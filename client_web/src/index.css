@@ -2,16 +2,65 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
+:root {
+  font-size: 14px;
+}
+
+@media (min-width: 640px) {
+  :root {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 2560px) {
+  :root {
+    font-size: 18px;
+  }
+}
+
+@media (min-width: 3840px) {
+  :root {
+    font-size: 22px;
+  }
+}
+
+@media (min-width: 5120px) {
+  :root {
+    font-size: 26px;
+  }
+}
+
+@media (min-width: 7680px) {
+  :root {
+    font-size: 34px;
+  }
+}
+
+html, body {
   margin: 0;
   padding: 0;
+  width: 100%;
+  min-height: 100%;
   background-color: #030712;
   color: #f8fafc;
   overflow-x: hidden;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .bg-radial-gradient {
   background: radial-gradient(circle at 50% 45%, rgba(0, 81, 255, 0.08) 0%, rgba(3, 7, 18, 0.98) 75%);
+}
+
+/* Touch targets and smooth scrolling */
+button, input, select, textarea {
+  touch-action: manipulation;
 }
 
 ::-webkit-scrollbar {
@@ -30,4 +79,19 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #00f0ff55;
+}
+
+/* Custom scrollbars */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.2);
+  border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 240, 255, 0.4);
 }

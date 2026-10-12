@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { NavigationTab, KnowledgeNode } from './shared/types';
 import { AppNavbar } from './shared/layout/AppNavbar';
-import { I18nProvider } from './shared/i18n/I18nContext';
+import { I18nProvider, useI18n } from './shared/i18n/I18nContext';
 import { NeuralCoreCanvas } from './features/core_visualizer_3d/NeuralCoreCanvas';
 import { SpatialWorldView } from './features/world_3d/SpatialWorldView';
 import { Studio3DView } from './features/studio_3d/Studio3DView';
 import { ControlDeckView } from './features/control_deck/ControlDeckView';
 
 export const MainConsole: React.FC = () => {
+  const { t } = useI18n();
   const [currentTab, setCurrentTab] = useState<NavigationTab>('WORLD_3D');
   const [nodes, setNodes] = useState<KnowledgeNode[]>([
     {
@@ -70,22 +71,22 @@ export const MainConsole: React.FC = () => {
       if (res.ok) {
         const payload = await res.json();
         fetchGraphNodes();
-        return payload.speech_output || 'Comando eseguito.';
+        return payload.speech_output || t('cmd_executed_default');
       }
     } catch {
     }
 
     const lower = command.toLowerCase();
-    if (lower.includes('luci') || lower.includes('luce')) {
-      return "Comando inviato ad Home Assistant. Illuminazione configurata secondo i parametri richiesti.";
+    if (lower.includes('luci') || lower.includes('luce') || lower.includes('light')) {
+      return t('cmd_ha_lights');
     }
-    if (lower.includes('telecamera') || lower.includes('sicurezza')) {
-      return "Controllo perimetrale completato. I sensori Frigate non segnalano movimenti sospetti.";
+    if (lower.includes('telecamera') || lower.includes('sicurezza') || lower.includes('camera') || lower.includes('security')) {
+      return t('cmd_security_frigate');
     }
-    if (lower.includes('codice') || lower.includes('programma')) {
-      return "Avviata la sintesi della routine nella sandbox protetta. Test completato con successo.";
+    if (lower.includes('codice') || lower.includes('programma') || lower.includes('code') || lower.includes('software')) {
+      return t('cmd_sandbox_code');
     }
-    return `Ricevuto: "${command}". Istruzione instradata all'orchestratore cognitivo.`;
+    return `${t('cmd_received')}: "${command}". ${t('cmd_routed')}`;
   };
 
   return (
