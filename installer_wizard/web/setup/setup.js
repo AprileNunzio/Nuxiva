@@ -27,7 +27,6 @@
   let busy = false;
   let currentAudio = null;
 
-  // Web Audio Context & Analyser
   let audioCtx = null;
   let analyserNode = null;
   let micStream = null;
@@ -57,9 +56,6 @@
     choice.lang = lang;
     if (window.SetupI18n && typeof window.SetupI18n.applyLanguage === "function") {
       window.SetupI18n.applyLanguage(lang);
-    }
-    if (window.NuxivaI18n && typeof window.NuxivaI18n.switchTo === "function") {
-      window.NuxivaI18n.switchTo(lang);
     }
     document.querySelectorAll(".lang-card").forEach((card) => {
       card.setAttribute("aria-checked", String(card.dataset.lang === lang));
@@ -112,7 +108,6 @@
     }
   }
 
-  // --- AUDIO CALIBRATION (STEP 2) ---
   async function initMicCalibration() {
     try {
       if (!micStream) {
@@ -151,7 +146,6 @@
     }
   }
 
-  // --- VISUALIZER & WAKE-WORD STUDIO (STEP 3) ---
   function initAudioVisualizer() {
     const canvas = $("audio-visualizer");
     if (!canvas) return;
@@ -234,7 +228,6 @@
         body: { index: nextIdx + 1, name: choice.assistantName }
       });
     } catch (e) {
-      // Ignorato se backend offline durante test
     }
 
     choice.samplesRecorded[nextIdx] = true;
@@ -273,11 +266,9 @@
         window.speechSynthesis.speak(u);
       }
     } catch (e) {
-      // Non bloccante
     }
   }
 
-  // --- ATTACH LISTENERS ---
   function initListeners() {
     document.querySelectorAll(".lang-card").forEach((card) => {
       card.addEventListener("click", () => {
@@ -384,7 +375,6 @@
           body: { name: choice.assistantName, gender: choice.gender, lang: choice.lang }
         });
       } catch (e) {
-        // Ignorato
       }
     }
 
@@ -461,7 +451,6 @@
         }
       }
     } catch (e) {
-      // Ignorato
     }
 
     setLanguage(choice.lang);

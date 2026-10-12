@@ -25,7 +25,6 @@
 
   <p class="step-of" id="step-of" aria-live="polite"></p>
 
-  <!-- SCREEN 0: Codice di sicurezza per accesso remoto LAN -->
   <section class="card screen" data-screen="code" hidden>
     <div class="screen-badge">SECURITY GATE</div>
     <h1 id="t-code-title">Codice di sicurezza</h1>
@@ -33,7 +32,6 @@
     <input class="code" id="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="000000" aria-label="Codice di 6 cifre">
   </section>
 
-  <!-- STEP 1: Selezione LINGUA di default (IT, EN, ES, FR) -->
   <section class="card screen" data-screen="lang_select" hidden>
     <div class="screen-badge">STEP 1 · LANGUAGE SETUP</div>
     <h1 id="t-lang-title">Seleziona la tua lingua</h1>
@@ -83,7 +81,6 @@
     </div>
   </section>
 
-  <!-- STEP 2: Auto-Installazione Base & Calibrazione Microfono -->
   <section class="card screen" data-screen="mic_calibration" hidden>
     <div class="screen-badge">STEP 2 · HARDWARE & AUDIO</div>
     <h1 id="t-mic-title">Calibrazione Microfono & Componenti Base</h1>
@@ -124,7 +121,6 @@
     </div>
   </section>
 
-  <!-- STEP 3: Nome Assistente, Persona Uomo/Donna & Wake-Word 3-Shot -->
   <section class="card screen" data-screen="assistant_naming" hidden>
     <div class="screen-badge">STEP 3 · ASSISTANT & WAKE-WORD</div>
     <h1 id="t-assist-title">Personalizza il tuo Assistente</h1>
@@ -166,13 +162,11 @@
         <span class="studio-sub" id="t-studio-sub">Pronuncia 3 volte il nome scelto per addestrare il modello</span>
       </div>
 
-      <!-- Oscilloscopio & Spettrogramma Canvas -->
       <div class="visualizer-wrapper">
         <canvas id="audio-visualizer" width="560" height="110"></canvas>
         <div class="pitch-indicator" id="pitch-tag">F0: -- Hz | RMS: 0.00</div>
       </div>
 
-      <!-- 3 Slot di Acquisizione -->
       <div class="samples-grid">
         <div class="sample-slot" id="slot-1" data-step="1">
           <div class="slot-ring">
@@ -212,7 +206,6 @@
     </div>
   </section>
 
-  <!-- STEP 4: Registrazione Proprietario & Configurazione Server -->
   <section class="card screen" data-screen="owner_config" hidden>
     <div class="screen-badge">STEP 4 · OWNER & SYSTEM PROFILE</div>
     <h1 id="t-owner-title">Identità Proprietario & Sistema</h1>
@@ -230,7 +223,6 @@
       </label>
     </div>
 
-    <!-- Scansione Volto Olografica -->
     <div class="face-enroll-box">
       <div class="face-header">
         <span class="icon">👁️</span>
@@ -243,7 +235,6 @@
       <span class="face-tag" id="face-feedback">Non ancora registrato (facoltativo)</span>
     </div>
 
-    <!-- Personalizzazione Cervello Server -->
     <div class="server-brain-config">
       <span class="sub-title" id="t-brain-title">Cervello AI & Orchestrazione</span>
       <div class="choices" id="brains" role="radiogroup">
@@ -294,7 +285,6 @@
     </div>
   </section>
 
-  <!-- SCREEN FINALE: Attivazione e Saluto -->
   <section class="card screen" data-screen="done" hidden>
     <div class="success-halo">
       <span class="big-check">✓</span>
@@ -334,7 +324,6 @@
   </nav>
 </main>
 
-<script src="/static/shared/translate.js"></script>
 <script src="/static/shared/core.js"></script>
 <script src="/static/setup/language/setup_i18n.js"></script>
 <script src="/static/setup/setup.js"></script>

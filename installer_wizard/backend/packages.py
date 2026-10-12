@@ -1,7 +1,6 @@
 import glob
 import json
 import os
-import shutil
 import time
 from dataclasses import dataclass
 
@@ -69,7 +68,7 @@ def brain_mode(env: dict | None = None) -> str:
         return "local"
     if ollama_remote():
         return "remote"
-    if shutil.which("ollama") or _installed("ollama"):
+    if _installed("ollama"):
         return "local"
     return "pending"
 
