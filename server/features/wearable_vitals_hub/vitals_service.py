@@ -1,5 +1,5 @@
 import time
-from typing import Dict, Any, Optional, List
+from typing import Optional
 from server.features.wearable_vitals_hub.interfaces import (
     RealtimeVitalTelemetry,
     BodyCompositionData,
@@ -7,7 +7,6 @@ from server.features.wearable_vitals_hub.interfaces import (
     WearableSystemState,
     ConnectionStatus,
 )
-from server.features.wearable_vitals_hub.protocol_parser import protocol_parser
 from server.features.wearable_vitals_hub.device_registry import wearable_registry
 from server.core.sensory_bus.event_router import sensory_bus
 from server.core.event_sourcing.universal_space import UniversalObservation

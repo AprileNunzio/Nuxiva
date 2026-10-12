@@ -1,5 +1,4 @@
-from fastapi import APIRouter, HTTPException
-from typing import Dict, Any, List
+from fastapi import APIRouter
 from server.features.wearable_vitals_hub.interfaces import (
     RealtimeVitalTelemetry,
     BodyCompositionData,
