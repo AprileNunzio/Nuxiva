@@ -8,8 +8,25 @@ from pathlib import Path
 
 log = logging.getLogger("nuxiva.ear")
 
-NAME = "nuxiva"
-WAKE_RE = re.compile(r"\b((?:hey|hei|hej|ehi|ehy|eh|ei|e|hi|ok|okay)[\s,]+)?(nuxiva|nuxiba|nucsiva|nuxif|nuchiva)\b[\s,.!?:;-]*", re.I)
+def current_name() -> str:
+    raw = os.environ.get("NUXIVA_ASSISTANT_NAME", "").strip()
+    if not raw:
+        try:
+            from config import read_env
+            raw = read_env().get("NUXIVA_ASSISTANT_NAME", "").strip()
+        except Exception:
+            pass
+    clean = re.sub(r"^(?:hey|hei|ehi|hi|ok|okay)\s+", "", raw or "nuxiva", flags=re.I).strip()
+    return clean.lower() or "nuxiva"
+
+
+def get_wake_re() -> re.Pattern:
+    name = current_name()
+    if name == "nuxiva":
+        return re.compile(r"\b((?:hey|hei|hej|ehi|ehy|eh|ei|e|hi|ok|okay)[\s,]+)?(nuxiva|nuxiba|nucsiva|nuxif|nuchiva)\b[\s,.!?:;-]*", re.I)
+    return re.compile(rf"\b((?:hey|hei|hej|ehi|ehy|eh|ei|e|hi|ok|okay)[\s,]+)?({re.escape(name)}|nuxiva|nuxiba)\b[\s,.!?:;-]*", re.I)
+
+
 NOT_NAMES = frozenset({"catena", "arena", "avena", "antenna", "atenei", "ateneo"})
 LEARN_FILE = Path(os.environ.get("NUXIVA_EAR_LEARN", "/var/lib/nuxiva/ear_learning.json"))
 PEOPLE_DIR = Path(os.environ.get("NUXIVA_PEOPLE_DIR", "/var/lib/nuxiva/people"))
@@ -36,7 +53,8 @@ GREETINGS = frozenset({"hey", "hei", "hej", "ehi", "ehy", "eh", "ei", "e", "hi",
 def name_variant(text: str) -> str | None:
     tokens = [w for w in (_plain(t) for t in TOKEN_RE.findall(text or "")) if w not in GREETINGS][:3]
     candidates = tokens + [a + b for a, b in zip(tokens, tokens[1:]) if len(a) <= 3]
-    scored = sorted((_lev(c, NAME), c) for c in candidates
+    name = current_name()
+    scored = sorted((min(_lev(c, name), _lev(c, "nuxiva")), c) for c in candidates
                     if 3 <= len(c) <= 10 and not any(blocked in c for blocked in NOT_NAMES))
     return scored[0][1] if scored and scored[0][0] <= 2 else None
 
@@ -46,13 +64,14 @@ class Learner:
     def __init__(self) -> None:
         self.data = {"variants": {}, "stats": {"wakes": 0, "fuzzy_wakes": 0, "commands": 0, "false_wakes": 0,
                                                "learned": 0, "wake_ms": []}, "strict": False}
+        name = current_name()
         try:
             saved = json.loads(LEARN_FILE.read_text(encoding="utf-8"))
         except (OSError, ValueError):
             saved = {}
-        if isinstance(saved, dict) and saved.get("name") == NAME:
+        if isinstance(saved, dict) and saved.get("name") in (name, "nuxiva"):
             self.data.update(saved)
-        self.data["name"] = NAME
+        self.data["name"] = name
         self.recent_miss = None
         self.last_save = 0.0
 
@@ -67,7 +86,8 @@ class Learner:
             log.warning("Apprendimento non salvato: %s", exc)
 
     def hotwords(self) -> str:
-        names = {"Nuxiva"}
+        name = current_name().capitalize()
+        names = {"Nuxiva", name}
         try:
             for f in list(PEOPLE_DIR.glob("*.json"))[:50]:
                 first = json.loads(f.read_text(encoding="utf-8")).get("first_name")
@@ -78,7 +98,7 @@ class Learner:
         return " ".join(sorted(names))
 
     def find_wake(self, text: str):
-        exact = WAKE_RE.search(text)
+        exact = get_wake_re().search(text)
         if exact:
             return exact.start(), exact.end(), None
         tokens = list(TOKEN_RE.finditer(text))
@@ -93,10 +113,11 @@ class Learner:
         return None
 
     def _sounds_like_name(self, word: str) -> bool:
-        if len(word) < 4 or len(word) > 9 or word in NOT_NAMES:
+        if len(word) < 3 or len(word) > 10 or word in NOT_NAMES:
             return False
         learned = self.data["variants"].get(word, 0)
-        dist = _lev(word, NAME)
+        name = current_name()
+        dist = min(_lev(word, name), _lev(word, "nuxiva"))
         return dist <= 1 or learned >= 2 or (dist == 2 and learned >= 1)
 
     @staticmethod
@@ -133,16 +154,18 @@ class Learner:
     def on_manual_listen(self) -> None:
         if self.recent_miss and time.time() - self.recent_miss[0] < 8:
             word = self.recent_miss[1]
-            if 3 <= len(word) <= 10 and word not in NOT_NAMES and _lev(word, NAME) <= 3:
+            name = current_name()
+            if 3 <= len(word) <= 10 and word not in NOT_NAMES and min(_lev(word, name), _lev(word, "nuxiva")) <= 3:
                 self.data["variants"][word] = self.data["variants"].get(word, 0) + 1
                 self.data["stats"]["learned"] += 1
-                log.info("Imparata la variante «%s» per Nuxiva", word)
+                log.info("Imparata la variante «%s»", word)
                 self.save(force=True)
         self.recent_miss = None
 
     def learn_variant(self, word: str) -> bool:
         word = _plain(word)
-        if not 3 <= len(word) <= 10 or word in NOT_NAMES or _lev(word, NAME) > 3:
+        name = current_name()
+        if not 3 <= len(word) <= 10 or word in NOT_NAMES or min(_lev(word, name), _lev(word, "nuxiva")) > 3:
             return False
         self.data["variants"][word] = self.data["variants"].get(word, 0) + 1
         self.data["stats"]["learned"] += 1
@@ -151,12 +174,13 @@ class Learner:
 
     def teach(self, word: str) -> bool:
         word = _plain(word)
-        if not 3 <= len(word) <= 10 or word in NOT_NAMES or _lev(word, NAME) > 3:
+        name = current_name()
+        if not 3 <= len(word) <= 10 or word in NOT_NAMES or min(_lev(word, name), _lev(word, "nuxiva")) > 3:
             return False
         self.data["variants"][word] = max(2, self.data["variants"].get(word, 0) + 1)
         self.data["stats"]["learned"] += 1
         self.save(force=True)
-        log.info("Variante «%s» per Nuxiva insegnata durante l'addestramento vocale", word)
+        log.info("Variante «%s» insegnata durante l'addestramento vocale", word)
         return True
 
     def on_review(self, missed: int, false_instant: int) -> None:

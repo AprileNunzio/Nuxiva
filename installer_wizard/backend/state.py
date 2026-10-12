@@ -4,7 +4,7 @@ import time
 from collections import deque
 from datetime import datetime, timezone
 
-from config import LOG_DIR, STATE_DIR
+from config import LOG_DIR, STATE_DIR, read_env
 
 STATE_FILE = STATE_DIR / "state.json"
 AUDIT_FILE = LOG_DIR / "audit.jsonl"
@@ -131,6 +131,8 @@ class Store:
             "privacy": self.privacy,
             "greeting": self.greeting,
             "voice_training": self.voice_training,
+            "assistant_name": read_env().get("NUXIVA_ASSISTANT_NAME", "NUXIVA"),
+            "assistant_gender": read_env().get("NUXIVA_ASSISTANT_GENDER", "female"),
             "now_playing": self.now_playing,
             "audio_rev": self.audio_rev,
             "study": self.study,

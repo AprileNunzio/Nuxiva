@@ -109,12 +109,19 @@
   }
 
   function onState(s) {
+    D.state = s;
+    if (s.assistant_name) {
+      const clean = s.assistant_name.replace(/^(?:hey|hei|ehi|hi|ok|okay)\s+/i, "").trim() || s.assistant_name;
+      const brand = document.querySelector(".brand");
+      if (brand) brand.innerHTML = `${fmt.esc(clean.toUpperCase())}<small>ASSISTENTE DIGITALE</small>`;
+      if (D.Ear && D.Ear.setAssistantName) D.Ear.setAssistantName(clean);
+    }
     privacy = s.privacy || privacy;
     renderPresence(s.presence);
     if (D.followLanguage) D.followLanguage(s.presence);
     guardPersonal();
     handleGreeting(s.greeting);
-    if (D.Enroll) D.Enroll.fromState(s.voice_training);
+    if (D.Enroll) D.Enroll.fromState(s.voice_training, s);
     D.onAudioRev(s.audio_rev);
     D.Ear.resetFrom(s.mic_reset);
     NuxivaDesk.setScreens(s.screens);

@@ -396,6 +396,8 @@
             lang: choice.lang,
             voice_lang: choice.lang,
             brain: choice.brain,
+            assistant_name: choice.assistantName,
+            assistant_gender: choice.gender,
             ollama_url: $("ollama-url")?.value.trim() || "",
             cloud_provider: choice.cloudProvider,
             cloud_key: $("cloud-key")?.value.trim() || "",

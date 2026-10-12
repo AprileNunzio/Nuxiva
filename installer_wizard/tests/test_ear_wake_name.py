@@ -3,6 +3,7 @@ import os
 import sys
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
 
 EAR = Path(__file__).resolve().parents[1] / "features" / "ear"
@@ -57,6 +58,15 @@ class WakeNameTest(unittest.TestCase):
         self.assertEqual(learner.data["variants"], {})
         self.assertIsNone(learner.find_wake("marvin accendi la luce"))
         self.assertEqual(learner.hotwords().split()[0], "Nuxiva")
+
+    def test_custom_assistant_name_wakes_both_with_and_without_hey(self):
+        with mock.patch.dict(os.environ, {"NUXIVA_ASSISTANT_NAME": "Jarvis"}):
+            learner = learner_module.Learner()
+            for text in ("Jarvis, accendi la luce", "Hey Jarvis, accendi la luce", "Ehi Jarvis accendi la luce", "jarvis accendi la luce"):
+                with self.subTest(text=text):
+                    found = learner.find_wake(text)
+                    self.assertIsNotNone(found)
+                    self.assertEqual(text[found[1]:], "accendi la luce")
 
     def test_wake_model_name_is_validated(self):
         import importlib

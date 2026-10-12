@@ -170,6 +170,12 @@ def _clean(raw: dict) -> dict:
             raise HTTPException(400, "Token di Telegram non valido")
         out.update(NUXIVA_TELEGRAM_TOKEN=telegram, NUXIVA_TELEGRAM="1")
     out["NUXIVA_COMMERCIAL"] = "1" if raw.get("commercial") is True else "0"
+    assist_name = str(raw.get("assistant_name") or "").strip()
+    if assist_name:
+        out["NUXIVA_ASSISTANT_NAME"] = assist_name
+    assist_gender = str(raw.get("assistant_gender") or "").strip().lower()
+    if assist_gender in ("male", "female"):
+        out["NUXIVA_ASSISTANT_GENDER"] = assist_gender
     return out
 
 
@@ -411,8 +417,18 @@ async def setup_save(request: Request, _: None = Depends(require_setup)):
     training = is_local(request)
     if training:
         from features.chat import voice_id
-        store.voice_training = {"id": secrets.token_hex(6), "at": time.time(), **voice_id.session(owner)}
-        store.touch()
+        async def _queue_voice():
+            from orchestrator import orch
+            while orch.busy or not store.installed or store.phase not in ("READY", "DEGRADED"):
+                await asyncio.sleep(2)
+            store.voice_training = {"id": secrets.token_hex(6), "at": time.time(), **voice_id.session(owner)}
+            store.touch()
+        if not DEMO and (not store.installed or store.phase not in ("READY", "DEGRADED")):
+            from tasks import background
+            background(_queue_voice())
+        else:
+            store.voice_training = {"id": secrets.token_hex(6), "at": time.time(), **voice_id.session(owner)}
+            store.touch()
     return JSONResponse({"ok": True, "shares_password": password, "owner": owner["slug"], "voice_training": training},
                         headers=NO_CACHE)
 

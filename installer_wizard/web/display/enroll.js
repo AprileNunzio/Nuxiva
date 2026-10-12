@@ -89,8 +89,20 @@
       draw(levelNote(ev.level));
       expect();
     },
-    fromState(request) {
+    fromState(request, sysState) {
       if (!request || !request.id || request.id === seenRequest) return;
+      const s = sysState || (window.NuxivaDisplay && window.NuxivaDisplay.state);
+      if (s) {
+        if (s.phase && !["READY", "DEGRADED"].includes(s.phase)) return;
+        if (!s.installed && s.phase !== "READY") return;
+        const steps = s.steps || {};
+        const busy = Object.values(steps).some((st) => ["running", "checking", "retrying"].includes(st.status));
+        if (busy) return;
+        const ear = steps.ear || {};
+        const voice = steps.voice || {};
+        if (ear.status && ear.status !== "done") return;
+        if (voice.status && voice.status !== "done") return;
+      }
       seenRequest = request.id;
       if (Date.now() / 1000 - (request.at || 0) < 600) this.start(request);
     },

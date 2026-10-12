@@ -1,3 +1,4 @@
+import os
 import re
 import time
 import unicodedata
@@ -37,13 +38,32 @@ PLANS = {
 }
 
 
+def get_assistant_name() -> str:
+    raw = ""
+    try:
+        from config import read_env
+        raw = read_env().get("NUXIVA_ASSISTANT_NAME", "").strip()
+    except Exception:
+        pass
+    if not raw:
+        raw = os.environ.get("NUXIVA_ASSISTANT_NAME", "").strip()
+    clean = re.sub(r"^(?:hey|hei|ehi|hi|ok|okay)\s+", "", raw or "Nuxiva", flags=re.I).strip()
+    return clean.capitalize() or "Nuxiva"
+
+
 def language(lang: str | None) -> str:
     return lang if lang in PLANS else "it"
 
 
-def plan(lang: str | None) -> list[dict]:
+def plan(lang: str | None, custom_name: str | None = None) -> list[dict]:
+    name = custom_name or get_assistant_name()
     chosen = PLANS[language(lang)]
-    return [{"kind": kind, "text": text} for kind in KINDS for text in chosen[kind]]
+    out = []
+    for kind in KINDS:
+        for template in chosen[kind]:
+            text = template.replace("Nuxiva", name).replace("nuxiva", name.lower())
+            out.append({"kind": kind, "text": text})
+    return out
 
 
 def plain(text: str) -> str:
