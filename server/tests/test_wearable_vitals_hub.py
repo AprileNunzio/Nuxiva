@@ -3,12 +3,8 @@ import time
 from server.features.wearable_vitals_hub.interfaces import (
     WearableProtocol,
     RealtimeVitalTelemetry,
-    BodyCompositionData,
-    WearableDeviceRegistration,
-    ConnectionStatus,
 )
 from server.features.wearable_vitals_hub.protocol_parser import protocol_parser
-from server.features.wearable_vitals_hub.device_registry import wearable_registry
 from server.features.wearable_vitals_hub.vitals_service import wearable_vitals_service
 
 class WearableVitalsHubTest(unittest.IsolatedAsyncioTestCase):

@@ -7,7 +7,6 @@ from server.features.user_presence_vitals.interfaces import (
     UserHealthProfile,
 )
 from server.features.user_presence_vitals.emergency_detector import vitals_emergency_detector
-from server.features.user_presence_vitals.emergency_broadcaster import home_emergency_broadcaster
 from server.features.user_presence_vitals.presence_vitals_coordinator import presence_vitals_coordinator
 from server.features.wearable_vitals_hub.interfaces import (
     RealtimeVitalTelemetry,
