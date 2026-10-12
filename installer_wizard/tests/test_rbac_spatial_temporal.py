@@ -10,7 +10,6 @@ from features.authz import resolve, heard
 class SpatialTemporalRBACUnitTests(unittest.TestCase):
 
     def test_time_window_validation(self):
-        # 1700049600 is 2023-11-15 12:00:00 (midday)
         from datetime import datetime
         dt = datetime(2026, 10, 12, 12, 0)
         self.assertTrue(is_time_allowed("08:00-18:00", dt.timestamp()))

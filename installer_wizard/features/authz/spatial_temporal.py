@@ -36,8 +36,8 @@ def is_zone_allowed(principal_zones: tuple[str, ...], device_zone: str) -> bool:
 def validate_spatial_temporal(principal: Principal, device_zone: str = "", now: float | None = None) -> Decision | None:
     if principal.role in ("system", "owner"):
         return None
-    if principal.schedule and not is_time_allowed(principal.schedule, now):
-        return Decision(False, "schedule", Risk.HOME)
     if principal.zones and not is_zone_allowed(principal.zones, device_zone):
         return Decision(False, "zone", Risk.HOME)
+    if principal.schedule and not is_time_allowed(principal.schedule, now):
+        return Decision(False, "schedule", Risk.HOME)
     return None
