@@ -5,7 +5,6 @@ import time
 from server.features.multimodal_surveillance.interfaces import (
     AudioChunkPayload,
     VideoFramePayload,
-    SatelliteNodeConfig,
     SemanticSearchQuery,
 )
 from server.features.multimodal_surveillance.audio_enhancer import audio_enhancer

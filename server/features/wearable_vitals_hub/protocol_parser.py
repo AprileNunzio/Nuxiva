@@ -1,6 +1,5 @@
 import time
-import math
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 from server.features.wearable_vitals_hub.interfaces import (
     RealtimeVitalTelemetry,
     BodyCompositionData,
