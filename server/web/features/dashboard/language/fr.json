@@ -168,6 +168,7 @@
     "user_role_admin": "Administrateur Principal / Chef de Maison",
     "user_role_family": "Membre de la Famille",
     "user_role_guest": "Invité / Visiteur",
-    "user_role_staff": "Personnel de Maison & Entreprise"
+    "user_role_staff": "Personnel de Maison & Entreprise",
+    "tab_cognitive_triage": "Passerelle Triage Cognitif & Santé"
   }
 }

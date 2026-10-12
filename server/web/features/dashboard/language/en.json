@@ -168,6 +168,7 @@
     "user_role_admin": "Primary Administrator / Household Head",
     "user_role_family": "Family Member",
     "user_role_guest": "Guest / Visitor",
-    "user_role_staff": "Household & Enterprise Staff"
+    "user_role_staff": "Household & Enterprise Staff",
+    "tab_cognitive_triage": "Cognitive Triage & Health Cockpit"
   }
 }

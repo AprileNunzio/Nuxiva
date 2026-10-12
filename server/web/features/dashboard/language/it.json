@@ -168,6 +168,7 @@
     "user_role_admin": "Amministratore / Capofamiglia",
     "user_role_family": "Membro Famiglia",
     "user_role_guest": "Ospite / Visitatore",
-    "user_role_staff": "Personale di Servizio"
+    "user_role_staff": "Personale di Servizio",
+    "tab_cognitive_triage": "Plancia Triage Cognitivo & Salute"
   }
 }
