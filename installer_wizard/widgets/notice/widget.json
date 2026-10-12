@@ -1,0 +1,16 @@
+{
+  "id": "notice",
+  "personal": true,
+  "name": "Avvisi",
+  "icon": "🔔",
+  "priority": 60,
+  "size": "s",
+  "ttl": 120,
+  "description": "Promemoria e messaggi dei moduli (compleanni, dispositivi nuovi, avvisi di sistema).",
+  "demo": {
+    "icon": "🎂",
+    "title": "Oggi è il compleanno di Maria",
+    "text": "Compie 34 anni."
+  },
+  "tone": "cyan"
+}

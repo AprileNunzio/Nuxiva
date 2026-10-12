@@ -1,0 +1,16 @@
+{
+  "id": "text_short",
+  "name": "Testo Breve",
+  "icon": "💬",
+  "priority": 70,
+  "size": "m",
+  "intents": [
+    "text_short"
+  ],
+  "description": "Visualizza risposte testuali con enfasi HTML (grassetto, colori).",
+  "demo": {
+    "content": "Questo è un <b>testo</b> con <em>enfasi</em>."
+  },
+  "ttl": 20,
+  "tone": "cyan"
+}

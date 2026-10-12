@@ -1,0 +1,19 @@
+{
+  "id": "cam_stream",
+  "personal": true,
+  "name": "Videocamera di Sicurezza",
+  "icon": "📷",
+  "priority": 70,
+  "size": "l",
+  "intents": [
+    "cam_stream"
+  ],
+  "description": "Flusso della videocamera di sicurezza con avviso di movimento.",
+  "ttl": 300,
+  "demo": {
+    "camera": "Ingresso Principale",
+    "motion_detected": true
+  },
+  "tone": "red",
+  "essential": true
+}

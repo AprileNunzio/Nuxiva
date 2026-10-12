@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="it" translate="no">
+<head>
+<meta charset="UTF-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<title>NUXIVA · Neural Interactive Operating System</title>
+<link rel="stylesheet" href="/static/shared/nuxiva.css">
+<link rel="stylesheet" href="/static/shared/bgqueue.css">
+<link rel="stylesheet" href="/static/setup/setup.css">
+</head>
+<body class="holo-grid">
+<div class="ambient-glow" aria-hidden="true"></div>
+
+<main class="wiz" id="wiz">
+  <header class="wiz-head">
+    <div class="brand">
+      <span class="pulse-dot"></span>
+      NUXIVA
+      <small id="sub-brand">NEURAL INTERACTIVE OS</small>
+    </div>
+    <ol class="dots" id="dots" aria-label="Avanzamento"></ol>
+  </header>
+
+  <p class="step-of" id="step-of" aria-live="polite"></p>
+
+  <!-- SCREEN 0: Codice di sicurezza per accesso remoto LAN -->
+  <section class="card screen" data-screen="code" hidden>
+    <div class="screen-badge">SECURITY GATE</div>
+    <h1 id="t-code-title">Codice di sicurezza</h1>
+    <p class="lead" id="t-code-lead">Stai configurando NUXIVA da un altro dispositivo o smartphone. Inserisci il codice di 6 cifre mostrato sullo schermo principale di NUXIVA.</p>
+    <input class="code" id="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="000000" aria-label="Codice di 6 cifre">
+  </section>
+
+  <!-- STEP 1: Selezione LINGUA di default (IT, EN, ES, FR) -->
+  <section class="card screen" data-screen="lang_select" hidden>
+    <div class="screen-badge">STEP 1 · LANGUAGE SETUP</div>
+    <h1 id="t-lang-title">Seleziona la tua lingua</h1>
+    <p class="lead" id="t-lang-lead">Scegli la lingua principale del sistema. Ogni persona potrà poi impostare la propria lingua visiva e vocale preferita.</p>
+    
+    <div class="lang-grid" id="lang-grid" role="radiogroup" aria-label="Selezione lingua">
+      <button type="button" class="lang-card" data-lang="it" aria-checked="true">
+        <span class="flag">🇮🇹</span>
+        <div class="lang-info">
+          <b data-no-i18n="">Italiano</b>
+          <small>Interfaccia e voce in italiano</small>
+        </div>
+        <span class="lang-check">✓</span>
+      </button>
+
+      <button type="button" class="lang-card" data-lang="en" aria-checked="false">
+        <span class="flag">🇬🇧</span>
+        <div class="lang-info">
+          <b data-no-i18n="">English</b>
+          <small>Interfaccia e voce in inglese</small>
+        </div>
+        <span class="lang-check">✓</span>
+      </button>
+
+      <button type="button" class="lang-card" data-lang="es" aria-checked="false">
+        <span class="flag">🇪🇸</span>
+        <div class="lang-info">
+          <b data-no-i18n="">Español</b>
+          <small>Interfaccia e voce in spagnolo</small>
+        </div>
+        <span class="lang-check">✓</span>
+      </button>
+
+      <button type="button" class="lang-card" data-lang="fr" aria-checked="false">
+        <span class="flag">🇫🇷</span>
+        <div class="lang-info">
+          <b data-no-i18n="">Français</b>
+          <small>Interfaccia e voce in francese</small>
+        </div>
+        <span class="lang-check">✓</span>
+      </button>
+    </div>
+
+    <div class="hw-summary-banner" id="hw-banner">
+      <span class="icon">⚡</span>
+      <span id="hw-desc">Rilevamento hardware in corso...</span>
+    </div>
+  </section>
+
+  <!-- STEP 2: Auto-Installazione Base & Calibrazione Microfono -->
+  <section class="card screen" data-screen="mic_calibration" hidden>
+    <div class="screen-badge">STEP 2 · HARDWARE & AUDIO</div>
+    <h1 id="t-mic-title">Calibrazione Microfono & Componenti Base</h1>
+    <p class="lead" id="t-mic-lead">NUXIVA opera con campionamento ad alta fedeltà. Calibriamo il microfono e misuriamo il rumore di fondo dell'ambiente.</p>
+
+    <div class="audio-hud">
+      <div class="hud-circle-container">
+        <div class="radar-sweep"></div>
+        <div class="hud-circle" id="hud-circle">
+          <span class="mic-icon">🎙️</span>
+          <div class="hud-level-val" id="hud-db">-42 dB</div>
+          <div class="hud-level-label" id="hud-status">In attesa microfono</div>
+        </div>
+      </div>
+
+      <div class="audio-metrics">
+        <div class="metric-row">
+          <span id="t-sample-rate">Frequenza di campionamento:</span>
+          <b id="val-samplerate">48.000 Hz · Hi-Fi</b>
+        </div>
+        <div class="metric-row">
+          <span id="t-noise-level">Rumore di fondo:</span>
+          <b id="val-noise">Basso (Ideale)</b>
+        </div>
+        <div class="metric-row">
+          <span id="t-channel">Canali & Latenza:</span>
+          <b>Ultra-Low Latency PCM</b>
+        </div>
+      </div>
+    </div>
+
+    <div class="mic-actions">
+      <button type="button" class="primary" id="btn-request-mic">
+        <span class="btn-icon">▶</span>
+        <span id="t-btn-mic">Attiva e Calibra Microfono</span>
+      </button>
+      <p class="hint" id="t-mic-hint">Tocca il pulsante per consentire l'accesso al microfono di questo dispositivo.</p>
+    </div>
+  </section>
+
+  <!-- STEP 3: Nome Assistente, Persona Uomo/Donna & Wake-Word 3-Shot -->
+  <section class="card screen" data-screen="assistant_naming" hidden>
+    <div class="screen-badge">STEP 3 · ASSISTANT & WAKE-WORD</div>
+    <h1 id="t-assist-title">Personalizza il tuo Assistente</h1>
+    <p class="lead" id="t-assist-lead">Come vuoi chiamare il tuo assistente? Puoi usare il predefinito «Hey NUXIVA» oppure un nome a tua scelta come «Jarvis» o «Ares».</p>
+
+    <div class="naming-box">
+      <label class="field">
+        <span id="t-label-assist-name">Nome dell'Assistente (Parola di attivazione)</span>
+        <input type="text" id="assistant-name" maxlength="40" value="Hey NUXIVA" placeholder="es. Hey NUXIVA, Jarvis, Sofia...">
+      </label>
+    </div>
+
+    <div class="gender-selection">
+      <span class="sub-title" id="t-gender-title">Genere e Timbro Vocale dell'Assistente</span>
+      <div class="gender-cards">
+        <button type="button" class="gender-card active" data-gender="female">
+          <span class="avatar-icon">👩</span>
+          <div class="card-meta">
+            <b id="t-gender-female">Donna (Female)</b>
+            <small id="t-gender-female-desc">Voce calda, fluida e naturale</small>
+          </div>
+          <button type="button" class="preview-sound-btn" id="btn-play-female" title="Ascolta anteprima">🔊</button>
+        </button>
+
+        <button type="button" class="gender-card" data-gender="male">
+          <span class="avatar-icon">👨</span>
+          <div class="card-meta">
+            <b id="t-gender-male">Uomo (Male)</b>
+            <small id="t-gender-male-desc">Voce profonda, chiara e autorevole</small>
+          </div>
+          <button type="button" class="preview-sound-btn" id="btn-play-male" title="Ascolta anteprima">🔊</button>
+        </button>
+      </div>
+    </div>
+
+    <div class="wake-studio">
+      <div class="studio-header">
+        <span class="badge" id="studio-badge">STUDIO ACUSTICO 3-SHOT</span>
+        <span class="studio-sub" id="t-studio-sub">Pronuncia 3 volte il nome scelto per addestrare il modello</span>
+      </div>
+
+      <!-- Oscilloscopio & Spettrogramma Canvas -->
+      <div class="visualizer-wrapper">
+        <canvas id="audio-visualizer" width="560" height="110"></canvas>
+        <div class="pitch-indicator" id="pitch-tag">F0: -- Hz | RMS: 0.00</div>
+      </div>
+
+      <!-- 3 Slot di Acquisizione -->
+      <div class="samples-grid">
+        <div class="sample-slot" id="slot-1" data-step="1">
+          <div class="slot-ring">
+            <span class="slot-num">1</span>
+            <span class="slot-icon">✓</span>
+          </div>
+          <span class="slot-label" id="t-slot-1">1ª Pronuncia</span>
+          <small class="slot-status">In attesa</small>
+        </div>
+
+        <div class="sample-slot" id="slot-2" data-step="2">
+          <div class="slot-ring">
+            <span class="slot-num">2</span>
+            <span class="slot-icon">✓</span>
+          </div>
+          <span class="slot-label" id="t-slot-2">2ª Pronuncia</span>
+          <small class="slot-status">In attesa</small>
+        </div>
+
+        <div class="sample-slot" id="slot-3" data-step="3">
+          <div class="slot-ring">
+            <span class="slot-num">3</span>
+            <span class="slot-icon">✓</span>
+          </div>
+          <span class="slot-label" id="t-slot-3">3ª Pronuncia</span>
+          <small class="slot-status">In attesa</small>
+        </div>
+      </div>
+
+      <div class="rec-control-bar">
+        <button type="button" class="record-pulse-btn" id="btn-record-sample">
+          <span class="rec-dot"></span>
+          <span id="btn-record-label">Premi e pronuncia il nome</span>
+        </button>
+        <p class="rec-hint" id="t-rec-hint">Assicurati di pronunciare chiaramente il nome scelto per una calibrazione biometrica perfetta.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 4: Registrazione Proprietario & Configurazione Server -->
+  <section class="card screen" data-screen="owner_config" hidden>
+    <div class="screen-badge">STEP 4 · OWNER & SYSTEM PROFILE</div>
+    <h1 id="t-owner-title">Identità Proprietario & Sistema</h1>
+    <p class="lead" id="t-owner-lead">Inserisci Nome e Cognome per configurare il proprietario di NUXIVA e personalizzare l'orchestrazione locale.</p>
+
+    <div class="owner-fields">
+      <label class="field">
+        <span id="t-label-fname">Nome</span>
+        <input type="text" id="owner-name" maxlength="40" placeholder="Il tuo nome">
+      </label>
+
+      <label class="field">
+        <span id="t-label-lname">Cognome (facoltativo)</span>
+        <input type="text" id="owner-last" maxlength="60" placeholder="Il tuo cognome">
+      </label>
+    </div>
+
+    <!-- Scansione Volto Olografica -->
+    <div class="face-enroll-box">
+      <div class="face-header">
+        <span class="icon">👁️</span>
+        <div>
+          <b id="t-face-title">Riconoscimento Facciale (Face ID)</b>
+          <small id="t-face-sub">Riconosce quando entri nella stanza e adatta la lingua dello schermo</small>
+        </div>
+      </div>
+      <button type="button" class="ghost" id="btn-enroll-face">Scansiona il mio viso</button>
+      <span class="face-tag" id="face-feedback">Non ancora registrato (facoltativo)</span>
+    </div>
+
+    <!-- Personalizzazione Cervello Server -->
+    <div class="server-brain-config">
+      <span class="sub-title" id="t-brain-title">Cervello AI & Orchestrazione</span>
+      <div class="choices" id="brains" role="radiogroup">
+        <button type="button" class="choice" data-brain="local" aria-checked="true">
+          <div>
+            <b id="t-brain-local">Locale Offline (Consigliato)</b>
+            <small id="t-brain-local-desc">Massima privacy, gira completamente sul tuo hardware</small>
+          </div>
+          <span class="badge">OFFLINE</span>
+        </button>
+        <button type="button" class="choice" data-brain="remote" aria-checked="false">
+          <div>
+            <b id="t-brain-remote">Server Ollama su Rete Locale</b>
+            <small id="t-brain-remote-desc">Usa un PC o server dedicato nella tua LAN con Ollama</small>
+          </div>
+          <span class="badge">LAN</span>
+        </button>
+        <button type="button" class="choice" data-brain="cloud" aria-checked="false">
+          <div>
+            <b id="t-brain-cloud">Cloud API (Claude, OpenAI, Gemini)</b>
+            <small id="t-brain-cloud-desc">Leggero per mini-PC a basse prestazioni con chiavi API</small>
+          </div>
+          <span class="badge">CLOUD</span>
+        </button>
+      </div>
+
+      <div class="sub" id="brain-remote-input" hidden>
+        <label class="field">
+          <span>Indirizzo Server Ollama</span>
+          <input type="url" id="ollama-url" placeholder="http://192.168.1.50:11434">
+        </label>
+      </div>
+
+      <div class="sub" id="brain-cloud-input" hidden>
+        <div class="field">
+          <span>Provider Cloud</span>
+          <div class="seg" id="cloud-providers">
+            <button type="button" data-cloud="gemini" aria-checked="true">Gemini</button>
+            <button type="button" data-cloud="anthropic" aria-checked="false">Claude</button>
+            <button type="button" data-cloud="openai" aria-checked="false">OpenAI</button>
+          </div>
+        </div>
+        <label class="field">
+          <span>API Key</span>
+          <input type="password" id="cloud-key" placeholder="Inserisci la tua chiave API">
+        </label>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREEN FINALE: Attivazione e Saluto -->
+  <section class="card screen" data-screen="done" hidden>
+    <div class="success-halo">
+      <span class="big-check">✓</span>
+    </div>
+    <h1 id="t-done-title">Inizializzazione NUXIVA Completata</h1>
+    <p class="lead" id="t-done-lead">Tutte le configurazioni sono state applicate con successo. Il tuo sistema operativo neurale è attivo.</p>
+    
+    <div class="summary-card">
+      <div class="sum-row">
+        <span>Assistente:</span>
+        <b id="sum-assist">Hey NUXIVA (Donna)</b>
+      </div>
+      <div class="sum-row">
+        <span>Proprietario:</span>
+        <b id="sum-owner">Nunzio Aprile</b>
+      </div>
+      <div class="sum-row">
+        <span>Lingua Primaria:</span>
+        <b id="sum-lang">Italiano</b>
+      </div>
+    </div>
+
+    <div class="launch-actions">
+      <a class="primary launch-btn" href="/" id="btn-enter-nuxiva">
+        <span>Avvia NUXIVA</span>
+        <span class="arrow">➔</span>
+      </a>
+    </div>
+  </section>
+
+  <p class="error" id="error" role="alert"></p>
+
+  <nav class="wiz-nav" id="nav">
+    <button type="button" class="ghost" id="back">Indietro</button>
+    <button type="button" class="ghost" id="skip">Salta</button>
+    <button type="button" class="primary" id="next">Avanti</button>
+  </nav>
+</main>
+
+<script src="/static/shared/translate.js"></script>
+<script src="/static/shared/core.js"></script>
+<script src="/static/setup/setup.js"></script>
+<script src="/static/shared/bgqueue.js"></script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "name": "Desktop a widget",
+  "description": "Il display è un desktop: ogni informazione è un widget indipendente che compare quando serve (musica, meteo, avvisi, allarmi), in ordine di priorità.",
+  "capabilities": [
+    "Widget scoperti dalle cartelle",
+    "Priorità modificabili",
+    "Allarmi a schermo intero",
+    "Prova di ogni widget dal pannello",
+    "Chiusura automatica dei dati personali",
+    "Widget del proprietario sul display: risorse, sistemi, firewall, aggiornamenti e notizie quando ti avvicini"
+  ],
+  "settings": {
+    "NUXIVA_PRIVACY_AUTOCLOSE": "Chiudi i widget con dati personali quando non ci sei",
+    "NUXIVA_PRIVACY_AWAY_S": "Dopo quanto tempo che ti sei allontanato",
+    "NUXIVA_PRIVACY_VOICE_S": "Chiudi i dati personali aperti a voce dopo",
+    "NUXIVA_SECRETARY": "Sul display, mostra i widget del proprietario quando si avvicina"
+  }
+}

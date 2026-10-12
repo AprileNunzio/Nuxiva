@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+<meta charset="utf-8"/>
+<meta content="notranslate" name="google"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Nuxiva OS Admin</title>
+<link href="/static/shared/nuxiva.css" rel="stylesheet"/>
+<link href="/static/admin/admin.css" rel="stylesheet"/>
+<script src="/static/admin/embed.js"></script>
+<nuxiva-slot name="feature-styles"></nuxiva-slot>
+<link href="/static/admin/embed.css" rel="stylesheet"/>
+</head>
+<body class="holo-grid">
+<div class="login" id="login">
+<div class="panel">
+<div class="brand">NUXIVA<small data-i18n="admin:login.brand">PANNELLO DI CONTROLLO</small></div>
+<form autocomplete="on" id="login-form">
+<div><label data-i18n="admin:login.user" for="u">Utente di sistema</label><input autocomplete="username" id="u" name="username" required=""/></div>
+<div><label data-i18n="admin:login.password" for="p">Password</label><input autocomplete="current-password" id="p" name="password" required="" type="password"/></div>
+<button class="btn primary" data-i18n="admin:login.submit" type="submit">Accedi</button>
+<div class="err" id="login-err"></div>
+<div class="hint" data-i18n="admin:login.hint">Accesso consentito a root e agli utenti dei gruppi sudo o nuxiva-admin.</div>
+</form>
+</div>
+</div>
+<div class="app" id="app">
+<nav>
+<div class="brand">NUXIVA<small data-i18n="admin:nav.admin">ADMIN</small></div>
+<a class="on" data-tab="overview"><span class="ic">◉</span><span class="lb" data-i18n="admin:nav.overview">Panoramica</span></a>
+<a data-tab="features"><span class="ic">▦</span><span class="lb" data-i18n="admin:nav.features">Funzionalità</span></a>
+<a href="/"><span class="ic">✦</span><span class="lb">Nexus</span></a>
+<div class="sec" data-i18n="admin:nav.favorites">Preferiti</div>
+<div id="nav-pinned" style="display:contents"></div>
+<div class="sec" data-i18n="admin:nav.system">Sistema</div>
+<a data-tab="packages"><span class="ic">◇</span><span class="lb" data-i18n="admin:nav.packages">Pacchetti</span></a>
+<a data-tab="steps"><span class="ic">☰</span><span class="lb" data-i18n="admin:nav.steps">Installazione</span></a>
+<a data-tab="config"><span class="ic">⚙</span><span class="lb" data-i18n="admin:nav.config">Configurazione</span></a>
+<a data-tab="updates"><span class="ic">⟳</span><span class="lb" data-i18n="admin:nav.updates">Aggiornamenti</span></a>
+<a data-tab="logs"><span class="ic">▤</span><span class="lb" data-i18n="admin:nav.logs">Log</span></a>
+<a data-tab="events"><span class="ic">◷</span><span class="lb" data-i18n="admin:nav.events">Eventi</span></a>
+<div class="spacer"></div>
+<div class="who" id="who"></div>
+<a id="logout"><span class="ic">⎋</span><span class="lb" data-i18n="admin:nav.logout">Esci</span></a>
+<div style="padding: 10px 12px; margin-bottom: 12px;">
+<select id="lang-selector" style="width: 100%; background: rgba(41, 224, 255, 0.06); color: var(--text-dim); border: 1px solid var(--line); border-radius: 6px; padding: 6px; font-size: 13px; cursor: pointer; outline: none; appearance: none; text-align: center;">
+</select>
+</div></nav>
+<div class="content">
+<div class="topbar">
+<h1 data-i18n="admin:overview.title" id="title">Panoramica</h1>
+<div class="row">
+<span class="phase-pill"><span class="dot" id="phase-dot"></span><span id="phase-lbl">—</span></span>
+<span class="dim mono" id="progress-lbl"></span>
+</div>
+</div>
+<div class="panel fbar" id="fbar"></div>
+<section class="tab" id="tab-features">
+<div class="feat-tools">
+<input autocomplete="off" data-i18n-placeholder="admin:features.search" id="feat-q" placeholder="Cerca una funzionalità…"/>
+<div class="seg" id="feat-state"><button class="on" data-i18n="admin:features.all" data-st="all">Tutte</button><button data-i18n="admin:features.active" data-st="on">Attive</button><button data-i18n="admin:features.inactive" data-st="off">Spente</button></div>
+<button class="btn" data-i18n="admin:features.rescan" id="feat-rescan" title="Rileggi le cartelle delle funzionalità e l'hardware">⟳ Scansiona</button>
+</div>
+<div class="chips" id="feat-cats"></div>
+<div class="feat-grid" id="feat-grid"></div>
+<div class="muted-note" id="feat-note"></div>
+</section>
+<section class="tab" id="tab-feature"><div class="panel" id="feature-page"></div></section>
+<section class="tab on" id="tab-overview">
+<div class="grid g4" style="margin-bottom:18px">
+<div class="panel stat"><div class="panel-title" data-i18n="admin:overview.cpu">Processore</div><div class="v" id="s-cpu">—</div><div class="bar"><i id="b-cpu"></i></div><div class="s" id="s-load"></div></div>
+<div class="panel stat"><div class="panel-title" data-i18n="admin:overview.mem">Memoria</div><div class="v" id="s-mem">—</div><div class="bar"><i id="b-mem"></i></div><div class="s" id="s-mem2"></div></div>
+<div class="panel stat"><div class="panel-title" data-i18n="admin:overview.disk">Disco</div><div class="v" id="s-disk">—</div><div class="bar"><i id="b-disk"></i></div><div class="s" id="s-disk2"></div></div>
+<div class="panel stat"><div class="panel-title" data-i18n="admin:overview.sys">Sistema</div><div class="v" id="s-up">—</div><div class="s" id="s-host"></div></div>
+</div>
+<div class="grid g2">
+<div class="panel">
+<div class="panel-title" data-i18n="admin:overview.components">Componenti</div>
+<table><thead><tr><th></th><th>Componente</th><th>Stato</th><th></th></tr></thead><tbody id="comp-body"></tbody></table>
+</div>
+<div class="panel">
+<div class="panel-title" data-i18n="admin:overview.quick_actions">Azioni rapide</div>
+<div class="actions" style="margin-bottom:16px">
+<button class="btn primary" data-action="repair" data-i18n="admin:overview.repair">Verifica e ripara tutto</button>
+<button class="btn" data-action="update-check" data-i18n="admin:overview.update_check">Controlla aggiornamenti</button>
+<button class="btn" data-action="restart-supervisor" data-confirm="Riavviare il supervisore? L'interfaccia si ricollegherà automaticamente." data-i18n="admin:overview.restart_sup">Riavvia supervisore</button>
+<button class="btn danger" data-action="reboot" data-confirm="Riavviare il sistema?" data-i18n="admin:overview.reboot">Riavvia sistema</button>
+</div>
+<div class="panel-title">Stato corrente</div>
+<div id="cur-msg" style="font-size:14px"></div>
+<div class="mono dim" id="cur-detail" style="margin-top:6px"></div>
+<div id="cur-err" style="margin-top:8px; color:var(--red); font-size:13px"></div>
+<div class="bar" style="margin-top:14px"><i id="b-progress"></i></div>
+<div class="muted-note" id="boot-info"></div>
+</div>
+</div>
+</section>
+<section class="tab" id="tab-packages">
+<div class="panel">
+<div class="panel-title">Cervello</div>
+<div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap">
+<div class="seg" id="brain-mode" role="radiogroup" aria-label="Cervello"><button type="button" data-mode="local">Su questo computer</button><button type="button" data-mode="remote">Su un altro computer</button><button type="button" data-mode="cloud">Nel cloud</button></div>
+<input id="brain-url" autocomplete="off" spellcheck="false" placeholder="192.168.1.20" hidden style="max-width:240px">
+<button class="btn sm primary" id="brain-save" type="button">Applica</button>
+</div>
+<div class="muted-note" id="brain-note"></div>
+</div>
+<div class="panel" style="margin-top:18px">
+<div class="panel-title">Pacchetti</div>
+<table><thead><tr><th>Pacchetto</th><th>Dimensione</th><th>Stato</th><th></th></tr></thead><tbody id="pkg-body"></tbody></table>
+<div class="muted-note">Nuxiva installa solo quello che usi. Puoi aggiungere un pacchetto da qui oppure chiederlo a voce, ad esempio «installa i documenti Office».</div>
+</div>
+</section>
+<section class="tab" id="tab-steps">
+<div class="panel" id="bg-panel">
+<div class="panel-title">Installazioni in background</div>
+<div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
+<span class="badge" id="bg-state">—</span><span class="dim" id="bg-summary"></span>
+<span style="flex:1"></span>
+<button class="btn sm" id="bg-toggle" type="button">Metti in pausa</button>
+</div>
+<div class="bar" style="margin-bottom:12px"><i id="bg-progress"></i></div>
+<table><thead><tr><th>Componente</th><th>Dimensione</th><th>Stato</th><th>Dettaglio</th><th></th></tr></thead><tbody id="bg-body"></tbody></table>
+<div class="muted-note">Le parti pesanti si installano dopo l'avvio, una alla volta, con priorità bassa, e si fermano mentre parli con Nuxiva. «Prima» sposta un componente in cima alla coda.</div>
+<div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:14px">
+<label class="btn sm" for="wake-file">Carica modello «Ehi, Nuxiva» (.onnx)</label>
+<input type="file" id="wake-file" accept=".onnx" hidden>
+<span class="dim" id="wake-note"></span>
+</div>
+</div>
+<div class="panel">
+<div class="panel-title" data-i18n="admin:steps.title">Step di convergenza</div>
+<table><thead><tr><th>Step</th><th>Stato</th><th>Tentativi</th><th>Durata</th><th>Dettaglio</th><th></th></tr></thead><tbody id="steps-body"></tbody></table>
+<div class="muted-note" data-i18n="admin:steps.note">Ogni step è idempotente: a ogni avvio viene verificato e riparato solo se necessario. "Riesegui" forza la reinstallazione del componente.</div>
+</div>
+</section>
+<section class="tab" id="tab-config">
+<div class="panel">
+<div class="panel-title" data-i18n="admin:config.settings">Impostazioni</div>
+<form id="config-form"><div class="form-grid" id="config-fields"></div>
+<div class="actions" style="margin-top:20px"><button class="btn primary" data-i18n="admin:config.save">Salva e applica</button></div>
+</form>
+<div class="muted-note" data-i18n="admin:config.note">Le modifiche vengono salvate in /etc/nuxiva/nuxiva.env e applicate automaticamente (riavvio dei soli componenti interessati).</div>
+</div>
+<div class="panel" style="margin-top:18px">
+<div class="panel-title" data-i18n="admin:config.sys_params">Parametri rilevati dal sistema</div>
+<table><tbody id="config-system"></tbody></table>
+</div>
+</section>
+<section class="tab" id="tab-updates">
+<div class="panel">
+<div class="panel-title" data-i18n="admin:updates.title">Aggiornamento autonomo da GitHub</div>
+<table><tbody id="upd-body"></tbody></table>
+<div class="actions" style="margin-top:16px">
+<button class="btn" data-action="update-check">Controlla ora</button>
+<button class="btn primary" data-action="update-apply" data-confirm="Applicare l'aggiornamento? Nuxiva verrà riavviata e, in caso di problemi, ripristinato automaticamente." data-i18n="admin:updates.apply">Aggiorna ora</button>
+</div>
+<div class="panel-title" style="margin-top:22px">Novità disponibili</div>
+<pre class="log" id="upd-log" style="height:auto; max-height:40vh"></pre>
+</div>
+</section>
+<section class="tab" id="tab-logs">
+<div class="panel">
+<div class="row" style="margin-bottom:12px; flex-wrap:wrap">
+<select id="log-src" style="max-width:260px">
+<option value="install">Installazione e step</option>
+<option value="supervisor">Supervisore</option>
+<option value="core">Nuxiva Core</option>
+<option value="ollama">Motore neurale</option>
+<option value="kiosk">Display kiosk</option>
+<option value="rollback">Rollback</option>
+</select>
+<button class="btn" id="log-refresh">Aggiorna</button>
+<label class="row" style="margin:0; gap:6px"><input checked="" id="log-auto" style="width:auto" type="checkbox"/> auto</label>
+</div>
+<pre class="log" id="log-text">Caricamento…</pre>
+</div>
+</section>
+<section class="tab" id="tab-events">
+<div class="panel events">
+<div class="panel-title" data-i18n="admin:events.title">Registro eventi (audit)</div>
+<table><thead><tr><th>Ora</th><th>Livello</th><th>Componente</th><th>Evento</th></tr></thead><tbody id="events-body"></tbody></table>
+</div>
+</section>
+<nuxiva-slot name="feature-tabs"></nuxiva-slot>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+<div class="link-lost" data-i18n="admin:global.reconnect" id="link"><div class="spinner"></div>Riconnessione al supervisore</div>
+<script src="/static/shared/core.js"></script>
+<script src="/static/admin/shell.js"></script>
+<script src="/static/admin/sortable.js"></script>
+<script src="/static/admin/uimode.js"></script>
+<script src="/static/admin/features.js"></script>
+<script src="/static/admin/system.js"></script>
+<script src="/static/admin/packages.js"></script>
+<nuxiva-slot name="feature-scripts"></nuxiva-slot>
+<script src="/static/admin/boot.js"></script>
+<script type="module">
+  window.I18N_BASE_PATH = '/static';
+  import { I18nManager } from '/static/dualbrain/shared/i18n/manager.js';
+  window.i18n = new I18nManager();
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    const langSelect = document.getElementById('lang-selector');
+    const availableLangs = await window.i18n.discoverLanguages();
+    if (langSelect) {
+      langSelect.innerHTML = '';
+      let names = {};
+      try { names = (await (await fetch('/i18n/languages')).json()).names || {}; } catch (err) { console.warn('language names unavailable', err); }
+      availableLangs.forEach((l) => {
+        const opt = document.createElement('option');
+        opt.value = l;
+        opt.textContent = names[l] ? `${names[l]} (${l})` : l.toUpperCase();
+        langSelect.appendChild(opt);
+      });
+    }
+    const savedLang = window.NUXIVA_UI_LANG || localStorage.getItem('nuxiva_admin_lang') || 'it';
+    const activeLang = availableLangs.includes(savedLang) ? savedLang : (availableLangs[0] || 'it');
+    await window.i18n.setLanguage(activeLang, ['admin']);
+    document.documentElement.lang = activeLang;
+    window.dispatchEvent(new CustomEvent('nuxiva-i18n', { detail: activeLang }));
+    if (langSelect) {
+      langSelect.value = activeLang;
+      langSelect.addEventListener('change', async (e) => {
+        await window.i18n.setLanguage(e.target.value, ['admin']);
+        document.documentElement.lang = e.target.value;
+        localStorage.setItem('nuxiva_admin_lang', e.target.value);
+        if (window.NuxivaI18n) await window.NuxivaI18n.setLanguage(e.target.value);
+        else window.location.reload();
+      });
+    }
+  });
+</script></body>
+</html>

@@ -1,0 +1,12 @@
+.w-spotify .mu-row { display: grid; grid-template-columns: 64px 1fr; gap: 14px; align-items: center; }
+.w-spotify .mu-cover { width: 64px; height: 64px; display: grid; place-items: center; overflow: hidden; border-radius: 10px; font-size: 24px; color: rgba(var(--tone), 0.8); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08) inset; }
+.w-spotify .mu-cover img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.w-spotify .mu-txt { min-width: 0; }
+.w-spotify .mu-title, .w-spotify .mu-artist, .w-spotify .mu-meta { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.w-spotify .mu-artist { margin-top: 2px; font-size: 13px; }
+.w-spotify .mu-meta { margin-top: 4px; font-size: 11px; }
+.w-spotify .mu-prog { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+.w-spotify .mu-track { flex: 1; margin-top: 0; }
+.w-spotify .mu-track i { width: 0; transition: width 1s linear; }
+.w-spotify .mu-time { font-size: 10px; color: var(--text-faint); font-variant-numeric: tabular-nums; }
+.w-spotify .mu-bio { margin-top: 10px; }

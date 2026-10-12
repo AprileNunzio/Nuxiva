@@ -1,0 +1,17 @@
+{
+  "id": "reminder",
+  "personal": true,
+  "name": "Promemoria",
+  "icon": "⏰",
+  "priority": 75,
+  "size": "m",
+  "ttl": 300,
+  "intents": [
+    "reminder"
+  ],
+  "description": "Promemoria.",
+  "demo": {
+    "content": "Chiamare il dentista alle 16:00"
+  },
+  "tone": "amber"
+}

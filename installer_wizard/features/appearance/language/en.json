@@ -1,0 +1,14 @@
+{
+  "name": "Assistant Appearance",
+  "description": "Animated full-body 3D character (or wireframe hologram or lightweight core, chosen per device). Walks, gestures while talking, waves, dances to music and opens an umbrella when it rains, against a live weather backdrop.",
+  "capabilities": [
+    "Automatic display mode selection for every screen",
+    "Animated 3D character or wireframe hologram, customizable color",
+    "Dances to music, umbrella when it rains, weather backdrop"
+  ],
+  "settings": {
+    "NUXIVA_AVATAR": "Appearance",
+    "NUXIVA_AVATAR_STYLE": "3D style",
+    "NUXIVA_FACE_COLOR": "Hologram Color"
+  }
+}

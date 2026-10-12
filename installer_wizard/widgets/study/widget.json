@@ -1,0 +1,21 @@
+{
+  "id": "study",
+  "name": "Studio in corso",
+  "icon": "🎓",
+  "priority": 10,
+  "size": "s",
+  "bind": {
+    "attr": "study",
+    "when": {
+      "state": "studying"
+    }
+  },
+  "description": "Materia e livello che Nuxiva sta studiando nei momenti di riposo.",
+  "demo": {
+    "state": "studying",
+    "topic": "Elettronica",
+    "level": "Intermedio",
+    "detail": "Lezione: il transistor come interruttore"
+  },
+  "tone": "violet"
+}
