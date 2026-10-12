@@ -1,0 +1,53 @@
+{
+  "it": {
+    "title": "Hub Funzioni Vitali & Dispositivi Indossabili",
+    "subtitle": "Connessione continua per Google Fitbit Edge, BLE standard, Google Fit e bilance Renpho in tempo reale",
+    "bpm_label": "Frequenza Cardiaca:",
+    "spo2_label": "Ossigeno SpO2:",
+    "hrv_label": "Variabilità HRV:",
+    "temp_label": "Temp. Cutanea:",
+    "steps_label": "Passi Odierni:",
+    "cals_label": "Calorie Bruciate:",
+    "weight_label": "Peso Corporeo:",
+    "bmi_label": "Indice Massa BMI:",
+    "fat_label": "Grasso Corporeo:",
+    "muscle_label": "Massa Muscolare:",
+    "water_label": "Idratazione Corporea:",
+    "sync_btn": "⚡ Sincronizza Dispositivi Indossabili",
+    "connected_devices": "Dispositivi Connessi:"
+  },
+  "en": {
+    "title": "Wearable Vitals Hub & Health Telemetry",
+    "subtitle": "Real-time connection for Google Fitbit Edge, standard BLE, Google Fit, and Renpho smart scales",
+    "bpm_label": "Heart Rate:",
+    "spo2_label": "SpO2 Oxygen:",
+    "hrv_label": "HRV Variability:",
+    "temp_label": "Skin Temp:",
+    "steps_label": "Steps Today:",
+    "cals_label": "Calories Burned:",
+    "weight_label": "Body Weight:",
+    "bmi_label": "BMI Index:",
+    "fat_label": "Body Fat:",
+    "muscle_label": "Muscle Mass:",
+    "water_label": "Hydration:",
+    "sync_btn": "⚡ Sync Wearable Devices",
+    "connected_devices": "Connected Devices:"
+  },
+  "fr": {
+    "title": "Hub des Fonctions Vitales & Objets Connectés",
+    "subtitle": "Connexion continue pour Google Fitbit Edge, BLE standard, Google Fit et balances Renpho en temps réel",
+    "bpm_label": "Fréquence Cardiaque :",
+    "spo2_label": "Oxygène SpO2 :",
+    "hrv_label": "Variabilité VRC :",
+    "temp_label": "Temp. Cutanée :",
+    "steps_label": "Pas Aujourd'hui :",
+    "cals_label": "Calories Brûlées :",
+    "weight_label": "Poids Corporel :",
+    "bmi_label": "Indice IMC :",
+    "fat_label": "Masse Grasse :",
+    "muscle_label": "Masse Musculaire :",
+    "water_label": "Hydratation :",
+    "sync_btn": "⚡ Synchroniser Appareils",
+    "connected_devices": "Appareils Connectés :"
+  }
+}

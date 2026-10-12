@@ -2,6 +2,10 @@ import { initProjectsDeck, refreshActiveProject, loadProjectsList } from "./feat
 import { initChatbotMeshDeck } from "./features/chatbot_mesh/chatbot_deck.js";
 import { initProximityHudDeck, refreshProximityHud } from "./features/proximity_hud/proximity_deck.js";
 import { initAdminWizard } from "./features/onboarding/wizard.js";
+import { initMultimodalSurveillance } from "./features/multimodal_surveillance/script.js";
+import { initHumanAffectiveEngine } from "./features/human_affective_engine/script.js";
+import { initWearableVitalsHub } from "./features/wearable_vitals_hub/script.js";
+import { initUserPresenceVitals } from "./features/user_presence_vitals/script.js";
 
 let currentSelectedAgentId = "windows_system_agent";
 
@@ -16,6 +20,10 @@ document.addEventListener("DOMContentLoaded", () => {
   initCadMediaDeck();
   initTelemetryDeck();
   initChatbotMeshDeck();
+  initMultimodalSurveillance();
+  initHumanAffectiveEngine();
+  initWearableVitalsHub();
+  initUserPresenceVitals();
   initAdminWizard();
   initGlobalCommandBar();
 
@@ -363,6 +371,10 @@ async function applyLanguage(lang) {
       "tab-nav-cad": c.deck_cad_media,
       "tab-nav-telemetry": c.deck_telemetry,
       "tab-nav-chatbot": c.deck_chatbot_mesh,
+      "tab-nav-multimodal-surveillance": c.deck_multimodal_surveillance,
+      "tab-nav-affective-engine": c.deck_affective_engine,
+      "tab-nav-wearables": c.deck_wearables_vitals,
+      "tab-nav-emergency": c.deck_emergency_vitals,
     };
 
     for (const [id, text] of Object.entries(tabMap)) {
@@ -372,6 +384,8 @@ async function applyLanguage(lang) {
         if (span && text) span.textContent = text;
       }
     }
+
+    window.dispatchEvent(new CustomEvent("nuxiva-language-changed", { detail: { lang } }));
 
     const inputCmd = document.getElementById("global-command-input");
     if (inputCmd && c.input_command_placeholder) {

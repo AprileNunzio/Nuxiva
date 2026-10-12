@@ -6,6 +6,10 @@
   <title>NUXIVA — Tactical Autonomous Cockpit</title>
   <link rel="stylesheet" href="/static/style.css">
   <link rel="stylesheet" href="/static/features/onboarding/wizard.css">
+  <link rel="stylesheet" href="/static/features/multimodal_surveillance/style.css">
+  <link rel="stylesheet" href="/static/features/human_affective_engine/style.css">
+  <link rel="stylesheet" href="/static/features/wearable_vitals_hub/style.css">
+  <link rel="stylesheet" href="/static/features/user_presence_vitals/style.css">
   <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
 </head>
 <body>
@@ -71,6 +75,18 @@
     </button>
     <button class="plancia-tab-btn" data-deck="deck-chatbot-mesh" id="tab-nav-chatbot">
       <span>💬</span> <span class="tab-label">Plancia Assistenti &amp; Bot</span>
+    </button>
+    <button class="plancia-tab-btn" data-deck="deck-multimodal-surveillance" id="tab-nav-multimodal-surveillance">
+      <span>📡</span> <span class="tab-label">Plancia Sorveglianza &amp; Satelliti</span>
+    </button>
+    <button class="plancia-tab-btn" data-deck="deck-affective-engine" id="tab-nav-affective-engine">
+      <span>💓</span> <span class="tab-label">Plancia Motore Affettivo &amp; Umore</span>
+    </button>
+    <button class="plancia-tab-btn" data-deck="deck-wearables-vitals" id="tab-nav-wearables">
+      <span>⌚</span> <span class="tab-label">Plancia Indossabili &amp; Vitals</span>
+    </button>
+    <button class="plancia-tab-btn" data-deck="deck-emergency-vitals" id="tab-nav-emergency">
+      <span>🚨</span> <span class="tab-label">Plancia Emergenze &amp; Prossimità</span>
     </button>
     <button class="tactical-btn" id="btn-open-admin-wizard" style="margin-left:auto; background:linear-gradient(90deg, #10b981, #00f0ff); color:#050811; font-weight:700; border:none; box-shadow:0 0 15px rgba(0,240,255,0.4); animation:floatBob 3s ease-in-out infinite;">
       <span>✨</span> Setup Guidato
@@ -326,20 +342,104 @@
     <!-- PLANCIA 5: PROXIMITY HUD & WEBCAM RADAR                           -->
     <!-- ================================================================= -->
     <section id="deck-proximity-hud" class="plancia-section">
+      <!-- LIVE VISION CONTROLLER (MANI & OCCHI) -->
+      <div class="grid-2col" style="margin-bottom:1.5rem;">
+        <div class="tactical-card" style="grid-column: 1 / -1;">
+          <div class="card-header">
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+              <span class="card-title">🎯 Controllo Visione: Mani &amp; Occhi (Live Gesture &amp; Gaze Hub)</span>
+              <span id="vision-camera-status-badge" class="badge-tag" style="background:rgba(0,240,255,0.15); color:var(--cyan-glow);">Disattivo</span>
+            </div>
+            <button id="btn-toggle-vision-camera" class="tactical-btn" style="background:linear-gradient(90deg, #10b981, #00f0ff); color:#050811; font-weight:700;">
+              📹 Avvia Telecamera Visione (Mani &amp; Occhi)
+            </button>
+          </div>
+          <div class="card-body" style="display:flex; flex-wrap:wrap; gap:1.5rem; align-items:flex-start;">
+            <!-- Viewport Canvas & Video -->
+            <div style="flex:1 1 500px; max-width:640px; position:relative; background:#070c18; border-radius:12px; overflow:hidden; border:1px solid rgba(0,240,255,0.3); box-shadow:0 0 25px rgba(0,240,255,0.15);">
+              <video id="vision-webcam-video" playsinline muted autoplay style="display:none;"></video>
+              <canvas id="vision-webcam-canvas" width="640" height="360" style="width:100%; height:auto; display:block; aspect-ratio:16/9;"></canvas>
+              <div style="position:absolute; top:10px; right:12px; pointer-events:none; font-family:var(--font-mono); font-size:0.75rem; color:#34d399; background:rgba(0,0,0,0.6); padding:2px 8px; border-radius:4px;">
+                ● LIVE STREAM SENSORY BUS
+              </div>
+            </div>
+
+            <!-- Indicatori e Configurazione -->
+            <div style="flex:1 1 340px; display:flex; flex-direction:column; gap:1.2rem;">
+              <!-- Telemetria Rapida Mani & Occhi -->
+              <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:1rem; display:flex; flex-direction:column; gap:0.8rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:0.85rem; color:var(--text-muted);">🖐️ Gesto Mani Rilevato:</span>
+                  <strong id="hud-gesture-current-label" style="font-size:1.1rem; color:#00f0ff; font-family:var(--font-mono);">NESSUNO</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:0.85rem; color:var(--text-muted);">👁️ Sguardo &amp; Attenzione:</span>
+                  <strong id="hud-gaze-state-label" style="font-size:1.0rem; color:#34d399; font-family:var(--font-mono);">🎯 Schermo (Focalizzato)</strong>
+                </div>
+                <div>
+                  <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:4px;">
+                    <span style="color:var(--text-muted);">Indice Attenzione Visiva:</span>
+                    <span id="hud-attention-percentage-val" style="color:var(--cyan-glow); font-family:var(--font-mono);">100%</span>
+                  </div>
+                  <div class="progress-container" style="height:8px;">
+                    <div id="hud-attention-bar-fill" class="progress-bar-fill" style="width:100%; background:linear-gradient(90deg, #10b981, #00f0ff);"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Switch e Opzioni -->
+              <div style="display:flex; flex-direction:column; gap:0.6rem; font-size:0.85rem;">
+                <label style="display:flex; align-items:center; gap:0.6rem; cursor:pointer;">
+                  <input type="checkbox" id="chk-enable-hands-gesture" checked style="accent-color:var(--cyan-glow);">
+                  <span>Abilita Controllo Navigazione con le Mani (Swipe, Pugno, Palmo)</span>
+                </label>
+                <label style="display:flex; align-items:center; gap:0.6rem; cursor:pointer;">
+                  <input type="checkbox" id="chk-enable-eye-gaze" checked style="accent-color:var(--cyan-glow);">
+                  <span>Abilita Sguardo Attivo (Wake-on-Gaze) &amp; Auto-Lock per Distrazione (8s)</span>
+                </label>
+                <label style="display:flex; align-items:center; gap:0.6rem; cursor:pointer;">
+                  <input type="checkbox" id="chk-audio-feedback" checked style="accent-color:var(--cyan-glow);">
+                  <span>Feedback Audio Cibernetico al Riconoscimento Gesti</span>
+                </label>
+                <div style="margin-top:0.4rem;">
+                  <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                    <span style="color:var(--text-muted);">Sensibilità Riconoscimento:</span>
+                  </div>
+                  <input type="range" id="range-gesture-sensitivity" min="0.3" max="0.95" step="0.05" value="0.75" style="width:100%; accent-color:var(--cyan-glow);">
+                </div>
+              </div>
+
+              <!-- Banco Test Rapido Gesti (Simulatore & Trigger) -->
+              <div style="background:rgba(0,240,255,0.03); border:1px solid rgba(0,240,255,0.15); border-radius:8px; padding:0.8rem;">
+                <span style="font-size:0.8rem; font-family:var(--font-mono); color:var(--cyan-glow); display:block; margin-bottom:0.5rem;">⚡ BANCO TEST RAPIDO GESTI:</span>
+                <div style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+                  <button id="btn-test-gesture-swipe-l" class="tactical-btn" style="padding:0.35rem 0.65rem; font-size:0.8rem;" title="Cambia alla plancia successiva">👉 Swipe Destra</button>
+                  <button id="btn-test-gesture-swipe-r" class="tactical-btn" style="padding:0.35rem 0.65rem; font-size:0.8rem;" title="Cambia alla plancia precedente">👈 Swipe Sinistra</button>
+                  <button id="btn-test-gesture-fist" class="tactical-btn danger" style="padding:0.35rem 0.65rem; font-size:0.8rem;" title="Blocca immediatamente lo schermo">✊ Pugno (Lock)</button>
+                  <button id="btn-test-gesture-palm" class="tactical-btn secondary" style="padding:0.35rem 0.65rem; font-size:0.8rem;" title="Stop vocale o pausa">🖐️ Palmo (Pausa)</button>
+                  <button id="btn-test-gesture-thumb" class="tactical-btn" style="padding:0.35rem 0.65rem; font-size:0.8rem; background:rgba(16,185,129,0.2); border-color:#10b981;" title="Conferma AI">👍 Pollice Su</button>
+                  <button id="btn-test-gesture-peace" class="tactical-btn" style="padding:0.35rem 0.65rem; font-size:0.8rem;" title="Attiva Assistente Bot">✌️ Segno V (Chat)</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="grid-2col">
         <div class="tactical-card">
           <div class="card-header">
-            <span class="card-title">👁️ Radar di Prossimità &amp; Webcam</span>
+            <span class="card-title">👁️ Radar di Prossimità &amp; Presenza Biometrica</span>
             <span id="hud-biometric-badge" class="badge-tag" style="background:rgba(0,240,255,0.2); color:var(--cyan-glow);">Attivo</span>
           </div>
-          <div class="card-body" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1.5rem; min-height:380px;">
-            <div style="width:200px; height:200px; border-radius:50%; border:2px dashed var(--cyan-glow); display:flex; align-items:center; justify-content:center; position:relative; box-shadow:0 0 30px rgba(0,240,255,0.2);">
-              <div style="width:140px; height:140px; border-radius:50%; background:rgba(0,240,255,0.08); display:flex; align-items:center; justify-content:center;">
+          <div class="card-body" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1.5rem; min-height:340px;">
+            <div style="width:180px; height:180px; border-radius:50%; border:2px dashed var(--cyan-glow); display:flex; align-items:center; justify-content:center; position:relative; box-shadow:0 0 30px rgba(0,240,255,0.2);">
+              <div style="width:130px; height:130px; border-radius:50%; background:rgba(0,240,255,0.08); display:flex; align-items:center; justify-content:center;">
                 <span style="font-size:2.5rem;" id="hud-radar-icon">👤</span>
               </div>
             </div>
             <div style="text-align:center;">
-              <h3 id="hud-detected-user-name" style="font-family:var(--font-display); font-size:1.4rem; color:#fff;" data-i18n="hud_user_default">Amministratore Primario (Owner)</h3>
+              <h3 id="hud-detected-user-name" style="font-family:var(--font-display); font-size:1.3rem; color:#fff;" data-i18n="hud_user_default">Amministratore Primario (Owner)</h3>
               <p id="hud-detection-details" style="font-family:var(--font-mono); font-size:0.8rem; color:#34d399; margin-top:4px;">Distanza: 0.8m | Confidenza Biometrica: 98%</p>
             </div>
             <div style="display:flex; gap:1rem;">
@@ -351,7 +451,7 @@
 
         <div class="tactical-card">
           <div class="card-header">
-            <span class="card-title">📋 Progetti Proiettati all'Avvicinamento</span>
+            <span class="card-title">📋 Progetti Sbloccati con Visione &amp; Presenza</span>
           </div>
           <div class="card-body">
             <div id="hud-projects-projected-list" style="display:flex; flex-direction:column; gap:0.75rem;">
@@ -570,6 +670,384 @@
             <div style="display:flex; gap:0.5rem; align-items:center;">
               <input type="text" id="chatbot-message-input" placeholder="Parla con il chatbot o richiedi un'azione..." style="flex:1; background:rgba(0,0,0,0.5); border:1px solid var(--border-glow); color:#fff; padding:0.6rem 0.8rem; border-radius:6px; font-family:var(--font-sans); font-size:0.85rem;">
               <button id="btn-chatbot-send" class="tactical-btn" style="padding:0.6rem 1.2rem;">Invia</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="deck-multimodal-surveillance" class="plancia-section">
+      <div class="surveillance-container">
+        <div class="surveillance-header-bar">
+          <div>
+            <h2 class="surveillance-title" data-i18n="title">Sorveglianza Multimodale Continua &amp; Auto-Potenziamento</h2>
+            <p class="surveillance-subtitle" data-i18n="subtitle">Registrazione continua audio/video, amplificazione adattiva, identificazione dettagliata corrieri e autoconfigurazione satelliti</p>
+          </div>
+          <div class="surveillance-node-control">
+            <label for="select-surveillance-node" data-i18n="node_selector">Nodo / Satellite Attivo:</label>
+            <select id="select-surveillance-node" class="tactical-select"></select>
+            <button id="btn-auto-configure-node" class="tactical-btn primary" data-i18n="auto_config_btn">⚡ Autoconfigura Dispositivi Default</button>
+          </div>
+        </div>
+
+        <div class="surveillance-grid">
+          <div class="tactical-card surveillance-card">
+            <div class="card-header">
+              <span class="card-title" data-i18n="audio_section_title">🎙️ Registrazione Continua Audio &amp; Amplificazione</span>
+              <span class="badge-tag live-badge" data-i18n="audio_status_recording">REGISTRAZIONE CONTINUA ATTIVA</span>
+            </div>
+            <div class="card-body">
+              <div class="audio-metrics-panel">
+                <div class="metric-pill">
+                  <span class="metric-label" data-i18n="audio_clean_gain">Guadagno SNR:</span>
+                  <strong id="val-audio-snr-gain" class="metric-val">+18.4 dB</strong>
+                </div>
+                <div class="metric-pill">
+                  <span class="metric-label">Punteggio Chiarezza:</span>
+                  <strong id="val-audio-clarity" class="metric-val">96.2%</strong>
+                </div>
+                <div class="metric-pill">
+                  <span class="metric-label">Microfono Vincolato:</span>
+                  <strong id="val-default-mic-name" class="metric-val">mic_desk_array</strong>
+                </div>
+              </div>
+              <div class="waveform-container">
+                <canvas id="canvas-continuous-audio-waveform" width="600" height="120"></canvas>
+              </div>
+              <div class="transcription-stream-box">
+                <span class="box-tag">ANALISI VOCALE &amp; STUDIO AUTONOMO DEI COMANDI:</span>
+                <p id="txt-latest-audio-transcription">Segnale acustico amplificato, ripulito dal rumore di fondo e pronto per correlazione cognitiva.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="tactical-card surveillance-card">
+            <div class="card-header">
+              <span class="card-title" data-i18n="video_section_title">📹 Monitoraggio Video Continuo &amp; Riconoscimento Dettagli</span>
+              <span class="badge-tag camera-badge">4K ZERO-LATENCY</span>
+            </div>
+            <div class="card-body">
+              <div class="semantic-search-box">
+                <input type="text" id="input-semantic-visual-query" class="tactical-input" data-i18n-placeholder="search_placeholder" placeholder="Chiedi: A che ora è venuto il corriere? Chi c'era vestito di giallo?" />
+                <button id="btn-submit-semantic-query" class="tactical-btn" data-i18n="search_btn">🔍 Cerca nel Registro Visivo</button>
+              </div>
+              <div id="box-semantic-direct-answer" class="direct-answer-panel" style="display:none;">
+                <div class="answer-header">RISPOSTA ISTANTANEA SENSORY BUS:</div>
+                <p id="txt-semantic-direct-answer" class="answer-body"></p>
+              </div>
+              <div class="event-timeline-header">
+                <span data-i18n="timeline_title">📋 Registro Eventi Semantici &amp; Dettagli Persona/Veicoli/Corriere</span>
+                <button id="btn-refresh-surveillance-timeline" class="tactical-btn secondary small">Aggiorna</button>
+              </div>
+              <div id="list-surveillance-events" class="surveillance-events-feed"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="deck-affective-engine" class="plancia-section">
+      <div class="affective-container">
+        <div class="affective-header-bar">
+          <div>
+            <h2 class="affective-title" data-i18n="title">Motore Affettivo &amp; Inferenza Psicofisiologica</h2>
+            <p class="affective-subtitle" data-i18n="subtitle">Rilevamento contactless battiti (rPPG), prosodia vocale e sguardo con risposta adattiva allo stato umorale</p>
+          </div>
+          <div class="affective-actions">
+            <button id="btn-run-affective-assessment" class="tactical-btn primary" data-i18n="evaluate_btn">⚡ Esegui Valutazione Multimodale</button>
+          </div>
+        </div>
+
+        <div class="affective-grid">
+          <div class="tactical-card affective-card">
+            <div class="card-header">
+              <span class="card-title">💓 Telemetria Emodinamica Contactless (rPPG)</span>
+              <span id="badge-hemodynamic-live" class="badge-tag pulse-badge">MONITORAGGIO ATTIVO</span>
+            </div>
+            <div class="card-body">
+              <div class="biometric-metrics-row">
+                <div class="metric-pill">
+                  <span class="metric-label" data-i18n="pulse_label">Battiti Cardiaci (rPPG):</span>
+                  <strong id="val-affective-bpm" class="metric-val pulse-val">72 BPM</strong>
+                </div>
+                <div class="metric-pill">
+                  <span class="metric-label" data-i18n="hrv_label">Variabilità Cardiaca (HRV):</span>
+                  <strong id="val-affective-hrv" class="metric-val">42.5 ms</strong>
+                </div>
+                <div class="metric-pill">
+                  <span class="metric-label">Confidenza Segnale:</span>
+                  <strong id="val-affective-confidence" class="metric-val">94.8%</strong>
+                </div>
+              </div>
+              <div class="photoplethysmogram-box">
+                <canvas id="canvas-rppg-pulse-wave" width="600" height="110"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="tactical-card affective-card">
+            <div class="card-header">
+              <span class="card-title" data-i18n="mood_label">Stato Umorale Rilevato:</span>
+              <span id="badge-current-mood-state" class="badge-tag mood-badge optimal">OTTIMALE &amp; BILANCIATO</span>
+            </div>
+            <div class="card-body">
+              <div class="risk-meters-container">
+                <div class="risk-meter-item">
+                  <div class="meter-header">
+                    <span data-i18n="depression_risk_label">Indice Rischio Depressione:</span>
+                    <strong id="val-depression-risk-pct">12%</strong>
+                  </div>
+                  <div class="progress-container">
+                    <div id="bar-depression-risk" class="progress-bar-fill" style="width: 12%; background: #10b981;"></div>
+                  </div>
+                </div>
+
+                <div class="risk-meter-item">
+                  <div class="meter-header">
+                    <span data-i18n="anxiety_risk_label">Indice Ansia &amp; Stress:</span>
+                    <strong id="val-anxiety-risk-pct">18%</strong>
+                  </div>
+                  <div class="progress-container">
+                    <div id="bar-anxiety-risk" class="progress-bar-fill" style="width: 18%; background: #00f0ff;"></div>
+                  </div>
+                </div>
+
+                <div class="risk-meter-item">
+                  <div class="meter-header">
+                    <span data-i18n="fatigue_risk_label">Indice Affaticamento / Burnout:</span>
+                    <strong id="val-fatigue-risk-pct">14%</strong>
+                  </div>
+                  <div class="progress-container">
+                    <div id="bar-fatigue-risk" class="progress-bar-fill" style="width: 14%; background: #3b82f6;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="intervention-strategy-box">
+                <span class="strategy-badge" data-i18n="intervention_title">Strategia Risposta Adattiva Nuxiva:</span>
+                <strong id="val-intervention-strategy-name" class="strategy-name">INTERVENTION_STANDARD_HIGH_PRODUCTIVITY</strong>
+                <p id="txt-adaptive-system-prompt-body" class="strategy-desc">L'utente è in stato emotivo bilanciato ed energico. Massima proattività operativa ed efficienza esecutiva.</p>
+                <div class="adaptive-tone-meta">
+                  <span class="meta-tag">TTS Tono: <b id="val-tone-warmth">Standard</b></span>
+                  <span class="meta-tag">Velocità Vocale: <b id="val-tone-speed">1.0x</b></span>
+                  <span class="meta-tag">Ambiente: <b id="val-tone-ambient">Neutro / Focus</b></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="deck-wearables-vitals" class="plancia-section">
+      <div class="wearables-container">
+        <div class="wearables-header-bar">
+          <div>
+            <h2 class="wearables-title" data-i18n="title">Hub Funzioni Vitali &amp; Dispositivi Indossabili</h2>
+            <p class="wearables-subtitle" data-i18n="subtitle">Connessione continua per Google Fitbit Edge, BLE standard, Google Fit e bilance Renpho in tempo reale</p>
+          </div>
+          <div class="wearables-actions">
+            <button id="btn-sync-wearables" class="tactical-btn primary" data-i18n="sync_btn">⚡ Sincronizza Dispositivi Indossabili</button>
+          </div>
+        </div>
+
+        <div class="wearables-grid">
+          <div class="tactical-card wearable-card">
+            <div class="card-header">
+              <span class="card-title">⌚ Google Fitbit Edge (Telemetria Real-Time)</span>
+              <span id="badge-fitbit-status" class="badge-tag wearable-live-badge">CONNESSO (BLE)</span>
+            </div>
+            <div class="card-body">
+              <div class="vitals-dashboard-row">
+                <div class="vital-tile vital-heart">
+                  <span class="tile-icon">💓</span>
+                  <div class="tile-content">
+                    <span class="tile-label" data-i18n="bpm_label">Frequenza Cardiaca:</span>
+                    <strong id="val-wearable-bpm" class="tile-val">68 BPM</strong>
+                  </div>
+                </div>
+
+                <div class="vital-tile vital-oxygen">
+                  <span class="tile-icon">🫁</span>
+                  <div class="tile-content">
+                    <span class="tile-label" data-i18n="spo2_label">Ossigeno SpO2:</span>
+                    <strong id="val-wearable-spo2" class="tile-val">99%</strong>
+                  </div>
+                </div>
+
+                <div class="vital-tile vital-hrv">
+                  <span class="tile-icon">📈</span>
+                  <div class="tile-content">
+                    <span class="tile-label" data-i18n="hrv_label">Variabilità HRV:</span>
+                    <strong id="val-wearable-hrv" class="tile-val">48.2 ms</strong>
+                  </div>
+                </div>
+
+                <div class="vital-tile vital-temp">
+                  <span class="tile-icon">🌡️</span>
+                  <div class="tile-content">
+                    <span class="tile-label" data-i18n="temp_label">Temp. Cutanea:</span>
+                    <strong id="val-wearable-temp" class="tile-val">36.5°C</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div class="vitals-submetrics-panel">
+                <div class="submetric-item">
+                  <span class="submetric-name" data-i18n="steps_label">Passi Odierni:</span>
+                  <strong id="val-wearable-steps">8.420</strong>
+                </div>
+                <div class="submetric-item">
+                  <span class="submetric-name" data-i18n="cals_label">Calorie Bruciate:</span>
+                  <strong id="val-wearable-calories">2.140 kcal</strong>
+                </div>
+                <div class="submetric-item">
+                  <span class="submetric-name">Frequenza Respiratoria:</span>
+                  <strong id="val-wearable-resp">13.5 rpm</strong>
+                </div>
+                <div class="submetric-item">
+                  <span class="submetric-name">Batteria Dispositivo:</span>
+                  <strong id="val-wearable-battery">88%</strong>
+                </div>
+              </div>
+
+              <div class="wearable-ecg-canvas-box">
+                <canvas id="canvas-wearable-ecg" width="600" height="90"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="tactical-card wearable-card">
+            <div class="card-header">
+              <span class="card-title">⚖️ Bilancia Intelligente Renpho &amp; Composizione Corporea</span>
+              <span id="badge-scale-status" class="badge-tag scale-live-badge">SINCRONIZZATO</span>
+            </div>
+            <div class="card-body">
+              <div class="scale-hero-weight">
+                <div class="hero-weight-content">
+                  <span class="hero-weight-label" data-i18n="weight_label">Peso Corporeo Attuale:</span>
+                  <div class="hero-weight-display">
+                    <strong id="val-scale-weight">74.6</strong>
+                    <span class="hero-weight-unit">KG</span>
+                  </div>
+                </div>
+                <div class="hero-bmi-badge">
+                  <span class="bmi-title" data-i18n="bmi_label">Indice BMI:</span>
+                  <strong id="val-scale-bmi">23.4</strong>
+                  <span class="bmi-category">Normopeso Ottimale</span>
+                </div>
+              </div>
+
+              <div class="body-composition-grid">
+                <div class="composition-tile">
+                  <span class="comp-label" data-i18n="fat_label">Grasso Corporeo:</span>
+                  <strong id="val-scale-fat">15.8%</strong>
+                  <div class="comp-bar"><div id="bar-scale-fat" class="comp-bar-fill" style="width: 15.8%; background: #10b981;"></div></div>
+                </div>
+
+                <div class="composition-tile">
+                  <span class="comp-label" data-i18n="muscle_label">Massa Muscolare:</span>
+                  <strong id="val-scale-muscle">35.2 kg</strong>
+                  <div class="comp-bar"><div id="bar-scale-muscle" class="comp-bar-fill" style="width: 47%; background: #00f0ff;"></div></div>
+                </div>
+
+                <div class="composition-tile">
+                  <span class="comp-label" data-i18n="water_label">Idratazione:</span>
+                  <strong id="val-scale-water">59.4%</strong>
+                  <div class="comp-bar"><div id="bar-scale-water" class="comp-bar-fill" style="width: 59.4%; background: #3b82f6;"></div></div>
+                </div>
+
+                <div class="composition-tile">
+                  <span class="comp-label">Età Metabolica:</span>
+                  <strong id="val-scale-meta-age">27 Anni</strong>
+                  <div class="comp-bar"><div class="comp-bar-fill" style="width: 27%; background: #c084fc;"></div></div>
+                </div>
+              </div>
+
+              <div class="connected-hardware-registry">
+                <span class="registry-title" data-i18n="connected_devices">Dispositivi Connessi:</span>
+                <div id="list-wearable-devices" class="hardware-pill-list"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="deck-emergency-vitals" class="plancia-section">
+      <div class="emergency-vitals-container">
+        <div class="emergency-header-bar">
+          <div>
+            <h2 class="emergency-title" data-i18n="title">Sistema Emergenze Biometriche &amp; Rilevamento Prossimità</h2>
+            <p class="emergency-subtitle" data-i18n="subtitle">Connessione automatica ai braccialetti all'avvicinamento del server, monitoraggio arresti cardiaci e avviso corale ai dispositivi</p>
+          </div>
+          <div class="emergency-action-btns">
+            <button id="btn-simulate-cardiac-arrest" class="tactical-btn danger" data-i18n="test_emergency_btn">🚨 Simula Allarme Arresto Cardiaco</button>
+            <button id="btn-restore-normal-vitals" class="tactical-btn secondary" data-i18n="test_normal_btn">✅ Ripristina Valori Normali</button>
+          </div>
+        </div>
+
+        <div id="banner-critical-alarm" class="alarm-critical-banner" style="display:none;">
+          <div class="alarm-banner-content">
+            <div class="alarm-icon-flash">🚨</div>
+            <div>
+              <h3 class="alarm-banner-title">EMERGENZA MEDICA CRITICA IN CORSO</h3>
+              <p id="txt-alarm-banner-reason" class="alarm-banner-desc">Rilevato arresto cardiaco o bradicardia estrema. Notifica corale in diffusione.</p>
+            </div>
+          </div>
+          <div id="badge-alarm-broadcast-status" class="alarm-broadcast-pill">AVVISO CORALE DISPOSITIVI INVIATO</div>
+        </div>
+
+        <div class="emergency-grid">
+          <div class="tactical-card emergency-card">
+            <div class="card-header">
+              <span class="card-title" data-i18n="profile_title">Profilo Sanitario Utente Riconosciuto:</span>
+              <span class="badge-tag auto-connect-badge" data-i18n="auto_connect_badge">AUTOCONNESSIONE ALL'AVVICINAMENTO: ATTIVA</span>
+            </div>
+            <div class="card-body">
+              <div class="profile-hero-card">
+                <div class="user-avatar-circle">👤</div>
+                <div class="user-meta-details">
+                  <h3 id="txt-emergency-user-name" class="user-full-name">Nunzio (Amministratore Primario)</h3>
+                  <p class="user-id-code">ID Profilo: <span id="txt-emergency-user-id">owner</span> | Dispositivo: <b>Google Fitbit Edge</b></p>
+                  <div class="user-vitals-status-pill">
+                    <span>Stato Fisiologico Attuale:</span>
+                    <strong id="txt-current-physiological-status" style="color:#34d399;">NORMALE &amp; MONITORATO IN TEMPO REALE</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div class="thresholds-panel">
+                <span class="thresholds-header" data-i18n="thresholds_title">Soglie Allarme Medico Critico:</span>
+                <div class="thresholds-row">
+                  <div class="threshold-pill">
+                    <span data-i18n="cardiac_arrest_threshold">Soglia Arresto Cardiaco:</span>
+                    <strong>&le; 28 BPM</strong>
+                  </div>
+                  <div class="threshold-pill">
+                    <span data-i18n="hypoxia_threshold">Soglia Ipossia Critica (SpO2):</span>
+                    <strong>&le; 85%</strong>
+                  </div>
+                  <div class="threshold-pill">
+                    <span data-i18n="tachycardia_threshold">Tachicardia Ventricolare:</span>
+                    <strong>&ge; 190 BPM</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tactical-card emergency-card">
+            <div class="card-header">
+              <span class="card-title" data-i18n="emergency_contacts_title">Contatti di Emergenza Vincolati:</span>
+              <span class="badge-tag broadcast-badge" data-i18n="home_broadcast_badge">BROADCAST CASA: ATTIVO</span>
+            </div>
+            <div class="card-body">
+              <div id="list-emergency-contacts" class="emergency-contacts-list"></div>
+              <div class="home-broadcast-integration-box">
+                <span class="broadcast-box-title">DISPOSITIVI DOMESTICI INTEGRATI PER ALLERTA CORALE:</span>
+                <p class="broadcast-box-desc">In caso di arresto o anomalia critica, Nuxiva attiva sirene interne, diffonde messaggi vocali su tutti gli smart speaker, fa lampeggiare le luci rosse e sblocca le serrature domotiche per agevolare i soccorsi.</p>
+              </div>
             </div>
           </div>
         </div>

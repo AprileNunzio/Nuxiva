@@ -8,6 +8,11 @@ from server.features.presence_privacy.models import (
 )
 from server.features.presence_privacy.presence_service import presence_service
 from server.features.presence_privacy.system_metrics import system_metrics_collector
+from server.features.presence_privacy.vision_telemetry import (
+    VisionTelemetryPayload,
+    VisionTelemetryConfig,
+    vision_telemetry_manager,
+)
 
 presence_router = APIRouter(prefix="/presence", tags=["presence"])
 system_router = APIRouter(prefix="/system", tags=["system"])
@@ -23,7 +28,12 @@ async def record_presence_verification(payload: VerificationPayload) -> Presence
 
 @presence_router.post("/toggle-mock", response_model=PresenceStatus)
 async def toggle_mock_presence(approaching: bool = True, verified: bool = True) -> PresenceStatus:
-    return presence_service.set_presence(approaching=approaching, verified=verified, user="owner")
+    res = presence_service.set_presence(approaching=approaching, verified=verified, user="owner")
+    if approaching and verified:
+        from server.features.user_presence_vitals.presence_vitals_coordinator import presence_vitals_coordinator
+        import asyncio
+        asyncio.create_task(presence_vitals_coordinator.on_user_approached_node("owner", "master_server"))
+    return res
 
 @system_router.get("/metrics", response_model=SystemTelemetryData)
 async def get_system_metrics() -> SystemTelemetryData:
@@ -81,4 +91,16 @@ async def get_proximity_hud_projects():
 @privacy_router.get("/policies", response_model=List[WidgetPrivacyPolicy])
 async def get_privacy_policies() -> List[WidgetPrivacyPolicy]:
     return presence_service.get_policies()
+
+@presence_router.post("/vision/telemetry")
+async def record_vision_telemetry(payload: VisionTelemetryPayload):
+    return await vision_telemetry_manager.process_telemetry(payload)
+
+@presence_router.get("/vision/state")
+async def get_vision_state():
+    return vision_telemetry_manager.get_latest_state()
+
+@presence_router.post("/vision/config")
+async def update_vision_config(config: VisionTelemetryConfig):
+    return vision_telemetry_manager.update_config(config)
 

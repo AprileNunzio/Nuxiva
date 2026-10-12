@@ -1,0 +1,69 @@
+<section id="deck-multimodal-surveillance" class="plancia-section">
+  <div class="surveillance-container">
+    <div class="surveillance-header-bar">
+      <div>
+        <h2 class="surveillance-title" data-i18n="title">Sorveglianza Multimodale Continua &amp; Auto-Potenziamento</h2>
+        <p class="surveillance-subtitle" data-i18n="subtitle">Registrazione continua audio/video, amplificazione adattiva, identificazione dettagliata corrieri e autoconfigurazione satelliti</p>
+      </div>
+      <div class="surveillance-node-control">
+        <label for="select-surveillance-node" data-i18n="node_selector">Nodo / Satellite Attivo:</label>
+        <select id="select-surveillance-node" class="tactical-select"></select>
+        <button id="btn-auto-configure-node" class="tactical-btn primary" data-i18n="auto_config_btn">⚡ Autoconfigura Dispositivi Default</button>
+      </div>
+    </div>
+
+    <div class="surveillance-grid">
+      <div class="tactical-card surveillance-card">
+        <div class="card-header">
+          <span class="card-title" data-i18n="audio_section_title">🎙️ Registrazione Continua Audio &amp; Amplificazione</span>
+          <span class="badge-tag live-badge" data-i18n="audio_status_recording">REGISTRAZIONE CONTINUA ATTIVA</span>
+        </div>
+        <div class="card-body">
+          <div class="audio-metrics-panel">
+            <div class="metric-pill">
+              <span class="metric-label" data-i18n="audio_clean_gain">Guadagno SNR:</span>
+              <strong id="val-audio-snr-gain" class="metric-val">+18.4 dB</strong>
+            </div>
+            <div class="metric-pill">
+              <span class="metric-label">Punteggio Chiarezza:</span>
+              <strong id="val-audio-clarity" class="metric-val">96.2%</strong>
+            </div>
+            <div class="metric-pill">
+              <span class="metric-label">Microfono Vincolato:</span>
+              <strong id="val-default-mic-name" class="metric-val">mic_desk_array</strong>
+            </div>
+          </div>
+          <div class="waveform-container">
+            <canvas id="canvas-continuous-audio-waveform" width="600" height="120"></canvas>
+          </div>
+          <div class="transcription-stream-box">
+            <span class="box-tag">ANALISI VOCALE &amp; STUDIO AUTONOMO DEI COMANDI:</span>
+            <p id="txt-latest-audio-transcription">Segnale acustico amplificato, ripulito dal rumore di fondo e pronto per correlazione cognitiva.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tactical-card surveillance-card">
+        <div class="card-header">
+          <span class="card-title" data-i18n="video_section_title">📹 Monitoraggio Video Continuo &amp; Riconoscimento Dettagli</span>
+          <span class="badge-tag camera-badge">4K ZERO-LATENCY</span>
+        </div>
+        <div class="card-body">
+          <div class="semantic-search-box">
+            <input type="text" id="input-semantic-visual-query" class="tactical-input" data-i18n-placeholder="search_placeholder" placeholder="Chiedi: A che ora è venuto il corriere? Chi c'era vestito di giallo?" />
+            <button id="btn-submit-semantic-query" class="tactical-btn" data-i18n="search_btn">🔍 Cerca nel Registro Visivo</button>
+          </div>
+          <div id="box-semantic-direct-answer" class="direct-answer-panel" style="display:none;">
+            <div class="answer-header">RISPOSTA ISTANTANEA SENSORY BUS:</div>
+            <p id="txt-semantic-direct-answer" class="answer-body"></p>
+          </div>
+          <div class="event-timeline-header">
+            <span data-i18n="timeline_title">📋 Registro Eventi Semantici &amp; Dettagli Persona/Veicoli/Corriere</span>
+            <button id="btn-refresh-surveillance-timeline" class="tactical-btn secondary small">Aggiorna</button>
+          </div>
+          <div id="list-surveillance-events" class="surveillance-events-feed"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

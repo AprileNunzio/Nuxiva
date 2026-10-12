@@ -25,6 +25,10 @@ from server.features.project_workspace.project_controller import project_router
 from server.core.agent_registry.agent_controller import agent_registry_router
 from server.core.security_guard.rbac_controller import rbac_router
 from server.features.llm_gateway.ternary_controller import ternary_router
+from server.features.multimodal_surveillance.controller import surveillance_router
+from server.features.human_affective_engine.controller import affective_router
+from server.features.wearable_vitals_hub.controller import wearable_router
+from server.features.user_presence_vitals.controller import emergency_presence_router
 from server.core.sensory_bus.event_router import sensory_bus
 from server.core.event_sourcing.universal_space import UniversalObservation
 
@@ -39,6 +43,10 @@ router.include_router(project_router)
 router.include_router(agent_registry_router)
 router.include_router(rbac_router)
 router.include_router(ternary_router)
+router.include_router(surveillance_router)
+router.include_router(affective_router)
+router.include_router(wearable_router)
+router.include_router(emergency_presence_router)
 
 class AuthExchangeRequest(BaseModel):
     client_id: str
