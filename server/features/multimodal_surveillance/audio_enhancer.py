@@ -25,7 +25,6 @@ class AudioSignalEnhancer:
             return audio_data, 0.0, 0.0, 0.0, {}
 
         orig_rms = float(np.sqrt(np.mean(audio_data ** 2))) + 1e-9
-        orig_peak = float(np.max(np.abs(audio_data))) + 1e-9
 
         denoised = self._spectral_gate(audio_data)
         amplified = self._apply_automatic_gain(denoised)
