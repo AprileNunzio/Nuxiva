@@ -63,7 +63,6 @@ export function createShell(root) {
       sections,
       favoriteLinks(),
       h("div", { class: "nav-foot" },
-        h("a", { class: "nv", href: "/classic" }, h("span", { class: "g", "aria-hidden": "true" }, "▤"), h("span", { class: "lb" }, "Pannello classico")),
         h("button", { class: "nv", type: "button", onclick: logout }, h("span", { class: "g", "aria-hidden": "true" }, "⎋"), h("span", { class: "lb" }, "Esci")),
         h("div", { class: "who" }, user ? `Connesso come ${user}` : "")));
   }

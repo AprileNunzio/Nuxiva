@@ -1,7 +1,13 @@
 from typing import Optional
 
-import cv2
-import numpy as np
+try:
+    import cv2
+except ImportError:
+    cv2 = None
+try:
+    import numpy as np
+except ImportError:
+    np = None
 
 MAX_SIDE = 900
 BORDER_FLAT_RATIO = 0.82
@@ -10,7 +16,7 @@ MARGIN_RATIO = 0.04
 
 
 def _decode(data: bytes) -> Optional[np.ndarray]:
-    if not data:
+    if not cv2 or not np or not data:
         return None
     try:
         image = cv2.imdecode(np.frombuffer(data, dtype=np.uint8), cv2.IMREAD_UNCHANGED)

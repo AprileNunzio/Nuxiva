@@ -161,15 +161,32 @@ async def admin_widget_test(wid: str, _: str = Depends(require_admin)):
     return desk.listing()
 
 
+@admin_routes.get("/api/widgets/targets")
+async def admin_widget_targets(_: str = Depends(require_admin)):
+    from features.nodes.registry import registry
+    targets = [{"id": "server", "name": "Server Principale", "type": "server"}]
+    for n in registry.listing():
+        if n.get("online") and n.get("type") in ("satellite", "display", "desktop"):
+            targets.append({"id": n["id"], "name": n["name"], "type": n.get("type_label") or n.get("type")})
+    return {"targets": targets}
+
+
 @admin_routes.post("/api/widgets/{wid}/recall")
-async def admin_widget_recall(wid: str, _: str = Depends(require_admin)):
+async def admin_widget_recall(wid: str, request: Request, _: str = Depends(require_admin)):
     if wid == "alarm":
         raise HTTPException(400, "L'allarme non si richiama a mano: usa la prova dal pannello")
+    target = None
+    if request.headers.get("content-type", "").startswith("application/json"):
+        try:
+            body = await request.json()
+            target = body.get("target") if isinstance(body, dict) else None
+        except Exception:
+            pass
     try:
-        origin = desk.recall(wid)
+        origin = desk.recall(wid, target=target)
     except KeyError:
         raise HTTPException(404, "Widget sconosciuto")
-    return {"ok": True, "origin": origin}
+    return {"ok": True, "origin": origin, "target": target}
 
 
 @admin_routes.delete("/api/desk/{key:path}")

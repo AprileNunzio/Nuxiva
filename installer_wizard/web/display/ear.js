@@ -245,7 +245,7 @@
 
   const Ear = D.Ear = window.nuxivaEar = {
     resetFrom(t) { if (!t || t === resetSeen) return; if (resetSeen) restartMic(); resetSeen = t; },
-    setAssistantName(name) { TITLES.idle = `Parla (oppure dì «${name}» o «Hey ${name}»)`; if (state === "idle" && $("ear-text")) $("ear-text").textContent = TITLES.idle; },
+    setAssistantName(name) { if (!name) return; TITLES.idle = TITLES.idle.replace(/«[^»]+»/, "«" + name + "»"); if (state === "idle" && $("ear-text")) $("ear-text").textContent = TITLES.idle; },
     start, send, restartMic, debugState: setState, debugLevel: level,
     listen() { if (ctx && ctx.state === "suspended") ctx.resume(); D.pingActivity(true); send({ type: "listen" }); setState("listening"); },
     speaking(on) { send({ type: "speaking", on }); },

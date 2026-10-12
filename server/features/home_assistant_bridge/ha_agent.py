@@ -71,11 +71,8 @@ class HomeAssistantAgent(BaseAgent):
         )
 
     async def _run_react(self, request: AgentTaskRequest) -> dict:
-        # FASE 3: Estrazione memoria episodica/abitudini dalla Deep Memory
-        # (Si può usare il FailureIndex semantico per evitare errori passati o lo StructureWorkspace per le abitudini)
         from server.features.deep_memory.composition import deep_memory
         
-        # Recuperiamo contesto strutturato (preferenze/abitudini)
         try:
             ws = deep_memory.workspace("home_habits")
             habits_context = ws.read_file("preferences.md") or "Nessuna preferenza nota."
@@ -83,7 +80,7 @@ class HomeAssistantAgent(BaseAgent):
             habits_context = "Memoria non accessibile."
 
         agent_prompt = (
-            "Sei Jarvis, il gestore della Domotica di Nuxiva. Controlli Home Assistant. "
+            "Sei il gestore della Domotica di Nuxiva. Controlli Home Assistant. "
             "Il tuo compito è capire l'ambiente, decidere il dominio e l'entità corretti "
             "ed eseguire l'azione con i tool forniti. "
             f"ABITUDINI DELL'UTENTE E MEMORIA:\n{habits_context}\n"

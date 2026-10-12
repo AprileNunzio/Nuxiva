@@ -18,14 +18,13 @@ class ProactiveEngine:
         if observation.modality != "home_assistant":
             return
 
-        # Analizziamo se l'evento richiede un'azione
         entity = observation.source_id
         state = observation.raw_data.get("state")
         old_state = observation.metadata.get("old_state", {}).get("state")
         
         prompt = (
             f"Evento domotico rilevato: L'entità '{entity}' è passata da '{old_state}' a '{state}'.\n"
-            "Sei il modulo di sicurezza e comfort proattivo (Jarvis).\n"
+            "Sei il modulo di sicurezza e comfort proattivo.\n"
             "In base a questo evento, c'è un'azione logica o urgente che dovresti fare autonomamente?\n"
             "Esempi: se una finestra si apre e il riscaldamento è acceso, dovresti spegnerlo.\n"
             "Rispondi SOLO con un JSON: {\"requires_action\": true/false, \"reason\": \"...\", \"task_intent\": \"spegni il riscaldamento in quella stanza\"}"

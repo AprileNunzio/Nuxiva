@@ -17845,8 +17845,8 @@
       "AI Brain & Orchestration"
     ],
     [
-      "Come vuoi chiamare il tuo assistente? Puoi usare il predefinito «Hey NUXIVA» oppure un nome a tua scelta come «Jarvis» o «Ares».",
-      "What would you like to call your assistant? You can use the default «Hey NUXIVA» or a name of your choice like «Jarvis» or «Ares»."
+      "Come vuoi chiamare il tuo assistente? Puoi usare il predefinito «Hey NUXIVA» oppure qualsiasi nome a tua scelta (es. «Astra», «Nova», «Ares»).",
+      "What would you like to call your assistant? You can use the default «Hey NUXIVA» or any name of your choice (e.g. «Astra», «Nova», «Ares»)."
     ],
     [
       "Confermato",
@@ -18039,6 +18039,14 @@
     [
       "{0} CPU · {1} GB RAM · {2} GB liberi sul disco",
       "{0} CPU · {1} GB RAM · {2} GB free on disk"
+    ],
+    [
+      "Dove vuoi mostrare l'anteprima?",
+      "Where do you want to show the preview?"
+    ],
+    [
+      "Scegli lo schermo o satellite su cui proiettare «{0}»:",
+      "Choose the screen or satellite to project «{0}»:"
     ]
   ],
   "reverse": [
@@ -35677,8 +35685,8 @@
       "Cerveau IA et orchestration"
     ],
     [
-      "Come vuoi chiamare il tuo assistente? Puoi usare il predefinito «Hey NUXIVA» oppure un nome a tua scelta come «Jarvis» o «Ares».",
-      "Comment souhaitez-vous appeler votre assistant ? Vous pouvez utiliser le nom par défaut « Hey NUXIVA » ou un nom de votre choix tel que « Jarvis » ou « Ares »."
+      "Come vuoi chiamare il tuo assistente? Puoi usare il predefinito «Hey NUXIVA» oppure qualsiasi nome a tua scelta (es. «Astra», «Nova», «Ares»).",
+      "Comment souhaitez-vous appeler votre assistant ? Vous pouvez utiliser le nom par défaut « Hey NUXIVA » ou le nom de votre choix (ex. « Astra », « Nova », « Ares »)."
     ],
     [
       "Confermato",
@@ -35871,6 +35879,14 @@
     [
       "{0} CPU · {1} GB RAM · {2} GB liberi sul disco",
       "{0} CPU · {1} Go RAM · {2} Go libres sur le disque"
+    ],
+    [
+      "Dove vuoi mostrare l'anteprima?",
+      "Où souhaitez-vous afficher l'aperçu ?"
+    ],
+    [
+      "Scegli lo schermo o satellite su cui proiettare «{0}»:",
+      "Choisissez l'écran ou le satellite sur lequel projeter «{0}» :"
     ]
   ]
 }

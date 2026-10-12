@@ -15,8 +15,7 @@ export function renderLogin(root, onSuccess) {
       h("div", { class: "field" }, h("label", { for: "nx-user" }, "Utente di sistema"), user),
       h("div", { class: "field" }, h("label", { for: "nx-pass" }, "Password"), pass),
       error, submit),
-    h("p", { class: "hint" }, "Accesso consentito a root e agli utenti dei gruppi sudo o nuxiva-admin."),
-    h("p", { class: "hint" }, h("a", { href: "/classic" }, "Apri il pannello classico")));
+    h("p", { class: "hint" }, "Accesso consentito a root e agli utenti dei gruppi sudo o nuxiva-admin."));
   mount(root, h("main", { class: "login" }, card));
   const orb = new Orb(canvas);
   orb.start();

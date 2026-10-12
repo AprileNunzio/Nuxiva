@@ -22,12 +22,12 @@ class PlanTest(unittest.TestCase):
         self.assertEqual(voice_training.plan("de"), voice_training.plan("it"))
 
     def test_custom_assistant_name_in_plan(self):
-        plan = voice_training.plan("it", custom_name="Jarvis")
+        plan = voice_training.plan("it", custom_name="Astra")
         wake_texts = [item["text"] for item in plan if item["kind"] == "wake"]
-        self.assertIn("Jarvis", wake_texts)
-        self.assertIn("Hey Jarvis", wake_texts)
+        self.assertIn("Astra", wake_texts)
+        self.assertIn("Hey Astra", wake_texts)
         cmd_texts = [item["text"] for item in plan if item["kind"] == "command"]
-        self.assertTrue(any("Jarvis" in c for c in cmd_texts))
+        self.assertTrue(any("Astra" in c for c in cmd_texts))
 
     def test_the_way_a_person_says_the_name_is_extracted(self):
         cases = {"Nuxiva": "nuxiva", "nu xiva": "nuxiva", "Hey Nuxiva": "nuxiva", "Ehi Nuxiba, che ore sono": "nuxiba",

@@ -60,9 +60,9 @@ class WakeNameTest(unittest.TestCase):
         self.assertEqual(learner.hotwords().split()[0], "Nuxiva")
 
     def test_custom_assistant_name_wakes_both_with_and_without_hey(self):
-        with mock.patch.dict(os.environ, {"NUXIVA_ASSISTANT_NAME": "Jarvis"}):
+        with mock.patch.dict(os.environ, {"NUXIVA_ASSISTANT_NAME": "Astra"}):
             learner = learner_module.Learner()
-            for text in ("Jarvis, accendi la luce", "Hey Jarvis, accendi la luce", "Ehi Jarvis accendi la luce", "jarvis accendi la luce"):
+            for text in ("Astra, accendi la luce", "Hey Astra, accendi la luce", "Ehi Astra accendi la luce", "astra accendi la luce"):
                 with self.subTest(text=text):
                     found = learner.find_wake(text)
                     self.assertIsNotNone(found)

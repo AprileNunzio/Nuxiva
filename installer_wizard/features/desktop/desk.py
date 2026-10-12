@@ -314,7 +314,7 @@ class Desk:
             log.exception("Sorgente del widget %s", m["id"])
             return None
 
-    def recall(self, wid: str) -> str:
+    def recall(self, wid: str, target: str | int | None = None) -> str:
         m = self.widgets.get(wid)
         if not m:
             raise KeyError(wid)
@@ -328,6 +328,11 @@ class Desk:
             data = {**m.get("demo", {}), "started_at": time.time() - 30}
         self.dismissed.pop(f"recall:{wid}", None)
         self.show(wid, data, key=f"recall:{wid}", ttl=m.get("ttl") or 120, intent=True)
+        if target and f"recall:{wid}" in self.instances:
+            self.instances[f"recall:{wid}"]["target"] = str(target)
+            if str(target).isdigit():
+                self.instances[f"recall:{wid}"]["screen"] = int(target)
+            self.publish()
         return origin
 
     def register_source(self, name: str, fn) -> None:
