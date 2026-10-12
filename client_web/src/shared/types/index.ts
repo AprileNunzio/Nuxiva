@@ -1,4 +1,22 @@
-export type NavigationTab = 'CORE' | 'CONTROL_DECK';
+export type NavigationTab = 'CORE' | 'WORLD_3D' | 'STUDIO_3D' | 'CONTROL_DECK';
+
+export interface SpatialAsset {
+  id: string;
+  name: string;
+  category: 'weather' | 'tools' | 'furniture' | 'architecture' | 'vehicles' | 'devices' | 'fx';
+  tags: string[];
+  icon: string;
+  description: string;
+  scale?: number;
+}
+
+export interface WorldEnvironmentState {
+  weather: 'CLEAR' | 'RAIN' | 'SNOW' | 'THUNDERSTORM' | 'NIGHT_NEON';
+  sceneTheme: 'CYBER_LAB' | 'MODERN_OFFICE' | 'PANORAMIC_TERRACE' | 'HOLODECK_VOID';
+  equippedItem: string | null;
+  ambientLightColor: string;
+  rainIntensity: number;
+}
 
 export interface KnowledgeNode {
   id: string;

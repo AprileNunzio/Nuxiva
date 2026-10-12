@@ -24,61 +24,11 @@ WAKE_MAX_BYTES = 20 * 1024 * 1024
 MAX_ATTEMPTS = 5
 LOCKOUT_S = 600
 
-PROFILES = {
-    "auto": {"label": "Automatico", "model": "", "size_gb": 0.0,
-             "note": "Nuxiva sceglie da sola in base all'hardware."},
-    "leggero": {"label": "Leggero", "model": "granite3.3:2b", "size_gb": 1.9, "min_ram_gb": 6,
-                "note": "Per mini PC e computer con poca memoria."},
-    "bilanciato": {"label": "Bilanciato", "model": "granite3.3:8b", "size_gb": 4.9, "min_ram_gb": 14,
-                   "note": "Ragionamento migliore, serve un computer recente."},
-    "potente": {"label": "Potente", "model": "qwen2.5:14b", "size_gb": 9.0, "min_ram_gb": 28,
-                "note": "Massima qualità, consigliato con scheda video da 12 GB o più."},
-}
-VOICE_CHOICES = {
-    "if_sara": "Sara — femminile, naturale (IT)",
-    "it_IT-serena-high": "Serena — femminile, alta qualità (IT)",
-    "it_IT-paola-medium": "Paola — femminile, veloce (IT)",
-    "im_nicola": "Nicola — maschile, naturale (IT)",
-    "af_heart": "Heart — female, natural (EN)",
-    "am_michael": "Michael — male, natural (EN)",
-    "ef_dora": "Dora — femenina, natural (ES)",
-    "em_alex": "Alex — masculino, natural (ES)",
-    "ff_siwis": "Siwis — féminine, naturelle (FR)",
-    "fr_FR-gilles-low": "Gilles — masculin, rapide (FR)",
-}
-
-VOICES_BY_LANG_GENDER = {
-    "it": {"female": "if_sara", "male": "im_nicola"},
-    "en": {"female": "af_heart", "male": "am_michael"},
-    "es": {"female": "ef_dora", "male": "em_alex"},
-    "fr": {"female": "ff_siwis", "male": "fr_FR-gilles-low"},
-}
-
-GREETING_TEMPLATES = {
-    "it": "Ciao! Sono {name}. Sono a tua disposizione.",
-    "en": "Hello! I am {name}. Ready to assist you.",
-    "es": "¡Hola! Soy {name}. A tu servicio.",
-    "fr": "Bonjour ! Je suis {name}. Prêt à vous assister.",
-}
-LANGS = UI_LANGUAGES
-
-NAME_RE = re.compile(r"[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ-]{0,39}")
-HA_URL_RE = re.compile(r"https?://[A-Za-z0-9.-]{1,253}(:\d{1,5})?(/[A-Za-z0-9._~/-]{0,200})?")
-HA_TOKEN_RE = re.compile(r"[A-Za-z0-9._-]{20,512}")
-TELEGRAM_RE = re.compile(r"\d{5,12}:[A-Za-z0-9_-]{30,64}")
-ANSWER_KEYS = {"NUXIVA_USER_NAME", "NUXIVA_UI_LANG", "NUXIVA_VOICE", "NUXIVA_LLM_MODEL", "NUXIVA_COMMERCIAL",
-               "HOME_ASSISTANT_URL", "HOME_ASSISTANT_TOKEN", "NUXIVA_TELEGRAM_TOKEN", "NUXIVA_SMB_PASSWORD",
-               "NUXIVA_BRAIN", "NUXIVA_OLLAMA_URL", "NUXIVA_CLOUD_PROVIDER", "NUXIVA_CLOUD_KEY", "NUXIVA_PACKAGES"}
-BRAINS = ("local", "remote", "cloud")
-CLOUD_PICK = {
-    "anthropic": ("Anthropic Claude", "claude-haiku-4-5-20251001", "claude-sonnet-5-5"),
-    "gemini": ("Google Gemini", "gemini-2.5-flash", "gemini-2.5-pro"),
-    "openai": ("OpenAI", "gpt-5-mini", "gpt-5"),
-    "mistral": ("Mistral AI", "mistral-small-latest", "mistral-large-latest"),
-}
-CLOUD_KEY_RE = re.compile(r"[A-Za-z0-9_\-.]{20,256}")
-WIZARD_PACKAGES = {"voice": "NUXIVA_VOICE_PACKAGE", "ear": "NUXIVA_EAR", "vision": "NUXIVA_VISION", "documents": "NUXIVA_DOCUMENTS"}
-SMB_RE = re.compile(r"[A-Za-z0-9_.@%+=:,-]{12,128}")
+from setup_config import (
+    ANSWER_KEYS, BRAINS, CLOUD_KEY_RE, CLOUD_PICK, GREETING_TEMPLATES,
+    HA_TOKEN_RE, HA_URL_RE, LANGS, NAME_RE, PROFILES, SMB_RE, TELEGRAM_RE,
+    VOICES_BY_LANG_GENDER, VOICE_CHOICES, WIZARD_PACKAGES
+)
 
 public_routes = APIRouter()
 admin_routes = APIRouter()
@@ -477,8 +427,8 @@ async def setup_face(request: Request, _: None = Depends(require_setup)):
         raise HTTPException(400, "Dati non validi")
     if not isinstance(raw, dict):
         raise HTTPException(400, "Dati non validi")
-    first, last = setup_owner.clean_names(raw)
-    return JSONResponse(await setup_owner.enroll_face(first, last), headers=NO_CACHE)
+    img = str(raw.get("image") or raw.get("photo_base64") or "")
+    return JSONResponse(await setup_owner.enroll_face(first, last, img), headers=NO_CACHE)
 
 
 @public_routes.post("/api/setup/wakeword")
@@ -528,61 +478,5 @@ async def _store_wakeword(request: Request) -> dict:
     return {"ok": True}
 
 
-def _parse_answers(text: str) -> dict:
-    raw: dict[str, str] = {}
-    for line in text.splitlines():
-        line = line.strip()
-        if not line or line.startswith("#") or "=" not in line:
-            continue
-        key, value = (part.strip() for part in line.split("=", 1))
-        if key in ANSWER_KEYS:
-            raw[key] = value.strip().strip('"').strip("'")
-    profile = next((k for k, v in PROFILES.items() if v["model"] and v["model"] == raw.get("NUXIVA_LLM_MODEL")), "auto")
-    picked = [p.strip() for p in raw.get("NUXIVA_PACKAGES", "").split(",") if p.strip()]
-    updates = _clean({"name": raw.get("NUXIVA_USER_NAME", ""), "lang": raw.get("NUXIVA_UI_LANG", "it"), "profile": profile,
-                      "brain": raw.get("NUXIVA_BRAIN", "local"), "ollama_url": raw.get("NUXIVA_OLLAMA_URL", ""),
-                      "cloud_provider": raw.get("NUXIVA_CLOUD_PROVIDER", ""), "cloud_key": raw.get("NUXIVA_CLOUD_KEY", ""),
-                      "packages": picked,
-                      "voice": raw.get("NUXIVA_VOICE", "if_sara"), "ha_url": raw.get("HOME_ASSISTANT_URL", ""),
-                      "ha_token": raw.get("HOME_ASSISTANT_TOKEN", ""), "telegram": raw.get("NUXIVA_TELEGRAM_TOKEN", ""),
-                      "commercial": raw.get("NUXIVA_COMMERCIAL") == "1"})
-    smb = raw.get("NUXIVA_SMB_PASSWORD", "")
-    if smb:
-        if not SMB_RE.fullmatch(smb):
-            raise HTTPException(400, "Password delle condivisioni non valida (almeno 12 caratteri, nessuno spazio)")
-        updates.update(NUXIVA_SMB_PASSWORD=smb, NUXIVA_SHARES="1")
-    _store_cloud({"brain": raw.get("NUXIVA_BRAIN", ""), "cloud_provider": raw.get("NUXIVA_CLOUD_PROVIDER", ""),
-                  "cloud_key": raw.get("NUXIVA_CLOUD_KEY", "")})
-    return updates
+from setup_answers import ANSWERS_FILE, answers_trusted, apply_answers_file, parse_answers as _parse_answers
 
-
-def answers_trusted(path: Path) -> bool:
-    try:
-        st = path.lstat()
-    except OSError:
-        return False
-    if not path.is_file() or path.is_symlink():
-        return False
-    return DEMO or (st.st_uid == 0 and not st.st_mode & 0o022)
-
-
-async def apply_answers_file(path: Path = ANSWERS_FILE) -> bool:
-    if done() or not answers_trusted(path):
-        return False
-    try:
-        updates = _parse_answers(path.read_text(encoding="utf-8"))
-    except HTTPException as exc:
-        store.event("ERROR", f"File di risposte non applicato: {exc.detail}", "setup")
-        return False
-    except (OSError, UnicodeDecodeError) as exc:
-        store.event("ERROR", f"File di risposte illeggibile: {exc}", "setup")
-        return False
-    await _apply(updates, "file di risposte")
-    if updates.get("NUXIVA_USER_NAME"):
-        setup_owner.register_owner(updates["NUXIVA_USER_NAME"], "", updates["NUXIVA_UI_LANG"], updates["NUXIVA_UI_LANG"])
-    _mark_done("file di risposte")
-    try:
-        path.unlink()
-    except OSError:
-        pass
-    return True

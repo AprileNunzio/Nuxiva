@@ -55,8 +55,11 @@
 
   function setLanguage(lang) {
     choice.lang = lang;
-    if (window.NuxivaI18n && typeof window.NuxivaI18n.setLanguage === "function") {
-      window.NuxivaI18n.setLanguage(lang);
+    if (window.SetupI18n && typeof window.SetupI18n.applyLanguage === "function") {
+      window.SetupI18n.applyLanguage(lang);
+    }
+    if (window.NuxivaI18n && typeof window.NuxivaI18n.switchTo === "function") {
+      window.NuxivaI18n.switchTo(lang);
     }
     document.querySelectorAll(".lang-card").forEach((card) => {
       card.setAttribute("aria-checked", String(card.dataset.lang === lang));
@@ -68,7 +71,11 @@
     const total = FLOW.length - 1;
     const current = at + 1;
     if ($("step-of") && at < total) {
-      $("step-of").textContent = `Passo ${current} di ${total}`;
+      if (window.SetupI18n && typeof window.SetupI18n.getStepText === "function") {
+        $("step-of").textContent = window.SetupI18n.getStepText(choice.lang, current, total);
+      } else {
+        $("step-of").textContent = `Passo ${current} di ${total}`;
+      }
     } else if ($("step-of")) {
       $("step-of").textContent = "";
     }
@@ -109,6 +116,9 @@
   async function initMicCalibration() {
     try {
       if (!micStream) {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          throw new Error("MEDIA_UNAVAILABLE");
+        }
         micStream = await navigator.mediaDevices.getUserMedia({
           audio: { echoCancellation: true, noiseSuppression: true, sampleRate: 48000 }
         });
@@ -316,8 +326,25 @@
         const fname = $("owner-name")?.value.trim() || "Nunzio";
         const lname = $("owner-last")?.value.trim() || "";
         $("btn-enroll-face").textContent = "Scansione...";
+        let photoBase64 = "";
         try {
-          await call("/api/setup/face", { body: { name: fname, last_name: lname } });
+          if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user", width: { ideal: 640 }, height: { ideal: 480 } } });
+            const video = document.createElement("video");
+            video.srcObject = stream;
+            video.playsInline = true;
+            await video.play();
+            const canvas = document.createElement("canvas");
+            canvas.width = video.videoWidth || 640;
+            canvas.height = video.videoHeight || 480;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            photoBase64 = canvas.toDataURL("image/jpeg", 0.85);
+            stream.getTracks().forEach((track) => track.stop());
+          }
+        } catch (camErr) {}
+        try {
+          await call("/api/setup/face", { body: { name: fname, last_name: lname, photo_base64: photoBase64 } });
           choice.faceEnrolled = true;
           $("btn-enroll-face").textContent = "Registrato";
           $("face-feedback").textContent = "Completato";

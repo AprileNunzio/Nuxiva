@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { NavigationTab, KnowledgeNode } from './shared/types';
 import { AppNavbar } from './shared/layout/AppNavbar';
+import { I18nProvider } from './shared/i18n/I18nContext';
 import { NeuralCoreCanvas } from './features/core_visualizer_3d/NeuralCoreCanvas';
+import { SpatialWorldView } from './features/world_3d/SpatialWorldView';
+import { Studio3DView } from './features/studio_3d/Studio3DView';
 import { ControlDeckView } from './features/control_deck/ControlDeckView';
 
-export const App: React.FC = () => {
-  const [currentTab, setCurrentTab] = useState<NavigationTab>('CORE');
+export const MainConsole: React.FC = () => {
+  const [currentTab, setCurrentTab] = useState<NavigationTab>('WORLD_3D');
   const [nodes, setNodes] = useState<KnowledgeNode[]>([
     {
       id: 'nuxiva_core',
@@ -86,20 +89,30 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#030712] text-slate-100 flex flex-col font-['Inter']">
+    <div className="min-h-screen bg-[#030712] text-slate-100 flex flex-col font-['Inter'] selection:bg-cyan-500 selection:text-slate-950">
       <AppNavbar 
         currentTab={currentTab} 
         onTabChange={setCurrentTab} 
         isMeshConnected={true} 
       />
 
-      <main className="flex-1 w-full flex flex-col">
-        {currentTab === 'CORE' ? (
+      <main className="flex-1 w-full flex flex-col overflow-hidden">
+        {currentTab === 'CORE' && (
           <NeuralCoreCanvas 
             onSendCommand={handleSendCommand} 
             activeNodes={nodes} 
           />
-        ) : (
+        )}
+
+        {currentTab === 'WORLD_3D' && (
+          <SpatialWorldView />
+        )}
+
+        {currentTab === 'STUDIO_3D' && (
+          <Studio3DView />
+        )}
+
+        {currentTab === 'CONTROL_DECK' && (
           <ControlDeckView 
             nodes={nodes} 
             onRefreshGraph={fetchGraphNodes} 
@@ -109,4 +122,13 @@ export const App: React.FC = () => {
     </div>
   );
 };
+
+export const App: React.FC = () => {
+  return (
+    <I18nProvider>
+      <MainConsole />
+    </I18nProvider>
+  );
+};
+
 export default App;

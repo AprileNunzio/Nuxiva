@@ -42,7 +42,6 @@ export const ProjectWidget: React.FC = () => {
     const [newMessage, setNewMessage] = useState('');
 
     useEffect(() => {
-        // Recupera progetti attivi all'avvio
         fetch('/api/v1/projects')
             .then(res => res.json())
             .then(data => {
@@ -54,13 +53,11 @@ export const ProjectWidget: React.FC = () => {
             })
             .catch(() => {});
 
-        // Polling per prossimità HUD (webcam e presenza)
         const hudInterval = setInterval(() => {
             fetch('/api/v1/presence/hud/projects')
                 .then(res => res.json())
                 .then(hud => {
                     if (hud.unlocked && hud.projects && hud.projects.length > 0) {
-                        // Sblocca automaticamente l'HUD se l'utente si è avvicinato
                         setExpanded(true);
                     }
                 })
@@ -84,7 +81,6 @@ export const ProjectWidget: React.FC = () => {
                     content: newMessage,
                 }),
             });
-            // Ricarica dettagli progetto
             const res = await fetch(`/api/v1/projects/${project.project_id}`);
             const data = await res.json();
             if (data.project) setProject(data.project);

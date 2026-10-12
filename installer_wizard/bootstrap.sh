@@ -492,7 +492,7 @@ online() {
     curl -fsS --proto '=https' --max-time 8 -o /dev/null "${REPO_URL%.git}.git/info/refs?service=git-upload-pack" 2>/dev/null \
         || curl -fsS --proto '=https' --max-time 8 -o /dev/null https://pypi.org/simple/pip/ 2>/dev/null
 }
-apt_busy() { pgrep -x apt-get >/dev/null || pgrep -x apt >/dev/null || pgrep -x dpkg >/dev/null || pgrep -x unattended-upgr >/dev/null; }
+apt_busy() { pgrep -x apt-get >/dev/null || pgrep -x apt >/dev/null || pgrep -x dpkg >/dev/null || ( [ -x /usr/bin/lsof ] && lsof /var/lib/dpkg/lock-frontend >/dev/null 2>&1 ); }
 
 wait_online() {
     local limit=${1:-300} t0=$EPOCHSECONDS restarted=0
@@ -514,7 +514,7 @@ wait_online() {
 wait_apt() {
     local t0=$EPOCHSECONDS prompted=0 killed=0
     while apt_busy && (( EPOCHSECONDS - t0 < 1800 )); do
-        if pgrep -x unattended-upgr >/dev/null; then
+        if [ -x /usr/bin/lsof ] && lsof /var/lib/dpkg/lock-frontend >/dev/null 2>&1; then
             if (( FORCE_APT )); then
                 if (( killed == 0 )); then
                     systemctl stop unattended-upgrades 2>/dev/null || true

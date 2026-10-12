@@ -173,12 +173,16 @@
   async function switchTo(lang, persist = true) {
     if (!allowed(lang) || lang === state.lang) return;
     if (persist) remember(lang);
-    await load(lang);
+    try {
+      await load(lang);
+    } catch (e) {
+      console.warn(e);
+    }
   }
 
   function setLanguage(lang) {
-    if (!allowed(lang)) return Promise.resolve();
-    return remember(lang).finally(() => location.reload());
+    if (!allowed(lang) || lang === state.lang) return Promise.resolve();
+    return switchTo(lang, true);
   }
 
   global.NuxivaI18n = { start, setLanguage, switchTo, translate, language: () => state.lang, languages: LANGS };
