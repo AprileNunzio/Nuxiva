@@ -2,7 +2,6 @@ import hmac
 import ipaddress
 import json
 import os
-import re
 import secrets
 import time
 from pathlib import Path
@@ -14,19 +13,18 @@ from fastapi.responses import JSONResponse, RedirectResponse, Response
 import machine
 from access import NO_CACHE, is_local, require_admin
 import setup_owner
-from config import DEMO, ETC_DIR, STATE_DIR, UI_LANGUAGES, read_env
+from config import DEMO, STATE_DIR, read_env
 from state import store
 
 SETUP_FILE = STATE_DIR / "setup.json"
-ANSWERS_FILE = ETC_DIR / "answers.env"
 WAKE_DIR = Path(os.environ.get("NUXIVA_WAKEWORD_MODELS", str(STATE_DIR / "wakeword" if DEMO else "/opt/nuxiva-ear/wakeword")))
 WAKE_MAX_BYTES = 20 * 1024 * 1024
 MAX_ATTEMPTS = 5
 LOCKOUT_S = 600
 
 from setup_config import (
-    ANSWER_KEYS, BRAINS, CLOUD_KEY_RE, CLOUD_PICK, GREETING_TEMPLATES,
-    HA_TOKEN_RE, HA_URL_RE, LANGS, NAME_RE, PROFILES, SMB_RE, TELEGRAM_RE,
+    BRAINS, CLOUD_KEY_RE, CLOUD_PICK, GREETING_TEMPLATES,
+    HA_TOKEN_RE, HA_URL_RE, LANGS, NAME_RE, PROFILES, TELEGRAM_RE,
     VOICES_BY_LANG_GENDER, VOICE_CHOICES, WIZARD_PACKAGES
 )
 
@@ -427,6 +425,7 @@ async def setup_face(request: Request, _: None = Depends(require_setup)):
         raise HTTPException(400, "Dati non validi")
     if not isinstance(raw, dict):
         raise HTTPException(400, "Dati non validi")
+    first, last = setup_owner.clean_names(raw)
     img = str(raw.get("image") or raw.get("photo_base64") or "")
     return JSONResponse(await setup_owner.enroll_face(first, last, img), headers=NO_CACHE)
 
@@ -479,4 +478,6 @@ async def _store_wakeword(request: Request) -> dict:
 
 
 from setup_answers import ANSWERS_FILE, answers_trusted, apply_answers_file, parse_answers as _parse_answers
+
+__all__ = ["ANSWERS_FILE", "answers_trusted", "apply_answers_file", "_parse_answers", "done", "require_setup", "setup_required"]
 
