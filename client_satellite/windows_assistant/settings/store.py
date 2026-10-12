@@ -7,7 +7,7 @@ import socket
 
 from settings import paths, protect
 
-log = logging.getLogger("atena.settings")
+log = logging.getLogger("nuxiva.settings")
 
 DEFAULTS = {
     "server": "", "node_id": "", "token": "", "pin": "", "ca": "", "name": socket.gethostname(),
@@ -77,5 +77,5 @@ def normalize_server(value: str) -> str:
     if value and not re.match(r"^https?://", value, re.I):
         value = "https://" + value
     if value and not re.fullmatch(r"https?://[A-Za-z0-9.\-]+(:\d{1,5})?", value):
-        raise ValueError("Indirizzo di ATENA non valido: usa solo nome o IP, ad esempio 192.168.1.100")
+        raise ValueError("Indirizzo di NUXIVA non valido: usa solo nome o IP, ad esempio 192.168.1.100")
     return value

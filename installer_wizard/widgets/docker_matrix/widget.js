@@ -9,7 +9,7 @@
     if (/running|healthy|\bup\b|attivo|in esecuzione/i.test(v)) return "ok";
     return "";
   };
-  AtenaDesk.register("docker_matrix", {
+  NuxivaDesk.register("docker_matrix", {
     render(el, d, ctx) {
       const lines = plain(d.content).split("\n").map((l) => l.trim()).filter(Boolean).slice(0, 12);
       const pairs = lines.map((l) => l.match(/^([^:]{1,48}):\s+(.+)$/));

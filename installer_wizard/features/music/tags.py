@@ -9,12 +9,12 @@ try:
 except ImportError:
     TinyTag = None
 
-log = logging.getLogger("atena.music")
+log = logging.getLogger("nuxiva.music")
 DASH = re.compile(r"^\s*(.+?)\s+[-–—]\s+(.+)$")
 LEADING_NO = re.compile(r"^\s*(\d{1,3})\s*[-._)]\s*(.+)$")
 YEAR = re.compile(r"(\d{4})")
 ANCHORS = ("libreria", "da smistare")
-STRUCTURE = {"libreria", "da smistare", "playlist", "copertine", "cestino", "06 musica", "condivisa", "_duplicati", "musica", "atena", "srv"}
+STRUCTURE = {"libreria", "da smistare", "playlist", "copertine", "cestino", "06 musica", "condivisa", "_duplicati", "musica", "nuxiva", "srv"}
 EMPTY = {"title": "", "artist": "", "album_artist": "", "album": "", "track_no": 0, "disc_no": 1, "year": 0, "genre": "",
          "duration": 0.0, "bitrate": 0, "cover": False}
 def number(text: str) -> int:

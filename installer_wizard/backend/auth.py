@@ -6,9 +6,9 @@ import time
 
 from config import DEMO, ETC_DIR
 
-SESSION_COOKIE = "atena_session"
+SESSION_COOKIE = "nuxiva_session"
 SESSION_TTL = 12 * 3600
-ADMIN_GROUPS = {"sudo", "wheel", "atena-admin"}
+ADMIN_GROUPS = {"sudo", "wheel", "nuxiva-admin"}
 _SECRET_FILE = ETC_DIR / "session.key"
 _failures: dict = {}
 
@@ -45,10 +45,10 @@ def authenticate(username: str, password: str, ip: str) -> bool:
         return False
     ok = False
     if DEMO:
-        ok = username == "admin" and password == "atena"
+        ok = username == "admin" and password == "nuxiva"
     elif username and password:
         import pam
-        ok = pam.pam().authenticate(username, password, service="atena-admin") and _is_admin_user(username)
+        ok = pam.pam().authenticate(username, password, service="nuxiva-admin") and _is_admin_user(username)
     if not ok:
         _failures.setdefault(ip, []).append(time.time())
     return ok

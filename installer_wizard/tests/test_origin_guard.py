@@ -46,12 +46,12 @@ class OriginGuardTests(unittest.TestCase):
         self.assertEqual(r.json()["code"], "security.untrusted_host")
 
     def test_lan_addresses_and_mdns_names_are_trusted(self):
-        for host in ("192.168.1.20:8080", "atena.local", "localhost:80", "[::1]:443"):
+        for host in ("192.168.1.20:8080", "nuxiva.local", "localhost:80", "[::1]:443"):
             self.assertEqual(_client().get("/api/ambient", headers={"Host": host}).status_code, 200, host)
 
     def test_configured_reverse_proxy_host_is_trusted(self):
-        r = _client(("atena.example.org",)).post("/api/assistant/chat", json={},
-                                                 headers={"Host": "atena.example.org", "Origin": "https://atena.example.org"})
+        r = _client(("nuxiva.example.org",)).post("/api/assistant/chat", json={},
+                                                 headers={"Host": "nuxiva.example.org", "Origin": "https://nuxiva.example.org"})
         self.assertEqual(r.status_code, 200)
 
 

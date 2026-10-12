@@ -6,7 +6,7 @@ from pathlib import Path
 
 from features.music import hints, layout, naming, tags
 
-log = logging.getLogger("atena.music")
+log = logging.getLogger("nuxiva.music")
 SETTLE = 20
 MANUAL_SETTLE = 3
 DUPLICATES = "_duplicati"

@@ -11,7 +11,7 @@ MIN = 0.4
 CLOSE = 0.25
 SURE = 0.9
 RING: deque = deque(maxlen=60)
-ARBITER = ("Sei il comprensore di Atena. Devi capire quale funzione vuole davvero l'utente, leggendo TUTTA la frase, il contesto e la conversazione "
+ARBITER = ("Sei il comprensore di Nuxiva. Devi capire quale funzione vuole davvero l'utente, leggendo TUTTA la frase, il contesto e la conversazione "
            "precedente. Scegli UNA sola funzione tra quelle proposte. Rispondi SOLO con JSON: "
            '{{"domain": "nome", "motivo": "una frase"}}.\nFunzioni possibili:\n{options}\nWidget aperti ora: {widgets}\n'
            "Conversazione recente:\n{history}\n\nFrase da capire: «{text}»")
@@ -29,11 +29,11 @@ class Decision:
 
 
 def enabled() -> bool:
-    return env_get("ATENA_UNDERSTANDING", "1") != "0"
+    return env_get("NUXIVA_UNDERSTANDING", "1") != "0"
 
 
 def reasoning() -> bool:
-    return env_get("ATENA_UNDERSTANDING_LLM", "1") != "0"
+    return env_get("NUXIVA_UNDERSTANDING_LLM", "1") != "0"
 
 
 def ambiguous(ranked: list[tuple[str, float]]) -> bool:

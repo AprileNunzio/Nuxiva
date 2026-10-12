@@ -10,7 +10,7 @@ from websockets.sync.client import connect
 from connection import tls
 from connection.client import Client, endpoint
 
-log = logging.getLogger("atena.ear")
+log = logging.getLogger("nuxiva.ear")
 MAX_BACKOFF = 30.0
 
 

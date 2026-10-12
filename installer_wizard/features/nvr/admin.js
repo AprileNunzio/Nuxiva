@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const LABELS = ["person", "car", "truck", "motorcycle", "bicycle", "dog", "cat", "bird", "package", "license_plate", "face", "motion"];
   const ICON = { person: "🧍", car: "🚗", truck: "🚚", motorcycle: "🏍️", bicycle: "🚲", dog: "🐕", cat: "🐈", bird: "🐦", package: "📦", license_plate: "🔢", face: "🙂", motion: "〰️" };
   const STATE = { connected: "ok", connecting: "running", error: "down", missing_dependency: "warn", disabled: "" };
@@ -67,7 +67,7 @@
       await search($("nv-query").value);
     } catch (err) { fail(err); }
     if (!bus) {
-      bus = window.Atena.subscribeBus(["nvr.status", "nvr.event.>"], (env) => {
+      bus = window.Nuxiva.subscribeBus(["nvr.status", "nvr.event.>"], (env) => {
         if (env.topic === "nvr.status") return renderStatus(env.payload);
         if (searching) return;
         events = [env.payload, ...events.filter((e) => e.id !== env.payload.id)].slice(0, 100);
@@ -95,7 +95,7 @@
       if (!confirm(A.t("nvr.confirm_clear"))) return;
       try { await A.api("DELETE", "/api/nvr/events"); events = []; renderEvents(); } catch (err) { fail(err); }
     });
-    window.addEventListener("atena-i18n", () => { if (A.isOn("nvr") && settings) { fillSettings(settings); renderEvents(); } });
+    window.addEventListener("nuxiva-i18n", () => { if (A.isOn("nvr") && settings) { fillSettings(settings); renderEvents(); } });
   }
 
   A.tab("nvr", { title: "NVR", init, load, leave });

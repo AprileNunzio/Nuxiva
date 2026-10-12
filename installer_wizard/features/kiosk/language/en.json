@@ -7,6 +7,6 @@
     "Screen saver with ambient clock and weather"
   ],
   "settings": {
-    "ATENA_KIOSK_SLEEP": "Screen sleep timeout (minutes)"
+    "NUXIVA_KIOSK_SLEEP": "Screen sleep timeout (minutes)"
   }
 }

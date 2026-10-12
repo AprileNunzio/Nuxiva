@@ -119,7 +119,7 @@ async def download_satellite():
     if not msi_files:
         raise HTTPException(status_code=404, detail="File MSI non ancora compilato sul server.")
         
-    return FileResponse(path=msi_files[0], filename="ATENA_Satellite_Setup.msi", media_type="application/x-msi")
+    return FileResponse(path=msi_files[0], filename="NUXIVA_Satellite_Setup.msi", media_type="application/x-msi")
 
 
 # prima le API, poi la route generica /{name} delle pagine

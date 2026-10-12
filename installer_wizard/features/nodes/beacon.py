@@ -6,7 +6,7 @@ import time
 
 from config import PUBLIC_PORT
 
-log = logging.getLogger("atena.nodes")
+log = logging.getLogger("nuxiva.nodes")
 
 DISCOVER_PORT = 50505
 ANNOUNCE_PORT = 50506
@@ -15,7 +15,7 @@ MAX_SEEN = 128
 
 
 def _payload() -> bytes:
-    return json.dumps({"atena": "master", "v": 1, "name": socket.gethostname()[:60], "port": PUBLIC_PORT}).encode()
+    return json.dumps({"nuxiva": "master", "v": 1, "name": socket.gethostname()[:60], "port": PUBLIC_PORT}).encode()
 
 
 class _Protocol(asyncio.DatagramProtocol):
@@ -36,7 +36,7 @@ class _Protocol(asyncio.DatagramProtocol):
             return
         if not isinstance(msg, dict):
             return
-        kind = msg.get("atena")
+        kind = msg.get("nuxiva")
         if kind not in ("discover", "node"):
             return
         self.beacon.note(addr[0], msg)

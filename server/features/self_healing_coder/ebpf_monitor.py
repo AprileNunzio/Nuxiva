@@ -1,6 +1,6 @@
 import logging
 
-log = logging.getLogger("atena.self_healing")
+log = logging.getLogger("nuxiva.self_healing")
 
 try:
     from bcc import BPF

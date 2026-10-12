@@ -32,7 +32,7 @@ ROUTES = [
     (
         "updates",
         re.compile(
-            r"\b(aggiornament[oi]|update|upgrade|nuova versione|aggiorna(ti|rti|re)?\s+(il\s+)?(sistema|atena|tutto|pacchetti|software)"
+            r"\b(aggiornament[oi]|update|upgrade|nuova versione|aggiorna(ti|rti|re)?\s+(il\s+)?(sistema|nuxiva|tutto|pacchetti|software)"
             r"|(installa|applica)\s+(gli\s+)?aggiornamenti|sei aggiornato)\b",
             re.I,
         ),

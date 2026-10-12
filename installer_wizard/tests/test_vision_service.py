@@ -10,12 +10,12 @@ from unittest import mock
 import cv2
 import numpy as np
 
-ROOT = Path(tempfile.mkdtemp(prefix="atena-vision-"))
-os.environ["ATENA_FACES_DIR"] = str(ROOT / "faces")
-os.environ["ATENA_VISION_MODELS"] = str(ROOT / "models")
-os.environ["ATENA_WEBCAMS_FILE"] = str(ROOT / "webcams.json")
-os.environ["ATENA_IR_STATUS"] = str(ROOT / "ir.json")
-os.environ["ATENA_CAMERA"] = "/dev/null-camera"
+ROOT = Path(tempfile.mkdtemp(prefix="nuxiva-vision-"))
+os.environ["NUXIVA_FACES_DIR"] = str(ROOT / "faces")
+os.environ["NUXIVA_VISION_MODELS"] = str(ROOT / "models")
+os.environ["NUXIVA_WEBCAMS_FILE"] = str(ROOT / "webcams.json")
+os.environ["NUXIVA_IR_STATUS"] = str(ROOT / "ir.json")
+os.environ["NUXIVA_CAMERA"] = "/dev/null-camera"
 for sub in ("faces", "models"):
     (ROOT / sub).mkdir()
 
@@ -66,9 +66,9 @@ class FakeRecogClass:
 
 
 with mock.patch.object(cv2, "FaceDetectorYN", FakeCv2Class), mock.patch.object(cv2, "FaceRecognizerSF", FakeRecogClass):
-    spec = importlib.util.spec_from_file_location("atena_vision_service", VISION / "service.py")
+    spec = importlib.util.spec_from_file_location("nuxiva_vision_service", VISION / "service.py")
     service = importlib.util.module_from_spec(spec)
-    sys.modules["atena_vision_service"] = service
+    sys.modules["nuxiva_vision_service"] = service
     spec.loader.exec_module(service)
     import selection
     from tracks import Track
@@ -105,7 +105,7 @@ class VisionServiceTest(unittest.TestCase):
         self.ir_detector = self.vision.fusion.detector
         self.detector.faces, self.ir_detector.faces = [], []
         self.vision.ir.gray = None
-        self.env = mock.patch.dict(os.environ, {"ATENA_LIVENESS": "advisory", "ATENA_IR_MODE": "auto"})
+        self.env = mock.patch.dict(os.environ, {"NUXIVA_LIVENESS": "advisory", "NUXIVA_IR_MODE": "auto"})
         self.env.start()
         self.addCleanup(self.env.stop)
         self.photo = np.zeros((20, 20, 3), dtype=np.uint8)
@@ -149,7 +149,7 @@ class VisionServiceTest(unittest.TestCase):
     def test_strict_mode_does_not_trust_a_spoof_and_learns_nothing(self):
         rgb = self.enrol("anna", 1)
         before = len(self.gallery.people["anna"]["embeddings"])
-        with mock.patch.dict(os.environ, {"ATENA_LIVENESS": "strict"}):
+        with mock.patch.dict(os.environ, {"NUXIVA_LIVENESS": "strict"}):
             self.frames(rgb[0], count=8, ir=ir_image(False), ir_faces=[])
             p = self.person()
         self.assertEqual((p["known"], p["name"]), (False, "Foto o schermo"))
@@ -163,7 +163,7 @@ class VisionServiceTest(unittest.TestCase):
 
     def test_liveness_can_be_switched_off(self):
         rgb = self.enrol("anna", 1)
-        with mock.patch.dict(os.environ, {"ATENA_LIVENESS": "off"}):
+        with mock.patch.dict(os.environ, {"NUXIVA_LIVENESS": "off"}):
             self.frames(rgb[0], ir=ir_image(False), ir_faces=[])
             self.assertEqual(self.person()["liveness"]["state"], "unknown")
 
@@ -261,11 +261,11 @@ class VisionServiceTest(unittest.TestCase):
         self.assertEqual(selection.capture_size(None, 8), (1280, 720))
         self.assertEqual(selection.capture_size(None, 2), (640, 480))
         self.assertEqual(selection.capture_size({"width": 640, "height": 480}, 8), (640, 480))
-        with mock.patch.dict(os.environ, {"ATENA_CAMERA_RES": "1920x1080"}):
+        with mock.patch.dict(os.environ, {"NUXIVA_CAMERA_RES": "1920x1080"}):
             self.assertEqual(selection.capture_size({"width": 1920, "height": 1080}, 2), (1920, 1080))
-        with mock.patch.dict(os.environ, {"ATENA_IR_MODE": "off"}):
+        with mock.patch.dict(os.environ, {"NUXIVA_IR_MODE": "off"}):
             self.assertFalse(selection.ir_enabled())
-        with mock.patch.dict(os.environ, {"ATENA_LIVENESS": "boh", "ATENA_LIVENESS_MIN": "9"}):
+        with mock.patch.dict(os.environ, {"NUXIVA_LIVENESS": "boh", "NUXIVA_LIVENESS_MIN": "9"}):
             self.assertEqual(selection.liveness_mode(), "advisory")
             self.assertEqual(selection.liveness_minimum(), 0.95)
 

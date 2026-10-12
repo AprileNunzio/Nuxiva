@@ -1,6 +1,6 @@
 {
   "name": "Modelli 3D",
-  "description": "Atena crea oggetti 3D su richiesta («creami un martello in 3D») e apre qualsiasi file 3D in un widget da ruotare con il mouse, con le dita o con le mani davanti alla webcam.",
+  "description": "Nuxiva crea oggetti 3D su richiesta («creami un martello in 3D») e apre qualsiasi file 3D in un widget da ruotare con il mouse, con le dita o con le mani davanti alla webcam.",
   "capabilities": [
     "Generazione da una frase: GLB a colori, STL in millimetri per la stampa, OBJ con materiali",
     "Visualizzatore: glTF/GLB, OBJ+MTL, STL, 3MF, AMF, PLY, FBX, DAE, 3DS, VRML, DXF, STEP/STP, IGES/IGS, BREP",

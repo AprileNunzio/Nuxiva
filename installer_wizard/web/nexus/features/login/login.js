@@ -10,12 +10,12 @@ export function renderLogin(root, onSuccess) {
   const submit = h("button", { class: "btn primary", type: "submit" }, "Accedi");
   const card = h("div", { class: "panel login-card" },
     h("div", { class: "orb-box" }, canvas),
-    h("h1", {}, "A.T.E.N.A.", h("small", {}, "NEXUS · PANNELLO DI CONTROLLO")),
+    h("h1", {}, "NUXIVA", h("small", {}, "NEXUS · PANNELLO DI CONTROLLO")),
     h("form", { onsubmit: send, novalidate: false },
       h("div", { class: "field" }, h("label", { for: "nx-user" }, "Utente di sistema"), user),
       h("div", { class: "field" }, h("label", { for: "nx-pass" }, "Password"), pass),
       error, submit),
-    h("p", { class: "hint" }, "Accesso consentito a root e agli utenti dei gruppi sudo o atena-admin."),
+    h("p", { class: "hint" }, "Accesso consentito a root e agli utenti dei gruppi sudo o nuxiva-admin."),
     h("p", { class: "hint" }, h("a", { href: "/classic" }, "Apri il pannello classico")));
   mount(root, h("main", { class: "login" }, card));
   const orb = new Orb(canvas);

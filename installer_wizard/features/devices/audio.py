@@ -6,9 +6,9 @@ import re
 
 from config import DEMO
 
-log = logging.getLogger("atena.audio")
+log = logging.getLogger("nuxiva.audio")
 
-KIOSK_USER = "atena-kiosk"
+KIOSK_USER = "nuxiva-kiosk"
 WATCH_SECONDS = 3
 _demo = {"output": {"volume": 70, "muted": False, "device": "demo.speakers"},
          "input": {"volume": 80, "muted": False, "device": "demo.mic"}}

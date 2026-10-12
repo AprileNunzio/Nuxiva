@@ -115,4 +115,4 @@
 
   H.NativeRig = NativeRig;
   H.MORPHS = MORPHS;
-})(window.Atena3D);
+})(window.Nuxiva3D);

@@ -6,11 +6,11 @@ from unittest import mock
 
 from fastapi.testclient import TestClient
 
-import atena_supervisor
+import nuxiva_supervisor
 from features.nodes import adapt
 from features.nodes import registry as registry_module
 
-HEADERS = {"X-Atena-Request": "1"}
+HEADERS = {"X-Nuxiva-Request": "1"}
 
 OLD = {"cores": 4, "ram_gb": 8, "avx2": True, "cameras": ["HD Webcam"], "audio_in": ["HD Webcam"], "ir_camera": False}
 NEW = {"cores": 4, "ram_gb": 8, "avx2": True, "cameras": ["HD Webcam", "CA20 IR (infrarossi)"], "audio_in": ["HD Webcam"],
@@ -115,8 +115,8 @@ class RegistryTest(unittest.TestCase):
 class ApiTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.admin = TestClient(atena_supervisor.admin)
-        assert cls.admin.post("/api/auth/login", json={"username": "admin", "password": "atena"}, headers=HEADERS).status_code == 200
+        cls.admin = TestClient(nuxiva_supervisor.admin)
+        assert cls.admin.post("/api/auth/login", json={"username": "admin", "password": "nuxiva"}, headers=HEADERS).status_code == 200
 
     def test_master_adapt_returns_a_report_and_remembers_it(self):
         snap = Path(tempfile.mkdtemp()) / "hardware_master.json"
@@ -132,7 +132,7 @@ class ApiTest(unittest.TestCase):
             self.assertEqual(second["changes"], [])
 
     def test_adapt_requires_login_and_nodes_overview_lists_the_command(self):
-        anon = TestClient(atena_supervisor.admin)
+        anon = TestClient(nuxiva_supervisor.admin)
         self.assertEqual(anon.post("/api/nodes/master/adapt", headers=HEADERS).status_code, 401)
         self.assertIn("adapt", self.admin.get("/api/nodes", headers=HEADERS).json()["commands"])
 

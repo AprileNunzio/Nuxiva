@@ -40,7 +40,7 @@ class RoutesFileTest(unittest.TestCase):
         self.assertEqual(brain_routing.brain_order_for("research"), ["x"])
 
     def test_missing_or_corrupt_file_falls_back_to_the_environment(self):
-        with patch.object(brain_routing.settings, "ATENA_LLM_RICERCATORE_ORDER", "a, b"):
+        with patch.object(brain_routing.settings, "NUXIVA_LLM_RICERCATORE_ORDER", "a, b"):
             self.assertEqual(brain_routing.brain_order_for("research"), ["a", "b"])
             with open(self.path, "w", encoding="utf-8") as handle:
                 handle.write("{broken")
@@ -66,8 +66,8 @@ class SigningTest(unittest.TestCase):
 
     def test_headers_carry_timestamp_and_signature(self):
         headers = SupervisorBridge("http://x", lambda: KNOWN_KEY)._headers("/p", b"{}")
-        self.assertTrue(abs(int(headers["X-Atena-Timestamp"]) - time.time()) < 5)
-        self.assertEqual(headers["X-Atena-Signature"], sign(KNOWN_KEY, "POST", "/p", int(headers["X-Atena-Timestamp"]), b"{}"))
+        self.assertTrue(abs(int(headers["X-Nuxiva-Timestamp"]) - time.time()) < 5)
+        self.assertEqual(headers["X-Nuxiva-Signature"], sign(KNOWN_KEY, "POST", "/p", int(headers["X-Nuxiva-Timestamp"]), b"{}"))
 
 
 class GatewayRoutingTest(unittest.IsolatedAsyncioTestCase):

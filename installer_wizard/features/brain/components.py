@@ -14,7 +14,7 @@ class Component:
 COMPONENTS: tuple[Component, ...] = (
     Component("conversation", "Conversazione", "Dialogo", "chat", "Risposte parlate e chat; il sistema sceglie tra veloce e ragionamento."),
     Component("agent", "Agente di sistema", "Dialogo", "deep", "Sceglie ed esegue gli strumenti del sistema operativo."),
-    Component("mind", "Memoria e ricordi", "Dialogo", "chat", "Estrae e ordina ciò che Atena ricorda di te."),
+    Component("mind", "Memoria e ricordi", "Dialogo", "chat", "Estrae e ordina ciò che Nuxiva ricorda di te."),
     Component("presentation", "Impaginazione dei contenuti", "Dialogo", "chat", "Sceglie come mostrare le risposte: testo, passi, tabelle, immagini, modelli 3D."),
     Component("diary", "Diario", "Dialogo", "chat", "Riassunti della giornata."),
     Component("actions", "Azioni rapide", "Dialogo", "chat", "Calcoli e comandi brevi."),

@@ -166,14 +166,14 @@ def parse_plan(raw: Any, fallback_speech: str = "") -> Plan:
     if mode == "widget":
         if len(blocks) > MAX_WIDGET_BLOCKS or any(b.type not in WIDGET_TYPES for b in blocks):
             raise PlanError("a widget holds at most two blocks among text, list, kv and image")
-        return Plan("widget", _text(raw.get("title"), _TITLE_LIMIT) or "Atena", "", speech, tuple(blocks))
+        return Plan("widget", _text(raw.get("title"), _TITLE_LIMIT) or "Nuxiva", "", speech, tuple(blocks))
     if sum(b.type == "image" for b in blocks) > MAX_IMAGES:
         raise PlanError(f"at most {MAX_IMAGES} images")
     if sum(b.type == "model3d" for b in blocks) > 1:
         raise PlanError("at most one 3D model")
     if not any(b.type != "model3d" for b in blocks):
         raise PlanError("the plan needs at least one visible block")
-    return Plan("focus", _text(raw.get("title"), _TITLE_LIMIT) or "Atena", _text(raw.get("subtitle"), 120), speech, tuple(blocks))
+    return Plan("focus", _text(raw.get("title"), _TITLE_LIMIT) or "Nuxiva", _text(raw.get("subtitle"), 120), speech, tuple(blocks))
 
 
 def fill_rows(blocks: List[Block]) -> List[Block]:

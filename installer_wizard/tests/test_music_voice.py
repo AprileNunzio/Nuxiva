@@ -85,8 +85,8 @@ class PlayTest(VoiceBase):
 
     def test_the_voice_setting_can_switch_everything_off(self):
         self.with_display()
-        write_env({"ATENA_MUSIC_VOICE": "0"})
-        self.addCleanup(lambda: write_env({"ATENA_MUSIC_VOICE": "1"}))
+        write_env({"NUXIVA_MUSIC_VOICE": "0"})
+        self.addCleanup(lambda: write_env({"NUXIVA_MUSIC_VOICE": "1"}))
         with self.assertRaises(LookupError):
             self.say("metti la musica di Vasco")
 

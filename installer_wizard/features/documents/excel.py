@@ -208,6 +208,6 @@ def write(doc: dict, path: Path, links: dict | None = None) -> Path:
         data.column_dimensions["A"].width = 28
         wb.move_sheet(data, offset=len(wb.sheetnames) - 1 - wb.sheetnames.index(DATA_SHEET))
     wb.active = 0
-    wb.properties.title, wb.properties.creator = doc["title"], doc.get("author") or "Atena"
+    wb.properties.title, wb.properties.creator = doc["title"], doc.get("author") or "Nuxiva"
     wb.save(str(path))
     return path

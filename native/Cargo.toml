@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["crates/bus-core", "crates/atena-native", "crates/egress", "crates/netguard", "crates/langid"]
+members = ["crates/bus-core", "crates/nuxiva-native", "crates/egress", "crates/netguard", "crates/langid"]
 
 [workspace.package]
 version = "4.1.53"

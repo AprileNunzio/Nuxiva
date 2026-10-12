@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $ } = A;
+  const A = window.NuxivaAdmin, { $ } = A;
   const mu = A.mu, esc = mu.esc;
   const Z = mu.queue = {};
   let pane = "queue", shown = false, lyrics = { id: null, lines: [], plain: "", on: -1 };

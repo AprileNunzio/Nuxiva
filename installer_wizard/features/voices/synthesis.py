@@ -32,15 +32,15 @@ def _clamped(key: str, default: float, lo: float, hi: float) -> float:
 
 
 def _speed() -> float:
-    return _clamped("ATENA_VOICE_SPEED", 1.0, 0.6, 1.6)
+    return _clamped("NUXIVA_VOICE_SPEED", 1.0, 0.6, 1.6)
 
 
 def _pitch() -> float:
-    return _clamped("ATENA_VOICE_PITCH", 0.0, -6.0, 6.0)
+    return _clamped("NUXIVA_VOICE_PITCH", 0.0, -6.0, 6.0)
 
 
 def _volume() -> float:
-    return _clamped("ATENA_VOICE_VOLUME", 1.0, 0.4, 2.0)
+    return _clamped("NUXIVA_VOICE_VOLUME", 1.0, 0.4, 2.0)
 
 
 async def _retune(wav: bytes, pitch: float, volume: float) -> bytes:

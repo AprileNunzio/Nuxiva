@@ -10,11 +10,11 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import numpy as np
 from kokoro_onnx import Kokoro
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [atena.voice] %(levelname)s: %(message)s")
-log = logging.getLogger("atena.voice")
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [nuxiva.voice] %(levelname)s: %(message)s")
+log = logging.getLogger("nuxiva.voice")
 
-BASE = os.environ.get("ATENA_KOKORO_DIR", "/opt/atena-voice/kokoro")
-PORT = int(os.environ.get("ATENA_VOICE_PORT", "8092"))
+BASE = os.environ.get("NUXIVA_KOKORO_DIR", "/opt/nuxiva-voice/kokoro")
+PORT = int(os.environ.get("NUXIVA_VOICE_PORT", "8092"))
 DEFAULT_VOICE = "if_sara"
 LANGS = {"a": "en-us", "b": "en-gb", "e": "es", "f": "fr-fr", "h": "hi", "i": "it", "j": "ja", "p": "pt-br", "z": "cmn"}
 

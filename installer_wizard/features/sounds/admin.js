@@ -1,10 +1,10 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   let loaded = false, timer = null;
 
   function local() {
-    if (window.AtenaSfx) return Promise.resolve(window.AtenaSfx);
-    return new Promise((ok) => { const s = document.createElement("script"); s.src = "/static/shared/sfx.js"; s.onload = () => ok(window.AtenaSfx); document.head.appendChild(s); });
+    if (window.NuxivaSfx) return Promise.resolve(window.NuxivaSfx);
+    return new Promise((ok) => { const s = document.createElement("script"); s.src = "/static/shared/sfx.js"; s.onload = () => ok(window.NuxivaSfx); document.head.appendChild(s); });
   }
 
   function render(d) {
@@ -46,6 +46,6 @@
   A.tab("sounds", {
     title: "Suoni", init,
     load() { load(); clearInterval(timer); timer = setInterval(() => { if (A.isOn("sounds")) load(); }, 15000); },
-    leave() { clearInterval(timer); if (window.AtenaSfx) window.AtenaSfx.ambient("none"); },
+    leave() { clearInterval(timer); if (window.NuxivaSfx) window.NuxivaSfx.ambient("none"); },
   });
 })();

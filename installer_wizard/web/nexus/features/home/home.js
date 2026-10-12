@@ -19,7 +19,7 @@ trackSystem();
 
 export function renderHome(outlet) {
   const canvas = h("canvas", { "aria-hidden": "true" });
-  const sayExplorer = h("h2", { class: "home-say only-explorer" }, "Ciao! Sono Atena.");
+  const sayExplorer = h("h2", { class: "home-say only-explorer" }, "Ciao! Sono Nuxiva.");
   const sayPilot = h("h2", { class: "home-say min-pilot" }, "Caricamento dello stato…");
   const ringBox = h("div", { class: "ring-box" });
   const stats = h("div", { class: "stats min-pilot" });
@@ -32,7 +32,7 @@ export function renderHome(outlet) {
     h("div", { class: "home-hero" },
       h("div", { class: "orb-box home-orb" }, canvas),
       h("div", { class: "home-copy" },
-        h("p", { class: "eyebrow" }, "Stato di Atena"), sayExplorer, sayPilot,
+        h("p", { class: "eyebrow" }, "Stato di Nuxiva"), sayExplorer, sayPilot,
         h("div", { class: "ready" }, ringBox,
           h("div", { class: "ready-copy" },
             h("span", { class: "only-explorer" }, "Quanto sto bene"),

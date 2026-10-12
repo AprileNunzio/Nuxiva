@@ -72,7 +72,7 @@ class BoardTest(unittest.TestCase):
 
     def test_values_are_clamped_and_validated(self):
         item = self.board.text("ciao", x=99999, y=-5, size=9999, ink="rosso")
-        self.assertEqual((item["x"], item["y"], item["size"], item["color"]), (board_module.WIDTH, 0, 140, board_module.ATENA_INK))
+        self.assertEqual((item["x"], item["y"], item["size"], item["color"]), (board_module.WIDTH, 0, 140, board_module.NUXIVA_INK))
         with self.assertRaises(ValueError):
             self.board.text("   ")
         with self.assertRaises(ValueError):
@@ -90,7 +90,7 @@ class BoardTest(unittest.TestCase):
         self.board.stroke([[1, 1], [2, 2]], "#ffffff", 4, False, by="user")
         self.assertTrue(self.board.undo("user"))
         self.assertFalse(self.board.undo("user"))
-        self.assertEqual([i["by"] for i in self.board.items], ["atena"])
+        self.assertEqual([i["by"] for i in self.board.items], ["nuxiva"])
         again = Board()
         self.assertEqual(again.items[0]["text"], "mio")
         self.assertEqual(again.counter, self.board.counter)
@@ -164,7 +164,7 @@ class VoiceTest(Base):
         self.assertIn("84", self.say("calcola 12 per (3 più 4) alla lavagna"))
         self.assertTrue(service.is_open())
         self.assertEqual(self.texts(), ["12 × (3 + 4)", "= 12 × 7", "= 84"])
-        self.assertEqual({i["color"] for i in self.board.items}, {board_module.ATENA_INK, service.TITLE_INK, service.RESULT_INK})
+        self.assertEqual({i["color"] for i in self.board.items}, {board_module.NUXIVA_INK, service.TITLE_INK, service.RESULT_INK})
         self.assertEqual(self.board.says, "12 × (3 + 4) fa 84.")
         self.say("risolvi 2x + 3 = 11")
         self.assertEqual(self.texts()[-1], "x = 4")
@@ -176,7 +176,7 @@ class VoiceTest(Base):
         self.assertEqual(self.texts(), ["il teorema di pitagora"])
         self.board.stroke([[1, 1], [9, 9]], "#ffffff", 4, False)
         self.assertIn("cancellato", self.say("annulla"))
-        self.assertEqual([i["by"] for i in self.board.items], ["atena"])
+        self.assertEqual([i["by"] for i in self.board.items], ["nuxiva"])
         self.assertIn("pulita", self.say("cancella la lavagna"))
         self.assertEqual(self.board.items, [])
         self.assertIn("chiuso", self.say("chiudi la lavagna"))
@@ -195,7 +195,7 @@ class VoiceTest(Base):
         with mock.patch("features.brain.llm.generate", mock.AsyncMock(return_value={})):
             self.assertIn("non sono riuscito", self.say("spiegami le frazioni alla lavagna"))
 
-    def test_atena_looks_at_what_the_user_wrote_and_checks_it(self):
+    def test_nuxiva_looks_at_what_the_user_wrote_and_checks_it(self):
         self.say("apri la lavagna")
         self.assertIn("non ho ancora visto", self.say("controlla cosa ho scritto"))
         self.board.set_snapshot(JPEG)
@@ -214,7 +214,7 @@ class VoiceTest(Base):
         self.assertIn("non ho ancora visto", self.say("controlla cosa ho scritto"))
 
     def test_the_whole_feature_can_be_switched_off(self):
-        with mock.patch.dict("os.environ", {"ATENA_WHITEBOARD": "0"}):
+        with mock.patch.dict("os.environ", {"NUXIVA_WHITEBOARD": "0"}):
             with mock.patch.object(commands, "env_get", lambda k, d="": "0"):
                 with self.assertRaises(LookupError):
                     self.say("apri la lavagna")
@@ -261,7 +261,7 @@ class EndpointTest(Base):
         self.assertIn("4", res["speech"])
         self.assertEqual(self.web.post("/api/board/text", json={"text": "3 + 5 =", "x": 100, "y": 100}).status_code, 200)
         view = self.web.get("/api/board").json()
-        self.assertTrue(any(it.get("by") == "atena" and "8" in it.get("text", "") for it in view["items"]))
+        self.assertTrue(any(it.get("by") == "nuxiva" and "8" in it.get("text", "") for it in view["items"]))
 
 
 class AccessTest(Base):

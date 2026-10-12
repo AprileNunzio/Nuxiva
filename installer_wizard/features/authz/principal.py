@@ -18,20 +18,24 @@ class Principal:
     factors: tuple[str, ...] = field(default_factory=tuple)
     override: str = ""
     source: str = ""
+    subrole: str = ""
+    zones: tuple[str, ...] = field(default_factory=tuple)
+    schedule: str = ""
 
     @property
     def known(self) -> bool:
         return bool(self.slug)
 
     def describe(self) -> dict:
-        return {"slug": self.slug, "role": self.role, "strength": self.strength.name.lower(),
-                "factors": list(self.factors), "override": self.override}
+        return {"slug": self.slug, "role": self.role, "subrole": self.subrole,
+                "strength": self.strength.name.lower(), "factors": list(self.factors),
+                "override": self.override, "zones": list(self.zones), "schedule": self.schedule}
 
 
 ANONYMOUS = Principal()
-SYSTEM = Principal(slug="atena", role="system", strength=Strength.STRONG, factors=("system",))
+SYSTEM = Principal(slug="nuxiva", role="system", strength=Strength.STRONG, factors=("system",))
 
-current: ContextVar[Principal] = ContextVar("atena_principal", default=ANONYMOUS)
+current: ContextVar[Principal] = ContextVar("nuxiva_principal", default=ANONYMOUS)
 
 
 def acting() -> Principal:

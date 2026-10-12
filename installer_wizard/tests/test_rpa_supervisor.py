@@ -266,7 +266,7 @@ class ServicePermissionTest(unittest.IsolatedAsyncioTestCase):
     async def test_disabled_or_unlisted_nodes_are_refused(self):
         from features.rpa import service
 
-        for env in ({}, {"ATENA_RPA": "1"}, {"ATENA_RPA": "0", "ATENA_RPA_NODES": "n1"}, {"ATENA_RPA": "1", "ATENA_RPA_NODES": "n2"}):
+        for env in ({}, {"NUXIVA_RPA": "1"}, {"NUXIVA_RPA": "0", "NUXIVA_RPA_NODES": "n1"}, {"NUXIVA_RPA": "1", "NUXIVA_RPA_NODES": "n2"}):
             with self.subTest(env=env), patch.object(service, "env_get", lambda k, d="": env.get(k, d)):
                 with self.assertRaises(PermissionError):
                     await service.rpa.run("n1", [{"do": "wait", "seconds": 1}])
@@ -274,7 +274,7 @@ class ServicePermissionTest(unittest.IsolatedAsyncioTestCase):
     async def test_permitted_node_with_invalid_steps_is_a_value_error(self):
         from features.rpa import service
 
-        env = {"ATENA_RPA": "1", "ATENA_RPA_NODES": "n1, n3"}
+        env = {"NUXIVA_RPA": "1", "NUXIVA_RPA_NODES": "n1, n3"}
         with patch.object(service, "env_get", lambda k, d="": env.get(k, d)):
             self.assertTrue(service.rpa.permitted("n3"))
             with self.assertRaises(ValueError):

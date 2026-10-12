@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const KIND = { local: "Webcam", ip: "Rete", infrared: "Infrarossi" };
   const C = { data: null, pane: "live", panes: {}, timers: {}, esc: (s) => fmt.esc(s) };
   A.cams = C;

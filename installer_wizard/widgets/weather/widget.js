@@ -1,6 +1,6 @@
 (() => {
-  const ICON = (k) => (window.AtenaIcons ? window.AtenaIcons.weather(k) : "");
-  AtenaDesk.register("weather", {
+  const ICON = (k) => (window.NuxivaIcons ? window.NuxivaIcons.weather(k) : "");
+  NuxivaDesk.register("weather", {
     render(el, d, ctx) {
       const c = d.current || {};
       const days = (d.days || []).slice(1, 5);

@@ -6,13 +6,13 @@ from state import store
 
 from features.redalert import broadcast, lights
 
-log = logging.getLogger("atena.redalert")
+log = logging.getLogger("nuxiva.redalert")
 
 REPEAT_AFTER = 25
 
 
 def enabled() -> bool:
-    return env_get("ATENA_REDALERT", "1") != "0"
+    return env_get("NUXIVA_REDALERT", "1") != "0"
 
 
 def _flag(key: str) -> bool:
@@ -21,7 +21,7 @@ def _flag(key: str) -> bool:
 
 def seconds() -> int:
     try:
-        return max(10, min(600, int(env_get("ATENA_REDALERT_SECONDS", "60"))))
+        return max(10, min(600, int(env_get("NUXIVA_REDALERT_SECONDS", "60"))))
     except ValueError:
         return 60
 
@@ -50,12 +50,12 @@ class RedAlert:
         self.stop_event.set()
 
     async def _run(self, duration: int) -> None:
-        saved = lights.snapshot() if _flag("ATENA_REDALERT_LIGHTS") else {}
+        saved = lights.snapshot() if _flag("NUXIVA_REDALERT_LIGHTS") else {}
         store.event("ERROR", f"Allarme rosso: {self.message}", "alarm")
         jobs = []
         if saved:
             jobs.append(self._lights(list(saved), duration))
-        if _flag("ATENA_REDALERT_CAST"):
+        if _flag("NUXIVA_REDALERT_CAST"):
             jobs.append(self._voice(duration))
         try:
             await asyncio.gather(*jobs)

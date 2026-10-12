@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { fmt } = A;
+  const A = window.NuxivaAdmin, { fmt } = A;
   const VIEWS = [
     { kind: "front", icon: "🙂", label: "Frontale", hint: "Guarda dritto la webcam" },
     { kind: "three_left", icon: "↖", label: "Tre quarti sinistra", hint: "Gira un poco la testa verso la tua sinistra" },
@@ -109,7 +109,7 @@
     const body = await shrink(file);
     const r = await fetch(`/api/people/${encodeURIComponent(slug)}/views?kind=${encodeURIComponent(kind)}`, {
       method: "POST", credentials: "same-origin", body,
-      headers: { "X-Atena-Request": "1", "Content-Type": "image/jpeg" },
+      headers: { "X-Nuxiva-Request": "1", "Content-Type": "image/jpeg" },
     });
     if (r.status === 401) { A.showLogin(); throw new Error("Sessione scaduta"); }
     const data = await r.json().catch(() => ({}));

@@ -13,7 +13,7 @@ from permissions.policy import Policy
 from senses import capture, reading
 from senses.windows import Focus
 
-log = logging.getLogger("atena.conversation")
+log = logging.getLogger("nuxiva.conversation")
 MAX_ROUNDS = 4
 TEXT_MIN = 120
 SCREEN_HINT = re.compile(r"\b(scherm|finestr|document|questo test|questa (?:pagina|mail|email|tabella|slide|foto)|"
@@ -95,7 +95,7 @@ class Conversation:
                     self._capture("screen", body)
                 result = self._rounds(body)
             except Denied as exc:
-                self._post(self.ui.say, "atena", f"Non posso: {exc}. Puoi cambiarlo in Permessi.")
+                self._post(self.ui.say, "nuxiva", f"Non posso: {exc}. Puoi cambiarlo in Permessi.")
                 self._post(self.ui.set_state, "idle")
                 return
             except Unauthorized:
@@ -106,7 +106,7 @@ class Conversation:
                 return
             except (ServerError, capture.CaptureError) as exc:
                 log.warning("Richiesta non riuscita: %s", exc)
-                self._post(self.ui.say, "atena", f"Non ci sono riuscita: {exc}")
+                self._post(self.ui.say, "nuxiva", f"Non ci sono riuscita: {exc}")
                 self._post(self.ui.set_state, "error")
                 return
             if result.get("ignored"):
@@ -114,6 +114,6 @@ class Conversation:
                 return
             reply, show = result.get("reply") or "", result.get("show") or ""
             if reply or show:
-                self._post(self.ui.say, "atena", reply, show)
+                self._post(self.ui.say, "nuxiva", reply, show)
             self.voice.answer(reply, result.get("lang") or lang, spoken)
             self._post(self.ui.set_state, "idle")

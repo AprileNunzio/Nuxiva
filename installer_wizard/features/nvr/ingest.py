@@ -4,7 +4,7 @@ import logging
 import ssl
 import time
 
-log = logging.getLogger("atena.nvr.ingest")
+log = logging.getLogger("nuxiva.nvr.ingest")
 MAX_MESSAGE = 64 * 1024
 
 
@@ -83,7 +83,7 @@ class MqttIngest:
                 async with aiomqtt.Client(hostname=settings["mqtt_host"], port=int(settings["mqtt_port"]),
                                           username=settings.get("mqtt_user") or None,
                                           password=settings.get("mqtt_password") or None,
-                                          tls_context=tls, identifier=f"atena-nvr-{int(time.time())}") as client:
+                                          tls_context=tls, identifier=f"nuxiva-nvr-{int(time.time())}") as client:
                     await client.subscribe(settings["mqtt_topic"])
                     self.state, self.detail, delay = "connected", "", 2.0
                     async for message in client.messages:

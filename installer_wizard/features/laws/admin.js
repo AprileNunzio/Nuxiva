@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
 
   const fixedRow = (l) => `<div class="lw-item lw-fixed">
     <div class="lw-n">${l.n}</div>

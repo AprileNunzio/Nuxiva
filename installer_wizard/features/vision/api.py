@@ -15,7 +15,7 @@ from features.vision.proxy import vision_proxy, vision_stream
 from state import store
 from tasks import background
 
-FACES = Path(os.environ.get("ATENA_FACES_DIR", "/var/lib/atena/faces"))
+FACES = Path(os.environ.get("NUXIVA_FACES_DIR", "/var/lib/nuxiva/faces"))
 public_routes = APIRouter()
 admin_routes = APIRouter()
 
@@ -94,7 +94,7 @@ async def admin_forget(slug: str, user: str = Depends(require_admin)):
     return resp
 
 
-VOICE_REPORT = Path(os.environ.get("ATENA_VOICEPRINTS", "/var/lib/atena/voiceprints")) / "report.json"
+VOICE_REPORT = Path(os.environ.get("NUXIVA_VOICEPRINTS", "/var/lib/nuxiva/voiceprints")) / "report.json"
 
 
 def _voice_report() -> dict:

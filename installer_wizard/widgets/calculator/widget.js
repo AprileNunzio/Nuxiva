@@ -1,5 +1,5 @@
 (() => {
-  AtenaDesk.register("calculator", {
+  NuxivaDesk.register("calculator", {
     render(el, d, ctx) {
       let isScientific = false;
       let parts = [];

@@ -1,6 +1,6 @@
 {
   "name": "Tool-Equipped Agent",
-  "description": "Atena reasons step-by-step and utilizes real tools until the task is complete: handling multi-stage workflows such as 'design a 3D hammer and email it to Marco'.",
+  "description": "Nuxiva reasons step-by-step and utilizes real tools until the task is complete: handling multi-stage workflows such as 'design a 3D hammer and email it to Marco'.",
   "capabilities": [
     "Files and folders: create, read, write, copy, move, compress, search; deletions are moved to trash",
     "Display: opens, closes, and moves widgets across monitors",
@@ -12,6 +12,6 @@
     "Voice confirmation before sending emails, file deletions, system-modifying commands, and writing outside working directories"
   ],
   "settings": {
-    "ATENA_AGENT_ACCESS": "Access level"
+    "NUXIVA_AGENT_ACCESS": "Access level"
   }
 }

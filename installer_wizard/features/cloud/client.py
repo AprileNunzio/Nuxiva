@@ -32,7 +32,7 @@ def headers(spec: Provider, entry: dict) -> dict:
         return {"x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json"}
     base = {"content-type": "application/json"}
     if spec.id == "openrouter":
-        base.update({"HTTP-Referer": "https://github.com/AprileNunzio/ATENA", "X-Title": "Atena OS"})
+        base.update({"HTTP-Referer": "https://github.com/AprileNunzio/NUXIVA", "X-Title": "Nuxiva OS"})
     if key and spec.auth == "api-key":
         base["api-key"] = key
     elif key:

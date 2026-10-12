@@ -99,7 +99,7 @@ class StoreTest(ClientBase):
 
 
 class SyncTest(ClientBase):
-    def test_external_tools_become_atena_tools_with_schema_and_confirmation_rules(self):
+    def test_external_tools_become_nuxiva_tools_with_schema_and_confirmation_rules(self):
         server_id = self.attach()
         self.assertEqual(asyncio.run(service.sync_one(server_id)), 3)
         row = registry.TOOLS["ext_calendario_crea_evento"]

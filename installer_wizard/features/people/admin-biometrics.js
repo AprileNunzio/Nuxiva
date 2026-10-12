@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   let timer = null;
 
   const badge = (text, kind = "") => `<span class="badge ${kind}">${fmt.esc(text)}</span>`;

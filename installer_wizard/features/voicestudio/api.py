@@ -35,8 +35,8 @@ def _step() -> dict:
 @admin_routes.get("/api/voicestudio")
 async def studio_status(_: str = Depends(require_admin)):
     out = {"enabled": client.enabled(), "where": "remote" if client.remote() else "local",
-           "url": env_get("ATENA_VOICESTUDIO_URL", ""), "has_key": bool(env_get("ATENA_VOICESTUDIO_KEY", "")),
-           "install": _step(), "online": False, "error": "", "voices": [], "atena_voice": catalog.voice_name(),
+           "url": env_get("NUXIVA_VOICESTUDIO_URL", ""), "has_key": bool(env_get("NUXIVA_VOICESTUDIO_KEY", "")),
+           "install": _step(), "online": False, "error": "", "voices": [], "nuxiva_voice": catalog.voice_name(),
            "sentences": design.SENTENCES, "choices": design.CHOICES}
     if out["enabled"]:
         try:
@@ -121,9 +121,9 @@ async def studio_use(request: Request, user: str = Depends(require_admin)):
         raise HTTPException(404, "Voce non trovata nello Studio")
     rest = [v for v in catalog.custom_order() or [catalog.voice_name()] if not catalog.is_studio(v)]
     order = ([voice] if voice else []) + rest
-    write_env({"ATENA_VOICE_ORDER": ",".join(dict.fromkeys(order)), "ATENA_VOICE": order[0]})
-    store.event("INFO", f"Voce di Atena: {client.name_of(voice) if voice else order[0]} ({user})", "voice")
-    return {"ok": True, "atena_voice": order[0]}
+    write_env({"NUXIVA_VOICE_ORDER": ",".join(dict.fromkeys(order)), "NUXIVA_VOICE": order[0]})
+    store.event("INFO", f"Voce di Nuxiva: {client.name_of(voice) if voice else order[0]} ({user})", "voice")
+    return {"ok": True, "nuxiva_voice": order[0]}
 
 
 @admin_routes.delete("/api/voicestudio/voices/{voice}")
@@ -140,7 +140,7 @@ async def studio_delete(voice: str, user: str = Depends(require_admin)):
 
 def _drop(voice: str) -> None:
     rest = [v for v in catalog.custom_order() if v != voice]
-    write_env({"ATENA_VOICE_ORDER": ",".join(rest), "ATENA_VOICE": rest[0] if rest else ""})
+    write_env({"NUXIVA_VOICE_ORDER": ",".join(rest), "NUXIVA_VOICE": rest[0] if rest else ""})
 
 
 async def _voices() -> list[dict]:

@@ -4,7 +4,7 @@ from typing import Tuple, Dict
 from server.features.llm_gateway.gateway import llm_gateway
 from server.features.llm_gateway.contracts import LLMRequest, LLMMessage
 
-logger = logging.getLogger("atena.intent_classifier")
+logger = logging.getLogger("nuxiva.intent_classifier")
 
 INTENT_CATALOG: Dict[str, str] = {
     "HOME_AUTOMATION": "Controllo luci, termostati, serrature, porte, prese smart, scene domotiche, climatizzazione",
@@ -18,11 +18,11 @@ INTENT_CATALOG: Dict[str, str] = {
 }
 
 _SYSTEM_PROMPT_TEMPLATE: str = (
-    "Sei il classificatore cognitivo degli intenti di Atena, un orchestratore autonomo e multilingue.\n"
+    "Sei il classificatore cognitivo degli intenti di Nuxiva, un orchestratore autonomo e multilingue.\n"
     "Il tuo compito è comprendere l'intenzione semantica profonda dell'utente, formulata in qualsiasi lingua o stile.\n\n"
     "Principio di ragionamento autonomo:\n"
     "- Se l'utente chiede informazioni su di sé o su altre persone (ad es. quanti anni ha, quando è nato, chi è, che lavoro fa, cosa gli piace), "
-    "oppure desidera che Atena impari, appunti, ricordi o aggiorni dettagli, fatti o preferenze personali, "
+    "oppure desidera che Nuxiva impari, appunti, ricordi o aggiorni dettagli, fatti o preferenze personali, "
     "l'intento logico corretto è interagire con la funzionalità Persone e anagrafe: PEOPLE_MANAGEMENT.\n\n"
     "Schema obbligatorio:\n"
     '  {{"intent": "<INTENT_NAME>", "confidence": <float 0.0-1.0>, "reasoning": "<ragionamento cognitivo>"}}\n\n'

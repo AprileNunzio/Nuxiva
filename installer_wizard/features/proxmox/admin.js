@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const STATES = { running: "acceso", stopped: "spento", paused: "in pausa", suspended: "sospeso" };
   const LABELS = { start: "Avvia", shutdown: "Spegni", stop: "Arresto forzato", reboot: "Riavvia", suspend: "Sospendi", resume: "Riprendi" };
   let data = null;
@@ -56,7 +56,7 @@
       const base = `/api/proxmox/${encodeURIComponent(row.dataset.node)}/${row.dataset.kind}/${row.dataset.vmid}`;
       try {
         if (b.dataset.act === "snapshot") {
-          const name = (prompt("Nome dello snapshot (lettere, numeri, - e _):", `atena-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}`) || "").trim();
+          const name = (prompt("Nome dello snapshot (lettere, numeri, - e _):", `nuxiva-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}`) || "").trim();
           if (!name) return;
           await A.api("POST", `${base}/snapshot`, { name });
         } else {

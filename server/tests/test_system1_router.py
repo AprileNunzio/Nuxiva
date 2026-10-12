@@ -29,7 +29,7 @@ class TestSystem1Router(unittest.TestCase):
     def test_conversation_classification(self):
         decision = self.router.classify_sync("ciao")
         self.assertEqual(decision.intent, System1Intent.CONVERSATION)
-        self.assertEqual(decision.target_agent, "atena_conversation")
+        self.assertEqual(decision.target_agent, "nuxiva_conversation")
         self.assertGreater(decision.confidence, 0.5)
 
     def test_whiteboard_canvas_classification(self):

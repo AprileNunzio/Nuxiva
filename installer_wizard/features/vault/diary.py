@@ -86,7 +86,7 @@ async def summary(data: dict) -> str:
         return ""
     try:
         from features.brain.llm import generate
-        prompt = ("Scrivi in italiano, in due o tre frasi, il riassunto di questa giornata di Atena per il diario, dando del Lei "
+        prompt = ("Scrivi in italiano, in due o tre frasi, il riassunto di questa giornata di Nuxiva per il diario, dando del Lei "
                   "all'utente. Solo fatti presenti qui:\n" + json.dumps({
                       "richieste": [r["text"] for r in data["requests"]][:30], "persone": [p["name"] for p in data["people"]],
                       "automazioni": [r["name"] + ": " + r["status"] for r in data["runs"]][:20],
@@ -109,7 +109,7 @@ def render(day: date, data: dict, recap: str, final: bool) -> str:
     if data["people"]:
         out += ["## Chi c'era"] + [f"- {p['name']}: dalle {_hm(p['first'])}, circa {p['minutes']:.0f} minuti" for p in data["people"]] + [""]
     if data["requests"]:
-        out += ["## Richieste ad Atena"] + [f"- {_hm(r['at'])} — {r['text']}" for r in data["requests"][-40:]] + [""]
+        out += ["## Richieste ad Nuxiva"] + [f"- {_hm(r['at'])} — {r['text']}" for r in data["requests"][-40:]] + [""]
     if data["runs"]:
         out += ["## Automazioni"] + [f"- {_hm(r['started'])} — {r['name']}: {r['status']}" + (f" ({r['error']})" if r.get("error") else "")
                                      for r in data["runs"][-40:]] + [""]

@@ -40,7 +40,7 @@ class FakeClient:
 
 
 def _request() -> LLMRequest:
-    return LLMRequest(model_name="x", messages=[LLMMessage(role="user", content="ciao")], system_prompt="Sei Atena.")
+    return LLMRequest(model_name="x", messages=[LLMMessage(role="user", content="ciao")], system_prompt="Sei Nuxiva.")
 
 
 class CloudProviderTests(unittest.IsolatedAsyncioTestCase):
@@ -56,10 +56,10 @@ class CloudProviderTests(unittest.IsolatedAsyncioTestCase):
         self.gateway._claude_api_key = "test-key"
         reply = await self.gateway._call_claude(_request(), 0.0)
         payload = FakeClient.calls[0]["json"]
-        self.assertEqual(payload["model"], settings.ATENA_CLAUDE_MODEL)
+        self.assertEqual(payload["model"], settings.NUXIVA_CLAUDE_MODEL)
         self.assertNotIn("claude-3", payload["model"])
         self.assertEqual(payload["system"][0]["cache_control"], {"type": "ephemeral"})
-        self.assertEqual((reply.content, reply.model_used), ("Buongiorno.", settings.ATENA_CLAUDE_MODEL))
+        self.assertEqual((reply.content, reply.model_used), ("Buongiorno.", settings.NUXIVA_CLAUDE_MODEL))
 
     async def test_gemini_key_travels_in_a_header_not_in_the_url(self):
         self.gateway._gemini_api_key = "secret-key"
@@ -73,7 +73,7 @@ class ConversationFailureTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_no_model_is_an_error_not_a_fake_answer(self):
         engine = ConversationEngine()
-        fake = LLMResponse(content="Atena Core accusa ricevuta", model_used=SYNTHETIC_MODEL, tokens_consumed=0, duration_ms=1)
+        fake = LLMResponse(content="Nuxiva Core accusa ricevuta", model_used=SYNTHETIC_MODEL, tokens_consumed=0, duration_ms=1)
         with mock.patch("server.core.reasoning.conversation.llm_gateway.generate_completion", return_value=fake):
             with self.assertRaises(AgentExecutionException):
                 await engine.reply("che tempo fa?", "kiosk")

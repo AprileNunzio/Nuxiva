@@ -109,13 +109,13 @@ _TOKEN = re.compile(r"[a-zà-ÿ']+", re.I)
 
 def _native():
     import os
-    if os.environ.get("ATENA_NATIVE", "auto").strip() == "0":
+    if os.environ.get("NUXIVA_NATIVE", "auto").strip() == "0":
         return None
     try:
-        import atena_native
+        import nuxiva_native
     except ImportError:
         return None
-    return atena_native if hasattr(atena_native, "detect_language") else None
+    return nuxiva_native if hasattr(nuxiva_native, "detect_language") else None
 
 
 NATIVE = _native()

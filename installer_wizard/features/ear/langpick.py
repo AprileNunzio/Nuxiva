@@ -6,7 +6,7 @@ MIN_SHARE = 0.6
 
 
 def allowed(raw: str | None = None) -> list[str]:
-    text = os.environ.get("ATENA_EAR_LANGUAGES", "") if raw is None else raw
+    text = os.environ.get("NUXIVA_EAR_LANGUAGES", "") if raw is None else raw
     return [c for c in (p.strip().lower() for p in text.split(",")) if CODE.match(c)]
 
 

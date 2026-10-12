@@ -3,8 +3,8 @@ use std::path::Path;
 
 use serde::Deserialize;
 
-use atena_netguard::detect::Thresholds;
-use atena_netguard::net::parse_mac;
+use nuxiva_netguard::detect::Thresholds;
+use nuxiva_netguard::net::parse_mac;
 
 #[derive(Debug, Deserialize)]
 #[serde(default)]

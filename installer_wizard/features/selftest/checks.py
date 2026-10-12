@@ -11,7 +11,7 @@ from features.selftest.skip import Skip
 from state import store
 
 LOCAL = "http://127.0.0.1"
-HEADERS = {"X-Atena-Request": "1", "Content-Type": "application/json"}
+HEADERS = {"X-Nuxiva-Request": "1", "Content-Type": "application/json"}
 
 
 async def supervisor_api():

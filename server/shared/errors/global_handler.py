@@ -1,13 +1,13 @@
 import logging
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-from server.shared.errors.domain_errors import AtenaBaseException
+from server.shared.errors.domain_errors import NuxivaBaseException
 
-logger = logging.getLogger("atena.error_handler")
+logger = logging.getLogger("nuxiva.error_handler")
 
 def register_global_error_handlers(app: FastAPI) -> None:
-    @app.exception_handler(AtenaBaseException)
-    async def handle_atena_exception(request: Request, exc: AtenaBaseException) -> JSONResponse:
+    @app.exception_handler(NuxivaBaseException)
+    async def handle_nuxiva_exception(request: Request, exc: NuxivaBaseException) -> JSONResponse:
         status_map = {
             "UNAUTHORIZED": 401,
             "BIOMETRIC_REJECTED": 403,
@@ -35,7 +35,7 @@ def register_global_error_handlers(app: FastAPI) -> None:
             content={
                 "status": "error",
                 "code": "INTERNAL_SERVER_ERROR",
-                "message": "An unhandled internal fault occurred in Atena runtime",
+                "message": "An unhandled internal fault occurred in Nuxiva runtime",
                 "path": str(request.url)
             }
         )

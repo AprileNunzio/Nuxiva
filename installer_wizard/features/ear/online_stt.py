@@ -9,7 +9,7 @@ import urllib.request
 import wave
 import numpy as np
 
-log = logging.getLogger("atena.ear.online")
+log = logging.getLogger("nuxiva.ear.online")
 
 RATE = 16000
 CUSTOM_URL_RE = re.compile(r"https?://[A-Za-z0-9.\-]+(:\d{1,5})?(/[A-Za-z0-9._~/-]{0,200})?")
@@ -35,7 +35,7 @@ def audio_to_wav_bytes(audio: np.ndarray, rate: int = RATE) -> bytes:
 
 
 def custom_endpoint() -> str:
-    url = os.environ.get("ATENA_ONLINE_STT_URL", "").strip().rstrip("/")
+    url = os.environ.get("NUXIVA_ONLINE_STT_URL", "").strip().rstrip("/")
     if not CUSTOM_URL_RE.fullmatch(url) or ".." in url:
         if url:
             log.warning("Indirizzo del server di trascrizione personalizzato non valido: %s", url[:120])
@@ -44,7 +44,7 @@ def custom_endpoint() -> str:
 
 
 def _get_api_key(provider: str) -> str:
-    explicit = os.environ.get("ATENA_ONLINE_STT_KEY", "").strip()
+    explicit = os.environ.get("NUXIVA_ONLINE_STT_KEY", "").strip()
     if explicit:
         return explicit
 
@@ -90,7 +90,7 @@ def transcribe_openai_compatible(wav_bytes: bytes, endpoint: str, model: str, ap
     # Form field: language
     body.extend(f"--{boundary}\r\nContent-Disposition: form-data; name=\"language\"\r\n\r\n{lang}\r\n".encode("utf-8"))
     # Form field: prompt
-    body.extend(f"--{boundary}\r\nContent-Disposition: form-data; name=\"prompt\"\r\n\r\nEhi, Atena.\r\n".encode("utf-8"))
+    body.extend(f"--{boundary}\r\nContent-Disposition: form-data; name=\"prompt\"\r\n\r\nEhi, Nuxiva.\r\n".encode("utf-8"))
     # File field: file
     body.extend(f"--{boundary}\r\nContent-Disposition: form-data; name=\"file\"; filename=\"audio.wav\"\r\nContent-Type: audio/wav\r\n\r\n".encode("utf-8"))
     body.extend(wav_bytes)
@@ -146,13 +146,13 @@ def transcribe_gemini(wav_bytes: bytes, api_key: str) -> str | None:
 
 def transcribe_online(audio: np.ndarray, lang: str = "it") -> str | None:
     """Tenta la trascrizione online usando il provider configurato. Ritorna None se fallisce o disattivato."""
-    provider = os.environ.get("ATENA_ONLINE_STT_PROVIDER", "deepgram").strip().lower()
+    provider = os.environ.get("NUXIVA_ONLINE_STT_PROVIDER", "deepgram").strip().lower()
     api_key = _get_api_key(provider)
     if provider == "custom":
         endpoint = custom_endpoint()
         if not endpoint:
             return None
-        model = os.environ.get("ATENA_ONLINE_STT_MODEL", "").strip() or "whisper-1"
+        model = os.environ.get("NUXIVA_ONLINE_STT_MODEL", "").strip() or "whisper-1"
         return transcribe_openai_compatible(audio_to_wav_bytes(audio, RATE), endpoint, model, api_key, lang, CUSTOM_TIMEOUT)
     if not api_key:
         return None

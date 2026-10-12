@@ -20,7 +20,7 @@ UNDO = re.compile(r"\b(annulla|torna indietro|cancella (?:l'ultim\w+|l ultim\w+)
 MATH = re.compile(r"\d")
 MATH_COLLAB = re.compile(r"\b(matematica|calcoli|equazioni|operazioni|algebra|esercizi)\b")
 COLLAB = re.compile(r"\b(lavoriamo|collaboriamo|studiamo|facciamo insieme|risolviamo insieme|aiutami con|aiutami a fare)\b")
-STOP = re.compile(r"\b(?:atena|athena|per favore|sulla lavagna|alla lavagna|la lavagna|lavagna|sul quaderno|con i passaggi|passo passo|passaggi|"
+STOP = re.compile(r"\b(?:nuxiva|nuxiva|per favore|sulla lavagna|alla lavagna|la lavagna|lavagna|sul quaderno|con i passaggi|passo passo|passaggi|"
                   r"calcola|calcoliamo|risolvi|risolviamo|quanto fa|quanto vale|fai il conto|svolgi|facciamo|l'equazione|equazione|"
                   r"il calcolo|calcolo|operazione|espressione|questa|questo|seguente|scrivi|scrivimi|e)\b")
 
@@ -56,7 +56,7 @@ def _expression(text: str) -> str:
     m = MATH_TAIL.search(body)
     expr = (m.group("expr") if m else body).strip(" .?!:")
     expr = re.sub(r"^(?:y\s*=\s*|f\(x\)\s*=\s*)", "", expr)
-    return re.sub(r"\b(?:alla|sulla) lavagna\b|\bper favore\b|\b(?:atena|athena)\b", "", expr).strip(" .?!:,")
+    return re.sub(r"\b(?:alla|sulla) lavagna\b|\bper favore\b|\b(?:nuxiva|nuxiva)\b", "", expr).strip(" .?!:,")
 
 
 async def science(text: str, t: str) -> tuple[str, dict] | None:
@@ -113,7 +113,7 @@ async def science(text: str, t: str) -> tuple[str, dict] | None:
 
 
 def enabled() -> bool:
-    return env_get("ATENA_WHITEBOARD", "1") != "0"
+    return env_get("NUXIVA_WHITEBOARD", "1") != "0"
 
 def plain(text: str) -> str:
     return re.sub(r"\s+", " ", str(text).lower().replace("à", "a").replace("è", "e").replace("é", "e").replace("ì", "i").replace("ò", "o").replace("ù", "u")).strip(" .?!")
@@ -147,7 +147,7 @@ async def answer(text: str) -> tuple[str, dict]:
         board.clear()
         return "Lavagna pulita.", FACE
     if opened and UNDO.search(t):
-        return ("Ho cancellato l'ultima cosa che hai scritto." if board.undo("user") or board.undo("atena") else "Non c'è niente da annullare."), FACE
+        return ("Ho cancellato l'ultima cosa che hai scritto." if board.undo("user") or board.undo("nuxiva") else "Non c'è niente da annullare."), FACE
     if (on_board or is_collab) and (OPEN.search(t) or is_collab) and not (SOLVE.search(t) or EXPLAIN.search(t)):
         service.open_board()
         if MATH_COLLAB.search(t) or is_collab:

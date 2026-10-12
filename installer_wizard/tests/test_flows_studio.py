@@ -7,7 +7,7 @@ from unittest import mock
 
 from fastapi.testclient import TestClient
 
-import atena_supervisor
+import nuxiva_supervisor
 from features.flows import composition
 from features.flows.application.studio import ConfirmationRequired, Studio
 from features.flows.domain import draft, guard
@@ -15,7 +15,7 @@ from features.flows.domain.catalog import EDGES, NODE_BY_ID, NODES, TEMPLATES, d
 from features.flows.infrastructure.env_settings import MIXED, EnvSettings
 from features.flows.infrastructure.signed_store import SignedVersionStore
 
-HEADERS = {"X-Atena-Request": "1"}
+HEADERS = {"X-Nuxiva-Request": "1"}
 DEFAULT_SETTINGS = {"understanding.enabled": "1", "understanding.arbiter": "1", "skills.enabled": "1", "skills.generate": "1",
                     "memory.enabled": "1", "agent.enabled": "1", "agent.access": "completo", "brain.strategy": "order",
                     "brain.scope": "anywhere", "presentation.mode": "smart"}
@@ -76,14 +76,14 @@ class EnvSettingsTest(unittest.TestCase):
         settings = EnvSettings(lambda: {}, None)
         self.assertEqual(settings.read(), DEFAULT_SETTINGS)
         env = settings.env_updates({"brain.scope": "home", "understanding.arbiter": "0"})
-        self.assertEqual(env["ATENA_UNDERSTANDING_LLM"], "0")
-        self.assertIn("ATENA_LLM_CHAT_SCOPE", env)
+        self.assertEqual(env["NUXIVA_UNDERSTANDING_LLM"], "0")
+        self.assertIn("NUXIVA_LLM_CHAT_SCOPE", env)
         self.assertTrue(all(v == "home" for k, v in env.items() if k.endswith("_SCOPE")))
         with self.assertRaises(ValueError):
             settings.env_updates({"rm.rf": "1"})
 
     def test_mixed_roles_are_reported(self):
-        self.assertEqual(EnvSettings(lambda: {"ATENA_LLM_CHAT_STRATEGY": "fastest"}, None).read()["brain.strategy"], MIXED)
+        self.assertEqual(EnvSettings(lambda: {"NUXIVA_LLM_CHAT_STRATEGY": "fastest"}, None).read()["brain.strategy"], MIXED)
 
 
 class SignedStoreTest(unittest.TestCase):
@@ -191,9 +191,9 @@ class SafeguardTest(StudioTest):
 
 class FlowsApiTest(unittest.TestCase):
     def test_endpoints(self):
-        self.assertEqual(TestClient(atena_supervisor.admin).get("/api/flows/studio").status_code, 401)
-        admin = TestClient(atena_supervisor.admin)
-        admin.post("/api/auth/login", json={"username": "admin", "password": "atena"}, headers=HEADERS)
+        self.assertEqual(TestClient(nuxiva_supervisor.admin).get("/api/flows/studio").status_code, 401)
+        admin = TestClient(nuxiva_supervisor.admin)
+        admin.post("/api/auth/login", json={"username": "admin", "password": "nuxiva"}, headers=HEADERS)
         tmp = Path(tempfile.mkdtemp())
         with mock.patch.object(composition.studio, "store", SignedVersionStore(tmp / "m.json", tmp / "k")):
             data = admin.get("/api/flows/studio").json()
@@ -203,7 +203,7 @@ class FlowsApiTest(unittest.TestCase):
             self.assertEqual(r.json()["pending"].get("brain.scope"), "home")
             self.assertEqual(admin.put("/api/flows/draft", json={"picks": {"laws": "x"}}, headers=HEADERS).status_code, 400)
             self.assertEqual(admin.post("/api/flows/publish", json={"password": "no"}, headers=HEADERS).status_code, 403)
-            self.assertEqual(admin.post("/api/flows/rollback/42", json={"password": "atena"}, headers=HEADERS).status_code, 404)
+            self.assertEqual(admin.post("/api/flows/rollback/42", json={"password": "nuxiva"}, headers=HEADERS).status_code, 404)
             self.assertEqual(admin.delete("/api/flows/draft", headers=HEADERS).json()["pending"], {})
             r = admin.post("/api/flows/compare", json={"a": {"picks": {}}, "b": {"picks": {"brain": "brain.home"}}}, headers=HEADERS)
             self.assertEqual(r.json()["different"], ["brain"])

@@ -23,7 +23,7 @@ export default function overview(root) {
           button("Verifica e ripara tutto", () => act("repair"), { kind: "primary" }),
           button("Controlla aggiornamenti", () => act("update-check")),
           button("Riavvia supervisore", () => act("restart-supervisor"), { confirm: { title: "Riavviare il supervisore?", text: "L'interfaccia si ricollegherà automaticamente.", action: "Riavvia" } }),
-          button("Riavvia sistema", () => act("reboot"), { kind: "danger", confirm: { title: "Riavviare il sistema?", text: "Atena tornerà disponibile tra qualche minuto.", action: "Riavvia", danger: true } })),
+          button("Riavvia sistema", () => act("reboot"), { kind: "danger", confirm: { title: "Riavviare il sistema?", text: "Nuxiva tornerà disponibile tra qualche minuto.", action: "Riavvia", danger: true } })),
         h("p", { class: "ptitle" }, "Stato corrente"), current)));
 
   onSnapshot(root, (s) => {

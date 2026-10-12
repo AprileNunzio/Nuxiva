@@ -1,10 +1,10 @@
 (() => {
-  const D = window.AtenaDisplay;
+  const D = window.NuxivaDisplay;
   const BEAT_MS = 5000, LOCAL = 0.25, TALKING = new Set(["listening", "transcribing", "thinking", "speaking"]);
   let on = false, sent = 0;
 
   const talking = () => {
-    const ear = window.atenaEar ? window.atenaEar.state : "";
+    const ear = window.nuxivaEar ? window.nuxivaEar.state : "";
     return TALKING.has(ear) || !!(D.isSpeaking && D.isSpeaking()) || !!D.busy || document.body.classList.contains("conversing");
   };
 

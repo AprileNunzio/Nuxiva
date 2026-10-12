@@ -1,10 +1,10 @@
 (() => {
-  const D = window.AtenaDisplay;
+  const D = window.NuxivaDisplay;
   const MUSIC = new Set(["music", "spotify", "karaoke"]);
   let floor = 0.02, peak = 0.1;
 
   const idle = () => !D.busy && !D.isSpeaking() && D.mode === "face" && !(D.Enroll && D.Enroll.active);
-  const musicOn = () => (window.AtenaDesk && AtenaDesk.all || []).some((w) => MUSIC.has(w.id));
+  const musicOn = () => (window.NuxivaDesk && NuxivaDesk.all || []).some((w) => MUSIC.has(w.id));
   const night = () => { const h = new Date().getHours(); return h >= 23 || h < 6; };
 
   function level(v) {

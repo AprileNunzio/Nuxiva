@@ -5,14 +5,14 @@ from features.brain.scope import DEFAULT_SCOPE, DEFAULT_STRATEGY
 
 MIXED = "mixed"
 FLAGS = {
-    "understanding.enabled": ("ATENA_UNDERSTANDING", "1"),
-    "understanding.arbiter": ("ATENA_UNDERSTANDING_LLM", "1"),
-    "skills.enabled": ("ATENA_SKILLS", "1"),
-    "skills.generate": ("ATENA_SKILLS_GENERATE", "1"),
-    "memory.enabled": ("ATENA_MIND", "1"),
-    "agent.enabled": ("ATENA_AGENT", "1"),
-    "agent.access": ("ATENA_AGENT_ACCESS", "completo"),
-    "presentation.mode": ("ATENA_PRESENTATION", "smart"),
+    "understanding.enabled": ("NUXIVA_UNDERSTANDING", "1"),
+    "understanding.arbiter": ("NUXIVA_UNDERSTANDING_LLM", "1"),
+    "skills.enabled": ("NUXIVA_SKILLS", "1"),
+    "skills.generate": ("NUXIVA_SKILLS_GENERATE", "1"),
+    "memory.enabled": ("NUXIVA_MIND", "1"),
+    "agent.enabled": ("NUXIVA_AGENT", "1"),
+    "agent.access": ("NUXIVA_AGENT_ACCESS", "completo"),
+    "presentation.mode": ("NUXIVA_PRESENTATION", "smart"),
 }
 ROLE_KEYS = {"brain.strategy": ("strategy_key", DEFAULT_STRATEGY), "brain.scope": ("scope_key", DEFAULT_SCOPE)}
 

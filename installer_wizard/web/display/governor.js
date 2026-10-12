@@ -1,5 +1,5 @@
 (() => {
-  const DEVICE_KEY = "atena-device";
+  const DEVICE_KEY = "nuxiva-device";
   const ID_OK = /^[A-Za-z0-9_-]{6,40}$/;
   const REPORT_EVERY = 30000, POLICY_EVERY = 120000;
   const STOP = Symbol("stop");
@@ -21,11 +21,11 @@
     st.applied = true;
     document.body.classList.toggle("tier-reduced", tier === "reduced");
     document.body.classList.toggle("tier-minimal", tier === "minimal");
-    if (window.atenaPerf) {
-      if (tier !== "full") window.atenaPerf.lite(`governatore: ${tier}`);
-      else if (window.atenaPerf.relax) window.atenaPerf.relax();
+    if (window.nuxivaPerf) {
+      if (tier !== "full") window.nuxivaPerf.lite(`governatore: ${tier}`);
+      else if (window.nuxivaPerf.relax) window.nuxivaPerf.relax();
     }
-    window.dispatchEvent(new CustomEvent("atena-tier", { detail: tier }));
+    window.dispatchEvent(new CustomEvent("nuxiva-tier", { detail: tier }));
   }
 
   function adopt(policy) {
@@ -33,7 +33,7 @@
     st.policy = policy;
     setTier(policy.enabled ? policy.tier : "full");
     if (!before || before.max_active !== policy.max_active || before.max_ambient !== policy.max_ambient) {
-      window.dispatchEvent(new CustomEvent("atena-policy", { detail: policy }));
+      window.dispatchEvent(new CustomEvent("nuxiva-policy", { detail: policy }));
     }
   }
 
@@ -97,11 +97,11 @@
   async function report() {
     const p = st.policy;
     if (!p || !p.report || document.hidden || st.reportFails > 5) return;
-    const perf = (window.atenaPerf && window.atenaPerf.stats) || { fps: 0, p95: 0, longMs: 0 };
+    const perf = (window.nuxivaPerf && window.nuxivaPerf.stats) || { fps: 0, p95: 0, longMs: 0 };
     const widgets = Object.values(st.costs).sort((a, b) => b.ms - a.ms).slice(0, 30)
       .map((c) => ({ id: c.id, ms: Math.round(c.ms), mounts: c.mounts, nodes: c.nodes }));
     st.costs = {};
-    const active = window.AtenaDesk ? window.AtenaDesk.active.length : 0;
+    const active = window.NuxivaDesk ? window.NuxivaDesk.active.length : 0;
     try {
       const r = await fetch("/api/governor/report", { method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ device: DEVICE, fps: perf.fps, p95: perf.p95, longtask_ms: perf.longMs, active, visible: true, widgets }) });
@@ -114,7 +114,7 @@
   pull();
   setInterval(pull, POLICY_EVERY);
   setInterval(report, REPORT_EVERY);
-  window.atenaGovernor = {
+  window.nuxivaGovernor = {
     limit, measure, cost, poll, frameGap, STOP, device: DEVICE, refresh: pull, report,
     get tier() { return st.tier; },
     get policy() { return st.policy; },

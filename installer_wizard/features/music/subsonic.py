@@ -85,7 +85,7 @@ async def ping(p, user):
 
 
 async def get_license(p, user):
-    return {"license": {"valid": True, "email": "atena@local", "licenseExpires": "2099-12-31T00:00:00.000Z"}}
+    return {"license": {"valid": True, "email": "nuxiva@local", "licenseExpires": "2099-12-31T00:00:00.000Z"}}
 
 
 async def extensions(p, user):

@@ -23,7 +23,7 @@ export async function api(path, { method = "GET", body, timeout = TIMEOUT_MS } =
   if (!path.startsWith("/api/")) throw new HttpError(0, "Percorso non consentito");
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeout);
-  const headers = { Accept: "application/json", "X-Atena-Request": "1" };
+  const headers = { Accept: "application/json", "X-Nuxiva-Request": "1" };
   if (body !== undefined) headers["Content-Type"] = "application/json";
   let response;
   try {
@@ -37,7 +37,7 @@ export async function api(path, { method = "GET", body, timeout = TIMEOUT_MS } =
       signal: controller.signal,
     });
   } catch (err) {
-    throw new HttpError(0, err.name === "AbortError" ? "Atena non risponde: riprova tra poco" : "Connessione con Atena assente");
+    throw new HttpError(0, err.name === "AbortError" ? "Nuxiva non risponde: riprova tra poco" : "Connessione con Nuxiva assente");
   } finally {
     clearTimeout(timer);
   }

@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 . "$(dirname "$0")/../lib.sh"
 
-STATE_FILE="$ATENA_STATE/display-driver"
-BLACKLIST=/etc/modprobe.d/atena-blacklist-nouveau.conf
+STATE_FILE="$NUXIVA_STATE/display-driver"
+BLACKLIST=/etc/modprobe.d/nuxiva-blacklist-nouveau.conf
 
-mode() { echo "${ATENA_GPU_DRIVER:-auto}"; }
+mode() { echo "${NUXIVA_GPU_DRIVER:-auto}"; }
 state() { cut -d'|' -f1 "$STATE_FILE" 2>/dev/null || true; }
 state_pkg() { cut -d'|' -f2 "$STATE_FILE" 2>/dev/null || true; }
-set_state() { mkdir -p "$ATENA_STATE"; echo "$1|${2:-}|${3:-}|$(date +%s)" > "$STATE_FILE"; }
+set_state() { mkdir -p "$NUXIVA_STATE"; echo "$1|${2:-}|${3:-}|$(date +%s)" > "$STATE_FILE"; }
 nvidia_loaded() { lsmod 2>/dev/null | grep -q '^nvidia ' && command -v nvidia-smi >/dev/null 2>&1 && nvidia-smi -L >/dev/null 2>&1; }
 installed_pkg() { { dpkg-query -W -f='${Package} ${Status}\n' 'nvidia-*driver' 2>/dev/null || true; } | awk '/install ok installed/ {print $1; exit}'; }
 
@@ -32,11 +32,11 @@ recommended() {
 secure_boot() { command -v mokutil >/dev/null 2>&1 && mokutil --sb-state 2>/dev/null | grep -qi 'enabled'; }
 
 schedule_reboot() {
-    if [ "${ATENA_GPU_DRIVER_REBOOT:-night}" = "now" ]; then
-        shutdown -r +2 "Atena: attivazione del driver video NVIDIA" || true
+    if [ "${NUXIVA_GPU_DRIVER_REBOOT:-night}" = "now" ]; then
+        shutdown -r +2 "Nuxiva: attivazione del driver video NVIDIA" || true
         detail "Riavvio tra 2 minuti per attivare il driver"
     else
-        shutdown -r 04:15 "Atena: attivazione del driver video NVIDIA" || true
+        shutdown -r 04:15 "Nuxiva: attivazione del driver video NVIDIA" || true
         detail "Riavvio programmato alle 04:15 per attivare il driver"
     fi
 }
@@ -51,7 +51,7 @@ revert() {
     rm -f "$BLACKLIST"
     update-initramfs -u >/dev/null 2>&1 || true
     set_state failed "$pkg" "$why"
-    shutdown -r +1 "Atena: ripristino del driver video precedente" || true
+    shutdown -r +1 "Nuxiva: ripristino del driver video precedente" || true
 }
 
 step_check() {

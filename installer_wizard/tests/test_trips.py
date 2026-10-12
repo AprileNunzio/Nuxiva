@@ -98,7 +98,7 @@ class DepartureTest(unittest.TestCase):
         self.assertIsNone(departure.classify("Dentista", "Via Roma 1"))
 
     def test_buffers_are_configurable_and_bounded(self):
-        env = {"ATENA_MAPS_BUFFER_BUS": "25"}.get
+        env = {"NUXIVA_MAPS_BUFFER_BUS": "25"}.get
         self.assertEqual(departure.buffer_minutes("bus", lambda k, d: env(k, d)), 25.0)
         self.assertEqual(departure.buffer_minutes("flight", lambda k, d: d), 120.0)
         self.assertEqual(departure.buffer_minutes(None, lambda k, d: d), 5.0)

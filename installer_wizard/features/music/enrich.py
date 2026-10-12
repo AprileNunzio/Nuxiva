@@ -6,7 +6,7 @@ import httpx
 from features.music import catalog, covers, naming, scanner, sources
 from features.music.db import db
 
-log = logging.getLogger("atena.music")
+log = logging.getLogger("nuxiva.music")
 RETRY = 30 * 86400
 BATCH = 40
 

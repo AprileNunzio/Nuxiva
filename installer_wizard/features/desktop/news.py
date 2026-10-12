@@ -8,7 +8,7 @@ import httpx
 
 from config import env_get
 
-log = logging.getLogger("atena.news")
+log = logging.getLogger("nuxiva.news")
 
 DEFAULT_FEED = "https://www.ansa.it/sito/notizie/topnews/topnews_rss.xml"
 ALLOWED_PREFIXES = ("https://www.ansa.it/", "https://www.repubblica.it/", "https://www.ilsole24ore.com/",
@@ -45,7 +45,7 @@ class News:
 
     @staticmethod
     def feed() -> str:
-        url = str(env_get("ATENA_NEWS_FEED", DEFAULT_FEED) or "").strip()
+        url = str(env_get("NUXIVA_NEWS_FEED", DEFAULT_FEED) or "").strip()
         return url if url.startswith(ALLOWED_PREFIXES) else DEFAULT_FEED
 
     @staticmethod
@@ -71,7 +71,7 @@ class News:
         if now - self.fetched_at < FRESH_FOR or now - self.failed_at < RETRY_AFTER:
             return self.items
         try:
-            async with httpx.AsyncClient(timeout=8, follow_redirects=False, headers={"User-Agent": "Atena-OS"}) as client:
+            async with httpx.AsyncClient(timeout=8, follow_redirects=False, headers={"User-Agent": "Nuxiva-OS"}) as client:
                 res = await client.get(self.feed())
             res.raise_for_status()
             self.items = self.parse(res.content[:MAX_BYTES])

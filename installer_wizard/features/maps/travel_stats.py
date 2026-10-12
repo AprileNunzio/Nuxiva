@@ -6,7 +6,7 @@ import time
 from datetime import datetime, timedelta
 from pathlib import Path
 
-log = logging.getLogger("atena.maps")
+log = logging.getLogger("nuxiva.maps")
 KEEP = 60
 MIN_GAP = 600.0
 

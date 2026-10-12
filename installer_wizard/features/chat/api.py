@@ -133,7 +133,7 @@ async def assistant_chat(text: str, device: str, heard_lang: str | None = None, 
     if len(text) > 4000:
         raise HTTPException(413, "Messaggio troppo lungo")
     if store.phase not in ("READY", "DEGRADED"):
-        raise HTTPException(503, "Atena non è ancora operativa")
+        raise HTTPException(503, "Nuxiva non è ancora operativa")
     study.engine.activity("chat")
     request_context.device.set(device)
     request_context.voice.set(heard.get("speaker") or "")
@@ -142,8 +142,8 @@ async def assistant_chat(text: str, device: str, heard_lang: str | None = None, 
     room = place_context.enter(principal.slug, principal.source, device)
     if heard.get("speaker"):
         try:
-            from atena_bus import BusError, atena_bus
-            atena_bus.publish("voice.speaker", {"speaker": heard["speaker"], "known": bool(heard.get("voice_known")), "device": device[:60]},
+            from nuxiva_bus import BusError, nuxiva_bus
+            nuxiva_bus.publish("voice.speaker", {"speaker": heard["speaker"], "known": bool(heard.get("voice_known")), "device": device[:60]},
                                origin="voice")
         except (ImportError, BusError):
             pass
@@ -214,7 +214,7 @@ def _demo_graph() -> dict:
 
 @public_routes.post("/api/assistant/chat")
 async def public_chat(request: Request):
-    require_display(request, "Per parlare con Atena da remoto accedi al pannello :8080")
+    require_display(request, "Per parlare con Nuxiva da remoto accedi al pannello :8080")
     body = await request.json()
     return await assistant_chat(body.get("text", ""), "kiosk" if is_local(request) else "remote", lang_of(body),
                                 _heard(body))
@@ -255,7 +255,7 @@ def _streaming_response(generator) -> StreamingResponse:
 
 @public_routes.post("/api/assistant/chat/stream")
 async def public_chat_stream(request: Request):
-    require_display(request, "Per parlare con Atena da remoto accedi al pannello :8080")
+    require_display(request, "Per parlare con Nuxiva da remoto accedi al pannello :8080")
     body = await request.json()
     return _streaming_response(_stream_chat(body.get("text", ""), "kiosk" if is_local(request) else "remote", lang_of(body), _heard(body)))
 
@@ -281,7 +281,7 @@ async def public_wake(request: Request):
     desk.wake()
     result = await wake.greeting(wake.wake_language())
     desk.show("g_notify", result["card"], key="wake", ttl=25)
-    dialogue.remember(request_context.device.get(), "Atena", result["reply"], "wake")
+    dialogue.remember(request_context.device.get(), "Nuxiva", result["reply"], "wake")
     return result
 
 

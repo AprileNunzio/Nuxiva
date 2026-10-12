@@ -9,7 +9,7 @@ from fastapi.responses import Response, StreamingResponse
 
 from features.music import conf, layout
 
-log = logging.getLogger("atena.music")
+log = logging.getLogger("nuxiva.music")
 CHUNK = 128 * 1024
 RANGE = re.compile(r"^bytes=(\d*)-(\d*)$")
 

@@ -20,7 +20,7 @@ def primary() -> str | None:
 
 
 def embed_model() -> str:
-    return read_env().get("ATENA_EMBED_MODEL") or "nomic-embed-text"
+    return read_env().get("NUXIVA_EMBED_MODEL") or "nomic-embed-text"
 
 
 def keep_alive(model: str) -> str:

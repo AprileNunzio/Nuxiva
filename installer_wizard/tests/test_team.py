@@ -110,7 +110,7 @@ class CollaborationTest(unittest.TestCase):
 
     def test_settings_can_only_be_changed_through_declared_keys(self):
         with self.assertRaises(ValueError):
-            call("agent_set", agent="music", key="ATENA_PASSWORD", value="x")
+            call("agent_set", agent="music", key="NUXIVA_PASSWORD", value="x")
         apply = mock.AsyncMock(return_value=[])
         with mock.patch("settings.apply_config", apply):
             key = roster.profile("music")["settings"][0]

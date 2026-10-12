@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 . "$(dirname "$0")/../lib.sh"
 
-MUSIC=/opt/atena-music
+MUSIC=/opt/nuxiva-music
 
 id_wanted() {
     unofficial_ok || return 1
-    [ "${ATENA_MUSIC_IDENTIFY:-1}" != "0" ] || { [ "${ATENA_MUSIC_ID:-1}" != "0" ] && [ "${ATENA_EAR:-1}" != "0" ]; }
+    [ "${NUXIVA_MUSIC_IDENTIFY:-1}" != "0" ] || { [ "${NUXIVA_MUSIC_ID:-1}" != "0" ] && [ "${NUXIVA_EAR:-1}" != "0" ]; }
 }
-cast_wanted() { [ "${ATENA_MUSIC_CAST:-1}" != "0" ]; }
+cast_wanted() { [ "${NUXIVA_MUSIC_CAST:-1}" != "0" ]; }
 id_ready() { "$MUSIC/venv/bin/python" -c "import shazamio" 2>/dev/null; }
 cast_ready() { "$MUSIC/venv/bin/python" -c "import pychromecast" 2>/dev/null; }
 cast_tried() { [ -f "$MUSIC/.cast-tried" ]; }

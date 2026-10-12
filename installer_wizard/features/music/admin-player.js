@@ -1,8 +1,8 @@
 (() => {
-  const A = window.AtenaAdmin, { $ } = A;
+  const A = window.NuxivaAdmin, { $ } = A;
   const mu = A.mu, esc = mu.esc;
   const P = mu.player = {};
-  const KEY = "atena-music";
+  const KEY = "nuxiva-music";
   const BANDS = [60, 170, 310, 600, 1000, 3000, 6000, 12000, 14000, 16000];
   const PRESETS = {
     "Piatto": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "Bassi forti": [6, 5, 4, 2, 0, 0, 0, 0, 0, 0], "Voce": [-2, -1, 0, 2, 4, 4, 3, 1, 0, -1],

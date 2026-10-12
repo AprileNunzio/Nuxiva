@@ -2,7 +2,7 @@ from features.agent.registry import tool
 from features.autonomy.routines import describe, parse_when, routines
 
 
-@tool("schedule_task", "programma un compito che Atena eseguirà da sola: when in parole (es. «ogni giorno alle 8», "
+@tool("schedule_task", "programma un compito che Nuxiva eseguirà da sola: when in parole (es. «ogni giorno alle 8», "
       "«ogni venerdì alle 18», «ogni 30 minuti», «domani alle 10», «quando mi vedi arrivare»); prompt = cosa fare, "
       "scritto come una richiesta completa a te stesso",
       {"title": "nome breve", "when": "quando, in parole", "prompt": "cosa fare"})

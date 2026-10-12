@@ -4,11 +4,11 @@ from server.features.llm_gateway.gateway import llm_gateway
 from server.features.llm_gateway.contracts import LLMRequest, LLMMessage
 from server.core.agent_registry.interfaces import AgentTaskRequest
 
-logger = logging.getLogger("atena.proactive_engine")
+logger = logging.getLogger("nuxiva.proactive_engine")
 
 class ProactiveEngine:
     """
-    Analizza gli eventi sensoriali passivi per capire se Atena deve agire in modo proattivo.
+    Analizza gli eventi sensoriali passivi per capire se Nuxiva deve agire in modo proattivo.
     System 2 (Lento, Riflessivo, Autonomo).
     """
     def __init__(self, model_name="qwen2.5:7b"):

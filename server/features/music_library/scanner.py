@@ -7,7 +7,7 @@ try:
 except ImportError:
     TinyTag = None
 
-logger = logging.getLogger("atena.music_library")
+logger = logging.getLogger("nuxiva.music_library")
 
 try:
     from installer_wizard.features.shares.archive import folder as share_folder

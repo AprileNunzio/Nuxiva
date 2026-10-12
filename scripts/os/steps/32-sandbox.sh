@@ -1,23 +1,23 @@
 #!/usr/bin/env bash
 . "$(dirname "$0")/../lib.sh"
 
-IMAGE=atena-sandbox:local
+IMAGE=nuxiva-sandbox:local
 BASE_IMAGE=python:3.11-slim-bookworm
-UNIT_SRC="$ATENA_DIR/scripts/os/systemd/atena-sandbox.service"
-UNIT_DST=/etc/systemd/system/atena-sandbox.service
-SOCKET=/run/atena/sandbox/broker.sock
-EGRESS_BRIDGE=atena-sbx0
+UNIT_SRC="$NUXIVA_DIR/scripts/os/systemd/nuxiva-sandbox.service"
+UNIT_DST=/etc/systemd/system/nuxiva-sandbox.service
+SOCKET=/run/nuxiva/sandbox/broker.sock
+EGRESS_BRIDGE=nuxiva-sbx0
 EGRESS_GATEWAY=172.29.240.1
 EGRESS_PORTS=38000:38099
 
 sources() {
-    find "$ATENA_DIR/sandbox_broker" "$ATENA_DIR/server/features/sandbox" -name '*.py' | sort
+    find "$NUXIVA_DIR/sandbox_broker" "$NUXIVA_DIR/server/features/sandbox" -name '*.py' | sort
     echo "$UNIT_SRC"
-    echo "$ATENA_DIR/scripts/os/steps/32-sandbox.sh"
-    echo "$ATENA_DIR/docker/sandbox/Dockerfile"
+    echo "$NUXIVA_DIR/scripts/os/steps/32-sandbox.sh"
+    echo "$NUXIVA_DIR/docker/sandbox/Dockerfile"
 }
 
-service_active() { systemctl is-active --quiet atena-sandbox; }
+service_active() { systemctl is-active --quiet nuxiva-sandbox; }
 
 firewall_active() { command -v ufw >/dev/null 2>&1 && ufw status 2>/dev/null | grep -q "Status: active"; }
 
@@ -45,7 +45,7 @@ step_apply() {
     retry 3 10 docker pull "$BASE_IMAGE" >/dev/null || warn "Pull dell'immagine base non riuscito: uso la copia locale se presente"
 
     progress 50 "Immagine della sandbox"
-    docker build --quiet -t "$IMAGE" "$ATENA_DIR/docker/sandbox" >/dev/null || fail "Build dell'immagine sandbox non riuscita"
+    docker build --quiet -t "$IMAGE" "$NUXIVA_DIR/docker/sandbox" >/dev/null || fail "Build dell'immagine sandbox non riuscita"
 
     progress 70 "Uscita controllata verso le API"
     open_egress_proxy_ports || warn "Regola del firewall per il proxy di uscita non applicata: gli script senza rete funzionano comunque"
@@ -53,9 +53,9 @@ step_apply() {
     progress 80 "Servizio Sandbox Broker"
     install -m 0644 "$UNIT_SRC" "$UNIT_DST"
     systemctl daemon-reload
-    systemctl enable atena-sandbox >/dev/null 2>&1
-    systemctl restart atena-sandbox
-    wait_for 60 test -S "$SOCKET" || fail "Il Sandbox Broker non si è avviato: journalctl -u atena-sandbox"
+    systemctl enable nuxiva-sandbox >/dev/null 2>&1
+    systemctl restart nuxiva-sandbox
+    wait_for 60 test -S "$SOCKET" || fail "Il Sandbox Broker non si è avviato: journalctl -u nuxiva-sandbox"
 
     code_mark sandbox $(sources)
     progress 100 "Sandbox isolata attiva"

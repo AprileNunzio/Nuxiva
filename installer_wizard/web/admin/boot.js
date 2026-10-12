@@ -1,1 +1,1 @@
-window.AtenaAdmin.start();
+window.NuxivaAdmin.start();

@@ -83,4 +83,4 @@
   };
 
   C.Poses = POSES;
-})(window.Atena3D);
+})(window.Nuxiva3D);

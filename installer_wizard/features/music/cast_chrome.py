@@ -5,8 +5,8 @@ from pathlib import Path
 
 from config import DEMO
 
-log = logging.getLogger("atena.music")
-VENV_PY = Path("/opt/atena-music/venv/bin/python")
+log = logging.getLogger("nuxiva.music")
+VENV_PY = Path("/opt/nuxiva-music/venv/bin/python")
 HELPER = Path(__file__).resolve().parent / "cast_helper.py"
 READY_MODULE = "pychromecast"
 

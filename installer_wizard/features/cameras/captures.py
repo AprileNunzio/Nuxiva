@@ -18,7 +18,7 @@ REGISTRY_RE = re.compile(r"^[0-9a-f]{8}$")
 
 def limit() -> int:
     try:
-        return max(10, min(1000, int(env_get("ATENA_CAMERAS_PHOTOS_MAX", "200"))))
+        return max(10, min(1000, int(env_get("NUXIVA_CAMERAS_PHOTOS_MAX", "200"))))
     except ValueError:
         return 200
 

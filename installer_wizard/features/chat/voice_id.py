@@ -8,7 +8,7 @@ from config import STATE_DIR, read_env
 from features.chat import context as request_context
 from features.people import identity, voice_training
 
-PRINTS = Path("/var/lib/atena/voiceprints")
+PRINTS = Path("/var/lib/nuxiva/voiceprints")
 OFFERS = STATE_DIR / "voice_offers.json"
 OFFER_EVERY = 3 * 86400
 ENROLL = re.compile(r"\b(?:impara|registra|memorizza|riconosci)\b.{0,15}\b(?:la )?mia voce\b|\btest (?:di lettura|vocale)\b",
@@ -67,6 +67,6 @@ def command(text: str) -> tuple[str, dict] | None:
 
 
 def session(profile: dict) -> dict:
-    lang = voice_training.language(profile.get("language") or read_env().get("ATENA_UI_LANG"))
+    lang = voice_training.language(profile.get("language") or read_env().get("NUXIVA_UI_LANG"))
     return {"mode": "enroll", "train": True, "slug": profile["slug"], "name": identity.first_name(profile), "lang": lang,
             "plan": voice_training.plan(lang)}

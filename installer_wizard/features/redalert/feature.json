@@ -5,9 +5,9 @@
   "category": "casa",
   "order": 118,
   "panel": "redalert",
-  "description": "Quando scatta un allarme (fumo, acqua, intrusione…) Atena fa lampeggiare lentamente di rosso tutte le luci di Home Assistant e ripete il messaggio urgente su tutti i Chromecast; finito l'allarme le luci tornano come prima.",
+  "description": "Quando scatta un allarme (fumo, acqua, intrusione…) Nuxiva fa lampeggiare lentamente di rosso tutte le luci di Home Assistant e ripete il messaggio urgente su tutti i Chromecast; finito l'allarme le luci tornano come prima.",
   "toggle": {
-    "env": "ATENA_REDALERT",
+    "env": "NUXIVA_REDALERT",
     "default": "1",
     "apply": []
   },
@@ -20,7 +20,7 @@
   ],
   "settings": [
     {
-      "key": "ATENA_REDALERT_LIGHTS",
+      "key": "NUXIVA_REDALERT_LIGHTS",
       "label": "Fai lampeggiare le luci di rosso",
       "type": "select",
       "default": "1",
@@ -36,7 +36,7 @@
       ]
     },
     {
-      "key": "ATENA_REDALERT_CAST",
+      "key": "NUXIVA_REDALERT_CAST",
       "label": "Avvisa a voce su tutti i Chromecast",
       "type": "select",
       "default": "1",
@@ -52,7 +52,7 @@
       ]
     },
     {
-      "key": "ATENA_REDALERT_SECONDS",
+      "key": "NUXIVA_REDALERT_SECONDS",
       "label": "Per quanto tempo",
       "type": "select",
       "default": "60",

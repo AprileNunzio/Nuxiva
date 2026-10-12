@@ -10,7 +10,7 @@ import httpx
 
 from server.config.env import settings
 
-logger = logging.getLogger("atena.llm_gateway.bridge")
+logger = logging.getLogger("nuxiva.llm_gateway.bridge")
 
 COMPLETE_PATH = "/api/internal/brain/complete"
 TRACE_PATH = "/api/internal/brain/trace"
@@ -32,18 +32,18 @@ class BridgeError(RuntimeError):
 
 
 class SupervisorBridge:
-    def __init__(self, base_url: str = "", key_provider=lambda: settings.ATENA_SECRET_KEY) -> None:
+    def __init__(self, base_url: str = "", key_provider=lambda: settings.NUXIVA_SECRET_KEY) -> None:
         self._base = base_url
         self._key = key_provider
         self._muted_until = 0.0
 
     @property
     def base_url(self) -> str:
-        return self._base or settings.ATENA_SUPERVISOR_URL
+        return self._base or settings.NUXIVA_SUPERVISOR_URL
 
     def _headers(self, path: str, body: bytes) -> Dict[str, str]:
         stamp = int(time.time())
-        return {"X-Atena-Timestamp": str(stamp), "X-Atena-Signature": sign(self._key(), "POST", path, stamp, body),
+        return {"X-Nuxiva-Timestamp": str(stamp), "X-Nuxiva-Signature": sign(self._key(), "POST", path, stamp, body),
                 "Content-Type": "application/json"}
 
     async def _post(self, path: str, payload: Dict[str, Any], timeout: float) -> httpx.Response:

@@ -6,7 +6,7 @@ from typing import Any, Dict
 from server.features.sandbox.domain.spec import ExecutionSpec
 
 GUEST_OVERHEAD_MB = 96
-BOOT_ARGS = "console=ttyS0 reboot=k panic=1 pci=off nomodules 8250.nr_uarts=1 random.trust_cpu=on i8042.noaux ro init=/sbin/atena-init"
+BOOT_ARGS = "console=ttyS0 reboot=k panic=1 pci=off nomodules 8250.nr_uarts=1 random.trust_cpu=on i8042.noaux ro init=/sbin/nuxiva-init"
 FRAME_HEADROOM = 64 * 1024
 
 
@@ -30,7 +30,7 @@ def out_image_size(spec: ExecutionSpec) -> int:
 
 def build_config(spec: ExecutionSpec, kernel: str, rootfs: str, in_image: str, out_image: str) -> Dict[str, Any]:
     return {
-        "boot-source": {"kernel_image_path": kernel, "boot_args": f"{BOOT_ARGS} atena.spec={guest_spec(spec)}"},
+        "boot-source": {"kernel_image_path": kernel, "boot_args": f"{BOOT_ARGS} nuxiva.spec={guest_spec(spec)}"},
         "drives": [
             {"drive_id": "rootfs", "path_on_host": rootfs, "is_root_device": True, "is_read_only": True},
             {"drive_id": "input", "path_on_host": in_image, "is_root_device": False, "is_read_only": True},

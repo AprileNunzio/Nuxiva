@@ -4,7 +4,7 @@ import { toast } from "./toast.js";
 const MESSAGES = {
   live: (name) => `${name}: aperto sul display con i dati dal vivo`,
   last: (name) => `${name}: riaperto sul display con gli ultimi dati`,
-  preview: (name) => `${name}: anteprima sul display. Chiedilo ad Atena per i dati veri`,
+  preview: (name) => `${name}: anteprima sul display. Chiedilo ad Nuxiva per i dati veri`,
 };
 let cache = null, pending = null;
 

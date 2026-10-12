@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const ST_STATE = { studying: "🎓 Sta studiando", waiting: "⏸ In attesa", paused: "⏸ In pausa", idle: "✓ In pari",
                      off: "○ Disattivato", budget: "⏹ Tempo esaurito", hours: "☾ Fuori orario" };
   const SOURCE_LBL = { manual: "scelta da te", auto: "dalle conversazioni" };
@@ -61,7 +61,7 @@
         <div class="faint" style="font-size:12px; margin-top:4px">Livello attuale: ${fmt.esc(t.level_name)} · obiettivo ${fmt.esc(d.levels[t.target_level])} · priorità ${t.priority}
           · ${t.cells} celle${t.due_reviews ? ` · ${t.due_reviews} ripassi in scadenza` : ""}${t.mentions ? ` · citata ${t.mentions} volte` : ""}</div>
         ${levelBars(t)}</div>`;
-    }).join("") || '<div class="faint">Nessuna materia: aggiungine una qui sopra oppure parla con Atena dei tuoi interessi, le scoprirà da sola.</div>';
+    }).join("") || '<div class="faint">Nessuna materia: aggiungine una qui sopra oppure parla con Nuxiva dei tuoi interessi, le scoprirà da sola.</div>';
     $("st-mentions").innerHTML = d.mentions.length ? `<div class="panel-title">Interessi emersi dalle conversazioni</div>` + d.mentions.map((m) => `<div class="row" style="justify-content:space-between; padding:6px 0">
         <span>${fmt.esc(m.name)} <span class="faint" style="font-size:12px">· ${m.count} ${m.count === 1 ? "volta" : "volte"}${m.hints && m.hints.length ? ` · ${fmt.esc(m.hints.slice(0, 3).join(", "))}` : ""}</span></span>
         <span class="actions"><button class="btn sm" data-mention="${fmt.esc(m.key)}">Studia</button><button class="btn sm danger" data-mention-drop="${fmt.esc(m.key)}">Ignora</button></span></div>`).join("") : "";
@@ -126,7 +126,7 @@
   async function topicAction(a) {
     const url = `/api/study/topics/${encodeURIComponent(studySel)}`;
     if (a === "delete") {
-      if (!confirm("Eliminare la materia con tutto ciò che Atena ha imparato?")) return false;
+      if (!confirm("Eliminare la materia con tutto ciò che Nuxiva ha imparato?")) return false;
       await A.api("DELETE", url); studySel = null; $("st-detail-panel").style.display = "none";
     } else if (a === "reset") {
       if (!confirm("Ricominciare la materia dal livello base? La memoria di questa materia verrà cancellata.")) return false;
@@ -174,7 +174,7 @@
       const a = e.target.dataset.tact; if (!a || !studySel) return;
       try { if (await topicAction(a)) loadStudy(); } catch (err) { A.toast(err.message, true); }
     });
-    $("st-now").addEventListener("click", async () => { try { await A.api("POST", "/api/study/now"); A.toast("Atena inizia a studiare (si ferma se gli parli)"); } catch (e) { A.toast(e.message, true); } });
+    $("st-now").addEventListener("click", async () => { try { await A.api("POST", "/api/study/now"); A.toast("Nuxiva inizia a studiare (si ferma se gli parli)"); } catch (e) { A.toast(e.message, true); } });
     $("st-search").addEventListener("submit", search);
   }
 

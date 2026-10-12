@@ -41,7 +41,7 @@ class Trace:
     def begin(self, component: str, note: str = "", chain: Iterable[str] = ()) -> int:
         call_id = next(self._ids)
         known = BY_ID.get(component)
-        entry = {"id": call_id, "component": component, "label": known.label if known else component or "Atena",
+        entry = {"id": call_id, "component": component, "label": known.label if known else component or "Nuxiva",
                  "started": time.time(), "state": "thinking", "model": None, "steps": [],
                  "chain": [brains.describe(ref)["label"] for ref in chain]}
         self._active[call_id] = entry

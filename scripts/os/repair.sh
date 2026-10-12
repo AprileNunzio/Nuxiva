@@ -2,16 +2,16 @@
 set -uo pipefail
 export DEBIAN_FRONTEND=noninteractive
 
-ATENA_DIR="${ATENA_DIR:-/opt/Atena}"
-WIZ="$ATENA_DIR/installer_wizard"
+NUXIVA_DIR="${NUXIVA_DIR:-/opt/Nuxiva}"
+WIZ="$NUXIVA_DIR/installer_wizard"
 VENV="$WIZ/venv"
 REQ="$WIZ/backend/requirements.txt"
 STAMP="$VENV/.requirements.sha1"
-STATE=/var/lib/atena
+STATE=/var/lib/nuxiva
 STATUS="$STATE/repair.json"
-LOG_DIR=/var/log/atena
+LOG_DIR=/var/log/nuxiva
 LOG="$LOG_DIR/repair.log"
-UNIT=atena-supervisor.service
+UNIT=nuxiva-supervisor.service
 CORE_IMPORTS="import fastapi, uvicorn, httpx, psutil, pam"
 RESTART=1
 QUIET=0
@@ -25,12 +25,12 @@ for arg in "$@"; do
     esac
 done
 
-[ "$EUID" -eq 0 ] || { echo "sudo atenactl ripara" >&2; exit 2; }
+[ "$EUID" -eq 0 ] || { echo "sudo nuxivactl ripara" >&2; exit 2; }
 mkdir -p "$STATE" "$LOG_DIR"
 chmod 750 "$LOG_DIR"
 
 ui_lang=""
-if [ -r /etc/atena/atena.env ]; then ui_lang=$(sed -n 's/^ATENA_UI_LANG=//p' /etc/atena/atena.env | tail -n 1); fi
+if [ -r /etc/nuxiva/nuxiva.env ]; then ui_lang=$(sed -n 's/^NUXIVA_UI_LANG=//p' /etc/nuxiva/nuxiva.env | tail -n 1); fi
 case "${ui_lang:-${LC_ALL:-${LC_MESSAGES:-${LANG:-}}}}" in
     it*) UI_LANG=it ;;
     *) UI_LANG=en ;;
@@ -39,10 +39,10 @@ esac
 declare -A L
 if [ "$UI_LANG" = it ]; then
     L=(
-        [title]="Riparazione di Atena" [busy]="Un'altra riparazione è già in corso"
+        [title]="Riparazione di Nuxiva" [busy]="Un'altra riparazione è già in corso"
         [disk]="Spazio su disco" [apt]="Gestore dei pacchetti" [network]="Connessione a internet"
-        [code]="File di Atena" [python]="Librerie Python" [system]="File di sistema" [ports]="Porte di rete"
-        [service]="Avvio di Atena"
+        [code]="File di Nuxiva" [python]="Librerie Python" [system]="File di sistema" [ports]="Porte di rete"
+        [service]="Avvio di Nuxiva"
         [disk_ok]="liberi" [disk_cleaned]="liberati con la pulizia" [disk_full]="spazio insufficiente: libera almeno 2 GB e riprova"
         [apt_wait]="attendo che finisca un'altra installazione" [apt_fixed]="installazione interrotta completata" [apt_failed]="il gestore dei pacchetti non risponde"
         [net_fixed]="ripristinata riavviando la risoluzione dei nomi" [net_offline]="assente: controlla cavo o Wi-Fi"
@@ -51,15 +51,15 @@ if [ "$UI_LANG" = it ]; then
         [sys_fixed]="ripristinati"
         [port_busy]="la porta %s è occupata da %s: chiudi quel programma"
         [svc_ok]="attiva" [svc_safe]="partita in modalità sicura" [svc_failed]="non risponde"
-        [ok]="ok" [done]="Riparazione completata: Atena funziona" [partial]="Riparazione terminata con problemi da risolvere a mano"
+        [ok]="ok" [done]="Riparazione completata: Nuxiva funziona" [partial]="Riparazione terminata con problemi da risolvere a mano"
         [log]="Log completo"
     )
 else
     L=(
-        [title]="Atena repair" [busy]="Another repair is already running"
+        [title]="Nuxiva repair" [busy]="Another repair is already running"
         [disk]="Disk space" [apt]="Package manager" [network]="Internet connection"
-        [code]="Atena files" [python]="Python libraries" [system]="System files" [ports]="Network ports"
-        [service]="Starting Atena"
+        [code]="Nuxiva files" [python]="Python libraries" [system]="System files" [ports]="Network ports"
+        [service]="Starting Nuxiva"
         [disk_ok]="free" [disk_cleaned]="freed by cleanup" [disk_full]="not enough space: free at least 2 GB and try again"
         [apt_wait]="waiting for another installation to finish" [apt_fixed]="interrupted installation completed" [apt_failed]="the package manager is not responding"
         [net_fixed]="restored by restarting name resolution" [net_offline]="offline: check the cable or Wi-Fi"
@@ -68,7 +68,7 @@ else
         [sys_fixed]="restored"
         [port_busy]="port %s is used by %s: close that program"
         [svc_ok]="running" [svc_safe]="started in safe mode" [svc_failed]="not responding"
-        [ok]="ok" [done]="Repair complete: Atena is working" [partial]="Repair finished with problems to fix by hand"
+        [ok]="ok" [done]="Repair complete: Nuxiva is working" [partial]="Repair finished with problems to fix by hand"
         [log]="Full log"
     )
 fi
@@ -79,7 +79,7 @@ else
     C_OK="" C_WARN="" C_BAD="" C_DIM="" C_CYAN="" C_OFF=""
 fi
 
-exec 8>/run/atena-repair.lock
+exec 8>/run/nuxiva-repair.lock
 if ! flock -n 8; then
     [ "$QUIET" = 1 ] || echo "${L[busy]}"
     exit 0
@@ -167,7 +167,7 @@ check_apt() {
 }
 
 online() {
-    curl -fsS --proto '=https' --max-time 8 -o /dev/null "https://github.com/AprileNunzio/ATENA.git/info/refs?service=git-upload-pack" \
+    curl -fsS --proto '=https' --max-time 8 -o /dev/null "https://github.com/AprileNunzio/NUXIVA.git/info/refs?service=git-upload-pack" \
         && curl -fsS --proto '=https' --max-time 8 -o /dev/null https://pypi.org/simple/pip/
 }
 
@@ -187,26 +187,26 @@ check_network() {
     return 1
 }
 
-git_a() { git -c safe.directory='*' -C "$ATENA_DIR" "$@"; }
+git_a() { git -c safe.directory='*' -C "$NUXIVA_DIR" "$@"; }
 
 check_code() {
     mark code running
     local head branch remote tmp
-    branch=$(sed -n 's/^ATENA_UPDATE_BRANCH=//p' /etc/atena/atena.env 2>/dev/null | tail -n 1)
+    branch=$(sed -n 's/^NUXIVA_UPDATE_BRANCH=//p' /etc/nuxiva/nuxiva.env 2>/dev/null | tail -n 1)
     branch=${branch:-main}
     if head=$(git_a rev-parse --verify -q HEAD 2>>"$LOG") && git_a fsck --connectivity-only --no-dangling >>"$LOG" 2>&1; then
         if git_a diff --quiet HEAD -- 2>>"$LOG"; then mark code ok "${head:0:7}"; return 0; fi
         if git_a reset --hard -q HEAD >>"$LOG" 2>&1; then mark code fixed "${L[code_fixed]}"; return 0; fi
     fi
     if (( NET == 0 )); then fail_step code "${L[code_failed]}"; return 1; fi
-    remote=$(git_a remote get-url origin 2>/dev/null || echo "https://github.com/AprileNunzio/ATENA.git")
-    case "$remote" in https://*) ;; *) remote="https://github.com/AprileNunzio/ATENA.git" ;; esac
-    tmp="$ATENA_DIR.repair.$$"
+    remote=$(git_a remote get-url origin 2>/dev/null || echo "https://github.com/AprileNunzio/NUXIVA.git")
+    case "$remote" in https://*) ;; *) remote="https://github.com/AprileNunzio/NUXIVA.git" ;; esac
+    tmp="$NUXIVA_DIR.repair.$$"
     rm -rf "$tmp"
     if ! git clone -q --branch "$branch" "$remote" "$tmp" >>"$LOG" 2>&1; then rm -rf "$tmp"; fail_step code "${L[code_failed]}"; return 1; fi
     if [ -n "${head:-}" ] && git -C "$tmp" cat-file -e "$head^{commit}" 2>/dev/null; then git -C "$tmp" reset -q --hard "$head" >>"$LOG" 2>&1; fi
-    rm -rf "$ATENA_DIR.broken"
-    mv "$ATENA_DIR" "$ATENA_DIR.broken" && mv "$tmp" "$ATENA_DIR" && rm -rf "$ATENA_DIR.broken"
+    rm -rf "$NUXIVA_DIR.broken"
+    mv "$NUXIVA_DIR" "$NUXIVA_DIR.broken" && mv "$tmp" "$NUXIVA_DIR" && rm -rf "$NUXIVA_DIR.broken"
     mark code fixed "${L[code_fetched]}"
 }
 
@@ -230,7 +230,7 @@ check_python() {
     [ "$(safe_reason)" = missing_library ] && healthy=0
     if (( healthy )); then mark python ok; return 0; fi
     if (( NET == 0 )); then fail_step python "${L[py_failed]}"; return 1; fi
-    exec 9>>"$VENV/.requirements.lock" 2>/dev/null || exec 9>/run/atena-requirements.lock
+    exec 9>>"$VENV/.requirements.lock" 2>/dev/null || exec 9>/run/nuxiva-requirements.lock
     if ! flock -n 9; then
         mark python running "${L[py_wait]}"
         flock -w 1800 9 || { fail_step python "${L[py_failed]}"; return 1; }
@@ -255,22 +255,22 @@ check_python() {
 check_system() {
     mark system running
     local changed=0 unit
-    for unit in atena-supervisor.service atena-rollback.service; do
-        if [ -f "$ATENA_DIR/scripts/os/systemd/$unit" ] && ! cmp -s "$ATENA_DIR/scripts/os/systemd/$unit" "/etc/systemd/system/$unit"; then
-            install -m 0644 "$ATENA_DIR/scripts/os/systemd/$unit" /etc/systemd/system/
+    for unit in nuxiva-supervisor.service nuxiva-rollback.service; do
+        if [ -f "$NUXIVA_DIR/scripts/os/systemd/$unit" ] && ! cmp -s "$NUXIVA_DIR/scripts/os/systemd/$unit" "/etc/systemd/system/$unit"; then
+            install -m 0644 "$NUXIVA_DIR/scripts/os/systemd/$unit" /etc/systemd/system/
             changed=1
         fi
     done
     (( changed )) && systemctl daemon-reload >>"$LOG" 2>&1
-    if [ ! -f /etc/pam.d/atena-admin ]; then
-        printf '%s\n' '# Atena OS admin panel' '@include common-auth' '@include common-account' > /etc/pam.d/atena-admin
+    if [ ! -f /etc/pam.d/nuxiva-admin ]; then
+        printf '%s\n' '# Nuxiva OS admin panel' '@include common-auth' '@include common-account' > /etc/pam.d/nuxiva-admin
         changed=1
     fi
-    getent group atena-admin >/dev/null || { groupadd --system atena-admin; changed=1; }
-    mkdir -p /etc/atena /var/lib/atena /var/log/atena
-    touch /etc/atena/atena.env
-    [ "$(stat -c %a /etc/atena)" = 700 ] || { chmod 700 /etc/atena; changed=1; }
-    [ "$(stat -c %a /etc/atena/atena.env)" = 600 ] || { chmod 600 /etc/atena/atena.env; changed=1; }
+    getent group nuxiva-admin >/dev/null || { groupadd --system nuxiva-admin; changed=1; }
+    mkdir -p /etc/nuxiva /var/lib/nuxiva /var/log/nuxiva
+    touch /etc/nuxiva/nuxiva.env
+    [ "$(stat -c %a /etc/nuxiva)" = 700 ] || { chmod 700 /etc/nuxiva; changed=1; }
+    [ "$(stat -c %a /etc/nuxiva/nuxiva.env)" = 600 ] || { chmod 600 /etc/nuxiva/nuxiva.env; changed=1; }
     systemctl is-enabled -q "$UNIT" 2>/dev/null || { systemctl enable -q "$UNIT" >>"$LOG" 2>&1; changed=1; }
     if (( changed )); then mark system fixed "${L[sys_fixed]}"; else mark system ok; fi
 }
@@ -317,7 +317,7 @@ check_service() {
         return 1
     fi
     if jq -e '.safe_mode == true' >/dev/null 2>&1 <<< "$body"; then fail_step service "${L[svc_safe]}"; return 1; fi
-    curl -fsS --max-time 10 -X POST -H "X-Atena-Request: 1" http://127.0.0.1:8080/api/internal/repair >>"$LOG" 2>&1
+    curl -fsS --max-time 10 -X POST -H "X-Nuxiva-Request: 1" http://127.0.0.1:8080/api/internal/repair >>"$LOG" 2>&1
     mark service ok "${L[svc_ok]}"
 }
 

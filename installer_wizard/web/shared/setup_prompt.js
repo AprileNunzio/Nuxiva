@@ -9,7 +9,7 @@
     icon.textContent = "✦";
     const text = document.createElement("span");
     const strong = document.createElement("strong");
-    strong.textContent = "Configura Atena";
+    strong.textContent = "Configura Nuxiva";
     const small = document.createElement("small");
     small.textContent = "Bastano due minuti, anche mentre l'installazione continua";
     text.append(strong, small);

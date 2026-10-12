@@ -2,8 +2,8 @@ import json
 import os
 from pathlib import Path
 
-STATE = Path(os.environ.get("ATENA_WEBCAMS_FILE", "/var/lib/atena/webcams.json"))
-FALLBACK = os.environ.get("ATENA_CAMERA", "/dev/video0")
+STATE = Path(os.environ.get("NUXIVA_WEBCAMS_FILE", "/var/lib/nuxiva/webcams.json"))
+FALLBACK = os.environ.get("NUXIVA_CAMERA", "/dev/video0")
 SIZES = {"640x480": (640, 480), "1280x720": (1280, 720), "1920x1080": (1920, 1080)}
 
 
@@ -18,7 +18,7 @@ def current() -> dict:
 
 
 def capture_size(mode: dict | None, cores: int) -> tuple[int, int]:
-    wanted = os.environ.get("ATENA_CAMERA_RES", "auto").strip()
+    wanted = os.environ.get("NUXIVA_CAMERA_RES", "auto").strip()
     width, height = SIZES.get(wanted) or ((1280, 720) if cores >= 4 else (640, 480))
     if mode and mode.get("width") and mode.get("height"):
         width, height = min(width, mode["width"]), min(height, mode["height"])
@@ -26,16 +26,16 @@ def capture_size(mode: dict | None, cores: int) -> tuple[int, int]:
 
 
 def ir_enabled() -> bool:
-    return os.environ.get("ATENA_IR_MODE", "auto").strip().lower() != "off"
+    return os.environ.get("NUXIVA_IR_MODE", "auto").strip().lower() != "off"
 
 
 def liveness_mode() -> str:
-    value = os.environ.get("ATENA_LIVENESS", "advisory").strip().lower()
+    value = os.environ.get("NUXIVA_LIVENESS", "advisory").strip().lower()
     return value if value in ("off", "advisory", "strict") else "advisory"
 
 
 def liveness_minimum() -> float:
     try:
-        return max(0.1, min(0.95, float(os.environ.get("ATENA_LIVENESS_MIN", "0.55"))))
+        return max(0.1, min(0.95, float(os.environ.get("NUXIVA_LIVENESS_MIN", "0.55"))))
     except ValueError:
         return 0.55

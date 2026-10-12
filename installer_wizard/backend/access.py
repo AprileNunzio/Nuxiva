@@ -17,7 +17,7 @@ def require_admin(request: Request) -> str:
     user = session_user(request)
     if not user:
         raise HTTPException(401, "Accesso richiesto")
-    if request.method in ("POST", "PUT", "DELETE") and request.headers.get("X-Atena-Request") != "1":
+    if request.method in ("POST", "PUT", "DELETE") and request.headers.get("X-Nuxiva-Request") != "1":
         raise HTTPException(403, "Richiesta non valida")
     return user
 
@@ -33,7 +33,7 @@ def require_display(request: Request, message: str = "Accesso richiesto") -> Non
 
 
 def require_internal(request: Request) -> None:
-    if not is_local(request) or request.headers.get("X-Atena-Request") != "1":
+    if not is_local(request) or request.headers.get("X-Nuxiva-Request") != "1":
         raise HTTPException(403, "Consentito solo in locale")
 
 

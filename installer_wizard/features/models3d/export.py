@@ -25,7 +25,7 @@ def _pad(data: bytes, fill: bytes = b"\x00") -> bytes:
 
 
 def glb(meshes: list[tuple[dict, Mesh]], name: str) -> bytes:
-    gltf = {"asset": {"version": "2.0", "generator": "Atena"}, "scene": 0,
+    gltf = {"asset": {"version": "2.0", "generator": "Nuxiva"}, "scene": 0,
             "scenes": [{"name": name, "nodes": [0]}],
             "nodes": [{"name": name, "children": list(range(1, len(meshes) + 1))}],
             "meshes": [], "materials": [], "accessors": [], "bufferViews": [], "buffers": []}
@@ -73,12 +73,12 @@ def stl(meshes: list[tuple[dict, Mesh]], name: str) -> bytes:
             n = (u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0])
             length = sum(x * x for x in n) ** 0.5 or 1.0
             tris.append(struct.pack("<12fH", *(x / length for x in n), *pa, *pb, *pc, 0))
-    header = f"Atena {name} (mm, Z in alto)".encode()[:80].ljust(80, b" ")
+    header = f"Nuxiva {name} (mm, Z in alto)".encode()[:80].ljust(80, b" ")
     return header + struct.pack("<I", len(tris)) + b"".join(tris)
 
 
 def obj(meshes: list[tuple[dict, Mesh]], name: str, mtl_name: str) -> tuple[bytes, bytes]:
-    lines, mats, base = [f"# Atena — {name} (cm)", f"mtllib {mtl_name}"], [], 1
+    lines, mats, base = [f"# Nuxiva — {name} (cm)", f"mtllib {mtl_name}"], [], 1
     for i, (part, m) in enumerate(meshes):
         mat = f"m{i}"
         r, g, b = _rgb(part.get("color"))

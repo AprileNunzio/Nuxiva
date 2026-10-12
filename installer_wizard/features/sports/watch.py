@@ -11,7 +11,7 @@ from features.sports.catalog import LIVE, POST
 from features.sports.fetch import SportsUnavailable
 from features.sports.prefs import prefs
 
-log = logging.getLogger("atena.sports")
+log = logging.getLogger("nuxiva.sports")
 TICK = 5.0
 LIVE_EVERY, NEAR_EVERY, IDLE_EVERY = 20.0, 60.0, 600.0
 PROXIMITY_TTL, PROXIMITY_COOLDOWN = 40.0, 1800.0
@@ -21,7 +21,7 @@ WIDGET_TTL = {"goal": 120, "red": 60, "kickoff": 90, "soon": 900, "final": 600}
 
 
 def enabled() -> bool:
-    return env_get("ATENA_SPORTS", "1") != "0"
+    return env_get("NUXIVA_SPORTS", "1") != "0"
 
 
 def match_widget(card: dict) -> tuple[str, dict]:

@@ -2,8 +2,8 @@ import re
 from datetime import datetime
 
 FACTS_TITLE = "## Cosa so"
-HINT = ("_Può modificare questo elenco: cancelli una riga e Atena la dimentica, la corregga e Atena aggiorna il ricordo, "
-        "ne aggiunga una (iniziando con «- ») e Atena la impara._")
+HINT = ("_Può modificare questo elenco: cancelli una riga e Nuxiva la dimentica, la corregga e Nuxiva aggiorna il ricordo, "
+        "ne aggiunga una (iniziando con «- ») e Nuxiva la impara._")
 
 
 def safe_name(text: str) -> str:
@@ -43,7 +43,7 @@ def person(profile: dict, sections: list[dict], facts: list[dict], habits: str) 
 
 
 def general(facts: list[dict]) -> str:
-    return "# Fatti generali\n\nCiò che Atena ricorda e non riguarda una persona precisa.\n\n" + facts_block(facts)
+    return "# Fatti generali\n\nCiò che Nuxiva ricorda e non riguarda una persona precisa.\n\n" + facts_block(facts)
 
 
 def parse_facts(text: str) -> list[str] | None:
@@ -77,7 +77,7 @@ def automations(items: list[dict], kinds: dict) -> str:
 
 def habits(suggestions: list[dict]) -> str:
     labels = {"new": "da decidere", "snoozed": "rimandata", "accepted": "automatizzata", "rejected": "rifiutata"}
-    out = ["# Abitudini della casa", "", "Regolarità che Atena ha notato nell'uso della casa.", ""]
+    out = ["# Abitudini della casa", "", "Regolarità che Nuxiva ha notato nell'uso della casa.", ""]
     for s in sorted(suggestions, key=lambda s: -s["confidence"]):
         out.append(f"- {s['text'][0].upper() + s['text'][1:]} — {s['support']} volte su {s['observed']} ({labels.get(s['status'], s['status'])})")
     return "\n".join(out) + "\n"
@@ -85,15 +85,15 @@ def habits(suggestions: list[dict]) -> str:
 
 def readme(root: str) -> str:
     return (
-        "# La memoria di Atena\n\n"
-        "Questa cartella è la memoria di Atena in chiaro: la può leggere, correggere e completare.\n\n"
-        "- **Persone/**: una scheda per persona con anagrafica, gusti e ciò che Atena sa di lei. "
+        "# La memoria di Nuxiva\n\n"
+        "Questa cartella è la memoria di Nuxiva in chiaro: la può leggere, correggere e completare.\n\n"
+        "- **Persone/**: una scheda per persona con anagrafica, gusti e ciò che Nuxiva sa di lei. "
         "Salute e documenti restano solo nel pannello.\n"
-        "- **Memoria/Fatti generali.md**: ciò che Atena ricorda e non riguarda una persona.\n"
+        "- **Memoria/Fatti generali.md**: ciò che Nuxiva ricorda e non riguarda una persona.\n"
         "- **Diario/**: una nota per ogni giorno con ciò che è successo.\n"
         "- **Casa/Abitudini.md**: le regolarità notate nell'uso della casa.\n"
         "- **Automazioni.md**: cosa fanno le automazioni attive.\n\n"
-        "Nelle sezioni «Cosa so» può cancellare, correggere o aggiungere righe: Atena le rilegge entro pochi minuti. "
-        "Le altre parti vengono riscritte da Atena.\n\n"
+        "Nelle sezioni «Cosa so» può cancellare, correggere o aggiungere righe: Nuxiva le rilegge entro pochi minuti. "
+        "Le altre parti vengono riscritte da Nuxiva.\n\n"
         f"Percorso sul server: `{root}`\n"
     )

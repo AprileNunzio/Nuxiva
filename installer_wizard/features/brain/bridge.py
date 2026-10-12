@@ -11,8 +11,8 @@ from features.brain.trace import trace
 from features.cloud.catalog import is_cloud
 from features.cloud.client import CloudError, complete
 
-SIGNATURE_HEADER = "X-Atena-Signature"
-TIMESTAMP_HEADER = "X-Atena-Timestamp"
+SIGNATURE_HEADER = "X-Nuxiva-Signature"
+TIMESTAMP_HEADER = "X-Nuxiva-Timestamp"
 MAX_SKEW_SECONDS = 30
 MAX_BODY_BYTES = 256 * 1024
 COMPLETE_PATH = "/api/internal/brain/complete"
@@ -44,7 +44,7 @@ async def _authorised(request: Request, path: str) -> bytes:
         stamp = int(request.headers.get(TIMESTAMP_HEADER, ""))
     except ValueError:
         raise HTTPException(401, "Firma mancante")
-    key = read_env().get("ATENA_SECRET_KEY", "")
+    key = read_env().get("NUXIVA_SECRET_KEY", "")
     if key.strip("0") and not verify(key, request.method, path, stamp, body, request.headers.get(SIGNATURE_HEADER, ""), time.time()):
         raise HTTPException(401, "Firma non valida")
     return body

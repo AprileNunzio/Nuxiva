@@ -1,6 +1,6 @@
 {
   "name": "Nodi e server",
-  "description": "Il server principale e tutti i nodi di Atena (satelliti audio, display, altri server, microcontrollori): stato in tempo reale, abbinamento sicuro e comandi.",
+  "description": "Il server principale e tutti i nodi di Nuxiva (satelliti audio, display, altri server, microcontrollori): stato in tempo reale, abbinamento sicuro e comandi.",
   "capabilities": [
     "Stato del server principale e dei suoi sottosistemi",
     "Abbinamento dei nodi con codice monouso e token personale",

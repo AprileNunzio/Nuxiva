@@ -13,14 +13,14 @@ EVENTS = [
     {"value": "person_left", "label": "Una persona non si vede più"},
     {"value": "nobody_home", "label": "Non c'è più nessuno"},
     {"value": "somebody_home", "label": "Arriva qualcuno dopo che non c'era nessuno"},
-    {"value": "wake", "label": "Qualcuno dice «Atena»"},
-    {"value": "voice_command", "label": "Qualsiasi richiesta ad Atena"},
+    {"value": "wake", "label": "Qualcuno dice «Nuxiva»"},
+    {"value": "voice_command", "label": "Qualsiasi richiesta ad Nuxiva"},
     {"value": "email_new", "label": "Nuova email"},
     {"value": "calendar_soon", "label": "Impegno in agenda tra poco"},
-    {"value": "component_broken", "label": "Un componente di Atena si guasta"},
+    {"value": "component_broken", "label": "Un componente di Nuxiva si guasta"},
     {"value": "component_ok", "label": "Un componente torna a funzionare"},
     {"value": "automation_finished", "label": "Un'altra automazione termina"},
-    {"value": "startup", "label": "Avvio di Atena"},
+    {"value": "startup", "label": "Avvio di Nuxiva"},
     {"value": "custom", "label": "Evento personalizzato (nome sotto)"},
 ]
 SUN = [{"value": "sunrise", "label": "Alba"}, {"value": "sunset", "label": "Tramonto"}]
@@ -37,7 +37,7 @@ TRIGGERS = {
     "time": {"label": "Orario", "icon": "⏰", "fields": [F("at", "Ora", "time", required=True), F("days", "Giorni (vuoto = tutti)", "days")]},
     "cron": {"label": "Espressione cron", "icon": "🗓", "fields": [
         F("expr", "Espressione cron (minuto ora giorno mese giorno-settimana, o @daily, @hourly…)", "text", required=True, placeholder="*/15 8-18 * * 1-5"),
-        F("misfire", "Se Atena era spenta all'orario", "select", options=MISFIRE)]},
+        F("misfire", "Se Nuxiva era spenta all'orario", "select", options=MISFIRE)]},
     "interval": {"label": "Ogni N minuti", "icon": "🔁", "fields": [F("minutes", "Ogni quanti minuti", "number", required=True, min=1)]},
     "sun": {"label": "Alba o tramonto", "icon": "🌅", "fields": [F("event", "Quando", "select", options=SUN, required=True),
                                                              F("offset", "Spostamento (minuti, anche negativo)", "number")]},
@@ -48,10 +48,10 @@ TRIGGERS = {
     "presence": {"label": "Presenze", "icon": "🧍", "fields": [
         F("event", "Quando", "select", required=True, options=[e for e in EVENTS if e["value"] in ("person_arrived", "person_left", "nobody_home", "somebody_home")]),
         F("person", "Persona (vuoto = chiunque)")]},
-    "phrase": {"label": "Frase detta ad Atena", "icon": "🗣", "fields": [
+    "phrase": {"label": "Frase detta ad Nuxiva", "icon": "🗣", "fields": [
         F("phrases", "Frasi (una per riga, * = qualsiasi parola)", "list", required=True),
         F("reply", "Risposta immediata (vuoto = «Subito, signore.»)")]},
-    "event": {"label": "Evento di Atena", "icon": "⚡", "fields": [F("name", "Evento", "select", options=EVENTS, required=True),
+    "event": {"label": "Evento di Nuxiva", "icon": "⚡", "fields": [F("name", "Evento", "select", options=EVENTS, required=True),
                                                                  F("custom", "Nome evento personalizzato"),
                                                                  F("filter", "Filtro (espressione, es. data.person == 'Nunzio')")]},
     "template": {"label": "Quando un'espressione diventa vera", "icon": "🧮", "fields": [
@@ -96,7 +96,7 @@ ACTIONS = {
     "holo": {"label": "Ologramma", "icon": "🧑‍🚀", "fields": [F("express", "Espressione (es. sorriso)"), F("play", "Animazione"),
                                                          F("accessory", "Accessorio (cappello, occhiali, cuffie)"), F("tint", "Colore (#rrggbb)")]},
     "sound": {"label": "Suono", "icon": "🎵", "fields": [F("name", "Suono", "sound", required=True), F("force", "Anche in silenzio", "bool")]},
-    "agent": {"label": "Chiedi ad Atena (agente con strumenti)", "icon": "🤖", "fields": [
+    "agent": {"label": "Chiedi ad Nuxiva (agente con strumenti)", "icon": "🤖", "fields": [
         F("prompt", "Cosa deve fare", "textarea", required=True), F("trusted", "Senza chiedere approvazione", "bool"),
         F("store", "Salva la risposta nella variabile")]},
     "email": {"label": "Invia email", "icon": "✉️", "fields": [F("to", "A", required=True), F("subject", "Oggetto", required=True),

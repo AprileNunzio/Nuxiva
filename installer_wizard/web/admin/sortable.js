@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { fmt } = A;
+  const A = window.NuxivaAdmin, { fmt } = A;
   const order = (list) => [...list.querySelectorAll(".prio-item[draggable=true]")].map((el) => el.dataset.id);
 
   A.makeSortable = (list, onChange) => {

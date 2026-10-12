@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-ATENA_DIR="${ATENA_DIR:-/opt/Atena}"
-WIZ="$ATENA_DIR/installer_wizard"
+NUXIVA_DIR="${NUXIVA_DIR:-/opt/Nuxiva}"
+WIZ="$NUXIVA_DIR/installer_wizard"
 VENV="$WIZ/venv"
 REQ="$WIZ/backend/requirements.txt"
 STAMP="$VENV/.requirements.sha1"
 
-mkdir -p /etc/atena /var/lib/atena /var/log/atena
-touch /etc/atena/atena.env
-chmod 700 /etc/atena
-chmod 600 /etc/atena/atena.env
+mkdir -p /etc/nuxiva /var/lib/nuxiva /var/log/nuxiva
+touch /etc/nuxiva/nuxiva.env
+chmod 700 /etc/nuxiva
+chmod 600 /etc/nuxiva/nuxiva.env
 
 if ! "$VENV/bin/python" -c "import fastapi, uvicorn, httpx, psutil, pam" >/dev/null 2>&1 \
         && [ -f "$STAMP" ]; then
@@ -31,7 +31,7 @@ install_requirements() {
     echo "$want" > "$STAMP.tmp" && mv -f "$STAMP.tmp" "$STAMP"
 }
 if [ -z "$have" ] || ! "$VENV/bin/python" -c "import fastapi, uvicorn, httpx, psutil, pam" >/dev/null 2>&1; then
-    echo "Installazione delle librerie Python di Atena, può richiedere alcuni minuti..."
+    echo "Installazione delle librerie Python di Nuxiva, può richiedere alcuni minuti..."
     install_requirements --progress-bar off 9>"$VENV/.requirements.lock"
 elif [ "$have" != "$want" ]; then
     echo "Aggiornamento librerie in background..."
@@ -41,8 +41,8 @@ fi
 pkill -f 'backend/wizard_server.py' >/dev/null 2>&1 || true
 
 units_changed=0
-for unit in atena-supervisor.service atena-rollback.service; do
-    src="$ATENA_DIR/scripts/os/systemd/$unit"
+for unit in nuxiva-supervisor.service nuxiva-rollback.service; do
+    src="$NUXIVA_DIR/scripts/os/systemd/$unit"
     if [ -f "$src" ] && ! cmp -s "$src" "/etc/systemd/system/$unit"; then
         install -m 0644 "$src" /etc/systemd/system/
         units_changed=1
@@ -50,7 +50,7 @@ for unit in atena-supervisor.service atena-rollback.service; do
 done
 if [ "$units_changed" = 1 ]; then systemctl daemon-reload >/dev/null 2>&1 || true; fi
 
-if [ ! -f /etc/pam.d/atena-admin ]; then
-    printf '%s\n' '# Atena OS admin panel' '@include common-auth' '@include common-account' > /etc/pam.d/atena-admin
+if [ ! -f /etc/pam.d/nuxiva-admin ]; then
+    printf '%s\n' '# Nuxiva OS admin panel' '@include common-auth' '@include common-account' > /etc/pam.d/nuxiva-admin
 fi
-getent group atena-admin >/dev/null || groupadd --system atena-admin
+getent group nuxiva-admin >/dev/null || groupadd --system nuxiva-admin

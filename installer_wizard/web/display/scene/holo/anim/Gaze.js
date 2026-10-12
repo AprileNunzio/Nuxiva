@@ -30,4 +30,4 @@
   }
 
   H.Gaze = Gaze;
-})(window.Atena3D);
+})(window.Nuxiva3D);

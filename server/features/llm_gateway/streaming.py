@@ -10,7 +10,7 @@ from server.features.llm_gateway.contracts import LLMRequest
 from server.features.llm_gateway.supervisor_bridge import is_remote_ref
 from server.features.llm_gateway.tuning import apply as apply_tuning
 
-logger = logging.getLogger("atena.llm_gateway.stream")
+logger = logging.getLogger("nuxiva.llm_gateway.stream")
 
 
 class StreamUnavailable(RuntimeError):
@@ -18,7 +18,7 @@ class StreamUnavailable(RuntimeError):
 
 
 def chain_for(request: LLMRequest) -> list[str]:
-    return [m for m in request.models if m] or brain_order_for(request.component) or [settings.ATENA_LLM_MODEL or request.model_name]
+    return [m for m in request.models if m] or brain_order_for(request.component) or [settings.NUXIVA_LLM_MODEL or request.model_name]
 
 
 def payload_for(model: str, request: LLMRequest, chain: list[str]) -> dict:

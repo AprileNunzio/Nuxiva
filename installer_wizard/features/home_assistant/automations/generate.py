@@ -29,7 +29,7 @@ async def draft(brain, request: str, name) -> dict:
     if not entities:
         raise AutomationError("Nessun dispositivo di Home Assistant disponibile")
     prompt = (
-        "Sei l'esperto di Home Assistant di Atena. Scrivi UNA automazione Home Assistant (formato 2024.10+, chiavi "
+        "Sei l'esperto di Home Assistant di Nuxiva. Scrivi UNA automazione Home Assistant (formato 2024.10+, chiavi "
         "triggers/conditions/actions, \"trigger\" al posto di \"platform\", \"action\" al posto di \"service\") che "
         "realizzi la richiesta. Usa SOLO le entità elencate. Rispondi solo con JSON, come questo esempio:\n"
         f"{_EXAMPLE}\n\nEntità (id | nome | stanza | stato):\n" + "\n".join(entities)

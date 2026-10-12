@@ -6,18 +6,18 @@ from unittest import mock
 
 from fastapi.testclient import TestClient
 
-import atena_supervisor
+import nuxiva_supervisor
 from features.shares import archive
 
-HEADERS = {"X-Atena-Request": "1"}
+HEADERS = {"X-Nuxiva-Request": "1"}
 SCRIPT = Path(__file__).resolve().parents[2] / "scripts" / "os" / "steps" / "63-shares.sh"
 
 
 class SharesMusicTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.admin = TestClient(atena_supervisor.admin)
-        assert cls.admin.post("/api/auth/login", json={"username": "admin", "password": "atena"}, headers=HEADERS).status_code == 200
+        cls.admin = TestClient(nuxiva_supervisor.admin)
+        assert cls.admin.post("/api/auth/login", json={"username": "admin", "password": "nuxiva"}, headers=HEADERS).status_code == 200
 
     def setUp(self):
         self.root = Path(tempfile.mkdtemp()) / "condivisa"

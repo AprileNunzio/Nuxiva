@@ -11,7 +11,7 @@ import numpy as np
 
 import earconf
 
-log = logging.getLogger("atena.ear")
+log = logging.getLogger("nuxiva.ear")
 
 RATE = 16000
 FRAME = 480
@@ -21,16 +21,16 @@ TAIL_FRAMES = 20
 MIN_VOICED = 1.5
 OVERRUN = 25.0
 CLIP_LEVEL = 0.98
-ROOT = Path(os.environ.get("ATENA_EAR_REVIEW_DIR", "/var/lib/atena/ear_review"))
+ROOT = Path(os.environ.get("NUXIVA_EAR_REVIEW_DIR", "/var/lib/nuxiva/ear_review"))
 RECORDS = ROOT / "chunks"
 
 
 def enabled() -> bool:
-    return earconf.flag("ATENA_EAR_RECORD", True)
+    return earconf.flag("NUXIVA_EAR_RECORD", True)
 
 
 def chunk_seconds() -> float:
-    return earconf.number("ATENA_EAR_RECORD_CHUNK", 60.0, 20.0, 300.0)
+    return earconf.number("NUXIVA_EAR_RECORD_CHUNK", 60.0, 20.0, 300.0)
 
 
 class Chunk:
@@ -175,9 +175,9 @@ def remove(meta_file: Path) -> None:
 
 def prune() -> int:
     now = time.time()
-    keep = earconf.number("ATENA_EAR_RECORD_HOURS", 24.0, 1.0, 168.0) * 3600
-    keep_done = earconf.number("ATENA_EAR_KEEP_REVIEWED_H", 2.0, 0.0, 48.0) * 3600
-    cap = earconf.number("ATENA_EAR_RECORD_MAX_MB", 500.0, 50.0, 5000.0) * 1024 * 1024
+    keep = earconf.number("NUXIVA_EAR_RECORD_HOURS", 24.0, 1.0, 168.0) * 3600
+    keep_done = earconf.number("NUXIVA_EAR_KEEP_REVIEWED_H", 2.0, 0.0, 48.0) * 3600
+    cap = earconf.number("NUXIVA_EAR_RECORD_MAX_MB", 500.0, 50.0, 5000.0) * 1024 * 1024
     rows = listing()
     removed = 0
     alive = []

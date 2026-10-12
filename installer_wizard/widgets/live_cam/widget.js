@@ -33,5 +33,5 @@
     update() {},
     destroy(el) { stop(el); },
   };
-  AtenaDesk.register("live_cam", impl);
+  NuxivaDesk.register("live_cam", impl);
 })();

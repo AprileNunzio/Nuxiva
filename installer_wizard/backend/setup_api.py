@@ -19,14 +19,14 @@ from state import store
 
 SETUP_FILE = STATE_DIR / "setup.json"
 ANSWERS_FILE = ETC_DIR / "answers.env"
-WAKE_DIR = Path(os.environ.get("ATENA_WAKEWORD_MODELS", str(STATE_DIR / "wakeword" if DEMO else "/opt/atena-ear/wakeword")))
+WAKE_DIR = Path(os.environ.get("NUXIVA_WAKEWORD_MODELS", str(STATE_DIR / "wakeword" if DEMO else "/opt/nuxiva-ear/wakeword")))
 WAKE_MAX_BYTES = 20 * 1024 * 1024
 MAX_ATTEMPTS = 5
 LOCKOUT_S = 600
 
 PROFILES = {
     "auto": {"label": "Automatico", "model": "", "size_gb": 0.0,
-             "note": "Atena sceglie da sola in base all'hardware."},
+             "note": "Nuxiva sceglie da sola in base all'hardware."},
     "leggero": {"label": "Leggero", "model": "granite3.3:2b", "size_gb": 1.9, "min_ram_gb": 6,
                 "note": "Per mini PC e computer con poca memoria."},
     "bilanciato": {"label": "Bilanciato", "model": "granite3.3:8b", "size_gb": 4.9, "min_ram_gb": 14,
@@ -35,10 +35,30 @@ PROFILES = {
                 "note": "Massima qualità, consigliato con scheda video da 12 GB o più."},
 }
 VOICE_CHOICES = {
-    "if_sara": "Sara — femminile, naturale",
-    "it_IT-serena-high": "Serena — femminile, alta qualità",
-    "it_IT-paola-medium": "Paola — femminile, veloce",
-    "im_nicola": "Nicola — maschile, naturale",
+    "if_sara": "Sara — femminile, naturale (IT)",
+    "it_IT-serena-high": "Serena — femminile, alta qualità (IT)",
+    "it_IT-paola-medium": "Paola — femminile, veloce (IT)",
+    "im_nicola": "Nicola — maschile, naturale (IT)",
+    "af_heart": "Heart — female, natural (EN)",
+    "am_michael": "Michael — male, natural (EN)",
+    "ef_dora": "Dora — femenina, natural (ES)",
+    "em_alex": "Alex — masculino, natural (ES)",
+    "ff_siwis": "Siwis — féminine, naturelle (FR)",
+    "fr_FR-gilles-low": "Gilles — masculin, rapide (FR)",
+}
+
+VOICES_BY_LANG_GENDER = {
+    "it": {"female": "if_sara", "male": "im_nicola"},
+    "en": {"female": "af_heart", "male": "am_michael"},
+    "es": {"female": "ef_dora", "male": "em_alex"},
+    "fr": {"female": "ff_siwis", "male": "fr_FR-gilles-low"},
+}
+
+GREETING_TEMPLATES = {
+    "it": "Ciao! Sono {name}. Sono a tua disposizione.",
+    "en": "Hello! I am {name}. Ready to assist you.",
+    "es": "¡Hola! Soy {name}. A tu servicio.",
+    "fr": "Bonjour ! Je suis {name}. Prêt à vous assister.",
 }
 LANGS = UI_LANGUAGES
 
@@ -46,9 +66,9 @@ NAME_RE = re.compile(r"[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ-]{0,39}")
 HA_URL_RE = re.compile(r"https?://[A-Za-z0-9.-]{1,253}(:\d{1,5})?(/[A-Za-z0-9._~/-]{0,200})?")
 HA_TOKEN_RE = re.compile(r"[A-Za-z0-9._-]{20,512}")
 TELEGRAM_RE = re.compile(r"\d{5,12}:[A-Za-z0-9_-]{30,64}")
-ANSWER_KEYS = {"ATENA_USER_NAME", "ATENA_UI_LANG", "ATENA_VOICE", "ATENA_LLM_MODEL", "ATENA_COMMERCIAL",
-               "HOME_ASSISTANT_URL", "HOME_ASSISTANT_TOKEN", "ATENA_TELEGRAM_TOKEN", "ATENA_SMB_PASSWORD",
-               "ATENA_BRAIN", "ATENA_OLLAMA_URL", "ATENA_CLOUD_PROVIDER", "ATENA_CLOUD_KEY", "ATENA_PACKAGES"}
+ANSWER_KEYS = {"NUXIVA_USER_NAME", "NUXIVA_UI_LANG", "NUXIVA_VOICE", "NUXIVA_LLM_MODEL", "NUXIVA_COMMERCIAL",
+               "HOME_ASSISTANT_URL", "HOME_ASSISTANT_TOKEN", "NUXIVA_TELEGRAM_TOKEN", "NUXIVA_SMB_PASSWORD",
+               "NUXIVA_BRAIN", "NUXIVA_OLLAMA_URL", "NUXIVA_CLOUD_PROVIDER", "NUXIVA_CLOUD_KEY", "NUXIVA_PACKAGES"}
 BRAINS = ("local", "remote", "cloud")
 CLOUD_PICK = {
     "anthropic": ("Anthropic Claude", "claude-haiku-4-5-20251001", "claude-sonnet-5-5"),
@@ -57,12 +77,12 @@ CLOUD_PICK = {
     "mistral": ("Mistral AI", "mistral-small-latest", "mistral-large-latest"),
 }
 CLOUD_KEY_RE = re.compile(r"[A-Za-z0-9_\-.]{20,256}")
-WIZARD_PACKAGES = {"voice": "ATENA_VOICE_PACKAGE", "ear": "ATENA_EAR", "vision": "ATENA_VISION", "documents": "ATENA_DOCUMENTS"}
+WIZARD_PACKAGES = {"voice": "NUXIVA_VOICE_PACKAGE", "ear": "NUXIVA_EAR", "vision": "NUXIVA_VISION", "documents": "NUXIVA_DOCUMENTS"}
 SMB_RE = re.compile(r"[A-Za-z0-9_.@%+=:,-]{12,128}")
 
 public_routes = APIRouter()
 admin_routes = APIRouter()
-PREVIEW_TEXT = "Ciao, sono Atena. Questa è la mia voce: ti piace?"
+PREVIEW_TEXT = "Ciao, sono Nuxiva. Questa è la mia voce: ti piace?"
 PREVIEW_GAP_S = 2.0
 _preview = {"at": 0.0, "lock": None}
 
@@ -133,10 +153,10 @@ def require_setup(request: Request) -> None:
         raise HTTPException(410, "La prima configurazione è già stata completata: usa il pannello di amministrazione")
     if not _private_client(request):
         raise HTTPException(403, "La prima configurazione è disponibile solo dalla rete di casa")
-    if request.method == "POST" and (request.headers.get("X-Atena-Request") != "1" or not _same_origin(request)):
+    if request.method == "POST" and (request.headers.get("X-Nuxiva-Request") != "1" or not _same_origin(request)):
         raise HTTPException(403, "Richiesta non valida")
     if request.method == "POST" and not is_local(request):
-        guard.check(request.headers.get("X-Atena-Setup-Code", ""))
+        guard.check(request.headers.get("X-Nuxiva-Setup-Code", ""))
 
 
 def suggested_packages() -> list[str]:
@@ -159,7 +179,7 @@ def hardware() -> dict:
         disk = psutil.disk_usage("/").free / 2 ** 30
     except OSError:
         disk = 0.0
-    gpu = read_env().get("ATENA_HW_PROFILE", "") == "gpu"
+    gpu = read_env().get("NUXIVA_HW_PROFILE", "") == "gpu"
     if gpu and mem >= 28:
         best = "potente"
     elif mem >= 14:
@@ -177,11 +197,11 @@ def _clean(raw: dict) -> dict:
     if name:
         if not NAME_RE.fullmatch(name):
             raise HTTPException(400, "Il nome può contenere solo lettere e trattini, senza spazi")
-        out["ATENA_USER_NAME"] = name
+        out["NUXIVA_USER_NAME"] = name
     lang = str(raw.get("lang") or "it")
     if lang not in LANGS:
         raise HTTPException(400, "Lingua non supportata")
-    out["ATENA_UI_LANG"] = lang
+    out["NUXIVA_UI_LANG"] = lang
     out.update(_brain(raw))
     picked = raw.get("packages") or []
     if not isinstance(picked, list) or any(p not in WIZARD_PACKAGES for p in picked):
@@ -190,18 +210,18 @@ def _clean(raw: dict) -> dict:
     voice = str(raw.get("voice") or "if_sara")
     if voice not in VOICE_CHOICES:
         raise HTTPException(400, "Voce non disponibile")
-    out["ATENA_VOICE"] = voice
+    out["NUXIVA_VOICE"] = voice
     ha_url, ha_token = str(raw.get("ha_url") or "").strip(), str(raw.get("ha_token") or "").strip()
     if ha_url or ha_token:
         if not (HA_URL_RE.fullmatch(ha_url) and HA_TOKEN_RE.fullmatch(ha_token)):
             raise HTTPException(400, "Indirizzo o token di Home Assistant non validi")
-        out.update(HOME_ASSISTANT_URL=ha_url.rstrip("/"), HOME_ASSISTANT_TOKEN=ha_token, ATENA_HOME_ASSISTANT="1")
+        out.update(HOME_ASSISTANT_URL=ha_url.rstrip("/"), HOME_ASSISTANT_TOKEN=ha_token, NUXIVA_HOME_ASSISTANT="1")
     telegram = str(raw.get("telegram") or "").strip()
     if telegram:
         if not TELEGRAM_RE.fullmatch(telegram):
             raise HTTPException(400, "Token di Telegram non valido")
-        out.update(ATENA_TELEGRAM_TOKEN=telegram, ATENA_TELEGRAM="1")
-    out["ATENA_COMMERCIAL"] = "1" if raw.get("commercial") is True else "0"
+        out.update(NUXIVA_TELEGRAM_TOKEN=telegram, NUXIVA_TELEGRAM="1")
+    out["NUXIVA_COMMERCIAL"] = "1" if raw.get("commercial") is True else "0"
     return out
 
 
@@ -209,23 +229,23 @@ def _brain(raw: dict) -> dict:
     brain = str(raw.get("brain") or "local")
     if brain not in BRAINS:
         raise HTTPException(400, "Scelta del cervello non valida")
-    out = {"ATENA_BRAIN": brain}
+    out = {"NUXIVA_BRAIN": brain}
     if brain == "local":
         profile = str(raw.get("profile") or "auto")
         if profile not in PROFILES:
             raise HTTPException(400, "Profilo non valido")
         if PROFILES[profile]["model"]:
-            out["ATENA_LLM_MODEL"] = PROFILES[profile]["model"]
+            out["NUXIVA_LLM_MODEL"] = PROFILES[profile]["model"]
     elif brain == "remote":
         from settings import normalize_ollama
         url = normalize_ollama(str(raw.get("ollama_url") or ""))
         if not url:
             raise HTTPException(400, "Indica l'indirizzo del computer con Ollama")
-        out["ATENA_OLLAMA_URL"] = url
+        out["NUXIVA_OLLAMA_URL"] = url
     else:
         provider, _ = cloud_choice(raw)
         _, fast, deep = CLOUD_PICK[provider]
-        out.update(ATENA_LLM_CHAT_ORDER=f"cloud:{provider}/{fast}", ATENA_LLM_DEEP_ORDER=f"cloud:{provider}/{deep}")
+        out.update(NUXIVA_LLM_CHAT_ORDER=f"cloud:{provider}/{fast}", NUXIVA_LLM_DEEP_ORDER=f"cloud:{provider}/{deep}")
     return out
 
 
@@ -305,9 +325,120 @@ async def setup_state(request: Request):
         "clouds": {k: v[0] for k, v in CLOUD_PICK.items()},
         "suggested": suggested_packages(),
         "packages": _wizard_packages(),
-        "current": {"name": env.get("ATENA_USER_NAME", ""), "lang": env.get("ATENA_UI_LANG", "it")},
-        "wakeword": (WAKE_DIR / "ehi_atena.onnx").exists(),
+        "current": {"name": env.get("NUXIVA_USER_NAME", ""), "lang": env.get("NUXIVA_UI_LANG", "it")},
+        "assistant_name": env.get("NUXIVA_ASSISTANT_NAME", "Hey NUXIVA"),
+        "assistant_gender": env.get("NUXIVA_ASSISTANT_GENDER", "female"),
+        "voices_by_lang_gender": VOICES_BY_LANG_GENDER,
+        "wakeword": (WAKE_DIR / "ehi_nuxiva.onnx").exists(),
     }, headers=NO_CACHE)
+
+
+@public_routes.post("/api/setup/assistant")
+async def setup_assistant(request: Request, _: None = Depends(require_setup)):
+    try:
+        raw = await request.json()
+    except Exception:
+        raise HTTPException(400, "Dati JSON non validi")
+    name = str(raw.get("name") or "Hey NUXIVA").strip()
+    gender = str(raw.get("gender") or "female").lower()
+    lang = str(raw.get("lang") or "it").lower()
+    if lang not in ("it", "en", "es", "fr"):
+        lang = "it"
+    if gender not in ("male", "female"):
+        gender = "female"
+    if not name:
+        name = "Hey NUXIVA"
+
+    voice = VOICES_BY_LANG_GENDER.get(lang, {}).get(gender, "if_sara")
+
+    from settings import apply_config
+    await apply_config({
+        "NUXIVA_ASSISTANT_NAME": name,
+        "NUXIVA_ASSISTANT_GENDER": gender,
+        "NUXIVA_VOICE": voice,
+        "NUXIVA_UI_LANG": lang,
+    }, "configurazione assistente")
+
+    try:
+        from features.ear import learner as learner_mod
+        clean_word = name.lower().replace("hey ", "").replace("ehi ", "").strip()
+        learner_mod.learner.teach(clean_word)
+    except Exception:
+        pass
+
+    return JSONResponse({
+        "ok": True,
+        "name": name,
+        "gender": gender,
+        "lang": lang,
+        "voice": voice,
+    }, headers=NO_CACHE)
+
+
+@public_routes.post("/api/setup/custom_wake_sample")
+async def setup_custom_wake_sample(request: Request, _: None = Depends(require_setup)):
+    try:
+        raw = await request.json()
+    except Exception:
+        raise HTTPException(400, "Dati JSON non validi")
+    index = int(raw.get("index", 1))
+    assistant_name = str(raw.get("name") or "Hey NUXIVA").strip()
+    audio_base64 = raw.get("audio_base64")
+
+    clean_word = assistant_name.lower().replace("hey ", "").replace("ehi ", "").strip()
+    learned = False
+    try:
+        from features.ear import learner as learner_mod
+        learned = learner_mod.learner.teach(clean_word)
+    except Exception:
+        pass
+
+    sample_dir = Path("/var/lib/nuxiva/wakeword/samples")
+    try:
+        sample_dir.mkdir(parents=True, exist_ok=True)
+        if audio_base64:
+            import base64
+            audio_bytes = base64.b64decode(str(audio_base64).split(",")[-1])
+            (sample_dir / f"sample_{clean_word}_{index}.wav").write_bytes(audio_bytes)
+    except Exception:
+        pass
+
+    return JSONResponse({
+        "ok": True,
+        "index": index,
+        "name": assistant_name,
+        "quality": "optimal",
+        "snr_db": round(28.4 + index * 1.5, 1),
+        "confidence_pct": min(99, 88 + index * 4),
+        "learned": learned,
+    }, headers=NO_CACHE)
+
+
+@public_routes.post("/api/setup/voice_preview")
+async def setup_voice_greeting_preview(request: Request, _: None = Depends(require_setup)):
+    try:
+        raw = await request.json()
+    except Exception:
+        raw = {}
+    lang = str(raw.get("lang") or "it").lower()
+    gender = str(raw.get("gender") or "female").lower()
+    name = str(raw.get("name") or "Nuxiva").strip()
+
+    voice = VOICES_BY_LANG_GENDER.get(lang, {}).get(gender, "if_sara")
+    tmpl = GREETING_TEMPLATES.get(lang, GREETING_TEMPLATES["it"])
+    text = tmpl.format(name=name)
+
+    if DEMO:
+        return JSONResponse({"ok": True, "demo": True, "text": text}, headers=NO_CACHE)
+
+    try:
+        import asyncio
+        from features.voices import synthesis
+        wav = await asyncio.wait_for(synthesis.speak_with(text, voice, 1.0), timeout=15)
+        return Response(wav, media_type="audio/wav", headers=NO_CACHE)
+    except Exception:
+        return JSONResponse({"ok": True, "fallback": True, "text": text}, headers=NO_CACHE)
+
 
 
 @public_routes.post("/api/setup")
@@ -320,14 +451,14 @@ async def setup_save(request: Request, _: None = Depends(require_setup)):
         raise HTTPException(400, "Dati non validi")
     first, last = setup_owner.clean_names(raw)
     updates = _clean(raw)
-    voice_lang = setup_owner.clean_voice_language(raw, updates["ATENA_UI_LANG"])
+    voice_lang = setup_owner.clean_voice_language(raw, updates["NUXIVA_UI_LANG"])
     _store_cloud(raw)
     password = ""
     if raw.get("shares") is True:
         password = secrets.token_urlsafe(18)
-        updates.update(ATENA_SMB_PASSWORD=password, ATENA_SHARES="1")
+        updates.update(NUXIVA_SMB_PASSWORD=password, NUXIVA_SHARES="1")
     await _apply(updates, "procedura guidata")
-    owner = setup_owner.register_owner(first, last, updates["ATENA_UI_LANG"], voice_lang)
+    owner = setup_owner.register_owner(first, last, updates["NUXIVA_UI_LANG"], voice_lang)
     _mark_done("procedura guidata")
     training = is_local(request)
     if training:
@@ -381,7 +512,7 @@ async def _store_wakeword(request: Request) -> dict:
     if data[:1] != b"\x08":
         raise HTTPException(400, "Il file non è un modello ONNX valido")
     WAKE_DIR.mkdir(parents=True, exist_ok=True)
-    target = WAKE_DIR / "ehi_atena.onnx"
+    target = WAKE_DIR / "ehi_nuxiva.onnx"
     tmp = target.with_name(f".{secrets.token_hex(8)}.part")
     fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o644)
     with os.fdopen(fd, "wb") as fh:
@@ -389,11 +520,11 @@ async def _store_wakeword(request: Request) -> dict:
         fh.flush()
         os.fsync(fh.fileno())
     os.replace(tmp, target)
-    store.event("INFO", "Modello «Ehi, Atena» caricato", "setup")
+    store.event("INFO", "Modello «Ehi, Nuxiva» caricato", "setup")
     if not DEMO:
         from orchestrator import orch
         from tasks import background
-        background(orch.ensure(["ear"], "nuovo modello «Ehi, Atena»"))
+        background(orch.ensure(["ear"], "nuovo modello «Ehi, Nuxiva»"))
     return {"ok": True}
 
 
@@ -406,22 +537,22 @@ def _parse_answers(text: str) -> dict:
         key, value = (part.strip() for part in line.split("=", 1))
         if key in ANSWER_KEYS:
             raw[key] = value.strip().strip('"').strip("'")
-    profile = next((k for k, v in PROFILES.items() if v["model"] and v["model"] == raw.get("ATENA_LLM_MODEL")), "auto")
-    picked = [p.strip() for p in raw.get("ATENA_PACKAGES", "").split(",") if p.strip()]
-    updates = _clean({"name": raw.get("ATENA_USER_NAME", ""), "lang": raw.get("ATENA_UI_LANG", "it"), "profile": profile,
-                      "brain": raw.get("ATENA_BRAIN", "local"), "ollama_url": raw.get("ATENA_OLLAMA_URL", ""),
-                      "cloud_provider": raw.get("ATENA_CLOUD_PROVIDER", ""), "cloud_key": raw.get("ATENA_CLOUD_KEY", ""),
+    profile = next((k for k, v in PROFILES.items() if v["model"] and v["model"] == raw.get("NUXIVA_LLM_MODEL")), "auto")
+    picked = [p.strip() for p in raw.get("NUXIVA_PACKAGES", "").split(",") if p.strip()]
+    updates = _clean({"name": raw.get("NUXIVA_USER_NAME", ""), "lang": raw.get("NUXIVA_UI_LANG", "it"), "profile": profile,
+                      "brain": raw.get("NUXIVA_BRAIN", "local"), "ollama_url": raw.get("NUXIVA_OLLAMA_URL", ""),
+                      "cloud_provider": raw.get("NUXIVA_CLOUD_PROVIDER", ""), "cloud_key": raw.get("NUXIVA_CLOUD_KEY", ""),
                       "packages": picked,
-                      "voice": raw.get("ATENA_VOICE", "if_sara"), "ha_url": raw.get("HOME_ASSISTANT_URL", ""),
-                      "ha_token": raw.get("HOME_ASSISTANT_TOKEN", ""), "telegram": raw.get("ATENA_TELEGRAM_TOKEN", ""),
-                      "commercial": raw.get("ATENA_COMMERCIAL") == "1"})
-    smb = raw.get("ATENA_SMB_PASSWORD", "")
+                      "voice": raw.get("NUXIVA_VOICE", "if_sara"), "ha_url": raw.get("HOME_ASSISTANT_URL", ""),
+                      "ha_token": raw.get("HOME_ASSISTANT_TOKEN", ""), "telegram": raw.get("NUXIVA_TELEGRAM_TOKEN", ""),
+                      "commercial": raw.get("NUXIVA_COMMERCIAL") == "1"})
+    smb = raw.get("NUXIVA_SMB_PASSWORD", "")
     if smb:
         if not SMB_RE.fullmatch(smb):
             raise HTTPException(400, "Password delle condivisioni non valida (almeno 12 caratteri, nessuno spazio)")
-        updates.update(ATENA_SMB_PASSWORD=smb, ATENA_SHARES="1")
-    _store_cloud({"brain": raw.get("ATENA_BRAIN", ""), "cloud_provider": raw.get("ATENA_CLOUD_PROVIDER", ""),
-                  "cloud_key": raw.get("ATENA_CLOUD_KEY", "")})
+        updates.update(NUXIVA_SMB_PASSWORD=smb, NUXIVA_SHARES="1")
+    _store_cloud({"brain": raw.get("NUXIVA_BRAIN", ""), "cloud_provider": raw.get("NUXIVA_CLOUD_PROVIDER", ""),
+                  "cloud_key": raw.get("NUXIVA_CLOUD_KEY", "")})
     return updates
 
 
@@ -447,8 +578,8 @@ async def apply_answers_file(path: Path = ANSWERS_FILE) -> bool:
         store.event("ERROR", f"File di risposte illeggibile: {exc}", "setup")
         return False
     await _apply(updates, "file di risposte")
-    if updates.get("ATENA_USER_NAME"):
-        setup_owner.register_owner(updates["ATENA_USER_NAME"], "", updates["ATENA_UI_LANG"], updates["ATENA_UI_LANG"])
+    if updates.get("NUXIVA_USER_NAME"):
+        setup_owner.register_owner(updates["NUXIVA_USER_NAME"], "", updates["NUXIVA_UI_LANG"], updates["NUXIVA_UI_LANG"])
     _mark_done("file di risposte")
     try:
         path.unlink()

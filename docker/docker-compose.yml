@@ -1,38 +1,38 @@
-name: atena
+name: nuxiva
 
 services:
-  atena-core:
-    image: atena-core:local
+  nuxiva-core:
+    image: nuxiva-core:local
     build:
       context: ..
       dockerfile: docker/core/Dockerfile
       args:
-        ATENA_SRC_HASH: ${ATENA_SRC_HASH:-dev}
-    container_name: atena-core
+        NUXIVA_SRC_HASH: ${NUXIVA_SRC_HASH:-dev}
+    container_name: nuxiva-core
     restart: unless-stopped
     network_mode: host
     env_file:
-      - path: /etc/atena/atena.env
+      - path: /etc/nuxiva/nuxiva.env
         required: false
     environment:
-      ATENA_ENV: production
-      ATENA_HOST: 0.0.0.0
-      ATENA_PORT: "8443"
-      OLLAMA_BASE_URL: ${ATENA_OLLAMA_URL:-http://127.0.0.1:11434}
+      NUXIVA_ENV: production
+      NUXIVA_HOST: 0.0.0.0
+      NUXIVA_PORT: "8443"
+      OLLAMA_BASE_URL: ${NUXIVA_OLLAMA_URL:-http://127.0.0.1:11434}
       QDRANT_HOST: 127.0.0.1
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ../data/db:/app/data/db
       - ../data/certs:/app/data/certs
       - ../data/models:/app/data/models
-      - /run/atena/sandbox:/run/atena/sandbox
-      - /var/lib/atena/brain:/run/atena/brain:ro
+      - /run/nuxiva/sandbox:/run/nuxiva/sandbox
+      - /var/lib/nuxiva/brain:/run/nuxiva/brain:ro
     depends_on:
-      - atena-qdrant
+      - nuxiva-qdrant
 
-  atena-qdrant:
+  nuxiva-qdrant:
     image: qdrant/qdrant:latest
-    container_name: atena-qdrant
+    container_name: nuxiva-qdrant
     restart: unless-stopped
     ports:
       - "127.0.0.1:6333:6333"
@@ -40,13 +40,13 @@ services:
     volumes:
       - ../data/qdrant:/qdrant/storage
 
-  atena-inference:
+  nuxiva-inference:
     profiles: ["gpu"]
     build:
       context: ..
       dockerfile: docker/inference/Dockerfile
-    image: atena-inference:local
-    container_name: atena-inference
+    image: nuxiva-inference:local
+    container_name: nuxiva-inference
     restart: unless-stopped
     ports:
       - "127.0.0.1:8444:8444"

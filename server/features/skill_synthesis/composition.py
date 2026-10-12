@@ -26,7 +26,7 @@ async def complete(system: str, user: str) -> str:
     models = brain_order_for("skill_synthesizer")
     response = await llm_gateway.generate_completion(
         LLMRequest(
-            model_name=(models or [settings.ATENA_LLM_MODEL or _DEFAULT_MODEL])[0],
+            model_name=(models or [settings.NUXIVA_LLM_MODEL or _DEFAULT_MODEL])[0],
             models=models,
             component="skill_synthesizer",
             messages=[LLMMessage(role="user", content=user)],
@@ -44,7 +44,7 @@ def strength(name: str) -> Strength:
     return Strength[name.upper()]
 
 
-tool_store = JsonToolStore(os.path.join(settings.DATA_DIR, "dynamic_tools"), lambda: settings.ATENA_SECRET_KEY)
+tool_store = JsonToolStore(os.path.join(settings.DATA_DIR, "dynamic_tools"), lambda: settings.NUXIVA_SECRET_KEY)
 tool_runner = DynamicToolRunner(
     sandbox_gateway,
     min_strength=strength(settings.SKILL_SANDBOX_MIN_STRENGTH),

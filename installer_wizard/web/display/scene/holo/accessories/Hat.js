@@ -13,4 +13,4 @@
     g.rotation.x = -0.08;
     return g;
   });
-})(window.Atena3D);
+})(window.Nuxiva3D);

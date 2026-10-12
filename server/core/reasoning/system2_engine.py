@@ -9,7 +9,7 @@ from server.config.env import settings
 from server.features.llm_gateway.gateway import llm_gateway
 from server.features.llm_gateway.contracts import LLMRequest, LLMMessage
 
-SYSTEM2_PROMPT = """Tu sei il Motore di Ragionamento Latente System 2 di Atena.
+SYSTEM2_PROMPT = """Tu sei il Motore di Ragionamento Latente System 2 di Nuxiva.
 Per compiti complessi o analitici, devi seguire questa struttura formale:
 
 <thinking>

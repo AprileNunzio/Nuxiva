@@ -16,7 +16,7 @@ from state import store
 from steps import step_catalog
 
 
-FACE_KEYS = {"ATENA_AVATAR", "ATENA_FACE_COLOR"}
+FACE_KEYS = {"NUXIVA_AVATAR", "NUXIVA_FACE_COLOR"}
 
 
 def _node_faces() -> dict:
@@ -45,13 +45,13 @@ def full_snapshot(admin: bool) -> dict:
     snap["supervisor_version"] = VERSION
     snap["asset_version"] = ASSET_VERSION
     env = read_env()
-    snap["llm_model"] = env.get("ATENA_LLM_MODEL", "")
+    snap["llm_model"] = env.get("NUXIVA_LLM_MODEL", "")
     cfg = brains.config()
     chat, deep = brains.active_now("chat"), brains.active_now("deep")
     last = brains.last.get("model", "")
     snap["brains"] = {"chat": chat["label"] if chat else cfg["chat"][0], "deep": deep["label"] if deep else cfg["deep"][0],
                       "routing": cfg["routing"], "last": brains.describe(last)["label"] if last else ""}
-    snap["user_name"] = env.get("ATENA_USER_NAME", "")
+    snap["user_name"] = env.get("NUXIVA_USER_NAME", "")
     snap["face"] = face_options()
     snap["node_faces"] = _node_faces()
     snap["mic_reset"] = getattr(store, "mic_reset", 0)

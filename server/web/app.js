@@ -1,376 +1,419 @@
-import { WeatherBackdropManager } from "./features/weather_backdrop/weather.js";
-import { CognitiveFlowViewer } from "./features/cognitive_flow/flow.js";
-import { WidgetPrivacyController } from "./features/privacy_controller/privacy.js";
-import { ProximityWidgetsManager } from "./features/proximity_widgets/proximity.js";
-import { AudioControlsManager } from "./features/audio_controls/audio.js";
-import { BrainModalManager } from "./features/brain_modal/brain.js";
-import { SettingsModalManager } from "./features/settings_modal/settings.js";
-import { I18nManager } from "./shared/i18n/manager.js";
+import { initProjectsDeck, refreshActiveProject, loadProjectsList } from "./features/war_room/war_room_deck.js";
+import { initChatbotMeshDeck } from "./features/chatbot_mesh/chatbot_deck.js";
+import { initProximityHudDeck, refreshProximityHud } from "./features/proximity_hud/proximity_deck.js";
+import { initAdminWizard } from "./features/onboarding/wizard.js";
 
-const i18n = new I18nManager();
-window.i18n = i18n;
+let currentSelectedAgentId = "windows_system_agent";
 
-const queryInput = document.getElementById("query-input");
-const submitBtn = document.getElementById("submit-btn");
-const thinkingPanel = document.getElementById("thinking-panel");
-const thinkingHeader = document.getElementById("thinking-header");
-const thinkingContent = document.getElementById("thinking-content");
-const responsePanel = document.getElementById("response-panel");
-const responseContent = document.getElementById("response-content");
-const toolsCard = document.getElementById("tools-card");
-const latencyMetric = document.getElementById("metric-latency");
-const strategyMetric = document.getElementById("metric-strategy");
-const chips = document.querySelectorAll(".chip");
+document.addEventListener("DOMContentLoaded", () => {
+  initI18n();
+  initDeckNavigation();
+  initProjectsDeck();
+  initCognitiveFlowDeck();
+  initAgentVaultDeck();
+  initRbacDeck();
+  initProximityHudDeck();
+  initCadMediaDeck();
+  initTelemetryDeck();
+  initChatbotMeshDeck();
+  initAdminWizard();
+  initGlobalCommandBar();
 
-const whiteboardSurface = document.getElementById("whiteboard-surface");
-const whiteboardCanvas = document.getElementById("whiteboard-canvas");
-const wbBtnBox = document.getElementById("wb-btn-box");
-const wbBtnArrow = document.getElementById("wb-btn-arrow");
-const wbBtnClear = document.getElementById("wb-btn-clear");
-const wbBtnClose = document.getElementById("wb-btn-close");
-const wbStatus = document.getElementById("wb-status");
-
-let isStreaming = false;
-let ctx = whiteboardCanvas ? whiteboardCanvas.getContext("2d") : null;
-let isDrawing = false;
-let lastX = 0;
-let lastY = 0;
-let shapes = [];
-
-const weatherManager = new WeatherBackdropManager();
-const cognitiveFlow = new CognitiveFlowViewer();
-const privacyController = new WidgetPrivacyController();
-privacyController.registerWidget("widget-network", {
-  maxExposureSeconds: 45,
-  isPersonal: true,
-  title: "Rete & IP",
-});
-const proximityManager = new ProximityWidgetsManager("proximity-shelf", privacyController);
-const audioControls = new AudioControlsManager();
-const brainModal = new BrainModalManager();
-const settingsModal = new SettingsModalManager();
-
-window.proximityManager = proximityManager;
-window.cognitiveFlow = cognitiveFlow;
-
-const presenceBadge = document.getElementById("presence-live-status");
-if (presenceBadge) {
-  presenceBadge.addEventListener("click", () => {
-    proximityManager.toggleMockPresence();
-  });
-}
-
-const langSelector = document.getElementById("lang-selector");
-async function initLocalization() {
-  const availableLangs = await i18n.discoverLanguages();
-  if (langSelector) {
-    langSelector.innerHTML = "";
-    availableLangs.forEach((l) => {
-      const opt = document.createElement("option");
-      opt.value = l;
-      opt.textContent = l.toUpperCase();
-      langSelector.appendChild(opt);
-    });
-    const saved = localStorage.getItem("atena_ui_lang") || "it";
-    langSelector.value = availableLangs.includes(saved) ? saved : (availableLangs[0] || "it");
-    await i18n.setLanguage(langSelector.value, ["dashboard"]);
-    langSelector.addEventListener("change", async (e) => {
-      const chosen = e.target.value;
-      localStorage.setItem("atena_ui_lang", chosen);
-      await i18n.setLanguage(chosen, ["dashboard"]);
-    });
-  }
-}
-initLocalization();
-
-function initWhiteboard() {
-  if (!whiteboardCanvas || !ctx) return;
-  whiteboardCanvas.width = whiteboardCanvas.offsetWidth || 900;
-  whiteboardCanvas.height = whiteboardCanvas.offsetHeight || 380;
-  drawWhiteboardGrid();
-}
-
-function drawWhiteboardGrid() {
-  if (!ctx) return;
-  ctx.fillStyle = "#020617";
-  ctx.fillRect(0, 0, whiteboardCanvas.width, whiteboardCanvas.height);
-  ctx.strokeStyle = "rgba(0, 240, 255, 0.05)";
-  ctx.lineWidth = 1;
-  const step = 30;
-  for (let x = 0; x < whiteboardCanvas.width; x += step) {
-    ctx.beginPath();
-    ctx.moveTo(x, 0);
-    ctx.lineTo(x, whiteboardCanvas.height);
-    ctx.stroke();
-  }
-  for (let y = 0; y < whiteboardCanvas.height; y += step) {
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(whiteboardCanvas.width, y);
-    ctx.stroke();
-  }
-}
-
-function redrawShapes() {
-  drawWhiteboardGrid();
-  shapes.forEach((s) => {
-    if (s.type === "box") {
-      ctx.fillStyle = "rgba(0, 240, 255, 0.12)";
-      ctx.strokeStyle = "#00f0ff";
-      ctx.lineWidth = 2;
-      ctx.fillRect(s.x, s.y, s.w, s.h);
-      ctx.strokeRect(s.x, s.y, s.w, s.h);
-      ctx.fillStyle = "#ffffff";
-      ctx.font = "13px monospace";
-      ctx.fillText(s.label || "Modulo Atena", s.x + 12, s.y + 30);
-    } else if (s.type === "arrow") {
-      ctx.strokeStyle = "#10b981";
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(s.x1, s.y1);
-      ctx.lineTo(s.x2, s.y2);
-      ctx.stroke();
-      ctx.fillStyle = "#10b981";
-      ctx.beginPath();
-      ctx.arc(s.x2, s.y2, 5, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  });
-}
-
-if (whiteboardCanvas) {
-  whiteboardCanvas.addEventListener("mousedown", (e) => {
-    isDrawing = true;
-    const rect = whiteboardCanvas.getBoundingClientRect();
-    lastX = e.clientX - rect.left;
-    lastY = e.clientY - rect.top;
-  });
-
-  whiteboardCanvas.addEventListener("mousemove", (e) => {
-    if (!isDrawing || !ctx) return;
-    const rect = whiteboardCanvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    ctx.strokeStyle = "#38bdf8";
-    ctx.lineWidth = 2;
-    ctx.lineCap = "round";
-    ctx.beginPath();
-    ctx.moveTo(lastX, lastY);
-    ctx.lineTo(x, y);
-    ctx.stroke();
-    lastX = x;
-    lastY = y;
-  });
-
-  window.addEventListener("mouseup", () => {
-    isDrawing = false;
-  });
-}
-
-if (wbBtnBox) {
-  wbBtnBox.addEventListener("click", () => {
-    const rx = 40 + ((shapes.length * 50) % 600);
-    const ry = 50 + ((shapes.length * 35) % 200);
-    shapes.push({ type: "box", x: rx, y: ry, w: 160, h: 50, label: `Service #${shapes.length + 1}` });
-    redrawShapes();
-    wbStatus.textContent = `Aggiunto componente architetturale #${shapes.length}`;
-  });
-}
-
-if (wbBtnArrow) {
-  wbBtnArrow.addEventListener("click", () => {
-    shapes.push({ type: "arrow", x1: 60, y1: 100, x2: 240, y2: 100 });
-    redrawShapes();
-    wbStatus.textContent = "Connessione logica tracciata";
-  });
-}
-
-if (wbBtnClear) {
-  wbBtnClear.addEventListener("click", () => {
-    shapes = [];
-    drawWhiteboardGrid();
-    wbStatus.textContent = "Lavagna pulita";
-  });
-}
-
-if (wbBtnClose) {
-  wbBtnClose.addEventListener("click", () => {
-    if (whiteboardSurface) whiteboardSurface.classList.remove("active");
-  });
-}
-
-function openWhiteboardSurface() {
-  if (whiteboardSurface) {
-    whiteboardSurface.classList.add("active");
-    initWhiteboard();
-    if (shapes.length === 0) {
-      shapes.push({ type: "box", x: 60, y: 60, w: 180, h: 50, label: "FastAPI Gateway" });
-      shapes.push({ type: "box", x: 320, y: 60, w: 180, h: 50, label: "Cognitive Router" });
-      shapes.push({ type: "arrow", x1: 240, y1: 85, x2: 320, y2: 85 });
-      redrawShapes();
-    }
-  }
-}
-
-chips.forEach((chip) => {
-  chip.addEventListener("click", () => {
-    queryInput.value = chip.dataset.prompt || chip.innerText;
-    executeStreamingQuery();
-  });
+  setInterval(() => {
+    refreshActiveProject();
+    refreshProximityHud();
+  }, 4000);
 });
 
-if (thinkingHeader) {
-  thinkingHeader.addEventListener("click", () => {
-    thinkingPanel.classList.toggle("collapsed");
+function initDeckNavigation() {
+  const tabs = document.querySelectorAll(".plancia-tab-btn");
+  const decks = document.querySelectorAll(".plancia-section");
+
+  tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      tabs.forEach(t => t.classList.remove("active"));
+      decks.forEach(d => d.classList.remove("active"));
+
+      tab.classList.add("active");
+      const targetDeckId = tab.getAttribute("data-deck");
+      const targetDeck = document.getElementById(targetDeckId);
+      if (targetDeck) {
+        targetDeck.classList.add("active");
+        if (targetDeckId === "deck-cognitive-flow" && window.mermaid) {
+          try { window.mermaid.init(undefined, "#mermaid-render-target"); } catch (e) {}
+        }
+      }
+    });
   });
 }
 
-if (submitBtn) {
-  submitBtn.addEventListener("click", () => {
-    executeStreamingQuery();
-  });
+async function initCognitiveFlowDeck() {
+  try {
+    const res = await fetch("/api/v1/cognitive/flow");
+    const data = await res.json();
+    const container = document.getElementById("cognitive-flow-nodes-list");
+    if (!container || !data || !data.nodes) return;
+
+    container.innerHTML = "";
+    data.nodes.forEach(n => {
+      const card = document.createElement("div");
+      card.className = "flow-node-item";
+      card.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <strong style="font-size:0.9rem; color:#fff;">${n.n}</strong>
+          <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted);">${n.k}</span>
+        </div>
+        <p style="font-size:0.8rem; color:var(--text-main); margin-top:4px;">${n.d || ""}</p>
+        <div class="node-meta-badges">
+          ${n.agent ? `<span class="badge-tag agent">🤖 Agente: ${n.agent}</span>` : ""}
+          ${n.tool ? `<span class="badge-tag tool">🔧 Tool: ${n.tool}</span>` : ""}
+          ${n.widget ? `<span class="badge-tag widget">🖥️ Widget: ${n.widget}</span>` : ""}
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  } catch (e) {}
 }
 
-if (queryInput) {
-  queryInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      executeStreamingQuery();
-    }
-  });
-}
-
-async function executeStreamingQuery() {
-  const query = queryInput.value.trim();
-  if (!query || isStreaming) return;
-
-  isStreaming = true;
-  proximityManager.setPrecedence(true);
-  submitBtn.disabled = true;
-  submitBtn.style.opacity = "0.5";
-
-  thinkingPanel.classList.remove("collapsed");
-  thinkingPanel.classList.remove("active");
-  thinkingContent.textContent = "";
-
-  responsePanel.classList.remove("active");
-  responseContent.textContent = "";
-
-  toolsCard.classList.remove("active");
-  toolsCard.textContent = "";
-
-  strategyMetric.textContent = "Elaborazione in corso...";
-  latencyMetric.textContent = "--";
-
-  const startTime = performance.now();
+async function initAgentVaultDeck() {
+  document.getElementById("btn-save-agent-instructions")?.addEventListener("click", saveAgentInstructions);
+  document.getElementById("btn-add-knowledge-modal")?.addEventListener("click", addKnowledgePrompt);
 
   try {
-    const response = await fetch("/api/v1/stream/reasoning", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "text/event-stream",
-      },
-      body: JSON.stringify({ query }),
+    const res = await fetch("/api/v1/agents/catalog");
+    const data = await res.json();
+    const listContainer = document.getElementById("agent-vault-selector-list");
+    const recruitSelect = document.getElementById("select-recruit-agent");
+    if (!listContainer) return;
+
+    listContainer.innerHTML = "";
+    if (recruitSelect) recruitSelect.innerHTML = "";
+
+    (data.catalog || []).forEach(ag => {
+      const div = document.createElement("div");
+      div.style.padding = "0.6rem 0.8rem";
+      div.style.borderRadius = "8px";
+      div.style.cursor = "pointer";
+      div.style.background = (ag.id === currentSelectedAgentId) ? "rgba(0,240,255,0.12)" : "rgba(255,255,255,0.03)";
+      div.style.border = (ag.id === currentSelectedAgentId) ? "1px solid var(--cyan-glow)" : "1px solid rgba(255,255,255,0.06)";
+      div.innerHTML = `
+        <div style="font-weight:600; font-size:0.85rem; color:#fff;">${ag.name}</div>
+        <div style="font-size:0.75rem; color:var(--text-dim);">${ag.role_category}</div>
+      `;
+
+      div.addEventListener("click", () => {
+        currentSelectedAgentId = ag.id;
+        initAgentVaultDeck();
+        loadAgentWorkspace(ag.id);
+      });
+      listContainer.appendChild(div);
+
+      if (recruitSelect) {
+        const opt = document.createElement("option");
+        opt.value = ag.id;
+        opt.innerText = ag.name;
+        recruitSelect.appendChild(opt);
+      }
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
+    loadAgentWorkspace(currentSelectedAgentId);
+  } catch (e) {}
+}
+
+async function loadAgentWorkspace(agentId) {
+  try {
+    const res = await fetch(`/api/v1/agents/${agentId}/workspace`);
+    const data = await res.json();
+    const ws = data.workspace;
+    if (!ws) return;
+
+    document.getElementById("vault-selected-agent-name").innerText = ws.profile.name;
+    document.getElementById("vault-selected-agent-path").innerText = `Directory protetta: ${ws.workspace_dir}`;
+    document.getElementById("vault-agent-instructions").value = ws.instructions || "";
+    document.getElementById("vault-agent-model").value = ws.profile.preferred_model || "default";
+    document.getElementById("vault-agent-temp").value = ws.profile.temperature || 0.7;
+    document.getElementById("vault-agent-widget").value = ws.profile.primary_widget || "";
+
+    const kList = document.getElementById("vault-knowledge-docs-list");
+    kList.innerHTML = "";
+    if (ws.knowledge_docs && ws.knowledge_docs.length > 0) {
+      ws.knowledge_docs.forEach(k => {
+        const item = document.createElement("div");
+        item.style.padding = "0.4rem 0.6rem";
+        item.style.background = "rgba(16,185,129,0.08)";
+        item.style.border = "1px solid rgba(16,185,129,0.2)";
+        item.style.borderRadius = "6px";
+        item.style.fontSize = "0.8rem";
+        item.innerHTML = `<strong>${k.filename}</strong> (${k.size_bytes} bytes) - Regola attiva`;
+        kList.appendChild(item);
+      });
+    } else {
+      kList.innerHTML = "<span style='font-size:0.75rem; color:var(--text-muted);'>Nessun documento caricato.</span>";
     }
 
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder("utf-8");
-    let buffer = "";
+    const tList = document.getElementById("vault-custom-tools-list");
+    tList.innerHTML = "";
+    const tools = ws.profile.custom_tools || [];
+    if (tools.length > 0) {
+      tools.forEach(t => {
+        const item = document.createElement("div");
+        item.style.padding = "0.4rem 0.6rem";
+        item.style.background = "rgba(139,92,246,0.08)";
+        item.style.border = "1px solid rgba(139,92,246,0.2)";
+        item.style.borderRadius = "6px";
+        item.style.fontSize = "0.8rem";
+        item.innerHTML = `<strong>${t}</strong> (Script Python personalizzato)`;
+        tList.appendChild(item);
+      });
+    } else {
+      tList.innerHTML = "<span style='font-size:0.75rem; color:var(--text-muted);'>Nessun tool custom aggiunto.</span>";
+    }
+  } catch (e) {}
+}
 
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
+async function saveAgentInstructions() {
+  const instructions = document.getElementById("vault-agent-instructions").value;
+  try {
+    await fetch(`/api/v1/agents/${currentSelectedAgentId}/workspace/instructions`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ instructions })
+    });
+    alert("Istruzioni salvate con successo.");
+  } catch (e) {}
+}
 
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split("\n\n");
-      buffer = lines.pop();
+async function addKnowledgePrompt() {
+  const filename = prompt("Nome del file:");
+  if (!filename) return;
+  const content = prompt("Contenuto della regola:");
+  if (!content) return;
 
-      for (const block of lines) {
-        if (!block.trim()) continue;
-        const eventLines = block.split("\n");
-        let eventName = "message";
-        let dataPayload = "";
+  try {
+    await fetch(`/api/v1/agents/${currentSelectedAgentId}/workspace/knowledge`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ filename, content })
+    });
+    loadAgentWorkspace(currentSelectedAgentId);
+  } catch (e) {}
+}
 
-        for (const line of eventLines) {
-          if (line.startsWith("event:")) {
-            eventName = line.substring(6).trim();
-          } else if (line.startsWith("data:")) {
-            dataPayload = line.substring(5).trim();
-          }
-        }
+async function initRbacDeck() {
+  try {
+    const [uRes, rRes] = await Promise.all([
+      fetch("/api/v1/rbac/users"),
+      fetch("/api/v1/rbac/roles")
+    ]);
+    const uData = await uRes.json();
+    const rData = await rRes.json();
 
-        handleServerEvent(eventName, dataPayload, startTime);
+    const usersContainer = document.getElementById("rbac-users-list");
+    usersContainer.innerHTML = "";
+    (uData.users || []).forEach(u => {
+      const row = document.createElement("div");
+      row.style.padding = "0.75rem";
+      row.style.background = "rgba(15,23,42,0.6)";
+      row.style.border = "1px solid rgba(255,255,255,0.06)";
+      row.style.borderRadius = "8px";
+      row.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <strong style="color:#fff;">${u.display_name} (@${u.username})</strong>
+          <span class="badge-tag" style="background:rgba(0,240,255,0.15); color:var(--cyan-glow);">${u.role.toUpperCase()}</span>
+        </div>
+        <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">
+          Profilo: <b>${u.profile}</b> | Progetti assegnati: ${u.assigned_projects ? u.assigned_projects.length : 0}
+        </div>
+      `;
+      usersContainer.appendChild(row);
+    });
+
+    const matrixContainer = document.getElementById("rbac-matrix-display");
+    matrixContainer.innerHTML = "";
+    for (const [role, perms] of Object.entries(rData.matrix || {})) {
+      const item = document.createElement("div");
+      item.style.padding = "0.6rem";
+      item.style.background = "rgba(255,255,255,0.02)";
+      item.style.borderRadius = "6px";
+      item.style.border = "1px solid rgba(255,255,255,0.05)";
+      item.innerHTML = `
+        <strong style="color:var(--cyan-glow); font-size:0.85rem;">Ruolo: ${role}</strong>
+        <div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:4px;">
+          ${perms.map(p => `<span class="badge-tag" style="font-size:0.65rem;">${p}</span>`).join("")}
+        </div>
+      `;
+      matrixContainer.appendChild(item);
+    }
+  } catch (e) {}
+}
+
+function initCadMediaDeck() {
+  document.getElementById("btn-test-gen-dxf")?.addEventListener("click", async () => {
+    try {
+      await fetch("/api/v1/command", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: "Genera disegno CAD flangia in DXF" })
+      });
+      loadCadFilesList();
+    } catch (e) {}
+  });
+
+  document.getElementById("btn-gen-instagram-copy")?.addEventListener("click", async () => {
+    const topic = document.getElementById("social-topic-input").value;
+    const preview = document.getElementById("social-output-preview");
+    preview.innerText = `Generazione copy per '${topic}'...`;
+    try {
+      const res = await fetch("/api/v1/command", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: `Scrivi un post Instagram su ${topic}` })
+      });
+      const data = await res.json();
+      preview.innerText = data.speech_output || "Deliverable generato con successo.";
+    } catch (e) {
+      preview.innerText = "Errore nella generazione del post.";
+    }
+  });
+
+  loadCadFilesList();
+}
+
+function loadCadFilesList() {
+  const container = document.getElementById("cad-files-list");
+  if (!container) return;
+  container.innerHTML = `
+    <div class="tactical-card" style="padding:0.75rem; border-left:3px solid var(--cyan-glow);">
+      <strong>ingegneria_meccanica_flangia.dxf</strong>
+      <p style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">Contorno 250x120mm con 3 forature d=12mm</p>
+      <span class="badge-tag" style="background:rgba(0,240,255,0.15); color:var(--cyan-glow); margin-top:4px;">Disponibile in data/cad_exports/</span>
+    </div>
+  `;
+}
+
+async function initTelemetryDeck() {
+  try {
+    const res = await fetch("/api/v1/system/metrics");
+    const data = await res.json();
+    if (data) {
+      document.getElementById("telem-cpu-val").innerText = `${Math.round(data.cpu_percent || 14)}%`;
+      document.getElementById("telem-cpu-bar").style.width = `${Math.round(data.cpu_percent || 14)}%`;
+      document.getElementById("telem-ram-val").innerText = `${Math.round(data.memory_percent || 38)}%`;
+      document.getElementById("telem-ram-bar").style.width = `${Math.round(data.memory_percent || 38)}%`;
+    }
+  } catch (e) {}
+}
+
+function initGlobalCommandBar() {
+  const input = document.getElementById("global-command-input");
+  const btn = document.getElementById("btn-global-dispatch");
+
+  const sendCommand = async () => {
+    const query = input.value.trim();
+    if (!query) return;
+
+    input.value = "";
+    try {
+      await fetch("/api/v1/command", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: query })
+      });
+      loadProjectsList();
+      refreshActiveProject();
+    } catch (e) {}
+  };
+
+  btn?.addEventListener("click", sendCommand);
+  input?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") sendCommand();
+  });
+}
+
+let currentUiLang = localStorage.getItem("nuxiva_ui_lang") || "it";
+
+async function initI18n() {
+  const selector = document.getElementById("lang-selector");
+  if (selector) {
+    selector.value = currentUiLang;
+    selector.addEventListener("change", (e) => {
+      applyLanguage(e.target.value);
+    });
+  }
+  await applyLanguage(currentUiLang);
+}
+
+async function applyLanguage(lang) {
+  currentUiLang = lang;
+  localStorage.setItem("nuxiva_ui_lang", lang);
+
+  try {
+    const res = await fetch(`/static/features/dashboard/language/${lang}.json`);
+    if (!res.ok) return;
+    const data = await res.json();
+    const c = data.cockpit;
+    if (!c) return;
+
+    const tabMap = {
+      "tab-nav-projects": c.deck_projects,
+      "tab-nav-flow": c.deck_cognitive_flow,
+      "tab-nav-vault": c.deck_agent_vault,
+      "tab-nav-rbac": c.deck_rbac,
+      "tab-nav-hud": c.deck_proximity_hud,
+      "tab-nav-cad": c.deck_cad_media,
+      "tab-nav-telemetry": c.deck_telemetry,
+      "tab-nav-chatbot": c.deck_chatbot_mesh,
+    };
+
+    for (const [id, text] of Object.entries(tabMap)) {
+      const tabEl = document.getElementById(id);
+      if (tabEl) {
+        const span = tabEl.querySelector(".tab-label");
+        if (span && text) span.textContent = text;
       }
     }
-  } catch (err) {
-    responsePanel.classList.add("active");
-    responseContent.textContent = `Errore di connessione o inferenza: ${err.message}`;
-    strategyMetric.textContent = "Error";
-  } finally {
-    isStreaming = false;
-    submitBtn.disabled = false;
-    submitBtn.style.opacity = "1";
-    proximityManager.setPrecedence(false);
-  }
-}
 
-function handleServerEvent(event, rawData, startTime) {
-  let data = {};
-  try {
-    data = JSON.parse(rawData);
-  } catch (_) {
-    data = { text: rawData };
-  }
+    const inputCmd = document.getElementById("global-command-input");
+    if (inputCmd && c.input_command_placeholder) {
+      inputCmd.placeholder = c.input_command_placeholder;
+    }
+    const btnDispatch = document.getElementById("btn-global-dispatch");
+    if (btnDispatch && c.btn_execute) {
+      btnDispatch.textContent = c.btn_execute;
+    }
+    const btnSaveAgent = document.getElementById("btn-save-agent-instructions");
+    if (btnSaveAgent && c.btn_save) {
+      btnSaveAgent.textContent = c.btn_save;
+    }
+    const btnRecruit = document.getElementById("btn-recruit-agent");
+    if (btnRecruit && c.btn_recruit) {
+      btnRecruit.textContent = c.btn_recruit;
+    }
 
-  if (event === "cache_hit") {
-    const elapsed = (performance.now() - startTime).toFixed(1);
-    strategyMetric.textContent = "Semantic Fast-Path Cache";
-    latencyMetric.textContent = `${elapsed} ms`;
-    responsePanel.classList.add("active");
-    responseContent.textContent = data.speech_output || "";
-    audioControls.speak(data.speech_output || "");
-  } else if (event === "system1") {
-    const intent = data.intent || "";
-    const lat = data.latency_ms || 0;
-    strategyMetric.textContent = `System 1: ${intent}`;
-    latencyMetric.textContent = `${lat.toFixed(1)} ms`;
-    if (intent === "whiteboard_canvas") {
-      openWhiteboardSurface();
+    const hudUserName = document.getElementById("hud-detected-user-name");
+    if (hudUserName && c.hud_user_default) {
+      hudUserName.textContent = c.hud_user_default;
     }
-  } else if (event === "journey_snapshot") {
-    cognitiveFlow.updateFromSnapshot(data);
-  } else if (event === "thinking") {
-    if (!thinkingPanel.classList.contains("active")) {
-      thinkingPanel.classList.add("active");
-      thinkingPanel.classList.remove("collapsed");
+
+    const uSel = document.getElementById("chatbot-user-selector");
+    if (uSel && c.user_role_admin) {
+      const optAdmin = uSel.querySelector("option[value='user_primary']");
+      if (optAdmin) optAdmin.textContent = `👑 ${c.user_role_admin}`;
+      const optFamily = uSel.querySelector("option[value='user_family']");
+      if (optFamily) optFamily.textContent = `🏡 ${c.user_role_family}`;
+      const optGuest = uSel.querySelector("option[value='user_guest']");
+      if (optGuest) optGuest.textContent = `🌟 ${c.user_role_guest}`;
+      const optStaff = uSel.querySelector("option[value='user_staff']");
+      if (optStaff) optStaff.textContent = `💼 ${c.user_role_staff}`;
     }
-    thinkingContent.textContent += data.chunk || "";
-    thinkingContent.scrollTop = thinkingContent.scrollHeight;
-  } else if (event === "response") {
-    if (thinkingPanel.classList.contains("active") && !thinkingPanel.classList.contains("collapsed")) {
-      thinkingPanel.classList.add("collapsed");
+
+    const wizTitle = document.getElementById("wizard-title-label");
+    if (wizTitle && c.admin_wizard_title) {
+      wizTitle.textContent = c.admin_wizard_title;
     }
-    if (!responsePanel.classList.contains("active")) {
-      responsePanel.classList.add("active");
+    const wizAutoBtn = document.getElementById("btn-wizard-instant-autoconfig");
+    if (wizAutoBtn && c.admin_wizard_auto_btn) {
+      wizAutoBtn.textContent = c.admin_wizard_auto_btn;
     }
-    if(data.chunk) { responseContent.textContent += data.chunk; } if(data.widget_html) { const w = document.createElement("div"); w.style.marginTop = "1rem"; w.innerHTML = data.widget_html; responseContent.appendChild(w); }
-    if (data.surface === "whiteboard") {
-      openWhiteboardSurface();
-    }
-  } else if (event === "tool_call") {
-    toolsCard.classList.add("active");
-    toolsCard.textContent = JSON.stringify(data, null, 2);
-  } else if (event === "done") {
-    const totalElapsed = (performance.now() - startTime).toFixed(1);
-    latencyMetric.textContent = `${totalElapsed} ms`;
-    if (!responsePanel.classList.contains("active") && responseContent.textContent) {
-      responsePanel.classList.add("active");
-    }
-    audioControls.speak(responseContent.textContent);
-  }
+  } catch (err) {}
 }

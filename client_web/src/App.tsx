@@ -8,9 +8,9 @@ export const App: React.FC = () => {
   const [currentTab, setCurrentTab] = useState<NavigationTab>('CORE');
   const [nodes, setNodes] = useState<KnowledgeNode[]>([
     {
-      id: 'atena_core',
+      id: 'nuxiva_core',
       node_type: 'AGENT',
-      label: 'Atena Orchestrator',
+      label: 'Nuxiva Orchestrator',
       properties: { status: 'ONLINE' },
       created_at: Date.now(),
       updated_at: Date.now()

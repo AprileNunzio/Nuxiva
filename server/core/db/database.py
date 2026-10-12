@@ -2,7 +2,7 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-DATABASE_URL = os.getenv("ATENA_DB_URL", "sqlite:///./data/atena.db")
+DATABASE_URL = os.getenv("NUXIVA_DB_URL", "sqlite:///./data/nuxiva.db")
 
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False} if "sqlite" in DATABASE_URL else {})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

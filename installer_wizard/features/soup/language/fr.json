@@ -4,9 +4,9 @@
   "capabilities": [
     "Ensemble de données du presse-papiers",
     "Entraînement de nuit",
-    "Modèle «athena-studio» à Ollama"
+    "Modèle «nuxiva-studio» à Ollama"
   ],
   "settings": {
-    "ATENA_STUDY_BASE_MODEL": "Modèle de base (Hugging Face)"
+    "NUXIVA_STUDY_BASE_MODEL": "Modèle de base (Hugging Face)"
   }
 }

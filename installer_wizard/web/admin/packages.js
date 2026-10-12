@@ -1,12 +1,12 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const STATE = { installed: "installato", installing: "in installazione", queued: "in coda", failed: "errore", available: "su richiesta", removed: "rimosso" };
   const BADGE = { installed: "ok", installing: "running", queued: "warn", failed: "down" };
   const NOTE = {
     local: "I modelli girano su questo computer con Ollama: tutto resta in casa.",
     remote: "Uso Ollama di un altro computer della rete: qui non installo nulla del cervello.",
     cloud: "Le risposte arrivano dal servizio cloud configurato in Funzionalità › Cloud.",
-    pending: "Il cervello non è ancora scelto: scegli dove deve pensare Atena.",
+    pending: "Il cervello non è ancora scelto: scegli dove deve pensare Nuxiva.",
   };
   let mode = "pending";
   let pick = "local";
@@ -48,7 +48,7 @@
       const b = $("brain-save");
       const body = { mode: pick };
       if (pick === "remote") body.url = $("brain-url").value.trim();
-      if (pick !== mode && !confirm("Cambiare dove pensa Atena? I componenti necessari si installano in background.")) return;
+      if (pick !== mode && !confirm("Cambiare dove pensa Nuxiva? I componenti necessari si installano in background.")) return;
       b.disabled = true;
       try { await A.api("POST", "/api/packages/brain", body); A.toast("Scelta salvata, applicazione in corso"); await load(); }
       catch (err) { A.toast(err.message, true); }

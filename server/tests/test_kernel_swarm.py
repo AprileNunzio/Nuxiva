@@ -128,7 +128,7 @@ class AnalyticAgentTest(unittest.IsolatedAsyncioTestCase):
         self.assertIn("obiettivo", call.await_args.args[0].messages[0].content)
 
     async def test_synthetic_gateway_fallback_is_an_error_not_an_answer(self):
-        fake = LLMResponse(content="Atena Core acknowledges", model_used=SYNTHETIC_MODEL, tokens_consumed=1, duration_ms=1)
+        fake = LLMResponse(content="Nuxiva Core acknowledges", model_used=SYNTHETIC_MODEL, tokens_consumed=1, duration_ms=1)
         with patch("server.features.analytic_agent.analytic_agent.llm_gateway.generate_completion", AsyncMock(return_value=fake)):
             response = await AnalyticReasonerAgent().execute(self.request)
         self.assertEqual((response.status, response.speech_output), ("ERROR", ""))

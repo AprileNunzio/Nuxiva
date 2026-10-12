@@ -107,7 +107,7 @@ def advice(s: dict) -> list[str]:
     if s.get("agreement") is not None and s["agreement"] < LOW_AGREEMENT:
         tips.append("Capisco spesso male le frasi: avvicina il microfono o scegli un modello di ascolto più preciso.")
     if s.get("missed", 0) >= 2:
-        tips.append("Ti sento dire «Atena» ma non mi attivo sempre: sto abbassando la soglia di attivazione.")
+        tips.append("Ti sento dire «Nuxiva» ma non mi attivo sempre: sto abbassando la soglia di attivazione.")
     if s.get("false_instant", 0) >= 2:
         tips.append("Mi attivo anche quando nessuno mi chiama: sto alzando la soglia di attivazione.")
     if s["weak_chunks"] / chunks >= 0.5:

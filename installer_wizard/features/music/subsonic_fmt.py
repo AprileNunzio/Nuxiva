@@ -79,7 +79,7 @@ def xml_node(name: str, value) -> str:
 
 
 def envelope(payload: dict, status: str = "ok") -> dict:
-    return {"status": status, "version": API_VERSION, "type": "atena", "serverVersion": "3", "openSubsonic": True, **payload}
+    return {"status": status, "version": API_VERSION, "type": "nuxiva", "serverVersion": "3", "openSubsonic": True, **payload}
 
 
 def render(payload: dict, fmt: str, callback: str = "", status: str = "ok") -> tuple[str, str]:

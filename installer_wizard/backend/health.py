@@ -7,13 +7,13 @@ import httpx
 from config import CORE_URL, DEMO, STATE_DIR, kiosk_log, ollama_remote, ollama_url, read_env
 from state import store
 
-log = logging.getLogger("atena.health")
+log = logging.getLogger("nuxiva.health")
 
 COMPONENTS = {
     "docker": "Motore container",
     "ollama": "Motore neurale",
     "llm": "Rete linguistica",
-    "core": "Atena Core",
+    "core": "Nuxiva Core",
     "qdrant": "Memoria vettoriale",
     "voice": "Voce neurale",
     "vision": "Visione",
@@ -40,7 +40,7 @@ EAR_LOG = ("Display", "Errore", "Pagina", "Connessione", "Rilevatore", "errore",
 
 
 async def ear_log() -> list[str]:
-    code, out = await sh("journalctl", "-u", "atena-ear", "-n", "40", "--no-pager", "-o", "cat", timeout=5)
+    code, out = await sh("journalctl", "-u", "nuxiva-ear", "-n", "40", "--no-pager", "-o", "cat", timeout=5)
     if code != 0:
         return []
     lines = [ln.split("] ", 1)[-1][:120] for ln in out.splitlines() if any(k in ln for k in EAR_LOG)]
@@ -48,7 +48,7 @@ async def ear_log() -> list[str]:
 
 
 async def kiosk_check() -> dict:
-    code, out = await sh("ps", "-u", "atena-kiosk", "-o", "args=", timeout=5)
+    code, out = await sh("ps", "-u", "nuxiva-kiosk", "-o", "args=", timeout=5)
     windows = [ln for ln in out.splitlines() if "chromium" in ln and "--user-data-dir" in ln and "--type=" not in ln]
     if code != 0 or not windows:
         return {"status": "warn", "detail": "Sessione grafica assente"}
@@ -78,7 +78,7 @@ def kiosk_hint() -> str:
 
 def mic_check(env: dict) -> dict | None:
     import json as _json
-    if env.get("ATENA_KIOSK", "1") == "0":
+    if env.get("NUXIVA_KIOSK", "1") == "0":
         return None
     try:
         link = _json.loads((STATE_DIR / "ear_link.json").read_text(encoding="utf-8"))
@@ -106,8 +106,8 @@ def mic_check(env: dict) -> dict | None:
     elif link.get("clients"):
         status += " · pagina senza identità (codice vecchio)"
     if service:
-        return {"status": "ok", "detail": f"In ascolto di \"Atena\"{status} (errore assorbito{service})"}
-    return {"status": "ok", "detail": f"In ascolto di \"Atena\"{status}"}
+        return {"status": "ok", "detail": f"In ascolto di \"Nuxiva\"{status} (errore assorbito{service})"}
+    return {"status": "ok", "detail": f"In ascolto di \"Nuxiva\"{status}"}
 
 
 def norm_model(model: str) -> str:
@@ -167,13 +167,13 @@ async def probe_all() -> dict:
         results["voice"] = ({"status": "warn", "detail": "Kokoro non attivo: voce di riserva Piper"}
                             if catalog.PIPER.exists() else {"status": "down", "detail": "Nessun motore vocale"})
 
-    if env.get("ATENA_EAR", "1") == "0":
+    if env.get("NUXIVA_EAR", "1") == "0":
         results["ear"] = {"status": "ok", "detail": "Disabilitato"}
     else:
         try:
             _, writer = await asyncio.wait_for(asyncio.open_connection("127.0.0.1", 8093), 3)
             writer.close()
-            detail = "In ascolto di \"Atena\""
+            detail = "In ascolto di \"Nuxiva\""
             try:
                 import json as _json
                 from config import STATE_DIR
@@ -191,7 +191,7 @@ async def probe_all() -> dict:
         except (OSError, asyncio.TimeoutError):
             results["ear"] = {"status": "down", "detail": "Servizio non raggiungibile"}
 
-    if env.get("ATENA_VISION", "1") == "0":
+    if env.get("NUXIVA_VISION", "1") == "0":
         results["vision"] = {"status": "ok", "detail": "Disabilitata"}
     else:
         try:
@@ -202,7 +202,7 @@ async def probe_all() -> dict:
         except (httpx.HTTPError, ValueError):
             results["vision"] = {"status": "down", "detail": "Servizio non raggiungibile"}
 
-    if env.get("ATENA_KIOSK", "1") == "0":
+    if env.get("NUXIVA_KIOSK", "1") == "0":
         results["kiosk"] = {"status": "ok", "detail": "Disabilitato"}
     else:
         results["kiosk"] = await kiosk_check()
@@ -233,7 +233,7 @@ def on_demand(results: dict, env: dict) -> dict:
     for key, pkg_id in ON_DEMAND.items():
         pkg = packages.PACKAGE_BY_ID[pkg_id]
         if key in results and not any(packages.step_wanted(s, env) for s in pkg.steps):
-            results[key] = {"status": "ok", "detail": "Su richiesta: installalo da Pacchetti o chiedilo ad Atena", "on_demand": True}
+            results[key] = {"status": "ok", "detail": "Su richiesta: installalo da Pacchetti o chiedilo ad Nuxiva", "on_demand": True}
     return results
 
 
@@ -297,29 +297,29 @@ class Watchdog:
             await self.orch.converge(["warmup"], reason="Riattivazione rete linguistica")
         elif key == "core" and native():
             if count <= 2:
-                await sh("systemctl", "restart", "atena-core", timeout=120)
+                await sh("systemctl", "restart", "nuxiva-core", timeout=120)
             else:
                 await self.orch.converge(["core", "services"], reason="Ricostruzione del core")
         elif key in ("core", "qdrant"):
             if count <= 2:
-                await sh("docker", "restart", f"atena-{key}", timeout=120)
+                await sh("docker", "restart", f"nuxiva-{key}", timeout=120)
             else:
                 await self.orch.converge(["docker", "core", "services"], reason="Ricostruzione servizi cognitivi")
         elif key == "ear" and store.components.get("ear", {}).get("mic"):
             await self._heal_mic(count)
         elif key == "ear":
             if count <= 2:
-                await sh("systemctl", "restart", "atena-ear", timeout=60)
+                await sh("systemctl", "restart", "nuxiva-ear", timeout=60)
             else:
                 await self.orch.converge(["ear"], reason="Ripristino dell'ascolto vocale")
         elif key == "vision":
             if count <= 2:
-                await sh("systemctl", "restart", "atena-vision", timeout=60)
+                await sh("systemctl", "restart", "nuxiva-vision", timeout=60)
             else:
                 await self.orch.converge(["vision"], reason="Ripristino della visione")
         elif key == "voice":
             if count <= 2:
-                await sh("systemctl", "restart", "atena-voice", timeout=60)
+                await sh("systemctl", "restart", "nuxiva-voice", timeout=60)
             else:
                 await self.orch.converge(["voice"], reason="Ripristino della voce neurale")
         elif key == "kiosk":

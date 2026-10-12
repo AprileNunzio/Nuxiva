@@ -11,7 +11,7 @@ assignees: ''
 Who needs this and what is hard or impossible today? Describe the situation, not only the solution.
 
 **Proposed solution**
-What should Atena do? Give example sentences ("apri la lavagna…"), screens or API calls where relevant.
+What should Nuxiva do? Give example sentences ("apri la lavagna…"), screens or API calls where relevant.
 
 **Where it fits**
 - [ ] New feature / agent

@@ -30,4 +30,4 @@
 
   H.Accessory = Accessory;
   H.Accessories = {};
-})(window.Atena3D);
+})(window.Nuxiva3D);

@@ -38,7 +38,7 @@ class PolicyTest(unittest.TestCase):
         self.assertIs(again.level("shell.powershell"), Level.ALLOW)
         self.assertFalse(again.tampered)
 
-    def test_editing_the_file_outside_atena_restores_safe_values(self):
+    def test_editing_the_file_outside_nuxiva_restores_safe_values(self):
         policy_module.Policy(self.file)
         data = json.loads(self.file.read_text(encoding="utf-8"))
         data["levels"]["shell.powershell"] = "allow"

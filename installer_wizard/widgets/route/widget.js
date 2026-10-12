@@ -1,5 +1,5 @@
 (() => {
-  AtenaDesk.register("route", {
+  NuxivaDesk.register("route", {
     render(el, d, ctx) {
       const delay = Number(d.delay);
       const late = Number.isFinite(delay) && delay >= 3;

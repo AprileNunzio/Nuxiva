@@ -89,7 +89,7 @@ async def move(src: str, dst: str) -> str:
     return f"spostato in {d}"
 
 
-@tool("delete", "sposta un file o una cartella nel cestino di Atena (recuperabile)", {"path": "percorso"}, confirm=True)
+@tool("delete", "sposta un file o una cartella nel cestino di Nuxiva (recuperabile)", {"path": "percorso"}, confirm=True)
 async def delete(path: str) -> str:
     p = resolve(path)
     if not p.exists():

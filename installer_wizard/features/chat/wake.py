@@ -13,7 +13,7 @@ from features.chat import speaker
 from features.chat.wake_phrases import native, phrases
 from features.google import timing
 
-log = logging.getLogger("atena.assistant")
+log = logging.getLogger("nuxiva.assistant")
 TRANSLATE_SECONDS = 4.0
 _recent: list[str] = []
 

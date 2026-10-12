@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="google" content="notranslate">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Atena</title>
-<link rel="stylesheet" href="/static/shared/atena.css">
+<title>Nuxiva</title>
+<link rel="stylesheet" href="/static/shared/nuxiva.css">
 <link rel="stylesheet" href="/static/display/display.css">
 <link rel="stylesheet" href="/static/display/hud.css">
 <link rel="stylesheet" href="/static/display/desk_touch.css">
@@ -24,7 +24,7 @@
 <div class="hud">
   <header>
     <div>
-      <div class="brand">A.T.E.N.A.<small>ASSISTENTE DIGITALE</small></div>
+      <div class="brand">NUXIVA<small>ASSISTENTE DIGITALE</small></div>
       <div class="chips" id="chips"></div>
     </div>
     <div class="clock"><b id="clock">--:--</b><span id="date"></span></div>
@@ -63,7 +63,7 @@
   </div>
 
   <div class="flow-ui" id="flow-ui">
-    <div class="flow-back"><button class="pill-btn" id="flow-back" onclick="if(window.AtenaDisplay&&window.AtenaDisplay.exitFlow)window.AtenaDisplay.exitFlow()">← Torna al volto</button></div>
+    <div class="flow-back"><button class="pill-btn" id="flow-back" onclick="if(window.NuxivaDisplay&&window.NuxivaDisplay.exitFlow)window.NuxivaDisplay.exitFlow()">← Torna al volto</button></div>
     <div class="flow-title">
       <h2>FLUSSO COGNITIVO COMPLETO</h2>
       <p>Percorso ricostruito dalla A alla Z · decisioni · giuria · agenti · cicli · ritorni</p>
@@ -79,8 +79,8 @@
   <div class="dock">
     <button class="ibtn" id="btn-brain" title="Mostra il cervello"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 5 2V4.5A2.5 2.5 0 0 0 9 4zm6 0a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-5 2V4.5A2.5 2.5 0 0 1 15 4z"/></svg></button>
     <button class="ibtn" id="btn-flow" title="Flusso Analisi Futuristico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="4" cy="12" r="2.5"/><circle cx="12" cy="5" r="2.5"/><circle cx="12" cy="19" r="2.5"/><circle cx="20" cy="12" r="2.5"/><path d="M6.5 12h3M12 7.5v9M14.5 12h3M6 10.5l4-4M6 13.5l4 4M14 6.5l4 4M14 17.5l4-4"/></svg></button>
-    <button class="ibtn mic off" id="btn-mic" title="Parla (oppure dì «Atena»)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
-    <input id="in" placeholder="Scrivi o dì «Atena»…" autocomplete="off">
+    <button class="ibtn mic off" id="btn-mic" title="Parla (oppure dì «Nuxiva»)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+    <input id="in" placeholder="Scrivi o dì «Nuxiva»…" autocomplete="off">
     <button class="ibtn" id="btn-vol" title="Audio e aspetto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg></button>
     <button class="ibtn" id="btn-voice" title="Voce attiva"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path id="wave" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12"/></svg></button>
   </div>
@@ -104,7 +104,7 @@
 
 <div class="tooltip" id="tip"></div>
 <div class="toast-mem" id="toast-mem"></div>
-<div class="mind empty" id="mind" title="Cosa sta pensando Atena: tocca per i dettagli">
+<div class="mind empty" id="mind" title="Cosa sta pensando Nuxiva: tocca per i dettagli">
   <div class="mind-head"><span class="mind-dot"></span><span class="mind-who" id="mind-who"></span><span class="mind-time" id="mind-time"></span></div>
   <div class="mind-model" id="mind-model"></div>
   <div class="mind-line" id="mind-line"></div>

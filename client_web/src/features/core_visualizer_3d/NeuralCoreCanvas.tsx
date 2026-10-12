@@ -221,7 +221,7 @@ export const NeuralCoreCanvas: React.FC<NeuralCoreCanvasProps> = ({ onSendComman
   const toggleVoiceListen = () => {
     setIsListening(prev => !prev);
     if (!isListening) {
-      setLastSpeechOutput("In ascolto del comando vocale... Pronuncia 'Atena' o impartisci un ordine.");
+      setLastSpeechOutput("In ascolto del comando vocale... Pronuncia 'Nuxiva' o impartisci un ordine.");
     }
   };
 
@@ -310,7 +310,7 @@ export const NeuralCoreCanvas: React.FC<NeuralCoreCanvasProps> = ({ onSendComman
               <Volume2 className="w-4 h-4" />
             </div>
             <div className="flex-1">
-              <div className="text-[10px] font-mono uppercase tracking-wider text-cyan-400">Risposta Vocale Atena</div>
+              <div className="text-[10px] font-mono uppercase tracking-wider text-cyan-400">Risposta Vocale Nuxiva</div>
               <p className="text-sm sm:text-base text-slate-200 font-['Rajdhani'] font-medium tracking-wide mt-1">
                 "{lastSpeechOutput}"
               </p>
@@ -323,7 +323,7 @@ export const NeuralCoreCanvas: React.FC<NeuralCoreCanvasProps> = ({ onSendComman
             type="text"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            placeholder="Chiedi qualsiasi cosa ad Atena o attiva il microfono..."
+            placeholder="Chiedi qualsiasi cosa ad Nuxiva o attiva il microfono..."
             className="w-full bg-slate-900/90 border border-cyan-950 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 rounded-2xl py-3.5 pl-4 pr-24 text-sm text-slate-100 placeholder:text-slate-500 backdrop-blur-md outline-none transition-all shadow-xl"
           />
           <div className="absolute right-2 flex items-center space-x-1">

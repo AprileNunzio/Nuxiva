@@ -61,7 +61,7 @@ class LocaleApiTests(LocaleBase):
         with mock.patch.object(pages, "WEB_DIR") as web:
             web.__truediv__.return_value.read_text.return_value = "<html><head></head><body></body></html>"
             html = pages.page("x.html", "fr").body.decode()
-        self.assertIn('window.ATENA_UI_LANG = "fr"', html)
+        self.assertIn('window.NUXIVA_UI_LANG = "fr"', html)
 
 
 if __name__ == "__main__":

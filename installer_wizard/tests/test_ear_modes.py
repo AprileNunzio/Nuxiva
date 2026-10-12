@@ -26,7 +26,7 @@ class EarModesTest(unittest.TestCase):
         self.assertEqual(len(wav), 32044)
 
     def test_online_stt_without_key_returns_none(self):
-        with mock.patch.dict(os.environ, {"ATENA_ONLINE_STT_KEY": "", "DEEPGRAM_API_KEY": "", "OPENAI_API_KEY": ""}, clear=True):
+        with mock.patch.dict(os.environ, {"NUXIVA_ONLINE_STT_KEY": "", "DEEPGRAM_API_KEY": "", "OPENAI_API_KEY": ""}, clear=True):
             samples = np.zeros(16000, dtype=np.float32)
             res = online_stt.transcribe_online(samples, "it")
             self.assertIsNone(res)
@@ -34,18 +34,18 @@ class EarModesTest(unittest.TestCase):
     def test_transcribe_default_offline_mode(self):
         # In modalità offline (default), non chiama online_stt
         samples = np.zeros(16000, dtype=np.float32)
-        with mock.patch.dict(os.environ, {"ATENA_EAR_MODE": "offline"}):
+        with mock.patch.dict(os.environ, {"NUXIVA_EAR_MODE": "offline"}):
             with mock.patch("online_stt.transcribe_online") as mock_online:
                 dummy_model = mock.Mock()
-                dummy_model.transcribe.return_value = ([mock.Mock(text="ciao Atena")], None)
+                dummy_model.transcribe.return_value = ([mock.Mock(text="ciao Nuxiva")], None)
                 with mock.patch.dict(stt.ACTIVE, {"model": dummy_model}):
                     text, lang = stt.transcribe(samples, fast=False, detect=False)
-                    self.assertEqual(text, "ciao Atena")
+                    self.assertEqual(text, "ciao Nuxiva")
                     mock_online.assert_not_called()
 
     def test_transcribe_online_mode_success(self):
         samples = np.zeros(16000, dtype=np.float32)
-        with mock.patch.dict(os.environ, {"ATENA_EAR_MODE": "online"}):
+        with mock.patch.dict(os.environ, {"NUXIVA_EAR_MODE": "online"}):
             with mock.patch("online_stt.transcribe_online", return_value="accendi luce salotto") as mock_online:
                 text, lang = stt.transcribe(samples, fast=False, detect=False)
                 self.assertEqual(text, "accendi luce salotto")
@@ -53,7 +53,7 @@ class EarModesTest(unittest.TestCase):
 
     def test_transcribe_online_fallback_to_offline_on_failure(self):
         samples = np.zeros(16000, dtype=np.float32)
-        with mock.patch.dict(os.environ, {"ATENA_EAR_MODE": "online"}):
+        with mock.patch.dict(os.environ, {"NUXIVA_EAR_MODE": "online"}):
             with mock.patch("online_stt.transcribe_online", return_value=None):
                 dummy_model2 = mock.Mock()
                 dummy_model2.transcribe.return_value = ([mock.Mock(text="fallback locale")], None)
@@ -66,7 +66,7 @@ class EarModesTest(unittest.TestCase):
         prof = enhance.NoiseProfile()
         prof.learn(samples)
         # DeepFilterNet assente o disattivato -> fallback spettrale locale
-        with mock.patch.dict(os.environ, {"ATENA_EAR_ENHANCE_ENGINE": "spectral"}):
+        with mock.patch.dict(os.environ, {"NUXIVA_EAR_ENHANCE_ENGINE": "spectral"}):
             out = enhance.clean(samples, prof)
             self.assertEqual(len(out), len(samples))
             self.assertIsInstance(out, np.ndarray)

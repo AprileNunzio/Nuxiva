@@ -4,12 +4,12 @@ from pathlib import Path
 
 from fastapi.testclient import TestClient
 
-import atena_supervisor
+import nuxiva_supervisor
 from features.nexus.application.summary_service import SummaryService
 from features.nexus.domain import summary
 from features.nexus.domain.zones import FAMILIES, ZONES, classify
 
-HEADERS = {"X-Atena-Request": "1"}
+HEADERS = {"X-Nuxiva-Request": "1"}
 FEATURES = Path(__file__).resolve().parents[1] / "features"
 
 
@@ -51,13 +51,13 @@ class SummaryDomainTest(unittest.TestCase):
         self.assertEqual(summary.health({}), 100)
 
     def test_todos_are_sorted_by_severity_and_capped(self):
-        data = inputs(components={"core": {"status": "down", "label": "Atena Core"}, "disk": {"status": "warn", "label": "Archiviazione"}},
+        data = inputs(components={"core": {"status": "down", "label": "Nuxiva Core"}, "disk": {"status": "warn", "label": "Archiviazione"}},
                       steps={"docker": {"status": "failed"}}, step_titles={"docker": "Motore container"},
                       update={"available": True}, approvals=2,
                       features=[{"id": "nvr", "name": "NVR", "state": {"risk": True}}])
         items = summary.todos(data)
         self.assertEqual([t.severity for t in items], ["bad", "bad", "warn", "warn", "warn", "info"])
-        self.assertIn("«Atena Core» non funziona", items[0].text)
+        self.assertIn("«Nuxiva Core» non funziona", items[0].text)
         self.assertIn("2 approvazioni in attesa", [t.text for t in items])
         self.assertIn("f/nvr", [t.target for t in items])
         many = inputs(steps={f"s{i}": {"status": "failed"} for i in range(20)})
@@ -72,7 +72,7 @@ class SummaryDomainTest(unittest.TestCase):
 class SummaryServiceTest(unittest.TestCase):
     def test_build_merges_state_catalog_and_placement(self):
         service = SummaryService(
-            state=lambda: {"phase": "READY", "components": {"core": {"status": "ok", "label": "Atena Core"}}},
+            state=lambda: {"phase": "READY", "components": {"core": {"status": "ok", "label": "Nuxiva Core"}}},
             catalog=lambda: {"features": [{"id": "vision", "name": "Visione", "toggle": {"env": "X"},
                                            "state": {"enabled": True, "mode": "auto"}},
                                           {"id": "proxmox", "name": "Proxmox", "state": {"enabled": False, "mode": "0"}}]},
@@ -82,14 +82,14 @@ class SummaryServiceTest(unittest.TestCase):
         self.assertEqual(data["counts"]["active"], 1)
         vision = next(t for t in data["tools"] if t["id"] == "vision")
         self.assertEqual((vision["zone"], vision["family"], vision["level"], vision["toggle"]), ("tools", "perception", "explorer", True))
-        self.assertEqual(data["components"][0]["label"], "Atena Core")
+        self.assertEqual(data["components"][0]["label"], "Nuxiva Core")
 
 
 class SummaryApiTest(unittest.TestCase):
     def test_summary_requires_session_and_lists_tools(self):
-        self.assertEqual(TestClient(atena_supervisor.admin).get("/api/nexus/summary").status_code, 401)
-        admin = TestClient(atena_supervisor.admin)
-        self.assertEqual(admin.post("/api/auth/login", json={"username": "admin", "password": "atena"}, headers=HEADERS).status_code, 200)
+        self.assertEqual(TestClient(nuxiva_supervisor.admin).get("/api/nexus/summary").status_code, 401)
+        admin = TestClient(nuxiva_supervisor.admin)
+        self.assertEqual(admin.post("/api/auth/login", json={"username": "admin", "password": "nuxiva"}, headers=HEADERS).status_code, 200)
         data = admin.get("/api/nexus/summary").json()
         self.assertGreater(data["counts"]["total"], 30)
         self.assertTrue({"tone", "health", "headline", "todos", "families", "tools"} <= set(data))

@@ -3,7 +3,7 @@ import threading
 
 from connection.client import Client, ServerError, Unauthorized
 
-log = logging.getLogger("atena.inbox")
+log = logging.getLogger("nuxiva.inbox")
 POLL_TIMEOUT = 40.0
 RETRY_AFTER = 10.0
 

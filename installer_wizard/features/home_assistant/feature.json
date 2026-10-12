@@ -5,9 +5,9 @@
   "category": "casa",
   "order": 110,
   "panel": "home",
-  "description": "Atena studia tutta la casa da Home Assistant: stanze, piani, dispositivi Zigbee, Thread, Matter, Wi-Fi, Z-Wave e Bluetooth con modelli e capacità. Li comanda a voce in pochi millisecondi e sa in quali stanze c'è movimento o presenza.",
+  "description": "Nuxiva studia tutta la casa da Home Assistant: stanze, piani, dispositivi Zigbee, Thread, Matter, Wi-Fi, Z-Wave e Bluetooth con modelli e capacità. Li comanda a voce in pochi millisecondi e sa in quali stanze c'è movimento o presenza.",
   "toggle": {
-    "env": "ATENA_HOME_ASSISTANT",
+    "env": "NUXIVA_HOME_ASSISTANT",
     "apply": []
   },
   "requires": {
@@ -41,19 +41,19 @@
       "type": "secret"
     },
     {
-      "key": "ATENA_HOME_ROOM",
-      "label": "Stanza in cui si trova Atena",
+      "key": "NUXIVA_HOME_ROOM",
+      "label": "Stanza in cui si trova Nuxiva",
       "type": "text",
       "placeholder": "es. Soggiorno"
     },
     {
-      "key": "ATENA_HOME_MOTION_MIN",
+      "key": "NUXIVA_HOME_MOTION_MIN",
       "label": "Minuti di occupazione dopo l'ultimo movimento",
       "type": "number",
       "default": "5"
     },
     {
-      "key": "ATENA_HOME_CONFIRM",
+      "key": "NUXIVA_HOME_CONFIRM",
       "label": "Chiedi conferma per serrature, allarme, cancelli e garage",
       "type": "bool",
       "default": "1"

@@ -1,10 +1,10 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   let page = 1, total = 0, selected = null, player = null, targets = [];
   const KIND = { display: "🖥", pc: "💻", cast: "📡", dlna: "📺" };
 
   function playerLib() {
-    if (window.AtenaTv) return Promise.resolve();
+    if (window.NuxivaTv) return Promise.resolve();
     return new Promise((ok, fail) => { const s = document.createElement("script"); s.src = "/static/shared/tvplayer.js"; s.onload = ok; s.onerror = () => fail(new Error("Lettore non disponibile")); document.head.appendChild(s); });
   }
 
@@ -47,7 +47,7 @@
       const r = await A.api("GET", `/api/tv/preview/${encodeURIComponent(cid)}`);
       await playerLib();
       if (player) player.stop();
-      player = await window.AtenaTv.play($("tv-video"), r.src, (s) => { $("tv-pmsg").textContent = s === "playing" ? "" : `${name}: ${s}`; });
+      player = await window.NuxivaTv.play($("tv-video"), r.src, (s) => { $("tv-pmsg").textContent = s === "playing" ? "" : `${name}: ${s}`; });
     } catch (e) { $("tv-pmsg").textContent = `${name}: ${e.message}`; }
   }
 

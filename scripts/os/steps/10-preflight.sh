@@ -4,10 +4,10 @@
 free_disk_mb() { df -Pm / | awk 'NR==2 {print $4}'; }
 
 step_check() {
-    [ -n "${ATENA_LLM_MODEL:-}" ] && [ -n "${ATENA_LLM_FAST_MODEL:-}" ] && [ -n "${ATENA_EMBED_MODEL:-}" ] \
+    [ -n "${NUXIVA_LLM_MODEL:-}" ] && [ -n "${NUXIVA_LLM_FAST_MODEL:-}" ] && [ -n "${NUXIVA_EMBED_MODEL:-}" ] \
         && [ "$(free_disk_mb)" -gt 3072 ] \
-        && [ "${ATENA_HW_PROFILE:-}" = "$(hw_profile)" ] \
-        && [ "${ATENA_MACHINE:-}" = "$(machine_class)" ]
+        && [ "${NUXIVA_HW_PROFILE:-}" = "$(hw_profile)" ] \
+        && [ "${NUXIVA_MACHINE:-}" = "$(machine_class)" ]
 }
 
 select_llm() {
@@ -38,7 +38,7 @@ step_apply() {
         x86_64|aarch64) info "Architettura: $arch" ;;
         *) fail "Architettura non supportata: $arch (richiesto x86_64 o aarch64)" ;;
     esac
-    command -v apt-get >/dev/null 2>&1 || fail "Atena OS richiede una distribuzione Debian/Ubuntu"
+    command -v apt-get >/dev/null 2>&1 || fail "Nuxiva OS richiede una distribuzione Debian/Ubuntu"
     . /etc/os-release
     info "Sistema operativo: ${PRETTY_NAME:-$ID}"
 
@@ -65,7 +65,7 @@ step_apply() {
     elif has_nvidia_gpu; then
         warn "Scheda NVIDIA rilevata ($(lspci | grep -iE '(vga|3d).*nvidia' | head -1 | cut -d: -f3- | xargs))"
         warn "ma non utilizzabile per l'inferenza (driver proprietario assente o GPU troppo datata/poca VRAM):"
-        warn "Atena usa la modalità CPU. Con una GPU recente e il driver NVIDIA verrà attivata da sola al riavvio."
+        warn "Nuxiva usa la modalità CPU. Con una GPU recente e il driver NVIDIA verrà attivata da sola al riavvio."
     else
         info "Nessuna GPU NVIDIA: modalità inferenza CPU ottimizzata"
     fi
@@ -79,34 +79,34 @@ step_apply() {
         powerful) info "Computer potente: profilo completo" ;;
         *) info "Computer standard: profilo bilanciato" ;;
     esac
-    if [ -n "${ATENA_MACHINE:-}" ] && [ "$ATENA_MACHINE" != "$machine" ]; then
-        [ "${ATENA_LLM_MODEL_AUTO:-1}" = "1" ] && ATENA_LLM_MODEL=""
-        [ "${ATENA_LLM_FAST_AUTO:-1}" = "1" ] && ATENA_LLM_FAST_MODEL=""
+    if [ -n "${NUXIVA_MACHINE:-}" ] && [ "$NUXIVA_MACHINE" != "$machine" ]; then
+        [ "${NUXIVA_LLM_MODEL_AUTO:-1}" = "1" ] && NUXIVA_LLM_MODEL=""
+        [ "${NUXIVA_LLM_FAST_AUTO:-1}" = "1" ] && NUXIVA_LLM_FAST_MODEL=""
     fi
-    set_env ATENA_MACHINE "$machine"
+    set_env NUXIVA_MACHINE "$machine"
 
     progress 80 "Selezione reti neurali ottimali"
-    ATENA_HW_PROFILE_PREV="${ATENA_HW_PROFILE:-}"
-    set_env ATENA_HW_PROFILE "$profile"
+    NUXIVA_HW_PROFILE_PREV="${NUXIVA_HW_PROFILE:-}"
+    set_env NUXIVA_HW_PROFILE "$profile"
     if [ "$profile" = gpu ]; then set_env COMPOSE_PROFILES gpu; else set_env COMPOSE_PROFILES ""; fi
-    if [ -n "${ATENA_HW_PROFILE_PREV:-}" ] && [ "$ATENA_HW_PROFILE_PREV" != "$profile" ] \
-            && [ "${ATENA_LLM_MODEL_AUTO:-1}" = "1" ]; then
-        ATENA_LLM_MODEL=""
+    if [ -n "${NUXIVA_HW_PROFILE_PREV:-}" ] && [ "$NUXIVA_HW_PROFILE_PREV" != "$profile" ] \
+            && [ "${NUXIVA_LLM_MODEL_AUTO:-1}" = "1" ]; then
+        NUXIVA_LLM_MODEL=""
     fi
-    if [ -n "${ATENA_HW_PROFILE_PREV:-}" ] && [ "$ATENA_HW_PROFILE_PREV" != "$profile" ] \
-            && [ "${ATENA_LLM_FAST_AUTO:-1}" = "1" ]; then
-        ATENA_LLM_FAST_MODEL=""
+    if [ -n "${NUXIVA_HW_PROFILE_PREV:-}" ] && [ "$NUXIVA_HW_PROFILE_PREV" != "$profile" ] \
+            && [ "${NUXIVA_LLM_FAST_AUTO:-1}" = "1" ]; then
+        NUXIVA_LLM_FAST_MODEL=""
     fi
-    if [ -z "${ATENA_LLM_MODEL:-}" ]; then
-        set_env ATENA_LLM_MODEL "$(select_llm "$ram_gb" "${vram_gb:-0}" "$machine")"
+    if [ -z "${NUXIVA_LLM_MODEL:-}" ]; then
+        set_env NUXIVA_LLM_MODEL "$(select_llm "$ram_gb" "${vram_gb:-0}" "$machine")"
     fi
-    if [ -z "${ATENA_LLM_FAST_MODEL:-}" ]; then
-        set_env ATENA_LLM_FAST_MODEL "$(select_fast_llm "$ram_gb" "${vram_gb:-0}" "$machine")"
+    if [ -z "${NUXIVA_LLM_FAST_MODEL:-}" ]; then
+        set_env NUXIVA_LLM_FAST_MODEL "$(select_fast_llm "$ram_gb" "${vram_gb:-0}" "$machine")"
     fi
-    if [ -z "${ATENA_EMBED_MODEL:-}" ]; then
-        set_env ATENA_EMBED_MODEL "nomic-embed-text"
+    if [ -z "${NUXIVA_EMBED_MODEL:-}" ]; then
+        set_env NUXIVA_EMBED_MODEL "nomic-embed-text"
     fi
-    info "Cervello potente: $ATENA_LLM_MODEL — veloce: $ATENA_LLM_FAST_MODEL — Embedding: $ATENA_EMBED_MODEL"
+    info "Cervello potente: $NUXIVA_LLM_MODEL — veloce: $NUXIVA_LLM_FAST_MODEL — Embedding: $NUXIVA_EMBED_MODEL"
     progress 100 "Analisi completata"
 }
 

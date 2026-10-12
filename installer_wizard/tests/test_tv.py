@@ -79,7 +79,7 @@ class StoreTest(unittest.TestCase):
 
 
 class TargetTest(unittest.TestCase):
-    ROWS = [{"id": "display", "kind": "display", "name": "Schermi di Atena", "online": True},
+    ROWS = [{"id": "display", "kind": "display", "name": "Schermi di Nuxiva", "online": True},
             {"id": "pc:studio-pc", "kind": "pc", "name": "Studio PC", "online": True},
             {"id": "cast:abc", "kind": "cast", "name": "Salotto TV", "online": True}]
 

@@ -5,11 +5,11 @@ import logging
 import uuid
 import time
 
-log = logging.getLogger("atena.mesh")
+log = logging.getLogger("nuxiva.mesh")
 
-class AtenaMeshCoordinator:
+class NuxivaMeshCoordinator:
     """
-    Gestisce la rete P2P decentralizzata di nodi Atena.
+    Gestisce la rete P2P decentralizzata di nodi Nuxiva.
     Permette il Tensor Sharding (distribuzione dell'inferenza pesante su altri nodi della rete locale).
     """
     def __init__(self, port=9999):
@@ -25,7 +25,7 @@ class AtenaMeshCoordinator:
         self.running = True
         threading.Thread(target=self._listen_for_peers, daemon=True).start()
         threading.Thread(target=self._broadcast_presence, daemon=True).start()
-        log.info(f"Atena Mesh attivato. Node ID: {self.node_id}. In attesa di peer...")
+        log.info(f"Nuxiva Mesh attivato. Node ID: {self.node_id}. In attesa di peer...")
 
     def _listen_for_peers(self):
         while self.running:
@@ -81,4 +81,4 @@ class AtenaMeshCoordinator:
                 return {}
         return MockSync()
 
-p2p_mesh = AtenaMeshCoordinator()
+p2p_mesh = NuxivaMeshCoordinator()

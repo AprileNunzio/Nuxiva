@@ -156,7 +156,7 @@ class BackupTest(Base):
             scheduler.archive([str(self.home)], target, f"2026010{n:02d}")
         removed = scheduler.rotate(target, keep=10)
         self.assertEqual(len(removed), 2)
-        self.assertEqual(len(list(target.glob("ATENA-backup-*.zip"))), 10)
+        self.assertEqual(len(list(target.glob("NUXIVA-backup-*.zip"))), 10)
 
     def test_a_backup_is_due_only_when_configured_and_late(self):
         cfg = {"backup_folders": [str(self.home)], "backup_target": str(self.root / "nas"), "backup_hours": 24}

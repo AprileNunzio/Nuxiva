@@ -9,10 +9,10 @@ import httpx
 
 from config import DEMO, STATE_DIR, env_get, write_env
 
-log = logging.getLogger("atena.location")
+log = logging.getLogger("nuxiva.location")
 
 STATE_FILE = STATE_DIR / "location.json"
-USER_AGENT = "AtenaOS/3 (+https://github.com/AprileNunzio/ATENA)"
+USER_AGENT = "NuxivaOS/3 (+https://github.com/AprileNunzio/NUXIVA)"
 BROWSER_FRESH = 12 * 3600
 PHONE_FRESH = 90 * 86400
 WIFI_FRESH = 6 * 3600
@@ -50,28 +50,28 @@ class Locator:
         self.lock = asyncio.Lock()
 
     def settings(self) -> dict:
-        mode = env_get("ATENA_LOCATION_MODE", "auto")
+        mode = env_get("NUXIVA_LOCATION_MODE", "auto")
         default = None
         try:
-            lat, lon = float(env_get("ATENA_LOCATION_LAT", "")), float(env_get("ATENA_LOCATION_LON", ""))
-            default = {"name": env_get("ATENA_LOCATION", "") or f"{lat:.4f}, {lon:.4f}", "lat": lat, "lon": lon}
+            lat, lon = float(env_get("NUXIVA_LOCATION_LAT", "")), float(env_get("NUXIVA_LOCATION_LON", ""))
+            default = {"name": env_get("NUXIVA_LOCATION", "") or f"{lat:.4f}, {lon:.4f}", "lat": lat, "lon": lon}
         except ValueError:
-            if env_get("ATENA_LOCATION", ""):
-                default = {"name": env_get("ATENA_LOCATION", ""), "lat": None, "lon": None}
+            if env_get("NUXIVA_LOCATION", ""):
+                default = {"name": env_get("NUXIVA_LOCATION", ""), "lat": None, "lon": None}
         return {"mode": mode if mode in ("auto", "fixed") else "auto", "default": default}
 
     async def set_default(self, name: str, lat, lon, mode: str | None = None) -> dict:
-        updates = {"ATENA_LOCATION": (name or "").strip()[:80],
-                   "ATENA_LOCATION_LAT": "" if lat in (None, "") else f"{float(lat):.6f}",
-                   "ATENA_LOCATION_LON": "" if lon in (None, "") else f"{float(lon):.6f}"}
+        updates = {"NUXIVA_LOCATION": (name or "").strip()[:80],
+                   "NUXIVA_LOCATION_LAT": "" if lat in (None, "") else f"{float(lat):.6f}",
+                   "NUXIVA_LOCATION_LON": "" if lon in (None, "") else f"{float(lon):.6f}"}
         if mode in ("auto", "fixed"):
-            updates["ATENA_LOCATION_MODE"] = mode
+            updates["NUXIVA_LOCATION_MODE"] = mode
         write_env(updates)
         return await self.current(refresh=False)
 
     def set_mode(self, mode: str) -> None:
         if mode in ("auto", "fixed"):
-            write_env({"ATENA_LOCATION_MODE": mode})
+            write_env({"NUXIVA_LOCATION_MODE": mode})
 
     async def report_browser(self, lat: float, lon: float, accuracy: float) -> dict:
         return await self.report("browser", lat, lon, accuracy)

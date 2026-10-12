@@ -10,7 +10,7 @@ from config import DEMO, VERSION
 from state import store
 from steps import STEP_BY_ID, STEPS, converge_step, run_pipeline
 
-log = logging.getLogger("atena.supervisor")
+log = logging.getLogger("nuxiva.supervisor")
 
 ERROR_RETRY_SECONDS = 120
 ERROR_RETRY_MAX = 30 * 60

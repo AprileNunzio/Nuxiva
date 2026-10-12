@@ -8,7 +8,7 @@ from state import store
 from features.bluetooth import adapter, prefs
 from features.bluetooth.router import router
 
-log = logging.getLogger("atena.bluetooth")
+log = logging.getLogger("nuxiva.bluetooth")
 TICK = 4
 RECONNECT_EVERY = 30
 
@@ -24,7 +24,7 @@ class BluetoothService:
 
     @staticmethod
     def enabled() -> bool:
-        return env_get("ATENA_BLUETOOTH", "1") != "0"
+        return env_get("NUXIVA_BLUETOOTH", "1") != "0"
 
     async def _prepare(self) -> None:
         from orchestrator import converge_steps

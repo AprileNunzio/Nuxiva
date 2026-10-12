@@ -5,7 +5,7 @@ from pathlib import Path
 VERSION = "4.1.53"
 FROZEN = bool(getattr(sys, "frozen", False))
 APP_DIR = Path(sys.executable).resolve().parent if FROZEN else Path(__file__).resolve().parent.parent
-DATA_DIR = Path(os.environ.get("APPDATA") or Path.home()) / "ATENA"
+DATA_DIR = Path(os.environ.get("APPDATA") or Path.home()) / "NUXIVA"
 CONFIG_FILE = DATA_DIR / "assistant.json"
 PERMISSIONS_FILE = DATA_DIR / "permissions.json"
 KEY_FILE = DATA_DIR / "integrity.key"

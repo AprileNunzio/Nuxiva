@@ -12,7 +12,7 @@ from features.presentation.infrastructure.commons_images import CommonsImages, h
 from features.presentation.infrastructure.image_store import ImageStore
 from features.study.constants import USER_AGENT
 
-logger = logging.getLogger("atena.presentation")
+logger = logging.getLogger("nuxiva.presentation")
 
 ROUTE = "/api/presentation/image"
 BUDGET_SECONDS = 45.0
@@ -36,7 +36,7 @@ planner = PresentationPlanner(_complete, CommonsImages(_fetch_json, _fetch_bytes
 
 
 async def compose(question: str, reply: str) -> Optional[Tuple[str, dict]]:
-    mode = env_get("ATENA_PRESENTATION", "smart")
+    mode = env_get("NUXIVA_PRESENTATION", "smart")
     if not worth_planning(question, reply, mode if mode in MODES else "smart"):
         return None
     try:

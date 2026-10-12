@@ -104,8 +104,8 @@ async def app_state(request: Request, _: str = Depends(require_admin)):
 async def app_set(request: Request, user: str = Depends(require_admin)):
     payload = await body(request)
     enabled = bool(payload.get("enabled"))
-    updates = {"ATENA_MUSIC_SUBSONIC": "1" if enabled else "0"}
+    updates = {"NUXIVA_MUSIC_SUBSONIC": "1" if enabled else "0"}
     if enabled and (payload.get("regenerate") or len(conf.app_password()) < 8):
-        updates["ATENA_MUSIC_APP_PASSWORD"] = secrets.token_urlsafe(12)
+        updates["NUXIVA_MUSIC_APP_PASSWORD"] = secrets.token_urlsafe(12)
     write_env(updates)
     return app_view(request)

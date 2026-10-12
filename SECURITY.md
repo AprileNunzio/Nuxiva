@@ -2,7 +2,7 @@
 
 *Riepilogo in italiano in fondo al documento.*
 
-Atena OS runs on a home server with access to microphones, cameras, files, smart-home devices and a shell, and
+Nuxiva OS runs on a home server with access to microphones, cameras, files, smart-home devices and a shell, and
 it can be driven by external assistants over MCP. Security is therefore a design requirement, not an
 afterthought: the project follows a **zero-trust** model in which every endpoint, tool call and input is
 authenticated, validated and, when it can change the real world, confirmed **in code** (never only in a prompt).
@@ -27,15 +27,15 @@ Report it privately through one of these channels:
 1. **GitHub private vulnerability reporting**: *Security → Report a vulnerability* on the repository page
    (when enabled for the repository).
 2. **E-mail**: `security@nunziotech.com`, or `aprilenunzio88@gmail.com` if you get no reply.
-   Use the subject *Atena security report*. If you need an encrypted channel, say so in a first message without
+   Use the subject *Nuxiva security report*. If you need an encrypted channel, say so in a first message without
    technical details and one will be arranged.
 
 Please include, as far as you can:
 
-- the affected component and version (`atenactl version`, or the commit shown by `/api/state`);
+- the affected component and version (`nuxivactl version`, or the commit shown by `/api/state`);
 - a description of the issue and its impact (what an attacker gains, and what access is required);
 - clear reproduction steps or a proof of concept, and the configuration involved (for example the MCP token
-  level, the `ATENA_AGENT_ACCESS` value, whether the demo mode was used);
+  level, the `NUXIVA_AGENT_ACCESS` value, whether the demo mode was used);
 - relevant logs, with secrets, tokens and personal data removed;
 - whether you intend to publish your findings, and when.
 
@@ -73,25 +73,25 @@ In scope:
   sessions and the anti-CSRF protection;
 - the **MCP server** (`/mcp`), its tokens, access levels, origin check, rate limits and audit log, and the **MCP
   client** (connections to external servers);
-- tools, agent delegation, the forge (tools, widgets and features created by Atena) and the understanding layer;
+- tools, agent delegation, the forge (tools, widgets and features created by Nuxiva) and the understanding layer;
 - node pairing, node tokens and the satellite agents;
-- Atena Core (`server/`), the sandbox broker (`sandbox_broker/`) and the isolation of generated code;
+- Nuxiva Core (`server/`), the sandbox broker (`sandbox_broker/`) and the isolation of generated code;
 - the music server (signed media URLs, share links, the compatible `/rest` API), the whiteboard and the camera
   streams;
 - the installer, the update mechanism and the rollback logic (supply chain of the installation itself);
-- secrets handling: sealed files, the cloud vault, `atena.env` permissions.
+- secrets handling: sealed files, the cloud vault, `nuxiva.env` permissions.
 
 Out of scope (unless you can show a concrete security impact):
 
 - social engineering, physical access to the server, and attacks that require an already-compromised admin
   account or a token created by the administrator with full access acting as intended;
-- volumetric denial of service, and findings against third-party services Atena can be connected to;
-- vulnerabilities in dependencies without a demonstrated way to exploit them in Atena;
+- volumetric denial of service, and findings against third-party services Nuxiva can be connected to;
+- vulnerabilities in dependencies without a demonstrated way to exploit them in Nuxiva;
 - missing best-practice headers or settings with no practical impact;
 - the `docker-compose.yml` and `Dockerfile` in the repository root, which are for local development only and use
   placeholder credentials;
 - behavior that only appears after an administrator deliberately lowers a protection (for example
-  `ATENA_UPDATE_REQUIRE_CI=0`, or marking an external MCP server as trusted).
+  `NUXIVA_UPDATE_REQUIRE_CI=0`, or marking an external MCP server as trusted).
 
 ## Security model in brief
 
@@ -110,11 +110,11 @@ Out of scope (unless you can show a concrete security impact):
 
 - Keep ports 80 and 8080 on your **local network**. Do not expose them to the Internet; for remote access use a
   VPN or an HTTPS reverse proxy with its own authentication. The MCP endpoint uses plain HTTP on the LAN.
-- Use strong passwords for the system users in the `atena-admin` group and for the shared folder user.
+- Use strong passwords for the system users in the `nuxiva-admin` group and for the shared folder user.
 - Create **standard** MCP tokens by default. Give **full access** tokens only to clients you trust, name them,
   review the audit log (`/api/mcp/audit`) and revoke tokens you no longer use.
-- Keep **automatic updates** and `ATENA_UPDATE_REQUIRE_CI=1` enabled, and leave the nightly self-test on.
-- Use `ATENA_AGENT_ACCESS=standard` if the agent does not need the whole server.
+- Keep **automatic updates** and `NUXIVA_UPDATE_REQUIRE_CI=1` enabled, and leave the nightly self-test on.
+- Use `NUXIVA_AGENT_ACCESS=standard` if the agent does not need the whole server.
 - Mark an external MCP server as *trusted* only if you control it.
 - Turn on cameras and recording only with the consent of the people filmed.
 
@@ -125,7 +125,7 @@ privately at once so that it can be rotated.
 
 # Politica di sicurezza (italiano)
 
-Atena OS gira su un server di casa con accesso a microfoni, telecamere, file, domotica e shell, e può essere
+Nuxiva OS gira su un server di casa con accesso a microfoni, telecamere, file, domotica e shell, e può essere
 guidato da assistenti esterni via MCP: la sicurezza è un requisito di progetto. Modello **zero-trust**: ogni
 endpoint, strumento e input è autenticato e validato, e ciò che può cambiare il mondo reale è confermato **dal
 codice**, non solo dal prompt (dettagli nel [README, §20](README.md#20-sicurezza-e-privacy)).
@@ -133,7 +133,7 @@ codice**, non solo dal prompt (dettagli nel [README, §20](README.md#20-sicurezz
 - **Versioni supportate**: 3.x (`main`); le installazioni si aggiornano da sole solo con CI verde.
 - **Come segnalare**: in privato, mai con una issue pubblica. Con la segnalazione privata di GitHub
   (*Security → Report a vulnerability*, se attiva) oppure via e-mail a `security@nunziotech.com` (in alternativa
-  `aprilenunzio88@gmail.com`), oggetto «Atena security report». Indicare componente e versione, impatto, passi
+  `aprilenunzio88@gmail.com`), oggetto «Nuxiva security report». Indicare componente e versione, impatto, passi
   per riprodurre, configurazione e log senza segreti.
 - **Tempi (obiettivi)**: conferma entro 3 giorni lavorativi, valutazione entro 7 giorni; correzione entro 7 giorni
   se critica, 14 se alta, 30 se media, alla prossima versione se bassa; avviso pubblico dopo la correzione.

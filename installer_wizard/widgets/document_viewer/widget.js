@@ -21,7 +21,7 @@
         <div class="wk-faint dv-where"><span>Cartella condivisa</span> › 01 <span>Documenti</span>${d.project ? ` › ${ctx.esc(base(d.project))}` : ""}</div></div>${preview}</div>`;
   }
 
-  AtenaDesk.register("document_viewer", {
+  NuxivaDesk.register("document_viewer", {
     render(el, d, ctx) {
       if (d.type === "office") return office(el, d, ctx);
       const url = safeUrl(d.url);

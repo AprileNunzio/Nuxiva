@@ -16,7 +16,7 @@ def first_contact_context() -> ssl.SSLContext:
 
 def pinned_context(ca_pem: str) -> ssl.SSLContext:
     if not ca_pem:
-        raise PinMismatch("Nessuna autorità di certificazione di ATENA memorizzata: abbina di nuovo questo PC")
+        raise PinMismatch("Nessuna autorità di certificazione di NUXIVA memorizzata: abbina di nuovo questo PC")
     ctx = ssl.create_default_context(cadata=ca_pem)
     ctx.check_hostname = False
     ctx.minimum_version = ssl.TLSVersion.TLSv1_2
@@ -37,4 +37,4 @@ def short(value: str) -> str:
 
 
 def mismatch(exc: ssl.SSLError) -> PinMismatch:
-    return PinMismatch(f"Il certificato presentato non è firmato dall'autorità di ATENA memorizzata ({exc.reason or exc})")
+    return PinMismatch(f"Il certificato presentato non è firmato dall'autorità di NUXIVA memorizzata ({exc.reason or exc})")

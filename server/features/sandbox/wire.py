@@ -1,8 +1,8 @@
 import hashlib
 import hmac
 
-TIMESTAMP_HEADER = "X-Atena-Timestamp"
-SIGNATURE_HEADER = "X-Atena-Signature"
+TIMESTAMP_HEADER = "X-Nuxiva-Timestamp"
+SIGNATURE_HEADER = "X-Nuxiva-Signature"
 MAX_SKEW_SECONDS = 30
 EXECUTE_PATH = "/v1/execute"
 STATUS_PATH = "/v1/status"

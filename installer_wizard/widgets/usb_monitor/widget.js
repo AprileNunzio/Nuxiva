@@ -1,5 +1,5 @@
 (() => {
-  AtenaDesk.register("usb_monitor", {
+  NuxivaDesk.register("usb_monitor", {
     render(el, d, ctx) {
       el.innerHTML = `${ctx.head({ icon: "usb", label: "Nuovo dispositivo USB", chip: "collegato", live: true })}
         <div class="wk-hero"><span class="wk-num sm">${ctx.esc(d.size || "—")}</span><span class="wk-sub">${ctx.esc(d.vendor || "—")}</span></div>

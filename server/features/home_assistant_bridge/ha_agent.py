@@ -10,7 +10,7 @@ from server.core.reasoning.self_critique import self_critique_engine
 from server.core.kernel.consensus.critical import CriticalAction, is_critical
 from server.core.kernel.consensus.instance import critical_jury
 
-logger = logging.getLogger("atena.ha_agent")
+logger = logging.getLogger("nuxiva.ha_agent")
 current_utterance: ContextVar[str] = ContextVar("current_utterance", default="")
 
 class HomeAssistantAgent(BaseAgent):
@@ -83,7 +83,7 @@ class HomeAssistantAgent(BaseAgent):
             habits_context = "Memoria non accessibile."
 
         agent_prompt = (
-            "Sei Jarvis, il gestore della Domotica di Atena. Controlli Home Assistant. "
+            "Sei Jarvis, il gestore della Domotica di Nuxiva. Controlli Home Assistant. "
             "Il tuo compito è capire l'ambiente, decidere il dominio e l'entità corretti "
             "ed eseguire l'azione con i tool forniti. "
             f"ABITUDINI DELL'UTENTE E MEMORIA:\n{habits_context}\n"

@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 . "$(dirname "$0")/../lib.sh"
 
-SYSCTL_FILE=/etc/sysctl.d/99-atena-hardening.conf
+SYSCTL_FILE=/etc/sysctl.d/99-nuxiva-hardening.conf
 PORTS_TCP=(22 80 443 8080)
 CLOSED_TCP=(8443)
 PORTS_UDP=(51820 50505)
 
 sysctl_conf() {
     printf '%s\n' \
-        '# Gestito da Atena OS — non modificare manualmente' \
+        '# Gestito da Nuxiva OS — non modificare manualmente' \
         'fs.protected_fifos = 2' \
         'fs.protected_regular = 2' \
         'fs.suid_dumpable = 0' \

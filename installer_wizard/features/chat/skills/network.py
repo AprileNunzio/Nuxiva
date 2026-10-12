@@ -13,7 +13,7 @@ async def network_skill() -> tuple[str, dict]:
     stats = [{"label": k, "value": str(n), "percent": min(100, n * 100 / max(1, len(online)))}
              for k, n in kinds.most_common(8)]
     items = [{"label": f"{d['icon']} {d['label']}", "value": d.get("ip", ""), "status": "ok"} for d in online[:40]]
-    new = [d for d in online if time.time() - d.get("first_seen", 0) < 24 * 3600 and d.get("type") != "atena"]
+    new = [d for d in online if time.time() - d.get("first_seen", 0) < 24 * 3600 and d.get("type") != "nuxiva"]
     speech = explorer.summary_text()
     if new:
         speech += f" {len(new)} {'è nuovo' if len(new) == 1 else 'sono nuovi'} nelle ultime 24 ore."

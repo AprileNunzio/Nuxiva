@@ -7,7 +7,7 @@
   "panel": "sports",
   "description": "Calcio e Formula 1 per ogni persona: squadre preferite, risultati in diretta, gol e fine partita annunciati, classifiche e calendario dei Gran Premi, con i widget che compaiono quando servono o quando ti avvicini.",
   "toggle": {
-    "env": "ATENA_SPORTS",
+    "env": "NUXIVA_SPORTS",
     "apply": []
   },
   "capabilities": [

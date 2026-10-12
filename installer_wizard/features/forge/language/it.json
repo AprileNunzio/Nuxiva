@@ -1,6 +1,6 @@
 {
-  "name": "Fucina di Atena",
-  "description": "Atena crea da sola nuovi strumenti (combinando quelli esistenti), widget e funzionalità: appena creati sono disponibili a lei, agli altri agenti e a ogni client MCP collegato.",
+  "name": "Fucina di Nuxiva",
+  "description": "Nuxiva crea da sola nuovi strumenti (combinando quelli esistenti), widget e funzionalità: appena creati sono disponibili a lei, agli altri agenti e a ogni client MCP collegato.",
   "capabilities": [
     "Strumenti nuovi come sequenze di strumenti esistenti, con parametri e conferme ereditate dai passi",
     "Widget per il display con titolo, valore, testo ed elenchi",

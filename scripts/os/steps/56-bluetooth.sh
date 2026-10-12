@@ -3,13 +3,13 @@
 
 BT_PKGS=(bluez pulseaudio-module-bluetooth)
 
-bt_enabled() { [ "${ATENA_BLUETOOTH:-1}" != "0" ]; }
+bt_enabled() { [ "${NUXIVA_BLUETOOTH:-1}" != "0" ]; }
 bt_adapter() { compgen -G "/sys/class/bluetooth/hci*" >/dev/null; }
 
 kiosk_pactl() {
     local uid
-    uid=$(id -u "$ATENA_KIOSK_USER" 2>/dev/null) || return 1
-    runuser -u "$ATENA_KIOSK_USER" -- env "XDG_RUNTIME_DIR=/run/user/$uid" pactl "$@"
+    uid=$(id -u "$NUXIVA_KIOSK_USER" 2>/dev/null) || return 1
+    runuser -u "$NUXIVA_KIOSK_USER" -- env "XDG_RUNTIME_DIR=/run/user/$uid" pactl "$@"
 }
 
 pulse_ready() {
@@ -21,8 +21,8 @@ step_check() {
     bt_adapter || return 0
     pkgs_present "${BT_PKGS[@]}" || return 1
     systemctl is-active --quiet bluetooth || return 1
-    id -nG "$ATENA_KIOSK_USER" 2>/dev/null | grep -qw bluetooth || return 1
-    ! id "$ATENA_KIOSK_USER" >/dev/null 2>&1 || pulse_ready
+    id -nG "$NUXIVA_KIOSK_USER" 2>/dev/null | grep -qw bluetooth || return 1
+    ! id "$NUXIVA_KIOSK_USER" >/dev/null 2>&1 || pulse_ready
 }
 
 step_apply() {
@@ -31,7 +31,7 @@ step_apply() {
         return 0
     fi
     if ! bt_adapter; then
-        progress 100 "Nessun adattatore Bluetooth: collega una chiavetta USB e Atena la configurerà"
+        progress 100 "Nessun adattatore Bluetooth: collega una chiavetta USB e Nuxiva la configurerà"
         return 0
     fi
     progress 20 "Installazione di BlueZ e del supporto audio Bluetooth"
@@ -51,8 +51,8 @@ step_apply() {
     bluetoothctl power on >/dev/null || warn "Accensione dell'adattatore non confermata"
     progress 75 "Permessi per il display"
     getent group bluetooth >/dev/null || groupadd --system bluetooth
-    if id "$ATENA_KIOSK_USER" >/dev/null 2>&1; then
-        usermod -aG bluetooth "$ATENA_KIOSK_USER"
+    if id "$NUXIVA_KIOSK_USER" >/dev/null 2>&1; then
+        usermod -aG bluetooth "$NUXIVA_KIOSK_USER"
         progress 85 "Collegamento dell'audio Bluetooth"
         pulse_ready || kiosk_pactl load-module module-bluetooth-policy >/dev/null 2>&1 || true
         pulse_ready || kiosk_pactl load-module module-bluetooth-discover >/dev/null \

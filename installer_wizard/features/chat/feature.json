@@ -1,6 +1,6 @@
 {
   "id": "chat",
-  "name": "Parla con Atena",
+  "name": "Parla con Nuxiva",
   "icon": "✉",
   "category": "assistente",
   "order": 10,
@@ -14,13 +14,13 @@
   ],
   "settings": [
     {
-      "key": "ATENA_ADDRESSEE_THRESHOLD",
+      "key": "NUXIVA_ADDRESSEE_THRESHOLD",
       "label": "Quanto deve essere sicuro che parli con lui prima di rispondere (0.2 timido - 0.95 prudente)",
       "type": "number",
       "default": "0.5"
     },
     {
-      "key": "ATENA_ADDRESSEE_ALONE",
+      "key": "NUXIVA_ADDRESSEE_ALONE",
       "label": "Fiducia in più quando sei solo nella stanza (0 - 1)",
       "type": "number",
       "default": "0.35"

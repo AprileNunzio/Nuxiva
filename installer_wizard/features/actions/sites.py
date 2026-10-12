@@ -62,7 +62,7 @@ def render_site(spec: dict) -> str:
         f'<meta name="description" content="{e(spec.get("tagline"))}"><style>:root{{--c1:{c1};--c2:{c2}}}'
         f"{_SITE_CSS}</style></head><body><header><h1>{e(spec.get('title'))}</h1><p>{e(spec.get('tagline'))}</p>"
         f"</header><nav>{''.join(nav)}</nav><main>{''.join(sections)}</main><footer>© {time.strftime('%Y')} "
-        f"{e(spec.get('title'))} · creato da Atena</footer></body></html>"
+        f"{e(spec.get('title'))} · creato da Nuxiva</footer></body></html>"
     )
 
 
@@ -135,5 +135,5 @@ async def sites_list_action(text: str) -> tuple[str, dict]:
     first = rows[0]
     speech = (f"Ho creato {len(rows)} sit{'i' if len(rows) > 1 else 'o'}. L'ultimo è {first['title']}: lo apre dal browser "
               f"all'indirizzo {first['url']}")
-    return speech, {"mode": "focus", "title": "Siti creati da Atena", "subtitle": "Visibili da ogni dispositivo della rete di casa",
+    return speech, {"mode": "focus", "title": "Siti creati da Nuxiva", "subtitle": "Visibili da ogni dispositivo della rete di casa",
                     "panels": [{"type": "kv", "title": "Indirizzi", "data": {r["title"]: r["url"] for r in rows[:20]}}]}

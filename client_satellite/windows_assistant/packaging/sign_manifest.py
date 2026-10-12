@@ -7,8 +7,8 @@ from pathlib import Path
 
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 
-REPOSITORY = "AprileNunzio/ATENA"
-KEY_ENV = "ATENA_ASSISTANT_SIGNING_KEY"
+REPOSITORY = "AprileNunzio/NUXIVA"
+KEY_ENV = "NUXIVA_ASSISTANT_SIGNING_KEY"
 
 
 def manifest(installer: Path, version: str) -> bytes:

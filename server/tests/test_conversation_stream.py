@@ -64,13 +64,13 @@ class StreamingTests(unittest.IsolatedAsyncioTestCase):
         engine = ConversationEngine()
 
         async def pieces(request):
-            for piece in ("Sono ", "Atena."):
+            for piece in ("Sono ", "Nuxiva."):
                 yield piece
 
         with mock.patch("server.core.reasoning.conversation.llm_gateway.stream_completion", side_effect=pieces):
             text = "".join(await _collect(engine.reply_stream("chi sei?", "kiosk")))
-        self.assertEqual(text, "Sono Atena.")
-        self.assertEqual(list(engine._history["kiosk"]), [("user", "chi sei?"), ("assistant", "Sono Atena.")])
+        self.assertEqual(text, "Sono Nuxiva.")
+        self.assertEqual(list(engine._history["kiosk"]), [("user", "chi sei?"), ("assistant", "Sono Nuxiva.")])
 
 
 try:

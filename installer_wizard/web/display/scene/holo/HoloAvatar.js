@@ -130,4 +130,4 @@
 
   J.HoloFace = HoloAvatar;
   H.HoloAvatar = HoloAvatar;
-})(window.Atena3D);
+})(window.Nuxiva3D);

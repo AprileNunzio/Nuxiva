@@ -6,13 +6,13 @@ from server.config.env import settings
 from server.core.event_sourcing.universal_space import UniversalObservation
 from server.core.sensory_bus.event_router import sensory_bus
 
-logger = logging.getLogger("atena.ha_sensory_driver")
+logger = logging.getLogger("nuxiva.ha_sensory_driver")
 
 class HomeAssistantSensoryDriver:
     """
     Ascolta il WebSocket di Home Assistant in tempo reale e converte
     gli eventi (es. cambi di stato, movimento, temperatura) in UniversalObservation
-    sul SensoryBus di Atena, rendendo il sistema PROATTIVO anziché reattivo.
+    sul SensoryBus di Nuxiva, rendendo il sistema PROATTIVO anziché reattivo.
     """
     def __init__(self, ws_url: str = None, token: str = settings.HOME_ASSISTANT_TOKEN):
         # Es: "ws://192.168.1.100:8123/api/websocket"

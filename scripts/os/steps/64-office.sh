@@ -4,10 +4,10 @@
 PACKAGES=(libreoffice-writer-nogui libreoffice-calc-nogui libreoffice-impress-nogui fonts-crosextra-carlito
           fonts-crosextra-caladea fonts-liberation2 fonts-dejavu-core fonts-noto-core)
 
-VENV="$ATENA_DIR/installer_wizard/venv"
-REQ="$ATENA_DIR/installer_wizard/features/documents/requirements.txt"
+VENV="$NUXIVA_DIR/installer_wizard/venv"
+REQ="$NUXIVA_DIR/installer_wizard/features/documents/requirements.txt"
 
-wanted() { [ "${ATENA_DOCUMENTS:-1}" != "0" ]; }
+wanted() { [ "${NUXIVA_DOCUMENTS:-1}" != "0" ]; }
 python_ready() { "$VENV/bin/python" -c "import docx, openpyxl, pptx, matplotlib" >/dev/null 2>&1; }
 
 step_check() {

@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const mu = A.mu = { view: { name: "home", arg: null }, stack: [], views: {}, sets: {}, cfg: {}, ready: false, user: "", out: { id: "browser", remote: false, name: "Questo browser" } };
 
   mu.esc = (s) => fmt.esc(s == null ? "" : s);

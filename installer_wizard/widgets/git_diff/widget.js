@@ -1,5 +1,5 @@
 (() => {
-  AtenaDesk.register("git_diff", {
+  NuxivaDesk.register("git_diff", {
     render(el, d, ctx) {
       const all = String(d.content ?? "").slice(0, 20000).split("\n");
       const add = all.filter((l) => l.startsWith("+") && !l.startsWith("+++")).length;

@@ -24,17 +24,17 @@ logging.basicConfig(
     format="%(asctime)s [%(name)s] %(levelname)s: %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
 )
-logger = logging.getLogger("atena.main")
+logger = logging.getLogger("nuxiva.main")
 
 def create_application() -> FastAPI:
     app = FastAPI(
-        title="Atena Autonomous Cognitive Orchestrator",
+        title="Nuxiva Autonomous Cognitive Orchestrator",
         version="4.1.53",
         docs_url="/docs",
         redoc_url="/redoc",
     )
 
-    origins = [o.strip() for o in settings.ATENA_CORS_ORIGINS.split(",") if o.strip() and o.strip() != "*"]
+    origins = [o.strip() for o in settings.NUXIVA_CORS_ORIGINS.split(",") if o.strip() and o.strip() != "*"]
     if origins:
         app.add_middleware(
             CORSMiddleware,
@@ -103,10 +103,13 @@ def create_application() -> FastAPI:
         from server.features.music_library.scanner import music_organizer
         from server.core.sensory_bus.event_router import sensory_bus
         from server.core.sensory_bus.actuator_gateway import actuator_gateway
+        from server.features.project_workspace.autonomous_runner import autonomous_runner
         import asyncio
         asyncio.create_task(music_organizer.scan_loop())
         sensory_bus.start()
         actuator_gateway.attach_to_bus()
+        autonomous_runner.start()
+
 
         try:
             from server.core.db.database import engine, Base
@@ -126,7 +129,7 @@ def create_application() -> FastAPI:
         project_manager.mark_interrupted_projects()
 
         logger.info(
-            "Atena v2.0.0 online — %d agents, %d graph nodes, %d graph edges",
+            "Nuxiva v2.0.0 online — %d agents, %d graph nodes, %d graph edges",
             len(agent_pool.list_agents()),
             graph_client.node_count(),
             graph_client.edge_count(),
@@ -166,10 +169,10 @@ def create_application() -> FastAPI:
 app = create_application()
 
 if __name__ == "__main__":
-    port_to_bind = int(os.environ.get("ATENA_PORT", getattr(settings, "ATENA_PORT", 80)))
+    port_to_bind = int(os.environ.get("NUXIVA_PORT", getattr(settings, "NUXIVA_PORT", 80)))
     uvicorn.run(
         "server.cmd.main:app",
-        host=settings.ATENA_HOST,
+        host=settings.NUXIVA_HOST,
         port=port_to_bind,
-        reload=(settings.ATENA_ENV == "development"),
+        reload=(settings.NUXIVA_ENV == "development"),
     )

@@ -19,13 +19,13 @@ from objects import ObjectDetector
 from tracks import Track, facing, iou, reliable_unknown
 from views import Views, router as views_router
 
-log = logging.getLogger("atena.vision")
+log = logging.getLogger("nuxiva.vision")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(levelname)s: %(message)s")
 
-MODELS = Path(os.environ.get("ATENA_VISION_MODELS", "/opt/atena-vision/models"))
+MODELS = Path(os.environ.get("NUXIVA_VISION_MODELS", "/opt/nuxiva-vision/models"))
 DETECT_WIDTH = 640
 PICK_CHECK = 5.0
-PORT = int(os.environ.get("ATENA_VISION_PORT", "8091"))
+PORT = int(os.environ.get("NUXIVA_VISION_PORT", "8091"))
 OBJECT_MODEL = MODELS / "object_detection_nanodet_2022nov.onnx"
 NEAR_RATIO = 0.16
 DETECT_FPS = 4
@@ -323,7 +323,7 @@ class Vision:
 
 gallery = Gallery()
 vision = Vision(gallery)
-app = FastAPI(title="Atena Vision", docs_url=None, redoc_url=None, openapi_url=None)
+app = FastAPI(title="Nuxiva Vision", docs_url=None, redoc_url=None, openapi_url=None)
 views = Views(vision, gallery, MODELS)
 app.include_router(views_router(views))
 
@@ -402,7 +402,7 @@ async def hands(request: Request):
 
 @app.get("/people/health")
 async def people_health():
-    return {"people": gallery.health(), "twin_similarity": float(os.environ.get("ATENA_FACE_TWIN_SIM", "0.55"))}
+    return {"people": gallery.health(), "twin_similarity": float(os.environ.get("NUXIVA_FACE_TWIN_SIM", "0.55"))}
 
 
 @app.get("/ir.jpg")

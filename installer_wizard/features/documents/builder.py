@@ -45,7 +45,7 @@ async def render(doc: dict, fmt: str, target: Path, links: dict | None = None) -
     base = spec.BASE_FORMAT[kind]
     if fmt == base:
         return RENDER[kind](doc, target, links)
-    with tempfile.TemporaryDirectory(prefix="atena-doc-") as tmp:
+    with tempfile.TemporaryDirectory(prefix="nuxiva-doc-") as tmp:
         source = Path(tmp) / f"{target.stem}.{base}"
         RENDER[kind](doc, source, links)
         produced, _ = await recipes.transform(source, fmt, Path(tmp))

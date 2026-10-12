@@ -16,12 +16,12 @@ class Reply:
 
 
 def system_ui() -> str:
-    value = env_get("ATENA_UI_LANG", DEFAULT_UI)
+    value = env_get("NUXIVA_UI_LANG", DEFAULT_UI)
     return value if value in UI_LANGUAGES else DEFAULT_UI
 
 
 def system_reply() -> str:
-    for value in (languages.base(env_get("ATENA_REPLY_LANG", "")), languages.base(env_get("ATENA_UI_LANG", ""))):
+    for value in (languages.base(env_get("NUXIVA_REPLY_LANG", "")), languages.base(env_get("NUXIVA_UI_LANG", ""))):
         if value in languages.LANGS:
             return value
     return languages.DEFAULT

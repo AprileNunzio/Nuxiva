@@ -22,7 +22,7 @@ try:
 except OSError:
     result["rootfs"] = "readonly"
 result["docker_socket"] = os.path.exists("/var/run/docker.sock")
-result["host_config"] = os.path.exists("/etc/atena")
+result["host_config"] = os.path.exists("/etc/nuxiva")
 with open("/out/proof.txt", "w") as handle:
     handle.write("artifact")
 print(json.dumps(result))

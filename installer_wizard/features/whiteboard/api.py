@@ -142,7 +142,7 @@ async def load_board(request: Request):
 async def download_pdf(request: Request):
     require_display(request, "Solo dal display o dal pannello")
     pdf_bytes = export_pages_to_pdf(board.pages)
-    return Response(content=pdf_bytes, media_type="application/pdf", headers={"Content-Disposition": 'attachment; filename="lavagna_atena.pdf"'})
+    return Response(content=pdf_bytes, media_type="application/pdf", headers={"Content-Disposition": 'attachment; filename="lavagna_nuxiva.pdf"'})
 
 @public_routes.get("/api/board/printers")
 async def list_printers(request: Request):
@@ -166,7 +166,7 @@ async def print_whiteboard(request: Request):
 
 import textwrap
 @public_routes.post("/api/board/ask")
-async def ask_atena(request: Request):
+async def ask_nuxiva(request: Request):
     data = await body_of(request)
     question = data.get("question", "")
     try:

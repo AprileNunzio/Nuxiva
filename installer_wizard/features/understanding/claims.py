@@ -53,7 +53,7 @@ def music(ctx: Context) -> float:
     noun = bool(m.NOUNS.search(t))
     if m.PLAY.match(t) and noun and not re.search(r"\b(?:web\s?cam|telecamera|lavagna|widget|schermo|finestra)\b", t):
         return 0.88
-    if m.PLAY.match(t) and re.match(r"^(?:per favore |ti prego |ehi |atena )*(?:suona|riproduci|fai partire|fammi sentire|ascolta|ascoltiamo)\b", t):
+    if m.PLAY.match(t) and re.match(r"^(?:per favore |ti prego |ehi |nuxiva )*(?:suona|riproduci|fai partire|fammi sentire|ascolta|ascoltiamo)\b", t):
         return 0.8
     if m.active_device() and (noun or "volume" in t or len(t.split()) <= 5) and (
             m.PAUSE.search(t) or m.RESUME.search(t) or m.NEXT.search(t) or m.PREVIOUS.search(t) or m.STOPPING.search(t) or "volume" in t):

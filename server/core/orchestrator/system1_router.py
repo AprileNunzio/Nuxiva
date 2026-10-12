@@ -178,7 +178,7 @@ class System1Router:
             direct_action = "navigate_web"
             surface_action = "browser_surface"
         elif has_chitchat and logits["conversation"] > logits["action_direct"] and logits["conversation"] > logits["complex_task"]:
-            target_agent = "atena_conversation"
+            target_agent = "nuxiva_conversation"
             direct_action = "chat_reply"
             surface_action = "dialogue_surface"
 

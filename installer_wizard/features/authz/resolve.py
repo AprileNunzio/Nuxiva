@@ -10,7 +10,7 @@ FACE_MIN_DEFAULT = 0.6
 
 def face_min() -> float:
     try:
-        return min(max(float(env_get("ATENA_AUTHZ_FACE_MIN", str(FACE_MIN_DEFAULT))), 0.3), 0.99)
+        return min(max(float(env_get("NUXIVA_AUTHZ_FACE_MIN", str(FACE_MIN_DEFAULT))), 0.3), 0.99)
     except ValueError:
         return FACE_MIN_DEFAULT
 
@@ -46,8 +46,12 @@ def strangers() -> int:
 
 
 def _principal(profile: dict, strength: Strength, factors: tuple[str, ...], source: str = "") -> Principal:
+    raw_zones = profile.get("allowed_zones") or ()
+    zones_tuple = tuple(raw_zones) if isinstance(raw_zones, (list, tuple)) else ()
     return Principal(slug=profile["slug"], role=str(profile.get("role") or "guest"), strength=strength,
-                     factors=factors, override=str(profile.get("authorization") or ""), source=source)
+                     factors=factors, override=str(profile.get("authorization") or ""), source=source,
+                     subrole=str(profile.get("subrole") or ""), zones=zones_tuple,
+                     schedule=str(profile.get("allowed_schedule") or ""))
 
 
 def for_session() -> Principal:
@@ -67,6 +71,10 @@ def for_request(device: str, speaker: str, text: str) -> Principal:
         if not profile:
             return ANONYMOUS
         face = next((f for f in seen if f["slug"] == proof.slug), None)
+        if len(seen) > 1 and face:
+            active_slugs = [f["slug"] for f in seen if f.get("active_speaker") is True]
+            if active_slugs and proof.slug not in active_slugs:
+                return _principal(profile, Strength.WEAK, ("voice",), proof.device)
         if face and face["live"]:
             return _principal(profile, Strength.STRONG, ("voice", "face"), proof.device)
         if face or proof.score >= voice_strong():

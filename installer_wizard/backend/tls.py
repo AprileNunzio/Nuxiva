@@ -15,7 +15,7 @@ from cryptography.x509.oid import NameOID
 CA_DAYS = 3650
 LEAF_DAYS = 397
 RENEW_BEFORE_DAYS = 30
-FIXED_NAMES = ("atena.local", "atena", "localhost")
+FIXED_NAMES = ("nuxiva.local", "nuxiva", "localhost")
 
 
 @dataclass(frozen=True)
@@ -54,7 +54,7 @@ def _write(path: Path, data: bytes, mode: int) -> None:
 
 
 def _name(common: str) -> x509.Name:
-    return x509.Name([x509.NameAttribute(NameOID.ORGANIZATION_NAME, "Atena OS"), x509.NameAttribute(NameOID.COMMON_NAME, common)])
+    return x509.Name([x509.NameAttribute(NameOID.ORGANIZATION_NAME, "Nuxiva OS"), x509.NameAttribute(NameOID.COMMON_NAME, common)])
 
 
 def _private_pem(key) -> bytes:
@@ -64,7 +64,7 @@ def _private_pem(key) -> bytes:
 def _make_ca(directory: Path) -> Tuple[Path, Path]:
     key = ec.generate_private_key(ec.SECP256R1())
     now = dt.datetime.now(dt.timezone.utc)
-    cert = (x509.CertificateBuilder().subject_name(_name("Atena OS Local CA")).issuer_name(_name("Atena OS Local CA"))
+    cert = (x509.CertificateBuilder().subject_name(_name("Nuxiva OS Local CA")).issuer_name(_name("Nuxiva OS Local CA"))
             .public_key(key.public_key()).serial_number(x509.random_serial_number())
             .not_valid_before(now - dt.timedelta(minutes=5)).not_valid_after(now + dt.timedelta(days=CA_DAYS))
             .add_extension(x509.BasicConstraints(ca=True, path_length=0), critical=True)
@@ -89,7 +89,7 @@ def _make_leaf(directory: Path, ca_cert, ca_key, names: Iterable[str], addresses
     key = ec.generate_private_key(ec.SECP256R1())
     now = dt.datetime.now(dt.timezone.utc)
     alt = [x509.DNSName(n) for n in names] + [x509.IPAddress(ipaddress.ip_address(a)) for a in addresses]
-    cert = (x509.CertificateBuilder().subject_name(_name("Atena OS")).issuer_name(ca_cert.subject)
+    cert = (x509.CertificateBuilder().subject_name(_name("Nuxiva OS")).issuer_name(ca_cert.subject)
             .public_key(key.public_key()).serial_number(x509.random_serial_number())
             .not_valid_before(now - dt.timedelta(minutes=5)).not_valid_after(now + dt.timedelta(days=LEAF_DAYS))
             .add_extension(x509.BasicConstraints(ca=False, path_length=None), critical=True)

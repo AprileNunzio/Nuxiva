@@ -6,7 +6,7 @@ import time
 
 from config import STATE_DIR
 
-log = logging.getLogger("atena.autonomy")
+log = logging.getLogger("nuxiva.autonomy")
 FILE = STATE_DIR / "autonomy_trust.json"
 REJECT_FOR = 24 * 3600
 MAX_RULES = 200

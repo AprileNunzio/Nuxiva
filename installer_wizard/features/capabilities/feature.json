@@ -1,13 +1,13 @@
 {
   "id": "capabilities",
-  "name": "Capacità di Atena",
+  "name": "Capacità di Nuxiva",
   "icon": "🧭",
   "category": "assistente",
   "order": 17,
   "pinned": false,
   "panel": "capabilities",
-  "toggle": { "env": "ATENA_CAPABILITIES", "apply": [] },
-  "description": "Atena dice a ogni cervello collegato (locale o cloud) tutto quello che sa fare e con quali frasi chiederlo, così nessun modello risponde «non posso» per qualcosa che Atena fa davvero.",
+  "toggle": { "env": "NUXIVA_CAPABILITIES", "apply": [] },
+  "description": "Nuxiva dice a ogni cervello collegato (locale o cloud) tutto quello che sa fare e con quali frasi chiederlo, così nessun modello risponde «non posso» per qualcosa che Nuxiva fa davvero.",
   "capabilities": [
     "Elenco aggiornato di musica, telecamere, widget e strumenti dell'agente inserito nelle istruzioni di ogni modello",
     "Pagina dati /api/capabilities (pannello) con frasi e strumenti in formato leggibile da qualsiasi LLM",

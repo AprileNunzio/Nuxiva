@@ -3,7 +3,7 @@
     const s = String(u || "").trim();
     return /^(https?:\/\/|\/(?!\/)|data:image\/)/i.test(s) ? s : "";
   };
-  AtenaDesk.register("brief", {
+  NuxivaDesk.register("brief", {
     render(el, d, ctx) {
       const src = safeUrl(d.image && d.image.src);
       const image = src

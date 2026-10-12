@@ -7,7 +7,7 @@
     "Local neural embeddings and semantic caching"
   ],
   "settings": {
-    "ATENA_EMBED_MODEL": "Embedding Model",
-    "ATENA_REASONING_BUDGET": "Reasoning Token Budget"
+    "NUXIVA_EMBED_MODEL": "Embedding Model",
+    "NUXIVA_REASONING_BUDGET": "Reasoning Token Budget"
   }
 }

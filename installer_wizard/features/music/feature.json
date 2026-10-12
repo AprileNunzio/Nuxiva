@@ -7,7 +7,7 @@
   "panel": "music",
   "description": "Il tuo Spotify locale: libreria, playlist, mix, ricerca, testi, Chromecast e DLNA, link condivisi, app per telefono e riconoscimento ambientale.",
   "toggle": {
-    "env": "ATENA_MUSIC_ID",
+    "env": "NUXIVA_MUSIC_ID",
     "apply": [
       "music"
     ]
@@ -17,14 +17,14 @@
     "Libreria con smistamento automatico",
     "Playlist normali e intelligenti",
     "Mix e radio infinita",
-    "Chromecast, DLNA e schermo di Atena",
+    "Chromecast, DLNA e schermo di Nuxiva",
     "Link condivisi a scadenza",
     "Server compatibile con le app musicali",
     "Riconoscimento ambientale"
   ],
   "settings": [
     {
-      "key": "ATENA_MUSIC_ORGANIZE",
+      "key": "NUXIVA_MUSIC_ORGANIZE",
       "label": "Smista da solo i file messi in «Da smistare»",
       "type": "select",
       "default": "1",
@@ -40,7 +40,7 @@
       ]
     },
     {
-      "key": "ATENA_MUSIC_SCAN_MIN",
+      "key": "NUXIVA_MUSIC_SCAN_MIN",
       "label": "Controllo della libreria",
       "type": "select",
       "default": "15",
@@ -64,7 +64,7 @@
       ]
     },
     {
-      "key": "ATENA_MUSIC_COVERS",
+      "key": "NUXIVA_MUSIC_COVERS",
       "label": "Cerca online copertine e dati mancanti (album, anno, genere)",
       "type": "select",
       "default": "1",
@@ -80,7 +80,7 @@
       ]
     },
     {
-      "key": "ATENA_MUSIC_LYRICS",
+      "key": "NUXIVA_MUSIC_LYRICS",
       "label": "Scarica i testi e salvali accanto ai brani (.lrc)",
       "type": "select",
       "default": "1",
@@ -96,7 +96,7 @@
       ]
     },
     {
-      "key": "ATENA_MUSIC_CAST",
+      "key": "NUXIVA_MUSIC_CAST",
       "label": "Cerca Chromecast, TV e speaker DLNA",
       "type": "select",
       "default": "1",
@@ -112,7 +112,7 @@
       ]
     },
     {
-      "key": "ATENA_MUSIC_RADIO",
+      "key": "NUXIVA_MUSIC_RADIO",
       "label": "Radio infinita quando la coda finisce",
       "type": "select",
       "default": "1",
@@ -128,7 +128,7 @@
       ]
     },
     {
-      "key": "ATENA_MUSIC_CROSSFADE",
+      "key": "NUXIVA_MUSIC_CROSSFADE",
       "label": "Dissolvenza tra i brani",
       "type": "select",
       "default": "0",
@@ -152,7 +152,7 @@
       ]
     },
     {
-      "key": "ATENA_MUSIC_TRANSCODE",
+      "key": "NUXIVA_MUSIC_TRANSCODE",
       "label": "Conversione dei formati non supportati",
       "type": "select",
       "default": "auto",
@@ -172,7 +172,7 @@
       ]
     },
     {
-      "key": "ATENA_MUSIC_TRANSCODE_KBPS",
+      "key": "NUXIVA_MUSIC_TRANSCODE_KBPS",
       "label": "Qualità della conversione",
       "type": "select",
       "default": "192",
@@ -196,7 +196,7 @@
       ]
     },
     {
-      "key": "ATENA_MUSIC_SHARE_LINKS",
+      "key": "NUXIVA_MUSIC_SHARE_LINKS",
       "label": "Permetti i link condivisi",
       "type": "select",
       "default": "1",
@@ -212,7 +212,7 @@
       ]
     },
     {
-      "key": "ATENA_MUSIC_SHARE_HOURS",
+      "key": "NUXIVA_MUSIC_SHARE_HOURS",
       "label": "Durata dei link condivisi",
       "type": "select",
       "default": "24",
@@ -236,7 +236,7 @@
       ]
     },
     {
-      "key": "ATENA_MUSIC_HISTORY_DAYS",
+      "key": "NUXIVA_MUSIC_HISTORY_DAYS",
       "label": "Cronologia di ascolto conservata",
       "type": "select",
       "default": "365",
@@ -256,7 +256,7 @@
       ]
     },
     {
-      "key": "ATENA_MUSIC_VOICE",
+      "key": "NUXIVA_MUSIC_VOICE",
       "label": "Comandi vocali per la musica",
       "type": "select",
       "default": "1",
@@ -272,7 +272,7 @@
       ]
     },
     {
-      "key": "ATENA_MUSIC_IDENTIFY",
+      "key": "NUXIVA_MUSIC_IDENTIFY",
       "label": "Riconosci i brani senza dati dal suono (invia 12 secondi di audio al servizio di riconoscimento)",
       "type": "select",
       "default": "1",
@@ -288,7 +288,7 @@
       ]
     },
     {
-      "key": "ATENA_MUSIC_TAGS",
+      "key": "NUXIVA_MUSIC_TAGS",
       "label": "Scrivi nei file i dati mancanti (titolo, artista, album, anno, genere)",
       "type": "select",
       "default": "1",
@@ -304,7 +304,7 @@
       ]
     },
     {
-      "key": "ATENA_MUSIC_RENAME",
+      "key": "NUXIVA_MUSIC_RENAME",
       "label": "Dai ai file nomi completi: numero - artista - titolo (anno)",
       "type": "select",
       "default": "1",

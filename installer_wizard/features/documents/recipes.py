@@ -70,7 +70,7 @@ async def transform(source: Path, dst: str, out_dir: Path) -> tuple[Path, str]:
     errors = []
     for i, route in enumerate(routes):
         started = time.time()
-        with tempfile.TemporaryDirectory(prefix="atena-recipe-") as tmp:
+        with tempfile.TemporaryDirectory(prefix="nuxiva-recipe-") as tmp:
             try:
                 produced = await _run(route, source, Path(tmp))
             except RuntimeError as exc:

@@ -4,7 +4,7 @@
     "user": "System User",
     "password": "Password",
     "submit": "Login",
-    "hint": "Access allowed to root and users in sudo or atena-admin groups."
+    "hint": "Access allowed to root and users in sudo or nuxiva-admin groups."
   },
   "nav": {
     "admin": "ADMIN",
@@ -49,7 +49,7 @@
   "config": {
     "settings": "Settings",
     "save": "Save and apply",
-    "note": "Changes are saved in /etc/atena/atena.env and applied automatically (restarting only affected components).",
+    "note": "Changes are saved in /etc/nuxiva/nuxiva.env and applied automatically (restarting only affected components).",
     "sys_params": "System detected parameters"
   },
   "updates": {
@@ -146,7 +146,7 @@
       "laser_feed": "Feed rate (mm/min)",
       "nozzle": "Nozzle (°C)",
       "bed": "Bed (°C)",
-      "default": "Atena default printer"
+      "default": "Nuxiva default printer"
     },
     "probe": {
       "virtual": "Virtual printer, always available.",
@@ -305,11 +305,11 @@
   },
   "feedback": {
     "title": "Implicit learning",
-    "intro": "When you manually undo ad Atena action within 3 minutes, that context gets a penalty; after repeated undos the action is no longer repeated under those conditions.",
+    "intro": "When you manually undo ad Nuxiva action within 3 minutes, that context gets a penalty; after repeated undos the action is no longer repeated under those conditions.",
     "reset_all": "Reset all",
     "reset": "Reset",
-    "confirm_reset": "Delete everything Atena learned from undos?",
-    "empty": "No data yet: Atena learns as you use the home.",
+    "confirm_reset": "Delete everything Nuxiva learned from undos?",
+    "empty": "No data yet: Nuxiva learns as you use the home.",
     "suppressed": "Won't repeat",
     "counts": "{ok} accepted · {undo} undone",
     "slot": "{from}-{to}",
@@ -511,7 +511,7 @@
     "mode_0": "Disabled",
     "state_active": "active",
     "state_inactive": "inactive",
-    "source_ai": " · created by Atena",
+    "source_ai": " · created by Nuxiva",
     "source_user": " · added by you",
     "pin_remove": "Remove from sidebar",
     "pin_add": "Add to sidebar",

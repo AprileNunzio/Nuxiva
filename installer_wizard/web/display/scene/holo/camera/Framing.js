@@ -49,4 +49,4 @@
   }
 
   H.Framing = Framing;
-})(window.Atena3D);
+})(window.Nuxiva3D);

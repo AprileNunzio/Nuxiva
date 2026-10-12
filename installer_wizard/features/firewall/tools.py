@@ -7,7 +7,7 @@ from features.firewall.store import store
 MODES = {"off": "spento", "monitor": "solo monitoraggio", "protect": "protezione", "lockdown": "lockdown (solo autorizzati)"}
 
 
-@tool("firewall_status", "stato del firewall di Atena: modalità, regole, blocchi attivi e ultimi allarmi di rete", {},
+@tool("firewall_status", "stato del firewall di Nuxiva: modalità, regole, blocchi attivi e ultimi allarmi di rete", {},
       agent="firewall")
 async def firewall_status() -> str:
     snap = store.snapshot()

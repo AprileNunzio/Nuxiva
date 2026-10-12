@@ -8,7 +8,7 @@ from typing import Awaitable, Callable, Dict, Optional
 
 from server.core.kernel.domain.node import NodeState
 
-logger = logging.getLogger("atena.orchestrator.interrupt")
+logger = logging.getLogger("nuxiva.orchestrator.interrupt")
 
 
 class ProjectState(Enum):

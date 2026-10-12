@@ -13,7 +13,7 @@ from features.google import timing
 from features.maps import departure
 from features.maps.travel_stats import TravelStats
 
-log = logging.getLogger("atena.maps")
+log = logging.getLogger("nuxiva.maps")
 STATE_FILE = STATE_DIR / "maps_trips.json"
 STATS_FILE = STATE_DIR / "maps_travel_stats.json"
 GO_WINDOW = 6.0
@@ -30,7 +30,7 @@ def number(key: str, default: float, lo: float, hi: float) -> float:
 
 
 def enabled() -> bool:
-    return env_get("ATENA_MAPS_TRIPS", "1") != "0"
+    return env_get("NUXIVA_MAPS_TRIPS", "1") != "0"
 
 
 class Trips:
@@ -58,8 +58,8 @@ class Trips:
     async def estimate(self, maps, origin: dict, dest: dict, mode: str, start: datetime, kind: str | None, now: datetime) -> dict:
         live = await maps.route(origin, dest, mode)
         buffer = departure.buffer_minutes(kind, env_get)
-        minimum = number("ATENA_MAPS_MARGIN_MIN", 5.0, 0.0, 60.0)
-        wise = env_get("ATENA_MAPS_WISE", "1") != "0"
+        minimum = number("NUXIVA_MAPS_MARGIN_MIN", 5.0, 0.0, 60.0)
+        wise = env_get("NUXIVA_MAPS_WISE", "1") != "0"
         best, used = live, live
         first = departure.wise_margin(self.stats.samples(dest, start), live["minutes"], minimum, wise)
         guess = start - timedelta(minutes=live["minutes"] + buffer + first["margin"])
@@ -105,7 +105,7 @@ class Trips:
         est = await self.estimate(maps, origin, dest, maps.default_mode(), e["start"], kind, now)
         leave_ts = est["plan"]["leave"].timestamp()
         until = (est["plan"]["leave"] - now).total_seconds() / 60
-        headsup = number("ATENA_MAPS_HEADSUP_MIN", 90.0, 10.0, 720.0)
+        headsup = number("NUXIVA_MAPS_HEADSUP_MIN", 90.0, 10.0, 720.0)
         stage = st["stage"]
         if stage == 0:
             if until > headsup:
@@ -127,7 +127,7 @@ class Trips:
         if not enabled():
             return
         from features.google.gservices import google
-        horizon = number("ATENA_MAPS_EVENT_HOURS", 4.0, 1.0, 48.0)
+        horizon = number("NUXIVA_MAPS_EVENT_HOURS", 4.0, 1.0, 48.0)
         now = datetime.now().astimezone()
         for _, session in google.present_sessions("calendar"):
             events = timing.upcoming(await session.events(now, now + timedelta(hours=horizon), 10), now)

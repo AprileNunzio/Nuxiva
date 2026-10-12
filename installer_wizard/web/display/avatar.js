@@ -1,8 +1,8 @@
 (function (global) {
   "use strict";
   const MODES = ["auto", "full", "light"];
-  const KEY_PREF = "atena.avatar";
-  const KEY_FPS = "atena.avatar.fps";
+  const KEY_PREF = "nuxiva.avatar";
+  const KEY_FPS = "nuxiva.avatar.fps";
   const store = {
     get(k) { try { return global.localStorage.getItem(k); } catch (e) { return null; } },
     set(k, v) { try { v === null ? global.localStorage.removeItem(k) : global.localStorage.setItem(k, v); } catch (e) {} },
@@ -201,7 +201,7 @@
       const tg = this._target();
       if (!this.layout) this.layout = { ...tg };
       for (const k of ["x", "y", "s"]) this.layout[k] = damp(this.layout[k], tg[k], 3.5, dt);
-      if (window.atenaPerf) window.atenaPerf.measure("nucleo", () => this._draw(dt)); else this._draw(dt);
+      if (window.nuxivaPerf) window.nuxivaPerf.measure("nucleo", () => this._draw(dt)); else this._draw(dt);
     }
     _draw(dt) {
       const { ctx, w, h, t, groove } = this, { x: cx0, y: cy0, s } = this.layout;
@@ -296,5 +296,5 @@
     }
   }
 
-  global.AtenaAvatar = { choose, probe, setDevicePref, watchFps, ThoughtCore, MODES };
+  global.NuxivaAvatar = { choose, probe, setDevicePref, watchFps, ThoughtCore, MODES };
 })(window);

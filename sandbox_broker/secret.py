@@ -1,6 +1,6 @@
 from typing import Callable
 
-_KEY = "ATENA_SECRET_KEY"
+_KEY = "NUXIVA_SECRET_KEY"
 
 
 def read_secret(env_file: str) -> str:

@@ -3,8 +3,8 @@ from dataclasses import asdict, dataclass
 
 from config import env_get
 
-COMMERCIAL_KEY = "ATENA_COMMERCIAL"
-UNOFFICIAL_KEY = "ATENA_UNOFFICIAL_SERVICES"
+COMMERCIAL_KEY = "NUXIVA_COMMERCIAL"
+UNOFFICIAL_KEY = "NUXIVA_UNOFFICIAL_SERVICES"
 NONCOMMERCIAL_NOTICE = "Licenza solo per uso personale e non commerciale"
 UNOFFICIAL_NOTICE = "Usa un servizio non ufficiale: si attiva solo se accetti i termini del servizio, sotto la tua responsabilità"
 UNKNOWN_NOTICE = "Licenza sconosciuta: verificala prima di usarlo"

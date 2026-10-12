@@ -7,13 +7,13 @@ from unittest import mock
 
 from fastapi.testclient import TestClient
 
-import atena_supervisor
+import nuxiva_supervisor
 from features.nexus import composition
 from features.nexus.application.preferences_service import PreferencesService
 from features.nexus.domain.preferences import MAX_FAVORITES, Preferences, amend, restore
 from features.nexus.infrastructure.json_preferences import JsonPreferencesRepository
 
-HEADERS = {"X-Atena-Request": "1"}
+HEADERS = {"X-Nuxiva-Request": "1"}
 NEXUS = Path(__file__).resolve().parents[1] / "web" / "nexus"
 IMPORT = re.compile(r'^\s*(?:import|export)\s[^"\']*?from\s+["\']([^"\']+)["\']', re.M)
 
@@ -58,8 +58,8 @@ class NexusApiTest(unittest.TestCase):
         cls.repo_patch = mock.patch.object(composition.preferences, "repository",
                                            JsonPreferencesRepository(Path(cls.tmp.name) / "p.json"))
         cls.repo_patch.start()
-        cls.admin = TestClient(atena_supervisor.admin)
-        r = cls.admin.post("/api/auth/login", json={"username": "admin", "password": "atena"}, headers=HEADERS)
+        cls.admin = TestClient(nuxiva_supervisor.admin)
+        r = cls.admin.post("/api/auth/login", json={"username": "admin", "password": "nuxiva"}, headers=HEADERS)
         assert r.status_code == 200, r.text
 
     @classmethod
@@ -69,7 +69,7 @@ class NexusApiTest(unittest.TestCase):
 
     def test_page_is_served_with_strict_security_headers(self):
         with mock.patch("setup_api.done", return_value=True):
-            r = TestClient(atena_supervisor.admin).get("/")
+            r = TestClient(nuxiva_supervisor.admin).get("/")
         self.assertEqual(r.status_code, 200)
         csp = r.headers["content-security-policy"]
         for directive in ("default-src 'none'", "script-src 'self'", "style-src 'self'", "frame-ancestors 'none'",
@@ -82,26 +82,26 @@ class NexusApiTest(unittest.TestCase):
 
     def test_page_redirects_to_setup_until_configured(self):
         with mock.patch("setup_api.done", return_value=False):
-            r = TestClient(atena_supervisor.admin).get("/", follow_redirects=False)
+            r = TestClient(nuxiva_supervisor.admin).get("/", follow_redirects=False)
         self.assertEqual(r.status_code, 303)
 
     def test_nexus_is_the_default_and_the_old_address_redirects(self):
-        legacy = TestClient(atena_supervisor.admin).get("/nexus", follow_redirects=False)
+        legacy = TestClient(nuxiva_supervisor.admin).get("/nexus", follow_redirects=False)
         self.assertEqual((legacy.status_code, legacy.headers["location"]), (308, "/"))
         with mock.patch("setup_api.done", return_value=True):
-            classic = TestClient(atena_supervisor.admin).get("/classic")
-            nexus = TestClient(atena_supervisor.admin).get("/")
+            classic = TestClient(nuxiva_supervisor.admin).get("/classic")
+            nexus = TestClient(nuxiva_supervisor.admin).get("/")
         self.assertIn("/static/admin/shell.js", classic.text)
         self.assertIn("/static/nexus/app.js", nexus.text)
         self.assertIn("/static/shared/translate.js", nexus.text)
 
     def test_page_declares_the_user_language(self):
         with mock.patch("setup_api.done", return_value=True), mock.patch("features.nexus.api.page_language", return_value="fr"):
-            r = TestClient(atena_supervisor.admin).get("/")
+            r = TestClient(nuxiva_supervisor.admin).get("/")
         self.assertIn('<html lang="fr">', r.text)
 
     def test_preferences_require_a_session_and_the_request_header(self):
-        anon = TestClient(atena_supervisor.admin)
+        anon = TestClient(nuxiva_supervisor.admin)
         self.assertEqual(anon.get("/api/nexus/preferences").status_code, 401)
         self.assertEqual(self.admin.put("/api/nexus/preferences", json={"level": "pilot"}).status_code, 403)
 

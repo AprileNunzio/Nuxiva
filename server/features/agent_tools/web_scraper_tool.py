@@ -4,7 +4,7 @@ import urllib.request
 import urllib.parse
 from html.parser import HTMLParser
 
-logger = logging.getLogger("atena.tools.web_scraper")
+logger = logging.getLogger("nuxiva.tools.web_scraper")
 
 class SimpleHTMLTextExtractor(HTMLParser):
     def __init__(self):
@@ -39,7 +39,7 @@ async def search_catalog(query: str, max_results: int = 3) -> str:
         safe_query = urllib.parse.quote(query)
         url = f"https://it.wikipedia.org/w/api.php?action=query&list=search&srsearch={safe_query}&utf8=&format=json"
         
-        req = urllib.request.Request(url, headers={'User-Agent': 'Atena-Agent/1.0'})
+        req = urllib.request.Request(url, headers={'User-Agent': 'Nuxiva-Agent/1.0'})
         with urllib.request.urlopen(req, timeout=5) as response:
             data = json.loads(response.read().decode())
         

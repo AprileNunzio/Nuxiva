@@ -1,6 +1,6 @@
 (() => {
   let ctx = null, master = null, fx = null, loopBus = null, ambBus = null, noiseBuf = null;
-  let theme = "atena", volume = 0.55, fxLevel = 1, ambLevel = 0.18, ducked = false;
+  let theme = "nuxiva", volume = 0.55, fxLevel = 1, ambLevel = 0.18, ducked = false;
   const loops = {}, ambient = { kind: "none", nodes: [], timers: [] };
 
   function init() {
@@ -34,7 +34,7 @@
     }
     o.connect(g); out.connect(opts.bus || fx);
     o.start(t0); o.stop(t0 + dur + 0.05);
-    if (theme === "atena" && !opts.plain) {
+    if (theme === "nuxiva" && !opts.plain) {
       const s = ctx.createOscillator(), sg = ctx.createGain();
       s.type = "sine"; s.frequency.setValueAtTime(freq * 2, t0);
       if (opts.to) s.frequency.exponentialRampToValueAtTime(opts.to * 2, t0 + dur);
@@ -154,7 +154,7 @@
     }
   }
 
-  window.AtenaSfx = {
+  window.NuxivaSfx = {
     names: () => Object.keys(SOUNDS).concat(["thinking", "working"]),
     play(name) {
       if (!init()) return;

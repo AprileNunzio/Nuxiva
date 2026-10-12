@@ -3,15 +3,15 @@ import json
 import time
 import logging
 
-log = logging.getLogger("atena.event_sourcing")
+log = logging.getLogger("nuxiva.event_sourcing")
 
 class TimeTravelLedger:
     """
-    Motore Event Sourcing di Atena.
+    Motore Event Sourcing di Nuxiva.
     Tutte le azioni sono immutabili e memorizzate come stream di eventi.
     Permette il "Time-Travel Debugging" (rewind del sistema).
     """
-    def __init__(self, db_path="atena_ledger.db"):
+    def __init__(self, db_path="nuxiva_ledger.db"):
         self.db_path = db_path
         self._init_db()
 

@@ -25,7 +25,7 @@ from senses.windows import Focus
 from settings import autostart, paths, store
 from updates.updater import Updater
 
-log = logging.getLogger("atena")
+log = logging.getLogger("nuxiva")
 
 
 class Assistant:
@@ -55,7 +55,7 @@ class Assistant:
         self.updater = Updater(lambda text: self.ui.dispatch.post(self.ui.note, text), self.quit)
         self.hotkeys: list = []
         if self.policy.tampered:
-            self.ui.alert("⚠ Il file dei permessi era stato modificato fuori da ATENA: ho ripristinato i valori sicuri.")
+            self.ui.alert("⚠ Il file dei permessi era stato modificato fuori da NUXIVA: ho ripristinato i valori sicuri.")
 
     def _executor(self) -> Executor:
         return Executor(self.gate, [*self.folders.values(), *self.policy.folders], self.focus, self.apps, self.snapshots)
@@ -95,7 +95,7 @@ class Assistant:
                 continue
             url = str(action.get("url") or "")
             if not tvwindow.trusted(url, self.cfg["server"]):
-                log.warning("Finestra TV rifiutata: indirizzo non di ATENA (%s)", url[:80])
+                log.warning("Finestra TV rifiutata: indirizzo non di NUXIVA (%s)", url[:80])
                 continue
             tvwindow.open_window(url)
             self.ui.note(f"📺 {str(action.get('title') or 'TV')[:60]}")
@@ -115,7 +115,7 @@ class Assistant:
         log.error(message)
         self.voice.stop()
         self.heartbeat.stop()
-        self.ui.dispatch.post(self.ui.alert, f"🛑 {message}. Ricollega il PC solo se hai cambiato tu il certificato di ATENA.")
+        self.ui.dispatch.post(self.ui.alert, f"🛑 {message}. Ricollega il PC solo se hai cambiato tu il certificato di NUXIVA.")
 
     def _bind_hotkeys(self) -> None:
         for handle in self.hotkeys:
@@ -152,12 +152,12 @@ class Assistant:
 
     def unpair(self, revoked: bool = False) -> None:
         from tkinter import messagebox
-        if not revoked and not messagebox.askyesno("ATENA", "Scollegare questo PC da ATENA? Dovrai abbinarlo di nuovo."):
+        if not revoked and not messagebox.askyesno("NUXIVA", "Scollegare questo PC da NUXIVA? Dovrai abbinarlo di nuovo."):
             return
         self.cfg.update(token="", pin="", ca="")
         store.save(self.cfg)
         if revoked:
-            messagebox.showwarning("ATENA", "Questo PC non è più autorizzato da ATENA. Riavvia l'assistente per abbinarlo di nuovo.")
+            messagebox.showwarning("NUXIVA", "Questo PC non è più autorizzato da NUXIVA. Riavvia l'assistente per abbinarlo di nuovo.")
         self.quit()
 
     def restart(self) -> None:

@@ -1,5 +1,5 @@
 (() => {
-  const D = window.AtenaDisplay, { $, fmt } = D;
+  const D = window.NuxivaDisplay, { $, fmt } = D;
   const ICONS = {
     clear: '<circle cx="24" cy="24" r="9" fill="#ffc53d"/><g stroke="#ffc53d" stroke-width="2.5" stroke-linecap="round"><path d="M24 5v5M24 38v5M5 24h5M38 24h5M10.5 10.5l3.5 3.5M34 34l3.5 3.5M10.5 37.5l3.5-3.5M34 14l3.5-3.5"/></g>',
     partly: '<circle cx="18" cy="18" r="7" fill="#ffc53d"/><path d="M15 36h20a7 7 0 0 0 0-14 9 9 0 0 0-17 2 6 6 0 0 0-3 12z" fill="#9fc6dc"/>',
@@ -69,7 +69,7 @@
   const WIDE = { forecast: 1, text: 1, routemap: 1 };
   let leaflet = null;
   const loadLeaflet = () => leaflet || (leaflet = new Promise((ok, ko) => {
-    const v = window.ATENA_ASSET_V ? `?v=${window.ATENA_ASSET_V}` : "";
+    const v = window.NUXIVA_ASSET_V ? `?v=${window.NUXIVA_ASSET_V}` : "";
     const css = document.createElement("link"); css.rel = "stylesheet"; css.href = `/vendor/leaflet.css${v}`; document.head.appendChild(css);
     const s = document.createElement("script"); s.src = `/vendor/leaflet.js${v}`; s.onload = () => ok(window.L); s.onerror = ko; document.head.appendChild(s);
   }));

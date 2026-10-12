@@ -6,9 +6,9 @@
   "order": 15,
   "pinned": true,
   "panel": "mind",
-  "description": "Dopo ogni scambio Atena valuta la frase, decide cosa tenere nella memoria a lungo o a breve termine, se richiamare un widget o un algoritmo e quali spunti mandare allo studio.",
+  "description": "Dopo ogni scambio Nuxiva valuta la frase, decide cosa tenere nella memoria a lungo o a breve termine, se richiamare un widget o un algoritmo e quali spunti mandare allo studio.",
   "toggle": {
-    "env": "ATENA_MIND",
+    "env": "NUXIVA_MIND",
     "apply": []
   },
   "capabilities": [

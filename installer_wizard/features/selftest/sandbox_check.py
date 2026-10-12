@@ -3,16 +3,16 @@ import json
 import os
 import sys
 
-from config import DEMO, ATENA_DIR
+from config import DEMO, NUXIVA_DIR
 from features.selftest.skip import Skip
 
 
 async def sandbox_isolation():
     if DEMO or os.name == "nt":
         raise Skip("la sandbox gira solo sul server")
-    env = {**os.environ, "PYTHONPATH": str(ATENA_DIR)}
+    env = {**os.environ, "PYTHONPATH": str(NUXIVA_DIR)}
     proc = await asyncio.create_subprocess_exec(
-        "python3", "-m", "sandbox_broker.selfcheck", cwd=str(ATENA_DIR), env=env,
+        "python3", "-m", "sandbox_broker.selfcheck", cwd=str(NUXIVA_DIR), env=env,
         stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
     try:
         out, err = await asyncio.wait_for(proc.communicate(), 90)

@@ -150,9 +150,9 @@ async def sound(a: dict, run) -> str:
 
 
 async def agent(a: dict, run) -> str:
-    from features.agent.agent import agent as atena_agent
+    from features.agent.agent import agent as nuxiva_agent
     steps: list[dict] = []
-    result = await atena_agent.run(str(a.get("prompt") or ""), steps, auto=f"Automazione: {run.name}",
+    result = await nuxiva_agent.run(str(a.get("prompt") or ""), steps, auto=f"Automazione: {run.name}",
                                     trusted=bool(a.get("trusted")))
     if a.get("store"):
         run.vars[str(a["store"])] = result

@@ -13,7 +13,7 @@ EAR = Path(__file__).resolve().parents[1] / "features" / "ear"
 if str(EAR) not in sys.path:
     sys.path.append(str(EAR))
 
-SCRIPT = {"text": "Atena accendi la luce"}
+SCRIPT = {"text": "Nuxiva accendi la luce"}
 fake = types.ModuleType("stt")
 fake.lock = None
 fake.calls = 0
@@ -47,7 +47,7 @@ class ReviewerTest(unittest.TestCase):
         self.rng = np.random.default_rng(5)
         fake.lock = asyncio.Lock()
         fake.calls = 0
-        SCRIPT["text"] = "Atena accendi la luce"
+        SCRIPT["text"] = "Nuxiva accendi la luce"
 
     def chunk(self, events):
         rec = recorder.Recorder("t")
@@ -107,11 +107,11 @@ class ReviewerTest(unittest.TestCase):
 
     def test_audio_is_deleted_right_away_when_retention_is_zero(self):
         import os
-        os.environ["ATENA_EAR_KEEP_REVIEWED_H"] = "0"
+        os.environ["NUXIVA_EAR_KEEP_REVIEWED_H"] = "0"
         try:
             self.run_review([])
         finally:
-            os.environ.pop("ATENA_EAR_KEEP_REVIEWED_H", None)
+            os.environ.pop("NUXIVA_EAR_KEEP_REVIEWED_H", None)
         self.assertEqual(recorder.listing(), [])
         self.assertEqual(len(reviewer_module.recent_reviews(10)), 1)
 

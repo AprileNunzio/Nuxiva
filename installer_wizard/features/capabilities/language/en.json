@@ -1,5 +1,5 @@
 {
-  "name": "Atena Capabilities",
+  "name": "Nuxiva Capabilities",
   "description": "Central catalog of active tools, sub-agent capabilities, and operational skills.",
   "capabilities": [
     "Dynamic skill registration and introspection",

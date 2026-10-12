@@ -5,13 +5,13 @@ from unittest import mock
 
 from fastapi.testclient import TestClient
 
-import atena_supervisor
+import nuxiva_supervisor
 import background
 from background import BackgroundQueue
 from state import store
 from steps import STEP_BY_ID, STEPS
 
-HEADERS = {"X-Atena-Request": "1"}
+HEADERS = {"X-Nuxiva-Request": "1"}
 
 
 def fresh_queue() -> BackgroundQueue:
@@ -37,7 +37,7 @@ class QueueTest(unittest.TestCase):
         self.assertFalse({"preflight", "system", "docker", "ollama", "models", "core", "services"} & heavy)
         self.assertGreater(STEP_BY_ID["brain"].size_gb, STEP_BY_ID["models"].size_gb)
 
-    @mock.patch("background.read_env", return_value={"ATENA_VOICE_PACKAGE": "1", "ATENA_EAR": "1", "ATENA_DOCUMENTS": "1"})
+    @mock.patch("background.read_env", return_value={"NUXIVA_VOICE_PACKAGE": "1", "NUXIVA_EAR": "1", "NUXIVA_DOCUMENTS": "1"})
     def test_order_follows_priority_and_admin_choice(self, _env):
         q = fresh_queue()
         order = [s.id for s in q.steps()]
@@ -91,15 +91,15 @@ class QueueTest(unittest.TestCase):
 class QueueApiTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.public = TestClient(atena_supervisor.public)
-        cls.admin = TestClient(atena_supervisor.admin)
-        r = cls.admin.post("/api/auth/login", json={"username": "admin", "password": "atena"}, headers=HEADERS)
+        cls.public = TestClient(nuxiva_supervisor.public)
+        cls.admin = TestClient(nuxiva_supervisor.admin)
+        r = cls.admin.post("/api/auth/login", json={"username": "admin", "password": "nuxiva"}, headers=HEADERS)
         assert r.status_code == 200, r.text
 
     def test_state_is_public_but_controls_need_admin(self):
         self.assertIn("background", self.public.get("/api/state").json())
         self.assertEqual(self.public.post("/api/background/pause", headers=HEADERS).status_code, 404)
-        anon = TestClient(atena_supervisor.admin)
+        anon = TestClient(nuxiva_supervisor.admin)
         self.assertEqual(anon.post("/api/background/pause", headers=HEADERS).status_code, 401)
         self.assertEqual(self.admin.post("/api/background/pause").status_code, 403)
         self.assertTrue(self.admin.post("/api/background/pause", headers=HEADERS).json()["paused"])

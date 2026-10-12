@@ -2,11 +2,11 @@ import logging
 import asyncio
 from datetime import datetime
 
-logger = logging.getLogger("atena.memory_distiller")
+logger = logging.getLogger("nuxiva.memory_distiller")
 
 class DeepMemoryDistiller:
     """
-    Il 'Sonno' di Atena.
+    Il 'Sonno' di Nuxiva.
     Si occupa di estrarre i successi del Sistema 2 e del Babbling Engine
     avvenuti durante il giorno, trasformarli in un dataset, e preparare
     il fine-tuning (LoRA/DPO) per il Sistema 1 locale, trasformando
@@ -43,11 +43,11 @@ class DeepMemoryDistiller:
             await self._run_local_finetune(dataset_path)
             
             # 4. Swap dei pesi (Sveglia)
-            logger.info("Fase 4: Reload dei pesi neurali completato. Atena si 'sveglia' piu' intelligente.")
+            logger.info("Fase 4: Reload dei pesi neurali completato. Nuxiva si 'sveglia' piu' intelligente.")
             self.last_run = datetime.utcnow()
             
         except Exception as e:
-            logger.error(f"Errore critico durante il sonno di Atena (Incubo/Crash): {e}")
+            logger.error(f"Errore critico durante il sonno di Nuxiva (Incubo/Crash): {e}")
         finally:
             self.is_distilling = False
 
@@ -60,7 +60,7 @@ class DeepMemoryDistiller:
     async def _build_training_dataset(self, episodes: list) -> str:
         # Genera il file .jsonl per l'addestramento
         await asyncio.sleep(1)
-        return "/tmp/atena_dream_dataset_today.jsonl"
+        return "/tmp/nuxiva_dream_dataset_today.jsonl"
 
     async def _run_local_finetune(self, dataset_path: str):
         # Chiama l'API di un framework locale (es. unpeft, axolotl, o Ollama experimental tuning)

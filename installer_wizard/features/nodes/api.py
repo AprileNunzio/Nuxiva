@@ -2,7 +2,7 @@ import hashlib
 import time
 
 from access import require_admin
-from config import EDITABLE_KEYS, ATENA_DIR, NODE, node_keys, read_global_env
+from config import EDITABLE_KEYS, NUXIVA_DIR, NODE, node_keys, read_global_env
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import FileResponse
 from state import store
@@ -62,7 +62,7 @@ async def node_heartbeat(request: Request):
     body = await _body(request)
     auth = request.headers.get("authorization", "")
     try:
-        node = registry.authenticate(request.headers.get("x-atena-node", ""), auth.removeprefix("Bearer ").strip())
+        node = registry.authenticate(request.headers.get("x-nuxiva-node", ""), auth.removeprefix("Bearer ").strip())
     except PermissionError as exc:
         raise HTTPException(401, str(exc))
     was_online = time.time() - node.get("last_seen", 0) < 90
@@ -77,14 +77,14 @@ async def node_heartbeat(request: Request):
 async def node_inbox(request: Request):
     auth = request.headers.get("authorization", "")
     try:
-        node = registry.authenticate(request.headers.get("x-atena-node", ""), auth.removeprefix("Bearer ").strip())
+        node = registry.authenticate(request.headers.get("x-nuxiva-node", ""), auth.removeprefix("Bearer ").strip())
     except PermissionError as exc:
         raise HTTPException(401, str(exc))
     return {"actions": await inbox.wait(node["id"], INBOX_WAIT)}
 
 
 def _agent_path():
-    return ATENA_DIR / "client_satellite" / "linux_edge" / "satellite.py"
+    return NUXIVA_DIR / "client_satellite" / "linux_edge" / "satellite.py"
 
 
 def _agent_sha() -> str:
@@ -188,7 +188,7 @@ async def node_chat(request: Request):
     body = await _body(request)
     auth = request.headers.get("authorization", "")
     try:
-        node = registry.authenticate(request.headers.get("x-atena-node", ""), auth.removeprefix("Bearer ").strip())
+        node = registry.authenticate(request.headers.get("x-nuxiva-node", ""), auth.removeprefix("Bearer ").strip())
     except PermissionError as exc:
         raise HTTPException(401, str(exc))
     from features.chat.api import assistant_chat
@@ -199,7 +199,7 @@ async def node_chat(request: Request):
 def _node(request: Request) -> dict:
     auth = request.headers.get("authorization", "")
     try:
-        return registry.authenticate(request.headers.get("x-atena-node", ""), auth.removeprefix("Bearer ").strip())
+        return registry.authenticate(request.headers.get("x-nuxiva-node", ""), auth.removeprefix("Bearer ").strip())
     except PermissionError as exc:
         raise HTTPException(401, str(exc))
 
@@ -226,7 +226,7 @@ async def node_intent(request: Request):
     body = await _body(request)
     auth = request.headers.get("authorization", "")
     try:
-        node = registry.authenticate(request.headers.get("x-atena-node", ""), auth.removeprefix("Bearer ").strip())
+        node = registry.authenticate(request.headers.get("x-nuxiva-node", ""), auth.removeprefix("Bearer ").strip())
     except PermissionError as exc:
         raise HTTPException(401, str(exc))
     from features.chat.api import assistant_chat
@@ -280,4 +280,4 @@ async def node_agent():
     path = _agent_path()
     if not path.is_file():
         raise HTTPException(404, "Agente non disponibile")
-    return FileResponse(path, media_type="text/x-python", filename="atena-node.py")
+    return FileResponse(path, media_type="text/x-python", filename="nuxiva-node.py")

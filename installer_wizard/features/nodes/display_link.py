@@ -8,7 +8,7 @@ from fastapi.responses import RedirectResponse
 from features.nodes.registry import registry
 from state import store
 
-COOKIE = "atena_display"
+COOKIE = "nuxiva_display"
 LINK_TTL = 60
 SESSION_TTL = 30 * 86400
 MAX_SESSIONS = 64
@@ -67,7 +67,7 @@ def display_node(request: Request) -> str | None:
 async def node_display_link(request: Request):
     auth = request.headers.get("authorization", "")
     try:
-        node = registry.authenticate(request.headers.get("x-atena-node", ""), auth.removeprefix("Bearer ").strip())
+        node = registry.authenticate(request.headers.get("x-nuxiva-node", ""), auth.removeprefix("Bearer ").strip())
     except PermissionError as exc:
         raise HTTPException(401, str(exc))
     return {"path": f"/screen/open?t={links.issue(node['id'])}", "expires_in": LINK_TTL}

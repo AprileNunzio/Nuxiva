@@ -20,6 +20,13 @@ from server.core.telemetry.journey import journey
 from server.features.weather.weather_controller import weather_router
 from server.features.presence_privacy.presence_controller import presence_router, system_router, privacy_router
 from server.features.cognitive_flow.flow_controller import flow_router
+from server.features.chatbot_mesh.chatbot_controller import chatbot_router
+from server.features.project_workspace.project_controller import project_router
+from server.core.agent_registry.agent_controller import agent_registry_router
+from server.core.security_guard.rbac_controller import rbac_router
+from server.features.llm_gateway.ternary_controller import ternary_router
+from server.core.sensory_bus.event_router import sensory_bus
+from server.core.event_sourcing.universal_space import UniversalObservation
 
 router = APIRouter(prefix="/api/v1")
 router.include_router(weather_router)
@@ -27,6 +34,11 @@ router.include_router(presence_router)
 router.include_router(system_router)
 router.include_router(privacy_router)
 router.include_router(flow_router)
+router.include_router(chatbot_router)
+router.include_router(project_router)
+router.include_router(agent_registry_router)
+router.include_router(rbac_router)
+router.include_router(ternary_router)
 
 class AuthExchangeRequest(BaseModel):
     client_id: str
@@ -59,6 +71,10 @@ class CameraFeedPayload(BaseModel):
     device_id: str
     frame_base64: str
     timestamp: float
+
+class InstantAutoSetupPayload(BaseModel):
+    environment: str = "smart_home"
+    lang: str = "it"
 
 LOOPBACK = {"127.0.0.1", "::1", "localhost"}
 
@@ -144,6 +160,10 @@ async def get_onboarding_profile() -> Dict[str, Any]:
 async def execute_onboarding_setup(payload: OnboardingConfig) -> Dict[str, Any]:
     return await onboarding_wizard.execute_setup(payload)
 
+@router.post("/onboarding/auto-setup")
+async def execute_instant_auto_setup(payload: InstantAutoSetupPayload) -> Dict[str, Any]:
+    return await onboarding_wizard.auto_configure_instant_setup(payload.environment, payload.lang)
+
 @router.get("/memory/cache/stats")
 async def get_semantic_cache_stats() -> Dict[str, Any]:
     return semantic_cache.stats()
@@ -167,7 +187,6 @@ async def exchange_token(payload: AuthExchangeRequest, request: Request) -> Dict
 async def handle_user_command(payload: UserCommandPayload) -> Dict[str, Any]:
     speaker_id = "user_primary"
     biometric_score = 0.95
-
     if payload.voice_pcm_base64:
         raw_pcm = base64.b64decode(payload.voice_pcm_base64)
         if len(raw_pcm) > 0:
@@ -200,10 +219,8 @@ async def handle_user_command(payload: UserCommandPayload) -> Dict[str, Any]:
 CONTEXT_KEYS = ("people_present", "knowledge", "models", "max_tokens", "reply_language", "speaker", "dialogue",
                 "long_term", "laws", "pinned", "capabilities")
 
-
 def _event(data: Dict[str, Any]) -> str:
     return "data: " + json.dumps(data, ensure_ascii=False) + "\n\n"
-
 
 async def _conversation_events(payload: UserCommandPayload) -> AsyncGenerator[str, None]:
     from server.core.reasoning.conversation import conversation_engine
@@ -232,12 +249,10 @@ async def _conversation_events(payload: UserCommandPayload) -> AsyncGenerator[st
         return
     yield _event({"done": True, "model": conversation_engine.last_model})
 
-
 @router.post("/conversation/stream")
 async def conversation_stream(payload: UserCommandPayload) -> StreamingResponse:
     return StreamingResponse(_conversation_events(payload), media_type="text/event-stream",
                              headers={"Cache-Control": "no-store", "X-Accel-Buffering": "no"})
-
 
 @router.get("/knowledge/graph")
 async def get_knowledge_graph_snapshot() -> Dict[str, Any]:
@@ -283,12 +298,8 @@ async def sync_mesh_network(peer: PeerNode) -> Dict[str, Any]:
     sync_data = p2p_mesh.get_sync_payload()
     return {"status": "success", "sync": sync_data.model_dump()}
 
-from server.core.sensory_bus.event_router import sensory_bus
-from server.core.event_sourcing.universal_space import UniversalObservation
-
 @router.post("/vision/feed")
 async def receive_camera_feed(payload: CameraFeedPayload) -> Dict[str, Any]:
-    # Wrappiamo il feed nell'Universal Space e lo gettiamo nel bus
     obs = UniversalObservation(
         modality="vision",
         source_id=payload.device_id,
@@ -296,7 +307,6 @@ async def receive_camera_feed(payload: CameraFeedPayload) -> Dict[str, Any]:
         metadata={"timestamp": payload.timestamp}
     )
     await sensory_bus.push_observation(obs)
-    
     return {
         "status": "success",
         "device_id": payload.device_id,

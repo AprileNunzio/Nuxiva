@@ -1,11 +1,11 @@
 import logging
 import asyncio
 
-logger = logging.getLogger("atena.continuous_learning")
+logger = logging.getLogger("nuxiva.continuous_learning")
 
 class ContinuousLearningEngine:
     """
-    Il cuore dell'autonomia di Atena. Se Atena non sa fare qualcosa, 
+    Il cuore dell'autonomia di Nuxiva. Se Nuxiva non sa fare qualcosa, 
     questo modulo viene attivato per "studiare", scrivere il codice mancante, 
     salvarlo nella memoria a lungo termine e riprovare. Nessun "Non lo so fare".
     """
@@ -15,7 +15,7 @@ class ContinuousLearningEngine:
         
     async def handle_failure(self, task_query: str, failure_reason: str, orchestrator_ref) -> str:
         """Intercetta un fallimento e avvia il loop di studio."""
-        logger.warning("Atena non sa come eseguire: '%s'. Motivo: %s", task_query, failure_reason)
+        logger.warning("Nuxiva non sa come eseguire: '%s'. Motivo: %s", task_query, failure_reason)
         logger.info("Avvio protocollo di apprendimento autonomo (La 'Scuola')...")
         self.is_learning = True
         
@@ -36,7 +36,7 @@ class ContinuousLearningEngine:
             logger.info("Step 3: Salvataggio della nuova abilita' in memoria per %s...", orchestrator_ref)
             
             # STEP 4: Riprovare
-            logger.info("Apprendimento completato. Atena riprova a eseguire il task originale.")
+            logger.info("Apprendimento completato. Nuxiva riprova a eseguire il task originale.")
             
             return "Non sapevo come fare, ma ho studiato la soluzione su internet, ho scritto un nuovo programma per gestirla e l'ho appena completata con successo! Ora so farlo per sempre."
             

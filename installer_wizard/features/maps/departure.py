@@ -2,11 +2,11 @@ import re
 from datetime import datetime, timedelta
 
 KINDS = (
-    ("flight", re.compile(r"\b(volo|aeroporto|flight|airport|imbarco)\b", re.I), "ATENA_MAPS_BUFFER_FLIGHT", 120.0),
+    ("flight", re.compile(r"\b(volo|aeroporto|flight|airport|imbarco)\b", re.I), "NUXIVA_MAPS_BUFFER_FLIGHT", 120.0),
     ("train", re.compile(r"\b(treno|stazione|trenitalia|italo|frecciarossa|frecciargento|intercity|binario)\b", re.I),
-     "ATENA_MAPS_BUFFER_TRAIN", 10.0),
+     "NUXIVA_MAPS_BUFFER_TRAIN", 10.0),
     ("bus", re.compile(r"\b(pullman|autobus|bus|flixbus|marozzi|autostazione|corriera|terminal|fermata)\b", re.I),
-     "ATENA_MAPS_BUFFER_BUS", 15.0),
+     "NUXIVA_MAPS_BUFFER_BUS", 15.0),
 )
 LABELS = {"flight": "il volo", "train": "il treno", "bus": "il pullman"}
 MIN_SAMPLES = 5
@@ -24,7 +24,7 @@ def classify(title: str, where: str) -> str | None:
 
 
 def buffer_minutes(kind: str | None, env) -> float:
-    key, default = next(((k, d) for name, _, k, d in KINDS if name == kind), ("ATENA_MAPS_BUFFER_EVENT", 5.0))
+    key, default = next(((k, d) for name, _, k, d in KINDS if name == kind), ("NUXIVA_MAPS_BUFFER_EVENT", 5.0))
     try:
         return max(0.0, min(300.0, float(env(key, str(default)))))
     except ValueError:

@@ -1,5 +1,5 @@
 (() => {
-  AtenaDesk.register("people_seen", {
+  NuxivaDesk.register("people_seen", {
     render(el, d, ctx) {
       const items = (Array.isArray(d.items) ? d.items : []).filter((i) => i && i.label && i.label !== "Nessuno").slice(0, 8);
       el.innerHTML = `${ctx.head({ icon: "eye", label: "Chi vedo" })}

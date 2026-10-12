@@ -58,7 +58,7 @@ A = Algorithm
 NODES: tuple[Node, ...] = (
     Node("input", "Ingresso", "◎", "La frase arriva dalla voce, dalla chat o da Telegram.", 120, 130, 0.03,
          (A("input.multi", "Voce e testo", "Trascrizione e pulizia della frase.", 5, 4, 5, 5, default=True),)),
-    Node("laws", "Leggi", "⚖", "Controlla che la richiesta rispetti le Leggi di Atena. Non si può togliere.", 320, 130, 0.02,
+    Node("laws", "Leggi", "⚖", "Controlla che la richiesta rispetti le Leggi di Nuxiva. Non si può togliere.", 320, 130, 0.02,
          (A("laws.guard", "Guardia delle Leggi", "Le leggi fondamentali più quelle che hai aggiunto.", 5, 4, 5, 5, default=True),),
          locked=True),
     Node("understanding", "Comprensione", "⌖", "Capisce quale funzione vuoi davvero, leggendo frase, contesto e conversazione.",
@@ -97,7 +97,7 @@ NODES: tuple[Node, ...] = (
         A("reasoning.tot", "Albero di pensieri", "Esplora più strade e sceglie la migliore.", 1, 5, 5, 1, available=False),
         A("reasoning.vote", "Voto a maggioranza", "Più risposte indipendenti, vince la più frequente.", 2, 5, 5, 2, available=False),
     )),
-    Node("agent", "Strumenti", "⚒", "L'agente usa gli strumenti di Atena: casa, file, rete, computer.", 920, 400, 0.4, (
+    Node("agent", "Strumenti", "⚒", "L'agente usa gli strumenti di Nuxiva: casa, file, rete, computer.", 920, 400, 0.4, (
         A("agent.full", "Accesso completo", "Può usare tutti gli strumenti, comprese le azioni sul sistema.", 4, 5, 3, 4, default=True,
           effects={"agent.enabled": "1", "agent.access": "completo"}),
         A("agent.standard", "Accesso standard", "Solo strumenti sicuri: niente comandi di sistema.", 4, 4, 5, 4,

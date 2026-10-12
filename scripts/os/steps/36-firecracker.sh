@@ -2,21 +2,21 @@
 . "$(dirname "$0")/../lib.sh"
 
 FC_VERSION=v1.10.1
-FC_DIR=/var/lib/atena/firecracker
+FC_DIR=/var/lib/nuxiva/firecracker
 FC_BIN=/usr/local/bin/firecracker
 FC_URL="https://github.com/firecracker-microvm/firecracker/releases/download/$FC_VERSION/firecracker-$FC_VERSION-x86_64.tgz"
 FC_SHA256=36112969952b0e34fadcfca769d48a55dc22cbba99af17e02bd0e24fc35adc77
 KERNEL_URL=https://s3.amazonaws.com/spec.ccfc.min/firecracker-ci/v1.10/x86_64/vmlinux-6.1.102
 KERNEL_SHA256=49ba99a5299444ac59dda2efc3569cc2d58a5d72ea6475a6bfc37aa0bf322e54
-IMAGE=atena-sandbox:local
+IMAGE=nuxiva-sandbox:local
 STATUS_FILE="$FC_DIR/status"
-TRIED_FILE="$ATENA_STATE/.firecracker-tried"
+TRIED_FILE="$NUXIVA_STATE/.firecracker-tried"
 RETRY_AFTER_SECONDS=21600
 
 sources() {
-    find "$ATENA_DIR/sandbox_broker/microvm" -name '*.py' | sort
-    echo "$ATENA_DIR/scripts/os/steps/36-firecracker.sh"
-    echo "$ATENA_DIR/docker/sandbox/Dockerfile"
+    find "$NUXIVA_DIR/sandbox_broker/microvm" -name '*.py' | sort
+    echo "$NUXIVA_DIR/scripts/os/steps/36-firecracker.sh"
+    echo "$NUXIVA_DIR/docker/sandbox/Dockerfile"
 }
 
 mark_status() {
@@ -79,9 +79,9 @@ build_rootfs() {
     docker export "$cid" | tar -x -C "$tree"
     docker rm "$cid" >/dev/null
     mkdir -p "$tree/proc" "$tree/sys" "$tree/dev" "$tree/tmp" "$tree/in" "$tree/out" "$tree/sbin"
-    install -m 0755 "$ATENA_DIR/sandbox_broker/microvm/guest_init.py" "$tree/sbin/atena-init"
+    install -m 0755 "$NUXIVA_DIR/sandbox_broker/microvm/guest_init.py" "$tree/sbin/nuxiva-init"
     size_mb=$(( $(du -sm "$tree" | cut -f1) + 64 ))
-    mke2fs -q -t ext4 -O ^has_journal -L atenaroot -d "$tree" "$tmp/rootfs.ext4" "${size_mb}M" || { rm -rf "$tmp"; return 1; }
+    mke2fs -q -t ext4 -O ^has_journal -L nuxivaroot -d "$tree" "$tmp/rootfs.ext4" "${size_mb}M" || { rm -rf "$tmp"; return 1; }
     mv -f "$tmp/rootfs.ext4" "$FC_DIR/rootfs.ext4"
     chmod 0644 "$FC_DIR/rootfs.ext4" "$FC_DIR/vmlinux"
     rm -rf "$tmp"
@@ -89,7 +89,7 @@ build_rootfs() {
 
 step_apply() {
     local reason
-    mkdir -p "$ATENA_STATE" "$FC_DIR"
+    mkdir -p "$NUXIVA_STATE" "$FC_DIR"
     _code_hash $(sources) > "$TRIED_FILE"
     if reason=$(unsupported_reason); then
         mark_status "non disponibile: $reason"
@@ -118,7 +118,7 @@ step_apply() {
     progress 90 "Attivazione"
     code_mark firecracker $(sources)
     mark_status "pronta: Firecracker $FC_VERSION"
-    systemctl restart atena-sandbox || warn "Broker non riavviato: userà Firecracker al prossimo controllo"
+    systemctl restart nuxiva-sandbox || warn "Broker non riavviato: userà Firecracker al prossimo controllo"
     progress 100 "Firecracker pronto"
 }
 

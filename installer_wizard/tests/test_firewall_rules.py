@@ -59,7 +59,7 @@ class CompilerTests(unittest.TestCase):
 
     def test_monitor_and_off_only_remove_the_table(self):
         for mode in ("off", "monitor"):
-            self.assertEqual(_compile(mode).splitlines(), ["table inet atena_guard", "delete table inet atena_guard"])
+            self.assertEqual(_compile(mode).splitlines(), ["table inet nuxiva_guard", "delete table inet nuxiva_guard"])
 
     def test_lockdown_denies_by_default_but_keeps_admin_access(self):
         script = _compile("lockdown", allow_lan=False, trusted=["aa:bb:cc:dd:ee:ff", "192.168.1.5"])
@@ -112,7 +112,7 @@ class CompilerTests(unittest.TestCase):
                                               {"action": "reject", "direction": "output", "destinations": ["2001:db8::/32"]}],
                           sets={"ufficio": ["10.1.0.0/16"]}, blocks=[nft.Block(model.address("203.0.113.9"), NOW + 60)],
                           trusted=["192.168.1.5"])
-        script = script.replace("delete table inet atena_guard\n", "", 1)
+        script = script.replace("delete table inet nuxiva_guard\n", "", 1)
         with tempfile.NamedTemporaryFile("w", suffix=".nft", delete=False) as handle:
             handle.write(script)
         try:

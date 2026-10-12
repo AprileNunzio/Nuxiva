@@ -150,7 +150,7 @@ def _suggestion(entity: str, state: str, p: dict, names: dict) -> dict:
             conditions = conditions + [{"type": "sun", "when": "night"}]
         text = f"quando arriva qualcuno{' e fa buio' if p.get('night') else ''} {verb} {name}"
         title = f"{name}: {verb} all'arrivo"
-    spec = {"name": title[0].upper() + title[1:], "description": f"Proposta da Atena osservando le abitudini: {text} "
+    spec = {"name": title[0].upper() + title[1:], "description": f"Proposta da Nuxiva osservando le abitudini: {text} "
             f"({p['support']} volte su {p['observed']}).", "tags": ["abitudini"], "mode": "single", "cooldown": 600,
             "triggers": [trigger], "conditions": conditions, "actions": [action]}
     return {"id": _pid(p["kind"], entity, state, p.get("group", "")), "kind": p["kind"], "entity": entity, "state": state,

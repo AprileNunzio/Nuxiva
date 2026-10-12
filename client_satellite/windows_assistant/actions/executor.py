@@ -11,7 +11,7 @@ from backup.snapshots import Snapshots
 from permissions.gate import Denied, Gate
 from senses.windows import Focus
 
-log = logging.getLogger("atena.actions")
+log = logging.getLogger("nuxiva.actions")
 
 
 class Executor:

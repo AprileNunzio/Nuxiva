@@ -24,11 +24,11 @@ import os
 ctk.set_appearance_mode("Dark")
 ctk.set_default_color_theme("blue")
 
-class AtenaAssistant(ctk.CTk):
+class NuxivaAssistant(ctk.CTk):
     def __init__(self):
         super().__init__()
         
-        self.title("ATENA Satellite Client")
+        self.title("NUXIVA Satellite Client")
         self.geometry("380x520")
         self.attributes("-topmost", True)
         self.overrideredirect(True)
@@ -57,7 +57,7 @@ class AtenaAssistant(ctk.CTk):
         header = ctk.CTkFrame(self, corner_radius=0, fg_color="#1E1E1E")
         header.grid(row=0, column=0, sticky="ew")
         
-        title = ctk.CTkLabel(header, text="ATENA SATELLITE", font=ctk.CTkFont(size=14, weight="bold"))
+        title = ctk.CTkLabel(header, text="NUXIVA SATELLITE", font=ctk.CTkFont(size=14, weight="bold"))
         title.pack(side="left", padx=10, pady=10)
         
         close_btn = ctk.CTkButton(header, text="X", width=30, height=30, fg_color="transparent", hover_color="#ff4444", command=self.destroy)
@@ -67,7 +67,7 @@ class AtenaAssistant(ctk.CTk):
         setup_frame = ctk.CTkFrame(self, fg_color="#2B2B2B")
         setup_frame.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
         
-        ctk.CTkLabel(setup_frame, text="IP Server ATENA:", font=ctk.CTkFont(size=11)).grid(row=0, column=0, padx=5, pady=(5,0), sticky="w")
+        ctk.CTkLabel(setup_frame, text="IP Server NUXIVA:", font=ctk.CTkFont(size=11)).grid(row=0, column=0, padx=5, pady=(5,0), sticky="w")
         self.f_server_ip = ctk.CTkEntry(setup_frame, placeholder_text="es. 192.168.1.100:8000", height=28)
         self.f_server_ip.grid(row=1, column=0, padx=5, pady=(0,5), sticky="ew")
 
@@ -87,7 +87,7 @@ class AtenaAssistant(ctk.CTk):
         self.chat_box = ctk.CTkTextbox(self, state="disabled", fg_color="#2B2B2B", wrap="word")
         self.chat_box.grid(row=3, column=0, padx=10, pady=5, sticky="nsew")
 
-        self._log_msg("Sistema", "Satellite Context Bridge avviato in background. Inserisci l'IP di ATENA e associa questo PC.")
+        self._log_msg("Sistema", "Satellite Context Bridge avviato in background. Inserisci l'IP di NUXIVA e associa questo PC.")
 
     def _log_msg(self, sender: str, msg: str):
         self.chat_box.configure(state="normal")
@@ -110,7 +110,7 @@ class AtenaAssistant(ctk.CTk):
         
         # Genera PSK
         psk = Fernet.generate_key().decode()
-        os.environ["ATENA_CONTEXT_PSK"] = psk
+        os.environ["NUXIVA_CONTEXT_PSK"] = psk
         
         # IP Locale
         local_ip = socket.gethostbyname(socket.gethostname())
@@ -134,8 +134,8 @@ class AtenaAssistant(ctk.CTk):
         try:
             with urllib.request.urlopen(req, timeout=10) as response:
                 if response.status in [200, 201]:
-                    self.status_lbl.configure(text="● Associato ad ATENA", text_color="#00FF00")
-                    self._log_msg("Sistema", f"Auto-Associazione completata! ATENA ora vede il PC a {payload['url']}.")
+                    self.status_lbl.configure(text="● Associato ad NUXIVA", text_color="#00FF00")
+                    self._log_msg("Sistema", f"Auto-Associazione completata! NUXIVA ora vede il PC a {payload['url']}.")
                     self.btn_connect.configure(text="Connesso", fg_color="#00aa00")
                 else:
                     self._log_msg("Errore", f"Server ha risposto con codice {response.status}.")
@@ -149,10 +149,10 @@ class AtenaAssistant(ctk.CTk):
             self.btn_connect.configure(state="normal", text="Riprova")
 
     def _start_backend(self):
-        # In ascolto sulla LAN: ATENA contatta il satellite su <ip-locale>:19999 (traffico cifrato con la PSK)
+        # In ascolto sulla LAN: NUXIVA contatta il satellite su <ip-locale>:19999 (traffico cifrato con la PSK)
         t = threading.Thread(target=start_satellite, kwargs={"host": "0.0.0.0"}, daemon=True)
         t.start()
 
 if __name__ == "__main__":
-    app = AtenaAssistant()
+    app = NuxivaAssistant()
     app.mainloop()

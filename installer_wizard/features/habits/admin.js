@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const STATUS = { new: "da decidere", snoozed: "rimandata", accepted: "automatizzata", rejected: "rifiutata" };
   const KIND = { time: "⏰", sun: "🌅", arrival: "🧍" };
   const when = (t) => (t ? new Date(t * 1000).toLocaleString("it-IT", { dateStyle: "short", timeStyle: "short" }) : "mai");

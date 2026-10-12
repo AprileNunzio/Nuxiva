@@ -6,7 +6,7 @@ from unittest import mock
 
 from fastapi.testclient import TestClient
 
-import atena_supervisor
+import nuxiva_supervisor
 from features.nexus import composition
 from features.nexus.application.freshness_service import FreshnessService
 from features.nexus.application.tool_service import ToolNotFound, ToolService
@@ -14,13 +14,13 @@ from features.nexus.domain import freshness, wizard
 from features.nexus.infrastructure.fingerprint import FolderFingerprint
 from features.nexus.infrastructure.json_store import JsonDocument
 
-HEADERS = {"X-Atena-Request": "1"}
+HEADERS = {"X-Nuxiva-Request": "1"}
 FEATURES = Path(__file__).resolve().parents[1] / "features"
-CAMERA = {"id": "cam", "name": "Cam", "toggle": {"env": "ATENA_CAM"}, "settings": [
-    {"key": "ATENA_CAM_FPS", "label": "Fluidità", "type": "select", "options": [{"value": "8", "label": "8 al secondo"}, "15"]},
-    {"key": "ATENA_CAM_KEY", "label": "Chiave", "type": "secret"},
-    {"key": "ATENA_CAM_ON", "label": "Registra", "type": "bool"},
-    {"key": "ATENA_CAM_LINK", "label": "Pagina", "type": "link", "default": "/x"},
+CAMERA = {"id": "cam", "name": "Cam", "toggle": {"env": "NUXIVA_CAM"}, "settings": [
+    {"key": "NUXIVA_CAM_FPS", "label": "Fluidità", "type": "select", "options": [{"value": "8", "label": "8 al secondo"}, "15"]},
+    {"key": "NUXIVA_CAM_KEY", "label": "Chiave", "type": "secret"},
+    {"key": "NUXIVA_CAM_ON", "label": "Registra", "type": "bool"},
+    {"key": "NUXIVA_CAM_LINK", "label": "Pagina", "type": "link", "default": "/x"},
 ]}
 
 
@@ -33,7 +33,7 @@ class WizardTest(unittest.TestCase):
         self.assertEqual([o["value"] for o in steps[3]["options"]], ["1", "0"])
 
     def test_declared_wizard_is_validated(self):
-        manifest = {**CAMERA, "wizard": [{"kind": "mode", "title": "Accendo la cam?"}, {"setting": "ATENA_CAM_ON", "title": "Registro?"},
+        manifest = {**CAMERA, "wizard": [{"kind": "mode", "title": "Accendo la cam?"}, {"setting": "NUXIVA_CAM_ON", "title": "Registro?"},
                                          {"setting": "NOPE"}, {"setting": "../x"}, "garbage"]}
         steps = wizard.build(manifest)
         self.assertEqual([s["title"] for s in steps], ["Accendo la cam?", "Registro?"])
@@ -114,11 +114,11 @@ class FreshnessInfrastructureTest(unittest.TestCase):
 
 class ToolServiceTest(unittest.TestCase):
     def test_detail_shapes_the_tool_and_rejects_unknown_ids(self):
-        listing = {"features": [{**CAMERA, "state": {"enabled": True, "mode": "auto"}, "values": {"ATENA_CAM_KEY": "••••1234"}}],
+        listing = {"features": [{**CAMERA, "state": {"enabled": True, "mode": "auto"}, "values": {"NUXIVA_CAM_KEY": "••••1234"}}],
                    "hardware": {"ram_gb": 8}}
         service = ToolService(lambda: listing, badges=lambda: {"cam": {"badge": "new", "since": 5}})
         tool = service.detail("cam")
-        self.assertEqual((tool["mode"], tool["badge"], tool["values"]["ATENA_CAM_KEY"]), ("auto", "new", "••••1234"))
+        self.assertEqual((tool["mode"], tool["badge"], tool["values"]["NUXIVA_CAM_KEY"]), ("auto", "new", "••••1234"))
         self.assertEqual(tool["settings"][0]["options"][0]["label"], "8 al secondo")
         for bad in ("missing", "../etc", "", "A" * 80):
             with self.assertRaises(ToolNotFound):
@@ -127,9 +127,9 @@ class ToolServiceTest(unittest.TestCase):
 
 class ToolApiTest(unittest.TestCase):
     def test_tool_detail_endpoint(self):
-        self.assertEqual(TestClient(atena_supervisor.admin).get("/api/nexus/tools/cameras").status_code, 401)
-        admin = TestClient(atena_supervisor.admin)
-        admin.post("/api/auth/login", json={"username": "admin", "password": "atena"}, headers=HEADERS)
+        self.assertEqual(TestClient(nuxiva_supervisor.admin).get("/api/nexus/tools/cameras").status_code, 401)
+        admin = TestClient(nuxiva_supervisor.admin)
+        admin.post("/api/auth/login", json={"username": "admin", "password": "nuxiva"}, headers=HEADERS)
         with mock.patch.object(composition.freshness, "document", JsonDocument(Path(tempfile.mkdtemp()) / "f.json")):
             composition.freshness._records = None
             r = admin.get("/api/nexus/tools/cameras")

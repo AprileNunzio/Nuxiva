@@ -200,7 +200,7 @@ def block(b: dict) -> dict | None:
 def normalize(kind: str, raw: dict, request: str) -> dict:
     raw = raw if isinstance(raw, dict) else {}
     doc = {"kind": kind, "title": text(raw.get("title"), 160) or text(request, 80), "subtitle": text(raw.get("subtitle"), 200),
-           "author": text(raw.get("author"), 80) or "Atena", "theme": text(raw.get("theme"), 20),
+           "author": text(raw.get("author"), 80) or "Nuxiva", "theme": text(raw.get("theme"), 20),
            "palette": raw.get("palette") if isinstance(raw.get("palette"), list) else [], "font": text(raw.get("font"), 40)}
     if kind == "documento":
         blocks, seen = [], set()

@@ -1,5 +1,5 @@
 (() => {
-  AtenaDesk.register("sun_cycle", {
+  NuxivaDesk.register("sun_cycle", {
     render(el, d, ctx) {
       const p = ctx.pct(d.progress) / 100;
       const q = 1 - p, x = q * q * 10 + 2 * q * p * 100 + p * p * 190, y = q * q * 58 + 2 * q * p * -34 + p * p * 58;

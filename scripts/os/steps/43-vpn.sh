@@ -2,9 +2,9 @@
 . "$(dirname "$0")/../lib.sh"
 
 PACKAGES=(wireguard-tools openvpn strongswan-swanctl charon-systemd)
-VPN_DIR=/etc/atena/vpn
+VPN_DIR=/etc/nuxiva/vpn
 
-wanted() { [ "${ATENA_VPN:-1}" != "0" ]; }
+wanted() { [ "${NUXIVA_VPN:-1}" != "0" ]; }
 
 step_check() {
     wanted || return 0
@@ -26,8 +26,8 @@ step_apply() {
 
     progress 80 "Servizio IKEv2"
     systemctl enable --now strongswan >/dev/null 2>&1 || warn "strongSwan non avviato: le VPN IPsec non saranno disponibili"
-    command -v tailscale >/dev/null 2>&1 || info "Tailscale non installato: installalo dal sito ufficiale per usarlo con Atena"
-    command -v zerotier-cli >/dev/null 2>&1 || info "ZeroTier non installato: installalo dal sito ufficiale per usarlo con Atena"
+    command -v tailscale >/dev/null 2>&1 || info "Tailscale non installato: installalo dal sito ufficiale per usarlo con Nuxiva"
+    command -v zerotier-cli >/dev/null 2>&1 || info "ZeroTier non installato: installalo dal sito ufficiale per usarlo con Nuxiva"
     progress 100 "VPN pronte"
 }
 

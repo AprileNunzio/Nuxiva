@@ -41,20 +41,20 @@ async def answer(text: str) -> tuple[str, dict]:
     if OFF.search(text):
         return policy.clear_dnd() + ", signore.", FACE
     if AMBIENT_OFF.search(text):
-        write_env({"ATENA_SOUNDS_AMBIENT": "none"})
+        write_env({"NUXIVA_SOUNDS_AMBIENT": "none"})
         store.touch()
         return "Sottofondo spento, signore.", FACE
     if AMBIENT.search(text):
         low = text.lower()
         choice = next((v for k, v in WORDS.items() if k in low), "reactor")
-        write_env({"ATENA_SOUNDS_AMBIENT": choice})
+        write_env({"NUXIVA_SOUNDS_AMBIENT": choice})
         store.touch()
         return f"Sottofondo «{AMBIENTS[choice]}» attivo, signore.", FACE
     m = VOLUME.search(text)
     if m:
         up = m.group(1).lower() in ("alza", "aumenta")
         value = max(0, min(100, policy.settings()["volume"] + (15 if up else -15)))
-        write_env({"ATENA_SOUNDS_VOLUME": str(value)})
+        write_env({"NUXIVA_SOUNDS_VOLUME": str(value)})
         store.touch()
         return f"Effetti sonori al {value} per cento, signore.", FACE
     if DND.search(text) and len(text.split()) <= 12:

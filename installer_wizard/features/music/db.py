@@ -5,7 +5,7 @@ from pathlib import Path
 
 from features.music import layout
 
-log = logging.getLogger("atena.music")
+log = logging.getLogger("nuxiva.music")
 SCHEMA = (
     """CREATE TABLE IF NOT EXISTS tracks (
       id INTEGER PRIMARY KEY, path TEXT UNIQUE NOT NULL, mtime REAL NOT NULL, size INTEGER NOT NULL,

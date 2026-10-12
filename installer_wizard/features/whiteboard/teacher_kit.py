@@ -101,7 +101,7 @@ async def commons_image(topic: str) -> tuple[str, str] | None:
     query = str(topic).strip()[:120]
     if not query:
         return None
-    headers = {"User-Agent": "AtenaWhiteboard/1.0 (educational; https://github.com/AprileNunzio/ATENA)"}
+    headers = {"User-Agent": "NuxivaWhiteboard/1.0 (educational; https://github.com/AprileNunzio/NUXIVA)"}
     async with httpx.AsyncClient(timeout=8, follow_redirects=False, headers=headers) as client:
         try:
             r = await client.get(wikimedia.API, params=wikimedia.search_params(query))

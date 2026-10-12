@@ -6,7 +6,7 @@ from pathlib import Path
 from features.music import catalog, layout, organizer
 from features.music.db import db
 
-log = logging.getLogger("atena.music")
+log = logging.getLogger("nuxiva.music")
 MAX_TRACKS = 5000
 SMART_FIELDS = {"genre": "genre=?", "artist": "artist_key=?", "year_from": "year>=?", "year_to": "year<=?", "album": "album_key=?"}
 SMART_FLAGS = {"never_played": "plays=0", "played": "plays>0", "recent_days": "added>=?", "liked": "id IN (SELECT track_id FROM likes WHERE user=?)",

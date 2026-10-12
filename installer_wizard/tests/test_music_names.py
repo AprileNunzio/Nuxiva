@@ -4,7 +4,7 @@ from unittest import mock
 
 from fastapi.testclient import TestClient
 
-import atena_supervisor
+import nuxiva_supervisor
 from config import write_env
 from features.music import catalog, identify, layout, music, naming, organizer, renamer, scanner, tagwriter, tags
 from features.music.db import db
@@ -12,7 +12,7 @@ from features.music import service as service_module
 from features.music.service import LibraryService
 from tests.test_music_library import Base, age, make_wav
 
-HEADERS = {"X-Atena-Request": "1"}
+HEADERS = {"X-Nuxiva-Request": "1"}
 SHAZAM = {"track": {"title": "Back In Black", "subtitle": "AC/DC", "key": "1", "genres": {"primary": "Rock"}, "images": {"coverarthq": "https://img.example/c.jpg"},
                     "sections": [{"metadata": [{"title": "Album", "text": "Back In Black"}, {"title": "Released", "text": "1980"}]}]}}
 
@@ -153,11 +153,11 @@ class IdentifyTest(Base):
 
     def test_the_user_can_assign_a_name_or_put_the_song_in_the_mixes(self):
         from fastapi.testclient import TestClient
-        import atena_supervisor
-        admin = TestClient(atena_supervisor.admin)
-        admin.post("/api/auth/login", json={"username": "admin", "password": "atena"}, headers=HEADERS)
-        write_env({"ATENA_MUSIC_IDENTIFY": "0"})
-        self.addCleanup(lambda: write_env({"ATENA_MUSIC_IDENTIFY": "1"}))
+        import nuxiva_supervisor
+        admin = TestClient(nuxiva_supervisor.admin)
+        admin.post("/api/auth/login", json={"username": "admin", "password": "nuxiva"}, headers=HEADERS)
+        write_env({"NUXIVA_MUSIC_IDENTIFY": "0"})
+        self.addCleanup(lambda: write_env({"NUXIVA_MUSIC_IDENTIFY": "1"}))
         first = self.dropped("uno.wav")
         second = self.dropped("due.wav")
         organizer.sweep(True)
@@ -228,8 +228,8 @@ class IdentifyTest(Base):
 class ServiceAndApiTest(Base):
     @classmethod
     def setUpClass(cls):
-        cls.admin = TestClient(atena_supervisor.admin)
-        assert cls.admin.post("/api/auth/login", json={"username": "admin", "password": "atena"}, headers=HEADERS).status_code == 200
+        cls.admin = TestClient(nuxiva_supervisor.admin)
+        assert cls.admin.post("/api/auth/login", json={"username": "admin", "password": "nuxiva"}, headers=HEADERS).status_code == 200
 
     def test_rename_preview_and_apply_over_http(self):
         path = make_wav(layout.library() / "Vasco" / "Blasco" / "Rosso.wav", title="Rosso", artist="Vasco", album="Blasco", track="1")
@@ -248,8 +248,8 @@ class ServiceAndApiTest(Base):
         self.assertIn("renamed", r.json())
 
     def test_cycle_identifies_and_renames_unless_switched_off(self):
-        write_env({"ATENA_UNOFFICIAL_SERVICES": "1"})
-        self.addCleanup(lambda: write_env({"ATENA_UNOFFICIAL_SERVICES": "0"}))
+        write_env({"NUXIVA_UNOFFICIAL_SERVICES": "1"})
+        self.addCleanup(lambda: write_env({"NUXIVA_UNOFFICIAL_SERVICES": "0"}))
         path = make_wav(layout.library() / "Vasco" / "Blasco" / "Rosso.wav", title="Rosso", artist="Vasco", album="Blasco", track="1")
         age(path)
         scanner.scan()
@@ -265,8 +265,8 @@ class ServiceAndApiTest(Base):
             asyncio.run(service.cycle(True))
             self.assertEqual(calls, [3])
             self.assertTrue((layout.library() / "Vasco" / "Blasco" / "01 - Vasco - Rosso.wav").is_file())
-            write_env({"ATENA_MUSIC_IDENTIFY": "0", "ATENA_MUSIC_RENAME": "0"})
-            self.addCleanup(lambda: write_env({"ATENA_MUSIC_IDENTIFY": "1", "ATENA_MUSIC_RENAME": "1"}))
+            write_env({"NUXIVA_MUSIC_IDENTIFY": "0", "NUXIVA_MUSIC_RENAME": "0"})
+            self.addCleanup(lambda: write_env({"NUXIVA_MUSIC_IDENTIFY": "1", "NUXIVA_MUSIC_RENAME": "1"}))
             service_module.state["covers_at"] = 0.0
             asyncio.run(service.cycle(True))
             self.assertEqual(calls, [3])

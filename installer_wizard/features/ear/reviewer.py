@@ -16,7 +16,7 @@ import stt
 from learner import TOKEN_RE, learner
 from tuning import tuning
 
-log = logging.getLogger("atena.ear")
+log = logging.getLogger("nuxiva.ear")
 
 RATE = 16000
 POLL = 30.0
@@ -81,13 +81,13 @@ class Reviewer:
         self.current = ""
 
     def enabled(self) -> bool:
-        return recorder.enabled() and earconf.flag("ATENA_EAR_REVIEW", True)
+        return recorder.enabled() and earconf.flag("NUXIVA_EAR_REVIEW", True)
 
     def resting(self) -> bool:
-        idle = earconf.number("ATENA_EAR_REVIEW_IDLE", 120.0, 10.0, 3600.0)
+        idle = earconf.number("NUXIVA_EAR_REVIEW_IDLE", 120.0, 10.0, 3600.0)
         if time.time() - activity.last_voice < idle or self.busy() or stt.lock.locked():
             return False
-        limit = earconf.number("ATENA_EAR_REVIEW_LOAD", 0.6, 0.1, 2.0)
+        limit = earconf.number("NUXIVA_EAR_REVIEW_LOAD", 0.6, 0.1, 2.0)
         try:
             load = os.getloadavg()[0] / (os.cpu_count() or 1)
         except (OSError, AttributeError):
@@ -95,7 +95,7 @@ class Reviewer:
         return load <= limit
 
     def quiet(self) -> bool:
-        idle = earconf.number("ATENA_EAR_REVIEW_IDLE", 120.0, 10.0, 3600.0)
+        idle = earconf.number("NUXIVA_EAR_REVIEW_IDLE", 120.0, 10.0, 3600.0)
         return time.time() - activity.last_voice >= min(idle, 20.0) and not self.busy()
 
     async def run(self) -> None:
@@ -136,7 +136,7 @@ class Reviewer:
         return out
 
     async def transcribe(self, meta: dict, clean: np.ndarray) -> list[dict] | None:
-        name = earconf.text("ATENA_EAR_REVIEW_MODEL", "same", ("same", "base", "small", "medium"))
+        name = earconf.text("NUXIVA_EAR_REVIEW_MODEL", "same", ("same", "base", "small", "medium"))
         segments: list = []
         for piece, t0 in self.pieces(meta, clean):
             if not self.quiet():
@@ -199,13 +199,13 @@ class Reviewer:
             first = TOKEN_RE.findall(ev["text"])[:1]
             if first and any(has_wake(s["text"]) and abs(s["start"] - float(ev["t"])) < 6 for s in segments):
                 if learner.learn_variant(first[0]):
-                    log.info("Dalla revisione ho imparato la variante «%s» di Atena", first[0])
+                    log.info("Dalla revisione ho imparato la variante «%s» di Nuxiva", first[0])
 
     def store(self, meta_file: Path, meta: dict, result: dict) -> None:
         lines = [json.dumps(r, ensure_ascii=False) for r in recent_reviews(KEEP_REVIEWS - 1)]
         lines.append(json.dumps(result, ensure_ascii=False))
         atomic_write(REVIEWS, "\n".join(lines) + "\n")
-        if earconf.number("ATENA_EAR_KEEP_REVIEWED_H", 2.0, 0.0, 48.0) <= 0:
+        if earconf.number("NUXIVA_EAR_KEEP_REVIEWED_H", 2.0, 0.0, 48.0) <= 0:
             recorder.remove(meta_file)
         else:
             atomic_write(meta_file, json.dumps(meta, ensure_ascii=False))

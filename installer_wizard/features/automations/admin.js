@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const when = (t) => (t ? new Date(t * 1000).toLocaleString("it-IT", { dateStyle: "short", timeStyle: "medium" }) : "mai");
   const BADGE = { completata: "ok", "in corso": "info", errore: "bad", fermata: "warn", interrotta: "warn", "in coda": "info", "condizioni non soddisfatte": "" };
   let data = null, catalog = null, current = null, dirty = false, jsonView = false, timer = null, runFilter = "";
@@ -176,7 +176,7 @@
       const d = await api("GET", "/api/automations/export");
       const link = document.createElement("a");
       link.href = URL.createObjectURL(new Blob([JSON.stringify(d, null, 2)], { type: "application/json" }));
-      link.download = `atena-automazioni-${new Date().toISOString().slice(0, 10)}.json`; link.click();
+      link.download = `nuxiva-automazioni-${new Date().toISOString().slice(0, 10)}.json`; link.click();
     });
     $("am-import").addEventListener("change", async (e) => {
       const file = e.target.files[0]; if (!file) return;

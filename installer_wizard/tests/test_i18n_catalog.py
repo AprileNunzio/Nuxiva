@@ -48,7 +48,7 @@ const fs = require("fs");
 const catalog = JSON.parse(fs.readFileSync(process.argv[2], "utf8"));
 const results = {};
 for (const lang of ["en", "it", "fr"]) {
-  const g = { localStorage: { getItem: () => null, setItem() {} }, navigator: { language: lang }, ATENA_UI_LANG: lang,
+  const g = { localStorage: { getItem: () => null, setItem() {} }, navigator: { language: lang }, NUXIVA_UI_LANG: lang,
     document: { readyState: "complete", documentElement: { lang }, body: null, addEventListener() {}, dispatchEvent() {} },
     fetch: async () => ({ json: async () => catalog }), CustomEvent: function () {} };
   const source = fs.readFileSync(process.argv[3], "utf8");
@@ -57,7 +57,7 @@ for (const lang of ["en", "it", "fr"]) {
   results[lang] = g;
 }
 setTimeout(() => {
-  const t = (lang, s) => results[lang].AtenaI18n.translate(s);
+  const t = (lang, s) => results[lang].NuxivaI18n.translate(s);
   console.log(JSON.stringify({
     exact: t("en", "Aggiungi stampante"),
     spaced: t("en", "  Salva profilo \n"),

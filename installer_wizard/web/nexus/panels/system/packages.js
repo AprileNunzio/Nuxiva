@@ -5,7 +5,7 @@ const NOTE = {
   local: "I modelli girano su questo computer con Ollama: tutto resta in casa.",
   remote: "Uso Ollama di un altro computer della rete: qui non installo nulla del cervello.",
   cloud: "Le risposte arrivano dal servizio cloud configurato nello strumento Cloud.",
-  pending: "Il cervello non è ancora scelto: scegli dove deve pensare Atena.",
+  pending: "Il cervello non è ancora scelto: scegli dove deve pensare Nuxiva.",
 };
 const MODES = [["local", "Su questo computer"], ["remote", "Su un altro computer"], ["cloud", "Nel cloud"]];
 
@@ -18,13 +18,13 @@ export default function packages(root) {
   function paintBrain() {
     const remote = pick === "remote";
     mount(brainBox,
-      row(seg(MODES, pick, (v) => { pick = v; paintBrain(); }, "Dove pensa Atena"),
+      row(seg(MODES, pick, (v) => { pick = v; paintBrain(); }, "Dove pensa Nuxiva"),
         pick !== mode || remote ? button("Applica", async () => {
           const body = { mode: pick, ...(remote ? { url: url.el.value.trim() } : {}) };
           await api("/api/packages/brain", { method: "POST", body });
           toast("Scelta salvata, applicazione in corso");
           await load();
-        }, { kind: "primary sm", confirm: pick !== mode ? { title: "Cambiare dove pensa Atena?", text: "I componenti necessari si installano in background.", action: "Cambia" } : null }) : null),
+        }, { kind: "primary sm", confirm: pick !== mode ? { title: "Cambiare dove pensa Nuxiva?", text: "I componenti necessari si installano in background.", action: "Cambia" } : null }) : null),
       remote ? url.field : null,
       note(NOTE[mode] || ""));
   }
@@ -45,6 +45,6 @@ export default function packages(root) {
 
   mount(root,
     section("Cervello", brainBox),
-    section("Pacchetti", list, note("Atena installa solo quello che usi. Puoi aggiungere un pacchetto da qui oppure chiederlo a voce, ad esempio «installa i documenti Office».")));
+    section("Pacchetti", list, note("Nuxiva installa solo quello che usi. Puoi aggiungere un pacchetto da qui oppure chiederlo a voce, ad esempio «installa i documenti Office».")));
   live(root, load, 5000);
 }

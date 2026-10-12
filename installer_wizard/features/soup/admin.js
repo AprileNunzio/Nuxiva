@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   let soup = null;
 
   A.renderSoup = (data) => {
@@ -13,7 +13,7 @@
       </tbody></table>
       <div class="form-grid" style="margin-top:12px">
         <div><label>Consolidamento notturno (02:00–06:00 o fascia di studio)</label><select id="soup-mode">
-          <option value="auto" ${s.mode === "auto" ? "selected" : ""}>Automatico: decide Atena in base all'hardware (consigliato)</option>
+          <option value="auto" ${s.mode === "auto" ? "selected" : ""}>Automatico: decide Nuxiva in base all'hardware (consigliato)</option>
           <option value="1" ${s.mode === "1" ? "selected" : ""}>Sempre attivo (a tuo rischio)</option>
           <option value="0" ${s.mode === "0" ? "selected" : ""}>Disattivato</option></select>
           <div class="faint" style="font-size:12px; margin-top:6px">${s.enabled ? '<span class="badge ok">attivo</span>' : '<span class="badge">non attivo</span>'} ${fmt.esc(s.decision || "")}</div></div>

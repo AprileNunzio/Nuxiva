@@ -7,7 +7,7 @@ from features.whiteboard.board import HEIGHT, WIDTH, board
 lavagna = partial(tool, agent="whiteboard")
 
 
-@lavagna("board_open", "apre la lavagna sul display, sempre vuota e a tutto schermo: Atena e l'utente scrivono e disegnano insieme", {})
+@lavagna("board_open", "apre la lavagna sul display, sempre vuota e a tutto schermo: Nuxiva e l'utente scrivono e disegnano insieme", {})
 async def board_open() -> str:
     service.open_board()
     return "lavagna aperta, vuota e a tutto schermo"

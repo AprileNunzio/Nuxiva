@@ -66,7 +66,7 @@ class ServiceTest(unittest.TestCase):
             said.append(text)
             return ["Salotto"]
 
-        env = {"ATENA_REDALERT": "1"}
+        env = {"NUXIVA_REDALERT": "1"}
         with mock.patch.object(service, "env_get", side_effect=lambda k, d="": env.get(k, d)), \
                 mock.patch.object(lights, "snapshot", return_value={"light.sala": {"on": True}}), \
                 mock.patch.object(lights, "flash", side_effect=flash), mock.patch.object(lights, "restore", side_effect=restore), \

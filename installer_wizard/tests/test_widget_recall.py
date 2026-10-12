@@ -2,10 +2,10 @@ import unittest
 
 from fastapi.testclient import TestClient
 
-import atena_supervisor
+import nuxiva_supervisor
 from features.desktop.desk import desk
 
-HEADERS = {"X-Atena-Request": "1"}
+HEADERS = {"X-Nuxiva-Request": "1"}
 
 
 class WidgetRecallTest(unittest.TestCase):
@@ -51,9 +51,9 @@ class WidgetRecallTest(unittest.TestCase):
                 desk.sources.pop(attr, None)
 
     def test_api_requires_admin_and_rejects_unknown(self):
-        self.assertEqual(TestClient(atena_supervisor.admin).post(f"/api/widgets/{self.wid}/recall", headers=HEADERS).status_code, 401)
-        admin = TestClient(atena_supervisor.admin)
-        admin.post("/api/auth/login", json={"username": "admin", "password": "atena"}, headers=HEADERS)
+        self.assertEqual(TestClient(nuxiva_supervisor.admin).post(f"/api/widgets/{self.wid}/recall", headers=HEADERS).status_code, 401)
+        admin = TestClient(nuxiva_supervisor.admin)
+        admin.post("/api/auth/login", json={"username": "admin", "password": "nuxiva"}, headers=HEADERS)
         self.assertEqual(admin.post(f"/api/widgets/{self.wid}/recall").status_code, 403)
         self.assertEqual(admin.post(f"/api/widgets/{self.wid}/recall", headers=HEADERS).json()["origin"], "preview")
         self.assertEqual(admin.post("/api/widgets/nope/recall", headers=HEADERS).status_code, 404)

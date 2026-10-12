@@ -3,15 +3,15 @@ from unittest import mock
 
 from fastapi.testclient import TestClient
 
-import atena_supervisor
+import nuxiva_supervisor
 import setup_api
 from state import store
 
 
 class MandatorySetupTest(unittest.TestCase):
     def setUp(self):
-        self.public = TestClient(atena_supervisor.public)
-        self.admin = TestClient(atena_supervisor.admin)
+        self.public = TestClient(nuxiva_supervisor.public)
+        self.admin = TestClient(nuxiva_supervisor.admin)
         self.phase = mock.patch.object(store, "phase", "READY")
         self.phase.start()
         self.private = mock.patch.object(setup_api, "_private_client", lambda request: True)

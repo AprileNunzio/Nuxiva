@@ -6,7 +6,7 @@ from pathlib import Path
 from config import DEMO, STATE_DIR
 
 SHARE = "condivisa"
-ROOT = (STATE_DIR / "srv" / SHARE) if DEMO else Path("/srv/atena") / SHARE
+ROOT = (STATE_DIR / "srv" / SHARE) if DEMO else Path("/srv/nuxiva") / SHARE
 FOLDERS = {
     "documenti": "01 Documenti",
     "siti": "02 Siti web",
@@ -16,17 +16,17 @@ FOLDERS = {
     "musica": "06 Musica",
 }
 DESCRIPTIONS = {
-    "documenti": "testi, note, elenchi e documenti scritti da Atena",
-    "siti": "siti web creati da Atena, uno per cartella, visibili anche dal browser",
-    "modelli3d": "oggetti 3D progettati da Atena (GLB, STL per la stampa, OBJ)",
-    "codice": "il codice mostrato da Atena sullo schermo, pronto da riusare",
-    "scambio": "cartella libera per scambiare file con Atena e sottocartelle create a richiesta",
-    "musica": "libreria musicale di Atena: brani organizzati per artista e album, playlist e nuova musica da smistare",
+    "documenti": "testi, note, elenchi e documenti scritti da Nuxiva",
+    "siti": "siti web creati da Nuxiva, uno per cartella, visibili anche dal browser",
+    "modelli3d": "oggetti 3D progettati da Nuxiva (GLB, STL per la stampa, OBJ)",
+    "codice": "il codice mostrato da Nuxiva sullo schermo, pronto da riusare",
+    "scambio": "cartella libera per scambiare file con Nuxiva e sottocartelle create a richiesta",
+    "musica": "libreria musicale di Nuxiva: brani organizzati per artista e album, playlist e nuova musica da smistare",
 }
 SUBFOLDERS = {"musica": ("Libreria", "Da smistare", "Playlist", "Copertine", "Cestino")}
 SUBFOLDER_NOTES = {
     "Libreria": "i brani ordinati per artista e album",
-    "Da smistare": "lascia qui i file nuovi: Atena li legge e li sposta in Libreria da sola",
+    "Da smistare": "lascia qui i file nuovi: Nuxiva li legge e li sposta in Libreria da sola",
     "Playlist": "le playlist esportate (M3U) per altri lettori",
     "Copertine": "le copertine degli album",
     "Cestino": "i brani tolti dalla libreria: da qui si possono ripristinare",
@@ -84,14 +84,14 @@ def unc(ip: str, kind: str = "") -> str:
 
 
 def readme() -> str:
-    lines = ["Cartella condivisa di Atena", "", "Qui Atena salva tutto ciò che crea, in queste sottocartelle:", ""]
+    lines = ["Cartella condivisa di Nuxiva", "", "Qui Nuxiva salva tutto ciò che crea, in queste sottocartelle:", ""]
     for k in FOLDERS:
         lines.append(f"  {FOLDERS[k]:<16} {DESCRIPTIONS[k]}")
         lines += [f"      {FOLDERS[k]}/{sub}: {SUBFOLDER_NOTES[sub]}" for sub in SUBFOLDERS.get(k, ())]
-    lines += ["", "La memoria di Atena (persone, fatti, diario) non è qui: per privacy resta solo sul server.",
+    lines += ["", "La memoria di Nuxiva (persone, fatti, diario) non è qui: per privacy resta solo sul server.",
               "", "I nomi iniziano sempre con la data in ordine inverso (AAAAMMGG_nome), così l'ordine alfabetico",
               "è anche quello cronologico: per esempio 20261002_lista-della-spesa.txt.",
-              "", "L'accesso richiede l'utente atena-share e la password indicata nel pannello di Atena",
+              "", "L'accesso richiede l'utente nuxiva-share e la password indicata nel pannello di Nuxiva",
               "(Condivisioni di rete)."]
     return "\n".join(lines) + "\n"
 

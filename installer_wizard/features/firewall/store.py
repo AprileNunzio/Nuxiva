@@ -13,7 +13,7 @@ from features.firewall.nft import Block
 FIREWALL_DIR = STATE_DIR / "firewall"
 CONFIG_FILE = FIREWALL_DIR / "config.json"
 HISTORY = 20
-log = logging.getLogger("atena.firewall")
+log = logging.getLogger("nuxiva.firewall")
 
 
 class FirewallStore:

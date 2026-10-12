@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { fmt } = A;
+  const A = window.NuxivaAdmin, { fmt } = A;
   const DAYS = ["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"];
 
   function habitsSection(p) {

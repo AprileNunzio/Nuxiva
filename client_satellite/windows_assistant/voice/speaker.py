@@ -6,7 +6,7 @@ import wave
 import numpy as np
 import sounddevice as sd
 
-log = logging.getLogger("atena.voice")
+log = logging.getLogger("nuxiva.voice")
 SAMPLE_TYPES = {1: np.uint8, 2: np.int16, 4: np.int32}
 
 

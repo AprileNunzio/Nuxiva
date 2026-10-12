@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   let data = null, bus = null;
   const when = (t) => new Date(t * 1000).toLocaleString(document.documentElement.lang || undefined, { dateStyle: "short", timeStyle: "medium" });
   const fail = (err) => A.toast(A.t(err.message), true);
@@ -27,7 +27,7 @@
 
   async function load() {
     try { data = await A.api("GET", "/api/twin"); render(); } catch (err) { fail(err); }
-    if (!bus) bus = window.Atena.subscribeBus("twin.verdict", (env) => { if (data) { data.history = [env.payload, ...data.history].slice(0, 50); render(); } });
+    if (!bus) bus = window.Nuxiva.subscribeBus("twin.verdict", (env) => { if (data) { data.history = [env.payload, ...data.history].slice(0, 50); render(); } });
   }
 
   function init() {
@@ -43,7 +43,7 @@
       try { $("tw-result").innerHTML = verdict({ ...(await A.api("POST", "/api/twin/simulate", { calls })), text: A.t("twin.simulation") }); }
       catch (err) { fail(err); }
     });
-    window.addEventListener("atena-i18n", () => { if (data && A.isOn("twin")) render(); });
+    window.addEventListener("nuxiva-i18n", () => { if (data && A.isOn("twin")) render(); });
   }
 
   A.tab("twin", { title: "Gemello digitale", init, load, leave() { if (bus) { bus.close(); bus = null; } } });

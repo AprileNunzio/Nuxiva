@@ -8,7 +8,7 @@
     "viewer_3d",
     "3d"
   ],
-  "description": "Modelli 3D creati da Atena o caricati: glTF/GLB, OBJ, STL, 3MF, AMF, PLY, FBX, DAE, 3DS, VRML, DXF, STEP, IGES, BREP. Si ruota con mouse, dita o mani.",
+  "description": "Modelli 3D creati da Nuxiva o caricati: glTF/GLB, OBJ, STL, 3MF, AMF, PLY, FBX, DAE, 3DS, VRML, DXF, STEP, IGES, BREP. Si ruota con mouse, dita o mani.",
   "ttl": 1800,
   "demo": {
     "id": "demo-head",

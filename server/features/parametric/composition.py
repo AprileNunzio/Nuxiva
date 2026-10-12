@@ -18,7 +18,7 @@ def build_completion(models_provider, component="parametric_designer"):
         models = models_provider()
         response = await llm_gateway.generate_completion(
             LLMRequest(
-                model_name=(models or [settings.ATENA_LLM_MODEL or _DEFAULT_MODEL])[0],
+                model_name=(models or [settings.NUXIVA_LLM_MODEL or _DEFAULT_MODEL])[0],
                 models=models,
                 component=component,
                 messages=[LLMMessage(role="user", content=user)],

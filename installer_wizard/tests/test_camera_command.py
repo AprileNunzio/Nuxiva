@@ -6,7 +6,7 @@ from features.chat.skills.camera import camera_skill, wants_camera_off
 
 class CameraIntentTest(unittest.TestCase):
     def test_enabling_phrases_are_recognised(self):
-        for text in ("Atena abilita la webcam", "apri la webcam a tutto schermo", "accendi la fotocamera", "mostrami la webcam",
+        for text in ("Nuxiva abilita la webcam", "apri la webcam a tutto schermo", "accendi la fotocamera", "mostrami la webcam",
                      "attiva la web cam per favore", "fammi vedere la webcam"):
             with self.subTest(text=text):
                 self.assertEqual(detect_intent(text), "camera")

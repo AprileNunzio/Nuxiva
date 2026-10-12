@@ -9,10 +9,10 @@ from server.core.kernel.domain.plan_codec import dag_from_plan, extract_json_arr
 from server.features.llm_gateway.contracts import LLMMessage, LLMRequest
 from server.features.llm_gateway.gateway import llm_gateway
 
-logger = logging.getLogger("atena.task_planner")
+logger = logging.getLogger("nuxiva.task_planner")
 
 _KINDS = ", ".join(k.value for k in NodeKind)
-_PLANNER_SYSTEM_PROMPT = f"""Sei il pianificatore strategico di Atena.
+_PLANNER_SYSTEM_PROMPT = f"""Sei il pianificatore strategico di Nuxiva.
 Trasforma la richiesta in un grafo aciclico di sotto-task atomici, isolati e verificabili.
 
 Rispondi con un JSON array. Ogni elemento DEVE avere:

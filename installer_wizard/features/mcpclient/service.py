@@ -10,7 +10,7 @@ from features.mcpclient import client, store
 from features.team.board import board
 from state import store as state
 
-log = logging.getLogger("atena.mcpclient")
+log = logging.getLogger("nuxiva.mcpclient")
 EXTERNAL: dict[str, dict] = {}
 PERIOD = 300.0
 KINDS = {"string": str, "integer": int, "number": float, "boolean": bool, "object": dict, "array": list}
@@ -19,7 +19,7 @@ MAX_TOOLS = 40
 
 
 def enabled() -> bool:
-    return env_get("ATENA_MCP_CLIENT", "1") != "0"
+    return env_get("NUXIVA_MCP_CLIENT", "1") != "0"
 
 
 def slug(text: str) -> str:

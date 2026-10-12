@@ -43,7 +43,7 @@ def _quote(text: str) -> str:
 
 
 def name(profile: model.Profile) -> str:
-    return f"atena-{profile.id}"
+    return f"nuxiva-{profile.id}"
 
 
 def render(profile: model.Profile, secrets: dict) -> str:

@@ -15,7 +15,7 @@ from features.cameras.cameras import cameras
 from features.vision.proxy import frame, ir_frame, vision_stream
 from features.vision.webcams import webcams
 
-log = logging.getLogger("atena.cameras")
+log = logging.getLogger("nuxiva.cameras")
 CHUNK = 64 * 1024
 MAX_SECONDS = 1800
 SNAPSHOT_TIMEOUT = 10
@@ -144,7 +144,7 @@ def ffmpeg_command(source: dict, fps: int, width: int, single: bool = False) -> 
 
 
 def settings() -> tuple[int, int, int]:
-    return number("ATENA_LIVECAM_FPS", 8, 2, 25), number("ATENA_LIVECAM_WIDTH", 640, 320, 1920), number("ATENA_LIVECAM_MAX", 2, 1, 6)
+    return number("NUXIVA_LIVECAM_FPS", 8, 2, 25), number("NUXIVA_LIVECAM_WIDTH", 640, 320, 1920), number("NUXIVA_LIVECAM_MAX", 2, 1, 6)
 
 
 async def stream(source: dict):

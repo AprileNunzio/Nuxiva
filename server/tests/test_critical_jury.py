@@ -65,7 +65,7 @@ class IntentConsistencyTest(unittest.IsolatedAsyncioTestCase):
         return await IntentConsistencyVoter(CriticalAction(domain, service, entity, utterance)).vote(None)
 
     async def test_grounded_requests_pass(self):
-        self.assertTrue((await self.ballot("Atena, apri la porta d'ingresso")).approve)
+        self.assertTrue((await self.ballot("Nuxiva, apri la porta d'ingresso")).approve)
         self.assertTrue((await self.ballot("disattiva l'allarme", "alarm_control_panel", "alarm_disarm", "alarm_control_panel.casa")).approve)
         self.assertTrue((await self.ballot("apri il garage", "cover", "open_cover", "cover.garage")).approve)
 

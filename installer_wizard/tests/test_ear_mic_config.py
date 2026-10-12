@@ -7,7 +7,7 @@ from features.ear import api
 
 class MicConfigTest(unittest.TestCase):
     def config(self, agc: str | None) -> dict:
-        values = {} if agc is None else {"ATENA_MIC_AGC": agc}
+        values = {} if agc is None else {"NUXIVA_MIC_AGC": agc}
         with mock.patch("features.ear.api.require_display"), \
                 mock.patch("features.ear.api.env_get", side_effect=lambda key, default: values.get(key, default)):
             return asyncio.run(api.ear_config(mock.Mock()))

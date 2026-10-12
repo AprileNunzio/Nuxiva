@@ -12,7 +12,7 @@ from features.desktop.privacy import privacy
 from features.desktop.screens import screens
 from state import store
 
-log = logging.getLogger("atena.widgets")
+log = logging.getLogger("nuxiva.widgets")
 
 SYSTEM_DIR = WIDGETS_DIR
 USER_DIR = STATE_DIR / "widgets"

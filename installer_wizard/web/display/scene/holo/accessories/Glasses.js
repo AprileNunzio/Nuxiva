@@ -22,4 +22,4 @@
     g.position.set(0, e.y, e.z + F * 0.3);
     return g;
   });
-})(window.Atena3D);
+})(window.Nuxiva3D);

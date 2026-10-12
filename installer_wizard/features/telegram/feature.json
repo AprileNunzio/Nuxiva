@@ -5,9 +5,9 @@
   "category": "comunicazione",
   "order": 140,
   "panel": "telegram",
-  "description": "Parla con Atena da ovunque: testo, voce e foto; notifiche di arrivi, guasti e ricorrenze.",
+  "description": "Parla con Nuxiva da ovunque: testo, voce e foto; notifiche di arrivi, guasti e ricorrenze.",
   "toggle": {
-    "env": "ATENA_TELEGRAM",
+    "env": "NUXIVA_TELEGRAM",
     "apply": []
   },
   "capabilities": [

@@ -1,9 +1,9 @@
 import logging
-from server.core.agent_registry.tool_registry import atena_tool
+from server.core.agent_registry.tool_registry import nuxiva_tool
 
-logger = logging.getLogger("atena.maps_tool")
+logger = logging.getLogger("nuxiva.maps_tool")
 
-@atena_tool("show_maps_route", "Mostra mappa e traffico. 'destinazione' DEVE essere SOLO il nome del luogo o citta' (es. 'Roma'), SENZA punteggiatura o resti della frase. 'partenza' e' opzionale (es. 'Napoli').")
+@nuxiva_tool("show_maps_route", "Mostra mappa e traffico. 'destinazione' DEVE essere SOLO il nome del luogo o citta' (es. 'Roma'), SENZA punteggiatura o resti della frase. 'partenza' e' opzionale (es. 'Napoli').")
 async def show_maps_route(destinazione: str, partenza: str = "") -> str:
     """
     Mostra il widget di Google Maps / OSM.

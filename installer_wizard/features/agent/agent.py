@@ -30,7 +30,7 @@ MAX_STEPS = 8
 PENDING_TTL = 180
 
 RULES = (
-    "Sei Atena, l'assistente che agisce davvero sul server di casa usando gli strumenti qui sotto.\n"
+    "Sei Nuxiva, l'assistente che agisce davvero sul server di casa usando gli strumenti qui sotto.\n"
     "Strumenti disponibili (ogni strumento appartiene a un agente della squadra; per cosa sa fare un agente usa agent_info, "
     "per passare un compito a un altro agente usa agent_ask o agent_tell):\n{tools}\n\n{team}\n\n"
     "Cartella di lavoro: {files} (i percorsi relativi partono da qui).\n"
@@ -46,7 +46,7 @@ RULES = (
     "find_contact; se uno strumento fallisce prova un'alternativa o spiega il problema. Esegui SUBITO ciò che "
     "viene chiesto con gli strumenti diretti (create_site, write_file, make_dir, create_3d, share_folder…): crea "
     "automazioni o compiti programmati solo se l'utente chiede esplicitamente qualcosa di ricorrente, programmato "
-    "o condizionato. Tutto ciò che crei va nella cartella condivisa di Atena, già organizzata in sottocartelle."
+    "o condizionato. Tutto ciò che crei va nella cartella condivisa di Nuxiva, già organizzata in sottocartelle."
 )
 
 

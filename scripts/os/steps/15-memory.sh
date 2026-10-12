@@ -2,9 +2,9 @@
 . "$(dirname "$0")/../lib.sh"
 
 ZRAM_CONF=/etc/default/zramswap
-SYSCTL=/etc/sysctl.d/90-atena-memory.conf
+SYSCTL=/etc/sysctl.d/90-nuxiva-memory.conf
 
-wanted() { [ "${ATENA_ZRAM:-auto}" != "0" ] && [ "$(ram_mb)" -lt 16384 ]; }
+wanted() { [ "${NUXIVA_ZRAM:-auto}" != "0" ] && [ "$(ram_mb)" -lt 16384 ]; }
 percent() { if [ "$(ram_mb)" -lt 7680 ]; then echo 75; else echo 50; fi; }
 zram_active() { swapon --show=NAME --noheadings 2>/dev/null | grep -q zram; }
 sd_swap_active() { systemctl is-active --quiet dphys-swapfile 2>/dev/null; }

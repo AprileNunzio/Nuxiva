@@ -2,7 +2,7 @@ import re
 
 ANY = [
     (re.compile(r"[*_#`>|]+"), " "),
-    (re.compile(r"\bA\.T\.E\.N\.A\.?", re.I), "Atena"),
+    (re.compile(r"\bN\.U\.X\.I\.V\.A\.?", re.I), "Nuxiva"),
     (re.compile(r"\s*[—–]\s*"), ", "),
 ]
 WORDS = {

@@ -6,7 +6,7 @@ import time
 
 from config import STATE_DIR, UI_LANGUAGES, WEB_DIR
 
-log = logging.getLogger("atena.locale")
+log = logging.getLogger("nuxiva.locale")
 NATIVE = ("it", "en", "fr")
 EXTRA = {k: v for k, v in UI_LANGUAGES.items() if k not in NATIVE}
 RTL = {"ar", "he", "fa", "ur"}

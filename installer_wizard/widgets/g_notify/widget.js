@@ -44,5 +44,5 @@
     }
   }
 
-  AtenaDesk.register("g_notify", { render, update: render, destroy(el) { clearInterval(timers.get(el)); } });
+  NuxivaDesk.register("g_notify", { render, update: render, destroy(el) { clearInterval(timers.get(el)); } });
 })();

@@ -26,22 +26,22 @@ class Package:
 
 
 PACKAGES = (
-    Package("display", ("kiosk",), "ATENA_KIOSK", "Display", "Schermo a tutto campo con volto, widget e lavagna", 0.4, "monitor"),
-    Package("voice", ("voice",), "ATENA_VOICE_PACKAGE", "Voce", "Atena ti risponde parlando, voce neurale offline", 1.0,
+    Package("display", ("kiosk",), "NUXIVA_KIOSK", "Display", "Schermo a tutto campo con volto, widget e lavagna", 0.4, "monitor"),
+    Package("voice", ("voice",), "NUXIVA_VOICE_PACKAGE", "Voce", "Nuxiva ti risponde parlando, voce neurale offline", 1.0,
             removable=False),
-    Package("ear", ("ear",), "ATENA_EAR", "Ascolto", "Ti ascolta dal microfono e risponde a «Ehi, Atena»", 1.5),
-    Package("music", ("music",), "ATENA_MUSIC_ID", "Riconoscimento musicale", "Brano, artista e album della musica in ascolto", 0.3),
-    Package("vision", ("vision",), "ATENA_VISION", "Visione", "Riconosce chi ha davanti dalla webcam, tutto in locale", 1.0, "camera"),
-    Package("bluetooth", ("bluetooth",), "ATENA_BLUETOOTH", "Bluetooth", "Casse, cuffie e microfoni senza fili", 0.05, "bluetooth"),
-    Package("documents", ("office",), "ATENA_DOCUMENTS", "Documenti Office", "Crea e apre Word, Excel, PowerPoint e PDF", 1.5),
-    Package("convert3d", ("convert3d",), "ATENA_3D_CONVERT", "Conversione 3D", "Apre file BLEND, USD e DWG", 1.0),
-    Package("shares", ("shares",), "ATENA_SHARES", "Cartelle condivise", "Cartelle visibili da Windows e Mac", 0.05),
-    Package("sandbox", ("sandbox", "gvisor", "firecracker"), "ATENA_SANDBOX", "Sandbox", "Esegue in sicurezza il codice che Atena scrive", 0.6,
+    Package("ear", ("ear",), "NUXIVA_EAR", "Ascolto", "Ti ascolta dal microfono e risponde a «Ehi, Nuxiva»", 1.5),
+    Package("music", ("music",), "NUXIVA_MUSIC_ID", "Riconoscimento musicale", "Brano, artista e album della musica in ascolto", 0.3),
+    Package("vision", ("vision",), "NUXIVA_VISION", "Visione", "Riconosce chi ha davanti dalla webcam, tutto in locale", 1.0, "camera"),
+    Package("bluetooth", ("bluetooth",), "NUXIVA_BLUETOOTH", "Bluetooth", "Casse, cuffie e microfoni senza fili", 0.05, "bluetooth"),
+    Package("documents", ("office",), "NUXIVA_DOCUMENTS", "Documenti Office", "Crea e apre Word, Excel, PowerPoint e PDF", 1.5),
+    Package("convert3d", ("convert3d",), "NUXIVA_3D_CONVERT", "Conversione 3D", "Apre file BLEND, USD e DWG", 1.0),
+    Package("shares", ("shares",), "NUXIVA_SHARES", "Cartelle condivise", "Cartelle visibili da Windows e Mac", 0.05),
+    Package("sandbox", ("sandbox", "gvisor", "firecracker"), "NUXIVA_SANDBOX", "Sandbox", "Esegue in sicurezza il codice che Nuxiva scrive", 0.6,
             removable=False),
-    Package("native", ("native",), "ATENA_NATIVE", "Core nativo", "Componenti in Rust più veloci, con ritorno automatico a Python", 0.3),
-    Package("brain_local", ("ollama", "brain", "soup"), "ATENA_BRAIN", "Cervello locale", "Modelli linguistici su questo computer con Ollama", 8.0,
+    Package("native", ("native",), "NUXIVA_NATIVE", "Core nativo", "Componenti in Rust più veloci, con ritorno automatico a Python", 0.3),
+    Package("brain_local", ("ollama", "brain", "soup"), "NUXIVA_BRAIN", "Cervello locale", "Modelli linguistici su questo computer con Ollama", 8.0,
             removable=False),
-    Package("brain_models", ("models", "warmup"), "ATENA_BRAIN", "Modelli del cervello", "Scarica e prepara i modelli scelti", 2.0),
+    Package("brain_models", ("models", "warmup"), "NUXIVA_BRAIN", "Modelli del cervello", "Scarica e prepara i modelli scelti", 2.0),
 )
 PACKAGE_BY_ID = {p.id: p for p in PACKAGES}
 PACKAGE_BY_STEP = {s: p for p in PACKAGES for s in p.steps}
@@ -62,7 +62,7 @@ def _detect(kind: str) -> bool:
 
 def brain_mode(env: dict | None = None) -> str:
     env = read_env() if env is None else env
-    mode = env.get("ATENA_BRAIN", "").strip().lower()
+    mode = env.get("NUXIVA_BRAIN", "").strip().lower()
     if mode in BRAIN_MODES:
         return mode
     if DEMO:
@@ -80,7 +80,7 @@ def _installed(step_id: str) -> bool:
 
 def wanted(pkg: Package, env: dict | None = None) -> bool:
     env = read_env() if env is None else env
-    if pkg.env == "ATENA_BRAIN":
+    if pkg.env == "NUXIVA_BRAIN":
         mode = brain_mode(env)
         return mode == "local" if pkg.id == "brain_local" else mode in ("local", "remote")
     value = env.get(pkg.env, "").strip().lower()
@@ -107,12 +107,12 @@ def migrate() -> dict:
     env = read_env()
     updates = {}
     for pkg in PACKAGES:
-        if pkg.env == "ATENA_BRAIN" or explicit(pkg, env):
+        if pkg.env == "NUXIVA_BRAIN" or explicit(pkg, env):
             continue
         if any(_installed(s) for s in pkg.steps):
             updates[pkg.env] = "1"
-    if not env.get("ATENA_BRAIN") and (_installed("ollama") or _installed("models")):
-        updates["ATENA_BRAIN"] = "remote" if ollama_remote() else "local"
+    if not env.get("NUXIVA_BRAIN") and (_installed("ollama") or _installed("models")):
+        updates["NUXIVA_BRAIN"] = "remote" if ollama_remote() else "local"
     if updates:
         write_env(updates)
         store.event("INFO", f"Pacchetti già installati confermati: {', '.join(sorted(updates))}", "packages")
@@ -153,6 +153,6 @@ def request_updates(pkg_id: str, on: bool) -> dict:
     pkg = PACKAGE_BY_ID.get(pkg_id)
     if pkg is None or pkg.id == "brain_models" or (not on and not pkg.removable):
         raise KeyError(pkg_id)
-    if pkg.env == "ATENA_BRAIN":
-        return {"ATENA_BRAIN": "local"}
+    if pkg.env == "NUXIVA_BRAIN":
+        return {"NUXIVA_BRAIN": "local"}
     return {pkg.env: "1" if on else "0"}

@@ -10,5 +10,5 @@
     </div>`;
   }
 
-  AtenaDesk.register("__ID__", { render: draw, update: draw, destroy() {} });
+  NuxivaDesk.register("__ID__", { render: draw, update: draw, destroy() {} });
 })();

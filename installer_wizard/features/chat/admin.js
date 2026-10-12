@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $ } = A;
+  const A = window.NuxivaAdmin, { $ } = A;
 
   function bubble(text, who, meta) {
     const d = document.createElement("div"); d.className = `msg ${who}`; d.textContent = text;
@@ -16,5 +16,5 @@
     });
   }
 
-  A.tab("chat", { title: "Parla con Atena", init });
+  A.tab("chat", { title: "Parla con Nuxiva", init });
 })();

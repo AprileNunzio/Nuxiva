@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, KEY = "atena_ui_mode", MODES = ["simple", "expert"];
+  const A = window.NuxivaAdmin, KEY = "nuxiva_ui_mode", MODES = ["simple", "expert"];
   const nexusMode = () => {
     try { const level = localStorage.getItem("nexus.level"); return level ? (level === "explorer" ? "simple" : "expert") : null; } catch { return null; }
   };
@@ -21,7 +21,7 @@
       if (!MODES.includes(mode)) return;
       try { localStorage.setItem(KEY, mode); } catch { A.toast("Preferenza non salvata nel browser", true); }
       apply(mode);
-      document.dispatchEvent(new CustomEvent("atena:uimode", { detail: mode }));
+      document.dispatchEvent(new CustomEvent("nuxiva:uimode", { detail: mode }));
     },
   };
 

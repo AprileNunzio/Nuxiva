@@ -28,7 +28,7 @@ export default function config(root) {
   }
 
   mount(root,
-    section("Impostazioni", form, note("Le modifiche vengono salvate in /etc/atena/atena.env e applicate automaticamente, riavviando solo i componenti interessati.")),
+    section("Impostazioni", form, note("Le modifiche vengono salvate in /etc/nuxiva/nuxiva.env e applicate automaticamente, riavviando solo i componenti interessati.")),
     section("Parametri rilevati dal sistema", system));
   load().catch((err) => toast(err.message, { error: true }));
 }

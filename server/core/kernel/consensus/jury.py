@@ -8,7 +8,7 @@ from server.core.kernel.consensus.panel import ConsensusPanel
 from server.core.kernel.consensus.policy_voter import PolicyGuardVoter
 from server.core.kernel.domain.outcome import ConsensusVerdict
 
-logger = logging.getLogger("atena.kernel.consensus.jury")
+logger = logging.getLogger("nuxiva.kernel.consensus.jury")
 
 
 class CriticalActionJury:

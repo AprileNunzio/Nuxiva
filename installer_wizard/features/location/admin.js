@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const LOC_SRC = { phone: "GPS del telefono (Telegram)", browser: "posizione precisa del display", wifi: "reti Wi-Fi vicine", lan: "access point di casa",
                    default: "posizione predefinita", ip: "indirizzo IP (approssimata)", none: "sconosciuta" };
   const acc = (m) => m == null ? "" : m >= 1000 ? `±${(m / 1000).toFixed(m >= 10000 ? 0 : 1)} km` : `±${Math.round(m)} m`;

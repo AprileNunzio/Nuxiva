@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const ICON = { light: "💡", switch: "🔌", fan: "🌀", cover: "🪟", climate: "🌡", media_player: "📺", scene: "🎬", lock: "🔒", vacuum: "🧹", script: "▶️" };
   const SHOWN = ["light", "switch", "fan", "cover", "climate", "media_player", "scene", "lock", "vacuum"];
   const ON = new Set(["on", "open", "opening", "playing", "heat", "cool", "auto", "heat_cool", "unlocked", "cleaning"]);

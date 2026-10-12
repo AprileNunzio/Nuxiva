@@ -133,7 +133,7 @@ class HomeLive:
         elif moving:
             label = "movimento adesso"
         elif webcam:
-            label = "Atena vede qualcuno"
+            label = "Nuxiva vede qualcuno"
         elif recent:
             label = f"movimento {ago(last)}"
         elif motion or presence:

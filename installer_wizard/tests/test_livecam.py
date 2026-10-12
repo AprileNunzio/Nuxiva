@@ -6,14 +6,14 @@ from fastapi.responses import Response
 from fastapi.testclient import TestClient
 
 import access
-import atena_supervisor
+import nuxiva_supervisor
 from features.cameras import commands, live
 from features.cameras.cameras import cameras
 from features.desktop import desk as desk_module
 from features.desktop.desk import desk
 from features.vision.webcams import webcams
 
-HEADERS = {"X-Atena-Request": "1"}
+HEADERS = {"X-Nuxiva-Request": "1"}
 
 
 def device(name: str, node: str, bus: str, ir: bool = False) -> dict:
@@ -162,9 +162,9 @@ class VoiceTest(Base):
 class ApiTest(Base):
     @classmethod
     def setUpClass(cls):
-        cls.admin = TestClient(atena_supervisor.admin)
-        assert cls.admin.post("/api/auth/login", json={"username": "admin", "password": "atena"}, headers=HEADERS).status_code == 200
-        cls.display = TestClient(atena_supervisor.public)
+        cls.admin = TestClient(nuxiva_supervisor.admin)
+        assert cls.admin.post("/api/auth/login", json={"username": "admin", "password": "nuxiva"}, headers=HEADERS).status_code == 200
+        cls.display = TestClient(nuxiva_supervisor.public)
 
     def setUp(self):
         super().setUp()

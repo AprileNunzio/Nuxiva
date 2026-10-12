@@ -1,6 +1,6 @@
 {
   "name": "Google",
-  "description": "Chaque personne connecte son compte Google : agenda, courrier, choses à faire, carnet d'adresses, Drive et notes, affichés uniquement à ceux qu'Athena reconnaît.",
+  "description": "Chaque personne connecte son compte Google : agenda, courrier, choses à faire, carnet d'adresses, Drive et notes, affichés uniquement à ceux qu'Nuxiva reconnaît.",
   "capabilities": [
     "Un compte Google pour chaque personne, des tokens cryptés",
     "Confidentialité : donnée uniquement aux personnes reconnues, les e-mails ne sont pas lus à haute voix devant les autres",
@@ -11,6 +11,6 @@
     "Rappels personnels avant chaque rendez-vous"
   ],
   "settings": {
-    "ATENA_GOOGLE_REMIND_MIN": "Prévenez-moi avant un rendez-vous (minutes, 0 = jamais)"
+    "NUXIVA_GOOGLE_REMIND_MIN": "Prévenez-moi avant un rendez-vous (minutes, 0 = jamais)"
   }
 }

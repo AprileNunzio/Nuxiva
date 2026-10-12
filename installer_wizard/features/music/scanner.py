@@ -7,7 +7,7 @@ from pathlib import Path
 from features.music import catalog, covers, layout, tags
 from features.music.db import db
 
-log = logging.getLogger("atena.music")
+log = logging.getLogger("nuxiva.music")
 BATCH = 40
 PAUSE = 0.02
 progress = {"running": False, "total": 0, "done": 0, "added": 0, "updated": 0, "removed": 0, "started": 0.0,

@@ -15,15 +15,15 @@ from collections import deque
 from contextlib import contextmanager
 from typing import Any, Deque, Dict, Iterator, List, Optional, Set
 
-logger = logging.getLogger("atena.journey")
+logger = logging.getLogger("nuxiva.journey")
 
 MAX_NODES = 320
 MAX_DETAIL = 1200
 KEEP = 20
 FLUSH_DELAY = 0.2
 
-_current: "contextvars.ContextVar[Optional[Journey]]" = contextvars.ContextVar("atena_journey", default=None)
-_parent: "contextvars.ContextVar[Optional[int]]" = contextvars.ContextVar("atena_journey_parent", default=None)
+_current: "contextvars.ContextVar[Optional[Journey]]" = contextvars.ContextVar("nuxiva_journey", default=None)
+_parent: "contextvars.ContextVar[Optional[int]]" = contextvars.ContextVar("nuxiva_journey_parent", default=None)
 _recent: "Deque[Journey]" = deque(maxlen=KEEP)
 _tasks: Set[Any] = set()
 
@@ -61,9 +61,28 @@ class Handle:
             self._j.touch()
         return self
 
+    def set_agent(self, agent_id: str) -> "Handle":
+        if self._j is not None and self.id is not None:
+            self._j.nodes[self.id]["agent"] = agent_id
+            self._j.touch()
+        return self
+
+    def set_tool(self, tool_name: str) -> "Handle":
+        if self._j is not None and self.id is not None:
+            self._j.nodes[self.id]["tool"] = tool_name
+            self._j.touch()
+        return self
+
+    def set_widget(self, widget_name: str) -> "Handle":
+        if self._j is not None and self.id is not None:
+            self._j.nodes[self.id]["widget"] = widget_name
+            self._j.touch()
+        return self
+
     @property
     def state(self) -> str:
         return self._j.nodes[self.id]["s"] if self._j is not None and self.id is not None else ""
+
 
 
 class Journey:
@@ -81,18 +100,35 @@ class Journey:
     def _rel(self) -> float:
         return round(time.time() - self.t0, 3)
 
-    def add(self, kind: str, name: str, detail: str, state: str, parent: Optional[int], parallel: bool) -> Optional[int]:
+    def add(
+        self,
+        kind: str,
+        name: str,
+        detail: str,
+        state: str,
+        parent: Optional[int],
+        parallel: bool,
+        agent: Optional[str] = None,
+        tool: Optional[str] = None,
+        widget: Optional[str] = None,
+    ) -> Optional[int]:
         if len(self.nodes) >= MAX_NODES:
             return None
         node_id = len(self.nodes)
         rel = self._rel()
-        self.nodes.append({"i": node_id, "p": parent, "k": kind, "n": clip(name, 90), "s": state, "a": rel,
-                           "b": None if state == "running" else rel, "d": clip(detail)})
+        self.nodes.append({
+            "i": node_id, "p": parent, "k": kind, "n": clip(name, 90), "s": state, "a": rel,
+            "b": None if state == "running" else rel, "d": clip(detail),
+            "agent": agent or "",
+            "tool": tool or "",
+            "widget": widget or "",
+        })
         if parent is not None:
             self._link(node_id, parent, parallel)
             self._kids.setdefault(parent, []).append((node_id, parallel))
         self.touch()
         return node_id
+
 
     def _tails(self, node_id: int) -> List[int]:
         kids = self._kids.get(node_id, [])
@@ -186,23 +222,55 @@ class JourneyApi:
     def active() -> Optional[Journey]:
         return _current.get()
 
-    def open(self, kind: str, name: str, detail: str = "", *, parallel: bool = False, state: str = "running") -> Handle:
+    def open(
+        self,
+        kind: str,
+        name: str,
+        detail: str = "",
+        *,
+        parallel: bool = False,
+        state: str = "running",
+        agent: Optional[str] = None,
+        tool: Optional[str] = None,
+        widget: Optional[str] = None,
+    ) -> Handle:
         try:
             journey = _current.get()
             if journey is None:
                 return _NULL
-            node_id = journey.add(kind, name, detail, state, _parent.get(), parallel)
+            node_id = journey.add(kind, name, detail, state, _parent.get(), parallel, agent=agent, tool=tool, widget=widget)
             return Handle(journey, node_id) if node_id is not None else _NULL
         except Exception as exc:
             logger.debug("journey.open: %s", exc)
             return _NULL
 
-    def step(self, kind: str, name: str, detail: str = "", state: str = "ok", *, parallel: bool = False) -> Handle:
-        return self.open(kind, name, detail, parallel=parallel, state=state)
+    def step(
+        self,
+        kind: str,
+        name: str,
+        detail: str = "",
+        state: str = "ok",
+        *,
+        parallel: bool = False,
+        agent: Optional[str] = None,
+        tool: Optional[str] = None,
+        widget: Optional[str] = None,
+    ) -> Handle:
+        return self.open(kind, name, detail, parallel=parallel, state=state, agent=agent, tool=tool, widget=widget)
 
     @contextmanager
-    def span(self, kind: str, name: str, detail: str = "", *, parallel: bool = False) -> Iterator[Handle]:
-        handle = self.open(kind, name, detail, parallel=parallel)
+    def span(
+        self,
+        kind: str,
+        name: str,
+        detail: str = "",
+        *,
+        parallel: bool = False,
+        agent: Optional[str] = None,
+        tool: Optional[str] = None,
+        widget: Optional[str] = None,
+    ) -> Iterator[Handle]:
+        handle = self.open(kind, name, detail, parallel=parallel, agent=agent, tool=tool, widget=widget)
         token = _parent.set(handle.id) if handle.id is not None else None
         try:
             yield handle
@@ -215,6 +283,7 @@ class JourneyApi:
         finally:
             if token is not None:
                 _parent.reset(token)
+
 
     def back(self, source: Handle, target: Handle, label: str) -> None:
         try:

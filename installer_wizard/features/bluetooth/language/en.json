@@ -7,6 +7,6 @@
     "Sensor telemetry acquisition"
   ],
   "settings": {
-    "ATENA_BT_ADAPTER": "Bluetooth Adapter"
+    "NUXIVA_BT_ADAPTER": "Bluetooth Adapter"
   }
 }

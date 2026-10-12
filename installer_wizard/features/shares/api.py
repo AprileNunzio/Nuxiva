@@ -9,7 +9,7 @@ from state import store
 
 public_routes = APIRouter()
 admin_routes = APIRouter()
-USER = "atena-share"
+USER = "nuxiva-share"
 
 
 @admin_routes.get("/api/shares")
@@ -34,5 +34,5 @@ async def overview(_: str = Depends(require_admin)):
     except OSError as exc:
         store.event("WARN", f"Cartelle condivise non create: {exc}", "shares")
     return {"active": active, "ip": ip, "windows": f"\\\\{ip}", "unc": archive.unc(ip), "user": USER,
-            "password": env_get("ATENA_SMB_PASSWORD", ""), "shares": shares, "folders": archive.overview(),
+            "password": env_get("NUXIVA_SMB_PASSWORD", ""), "shares": shares, "folders": archive.overview(),
             "root": str(archive.ROOT)}

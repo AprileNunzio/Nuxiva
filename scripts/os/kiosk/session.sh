@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-URL="${ATENA_KIOSK_URL:-http://127.0.0.1/}"
+URL="${NUXIVA_KIOSK_URL:-http://127.0.0.1/}"
 BASE="${URL%/}"
-PROFILE="$HOME/.config/atena-chromium"
-LOG="$HOME/.cache/atena-kiosk.log"
+PROFILE="$HOME/.config/nuxiva-chromium"
+LOG="$HOME/.cache/nuxiva-kiosk.log"
 mkdir -p "$(dirname "$LOG")" "$PROFILE/Default"
 exec >>"$LOG" 2>&1
 echo "[$(date -Is)] Avvio sessione kiosk su $URL"

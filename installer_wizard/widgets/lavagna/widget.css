@@ -19,8 +19,8 @@
 .lv-canvas { touch-action: none; background: transparent; }
 .lv-input { position: absolute; z-index: 15; min-width: 260px; padding: 6px 10px; transform: translateY(-50%); border: 0; border-radius: 8px; outline: none;
   background: rgba(0, 0, 0, 0.7); box-shadow: 0 0 0 1px rgba(var(--tone), 0.6) inset; color: var(--text); font-size: 26px; }
-.lv-atena { position: absolute; left: 16px; bottom: 16px; z-index: 12; display: flex; align-items: flex-end; gap: 10px; max-width: 40%; opacity: 0; pointer-events: none; transition: opacity 0.35s ease; }
-.lv-atena:has(.lv-orb.busy), .lv-atena:has(.lv-says:not([hidden])), .lv-atena.active { opacity: 1; }
+.lv-nuxiva { position: absolute; left: 16px; bottom: 16px; z-index: 12; display: flex; align-items: flex-end; gap: 10px; max-width: 40%; opacity: 0; pointer-events: none; transition: opacity 0.35s ease; }
+.lv-nuxiva:has(.lv-orb.busy), .lv-nuxiva:has(.lv-says:not([hidden])), .lv-nuxiva.active { opacity: 1; }
 .lv-orb { flex: none; width: 22px; height: 22px; border-radius: 50%; box-shadow: 0 0 0 1px rgba(var(--tone), 0.8) inset, 0 0 14px rgba(var(--tone), 0.45); background: radial-gradient(circle, rgba(var(--tone), 0.5), transparent 70%); }
 .lv-orb.busy { animation: lv-pulse 0.7s ease-in-out infinite alternate; }
 .lv-says { padding: 6px 12px; border-radius: 10px; background: rgba(4, 12, 18, 0.85); box-shadow: 0 0 0 1px rgba(var(--tone), 0.3) inset; color: var(--text); font-size: 14px; line-height: 1.35; }

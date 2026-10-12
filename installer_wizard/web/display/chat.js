@@ -1,5 +1,5 @@
 (() => {
-  const D = window.AtenaDisplay, { $ } = D;
+  const D = window.NuxivaDisplay, { $ } = D;
 
   function thinking(on) {
     const { avatar } = D;
@@ -9,7 +9,7 @@
   }
 
   D.wakeDesk = () => {
-    if (window.AtenaTouch) { window.AtenaTouch.hideMenu(); window.AtenaTouch.hideSheet(); }
+    if (window.NuxivaTouch) { window.NuxivaTouch.hideMenu(); window.NuxivaTouch.hideSheet(); }
     fetch("/api/desk/wake", { method: "POST" }).catch((err) => console.warn("Chiusura dei widget automatici non riuscita:", err));
   };
 
@@ -181,7 +181,7 @@
     });
     if (!D.local) {
       fetch("/api/auth/me", { credentials: "include" }).then((r) => {
-        if (!r.ok) $("note").textContent = "Accesso remoto in sola visione — per parlare con Atena accedi al pannello :8080";
+        if (!r.ok) $("note").textContent = "Accesso remoto in sola visione — per parlare con Nuxiva accedi al pannello :8080";
       }).catch(() => {});
     }
   };

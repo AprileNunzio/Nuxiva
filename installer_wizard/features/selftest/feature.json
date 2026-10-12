@@ -5,8 +5,8 @@
   "category": "sistema",
   "order": 5,
   "panel": "selftest",
-  "toggle": { "env": "ATENA_SELFTEST", "apply": [] },
-  "description": "Atena prova davvero le sue funzioni ogni notte e dopo ogni aggiornamento; se un aggiornamento rompe qualcosa di essenziale torna da solo alla versione precedente e la avvisa.",
+  "toggle": { "env": "NUXIVA_SELFTEST", "apply": [] },
+  "description": "Nuxiva prova davvero le sue funzioni ogni notte e dopo ogni aggiornamento; se un aggiornamento rompe qualcosa di essenziale torna da solo alla versione precedente e la avvisa.",
   "capabilities": [
     "13 prove reali: supervisore e pannello, componenti, conversazione, voce, automazioni, cervello, display, ascolto, visione, casa, suoni, spazio, aggiornamenti",
     "Ogni notte (03:30) e cinque minuti dopo ogni aggiornamento",
@@ -16,10 +16,10 @@
     "A voce: «fai il collaudo»"
   ],
   "settings": [
-    {"key": "ATENA_SELFTEST_AT", "label": "Ora del collaudo notturno (HH:MM)", "type": "text", "default": "03:30"},
-    {"key": "ATENA_SELFTEST_ROLLBACK", "label": "Se un aggiornamento rompe qualcosa di essenziale", "type": "select", "default": "1",
+    {"key": "NUXIVA_SELFTEST_AT", "label": "Ora del collaudo notturno (HH:MM)", "type": "text", "default": "03:30"},
+    {"key": "NUXIVA_SELFTEST_ROLLBACK", "label": "Se un aggiornamento rompe qualcosa di essenziale", "type": "select", "default": "1",
      "options": [{"value": "1", "label": "Torna da solo alla versione precedente"}, {"value": "0", "label": "Avvisa soltanto"}]},
-    {"key": "ATENA_UPDATE_REQUIRE_CI", "label": "Aggiornamenti da GitHub", "type": "select", "default": "1",
+    {"key": "NUXIVA_UPDATE_REQUIRE_CI", "label": "Aggiornamenti da GitHub", "type": "select", "default": "1",
      "options": [{"value": "1", "label": "Solo versioni con i test superati"}, {"value": "0", "label": "Qualsiasi versione"}]}
   ]
 }

@@ -78,7 +78,7 @@ class HomeReports:
                              "state": self._state_text(e), "controllable": bool(e.get("controllable")),
                              "capabilities": [CAP_IT.get(c, c) for c in e.get("capabilities", [])],
                              "category": e["category"], "aliases": e["aliases"] + self.aliases.get(f"entity:{eid}", []),
-                             "atena_aliases": self.aliases.get(f"entity:{eid}", [])})
+                             "nuxiva_aliases": self.aliases.get(f"entity:{eid}", [])})
             out.append({k: d[k] for k in ("device_id", "name", "manufacturer", "model", "model_id", "sw_version",
                                           "hw_version", "integration", "protocol", "matter", "area_id", "disabled")}
                        | {"area": self.areas.get(d["area_id"] or "", {}).get("name", ""),

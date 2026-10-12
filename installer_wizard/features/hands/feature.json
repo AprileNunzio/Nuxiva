@@ -6,7 +6,7 @@
   "order": 62,
   "description": "Controlla i widget con le mani davanti alla webcam: pizzica per afferrare, trascina, lancia di lato per cambiare schermo, due mani per lo zoom. In automatico si attiva solo se la GPU del display regge il riconoscimento senza rallentare la pagina.",
   "toggle": {
-    "env": "ATENA_HANDS",
+    "env": "NUXIVA_HANDS",
     "tri": true,
     "apply": []
   },
@@ -23,7 +23,7 @@
   ],
   "settings": [
     {
-      "key": "ATENA_HANDS_FPS",
+      "key": "NUXIVA_HANDS_FPS",
       "label": "Analisi al secondo con una mano in vista",
       "type": "select",
       "default": "20",
@@ -34,7 +34,7 @@
       ]
     },
     {
-      "key": "ATENA_HANDS_COUNT",
+      "key": "NUXIVA_HANDS_COUNT",
       "label": "Mani riconosciute",
       "type": "select",
       "default": "2",
@@ -44,7 +44,7 @@
       ]
     },
     {
-      "key": "ATENA_HANDS_MAX_MS",
+      "key": "NUXIVA_HANDS_MAX_MS",
       "label": "Tempo massimo per analisi (in automatico oltre questo si spegne)",
       "type": "select",
       "default": "50",

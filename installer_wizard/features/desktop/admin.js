@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   let widgetData = null;
 
   const whenText = (w) => w.bind ? `quando c'è ${fmt.esc(typeof w.bind === "string" ? w.bind : w.bind.attr)}`
@@ -15,7 +15,7 @@
     const d = widgetData;
     $("wd-active").innerHTML = d.active.map((i) => `<span>${fmt.esc(i.icon)} ${fmt.esc(i.name)} · ${i.priority} <button class="btn sm" data-wdhide="${fmt.esc(i.key)}" title="Nascondi">✕</button></span>`).join("") || '<span class="faint">Nessun widget: solo il volto.</span>';
     $("wd-body").innerHTML = d.widgets.map((w) => `<tr><td style="font-size:20px">${fmt.esc(w.icon)}</td>
-      <td>${fmt.esc(w.name)} ${w.source !== "system" ? `<span class="badge">${w.source === "ai" ? "creato da Atena" : "aggiunto da te"}</span>` : ""}<div class="faint" style="font-size:12px">${fmt.esc(w.description)}</div></td>
+      <td>${fmt.esc(w.name)} ${w.source !== "system" ? `<span class="badge">${w.source === "ai" ? "creato da Nuxiva" : "aggiunto da te"}</span>` : ""}<div class="faint" style="font-size:12px">${fmt.esc(w.description)}</div></td>
       <td style="font-size:12px" class="dim">${whenText(w)}${w.size === "full" ? " · schermo intero" : ""}</td>
       <td><input type="number" min="0" max="100" value="${w.effective_priority}" data-wdprio="${fmt.esc(w.id)}" style="width:76px"></td>
       <td><input type="checkbox" style="width:auto" data-wdon="${fmt.esc(w.id)}" ${w.enabled ? "checked" : ""}></td>

@@ -1,6 +1,6 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
-  const VPN = (window.AtenaVpn = window.AtenaVpn || {});
+  const A = window.NuxivaAdmin, { $, fmt } = A;
+  const VPN = (window.NuxivaVpn = window.NuxivaVpn || {});
   const KINDS = { wireguard: "WireGuard", openvpn: "OpenVPN", ipsec: "IPsec IKEv2", tailscale: "Tailscale", zerotier: "ZeroTier" };
   const SPLIT = { all: "tutto il traffico", include: "solo alcune reti", exclude: "tutto tranne alcune reti" };
   let timer = null, peerConfig = "", peerName = "";
@@ -21,7 +21,7 @@
     return `<div class="vpn-peers"><b>Dispositivi che possono entrare</b>${rows.join("") || '<div class="faint">Nessun dispositivo.</div>'}
       <form class="vpn-inline" data-peer-add><input name="name" placeholder="es. Telefono di Nunzio" maxlength="32" required>
       <button class="btn sm primary" type="submit">Aggiungi dispositivo</button></form>
-      <div class="faint">Apri sul router la porta UDP ${p.settings.listen_port} verso Atena e usa l'indirizzo ${fmt.esc(p.settings.public_host)}.</div></div>`;
+      <div class="faint">Apri sul router la porta UDP ${p.settings.listen_port} verso Nuxiva e usa l'indirizzo ${fmt.esc(p.settings.public_host)}.</div></div>`;
   }
 
   function card(p) {
@@ -118,7 +118,7 @@
     $("vpn-peer-download").addEventListener("click", () => {
       const a = document.createElement("a");
       a.href = URL.createObjectURL(new Blob([peerConfig], { type: "text/plain" }));
-      a.download = `${peerName.replace(/[^\w-]+/g, "_") || "atena"}.conf`;
+      a.download = `${peerName.replace(/[^\w-]+/g, "_") || "nuxiva"}.conf`;
       a.click();
       setTimeout(() => URL.revokeObjectURL(a.href), 1000);
     });

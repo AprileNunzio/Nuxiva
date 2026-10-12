@@ -9,7 +9,7 @@ from pathlib import Path
 from backup.snapshots import Snapshots
 from settings import paths
 
-log = logging.getLogger("atena.backup")
+log = logging.getLogger("nuxiva.backup")
 KEEP = 10
 STATE_FILE = paths.DATA_DIR / "backup_state.json"
 SKIP_DIRS = {"node_modules", ".git", "__pycache__", ".venv", "venv", "$recycle.bin"}
@@ -18,7 +18,7 @@ CHECK_SECONDS = 600
 
 def archive(sources: list[str], target: Path, stamp: str) -> Path:
     target.mkdir(parents=True, exist_ok=True)
-    destination = target / f"ATENA-backup-{stamp}.zip"
+    destination = target / f"NUXIVA-backup-{stamp}.zip"
     partial = destination.with_suffix(".partial")
     with zipfile.ZipFile(partial, "w", zipfile.ZIP_DEFLATED, allowZip64=True) as zf:
         for source in map(Path, sources):
@@ -37,7 +37,7 @@ def archive(sources: list[str], target: Path, stamp: str) -> Path:
 
 
 def rotate(target: Path, keep: int = KEEP) -> list[Path]:
-    copies = sorted(target.glob("ATENA-backup-*.zip"))
+    copies = sorted(target.glob("NUXIVA-backup-*.zip"))
     removed = copies[:-keep] if len(copies) > keep else []
     for old in removed:
         old.unlink()

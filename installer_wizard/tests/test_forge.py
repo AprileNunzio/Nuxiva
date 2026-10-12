@@ -102,7 +102,7 @@ class RecipeTest(ForgeBase):
 
 
 class AssetsTest(ForgeBase):
-    def test_widgets_are_created_shown_and_removed_only_when_made_by_atena(self):
+    def test_widgets_are_created_shown_and_removed_only_when_made_by_nuxiva(self):
         self.assertIn("creato", call("create_widget", id="termostato", name="Termostato", description="temperatura", size="s"))
         self.assertEqual(desk.widgets["termostato"]["source"], "ai")
         folder = desk_module.USER_DIR / "termostato"
@@ -139,7 +139,7 @@ class AutoExposureTest(ForgeBase):
     def token(self, risky: bool) -> dict:
         return {"id": "t", "label": "prova", "risky": risky}
 
-    def test_a_tool_made_by_atena_shows_up_in_mcp_without_any_restart(self):
+    def test_a_tool_made_by_nuxiva_shows_up_in_mcp_without_any_restart(self):
         full = self.token(True)
         before = catalog.signature(mcp.visible(full))
         self.assertNotIn("doppio_eco", mcp.visible(full))
@@ -152,7 +152,7 @@ class AutoExposureTest(ForgeBase):
         self.assertFalse(reply["isError"])
         self.assertIn("eco:mcp", reply["content"][0]["text"])
 
-    def test_limited_tokens_never_see_what_atena_forges(self):
+    def test_limited_tokens_never_see_what_nuxiva_forges(self):
         recipes.save(RecipeTest.spec)
         self.assertNotIn("doppio_eco", mcp.visible(self.token(False)))
         self.assertNotIn("create_tool", mcp.visible(self.token(False)))
@@ -165,9 +165,9 @@ class AutoExposureTest(ForgeBase):
         assets.create_feature({"id": "serra", "name": "Serra"})
         self.assertNotEqual(catalog.signature(mcp.visible(full)), before)
         self.assertIn("meteo_extra", catalog.widgets())
-        self.assertIn("atena://agent/serra", [r["uri"] for r in catalog.resources(None)])
-        self.assertNotIn("atena://agent/serra", [r["uri"] for r in catalog.resources({"music"})])
-        self.assertIn("Serra", catalog.read("atena://agent/serra")[1])
+        self.assertIn("nuxiva://agent/serra", [r["uri"] for r in catalog.resources(None)])
+        self.assertNotIn("nuxiva://agent/serra", [r["uri"] for r in catalog.resources({"music"})])
+        self.assertIn("Serra", catalog.read("nuxiva://agent/serra")[1])
 
 
 if __name__ == "__main__":

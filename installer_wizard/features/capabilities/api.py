@@ -72,7 +72,7 @@ def authorize(request: Request) -> dict:
 async def changes(request: Request, token: dict):
     last = catalog.signature(mcp.visible(token))
     started = beat = time.time()
-    yield ": atena\n\n"
+    yield ": nuxiva\n\n"
     while time.time() - started < MAX_STREAM and not await request.is_disconnected():
         await asyncio.sleep(WATCH_EVERY)
         now = catalog.signature(mcp.visible(token))

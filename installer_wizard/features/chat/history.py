@@ -10,7 +10,7 @@ from config import STATE_DIR
 
 HISTORY_DB = STATE_DIR / "chat" / "dialogue.db"
 RETENTION = 7 * 86400
-log = logging.getLogger("atena.chat")
+log = logging.getLogger("nuxiva.chat")
 
 
 class HistoryStore:

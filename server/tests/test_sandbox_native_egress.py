@@ -11,7 +11,7 @@ from sandbox_broker.egress import EgressProxy
 from sandbox_broker.native_egress import NativeEgressProxy, open_egress_proxy, trusted_binary
 from server.tests import test_sandbox_egress as base
 
-TEST_BINARY = os.environ.get("ATENA_EGRESS_TEST_BIN", "")
+TEST_BINARY = os.environ.get("NUXIVA_EGRESS_TEST_BIN", "")
 
 
 def closed_port():
@@ -20,7 +20,7 @@ def closed_port():
         return probe.getsockname()[1]
 
 
-@unittest.skipUnless(TEST_BINARY and os.access(TEST_BINARY, os.X_OK), "atena-egress test build not available")
+@unittest.skipUnless(TEST_BINARY and os.access(TEST_BINARY, os.X_OK), "nuxiva-egress test build not available")
 class NativeProxyBehaviourTest(base.ProxyBehaviourTest):
     def make_proxy(self, upstream, allowed, table=None, refused=False, max_bytes=16 * 1024 * 1024, port_range=(0, 0),
                    lifetime=10):
@@ -56,7 +56,7 @@ class FactoryTest(unittest.TestCase):
     def setUp(self):
         self.dir = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, self.dir, True)
-        self.binary = os.path.join(self.dir, "atena-egress")
+        self.binary = os.path.join(self.dir, "nuxiva-egress")
 
     def install(self, mode):
         with open(self.binary, "w") as handle:
@@ -83,7 +83,7 @@ class FactoryTest(unittest.TestCase):
 
     def test_native_can_be_disabled(self):
         self.install(stat.S_IRWXU)
-        with mock.patch.dict(os.environ, {"ATENA_NATIVE": "0"}), mock.patch.object(native_egress, "NativeEgressProxy") as native:
+        with mock.patch.dict(os.environ, {"NUXIVA_NATIVE": "0"}), mock.patch.object(native_egress, "NativeEgressProxy") as native:
             self.assertIsInstance(self.open(), EgressProxy)
         native.assert_not_called()
 

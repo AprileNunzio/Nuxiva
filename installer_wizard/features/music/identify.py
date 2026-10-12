@@ -9,7 +9,7 @@ import httpx
 from features.music import catalog, covers, hints, layout, music, naming, scanner, sources, tagwriter, tags
 from features.music.db import db
 
-log = logging.getLogger("atena.music")
+log = logging.getLogger("nuxiva.music")
 RETRY = 30 * 86400
 POOL = 200
 SAMPLE_SECONDS = 12

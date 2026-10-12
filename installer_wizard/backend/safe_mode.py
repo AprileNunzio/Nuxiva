@@ -15,23 +15,23 @@ from pathlib import Path
 
 BACKEND_DIR = Path(__file__).resolve().parent
 APP_DIR = BACKEND_DIR.parent
-DEMO = os.environ.get("ATENA_DEMO") == "1"
-ATENA_DIR = Path(os.environ.get("ATENA_DIR", BACKEND_DIR.parents[1] if DEMO else "/opt/Atena"))
-_ROOT = Path(tempfile.gettempdir()) / "atena-demo" if DEMO else Path("/")
-STATE_DIR = _ROOT / "var/lib/atena"
-ENV_FILE = _ROOT / "etc/atena/atena.env"
+DEMO = os.environ.get("NUXIVA_DEMO") == "1"
+NUXIVA_DIR = Path(os.environ.get("NUXIVA_DIR", BACKEND_DIR.parents[1] if DEMO else "/opt/Nuxiva"))
+_ROOT = Path(tempfile.gettempdir()) / "nuxiva-demo" if DEMO else Path("/")
+STATE_DIR = _ROOT / "var/lib/nuxiva"
+ENV_FILE = _ROOT / "etc/nuxiva/nuxiva.env"
 SAFE_FILE = STATE_DIR / "safe_mode.json"
 REPAIR_FILE = STATE_DIR / "repair.json"
 AUTO_STAMP = STATE_DIR / "safe_autorepair"
-REPAIR_SCRIPT = ATENA_DIR / "scripts/os/repair.sh"
+REPAIR_SCRIPT = NUXIVA_DIR / "scripts/os/repair.sh"
 PAGE_FILE = APP_DIR / "web/safe/safe.html"
-PUBLIC_PORT = int(os.environ.get("ATENA_PUBLIC_PORT", 8000 if DEMO else 80))
-ADMIN_PORT = int(os.environ.get("ATENA_ADMIN_PORT", 8001 if DEMO else 8080))
+PUBLIC_PORT = int(os.environ.get("NUXIVA_PUBLIC_PORT", 8000 if DEMO else 80))
+ADMIN_PORT = int(os.environ.get("NUXIVA_ADMIN_PORT", 8001 if DEMO else 8080))
 AUTO_REPAIR_EVERY = 1800
 REQUEST_GAP = 20
 REPAIR_STALE = 3600
 
-log = logging.getLogger("atena.safe")
+log = logging.getLogger("nuxiva.safe")
 _lock = threading.Lock()
 _last_request = 0.0
 
@@ -51,7 +51,7 @@ def classify(exc: BaseException) -> str:
 
 def describe(exc: BaseException) -> str:
     text = f"{type(exc).__name__}: {exc}"
-    text = text.replace(str(ATENA_DIR), "…")
+    text = text.replace(str(NUXIVA_DIR), "…")
     return re.sub(r"\s+", " ", text)[:300]
 
 
@@ -89,7 +89,7 @@ def ui_lang() -> str:
         log.warning("Lingua dell'interfaccia non leggibile da %s: %s", ENV_FILE, exc)
         return ""
     for line in lines:
-        if line.startswith("ATENA_UI_LANG="):
+        if line.startswith("NUXIVA_UI_LANG="):
             value = line.split("=", 1)[1].strip()
             if re.fullmatch(r"[a-z]{2}", value):
                 return value
@@ -106,7 +106,7 @@ def _repair_command() -> list[str]:
     script = ["/bin/bash", str(REPAIR_SCRIPT), "--quiet", "--origin=safe-mode"]
     runner = shutil.which("systemd-run")
     if runner:
-        return [runner, "--unit=atena-repair", "--collect", "--quiet", "--property=TimeoutStartSec=3600", *script]
+        return [runner, "--unit=nuxiva-repair", "--collect", "--quiet", "--property=TimeoutStartSec=3600", *script]
     return script
 
 
@@ -156,7 +156,7 @@ def load_page() -> tuple[bytes, str]:
     try:
         page = PAGE_FILE.read_text(encoding="utf-8")
     except OSError:
-        page = "<!DOCTYPE html><meta charset=utf-8><title>Atena</title><p>Atena: safe mode. sudo atenactl ripara</p>"
+        page = "<!DOCTYPE html><meta charset=utf-8><title>Nuxiva</title><p>Nuxiva: safe mode. sudo nuxivactl ripara</p>"
     csp = (f"default-src 'none'; script-src {_hashes(page, 'script') or chr(39) + 'none' + chr(39)}; "
            f"style-src {_hashes(page, 'style') or chr(39) + 'none' + chr(39)}; connect-src 'self'; img-src 'self' data:; "
            "base-uri 'none'; form-action 'none'; frame-ancestors 'none'")
@@ -177,7 +177,7 @@ class SafeState:
 
 def handler_for(state: SafeState) -> type[BaseHTTPRequestHandler]:
     class Handler(BaseHTTPRequestHandler):
-        server_version = "Atena"
+        server_version = "Nuxiva"
         sys_version = ""
         timeout = 15
         protocol_version = "HTTP/1.1"
@@ -218,7 +218,7 @@ def handler_for(state: SafeState) -> type[BaseHTTPRequestHandler]:
         do_HEAD = do_GET
 
         def _same_origin(self) -> bool:
-            if self.headers.get("X-Atena-Request") != "1":
+            if self.headers.get("X-Nuxiva-Request") != "1":
                 return False
             origin = self.headers.get("Origin")
             if origin is None:

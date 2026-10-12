@@ -9,8 +9,8 @@
     "Si ferma da solo se rallenta la pagina"
   ],
   "settings": {
-    "ATENA_HANDS_FPS": "Analisi al secondo con una mano in vista",
-    "ATENA_HANDS_COUNT": "Mani riconosciute",
-    "ATENA_HANDS_MAX_MS": "Tempo massimo per analisi (in automatico oltre questo si spegne)"
+    "NUXIVA_HANDS_FPS": "Analisi al secondo con una mano in vista",
+    "NUXIVA_HANDS_COUNT": "Mani riconosciute",
+    "NUXIVA_HANDS_MAX_MS": "Tempo massimo per analisi (in automatico oltre questo si spegne)"
   }
 }

@@ -7,7 +7,7 @@ import time
 from typing import Any, Callable, Dict, Iterator, Optional
 
 GENESIS = "0" * 64
-_CONTEXT = b"atena.consensus.ledger.v1"
+_CONTEXT = b"nuxiva.consensus.ledger.v1"
 
 
 def _canonical(record: Dict[str, Any]) -> bytes:

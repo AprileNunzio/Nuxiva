@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const MODE_LABEL = { auto: "Automatica", 1: "Sempre attiva", 0: "Disattivata" };
   let featCat = "all", featState = "all", fsetTimer = null;
 
@@ -87,7 +87,7 @@
       && (featState === "all" || (featState === "on") === f.state.enabled)
       && (!q || JSON.stringify([tName(f), tDesc(f), f.capabilities]).toLowerCase().includes(q)));
 
-    let tNew = "nuova", tSourceAi = " · creata da Atena", tSourceUser = " · aggiunta da te";
+    let tNew = "nuova", tSourceAi = " · creata da Nuxiva", tSourceUser = " · aggiunta da te";
     let tPinRem = "Togli dal menu laterale", tPinAdd = "Aggiungi al menu laterale", tBtnOpen = "Apri";
     let tEmpty = "Nessuna funzionalità corrisponde alla ricerca.";
     try {
@@ -244,7 +244,7 @@
       if (e.target.closest("[data-ppin]")) { const f = find(A.currentFeature); updateFeature(f.id, { pinned: !f.pinned }).then(() => renderFeaturePage(find(f.id))); return; }
       const p = e.target.closest("[data-fpanel]"); if (p) A.openTab(p.dataset.fpanel, A.currentFeature);
     });
-    window.addEventListener("atena-i18n", async () => {
+    window.addEventListener("nuxiva-i18n", async () => {
       if (A.featData && A.featData.features && window.i18n) {
         await Promise.all(A.featData.features.map((f) => window.i18n.loadFeature(f.id).catch(() => null)));
         refresh();

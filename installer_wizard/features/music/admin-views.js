@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $ } = A;
+  const A = window.NuxivaAdmin, { $ } = A;
   const mu = A.mu, esc = mu.esc;
   const main = () => mu.main();
   const PAGE = 60;
@@ -19,7 +19,7 @@
   function empty(stats) {
     return `<div class="panel"><b>La libreria è ancora vuota.</b>
       <p class="mu-note">Copia i brani nella cartella condivisa <code>06 Musica/Da smistare</code> (anche dalla rete) oppure trascinali nella sezione «Gestione»:
-      Atena li legge, li ordina in <code>Libreria/Artista/Album</code> e li mostra qui. Brani trovati finora: ${stats.tracks || 0}.</p>
+      Nuxiva li legge, li ordina in <code>Libreria/Artista/Album</code> e li mostra qui. Brani trovati finora: ${stats.tracks || 0}.</p>
       <button class="btn primary" data-go="manage">Apri la gestione</button></div>`;
   }
 

@@ -9,7 +9,7 @@ from features.presentation.infrastructure import cutout, openverse, wikimedia
 from features.presentation.infrastructure.image_store import ImageStore
 from features.presentation.infrastructure.wikimedia import Candidate
 
-logger = logging.getLogger("atena.presentation.images")
+logger = logging.getLogger("nuxiva.presentation.images")
 
 MAX_DOWNLOAD_BYTES = 6 * 1024 * 1024
 TRIES = 4

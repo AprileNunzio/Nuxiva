@@ -53,5 +53,5 @@ class SandboxRunner:
         return report.succeeded, report.stdout, report.stderr
 
 
-sandbox_gateway = SandboxGateway(BrokerClient(settings.SANDBOX_SOCKET_PATH, lambda: settings.ATENA_SECRET_KEY))
+sandbox_gateway = SandboxGateway(BrokerClient(settings.SANDBOX_SOCKET_PATH, lambda: settings.NUXIVA_SECRET_KEY))
 sandbox_runner = SandboxRunner(sandbox_gateway, settings.CODE_SANDBOX_TIMEOUT_SECONDS)

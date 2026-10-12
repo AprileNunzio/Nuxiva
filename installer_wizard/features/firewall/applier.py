@@ -10,7 +10,7 @@ from features.firewall.nft import compile_script
 from features.firewall.store import FIREWALL_DIR, store
 
 NFT_TIMEOUT = 20.0
-SCRIPT_FILE = FIREWALL_DIR / "atena_guard.nft"
+SCRIPT_FILE = FIREWALL_DIR / "nuxiva_guard.nft"
 
 
 class FirewallError(RuntimeError):

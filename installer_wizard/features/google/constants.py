@@ -2,7 +2,7 @@ import logging
 
 from config import STATE_DIR
 
-log = logging.getLogger("atena.google")
+log = logging.getLogger("nuxiva.google")
 
 REDIRECT_URI = "http://127.0.0.1:8889/"
 STATE_FILE = STATE_DIR / "google.json"

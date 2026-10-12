@@ -2,7 +2,7 @@ import json
 from server.features.remote_control.manager import RemoteComputerManager
 
 # Questa è l'annotazione fittizia/ipotetica che il tuo sistema Agent potrebbe usare
-# Sostituisci o adatta l'implementazione in base al sistema di plugin/tool di ATENA
+# Sostituisci o adatta l'implementazione in base al sistema di plugin/tool di NUXIVA
 class RemoteControlTool:
     """
     Tool Agentico per l'amministrazione dei PC di rete.

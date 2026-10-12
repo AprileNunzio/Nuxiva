@@ -9,7 +9,7 @@ import machine
 import updater
 from access import NO_CACHE, require_admin, require_internal, session_user
 import setup_api
-from config import DEMO, EDITABLE_KEYS, ATENA_DIR, NODE, PUBLIC_PORT, is_secret, kiosk_log, read_env
+from config import DEMO, EDITABLE_KEYS, NUXIVA_DIR, NODE, PUBLIC_PORT, is_secret, kiosk_log, read_env
 from orchestrator import orch
 from pages import page
 from features.locale.api import page_language
@@ -25,23 +25,23 @@ admin_routes = APIRouter()
 LOG_SOURCES = {
     "install": "Installazione e step",
     "supervisor": "Supervisore (journal)",
-    "core": "Atena Core",
+    "core": "Nuxiva Core",
     "ollama": "Motore neurale",
     "kiosk": "Display kiosk",
     "rollback": "Rollback",
 }
 LOG_COMMANDS = {
     "install": lambda n: ("tail", "-n", n, str(INSTALL_LOG)),
-    "supervisor": lambda n: ("journalctl", "-u", "atena-supervisor", "-n", n, "--no-pager"),
-    "core": lambda n: (("journalctl", "-u", "atena-core", "-n", n, "--no-pager") if machine.core_runtime() == "native"
-                       else ("docker", "logs", "--tail", n, "atena-core")),
+    "supervisor": lambda n: ("journalctl", "-u", "nuxiva-supervisor", "-n", n, "--no-pager"),
+    "core": lambda n: (("journalctl", "-u", "nuxiva-core", "-n", n, "--no-pager") if machine.core_runtime() == "native"
+                       else ("docker", "logs", "--tail", n, "nuxiva-core")),
     "ollama": lambda n: ("journalctl", "-u", "ollama", "-n", n, "--no-pager"),
     "kiosk": lambda n: ("tail", "-n", n, str(kiosk_log())),
-    "rollback": lambda n: ("tail", "-n", n, "/var/log/atena/rollback.log"),
+    "rollback": lambda n: ("tail", "-n", n, "/var/log/nuxiva/rollback.log"),
 }
 COMPONENT_RESTART = {
-    "core": ["docker", "restart", "atena-core"],
-    "qdrant": ["docker", "restart", "atena-qdrant"],
+    "core": ["docker", "restart", "nuxiva-core"],
+    "qdrant": ["docker", "restart", "nuxiva-qdrant"],
     "ollama": ["systemctl", "restart", "ollama"],
     "docker": ["systemctl", "restart", "docker"],
     "kiosk": ["systemctl", "restart", "getty@tty1"],
@@ -110,7 +110,7 @@ async def admin_index(request: Request):
 
 @admin_routes.post("/api/auth/login")
 async def login(request: Request):
-    if request.headers.get("X-Atena-Request") != "1":
+    if request.headers.get("X-Nuxiva-Request") != "1":
         raise HTTPException(403, "Richiesta non valida")
     body = await request.json()
     ip = request.client.host if request.client else "?"
@@ -185,7 +185,7 @@ async def admin_action(action: str, request: Request, user: str = Depends(requir
             raise HTTPException(404, "Componente sconosciuto")
         if comp == "kiosk":
             await health.sh("pkill", "-t", "tty1")
-        command = ["systemctl", "restart", "atena-core"] if comp == "core" and machine.core_runtime() == "native" else COMPONENT_RESTART[comp]
+        command = ["systemctl", "restart", "nuxiva-core"] if comp == "core" and machine.core_runtime() == "native" else COMPONENT_RESTART[comp]
         code, out = (0, "demo") if DEMO else await health.sh(*command, timeout=180)
         return {"ok": code == 0, "output": out[-500:]}
     elif action == "update-check":
@@ -197,7 +197,7 @@ async def admin_action(action: str, request: Request, user: str = Depends(requir
     elif action == "reboot":
         background(delayed("systemctl", "reboot"))
     elif action == "restart-supervisor":
-        background(delayed("systemctl", "restart", "atena-supervisor"))
+        background(delayed("systemctl", "restart", "nuxiva-supervisor"))
     else:
         raise HTTPException(404, "Azione sconosciuta")
     return {"ok": True}
@@ -227,17 +227,17 @@ async def background_action(action: str, step: str = "", _: str = Depends(requir
 @admin_routes.post("/api/internal/{action}")
 async def internal_action(action: str, request: Request):
     require_internal(request)
-    store.event("INFO", f"Comando locale atenactl: {action}", "atenactl")
+    store.event("INFO", f"Comando locale nuxivactl: {action}", "nuxivactl")
     if action == "update":
         info = await updater.check()
         if not info.get("available"):
-            return {"ok": True, "message": f"Atena è aggiornata ({(info.get('local_rev') or '?')[:7]}). "
+            return {"ok": True, "message": f"Nuxiva è aggiornata ({(info.get('local_rev') or '?')[:7]}). "
                                            f"{info.get('last_result', '')}".strip()}
-        background(updater.apply("richiesto da atenactl"))
+        background(updater.apply("richiesto da nuxivactl"))
         return {"ok": True, "message": f"Aggiornamento {info['local_rev'][:7]} → {(info.get('target_rev') or info['remote_rev'])[:7]} avviato: "
                                        "il supervisore si riavvierà e verificherà la nuova versione."}
     if action == "repair":
-        background(orch.converge(reason="Riparazione richiesta da atenactl"))
+        background(orch.converge(reason="Riparazione richiesta da nuxivactl"))
         return {"ok": True, "message": "Verifica e riparazione di tutti i componenti avviata."}
     raise HTTPException(404, "Azione sconosciuta")
 
@@ -252,7 +252,7 @@ async def get_config(_: str = Depends(require_admin)):
         items.append({"key": key, "label": label, "secret": secret,
                       "value": ("••••" + value[-4:]) if (secret and value) else value, "set": bool(value)})
     readonly = {k: ("••••" if v else "") if is_secret(k) else v for k, v in env.items() if k not in EDITABLE_KEYS}
-    return {"editable": items, "system": readonly, "atena_dir": str(ATENA_DIR)}
+    return {"editable": items, "system": readonly, "nuxiva_dir": str(NUXIVA_DIR)}
 
 
 @admin_routes.put("/api/config")

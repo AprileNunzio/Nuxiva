@@ -4,7 +4,7 @@ import os
 import re
 from typing import Protocol
 
-log = logging.getLogger("atena.bus")
+log = logging.getLogger("nuxiva.bus")
 
 MAX_SUBSCRIPTIONS = 1 << 16
 TOPIC_RE = re.compile(r"[a-z0-9_-]{1,40}(\.[a-z0-9_-]{1,40}){0,7}")
@@ -75,13 +75,13 @@ class PyTopicRouter:
 
 
 def _load_native():
-    if os.environ.get("ATENA_NATIVE", "auto").strip() == "0":
+    if os.environ.get("NUXIVA_NATIVE", "auto").strip() == "0":
         return None
     try:
-        import atena_native
+        import nuxiva_native
     except ImportError:
         return None
-    return atena_native
+    return nuxiva_native
 
 
 _native = _load_native()

@@ -63,11 +63,11 @@ class AutomationsTest(unittest.TestCase):
     async def _multi_stage(self):
         library.add({
             "name": "Caldo", "variables": {"soglia": 26},
-            "triggers": [{"type": "state", "entity": "atena.var.temp", "above": "{{ 26 }}"}],
-            "conditions": [{"type": "or", "conditions": [{"type": "expr", "expr": "num(state('atena.var.temp')) > soglia"},
+            "triggers": [{"type": "state", "entity": "nuxiva.var.temp", "above": "{{ 26 }}"}],
+            "conditions": [{"type": "or", "conditions": [{"type": "expr", "expr": "num(state('nuxiva.var.temp')) > soglia"},
                                                          {"type": "presence", "present": True}]}],
             "actions": [
-                {"type": "set", "name": "t", "value": "{{ num(state('atena.var.temp')) }}"},
+                {"type": "set", "name": "t", "value": "{{ num(state('nuxiva.var.temp')) }}"},
                 {"type": "speak", "text": "Ci sono {{ t }} gradi"},
                 {"type": "choose", "options": [
                     {"conditions": [{"type": "expr", "expr": "t >= 30"}], "actions": [{"type": "speak", "text": "molto"}]},
@@ -75,7 +75,7 @@ class AutomationsTest(unittest.TestCase):
                  "default": [{"type": "speak", "text": "appena"}]},
                 {"type": "repeat", "count": 3, "actions": [{"type": "set", "name": "giri", "value": "{{ ripetizione }}"}]},
                 {"type": "parallel", "branches": [[{"type": "delay", "seconds": "0.1"}],
-                                                  [{"type": "wait_state", "entity": "atena.var.finestra", "to": "aperta", "timeout": 0.3}]]},
+                                                  [{"type": "wait_state", "entity": "nuxiva.var.finestra", "to": "aperta", "timeout": 0.3}]]},
                 {"type": "if", "conditions": [{"type": "expr", "expr": "scaduto"}],
                  "then": [{"type": "speak", "text": "mai aperta"}], "else": [{"type": "speak", "text": "aperta"}]},
                 {"type": "set", "name": "ultimo", "value": "{{ t }}", "scope": "global"},
@@ -110,7 +110,7 @@ class AutomationsTest(unittest.TestCase):
                                   "yes": [{"type": "set", "name": "fatto", "value": "{{ parole[0] }}", "scope": "global"}],
                                   "no": [{"type": "speak", "text": "annullato"}]},
                                  {"type": "respond", "text": "ok"}]})
-        reply, _ = await commands.answer("Atena, spegni tutto in cucina")
+        reply, _ = await commands.answer("Nuxiva, spegni tutto in cucina")
         self.assertIn("ok", reply.lower() + "ok")
         await asyncio.sleep(0.2)
         reply, _ = await commands.answer("sì")

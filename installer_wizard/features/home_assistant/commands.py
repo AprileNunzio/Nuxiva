@@ -110,7 +110,7 @@ class HomeCommands:
         lines = [f"{e['entity_id']} | {e['name']} | {self.areas.get(e.get('area_id') or '', {}).get('name', '-')} | "
                  f"{e.get('state')} | servizi: {', '.join(self.services.get(e['domain'], [])[:14])}" for e in ents]
         prompt = (
-            "Sei il sistema domotico di Atena collegato a Home Assistant. Traduci la richiesta dell'utente in "
+            "Sei il sistema domotico di Nuxiva collegato a Home Assistant. Traduci la richiesta dell'utente in "
             "chiamate di servizio usando SOLO le entità elencate. Rispondi solo con JSON nel formato "
             '{"calls": [{"entity_id": "light.x", "service": "turn_on", "data": {"brightness_pct": 50}}]}. '
             'Se la richiesta non è un comando per queste entità rispondi {"calls": []}. '

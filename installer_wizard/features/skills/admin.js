@@ -1,10 +1,10 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   let skillData = null, skillSel = null;
 
   const skillItem = (k) => `
       <div class="cat-item" style="cursor:pointer; ${k.key === skillSel ? "border-color:var(--cyan)" : ""}" data-sk="${fmt.esc(k.key)}"><div>
-        <div class="nm">${fmt.esc(k.name)} ${k.source === "ai" ? '<span class="badge warn">scritto da Atena</span>' : k.source === "user" ? '<span class="badge">tuo</span>' : ""} ${k.stats.enabled === false ? '<span class="badge">disattivato</span>' : ""}</div>
+        <div class="nm">${fmt.esc(k.name)} ${k.source === "ai" ? '<span class="badge warn">scritto da Nuxiva</span>' : k.source === "user" ? '<span class="badge">tuo</span>' : ""} ${k.stats.enabled === false ? '<span class="badge">disattivato</span>' : ""}</div>
         <div class="nt">${fmt.esc(k.description)}</div>
         <div class="fit ok">${k.stats.uses || 0} usi${k.stats.uses ? ` · ~${k.stats.avg_ms} ms` : ""}${k.stats.fails ? ` · ${k.stats.fails} scarti` : ""}</div></div></div>`;
 
@@ -14,7 +14,7 @@
     skillData.skills.forEach((k) => (byCat[k.category_label] = byCat[k.category_label] || []).push(k));
     $("sk-list").innerHTML = Object.entries(byCat).map(([cat, list]) => `<div class="panel-title" style="margin:6px 0 2px">${fmt.esc(cat)}</div>` + list.map(skillItem).join("")).join("")
       || '<div class="faint">Nessun algoritmo.</div>';
-    $("sk-note").innerHTML = `${skillData.generate ? "Quando manca un algoritmo, Atena risponde subito e intanto ne scrive uno nuovo, lo controlla e lo prova in un processo isolato." : "Creazione automatica disattivata (Funzionalità → Algoritmi)."} Cartella: <span class="mono">${fmt.esc(skillData.user_dir)}</span>`
+    $("sk-note").innerHTML = `${skillData.generate ? "Quando manca un algoritmo, Nuxiva risponde subito e intanto ne scrive uno nuovo, lo controlla e lo prova in un processo isolato." : "Creazione automatica disattivata (Funzionalità → Algoritmi)."} Cartella: <span class="mono">${fmt.esc(skillData.user_dir)}</span>`
       + (skillData.errors.length ? `<div style="color:var(--amber)">Scartati: ${skillData.errors.map((e) => `${fmt.esc(e.path)} (${fmt.esc(e.error)})`).join("; ")}</div>` : "");
     if (skillSel) openSkill(skillSel);
   }
@@ -56,7 +56,7 @@
       e.preventDefault(); const text = $("sk-q").value.trim(); if (!text) return;
       try { const r = await A.api("POST", "/api/skills/ask", { text }), a = r.answer;
         $("sk-res").innerHTML = a ? `∑ <b>${fmt.esc(a.name)}</b>: ${fmt.esc(a.speech)} <span class="faint">· ${a.total_ms} ms</span>`
-          : `<span class="faint">Nessun algoritmo: risponderebbe il modello linguistico${r.needs ? " e Atena ne scriverebbe uno nuovo per la prossima volta" : ""}.</span>`; }
+          : `<span class="faint">Nessun algoritmo: risponderebbe il modello linguistico${r.needs ? " e Nuxiva ne scriverebbe uno nuovo per la prossima volta" : ""}.</span>`; }
       catch (err) { A.toast(err.message, true); }
     });
   }

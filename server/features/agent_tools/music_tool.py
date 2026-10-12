@@ -1,5 +1,5 @@
 import os
-from server.core.agent_registry.tool_registry import atena_tool
+from server.core.agent_registry.tool_registry import nuxiva_tool
 
 try:
     from installer_wizard.features.shares.archive import folder as share_folder
@@ -9,7 +9,7 @@ except ImportError:
 
 MUSIC_LIBRARY_DIR = os.path.join(MUSIC_ROOT, "Libreria")
 
-@atena_tool("play_music", "Riproduce musica. Puoi specificare 'sorgente' ('locale' o 'spotify') e 'brano' (es. 'Back in Black AC/DC').")
+@nuxiva_tool("play_music", "Riproduce musica. Puoi specificare 'sorgente' ('locale' o 'spotify') e 'brano' (es. 'Back in Black AC/DC').")
 async def play_music(brano: str = "", sorgente: str = "locale") -> str:
     """
     Simula la riproduzione musicale.

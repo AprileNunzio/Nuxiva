@@ -12,7 +12,7 @@ from features.google.session import Session
 from features.people import identity
 
 _R = lambda p: re.compile(p, re.I)
-FOLLOW_UP = _R(r"^\W*(?:(?:ehi\W+)?(?:atena|athena)\W+)?(?:s[iì]\W*)?(?:leggi(?:me)?(?:l[aoei]|l[ae]|li)|leggila|leggilo|aprila|aprilo|"
+FOLLOW_UP = _R(r"^\W*(?:(?:ehi\W+)?(?:nuxiva|nuxiva)\W+)?(?:s[iì]\W*)?(?:leggi(?:me)?(?:l[aoei]|l[ae]|li)|leggila|leggilo|aprila|aprilo|"
                 r"mostra(?:me)?(?:l[aoei])|fammel[aoei] vedere|dimmi di più|cosa dice|di cosa si tratta|s[iì](?: grazie)?|"
                 r"certo|va bene|dimmi)\W*$")
 YES_ONLY = _R(r"^\W*(?:s[iì](?: grazie)?|certo|va bene|dimmi)\W*$")

@@ -8,15 +8,15 @@ import numpy as np
 
 from tuning import tuning
 
-log = logging.getLogger("atena.ear")
+log = logging.getLogger("nuxiva.ear")
 
-MODELS = Path(os.environ.get("ATENA_WAKEWORD_MODELS", "/opt/atena-ear/wakeword"))
-DEFAULT_MODEL = "ehi_atena"
+MODELS = Path(os.environ.get("NUXIVA_WAKEWORD_MODELS", "/opt/nuxiva-ear/wakeword"))
+DEFAULT_MODEL = "ehi_nuxiva"
 MODEL_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,63}")
 
 
 def model_name() -> str:
-    name = os.environ.get("ATENA_WAKEWORD_MODEL", "").strip()
+    name = os.environ.get("NUXIVA_WAKEWORD_MODEL", "").strip()
     return name if MODEL_RE.fullmatch(name) and ".." not in name else DEFAULT_MODEL
 
 
@@ -33,13 +33,13 @@ class WakeWord:
         self.last_hit = 0.0
         self.score = 0.0
         files = [MODELS / f"{MODEL_NAME}.onnx", MODELS / "melspectrogram.onnx", MODELS / "embedding_model.onnx"]
-        if os.environ.get("ATENA_WAKEWORD", "1") == "0" or not all(f.exists() for f in files):
+        if os.environ.get("NUXIVA_WAKEWORD", "1") == "0" or not all(f.exists() for f in files):
             log.info("Rilevatore istantaneo non disponibile: uso solo il riconoscimento del parlato")
             return
         try:
             from openwakeword.model import Model
             self.model = self._build(Model, files)
-            log.info("Rilevatore istantaneo «Ehi, Atena» attivo (soglia %.2f)", tuning.wake_threshold())
+            log.info("Rilevatore istantaneo «Ehi, Nuxiva» attivo (soglia %.2f)", tuning.wake_threshold())
         except Exception as exc:
             log.warning("Rilevatore istantaneo non avviato: %s", exc)
             self.model = None

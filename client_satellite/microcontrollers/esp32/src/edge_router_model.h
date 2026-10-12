@@ -2,7 +2,7 @@
 
 #include <stddef.h>
 
-namespace atena_edge {
+namespace nuxiva_edge {
 
 constexpr char MODEL_DIGEST[] = "b0755e7b62bcc2c6295f9ad48f9e84f69ae94224ee37f4b841a9bfe2433cfe09";
 

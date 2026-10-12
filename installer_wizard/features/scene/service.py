@@ -3,19 +3,19 @@ import logging
 import time
 
 from config import STATE_DIR
-from atena_bus import BusError, Envelope, atena_bus
+from nuxiva_bus import BusError, Envelope, nuxiva_bus
 
 from features.scene.fusion import PresenceFusion
 from features.scene.graph import SceneGraph
 
-log = logging.getLogger("atena.scene")
+log = logging.getLogger("nuxiva.scene")
 STEP_EVERY = 2.0
 CAPABILITIES = ["scene.where", "scene.readiness", "fusion.presence"]
 
 
 def _publish(topic: str, payload: dict, retain: bool) -> None:
     try:
-        atena_bus.publish(topic, payload, origin="scene", retain=retain)
+        nuxiva_bus.publish(topic, payload, origin="scene", retain=retain)
     except BusError as exc:
         log.debug("Scena: %s non pubblicato: %s", topic, exc)
 
@@ -54,11 +54,11 @@ class Scene:
         if self.subscriptions:
             return
         self.subscriptions = [
-            atena_bus.subscribe("vision.objects", self.on_objects),
-            atena_bus.subscribe("vision.presence", lambda e: self.fusion.on_vision(e.payload)),
-            atena_bus.subscribe("voice.speaker", lambda e: self.fusion.on_voice(e.payload)),
-            atena_bus.subscribe("home.state_changed", lambda e: self.fusion.on_home(e.payload)),
-            atena_bus.subscribe("fusion.arrival", self._arrival),
+            nuxiva_bus.subscribe("vision.objects", self.on_objects),
+            nuxiva_bus.subscribe("vision.presence", lambda e: self.fusion.on_vision(e.payload)),
+            nuxiva_bus.subscribe("voice.speaker", lambda e: self.fusion.on_voice(e.payload)),
+            nuxiva_bus.subscribe("home.state_changed", lambda e: self.fusion.on_home(e.payload)),
+            nuxiva_bus.subscribe("fusion.arrival", self._arrival),
         ]
 
     @staticmethod
@@ -77,7 +77,7 @@ class Scene:
                 self.fusion.step()
                 if time.time() - last_announce > 30:
                     last_announce = time.time()
-                    atena_bus.announce("scene", CAPABILITIES)
+                    nuxiva_bus.announce("scene", CAPABILITIES)
             except Exception as exc:
                 log.warning("Scena: %s", exc)
             await asyncio.sleep(STEP_EVERY)

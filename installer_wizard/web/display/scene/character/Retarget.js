@@ -69,4 +69,4 @@
 
   C.retarget = retarget;
   C.nativeClip = native;
-})(window.Atena3D);
+})(window.Nuxiva3D);

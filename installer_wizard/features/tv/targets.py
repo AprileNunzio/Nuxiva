@@ -41,7 +41,7 @@ def _pcs() -> list[dict]:
 
 def _screens() -> list[dict]:
     from features.desktop.screens import screens
-    rows = [{"id": "display", "kind": "display", "name": "Schermi di Atena", "online": True}]
+    rows = [{"id": "display", "kind": "display", "name": "Schermi di Nuxiva", "online": True}]
     active = screens.active()
     if len(active) > 1:
         rows += [{"id": f"display:{s['n']}", "kind": "display", "name": f"Schermo {s['n'] + 1}", "online": True} for s in active]
@@ -80,7 +80,7 @@ async def play(channel: dict, target_id: str, who: str = "") -> str:
         if ref:
             desk.set_screen("tv_player", int(ref))
         desk.fullscreen("tv", True)
-        return "sullo schermo di Atena"
+        return "sullo schermo di Nuxiva"
     if kind == "pc":
         from features.nodes.inbox import inbox
         pc = next((p for p in _pcs() if p["id"] == target_id), None)
@@ -97,7 +97,7 @@ async def play(channel: dict, target_id: str, who: str = "") -> str:
     except KeyError as exc:
         raise TargetError("Dispositivo non trovato: cercalo di nuovo nella rete") from exc
     url = base_url() + live_path(channel)
-    meta = {"title": channel["name"], "artist": channel.get("group", ""), "album": "Atena TV", "art": channel.get("logo", ""),
+    meta = {"title": channel["name"], "artist": channel.get("group", ""), "album": "Nuxiva TV", "art": channel.get("logo", ""),
             "mime": "application/x-mpegURL", "video": True}
     try:
         if device["kind"] == "cast":

@@ -1,6 +1,6 @@
 {
   "name": "Autonomie",
-  "description": "Athena travaille seule : elle réalise les tâches programmées, vérifie et diagnostique les pannes, apprend ce qu'elle ne savait pas faire et vous envoie la synthèse chaque soir. Les actions sensibles attendent votre approbation, une seule fois si vous choisissez « Toujours approuver ».",
+  "description": "Nuxiva travaille seule : elle réalise les tâches programmées, vérifie et diagnostique les pannes, apprend ce qu'elle ne savait pas faire et vous envoie la synthèse chaque soir. Les actions sensibles attendent votre approbation, une seule fois si vous choisissez « Toujours approuver ».",
   "capabilities": [
     "Tâches programmées verbalement : « chaque matin à 8h envoie-moi la météo par email », « chaque vendredi copie les projets dans le dossier SMB »",
     "Horaires : tous les jours, en semaine, en semaine, le week-end, toutes les N minutes/heures, une fois, quand il vous voit arriver, au démarrage",

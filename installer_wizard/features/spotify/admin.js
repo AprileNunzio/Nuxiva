@@ -1,11 +1,11 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
 
   async function loadCredentials() {
     const cfg = await A.api("GET", "/api/config");
-    const id = cfg.editable.find((x) => x.key === "ATENA_SPOTIFY_CLIENT_ID");
+    const id = cfg.editable.find((x) => x.key === "NUXIVA_SPOTIFY_CLIENT_ID");
     if (id && document.activeElement !== $("sp-id")) $("sp-id").value = id.value;
-    const sec = cfg.editable.find((x) => x.key === "ATENA_SPOTIFY_CLIENT_SECRET");
+    const sec = cfg.editable.find((x) => x.key === "NUXIVA_SPOTIFY_CLIENT_SECRET");
     $("sp-secret").placeholder = sec && sec.set ? sec.value : "non impostato";
   }
 
@@ -22,8 +22,8 @@
   function init() {
     $("sp-creds").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const body = { ATENA_SPOTIFY_CLIENT_ID: $("sp-id").value.trim() };
-      if ($("sp-secret").value.trim()) body.ATENA_SPOTIFY_CLIENT_SECRET = $("sp-secret").value.trim();
+      const body = { NUXIVA_SPOTIFY_CLIENT_ID: $("sp-id").value.trim() };
+      if ($("sp-secret").value.trim()) body.NUXIVA_SPOTIFY_CLIENT_SECRET = $("sp-secret").value.trim();
       try { await A.api("PUT", "/api/config", body); $("sp-secret").value = ""; A.toast("Credenziali salvate"); loadSpotify(); } catch (err) { A.toast(err.message, true); }
     });
     $("sp-auth").addEventListener("click", async () => {

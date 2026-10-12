@@ -5,10 +5,10 @@
     "\\\\Server-IP\\partagé par l'Explorateur de fichiers Windows, smb://IP/partagé par Mac et Linux",
     "Sous-dossiers : 01 Documents, 02 Sites Web, 03 Modèles 3D, 04 Code, 05 Exchange, 06 Musique",
     "Noms inversés : 20261002_name.extension",
-    "Accès uniquement avec l'utilisateur et le mot de passe atena-share, compatible avec Windows 11 (SMB2/3)",
+    "Accès uniquement avec l'utilisateur et le mot de passe nuxiva-share, compatible avec Windows 11 (SMB2/3)",
     "La mémoire personnelle reste uniquement sur le serveur, jamais sur le réseau"
   ],
   "settings": {
-    "ATENA_SMB_PASSWORD": "Mot de passe utilisateur atena-share (vide = généré)"
+    "NUXIVA_SMB_PASSWORD": "Mot de passe utilisateur nuxiva-share (vide = généré)"
   }
 }

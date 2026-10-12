@@ -12,7 +12,7 @@ from server.features.sandbox import wire
 from server.features.sandbox.domain.errors import SandboxUnavailableError, SpecError
 from server.features.sandbox.domain.spec import ExecutionSpec
 
-logger = logging.getLogger("atena.sandbox_broker")
+logger = logging.getLogger("nuxiva.sandbox_broker")
 
 
 class BrokerHandler(BaseHTTPRequestHandler):

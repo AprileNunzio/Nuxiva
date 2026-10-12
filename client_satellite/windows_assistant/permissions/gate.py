@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from permissions.catalog import BY_KEY, Level
 from permissions.policy import Policy
 
-log = logging.getLogger("atena.permissions")
+log = logging.getLogger("nuxiva.permissions")
 
 
 class Denied(PermissionError):

@@ -1,6 +1,6 @@
 {
   "ui": {
-    "title": "Orchestrateur cognitif Athena",
+    "title": "Orchestrateur cognitif Nuxiva",
     "subtitle": "Système agent avancé v2.0",
     "input_placeholder": "Écrivez une invite pour Athéna ou l'Essaim...",
     "send_button": "Envoyer la commande",
@@ -21,8 +21,33 @@
     "whiteboard_traced": "Connexion gRPC/WebSocket tracée",
     "whiteboard_cleared": "Table rase",
     "processing": "Traitement en cours...",
-    "error_connection": "Erreur de connexion ou d'inférence : {err}",
+    "error_connection": "Erreur de connexion ou d'inférence : {err}",
     "semantic_fast_path": "Sémantique Fast-Path (0 ms)",
-    "system1": "Système 1 : {intention}"
+    "system1": "Système 1 : {intention}"
+  },
+  "cockpit": {
+    "deck_projects": "Passerelle War Room & Projets 24/7",
+    "deck_cognitive_flow": "Passerelle Flux Cognitif",
+    "deck_agent_vault": "Passerelle Agent Vault & Windows",
+    "deck_rbac": "Passerelle RBAC & Personnel",
+    "deck_proximity_hud": "Passerelle Proximity HUD",
+    "deck_cad_media": "Passerelle CAD & Studio Médias",
+    "deck_telemetry": "Passerelle Télémétrie & Noyau",
+    "deck_chatbot_mesh": "Passerelle Assistants & Bots Personnalisés",
+    "btn_execute": "Exécuter",
+    "btn_save": "Enregistrer",
+    "btn_recruit": "Confirmer",
+    "input_command_placeholder": "Donnez un ordre, décrivez un nouveau projet ou interrogez les agents...",
+    "admin_wizard_title": "Assistant de Configuration Intelligent",
+    "admin_wizard_auto_btn": "⚡ Détection & Auto-Configuration en 1 Clic",
+    "admin_wizard_step1": "Étape 1 : Profil Maison / Entreprise",
+    "admin_wizard_step2": "Étape 2 : Assistants & Bots Recommandés",
+    "admin_wizard_step3": "Étape 3 : Outils & Widgets Détectés",
+    "admin_wizard_step4": "Étape 4 : Activation Immédiate",
+    "hud_user_default": "Administrateur Principal (Propriétaire)",
+    "user_role_admin": "Administrateur Principal / Chef de Maison",
+    "user_role_family": "Membre de la Famille",
+    "user_role_guest": "Invité / Visiteur",
+    "user_role_staff": "Personnel de Maison & Entreprise"
   }
 }

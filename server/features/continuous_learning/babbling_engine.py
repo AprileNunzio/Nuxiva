@@ -10,13 +10,13 @@ from server.core.event_sourcing.universal_space import (
 )
 from server.core.memory.semantic_cache import semantic_cache
 
-logger = logging.getLogger("atena.babbling_engine")
+logger = logging.getLogger("nuxiva.babbling_engine")
 
 
 class UniversalBabblingEngine:
     """
     Motore di esplorazione attiva (Motor/Social/Protocol Babbling).
-    Quando Atena incontra un input sconosciuto (hardware o conversazionale),
+    Quando Nuxiva incontra un input sconosciuto (hardware o conversazionale),
     invece di fallire, genera "probe" (azioni esplorative sicure) e mappa
     le reazioni dell'ambiente per costruire un modello comportamentale da zero.
     """
@@ -97,7 +97,7 @@ class UniversalBabblingEngine:
         )
 
         prompt = f"""
-Sei il Babbling Engine di Atena. Hai ricevuto un segnale sconosciuto:
+Sei il Babbling Engine di Nuxiva. Hai ricevuto un segnale sconosciuto:
 Modality: {observation.modality}
 Source: {observation.source_id}
 Dati: {observation.raw_data}
@@ -191,7 +191,7 @@ Rispondi ESCLUSIVAMENTE con un JSON valido con questa struttura, senza alcun tes
         )
 
         # Inserisce in cache semantica il pattern vincente (Hot-Path per il Sistema 1)
-        # Questo permette ad Atena di non dover più 'esplorare' per questo esatto stimolo.
+        # Questo permette ad Nuxiva di non dover più 'esplorare' per questo esatto stimolo.
         await semantic_cache.record_success(
             query=str(initial_stimulus.raw_data),
             result_data={

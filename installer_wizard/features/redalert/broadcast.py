@@ -3,7 +3,7 @@ import logging
 import secrets
 import time
 
-log = logging.getLogger("atena.redalert")
+log = logging.getLogger("nuxiva.redalert")
 
 AUDIO_TTL = 600
 VOLUME = 0.85
@@ -41,7 +41,7 @@ async def _one(device: dict, url: str) -> str | None:
     from features.music import cast_chrome
     try:
         await cast_chrome.control(device, "volume", VOLUME)
-        await cast_chrome.load(device, url, {"title": "Allarme", "artist": "Atena", "album": "", "art": "", "mime": "audio/wav"})
+        await cast_chrome.load(device, url, {"title": "Allarme", "artist": "Nuxiva", "album": "", "art": "", "mime": "audio/wav"})
         return device.get("name", "Chromecast")
     except RuntimeError as exc:
         log.warning("Messaggio urgente non riprodotto su %s: %s", device.get("name"), exc)

@@ -3,7 +3,7 @@ import logging
 import numpy as np
 import sounddevice as sd
 
-log = logging.getLogger("atena.voice")
+log = logging.getLogger("nuxiva.voice")
 RATE = 16000
 BLOCK = 1600
 

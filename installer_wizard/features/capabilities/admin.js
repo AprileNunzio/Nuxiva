@@ -1,10 +1,10 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const when = (t) => (t ? new Date(t * 1000).toLocaleString("it-IT", { dateStyle: "short", timeStyle: "short" }) : "mai");
   let timer = null;
 
   function snippet(token) {
-    return JSON.stringify({ mcpServers: { atena: { url: `${location.origin}/mcp`, headers: { Authorization: `Bearer ${token}` } } } }, null, 2);
+    return JSON.stringify({ mcpServers: { nuxiva: { url: `${location.origin}/mcp`, headers: { Authorization: `Bearer ${token}` } } } }, null, 2);
   }
 
   async function tokens() {

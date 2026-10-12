@@ -7,12 +7,12 @@ from pydantic import ValidationError
 from server.features.parametric.domain.spec_document import parse_spec_document
 from server.features.parametric.domain.schema import ModelSpec, first_error_lines, spec_prompt_description
 
-logger = logging.getLogger("atena.parametric.translator")
+logger = logging.getLogger("nuxiva.parametric.translator")
 
 Completion = Callable[[str, str], Awaitable[str]]
 
 _SYSTEM = (
-    "Sei il progettista parametrico di Atena. Traduci la richiesta dell'utente in una specifica geometrica "
+    "Sei il progettista parametrico di Nuxiva. Traduci la richiesta dell'utente in una specifica geometrica "
     "esatta. Scegli tu le dimensioni realistiche, nelle unità indicate, e componi l'oggetto con le primitive "
     "disponibili. Non scrivere codice né spiegazioni.\n"
 )

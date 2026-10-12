@@ -1,5 +1,5 @@
 (() => {
-  const D = window.AtenaDisplay, { $, fmt } = D;
+  const D = window.NuxivaDisplay, { $, fmt } = D;
   let knownIds = null;
 
   function renderLegend() {

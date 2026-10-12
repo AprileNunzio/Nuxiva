@@ -1,12 +1,12 @@
 (() => {
-  const D = window.AtenaDisplay;
-  const V = window.ATENA_ASSET_V ? `?v=${window.ATENA_ASSET_V}` : "";
+  const D = window.NuxivaDisplay;
+  const V = window.NUXIVA_ASSET_V ? `?v=${window.NUXIVA_ASSET_V}` : "";
   const PINCH_ON = 0.32, PINCH_OFF = 0.5, IDLE_FPS = 4, BUDGET = 0.25, WARMUP = 3, PROBE = 12, MEMORY = 86400000, BOX = { x0: 0.12, x1: 0.88, y0: 0.08, y1: 0.78 };
   const FLICK = 2.2, POINTER = 77;
   const st = { model: null, img: null, cursor: null, last: 0, ts: 0, x: 0, y: 0, seen: 0, pinch: false, target: null,
                trail: [], pair: null, failures: 0, cost: 0, delegate: "", samples: 0, probe: 0, status: "spente", stopped: false };
   const opt = () => D.FACE || {};
-  const VERDICT = "atena.hands.verdict";
+  const VERDICT = "nuxiva.hands.verdict";
 
   const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
   const clamp = (v) => Math.max(0, Math.min(1, v));
@@ -72,15 +72,15 @@
   }
 
   function spread(el, span) {
-    const widget = window.AtenaTouch && window.AtenaTouch.widgetOf(el);
+    const widget = window.NuxivaTouch && window.NuxivaTouch.widgetOf(el);
     if (!widget) { st.spread = null; return; }
-    window.AtenaTouch.cancel();
+    window.NuxivaTouch.cancel();
     if (!st.spread || st.spread.key !== widget.dataset.key) { st.spread = { key: widget.dataset.key, start: span, done: false }; return; }
     if (st.spread.done) return;
     const grow = span / st.spread.start;
     if (grow > 1.6 || grow < 0.6) {
       st.spread.done = true;
-      window.AtenaTouch.fullscreen(widget.dataset.key, grow > 1);
+      window.NuxivaTouch.fullscreen(widget.dataset.key, grow > 1);
     }
   }
 
@@ -116,13 +116,13 @@
   }
 
   function remember(reason) {
-    try { localStorage.setItem(VERDICT, JSON.stringify({ gpu: window.atenaPerf && window.atenaPerf.gpu, max: opt().hands_max_ms, reason, at: Date.now() })); } catch (err) { }
+    try { localStorage.setItem(VERDICT, JSON.stringify({ gpu: window.nuxivaPerf && window.nuxivaPerf.gpu, max: opt().hands_max_ms, reason, at: Date.now() })); } catch (err) { }
   }
 
   function recalled() {
     try {
       const v = JSON.parse(localStorage.getItem(VERDICT) || "null");
-      return v && v.gpu === (window.atenaPerf && window.atenaPerf.gpu) && v.max === opt().hands_max_ms && Date.now() - v.at < MEMORY ? v.reason : "";
+      return v && v.gpu === (window.nuxivaPerf && window.nuxivaPerf.gpu) && v.max === opt().hands_max_ms && Date.now() - v.at < MEMORY ? v.reason : "";
     } catch (err) { return ""; }
   }
 
@@ -165,7 +165,7 @@
     catch (err) { if (++st.failures === 1) console.warn("Mani: fotogramma non elaborato", err); return; }
     const spent = performance.now() - t0;
     st.cost = st.cost ? st.cost * 0.8 + spent * 0.2 : spent;
-    if (window.atenaPerf) window.atenaPerf.cost(`mani_${st.delegate}`, spent);
+    if (window.nuxivaPerf) window.nuxivaPerf.cost(`mani_${st.delegate}`, spent);
     judge(spent);
     if (st.stopped) return;
     const hands = res.landmarks || [];
@@ -185,7 +185,7 @@
     if (!D.local) { st.status = "spente: solo sul display del server"; return; }
     if (!mode || mode === "0" || mode === false) { st.status = "spente: disattivate nelle funzionalità"; return; }
     const auto = mode === "auto";
-    const gpu = (window.atenaPerf && window.atenaPerf.gpu) || "";
+    const gpu = (window.nuxivaPerf && window.nuxivaPerf.gpu) || "";
     if (auto && /swiftshader|llvmpipe|software|nessuna/i.test(gpu)) { st.status = `spente: nessuna GPU utilizzabile (${gpu})`; return; }
     const known = auto && recalled();
     if (known) { st.status = `spente: ${known} (verifica già fatta, riprovo tra 24 ore)`; return; }
@@ -212,6 +212,6 @@
     requestAnimationFrame(loop);
   }
 
-  window.atenaHands = { get status() { return st.status; } };
+  window.nuxivaHands = { get status() { return st.status; } };
   D.startHands = () => setTimeout(start, 4000);
 })();

@@ -7,7 +7,7 @@
   "panel": "people",
   "description": "Webcam e riconoscimento facciale locale: chi è in casa, saluti personalizzati, nuove persone aggiunte da sole.",
   "toggle": {
-    "env": "ATENA_VISION",
+    "env": "NUXIVA_VISION",
     "apply": [
       "vision"
     ]
@@ -31,7 +31,7 @@
   ],
   "settings": [
     {
-      "key": "ATENA_IR_MODE",
+      "key": "NUXIVA_IR_MODE",
       "label": "Sensore infrarosso (webcam con doppio sensore)",
       "type": "select",
       "default": "auto",
@@ -50,7 +50,7 @@
       ]
     },
     {
-      "key": "ATENA_LIVENESS",
+      "key": "NUXIVA_LIVENESS",
       "label": "Controllo anti-foto e anti-schermo (richiede l'infrarosso)",
       "type": "select",
       "default": "advisory",
@@ -73,7 +73,7 @@
       ]
     },
     {
-      "key": "ATENA_LIVENESS_MIN",
+      "key": "NUXIVA_LIVENESS_MIN",
       "label": "Punteggio minimo per considerare vivo un volto (0,1 - 0,95)",
       "type": "number",
       "default": "0.55",
@@ -82,7 +82,7 @@
       ]
     },
     {
-      "key": "ATENA_CAMERA_RES",
+      "key": "NUXIVA_CAMERA_RES",
       "label": "Risoluzione della webcam",
       "type": "select",
       "default": "auto",
@@ -109,7 +109,7 @@
       ]
     },
     {
-      "key": "ATENA_CAMERA_RGB",
+      "key": "NUXIVA_CAMERA_RGB",
       "label": "Webcam a colori: automatica oppure percorso (es. /dev/video0)",
       "type": "text",
       "default": "auto",
@@ -118,7 +118,7 @@
       ]
     },
     {
-      "key": "ATENA_CAMERA_IR",
+      "key": "NUXIVA_CAMERA_IR",
       "label": "Sensore infrarosso: automatico, off oppure percorso (es. /dev/video2)",
       "type": "text",
       "default": "auto",
@@ -127,7 +127,7 @@
       ]
     },
     {
-      "key": "ATENA_FACE_AUTOIMPROVE",
+      "key": "NUXIVA_FACE_AUTOIMPROVE",
       "label": "Il riconoscimento dei volti migliora da solo nel tempo",
       "type": "select",
       "default": "1",
@@ -146,7 +146,7 @@
       ]
     },
     {
-      "key": "ATENA_FACE_ADAPTIVE",
+      "key": "NUXIVA_FACE_ADAPTIVE",
       "label": "Soglia di riconoscimento calcolata per ogni persona",
       "type": "select",
       "default": "1",
@@ -165,7 +165,7 @@
       ]
     },
     {
-      "key": "ATENA_FACE_THRESHOLD",
+      "key": "NUXIVA_FACE_THRESHOLD",
       "label": "Soglia di somiglianza del volto (0,2 - 0,8)",
       "type": "number",
       "default": "0.40",
@@ -174,7 +174,7 @@
       ]
     },
     {
-      "key": "ATENA_FACE_MARGIN",
+      "key": "NUXIVA_FACE_MARGIN",
       "label": "Distacco minimo dalla seconda persona più simile (0 - 0,4)",
       "type": "number",
       "default": "0.05",
@@ -183,7 +183,7 @@
       ]
     },
     {
-      "key": "ATENA_FACE_TWIN_SIM",
+      "key": "NUXIVA_FACE_TWIN_SIM",
       "label": "Due persone sono «somiglianti» oltre questa somiglianza (0,3 - 0,95)",
       "type": "number",
       "default": "0.55",
@@ -192,7 +192,7 @@
       ]
     },
     {
-      "key": "ATENA_FACE_TWIN_MARGIN",
+      "key": "NUXIVA_FACE_TWIN_MARGIN",
       "label": "Distacco richiesto tra persone somiglianti, per esempio gemelli (0 - 0,5)",
       "type": "number",
       "default": "0.12",
@@ -201,7 +201,7 @@
       ]
     },
     {
-      "key": "ATENA_FACE_IR_WEIGHT",
+      "key": "NUXIVA_FACE_IR_WEIGHT",
       "label": "Peso dell'infrarosso nel riconoscimento (0 - 0,8)",
       "type": "number",
       "default": "0.35",

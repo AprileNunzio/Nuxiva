@@ -42,12 +42,12 @@ export default function steps(root) {
 
   mount(root,
     section("Installazioni in background", bgHead, bgList,
-      note("Le parti pesanti si installano dopo l'avvio, una alla volta, con priorità bassa, e si fermano mentre parli con Atena. «Prima» sposta un componente in cima alla coda."),
-      row(filePick("Carica modello «Ehi, Atena» (.onnx)", ".onnx", async (file) => {
+      note("Le parti pesanti si installano dopo l'avvio, una alla volta, con priorità bassa, e si fermano mentre parli con Nuxiva. «Prima» sposta un componente in cima alla coda."),
+      row(filePick("Carica modello «Ehi, Nuxiva» (.onnx)", ".onnx", async (file) => {
         try {
           await upload("/api/setup/wakeword", file, { accept: /\.onnx$/i, max: 20 * 1024 * 1024 });
           wakeNote.textContent = `Caricato: ${file.name}`;
-          toast("Modello «Ehi, Atena» caricato: l'ascolto si riavvia da solo");
+          toast("Modello «Ehi, Nuxiva» caricato: l'ascolto si riavvia da solo");
         } catch (err) { toast(err.message, { error: true }); }
       }), wakeNote)),
     section("Step di convergenza", stepList,

@@ -25,7 +25,7 @@ async def get_json(url: str, ttl: float) -> dict:
         if hit and time.time() - hit[0] < ttl:
             return hit[1]
         try:
-            async with httpx.AsyncClient(timeout=10, headers={"User-Agent": "Atena-OS"}, follow_redirects=False) as client:
+            async with httpx.AsyncClient(timeout=10, headers={"User-Agent": "Nuxiva-OS"}, follow_redirects=False) as client:
                 res = await client.get(url)
             res.raise_for_status()
             data = res.json()

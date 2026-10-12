@@ -6,8 +6,8 @@ import customtkinter as ctk
 from connection import tls
 from ui import theme
 
-GUIDE = ("1. Nel pannello di ATENA apri Funzionalità → Nodi e server e premi «+ Aggiungi un nodo»: compare un codice di "
-         "6 cifre e l'impronta del certificato.\n2. Scrivi qui l'indirizzo di ATENA e premi «Verifica»: confronta l'impronta "
+GUIDE = ("1. Nel pannello di NUXIVA apri Funzionalità → Nodi e server e premi «+ Aggiungi un nodo»: compare un codice di "
+         "6 cifre e l'impronta del certificato.\n2. Scrivi qui l'indirizzo di NUXIVA e premi «Verifica»: confronta l'impronta "
          "che compare qui con quella del pannello. Devono essere identiche.\n3. Scrivi il codice e premi «Collega».")
 
 
@@ -17,27 +17,27 @@ class PairingWindow:
         self.paired = False
         self.fingerprint = ""
         self.window = ctk.CTk(fg_color=theme.PANEL)
-        self.window.title("ATENA · Collega questo PC")
+        self.window.title("NUXIVA · Collega questo PC")
         self.window.minsize(440, 600)
         self.window.geometry("500x680")
-        ctk.CTkLabel(self.window, text="Collega questo PC ad ATENA", font=(theme.FONT, 20, "bold"), text_color=theme.TEXT
+        ctk.CTkLabel(self.window, text="Collega questo PC ad NUXIVA", font=(theme.FONT, 20, "bold"), text_color=theme.TEXT
                      ).pack(anchor="w", padx=24, pady=(22, 6))
         ctk.CTkLabel(self.window, text=GUIDE, justify="left", wraplength=450, font=(theme.FONT, 12), text_color=theme.DIM
                      ).pack(anchor="w", padx=24)
-        self.server = self._field("Indirizzo di ATENA", cfg.get("server", "").removeprefix("https://"), "es. 192.168.1.100")
+        self.server = self._field("Indirizzo di NUXIVA", cfg.get("server", "").removeprefix("https://"), "es. 192.168.1.100")
         self.check = ctk.CTkButton(self.window, text="Verifica", fg_color=theme.LINE, command=self._verify)
         self.check.pack(anchor="w", padx=24, pady=(8, 0))
         self.print_label = ctk.CTkLabel(self.window, text="", font=(theme.MONO, 15, "bold"), text_color=theme.CYAN)
         self.print_label.pack(anchor="w", padx=24, pady=(6, 0))
         self.matches = tk.BooleanVar(value=False)
-        self.match_box = ctk.CTkCheckBox(self.window, text="L'impronta coincide con quella del pannello di ATENA",
+        self.match_box = ctk.CTkCheckBox(self.window, text="L'impronta coincide con quella del pannello di NUXIVA",
                                          variable=self.matches, text_color=theme.TEXT, fg_color=theme.CYAN,
                                          command=self._refresh, state="disabled")
         self.match_box.pack(anchor="w", padx=24, pady=(6, 0))
         self.code = self._field("Codice di abbinamento (6 cifre)", "", "es. 482913")
         self.name = self._field("Nome di questo PC", cfg.get("name", ""), "es. Studio")
         self.autostart = tk.BooleanVar(value=True)
-        ctk.CTkCheckBox(self.window, text="Avvia ATENA all'accensione del PC", variable=self.autostart,
+        ctk.CTkCheckBox(self.window, text="Avvia NUXIVA all'accensione del PC", variable=self.autostart,
                         text_color=theme.TEXT, fg_color=theme.CYAN, font=(theme.FONT, 12)).pack(anchor="w", padx=24, pady=(14, 0))
         self.status = ctk.CTkLabel(self.window, text="", font=(theme.FONT, 12), text_color=theme.RED, wraplength=450,
                                    justify="left")
@@ -74,7 +74,7 @@ class PairingWindow:
         threading.Thread(target=run, daemon=True).start()
 
     def _verify(self) -> None:
-        self._say("Verifico il certificato di ATENA…", theme.DIM)
+        self._say("Verifico il certificato di NUXIVA…", theme.DIM)
         self.check.configure(state="disabled")
         address = self.server.get()
         self._background(lambda: self.verify(address), self._verified)
@@ -85,7 +85,7 @@ class PairingWindow:
         self.print_label.configure(text=f"Impronta: {tls.short(fingerprint)}")
         self.match_box.configure(state="normal")
         self.check.configure(state="normal")
-        self._say("Confronta l'impronta con quella mostrata nel pannello di ATENA.", theme.DIM)
+        self._say("Confronta l'impronta con quella mostrata nel pannello di NUXIVA.", theme.DIM)
         self._refresh()
 
     def _pair(self) -> None:

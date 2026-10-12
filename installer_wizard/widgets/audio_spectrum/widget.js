@@ -3,7 +3,7 @@
     const s = String(v ?? "").slice(0, 2000).replace(/<br\s*\/?>/gi, "\n").replace(/<\/(p|div|li|tr|h[1-6])>/gi, "\n");
     return s.includes("<") ? new DOMParser().parseFromString(s, "text/html").body.textContent : s;
   };
-  AtenaDesk.register("audio_spectrum", {
+  NuxivaDesk.register("audio_spectrum", {
     render(el, d, ctx) {
       const lines = plain(d.content).split("\n").map((l) => l.trim()).filter(Boolean).slice(0, 4);
       const [first = "", ...rest] = lines;

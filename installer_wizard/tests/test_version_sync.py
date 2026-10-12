@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 
 SCRIPT = Path(__file__).resolve().parents[2] / "scripts" / "release" / "version.py"
-spec = importlib.util.spec_from_file_location("atena_version", SCRIPT)
+spec = importlib.util.spec_from_file_location("nuxiva_version", SCRIPT)
 version = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(version)
 

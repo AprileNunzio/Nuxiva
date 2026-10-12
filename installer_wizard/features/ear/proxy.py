@@ -8,14 +8,14 @@ from fastapi import WebSocket, WebSocketDisconnect
 import auth
 from features.authz.heard import heard
 
-logger = logging.getLogger("atena.ear.proxy")
+logger = logging.getLogger("nuxiva.ear.proxy")
 UPSTREAM = "ws://127.0.0.1:8093"
 MAX_MESSAGE = 2 ** 22
 DENIED = 4401
 
 
 def _node_allowed(socket: WebSocket) -> bool:
-    node_id = socket.headers.get("x-atena-node", "")
+    node_id = socket.headers.get("x-nuxiva-node", "")
     if not node_id:
         return False
     from features.nodes.registry import registry
@@ -53,7 +53,7 @@ async def _down(client: Any, upstream: Any, device: str) -> None:
 
 
 def device_of(socket: Any) -> str:
-    node_id = socket.headers.get("x-atena-node", "") if hasattr(socket, "headers") else ""
+    node_id = socket.headers.get("x-nuxiva-node", "") if hasattr(socket, "headers") else ""
     return f"node:{node_id}" if node_id and _node_allowed(socket) else "mic:local"
 
 

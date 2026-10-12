@@ -5,7 +5,7 @@ from datetime import datetime
 from pathlib import Path
 from unittest import mock
 
-from atena_bus import AtenaBus
+from nuxiva_bus import NuxivaBus
 
 from features.nvr import service as nvr_service
 from features.nvr import settings as nvr_settings
@@ -92,10 +92,10 @@ class SettingsTest(unittest.TestCase):
 class ServiceTest(unittest.TestCase):
     def test_events_are_filtered_stored_and_published(self):
         with tempfile.TemporaryDirectory() as root:
-            bus = AtenaBus()
+            bus = NuxivaBus()
             got = []
             bus.subscribe("nvr.>", got.append)
-            with mock.patch.object(nvr_service, "atena_bus", bus):
+            with mock.patch.object(nvr_service, "nuxiva_bus", bus):
                 nvr = nvr_service.Nvr()
                 nvr._store = EventStore(Path(root) / "e.db")
                 self.addCleanup(nvr._store.close)

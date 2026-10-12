@@ -83,7 +83,7 @@ class PresetTest(unittest.TestCase):
 
 class EffectiveChainTest(unittest.TestCase):
     def test_role_scope_filters_the_runtime_chain(self):
-        env = {"ATENA_LLM_DEEP_ORDER": f"{CLOUD},{LOCAL_B}", "ATENA_LLM_DEEP_SCOPE": "home"}
+        env = {"NUXIVA_LLM_DEEP_ORDER": f"{CLOUD},{LOCAL_B}", "NUXIVA_LLM_DEEP_SCOPE": "home"}
         with patch.object(brains_module, "read_env", return_value=env), \
                 patch.object(scope, "origin", side_effect=fake_origin):
             b = brains_module.Brains()

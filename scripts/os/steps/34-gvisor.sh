@@ -5,7 +5,7 @@ DAEMON_JSON=/etc/docker/daemon.json
 GVISOR_DIR=/usr/local/bin
 RUNSC_BIN="$GVISOR_DIR/runsc"
 GVISOR_BASE=https://storage.googleapis.com/gvisor/releases/release/latest
-TRIED_FILE="$ATENA_STATE/.gvisor-tried"
+TRIED_FILE="$NUXIVA_STATE/.gvisor-tried"
 RETRY_AFTER_SECONDS=21600
 
 runtime_registered() {
@@ -66,7 +66,7 @@ PY
 }
 
 step_apply() {
-    mkdir -p "$ATENA_STATE"
+    mkdir -p "$NUXIVA_STATE"
     touch "$TRIED_FILE"
     progress 10 "Download di gVisor"
     if [ ! -x "$RUNSC_BIN" ] && ! fetch_runsc; then

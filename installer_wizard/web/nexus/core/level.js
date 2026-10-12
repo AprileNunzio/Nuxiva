@@ -2,7 +2,7 @@ import { api } from "./http.js";
 import { store } from "./store.js";
 
 export const LEVELS = [
-  { id: "explorer", label: "Esploratore", hint: "Poche scelte chiare, ti guida Atena" },
+  { id: "explorer", label: "Esploratore", hint: "Poche scelte chiare, ti guida Nuxiva" },
   { id: "pilot", label: "Pilota", hint: "Zone, interruttori e modelli pronti" },
   { id: "architect", label: "Architetto", hint: "Tutto: file, priorità, JSON e log" },
 ];

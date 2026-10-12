@@ -7,7 +7,7 @@
   const at = (iso) => new Date(iso).toLocaleString(undefined, { weekday: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
   const rows = (list, ctx) => `<ul class="wk-list f1-rows">${list.map((r) => `<li class="wk-row ic"><span class="f1-pos">${ctx.esc(r.pos)}</span>
     <span>${ctx.esc(r.name || r.team || "")}${r.name && r.team ? `<small> ${ctx.esc(r.team)}</small>` : ""}</span><span class="mono">${ctx.esc(r.time || r.points)}</span></li>`).join("")}</ul>`;
-  AtenaDesk.register("f1_race", {
+  NuxivaDesk.register("f1_race", {
     render(el, d, ctx) {
       const race = d.race || {};
       if (d.mode === "standings") {

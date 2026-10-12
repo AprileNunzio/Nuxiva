@@ -31,7 +31,7 @@ CATALOG = [
     {"name": "llama3.2:3b", "label": "Llama 3.2 · 3 B", "size_gb": 2.0, "roles": ["chat", "deep"], "category": "chat", "rank": 8,
      "notes": "Nuova generazione Meta per dialoghi fluidi, istruzioni veloci e riassunti immediati."},
     {"name": "qwen2.5:1.5b", "label": "Qwen 2.5 · 1,5 B", "size_gb": 1.0, "roles": ["chat"], "category": "chat", "rank": 9,
-     "notes": "Ultra-veloce e leggero: perfetto per il Sistema 1 di Atena e per CPU senza scheda video."},
+     "notes": "Ultra-veloce e leggero: perfetto per il Sistema 1 di Nuxiva e per CPU senza scheda video."},
     {"name": "mistral:7b", "label": "Mistral · 7 B", "size_gb": 4.1, "roles": ["chat", "deep"], "category": "deep", "rank": 10,
      "notes": "Celebre modello europeo: risposte dirette, sintetiche e ad alte prestazioni generali."},
     {"name": "deepseek-r1:1.5b", "label": "DeepSeek R1 · 1,5 B", "size_gb": 1.1, "roles": ["chat", "deep"], "category": "reasoning", "rank": 11,
@@ -119,8 +119,8 @@ class Brains:
     @staticmethod
     def config() -> dict:
         env = read_env()
-        main = env.get("ATENA_LLM_MODEL") or "granite3.3:2b"
-        fast = env.get("ATENA_LLM_FAST_MODEL") or main
+        main = env.get("NUXIVA_LLM_MODEL") or "granite3.3:2b"
+        fast = env.get("NUXIVA_LLM_FAST_MODEL") or main
         custom = {r.id: split_order(env.get(r.env_key, "")) for r in ROLES}
         orders = {
             "chat": custom["chat"] or [fast, main],
@@ -128,7 +128,7 @@ class Brains:
         }
         for role in ROLES:
             orders.setdefault(role.id, custom[role.id] or orders[FALLBACK_ROLE])
-        routing = env.get("ATENA_LLM_ROUTING")
+        routing = env.get("NUXIVA_LLM_ROUTING")
         return {
             "routing": routing if routing in ("auto", "1", "0") else "auto",
             "main": main, "fast": fast,

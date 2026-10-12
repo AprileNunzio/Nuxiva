@@ -1,5 +1,5 @@
 (() => {
-  const D = window.AtenaDisplay, { $, fmt } = D;
+  const D = window.NuxivaDisplay, { $, fmt } = D;
   const LOOK_NAMES = { full: "Ologramma 3D con volto", light: "Nucleo leggero", auto: "automatico" };
   let volTimer = null, lastInput = null, audioRev = null;
 
@@ -45,7 +45,7 @@
     }
     loadAudio();
     $("btn-vol").addEventListener("click", () => { const p = $("vol-panel"); p.classList.toggle("show"); if (p.classList.contains("show")) { loadAudio(); showLook(); } });
-    $("avatar-pref").addEventListener("change", (e) => { AtenaAvatar.setDevicePref(e.target.value); location.reload(); });
+    $("avatar-pref").addEventListener("change", (e) => { NuxivaAvatar.setDevicePref(e.target.value); location.reload(); });
     $("vol-out").addEventListener("input", (e) => { $("vol-out-v").textContent = `${e.target.value}%`; setAudio({ output: { volume: +e.target.value } }); });
     $("vol-in").addEventListener("input", (e) => { $("vol-in-v").textContent = `${e.target.value}%`; setAudio({ input: { volume: +e.target.value } }); });
     $("vol-out-m").addEventListener("click", (e) => setAudio({ output: { muted: !e.target.classList.contains("on") } }));

@@ -13,10 +13,10 @@ sys.path.append(str(Path(__file__).resolve().parents[1] / "biometrics"))
 import embeddings as emb
 import earconf
 
-log = logging.getLogger("atena.ear")
+log = logging.getLogger("nuxiva.ear")
 
-MODEL = Path(os.environ.get("ATENA_VOICEPRINT_MODEL", "/opt/atena-ear/voiceprint/speaker.onnx"))
-STORE = Path(os.environ.get("ATENA_VOICEPRINTS", "/var/lib/atena/voiceprints"))
+MODEL = Path(os.environ.get("NUXIVA_VOICEPRINT_MODEL", "/opt/nuxiva-ear/voiceprint/speaker.onnx"))
+STORE = Path(os.environ.get("NUXIVA_VOICEPRINTS", "/var/lib/nuxiva/voiceprints"))
 RATE = 16000
 MIN_SECONDS = 1.0
 MAX_SAMPLES = 40
@@ -28,19 +28,19 @@ _SLUG = re.compile(r"^[a-z0-9][a-z0-9-]{0,40}$")
 
 
 def match_base() -> float:
-    return earconf.number("ATENA_VOICEPRINT_MATCH", 0.62, 0.3, 0.95)
+    return earconf.number("NUXIVA_VOICEPRINT_MATCH", 0.62, 0.3, 0.95)
 
 
 def margin() -> float:
-    return earconf.number("ATENA_VOICE_MARGIN", 0.06, 0.0, 0.5)
+    return earconf.number("NUXIVA_VOICE_MARGIN", 0.06, 0.0, 0.5)
 
 
 def twin_margin() -> float:
-    return earconf.number("ATENA_VOICE_TWIN_MARGIN", 0.12, 0.0, 0.6)
+    return earconf.number("NUXIVA_VOICE_TWIN_MARGIN", 0.12, 0.0, 0.6)
 
 
 def twin_similarity() -> float:
-    return earconf.number("ATENA_VOICE_TWIN_SIM", 0.5, 0.2, 0.95)
+    return earconf.number("NUXIVA_VOICE_TWIN_SIM", 0.5, 0.2, 0.95)
 
 
 def person_score(samples: np.ndarray, centre: np.ndarray, probe: np.ndarray) -> float:
@@ -58,7 +58,7 @@ class Voiceprints:
         self.limits: dict[str, float] = {}
         self.twins: set = set()
         self.stamp = 0.0
-        if os.environ.get("ATENA_VOICEPRINT", "1") == "0" or not MODEL.exists():
+        if os.environ.get("NUXIVA_VOICEPRINT", "1") == "0" or not MODEL.exists():
             log.info("Impronta vocale non disponibile su questo sistema")
             return
         try:
@@ -79,7 +79,7 @@ class Voiceprints:
 
     def _load(self) -> None:
         samples, centres, limits = {}, {}, {}
-        adaptive = earconf.flag("ATENA_VOICE_ADAPTIVE", True)
+        adaptive = earconf.flag("NUXIVA_VOICE_ADAPTIVE", True)
         for f in STORE.glob("*.npy"):
             try:
                 rows = emb.unit_rows(np.load(f))
@@ -147,7 +147,7 @@ class Voiceprints:
     def may_learn(self, slug: str, probe: np.ndarray, source: str) -> bool:
         if source != "ascolto":
             return True
-        if not earconf.flag("ATENA_VOICE_AUTOIMPROVE", True):
+        if not earconf.flag("NUXIVA_VOICE_AUTOIMPROVE", True):
             return self.count(slug) < ENROLLED_AT
         if self.count(slug) < ENROLLED_AT:
             return True

@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const OK = { ok: "ok", with_person: "ok", elsewhere: "warn", stale: "warn", unknown: "down" };
   let data = null, points = [], bus = null;
 
@@ -67,7 +67,7 @@
   async function load() {
     try { data = await A.api("GET", "/api/scene"); render(); } catch (err) { fail(err); }
     $("sc-snapshot").src = `/api/vision/snapshot.jpg?t=${Date.now()}`;
-    if (!bus) bus = window.Atena.subscribeBus("fusion.presence", (env) => renderPresence(env.payload));
+    if (!bus) bus = window.Nuxiva.subscribeBus("fusion.presence", (env) => renderPresence(env.payload));
   }
 
   async function save(kind, body) {
@@ -107,7 +107,7 @@
       if (!confirm(A.t("scene.confirm_remove"))) return;
       try { await A.api("DELETE", `/api/scene/${b.dataset.del}/${encodeURIComponent(b.dataset.id)}`); await load(); } catch (err) { fail(err); }
     });
-    window.addEventListener("atena-i18n", () => { if (data && A.isOn("scene")) render(); });
+    window.addEventListener("nuxiva-i18n", () => { if (data && A.isOn("scene")) render(); });
   }
 
   A.tab("scene", { title: "Scena e presenza", init, load, leave() { if (bus) { bus.close(); bus = null; } } });

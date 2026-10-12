@@ -30,5 +30,5 @@
     update(el) { tick(el); },
     destroy(el) { clearInterval(timers.get(el)); },
   };
-  AtenaDesk.register("clock", impl);
+  NuxivaDesk.register("clock", impl);
 })();

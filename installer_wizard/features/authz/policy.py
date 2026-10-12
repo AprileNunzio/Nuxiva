@@ -9,7 +9,7 @@ from features.authz.principal import Principal, Strength
 from features.authz.risk import Risk, parse
 
 POLICY_FILE = STATE_DIR / "authz" / "policy.json"
-log = logging.getLogger("atena.authz")
+log = logging.getLogger("nuxiva.authz")
 
 DEFAULT_CEILING: dict[str, Risk] = {
     "system": Risk.CRITICAL, "owner": Risk.CRITICAL, "family": Risk.FILES, "staff": Risk.HOME,
@@ -18,6 +18,13 @@ DEFAULT_CEILING: dict[str, Risk] = {
 DEFAULT_PROOF: dict[Risk, Strength] = {
     Risk.INFO: Strength.NONE, Risk.HOME: Strength.NONE, Risk.PERSONAL: Strength.SINGLE,
     Risk.FILES: Strength.SINGLE, Risk.CRITICAL: Strength.STRONG,
+}
+
+
+SUBROLE_CEILING: dict[str, Risk] = {
+    "butler": Risk.FILES,
+    "nanny": Risk.HOME,
+    "cleaner": Risk.HOME,
 }
 
 
@@ -76,7 +83,10 @@ class Policy:
 
     def limit(self, principal: Principal) -> Risk:
         with self._lock:
-            base = self.ceiling.get(principal.role, self.ceiling["anonymous"])
+            if principal.subrole and principal.subrole in SUBROLE_CEILING:
+                base = SUBROLE_CEILING[principal.subrole]
+            else:
+                base = self.ceiling.get(principal.role, self.ceiling["anonymous"])
         custom = parse(principal.override)
         return base if custom is None or principal.role == "system" else custom
 

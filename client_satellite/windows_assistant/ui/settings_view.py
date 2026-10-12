@@ -12,7 +12,7 @@ class SettingsWindow:
     def __init__(self, root, cfg: dict, autostart: bool, fingerprint: str, actions: dict) -> None:
         self.cfg, self.actions = cfg, actions
         self.window = ctk.CTkToplevel(root, fg_color=theme.PANEL)
-        self.window.title("ATENA · Impostazioni")
+        self.window.title("NUXIVA · Impostazioni")
         self.window.attributes("-topmost", True)
         self.window.minsize(440, 480)
         self.window.geometry("500x720")
@@ -24,9 +24,9 @@ class SettingsWindow:
         ctk.CTkLabel(body, text=f"Collegata a {cfg['server']} come «{cfg['name']}»\nCertificato verificato: {fingerprint}",
                      font=(theme.FONT, 12), text_color=theme.DIM, justify="left").pack(anchor="w", padx=20, pady=(0, 12))
         self.values = {
-            "voice": self._switch("Risposte a voce", "Se spento, ATENA risponde solo per iscritto nel pannello.", cfg["voice"]),
-            "headset": self._switch("Uso le cuffie", "Puoi interrompere ATENA parlandole sopra.", cfg["headset"]),
-            "autostart": self._switch("Avvia con Windows", "ATENA parte da sola quando accendi il PC.", autostart),
+            "voice": self._switch("Risposte a voce", "Se spento, NUXIVA risponde solo per iscritto nel pannello.", cfg["voice"]),
+            "headset": self._switch("Uso le cuffie", "Puoi interrompere NUXIVA parlandole sopra.", cfg["headset"]),
+            "autostart": self._switch("Avvia con Windows", "NUXIVA parte da sola quando accendi il PC.", autostart),
         }
         self.hotkey = self._entry("Tasti rapidi per parlare", cfg["hotkey"])
         self._backup()
@@ -63,8 +63,8 @@ class SettingsWindow:
         card = self._card()
         ctk.CTkLabel(card, text="Backup automatico delle cartelle", font=(theme.FONT, 13), text_color=theme.TEXT
                      ).pack(anchor="w", padx=12, pady=(10, 2))
-        ctk.CTkLabel(card, text="ATENA copia le cartelle scelte in un archivio .zip nella destinazione (disco esterno o NAS) "
-                     "e tiene le ultime 10 copie. Ogni file modificato da ATENA ha comunque una copia di sicurezza.",
+        ctk.CTkLabel(card, text="NUXIVA copia le cartelle scelte in un archivio .zip nella destinazione (disco esterno o NAS) "
+                     "e tiene le ultime 10 copie. Ogni file modificato da NUXIVA ha comunque una copia di sicurezza.",
                      font=(theme.FONT, 11), text_color=theme.DIM, wraplength=420, justify="left").pack(anchor="w", padx=12)
         self.sources = list(self.cfg.get("backup_folders") or [])
         self.target = tk.StringVar(value=self.cfg.get("backup_target") or "")

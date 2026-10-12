@@ -125,7 +125,7 @@ class HomeCommandTests(PlacesBase):
         with mock.patch.object(brain, "areas", {"camera": {"name": "camera da letto"}}, create=True):
             self.assertEqual(context.area(), "camera")
 
-    def test_without_location_atena_room_is_used(self):
+    def test_without_location_nuxiva_room_is_used(self):
         current_room.set(None)
         self.assertEqual(parse_command("accendi la luce", self.catalog())["entities"], ["light.cucina"])
 

@@ -6,7 +6,7 @@ from unittest import mock
 
 from fastapi.testclient import TestClient
 
-import atena_supervisor
+import nuxiva_supervisor
 from features.nexus.domain.zones import classify
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -15,7 +15,7 @@ ZONES_JS = ROOT / "web" / "nexus" / "features" / "shell" / "zones.js"
 TOOL_JS = ROOT / "web" / "nexus" / "features" / "tool" / "tool.js"
 PANELS_DIR = ROOT / "web" / "nexus" / "panels"
 REGISTRY_JS = PANELS_DIR / "registry.js"
-HEADERS = {"X-Atena-Request": "1"}
+HEADERS = {"X-Nuxiva-Request": "1"}
 
 
 class NexusParityTest(unittest.TestCase):
@@ -51,12 +51,12 @@ class NexusParityTest(unittest.TestCase):
 
     def test_classic_panel_can_be_embedded_only_by_itself(self):
         with mock.patch("setup_api.done", return_value=True):
-            r = TestClient(atena_supervisor.admin).get("/classic")
+            r = TestClient(nuxiva_supervisor.admin).get("/classic")
         self.assertEqual(r.headers["content-security-policy"], "frame-ancestors 'self'")
         self.assertEqual(r.headers["x-frame-options"], "SAMEORIGIN")
         self.assertIn("/static/admin/embed.js", r.text)
         with mock.patch("setup_api.done", return_value=True):
-            nexus = TestClient(atena_supervisor.admin).get("/")
+            nexus = TestClient(nuxiva_supervisor.admin).get("/")
         self.assertIn("frame-src 'self'", nexus.headers["content-security-policy"])
 
 

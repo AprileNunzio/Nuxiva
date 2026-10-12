@@ -7,12 +7,12 @@ from features.presentation.application.ports import Completion, ImageFinder, Mod
 from features.presentation.domain.plan import PlanError, parse_plan, side_effects
 from features.presentation.domain.stage import ImageAsset, to_ui, to_widget
 
-logger = logging.getLogger("atena.presentation")
+logger = logging.getLogger("nuxiva.presentation")
 
 IMAGE_TIMEOUT_SECONDS = 14.0
 MAX_ANSWER_CHARS = 3500
 
-SYSTEM = """Sei il regista dei contenuti di Atena. Hai la domanda dell'utente e la risposta già pronta; decidi tu come
+SYSTEM = """Sei il regista dei contenuti di Nuxiva. Hai la domanda dell'utente e la risposta già pronta; decidi tu come
 mostrarla sullo schermo nel modo migliore, scegliendo forma, dimensioni e colonne. Non ripetere inutilmente: scegli le
 forme che aiutano davvero a capire.
 

@@ -12,8 +12,8 @@ from features.vpn.store import VPN_DIR, store
 
 CHECK_EVERY = 20.0
 MAX_BACKOFF = 300.0
-GUARD_FILE = VPN_DIR / "atena_vpn.nft"
-log = logging.getLogger("atena.vpn")
+GUARD_FILE = VPN_DIR / "nuxiva_vpn.nft"
+log = logging.getLogger("nuxiva.vpn")
 
 
 def _endpoints(p: model.Profile) -> tuple[tuple[str, int, str], ...]:

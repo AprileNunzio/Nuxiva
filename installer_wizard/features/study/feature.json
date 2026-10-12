@@ -5,7 +5,7 @@
   "category": "conoscenza",
   "order": 120,
   "panel": "study",
-  "description": "A riposo Atena studia le materie che scegli o che scopre dalle conversazioni, da base a esperto, e usa ciò che impara nelle risposte.",
+  "description": "A riposo Nuxiva studia le materie che scegli o che scopre dalle conversazioni, da base a esperto, e usa ciò che impara nelle risposte.",
   "toggle": {
     "hook": "study"
   },

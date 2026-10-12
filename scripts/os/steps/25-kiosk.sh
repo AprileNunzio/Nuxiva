@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 . "$(dirname "$0")/../lib.sh"
 
-USER_NAME="$ATENA_KIOSK_USER"
+USER_NAME="$NUXIVA_KIOSK_USER"
 GETTY_OVERRIDE=/etc/systemd/system/getty@tty1.service.d/override.conf
-POLICY=/etc/chromium/policies/managed/atena.json
-SESSION="$ATENA_DIR/scripts/os/kiosk/session.sh"
+POLICY=/etc/chromium/policies/managed/nuxiva.json
+SESSION="$NUXIVA_DIR/scripts/os/kiosk/session.sh"
 
-kiosk_enabled() { [ "${ATENA_KIOSK:-1}" != "0" ]; }
+kiosk_enabled() { [ "${NUXIVA_KIOSK:-1}" != "0" ]; }
 user_home() { getent passwd "$USER_NAME" | cut -d: -f6; }
 
 getty_conf() {
     printf '%s\n' \
-        '# Gestito da Atena OS' \
+        '# Gestito da Nuxiva OS' \
         '[Service]' \
         'ExecStart=' \
         "ExecStart=-/sbin/agetty --autologin $USER_NAME --noclear %I \$TERM" \
@@ -21,7 +21,7 @@ getty_conf() {
 
 bash_profile() {
     printf '%s\n' \
-        '# Gestito da Atena OS: avvia la sessione grafica kiosk su tty1' \
+        '# Gestito da Nuxiva OS: avvia la sessione grafica kiosk su tty1' \
         'if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then' \
         "    exec startx $SESSION -- :0 vt1 -nolisten tcp -keeptty >\"\$HOME/.cache/xorg-session.log\" 2>&1" \
         'fi'
@@ -72,7 +72,7 @@ step_apply() {
     fi
     progress 15 "Creazione utente kiosk dedicato"
     if ! id "$USER_NAME" >/dev/null 2>&1; then
-        useradd --create-home --shell /bin/bash --comment "Atena Kiosk" "$USER_NAME"
+        useradd --create-home --shell /bin/bash --comment "Nuxiva Kiosk" "$USER_NAME"
         passwd -l "$USER_NAME" >/dev/null
     fi
     local group
@@ -91,7 +91,7 @@ step_apply() {
     progress 60 "Rimozione sessione legacy di root"
     if legacy_root_session; then
         sed -i '/startx/d' /root/.bash_profile
-        [ -f /root/.xinitrc ] && mv -f /root/.xinitrc /root/.xinitrc.atena-legacy
+        [ -f /root/.xinitrc ] && mv -f /root/.xinitrc /root/.xinitrc.nuxiva-legacy
         changed=1
     fi
 

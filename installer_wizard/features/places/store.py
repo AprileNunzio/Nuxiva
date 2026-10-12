@@ -11,7 +11,7 @@ PLACES_FILE = STATE_DIR / "places" / "places.json"
 NAME = re.compile(r"^[\w .,'()/-]{1,40}$", re.UNICODE)
 KEY = re.compile(r"^(server|display:kiosk|mic:local|camera:main|node:[\w.-]{1,64}|camera:[\w.-]{1,64}|speaker:[\w.-]{1,64})$")
 SENSES = ("sees", "hears", "shows", "speaks")
-log = logging.getLogger("atena.places")
+log = logging.getLogger("nuxiva.places")
 
 
 @dataclass

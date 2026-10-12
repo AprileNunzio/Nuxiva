@@ -1,9 +1,9 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const LANGS = [["it", "🇮🇹 Italiano"], ["en", "🇬🇧 English"], ["fr", "🇫🇷 Français"], ["es", "🇪🇸 Español"], ["de", "🇩🇪 Deutsch"], ["pt", "🇵🇹 Português"]];
   const GROUPS = [["gender", "Chi parla?"], ["age", "Quanti anni ha?"], ["pitch", "Che tono ha?"], ["style", "Come parla?"]];
   const MAX_SECONDS = 30;
-  const C = { mode: "design", name: "", picks: { style: "" }, lang: (window.ATENA_UI_LANG || navigator.language || "it").slice(0, 2), consent: false,
+  const C = { mode: "design", name: "", picks: { style: "" }, lang: (window.NUXIVA_UI_LANG || navigator.language || "it").slice(0, 2), consent: false,
     blob: null, file: "", recorder: null, stream: null, seconds: 0, tick: null, sending: false };
   if (!LANGS.some(([v]) => v === C.lang)) C.lang = "it";
 
@@ -43,7 +43,7 @@
     const tab = (mode, icon, title, text) => `<button type="button" class="vs-card ${C.mode === mode ? "on" : ""}" data-mode="${mode}">
       <span class="vs-ic">${icon}</span><b>${fmt.esc(title)}</b><small>${fmt.esc(text)}</small></button>`;
     return `<div class="vs-cards">${tab("design", "🎨", "Inventa una voce", "Scegli com'è fatta con le figure")}
-        ${tab("clone", "🎤", "Copia una voce", "Leggi una frase e Atena impara quella voce")}</div>
+        ${tab("clone", "🎤", "Copia una voce", "Leggi una frase e Nuxiva impara quella voce")}</div>
       <div><div class="vs-label">Come si chiama la voce?</div><div class="vs-row"><input type="text" id="vs-name" maxlength="40" placeholder="Per esempio: Nonno Pino" value="${fmt.esc(C.name)}" autocomplete="off"></div></div>
       ${C.mode === "design" ? designHtml() : cloneHtml()}`;
   }
@@ -81,7 +81,7 @@
         const form = new FormData();
         form.append("name", C.name.trim()); form.append("language", C.lang); form.append("consent", C.consent ? "1" : "0");
         form.append("audio", C.blob, C.file || "registrazione.webm");
-        const res = await fetch("/api/voicestudio/clone", { method: "POST", credentials: "same-origin", headers: { "X-Atena-Request": "1" }, body: form });
+        const res = await fetch("/api/voicestudio/clone", { method: "POST", credentials: "same-origin", headers: { "X-Nuxiva-Request": "1" }, body: form });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(data.detail || `Errore ${res.status}`);
         voice = data.voice;

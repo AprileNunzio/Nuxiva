@@ -194,7 +194,7 @@ class Deck:
             self.text(slide, 0.8, 2.8, W - 1.6, 1.6, s["title"] or self.spec["title"], 44, ink, True, t["heading"])
             self.text(slide, 0.8, 4.4, W - 1.6, 1.2, s["subtitle"] or self.spec.get("subtitle", ""), 20, ink)
             if layout == "title":
-                self.text(slide, 0.8, H - 1.0, 8, 0.4, self.spec.get("author") or "Atena", 12, ink)
+                self.text(slide, 0.8, H - 1.0, 8, 0.4, self.spec.get("author") or "Nuxiva", 12, ink)
         elif layout == "section":
             slide = self.new("FFFFFF")
             self.sections += 1
@@ -241,7 +241,7 @@ class Deck:
         for s in slides:
             self.slide(s)
         self.prs.core_properties.title = self.spec["title"]
-        self.prs.core_properties.author = self.spec.get("author") or "Atena"
+        self.prs.core_properties.author = self.spec.get("author") or "Nuxiva"
         self.prs.save(str(path))
         return path
 

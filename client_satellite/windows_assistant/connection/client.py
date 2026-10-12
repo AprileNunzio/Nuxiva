@@ -6,8 +6,8 @@ from urllib.parse import urlsplit
 
 from connection import tls
 
-log = logging.getLogger("atena.link")
-CA_PATH = "/atena-ca.crt"
+log = logging.getLogger("nuxiva.link")
+CA_PATH = "/nuxiva-ca.crt"
 CA_LIMIT = 65536
 
 
@@ -22,7 +22,7 @@ class ServerError(Exception):
 def endpoint(server: str) -> tuple[str, int]:
     parts = urlsplit(server)
     if parts.scheme != "https" or not parts.hostname:
-        raise ServerError("ATENA si raggiunge solo in HTTPS")
+        raise ServerError("NUXIVA si raggiunge solo in HTTPS")
     return parts.hostname, parts.port or 443
 
 
@@ -35,7 +35,7 @@ def _fetch_ca(host: str, port: int, timeout: float) -> str:
     finally:
         conn.close()
     if response.status != 200:
-        raise ServerError(f"ATENA non ha fornito il suo certificato di autorità (errore {response.status})")
+        raise ServerError(f"NUXIVA non ha fornito il suo certificato di autorità (errore {response.status})")
     pem = body.decode("ascii", "replace")
     if "BEGIN CERTIFICATE" not in pem:
         raise ServerError("Il certificato di autorità ricevuto non è valido")
@@ -55,7 +55,7 @@ def first_contact(server: str, timeout: float = 10) -> tuple[str, str]:
         raise ServerError("Il certificato del server non è firmato dall'autorità che dichiara: possibile intermediario "
                           "in rete, abbinamento bloccato") from exc
     except (OSError, ssl.SSLError, http.client.HTTPException) as exc:
-        raise ServerError(f"ATENA non raggiungibile in HTTPS su {host}:{port}: {exc}") from exc
+        raise ServerError(f"NUXIVA non raggiungibile in HTTPS su {host}:{port}: {exc}") from exc
     return tls.pem_fingerprint(pem), pem
 
 
@@ -64,7 +64,7 @@ class Client:
         self.server, self.node_id, self.token, self.ca_pem = server, node_id, token, ca_pem
 
     def headers(self) -> dict:
-        return {"X-Atena-Node": self.node_id, "Authorization": f"Bearer {self.token}"}
+        return {"X-Nuxiva-Node": self.node_id, "Authorization": f"Bearer {self.token}"}
 
     def context(self) -> ssl.SSLContext:
         return tls.pinned_context(self.ca_pem)
@@ -80,7 +80,7 @@ class Client:
         except ssl.SSLCertVerificationError as exc:
             raise tls.mismatch(exc) from exc
         except (OSError, ssl.SSLError, http.client.HTTPException) as exc:
-            raise ServerError(f"ATENA non raggiungibile: {exc}") from exc
+            raise ServerError(f"NUXIVA non raggiungibile: {exc}") from exc
         finally:
             conn.close()
         if response.status == 401:

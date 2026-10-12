@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const initials = (n) => (n || "?").split(/\s+/).map((x) => x[0]).join("").slice(0, 2).toUpperCase();
   const avatar = (p, size = 64) => `<img class="frontal-avatar" style="width:${size}px;height:${size}px" src="/api/vision/people/${encodeURIComponent(p.slug)}/photo.jpg" onerror="this.outerHTML='<div class=&quot;frontal-avatar&quot; style=&quot;width:${size}px;height:${size}px;display:grid;place-items:center;font-size:${Math.round(size/2.5)}px;color:var(--cyan);background:rgba(2,8,16,0.8);&quot;>${fmt.esc(initials(p.name))}</div>'">`;
   const ago = (t) => t ? `${fmt.duration(Date.now() / 1000 - t)} fa` : "mai";
@@ -192,9 +192,9 @@
   function voiceSection(p) {
     const vp = p.voiceprint || {};
     const vs = vp.enrolled ? `✓ registrata (${vp.samples} campioni${vp.updated ? `, ultimo ${new Date(vp.updated * 1000).toLocaleDateString("it-IT")}` : ""})`
-      : vp.samples ? `in corso: ${vp.samples} campioni raccolti` : "non ancora registrata — usa «Avvia sul display» qui sotto oppure dì «Atena, impara la mia voce» davanti alla webcam";
+      : vp.samples ? `in corso: ${vp.samples} campioni raccolti` : "non ancora registrata — usa «Avvia sul display» qui sotto oppure dì «Nuxiva, impara la mia voce» davanti alla webcam";
     return `<div class="form-grid">
-        <div><label>Voce di Atena per questa persona</label><select data-voice="tts_voice"><option value="">Predefinita di sistema</option>
+        <div><label>Voce di Nuxiva per questa persona</label><select data-voice="tts_voice"><option value="">Predefinita di sistema</option>
           ${Object.entries(peopleSchema.voices || {}).map(([v, label]) => `<option value="${v}" ${p.voice && p.voice.tts_voice === v ? "selected" : ""}>${fmt.esc(label)}</option>`).join("")}</select></div>
         <div><label>Velocità (${(p.voice && p.voice.speed) || 1.0})</label><input data-voice="speed" type="range" min="0.7" max="1.4" step="0.05" value="${(p.voice && p.voice.speed) || 1}"></div>
         <div><label>Tono (${(p.voice && p.voice.pitch) || 0})</label><input data-voice="pitch" type="range" min="-6" max="6" step="0.5" value="${(p.voice && p.voice.pitch) || 0}"></div>

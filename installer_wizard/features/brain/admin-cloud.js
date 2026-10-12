@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const LABELS = { temperature: "Creatività", top_p: "Top-p", max_tokens: "Lunghezza massima", reasoning: "Ragionamento", timeout: "Attesa (s)" };
   const NAMES = { "": "predefinito", minimal: "minimo", low: "basso", medium: "medio", high: "alto" };
   let data = null, filter = "all";
@@ -106,7 +106,7 @@
         const saved = await A.api("PUT", `/api/cloud/${pid}`, collect(el));
         await loadModels(pid, true);
         const inUse = [...A.brainRoles.usedRefs()].some((r) => r.startsWith(`cloud:${pid}/`));
-        A.toast(inUse || !saved.configured ? `Salvato: ${saved.model || "nessun modello"}` : `Salvato ${saved.model}. Premi ${A.brainRoles.addHint()} perché Atena lo usi`);
+        A.toast(inUse || !saved.configured ? `Salvato: ${saved.model || "nessun modello"}` : `Salvato ${saved.model}. Premi ${A.brainRoles.addHint()} perché Nuxiva lo usi`);
         return load();
       }
       if (action === "forget") { if (!confirm("Rimuovere la chiave?")) return; await A.api("PUT", `/api/cloud/${pid}`, { key: "" }); return load(); }
@@ -133,8 +133,8 @@
     $("cl-only-btn").addEventListener("click", async () => {
       const chat = $("cl-only-chat").value, deep = $("cl-only-deep").value;
       if (!chat || !deep) return A.toast("Collega prima almeno un fornitore", true);
-      if (!confirm("Atena userà solo questi cervelli cloud, senza modelli locali. Procedere?")) return;
-      try { await A.api("POST", "/api/cloud/only", { chat: [chat], deep: [deep] }); A.toast("Atena ora ragiona solo nel cloud"); A.brain.reload(); load(); } catch (e) { A.toast(e.message, true); }
+      if (!confirm("Nuxiva userà solo questi cervelli cloud, senza modelli locali. Procedere?")) return;
+      try { await A.api("POST", "/api/cloud/only", { chat: [chat], deep: [deep] }); A.toast("Nuxiva ora ragiona solo nel cloud"); A.brain.reload(); load(); } catch (e) { A.toast(e.message, true); }
     });
   }
 

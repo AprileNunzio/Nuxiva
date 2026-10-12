@@ -7,7 +7,7 @@
   "intents": [
     "code_view"
   ],
-  "description": "Mostra il codice chiesto ad Atena con il linguaggio e un pulsante per copiarlo (resta 15 minuti).",
+  "description": "Mostra il codice chiesto ad Nuxiva con il linguaggio e un pulsante per copiarlo (resta 15 minuti).",
   "demo": {
     "language": "html",
     "title": "Pagina di esempio",

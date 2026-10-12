@@ -8,7 +8,7 @@ import httpx
 from fastapi.testclient import TestClient
 
 import access
-import atena_supervisor
+import nuxiva_supervisor
 from config import write_env
 from features.music import catalog, dlna, sharing, tokens
 from features.music.db import db
@@ -16,7 +16,7 @@ from features.music.outputs import DEVICE_RE, Outputs, outputs as shared_outputs
 from state import store
 from tests.test_music_library import Base
 
-HEADERS = {"X-Atena-Request": "1"}
+HEADERS = {"X-Nuxiva-Request": "1"}
 DESCRIPTION = """<?xml version="1.0"?><root xmlns="urn:schemas-upnp-org:device-1-0"><device><friendlyName>Salotto</friendlyName><modelName>Box</modelName>
 <serviceList><service><serviceType>urn:schemas-upnp-org:service:AVTransport:1</serviceType><controlURL>/avt</controlURL></service>
 <service><serviceType>urn:schemas-upnp-org:service:RenderingControl:1</serviceType><controlURL>/rc</controlURL></service></serviceList></device></root>"""
@@ -149,9 +149,9 @@ class OutputsTest(Base, unittest.IsolatedAsyncioTestCase):
 class SharingTest(Base):
     @classmethod
     def setUpClass(cls):
-        cls.admin = TestClient(atena_supervisor.admin)
-        cls.public = TestClient(atena_supervisor.public)
-        assert cls.admin.post("/api/auth/login", json={"username": "admin", "password": "atena"}, headers=HEADERS).status_code == 200
+        cls.admin = TestClient(nuxiva_supervisor.admin)
+        cls.public = TestClient(nuxiva_supervisor.public)
+        assert cls.admin.post("/api/auth/login", json={"username": "admin", "password": "nuxiva"}, headers=HEADERS).status_code == 200
 
     def test_links_expose_only_what_was_shared_and_expire(self):
         self.filled()
@@ -202,12 +202,12 @@ class SubsonicTest(Base):
 
     @classmethod
     def setUpClass(cls):
-        cls.public = TestClient(atena_supervisor.public)
+        cls.public = TestClient(nuxiva_supervisor.public)
 
     def setUp(self):
         super().setUp()
-        write_env({"ATENA_MUSIC_SUBSONIC": "1", "ATENA_MUSIC_APP_PASSWORD": self.PASSWORD})
-        self.addCleanup(lambda: write_env({"ATENA_MUSIC_SUBSONIC": "0", "ATENA_MUSIC_APP_PASSWORD": ""}))
+        write_env({"NUXIVA_MUSIC_SUBSONIC": "1", "NUXIVA_MUSIC_APP_PASSWORD": self.PASSWORD})
+        self.addCleanup(lambda: write_env({"NUXIVA_MUSIC_SUBSONIC": "0", "NUXIVA_MUSIC_APP_PASSWORD": ""}))
 
     def call(self, method: str, **params):
         salt = "abc123"
@@ -225,7 +225,7 @@ class SubsonicTest(Base):
         self.assertEqual(plain["status"], "ok")
         hexed = self.public.get("/rest/ping", params={"u": "x", "p": "enc:" + self.PASSWORD.encode().hex(), "f": "json"}).json()["subsonic-response"]
         self.assertEqual(hexed["status"], "ok")
-        write_env({"ATENA_MUSIC_SUBSONIC": "0"})
+        write_env({"NUXIVA_MUSIC_SUBSONIC": "0"})
         self.assertEqual(self.reply("ping")["error"]["code"], 50)
 
     def test_xml_is_the_default_format(self):
@@ -273,9 +273,9 @@ class SubsonicTest(Base):
 class OutputApiTest(Base):
     @classmethod
     def setUpClass(cls):
-        cls.admin = TestClient(atena_supervisor.admin)
-        cls.display = TestClient(atena_supervisor.public)
-        assert cls.admin.post("/api/auth/login", json={"username": "admin", "password": "atena"}, headers=HEADERS).status_code == 200
+        cls.admin = TestClient(nuxiva_supervisor.admin)
+        cls.display = TestClient(nuxiva_supervisor.public)
+        assert cls.admin.post("/api/auth/login", json={"username": "admin", "password": "nuxiva"}, headers=HEADERS).status_code == 200
 
     def setUp(self):
         super().setUp()
@@ -325,7 +325,7 @@ class OutputApiTest(Base):
         self.local = False
         self.assertEqual(self.display.get("/api/music/out/poll?device=display:sala").status_code, 401)
         self.assertEqual(self.display.post("/api/music/out/report", json={"device": "display:sala"}).status_code, 401)
-        anon = TestClient(atena_supervisor.admin)
+        anon = TestClient(nuxiva_supervisor.admin)
         self.assertEqual(anon.get("/api/music/out", headers=HEADERS).status_code, 401)
 
     def test_library_overview_carries_the_preferences_and_lookup_restores_a_queue(self):
@@ -347,7 +347,7 @@ class OutputApiTest(Base):
         self.assertNotEqual(fresh["password"], state["password"])
         off = self.admin.post("/api/music/app", json={"enabled": False}, headers=HEADERS).json()
         self.assertEqual((off["enabled"], off["password"]), (False, ""))
-        write_env({"ATENA_MUSIC_APP_PASSWORD": ""})
+        write_env({"NUXIVA_MUSIC_APP_PASSWORD": ""})
 
 
 if __name__ == "__main__":

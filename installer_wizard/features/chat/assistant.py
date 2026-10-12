@@ -165,7 +165,7 @@ async def _route(text: str, core_call, speech_lang: dict | None = None) -> dict:
     intent = detect_intent(text)
     if (speech_lang or {}).get("switched") and intent not in ("voices",):
         intent = "conversation"
-    agent = "atena_ui"
+    agent = "nuxiva_ui"
     refused = _refused(intent, started)
     if refused:
         return refused

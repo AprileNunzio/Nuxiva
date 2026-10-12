@@ -1,5 +1,5 @@
 (() => {
-  AtenaDesk.register("system_update", {
+  NuxivaDesk.register("system_update", {
     render(el, d, ctx) {
       const changes = Array.isArray(d.changes) ? d.changes.slice(0, 6) : [];
       el.innerHTML = `${ctx.head({ icon: "download", label: "Aggiornamento", chip: "disponibile", live: true })}

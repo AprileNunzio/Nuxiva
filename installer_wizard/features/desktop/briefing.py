@@ -43,7 +43,7 @@ def systems() -> tuple[str, dict, int]:
     if up.get("available"):
         lines.append(f"Aggiornamento disponibile: {str(up.get('target_rev') or up.get('remote_rev', ''))[:10]}")
     else:
-        lines.append("Atena è aggiornata")
+        lines.append("Nuxiva è aggiornata")
     down = any(c.get("status") == "down" for c in bad)
     return "brief", {"title": "Stato dei sistemi", "lines": lines}, 88 if down else 65 if bad or up.get("available") else 35
 

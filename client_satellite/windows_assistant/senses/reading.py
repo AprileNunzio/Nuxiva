@@ -6,7 +6,7 @@ from comtypes import COMError
 
 from senses.windows import Window
 
-log = logging.getLogger("atena.senses")
+log = logging.getLogger("nuxiva.senses")
 TEXT_KINDS = (auto.ControlType.DocumentControl, auto.ControlType.EditControl)
 
 

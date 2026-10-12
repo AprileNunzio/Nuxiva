@@ -47,7 +47,7 @@ def overview() -> dict:
     selected = webcams.state.get("selected") or {}
     return {"sources": [row_view(r) for r in sorted(rows, key=lambda r: (r["hidden"], not r["favorite"], r["order"], r["name"]))],
             "saved_webcams": orphans(rows), "problems": webcams.state.get("problems", []), "selected": selected,
-            "tools": {"ffmpeg": bool(shutil.which("ffmpeg")), "v4l2": bool(shutil.which("v4l2-ctl")), "recording": env_get("ATENA_CAMERAS", "0") != "0"}}
+            "tools": {"ffmpeg": bool(shutil.which("ffmpeg")), "v4l2": bool(shutil.which("v4l2-ctl")), "recording": env_get("NUXIVA_CAMERAS", "0") != "0"}}
 
 
 def set_record(source_id: str, body: dict) -> dict:

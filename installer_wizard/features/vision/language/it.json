@@ -15,18 +15,18 @@
     "Il riconoscimento migliora da solo: campioni diversi, soglie per persona, infrarosso"
   ],
   "settings": {
-    "ATENA_IR_MODE": "Sensore infrarosso (webcam con doppio sensore)",
-    "ATENA_LIVENESS": "Controllo anti-foto e anti-schermo (richiede l'infrarosso)",
-    "ATENA_LIVENESS_MIN": "Punteggio minimo per considerare vivo un volto (0,1 - 0,95)",
-    "ATENA_CAMERA_RES": "Risoluzione della webcam",
-    "ATENA_CAMERA_RGB": "Webcam a colori: automatica oppure percorso (es. /dev/video0)",
-    "ATENA_CAMERA_IR": "Sensore infrarosso: automatico, off oppure percorso (es. /dev/video2)",
-    "ATENA_FACE_AUTOIMPROVE": "Il riconoscimento dei volti migliora da solo nel tempo",
-    "ATENA_FACE_ADAPTIVE": "Soglia di riconoscimento calcolata per ogni persona",
-    "ATENA_FACE_THRESHOLD": "Soglia di somiglianza del volto (0,2 - 0,8)",
-    "ATENA_FACE_MARGIN": "Distacco minimo dalla seconda persona più simile (0 - 0,4)",
-    "ATENA_FACE_TWIN_SIM": "Due persone sono «somiglianti» oltre questa somiglianza (0,3 - 0,95)",
-    "ATENA_FACE_TWIN_MARGIN": "Distacco richiesto tra persone somiglianti, per esempio gemelli (0 - 0,5)",
-    "ATENA_FACE_IR_WEIGHT": "Peso dell'infrarosso nel riconoscimento (0 - 0,8)"
+    "NUXIVA_IR_MODE": "Sensore infrarosso (webcam con doppio sensore)",
+    "NUXIVA_LIVENESS": "Controllo anti-foto e anti-schermo (richiede l'infrarosso)",
+    "NUXIVA_LIVENESS_MIN": "Punteggio minimo per considerare vivo un volto (0,1 - 0,95)",
+    "NUXIVA_CAMERA_RES": "Risoluzione della webcam",
+    "NUXIVA_CAMERA_RGB": "Webcam a colori: automatica oppure percorso (es. /dev/video0)",
+    "NUXIVA_CAMERA_IR": "Sensore infrarosso: automatico, off oppure percorso (es. /dev/video2)",
+    "NUXIVA_FACE_AUTOIMPROVE": "Il riconoscimento dei volti migliora da solo nel tempo",
+    "NUXIVA_FACE_ADAPTIVE": "Soglia di riconoscimento calcolata per ogni persona",
+    "NUXIVA_FACE_THRESHOLD": "Soglia di somiglianza del volto (0,2 - 0,8)",
+    "NUXIVA_FACE_MARGIN": "Distacco minimo dalla seconda persona più simile (0 - 0,4)",
+    "NUXIVA_FACE_TWIN_SIM": "Due persone sono «somiglianti» oltre questa somiglianza (0,3 - 0,95)",
+    "NUXIVA_FACE_TWIN_MARGIN": "Distacco richiesto tra persone somiglianti, per esempio gemelli (0 - 0,5)",
+    "NUXIVA_FACE_IR_WEIGHT": "Peso dell'infrarosso nel riconoscimento (0 - 0,8)"
   }
 }

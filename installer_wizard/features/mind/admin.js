@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   let data = null;
 
   const pct = (v) => Math.round((v || 0) * 100);
@@ -45,7 +45,7 @@
     $("mn-suggest").innerHTML = (data.suggestions || []).map((s) =>
       `<div class="mn-sugg">💡 ${fmt.esc(s.text)} <button class="btn sm" data-sugg="${fmt.esc(s.id)}">Ok, ho capito</button></div>`).join("");
     $("mn-facts").innerHTML = data.facts.length ? data.facts.map(factRow).join("")
-      : '<div class="faint">Ancora nessun ricordo. Parla con Atena di te: imparerà i fatti che contano.</div>';
+      : '<div class="faint">Ancora nessun ricordo. Parla con Nuxiva di te: imparerà i fatti che contano.</div>';
     $("mn-diary").innerHTML = data.diary.length ? data.diary.map(diaryRow).join("")
       : '<div class="faint">Il diario si riempirà dopo i primi scambi.</div>';
   }

@@ -20,7 +20,7 @@ _HINTS = {
 class OAuthApp:
     @staticmethod
     def credentials() -> tuple[str, str]:
-        return env_get("ATENA_GOOGLE_CLIENT_ID", "").strip(), env_get("ATENA_GOOGLE_CLIENT_SECRET", "").strip()
+        return env_get("NUXIVA_GOOGLE_CLIENT_ID", "").strip(), env_get("NUXIVA_GOOGLE_CLIENT_SECRET", "").strip()
 
     def ready(self) -> bool:
         return all(self.credentials())
@@ -68,7 +68,7 @@ class OAuthApp:
                                  "redirect_uri": REDIRECT_URI, "code_verifier": flow["verifier"]})
         flows.consume(state)
         if not body.get("refresh_token"):
-            raise LinkError("Google non ha rilasciato il token di rinnovo: rimuovi l'accesso di Atena da "
+            raise LinkError("Google non ha rilasciato il token di rinnovo: rimuovi l'accesso di Nuxiva da "
                             "myaccount.google.com/permissions e ricollega")
         return flow["slug"], body
 

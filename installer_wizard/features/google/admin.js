@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   let data = null, linking = "";
 
   const blk = (t, rows) => `<div class="blk"><b>${t}</b>${rows}</div>`;
@@ -33,7 +33,7 @@
 
   async function loadCredentials() {
     const cfg = await A.api("GET", "/api/config");
-    const sec = cfg.editable.find((x) => x.key === "ATENA_GOOGLE_CLIENT_SECRET");
+    const sec = cfg.editable.find((x) => x.key === "NUXIVA_GOOGLE_CLIENT_SECRET");
     if (document.activeElement !== $("gg-id")) $("gg-id").value = data.client_id || "";
     $("gg-secret").placeholder = sec && sec.set ? sec.value : "non impostato";
   }
@@ -60,7 +60,7 @@
     if (!linking) return;
     const flow = pending.find((f) => f.slug === linking);
     $("gg-pending-who").textContent = nameOf(linking);
-    $("gg-pending-note").textContent = flow ? `Il link resta valido ancora ${Math.max(1, Math.round(flow.expires_in / 60))} minuti, anche se Atena si riavvia.` : "";
+    $("gg-pending-note").textContent = flow ? `Il link resta valido ancora ${Math.max(1, Math.round(flow.expires_in / 60))} minuti, anche se Nuxiva si riavvia.` : "";
   }
 
   async function finish(url) {
@@ -84,7 +84,7 @@
         showPending(); $("gg-url").focus();
         A.toast("Accedi con l'account Google di questa persona, poi incolla qui l'indirizzo finale");
       } else if (action === "unlink") {
-        if (!confirm("Scollegare questo account Google? Atena non potrà più leggerne agenda e posta.")) return;
+        if (!confirm("Scollegare questo account Google? Nuxiva non potrà più leggerne agenda e posta.")) return;
         await A.api("DELETE", `/api/google/${encodeURIComponent(slug)}`); load();
       } else if (action === "preview") {
         const box = el.querySelector("[data-preview]"); box.textContent = "Carico…";
@@ -97,8 +97,8 @@
     $("gg-people").addEventListener("click", (e) => { const b = e.target.closest("[data-act]"); if (b) act(b.closest("[data-slug]"), b.dataset.act); });
     $("gg-creds").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const body = { ATENA_GOOGLE_CLIENT_ID: $("gg-id").value.trim() };
-      if ($("gg-secret").value.trim()) body.ATENA_GOOGLE_CLIENT_SECRET = $("gg-secret").value.trim();
+      const body = { NUXIVA_GOOGLE_CLIENT_ID: $("gg-id").value.trim() };
+      if ($("gg-secret").value.trim()) body.NUXIVA_GOOGLE_CLIENT_SECRET = $("gg-secret").value.trim();
       try { await A.api("PUT", "/api/config", body); $("gg-secret").value = ""; A.toast("App Google salvata"); load(); } catch (err) { A.toast(err.message, true); }
     });
     $("gg-finish-form").addEventListener("submit", (e) => { e.preventDefault(); finish($("gg-url").value); });

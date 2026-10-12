@@ -28,14 +28,14 @@ async def set_brain(request: Request, user: str = Depends(require_admin)):
     mode = str(data.get("mode", ""))
     if mode not in packages.BRAIN_MODES:
         raise HTTPException(400, "Modalità del cervello non valida")
-    updates = {"ATENA_BRAIN": mode}
+    updates = {"NUXIVA_BRAIN": mode}
     if mode == "remote":
         url = normalize_ollama(str(data.get("url", "")))
         if not url:
             raise HTTPException(400, "Indica l'indirizzo del server Ollama")
-        updates["ATENA_OLLAMA_URL"] = url
+        updates["NUXIVA_OLLAMA_URL"] = url
     elif mode == "local":
-        updates["ATENA_OLLAMA_URL"] = ""
+        updates["NUXIVA_OLLAMA_URL"] = ""
     applying = await apply_config(updates, user, BRAIN_STEPS[mode])
     return {"ok": True, "brain": mode, "applying": applying}
 

@@ -15,14 +15,14 @@ def announce(port: int) -> None:
     _active["port"] = port
 
 
-@public_routes.get("/atena-ca.crt")
+@public_routes.get("/nuxiva-ca.crt")
 async def ca_certificate():
     if not CA_FILE.exists():
         raise HTTPException(404, "Certificato non ancora generato")
-    return FileResponse(CA_FILE, media_type="application/x-x509-ca-cert", filename="atena-os-ca.crt")
+    return FileResponse(CA_FILE, media_type="application/x-x509-ca-cert", filename="nuxiva-os-ca.crt")
 
 
 @public_routes.get("/api/secure/status")
 async def secure_status(request: Request):
     require_display(request)
-    return {"https_port": _active["port"], "ca": "/atena-ca.crt", "host": socket.gethostname()}
+    return {"https_port": _active["port"], "ca": "/nuxiva-ca.crt", "host": socket.gethostname()}

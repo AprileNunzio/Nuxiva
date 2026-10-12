@@ -8,7 +8,7 @@
     "Owner's widgets on the display: resources, systems, firewall, updates and news when you come close"
   ],
   "settings": {
-    "ATENA_DESKTOP_THEME": "Desktop Theme",
-    "ATENA_SECRETARY": "On the display, show the owner's widgets when they come close"
+    "NUXIVA_DESKTOP_THEME": "Desktop Theme",
+    "NUXIVA_SECRETARY": "On the display, show the owner's widgets when they come close"
   }
 }

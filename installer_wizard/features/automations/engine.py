@@ -17,14 +17,14 @@ from features.governor.service import governor
 from features.scheduler.clock import TriggerClock
 from features.scheduler.marks import Marks
 
-log = logging.getLogger("atena.automations")
+log = logging.getLogger("nuxiva.automations")
 TICK = 1.0
 TEMPLATE_EVERY = 10
 SCHEDULED = ("time", "interval", "cron", "sun")
 
 
 def enabled() -> bool:
-    return env_get("ATENA_AUTOMATIONS", "1") != "0"
+    return env_get("NUXIVA_AUTOMATIONS", "1") != "0"
 
 
 class Engine:
@@ -256,7 +256,7 @@ class Engine:
         return started
 
     def phrase(self, text: str) -> tuple[dict, dict, dict] | None:
-        clean = re.sub(r"^\s*(ehi[,\s]+)?(?:atena|athena)[,\s]+", "", text.strip(), flags=re.I).strip(" .!?").lower()
+        clean = re.sub(r"^\s*(ehi[,\s]+)?(?:nuxiva|nuxiva)[,\s]+", "", text.strip(), flags=re.I).strip(" .!?").lower()
         for a in library.all():
             if not a.get("enabled", True):
                 continue

@@ -23,7 +23,7 @@ export default function updates(root) {
   const check = async (quiet = false) => {
     const u = await api("/api/actions/update-check", { method: "POST" });
     paint(u);
-    if (!quiet) toast(u.available ? "Aggiornamento disponibile" : "Atena è aggiornata");
+    if (!quiet) toast(u.available ? "Aggiornamento disponibile" : "Nuxiva è aggiornata");
   };
   mount(root,
     section("Aggiornamento autonomo da GitHub", facts,
@@ -32,8 +32,8 @@ export default function updates(root) {
         button("Aggiorna ora", async () => {
           const r = await api("/api/actions/update-apply", { method: "POST" });
           toast(r.message || "Aggiornamento avviato");
-        }, { kind: "primary", confirm: { title: "Applicare l'aggiornamento?", text: "Atena verrà riavviata e, in caso di problemi, ripristinata automaticamente.", action: "Aggiorna ora" } })),
-      note("Atena controlla da sola GitHub, installa solo le versioni che hanno superato i test e torna indietro se qualcosa non va.")),
+        }, { kind: "primary", confirm: { title: "Applicare l'aggiornamento?", text: "Nuxiva verrà riavviata e, in caso di problemi, ripristinata automaticamente.", action: "Aggiorna ora" } })),
+      note("Nuxiva controlla da sola GitHub, installa solo le versioni che hanno superato i test e torna indietro se qualcosa non va.")),
     section("Novità disponibili", news));
   check(true).catch((err) => { news.textContent = err.message; });
 }

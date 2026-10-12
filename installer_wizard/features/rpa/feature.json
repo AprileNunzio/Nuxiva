@@ -6,12 +6,12 @@
   "order": 18,
   "panel": "",
   "toggle": {
-    "env": "ATENA_RPA",
+    "env": "NUXIVA_RPA",
     "apply": []
   },
-  "description": "ATENA vive anche sul tuo PC Windows come assistente digitale, un po' come Gemini su Android: la chiami con la voce (\"Atena…\") o con Ctrl+Alt+Spazio, ti risponde a voce, guarda lo schermo o la webcam quando glielo chiedi e lavora per te: crea cartelle e file, apre documenti e programmi, ti aiuta a scrivere, a creare siti web e a usare AutoCAD o Archicad.",
+  "description": "NUXIVA vive anche sul tuo PC Windows come assistente digitale, un po' come Gemini su Android: la chiami con la voce (\"Nuxiva…\") o con Ctrl+Alt+Spazio, ti risponde a voce, guarda lo schermo o la webcam quando glielo chiedi e lavora per te: crea cartelle e file, apre documenti e programmi, ti aiuta a scrivere, a creare siti web e a usare AutoCAD o Archicad.",
   "capabilities": [
-    "Assistente vocale sul PC: parola di attivazione «Atena», risposte con la voce neurale di ATENA, interruzione con Esc",
+    "Assistente vocale sul PC: parola di attivazione «Nuxiva», risposte con la voce neurale di NUXIVA, interruzione con Esc",
     "Vede quello che vedi: legge il documento o la pagina su cui lavori e, se serve, guarda lo schermo o la webcam",
     "Lavora per te: crea cartelle e file, apre documenti, app e siti, scrive o incolla testo nel programma aperto",
     "Aiuto ai progetti: siti web pronti in Visual Studio Code, script AutoCAD (.scr/.lsp), guida passo-passo per Archicad",
@@ -20,14 +20,14 @@
   ],
   "settings": [
     {
-      "key": "ATENA_RPA_PSK",
+      "key": "NUXIVA_RPA_PSK",
       "label": "Chiave PSK (Generata automaticamente per la crittografia E2E del Satellite)",
       "type": "text",
       "default": "PiGTww29o8X0o8uYEkDSQEJHjU4ehvHp4LTDvhABvPk=",
       "help": "Non serve modificarla: viene creata in automatico. Cambiala solo se sai cosa stai facendo."
     },
     {
-      "key": "ATENA_RPA_AUTO_SYNC",
+      "key": "NUXIVA_RPA_AUTO_SYNC",
       "label": "Ping e Sincronizzazione automatica dei PC in background",
       "type": "select",
       "default": "1",
@@ -41,10 +41,10 @@
           "label": "Manuale"
         }
       ],
-      "help": "Se attiva, ATENA controlla da sola ogni tanto che i PC collegati siano accesi e raggiungibili."
+      "help": "Se attiva, NUXIVA controlla da sola ogni tanto che i PC collegati siano accesi e raggiungibili."
     },
     {
-      "key": "ATENA_RPA_DASHBOARD_LINK",
+      "key": "NUXIVA_RPA_DASHBOARD_LINK",
       "label": "Dashboard Controllo Remoto (Aggiungi IP, Password e verifica lo stato)",
       "type": "link",
       "default": "/api/v1/computer-control/view.html",
@@ -52,8 +52,8 @@
       "help": "Per utenti esperti: aggiungi PC a mano via WinRM o SSH e controlla se sono online."
     },
     {
-      "key": "ATENA_RPA_DOWNLOAD_LINK",
-      "label": "Scarica l'Assistente ATENA per Windows (.ZIP)",
+      "key": "NUXIVA_RPA_DOWNLOAD_LINK",
+      "label": "Scarica l'Assistente NUXIVA per Windows (.ZIP)",
       "type": "link",
       "default": "/api/rpa/download-client",
       "button": "Scarica l'Assistente per Windows",
@@ -61,7 +61,7 @@
       "help": "Installer per Windows 10/11: non serve Python. Si aggiorna da solo con aggiornamenti firmati digitalmente."
     },
     {
-      "key": "ATENA_RPA_DOWNLOAD_ZIP",
+      "key": "NUXIVA_RPA_DOWNLOAD_ZIP",
       "label": "Alternativa per utenti esperti: sorgenti in ZIP (richiede Python)",
       "type": "link",
       "default": "/api/rpa/download-client?format=zip",
@@ -69,7 +69,7 @@
       "download": true
     },
     {
-      "key": "ATENA_RPA_NODES",
+      "key": "NUXIVA_RPA_NODES",
       "label": "Compatibilità Nodi Legacy (id separati da virgola)",
       "type": "text",
       "default": "",
@@ -79,40 +79,40 @@
   "guide": [
     {
       "title": "Cos'è e a cosa serve (in parole semplici)",
-      "text": "Con l'Assistente per Windows, ATENA \"vive\" anche sul tuo computer. Compare come una piccola sfera luminosa nell'angolo dello schermo: non disturba, ma è sempre pronta. Puoi chiamarla dicendo \"Atena…\", premendo Ctrl+Alt+Spazio oppure cliccando la sfera per scriverle. Ti risponde a voce, può leggere il documento su cui stai lavorando, guardare lo schermo o la webcam (solo quando glielo chiedi) e fare cose per te: creare cartelle e file, aprire programmi, scrivere testi, preparare un sito web.",
-      "tip": "L'intelligenza resta sul server di ATENA: sul PC gira solo un programma leggero che fa da orecchie, occhi e mani."
+      "text": "Con l'Assistente per Windows, NUXIVA \"vive\" anche sul tuo computer. Compare come una piccola sfera luminosa nell'angolo dello schermo: non disturba, ma è sempre pronta. Puoi chiamarla dicendo \"Nuxiva…\", premendo Ctrl+Alt+Spazio oppure cliccando la sfera per scriverle. Ti risponde a voce, può leggere il documento su cui stai lavorando, guardare lo schermo o la webcam (solo quando glielo chiedi) e fare cose per te: creare cartelle e file, aprire programmi, scrivere testi, preparare un sito web.",
+      "tip": "L'intelligenza resta sul server di NUXIVA: sul PC gira solo un programma leggero che fa da orecchie, occhi e mani."
     },
     {
       "title": "Prima di iniziare: cosa ti serve",
       "steps": [
-        "Un PC con Windows 10 o 11 (64 bit) nella stessa rete (stesso Wi-Fi o router) del computer su cui gira ATENA.",
+        "Un PC con Windows 10 o 11 (64 bit) nella stessa rete (stesso Wi-Fi o router) del computer su cui gira NUXIVA.",
         "Non serve installare Python né altri programmi: l'installer contiene già tutto.",
-        "Facoltativi ma consigliati: microfono e altoparlanti (o cuffie) per parlare con ATENA, una webcam se vuoi che possa guardarti."
+        "Facoltativi ma consigliati: microfono e altoparlanti (o cuffie) per parlare con NUXIVA, una webcam se vuoi che possa guardarti."
       ]
     },
     {
       "title": "Scarica e installa l'assistente",
       "steps": [
-        "Dal PC Windows apri questa pagina e premi «Scarica l'Assistente per Windows»: scarichi ATENA_Assistente_Setup.exe.",
+        "Dal PC Windows apri questa pagina e premi «Scarica l'Assistente per Windows»: scarichi NUXIVA_Assistente_Setup.exe.",
         "Apri il file scaricato. Se compare l'avviso blu «Windows ha protetto il PC», premi «Ulteriori informazioni» e poi «Esegui comunque».",
-        "Segui l'installazione: non servono diritti di amministratore e ATENA si installa solo per il tuo utente, con un collegamento nel menu Start.",
-        "Gli aggiornamenti successivi arrivano da soli: ATENA li installa solo se sono firmati digitalmente dallo sviluppatore."
+        "Segui l'installazione: non servono diritti di amministratore e NUXIVA si installa solo per il tuo utente, con un collegamento nel menu Start.",
+        "Gli aggiornamenti successivi arrivano da soli: NUXIVA li installa solo se sono firmati digitalmente dallo sviluppatore."
       ],
-      "tip": "Se Windows chiede di consentire l'accesso alla rete ad ATENA, scegli «Reti private» e premi «Consenti»."
+      "tip": "Se Windows chiede di consentire l'accesso alla rete ad NUXIVA, scegli «Reti private» e premi «Consenti»."
     },
     {
-      "title": "Collega il PC ad ATENA (con un codice)",
+      "title": "Collega il PC ad NUXIVA (con un codice)",
       "steps": [
-        "Sul pannello di amministrazione di ATENA apri Funzionalità → Nodi e server e premi «+ Aggiungi un nodo»: compare un codice di 6 cifre e l'impronta del certificato di ATENA.",
-        "Nella finestra «Collega questo PC ad ATENA» scrivi l'indirizzo di ATENA (ad esempio 192.168.1.100) e premi «Verifica».",
-        "Controlla che l'impronta mostrata sia identica a quella del pannello e spunta «L'impronta coincide»: così sei sicuro di parlare con il tuo ATENA e non con un intruso in rete.",
-        "Scrivi il codice e un nome per il PC, poi premi «Collega». Compare la sfera luminosa in basso a destra: ATENA è pronta."
+        "Sul pannello di amministrazione di NUXIVA apri Funzionalità → Nodi e server e premi «+ Aggiungi un nodo»: compare un codice di 6 cifre e l'impronta del certificato di NUXIVA.",
+        "Nella finestra «Collega questo PC ad NUXIVA» scrivi l'indirizzo di NUXIVA (ad esempio 192.168.1.100) e premi «Verifica».",
+        "Controlla che l'impronta mostrata sia identica a quella del pannello e spunta «L'impronta coincide»: così sei sicuro di parlare con il tuo NUXIVA e non con un intruso in rete.",
+        "Scrivi il codice e un nome per il PC, poi premi «Collega». Compare la sfera luminosa in basso a destra: NUXIVA è pronta."
       ]
     },
     {
       "title": "Come si usa ogni giorno",
       "steps": [
-        "Per parlare: di' \"Atena\" seguito dalla richiesta, oppure premi Ctrl+Alt+Spazio. Mentre ascolta la sfera pulsa in azzurro, mentre pensa diventa viola, mentre parla diventa verde.",
+        "Per parlare: di' \"Nuxiva\" seguito dalla richiesta, oppure premi Ctrl+Alt+Spazio. Mentre ascolta la sfera pulsa in azzurro, mentre pensa diventa viola, mentre parla diventa verde.",
         "Per scrivere: clicca la sfera, scrivi nella casella in basso e premi Invio. Il pannello si richiude da solo quando non serve.",
         "Per interromperla mentre parla: premi Esc. Clic destro sulla sfera per mettere in pausa il microfono, aprire le impostazioni o uscire.",
         "La sfera si può trascinare dove preferisci: ricorda la posizione."
@@ -123,7 +123,7 @@
       "steps": [
         "\"Crea sulla Scrivania una cartella Preventivi 2026 con dentro Clienti e Fornitori\"",
         "\"Riassumi il documento che sto leggendo\" oppure \"Correggi gli errori del testo che sto scrivendo\"",
-        "\"Scrivi una mail cortese per rimandare la riunione a giovedì\" (ATENA la scrive direttamente nel programma aperto)",
+        "\"Scrivi una mail cortese per rimandare la riunione a giovedì\" (NUXIVA la scrive direttamente nel programma aperto)",
         "\"Crea un sito web per una pizzeria e aprilo in Visual Studio Code\"",
         "\"In AutoCAD come faccio un array polare?\" oppure \"Preparami uno script AutoCAD che disegna una griglia 5x5\"",
         "\"Guarda il mio schermo: cosa sto sbagliando in questo disegno di Archicad?\"",
@@ -134,23 +134,23 @@
     {
       "title": "Privacy, permessi e sicurezza",
       "steps": [
-        "Cosa può fare ATENA lo decidi tu: clic destro sulla sfera → Permessi. Per ogni capacità scegli «Consenti», «Chiedi ogni volta» o «Mai».",
-        "Con «Chiedi ogni volta» ATENA mostra sempre l'azione esatta prima di eseguirla: il comando PowerShell, il contenuto dello script, il comando SSH o il file da modificare.",
+        "Cosa può fare NUXIVA lo decidi tu: clic destro sulla sfera → Permessi. Per ogni capacità scegli «Consenti», «Chiedi ogni volta» o «Mai».",
+        "Con «Chiedi ogni volta» NUXIVA mostra sempre l'azione esatta prima di eseguirla: il comando PowerShell, il contenuto dello script, il comando SSH o il file da modificare.",
         "Comandi che cancellano, formattano o scaricano ed eseguono programmi chiedono sempre conferma, anche se hai scelto «Consenti».",
-        "ATENA lavora nelle tue cartelle personali; per altre cartelle aggiungile nei Permessi. Prima di modificare un file ne salva una copia di sicurezza.",
-        "La comunicazione con ATENA è cifrata (HTTPS) e legata al certificato verificato all'abbinamento: un intruso in rete non può fingersi ATENA.",
+        "NUXIVA lavora nelle tue cartelle personali; per altre cartelle aggiungile nei Permessi. Prima di modificare un file ne salva una copia di sicurezza.",
+        "La comunicazione con NUXIVA è cifrata (HTTPS) e legata al certificato verificato all'abbinamento: un intruso in rete non può fingersi NUXIVA.",
         "Microfono, schermo e webcam si usano solo quando servono e puoi vietarli nei Permessi. Per scollegare il PC: Impostazioni → «Scollega questo PC»."
       ]
     },
     {
       "title": "Se qualcosa non funziona",
       "steps": [
-        "«ATENA si raggiunge solo in HTTPS» o «non raggiungibile»: controlla che il PC sia nella stessa rete e che ATENA sia accesa e aggiornata: HTTPS è sempre attivo sulla porta 443.",
+        "«NUXIVA si raggiunge solo in HTTPS» o «non raggiungibile»: controlla che il PC sia nella stessa rete e che NUXIVA sia accesa e aggiornata: HTTPS è sempre attivo sulla porta 443.",
         "«Codice di abbinamento non valido o scaduto»: genera un nuovo codice in Nodi e server e scrivilo entro qualche minuto.",
-        "L'impronta non coincide: non collegare il PC e controlla la rete. Se hai reinstallato ATENA, l'impronta cambia ed è normale ricollegare.",
-        "«Il certificato presentato non è firmato dall'autorità di ATENA»: ATENA è stata reinstallata o qualcuno si intromette nella rete. Ricollega il PC solo se sei sicuro.",
-        "La sfera è grigia o ATENA non ti sente: il servizio di ascolto di ATENA potrebbe essere spento; intanto puoi scriverle cliccando la sfera.",
-        "Per tutti gli altri problemi il registro si trova in %APPDATA%/ATENA/assistant.log."
+        "L'impronta non coincide: non collegare il PC e controlla la rete. Se hai reinstallato NUXIVA, l'impronta cambia ed è normale ricollegare.",
+        "«Il certificato presentato non è firmato dall'autorità di NUXIVA»: NUXIVA è stata reinstallata o qualcuno si intromette nella rete. Ricollega il PC solo se sei sicuro.",
+        "La sfera è grigia o NUXIVA non ti sente: il servizio di ascolto di NUXIVA potrebbe essere spento; intanto puoi scriverle cliccando la sfera.",
+        "Per tutti gli altri problemi il registro si trova in %APPDATA%/NUXIVA/assistant.log."
       ]
     }
   ]

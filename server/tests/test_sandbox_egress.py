@@ -266,12 +266,12 @@ class SpecAndCommandTest(unittest.TestCase):
         self.assertEqual(ExecutionReport.from_wire(report.to_wire()).egress_denied, ("evil.com",))
 
     def test_docker_command_uses_the_internal_network_and_proxy_only_for_allowlists(self):
-        argv = build_run_argv("docker", "c", "img", self.spec(), "/in", "/out", 65534, None, "atena-sbx", "http://172.29.240.1:38000")
+        argv = build_run_argv("docker", "c", "img", self.spec(), "/in", "/out", 65534, None, "nuxiva-sbx", "http://172.29.240.1:38000")
         joined = " ".join(argv)
-        self.assertIn("--network atena-sbx", joined)
+        self.assertIn("--network nuxiva-sbx", joined)
         self.assertIn("HTTPS_PROXY=http://172.29.240.1:38000", joined)
         none = build_run_argv("docker", "c", "img", self.spec(network=NetworkPolicy.NONE, egress_hosts=()), "/in", "/out", 65534,
-                              None, "atena-sbx", "http://172.29.240.1:38000")
+                              None, "nuxiva-sbx", "http://172.29.240.1:38000")
         self.assertIn("--network none", " ".join(none))
         self.assertNotIn("PROXY", " ".join(none))
         fallback = build_run_argv("docker", "c", "img", self.spec(), "/in", "/out", 65534)

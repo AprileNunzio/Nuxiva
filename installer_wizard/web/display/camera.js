@@ -1,7 +1,7 @@
 (() => {
-  const D = window.AtenaDisplay, { $, fmt } = D;
+  const D = window.NuxivaDisplay, { $, fmt } = D;
   const MINI = 250, MARGIN = 18, IDLE_OFF = 15 * 60000, ZOOM_MAX = 3, ZOOM_STEP = 0.25, FALLBACK_AFTER = 4000, SHOTS = 5;
-  const KEY = "atena-cam-zone";
+  const KEY = "nuxiva-cam-zone";
   const COLORS = ["#29e0ff", "#3dffa8", "#ffb547", "#ff4d6a", "#ffffff"];
   const cam = D.cam = { on: false, mirror: true, zoom: 1, draw: false, color: COLORS[0], zone: null, hidden: false, shots: [], source: "" };
   let root, video, ink, mini, bar, strip, flash, pen, stream, poll, feedTimer, lastStroke;
@@ -39,7 +39,7 @@
     bar.id = "cam-bar";
     bar.innerHTML = [
       ["mirror", "↔", "Specchio"], ["zoom-out", "−", "Riduci"], ["zoom-in", "+", "Ingrandisci"], ["shot", "◉", "Scatta"],
-      ["draw", "✎", "Disegna"], ["clear", "⌫", "Cancella disegno"], ["atena", "◌", "Mostra o nascondi Atena"], ["close", "✕", "Chiudi la webcam"],
+      ["draw", "✎", "Disegna"], ["clear", "⌫", "Cancella disegno"], ["nuxiva", "◌", "Mostra o nascondi Nuxiva"], ["close", "✕", "Chiudi la webcam"],
     ].map(([a, g, t]) => `<button type="button" data-cam="${a}" title="${t}" aria-label="${t}">${g}</button>`).join("")
       + `<span class="cam-colors">${COLORS.map((c) => `<button type="button" data-color="${c}" style="--c:${c}" aria-label="Colore"></button>`).join("")}</span>`;
     document.body.appendChild(bar);
@@ -90,7 +90,7 @@
     const drop = () => { if (!grab) return; grab = null; mini.classList.remove("grabbed"); keep(); };
     mini.addEventListener("pointerup", drop);
     mini.addEventListener("pointercancel", drop);
-    mini.addEventListener("dblclick", () => act("atena"));
+    mini.addEventListener("dblclick", () => act("nuxiva"));
   }
 
   function wireInk() {
@@ -123,7 +123,7 @@
     video.stage.style.setProperty("--zoom", cam.zoom);
     bar.querySelector('[data-cam="mirror"]').classList.toggle("on", cam.mirror);
     bar.querySelector('[data-cam="draw"]').classList.toggle("on", cam.draw);
-    bar.querySelector('[data-cam="atena"]').classList.toggle("on", !cam.hidden);
+    bar.querySelector('[data-cam="nuxiva"]').classList.toggle("on", !cam.hidden);
     bar.classList.toggle("drawing", cam.draw);
     ink.classList.toggle("armed", cam.draw);
     bar.querySelectorAll("[data-color]").forEach((b) => b.classList.toggle("on", b.dataset.color === cam.color));
@@ -137,7 +137,7 @@
     else if (name === "zoom-out") cam.zoom = Math.max(1, +(cam.zoom - ZOOM_STEP).toFixed(2));
     else if (name === "draw") cam.draw = !cam.draw;
     else if (name === "clear") pen.clearRect(0, 0, ink.width, ink.height);
-    else if (name === "atena") { cam.hidden = !cam.hidden; applyZone(); }
+    else if (name === "nuxiva") { cam.hidden = !cam.hidden; applyZone(); }
     else if (name === "shot") shoot();
     else if (name === "close") return setCamera(false);
     paint();
@@ -179,7 +179,7 @@
   }
 
   function renderShots() {
-    strip.innerHTML = cam.shots.map((u, i) => `<a href="${fmt.esc(u)}" download="atena-${Date.now()}-${i + 1}.png" title="Salva la foto"><img src="${fmt.esc(u)}" alt="Foto ${i + 1}"></a>`).join("");
+    strip.innerHTML = cam.shots.map((u, i) => `<a href="${fmt.esc(u)}" download="nuxiva-${Date.now()}-${i + 1}.png" title="Salva la foto"><img src="${fmt.esc(u)}" alt="Foto ${i + 1}"></a>`).join("");
   }
 
   function useServerFeed() {

@@ -20,7 +20,7 @@ from tasks import background
 admin_routes = APIRouter()
 public_routes = APIRouter()
 TRAINING_BODY_LIMIT = 65536
-FACES = Path(os.environ.get("ATENA_FACES_DIR", str(STATE_DIR / "faces")))
+FACES = Path(os.environ.get("NUXIVA_FACES_DIR", str(STATE_DIR / "faces")))
 
 
 def is_scanned_unnamed(p: dict) -> bool:

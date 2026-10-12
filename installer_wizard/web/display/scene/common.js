@@ -27,5 +27,5 @@
     return out.set(u * u * a.x + 2 * u * t * m.x + t * t * b.x, u * u * a.y + 2 * u * t * m.y + t * t * b.y, u * u * a.z + 2 * u * t * m.z + t * t * b.z);
   }
 
-  global.Atena3D = { THREE, REGIONS, damp, hash, rng, quad };
+  global.Nuxiva3D = { THREE, REGIONS, damp, hash, rng, quad };
 })(window);

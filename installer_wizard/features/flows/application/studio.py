@@ -115,4 +115,4 @@ class Studio:
         draft = drafts.parse({"picks": previous["picks"], "positions": previous.get("positions", {}),
                               "template": previous.get("template", "")}, current)
         note = f"Ripristino automatico: troppi errori dopo la versione {latest['version']}"
-        return await self._apply(draft, "atena", note, auto=True)
+        return await self._apply(draft, "nuxiva", note, auto=True)

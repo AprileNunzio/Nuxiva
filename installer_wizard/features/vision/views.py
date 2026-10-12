@@ -11,7 +11,7 @@ from fastapi import APIRouter, HTTPException, Request
 
 from gallery import FACES, slugify
 
-log = logging.getLogger("atena.vision")
+log = logging.getLogger("nuxiva.vision")
 
 KINDS = {
     "front": "Frontale", "three_left": "Tre quarti sinistra", "three_right": "Tre quarti destra",

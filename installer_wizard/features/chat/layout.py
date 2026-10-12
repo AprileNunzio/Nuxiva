@@ -118,5 +118,5 @@ def plan_text(reply: str, question: str) -> tuple[str, dict]:
         panels[0]["span"], panels[1]["span"] = (7, 5) if longer_text else (5, 7)
     else:
         panels[0]["span"] = 12
-    return speech, {"mode": "focus", "layout": "grid", "title": _title(question), "subtitle": "Elaborato da Atena",
+    return speech, {"mode": "focus", "layout": "grid", "title": _title(question), "subtitle": "Elaborato da Nuxiva",
                     "panels": panels}

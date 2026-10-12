@@ -13,16 +13,16 @@ class PermissionsWindow:
     def __init__(self, root, policy: Policy, on_change) -> None:
         self.policy, self.on_change = policy, on_change
         self.window = ctk.CTkToplevel(root, fg_color=theme.PANEL)
-        self.window.title("ATENA · Permessi")
+        self.window.title("NUXIVA · Permessi")
         self.window.attributes("-topmost", True)
         self.window.minsize(460, 420)
         self.window.geometry("640x720")
-        ctk.CTkLabel(self.window, text="Cosa può fare ATENA su questo PC", font=(theme.FONT, 18, "bold"),
+        ctk.CTkLabel(self.window, text="Cosa può fare NUXIVA su questo PC", font=(theme.FONT, 18, "bold"),
                      text_color=theme.TEXT).pack(anchor="w", padx=20, pady=(18, 2))
         ctk.CTkLabel(self.window, text="«Chiedi ogni volta» mostra sempre l'azione esatta prima di eseguirla.",
                      font=(theme.FONT, 12), text_color=theme.DIM).pack(anchor="w", padx=20, pady=(0, 8))
         if policy.tampered:
-            ctk.CTkLabel(self.window, text="⚠ Il file dei permessi era stato modificato fuori da ATENA: ho ripristinato i "
+            ctk.CTkLabel(self.window, text="⚠ Il file dei permessi era stato modificato fuori da NUXIVA: ho ripristinato i "
                          "valori sicuri.", text_color=theme.AMBER, wraplength=580, justify="left").pack(anchor="w", padx=20)
         self.body = ctk.CTkScrollableFrame(self.window, fg_color=theme.BG, corner_radius=12)
         self.body.pack(fill="both", expand=True, padx=16, pady=(4, 16))
@@ -70,13 +70,13 @@ class PermissionsWindow:
                       command=self._add).pack(anchor="w", padx=8, pady=8)
 
     def _add(self) -> None:
-        chosen = filedialog.askdirectory(parent=self.window, title="Cartella in cui ATENA può lavorare")
+        chosen = filedialog.askdirectory(parent=self.window, title="Cartella in cui NUXIVA può lavorare")
         if not chosen:
             return
         try:
             self.policy.set_folders([*self.policy.folders, chosen])
         except ValueError as exc:
-            messagebox.showerror("ATENA", str(exc), parent=self.window)
+            messagebox.showerror("NUXIVA", str(exc), parent=self.window)
             return
         self.on_change("folders", None)
         self._draw_folders()

@@ -29,6 +29,56 @@ async def toggle_mock_presence(approaching: bool = True, verified: bool = True) 
 async def get_system_metrics() -> SystemTelemetryData:
     return system_metrics_collector.collect()
 
+@presence_router.get("/hud/projects")
+async def get_proximity_hud_projects():
+    status = presence_service.get_status()
+    if not (status.is_owner_approaching or status.is_biometrically_verified):
+        return {
+            "unlocked": False,
+            "reason": "Nessun utente autorizzato in prossimità del monitor",
+            "detected_user": None,
+            "projects": [],
+        }
+
+    from server.features.project_workspace.manager import project_manager
+    from server.features.chatbot_mesh.user_agent_customization_service import user_agent_customization_service
+    from server.core.security_guard.rbac_service import rbac_service
+
+    detected = status.detected_user or "user_primary"
+    user_account = rbac_service.get_user(detected)
+    user_display = user_account.display_name if user_account else "Utente Primario"
+
+    # Personalizzazioni per l'utente rilevato
+    personalizations = user_agent_customization_service.list_user_personalizations(detected)
+
+    active_projects = [
+        {
+            "project_id": p.project_id,
+            "name": p.name,
+            "goal": p.goal,
+            "completion_percentage": p.completion_percentage,
+            "autonomous_247": p.autonomous_247,
+            "assigned_agents": p.assigned_agents,
+            "milestones_count": len(p.milestones),
+            "status": p.status,
+        }
+        for p in project_manager.get_all(detected)
+        if p.status == "ACTIVE"
+    ]
+
+    return {
+        "unlocked": True,
+        "detected_user": detected,
+        "display_name": user_display,
+        "role": user_account.role.value if user_account else "owner_admin",
+        "verification_method": status.verification_method,
+        "confidence": status.confidence_score,
+        "projects_count": len(active_projects),
+        "projects": active_projects,
+        "active_personalizations_count": len(personalizations),
+    }
+
 @privacy_router.get("/policies", response_model=List[WidgetPrivacyPolicy])
 async def get_privacy_policies() -> List[WidgetPrivacyPolicy]:
     return presence_service.get_policies()
+

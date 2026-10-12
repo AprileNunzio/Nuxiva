@@ -11,7 +11,7 @@ from state import store
 from features.automations.bus import bus
 from features.vault import diary, render
 
-log = logging.getLogger("atena.vault")
+log = logging.getLogger("nuxiva.vault")
 FILE = STATE_DIR / "vault.json"
 EXPORT_EVERY = 300
 DIARY_EVERY = 1800
@@ -19,11 +19,11 @@ FINAL_AT = "23:50"
 
 
 def enabled() -> bool:
-    return env_get("ATENA_VAULT", "1") != "0"
+    return env_get("NUXIVA_VAULT", "1") != "0"
 
 
 def root() -> Path:
-    custom = env_get("ATENA_VAULT_DIR", "").strip()
+    custom = env_get("NUXIVA_VAULT_DIR", "").strip()
     if custom:
         return Path(custom)
     return STATE_DIR / "memoria"

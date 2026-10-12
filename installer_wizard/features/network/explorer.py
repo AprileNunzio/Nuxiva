@@ -12,7 +12,7 @@ import httpx
 from config import DEMO, STATE_DIR, env_get
 from state import store
 
-log = logging.getLogger("atena.network")
+log = logging.getLogger("nuxiva.network")
 DEVICES_FILE = STATE_DIR / "devices.json"
 SCAN_EVERY = 10 * 60
 RESTUDY_EVERY = 7 * 24 * 3600
@@ -23,7 +23,7 @@ TYPES = {
     "computer": ("Computer", "💻"), "server": ("Server", "🖥"), "printer": ("Stampante", "🖨"), "tv": ("TV / media", "📺"),
     "camera": ("Telecamera", "📷"), "nas": ("NAS / archivio", "🗄"), "iot": ("Dispositivo IoT", "🔌"),
     "esp": ("ESP32 / ESP8266", "🔧"), "raspberry": ("Raspberry Pi", "🍓"), "speaker": ("Altoparlante / assistente", "🔊"),
-    "homeassistant": ("Home Assistant", "🏠"), "console": ("Console di gioco", "🎮"), "atena": ("Questa Atena", "🤖"),
+    "homeassistant": ("Home Assistant", "🏠"), "console": ("Console di gioco", "🎮"), "nuxiva": ("Questa Nuxiva", "🤖"),
     "unknown": ("Sconosciuto", "❔"),
 }
 VENDOR_RULES = [
@@ -98,7 +98,7 @@ class NetworkExplorer:
         if d.get("type_manual"):
             return d["type"]
         if d.get("ip") == self.own_ip:
-            return "atena"
+            return "nuxiva"
         if d.get("ip") == self.gateway:
             return "router"
         ports = {p["port"] for p in d.get("ports", [])}
@@ -292,7 +292,7 @@ class NetworkExplorer:
         asyncio.create_task(self._study_worker())
         await asyncio.sleep(60)
         while True:
-            if env_get("ATENA_NETWORK", "1") == "0":
+            if env_get("NUXIVA_NETWORK", "1") == "0":
                 await asyncio.sleep(30)
                 continue
             try:

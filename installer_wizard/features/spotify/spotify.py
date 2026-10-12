@@ -10,7 +10,7 @@ import httpx
 from config import env_get, write_env
 from state import store
 
-log = logging.getLogger("atena.spotify")
+log = logging.getLogger("nuxiva.spotify")
 
 REDIRECT_URI = "http://127.0.0.1:8888/callback"
 SCOPES = "user-read-currently-playing user-read-playback-state user-modify-playback-state"
@@ -28,14 +28,14 @@ class Spotify:
 
     @staticmethod
     def _creds() -> tuple[str, str]:
-        return env_get("ATENA_SPOTIFY_CLIENT_ID", ""), env_get("ATENA_SPOTIFY_CLIENT_SECRET", "")
+        return env_get("NUXIVA_SPOTIFY_CLIENT_ID", ""), env_get("NUXIVA_SPOTIFY_CLIENT_SECRET", "")
 
     def configured(self) -> bool:
-        return all(self._creds()) and bool(env_get("ATENA_SPOTIFY_REFRESH_TOKEN", ""))
+        return all(self._creds()) and bool(env_get("NUXIVA_SPOTIFY_REFRESH_TOKEN", ""))
 
     @staticmethod
     def enabled() -> bool:
-        return env_get("ATENA_SPOTIFY", "1") != "0"
+        return env_get("NUXIVA_SPOTIFY", "1") != "0"
 
     def auth_url(self) -> str:
         cid, _ = self._creds()
@@ -68,7 +68,7 @@ class Spotify:
         if not code:
             raise ValueError("Codice di autorizzazione mancante")
         body = await self._token({"grant_type": "authorization_code", "code": code, "redirect_uri": REDIRECT_URI})
-        write_env({"ATENA_SPOTIFY_REFRESH_TOKEN": body["refresh_token"]})
+        write_env({"NUXIVA_SPOTIFY_REFRESH_TOKEN": body["refresh_token"]})
         self.access_token, self.expires_at = body["access_token"], time.time() + body.get("expires_in", 3600) - 60
         me = await self._api("/me")
         self.user = (me or {}).get("display_name") or (me or {}).get("id") or ""
@@ -76,16 +76,16 @@ class Spotify:
         return self.user
 
     def disconnect(self) -> None:
-        write_env({"ATENA_SPOTIFY_REFRESH_TOKEN": ""})
+        write_env({"NUXIVA_SPOTIFY_REFRESH_TOKEN": ""})
         self.access_token, self.now, self.user = "", {}, ""
 
     async def _access(self) -> str:
         if not self.access_token or time.time() > self.expires_at:
             body = await self._token({"grant_type": "refresh_token",
-                                      "refresh_token": env_get("ATENA_SPOTIFY_REFRESH_TOKEN", "")})
+                                      "refresh_token": env_get("NUXIVA_SPOTIFY_REFRESH_TOKEN", "")})
             self.access_token, self.expires_at = body["access_token"], time.time() + body.get("expires_in", 3600) - 60
             if body.get("refresh_token"):
-                write_env({"ATENA_SPOTIFY_REFRESH_TOKEN": body["refresh_token"]})
+                write_env({"NUXIVA_SPOTIFY_REFRESH_TOKEN": body["refresh_token"]})
         return self.access_token
 
     async def _api(self, path: str) -> dict | None:
@@ -141,7 +141,7 @@ class Spotify:
     def current(self) -> dict:
         if not self.now:
             return {}
-        if env_get("ATENA_SPOTIFY_WHEN", "present") == "present" and \
+        if env_get("NUXIVA_SPOTIFY_WHEN", "present") == "present" and \
                 not any(p.get("known") for p in store.presence.get("people", [])):
             return {}
         return self.now
@@ -150,7 +150,7 @@ class Spotify:
         cid, secret = self._creds()
         return {"configured": self.configured(), "has_credentials": bool(cid and secret), "status": self.status,
                 "user": self.user, "now": self.now, "redirect_uri": REDIRECT_URI, "enabled": self.enabled(),
-                "when": env_get("ATENA_SPOTIFY_WHEN", "present")}
+                "when": env_get("NUXIVA_SPOTIFY_WHEN", "present")}
 
     async def run(self) -> None:
         while True:

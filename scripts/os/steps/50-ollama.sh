@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 . "$(dirname "$0")/../lib.sh"
 
-OVERRIDE=/etc/systemd/system/ollama.service.d/atena.conf
+OVERRIDE=/etc/systemd/system/ollama.service.d/nuxiva.conf
 
 max_loaded() {
     local ram_gb
@@ -11,7 +11,7 @@ max_loaded() {
 
 override_conf() {
     printf '%s\n' \
-        '# Gestito da Atena OS' \
+        '# Gestito da Nuxiva OS' \
         '[Service]' \
         'Environment="OLLAMA_HOST=127.0.0.1:11434"' \
         'Environment="OLLAMA_KEEP_ALIVE=24h"' \

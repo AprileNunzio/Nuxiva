@@ -21,20 +21,20 @@ try:
 except ImportError:
     online_stt = None
 
-log = logging.getLogger("atena.ear")
+log = logging.getLogger("nuxiva.ear")
 
 RATE = 16000
-MODEL_DIR = os.environ.get("ATENA_EAR_MODELS", "/opt/atena-ear/models")
+MODEL_DIR = os.environ.get("NUXIVA_EAR_MODELS", "/opt/nuxiva-ear/models")
 CPU = os.cpu_count() or 4
 THREADS = max(2, min(8, CPU - 2))
 HEAD_SECONDS = 1.8
-MULTILANG = os.environ.get("ATENA_EAR_MULTILANG", "1").lower() not in ("0", "off", "no")
-HOME_LANG = os.environ.get("ATENA_REPLY_LANG", "it").strip().lower()[:3] or "it"
+MULTILANG = os.environ.get("NUXIVA_EAR_MULTILANG", "1").lower() not in ("0", "off", "no")
+HOME_LANG = os.environ.get("NUXIVA_REPLY_LANG", "it").strip().lower()[:3] or "it"
 LANGUAGES = langpick.allowed()
 LANG_MIN_PROB = 0.75
 LANG_MIN_SECONDS = 0.9
-PROMPTS = {"it": "Ehi, Atena, assistente digitale.", "en": "Hey Atena, digital assistant.", "es": "Oye, Atena, asistente digital.",
-           "fr": "Hé, Atena, assistante numérique.", "de": "Hey Atena, digitale Assistentin.", "pt": "Ei, Atena, assistente digital."}
+PROMPTS = {"it": "Ehi, Nuxiva, assistente digitale.", "en": "Hey Nuxiva, digital assistant.", "es": "Oye, Nuxiva, asistente digital.",
+           "fr": "Hé, Nuxiva, assistante numérique.", "de": "Hey Nuxiva, digitale Assistentin.", "pt": "Ei, Nuxiva, assistente digital."}
 HALLUCINATIONS = {"", "grazie.", "grazie", "sottotitoli a cura di qtss", "sottotitoli creati dalla comunità amara.org",
                   "thank you.", "thanks for watching!", "you"}
 
@@ -47,8 +47,8 @@ def _has_avx2() -> bool:
 
 
 AVX2 = _has_avx2()
-MODEL_SIZE = os.environ.get("ATENA_STT_MODEL") or ("small" if CPU >= 6 and AVX2 else "base")
-WAKE_MODEL = os.environ.get("ATENA_WAKE_MODEL") or ("base" if CPU >= 6 and AVX2 else "tiny")
+MODEL_SIZE = os.environ.get("NUXIVA_STT_MODEL") or ("small" if CPU >= 6 and AVX2 else "base")
+WAKE_MODEL = os.environ.get("NUXIVA_WAKE_MODEL") or ("base" if CPU >= 6 and AVX2 else "tiny")
 SLOW_RTF = 0.8
 FALLBACK = "base" if MODEL_SIZE not in ("base", "tiny") else "tiny"
 
@@ -94,7 +94,7 @@ def spoken_language(audio: np.ndarray) -> str:
 
 
 def _adapt(seconds: float, audio_seconds: float) -> None:
-    if os.environ.get("ATENA_STT_MODEL") or ACTIVE["name"] == FALLBACK or audio_seconds < 1.0:
+    if os.environ.get("NUXIVA_STT_MODEL") or ACTIVE["name"] == FALLBACK or audio_seconds < 1.0:
         return
     SPEED.append(seconds / audio_seconds)
     if len(SPEED) == SPEED.maxlen and sum(SPEED) / len(SPEED) > SLOW_RTF:
@@ -107,7 +107,7 @@ def _adapt(seconds: float, audio_seconds: float) -> None:
 def transcribe(audio: np.ndarray, fast: bool = False, detect: bool = False) -> tuple[str, str]:
     started = time.time()
     lang = spoken_language(audio) if detect else HOME_LANG
-    ear_mode = os.environ.get("ATENA_EAR_MODE", "offline").strip().lower()
+    ear_mode = os.environ.get("NUXIVA_EAR_MODE", "offline").strip().lower()
 
     if not fast and ear_mode in ("online", "hybrid") and online_stt is not None:
         try:
@@ -122,8 +122,8 @@ def transcribe(audio: np.ndarray, fast: bool = False, detect: bool = False) -> t
 
     m = wake_model if fast else ACTIVE["model"]
     segments, _ = m.transcribe(audio, language=lang, beam_size=1, vad_filter=False,
-                               initial_prompt=PROMPTS.get(lang, "Atena."), condition_on_previous_text=False,
-                               hotwords=HOTWORDS["value"] if lang == HOME_LANG else "Atena")
+                               initial_prompt=PROMPTS.get(lang, "Nuxiva."), condition_on_previous_text=False,
+                               hotwords=HOTWORDS["value"] if lang == HOME_LANG else "Nuxiva")
     text = " ".join(s.text.strip() for s in segments).strip()
     if not fast:
         _adapt(time.time() - started, len(audio) / RATE)
@@ -153,8 +153,8 @@ def review_model(name: str):
 def transcribe_segments(audio: np.ndarray, name: str = "same", offset: float = 0.0) -> list[dict]:
     lang = spoken_language(audio)
     segments, _ = review_model(name).transcribe(audio, language=lang, beam_size=3, vad_filter=False,
-                                                initial_prompt=PROMPTS.get(lang, "Atena."),
+                                                initial_prompt=PROMPTS.get(lang, "Nuxiva."),
                                                 condition_on_previous_text=False,
-                                                hotwords=HOTWORDS["value"] if lang == HOME_LANG else "Atena")
+                                                hotwords=HOTWORDS["value"] if lang == HOME_LANG else "Nuxiva")
     return [{"start": round(offset + s.start, 2), "end": round(offset + s.end, 2), "text": s.text.strip()}
             for s in segments if s.text.strip() and not hallucination(s.text)]

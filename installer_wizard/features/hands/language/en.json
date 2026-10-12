@@ -7,7 +7,7 @@
     "Zero-touch UI interaction"
   ],
   "settings": {
-    "ATENA_HANDS_FPS": "Sampling rate (fps)",
-    "ATENA_HANDS_COUNT": "Max hands tracked"
+    "NUXIVA_HANDS_FPS": "Sampling rate (fps)",
+    "NUXIVA_HANDS_COUNT": "Max hands tracked"
   }
 }

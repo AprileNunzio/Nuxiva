@@ -8,8 +8,8 @@ use std::io::BufReader;
 use std::path::PathBuf;
 use std::process::ExitCode;
 
-use atena_netguard::engine::{Engine, Event};
-use atena_netguard::pcap::Reader;
+use nuxiva_netguard::engine::{Engine, Event};
+use nuxiva_netguard::pcap::Reader;
 
 use crate::config::Config;
 use crate::sink::Sink;
@@ -96,13 +96,13 @@ fn main() -> ExitCode {
         match args.command.as_str() {
             "replay" => replay(&args, &config),
             "capture" => live(&args, &config),
-            _ => Err("uso: atena-netguard replay --file F | capture --interface I [--socket S] [--config C]".into()),
+            _ => Err("uso: nuxiva-netguard replay --file F | capture --interface I [--socket S] [--config C]".into()),
         }
     });
     match outcome {
         Ok(()) => ExitCode::SUCCESS,
         Err(message) => {
-            eprintln!("atena-netguard: {message}");
+            eprintln!("nuxiva-netguard: {message}");
             ExitCode::FAILURE
         }
     }

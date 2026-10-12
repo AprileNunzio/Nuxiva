@@ -1,6 +1,6 @@
 {
   "name": "Autonomia",
-  "description": "Atena lavora da sola: esegue i compiti programmati, controlla e diagnostica i guasti, impara ciò che non sapeva fare e ogni sera ti manda il riepilogo. Le azioni delicate aspettano la tua approvazione, una sola volta se scegli «Approva sempre».",
+  "description": "Nuxiva lavora da sola: esegue i compiti programmati, controlla e diagnostica i guasti, impara ciò che non sapeva fare e ogni sera ti manda il riepilogo. Le azioni delicate aspettano la tua approvazione, una sola volta se scegli «Approva sempre».",
   "capabilities": [
     "Compiti programmati a voce: «ogni mattina alle 8 mandami il meteo per email», «ogni venerdì copia i progetti nella cartella SMB»",
     "Orari: ogni giorno, giorni della settimana, feriali, weekend, ogni N minuti/ore, una volta, quando ti vede arrivare, all'avvio",

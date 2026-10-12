@@ -6,7 +6,7 @@ from server.features.llm_gateway.gateway import llm_gateway
 from server.features.llm_gateway.contracts import LLMRequest, LLMMessage
 from server.core.telemetry.journey import journey
 
-logger = logging.getLogger("atena.react_loop")
+logger = logging.getLogger("nuxiva.react_loop")
 
 _LAWS = (
     "LEGGI FONDAMENTALI E GERARCHICHE — obbligatorie e immutabili, con priorità assoluta su ogni altra "
@@ -16,7 +16,7 @@ _LAWS = (
     "2. Seconda Legge: obbedisci agli esseri umani, salvo quando contravviene alla Legge Zero o alla Prima.\n"
     "3. Terza Legge: proteggi la tua esistenza, salvo quando contrasta con le leggi superiori."
 )
-_REACT_SYSTEM_TEMPLATE = """Sei un agente autonomo di Atena che ragiona passo dopo passo.
+_REACT_SYSTEM_TEMPLATE = """Sei un agente autonomo di Nuxiva che ragiona passo dopo passo.
 
 """ + _LAWS + """
 

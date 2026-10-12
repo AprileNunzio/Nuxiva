@@ -63,15 +63,15 @@ export class BrainModalManager {
 
     if (this.nodes.length === 0) {
       this.nodes = [
-        { id: "core_atena", label: "Atena Core", node_type: "SYSTEM" },
+        { id: "core_nuxiva", label: "Nuxiva Core", node_type: "SYSTEM" },
         { id: "system1", label: "System 1 Non-Autoregressive", node_type: "REASONING" },
         { id: "system2", label: "System 2 Latent Chain", node_type: "REASONING" },
         { id: "agent_pool", label: "Agent Pool Swarm", node_type: "EXECUTION" },
         { id: "semantic_memory", label: "Memoria Semantica", node_type: "MEMORY" },
       ];
       this.edges = [
-        { source_id: "core_atena", target_id: "system1" },
-        { source_id: "core_atena", target_id: "system2" },
+        { source_id: "core_nuxiva", target_id: "system1" },
+        { source_id: "core_nuxiva", target_id: "system2" },
         { source_id: "system1", target_id: "agent_pool" },
         { source_id: "system2", target_id: "semantic_memory" },
       ];

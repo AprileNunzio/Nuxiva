@@ -9,6 +9,6 @@
     "Le nœud se connecte en sortie : aucun port ouvert ; activation explicite pour chaque nœud"
   ],
   "settings": {
-    "ATENA_RPA_NODES": "Nœuds vérifiables (identifiants séparés par des virgules)"
+    "NUXIVA_RPA_NODES": "Nœuds vérifiables (identifiants séparés par des virgules)"
   }
 }

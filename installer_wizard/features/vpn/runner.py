@@ -80,7 +80,7 @@ async def up(p: model.Profile, secrets: dict) -> None:
     elif p.kind == "openvpn":
         login = write_private(CONF_DIR / f"{p.interface}.auth", f"{secrets.get('username', '')}\n{secrets.get('password', '')}\n")
         path = write_private(CONF_DIR / f"{p.interface}.ovpn", openvpn.render(p, secrets, login))
-        await run("systemd-run", f"--unit=atena-{p.interface}", "--collect", "--property=Restart=on-failure",
+        await run("systemd-run", f"--unit=nuxiva-{p.interface}", "--collect", "--property=Restart=on-failure",
                   "--property=RestartSec=5", "openvpn", "--config", path)
         await asyncio.sleep(3)
         await _dns(p)
@@ -104,7 +104,7 @@ async def down(p: model.Profile) -> None:
         if conf.exists():
             await run("wg-quick", "down", str(conf))
     elif p.kind == "openvpn":
-        await run("systemctl", "stop", f"atena-{p.interface}")
+        await run("systemctl", "stop", f"nuxiva-{p.interface}")
     elif p.kind == "ipsec":
         await run("swanctl", "--terminate", "--ike", ipsec.name(p), "--timeout", "15")
     elif p.kind == "tailscale":
@@ -128,7 +128,7 @@ async def status(p: model.Profile) -> dict:
             state = _wireguard_state(await run("wg", "show", p.interface, "latest-handshakes", timeout=10), time.time())
             return state | {"connected": state["connected"] or (p.role == "server")}
         if p.kind == "openvpn":
-            await run("systemctl", "is-active", "--quiet", f"atena-{p.interface}", timeout=10)
+            await run("systemctl", "is-active", "--quiet", f"nuxiva-{p.interface}", timeout=10)
             await run("ip", "link", "show", p.interface, timeout=10)
             return {"connected": True}
         if p.kind == "ipsec":

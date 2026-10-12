@@ -44,10 +44,10 @@ class ListingTest(unittest.TestCase):
             fake.list_printers.return_value = [{"id": "p1", "name": "Ufficio", "type": "laser_2d", "connection": "network", "api_key": "SECRET"}]
             with mock.patch.object(service, "printer_manager", fake):
                 printers = service.Printers()
-                printers.set_options("p1", {"copies": 3, "atena_default": True})
+                printers.set_options("p1", {"copies": 3, "nuxiva_default": True})
                 row = printers.listing()[0]
                 self.assertNotIn("api_key", row)
-                self.assertTrue(row["has_api_key"] and row["atena_default"])
+                self.assertTrue(row["has_api_key"] and row["nuxiva_default"])
                 self.assertEqual(row["options"]["copies"], 3)
                 self.assertEqual((Path(root) / "o.json").stat().st_mode & 0o777, 0o600)
                 self.assertEqual(service.Printers().default_id, "p1")

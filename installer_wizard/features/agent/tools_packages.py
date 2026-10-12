@@ -16,7 +16,7 @@ def _changes(args: dict) -> bool:
     return args.get("action") in ("install", "remove")
 
 
-@tool("packages", "elenca, installa in background o rimuove i pacchetti di Atena (voce, ascolto, visione, documenti Office, ecc.)",
+@tool("packages", "elenca, installa in background o rimuove i pacchetti di Nuxiva (voce, ascolto, visione, documenti Office, ecc.)",
       {"action": "list, install o remove", "package": f"uno tra {IDS}"}, confirm=_changes, full_only=True)
 async def manage(action: str = "list", package: str = "") -> str:
     if action == "list":

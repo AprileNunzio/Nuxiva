@@ -5,7 +5,7 @@ import time
 
 import httpx
 
-from config import DEMO, ATENA_DIR, STATE_DIR, env_get
+from config import DEMO, NUXIVA_DIR, STATE_DIR, env_get
 from health import sh
 from state import now_iso, store
 
@@ -20,7 +20,7 @@ _unreachable_since = 0.0
 
 
 async def git(*args: str, timeout: float = 120) -> tuple[int, str]:
-    return await sh("git", "-c", "safe.directory=*", "-C", str(ATENA_DIR), *args, timeout=timeout)
+    return await sh("git", "-c", "safe.directory=*", "-C", str(NUXIVA_DIR), *args, timeout=timeout)
 
 
 def _bad_revs() -> set:
@@ -31,7 +31,7 @@ def _bad_revs() -> set:
 
 
 def branch() -> str:
-    return env_get("ATENA_UPDATE_BRANCH", "main") or "main"
+    return env_get("NUXIVA_UPDATE_BRANCH", "main") or "main"
 
 
 async def current_rev() -> str:
@@ -40,7 +40,7 @@ async def current_rev() -> str:
 
 
 def require_ci() -> bool:
-    return env_get("ATENA_UPDATE_REQUIRE_CI", "1") != "0"
+    return env_get("NUXIVA_UPDATE_REQUIRE_CI", "1") != "0"
 
 
 async def _slug() -> str:
@@ -108,7 +108,7 @@ async def mark_good() -> None:
 
 
 def auto_update_enabled() -> bool:
-    return not DEMO and env_get("ATENA_AUTO_UPDATE", "1") != "0"
+    return not DEMO and env_get("NUXIVA_AUTO_UPDATE", "1") != "0"
 
 
 async def check(fetch_timeout: float = 180) -> dict:
@@ -154,7 +154,7 @@ async def apply(reason: str = "automatico", fetch_timeout: float = 180) -> bool:
     store.message = "Riavvio del supervisore sulla nuova versione…"
     store.touch()
     await asyncio.sleep(2)
-    await sh("systemctl", "restart", "--no-block", "atena-supervisor.service", timeout=10)
+    await sh("systemctl", "restart", "--no-block", "nuxiva-supervisor.service", timeout=10)
     return True
 
 
@@ -190,7 +190,7 @@ async def finish_pending(success: bool) -> bool:
     with BAD_REVS_FILE.open("a") as fh:
         fh.write(data["to"] + "\n")
     await git("reset", "--hard", data["from"])
-    await sh("systemctl", "restart", "--no-block", "atena-supervisor.service", timeout=10)
+    await sh("systemctl", "restart", "--no-block", "nuxiva-supervisor.service", timeout=10)
     return True
 
 
@@ -202,14 +202,14 @@ async def scheduler() -> None:
             await asyncio.sleep(60)
             continue
         try:
-            if env_get("ATENA_AUTO_UPDATE", "1") != "0":
+            if env_get("NUXIVA_AUTO_UPDATE", "1") != "0":
                 await apply("automatico" if store.phase == "READY" else "correttivo (sistema bloccato)")
             else:
                 await check()
         except Exception as exc:
             store.event("ERROR", f"Errore updater: {exc}", "updater")
         try:
-            minutes = float(env_get("ATENA_UPDATE_INTERVAL_MIN", "5") or 5)
+            minutes = float(env_get("NUXIVA_UPDATE_INTERVAL_MIN", "5") or 5)
         except ValueError:
             minutes = 5
         await asyncio.sleep(max(1.0, minutes) * 60)

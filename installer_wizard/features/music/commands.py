@@ -9,7 +9,7 @@ from features.music import catalog, conf, listening, mixes, playlists
 from features.music.db import db
 from features.music.outputs import outputs
 
-PLAY = re.compile(r"^(?:per favore |ti prego |ehi |atena )*(?:metti(?:mi)?|riproduci|suona|fai partire|fammi sentire|fammi ascoltare|voglio ascoltare|"
+PLAY = re.compile(r"^(?:per favore |ti prego |ehi |nuxiva )*(?:metti(?:mi)?|riproduci|suona|fai partire|fammi sentire|fammi ascoltare|voglio ascoltare|"
                   r"ascoltiamo|ascolta|mandami|play)\b\s*(?P<rest>.*)$")
 NOUNS = re.compile(r"\b(musica|canzone|canzoni|brano|brani|album|disco|dischi|playlist|mix|radio|cantante|band|artista)\b")
 STOP = {"il", "lo", "la", "le", "i", "gli", "un", "una", "uno", "di", "del", "della", "dello", "dei", "degli", "delle", "da", "dal", "dalla", "po", "qualcosa",
@@ -199,7 +199,7 @@ async def answer(text: str) -> tuple[str, dict]:
         raise LookupError
     t = plain(text)
     music_noun = bool(NOUNS.search(t))
-    if PLAY.match(t) and (music_noun or re.match(r"^(?:per favore |ti prego |ehi |atena )*(?:suona|riproduci|fai partire|fammi sentire|fammi ascoltare|ascoltiamo|ascolta|voglio ascoltare)\b", t)):
+    if PLAY.match(t) and (music_noun or re.match(r"^(?:per favore |ti prego |ehi |nuxiva )*(?:suona|riproduci|fai partire|fammi sentire|fammi ascoltare|ascoltiamo|ascolta|voglio ascoltare)\b", t)):
         if not re.search(r"\b(?:web\s?cam|telecamera|videocamera|camera|widget|schermo|finestra)\b", t):
             return await play(t)
     if active_device() and (music_noun or "volume" in t or len(t.split()) <= 5):

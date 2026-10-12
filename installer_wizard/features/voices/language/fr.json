@@ -11,10 +11,10 @@
     "Aperçu de chaque entrée"
   ],
   "settings": {
-    "ATENA_VOICE_SPEED": "Vitesse de la voix (0,6 - 1,6)",
-    "ATENA_VOICE_PITCH": "Ton de la voix (-6 bas … +6 haut)",
-    "ATENA_VOICE_VOLUME": "Volume de la voix (0,4 - 2,0)",
-    "ATENA_VOICE_ONLINE": "Inscriptions en ligne",
-    "ATENA_VOICE_AUTO_DOWNLOAD": "Téléchargez vous-même de nouvelles voix linguistiques"
+    "NUXIVA_VOICE_SPEED": "Vitesse de la voix (0,6 - 1,6)",
+    "NUXIVA_VOICE_PITCH": "Ton de la voix (-6 bas … +6 haut)",
+    "NUXIVA_VOICE_VOLUME": "Volume de la voix (0,4 - 2,0)",
+    "NUXIVA_VOICE_ONLINE": "Inscriptions en ligne",
+    "NUXIVA_VOICE_AUTO_DOWNLOAD": "Téléchargez vous-même de nouvelles voix linguistiques"
   }
 }

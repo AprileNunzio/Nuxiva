@@ -13,7 +13,7 @@ import httpx
 from features.vision import ir_configure
 from state import store
 
-log = logging.getLogger("atena.webcams")
+log = logging.getLogger("nuxiva.webcams")
 VERSION = "6.1.2"
 URL = ("https://github.com/EmixamPP/linux-enable-ir-emitter/releases/download/"
        f"{VERSION}/linux-enable-ir-emitter-{VERSION}-release.systemd.x86-64.tar.gz")

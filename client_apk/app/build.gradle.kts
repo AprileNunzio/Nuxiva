@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.atena.edge"
+    namespace = "com.nuxiva.edge"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.atena.edge"
+        applicationId = "com.nuxiva.edge"
         minSdk = 26
         targetSdk = 34
         versionCode = 4001053

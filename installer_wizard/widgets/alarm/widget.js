@@ -3,7 +3,7 @@
     smoke: ["fire", "Fumo rilevato"], gas: ["alert", "Fuga di gas"], flood: ["drop", "Allagamento"],
     intrusion: ["shield", "Intrusione"], co: ["fog", "Monossido di carbonio"], generic: ["alert", "Allarme"],
   };
-  AtenaDesk.register("alarm", {
+  NuxivaDesk.register("alarm", {
     render(el, d, ctx) {
       const [icon, title] = Object.hasOwn(KIND, d.kind) ? KIND[d.kind] : KIND.generic;
       const at = Number(d.at) > 0 ? Number(d.at) : ctx.now();

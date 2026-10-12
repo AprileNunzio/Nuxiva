@@ -10,7 +10,7 @@ from xml.sax.saxutils import escape
 
 import httpx
 
-log = logging.getLogger("atena.music")
+log = logging.getLogger("nuxiva.music")
 SSDP_ADDR = ("239.255.255.250", 1900)
 RENDERER = "urn:schemas-upnp-org:device:MediaRenderer:1"
 AVT = "urn:schemas-upnp-org:service:AVTransport:1"

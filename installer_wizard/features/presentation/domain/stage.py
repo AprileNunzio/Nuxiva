@@ -72,5 +72,5 @@ def to_ui(plan: Plan, images: Mapping[int, ImageAsset]) -> Dict[str, Any]:
         return {"mode": "face"}
     spans = [b.span for b in fill_rows(kept)]
     ordered = [{**panels[i], "span": spans[i]} for i in range(len(kept))]
-    return {"mode": "focus", "layout": "grid", "title": plan.title, "subtitle": plan.subtitle or "Impaginato da Atena",
+    return {"mode": "focus", "layout": "grid", "title": plan.title, "subtitle": plan.subtitle or "Impaginato da Nuxiva",
             "panels": ordered}

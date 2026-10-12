@@ -14,17 +14,17 @@ from features.firewall import model
 from features.firewall.nft import Block
 from features.firewall.store import store
 
-SOCKET = Path("/run/atena/netguard/netguard.sock")
+SOCKET = Path("/run/nuxiva/netguard/netguard.sock")
 SEVERITY = {name: rank for rank, name in enumerate(model.SEVERITIES)}
 KINDS = {"port_scan", "host_sweep", "syn_flood", "brute_force", "arp_spoof", "dns_tunnel", "icmp_flood", "exfiltration"}
 MAX_LINE = 1 << 20
-log = logging.getLogger("atena.firewall")
+log = logging.getLogger("nuxiva.firewall")
 
 
 def protected() -> set[str]:
     import tls
     addresses = set(tls.local_addresses()) | {"127.0.0.1", "::1"}
-    gateway = env_get("ATENA_GATEWAY_IP", "")
+    gateway = env_get("NUXIVA_GATEWAY_IP", "")
     if gateway:
         addresses.add(gateway)
     return addresses
@@ -116,11 +116,11 @@ class Monitor:
 
     def _publish(self, alert: dict) -> None:
         try:
-            from atena_bus import BusError, atena_bus
+            from nuxiva_bus import BusError, nuxiva_bus
         except ImportError:
             return
         try:
-            atena_bus.publish("firewall.alert", alert, origin="firewall")
+            nuxiva_bus.publish("firewall.alert", alert, origin="firewall")
         except BusError as exc:
             log.warning("Allarme firewall non pubblicato sul bus: %s", exc)
 
@@ -150,7 +150,7 @@ class Monitor:
     async def run(self) -> None:
         from features.firewall.applier import FirewallError, applier
         try:
-            await applier.apply("avvio di Atena")
+            await applier.apply("avvio di Nuxiva")
         except FirewallError as exc:
             log.error("Firewall non applicato all'avvio: %s", exc)
         if not sys.platform.startswith("linux"):

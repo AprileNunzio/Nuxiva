@@ -12,7 +12,7 @@ WEIGHT = {"voice": 1.0, "face": 0.9, "request": 0.7}
 MIN_SCORE = 0.25
 KEEP = 120.0
 
-current_room: ContextVar[Room | None] = ContextVar("atena_room", default=None)
+current_room: ContextVar[Room | None] = ContextVar("nuxiva_room", default=None)
 
 
 @dataclass(frozen=True)

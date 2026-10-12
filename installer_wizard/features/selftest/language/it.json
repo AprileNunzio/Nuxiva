@@ -1,6 +1,6 @@
 {
   "name": "Collaudo",
-  "description": "Atena prova davvero le sue funzioni ogni notte e dopo ogni aggiornamento; se un aggiornamento rompe qualcosa di essenziale torna da solo alla versione precedente e la avvisa.",
+  "description": "Nuxiva prova davvero le sue funzioni ogni notte e dopo ogni aggiornamento; se un aggiornamento rompe qualcosa di essenziale torna da solo alla versione precedente e la avvisa.",
   "capabilities": [
     "13 prove reali: supervisore e pannello, componenti, conversazione, voce, automazioni, cervello, display, ascolto, visione, casa, suoni, spazio, aggiornamenti",
     "Ogni notte (03:30) e cinque minuti dopo ogni aggiornamento",
@@ -10,8 +10,8 @@
     "A voce: «fai il collaudo»"
   ],
   "settings": {
-    "ATENA_SELFTEST_AT": "Ora del collaudo notturno (HH:MM)",
-    "ATENA_SELFTEST_ROLLBACK": "Se un aggiornamento rompe qualcosa di essenziale",
-    "ATENA_UPDATE_REQUIRE_CI": "Aggiornamenti da GitHub"
+    "NUXIVA_SELFTEST_AT": "Ora del collaudo notturno (HH:MM)",
+    "NUXIVA_SELFTEST_ROLLBACK": "Se un aggiornamento rompe qualcosa di essenziale",
+    "NUXIVA_UPDATE_REQUIRE_CI": "Aggiornamenti da GitHub"
   }
 }

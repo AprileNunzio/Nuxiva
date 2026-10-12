@@ -42,26 +42,28 @@ local.properties
 .DS_Store
 Thumbs.db
 *.log
-data/db/*
-data/certs/*
-!data/db/.gitkeep
+data/*
+!data/certs/
 !data/certs/.gitkeep
-data/qdrant/
-data/models/
-data/install_state.json
+!data/db/
+!data/db/.gitkeep
 ssh_debug*
 ssh_restart.py
 server/features/dynamic_skills/
 
+# AI instructions and assistants
 .claude/
 .cursor/
+.cursorrules
 .aider*
 .copilot/
+copilot-instructions.md
 .codex/
 .gemini/
 CLAUDE.md
 AGENTS.md
 GEMINI.md
+CHATGPT.md
 docs/
 screenshots*/
 *.pem

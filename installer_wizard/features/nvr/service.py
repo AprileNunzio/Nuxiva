@@ -3,14 +3,14 @@ import logging
 import re
 import time
 
-from atena_bus import BusError, Envelope, atena_bus
+from nuxiva_bus import BusError, Envelope, nuxiva_bus
 
 from features.nvr import settings as nvr_settings
 from features.nvr.ingest import MqttIngest
 from features.nvr.search import parse
 from features.nvr.store import EventStore
 
-log = logging.getLogger("atena.nvr")
+log = logging.getLogger("nuxiva.nvr")
 STATUS_EVERY = 30.0
 PRUNE_EVERY = 3600.0
 CAPABILITIES = ["nvr.events", "nvr.search", "nvr.mqtt_ingest"]
@@ -40,9 +40,9 @@ class Nvr:
             return False
         payload = {k: event[k] for k in ("id", "at", "camera", "label", "score", "source", "zone", "text")}
         try:
-            atena_bus.publish(f"nvr.event.{slug(event['camera'])}", payload, origin="nvr")
+            nuxiva_bus.publish(f"nvr.event.{slug(event['camera'])}", payload, origin="nvr")
             if event["label"] in self.settings["notify_labels"]:
-                atena_bus.publish("nvr.alert", payload, origin="nvr")
+                nuxiva_bus.publish("nvr.alert", payload, origin="nvr")
         except BusError as exc:
             log.debug("NVR: evento non pubblicato: %s", exc)
         return True
@@ -99,17 +99,17 @@ class Nvr:
 
     def publish_status(self) -> None:
         try:
-            atena_bus.publish("nvr.status", self.status(), origin="nvr", retain=True)
+            nuxiva_bus.publish("nvr.status", self.status(), origin="nvr", retain=True)
         except BusError as exc:
             log.debug("NVR: stato non pubblicato: %s", exc)
 
     async def run(self) -> None:
-        self.subscription = atena_bus.subscribe("camera.event.>", self.on_camera_event)
+        self.subscription = nuxiva_bus.subscribe("camera.event.>", self.on_camera_event)
         self.ingest.configure(self.settings)
         last_prune = 0.0
         while True:
             try:
-                atena_bus.announce("nvr", CAPABILITIES, info={"ingest": self.ingest.state})
+                nuxiva_bus.announce("nvr", CAPABILITIES, info={"ingest": self.ingest.state})
                 self.publish_status()
                 if time.time() - last_prune > PRUNE_EVERY:
                     last_prune = time.time()

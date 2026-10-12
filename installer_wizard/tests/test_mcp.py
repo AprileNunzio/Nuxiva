@@ -77,12 +77,12 @@ class ProtocolTest(TokenBase):
         full = {t["name"] for t in self.ask(self.risky, "tools/list")["result"]["tools"]}
         self.assertTrue({"run_command", "agent_set"} <= full)
         uris = [r["uri"] for r in self.ask(self.safe, "resources/list")["result"]["resources"]]
-        self.assertTrue({"atena://capabilities", "atena://team", "atena://widgets", "atena://agent/music"} <= set(uris))
-        self.assertNotIn("atena://agent/vault", uris)
-        self.assertIn("error", self.ask(self.safe, "resources/read", {"uri": "atena://agent/vault"}))
-        self.assertIn("music_play", self.ask(self.safe, "resources/read", {"uri": "atena://agent/music"})["result"]["contents"][0]["text"])
-        self.assertIn("atena://agent/{id}", str(self.ask(self.safe, "resources/templates/list")))
-        text = self.ask(self.safe, "resources/read", {"uri": "atena://capabilities"})["result"]["contents"][0]["text"]
+        self.assertTrue({"nuxiva://capabilities", "nuxiva://team", "nuxiva://widgets", "nuxiva://agent/music"} <= set(uris))
+        self.assertNotIn("nuxiva://agent/vault", uris)
+        self.assertIn("error", self.ask(self.safe, "resources/read", {"uri": "nuxiva://agent/vault"}))
+        self.assertIn("music_play", self.ask(self.safe, "resources/read", {"uri": "nuxiva://agent/music"})["result"]["contents"][0]["text"])
+        self.assertIn("nuxiva://agent/{id}", str(self.ask(self.safe, "resources/templates/list")))
+        text = self.ask(self.safe, "resources/read", {"uri": "nuxiva://capabilities"})["result"]["contents"][0]["text"]
         self.assertIn("LA SQUADRA", text)
         self.assertIn("error", self.ask(self.safe, "resources/read", {"uri": "file:///etc/passwd"}))
         self.assertIn("error", self.ask(self.safe, "metodo/inesistente"))
@@ -98,7 +98,7 @@ class ProtocolTest(TokenBase):
             self.assertIn("error", self.ask(self.safe, "tools/call", {"name": forbidden, "arguments": args}))
 
     def test_risky_actions_need_a_risky_token_and_an_explicit_confirmation(self):
-        args = {"agent": "music", "key": "ATENA_PASSWORD", "value": "x"}
+        args = {"agent": "music", "key": "NUXIVA_PASSWORD", "value": "x"}
         refused = self.ask(self.risky, "tools/call", {"name": "agent_set", "arguments": args})["result"]
         self.assertTrue(refused["isError"])
         self.assertIn("_confirm", refused["content"][0]["text"])

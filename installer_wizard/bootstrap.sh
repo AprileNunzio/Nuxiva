@@ -1,29 +1,27 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-REPO_URL="${ATENA_REPO:-https://github.com/AprileNunzio/ATENA.git}"
-BRANCH="${ATENA_BRANCH:-main}"
-ATENA_DIR=/opt/Atena
-WIZ="$ATENA_DIR/installer_wizard"
+REPO_URL="${NUXIVA_REPO:-https://github.com/AprileNunzio/NUXIVA.git}"
+BRANCH="${NUXIVA_BRANCH:-main}"
+NUXIVA_DIR=/opt/Nuxiva
+WIZ="$NUXIVA_DIR/installer_wizard"
 VENV="$WIZ/venv"
 REQ="$WIZ/backend/requirements.txt"
 STAMP="$VENV/.requirements.sha1"
-LOG_DIR=/var/log/atena
+LOG_DIR=/var/log/nuxiva
 LOG="$LOG_DIR/bootstrap.log"
 PREREQS=(git curl ca-certificates python3 python3-venv jq)
 WEIGHT=(0 10 15 45 2 25 3)
 
-case "${LC_ALL:-${LC_MESSAGES:-${LANG:-}}}" in
-    it*) UI_LANG=it ;;
-    *) UI_LANG=en ;;
-esac
+# Phase 1: Base installation runs in English by default
+UI_LANG="${NUXIVA_BOOTSTRAP_LANG:-en}"
 
 declare -A T
 if [ "$UI_LANG" = it ]; then
     DEC=","
     T=(
         [title]="Installazione di base" [elapsed]="trascorsi" [total]="Totale" [eta]="fine prevista"
-        [s1]="Prerequisiti di sistema" [s2]="Download di Atena" [s3]="Librerie Python"
+        [s1]="Prerequisiti di sistema" [s2]="Download di Nuxiva" [s3]="Librerie Python"
         [s4]="Configurazione di base" [s5]="Interfaccia grafica (Kiosk)" [s6]="Avvio del Supervisor"
         [repair]="Riparazione dei pacchetti interrotti" [index]="Aggiornamento dell'indice dei pacchetti"
         [present]="già presenti" [package]="pacchetto" [packages]="pacchetti" [of]="di" [left]="mancano" [remaining]="restanti"
@@ -33,26 +31,26 @@ if [ "$UI_LANG" = it ]; then
         [installpy]="Installazione delle librerie" [build]="Compilazione" [lock]="In attesa di un'altra installazione"
         [config]="Configurazione dei servizi" [admin_user]="pannello abilitato per" [start]="Avvio del servizio"
         [waiting]="In attesa della risposta" [ready]="attivo"
-        [error]="ERRORE" [root]="Eseguire come root (sudo)." [debian]="Atena OS richiede Debian o Ubuntu."
+        [error]="ERRORE" [root]="Eseguire come root (sudo)." [debian]="Nuxiva OS richiede Debian o Ubuntu."
         [stopped]="Installazione interrotta al passo" [line]="riga" [lastlog]="Ultime righe del log" [fulllog]="Log completo"
         [noresp]="Il Supervisor non risponde" [done]="Installazione di base completata"
         [autonomy]="Il Supervisor completa l'installazione in autonomia."
-        [monitor]="Monitor installazione / Atena" [admin]="Pannello di amministrazione" [live]="Log in tempo reale"
+        [monitor]="Monitor installazione / Nuxiva" [admin]="Pannello di amministrazione" [live]="Log in tempo reale"
         [retry]="Nuovo tentativo %d di %d" [heal_apt]="Gestore dei pacchetti riparato" [heal_net]="Connessione verificata"
-        [heal_git]="Copia di Atena rimossa: la riscarico da zero" [heal_pipcache]="Cache delle librerie svuotata"
+        [heal_git]="Copia di Nuxiva rimossa: la riscarico da zero" [heal_pipcache]="Cache delle librerie svuotata"
         [heal_venv]="Ambiente Python ricostruito da zero" [heal_repair]="Riparazione automatica eseguita" [autorepair]="Riparazione automatica"
         [disk_clean]="Pulizia del disco" [disk_full]="Spazio su disco insufficiente: liberi %s, ne servono almeno 2 GB. Libera spazio e rilancia il comando."
         [offline]="Nessuna connessione a internet: controlla cavo o Wi-Fi e rilancia il comando." [net_wait]="Nessuna connessione, riprovo"
         [net_check]="Verifica della connessione" [apt_wait]="Un altro programma sta installando pacchetti, attendo"
         [port_busy]="La porta %s è occupata dal programma «%s»: chiudilo o disinstallalo e rilancia il comando."
-        [safe]="Atena è partita in modalità sicura e si sta riparando da sola: apri la pagina qui sotto per seguire la riparazione."
+        [safe]="Nuxiva è partita in modalità sicura e si sta riparando da sola: apri la pagina qui sotto per seguire la riparazione."
         [failed_after]="%s non riuscito dopo %d tentativi."
     )
 else
     DEC="."
     T=(
         [title]="Base installation" [elapsed]="elapsed" [total]="Total" [eta]="expected finish"
-        [s1]="System prerequisites" [s2]="Downloading Atena" [s3]="Python libraries"
+        [s1]="System prerequisites" [s2]="Downloading Nuxiva" [s3]="Python libraries"
         [s4]="Base configuration" [s5]="Graphical interface (Kiosk)" [s6]="Starting the Supervisor"
         [repair]="Repairing interrupted packages" [index]="Updating the package index"
         [present]="already present" [package]="package" [packages]="packages" [of]="of" [left]="left" [remaining]="remaining"
@@ -62,19 +60,19 @@ else
         [installpy]="Installing libraries" [build]="Building" [lock]="Waiting for another installation"
         [config]="Configuring services" [admin_user]="panel enabled for" [start]="Starting the service"
         [waiting]="Waiting for a response" [ready]="running"
-        [error]="ERROR" [root]="Run as root (sudo)." [debian]="Atena OS requires Debian or Ubuntu."
+        [error]="ERROR" [root]="Run as root (sudo)." [debian]="Nuxiva OS requires Debian or Ubuntu."
         [stopped]="Installation stopped at step" [line]="line" [lastlog]="Last log lines" [fulllog]="Full log"
         [noresp]="The Supervisor is not responding" [done]="Base installation complete"
         [autonomy]="The Supervisor finishes the installation on its own."
-        [monitor]="Installation monitor / Atena" [admin]="Admin panel" [live]="Live log"
+        [monitor]="Installation monitor / Nuxiva" [admin]="Admin panel" [live]="Live log"
         [retry]="Retry %d of %d" [heal_apt]="Package manager repaired" [heal_net]="Connection checked"
-        [heal_git]="Atena copy removed: downloading it again from scratch" [heal_pipcache]="Library cache cleared"
+        [heal_git]="Nuxiva copy removed: downloading it again from scratch" [heal_pipcache]="Library cache cleared"
         [heal_venv]="Python environment rebuilt from scratch" [heal_repair]="Automatic repair done" [autorepair]="Automatic repair"
         [disk_clean]="Cleaning up the disk" [disk_full]="Not enough disk space: %s free, at least 2 GB needed. Free some space and run the command again."
         [offline]="No internet connection: check the cable or Wi-Fi and run the command again." [net_wait]="No connection, retrying"
         [net_check]="Checking the connection" [apt_wait]="Another program is installing packages, waiting"
         [port_busy]="Port %s is used by the program \"%s\": close or uninstall it and run the command again."
-        [safe]="Atena started in safe mode and is repairing itself: open the page below to follow the repair."
+        [safe]="Nuxiva started in safe mode and is repairing itself: open the page below to follow the repair."
         [failed_after]="%s failed after %d attempts."
     )
 fi
@@ -196,7 +194,7 @@ render_plain() {
     mark=$(( CUR * 1000 + PCT / 10 * 10 ))
     (( mark == PLAIN_MARK )) && return 0
     PLAIN_MARK=$mark
-    printf '[Atena] %d/6 %s %3d%%  (%s %d%%)\n' "$CUR" "${T[s$CUR]}" "$PCT" "${T[total]}" "$p"
+    printf '[Nuxiva] %d/6 %s %3d%%  (%s %d%%)\n' "$CUR" "${T[s$CUR]}" "$PCT" "${T[total]}" "$p"
 }
 
 draw() {
@@ -211,7 +209,7 @@ draw() {
     SPIN_I=$(( (SPIN_I + 1) % ${#G_SPIN[@]} ))
     spin=${G_SPIN[SPIN_I]}
     fmt_dur dur $(( EPOCHSECONDS - START ))
-    lines+=("   ${C_BOLD}${C_CYAN}A.T.E.N.A.${C_OFF}  ${G_DOT}  ${T[title]}   ${C_DIM}${dur} ${T[elapsed]}${C_OFF}")
+    lines+=("   ${C_BOLD}${C_CYAN}NUXIVA${C_OFF}  ${G_DOT}  ${T[title]}   ${C_DIM}${dur} ${T[elapsed]}${C_OFF}")
     lines+=("")
     for (( i = 1; i <= 6; i++ )); do
         case "${STEP_STATE[i]}" in
@@ -267,7 +265,7 @@ step_end() {
     STEP_NOTE[CUR]=$1
     STEP_DUR[CUR]=$(( EPOCHSECONDS - STEP_T0[CUR] ))
     PCT=100 DETAIL1="" DETAIL2=""
-    if [ "$TTY" != 1 ]; then printf '[Atena] %d/6 %s %s %s\n' "$CUR" "${T[s$CUR]}" "$G_OK" "$1"; fi
+    if [ "$TTY" != 1 ]; then printf '[Nuxiva] %d/6 %s %s %s\n' "$CUR" "${T[s$CUR]}" "$G_OK" "$1"; fi
     draw 1
 }
 
@@ -532,7 +530,7 @@ wait_apt() {
             else
                 if [ "$TTY" = 1 ] && (( prompted == 0 )); then
                     printf '\r\033[K\n%sAggiornamento automatico di Linux in corso, potrebbe richiedere minuti.%s\n' "$C_AMBER" "$C_OFF" >/dev/tty
-                    printf 'Premi [Invio] se vuoi interromperlo forzatamente per installare Atena (o usa --force-apt)\n' >/dev/tty
+                    printf 'Premi [Invio] se vuoi interromperlo forzatamente per installare Nuxiva (o usa --force-apt)\n' >/dev/tty
                     prompted=1
                 fi
                 if (( prompted == 1 )); then
@@ -566,7 +564,7 @@ heal_git() {
     HEAL_NOTE=${T[heal_net]}
     wait_online 180 || true
     if (( $1 >= 2 )); then
-        rm -rf "$ATENA_DIR"
+        rm -rf "$NUXIVA_DIR"
         HEAL_NOTE=${T[heal_git]}
     fi
     return 0
@@ -588,8 +586,8 @@ heal_pip() {
 heal_none() { return 0; }
 
 heal_start() {
-    systemctl stop atena-supervisor.service
-    bash "$ATENA_DIR/scripts/os/repair.sh" --quiet --no-restart --origin=installer
+    systemctl stop nuxiva-supervisor.service
+    bash "$NUXIVA_DIR/scripts/os/repair.sh" --quiet --no-restart --origin=installer
     HEAL_NOTE=${T[heal_repair]}
     return 0
 }
@@ -624,15 +622,15 @@ do_download() {
     GIT_SIZE=""
     speed_reset
     phase "${T[prepare]}"
-    if [ -d "$ATENA_DIR/.git" ] && git -C "$ATENA_DIR" rev-parse --verify -q HEAD >/dev/null 2>&1; then
-        stream h_git env LC_ALL=C git -C "$ATENA_DIR" fetch --progress origin "$BRANCH" || return 1
+    if [ -d "$NUXIVA_DIR/.git" ] && git -C "$NUXIVA_DIR" rev-parse --verify -q HEAD >/dev/null 2>&1; then
+        stream h_git env LC_ALL=C git -C "$NUXIVA_DIR" fetch --progress origin "$BRANCH" || return 1
         phase "${T[checkout]}"
-        git -C "$ATENA_DIR" reset --hard --quiet "origin/$BRANCH" >>"$LOG" 2>&1 || return 1
+        git -C "$NUXIVA_DIR" reset --hard --quiet "origin/$BRANCH" >>"$LOG" 2>&1 || return 1
     else
-        rm -rf "$ATENA_DIR"
-        stream h_git env LC_ALL=C git clone --progress --branch "$BRANCH" "$REPO_URL" "$ATENA_DIR" || return 1
+        rm -rf "$NUXIVA_DIR"
+        stream h_git env LC_ALL=C git clone --progress --branch "$BRANCH" "$REPO_URL" "$NUXIVA_DIR" || return 1
     fi
-    HEAD_SHORT=$(git -C "$ATENA_DIR" rev-parse --short HEAD) || return 1
+    HEAD_SHORT=$(git -C "$NUXIVA_DIR" rev-parse --short HEAD) || return 1
     STEP_RESULT="$HEAD_SHORT${GIT_SIZE:+ $G_DOT ${GIT_SIZE//./$DEC}}"
 }
 
@@ -690,30 +688,30 @@ do_python() {
 do_config() {
     local candidate
     phase "${T[config]}"
-    mkdir -p /etc/atena /var/lib/atena || return 1
-    touch /etc/atena/atena.env
-    chmod 700 /etc/atena
-    chmod 600 /etc/atena/atena.env
-    grep -q '^ATENA_UPDATE_BRANCH=' /etc/atena/atena.env || echo "ATENA_UPDATE_BRANCH=$BRANCH" >> /etc/atena/atena.env
-    grep -q '^ATENA_AUTO_UPDATE=' /etc/atena/atena.env || echo "ATENA_AUTO_UPDATE=1" >> /etc/atena/atena.env
-    getent group atena-admin >/dev/null || groupadd --system atena-admin || return 1
+    mkdir -p /etc/nuxiva /var/lib/nuxiva || return 1
+    touch /etc/nuxiva/nuxiva.env
+    chmod 700 /etc/nuxiva
+    chmod 600 /etc/nuxiva/nuxiva.env
+    grep -q '^NUXIVA_UPDATE_BRANCH=' /etc/nuxiva/nuxiva.env || echo "NUXIVA_UPDATE_BRANCH=$BRANCH" >> /etc/nuxiva/nuxiva.env
+    grep -q '^NUXIVA_AUTO_UPDATE=' /etc/nuxiva/nuxiva.env || echo "NUXIVA_AUTO_UPDATE=1" >> /etc/nuxiva/nuxiva.env
+    getent group nuxiva-admin >/dev/null || groupadd --system nuxiva-admin || return 1
     ADMINS=()
     for candidate in "${SUDO_USER:-}" "$(getent passwd 1000 | cut -d: -f1)"; do
         if [ -n "$candidate" ] && [ "$candidate" != "root" ] && id "$candidate" >/dev/null 2>&1; then
-            usermod -aG atena-admin "$candidate" || return 1
+            usermod -aG nuxiva-admin "$candidate" || return 1
             [[ " ${ADMINS[*]} " == *" $candidate "* ]] || ADMINS+=("$candidate")
         fi
     done
     PCT=40
     draw 1
     pkill -f 'backend/wizard_server.py' >/dev/null 2>&1 || true
-    systemctl disable atena-updater.service >/dev/null 2>&1 || true
-    rm -f /etc/systemd/system/atena-updater.service
-    install -m 0644 "$ATENA_DIR/scripts/os/systemd/atena-supervisor.service" /etc/systemd/system/ || return 1
-    install -m 0644 "$ATENA_DIR/scripts/os/systemd/atena-rollback.service" /etc/systemd/system/ || return 1
+    systemctl disable nuxiva-updater.service >/dev/null 2>&1 || true
+    rm -f /etc/systemd/system/nuxiva-updater.service
+    install -m 0644 "$NUXIVA_DIR/scripts/os/systemd/nuxiva-supervisor.service" /etc/systemd/system/ || return 1
+    install -m 0644 "$NUXIVA_DIR/scripts/os/systemd/nuxiva-rollback.service" /etc/systemd/system/ || return 1
     PCT=60
     draw 1
-    bash "$ATENA_DIR/scripts/os/prestart.sh" >>"$LOG" 2>&1 || return 1
+    bash "$NUXIVA_DIR/scripts/os/prestart.sh" >>"$LOG" 2>&1 || return 1
     if (( ${#ADMINS[@]} > 0 )); then STEP_RESULT="${T[admin_user]} ${ADMINS[*]}"; else STEP_RESULT=""; fi
 }
 
@@ -723,7 +721,7 @@ port_owner() {
 
 check_ports() {
     local port owner name pid msg
-    systemctl is-active -q atena-supervisor.service && return 0
+    systemctl is-active -q nuxiva-supervisor.service && return 0
     for port in 80 8080; do
         owner=$(port_owner "$port")
         [ -n "$owner" ] || continue
@@ -750,10 +748,10 @@ h_kiosk() {
 }
 
 do_kiosk() {
-    export ATENA_DIR="/opt/Atena"
+    export NUXIVA_DIR="/opt/Nuxiva"
     phase "${T[s5]}"
-    stream h_kiosk bash "$ATENA_DIR/scripts/os/steps/20-system.sh" apply || return 1
-    stream h_kiosk bash "$ATENA_DIR/scripts/os/steps/25-kiosk.sh" apply || return 1
+    stream h_kiosk bash "$NUXIVA_DIR/scripts/os/steps/20-system.sh" apply || return 1
+    stream h_kiosk bash "$NUXIVA_DIR/scripts/os/steps/25-kiosk.sh" apply || return 1
     STEP_RESULT=""
 }
 
@@ -763,9 +761,9 @@ do_start() {
     phase "${T[start]}"
     check_ports
     systemctl daemon-reload >>"$LOG" 2>&1
-    systemctl enable atena-supervisor.service >>"$LOG" 2>&1 || return 1
-    systemctl reset-failed atena-supervisor.service >>"$LOG" 2>&1 || true
-    systemctl restart atena-supervisor.service >>"$LOG" 2>&1 || return 1
+    systemctl enable nuxiva-supervisor.service >>"$LOG" 2>&1 || return 1
+    systemctl reset-failed nuxiva-supervisor.service >>"$LOG" 2>&1 || true
+    systemctl restart nuxiva-supervisor.service >>"$LOG" 2>&1 || return 1
     for (( w = 0; w < WAIT_MAX * 4; w++ )); do
         if (( w % 4 == 0 )); then
             if body=$(curl -fsS --max-time 2 http://127.0.0.1/healthz 2>/dev/null); then
@@ -782,7 +780,7 @@ do_start() {
         draw
         sleep 0.25
     done
-    journalctl -u atena-supervisor -n 40 --no-pager >>"$LOG" 2>&1 || true
+    journalctl -u nuxiva-supervisor -n 40 --no-pager >>"$LOG" 2>&1 || true
     return 1
 }
 
@@ -821,7 +819,7 @@ preflight
 STEP_RESULT=""
 attempt do_prereqs heal_apt
 step_end "$STEP_RESULT"
-git config --global --add safe.directory "$ATENA_DIR" >>"$LOG" 2>&1 || true
+git config --global --add safe.directory "$NUXIVA_DIR" >>"$LOG" 2>&1 || true
 run_step 2 do_download heal_git
 run_step 3 do_python heal_pip
 run_step 4 do_config heal_none
@@ -837,14 +835,15 @@ if (( SAFE )); then
     echo
     echo -e "   ${T[monitor]}:  ${C_GREEN}http://${IP:-localhost}/${C_OFF}"
     echo -e "   ${T[admin]}:  ${C_GREEN}http://${IP:-localhost}:8080/${C_OFF}"
-    echo -e "   ${T[live]}:  journalctl -fu atena-supervisor"
+    echo -e "   ${T[live]}:  journalctl -fu nuxiva-supervisor"
     echo
 else
+    mkdir -p /var/lib/nuxiva 2>/dev/null || true
+    echo '{"phase": 2, "base_installed": true, "at": "'$(date -u +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || echo "")'"}' > /var/lib/nuxiva/install_state.json 2>/dev/null || true
     echo -e "   ${C_GREEN}${G_OK}${C_OFF} ${T[done]} ${C_DIM}(${total_dur})${C_OFF}"
-    echo -e "   ${T[autonomy]}"
     echo
-    echo -e "   Il sistema si riavvierà tra pochi secondi per avviare l'interfaccia grafica..."
+    echo -e "   ${C_CYAN}>>> Base installation complete. Rebooting system in 5 seconds to launch graphical setup...${C_OFF}"
     echo
-    sleep 3
-    reboot
+    sleep 5
+    reboot || sudo reboot || systemctl reboot || true
 fi

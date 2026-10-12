@@ -1,5 +1,5 @@
 (() => {
-  AtenaDesk.register("thermostat", {
+  NuxivaDesk.register("thermostat", {
     render(el, d, ctx) {
       const cur = Number(d.current), target = Number(d.target);
       const fill = Number.isFinite(cur) ? ((cur - 10) / 20) * 100 : 0;

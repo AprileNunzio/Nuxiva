@@ -4,7 +4,7 @@ import asyncio
 from server.core.event_sourcing.universal_space import UniversalAction
 from server.core.sensory_bus.event_router import sensory_bus
 
-logger = logging.getLogger("atena.actuator_gateway")
+logger = logging.getLogger("nuxiva.actuator_gateway")
 
 class UniversalActuatorGateway:
     """
@@ -58,7 +58,7 @@ class UniversalActuatorGateway:
 
     async def _generic_fuzzing_fallback(self, action: UniversalAction):
         """
-        L'estremo tentativo. Se Atena non sa cos'è l'attuatore, logga i byte
+        L'estremo tentativo. Se Nuxiva non sa cos'è l'attuatore, logga i byte
         sperando di intercettare il device via OS-level hooks.
         """
         logger.critical(f"[RAW FUZZING OUT] Target: {action.target_id} | Vector: {action.control_vector}")

@@ -34,7 +34,7 @@ class Mind:
         self.publish()
 
     def enabled(self) -> bool:
-        return env_get("ATENA_MIND", "1") != "0"
+        return env_get("NUXIVA_MIND", "1") != "0"
 
     def save(self) -> None:
         tmp = STATE_FILE.with_suffix(".tmp")

@@ -46,7 +46,7 @@ class StrokeRecognitionTest(Base):
         self.assertEqual(digits.recognize([[[130, 100], [130, 180]]]), "1")
         self.assertEqual(digits.recognize([[[115, 120], [133, 100], [133, 180]]]), "1")
 
-    def test_atena_text_is_ignored_by_recognition(self):
+    def test_nuxiva_text_is_ignored_by_recognition(self):
         board.text("Metodo Perfetto: 242", x=260, y=150, size=34)
         write(handwritten_two_plus_two())
         self.assertEqual(ocr.recognize_math(board.items)["expression"], "2+2=")
@@ -63,16 +63,16 @@ class AnswerLayoutTest(Base):
         res = teacher.auto_evaluate()
         self.assertEqual(res["result"], "4")
         self.assertEqual(res["perfect"], "")
-        written = [i for i in board.items if i["by"] == "atena"]
+        written = [i for i in board.items if i["by"] == "nuxiva"]
         self.assertEqual([i["text"] for i in written], ["4"])
         self.assertGreater(written[0]["x"], max(b[2] for b in user_boxes))
         self.assertNotIn("Metodo", board.says)
 
-    def test_atena_never_writes_over_the_user(self):
+    def test_nuxiva_never_writes_over_the_user(self):
         write(handwritten_two_plus_two())
         user_boxes = board.occupied()
         teacher.teach("47 + 29 =", line=[360, 180, 850, 245], size=50)
-        for item in (i for i in board.items if i["by"] == "atena" and i["type"] == "text"):
+        for item in (i for i in board.items if i["by"] == "nuxiva" and i["type"] == "text"):
             x0, y0, x1, y1 = board.bounds(item)
             for ux0, uy0, ux1, uy1 in user_boxes:
                 self.assertFalse(x0 < ux1 and x1 > ux0 and y0 < uy1 and y1 > uy0, item["text"])
@@ -84,7 +84,7 @@ class AnswerLayoutTest(Base):
         user_boxes = board.occupied()
         service.solve_on_board("3x + 5 = 20")
         board.plot([{"label": "y = x", "points": [[0, 0], [1, 1]]}], 0, 1, 0, 1)
-        for item in (i for i in board.items if i["by"] == "atena"):
+        for item in (i for i in board.items if i["by"] == "nuxiva"):
             x0, y0, x1, y1 = board.bounds(item)
             for ux0, uy0, ux1, uy1 in user_boxes:
                 self.assertFalse(x0 < ux1 and x1 > ux0 and y0 < uy1 and y1 > uy0, item.get("text", item["type"]))

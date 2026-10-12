@@ -8,7 +8,7 @@
   "panel": "cameras",
   "description": "Un'unica funzione per webcam, infrarosso e telecamere di rete: vista dal vivo di tutte le sorgenti, ricerca e modelli per le marche più comuni, prova della connessione, opzioni per ogni telecamera (nome, stanza, rotazione, specchio, fluidità), controlli della webcam (luminosità, contrasto, esposizione), foto e clip, avviso di movimento e registrazione ad anello. Registrazione spenta di default: va attivata con il consenso di chi viene ripreso.",
   "toggle": {
-    "env": "ATENA_CAMERAS",
+    "env": "NUXIVA_CAMERAS",
     "default": "0",
     "apply": []
   },
@@ -27,7 +27,7 @@
   ],
   "settings": [
     {
-      "key": "ATENA_LIVECAM_FPS",
+      "key": "NUXIVA_LIVECAM_FPS",
       "label": "Fluidità dell'immagine in diretta",
       "type": "select",
       "default": "8",
@@ -51,7 +51,7 @@
       ]
     },
     {
-      "key": "ATENA_LIVECAM_WIDTH",
+      "key": "NUXIVA_LIVECAM_WIDTH",
       "label": "Larghezza dell'immagine in diretta",
       "type": "select",
       "default": "640",
@@ -75,7 +75,7 @@
       ]
     },
     {
-      "key": "ATENA_LIVECAM_MAX",
+      "key": "NUXIVA_LIVECAM_MAX",
       "label": "Telecamere in diretta contemporanee",
       "type": "select",
       "default": "2",
@@ -99,7 +99,7 @@
       ]
     },
     {
-      "key": "ATENA_CAMERAS_MOTION_EVERY",
+      "key": "NUXIVA_CAMERAS_MOTION_EVERY",
       "label": "Controllo del movimento ogni",
       "type": "select",
       "default": "5",
@@ -123,7 +123,7 @@
       ]
     },
     {
-      "key": "ATENA_CAMERAS_MOTION_COOLDOWN",
+      "key": "NUXIVA_CAMERAS_MOTION_COOLDOWN",
       "label": "Pausa tra due avvisi di movimento",
       "type": "select",
       "default": "60",
@@ -147,7 +147,7 @@
       ]
     },
     {
-      "key": "ATENA_CAMERAS_PHOTOS_MAX",
+      "key": "NUXIVA_CAMERAS_PHOTOS_MAX",
       "label": "Foto conservate per telecamera",
       "type": "select",
       "default": "200",
@@ -171,7 +171,7 @@
       ]
     },
     {
-      "key": "ATENA_IR_AUTO",
+      "key": "NUXIVA_IR_AUTO",
       "label": "Configura da solo l'emettitore infrarosso se l'immagine è al buio",
       "type": "select",
       "default": "1",

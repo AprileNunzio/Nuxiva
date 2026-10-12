@@ -13,7 +13,7 @@ from sandbox_broker.secret import secret_provider
 from sandbox_broker.server import bind_handler, serve_unix
 from server.features.sandbox.domain.strength import Strength
 
-logger = logging.getLogger("atena.sandbox_broker")
+logger = logging.getLogger("nuxiva.sandbox_broker")
 
 
 def build_registry(config: BrokerConfig, network: EgressNetwork) -> BackendRegistry:

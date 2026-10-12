@@ -5,22 +5,22 @@ from unittest import mock
 
 from fastapi.testclient import TestClient
 
-import atena_supervisor
+import nuxiva_supervisor
 from features.nexus import composition
 from features.nexus.application.awakening_service import AwakeningService
 from features.nexus.domain import awakening, summary
 from features.nexus.infrastructure.json_store import JsonDocument
 
-HEADERS = {"X-Atena-Request": "1"}
+HEADERS = {"X-Nuxiva-Request": "1"}
 CATALOG = {"features": [
     {"id": "vision", "state": {"mode": "auto"}}, {"id": "ear", "state": {"mode": "0"}},
     {"id": "home_assistant", "state": {"mode": "auto"}, "values": {"HOME_ASSISTANT_URL": "http://ha:8123"}},
-    {"id": "autonomy", "state": {"mode": "auto"}}, {"id": "agent", "state": {"mode": "1"}, "values": {"ATENA_AGENT_ACCESS": "standard"}},
+    {"id": "autonomy", "state": {"mode": "auto"}}, {"id": "agent", "state": {"mode": "1"}, "values": {"NUXIVA_AGENT_ACCESS": "standard"}},
 ]}
 
 
 def service(path: Path, clock=lambda: 50.0) -> AwakeningService:
-    return AwakeningService(JsonDocument(path), env=lambda: {"ATENA_USER_NAME": "Anna"}, catalog=lambda: CATALOG,
+    return AwakeningService(JsonDocument(path), env=lambda: {"NUXIVA_USER_NAME": "Anna"}, catalog=lambda: CATALOG,
                             brain_mode=lambda: "local", clock=clock)
 
 
@@ -76,10 +76,10 @@ class AwakeningServiceTest(unittest.TestCase):
 
 class AwakeningApiTest(unittest.TestCase):
     def test_endpoints_require_session_and_validate(self):
-        anon = TestClient(atena_supervisor.admin)
+        anon = TestClient(nuxiva_supervisor.admin)
         self.assertEqual(anon.get("/api/nexus/awakening").status_code, 401)
-        admin = TestClient(atena_supervisor.admin)
-        admin.post("/api/auth/login", json={"username": "admin", "password": "atena"}, headers=HEADERS)
+        admin = TestClient(nuxiva_supervisor.admin)
+        admin.post("/api/auth/login", json={"username": "admin", "password": "nuxiva"}, headers=HEADERS)
         with mock.patch.object(composition.awakening, "document", JsonDocument(Path(tempfile.mkdtemp()) / "a.json")):
             self.assertEqual(admin.put("/api/nexus/awakening", json={"step": "level", "status": "done"}).status_code, 403)
             r = admin.put("/api/nexus/awakening", json={"step": "level", "status": "done", "note": "Pilota"}, headers=HEADERS)

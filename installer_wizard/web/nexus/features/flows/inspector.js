@@ -9,11 +9,11 @@ function legend(a, b) {
   return h("div", { class: "legend" }, h("span", {}, h("i", {}), a), b ? h("span", {}, h("i", { class: "cmp" }), b) : null);
 }
 
-function overview(state, templateName) {
+function overview(state, templnuxivame) {
   const t = state.traits.draft;
   return [
     h("p", { class: "ptitle" }, "Profilo del flusso"),
-    h("h3", { class: "insp-title" }, templateName),
+    h("h3", { class: "insp-title" }, templnuxivame),
     radar(t, state.traits.default),
     legend("Bozza", "Predefinito"),
     h("div", { class: "meters" }, METERS.map(([key, label]) => h("div", { class: "meter" },
@@ -27,7 +27,7 @@ function pending(state) {
   const keys = Object.entries(state.pending);
   return h("div", { class: "min-architect" },
     h("p", { class: "ptitle" }, "Cosa cambierà pubblicando"),
-    keys.length ? h("pre", { class: "json" }, JSON.stringify(state.pending, null, 2)) : h("p", { class: "dim" }, "Nessuna modifica: la bozza è uguale a ciò che usa Atena."));
+    keys.length ? h("pre", { class: "json" }, JSON.stringify(state.pending, null, 2)) : h("p", { class: "dim" }, "Nessuna modifica: la bozza è uguale a ciò che usa Nuxiva."));
 }
 
 function nodeDetail(node, state, choose) {
@@ -57,7 +57,7 @@ function nodeDetail(node, state, choose) {
   ];
 }
 
-export function renderInspector(box, state, selected, templateName, choose) {
+export function renderInspector(box, state, selected, templnuxivame, choose) {
   const node = selected && state.nodes.find((n) => n.id === selected);
-  box.replaceChildren(...[node ? nodeDetail(node, state, choose) : overview(state, templateName), pending(state)].flat(2).filter(Boolean));
+  box.replaceChildren(...[node ? nodeDetail(node, state, choose) : overview(state, templnuxivame), pending(state)].flat(2).filter(Boolean));
 }

@@ -35,7 +35,7 @@ class OnlineBase(Base):
         patcher = mock.patch.object(sources.httpx, "AsyncClient", lambda **kw: real(transport=transport(), **kw))
         patcher.start()
         self.addCleanup(patcher.stop)
-        self.addCleanup(lambda: write_env({"ATENA_MUSIC_COVERS": "1", "ATENA_MUSIC_LYRICS": "1"}))
+        self.addCleanup(lambda: write_env({"NUXIVA_MUSIC_COVERS": "1", "NUXIVA_MUSIC_LYRICS": "1"}))
 
     def unknown_album_track(self) -> dict:
         path = make_wav(self.inbox / "AC DC - Back in Black.wav")
@@ -148,7 +148,7 @@ class ServiceOnlineTest(OnlineBase):
             asyncio.run(service.online())
         self.assertEqual(len(list(layout.library().rglob("*.lrc"))), 1)
         self.assertEqual(db.scalar("SELECT COUNT(*) FROM tracks WHERE album='Back In Black'"), 1)
-        write_env({"ATENA_MUSIC_COVERS": "0", "ATENA_MUSIC_LYRICS": "0"})
+        write_env({"NUXIVA_MUSIC_COVERS": "0", "NUXIVA_MUSIC_LYRICS": "0"})
         for lrc in layout.library().rglob("*.lrc"):
             lrc.unlink()
         db.run("DELETE FROM lookups")

@@ -5,7 +5,7 @@ import time
 from config import env_get
 from state import store
 
-log = logging.getLogger("atena.loops")
+log = logging.getLogger("nuxiva.loops")
 STABLE_AFTER = 120.0
 CHECK_EVERY = 10.0
 BACKOFF_MIN = 1.0
@@ -13,19 +13,19 @@ REPORT_EVERY = 10
 
 
 def enabled() -> bool:
-    return env_get("ATENA_LOOPS_RESTART", "1") != "0"
+    return env_get("NUXIVA_LOOPS_RESTART", "1") != "0"
 
 
 def backoff_max() -> float:
     try:
-        return max(5.0, min(600.0, float(env_get("ATENA_LOOPS_BACKOFF_MAX", "60"))))
+        return max(5.0, min(600.0, float(env_get("NUXIVA_LOOPS_BACKOFF_MAX", "60"))))
     except ValueError:
         return 60.0
 
 
 def stale_factor() -> float:
     try:
-        return max(2.0, min(20.0, float(env_get("ATENA_LOOPS_STALE_FACTOR", "5"))))
+        return max(2.0, min(20.0, float(env_get("NUXIVA_LOOPS_STALE_FACTOR", "5"))))
     except ValueError:
         return 5.0
 

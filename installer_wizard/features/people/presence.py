@@ -167,10 +167,10 @@ class PresenceMonitor:
             return
         self._bus_sig, self._bus_at = signature, now
         try:
-            from atena_bus import BusError, atena_bus
-            atena_bus.publish("vision.presence", {"people": people}, origin="vision", retain=True)
+            from nuxiva_bus import BusError, nuxiva_bus
+            nuxiva_bus.publish("vision.presence", {"people": people}, origin="vision", retain=True)
             if objects:
-                atena_bus.publish("vision.objects", {"source": "main", "objects": objects, "frame": data.get("frame") or [0, 0],
+                nuxiva_bus.publish("vision.objects", {"source": "main", "objects": objects, "frame": data.get("frame") or [0, 0],
                                                       "people": people}, origin="vision")
         except (ImportError, BusError):
             pass
@@ -193,7 +193,7 @@ class PresenceMonitor:
             return
         async with httpx.AsyncClient(timeout=3) as client:
             while True:
-                if env_get("ATENA_VISION", "1") == "0":
+                if env_get("NUXIVA_VISION", "1") == "0":
                     store.presence = {"status": "disabled", "people": [], "summary": ""}
                     await asyncio.sleep(10)
                     continue

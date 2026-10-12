@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   let tgTimer = null;
 
   async function loadTelegram() {
@@ -37,7 +37,7 @@
     $("tg-gen").addEventListener("click", async () => { try { const r = await A.api("POST", "/api/telegram/pair-code"); showCode(r.code, r.expires_in); } catch (e) { A.toast(e.message, true); } });
     $("tg-token-form").addEventListener("submit", async (e) => {
       e.preventDefault(); const v = $("tg-token").value.trim(); if (!v) return;
-      try { await A.api("PUT", "/api/config", { ATENA_TELEGRAM_TOKEN: v }); $("tg-token").value = ""; A.toast("Token salvato: connessione al bot…"); setTimeout(loadTelegram, 4000); }
+      try { await A.api("PUT", "/api/config", { NUXIVA_TELEGRAM_TOKEN: v }); $("tg-token").value = ""; A.toast("Token salvato: connessione al bot…"); setTimeout(loadTelegram, 4000); }
       catch (err) { A.toast(err.message, true); }
     });
     $("tg-chats").addEventListener("change", async (e) => {

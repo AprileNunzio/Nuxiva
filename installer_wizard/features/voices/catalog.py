@@ -12,7 +12,7 @@ from config import STATE_DIR, env_get
 from features.voices import languages
 from state import store
 
-VOICE_DIR = Path("/opt/atena-voice")
+VOICE_DIR = Path("/opt/nuxiva-voice")
 PIPER = VOICE_DIR / "piper" / "piper"
 KOKORO_MODEL = VOICE_DIR / "kokoro" / "kokoro-v1.0.onnx"
 KOKORO_URL = "http://127.0.0.1:8092"
@@ -75,11 +75,11 @@ ONLINE_CATALOG_FILE = CATALOG_DIR / "online.json"
 _ONLINE_RE = re.compile(r"^[a-z]{2,3}(-[A-Za-z0-9]{2,8}){1,3}-[A-Za-z]+Neural$")
 
 SAMPLES = {
-    "it": "Buongiorno, sono Atena. Questa è la mia voce.", "en": "Hello, I'm Atena. This is my voice.",
-    "es": "Hola, soy Atena. Esta es mi voz.", "fr": "Bonjour, je suis Atena. Voici ma voix.",
-    "de": "Hallo, ich bin Atena. Das ist meine Stimme.", "pt": "Olá, eu sou o Atena. Esta é a minha voz.",
-    "nl": "Hallo, ik ben Atena. Dit is mijn stem.", "ru": "Здравствуйте, я Джарвис. Это мой голос.",
-    "pl": "Dzień dobry, jestem Atena. To jest mój głos.", "ja": "こんにちは、ジャーヴィスです。これが私の声です。",
+    "it": "Buongiorno, sono Nuxiva. Questa è la mia voce.", "en": "Hello, I'm Nuxiva. This is my voice.",
+    "es": "Hola, soy Nuxiva. Esta es mi voz.", "fr": "Bonjour, je suis Nuxiva. Voici ma voix.",
+    "de": "Hallo, ich bin Nuxiva. Das ist meine Stimme.", "pt": "Olá, eu sou o Nuxiva. Esta é a minha voz.",
+    "nl": "Hallo, ik ben Nuxiva. Dit is mijn stem.", "ru": "Здравствуйте, я Джарвис. Это мой голос.",
+    "pl": "Dzień dobry, jestem Nuxiva. To jest mój głos.", "ja": "こんにちは、ジャーヴィスです。これが私の声です。",
     "zh": "你好，我是贾维斯。这是我的声音。", "hi": "नमस्ते, मैं जार्विस हूँ। यह मेरी आवाज़ है।",
 }
 
@@ -107,7 +107,7 @@ def engine(voice: str) -> str:
 
 
 def online_enabled() -> bool:
-    mode = (env_get("ATENA_VOICE_ONLINE", "0") or "0").lower()
+    mode = (env_get("NUXIVA_VOICE_ONLINE", "0") or "0").lower()
     if mode not in ("1", "on", "yes", "si", "sì") or not licensing.permitted("edge_tts"):
         return False
     return importlib.util.find_spec("edge_tts") is not None
@@ -129,19 +129,19 @@ def voice_license(voice: str) -> dict:
 
 
 def auto_download() -> bool:
-    return (env_get("ATENA_VOICE_AUTO_DOWNLOAD", "1") or "1") not in ("0", "off", "no")
+    return (env_get("NUXIVA_VOICE_AUTO_DOWNLOAD", "1") or "1") not in ("0", "off", "no")
 
 
 def fallback_voice() -> str:
-    return env_get("ATENA_VOICE_FALLBACK", DEFAULT_FALLBACK) or DEFAULT_FALLBACK
+    return env_get("NUXIVA_VOICE_FALLBACK", DEFAULT_FALLBACK) or DEFAULT_FALLBACK
 
 
 def custom_order() -> list[str]:
-    return [v.strip() for v in env_get("ATENA_VOICE_ORDER", "").split(",") if v.strip()]
+    return [v.strip() for v in env_get("NUXIVA_VOICE_ORDER", "").split(",") if v.strip()]
 
 
 def voice_order() -> list[str]:
-    order = custom_order() or [env_get("ATENA_VOICE", DEFAULT_VOICE) or DEFAULT_VOICE]
+    order = custom_order() or [env_get("NUXIVA_VOICE", DEFAULT_VOICE) or DEFAULT_VOICE]
     usable = [v for v in dict.fromkeys(order + [fallback_voice()]) if allowed(v)]
     return usable or [DEFAULT_VOICE]
 
@@ -152,7 +152,7 @@ def voice_name() -> str:
 
 def lang_prefs() -> dict[str, str]:
     prefs = {}
-    for item in env_get("ATENA_VOICE_LANG", "").split(","):
+    for item in env_get("NUXIVA_VOICE_LANG", "").split(","):
         lang, _, v = item.partition(":")
         if lang.strip() and v.strip():
             prefs[lang.strip()] = v.strip()

@@ -3,7 +3,7 @@ import unittest
 from features.voices import languages
 
 
-@unittest.skipIf(languages.NATIVE is None, "atena_native not built")
+@unittest.skipIf(languages.NATIVE is None, "nuxiva_native not built")
 class NativeLanguageTests(unittest.TestCase):
 
     def test_rust_detector_handles_replies_the_vocabulary_misses(self):

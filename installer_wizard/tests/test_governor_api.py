@@ -4,19 +4,19 @@ from unittest import mock
 from fastapi.testclient import TestClient
 
 import access
-import atena_supervisor
+import nuxiva_supervisor
 
-HEADERS = {"X-Atena-Request": "1"}
+HEADERS = {"X-Nuxiva-Request": "1"}
 
 
 class GovernorApiTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.admin = TestClient(atena_supervisor.admin)
-        r = cls.admin.post("/api/auth/login", json={"username": "admin", "password": "atena"}, headers=HEADERS)
+        cls.admin = TestClient(nuxiva_supervisor.admin)
+        r = cls.admin.post("/api/auth/login", json={"username": "admin", "password": "nuxiva"}, headers=HEADERS)
         assert r.status_code == 200, r.text
-        cls.display = TestClient(atena_supervisor.public)
-        cls.stranger = TestClient(atena_supervisor.public)
+        cls.display = TestClient(nuxiva_supervisor.public)
+        cls.stranger = TestClient(nuxiva_supervisor.public)
 
     def setUp(self):
         self.local = mock.patch.object(access, "is_local", lambda request: self.client_is_local)
@@ -37,7 +37,7 @@ class GovernorApiTest(unittest.TestCase):
         self.assertIn("upcoming", scheduler)
 
     def test_admin_views_require_login(self):
-        anon = TestClient(atena_supervisor.admin)
+        anon = TestClient(nuxiva_supervisor.admin)
         for path in ("/api/governor/state", "/api/scheduler/state", "/api/ear/review"):
             with self.subTest(path=path):
                 self.assertEqual(anon.get(path, headers=HEADERS).status_code, 401)

@@ -1,4 +1,4 @@
-name: Atena CI Pipeline
+name: Nuxiva CI Pipeline
 
 on:
   push:
@@ -96,25 +96,25 @@ jobs:
       - name: Rust Tests
         run: |
           cargo test --workspace --locked
-          cargo clippy -p atena-egress --all-targets --locked --features test-hooks -- -D warnings
-          cargo test -p atena-egress --locked --features test-hooks
-          cargo build --release --locked -p atena-egress --features test-hooks
+          cargo clippy -p nuxiva-egress --all-targets --locked --features test-hooks -- -D warnings
+          cargo test -p nuxiva-egress --locked --features test-hooks
+          cargo build --release --locked -p nuxiva-egress --features test-hooks
 
       - name: Build and Install Python Module
         run: |
           python -m pip install --upgrade pip maturin==1.9.6
-          maturin build --release --locked --manifest-path crates/atena-native/Cargo.toml --out dist
-          python -m pip install dist/atena_native-*.whl
+          maturin build --release --locked --manifest-path crates/nuxiva-native/Cargo.toml --out dist
+          python -m pip install dist/nuxiva_native-*.whl
           python -m pip install -r ../installer_wizard/backend/requirements.txt
 
       - name: Native Parity and Bus Tests
         working-directory: ./installer_wizard
-        run: python -m unittest tests.test_bus_router tests.test_atena_bus tests.test_nvr tests.test_language_native -v
+        run: python -m unittest tests.test_bus_router tests.test_nuxiva_bus tests.test_nvr tests.test_language_native -v
 
       - name: Native Egress Proxy Tests
         working-directory: .
         env:
-          ATENA_EGRESS_TEST_BIN: ${{ github.workspace }}/native/target/release/atena-egress
+          NUXIVA_EGRESS_TEST_BIN: ${{ github.workspace }}/native/target/release/nuxiva-egress
         run: |
           python -m pip install httpx==0.28.1 pydantic==2.13.5 pydantic-settings==2.15.0 psutil pyyaml
           python -m unittest server.tests.test_sandbox_native_egress server.tests.test_sandbox_egress -v
@@ -134,7 +134,7 @@ jobs:
         run: for f in $(find installer_wizard -name "*.js"); do node --check "$f"; done
 
       - name: Shell Syntax
-        run: for f in $(find scripts installer_wizard -name "*.sh") scripts/os/atenactl install.sh; do bash -n "$f"; done
+        run: for f in $(find scripts installer_wizard -name "*.sh") scripts/os/nuxivactl install.sh; do bash -n "$f"; done
 
   validate-web-client:
     runs-on: ubuntu-latest

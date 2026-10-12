@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const ICON = { local: "🖥", server: "🖧", cloud: "☁" };
   const ORIGIN = { local: "Questo server", server: "Server in rete", cloud: "Cloud" };
   const SCOPES = {
@@ -156,7 +156,7 @@
       if (t.dataset.strategy) saveSettings(t.dataset.strategy, { strategy: t.value });
       if (t.dataset.source) { builder[t.dataset.source].source = t.value; render(data); }
     });
-    document.addEventListener("atena:uimode", (e) => { if (e.detail === "expert") loadSources(); });
+    document.addEventListener("nuxiva:uimode", (e) => { if (e.detail === "expert") loadSources(); });
   }
 
   A.brainChains = { init, render, loadSources: () => (A.uiMode && A.uiMode.expert() ? loadSources() : Promise.resolve()) };

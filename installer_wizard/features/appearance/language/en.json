@@ -7,8 +7,8 @@
     "Dances to music, umbrella when it rains, weather backdrop"
   ],
   "settings": {
-    "ATENA_AVATAR": "Appearance",
-    "ATENA_AVATAR_STYLE": "3D style",
-    "ATENA_FACE_COLOR": "Hologram Color"
+    "NUXIVA_AVATAR": "Appearance",
+    "NUXIVA_AVATAR_STYLE": "3D style",
+    "NUXIVA_FACE_COLOR": "Hologram Color"
   }
 }

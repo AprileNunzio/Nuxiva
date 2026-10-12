@@ -4,7 +4,7 @@ import threading
 import time
 from pathlib import Path
 
-log = logging.getLogger("atena.governor")
+log = logging.getLogger("nuxiva.governor")
 SCHEMA = """CREATE TABLE IF NOT EXISTS usage (
   minute INTEGER NOT NULL, component TEXT NOT NULL, kind TEXT NOT NULL,
   n INTEGER NOT NULL DEFAULT 0, cpu_ms REAL NOT NULL DEFAULT 0, wall_ms REAL NOT NULL DEFAULT 0,

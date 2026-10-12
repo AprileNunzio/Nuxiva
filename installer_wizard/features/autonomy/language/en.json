@@ -1,6 +1,6 @@
 {
   "name": "Cognitive Autonomy",
-  "description": "Atena works on her own: she runs scheduled tasks, checks and diagnoses faults, learns what she could not do and sends you an evening summary. Sensitive actions wait for your approval, only once if you choose «Always approve».",
+  "description": "Nuxiva works on her own: she runs scheduled tasks, checks and diagnoses faults, learns what she could not do and sends you an evening summary. Sensitive actions wait for your approval, only once if you choose «Always approve».",
   "capabilities": [
     "Proactive periodic sweeps",
     "Autonomous anomaly detection and resolution",
@@ -8,7 +8,7 @@
     "Read-only diagnosis without approvals, no duplicate requests, rejections remembered for 24 hours and revocable «always approve» actions"
   ],
   "settings": {
-    "ATENA_AUTONOMY_LEVEL": "Autonomy level",
-    "ATENA_AUTONOMY_INTERVAL": "Sweep interval (seconds)"
+    "NUXIVA_AUTONOMY_LEVEL": "Autonomy level",
+    "NUXIVA_AUTONOMY_INTERVAL": "Sweep interval (seconds)"
   }
 }

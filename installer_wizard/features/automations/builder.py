@@ -5,7 +5,7 @@ from features.automations.schema import ACTIONS, CONDITIONS, EVENTS, TRIGGERS, v
 from features.automations.templates import TEMPLATES
 
 RULES = (
-    "Sei il progettista di automazioni di Atena. Trasforma la richiesta in UNA automazione JSON valida, senza testo "
+    "Sei il progettista di automazioni di Nuxiva. Trasforma la richiesta in UNA automazione JSON valida, senza testo "
     "fuori dal JSON. Struttura: {{\"name\": str, \"description\": str, \"mode\": \"single|restart|queued|parallel\", "
     "\"cooldown\": secondi, \"variables\": {{}}, \"triggers\": [...], \"conditions\": [...], \"actions\": [...]}}.\n"
     "Ogni elemento ha \"type\" e i suoi campi. Tipi disponibili:\n{catalog}\n"

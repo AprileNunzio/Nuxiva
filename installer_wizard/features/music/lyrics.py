@@ -3,7 +3,7 @@ import re
 import httpx
 
 LRCLIB = "https://lrclib.net/api/get"
-USER_AGENT = "AtenaOS/3 (+https://github.com/AprileNunzio/ATENA)"
+USER_AGENT = "NuxivaOS/3 (+https://github.com/AprileNunzio/NUXIVA)"
 LINE = re.compile(r"((?:\[\d{1,2}:\d{2}(?:[.:]\d{1,3})?\])+)(.*)")
 TAG = re.compile(r"\[(\d{1,2}):(\d{2})(?:[.:](\d{1,3}))?\]")
 _cache: dict = {}

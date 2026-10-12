@@ -5,7 +5,7 @@ from pathlib import Path
 from features.music import layout, lyrics, naming
 from features.music.db import db
 
-log = logging.getLogger("atena.music")
+log = logging.getLogger("nuxiva.music")
 RETRY = 7 * 86400
 BATCH = 60
 

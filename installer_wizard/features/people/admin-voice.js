@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { fmt } = A;
+  const A = window.NuxivaAdmin, { fmt } = A;
   const ADVICE = { lower: "il microfono era troppo alto", raise: "la voce arrivava troppo bassa", ok: "livello del microfono corretto" };
 
   function chips(list) {
@@ -7,15 +7,15 @@
   }
 
   function dictionary(rows) {
-    if (!rows.length) return '<div class="muted-note">ATENA ha capito tutte le frasi esattamente come scritte.</div>';
-    return `<div style="overflow-x:auto"><table><thead><tr><th>Frase da dire</th><th>Come l'ha capita ATENA</th></tr></thead>
+    if (!rows.length) return '<div class="muted-note">NUXIVA ha capito tutte le frasi esattamente come scritte.</div>';
+    return `<div style="overflow-x:auto"><table><thead><tr><th>Frase da dire</th><th>Come l'ha capita NUXIVA</th></tr></thead>
       <tbody>${rows.map((r) => `<tr><td>${fmt.esc(r.said)}</td><td>${fmt.esc(r.heard)}</td></tr>`).join("")}</tbody></table></div>`;
   }
 
   function training(t) {
     if (!t) {
       return `<div class="muted-note" style="margin-top:10px">Non ancora addestrata. Premi «Avvia sul display»: sul display comparirà
-        una breve sequenza da ripetere (il nome «Atena», alcuni comandi e qualche frase). ATENA impara il timbro della voce e il modo
+        una breve sequenza da ripetere (il nome «Nuxiva», alcuni comandi e qualche frase). NUXIVA impara il timbro della voce e il modo
         in cui questa persona pronuncia il suo nome e i comandi.</div>`;
     }
     const when = new Date(t.trained_at * 1000).toLocaleString();
@@ -24,7 +24,7 @@
         <div><label>Frasi capite</label><div><b style="color:var(--cyan)">${t.score}%</b></div></div>
         <div><label>Microfono</label><div>${fmt.esc(ADVICE[(t.level && t.level.advice) || "ok"])}</div></div>
       </div>
-      <label style="margin-top:14px">Come pronuncia «Atena»</label>
+      <label style="margin-top:14px">Come pronuncia «Nuxiva»</label>
       ${(t.wake_variants || []).length ? chips(t.wake_variants) : '<div class="muted-note">Nessuna variante: il nome viene capito correttamente.</div>'}
       <label style="margin-top:14px">Dizionario personale</label>
       ${dictionary(t.dictionary || [])}`;

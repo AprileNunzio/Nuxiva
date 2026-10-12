@@ -1,6 +1,6 @@
 {
   "name": "Gestione delle risorse",
-  "description": "Misura quanto pesano funzioni e widget, tiene una statistica dei consumi e adatta Atena al dispositivo: rimanda i lavori di fondo quando il sistema è sotto sforzo e fa girare il display in modo più leggero sui PC datati.",
+  "description": "Misura quanto pesano funzioni e widget, tiene una statistica dei consumi e adatta Nuxiva al dispositivo: rimanda i lavori di fondo quando il sistema è sotto sforzo e fa girare il display in modo più leggero sui PC datati.",
   "capabilities": [
     "Pressione del sistema da processore, memoria, swap e carico, con isteresi",
     "Lavori di fondo e cron rimandati (non scartati) quando serve",
@@ -10,14 +10,14 @@
     "Limite di widget attivi per dispositivo, con priorità a quello richiamato"
   ],
   "settings": {
-    "ATENA_GOV_CLASS": "Classe del dispositivo",
-    "ATENA_GOV_QUALITY": "Qualità grafica del display",
-    "ATENA_GOV_MAX_WIDGETS": "Widget attivi insieme (0 = automatico)",
-    "ATENA_GOV_CLIENT_REPORT": "I display inviano le proprie misure di fluidità",
-    "ATENA_GOV_SAMPLE_S": "Ogni quanti secondi misurare il sistema (1 - 30)",
-    "ATENA_GOV_PRESSURE_ENTER": "Sistema sotto sforzo oltre questa pressione (30 - 100)",
-    "ATENA_GOV_PRESSURE_EXIT": "Torna normale sotto questa pressione (10 - 99)",
-    "ATENA_GOV_DEFER_MAX_MIN": "Un lavoro di fondo si può rimandare al massimo (minuti, 0 = mai)",
-    "ATENA_GOV_RETENTION_DAYS": "Conserva le statistiche per (giorni, 1 - 365)"
+    "NUXIVA_GOV_CLASS": "Classe del dispositivo",
+    "NUXIVA_GOV_QUALITY": "Qualità grafica del display",
+    "NUXIVA_GOV_MAX_WIDGETS": "Widget attivi insieme (0 = automatico)",
+    "NUXIVA_GOV_CLIENT_REPORT": "I display inviano le proprie misure di fluidità",
+    "NUXIVA_GOV_SAMPLE_S": "Ogni quanti secondi misurare il sistema (1 - 30)",
+    "NUXIVA_GOV_PRESSURE_ENTER": "Sistema sotto sforzo oltre questa pressione (30 - 100)",
+    "NUXIVA_GOV_PRESSURE_EXIT": "Torna normale sotto questa pressione (10 - 99)",
+    "NUXIVA_GOV_DEFER_MAX_MIN": "Un lavoro di fondo si può rimandare al massimo (minuti, 0 = mai)",
+    "NUXIVA_GOV_RETENTION_DAYS": "Conserva le statistiche per (giorni, 1 - 365)"
   }
 }

@@ -22,8 +22,8 @@ class PlanTest(unittest.TestCase):
         self.assertEqual(voice_training.plan("de"), voice_training.plan("it"))
 
     def test_the_way_a_person_says_the_name_is_extracted(self):
-        cases = {"Atena": "atena", "a tena": "atena", "Hey Athena": "athena", "Ehi Adena, che ore sono": "adena",
-                 "dis Atèna": "atena"}
+        cases = {"Nuxiva": "nuxiva", "nu xiva": "nuxiva", "Hey Nuxiva": "nuxiva", "Ehi Nuxiba, che ore sono": "nuxiba",
+                 "dis Nuxiva": "nuxiva"}
         for heard, variant in cases.items():
             with self.subTest(heard=heard):
                 self.assertEqual(learner_module.name_variant(heard), variant)
@@ -32,12 +32,12 @@ class PlanTest(unittest.TestCase):
                 self.assertIsNone(learner_module.name_variant(heard))
 
     def test_steps_are_judged_by_kind(self):
-        wake, command, reading = ({"kind": k, "text": t} for k, t in (("wake", "Atena"), ("command", "Atena, che ore sono?"),
+        wake, command, reading = ({"kind": k, "text": t} for k, t in (("wake", "Nuxiva"), ("command", "Nuxiva, che ore sono?"),
                                                                        ("reading", "Il gatto dorme.")))
-        self.assertTrue(voice_training.evaluate(wake, "a tena")["ok"])
+        self.assertTrue(voice_training.evaluate(wake, "nu xiva")["ok"])
         self.assertFalse(voice_training.evaluate(wake, "buongiorno")["ok"])
-        self.assertTrue(voice_training.evaluate(command, "Adena che ore sono")["ok"])
-        self.assertFalse(voice_training.evaluate(command, "Atena accendi la luce")["ok"])
+        self.assertTrue(voice_training.evaluate(command, "Nuxiba che ore sono")["ok"])
+        self.assertFalse(voice_training.evaluate(command, "Nuxiva accendi la luce")["ok"])
         self.assertTrue(voice_training.evaluate(reading, "il gatto dorme")["ok"])
 
 
@@ -45,9 +45,9 @@ class LearnerTeachTest(unittest.TestCase):
     def test_a_taught_variant_wakes_at_once(self):
         with tempfile.TemporaryDirectory() as tmp, mock.patch.object(learner_module, "LEARN_FILE", Path(tmp) / "l.json"):
             learner = learner_module.Learner()
-            self.assertIsNone(learner.find_wake("adina accendi la luce"))
-            self.assertTrue(learner.teach("adina"))
-            self.assertIsNotNone(learner.find_wake("adina accendi la luce"))
+            self.assertIsNone(learner.find_wake("naxina accendi la luce"))
+            self.assertTrue(learner.teach("naxina"))
+            self.assertIsNotNone(learner.find_wake("naxina accendi la luce"))
             self.assertFalse(learner.teach("catena"))
 
 
@@ -64,7 +64,7 @@ class RecordTest(unittest.TestCase):
 
     def answers(self):
         plan = voice_training.plan("it")
-        heard = {"wake": "a tena", "command": "", "reading": "testo letto"}
+        heard = {"wake": "nu xiva", "command": "", "reading": "testo letto"}
         out = []
         for i, item in enumerate(plan):
             said = item["text"] if item["kind"] == "command" else heard[item["kind"]]
@@ -73,10 +73,10 @@ class RecordTest(unittest.TestCase):
 
     def test_training_builds_the_personal_dictionary(self):
         result = voice_training.record("nunzio", "it", self.answers())
-        self.assertEqual(result["wake_variants"], ["atena"])
+        self.assertEqual(result["wake_variants"], ["nuxiva"])
         self.assertEqual(result["language"], "it")
         self.assertEqual(result["score"], 100)
-        self.assertTrue(all(row["heard"] == "a tena" for row in result["dictionary"]))
+        self.assertTrue(all(row["heard"] == "nu xiva" for row in result["dictionary"]))
         self.assertEqual(result["level"]["advice"], "lower")
         self.assertIn("voice_training", json.loads((Path(self.tmp.name) / "nunzio.json").read_text(encoding="utf-8")))
 

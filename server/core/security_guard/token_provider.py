@@ -9,7 +9,7 @@ from server.config.security import security_config
 from server.shared.errors.domain_errors import UnauthorizedException
 
 class TokenProvider:
-    def __init__(self, secret_key: str = settings.ATENA_SECRET_KEY):
+    def __init__(self, secret_key: str = settings.NUXIVA_SECRET_KEY):
         self._secret = secret_key.encode("utf-8")
 
     def issue_token(self, subject: str, claims: Dict[str, Any]) -> str:

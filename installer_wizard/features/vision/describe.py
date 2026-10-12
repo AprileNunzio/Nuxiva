@@ -9,7 +9,7 @@ from features.cameras import live
 from features.desktop.desk import desk
 from features.vision import stills
 
-log = logging.getLogger("atena.vision")
+log = logging.getLogger("nuxiva.vision")
 PROMPT = ("Descrivi in italiano, in modo completo e concreto, tutto ciò che si vede ora nella foto: le persone (quante, cosa fanno, "
           "abbigliamento, espressione, senza ipotizzare identità), gli oggetti e dove si trovano, eventuali testi leggibili, ambiente e "
           "luce, movimento o situazioni insolite. Rispondi SOLO con JSON: {\"description\": testo di tre-cinque frasi da leggere ad alta "

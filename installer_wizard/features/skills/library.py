@@ -13,7 +13,7 @@ from pathlib import Path
 from config import DEMO, SKILLS_DIR, STATE_DIR, env_get
 from state import store
 
-log = logging.getLogger("atena.skills")
+log = logging.getLogger("nuxiva.skills")
 
 SYSTEM_DIR = SKILLS_DIR
 USER_DIR = STATE_DIR / "skills"
@@ -118,11 +118,11 @@ class Library:
 
     @staticmethod
     def enabled() -> bool:
-        return env_get("ATENA_SKILLS", "1") != "0"
+        return env_get("NUXIVA_SKILLS", "1") != "0"
 
     @staticmethod
     def may_generate() -> bool:
-        return env_get("ATENA_SKILLS_GENERATE", "1") != "0"
+        return env_get("NUXIVA_SKILLS_GENERATE", "1") != "0"
 
     def scan(self) -> None:
         paths = sorted(glob.glob(str(SYSTEM_DIR / "*" / "*" / "skill.json")) + glob.glob(str(USER_DIR / "*" / "*" / "skill.json")))

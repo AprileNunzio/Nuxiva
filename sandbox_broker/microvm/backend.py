@@ -20,7 +20,7 @@ ROOTFS_FILE = "rootfs.ext4"
 _CONSOLE_FACTOR = 2
 _SMOKE_SPEC = ExecutionSpec(
     language=Language.PYTHON,
-    source="print('atena-microvm-ok')",
+    source="print('nuxiva-microvm-ok')",
     limits=ResourceLimits(memory_mb=64, wall_seconds=30),
 )
 
@@ -131,6 +131,6 @@ class MicroVmBackend(Backend):
         except (OSError, SandboxUnavailableError) as exc:
             self.note = f"avvio fallito: {exc}"[:200]
             return False
-        healthy = result.exit_code == 0 and b"atena-microvm-ok" in result.stdout and time.monotonic() - started < 60
+        healthy = result.exit_code == 0 and b"nuxiva-microvm-ok" in result.stdout and time.monotonic() - started < 60
         self.note = "" if healthy else f"prova fallita: exit={result.exit_code} {self.last_trace or result.stderr[-160:].decode('utf-8', 'replace')}"
         return healthy

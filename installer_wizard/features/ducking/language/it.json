@@ -1,8 +1,8 @@
 {
   "name": "Volume durante la conversazione",
-  "description": "Mentre parli con Atena abbassa da sola la musica, Spotify, la TV sui Chromecast e le casse di Home Assistant, e rimette il volume di prima a conversazione finita (se nel frattempo non l'hai cambiato tu).",
+  "description": "Mentre parli con Nuxiva abbassa da sola la musica, Spotify, la TV sui Chromecast e le casse di Home Assistant, e rimette il volume di prima a conversazione finita (se nel frattempo non l'hai cambiato tu).",
   "capabilities": [
-    "Musica sulle uscite di Atena (Chromecast, DLNA, PC)",
+    "Musica sulle uscite di Nuxiva (Chromecast, DLNA, PC)",
     "Spotify (dopo aver ricollegato l'account)",
     "TV trasmessa sui Chromecast",
     "Casse e lettori di Home Assistant",
@@ -10,7 +10,7 @@
     "Ripristino sicuro: non tocca un volume cambiato a mano"
   ],
   "settings": {
-    "ATENA_DUCK_LEVEL": "Durante la conversazione il volume scende al",
-    "ATENA_DUCK_HOME": "Abbassa anche TV e casse di casa"
+    "NUXIVA_DUCK_LEVEL": "Durante la conversazione il volume scende al",
+    "NUXIVA_DUCK_HOME": "Abbassa anche TV e casse di casa"
   }
 }

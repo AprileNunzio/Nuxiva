@@ -18,7 +18,7 @@ DEVICE = "prova-comprensione"
 
 def ctx(text: str, widgets=(), last_intent: str = "", age: float = 5.0) -> context.Context:
     return context.Context(text=text, plain=context.plain(text), device=DEVICE, last_text="", last_intent=last_intent, last_age=age, widgets=set(widgets),
-                           history="Utente: ciao\nAtena: buongiorno")
+                           history="Utente: ciao\nNuxiva: buongiorno")
 
 
 class BareMathTest(unittest.TestCase):

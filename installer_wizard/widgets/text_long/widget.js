@@ -17,7 +17,7 @@
     const doc = new DOMParser().parseFromString(String(html).slice(0, 40000), "text/html");
     copy(doc.body, target, 0);
   };
-  AtenaDesk.register("text_long", {
+  NuxivaDesk.register("text_long", {
     render(el, d) {
       el.innerHTML = `<div class="wk-text tx-long"><i>Caricamento testo esteso…</i></div>`;
       if (d.content) {

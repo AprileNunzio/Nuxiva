@@ -4,7 +4,7 @@ from server.core.orchestrator.brain_routing import brain_order_for
 from server.features.parametric.application.translator import SpecTranslationError
 from server.features.parametric.composition import UnavailableModelError, build_designer
 
-logger = logging.getLogger("atena.tools.generator_3d")
+logger = logging.getLogger("nuxiva.tools.generator_3d")
 
 _designer = build_designer(lambda: brain_order_for("parametric_designer"))
 

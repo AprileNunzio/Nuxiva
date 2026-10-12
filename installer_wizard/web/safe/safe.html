@@ -5,7 +5,7 @@
 <meta name="google" content="notranslate">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
-<title>Atena</title>
+<title>Nuxiva</title>
 <style>
 :root { --bg: #04070d; --text: #e8f6ff; --dim: #8fa6b8; --faint: #55697a; --cyan: 41, 224, 255; --green: #3dffa8; --amber: #ffb547; --red: #ff4d6a; --mono: ui-monospace, "JetBrains Mono", Menlo, monospace; }
 * { box-sizing: border-box; }
@@ -44,7 +44,7 @@ code { display: block; margin-top: 8px; padding: 10px 12px; border-radius: 10px;
 </head>
 <body>
 <main id="app">
-  <div class="brand"><span class="pulse"></span>A.T.E.N.A.</div>
+  <div class="brand"><span class="pulse"></span>NUXIVA</div>
   <h1 id="title"></h1>
   <p id="lead"></p>
   <ol id="steps" hidden></ol>
@@ -53,81 +53,81 @@ code { display: block; margin-top: 8px; padding: 10px 12px; border-radius: 10px;
   <details>
     <summary id="tech"></summary>
     <code id="error"></code>
-    <code class="cli">sudo atenactl ripara</code>
+    <code class="cli">sudo nuxivactl ripara</code>
   </details>
 </main>
 <script>
 (() => {
   const TEXT = {
     it: {
-      title: "Atena è in modalità sicura",
-      titleOk: "Atena è di nuovo operativa",
+      title: "Nuxiva è in modalità sicura",
+      titleOk: "Nuxiva è di nuovo operativa",
       reasons: {
-        missing_library: "Mancano alcune librerie che servono ad Atena per partire.",
-        broken_code: "Alcuni file di Atena sono danneggiati o incompleti.",
-        system: "Un problema del sistema impedisce ad Atena di partire.",
-        unknown: "Atena non è riuscita a partire normalmente."
+        missing_library: "Mancano alcune librerie che servono ad Nuxiva per partire.",
+        broken_code: "Alcuni file di Nuxiva sono danneggiati o incompleti.",
+        system: "Un problema del sistema impedisce ad Nuxiva di partire.",
+        unknown: "Nuxiva non è riuscita a partire normalmente."
       },
-      calm: "I tuoi dati sono al sicuro. Atena può ripararsi da sola: basta un tocco.",
+      calm: "I tuoi dati sono al sicuro. Nuxiva può ripararsi da sola: basta un tocco.",
       repair: "Ripara ora", repairing: "Riparazione in corso…", retry: "Riprova la riparazione",
       started: "Riparazione avviata, segui i passaggi qui sopra.",
       busy: "Una riparazione è già in corso.", wait: "Attendi qualche secondo prima di riprovare.",
       unavailable: "La riparazione automatica non è disponibile: usa il comando qui sotto.",
-      offline: "Atena non risponde, sto riprovando…",
-      done: "Riparazione completata, sto riavviando Atena…",
+      offline: "Nuxiva non risponde, sto riprovando…",
+      done: "Riparazione completata, sto riavviando Nuxiva…",
       failed: "Alcuni problemi vanno risolti a mano: leggi i passaggi in rosso.",
       tech: "Dettagli tecnici",
-      steps: { disk: "Spazio su disco", apt: "Gestore dei pacchetti", network: "Connessione a internet", code: "File di Atena",
-               python: "Librerie Python", system: "File di sistema", ports: "Porte di rete", service: "Avvio di Atena" }
+      steps: { disk: "Spazio su disco", apt: "Gestore dei pacchetti", network: "Connessione a internet", code: "File di Nuxiva",
+               python: "Librerie Python", system: "File di sistema", ports: "Porte di rete", service: "Avvio di Nuxiva" }
     },
     en: {
-      title: "Atena is in safe mode",
-      titleOk: "Atena is working again",
+      title: "Nuxiva is in safe mode",
+      titleOk: "Nuxiva is working again",
       reasons: {
-        missing_library: "Some libraries Atena needs to start are missing.",
-        broken_code: "Some Atena files are damaged or incomplete.",
-        system: "A system problem is preventing Atena from starting.",
-        unknown: "Atena could not start normally."
+        missing_library: "Some libraries Nuxiva needs to start are missing.",
+        broken_code: "Some Nuxiva files are damaged or incomplete.",
+        system: "A system problem is preventing Nuxiva from starting.",
+        unknown: "Nuxiva could not start normally."
       },
-      calm: "Your data is safe. Atena can repair itself with a single tap.",
+      calm: "Your data is safe. Nuxiva can repair itself with a single tap.",
       repair: "Repair now", repairing: "Repairing…", retry: "Try repairing again",
       started: "Repair started, follow the steps above.",
       busy: "A repair is already running.", wait: "Wait a few seconds before trying again.",
       unavailable: "Automatic repair is not available: use the command below.",
-      offline: "Atena is not responding, retrying…",
-      done: "Repair complete, restarting Atena…",
+      offline: "Nuxiva is not responding, retrying…",
+      done: "Repair complete, restarting Nuxiva…",
       failed: "Some problems need a manual fix: read the steps in red.",
       tech: "Technical details",
-      steps: { disk: "Disk space", apt: "Package manager", network: "Internet connection", code: "Atena files",
-               python: "Python libraries", system: "System files", ports: "Network ports", service: "Starting Atena" }
+      steps: { disk: "Disk space", apt: "Package manager", network: "Internet connection", code: "Nuxiva files",
+               python: "Python libraries", system: "System files", ports: "Network ports", service: "Starting Nuxiva" }
     },
     fr: {
-      title: "Atena est en mode sans échec",
-      titleOk: "Atena fonctionne à nouveau",
+      title: "Nuxiva est en mode sans échec",
+      titleOk: "Nuxiva fonctionne à nouveau",
       reasons: {
-        missing_library: "Il manque certaines bibliothèques dont Atena a besoin pour démarrer.",
-        broken_code: "Certains fichiers d'Atena sont endommagés ou incomplets.",
-        system: "Un problème du système empêche Atena de démarrer.",
-        unknown: "Atena n'a pas pu démarrer normalement."
+        missing_library: "Il manque certaines bibliothèques dont Nuxiva a besoin pour démarrer.",
+        broken_code: "Certains fichiers d'Nuxiva sont endommagés ou incomplets.",
+        system: "Un problème du système empêche Nuxiva de démarrer.",
+        unknown: "Nuxiva n'a pas pu démarrer normalement."
       },
-      calm: "Vos données sont en sécurité. Atena peut se réparer toute seule : il suffit d'un geste.",
+      calm: "Vos données sont en sécurité. Nuxiva peut se réparer toute seule : il suffit d'un geste.",
       repair: "Réparer maintenant", repairing: "Réparation en cours…", retry: "Réessayer la réparation",
       started: "Réparation lancée, suivez les étapes ci-dessus.",
       busy: "Une réparation est déjà en cours.", wait: "Attendez quelques secondes avant de réessayer.",
       unavailable: "La réparation automatique n'est pas disponible : utilisez la commande ci-dessous.",
-      offline: "Atena ne répond pas, nouvelle tentative…",
-      done: "Réparation terminée, redémarrage d'Atena…",
+      offline: "Nuxiva ne répond pas, nouvelle tentative…",
+      done: "Réparation terminée, redémarrage d'Nuxiva…",
       failed: "Certains problèmes doivent être résolus à la main : lisez les étapes en rouge.",
       tech: "Détails techniques",
-      steps: { disk: "Espace disque", apt: "Gestionnaire de paquets", network: "Connexion à Internet", code: "Fichiers d'Atena",
-               python: "Bibliothèques Python", system: "Fichiers système", ports: "Ports réseau", service: "Démarrage d'Atena" }
+      steps: { disk: "Espace disque", apt: "Gestionnaire de paquets", network: "Connexion à Internet", code: "Fichiers d'Nuxiva",
+               python: "Bibliothèques Python", system: "Fichiers système", ports: "Ports réseau", service: "Démarrage d'Nuxiva" }
     }
   };
   const ICON = { ok: "✓", fixed: "✓", failed: "✗", running: "◌", pending: "·", skipped: "–" };
   const $ = (id) => document.getElementById(id);
   const browser = (navigator.language || "it").slice(0, 2);
   let saved = "";
-  try { saved = localStorage.getItem("atena_ui_lang") || ""; } catch (e) { saved = ""; }
+  try { saved = localStorage.getItem("nuxiva_ui_lang") || ""; } catch (e) { saved = ""; }
   const pick = (server) => [saved, server, browser].find((code) => TEXT[code]) || "en";
   let T = TEXT[pick("")];
   let lastState = "";
@@ -197,7 +197,7 @@ code { display: block; margin-top: 8px; padding: 10px 12px; border-radius: 10px;
   $("repair").addEventListener("click", async () => {
     $("repair").disabled = true;
     try {
-      const r = await fetch("/api/safe/repair", { method: "POST", headers: { "X-Atena-Request": "1" } });
+      const r = await fetch("/api/safe/repair", { method: "POST", headers: { "X-Nuxiva-Request": "1" } });
       const map = { 202: [T.started], 409: [T.busy], 429: [T.wait], 503: [T.unavailable, true] };
       const [text, bad] = map[r.status] || [T.unavailable, true];
       say(text, bad);

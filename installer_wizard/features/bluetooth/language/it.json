@@ -1,6 +1,6 @@
 {
   "name": "Bluetooth",
-  "description": "Casse, cuffie, microfoni e auricolari Bluetooth: abbinamento, ordine di preferenza per uscita e microfono, profilo audio e riconnessione automatica. Con gli auricolari puoi parlare con Atena da un'altra stanza.",
+  "description": "Casse, cuffie, microfoni e auricolari Bluetooth: abbinamento, ordine di preferenza per uscita e microfono, profilo audio e riconnessione automatica. Con gli auricolari puoi parlare con Nuxiva da un'altra stanza.",
   "capabilities": [
     "Ricerca e abbinamento dei dispositivi",
     "Ordine di preferenza per uscita audio e microfono",

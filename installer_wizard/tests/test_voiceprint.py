@@ -107,7 +107,7 @@ class VoiceprintTest(unittest.TestCase):
         anna = voice(1, 8)
         self.enrol("anna", anna)
         before = self.vp.count("anna")
-        with mock.patch.dict(os.environ, {"ATENA_VOICE_AUTOIMPROVE": "0"}):
+        with mock.patch.dict(os.environ, {"NUXIVA_VOICE_AUTOIMPROVE": "0"}):
             self.vp.add("anna", anna[0], "ascolto")
             self.assertEqual(self.vp.count("anna"), before)
             self.assertGreater(self.vp.add("anna", anna[1], "lettura"), 0)
@@ -132,7 +132,7 @@ class VoiceprintTest(unittest.TestCase):
     def test_adaptive_threshold_can_be_disabled(self):
         self.enrol("anna", voice(1, 14, 0.5))
         adaptive = self.vp.limits["anna"]
-        with mock.patch.dict(os.environ, {"ATENA_VOICE_ADAPTIVE": "0"}):
+        with mock.patch.dict(os.environ, {"NUXIVA_VOICE_ADAPTIVE": "0"}):
             self.vp._load()
             self.assertEqual(self.vp.limits["anna"], voiceprint.match_base())
         self.assertNotEqual(adaptive, voiceprint.match_base())

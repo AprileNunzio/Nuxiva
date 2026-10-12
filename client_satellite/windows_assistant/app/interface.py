@@ -18,7 +18,7 @@ class Interface:
         self.cfg, self.actions = cfg, actions
         self.root = ctk.CTk()
         self.root.withdraw()
-        self.root.title("ATENA")
+        self.root.title("NUXIVA")
         self.scale = theme.scale_of(self.root)
         self.dispatch = Dispatcher(self.root)
         self.muted = tk.BooleanVar(value=False)
@@ -32,7 +32,7 @@ class Interface:
 
     def _menu(self) -> list:
         self.muted.set(self.actions["is_muted"]())
-        return [("Apri ATENA", self.toggle_panel), ("Parla con ATENA", self.actions["listen"]), ("Widget di ATENA", self.actions["widgets"]),
+        return [("Apri NUXIVA", self.toggle_panel), ("Parla con NUXIVA", self.actions["listen"]), ("Widget di NUXIVA", self.actions["widgets"]),
                 ("Microfono in pausa", self.muted, lambda: self.actions["mute"](self.muted.get())), None,
                 ("Permessi…", self.open_permissions), ("Impostazioni…", self.open_settings), ("Esci", self.actions["quit"])]
 

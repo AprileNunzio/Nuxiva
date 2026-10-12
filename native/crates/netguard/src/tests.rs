@@ -331,7 +331,7 @@ fn loopback_traffic_is_never_an_attack() {
 }
 
 #[test]
-fn outgoing_scans_from_atena_itself_are_not_attacks() {
+fn outgoing_scans_from_nuxiva_itself_are_not_attacks() {
     let mut e = engine();
     e.own_macs(&[OWN]);
     let mut alerts = Vec::new();

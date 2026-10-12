@@ -47,7 +47,7 @@ def render(router: System1Router) -> str:
         "",
         "#include <stddef.h>",
         "",
-        "namespace atena_edge {",
+        "namespace nuxiva_edge {",
         "",
         f"constexpr char MODEL_DIGEST[] = \"{digest(tables)}\";",
         "",

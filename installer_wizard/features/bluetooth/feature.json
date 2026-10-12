@@ -5,9 +5,9 @@
   "category": "percezione",
   "order": 95,
   "panel": "bluetooth",
-  "description": "Casse, cuffie, microfoni e auricolari Bluetooth: abbinamento, ordine di preferenza per uscita e microfono, profilo audio e riconnessione automatica. Con gli auricolari puoi parlare con Atena da un'altra stanza.",
+  "description": "Casse, cuffie, microfoni e auricolari Bluetooth: abbinamento, ordine di preferenza per uscita e microfono, profilo audio e riconnessione automatica. Con gli auricolari puoi parlare con Nuxiva da un'altra stanza.",
   "toggle": {
-    "env": "ATENA_BLUETOOTH",
+    "env": "NUXIVA_BLUETOOTH",
     "apply": [
       "bluetooth"
     ]

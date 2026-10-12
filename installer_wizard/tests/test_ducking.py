@@ -30,7 +30,7 @@ class DuckerTest(unittest.TestCase):
         self.ducker = Ducker()
         found = [self.speaker, self.tv, self.broken]
         self.patches = [mock.patch.object(Ducker, "collect", mock.AsyncMock(return_value=found)),
-                        mock.patch.object(ducker_module, "env_get", side_effect=lambda k, d="": {"ATENA_DUCK_LEVEL": "25"}.get(k, d))]
+                        mock.patch.object(ducker_module, "env_get", side_effect=lambda k, d="": {"NUXIVA_DUCK_LEVEL": "25"}.get(k, d))]
         for p in self.patches:
             p.start()
             self.addCleanup(p.stop)
@@ -66,7 +66,7 @@ class DuckerTest(unittest.TestCase):
         self.assertEqual(self.speaker.volume, 0.8)
 
     def test_disabled_does_nothing(self):
-        with mock.patch.object(ducker_module, "env_get", side_effect=lambda k, d="": "0" if k == "ATENA_DUCKING" else d):
+        with mock.patch.object(ducker_module, "env_get", side_effect=lambda k, d="": "0" if k == "NUXIVA_DUCKING" else d):
             asyncio.run(self.ducker.signal(True))
         self.assertFalse(self.ducker.active)
         self.assertEqual(self.speaker.volume, 0.8)

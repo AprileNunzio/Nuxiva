@@ -5,20 +5,20 @@ from typing import Dict, List, Tuple
 from server.config.env import settings
 
 AGENT_BRAIN_ENV: Dict[str, str] = {
-    "research": "ATENA_LLM_RICERCATORE_ORDER",
-    "domotics": "ATENA_LLM_DOMOTICO_ORDER",
-    "skill_synthesizer": "ATENA_LLM_STUDIO_ORDER",
-    "tool_builder": "ATENA_LLM_STUDIO_ORDER",
-    "genera_modello_3d": "ATENA_LLM_3D_ORDER",
-    "parametric_designer": "ATENA_LLM_3D_ORDER",
-    "agent_self_healing_coder": "ATENA_LLM_CODER_ORDER",
-    "analytic_reasoner": "ATENA_LLM_DEEP_ORDER",
-    "kernel_planner": "ATENA_LLM_DEEP_ORDER",
-    "kernel_critic": "ATENA_LLM_DEEP_ORDER",
+    "research": "NUXIVA_LLM_RICERCATORE_ORDER",
+    "domotics": "NUXIVA_LLM_DOMOTICO_ORDER",
+    "skill_synthesizer": "NUXIVA_LLM_STUDIO_ORDER",
+    "tool_builder": "NUXIVA_LLM_STUDIO_ORDER",
+    "genera_modello_3d": "NUXIVA_LLM_3D_ORDER",
+    "parametric_designer": "NUXIVA_LLM_3D_ORDER",
+    "agent_self_healing_coder": "NUXIVA_LLM_CODER_ORDER",
+    "analytic_reasoner": "NUXIVA_LLM_DEEP_ORDER",
+    "kernel_planner": "NUXIVA_LLM_DEEP_ORDER",
+    "kernel_critic": "NUXIVA_LLM_DEEP_ORDER",
     # Motori Cognitivi di Base (Sistema 1, 2 e Apprendimento Attivo)
-    "system1_router": "ATENA_LLM_SYS1_ORDER",
-    "system2_engine": "ATENA_LLM_SYS2_ORDER",
-    "babbling_engine": "ATENA_LLM_EXPLORE_ORDER",
+    "system1_router": "NUXIVA_LLM_SYS1_ORDER",
+    "system2_engine": "NUXIVA_LLM_SYS2_ORDER",
+    "babbling_engine": "NUXIVA_LLM_EXPLORE_ORDER",
 }
 
 _cache: Tuple[int, dict] = (-1, {})

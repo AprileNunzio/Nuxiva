@@ -16,7 +16,7 @@ class BackgroundStepsTest(unittest.TestCase):
     def test_boot_pipeline_skips_background_steps(self):
         for s in STEPS:
             store.steps.pop(s.id, None)
-        with mock.patch("steps.read_env", return_value={"ATENA_DOCUMENTS": "1"}):
+        with mock.patch("steps.read_env", return_value={"NUXIVA_DOCUMENTS": "1"}):
             self.assertTrue(asyncio.run(run_pipeline()))
         self.assertEqual(store.steps["office"]["status"], "background")
         self.assertEqual(store.steps["models"]["status"], "done")

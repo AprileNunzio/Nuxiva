@@ -19,17 +19,17 @@ def env(values: dict):
 
 class DefaultLanguageTest(unittest.TestCase):
     def test_reply_language_follows_the_system_language(self):
-        with env({"ATENA_UI_LANG": "fr"}):
+        with env({"NUXIVA_UI_LANG": "fr"}):
             self.assertEqual(service.system_reply(), "fr")
-        with env({"ATENA_UI_LANG": "fr", "ATENA_REPLY_LANG": "en"}):
+        with env({"NUXIVA_UI_LANG": "fr", "NUXIVA_REPLY_LANG": "en"}):
             self.assertEqual(service.system_reply(), "en")
         with env({}):
             self.assertEqual(service.system_reply(), "it")
-        with env({"ATENA_UI_LANG": "xx"}):
+        with env({"NUXIVA_UI_LANG": "xx"}):
             self.assertEqual(service.system_reply(), languages.DEFAULT)
 
     def test_unrecognised_short_text_is_answered_in_the_system_language(self):
-        with env({"ATENA_UI_LANG": "fr"}), mock.patch.object(service, "chosen", return_value=None):
+        with env({"NUXIVA_UI_LANG": "fr"}), mock.patch.object(service, "chosen", return_value=None):
             self.assertEqual(languages.resolve("ok", "kiosk")["lang"], "fr")
 
 

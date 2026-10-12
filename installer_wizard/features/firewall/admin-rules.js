@@ -1,6 +1,6 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
-  const FW = (window.AtenaFirewall = window.AtenaFirewall || {});
+  const A = window.NuxivaAdmin, { $, fmt } = A;
+  const FW = (window.NuxivaFirewall = window.NuxivaFirewall || {});
   const ACTIONS = { accept: "consenti", drop: "scarta", reject: "rifiuta", limit: "limita" };
   const DIRECTIONS = { input: "in ingresso", output: "in uscita", forward: "inoltro" };
   const split = (text) => String(text || "").split(/[\s,]+/).filter(Boolean);

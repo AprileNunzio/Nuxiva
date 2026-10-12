@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 . "$(dirname "$0")/../lib.sh"
 
-VOICE_DIR=/opt/atena-voice
+VOICE_DIR=/opt/nuxiva-voice
 KOKORO="$VOICE_DIR/kokoro"
 KOKORO_URL=https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0
 PIPER_VERSION=2023.11.14-2
 VOICES_URL=https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0
-FALLBACK="${ATENA_VOICE_FALLBACK:-it_IT-riccardo-x_low}"
-UNIT_SRC="$ATENA_DIR/scripts/os/systemd/atena-voice.service"
-UNIT=/etc/systemd/system/atena-voice.service
-CODE="$ATENA_DIR/installer_wizard/features/voices/service.py"
-MIGRATION="$ATENA_STATE/.voice-v2"
+FALLBACK="${NUXIVA_VOICE_FALLBACK:-it_IT-riccardo-x_low}"
+UNIT_SRC="$NUXIVA_DIR/scripts/os/systemd/nuxiva-voice.service"
+UNIT=/etc/systemd/system/nuxiva-voice.service
+CODE="$NUXIVA_DIR/installer_wizard/features/voices/service.py"
+MIGRATION="$NUXIVA_STATE/.voice-v2"
 
 piper_arch() {
     case "$(uname -m)" in
@@ -67,7 +67,7 @@ step_check() {
     [ -f "$MIGRATION" ] || return 1
     piper_voices_ready || return 1
     [ -s "$KOKORO/kokoro-v1.0.onnx" ] && [ -s "$KOKORO/voices-v1.0.bin" ] || return 1
-    same_content "$UNIT" < "$UNIT_SRC" && systemctl is-enabled --quiet atena-voice && kokoro_ok \
+    same_content "$UNIT" < "$UNIT_SRC" && systemctl is-enabled --quiet nuxiva-voice && kokoro_ok \
         && code_current voice "$CODE"
 }
 
@@ -97,16 +97,16 @@ step_apply() {
 
     progress 80 "Avvio del servizio vocale"
     if write_if_changed "$UNIT" < "$UNIT_SRC"; then systemctl daemon-reload; fi
-    systemctl enable atena-voice >/dev/null 2>&1
-    systemctl restart atena-voice
+    systemctl enable nuxiva-voice >/dev/null 2>&1
+    systemctl restart nuxiva-voice
     wait_for 90 kokoro_ok || fail "Il servizio vocale Kokoro non risponde"
     code_mark voice "$CODE"
 
     if [ ! -f "$MIGRATION" ]; then
-        set_env ATENA_VOICE if_sara
+        set_env NUXIVA_VOICE if_sara
         touch "$MIGRATION"
     fi
-    info "Voce neurale: ${ATENA_VOICE:-if_sara} (riserva: $FALLBACK)"
+    info "Voce neurale: ${NUXIVA_VOICE:-if_sara} (riserva: $FALLBACK)"
     progress 100 "Voce neurale maschile attiva"
 }
 

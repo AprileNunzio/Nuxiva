@@ -3,8 +3,8 @@ import re
 
 import httpx
 
-log = logging.getLogger("atena.music")
-USER_AGENT = "AtenaOS/3 (+https://github.com/AprileNunzio/ATENA)"
+log = logging.getLogger("nuxiva.music")
+USER_AGENT = "NuxivaOS/3 (+https://github.com/AprileNunzio/NUXIVA)"
 BRACKETS = re.compile(r"\(.*?\)|\[.*?\]|\{.*?\}")
 NOISE = re.compile(r"\b(official|video|audio|lyrics?|lyric video|hd|hq|4k|remaster(?:ed)?|live|clip|ufficiale|testo|full album|mp3|320kbps)\b", re.I)
 LIMIT = 6

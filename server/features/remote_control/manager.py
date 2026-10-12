@@ -54,7 +54,7 @@ class RemoteComputerManager:
         name = name.upper()
         
         if name not in self._computers:
-            return {"status": "error", "message": f"PC {name} non trovato nella rete di ATENA."}
+            return {"status": "error", "message": f"PC {name} non trovato nella rete di NUXIVA."}
         
         protocol = self._computers[name]
         

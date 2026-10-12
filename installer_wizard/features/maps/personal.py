@@ -49,7 +49,7 @@ def set_commute(profile: dict, hour: int, minute: int) -> dict:
 
 def migrate(places: dict) -> bool:
     env = read_env()
-    legacy_time = env.get("ATENA_MAPS_COMMUTE", "").strip()
+    legacy_time = env.get("NUXIVA_MAPS_COMMUTE", "").strip()
     work = places.get("lavoro")
     target = owner()
     if not target or not (legacy_time or work):
@@ -57,7 +57,7 @@ def migrate(places: dict) -> bool:
     changes = {}
     if legacy_time and not target.get("commute_time"):
         changes["commute_time"] = legacy_time
-        days = env.get("ATENA_MAPS_COMMUTE_DAYS", "")
+        days = env.get("NUXIVA_MAPS_COMMUTE_DAYS", "")
         if days in ("1-5", "1-6", "1-7", "6-7"):
             changes["commute_days"] = days
     if work and not address(target, "Lavoro"):
@@ -68,7 +68,7 @@ def migrate(places: dict) -> bool:
         people.update(target["slug"], changes)
         store.event("INFO", f"Maps: lavoro e tragitto spostati nella scheda di {target.get('name')}", "maps")
     if legacy_time:
-        write_env({"ATENA_MAPS_COMMUTE": "", "ATENA_MAPS_COMMUTE_DAYS": ""})
+        write_env({"NUXIVA_MAPS_COMMUTE": "", "NUXIVA_MAPS_COMMUTE_DAYS": ""})
     return True
 
 

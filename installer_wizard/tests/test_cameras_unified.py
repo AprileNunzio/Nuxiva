@@ -8,12 +8,12 @@ import numpy as np
 from fastapi.testclient import TestClient
 
 import access
-import atena_supervisor
+import nuxiva_supervisor
 from features.cameras import captures, controls, discovery, events, live, motion, netguard, options, presets, probe, unified
 from features.cameras.cameras import cameras
 from features.vision.webcams import webcams
 
-HEADERS = {"X-Atena-Request": "1"}
+HEADERS = {"X-Nuxiva-Request": "1"}
 LIST_CTRLS = """
                      brightness 0x00980900 (int)    : min=0 max=255 step=1 default=128 value=100
                        contrast 0x00980901 (int)    : min=0 max=255 step=1 default=32 value=32
@@ -288,9 +288,9 @@ class UnifiedTest(Temp):
 class ApiTest(Temp):
     @classmethod
     def setUpClass(cls):
-        cls.admin = TestClient(atena_supervisor.admin)
-        assert cls.admin.post("/api/auth/login", json={"username": "admin", "password": "atena"}, headers=HEADERS).status_code == 200
-        cls.display = TestClient(atena_supervisor.public)
+        cls.admin = TestClient(nuxiva_supervisor.admin)
+        assert cls.admin.post("/api/auth/login", json={"username": "admin", "password": "nuxiva"}, headers=HEADERS).status_code == 200
+        cls.display = TestClient(nuxiva_supervisor.public)
 
     def setUp(self):
         super().setUp()

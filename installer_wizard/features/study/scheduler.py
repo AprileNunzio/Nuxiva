@@ -30,7 +30,7 @@ class StudyScheduler:
         if not s.get("enabled"):
             return "off:Studio autonomo disattivato"
         if store.phase not in ("READY", "DEGRADED"):
-            return "waiting:Atena non è ancora operativa"
+            return "waiting:Nuxiva non è ancora operativa"
         forced = time.time() < self.force_until
         if not forced:
             idle = time.time() - self.last_activity

@@ -1,18 +1,25 @@
 import logging
 from typing import Optional, Dict, Any
-from proxmoxer import ProxmoxAPI
+try:
+    from proxmoxer import ProxmoxAPI
+except ImportError:
+    ProxmoxAPI = None
 from server.config.env import settings
 
-logger = logging.getLogger("atena.proxmox_manager")
+logger = logging.getLogger("nuxiva.proxmox_manager")
+
 
 class ProxmoxManager:
     def __init__(self):
         self._proxmox: Optional[ProxmoxAPI] = None
 
     def _get_api(self) -> ProxmoxAPI:
+        if ProxmoxAPI is None:
+            raise RuntimeError("Libreria 'proxmoxer' non installata nell'ambiente.")
         if self._proxmox is None:
             if not settings.PROXMOX_HOST:
                 raise ValueError("PROXMOX_HOST is not configured in settings.")
+
             
             kwargs = {
                 "host": settings.PROXMOX_HOST,

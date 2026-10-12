@@ -16,7 +16,7 @@ class Preset:
 
 
 PRESETS: tuple[Preset, ...] = (
-    Preset("auto", "✨", "Automatico", "Atena sceglie da sola in base all'hardware.", "anywhere", ()),
+    Preset("auto", "✨", "Automatico", "Nuxiva sceglie da sola in base all'hardware.", "anywhere", ()),
     Preset("private", "🔒", "Privato", "Solo modelli in casa: nessun dato esce dalla rete.", "home", ("local", "servers")),
     Preset("balanced", "⚖️", "Bilanciato", "Prima in casa; il cloud solo se la casa non risponde.", "home_first",
            ("local", "servers", "cloud")),

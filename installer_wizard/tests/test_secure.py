@@ -25,12 +25,12 @@ class CertificateTest(unittest.TestCase):
         return x509.load_pem_x509_certificate((self.dir / "server.pem").read_bytes())
 
     def test_leaf_is_signed_by_the_local_ca_and_names_every_address(self):
-        material = tls.ensure_certificates(self.dir, ["atena.local", "casa"], ["127.0.0.1", "192.168.1.5"])
+        material = tls.ensure_certificates(self.dir, ["nuxiva.local", "casa"], ["127.0.0.1", "192.168.1.5"])
         ca = x509.load_pem_x509_certificate(material.ca_pem.read_bytes())
         leaf = self.leaf()
         ca.public_key().verify(leaf.signature, leaf.tbs_certificate_bytes, ec.ECDSA(hashes.SHA256()))
         san = leaf.extensions.get_extension_for_class(x509.SubjectAlternativeName).value
-        self.assertEqual(sorted(san.get_values_for_type(x509.DNSName)), ["atena.local", "casa"])
+        self.assertEqual(sorted(san.get_values_for_type(x509.DNSName)), ["nuxiva.local", "casa"])
         self.assertEqual(sorted(str(a) for a in san.get_values_for_type(x509.IPAddress)), ["127.0.0.1", "192.168.1.5"])
         self.assertTrue(ca.extensions.get_extension_for_class(x509.BasicConstraints).value.ca)
         self.assertFalse(leaf.extensions.get_extension_for_class(x509.BasicConstraints).value.ca)
@@ -81,7 +81,7 @@ class CertificateTest(unittest.TestCase):
 
     def test_local_addresses_always_include_loopback(self):
         self.assertIn("127.0.0.1", tls.local_addresses())
-        self.assertIn("atena.local", tls.local_names())
+        self.assertIn("nuxiva.local", tls.local_names())
 
 
 class FakeClient:
@@ -150,8 +150,8 @@ class ProxyTest(unittest.IsolatedAsyncioTestCase):
             return {"id": node_id}
 
         with mock.patch.object(registry, "authenticate", side_effect=authenticate):
-            node = {"x-atena-node": "pc-studio", "authorization": "Bearer good"}
-            forged = {"x-atena-node": "pc-studio", "authorization": "Bearer bad"}
+            node = {"x-nuxiva-node": "pc-studio", "authorization": "Bearer good"}
+            forged = {"x-nuxiva-node": "pc-studio", "authorization": "Bearer bad"}
             self.assertTrue(proxy.allowed(self.socket("192.168.1.20", headers=node)))
             self.assertFalse(proxy.allowed(self.socket("192.168.1.20", headers=forged)))
             self.assertFalse(proxy.allowed(self.socket("192.168.1.20", headers={"authorization": "Bearer good"})))

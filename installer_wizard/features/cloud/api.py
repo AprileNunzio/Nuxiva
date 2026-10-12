@@ -75,7 +75,7 @@ async def cloud_test(pid: str, request: Request, _: str = Depends(require_admin)
 async def cloud_only(request: Request, user: str = Depends(require_admin)):
     body = await request.json()
     lists = {}
-    for kind, key in (("chat", "ATENA_LLM_CHAT_ORDER"), ("deep", "ATENA_LLM_DEEP_ORDER")):
+    for kind, key in (("chat", "NUXIVA_LLM_CHAT_ORDER"), ("deep", "NUXIVA_LLM_DEEP_ORDER")):
         refs = [str(r) for r in body.get(kind) or []]
         if not refs or len(refs) > 12 or not all(r.startswith("cloud:") and _MODEL_RE.match(r[6:]) for r in refs):
             raise HTTPException(400, "Scegli almeno un modello cloud per ogni lista")
@@ -84,7 +84,7 @@ async def cloud_only(request: Request, user: str = Depends(require_admin)):
     brains.invalidate()
     from features.brain.residency import rebalance
     background(rebalance())
-    store.event("INFO", f"Atena usa solo cervelli cloud (impostato da {user})", "cloud")
+    store.event("INFO", f"Nuxiva usa solo cervelli cloud (impostato da {user})", "cloud")
     return {"ok": True}
 
 
@@ -128,7 +128,7 @@ async def servers_remove(pid: str, user: str = Depends(require_admin)):
     prefix = f"cloud:{pid}/"
     env = brains.config()
     updates = {}
-    for kind, key in (("chat", "ATENA_LLM_CHAT_ORDER"), ("deep", "ATENA_LLM_DEEP_ORDER")):
+    for kind, key in (("chat", "NUXIVA_LLM_CHAT_ORDER"), ("deep", "NUXIVA_LLM_DEEP_ORDER")):
         if env[f"{kind}_custom"]:
             kept = [m for m in env[kind] if not m.startswith(prefix)]
             if len(kept) != len(env[kind]):

@@ -1,5 +1,5 @@
 (() => {
-  AtenaDesk.register("alert_info", {
+  NuxivaDesk.register("alert_info", {
     render(el, d, ctx) {
       el.innerHTML = `${ctx.head({ icon: "info", label: "Informazione" })}
         <div class="wk-title">${ctx.esc(String(d.title || "Informazione").slice(0, 120))}</div>

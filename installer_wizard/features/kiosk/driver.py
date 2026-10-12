@@ -6,7 +6,7 @@ from pathlib import Path
 from config import DEMO, STATE_DIR, STEPS_DIR
 from state import store
 
-log = logging.getLogger("atena.display-driver")
+log = logging.getLogger("nuxiva.display-driver")
 STATE_FILE = STATE_DIR / "display-driver"
 VERIFY_FOR = 600
 NEEDED_OK = 3

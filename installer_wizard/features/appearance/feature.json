@@ -12,7 +12,7 @@
   ],
   "settings": [
     {
-      "key": "ATENA_AVATAR",
+      "key": "NUXIVA_AVATAR",
       "label": "Aspetto",
       "type": "select",
       "default": "auto",
@@ -32,7 +32,7 @@
       ]
     },
     {
-      "key": "ATENA_AVATAR_STYLE",
+      "key": "NUXIVA_AVATAR_STYLE",
       "label": "Stile del 3D",
       "type": "select",
       "default": "character",
@@ -48,7 +48,7 @@
       ]
     },
     {
-      "key": "ATENA_FACE_COLOR",
+      "key": "NUXIVA_FACE_COLOR",
       "label": "Colore dell'ologramma",
       "type": "color"
     }

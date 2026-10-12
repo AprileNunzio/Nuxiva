@@ -82,8 +82,8 @@ class Writer:
             st.font.color.rgb = self.color(t["primary"] if level < 3 else t["accent"])
             st.paragraph_format.space_before, st.paragraph_format.space_after = Pt(18 if level == 1 else 12), Pt(6)
             st.paragraph_format.keep_with_next = True
-        if "Didascalia Atena" not in [s.name for s in self.doc.styles]:
-            cap = self.doc.styles.add_style("Didascalia Atena", WD_STYLE_TYPE.PARAGRAPH)
+        if "Didascalia Nuxiva" not in [s.name for s in self.doc.styles]:
+            cap = self.doc.styles.add_style("Didascalia Nuxiva", WD_STYLE_TYPE.PARAGRAPH)
             cap.base_style = normal
             cap.font.size, cap.font.italic = Pt(9), True
             cap.font.color.rgb = self.color(t["muted"])
@@ -154,7 +154,7 @@ class Writer:
         meta = self.doc.add_paragraph()
         meta.paragraph_format.space_before = Pt(18)
         meta.alignment = WD_ALIGN_PARAGRAPH.LEFT
-        mr = meta.add_run(f"{s.get('author') or 'Atena'}  ·  {italian_date()}")
+        mr = meta.add_run(f"{s.get('author') or 'Nuxiva'}  ·  {italian_date()}")
         mr.font.size, mr.font.color.rgb = Pt(10), self.color(t["muted"])
         OxmlElement, qn = self._oxml()
         borders = OxmlElement("w:pBdr")
@@ -238,7 +238,7 @@ class Writer:
                 if numeric[ci]:
                     p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
         if b.get("caption"):
-            self.doc.add_paragraph(b["caption"], style="Didascalia Atena")
+            self.doc.add_paragraph(b["caption"], style="Didascalia Nuxiva")
         else:
             self.doc.add_paragraph()
 
@@ -248,7 +248,7 @@ class Writer:
         try:
             data = charts.png(b, self.theme)
         except Exception as exc:
-            self.doc.add_paragraph(f"[Grafico non disponibile: {exc}]", style="Didascalia Atena")
+            self.doc.add_paragraph(f"[Grafico non disponibile: {exc}]", style="Didascalia Nuxiva")
             return
         p = self.doc.add_paragraph()
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -362,7 +362,7 @@ class Writer:
         self.header_footer()
         self.blocks()
         props = self.doc.core_properties
-        props.title, props.author, props.subject = self.spec["title"], self.spec.get("author") or "Atena", self.spec.get("subtitle", "")
+        props.title, props.author, props.subject = self.spec["title"], self.spec.get("author") or "Nuxiva", self.spec.get("subtitle", "")
         self.doc.save(str(path))
         return path
 

@@ -77,7 +77,7 @@ def render_page_image(page: dict, page_num: int, total_pages: int) -> Image.Imag
         elif t in ("formula", "callout", "table", "plot", "chart", "image", "mark"):
             _rich(img, draw, it, c)
     hdr_font = _get_font(18)
-    draw.text((30, 20), "ATENA - Lavagna Interattiva", fill=(41, 224, 255), font=hdr_font)
+    draw.text((30, 20), "NUXIVA - Lavagna Interattiva", fill=(41, 224, 255), font=hdr_font)
     draw.text((WIDTH - 180, 20), f"Pagina {page_num} di {total_pages}", fill=(180, 190, 195), font=hdr_font)
     return img
 

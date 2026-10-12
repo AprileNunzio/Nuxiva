@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const PHASE_DOT = { READY: "ok", DEGRADED: "warn", ERROR: "down", INSTALLING: "warn", BOOTING: "warn", UPDATING: "warn" };
   const STEP_STATUS = { pending: "in attesa", checking: "verifica", running: "in corso", retrying: "nuovo tentativo", done: "operativo", failed: "errore", skipped: "saltato", background: "in background dopo l'avvio", on_demand: "su richiesta" };
   const RESTARTABLE = { core: 1, qdrant: 1, ollama: 1, docker: 1, kiosk: 1 };
@@ -108,7 +108,7 @@
       b.disabled = true;
       try {
         const r = await A.api("POST", `/api/actions/${b.dataset.action}`, body);
-        if (b.dataset.action === "update-check") { renderUpdate(r); A.toast(r.available ? "Aggiornamento disponibile" : "Atena è aggiornata"); }
+        if (b.dataset.action === "update-check") { renderUpdate(r); A.toast(r.available ? "Aggiornamento disponibile" : "Nuxiva è aggiornata"); }
         else A.toast(r.message || (r.ok === false ? "Operazione non riuscita" : "Operazione avviata"), r.ok === false);
       } catch (err) { A.toast(err.message, true); }
       finally { setTimeout(() => (b.disabled = false), 1500); }
@@ -139,11 +139,11 @@
       if (!f) return;
       try {
         if (!/\.onnx$/i.test(f.name)) throw new Error("Scegli un file .onnx");
-        const r = await fetch("/api/setup/wakeword", { method: "POST", body: f, credentials: "same-origin", headers: { "X-Atena-Request": "1", "Content-Type": "application/octet-stream" } });
+        const r = await fetch("/api/setup/wakeword", { method: "POST", body: f, credentials: "same-origin", headers: { "X-Nuxiva-Request": "1", "Content-Type": "application/octet-stream" } });
         const d = await r.json().catch(() => ({}));
         if (!r.ok) throw new Error(d.detail || `Errore ${r.status}`);
         $("wake-note").textContent = `Caricato: ${f.name}`;
-        A.toast("Modello «Ehi, Atena» caricato: l'ascolto si riavvia da solo");
+        A.toast("Modello «Ehi, Nuxiva» caricato: l'ascolto si riavvia da solo");
       } catch (err) { A.toast(err.message, true); }
     });
     $("log-src").addEventListener("change", loadLogs);

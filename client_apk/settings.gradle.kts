@@ -12,5 +12,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "atena-edge-apk"
+rootProject.name = "nuxiva-edge-apk"
 include(":app")

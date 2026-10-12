@@ -8,7 +8,7 @@ from fastapi import HTTPException
 from features.people import people
 from features.vision.proxy import VISION_URL, vision_proxy
 
-log = logging.getLogger("atena.people")
+log = logging.getLogger("nuxiva.people")
 GOOD_SAMPLES = 20
 
 

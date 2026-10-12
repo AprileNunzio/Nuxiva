@@ -4,7 +4,7 @@ import re
 
 from config import STATE_DIR
 
-log = logging.getLogger("atena.home")
+log = logging.getLogger("nuxiva.home")
 
 HOME_DIR = STATE_DIR / "home"
 DB_FILE = HOME_DIR / "home.db"

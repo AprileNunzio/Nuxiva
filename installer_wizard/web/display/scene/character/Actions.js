@@ -59,4 +59,4 @@
   }
 
   C.Actions = { ACTIONS, STOPS, EXPRESS, key, names: () => Object.keys(ACTIONS) };
-})(window.Atena3D);
+})(window.Nuxiva3D);

@@ -24,7 +24,7 @@ async def convert(source: Path, target_ext: str, out_dir: Path | None = None, ex
         raise RuntimeError("LibreOffice non è installato: lo installa il passo «Ufficio» dell'installazione")
     out_dir = out_dir or source.parent
     async with _slots:
-        with tempfile.TemporaryDirectory(prefix="atena-office-") as profile, tempfile.TemporaryDirectory(prefix="atena-out-") as tmp:
+        with tempfile.TemporaryDirectory(prefix="nuxiva-office-") as profile, tempfile.TemporaryDirectory(prefix="nuxiva-out-") as tmp:
             proc = await asyncio.create_subprocess_exec(
                 binary, f"-env:UserInstallation={Path(profile).as_uri()}", "--headless", "--norestore", "--nologo",
                 "--convert-to", export or FILTERS[target_ext], "--outdir", tmp, str(source),

@@ -1,19 +1,19 @@
 #!/usr/bin/env bash
 . "$(dirname "$0")/../lib.sh"
 
-NAME=atena-voicestudio
-VOLUME=atena-voicestudio
+NAME=nuxiva-voicestudio
+VOLUME=nuxiva-voicestudio
 PORT=3900
 DEFAULT_IMAGE=ghcr.io/debpalash/voicestudio:0.5.6
-IMAGE="${ATENA_VOICESTUDIO_IMAGE:-$DEFAULT_IMAGE}"
+IMAGE="${NUXIVA_VOICESTUDIO_IMAGE:-$DEFAULT_IMAGE}"
 [[ "$IMAGE" =~ ^[a-z0-9][a-z0-9./_-]{0,120}:[A-Za-z0-9._-]{1,64}$ ]] || IMAGE=$DEFAULT_IMAGE
 HEALTH="http://127.0.0.1:$PORT/.well-known/voicestudio-speech"
 
-wanted() { [ "${ATENA_VOICESTUDIO:-0}" = "1" ] && [ "${ATENA_VOICESTUDIO_WHERE:-local}" != "remote" ]; }
+wanted() { [ "${NUXIVA_VOICESTUDIO:-0}" = "1" ] && [ "${NUXIVA_VOICESTUDIO_WHERE:-local}" != "remote" ]; }
 have_docker() { command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; }
 gpu_flags() { has_usable_gpu && docker info 2>/dev/null | grep -qi nvidia && echo "--gpus all" || true; }
-signature() { printf '%s|%s|%s' "$IMAGE" "$(gpu_flags)" "$(printf '%s' "${ATENA_VOICESTUDIO_KEY:-}" | sha1sum | cut -c1-12)"; }
-running_signature() { docker inspect -f '{{ index .Config.Labels "atena.signature" }}' "$NAME" 2>/dev/null || true; }
+signature() { printf '%s|%s|%s' "$IMAGE" "$(gpu_flags)" "$(printf '%s' "${NUXIVA_VOICESTUDIO_KEY:-}" | sha1sum | cut -c1-12)"; }
+running_signature() { docker inspect -f '{{ index .Config.Labels "nuxiva.signature" }}' "$NAME" 2>/dev/null || true; }
 running() { [ "$(docker inspect -f '{{.State.Running}}' "$NAME" 2>/dev/null)" = "true" ]; }
 healthy() { curl -fsS --max-time 5 "$HEALTH" >/dev/null 2>&1; }
 
@@ -45,8 +45,8 @@ ensure_docker() {
 }
 
 ensure_key() {
-    [ -n "${ATENA_VOICESTUDIO_KEY:-}" ] && return 0
-    set_env ATENA_VOICESTUDIO_KEY "$(python3 -c 'import secrets; print(secrets.token_urlsafe(32))')"
+    [ -n "${NUXIVA_VOICESTUDIO_KEY:-}" ] && return 0
+    set_env NUXIVA_VOICESTUDIO_KEY "$(python3 -c 'import secrets; print(secrets.token_urlsafe(32))')"
 }
 
 step_apply() {
@@ -71,8 +71,8 @@ step_apply() {
         local flags
         flags=$(gpu_flags)
         # shellcheck disable=SC2086
-        OMNIVOICE_API_KEY="$ATENA_VOICESTUDIO_KEY" docker run -d --name "$NAME" --restart unless-stopped $flags \
-            --label "atena.signature=$(signature)" \
+        OMNIVOICE_API_KEY="$NUXIVA_VOICESTUDIO_KEY" docker run -d --name "$NAME" --restart unless-stopped $flags \
+            --label "nuxiva.signature=$(signature)" \
             -p "127.0.0.1:$PORT:$PORT" \
             -e OMNIVOICE_API_KEY -e OMNIVOICE_ANALYTICS_DISABLED=1 \
             -v "$VOLUME:/app/omnivoice_data" \

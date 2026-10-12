@@ -10,7 +10,7 @@ from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
 
 PUBLIC_KEY = "DN6SKGGnjtJbKYc7I4CajVCrV8X1hLrXYDR0U9x5qOU="
-REPOSITORY = "AprileNunzio/ATENA"
+REPOSITORY = "AprileNunzio/NUXIVA"
 DOWNLOAD_RE = re.compile(rf"https://github\.com/{re.escape(REPOSITORY)}/releases/download/assistant-v[0-9.]+/[A-Za-z0-9_.-]+\.exe")
 VERSION_RE = re.compile(r"\d+(?:\.\d+){1,3}")
 MAX_SIZE = 400 * 1024 * 1024

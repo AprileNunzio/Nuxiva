@@ -8,7 +8,7 @@ from pathlib import Path
 
 from sealed import write_private
 
-log = logging.getLogger("atena.flows")
+log = logging.getLogger("nuxiva.flows")
 MAX_VERSIONS = 50
 
 

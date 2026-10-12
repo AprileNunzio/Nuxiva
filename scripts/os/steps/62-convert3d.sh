@@ -5,7 +5,7 @@ free_gb() { df -Pk / | awk 'NR == 2 {printf "%d", $4 / 1024 / 1024}'; }
 ram_gb() { awk '/MemTotal/ {printf "%d", ($2 / 1024 / 1024) + 0.5}' /proc/meminfo; }
 
 wanted() {
-    case "${ATENA_3D_CONVERT:-auto}" in
+    case "${NUXIVA_3D_CONVERT:-auto}" in
         0) return 1 ;;
         1) return 0 ;;
         *) [ "$(free_gb)" -ge 20 ] && [ "$(ram_gb)" -ge 4 ] ;;

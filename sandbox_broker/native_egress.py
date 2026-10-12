@@ -8,7 +8,7 @@ from typing import Optional, Sequence, Tuple, Union
 
 from sandbox_broker.egress import EgressProxy
 
-logger = logging.getLogger("atena.sandbox_broker.egress")
+logger = logging.getLogger("nuxiva.sandbox_broker.egress")
 
 DEFAULT_MAX_BYTES = 16 * 1024 * 1024
 REPORT_TIMEOUT = 5.0
@@ -129,7 +129,7 @@ AnyEgressProxy = Union[NativeEgressProxy, EgressProxy]
 
 
 def native_enabled() -> bool:
-    return os.environ.get("ATENA_NATIVE", "auto").strip() != "0"
+    return os.environ.get("NUXIVA_NATIVE", "auto").strip() != "0"
 
 
 def open_egress_proxy(

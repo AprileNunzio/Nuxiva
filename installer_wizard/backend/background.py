@@ -11,7 +11,7 @@ from config import DEMO, STATE_DIR, read_env
 from state import store
 from steps import STEP_BY_ID, STEPS, Step, converge_step
 
-log = logging.getLogger("atena.background")
+log = logging.getLogger("nuxiva.background")
 
 QUEUE_FILE = STATE_DIR / "background.json"
 DISK_PATHS = ("/", "/opt", "/var/lib")

@@ -7,6 +7,6 @@
     "Power profile switching (ECO, DYNAMIC, BOOST)"
   ],
   "settings": {
-    "ATENA_POWER_PROFILE": "Power Profile"
+    "NUXIVA_POWER_PROFILE": "Power Profile"
   }
 }

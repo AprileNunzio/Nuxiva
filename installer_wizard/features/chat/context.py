@@ -1,7 +1,7 @@
 from contextvars import ContextVar
 
-device: ContextVar[str] = ContextVar("atena_device", default="kiosk")
-voice: ContextVar[str] = ContextVar("atena_voice", default="")
+device: ContextVar[str] = ContextVar("nuxiva_device", default="kiosk")
+voice: ContextVar[str] = ContextVar("nuxiva_voice", default="")
 TRUSTED = ("admin", "remote")
 
 

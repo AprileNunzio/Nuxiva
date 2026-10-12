@@ -7,7 +7,7 @@ from pathlib import Path
 
 from features.music import id3
 
-log = logging.getLogger("atena.music")
+log = logging.getLogger("nuxiva.music")
 FFMPEG_KEYS = {"title": "title", "artist": "artist", "album": "album", "album_artist": "album_artist", "genre": "genre",
                "year": "date", "track_no": "track"}
 TIMEOUT = 120

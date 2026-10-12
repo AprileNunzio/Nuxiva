@@ -18,7 +18,7 @@ from server.core.kernel.domain.node import NodeSpec, NodeState, RiskLevel
 from server.core.kernel.domain.outcome import ErrorPayload, NodeResult
 from server.core.telemetry.journey import journey
 
-logger = logging.getLogger("atena.kernel.scheduler")
+logger = logging.getLogger("nuxiva.kernel.scheduler")
 
 MEMORY_WARNING = "memory_warning"
 

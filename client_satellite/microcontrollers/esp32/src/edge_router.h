@@ -2,7 +2,7 @@
 
 #include <stddef.h>
 
-namespace atena_edge {
+namespace nuxiva_edge {
 
 enum class Intent : unsigned char {
     Conversation = 0,

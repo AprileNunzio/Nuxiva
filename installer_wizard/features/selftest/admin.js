@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const ICON = { ok: "✅", errore: "❌", saltato: "⏭" };
   const when = (t) => new Date(t * 1000).toLocaleString("it-IT", { dateStyle: "short", timeStyle: "short" });
   let data = null, shown = 0, timer = null;

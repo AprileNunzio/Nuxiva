@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
 
   const copyButton = (text) => `<button class="btn sm" data-copy="${fmt.esc(text)}">Copia</button>`;
 

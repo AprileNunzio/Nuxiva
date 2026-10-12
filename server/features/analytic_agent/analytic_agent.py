@@ -8,7 +8,7 @@ from server.features.llm_gateway.contracts import LLMMessage, LLMRequest
 from server.features.llm_gateway.gateway import llm_gateway
 
 _SYSTEM_PROMPT = (
-    "Sei l'analista di Atena. Risolvi esclusivamente il sotto-task indicato, usando i risultati dei passi "
+    "Sei l'analista di Nuxiva. Risolvi esclusivamente il sotto-task indicato, usando i risultati dei passi "
     "precedenti quando servono. Rispondi in modo concreto, completo e verificabile, senza premesse. "
     "Se il tentativo precedente è fallito, correggi esattamente il problema segnalato."
 )
@@ -33,7 +33,7 @@ class AnalyticReasonerAgent(BaseAgent):
         started = time.time()
         response = await llm_gateway.generate_completion(
             LLMRequest(
-                model_name=settings.ATENA_LLM_MODEL or _DEFAULT_MODEL,
+                model_name=settings.NUXIVA_LLM_MODEL or _DEFAULT_MODEL,
                 models=[request.preferred_brain] if request.preferred_brain else [],
                 component="analytic_reasoner",
                 messages=[LLMMessage(role="user", content=self._prompt(request))],

@@ -9,7 +9,7 @@
   };
   const CHIP = { live: ["live", true], goal: ["gol!", true], red: ["rosso", true], kickoff: ["iniziata", true], soon: ["tra poco", false],
     final: ["finale", false], result: ["finale", false], today: ["oggi", false], next: ["prossima", false] };
-  AtenaDesk.register("sport_match", {
+  NuxivaDesk.register("sport_match", {
     render(el, d, ctx) {
       const m = d.match || {}, h = m.home || {}, a = m.away || {};
       const [chip, live] = CHIP[d.kind] || (m.state === "in" ? CHIP.live : m.state === "post" ? CHIP.final : CHIP.next);

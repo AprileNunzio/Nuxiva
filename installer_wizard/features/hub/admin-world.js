@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin;
+  const A = window.NuxivaAdmin;
   const CYAN = 0x29e0ff, VIOLET = 0xa08cff, GREEN = 0x3dffa8, AMBER = 0xffc43d;
 
   function load(src) {
@@ -21,7 +21,7 @@
   }
 
   function label(raw, opts = {}) {
-    const text = (window.AtenaI18n && window.AtenaI18n.translate(raw)) || raw;
+    const text = (window.NuxivaI18n && window.NuxivaI18n.translate(raw)) || raw;
     const T = window.THREE, size = opts.size || 30, pad = 14;
     const canvas = document.createElement("canvas"), ctx = canvas.getContext("2d");
     ctx.font = `600 ${size}px system-ui, sans-serif`;

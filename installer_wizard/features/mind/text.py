@@ -7,7 +7,7 @@ STOP = {
     "nei", "nelle", "sul", "sulla", "sui", "dal", "dalla", "dai", "gli", "le", "lo", "la", "il", "non", "come",
     "cosa", "sono", "sei", "era", "ero", "hai", "ho", "abbiamo", "avete", "hanno", "questo", "questa", "quello",
     "quella", "anche", "pero", "poi", "piu", "molto", "tanto", "tutto", "tutti", "mio", "mia", "miei", "mie",
-    "tuo", "tua", "suo", "sua", "nostro", "nostra", "atena", "allora", "quindi", "quando", "dove", "perche",
+    "tuo", "tua", "suo", "sua", "nostro", "nostra", "nuxiva", "allora", "quindi", "quando", "dove", "perche",
     "quale", "quali", "qui", "qua", "oggi", "adesso", "ora", "sempre", "mai", "fare", "fai", "faccio", "essere",
     "stato", "stata", "dire", "dimmi", "sai", "puoi", "vorrei", "voglio", "the", "and", "you", "are", "what",
 }

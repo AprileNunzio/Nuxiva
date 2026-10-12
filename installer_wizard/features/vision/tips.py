@@ -57,7 +57,7 @@ class ObjectTips:
 
     async def run(self) -> None:
         while True:
-            if env_get("ATENA_OBJECT_TIPS", "1") != "0" and store.presence.get("status") == "ok":
+            if env_get("NUXIVA_OBJECT_TIPS", "1") != "0" and store.presence.get("status") == "ok":
                 self.check()
             await asyncio.sleep(1.5)
 

@@ -23,18 +23,18 @@ class WakeNameTest(unittest.TestCase):
         learner_module.LEARN_FILE = self.old
         self.dir.cleanup()
 
-    def test_ehi_atena_wakes_and_leaves_the_command(self):
+    def test_ehi_nuxiva_wakes_and_leaves_the_command(self):
         learner = learner_module.Learner()
-        for text in ("Ehi, Atena, accendi la luce", "ehi atena accendi la luce", "Atena accendi la luce",
-                     "Hey Athena, accendi la luce"):
+        for text in ("Ehi, Nuxiva, accendi la luce", "ehi nuxiva accendi la luce", "Nuxiva accendi la luce",
+                     "Hey Nuxiva, accendi la luce"):
             with self.subTest(text=text):
                 start, end, _ = learner.find_wake(text)
                 self.assertEqual(text[end:], "accendi la luce")
 
     def test_split_name_and_more_greetings_wake_and_leave_the_command(self):
         learner = learner_module.Learner()
-        for text in ("a tena, accendi la luce", "Ate na accendi la luce", "Hei Atena accendi la luce",
-                     "E Atena, accendi la luce", "Eh atena accendi la luce"):
+        for text in ("nu xiva, accendi la luce", "Nu xiva accendi la luce", "Hei Nuxiva accendi la luce",
+                     "E Nuxiva, accendi la luce", "Eh nuxiva accendi la luce"):
             with self.subTest(text=text):
                 found = learner.find_wake(text)
                 self.assertIsNotNone(found)
@@ -45,7 +45,7 @@ class WakeNameTest(unittest.TestCase):
 
     def test_close_mishearing_wakes_but_common_words_do_not(self):
         learner = learner_module.Learner()
-        self.assertIsNotNone(learner.find_wake("Atene accendi la luce"))
+        self.assertIsNotNone(learner.find_wake("Nuxiba accendi la luce"))
         for text in ("catena del cancello", "arena di Verona", "Serena accendi la luce"):
             with self.subTest(text=text):
                 self.assertIsNone(learner.find_wake(text))
@@ -56,18 +56,18 @@ class WakeNameTest(unittest.TestCase):
         learner = learner_module.Learner()
         self.assertEqual(learner.data["variants"], {})
         self.assertIsNone(learner.find_wake("marvin accendi la luce"))
-        self.assertEqual(learner.hotwords().split()[0], "Atena")
+        self.assertEqual(learner.hotwords().split()[0], "Nuxiva")
 
     def test_wake_model_name_is_validated(self):
         import importlib
-        os.environ["ATENA_WAKEWORD_MODEL"] = "../../etc/passwd"
+        os.environ["NUXIVA_WAKEWORD_MODEL"] = "../../etc/passwd"
         try:
             wakeword = importlib.import_module("wakeword")
-            self.assertEqual(wakeword.model_name(), "ehi_atena")
-            os.environ["ATENA_WAKEWORD_MODEL"] = "ehi_atena_v2"
-            self.assertEqual(wakeword.model_name(), "ehi_atena_v2")
+            self.assertEqual(wakeword.model_name(), "ehi_nuxiva")
+            os.environ["NUXIVA_WAKEWORD_MODEL"] = "ehi_nuxiva_v2"
+            self.assertEqual(wakeword.model_name(), "ehi_nuxiva_v2")
         finally:
-            os.environ.pop("ATENA_WAKEWORD_MODEL", None)
+            os.environ.pop("NUXIVA_WAKEWORD_MODEL", None)
 
 
 if __name__ == "__main__":

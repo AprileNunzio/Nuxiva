@@ -67,7 +67,7 @@ def auto_solve_board() -> dict | None:
     if res:
         return res
     last_item = board.items[-1]
-    if last_item.get("by") == "atena":
+    if last_item.get("by") == "nuxiva":
         return None
     data = ocr.recognize_math(board.items, board.snapshot)
     if not data or not data.get("has_equals"):

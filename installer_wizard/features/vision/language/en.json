@@ -7,6 +7,6 @@
     "Proximity detection and presence scoring"
   ],
   "settings": {
-    "ATENA_VISION_DEVICE": "Camera device index"
+    "NUXIVA_VISION_DEVICE": "Camera device index"
   }
 }

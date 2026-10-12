@@ -17,7 +17,7 @@
     const doc = new DOMParser().parseFromString(String(html).slice(0, 4000), "text/html");
     copy(doc.body, target, 0);
   };
-  AtenaDesk.register("text_short", {
+  NuxivaDesk.register("text_short", {
     render(el, d) {
       el.innerHTML = `<div class="wk-text tx-short"></div>`;
       if (d.content) {

@@ -9,7 +9,7 @@ from state import store
 
 from features.automations import sun
 
-log = logging.getLogger("atena.automations")
+log = logging.getLogger("nuxiva.automations")
 VARS_FILE = STATE_DIR / "automation_vars.json"
 LEAVE_AFTER = 120
 
@@ -41,8 +41,8 @@ class States:
             return None
 
     def get(self, eid: str) -> dict | None:
-        if eid.startswith("atena.var."):
-            name = eid[len("atena.var."):]
+        if eid.startswith("nuxiva.var."):
+            name = eid[len("nuxiva.var."):]
             if name in self.globals:
                 return {"state": self.globals[name], "attrs": {}, "lc": self.virtual.get(eid, {}).get("lc", 0)}
             return None
@@ -107,13 +107,13 @@ class States:
                             "state": st.get("state"), "source": "casa", "domain": eid.split(".")[0]})
         for eid, st in self.virtual.items():
             out.append({"id": eid, "name": st.get("attrs", {}).get("name", eid), "state": st.get("state"),
-                        "source": "atena", "domain": eid.split(".")[1] if eid.count(".") > 1 else "atena"})
+                        "source": "nuxiva", "domain": eid.split(".")[1] if eid.count(".") > 1 else "nuxiva"})
         for k, v in self.globals.items():
-            out.append({"id": f"atena.var.{k}", "name": f"Variabile {k}", "state": v, "source": "variabile",
+            out.append({"id": f"nuxiva.var.{k}", "name": f"Variabile {k}", "state": v, "source": "variabile",
                         "domain": "var"})
         if not self._home_has("sun.sun"):
             s = sun.entity()
-            out.append({"id": "sun.sun", "name": "Sole", "state": s["state"], "source": "atena", "domain": "sun"})
+            out.append({"id": "sun.sun", "name": "Sole", "state": s["state"], "source": "nuxiva", "domain": "sun"})
         return sorted(out, key=lambda x: (x["source"], x["id"]))
 
 
@@ -131,7 +131,7 @@ class Bus:
 
     def emit(self, name: str, data: dict | None = None) -> None:
         ev = {"name": name, "data": data or {}, "at": time.time()}
-        if not (name == "state_changed" and str((data or {}).get("entity_id", "")).startswith(("atena.time", "atena.component."))):
+        if not (name == "state_changed" and str((data or {}).get("entity_id", "")).startswith(("nuxiva.time", "nuxiva.component."))):
             self.recent = (self.recent + [ev])[-100:]
         for check, fut in list(self.waiters):
             if not fut.done() and check(ev):
@@ -146,8 +146,8 @@ class Bus:
     @staticmethod
     def _forward(name: str, data: dict) -> None:
         try:
-            from atena_bus import BusError, atena_bus
-            atena_bus.publish(f"home.{name}", {k: v for k, v in data.items() if k not in ("old", "new")}, origin="automations")
+            from nuxiva_bus import BusError, nuxiva_bus
+            nuxiva_bus.publish(f"home.{name}", {k: v for k, v in data.items() if k not in ("old", "new")}, origin="automations")
         except (ImportError, BusError, TypeError, ValueError) as exc:
             log.debug("Evento %s non inoltrato al bus: %s", name, exc)
 
@@ -176,7 +176,7 @@ class Bus:
             self.state_changed(eid, old, new)
 
     def set_global(self, name: str, value) -> None:
-        eid = f"atena.var.{name}"
+        eid = f"nuxiva.var.{name}"
         old = {"state": self.states.globals.get(name)} if name in self.states.globals else None
         if old and old["state"] == value:
             return
@@ -193,17 +193,17 @@ class Bus:
             slug = p["slug"]
             if slug not in self.present:
                 self.emit("person_arrived", {"person": p["name"], "slug": slug})
-                self.set_state(f"atena.person.{slug}", "home", {"name": p["name"]})
+                self.set_state(f"nuxiva.person.{slug}", "home", {"name": p["name"]})
             self.present[slug] = now
         for slug, seen in list(self.present.items()):
             if now - seen > LEAVE_AFTER:
                 del self.present[slug]
-                name = self.states.virtual.get(f"atena.person.{slug}", {}).get("attrs", {}).get("name", slug)
+                name = self.states.virtual.get(f"nuxiva.person.{slug}", {}).get("attrs", {}).get("name", slug)
                 self.emit("person_left", {"person": name, "slug": slug})
-                self.set_state(f"atena.person.{slug}", "away", {"name": name})
+                self.set_state(f"nuxiva.person.{slug}", "away", {"name": name})
         count = len(self.present)
-        before = self.states.virtual.get("atena.people", {}).get("state")
-        self.set_state("atena.people", count, {"name": "Persone in vista"})
+        before = self.states.virtual.get("nuxiva.people", {}).get("state")
+        self.set_state("nuxiva.people", count, {"name": "Persone in vista"})
         if before not in (None, 0) and count == 0:
             self.emit("nobody_home", {})
         if before == 0 and count > 0:
@@ -212,13 +212,13 @@ class Bus:
     def component(self, key: str, label: str, status: str) -> None:
         old = self.components.get(key)
         self.components[key] = status
-        self.set_state(f"atena.component.{key}", status, {"name": label})
+        self.set_state(f"nuxiva.component.{key}", status, {"name": label})
         if old is not None and old != status:
             self.emit("component_broken" if status not in ("ok", "idle") else "component_ok",
                       {"component": key, "label": label, "status": status})
 
     def tick(self) -> None:
-        self.set_state("atena.time", datetime.now().strftime("%H:%M"), {"name": "Ora"})
+        self.set_state("nuxiva.time", datetime.now().strftime("%H:%M"), {"name": "Ora"})
 
 
 bus = Bus()

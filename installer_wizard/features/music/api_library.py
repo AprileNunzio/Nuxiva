@@ -276,7 +276,7 @@ async def duplicates(_: str = Depends(require_admin)):
 
 @admin_routes.put("/api/music/upload")
 async def upload(request: Request, name: str = "", user: str = Depends(require_admin)):
-    if request.headers.get("X-Atena-Request") != "1":
+    if request.headers.get("X-Nuxiva-Request") != "1":
         raise HTTPException(403, "Richiesta non valida")
     clean = organizer.name(Path(name).name, "brano")
     if not layout.is_audio(Path(clean)):

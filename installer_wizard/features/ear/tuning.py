@@ -6,9 +6,9 @@ from pathlib import Path
 
 import earconf
 
-log = logging.getLogger("atena.ear")
+log = logging.getLogger("nuxiva.ear")
 
-TUNING_FILE = Path(os.environ.get("ATENA_EAR_TUNING", "/var/lib/atena/ear_tuning.json"))
+TUNING_FILE = Path(os.environ.get("NUXIVA_EAR_TUNING", "/var/lib/nuxiva/ear_tuning.json"))
 THRESHOLD_MIN, THRESHOLD_MAX = 0.25, 0.80
 WAKE_GAIN_MIN, WAKE_GAIN_MAX = 1.0, 30.0
 MAX_GAIN_MIN, MAX_GAIN_MAX = 2.0, 80.0
@@ -77,20 +77,20 @@ class Tuning:
             log.warning("Regolazioni dell'ascolto non salvate: %s", exc)
 
     def wake_threshold(self) -> float:
-        base = earconf.number("ATENA_WAKEWORD_THRESHOLD", 0.5, THRESHOLD_MIN, THRESHOLD_MAX)
-        if not earconf.flag("ATENA_EAR_AUTOTUNE", True) or self.state.get("wake_threshold") is None:
+        base = earconf.number("NUXIVA_WAKEWORD_THRESHOLD", 0.5, THRESHOLD_MIN, THRESHOLD_MAX)
+        if not earconf.flag("NUXIVA_EAR_AUTOTUNE", True) or self.state.get("wake_threshold") is None:
             return base
         return clamp(float(self.state["wake_threshold"]), THRESHOLD_MIN, THRESHOLD_MAX)
 
     def wake_gain_limit(self) -> float:
-        base = earconf.number("ATENA_EAR_WAKE_GAIN", 8.0, WAKE_GAIN_MIN, WAKE_GAIN_MAX)
-        if not earconf.flag("ATENA_EAR_AUTOTUNE", True):
+        base = earconf.number("NUXIVA_EAR_WAKE_GAIN", 8.0, WAKE_GAIN_MIN, WAKE_GAIN_MAX)
+        if not earconf.flag("NUXIVA_EAR_AUTOTUNE", True):
             return base
         return clamp(base * float(self.state.get("wake_gain") or 1.0), WAKE_GAIN_MIN, WAKE_GAIN_MAX)
 
     def max_gain(self) -> float:
-        base = earconf.number("ATENA_EAR_MAX_GAIN", 30.0, MAX_GAIN_MIN, MAX_GAIN_MAX)
-        if not earconf.flag("ATENA_EAR_AUTOTUNE", True) or self.state.get("max_gain") is None:
+        base = earconf.number("NUXIVA_EAR_MAX_GAIN", 30.0, MAX_GAIN_MIN, MAX_GAIN_MAX)
+        if not earconf.flag("NUXIVA_EAR_AUTOTUNE", True) or self.state.get("max_gain") is None:
             return base
         return clamp(float(self.state["max_gain"]), MAX_GAIN_MIN, MAX_GAIN_MAX)
 
@@ -103,7 +103,7 @@ class Tuning:
         window["clipped"] += 1 if review.get("clipped") else 0
         applied = []
         if window["chunks"] >= WINDOW_CHUNKS and window["missed"] + window["false_instant"] + window["weak"] >= MIN_EVENTS:
-            if earconf.flag("ATENA_EAR_AUTOTUNE", True):
+            if earconf.flag("NUXIVA_EAR_AUTOTUNE", True):
                 current = {"wake_threshold": self.wake_threshold(), "wake_gain": float(self.state.get("wake_gain") or 1.0),
                            "max_gain": self.max_gain()}
                 for key, value, why in decide(window, current):
@@ -119,7 +119,7 @@ class Tuning:
     def snapshot(self) -> dict:
         return {"wake_threshold": round(self.wake_threshold(), 3), "wake_gain_limit": round(self.wake_gain_limit(), 2),
                 "max_gain": round(self.max_gain(), 1), "history": self.state.get("history", [])[-10:],
-                "window": self.state.get("window", dict(FRESH)), "autotune": earconf.flag("ATENA_EAR_AUTOTUNE", True)}
+                "window": self.state.get("window", dict(FRESH)), "autotune": earconf.flag("NUXIVA_EAR_AUTOTUNE", True)}
 
 
 tuning = Tuning()

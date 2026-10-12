@@ -2,23 +2,23 @@
   #define AppVersion "0.0.0"
 #endif
 #ifndef DistDir
-  #define DistDir "..\build\dist\ATENA"
+  #define DistDir "..\build\dist\NUXIVA"
 #endif
 
 [Setup]
 AppId={{6F2C8E41-7B3A-4C1D-9E55-A7E1D0C4B2F9}
-AppName=ATENA Assistente
+AppName=NUXIVA Assistente
 AppVersion={#AppVersion}
 AppPublisher=NunzioTech
-AppPublisherURL=https://github.com/AprileNunzio/ATENA
-DefaultDirName={localappdata}\Programs\ATENA
+AppPublisherURL=https://github.com/AprileNunzio/NUXIVA
+DefaultDirName={localappdata}\Programs\NUXIVA
 DisableDirPage=yes
 DisableProgramGroupPage=yes
 PrivilegesRequired=lowest
 OutputDir=..\build\installer
-OutputBaseFilename=ATENA_Assistente_Setup
-SetupIconFile=..\build\atena.ico
-UninstallDisplayIcon={app}\ATENA.exe
+OutputBaseFilename=NUXIVA_Assistente_Setup
+SetupIconFile=..\build\nuxiva.ico
+UninstallDisplayIcon={app}\NUXIVA.exe
 Compression=lzma2/max
 SolidCompression=yes
 WizardStyle=modern
@@ -39,12 +39,12 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Source: "{#DistDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
-Name: "{userprograms}\ATENA Assistente"; Filename: "{app}\ATENA.exe"
-Name: "{userdesktop}\ATENA Assistente"; Filename: "{app}\ATENA.exe"; Tasks: desktopicon
+Name: "{userprograms}\NUXIVA Assistente"; Filename: "{app}\NUXIVA.exe"
+Name: "{userdesktop}\NUXIVA Assistente"; Filename: "{app}\NUXIVA.exe"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\ATENA.exe"; Description: "{cm:LaunchProgram,ATENA Assistente}"; Flags: nowait postinstall skipifsilent
-Filename: "{app}\ATENA.exe"; Flags: nowait; Check: WizardSilent
+Filename: "{app}\NUXIVA.exe"; Description: "{cm:LaunchProgram,NUXIVA Assistente}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\NUXIVA.exe"; Flags: nowait; Check: WizardSilent
 
 [UninstallRun]
-Filename: "{cmd}"; Parameters: "/C reg delete HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v ""ATENA Assistente"" /f"; Flags: runhidden; RunOnceId: "RemoveAutostart"
+Filename: "{cmd}"; Parameters: "/C reg delete HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v ""NUXIVA Assistente"" /f"; Flags: runhidden; RunOnceId: "RemoveAutostart"

@@ -144,4 +144,4 @@ async def admin_study_dataset(_: str = Depends(require_admin)):
     rows = engine.dataset()
     return PlainTextResponse("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows),
                              media_type="application/jsonl",
-                             headers={"Content-Disposition": 'attachment; filename="atena-studio.jsonl"'})
+                             headers={"Content-Disposition": 'attachment; filename="nuxiva-studio.jsonl"'})

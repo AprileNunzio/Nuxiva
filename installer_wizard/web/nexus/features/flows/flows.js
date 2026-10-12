@@ -37,7 +37,7 @@ export function renderFlows(outlet) {
     build();
   }
 
-  const templateName = () => state.templates[state.draft.template]?.name || (state.draft.template === "custom" ? "Personalizzato" : "Bozza attuale");
+  const templnuxivame = () => state.templates[state.draft.template]?.name || (state.draft.template === "custom" ? "Personalizzato" : "Bozza attuale");
   const dirty = () => Object.keys(state.pending).length > 0;
 
   function snapshot() {
@@ -53,7 +53,7 @@ export function renderFlows(outlet) {
         const result = await api("/api/flows/draft", { method: "PUT", body: state.draft });
         Object.assign(state, { pending: result.pending, traits: result.traits, estimate: result.estimate });
         state.draft = { ...result.draft, positions: result.draft.positions || {} };
-        status.textContent = dirty() ? "Bozza salvata, non ancora pubblicata" : "Uguale a ciò che usa Atena";
+        status.textContent = dirty() ? "Bozza salvata, non ancora pubblicata" : "Uguale a ciò che usa Nuxiva";
         paintTemplates(); paintInspector(); paintCanvas(); publishBtn.disabled = !dirty();
       } catch (err) { status.textContent = ""; fail(err); }
     }, SAVE_DELAY);
@@ -85,7 +85,7 @@ export function renderFlows(outlet) {
 
   async function publish() {
     const password = await askPassword({ title: "Pubblicare il nuovo modo di ragionare?",
-      text: "Atena userà subito il flusso della bozza. Per sicurezza conferma la tua identità.", action: "Pubblica" });
+      text: "Nuxiva userà subito il flusso della bozza. Per sicurezza conferma la tua identità.", action: "Pubblica" });
     if (!password) return;
     publishBtn.disabled = true;
     try {
@@ -98,7 +98,7 @@ export function renderFlows(outlet) {
 
   async function rollback(version) {
     const password = await askPassword({ title: `Tornare alla versione ${version}?`,
-      text: "Atena riprende subito il modo di ragionare di quella versione.", action: "Ripristina" });
+      text: "Nuxiva riprende subito il modo di ragionare di quella versione.", action: "Ripristina" });
     if (!password) return;
     try {
       await api(`/api/flows/rollback/${version}`, { method: "POST", body: { password } });
@@ -129,7 +129,7 @@ export function renderFlows(outlet) {
       selected, editable: allows("pilot"), current: state.current });
   }
 
-  function paintInspector() { renderInspector(inspector, state, selected, templateName(), choose); }
+  function paintInspector() { renderInspector(inspector, state, selected, templnuxivame(), choose); }
 
   function paintVersions() {
     mount(versions, h("p", { class: "ptitle" }, "Versioni pubblicate"),
@@ -145,10 +145,10 @@ export function renderFlows(outlet) {
   function build() {
     const compareBox = comparePanel(state);
     mount(view,
-      h("div", { class: "view-head" }, h("p", { class: "eyebrow" }, "Flow Studio · flusso principale"), h("h2", {}, "Come ragiona Atena"),
+      h("div", { class: "view-head" }, h("p", { class: "eyebrow" }, "Flow Studio · flusso principale"), h("h2", {}, "Come ragiona Nuxiva"),
         h("p", {}, "Ogni nodo è un passo del ragionamento. Le modifiche restano in bozza finché non le pubblichi; puoi sempre tornare a una versione precedente."),
-        h("p", { class: "dim small" }, "Rete di sicurezza: se dopo una pubblicazione metà dei ragionamenti fallisce, Atena torna da sola alla versione precedente.")),
-      h("p", { class: "flow-hint only-explorer" }, "Tocca un modello qui sotto per cambiare il modo di pensare di Atena, provalo e poi premi «Pubblica»."),
+        h("p", { class: "dim small" }, "Rete di sicurezza: se dopo una pubblicazione metà dei ragionamenti fallisce, Nuxiva torna da sola alla versione precedente.")),
+      h("p", { class: "flow-hint only-explorer" }, "Tocca un modello qui sotto per cambiare il modo di pensare di Nuxiva, provalo e poi premi «Pubblica»."),
       h("div", { class: "flow-bar" }, templates,
         h("div", { class: "flow-actions" },
           h("button", { class: "btn ghost min-pilot", type: "button", onclick: undo }, "Annulla"),

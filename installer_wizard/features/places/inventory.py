@@ -1,7 +1,7 @@
 from features.places.store import store
 
-FIXED = (("server", "Server di Atena", ["shows"]), ("display:kiosk", "Display di Atena", ["shows", "speaks"]),
-         ("mic:local", "Microfono di Atena", ["hears"]), ("camera:main", "Webcam di Atena", ["sees"]))
+FIXED = (("server", "Server di Nuxiva", ["shows"]), ("display:kiosk", "Display di Nuxiva", ["shows", "speaks"]),
+         ("mic:local", "Microfono di Nuxiva", ["hears"]), ("camera:main", "Webcam di Nuxiva", ["sees"]))
 NODE_SENSES = {"phone": ["hears", "speaks", "shows"], "pc": ["hears", "speaks", "shows"], "display": ["shows", "speaks"],
                "satellite": ["hears", "speaks"], "camera": ["sees"]}
 
@@ -22,7 +22,7 @@ def _cameras() -> list[dict]:
 
 
 def devices() -> list[dict]:
-    rows = [{"key": k, "name": n, "kind": "atena", "hint": "", "senses": s} for k, n, s in FIXED]
+    rows = [{"key": k, "name": n, "kind": "nuxiva", "hint": "", "senses": s} for k, n, s in FIXED]
     rows += _nodes() + _cameras()
     with store.lock:
         for row in rows:

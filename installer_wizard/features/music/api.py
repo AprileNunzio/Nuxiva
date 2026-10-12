@@ -23,7 +23,7 @@ async def admin_music(_: str = Depends(require_admin)):
 @admin_routes.put("/api/music")
 async def admin_music_set(request: Request, user: str = Depends(require_admin)):
     enabled = bool((await request.json()).get("enabled"))
-    write_env({"ATENA_MUSIC_ID": "1" if enabled else "0"})
+    write_env({"NUXIVA_MUSIC_ID": "1" if enabled else "0"})
     if not enabled:
         store.now_playing = {}
         store.touch()

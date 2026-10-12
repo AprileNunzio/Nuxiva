@@ -18,8 +18,8 @@ import zlib
 from pathlib import Path
 
 VERSION = "4.1.53"
-CONFIG = Path(os.environ.get("ATENA_NODE_CONFIG", "/etc/atena-node.json"))
-log = logging.getLogger("atena-rpa")
+CONFIG = Path(os.environ.get("NUXIVA_NODE_CONFIG", "/etc/nuxiva-node.json"))
+log = logging.getLogger("nuxiva-rpa")
 
 ACTIONS = {"capture", "click", "double_click", "right_click", "move", "drag", "type", "key", "scroll", "wait"}
 MAX_TEXT = 500
@@ -252,7 +252,7 @@ class VirtualInput:
             self._fcntl.ioctl(self.fd, UI_SET_ABSBIT, axis)
         maximum, zeros = [0] * 64, [0] * 64
         maximum[ABS_X], maximum[ABS_Y] = width - 1, height - 1
-        os.write(self.fd, struct.pack("80sHHHHi" + "i" * 256, b"atena-rpa", 3, 1, 1, 1, 0, *maximum, *zeros, *zeros, *zeros))
+        os.write(self.fd, struct.pack("80sHHHHi" + "i" * 256, b"nuxiva-rpa", 3, 1, 1, 1, 0, *maximum, *zeros, *zeros, *zeros))
         self._fcntl.ioctl(self.fd, UI_DEV_CREATE)
         time.sleep(0.5)
 
@@ -370,7 +370,7 @@ class Executor:
 
 def post(cfg: dict, path: str, body: dict, timeout: float = 40) -> dict:
     request = urllib.request.Request(cfg["server"] + path, json.dumps(body).encode(), {
-        "Content-Type": "application/json", "Authorization": f"Bearer {cfg['token']}", "X-Atena-Node": cfg["id"]})
+        "Content-Type": "application/json", "Authorization": f"Bearer {cfg['token']}", "X-Nuxiva-Node": cfg["id"]})
     with urllib.request.urlopen(request, timeout=timeout) as res:
         return json.loads(res.read() or b"{}")
 
@@ -422,7 +422,7 @@ def serve(cfg: dict) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Demone di controllo dell'host per l'RPA cognitivo di Atena")
+    parser = argparse.ArgumentParser(description="Demone di controllo dell'host per l'RPA cognitivo di Nuxiva")
     parser.add_argument("--check", action="store_true", help="Verifica cattura schermo e input virtuale, poi esce")
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")

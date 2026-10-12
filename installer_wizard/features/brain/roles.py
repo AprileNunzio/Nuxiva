@@ -24,19 +24,19 @@ class Role:
 
 
 ROLES: tuple[Role, ...] = (
-    Role("chat", "ATENA_LLM_CHAT_ORDER", "⚡", "Conversazione veloce",
+    Role("chat", "NUXIVA_LLM_CHAT_ORDER", "⚡", "Conversazione veloce",
          "Saluti e domande brevi: risponde il primo cervello disponibile.", 320),
-    Role("deep", "ATENA_LLM_DEEP_ORDER", "🧠", "Ragionamento",
+    Role("deep", "NUXIVA_LLM_DEEP_ORDER", "🧠", "Ragionamento",
          "Spiegazioni, analisi, codice, testi lunghi, azioni."),
-    Role("ricercatore", "ATENA_LLM_RICERCATORE_ORDER", "🔎", "Ricercatore",
+    Role("ricercatore", "NUXIVA_LLM_RICERCATORE_ORDER", "🔎", "Ricercatore",
          "Ricerche sul web e sintesi di fonti."),
-    Role("domotico", "ATENA_LLM_DOMOTICO_ORDER", "🏠", "Domotico",
+    Role("domotico", "NUXIVA_LLM_DOMOTICO_ORDER", "🏠", "Domotico",
          "Comandi e scene per la casa."),
-    Role("studio", "ATENA_LLM_STUDIO_ORDER", "🎓", "Studio autonomo",
+    Role("studio", "NUXIVA_LLM_STUDIO_ORDER", "🎓", "Studio autonomo",
          "Studio, esercizi ed esami a riposo."),
-    Role("coder", "ATENA_LLM_CODER_ORDER", "🌐", "Architetto web",
+    Role("coder", "NUXIVA_LLM_CODER_ORDER", "🌐", "Architetto web",
          "Progettazione e scrittura di siti e app."),
-    Role("modello3d", "ATENA_LLM_3D_ORDER", "🧊", "Modellazione 3D",
+    Role("modello3d", "NUXIVA_LLM_3D_ORDER", "🧊", "Modellazione 3D",
          "Generazione di modelli tridimensionali."),
 )
 

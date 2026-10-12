@@ -10,7 +10,7 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from updates import manifest, updater
 
 INSTALLER = b"MZ" + b"\x00" * 1000
-URL = "https://github.com/AprileNunzio/ATENA/releases/download/assistant-v1.2.0/ATENA_Assistente_Setup.exe"
+URL = "https://github.com/AprileNunzio/NUXIVA/releases/download/assistant-v1.2.0/NUXIVA_Assistente_Setup.exe"
 
 
 def keypair():
@@ -51,9 +51,9 @@ class ManifestTest(unittest.TestCase):
             manifest.verify(data, b"non-base64!!", self.public)
 
     def test_only_official_download_addresses(self):
-        for url in ("https://evil.example/ATENA_Assistente_Setup.exe",
-                    "https://github.com/someone/ATENA/releases/download/assistant-v1.2.0/x.exe",
-                    "http://github.com/AprileNunzio/ATENA/releases/download/assistant-v1.2.0/x.exe"):
+        for url in ("https://evil.example/NUXIVA_Assistente_Setup.exe",
+                    "https://github.com/someone/NUXIVA/releases/download/assistant-v1.2.0/x.exe",
+                    "http://github.com/AprileNunzio/NUXIVA/releases/download/assistant-v1.2.0/x.exe"):
             data, signature = signed(self.key, url=url)
             with self.subTest(url=url), self.assertRaises(manifest.UpdateRejected):
                 manifest.verify(data, signature, self.public)

@@ -29,7 +29,7 @@ Examples of unacceptable behavior include:
 * Trolling, insulting or derogatory comments, and personal or political attacks
 * Public or private harassment
 * Publishing others' private information, such as a physical or email address, without their explicit permission
-* Publishing recordings, camera frames, voice samples or any other personal data collected by ad Atena
+* Publishing recordings, camera frames, voice samples or any other personal data collected by ad Nuxiva
   installation about people who have not consented to it
 * Other conduct which could reasonably be considered inappropriate in a professional setting
 
@@ -47,7 +47,7 @@ reasons for moderation decisions when appropriate.
 
 This Code of Conduct applies within all community spaces, and also applies when an individual is officially
 representing the community in public spaces. Community spaces include the repository, issues, pull requests,
-discussions, review comments, and any direct communication about the Atena project. Examples of representing
+discussions, review comments, and any direct communication about the Nuxiva project. Examples of representing
 our community include using an official e-mail address, posting via an official social media account, or acting
 as an appointed representative at an online or offline event.
 
@@ -132,7 +132,7 @@ Questo progetto adotta il **Contributor Covenant 2.1**. In sintesi:
 - **Comportamenti inaccettabili**: linguaggio o immagini sessualizzati, insulti e attacchi personali o
   politici, molestie pubbliche o private, pubblicazione di dati privati altrui senza permesso, **pubblicazione di
   registrazioni, immagini della webcam, campioni vocali o altri dati personali raccolti da un'installazione di
-  Atena su persone che non hanno acconsentito**, ogni altra condotta non appropriata in un contesto professionale.
+  Nuxiva su persone che non hanno acconsentito**, ogni altra condotta non appropriata in un contesto professionale.
 - **Ambito**: repository, issue, pull request, discussioni, commenti di revisione e ogni comunicazione sul
   progetto; vale anche quando si rappresenta ufficialmente la comunità.
 - **Segnalazioni**: a **aprilenunzio88@gmail.com** (oggetto «Codice di condotta»). Conferma di ricezione entro

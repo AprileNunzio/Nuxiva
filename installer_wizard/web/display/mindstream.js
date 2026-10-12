@@ -1,5 +1,5 @@
 (() => {
-  const D = window.AtenaDisplay, { $, fmt } = D;
+  const D = window.NuxivaDisplay, { $, fmt } = D;
   const esc = fmt.esc;
   let snap = null, seen = -1, open = false, timer = null;
 

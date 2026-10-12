@@ -95,5 +95,5 @@
     const body = P[name] || P[WEATHER[name]] || P.info;
     return `<svg class="wk-svg${cls ? ` ${cls}` : ""}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${body}</svg>`;
   }
-  window.AtenaIcons = Object.freeze({ icon, weather: (k) => icon(WEATHER[k] || "cloud"), names: Object.freeze(Object.keys(P)) });
+  window.NuxivaIcons = Object.freeze({ icon, weather: (k) => icon(WEATHER[k] || "cloud"), names: Object.freeze(Object.keys(P)) });
 })();

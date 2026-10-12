@@ -10,7 +10,7 @@ from features.vision import ir_auto, ir_configure, ir_emitter
 from features.vision import webcams as cams
 from state import store
 
-log = logging.getLogger("atena.cameras")
+log = logging.getLogger("nuxiva.cameras")
 FILE = STATE_DIR / "cameras" / "ir_auto.json"
 INTERVAL = 30
 DARK_AFTER = 60
@@ -18,7 +18,7 @@ RETRY_AFTER = 7 * 86400
 
 
 def enabled() -> bool:
-    return env_get("ATENA_IR_AUTO", "1").strip() != "0"
+    return env_get("NUXIVA_IR_AUTO", "1").strip() != "0"
 
 
 def read() -> dict:

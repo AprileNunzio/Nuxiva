@@ -39,14 +39,14 @@ class AwakeningService:
         home_values = features.get("home_assistant", {}).get("values") or {}
         agent_values = features.get("agent", {}).get("values") or {}
         return {
-            "name": env.get("ATENA_USER_NAME", ""),
-            "lang": env.get("ATENA_UI_LANG", "") or "it",
+            "name": env.get("NUXIVA_USER_NAME", ""),
+            "lang": env.get("NUXIVA_UI_LANG", "") or "it",
             "brain": self.brain_mode(),
-            "ollama_url": env.get("ATENA_OLLAMA_URL", ""),
+            "ollama_url": env.get("NUXIVA_OLLAMA_URL", ""),
             "senses": {fid: mode(fid) for fid in SENSES if fid in features},
             "home": {"available": "home_assistant" in features, "connected": bool(home_values.get("HOME_ASSISTANT_URL")),
                      "url": home_values.get("HOME_ASSISTANT_URL", "")},
-            "trust": awakening.trust_profile(mode("autonomy"), str(agent_values.get("ATENA_AGENT_ACCESS", ""))),
+            "trust": awakening.trust_profile(mode("autonomy"), str(agent_values.get("NUXIVA_AGENT_ACCESS", ""))),
         }
 
     def state(self) -> dict:

@@ -5,9 +5,9 @@
   "category": "casa",
   "order": 26,
   "panel": "twin",
-  "toggle": { "env": "ATENA_TWIN", "apply": [] },
+  "toggle": { "env": "NUXIVA_TWIN", "apply": [] },
   "requires": { "features": ["home_assistant"] },
-  "description": "Prima di eseguire un comando per la casa, Atena lo simula su una copia dello stato attuale e scarta le azioni che violano le regole di sicurezza.",
+  "description": "Prima di eseguire un comando per la casa, Nuxiva lo simula su una copia dello stato attuale e scarta le azioni che violano le regole di sicurezza.",
   "capabilities": [
     "Simula ogni comando, automazione e previsione prima di inviarlo a Home Assistant",
     "Ferma telecamere spente con l'allarme inserito, porte aperte ad allarme attivo, valvole aperte a casa vuota e comandi contraddittori",
@@ -15,7 +15,7 @@
     "Corregge il piano togliendo solo le azioni in conflitto ed esegue il resto"
   ],
   "settings": [
-    {"key": "ATENA_TWIN", "label": "Modalità", "type": "select", "default": "enforce",
+    {"key": "NUXIVA_TWIN", "label": "Modalità", "type": "select", "default": "enforce",
      "options": [{"value": "enforce", "label": "Correggi e blocca"}, {"value": "warn", "label": "Solo avvisi"}, {"value": "off", "label": "Spento"}]}
   ]
 }

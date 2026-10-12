@@ -1,6 +1,6 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
-  const FW = (window.AtenaFirewall = window.AtenaFirewall || {});
+  const A = window.NuxivaAdmin, { $, fmt } = A;
+  const FW = (window.NuxivaFirewall = window.NuxivaFirewall || {});
   const MODES = { off: "Spento", monitor: "Solo monitoraggio", protect: "Protezione", lockdown: "Lockdown" };
   const LEVELS = { low: "bassa", medium: "media", high: "alta", critical: "critica" };
   const KINDS = { port_scan: "scansione delle porte", host_sweep: "scansione della rete", syn_flood: "SYN flood",
@@ -51,7 +51,7 @@
 
   function traffic(sum) {
     if (!sum || !sum.at) {
-      $("fw-stats").innerHTML = '<span class="faint">Nessun dato: avvia il servizio atena-netguard per analizzare ethernet e wifi.</span>';
+      $("fw-stats").innerHTML = '<span class="faint">Nessun dato: avvia il servizio nuxiva-netguard per analizzare ethernet e wifi.</span>';
       $("fw-talkers").innerHTML = "";
       return;
     }

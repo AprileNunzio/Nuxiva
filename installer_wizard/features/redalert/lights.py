@@ -1,7 +1,7 @@
 import asyncio
 import logging
 
-log = logging.getLogger("atena.redalert")
+log = logging.getLogger("nuxiva.redalert")
 
 PERIOD = 1.0
 RED = [255, 0, 0]

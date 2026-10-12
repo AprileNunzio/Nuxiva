@@ -18,7 +18,7 @@ class KeyCheckError(ValueError):
 
 
 def stored_key(provider: str) -> str:
-    explicit = env_get("ATENA_ONLINE_STT_KEY", "").strip()
+    explicit = env_get("NUXIVA_ONLINE_STT_KEY", "").strip()
     if explicit:
         return explicit
     spec = PROVIDERS.get(provider)

@@ -1,5 +1,5 @@
 (() => {
-  AtenaDesk.register("cam_stream", {
+  NuxivaDesk.register("cam_stream", {
     render(el, d, ctx) {
       const motion = !!d.motion_detected;
       el.innerHTML = `${ctx.head({ icon: "camera", label: "Videocamera", title: d.camera || "", chip: motion ? "movimento" : "in ascolto", live: true, state: motion ? "bad" : "" })}

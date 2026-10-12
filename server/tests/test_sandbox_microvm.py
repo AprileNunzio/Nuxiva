@@ -29,7 +29,7 @@ def read_bytes(path):
 
 def line(key, value):
     raw = value if isinstance(value, bytes) else str(value).encode()
-    return b"@@ATENA@@ " + key.encode() + b" " + base64.b64encode(raw) + b"\n"
+    return b"@@NUXIVA@@ " + key.encode() + b" " + base64.b64encode(raw) + b"\n"
 
 
 class ArchiveTest(unittest.TestCase):
@@ -76,7 +76,7 @@ class ConsoleTest(unittest.TestCase):
         self.assertTrue(console.parse(line("stdout", b"") + line("timeout", 1) + line("exit", -9), 10).timed_out)
         self.assertTrue(console.parse(line("exit", 137), 10).oom_killed)
         self.assertFalse(console.parse(line("timeout", 1) + line("exit", 137), 10).oom_killed)
-        self.assertFalse(console.parse(b"garbage\n@@ATENA@@ stdout !!!\n", 10).complete)
+        self.assertFalse(console.parse(b"garbage\n@@NUXIVA@@ stdout !!!\n", 10).complete)
 
     def test_tail_keeps_the_last_kernel_lines_and_the_vmm_error_only(self):
         raw = b"".join(b"[ %d] line" % i + bytes([10]) for i in range(10)) + line("stdout", b"secret") + b"Kernel panic - not syncing" + bytes([10])
@@ -85,7 +85,7 @@ class ConsoleTest(unittest.TestCase):
         self.assertIn("cannot open /dev/kvm", text)
         self.assertNotIn("secret", text)
         self.assertNotIn("[ 0]", text)
-        trace = console.tail(bytes([10]).join([b"[    0.5] Run /sbin/atena-init", b"Traceback (most recent call last):", b"OSError: mount /proc", b"[    0.6] Kernel panic - not syncing: Attempted to kill init", b"[    0.6] RDX: 0000"]), b"")
+        trace = console.tail(bytes([10]).join([b"[    0.5] Run /sbin/nuxiva-init", b"Traceback (most recent call last):", b"OSError: mount /proc", b"[    0.6] Kernel panic - not syncing: Attempted to kill init", b"[    0.6] RDX: 0000"]), b"")
         self.assertIn("OSError: mount /proc", trace)
         self.assertNotIn("RDX", trace)
 
@@ -115,7 +115,7 @@ class ConfigTest(unittest.TestCase):
         encoded = vmconfig.guest_spec(self.spec(wall_seconds=12, pids=40))
         decoded = json.loads(base64.b64decode(encoded))
         self.assertEqual((decoded["language"], decoded["wall"], decoded["pids"]), ("python", 12, 40))
-        self.assertIn("atena.spec=", vmconfig.build_config(self.spec(), "/k", "/r", "/i", "/o")["boot-source"]["boot_args"])
+        self.assertIn("nuxiva.spec=", vmconfig.build_config(self.spec(), "/k", "/r", "/i", "/o")["boot-source"]["boot_args"])
 
 
 class BackendTest(unittest.TestCase):

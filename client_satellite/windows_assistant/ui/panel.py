@@ -7,13 +7,13 @@ from ui.orb import STATE_COLOR
 
 WIDTH, HEIGHT = 400, 540
 IDLE_HIDE_SECONDS = 45
-STATE_TEXT = {"idle": "Pronta · di' «Atena» o premi {hotkey}", "listening": "Ti ascolto…", "thinking": "Ci penso…",
-              "speaking": "Sto parlando · Esc per interrompere", "offline": "ATENA non raggiungibile · riprovo…",
+STATE_TEXT = {"idle": "Pronta · di' «Nuxiva» o premi {hotkey}", "listening": "Ti ascolto…", "thinking": "Ci penso…",
+              "speaking": "Sto parlando · Esc per interrompere", "offline": "NUXIVA non raggiungibile · riprovo…",
               "error": "Qualcosa non va", "alert": "Attenzione: controlla i messaggi"}
 SHORTCUTS = (("🖥 Schermo", "Guarda il mio schermo e dimmi cosa vedi"),
              ("✍ Scrivi", "Aiutami a migliorare il testo che sto scrivendo"),
              ("📷 Guardami", "Guardami dalla webcam"))
-WELCOME = ("Ciao! Sono ATENA. Posso creare cartelle e file, aprire documenti e programmi, aiutarti a scrivere e guardare "
+WELCOME = ("Ciao! Sono NUXIVA. Posso creare cartelle e file, aprire documenti e programmi, aiutarti a scrivere e guardare "
            "lo schermo o la webcam quando me lo chiedi. Quello che posso fare lo decidi tu in Impostazioni → Permessi.")
 
 
@@ -35,14 +35,14 @@ class Panel:
         self._header()
         self.feed = ctk.CTkScrollableFrame(self.window, fg_color=theme.BG, corner_radius=12)
         self.feed.pack(fill="both", expand=True, padx=12)
-        self.bubble("atena", WELCOME)
+        self.bubble("nuxiva", WELCOME)
         self._shortcuts()
         self._input()
 
     def _header(self) -> None:
         head = ctk.CTkFrame(self.window, fg_color=theme.PANEL, corner_radius=0)
         head.pack(fill="x", padx=16, pady=(14, 0))
-        ctk.CTkLabel(head, text="ATENA", font=(theme.FONT, 15, "bold"), text_color=theme.TEXT).pack(side="left")
+        ctk.CTkLabel(head, text="NUXIVA", font=(theme.FONT, 15, "bold"), text_color=theme.TEXT).pack(side="left")
         _icon_button(head, "✕", self.hide).pack(side="right")
         _icon_button(head, "⚙", self.actions["settings"]).pack(side="right")
         _icon_button(head, "🛡", self.actions["permissions"]).pack(side="right")
@@ -61,7 +61,7 @@ class Panel:
     def _input(self) -> None:
         row = ctk.CTkFrame(self.window, fg_color=theme.PANEL)
         row.pack(fill="x", padx=12, pady=12)
-        self.entry = ctk.CTkEntry(row, placeholder_text="Scrivi ad ATENA…", height=38, corner_radius=19,
+        self.entry = ctk.CTkEntry(row, placeholder_text="Scrivi ad NUXIVA…", height=38, corner_radius=19,
                                   fg_color=theme.CARD, border_color=theme.LINE, text_color=theme.TEXT, font=(theme.FONT, 13))
         self.entry.pack(side="left", fill="x", expand=True)
         self.entry.bind("<Return>", self._send)

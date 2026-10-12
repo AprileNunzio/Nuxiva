@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import StreamingResponse
 
 from access import NO_CACHE, require_admin, require_display
-from atena_bus import Envelope, atena_bus, valid_pattern
+from nuxiva_bus import Envelope, nuxiva_bus, valid_pattern
 
 admin_routes = APIRouter()
 public_routes = APIRouter()
@@ -36,7 +36,7 @@ def stream(patterns: list[str]):
                 queue.put_nowait(envelope)
             loop.call_soon_threadsafe(put)
 
-        subs = [atena_bus.subscribe(p, push, replay=True) for p in patterns]
+        subs = [nuxiva_bus.subscribe(p, push, replay=True) for p in patterns]
         try:
             while not await request.is_disconnected():
                 try:
@@ -66,4 +66,4 @@ async def display_stream(request: Request, topics: str = ""):
 
 @admin_routes.get("/api/bus/modules")
 async def bus_modules(_: str = Depends(require_admin)):
-    return {"modules": atena_bus.modules(), "stats": atena_bus.stats()}
+    return {"modules": nuxiva_bus.modules(), "stats": nuxiva_bus.stats()}

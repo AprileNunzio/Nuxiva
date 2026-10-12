@@ -131,7 +131,7 @@ async def calc_action(text: str) -> tuple[str, dict]:
     return speech, {
         "mode": "focus",
         "title": "Calcolo",
-        "subtitle": "Espressione verificata ed eseguita da Atena",
+        "subtitle": "Espressione verificata ed eseguita da Nuxiva",
         "panels": [
             {"type": "kv", "title": "Risultato", "data": {"Risultato": f"{shown} {unit}".strip(), "Espressione": expr}}
         ],

@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const esc = fmt.esc;
   const ICON = { cloud: "☁", server: "🖧", local: "🖥" };
   const KEEP = [["", "Predefinito"], ["5m", "5 minuti"], ["30m", "30 minuti"], ["1h", "1 ora"], ["6h", "6 ore"], ["24h", "24 ore"], ["-1", "Sempre"]];
@@ -50,7 +50,7 @@
 
   function stats(c) {
     const st = c.stats;
-    if (!st || !st.calls) return '<div class="faint" style="font-size:11px">Nessuna chiamata da quando Atena è stata avviata.</div>';
+    if (!st || !st.calls) return '<div class="faint" style="font-size:11px">Nessuna chiamata da quando Nuxiva è stata avviata.</div>';
     const color = st.success >= 95 ? "var(--green)" : st.success >= 70 ? "var(--amber)" : "var(--red)";
     return `<div class="faint" style="font-size:11px">${st.calls} chiamate · <b style="color:${color}">${st.success}% riuscite</b> · ~${(st.avg_ms / 1000).toFixed(1)} s
       ${st.last_model ? ` · ultimo: ${esc(st.last_model)}` : ""}</div>${st.last_error ? `<div class="as-error">Ultimo errore: ${esc(st.last_error)}</div>` : ""}`;
@@ -88,14 +88,14 @@
     const refs = [...new Set([...data.components.flatMap((c) => c.chain.slice(0, 2).map((x) => x.ref)), ...Object.keys(keep.overrides)])];
     const rows = refs.map((ref) => `<div class="as-keep"><span class="mono">${esc(label(ref))}</span><select data-keep="${esc(ref)}">${KEEP.map(([v, l]) => `<option value="${v}" ${(keep.overrides[ref] || "") === v ? "selected" : ""}>${l}</option>`).join("")}</select></div>`).join("");
     return `<div class="panel-title" style="margin:0">Permanenza in Memoria RAM / VRAM</div>
-      <div class="dim" style="font-size:13px; margin:4px 0 16px">Definisce quanto a lungo ciascun modello resta caricato dopo l'ultima risposta: mantenendolo caricato, Atena risponde istantaneamente senza dover ricaricare i pesi dal disco.</div>${rows || '<div class="faint">Nessun modello attualmente in memoria.</div>'}`;
+      <div class="dim" style="font-size:13px; margin:4px 0 16px">Definisce quanto a lungo ciascun modello resta caricato dopo l'ultima risposta: mantenendolo caricato, Nuxiva risponde istantaneamente senza dover ricaricare i pesi dal disco.</div>${rows || '<div class="faint">Nessun modello attualmente in memoria.</div>'}`;
   }
 
   function render() {
     const groups = [...new Set(data.components.map((c) => c.group))];
     const body = groups.map((g) => `<div class="as-group"><div class="as-group-title">${esc(g)}</div>${data.components.filter((c) => c.group === g).map(row).join("")}</div>`).join("");
     $("br-assign").innerHTML = `<div class="panel"><div class="panel-title" style="margin:0">Mappatura Cervelli per Singolo Componente</div>
-      <div class="dim" style="font-size:13px; margin:4px 0 16px">Ogni agente e funzione interna di Atena può avere un proprio cervello: un modello locale, un altro computer in rete o un servizio cloud, con priorità e ripiego automatico. Ciò che non personalizzi segue la catena predefinita del suo ruolo.</div>${body}</div>
+      <div class="dim" style="font-size:13px; margin:4px 0 16px">Ogni agente e funzione interna di Nuxiva può avere un proprio cervello: un modello locale, un altro computer in rete o un servizio cloud, con priorità e ripiego automatico. Ciò che non personalizzi segue la catena predefinita del suo ruolo.</div>${body}</div>
       <div class="panel">${keepPanel()}</div>`;
   }
 

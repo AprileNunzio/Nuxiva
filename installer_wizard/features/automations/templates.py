@@ -1,9 +1,9 @@
 TEMPLATES = [
     {
         "name": "Buonanotte",
-        "description": "Dice «buonanotte»: Atena chiede conferma, spegne le luci, abbassa le tapparelle, attiva il silenzio e le dice cosa c'è domani.",
+        "description": "Dice «buonanotte»: Nuxiva chiede conferma, spegne le luci, abbassa le tapparelle, attiva il silenzio e le dice cosa c'è domani.",
         "tags": ["casa", "sera"],
-        "triggers": [{"type": "phrase", "phrases": ["buonanotte", "vado a dormire", "notte atena"], "reply": "Buonanotte, signore."}],
+        "triggers": [{"type": "phrase", "phrases": ["buonanotte", "vado a dormire", "notte nuxiva"], "reply": "Buonanotte, signore."}],
         "conditions": [],
         "actions": [
             {"type": "confirm", "question": "Spengo tutte le luci e chiudo le tapparelle?", "timeout": 20,
@@ -71,21 +71,21 @@ TEMPLATES = [
     },
     {
         "name": "Componente guasto",
-        "description": "Quando un componente di Atena si guasta, avvisa su Telegram e chiede all'agente una diagnosi in sola lettura.",
+        "description": "Quando un componente di Nuxiva si guasta, avvisa su Telegram e chiede all'agente una diagnosi in sola lettura.",
         "tags": ["sistema"],
         "triggers": [{"type": "event", "name": "component_broken"}],
         "cooldown": 900,
         "mode": "queued",
         "actions": [
             {"type": "delay", "seconds": 120},
-            {"type": "if", "conditions": [{"type": "expr", "expr": "state('atena.component.' + data.component) not in ['ok', 'idle']"}],
+            {"type": "if", "conditions": [{"type": "expr", "expr": "state('nuxiva.component.' + data.component) not in ['ok', 'idle']"}],
              "then": [{"type": "agent", "prompt": "Il componente {{ data.label }} è in stato {{ data.status }}. Diagnostica con soli comandi di lettura e rispondi in due frasi.", "store": "diagnosi"},
                       {"type": "notify", "title": "Guasto: {{ data.label }}", "text": "{{ diagnosi }}", "channels": ["telegram", "display"]}]},
         ],
     },
     {
         "name": "Notifica da webhook",
-        "description": "Un altro sistema chiama l'indirizzo web dell'automazione: Atena mostra e legge il messaggio ricevuto.",
+        "description": "Un altro sistema chiama l'indirizzo web dell'automazione: Nuxiva mostra e legge il messaggio ricevuto.",
         "tags": ["integrazioni"],
         "triggers": [{"type": "webhook"}],
         "actions": [{"type": "notify", "title": "{{ data.title or 'Messaggio esterno' }}", "text": "{{ data.text or data }}", "channels": ["display", "voice"]}],

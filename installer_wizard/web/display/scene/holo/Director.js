@@ -31,4 +31,4 @@
   }
 
   H.Director = Director;
-})(window.Atena3D);
+})(window.Nuxiva3D);

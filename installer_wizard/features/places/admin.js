@@ -1,7 +1,7 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const SENSES = { sees: "vede", hears: "sente", shows: "mostra", speaks: "parla" };
-  const ICONS = { atena: "🧠", phone: "📱", pc: "💻", display: "🖥", satellite: "🔊", camera: "📷", other: "📟" };
+  const ICONS = { nuxiva: "🧠", phone: "📱", pc: "💻", display: "🖥", satellite: "🔊", camera: "📷", other: "📟" };
   let data = null, timer = null;
 
   async function call(method, url, body) {

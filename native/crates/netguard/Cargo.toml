@@ -1,5 +1,5 @@
 [package]
-name = "atena-netguard"
+name = "nuxiva-netguard"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
@@ -7,7 +7,7 @@ license.workspace = true
 publish.workspace = true
 
 [[bin]]
-name = "atena-netguard"
+name = "nuxiva-netguard"
 path = "src/main.rs"
 
 [lints]

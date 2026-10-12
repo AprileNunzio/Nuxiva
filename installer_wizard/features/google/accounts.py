@@ -22,7 +22,7 @@ class Accounts:
         return self._data
 
     def _migrate(self) -> None:
-        legacy = env_get("ATENA_GOOGLE_REFRESH_TOKEN", "")
+        legacy = env_get("NUXIVA_GOOGLE_REFRESH_TOKEN", "")
         target = identity.owner() if legacy else None
         if not target:
             return
@@ -31,7 +31,7 @@ class Accounts:
             "refresh": legacy, "email": info.get("email", ""), "name": info.get("name", ""),
             "scopes": info.get("scopes", []), "linked_at": info.get("linked_at", time.time())})
         _store.save(self._data)
-        write_env({"ATENA_GOOGLE_REFRESH_TOKEN": ""})
+        write_env({"NUXIVA_GOOGLE_REFRESH_TOKEN": ""})
         store.event("INFO", f"Google: l'account collegato ora appartiene a {target.get('name')}", "google")
 
     def get(self, slug: str) -> dict | None:

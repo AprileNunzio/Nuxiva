@@ -10,7 +10,7 @@ from features.vpn import model
 VPN_DIR = STATE_DIR / "vpn"
 PROFILES_FILE = VPN_DIR / "profiles.json"
 SECRETS = SealedFile(ETC_DIR / "vpn.vault", ETC_DIR / "vpn.key")
-log = logging.getLogger("atena.vpn")
+log = logging.getLogger("nuxiva.vpn")
 
 
 def _restore(item: dict) -> model.Profile:

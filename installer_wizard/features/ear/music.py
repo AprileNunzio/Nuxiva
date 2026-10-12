@@ -11,11 +11,11 @@ from collections import deque
 
 import numpy as np
 
-log = logging.getLogger("atena.ear")
+log = logging.getLogger("nuxiva.ear")
 
 RATE = 16000
 FRAME = 480
-MUSIC_URL = f"http://127.0.0.1:{os.environ.get('ATENA_ADMIN_PORT', '8080')}/api/internal/music"
+MUSIC_URL = f"http://127.0.0.1:{os.environ.get('NUXIVA_ADMIN_PORT', '8080')}/api/internal/music"
 WINDOW = 10.0
 LOUD_RATIO = 0.88
 STATE = {"next_at": time.time() + 60, "busy": False}
@@ -29,7 +29,7 @@ def _post(audio: np.ndarray) -> dict:
         w.setframerate(RATE)
         w.writeframes((np.clip(audio, -1, 1) * 32767).astype("<i2").tobytes())
     req = urllib.request.Request(MUSIC_URL, data=buf.getvalue(), method="POST",
-                                 headers={"Content-Type": "audio/wav", "X-Atena-Request": "1"})
+                                 headers={"Content-Type": "audio/wav", "X-Nuxiva-Request": "1"})
     with urllib.request.urlopen(req, timeout=60) as r:
         return json.loads(r.read() or b"{}")
 

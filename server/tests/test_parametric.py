@@ -244,7 +244,7 @@ class AgentTest(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(response.result_data["stats"]["parts"], 7)
 
     async def test_synthetic_gateway_answer_is_an_error_and_no_files(self):
-        fake = LLMResponse(content="Atena Core acknowledges", model_used=SYNTHETIC_MODEL, tokens_consumed=1, duration_ms=1)
+        fake = LLMResponse(content="Nuxiva Core acknowledges", model_used=SYNTHETIC_MODEL, tokens_consumed=1, duration_ms=1)
         with tempfile.TemporaryDirectory() as root, \
                 patch("server.features.parametric.composition.llm_gateway.generate_completion", AsyncMock(return_value=fake)), \
                 patch("server.features.parametric.composition.settings.DATA_DIR", root):

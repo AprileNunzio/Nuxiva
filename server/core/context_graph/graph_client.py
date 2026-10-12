@@ -15,7 +15,7 @@ from server.core.context_graph.node_schema import (
 )
 from server.shared.errors.domain_errors import EntityNotFoundException
 
-logger = logging.getLogger("atena.graph_client")
+logger = logging.getLogger("nuxiva.graph_client")
 
 
 class GraphClient:
@@ -61,12 +61,12 @@ class GraphClient:
 
     def _bootstrap_default_topology(self) -> None:
         now = time.time()
-        row = self._conn.execute("SELECT id FROM nodes WHERE id = ?", ("atena_core",)).fetchone()
+        row = self._conn.execute("SELECT id FROM nodes WHERE id = ?", ("nuxiva_core",)).fetchone()
         if not row:
             self._conn.execute(
                 "INSERT INTO nodes (id, node_type, label, properties, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
-                ("atena_core", NodeType.AGENT.value if hasattr(NodeType.AGENT, "value") else str(NodeType.AGENT),
-                 "Atena Orchestrator",
+                ("nuxiva_core", NodeType.AGENT.value if hasattr(NodeType.AGENT, "value") else str(NodeType.AGENT),
+                 "Nuxiva Orchestrator",
                  json.dumps({"version": "4.1.53", "status": "ONLINE"}),
                  now, now),
             )

@@ -5,7 +5,7 @@ import re
 from features.cameras import live, options
 from features.vision import webcams as cams
 
-log = logging.getLogger("atena.cameras")
+log = logging.getLogger("nuxiva.cameras")
 LINE = re.compile(r"^\s*([a-z0-9_]+)\s+0x[0-9a-f]+\s+\((int|bool|menu|button|intmenu)\)\s*:\s*(.*)$")
 MENU = re.compile(r"^\s+(-?\d+):\s+(.+)$")
 FIELD = re.compile(r"(min|max|step|default|value)=(-?\d+)")

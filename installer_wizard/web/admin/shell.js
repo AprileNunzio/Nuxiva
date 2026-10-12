@@ -1,8 +1,8 @@
 (() => {
   const $ = (id) => document.getElementById(id);
-  const A = window.AtenaAdmin = {
+  const A = window.NuxivaAdmin = {
     $,
-    fmt: Atena.fmt,
+    fmt: Nuxiva.fmt,
     state: null,
     streaming: false,
     currentTab: "overview",
@@ -16,7 +16,7 @@
   };
 
   A.api = async (method, url, body) => {
-    const opts = { method, headers: { "X-Atena-Request": "1" }, credentials: "same-origin" };
+    const opts = { method, headers: { "X-Nuxiva-Request": "1" }, credentials: "same-origin" };
     if (body !== undefined) { opts.headers["Content-Type"] = "application/json"; opts.body = JSON.stringify(body); }
     const r = await fetch(url, opts);
     if (r.status === 401) { A.showLogin(); throw new Error("Sessione scaduta"); }
@@ -65,7 +65,7 @@
   };
 
   A.onState = (s) => {
-    if (s.asset_version && window.ATENA_ASSET_V && s.asset_version !== window.ATENA_ASSET_V && !typing()) {
+    if (s.asset_version && window.NUXIVA_ASSET_V && s.asset_version !== window.NUXIVA_ASSET_V && !typing()) {
       location.reload();
       return;
     }
@@ -76,7 +76,7 @@
   A.showApp = (user) => {
     $("login").style.display = "none"; $("app").classList.add("show");
     $("who").textContent = `Connesso come ${user}`;
-    if (!A.streaming) { A.streaming = true; Atena.connectState("/api/stream", A.onState, (ok) => $("link").classList.toggle("show", !ok)); }
+    if (!A.streaming) { A.streaming = true; Nuxiva.connectState("/api/stream", A.onState, (ok) => $("link").classList.toggle("show", !ok)); }
     A.loadFeatures().then(() => {
       const h = location.hash.slice(1);
       if (h.startsWith("f/")) A.openFeature(h.slice(2)); else if (h) A.openTab(h);
@@ -94,9 +94,9 @@
     const memo = A.session();
     if (!$(`tab-${tab}`)) {
       const stale = featData.features.some((x) => x.panel === tab);
-      if (stale && memo && memo.getItem("atena-reload") !== tab) { memo.setItem("atena-reload", tab); location.hash = tab; location.reload(); return; }
+      if (stale && memo && memo.getItem("nuxiva-reload") !== tab) { memo.setItem("nuxiva-reload", tab); location.hash = tab; location.reload(); return; }
       tab = "overview";
-    } else if (memo) memo.removeItem("atena-reload");
+    } else if (memo) memo.removeItem("nuxiva-reload");
     const previous = A.tabs[A.currentTab];
     if (A.currentTab !== tab && previous && previous.leave) previous.leave();
     A.currentTab = tab;

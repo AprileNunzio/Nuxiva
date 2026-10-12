@@ -10,7 +10,7 @@ def _delegation_risk(args: dict) -> bool:
     return name not in registry.TOOLS or registry.needs_confirm(name, args.get("args") or {})
 
 
-@registry.tool("team_roster", "elenca tutti gli agenti di Atena con priorità, strumenti e cosa sta facendo ciascuno ora", {}, agent="agent")
+@registry.tool("team_roster", "elenca tutti gli agenti di Nuxiva con priorità, strumenti e cosa sta facendo ciascuno ora", {}, agent="agent")
 async def team_roster() -> str:
     return roster.team_text() + "\n" + board.digest()
 

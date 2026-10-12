@@ -1,13 +1,13 @@
 {
   "name": "Algoritmi",
-  "description": "Calcoli, conversioni e procedure come algoritmi Python verificati: Atena li scrive una volta, li tiene in memoria e li riusa in millisecondi.",
+  "description": "Calcoli, conversioni e procedure come algoritmi Python verificati: Nuxiva li scrive una volta, li tiene in memoria e li riusa in millisecondi.",
   "capabilities": [
     "Calcolatrice, percentuali e IVA, conversioni, date",
-    "Nuovi algoritmi scritti da Atena",
+    "Nuovi algoritmi scritti da Nuxiva",
     "Controllo del codice e prova in ambiente isolato",
     "Statistiche di utilizzo"
   ],
   "settings": {
-    "ATENA_SKILLS_GENERATE": "Atena scrive da sola nuovi algoritmi"
+    "NUXIVA_SKILLS_GENERATE": "Nuxiva scrive da sola nuovi algoritmi"
   }
 }

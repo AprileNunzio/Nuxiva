@@ -1,6 +1,6 @@
 (() => {
-  const D = window.AtenaDisplay, { $ } = D;
-  const V = window.ATENA_ASSET_V ? `?v=${window.ATENA_ASSET_V}` : "";
+  const D = window.NuxivaDisplay, { $ } = D;
+  const V = window.NUXIVA_ASSET_V ? `?v=${window.NUXIVA_ASSET_V}` : "";
   const loadScript = (src) => new Promise((ok, ko) => {
     const el = document.createElement("script");
     el.src = src + V; el.onload = ok; el.onerror = () => ko(new Error(`${src} non caricato`));
@@ -25,8 +25,8 @@
 
   function startLight() {
     $("scene").style.display = "none"; $("core").style.display = "block";
-    if (window.atenaPerf) window.atenaPerf.lite(D.look.reason || "modalità leggera");
-    D.avatar = window.atenaAvatar = new AtenaAvatar.ThoughtCore($("core"));
+    if (window.nuxivaPerf) window.nuxivaPerf.lite(D.look.reason || "modalità leggera");
+    D.avatar = window.nuxivaAvatar = new NuxivaAvatar.ThoughtCore($("core"));
     D.avatar.setMode(D.mode);
   }
 
@@ -34,16 +34,16 @@
     const { FACE, look } = D;
     try {
       await load3D();
-      const scene = D.scene = new Atena3D.AtenaScene($("scene"), { onSelect: D.showNode, onHover: D.hoverNode,
+      const scene = D.scene = new Nuxiva3D.NuxivaScene($("scene"), { onSelect: D.showNode, onHover: D.hoverNode,
         faceOptions: { color: FACE.color, style: FACE.style },
-        onFaceReady: () => look.auto && AtenaAvatar.watchFps(() => scene.frames, look.info, (fps) => {
+        onFaceReady: () => look.auto && NuxivaAvatar.watchFps(() => scene.frames, look.info, (fps) => {
           console.warn(`3D a ${fps} fps: passo al nucleo leggero`);
           const swap = () => (D.busy || D.isSpeaking() ? setTimeout(swap, 3000) : location.reload());
           swap();
         }) });
       $("scene").style.display = "block";
-      D.avatar = window.atenaAvatar = scene;
-      window.atenaScene = scene;
+      D.avatar = window.nuxivaAvatar = scene;
+      window.nuxivaScene = scene;
       scene.setMode(D.mode);
       if (D.weather) scene.setWeather(D.weather);
       D.applyStage();
@@ -58,15 +58,15 @@
   async function ensureBrain() {
     if (D.scene) return D.scene;
     await load3D();
-    D.scene = D.scene || new Atena3D.AtenaScene($("scene"), { face: false, onSelect: D.showNode, onHover: D.hoverNode });
-    window.atenaScene = D.scene;
+    D.scene = D.scene || new Nuxiva3D.NuxivaScene($("scene"), { face: false, onSelect: D.showNode, onHover: D.hoverNode });
+    window.nuxivaScene = D.scene;
     $("scene").style.display = "block";
     await D.refreshBrain(false);
     return D.scene;
   }
 
   D.startLook = () => {
-    const look = D.look = window.atenaLook = AtenaAvatar.choose(D.FACE.avatar);
+    const look = D.look = window.nuxivaLook = NuxivaAvatar.choose(D.FACE.avatar);
     console.info(`Aspetto: ${look.mode} (${look.reason})`, look.info);
     if (look.mode === "full") startFull(); else startLight();
   };

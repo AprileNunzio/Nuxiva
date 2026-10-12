@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const STATE = { ready: "ok", standby: "warn", busy: "running", offline: "down", unknown: "" };
   let data = { printers: [] }, editing = null;
 
@@ -13,7 +13,7 @@
   function render() {
     $("pr-list").innerHTML = data.printers.map((p) => `<div class="pr-item" data-id="${fmt.esc(p.id)}">
       <div><b>${fmt.esc(p.name)}</b> <span class="badge">${fmt.esc(typeLabel(p.type))}</span> ${stateBadge(p.status || "unknown")}
-        ${p.atena_default ? `<span class="badge ok">${fmt.esc(A.t("printers.default"))}</span>` : ""}
+        ${p.nuxiva_default ? `<span class="badge ok">${fmt.esc(A.t("printers.default"))}</span>` : ""}
         <div class="faint">${fmt.esc(A.t(`printers.connection.${p.connection}`))}${p.address ? " · " + fmt.esc(p.address) : ""}${p.port ? ":" + fmt.esc(String(p.port)) : ""}</div>
         <div class="faint" data-probe></div></div>
       <div class="actions">
@@ -34,7 +34,7 @@
     $("po-paper").value = o.paper; $("po-orientation").value = o.orientation; $("po-quality").value = o.quality;
     $("po-copies").value = o.copies; $("po-color").checked = o.color; $("po-duplex").checked = o.duplex;
     $("po-power").value = o.laser_power; $("po-feed").value = o.laser_feed; $("po-nozzle").value = o.nozzle_temp; $("po-bed").value = o.bed_temp;
-    $("po-default").checked = !!p.atena_default;
+    $("po-default").checked = !!p.nuxiva_default;
     document.querySelectorAll("#pr-options-form .pr-2d").forEach((x) => { x.hidden = !["laser_2d", "inkjet_2d"].includes(p.type); });
     document.querySelectorAll("#pr-options-form .pr-laser").forEach((x) => { x.hidden = p.type !== "engraver"; });
     document.querySelectorAll("#pr-options-form .pr-3d").forEach((x) => { x.hidden = p.type !== "3d"; });
@@ -77,7 +77,7 @@
           paper: $("po-paper").value, orientation: $("po-orientation").value, quality: $("po-quality").value,
           copies: Number($("po-copies").value), color: $("po-color").checked, duplex: $("po-duplex").checked,
           laser_power: Number($("po-power").value), laser_feed: Number($("po-feed").value),
-          nozzle_temp: Number($("po-nozzle").value), bed_temp: Number($("po-bed").value), atena_default: $("po-default").checked });
+          nozzle_temp: Number($("po-nozzle").value), bed_temp: Number($("po-bed").value), nuxiva_default: $("po-default").checked });
         $("pr-options-panel").hidden = true; editing = null; A.toast(A.t("printers.saved")); load();
       } catch (err) { fail(err); }
     });
@@ -101,12 +101,12 @@
         $("pr-address").value = item.dataset.host; $("pr-port").value = item.dataset.port === "631" ? 631 : 9100; $("pr-name").focus();
         return;
       }
-      const queue = prompt(A.t("printers.queue_prompt"), (item.dataset.host || "atena").replace(/[^A-Za-z0-9_-]/g, "_"));
+      const queue = prompt(A.t("printers.queue_prompt"), (item.dataset.host || "nuxiva").replace(/[^A-Za-z0-9_-]/g, "_"));
       if (!queue) return;
       try { await A.api("POST", "/api/printers/install", { uri: item.dataset.uri, queue }); A.toast(A.t("printers.installed", { queue })); load(); }
       catch (err) { fail(err); }
     });
-    window.addEventListener("atena-i18n", () => { if (A.isOn("printers")) render(); });
+    window.addEventListener("nuxiva-i18n", () => { if (A.isOn("printers")) render(); });
   }
 
   A.tab("printers", { title: "Stampanti", init, load });

@@ -11,15 +11,15 @@
     "Aggiorna il consiglio se il traffico cambia e avvisa quando è ora di uscire"
   ],
   "settings": {
-    "ATENA_MAPS_MODE": "Mezzo predefinito",
-    "ATENA_MAPS_TRIPS": "Consigliami quando uscire per gli appuntamenti con un luogo e per pullman, treni e voli",
-    "ATENA_MAPS_WISE": "Margine di sicurezza calcolato dallo storico dei tempi (traffico variabile)",
-    "ATENA_MAPS_MARGIN_MIN": "Margine minimo in più sul tempo di viaggio, in minuti (0 - 60)",
-    "ATENA_MAPS_BUFFER_BUS": "Arrivare in anticipo per un pullman (minuti)",
-    "ATENA_MAPS_BUFFER_TRAIN": "Arrivare in anticipo per un treno (minuti)",
-    "ATENA_MAPS_BUFFER_FLIGHT": "Arrivare in anticipo per un volo (minuti)",
-    "ATENA_MAPS_BUFFER_EVENT": "Anticipo per gli altri appuntamenti (minuti)",
-    "ATENA_MAPS_HEADSUP_MIN": "Primo avviso quanti minuti prima dell'ora di uscita (10 - 720)",
-    "ATENA_MAPS_EVENT_HOURS": "Guarda gli impegni delle prossime ore (1 - 48)"
+    "NUXIVA_MAPS_MODE": "Mezzo predefinito",
+    "NUXIVA_MAPS_TRIPS": "Consigliami quando uscire per gli appuntamenti con un luogo e per pullman, treni e voli",
+    "NUXIVA_MAPS_WISE": "Margine di sicurezza calcolato dallo storico dei tempi (traffico variabile)",
+    "NUXIVA_MAPS_MARGIN_MIN": "Margine minimo in più sul tempo di viaggio, in minuti (0 - 60)",
+    "NUXIVA_MAPS_BUFFER_BUS": "Arrivare in anticipo per un pullman (minuti)",
+    "NUXIVA_MAPS_BUFFER_TRAIN": "Arrivare in anticipo per un treno (minuti)",
+    "NUXIVA_MAPS_BUFFER_FLIGHT": "Arrivare in anticipo per un volo (minuti)",
+    "NUXIVA_MAPS_BUFFER_EVENT": "Anticipo per gli altri appuntamenti (minuti)",
+    "NUXIVA_MAPS_HEADSUP_MIN": "Primo avviso quanti minuti prima dell'ora di uscita (10 - 720)",
+    "NUXIVA_MAPS_EVENT_HOURS": "Guarda gli impegni delle prossime ore (1 - 48)"
   }
 }

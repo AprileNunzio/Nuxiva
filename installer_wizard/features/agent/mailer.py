@@ -49,14 +49,14 @@ def _gmail_session():
 
 
 def smtp_ready() -> bool:
-    return bool(env_get("ATENA_SMTP_HOST") and env_get("ATENA_SMTP_USER"))
+    return bool(env_get("NUXIVA_SMTP_HOST") and env_get("NUXIVA_SMTP_USER"))
 
 
 def _smtp_send(msg: EmailMessage) -> None:
-    host, port = env_get("ATENA_SMTP_HOST"), int(env_get("ATENA_SMTP_PORT", "587") or 587)
-    user, password = env_get("ATENA_SMTP_USER"), env_get("ATENA_SMTP_PASSWORD")
+    host, port = env_get("NUXIVA_SMTP_HOST"), int(env_get("NUXIVA_SMTP_PORT", "587") or 587)
+    user, password = env_get("NUXIVA_SMTP_USER"), env_get("NUXIVA_SMTP_PASSWORD")
     if "From" not in msg:
-        msg["From"] = env_get("ATENA_SMTP_FROM") or user
+        msg["From"] = env_get("NUXIVA_SMTP_FROM") or user
     if port == 465:
         with smtplib.SMTP_SSL(host, port, timeout=30) as s:
             s.login(user, password)
@@ -80,5 +80,5 @@ async def send(to: list[str], subject: str, body: str, files: list[Path]) -> str
         return f"inviata con Gmail ({session.info.get('email', session.slug)})"
     if smtp_ready():
         await asyncio.to_thread(_smtp_send, msg)
-        return f"inviata via SMTP ({env_get('ATENA_SMTP_HOST')})"
+        return f"inviata via SMTP ({env_get('NUXIVA_SMTP_HOST')})"
     raise MailUnavailable("nessun account per inviare: collega Google con il permesso «Invio email» oppure imposta l'SMTP nel pannello")

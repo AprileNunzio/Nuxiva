@@ -1,5 +1,5 @@
 (() => {
-  const { fmt, Reactor, connectState } = Atena;
+  const { fmt, Reactor, connectState } = Nuxiva;
   const $ = (id) => document.getElementById(id);
   const reactor = new Reactor($("reactor"));
   const STATUS_TEXT = { pending: "in attesa", checking: "verifica", running: "", retrying: "nuovo tentativo", done: "ok", failed: "errore", skipped: "saltato", background: "dopo l'avvio" };

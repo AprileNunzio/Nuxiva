@@ -36,11 +36,11 @@ class StreamChatTests(unittest.TestCase):
 
     def test_errors_become_an_error_event(self):
         async def failing(text, device, lang=None, heard=None):
-            raise HTTPException(503, "Atena non è ancora operativa")
+            raise HTTPException(503, "Nuxiva non è ancora operativa")
 
         with mock.patch.object(chat_api, "assistant_chat", side_effect=failing):
             out = events(asyncio.run(collect(chat_api._stream_chat("ciao", "kiosk", None, {}))))
-        self.assertEqual(out, [{"type": "error", "status": 503, "detail": "Atena non è ancora operativa"}])
+        self.assertEqual(out, [{"type": "error", "status": 503, "detail": "Nuxiva non è ancora operativa"}])
 
 
 class CoreStreamTests(unittest.TestCase):
@@ -63,11 +63,11 @@ class CoreStreamTests(unittest.TestCase):
         return result, [queue.get_nowait() for _ in range(queue.qsize())]
 
     def test_reads_server_sent_events_from_the_core(self):
-        body = 'data: {"t": "Sono "}\n\ndata: {"t": "Atena."}\n\ndata: {"done": true, "model": "ollama/qwen3"}\n\n'
+        body = 'data: {"t": "Sono "}\n\ndata: {"t": "Nuxiva."}\n\ndata: {"done": true, "model": "ollama/qwen3"}\n\n'
         result, pushed = self.run_stream(body)
-        self.assertEqual(result["speech_output"], "Sono Atena.")
+        self.assertEqual(result["speech_output"], "Sono Nuxiva.")
         self.assertEqual(result["result_data"]["model"], "ollama/qwen3")
-        self.assertEqual([p["t"] for p in pushed], ["Sono ", "Atena."])
+        self.assertEqual([p["t"] for p in pushed], ["Sono ", "Nuxiva."])
 
     def test_core_errors_let_the_next_brain_answer(self):
         with self.assertRaises(ValueError):

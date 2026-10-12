@@ -8,6 +8,6 @@
     "Chaque décision est enregistrée et consultable dans le panel (/api/understanding)"
   ],
   "settings": {
-    "ATENA_UNDERSTANDING_LLM": "Raisonner avec le modèle dans les cas douteux"
+    "NUXIVA_UNDERSTANDING_LLM": "Raisonner avec le modèle dans les cas douteux"
   }
 }

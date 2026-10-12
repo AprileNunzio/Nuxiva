@@ -1,10 +1,10 @@
 {
     "ui": {
-        "title": "Atena Cognitive Orchestrator",
+        "title": "Nuxiva Cognitive Orchestrator",
         "subtitle": "Sistema Agentico Avanzato v2.0",
-        "input_placeholder": "Scrivi un prompt per Atena o per lo Swarm...",
+        "input_placeholder": "Scrivi un prompt per Nuxiva o per lo Swarm...",
         "send_button": "Invia Comando",
-        "thinking_title": "Atena sta ragionando (System 2)...",
+        "thinking_title": "Nuxiva sta ragionando (System 2)...",
         "response_title": "Esecuzione e Risposta",
         "tools_title": "Strumenti Dinamici Utilizzati",
         "whiteboard_title": "Lavagna Interattiva",
@@ -24,5 +24,31 @@
         "error_connection": "Errore di connessione o inferenza: {err}",
         "semantic_fast_path": "Fast-Path Semantico (0 ms)",
         "system1": "System 1: {intent}"
+    },
+    "cockpit": {
+        "deck_projects": "Plancia War Room & Progetti 24/7",
+        "deck_cognitive_flow": "Plancia Flusso Cognitivo",
+        "deck_agent_vault": "Plancia Agent Vault & Windows",
+        "deck_rbac": "Plancia RBAC & Personale",
+        "deck_proximity_hud": "Plancia Proximity HUD",
+        "deck_cad_media": "Plancia CAD & Media Studio",
+        "deck_telemetry": "Plancia Telemetria & Kernel",
+        "deck_chatbot_mesh": "Plancia Assistenti & Bot Personalizzati",
+        "btn_execute": "Esegui",
+        "btn_save": "Salva Modifiche",
+        "btn_recruit": "Conferma",
+        "input_command_placeholder": "Impartisci un comando, descrivi un nuovo progetto o interroga gli agenti...",
+        "admin_wizard_title": "Configurazione Guidata Intelligente",
+        "admin_wizard_auto_btn": "⚡ Rilevamento & Auto-Configurazione Rapida",
+        "admin_wizard_step1": "Passo 1: Selezione Profilo Casa / Impresa",
+        "admin_wizard_step2": "Passo 2: Assistenti & Bot Consigliati",
+        "admin_wizard_step3": "Passo 3: Strumenti & Widget Attivi",
+        "admin_wizard_step4": "Passo 4: Attivazione con 1 Clic",
+        "hud_user_default": "Amministratore Primario (Owner)",
+        "user_role_admin": "Amministratore / Capofamiglia",
+        "user_role_family": "Membro Famiglia",
+        "user_role_guest": "Ospite / Visitatore",
+        "user_role_staff": "Personale di Servizio"
     }
 }
+

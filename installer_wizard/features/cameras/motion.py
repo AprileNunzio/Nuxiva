@@ -11,7 +11,7 @@ from features.cameras import captures, events, live, options
 from features.desktop.desk import desk
 from state import store
 
-log = logging.getLogger("atena.cameras")
+log = logging.getLogger("nuxiva.cameras")
 WIDTH, HEIGHT = 64, 36
 PIXEL_DELTA = 25
 FRAMES = {}
@@ -77,7 +77,7 @@ async def check(row: dict, opts: dict, cooldown: int) -> None:
 
 async def tick() -> int:
     saved = options.read()
-    cooldown = number("ATENA_CAMERAS_MOTION_COOLDOWN", 60, 10, 3600)
+    cooldown = number("NUXIVA_CAMERAS_MOTION_COOLDOWN", 60, 10, 3600)
     watched = [r for r in live.all_rows() if (saved.get(r["id"]) or {}).get("motion")]
     for gone in set(FRAMES) - {r["id"] for r in watched}:
         FRAMES.pop(gone, None)
@@ -92,4 +92,4 @@ async def tick() -> int:
 async def run() -> None:
     while True:
         await tick()
-        await asyncio.sleep(number("ATENA_CAMERAS_MOTION_EVERY", 5, 2, 60))
+        await asyncio.sleep(number("NUXIVA_CAMERAS_MOTION_EVERY", 5, 2, 60))

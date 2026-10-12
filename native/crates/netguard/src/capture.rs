@@ -5,8 +5,8 @@ use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
 use socket2::{Domain, Protocol, Socket, Type};
 
-use atena_netguard::engine::{Engine, Event};
-use atena_netguard::net::parse_mac;
+use nuxiva_netguard::engine::{Engine, Event};
+use nuxiva_netguard::net::parse_mac;
 
 use crate::config::Config;
 use crate::sink::Sink;
@@ -59,7 +59,7 @@ fn listen(interface: &str, socket: &Socket, frames: &SyncSender<(u64, Vec<u8>)>)
             }
             Err(e) if e.kind() == std::io::ErrorKind::Interrupted => {}
             Err(e) => {
-                eprintln!("atena-netguard: cattura su {interface} interrotta: {e}");
+                eprintln!("nuxiva-netguard: cattura su {interface} interrotta: {e}");
                 return;
             }
         }

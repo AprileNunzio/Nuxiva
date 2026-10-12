@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $ } = A;
+  const A = window.NuxivaAdmin, { $ } = A;
   const C = A.cams;
   let selected = "";
 

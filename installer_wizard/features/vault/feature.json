@@ -5,12 +5,12 @@
   "category": "conoscenza",
   "order": 30,
   "toggle": {
-    "env": "ATENA_VAULT",
+    "env": "NUXIVA_VAULT",
     "apply": []
   },
-  "description": "La memoria di Atena in file di testo leggibili, conservati solo sul server (non in rete) per privacy: schede delle persone, fatti, abitudini, automazioni e un diario per ogni giorno. Le correzioni fatte nei file tornano nella memoria.",
+  "description": "La memoria di Nuxiva in file di testo leggibili, conservati solo sul server (non in rete) per privacy: schede delle persone, fatti, abitudini, automazioni e un diario per ogni giorno. Le correzioni fatte nei file tornano nella memoria.",
   "capabilities": [
-    "Persone/<Nome>.md: anagrafica, gusti, abitudini e ciò che Atena sa (salute e documenti restano privati)",
+    "Persone/<Nome>.md: anagrafica, gusti, abitudini e ciò che Nuxiva sa (salute e documenti restano privati)",
     "Memoria/Fatti generali.md, Casa/Abitudini.md, Automazioni.md",
     "Diario/AAAA/MM/AAAA-MM-GG.md: chi c'era, richieste, automazioni, cosa ha imparato, situazioni insolite, collaudo, con riassunto serale",
     "Modifiche dai file: cancellare, correggere o aggiungere righe in «Cosa so» aggiorna la memoria",
@@ -18,8 +18,8 @@
   ],
   "settings": [
     {
-      "key": "ATENA_VAULT_DIR",
-      "label": "Cartella personalizzata (vuoto = /var/lib/atena/memoria, solo sul server)",
+      "key": "NUXIVA_VAULT_DIR",
+      "label": "Cartella personalizzata (vuoto = /var/lib/nuxiva/memoria, solo sul server)",
       "type": "text",
       "default": ""
     }

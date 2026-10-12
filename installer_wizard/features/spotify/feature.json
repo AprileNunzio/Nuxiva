@@ -7,12 +7,12 @@
   "panel": "spotify",
   "description": "Collega il tuo account: quando sei davanti allo schermo il brano in riproduzione compare come widget.",
   "toggle": {
-    "env": "ATENA_SPOTIFY",
+    "env": "NUXIVA_SPOTIFY",
     "apply": []
   },
   "requires": {
     "env": [
-      "ATENA_SPOTIFY_REFRESH_TOKEN"
+      "NUXIVA_SPOTIFY_REFRESH_TOKEN"
     ]
   },
   "capabilities": [
@@ -21,7 +21,7 @@
   ],
   "settings": [
     {
-      "key": "ATENA_SPOTIFY_WHEN",
+      "key": "NUXIVA_SPOTIFY_WHEN",
       "label": "Quando mostrare il brano",
       "type": "select",
       "default": "present",

@@ -9,12 +9,12 @@ from unittest import mock
 from fastapi import HTTPException
 from fastapi.testclient import TestClient
 
-import atena_supervisor
+import nuxiva_supervisor
 from features.music import catalog, id3, layout, listening, mixes, organizer, playlists, scanner, stream, tags, tokens
 from features.music.db import db
 from features.shares import archive
 
-HEADERS = {"X-Atena-Request": "1"}
+HEADERS = {"X-Nuxiva-Request": "1"}
 
 
 def make_wav(path: Path, seconds: float = 1.0, title: str = "", artist: str = "", album: str = "", genre: str = "", year: str = "", track: str = "") -> Path:
@@ -71,7 +71,7 @@ class TagsTest(Base):
         self.assertAlmostEqual(info["duration"], 2.0, places=1)
 
     def test_structural_folders_are_never_taken_for_artist_or_album(self):
-        for place in ("06 Musica/Da smistare", "srv/atena/condivisa/06 Musica/Da smistare", "condivisa/06 Musica"):
+        for place in ("06 Musica/Da smistare", "srv/nuxiva/condivisa/06 Musica/Da smistare", "condivisa/06 Musica"):
             path = self.tmp / place / "Canzone.wav"
             info = tags.from_path(path)
             self.assertNotIn("album", info, place)
@@ -320,8 +320,8 @@ class StreamTest(Base):
 class ApiTest(Base):
     @classmethod
     def setUpClass(cls):
-        cls.admin = TestClient(atena_supervisor.admin)
-        assert cls.admin.post("/api/auth/login", json={"username": "admin", "password": "atena"}, headers=HEADERS).status_code == 200
+        cls.admin = TestClient(nuxiva_supervisor.admin)
+        assert cls.admin.post("/api/auth/login", json={"username": "admin", "password": "nuxiva"}, headers=HEADERS).status_code == 200
 
     def test_browsing_endpoints_and_streaming_with_ranges(self):
         self.filled()
@@ -340,7 +340,7 @@ class ApiTest(Base):
         self.assertIn("mixes", self.admin.get("/api/music/home", headers=HEADERS).json())
 
     def test_requires_login(self):
-        anon = TestClient(atena_supervisor.admin)
+        anon = TestClient(nuxiva_supervisor.admin)
         for path in ("/api/music/tracks", "/api/music/stream/1", "/api/music/home", "/api/music/playlists"):
             self.assertEqual(anon.get(path, headers=HEADERS).status_code, 401, path)
 

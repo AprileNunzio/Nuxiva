@@ -9,14 +9,14 @@ from pathlib import Path
 from config import DEMO, env_get
 from state import store
 
-log = logging.getLogger("atena.soup")
+log = logging.getLogger("nuxiva.soup")
 
-SOUP_BIN = Path("/opt/atena-soup/venv/bin/soup")
-WORK = Path("/var/lib/atena/study/soup")
+SOUP_BIN = Path("/opt/nuxiva-soup/venv/bin/soup")
+WORK = Path("/var/lib/nuxiva/study/soup")
 STATUS_FILE = WORK / "status.json"
 MIN_EXAMPLES = 120
 MIN_NEW_EXAMPLES = 60
-OLLAMA_MODEL = "atena-studio"
+OLLAMA_MODEL = "nuxiva-studio"
 DEFAULT_BASE = "Qwen/Qwen2.5-1.5B-Instruct"
 
 
@@ -41,7 +41,7 @@ class SoupTrainer:
 
     @staticmethod
     def mode() -> str:
-        value = env_get("ATENA_STUDY_FINETUNE", "auto").strip().lower()
+        value = env_get("NUXIVA_STUDY_FINETUNE", "auto").strip().lower()
         return value if value in ("auto", "1", "0") else "auto"
 
     def capable(self) -> tuple[bool, str]:
@@ -66,7 +66,7 @@ class SoupTrainer:
 
     @staticmethod
     def base_model() -> str:
-        return env_get("ATENA_STUDY_BASE_MODEL", "") or DEFAULT_BASE
+        return env_get("NUXIVA_STUDY_BASE_MODEL", "") or DEFAULT_BASE
 
     async def probe_gpu(self) -> dict:
         if DEMO or not shutil.which("nvidia-smi"):
@@ -173,7 +173,7 @@ class SoupTrainer:
         dataset = self.export_dataset()
         examples = sum(1 for _ in dataset.open(encoding="utf-8"))
         if examples < MIN_EXAMPLES:
-            return {"ok": False, "message": f"Servono almeno {MIN_EXAMPLES} esempi (ora {examples}): Atena deve studiare ancora"}
+            return {"ok": False, "message": f"Servono almeno {MIN_EXAMPLES} esempi (ora {examples}): Nuxiva deve studiare ancora"}
         run = {"started": time.time(), "examples": examples, "base": self.base_model(), "reason": reason, "result": ""}
         self.data.setdefault("runs", []).append(run)
         store.event("INFO", f"Soup: consolidamento nei pesi avviato ({examples} esempi, {self.base_model()})", "study")

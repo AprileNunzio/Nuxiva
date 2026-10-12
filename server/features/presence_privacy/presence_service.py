@@ -43,7 +43,7 @@ class PresenceService:
                 widget_id="network_ip",
                 is_sensitive=True,
                 max_exposure_seconds=45,
-                allowed_users=["owner", "admin", "nunzio"],
+                allowed_users=["owner", "admin", "user_primary"],
             ),
         }
 

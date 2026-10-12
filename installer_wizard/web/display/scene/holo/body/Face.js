@@ -136,4 +136,4 @@
   }
 
   H.Face = Face;
-})(window.Atena3D);
+})(window.Nuxiva3D);

@@ -31,7 +31,7 @@ async def send_email(to, subject: str, body: str, attachments=None) -> str:
         if not p.is_file():
             raise ValueError(f"allegato non trovato: {raw}")
         files.append(p)
-    how = await mailer.send(_list(to), str(subject or "Da Atena")[:200], str(body or ""), files)
+    how = await mailer.send(_list(to), str(subject or "Da Nuxiva")[:200], str(body or ""), files)
     return f"email a {', '.join(_list(to))} {how}" + (f" con {len(files)} allegati" if files else "")
 
 
@@ -67,7 +67,7 @@ async def copy_to_share(path: str, share: str = "condivisa") -> str:
     return f"copiato in {dest}; in rete: \\\\{my_ip()}\\{target.name}\\{src.name}"
 
 
-@tool("find_contact", "cerca una persona nell'anagrafe di Atena e restituisce i suoi indirizzi email", {"name": "nome"})
+@tool("find_contact", "cerca una persona nell'anagrafe di Nuxiva e restituisce i suoi indirizzi email", {"name": "nome"})
 async def find_contact(name: str) -> str:
     from features.people import people
     wanted = name.lower().strip()

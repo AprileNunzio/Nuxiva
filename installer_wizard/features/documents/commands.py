@@ -20,7 +20,7 @@ running: dict[str, str] = {}
 
 
 def enabled() -> bool:
-    return env_get("ATENA_DOCUMENTS", "1") != "0"
+    return env_get("NUXIVA_DOCUMENTS", "1") != "0"
 
 
 def card(entry: dict) -> dict:

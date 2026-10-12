@@ -10,11 +10,11 @@ from server.features.skill_synthesis.application.ports import ApprovalPort, Tool
 from server.features.skill_synthesis.application.runner import INPUT_FILE, DynamicToolRunner, ToolRun
 from server.features.skill_synthesis.domain.tool import DynamicTool, ToolError
 
-logger = logging.getLogger("atena.skill_synthesis")
+logger = logging.getLogger("nuxiva.skill_synthesis")
 
 Completion = Callable[[str, str], Awaitable[str]]
 
-SYSTEM = f"""Sei il fabbricante di strumenti di Atena. Scrivi un piccolo script (python o bash) che svolge esattamente
+SYSTEM = f"""Sei il fabbricante di strumenti di Nuxiva. Scrivi un piccolo script (python o bash) che svolge esattamente
 il compito richiesto e lo restituisce come dato strutturato. Contratto obbligatorio dello script:
 - legge i parametri dal file JSON /in/{INPUT_FILE} (python: json.load(open("/in/{INPUT_FILE}")); bash: jq non c'è, usa python)
 - stampa come ULTIMA riga su stdout un solo oggetto JSON con il risultato (campo "summary" con una frase leggibile)

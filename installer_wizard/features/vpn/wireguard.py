@@ -123,7 +123,7 @@ def server_settings(data: dict, current: dict | None = None) -> dict:
     return {
         "subnet": str(subnet),
         "listen_port": max(1024, min(int(data.get("listen_port") or current.get("listen_port") or 51820), 65535)),
-        "public_host": model.host(data.get("public_host") or current.get("public_host") or "atena.local"),
+        "public_host": model.host(data.get("public_host") or current.get("public_host") or "nuxiva.local"),
         "peers": list(current.get("peers") or []),
         "lan_access": bool(data.get("lan_access", current.get("lan_access", True))),
     }

@@ -1,6 +1,6 @@
 (() => {
   const clean = (s) => String(s ?? "").replace(/^[^\p{L}\p{N}]+/u, "").trim();
-  AtenaDesk.register("network_devices", {
+  NuxivaDesk.register("network_devices", {
     render(el, d, ctx) {
       const items = Array.isArray(d.items) ? d.items : [];
       const shown = items.slice(0, 10);

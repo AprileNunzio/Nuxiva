@@ -1,5 +1,5 @@
 (() => {
-  const D = window.AtenaDisplay;
+  const D = window.NuxivaDisplay;
   const REDUCED = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
   const SCENES = {
     clear: { stars: 1, sun: 1 }, partly: { clouds: 5, stars: 0.5, sun: 0.6 }, cloudy: { clouds: 9 },
@@ -27,9 +27,9 @@
 
   function draw(ts) {
     requestAnimationFrame(draw);
-    if (ts - last < (window.atenaGovernor ? window.atenaGovernor.frameGap("ambient") : 33)) return;
+    if (ts - last < (window.nuxivaGovernor ? window.nuxivaGovernor.frameGap("ambient") : 33)) return;
     const dt = Math.min(0.1, (ts - last) / 1000); last = ts;
-    if (window.atenaPerf) window.atenaPerf.measure("meteo", () => paint(ts, dt)); else paint(ts, dt);
+    if (window.nuxivaPerf) window.nuxivaPerf.measure("meteo", () => paint(ts, dt)); else paint(ts, dt);
   }
 
   function paint(ts, dt) {

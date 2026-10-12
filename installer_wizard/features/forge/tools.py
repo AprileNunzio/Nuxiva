@@ -15,19 +15,19 @@ recipes.load()
 async def create_tool(name: str, description: str, steps: list, params: dict | None = None, agent: str = "") -> str:
     spec = recipes.save({"name": name, "description": description, "params": params or {}, "steps": steps, "agent": agent or "forge"})
     board.post("forge", "tutti", f"nuovo strumento «{spec['name']}» ({len(spec['steps'])} passi)", "creazione")
-    return f"strumento «{spec['name']}» creato: da ora è disponibile ad Atena e a ogni client MCP collegato"
+    return f"strumento «{spec['name']}» creato: da ora è disponibile ad Nuxiva e a ogni client MCP collegato"
 
 
-@forge("list_custom_tools", "elenca gli strumenti creati da Atena con i loro passi", {})
+@forge("list_custom_tools", "elenca gli strumenti creati da Nuxiva con i loro passi", {})
 async def list_custom_tools() -> str:
     return "\n".join(f"- {s['name']}({', '.join(s['params'])}): {s['description']} → " + " › ".join(st["tool"] for st in s["steps"])
                      for s in recipes.CUSTOM.values()) or "nessuno strumento creato"
 
 
-@forge("delete_tool", "elimina uno strumento creato da Atena", {"name": "nome dello strumento"}, confirm=True)
+@forge("delete_tool", "elimina uno strumento creato da Nuxiva", {"name": "nome dello strumento"}, confirm=True)
 async def delete_tool(name: str) -> str:
     if not recipes.remove(name):
-        raise ValueError(f"«{name}» non è uno strumento creato da Atena")
+        raise ValueError(f"«{name}» non è uno strumento creato da Nuxiva")
     return f"strumento «{name}» eliminato"
 
 
@@ -40,10 +40,10 @@ async def create_widget(id: str, name: str, description: str = "", icon: str = "
     return f"widget «{manifest['id']}» creato: aprilo con show_widget(id=\"{manifest['id']}\", data={{...}})"
 
 
-@forge("delete_widget", "elimina un widget creato da Atena", {"id": "id del widget"}, confirm=True)
+@forge("delete_widget", "elimina un widget creato da Nuxiva", {"id": "id del widget"}, confirm=True)
 async def delete_widget(id: str) -> str:
     if not assets.delete_widget(id):
-        raise ValueError(f"«{id}» non è un widget creato da Atena")
+        raise ValueError(f"«{id}» non è un widget creato da Nuxiva")
     return f"widget «{id}» eliminato"
 
 
@@ -56,8 +56,8 @@ async def create_feature(id: str, name: str, description: str = "", capabilities
     return f"funzionalità «{manifest['id']}» creata: ora è un agente della squadra"
 
 
-@forge("delete_feature", "elimina una funzionalità creata da Atena", {"id": "id della funzionalità"}, confirm=True)
+@forge("delete_feature", "elimina una funzionalità creata da Nuxiva", {"id": "id della funzionalità"}, confirm=True)
 async def delete_feature(id: str) -> str:
     if not assets.delete_feature(id):
-        raise ValueError(f"«{id}» non è una funzionalità creata da Atena")
+        raise ValueError(f"«{id}» non è una funzionalità creata da Nuxiva")
     return f"funzionalità «{id}» eliminata"

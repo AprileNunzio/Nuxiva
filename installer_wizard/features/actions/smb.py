@@ -19,15 +19,15 @@ async def smb_action(text: str) -> tuple[str, dict]:
     ip = my_ip()
     unc = f"{archive.unc(ip, 'scambio')}\\{name}"
     store.event("INFO", f"Cartella {'creata' if created else 'verificata'} nella condivisione: {unc}", "actions")
-    speech = (f"{'Ho creato' if created else 'Esiste già'} la cartella «{name}» nella cartella condivisa di Atena, "
-              f"in «{archive.FOLDERS['scambio']}». È protetta dalla password dell'utente atena-share.")
+    speech = (f"{'Ho creato' if created else 'Esiste già'} la cartella «{name}» nella cartella condivisa di Nuxiva, "
+              f"in «{archive.FOLDERS['scambio']}». È protetta dalla password dell'utente nuxiva-share.")
     return speech, {
         "mode": "focus",
         "title": f"Cartella {name}",
-        "subtitle": "Cartella condivisa di Atena",
+        "subtitle": "Cartella condivisa di Nuxiva",
         "panels": [{"type": "kv", "title": "Accesso", "data": {
             "Windows": unc,
             "Mac / Linux": f"smb://{ip}/{archive.SHARE}/{archive.FOLDERS['scambio']}/{name}",
-            "Utente": "atena-share (password nel pannello, Condivisioni di rete)",
+            "Utente": "nuxiva-share (password nel pannello, Condivisioni di rete)",
         }}],
     }

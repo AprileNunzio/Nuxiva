@@ -10,8 +10,8 @@ from features.locale.store import store
 from features.voices import languages
 
 CHECK_EVERY = 600.0
-KEY = "ATENA_EAR_LANGUAGES"
-log = logging.getLogger("atena.locale")
+KEY = "NUXIVA_EAR_LANGUAGES"
+log = logging.getLogger("nuxiva.locale")
 
 
 def household() -> list[str]:
@@ -34,7 +34,7 @@ async def sync() -> bool:
     write_env({KEY: wanted})
     log.info("Lingue ascoltate dall'orecchio: %s", wanted)
     if sys.platform.startswith("linux") and shutil.which("systemctl"):
-        process = await asyncio.create_subprocess_exec("systemctl", "try-restart", "atena-ear",
+        process = await asyncio.create_subprocess_exec("systemctl", "try-restart", "nuxiva-ear",
                                                        stdout=asyncio.subprocess.DEVNULL, stderr=asyncio.subprocess.DEVNULL)
         await process.wait()
     return True

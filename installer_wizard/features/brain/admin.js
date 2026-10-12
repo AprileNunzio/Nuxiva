@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   let brainData = null;
   let catQuery = "";
   let catCategory = "all";
@@ -21,7 +21,7 @@
       const el = $(`br-sub-${s}`);
       if (el) el.classList.toggle("on", s === subId);
     });
-    try { localStorage.setItem("atena_brain_subpage", subId); } catch (_) {}
+    try { localStorage.setItem("nuxiva_brain_subpage", subId); } catch (_) {}
     if (subId === "assign" && A.brainAssign) A.brainAssign.load();
     if (subId === "add") { loadModels(); loadOllama(); }
   }
@@ -32,7 +32,7 @@
       $("models-body").innerHTML = d.models.map((m) => `<tr><td class="mono" style="font-weight:600">${fmt.esc(m.name)}</td><td class="mono">${fmt.bytes(m.size)}</td>
         <td>${d.loaded.includes(m.name) ? '<span class="badge ok">in memoria</span>' : '<span class="badge">su disco</span>'}</td>
         <td style="text-align:right"><button class="btn sm danger" data-del="${fmt.esc(m.name)}">Elimina</button></td></tr>`).join("")
-        || `<tr><td colspan="4" class="faint">Nessun modello locale scaricato: Atena può usare i server remoti o il cloud.</td></tr>`;
+        || `<tr><td colspan="4" class="faint">Nessun modello locale scaricato: Nuxiva può usare i server remoti o il cloud.</td></tr>`;
     } catch (e) { $("models-body").innerHTML = `<tr><td colspan="4" class="faint">${fmt.esc(e.message)}</td></tr>`; }
   }
 
@@ -218,7 +218,7 @@
   async function loadOllama() {
     try {
       const c = await A.api("GET", "/api/config");
-      const item = (c.editable || []).find((x) => x.key === "ATENA_OLLAMA_URL");
+      const item = (c.editable || []).find((x) => x.key === "NUXIVA_OLLAMA_URL");
       $("ol-url").value = (item && item.value) || "";
     } catch (e) {}
   }
@@ -249,7 +249,7 @@
       e.preventDefault();
       if ($("ol-url").value.trim() && !(await testOllama()) && !confirm("Il server non risponde: salvare comunque l'indirizzo?")) return;
       try {
-        await A.api("PUT", "/api/config", { ATENA_OLLAMA_URL: $("ol-url").value.trim() });
+        await A.api("PUT", "/api/config", { NUXIVA_OLLAMA_URL: $("ol-url").value.trim() });
         A.toast($("ol-url").value.trim() ? "Indirizzo Ollama salvato" : "Ripristinato Ollama locale predefinito");
         loadOllama(); loadModels(); loadBrains();
       } catch (err) { A.toast(err.message, true); }
@@ -341,7 +341,7 @@
     });
 
     try {
-      const savedSub = localStorage.getItem("atena_brain_subpage");
+      const savedSub = localStorage.getItem("nuxiva_brain_subpage");
       if (savedSub && ["dashboard", "assign", "add"].includes(savedSub)) {
         showSubpage(savedSub);
       }

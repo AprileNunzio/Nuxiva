@@ -34,7 +34,7 @@ def authority(label: str):
 def leaf(ca_cert, ca_key):
     key = ec.generate_private_key(ec.SECP256R1())
     now = dt.datetime.now(dt.timezone.utc)
-    cert = (x509.CertificateBuilder().subject_name(_name("Atena OS")).issuer_name(ca_cert.subject).public_key(key.public_key())
+    cert = (x509.CertificateBuilder().subject_name(_name("Nuxiva OS")).issuer_name(ca_cert.subject).public_key(key.public_key())
             .serial_number(x509.random_serial_number()).not_valid_before(now - dt.timedelta(days=1))
             .not_valid_after(now + dt.timedelta(days=30))
             .add_extension(x509.SubjectAlternativeName([x509.IPAddress(ipaddress.ip_address("127.0.0.1"))]), False)
@@ -46,7 +46,7 @@ def pem(cert) -> str:
     return cert.public_bytes(serialization.Encoding.PEM).decode()
 
 
-class FakeAtena:
+class FakeNuxiva:
     def __init__(self, folder: Path, served_ca, signing_ca) -> None:
         cert, key = leaf(*signing_ca)
         (folder / "server.pem").write_text(pem(cert), encoding="utf-8")
@@ -87,23 +87,23 @@ class FakeAtena:
 class PinningTest(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
-        self.real_ca, self.evil_ca = authority("Atena OS Local CA"), authority("Intermediario")
+        self.real_ca, self.evil_ca = authority("Nuxiva OS Local CA"), authority("Intermediario")
 
     def tearDown(self):
         self.tmp.cleanup()
 
-    def server(self, served, signing) -> FakeAtena:
+    def server(self, served, signing) -> FakeNuxiva:
         folder = Path(self.tmp.name) / served[0].subject.rfc4514_string()[:8].replace("=", "")
         folder.mkdir(exist_ok=True)
-        fake = FakeAtena(folder, served, signing)
+        fake = FakeNuxiva(folder, served, signing)
         self.addCleanup(fake.close)
         return fake
 
     def test_pairing_reads_and_checks_the_authority(self):
-        atena = self.server(self.real_ca, self.real_ca)
-        fingerprint, ca_pem = first_contact(atena.url)
+        nuxiva = self.server(self.real_ca, self.real_ca)
+        fingerprint, ca_pem = first_contact(nuxiva.url)
         self.assertEqual(fingerprint, tls.pem_fingerprint(pem(self.real_ca[0])))
-        reply = Client(atena.url, "pc-test", "token", ca_pem).heartbeat({})
+        reply = Client(nuxiva.url, "pc-test", "token", ca_pem).heartbeat({})
         self.assertEqual(reply["heartbeat"], 30)
 
     def test_a_server_lying_about_its_authority_is_blocked_at_pairing(self):

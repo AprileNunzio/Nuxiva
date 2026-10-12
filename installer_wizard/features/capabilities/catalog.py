@@ -7,7 +7,7 @@ from features.desktop.desk import desk
 from features.team import roster
 
 READ_ONLY = ("list_", "find_", "file_info", "read_file", "music_search", "music_now", "music_outputs", "agent_info", "team_roster", "now", "avatar_catalog")
-AGENT_URI = "atena://agent/"
+AGENT_URI = "nuxiva://agent/"
 
 
 def annotations(name: str) -> dict:
@@ -23,9 +23,9 @@ def widgets() -> str:
 
 
 def resources(visible_agents: set[str] | None) -> list[dict]:
-    rows = [{"uri": "atena://capabilities", "name": "Cosa sa fare Atena", "mimeType": "text/plain"},
-            {"uri": "atena://team", "name": "Squadra di agenti, priorità e lavagna", "mimeType": "application/json"},
-            {"uri": "atena://widgets", "name": "Widget disponibili sul display", "mimeType": "application/json"}]
+    rows = [{"uri": "nuxiva://capabilities", "name": "Cosa sa fare Nuxiva", "mimeType": "text/plain"},
+            {"uri": "nuxiva://team", "name": "Squadra di agenti, priorità e lavagna", "mimeType": "application/json"},
+            {"uri": "nuxiva://widgets", "name": "Widget disponibili sul display", "mimeType": "application/json"}]
     rows += [{"uri": AGENT_URI + a, "name": f"Agente {a}", "mimeType": "text/plain"} for a in roster.ids() if visible_agents is None or a in visible_agents]
     return rows
 
@@ -35,11 +35,11 @@ def templates() -> list[dict]:
 
 
 def read(uri: str) -> tuple[str, str]:
-    if uri == "atena://capabilities":
+    if uri == "nuxiva://capabilities":
         return "text/plain", manifest.summary()
-    if uri == "atena://team":
+    if uri == "nuxiva://team":
         return "application/json", json.dumps(roster.document(), ensure_ascii=False)
-    if uri == "atena://widgets":
+    if uri == "nuxiva://widgets":
         return "application/json", widgets()
     if uri.startswith(AGENT_URI):
         return "text/plain", card(roster.find(uri[len(AGENT_URI):]))
@@ -56,8 +56,8 @@ def card(agent_id: str) -> str:
 
 
 def prompts() -> list[dict]:
-    return [{"name": "panoramica", "description": "Cosa sa fare Atena, con le frasi per chiederlo e la squadra di agenti"},
-            {"name": "agente", "description": "Scheda completa di un agente di Atena", "arguments": [{"name": "agente", "description": "id o nome", "required": True}]}]
+    return [{"name": "panoramica", "description": "Cosa sa fare Nuxiva, con le frasi per chiederlo e la squadra di agenti"},
+            {"name": "agente", "description": "Scheda completa di un agente di Nuxiva", "arguments": [{"name": "agente", "description": "id o nome", "required": True}]}]
 
 
 def prompt(name: str, arguments: dict) -> dict:

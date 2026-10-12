@@ -8,7 +8,7 @@ import urllib.request
 from settings import paths
 from updates import manifest
 
-log = logging.getLogger("atena.updates")
+log = logging.getLogger("nuxiva.updates")
 RELEASES = f"https://api.github.com/repos/{manifest.REPOSITORY}/releases?per_page=20"
 CHECK_EVERY = 6 * 3600
 FIRST_CHECK = 300
@@ -17,7 +17,7 @@ SILENT = ["/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART", "/CLOSEAPPLICATIONS"
 
 
 def _get(url: str, limit: int) -> bytes:
-    request = urllib.request.Request(url, headers={"User-Agent": "ATENA-Assistente", "Accept": "application/octet-stream"})
+    request = urllib.request.Request(url, headers={"User-Agent": "NUXIVA-Assistente", "Accept": "application/octet-stream"})
     with urllib.request.urlopen(request, timeout=TIMEOUT) as response:
         data = response.read(limit + 1)
     if len(data) > limit:
@@ -82,11 +82,11 @@ class Updater(threading.Thread):
             raise manifest.UpdateRejected("la versione firmata non corrisponde alla release")
         installer = _get(release.url, release.size)
         manifest.check_file(installer, release)
-        target = paths.DATA_DIR / "updates" / f"ATENA_Assistente_Setup_{release.version}.exe"
+        target = paths.DATA_DIR / "updates" / f"NUXIVA_Assistente_Setup_{release.version}.exe"
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(installer)
         log.info("Aggiornamento %s verificato (firma e SHA-256): installazione", release.version)
-        self.notify(f"⬆ Aggiornamento {release.version} verificato: installo e riavvio ATENA…")
+        self.notify(f"⬆ Aggiornamento {release.version} verificato: installo e riavvio NUXIVA…")
         subprocess.Popen([str(target), *SILENT], close_fds=True)
         self.after_launch()
 

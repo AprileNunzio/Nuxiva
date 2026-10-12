@@ -5,7 +5,7 @@
 
 #include "edge_router_model.h"
 
-namespace atena_edge {
+namespace nuxiva_edge {
 namespace {
 
 struct Token {
@@ -183,7 +183,7 @@ Decision classify(const char* utf8, size_t length) {
         decision.agent = "browser_agent";
         decision.action = "navigate_web";
     } else if (has_chitchat && logits[0] > logits[1] && logits[0] > logits[4]) {
-        decision.agent = "atena_conversation";
+        decision.agent = "nuxiva_conversation";
         decision.action = "chat_reply";
     }
 

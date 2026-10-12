@@ -9,7 +9,7 @@ from permissions.policy import Policy
 from voice.microphone import Microphone
 from voice.speaker import Speaker
 
-log = logging.getLogger("atena.voice")
+log = logging.getLogger("nuxiva.voice")
 FOLLOWUP_SECONDS = 8
 
 

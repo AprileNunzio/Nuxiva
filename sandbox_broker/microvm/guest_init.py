@@ -11,7 +11,7 @@ import subprocess
 import sys
 import tarfile
 
-MARK = "@@ATENA@@"
+MARK = "@@NUXIVA@@"
 UID = 65534
 NAME = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
 ENTRY = {"python": ["python3", "-I", "-B", "/in/main.py"], "bash": ["bash", "--noprofile", "--norc", "/in/main.sh"]}
@@ -34,7 +34,7 @@ def emit(key, value):
 def read_spec():
     with open("/proc/cmdline", encoding="ascii") as handle:
         for token in handle.read().split():
-            if token.startswith("atena.spec="):
+            if token.startswith("nuxiva.spec="):
                 return json.loads(base64.b64decode(token.split("=", 1)[1]))
     raise RuntimeError("missing spec")
 

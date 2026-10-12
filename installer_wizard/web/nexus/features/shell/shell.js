@@ -13,12 +13,12 @@ import { GROUPS, ZONES, zone } from "./zones.js";
 export function createShell(root) {
   const nav = h("nav", { class: "nav", "aria-label": "Zone del pannello" });
   const title = h("h1", { id: "nx-title" });
-  const linkDot = h("span", { class: "link-state", role: "img", "aria-label": "Collegato ad Atena" });
+  const linkDot = h("span", { class: "link-state", role: "img", "aria-label": "Collegato ad Nuxiva" });
   const levelSeg = h("div", { class: "seg", role: "group", "aria-label": "Livello di esperienza" });
   const outlet = h("main", { class: "outlet", id: "nx-outlet", tabindex: "-1" });
   const languages = { it: "Italiano", en: "English", fr: "Français" };
-  const current = (window.AtenaI18n?.language?.() || document.documentElement.lang || "it").slice(0, 2);
-  const langPick = h("select", { class: "lang-pick", "aria-label": "Lingua", onchange: (e) => window.AtenaI18n?.setLanguage(e.target.value) },
+  const current = (window.NuxivaI18n?.language?.() || document.documentElement.lang || "it").slice(0, 2);
+  const langPick = h("select", { class: "lang-pick", "aria-label": "Lingua", onchange: (e) => window.NuxivaI18n?.setLanguage(e.target.value) },
     Object.entries(languages).map(([code, label]) => h("option", { value: code, selected: code === current ? true : null }, label)));
   const top = h("header", { class: "top" }, title, linkDot,
     h("button", { class: "search", type: "button", onclick: openPalette, "aria-label": "Cerca ovunque" },
@@ -59,7 +59,7 @@ export function createShell(root) {
       }, h("span", { class: "g", "aria-hidden": "true" }, z.glyph), h("span", { class: "lb" }, z.title), zoneMarker(z)))];
     });
     mount(nav,
-      h("a", { class: "brand", href: "#/home" }, "A.T.E.N.A.", h("small", {}, "NEXUS · 8080")),
+      h("a", { class: "brand", href: "#/home" }, "NUXIVA", h("small", {}, "NEXUS · 8080")),
       sections,
       favoriteLinks(),
       h("div", { class: "nav-foot" },
@@ -78,7 +78,7 @@ export function createShell(root) {
     if (["route", "user", "favorites"].some((key) => changed.includes(key))) renderNav();
     if (changed.includes("link")) {
       linkDot.classList.toggle("down", !state.link);
-      linkDot.setAttribute("aria-label", state.link ? "Collegato ad Atena" : "Collegamento con Atena perso");
+      linkDot.setAttribute("aria-label", state.link ? "Collegato ad Nuxiva" : "Collegamento con Nuxiva perso");
     }
   });
   renderLevels();
@@ -92,7 +92,7 @@ export function createShell(root) {
       if (z && !allows(z.min)) { go("home"); return; }
       if (z?.added) { markSeen(`zone:${z.id}:${z.added}`); renderNav(); }
       title.textContent = z ? z.title : { tool: "Strumento", section: "Sezione", classic: "Sezione" }[route.id] || "Nexus";
-      document.title = `${title.textContent} · Atena Nexus`;
+      document.title = `${title.textContent} · Nuxiva Nexus`;
       render(outlet, route);
       outlet.scrollTop = 0;
     },

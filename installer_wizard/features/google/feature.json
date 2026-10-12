@@ -5,14 +5,14 @@
   "category": "comunicazione",
   "order": 140,
   "panel": "google",
-  "description": "Ogni persona collega il proprio account Google: agenda, posta, cose da fare, rubrica, Drive e note, mostrati solo a chi Atena riconosce.",
+  "description": "Ogni persona collega il proprio account Google: agenda, posta, cose da fare, rubrica, Drive e note, mostrati solo a chi Nuxiva riconosce.",
   "toggle": {
-    "env": "ATENA_GOOGLE",
+    "env": "NUXIVA_GOOGLE",
     "apply": []
   },
   "requires": {
     "env": [
-      "ATENA_GOOGLE_CLIENT_ID"
+      "NUXIVA_GOOGLE_CLIENT_ID"
     ]
   },
   "capabilities": [
@@ -26,7 +26,7 @@
   ],
   "settings": [
     {
-      "key": "ATENA_GOOGLE_REMIND_MIN",
+      "key": "NUXIVA_GOOGLE_REMIND_MIN",
       "label": "Avvisami prima di un appuntamento (minuti, 0 = mai)",
       "type": "number",
       "default": "10"

@@ -6,7 +6,7 @@ import httpx
 
 from features.chat.skills.weather import weather_skill
 
-log = logging.getLogger("atena.assistant")
+log = logging.getLogger("nuxiva.assistant")
 TTL = 15 * 60
 _cache: dict = {"at": 0.0, "data": None}
 

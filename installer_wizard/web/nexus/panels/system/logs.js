@@ -3,7 +3,7 @@ import { api, button, h, live, mount, row, section, select, spacer, toggle } fro
 const SOURCES = [
   ["install", "Installazione e step"],
   ["supervisor", "Supervisore"],
-  ["core", "Atena Core"],
+  ["core", "Nuxiva Core"],
   ["ollama", "Motore neurale"],
   ["kiosk", "Display kiosk"],
   ["rollback", "Rollback"],

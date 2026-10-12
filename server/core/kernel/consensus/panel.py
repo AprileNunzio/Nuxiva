@@ -8,7 +8,7 @@ from server.core.kernel.domain.dag import ExecutionDag
 from server.core.kernel.domain.outcome import ConsensusVerdict
 from server.core.telemetry.journey import journey
 
-logger = logging.getLogger("atena.kernel.consensus")
+logger = logging.getLogger("nuxiva.kernel.consensus")
 
 
 def byzantine_bounds(voters: int) -> Tuple[int, int]:

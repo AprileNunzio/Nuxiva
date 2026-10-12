@@ -3,7 +3,7 @@
   let host = null, resizeObs = null, lastList = [], allList = [], layoutRaf = 0, lastZone = "", screens = [];
   const hooks = { speak: () => {}, onStage: () => {}, screen: 0, satellite: false, quiet: false };
   const EDGE = 28;
-  const gov = (id, fn, el, mount) => (window.atenaGovernor ? window.atenaGovernor.measure(id, fn, el, mount) : fn());
+  const gov = (id, fn, el, mount) => (window.nuxivaGovernor ? window.nuxivaGovernor.measure(id, fn, el, mount) : fn());
 
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
@@ -67,7 +67,7 @@
   }
   const mmss = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
   const TONES = new Set(["cyan", "green", "blue", "violet", "amber", "red"]);
-  const icon = (name) => (window.AtenaIcons ? window.AtenaIcons.icon(name) : "");
+  const icon = (name) => (window.NuxivaIcons ? window.NuxivaIcons.icon(name) : "");
   const head = ({ icon: ic = "", label = "", title = "", chip = "", live = false, state = "" } = {}) =>
     `<div class="wk-head">${ic ? icon(ic) : ""}<span class="wk-k">${esc(label)}</span>${title !== "" && title != null ? `<span class="wk-n">${esc(title)}</span>` : ""}`
     + `${chip !== "" && chip != null ? `<span class="wk-chip${live ? " live" : ""}${state ? ` ${esc(state)}` : ""}">${esc(chip)}</span>` : ""}</div>`;
@@ -318,7 +318,7 @@
   async function render(list) {
     allList = list || [];
     const mineNow = allList.filter(mine);
-    lastList = window.atenaGovernor ? window.atenaGovernor.limit(mineNow) : mineNow;
+    lastList = window.nuxivaGovernor ? window.nuxivaGovernor.limit(mineNow) : mineNow;
     document.body.classList.toggle("desk-whiteboard", lastList.some((i) => i.id === "lavagna"));
     if (!host) return;
     const live = new Set(lastList.map((i) => i.key));
@@ -330,8 +330,8 @@
   function hello() {
     fetch("/api/desk/hello", { method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ screen: hooks.screen, x: hooks.x || 0, w: window.innerWidth, h: window.innerHeight,
-        local: ["127.0.0.1", "localhost"].includes(location.hostname), ear: window.atenaEar ? `${window.atenaEar.state} ${window.atenaEar.link}` : "",
-        perf: window.atenaPerf ? window.atenaPerf.text : "" }) }).catch(() => {});
+        local: ["127.0.0.1", "localhost"].includes(location.hostname), ear: window.nuxivaEar ? `${window.nuxivaEar.state} ${window.nuxivaEar.link}` : "",
+        perf: window.nuxivaPerf ? window.nuxivaPerf.text : "" }) }).catch(() => {});
   }
 
   function mount(container, options = {}) {
@@ -340,12 +340,12 @@
     if (!hooks.quiet) { hello(); setInterval(hello, 10000); }
     ["l", "r"].forEach((side) => { const g = document.createElement("div"); g.className = `edge-glow ${side}`; document.body.appendChild(g); });
     window.addEventListener("resize", scheduleLayout);
-    window.addEventListener("atena-policy", () => render(allList));
+    window.addEventListener("nuxiva-policy", () => render(allList));
     if (window.ResizeObserver) resizeObs = new ResizeObserver(scheduleLayout);
     render(allList);
   }
 
-  window.AtenaDesk = {
+  window.NuxivaDesk = {
     register(id, impl) { impls[id] = impl; },
     ctx,
     implOf: (id) => impls[id] || null,

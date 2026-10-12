@@ -9,8 +9,8 @@ def add(kind: str, source: str, name: str, text: str) -> dict:
     items.append(entry)
     del items[:-RING]
     try:
-        from atena_bus import BusError, atena_bus
-        atena_bus.publish(f"camera.event.{kind if kind.isalnum() else 'other'}", entry, origin="cameras")
+        from nuxiva_bus import BusError, nuxiva_bus
+        nuxiva_bus.publish(f"camera.event.{kind if kind.isalnum() else 'other'}", entry, origin="cameras")
     except (ImportError, BusError):
         pass
     return entry

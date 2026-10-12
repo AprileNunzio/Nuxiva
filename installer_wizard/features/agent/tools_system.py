@@ -33,7 +33,7 @@ async def http_get(url: str) -> str:
     if not re.match(r"^https?://", url):
         raise ValueError("indirizzo non valido")
     async with httpx.AsyncClient(timeout=20, follow_redirects=True) as client:
-        r = await client.get(url, headers={"User-Agent": "Atena/3"})
+        r = await client.get(url, headers={"User-Agent": "Nuxiva/3"})
     text = re.sub(r"<script.*?</script>|<style.*?</style>", " ", r.text, flags=re.S | re.I)
     text = re.sub(r"<[^>]+>", " ", text)
     return f"HTTP {r.status_code}\n" + re.sub(r"\s+", " ", text).strip()[:5000]

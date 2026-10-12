@@ -16,7 +16,7 @@
     area.remove();
   }
 
-  AtenaDesk.register("code_view", {
+  NuxivaDesk.register("code_view", {
     render(el, d, ctx) {
       const content = String(d.content || "");
       const lines = content.split("\n").length;

@@ -10,28 +10,28 @@ from steps import STEP_BY_ID
 from tasks import background
 
 STEP_TRIGGERS = (
-    ({"ATENA_LLM_MODEL", "ATENA_EMBED_MODEL", "ATENA_LLM_FAST_MODEL"}, ["preflight", "models", "brain", "warmup"]),
-    ({"ATENA_LLM_MODEL", "ATENA_EMBED_MODEL"}, ["services"]),
+    ({"NUXIVA_LLM_MODEL", "NUXIVA_EMBED_MODEL", "NUXIVA_LLM_FAST_MODEL"}, ["preflight", "models", "brain", "warmup"]),
+    ({"NUXIVA_LLM_MODEL", "NUXIVA_EMBED_MODEL"}, ["services"]),
     ({"GEMINI_API_KEY", "ANTHROPIC_API_KEY", "HOME_ASSISTANT_URL", "HOME_ASSISTANT_TOKEN"}, ["services"]),
-    ({"ATENA_KIOSK"}, ["kiosk"]),
-    ({"ATENA_VOICE"}, ["voice"]),
-    ({"ATENA_VISION"}, ["vision"]),
-    ({"ATENA_EAR", "ATENA_STT_MODEL"}, ["ear"]),
-    ({"ATENA_MUSIC_ID", "ATENA_EAR"}, ["music"]),
-    ({"ATENA_STUDY_FINETUNE"}, ["soup"]),
-    ({"ATENA_3D_CONVERT"}, ["convert3d"]),
-    ({"ATENA_COMMERCIAL", "ATENA_UNOFFICIAL_SERVICES"}, ["voice", "ear", "music", "models", "brain"]),
-    ({"ATENA_GPU_DRIVER"}, ["display_driver"]),
-    ({"ATENA_SHARES", "ATENA_SMB_PASSWORD"}, ["shares"]),
-    ({"ATENA_OLLAMA_URL"}, ["ollama", "models", "brain", "warmup", "services"]),
-    ({"ATENA_BRAIN"}, ["ollama", "models", "brain", "warmup", "services"]),
-    ({"ATENA_VOICE_PACKAGE"}, ["voice"]),
-    ({"ATENA_DOCUMENTS"}, ["office"]),
-    ({"ATENA_BLUETOOTH"}, ["bluetooth"]),
-    ({"ATENA_SANDBOX"}, ["sandbox", "gvisor", "firecracker"]),
-    ({"ATENA_NATIVE"}, ["native"]),
-    ({"ATENA_ZRAM"}, ["memory"]),
-    ({"ATENA_CORE_RUNTIME"}, ["docker", "core", "services"]),
+    ({"NUXIVA_KIOSK"}, ["kiosk"]),
+    ({"NUXIVA_VOICE"}, ["voice"]),
+    ({"NUXIVA_VISION"}, ["vision"]),
+    ({"NUXIVA_EAR", "NUXIVA_STT_MODEL"}, ["ear"]),
+    ({"NUXIVA_MUSIC_ID", "NUXIVA_EAR"}, ["music"]),
+    ({"NUXIVA_STUDY_FINETUNE"}, ["soup"]),
+    ({"NUXIVA_3D_CONVERT"}, ["convert3d"]),
+    ({"NUXIVA_COMMERCIAL", "NUXIVA_UNOFFICIAL_SERVICES"}, ["voice", "ear", "music", "models", "brain"]),
+    ({"NUXIVA_GPU_DRIVER"}, ["display_driver"]),
+    ({"NUXIVA_SHARES", "NUXIVA_SMB_PASSWORD"}, ["shares"]),
+    ({"NUXIVA_OLLAMA_URL"}, ["ollama", "models", "brain", "warmup", "services"]),
+    ({"NUXIVA_BRAIN"}, ["ollama", "models", "brain", "warmup", "services"]),
+    ({"NUXIVA_VOICE_PACKAGE"}, ["voice"]),
+    ({"NUXIVA_DOCUMENTS"}, ["office"]),
+    ({"NUXIVA_BLUETOOTH"}, ["bluetooth"]),
+    ({"NUXIVA_SANDBOX"}, ["sandbox", "gvisor", "firecracker"]),
+    ({"NUXIVA_NATIVE"}, ["native"]),
+    ({"NUXIVA_ZRAM"}, ["memory"]),
+    ({"NUXIVA_CORE_RUNTIME"}, ["docker", "core", "services"]),
 )
 
 
@@ -49,18 +49,18 @@ def normalize_ollama(value: str) -> str:
 
 
 async def apply_config(updates: dict, user: str, extra_steps: list | None = None) -> list:
-    if "ATENA_OLLAMA_URL" in updates:
-        updates["ATENA_OLLAMA_URL"] = normalize_ollama(updates["ATENA_OLLAMA_URL"])
-    if "ATENA_LLM_MODEL" in updates:
-        updates["ATENA_LLM_MODEL_AUTO"] = "0" if updates["ATENA_LLM_MODEL"] else "1"
-    if "ATENA_LLM_FAST_MODEL" in updates:
-        updates["ATENA_LLM_FAST_AUTO"] = "0" if updates["ATENA_LLM_FAST_MODEL"] else "1"
+    if "NUXIVA_OLLAMA_URL" in updates:
+        updates["NUXIVA_OLLAMA_URL"] = normalize_ollama(updates["NUXIVA_OLLAMA_URL"])
+    if "NUXIVA_LLM_MODEL" in updates:
+        updates["NUXIVA_LLM_MODEL_AUTO"] = "0" if updates["NUXIVA_LLM_MODEL"] else "1"
+    if "NUXIVA_LLM_FAST_MODEL" in updates:
+        updates["NUXIVA_LLM_FAST_AUTO"] = "0" if updates["NUXIVA_LLM_FAST_MODEL"] else "1"
     try:
         write_env(updates)
     except ValueError as exc:
         raise HTTPException(400, str(exc))
     registry.note_env_change(updates)
-    if "ATENA_OLLAMA_URL" in updates:
+    if "NUXIVA_OLLAMA_URL" in updates:
         _ollama_cache.clear()
     brains.invalidate()
     store.event("INFO", f"Configurazione aggiornata da {user}: {', '.join(updates)}", "admin")
@@ -73,8 +73,8 @@ async def apply_config(updates: dict, user: str, extra_steps: list | None = None
         if "services" in needs and not DEMO:
             import machine
             if machine.core_runtime() == "native":
-                await health.sh("systemctl", "stop", "atena-core", timeout=60)
+                await health.sh("systemctl", "stop", "nuxiva-core", timeout=60)
             else:
-                await health.sh("docker", "rm", "-f", "atena-core", timeout=60)
+                await health.sh("docker", "rm", "-f", "nuxiva-core", timeout=60)
         background(converge_steps(needs, "Applicazione della nuova configurazione"))
     return needs

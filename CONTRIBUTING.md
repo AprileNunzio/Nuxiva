@@ -1,8 +1,8 @@
-# Contributing to Atena OS
+# Contributing to Nuxiva OS
 
 *Riepilogo in italiano in fondo al documento.*
 
-Thank you for your interest in **Atena OS**, the home assistant and agent platform engineered by
+Thank you for your interest in **Nuxiva OS**, the home assistant and agent platform engineered by
 **NunzioTech**. This guide explains how to propose, build and review changes so that contributions are quick to
 accept and safe to ship: **every commit on `main` is installed automatically on running servers** once its CI is
 green, so quality and safety are part of the contribution, not an extra.
@@ -15,7 +15,7 @@ privately as described in [SECURITY.md](SECURITY.md), never through public issue
 - **Report a bug** or **propose a feature** with the issue templates. Search existing issues first.
 - **Improve documentation**: the [README](README.md) (in Italian) and [installer_wizard/MCP.md](installer_wizard/MCP.md).
 - **Add or fix a feature, tool, widget, algorithm or installation step**: see
-  [how to add things](#adding-things-to-atena).
+  [how to add things](#adding-things-to-nuxiva).
 - **Review pull requests** and reproduce reported problems.
 
 For anything larger than a small fix, **open an issue first** and describe the problem, the proposed design and
@@ -26,16 +26,16 @@ the impact on privacy and security. It avoids wasted work.
 Requirements: Python 3.11+, Node.js 20 (for the JavaScript syntax checks and `client_web`), `bash`, `git`.
 
 ```bash
-git clone https://github.com/AprileNunzio/ATENA.git
-cd ATENA/installer_wizard
+git clone https://github.com/AprileNunzio/NUXIVA.git
+cd NUXIVA/installer_wizard
 python3 -m venv venv
 venv/bin/pip install -r backend/requirements.txt -r features/documents/requirements.txt pyflakes
 cd backend
-ATENA_DEMO=1 ../venv/bin/python atena_supervisor.py
+NUXIVA_DEMO=1 ../venv/bin/python nuxiva_supervisor.py
 ```
 
 Open `http://localhost:8000/` (display) and `http://localhost:8001/` (admin panel, user `admin`, password
-`atena`, demo mode only). Demo mode never touches the machine: data lives in `<temp>/atena-demo/` and system
+`nuxiva`, demo mode only). Demo mode never touches the machine: data lives in `<temp>/nuxiva-demo/` and system
 steps, Docker and services are simulated. On Windows use the PowerShell commands in
 [README section 8](README.md#8-il-supervisore). Installation steps (`scripts/os/steps/*.sh`) must be tried on a
 disposable Debian or Ubuntu machine.
@@ -50,8 +50,8 @@ disposable Debian or Ubuntu machine.
 | `installer_wizard/skills/` | Verified Python algorithms |
 | `installer_wizard/web/` | Display, admin shell, shared assets |
 | `installer_wizard/tests/` | Unit and API tests (`unittest`) |
-| `scripts/os/` | Installation steps, systemd units, `atenactl` |
-| `server/` · `sandbox_broker/` | Atena Core and the isolated sandbox broker |
+| `scripts/os/` | Installation steps, systemd units, `nuxivactl` |
+| `server/` · `sandbox_broker/` | Nuxiva Core and the isolated sandbox broker |
 | `native/` | Rust core for latency-critical paths (event bus router), exposed to Python via PyO3 |
 | `client_satellite/` · `client_web/` · `client_apk/` | Nodes, web dashboard, Android client |
 
@@ -69,7 +69,7 @@ These rules are enforced in review and, where possible, by CI.
 | **Errors** | Fail loudly with a clear message; never silence exceptions. User-facing messages are in Italian. |
 | **Async** | The supervisor is `asyncio`: no blocking calls in the loop (use `httpx.AsyncClient`, `asyncio.create_subprocess_exec`, `asyncio.to_thread`). |
 | **Idempotence** | Installation steps and repairs can be run repeatedly without damage. |
-| **Secrets** | Never in the repository, tests, logs or examples. Use `atena.env`, the sealed files or the vault. |
+| **Secrets** | Never in the repository, tests, logs or examples. Use `nuxiva.env`, the sealed files or the vault. |
 | **Privacy** | Local by default. Anything that sends data outside the server must be optional, documented and switchable off. |
 | **Dependencies** | Add one only when the standard library or an existing dependency cannot do the job; pin versions and check the license. |
 
@@ -106,7 +106,7 @@ python -m pyflakes server sandbox_broker installer_wizard client_satellite
 (cd installer_wizard && python -m unittest discover -s tests -t .)
 python -m unittest discover -s server/tests -t .
 for f in $(find installer_wizard -name "*.js" -not -path "*/venv/*"); do node --check "$f"; done
-for f in $(find scripts installer_wizard -name "*.sh") scripts/os/atenactl install.sh; do bash -n "$f"; done
+for f in $(find scripts installer_wizard -name "*.sh") scripts/os/nuxivactl install.sh; do bash -n "$f"; done
 find installer_wizard server sandbox_broker scripts -type f \( -name "*.py" -o -name "*.js" -o -name "*.sh" -o -name "*.css" -o -name "*.html" \) \
   -not -path "*/venv/*" -exec awk 'END { if (NR > 500) print FILENAME ": " NR }' {} \;
 ```
@@ -146,7 +146,7 @@ receiving your change, and a green build means it will be running on real homes 
 Review looks at: correctness, tests, security and privacy, compliance with the standards above, clarity, effect
 on existing installations (migrations, defaults, upgrade path) and documentation.
 
-## Adding things to Atena
+## Adding things to Nuxiva
 
 | To add | Read |
 | :--- | :--- |
@@ -162,7 +162,7 @@ behavior, configuration variables, API routes or security properties.
 
 ## Licensing of contributions
 
-Atena OS is released under the [MIT License](LICENSE). By contributing you agree that your contribution is
+Nuxiva OS is released under the [MIT License](LICENSE). By contributing you agree that your contribution is
 licensed under the same terms (inbound = outbound). Do not submit code, data, models, fonts, sounds or images that
 you cannot license under MIT, and do not copy from projects with incompatible licenses. Third-party material must
 keep its original notice and be listed in the pull request.
@@ -186,8 +186,8 @@ parte del contributo.
 
 1. **Prima di iniziare**: per modifiche non banali apri una issue; le vulnerabilità si segnalano in privato
    ([SECURITY.md](SECURITY.md)); rispetta il [Codice di condotta](CODE_OF_CONDUCT.md).
-2. **Ambiente**: Python 3.11+, Node 20; avvio in modalità demo con `ATENA_DEMO=1` (display `:8000`, pannello `:8001`,
-   utente `admin`, password `atena`) come nel [README §8](README.md#8-il-supervisore).
+2. **Ambiente**: Python 3.11+, Node 20; avvio in modalità demo con `NUXIVA_DEMO=1` (display `:8000`, pannello `:8001`,
+   utente `admin`, password `nuxiva`) come nel [README §8](README.md#8-il-supervisore).
 3. **Regole**: niente commenti né docstring; massimo 500 righe per file; codice per funzionalità
    (`features/<id>/`); responsabilità singola; zero-trust (autenticazione e validazione di ogni ingresso); nessun
    segreto nel repository; errori mai silenziati; messaggi per l'utente in italiano.

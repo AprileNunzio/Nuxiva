@@ -5,7 +5,7 @@ from logging.handlers import RotatingFileHandler
 
 from settings import paths
 
-log = logging.getLogger("atena")
+log = logging.getLogger("nuxiva")
 
 
 def configure_logging() -> None:

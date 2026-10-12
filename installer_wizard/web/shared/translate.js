@@ -1,20 +1,20 @@
 (function (global) {
   "use strict";
-  const LANGS = ["it", "en", "fr"];
+  const LANGS = ["it", "en", "fr", "es"];
   const RTL = ["ar", "he", "fa", "ur"];
   const REFRESH_MS = 20000;
   const allowed = (lang) => /^[a-z]{2,3}$/.test(String(lang || ""));
-  const TABLES = { en: "pairs", fr: "fr", it: "reverse" };
+  const TABLES = { en: "pairs", fr: "fr", es: "es", it: "reverse" };
   const ATTRS = ["placeholder", "title", "aria-label", "alt"];
   const SKIP = new Set(["SCRIPT", "STYLE", "TEXTAREA", "CODE", "PRE", "NOSCRIPT"]);
   const state = { lang: "it", exact: new Map(), patterns: [], ready: false, observer: null };
 
   function cached() {
-    try { return localStorage.getItem("atena_ui_lang") || ""; } catch (e) { return ""; }
+    try { return localStorage.getItem("nuxiva_ui_lang") || ""; } catch (e) { return ""; }
   }
 
   function pick() {
-    const chosen = String(global.ATENA_UI_LANG || cached() || "").toLowerCase();
+    const chosen = String(global.NUXIVA_UI_LANG || cached() || "").toLowerCase();
     if (allowed(chosen)) return chosen;
     const code = (document.documentElement.lang || navigator.language || "it").slice(0, 2).toLowerCase();
     return LANGS.includes(code) ? code : "it";
@@ -123,7 +123,7 @@
 
   async function table(lang) {
     if (TABLES[lang]) {
-      const v = global.ATENA_ASSET_V ? `?v=${global.ATENA_ASSET_V}` : "";
+      const v = global.NUXIVA_ASSET_V ? `?v=${global.NUXIVA_ASSET_V}` : "";
       const data = await (await fetch(`/static/shared/i18n_catalog.json${v}`, { cache: "force-cache" })).json();
       return { pairs: data[TABLES[lang]] || [], complete: true };
     }
@@ -145,7 +145,7 @@
     walk(document.body);
     clearTimeout(state.refresh);
     if (!got.complete) state.refresh = setTimeout(() => { if (state.lang === lang) load(lang).catch((e) => console.warn("i18n refresh failed", e)); }, REFRESH_MS);
-    document.dispatchEvent(new CustomEvent("atena-translated", { detail: lang }));
+    document.dispatchEvent(new CustomEvent("nuxiva-translated", { detail: lang }));
   }
 
   async function start(lang) {
@@ -160,11 +160,11 @@
   }
 
   function remember(lang) {
-    try { localStorage.setItem("atena_ui_lang", lang); } catch (e) { console.warn("language preference not saved", e); }
-    global.ATENA_UI_LANG = lang;
+    try { localStorage.setItem("nuxiva_ui_lang", lang); } catch (e) { console.warn("language preference not saved", e); }
+    global.NUXIVA_UI_LANG = lang;
     return fetch("/api/locale/ui", {
       method: "PUT", credentials: "same-origin",
-      headers: { "Content-Type": "application/json", "X-Atena-Request": "1" },
+      headers: { "Content-Type": "application/json", "X-Nuxiva-Request": "1" },
       body: JSON.stringify({ lang }),
     }).then((r) => { if (!r.ok) console.warn("language preference not saved", r.status); })
       .catch((e) => console.warn("language preference not saved", e));
@@ -181,7 +181,7 @@
     return remember(lang).finally(() => location.reload());
   }
 
-  global.AtenaI18n = { start, setLanguage, switchTo, translate, language: () => state.lang, languages: LANGS };
+  global.NuxivaI18n = { start, setLanguage, switchTo, translate, language: () => state.lang, languages: LANGS };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => start());
   else start();
 })(window);

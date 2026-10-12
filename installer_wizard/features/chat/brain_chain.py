@@ -34,7 +34,7 @@ async def _cloud(ref: str, query: str, device: str, context: dict, route: dict) 
     brains.record(ref, answer.ms, True, route["kind"])
     trace.finish(call, ref, answer.ms, answer.text)
     background(touch(ref))
-    return {"agent_id": f"atena_cloud · {ref.removeprefix('cloud:')} ({_label(route['kind'])})",
+    return {"agent_id": f"nuxiva_cloud · {ref.removeprefix('cloud:')} ({_label(route['kind'])})",
             "speech_output": answer.text, "result_data": {"model": ref}}
 
 

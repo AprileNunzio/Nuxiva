@@ -6,23 +6,23 @@
   "order": 40,
   "panel": "shares",
   "toggle": {
-    "env": "ATENA_SHARES",
+    "env": "NUXIVA_SHARES",
     "apply": [
       "shares"
     ]
   },
-  "description": "Cartella di rete protetta per documenti, siti, modelli 3D, codice e musica. La memoria di Atena non è in rete.",
+  "description": "Cartella di rete protetta per documenti, siti, modelli 3D, codice e musica. La memoria di Nuxiva non è in rete.",
   "capabilities": [
     "\\\\IP-del-server\\condivisa da Esplora file di Windows, smb://IP/condivisa da Mac e Linux",
     "Sottocartelle: 01 Documenti, 02 Siti web, 03 Modelli 3D, 04 Codice, 05 Scambio, 06 Musica",
     "Nomi con data inversa: 20261002_nome.estensione",
-    "Accesso solo con l'utente atena-share e password, compatibile con Windows 11 (SMB2/3)",
+    "Accesso solo con l'utente nuxiva-share e password, compatibile con Windows 11 (SMB2/3)",
     "La memoria personale resta solo sul server, mai in rete"
   ],
   "settings": [
     {
-      "key": "ATENA_SMB_PASSWORD",
-      "label": "Password dell'utente atena-share (vuota = generata)",
+      "key": "NUXIVA_SMB_PASSWORD",
+      "label": "Password dell'utente nuxiva-share (vuota = generata)",
       "type": "secret",
       "default": "",
       "apply": [

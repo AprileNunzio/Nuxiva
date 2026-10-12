@@ -12,7 +12,7 @@ from state import store
 
 from features.vision import devices as dev
 
-log = logging.getLogger("atena.webcams")
+log = logging.getLogger("nuxiva.webcams")
 STATE_FILE = STATE_DIR / "webcams.json"
 IR_STATUS_FILE = STATE_DIR / "ir_status.json"
 SCAN_EVERY = 10.0
@@ -64,7 +64,7 @@ def ensure_driver(modprobe=None) -> str:
 
 
 def overrides() -> tuple[str, str]:
-    return env_get("ATENA_CAMERA_RGB", "auto").strip() or "auto", env_get("ATENA_CAMERA_IR", "auto").strip() or "auto"
+    return env_get("NUXIVA_CAMERA_RGB", "auto").strip() or "auto", env_get("NUXIVA_CAMERA_IR", "auto").strip() or "auto"
 
 
 def scan(inspector=inspect, lister=None, usb=usb_video_interfaces, driver=ensure_driver) -> dict:
@@ -116,7 +116,7 @@ class Webcams:
 
     @staticmethod
     def enabled() -> bool:
-        return env_get("ATENA_VISION", "1") != "0"
+        return env_get("NUXIVA_VISION", "1") != "0"
 
     def publish(self, new: dict) -> None:
         before = {d["id"]: d for d in self.state.get("devices", [])}

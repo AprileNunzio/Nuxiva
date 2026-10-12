@@ -21,17 +21,17 @@ STRONG = re.compile(
     r"|\b(programmami|pianifica\w*|automatizza\w*)\b|\bprogramma\s+(un|una|ogni|di|che|per)\b"
     r"|\b(compiti|routine|attivit[àa]) programmat\w*"
     r"|\b(cancella|elimina|togli|ferma)\b.*\b(compito|routine|programmazione)\b", re.I)
-APPROVE = re.compile(r"^\s*((?:ehi[, ]+)?(?:atena|athena)[, ]+)?(approva|approvo|autorizz\w+|via libera)\b", re.I)
+APPROVE = re.compile(r"^\s*((?:ehi[, ]+)?(?:nuxiva|nuxiva)[, ]+)?(approva|approvo|autorizz\w+|via libera)\b", re.I)
 ALWAYS = re.compile(r"\b(sempre|d'ora in poi|ogni volta)\b", re.I)
-REJECT = re.compile(r"^\s*((?:ehi[, ]+)?(?:atena|athena)[, ]+)?(rifiuta|rifiuto|non approv\w+|nega)\b", re.I)
+REJECT = re.compile(r"^\s*((?:ehi[, ]+)?(?:nuxiva|nuxiva)[, ]+)?(rifiuta|rifiuto|non approv\w+|nega)\b", re.I)
 WEAK = re.compile(
-    rf"^\s*((?:ehi[, ]+)?(?:atena|athena)[, ]+)?(per favore\s+)?{VERB}\w*\b.*\b(file|cartell\w*|directory|documento|progetto|widget|schermo"
+    rf"^\s*((?:ehi[, ]+)?(?:nuxiva|nuxiva)[, ]+)?(per favore\s+)?{VERB}\w*\b.*\b(file|cartell\w*|directory|documento|progetto|widget|schermo"
     r"|modello|ologramma|avatar|comando|archivio|pagina|percorso|server|scambio|condivis\w*|pdf|docx|xlsx|pptx|excel"
     r"|word|foglio)\b", re.I)
 
 
 def enabled() -> bool:
-    return env_get("ATENA_AGENT", "1") != "0"
+    return env_get("NUXIVA_AGENT", "1") != "0"
 
 
 def _approvals() -> list:

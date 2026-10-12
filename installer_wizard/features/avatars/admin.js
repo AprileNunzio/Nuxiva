@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin;
+  const A = window.NuxivaAdmin;
 
   async function loadAvatars() {
     const res = await A.api("GET", "/api/avatars");

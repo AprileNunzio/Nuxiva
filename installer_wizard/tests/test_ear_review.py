@@ -17,7 +17,7 @@ import review_metrics as metrics
 import tuning as tuning_module
 from autolevel import AutoLevel
 
-HAS_WAKE = lambda text: "atena" in text.lower()
+HAS_WAKE = lambda text: "nuxiva" in text.lower()
 
 
 class MetricsTest(unittest.TestCase):
@@ -28,13 +28,13 @@ class MetricsTest(unittest.TestCase):
         self.assertEqual(metrics.agreement("perché sì", "perche si"), 1.0)
         self.assertLess(metrics.agreement("accendi la luce", "spegni il televisore"), 0.3)
 
-    def test_missed_wake_when_review_hears_atena_but_nothing_handled(self):
-        segments = [{"start": 10, "end": 12, "text": "Atena che ore sono"}]
+    def test_missed_wake_when_review_hears_nuxiva_but_nothing_handled(self):
+        segments = [{"start": 10, "end": 12, "text": "Nuxiva che ore sono"}]
         audit = metrics.wake_audit([{"kind": "heard", "t": 11.0, "text": "giarbis"}], segments, HAS_WAKE)
         self.assertEqual(audit["missed"], 1)
 
     def test_handled_wake_is_true_and_noise_trigger_is_false_instant(self):
-        segments = [{"start": 1, "end": 3, "text": "Atena accendi la luce"}]
+        segments = [{"start": 1, "end": 3, "text": "Nuxiva accendi la luce"}]
         events = [{"kind": "wake", "t": 2.0, "source": "instant"}, {"kind": "wake", "t": 40.0, "source": "instant"}]
         audit = metrics.wake_audit(events, segments, HAS_WAKE)
         self.assertEqual((audit["missed"], audit["true_wakes"], audit["false_instant"]), (0, 1, 1))
@@ -66,7 +66,7 @@ class TuningTest(unittest.TestCase):
         self.dir = tempfile.mkdtemp()
         tuning_module.TUNING_FILE = Path(self.dir) / "tuning.json"
         self.tuning = tuning_module.Tuning()
-        os.environ.pop("ATENA_EAR_AUTOTUNE", None)
+        os.environ.pop("NUXIVA_EAR_AUTOTUNE", None)
 
     def review(self, **kw):
         base = {"missed": 0, "false_instant": 0, "true_wakes": 0, "weak": False, "clipped": False}
@@ -96,13 +96,13 @@ class TuningTest(unittest.TestCase):
         self.assertGreater(self.tuning.wake_gain_limit(), 8.0)
 
     def test_autotune_off_only_observes(self):
-        os.environ["ATENA_EAR_AUTOTUNE"] = "0"
+        os.environ["NUXIVA_EAR_AUTOTUNE"] = "0"
         try:
             for _ in range(tuning_module.WINDOW_CHUNKS):
                 self.assertEqual(self.tuning.observe(self.review(missed=1)), [])
             self.assertEqual(self.tuning.wake_threshold(), 0.5)
         finally:
-            os.environ.pop("ATENA_EAR_AUTOTUNE", None)
+            os.environ.pop("NUXIVA_EAR_AUTOTUNE", None)
 
     def test_state_survives_restart_and_reset(self):
         for _ in range(tuning_module.WINDOW_CHUNKS):
@@ -148,11 +148,11 @@ class RecorderTest(unittest.TestCase):
         self.assertIsNone(self.run_chunk([]))
 
     def test_disabled_recording_stores_nothing(self):
-        os.environ["ATENA_EAR_RECORD"] = "0"
+        os.environ["NUXIVA_EAR_RECORD"] = "0"
         try:
             self.assertIsNone(self.run_chunk([(200, 400)]))
         finally:
-            os.environ.pop("ATENA_EAR_RECORD", None)
+            os.environ.pop("NUXIVA_EAR_RECORD", None)
 
     def test_write_list_prune_and_purge(self):
         chunk = self.run_chunk([(200, 400)])
@@ -160,13 +160,13 @@ class RecorderTest(unittest.TestCase):
         self.assertEqual(len(recorder.listing()), 1)
         meta_file, meta = recorder.listing()[0]
         self.assertTrue(meta_file.with_suffix(".wav").exists())
-        os.environ["ATENA_EAR_RECORD_HOURS"] = "1"
+        os.environ["NUXIVA_EAR_RECORD_HOURS"] = "1"
         try:
             meta["started"] = time.time() - 7200
             meta_file.write_text(json.dumps(meta), encoding="utf-8")
             self.assertEqual(recorder.prune(), 1)
         finally:
-            os.environ.pop("ATENA_EAR_RECORD_HOURS", None)
+            os.environ.pop("NUXIVA_EAR_RECORD_HOURS", None)
         recorder.write_chunk(self.run_chunk([(200, 400)]))
         self.assertEqual(recorder.purge(), 1)
         self.assertEqual(recorder.listing(), [])

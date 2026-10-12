@@ -7,12 +7,12 @@ from config import STATE_DIR
 from features.music import layout, naming, tags
 from features.music.db import db
 
-log = logging.getLogger("atena.music")
+log = logging.getLogger("nuxiva.music")
 CACHE = STATE_DIR / "music_covers"
 SIZES = (96, 300, 600)
 FOLDER_NAMES = ("cover", "folder", "front", "album", "albumart", "artwork")
 IMAGE_EXT = (".jpg", ".jpeg", ".png", ".webp")
-USER_AGENT = "AtenaOS/3 (+https://github.com/AprileNunzio/ATENA)"
+USER_AGENT = "NuxivaOS/3 (+https://github.com/AprileNunzio/NUXIVA)"
 MAX_IMAGE = 6 * 1024 * 1024
 
 

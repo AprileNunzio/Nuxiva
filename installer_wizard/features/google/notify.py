@@ -11,7 +11,7 @@ from features.google import timing
 from features.google.session import Session
 from features.people import identity
 
-log = logging.getLogger("atena.google")
+log = logging.getLogger("nuxiva.google")
 FRESH_SECONDS = 12 * 3600
 FOLLOW_UP_SECONDS = 15 * 60
 TTL = 180

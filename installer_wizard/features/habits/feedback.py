@@ -9,7 +9,7 @@ from config import STATE_DIR
 
 from features.twin.model import predicted_state
 
-log = logging.getLogger("atena.feedback")
+log = logging.getLogger("nuxiva.feedback")
 FILE = STATE_DIR / "feedback.json"
 WINDOW = 180.0
 SETTLE = 3.0
@@ -195,8 +195,8 @@ class Feedback:
     @staticmethod
     def _publish(topic: str, payload: dict) -> None:
         try:
-            from atena_bus import BusError, atena_bus
-            atena_bus.publish(topic, payload, origin="feedback")
+            from nuxiva_bus import BusError, nuxiva_bus
+            nuxiva_bus.publish(topic, payload, origin="feedback")
         except (ImportError, BusError):
             pass
 

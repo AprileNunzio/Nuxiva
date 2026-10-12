@@ -5,11 +5,11 @@ from unittest import mock
 
 from fastapi.testclient import TestClient
 
-import atena_supervisor
+import nuxiva_supervisor
 import packages
 from state import store
 
-HEADERS = {"X-Atena-Request": "1"}
+HEADERS = {"X-Nuxiva-Request": "1"}
 P = packages.PACKAGE_BY_ID
 
 
@@ -37,19 +37,19 @@ class PackageRulesTest(unittest.TestCase):
             self.assertTrue(packages.step_wanted(sid, {}))
 
     def test_explicit_request_and_removal(self):
-        self.assertTrue(packages.wanted(P["documents"], {"ATENA_DOCUMENTS": "1"}))
-        self.assertFalse(packages.wanted(P["documents"], {"ATENA_DOCUMENTS": "0"}))
-        self.assertTrue(packages.wanted(P["convert3d"], {"ATENA_3D_CONVERT": "auto"}))
+        self.assertTrue(packages.wanted(P["documents"], {"NUXIVA_DOCUMENTS": "1"}))
+        self.assertFalse(packages.wanted(P["documents"], {"NUXIVA_DOCUMENTS": "0"}))
+        self.assertTrue(packages.wanted(P["convert3d"], {"NUXIVA_3D_CONVERT": "auto"}))
 
     def test_installed_steps_keep_converging_so_removal_can_disable_them(self):
         store.steps["vision"] = {"status": "done"}
-        self.assertTrue(packages.step_wanted("vision", {"ATENA_VISION": "0"}))
+        self.assertTrue(packages.step_wanted("vision", {"NUXIVA_VISION": "0"}))
 
     def test_brain_modes(self):
         cases = {"local": (True, True), "remote": (False, True), "cloud": (False, False)}
         for mode, (local, models) in cases.items():
             with self.subTest(mode=mode):
-                env = {"ATENA_BRAIN": mode}
+                env = {"NUXIVA_BRAIN": mode}
                 self.assertEqual(packages.step_wanted("ollama", env), local)
                 self.assertEqual(packages.step_wanted("brain", env), local)
                 self.assertEqual(packages.step_wanted("models", env), models)
@@ -67,8 +67,8 @@ class PackageRulesTest(unittest.TestCase):
             packages.request_updates("voice", False)
         with self.assertRaises(KeyError):
             packages.request_updates("brain_models", True)
-        self.assertEqual(packages.request_updates("documents", True), {"ATENA_DOCUMENTS": "1"})
-        self.assertEqual(packages.request_updates("brain_local", True), {"ATENA_BRAIN": "local"})
+        self.assertEqual(packages.request_updates("documents", True), {"NUXIVA_DOCUMENTS": "1"})
+        self.assertEqual(packages.request_updates("brain_local", True), {"NUXIVA_BRAIN": "local"})
 
 
 class MigrationTest(unittest.TestCase):
@@ -92,10 +92,10 @@ class MigrationTest(unittest.TestCase):
     def test_existing_installs_keep_everything_they_had(self):
         for sid in ("office", "vision", "ollama", "models"):
             store.steps[sid] = {"status": "done"}
-        self.env["ATENA_VISION"] = "0"
+        self.env["NUXIVA_VISION"] = "0"
         updates = packages.migrate()
-        self.assertEqual(updates, {"ATENA_DOCUMENTS": "1", "ATENA_BRAIN": "local"})
-        self.assertEqual(self.env["ATENA_VISION"], "0")
+        self.assertEqual(updates, {"NUXIVA_DOCUMENTS": "1", "NUXIVA_BRAIN": "local"})
+        self.assertEqual(self.env["NUXIVA_VISION"], "0")
         self.assertEqual(packages.migrate(), {})
 
     def test_fresh_installs_write_nothing(self):
@@ -116,7 +116,7 @@ class HealthAndChatTest(unittest.TestCase):
         down = {"status": "down", "detail": "Non raggiungibile"}
         results = {k: dict(down) for k in ("ollama", "llm", "voice", "vision", "ear", "kiosk", "core")}
         with mock.patch.object(packages, "_detect", return_value=False):
-            out = health.on_demand(results, {"ATENA_BRAIN": "cloud", "ATENA_EAR": "1"})
+            out = health.on_demand(results, {"NUXIVA_BRAIN": "cloud", "NUXIVA_EAR": "1"})
         for key in ("ollama", "llm", "voice", "vision", "kiosk"):
             self.assertTrue(out[key].get("on_demand"), key)
             self.assertEqual(out[key]["status"], "ok")
@@ -132,7 +132,7 @@ class HealthAndChatTest(unittest.TestCase):
                 mock.patch.object(packages, "read_env", return_value={}):
             out = asyncio.run(tools_packages.manage("install", "Documenti Office"))
         self.assertIn("avviata", out)
-        self.assertEqual(apply.call_args.args[0], {"ATENA_DOCUMENTS": "1"})
+        self.assertEqual(apply.call_args.args[0], {"NUXIVA_DOCUMENTS": "1"})
         with self.assertRaises(ValueError):
             asyncio.run(tools_packages.manage("install", "niente"))
         self.assertIn("non si può", asyncio.run(tools_packages.manage("remove", "voice")))
@@ -141,8 +141,8 @@ class HealthAndChatTest(unittest.TestCase):
 class PackagesApiTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.admin = TestClient(atena_supervisor.admin)
-        r = cls.admin.post("/api/auth/login", json={"username": "admin", "password": "atena"}, headers=HEADERS)
+        cls.admin = TestClient(nuxiva_supervisor.admin)
+        r = cls.admin.post("/api/auth/login", json={"username": "admin", "password": "nuxiva"}, headers=HEADERS)
         assert r.status_code == 200, r.text
 
     def test_listing(self):
@@ -157,7 +157,7 @@ class PackagesApiTest(unittest.TestCase):
             r = self.admin.post("/api/packages/documents", json={"on": True}, headers=HEADERS)
         self.assertEqual(r.status_code, 200, r.text)
         apply.assert_called_once()
-        self.assertEqual(apply.call_args.args[0], {"ATENA_DOCUMENTS": "1"})
+        self.assertEqual(apply.call_args.args[0], {"NUXIVA_DOCUMENTS": "1"})
         self.assertEqual(apply.call_args.args[2], ["office"])
 
     def test_unknown_or_locked_packages(self):
@@ -168,13 +168,13 @@ class PackagesApiTest(unittest.TestCase):
         with mock.patch("packages_api.apply_config", return_value=[]) as apply:
             r = self.admin.post("/api/packages/brain", json={"mode": "remote", "url": "192.168.1.20"}, headers=HEADERS)
             self.assertEqual(r.status_code, 200, r.text)
-            self.assertEqual(apply.call_args.args[0], {"ATENA_BRAIN": "remote", "ATENA_OLLAMA_URL": "http://192.168.1.20:11434"})
+            self.assertEqual(apply.call_args.args[0], {"NUXIVA_BRAIN": "remote", "NUXIVA_OLLAMA_URL": "http://192.168.1.20:11434"})
             self.assertEqual(apply.call_args.args[2], ["models", "warmup"])
             self.assertEqual(self.admin.post("/api/packages/brain", json={"mode": "remote"}, headers=HEADERS).status_code, 400)
             self.assertEqual(self.admin.post("/api/packages/brain", json={"mode": "x"}, headers=HEADERS).status_code, 400)
 
     def test_requires_admin(self):
-        anon = TestClient(atena_supervisor.admin)
+        anon = TestClient(nuxiva_supervisor.admin)
         self.assertEqual(anon.get("/api/packages").status_code, 401)
         self.assertEqual(self.admin.post("/api/packages/documents", json={"on": True}).status_code, 403)
 

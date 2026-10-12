@@ -34,7 +34,7 @@ async def _stt(pcm: bytes) -> str:
 async def _update() -> str:
     info = await updater.check()
     if not info.get("available"):
-        return f"✅ Atena è aggiornata ({(info.get('local_rev') or '?')[:7]})."
+        return f"✅ Nuxiva è aggiornata ({(info.get('local_rev') or '?')[:7]})."
     background(updater.apply("richiesto da Telegram"))
     return f"⬆️ Aggiornamento {info['local_rev'][:7]} → {(info.get('target_rev') or info['remote_rev'])[:7]} avviato: la avviso quando è pronto."
 

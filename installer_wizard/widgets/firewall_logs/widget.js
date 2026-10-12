@@ -4,7 +4,7 @@
     return s.includes("<") ? new DOMParser().parseFromString(s, "text/html").body.textContent : s;
   };
   const IP = /\b(?:\d{1,3}\.){3}\d{1,3}\b/g;
-  AtenaDesk.register("firewall_logs", {
+  NuxivaDesk.register("firewall_logs", {
     render(el, d, ctx) {
       const lines = plain(d.content).split("\n").map((l) => l.trim()).filter(Boolean).slice(-14);
       const out = lines.map((l) => ctx.esc(l).replace(IP, (m) => `<em>${m}</em>`)).join("\n");

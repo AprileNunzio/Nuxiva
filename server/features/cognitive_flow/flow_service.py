@@ -23,22 +23,22 @@ class CognitiveFlowService:
         if existing:
             return existing.snapshot() if isinstance(existing, Journey) else existing
 
-        j = journey.begin("Analisi meteo e diagnostica di sistema", "operatore_locale")
+        j = journey.begin("Progetto Ingegneria: Generazione CAD e Diagnostica Windows", "operatore_locale")
         with journey.span("laws", "Leggi Fondamentali", "Verifica Asimov & Zero-Trust") as h1:
             h1.ok("Nessuna violazione riscontrata")
-        with journey.span("cache", "Memoria Semantica Cache", "Ricerca vettoriale embedding nomic") as h2:
-            h2.fail("Cache miss (similarita 0.62 < 0.88)")
-        with journey.span("router", "System 1 Router", "Analisi riflessiva non-autoregressiva") as h3:
-            h3.ok("Instradamento verso Swarm Agenti")
-        with journey.span("classifier", "Classificatore Intenti", "Intent: TELEMETRY_DIAGNOSTICS") as h4:
-            h4.ok("Score: 0.96")
-        with journey.span("agent", "SysOps Automation Agent", "Interrogazione metriche hardware e rete", parallel=True) as h5:
-            h5.note("CPU: 12% | RAM: 42% | Sensorica: OK")
-            h5.ok("Metriche raccolte con successo")
-        with journey.span("reasoning", "System 2 Latent Engine", "Sintesi cognitiva e verifica coerenza") as h6:
-            h6.note("Pensiero logico: stato nominale, nessun intervento di auto-healing richiesto.")
-            h6.ok("Sintesi validata")
-        journey.finish("Sistema Atena pienamente operativo. Tutti i nodi cognitivi rispondono con latenza <50ms.", "SUCCESS", "agent_sysops")
+        with journey.span("router", "System 1 Router", "Instradamento verso Swarm Agenti") as h3:
+            h3.ok("Team assegnato: Chief, Windows Specialist, CAD Engineer")
+        with journey.span("agent", "Windows System Agent", "Automazione ambiente e verifica processi", agent="windows_system_agent", tool="windows_powershell_exec", widget="windows_desktop_control_widget", parallel=True) as h4:
+            h4.note("Esecuzione comando PowerShell: Get-Process | Validazione ambiente OS")
+            h4.ok("Sessione Windows pronta")
+        with journey.span("agent", "AutoCAD & 3D CAD Engineer", "Generazione disegno vettoriale DXF flangia", agent="autocad_designer", tool="cad_generate_dxf", widget="cad_viewport_viewer", parallel=True) as h5:
+            h5.note("DXF R12 generato in data/cad_exports/flangia.dxf (Area: 140.2 cm2)")
+            h5.ok("File DXF validato e pronto")
+        with journey.span("supervisor", "Capo Agente (Chief)", "Supervisione 24/7 e calcolo avanzamento", agent="chief_supervisor", tool="chief_anti_loop_watchdog", widget="chief_supervision_hud") as h6:
+            h6.note("Zero loop intercettati. Milestone avanzata al 45%. Proiezione widget completata.")
+            h6.ok("Avanzamento convalidato")
+        journey.finish("Flusso cognitivo eseguito: tutti gli agenti hanno risposto, tool eseguiti e widget proiettati a schermo.", "SUCCESS", "chief_supervisor")
         return j.snapshot()
+
 
 cognitive_flow_service = CognitiveFlowService()

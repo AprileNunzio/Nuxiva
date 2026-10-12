@@ -9,7 +9,7 @@ def master() -> dict:
     down = [c["label"] for c in comps.values() if c.get("status") not in ("ok", "idle")]
     update = store.update or {}
     return {
-        "name": sysinfo.get("hostname") or "Server Atena",
+        "name": sysinfo.get("hostname") or "Server Nuxiva",
         "ip": sysinfo.get("ip", ""),
         "phase": store.phase,
         "version": VERSION,

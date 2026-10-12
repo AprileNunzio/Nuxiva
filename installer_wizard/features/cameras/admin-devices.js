@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const C = A.cams;
   let irTimer = null, lastIr = false, sessionTimer = null;
 
@@ -21,7 +21,7 @@
         <button class="btn sm" data-bio="answer-n">No</button><button class="btn sm" data-bio="cancel">Interrompi</button></div>`;
     }
     const last = run.result ? `<div class="bio-note">Ultima configurazione: ${fmt.esc(run.result)}</div>${run.output ? `<pre class="bio-term">${fmt.esc(run.output)}</pre>` : ""}` : "";
-    return `<div class="bio-note">Atena può guidare la configurazione da qui: mette in pausa la visione, prova i comandi della webcam e ti chiede se l'emettitore lampeggia. Prova controlli della webcam e in rari casi può alterarne le impostazioni.</div>
+    return `<div class="bio-note">Nuxiva può guidare la configurazione da qui: mette in pausa la visione, prova i comandi della webcam e ti chiede se l'emettitore lampeggia. Prova controlli della webcam e in rari casi può alterarne le impostazioni.</div>
       <div class="bio-line"><button class="btn sm primary" data-bio="configure">Configura l'emettitore</button></div>${last}
       <div class="bio-note">In alternativa sul server: <span class="bio-cmd">${fmt.esc(e.command)} <button class="btn sm" data-copy-cmd="${fmt.esc(e.command)}">Copia</button></span></div>`;
   }
@@ -107,7 +107,7 @@
         A.toast("Configurazione avviata");
         watchSession();
       } else if (kind === "auto") {
-        if (!confirm("Configurare l'emettitore infrarosso in automatico? Atena installa lo strumento verificato, mette in pausa la visione e prova comandi sulla webcam infrarossa finché la luce si accende. In rari casi può alterare le impostazioni della webcam: procedi solo se accetti il rischio.")) return;
+        if (!confirm("Configurare l'emettitore infrarosso in automatico? Nuxiva installa lo strumento verificato, mette in pausa la visione e prova comandi sulla webcam infrarossa finché la luce si accende. In rari casi può alterare le impostazioni della webcam: procedi solo se accetti il rischio.")) return;
         await A.api("POST", "/api/vision/webcams/ir/auto", { confirm: true });
         A.toast("Configurazione automatica avviata");
         watchSession();

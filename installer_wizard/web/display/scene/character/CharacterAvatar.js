@@ -240,4 +240,4 @@
 
   J.CharacterAvatar = CharacterAvatar;
   C.CharacterAvatar = CharacterAvatar;
-})(window.Atena3D);
+})(window.Nuxiva3D);

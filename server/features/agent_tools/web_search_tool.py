@@ -5,13 +5,13 @@ import re
 
 import httpx
 
-from server.core.agent_registry.tool_registry import atena_tool
+from server.core.agent_registry.tool_registry import nuxiva_tool
 
-logger = logging.getLogger("atena.web_search_tool")
+logger = logging.getLogger("nuxiva.web_search_tool")
 
 BRAVE_URL = "https://api.search.brave.com/res/v1/web/search"
 WIKIPEDIA_URL = "https://{lang}.wikipedia.org/w/api.php"
-USER_AGENT = "AtenaOS/4 (+https://github.com/AprileNunzio/ATENA)"
+USER_AGENT = "NuxivaOS/4 (+https://github.com/AprileNunzio/NUXIVA)"
 TIMEOUT = 12.0
 MAX_RESULTS = 10
 TAGS = re.compile(r"<[^>]+>")
@@ -42,14 +42,14 @@ async def _wikipedia(client: httpx.AsyncClient, query: str, count: int, lang: st
             f"Snippet: {html.unescape(TAGS.sub('', str(i.get('snippet', ''))))}" for i in items]
 
 
-@atena_tool(
+@nuxiva_tool(
     "web_search",
     "Cerca informazioni su internet tramite API ufficiali (Brave Search se configurato, altrimenti Wikipedia). "
     "Usa per prezzi, orari, recensioni, notizie o voci enciclopediche."
 )
 async def web_search(query: str, max_results: int = 5) -> str:
     count = _limit(max_results)
-    key = os.environ.get("ATENA_BRAVE_API_KEY", "").strip()
+    key = os.environ.get("NUXIVA_BRAVE_API_KEY", "").strip()
     try:
         async with httpx.AsyncClient(timeout=TIMEOUT, headers={"User-Agent": USER_AGENT}, follow_redirects=False) as client:
             if key:

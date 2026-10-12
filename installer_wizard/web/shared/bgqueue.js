@@ -68,7 +68,7 @@
     bar.append(fill);
     head.append(title, sub, bar);
     const list = el("ul", "bgq-list");
-    const foot = el("div", "bgq-foot", "Atena è già pronta: queste parti si aggiungono da sole, senza riavvii.");
+    const foot = el("div", "bgq-foot", "Nuxiva è già pronta: queste parti si aggiungono da sole, senza riavvii.");
     panel.append(head, list, foot);
 
     const pill = el("button", "bgq-pill");
@@ -145,7 +145,7 @@
       fill.style.width = `${pct}%`;
 
       if (finished) {
-        line1.textContent = "Atena è al completo";
+        line1.textContent = "Nuxiva è al completo";
         line2.textContent = "Tutte le parti sono installate";
         sub.textContent = `${bg.total} di ${bg.total} pronte`;
         if (!farewell) {
@@ -203,5 +203,5 @@
     }
     render(bg);
   };
-  addEventListener("atena:state", onState);
+  addEventListener("nuxiva:state", onState);
 })();

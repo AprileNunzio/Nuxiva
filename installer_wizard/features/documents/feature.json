@@ -6,8 +6,8 @@
   "order": 36,
   "pinned": false,
   "panel": "",
-  "toggle": { "env": "ATENA_DOCUMENTS", "apply": ["office"] },
-  "description": "Atena prepara documenti professionali per Microsoft Office, LibreOffice e OpenOffice: Word, Excel, PowerPoint, ODT, ODS, ODP e PDF, con temi grafici moderni, caratteri, colori, tabelle, grafici e indicatori. Per i progetti crea una cartella con sottocartelle, più documenti collegati tra loro e un indice.",
+  "toggle": { "env": "NUXIVA_DOCUMENTS", "apply": ["office"] },
+  "description": "Nuxiva prepara documenti professionali per Microsoft Office, LibreOffice e OpenOffice: Word, Excel, PowerPoint, ODT, ODS, ODP e PDF, con temi grafici moderni, caratteri, colori, tabelle, grafici e indicatori. Per i progetti crea una cartella con sottocartelle, più documenti collegati tra loro e un indice.",
   "capabilities": [
     "Word e ODT: copertina, stili dei titoli, intestazione e numeri di pagina, tabelle con totali, grafici, indicatori, riquadri, citazioni, link",
     "Excel e ODS: colonne tipizzate (valuta, percentuale, date), formule, totali, filtri, intestazioni bloccate, grafici nativi",

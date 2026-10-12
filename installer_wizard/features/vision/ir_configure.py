@@ -10,8 +10,8 @@ from pathlib import Path
 
 from state import store
 
-log = logging.getLogger("atena.webcams")
-VISION_UNIT = "atena-vision"
+log = logging.getLogger("nuxiva.webcams")
+VISION_UNIT = "nuxiva-vision"
 MAX_SECONDS = 600
 KEEP_CHARS = 4000
 ANSI = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]|\r")

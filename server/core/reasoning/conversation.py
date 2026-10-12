@@ -8,10 +8,10 @@ from server.features.llm_gateway.contracts import LLMMessage, LLMRequest
 from server.features.llm_gateway.gateway import llm_gateway
 from server.shared.errors.domain_errors import AgentExecutionException
 
-logger = logging.getLogger("atena.conversation")
+logger = logging.getLogger("nuxiva.conversation")
 
 _PERSONA = (
-    "Sei A.T.E.N.A., l'assistente digitale personale che vive in questo sistema. "
+    "Sei NUXIVA, l'assistente digitale personale che vive in questo sistema. "
     "Parli in italiano (se l'utente ti scrive in un'altra lingua, rispondi nella sua lingua), con tono "
     "preciso, come un maggiordomo tecnologico di altissimo livello. "
     "Stile di risposta (sempre, salvo richiesta diversa): dai del Lei e chiama l'utente «signore» (o per nome). "
@@ -26,7 +26,7 @@ _PERSONA = (
     "una frase. "
     "Dai più dettagli solo se richiesti. Non inventare dati in tempo reale che non conosci: se ti mancano informazioni, dillo. "
     "Non affermare mai di aver creato, mostrato, inviato, salvato, acceso o eseguito qualcosa: le azioni "
-    "le fanno gli strumenti di Atena, non tu. Se ti chiedono un'azione e nel contesto non c'è la "
+    "le fanno gli strumenti di Nuxiva, non tu. Se ti chiedono un'azione e nel contesto non c'è la "
     "conferma che sia stata fatta, dì che non è stata eseguita e suggerisci come chiederla. "
     ""
 )
@@ -58,14 +58,15 @@ class ConversationEngine:
         if dialogue:
             persona += ("\nUltimi scambi di questa conversazione (mantieni il filo del discorso e risolvi i "
                         "riferimenti come «e domani?» o «e lui?»):\n" + dialogue[:2500])
-        elif settings.ATENA_USER_NAME:
-            persona += (f" L'utente si chiama {settings.ATENA_USER_NAME}: tu sei Atena, non chiamarlo mai "
-                        "Atena o A.T.E.N.A.")
+        elif settings.NUXIVA_USER_NAME:
+            persona += (f" L'utente si chiama {settings.NUXIVA_USER_NAME}: tu sei Nuxiva, non chiamarlo mai "
+                        "Nuxiva o NUXIVA")
         if people_context:
             persona += ("\nPersone riconosciute ora davanti a te dalla webcam (personalizza la risposta, "
                         "rivolgiti a loro per nome e rispetta le loro preferenze):\n" + people_context)
         if reply_language:
-            persona += "\n" + reply_language[:600]
+            persona += (f"\nDIRETTIVA LINGUA OBBLIGATORIA: Rispondi ESCLUSIVAMENTE nella lingua indicata: {reply_language[:200]}. "
+                        "Non usare altre lingue se non espressamente richiesto dall'utente.\n")
         if knowledge:
             persona += ("\nAppunti che hai studiato tu stesso da fonti verificate (usali se pertinenti alla "
                         "domanda, senza citarli come appunti):\n" + knowledge[:1500])
@@ -79,7 +80,7 @@ class ConversationEngine:
 
     def _request(self, messages: list[LLMMessage], persona: str, models: Optional[List[str]], max_tokens: int,
                  pinned: str) -> LLMRequest:
-        return LLMRequest(model_name=settings.ATENA_LLM_MODEL or "granite3.3:2b", messages=messages, system_prompt=persona,
+        return LLMRequest(model_name=settings.NUXIVA_LLM_MODEL or "granite3.3:2b", messages=messages, system_prompt=persona,
                           temperature=0.6, max_tokens=max(64, min(int(max_tokens or 400), 2048)),
                           models=list(models or []), pinned=pinned)
 
@@ -96,7 +97,7 @@ class ConversationEngine:
                                          dialogue, long_term, laws, capabilities)
         response = await llm_gateway.generate_completion(self._request(messages, persona, models, max_tokens, pinned))
         if response.is_synthetic:
-            raise AgentExecutionException("atena_conversation", "nessun modello linguistico disponibile",
+            raise AgentExecutionException("nuxiva_conversation", "nessun modello linguistico disponibile",
                                           {"reason": "no_model"})
         self.last_model = response.model_used
         answer = response.content.strip() or "Mi scuso, non sono riuscito a formulare una risposta."
@@ -116,7 +117,7 @@ class ConversationEngine:
             yield chunk
         answer = "".join(parts).strip()
         if not answer:
-            raise AgentExecutionException("atena_conversation", "risposta vuota", {"reason": "empty"})
+            raise AgentExecutionException("nuxiva_conversation", "risposta vuota", {"reason": "empty"})
         self.last_model = llm_gateway.last_stream_model
         self._remember(device_id, query, answer)
 

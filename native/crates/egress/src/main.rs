@@ -4,9 +4,9 @@ use std::io::{BufRead, Write};
 use std::net::{SocketAddr, TcpListener as StdListener};
 use std::process::ExitCode;
 
-use atena_egress::config::{Config, MAX_CONFIG_BYTES, Upstream};
-use atena_egress::proxy::{ALLOWED_PORTS, Proxy};
-use atena_egress::sandbox;
+use nuxiva_egress::config::{Config, MAX_CONFIG_BYTES, Upstream};
+use nuxiva_egress::proxy::{ALLOWED_PORTS, Proxy};
+use nuxiva_egress::sandbox;
 use serde_json::json;
 use tokio::io::AsyncReadExt;
 use tokio::net::TcpListener;

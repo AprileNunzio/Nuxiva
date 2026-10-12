@@ -13,7 +13,7 @@ from state import store
 
 from features.maps import geometry, personal, trips
 
-log = logging.getLogger("atena.maps")
+log = logging.getLogger("nuxiva.maps")
 
 STATE_FILE = STATE_DIR / "maps.json"
 MODES = {"drive": ("DRIVE", "in auto", "driving"), "walk": ("WALK", "a piedi", "walking"),
@@ -54,15 +54,15 @@ class Maps:
 
     @staticmethod
     def enabled() -> bool:
-        return env_get("ATENA_MAPS", "1") != "0"
+        return env_get("NUXIVA_MAPS", "1") != "0"
 
     @staticmethod
     def key() -> str:
-        return env_get("ATENA_MAPS_API_KEY", "").strip()
+        return env_get("NUXIVA_MAPS_API_KEY", "").strip()
 
     @staticmethod
     def default_mode() -> str:
-        m = env_get("ATENA_MAPS_MODE", "drive")
+        m = env_get("NUXIVA_MAPS_MODE", "drive")
         return m if m in MODES else "drive"
 
     async def home(self) -> dict:
@@ -207,7 +207,7 @@ class Maps:
                 "foot": "routing.openstreetmap.de/routed-foot/route/v1/foot",
                 "bike": "routing.openstreetmap.de/routed-bike/route/v1/bike"}[profile]
         url = f"https://{host}/{origin['lon']},{origin['lat']};{dest['lon']},{dest['lat']}"
-        async with httpx.AsyncClient(timeout=15, headers={"User-Agent": "AtenaOS/3 (+https://github.com/AprileNunzio/ATENA)"}) as client:
+        async with httpx.AsyncClient(timeout=15, headers={"User-Agent": "NuxivaOS/3 (+https://github.com/AprileNunzio/NUXIVA)"}) as client:
             r = await client.get(url, params={"overview": "full", "geometries": "geojson", "steps": "true"})
         data = r.json()
         if data.get("code") != "Ok" or not data.get("routes"):

@@ -14,7 +14,7 @@ from features.habits.foresight import foresight
 from features.habits.journal import ACTIONABLE, Journal
 from features.habits.miner import WINDOW_DAYS, mine
 
-log = logging.getLogger("atena.habits")
+log = logging.getLogger("nuxiva.habits")
 FILE = STATE_DIR / "habits.json"
 OWN_ACTION = 15
 ASK_EVERY = 2 * 3600
@@ -25,12 +25,12 @@ ODD_CLASSES = {"door", "window", "opening", "garage_door", "motion", "occupancy"
 
 
 def enabled() -> bool:
-    return env_get("ATENA_HABITS", "1") != "0"
+    return env_get("NUXIVA_HABITS", "1") != "0"
 
 
 def threshold() -> float:
     try:
-        return max(0.5, min(0.95, float(env_get("ATENA_HABITS_CONFIDENCE", "0.7"))))
+        return max(0.5, min(0.95, float(env_get("NUXIVA_HABITS_CONFIDENCE", "0.7"))))
     except ValueError:
         return 0.7
 
@@ -87,7 +87,7 @@ class Habits:
             self.foresee(arrival=True)
 
     def foresee(self, arrival: bool = False) -> list[dict]:
-        if env_get("ATENA_HABITS_FORESIGHT", "1") == "0":
+        if env_get("NUXIVA_HABITS_FORESIGHT", "1") == "0":
             return []
         names = {e["id"]: e["name"] for e in bus.states.catalog()}
         armed = foresight.arm(self.journal.rows(time.time() - WINDOW_DAYS * 86400), names, arrival)
@@ -96,7 +96,7 @@ class Habits:
         return armed
 
     def _check_odd(self, eid: str, cls: str, people: int) -> None:
-        if people or env_get("ATENA_HABITS_ANOMALIES", "1") == "0":
+        if people or env_get("NUXIVA_HABITS_ANOMALIES", "1") == "0":
             return
         now = time.time()
         rows = self.journal.rows(now - WINDOW_DAYS * 86400, "sensor")
@@ -171,7 +171,7 @@ class Habits:
         return message
 
     def _ask(self) -> None:
-        if not enabled() or env_get("ATENA_HABITS_ASK", "1") == "0" or not bus.present or bus.states.quiet():
+        if not enabled() or env_get("NUXIVA_HABITS_ASK", "1") == "0" or not bus.present or bus.states.quiet():
             return
         now = time.time()
         if now - self.data.get("asked", 0) < ASK_EVERY or not 9 <= datetime.now().hour < 21:

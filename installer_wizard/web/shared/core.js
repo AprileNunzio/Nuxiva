@@ -12,7 +12,7 @@
         onLink && onLink(true);
         let data;
         try { data = JSON.parse(ev.data); onState(data); } catch (e) { console.error(e); }
-        if (data) global.dispatchEvent(new CustomEvent("atena:state", { detail: data }));
+        if (data) global.dispatchEvent(new CustomEvent("nuxiva:state", { detail: data }));
       };
       es.onerror = () => {
         onLink && onLink(false);
@@ -197,5 +197,5 @@
     return { close() { closed = true; clearTimeout(retry); es && es.close(); } };
   }
 
-  global.Atena = { connectState, subscribeBus, fmt, Reactor, PHASE_COLORS };
+  global.Nuxiva = { connectState, subscribeBus, fmt, Reactor, PHASE_COLORS };
 })(window);

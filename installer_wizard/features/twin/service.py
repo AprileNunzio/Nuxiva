@@ -10,7 +10,7 @@ from features.twin.model import HomeState
 from features.twin.rules import RULES
 from features.twin.simulator import review
 
-log = logging.getLogger("atena.twin")
+log = logging.getLogger("nuxiva.twin")
 SETTINGS_FILE = STATE_DIR / "twin.json"
 MODES = ("enforce", "warn", "off")
 HISTORY = 50
@@ -32,7 +32,7 @@ class Twin:
         return {"rules": {name: bool(rules.get(name, True)) for name in RULES}}
 
     def mode(self) -> str:
-        value = env_get("ATENA_TWIN", "enforce")
+        value = env_get("NUXIVA_TWIN", "enforce")
         return value if value in MODES else "enforce"
 
     def rules(self) -> list[str]:
@@ -76,8 +76,8 @@ class Twin:
         with self.lock:
             self.history = ([verdict] + self.history)[:HISTORY]
         try:
-            from atena_bus import BusError, atena_bus
-            atena_bus.publish("twin.verdict", verdict, origin="twin")
+            from nuxiva_bus import BusError, nuxiva_bus
+            nuxiva_bus.publish("twin.verdict", verdict, origin="twin")
         except (ImportError, BusError) as exc:
             log.debug("Verdetto del gemello non pubblicato: %s", exc)
 

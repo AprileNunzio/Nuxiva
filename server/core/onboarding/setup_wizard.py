@@ -49,6 +49,48 @@ class OnboardingWizard:
             lang=lang,
         )
 
+    async def auto_configure_instant_setup(self, environment: str = "smart_home", lang: str = "it") -> Dict[str, Any]:
+        """
+        Esegue la configurazione automatica 'Zero-Fatigue' in 1 solo clic:
+        1. Rileva la RAM e la GPU.
+        2. Attiva il modello Ternario ottimale isolato (Bonsai 27B o 8B) liberando modelli preesistenti.
+        3. Configura le impostazioni ambientali consigliate.
+        4. Esegue la scansione automatica a runtime di tutti i tool e widget.
+        """
+        from server.features.llm_gateway.ternary_engine import ternary_engine
+        from server.core.agent_registry.dynamic_scanner import dynamic_scanner
+
+        profile = self.analyze_system()
+        target_ternary = profile.recommended_ternary_model if profile.supports_ternary_27b else "bonsai-8b"
+        
+        # Attiva il modello singolo isolato
+        ternary_res = await ternary_engine.activate_single_model(target_ternary)
+        
+        # Scansiona le risorse dinamiche disponibili
+        scanned = dynamic_scanner.scan_all()
+
+        config = OnboardingConfig(
+            provider="ollama",
+            system1_model=profile.recommended_system1,
+            system2_model=target_ternary,
+            system2_quantization="1.58b_ternary",
+            use_external_api=False,
+            hardware=profile,
+            lang=lang,
+        )
+        self.persist_config(config)
+
+        return {
+            "status": "success",
+            "message": "Nuxiva auto-configurato istantaneamente con successo!",
+            "hardware_tier": profile.tier,
+            "active_model": target_ternary,
+            "ternary_savings": ternary_res.get("savings", {}),
+            "environment_configured": environment,
+            "scanned_tools_count": scanned["total_tools"],
+            "scanned_widgets_count": scanned["total_widgets"],
+        }
+
     def persist_config(self, config: OnboardingConfig) -> None:
         env_lines = []
         if os.path.exists(self.env_path):
@@ -59,8 +101,8 @@ class OnboardingWizard:
             "LLM_PROVIDER": config.provider,
             "SYSTEM1_MODEL": config.system1_model,
             "SYSTEM2_MODEL": config.system2_model,
-            "ATENA_LLM_MODEL": config.system2_model,
-            "ATENA_LLM_FAST_MODEL": config.system1_model,
+            "NUXIVA_LLM_MODEL": config.system2_model,
+            "NUXIVA_LLM_FAST_MODEL": config.system1_model,
         }
         if config.api_key:
             if config.provider == "gemini":

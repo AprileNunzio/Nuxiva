@@ -19,7 +19,7 @@ export function renderSection(outlet, route) {
       h("a", { class: "btn", href: "#/home" }, "Torna alla Plancia"))));
     return;
   }
-  document.title = `${section.label} · Atena Nexus`;
+  document.title = `${section.label} · Nuxiva Nexus`;
   mount(outlet, h("section", { class: "view" },
     h("a", { class: "back", href: `#/${section.zone.id}` }, "← ", section.zone.title),
     h("div", { class: "view-head" }, h("p", { class: "eyebrow" }, section.zone.title), h("h2", {}, section.label)),

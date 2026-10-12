@@ -1,6 +1,6 @@
 (() => {
   const ICON = { Processore: "cpu", Memoria: "memory", Disco: "server", Temperatura: "therm" };
-  AtenaDesk.register("system_health", {
+  NuxivaDesk.register("system_health", {
     render(el, d, ctx) {
       const items = Array.isArray(d.items) ? d.items.slice(0, 6) : [];
       const state = (p) => (p >= 90 ? "bad" : p >= 75 ? "warn" : "");

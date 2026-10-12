@@ -7,7 +7,7 @@ from pathlib import Path
 
 from features.governor.profile import TIERS
 
-log = logging.getLogger("atena.governor")
+log = logging.getLogger("nuxiva.governor")
 ID_RE = re.compile(r"^[A-Za-z0-9_-]{6,40}$")
 WIDGET_RE = re.compile(r"^[a-z0-9_-]{1,40}$")
 HISTORY = 8

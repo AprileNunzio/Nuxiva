@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $ } = A;
+  const A = window.NuxivaAdmin, { $ } = A;
   const mu = A.mu, esc = mu.esc;
   const O = mu.out;
   const ICON = { display: "🖥", cast: "📺", dlna: "🔈", browser: "💻" };
@@ -90,9 +90,9 @@
     $("mu-main").innerHTML = `<h2>Dispositivi</h2><div class="mu-actions"><button class="btn" id="mu-scan">⟳ Cerca nella rete</button></div>
       ${r.cast ? "" : '<div class="mu-note">La ricerca di Chromecast, TV e speaker è disattivata nelle impostazioni di Gestione Musica.</div>'}
       ${rows.map((d) => `<div class="mu-dev ${O.id === d.id ? "on" : ""}"><div class="ic">${ICON[d.kind] || "▶"}</div>
-        <div class="nm"><b>${esc(d.name)}</b><small>${d.kind === "browser" ? "Audio di questo computer" : d.kind === "cast" ? `Chromecast ${esc(d.model || "")}` : d.kind === "dlna" ? `Altoparlante o TV (DLNA) ${esc(d.model || "")}` : "Schermo di Atena"}${d.active ? " · in riproduzione" : ""}</small></div>
+        <div class="nm"><b>${esc(d.name)}</b><small>${d.kind === "browser" ? "Audio di questo computer" : d.kind === "cast" ? `Chromecast ${esc(d.model || "")}` : d.kind === "dlna" ? `Altoparlante o TV (DLNA) ${esc(d.model || "")}` : "Schermo di Nuxiva"}${d.active ? " · in riproduzione" : ""}</small></div>
         ${O.id === d.id ? '<span class="badge ok">in uso</span>' : `<button class="btn sm primary" data-dev="${esc(d.id)}">Riproduci qui</button>`}</div>`).join("")}
-      <p class="mu-note">Gli schermi di Atena compaiono quando la pagina del display è aperta. Chromecast, TV e speaker DLNA vengono trovati nella rete locale; se non compaiono, controlla che siano accesi e sulla stessa rete.</p>`;
+      <p class="mu-note">Gli schermi di Nuxiva compaiono quando la pagina del display è aperta. Chromecast, TV e speaker DLNA vengono trovati nella rete locale; se non compaiono, controlla che siano accesi e sulla stessa rete.</p>`;
     $("mu-scan").addEventListener("click", async () => { A.toast("Cerco nella rete…"); try { await fetchDevices(true); mu.reload(); } catch (e) { mu.err(e); } });
     $("mu-main").querySelectorAll("[data-dev]").forEach((b) => b.addEventListener("click", () => {
       const d = rows.find((x) => x.id === b.dataset.dev);

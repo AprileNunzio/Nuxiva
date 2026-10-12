@@ -8,8 +8,8 @@ from pathlib import Path
 import cv2
 import numpy as np
 
-log = logging.getLogger("atena.vision")
-STATUS_FILE = Path(os.environ.get("ATENA_IR_STATUS", "/var/lib/atena/ir_status.json"))
+log = logging.getLogger("nuxiva.vision")
+STATUS_FILE = Path(os.environ.get("NUXIVA_IR_STATUS", "/var/lib/nuxiva/ir_status.json"))
 DARK_MEAN = 6.0
 FPS = 10
 STATUS_EVERY = 5.0

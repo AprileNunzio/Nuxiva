@@ -14,16 +14,16 @@ from state import store
 
 from features.music import lyrics
 
-log = logging.getLogger("atena.music")
+log = logging.getLogger("nuxiva.music")
 
-VENV_PY = Path("/opt/atena-music/venv/bin/python")
+VENV_PY = Path("/opt/nuxiva-music/venv/bin/python")
 RECOGNIZER = Path(__file__).resolve().parent / "music_id.py"
-USER_AGENT = "AtenaOS/3 (+https://github.com/AprileNunzio/ATENA)"
+USER_AGENT = "NuxivaOS/3 (+https://github.com/AprileNunzio/NUXIVA)"
 DISABLED_RETRY = 300
 
 
 def enabled() -> bool:
-    return env_get("ATENA_MUSIC_ID", "1") != "0" and licensing.permitted("shazam")
+    return env_get("NUXIVA_MUSIC_ID", "1") != "0" and licensing.permitted("shazam")
 
 
 def available() -> bool:

@@ -14,7 +14,7 @@ class ConfirmDialog:
     def __init__(self, root, capability: Capability, request: Request) -> None:
         self.result = Answer(False)
         self.window = ctk.CTkToplevel(root, fg_color=theme.PANEL)
-        self.window.title("ATENA · Autorizzazione richiesta")
+        self.window.title("NUXIVA · Autorizzazione richiesta")
         self.window.attributes("-topmost", True)
         self.window.minsize(420, 320)
         self.window.geometry("520x440")
@@ -27,7 +27,7 @@ class ConfirmDialog:
 
     def _build(self, capability: Capability, request: Request) -> None:
         w = self.window
-        ctk.CTkLabel(w, text="ATENA chiede il permesso", font=(theme.FONT, 18, "bold"), text_color=theme.TEXT
+        ctk.CTkLabel(w, text="NUXIVA chiede il permesso", font=(theme.FONT, 18, "bold"), text_color=theme.TEXT
                      ).pack(anchor="w", padx=20, pady=(18, 2))
         color = theme.AMBER if capability.risky else theme.CYAN
         ctk.CTkLabel(w, text=f"{'⚠ ' if capability.risky else ''}{capability.title}", font=(theme.FONT, 13, "bold"),
@@ -53,7 +53,7 @@ class ConfirmDialog:
         remember = self.remember.get()
         if remember and self.capability.risky:
             remember = messagebox.askyesno(
-                "ATENA", f"«{self.capability.title}» è un'azione delicata. Vuoi davvero che ATENA la esegua sempre senza chiedere?",
+                "NUXIVA", f"«{self.capability.title}» è un'azione delicata. Vuoi davvero che NUXIVA la esegua sempre senza chiedere?",
                 parent=self.window)
         self._close(Answer(True, remember))
 

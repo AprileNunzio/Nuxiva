@@ -1,5 +1,5 @@
 (() => {
-  const D = window.AtenaDisplay, { fmt } = D;
+  const D = window.NuxivaDisplay, { fmt } = D;
   const { render, wide } = D.stagePanels;
   const esc = fmt.esc;
   const pct = (v) => `${Math.max(0, Math.min(100, Number(v) * 100))}%`;

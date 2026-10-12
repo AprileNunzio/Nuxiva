@@ -12,7 +12,7 @@ from server.core.reasoning.react_loop import ReActLoop
 from server.core.reasoning.self_critique import self_critique_engine
 from server.shared.i18n.provider import global_translator
 
-logger = logging.getLogger("atena.sysops_agent")
+logger = logging.getLogger("nuxiva.sysops_agent")
 
 class SysOpsAutomationAgent(BaseAgent):
     def __init__(self) -> None:

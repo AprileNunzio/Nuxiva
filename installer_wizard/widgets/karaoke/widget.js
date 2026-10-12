@@ -56,5 +56,5 @@
     },
     destroy(el) { clearInterval(timers.get(el)); },
   };
-  AtenaDesk.register("karaoke", impl);
+  NuxivaDesk.register("karaoke", impl);
 })();

@@ -5,7 +5,7 @@ from pathlib import Path
 from settings import paths
 
 RUN_KEY = r"Software\Microsoft\Windows\CurrentVersion\Run"
-RUN_NAME = "ATENA Assistente"
+RUN_NAME = "NUXIVA Assistente"
 
 
 def command() -> str:
@@ -13,7 +13,7 @@ def command() -> str:
         return f'"{Path(sys.executable).resolve()}"'
     pythonw = Path(sys.executable).with_name("pythonw.exe")
     interpreter = pythonw if pythonw.exists() else Path(sys.executable)
-    return f'"{interpreter}" "{paths.APP_DIR / "atena_assistant.py"}"'
+    return f'"{interpreter}" "{paths.APP_DIR / "nuxiva_assistant.py"}"'
 
 
 def enabled() -> bool:

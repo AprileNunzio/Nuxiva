@@ -9,7 +9,7 @@ import time
 import numpy as np
 import websockets
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [atena.ear] %(levelname)s: %(message)s")
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [nuxiva.ear] %(levelname)s: %(message)s")
 for noisy in ("websockets", "faster_whisper"):
     logging.getLogger(noisy).setLevel(logging.WARNING)
 
@@ -24,22 +24,22 @@ from voiceprint import ENROLLED_AT, Voiceprints
 from wakeword import WakeWord
 from autolevel import AutoLevel
 
-log = logging.getLogger("atena.ear")
+log = logging.getLogger("nuxiva.ear")
 
 RATE = 16000
-PORT = int(os.environ.get("ATENA_EAR_PORT", "8093"))
+PORT = int(os.environ.get("NUXIVA_EAR_PORT", "8093"))
 FRAME = 480
 PRE_ROLL = int(0.4 * RATE)
-END_SILENCE = earconf.number("ATENA_EAR_END_SILENCE", 0.65, 0.3, 1.5)
-CONVERSATION_S = earconf.number("ATENA_EAR_CONVERSATION_S", 30.0, 5.0, 120.0)
+END_SILENCE = earconf.number("NUXIVA_EAR_END_SILENCE", 0.65, 0.3, 1.5)
+CONVERSATION_S = earconf.number("NUXIVA_EAR_CONVERSATION_S", 30.0, 5.0, 120.0)
 MAX_UTTERANCE = 14.0
 MIN_UTTERANCE = 0.35
 WAIT_FOR_SPEECH = 8.0
 SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]{0,40}$")
-BARGE_IN = float(os.environ.get("ATENA_BARGE_IN", "0.7"))
+BARGE_IN = float(os.environ.get("NUXIVA_BARGE_IN", "0.7"))
 
 voiceprints = Voiceprints()
-LINK_FILE = os.environ.get("ATENA_EAR_LINK", "/var/lib/atena/ear_link.json")
+LINK_FILE = os.environ.get("NUXIVA_EAR_LINK", "/var/lib/nuxiva/ear_link.json")
 LINK = {"clients": 0, "last_audio": 0.0, "level": 0.0, "since": time.time(), "pages": []}
 SESSIONS: set = set()
 
@@ -76,7 +76,7 @@ class Session:
         self.conversation = False
         self.awaiting_command = False
         self.instant = False
-        self.atena_speaking = False
+        self.nuxiva_speaking = False
         self.last_level = 0.0
         self.waiting = 0
         self.raw: list | None = None
@@ -127,13 +127,13 @@ class Session:
         if advice:
             LINK["mic_level"] = advice
             await self.send(type="mic_level", advice=advice)
-        self.music.feed(frame, rms, self.noise, self.mode == "idle" and not self.atena_speaking, now)
+        self.music.feed(frame, rms, self.noise, self.mode == "idle" and not self.nuxiva_speaking, now)
         threshold = max(self.noise * 3.2, 0.010)
         voiced = rms > threshold
         if voiced:
             activity.voice()
         chunk = self.recorder.feed(frame, rms, voiced or self.in_speech, self.noise, now,
-                                   self.atena_speaking or self.enroll is not None or self.music.playing,
+                                   self.nuxiva_speaking or self.enroll is not None or self.music.playing,
                                    self.profile.magnitude)
         if chunk is not None:
             asyncio.create_task(self._save(chunk))
@@ -142,10 +142,10 @@ class Session:
             await self.send(type="level", rms=round(min(1.0, rms * 12), 3), speech=self.in_speech,
                             wake=round(self.wake.score, 2))
 
-        if self.atena_speaking:
+        if self.nuxiva_speaking:
             self.in_speech, self.speech = False, []
             if self.enroll is None and self.wake.feed(frame) and self.wake.score >= BARGE_IN:
-                self.atena_speaking = False
+                self.nuxiva_speaking = False
                 await self.send(type="barge")
                 await self._instant_wake()
             return
@@ -254,7 +254,7 @@ class Session:
         learner.on_command()
         self.recorder.note("transcript", text=command, dur=round(len(clean) / RATE, 2), woke=woke, ms=ms)
         speaker, score = await asyncio.to_thread(self._speaker, clean)
-        enforce_speaker = earconf.flag("ATENA_VOICEPRINT_ENFORCE", False)
+        enforce_speaker = earconf.flag("NUXIVA_VOICEPRINT_ENFORCE", False)
         if enforce_speaker and voiceprints.ready and len(voiceprints.samples) > 0:
             if not speaker:
                 log.info("Voce non riconosciuta tra i profili registrati (score=%.2f): comando ignorato per sicurezza", score)
@@ -263,7 +263,7 @@ class Session:
 
         await self.send(type="transcript", text=command, ms=ms, lang=lang, followup=followup and not woke,
                         speaker=speaker, speaker_score=round(score, 3), voice_known=self._known(self.alone))
-        auto_followup = earconf.number("ATENA_EAR_AUTO_FOLLOWUP", 8.0, 0.0, 30.0)
+        auto_followup = earconf.number("NUXIVA_EAR_AUTO_FOLLOWUP", 8.0, 0.0, 30.0)
         if auto_followup > 0.0:
             await self.set_mode("listening", seconds=auto_followup, conversation=True)
         else:
@@ -324,8 +324,8 @@ class Session:
                 seconds = max(seconds, CONVERSATION_S)
             await self.set_mode("listening", seconds, conversation=bool(msg.get("conversation")))
         elif kind == "speaking":
-            self.atena_speaking = bool(msg.get("on"))
-            if self.atena_speaking:
+            self.nuxiva_speaking = bool(msg.get("on"))
+            if self.nuxiva_speaking:
                 self.wake.reset()
         elif kind == "presence":
             alone = str(msg.get("alone") or "")
@@ -420,7 +420,7 @@ async def handler(ws) -> None:
 
 
 async def main() -> None:
-    reviewer = Reviewer(lambda: any(s.mode != "idle" or s.in_speech or s.atena_speaking for s in SESSIONS))
+    reviewer = Reviewer(lambda: any(s.mode != "idle" or s.in_speech or s.nuxiva_speaking for s in SESSIONS))
     async with websockets.serve(handler, "127.0.0.1", PORT, max_size=2 ** 20, ping_interval=20, ping_timeout=90):
         await asyncio.gather(link_writer(), reviewer.run())
 

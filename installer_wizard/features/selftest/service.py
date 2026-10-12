@@ -10,7 +10,7 @@ from state import store
 from features.selftest.checks import CHECKS
 from features.selftest.skip import Skip
 
-log = logging.getLogger("atena.selftest")
+log = logging.getLogger("nuxiva.selftest")
 FILE = STATE_DIR / "selftest.json"
 TIMEOUT = 90
 AFTER_UPDATE = 300
@@ -18,7 +18,7 @@ KEEP = 40
 
 
 def enabled() -> bool:
-    return env_get("ATENA_SELFTEST", "1") != "0"
+    return env_get("NUXIVA_SELFTEST", "1") != "0"
 
 
 class SelfTest:
@@ -113,7 +113,7 @@ class SelfTest:
 
     async def _rollback(self, report: dict, critical: list) -> bool:
         good = self.data.get("good_rev")
-        if DEMO or not good or good == report["rev"] or env_get("ATENA_SELFTEST_ROLLBACK", "1") == "0":
+        if DEMO or not good or good == report["rev"] or env_get("NUXIVA_SELFTEST_ROLLBACK", "1") == "0":
             return False
         import updater
         names = ", ".join(r["label"] for r in critical)
@@ -128,7 +128,7 @@ class SelfTest:
             return False
         await updater.mark_good()
         from health import sh
-        await sh("systemctl", "restart", "--no-block", "atena-supervisor.service", timeout=10)
+        await sh("systemctl", "restart", "--no-block", "nuxiva-supervisor.service", timeout=10)
         return True
 
     async def _tell(self, text: str) -> None:
@@ -158,7 +158,7 @@ class SelfTest:
                     ready_since = ready_since or time.time()
                     rev = await self._rev()
                     now = datetime.now()
-                    at = env_get("ATENA_SELFTEST_AT", "03:30")
+                    at = env_get("NUXIVA_SELFTEST_AT", "03:30")
                     if rev and rev != self.data.get("tested_rev") and time.time() - ready_since > AFTER_UPDATE:
                         await self.run("dopo l'aggiornamento" if self.data.get("tested_rev") else "primo avvio")
                     elif self._night(now, at) and self.data.get("night") != now.strftime("%Y-%m-%d"):

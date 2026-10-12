@@ -7,7 +7,7 @@
     "Emotional pitch and cadence modulation"
   ],
   "settings": {
-    "ATENA_TTS_VOICE": "Default voice",
-    "ATENA_TTS_SPEED": "Speech rate"
+    "NUXIVA_TTS_VOICE": "Default voice",
+    "NUXIVA_TTS_SPEED": "Speech rate"
   }
 }

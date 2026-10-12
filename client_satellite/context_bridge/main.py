@@ -8,7 +8,7 @@ from sensor import ContextSensor
 from crypto import E2EEncryption
 from updater import apply_update
 
-app = FastAPI(title="Atena Context Satellite")
+app = FastAPI(title="Nuxiva Context Satellite")
 
 class EncryptedPayload(BaseModel):
     payload: str

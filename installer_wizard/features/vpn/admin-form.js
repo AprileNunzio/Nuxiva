@@ -1,6 +1,6 @@
 (() => {
-  const A = window.AtenaAdmin, { $ } = A;
-  const VPN = (window.AtenaVpn = window.AtenaVpn || {});
+  const A = window.NuxivaAdmin, { $ } = A;
+  const VPN = (window.NuxivaVpn = window.NuxivaVpn || {});
   const split = (text) => String(text || "").split(/[\s,]+/).filter(Boolean);
 
   function showKind() {

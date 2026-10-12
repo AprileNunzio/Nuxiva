@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const SECTIONS = [["triggers", "Quando", "Aggiungi un innesco"], ["conditions", "Solo se", "Aggiungi una condizione"], ["actions", "Allora", "Aggiungi un'azione"]];
   const DAYS = [["mon", "Lun"], ["tue", "Mar"], ["wed", "Mer"], ["thu", "Gio"], ["fri", "Ven"], ["sat", "Sab"], ["sun", "Dom"]];
   const STATES = ["on", "off", "open", "closed", "home", "not_home", "playing", "locked", "unlocked"];

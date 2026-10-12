@@ -5,4 +5,4 @@
 Dockerfile text eol=lf
 *.yml text eol=lf
 *.apk binary
-scripts/os/atenactl text eol=lf
+scripts/os/nuxivactl text eol=lf

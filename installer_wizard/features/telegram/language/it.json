@@ -1,6 +1,6 @@
 {
   "name": "Telegram",
-  "description": "Parla con Atena da ovunque: testo, voce e foto; notifiche di arrivi, guasti e ricorrenze.",
+  "description": "Parla con Nuxiva da ovunque: testo, voce e foto; notifiche di arrivi, guasti e ricorrenze.",
   "capabilities": [
     "Abbinamento con codice",
     "Chat testo e voce",

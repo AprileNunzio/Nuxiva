@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const S = { data: null, step: "power", where: "local", url: "", key: "", timer: null, audio: null, busy: false };
   const STEPS = [
     { id: "power", icon: "🔌", title: "Accendi" },
@@ -51,9 +51,9 @@
       <div><div class="vs-label">Chiave dello Studio</div>
         <div class="vs-row"><input type="password" id="vs-key" placeholder="${d.has_key ? "Chiave salvata: incollane una nuova per cambiarla" : "Incolla qui la chiave (OMNIVOICE_API_KEY)"}" value="${fmt.esc(S.key)}" autocomplete="off">
         <button type="button" class="btn" id="vs-check">Verifica</button></div><div class="vs-msg" id="vs-check-msg"></div></div>` : "";
-    return `<div class="muted-note">Lo Studio delle voci è un programma a parte che Atena usa per parlare con voci nuove. Scegli dove deve funzionare e premi il pulsante.</div>
+    return `<div class="muted-note">Lo Studio delle voci è un programma a parte che Nuxiva usa per parlare con voci nuove. Scegli dove deve funzionare e premi il pulsante.</div>
       <div><div class="vs-label">Dove funziona</div><div class="vs-cards">
-        ${card("where", "local", "🖥", "Su questo computer", "Atena lo installa da sola. Serve un computer potente con 12 GB liberi.")}
+        ${card("where", "local", "🖥", "Su questo computer", "Nuxiva lo installa da sola. Serve un computer potente con 12 GB liberi.")}
         ${card("where", "remote", "💻", "Su un altro computer", "Hai già VoiceStudio su un altro PC di casa, magari con una scheda video.")}</div></div>
       ${remote}
       <div class="vs-row">${d.enabled ? `<button type="button" class="btn primary vs-big" id="vs-save">💾 Salva</button><button type="button" class="btn vs-big" id="vs-off">⏻ Spegni lo Studio</button>`
@@ -64,12 +64,12 @@
   function voicesHtml() {
     const d = S.data || {}, list = d.voices || [];
     if (!list.length) return `<div class="vs-empty">Non hai ancora creato nessuna voce.<br><br><button type="button" class="btn primary vs-big" data-goto="create">✨ Crea la prima voce</button></div>`;
-    const studioMain = list.some((v) => v.id === d.atena_voice);
-    return `<div class="muted-note">Premi «Ascolta» per sentirla e «Usa per Atena» per farla parlare con quella voce.</div>
-      <div class="vs-voices">${list.map((v) => `<div class="vs-voice ${v.id === d.atena_voice ? "main" : ""}">
-        <div class="vs-voice-name"><span>${v.id === d.atena_voice ? "⭐" : "🎙"}</span><b>${fmt.esc(v.name)}</b></div>
+    const studioMain = list.some((v) => v.id === d.nuxiva_voice);
+    return `<div class="muted-note">Premi «Ascolta» per sentirla e «Usa per Nuxiva» per farla parlare con quella voce.</div>
+      <div class="vs-voices">${list.map((v) => `<div class="vs-voice ${v.id === d.nuxiva_voice ? "main" : ""}">
+        <div class="vs-voice-name"><span>${v.id === d.nuxiva_voice ? "⭐" : "🎙"}</span><b>${fmt.esc(v.name)}</b></div>
         <div class="vs-row"><button type="button" class="btn" data-play="${fmt.esc(v.id)}">▶ Ascolta</button>
-          ${v.id === d.atena_voice ? `<span class="vs-msg ok">Voce di Atena</span>` : `<button type="button" class="btn primary" data-use="${fmt.esc(v.id)}">⭐ Usa per Atena</button>`}</div>
+          ${v.id === d.nuxiva_voice ? `<span class="vs-msg ok">Voce di Nuxiva</span>` : `<button type="button" class="btn primary" data-use="${fmt.esc(v.id)}">⭐ Usa per Nuxiva</button>`}</div>
         <button type="button" class="btn danger" data-del="${fmt.esc(v.id)}">🗑 Elimina</button></div>`).join("")}</div>
       ${studioMain ? `<div class="vs-row"><button type="button" class="btn" data-use="">↩ Torna alla voce di prima</button></div>` : ""}`;
   }
@@ -103,10 +103,10 @@
   }
 
   async function saveWhere() {
-    const body = { ATENA_VOICESTUDIO_WHERE: S.where };
+    const body = { NUXIVA_VOICESTUDIO_WHERE: S.where };
     if (S.where === "remote") {
-      body.ATENA_VOICESTUDIO_URL = S.url.trim();
-      if (S.key) body.ATENA_VOICESTUDIO_KEY = S.key;
+      body.NUXIVA_VOICESTUDIO_URL = S.url.trim();
+      if (S.key) body.NUXIVA_VOICESTUDIO_KEY = S.key;
     }
     await A.api("PUT", "/api/features/voicestudio/settings", body);
   }
@@ -134,8 +134,8 @@
   A.vsPlay = async (voice, btn, text) => {
     if (btn) btn.disabled = true;
     try {
-      const r = await fetch("/api/voicestudio/preview", { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json", "X-Atena-Request": "1" },
-        body: JSON.stringify({ voice, text: text || "", language: (window.ATENA_UI_LANG || navigator.language || "it").slice(0, 2) }) });
+      const r = await fetch("/api/voicestudio/preview", { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json", "X-Nuxiva-Request": "1" },
+        body: JSON.stringify({ voice, text: text || "", language: (window.NUXIVA_UI_LANG || navigator.language || "it").slice(0, 2) }) });
       if (!r.ok) throw new Error((await r.json().catch(() => ({}))).detail || `Errore ${r.status}`);
       if (S.audio) S.audio.pause();
       S.audio = new Audio(URL.createObjectURL(await r.blob())); S.audio.play();
@@ -157,7 +157,7 @@
     if (t.id === "vs-retry") { try { await A.api("POST", "/api/voicestudio/retry"); A.toast("Riprovo l'installazione"); } catch (err) { A.toast(err.message, true); } return load(); }
     if (t.dataset.play) return A.vsPlay(t.dataset.play, t);
     try {
-      if (t.dataset.use !== undefined) { await A.api("PUT", "/api/voicestudio/use", { voice: t.dataset.use }); A.toast(t.dataset.use ? "Ora Atena parla con questa voce" : "Atena è tornata alla voce di prima"); return load(); }
+      if (t.dataset.use !== undefined) { await A.api("PUT", "/api/voicestudio/use", { voice: t.dataset.use }); A.toast(t.dataset.use ? "Ora Nuxiva parla con questa voce" : "Nuxiva è tornata alla voce di prima"); return load(); }
       if (t.dataset.del && confirm("Eliminare questa voce? Non si potrà recuperare.")) { await A.api("DELETE", `/api/voicestudio/voices/${encodeURIComponent(t.dataset.del)}`); A.toast("Voce eliminata"); return load(); }
     } catch (err) { A.toast(err.message, true); return undefined; }
     return A.vsCreate.click(t);

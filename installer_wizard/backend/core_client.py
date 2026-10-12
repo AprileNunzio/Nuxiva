@@ -10,7 +10,7 @@ class CoreClient:
     async def _token(self, client: httpx.AsyncClient) -> str:
         if not self.token:
             r = await client.post(f"{CORE_URL}/api/v1/auth/exchange",
-                                  json={"client_id": "atena-supervisor", "client_secret": "local",
+                                  json={"client_id": "nuxiva-supervisor", "client_secret": "local",
                                         "device_type": "kiosk"})
             r.raise_for_status()
             self.token = r.json()["token"]

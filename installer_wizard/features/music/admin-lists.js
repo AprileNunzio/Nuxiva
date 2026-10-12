@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $ } = A;
+  const A = window.NuxivaAdmin, { $ } = A;
   const mu = A.mu, esc = mu.esc;
   const L = mu.pl = {};
   let playlists = [];
@@ -164,7 +164,7 @@
       <label>Album<input data-f="album" value="${esc(t.album)}"></label><label>Artista dell'album<input data-f="album_artist" value="${esc(t.album_artist)}"></label>
       <label>Genere<input data-f="genre" value="${esc(t.genre)}"></label><label>Anno<input data-f="year" type="number" value="${t.year || ""}"></label>
       ${album ? "" : `<label>Applica a<select data-f="scope"><option value="track">Solo questo brano</option><option value="album">Tutto l'album (album, artista album, genere, anno)</option></select></label>`}</div>
-      <p class="mu-note">Le modifiche valgono per la libreria di Atena; i file restano com'erano.</p>`, async (wrap) => {
+      <p class="mu-note">Le modifiche valgono per la libreria di Nuxiva; i file restano com'erano.</p>`, async (wrap) => {
       const body = { scope: album ? "album" : "track" };
       wrap.querySelectorAll("[data-f]").forEach((el) => { if (el.value.trim() !== "") body[el.dataset.f] = el.dataset.f.match(/year|track_no/) ? Number(el.value) : el.value.trim(); });
       const r = await mu.post(`/api/music/tracks/${t.id}/edit`, body);
@@ -176,7 +176,7 @@
   mu.share = (kind, ref) => {
     mu.modal("Crea un link condiviso", `<div class="mu-form"><label>Il link vale<select id="mu-share-h"><option value="1">1 ora</option><option value="24" selected>1 giorno</option>
       <option value="168">1 settimana</option><option value="720">30 giorni</option></select></label></div>
-      <p class="mu-note">Chi ha il link può ascoltare solo questo contenuto, senza accedere ad Atena, finché non scade. Puoi revocarlo dalla sezione «Gestione e condivisione».</p>`, async (wrap) => {
+      <p class="mu-note">Chi ha il link può ascoltare solo questo contenuto, senza accedere ad Nuxiva, finché non scade. Puoi revocarlo dalla sezione «Gestione e condivisione».</p>`, async (wrap) => {
       const r = await mu.post("/api/music/shares", { kind, ref, hours: Number(wrap.querySelector("#mu-share-h").value) });
       mu.modal("Link pronto", `<div class="mu-form"><input id="mu-share-url" readonly value="${esc(r.url)}"></div><p class="mu-note">Funziona solo nella tua rete, a meno che tu non la renda raggiungibile da fuori.</p>`, null);
       const input = document.getElementById("mu-share-url");

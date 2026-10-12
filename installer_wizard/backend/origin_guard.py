@@ -5,7 +5,7 @@ from collections.abc import Awaitable, Callable, Iterable
 from urllib.parse import urlsplit
 
 UNSAFE = frozenset({"POST", "PUT", "PATCH", "DELETE"})
-LOOPBACK_NAMES = frozenset({"localhost", "atena.local", "atena"})
+LOOPBACK_NAMES = frozenset({"localhost", "nuxiva.local", "nuxiva"})
 
 Scope = dict
 Receive = Callable[[], Awaitable[dict]]

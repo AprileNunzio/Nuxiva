@@ -63,7 +63,7 @@ async def admin_voices_set(request: Request, user: str = Depends(require_admin))
     if len(order) > 12 or not all(_VOICE_RE.match(v) for v in order):
         raise HTTPException(400, "Elenco di voci non valido")
     order = list(dict.fromkeys(order))
-    write_env({"ATENA_VOICE_ORDER": ",".join(order), **({"ATENA_VOICE": order[0]} if order else {})})
+    write_env({"NUXIVA_VOICE_ORDER": ",".join(order), **({"NUXIVA_VOICE": order[0]} if order else {})})
     store.event("INFO", f"Ordine delle voci aggiornato da {user}: {', '.join(order) or 'automatico'}", "voice")
     return await overview.overview()
 
@@ -88,7 +88,7 @@ async def admin_voice_language(request: Request, user: str = Depends(require_adm
     if name:
         prefs[lang] = name
         await downloads.start_download(name)
-    write_env({"ATENA_VOICE_LANG": catalog.lang_prefs_env(prefs)})
+    write_env({"NUXIVA_VOICE_LANG": catalog.lang_prefs_env(prefs)})
     store.event("INFO", f"Voce per {languages.label(lang).lower()} impostata da {user}: {name or 'automatica'}", "voice")
     return await overview.overview()
 

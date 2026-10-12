@@ -1,5 +1,5 @@
 (() => {
-  AtenaDesk.register("os_networks", {
+  NuxivaDesk.register("os_networks", {
     render(el, d, ctx) {
       const devs = Array.isArray(d.devices) ? d.devices.slice(0, 12) : [];
       const rows = devs.map((n) => {

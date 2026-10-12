@@ -1,23 +1,23 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
-  const KEEP = ["ATENA_EAR_MODE", "ATENA_ONLINE_STT_PROVIDER", "ATENA_ONLINE_STT_KEY", "ATENA_ONLINE_STT_URL", "ATENA_ONLINE_STT_MODEL"];
+  const A = window.NuxivaAdmin, { $, fmt } = A;
+  const KEEP = ["NUXIVA_EAR_MODE", "NUXIVA_ONLINE_STT_PROVIDER", "NUXIVA_ONLINE_STT_KEY", "NUXIVA_ONLINE_STT_URL", "NUXIVA_ONLINE_STT_MODEL"];
   let step = "listen", saved = {}, draft = {}, defaults = {}, typedKey = "", review = null;
 
   const feature = () => ((A.featData && A.featData.features) || []).find((f) => f.id === "ear");
-  const changed = () => Object.keys(draft).filter((k) => draft[k] !== saved[k] && !(k === "ATENA_ONLINE_STT_KEY" && !typedKey));
+  const changed = () => Object.keys(draft).filter((k) => draft[k] !== saved[k] && !(k === "NUXIVA_ONLINE_STT_KEY" && !typedKey));
   const stepOf = (id) => A.earSchema.STEPS.find((s) => s.id === id);
   const visible = (f) => !f.when || f.when(draft);
 
   function summary(id) {
     const v = draft;
     if (id === "listen") {
-      const mode = { offline: "Offline", online: "Online", hybrid: "Ibrido" }[v.ATENA_EAR_MODE] || "Offline";
-      const prov = (A.earSchema.PROVIDERS.find((p) => p.value === v.ATENA_ONLINE_STT_PROVIDER) || {}).title;
-      return v.ATENA_EAR_MODE === "offline" ? mode : `${mode} · ${prov || ""}`;
+      const mode = { offline: "Offline", online: "Online", hybrid: "Ibrido" }[v.NUXIVA_EAR_MODE] || "Offline";
+      const prov = (A.earSchema.PROVIDERS.find((p) => p.value === v.NUXIVA_ONLINE_STT_PROVIDER) || {}).title;
+      return v.NUXIVA_EAR_MODE === "offline" ? mode : `${mode} · ${prov || ""}`;
     }
-    if (id === "who") return v.ATENA_VOICEPRINT_ENFORCE === "1" ? "Solo voci registrate" : "Chiunque dica «Atena»";
+    if (id === "who") return v.NUXIVA_VOICEPRINT_ENFORCE === "1" ? "Solo voci registrate" : "Chiunque dica «Nuxiva»";
     if (id === "mic") return (preset() || {}).title || "Personalizzato";
-    return v.ATENA_EAR_RECORD === "0" ? "Nessuna registrazione" : `Registrazioni per ${v.ATENA_EAR_RECORD_HOURS || "?"} h`;
+    return v.NUXIVA_EAR_RECORD === "0" ? "Nessuna registrazione" : `Registrazioni per ${v.NUXIVA_EAR_RECORD_HOURS || "?"} h`;
   }
 
   function preset() {
@@ -96,7 +96,7 @@
   }
 
   async function save() {
-    const body = Object.fromEntries(changed().map((k) => [k, k === "ATENA_ONLINE_STT_KEY" ? typedKey : draft[k]]));
+    const body = Object.fromEntries(changed().map((k) => [k, k === "NUXIVA_ONLINE_STT_KEY" ? typedKey : draft[k]]));
     try {
       await A.api("PUT", "/api/features/ear/settings", body);
       A.toast("Ascolto aggiornato: si riavvia in pochi secondi");
@@ -109,7 +109,7 @@
     const msg = $("ear-keymsg");
     msg.textContent = "Verifico…"; msg.className = "ear-keymsg";
     try {
-      const r = await A.api("POST", "/api/ear/stt/check", { provider: draft.ATENA_ONLINE_STT_PROVIDER, key: typedKey, url: draft.ATENA_ONLINE_STT_URL || "" });
+      const r = await A.api("POST", "/api/ear/stt/check", { provider: draft.NUXIVA_ONLINE_STT_PROVIDER, key: typedKey, url: draft.NUXIVA_ONLINE_STT_URL || "" });
       msg.textContent = r.message; msg.className = `ear-keymsg ${r.ok ? "ok" : "bad"}`;
     } catch (e) { msg.textContent = e.message; msg.className = "ear-keymsg bad"; }
   }
@@ -135,13 +135,13 @@
       if (t.id === "ear-check") return checkKey();
       try {
         if (t.id === "ear-purge" && confirm("Eliminare tutte le registrazioni della voce?")) { const r = await A.api("POST", "/api/ear/review/purge"); A.toast(`${r.removed} file eliminati`); load(); }
-        if (t.id === "ear-retune" && confirm("Azzerare le regolazioni che Atena ha fatto da sola?")) { await A.api("POST", "/api/ear/tuning/reset"); A.toast("Regolazioni azzerate"); }
+        if (t.id === "ear-retune" && confirm("Azzerare le regolazioni che Nuxiva ha fatto da sola?")) { await A.api("POST", "/api/ear/tuning/reset"); A.toast("Regolazioni azzerate"); }
       } catch (err) { A.toast(err.message, true); }
     });
     body.addEventListener("input", (e) => {
       const t = e.target;
       if (t.dataset.slider) { draft[t.dataset.slider] = t.value; t.nextElementSibling.textContent = t.value.replace(".", ","); renderSteps(); $("ear-savebar").hidden = !changed().length; $("ear-changes").textContent = `${changed().length} modifiche da salvare`; }
-      if (t.id === "ear-key") { typedKey = t.value.trim(); draft.ATENA_ONLINE_STT_KEY = typedKey ? "new" : saved.ATENA_ONLINE_STT_KEY; $("ear-savebar").hidden = !changed().length; $("ear-changes").textContent = `${changed().length} modifiche da salvare`; }
+      if (t.id === "ear-key") { typedKey = t.value.trim(); draft.NUXIVA_ONLINE_STT_KEY = typedKey ? "new" : saved.NUXIVA_ONLINE_STT_KEY; $("ear-savebar").hidden = !changed().length; $("ear-changes").textContent = `${changed().length} modifiche da salvare`; }
     });
     body.addEventListener("change", (e) => {
       const t = e.target;

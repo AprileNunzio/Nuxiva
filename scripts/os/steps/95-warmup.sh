@@ -13,7 +13,7 @@ present() {
 }
 
 primary_model() {
-    local list="${ATENA_LLM_CHAT_ORDER:-${ATENA_LLM_FAST_MODEL:-${ATENA_LLM_MODEL:-granite3.3:2b}}},${ATENA_LLM_DEEP_ORDER:-}"
+    local list="${NUXIVA_LLM_CHAT_ORDER:-${NUXIVA_LLM_FAST_MODEL:-${NUXIVA_LLM_MODEL:-granite3.3:2b}}},${NUXIVA_LLM_DEEP_ORDER:-}"
     local m
     for m in ${list//,/ }; do
         case "$m" in cloud:*|"") continue ;; esac
@@ -47,14 +47,14 @@ step_check() {
 step_apply() {
     local main embed reply
     main=$(primary_model)
-    embed=$(normalize "${ATENA_EMBED_MODEL:-nomic-embed-text}")
+    embed=$(normalize "${NUXIVA_EMBED_MODEL:-nomic-embed-text}")
 
     progress 20 "Verifica rete di memoria semantica"
     if ollama_remote && ! present "$embed"; then
         warn "Il server Ollama remoto non ha $embed: la memoria semantica resta spenta finché non lo installi lì"
     else
         curl -fsS --max-time 120 "$OLLAMA_URL/api/embed" \
-        -d "{\"model\":\"$embed\",\"input\":\"Atena online\",\"keep_alive\":\"5m\"}" >/dev/null \
+        -d "{\"model\":\"$embed\",\"input\":\"Nuxiva online\",\"keep_alive\":\"5m\"}" >/dev/null \
         || fail "La rete di embedding $embed non risponde"
     fi
 

@@ -1,10 +1,10 @@
 {
     "ui": {
-        "title": "Atena Cognitive Orchestrator",
+        "title": "Nuxiva Cognitive Orchestrator",
         "subtitle": "Advanced Agentic System v2.0",
-        "input_placeholder": "Type a prompt for Atena or the Swarm...",
+        "input_placeholder": "Type a prompt for Nuxiva or the Swarm...",
         "send_button": "Send Command",
-        "thinking_title": "Atena is reasoning (System 2)...",
+        "thinking_title": "Nuxiva is reasoning (System 2)...",
         "response_title": "Execution and Answer",
         "tools_title": "Dynamic Tools Used",
         "whiteboard_title": "Interactive Whiteboard",
@@ -24,5 +24,31 @@
         "error_connection": "Connection or inference error: {err}",
         "semantic_fast_path": "Semantic Fast-Path (0 ms)",
         "system1": "System 1: {intent}"
+    },
+    "cockpit": {
+        "deck_projects": "War Room & Projects 24/7 Deck",
+        "deck_cognitive_flow": "Cognitive Flow Deck",
+        "deck_agent_vault": "Agent Vault & Windows Deck",
+        "deck_rbac": "RBAC & Staff Deck",
+        "deck_proximity_hud": "Proximity HUD Deck",
+        "deck_cad_media": "CAD & Media Studio Deck",
+        "deck_telemetry": "Telemetry & Kernel Deck",
+        "deck_chatbot_mesh": "Personalized Assistants & Bots Deck",
+        "btn_execute": "Execute",
+        "btn_save": "Save Changes",
+        "btn_recruit": "Confirm",
+        "input_command_placeholder": "Issue a command, describe a new project or query agents...",
+        "admin_wizard_title": "Smart Animated Setup Wizard",
+        "admin_wizard_auto_btn": "⚡ 1-Click Auto Configuration",
+        "admin_wizard_step1": "Step 1: Home / Enterprise Profile",
+        "admin_wizard_step2": "Step 2: Recommended Bots & Staff",
+        "admin_wizard_step3": "Step 3: Auto-Discovered Tools & Widgets",
+        "admin_wizard_step4": "Step 4: Instant Activation",
+        "hud_user_default": "Primary Administrator (Owner)",
+        "user_role_admin": "Primary Administrator / Household Head",
+        "user_role_family": "Family Member",
+        "user_role_guest": "Guest / Visitor",
+        "user_role_staff": "Household & Enterprise Staff"
     }
 }
+

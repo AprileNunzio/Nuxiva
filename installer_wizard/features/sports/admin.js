@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const HOUSEHOLD = "_casa";
   let data = null, who = HOUSEHOLD, draft = null, teams = [];
 
@@ -93,7 +93,7 @@
     $("sp-save").addEventListener("click", save);
     $("sp-refresh").addEventListener("click", preview);
     $("sp-show").addEventListener("click", async () => {
-      try { await A.api("POST", `/api/sports/show/${encodeURIComponent(who)}`); A.toast("Mostrato sullo schermo di Atena"); } catch (e) { A.toast(e.message, true); }
+      try { await A.api("POST", `/api/sports/show/${encodeURIComponent(who)}`); A.toast("Mostrato sullo schermo di Nuxiva"); } catch (e) { A.toast(e.message, true); }
     });
   }
 

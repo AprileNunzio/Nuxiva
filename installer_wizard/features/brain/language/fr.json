@@ -1,6 +1,6 @@
 {
   "name": "Cerveau",
-  "description": "Le cerveau d'Athena en un seul endroit : modèles sur le serveur et les services cloud (OpenAI, Claude, Gemini, Grok, Mistral, DeepSeek et autres), mixés par ordre de priorité, le modèle utilisé étant toujours visible.",
+  "description": "Le cerveau d'Nuxiva en un seul endroit : modèles sur le serveur et les services cloud (OpenAI, Claude, Gemini, Grok, Mistral, DeepSeek et autres), mixés par ordre de priorité, le modèle utilisé étant toujours visible.",
   "capabilities": [
     "Modèle en usage toujours visible, avec origine et heures",
     "Listes de priorités mixtes locales et cloud",

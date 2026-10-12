@@ -1,6 +1,6 @@
 #!/bin/bash
 # ==============================================================================
-# ATENA SDK GENERATOR - DX Engine
+# NUXIVA SDK GENERATOR - DX Engine
 # Genera automaticamente librerie client in TypeScript, Rust, Python e Go
 # in base alle specifiche OpenAPI (generabili da FastAPI) o gRPC Protobuf.
 # ==============================================================================
@@ -16,31 +16,31 @@ fi
 API_SCHEMA="server/api_schema.json"
 OUTPUT_DIR="sdk"
 
-echo "🛠 Generazione Atena SDK Dynamics..."
+echo "🛠 Generazione Nuxiva SDK Dynamics..."
 
 # 1. TypeScript / JS per Frontend e App Node.js
-echo " Generando Atena SDK [TypeScript]..."
+echo " Generando Nuxiva SDK [TypeScript]..."
 openapi-generator-cli generate \
     -i "$API_SCHEMA" \
     -g typescript-axios \
     -o "$OUTPUT_DIR/typescript" \
-    --additional-properties=npmName=atena-sdk-js,supportsES6=true > /dev/null
+    --additional-properties=npmName=nuxiva-sdk-js,supportsES6=true > /dev/null
 
 # 2. Rust (Alte prestazioni, Sistemi Embed)
-echo " Generando Atena SDK [Rust]..."
+echo " Generando Nuxiva SDK [Rust]..."
 openapi-generator-cli generate \
     -i "$API_SCHEMA" \
     -g rust \
     -o "$OUTPUT_DIR/rust" \
-    --additional-properties=packageName=atena-sdk-rs > /dev/null
+    --additional-properties=packageName=nuxiva-sdk-rs > /dev/null
 
 # 3. Go (Microservizi)
-echo " Generando Atena SDK [Go]..."
+echo " Generando Nuxiva SDK [Go]..."
 openapi-generator-cli generate \
     -i "$API_SCHEMA" \
     -g go \
     -o "$OUTPUT_DIR/go" \
-    --additional-properties=packageName=atena > /dev/null
+    --additional-properties=packageName=nuxiva > /dev/null
 
 echo "✅ Tutte le SDK sono state generate in $OUTPUT_DIR/"
-echo "Gli sviluppatori possono importare direttamente questi pacchetti per interagire con Atena con Type-Safety e crittografia nativa."
+echo "Gli sviluppatori possono importare direttamente questi pacchetti per interagire con Nuxiva con Type-Safety e crittografia nativa."

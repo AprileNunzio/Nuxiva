@@ -1,5 +1,5 @@
 {
-  "name": "Atena Forge",
+  "name": "Nuxiva Forge",
   "description": "Self-healing code generation, runtime skill synthesis, sandbox testing, and automated microVM execution.",
   "capabilities": [
     "Python script generation and static verification",
@@ -7,6 +7,6 @@
     "Dynamic tool synthesis"
   ],
   "settings": {
-    "ATENA_SANDBOX_TIMEOUT": "Sandbox execution timeout (seconds)"
+    "NUXIVA_SANDBOX_TIMEOUT": "Sandbox execution timeout (seconds)"
   }
 }

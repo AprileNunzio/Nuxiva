@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const HM_STATUS = { online: ["collegato", "ok"], connecting: ["collegamento…", "warn"], offline: ["non raggiungibile", "down"],
     auth_failed: ["token rifiutato", "down"], not_configured: ["da configurare", "warn"], disabled: ["disattivato", ""], starting: ["avvio…", "warn"] };
   const KIND = { motion: "🏃", presence: "🧍", opening: "🚪", person: "👤", device_tracker: "📍", lock: "🔒", alarm_control_panel: "🚨", light: "💡", cover: "🪟", climate: "🌡", media_player: "📺" };
@@ -45,7 +45,7 @@
     if ((h.configured && h.status !== "auth_failed") || h.status === "online") { box.style.display = "none"; return; }
     box.style.display = "block";
     box.innerHTML = `<div class="panel-title">Collega Home Assistant</div>
-      <div class="muted-note" style="margin-bottom:12px">In Home Assistant apri il tuo profilo → <b>Sicurezza</b> → <b>Token di accesso a lunga durata</b> → Crea token. Incollalo qui: Atena si collega da sola e studia tutta la casa.</div>
+      <div class="muted-note" style="margin-bottom:12px">In Home Assistant apri il tuo profilo → <b>Sicurezza</b> → <b>Token di accesso a lunga durata</b> → Crea token. Incollalo qui: Nuxiva si collega da sola e studia tutta la casa.</div>
       ${h.discovered.length ? `<div class="muted-note" style="margin-bottom:10px">Trovato in rete: ${h.discovered.map((u) => `<button class="btn sm" data-hmurl="${fmt.esc(u)}">${fmt.esc(u)}</button>`).join(" ")}</div>` : ""}
       <div class="form-grid"><div><label>Indirizzo</label><input id="hm-url" value="${fmt.esc(h.url || "")}" placeholder="http://homeassistant.local:8123"></div>
         <div><label>Token</label><input id="hm-token" type="password" placeholder="${h.configured ? "token salvato: incollane uno nuovo" : "incolla il token"}" autocomplete="off"></div></div>
@@ -80,7 +80,7 @@
       <div class="panel-title">Entità e come comandarle</div>
       ${d.entities.map((e) => `<div class="ent"><div>${fmt.esc(e.name)} <span class="faint mono">${fmt.esc(e.entity_id)}</span></div><div class="dim">${fmt.esc(e.state)}</div>
         ${e.controllable ? `<div class="cp">Comandabile${e.capabilities.length ? ": " + fmt.esc(e.capabilities.join(", ")) : ""}</div>
-        <input data-alias="entity:${fmt.esc(e.entity_id)}" value="${fmt.esc(e.atena_aliases.join(", "))}" placeholder="Altri nomi con cui la chiami (separati da virgola)">` : e.category ? `<div class="cp">${e.category === "diagnostic" ? "Diagnostica" : "Configurazione"}</div>` : ""}</div>`).join("") || '<div class="faint">Nessuna entità attiva.</div>'}`;
+        <input data-alias="entity:${fmt.esc(e.entity_id)}" value="${fmt.esc(e.nuxiva_aliases.join(", "))}" placeholder="Altri nomi con cui la chiami (separati da virgola)">` : e.category ? `<div class="cp">${e.category === "diagnostic" ? "Diagnostica" : "Configurazione"}</div>` : ""}</div>`).join("") || '<div class="faint">Nessuna entità attiva.</div>'}`;
   }
 
   async function loadHomeActivity() {
@@ -101,7 +101,7 @@
   function showSub(id) {
     $("hm-subnav").querySelectorAll("[data-hsub]").forEach((b) => b.classList.toggle("on", b.dataset.hsub === id));
     ["rooms", "autos", "devices", "activity"].forEach((x) => $(`hm-sub-${x}`).classList.toggle("on", x === id));
-    try { localStorage.setItem("atena_home_sub", id); } catch { A.toast("Preferenza non salvata nel browser", true); }
+    try { localStorage.setItem("nuxiva_home_sub", id); } catch { A.toast("Preferenza non salvata nel browser", true); }
     if (id === "autos" && A.homeAutos) A.homeAutos.load();
   }
 
@@ -109,7 +109,7 @@
     A.homeRooms.init();
     if (A.homeAutos) A.homeAutos.init();
     $("hm-subnav").addEventListener("click", (e) => { const b = e.target.closest("[data-hsub]"); if (b) showSub(b.dataset.hsub); });
-    try { const saved = localStorage.getItem("atena_home_sub"); if (["rooms", "autos", "devices", "activity"].includes(saved)) showSub(saved); } catch { showSub("rooms"); }
+    try { const saved = localStorage.getItem("nuxiva_home_sub"); if (["rooms", "autos", "devices", "activity"].includes(saved)) showSub(saved); } catch { showSub("rooms"); }
     $("hm-try").addEventListener("click", () => homeTest(false));
     $("hm-run").addEventListener("click", () => homeTest(true));
     $("hm-q").addEventListener("keydown", (e) => { if (e.key === "Enter") homeTest(false); });
@@ -123,12 +123,12 @@
       finally { e.target.disabled = false; }
     });
     $("hm-forget").addEventListener("click", async () => {
-      if (!confirm("Dimenticare le frasi che Atena ha imparato per la casa?")) return;
+      if (!confirm("Dimenticare le frasi che Nuxiva ha imparato per la casa?")) return;
       try { await A.api("DELETE", "/api/home/learned"); A.toast("Frasi dimenticate"); loadHome(); } catch (e) { A.toast(e.message, true); }
     });
     $("tab-home").addEventListener("change", async (e) => {
       const t = e.target.dataset.alias; if (!t) return;
-      try { await A.api("PUT", "/api/home/aliases", { target: t, names: e.target.value }); A.toast("Nomi salvati: Atena li usa subito"); } catch (err) { A.toast(err.message, true); }
+      try { await A.api("PUT", "/api/home/aliases", { target: t, names: e.target.value }); A.toast("Nomi salvati: Nuxiva li usa subito"); } catch (err) { A.toast(err.message, true); }
     });
     $("hm-connect").addEventListener("click", async (e) => {
       const u = e.target.dataset.hmurl; if (u) { $("hm-url").value = u; return; }

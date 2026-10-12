@@ -9,8 +9,8 @@
     "Situations inhabituelles : porte, fenêtre ou mouvement à un moment inopiné et maison vide → alerte vocale, alarme et Télégramme"
   ],
   "settings": {
-    "ATENA_HABITS_CONFIDENCE": "Quelle doit être la régularité d'une habitude pour le proposer",
-    "ATENA_HABITS_ASK": "Propositions verbalement",
-    "ATENA_HABITS_ANOMALIES": "Alertes pour situations inhabituelles"
+    "NUXIVA_HABITS_CONFIDENCE": "Quelle doit être la régularité d'une habitude pour le proposer",
+    "NUXIVA_HABITS_ASK": "Propositions verbalement",
+    "NUXIVA_HABITS_ANOMALIES": "Alertes pour situations inhabituelles"
   }
 }

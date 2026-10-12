@@ -67,7 +67,7 @@ def todos(inputs: Inputs) -> list[Todo]:
     items += [Todo("bad", f"Passo «{title}» non riuscito", "system", "steps") for title in _failed_steps(inputs)]
     items += [Todo("warn", f"«{c.get('label', '?')}» funziona a metà", "system", "steps") for c in _warn_components(inputs.components)]
     if inputs.phase == "DEGRADED" and not items:
-        items.append(Todo("warn", "Atena funziona in modalità ridotta", "system", "steps"))
+        items.append(Todo("warn", "Nuxiva funziona in modalità ridotta", "system", "steps"))
     if inputs.approvals:
         noun = "approvazione in attesa" if inputs.approvals == 1 else "approvazioni in attesa"
         items.append(Todo("warn", f"{inputs.approvals} {noun}", "trust", "autonomy"))
@@ -77,7 +77,7 @@ def todos(inputs: Inputs) -> list[Todo]:
         left = "manca 1 passo" if inputs.awakening_left == 1 else f"mancano {inputs.awakening_left} passi"
         items.append(Todo("info", f"Completa il Risveglio: {left}", "awakening"))
     if inputs.update.get("available"):
-        items.append(Todo("info", "Aggiornamento di Atena pronto", "system", "updates"))
+        items.append(Todo("info", "Aggiornamento di Nuxiva pronto", "system", "updates"))
     items.sort(key=lambda t: _SEVERITY_ORDER.get(t.severity, 3))
     return items[:MAX_TODOS]
 

@@ -15,12 +15,12 @@
     "Tutto ciò che manca (ffmpeg, v4l-utils, strumento dell'emettitore infrarosso) si installa e si configura da solo, senza interventi"
   ],
   "settings": {
-    "ATENA_LIVECAM_FPS": "Fluidità dell'immagine in diretta",
-    "ATENA_LIVECAM_WIDTH": "Larghezza dell'immagine in diretta",
-    "ATENA_LIVECAM_MAX": "Telecamere in diretta contemporanee",
-    "ATENA_CAMERAS_MOTION_EVERY": "Controllo del movimento ogni",
-    "ATENA_CAMERAS_MOTION_COOLDOWN": "Pausa tra due avvisi di movimento",
-    "ATENA_CAMERAS_PHOTOS_MAX": "Foto conservate per telecamera",
-    "ATENA_IR_AUTO": "Configura da solo l'emettitore infrarosso se l'immagine è al buio"
+    "NUXIVA_LIVECAM_FPS": "Fluidità dell'immagine in diretta",
+    "NUXIVA_LIVECAM_WIDTH": "Larghezza dell'immagine in diretta",
+    "NUXIVA_LIVECAM_MAX": "Telecamere in diretta contemporanee",
+    "NUXIVA_CAMERAS_MOTION_EVERY": "Controllo del movimento ogni",
+    "NUXIVA_CAMERAS_MOTION_COOLDOWN": "Pausa tra due avvisi di movimento",
+    "NUXIVA_CAMERAS_PHOTOS_MAX": "Foto conservate per telecamera",
+    "NUXIVA_IR_AUTO": "Configura da solo l'emettitore infrarosso se l'immagine è al buio"
   }
 }

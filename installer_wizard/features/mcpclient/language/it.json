@@ -1,6 +1,6 @@
 {
   "name": "Server MCP esterni",
-  "description": "Atena si collega ad altri server MCP e ne usa gli strumenti come propri: appaiono nella squadra, all'agente e a ogni client collegato ad Atena.",
+  "description": "Nuxiva si collega ad altri server MCP e ne usa gli strumenti come propri: appaiono nella squadra, all'agente e a ogni client collegato ad Nuxiva.",
   "capabilities": [
     "Collega server MCP via HTTP con token, senza limiti di tipo di strumento",
     "Strumenti esterni aggiornati ogni 5 minuti e a ogni modifica dal pannello",

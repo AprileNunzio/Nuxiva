@@ -6,7 +6,7 @@ from state import store
 from features.brain.journey import journeys
 from features.flows.composition import studio
 
-log = logging.getLogger("atena.flows")
+log = logging.getLogger("nuxiva.flows")
 CHECK_SECONDS = 30
 
 

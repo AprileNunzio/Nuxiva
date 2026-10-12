@@ -87,4 +87,4 @@
   }
 
   C.Rain = Rain;
-})(window.Atena3D);
+})(window.Nuxiva3D);

@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   let netData = { devices: [], types: {} }, netSel = null;
 
   async function loadNetwork() {

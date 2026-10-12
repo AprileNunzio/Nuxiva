@@ -69,18 +69,18 @@ class Client:
 
     @staticmethod
     def enabled() -> bool:
-        return env_get("ATENA_VOICESTUDIO", "0") == "1"
+        return env_get("NUXIVA_VOICESTUDIO", "0") == "1"
 
     @staticmethod
     def remote() -> bool:
-        return env_get("ATENA_VOICESTUDIO_WHERE", "local") == "remote"
+        return env_get("NUXIVA_VOICESTUDIO_WHERE", "local") == "remote"
 
     def base(self) -> str:
-        return safe_url(env_get("ATENA_VOICESTUDIO_URL", "")) if self.remote() else LOCAL_URL
+        return safe_url(env_get("NUXIVA_VOICESTUDIO_URL", "")) if self.remote() else LOCAL_URL
 
     @staticmethod
     def headers(key: str | None = None) -> dict:
-        token = env_get("ATENA_VOICESTUDIO_KEY", "") if key is None else key
+        token = env_get("NUXIVA_VOICESTUDIO_KEY", "") if key is None else key
         return {"Authorization": f"Bearer {token}"} if token else {}
 
     async def _call(self, method: str, path: str, base: str | None = None, key: str | None = None,

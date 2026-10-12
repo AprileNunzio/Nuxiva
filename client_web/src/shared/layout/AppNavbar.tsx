@@ -19,7 +19,7 @@ export const AppNavbar: React.FC<AppNavbarProps> = ({ currentTab, onTabChange, i
           <div>
             <div className="flex items-center space-x-2">
               <span className="font-['Rajdhani'] font-bold text-xl tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
-                ATENA CORE
+                NUXIVA CORE
               </span>
               <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
                 v1.0.0

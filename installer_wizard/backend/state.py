@@ -11,10 +11,10 @@ AUDIT_FILE = LOG_DIR / "audit.jsonl"
 INSTALL_LOG = LOG_DIR / "install.log"
 
 PHASES = {
-    "INSTALLING": "Installazione di Atena OS",
+    "INSTALLING": "Installazione di Nuxiva OS",
     "BOOTING": "Avvio dei sistemi",
     "UPDATING": "Aggiornamento in corso",
-    "READY": "Atena operativa",
+    "READY": "Nuxiva operativa",
     "DEGRADED": "Auto-riparazione in corso",
     "ERROR": "Intervento automatico in corso",
 }

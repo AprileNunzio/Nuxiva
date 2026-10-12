@@ -14,7 +14,7 @@ def _num(key: str, default: float, lo: float, hi: float) -> float:
     except ValueError:
         return default
 
-NAME = re.compile(r"\b(?:atena|athena|attena)\b", re.I)
+NAME = re.compile(r"\b(?:nuxiva|nuxiva|attena)\b", re.I)
 FILLER = re.compile(r"^\W*(?:mh+|m+|eh+|ah+|oh+|boh|mah|ok(?:ay)?|va be(?:ne)?|beh|allora|niente|nulla|ahah\w*)\W*$", re.I)
 ANSWER = re.compile(r"^\W*(?:s[iì]|no|certo|esatto|giusto|perfetto|grazie|ok|va bene|d'accordo|fallo|procedi|annulla|"
                     r"lascia (?:stare|perdere)|non importa)\b", re.I)
@@ -25,7 +25,7 @@ REQUEST = re.compile(r"\?\s*$|^\W*(?:e\s+)?(?:come|cosa|cos'|dove|quando|quanto|
 COMMAND = re.compile(r"^\W*(?:accendi|spegni|metti|alza|abbassa|apri|chiudi|avvia|ferma|imposta|attiva|disattiva|"
                      r"riproduci|mostrami|dimmi|ricordami|aggiungi|cerca|chiama|manda|leggimi|calcola)\b", re.I)
 SECOND_PERSON = re.compile(r"\b(?:tu|ti|te|tuo|tua|puoi|sai|hai|potresti|vorresti|pensi|dimmi|fammi)\b", re.I)
-THIRD_PERSON = re.compile(r"\b(?:lui|lei|(?:atena|athena) (?:è|e'|ha|fa|sta)|il computer|questo coso)\b", re.I)
+THIRD_PERSON = re.compile(r"\b(?:lui|lei|(?:nuxiva|nuxiva) (?:è|e'|ha|fa|sta)|il computer|questo coso)\b", re.I)
 WORD = re.compile(r"[a-zà-ÿ]{4,}", re.I)
 
 
@@ -57,7 +57,7 @@ def judge(text: str, device: str) -> Verdict:
     people = store.presence.get("people", [])
     alone = len(people) <= 1
     facing = any(p.get("facing") for p in people)
-    score = _num("ATENA_ADDRESSEE_ALONE", 0.35, 0.0, 1.0) if alone else 0.0
+    score = _num("NUXIVA_ADDRESSEE_ALONE", 0.35, 0.0, 1.0) if alone else 0.0
     reasons = []
     if FILLER.match(text):
         return Verdict(False, 0.0, "intercalare")
@@ -88,5 +88,5 @@ def judge(text: str, device: str) -> Verdict:
         reasons.append("parla di me in terza persona")
     if not alone and not facing:
         score -= 0.1
-    threshold = _num("ATENA_ADDRESSEE_THRESHOLD", 0.5, 0.2, 0.95)
+    threshold = _num("NUXIVA_ADDRESSEE_THRESHOLD", 0.5, 0.2, 0.95)
     return Verdict(score >= threshold, round(score, 2), ", ".join(reasons) or "conversazione generica")

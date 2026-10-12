@@ -7,7 +7,7 @@ import httpx
 from config import CORE_URL
 from core_client import core
 
-sink: ContextVar[asyncio.Queue | None] = ContextVar("atena_stream_sink", default=None)
+sink: ContextVar[asyncio.Queue | None] = ContextVar("nuxiva_stream_sink", default=None)
 PREFIX = "data: "
 
 
@@ -49,4 +49,4 @@ async def core_stream(payload: dict) -> dict:
             break
     if not text:
         raise StreamFailed("risposta vuota")
-    return {"agent_id": agent or "atena_conversation", "speech_output": "".join(text), "result_data": {"model": model}}
+    return {"agent_id": agent or "nuxiva_conversation", "speech_output": "".join(text), "result_data": {"model": model}}

@@ -1,5 +1,5 @@
 (() => {
-  AtenaDesk.register("kanban_board", {
+  NuxivaDesk.register("kanban_board", {
     render(el, d, ctx) {
       const doing = Array.isArray(d.doing) ? d.doing.slice(0, 8) : [];
       const todo = Array.isArray(d.todo) ? d.todo.slice(0, 8) : [];

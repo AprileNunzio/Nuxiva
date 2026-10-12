@@ -8,7 +8,7 @@ const setSettings = (fid, body) => api(`/api/features/${fid}/settings`, { method
 
 export const STEPS = {
   language: {
-    label: "Lingua", title: "Ciao, sono Atena. Come ti chiami?",
+    label: "Lingua", title: "Ciao, sono Nuxiva. Come ti chiami?",
     text: "Ti chiamerò così e userò la lingua che scegli per il pannello e per il display.",
     init: (c) => ({ name: c.name, lang: c.lang }),
     form: (a, set) => [
@@ -19,7 +19,7 @@ export const STEPS = {
     valid: (a) => Boolean(a.lang),
     async apply(a) {
       const name = (a.name || "").trim().slice(0, 40);
-      if (name) await api("/api/config", { method: "PUT", body: { ATENA_USER_NAME: name } });
+      if (name) await api("/api/config", { method: "PUT", body: { NUXIVA_USER_NAME: name } });
       await api("/api/locale/ui", { method: "PUT", body: { lang: a.lang } });
       return [name, a.lang.toUpperCase()].filter(Boolean).join(" · ");
     },
@@ -33,7 +33,7 @@ export const STEPS = {
     async apply(a) { await chooseLevel(a.level); return LEVELS.find((l) => l.id === a.level).label; },
   },
   brain: {
-    label: "Cervello", title: "Dove deve pensare Atena?",
+    label: "Cervello", title: "Dove deve pensare Nuxiva?",
     text: "Il cervello è il modello che capisce e risponde. Su questo computer i dati non escono mai di casa.",
     init: (c) => ({ brain: c.brain, url: c.ollama_url }),
     form: (a, set) => [
@@ -53,7 +53,7 @@ export const STEPS = {
     label: "Sensi", title: "Quali sensi posso usare?",
     text: "Ogni senso resta spento finché non lo accendi. Le immagini e la voce restano in casa.",
     init: (c) => ({ senses: Object.entries(c.senses).filter(([, m]) => m && m !== "0").map(([id]) => id) }),
-    form: (a, set, c) => [h("div", { class: "choices" }, [["vision", "◐", "Vista", "Riconosco volti e oggetti"], ["ear", "◖", "Udito", "Mi chiami con «Ehi Atena»"],
+    form: (a, set, c) => [h("div", { class: "choices" }, [["vision", "◐", "Vista", "Riconosco volti e oggetti"], ["ear", "◖", "Udito", "Mi chiami con «Ehi Nuxiva»"],
       ["hands", "☚", "Mani", "Comandi con i gesti"]].filter(([id]) => id in c.senses).map(([id, glyph, title, hint]) => {
       const on = a.senses.includes(id);
       return h("button", { type: "button", class: "choice", role: "switch", "aria-checked": String(on), "aria-pressed": String(on),
@@ -94,7 +94,7 @@ export const STEPS = {
   },
   trust: {
     label: "Fiducia", title: "Quanto posso fare da sola?",
-    text: "Le Leggi di Atena valgono sempre. Qui scegli quando devo chiederti il permesso.",
+    text: "Le Leggi di Nuxiva valgono sempre. Qui scegli quando devo chiederti il permesso.",
     init: (c) => ({ profile: c.trust }),
     form: (a, set) => [choices([["careful", "Prudente", "Non agisco mai da sola, ti chiedo tutto"], ["balanced", "Equilibrata", "Propongo e agisco solo quando è sicuro"],
       ["autonomous", "Autonoma", "Agisco da sola e ti avviso; accesso completo agli strumenti"]], a.profile, (profile) => set({ profile }))],
@@ -102,7 +102,7 @@ export const STEPS = {
     async apply(a, current, profiles) {
       const p = profiles[a.profile];
       await setMode("autonomy", p.autonomy);
-      await setSettings("agent", { ATENA_AGENT_ACCESS: p.agent_access });
+      await setSettings("agent", { NUXIVA_AGENT_ACCESS: p.agent_access });
       return { careful: "Prudente", balanced: "Equilibrata", autonomous: "Autonoma" }[a.profile];
     },
   },

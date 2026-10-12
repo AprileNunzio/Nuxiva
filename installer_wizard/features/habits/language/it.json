@@ -1,6 +1,6 @@
 {
   "name": "Abitudini",
-  "description": "Atena osserva come usa la casa, riconosce le abitudini ricorrenti e le propone come automazioni; segnala anche le situazioni insolite quando non c'è nessuno.",
+  "description": "Nuxiva osserva come usa la casa, riconosce le abitudini ricorrenti e le propone come automazioni; segnala anche le situazioni insolite quando non c'è nessuno.",
   "capabilities": [
     "Registra luci, prese, tapparelle, termostati, media e serrature comandati a mano (non quelli mossi dalle automazioni)",
     "Ogni notte cerca regolarità: stesso orario (tutti i giorni, feriali o fine settimana), al tramonto, all'arrivo di qualcuno",
@@ -9,8 +9,8 @@
     "Situazioni insolite: porta, finestra o movimento a un'ora mai vista e casa vuota → avviso a voce, allarme e Telegram"
   ],
   "settings": {
-    "ATENA_HABITS_CONFIDENCE": "Quanto deve essere regolare un'abitudine per proporla",
-    "ATENA_HABITS_ASK": "Proposte a voce",
-    "ATENA_HABITS_ANOMALIES": "Avvisi di situazioni insolite"
+    "NUXIVA_HABITS_CONFIDENCE": "Quanto deve essere regolare un'abitudine per proporla",
+    "NUXIVA_HABITS_ASK": "Proposte a voce",
+    "NUXIVA_HABITS_ANOMALIES": "Avvisi di situazioni insolite"
   }
 }

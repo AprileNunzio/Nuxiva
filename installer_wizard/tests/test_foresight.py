@@ -54,7 +54,7 @@ class ForesightTest(unittest.TestCase):
         self.foresight.arm(evenings(), NAMES, arrival=True)
 
     def test_armed_plan_fires_on_matching_command(self):
-        plan = self.foresight.match("Atena, accendi la luce del salotto")
+        plan = self.foresight.match("Nuxiva, accendi la luce del salotto")
         self.assertEqual(plan["calls"][0]["domain"], "light")
         self.assertEqual(plan["calls"][0]["service"], "turn_on")
         self.assertEqual(plan["entities"], ["light.salotto"])

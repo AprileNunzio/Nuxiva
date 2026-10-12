@@ -2,7 +2,7 @@
   "use strict";
   const { THREE, damp, HoloFace, HoloBrain } = J;
 
-  class AtenaScene {
+  class NuxivaScene {
     constructor(canvas, handlers = {}) {
       this.handlers = handlers;
       this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
@@ -150,5 +150,5 @@
     }
   }
 
-  Object.assign(J, { AtenaScene });
-})(window, window.Atena3D);
+  Object.assign(J, { NuxivaScene });
+})(window, window.Nuxiva3D);

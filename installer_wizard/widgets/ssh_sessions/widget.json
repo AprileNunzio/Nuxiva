@@ -10,7 +10,7 @@
   "description": "Accessi SSH attivi in questo momento.",
   "ttl": 60,
   "demo": {
-    "content": "atena@192.168.1.12: da 42 min\nroot@10.0.0.5: da 3 min"
+    "content": "nuxiva@192.168.1.12: da 42 min\nroot@10.0.0.5: da 3 min"
   },
   "tone": "red",
   "essential": true

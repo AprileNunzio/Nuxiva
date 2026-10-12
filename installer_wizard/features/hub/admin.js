@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const POLL = 1500;
   const AREAS = [
     ["home_assistant", 0x3dffa8], ["brain", 0xa08cff], ["sports", 0xffc43d], ["tv", 0xff7ac8], ["google", 0x29e0ff],

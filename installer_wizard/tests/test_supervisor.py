@@ -4,18 +4,18 @@ from unittest import mock
 
 from fastapi.testclient import TestClient
 
-import atena_supervisor
+import nuxiva_supervisor
 from config import FEATURES_DIR
 
-HEADERS = {"X-Atena-Request": "1"}
+HEADERS = {"X-Nuxiva-Request": "1"}
 
 
 class SupervisorTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.public = TestClient(atena_supervisor.public)
-        cls.admin = TestClient(atena_supervisor.admin)
-        r = cls.admin.post("/api/auth/login", json={"username": "admin", "password": "atena"}, headers=HEADERS)
+        cls.public = TestClient(nuxiva_supervisor.public)
+        cls.admin = TestClient(nuxiva_supervisor.admin)
+        r = cls.admin.post("/api/auth/login", json={"username": "admin", "password": "nuxiva"}, headers=HEADERS)
         assert r.status_code == 200, r.text
 
     def test_public_pages(self):
@@ -27,7 +27,7 @@ class SupervisorTest(unittest.TestCase):
             self.assertIn(key, state)
 
     def test_admin_requires_login(self):
-        anon = TestClient(atena_supervisor.admin)
+        anon = TestClient(nuxiva_supervisor.admin)
         self.assertEqual(anon.get("/api/automations", headers=HEADERS).status_code, 401)
 
     def test_admin_apis(self):

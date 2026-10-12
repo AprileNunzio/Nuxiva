@@ -5,7 +5,7 @@
   const st = { down: null, timer: 0, menu: null, sheet: null, sheetTimer: 0, opened: 0 };
 
   function post(url, body) {
-    return fetch(url, { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json", "X-Atena-Request": "1" },
+    return fetch(url, { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json", "X-Nuxiva-Request": "1" },
       body: JSON.stringify(body) }).then((r) => { if (!r.ok) throw new Error(`errore ${r.status}`); return r; });
   }
 
@@ -78,7 +78,7 @@
     </article>`;
     el.addEventListener("click", (e) => {
       const b = e.target.closest("[data-wt]");
-      if (b && b.dataset.wt === "read" && window.AtenaDesk) window.AtenaDesk.ctx.speak(`${d.title || ""}. ${d.text || ""}`.slice(0, 1200));
+      if (b && b.dataset.wt === "read" && window.NuxivaDesk) window.NuxivaDesk.ctx.speak(`${d.title || ""}. ${d.text || ""}`.slice(0, 1200));
       if ((b && b.dataset.wt === "close") || e.target === el) hideSheet();
     });
     document.body.appendChild(el);
@@ -145,5 +145,5 @@
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") { hideMenu(); hideSheet(); } });
   if (document.body) exitButton(); else document.addEventListener("DOMContentLoaded", exitButton);
 
-  window.AtenaTouch = { menu, detail, fullscreen, close, hideMenu, hideSheet, widgetOf, cancel: () => { cancelHold(); hideMenu(); } };
+  window.NuxivaTouch = { menu, detail, fullscreen, close, hideMenu, hideSheet, widgetOf, cancel: () => { cancelHold(); hideMenu(); } };
 })();

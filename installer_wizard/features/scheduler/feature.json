@@ -4,9 +4,9 @@
   "icon": "🗓",
   "category": "sistema",
   "order": 13,
-  "description": "Tiene sempre vivi i servizi in background (li riavvia se si fermano o si bloccano) e fa girare i cron: espressioni cron, ripresa delle esecuzioni mancate quando Atena era spenta e stato che sopravvive ai riavvii.",
+  "description": "Tiene sempre vivi i servizi in background (li riavvia se si fermano o si bloccano) e fa girare i cron: espressioni cron, ripresa delle esecuzioni mancate quando Nuxiva era spenta e stato che sopravvive ai riavvii.",
   "toggle": {
-    "env": "ATENA_LOOPS_RESTART",
+    "env": "NUXIVA_LOOPS_RESTART",
     "apply": []
   },
   "capabilities": [
@@ -19,21 +19,21 @@
   ],
   "settings": [
     {
-      "key": "ATENA_LOOPS_BACKOFF_MAX",
+      "key": "NUXIVA_LOOPS_BACKOFF_MAX",
       "label": "Attesa massima prima di riavviare un servizio guasto, in secondi (5 - 600)",
       "type": "number",
       "default": "60",
       "apply": []
     },
     {
-      "key": "ATENA_LOOPS_STALE_FACTOR",
+      "key": "NUXIVA_LOOPS_STALE_FACTOR",
       "label": "Un servizio è bloccato dopo quante volte il suo battito normale (2 - 20)",
       "type": "number",
       "default": "5",
       "apply": []
     },
     {
-      "key": "ATENA_SCHED_PERSIST",
+      "key": "NUXIVA_SCHED_PERSIST",
       "label": "Ricorda le esecuzioni dopo un riavvio",
       "type": "select",
       "default": "1",
@@ -50,8 +50,8 @@
       ]
     },
     {
-      "key": "ATENA_SCHED_MISFIRE",
-      "label": "Se Atena era spenta all'orario di un'automazione",
+      "key": "NUXIVA_SCHED_MISFIRE",
+      "label": "Se Nuxiva era spenta all'orario di un'automazione",
       "type": "select",
       "default": "run_once",
       "apply": [],
@@ -71,21 +71,21 @@
       ]
     },
     {
-      "key": "ATENA_SCHED_GRACE_MIN",
+      "key": "NUXIVA_SCHED_GRACE_MIN",
       "label": "Recupera solo se la mancata esecuzione è più recente di (minuti, 0 = mai recuperare)",
       "type": "number",
       "default": "120",
       "apply": []
     },
     {
-      "key": "ATENA_SCHED_MAX_CATCHUP",
+      "key": "NUXIVA_SCHED_MAX_CATCHUP",
       "label": "Massimo di esecuzioni recuperate per ogni innesco (1 - 50)",
       "type": "number",
       "default": "3",
       "apply": []
     },
     {
-      "key": "ATENA_SCHED_JITTER_S",
+      "key": "NUXIVA_SCHED_JITTER_S",
       "label": "Sfasamento casuale degli orari per non farli scattare tutti insieme, in secondi (0 - 300)",
       "type": "number",
       "default": "0",

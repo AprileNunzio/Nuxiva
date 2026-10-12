@@ -11,7 +11,7 @@ def setup_telemetry(app: FastAPI):
     # Abilita la telemetria solo se OTLP_ENDPOINT è configurato
     otlp_endpoint = os.getenv("OTLP_ENDPOINT")
     if not otlp_endpoint:
-        logging.getLogger("atena.telemetry").info("OTLP_ENDPOINT non configurato. Telemetria disabilitata.")
+        logging.getLogger("nuxiva.telemetry").info("OTLP_ENDPOINT non configurato. Telemetria disabilitata.")
         return
 
     provider = TracerProvider()
@@ -21,7 +21,7 @@ def setup_telemetry(app: FastAPI):
     trace.set_tracer_provider(provider)
 
     FastAPIInstrumentor.instrument_app(app)
-    logging.getLogger("atena.telemetry").info(f"Telemetria OpenTelemetry configurata su {otlp_endpoint}")
+    logging.getLogger("nuxiva.telemetry").info(f"Telemetria OpenTelemetry configurata su {otlp_endpoint}")
 
 def get_tracer(name: str):
     return trace.get_tracer(name)

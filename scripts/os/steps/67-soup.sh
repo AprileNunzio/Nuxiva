@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 . "$(dirname "$0")/../lib.sh"
 
-SOUP=/opt/atena-soup
+SOUP=/opt/nuxiva-soup
 
 soup_mode() {
-    case "${ATENA_STUDY_FINETUNE:-auto}" in
-        1|0) echo "$ATENA_STUDY_FINETUNE" ;;
+    case "${NUXIVA_STUDY_FINETUNE:-auto}" in
+        1|0) echo "$NUXIVA_STUDY_FINETUNE" ;;
         *) echo auto ;;
     esac
 }
@@ -48,7 +48,7 @@ step_apply() {
     retry 2 20 "$SOUP/venv/bin/pip" install -q --prefer-binary "soup-cli[train]" \
         || fail "Installazione di Soup non riuscita"
     soup_ready || fail "Soup installato ma non funzionante"
-    mkdir -p /var/lib/atena/study/soup
+    mkdir -p /var/lib/nuxiva/study/soup
     progress 100 "Soup pronto per il consolidamento notturno"
 }
 

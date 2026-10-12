@@ -1,4 +1,4 @@
-$Host.UI.RawUI.WindowTitle = "Atena Orchestrator Installer - NunzioTech"
+$Host.UI.RawUI.WindowTitle = "Nuxiva Orchestrator Installer - NunzioTech"
 Clear-Host
 
 Write-Host @"
@@ -49,9 +49,9 @@ npm install --silent
 Set-Location ..
 Write-Success "Moduli interfaccia web pronti."
 
-Write-Step "5/5 - Avvio del Server Atena Orchestrator..."
+Write-Step "5/5 - Avvio del Server Nuxiva Orchestrator..."
 Write-Host "================================================================" -ForegroundColor Blue
-Write-Host "   ATENA PRONTO ALL'USO SULLA MACCHINA LOCALE                  " -ForegroundColor Green
+Write-Host "   NUXIVA PRONTO ALL'USO SULLA MACCHINA LOCALE                  " -ForegroundColor Green
 Write-Host "   NunzioTech Autonomous System 2026                            " -ForegroundColor White
 Write-Host "================================================================" -ForegroundColor Blue
 python -m server.cmd.main

@@ -4,7 +4,7 @@
     "user": "Utente di sistema",
     "password": "Password",
     "submit": "Accedi",
-    "hint": "Accesso consentito a root e agli utenti dei gruppi sudo o atena-admin."
+    "hint": "Accesso consentito a root e agli utenti dei gruppi sudo o nuxiva-admin."
   },
   "nav": {
     "admin": "ADMIN",
@@ -49,7 +49,7 @@
   "config": {
     "settings": "Impostazioni",
     "save": "Salva e applica",
-    "note": "Le modifiche vengono salvate in /etc/atena/atena.env e applicate automaticamente (riavvio dei soli componenti interessati).",
+    "note": "Le modifiche vengono salvate in /etc/nuxiva/nuxiva.env e applicate automaticamente (riavvio dei soli componenti interessati).",
     "sys_params": "Parametri rilevati dal sistema"
   },
   "updates": {
@@ -133,7 +133,7 @@
       "laser_feed": "Velocità (mm/min)",
       "nozzle": "Ugello (°C)",
       "bed": "Piatto (°C)",
-      "default": "Stampante predefinita di Atena"
+      "default": "Stampante predefinita di Nuxiva"
     },
     "probe": {
       "virtual": "Stampante virtuale sempre disponibile.",
@@ -292,11 +292,11 @@
   },
   "feedback": {
     "title": "Apprendimento implicito",
-    "intro": "Quando annulli a mano un'azione di Atena entro 3 minuti, quel contesto riceve una penalità; dopo ripetuti annullamenti l'azione non viene più ripetuta in quelle condizioni.",
+    "intro": "Quando annulli a mano un'azione di Nuxiva entro 3 minuti, quel contesto riceve una penalità; dopo ripetuti annullamenti l'azione non viene più ripetuta in quelle condizioni.",
     "reset_all": "Azzera tutto",
     "reset": "Azzera",
-    "confirm_reset": "Cancellare tutto ciò che Atena ha imparato dagli annullamenti?",
-    "empty": "Nessun dato ancora: Atena impara man mano che usi la casa.",
+    "confirm_reset": "Cancellare tutto ciò che Nuxiva ha imparato dagli annullamenti?",
+    "empty": "Nessun dato ancora: Nuxiva impara man mano che usi la casa.",
     "suppressed": "Non lo rifà",
     "counts": "{ok} accettate · {undo} annullate",
     "slot": "{from}-{to}",
@@ -498,7 +498,7 @@
     "mode_0": "Disattivata",
     "state_active": "attiva",
     "state_inactive": "spenta",
-    "source_ai": " · creata da Atena",
+    "source_ai": " · creata da Nuxiva",
     "source_user": " · aggiunta da te",
     "pin_remove": "Togli dal menu laterale",
     "pin_add": "Aggiungi al menu laterale",

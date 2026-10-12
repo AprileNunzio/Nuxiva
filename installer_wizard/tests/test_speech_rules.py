@@ -15,7 +15,7 @@ class SpeechRulesTests(unittest.TestCase):
 
     def test_links_and_markdown_are_never_read_aloud(self):
         self.assertEqual(speech_rules.normalize("**Vedi** https://example.com/x", "en"), "Vedi the link")
-        self.assertEqual(speech_rules.normalize("A.T.E.N.A. — ciao", "ja"), "Atena, ciao")
+        self.assertEqual(speech_rules.normalize("N.U.X.I.V.A. — ciao", "ja"), "Nuxiva, ciao")
 
 
 if __name__ == "__main__":

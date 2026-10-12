@@ -16,26 +16,26 @@ class QuietHoursTest(unittest.TestCase):
         policy.manual = {}
 
     def test_overnight_window(self):
-        with env({"ATENA_QUIET_START": "23:00", "ATENA_QUIET_END": "07:00"}):
+        with env({"NUXIVA_QUIET_START": "23:00", "NUXIVA_QUIET_END": "07:00"}):
             self.assertTrue(policy.scheduled(datetime(2026, 10, 1, 23, 30)))
             self.assertTrue(policy.scheduled(datetime(2026, 10, 2, 6, 59)))
             self.assertFalse(policy.scheduled(datetime(2026, 10, 2, 7, 0)))
             self.assertFalse(policy.scheduled(datetime(2026, 10, 1, 22, 59)))
 
     def test_day_window_and_off(self):
-        with env({"ATENA_QUIET_START": "13:00", "ATENA_QUIET_END": "15:00"}):
+        with env({"NUXIVA_QUIET_START": "13:00", "NUXIVA_QUIET_END": "15:00"}):
             self.assertTrue(policy.scheduled(datetime(2026, 10, 1, 14, 0)))
             self.assertFalse(policy.scheduled(datetime(2026, 10, 1, 16, 0)))
-        with env({"ATENA_QUIET_MODE": "off"}):
+        with env({"NUXIVA_QUIET_MODE": "off"}):
             self.assertFalse(policy.scheduled(datetime(2026, 10, 1, 23, 30)))
 
     def test_weekend_nights(self):
-        with env({"ATENA_QUIET_DAYS": "weekend"}):
+        with env({"NUXIVA_QUIET_DAYS": "weekend"}):
             self.assertTrue(policy.scheduled(datetime(2026, 10, 3, 1, 0)))
             self.assertFalse(policy.scheduled(datetime(2026, 10, 1, 23, 30)))
 
     def test_dnd_and_urgent(self):
-        with env({"ATENA_QUIET_MODE": "off"}):
+        with env({"NUXIVA_QUIET_MODE": "off"}):
             policy.set_dnd(30)
             self.assertTrue(policy.quiet())
             self.assertIn("silenzio", policy.play("notify"))
@@ -47,7 +47,7 @@ class QuietHoursTest(unittest.TestCase):
             policy.play("inesistente")
 
     def test_voice_commands(self):
-        with env({"ATENA_QUIET_MODE": "off"}):
+        with env({"NUXIVA_QUIET_MODE": "off"}):
             reply, _ = asyncio.run(commands.answer("non disturbare per un'ora"))
             self.assertIn("Non disturbare attivo fino", reply)
             self.assertAlmostEqual(policy.dnd()["until"] - policy.dnd()["since"], 3600, delta=5)

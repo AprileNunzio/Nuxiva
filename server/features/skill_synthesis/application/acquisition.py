@@ -8,7 +8,7 @@ from typing import Any, Callable, Deque, Dict, Optional
 from server.features.skill_synthesis.application.ports import SynthesisUnavailable
 from server.features.skill_synthesis.application.synthesizer import ToolSynthesizer
 
-logger = logging.getLogger("atena.skill_synthesis.acquisition")
+logger = logging.getLogger("nuxiva.skill_synthesis.acquisition")
 
 WINDOW_SECONDS = 3600.0
 _SPEECH_LIMIT = 600

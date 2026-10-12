@@ -1,6 +1,6 @@
 {
   "name": "Gestion Proxmox",
-  "description": "Atena se connecte à votre hyperviseur Proxmox VE : état des nœuds, machines virtuelles et conteneurs, démarrage, arrêt, redémarrage et snapshots, aussi à la voix.",
+  "description": "Nuxiva se connecte à votre hyperviseur Proxmox VE : état des nœuds, machines virtuelles et conteneurs, démarrage, arrêt, redémarrage et snapshots, aussi à la voix.",
   "capabilities": [
     "État des nœuds, VM et conteneurs LXC avec CPU et RAM",
     "Démarrage, arrêt, arrêt forcé, redémarrage, suspension et reprise",

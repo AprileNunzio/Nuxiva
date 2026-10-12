@@ -6,7 +6,7 @@ from features.governor.service import governor
 from features.music import conf, covers, enrich, identify, legacy, listening, lyrics_store, organizer, renamer, scanner, sharing
 from state import store
 
-log = logging.getLogger("atena.music")
+log = logging.getLogger("nuxiva.music")
 FIRST_DELAY = 20.0
 COVER_EVERY = 3600.0
 WATCH_EVERY = 8.0

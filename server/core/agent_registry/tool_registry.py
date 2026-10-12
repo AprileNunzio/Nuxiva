@@ -2,7 +2,7 @@ import logging
 import inspect
 from typing import Callable, Dict, Any
 
-logger = logging.getLogger("atena.tool_registry")
+logger = logging.getLogger("nuxiva.tool_registry")
 
 class ToolRegistry:
     def __init__(self):
@@ -36,4 +36,4 @@ class ToolRegistry:
         logger.info(f"Auto-injected {len(self._tools)} tools into ReAct loop.")
 
 global_tool_registry = ToolRegistry()
-atena_tool = global_tool_registry.register
+nuxiva_tool = global_tool_registry.register

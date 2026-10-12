@@ -44,5 +44,5 @@
     return { stop() { try { handle.destroy(); } catch { video.pause(); } } };
   }
 
-  window.AtenaTv = { play };
+  window.NuxivaTv = { play };
 })();

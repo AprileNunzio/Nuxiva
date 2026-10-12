@@ -22,8 +22,8 @@ class ClassifyTest(unittest.TestCase):
         self.assertEqual(safe_mode.classify(RuntimeError("boom")), "unknown")
 
     def test_description_hides_install_path(self):
-        text = safe_mode.describe(OSError(f"{safe_mode.ATENA_DIR}/x missing"))
-        self.assertNotIn(str(safe_mode.ATENA_DIR), text)
+        text = safe_mode.describe(OSError(f"{safe_mode.NUXIVA_DIR}/x missing"))
+        self.assertNotIn(str(safe_mode.NUXIVA_DIR), text)
 
 
 class ServerTest(unittest.TestCase):
@@ -80,12 +80,12 @@ class ServerTest(unittest.TestCase):
         with mock.patch.object(safe_mode, "start_repair", return_value=True) as start:
             resp, _ = self.request("POST", "/api/safe/repair")
             self.assertEqual(resp.status, 403)
-            resp, _ = self.request("POST", "/api/safe/repair", {"X-Atena-Request": "1", "Origin": "http://evil.example"})
+            resp, _ = self.request("POST", "/api/safe/repair", {"X-Nuxiva-Request": "1", "Origin": "http://evil.example"})
             self.assertEqual(resp.status, 403)
             start.assert_not_called()
 
     def test_repair_is_rate_limited(self):
-        headers = {"X-Atena-Request": "1", "Origin": f"http://127.0.0.1:{self.port}"}
+        headers = {"X-Nuxiva-Request": "1", "Origin": f"http://127.0.0.1:{self.port}"}
         with mock.patch.object(safe_mode, "start_repair", return_value=True) as start, \
                 mock.patch.object(safe_mode, "repair_running", return_value=False):
             resp, _ = self.request("POST", "/api/safe/repair", headers)
@@ -96,7 +96,7 @@ class ServerTest(unittest.TestCase):
 
     def test_repair_conflicts_while_running(self):
         with mock.patch.object(safe_mode, "repair_running", return_value=True):
-            resp, _ = self.request("POST", "/api/safe/repair", {"X-Atena-Request": "1"})
+            resp, _ = self.request("POST", "/api/safe/repair", {"X-Nuxiva-Request": "1"})
             self.assertEqual(resp.status, HTTPStatus.CONFLICT)
 
     def test_unsupported_methods(self):
@@ -106,20 +106,20 @@ class ServerTest(unittest.TestCase):
 
 class LaunchTest(unittest.TestCase):
     def test_import_failure_enters_safe_mode(self):
-        import atena_launch
+        import nuxiva_launch
 
         failing = ModuleNotFoundError("No module named 'uvicorn'", name="uvicorn")
         real_import = __import__
 
         def fake_import(name, *args, **kwargs):
-            if name == "atena_supervisor":
+            if name == "nuxiva_supervisor":
                 raise failing
             return real_import(name, *args, **kwargs)
 
         with mock.patch("builtins.__import__", side_effect=fake_import), \
                 mock.patch.object(safe_mode, "run") as run, \
-                self.assertLogs("atena.launch", level="ERROR"):
-            atena_launch.main()
+                self.assertLogs("nuxiva.launch", level="ERROR"):
+            nuxiva_launch.main()
         run.assert_called_once_with(failing)
 
 

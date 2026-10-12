@@ -1,5 +1,5 @@
 (() => {
-  const D = window.AtenaDisplay, { $, fmt } = D;
+  const D = window.NuxivaDisplay, { $, fmt } = D;
   let homeSent = 0;
 
   function goHome() {
@@ -37,7 +37,7 @@
     if ($("greet")) $("greet").textContent = `${g}${who ? ", " + who : ""}.`;
     const quiet = !D.busy && !D.isSpeaking() && Date.now() - D.lastInteraction;
     if (D.mode !== "face" && quiet > (D.mode === "brain" ? 90000 : 60000)) goHome();
-    else if (D.mode === "face" && quiet > 60000 && (AtenaDesk.all || []).some((w) => w.intent)) goHome();
+    else if (D.mode === "face" && quiet > 60000 && (NuxivaDesk.all || []).some((w) => w.intent)) goHome();
     guardPersonal();
     if (quiet > 60000 && !rested) rest();
     else if (quiet && quiet < 60000) rested = false;
@@ -117,17 +117,17 @@
     if (D.Enroll) D.Enroll.fromState(s.voice_training);
     D.onAudioRev(s.audio_rev);
     D.Ear.resetFrom(s.mic_reset);
-    AtenaDesk.setScreens(s.screens);
-    AtenaDesk.render(s.desk || []);
+    NuxivaDesk.setScreens(s.screens);
+    NuxivaDesk.render(s.desk || []);
     if (D.Sounds) { D.Sounds.update(s.sounds); D.Sounds.desk(s.desk); }
     if (!["READY", "DEGRADED"].includes(s.phase)) { location.reload(); return; }
-    if (s.asset_version && window.ATENA_ASSET_V && s.asset_version !== window.ATENA_ASSET_V) {
+    if (s.asset_version && window.NUXIVA_ASSET_V && s.asset_version !== window.NUXIVA_ASSET_V) {
       D.staleSince = D.staleSince || Date.now();
       if ((!D.busy && !D.isSpeaking()) || Date.now() - D.staleSince > 120000) { location.reload(); return; }
     }
     const node = new URLSearchParams(location.search).get("node");
     const face = (node && s.node_faces && s.node_faces[node]) || s.face;
-    if (face && window.ATENA_FACE && JSON.stringify(face) !== JSON.stringify(window.ATENA_FACE)) { location.reload(); return; }
+    if (face && window.NUXIVA_FACE && JSON.stringify(face) !== JSON.stringify(window.NUXIVA_FACE)) { location.reload(); return; }
     D.userName = s.user_name || "";
     $("banner").textContent = s.message;
     $("banner").classList.toggle("show", s.phase === "DEGRADED");
@@ -162,12 +162,12 @@
   D.startChat();
   setTimeout(sendPosition, 5000);
   setInterval(sendPosition, 30 * 60000);
-  AtenaDesk.mount($("desk"), {
+  NuxivaDesk.mount($("desk"), {
     speak: (text) => { if (!D.busy) { D.typeInto($("say"), text); D.speak(text); } },
     onStage: (zone) => { if (D.cam && D.cam.on) { D.cam.prevZone = zone; return; } D.stageZone = zone; D.applyStage(); },
     screen: 0, x: +(new URLSearchParams(location.search).get("x") || 0),
   });
-  Atena.connectState("/api/stream", (s) => (window.atenaPerf ? window.atenaPerf.measure("stato", () => onState(s)) : onState(s)), (ok) => $("link").classList.toggle("show", !ok));
+  Nuxiva.connectState("/api/stream", (s) => (window.nuxivaPerf ? window.nuxivaPerf.measure("stato", () => onState(s)) : onState(s)), (ok) => $("link").classList.toggle("show", !ok));
   D.startBrain();
   D.startMindStream();
   if (D.startFlow) D.startFlow();
@@ -179,7 +179,7 @@ const projectWidget = {
   async tick() {
     const token = localStorage.getItem("token") || "";
     const res = await fetch("/api/projects/status", { headers: { "Authorization": "Bearer " + token } });
-    if (res.status === 404 || res.status === 401 || res.status === 403) return window.atenaGovernor ? window.atenaGovernor.STOP : undefined;
+    if (res.status === 404 || res.status === 401 || res.status === 403) return window.nuxivaGovernor ? window.nuxivaGovernor.STOP : undefined;
     if (!res.ok) throw new Error(`stato progetti ${res.status}`);
     const data = await res.json();
     const widget = document.getElementById("project-widget");
@@ -194,4 +194,4 @@ const projectWidget = {
     return undefined;
   },
 };
-if (window.atenaGovernor) window.atenaGovernor.poll("progetti", () => projectWidget.tick(), 3000, 60000);
+if (window.nuxivaGovernor) window.nuxivaGovernor.poll("progetti", () => projectWidget.tick(), 3000, 60000);

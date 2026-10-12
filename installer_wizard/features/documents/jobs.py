@@ -157,7 +157,7 @@ async def project(request: str) -> dict:
     await asyncio.gather(*(build(d) for d in docs))
     made = [d for d in docs if not d.get("failed")]
     index_path = root / f"{archive.stamp()}_00_Indice-del-progetto.docx"
-    index = {"kind": "documento", "title": title, "subtitle": spec.text(plan.get("description"), 300), "author": "Atena",
+    index = {"kind": "documento", "title": title, "subtitle": spec.text(plan.get("description"), 300), "author": "Nuxiva",
              "theme": theme, "palette": [], "font": "", "blocks": [
                  {"type": "heading", "level": 1, "text": "Panoramica"},
                  {"type": "paragraph", "text": spec.text(plan.get("description"), 1200) or request, "align": "justify"},

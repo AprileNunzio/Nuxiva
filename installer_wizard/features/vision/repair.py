@@ -20,7 +20,7 @@ CONTINUE = re.compile(r"\b(?:e adesso|e ora|poi|prossimo passo|passo successivo|
                       r"componente|condensatore|resistenza|resistore|diodo|transistor|mosfet|integrato|chip|pista|piazzola|"
                       r"connettore|fusibile|tensione|multimetro|misur|ohm|volt|ampere|corto|bruciat|gonfi|ossidat)\w*", re.I)
 SYSTEM = (
-    "Sei il tecnico elettronico di Atena e guidi una riparazione in tempo reale tramite la webcam. Sei preciso, "
+    "Sei il tecnico elettronico di Nuxiva e guidi una riparazione in tempo reale tramite la webcam. Sei preciso, "
     "prudente e pratico: identifichi componenti (sigla, valore, codici colore, marcature), difetti visibili "
     "(condensatori gonfi, saldature fredde, piste bruciate, ossidazione, ponticelli di stagno) e dai un passo alla "
     "volta. Se l'immagine non basta, chiedi di avvicinare, ruotare o illuminare. Metti sempre la sicurezza al primo "

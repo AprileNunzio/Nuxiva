@@ -1,4 +1,4 @@
-# Funzionalità di Atena
+# Funzionalità di Nuxiva
 
 Ogni funzionalità è una cartella con un file `feature.json`. Il supervisore scansiona in background
 (ogni 20 secondi) queste due posizioni e la funzionalità compare da sola, come scheda, in
@@ -7,7 +7,7 @@ Ogni funzionalità è una cartella con un file `feature.json`. Il supervisore sc
 | Cartella | Chi la crea |
 |---|---|
 | `installer_wizard/features/<id>/` | funzionalità di sistema, arrivano con gli aggiornamenti da GitHub |
-| `/var/lib/atena/features/<id>/` | funzionalità aggiunte dall'utente o create da Atena stessa |
+| `/var/lib/nuxiva/features/<id>/` | funzionalità aggiunte dall'utente o create da Nuxiva stessa |
 
 Una funzionalità non ha bisogno di modificare il pannello: la scheda, l'interruttore, le impostazioni e
 la voce nel menu laterale (se l'utente la aggiunge ai preferiti) sono generati dal manifest.
@@ -18,10 +18,10 @@ la voce nel menu laterale (se l'utente la aggiunge ai preferiti) sono generati d
 |---|---|
 | `feature.json` | manifest (obbligatorio) |
 | `*.py` | logica della funzionalità, importata come `features.<id>.<modulo>` |
-| `api.py` | rotte HTTP: `public_routes` (porta 80) e `admin_routes` (porta 8080), registrate in `backend/atena_supervisor.py` |
+| `api.py` | rotte HTTP: `public_routes` (porta 80) e `admin_routes` (porta 8080), registrate in `backend/nuxiva_supervisor.py` |
 | `service.py` | servizio esterno con una propria unità systemd (voce, visione, ascolto) |
 | `admin.html` | una `<section class="tab" id="tab-<panel>">` inserita nel pannello |
-| `admin.js` | registra la scheda con `AtenaAdmin.tab("<panel>", { init, load, onState, leave })` |
+| `admin.js` | registra la scheda con `NuxivaAdmin.tab("<panel>", { init, load, onState, leave })` |
 | `admin.css` | stili della sola scheda |
 
 Il supervisore inserisce da solo `admin.html`, `admin.js` e `admin.css` di ogni cartella nella pagina
@@ -41,7 +41,7 @@ del pannello: aggiungere una scheda non richiede di modificare `web/admin`.
   "capabilities": ["Allerte della protezione civile", "Pollini e qualità dell'aria"],
   "pinned": false,
   "panel": "",
-  "toggle": { "env": "ATENA_METEO_PLUS", "apply": [] },
+  "toggle": { "env": "NUXIVA_METEO_PLUS", "apply": [] },
   "requires": { "ram_gb": 2, "gpu_vram_gb": 0, "video": false, "commands": ["curl"], "features": ["ear"] },
   "settings": [
     { "key": "soglia_vento", "label": "Avvisami con vento oltre (km/h)", "type": "number", "default": "60" },
@@ -54,16 +54,16 @@ del pannello: aggiungere una scheda non richiede di modificare `web/admin`.
 |---|---|
 | `id` | minuscole, cifre, `-` e `_` (di norma uguale al nome della cartella) |
 | `category` | `assistente`, `percezione`, `casa`, `conoscenza`, `comunicazione`, `sistema`, `altro` |
-| `source` | solo per le cartelle utente: `ai` (creata da Atena) o `user` |
+| `source` | solo per le cartelle utente: `ai` (creata da Nuxiva) o `user` |
 | `pinned` | se `true` compare già nel menu laterale alla prima scoperta |
 | `panel` | scheda dedicata già presente nel pannello (es. `telegram`); vuoto = pagina generata |
-| `toggle` | assente = sempre attiva. `env`: variabile `1`/`0` in `atena.env` (con `tri: true` vale `auto`/`1`/`0`), `apply`: step da riconvergere. `hook`: interruttore Python registrato dal modulo (`registry.register_hook`) |
+| `toggle` | assente = sempre attiva. `env`: variabile `1`/`0` in `nuxiva.env` (con `tri: true` vale `auto`/`1`/`0`), `apply`: step da riconvergere. `hook`: interruttore Python registrato dal modulo (`registry.register_hook`) |
 | `requires` | requisiti per la modalità **automatica**: se mancano la funzionalità resta spenta, con il motivo |
-| `settings` | campi del modulo generato: `text`, `number`, `select`, `color`, `secret`, `bool`. Le chiavi MAIUSCOLE vanno in `atena.env` (solo quelle ammesse per le funzionalità esterne), le altre restano nello stato della funzionalità (`registry.settings_of(id)`) |
+| `settings` | campi del modulo generato: `text`, `number`, `select`, `color`, `secret`, `bool`. Le chiavi MAIUSCOLE vanno in `nuxiva.env` (solo quelle ammesse per le funzionalità esterne), le altre restano nello stato della funzionalità (`registry.settings_of(id)`) |
 
 ## Nexus: zona, livello e procedura guidata
 
-Campi facoltativi letti dal nuovo pannello Nexus (`/nexus`); se mancano, Atena li deduce da `id` e `category`.
+Campi facoltativi letti dal nuovo pannello Nexus (`/nexus`); se mancano, Nuxiva li deduce da `id` e `category`.
 
 | Campo | Significato |
 |---|---|
@@ -80,7 +80,7 @@ i suoi file cambiano con un aggiornamento.
 
 Ogni funzionalità con interruttore ha tre modalità, scelte dalla scheda:
 
-- **Automatica** (predefinita): Atena la accende se l'hardware soddisfa `requires`, e la riaccende da
+- **Automatica** (predefinita): Nuxiva la accende se l'hardware soddisfa `requires`, e la riaccende da
   solo quando l'hardware cambia (es. si collega una webcam);
 - **Sempre attiva**: accesa comunque, a rischio dell'utente (la scheda mostra cosa manca);
 - **Disattivata**.

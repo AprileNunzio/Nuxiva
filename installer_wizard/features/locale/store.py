@@ -9,7 +9,7 @@ PREFS_FILE = STATE_DIR / "locale" / "prefs.json"
 SCOPES = ("devices", "users", "people")
 KEY = re.compile(r"^[A-Za-z0-9_.:@-]{1,64}$")
 FIELDS = ("ui", "reply", "teach")
-log = logging.getLogger("atena.locale")
+log = logging.getLogger("nuxiva.locale")
 
 
 class LocaleStore:

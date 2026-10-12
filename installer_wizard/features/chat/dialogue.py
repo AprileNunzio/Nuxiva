@@ -77,7 +77,7 @@ class Dialogue:
         lines = []
         for t in self.recent(device)[-6:]:
             lines.append(f"Utente: {t.text}")
-            lines.append(f"Atena: {t.reply[:300]}")
+            lines.append(f"Nuxiva: {t.reply[:300]}")
         return "\n".join(lines)
 
     def asked_question(self, device: str) -> bool:

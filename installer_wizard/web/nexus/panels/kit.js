@@ -167,7 +167,7 @@ export async function upload(path, file, { accept = null, max = 0 } = {}) {
   if (max && file.size > max) throw new Error("File troppo grande");
   if (!path.startsWith("/api/")) throw new Error("Percorso non consentito");
   const response = await fetch(path, { method: "POST", body: file, credentials: "same-origin", cache: "no-store", redirect: "error",
-    headers: { "X-Atena-Request": "1", "Content-Type": "application/octet-stream" } });
+    headers: { "X-Nuxiva-Request": "1", "Content-Type": "application/octet-stream" } });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(typeof data.detail === "string" ? data.detail : `Errore ${response.status}`);
   return data;

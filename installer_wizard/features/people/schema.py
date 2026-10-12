@@ -17,6 +17,8 @@ RELATIONS = {
 
 ROLES = {"owner": "Proprietario", "family": "Famiglia", "friend": "Amico", "guest": "Ospite", "staff": "Collaboratore",
          "service": "Servizi (medico, tecnico…)"}
+SUBROLES = {"": "Nessuna mansione specifica", "butler": "Maggiordomo (Gestione Casa)",
+            "nanny": "Tata / Babysitter (Bambini)", "cleaner": "Collaboratore Domestico / Pulizie"}
 AUTHORIZATIONS = {"": "Come il ruolo", "info": "Solo informazioni", "home": "Casa e dispositivi", "personal": "Anche dati personali",
                   "files": "Anche creare e modificare file", "critical": "Tutto, anche azioni delicate"}
 
@@ -37,11 +39,14 @@ SECTIONS = [
         {"key": "languages", "label": "Lingue parlate", "type": "tags"},
         {"key": "ui_language", "label": "Lingua dello schermo quando è davanti al display", "type": "select",
          "options": ["", *UI_LANGUAGES], "labels": {"": "Come il sistema", **UI_LANGUAGES}},
-        {"key": "voice_language", "label": "Lingua in cui ATENA le parla", "type": "select",
+        {"key": "voice_language", "label": "Lingua in cui NUXIVA le parla", "type": "select",
          "options": ["", *VOICE_LANGUAGES], "labels": {"": "Come il sistema", **{k: v[1] for k, v in VOICE_LANGUAGES.items()}}},
         {"key": "religion", "label": "Religione", "type": "text"},
         {"key": "marital_status", "label": "Stato civile", "type": "select", "options": ["", "Celibe/Nubile", "Fidanzato/a", "Convivente", "Sposato/a", "Unito/a civilmente", "Separato/a", "Divorziato/a", "Vedovo/a"]},
-        {"key": "role", "label": "Ruolo per Atena", "type": "select", "options": list(ROLES), "labels": ROLES},
+        {"key": "role", "label": "Ruolo per Nuxiva", "type": "select", "options": list(ROLES), "labels": ROLES},
+        {"key": "subrole", "label": "Mansione specifica (Staff)", "type": "select", "options": list(SUBROLES), "labels": SUBROLES},
+        {"key": "allowed_zones", "label": "Stanze e zone autorizzate", "type": "tags"},
+        {"key": "allowed_schedule", "label": "Orario di servizio (es. 08:00-18:00)", "type": "text", "placeholder": "es. 08:30-17:30 (vuoto = sempre)"},
         {"key": "authorization", "label": "Autorizzazioni con volto e voce", "type": "select", "options": list(AUTHORIZATIONS),
          "labels": AUTHORIZATIONS},
         {"key": "deceased", "label": "Deceduto/a", "type": "bool"},
@@ -148,9 +153,9 @@ SECTIONS = [
     ]},
     {"id": "notes", "title": "Note e privacy", "icon": "📝", "fields": [
         {"key": "tags", "label": "Etichette", "type": "tags"},
-        {"key": "notes", "label": "Note per Atena", "type": "textarea"},
+        {"key": "notes", "label": "Note per Nuxiva", "type": "textarea"},
         {"key": "consent", "label": "Usa questo profilo per personalizzare le risposte", "type": "bool"},
-        {"key": "share_health", "label": "Atena può usare i dati sanitari (es. promemoria farmaci)", "type": "bool"},
+        {"key": "share_health", "label": "Nuxiva può usare i dati sanitari (es. promemoria farmaci)", "type": "bool"},
     ]},
 ]
 

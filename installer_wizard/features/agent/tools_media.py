@@ -19,7 +19,7 @@ def _ready() -> None:
         raise PermissionError("il controllo vocale della musica è disattivato nelle impostazioni")
 
 
-@music("music_outputs", "elenca gli schermi e gli altoparlanti di rete su cui far suonare la musica (Chromecast, DLNA, display Atena)", {})
+@music("music_outputs", "elenca gli schermi e gli altoparlanti di rete su cui far suonare la musica (Chromecast, DLNA, display Nuxiva)", {})
 async def music_outputs() -> str:
     rows = await outputs.refresh(True)
     if not rows:

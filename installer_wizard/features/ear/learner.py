@@ -6,13 +6,13 @@ import time
 import unicodedata
 from pathlib import Path
 
-log = logging.getLogger("atena.ear")
+log = logging.getLogger("nuxiva.ear")
 
-NAME = "atena"
-WAKE_RE = re.compile(r"\b((?:hey|hei|hej|ehi|ehy|eh|ei|e|hi|ok|okay)[\s,]+)?(atena|athena|attena|atenna|aténa|athéna|hatena|atèna|athèna)\b[\s,.!?:;-]*", re.I)
+NAME = "nuxiva"
+WAKE_RE = re.compile(r"\b((?:hey|hei|hej|ehi|ehy|eh|ei|e|hi|ok|okay)[\s,]+)?(nuxiva|nuxiba|nucsiva|nuxif|nuchiva)\b[\s,.!?:;-]*", re.I)
 NOT_NAMES = frozenset({"catena", "arena", "avena", "antenna", "atenei", "ateneo"})
-LEARN_FILE = Path(os.environ.get("ATENA_EAR_LEARN", "/var/lib/atena/ear_learning.json"))
-PEOPLE_DIR = Path(os.environ.get("ATENA_PEOPLE_DIR", "/var/lib/atena/people"))
+LEARN_FILE = Path(os.environ.get("NUXIVA_EAR_LEARN", "/var/lib/nuxiva/ear_learning.json"))
+PEOPLE_DIR = Path(os.environ.get("NUXIVA_PEOPLE_DIR", "/var/lib/nuxiva/people"))
 TOKEN_RE = re.compile(r"[a-zàèéìòù']+", re.I)
 
 
@@ -67,7 +67,7 @@ class Learner:
             log.warning("Apprendimento non salvato: %s", exc)
 
     def hotwords(self) -> str:
-        names = {"Atena"}
+        names = {"Nuxiva"}
         try:
             for f in list(PEOPLE_DIR.glob("*.json"))[:50]:
                 first = json.loads(f.read_text(encoding="utf-8")).get("first_name")
@@ -136,7 +136,7 @@ class Learner:
             if 3 <= len(word) <= 10 and word not in NOT_NAMES and _lev(word, NAME) <= 3:
                 self.data["variants"][word] = self.data["variants"].get(word, 0) + 1
                 self.data["stats"]["learned"] += 1
-                log.info("Imparata la variante «%s» per Atena", word)
+                log.info("Imparata la variante «%s» per Nuxiva", word)
                 self.save(force=True)
         self.recent_miss = None
 
@@ -156,7 +156,7 @@ class Learner:
         self.data["variants"][word] = max(2, self.data["variants"].get(word, 0) + 1)
         self.data["stats"]["learned"] += 1
         self.save(force=True)
-        log.info("Variante «%s» per Atena insegnata durante l'addestramento vocale", word)
+        log.info("Variante «%s» per Nuxiva insegnata durante l'addestramento vocale", word)
         return True
 
     def on_review(self, missed: int, false_instant: int) -> None:

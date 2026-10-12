@@ -176,11 +176,11 @@ class GovernorTest(unittest.TestCase):
 
     def test_deferral_is_bounded_by_the_maximum(self):
         self.gov.pressure.high = True
-        self.settings["ATENA_GOV_DEFER_MAX_MIN"] = 0.0
+        self.settings["NUXIVA_GOV_DEFER_MAX_MIN"] = 0.0
         self.assertEqual(asyncio.run(self.gov.gate("background", "job")), 0.0)
 
     def test_disabled_governor_is_transparent(self):
-        self.settings["ATENA_GOVERNOR"] = False
+        self.settings["NUXIVA_GOVERNOR"] = False
         self.gov.pressure.high = True
         self.assertEqual(asyncio.run(self.gov.gate("background", "job")), 0.0)
         with self.gov.measure("x"):
@@ -188,7 +188,7 @@ class GovernorTest(unittest.TestCase):
         self.assertEqual(self.gov.ledger.top(5), [])
 
     def test_slot_limits_concurrency_and_records_cost(self):
-        self.settings["ATENA_GOV_CLASS"] = "low"
+        self.settings["NUXIVA_GOV_CLASS"] = "low"
         peak = {"now": 0, "max": 0}
 
         async def work(name):
@@ -206,19 +206,19 @@ class GovernorTest(unittest.TestCase):
         self.assertEqual(self.gov.active["background"], 0)
 
     def test_policy_follows_class_override_and_device_history(self):
-        self.settings["ATENA_GOV_CLASS"] = "low"
+        self.settings["NUXIVA_GOV_CLASS"] = "low"
         policy = self.gov.policy(None)
         self.assertEqual((policy["class"], policy["tier"], policy["max_active"]), ("low", "reduced", 2))
-        self.settings["ATENA_GOV_CLASS"] = "high"
+        self.settings["NUXIVA_GOV_CLASS"] = "high"
         self.assertEqual(self.gov.policy(None)["tier"], "full")
-        self.settings["ATENA_GOV_MAX_WIDGETS"] = 3
+        self.settings["NUXIVA_GOV_MAX_WIDGETS"] = 3
         self.assertEqual(self.gov.policy(None)["max_active"], 3)
-        self.settings["ATENA_GOV_QUALITY"] = "minimal"
+        self.settings["NUXIVA_GOV_QUALITY"] = "minimal"
         policy = self.gov.policy(None)
         self.assertEqual((policy["tier"], policy["max_ambient"]), ("minimal", 0))
 
     def test_report_updates_ledger_and_lowers_the_tier_for_a_slow_device(self):
-        self.settings["ATENA_GOV_CLASS"] = "high"
+        self.settings["NUXIVA_GOV_CLASS"] = "high"
         slow = devices.clean_report({"device": "slowpc01", "fps": 4, "p95": 300, "active": 3,
                                      "widgets": [{"id": "viewer_3d", "ms": 900, "nodes": 4000}]})
         first = self.gov.report(slow)

@@ -83,7 +83,7 @@ def register(spec: dict) -> None:
         return await execute(spec, given)
     run.__name__ = spec["name"]
     run.__signature__ = inspect.Signature([inspect.Parameter(k, inspect.Parameter.KEYWORD_ONLY, default="", annotation=str) for k in spec["params"]])
-    registry.TOOLS[spec["name"]] = {"name": spec["name"], "description": spec["description"] + " (strumento creato da Atena)", "args": spec["params"], "fn": run,
+    registry.TOOLS[spec["name"]] = {"name": spec["name"], "description": spec["description"] + " (strumento creato da Nuxiva)", "args": spec["params"], "fn": run,
                                     "confirm": lambda args: risky(spec, args), "full_only": False, "agent": spec["agent"], "verify": None, "custom": True}
     CUSTOM[spec["name"]] = spec
     risk.compose(spec["name"], [step["tool"] for step in spec["steps"]])

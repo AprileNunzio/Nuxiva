@@ -71,4 +71,4 @@
 
   H.Visemes = Visemes;
   H.VISEMES = SHAPES;
-})(window.Atena3D);
+})(window.Nuxiva3D);

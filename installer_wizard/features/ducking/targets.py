@@ -2,7 +2,7 @@ import asyncio
 import logging
 import time
 
-log = logging.getLogger("atena.ducking")
+log = logging.getLogger("nuxiva.ducking")
 
 TV_FRESH = 6 * 3600
 TIMEOUT = 8

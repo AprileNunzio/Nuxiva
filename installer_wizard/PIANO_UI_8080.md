@@ -1,8 +1,8 @@
-# Atena Nexus — Piano di implementazione del nuovo pannello :8080
+# Nuxiva Nexus — Piano di implementazione del nuovo pannello :8080
 
 > Obiettivo: trasformare il pannello di amministrazione da 44 schede piatte a un'esperienza **guidata, a step, futuristica**,
 > usabile da un bambino e potente per un esperto, con un nuovo **Flow Studio** drag & drop per vedere e modificare
-> come Atena ragiona.
+> come Nuxiva ragiona.
 
 ---
 
@@ -14,13 +14,13 @@
 | Categorie incoerenti | `feature.json → category`: `assistente`, `intelligenza`, `intrattenimento`, `casa`, ... (alcune non documentate in `features/README.md`) | Strumenti simili finiscono in posti diversi |
 | Doppio livello rigido | `web/admin/uimode.js`: solo `simple` / `expert` | Nessun percorso per principianti assoluti |
 | Il ragionamento è invisibile | `brain/stages.py`, `brain/journey.py`, `understanding/router.py`, `brain/scope.py (STRATEGIES = order, fastest)` | Le scelte di algoritmo sono sparse in variabili `.env` |
-| Configurazione dispersa | `atena.env` + `registry.settings_of(id)` + schede dedicate | Nessuna visione d'insieme, nessun "annulla" |
+| Configurazione dispersa | `nuxiva.env` + `registry.settings_of(id)` + schede dedicate | Nessuna visione d'insieme, nessun "annulla" |
 | Sicurezza front-end migliorabile | script `type="module"` e stili inline in `admin.html` | Impedisce una CSP rigorosa senza `unsafe-inline` |
 
 Punti di forza da **riusare** (non riscrivere):
 - auto-scoperta delle funzionalità (`backend/feature_registry.py`, manifest `feature.json`);
 - tracciamento del ragionamento (`JourneyTracker`, nodi `input → laws → cache → router → planner → agent → tool → jury → answer`, già colorati in `web/display/flow.js`);
-- design token esistenti in `web/shared/atena.css` (ciano/viola/verde, vetro, griglia olografica);
+- design token esistenti in `web/shared/nuxiva.css` (ciano/viola/verde, vetro, griglia olografica);
 - i18n per feature (`features/<id>/language/*.json`).
 
 ---
@@ -29,9 +29,9 @@ Punti di forza da **riusare** (non riscrivere):
 
 | Livello | Per chi | Cosa vede | Linguaggio |
 |---|---|---|---|
-| **Esploratore** | bambini, primo avvio, chi non è tecnico | Card grandi, 1 decisione per schermata, guida "Atena Orb" che parla, niente numeri tecnici | «Vuoi che Atena ti veda con la telecamera?» |
+| **Esploratore** | bambini, primo avvio, chi non è tecnico | Card grandi, 1 decisione per schermata, guida "Nuxiva Orb" che parla, niente numeri tecnici | «Vuoi che Nuxiva ti veda con la telecamera?» |
 | **Pilota** | utente domestico evoluto | Zone, interruttori, preset, Flow Studio con template | «Riconoscimento volti: attivo — automatico» |
-| **Architetto** | sistemisti, sviluppatori | Tutto: variabili `.env`, JSON dei flussi, log grezzi, API, metriche, diff | `ATENA_LLM_DEEP_STRATEGY=fastest` |
+| **Architetto** | sistemisti, sviluppatori | Tutto: variabili `.env`, JSON dei flussi, log grezzi, API, metriche, diff | `NUXIVA_LLM_DEEP_STRATEGY=fastest` |
 
 Principio: **progressive disclosure**. Ogni elemento dichiara `data-level="explorer|pilot|architect"`; il livello si
 cambia in ogni momento, sostituisce `uimode.js` e viene salvato lato server per utente (non solo in `localStorage`).
@@ -80,7 +80,7 @@ cosa sa fare → cosa può fare → cosa vede → come funziona sotto → cosa �
   "level": "pilot",
   "keywords": ["webcam", "volto", "face"],
   "wizard": [
-    { "id": "consent", "kind": "choice", "title": "Vuoi che Atena riconosca i volti?" },
+    { "id": "consent", "kind": "choice", "title": "Vuoi che Nuxiva riconosca i volti?" },
     { "id": "camera",  "kind": "device-pick", "source": "/api/cameras" }
   ],
   "flow_nodes": ["vision.detector"]
@@ -101,22 +101,22 @@ Per ogni pagina: **scopo**, **cosa vede ciascun livello**, **componenti**, **API
 
 ### 3.1 Accesso (Login)
 - **Scopo**: ingresso sicuro con PAM, già esistente.
-- **Wow**: l'orb di Atena si "sveglia" e scansiona; il campo password ha un feedback a onda; errore = vibrazione glitch.
+- **Wow**: l'orb di Nuxiva si "sveglia" e scansiona; il campo password ha un feedback a onda; errore = vibrazione glitch.
 - **Sicurezza**: rate limit esponenziale per IP+utente, cookie `__Host-` `HttpOnly` `Secure` `SameSite=Strict`,
   rotazione dell'id di sessione al login, WebAuthn/passkey opzionale come secondo fattore, messaggio di errore uniforme.
 - **API**: `POST /api/auth/login`, `POST /api/auth/webauthn/*`, `POST /api/auth/logout`.
 
-### 3.2 Primo avvio — "Risveglio di Atena" (wizard a step)
+### 3.2 Primo avvio — "Risveglio di Nuxiva" (wizard a step)
 Mostrato al primo login o finché la checklist non è completa. 7 step, ognuno una schermata piena con una sola domanda:
 
-1. **Lingua e voce** — Atena parla e chiede «Come ti chiami?».
+1. **Lingua e voce** — Nuxiva parla e chiede «Come ti chiami?».
 2. **Livello** — Esploratore / Pilota / Architetto, con tre card illustrate.
-3. **Dove pensa Atena** — «Su questo computer / su un altro / nel cloud» (riusa `brain-mode` di `packages`), con test
+3. **Dove pensa Nuxiva** — «Su questo computer / su un altro / nel cloud» (riusa `brain-mode` di `packages`), con test
    di velocità reale e risultato in "stelle".
 4. **Sensi** — telecamera, microfono, mani: anteprima live, consenso esplicito per ogni senso.
 5. **Casa** — rilevamento automatico di Home Assistant, stanze e persone.
 6. **Regole** — scegli un profilo di fiducia (Prudente / Equilibrato / Autonomo) che imposta `laws` e `autonomy`.
-7. **Pronto** — riepilogo animato, "Atena è pronta al 100 %", con anello che si chiude.
+7. **Pronto** — riepilogo animato, "Nuxiva è pronta al 100 %", con anello che si chiude.
 
 - Ogni step è **salvabile e ripristinabile** (bozza lato server), salto sempre possibile, «Rifai la procedura» dalla Plancia.
 - **Componenti**: `<at-stepper>`, `<at-choice-card>`, `<at-device-preview>`, `<at-orb-guide>`.
@@ -139,7 +139,7 @@ Sotto-pagine a schede orizzontali:
 3. **Cloud** — 22 fornitori, chiavi in `vault` cifrate, mai rimostrate in chiaro (solo ultime 4 cifre).
 4. **Ruoli** — i ruoli di `brain/roles.py` (Conversazione, Ragionamento, Ricercatore, Domotico, ...) come card
    con catena di cervelli ordinabile via drag & drop.
-5. **Memoria** — `mind` + `vault`: cosa ricorda Atena, ricerca, oblio selettivo (diritto all'oblio).
+5. **Memoria** — `mind` + `vault`: cosa ricorda Nuxiva, ricerca, oblio selettivo (diritto all'oblio).
 6. **Studio** — `study` + `soup`: cosa sta imparando, calendario, risultati.
 
 - **Esploratore**: vede solo «Quanto è intelligente / quanto è veloce / quanto è privata» con tre slider che scelgono un preset.
@@ -189,7 +189,7 @@ Un'unica pagina che contiene **tutti** i tool.
 ### 3.11 Elementi globali
 - **Command palette** `Ctrl/⌘ + K`: cerca pagine, strumenti, impostazioni, azioni («riavvia voce», «apri firewall»).
 - **Comando vocale**: microfono nella barra, stesso motore della palette.
-- **Atena Orb**: guida contestuale, pulsante «Spiegamelo semplice» su ogni schermata.
+- **Nuxiva Orb**: guida contestuale, pulsante «Spiegamelo semplice» su ogni schermata.
 - **Centro notifiche** e **toast** con «Annulla» per 10 secondi su ogni modifica reversibile.
 - **Selettore livello** e lingua sempre visibili.
 
@@ -198,7 +198,7 @@ Un'unica pagina che contiene **tutti** i tool.
 ## 4. Flow Studio — il diagramma di flusso dei ragionamenti
 
 ### 4.1 Concetto
-Atena fornisce **flussi predefiniti** (come ragiona oggi). L'utente li vede come un grafo di nodi; può:
+Nuxiva fornisce **flussi predefiniti** (come ragiona oggi). L'utente li vede come un grafo di nodi; può:
 1. **scegliere un template** (Esploratore);
 2. **cambiare l'algoritmo di un nodo** da un menu di alternative con pro/contro (Pilota);
 3. **trascinare, aggiungere, collegare nodi** e creare flussi propri (Architetto).
@@ -249,7 +249,7 @@ hardware», calcolato da `governor/profile.py`.
 - **Confronto A/B**: stessa frase su due flussi affiancati, con differenze evidenziate e voto dell'utente.
 - **Versioni**: bozza → validazione → pubblicazione; cronologia con diff visuale e **rollback in un click**;
   annulla/ripeti illimitato in sessione.
-- **Rete di sicurezza**: se un flusso pubblicato produce errori sopra soglia, Atena torna da sola all'ultima versione
+- **Rete di sicurezza**: se un flusso pubblicato produce errori sopra soglia, Nuxiva torna da sola all'ultima versione
   stabile e lo notifica (stesso principio del rollback degli aggiornamenti).
 - **Accessibilità**: ogni operazione è possibile anche da tastiera e da lista (vista "Elenco" alternativa al grafo).
 
@@ -294,7 +294,7 @@ features/flows/
 │   ├── simulate_flow.py
 │   └── ports.py                # interfacce (Protocol): FlowRepository, AlgorithmRegistry, Signer, Clock, EventLedger
 ├── infrastructure/
-│   ├── json_repository.py      # /var/lib/atena/flows, scrittura atomica (tmp + fsync + rename), permessi 0600
+│   ├── json_repository.py      # /var/lib/nuxiva/flows, scrittura atomica (tmp + fsync + rename), permessi 0600
 │   ├── hmac_signer.py          # firma HMAC-SHA256 con chiave in vault, confronto a tempo costante
 │   ├── registry.py             # catalogo algoritmi: adattatori verso brain.scope, understanding.router, team.router, …
 │   ├── ledger.py               # ogni pubblicazione/rollback è un evento immutabile
@@ -361,7 +361,7 @@ web/nexus/
 │   ├── zones.js
 │   └── search-index.js
 ├── design/                     # design system
-│   ├── tokens.css              # evoluzione di shared/atena.css
+│   ├── tokens.css              # evoluzione di shared/nuxiva.css
 │   ├── motion.css              # rispetta prefers-reduced-motion
 │   └── components/             # at-card, at-stepper, at-toggle3, at-radar, at-orb, at-palette, at-toast, ...
 ├── features/                   # una cartella per pagina, ciascuna con view + controller
@@ -406,18 +406,18 @@ rendering su `<canvas>` con lo stesso modello.
 
 **Concept: "Nexus olografico"** — il pannello è la plancia di comando di un'intelligenza viva, non un gestionale.
 
-1. **Atena Orb** — una sfera di luce (riuso del motore 3D del display, versione leggera in WebGL con fallback CSS)
+1. **Nuxiva Orb** — una sfera di luce (riuso del motore 3D del display, versione leggera in WebGL con fallback CSS)
    che respira, cambia colore con lo stato, parla e indica con un raggio luminoso l'elemento da toccare. È la guida
    dell'Esploratore e l'indicatore di salute del Pilota.
 2. **Mappa neurale viva** — in Plancia e nel Flow Studio le richieste reali scorrono come particelle lungo il grafo:
-   si *vede* Atena pensare.
+   si *vede* Nuxiva pensare.
 3. **Transizioni spaziali** — passando da una zona all'altra la camera "vola" nella costellazione (View Transitions API);
    aprire uno strumento è uno zoom sul suo satellite.
 4. **Materiali** — vetro scuro con bordi a luce ciano, aurora di sfondo che si muove lentamente, griglia olografica in
    prospettiva, tipografia Inter + JetBrains Mono per i dati, micro-glow sui valori che cambiano.
 5. **Suono e aptica** — riuso di `shared/sfx.js` per conferme sottili; vibrazione su mobile; tutto disattivabile.
-6. **Replay del ragionamento** — ogni risposta di Atena si può "riavvolgere" e riguardare nodo per nodo.
-7. **Progressione** — per l'Esploratore: anello «Atena è pronta all'82 %», piccole medaglie quando si attiva un senso,
+6. **Replay del ragionamento** — ogni risposta di Nuxiva si può "riavvolgere" e riguardare nodo per nodo.
+7. **Progressione** — per l'Esploratore: anello «Nuxiva è pronta all'82 %», piccole medaglie quando si attiva un senso,
    linguaggio caldo e illustrato.
 8. **Modalità "Spiegamelo"** — su qualsiasi elemento, l'Orb spiega in parole semplici cosa fa e cosa succede se lo cambi.
 9. **Accessibile per davvero** — contrasto AA, focus visibile luminoso, navigazione da tastiera completa,
@@ -427,7 +427,7 @@ rendering su `<canvas>` con lo stesso modello.
 
 ## 7. Roadmap a fasi
 
-La nuova interfaccia vive su `/nexus` dietro l'impostazione `ATENA_NEXUS_UI`; il pannello attuale resta su `/` finché
+La nuova interfaccia vive su `/nexus` dietro l'impostazione `NUXIVA_NEXUS_UI`; il pannello attuale resta su `/` finché
 non si raggiunge la parità. Nessuna rottura per gli utenti esistenti.
 
 | Fase | Contenuto | Esito verificabile |
@@ -435,7 +435,7 @@ non si raggiunge la parità. Nessuna rottura per gli utenti esistenti.
 | **F0 — Fondamenta** (1 sett.) | design token, componenti base, `core/*`, CSP rigorosa su `/nexus`, livello lato server | pagina vuota con login, palette e cambio livello; test di sicurezza header |
 | **F1 — Shell e Plancia** (1–2 sett.) | navigazione 8 zone, `nexus_api`, Plancia per i 3 livelli, ponte legacy | ogni scheda esistente raggiungibile dalla nuova shell |
 | **F2 — Strumenti** (2 sett.) | catalogo unificato, pagina strumento a template, `zone/family/level/wizard` nel manifest, migrazione delle categorie | tutte le 63 feature visibili e configurabili; wizard su 5 feature pilota (vision, ear, home_assistant, telegram, brain) |
-| **F3 — Primo avvio** (1 sett.) | wizard "Risveglio di Atena" a 7 step | un utente nuovo arriva a un sistema funzionante senza aprire altre pagine |
+| **F3 — Primo avvio** (1 sett.) | wizard "Risveglio di Nuxiva" a 7 step | un utente nuovo arriva a un sistema funzionante senza aprire altre pagine |
 | **F4 — Flow Studio MVP** (3 sett.) | feature `flows` (dominio, casi d'uso, repository, firma), catalogo dagli algoritmi già esistenti, canvas sola lettura + cambio algoritmo per nodo, template | il flusso principale è visibile e modificabile; il motore legge le scelte dal runtime con fallback |
 | **F5 — Flow Studio completo** (3 sett.) | drag & drop, porte tipizzate, banco di prova in simulazione, A/B, versioni, rollback automatico | un esperto crea un flusso personalizzato, lo prova, lo pubblica e lo annulla |
 | **F6 — Nuovi algoritmi** (2–3 sett.) | cache semantica, bandit UCB, BM25/ibrido, Tree-of-Thoughts, self-consistency, MMR | ogni algoritmo con test e metriche reali nel radar |

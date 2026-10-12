@@ -11,7 +11,7 @@
     "web",
     "documents"
   ],
-  "description": "Documenti e progetti creati da Atena (Word, Excel, PowerPoint, LibreOffice, PDF) con anteprima, oppure pagine web e PDF.",
+  "description": "Documenti e progetti creati da Nuxiva (Word, Excel, PowerPoint, LibreOffice, PDF) con anteprima, oppure pagine web e PDF.",
   "ttl": 1800,
   "demo": {
     "type": "office",

@@ -18,7 +18,7 @@ from server.core.orchestrator.system1_router import system1_router, System1Inten
 from server.core.reasoning.system2_engine import system2_engine
 from server.core.telemetry.journey import journey
 
-logger = logging.getLogger("atena.dispatcher")
+logger = logging.getLogger("nuxiva.dispatcher")
 
 class OrchestratorDispatcher:
     def __init__(self) -> None:
@@ -289,7 +289,7 @@ class OrchestratorDispatcher:
             )
             res = AgentTaskResponse(
                 task_id=task_id,
-                agent_id="atena_conversation",
+                agent_id="nuxiva_conversation",
                 status="SUCCESS",
                 result_data={
                     "intent": extracted_intent,

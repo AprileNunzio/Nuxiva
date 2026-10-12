@@ -12,7 +12,7 @@
     const hit = EMOJI.find(([re]) => re.test(s));
     return hit ? hit[1] : "bell";
   };
-  AtenaDesk.register("notice", {
+  NuxivaDesk.register("notice", {
     render(el, d, ctx) {
       const warn = d.level === "warn";
       el.innerHTML = `${ctx.head({ label: warn ? "Attenzione" : "Avviso" })}

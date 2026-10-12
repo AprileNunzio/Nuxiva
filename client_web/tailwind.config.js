@@ -6,7 +6,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        atena: {
+        nuxiva: {
           cyan: '#00f0ff',
           blue: '#0051ff',
           dark: '#030712',

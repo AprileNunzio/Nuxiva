@@ -32,25 +32,25 @@ class RoleConfigTest(unittest.TestCase):
             self.assertFalse(cfg[f"{role.id}_custom"])
 
     def test_specialists_follow_deep_list_when_empty(self):
-        cfg = config_with({"ATENA_LLM_DEEP_ORDER": "qwen2.5:7b,qwen2.5:3b"})
+        cfg = config_with({"NUXIVA_LLM_DEEP_ORDER": "qwen2.5:7b,qwen2.5:3b"})
         for role in ROLES:
             if role.id not in ("chat", "deep"):
                 self.assertEqual(cfg[role.id], cfg["deep"])
 
     def test_custom_specialist_overrides_and_dedupes(self):
-        cfg = config_with({"ATENA_LLM_RICERCATORE_ORDER": "gemma2:9b,gemma2:9b,llama3.1:8b"})
+        cfg = config_with({"NUXIVA_LLM_RICERCATORE_ORDER": "gemma2:9b,gemma2:9b,llama3.1:8b"})
         self.assertEqual(cfg["ricercatore"], ["gemma2:9b", "llama3.1:8b"])
         self.assertTrue(cfg["ricercatore_custom"])
         self.assertFalse(cfg["domotico_custom"])
 
     def test_chat_and_deep_defaults_follow_hardware_models(self):
-        cfg = config_with({"ATENA_LLM_MODEL": "big", "ATENA_LLM_FAST_MODEL": "small"})
+        cfg = config_with({"NUXIVA_LLM_MODEL": "big", "NUXIVA_LLM_FAST_MODEL": "small"})
         self.assertEqual(cfg["chat"], ["small", "big"])
         self.assertEqual(cfg["deep"], ["big", "small"])
 
     def test_invalid_routing_falls_back_to_auto(self):
-        self.assertEqual(config_with({"ATENA_LLM_ROUTING": "x"})["routing"], "auto")
-        self.assertEqual(config_with({"ATENA_LLM_ROUTING": "1"})["routing"], "1")
+        self.assertEqual(config_with({"NUXIVA_LLM_ROUTING": "x"})["routing"], "auto")
+        self.assertEqual(config_with({"NUXIVA_LLM_ROUTING": "1"})["routing"], "1")
 
     def test_max_tokens_cover_all_roles(self):
         self.assertEqual(set(module.MAX_TOKENS), {r.id for r in ROLES})

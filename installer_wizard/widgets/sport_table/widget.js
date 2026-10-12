@@ -1,6 +1,6 @@
 (() => {
   const dot = (c) => `#${/^[0-9a-f]{6}$/i.test(c || "") ? c : "29e0ff"}`;
-  AtenaDesk.register("sport_table", {
+  NuxivaDesk.register("sport_table", {
     render(el, d, ctx) {
       const rows = d.rows || [], mark = new Set(d.highlight || []);
       const focus = rows.findIndex((r) => mark.has(r.id));

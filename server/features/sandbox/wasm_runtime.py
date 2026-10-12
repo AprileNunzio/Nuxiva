@@ -1,7 +1,7 @@
 import logging
 from server.shared.i18n.provider import global_translator
 
-log = logging.getLogger("atena.sandbox.wasm")
+log = logging.getLogger("nuxiva.sandbox.wasm")
 
 try:
     import wasmtime

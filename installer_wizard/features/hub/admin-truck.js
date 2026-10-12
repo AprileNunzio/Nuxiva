@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin;
+  const A = window.NuxivaAdmin;
   const SPEED = 0.16, LEAVE = 4.5, MAX_TRUCKS = 3;
 
   function model(world, color) {

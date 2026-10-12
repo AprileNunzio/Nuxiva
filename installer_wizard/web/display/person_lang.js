@@ -1,15 +1,15 @@
 (() => {
-  const D = window.AtenaDisplay;
+  const D = window.NuxivaDisplay;
   const RETURN_AFTER = 60000;
   let following = "", lastSeen = 0;
 
   function systemLanguage(i18n) {
-    const wanted = (window.ATENA_UI_LANG || navigator.language || "it").slice(0, 2).toLowerCase();
+    const wanted = (window.NUXIVA_UI_LANG || navigator.language || "it").slice(0, 2).toLowerCase();
     return i18n.languages.includes(wanted) ? wanted : "it";
   }
 
   D.followLanguage = (presence) => {
-    const i18n = window.AtenaI18n;
+    const i18n = window.NuxivaI18n;
     if (!i18n) return;
     const people = (presence && presence.people) || [];
     const langs = [...new Set(people.filter((p) => p.known && p.ui_lang).map((p) => p.ui_lang))];

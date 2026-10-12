@@ -4,7 +4,7 @@ import threading
 from connection import tls
 from connection.client import Client, ServerError, Unauthorized
 
-log = logging.getLogger("atena.link")
+log = logging.getLogger("nuxiva.link")
 MIN_INTERVAL = 10.0
 
 
@@ -29,7 +29,7 @@ class Heartbeat(threading.Thread):
                 return
             except ServerError as exc:
                 if self.online:
-                    log.warning("ATENA non raggiungibile: %s", exc)
+                    log.warning("NUXIVA non raggiungibile: %s", exc)
                 self.online = False
             else:
                 self.online = True

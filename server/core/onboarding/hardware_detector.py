@@ -26,8 +26,11 @@ class HardwareProfile(BaseModel):
     system2_quantization: str
     supports_local: bool
     recommended_provider: str
+    supports_ternary_27b: bool = False
+    recommended_ternary_model: str = "bonsai-27b"
 
 class HardwareDetector:
+
     @staticmethod
     def _detect_cuda() -> tuple[bool, Optional[str], float, float]:
         if shutil.which("nvidia-smi") is not None:
@@ -144,6 +147,9 @@ class HardwareDetector:
             local = False
             provider = "gemini"
 
+        supports_ternary = (ram_total >= 7.5 or vram_total >= 5.5)
+        ternary_model = "bonsai-27b" if supports_ternary else "bonsai-8b"
+
         return HardwareProfile(
             ram_total_gb=ram_total,
             ram_available_gb=ram_avail,
@@ -161,6 +167,9 @@ class HardwareDetector:
             system2_quantization=quant,
             supports_local=local,
             recommended_provider=provider,
+            supports_ternary_27b=supports_ternary,
+            recommended_ternary_model=ternary_model,
         )
+
 
 hardware_detector = HardwareDetector()

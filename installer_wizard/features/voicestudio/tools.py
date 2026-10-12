@@ -62,7 +62,7 @@ def _voice(raw: str) -> str:
 async def studio_voices() -> str:
     rows = await client.voices(fresh=True)
     main = catalog.voice_name()
-    return "\n".join(f"- {v['name']} ({v['id']}){' ← voce di Atena' if v['id'] == main else ''}" for v in rows) \
+    return "\n".join(f"- {v['name']} ({v['id']}){' ← voce di Nuxiva' if v['id'] == main else ''}" for v in rows) \
         or "nessuna voce nello Studio"
 
 
@@ -80,7 +80,7 @@ async def transcribe_audio(path: str, language: str = "") -> str:
 
 @tool("speak_to_file", "legge ad alta voce un testo o un documento con una voce dello Studio e salva l'audio (audiolibro, "
       "messaggio, lettura) nella cartella condivisa", {"text": "testo da leggere (oppure vuoto)", "path": "documento da leggere "
-      "(oppure vuoto)", "voice": "nome della voce (vuoto = voce di Atena)", "name": "nome del file"}, agent="voicestudio")
+      "(oppure vuoto)", "voice": "nome della voce (vuoto = voce di Nuxiva)", "name": "nome del file"}, agent="voicestudio")
 async def speak_to_file(text: str = "", path: str = "", voice: str = "", name: str = "lettura") -> str:
     await client.voices()
     if path:

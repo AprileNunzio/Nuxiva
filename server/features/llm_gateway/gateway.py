@@ -11,7 +11,7 @@ from server.features.llm_gateway.contracts import SYNTHETIC_MODEL, LLMRequest, L
 from server.features.llm_gateway.tuning import apply as apply_tuning
 from server.shared.i18n.provider import global_translator
 
-logger = logging.getLogger("atena.llm_gateway")
+logger = logging.getLogger("nuxiva.llm_gateway")
 
 class LLMGateway:
     def __init__(self) -> None:
@@ -60,7 +60,7 @@ class LLMGateway:
         return self._fallback_synthetic_response(request, start_time, last_error)
 
     async def _call_ollama(self, request: LLMRequest, start_time: float) -> LLMResponse:
-        chain = [m for m in request.models if m] or brain_order_for(request.component) or [settings.ATENA_LLM_MODEL or request.model_name]
+        chain = [m for m in request.models if m] or brain_order_for(request.component) or [settings.NUXIVA_LLM_MODEL or request.model_name]
         messages = [{"role": m.role, "content": m.content} for m in request.messages]
         if request.system_prompt:
             messages.insert(0, {"role": "system", "content": request.system_prompt})
@@ -141,7 +141,7 @@ class LLMGateway:
             }
         }
 
-        gemini_model = settings.ATENA_GEMINI_MODEL
+        gemini_model = settings.NUXIVA_GEMINI_MODEL
 
         async with httpx.AsyncClient(timeout=60.0) as client:
             url = f"https://generativelanguage.googleapis.com/v1beta/models/{gemini_model}:generateContent"
@@ -164,7 +164,7 @@ class LLMGateway:
         for m in request.messages:
             messages.append({"role": m.role, "content": m.content})
         payload = {
-            "model": settings.ATENA_OPENAI_MODEL,
+            "model": settings.NUXIVA_OPENAI_MODEL,
             "messages": messages,
             "max_tokens": request.max_tokens,
             "temperature": request.temperature,
@@ -182,7 +182,7 @@ class LLMGateway:
             elapsed = (time.time() - start_time) * 1000
             return LLMResponse(
                 content=content,
-                model_used=settings.ATENA_OPENAI_MODEL,
+                model_used=settings.NUXIVA_OPENAI_MODEL,
                 tokens_consumed=tokens,
                 duration_ms=elapsed,
             )
@@ -194,7 +194,7 @@ class LLMGateway:
             messages.append({"role": role, "content": m.content})
 
         payload = {
-            "model": settings.ATENA_CLAUDE_MODEL,
+            "model": settings.NUXIVA_CLAUDE_MODEL,
             "messages": messages,
             "max_tokens": request.max_tokens,
             "temperature": request.temperature,
@@ -217,7 +217,7 @@ class LLMGateway:
             elapsed = (time.time() - start_time) * 1000
             return LLMResponse(
                 content=content,
-                model_used=data.get("model") or settings.ATENA_CLAUDE_MODEL,
+                model_used=data.get("model") or settings.NUXIVA_CLAUDE_MODEL,
                 tokens_consumed=tokens,
                 duration_ms=elapsed
             )

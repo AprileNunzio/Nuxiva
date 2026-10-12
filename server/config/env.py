@@ -4,12 +4,12 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class ServerSettings(BaseSettings):
-    ATENA_ENV: Literal["development", "production", "testing"] = "development"
-    ATENA_HOST: str = "0.0.0.0"
-    ATENA_CORS_ORIGINS: str = ""
-    ATENA_PORT: int = 8443
-    ATENA_WEB_PORT: int = 80
-    ATENA_SECRET_KEY: str = (
+    NUXIVA_ENV: Literal["development", "production", "testing"] = "development"
+    NUXIVA_HOST: str = "0.0.0.0"
+    NUXIVA_CORS_ORIGINS: str = ""
+    NUXIVA_PORT: int = 8443
+    NUXIVA_WEB_PORT: int = 80
+    NUXIVA_SECRET_KEY: str = (
         "0000000000000000000000000000000000000000000000000000000000000000"
     )
     DATA_DIR: str = "./data"
@@ -24,33 +24,35 @@ class ServerSettings(BaseSettings):
     ANTHROPIC_API_KEY: str = ""
     GOOGLE_API_KEY: str = ""
     GEMINI_API_KEY: str = ""
-    ATENA_LLM_MODEL: str = ""
-    ATENA_CLAUDE_MODEL: str = "claude-sonnet-5-5"
-    ATENA_OPENAI_MODEL: str = "gpt-4.1-mini"
-    ATENA_GEMINI_MODEL: str = "gemini-2.5-flash"
-    ATENA_LLM_FAST_MODEL: str = ""
-    ATENA_LLM_CHAT_ORDER: str = ""
-    ATENA_LLM_DEEP_ORDER: str = ""
-    ATENA_LLM_RICERCATORE_ORDER: str = ""
-    ATENA_LLM_DOMOTICO_ORDER: str = ""
-    ATENA_LLM_STUDIO_ORDER: str = ""
-    ATENA_LLM_CODER_ORDER: str = ""
-    ATENA_LLM_3D_ORDER: str = ""
-    ATENA_EMBED_MODEL: str = "nomic-embed-text"
-    ATENA_ASSISTANT_NAME: str = ""
-    ATENA_USER_NAME: str = ""
+    NUXIVA_LLM_MODEL: str = ""
+    NUXIVA_CLAUDE_MODEL: str = "claude-sonnet-5-5"
+    NUXIVA_OPENAI_MODEL: str = "gpt-4.1-mini"
+    NUXIVA_GEMINI_MODEL: str = "gemini-2.5-flash"
+    NUXIVA_LLM_FAST_MODEL: str = ""
+    NUXIVA_LLM_CHAT_ORDER: str = ""
+    NUXIVA_LLM_DEEP_ORDER: str = ""
+    NUXIVA_LLM_RICERCATORE_ORDER: str = ""
+    NUXIVA_LLM_DOMOTICO_ORDER: str = ""
+    NUXIVA_LLM_STUDIO_ORDER: str = ""
+    NUXIVA_LLM_CODER_ORDER: str = ""
+    NUXIVA_LLM_3D_ORDER: str = ""
+    NUXIVA_EMBED_MODEL: str = "nomic-embed-text"
+    NUXIVA_ASSISTANT_NAME: str = ""
+    NUXIVA_USER_NAME: str = ""
+    NUXIVA_DEFAULT_LANGUAGE: str = "it"
     HOME_ASSISTANT_URL: str = "http://127.0.0.1:8123"
+
     HOME_ASSISTANT_TOKEN: str = ""
     FRIGATE_URL: str = "http://127.0.0.1:5000"
     CODE_SANDBOX_TIMEOUT_SECONDS: int = 30
-    SANDBOX_SOCKET_PATH: str = "/run/atena/sandbox/broker.sock"
+    SANDBOX_SOCKET_PATH: str = "/run/nuxiva/sandbox/broker.sock"
     SKILL_SANDBOX_MIN_STRENGTH: Literal["container", "userspace_kernel", "microvm"] = "microvm"
     SKILL_SANDBOX_EGRESS_MIN_STRENGTH: Literal["container", "userspace_kernel", "microvm"] = "userspace_kernel"
     SKILL_SYNTHESIS_PER_HOUR: int = 6
     CONSENSUS_CRITICAL_MIN_MODELS: int = 2
     CONSENSUS_CRITICAL_TIMEOUT_SECONDS: float = 45.0
-    BRAIN_ROUTES_PATH: str = "/run/atena/brain/routes.json"
-    ATENA_SUPERVISOR_URL: str = "http://127.0.0.1:8080"
+    BRAIN_ROUTES_PATH: str = "/run/nuxiva/brain/routes.json"
+    NUXIVA_SUPERVISOR_URL: str = "http://127.0.0.1:8080"
     
     # Proxmox Configuration
     PROXMOX_HOST: str = ""
@@ -66,5 +68,5 @@ class ServerSettings(BaseSettings):
 
 
 settings = ServerSettings()
-if not settings.ATENA_SECRET_KEY.strip("0"):
-    settings.ATENA_SECRET_KEY = secrets.token_hex(32)
+if not settings.NUXIVA_SECRET_KEY.strip("0"):
+    settings.NUXIVA_SECRET_KEY = secrets.token_hex(32)

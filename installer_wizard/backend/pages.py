@@ -9,7 +9,7 @@ from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 from access import NO_CACHE
-from config import FEATURES_DIR, ATENA_DIR, STATE_DIR, UI_LANGUAGES, WEB_DIR, read_env
+from config import FEATURES_DIR, NUXIVA_DIR, STATE_DIR, UI_LANGUAGES, WEB_DIR, read_env
 
 VENDOR_DIR = STATE_DIR / "vendor"
 VENDOR = {
@@ -44,9 +44,9 @@ _ASSET_RE = re.compile(r'((?:src|href)="/(?:static|vendor|features)/[^"?]+)"')
 
 def _asset_version() -> str:
     try:
-        head = (ATENA_DIR / ".git" / "HEAD").read_text().strip()
+        head = (NUXIVA_DIR / ".git" / "HEAD").read_text().strip()
         if head.startswith("ref:"):
-            head = (ATENA_DIR / ".git" / head[5:]).read_text().strip()
+            head = (NUXIVA_DIR / ".git" / head[5:]).read_text().strip()
         return head[:10]
     except OSError:
         return str(int(time.time()))
@@ -66,7 +66,7 @@ def face_options() -> dict:
         value = env.get(key, default)
         return value if value in options else default
 
-    hands = choice("ATENA_HANDS", ("auto", "1", "0"), "auto")
+    hands = choice("NUXIVA_HANDS", ("auto", "1", "0"), "auto")
     
     model_url = "/static/shared/models/head.glb"
     active_file = STATE_DIR / "avatars" / "active.txt"
@@ -80,13 +80,13 @@ def face_options() -> dict:
                         model_url = f"/api/avatars/serve/{active_name}/{f.name}"
                         break
 
-    return {"avatar": choice("ATENA_AVATAR", ("auto", "full", "light"), "auto"),
-            "style": choice("ATENA_AVATAR_STYLE", ("character", "hologram"), "character"), "color": color("ATENA_FACE_COLOR", "#29e0ff"),
+    return {"avatar": choice("NUXIVA_AVATAR", ("auto", "full", "light"), "auto"),
+            "style": choice("NUXIVA_AVATAR_STYLE", ("character", "hologram"), "character"), "color": color("NUXIVA_FACE_COLOR", "#29e0ff"),
             "model": model_url,
-            "hands": "0" if env.get("ATENA_VISION", "1") == "0" else hands,
-            "hands_fps": int(choice("ATENA_HANDS_FPS", ("10", "20", "30"), "20")),
-            "hands_count": int(choice("ATENA_HANDS_COUNT", ("1", "2"), "2")),
-            "hands_max_ms": int(choice("ATENA_HANDS_MAX_MS", ("30", "50", "90"), "50"))}
+            "hands": "0" if env.get("NUXIVA_VISION", "1") == "0" else hands,
+            "hands_fps": int(choice("NUXIVA_HANDS_FPS", ("10", "20", "30"), "20")),
+            "hands_count": int(choice("NUXIVA_HANDS_COUNT", ("1", "2"), "2")),
+            "hands_max_ms": int(choice("NUXIVA_HANDS_MAX_MS", ("30", "50", "90"), "50"))}
 
 
 def _assets(folder: Path, ext: str) -> list[str]:
@@ -107,14 +107,14 @@ def admin_parts() -> dict[str, str]:
 
 
 def ui_language() -> str:
-    value = read_env().get("ATENA_UI_LANG", "")
+    value = read_env().get("NUXIVA_UI_LANG", "")
     return value if value in UI_LANGUAGES else ""
 
 
 def render(html: str, lang: str = "") -> Response:
-    html = html.replace("</head>", f"<script>window.ATENA_FACE = {json.dumps(face_options())}; "
-                                   f"window.ATENA_ASSET_V = {json.dumps(ASSET_VERSION)}; "
-                                   f"window.ATENA_UI_LANG = {json.dumps(lang or ui_language())};</script>\n"
+    html = html.replace("</head>", f"<script>window.NUXIVA_FACE = {json.dumps(face_options())}; "
+                                   f"window.NUXIVA_ASSET_V = {json.dumps(ASSET_VERSION)}; "
+                                   f"window.NUXIVA_UI_LANG = {json.dumps(lang or ui_language())};</script>\n"
                                    '<script src="/static/shared/translate.js"></script>\n</head>', 1)
     html = _ASSET_RE.sub(lambda m: f'{m.group(1)}?v={ASSET_VERSION}"', html)
     return Response(html, media_type="text/html", headers=NO_CACHE)
@@ -122,9 +122,9 @@ def render(html: str, lang: str = "") -> Response:
 
 def page(name: str, lang: str = "") -> Response:
     html = (WEB_DIR / name).read_text(encoding="utf-8")
-    if "<atena-slot" in html:
+    if "<nuxiva-slot" in html:
         for key, value in admin_parts().items():
-            html = html.replace(f'<atena-slot name="{key}"></atena-slot>', value)
+            html = html.replace(f'<nuxiva-slot name="{key}"></nuxiva-slot>', value)
     return render(html, lang)
 
 

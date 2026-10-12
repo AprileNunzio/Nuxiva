@@ -21,7 +21,7 @@ class Google:
 
     @staticmethod
     def enabled() -> bool:
-        return env_get("ATENA_GOOGLE", "1") != "0"
+        return env_get("NUXIVA_GOOGLE", "1") != "0"
 
     def session(self, slug: str) -> Session | None:
         if not accounts.get(slug):
@@ -77,7 +77,7 @@ class Google:
                          "status": session.status if session else ("collegato" if entry else "non collegato"),
                          "unread": session.unread if session else None})
         return {"enabled": self.enabled(), "has_credentials": bool(cid and secret), "client_id": cid,
-                "redirect_uri": REDIRECT_URI, "remind_min": env_get("ATENA_GOOGLE_REMIND_MIN", "10"),
+                "redirect_uri": REDIRECT_URI, "remind_min": env_get("NUXIVA_GOOGLE_REMIND_MIN", "10"),
                 "default_services": DEFAULT_SERVICES.split(","),
                 "services": [{"id": s, "name": d["name"], "icon": d["icon"], "api": d["api"],
                               "workspace": bool(d.get("workspace"))} for s, d in SERVICES.items()],
@@ -134,7 +134,7 @@ class Google:
         while True:
             if self.enabled() and oauth.ready():
                 accounts.slugs()
-                minutes = int(env_get("ATENA_GOOGLE_REMIND_MIN", "10") or 10)
+                minutes = int(env_get("NUXIVA_GOOGLE_REMIND_MIN", "10") or 10)
                 here = identity.present()
                 full = time.time() - last_full >= 60
                 for profile in here:

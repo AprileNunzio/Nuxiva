@@ -6,13 +6,13 @@ from config import env_get
 from features.tv.m3u import PlaylistError
 from features.tv.store import tv_store
 
-log = logging.getLogger("atena.tv")
+log = logging.getLogger("nuxiva.tv")
 CHECK_EVERY = 1800.0
 
 
 def refresh_hours() -> float:
     try:
-        return max(1.0, min(168.0, float(env_get("ATENA_TV_REFRESH_H", "24"))))
+        return max(1.0, min(168.0, float(env_get("NUXIVA_TV_REFRESH_H", "24"))))
     except ValueError:
         return 24.0
 

@@ -3,7 +3,7 @@
   const STATE = { loading: "in collegamento", playing: "in onda", blocked: "audio disattivato", error: "non disponibile" };
 
   function ensure(src) {
-    if (window.AtenaTv) return Promise.resolve();
+    if (window.NuxivaTv) return Promise.resolve();
     return new Promise((ok, fail) => {
       const s = document.createElement("script");
       s.src = src; s.onload = ok; s.onerror = () => fail(new Error("lettore non disponibile"));
@@ -11,7 +11,7 @@
     });
   }
 
-  AtenaDesk.register("tv_player", {
+  NuxivaDesk.register("tv_player", {
     render(el, d, ctx) {
       const current = players.get(el);
       if (current && current.src === d.src) return;
@@ -24,7 +24,7 @@
       players.set(el, entry);
       if (!d.src) { msg.textContent = "Nessun canale"; return; }
       ensure("/static/shared/tvplayer.js")
-        .then(() => window.AtenaTv.play(video, d.src, (s) => { if (chip) chip.textContent = STATE[s] || s; }))
+        .then(() => window.NuxivaTv.play(video, d.src, (s) => { if (chip) chip.textContent = STATE[s] || s; }))
         .then((h) => { entry.handle = h; })
         .catch((e) => { msg.textContent = `Il canale non si apre: ${e.message}`; });
     },

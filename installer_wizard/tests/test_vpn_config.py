@@ -113,11 +113,11 @@ class OpenVpnTests(unittest.TestCase):
         self.assertIn("tls-crypt", secrets["blocks"])
         self.assertNotIn("tls-crypt", settings["blocks"])
         p = model.profile({"name": "Lavoro", "kind": "openvpn", "split": {"mode": "include", "networks": ["10.20.0.0/16"]}}, settings)
-        text = openvpn.render(p, secrets, "/etc/atena/vpn/x.auth")
+        text = openvpn.render(p, secrets, "/etc/nuxiva/vpn/x.auth")
         self.assertIn("script-security 0", text)
         self.assertIn(f"dev {p.interface}", text)
         self.assertIn("route 10.20.0.0 255.255.0.0 vpn_gateway", text)
-        self.assertIn("auth-user-pass /etc/atena/vpn/x.auth", text)
+        self.assertIn("auth-user-pass /etc/nuxiva/vpn/x.auth", text)
 
     def test_dangerous_directives_are_refused(self):
         for evil in ("up /tmp/x.sh", "script-security 2", "plugin /lib/evil.so", "tls-verify /bin/sh", "ca /etc/shadow",
@@ -144,9 +144,9 @@ class IpsecAndMeshTests(unittest.TestCase):
     def test_tailscale_and_zerotier_commands_have_no_shell(self):
         p = model.profile({"name": "Mesh", "kind": "tailscale"},
                           mesh.tailscale_settings({"login_server": "https://hs.example.com", "exit_node": "100.64.0.1"}))
-        args = mesh.tailscale_up(p, "/etc/atena/vpn/k")
+        args = mesh.tailscale_up(p, "/etc/nuxiva/vpn/k")
         self.assertIn("--login-server=https://hs.example.com", args)
-        self.assertIn("--auth-key=file:/etc/atena/vpn/k", args)
+        self.assertIn("--auth-key=file:/etc/nuxiva/vpn/k", args)
         with self.assertRaises(ValueError):
             mesh.zerotier_settings({"network_id": "zz; reboot"})
         with self.assertRaises(ValueError):
@@ -179,7 +179,7 @@ class GuardTests(unittest.TestCase):
         self.assertIn(f'ip saddr 10.66.0.0/24 oifname != "{p.interface}" masquerade', script)
 
     def test_nothing_active_removes_the_table(self):
-        self.assertEqual(guard.compile_script([]).splitlines(), ["table inet atena_vpn", "delete table inet atena_vpn"])
+        self.assertEqual(guard.compile_script([]).splitlines(), ["table inet nuxiva_vpn", "delete table inet nuxiva_vpn"])
 
     @unittest.skipUnless(shutil.which("nft") and hasattr(os, "geteuid") and os.geteuid() == 0, "serve nft come root")
     def test_scripts_are_accepted_by_nftables(self):
@@ -188,7 +188,7 @@ class GuardTests(unittest.TestCase):
         ipsec_client = guard.Tunnel(model.profile({"name": "IKE", "kind": "ipsec", "kill_switch": True}, {}))
         script = guard.compile_script([self.tunnel(kill_switch=True), server, ipsec_client,
                                        self.tunnel(kill_switch=True, split={"mode": "include", "networks": ["fd00::/8"]})])
-        script = script.replace("delete table inet atena_vpn\n", "", 1)
+        script = script.replace("delete table inet nuxiva_vpn\n", "", 1)
         with tempfile.NamedTemporaryFile("w", suffix=".nft", delete=False) as handle:
             handle.write(script)
         try:

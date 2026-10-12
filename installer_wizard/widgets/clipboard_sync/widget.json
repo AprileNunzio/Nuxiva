@@ -11,7 +11,7 @@
   "description": "Ultimo testo copiato, condiviso tra i dispositivi.",
   "ttl": 60,
   "demo": {
-    "content": "ssh atena@192.168.1.40 -p 2222\nPassword Wi-Fi ospiti nel gestore password"
+    "content": "ssh nuxiva@192.168.1.40 -p 2222\nPassword Wi-Fi ospiti nel gestore password"
   },
   "tone": "blue"
 }

@@ -8,7 +8,7 @@ import time
 from typing import Callable, Optional, Sequence, Tuple
 from urllib.parse import urlsplit
 
-logger = logging.getLogger("atena.sandbox_broker.egress")
+logger = logging.getLogger("nuxiva.sandbox_broker.egress")
 
 ALLOWED_PORTS = (80, 443)
 HEAD_LIMIT = 16384

@@ -28,8 +28,8 @@ class PrivacyTest(unittest.TestCase):
             patcher = mock.patch.object(target, "time", self.clock.time)
             patcher.start()
             self.addCleanup(patcher.stop)
-        write_env({"ATENA_PRIVACY_AUTOCLOSE": "1", "ATENA_PRIVACY_AWAY_S": "10", "ATENA_PRIVACY_VOICE_S": "30"})
-        self.addCleanup(lambda: write_env({"ATENA_PRIVACY_AUTOCLOSE": "1", "ATENA_PRIVACY_AWAY_S": "10", "ATENA_PRIVACY_VOICE_S": "30"}))
+        write_env({"NUXIVA_PRIVACY_AUTOCLOSE": "1", "NUXIVA_PRIVACY_AWAY_S": "10", "NUXIVA_PRIVACY_VOICE_S": "30"})
+        self.addCleanup(lambda: write_env({"NUXIVA_PRIVACY_AUTOCLOSE": "1", "NUXIVA_PRIVACY_AWAY_S": "10", "NUXIVA_PRIVACY_VOICE_S": "30"}))
         privacy_module.privacy.gone_since = None
         self.addCleanup(lambda: setattr(store, "presence", {"status": "starting", "people": [], "summary": ""}))
         store.presence = OK
@@ -109,11 +109,11 @@ class PrivacyTest(unittest.TestCase):
         self.assertFalse(store.privacy["away"])
 
     def test_the_whole_thing_can_be_switched_off_and_tuned(self):
-        write_env({"ATENA_PRIVACY_AUTOCLOSE": "0"})
+        write_env({"NUXIVA_PRIVACY_AUTOCLOSE": "0"})
         self.desk.show("document_viewer", {"x": 1}, intent=True)
         store.presence = EMPTY
         self.assertFalse(self.sweep(600))
-        write_env({"ATENA_PRIVACY_AUTOCLOSE": "1", "ATENA_PRIVACY_VOICE_S": "0", "ATENA_PRIVACY_AWAY_S": "60"})
+        write_env({"NUXIVA_PRIVACY_AUTOCLOSE": "1", "NUXIVA_PRIVACY_VOICE_S": "0", "NUXIVA_PRIVACY_AWAY_S": "60"})
         store.presence = OK
         self.sweep()
         self.desk.show("document_viewer", {"x": 1}, intent=True)

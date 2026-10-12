@@ -6,7 +6,7 @@ from features.voices import languages
 PIVOT = "it"
 CACHE_SIZE = 256
 MAX_CHARS = 1200
-log = logging.getLogger("atena.locale")
+log = logging.getLogger("nuxiva.locale")
 
 TO_PIVOT = ("Traduci in italiano la richiesta dell'utente, mantenendo nomi propri, numeri, orari e unità. "
             "Rispondi solo con la traduzione, senza virgolette né commenti.")

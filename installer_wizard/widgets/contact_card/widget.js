@@ -1,5 +1,5 @@
 (() => {
-  AtenaDesk.register("contact_card", {
+  NuxivaDesk.register("contact_card", {
     render(el, d, ctx) {
       const name = String(d.name || "");
       el.innerHTML = `${ctx.head({ icon: "contact", label: "Contatto" })}

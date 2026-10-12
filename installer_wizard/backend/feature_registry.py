@@ -14,7 +14,7 @@ import psutil
 from config import DEMO, FEATURES_DIR, EDITABLE_KEYS, STATE_DIR, is_secret, read_env, write_env
 from state import store
 
-log = logging.getLogger("atena.features")
+log = logging.getLogger("nuxiva.features")
 
 SYSTEM_DIR = FEATURES_DIR
 USER_DIR = STATE_DIR / "features"

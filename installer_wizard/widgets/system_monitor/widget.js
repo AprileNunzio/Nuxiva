@@ -1,6 +1,6 @@
 (() => {
   const val = (v) => (v === undefined || v === null || v === "" || !Number.isFinite(Number(v)) ? null : Math.round(Math.max(0, Math.min(100, Number(v)))));
-  AtenaDesk.register("system_monitor", {
+  NuxivaDesk.register("system_monitor", {
     render(el, d, ctx) {
       const cpu = val(d.cpu), ram = val(d.ram);
       const hot = (cpu ?? 0) > 80 || (ram ?? 0) > 85;

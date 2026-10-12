@@ -1,6 +1,6 @@
 (() => {
-  const D = window.AtenaDisplay;
-  const KEY = "atena-music-device";
+  const D = window.NuxivaDisplay;
+  const KEY = "nuxiva-music-device";
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   let id = "";
   try {
@@ -9,7 +9,7 @@
   } catch (err) { id = `t${Math.random().toString(36).slice(2, 9)}`; }
   const device = `display:${id}`;
   const node = new URLSearchParams(location.search).get("node");
-  const name = node ? `Schermo ${node}` : D.local ? "Schermo di Atena" : `Schermo ${id.slice(0, 4)}`;
+  const name = node ? `Schermo ${node}` : D.local ? "Schermo di Nuxiva" : `Schermo ${id.slice(0, 4)}`;
   let audio = null, target = 0.6, reported = 0;
 
   const post = (state, ended) => {

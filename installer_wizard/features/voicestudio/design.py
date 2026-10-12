@@ -15,12 +15,12 @@ CHOICES = {
 }
 
 SENTENCES = {
-    "it": "Mi chiamo {name}. Do il mio consenso perché Atena usi la mia voce in questa casa. Oggi è una bella giornata e leggo con calma.",
-    "en": "My name is {name}. I give my consent for Atena to use my voice in this home. Today is a nice day and I read calmly.",
-    "fr": "Je m'appelle {name}. Je donne mon accord pour qu'Atena utilise ma voix dans cette maison. Aujourd'hui il fait beau et je lis calmement.",
-    "es": "Me llamo {name}. Doy mi consentimiento para que Atena use mi voz en esta casa. Hoy es un buen día y leo con calma.",
-    "de": "Ich heiße {name}. Ich erlaube Atena, meine Stimme in diesem Zuhause zu verwenden. Heute ist ein schöner Tag und ich lese ruhig.",
-    "pt": "Meu nome é {name}. Dou o meu consentimento para que a Atena use a minha voz nesta casa. Hoje é um belo dia e leio com calma.",
+    "it": "Mi chiamo {name}. Do il mio consenso perché Nuxiva usi la mia voce in questa casa. Oggi è una bella giornata e leggo con calma.",
+    "en": "My name is {name}. I give my consent for Nuxiva to use my voice in this home. Today is a nice day and I read calmly.",
+    "fr": "Je m'appelle {name}. Je donne mon accord pour qu'Nuxiva utilise ma voix dans cette maison. Aujourd'hui il fait beau et je lis calmement.",
+    "es": "Me llamo {name}. Doy mi consentimiento para que Nuxiva use mi voz en esta casa. Hoy es un buen día y leo con calma.",
+    "de": "Ich heiße {name}. Ich erlaube Nuxiva, meine Stimme in diesem Zuhause zu verwenden. Heute ist ein schöner Tag und ich lese ruhig.",
+    "pt": "Meu nome é {name}. Dou o meu consentimento para que a Nuxiva use a minha voz nesta casa. Hoje é um belo dia e leio com calma.",
 }
 
 PREVIEW = {

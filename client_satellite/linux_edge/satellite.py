@@ -22,12 +22,12 @@ DISCOVER_PORT = 50505
 ANNOUNCE_PORT = 50506
 JOIN_TIMEOUT = 15 * 60
 REDISCOVER_AFTER = 3
-CONFIG = Path(os.environ.get("ATENA_NODE_CONFIG", Path.home() / ".config" / "atena-node.json"))
-SERVICE = Path("/etc/systemd/system/atena-node.service")
+CONFIG = Path(os.environ.get("NUXIVA_NODE_CONFIG", Path.home() / ".config" / "nuxiva-node.json"))
+SERVICE = Path("/etc/systemd/system/nuxiva-node.service")
 TYPES = ("satellite", "display", "server", "esp32", "android", "sensor", "other")
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
-log = logging.getLogger("atena-node")
+log = logging.getLogger("nuxiva-node")
 
 
 def post(server: str, path: str, body: dict, headers: dict | None = None) -> dict:
@@ -137,7 +137,7 @@ def capabilities() -> list[str]:
 
 
 def discover(ident: str = "", paired: bool = False, timeout: float = 4.0) -> str | None:
-    hello = json.dumps({"atena": "discover", "id": ident, "paired": paired, "version": VERSION}).encode()
+    hello = json.dumps({"nuxiva": "discover", "id": ident, "paired": paired, "version": VERSION}).encode()
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         sock.settimeout(timeout)
@@ -146,7 +146,7 @@ def discover(ident: str = "", paired: bool = False, timeout: float = 4.0) -> str
             while True:
                 data, addr = sock.recvfrom(1024)
                 msg = json.loads(data)
-                if isinstance(msg, dict) and msg.get("atena") == "master":
+                if isinstance(msg, dict) and msg.get("nuxiva") == "master":
                     port = int(msg.get("port") or 80)
                     return f"http://{addr[0]}" + ("" if port == 80 else f":{port}")
         except (OSError, ValueError):
@@ -201,12 +201,12 @@ def pair(args) -> dict:
 def join(args) -> dict:
     server = args.server or discover(node_id(args.name))
     if not server:
-        sys.exit("Nessun server Atena trovato in rete: indica --server http://IP-DI-ATENA")
+        sys.exit("Nessun server Nuxiva trovato in rete: indica --server http://IP-DI-NUXIVA")
     ident, key = node_id(args.name), secrets.token_hex(32)
     res = post(server, "/api/nodes/request", {"id": ident, "key": key, "name": args.name, "type": args.type,
                                               "room": args.room})
     log.info("Richiesta inviata a %s. Nel pannello Nodi approva il codice %s", server, res["fingerprint"])
-    print(f"Codice da confermare nel pannello Atena: {res['fingerprint']}", flush=True)
+    print(f"Codice da confermare nel pannello Nuxiva: {res['fingerprint']}", flush=True)
     deadline = time.time() + JOIN_TIMEOUT
     while time.time() < deadline:
         time.sleep(5)
@@ -223,12 +223,12 @@ def install_service() -> None:
     if os.geteuid() != 0:
         sys.exit("Per installare il servizio esegui con sudo")
     SERVICE.write_text(f"""[Unit]
-Description=Nodo Atena
+Description=Nodo Nuxiva
 After=network-online.target
 Wants=network-online.target
 
 [Service]
-Environment=ATENA_NODE_CONFIG={CONFIG}
+Environment=NUXIVA_NODE_CONFIG={CONFIG}
 ExecStart={sys.executable} {Path(__file__).resolve()}
 Restart=always
 RestartSec=10
@@ -237,12 +237,12 @@ RestartSec=10
 WantedBy=multi-user.target
 """)
     subprocess.run(["systemctl", "daemon-reload"], check=True)
-    subprocess.run(["systemctl", "enable", "--now", "atena-node"], check=True)
-    log.info("Servizio atena-node installato e avviato")
+    subprocess.run(["systemctl", "enable", "--now", "nuxiva-node"], check=True)
+    log.info("Servizio nuxiva-node installato e avviato")
 
 
 def loop(cfg: dict) -> None:
-    headers = {"Authorization": f"Bearer {cfg['token']}", "X-Atena-Node": cfg["id"]}
+    headers = {"Authorization": f"Bearer {cfg['token']}", "X-Nuxiva-Node": cfg["id"]}
     wait, failures = 30, 0
     while True:
         try:
@@ -273,7 +273,7 @@ def loop(cfg: dict) -> None:
             if failures >= REDISCOVER_AFTER:
                 found = discover(cfg["id"], paired=True)
                 if found and found != cfg["server"]:
-                    log.info("Il server Atena ha cambiato indirizzo: %s", found)
+                    log.info("Il server Nuxiva ha cambiato indirizzo: %s", found)
                     cfg["server"] = found
                     save_config({k: v for k, v in cfg.items() if k != "agent"})
                 failures = 0
@@ -281,14 +281,14 @@ def loop(cfg: dict) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Agente dei nodi Atena")
-    parser.add_argument("--server", help="Indirizzo del server Atena, es. http://192.168.1.10")
+    parser = argparse.ArgumentParser(description="Agente dei nodi Nuxiva")
+    parser.add_argument("--server", help="Indirizzo del server Nuxiva, es. http://192.168.1.10")
     parser.add_argument("--code", help="Codice di abbinamento mostrato nel pannello Nodi")
     parser.add_argument("--name", default=socket.gethostname())
     parser.add_argument("--room", default="")
     parser.add_argument("--type", default="satellite", choices=TYPES)
     parser.add_argument("--install", action="store_true", help="Installa l'agente come servizio di sistema")
-    parser.add_argument("--join", action="store_true", help="Cerca Atena in rete e chiedi l'approvazione dal pannello")
+    parser.add_argument("--join", action="store_true", help="Cerca Nuxiva in rete e chiedi l'approvazione dal pannello")
     args = parser.parse_args()
     if args.code and args.server:
         cfg = pair(args)
@@ -297,7 +297,7 @@ def main() -> None:
     elif CONFIG.exists():
         cfg = json.loads(CONFIG.read_text())
     else:
-        sys.exit("Prima abbina il nodo: --join (automatico) oppure --server http://IP-DI-ATENA --code CODICE")
+        sys.exit("Prima abbina il nodo: --join (automatico) oppure --server http://IP-DI-NUXIVA --code CODICE")
     if args.install:
         install_service()
         return

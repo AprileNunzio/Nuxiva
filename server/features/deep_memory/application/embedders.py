@@ -5,7 +5,7 @@ from typing import List, Optional
 
 from server.features.deep_memory.application.ports import Embedder
 
-logger = logging.getLogger("atena.deep_memory.embedders")
+logger = logging.getLogger("nuxiva.deep_memory.embedders")
 _WORD = re.compile(r"\w{2,}", re.UNICODE)
 
 

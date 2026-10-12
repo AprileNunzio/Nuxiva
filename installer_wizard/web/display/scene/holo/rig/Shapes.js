@@ -59,4 +59,4 @@
   }
 
   H.Shapes = { NAMES, build };
-})(window.Atena3D);
+})(window.Nuxiva3D);

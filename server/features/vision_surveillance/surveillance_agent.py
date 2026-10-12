@@ -7,7 +7,7 @@ from server.core.agent_registry.interfaces import BaseAgent, AgentTaskRequest, A
 from server.core.reasoning.react_loop import ReActLoop
 from server.core.reasoning.self_critique import self_critique_engine
 
-logger = logging.getLogger("atena.surveillance_agent")
+logger = logging.getLogger("nuxiva.surveillance_agent")
 
 class VisionSurveillanceAgent(BaseAgent):
     def __init__(self, frigate_url: str = settings.FRIGATE_URL) -> None:
@@ -37,7 +37,7 @@ class VisionSurveillanceAgent(BaseAgent):
         react_result = await self._react.run(
             task=request.raw_query,
             agent_context=(
-                "Sei il responsabile della Sicurezza Visiva di Atena. Interfacciati con il "
+                "Sei il responsabile della Sicurezza Visiva di Nuxiva. Interfacciati con il "
                 "sistema NVR Frigate. Analizza le richieste dell'utente, usa i tool per "
                 "reperire gli ultimi eventi di sicurezza e formula una risposta chiara sullo stato "
                 "del perimetro o sull'evento richiesto."

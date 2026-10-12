@@ -10,7 +10,7 @@ from pathlib import Path
 from permissions.catalog import BY_KEY, CAPABILITIES, Level
 from settings import paths, protect
 
-log = logging.getLogger("atena.permissions")
+log = logging.getLogger("nuxiva.permissions")
 
 
 def _key() -> bytes:
@@ -51,7 +51,7 @@ class Policy:
         if not isinstance(levels, dict) or not isinstance(folders, list) or \
                 not hmac.compare_digest(str(data.get("mac", "")), self._mac(levels, folders)):
             self.tampered = True
-            log.error("Il file dei permessi è stato modificato fuori da ATENA: ripristino i valori sicuri")
+            log.error("Il file dei permessi è stato modificato fuori da NUXIVA: ripristino i valori sicuri")
             self.save()
             return
         for key, value in levels.items():

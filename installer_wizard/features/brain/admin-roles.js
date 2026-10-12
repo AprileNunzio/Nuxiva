@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { fmt } = A;
+  const A = window.NuxivaAdmin, { fmt } = A;
 
   const all = () => (A.brain && A.brain.lists() ? A.brain.lists().roles : []);
   const refsOf = (roleId) => new Set((all().find((r) => r.id === roleId)?.entries || []).map((e) => e.name));

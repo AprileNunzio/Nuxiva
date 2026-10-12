@@ -1,8 +1,0 @@
-[Unit]
-Description=Atena OS — ripristino dell'ultima versione funzionante
-After=network-online.target
-
-[Service]
-Type=oneshot
-TimeoutStartSec=3600
-ExecStart=/bin/bash /opt/Atena/scripts/os/rollback.sh

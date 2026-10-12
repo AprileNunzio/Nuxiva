@@ -89,7 +89,7 @@ async function boot() {
   } catch (err) {
     if (err.status === 401) renderLogin(root, enter);
     else mount(root, h("main", { class: "login" }, h("div", { class: "panel login-card" },
-      h("h1", {}, "A.T.E.N.A."), h("p", { class: "login-err" }, err.message),
+      h("h1", {}, "NUXIVA"), h("p", { class: "login-err" }, err.message),
       h("button", { class: "btn primary", type: "button", onclick: () => location.reload() }, "Riprova"))));
   }
 }

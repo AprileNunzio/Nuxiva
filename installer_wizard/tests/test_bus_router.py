@@ -6,9 +6,9 @@ import bus_router
 from bus_router import PyTopicRouter, py_matches, py_valid_origin, py_valid_pattern, py_valid_topic
 
 try:
-    import atena_native
+    import nuxiva_native
 except ImportError:
-    atena_native = None
+    nuxiva_native = None
 
 PATTERNS = ("a", "a.b", "a.*", "*.b", "a.>", "*.>", ">", "a.*.c", "*.*.*", "b.>", "a.b.c", "*")
 TOPICS = ("a", "b", "a.b", "a.c", "b.b", "a.b.c", "a.x.c", "b.c.d", "a.b.c.d", "a.b.c.d.e.f.g.h")
@@ -50,21 +50,21 @@ class PyRouterTest(RouterContract, unittest.TestCase):
         return PyTopicRouter()
 
 
-@unittest.skipIf(atena_native is None, "atena_native not built")
+@unittest.skipIf(nuxiva_native is None, "nuxiva_native not built")
 class NativeRouterTest(RouterContract, unittest.TestCase):
     def make(self):
-        return atena_native.TopicRouter()
+        return nuxiva_native.TopicRouter()
 
     def test_validators_agree_with_python(self):
         for pattern, topic in itertools.product(PATTERNS + BAD_PATTERNS, TOPICS + BAD_TOPICS):
-            self.assertEqual(atena_native.matches(pattern, topic), py_matches(pattern, topic), (pattern, topic))
+            self.assertEqual(nuxiva_native.matches(pattern, topic), py_matches(pattern, topic), (pattern, topic))
         for raw in PATTERNS + BAD_PATTERNS + TOPICS + BAD_TOPICS + ("node.kitchen-1", "o" * 65):
-            self.assertEqual(atena_native.valid_topic(raw), py_valid_topic(raw), raw)
-            self.assertEqual(atena_native.valid_pattern(raw), py_valid_pattern(raw), raw)
-            self.assertEqual(atena_native.valid_origin(raw), py_valid_origin(raw), raw)
+            self.assertEqual(nuxiva_native.valid_topic(raw), py_valid_topic(raw), raw)
+            self.assertEqual(nuxiva_native.valid_pattern(raw), py_valid_pattern(raw), raw)
+            self.assertEqual(nuxiva_native.valid_origin(raw), py_valid_origin(raw), raw)
 
     def test_bus_uses_the_native_engine_unless_disabled(self):
-        disabled = os.environ.get("ATENA_NATIVE", "auto").strip() == "0"
+        disabled = os.environ.get("NUXIVA_NATIVE", "auto").strip() == "0"
         self.assertEqual(bus_router.ENGINE, "python" if disabled else "rust")
 
 

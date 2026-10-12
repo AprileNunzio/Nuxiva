@@ -17,4 +17,4 @@
     g.position.set(0, y, L.centerZ);
     return g;
   });
-})(window.Atena3D);
+})(window.Nuxiva3D);

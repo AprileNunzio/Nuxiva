@@ -6,8 +6,8 @@ import numpy as np
 
 import selection
 
-log = logging.getLogger("atena.vision")
-AUTO_ENROLL = os.environ.get("ATENA_AUTO_ENROLL", "1") != "0"
+log = logging.getLogger("nuxiva.vision")
+AUTO_ENROLL = os.environ.get("NUXIVA_AUTO_ENROLL", "1") != "0"
 AUTO_MIN_SECONDS = 2.5
 AUTO_MIN_RATIO = 0.09
 AUTO_SAMPLES = 8
@@ -15,8 +15,8 @@ MERGE_THRESHOLD = 0.30
 LEARN_UNTIL = 25
 LEARN_EVERY = 1.5
 REFINE_EVERY = 60.0
-MERGE_CENTROID = float(os.environ.get("ATENA_FACE_MERGE_CENTROID", "0.45"))
-REFINE = os.environ.get("ATENA_FACE_AUTOIMPROVE", "1") != "0"
+MERGE_CENTROID = float(os.environ.get("NUXIVA_FACE_MERGE_CENTROID", "0.45"))
+REFINE = os.environ.get("NUXIVA_FACE_AUTOIMPROVE", "1") != "0"
 
 
 def learn(vision, track, frame, feature) -> None:

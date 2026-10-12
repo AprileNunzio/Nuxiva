@@ -9,8 +9,8 @@
     "Il s'arrête s'il ralentit la page"
   ],
   "settings": {
-    "ATENA_HANDS_FPS": "Analyse par seconde avec une main en vue",
-    "ATENA_HANDS_COUNT": "Des mains reconnues",
-    "ATENA_HANDS_MAX_MS": "Temps maximum d'analyse (il s'éteint automatiquement au-delà)"
+    "NUXIVA_HANDS_FPS": "Analyse par seconde avec une main en vue",
+    "NUXIVA_HANDS_COUNT": "Des mains reconnues",
+    "NUXIVA_HANDS_MAX_MS": "Temps maximum d'analyse (il s'éteint automatiquement au-delà)"
   }
 }

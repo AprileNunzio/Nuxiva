@@ -11,7 +11,7 @@ import httpx
 from config import STATE_DIR, env_get
 from state import store
 
-log = logging.getLogger("atena.telegram")
+log = logging.getLogger("nuxiva.telegram")
 DATA_FILE = STATE_DIR / "telegram.json"
 API = "https://api.telegram.org"
 PAIR_TTL = 600
@@ -59,9 +59,9 @@ class TelegramBot:
 
     @property
     def token(self) -> str:
-        if env_get("ATENA_TELEGRAM", "1") == "0":
+        if env_get("NUXIVA_TELEGRAM", "1") == "0":
             return ""
-        return env_get("ATENA_TELEGRAM_TOKEN", "").strip()
+        return env_get("NUXIVA_TELEGRAM_TOKEN", "").strip()
 
     def new_pair_code(self) -> dict:
         self.pair_code = f"{secrets.randbelow(1_000_000):06d}"
@@ -119,10 +119,10 @@ class TelegramBot:
             log.warning("Invio a %s non riuscito: %s", chat_id, exc)
 
     async def send_photo(self, chat_id, jpeg: bytes, caption: str = "") -> None:
-        result = await self.upload("sendPhoto", chat_id, "photo", "atena.jpg", jpeg, "image/jpeg",
+        result = await self.upload("sendPhoto", chat_id, "photo", "nuxiva.jpg", jpeg, "image/jpeg",
                                    caption=caption[:1000], parse_mode="HTML")
         if not result.get("ok"):
-            await self.upload("sendPhoto", chat_id, "photo", "atena.jpg", jpeg, "image/jpeg",
+            await self.upload("sendPhoto", chat_id, "photo", "nuxiva.jpg", jpeg, "image/jpeg",
                               caption=plain(caption)[:1000])
 
     async def send_voice(self, chat_id, text: str, lang: str | None = None) -> None:
@@ -136,7 +136,7 @@ class TelegramBot:
                 stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE)
             ogg, _ = await asyncio.wait_for(proc.communicate(wav), 60)
             if ogg:
-                await self.upload("sendVoice", chat_id, "voice", "atena.ogg", ogg, "audio/ogg")
+                await self.upload("sendVoice", chat_id, "voice", "nuxiva.ogg", ogg, "audio/ogg")
         except (OSError, RuntimeError, asyncio.TimeoutError, httpx.HTTPError) as exc:
             log.warning("Risposta vocale non inviata: %s", exc)
 
@@ -152,7 +152,7 @@ class TelegramBot:
     async def run(self) -> None:
         while True:
             if not self.token:
-                self.status, self.me = ("disattivato" if env_get("ATENA_TELEGRAM", "1") == "0"
+                self.status, self.me = ("disattivato" if env_get("NUXIVA_TELEGRAM", "1") == "0"
                                         else "non configurato"), {}
                 await asyncio.sleep(10)
                 continue
@@ -204,11 +204,11 @@ class TelegramBot:
                 self._save()
                 self.pair_code = None
                 store.event("INFO", f"Telegram: abbinato {name} ({role})", "telegram")
-                await self.send(chat_id, f"✅ Abbinamento completato, {esc(name)}. Sono <b>Atena</b>.\n"
+                await self.send(chat_id, f"✅ Abbinamento completato, {esc(name)}. Sono <b>Nuxiva</b>.\n"
                                          "Scrivimi o mandami un messaggio vocale. /aiuto per i comandi.")
             else:
-                await self.send(chat_id, "🔒 Questo è il bot privato di un sistema Atena.\n"
-                                         "Per abbinarti apri il pannello di Atena → Telegram → «Genera codice» "
+                await self.send(chat_id, "🔒 Questo è il bot privato di un sistema Nuxiva.\n"
+                                         "Per abbinarti apri il pannello di Nuxiva → Telegram → «Genera codice» "
                                          "e inviami il codice a 6 cifre.")
             return
 
@@ -225,7 +225,7 @@ class TelegramBot:
 
     async def _location(self, chat_id: str, chat: dict, loc: dict) -> None:
         if chat.get("role") != "owner":
-            await self.send(chat_id, "Solo il proprietario può impostare la posizione di Atena.")
+            await self.send(chat_id, "Solo il proprietario può impostare la posizione di Nuxiva.")
             return
         from features.location.locator import locator
         try:
@@ -265,7 +265,7 @@ class TelegramBot:
     async def _voice_message(self, chat_id: str, chat: dict, msg: dict) -> None:
         stt = self.handlers.get("stt")
         if not stt:
-            return await self.send(chat_id, "L'ascolto vocale non è attivo su questa Atena.")
+            return await self.send(chat_id, "L'ascolto vocale non è attivo su questa Nuxiva.")
         media = msg.get("voice") or msg.get("audio")
         await self.call("sendChatAction", chat_id=chat_id, action="typing")
         try:
@@ -289,7 +289,7 @@ class TelegramBot:
             return await self.send(chat_id, "⛔ Comando riservato al proprietario.")
         h = self.handlers
         if command in ("start", "aiuto", "help"):
-            await self.send(chat_id, "🤖 <b>Atena</b> — comandi disponibili:\n" +
+            await self.send(chat_id, "🤖 <b>Nuxiva</b> — comandi disponibili:\n" +
                             "\n".join(f"/{c} — {d}" for c, d in COMMANDS) +
                             "\n\nOppure scrivimi o mandami un vocale come faresti di persona.")
         elif command == "stato":
@@ -356,7 +356,7 @@ class TelegramBot:
             await asyncio.sleep(3)
             if not getattr(self, "announced_boot", False) and store.phase == "READY":
                 self.announced_boot = True
-                await self.notify(f"✅ <b>Atena operativa</b> (avvio n. {store.boot_count}).")
+                await self.notify(f"✅ <b>Nuxiva operativa</b> (avvio n. {store.boot_count}).")
             if self._last_phase and store.phase != self._last_phase and store.phase in ("DEGRADED", "ERROR"):
                 await self.notify(f"🟠 <b>{esc(store.snapshot()['phase_label'])}</b>\n{esc(store.message)}\n{esc(store.last_error)}")
             self._last_phase = store.phase
@@ -365,7 +365,7 @@ class TelegramBot:
                 self.data["last_greeting"] = greeting["id"]
                 jpeg = await self.handlers["snapshot"]() if self.handlers.get("snapshot") else None
                 who = ", ".join(greeting.get("names") or []) or "una persona non riconosciuta"
-                await self.notify(f"👁 Davanti ad Atena: <b>{esc(who)}</b>\n«{esc(greeting.get('text', ''))}»", jpeg)
+                await self.notify(f"👁 Davanti ad Nuxiva: <b>{esc(who)}</b>\n«{esc(greeting.get('text', ''))}»", jpeg)
             today = time.strftime("%Y-%m-%d")
             if time.localtime().tm_hour >= 8 and self._last_daily != today and self.handlers.get("reminders"):
                 self._last_daily = today

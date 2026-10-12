@@ -4,7 +4,7 @@ import os
 import time
 from pathlib import Path
 
-log = logging.getLogger("atena.scheduler")
+log = logging.getLogger("nuxiva.scheduler")
 FLUSH_EVERY = 15.0
 
 

@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 from features.firewall.model import Address, Policy, Rule
 
-TABLE = "atena_guard"
+TABLE = "nuxiva_guard"
 LAN4 = ("10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "169.254.0.0/16")
 LAN6 = ("fc00::/7", "fe80::/10")
 FAMILIES = {"ip4": ("ip", "ipv4_addr"), "ip6": ("ip6", "ipv6_addr"), "mac": ("ether", "ether_addr")}

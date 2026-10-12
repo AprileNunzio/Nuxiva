@@ -8,10 +8,10 @@ from features.study.constants import USER_AGENT, log
 
 class StudySources:
     def _model(self) -> str:
-        return self.settings.get("model") or env_get("ATENA_LLM_MODEL", "granite3.3:2b")
+        return self.settings.get("model") or env_get("NUXIVA_LLM_MODEL", "granite3.3:2b")
 
     def _embed_model(self) -> str:
-        return env_get("ATENA_EMBED_MODEL", "nomic-embed-text")
+        return env_get("NUXIVA_EMBED_MODEL", "nomic-embed-text")
 
     async def llm_json(self, system: str, prompt: str, max_tokens: int = 600) -> dict:
         from features.brain.llm import BrainUnavailable, generate

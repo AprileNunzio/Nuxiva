@@ -68,7 +68,7 @@ export function renderTool(outlet, route) {
       return;
     }
     if (!view.isConnected) return;
-    document.title = `${tool.name} · Atena Nexus`;
+    document.title = `${tool.name} · Nuxiva Nexus`;
     tab = tab || tabsOf(tool)[0].id;
     paint(tool);
     if (tool.badge) { markSeen(freshKey(tool)); refresh().catch(() => {}); }

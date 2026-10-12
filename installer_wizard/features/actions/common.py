@@ -11,10 +11,10 @@ from config import STATE_DIR
 
 from features.shares import archive
 
-log = logging.getLogger("atena.actions")
+log = logging.getLogger("nuxiva.actions")
 
 
-WORK_DIR = Path("/srv/atena")
+WORK_DIR = Path("/srv/nuxiva")
 FILES_DIR = archive.path("documenti")
 SITES_DIR = archive.path("siti")
 SHARES_DIR = archive.path("scambio")
@@ -37,7 +37,7 @@ async def sh(*cmd: str, timeout: float = 60) -> tuple[int, str]:
     return proc.returncode or 0, out.decode("utf-8", "replace").strip()
 
 
-def slug(text: str, fallback: str = "atena") -> str:
+def slug(text: str, fallback: str = "nuxiva") -> str:
     text = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode().lower()
     return re.sub(r"[^a-z0-9]+", "-", text).strip("-")[:40] or fallback
 

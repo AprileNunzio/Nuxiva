@@ -7,7 +7,7 @@ SPEED_URL = "https://speed.cloudflare.com"
 
 
 async def speed_action(text: str) -> tuple[str, dict]:
-    async with httpx.AsyncClient(timeout=30, headers={"User-Agent": "Atena-OS"}) as client:
+    async with httpx.AsyncClient(timeout=30, headers={"User-Agent": "Nuxiva-OS"}) as client:
         pings = []
         for _ in range(5):
             t = time.perf_counter()

@@ -1,5 +1,5 @@
 (() => {
-  const D = window.AtenaDisplay, { $ } = D;
+  const D = window.NuxivaDisplay, { $ } = D;
 
   const Voice = (() => {
     let ctx = null, gain = null, volume = 1, analyser = null, samples = null, spectrum = null, source = null, generation = 0, active = false, raf = 0;

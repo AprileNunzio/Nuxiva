@@ -5,13 +5,13 @@ from state import store
 
 from features.people import people
 
-log = logging.getLogger("atena.welcome")
+log = logging.getLogger("nuxiva.welcome")
 TTL = 180
 ICONS = {"compleanno": "🎂", "onomastico": "🎉"}
 
 
 def enabled() -> bool:
-    return env_get("ATENA_WELCOME", "1") != "0"
+    return env_get("NUXIVA_WELCOME", "1") != "0"
 
 
 def _when(days: int) -> str:

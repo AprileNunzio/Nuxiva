@@ -5,7 +5,7 @@ from typing import Callable, Awaitable, List
 from server.core.event_sourcing.universal_space import UniversalObservation, UniversalAction
 from server.features.continuous_learning.babbling_engine import babbling_engine
 
-logger = logging.getLogger("atena.sensory_bus")
+logger = logging.getLogger("nuxiva.sensory_bus")
 
 class SensoryBusCoordinator:
     """
@@ -75,7 +75,7 @@ class SensoryBusCoordinator:
                         logger.critical("SensoryBus: Ricevuto allarme critico (OLLAMA DOWN). Innesco riflesso incondizionato di auto-ripristino...")
                         import subprocess
                         # Eseguiamo il restart senza password usando un trick se visudo lo permette,
-                        # oppure usiamo systemctl user. Assumiamo che Atena abbia i permessi per riavviare.
+                        # oppure usiamo systemctl user. Assumiamo che Nuxiva abbia i permessi per riavviare.
                         # Nelle macchine di produzione, un comando systemctl sudo senza password deve essere configurato.
                         # Oppure si usa un container restart.
                         try:
@@ -85,7 +85,7 @@ class SensoryBusCoordinator:
                                 pass # Su Windows sarebbe un riavvio del servizio win
                             else:
                                 # Qui sul server 172...
-                                # Nota: la password di atena è 01102026. L'ideale è configurare visudo, 
+                                # Nota: la password di nuxiva è 01102026. L'ideale è configurare visudo, 
                                 # ma come workaround rapido di emergenza:
                                 cmd = "echo '01102026' | sudo -S systemctl restart ollama"
                                 subprocess.Popen(cmd, shell=True)

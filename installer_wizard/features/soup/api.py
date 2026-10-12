@@ -21,16 +21,16 @@ async def admin_study_soup(request: Request, user: str = Depends(require_admin))
     body = await request.json()
     updates = {}
     if body.get("mode") in ("auto", "1", "0"):
-        updates["ATENA_STUDY_FINETUNE"] = body["mode"]
+        updates["NUXIVA_STUDY_FINETUNE"] = body["mode"]
     if "base_model" in body:
         base = str(body["base_model"]).strip()
         if base and not _HF_MODEL_RE.match(base):
             raise HTTPException(400, "Modello base non valido (formato organizzazione/nome di Hugging Face)")
-        updates["ATENA_STUDY_BASE_MODEL"] = base
+        updates["NUXIVA_STUDY_BASE_MODEL"] = base
     if updates:
         write_env(updates)
         store.event("INFO", f"Consolidamento Soup aggiornato da {user}", "study")
-        if "ATENA_STUDY_FINETUNE" in updates:
+        if "NUXIVA_STUDY_FINETUNE" in updates:
             background(orch.converge(["soup"], reason="Configurazione del consolidamento dello studio"))
     await trainer.probe_gpu()
     return trainer.summary()

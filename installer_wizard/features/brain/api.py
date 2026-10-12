@@ -74,7 +74,7 @@ async def admin_pull(request: Request, _: str = Depends(require_admin)):
 @admin_routes.delete("/api/models/{name:path}")
 async def admin_delete_model(name: str, _: str = Depends(require_admin)):
     env, cfg = read_env(), brains.config()
-    in_use = {health.norm_model(m) for m in [env.get("ATENA_LLM_MODEL", ""), env.get("ATENA_EMBED_MODEL", ""),
+    in_use = {health.norm_model(m) for m in [env.get("NUXIVA_LLM_MODEL", ""), env.get("NUXIVA_EMBED_MODEL", ""),
                                              cfg["fast"], *(m for role in ROLES for m in cfg[role.id])] if m}
     if health.norm_model(name) in in_use:
         raise HTTPException(409, "Il modello è in uso: toglilo prima dalle liste del cervello")
@@ -97,7 +97,7 @@ async def admin_brains_set(request: Request, user: str = Depends(require_admin))
     if "routing" in body:
         if body["routing"] not in ("auto", "1", "0"):
             raise HTTPException(400, "Modalità di instradamento non valida")
-        updates["ATENA_LLM_ROUTING"] = body["routing"]
+        updates["NUXIVA_LLM_ROUTING"] = body["routing"]
     for role in ROLES:
         if role.id in body:
             models = [str(m).strip() for m in (body[role.id] or []) if str(m).strip()]

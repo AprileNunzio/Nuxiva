@@ -8,7 +8,7 @@ from features.automations.expr import number
 from features.scheduler import cronexpr, misfire
 from features.scheduler.marks import Marks
 
-log = logging.getLogger("atena.scheduler")
+log = logging.getLogger("nuxiva.scheduler")
 CLOCK_KINDS = ("time", "interval", "cron", "sun")
 CATCH_UP_KINDS = ("time", "cron")
 
@@ -19,19 +19,19 @@ class Policy:
         self.env = env
 
     def misfire(self, trigger: dict) -> str:
-        return misfire.policy_of(trigger.get("misfire"), misfire.policy_of(self.env("ATENA_SCHED_MISFIRE", "run_once"), "run_once"))
+        return misfire.policy_of(trigger.get("misfire"), misfire.policy_of(self.env("NUXIVA_SCHED_MISFIRE", "run_once"), "run_once"))
 
     def grace(self) -> float:
-        return self._num("ATENA_SCHED_GRACE_MIN", 120.0, 0.0, 10080.0) * 60
+        return self._num("NUXIVA_SCHED_GRACE_MIN", 120.0, 0.0, 10080.0) * 60
 
     def max_runs(self) -> int:
-        return int(self._num("ATENA_SCHED_MAX_CATCHUP", 3.0, 1.0, 50.0))
+        return int(self._num("NUXIVA_SCHED_MAX_CATCHUP", 3.0, 1.0, 50.0))
 
     def jitter(self) -> float:
-        return self._num("ATENA_SCHED_JITTER_S", 0.0, 0.0, 300.0)
+        return self._num("NUXIVA_SCHED_JITTER_S", 0.0, 0.0, 300.0)
 
     def enabled(self) -> bool:
-        return self.env("ATENA_SCHED_PERSIST", "1") != "0"
+        return self.env("NUXIVA_SCHED_PERSIST", "1") != "0"
 
     def _num(self, key: str, default: float, lo: float, hi: float) -> float:
         try:

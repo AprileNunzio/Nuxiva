@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
 
   async function loadMaps() {
     let d; try { d = await A.api("GET", "/api/maps"); } catch (e) { A.toast(e.message, true); return; }
@@ -30,7 +30,7 @@
     $("mp-key").addEventListener("submit", async (e) => {
       e.preventDefault();
       const body = {};
-      if ($("mp-apikey").value.trim()) body.ATENA_MAPS_API_KEY = $("mp-apikey").value.trim();
+      if ($("mp-apikey").value.trim()) body.NUXIVA_MAPS_API_KEY = $("mp-apikey").value.trim();
       if (!Object.keys(body).length) return A.toast("Nessuna modifica");
       try { await A.api("PUT", "/api/config", body); $("mp-apikey").value = ""; A.toast("Salvato"); loadMaps(); } catch (err) { A.toast(err.message, true); }
     });

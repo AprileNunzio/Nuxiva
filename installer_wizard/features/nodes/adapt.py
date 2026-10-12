@@ -12,7 +12,7 @@ from state import store
 
 from features.governor import profile
 
-log = logging.getLogger("atena.nodes")
+log = logging.getLogger("nuxiva.nodes")
 SNAPSHOT = STATE_DIR / "hardware_master.json"
 LISTS = {"cameras": "Webcam", "audio_in": "Microfono", "audio_out": "Uscita audio", "usb": "Periferica USB"}
 NUMBERS = (("cores", 1, 512), ("ram_gb", 0, 4096), ("disk_gb", 0, 1_000_000))

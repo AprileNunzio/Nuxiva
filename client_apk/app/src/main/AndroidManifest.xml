@@ -19,11 +19,11 @@
     <uses-feature android:name="android.hardware.screen.landscape" android:required="false" />
 
     <application
-        android:name=".core.AtenaApplication"
+        android:name=".core.NuxivaApplication"
         android:allowBackup="false"
         android:hardwareAccelerated="true"
         android:icon="@android:drawable/ic_dialog_info"
-        android:label="Atena Edge"
+        android:label="Nuxiva Edge"
         android:roundIcon="@android:drawable/ic_dialog_info"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar"
@@ -36,7 +36,7 @@
             android:foregroundServiceType="microphone|camera" />
 
         <activity
-            android:name=".features.ui_hud.AtenaHudActivity"
+            android:name=".features.ui_hud.NuxivaHudActivity"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden"
             android:screenOrientation="fullSensor"
             android:windowSoftInputMode="adjustResize"

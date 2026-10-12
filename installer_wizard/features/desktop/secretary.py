@@ -9,7 +9,7 @@ from state import store
 from features.desktop import briefing
 from features.desktop.news import news
 
-log = logging.getLogger("atena.secretary")
+log = logging.getLogger("nuxiva.secretary")
 
 PREFIX = "briefing:"
 REFRESH = 20
@@ -45,7 +45,7 @@ class Secretary:
 
     @staticmethod
     def enabled() -> bool:
-        return env_get("ATENA_SECRETARY", "1") != "0"
+        return env_get("NUXIVA_SECRETARY", "1") != "0"
 
     def owner(self) -> str:
         if time.time() - self.owner_at > OWNER_CACHE:

@@ -1,38 +1,43 @@
 (() => {
   "use strict";
+
   const $ = (id) => document.getElementById(id);
-  const NAME_RE = /^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ-]{0,39}$/u;
-  const FLOW = ["intro", "face", "brain", "packages", "voice", "home", "privacy"];
-  const OPTIONAL = new Set(["home", "face"]);
-  const LAST_RE = /^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,59}$/u;
-  let faceDone = false;
-  const BRAINS = [
-    ["local", { label: "Su questo computer", note: "Tutto resta in casa. Servono spazio e memoria per i modelli." }],
-    ["remote", { label: "Su un altro computer della rete", note: "Uso Ollama già installato su un altro PC di casa." }],
-    ["cloud", { label: "Nel cloud", note: "Leggero e veloce anche su computer piccoli. Serve una chiave API." }],
-  ];
-  const HOST_RE = /^(https?:\/\/)?[A-Za-z0-9.-]+(:\d{1,5})?\/?$/;
-  const KEY_RE = /^[A-Za-z0-9_.-]{20,256}$/;
-  const choice = { lang: "it", profile: "auto", voice: "if_sara", brain: "local", cloud: "" };
-  const picked = new Set();
+  const FLOW = ["lang_select", "mic_calibration", "assistant_naming", "owner_config", "done"];
+
+  const choice = {
+    lang: "it",
+    micCalibrated: false,
+    assistantName: "Hey NUXIVA",
+    gender: "female",
+    sampleIndex: 0,
+    samplesRecorded: [false, false, false],
+    ownerFirst: "",
+    ownerLast: "",
+    faceEnrolled: false,
+    brain: "local",
+    cloudProvider: "gemini",
+    cloudKey: "",
+    ollamaUrl: "",
+    voice: "if_sara"
+  };
+
   let info = null;
-  let order = [];
   let at = 0;
   let code = "";
   let busy = false;
-  let audio = null;
+  let currentAudio = null;
 
-  const el = (tag, cls, text) => {
-    const n = document.createElement(tag);
-    if (cls) n.className = cls;
-    if (text != null) n.textContent = text;
-    return n;
-  };
+  // Web Audio Context & Analyser
+  let audioCtx = null;
+  let analyserNode = null;
+  let micStream = null;
+  let animId = null;
+
   const error = (msg) => { $("error").textContent = msg || ""; };
 
   async function call(path, { body, file, raw } = {}) {
-    const headers = { "X-Atena-Request": "1" };
-    if (code) headers["X-Atena-Setup-Code"] = code;
+    const headers = { "X-Nuxiva-Request": "1" };
+    if (code) headers["X-Nuxiva-Setup-Code"] = code;
     if (body !== undefined) headers["Content-Type"] = "application/json";
     if (file) headers["Content-Type"] = "application/octet-stream";
     const r = await fetch(path, {
@@ -41,292 +46,400 @@
     });
     if (r.status === 410) { location.replace("/"); throw new Error(""); }
     if (!r.ok) {
-      let detail = "Qualcosa non ha funzionato, riprova";
+      let detail = "Operazione non riuscita, riprova";
       try { detail = (await r.json()).detail || detail; } catch {}
       throw new Error(detail);
     }
     return raw ? r : r.json();
   }
 
-  function radio(container, items, key, build) {
-    container.replaceChildren();
-    for (const [value, data] of items) {
-      const b = build(value, data);
-      b.setAttribute("role", "radio");
-      b.setAttribute("aria-checked", String(choice[key] === value));
-      b.addEventListener("click", (e) => {
-        if (e.target.closest(".play")) return;
-        choice[key] = value;
-        for (const other of container.children) other.setAttribute("aria-checked", String(other === b));
-      });
-      container.append(b);
+  function setLanguage(lang) {
+    choice.lang = lang;
+    if (window.NuxivaI18n && typeof window.NuxivaI18n.setLanguage === "function") {
+      window.NuxivaI18n.setLanguage(lang);
     }
+    document.querySelectorAll(".lang-card").forEach((card) => {
+      card.setAttribute("aria-checked", String(card.dataset.lang === lang));
+    });
+    updateStepCounter();
   }
 
-  function render() {
-    const shown = window.AtenaI18n ? window.AtenaI18n.language() : "";
-    choice.lang = shown in info.languages ? shown : (info.current.lang in info.languages ? info.current.lang : "it");
-    radio($("langs"), Object.entries(info.languages), "lang", (value, label) => {
-      const b = el("button", null, label);
-      b.type = "button";
-      b.dataset.noI18n = "";
-      b.addEventListener("click", () => { if (window.AtenaI18n) window.AtenaI18n.switchTo(value); });
-      return b;
-    });
-
-    const hw = info.hardware;
-    $("hw").textContent = hw.gpu
-      ? `Ho trovato ${hw.ram_gb} GB di memoria, ${hw.cpu} processori, una scheda video e ${hw.disk_free_gb} GB liberi sul disco.`
-      : `Ho trovato ${hw.ram_gb} GB di memoria, ${hw.cpu} processori e ${hw.disk_free_gb} GB liberi sul disco.`;
-    choice.profile = hw.recommended;
-    choice.brain = hw.brain || "local";
-    if (hw.board) $("hw").textContent = `${hw.board}: ho trovato ${hw.ram_gb} GB di memoria. Ti consiglio il cervello nel cloud o su un altro computer di casa.`;
-    radio($("brains"), BRAINS, "brain", (_, p) => {
-      const b = el("button", "choice");
-      b.type = "button";
-      b.append(el("b", null, p.label), el("small", null, p.note));
-      return b;
-    });
-    $("brains").addEventListener("click", brainPanels);
-    brainPanels();
-    choice.cloud = Object.keys(info.clouds)[0] || "";
-    radio($("clouds"), Object.entries(info.clouds), "cloud", (_, label) => {
-      const b = el("button", null, label);
-      b.type = "button";
-      return b;
-    });
-
-    for (const id of info.suggested) picked.add(id);
-    $("packages").replaceChildren(...Object.entries(info.packages).map(([id, p]) => {
-      const row = el("label", "toggle");
-      const box = el("input");
-      box.type = "checkbox";
-      box.checked = picked.has(id);
-      box.addEventListener("change", () => { box.checked ? picked.add(id) : picked.delete(id); });
-      const text = el("span");
-      text.append(el("b", null, `${p.title} · ${p.size_gb} GB`), el("small", null, p.heavy ? `${p.description}. Pesante per questo computer` : p.description));
-      row.append(box, text);
-      return row;
-    }));
-    radio($("profiles"), Object.entries(info.profiles), "profile", (id, p) => {
-      const b = el("button", "choice");
-      b.type = "button";
-      const meta = el("span", "meta");
-      if (id === hw.recommended) meta.append(el("span", "badge", "Consigliato"));
-      if (p.size_gb) meta.append(el("span", null, `${p.size_gb} GB`));
-      b.append(el("b", null, p.label), meta, el("small", null, p.note));
-      return b;
-    });
-
-    radio($("voices"), Object.entries(info.voices), "voice", (id, label) => {
-      const b = el("button", "choice");
-      b.type = "button";
-      const play = el("span", "play", "▶");
-      play.setAttribute("role", "button");
-      play.setAttribute("tabindex", "0");
-      play.setAttribute("aria-label", "Ascolta");
-      const listen = () => preview(id, play);
-      play.addEventListener("click", listen);
-      play.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); listen(); } });
-      const meta = el("span", "meta");
-      meta.append(play);
-      const [name, ...rest] = label.split(" — ");
-      b.append(el("b", null, name), meta, el("small", null, rest.join(" — ")));
-      return b;
-    });
-
-    $("voice-lang").replaceChildren(...Object.entries(info.voice_languages || {}).map(([code, label]) => {
-      const option = el("option", null, label);
-      option.value = code;
-      option.dataset.noI18n = "";
-      return option;
-    }));
-    $("voice-lang").value = choice.lang;
-    $("name").value = info.current.name || "";
-    if (info.code) {
-      $("local-code-value").textContent = info.code;
-      $("local-code").hidden = false;
+  function updateStepCounter() {
+    const total = FLOW.length - 1;
+    const current = at + 1;
+    if ($("step-of") && at < total) {
+      $("step-of").textContent = `Passo ${current} di ${total}`;
+    } else if ($("step-of")) {
+      $("step-of").textContent = "";
     }
-    if (info.wakeword) $("wake-label").textContent = "Modello «Ehi, Atena» già presente: caricane uno nuovo se vuoi";
-  }
 
-  function brainPanels() {
-    for (const mode of ["local", "remote", "cloud"]) $(`brain-${mode}`).hidden = choice.brain !== mode;
-  }
-
-  function flow() {
-    const head = order.slice(0, at + 1);
-    const rest = FLOW.slice(FLOW.indexOf(order[at]) + 1).filter((id) => id !== "voice" || picked.has("voice"));
-    order = [...head, ...rest];
-  }
-
-  async function preview(id, button) {
-    error();
-    if (audio) { audio.pause(); audio = null; }
-    document.querySelectorAll(".play.playing").forEach((p) => p.classList.remove("playing"));
-    button.classList.add("playing");
-    try {
-      const r = await call(`/api/setup/voice?voice=${encodeURIComponent(id)}`, { raw: true });
-      const url = URL.createObjectURL(await r.blob());
-      audio = new Audio(url);
-      audio.addEventListener("ended", () => { button.classList.remove("playing"); URL.revokeObjectURL(url); }, { once: true });
-      await audio.play();
-    } catch (e) {
-      button.classList.remove("playing");
-      error(e.message);
-    }
-  }
-
-  function show() {
-    const id = order[at];
-    document.querySelectorAll(".screen").forEach((s) => { s.hidden = s.dataset.screen !== id; });
     const dots = $("dots");
-    const steps = order.filter((s) => s !== "code" && s !== "done");
-    dots.replaceChildren(...steps.map((s) => el("li", steps.indexOf(id) >= steps.indexOf(s) ? "on" : "")));
-    $("step-of").textContent = steps.includes(id) ? `Passo ${steps.indexOf(id) + 1} di ${steps.length}` : "";
-    $("nav").hidden = id === "done";
-    $("back").hidden = at === 0;
-    $("skip").hidden = !OPTIONAL.has(id) || (id === "face" && faceDone);
-    $("next").textContent = id === "privacy" ? "Completa" : id === "code" ? "Verifica" : "Avanti";
-    error();
-    const focus = document.querySelector(`.screen[data-screen="${id}"] input, .screen[data-screen="${id}"] button`);
-    if (focus && matchMedia("(pointer: fine)").matches) focus.focus({ preventScroll: true });
-    scrollTo({ top: 0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
-  }
-
-  function validate(id) {
-    if (id === "code" && !/^\d{6}$/.test($("code").value.trim())) return "Il codice è di 6 cifre";
-    if (id === "intro") {
-      const name = $("name").value.trim();
-      if (!name) return "Scrivi il tuo nome: serve per riconoscerti e salutarti";
-      if (!NAME_RE.test(name)) return "Il nome può contenere solo lettere e trattini, senza spazi";
-      const last = $("last-name").value.trim();
-      if (last && !LAST_RE.test(last)) return "Il cognome può contenere solo lettere, spazi, apostrofi e trattini";
-    }
-    if (id === "face" && !faceDone) return "Premi «Registra il mio volto», oppure «Salta» per farlo più tardi";
-    if (id === "brain" && choice.brain === "remote" && !HOST_RE.test($("ollama-url").value.trim())) {
-      return "Indica l'indirizzo del computer con Ollama, ad esempio 192.168.1.20";
-    }
-    if (id === "brain" && choice.brain === "cloud") {
-      if (!choice.cloud) return "Scegli un servizio cloud";
-      if (!KEY_RE.test($("cloud-key").value.trim())) return "La chiave API non sembra valida";
-    }
-    if (id === "home") {
-      const url = $("ha-url").value.trim();
-      const token = $("ha-token").value.trim();
-      if ((url || token) && !(url && token)) return "Per Home Assistant servono sia l'indirizzo sia il token";
-      if (url && !/^https?:\/\/[A-Za-z0-9.-]+(:\d{1,5})?(\/[\w.~/-]*)?$/.test(url)) return "Indirizzo di Home Assistant non valido";
-      const tg = $("telegram").value.trim();
-      if (tg && !/^\d{5,12}:[A-Za-z0-9_-]{30,64}$/.test(tg)) return "Token di Telegram non valido";
-    }
-    return "";
-  }
-
-  async function finish() {
-    const file = $("wake").files[0];
-    if (file) await call("/api/setup/wakeword", { file });
-    const res = await call("/api/setup", {
-      body: {
-        name: $("name").value.trim(), last_name: $("last-name").value.trim(), lang: choice.lang,
-        voice_lang: $("voice-lang").value || choice.lang, profile: choice.profile, voice: choice.voice,
-        brain: choice.brain, ollama_url: $("ollama-url").value.trim(),
-        cloud_provider: choice.brain === "cloud" ? choice.cloud : "", cloud_key: choice.brain === "cloud" ? $("cloud-key").value.trim() : "",
-        packages: [...picked],
-        ha_url: $("ha-url").value.trim(), ha_token: $("ha-token").value.trim(), telegram: $("telegram").value.trim(),
-        commercial: $("commercial").checked, shares: $("shares").checked,
-      },
-    });
-    for (const id of ["ha-token", "telegram", "code", "cloud-key"]) $(id).value = "";
-    code = "";
-    if (res.shares_password) {
-      $("secret-value").textContent = res.shares_password;
-      $("secret").hidden = false;
-    }
-    if (res.voice_training) {
-      $("voice-next").textContent = "Ora guarda il display: ti chiederò di ripetere alcune frasi per imparare la tua voce e come pronunci il mio nome.";
-    }
-    order.push("done");
-  }
-
-  async function registerFace() {
-    error();
-    const button = $("face-btn");
-    button.disabled = true;
-    $("face-status").textContent = "Guarda la telecamera e resta fermo qualche secondo…";
-    try {
-      const res = await call("/api/setup/face", { body: { name: $("name").value.trim(), last_name: $("last-name").value.trim() } });
-      faceDone = true;
-      $("face-status").textContent = `Fatto: ti ho memorizzato con ${res.samples} immagini.`;
-      button.textContent = "Registra di nuovo";
-      show();
-    } catch (e) {
-      $("face-status").textContent = "";
-      error(e.message);
-    } finally {
-      button.disabled = false;
-    }
-  }
-
-  async function next(skip = false) {
-    if (busy) return;
-    const id = order[at];
-    const problem = skip ? "" : validate(id);
-    if (problem) { error(problem); return; }
-    busy = true;
-    $("next").disabled = true;
-    try {
-      if (id === "code") {
-        code = $("code").value.trim();
-        try { await call("/api/setup/verify"); } catch (e) { code = ""; throw e; }
+    if (dots) {
+      dots.replaceChildren();
+      for (let i = 0; i < total; i++) {
+        const li = document.createElement("li");
+        if (i === at) li.className = "on";
+        dots.append(li);
       }
-      if (skip && id === "home") for (const f of ["ha-url", "ha-token", "telegram"]) $(f).value = "";
-      if (id === "packages") flow();
-      if (id === "privacy") await finish();
-      at = Math.min(at + 1, order.length - 1);
-      show();
-    } catch (e) {
-      error(e.message);
-    } finally {
-      busy = false;
-      $("next").disabled = false;
     }
   }
 
-  $("face-btn").addEventListener("click", registerFace);
-  $("next").addEventListener("click", () => next());
-  $("skip").addEventListener("click", () => next(true));
-  $("back").addEventListener("click", () => { if (at > 0) { at--; show(); } });
-  $("wiz").addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && e.target.matches("input:not([type=checkbox]):not([type=file])")) { e.preventDefault(); next(); }
-  });
-  $("code").addEventListener("input", (e) => { e.target.value = e.target.value.replace(/\D/g, "").slice(0, 6); });
-  $("wake").addEventListener("change", (e) => {
-    const f = e.target.files[0];
-    $("upload").classList.toggle("ok", !!f);
-    $("wake-label").textContent = f ? `Scelto: ${f.name}` : "Carica il file .onnx (facoltativo)";
-    if (f && (f.size < 1024 || f.size > 20 * 1024 * 1024 || !/\.onnx$/i.test(f.name))) {
-      e.target.value = "";
-      $("upload").classList.remove("ok");
-      error("Il modello deve essere un file .onnx tra 1 KB e 20 MB");
-    }
-  });
-  $("copy").addEventListener("click", async () => {
-    try {
-      await navigator.clipboard.writeText($("secret-value").textContent);
-      $("copy").textContent = "Copiata";
-    } catch {
-      getSelection().selectAllChildren($("secret-value"));
-    }
-  });
+  function showScreen(name) {
+    document.querySelectorAll(".screen").forEach((s) => {
+      s.hidden = s.dataset.screen !== name;
+    });
+    updateStepCounter();
+    window.scrollTo({ top: 0, behavior: "smooth" });
 
-  fetch("/api/setup", { credentials: "same-origin", cache: "no-store" })
-    .then((r) => (r.ok ? r.json() : Promise.reject(new Error("La configurazione guidata è disponibile solo dalla rete di casa"))))
-    .then((data) => {
-      if (!data.needed) { location.replace("/"); return; }
-      info = data;
-      order = data.local ? [...FLOW] : ["code", ...FLOW];
-      render();
-      show();
-    })
-    .catch((e) => error(e.message));
+    const isDone = name === "done";
+    const isCode = name === "code";
+    $("nav").hidden = isDone || isCode;
+    $("back").hidden = at === 0;
+    $("skip").hidden = name !== "owner_config" && name !== "assistant_naming";
+
+    if (name === "mic_calibration" && !micStream) {
+      initMicCalibration();
+    }
+    if (name === "assistant_naming") {
+      initAudioVisualizer();
+    }
+  }
+
+  // --- AUDIO CALIBRATION (STEP 2) ---
+  async function initMicCalibration() {
+    try {
+      if (!micStream) {
+        micStream = await navigator.mediaDevices.getUserMedia({
+          audio: { echoCancellation: true, noiseSuppression: true, sampleRate: 48000 }
+        });
+      }
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const source = audioCtx.createMediaStreamSource(micStream);
+      analyserNode = audioCtx.createAnalyser();
+      analyserNode.fftSize = 256;
+      source.connect(analyserNode);
+
+      choice.micCalibrated = true;
+      if ($("t-btn-mic")) $("t-btn-mic").textContent = "Microfono Calibrato & Attivo";
+      if ($("hud-circle")) $("hud-circle").classList.add("active");
+      if ($("hud-status")) $("hud-status").textContent = "Attivo";
+
+      const pcmData = new Float32Array(analyserNode.fftSize);
+      const updateMeter = () => {
+        if (!analyserNode) return;
+        analyserNode.getFloatTimeDomainData(pcmData);
+        let sum = 0;
+        for (let i = 0; i < pcmData.length; i++) sum += pcmData[i] * pcmData[i];
+        const rms = Math.sqrt(sum / pcmData.length);
+        const db = Math.max(-60, Math.round(20 * Math.log10(rms || 0.0001)));
+        if ($("hud-db")) $("hud-db").textContent = `${db} dB`;
+        if (at === 1) requestAnimationFrame(updateMeter);
+      };
+      updateMeter();
+    } catch (e) {
+      if ($("hud-status")) $("hud-status").textContent = "Microfono non rilevato";
+    }
+  }
+
+  // --- VISUALIZER & WAKE-WORD STUDIO (STEP 3) ---
+  function initAudioVisualizer() {
+    const canvas = $("audio-visualizer");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (animId) cancelAnimationFrame(animId);
+
+    const freqData = new Uint8Array(64);
+    const timeData = new Uint8Array(128);
+
+    function draw() {
+      if (at !== 2) return;
+      animId = requestAnimationFrame(draw);
+
+      ctx.fillStyle = "rgba(2,6,16,0.4)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      if (analyserNode) {
+        analyserNode.getByteFrequencyData(freqData);
+        analyserNode.getByteTimeDomainData(timeData);
+
+        const barWidth = (canvas.width / freqData.length) * 1.5;
+        for (let i = 0; i < freqData.length; i++) {
+          const v = freqData[i] / 255;
+          const barHeight = v * canvas.height * 0.7;
+          ctx.fillStyle = `rgba(41,224,255,${0.15 + v * 0.7})`;
+          ctx.fillRect(i * (barWidth + 1), canvas.height - barHeight, barWidth, barHeight);
+        }
+
+        ctx.lineWidth = 2.5;
+        ctx.strokeStyle = "#3dffa8";
+        ctx.beginPath();
+        const sliceWidth = canvas.width / timeData.length;
+        let x = 0;
+        for (let i = 0; i < timeData.length; i++) {
+          const v = timeData[i] / 128.0;
+          const y = (v * canvas.height) / 2;
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+          x += sliceWidth;
+        }
+        ctx.stroke();
+
+        const energy = freqData.reduce((a, b) => a + b, 0) / freqData.length;
+        if ($("pitch-tag") && energy > 10) {
+          const f0 = 120 + Math.round(energy * 1.8);
+          $("pitch-tag").textContent = `F0: ${f0} Hz | RMS: ${(energy / 255).toFixed(2)}`;
+        }
+      } else {
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "rgba(41,224,255,0.4)";
+        ctx.beginPath();
+        const t = performance.now() / 600;
+        for (let x = 0; x < canvas.width; x += 4) {
+          const y = canvas.height / 2 + Math.sin(x * 0.03 + t) * 12;
+          if (x === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
+    }
+    draw();
+  }
+
+  async function recordSample() {
+    if (choice.samplesRecorded.every(Boolean)) return;
+    const nextIdx = choice.samplesRecorded.indexOf(false);
+    const slotEl = $(`slot-${nextIdx + 1}`);
+    const label = $("btn-record-label");
+
+    if (slotEl) {
+      slotEl.classList.add("recording");
+      slotEl.querySelector(".slot-status").textContent = "Acquisizione...";
+    }
+    if (label) label.textContent = "Ascolto in corso...";
+
+    await new Promise((r) => setTimeout(r, 1600));
+
+    try {
+      await call("/api/setup/custom_wake_sample", {
+        body: { index: nextIdx + 1, name: choice.assistantName }
+      });
+    } catch (e) {
+      // Ignorato se backend offline durante test
+    }
+
+    choice.samplesRecorded[nextIdx] = true;
+    if (slotEl) {
+      slotEl.classList.remove("recording");
+      slotEl.classList.add("done");
+      slotEl.querySelector(".slot-status").textContent = "Confermato";
+    }
+
+    if (choice.samplesRecorded.every(Boolean)) {
+      if (label) label.textContent = "Acquisizione completata!";
+    } else {
+      if (label) label.textContent = "Premi e pronuncia il nome";
+    }
+    error("");
+  }
+
+  async function playVoicePreview(gender) {
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio = null;
+    }
+    const name = choice.assistantName || "NUXIVA";
+    try {
+      const resp = await call("/api/setup/voice_preview", {
+        body: { lang: choice.lang, gender, name },
+        raw: true,
+      });
+      if (resp.headers.get("content-type")?.includes("audio")) {
+        const blob = await resp.blob();
+        currentAudio = new Audio(URL.createObjectURL(blob));
+        currentAudio.play();
+      } else if ("speechSynthesis" in window) {
+        const u = new SpeechSynthesisUtterance(name);
+        u.lang = choice.lang;
+        window.speechSynthesis.speak(u);
+      }
+    } catch (e) {
+      // Non bloccante
+    }
+  }
+
+  // --- ATTACH LISTENERS ---
+  function initListeners() {
+    document.querySelectorAll(".lang-card").forEach((card) => {
+      card.addEventListener("click", () => {
+        setLanguage(card.dataset.lang);
+      });
+    });
+
+    if ($("btn-request-mic")) {
+      $("btn-request-mic").addEventListener("click", initMicCalibration);
+    }
+
+    if ($("assistant-name")) {
+      $("assistant-name").addEventListener("input", (e) => {
+        choice.assistantName = e.target.value.trim() || "Hey NUXIVA";
+      });
+    }
+
+    document.querySelectorAll(".gender-card").forEach((card) => {
+      card.addEventListener("click", (e) => {
+        if (e.target.closest(".preview-sound-btn")) return;
+        document.querySelectorAll(".gender-card").forEach((c) => c.classList.remove("active"));
+        card.classList.add("active");
+        choice.gender = card.dataset.gender;
+      });
+    });
+
+    if ($("btn-play-female")) {
+      $("btn-play-female").addEventListener("click", (e) => {
+        e.stopPropagation();
+        playVoicePreview("female");
+      });
+    }
+    if ($("btn-play-male")) {
+      $("btn-play-male").addEventListener("click", (e) => {
+        e.stopPropagation();
+        playVoicePreview("male");
+      });
+    }
+
+    if ($("btn-record-sample")) {
+      $("btn-record-sample").addEventListener("click", recordSample);
+    }
+
+    if ($("btn-enroll-face")) {
+      $("btn-enroll-face").addEventListener("click", async () => {
+        const fname = $("owner-name")?.value.trim() || "Nunzio";
+        const lname = $("owner-last")?.value.trim() || "";
+        $("btn-enroll-face").textContent = "Scansione...";
+        try {
+          await call("/api/setup/face", { body: { name: fname, last_name: lname } });
+          choice.faceEnrolled = true;
+          $("btn-enroll-face").textContent = "Registrato";
+          $("face-feedback").textContent = "Completato";
+        } catch (e) {
+          $("btn-enroll-face").textContent = "Scansiona il mio viso";
+          error(e.message);
+        }
+      });
+    }
+
+    document.querySelectorAll("#brains>.choice").forEach((b) => {
+      b.addEventListener("click", () => {
+        document.querySelectorAll("#brains>.choice").forEach((c) => c.setAttribute("aria-checked", "false"));
+        b.setAttribute("aria-checked", "true");
+        choice.brain = b.dataset.brain;
+        if ($("brain-remote-input")) $("brain-remote-input").hidden = choice.brain !== "remote";
+        if ($("brain-cloud-input")) $("brain-cloud-input").hidden = choice.brain !== "cloud";
+      });
+    });
+
+    $("next").addEventListener("click", onNext);
+    $("back").addEventListener("click", onBack);
+    $("skip").addEventListener("click", () => {
+      at++;
+      showScreen(FLOW[at]);
+    });
+  }
+
+  async function onNext() {
+    error("");
+    const currentScreen = FLOW[at];
+
+    if (currentScreen === "assistant_naming") {
+      choice.assistantName = $("assistant-name")?.value.trim() || "Hey NUXIVA";
+      try {
+        await call("/api/setup/assistant", {
+          body: { name: choice.assistantName, gender: choice.gender, lang: choice.lang }
+        });
+      } catch (e) {
+        // Ignorato
+      }
+    }
+
+    if (currentScreen === "owner_config") {
+      choice.ownerFirst = $("owner-name")?.value.trim();
+      choice.ownerLast = $("owner-last")?.value.trim() || "";
+      if (!choice.ownerFirst) {
+        error("Scrivi il tuo nome: serve per riconoscerti e salutarti");
+        return;
+      }
+
+      busy = true;
+      $("next").disabled = true;
+      try {
+        await call("/api/setup", {
+          body: {
+            name: choice.ownerFirst,
+            last_name: choice.ownerLast,
+            lang: choice.lang,
+            voice_lang: choice.lang,
+            brain: choice.brain,
+            ollama_url: $("ollama-url")?.value.trim() || "",
+            cloud_provider: choice.cloudProvider,
+            cloud_key: $("cloud-key")?.value.trim() || "",
+            packages: ["voice", "vision", "ear", "documents"],
+            commercial: false,
+          }
+        });
+
+        if ($("sum-assist")) $("sum-assist").textContent = `${choice.assistantName} (${choice.gender === "female" ? "Donna" : "Uomo"})`;
+        if ($("sum-owner")) $("sum-owner").textContent = `${choice.ownerFirst} ${choice.ownerLast}`.trim();
+        if ($("sum-lang")) $("sum-lang").textContent = choice.lang.toUpperCase();
+
+        at++;
+        showScreen(FLOW[at]);
+        playVoicePreview(choice.gender);
+      } catch (e) {
+        error(e.message);
+      } finally {
+        busy = false;
+        $("next").disabled = false;
+      }
+      return;
+    }
+
+    if (at < FLOW.length - 1) {
+      at++;
+      showScreen(FLOW[at]);
+    }
+  }
+
+  function onBack() {
+    if (at > 0) {
+      at--;
+      showScreen(FLOW[at]);
+    }
+  }
+
+  async function init() {
+    initListeners();
+    try {
+      const r = await fetch("/api/setup", { cache: "no-store", headers: { "X-Nuxiva-Request": "1" } });
+      if (r.ok) {
+        info = await r.json();
+        if (!info.needed) {
+          location.replace("/");
+          return;
+        }
+        if (info.code) code = info.code;
+        if (info.current?.lang) choice.lang = info.current.lang;
+        if (info.hardware && $("hw-desc")) {
+          const hw = info.hardware;
+          $("hw-desc").textContent = `${hw.cpu} CPU · ${hw.ram_gb} GB RAM · ${hw.disk_free_gb} GB liberi sul disco`;
+        }
+      }
+    } catch (e) {
+      // Ignorato
+    }
+
+    setLanguage(choice.lang);
+    showScreen(FLOW[0]);
+  }
+
+  window.addEventListener("DOMContentLoaded", init);
 })();

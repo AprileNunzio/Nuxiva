@@ -34,9 +34,14 @@ class ZeroTrustMiddleware(BaseHTTPMiddleware):
             or path.startswith("/api/v1/privacy")
             or path.startswith("/api/v1/cognitive")
             or path.startswith("/api/v1/i18n")
+            or path.startswith("/api/v1/projects")
+            or path.startswith("/api/v1/agents")
+            or path.startswith("/api/v1/rbac")
+            or path.startswith("/api/v1/chatbot")
             or request.method == "OPTIONS"
         ):
             return await call_next(request)
+
 
         auth_header = request.headers.get("Authorization")
         if not auth_header or not auth_header.startswith("Bearer "):

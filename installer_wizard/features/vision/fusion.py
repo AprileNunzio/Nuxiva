@@ -11,7 +11,7 @@ sys.path.append(str(Path(__file__).resolve().parents[1] / "biometrics"))
 import embeddings as emb
 import liveness as lv
 
-log = logging.getLogger("atena.vision")
+log = logging.getLogger("nuxiva.vision")
 PAIR_MIN = 0.2
 OFFSET_ALPHA = 0.05
 OFFSET_LIMIT = 0.3

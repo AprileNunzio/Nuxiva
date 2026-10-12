@@ -13,8 +13,8 @@ from state import store
 
 public_routes = APIRouter()
 admin_routes = APIRouter()
-REVIEW_DIR = Path(os.environ.get("ATENA_EAR_REVIEW_DIR", "/var/lib/atena/ear_review"))
-TUNING_FILE = Path(os.environ.get("ATENA_EAR_TUNING", "/var/lib/atena/ear_tuning.json"))
+REVIEW_DIR = Path(os.environ.get("NUXIVA_EAR_REVIEW_DIR", "/var/lib/nuxiva/ear_review"))
+TUNING_FILE = Path(os.environ.get("NUXIVA_EAR_TUNING", "/var/lib/nuxiva/ear_tuning.json"))
 
 
 def on(key: str, default: str) -> bool:
@@ -24,8 +24,8 @@ def on(key: str, default: str) -> bool:
 @public_routes.get("/api/ear/config")
 async def ear_config(request: Request):
     require_display(request, "Solo dal display")
-    agc = env_get("ATENA_MIC_AGC", "auto").strip().lower()
-    return {"echoCancellation": on("ATENA_MIC_EC", "1"), "noiseSuppression": on("ATENA_MIC_NS", "0"),
+    agc = env_get("NUXIVA_MIC_AGC", "auto").strip().lower()
+    return {"echoCancellation": on("NUXIVA_MIC_EC", "1"), "noiseSuppression": on("NUXIVA_MIC_NS", "0"),
             "autoGainControl": agc in ("1", "on", "yes", "true"), "autoLevel": agc == "auto"}
 
 
@@ -35,7 +35,7 @@ async def ear_review(request: Request):
     try:
         data = json.loads((REVIEW_DIR / "summary.json").read_text(encoding="utf-8"))
     except FileNotFoundError:
-        data = {"state": "nessuna analisi ancora", "recording": on("ATENA_EAR_RECORD", "1"), "pending": 0, "summary": {"chunks": 0}}
+        data = {"state": "nessuna analisi ancora", "recording": on("NUXIVA_EAR_RECORD", "1"), "pending": 0, "summary": {"chunks": 0}}
     except (OSError, ValueError) as exc:
         data = {"state": f"riepilogo non leggibile: {exc}"}
     return data
@@ -73,7 +73,7 @@ async def ear_stt_check(request: Request):
         raise HTTPException(400, str(exc))
 
 
-desk.register_source("ear_widget", lambda: {"ear": True} if env_get("ATENA_EAR", "1") != "0" else None)
+desk.register_source("ear_widget", lambda: {"ear": True} if env_get("NUXIVA_EAR", "1") != "0" else None)
 
 
 @public_routes.post("/api/ear/client")

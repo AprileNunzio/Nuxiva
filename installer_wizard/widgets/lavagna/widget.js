@@ -33,7 +33,7 @@
     return code in STRINGS ? code : "it";
   };
   const L = () => STRINGS[lang()];
-  const icon = (name) => (window.AtenaIcons ? window.AtenaIcons.icon(name) : "");
+  const icon = (name) => (window.NuxivaIcons ? window.NuxivaIcons.icon(name) : "");
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const post = (path, body) => fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body || {}) }).then((r) => r.json()).catch(() => ({}));
   const images = new Map();
@@ -293,7 +293,7 @@
         <canvas class="lv-canvas"></canvas>
         <input class="lv-input" maxlength="200" hidden>
       </div>
-      <div class="lv-atena"><div class="lv-orb"></div><div class="lv-says" hidden></div></div>
+      <div class="lv-nuxiva"><div class="lv-orb"></div><div class="lv-says" hidden></div></div>
       <div class="lv-modal-mask" style="display:none">
         <div class="lv-modal">
           <div class="lv-modal-head"><h3>${icon("printer")}${esc(t.printHead)}</h3><button data-m="close" class="lv-modal-x">${icon("close")}</button></div>
@@ -330,11 +330,11 @@
     };
 
     const reveal = (it) => {
-      if (it.by !== "atena" || !st.seen.has(it.id)) return it.text ? it.text.length : 0;
+      if (it.by !== "nuxiva" || !st.seen.has(it.id)) return it.text ? it.text.length : 0;
       return (performance.now() - st.seen.get(it.id)) * 0.045;
     };
     const appear = (it) => (st.seen.has(it.id) ? Math.min(1, (performance.now() - st.seen.get(it.id)) / 450) : 1);
-    const animating = () => st.items.some((i) => i.by === "atena" && st.seen.has(i.id) &&
+    const animating = () => st.items.some((i) => i.by === "nuxiva" && st.seen.has(i.id) &&
       ((i.type === "text" && reveal(i) < i.text.length) || (i.type !== "text" && appear(i) < 1)));
 
     const redraw = () => {
@@ -407,7 +407,7 @@
       if (data.same) return;
       const fresh = new Set(data.items.map((i) => i.id));
       for (const it of data.items) {
-        if (!st.first && it.by === "atena" && ANIMATED.has(it.type) && !st.seen.has(it.id) && !st.items.some((o) => o.id === it.id)) {
+        if (!st.first && it.by === "nuxiva" && ANIMATED.has(it.type) && !st.seen.has(it.id) && !st.items.some((o) => o.id === it.id)) {
           st.seen.set(it.id, performance.now());
         }
       }
@@ -609,7 +609,7 @@
       } else if (b.dataset.a === "pdf") {
         const link = document.createElement("a");
         link.href = "/api/board/pdf";
-        link.download = "atena_whiteboard.pdf";
+        link.download = "nuxiva_whiteboard.pdf";
         document.body.appendChild(link);
         link.click();
         link.remove();
@@ -640,5 +640,5 @@
     fit();
   }
 
-  AtenaDesk.register("lavagna", { render: mount, update() {}, destroy(el) { if (el._lv) el._lv.stop(); } });
+  NuxivaDesk.register("lavagna", { render: mount, update() {}, destroy(el) { if (el._lv) el._lv.stop(); } });
 })();

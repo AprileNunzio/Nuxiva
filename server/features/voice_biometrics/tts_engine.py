@@ -7,9 +7,9 @@ from io import BytesIO
 
 from server.features.voice_biometrics.audio_contracts import TTSRequest
 
-logger = logging.getLogger("atena.tts")
+logger = logging.getLogger("nuxiva.tts")
 
-MODELS_DIR = os.environ.get("ATENA_TTS_MODELS_DIR", "/app/data/models/tts")
+MODELS_DIR = os.environ.get("NUXIVA_TTS_MODELS_DIR", "/app/data/models/tts")
 SAMPLE_RATE = 22050
 
 

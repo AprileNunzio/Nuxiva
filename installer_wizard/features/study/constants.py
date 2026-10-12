@@ -6,11 +6,11 @@ from datetime import datetime
 
 from config import STATE_DIR
 
-log = logging.getLogger("atena.study")
+log = logging.getLogger("nuxiva.study")
 
 STUDY_DIR = STATE_DIR / "study"
 STATE_FILE = STUDY_DIR / "state.json"
-USER_AGENT = "AtenaOS/3 (+https://github.com/AprileNunzio/ATENA)"
+USER_AGENT = "NuxivaOS/3 (+https://github.com/AprileNunzio/NUXIVA)"
 
 LEVELS = {1: "Base", 2: "Intermedio", 3: "Avanzato", 4: "Professionale", 5: "Esperto"}
 LEVEL_HINT = {

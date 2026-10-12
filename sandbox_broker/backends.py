@@ -17,7 +17,7 @@ from server.features.sandbox.domain.strength import Strength
 _OOM_EXIT = 137
 _SMOKE_SPEC = ExecutionSpec(
     language=Language.PYTHON,
-    source="print('atena-sandbox-ok')",
+    source="print('nuxiva-sandbox-ok')",
     limits=ResourceLimits(memory_mb=64, wall_seconds=60),
 )
 
@@ -124,4 +124,4 @@ class DockerBackend(Backend):
                 result = self.run(_SMOKE_SPEC, workspace)
         except (OSError, subprocess.SubprocessError):
             return False
-        return result.exit_code == 0 and b"atena-sandbox-ok" in result.stdout
+        return result.exit_code == 0 and b"nuxiva-sandbox-ok" in result.stdout

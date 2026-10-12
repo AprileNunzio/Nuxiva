@@ -70,7 +70,7 @@ class GraphTest(unittest.TestCase):
 
     def test_voice_answers_in_both_languages(self):
         self.see("telecomando", [100, 300, 40, 40])
-        it = voice.answer("Atena, dov'è le chiavi della Grande Punto?", self.g, "it", T0 + 120)
+        it = voice.answer("Nuxiva, dov'è le chiavi della Grande Punto?", self.g, "it", T0 + 120)
         self.assertIn("tavolo della cucina", it)
         self.assertIn("2.1", it)
         en = voice.answer("where are the chiavi?", self.g, "en", T0 + 120)

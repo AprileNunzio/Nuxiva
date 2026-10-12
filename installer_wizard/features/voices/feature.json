@@ -6,7 +6,7 @@
   "order": 30,
   "pinned": true,
   "panel": "voices",
-  "description": "Oltre 600 voci in più di 60 lingue (una trentina in italiano): scegli, ascolta e scarica; mettile in ordine. Atena risponde nella lingua in cui gli parli o in quella che gli chiedi («parlami in inglese», «insegnami il tedesco») e scarica da solo la voce che gli manca.",
+  "description": "Oltre 600 voci in più di 60 lingue (una trentina in italiano): scegli, ascolta e scarica; mettile in ordine. Nuxiva risponde nella lingua in cui gli parli o in quella che gli chiedi («parlami in inglese», «insegnami il tedesco») e scarica da solo la voce che gli manca.",
   "capabilities": [
     "Voci neurali Kokoro (9 lingue)",
     "Catalogo Piper completo, scaricabile",
@@ -18,25 +18,25 @@
   ],
   "settings": [
     {
-      "key": "ATENA_VOICE_SPEED",
+      "key": "NUXIVA_VOICE_SPEED",
       "label": "Velocità della voce (0.6 - 1.6)",
       "type": "number",
       "default": "1.0"
     },
     {
-      "key": "ATENA_VOICE_PITCH",
+      "key": "NUXIVA_VOICE_PITCH",
       "label": "Tono della voce (-6 grave … +6 acuto)",
       "type": "number",
       "default": "0"
     },
     {
-      "key": "ATENA_VOICE_VOLUME",
+      "key": "NUXIVA_VOICE_VOLUME",
       "label": "Volume della voce (0.4 - 2.0)",
       "type": "number",
       "default": "1.0"
     },
     {
-      "key": "ATENA_VOICE_ONLINE",
+      "key": "NUXIVA_VOICE_ONLINE",
       "label": "Voci online",
       "type": "select",
       "default": "auto",
@@ -56,7 +56,7 @@
       ]
     },
     {
-      "key": "ATENA_VOICE_AUTO_DOWNLOAD",
+      "key": "NUXIVA_VOICE_AUTO_DOWNLOAD",
       "label": "Scarica da solo le voci delle lingue nuove",
       "type": "select",
       "default": "1",

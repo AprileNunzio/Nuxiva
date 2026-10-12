@@ -99,4 +99,4 @@
   }
 
   H.Library = { find, emotion, catalog, HEAD };
-})(window.Atena3D);
+})(window.Nuxiva3D);

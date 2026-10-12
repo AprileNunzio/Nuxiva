@@ -15,12 +15,12 @@
     "Tout ce qui manque (ffmpeg, v4l-utils, outil émetteur infrarouge) s'installe et se configure tout seul, sans intervention"
   ],
   "settings": {
-    "ATENA_LIVECAM_FPS": "Fluidité de l'image en direct",
-    "ATENA_LIVECAM_WIDTH": "Largeur de l'image en direct",
-    "ATENA_LIVECAM_MAX": "Caméras live contemporaines",
-    "ATENA_CAMERAS_MOTION_EVERY": "Contrôle de mouvement tous les",
-    "ATENA_CAMERAS_MOTION_COOLDOWN": "Pause entre deux alertes de mouvement",
-    "ATENA_CAMERAS_PHOTOS_MAX": "Photos stockées par l'appareil photo",
-    "ATENA_IR_AUTO": "Configurez vous-même l'émetteur infrarouge si l'image est dans l'obscurité"
+    "NUXIVA_LIVECAM_FPS": "Fluidité de l'image en direct",
+    "NUXIVA_LIVECAM_WIDTH": "Largeur de l'image en direct",
+    "NUXIVA_LIVECAM_MAX": "Caméras live contemporaines",
+    "NUXIVA_CAMERAS_MOTION_EVERY": "Contrôle de mouvement tous les",
+    "NUXIVA_CAMERAS_MOTION_COOLDOWN": "Pause entre deux alertes de mouvement",
+    "NUXIVA_CAMERAS_PHOTOS_MAX": "Photos stockées par l'appareil photo",
+    "NUXIVA_IR_AUTO": "Configurez vous-même l'émetteur infrarouge si l'image est dans l'obscurité"
   }
 }

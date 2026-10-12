@@ -6,7 +6,7 @@ from pathlib import Path
 
 from settings import paths
 
-log = logging.getLogger("atena.backup")
+log = logging.getLogger("nuxiva.backup")
 KEEP_DAYS = 30
 
 

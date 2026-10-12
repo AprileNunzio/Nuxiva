@@ -4,7 +4,7 @@ use std::os::unix::net::{UnixListener, UnixStream};
 #[cfg(unix)]
 use std::path::Path;
 
-use atena_netguard::engine::Event;
+use nuxiva_netguard::engine::Event;
 
 #[derive(Debug)]
 pub struct Sink {

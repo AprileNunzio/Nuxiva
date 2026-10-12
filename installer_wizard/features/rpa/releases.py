@@ -4,10 +4,10 @@ import time
 
 import httpx
 
-log = logging.getLogger("atena.rpa")
-REPOSITORY = "AprileNunzio/ATENA"
+log = logging.getLogger("nuxiva.rpa")
+REPOSITORY = "AprileNunzio/NUXIVA"
 API = f"https://api.github.com/repos/{REPOSITORY}/releases?per_page=20"
-INSTALLER = "ATENA_Assistente_Setup.exe"
+INSTALLER = "NUXIVA_Assistente_Setup.exe"
 CACHE_SECONDS = 3600
 TAG_RE = re.compile(r"assistant-v(\d+(?:\.\d+){1,3})")
 _cache: dict = {"at": 0.0, "url": ""}

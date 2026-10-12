@@ -3,9 +3,9 @@ from cryptography.fernet import Fernet
 from fastapi import HTTPException
 
 # Chiave simmetrica pre-condivisa (PSK) per E2E Encryption
-# In produzione questa chiave deve essere generata da ATENA e iniettata al primo setup
-_ATENA_PSK = os.environ.get("ATENA_CONTEXT_PSK", Fernet.generate_key().decode())
-_cipher = Fernet(_ATENA_PSK.encode())
+# In produzione questa chiave deve essere generata da NUXIVA e iniettata al primo setup
+_NUXIVA_PSK = os.environ.get("NUXIVA_CONTEXT_PSK", Fernet.generate_key().decode())
+_cipher = Fernet(_NUXIVA_PSK.encode())
 
 class E2EEncryption:
     @staticmethod

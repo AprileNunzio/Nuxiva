@@ -42,7 +42,7 @@ class PersistentPTY:
         except OSError as exc:
             raise RuntimeError(f"PTY read failed: {exc}")
 
-MARK = b"@@ATENA@@"
+MARK = b"@@NUXIVA@@"
 _OOM_SIGNS = (b"Out of memory", b"oom-kill", b"Killed process")
 
 

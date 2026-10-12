@@ -10,7 +10,7 @@ from features.governor import conf, pressure, profile
 from features.governor.devices import Devices
 from features.governor.ledger import Ledger
 
-log = logging.getLogger("atena.governor")
+log = logging.getLogger("nuxiva.governor")
 DEFER_STEP = 5.0
 RECORD_BELOW_MS = 0.5
 
@@ -40,7 +40,7 @@ class Governor:
         self.me = psutil.Process()
 
     def enabled(self) -> bool:
-        return conf.flag("ATENA_GOVERNOR", True)
+        return conf.flag("NUXIVA_GOVERNOR", True)
 
     def detect(self) -> dict:
         ram = psutil.virtual_memory().total / 1024 ** 3
@@ -48,17 +48,17 @@ class Governor:
         return {"cores": self.cores, "ram_gb": round(ram, 1), "avx2": avx2, "detected": profile.classify(self.cores, ram, avx2)}
 
     def device_class(self) -> str:
-        forced = conf.choice("ATENA_GOV_CLASS", "auto", ("auto", *profile.CLASSES))
+        forced = conf.choice("NUXIVA_GOV_CLASS", "auto", ("auto", *profile.CLASSES))
         return self.hardware["detected"] if forced == "auto" else forced
 
     def slots(self, kind: str) -> int:
         return profile.SLOTS[self.device_class()][kind]
 
     def enter_level(self) -> float:
-        return conf.number("ATENA_GOV_PRESSURE_ENTER", 75.0, 30.0, 100.0)
+        return conf.number("NUXIVA_GOV_PRESSURE_ENTER", 75.0, 30.0, 100.0)
 
     def leave_level(self) -> float:
-        return min(self.enter_level(), conf.number("ATENA_GOV_PRESSURE_EXIT", 55.0, 10.0, 99.0))
+        return min(self.enter_level(), conf.number("NUXIVA_GOV_PRESSURE_EXIT", 55.0, 10.0, 99.0))
 
     def sample(self) -> dict:
         mem, swap = psutil.virtual_memory(), psutil.swap_memory()
@@ -80,10 +80,10 @@ class Governor:
             try:
                 if self.enabled():
                     await asyncio.to_thread(self.sample)
-                    await asyncio.to_thread(self.ledger.prune, conf.number("ATENA_GOV_RETENTION_DAYS", 14.0, 1.0, 365.0))
+                    await asyncio.to_thread(self.ledger.prune, conf.number("NUXIVA_GOV_RETENTION_DAYS", 14.0, 1.0, 365.0))
             except Exception:
                 log.exception("Campionamento delle risorse non riuscito")
-            await asyncio.sleep(conf.number("ATENA_GOV_SAMPLE_S", 2.0, 1.0, 30.0))
+            await asyncio.sleep(conf.number("NUXIVA_GOV_SAMPLE_S", 2.0, 1.0, 30.0))
 
     def busy(self, kind: str) -> bool:
         if not self.enabled() or kind in ("realtime", "interactive"):
@@ -95,7 +95,7 @@ class Governor:
     async def gate(self, kind: str, name: str = "") -> float:
         if not self.busy(kind):
             return 0.0
-        limit = conf.number("ATENA_GOV_DEFER_MAX_MIN", 30.0, 0.0, 1440.0) * 60
+        limit = conf.number("NUXIVA_GOV_DEFER_MAX_MIN", 30.0, 0.0, 1440.0) * 60
         if limit <= 0:
             return 0.0
         started = time.time()
@@ -158,18 +158,18 @@ class Governor:
 
     def policy(self, device: str | None) -> dict:
         cls = self.device_class()
-        forced_tier = conf.choice("ATENA_GOV_QUALITY", "auto", ("auto", *profile.TIERS))
+        forced_tier = conf.choice("NUXIVA_GOV_QUALITY", "auto", ("auto", *profile.TIERS))
         base = profile.QUALITY[cls]
         known = self.devices.known(device) if device else {}
         tier = forced_tier if forced_tier != "auto" else known.get("tier") or base
         caps = dict(profile.WIDGETS[cls])
-        override = int(conf.number("ATENA_GOV_MAX_WIDGETS", 0, 0, 40))
+        override = int(conf.number("NUXIVA_GOV_MAX_WIDGETS", 0, 0, 40))
         if override:
             caps["active"] = override
         if tier == "minimal":
             caps = {"active": max(1, caps["active"] // 2), "ambient": 0}
         return {"enabled": self.enabled(), "class": cls, "tier": tier, "max_active": caps["active"], "max_ambient": caps["ambient"],
-                "report": self.enabled() and conf.flag("ATENA_GOV_CLIENT_REPORT", True), "report_every_s": 30,
+                "report": self.enabled() and conf.flag("NUXIVA_GOV_CLIENT_REPORT", True), "report_every_s": 30,
                 "server_busy": self.pressure.high}
 
     def report(self, clean: dict) -> dict:

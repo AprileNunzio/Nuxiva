@@ -1,11 +1,11 @@
 (() => {
-  const D = window.AtenaDisplay, { $ } = D;
+  const D = window.NuxivaDisplay, { $ } = D;
   const bars = [], waveBars = [];
   let lastAlone = null, wsFails = 0, restarting = false, lastTry = Date.now(), heardAt = 0;
   const stats = { opens: 0, msgs: 0, sends: 0, mic: 0, made: 0 };
   const PAGE = Math.random().toString(36).slice(2, 8);
-  const OPT_IN = "atena-remote-mic";
-  const AUTO_AGC = "atena-mic-agc";
+  const OPT_IN = "nuxiva-remote-mic";
+  const AUTO_AGC = "nuxiva-mic-agc";
   let autoLevel = false, agcOn = false;
   const agcLearned = () => { try { return localStorage.getItem(AUTO_AGC) === "1"; } catch (e) { return false; } };
   const optedIn = () => { try { return localStorage.getItem(OPT_IN) === "1"; } catch (e) { return false; } };
@@ -19,8 +19,8 @@
   });
   let ws = null, ctx = null, stream = null, state = "off", history = new Array(28).fill(0);
   const WORKLET = `class Tap extends AudioWorkletProcessor { process(inp) { const c = inp[0] && inp[0][0]; if (c) this.port.postMessage(c.slice(0)); return true; } }
-      registerProcessor("atena-tap", Tap);`;
-  const TITLES = { idle: "Parla (oppure dì «Atena»)", listening: "In ascolto", transcribing: "In ascolto", off: "Microfono non attivo" };
+      registerProcessor("nuxiva-tap", Tap);`;
+  const TITLES = { idle: "Parla (oppure dì «Nuxiva»)", listening: "In ascolto", transcribing: "In ascolto", off: "Microfono non attivo" };
 
   async function report(ok, error) {
     let inputs = 0, label = "";
@@ -33,7 +33,7 @@
   function setState(s, text) {
     const { avatar } = D;
     state = s;
-    window.dispatchEvent(new CustomEvent("atena-ear", { detail: { state: s, text: text || TITLES[s] } }));
+    window.dispatchEvent(new CustomEvent("nuxiva-ear", { detail: { state: s, text: text || TITLES[s] } }));
     $("ear").className = `ear ${s}`;
     $("btn-mic").className = `ibtn mic ${s === "listening" ? "listening" : s === "off" ? "off" : ""}`;
     document.body.classList.toggle("listening", s === "listening");
@@ -45,7 +45,7 @@
   function level(v) {
     bars.forEach((b, i) => { b.style.height = `${2 + Math.max(0, v * 16 - Math.abs(i - 6) * 1.2 + Math.random() * 3)}px`; });
     history.push(v); history.shift();
-    window.dispatchEvent(new CustomEvent("atena-ear-level", { detail: v }));
+    window.dispatchEvent(new CustomEvent("nuxiva-ear-level", { detail: v }));
     if (state === "listening") waveBars.forEach((b, i) => { b.style.height = `${6 + history[i] * 64 * (0.6 + 0.4 * Math.sin(i * 0.9))}px`; });
     const m = $("vol-in-meter"); if (m) m.style.width = `${Math.min(100, v * 100)}%`;
     D.Mood.level(v);
@@ -79,7 +79,7 @@
       if (ctx.state === "suspended") ctx.resume().catch(() => {});
       await withTimeout(ctx.audioWorklet.addModule(URL.createObjectURL(new Blob([WORKLET], { type: "application/javascript" }))),
         8000, "il motore audio del browser non si avvia");
-      const src = ctx.createMediaStreamSource(stream), tap = new AudioWorkletNode(ctx, "atena-tap");
+      const src = ctx.createMediaStreamSource(stream), tap = new AudioWorkletNode(ctx, "nuxiva-tap");
       src.connect(tap);
       const ratio = ctx.sampleRate / 16000;
       let acc = [], pos = 0;
@@ -201,7 +201,7 @@
 
   function offReason() {
     if (secure()) return "Tocca il microfono per usare quello di questo dispositivo";
-    return "Microfono di questo dispositivo: apri Atena con https:// (vedi il certificato su /atena-ca.crt)";
+    return "Microfono di questo dispositivo: apri Nuxiva con https:// (vedi il certificato su /nuxiva-ca.crt)";
   }
 
   let activated = false;
@@ -243,7 +243,7 @@
   let resetSeen = 0;
   if (navigator.mediaDevices) navigator.mediaDevices.addEventListener("devicechange", () => { if (state === "off") restartMic(); });
 
-  const Ear = D.Ear = window.atenaEar = {
+  const Ear = D.Ear = window.nuxivaEar = {
     resetFrom(t) { if (!t || t === resetSeen) return; if (resetSeen) restartMic(); resetSeen = t; },
     start, send, restartMic, debugState: setState, debugLevel: level,
     listen() { if (ctx && ctx.state === "suspended") ctx.resume(); D.pingActivity(true); send({ type: "listen" }); setState("listening"); },
@@ -251,6 +251,6 @@
     followup(seconds = 20) { send({ type: "followup", seconds, conversation: true }); },
     presence(alone) { if (alone !== lastAlone) { lastAlone = alone; send({ type: "presence", alone: alone || "" }); } },
     get state() { return state; },
-    get link() { return `pagina=${PAGE} ${document.visibilityState} v=${(window.ATENA_ASSET_V || "").slice(0, 7)} ws=${ws ? ["connessione", "aperto", "chiusura", "chiuso"][ws.readyState] : "nessuno"} mic=${micLive() ? "attivo" : "spento"} audio=${heardAt ? Math.round((Date.now() - heardAt) / 1000) + "s" : "mai"} errori=${wsFails} t=${Math.round(performance.now() / 1000)}s ws_creati=${stats.made} aperti=${stats.opens} msg=${stats.msgs} inviati=${stats.sends} mic_ok=${stats.mic}`; },
+    get link() { return `pagina=${PAGE} ${document.visibilityState} v=${(window.NUXIVA_ASSET_V || "").slice(0, 7)} ws=${ws ? ["connessione", "aperto", "chiusura", "chiuso"][ws.readyState] : "nessuno"} mic=${micLive() ? "attivo" : "spento"} audio=${heardAt ? Math.round((Date.now() - heardAt) / 1000) + "s" : "mai"} errori=${wsFails} t=${Math.round(performance.now() / 1000)}s ws_creati=${stats.made} aperti=${stats.opens} msg=${stats.msgs} inviati=${stats.sends} mic_ok=${stats.mic}`; },
   };
 })();

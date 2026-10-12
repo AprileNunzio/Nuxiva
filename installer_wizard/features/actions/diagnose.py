@@ -87,7 +87,7 @@ def _command_ok(argv: list[str]) -> bool:
     if argv[0] == "env" and len(argv) > 1:
         return False
     if argv[0] in ("head", "tail", "grep", "wc", "stat", "file", "ls", "du") and any(
-        a.startswith(("/etc/atena", "/var/lib/atena", "/root", "/etc/shadow")) for a in argv[1:]
+        a.startswith(("/etc/nuxiva", "/var/lib/nuxiva", "/root", "/etc/shadow")) for a in argv[1:]
     ):
         return False
     return True
@@ -97,7 +97,7 @@ async def diagnose_action(text: str) -> tuple[str, dict] | None:
     history = ""
     for attempt in range(3):
         spec = await llm(
-            "Sei l'amministratore di un server Debian 12 (Atena). Per rispondere alla richiesta scegli UN comando "
+            "Sei l'amministratore di un server Debian 12 (Nuxiva). Per rispondere alla richiesta scegli UN comando "
             "Linux di SOLA LETTURA tra: " + ", ".join(sorted(SAFE_CMDS)) + ". Niente pipe, redirezioni, sudo o "
             "variabili. Se la richiesta non riguarda il sistema, la rete o l'hardware rispondi "
             '{"command": ""}. Rispondi SOLO con JSON {"command": "..."}.' + history + "\n\nRichiesta: " + text,

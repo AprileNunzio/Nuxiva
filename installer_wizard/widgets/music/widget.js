@@ -33,5 +33,5 @@
     update(el, d, ctx) { if (!el._d || el._d.key !== d.key) paint(el, d, ctx); el._d = d; tick(el, d, ctx); },
     destroy(el) { clearInterval(timers.get(el)); },
   };
-  AtenaDesk.register("music", impl);
+  NuxivaDesk.register("music", impl);
 })();

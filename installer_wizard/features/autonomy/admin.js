@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const ICON = { routine: "⏰", diagnosi: "🩺", studio: "📚", approvazione: "🔐" };
   const when = (t) => (t ? new Date(t * 1000).toLocaleString("it-IT", { dateStyle: "short", timeStyle: "short" }) : "mai");
   let timer = null;
@@ -14,7 +14,7 @@
         <button class="btn sm danger" data-no>Rifiuta</button></div></div>`).join("");
     const tr = $("au-trust");
     tr.hidden = !d.trusted.length;
-    tr.innerHTML = `<div class="panel-title">✅ Azioni che Atena fa senza chiedere (${d.trusted.length})</div>
+    tr.innerHTML = `<div class="panel-title">✅ Azioni che Nuxiva fa senza chiedere (${d.trusted.length})</div>
       <div class="muted-note">Le diagnosi automatiche usano solo la sola lettura e non chiedono mai nulla; un rifiuto vale 24 ore.</div>` + d.trusted.map((t) =>
       `<div class="au-item" data-trust="${fmt.esc(t.id)}"><div><b>${fmt.esc(t.title)}</b><div>${fmt.esc(t.summary)}</div><div class="faint">${when(t.at)}</div></div>
         <div class="actions"><button class="btn sm" data-revoke>Revoca</button></div></div>`).join("");
@@ -24,11 +24,11 @@
           <div class="faint">Eseguito ${r.runs || 0} volte · ultima: ${when(r.last_run)}${r.last_result ? ` — ${fmt.esc(r.last_result)}` : ""}</div></div>
         <div class="actions"><button class="btn sm" data-run>Esegui ora</button>
           ${r.trusted ? '<button class="btn sm" data-untrust>Revoca autorizzazione</button>' : ""}<button class="btn sm" data-toggle>${r.enabled ? "Sospendi" : "Riattiva"}</button><button class="btn sm danger" data-del>Elimina</button></div></div>`).join("")
-      || '<div class="faint">Nessun compito. Aggiungine uno qui sopra o di\' ad Atena: «ogni mattina alle 8 mandami il meteo per email».</div>';
+      || '<div class="faint">Nessun compito. Aggiungine uno qui sopra o di\' ad Nuxiva: «ogni mattina alle 8 mandami il meteo per email».</div>';
     $("au-journal").innerHTML = d.journal.map((e) => `<div class="au-log"><span>${ICON[e.kind] || "•"}</span>
         <div><b>${fmt.esc(e.title)}</b> <span class="faint">${when(e.at)}</span><div>${fmt.esc(e.text)}</div>
         ${e.steps && e.steps.length ? `<div class="faint mono">${e.steps.map((s) => fmt.esc(s.tool)).join(" → ")}</div>` : ""}</div></div>`).join("")
-      || '<div class="faint">Ancora niente: qui comparirà tutto ciò che Atena fa da sola.</div>';
+      || '<div class="faint">Ancora niente: qui comparirà tutto ciò che Nuxiva fa da sola.</div>';
   }
 
   async function load() {

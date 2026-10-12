@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const ICONS = { satellite: "🎙", display: "🖥", server: "🖧", esp32: "📟", android: "📱", sensor: "🌡", other: "🔌" };
   let data = null, timer = null, codeTimer = null, masterReport = null;
 
@@ -43,7 +43,7 @@
       <div class="actions">
         ${s.update_available ? '<button class="btn sm primary" data-master="update-apply">Aggiorna ora</button>' : '<button class="btn sm" data-master="update-check">Controlla aggiornamenti</button>'}
         <button class="btn sm" data-master="adapt" title="Riesamina webcam, microfoni, scheda video e memoria e riadatta le funzionalità">Auto-adatta all'hardware</button>
-        <button class="btn sm" data-master="restart-supervisor">Riavvia Atena</button>
+        <button class="btn sm" data-master="restart-supervisor">Riavvia Nuxiva</button>
         <button class="btn sm danger" data-master="reboot">Riavvia il server</button></div></div>
       ${metrics(s.metrics)}
       ${adaptHtml(masterReport)}
@@ -103,13 +103,13 @@
       $("nd-pairing").innerHTML = `<div>Codice di abbinamento, valido ancora ${Math.floor(left / 60)}:${String(left % 60).padStart(2, "0")}:</div>
         <div class="nd-code">${fmt.esc(r.code)}</div>
         <div class="nd-sub">Sul Raspberry Pi o computer da aggiungere (Linux, Python 3) esegui:</div>
-        <div class="nd-cmd">curl -sL ${fmt.esc(server)}/nodes/agent.py -o atena-node.py
-sudo python3 atena-node.py --server ${fmt.esc(server)} --code ${fmt.esc(r.code)} --name "Cucina" --type satellite --install</div>
+        <div class="nd-cmd">curl -sL ${fmt.esc(server)}/nodes/agent.py -o nuxiva-node.py
+sudo python3 nuxiva-node.py --server ${fmt.esc(server)} --code ${fmt.esc(r.code)} --name "Cucina" --type satellite --install</div>
         <div class="nd-sub">Cambia nome e tipo a piacere (satellite, display, server, sensor). Con --install l'agente parte da solo a ogni accensione.</div>
-        <div class="nd-sub" style="margin-top:10px">PC Windows: nell'Assistente ATENA scrivi l'indirizzo ${fmt.esc(data.master.ip || location.hostname)}, premi «Verifica» e controlla che l'impronta sia ${r.ca_fingerprint ? `<b class="mono">${fmt.esc(r.ca_fingerprint)}</b>` : "quella del certificato di ATENA (HTTPS non ancora attivo)"}, poi inserisci il codice.</div>
-        <div class="nd-sub" style="margin-top:10px">Oppure, senza codice: il nodo trova Atena da sola nella rete e tu lo approvi qui confrontando il codice che mostra.</div>
-        <div class="nd-cmd">curl -sL ${fmt.esc(server)}/nodes/agent.py -o atena-node.py
-sudo python3 atena-node.py --join --name "Cucina" --type satellite --install</div>
+        <div class="nd-sub" style="margin-top:10px">PC Windows: nell'Assistente NUXIVA scrivi l'indirizzo ${fmt.esc(data.master.ip || location.hostname)}, premi «Verifica» e controlla che l'impronta sia ${r.ca_fingerprint ? `<b class="mono">${fmt.esc(r.ca_fingerprint)}</b>` : "quella del certificato di NUXIVA (HTTPS non ancora attivo)"}, poi inserisci il codice.</div>
+        <div class="nd-sub" style="margin-top:10px">Oppure, senza codice: il nodo trova Nuxiva da sola nella rete e tu lo approvi qui confrontando il codice che mostra.</div>
+        <div class="nd-cmd">curl -sL ${fmt.esc(server)}/nodes/agent.py -o nuxiva-node.py
+sudo python3 nuxiva-node.py --join --name "Cucina" --type satellite --install</div>
         <div class="nd-sub">Se il server cambia indirizzo (DHCP), i nodi lo ritrovano da soli e si aggiornano automaticamente.</div>`;
     };
     clearInterval(codeTimer); draw();
@@ -128,7 +128,7 @@ sudo python3 atena-node.py --join --name "Cucina" --type satellite --install</di
 
   async function masterAction(action) {
     if (action === "adapt") return masterAdapt();
-    const ask = { reboot: "Riavviare il server? Atena sarà offline per qualche minuto.", "restart-supervisor": "Riavviare Atena?" }[action];
+    const ask = { reboot: "Riavviare il server? Nuxiva sarà offline per qualche minuto.", "restart-supervisor": "Riavviare Nuxiva?" }[action];
     if (ask && !confirm(ask)) return;
     try { await A.api("POST", `/api/actions/${action}`); A.toast("Comando inviato"); setTimeout(load, 1500); } catch (e) { A.toast(e.message, true); }
   }

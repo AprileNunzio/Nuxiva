@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin;
+  const A = window.NuxivaAdmin;
   const ORIGIN = { x: 0, z: -11 };
   const ROLE_COLOR = { chat: 0x29e0ff, deep: 0xff8c3c, domotico: 0x3dffa8, ricercatore: 0xffc43d, studio: 0xa08cff, coder: 0xff7ac8, modello3d: 0x6ea8ff };
   const WALK = 3.2, COLS = 4;

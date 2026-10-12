@@ -53,7 +53,7 @@ class FeedbackTest(unittest.TestCase):
         self.assertFalse(self.fb.suppressed("automation", "a1", "cover.sala", "closed", context(T0, 0, True)))
         self.assertFalse(self.fb.suppressed("voice", "a1", "cover.sala", "closed", self.ctx))
 
-    def test_atena_echo_and_superseded_actions_are_not_reversals(self):
+    def test_nuxiva_echo_and_superseded_actions_are_not_reversals(self):
         self.fb.observe(plan(), "", "automazione", {"cover.sala": "open"})
         self.fb.on_event(ev("cover.sala", "open"))
         self.assertEqual(self.fb.data["stats"], {})

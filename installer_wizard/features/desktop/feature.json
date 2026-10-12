@@ -17,7 +17,7 @@
   ],
   "settings": [
     {
-      "key": "ATENA_SECRETARY",
+      "key": "NUXIVA_SECRETARY",
       "label": "Sul display, mostra i widget del proprietario quando si avvicina",
       "type": "select",
       "default": "1",
@@ -33,7 +33,7 @@
       ]
     },
     {
-      "key": "ATENA_PRIVACY_AUTOCLOSE",
+      "key": "NUXIVA_PRIVACY_AUTOCLOSE",
       "label": "Chiudi i widget con dati personali quando non ci sei",
       "type": "select",
       "default": "1",
@@ -49,7 +49,7 @@
       ]
     },
     {
-      "key": "ATENA_PRIVACY_AWAY_S",
+      "key": "NUXIVA_PRIVACY_AWAY_S",
       "label": "Dopo quanto tempo che ti sei allontanato",
       "type": "select",
       "default": "10",
@@ -73,7 +73,7 @@
       ]
     },
     {
-      "key": "ATENA_PRIVACY_VOICE_S",
+      "key": "NUXIVA_PRIVACY_VOICE_S",
       "label": "Chiudi i dati personali aperti a voce dopo",
       "type": "select",
       "default": "30",

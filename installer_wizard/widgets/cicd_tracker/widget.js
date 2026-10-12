@@ -9,7 +9,7 @@
     if (/success|passed|riuscit|superat|completat|\bok\b|done/i.test(v)) return "ok";
     return "";
   };
-  AtenaDesk.register("cicd_tracker", {
+  NuxivaDesk.register("cicd_tracker", {
     render(el, d, ctx) {
       const lines = plain(d.content).split("\n").map((l) => l.trim()).filter(Boolean).slice(0, 10);
       const pairs = lines.map((l) => l.match(/^([^:]{1,48}):\s+(.+)$/));

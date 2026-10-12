@@ -41,20 +41,20 @@ class Policy:
 
     def settings(self) -> dict:
         return {
-            "enabled": env_get("ATENA_SOUNDS", "1") != "0",
-            "volume": _int("ATENA_SOUNDS_VOLUME", 55),
-            "theme": env_get("ATENA_SOUNDS_THEME", "atena"),
-            "feedback": env_get("ATENA_SOUNDS_FEEDBACK", "1") != "0",
-            "thinking": env_get("ATENA_SOUNDS_THINKING", "1") != "0",
-            "notify": env_get("ATENA_SOUNDS_NOTIFY", "1") != "0",
-            "ambient": env_get("ATENA_SOUNDS_AMBIENT", "none"),
-            "ambient_volume": _int("ATENA_SOUNDS_AMBIENT_VOLUME", 18),
-            "quiet_mode": env_get("ATENA_QUIET_MODE", "soft"),
-            "quiet_start": _hm("ATENA_QUIET_START", "23:00"),
-            "quiet_end": _hm("ATENA_QUIET_END", "07:00"),
-            "quiet_days": env_get("ATENA_QUIET_DAYS", "all"),
-            "quiet_voice": _int("ATENA_QUIET_VOICE", 45),
-            "quiet_effects": _int("ATENA_QUIET_EFFECTS", 25),
+            "enabled": env_get("NUXIVA_SOUNDS", "1") != "0",
+            "volume": _int("NUXIVA_SOUNDS_VOLUME", 55),
+            "theme": env_get("NUXIVA_SOUNDS_THEME", "nuxiva"),
+            "feedback": env_get("NUXIVA_SOUNDS_FEEDBACK", "1") != "0",
+            "thinking": env_get("NUXIVA_SOUNDS_THINKING", "1") != "0",
+            "notify": env_get("NUXIVA_SOUNDS_NOTIFY", "1") != "0",
+            "ambient": env_get("NUXIVA_SOUNDS_AMBIENT", "none"),
+            "ambient_volume": _int("NUXIVA_SOUNDS_AMBIENT_VOLUME", 18),
+            "quiet_mode": env_get("NUXIVA_QUIET_MODE", "soft"),
+            "quiet_start": _hm("NUXIVA_QUIET_START", "23:00"),
+            "quiet_end": _hm("NUXIVA_QUIET_END", "07:00"),
+            "quiet_days": env_get("NUXIVA_QUIET_DAYS", "all"),
+            "quiet_voice": _int("NUXIVA_QUIET_VOICE", 45),
+            "quiet_effects": _int("NUXIVA_QUIET_EFFECTS", 25),
         }
 
     def scheduled(self, now: datetime | None = None) -> bool:

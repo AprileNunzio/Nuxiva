@@ -15,7 +15,7 @@
     "type": "wifi",
     "devices": [
       {
-        "name": "Atena_5G_Core",
+        "name": "Nuxiva_5G_Core",
         "signal": 98,
         "secure": true,
         "connected": true

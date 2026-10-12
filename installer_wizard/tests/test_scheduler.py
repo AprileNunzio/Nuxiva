@@ -134,10 +134,10 @@ class ClockTest(unittest.TestCase):
         autos = [self.auto({"type": "cron", "expr": "0 * * * *"})]
         base = self.clock()
         base.marks.set("a1:t1", at("2026-10-04 09:00").timestamp(), now_flush=True)
-        self.env["ATENA_SCHED_MISFIRE"] = "skip"
+        self.env["NUXIVA_SCHED_MISFIRE"] = "skip"
         self.clock().tick(autos, at("2026-10-04 11:20"))
         self.assertEqual(self.started, [])
-        self.env.update(ATENA_SCHED_MISFIRE="run_once", ATENA_SCHED_GRACE_MIN="10")
+        self.env.update(NUXIVA_SCHED_MISFIRE="run_once", NUXIVA_SCHED_GRACE_MIN="10")
         self.clock().tick(autos, at("2026-10-04 11:20"))
         self.assertEqual(self.started, [])
 
@@ -149,7 +149,7 @@ class ClockTest(unittest.TestCase):
         self.assertEqual(self.started, [])
 
     def test_persistence_can_be_switched_off(self):
-        self.env["ATENA_SCHED_PERSIST"] = "0"
+        self.env["NUXIVA_SCHED_PERSIST"] = "0"
         clock = self.clock()
         clock.tick([self.auto({"type": "cron", "expr": "0 * * * *"})], at("2026-10-04 10:00"))
         self.assertFalse(self.file.exists())
@@ -164,7 +164,7 @@ class ClockTest(unittest.TestCase):
 
     def test_interval_far_overdue_with_skip_resets_silently(self):
         autos = [self.auto({"type": "interval", "minutes": 10})]
-        self.env["ATENA_SCHED_MISFIRE"] = "skip"
+        self.env["NUXIVA_SCHED_MISFIRE"] = "skip"
         first = self.clock()
         first.marks.set("a1:t1", time.time() - 7200, now_flush=True)
         self.clock().tick(autos)

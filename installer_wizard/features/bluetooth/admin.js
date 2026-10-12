@@ -1,11 +1,11 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const ICONS = { Auricolari: "🎧", Cuffie: "🎧", Cassa: "🔊", Microfono: "🎙", Telefono: "📱", Computer: "💻", Tastiera: "⌨", Mouse: "🖱", Controller: "🎮" };
   let data = null, timer = null;
 
   function status(c) {
     if (!data.enabled) return "<b>Bluetooth disattivato</b>Riattivalo dalle Funzionalità.";
-    if (!c.present) return `<b>Nessun adattatore Bluetooth</b><span class="bt-empty">Questo server non ha il Bluetooth. Collega una chiavetta USB Bluetooth 5.x compatibile con Linux (ad esempio con chip Realtek RTL8761B o Intel): Atena la riconosce da sola, installa ciò che serve e la rende pronta in un minuto.</span>`;
+    if (!c.present) return `<b>Nessun adattatore Bluetooth</b><span class="bt-empty">Questo server non ha il Bluetooth. Collega una chiavetta USB Bluetooth 5.x compatibile con Linux (ad esempio con chip Realtek RTL8761B o Intel): Nuxiva la riconosce da sola, installa ciò che serve e la rende pronta in un minuto.</span>`;
     if (!c.installed) return "<b>Adattatore rilevato</b>Sto installando il supporto Bluetooth, attendi qualche istante…";
     return `<b>${c.powered ? "🟢" : "⚪"} ${fmt.esc(c.name || "Bluetooth")}</b><span class="faint mono">${fmt.esc(c.address || "")}</span>${data.scanning ? " · <span style='color:var(--cyan)'>ricerca in corso…</span>" : ""}`;
   }

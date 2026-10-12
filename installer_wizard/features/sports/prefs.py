@@ -7,7 +7,7 @@ from config import STATE_DIR
 
 from features.sports.catalog import BY_CODE
 
-log = logging.getLogger("atena.sports")
+log = logging.getLogger("nuxiva.sports")
 HOUSEHOLD = "_casa"
 MAX_TEAMS = 12
 ALERTS = ("goals", "kickoff", "results", "f1")

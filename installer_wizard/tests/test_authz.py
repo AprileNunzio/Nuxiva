@@ -168,7 +168,7 @@ class EnforcementTests(unittest.TestCase):
         execute.assert_not_called()
         self.assertIn("volto e voce", reply)
 
-    def test_automations_run_as_atena_and_restore_the_caller(self):
+    def test_automations_run_as_nuxiva_and_restore_the_caller(self):
         from features.agent.agent import Agent
         agent = Agent()
         seen = []
@@ -201,7 +201,7 @@ class EnforcementTests(unittest.TestCase):
 
 class CatalogCoverageTests(unittest.TestCase):
 
-    def test_tools_built_by_atena_inherit_the_riskiest_step(self):
+    def test_tools_built_by_nuxiva_inherit_the_riskiest_step(self):
         from features.authz import risk
         risk.compose("zz_saluta", ["show_widget", "now"])
         risk.compose("zz_pulizia", ["show_widget", "delete"])

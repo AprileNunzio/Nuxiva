@@ -12,9 +12,9 @@ ESP32 = Path(__file__).resolve().parents[2] / "client_satellite" / "microcontrol
 CORPUS = [
     "accendi la luce del salotto",
     "Spegni le LUCI",
-    "Atena, apri la porta d'ingresso",
+    "Nuxiva, apri la porta d'ingresso",
     "ciao come stai?",
-    "buongiorno Atena",
+    "buongiorno Nuxiva",
     "apri il sito di wikipedia sulla rivoluzione francese",
     "disegna un diagramma di flusso sulla lavagna",
     "PERCHÉ il cielo è blu? spiegami la fisica",

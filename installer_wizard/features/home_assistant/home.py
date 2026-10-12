@@ -55,10 +55,10 @@ class HomeBrain(HomeConnection, HomeRegistry, HomeLive, HomeCommands, HomeAnswer
         env = read_env()
         return {"url": env.get("HOME_ASSISTANT_URL", "").strip().rstrip("/"),
                 "token": env.get("HOME_ASSISTANT_TOKEN", "").strip(),
-                "enabled": env.get("ATENA_HOME_ASSISTANT", "1") != "0",
-                "room": env.get("ATENA_HOME_ROOM", "").strip(),
-                "motion_min": float(env.get("ATENA_HOME_MOTION_MIN", "5") or 5),
-                "confirm": env.get("ATENA_HOME_CONFIRM", "1") != "0",
+                "enabled": env.get("NUXIVA_HOME_ASSISTANT", "1") != "0",
+                "room": env.get("NUXIVA_HOME_ROOM", "").strip(),
+                "motion_min": float(env.get("NUXIVA_HOME_MOTION_MIN", "5") or 5),
+                "confirm": env.get("NUXIVA_HOME_CONFIRM", "1") != "0",
                 "verify_ssl": env.get("HOME_ASSISTANT_VERIFY_SSL", "1") != "0"}
 
     @property

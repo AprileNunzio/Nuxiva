@@ -1,30 +1,30 @@
 #!/usr/bin/env bash
 . "$(dirname "$0")/../lib.sh"
 
-SMB_USER=atena-share
-OLD_ROOT=/srv/atena/condivisioni
-ARCHIVE=/srv/atena/condivisa
+SMB_USER=nuxiva-share
+OLD_ROOT=/srv/nuxiva/condivisioni
+ARCHIVE=/srv/nuxiva/condivisa
 FOLDERS=("01 Documenti" "02 Siti web" "03 Modelli 3D" "04 Codice" "05 Scambio" "06 Musica")
 MUSIC_SUBFOLDERS=("Libreria" "Da smistare" "Playlist" "Copertine" "Cestino")
-MEMORY=/var/lib/atena/memoria
+MEMORY=/var/lib/nuxiva/memoria
 CONF=/etc/samba/smb.conf
 
-wanted() { [ "${ATENA_SHARES:-1}" != "0" ]; }
-password_hash() { printf '%s' "${ATENA_SMB_PASSWORD:-}" | sha1sum | cut -c1-12; }
+wanted() { [ "${NUXIVA_SHARES:-1}" != "0" ]; }
+password_hash() { printf '%s' "${NUXIVA_SMB_PASSWORD:-}" | sha1sum | cut -c1-12; }
 
 step_check() {
     wanted || return 0
     command -v smbd >/dev/null 2>&1 || return 1
     systemctl is-active --quiet smbd || return 1
     grep -q '^\[condivisa\]' "$CONF" 2>/dev/null || return 1
-    grep -q '^\[memoria-atena\]' "$CONF" 2>/dev/null && return 1
+    grep -q '^\[memoria-nuxiva\]' "$CONF" 2>/dev/null && return 1
     [ -d "$ARCHIVE/05 Scambio" ] || return 1
     [ -d "$ARCHIVE/06 Musica" ] || return 1
     local sub
     for sub in "${MUSIC_SUBFOLDERS[@]}"; do [ -d "$ARCHIVE/06 Musica/$sub" ] || return 1; done
     [ -e "$ARCHIVE/05 Memoria" ] && return 1
     [ -e "$ARCHIVE/06 Scambio" ] && return 1
-    [ "$(cat "$ATENA_STATE/.shares-pass" 2>/dev/null)" = "$(password_hash)" ] || return 1
+    [ "$(cat "$NUXIVA_STATE/.shares-pass" 2>/dev/null)" = "$(password_hash)" ] || return 1
     code_current shares "$0"
 }
 
@@ -41,19 +41,19 @@ head = [s for s in sections if not s.startswith("[")]
 blocks = {re.match(r"\[([^\]]+)\]", s).group(1).lower(): s for s in sections if s.startswith("[")}
 glob = blocks.get("global", "[global]\n   workgroup = WORKGROUP\n")
 wanted = {"server min protocol": "SMB2_10", "map to guest": "Bad User", "server signing": "auto",
-          "netbios name": "ATENA", "server string": "Atena", "usershare allow guests": "yes"}
+          "netbios name": "NUXIVA", "server string": "Nuxiva", "usershare allow guests": "yes"}
 for key, value in wanted.items():
     if re.search(rf"(?mi)^\s*{key}\s*=", glob):
         glob = re.sub(rf"(?mi)^\s*{key}\s*=.*$", f"   {key} = {value}", glob)
     else:
         glob = glob.rstrip("\n") + f"\n   {key} = {value}\n"
 blocks["global"] = glob.rstrip("\n") + "\n\n"
-for unused in ("homes", "printers", "print$", "memoria-atena", "file-atena"):
+for unused in ("homes", "printers", "print$", "memoria-nuxiva", "file-nuxiva"):
     blocks.pop(unused, None)
 for key in [k for k, v in blocks.items() if re.search(rf"(?mi)^\s*path\s*=\s*{re.escape(old_root)}", v)]:
     blocks.pop(key)
 common = "   browseable = yes\n   read only = no\n   create mask = 0664\n   directory mask = 2775\n   hosts allow = 127. 10. 172.16.0.0/12 192.168.\n"
-blocks["condivisa"] = (f"[condivisa]\n   comment = Creazioni di Atena (con password)\n   path = {root}\n{common}"
+blocks["condivisa"] = (f"[condivisa]\n   comment = Creazioni di Nuxiva (con password)\n   path = {root}\n{common}"
                        f"   guest ok = no\n   valid users = {user}\n   force user = root\n\n")
 order = ["global"] + [k for k in blocks if k != "global"]
 conf.write_text("".join(head) + "".join(blocks[k] for k in order))
@@ -75,12 +75,12 @@ move_into() {
 }
 
 migrate_old() {
-    move_into "$OLD_ROOT/memoria-atena" "$MEMORY"
+    move_into "$OLD_ROOT/memoria-nuxiva" "$MEMORY"
     move_into "$ARCHIVE/05 Memoria" "$MEMORY"
     move_into "$ARCHIVE/06 Scambio" "$ARCHIVE/05 Scambio"
     move_into "$OLD_ROOT/condivisa" "$ARCHIVE/05 Scambio"
-    move_into /srv/atena/file "$ARCHIVE/01 Documenti"
-    move_into /srv/atena/siti "$ARCHIVE/02 Siti web"
+    move_into /srv/nuxiva/file "$ARCHIVE/01 Documenti"
+    move_into /srv/nuxiva/siti "$ARCHIVE/02 Siti web"
     move_into "$OLD_ROOT" "$ARCHIVE/05 Scambio"
     mkdir -p "$MEMORY"
     chmod 700 "$MEMORY"
@@ -95,12 +95,12 @@ step_apply() {
     apt_install samba
     apt_install wsdd2 >/dev/null 2>&1 || apt_install wsdd >/dev/null 2>&1 || true
     progress 35 "Utente per le condivisioni"
-    if [ -z "${ATENA_SMB_PASSWORD:-}" ]; then
-        ATENA_SMB_PASSWORD=$(python3 -c "import secrets; print(''.join(secrets.choice('ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789') for _ in range(12)))")
-        set_env ATENA_SMB_PASSWORD "$ATENA_SMB_PASSWORD"
+    if [ -z "${NUXIVA_SMB_PASSWORD:-}" ]; then
+        NUXIVA_SMB_PASSWORD=$(python3 -c "import secrets; print(''.join(secrets.choice('ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789') for _ in range(12)))")
+        set_env NUXIVA_SMB_PASSWORD "$NUXIVA_SMB_PASSWORD"
     fi
     id "$SMB_USER" >/dev/null 2>&1 || useradd -M -s /usr/sbin/nologin "$SMB_USER"
-    printf '%s\n%s\n' "$ATENA_SMB_PASSWORD" "$ATENA_SMB_PASSWORD" | smbpasswd -s -a "$SMB_USER" >/dev/null
+    printf '%s\n%s\n' "$NUXIVA_SMB_PASSWORD" "$NUXIVA_SMB_PASSWORD" | smbpasswd -s -a "$SMB_USER" >/dev/null
     smbpasswd -e "$SMB_USER" >/dev/null
     progress 55 "Cartelle condivise"
     migrate_old
@@ -108,7 +108,7 @@ step_apply() {
     for f in "${FOLDERS[@]}"; do mkdir -p "$ARCHIVE/$f"; done
     for f in "${MUSIC_SUBFOLDERS[@]}"; do mkdir -p "$ARCHIVE/06 Musica/$f"; done
     chmod 2775 "$ARCHIVE"
-    if [ -f "$CONF" ] && [ ! -f "$CONF.atena-orig" ]; then cp "$CONF" "$CONF.atena-orig"; fi
+    if [ -f "$CONF" ] && [ ! -f "$CONF.nuxiva-orig" ]; then cp "$CONF" "$CONF.nuxiva-orig"; fi
     write_conf
     testparm -s >/dev/null 2>&1 || fail "Configurazione Samba non valida"
     progress 80 "Avvio dei servizi di rete"
@@ -124,8 +124,8 @@ step_apply() {
         done
     fi
     wait_for 30 systemctl is-active --quiet smbd || fail "Samba non si è avviato"
-    mkdir -p "$ATENA_STATE"
-    password_hash > "$ATENA_STATE/.shares-pass"
+    mkdir -p "$NUXIVA_STATE"
+    password_hash > "$NUXIVA_STATE/.shares-pass"
     code_mark shares "$0"
     progress 100 "Cartella condivisa attiva: \\\\$(hostname -I | awk '{print $1}')\\condivisa (utente $SMB_USER)"
 }

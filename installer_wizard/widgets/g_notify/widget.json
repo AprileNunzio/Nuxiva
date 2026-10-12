@@ -6,7 +6,7 @@
   "priority": 80,
   "size": "m",
   "ttl": 180,
-  "description": "Nuove email, appuntamenti in arrivo e riepilogo della giornata di chi è davanti ad Atena.",
+  "description": "Nuove email, appuntamenti in arrivo e riepilogo della giornata di chi è davanti ad Nuxiva.",
   "demo": {
     "kind": "event",
     "who": "Nunzio",

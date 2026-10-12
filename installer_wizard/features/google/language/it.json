@@ -1,6 +1,6 @@
 {
   "name": "Google",
-  "description": "Ogni persona collega il proprio account Google: agenda, posta, cose da fare, rubrica, Drive e note, mostrati solo a chi Atena riconosce.",
+  "description": "Ogni persona collega il proprio account Google: agenda, posta, cose da fare, rubrica, Drive e note, mostrati solo a chi Nuxiva riconosce.",
   "capabilities": [
     "Un account Google per ogni persona, token cifrati",
     "Privacy: dati solo a chi è riconosciuto, email non lette ad alta voce davanti ad altri",
@@ -11,6 +11,6 @@
     "Promemoria personali prima di ogni appuntamento"
   ],
   "settings": {
-    "ATENA_GOOGLE_REMIND_MIN": "Avvisami prima di un appuntamento (minuti, 0 = mai)"
+    "NUXIVA_GOOGLE_REMIND_MIN": "Avvisami prima di un appuntamento (minuti, 0 = mai)"
   }
 }

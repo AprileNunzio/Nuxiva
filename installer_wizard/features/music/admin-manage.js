@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $ } = A;
+  const A = window.NuxivaAdmin, { $ } = A;
   const mu = A.mu, esc = mu.esc;
   const M = mu.manage = {};
   let timer = null;
@@ -25,7 +25,7 @@
 
   function upload() {
     return `<div class="mu-drop" id="mu-drop">Trascina qui i brani oppure <label class="btn sm" style="display:inline-block;margin:0">scegli i file<input id="mu-files" type="file" multiple accept="audio/*,.flac,.m4a,.ogg,.opus,.wma,.aiff,.alac" hidden></label>
-      <div class="mu-note">I file vanno in «Da smistare» e Atena li ordina da sola in Artista/Album. Puoi anche copiarli dalla rete nella cartella condivisa.</div><div id="mu-up"></div></div>`;
+      <div class="mu-note">I file vanno in «Da smistare» e Nuxiva li ordina da sola in Artista/Album. Puoi anche copiarli dalla rete nella cartella condivisa.</div><div id="mu-up"></div></div>`;
   }
 
   async function sendFiles(files) {
@@ -36,12 +36,12 @@
       line.textContent = `${file.name}: invio…`;
       box.appendChild(line);
       try {
-        const r = await fetch(`/api/music/upload?name=${encodeURIComponent(file.name)}`, { method: "PUT", headers: { "X-Atena-Request": "1" }, body: file, credentials: "same-origin" });
+        const r = await fetch(`/api/music/upload?name=${encodeURIComponent(file.name)}`, { method: "PUT", headers: { "X-Nuxiva-Request": "1" }, body: file, credentials: "same-origin" });
         const d = await r.json().catch(() => ({}));
         line.textContent = r.ok ? `${file.name}: caricato` : `${file.name}: ${d.detail || r.status}`;
       } catch (e) { line.textContent = `${file.name}: ${e.message}`; }
     }
-    A.toast("Caricamento terminato: Atena sta smistando i brani");
+    A.toast("Caricamento terminato: Nuxiva sta smistando i brani");
     await mu.post("/api/music/scan", {}).then((r) => { const m = (r.result.sorted || {}).moved || 0; A.toast(m ? `${m} brani smistati` : "Brani ricevuti: li smisto appena la copia è finita"); }).catch((e) => console.info(e));
   }
 
@@ -68,14 +68,14 @@
     return `<div class="mu-actions"><label class="switch"><input type="checkbox" id="mu-amb" ${m.enabled ? "checked" : ""}> Riconosci la musica che suona nella stanza</label>${state}</div>
       ${np.title ? `<div class="mu-dev"><div class="ic">♪</div><div class="nm"><b>${esc(np.title)}</b><small>${esc([np.artist, np.album, np.year].filter(Boolean).join(" · "))}</small></div>
         <button class="btn sm" data-search="${esc(np.title)}">Cerca nella libreria</button></div>` : '<div class="mu-note">Nessun brano riconosciuto in questo momento.</div>'}
-      <p class="mu-note">Quando in stanza suona musica per almeno dieci secondi, Atena la riconosce dall'impronta acustica e la mostra sul display. Da spento l'audio non lascia mai la macchina.</p>`;
+      <p class="mu-note">Quando in stanza suona musica per almeno dieci secondi, Nuxiva la riconosce dall'impronta acustica e la mostra sul display. Da spento l'audio non lascia mai la macchina.</p>`;
   }
 
   let waiting = [];
 
   async function unassigned() {
     waiting = (await mu.get("/api/music/unassigned")).files;
-    if (!waiting.length) return '<div class="mu-note">Nessun brano in attesa: Atena riconosce e smista tutto da sola.</div>';
+    if (!waiting.length) return '<div class="mu-note">Nessun brano in attesa: Nuxiva riconosce e smista tutto da sola.</div>';
     return `<p class="mu-note">Questi brani non hanno un artista e non sono riuscito a riconoscerli. Restano in «Da smistare» finché non decidi tu: dai un nome e un artista, oppure mettili nei Mix.</p>
       ${waiting.map((f, i) => `<div class="mu-dev"><div class="ic">♪</div><div class="nm"><b>${esc(f.title || f.name)}</b><small>${esc(f.name)}</small></div>
         <button class="btn sm primary" data-assign="${i}">Assegna…</button><button class="btn sm" data-mix="${i}">Nei Mix</button></div>`).join("")}`;

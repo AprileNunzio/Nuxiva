@@ -9,11 +9,11 @@ from typing import Any, Callable, Dict, List, Optional
 
 from server.features.skill_synthesis.domain.tool import TOOL_NAME, DynamicTool, ToolError
 
-logger = logging.getLogger("atena.skill_synthesis.store")
+logger = logging.getLogger("nuxiva.skill_synthesis.store")
 
 KeyProvider = Callable[[], str]
 SIGNATURE_FIELD = "signature"
-_CONTEXT = b"atena.dynamic_tools.v1"
+_CONTEXT = b"nuxiva.dynamic_tools.v1"
 
 
 def _canonical(payload: Dict[str, Any]) -> bytes:

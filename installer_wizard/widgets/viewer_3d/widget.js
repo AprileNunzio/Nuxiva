@@ -1,5 +1,5 @@
 (() => {
-  const VER = window.ATENA_ASSET_V ? `?v=${window.ATENA_ASSET_V}` : "";
+  const VER = window.NUXIVA_ASSET_V ? `?v=${window.NUXIVA_ASSET_V}` : "";
   const FFLATE = ["fflate.min.js"];
   const NEEDS = {
     glb: ["GLTFLoader.js"], gltf: ["GLTFLoader.js"], obj: ["MTLLoader.js", "OBJLoader.js"], stl: ["STLLoader.js"],
@@ -237,7 +237,7 @@
     frame();
   }
 
-  AtenaDesk.register("viewer_3d", {
+  NuxivaDesk.register("viewer_3d", {
     render(el, d, ctx) { if (el._v3) el._v3.alive = false; mount(el, d, ctx); },
     update(el, d, ctx) { if (el._v3 && el._v3.id === d.id) return; if (el._v3) el._v3.alive = false; mount(el, d, ctx); },
     destroy(el) { if (el._v3) { el._v3.alive = false; cancelAnimationFrame(el._v3.raf); if (el._v3.renderer) el._v3.renderer.dispose(); } },

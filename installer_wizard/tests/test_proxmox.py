@@ -62,10 +62,10 @@ class ClientTests(unittest.TestCase):
         self.assertEqual(str(write.url), "https://192.168.1.5:8006/api2/json/nodes/pve/qemu/100/status/start")
 
     def test_api_token_is_sent_as_header(self):
-        with env(PROXMOX_TOKEN_ID="root@pam!atena", PROXMOX_TOKEN_SECRET="abc-123"):
+        with env(PROXMOX_TOKEN_ID="root@pam!nuxiva", PROXMOX_TOKEN_SECRET="abc-123"):
             asyncio.run(self.client.overview())
         self.assertFalse(any(c.url.path.endswith("/access/ticket") for c in self.fake.calls))
-        self.assertEqual(self.fake.calls[0].headers["authorization"], "PVEAPIToken=root@pam!atena=abc-123")
+        self.assertEqual(self.fake.calls[0].headers["authorization"], "PVEAPIToken=root@pam!nuxiva=abc-123")
 
     def test_invalid_requests_never_reach_proxmox(self):
         with env():

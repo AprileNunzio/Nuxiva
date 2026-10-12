@@ -65,7 +65,7 @@ async def refresh(force: bool = False) -> list[dict]:
 
 
 async def _download() -> list[dict]:
-    async with httpx.AsyncClient(timeout=25, headers={"User-Agent": "Atena-OS"}) as client:
+    async with httpx.AsyncClient(timeout=25, headers={"User-Agent": "Nuxiva-OS"}) as client:
         res = await client.get(CATALOG_URL)
         res.raise_for_status()
     rows = [r for r in (_row(m) for m in res.json().get("data", [])) if r]

@@ -138,7 +138,7 @@ class Printers:
             safe["has_api_key"] = bool(p.get("api_key"))
             safe["custom"] = p.get("id") in custom
             safe["options"] = clean_options(self.options.get(p["id"], {}))
-            safe["atena_default"] = p["id"] == self.default_id
+            safe["nuxiva_default"] = p["id"] == self.default_id
             out.append(safe)
         return out
 
@@ -167,7 +167,7 @@ class Printers:
         options = clean_options(body)
         with self.lock:
             self.options[pid] = options
-            if body.get("atena_default"):
+            if body.get("nuxiva_default"):
                 self.default_id = pid
             elif self.default_id == pid:
                 self.default_id = ""

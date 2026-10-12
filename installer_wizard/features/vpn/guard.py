@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 from features.vpn import model
 
-TABLE = "atena_vpn"
+TABLE = "nuxiva_vpn"
 LAN4 = ("10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "169.254.0.0/16")
 LAN6 = ("fc00::/7", "fe80::/10")
 MESH_IFACES = {"tailscale": ["tailscale0"], "zerotier": ["zt*"]}

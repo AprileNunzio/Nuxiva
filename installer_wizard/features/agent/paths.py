@@ -24,7 +24,7 @@ class AccessDenied(Exception):
 
 
 def level() -> str:
-    value = env_get("ATENA_AGENT_ACCESS", "completo").lower()
+    value = env_get("NUXIVA_AGENT_ACCESS", "completo").lower()
     return value if value in ("standard", "completo") else "completo"
 
 

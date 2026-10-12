@@ -1,5 +1,5 @@
 (() => {
-  const D = window.AtenaDisplay, { fmt } = D;
+  const D = window.NuxivaDisplay, { fmt } = D;
   const LABELS = { wake: "Dì il mio nome", command: "Dì il comando", reading: "Leggi la frase" };
   let session = null, seenRequest = "";
 

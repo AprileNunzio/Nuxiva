@@ -1,31 +1,31 @@
 #!/usr/bin/env bash
 . "$(dirname "$0")/../lib.sh"
 
-NATIVE_SRC="$ATENA_DIR/native"
-NATIVE_HOME="${ATENA_NATIVE_HOME:-/opt/atena-native}"
+NATIVE_SRC="$NUXIVA_DIR/native"
+NATIVE_HOME="${NUXIVA_NATIVE_HOME:-/opt/nuxiva-native}"
 RUST_VERSION="1.89.0"
 MATURIN_VERSION="1.9.6"
 RUSTUP_URL="https://static.rust-lang.org/rustup/dist/$(uname -m)-unknown-linux-gnu/rustup-init"
-VENV="$ATENA_DIR/installer_wizard/venv"
+VENV="$NUXIVA_DIR/installer_wizard/venv"
 STAMP="$NATIVE_HOME/.installed"
-EGRESS_BIN="$NATIVE_HOME/bin/atena-egress"
-NETGUARD_BIN="$NATIVE_HOME/bin/atena-netguard"
+EGRESS_BIN="$NATIVE_HOME/bin/nuxiva-egress"
+NETGUARD_BIN="$NATIVE_HOME/bin/nuxiva-netguard"
 
 export RUSTUP_HOME="$NATIVE_HOME/rustup"
 export CARGO_HOME="$NATIVE_HOME/cargo"
 export CARGO_TARGET_DIR="$NATIVE_HOME/target"
 export PATH="$CARGO_HOME/bin:$PATH"
 
-wanted() { [ "${ATENA_NATIVE:-auto}" != "0" ]; }
+wanted() { [ "${NUXIVA_NATIVE:-auto}" != "0" ]; }
 
 src_hash() {
     (
-        cd "$ATENA_DIR"
+        cd "$NUXIVA_DIR"
         git -c safe.directory='*' rev-parse HEAD:native 2>/dev/null | cut -c1-16
     )
 }
 
-native_loaded() { "$VENV/bin/python" -I -c "import atena_native" >/dev/null 2>&1; }
+native_loaded() { "$VENV/bin/python" -I -c "import nuxiva_native" >/dev/null 2>&1; }
 
 step_check() {
     if ! wanted; then
@@ -53,7 +53,7 @@ install_rust() {
 step_apply() {
     if ! wanted; then
         progress 50 "Core nativo disattivato: ritorno al motore Python"
-        "$VENV/bin/pip" uninstall -y -q atena-native >/dev/null 2>&1 || true
+        "$VENV/bin/pip" uninstall -y -q nuxiva-native >/dev/null 2>&1 || true
         rm -f "$STAMP" "$EGRESS_BIN" "$NETGUARD_BIN"
         progress 100 "Core nativo disattivato"
         return 0
@@ -75,7 +75,7 @@ step_apply() {
     progress 50 "Compilazione del message broker in Rust"
     rm -rf "$NATIVE_HOME/wheels"
     (
-        cd "$NATIVE_SRC/crates/atena-native"
+        cd "$NATIVE_SRC/crates/nuxiva-native"
         "$NATIVE_HOME/build/bin/maturin" build --release --locked --out "$NATIVE_HOME/wheels" 2>&1 | tail -n 20
         exit "${PIPESTATUS[0]}"
     ) || fail "Compilazione del core nativo non riuscita"
@@ -83,24 +83,24 @@ step_apply() {
     progress 75 "Compilazione del proxy di uscita della sandbox"
     (
         cd "$NATIVE_SRC"
-        cargo build --release --locked -p atena-egress 2>&1 | tail -n 20
+        cargo build --release --locked -p nuxiva-egress 2>&1 | tail -n 20
         exit "${PIPESTATUS[0]}"
     ) || fail "Compilazione del proxy di uscita non riuscita"
     install -d -m 0755 -o root -g root "$NATIVE_HOME/bin"
-    install -m 0755 -o root -g root "$CARGO_TARGET_DIR/release/atena-egress" "$EGRESS_BIN.new"
+    install -m 0755 -o root -g root "$CARGO_TARGET_DIR/release/nuxiva-egress" "$EGRESS_BIN.new"
     mv -f "$EGRESS_BIN.new" "$EGRESS_BIN"
 
     progress 80 "Compilazione del motore di analisi del traffico (firewall)"
     (
         cd "$NATIVE_SRC"
-        cargo build --release --locked -p atena-netguard 2>&1 | tail -n 20
+        cargo build --release --locked -p nuxiva-netguard 2>&1 | tail -n 20
         exit "${PIPESTATUS[0]}"
     ) || fail "Compilazione del motore di analisi del traffico non riuscita"
-    install -m 0755 -o root -g root "$CARGO_TARGET_DIR/release/atena-netguard" "$NETGUARD_BIN.new"
+    install -m 0755 -o root -g root "$CARGO_TARGET_DIR/release/nuxiva-netguard" "$NETGUARD_BIN.new"
     mv -f "$NETGUARD_BIN.new" "$NETGUARD_BIN"
 
     progress 85 "Installazione nel supervisore"
-    "$VENV/bin/pip" install -q --force-reinstall --no-deps "$NATIVE_HOME"/wheels/atena_native-*.whl \
+    "$VENV/bin/pip" install -q --force-reinstall --no-deps "$NATIVE_HOME"/wheels/nuxiva_native-*.whl \
         || fail "Installazione del modulo nativo non riuscita"
     native_loaded || fail "Il modulo nativo non si carica"
     src_hash > "$STAMP"

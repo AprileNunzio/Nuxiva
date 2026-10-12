@@ -5,9 +5,9 @@
   "category": "sistema",
   "order": 175,
   "panel": "proxmox",
-  "description": "Atena si integra nativamente con il tuo hypervisor Proxmox VE per amministrare, monitorare e diagnosticare container LXC e macchine virtuali. L'agente SysOps può eseguire richieste complesse mostrando dashboard dinamiche.",
+  "description": "Nuxiva si integra nativamente con il tuo hypervisor Proxmox VE per amministrare, monitorare e diagnosticare container LXC e macchine virtuali. L'agente SysOps può eseguire richieste complesse mostrando dashboard dinamiche.",
   "toggle": {
-    "env": "ATENA_PROXMOX",
+    "env": "NUXIVA_PROXMOX",
     "apply": []
   },
   "requires": {

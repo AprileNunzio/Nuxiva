@@ -5,7 +5,7 @@ import health
 from config import DEMO
 from state import store
 
-log = logging.getLogger("atena.supervisor")
+log = logging.getLogger("nuxiva.supervisor")
 _background_tasks: set = set()
 
 

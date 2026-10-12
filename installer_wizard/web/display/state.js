@@ -1,9 +1,9 @@
 (() => {
   const $ = (id) => document.getElementById(id);
-  const D = window.AtenaDisplay = {
+  const D = window.NuxivaDisplay = {
     $,
-    fmt: Atena.fmt,
-    FACE: window.ATENA_FACE || {},
+    fmt: Nuxiva.fmt,
+    FACE: window.NUXIVA_FACE || {},
     local: ["127.0.0.1", "localhost"].includes(location.hostname),
     avatar: null,
     scene: null,
@@ -18,7 +18,7 @@
     presentNames: [],
     lastVoice: false,
     stageZone: null,
-    regions: () => (window.Atena3D ? Atena3D.REGIONS : {}),
+    regions: () => (window.Nuxiva3D ? Nuxiva3D.REGIONS : {}),
   };
 
   let typer;

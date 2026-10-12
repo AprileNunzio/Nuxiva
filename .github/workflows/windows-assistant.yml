@@ -54,7 +54,7 @@ jobs:
         if: steps.version.outputs.exists == 'false'
         shell: pwsh
         env:
-          ATENA_ASSISTANT_SIGNING_KEY: ${{ secrets.ATENA_ASSISTANT_SIGNING_KEY }}
+          NUXIVA_ASSISTANT_SIGNING_KEY: ${{ secrets.NUXIVA_ASSISTANT_SIGNING_KEY }}
         run: .\packaging\build.ps1
 
       - name: Publish Release
@@ -64,7 +64,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           $version = "${{ steps.version.outputs.value }}"
-          $files = @("build\installer\ATENA_Assistente_Setup.exe", "build\installer\manifest.json")
+          $files = @("build\installer\NUXIVA_Assistente_Setup.exe", "build\installer\manifest.json")
           if (Test-Path "build\installer\manifest.sig") { $files += "build\installer\manifest.sig" }
-          gh release create "assistant-v$version" @files --title "ATENA Assistente $version" `
-            --notes "Installer dell'Assistente ATENA per Windows $version. Gli aggiornamenti automatici si installano solo se il manifesto è firmato."
+          gh release create "assistant-v$version" @files --title "NUXIVA Assistente $version" `
+            --notes "Installer dell'Assistente NUXIVA per Windows $version. Gli aggiornamenti automatici si installano solo se il manifesto è firmato."

@@ -15,9 +15,9 @@ MODELS_SCOPE="${MODELS_SCOPE:-essential}"
 models() {
     local m list
     if [ "$MODELS_SCOPE" = full ]; then
-        list=("${ATENA_LLM_MODEL:-granite3.3:2b}")
+        list=("${NUXIVA_LLM_MODEL:-granite3.3:2b}")
     else
-        list=("${ATENA_LLM_FAST_MODEL:-${ATENA_LLM_MODEL:-granite3.3:2b}}" "${ATENA_EMBED_MODEL:-embeddinggemma-2}")
+        list=("${NUXIVA_LLM_FAST_MODEL:-${NUXIVA_LLM_MODEL:-granite3.3:2b}}" "${NUXIVA_EMBED_MODEL:-embeddinggemma-2}")
     fi
     for m in "${list[@]}"; do
         licensed "$m"

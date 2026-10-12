@@ -13,9 +13,9 @@ from features.people import people
 from features.vision.proxy import VISION_URL
 from state import store
 
-log = logging.getLogger("atena.people")
+log = logging.getLogger("nuxiva.people")
 admin_routes = APIRouter()
-FACES = Path(os.environ.get("ATENA_FACES_DIR", str(STATE_DIR / "faces")))
+FACES = Path(os.environ.get("NUXIVA_FACES_DIR", str(STATE_DIR / "faces")))
 KINDS = ("front", "three_left", "three_right", "left", "right", "up", "down", "body", "body_back")
 BODY = ("body", "body_back")
 PHOTO_ID = re.compile(r"^(photo_primary|[A-Za-z0-9][A-Za-z0-9_.-]{0,120}\.jpg)$")

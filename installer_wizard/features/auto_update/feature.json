@@ -5,9 +5,9 @@
   "category": "sistema",
   "order": 170,
   "panel": "updates",
-  "description": "Atena si aggiorna da sola da GitHub, verifica la nuova versione e torna indietro se qualcosa non va.",
+  "description": "Nuxiva si aggiorna da sola da GitHub, verifica la nuova versione e torna indietro se qualcosa non va.",
   "toggle": {
-    "env": "ATENA_AUTO_UPDATE",
+    "env": "NUXIVA_AUTO_UPDATE",
     "apply": []
   },
   "capabilities": [
@@ -16,13 +16,13 @@
   ],
   "settings": [
     {
-      "key": "ATENA_UPDATE_INTERVAL_MIN",
+      "key": "NUXIVA_UPDATE_INTERVAL_MIN",
       "label": "Controlla ogni (minuti)",
       "type": "number",
       "default": "5"
     },
     {
-      "key": "ATENA_UPDATE_BRANCH",
+      "key": "NUXIVA_UPDATE_BRANCH",
       "label": "Ramo GitHub",
       "type": "text",
       "default": "main"

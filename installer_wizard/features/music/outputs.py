@@ -8,7 +8,7 @@ from features.music import cast_chrome, catalog, conf, dlna, layout, listening, 
 from features.music.db import db
 from state import store
 
-log = logging.getLogger("atena.music")
+log = logging.getLogger("nuxiva.music")
 DEVICE_RE = re.compile(r"^(cast|dlna|display):[A-Za-z0-9._-]{1,64}$")
 KNOWN_TTL = 600.0
 DISCOVER_TTL = 90.0
@@ -61,7 +61,7 @@ class Outputs:
         self.lock = asyncio.Lock()
 
     def remote_beat(self, device_id: str, name: str) -> None:
-        self.devices[device_id] = {"id": device_id, "kind": "display", "name": name[:40] or "Schermo Atena", "seen": time.time()}
+        self.devices[device_id] = {"id": device_id, "kind": "display", "name": name[:40] or "Schermo Nuxiva", "seen": time.time()}
         self.remote_queue.setdefault(device_id, asyncio.Queue())
 
     async def wait_command(self, device_id: str, name: str) -> dict | None:

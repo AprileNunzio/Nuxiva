@@ -11,7 +11,7 @@ from server.core.reasoning.self_critique import self_critique_engine
 from server.features.deep_memory.composition import deep_memory
 from server.features.self_healing_coder.workspace_files import WorkspaceError, WorkspaceFiles
 
-logger = logging.getLogger("atena.coder_agent")
+logger = logging.getLogger("nuxiva.coder_agent")
 
 _structure = deep_memory.workspace("workspace")
 workspace_files = WorkspaceFiles(os.path.join("data", "workspace"), lambda: _structure)

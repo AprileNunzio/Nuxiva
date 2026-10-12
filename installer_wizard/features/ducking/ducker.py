@@ -7,7 +7,7 @@ from state import store
 
 from features.ducking import targets
 
-log = logging.getLogger("atena.ducking")
+log = logging.getLogger("nuxiva.ducking")
 
 BEAT_TIMEOUT = 15
 RELEASE_AFTER = 3
@@ -15,18 +15,18 @@ TOLERANCE = 0.03
 
 
 def enabled() -> bool:
-    return env_get("ATENA_DUCKING", "1") != "0"
+    return env_get("NUXIVA_DUCKING", "1") != "0"
 
 
 def level() -> float:
     try:
-        return max(0.05, min(0.8, int(env_get("ATENA_DUCK_LEVEL", "25")) / 100))
+        return max(0.05, min(0.8, int(env_get("NUXIVA_DUCK_LEVEL", "25")) / 100))
     except ValueError:
         return 0.25
 
 
 def include_home() -> bool:
-    return env_get("ATENA_DUCK_HOME", "1") != "0"
+    return env_get("NUXIVA_DUCK_HOME", "1") != "0"
 
 
 class Ducker:

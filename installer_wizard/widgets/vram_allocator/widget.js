@@ -16,7 +16,7 @@
     return `${hero ? `<div class="wk-hero"><span class="wk-num sm">${ctx.esc(first[2])}</span><span class="wk-sub">${ctx.esc(first[1])}</span></div>${level === null ? "" : ctx.bar(level, level >= 90 ? "bad" : level >= 75 ? "warn" : "")}` : ""}
       ${items.length ? `<dl class="wk-kv">${items.map((p) => `<dt>${ctx.esc(p[1])}</dt><dd class="mono">${ctx.esc(p[2])}</dd>`).join("")}</dl>` : ""}`;
   };
-  AtenaDesk.register("vram_allocator", {
+  NuxivaDesk.register("vram_allocator", {
     render(el, d, ctx) {
       el.innerHTML = `${ctx.head({ icon: "memory", label: "Memoria GPU" })}${body(d.content, ctx)}`;
     },

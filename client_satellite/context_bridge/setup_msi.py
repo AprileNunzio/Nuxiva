@@ -19,17 +19,17 @@ executables = [
     Executable(
         script="gui.py",
         base=base,
-        target_name="AtenaSatellite.exe",
-        # icon="atena_icon.ico", # Decommenta se aggiungi un file .ico nella cartella
-        shortcut_name="ATENA Satellite",
+        target_name="NuxivaSatellite.exe",
+        # icon="nuxiva_icon.ico", # Decommenta se aggiungi un file .ico nella cartella
+        shortcut_name="NUXIVA Satellite",
         shortcut_dir="DesktopFolder"
     )
 ]
 
 setup(
-    name="ATENA Satellite",
+    name="NUXIVA Satellite",
     version="4.1.53",
-    description="Client Desktop Interattivo e Context Bridge per ATENA",
+    description="Client Desktop Interattivo e Context Bridge per NUXIVA",
     author="NunzioTech",
     options={"build_exe": build_exe_options},
     executables=executables

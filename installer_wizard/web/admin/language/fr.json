@@ -4,7 +4,7 @@
     "user": "Utilisateur du système",
     "password": "Mot de passe",
     "submit": "Se connecter",
-    "hint": "Accès autorisé au root et aux utilisateurs des groupes sudo ou atena-admin."
+    "hint": "Accès autorisé au root et aux utilisateurs des groupes sudo ou nuxiva-admin."
   },
   "nav": {
     "admin": "ADMINISTRATEUR",
@@ -49,7 +49,7 @@
   "config": {
     "settings": "Paramètres",
     "save": "Enregistrer et postuler",
-    "note": "Les modifications sont enregistrées dans /etc/atena/atena.env et appliquées automatiquement (en redémarrant uniquement les composants concernés).",
+    "note": "Les modifications sont enregistrées dans /etc/nuxiva/nuxiva.env et appliquées automatiquement (en redémarrant uniquement les composants concernés).",
     "sys_params": "Paramètres détectés par le système"
   },
   "updates": {
@@ -133,7 +133,7 @@
       "laser_feed": "Vitesse (mm/min)",
       "nozzle": "Buse (°C)",
       "bed": "Plat (°C)",
-      "default": "Imprimante par défaut Athena"
+      "default": "Imprimante par défaut Nuxiva"
     },
     "probe": {
       "virtual": "Imprimante virtuelle toujours disponible.",
@@ -292,11 +292,11 @@
   },
   "feedback": {
     "title": "Apprentissage implicite",
-    "intro": "Lorsque vous annulez manuellement une action Athena dans les 3 minutes, ce contexte reçoit une pénalité ; après des annulations répétées, l'action n'est plus répétée dans ces conditions.",
+    "intro": "Lorsque vous annulez manuellement une action Nuxiva dans les 3 minutes, ce contexte reçoit une pénalité ; après des annulations répétées, l'action n'est plus répétée dans ces conditions.",
     "reset_all": "Tout effacer",
     "reset": "Réinitialiser",
     "confirm_reset": "Effacer tout ce qu'Athéna a appris de ces défaites ?",
-    "empty": "Aucune donnée pour l'instant : Athena apprend à mesure que vous utilisez la maison.",
+    "empty": "Aucune donnée pour l'instant : Nuxiva apprend à mesure que vous utilisez la maison.",
     "suppressed": "Il ne recommencera pas",
     "counts": "{ok} accepter · {annuler} annuler",
     "slot": "{de}-{à}",

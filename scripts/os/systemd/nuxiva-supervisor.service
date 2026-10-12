@@ -1,0 +1,23 @@
+[Unit]
+Description=Nuxiva OS Supervisor (installazione, avvio, auto-riparazione, aggiornamenti)
+Documentation=https://github.com/AprileNunzio/NUXIVA
+After=network-online.target docker.service
+Wants=network-online.target
+StartLimitIntervalSec=600
+StartLimitBurst=5
+OnFailure=nuxiva-rollback.service
+
+[Service]
+Type=simple
+Environment=PYTHONUNBUFFERED=1
+Environment=NUXIVA_DIR=/opt/Nuxiva
+ExecStartPre=/bin/bash /opt/Nuxiva/scripts/os/prestart.sh
+ExecStart=/opt/Nuxiva/installer_wizard/venv/bin/python /opt/Nuxiva/installer_wizard/backend/nuxiva_launch.py
+Restart=always
+RestartSec=3
+TimeoutStartSec=900
+KillMode=mixed
+TimeoutStopSec=20
+
+[Install]
+WantedBy=multi-user.target

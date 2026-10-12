@@ -14,15 +14,15 @@ import numpy as np
 sys.path.append(str(Path(__file__).resolve().parents[1] / "biometrics"))
 import embeddings as emb
 
-log = logging.getLogger("atena.vision")
+log = logging.getLogger("nuxiva.vision")
 
-FACES = Path(os.environ.get("ATENA_FACES_DIR", "/var/lib/atena/faces"))
-MATCH_THRESHOLD = float(os.environ.get("ATENA_FACE_THRESHOLD", "0.40"))
-MARGIN = float(os.environ.get("ATENA_FACE_MARGIN", "0.05"))
-TWIN_SIM = float(os.environ.get("ATENA_FACE_TWIN_SIM", "0.55"))
-TWIN_MARGIN = float(os.environ.get("ATENA_FACE_TWIN_MARGIN", "0.12"))
-IR_WEIGHT = float(os.environ.get("ATENA_FACE_IR_WEIGHT", "0.35"))
-ADAPTIVE = os.environ.get("ATENA_FACE_ADAPTIVE", "1") != "0"
+FACES = Path(os.environ.get("NUXIVA_FACES_DIR", "/var/lib/nuxiva/faces"))
+MATCH_THRESHOLD = float(os.environ.get("NUXIVA_FACE_THRESHOLD", "0.40"))
+MARGIN = float(os.environ.get("NUXIVA_FACE_MARGIN", "0.05"))
+TWIN_SIM = float(os.environ.get("NUXIVA_FACE_TWIN_SIM", "0.55"))
+TWIN_MARGIN = float(os.environ.get("NUXIVA_FACE_TWIN_MARGIN", "0.12"))
+IR_WEIGHT = float(os.environ.get("NUXIVA_FACE_IR_WEIGHT", "0.35"))
+ADAPTIVE = os.environ.get("NUXIVA_FACE_ADAPTIVE", "1") != "0"
 MAX_SAMPLES = 40
 UNKNOWN = "Sconosciuto"
 

@@ -2,7 +2,7 @@
   "name": "Automazioni",
   "description": "Motore di automazione a più stadi: inneschi multipli, condizioni annidate, azioni con rami, attese, ripetizioni, parallelo, conferme a voce, variabili e traccia passo per passo di ogni esecuzione.",
   "capabilities": [
-    "Inneschi: orari e giorni, intervalli, alba e tramonto con spostamento, cambi di stato di dispositivi (anche soglie e durata), presenze, frasi dette ad Atena, eventi (email, agenda, guasti, avvio), espressioni, webhook",
+    "Inneschi: orari e giorni, intervalli, alba e tramonto con spostamento, cambi di stato di dispositivi (anche soglie e durata), presenze, frasi dette ad Nuxiva, eventi (email, agenda, guasti, avvio), espressioni, webhook",
     "Condizioni annidate E/O/NON: fasce orarie, stati con durata, presenze, giorno/notte, orario di silenzio, espressioni",
     "Azioni: dispositivi Home Assistant, voce, notifiche (display, voce, Telegram, email), widget, ologramma, suoni, agente con strumenti, email, richieste web, eventi",
     "Controllo di flusso: se/altrimenti, scelta tra più casi, rami paralleli, ripetizioni (volte, mentre, finché), attese di tempo, stato, evento o espressione, conferma a voce sì/no",

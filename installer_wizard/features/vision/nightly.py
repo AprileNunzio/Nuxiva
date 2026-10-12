@@ -10,8 +10,8 @@ from pathlib import Path
 from config import STATE_DIR
 from state import store
 
-log = logging.getLogger("atena.vision.nightly")
-FACES = Path(os.environ.get("ATENA_FACES_DIR", str(STATE_DIR / "faces")))
+log = logging.getLogger("nuxiva.vision.nightly")
+FACES = Path(os.environ.get("NUXIVA_FACES_DIR", str(STATE_DIR / "faces")))
 
 # Nightly run scheduled between 03:00 and 04:00 AM
 NIGHTLY_HOUR = 3

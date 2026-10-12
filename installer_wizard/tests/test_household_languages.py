@@ -47,7 +47,7 @@ class HouseholdTests(LocaleBase):
                 mock.patch.object(household.sys, "platform", "win32"):
             self.assertTrue(asyncio.run(household.sync()))
             self.assertFalse(asyncio.run(household.sync()))
-        self.assertEqual(written["ATENA_EAR_LANGUAGES"], "it")
+        self.assertEqual(written["NUXIVA_EAR_LANGUAGES"], "it")
 
 
 if __name__ == "__main__":

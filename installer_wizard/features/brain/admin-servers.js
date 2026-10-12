@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const FLAVOR = { ollama: "Ollama", openai: "Compatibile OpenAI" };
   let data = null;
 

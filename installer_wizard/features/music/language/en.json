@@ -7,6 +7,6 @@
     "Acoustic feature analysis and playlist generation"
   ],
   "settings": {
-    "ATENA_MUSIC_DIR": "Music directory"
+    "NUXIVA_MUSIC_DIR": "Music directory"
   }
 }

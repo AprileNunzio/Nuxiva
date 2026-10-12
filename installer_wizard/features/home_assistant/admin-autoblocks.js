@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin;
+  const A = window.NuxivaAdmin;
   const only = (obj, keys) => Object.keys(obj).every((k) => keys.includes(k));
   const one = (v) => (typeof v === "string" ? v : Array.isArray(v) && v.length === 1 && typeof v[0] === "string" ? v[0] : null);
   const minutesOf = (d) => {

@@ -38,7 +38,7 @@ class UniversalAction(BaseModel):
     # Aspettativa visiva/sensoriale (Il 'Grounding' per calcolare il Reward)
     expected_observation_state: Optional[Dict[str, Any]] = Field(
         default=None, 
-        description="Cosa si aspetta di vedere Atena nel frame successivo dopo questa azione? Serve per l'Auto-Reward."
+        description="Cosa si aspetta di vedere Nuxiva nel frame successivo dopo questa azione? Serve per l'Auto-Reward."
     )
 
 class RewardSignal(BaseModel):

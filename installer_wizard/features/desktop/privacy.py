@@ -23,15 +23,15 @@ class Privacy:
 
     @staticmethod
     def enabled() -> bool:
-        return flag("ATENA_PRIVACY_AUTOCLOSE", True)
+        return flag("NUXIVA_PRIVACY_AUTOCLOSE", True)
 
     @staticmethod
     def away_seconds() -> float:
-        return number("ATENA_PRIVACY_AWAY_S", 10, 3, 600)
+        return number("NUXIVA_PRIVACY_AWAY_S", 10, 3, 600)
 
     @staticmethod
     def voice_seconds() -> float:
-        return number("ATENA_PRIVACY_VOICE_S", 30, 0, 600)
+        return number("NUXIVA_PRIVACY_VOICE_S", 30, 0, 600)
 
     def watch(self) -> None:
         presence = store.presence or {}

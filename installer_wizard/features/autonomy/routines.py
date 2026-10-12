@@ -10,7 +10,7 @@ FILE = STATE_DIR / "routines.json"
 DAYS = {"lunedi": 0, "martedi": 1, "mercoledi": 2, "giovedi": 3, "venerdi": 4, "sabato": 5, "domenica": 6}
 DAY_NAMES = ["lunedì", "martedì", "mercoledì", "giovedì", "venerdì", "sabato", "domenica"]
 PARTS = {"mattina": "08:00", "mattino": "08:00", "pomeriggio": "15:00", "sera": "20:00", "notte": "23:00", "mezzogiorno": "12:00"}
-EVENTS = {"arrival": "quando mi vedi arrivare", "startup": "all'avvio di Atena"}
+EVENTS = {"arrival": "quando mi vedi arrivare", "startup": "all'avvio di Nuxiva"}
 
 
 def _load() -> list[dict]:

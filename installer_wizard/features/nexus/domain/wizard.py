@@ -5,9 +5,9 @@ MAX_OPTIONS = 12
 _KEY = re.compile(r"^[A-Za-z][A-Za-z0-9_]{0,63}$")
 MODE_STEP = {
     "id": "mode", "kind": "mode", "title": "Quando deve funzionare?",
-    "text": "In automatico Atena la accende da sola quando l'hardware lo permette.",
+    "text": "In automatico Nuxiva la accende da sola quando l'hardware lo permette.",
     "options": [
-        {"value": "auto", "label": "Automatico", "hint": "Decide Atena in base all'hardware"},
+        {"value": "auto", "label": "Automatico", "hint": "Decide Nuxiva in base all'hardware"},
         {"value": "1", "label": "Sempre attiva", "hint": "Accesa comunque, anche se manca qualcosa"},
         {"value": "0", "label": "Spenta", "hint": "Non la uso"},
     ],

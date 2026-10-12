@@ -98,7 +98,7 @@ def _init_deepfilternet():
     if _DF_TRIED:
         return _DF_MODEL
     _DF_TRIED = True
-    engine = os.environ.get("ATENA_EAR_ENHANCE_ENGINE", "auto").strip().lower()
+    engine = os.environ.get("NUXIVA_EAR_ENHANCE_ENGINE", "auto").strip().lower()
     if engine == "spectral":
         return None
     try:
@@ -131,7 +131,7 @@ def normalize(x: np.ndarray) -> np.ndarray:
     rms = float(voiced.mean()) if len(voiced) else 0.0
     if rms <= 1e-5:
         return x
-    target = _env_f("ATENA_EAR_TARGET_RMS", TARGET_RMS, 0.03, 0.2)
+    target = _env_f("NUXIVA_EAR_TARGET_RMS", TARGET_RMS, 0.03, 0.2)
     max_gain = tuning.max_gain()
     gain = min(max_gain, target / rms)
     # Protezione rumore da lontano: se il segnale e' molto basso, evita di gonfiare solo il fruscio

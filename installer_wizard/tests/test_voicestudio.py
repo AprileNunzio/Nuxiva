@@ -66,8 +66,8 @@ class FakeStudio:
         return httpx.Response(404, json={"detail": "not found"})
 
 
-ENV = {"ATENA_VOICESTUDIO": "1", "ATENA_VOICESTUDIO_WHERE": "local", "ATENA_VOICESTUDIO_KEY": "secret",
-       "ATENA_VOICESTUDIO_URL": ""}
+ENV = {"NUXIVA_VOICESTUDIO": "1", "NUXIVA_VOICESTUDIO_WHERE": "local", "NUXIVA_VOICESTUDIO_KEY": "secret",
+       "NUXIVA_VOICESTUDIO_URL": ""}
 
 
 class StudioCase(unittest.TestCase):
@@ -123,11 +123,11 @@ class ClientTest(StudioCase):
         self.assertEqual([v["id"] for v in voices], ["studio_ab12cd34"])
 
     def test_wrong_key_is_explained(self):
-        self.env["ATENA_VOICESTUDIO_KEY"] = "wrong"
+        self.env["NUXIVA_VOICESTUDIO_KEY"] = "wrong"
         with self.assertRaisesRegex(StudioError, "chiave"):
             asyncio.run(client.voices())
 
-    def test_atena_speaks_with_a_studio_voice(self):
+    def test_nuxiva_speaks_with_a_studio_voice(self):
         asyncio.run(client.voices())
         self.assertEqual(catalog.engine("studio_ab12cd34"), "studio")
         self.assertTrue(catalog.describe("studio_ab12cd34")["multi"])
@@ -177,7 +177,7 @@ class ApiTest(StudioCase):
         self.assertIn("gender", data["choices"])
 
     def test_status_when_off(self):
-        self.env["ATENA_VOICESTUDIO"] = "0"
+        self.env["NUXIVA_VOICESTUDIO"] = "0"
         data = self.http.get("/api/voicestudio").json()
         self.assertFalse(data["enabled"])
         self.assertEqual(self.fake.calls, [])
@@ -188,7 +188,7 @@ class ApiTest(StudioCase):
         self.assertEqual(self.http.post("/api/voicestudio/design", json={"name": "<b>", "gender": "female"}).status_code, 400)
         with mock.patch.object(catalog, "custom_order", return_value=["if_sara"]):
             self.http.put("/api/voicestudio/use", json={"voice": "studio_ee11ff22"})
-        self.assertEqual(self.written["ATENA_VOICE_ORDER"], "studio_ee11ff22,if_sara")
+        self.assertEqual(self.written["NUXIVA_VOICE_ORDER"], "studio_ee11ff22,if_sara")
         self.assertEqual(self.http.put("/api/voicestudio/use", json={"voice": "studio_nope1234"}).status_code, 404)
 
     def test_clone_requires_consent_and_audio(self):

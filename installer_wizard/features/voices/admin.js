@@ -1,5 +1,5 @@
 (() => {
-  const A = window.AtenaAdmin, { $, fmt } = A;
+  const A = window.NuxivaAdmin, { $, fmt } = A;
   const GENDER = { m: "maschile", f: "femminile" };
   const ENGINE = { kokoro: "Kokoro · naturale · offline", online: "Online · naturalissima", piper: "Piper · offline" };
   let voiceData = null, voiceAudio = null, searchTimer = null;
@@ -20,7 +20,7 @@
         <div class="nm">${v.preferred ? "★ " : ""}${fmt.esc(v.name)} <span class="faint mono" style="font-size:11px">${fmt.esc(v.id)}</span></div>
         <div class="nt">${voiceSub(v)}${v.size_mb ? ` · ${v.size_mb} MB` : ""}${v.downloading ? " · download in corso…" : v.installed && v.engine !== "online" ? " · ✓ pronta" : ""}</div></div>
       <div class="actions" style="justify-content:flex-end">
-        <button class="btn sm" data-vpref="${fmt.esc(v.id)}" data-vlang="${fmt.esc(v.lang)}" title="${v.preferred ? "Torna alla scelta automatica" : `Usa questa voce quando Atena parla ${fmt.esc((d.langs[v.lang] || v.lang).toLowerCase())}`}">${v.preferred ? "★" : "☆"}</button>
+        <button class="btn sm" data-vpref="${fmt.esc(v.id)}" data-vlang="${fmt.esc(v.lang)}" title="${v.preferred ? "Torna alla scelta automatica" : `Usa questa voce quando Nuxiva parla ${fmt.esc((d.langs[v.lang] || v.lang).toLowerCase())}`}">${v.preferred ? "★" : "☆"}</button>
         ${v.installed ? `<button class="btn sm" data-play="${fmt.esc(v.id)}" title="Ascolta">▶</button>` : ""}
         ${v.downloadable && !v.installed ? `<button class="btn sm primary" data-vdl="${fmt.esc(v.id)}">Scarica</button>` : ""}
         <button class="btn sm" data-vadd="${fmt.esc(v.id)}" ${inOrder.has(v.id) ? "disabled" : ""}>+ Priorità</button>
@@ -50,7 +50,7 @@
   async function play(t) {
     t.disabled = true;
     try {
-      const r = await fetch("/api/voices/preview", { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json", "X-Atena-Request": "1" },
+      const r = await fetch("/api/voices/preview", { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json", "X-Nuxiva-Request": "1" },
         body: JSON.stringify({ voice: t.dataset.play, text: $("vo-text").value.trim() }) });
       if (!r.ok) throw new Error((await r.json().catch(() => ({}))).detail || `Errore ${r.status}`);
       if (voiceAudio) voiceAudio.pause();

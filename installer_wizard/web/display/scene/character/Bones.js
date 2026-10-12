@@ -127,4 +127,4 @@
   C.Rig = Rig;
   C.canon = canon;
   C.byCanon = byCanon;
-})(window.Atena3D);
+})(window.Nuxiva3D);

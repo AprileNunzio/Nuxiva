@@ -27,7 +27,7 @@ MAX_TABLE = 12
 MAX_CELL = 60
 SHAPES = ("line", "arrow", "rect", "ellipse")
 COLOR = re.compile(r"^#[0-9a-fA-F]{6}$")
-ATENA_INK = "#29e0ff"
+NUXIVA_INK = "#29e0ff"
 USER_INK = "#f4f4f0"
 ERROR_INK = "#ff4d6a"
 NOTE_INK = "#ffd166"
@@ -209,7 +209,7 @@ class Board:
         return self.add({"type": "erase" if erase else "stroke", "by": by, "points": clean, "color": color(ink, USER_INK),
                          "width": number(width, 1, 60, 4)})
 
-    def text(self, text: str, x=None, y=None, size=40, ink: str = ATENA_INK, by: str = "atena") -> dict:
+    def text(self, text: str, x=None, y=None, size=40, ink: str = NUXIVA_INK, by: str = "nuxiva") -> dict:
         text = re.sub(r"\s+", " ", str(text)).strip()[:MAX_TEXT]
         if not text:
             raise ValueError("testo vuoto")
@@ -217,7 +217,7 @@ class Board:
         if x is None or y is None:
             x, y = self.place(size)
         return self.add({"type": "text", "by": by, "text": text, "x": number(x, 0, WIDTH), "y": number(y, 0, HEIGHT), "size": size,
-                         "color": color(ink, ATENA_INK), "align": "left"})
+                         "color": color(ink, NUXIVA_INK), "align": "left"})
 
     def underline(self, x1, y, x2, ink: str = ERROR_INK, width=4) -> dict:
         pts = []
@@ -226,7 +226,7 @@ class Board:
             px = x1 + (x2 - x1) * (i / seg)
             py = y + (3.5 if i % 2 == 1 else -3.5)
             pts.append([round(px, 1), round(py, 1)])
-        return self.stroke(pts, ink, width, False, by="atena")
+        return self.stroke(pts, ink, width, False, by="nuxiva")
 
     def place(self, size: float) -> tuple[float, float]:
         return self.reserve(size * 1.45, gap=0)
@@ -270,7 +270,7 @@ class Board:
             lines.append(current)
         return lines
 
-    def paragraph(self, text: str, size: float = 40, ink: str = ATENA_INK) -> list[dict]:
+    def paragraph(self, text: str, size: float = 40, ink: str = NUXIVA_INK) -> list[dict]:
         return [self.text(line, size=size, ink=ink) for line in self.wrap(text, size)[:12]]
 
     def mark(self, style: str, x1, y1, x2, y2, ink: str = NOTE_INK, width=4, target: int | None = None) -> dict:
@@ -281,7 +281,7 @@ class Board:
             if found is None:
                 raise ValueError("whiteboard.error.target")
             x1, y1, x2, y2 = self.bounds(found)
-        return self.add({"type": "mark", "style": style, "by": "atena", "x1": number(x1, 0, WIDTH), "y1": number(y1, 0, HEIGHT),
+        return self.add({"type": "mark", "style": style, "by": "nuxiva", "x1": number(x1, 0, WIDTH), "y1": number(y1, 0, HEIGHT),
                          "x2": number(x2, 0, WIDTH), "y2": number(y2, 0, HEIGHT), "color": color(ink, NOTE_INK), "width": number(width, 1, 20, 4)})
 
     @staticmethod
@@ -304,7 +304,7 @@ class Board:
         height = 70 + len(lines) * size * 1.35
         if x is None or y is None:
             x, y = self.reserve(height)
-        return self.add({"type": "callout", "kind": kind, "by": "atena", "title": str(title)[:80], "lines": lines, "size": size,
+        return self.add({"type": "callout", "kind": kind, "by": "nuxiva", "title": str(title)[:80], "lines": lines, "size": size,
                          "x": number(x, 0, WIDTH), "y": number(y, 0, HEIGHT), "w": number(w, 200, WIDTH), "h": height})
 
     def image(self, data_uri: str, caption: str = "", x=None, y=None, w: float = 420, h: float = 300) -> dict:
@@ -319,7 +319,7 @@ class Board:
         w, h = number(w, 80, COLUMN_WIDTH), number(h, 60, BOTTOM - TOP - 40)
         if x is None or y is None:
             x, y = self.reserve(h + (36 if caption else 0))
-        return self.add({"type": "image", "by": "atena", "src": data_uri, "caption": str(caption)[:120],
+        return self.add({"type": "image", "by": "nuxiva", "src": data_uri, "caption": str(caption)[:120],
                          "x": number(x, 0, WIDTH), "y": number(y, 0, HEIGHT), "w": w, "h": h})
 
     def plot(self, series: list[dict], xmin: float, xmax: float, ymin: float, ymax: float, title: str = "",
@@ -327,13 +327,13 @@ class Board:
         clean = []
         for s in series[:MAX_SERIES]:
             points = [[float(p[0]), None if p[1] is None else float(p[1])] for p in s.get("points", [])[:MAX_PLOT_POINTS]]
-            clean.append({"label": str(s.get("label", ""))[:80], "color": color(s.get("color"), ATENA_INK), "points": points})
+            clean.append({"label": str(s.get("label", ""))[:80], "color": color(s.get("color"), NUXIVA_INK), "points": points})
         if not clean or not xmin < xmax or not ymin < ymax:
             raise ValueError("whiteboard.error.plot")
         w, h = number(w, 200, COLUMN_WIDTH), number(h, 160, BOTTOM - TOP)
         if x is None or y is None:
             x, y = self.reserve(h)
-        return self.add({"type": "plot", "by": "atena", "title": str(title)[:80], "series": clean, "xmin": xmin, "xmax": xmax,
+        return self.add({"type": "plot", "by": "nuxiva", "title": str(title)[:80], "series": clean, "xmin": xmin, "xmax": xmax,
                          "ymin": ymin, "ymax": ymax, "x": number(x, 0, WIDTH), "y": number(y, 0, HEIGHT), "w": w, "h": h})
 
     def chart(self, kind: str, labels: list, values: list, title: str = "", x=None, y=None, w: float = COLUMN_WIDTH, h: float = 380) -> dict:
@@ -349,17 +349,17 @@ class Board:
         w, h = number(w, 200, COLUMN_WIDTH), number(h, 160, BOTTOM - TOP)
         if x is None or y is None:
             x, y = self.reserve(h)
-        return self.add({"type": "chart", "kind": kind, "by": "atena", "title": str(title)[:80], "labels": labs, "values": vals,
+        return self.add({"type": "chart", "kind": kind, "by": "nuxiva", "title": str(title)[:80], "labels": labs, "values": vals,
                          "x": number(x, 0, WIDTH), "y": number(y, 0, HEIGHT), "w": w, "h": h})
 
-    def formula(self, lines: list[str], label: str = "", size: float = 34, ink: str = ATENA_INK) -> dict:
+    def formula(self, lines: list[str], label: str = "", size: float = 34, ink: str = NUXIVA_INK) -> dict:
         rows = [str(l)[:120] for l in lines][:14]
         if not rows:
             raise ValueError("whiteboard.error.formula")
         size = number(size, 18, 60, 34)
         x, y = self.reserve(size * 1.25 * len(rows) + (size if label else 0))
-        return self.add({"type": "formula", "by": "atena", "lines": rows, "label": str(label)[:80], "size": size,
-                         "x": x, "y": y, "color": color(ink, ATENA_INK)})
+        return self.add({"type": "formula", "by": "nuxiva", "lines": rows, "label": str(label)[:80], "size": size,
+                         "x": x, "y": y, "color": color(ink, NUXIVA_INK)})
 
     def table(self, header: list, rows: list, title: str = "") -> dict:
         head = [str(c)[:MAX_CELL] for c in header][:8]
@@ -369,14 +369,14 @@ class Board:
         size = 26
         height = (len(body) + (1 if head else 0)) * size * 1.6 + (size * 1.4 if title else 0) + 10
         x, y = self.reserve(height)
-        return self.add({"type": "table", "by": "atena", "title": str(title)[:80], "header": head, "rows": body, "size": size,
+        return self.add({"type": "table", "by": "nuxiva", "title": str(title)[:80], "header": head, "rows": body, "size": size,
                          "x": x, "y": y, "w": COLUMN_WIDTH, "h": height})
 
-    def shape(self, kind: str, x1, y1, x2, y2, ink: str = ATENA_INK, width=4, by: str = "atena") -> dict:
+    def shape(self, kind: str, x1, y1, x2, y2, ink: str = NUXIVA_INK, width=4, by: str = "nuxiva") -> dict:
         if kind not in SHAPES:
             raise ValueError(f"figura sconosciuta: {', '.join(SHAPES)}")
         return self.add({"type": kind, "by": by, "x1": number(x1, 0, WIDTH), "y1": number(y1, 0, HEIGHT), "x2": number(x2, 0, WIDTH),
-                         "y2": number(y2, 0, HEIGHT), "color": color(ink, ATENA_INK), "width": number(width, 1, 20, 4)})
+                         "y2": number(y2, 0, HEIGHT), "color": color(ink, NUXIVA_INK), "width": number(width, 1, 20, 4)})
 
     def say(self, text: str) -> None:
         self.says, self.says_at = str(text)[:240], time.time()

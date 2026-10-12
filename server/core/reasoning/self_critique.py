@@ -10,7 +10,7 @@ from server.core.kernel.domain.outcome import NodeResult, Verdict
 from server.features.llm_gateway.contracts import LLMMessage, LLMRequest
 from server.features.llm_gateway.gateway import llm_gateway
 
-logger = logging.getLogger("atena.self_critique")
+logger = logging.getLogger("nuxiva.self_critique")
 
 _REVIEW_SYSTEM = (
     "Sei un revisore perfezionista. Valuta la qualità dell'output:\n"

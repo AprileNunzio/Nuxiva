@@ -1,5 +1,5 @@
 (() => {
-  const D = window.AtenaDisplay, { fmt } = D;
+  const D = window.NuxivaDisplay, { fmt } = D;
   const { render, wide } = D.stagePanels;
   const esc = fmt.esc;
   const PALETTE = ["#29e0ff", "#b36bff", "#3dffa8", "#ffb547", "#ff6bb5", "#3d7bff", "#ffd84d"];

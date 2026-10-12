@@ -4,7 +4,7 @@ from typing import List
 import httpx
 from server.config.env import settings
 
-logger = logging.getLogger("atena.embedding_engine")
+logger = logging.getLogger("nuxiva.embedding_engine")
 
 
 class OllamaEmbeddingEngine:
@@ -12,7 +12,7 @@ class OllamaEmbeddingEngine:
     def __init__(
         self,
         ollama_url: str = settings.OLLAMA_BASE_URL,
-        default_model: str = settings.ATENA_EMBED_MODEL,
+        default_model: str = settings.NUXIVA_EMBED_MODEL,
     ) -> None:
         self._url = ollama_url
         self._model = default_model

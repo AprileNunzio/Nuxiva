@@ -14,7 +14,7 @@ NEED_VISION = ("Per trovare gli elementi sullo schermo mi serve un cervello che 
 
 
 def allowed_nodes() -> set[str]:
-    return {n.strip() for n in env_get("ATENA_RPA_NODES", "").split(",") if n.strip()}
+    return {n.strip() for n in env_get("NUXIVA_RPA_NODES", "").split(",") if n.strip()}
 
 
 class RpaService:
@@ -23,7 +23,7 @@ class RpaService:
         self._locks: dict[str, asyncio.Lock] = {}
 
     def permitted(self, node_id: str) -> bool:
-        return env_get("ATENA_RPA", "0") == "1" and node_id in allowed_nodes()
+        return env_get("NUXIVA_RPA", "0") == "1" and node_id in allowed_nodes()
 
     async def run(self, node_id: str, raw_steps, user: str = "agente") -> RunTrace:
         if not self.permitted(node_id):

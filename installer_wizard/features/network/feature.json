@@ -7,7 +7,7 @@
   "panel": "network",
   "description": "Scopre, studia e classifica i dispositivi della rete di casa e ne impara le abitudini.",
   "toggle": {
-    "env": "ATENA_NETWORK",
+    "env": "NUXIVA_NETWORK",
     "apply": []
   },
   "requires": {

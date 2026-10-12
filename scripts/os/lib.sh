@@ -3,20 +3,20 @@ set -Eeuo pipefail
 export DEBIAN_FRONTEND=noninteractive
 export LC_ALL=C.UTF-8
 
-ATENA_DIR="${ATENA_DIR:-/opt/Atena}"
-ATENA_ETC="${ATENA_ETC:-/etc/atena}"
-ATENA_STATE="${ATENA_STATE:-/var/lib/atena}"
-ATENA_ENV_FILE="$ATENA_ETC/atena.env"
-ATENA_KIOSK_USER="${ATENA_KIOSK_USER:-atena-kiosk}"
+NUXIVA_DIR="${NUXIVA_DIR:-/opt/Nuxiva}"
+NUXIVA_ETC="${NUXIVA_ETC:-/etc/nuxiva}"
+NUXIVA_STATE="${NUXIVA_STATE:-/var/lib/nuxiva}"
+NUXIVA_ENV_FILE="$NUXIVA_ETC/nuxiva.env"
+NUXIVA_KIOSK_USER="${NUXIVA_KIOSK_USER:-nuxiva-kiosk}"
 OLLAMA_URL="${OLLAMA_URL:-http://127.0.0.1:11434}"
 CORE_URL="${CORE_URL:-http://127.0.0.1:8443}"
 
-if [ -f "$ATENA_ENV_FILE" ]; then
-    set -a; . "$ATENA_ENV_FILE"; set +a
+if [ -f "$NUXIVA_ENV_FILE" ]; then
+    set -a; . "$NUXIVA_ENV_FILE"; set +a
 fi
 
-if [ -n "${ATENA_OLLAMA_URL:-}" ]; then
-    OLLAMA_URL="${ATENA_OLLAMA_URL%/}"
+if [ -n "${NUXIVA_OLLAMA_URL:-}" ]; then
+    OLLAMA_URL="${NUXIVA_OLLAMA_URL%/}"
     case "$OLLAMA_URL" in http://*|https://*) ;; *) OLLAMA_URL="http://$OLLAMA_URL" ;; esac
     case "${OLLAMA_URL#*//}" in *:*) ;; *) OLLAMA_URL="$OLLAMA_URL:11434" ;; esac
 fi
@@ -28,8 +28,8 @@ ollama_remote() {
 }
 
 truthy() { case "${1,,}" in 1|true|yes|on|si|sì) return 0 ;; *) return 1 ;; esac; }
-commercial() { truthy "${ATENA_COMMERCIAL:-0}"; }
-unofficial_ok() { truthy "${ATENA_UNOFFICIAL_SERVICES:-0}"; }
+commercial() { truthy "${NUXIVA_COMMERCIAL:-0}"; }
+unofficial_ok() { truthy "${NUXIVA_UNOFFICIAL_SERVICES:-0}"; }
 
 progress() { echo "@@PROGRESS $1 ${*:2}"; }
 detail()   { echo "@@DETAIL $*"; }
@@ -91,17 +91,17 @@ apt_install() {
 
 set_env() {
     local key=$1 value=$2
-    mkdir -p "$ATENA_ETC"
-    touch "$ATENA_ENV_FILE"
-    chmod 600 "$ATENA_ENV_FILE"
-    if grep -q "^${key}=" "$ATENA_ENV_FILE"; then
+    mkdir -p "$NUXIVA_ETC"
+    touch "$NUXIVA_ENV_FILE"
+    chmod 600 "$NUXIVA_ENV_FILE"
+    if grep -q "^${key}=" "$NUXIVA_ENV_FILE"; then
         local tmp
         tmp=$(mktemp)
-        awk -v k="$key" -v v="$value" 'BEGIN{FS=OFS="="} $1==k {print k "=" v; next} {print}' "$ATENA_ENV_FILE" > "$tmp"
-        cat "$tmp" > "$ATENA_ENV_FILE"
+        awk -v k="$key" -v v="$value" 'BEGIN{FS=OFS="="} $1==k {print k "=" v; next} {print}' "$NUXIVA_ENV_FILE" > "$tmp"
+        cat "$tmp" > "$NUXIVA_ENV_FILE"
         rm -f "$tmp"
     else
-        echo "${key}=${value}" >> "$ATENA_ENV_FILE"
+        echo "${key}=${value}" >> "$NUXIVA_ENV_FILE"
     fi
     export "$key=$value"
 }
@@ -129,15 +129,15 @@ same_content() {
 }
 
 _code_hash() { cat "$@" 2>/dev/null | sha1sum | cut -c1-16; }
-code_current() { local name=$1; shift; [ "$(cat "$ATENA_STATE/.code-$name" 2>/dev/null)" = "$(_code_hash "$@")" ]; }
-code_mark() { local name=$1; shift; mkdir -p "$ATENA_STATE"; _code_hash "$@" > "$ATENA_STATE/.code-$name"; }
+code_current() { local name=$1; shift; [ "$(cat "$NUXIVA_STATE/.code-$name" 2>/dev/null)" = "$(_code_hash "$@")" ]; }
+code_mark() { local name=$1; shift; mkdir -p "$NUXIVA_STATE"; _code_hash "$@" > "$NUXIVA_STATE/.code-$name"; }
 
 compose() {
     docker compose \
-        --project-name atena \
-        --project-directory "$ATENA_DIR/docker" \
-        -f "$ATENA_DIR/docker/docker-compose.yml" \
-        --env-file "$ATENA_ENV_FILE" "$@"
+        --project-name nuxiva \
+        --project-directory "$NUXIVA_DIR/docker" \
+        -f "$NUXIVA_DIR/docker/docker-compose.yml" \
+        --env-file "$NUXIVA_ENV_FILE" "$@"
 }
 
 has_nvidia_gpu() {
@@ -170,18 +170,18 @@ machine_class() {
 }
 
 core_runtime() {
-    case "${ATENA_CORE_RUNTIME:-}" in native|docker) echo "$ATENA_CORE_RUNTIME"; return 0 ;; esac
-    case "${ATENA_MACHINE:-$(machine_class)}" in pi|small) echo native ;; *) echo docker ;; esac
+    case "${NUXIVA_CORE_RUNTIME:-}" in native|docker) echo "$NUXIVA_CORE_RUNTIME"; return 0 ;; esac
+    case "${NUXIVA_MACHINE:-$(machine_class)}" in pi|small) echo native ;; *) echo docker ;; esac
 }
 native_core() { [ "$(core_runtime)" = native ]; }
 docker_needed() {
     native_core || return 0
-    case "${ATENA_SANDBOX:-0}" in 1|on|yes|true|auto) return 0 ;; *) return 1 ;; esac
+    case "${NUXIVA_SANDBOX:-0}" in 1|on|yes|true|auto) return 0 ;; *) return 1 ;; esac
 }
 
 core_src_hash() {
     (
-        cd "$ATENA_DIR"
+        cd "$NUXIVA_DIR"
         git -c safe.directory='*' rev-parse HEAD:server HEAD:docker/core 2>/dev/null | sha1sum | cut -c1-16
     )
 }

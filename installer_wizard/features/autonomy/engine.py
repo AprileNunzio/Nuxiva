@@ -12,7 +12,7 @@ from features.autonomy import approvals, journal
 from features.autonomy.trust import book
 from features.autonomy.routines import routines
 
-log = logging.getLogger("atena.autonomy")
+log = logging.getLogger("nuxiva.autonomy")
 TICK = 30
 AUTOPILOT_EVERY = 30 * 60
 BROKEN_FOR = 10 * 60
@@ -24,7 +24,7 @@ DIAGNOSE = ("Il componente «{label}» è in stato «{status}» da {minutes} min
 
 
 def enabled() -> bool:
-    return env_get("ATENA_AUTONOMY", "1") != "0"
+    return env_get("NUXIVA_AUTONOMY", "1") != "0"
 
 
 class Autonomy:
@@ -46,7 +46,7 @@ class Autonomy:
             log.debug("Telegram non disponibile: %s", exc)
         if show:
             from features.desktop.desk import desk
-            desk.show("notice", {"icon": icon, "title": "Atena in autonomia", "text": text[:300]},
+            desk.show("notice", {"icon": icon, "title": "Nuxiva in autonomia", "text": text[:300]},
                       key=f"autonomy:{int(time.time())}", ttl=90)
 
     async def ask_approval(self, item: dict) -> None:

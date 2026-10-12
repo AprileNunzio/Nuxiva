@@ -6,6 +6,6 @@
     "model_unavailable": "Modèle {model} non disponible : {exc}"
   },
   "fallback": {
-    "synthetic_response": "Accusé de réception Athena Core reçu pour : '{query}'. Fonctionnement en mode autonome déterministe. (Dernière erreur : {erreur})"
+    "synthetic_response": "Accusé de réception Nuxiva Core reçu pour : '{query}'. Fonctionnement en mode autonome déterministe. (Dernière erreur : {erreur})"
   }
 }

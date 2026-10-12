@@ -286,7 +286,7 @@ def auto_evaluate() -> dict | None:
     if not board.ai_enabled or not board.items:
         return None
     last_item = board.items[-1]
-    if last_item.get("by") == "atena":
+    if last_item.get("by") == "nuxiva":
         return None
     data = ocr.recognize_math(board.items, board.snapshot)
     if not data or not data.get("has_equals"):

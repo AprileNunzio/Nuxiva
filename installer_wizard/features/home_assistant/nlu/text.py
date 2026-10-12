@@ -17,7 +17,7 @@ for _u in (2, 3, 4, 5, 7, 8, 9):
 
 STOPWORDS = set("""il lo la i gli le l un uno una un di del dello della dei degli delle d a al allo alla ai agli
 alle in nel nello nella nei negli nelle su sul sullo sulla sui sugli sulle con col per tra fra e ed o che mi ti ci
-si me te ce ne per favore perfavore atena ehi puoi potresti vorrei voglio dammi fammi anche ora subito adesso please
+si me te ce ne per favore perfavore nuxiva ehi puoi potresti vorrei voglio dammi fammi anche ora subito adesso please
 grazie tutto tutte tutti tutta mio mia miei mie tuo tua suo sua nostro nostra quello quella quelli quelle questo
 questa questi queste da dal dallo dalla dai dagli dalle""".split())
 
