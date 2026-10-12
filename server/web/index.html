@@ -29,18 +29,17 @@
     <div class="tactical-telemetry-pills">
       <div class="telemetry-pill accent">
         <span class="pulse-dot"></span>
-        <span id="header-rust-bus">RUST BUS: 0.12ms</span>
+        <span id="header-rust-bus" data-i18n="header_rust_bus">RUST BUS: 0.12ms</span>
       </div>
       <div class="telemetry-pill">
-        <span>LOGICA TERNARIA:</span>
-        <strong id="header-ternary-bypass">78% Bypass Token</strong>
+        <span data-i18n="header_ternary_bypass">78% Bypass Token</span>
       </div>
       <div class="telemetry-pill warning" id="hud-presence-status">
         <span class="pulse-dot"></span>
-        <span id="hud-presence-text">WEBCAM: In attesa utente</span>
+        <span id="hud-presence-text" data-i18n="header_presence">WEBCAM: In attesa utente</span>
       </div>
       <div class="telemetry-pill">
-        <span>LINGUA:</span>
+        <span data-i18n="header_lang">LINGUA:</span>
         <select id="lang-selector" style="background:transparent; color:var(--cyan-glow); border:none; font-family:var(--font-mono); font-weight:700; cursor:pointer; outline:none;">
           <option value="it" style="background:#0b0f19; color:#fff;">🇮🇹 IT</option>
           <option value="en" style="background:#0b0f19; color:#fff;">🇬🇧 EN</option>
@@ -50,7 +49,6 @@
     </div>
   </header>
 
-  <!-- NAVBAR SELETTORE DELLE PLANCE (DECK SWITCHER) -->
   <nav class="plance-navbar">
     <button class="plancia-tab-btn active" data-deck="deck-projects" id="tab-nav-projects">
       <span>🚀</span> <span class="tab-label">Plancia War Room &amp; Progetti 24/7</span>
@@ -89,7 +87,7 @@
       <span>🚨</span> <span class="tab-label">Plancia Emergenze &amp; Prossimità</span>
     </button>
     <button class="tactical-btn" id="btn-open-admin-wizard" style="margin-left:auto; background:linear-gradient(90deg, #10b981, #00f0ff); color:#050811; font-weight:700; border:none; box-shadow:0 0 15px rgba(0,240,255,0.4); animation:floatBob 3s ease-in-out infinite;">
-      <span>✨</span> Setup Guidato
+      <span data-i18n="btn_guided_setup">✨ Setup Guidato</span>
     </button>
   </nav>
 
@@ -104,30 +102,27 @@
         <!-- Colonna 1: Selettore Progetti Aperti -->
         <div class="tactical-card">
           <div class="card-header">
-            <span class="card-title">📁 Progetti Attivi</span>
-            <button id="btn-modal-new-project" class="tactical-btn" style="padding:0.3rem 0.6rem; font-size:0.8rem;">+ Nuovo</button>
+            <span class="card-title" data-i18n="projects_title">📁 Progetti Attivi</span>
+            <button id="btn-modal-new-project" class="tactical-btn" style="padding:0.3rem 0.6rem; font-size:0.8rem;" data-i18n="btn_new_project">+ Nuovo</button>
           </div>
           <div class="card-body" style="padding:0.75rem;">
             <div id="projects-list-container" style="display:flex; flex-direction:column; gap:0.6rem;">
-              <!-- Popolato dinamicamente da app.js -->
             </div>
           </div>
         </div>
 
-        <!-- Colonna 2: War Room Feed Collaborativo -->
         <div class="tactical-card" style="grid-column: 2;">
           <div class="card-header">
             <div>
-              <span class="card-title">🛰️ War Room: <span id="current-project-title" style="color:var(--cyan-glow);">-</span></span>
+              <span class="card-title"><span data-i18n="war_room_title">🛰️ War Room:</span> <span id="current-project-title" style="color:var(--cyan-glow);">-</span></span>
               <p id="current-project-goal" style="font-size:0.78rem; color:var(--text-muted); margin-top:2px; font-family:var(--font-mono);"></p>
             </div>
             <div style="text-align:right;">
               <span id="current-project-pct" style="font-family:var(--font-mono); font-size:1.2rem; font-weight:700; color:var(--cyan-glow);">0%</span>
-              <div id="current-project-auto-badge" class="badge-tag" style="display:none; background:rgba(16,185,129,0.2); color:#34d399; margin-top:2px;">24/7 Autonomo</div>
+              <div id="current-project-auto-badge" class="badge-tag" style="display:none; background:rgba(16,185,129,0.2); color:#34d399; margin-top:2px;" data-i18n="war_room_autonomous_badge">24/7 Autonomo</div>
             </div>
           </div>
 
-          <!-- Barra di Completamento Globale -->
           <div style="padding:0.75rem 1.25rem; border-bottom:1px solid rgba(255,255,255,0.06); background:rgba(0,0,0,0.3);">
             <div class="progress-container">
               <div id="current-project-progress-bar" class="progress-bar-fill" style="width:0%;"></div>
@@ -136,42 +131,35 @@
 
           <div class="card-body" style="display:flex; flex-direction:column; gap:0.75rem;">
             <div id="war-room-feed" class="war-room-timeline">
-              <!-- Feed messaggi tra agenti popolato live -->
             </div>
-            <!-- Input per parlare direttamente nella War Room -->
             <div style="display:flex; gap:0.5rem; margin-top:auto;">
-              <input type="text" id="war-room-input" class="tactical-input" placeholder="Intervieni direttamente nella War Room con il team...">
-              <button id="btn-war-room-send" class="tactical-btn">Invia</button>
+              <input type="text" id="war-room-input" class="tactical-input" data-i18n-placeholder="war_room_input_placeholder" placeholder="Intervieni direttamente nella War Room con il team...">
+              <button id="btn-war-room-send" class="tactical-btn" data-i18n="war_room_send_btn">Invia</button>
             </div>
           </div>
         </div>
 
-        <!-- Colonna 3: Milestones & Team Roster -->
         <div style="display:flex; flex-direction:column; gap:1.5rem;">
-          <!-- Milestones Card -->
           <div class="tactical-card">
             <div class="card-header">
-              <span class="card-title">🎯 Milestone di Avanzamento</span>
+              <span class="card-title" data-i18n="milestones_title">🎯 Milestone di Avanzamento</span>
             </div>
             <div class="card-body" style="padding:0.75rem;">
               <div id="project-milestones-list" style="display:flex; flex-direction:column; gap:0.6rem;">
-                <!-- Milestones dinamiche -->
               </div>
             </div>
           </div>
 
-          <!-- Team Agenti Assegnati -->
           <div class="tactical-card">
             <div class="card-header">
-              <span class="card-title">🤖 Team Agenti Operativo</span>
+              <span class="card-title" data-i18n="team_title">🤖 Team Agenti Operativo</span>
             </div>
             <div class="card-body" style="padding:0.75rem;">
               <div id="project-team-roster" style="display:flex; flex-direction:column; gap:0.5rem;">
-                <!-- Roster agenti -->
               </div>
               <div style="margin-top:0.75rem; display:flex; gap:0.5rem;">
                 <select id="select-recruit-agent" class="tactical-input" style="font-size:0.8rem;"></select>
-                <button id="btn-recruit-agent" class="tactical-btn" style="padding:0.4rem 0.8rem; font-size:0.8rem;">Conferma</button>
+                <button id="btn-recruit-agent" class="tactical-btn" style="padding:0.4rem 0.8rem; font-size:0.8rem;" data-i18n="btn_recruit_confirm">Conferma</button>
               </div>
             </div>
           </div>
@@ -187,23 +175,21 @@
         <!-- Grafo e Nodi Dettagliati -->
         <div class="tactical-card">
           <div class="card-header">
-            <span class="card-title">⚡ Grafo Decisionale Cognitivo Live</span>
-            <span class="badge-tag" style="background:rgba(0,240,255,0.2); color:var(--cyan-glow);">System 1 &amp; System 2</span>
+            <span class="card-title" data-i18n="flow_title">⚡ Grafo Decisionale Cognitivo Live</span>
+            <span class="badge-tag" style="background:rgba(0,240,255,0.2); color:var(--cyan-glow);" data-i18n="flow_badge">System 1 &amp; System 2</span>
           </div>
           <div class="card-body">
-            <div style="margin-bottom:1rem; padding:0.75rem; background:rgba(0,240,255,0.05); border:1px solid var(--border-neon); border-radius:8px; font-size:0.8rem;">
+            <div style="margin-bottom:1rem; padding:0.75rem; background:rgba(0,240,255,0.05); border:1px solid var(--border-neon); border-radius:8px; font-size:0.8rem;" data-i18n="flow_explainer">
               Ogni passaggio analizza la richiesta: <strong>Agente chiamato</strong>, <strong>Tool richiesto</strong>, <strong>Widget proiettato</strong> e <strong>Decisione ternaria</strong> (+1, 0, -1).
             </div>
             <div id="cognitive-flow-nodes-list">
-              <!-- Nodi cognitivi arricchiti -->
             </div>
           </div>
         </div>
 
-        <!-- Visualizzatore Diagramma Mermaid & Logica Ternaria -->
         <div class="tactical-card">
           <div class="card-header">
-            <span class="card-title">📊 Diagramma di Flusso Strutturato</span>
+            <span class="card-title" data-i18n="diagram_title">📊 Diagramma di Flusso Strutturato</span>
           </div>
           <div class="card-body">
             <div id="mermaid-graph-container" style="background:rgba(5,8,17,0.7); border-radius:8px; padding:1rem; min-height:350px; overflow-x:auto;">
@@ -222,76 +208,66 @@
       </div>
     </section>
 
-    <!-- ================================================================= -->
-    <!-- PLANCIA 3: AGENT VAULT & FORGE (INCLUSO WINDOWS SPECIALIST)       -->
-    <!-- ================================================================= -->
     <section id="deck-agent-vault" class="plancia-section">
       <div class="grid-3col">
-        <!-- Colonna 1: Selettore Agente -->
         <div class="tactical-card">
           <div class="card-header">
-            <span class="card-title">🤖 Catalogo Agenti</span>
+            <span class="card-title" data-i18n="vault_catalog_title">🤖 Catalogo Agenti</span>
           </div>
           <div class="card-body" style="padding:0.75rem;">
             <div id="agent-vault-selector-list" style="display:flex; flex-direction:column; gap:0.5rem;">
-              <!-- Lista agenti -->
             </div>
           </div>
         </div>
 
-        <!-- Colonna 2: Editor Istruzioni & Knowledge Vault -->
         <div class="tactical-card" style="grid-column: 2;">
           <div class="card-header">
             <div>
               <span class="card-title" id="vault-selected-agent-name">Windows Power &amp; System Specialist</span>
               <span style="font-size:0.75rem; font-family:var(--font-mono); color:var(--text-muted);" id="vault-selected-agent-path">Directory protetta: data/agents/windows_system_agent/</span>
             </div>
-            <button id="btn-save-agent-instructions" class="tactical-btn">Salva Modifiche</button>
+            <button id="btn-save-agent-instructions" class="tactical-btn" data-i18n="btn_save_instructions">Salva Modifiche</button>
           </div>
           <div class="card-body" style="display:flex; flex-direction:column; gap:1rem;">
             <div>
-              <label style="font-size:0.8rem; font-weight:600; color:var(--cyan-glow); display:block; margin-bottom:0.4rem;">
+              <label style="font-size:0.8rem; font-weight:600; color:var(--cyan-glow); display:block; margin-bottom:0.4rem;" data-i18n="vault_instructions_label">
                 Istruzioni Operative &amp; System Prompt (instructions.md):
               </label>
               <textarea id="vault-agent-instructions" class="tactical-input" rows="8" style="font-family:var(--font-mono); font-size:0.82rem; line-height:1.5;"></textarea>
             </div>
 
-            <!-- Archivio Documenti di Conoscenza (knowledge/) -->
             <div style="border-top:1px solid rgba(255,255,255,0.08); padding-top:1rem;">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
-                <span style="font-size:0.85rem; font-weight:600; color:#34d399;">📚 File di Conoscenza &amp; Regole (knowledge/):</span>
-                <button id="btn-add-knowledge-modal" class="tactical-btn secondary" style="padding:0.25rem 0.5rem; font-size:0.75rem;">+ Aggiungi Regola</button>
+                <span style="font-size:0.85rem; font-weight:600; color:#34d399;" data-i18n="vault_knowledge_title">📚 File di Conoscenza &amp; Regole (knowledge/):</span>
+                <button id="btn-add-knowledge-modal" class="tactical-btn secondary" style="padding:0.25rem 0.5rem; font-size:0.75rem;" data-i18n="vault_add_rule_btn">+ Aggiungi Regola</button>
               </div>
               <div id="vault-knowledge-docs-list" style="display:flex; flex-direction:column; gap:0.4rem;">
-                <!-- Lista documenti -->
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Colonna 3: Parametri & Tool Custom (tools/) -->
         <div class="tactical-card">
           <div class="card-header">
-            <span class="card-title">⚙️ Parametri &amp; Tool Custom</span>
+            <span class="card-title" data-i18n="vault_params_title">⚙️ Parametri &amp; Tool Custom</span>
           </div>
           <div class="card-body" style="display:flex; flex-direction:column; gap:1rem;">
             <div>
-              <label style="font-size:0.78rem; color:var(--text-muted);">Modello LLM Preferito:</label>
+              <label style="font-size:0.78rem; color:var(--text-muted);" data-i18n="vault_model_label">Modello LLM Preferito:</label>
               <input type="text" id="vault-agent-model" class="tactical-input" value="default">
             </div>
             <div>
-              <label style="font-size:0.78rem; color:var(--text-muted);">Temperatura:</label>
+              <label style="font-size:0.78rem; color:var(--text-muted);" data-i18n="vault_temp_label">Temperatura:</label>
               <input type="number" id="vault-agent-temp" class="tactical-input" min="0" max="1" step="0.05" value="0.7">
             </div>
             <div>
-              <label style="font-size:0.78rem; color:var(--text-muted);">Widget Primario:</label>
+              <label style="font-size:0.78rem; color:var(--text-muted);" data-i18n="vault_widget_label">Widget Primario:</label>
               <input type="text" id="vault-agent-widget" class="tactical-input" value="windows_desktop_control_widget">
             </div>
 
             <div style="border-top:1px solid rgba(255,255,255,0.08); padding-top:0.75rem;">
-              <span style="font-size:0.8rem; font-weight:600; color:var(--purple-glow);">🔧 Script Tool Custom (tools/):</span>
+              <span style="font-size:0.8rem; font-weight:600; color:var(--purple-glow);" data-i18n="vault_tools_title">🔧 Script Tool Custom (tools/):</span>
               <div id="vault-custom-tools-list" style="margin-top:0.4rem; display:flex; flex-direction:column; gap:0.4rem;">
-                <!-- Tool personalizzati -->
               </div>
             </div>
           </div>
@@ -307,55 +283,47 @@
         <!-- Selettore Profili Casa vs Azienda -->
         <div class="tactical-card">
           <div class="card-header">
-            <span class="card-title">👥 Utenti &amp; Personale Registrato</span>
+            <span class="card-title" data-i18n="rbac_users_title">👥 Utenti &amp; Personale Registrato</span>
             <div style="display:flex; gap:0.5rem;">
-              <button class="tactical-btn secondary rbac-filter-btn active" data-filter="all">Tutti</button>
-              <button class="tactical-btn secondary rbac-filter-btn" data-filter="home">Casa / Staff</button>
-              <button class="tactical-btn secondary rbac-filter-btn" data-filter="enterprise">Azienda</button>
+              <button class="tactical-btn secondary rbac-filter-btn active" data-filter="all" data-i18n="rbac_filter_all">Tutti</button>
+              <button class="tactical-btn secondary rbac-filter-btn" data-filter="home" data-i18n="rbac_filter_home">Casa / Staff</button>
+              <button class="tactical-btn secondary rbac-filter-btn" data-filter="enterprise" data-i18n="rbac_filter_enterprise">Azienda</button>
             </div>
           </div>
           <div class="card-body">
             <div id="rbac-users-list" style="display:flex; flex-direction:column; gap:0.75rem;">
-              <!-- Utenti visualizzati con ruoli (Autista, Segretaria, Maggiordomo, ecc.) -->
             </div>
           </div>
         </div>
 
-        <!-- Matrice dei Permessi Granulare -->
         <div class="tactical-card">
           <div class="card-header">
-            <span class="card-title">🛡️ Matrice dei Permessi Granulare</span>
+            <span class="card-title" data-i18n="rbac_matrix_title">🛡️ Matrice dei Permessi Granulare</span>
           </div>
           <div class="card-body">
-            <div style="margin-bottom:1rem; font-size:0.82rem; color:var(--text-muted);">
+            <div style="margin-bottom:1rem; font-size:0.82rem; color:var(--text-muted);" data-i18n="rbac_matrix_explainer">
               Ogni sezione, telecamera, comando o strumento è vincolato all'autorizzazione del profilo:
             </div>
             <div id="rbac-matrix-display" style="display:flex; flex-direction:column; gap:0.5rem; max-height:480px; overflow-y:auto;">
-              <!-- Matrice ruoli e permessi -->
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ================================================================= -->
-    <!-- PLANCIA 5: PROXIMITY HUD & WEBCAM RADAR                           -->
-    <!-- ================================================================= -->
     <section id="deck-proximity-hud" class="plancia-section">
-      <!-- LIVE VISION CONTROLLER (MANI & OCCHI) -->
       <div class="grid-2col" style="margin-bottom:1.5rem;">
         <div class="tactical-card" style="grid-column: 1 / -1;">
           <div class="card-header">
             <div style="display:flex; align-items:center; gap:0.75rem;">
-              <span class="card-title">🎯 Controllo Visione: Mani &amp; Occhi (Live Gesture &amp; Gaze Hub)</span>
-              <span id="vision-camera-status-badge" class="badge-tag" style="background:rgba(0,240,255,0.15); color:var(--cyan-glow);">Disattivo</span>
+              <span class="card-title" data-i18n="vision_control_title">🎯 Controllo Visione: Mani &amp; Occhi (Live Gesture &amp; Gaze Hub)</span>
+              <span id="vision-camera-status-badge" class="badge-tag" style="background:rgba(0,240,255,0.15); color:var(--cyan-glow);" data-i18n="vision_badge_inactive">Disattivo</span>
             </div>
-            <button id="btn-toggle-vision-camera" class="tactical-btn" style="background:linear-gradient(90deg, #10b981, #00f0ff); color:#050811; font-weight:700;">
+            <button id="btn-toggle-vision-camera" class="tactical-btn" style="background:linear-gradient(90deg, #10b981, #00f0ff); color:#050811; font-weight:700;" data-i18n="btn_toggle_vision">
               📹 Avvia Telecamera Visione (Mani &amp; Occhi)
             </button>
           </div>
           <div class="card-body" style="display:flex; flex-wrap:wrap; gap:1.5rem; align-items:flex-start;">
-            <!-- Viewport Canvas & Video -->
             <div style="flex:1 1 500px; max-width:640px; position:relative; background:#070c18; border-radius:12px; overflow:hidden; border:1px solid rgba(0,240,255,0.3); box-shadow:0 0 25px rgba(0,240,255,0.15);">
               <video id="vision-webcam-video" playsinline muted autoplay style="display:none;"></video>
               <canvas id="vision-webcam-canvas" width="640" height="360" style="width:100%; height:auto; display:block; aspect-ratio:16/9;"></canvas>
@@ -364,21 +332,19 @@
               </div>
             </div>
 
-            <!-- Indicatori e Configurazione -->
             <div style="flex:1 1 340px; display:flex; flex-direction:column; gap:1.2rem;">
-              <!-- Telemetria Rapida Mani & Occhi -->
               <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:1rem; display:flex; flex-direction:column; gap:0.8rem;">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                  <span style="font-size:0.85rem; color:var(--text-muted);">🖐️ Gesto Mani Rilevato:</span>
+                  <span style="font-size:0.85rem; color:var(--text-muted);" data-i18n="gesture_label">🖐️ Gesto Mani Rilevato:</span>
                   <strong id="hud-gesture-current-label" style="font-size:1.1rem; color:#00f0ff; font-family:var(--font-mono);">NESSUNO</strong>
                 </div>
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                  <span style="font-size:0.85rem; color:var(--text-muted);">👁️ Sguardo &amp; Attenzione:</span>
+                  <span style="font-size:0.85rem; color:var(--text-muted);" data-i18n="gaze_label">👁️ Sguardo &amp; Attenzione:</span>
                   <strong id="hud-gaze-state-label" style="font-size:1.0rem; color:#34d399; font-family:var(--font-mono);">🎯 Schermo (Focalizzato)</strong>
                 </div>
                 <div>
                   <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:4px;">
-                    <span style="color:var(--text-muted);">Indice Attenzione Visiva:</span>
+                    <span style="color:var(--text-muted);" data-i18n="attention_index_label">Indice Attenzione Visiva:</span>
                     <span id="hud-attention-percentage-val" style="color:var(--cyan-glow); font-family:var(--font-mono);">100%</span>
                   </div>
                   <div class="progress-container" style="height:8px;">
@@ -387,31 +353,29 @@
                 </div>
               </div>
 
-              <!-- Switch e Opzioni -->
               <div style="display:flex; flex-direction:column; gap:0.6rem; font-size:0.85rem;">
                 <label style="display:flex; align-items:center; gap:0.6rem; cursor:pointer;">
                   <input type="checkbox" id="chk-enable-hands-gesture" checked style="accent-color:var(--cyan-glow);">
-                  <span>Abilita Controllo Navigazione con le Mani (Swipe, Pugno, Palmo)</span>
+                  <span data-i18n="chk_hands_gesture">Abilita Controllo Navigazione con le Mani (Swipe, Pugno, Palmo)</span>
                 </label>
                 <label style="display:flex; align-items:center; gap:0.6rem; cursor:pointer;">
                   <input type="checkbox" id="chk-enable-eye-gaze" checked style="accent-color:var(--cyan-glow);">
-                  <span>Abilita Sguardo Attivo (Wake-on-Gaze) &amp; Auto-Lock per Distrazione (8s)</span>
+                  <span data-i18n="chk_eye_gaze">Abilita Sguardo Attivo (Wake-on-Gaze) &amp; Auto-Lock per Distrazione (8s)</span>
                 </label>
                 <label style="display:flex; align-items:center; gap:0.6rem; cursor:pointer;">
                   <input type="checkbox" id="chk-audio-feedback" checked style="accent-color:var(--cyan-glow);">
-                  <span>Feedback Audio Cibernetico al Riconoscimento Gesti</span>
+                  <span data-i18n="chk_audio_feedback">Feedback Audio Cibernetico al Riconoscimento Gesti</span>
                 </label>
                 <div style="margin-top:0.4rem;">
                   <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                    <span style="color:var(--text-muted);">Sensibilità Riconoscimento:</span>
+                    <span style="color:var(--text-muted);" data-i18n="sensitivity_label">Sensibilità Riconoscimento:</span>
                   </div>
                   <input type="range" id="range-gesture-sensitivity" min="0.3" max="0.95" step="0.05" value="0.75" style="width:100%; accent-color:var(--cyan-glow);">
                 </div>
               </div>
 
-              <!-- Banco Test Rapido Gesti (Simulatore & Trigger) -->
               <div style="background:rgba(0,240,255,0.03); border:1px solid rgba(0,240,255,0.15); border-radius:8px; padding:0.8rem;">
-                <span style="font-size:0.8rem; font-family:var(--font-mono); color:var(--cyan-glow); display:block; margin-bottom:0.5rem;">⚡ BANCO TEST RAPIDO GESTI:</span>
+                <span style="font-size:0.8rem; font-family:var(--font-mono); color:var(--cyan-glow); display:block; margin-bottom:0.5rem;" data-i18n="test_bench_title">⚡ BANCO TEST RAPIDO GESTI:</span>
                 <div style="display:flex; flex-wrap:wrap; gap:0.5rem;">
                   <button id="btn-test-gesture-swipe-l" class="tactical-btn" style="padding:0.35rem 0.65rem; font-size:0.8rem;" title="Cambia alla plancia successiva">👉 Swipe Destra</button>
                   <button id="btn-test-gesture-swipe-r" class="tactical-btn" style="padding:0.35rem 0.65rem; font-size:0.8rem;" title="Cambia alla plancia precedente">👈 Swipe Sinistra</button>
@@ -429,8 +393,8 @@
       <div class="grid-2col">
         <div class="tactical-card">
           <div class="card-header">
-            <span class="card-title">👁️ Radar di Prossimità &amp; Presenza Biometrica</span>
-            <span id="hud-biometric-badge" class="badge-tag" style="background:rgba(0,240,255,0.2); color:var(--cyan-glow);">Attivo</span>
+            <span class="card-title" data-i18n="radar_title">👁️ Radar di Prossimità &amp; Presenza Biometrica</span>
+            <span id="hud-biometric-badge" class="badge-tag" style="background:rgba(0,240,255,0.2); color:var(--cyan-glow);" data-i18n="radar_badge_active">Attivo</span>
           </div>
           <div class="card-body" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1.5rem; min-height:340px;">
             <div style="width:180px; height:180px; border-radius:50%; border:2px dashed var(--cyan-glow); display:flex; align-items:center; justify-content:center; position:relative; box-shadow:0 0 30px rgba(0,240,255,0.2);">
@@ -443,19 +407,18 @@
               <p id="hud-detection-details" style="font-family:var(--font-mono); font-size:0.8rem; color:#34d399; margin-top:4px;">Distanza: 0.8m | Confidenza Biometrica: 98%</p>
             </div>
             <div style="display:flex; gap:1rem;">
-              <button id="btn-toggle-presence-near" class="tactical-btn">Simula Avvicinamento (Sblocca)</button>
-              <button id="btn-toggle-presence-away" class="tactical-btn secondary">Simula Allontanamento (Proteggi)</button>
+              <button id="btn-toggle-presence-near" class="tactical-btn" data-i18n="btn_sim_near">Simula Avvicinamento (Sblocca)</button>
+              <button id="btn-toggle-presence-away" class="tactical-btn secondary" data-i18n="btn_sim_away">Simula Allontanamento (Proteggi)</button>
             </div>
           </div>
         </div>
 
         <div class="tactical-card">
           <div class="card-header">
-            <span class="card-title">📋 Progetti Sbloccati con Visione &amp; Presenza</span>
+            <span class="card-title" data-i18n="unlocked_projects_title">📋 Progetti Sbloccati con Visione &amp; Presenza</span>
           </div>
           <div class="card-body">
             <div id="hud-projects-projected-list" style="display:flex; flex-direction:column; gap:0.75rem;">
-              <!-- Progetti sbloccati -->
             </div>
           </div>
         </div>
@@ -470,31 +433,29 @@
         <!-- CAD Viewport & BOM -->
         <div class="tactical-card">
           <div class="card-header">
-            <span class="card-title">📐 Disegni AutoCAD &amp; File DXF Generati</span>
-            <button id="btn-test-gen-dxf" class="tactical-btn" style="padding:0.3rem 0.6rem; font-size:0.8rem;">+ Genera DXF Test</button>
+            <span class="card-title" data-i18n="cad_title">📐 Disegni AutoCAD &amp; File DXF Generati</span>
+            <button id="btn-test-gen-dxf" class="tactical-btn" style="padding:0.3rem 0.6rem; font-size:0.8rem;" data-i18n="btn_test_dxf">+ Genera DXF Test</button>
           </div>
           <div class="card-body">
             <div id="cad-files-list" style="display:flex; flex-direction:column; gap:0.6rem;">
-              <!-- File DXF sul disco -->
             </div>
           </div>
         </div>
 
-        <!-- Social Media Studio & Immagini -->
         <div class="tactical-card">
           <div class="card-header">
-            <span class="card-title">📱 Instagram &amp; Media Studio (Sovranità Linguistica)</span>
+            <span class="card-title" data-i18n="social_title">📱 Instagram &amp; Media Studio (Sovranità Linguistica)</span>
           </div>
           <div class="card-body" style="display:flex; flex-direction:column; gap:1rem;">
             <div>
-              <label style="font-size:0.8rem; color:var(--text-muted);">Argomento / Tema Post o Immagine:</label>
+              <label style="font-size:0.8rem; color:var(--text-muted);" data-i18n="social_topic_label">Argomento / Tema Post o Immagine:</label>
               <input type="text" id="social-topic-input" class="tactical-input" value="Lancio Nuovo Pezzo Meccanico in Ergal">
             </div>
             <div style="display:flex; gap:0.5rem;">
-              <button id="btn-gen-instagram-copy" class="tactical-btn">Genera Copy Instagram</button>
-              <button id="btn-gen-image-with-text" class="tactical-btn secondary">Genera Immagine con Scritta</button>
+              <button id="btn-gen-instagram-copy" class="tactical-btn" data-i18n="btn_gen_instagram">Genera Copy Instagram</button>
+              <button id="btn-gen-image-with-text" class="tactical-btn secondary" data-i18n="btn_gen_image">Genera Immagine con Scritta</button>
             </div>
-            <div id="social-output-preview" style="background:rgba(5,8,17,0.8); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:1rem; font-family:var(--font-mono); font-size:0.82rem; white-space:pre-wrap; min-height:160px;">
+            <div id="social-output-preview" style="background:rgba(5,8,17,0.8); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:1rem; font-family:var(--font-mono); font-size:0.82rem; white-space:pre-wrap; min-height:160px;" data-i18n="social_preview_placeholder">
               Anteprima dei deliverable generati in lingua di default...
             </div>
           </div>
@@ -502,51 +463,48 @@
       </div>
     </section>
 
-    <!-- ================================================================= -->
-    <!-- PLANCIA 7: TELEMETRIA & RUST KERNEL                               -->
-    <!-- ================================================================= -->
     <section id="deck-telemetry" class="plancia-section">
       <div class="grid-3col">
         <div class="tactical-card">
-          <div class="card-header"><span class="card-title">⚡ Rust Bus &amp; LangID</span></div>
+          <div class="card-header"><span class="card-title" data-i18n="telem_rust_title">⚡ Rust Bus &amp; LangID</span></div>
           <div class="card-body" style="display:flex; flex-direction:column; gap:0.75rem;">
             <div style="padding:0.75rem; background:rgba(0,240,255,0.05); border-radius:8px;">
-              <span style="font-size:0.75rem; color:var(--text-muted);">Latenza Topic Router (bus-core):</span>
+              <span style="font-size:0.75rem; color:var(--text-muted);" data-i18n="telem_router_latency">Latenza Topic Router (bus-core):</span>
               <h2 style="color:var(--cyan-glow); font-family:var(--font-mono);">0.08 ms</h2>
             </div>
             <div style="padding:0.75rem; background:rgba(16,185,129,0.05); border-radius:8px;">
-              <span style="font-size:0.75rem; color:var(--text-muted);">Rilevamento Lingua (langid):</span>
+              <span style="font-size:0.75rem; color:var(--text-muted);" data-i18n="telem_lang_detection">Rilevamento Lingua (langid):</span>
               <h2 style="color:#34d399; font-family:var(--font-mono);">0.04 ms (0 Token LLM)</h2>
             </div>
           </div>
         </div>
 
         <div class="tactical-card">
-          <div class="card-header"><span class="card-title">🧠 Decisioni a Logica Ternaria</span></div>
+          <div class="card-header"><span class="card-title" data-i18n="telem_ternary_title">🧠 Decisioni a Logica Ternaria</span></div>
           <div class="card-body" style="display:flex; flex-direction:column; gap:0.75rem;">
             <div style="padding:0.75rem; background:rgba(139,92,246,0.05); border-radius:8px;">
-              <span style="font-size:0.75rem; color:var(--text-muted);">Fast-Pass (+1) Senza Chiamate:</span>
+              <span style="font-size:0.75rem; color:var(--text-muted);" data-i18n="telem_fast_pass">Fast-Pass (+1) Senza Chiamate:</span>
               <h2 style="color:var(--purple-glow); font-family:var(--font-mono);">78% delle query</h2>
             </div>
             <div style="padding:0.75rem; background:rgba(245,158,11,0.05); border-radius:8px;">
-              <span style="font-size:0.75rem; color:var(--text-muted);">Stalli Anti-Loop Neutralizzati (-1):</span>
+              <span style="font-size:0.75rem; color:var(--text-muted);" data-i18n="telem_anti_loop">Stalli Anti-Loop Neutralizzati (-1):</span>
               <h2 id="metric-anti-loop-interventions" style="color:var(--amber-glow); font-family:var(--font-mono);">12 Interventi</h2>
             </div>
           </div>
         </div>
 
         <div class="tactical-card">
-          <div class="card-header"><span class="card-title">🖥️ Risorse Sistema Host</span></div>
+          <div class="card-header"><span class="card-title" data-i18n="telem_host_title">🖥️ Risorse Sistema Host</span></div>
           <div class="card-body" style="display:flex; flex-direction:column; gap:0.75rem;">
             <div>
               <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:4px;">
-                <span>CPU Load:</span> <span id="telem-cpu-val" style="color:var(--cyan-glow);">14%</span>
+                <span data-i18n="telem_cpu_label">CPU Load:</span> <span id="telem-cpu-val" style="color:var(--cyan-glow);">14%</span>
               </div>
               <div class="progress-container"><div id="telem-cpu-bar" class="progress-bar-fill" style="width:14%;"></div></div>
             </div>
             <div>
               <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:4px;">
-                <span>RAM Usage:</span> <span id="telem-ram-val" style="color:#34d399;">38%</span>
+                <span data-i18n="telem_ram_label">RAM Usage:</span> <span id="telem-ram-val" style="color:#34d399;">38%</span>
               </div>
               <div class="progress-container"><div id="telem-ram-bar" class="progress-bar-fill" style="width:38%; background:linear-gradient(90deg, #10b981, #00f0ff);"></div></div>
             </div>
@@ -563,82 +521,77 @@
         <!-- Colonna 1: Selettore Persona Casa & Chatbot Esperto -->
         <div class="tactical-card">
           <div class="card-header">
-            <span class="card-title">👥 Persona &amp; Chatbot</span>
+            <span class="card-title" data-i18n="persona_title">👥 Persona &amp; Chatbot</span>
           </div>
           <div class="card-body" style="display:flex; flex-direction:column; gap:1rem;">
             <div>
-              <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px;">PERSONA DELLA CASA:</label>
+              <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px;" data-i18n="persona_label">PERSONA DELLA CASA:</label>
               <select id="chatbot-user-selector" style="width:100%; background:rgba(0,0,0,0.5); border:1px solid var(--border-glow); color:var(--cyan-glow); padding:0.5rem; border-radius:6px; font-family:var(--font-mono);">
-                <option value="user_primary">👑 Utente Primario (Admin / Owner)</option>
-                <option value="user_family">🏡 Membro Famiglia (Family)</option>
-                <option value="user_guest">🌟 Ospite / Visitatore (Guest)</option>
-                <option value="user_staff">💼 Personale di Servizio (Staff)</option>
+                <option value="user_primary" data-i18n="user_role_admin">👑 Utente Primario (Admin / Owner)</option>
+                <option value="user_family" data-i18n="user_role_family">🏡 Membro Famiglia (Family)</option>
+                <option value="user_guest" data-i18n="user_role_guest">🌟 Ospite / Visitatore (Guest)</option>
+                <option value="user_staff" data-i18n="user_role_staff">💼 Personale di Servizio (Staff)</option>
               </select>
             </div>
 
             <div>
-              <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:6px;">SELEZIONA AGENTE CHATBOT:</label>
+              <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:6px;" data-i18n="select_bot_label">SELEZIONA AGENTE CHATBOT:</label>
               <div id="chatbot-agents-list" style="display:flex; flex-direction:column; gap:0.5rem; max-height:420px; overflow-y:auto;">
-                <!-- Popolato dinamicamente da app.js -->
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Colonna 2: Personalizzazione della Persona Selezionata (Non Sovrascrivibile) -->
         <div class="tactical-card">
           <div class="card-header">
             <div>
-              <span class="card-title">⚙️ Personalizzazione per <span id="chatbot-active-user-title" style="color:var(--cyan-glow);">Utente Primario</span></span>
-              <p style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">Isolato in /data/user_agent_configs/ — mai sovrascritto</p>
+              <span class="card-title"><span data-i18n="customization_title">⚙️ Personalizzazione per</span> <span id="chatbot-active-user-title" style="color:var(--cyan-glow);">Utente Primario</span></span>
+              <p style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;" data-i18n="customization_subtitle">Isolato in /data/user_agent_configs/ — mai sovrascritto</p>
             </div>
-            <button id="btn-save-chatbot-persona" class="tactical-btn" style="padding:0.35rem 0.75rem; font-size:0.8rem;">💾 Salva</button>
+            <button id="btn-save-chatbot-persona" class="tactical-btn" style="padding:0.35rem 0.75rem; font-size:0.8rem;" data-i18n="btn_save_persona">💾 Salva</button>
           </div>
           <div class="card-body" style="display:flex; flex-direction:column; gap:0.9rem; max-height:560px; overflow-y:auto;">
             <div>
-              <label style="font-size:0.75rem; color:var(--text-muted);">SOPRANNOME DELL'AGENTE PER QUESTO UTENTE:</label>
-              <input type="text" id="chatbot-input-nickname" placeholder="Es. Jarvis, Alfred, MyCoder..." style="width:100%; background:rgba(0,0,0,0.4); border:1px solid var(--border-glow); color:#fff; padding:0.4rem; border-radius:6px; margin-top:4px;">
+              <label style="font-size:0.75rem; color:var(--text-muted);" data-i18n="nickname_label">SOPRANNOME DELL'AGENTE PER QUESTO UTENTE:</label>
+              <input type="text" id="chatbot-input-nickname" data-i18n-placeholder="nickname_placeholder" placeholder="Es. Jarvis, Alfred, MyCoder..." style="width:100%; background:rgba(0,0,0,0.4); border:1px solid var(--border-glow); color:#fff; padding:0.4rem; border-radius:6px; margin-top:4px;">
             </div>
 
             <div>
-              <label style="font-size:0.75rem; color:var(--text-muted);">TONO E STILE DI CONVERSAZIONE:</label>
+              <label style="font-size:0.75rem; color:var(--text-muted);" data-i18n="tone_label">TONO E STILE DI CONVERSAZIONE:</label>
               <select id="chatbot-select-tone" style="width:100%; background:rgba(0,0,0,0.4); border:1px solid var(--border-glow); color:var(--cyan-glow); padding:0.4rem; border-radius:6px; margin-top:4px; font-family:var(--font-mono);">
-                <option value="friendly">😊 Amichevole e Collaborativo</option>
-                <option value="formal">👔 Formale ed Istituzionale</option>
-                <option value="concise">⚡ Ultra-Sintetico e Diretto</option>
-                <option value="technical">🛠️ Rigoroso e Tecnico</option>
-                <option value="kid_safe">🧸 A Misura di Bambino (Educativo)</option>
-                <option value="poetic">🎭 Poetico ed Espressivo</option>
+                <option value="friendly" data-i18n="tone_friendly">😊 Amichevole e Collaborativo</option>
+                <option value="formal" data-i18n="tone_formal">👔 Formale ed Istituzionale</option>
+                <option value="concise" data-i18n="tone_concise">⚡ Ultra-Sintetico e Diretto</option>
+                <option value="technical" data-i18n="tone_technical">🛠️ Rigoroso e Tecnico</option>
+                <option value="kid_safe" data-i18n="tone_kids">🧸 A Misura di Bambino (Educativo)</option>
+                <option value="poetic" data-i18n="tone_poetic">🎭 Poetico ed Espressivo</option>
               </select>
             </div>
 
             <div>
-              <label style="font-size:0.75rem; color:var(--text-muted);">ISTRUZIONI &amp; PREFERENZE PRIVATE DI QUESTA PERSONA:</label>
-              <textarea id="chatbot-user-prompt" rows="3" placeholder="Es. Rispondimi solo in elenchi puntati; non fissare appuntamenti prima delle 10:00..." style="width:100%; background:rgba(0,0,0,0.4); border:1px solid var(--border-glow); color:#fff; padding:0.4rem; border-radius:6px; margin-top:4px; font-family:var(--font-mono); font-size:0.8rem;"></textarea>
+              <label style="font-size:0.75rem; color:var(--text-muted);" data-i18n="prompt_label">ISTRUZIONI &amp; PREFERENZE PRIVATE DI QUESTA PERSONA:</label>
+              <textarea id="chatbot-user-prompt" rows="3" data-i18n-placeholder="prompt_placeholder" placeholder="Es. Rispondimi solo in elenchi puntati; non fissare appuntamenti prima delle 10:00..." style="width:100%; background:rgba(0,0,0,0.4); border:1px solid var(--border-glow); color:#fff; padding:0.4rem; border-radius:6px; margin-top:4px; font-family:var(--font-mono); font-size:0.8rem;"></textarea>
             </div>
 
             <div>
-              <label style="font-size:0.75rem; color:var(--text-muted);">NOTE PERSONALI / MEMORIA CONDIVISA:</label>
-              <textarea id="chatbot-user-knowledge" rows="2" placeholder="Es. Le mie passioni, progetti personali, allergeni o abitudini di casa..." style="width:100%; background:rgba(0,0,0,0.4); border:1px solid var(--border-glow); color:#fff; padding:0.4rem; border-radius:6px; margin-top:4px; font-family:var(--font-mono); font-size:0.8rem;"></textarea>
+              <label style="font-size:0.75rem; color:var(--text-muted);" data-i18n="notes_label">NOTE PERSONALI / MEMORIA CONDIVISA:</label>
+              <textarea id="chatbot-user-knowledge" rows="2" data-i18n-placeholder="notes_placeholder" placeholder="Es. Le mie passioni, progetti personali, allergeni o abitudini di casa..." style="width:100%; background:rgba(0,0,0,0.4); border:1px solid var(--border-glow); color:#fff; padding:0.4rem; border-radius:6px; margin-top:4px; font-family:var(--font-mono); font-size:0.8rem;"></textarea>
             </div>
 
             <div>
-              <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px;">WIDGET INTERATTIVI ATTIVI PER QUESTA PERSONA:</label>
+              <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px;" data-i18n="active_widgets_label">WIDGET INTERATTIVI ATTIVI PER QUESTA PERSONA:</label>
               <div id="chatbot-widgets-checkboxes" style="display:grid; grid-template-columns:1fr 1fr; gap:0.4rem;">
-                <!-- Popolato dinamicamente da app.js -->
               </div>
             </div>
 
             <div>
-              <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px;">TOOL ABILITATI PER QUESTA PERSONA:</label>
+              <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px;" data-i18n="enabled_tools_label">TOOL ABILITATI PER QUESTA PERSONA:</label>
               <div id="chatbot-tools-checkboxes" style="display:flex; flex-direction:column; gap:0.3rem;">
-                <!-- Popolato dinamicamente da app.js -->
               </div>
             </div>
 
-            <!-- Box di Anteprima Reattiva Live in Tempo Reale -->
             <div style="padding:0.75rem; background:rgba(0,240,255,0.03); border:1px dashed var(--border-glow); border-radius:8px;">
-              <span style="font-size:0.7rem; color:var(--cyan-glow); font-family:var(--font-mono); display:block; margin-bottom:4px;">🔮 ANTEPRIMA TONO DI RISPOSTA:</span>
+              <span style="font-size:0.7rem; color:var(--cyan-glow); font-family:var(--font-mono); display:block; margin-bottom:4px;" data-i18n="preview_tone_label">🔮 ANTEPRIMA TONO DI RISPOSTA:</span>
               <p id="chatbot-tone-live-preview" style="font-size:0.78rem; color:#fff; font-style:italic;">
                 "Ciao! Sono il tuo assistente. Come posso aiutarti oggi?"
               </p>
@@ -646,30 +599,24 @@
           </div>
         </div>
 
-        <!-- Colonna 3: Console Chatbot Interattiva (Live Interactive Console) -->
         <div class="tactical-card" style="display:flex; flex-direction:column;">
           <div class="card-header">
             <div>
-              <span class="card-title">💬 Canale Chat: <span id="chatbot-active-agent-name" style="color:var(--cyan-glow);">-</span></span>
-              <span id="chatbot-channel-badge" class="badge-tag" style="background:rgba(0,240,255,0.15); color:var(--cyan-glow); margin-left:6px;">Multi-Channel Bot Hub</span>
+              <span class="card-title"><span data-i18n="chat_channel_title">💬 Canale Chat:</span> <span id="chatbot-active-agent-name" style="color:var(--cyan-glow);">-</span></span>
+              <span id="chatbot-channel-badge" class="badge-tag" style="background:rgba(0,240,255,0.15); color:var(--cyan-glow); margin-left:6px;" data-i18n="chat_channel_badge">Multi-Channel Bot Hub</span>
             </div>
-            <button id="btn-clear-chat-history" class="tactical-btn secondary" style="padding:0.25rem 0.5rem; font-size:0.75rem;">Pulisci</button>
+            <button id="btn-clear-chat-history" class="tactical-btn secondary" style="padding:0.25rem 0.5rem; font-size:0.75rem;" data-i18n="btn_clear_chat">Pulisci</button>
           </div>
           <div class="card-body" style="flex:1; display:flex; flex-direction:column; justify-content:space-between; padding:0.75rem; min-height:480px;">
-            <!-- Box messaggi -->
             <div id="chatbot-messages-stream" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:0.6rem; padding-right:4px; margin-bottom:0.75rem; max-height:360px;">
-              <!-- Popolato dinamicamente -->
             </div>
 
-            <!-- Box Widget Interattivi Renderizzati -->
             <div id="chatbot-rendered-widgets" style="display:flex; flex-direction:column; gap:0.5rem; margin-bottom:0.75rem;">
-              <!-- Widget interattivi (CAD viewer, switch, anteprima social) -->
             </div>
 
-            <!-- Input bar conversazionale -->
             <div style="display:flex; gap:0.5rem; align-items:center;">
-              <input type="text" id="chatbot-message-input" placeholder="Parla con il chatbot o richiedi un'azione..." style="flex:1; background:rgba(0,0,0,0.5); border:1px solid var(--border-glow); color:#fff; padding:0.6rem 0.8rem; border-radius:6px; font-family:var(--font-sans); font-size:0.85rem;">
-              <button id="btn-chatbot-send" class="tactical-btn" style="padding:0.6rem 1.2rem;">Invia</button>
+              <input type="text" id="chatbot-message-input" data-i18n-placeholder="chat_input_placeholder" placeholder="Parla con il chatbot o richiedi un'azione..." style="flex:1; background:rgba(0,0,0,0.5); border:1px solid var(--border-glow); color:#fff; padding:0.6rem 0.8rem; border-radius:6px; font-family:var(--font-sans); font-size:0.85rem;">
+              <button id="btn-chatbot-send" class="tactical-btn" style="padding:0.6rem 1.2rem;" data-i18n="btn_chat_send">Invia</button>
             </div>
           </div>
         </div>
@@ -1056,16 +1003,15 @@
 
   </main>
 
-  <!-- FLOATING COMMAND BAR IN BASSO (SEMPRE ACCESSIBILE) -->
   <footer class="bottom-command-bar">
     <div style="display:flex; align-items:center; gap:0.5rem;">
       <span style="color:var(--cyan-glow); font-size:1.2rem;">⚡</span>
       <span style="font-family:var(--font-mono); font-size:0.78rem; color:var(--text-muted);">NUXIVA CORE:</span>
     </div>
     <div class="command-input-wrapper">
-      <input type="text" id="global-command-input" placeholder="Impartisci un comando, descrivi un nuovo progetto o interroga gli agenti...">
+      <input type="text" id="global-command-input" data-i18n-placeholder="input_command_placeholder" placeholder="Impartisci un comando, descrivi un nuovo progetto o interroga gli agenti...">
     </div>
-    <button id="btn-global-dispatch" class="tactical-btn">Esegui</button>
+    <button id="btn-global-dispatch" class="tactical-btn" data-i18n="btn_execute">Esegui</button>
   </footer>
 
   <!-- ================================================================= -->
@@ -1078,120 +1024,110 @@
         <div style="display:flex; align-items:center; gap:0.6rem;">
           <span style="font-size:1.5rem; animation:floatBob 2.5s infinite;">🪄</span>
           <div>
-            <h3 style="font-family:var(--font-display); font-size:1.25rem; color:#fff;" id="wizard-title-label">Auto-Configurazione NUXIVA Guidata</h3>
-            <p style="font-size:0.75rem; color:var(--text-muted);">Semplicità estrema a step per tutta la casa &amp; impresa</p>
+            <h3 style="font-family:var(--font-display); font-size:1.25rem; color:#fff;" id="wizard-title-label" data-i18n="admin_wizard_title">Auto-Configurazione NUXIVA Guidata</h3>
+            <p style="font-size:0.75rem; color:var(--text-muted);" data-i18n="admin_wizard_subtitle">Semplicità estrema a step per tutta la casa &amp; impresa</p>
           </div>
         </div>
         <button id="btn-close-wizard" style="background:transparent; border:none; color:var(--text-muted); font-size:1.5rem; cursor:pointer;">&times;</button>
       </div>
 
-      <!-- Barra di Progresso a Step con Animazione Neon -->
       <div class="wizard-stepper-progress">
         <div class="step-node active" id="step-node-1">
           <div class="step-circle">1</div>
-          <span class="step-title-text">Profilo</span>
+          <span class="step-title-text" data-i18n="step1_title">Profilo</span>
         </div>
         <div style="flex:1; height:2px; background:var(--border-glow); margin:0 0.5rem;"></div>
         <div class="step-node" id="step-node-2">
           <div class="step-circle">2</div>
-          <span class="step-title-text">Agenti &amp; Bot</span>
+          <span class="step-title-text" data-i18n="step2_title">Agenti &amp; Bot</span>
         </div>
         <div style="flex:1; height:2px; background:var(--border-glow); margin:0 0.5rem;"></div>
         <div class="step-node" id="step-node-3">
           <div class="step-circle">3</div>
-          <span class="step-title-text">Tool &amp; Widget</span>
+          <span class="step-title-text" data-i18n="step3_title">Tool &amp; Widget</span>
         </div>
         <div style="flex:1; height:2px; background:var(--border-glow); margin:0 0.5rem;"></div>
         <div class="step-node" id="step-node-4">
           <div class="step-circle">4</div>
-          <span class="step-title-text">Attiva</span>
+          <span class="step-title-text" data-i18n="step4_title">Attiva</span>
         </div>
       </div>
 
-      <!-- Viewport Piani a Step -->
       <div class="wizard-body-viewport">
-        <!-- STEP 1: Scelta Profilo o Auto-Config 1-Clic -->
         <div class="wizard-step-pane active" id="wizard-step-1">
-          <!-- Banner Hero 1-Clic per Utenti Meno Esperti -->
           <div class="quick-autoconfig-hero">
             <div>
               <div style="display:flex; align-items:center; gap:0.5rem;">
                 <span style="font-size:1.4rem;">⚡</span>
-                <strong style="color:var(--emerald-glow); font-size:1rem;">Modalità Smart Zero-Fatigue (Consigliata)</strong>
+                <strong style="color:var(--emerald-glow); font-size:1rem;" data-i18n="hero_autoconfig_badge">Modalità Smart Zero-Fatigue (Consigliata)</strong>
               </div>
-              <p style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">
+              <p style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;" data-i18n="hero_autoconfig_desc">
                 Nuxiva analizza automaticamente l'hardware del PC, scansiona i sensori e configura per te tutti gli agenti e widget ottimali.
               </p>
             </div>
-            <button id="btn-wizard-instant-autoconfig" class="tactical-btn" style="background:linear-gradient(90deg, #10b981, #00f0ff); color:#050811; font-weight:700; white-space:nowrap; padding:0.6rem 1.2rem;">
+            <button id="btn-wizard-instant-autoconfig" class="tactical-btn" style="background:linear-gradient(90deg, #10b981, #00f0ff); color:#050811; font-weight:700; white-space:nowrap; padding:0.6rem 1.2rem;" data-i18n="admin_wizard_auto_btn">
               🚀 1-Clic Auto Setup
             </button>
           </div>
 
-          <h4 style="font-size:0.85rem; color:var(--cyan-glow); margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.5px;">Oppure seleziona il tuo ambiente principale:</h4>
+          <h4 style="font-size:0.85rem; color:var(--cyan-glow); margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.5px;" data-i18n="select_env_title">Oppure seleziona il tuo ambiente principale:</h4>
           
           <div class="card-selection-grid">
             <div class="selectable-wizard-card selected" data-env="smart_home">
               <span style="font-size:2rem;">🏡</span>
-              <strong style="color:#fff; font-size:0.95rem;">Casa &amp; Famiglia</strong>
-              <p style="font-size:0.75rem; color:var(--text-muted);">Attiva Maggiordomo, Segretaria, Autista, Smart Home, privacy dei bimbi e widget meteo/musica.</p>
+              <strong style="color:#fff; font-size:0.95rem;" data-i18n="env_home_title">Casa &amp; Famiglia</strong>
+              <p style="font-size:0.75rem; color:var(--text-muted);" data-i18n="env_home_desc">Attiva Maggiordomo, Segretaria, Autista, Smart Home, privacy dei bimbi e widget meteo/musica.</p>
             </div>
             <div class="selectable-wizard-card" data-env="enterprise">
               <span style="font-size:2rem;">🏢</span>
-              <strong style="color:#fff; font-size:0.95rem;">Studio &amp; Azienda</strong>
-              <p style="font-size:0.75rem; color:var(--text-muted);">Attiva Capo Agente, Project Director, Coder Fullstack, DevOps e drafting CAD R12.</p>
+              <strong style="color:#fff; font-size:0.95rem;" data-i18n="env_enterprise_title">Studio &amp; Azienda</strong>
+              <p style="font-size:0.75rem; color:var(--text-muted);" data-i18n="env_enterprise_desc">Attiva Capo Agente, Project Director, Coder Fullstack, DevOps e drafting CAD R12.</p>
             </div>
             <div class="selectable-wizard-card" data-env="creator">
               <span style="font-size:2rem;">📱</span>
-              <strong style="color:#fff; font-size:0.95rem;">Content Creator &amp; Social</strong>
-              <p style="font-size:0.75rem; color:var(--text-muted);">Pianificazione Instagram, Telegram broadcast, copy virale e studio multimediale.</p>
+              <strong style="color:#fff; font-size:0.95rem;" data-i18n="env_creator_title">Content Creator &amp; Social</strong>
+              <p style="font-size:0.75rem; color:var(--text-muted);" data-i18n="env_creator_desc">Pianificazione Instagram, Telegram broadcast, copy virale e studio multimediale.</p>
             </div>
           </div>
         </div>
 
-        <!-- STEP 2: Selezione Agenti e Membri della Casa -->
         <div class="wizard-step-pane" id="wizard-step-2">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
             <div>
-              <h4 style="font-size:0.95rem; color:#fff;">Assistenti Consigliati per il tuo Profilo</h4>
-              <p style="font-size:0.75rem; color:var(--text-muted);">Scansionati dinamicamente. Puoi attivarli o disattivarli con un solo tocco.</p>
+              <h4 style="font-size:0.95rem; color:#fff;" data-i18n="step2_heading">Assistenti Consigliati per il tuo Profilo</h4>
+              <p style="font-size:0.75rem; color:var(--text-muted);" data-i18n="step2_desc">Scansionati dinamicamente. Puoi attivarli o disattivarli con un solo tocco.</p>
             </div>
-            <button id="btn-wizard-select-all-agents" class="tactical-btn secondary" style="padding:0.25rem 0.6rem; font-size:0.72rem;">Seleziona Tutti</button>
+            <button id="btn-wizard-select-all-agents" class="tactical-btn secondary" style="padding:0.25rem 0.6rem; font-size:0.72rem;" data-i18n="btn_select_all">Seleziona Tutti</button>
           </div>
           <div id="wizard-agents-scanned-container" class="card-selection-grid">
-            <!-- Popolato dinamicamente da app.js -->
           </div>
         </div>
 
-        <!-- STEP 3: Auto-Discovery di Tool e Widget Scansionati -->
         <div class="wizard-step-pane" id="wizard-step-3">
           <div style="margin-bottom:1rem;">
-            <h4 style="font-size:0.95rem; color:#fff;">Strumenti &amp; Widget Rilevati a Runtime</h4>
-            <p style="font-size:0.75rem; color:var(--text-muted);">Nessun catalogo fisso: Nuxiva ha trovato questi moduli installati nel sistema.</p>
+            <h4 style="font-size:0.95rem; color:#fff;" data-i18n="step3_heading">Strumenti &amp; Widget Rilevati a Runtime</h4>
+            <p style="font-size:0.75rem; color:var(--text-muted);" data-i18n="step3_desc">Nessun catalogo fisso: Nuxiva ha trovato questi moduli installati nel sistema.</p>
           </div>
 
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem;">
             <div>
-              <strong style="font-size:0.8rem; color:var(--cyan-glow); display:block; margin-bottom:0.5rem;">🛠️ STRUMENTI ATTIVI:</strong>
+              <strong style="font-size:0.8rem; color:var(--cyan-glow); display:block; margin-bottom:0.5rem;" data-i18n="tools_active_label">🛠️ STRUMENTI ATTIVI:</strong>
               <div id="wizard-tools-scanned-list" style="display:flex; flex-direction:column; gap:0.4rem; max-height:220px; overflow-y:auto;">
-                <!-- Popolato dinamicamente -->
               </div>
             </div>
             <div>
-              <strong style="font-size:0.8rem; color:var(--purple-glow); display:block; margin-bottom:0.5rem;">📊 WIDGET INTERATTIVI:</strong>
+              <strong style="font-size:0.8rem; color:var(--purple-glow); display:block; margin-bottom:0.5rem;" data-i18n="widgets_active_label">📊 WIDGET INTERATTIVI:</strong>
               <div id="wizard-widgets-scanned-list" style="display:flex; flex-direction:column; gap:0.4rem; max-height:220px; overflow-y:auto;">
-                <!-- Popolato dinamicamente -->
               </div>
             </div>
           </div>
         </div>
 
-        <!-- STEP 4: Riepilogo & Attivazione Istantanea -->
         <div class="wizard-step-pane" id="wizard-step-4">
           <div style="text-align:center; padding:1rem 0;">
             <div style="font-size:3rem; animation:glowPulse 2s infinite; display:inline-block; border-radius:50%; padding:0.5rem;">✨</div>
-            <h3 style="color:#fff; font-size:1.3rem; margin-top:0.75rem;">Tutto Pronto! Il tuo Nuxiva OS è Ottimizzato</h3>
-            <p style="font-size:0.85rem; color:var(--text-muted); max-width:500px; margin:0.5rem auto 1.5rem auto;">
+            <h3 style="color:#fff; font-size:1.3rem; margin-top:0.75rem;" data-i18n="step4_heading">Tutto Pronto! Il tuo Nuxiva OS è Ottimizzato</h3>
+            <p style="font-size:0.85rem; color:var(--text-muted); max-width:500px; margin:0.5rem auto 1.5rem auto;" data-i18n="step4_desc">
               Abbiamo impostato il modello Ternario Bonsai a zero-costi, configurato le tue plance e abilitato i chatbot dedicati ad ogni membro della casa.
             </p>
 
@@ -1205,13 +1141,12 @@
         </div>
       </div>
 
-      <!-- Footer Navigazione Step -->
       <div class="wizard-footer-bar">
-        <button id="btn-wizard-prev" class="tactical-btn secondary" style="display:none;">&larr; Indietro</button>
+        <button id="btn-wizard-prev" class="tactical-btn secondary" style="display:none;" data-i18n="btn_prev">&larr; Indietro</button>
         <div style="margin-left:auto; display:flex; gap:0.75rem;">
-          <button id="btn-wizard-skip" class="tactical-btn secondary">Chiudi</button>
-          <button id="btn-wizard-next" class="tactical-btn">Avanti &rarr;</button>
-          <button id="btn-wizard-finish" class="tactical-btn" style="display:none; background:linear-gradient(90deg, #10b981, #00f0ff); color:#050811; font-weight:700;">
+          <button id="btn-wizard-skip" class="tactical-btn secondary" data-i18n="btn_skip">Chiudi</button>
+          <button id="btn-wizard-next" class="tactical-btn" data-i18n="btn_next">Avanti &rarr;</button>
+          <button id="btn-wizard-finish" class="tactical-btn" style="display:none; background:linear-gradient(90deg, #10b981, #00f0ff); color:#050811; font-weight:700;" data-i18n="btn_finish">
             🚀 Entra nella Plancia
           </button>
         </div>

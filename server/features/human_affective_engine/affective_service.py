@@ -1,12 +1,8 @@
-import time
 from typing import Dict, Any, Optional
 from server.features.human_affective_engine.interfaces import (
     PhysiologicalMultimodalPayload,
     AffectiveInferenceResult,
 )
-from server.features.human_affective_engine.rppg_hemodynamic_extractor import hemodynamic_processor
-from server.features.human_affective_engine.vocal_biomarker_extractor import vocal_biomarker_analyzer
-from server.features.human_affective_engine.gaze_affect_profiler import gaze_affect_profiler
 from server.features.human_affective_engine.affective_fusion_engine import affective_fusion_engine
 from server.features.human_affective_engine.adaptive_response_orchestrator import adaptive_response_orchestrator
 from server.core.sensory_bus.event_router import sensory_bus

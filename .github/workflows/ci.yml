@@ -65,7 +65,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install Kernel Test Dependencies
-        run: python -m pip install httpx==0.28.1 pydantic==2.13.5 pydantic-settings==2.15.0 psutil pyyaml
+        run: python -m pip install httpx==0.28.1 pydantic==2.13.5 pydantic-settings==2.15.0 psutil pyyaml numpy
 
       - name: Kernel and Sandbox Broker Tests
         run: python -m unittest discover -s server/tests -t . -v

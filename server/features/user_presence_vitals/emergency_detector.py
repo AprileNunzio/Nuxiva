@@ -1,9 +1,8 @@
 import uuid
 import datetime
-from typing import Dict, Any, List, Optional
+from typing import Optional
 from server.features.user_presence_vitals.interfaces import (
     EmergencySeverity,
-    EmergencyVitalsThresholds,
     UserHealthProfile,
     EmergencyEventLog,
 )

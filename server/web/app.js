@@ -6,6 +6,7 @@ import { initMultimodalSurveillance } from "./features/multimodal_surveillance/s
 import { initHumanAffectiveEngine } from "./features/human_affective_engine/script.js";
 import { initWearableVitalsHub } from "./features/wearable_vitals_hub/script.js";
 import { initUserPresenceVitals } from "./features/user_presence_vitals/script.js";
+import { applyDomTranslations } from "./shared/i18n/dom_translator.js";
 
 let currentSelectedAgentId = "windows_system_agent";
 
@@ -384,6 +385,9 @@ async function applyLanguage(lang) {
         if (span && text) span.textContent = text;
       }
     }
+
+    applyDomTranslations(c);
+    applyDomTranslations(data);
 
     window.dispatchEvent(new CustomEvent("nuxiva-language-changed", { detail: { lang } }));
 

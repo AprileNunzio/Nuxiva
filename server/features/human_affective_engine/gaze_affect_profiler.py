@@ -1,4 +1,4 @@
-from typing import List, Dict, Any
+from typing import List
 from server.features.human_affective_engine.interfaces import OcularGazeBiomarkers
 
 class GazeAffectProfiler:

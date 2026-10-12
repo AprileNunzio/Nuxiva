@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter
 from typing import Dict, Any, List
 from server.features.multimodal_surveillance.interfaces import (
     AudioChunkPayload,

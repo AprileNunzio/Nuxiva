@@ -1,5 +1,5 @@
 import numpy as np
-from typing import List, Tuple
+from typing import Tuple
 from collections import deque
 from server.features.human_affective_engine.interfaces import HeartRateMetrics
 
@@ -61,7 +61,6 @@ class HemodynamicSignalProcessor:
         return bpm, quality
 
     def _estimate_hrv_rmssd(self, signal: np.ndarray, bpm: float) -> float:
-        expected_period_frames = (self._fps * 60.0) / (bpm + 1e-9)
         diffs = np.diff(signal)
         rmssd_proxy = float(np.sqrt(np.mean(diffs ** 2)) * 100.0)
         return rmssd_proxy

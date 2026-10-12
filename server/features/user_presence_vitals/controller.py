@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from typing import Dict, Any, List
 from server.features.user_presence_vitals.interfaces import (
     UserHealthProfile,

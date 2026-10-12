@@ -11,9 +11,6 @@ class VocalBiomarkerAnalyzer:
             return self._default_metrics()
 
         energy = float(np.sqrt(np.mean(pcm_signal ** 2))) + 1e-9
-        zero_crossings = np.nonzero(np.diff(pcm_signal > 0))[0]
-        zcr = len(zero_crossings) / float(len(pcm_signal))
-
         pitch_est, pitch_std = self._estimate_pitch_autocorr(pcm_signal)
         monotone = float(np.clip(1.0 - (pitch_std / 35.0), 0.0, 1.0))
         silence_ratio = float(np.mean(np.abs(pcm_signal) < 0.02))

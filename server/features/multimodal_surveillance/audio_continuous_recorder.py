@@ -1,5 +1,4 @@
 import uuid
-import time
 from collections import deque
 from typing import Dict, Deque, List, Optional, Any
 from server.features.multimodal_surveillance.interfaces import (

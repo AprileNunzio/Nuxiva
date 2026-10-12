@@ -1,9 +1,7 @@
-import time
 from typing import Dict, Any, Optional, List
 from server.features.user_presence_vitals.interfaces import (
     UserHealthProfile,
     EmergencyContact,
-    EmergencyEventLog,
 )
 from server.features.user_presence_vitals.emergency_detector import vitals_emergency_detector
 from server.features.user_presence_vitals.emergency_broadcaster import home_emergency_broadcaster

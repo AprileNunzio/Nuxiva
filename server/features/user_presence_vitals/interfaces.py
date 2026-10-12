@@ -1,7 +1,6 @@
 from enum import Enum
 from typing import Optional, List, Dict, Any
 from pydantic import BaseModel, Field
-import time
 
 class EmergencySeverity(str, Enum):
     INFO = "info"

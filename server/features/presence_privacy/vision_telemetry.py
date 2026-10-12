@@ -2,7 +2,6 @@ import time
 import logging
 from typing import Optional, Dict, Any
 from pydantic import BaseModel, Field
-from server.features.presence_privacy.models import BiometricType
 from server.features.presence_privacy.presence_service import presence_service
 from server.core.sensory_bus.event_router import sensory_bus
 from server.core.event_sourcing.universal_space import UniversalObservation
