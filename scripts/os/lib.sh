@@ -11,9 +11,33 @@ NUXIVA_KIOSK_USER="${NUXIVA_KIOSK_USER:-nuxiva-kiosk}"
 OLLAMA_URL="${OLLAMA_URL:-http://127.0.0.1:11434}"
 CORE_URL="${CORE_URL:-http://127.0.0.1:8443}"
 
-if [ -f "$NUXIVA_ENV_FILE" ]; then
-    set -a; . "$NUXIVA_ENV_FILE"; set +a
-fi
+load_env_file() {
+    local file="$1" line key val
+    [ -f "$file" ] || return 0
+    while IFS= read -r line || [ -n "$line" ]; do
+        line="${line#"${line%%[![:space:]]*}"}"
+        line="${line%$'\r'}"
+        case "$line" in ""|\#* ) continue ;; *=*) ;; *) continue ;; esac
+        key="${line%%=*}"
+        val="${line#*=}"
+        key="${key#"${key%%[![:space:]]*}"}"
+        key="${key%"${key##*[![:space:]]}"}"
+        [[ "$key" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]] || continue
+        val="${val#"${val%%[![:space:]]*}"}"
+        val="${val%"${val##*[![:space:]]}"}"
+        if [[ "$val" =~ ^\"(.*)\"$ ]]; then
+            val="${BASH_REMATCH[1]}"
+        elif [[ "$val" =~ ^\'(.*)\'$ ]]; then
+            val="${BASH_REMATCH[1]}"
+        fi
+        if [ "$key" = "NUXIVA_ASSISTANT_NAME" ] && [[ "${val,,}" == *jarvis* ]]; then
+            val="Hey NUXIVA"
+        fi
+        export "$key=$val"
+    done < "$file"
+}
+
+load_env_file "$NUXIVA_ENV_FILE"
 
 if [ -n "${NUXIVA_OLLAMA_URL:-}" ]; then
     OLLAMA_URL="${NUXIVA_OLLAMA_URL%/}"

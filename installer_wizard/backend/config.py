@@ -206,6 +206,12 @@ def read_env() -> dict:
     return env
 
 
+def _clean_assistant_name(value: str) -> str:
+    if "jarvis" in str(value).lower():
+        return "Hey NUXIVA"
+    return str(value)
+
+
 def read_global_env() -> dict:
     env = {}
     if ENV_FILE.exists():
@@ -214,7 +220,11 @@ def read_global_env() -> dict:
             if not line or line.startswith("#") or "=" not in line:
                 continue
             key, value = line.split("=", 1)
-            env[key.strip()] = value.strip().strip('"')
+            k = key.strip()
+            v = value.strip().strip('"').strip("'")
+            if k == "NUXIVA_ASSISTANT_NAME":
+                v = _clean_assistant_name(v)
+            env[k] = v
     return env
 
 
@@ -242,11 +252,14 @@ def ollama_remote() -> bool:
 
 
 def write_env(updates: dict) -> None:
-    for key, value in updates.items():
+    cleaned = dict(updates)
+    if "NUXIVA_ASSISTANT_NAME" in cleaned and cleaned["NUXIVA_ASSISTANT_NAME"] != "":
+        cleaned["NUXIVA_ASSISTANT_NAME"] = _clean_assistant_name(cleaned["NUXIVA_ASSISTANT_NAME"])
+    for key, value in cleaned.items():
         if not _KEY_RE.match(key) or "\n" in str(value):
             raise ValueError(f"Chiave o valore non valido: {key}")
     lines = ENV_FILE.read_text(encoding="utf-8").splitlines() if ENV_FILE.exists() else []
-    pending = dict(updates)
+    pending = dict(cleaned)
     out = []
     for line in lines:
         key = line.split("=", 1)[0].strip() if "=" in line and not line.lstrip().startswith("#") else None

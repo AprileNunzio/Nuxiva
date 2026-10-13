@@ -23,7 +23,7 @@ bash_profile() {
     printf '%s\n' \
         '# Gestito da Nuxiva OS: avvia la sessione grafica kiosk su tty1' \
         'if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then' \
-        "    exec startx $SESSION -- :0 vt1 -nolisten tcp -keeptty >\"\$HOME/.cache/xorg-session.log\" 2>&1" \
+        "    exec startx /bin/bash $SESSION -- :0 vt1 -nolisten tcp -keeptty >\"\$HOME/.cache/xorg-session.log\" 2>&1" \
         'fi'
 }
 

@@ -207,6 +207,12 @@ class WizardTest(unittest.TestCase):
         self.assertEqual(r.status_code, 403)
         self.assertEqual(admin.post("/api/setup/wakeword", content=ONNX, headers=BINARY).status_code, 200)
 
+    def test_forbidden_assistant_name_is_sanitized(self):
+        out = setup_api._clean({"assistant_name": "Hey Jarvis"})
+        self.assertEqual(out["NUXIVA_ASSISTANT_NAME"], "Hey NUXIVA")
+        write_env({"NUXIVA_ASSISTANT_NAME": "Jarvis"})
+        self.assertEqual(read_env().get("NUXIVA_ASSISTANT_NAME"), "Hey NUXIVA")
+
 
 if __name__ == "__main__":
     unittest.main()

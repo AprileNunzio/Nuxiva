@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+[ -n "${BASH_VERSION:-}" ] || exec /bin/bash "$0" "$@"
 URL="${NUXIVA_KIOSK_URL:-http://127.0.0.1/}"
 BASE="${URL%/}"
 PROFILE="$HOME/.config/nuxiva-chromium"

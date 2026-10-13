@@ -323,6 +323,8 @@ class Watchdog:
             else:
                 await self.orch.converge(["voice"], reason="Ripristino della voce neurale")
         elif key == "kiosk":
+            if count >= 2:
+                await self.orch.converge(["kiosk"], reason="Ripristino della sessione kiosk", force=True)
             await sh("pkill", "-t", "tty1", timeout=10)
             await sh("systemctl", "restart", "getty@tty1", timeout=30)
         elif key == "disk":
