@@ -68,23 +68,33 @@ async def agent_set(agent: str, key: str, value: str) -> str:
     return f"{key} di {target} impostata a «{str(value)[:80]}»"
 
 
-@registry.tool("ceo_overview", "mostra la visione esecutiva del CEO, i ruoli specializzati attivi e l'assegnazione degli incarichi", {}, agent="agent")
+@registry.tool("ceo_overview", "mostra la panoramica del CEO sulla squadra di agenti scansionati, con i loro strumenti, widget e capacità", {}, agent="agent")
 async def ceo_overview() -> str:
     from features.team.ceo import ceo
     data = ceo.get_team_overview()
-    lines = [f"=== {data['ceo']} ===", data['mission'], "", "Agenti Specializzati:"]
-    for s in data["specialists"]:
-        lines.append(f"• [{s['id']}] {s['name']}: {s['description']}")
+    lines = [
+        f"=== {data['ceo']} ===",
+        f"{data['mission']} — Totale: {data['total_agents']} agenti, {data['total_tools']} strumenti, {data['total_widgets']} widget",
+        "",
+        "Squadra Agenti Scansionata:"
+    ]
+    for a in data["agents"]:
+        tools_str = f" · strumenti: {', '.join(a['tools'])}" if a['tools'] else ""
+        widgets_str = f" · widget: {', '.join(a['widgets'])}" if a['widgets'] else ""
+        lines.append(f"• [{a['id']}] «{a['name']}» ({a['category']}){tools_str}{widgets_str}: {a['description'][:100]}")
     return "\n".join(lines)
 
 
-@registry.tool("ceo_delegate", "il CEO assegna un incarico esplicito a uno specialista di dominio",
-               {"specialist": "identificativo o ruolo dello specialista (sysadmin, coder, domotica, vision, audio, secretary, research, security, advisor)", "task": "dettagli dell'incarico"}, agent="agent")
-async def ceo_delegate(specialist: str, task: str) -> str:
-    from features.team.ceo import SPECIALIST_ROSTER
-    spec = SPECIALIST_ROSTER.get(specialist.strip().lower())
-    if not spec:
-        valid = ", ".join(SPECIALIST_ROSTER.keys())
-        raise ValueError(f"Specialista «{specialist}» sconosciuto. Ruoli validi: {valid}")
-    board.post("ceo", spec.role_id, f"Incarico esplicito per {spec.name}: {task[:200]}", "direttiva_esecutiva")
-    return f"Incarico assegnato con successo dal CEO a «{spec.name}» ({spec.role_id}): {task}"
+@registry.tool("ceo_delegate", "il CEO assegna un incarico esplicito a un agente della squadra rilevato dallo scanner",
+               {"agent": "identificativo o nome dell'agente", "task": "dettagli dell'incarico"}, agent="agent")
+async def ceo_delegate(agent: str, task: str) -> str:
+    from features.team.scanner import scanner
+    target = scanner.find_agent(agent)
+    if not target:
+        scanner.scan(force=True)
+        target = scanner.find_agent(agent)
+    if not target:
+        available = ", ".join(sorted(scanner.agents.keys()))
+        raise ValueError(f"Agente «{agent}» non trovato nella squadra scansionata. Disponibili: {available}")
+    board.post("ceo", target.id, f"Incarico esplicito per {target.name}: {task[:200]}", "direttiva_esecutiva")
+    return f"Incarico assegnato con successo dal CEO a «{target.name}» [{target.id}]: {task}"
