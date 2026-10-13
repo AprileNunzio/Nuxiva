@@ -28,12 +28,46 @@ api_ok() { curl -fsS --max-time 5 "$OLLAMA_URL/api/version" >/dev/null 2>&1; }
 
 local_off() { ! systemctl is-active --quiet ollama 2>/dev/null; }
 
+unit_present() {
+    [ -f /etc/systemd/system/ollama.service ] || [ -f /usr/lib/systemd/system/ollama.service ] || [ -f /lib/systemd/system/ollama.service ]
+}
+
+ensure_unit() {
+    unit_present && return 0
+    local bin
+    bin=$(command -v ollama)
+    id -u ollama >/dev/null 2>&1 || useradd -r -s /bin/false -U -m -d /usr/share/ollama ollama 2>/dev/null || true
+    for grp in render video; do
+        getent group "$grp" >/dev/null && usermod -a -G "$grp" ollama 2>/dev/null || true
+    done
+    printf '%s\n' \
+        '[Unit]' \
+        'Description=Ollama Service' \
+        'After=network-online.target' \
+        '' \
+        '[Service]' \
+        "ExecStart=$bin serve" \
+        'User=ollama' \
+        'Group=ollama' \
+        'Restart=always' \
+        'RestartSec=3' \
+        'Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"' \
+        '' \
+        '[Install]' \
+        'WantedBy=default.target' > /etc/systemd/system/ollama.service
+    systemctl daemon-reload
+}
+
 step_check() {
     if ollama_remote; then
         api_ok && local_off
         return
     fi
+    if [ "${NUXIVA_BRAIN:-}" != "local" ]; then
+        return 0
+    fi
     command -v ollama >/dev/null 2>&1 \
+        && unit_present \
         && override_conf | same_content "$OVERRIDE" \
         && systemctl is-enabled ollama >/dev/null 2>&1 \
         && api_ok
@@ -46,10 +80,19 @@ step_apply() {
             systemctl disable --now ollama >/dev/null 2>&1 || true
             info "Ollama locale fermato: uso il server remoto e libero la memoria"
         fi
-        wait_for 30 api_ok || fail "Il server Ollama remoto $OLLAMA_URL non risponde (sul server remoto serve OLLAMA_HOST=0.0.0.0)"
+        wait_for 30 api_ok || { warn "Il server Ollama remoto $OLLAMA_URL non risponde"; return 0; }
         info "Ollama remoto $(curl -fsS "$OLLAMA_URL/api/version" | jq -r .version 2>/dev/null) operativo su $OLLAMA_URL"
         progress 100 "Motore neurale remoto operativo"
         return
+    fi
+    if [ "${NUXIVA_BRAIN:-}" != "local" ]; then
+        if [ "${NUXIVA_BRAIN:-}" = "cloud" ] && systemctl is-active --quiet ollama 2>/dev/null; then
+            systemctl disable --now ollama >/dev/null 2>&1 || true
+            info "Ollama locale fermato: selezionato cervello cloud esterno"
+        fi
+        info "Motore neurale locale in attesa di scelta (Ollama locale o LLM esterno con API key)"
+        progress 100 "In attesa di scelta LLM"
+        return 0
     fi
     if ! command -v ollama >/dev/null 2>&1; then
         progress 10 "Download del motore neurale Ollama"
@@ -62,14 +105,19 @@ step_apply() {
     fi
 
     progress 75 "Configurazione servizio neurale"
+    ensure_unit
     if override_conf | write_if_changed "$OVERRIDE"; then
         systemctl daemon-reload
     fi
-    systemctl enable ollama >/dev/null 2>&1
-    systemctl restart ollama
+    systemctl enable ollama >/dev/null 2>&1 || true
+    systemctl restart ollama || true
 
     progress 90 "Attesa risposta del motore neurale"
-    wait_for 90 api_ok || fail "Ollama non risponde su $OLLAMA_URL"
+    if ! wait_for 90 api_ok; then
+        warn "Ollama non risponde su $OLLAMA_URL: proseguo (puoi configurare Ollama o un LLM esterno)"
+        progress 100 "Bypassato: in attesa di configurazione LLM"
+        return 0
+    fi
     info "Ollama $(curl -fsS "$OLLAMA_URL/api/version" | jq -r .version 2>/dev/null) operativo"
     progress 100 "Motore neurale operativo"
 }

@@ -48,9 +48,10 @@ step_apply() {
     fi
     progress 85 "Rotazione dei log Nuxiva"
     logrotate_conf | write_if_changed "$LOGROTATE" || true
-    chmod +x "$NUXIVA_DIR/scripts/os/nuxivactl"
+    chmod +x "$NUXIVA_DIR/scripts/os/nuxivactl" "$NUXIVA_DIR/scripts/os/force-upgrade.sh"
     ln -sfn "$NUXIVA_DIR/scripts/os/nuxivactl" "$CTL"
-    progress 100 "Manutenzione autonoma attiva (comando nuxivactl disponibile)"
+    ln -sfn "$NUXIVA_DIR/scripts/os/force-upgrade.sh" /usr/local/bin/nuxiva-upgrade
+    progress 100 "Manutenzione autonoma attiva (comandi nuxivactl e nuxiva-upgrade disponibili)"
 }
 
 step_main "$@"

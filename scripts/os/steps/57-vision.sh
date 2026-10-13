@@ -44,9 +44,7 @@ step_apply() {
     for f in "${FILES[@]}"; do
         i=$((i + 1))
         if [ ! -s "$MODELS/${f##*/}" ]; then
-            progress $((i * 20)) "Download rete visiva ${f##*/}"
-            retry 3 5 curl -fsSL -o "$MODELS/${f##*/}.part" "$ZOO/$f"
-            mv -f "$MODELS/${f##*/}.part" "$MODELS/${f##*/}"
+            retry 3 5 download_file "$MODELS/${f##*/}" "$ZOO/$f" "${f##*/}" $((i * 15)) 15
         fi
     done
 

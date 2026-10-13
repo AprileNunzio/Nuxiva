@@ -32,7 +32,7 @@ fetch_runsc() {
     command -v bzip2 >/dev/null 2>&1 || apt_install bzip2 || return 1
     url="$GVISOR_BASE/$arch"
     tmp=$(mktemp -d)
-    if retry 4 15 curl -fsSL --connect-timeout 20 -C - -o "$tmp/gvisor.tar.bz2" "$url/gvisor.tar.bz2" \
+    if retry 4 15 download_file "$tmp/gvisor.tar.bz2" "$url/gvisor.tar.bz2" "gVisor ($arch)" 10 70 \
         && retry 3 5 curl -fsSL -o "$tmp/gvisor.tar.bz2.sha512" "$url/gvisor.tar.bz2.sha512" \
         && (cd "$tmp" && sha512sum -c gvisor.tar.bz2.sha512 >/dev/null) \
         && tar -xjf "$tmp/gvisor.tar.bz2" -C "$GVISOR_DIR" runsc containerd-shim-runsc-v1 gvisor-bin; then

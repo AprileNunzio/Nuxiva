@@ -168,8 +168,6 @@ def _clean(raw: dict) -> dict:
     out["NUXIVA_COMMERCIAL"] = "1" if raw.get("commercial") is True else "0"
     assist_name = str(raw.get("assistant_name") or "").strip()
     if assist_name:
-        if "jarvis" in assist_name.lower():
-            assist_name = "Hey NUXIVA"
         out["NUXIVA_ASSISTANT_NAME"] = assist_name
     assist_gender = str(raw.get("assistant_gender") or "").strip().lower()
     if assist_gender in ("male", "female"):
@@ -298,7 +296,7 @@ async def setup_assistant(request: Request, _: None = Depends(require_setup)):
         lang = "it"
     if gender not in ("male", "female"):
         gender = "female"
-    if not name or "jarvis" in name.lower():
+    if not name:
         name = "Hey NUXIVA"
 
     voice = VOICES_BY_LANG_GENDER.get(lang, {}).get(gender, "if_sara")
@@ -335,8 +333,6 @@ async def setup_custom_wake_sample(request: Request, _: None = Depends(require_s
         raise HTTPException(400, "Dati JSON non validi")
     index = int(raw.get("index", 1))
     assistant_name = str(raw.get("name") or "Hey NUXIVA").strip()
-    if "jarvis" in assistant_name.lower():
-        assistant_name = "Hey NUXIVA"
     audio_base64 = raw.get("audio_base64")
 
     clean_word = assistant_name.lower().replace("hey ", "").replace("ehi ", "").strip()

@@ -13,12 +13,12 @@ NAMES = {r.name.lower(): r for r in Risk}
 
 TOOLS: dict[str, Risk] = {
     "now": Risk.INFO, "list_widgets": Risk.INFO, "avatar_catalog": Risk.INFO, "list_models": Risk.INFO,
-    "team_roster": Risk.INFO, "agent_info": Risk.INFO, "agent_inbox": Risk.INFO, "list_automations": Risk.INFO,
+    "team_roster": Risk.INFO, "agent_info": Risk.INFO, "agent_inbox": Risk.INFO, "ceo_overview": Risk.INFO, "list_automations": Risk.INFO,
     "list_tasks": Risk.INFO, "list_custom_tools": Risk.INFO, "music_now": Risk.INFO, "music_search": Risk.INFO,
     "music_outputs": Risk.INFO,
     "show_widget": Risk.HOME, "hide_widget": Risk.HOME, "move_widget": Risk.HOME, "avatar": Risk.HOME,
     "show_model": Risk.HOME, "run_automation": Risk.HOME, "toggle_automation": Risk.HOME, "emit_event": Risk.HOME,
-    "agent_tell": Risk.HOME, "agent_ask": Risk.HOME, "close_camera": Risk.HOME, "music_control": Risk.HOME,
+    "agent_tell": Risk.HOME, "agent_ask": Risk.HOME, "ceo_delegate": Risk.HOME, "close_camera": Risk.HOME, "music_control": Risk.HOME,
     "music_play": Risk.HOME,
     **{f"board_{n}": Risk.HOME for n in ("callout", "chart", "chemistry", "clear", "close", "draw", "formula", "image",
                                          "language", "lesson", "look", "mark", "new_page", "open", "physics", "plot",

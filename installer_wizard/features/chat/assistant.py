@@ -90,13 +90,19 @@ async def handle(text: str, core_call, speech_lang: dict | None = None) -> dict:
     switched = bool((speech_lang or {}).get("switched"))
     routing = text if switched else await pivot.to_pivot(text, lang)
 
+    from features.team.ceo import ceo
+    ceo_decision = ceo.on_conversation_start(routing, {"lang": lang})
+
     generated = {"by_model": False}
 
     async def ask(_query: str) -> dict:
         generated["by_model"] = True
         return await core_call(text)
 
-    result = await _route(routing, ask, speech_lang)
+    async with stages.stage("ceo", "CEO Orchestrator", ceo_decision.delegation_plan):
+        raw_result = await _route(routing, ask, speech_lang)
+        result = ceo.synthesize(ceo_decision, raw_result)
+
     if lang != pivot.PIVOT and result.get("reply"):
         result["reply"] = await pivot.from_pivot(result["reply"], lang, force=not generated["by_model"])
     return result

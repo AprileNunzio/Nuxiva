@@ -1,5 +1,5 @@
 PRIORITY = {
-    "laws": 100, "vault": 95, "selftest": 90, "governor": 85, "auto_update": 80, "ear": 78, "vision": 75, "people": 72, "home_assistant": 70,
+    "ceo": 110, "laws": 100, "vault": 95, "selftest": 90, "governor": 85, "auto_update": 80, "ear": 78, "vision": 75, "people": 72, "home_assistant": 70,
     "cameras": 65, "desktop": 60, "kiosk": 58, "nodes": 56, "autonomy": 55, "automations": 52, "scheduler": 52, "agent": 50, "chat": 50,
     "brain": 50, "documents": 40, "models3d": 35, "shares": 35, "whiteboard": 40, "music": 30, "sounds": 30, "spotify": 28, "appearance": 20,
 }

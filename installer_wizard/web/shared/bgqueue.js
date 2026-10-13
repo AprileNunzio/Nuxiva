@@ -95,10 +95,39 @@
 
     const rows = new Map();
     const samples = [];
+    const itemSamples = new Map();
     let seenWork = false;
     let farewell = null;
     let gone = false;
     const lastStatus = new Map();
+
+    function extractSpeed(item) {
+      if (item.speed) return item.speed;
+      if (item.detail) {
+        const m = item.detail.match(/(\d+(?:\.\d+)?\s*(?:[kKMGT]?B\/s|[kKMGT]?iB\/s))/i);
+        if (m) return m[1];
+      }
+      if (item.status !== "running") return "";
+      const now = Date.now() / 1000;
+      const doneGb = (Number(item.size_gb) || 0.5) * (Number(item.progress) || 0) / 100;
+      let history = itemSamples.get(item.id);
+      if (!history) {
+        history = [];
+        itemSamples.set(item.id, history);
+      }
+      history.push([now, doneGb]);
+      while (history.length > 2 && now - history[0][0] > 60) history.shift();
+      if (history.length >= 2) {
+        const [t0, g0] = history[0];
+        const dt = now - t0;
+        const dg = doneGb - g0;
+        if (dt >= 2 && dg > 0) {
+          const mbps = (dg * 1024) / dt;
+          return mbps >= 1 ? `${mbps.toFixed(1)} MB/s` : `${Math.round(mbps * 1024)} KB/s`;
+        }
+      }
+      return "";
+    }
 
     function row(item) {
       let r = rows.get(item.id);
@@ -107,11 +136,17 @@
         const rg = ring(30);
         const name = el("div", "name");
         const strong = el("strong", null, item.title);
+        const miniBar = el("div", "item-bar");
+        const miniFill = el("i");
+        miniBar.append(miniFill);
         const small = el("small");
-        name.append(strong, small);
-        const state = el("span", "state");
-        li.append(rg.box, name, state);
-        r = { li, rg, small, state };
+        name.append(strong, miniBar, small);
+        const stateWrap = el("div", "state-wrap");
+        const pctEl = el("span", "state-pct");
+        const speedEl = el("span", "state-speed");
+        stateWrap.append(pctEl, speedEl);
+        li.append(rg.box, name, stateWrap);
+        r = { li, rg, small, miniFill, pctEl, speedEl };
         rows.set(item.id, r);
       }
       return r;
@@ -136,6 +171,7 @@
 
       const totalGb = bg.items.reduce((a, i) => a + (Number(i.size_gb) || 0), 0);
       const current = bg.items.find((i) => i.status === "running");
+      const curSpeed = current ? extractSpeed(current) : (bg.current_speed || "");
       const pct = Math.round(Number(bg.progress) || 0);
 
       root.classList.toggle("paused", !!bg.paused);
@@ -162,33 +198,61 @@
         } else if (bg.conversation) {
           line1.textContent = current ? current.title : "In attesa";
           line2.textContent = "Riprendo quando finisci di parlare";
+        } else if (current) {
+          line1.textContent = `${current.title} · ${current.progress}%`;
+          line2.textContent = [
+            curSpeed ? `↓ ${curSpeed}` : "in corso",
+            `${bg.done} di ${bg.total} pronte`,
+            left
+          ].filter(Boolean).join(" · ");
         } else {
-          line1.textContent = current ? current.title : "Preparazione del prossimo componente";
+          line1.textContent = "Preparazione del prossimo componente";
           line2.textContent = [`${bg.done} di ${bg.total} pronte`, left].filter(Boolean).join(" · ");
         }
         sub.textContent = bg.paused
           ? `${bg.done} di ${bg.total} pronte · ${totalGb.toFixed(1)} GB in tutto · in pausa`
-          : `${bg.done} di ${bg.total} pronte · ${totalGb.toFixed(1)} GB in tutto`;
+          : `${bg.done} di ${bg.total} pronte · ${totalGb.toFixed(1)} GB in tutto${curSpeed ? ` · ↓ ${curSpeed}` : ""}`;
       }
 
       bg.items.forEach((item, idx) => {
         const r = row(item);
         const before = lastStatus.get(item.id);
+        const isRunning = item.status === "running";
+        const itemProg = Math.max(0, Math.min(100, Number(item.progress) || 0));
+        const itemSpd = extractSpeed(item);
+
         r.li.className = `bgq-item ${item.status}`;
         if (before && before !== "done" && item.status === "done" && !reduced.matches) {
           r.li.classList.add("just-done");
         }
-        r.rg.set(item.progress, item.status === "running" ? `${item.progress}` : "");
-        r.small.textContent = item.status === "running" && item.detail ? item.detail
-          : item.status === "waiting_disk" || item.status === "failed" ? (item.message || item.description)
-          : `${Number(item.size_gb).toFixed(1)} GB · ${item.description}`;
-        r.state.textContent = item.status === "running" ? `${item.progress}%` : (STATUS[item.status] || "");
+        r.rg.set(itemProg, isRunning ? `${itemProg}` : "");
+        r.miniFill.style.width = isRunning ? `${itemProg}%` : item.status === "done" ? "100%" : "0%";
+
+        if (isRunning) {
+          r.pctEl.textContent = `${itemProg}%`;
+          r.speedEl.textContent = itemSpd ? `↓ ${itemSpd}` : "in corso";
+          r.small.textContent = item.detail ? item.detail : `${Number(item.size_gb).toFixed(1)} GB · ${item.description}`;
+        } else if (item.status === "done") {
+          r.pctEl.textContent = "100%";
+          r.speedEl.textContent = "pronta";
+          r.small.textContent = `${Number(item.size_gb).toFixed(1)} GB · ${item.description}`;
+        } else if (item.status === "waiting_disk" || item.status === "failed") {
+          r.pctEl.textContent = STATUS[item.status] || item.status;
+          r.speedEl.textContent = item.status === "failed" ? "riproverà" : "serve spazio";
+          r.small.textContent = item.message || item.description;
+        } else {
+          r.pctEl.textContent = STATUS[item.status] || "in coda";
+          r.speedEl.textContent = `${Number(item.size_gb).toFixed(1)} GB`;
+          r.small.textContent = item.description;
+        }
+
         if (list.children[idx] !== r.li) list.insertBefore(r.li, list.children[idx] || null);
         lastStatus.set(item.id, item.status);
       });
 
       if (!gone) root.classList.add("show");
     }
+
 
     return render;
   }

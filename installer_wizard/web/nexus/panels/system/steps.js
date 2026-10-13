@@ -24,8 +24,9 @@ export default function steps(root) {
         bar(bg.progress));
       mount(bgList, table(["Componente", "Dimensione", "Stato", "Dettaglio", ""], bg.items.map((i, n) => {
         const [label, t] = BG[i.status] || [i.status, ""];
+        const runningPill = i.status === "running" ? ` ${i.progress}%${i.speed ? ` · ${i.speed}` : ""}` : "";
         return [h("div", {}, i.title, h("div", { class: "dim small" }, i.description)), h("span", { class: "mono" }, `${fmt.num(i.size_gb, 1)} GB`),
-          pill(`${label}${i.status === "running" ? ` ${i.progress}%` : ""}`, t), h("span", { class: "dim small" }, i.detail || i.message || ""),
+          pill(`${label}${runningPill}`, t), h("span", { class: "dim small" }, i.detail || i.message || ""),
           i.status !== "done" && n > 0 ? h("div", { class: "cell-actions" }, button("Prima", () => background(`/api/background/prioritize?step=${encodeURIComponent(i.id)}`), { kind: "ghost sm" })) : ""];
       })));
     }

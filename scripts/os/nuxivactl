@@ -20,9 +20,18 @@ case "${1:-status}" in
           "",
           "Step:", (.catalog[] as $c | "  \($c.title): \(.steps[$c.id].status // "in attesa")")'
         ;;
-    update)
+    update|upgrade)
+        if [[ "${2:-}" == "--force" || "${2:-}" == "-f" ]]; then
+            [ "$EUID" -eq 0 ] || exec sudo -- "$0" "$@"
+            bash /opt/Nuxiva/scripts/os/force-upgrade.sh "${3:-main}"
+            exit 0
+        fi
         echo -e "${C}Controllo aggiornamenti su GitHub…${N}"
         call update 60 | jq -r '.message'
+        ;;
+    force-upgrade|force-update)
+        [ "$EUID" -eq 0 ] || exec sudo -- "$0" "$@"
+        bash /opt/Nuxiva/scripts/os/force-upgrade.sh "${2:-main}"
         ;;
     ripara|fix|repair)
         [ "$EUID" -eq 0 ] || exec sudo -- "$0" "$@"
@@ -51,7 +60,7 @@ case "${1:-status}" in
         git -c safe.directory='*' -C /opt/Nuxiva log -1 --format='%h %ci %s'
         ;;
     *)
-        echo "nuxivactl status | ripara | update | logs [install|supervisor|core|ollama|voice|vision|ear] | setup-code | background | version" >&2
+        echo "nuxivactl status | update [--force] | force-upgrade | ripara | logs [install|supervisor|core|ollama|voice|vision|ear] | setup-code | background | version" >&2
         exit 2
         ;;
 esac

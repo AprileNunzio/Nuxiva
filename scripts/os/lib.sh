@@ -30,9 +30,6 @@ load_env_file() {
         elif [[ "$val" =~ ^\'(.*)\'$ ]]; then
             val="${BASH_REMATCH[1]}"
         fi
-        if [ "$key" = "NUXIVA_ASSISTANT_NAME" ] && [[ "${val,,}" == *jarvis* ]]; then
-            val="Hey NUXIVA"
-        fi
         export "$key=$val"
     done < "$file"
 }
@@ -57,9 +54,73 @@ unofficial_ok() { truthy "${NUXIVA_UNOFFICIAL_SERVICES:-0}"; }
 
 progress() { echo "@@PROGRESS $1 ${*:2}"; }
 detail()   { echo "@@DETAIL $*"; }
+speed()    { echo "@@SPEED $*"; }
 info()     { echo "[INFO] $*"; }
 warn()     { echo "[WARN] $*"; }
 fail()     { echo "[FAIL] $*"; exit 1; }
+
+download_file() {
+    local target=$1 url=$2 label=${3:-$(basename "$target")} base_pct=${4:-0} span_pct=${5:-100}
+    mkdir -p "$(dirname "$target")"
+    local tmp="${target}.part"
+    if command -v python3 >/dev/null 2>&1; then
+        python3 - "$url" "$tmp" "$target" "$label" "$base_pct" "$span_pct" <<'PY' && return 0
+import os, sys, time, urllib.request
+
+url, tmp, target, label = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
+base_pct, span_pct = int(sys.argv[5]), int(sys.argv[6])
+
+def fmt_size(n):
+    if n >= 1e9: return f"{n / 1e9:.2f} GB"
+    if n >= 1e6: return f"{n / 1e6:.1f} MB"
+    if n >= 1e3: return f"{n / 1e3:.0f} KB"
+    return f"{n} B"
+
+req = urllib.request.Request(url, headers={"User-Agent": "Nuxiva/1.0"})
+try:
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        total = int(resp.headers.get("Content-Length") or 0)
+        done = 0
+        last_t = time.time()
+        last_bytes = 0
+        last_emit = 0.0
+        with open(tmp, "wb") as out:
+            while True:
+                chunk = resp.read(65536)
+                if not chunk:
+                    break
+                out.write(chunk)
+                done += len(chunk)
+                now = time.time()
+                if now - last_emit >= 0.5 or (total and done == total):
+                    dt = max(now - last_t, 0.001)
+                    spd = max(0, (done - last_bytes) / dt)
+                    spd_str = f"{fmt_size(spd)}/s"
+                    if total > 0:
+                        pct = min(100, int(done * 100 / total))
+                        eta_s = int((total - done) / spd) if spd > 0 else 0
+                        eta_str = f"{eta_s // 60}m{eta_s % 60:02d}s"
+                        prog = base_pct + int(pct * span_pct / 100)
+                        print(f"@@PROGRESS {prog} Download {label}: {pct}%", flush=True)
+                        print(f"@@DETAIL {label} — {fmt_size(done)}/{fmt_size(total)} — {spd_str} — ETA {eta_str}", flush=True)
+                    else:
+                        print(f"@@DETAIL {label} — {fmt_size(done)} — {spd_str}", flush=True)
+                    print(f"@@SPEED {spd_str}", flush=True)
+                    last_emit, last_bytes, last_t = now, done, now
+    os.replace(tmp, target)
+except Exception as e:
+    if os.path.exists(tmp):
+        try: os.remove(tmp)
+        except OSError: pass
+    print(f"[FAIL] Download {label} fallito: {e}", flush=True)
+    sys.exit(1)
+PY
+    fi
+    progress "$base_pct" "Download $label..."
+    curl -fL --progress-bar -o "$tmp" "$url" || { rm -f "$tmp"; return 1; }
+    mv -f "$tmp" "$target"
+    progress "$((base_pct + span_pct))" "$label pronto"
+}
 
 retry() {
     local attempts=$1 delay=$2 i

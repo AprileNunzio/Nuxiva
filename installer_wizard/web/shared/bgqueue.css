@@ -72,8 +72,8 @@
 .bgq-text small { font-size: 11px; color: var(--text-dim, #7fa3b8); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .bgq-panel {
-  width: min(380px, calc(100vw - 32px));
-  max-height: min(62vh, 520px);
+  width: min(420px, calc(100vw - 32px));
+  max-height: min(65vh, 540px);
   display: flex;
   flex-direction: column;
   border: 1px solid var(--line-strong, rgba(80, 200, 255, .38));
@@ -107,9 +107,22 @@
   gap: 12px;
   padding: 9px 10px;
   border-radius: 12px;
-  transition: background .3s ease, opacity .4s ease, transform .4s ease;
+  transition: background .3s ease, opacity .4s ease, transform .4s ease, border-color .3s ease;
+  border: 1px solid transparent;
 }
-.bgq-item.running { background: rgba(41, 224, 255, .07); }
+.bgq-item.running {
+  background: rgba(41, 224, 255, .08);
+  border-color: rgba(41, 224, 255, .28);
+  box-shadow: 0 0 12px rgba(41, 224, 255, .08) inset;
+}
+.bgq-item.running .bgq-ring::after {
+  content: "";
+  position: absolute; inset: -2px;
+  border-radius: 50%;
+  border: 1.5px solid transparent;
+  border-top-color: var(--cyan, #29e0ff);
+  animation: bgq-spin 1.8s linear infinite;
+}
 .bgq-item .bgq-ring { width: 30px; height: 30px; }
 .bgq-item .bgq-ring circle { stroke-width: 3; }
 .bgq-item.done { --bgq-ring: var(--green, #3dffa8); }
@@ -120,7 +133,69 @@
 .bgq-item.just-done { animation: bgq-pop .7s cubic-bezier(.2, .8, .2, 1); }
 .bgq-item .name { min-width: 0; }
 .bgq-item .name strong { display: block; font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bgq-item .item-bar {
+  margin: 4px 0 3px;
+  height: 3px;
+  border-radius: 3px;
+  background: rgba(41, 224, 255, .14);
+  overflow: hidden;
+  width: 100%;
+}
+.bgq-item .item-bar i {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--blue, #3d7bff), var(--cyan, #29e0ff));
+  box-shadow: 0 0 6px rgba(41, 224, 255, .6);
+  transition: width .5s ease;
+}
+.bgq-item.done .item-bar i {
+  background: var(--green, #3dffa8);
+  box-shadow: 0 0 6px rgba(61, 255, 168, .5);
+}
 .bgq-item .name small { display: block; font-size: 11px; color: var(--text-faint, #4a6a7e); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bgq-item.running .name small {
+  white-space: normal;
+  word-break: break-word;
+  color: var(--text-dim, #7fa3b8);
+  line-height: 1.3;
+}
+.bgq-item .state-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 2px;
+  text-align: right;
+  min-width: 64px;
+}
+.bgq-item .state-pct {
+  font: 600 12px/1 var(--mono, monospace);
+  color: var(--text, #d9f3ff);
+  white-space: nowrap;
+}
+.bgq-item.running .state-pct {
+  color: var(--cyan, #29e0ff);
+  font-size: 13px;
+}
+.bgq-item.done .state-pct {
+  color: var(--green, #3dffa8);
+}
+.bgq-item.failed .state-pct, .bgq-item.waiting_disk .state-pct {
+  color: var(--amber, #ffb547);
+}
+.bgq-item .state-speed {
+  font: 500 10px/1.1 var(--mono, monospace);
+  color: var(--cyan, #29e0ff);
+  white-space: nowrap;
+  letter-spacing: -.02em;
+}
+.bgq-item.done .state-speed {
+  color: var(--green, #3dffa8);
+}
+.bgq-item:not(.running) .state-speed {
+  color: var(--text-faint, #4a6a7e);
+}
 .bgq-item .state { font: 500 11px/1 var(--mono, monospace); color: var(--text-dim, #7fa3b8); white-space: nowrap; }
 .bgq-item.running .state { color: var(--bgq-ring); }
 .bgq-item.done .state { color: var(--green, #3dffa8); }

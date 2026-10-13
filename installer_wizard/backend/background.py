@@ -11,8 +11,11 @@ from config import DEMO, STATE_DIR, read_env
 from state import store
 from steps import STEP_BY_ID, STEPS, Step, converge_step
 
+import re
+
 log = logging.getLogger("nuxiva.background")
 
+SPEED_RE = re.compile(r"(\d+(?:\.\d+)?\s*(?:[kKMGT]?B/s|[kKMGT]?iB/s))", re.IGNORECASE)
 QUEUE_FILE = STATE_DIR / "background.json"
 DISK_PATHS = ("/", "/opt", "/var/lib")
 DISK_MARGIN_GB = 2.0
@@ -65,7 +68,8 @@ class BackgroundQueue:
     def steps(self) -> list[Step]:
         rank = {sid: i for i, sid in enumerate(self.order)}
         env = read_env()
-        return sorted((s for s in STEPS if s.background and packages.step_wanted(s.id, env)), key=lambda s: (rank.get(s.id, len(rank)), s.priority))
+        return sorted((s for s in STEPS if s.background and packages.step_wanted(s.id, env)),
+                      key=lambda s: (rank.get(s.id, len(rank)), s.size_gb, s.priority))
 
     @staticmethod
     def status(step: Step) -> str:
@@ -83,19 +87,45 @@ class BackgroundQueue:
 
     def snapshot(self) -> dict:
         items, weight, done_weight = [], 0.0, 0.0
+        current_speed = ""
         for step in self.steps():
             rec = store.steps.get(step.id, {})
             status = self.status(step)
             progress = 100 if status == "done" else int(rec.get("progress", 0) or 0) if status == "running" else 0
             weight += step.size_gb
             done_weight += step.size_gb * progress / 100
-            items.append({"id": step.id, "title": step.title, "description": step.description, "status": status,
-                          "progress": progress, "message": str(rec.get("message", ""))[:160],
-                          "detail": str(rec.get("detail", ""))[:160], "size_gb": step.size_gb})
+            detail = str(rec.get("detail", ""))[:160]
+            speed = str(rec.get("speed", ""))
+            if status == "running" and not speed and detail:
+                m = SPEED_RE.search(detail)
+                if m:
+                    speed = m.group(1)
+            if status == "running" and speed and not current_speed:
+                current_speed = speed
+            items.append({
+                "id": step.id,
+                "title": step.title,
+                "description": step.description,
+                "status": status,
+                "progress": progress,
+                "speed": speed,
+                "last_update": float(rec.get("last_update", 0.0) or 0.0),
+                "message": str(rec.get("message", ""))[:160],
+                "detail": detail,
+                "size_gb": step.size_gb,
+            })
         done = sum(1 for i in items if i["status"] == "done")
-        return {"paused": self.paused, "conversation": self.in_conversation(), "current": self.current,
-                "finished": self.finished or done == len(items), "done": done, "total": len(items),
-                "progress": round(done_weight * 100 / weight, 1) if weight else 100.0, "items": items}
+        return {
+            "paused": self.paused,
+            "conversation": self.in_conversation(),
+            "current": self.current,
+            "current_speed": current_speed,
+            "finished": self.finished or done == len(items),
+            "done": done,
+            "total": len(items),
+            "progress": round(done_weight * 100 / weight, 1) if weight else 100.0,
+            "items": items,
+        }
 
     def note_activity(self) -> None:
         self.last_activity = time.time()

@@ -269,10 +269,6 @@ check_system() {
     getent group nuxiva-admin >/dev/null || { groupadd --system nuxiva-admin; changed=1; }
     mkdir -p /etc/nuxiva /var/lib/nuxiva /var/log/nuxiva
     touch /etc/nuxiva/nuxiva.env
-    if grep -qi '^NUXIVA_ASSISTANT_NAME=.*jarvis' /etc/nuxiva/nuxiva.env 2>/dev/null; then
-        sed -i -E 's/^NUXIVA_ASSISTANT_NAME=.*[jJ][aA][rR][vV][iI][sS].*/NUXIVA_ASSISTANT_NAME=Hey NUXIVA/' /etc/nuxiva/nuxiva.env
-        changed=1
-    fi
     chmod +x "$NUXIVA_DIR/scripts/os/kiosk/session.sh" "$NUXIVA_DIR/scripts/os/nuxivactl" \
         "$NUXIVA_DIR/scripts/os/"*.sh "$NUXIVA_DIR/scripts/os/steps/"*.sh 2>/dev/null || true
     [ "$(stat -c %a /etc/nuxiva)" = 700 ] || { chmod 700 /etc/nuxiva; changed=1; }

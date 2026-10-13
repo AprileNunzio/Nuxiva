@@ -66,3 +66,25 @@ async def agent_set(agent: str, key: str, value: str) -> str:
         await apply_config(env_updates, "agente", steps)
     board.post(ACTING.get(), target, f"impostazione {key} cambiata", "impostazioni")
     return f"{key} di {target} impostata a «{str(value)[:80]}»"
+
+
+@registry.tool("ceo_overview", "mostra la visione esecutiva del CEO, i ruoli specializzati attivi e l'assegnazione degli incarichi", {}, agent="agent")
+async def ceo_overview() -> str:
+    from features.team.ceo import ceo
+    data = ceo.get_team_overview()
+    lines = [f"=== {data['ceo']} ===", data['mission'], "", "Agenti Specializzati:"]
+    for s in data["specialists"]:
+        lines.append(f"• [{s['id']}] {s['name']}: {s['description']}")
+    return "\n".join(lines)
+
+
+@registry.tool("ceo_delegate", "il CEO assegna un incarico esplicito a uno specialista di dominio",
+               {"specialist": "identificativo o ruolo dello specialista (sysadmin, coder, domotica, vision, audio, secretary, research, security, advisor)", "task": "dettagli dell'incarico"}, agent="agent")
+async def ceo_delegate(specialist: str, task: str) -> str:
+    from features.team.ceo import SPECIALIST_ROSTER
+    spec = SPECIALIST_ROSTER.get(specialist.strip().lower())
+    if not spec:
+        valid = ", ".join(SPECIALIST_ROSTER.keys())
+        raise ValueError(f"Specialista «{specialist}» sconosciuto. Ruoli validi: {valid}")
+    board.post("ceo", spec.role_id, f"Incarico esplicito per {spec.name}: {task[:200]}", "direttiva_esecutiva")
+    return f"Incarico assegnato con successo dal CEO a «{spec.name}» ({spec.role_id}): {task}"

@@ -68,7 +68,8 @@ STEPS = [
          critical=False, background=True, priority=95, size_gb=6.0),
     Step("convert3d", "62-convert3d.sh", "Conversione 3D", "Blender e LibreDWG per aprire BLEND, USD e DWG", 1,
          critical=False, background=True, priority=70, size_gb=1.0),
-    Step("models", "60-models.sh", "Reti neurali essenziali", "Modello linguistico veloce e memoria semantica", 12),
+    Step("models", "60-models.sh", "Reti neurali essenziali", "Modello linguistico veloce e memoria semantica", 12,
+         critical=False),
     Step("brain", "61-brain.sh", "Cervello potente", "Modello linguistico per il ragionamento profondo", 18,
          critical=False, background=True, priority=30, size_gb=8.0),
     Step("soup", "67-soup.sh", "Consolidamento dello studio", "Addestramento con Soup (solo con GPU adatta)", 1,
@@ -77,7 +78,7 @@ STEPS = [
     Step("services", "80-services.sh", "Servizi cognitivi", "Core, memoria vettoriale e agenti", 7),
     Step("maintenance", "90-maintenance.sh", "Manutenzione autonoma", "Aggiornamenti di sicurezza e log", 2,
          critical=False),
-    Step("warmup", "95-warmup.sh", "Attivazione neurale", "Caricamento delle reti in memoria", 6),
+    Step("warmup", "95-warmup.sh", "Attivazione neurale", "Caricamento delle reti in memoria", 6, critical=False),
 ]
 STEP_BY_ID = {s.id: s for s in STEPS}
 TOTAL_WEIGHT = sum(s.weight for s in STEPS)
@@ -88,12 +89,19 @@ def step_catalog() -> list:
              "background": s.background, "priority": s.priority} for s in STEPS]
 
 
+SPEED_RE = re.compile(r"(\d+(?:\.\d+)?\s*(?:[kKMGT]?B/s|[kKMGT]?iB/s))", re.IGNORECASE)
+PCT_RE = re.compile(r"(\d{1,3})%")
+
+
 def _record(step: Step) -> dict:
     rec = store.steps.get(step.id)
     if not isinstance(rec, dict):
         rec = {}
     rec.setdefault("status", "pending")
     rec.setdefault("progress", 0)
+    rec.setdefault("speed", "")
+    rec.setdefault("detail", "")
+    rec.setdefault("last_update", 0.0)
     rec.setdefault("message", "")
     rec.setdefault("attempts", 0)
     rec.setdefault("error", "")
@@ -161,6 +169,17 @@ async def _run_script(step: Step, action: str, stream: bool, quiet: bool = False
                 rec["detail"] = line[:160]
             else:
                 store.detail = line[:160]
+            rec["last_update"] = time.time()
+            sm = SPEED_RE.search(line)
+            if sm:
+                rec["speed"] = sm.group(1)
+            pm = PCT_RE.search(line)
+            if pm:
+                try:
+                    rec["progress"] = max(0, min(100, int(pm.group(1))))
+                    _recompute_progress()
+                except ValueError:
+                    pass
             store.touch()
         elif line.startswith("@@PROGRESS "):
             parts = line.split(" ", 2)
@@ -172,12 +191,22 @@ async def _run_script(step: Step, action: str, stream: bool, quiet: bool = False
                 rec["message"] = parts[2][:200]
                 if not quiet:
                     store.message = parts[2]
+            rec["last_update"] = time.time()
             _recompute_progress()
+        elif line.startswith("@@SPEED "):
+            rec["speed"] = line[8:].strip()[:30]
+            rec["last_update"] = time.time()
+            store.touch()
         elif line.startswith("@@DETAIL "):
+            dt = line[9:].strip()
             if quiet:
-                rec["detail"] = line[9:169]
+                rec["detail"] = dt[:160]
             else:
-                store.detail = line[9:]
+                store.detail = dt
+            rec["last_update"] = time.time()
+            sm = SPEED_RE.search(dt)
+            if sm:
+                rec["speed"] = sm.group(1)
             store.touch()
         else:
             store.log(line[:500], step.id)
@@ -196,9 +225,11 @@ async def _demo_script(step: Step, action: str, stream: bool, quiet: bool = Fals
     for pct in range(0, 101, random.choice((5, 10, 20))):
         await asyncio.sleep(0.15 * step.weight / 4 + 0.1)
         rec["progress"] = pct
+        rec["last_update"] = time.time()
+        rec["speed"] = f"{random.uniform(28.0, 48.0):.1f} MB/s" if 0 < pct < 100 else ""
         rec["message"] = f"{step.title}: {pct}%"
         if quiet:
-            rec["detail"] = f"{pct * step.size_gb / 100:.2f}/{step.size_gb:.2f} GB — 42.0 MB/s"
+            rec["detail"] = f"{pct * step.size_gb / 100:.2f}/{step.size_gb:.2f} GB — {rec['speed'] or '42.0 MB/s'}"
         else:
             store.message = rec["message"]
         if step.id == "models" and not quiet:
@@ -233,20 +264,20 @@ async def converge_step(step: Step, force: bool = False, quiet: bool = False) ->
     started = time.time()
 
     if not force:
-        rec.update(status="checking", message="Verifica…", detail="")
+        rec.update(status="checking", message="Verifica…", detail="", speed="")
         if not quiet:
             store.message = f"Verifica: {step.title}"
             store.detail = ""
         store.touch()
         code, _ = await run_step_action(step, "check", stream=False, quiet=quiet)
         if code == 0:
-            rec.update(status="done", progress=100, message="Operativo", error="")
+            rec.update(status="done", progress=100, message="Operativo", error="", speed="")
             _recompute_progress()
             return True
 
     for attempt in range(1, MAX_ATTEMPTS + 1):
         rec.update(status="running", progress=0, attempts=rec.get("attempts", 0) + 1,
-                   message="Avvio…", detail="")
+                   message="Avvio…", detail="", speed="", last_update=time.time())
         if not quiet:
             store.message = step.title
             store.detail = ""
@@ -258,14 +289,14 @@ async def converge_step(step: Step, force: bool = False, quiet: bool = False) ->
             check_code, _ = await run_step_action(step, "check", stream=False, quiet=quiet)
             if check_code == 0:
                 rec.update(status="done", progress=100, message="Completato", error="",
-                           duration=round(time.time() - started))
+                           speed="", duration=round(time.time() - started))
                 store.event("INFO", f"'{step.title}' completato in {rec['duration']}s", step.id)
                 store.save()
                 _recompute_progress()
                 return True
             error = error or "Verifica finale non superata"
 
-        rec.update(status="retrying", error=error or f"Codice di uscita {code}")
+        rec.update(status="retrying", error=error or f"Codice di uscita {code}", speed="")
         if not quiet:
             store.last_error = f"{step.title}: {rec['error']}"
         store.event("ERROR", f"'{step.title}' fallito: {rec['error']}", step.id)

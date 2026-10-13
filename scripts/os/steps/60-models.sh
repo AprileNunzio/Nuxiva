@@ -34,6 +34,8 @@ model_present() {
 step_check() {
     local m
     ollama_remote && return 0
+    [ "${NUXIVA_BRAIN:-}" = "local" ] || return 0
+    curl -fsS --max-time 3 "$OLLAMA_URL/api/version" >/dev/null 2>&1 || return 0
     for m in $(models); do model_present "$m" || return 1; done
 }
 
@@ -65,6 +67,7 @@ with urllib.request.urlopen(req, timeout=3600) as resp:
             print(f"@@PROGRESS {base + pct * span // 100} Download {model}: {pct}%", flush=True)
             print(f"@@DETAIL {model} — {done / 1e9:.2f}/{total / 1e9:.2f} GB — "
                   f"{speed / 1e6:.1f} MB/s — ETA {eta // 60}m{eta % 60:02d}s", flush=True)
+            print(f"@@SPEED {speed / 1e6:.1f} MB/s", flush=True)
             last_emit, last_bytes, last_t = now, done, now
         elif not total and status:
             print(f"[INFO] {model}: {status}", flush=True)
@@ -72,7 +75,16 @@ PY
 }
 
 step_apply() {
-    curl -fsS --max-time 5 "$OLLAMA_URL/api/version" >/dev/null || fail "Ollama non è in esecuzione"
+    if [ "${NUXIVA_BRAIN:-}" != "local" ] && ! ollama_remote; then
+        info "Cervello locale non selezionato: download modelli Ollama ignorato"
+        progress 100 "In attesa di scelta tra Ollama locale o LLM esterno"
+        return 0
+    fi
+    if ! curl -fsS --max-time 5 "$OLLAMA_URL/api/version" >/dev/null 2>&1; then
+        warn "Ollama non è in esecuzione: bypass automatico (puoi configurare Ollama o un LLM esterno tramite API key)"
+        progress 100 "Bypassato: in attesa di Ollama o LLM esterno"
+        return 0
+    fi
     local all=($(models)) i=0 n span
     n=${#all[@]}
     span=$((100 / n))

@@ -40,12 +40,26 @@ unload_others() {
 
 step_check() {
     local main
+    if [ "${NUXIVA_BRAIN:-}" != "local" ] && ! ollama_remote; then
+        return 0
+    fi
+    curl -fsS --max-time 3 "$OLLAMA_URL/api/version" >/dev/null 2>&1 || return 0
     main=$(primary_model)
     [ -z "$main" ] || loaded "$(normalize "$main")"
 }
 
 step_apply() {
     local main embed reply
+    if [ "${NUXIVA_BRAIN:-}" != "local" ] && ! ollama_remote; then
+        info "Cervello locale non selezionato: precaricamento Ollama ignorato"
+        progress 100 "Solo cervelli esterni o in attesa di scelta"
+        return 0
+    fi
+    if ! curl -fsS --max-time 5 "$OLLAMA_URL/api/version" >/dev/null 2>&1; then
+        warn "Ollama non è in esecuzione: attivazione neurale locale ignorata"
+        progress 100 "Bypassato: in attesa di Ollama o LLM esterno"
+        return 0
+    fi
     main=$(primary_model)
     embed=$(normalize "${NUXIVA_EMBED_MODEL:-nomic-embed-text}")
 
@@ -55,7 +69,7 @@ step_apply() {
     else
         curl -fsS --max-time 120 "$OLLAMA_URL/api/embed" \
         -d "{\"model\":\"$embed\",\"input\":\"Nuxiva online\",\"keep_alive\":\"5m\"}" >/dev/null \
-        || fail "La rete di embedding $embed non risponde"
+        || warn "La rete di embedding $embed non risponde"
     fi
 
     if [ -z "$main" ]; then
@@ -66,7 +80,7 @@ step_apply() {
     main=$(normalize "$main")
     unload_others "$main" "$embed"
     progress 60 "Attivazione rete linguistica $main"
-    reply=$(ask "$main") || fail "La rete linguistica $main non risponde"
+    reply=$(ask "$main") || { warn "La rete linguistica $main non risponde"; return 0; }
     info "Test neurale: '$reply'"
     progress 100 "Rete linguistica $main attiva; gli altri modelli si caricano solo quando servono"
 }

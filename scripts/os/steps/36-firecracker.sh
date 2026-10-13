@@ -51,7 +51,7 @@ step_check() {
 
 fetch_verified() {
     local url=$1 sha=$2 target=$3
-    retry 4 15 curl -fsSL --connect-timeout 20 -C - -o "$target" "$url" || return 1
+    retry 4 15 download_file "$target" "$url" "$(basename "$target")" 10 50 || return 1
     echo "$sha  $target" | sha256sum -c >/dev/null 2>&1
 }
 

@@ -44,11 +44,11 @@ piper_voices_ready() {
 
 install_piper_fallback() {
     if [ ! -x "$VOICE_DIR/piper/piper" ]; then
-        progress 5 "Download del motore vocale di riserva"
         local tarball
         tarball=$(mktemp)
-        retry 3 5 curl -fsSL -o "$tarball" \
-            "https://github.com/rhasspy/piper/releases/download/$PIPER_VERSION/piper_linux_$(piper_arch).tar.gz"
+        retry 3 5 download_file "$tarball" \
+            "https://github.com/rhasspy/piper/releases/download/$PIPER_VERSION/piper_linux_$(piper_arch).tar.gz" \
+            "Piper ($PIPER_VERSION)" 5 20
         rm -rf "$VOICE_DIR/piper"
         tar -xzf "$tarball" -C "$VOICE_DIR"
         rm -f "$tarball"
@@ -56,8 +56,8 @@ install_piper_fallback() {
     local ext
     for ext in onnx onnx.json; do
         if [ ! -s "$VOICE_DIR/voices/$FALLBACK.$ext" ]; then
-            retry 3 5 curl -fsSL -o "$VOICE_DIR/voices/$FALLBACK.$ext.part" "$VOICES_URL/$(piper_voice_path "$FALLBACK").$ext"
-            mv -f "$VOICE_DIR/voices/$FALLBACK.$ext.part" "$VOICE_DIR/voices/$FALLBACK.$ext"
+            retry 3 5 download_file "$VOICE_DIR/voices/$FALLBACK.$ext" \
+                "$VOICES_URL/$(piper_voice_path "$FALLBACK").$ext" "$FALLBACK.$ext" 25 15
         fi
     done
     piper_ok || warn "Voce di riserva Piper non funzionante"
@@ -86,13 +86,12 @@ step_apply() {
         retry 3 5 "$KOKORO/venv/bin/pip" install -q --upgrade pip
         retry 3 5 "$KOKORO/venv/bin/pip" install -q kokoro-onnx
     fi
-    local f
+    local f base=45
     for f in kokoro-v1.0.onnx voices-v1.0.bin; do
         if [ ! -s "$KOKORO/$f" ]; then
-            progress 45 "Download della voce neurale maschile ($f)"
-            retry 3 5 curl -fsSL -o "$KOKORO/$f.part" "$KOKORO_URL/$f"
-            mv -f "$KOKORO/$f.part" "$KOKORO/$f"
+            retry 3 5 download_file "$KOKORO/$f" "$KOKORO_URL/$f" "Kokoro ($f)" "$base" 18
         fi
+        base=$((base + 18))
     done
 
     progress 80 "Avvio del servizio vocale"

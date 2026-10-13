@@ -62,8 +62,8 @@
     $("bg-toggle").hidden = !!bg.finished;
     $("bg-body").innerHTML = bg.items.map((i, n) => `<tr><td>${fmt.esc(i.title)}<div class="faint" style="font-size:12px">${fmt.esc(i.description)}</div></td>
       <td class="mono">${Number(i.size_gb).toFixed(1)} GB</td>
-      <td><span class="badge ${BG_BADGE[i.status] || ""}">${BG_STATUS[i.status] || fmt.esc(i.status)}${i.status === "running" ? ` ${i.progress}%` : ""}</span></td>
-      <td style="max-width:320px; font-size:12px" class="dim">${fmt.esc(i.detail || i.message || "")}</td>
+      <td><span class="badge ${BG_BADGE[i.status] || ""}">${BG_STATUS[i.status] || fmt.esc(i.status)}${i.status === "running" ? ` ${i.progress}%` : ""}</span>${i.speed ? `<div class="mono">${`↓ ${fmt.esc(i.speed)}`}</div>` : ""}</td>
+      <td style="max-width:320px; font-size:12px" class="${i.status === "running" ? "text-cyan" : "dim"}">${fmt.esc(i.detail || i.message || "")}</td>
       <td style="text-align:right">${i.status !== "done" && n > 0 ? `<button class="btn sm" type="button" data-bg-first="${fmt.esc(i.id)}">Prima</button>` : ""}</td></tr>`).join("");
   }
 

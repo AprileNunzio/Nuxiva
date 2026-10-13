@@ -96,10 +96,11 @@ install_instant() {
         retry 3 5 "$EAR/venv/bin/pip" install -q onnxruntime requests tqdm scipy \
             && retry 3 5 "$EAR/venv/bin/pip" install -q --no-deps openwakeword || return 1
     fi
+    local oww_i=0
     for f in "${OWW_FILES[@]}"; do
+        oww_i=$((oww_i + 1))
         [ -s "$EAR/wakeword/$f" ] && continue
-        retry 3 5 curl -fsSL -o "$EAR/wakeword/$f.part" "$OWW_URL/$f" || return 1
-        mv -f "$EAR/wakeword/$f.part" "$EAR/wakeword/$f"
+        retry 3 5 download_file "$EAR/wakeword/$f" "$OWW_URL/$f" "Wakeword ($f)" $((55 + oww_i * 5)) 5 || return 1
     done
     fetch_wake_model || return 1
     py -c "
@@ -114,8 +115,7 @@ install_voiceprint() {
         retry 3 5 "$EAR/venv/bin/pip" install -q "sherpa-onnx==$SHERPA_VERSION" "sherpa-onnx-core==$SHERPA_VERSION" || return 1
     fi
     if [ ! -s "$EAR/voiceprint/speaker.onnx" ]; then
-        retry 3 10 curl -fsSL -o "$EAR/voiceprint/speaker.onnx.part" "$SPEAKER_URL" || return 1
-        mv -f "$EAR/voiceprint/speaker.onnx.part" "$EAR/voiceprint/speaker.onnx"
+        retry 3 10 download_file "$EAR/voiceprint/speaker.onnx" "$SPEAKER_URL" "speaker.onnx" 75 10 || return 1
     fi
     py -c "
 import sherpa_onnx
