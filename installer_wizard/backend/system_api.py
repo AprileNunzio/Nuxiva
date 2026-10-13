@@ -99,13 +99,7 @@ async def trigger_holo_action(req: HoloActionReq):
 
 @admin_routes.get("/classic")
 async def admin_index(request: Request):
-    if not setup_api.done():
-        port = "" if PUBLIC_PORT == 80 else f":{PUBLIC_PORT}"
-        return RedirectResponse(f"http://{request.url.hostname}{port}/setup", status_code=303)
-    response = page("admin/admin.html", page_language(request, admin=True))
-    response.headers["Content-Security-Policy"] = "frame-ancestors 'self'"
-    response.headers["X-Frame-Options"] = "SAMEORIGIN"
-    return response
+    return RedirectResponse("/", status_code=308)
 
 
 @admin_routes.post("/api/auth/login")

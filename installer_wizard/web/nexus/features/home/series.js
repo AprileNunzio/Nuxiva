@@ -1,7 +1,13 @@
 import { store } from "../../core/store.js";
 import { Series } from "../../components/charts.js";
 
-export const SERIES = { cpu: new Series(), mem: new Series(), disk: new Series(), temp: new Series() };
+export const SERIES = {
+  cpu: new Series(),
+  mem: new Series(),
+  disk: new Series(),
+  temp: new Series(),
+  gpu: new Series(),
+};
 let lastTime = 0, tracking = false;
 
 export function trackSystem() {
@@ -15,5 +21,6 @@ export function trackSystem() {
     SERIES.mem.push(sys.mem_percent);
     SERIES.disk.push(sys.disk_percent);
     if (sys.temperature != null) SERIES.temp.push(sys.temperature);
+    if (sys.gpu) SERIES.gpu.push(sys.gpu.gpu_percent || 0);
   });
 }

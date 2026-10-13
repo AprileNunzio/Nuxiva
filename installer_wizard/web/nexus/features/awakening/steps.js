@@ -41,7 +41,7 @@ export const STEPS = {
         ["cloud", "Nel cloud", "Il più intelligente, serve una chiave"]], a.brain, (brain) => set({ brain })),
       a.brain === "remote" ? h("div", { class: "field" }, h("label", { for: "aw-url" }, "Indirizzo del computer con Ollama"),
         h("input", { class: "input", id: "aw-url", placeholder: "192.168.1.20", maxlength: "120", value: a.url || "", oninput: (e) => set({ url: e.target.value }, false) })) : null,
-      a.brain === "cloud" ? h("p", { class: "aw-note" }, "Dopo il Risveglio inserisci la chiave del servizio in Cervello → Cloud.") : null,
+      a.brain === "cloud" ? h("p", { class: "aw-note" }, "Dopo la Configurazione Iniziale inserisci la chiave del servizio in Cervello → Cloud.") : null,
     ],
     valid: (a) => Boolean(a.brain) && (a.brain !== "remote" || Boolean((a.url || "").trim())),
     async apply(a, current) {

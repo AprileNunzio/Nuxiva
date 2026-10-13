@@ -1,41 +1,24 @@
 import { api } from "./http.js";
 import { store } from "./store.js";
 
-export const LEVELS = [
-  { id: "explorer", label: "Esploratore", hint: "Poche scelte chiare, ti guida Nuxiva" },
-  { id: "pilot", label: "Pilota", hint: "Zone, interruttori e modelli pronti" },
-  { id: "architect", label: "Architetto", hint: "Tutto: file, priorità, JSON e log" },
-];
-const RANK = { explorer: 0, pilot: 1, architect: 2 };
-const CACHE_KEY = "nexus.level";
+// Sistema unificato: Esploratore, Pilota e Architetto sono stati rimossi.
+// Nuxiva ora opera con un unico metodo integrato a piena potenza.
+export const LEVELS = [];
+const CACHE_KEY = "nexus.mode";
 
-export const rank = (level) => RANK[level] ?? 1;
-export const allows = (minimum, level = store.get().level) => rank(level) >= rank(minimum);
+export const rank = () => 1;
+export const allows = () => true;
 
 export function cachedLevel() {
-  try {
-    const value = localStorage.getItem(CACHE_KEY);
-    return value in RANK ? value : null;
-  } catch {
-    return null;
-  }
+  return "unified";
 }
 
-export function applyLevel(level) {
-  document.body.dataset.level = level;
-  try { localStorage.setItem(CACHE_KEY, level); } catch {}
+export function applyLevel(level = "unified") {
+  document.body.dataset.level = "unified";
+  try { localStorage.setItem(CACHE_KEY, "unified"); } catch {}
 }
 
 export async function chooseLevel(level) {
-  if (!(level in RANK)) return;
-  const previous = store.get().level;
-  applyLevel(level);
-  store.set({ level });
-  try {
-    await api("/api/nexus/preferences", { method: "PUT", body: { level } });
-  } catch (err) {
-    applyLevel(previous);
-    store.set({ level: previous });
-    throw err;
-  }
+  applyLevel("unified");
+  store.set({ level: "unified" });
 }

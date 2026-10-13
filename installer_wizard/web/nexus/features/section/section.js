@@ -16,7 +16,7 @@ export function renderSection(outlet, route) {
   const section = sections().find((s) => s.tab === route.param);
   if (!section) {
     mount(outlet, h("section", { class: "view" }, h("div", { class: "view-head" }, h("h2", {}, "Sezione non trovata"),
-      h("a", { class: "btn", href: "#/home" }, "Torna alla Plancia"))));
+      h("a", { class: "btn", href: "#/home" }, "Torna alla Dashboard"))));
     return;
   }
   document.title = `${section.label} · Nuxiva Nexus`;

@@ -241,6 +241,16 @@ def ollama_remote() -> bool:
     return host not in ("127.0.0.1", "localhost", "::1", "")
 
 
+def _format_env_line(key: str, value: str) -> str:
+    s = str(value).strip()
+    if (s.startswith('"') and s.endswith('"')) or (s.startswith("'") and s.endswith("'")):
+        return f"{key}={s}"
+    if any(c in s for c in " \t'\"$#;*?()[]{}|&<>~`="):
+        escaped = s.replace("\\", "\\\\").replace('"', '\\"')
+        return f'{key}="{escaped}"'
+    return f"{key}={s}"
+
+
 def write_env(updates: dict) -> None:
     for key, value in updates.items():
         if not _KEY_RE.match(key) or "\n" in str(value):
@@ -249,14 +259,18 @@ def write_env(updates: dict) -> None:
     pending = dict(updates)
     out = []
     for line in lines:
-        key = line.split("=", 1)[0].strip() if "=" in line and not line.lstrip().startswith("#") else None
-        if key in pending:
-            value = pending.pop(key)
-            if value != "":
-                out.append(f"{key}={value}")
+        if "=" in line and not line.lstrip().startswith("#"):
+            k, v = line.split("=", 1)
+            k = k.strip()
+            if k in pending:
+                val = pending.pop(k)
+                if val != "":
+                    out.append(_format_env_line(k, val))
+            else:
+                out.append(_format_env_line(k, v))
         else:
             out.append(line)
-    out.extend(f"{k}={v}" for k, v in pending.items() if v != "")
+    out.extend(_format_env_line(k, v) for k, v in pending.items() if v != "")
     tmp = ENV_FILE.with_suffix(".tmp")
     tmp.write_text("\n".join(out) + "\n", encoding="utf-8")
     os.chmod(tmp, 0o600)

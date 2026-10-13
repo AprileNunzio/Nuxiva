@@ -1,6 +1,6 @@
 import { h, mount } from "./core/dom.js";
 import { api, onUnauthorized, stream } from "./core/http.js";
-import { LEVELS, allows, applyLevel, cachedLevel, chooseLevel } from "./core/level.js";
+import { applyLevel, cachedLevel } from "./core/level.js";
 import { current, define, go, setFallback, start, view } from "./core/router.js";
 import { store } from "./core/store.js";
 import { fail, toast } from "./core/toast.js";
@@ -23,41 +23,37 @@ const root = document.getElementById("nexus");
 function registerRoutes() {
   for (const z of ZONES) define(z.id, renderZone);
   define("home", renderHome);
+  define("dashboard", renderHome);
   define("tool", renderTool);
   define("awakening", renderAwakening);
   define("flows", renderFlows);
   define("section", renderSection);
-  define("classic", renderSection);
+  define("classic", () => go("home"));
   define("widgets", renderWidgets);
   setFallback("home");
 }
 
 function registerPalette() {
-  addSource(() => ZONES.filter((z) => allows(z.min)).map((z) => ({
+  addSource(() => ZONES.map((z) => ({
     glyph: z.glyph, title: z.title, kind: "Zona", keywords: z.lead, run: () => go(z.id),
   })));
-  addSource(() => LEVELS.map((l) => ({
-    glyph: "◍", title: `Passa al livello ${l.label}`, kind: "Azione", keywords: `livello ${l.hint}`,
-    run: () => chooseLevel(l.id).then(() => toast(`Livello ${l.label}`)).catch(fail),
-  })));
-  addSource(() => (summary()?.tools || []).filter((t) => allows(t.level)).map((t) => ({
+  addSource(() => (summary()?.tools || []).map((t) => ({
     glyph: t.icon, title: t.name, kind: t.badge === "new" ? "Strumento · Novità" : t.badge === "updated" ? "Strumento · Aggiornato" : "Strumento", keywords: `${t.description} ${t.id}`, run: () => go("tool", t.id),
   })));
-  addSource(() => sections().filter((s) => allows(s.zone.min)).map((s) => ({
+  addSource(() => sections().map((s) => ({
     glyph: s.zone.glyph, title: s.label, kind: `Sezione · ${s.zone.title}`, keywords: s.tab, run: () => go("section", s.tab),
   })));
   addSource(() => cachedWidgets().map((w) => ({
     glyph: w.icon || "▣", title: w.name, kind: "Widget · mostra sul display", keywords: `widget ${w.description || ""} ${w.id}`,
     run: () => recall(w).catch(fail),
   })));
-
 }
 
 async function loadPreferences() {
   try {
     const prefs = await api("/api/nexus/preferences");
-    applyLevel(prefs.level);
-    store.set({ level: prefs.level, favorites: prefs.favorites });
+    applyLevel("unified");
+    store.set({ level: "unified", favorites: prefs.favorites || [] });
   } catch (err) {
     fail(err);
   }
@@ -71,14 +67,11 @@ async function enter(user) {
   widgets().catch(() => {});
   stream("/api/stream", (snapshot) => store.set({ snapshot }), (link) => store.set({ link }));
   start((route) => shell.show(route, view(route.id)));
-  store.subscribe((_, changed) => {
-    if (changed.includes("level")) { const route = current(); shell.show(route, view(route.id)); }
-  });
 }
 
 async function boot() {
-  const level = cachedLevel();
-  if (level) { applyLevel(level); store.set({ level }); }
+  applyLevel("unified");
+  store.set({ level: "unified" });
   registerRoutes();
   registerPalette();
   installShortcut();

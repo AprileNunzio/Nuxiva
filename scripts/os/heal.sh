@@ -28,6 +28,11 @@ if ! curl -fsS --max-time 8 -o /dev/null https://github.com; then
     sleep 5
 fi
 
+# Sanificazione automatica /etc/nuxiva/nuxiva.env contro errori di quoting o spazi
+if [ -f /etc/nuxiva/nuxiva.env ]; then
+    sed -i -E 's/^([A-Za-z0-9_]+)=(["][^"]*["]|['"'"'][^'"'"']*['"'"']|[A-Za-z0-9_.:\/-]+)(.*)$/\1="\2\3"/' /etc/nuxiva/nuxiva.env 2>/dev/null || true
+fi
+
 case "$step" in
     docker|core|services|gpu)
         if command -v docker >/dev/null && ! docker info >/dev/null 2>&1; then
@@ -38,9 +43,18 @@ case "$step" in
         ;;
     ollama|models|warmup)
         if systemctl list-unit-files ollama.service >/dev/null 2>&1; then
-            warn "Riavvio del motore neurale"
+            warn "Diagnosi e ripristino del motore neurale Ollama"
+            getent group ollama >/dev/null || groupadd -r ollama 2>/dev/null || true
+            id -u ollama >/dev/null 2>&1 || useradd -r -g ollama -s /bin/false -m -d /usr/share/ollama ollama 2>/dev/null || true
+            mkdir -p /usr/share/ollama/.ollama/models
+            chown -R ollama:ollama /usr/share/ollama 2>/dev/null || true
+            chmod 755 /usr/share/ollama 2>/dev/null || true
+            systemctl daemon-reload
             systemctl restart ollama
-            sleep 5
+            sleep 4
+            if ! curl -fsS --max-time 3 http://127.0.0.1:11434/api/version >/dev/null 2>&1; then
+                journalctl -u ollama -n 15 --no-pager 2>/dev/null || true
+            fi
         fi
         ;;
 esac

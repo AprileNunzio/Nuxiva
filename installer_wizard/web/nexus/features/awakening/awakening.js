@@ -29,7 +29,7 @@ export function renderAwakening(outlet) {
   };
 
   function stepList() {
-    return h("ol", { class: "aw-steps", "aria-label": "Passi del Risveglio" }, [...state.steps, { id: "done" }].map((s, i) => {
+    return h("ol", { class: "aw-steps", "aria-label": "Passi Configurazione Iniziale" }, [...state.steps, { id: "done" }].map((s, i) => {
       const done = s.status === "done" || s.status === "skipped";
       return h("li", { class: `${done ? "done" : ""}${i === index ? " cur" : ""}`, "aria-current": i === index ? "step" : null },
         h("button", { type: "button", class: "aw-step", onclick: () => { if (s.id !== "done") load(i); else { index = state.steps.length; paint(); } } },
@@ -42,31 +42,34 @@ export function renderAwakening(outlet) {
   function finale() {
     const p = state.progress;
     return h("div", { class: "panel aw-card" },
-      h("p", { class: "eyebrow" }, "Risveglio"),
-      h("h2", {}, p.complete ? "Sono pronta." : "Ci siamo quasi."),
-      h("div", { class: "ready" }, ring(p.percent, "Risveglio completato"),
-        h("p", { class: "dim" }, p.complete ? "Abbiamo deciso tutto insieme. Puoi rifare il Risveglio quando vuoi."
-          : `Mancano ${p.total - p.finished} passi: puoi completarli adesso o più tardi.`)),
+      h("p", { class: "eyebrow" }, "Configurazione Iniziale · Facoltativa"),
+      h("h2", {}, p.complete ? "Configurazione completata." : "Configurazione in corso."),
+      h("div", { class: "ready" }, ring(p.percent, "Stato Configurazione"),
+        h("p", { class: "dim" }, p.complete
+          ? "I parametri essenziali sono stati configurati. Questa procedura è facoltativa: puoi rifarla liberamente ogni volta che desideri o proseguire."
+          : `Rimangono ${p.total - p.finished} passi facoltativi: puoi completarli ora oppure accedere direttamente alla Dashboard.`)),
       h("div", { class: "aw-summary" }, state.steps.map((s) => h("div", {}, h("span", {}, STEPS[s.id].label),
         h("b", {}, s.note || (s.status === "skipped" ? "Saltato" : "Da fare"))))),
       h("div", { class: "aw-nav" },
-        h("button", { class: "btn ghost", type: "button", onclick: restart }, "Ricomincia"),
+        h("button", { class: "btn ghost", type: "button", onclick: restart }, "Rifai Configurazione Iniziale"),
         h("span", { class: "spacer" }),
-        p.complete ? null : h("button", { class: "btn", type: "button", onclick: () => load() }, "Completa i passi mancanti"),
-        h("a", { class: "btn primary", href: "#/home" }, "Vai alla Plancia")));
+        p.complete ? null : h("button", { class: "btn", type: "button", onclick: () => load() }, "Completa passi"),
+        h("a", { class: "btn primary", href: "#/dashboard" }, "Vai alla Dashboard")));
   }
 
   function card() {
     const id = state.steps[index].id, step = STEPS[id];
     const ok = step.valid(answers, state.current);
     return h("div", { class: "panel aw-card" },
-      h("p", { class: "eyebrow" }, `Passo ${index + 1} di ${state.steps.length}`),
+      h("div", { class: "aw-optional-tag", style: "display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 6px; background: rgba(41, 224, 255, 0.15); color: var(--cyan); margin-bottom: 6px;" }, "PROCEDURA FACOLTATIVA"),
+      h("p", { class: "eyebrow" }, `Configurazione Iniziale · Passo ${index + 1} di ${state.steps.length}`),
       h("h2", {}, step.title), h("p", { class: "aw-lead" }, step.text),
       step.form(answers, set, state.current),
       h("div", { class: "aw-nav" },
         index > 0 ? h("button", { class: "btn ghost", type: "button", onclick: () => load(index - 1) }, "Indietro") : null,
+        h("a", { class: "btn ghost", href: "#/dashboard", title: "Salta e vai alla Dashboard" }, "Chiudi e vai alla Dashboard"),
         h("span", { class: "spacer" }),
-        h("button", { class: "btn ghost", type: "button", disabled: busy || null, onclick: () => advance(id, null) }, "Salta"),
+        h("button", { class: "btn ghost", type: "button", disabled: busy || null, onclick: () => advance(id, null) }, "Salta passo"),
         primary = h("button", { class: "btn primary", type: "button", disabled: busy || !ok || null, onclick: () => advance(id, step) }, busy ? "Applico…" : "Avanti")));
   }
 
@@ -96,6 +99,12 @@ export function renderAwakening(outlet) {
   }
 
   async function restart() {
-    try { await api("/api/nexus/awakening/reset", { method: "POST" }); toast("Risveglio ricominciato"); await load(0); } catch (err) { fail(err); }
+    try {
+      await api("/api/nexus/awakening/reset", { method: "POST" });
+      toast("Configurazione Iniziale riavviata");
+      await load(0);
+    } catch (err) {
+      fail(err);
+    }
   }
 }

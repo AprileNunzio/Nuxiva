@@ -28,18 +28,25 @@ api_ok() { curl -fsS --max-time 5 "$OLLAMA_URL/api/version" >/dev/null 2>&1; }
 
 local_off() { ! systemctl is-active --quiet ollama 2>/dev/null; }
 
-unit_present() {
-    [ -f /etc/systemd/system/ollama.service ] || [ -f /usr/lib/systemd/system/ollama.service ] || [ -f /lib/systemd/system/ollama.service ]
-}
-
-ensure_unit() {
-    unit_present && return 0
-    local bin
-    bin=$(command -v ollama)
-    id -u ollama >/dev/null 2>&1 || useradd -r -s /bin/false -U -m -d /usr/share/ollama ollama 2>/dev/null || true
+ensure_ollama_user() {
+    getent group ollama >/dev/null || groupadd -r ollama || true
+    if ! id -u ollama >/dev/null 2>&1; then
+        useradd -r -g ollama -s /bin/false -m -d /usr/share/ollama ollama 2>/dev/null || \
+        useradd -r -s /bin/false -m -d /usr/share/ollama ollama 2>/dev/null || true
+    fi
     for grp in render video; do
         getent group "$grp" >/dev/null && usermod -a -G "$grp" ollama 2>/dev/null || true
     done
+    mkdir -p /usr/share/ollama/.ollama/models
+    chown -R ollama:ollama /usr/share/ollama 2>/dev/null || true
+    chmod 755 /usr/share/ollama 2>/dev/null || true
+}
+
+ensure_unit() {
+    ensure_ollama_user
+    unit_present && return 0
+    local bin
+    bin=$(command -v ollama)
     printf '%s\n' \
         '[Unit]' \
         'Description=Ollama Service' \
@@ -52,6 +59,8 @@ ensure_unit() {
         'Restart=always' \
         'RestartSec=3' \
         'Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"' \
+        'Environment="HOME=/usr/share/ollama"' \
+        'WorkingDirectory=/usr/share/ollama' \
         '' \
         '[Install]' \
         'WantedBy=default.target' > /etc/systemd/system/ollama.service
@@ -96,6 +105,7 @@ step_apply() {
     fi
     if ! command -v ollama >/dev/null 2>&1; then
         progress 10 "Download del motore neurale Ollama"
+        ensure_ollama_user
         local installer
         installer=$(mktemp)
         retry 3 5 curl -fsSL https://ollama.com/install.sh -o "$installer"
@@ -115,6 +125,7 @@ step_apply() {
     progress 90 "Attesa risposta del motore neurale"
     if ! wait_for 90 api_ok; then
         warn "Ollama non risponde su $OLLAMA_URL: proseguo (puoi configurare Ollama o un LLM esterno)"
+        journalctl -u ollama -n 25 --no-pager 2>/dev/null || true
         progress 100 "Bypassato: in attesa di configurazione LLM"
         return 0
     fi

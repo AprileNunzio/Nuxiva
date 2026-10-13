@@ -14,19 +14,19 @@ import { classicFrame } from "../../components/classic-frame.js";
 import { hasPanel, nativePanel } from "../../components/native-panel.js";
 
 const TABS = [
-  { id: "panel", label: "Plancia", min: "explorer", has: (tool) => Boolean(tool.panel) },
-  { id: "guide", label: "Configura con me", min: "explorer", has: (tool) => tool.wizard.length > 0 },
-  { id: "settings", label: "Impostazioni", min: "pilot", has: (tool) => tool.settings.length > 0 || !tool.panel },
-  { id: "advanced", label: "Avanzate", min: "architect", has: () => true },
+  { id: "panel", label: "Controllo", has: (tool) => Boolean(tool.panel) },
+  { id: "guide", label: "Configura con me", has: (tool) => tool.wizard.length > 0 },
+  { id: "settings", label: "Impostazioni", has: (tool) => tool.settings.length > 0 || !tool.panel },
+  { id: "advanced", label: "Avanzate (JSON & Debug)", has: () => true },
 ];
 
 const tabsOf = (tool) => {
-  const tabs = TABS.filter((t) => allows(t.min) && t.has(tool));
+  const tabs = TABS.filter((t) => t.has(tool));
   return tabs.length ? tabs : TABS.filter((t) => t.id === "settings");
 };
 
 function panelOf(tool) {
-  return hasPanel(tool.panel) ? nativePanel(tool.panel, { tool }) : classicFrame(tool.panel, `Plancia di ${tool.name}`);
+  return hasPanel(tool.panel) ? nativePanel(tool.panel, { tool }) : classicFrame(tool.panel, `Modulo di ${tool.name}`);
 }
 
 export async function toggleFavorite(fid) {

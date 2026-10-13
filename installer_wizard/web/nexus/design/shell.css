@@ -46,3 +46,33 @@
   .search span { display: none; }
 }
 .lang-pick { padding: 6px 10px; border-radius: 10px; border: 1px solid var(--line); background: rgba(8, 18, 32, 0.75); color: var(--text-dim); cursor: pointer; }
+
+.nx-hud-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: rgba(41, 224, 255, 0.08);
+  border: 1px solid rgba(41, 224, 255, 0.28);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--cyan);
+}
+.nx-hud-chip .chip-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+}
+.nx-hud-chip.down {
+  background: rgba(255, 77, 106, 0.1);
+  border-color: rgba(255, 77, 106, 0.35);
+  color: var(--red);
+}
+.nx-hud-chip.down .chip-dot {
+  background: var(--red);
+  box-shadow: 0 0 8px var(--red);
+}
