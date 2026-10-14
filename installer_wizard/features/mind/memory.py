@@ -5,6 +5,7 @@ import uuid
 
 from config import STATE_DIR
 
+from features.mind import scoring
 from features.mind import text as T
 
 MIND_DIR = STATE_DIR / "mind"
@@ -28,22 +29,25 @@ class LongTermMemory:
             tmp.write_text(json.dumps(self.facts, ensure_ascii=False, indent=1), encoding="utf-8")
             tmp.replace(FACTS_FILE)
 
-    def add(self, text: str, kind: str = "fatto", score: float = 0.6, who: str = "") -> dict | None:
+    def add(self, text: str, kind: str = "fatto", score: float = 0.6, who: str = "", limbic: dict | None = None) -> dict | None:
         text = " ".join(text.split())[:200]
         if len(text) < 3:
             return None
         with self.lock:
-            return self._add(text, kind, score, who)
+            return self._add(text, kind, score, who, limbic)
 
-    def _add(self, text: str, kind: str, score: float, who: str) -> dict:
+    def _add(self, text: str, kind: str, score: float, who: str, limbic: dict | None = None) -> dict:
+        limbic_data = limbic or {"valence": 0.0, "arousal": 0.3, "dopamine": 0.5, "noradrenaline": 0.2}
         for f in self.facts:
             if T.jaccard(f["text"], text) >= 0.6:
                 f.update(text=text, score=max(f["score"], score), updated=time.time(),
-                         hits=f.get("hits", 0), who=who or f.get("who", ""))
+                         hits=f.get("hits", 0), who=who or f.get("who", ""),
+                         limbic=limbic or f.get("limbic", limbic_data))
                 self.save()
                 return f
         fact = {"id": uuid.uuid4().hex[:8], "text": text, "kind": kind, "score": round(score, 2),
-                "who": who, "created": time.time(), "updated": time.time(), "hits": 0}
+                "who": who, "created": time.time(), "updated": time.time(), "hits": 0,
+                "rehearsals": 1, "limbic": limbic_data}
         self.facts.append(fact)
         self.facts.sort(key=lambda x: -x["score"])
         del self.facts[MAX_FACTS:]
@@ -61,11 +65,13 @@ class LongTermMemory:
                 continue
             rel = T.overlap(query, f["text"])
             if rel >= 0.34:
-                scored.append((rel * 0.7 + f["score"] * 0.3, f))
+                retention_score = scoring.score_memory_retention(f, rel)
+                scored.append((retention_score, f))
         scored.sort(key=lambda x: -x[0])
         hits = [f for _, f in scored[:k]]
         for f in hits:
             f["hits"] = f.get("hits", 0) + 1
+            f["rehearsals"] = f.get("rehearsals", 1) + 1
         if hits:
             self.save()
         return hits

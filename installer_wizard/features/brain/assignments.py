@@ -1,7 +1,10 @@
 import json
 import re
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Callable, Mapping
+
+from config import STATE_DIR
 
 from features.brain.components import BY_ID as COMPONENT_BY_ID
 from features.brain.roles import BY_ID as ROLE_BY_ID
@@ -95,3 +98,19 @@ def resolve(component_id: str, assignments: Mapping[str, Assignment], role_order
     else:
         chain = inherited
     return [ref for ref in dict.fromkeys(chain) if keep(ref)]
+
+
+def save_synaptic_weights(weights: Mapping[str, float], file_path: Path | None = None) -> None:
+    target = file_path or (STATE_DIR / "brain" / "synaptic_plasticity.json")
+    target.parent.mkdir(parents=True, exist_ok=True)
+    tmp = target.with_suffix(".tmp")
+    tmp.write_text(json.dumps(dict(weights), ensure_ascii=False, indent=2), encoding="utf-8")
+    tmp.replace(target)
+
+
+def load_synaptic_weights(file_path: Path | None = None) -> dict[str, float]:
+    target = file_path or (STATE_DIR / "brain" / "synaptic_plasticity.json")
+    try:
+        return json.loads(target.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}

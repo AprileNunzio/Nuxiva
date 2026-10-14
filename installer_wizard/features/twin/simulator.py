@@ -77,3 +77,19 @@ def review(state: HomeState, plan: dict, rules: list[str], correct: bool = True)
         dropped.extend(removed)
         _, conflicts, changes = simulate(state, current, rules)
     return Review(current, conflicts, dropped, changes)
+
+
+async def predict_user_impact(candidate: dict, limbic: object = None) -> float:
+    text = str(candidate.get("text", candidate.get("speech_output", ""))).lower()
+    if not text:
+        return 0.5
+    risk = 0.0
+    for term in ("errore", "fallito", "non riesco", "impossibile", "pericolo"):
+        if term in text:
+            risk += 0.2
+    valence = float(getattr(limbic, "valence", 0.0))
+    cortisol = float(getattr(limbic, "cortisol", 0.1))
+    dopamine = float(getattr(limbic, "dopamine", 0.5))
+    clarity = min(1.0, len(text.split()) / 25.0)
+    score = 0.5 + (0.25 * (1.0 - min(1.0, risk))) + (0.2 * dopamine) - (0.15 * cortisol) + (0.1 * valence) + (0.1 * clarity)
+    return max(0.05, min(1.0, score))

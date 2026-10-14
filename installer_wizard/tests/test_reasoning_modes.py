@@ -1,10 +1,17 @@
+import asyncio
+import tempfile
 import unittest
+from pathlib import Path
 from unittest.mock import patch
 
 from features.brain import brains as brains_module
 from features.brain import presets
-from features.brain.components import SpikingNeuronNode, SynapticSpike
+from features.brain.assignments import load_synaptic_weights, save_synaptic_weights
+from features.brain.components import LimbicModulator, SpikingNeuron, SpikingNeuronNode, SynapticSpike
+from features.chat.brain_chain import CorticalBrainChain
+from features.mind.scoring import compute_emotional_salience, score_memory_retention
 from features.people import people
+from features.twin.simulator import predict_user_impact
 from nuxiva_bus import NuxivaBus
 
 
@@ -82,6 +89,65 @@ class ReasoningModesTest(unittest.IsolatedAsyncioTestCase):
         w_initial = bus.synaptic_weights.get("talamo", "cortex")
         w_potentiated = bus.synaptic_weights.apply_stdp("talamo", "cortex", delta_t_ms=10.0, dopamine=0.8, is_reward=True)
         self.assertGreater(w_potentiated, w_initial)
+
+    def test_limbic_modulator_biometrics_and_threshold(self):
+        limbic = LimbicModulator()
+        base_thresh = limbic.compute_threshold(0.7)
+        limbic.ingest_biometrics(vocal_stress=0.8, facial_valence=-0.5, heart_rate_delta=0.4, system_pressure=0.7)
+        stressed_thresh = limbic.compute_threshold(0.7)
+        self.assertNotEqual(base_thresh, stressed_thresh)
+        self.assertLessEqual(limbic.parallel_branch_budget(8), 8)
+
+    async def test_spiking_neuron_stdp_and_firing(self):
+        neuron = SpikingNeuron("pyramidal_1", role="deep", base_threshold=0.5)
+        neuron.connect("motor_1", weight=0.8)
+        spike = SynapticSpike(source_id="sensory_1", target_id="pyramidal_1", potential=0.7)
+        p = neuron.integrate(spike)
+        self.assertGreater(p, 0.0)
+
+        fired = await neuron.evaluate_and_fire({"thought": "analyze"}, LimbicModulator())
+        self.assertGreaterEqual(len(fired), 1)
+
+        w = neuron.apply_stdp("motor_1", post_fired_at=neuron.last_fired_at + 0.01, reward_signal=1.2)
+        self.assertGreater(w, 0.8)
+
+    async def test_cortical_brain_chain_parallel_thought(self):
+        chain = CorticalBrainChain()
+        chain.set_mode("nuxiva-5.0-fast")
+
+        async def branch_slow(q, ctx, limbic):
+            await asyncio.sleep(0.05)
+            return {"text": "slow result", "confidence": 0.5}
+
+        async def branch_fast(q, ctx, limbic):
+            return {"text": "fast ignited result", "confidence": 0.95}
+
+        res = await chain.execute_parallel_thought(
+            "calcola il teorema",
+            {},
+            [branch_slow, branch_fast],
+            critic_fn=predict_user_impact,
+        )
+        self.assertIn("fast ignited result", res.get("text", ""))
+        self.assertIn("limbic_snapshot", res)
+
+    def test_emotional_salience_and_retention(self):
+        s_neutral = compute_emotional_salience(valence=0.0, arousal=0.1)
+        s_intense = compute_emotional_salience(valence=0.9, arousal=0.8, dopamine=0.9, noradrenaline=0.8)
+        self.assertGreater(s_intense, s_neutral)
+
+        now = 100000.0
+        mem = {"timestamp": now - 3600.0, "importance": 0.8, "rehearsals": 2, "limbic": {"valence": 0.8, "arousal": 0.7}}
+        score = score_memory_retention(mem, query_similarity=0.9, now_ts=now)
+        self.assertGreater(score, 0.5)
+
+    def test_synaptic_weights_persistence(self):
+        with tempfile.NamedTemporaryFile(delete=False) as tf:
+            p = Path(tf.name)
+        save_synaptic_weights({"conversation:qwen2.5:1.5b": 1.25}, file_path=p)
+        loaded = load_synaptic_weights(file_path=p)
+        p.unlink(missing_ok=True)
+        self.assertEqual(loaded.get("conversation:qwen2.5:1.5b"), 1.25)
 
 
 if __name__ == "__main__":

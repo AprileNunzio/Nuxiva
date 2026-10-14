@@ -1,11 +1,14 @@
+import asyncio
 import json
 import re
 import time
+from typing import Any
 
 import httpx
 from config import ollama_url
 from tasks import background
 
+from features.brain.assignments import load_synaptic_weights, save_synaptic_weights
 from features.brain.brains import brains
 from features.brain.trace import trace
 from features.brain.residency import keep_alive, touch
@@ -96,11 +99,86 @@ async def generate(prompt: str, *, as_json: bool = False, max_tokens: int = 500,
             errors.append(f"{model}: {str(exc)[:120]}")
             trace.failed(call, model, str(exc) or type(exc).__name__)
             brains.record(model, (time.perf_counter() - started) * 1000, False, kind)
+            if component:
+                try:
+                    sw = load_synaptic_weights()
+                    key = f"{component}:{model}"
+                    sw[key] = max(0.05, round(sw.get(key, 0.6) - 0.05, 3))
+                    save_synaptic_weights(sw)
+                except Exception:
+                    pass
             continue
         elapsed = (time.perf_counter() - started) * 1000
         brains.record(model, elapsed, True, kind)
         trace.finish(call, model, elapsed, text)
         background(touch(model))
+        if component:
+            try:
+                sw = load_synaptic_weights()
+                key = f"{component}:{model}"
+                sw[key] = min(2.5, round(sw.get(key, 0.6) + 0.05, 3))
+                save_synaptic_weights(sw)
+            except Exception:
+                pass
         return result
     trace.abort(call, "; ".join(errors))
     raise BrainUnavailable("; ".join(errors) or "nessun modello disponibile")
+
+
+async def generate_branches(
+    prompt: str,
+    *,
+    n_branches: int = 1,
+    as_json: bool = False,
+    max_tokens: int = 500,
+    temperature: float = 0.1,
+    kind: str = "deep",
+    system: str = "",
+    prefer: list[str] | None = None,
+    timeout: float = 240,
+    govern: bool = True,
+    component: str = "",
+) -> list[Any]:
+    if n_branches <= 1:
+        single = await generate(
+            prompt,
+            as_json=as_json,
+            max_tokens=max_tokens,
+            temperature=temperature,
+            kind=kind,
+            system=system,
+            prefer=prefer,
+            timeout=timeout,
+            govern=govern,
+            component=component,
+        )
+        return [single]
+    tasks = [
+        asyncio.create_task(
+            generate(
+                prompt,
+                as_json=as_json,
+                max_tokens=max_tokens,
+                temperature=min(1.0, max(0.05, temperature + (i * 0.07))),
+                kind=kind,
+                system=system,
+                prefer=prefer,
+                timeout=timeout,
+                govern=govern,
+                component=component,
+            )
+        )
+        for i in range(min(n_branches, 8))
+    ]
+    done, pending = await asyncio.wait(tasks, timeout=timeout)
+    for p in pending:
+        p.cancel()
+    results = []
+    for d in done:
+        try:
+            results.append(d.result())
+        except Exception:
+            pass
+    if not results:
+        raise BrainUnavailable("nessuna branca parallela completata")
+    return results
