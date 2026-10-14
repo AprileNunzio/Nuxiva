@@ -439,7 +439,7 @@ if [ "$EUID" -ne 0 ]; then
         echo "Stai eseguendo lo script via pipe. Se usassimo 'sudo' ora," >&2
         echo "la richiesta di password potrebbe inghiottire parte dello script." >&2
         echo "Per favore esegui il comando in questo modo:" >&2
-        echo -e "\033[32m  curl -sL <URL> | sudo bash\033[0m" >&2
+        echo -e "\033[32m  curl -fsSL https://raw.githubusercontent.com/AprileNunzio/NUXIVA/main/install.sh | sudo bash\033[0m" >&2
         exit 1
     fi
     echo -e "\033[33mQuesto script richiede i permessi di root. Richiesta sudo in corso...\033[0m" >&2
