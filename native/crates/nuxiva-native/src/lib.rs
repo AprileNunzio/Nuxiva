@@ -21,7 +21,7 @@ fn poisoned() -> PyErr {
 }
 
 #[pyclass(module = "nuxiva_native")]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct PySynapticSpike {
     #[pyo3(get, set)]
     pub source_neuron: u32,

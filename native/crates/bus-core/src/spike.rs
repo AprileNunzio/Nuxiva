@@ -19,6 +19,7 @@ pub struct SynapticSpike {
 }
 
 impl SynapticSpike {
+    #[must_use]
     pub fn new(
         source_neuron: u32,
         target_cluster: u32,
@@ -37,6 +38,7 @@ impl SynapticSpike {
         }
     }
 
+    #[must_use]
     pub fn is_inhibitory(&self) -> bool {
         self.transmitter == TransmitterType::GabaInhibitory
     }
@@ -61,6 +63,7 @@ impl<T: Clone, const N: usize> Default for RingBufferLockFree<T, N> {
 }
 
 impl<T: Clone, const N: usize> RingBufferLockFree<T, N> {
+    #[must_use]
     pub fn new() -> Self {
         Self::default()
     }
@@ -71,7 +74,13 @@ impl<T: Clone, const N: usize> RingBufferLockFree<T, N> {
         if head.wrapping_sub(tail) >= N {
             return false;
         }
-        self.buffer[head % N] = Some(item);
+        let Some(idx) = head.checked_rem(N) else {
+            return false;
+        };
+        let Some(slot) = self.buffer.get_mut(idx) else {
+            return false;
+        };
+        *slot = Some(item);
         self.head.store(head.wrapping_add(1), Ordering::Release);
         true
     }
@@ -82,7 +91,8 @@ impl<T: Clone, const N: usize> RingBufferLockFree<T, N> {
         if tail == head {
             return None;
         }
-        let item = self.buffer[tail % N].take();
+        let idx = tail.checked_rem(N)?;
+        let item = self.buffer.get_mut(idx)?.take();
         self.tail.store(tail.wrapping_add(1), Ordering::Release);
         item
     }
@@ -110,6 +120,7 @@ pub struct SynapticWeightMatrix {
 }
 
 impl SynapticWeightMatrix {
+    #[must_use]
     pub fn new(rows: usize, cols: usize, default_weight: f32) -> Self {
         let safe_rows = rows.max(1);
         let safe_cols = cols.max(1);
@@ -127,27 +138,39 @@ impl SynapticWeightMatrix {
 
     fn index(&self, row: usize, col: usize) -> Option<usize> {
         if row < self.rows && col < self.cols {
-            Some(row * self.cols + col)
+            row.checked_mul(self.cols).and_then(|r| r.checked_add(col))
         } else {
             None
         }
     }
 
+    #[must_use]
     pub fn get(&self, pre: usize, post: usize) -> f32 {
-        self.index(pre, post).map(|i| self.weights[i]).unwrap_or(0.0)
+        self.index(pre, post)
+            .and_then(|i| self.weights.get(i).copied())
+            .unwrap_or(0.0)
     }
 
     pub fn set(&mut self, pre: usize, post: usize, weight: f32) {
         if let Some(i) = self.index(pre, post) {
-            self.weights[i] = weight.clamp(0.0, 1.0);
+            if let Some(slot) = self.weights.get_mut(i) {
+                *slot = weight.clamp(0.0, 1.0);
+            }
         }
     }
 
-    pub fn apply_stdp(&mut self, pre: usize, post: usize, delta_t_ms: f32, dopamine: f32, is_reward: bool) -> f32 {
+    pub fn apply_stdp(
+        &mut self,
+        pre: usize,
+        post: usize,
+        delta_t_ms: f32,
+        dopamine: f32,
+        is_reward: bool,
+    ) -> f32 {
         let Some(idx) = self.index(pre, post) else {
             return 0.0;
         };
-        let current = self.weights[idx];
+        let current = self.weights.get(idx).copied().unwrap_or(0.0);
         let delta_w = if delta_t_ms > 0.0 && is_reward {
             let exp_term = (-delta_t_ms / self.tau_plus.max(0.1)).exp();
             self.a_plus * exp_term * (1.0 + dopamine.clamp(0.0, 1.0))
@@ -156,7 +179,9 @@ impl SynapticWeightMatrix {
             -self.a_minus * exp_term
         };
         let updated = (current + delta_w).clamp(0.0, 1.0);
-        self.weights[idx] = updated;
+        if let Some(slot) = self.weights.get_mut(idx) {
+            *slot = updated;
+        }
         updated
     }
 }

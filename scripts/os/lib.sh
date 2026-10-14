@@ -199,7 +199,7 @@ for line in lines:
         continue
     if "=" in stripped:
         cur_k, cur_v = stripped.split("=", 1)
-        cur_k = cur_k.strip().strip("\"'\t ")
+        cur_k = cur_k.strip().strip("\"").strip("\x27").strip()
         if cur_k == k:
             found = True
             out.append(formatted)

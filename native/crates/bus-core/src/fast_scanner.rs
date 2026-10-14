@@ -21,10 +21,10 @@ pub struct ScanReport {
 }
 
 fn fnv1a_hash(data: &[u8]) -> u64 {
-    let mut hash: u64 = 0xcbf29ce484222325;
+    let mut hash: u64 = 0xcbf2_9ce4_8422_2325;
     for byte in data {
         hash ^= u64::from(*byte);
-        hash = hash.wrapping_mul(0x100000001b3);
+        hash = hash.wrapping_mul(0x0100_0000_01b3);
     }
     hash
 }
@@ -57,6 +57,7 @@ pub struct FastScannerRegistry {
 }
 
 impl FastScannerRegistry {
+    #[must_use]
     pub fn new() -> Self {
         Self {
             cache: RwLock::new(HashMap::new()),
@@ -84,7 +85,10 @@ impl FastScannerRegistry {
                             .to_string();
                         if !dir_name.starts_with('_') && !dir_name.starts_with('.') {
                             let fp = compute_fingerprint(&target_path);
-                            current_ids.insert(dir_name.clone(), (target_path.to_string_lossy().to_string(), fp));
+                            current_ids.insert(
+                                dir_name.clone(),
+                                (target_path.to_string_lossy().to_string(), fp),
+                            );
                         }
                     }
                 }

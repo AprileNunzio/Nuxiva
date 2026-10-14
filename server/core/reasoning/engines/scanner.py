@@ -1,7 +1,7 @@
 import importlib
 import inspect
 from pathlib import Path
-from typing import Dict, List, Optional, Type
+from typing import Dict, List, Optional
 from server.core.reasoning.engines.base import BaseReasoningEngine
 from server.features.llm_gateway.contracts import CognitiveEngineVersion
 

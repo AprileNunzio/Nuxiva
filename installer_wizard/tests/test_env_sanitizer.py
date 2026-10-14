@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
-from config import _format_env_line, sanitize_env_file, write_env, read_global_env
+from config import _format_env_line, sanitize_env_file, read_global_env
 
 class EnvSanitizerTest(unittest.TestCase):
     def test_format_env_line_strips_nested_quotes(self) -> None:

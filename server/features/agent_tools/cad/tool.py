@@ -1,7 +1,7 @@
 import os
 import time
 import logging
-from typing import Dict, Any, List
+from typing import Dict, Any
 from server.config.env import settings
 from server.core.scanner.base import DiscoveryManifest
 from server.features.agent_tools.base import BaseAgentTool

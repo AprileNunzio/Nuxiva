@@ -1,4 +1,4 @@
-from typing import Dict, Any, List
+from typing import Dict, Any
 from server.core.scanner.base import DiscoveryManifest
 from server.web.widgets.base import BaseWidget
 

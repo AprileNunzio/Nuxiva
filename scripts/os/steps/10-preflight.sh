@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
-. "$(dirname "$0")/../lib.sh"
+if [ -f "$(dirname "$0")/../lib.sh" ]; then
+    . "$(dirname "$0")/../lib.sh"
+elif [ -f "./scripts/os/lib.sh" ]; then
+    . "./scripts/os/lib.sh"
+elif [ -f "../lib.sh" ]; then
+    . "../lib.sh"
+fi
 
 free_disk_mb() { df -Pm / | awk 'NR==2 {print $4}'; }
 

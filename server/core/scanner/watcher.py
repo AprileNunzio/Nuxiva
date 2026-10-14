@@ -1,4 +1,3 @@
-import os
 import asyncio
 from typing import Dict, List, Callable, Coroutine, Any
 from server.core.scanner.universal_scanner import UniversalScanner

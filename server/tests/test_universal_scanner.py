@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from server.core.scanner.base import BaseDiscoverable, DiscoveryManifest
 from server.core.scanner.universal_scanner import UniversalScanner
-from server.core.scanner.security import ZeroTrustValidator, SecurityViolationError
+from server.core.scanner.security import ZeroTrustValidator
 
 class DummyItem(BaseDiscoverable):
     def __init__(self, manifest_data=None):

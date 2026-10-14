@@ -45,7 +45,7 @@ if p.exists():
             continue
         if "=" in line:
             k, v = line.split("=", 1)
-            k = k.strip().strip("\"'\t ")
+            k = k.strip().strip("\"").strip("\x27").strip()
             if not re.match(r"^[A-Za-z_][A-Za-z0-9_]*$", k) or k in seen:
                 continue
             seen.add(k)

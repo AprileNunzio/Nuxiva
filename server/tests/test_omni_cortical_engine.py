@@ -2,7 +2,7 @@ import unittest
 from server.features.llm_gateway.contracts import CognitiveEngineVersion
 from server.core.reasoning.engines.scanner import EngineScanner
 from server.features.brain.service import BrainEngineService
-from server.core.reasoning.omni_cortical_engine import OmniCorticalEngine, LatentSpikePacket
+from server.core.reasoning.omni_cortical_engine import OmniCorticalEngine
 from server.core.orchestrator.system1_router import System1Router
 
 class OmniCorticalEngineTest(unittest.IsolatedAsyncioTestCase):

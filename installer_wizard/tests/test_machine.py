@@ -1,4 +1,6 @@
+import os
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -79,10 +81,21 @@ class NativeCoreTest(unittest.TestCase):
 
 
 class ScriptTest(unittest.TestCase):
+    def _bash_cmd(self):
+        if sys.platform == "win32":
+            git_bash = Path("C:/Program Files/Git/bin/bash.exe")
+            if git_bash.exists():
+                return str(git_bash)
+        return "bash"
+
     def run_preflight(self, expr):
-        script = f'source <(sed "/^step_main/d" {STEPS / "10-preflight.sh"}); {expr}'
-        env = {"PATH": "/usr/bin:/bin", "NUXIVA_ETC": "/nonexistent"}
-        return subprocess.run(["bash", "-c", script], capture_output=True, text=True, env=env, timeout=20, cwd=STEPS).stdout.strip()
+        target = (STEPS / "10-preflight.sh").as_posix()
+        script = f'source <(sed "/^step_main/d" "{target}"); {expr}'
+        env = dict(os.environ)
+        env["NUXIVA_ETC"] = "/nonexistent"
+        if sys.platform != "win32":
+            env["PATH"] = "/usr/bin:/bin"
+        return subprocess.run([self._bash_cmd(), "-c", script], capture_output=True, text=True, env=env, timeout=20, cwd=str(STEPS)).stdout.strip()
 
     def test_a_raspberry_pi_gets_small_models(self):
         self.assertEqual(self.run_preflight("select_llm 8 0 pi; select_fast_llm 8 0 pi; select_llm 4 0 pi").split(),
@@ -103,7 +116,7 @@ class ScriptTest(unittest.TestCase):
         self.assertFalse(step.critical)
         self.assertTrue((STEPS_DIR / step.script).name == "15-memory.sh")
         self.assertTrue((STEPS / step.script).exists())
-        self.assertEqual(subprocess.run(["bash", "-n", str(STEPS / step.script)]).returncode, 0)
+        self.assertEqual(subprocess.run([self._bash_cmd(), "-n", str(STEPS / step.script)]).returncode, 0)
 
 
 if __name__ == "__main__":

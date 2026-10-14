@@ -10,7 +10,6 @@ from server.core.context_graph.node_schema import NodeType, RelationType
 from server.core.orchestrator.brain_routing import preferred_brain_for
 from server.core.orchestrator.intent_classifier import intent_classifier
 from server.core.planner.task_decomposer import task_planner
-from server.features.skill_synthesis.synthesizer_lobe import skill_synthesizer
 from server.shared.utils.text_sanitizer import TextSanitizer
 from server.core.reasoning.conversation import conversation_engine
 from server.core.memory.semantic_cache import semantic_cache

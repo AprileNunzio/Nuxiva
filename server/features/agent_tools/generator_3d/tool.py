@@ -8,8 +8,7 @@ logger = logging.getLogger("nuxiva.tool.generator_3d")
 async def generate_3d_model(prompt: str, job_id: str = "react_tool") -> str:
     try:
         from server.core.orchestrator.brain_routing import brain_order_for
-        from server.features.parametric.application.translator import SpecTranslationError
-        from server.features.parametric.composition import UnavailableModelError, build_designer
+        from server.features.parametric.composition import build_designer
         designer = build_designer(lambda: brain_order_for("parametric_designer"))
         result = await designer.design(prompt, job_id)
         files = ", ".join(result.written.values())

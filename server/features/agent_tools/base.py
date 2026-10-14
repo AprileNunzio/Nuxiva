@@ -1,6 +1,6 @@
 from abc import abstractmethod
 from typing import Dict, Any
-from server.core.scanner.base import BaseDiscoverable, DiscoveryManifest
+from server.core.scanner.base import BaseDiscoverable
 
 class BaseAgentTool(BaseDiscoverable):
     @abstractmethod

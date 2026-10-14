@@ -5,7 +5,7 @@ import inspect
 import hashlib
 import importlib.util
 from threading import RLock
-from typing import TypeVar, Generic, Type, Dict, List, Optional
+from typing import TypeVar, Generic, Type, Dict, List, Optional, Any
 from server.core.scanner.base import BaseDiscoverable, DiscoveryManifest
 from server.core.scanner.security import ZeroTrustValidator, SecurityViolationError
 
