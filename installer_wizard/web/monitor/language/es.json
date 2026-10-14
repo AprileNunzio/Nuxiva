@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "web/monitor",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Secuencia de Activación",
+    "activation_sequence": "Secuencia de activación",
+    "completed": "completado",
+    "connecting": "Conexión al supervisor",
+    "brand_sub": "SISTEMA OPERATIVO COGNITIVO"
+  }
+}

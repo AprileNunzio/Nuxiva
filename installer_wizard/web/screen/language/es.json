@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "web/screen",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Pantalla Satélite",
+    "screen_name": "PANTALLA",
+    "idle_hint": "Arrastra aquí un widget desde el borde de la otra pantalla, o pídele a Nuxiva que lo mueva.",
+    "link_lost": "Reconexión al supervisor"
+  }
+}

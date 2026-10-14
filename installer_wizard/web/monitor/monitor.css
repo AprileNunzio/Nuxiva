@@ -99,3 +99,42 @@ body.UPDATING .phase h1 { color: var(--violet); }
   .steps li .d { display: none; }
   footer.console { height: 110px; }
 }
+@media (max-width: 540px) {
+  .shell { padding: 12px 10px; gap: 12px; }
+  header { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .hdr-right { width: 100%; justify-content: space-between; }
+  .panel { padding: 12px 14px; }
+  .pct b { font-size: 28px; }
+  .phase h1 { font-size: 18px; }
+  footer.console { height: 90px; padding: 10px 12px; font-size: 11px; }
+}
+@media (min-width: 2560px) {
+  html, body { font-size: 18px; }
+  .shell { padding: 36px 48px; gap: 28px; }
+  .panel { padding: 26px 30px; border-radius: 18px; }
+  .steps li .t { font-size: 18px; }
+  .steps li .d { font-size: 14px; }
+  .phase h1 { font-size: 44px; }
+  .phase .msg { font-size: 22px; }
+  footer.console { height: 200px; font-size: 15px; }
+}
+@media (min-width: 3840px) {
+  html, body { font-size: 24px; }
+  .shell { padding: 56px 72px; gap: 40px; }
+  .panel { padding: 36px 42px; border-radius: 24px; }
+  .steps li .t { font-size: 24px; }
+  .steps li .d { font-size: 18px; }
+  .phase h1 { font-size: 60px; }
+  .phase .msg { font-size: 30px; }
+  footer.console { height: 280px; font-size: 20px; }
+}
+@media (min-width: 7680px) {
+  html, body { font-size: 38px; }
+  .shell { padding: 90px 120px; gap: 64px; }
+  .panel { padding: 56px 68px; border-radius: 36px; }
+  .steps li .t { font-size: 38px; }
+  .steps li .d { font-size: 28px; }
+  .phase h1 { font-size: 96px; }
+  .phase .msg { font-size: 48px; }
+  footer.console { height: 420px; font-size: 32px; }
+}
