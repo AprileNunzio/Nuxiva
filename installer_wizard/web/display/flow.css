@@ -33,10 +33,22 @@ body.flow .dock, body.flow .dock-note, body.flow .vol-panel { z-index: 30; }
   animation: fnode-in 0.45s both; transition: box-shadow 0.25s, transform 0.25s; }
 .fnode:hover { box-shadow: 0 0 26px rgba(var(--tone), 0.4); transform: translateY(-2px); }
 .fnode.sel { box-shadow: 0 0 0 2px rgba(var(--tone), 0.55), 0 0 28px rgba(var(--tone), 0.4); }
-.fnode.root { --tone: 41,224,255; }
-.fnode.law { --tone: 255,196,61; }
+.fnode.root, .fnode.input { --tone: 41,224,255; }
+.fnode.law, .fnode.laws { --tone: 255,196,61; }
+.fnode.cache { --tone: 61,255,168; }
+.fnode.router { --tone: 160,140,255; }
+.fnode.classifier { --tone: 160,140,255; }
+.fnode.reasoning { --tone: 255,140,60; }
+.fnode.planner { --tone: 255,140,60; }
+.fnode.decision { --tone: 80,180,255; }
+.fnode.pool { --tone: 80,180,255; }
+.fnode.jury { --tone: 255,77,106; }
+.fnode.voter { --tone: 255,196,61; }
+.fnode.dag_node { --tone: 160,140,255; }
+.fnode.system2 { --tone: 255,140,60; }
 .fnode.step { --tone: 160,140,255; }
 .fnode.chain { --tone: 80,150,255; }
+.fnode.answer { --tone: 61,255,168; }
 .fnode.ok { --tone: 61,255,168; }
 .fnode.bad { --tone: 255,77,106; }
 .fnode.wait { --tone: 41,224,255; }

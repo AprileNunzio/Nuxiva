@@ -225,10 +225,19 @@ class Brains:
         cfg, installed = self.config(), {norm(n) for n in await self.installed()}
         routing = cfg["routing"]
         split = routing == "1" or (routing == "auto" and norm(cfg["chat"][0]) != norm(cfg["deep"][0]))
-        if mode_override in ("fast", "chat", "veloce", "5.0-flash"):
-            kind, reason = "chat", "modalità veloce (Nuxiva 5.0 Veloce)"
-        elif mode_override in ("reasoning", "deep", "ragionamento", "pro", "5.0-pro"):
-            kind, reason = "deep", "modalità ragionamento (Nuxiva 5.0 Pro)"
+        if mode_override:
+            from server.core.reasoning.engines.scanner import engine_scanner
+            eng = engine_scanner.get_engine(mode_override)
+            if eng:
+                sla = eng.latency_sla_ms
+                kind = "chat" if sla <= 50 else "deep"
+                reason = f"motore cognitivo: {eng.name}"
+            elif mode_override in ("fast", "chat", "veloce", "5.0-flash"):
+                kind, reason = "chat", "modalità veloce (Nuxiva 5.0 Veloce)"
+            elif mode_override in ("reasoning", "deep", "ragionamento", "pro", "5.0-pro"):
+                kind, reason = "deep", "modalità ragionamento (Nuxiva 6.0 Pro)"
+            else:
+                kind, reason = self.classify(text) if split else ("deep", "cervello unico")
         else:
             kind, reason = self.classify(text) if split else ("deep", "cervello unico")
         planned = self.effective(kind, cfg, cfg["deep" if kind == "chat" else "chat"])
@@ -239,7 +248,8 @@ class Brains:
         if not chain:
             chain = planned[:1]
         return {"kind": kind, "reason": reason, "models": chain, "skipped": skipped,
-                "scope": cfg[f"{kind}_scope"], "strategy": cfg[f"{kind}_strategy"], "max_tokens": MAX_TOKENS[kind]}
+                "scope": cfg[f"{kind}_scope"], "strategy": cfg[f"{kind}_strategy"], "max_tokens": MAX_TOKENS[kind],
+                "reasoning_mode": mode_override}
 
     def record(self, model: str, ms: float, ok: bool, kind: str) -> None:
         s = self.stats.setdefault(model, {"ok": 0, "fail": 0, "avg_ms": ms})

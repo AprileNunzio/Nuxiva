@@ -113,7 +113,26 @@ def preferred_reasoning_mode(slug: str | None) -> str:
 
 
 def set_preferred_reasoning_mode(slug: str | None, mode: str) -> str:
-    cleaned = "fast" if mode in ("fast", "chat", "veloce", "5.0-flash") else "reasoning"
+    m = (mode or "").strip().lower()
+    if m in ("fast", "chat", "veloce", "5.0-flash", "nuxiva-5.0-veloce", "nuxiva-5.0-fast"):
+        cleaned = "fast"
+    elif m in ("auto", "6.5-auto", "nuxiva-6.5-auto"):
+        cleaned = "auto"
+    elif m in ("ultra", "6.5-ultra", "nuxiva-6.5-ultra"):
+        cleaned = "ultra"
+    elif m in ("empatico", "empathetic", "5.0-limbic", "nuxiva-5.0-empatico", "nuxiva-5.0-empathetic"):
+        cleaned = "empatico"
+    elif m in ("legacy", "4.2-legacy", "nuxiva-4.2-legacy"):
+        cleaned = "legacy"
+    elif m in ("reasoning", "deep", "pro", "5.0-pro", "6.0-pro", "nuxiva-6.0-pro", "ragionamento"):
+        cleaned = "reasoning"
+    else:
+        try:
+            from server.core.reasoning.engines.scanner import engine_scanner
+            eng = engine_scanner.get_engine(m)
+            cleaned = m if eng else "reasoning"
+        except Exception:
+            cleaned = "reasoning"
     if not slug:
         return cleaned
     with _lock:

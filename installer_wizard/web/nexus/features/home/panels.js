@@ -41,24 +41,29 @@ export function statTiles(sys) {
   
   // CPU per-core micro bar
   const coreBars = (sys.per_cpu && sys.per_cpu.length) ? h("div", { class: "core-meter-row", title: "Carico singoli core logici" },
-    sys.per_cpu.slice(0, 16).map((val, idx) => h("div", {
-      class: "core-bar-item",
-      style: `height:${Math.max(4, Math.min(val, 100))}%;`,
-      title: `Core ${idx}: ${val}%`
-    }))) : null;
+    sys.per_cpu.slice(0, 16).map((val, idx) => {
+      const coreVal = Number(val) || 0;
+      return h("div", {
+        class: "core-bar-item",
+        style: `height:${Math.max(4, Math.min(coreVal, 100))}%;`,
+        title: `Core ${idx}: ${coreVal}%`
+      });
+    })) : null;
 
   // GPU telemetry
   const gpu = sys.gpu && sys.gpu.available !== false ? sys.gpu : null;
+  const gpuPct = Math.max(0, Math.min(Number(gpu?.vram_percent ?? gpu?.gpu_percent) || 0, 100));
   const gpuNote = gpu
     ? `${gpu.name} · clock ${gpu.clock_mhz ? `${Math.round(gpu.clock_mhz)} MHz` : "—"} · VRAM ${Math.round(gpu.vram_used || 0)}/${Math.round(gpu.vram_total || 0)} MB`
     : "Nessuna GPU dedicata rilevata";
   const gpuBar = gpu ? h("div", { class: "hud-linear-meter" },
-    h("div", { class: "meter-fill-gpu", style: `width:${Math.min(gpu.vram_percent || gpu.gpu_percent || 0, 100)}%;` })) : null;
+    h("div", { class: "meter-fill-gpu", style: `width:${gpuPct}%;` })) : null;
 
   // RAM telemetry
+  const memPct = Math.max(0, Math.min(Number(sys.mem_percent) || 0, 100));
   const ramNote = `${gb(sys.mem_used)} di ${gb(sys.mem_total)} GB · swap ${Math.round(sys.swap_percent ?? 0)}%`;
   const ramBar = h("div", { class: "hud-linear-meter" },
-    h("div", { class: "meter-fill-ram", style: `width:${Math.min(sys.mem_percent, 100)}%;` }));
+    h("div", { class: "meter-fill-ram", style: `width:${memPct}%;` }));
 
   // I/O & Network Net Speed
   const netRx = formatRate(sys.net_rx_rate);
@@ -89,15 +94,19 @@ export function processesPanel(sys) {
           h("th", {}, "STATO"),
           h("th", { class: "col-r" }, "CPU %"),
           h("th", { class: "col-r" }, "RAM (MB)"))),
-        h("tbody", {}, procs.length ? procs.map((p) => h("tr", { class: "proc-row" },
-          h("td", { class: "mono-dim-cyan" }, String(p.pid)),
-          h("td", { class: "mono-bold" }, p.name),
-          h("td", {}, h("span", { class: `proc-status ${p.status === "running" ? "live" : "idle"}` }, p.status.toUpperCase())),
-          h("td", { class: "col-r" },
-            h("div", { class: "val-with-bar" },
-              h("span", { class: "mono-accent" }, `${p.cpu.toFixed(1)}%`),
-              h("div", { class: "mini-bar-track" }, h("div", { class: "mini-bar-fill", style: `width:${Math.min(p.cpu * 2, 100)}%;` })))),
-          h("td", { class: "mono-dim-r" }, `${p.mem_mb.toFixed(1)} MB`)))
+        h("tbody", {}, procs.length ? procs.map((p) => {
+          const cpuVal = Number(p.cpu) || 0;
+          const cpuBarPct = Math.max(0, Math.min(cpuVal * 2, 100));
+          return h("tr", { class: "proc-row" },
+            h("td", { class: "mono-dim-cyan" }, String(p.pid)),
+            h("td", { class: "mono-bold" }, p.name),
+            h("td", {}, h("span", { class: `proc-status ${p.status === "running" ? "live" : "idle"}` }, p.status.toUpperCase())),
+            h("td", { class: "col-r" },
+              h("div", { class: "val-with-bar" },
+                h("span", { class: "mono-accent" }, `${cpuVal.toFixed(1)}%`),
+                h("div", { class: "mini-bar-track" }, h("div", { class: "mini-bar-fill", style: `width:${cpuBarPct}%;` })))),
+            h("td", { class: "mono-dim-r" }, `${(Number(p.mem_mb) || 0).toFixed(1)} MB`));
+        })
           : [h("tr", {}, h("td", { colspan: "5", class: "dim-text-center" }, "Lettura telemetria processi in corso…"))])))
   ];
 }

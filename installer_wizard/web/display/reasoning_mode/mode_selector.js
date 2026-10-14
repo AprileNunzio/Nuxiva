@@ -2,80 +2,29 @@
   "use strict";
 
   const STORAGE_KEY = "nuxiva_reasoning_mode";
-  const DEFAULT_MODE = "reasoning";
-
-  const I18N = {
-    it: {
-      mode_fast_name: "Nuxiva 5.0 Veloce",
-      mode_fast_badge: "5.0-flash",
-      mode_fast_title: "Modalità Veloce (<180ms): risposte istantanee",
-      mode_reasoning_name: "Nuxiva 5.0 Pro",
-      mode_reasoning_badge: "5.0-pro",
-      mode_reasoning_title: "Modalità Ragionamento: pensiero profondo e parallelo",
-    },
-    en: {
-      mode_fast_name: "Nuxiva 5.0 Fast",
-      mode_fast_badge: "5.0-flash",
-      mode_fast_title: "Fast Mode (<180ms): instant responses",
-      mode_reasoning_name: "Nuxiva 5.0 Pro",
-      mode_reasoning_badge: "5.0-pro",
-      mode_reasoning_title: "Reasoning Mode: deep parallel cortical thinking",
-    },
-    fr: {
-      mode_fast_name: "Nuxiva 5.0 Rapide",
-      mode_fast_badge: "5.0-flash",
-      mode_fast_title: "Mode Rapide (<180ms): réponses instantanées",
-      mode_reasoning_name: "Nuxiva 5.0 Pro",
-      mode_reasoning_badge: "5.0-pro",
-      mode_reasoning_title: "Mode Raisonnement: pensée profonde corticale",
-    },
-    de: {
-      mode_fast_name: "Nuxiva 5.0 Schnell",
-      mode_fast_badge: "5.0-flash",
-      mode_fast_title: "Schneller Modus (<180ms): sofortige Antworten",
-      mode_reasoning_name: "Nuxiva 5.0 Pro",
-      mode_reasoning_badge: "5.0-pro",
-      mode_reasoning_title: "Denkmodus: tiefe parallele kortikale Logik",
-    },
-    es: {
-      mode_fast_name: "Nuxiva 5.0 Rápido",
-      mode_fast_badge: "5.0-flash",
-      mode_fast_title: "Modo Rápido (<180ms): respuestas instantáneas",
-      mode_reasoning_name: "Nuxiva 5.0 Pro",
-      mode_reasoning_badge: "5.0-pro",
-      mode_reasoning_title: "Modo Razonamiento: pensamiento cortical profundo",
-    },
-  };
-
-  function getLang() {
-    const raw = (document.documentElement.lang || navigator.language || "it").slice(0, 2).toLowerCase();
-    return I18N[raw] ? raw : "it";
-  }
-
-  function t(key) {
-    const dict = I18N[getLang()] || I18N.it;
-    return dict[key] || I18N.it[key] || key;
-  }
 
   class ReasoningModeSelector {
     constructor() {
+      this.engines = [];
       this.currentMode = this.loadLocalMode();
+      this.isOpen = false;
       this.rootElement = null;
-      this.btnFast = null;
-      this.btnReasoning = null;
+      this.triggerBtn = null;
+      this.menuEl = null;
+      this.itemsContainer = null;
+      this.iconEl = null;
+      this.nameEl = null;
+      this.verEl = null;
+      this.countEl = null;
       this.init();
     }
 
     loadLocalMode() {
       try {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored === "fast" || stored === "reasoning") {
-          return stored;
-        }
+        return localStorage.getItem(STORAGE_KEY) || "";
       } catch (err) {
-        return DEFAULT_MODE;
+        return "";
       }
-      return DEFAULT_MODE;
     }
 
     saveLocalMode(mode) {
@@ -89,15 +38,75 @@
     async fetchServerMode() {
       try {
         const response = await fetch("/api/assistant/mode", { method: "GET" });
-        if (response.ok) {
-          const data = await response.json();
-          if (data && (data.mode === "fast" || data.mode === "reasoning")) {
-            this.setMode(data.mode, false);
-          }
+        if (!response.ok) return;
+
+        const data = await response.json();
+        const rawEngines = Array.isArray(data.modes)
+          ? data.modes
+          : Array.isArray(data.engines)
+          ? data.engines
+          : [];
+
+        // Rilevamento dinamico al 100% dei motori scoperti dallo scanner delle directory
+        this.engines = rawEngines.map((m) => {
+          const rawId = String(m.id || m.raw_version || m.version || "").trim();
+          const cleanBadge = String(m.badge || m.version || rawId).replace(/^nuxiva-/i, "");
+          const slaVal = m.sla_ms != null ? m.sla_ms : m.latency_sla_ms;
+          const slaFormatted =
+            slaVal != null
+              ? typeof slaVal === "number" && slaVal < 1000
+                ? `<${slaVal}ms`
+                : `${(slaVal / 1000).toFixed(1)}s`
+              : "—";
+
+          return {
+            id: rawId,
+            name: m.name || rawId,
+            shortName: cleanBadge || m.name || rawId,
+            version: cleanBadge,
+            badge: cleanBadge,
+            icon: m.icon || "🧠",
+            sla: slaFormatted,
+            hint: m.hint || m.architecture || "",
+            isDefault: !!m.is_default,
+          };
+        });
+
+        // Risoluzione modalità attiva
+        const serverActive = data.mode ? String(data.mode).trim() : "";
+        const defaultMode = data.default ? String(data.default).trim() : (this.engines[0] ? this.engines[0].id : "");
+
+        if (!this.currentMode || !this.findEngine(this.currentMode)) {
+          this.currentMode = serverActive || defaultMode;
+        } else if (serverActive && this.findEngine(serverActive)) {
+          this.currentMode = serverActive;
+        }
+
+        this.renderMenuItems();
+        this.updateUi();
+
+        if (window.NuxivaDisplay) {
+          window.NuxivaDisplay.reasoningMode = this.currentMode;
         }
       } catch (err) {
-        return;
+        console.warn("[Nuxiva Mode Selector] Rilevamento scanner fallito:", err);
       }
+    }
+
+    findEngine(query) {
+      if (!query || !this.engines.length) return null;
+      const q = String(query).trim().toLowerCase();
+      return (
+        this.engines.find((e) => e.id.toLowerCase() === q) ||
+        this.engines.find((e) => e.version.toLowerCase() === q) ||
+        this.engines.find((e) => e.name.toLowerCase() === q) ||
+        this.engines.find((e) => e.id.toLowerCase().includes(q)) ||
+        null
+      );
+    }
+
+    getActiveEngine() {
+      return this.findEngine(this.currentMode) || this.engines[0] || null;
     }
 
     async syncServerMode(mode) {
@@ -114,24 +123,26 @@
     }
 
     setMode(mode, syncToServer = true) {
-      const sanitized = mode === "fast" ? "fast" : "reasoning";
-      this.currentMode = sanitized;
-      this.saveLocalMode(sanitized);
+      const match = this.findEngine(mode);
+      const chosenId = match ? match.id : mode;
+
+      this.currentMode = chosenId;
+      this.saveLocalMode(chosenId);
 
       if (window.NuxivaDisplay) {
-        window.NuxivaDisplay.reasoningMode = sanitized;
+        window.NuxivaDisplay.reasoningMode = chosenId;
       }
 
       this.updateUi();
 
       window.dispatchEvent(
         new CustomEvent("nuxiva:reasoning_mode_changed", {
-          detail: { mode: sanitized },
+          detail: { mode: chosenId, engine: match },
         })
       );
 
       if (syncToServer) {
-        this.syncServerMode(sanitized);
+        this.syncServerMode(chosenId);
       }
     }
 
@@ -139,61 +150,147 @@
       return this.currentMode;
     }
 
+    toggleMenu(force) {
+      const willOpen = typeof force === "boolean" ? force : !this.isOpen;
+      this.isOpen = willOpen;
+      if (this.menuEl) {
+        this.menuEl.hidden = !willOpen;
+      }
+      if (this.triggerBtn) {
+        this.triggerBtn.classList.toggle("is-open", willOpen);
+        this.triggerBtn.setAttribute("aria-expanded", willOpen ? "true" : "false");
+      }
+    }
+
+    closeMenu() {
+      if (this.isOpen) {
+        this.toggleMenu(false);
+      }
+    }
+
+    renderMenuItems() {
+      if (!this.itemsContainer) return;
+      this.itemsContainer.innerHTML = "";
+
+      if (this.countEl) {
+        this.countEl.textContent = `${this.engines.length} ${this.engines.length === 1 ? "VERSIONE" : "VERSIONI"}`;
+      }
+
+      if (!this.engines.length) {
+        const empty = document.createElement("div");
+        empty.className = "opt-hint";
+        empty.style.padding = "10px";
+        empty.textContent = "Scansione motori in corso…";
+        this.itemsContainer.appendChild(empty);
+        return;
+      }
+
+      this.engines.forEach((eng) => {
+        const isActive = this.currentMode && eng.id.toLowerCase() === this.currentMode.toLowerCase();
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = `dock-model-option ${isActive ? "is-active" : ""}`;
+        btn.setAttribute("role", "menuitem");
+        btn.setAttribute("data-engine-id", eng.id);
+        btn.title = `${eng.name} (${eng.version})${eng.hint ? `: ${eng.hint}` : ""}`;
+
+        btn.innerHTML = `
+          <span class="opt-icon-col">${eng.icon}</span>
+          <span class="opt-info">
+            <span class="opt-top-row">
+              <span class="opt-name">${eng.name}</span>
+              <span class="opt-badge">${eng.version}</span>
+              <span class="opt-sla">${eng.sla}</span>
+            </span>
+            ${eng.hint ? `<span class="opt-hint">${eng.hint}</span>` : ""}
+          </span>
+          <span class="opt-check">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </span>
+        `;
+
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          this.setMode(eng.id, true);
+          this.closeMenu();
+        });
+
+        this.itemsContainer.appendChild(btn);
+      });
+    }
+
     updateUi() {
-      if (!this.btnFast || !this.btnReasoning) return;
+      const eng = this.getActiveEngine();
+      if (!eng) return;
 
-      const isFast = this.currentMode === "fast";
-      this.btnFast.classList.toggle("active", isFast);
-      this.btnFast.setAttribute("aria-pressed", isFast ? "true" : "false");
+      if (this.iconEl) this.iconEl.textContent = eng.icon;
+      if (this.nameEl) this.nameEl.textContent = eng.shortName;
+      if (this.verEl) this.verEl.textContent = eng.version;
+      if (this.triggerBtn) {
+        this.triggerBtn.title = `Motore: ${eng.name} (${eng.version}) · SLA ${eng.sla}`;
+      }
 
-      this.btnReasoning.classList.toggle("active", !isFast);
-      this.btnReasoning.setAttribute("aria-pressed", !isFast ? "true" : "false");
-
-      const fastNameEl = document.getElementById("mode-fast-name-text");
-      const fastVerEl = document.getElementById("mode-fast-ver-text");
-      const rNameEl = document.getElementById("mode-reasoning-name-text");
-      const rVerEl = document.getElementById("mode-reasoning-ver-text");
-
-      if (fastNameEl) fastNameEl.textContent = t("mode_fast_name");
-      if (fastVerEl) fastVerEl.textContent = t("mode_fast_badge");
-      if (rNameEl) rNameEl.textContent = t("mode_reasoning_name");
-      if (rVerEl) rVerEl.textContent = t("mode_reasoning_badge");
-
-      this.btnFast.title = t("mode_fast_title");
-      this.btnReasoning.title = t("mode_reasoning_title");
+      if (this.itemsContainer) {
+        const all = this.itemsContainer.querySelectorAll(".dock-model-option");
+        all.forEach((el) => {
+          const id = el.getAttribute("data-engine-id");
+          const active = id && id.toLowerCase() === this.currentMode.toLowerCase();
+          el.classList.toggle("is-active", !!active);
+        });
+      }
     }
 
     bindEvents() {
-      if (this.btnFast) {
-        this.btnFast.addEventListener("click", () => this.setMode("fast", true));
+      if (this.triggerBtn) {
+        this.triggerBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          this.toggleMenu();
+        });
       }
-      if (this.btnReasoning) {
-        this.btnReasoning.addEventListener("click", () => this.setMode("reasoning", true));
-      }
-      window.addEventListener("languagechange", () => this.updateUi());
-      window.addEventListener("nuxiva:language_changed", () => this.updateUi());
+
+      document.addEventListener("click", (e) => {
+        if (!this.rootElement || !this.rootElement.contains(e.target)) {
+          this.closeMenu();
+        }
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && this.isOpen) {
+          this.closeMenu();
+          if (this.triggerBtn) this.triggerBtn.focus();
+        }
+      });
     }
 
     mount() {
-      this.btnFast = document.getElementById("btn-mode-fast");
-      this.btnReasoning = document.getElementById("btn-mode-reasoning");
       this.rootElement = document.getElementById("reasoning-selector-root");
+      this.triggerBtn = document.getElementById("btn-model-trigger");
+      this.menuEl = document.getElementById("dock-model-menu");
+      this.itemsContainer = document.getElementById("dock-model-items");
+      this.iconEl = document.getElementById("dock-model-icon");
+      this.nameEl = document.getElementById("dock-model-name");
+      this.verEl = document.getElementById("dock-model-ver-text");
+      this.countEl = document.getElementById("dock-model-count");
 
-      if (this.btnFast && this.btnReasoning) {
+      if (this.triggerBtn && this.menuEl && this.itemsContainer) {
         this.bindEvents();
+        this.renderMenuItems();
         this.updateUi();
       }
     }
 
     init() {
-      if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", () => {
-          this.mount();
-          this.fetchServerMode();
-        });
-      } else {
+      const setup = () => {
         this.mount();
         this.fetchServerMode();
+      };
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", setup);
+      } else {
+        setup();
       }
 
       if (window.NuxivaDisplay) {

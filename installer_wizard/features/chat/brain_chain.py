@@ -7,6 +7,7 @@ import httpx
 from state import store
 from tasks import background
 
+from features.brain import stages
 from features.brain.brains import brains
 from features.brain.components import (
     LimbicModulator,
@@ -83,13 +84,57 @@ class CorticalBrainChain:
         self.active_mode: str = "nuxiva-6.5-auto"
 
     def set_mode(self, mode_id: str) -> str:
-        if mode_id in REASONING_PROFILES:
-            self.active_mode = mode_id
+        from server.core.reasoning.engines.scanner import engine_scanner
+        eng = engine_scanner.get_engine(mode_id)
+        if eng:
+            ver_str = getattr(eng.version, "value", str(eng.version))
+            self.active_mode = ver_str
+            return self.active_mode
+        aliases = {
+            "fast": "nuxiva-5.0-fast",
+            "veloce": "nuxiva-5.0-fast",
+            "5.0-flash": "nuxiva-5.0-fast",
+            "nuxiva-5.0-veloce": "nuxiva-5.0-fast",
+            "reasoning": "nuxiva-6.0-pro",
+            "pro": "nuxiva-6.0-pro",
+            "6.0-pro": "nuxiva-6.0-pro",
+            "5.0-pro": "nuxiva-6.0-pro",
+            "nuxiva-6.0-pro": "nuxiva-6.0-pro",
+            "auto": "nuxiva-6.5-auto",
+            "6.5-auto": "nuxiva-6.5-auto",
+            "nuxiva-6.5-auto": "nuxiva-6.5-auto",
+            "ultra": "nuxiva-6.5-ultra",
+            "6.5-ultra": "nuxiva-6.5-ultra",
+            "nuxiva-6.5-ultra": "nuxiva-6.5-ultra",
+            "empatico": "nuxiva-5.0-empathetic",
+            "empathetic": "nuxiva-5.0-empathetic",
+            "5.0-limbic": "nuxiva-5.0-empathetic",
+            "nuxiva-5.0-empatico": "nuxiva-5.0-empathetic",
+            "legacy": "nuxiva-4.2-legacy",
+            "4.2-legacy": "nuxiva-4.2-legacy",
+            "nuxiva-4.2-legacy": "nuxiva-4.2-legacy",
+        }
+        resolved = aliases.get(str(mode_id).lower().strip() if mode_id else "", mode_id)
+        self.active_mode = resolved or "nuxiva-6.5-auto"
         return self.active_mode
 
     def resolve_effective_profile(self, query: str) -> Dict[str, Any]:
         if self.active_mode != "nuxiva-6.5-auto":
-            return REASONING_PROFILES.get(self.active_mode, REASONING_PROFILES["nuxiva-6.0-pro"])
+            if self.active_mode in REASONING_PROFILES:
+                return REASONING_PROFILES[self.active_mode]
+            from server.core.reasoning.engines.scanner import engine_scanner
+            eng = engine_scanner.get_engine(self.active_mode)
+            sla = getattr(eng, "latency_sla_ms", 1000) if eng else 1000
+            branches = 16 if sla > 600 else (8 if sla > 200 else (4 if sla > 50 else 2))
+            depth = 4 if sla > 600 else (3 if sla > 200 else 1)
+            return {
+                "parallel_branches": branches,
+                "mcts_depth": depth,
+                "ignition_threshold": 0.85,
+                "timeout_s": max(0.5, sla / 1000.0 * 2.0),
+                "use_limbic": True,
+                "use_twin_critic": sla > 100,
+            }
         complexity = min(1.0, len(query.split()) / 45.0)
         if self.limbic.noradrenaline > 0.75 and complexity < 0.3:
             return REASONING_PROFILES["nuxiva-5.0-fast"]
@@ -192,14 +237,21 @@ class CorticalBrainChain:
 cortical_chain = CorticalBrainChain()
 
 
-def _label(kind: str) -> str:
-    return "Nuxiva 5.0 Veloce (5.0-flash)" if kind == "chat" else "Nuxiva 5.0 Pro Ragionamento (5.0-pro)"
+def _label(kind: str, mode_id: str | None = None) -> str:
+    if mode_id:
+        from server.core.reasoning.engines.scanner import engine_scanner
+        eng = engine_scanner.get_engine(mode_id)
+        if eng:
+            return eng.name
+    return "Nuxiva 5.0 Veloce (5.0-flash)" if kind == "chat" else "Nuxiva 6.0 Pro (6.0-pro)"
 
 
 async def _cloud(ref: str, query: str, device: str, context: dict, route: dict) -> dict:
     started = time.time()
     call = trace.begin("conversation", route["reason"], route["models"])
     trace.attempt(call, ref)
+    mode_id = route.get("reasoning_mode")
+    label = _label(route["kind"], mode_id)
     try:
         answer = await conversation.reply(ref, query, device, context, route["max_tokens"])
     except CloudError as exc:
@@ -210,9 +262,9 @@ async def _cloud(ref: str, query: str, device: str, context: dict, route: dict) 
     trace.finish(call, ref, answer.ms, answer.text)
     background(touch(ref))
     return {
-        "agent_id": f"nuxiva_cloud · {ref.removeprefix('cloud:')} ({_label(route['kind'])})",
+        "agent_id": f"nuxiva_cloud · {ref.removeprefix('cloud:')} ({label})",
         "speech_output": answer.text,
-        "result_data": {"model": ref, "commercial_tier": _label(route["kind"])},
+        "result_data": {"model": ref, "commercial_tier": label},
     }
 
 
@@ -236,7 +288,13 @@ async def ask(query: str, device: str, context: dict, route: dict, core_local: C
         raise NoBrainAvailable("nessun cervello configurato")
 
     mode_id = route.get("reasoning_mode") or ("nuxiva-5.0-fast" if route.get("kind") == "chat" else "nuxiva-6.0-pro")
-    cortical_chain.set_mode(mode_id)
+    from server.core.reasoning.engines.scanner import engine_scanner
+    engine = engine_scanner.get_engine(mode_id)
+    if not engine:
+        engine = engine_scanner.get_default_engine()
+
+    ver_val = getattr(engine.version, "value", str(engine.version))
+    cortical_chain.set_mode(ver_val)
 
     branch_generators: List[Callable[[str, Dict[str, Any], LimbicModulator], Awaitable[Dict[str, Any]]]] = []
     for ctype, target in candidates:
@@ -256,12 +314,24 @@ async def ask(query: str, device: str, context: dict, route: dict, core_local: C
             return branch_gen
         branch_generators.append(make_generator(ctype, target))
 
-    final_thought = await cortical_chain.execute_parallel_thought(
-        query,
-        context,
-        branch_generators,
-        critic_fn=predict_user_impact,
-    )
+    flow_stages = engine.get_flow_stages(query, context) if hasattr(engine, "get_flow_stages") else []
+
+    async def _execute_parallel():
+        return await cortical_chain.execute_parallel_thought(
+            query,
+            context,
+            branch_generators,
+            critic_fn=predict_user_impact,
+        )
+
+    async def _nest_and_run(stages_left: list):
+        if not stages_left:
+            return await _execute_parallel()
+        st = stages_left[0]
+        async with stages.stage(st["kind"], st["name"], st["detail"], st.get("label", "")):
+            return await _nest_and_run(stages_left[1:])
+
+    final_thought = await _nest_and_run(flow_stages)
 
     raw = final_thought.get("raw_result")
     if raw and raw.get("speech_output"):
