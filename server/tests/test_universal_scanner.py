@@ -62,5 +62,9 @@ class TestUniversalScanner(unittest.TestCase):
         self.assertEqual(items["test_plugin"].manifest.name, "Plugin One")
         self.assertEqual(scanner.get("test_plugin").id, "plugin_1")
 
+    def test_common_scanner_reexport(self):
+        from server.core.common.scanner import UniversalScanner as CommonScanner
+        self.assertIs(CommonScanner, UniversalScanner)
+
 if __name__ == "__main__":
     unittest.main()
