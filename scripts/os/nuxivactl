@@ -3,9 +3,44 @@ set -euo pipefail
 API=http://127.0.0.1:8080/api/internal
 C='\033[0;36m'; G='\033[0;32m'; R='\033[0;31m'; N='\033[0m'
 
+ui_lang=""
+if [ -r /etc/nuxiva/nuxiva.env ]; then
+    ui_lang=$(sed -n 's/^NUXIVA_UI_LANG=//p' /etc/nuxiva/nuxiva.env | tail -n 1)
+fi
+
+case "${ui_lang:-${LC_ALL:-${LC_MESSAGES:-${LANG:-}}}}" in
+    it*) UI_LANG=it ;;
+    fr*) UI_LANG=fr ;;
+    *) UI_LANG=en ;;
+esac
+
+declare -A L
+if [ "$UI_LANG" = it ]; then
+    L=(
+        [sup_unresponsive]="Il supervisore non risponde (systemctl status nuxiva-supervisor)"
+        [checking_updates]="Controllo aggiornamenti su GitHub…"
+        [sources_err]="Sorgenti valide: install supervisor core ollama voice vision ear"
+        [usage]="Uso: nuxivactl status | update [--force] | force-upgrade | ripara | logs [install|supervisor|core|ollama|voice|vision|ear] | setup-code | background | version"
+    )
+elif [ "$UI_LANG" = fr ]; then
+    L=(
+        [sup_unresponsive]="Le superviseur ne répond pas (systemctl status nuxiva-supervisor)"
+        [checking_updates]="Vérification des mises à jour sur GitHub…"
+        [sources_err]="Sources valides: install supervisor core ollama voice vision ear"
+        [usage]="Usage: nuxivactl status | update [--force] | force-upgrade | ripara | logs [install|supervisor|core|ollama|voice|vision|ear] | setup-code | background | version"
+    )
+else
+    L=(
+        [sup_unresponsive]="Supervisor is not responding (systemctl status nuxiva-supervisor)"
+        [checking_updates]="Checking for updates on GitHub…"
+        [sources_err]="Valid sources: install supervisor core ollama voice vision ear"
+        [usage]="Usage: nuxivactl status | update [--force] | force-upgrade | ripara | logs [install|supervisor|core|ollama|voice|vision|ear] | setup-code | background | version"
+    )
+fi
+
 call() {
     curl -fsS --max-time "${2:-30}" -X POST -H "X-Nuxiva-Request: 1" "$API/$1" \
-        || { echo -e "${R}Il supervisore non risponde (systemctl status nuxiva-supervisor)${N}" >&2; exit 1; }
+        || { echo -e "${R}${L[sup_unresponsive]}${N}" >&2; exit 1; }
 }
 
 case "${1:-status}" in
@@ -26,7 +61,7 @@ case "${1:-status}" in
             bash /opt/Nuxiva/scripts/os/force-upgrade.sh "${3:-main}"
             exit 0
         fi
-        echo -e "${C}Controllo aggiornamenti su GitHub…${N}"
+        echo -e "${C}${L[checking_updates]}${N}"
         call update 60 | jq -r '.message'
         ;;
     force-upgrade|force-update)
@@ -44,7 +79,7 @@ case "${1:-status}" in
             supervisor|ollama) journalctl -fu "${src/supervisor/nuxiva-supervisor}" ;;
             voice|vision|ear) journalctl -fu "nuxiva-$src" ;;
             core) if systemctl is-active --quiet nuxiva-core; then journalctl -u nuxiva-core -f -n 200; else docker logs -f --tail 200 nuxiva-core; fi ;;
-            *) echo "Sorgenti: install supervisor core ollama voice vision ear" >&2; exit 2 ;;
+            *) echo "${L[sources_err]}" >&2; exit 2 ;;
         esac
         ;;
     setup-code)
@@ -60,7 +95,7 @@ case "${1:-status}" in
         git -c safe.directory='*' -C /opt/Nuxiva log -1 --format='%h %ci %s'
         ;;
     *)
-        echo "nuxivactl status | update [--force] | force-upgrade | ripara | logs [install|supervisor|core|ollama|voice|vision|ear] | setup-code | background | version" >&2
+        echo "${L[usage]}" >&2
         exit 2
         ;;
 esac

@@ -33,6 +33,7 @@ ui_lang=""
 if [ -r /etc/nuxiva/nuxiva.env ]; then ui_lang=$(sed -n 's/^NUXIVA_UI_LANG=//p' /etc/nuxiva/nuxiva.env | tail -n 1); fi
 case "${ui_lang:-${LC_ALL:-${LC_MESSAGES:-${LANG:-}}}}" in
     it*) UI_LANG=it ;;
+    fr*) UI_LANG=fr ;;
     *) UI_LANG=en ;;
 esac
 
@@ -53,6 +54,23 @@ if [ "$UI_LANG" = it ]; then
         [svc_ok]="attiva" [svc_safe]="partita in modalità sicura" [svc_failed]="non risponde"
         [ok]="ok" [done]="Riparazione completata: Nuxiva funziona" [partial]="Riparazione terminata con problemi da risolvere a mano"
         [log]="Log completo"
+    )
+elif [ "$UI_LANG" = fr ]; then
+    L=(
+        [title]="Réparation de Nuxiva" [busy]="Une autre réparation est déjà en cours"
+        [disk]="Espace disque" [apt]="Gestionnaire de paquets" [network]="Connexion Internet"
+        [code]="Fichiers Nuxiva" [python]="Bibliothèques Python" [system]="Fichiers système" [ports]="Ports réseau"
+        [service]="Démarrage de Nuxiva"
+        [disk_ok]="libres" [disk_cleaned]="libérés par le nettoyage" [disk_full]="espace insuffisant : libérez au moins 2 Go et réessayez"
+        [apt_wait]="en attente de la fin d'une autre installation" [apt_fixed]="installation interrompue terminée" [apt_failed]="le gestionnaire de paquets ne répond pas"
+        [net_fixed]="restaurée par le redémarrage de la résolution DNS" [net_offline]="absente : vérifiez le câble ou le Wi-Fi"
+        [code_fixed]="fichiers endommagés restaurés" [code_fetched]="téléchargés à nouveau depuis GitHub" [code_failed]="impossible de les restaurer"
+        [py_fixed]="réinstallées" [py_rebuilt]="environnement reconstruit à neuf" [py_failed]="installation échouée" [py_wait]="en attente d'une autre installation"
+        [sys_fixed]="restaurés"
+        [port_busy]="le port %s est occupé par %s : fermez ce programme"
+        [svc_ok]="actif" [svc_safe]="démarré en mode sans échec" [svc_failed]="ne répond pas"
+        [ok]="ok" [done]="Réparation terminée : Nuxiva est opérationnel" [partial]="Réparation terminée avec des problèmes à résoudre manuellement"
+        [log]="Journal complet"
     )
 else
     L=(
@@ -263,7 +281,7 @@ check_system() {
     done
     (( changed )) && systemctl daemon-reload >>"$LOG" 2>&1
     if [ ! -f /etc/pam.d/nuxiva-admin ]; then
-        printf '%s\n' '# Nuxiva OS admin panel' '@include common-auth' '@include common-account' > /etc/pam.d/nuxiva-admin
+        printf '%s\n' '@include common-auth' '@include common-account' > /etc/pam.d/nuxiva-admin
         changed=1
     fi
     getent group nuxiva-admin >/dev/null || { groupadd --system nuxiva-admin; changed=1; }
