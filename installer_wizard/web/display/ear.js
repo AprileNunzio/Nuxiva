@@ -183,6 +183,7 @@
       else if (ev.type === "enroll_unavailable") D.Enroll.unavailable();
       else if (ev.type === "transcript" && ev.text) {
         D.lastVoice = true;
+        if (ev.speaker) D.currentSpeaker = ev.speaker;
         D.ask(ev.text, ev.lang, { followup: !!ev.followup, speaker: ev.speaker || "", voice_known: ev.voice_known });
       }
     };

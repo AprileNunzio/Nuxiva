@@ -59,7 +59,7 @@ async def _demo_core(query: str) -> dict:
     return {"agent_id": "demo", "speech_output": text}
 
 
-async def _core_call(query: str, device: str, speech_lang: dict) -> dict:
+async def _core_call(query: str, device: str, speech_lang: dict, mode: str | None = None) -> dict:
     present = [p["slug"] for p in store.presence.get("people", []) if p.get("known")]
     context = {"people_present": people.context_for(present)} if present else {}
     context["laws"] = laws.preamble()
@@ -75,7 +75,7 @@ async def _core_call(query: str, device: str, speech_lang: dict) -> dict:
     long_term = mind.recall(query, who=acting().slug)
     if long_term:
         context["long_term"] = long_term
-    route = await brains.route(query)
+    route = await brains.route(query, mode_override=mode)
     rule = languages.instruction(speech_lang["lang"], speech_lang["teach"])
     if rule:
         context["reply_language"] = rule
@@ -106,7 +106,7 @@ async def _core_call(query: str, device: str, speech_lang: dict) -> dict:
             trace.note(call, f"gestita dall'agente {data.get('agent_id') or 'core'}")
         trace.finish(call, model, (time.time() - started) * 1000, data.get("speech_output") or "")
         if model:
-            label = "veloce" if route["kind"] == "chat" else "ragionamento"
+            label = "Nuxiva 5.0 Veloce (5.0-flash)" if route["kind"] == "chat" else "Nuxiva 5.0 Pro Ragionamento (5.0-pro)"
             data["agent_id"] = f"{data.get('agent_id') or 'core'} · {model} ({label})"
         return data
 
@@ -120,8 +120,10 @@ async def _core_call(query: str, device: str, speech_lang: dict) -> dict:
 def _heard(body: dict) -> dict:
     slug = str(body.get("speaker") or "")
     known = body.get("voice_known")
+    mode = str(body.get("reasoning_mode") or body.get("mode") or "").strip()
     return {"followup": bool(body.get("followup")), "speaker": slug if SLUG_RE.match(slug) else "",
-            "voice_known": known if isinstance(known, bool) else None}
+            "voice_known": known if isinstance(known, bool) else None,
+            "reasoning_mode": mode if mode in ("fast", "reasoning", "veloce", "ragionamento", "5.0-flash", "5.0-pro") else None}
 
 
 async def assistant_chat(text: str, device: str, heard_lang: str | None = None, heard: dict | None = None) -> JSONResponse:
@@ -158,8 +160,13 @@ async def assistant_chat(text: str, device: str, heard_lang: str | None = None, 
     if speech_lang["lang"] != home_lang():
         background(ensure_language(speech_lang["lang"]))
 
+    mode = heard.get("reasoning_mode")
+    if not mode:
+        from features.people.people import preferred_reasoning_mode
+        mode = preferred_reasoning_mode(principal.slug)
+
     async def core_call(query: str) -> dict:
-        return await (_demo_core(query) if DEMO else _core_call(query, device, speech_lang))
+        return await (_demo_core(query) if DEMO else _core_call(query, device, speech_lang, mode))
 
     flow = ChatJourney(said, text, device, heard.get("speaker") or "utente")
     enroll = voice_id.command(text)
@@ -342,4 +349,43 @@ async def public_stream_reasoning(request: Request):
                     yield f"{line}\n\n"
 
     return StreamingResponse(event_stream(), media_type="text/event-stream")
+
+
+@public_routes.get("/api/assistant/mode")
+async def get_assistant_mode(request: Request):
+    principal = authz_resolve.for_request("kiosk" if is_local(request) else "remote", "", "")
+    from features.people.people import preferred_reasoning_mode
+    from features.brain.presets import REASONING_MODES, DEFAULT_REASONING_MODE_ID
+    active_mode = preferred_reasoning_mode(principal.slug)
+    return {
+        "mode": active_mode,
+        "default": DEFAULT_REASONING_MODE_ID,
+        "modes": [
+            {
+                "id": m.id,
+                "name": m.name,
+                "version": m.version,
+                "badge": m.badge,
+                "hint": m.hint,
+                "sla_ms": m.sla_ms,
+                "is_default": m.is_default,
+            }
+            for m in REASONING_MODES
+        ],
+    }
+
+
+@public_routes.post("/api/assistant/mode")
+async def set_assistant_mode(request: Request):
+    body = await request.json()
+    mode = str(body.get("mode") or "").strip().lower()
+    speaker = str(body.get("speaker") or "").strip()
+    if speaker and not SLUG_RE.match(speaker):
+        raise HTTPException(400, "Identificativo utente non valido")
+    cleaned_mode = "fast" if mode in ("fast", "chat", "veloce", "5.0-flash") else "reasoning"
+    principal = authz_resolve.for_request("kiosk" if is_local(request) else "remote", speaker, "")
+    from features.people.people import set_preferred_reasoning_mode
+    saved = set_preferred_reasoning_mode(principal.slug, cleaned_mode)
+    return {"status": "ok", "mode": saved, "user": principal.slug}
+
 

@@ -19,6 +19,7 @@ import { AgentDescriptor, SystemModelConfig, KnowledgeNode } from '../../shared/
 import { NeuralAnalysisFlow } from './NeuralAnalysisFlow';
 import { ProjectWidget } from './ProjectWidget';
 import { useI18n } from '../../shared/i18n/I18nContext';
+import { CognitiveEngineSelector } from '../cognitive_engine';
 
 interface ControlDeckViewProps {
   nodes: KnowledgeNode[];
@@ -91,15 +92,18 @@ export const ControlDeckView: React.FC<ControlDeckViewProps> = ({ nodes, onRefre
 
   return (
     <div className="w-full max-w-7xl 3xl:max-w-[1800px] 4xl:max-w-[2400px] 5xl:max-w-[3600px] 8k:max-w-[7200px] mx-auto px-3 sm:px-6 8k:px-16 py-4 sm:py-8 8k:py-16 space-y-6 sm:space-y-8 8k:space-y-12">
-      {/* Title */}
-      <div>
-        <h1 className="text-xl sm:text-3xl 8k:text-5xl font-['Rajdhani'] font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400">
-          {t('deck_title')}
-        </h1>
-        <p className="text-xs sm:text-sm 8k:text-xl text-slate-400 mt-1">
-          {t('deck_subtitle')}
-        </p>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-xl sm:text-3xl 8k:text-5xl font-['Rajdhani'] font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400">
+            {t('deck_title')}
+          </h1>
+          <p className="text-xs sm:text-sm 8k:text-xl text-slate-400 mt-1">
+            {t('deck_subtitle')}
+          </p>
+        </div>
+        <CognitiveEngineSelector />
       </div>
+
 
       <div className="grid grid-cols-1 lg:grid-cols-3 4xl:grid-cols-4 8k:grid-cols-6 gap-5 sm:gap-6 8k:gap-10">
         <div className="lg:col-span-2 4xl:col-span-3 8k:col-span-4 space-y-5 sm:space-y-6 8k:space-y-10">

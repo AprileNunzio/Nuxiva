@@ -1,5 +1,5 @@
 import re
-from typing import Tuple
+from typing import Any, Tuple
 from .interfaces import UserCognitiveInput, PsychologicalEvaluation, EmotionalState
 
 class PsychologicalAgent:
@@ -65,3 +65,19 @@ class PsychologicalAgent:
         if state == EmotionalState.FRUSTRATED:
             return "non_defensive_deescalation", "Ascolto chiaro privo di reattività, offrendo uno spazio ordinato di sfogo."
         return "neutral_supportive", "Presenza equilibrata e attenta alla stabilità dell'utente."
+
+    def detect_tom_discrepancy(self, user_input: UserCognitiveInput) -> Any:
+        from server.core.kernel.domain.node import SynapticSpike
+        text = user_input.raw_text.strip().lower()
+        is_literal_positive = bool(re.search(r"\b(sto bene|tutto bene|tutto ok|nessun problema|va bene)\b", text))
+        has_somatic_distress = (user_input.vocal_jitter > 0.03 or user_input.heart_rate_bpm > 95.0 or user_input.facial_valence < -0.25)
+        if is_literal_positive and has_somatic_distress:
+            return SynapticSpike(
+                source_neuron="psychological_agent",
+                target_cluster="theory_of_mind",
+                potential=0.95,
+                inhibitory_gaba=False,
+                emotion_vector=[0.1, 0.8, 0.4, 0.7],
+                payload={"override": True, "reason": "tom_discrepancy_detected", "text": text},
+            )
+        return None

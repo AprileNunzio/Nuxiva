@@ -22,7 +22,7 @@ async def updates_action(text: str) -> tuple[str, dict]:
             r"\b(installa|applica|esegui|fai|procedi|aggiorna(ti|rti)?\s+(ora|adesso|tutto|il sistema))\b", text, re.I
         )
     ) and not re.search(r"\b(controlla|verifica|ci sono|c'?[èe]|esistono|disponibil)\b", text, re.I)
-    info, (pkgs, note) = await asyncio.gather(updater.check(), _apt_upgradable())
+    info, (pkgs, note) = await asyncio.gather(updater.check(allow_bad=True), _apt_upgradable())
     nuxiva_new = bool(info.get("available"))
     items = [
         {
@@ -40,7 +40,7 @@ async def updates_action(text: str) -> tuple[str, dict]:
         if pkgs:
             asyncio.get_running_loop().create_task(_apt_upgrade())
         if nuxiva_new:
-            asyncio.get_running_loop().create_task(updater.apply("richiesto a voce"))
+            asyncio.get_running_loop().create_task(updater.apply("richiesto a voce", force=True))
         speech = f"Avvio l'installazione: {len(pkgs)} pacchetti di sistema" if pkgs else "Avvio l'aggiornamento"
         speech += (
             " e la nuova versione di Nuxiva; mi riavvierò da sola e verificherò che tutto funzioni."

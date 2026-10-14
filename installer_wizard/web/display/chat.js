@@ -144,20 +144,22 @@
   D.ask = async (text, lang, heard = {}) => {
     D.busy = true; D.lastInteraction = Date.now();
     thinking(true);
+    const activeMode = (D.getReasoningMode ? D.getReasoningMode() : D.reasoningMode) || localStorage.getItem("nuxiva_reasoning_mode") || "reasoning";
+    const payload = { reasoning_mode: activeMode, ...heard };
     if (!heard.followup) {
       $("you").textContent = `« ${text} »`;
       $("say").textContent = "…";
     }
     try {
       if (!heard.followup) await predict(text);
-      const streamed = await askStream(text, lang, heard);
+      const streamed = await askStream(text, lang, payload);
       if (streamed) {
         if (streamed.data.ignored) { D.lastVoice = false; D.Ear.followup(12); return; }
         show(text, streamed.data, streamed.spoken);
         return;
       }
       const r = await fetch("/api/assistant/chat", { method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, lang, ...heard }) });
+        body: JSON.stringify({ text, lang, ...payload }) });
       const d = await r.json();
       if (!r.ok) throw new Error(d.detail || "Errore");
       if (d.ignored) { D.lastVoice = false; D.Ear.followup(12); return; }

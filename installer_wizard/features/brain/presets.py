@@ -15,16 +15,146 @@ class Preset:
     sources: tuple[str, ...]
 
 
+from enum import Enum
+
+class CognitiveEngineVersion(str, Enum):
+    LEGACY_4_2 = "nuxiva-4.2-legacy"
+    VELOCE_5_0 = "nuxiva-5.0-veloce"
+    EMPATICO_5_0 = "nuxiva-5.0-empatico"
+    PRO_6_0 = "nuxiva-6.0-pro"
+    ULTRA_6_5 = "nuxiva-6.5-ultra"
+    AUTO_6_5 = "nuxiva-6.5-auto"
+
+@dataclass(frozen=True)
+class ReasoningModeInfo:
+    id: str
+    name: str
+    version: str
+    badge: str
+    hint: str
+    sla_ms: int
+    is_default: bool = False
+
+
+DEFAULT_PRESET_ID = "neuro_core"
+
 PRESETS: tuple[Preset, ...] = (
+    Preset(
+        "neuro_core",
+        "🧠",
+        "Nuxiva Neuro-Core 5.0",
+        "Piano Corticale Neuro-Biologico e Parallelismo Corticale con dinamica LIF, modulazione limbica e inibizione GABA.",
+        "anywhere",
+        ("local", "servers", "cloud"),
+    ),
     Preset("auto", "✨", "Automatico", "Nuxiva sceglie da sola in base all'hardware.", "anywhere", ()),
     Preset("private", "🔒", "Privato", "Solo modelli in casa: nessun dato esce dalla rete.", "home", ("local", "servers")),
-    Preset("balanced", "⚖️", "Bilanciato", "Prima in casa; il cloud solo se la casa non risponde.", "home_first",
-           ("local", "servers", "cloud")),
-    Preset("smart", "🚀", "Massima intelligenza", "Prima il cloud più capace, la casa come riserva.", "anywhere",
-           ("cloud", "local", "servers")),
+    Preset(
+        "balanced",
+        "⚖️",
+        "Bilanciato",
+        "Prima in casa; il cloud solo se la casa non risponde.",
+        "home_first",
+        ("local", "servers", "cloud"),
+    ),
+    Preset(
+        "smart",
+        "🚀",
+        "Massima intelligenza",
+        "Prima il cloud più capace, la casa come riserva.",
+        "anywhere",
+        ("cloud", "local", "servers"),
+    ),
     Preset("cloud", "☁️", "Solo cloud", "Solo servizi cloud collegati, niente modelli locali.", "anywhere", ("cloud",)),
 )
 BY_ID = {p.id: p for p in PRESETS}
+
+COGNITIVE_ENGINES: tuple[ReasoningModeInfo, ...] = (
+    ReasoningModeInfo(
+        id=CognitiveEngineVersion.LEGACY_4_2.value,
+        name="Nuxiva 4.2 Legacy Chain-Sync",
+        version=CognitiveEngineVersion.LEGACY_4_2.value,
+        badge="Legacy",
+        hint="Pipeline sequenziale a token con fallback seriale.",
+        sla_ms=2500,
+        is_default=False,
+    ),
+    ReasoningModeInfo(
+        id=CognitiveEngineVersion.VELOCE_5_0.value,
+        name="Nuxiva 5.0 Veloce Synapse-Flash",
+        version=CognitiveEngineVersion.VELOCE_5_0.value,
+        badge="Veloce",
+        hint="Ternary 1.58-bit con Liquid LNN e bus spiking zero-copy.",
+        sla_ms=25,
+        is_default=False,
+    ),
+    ReasoningModeInfo(
+        id=CognitiveEngineVersion.EMPATICO_5_0.value,
+        name="Nuxiva 5.0 Empatico Synapse-Limbic",
+        version=CognitiveEngineVersion.EMPATICO_5_0.value,
+        badge="Empatico",
+        hint="Global Workspace a 8 corsie parallele con fusione biometrica 10Hz.",
+        sla_ms=120,
+        is_default=False,
+    ),
+    ReasoningModeInfo(
+        id=CognitiveEngineVersion.PRO_6_0.value,
+        name="Nuxiva 6.0 Pro Omni-Latent",
+        version=CognitiveEngineVersion.PRO_6_0.value,
+        badge="Omni-Latent",
+        hint="Spazio Latente Continuo JEPA/Coconut con plasticita TTT live in VRAM.",
+        sla_ms=15,
+        is_default=False,
+    ),
+    ReasoningModeInfo(
+        id=CognitiveEngineVersion.ULTRA_6_5.value,
+        name="Nuxiva 6.5 Ultra DeepThink-MCTS",
+        version=CognitiveEngineVersion.ULTRA_6_5.value,
+        badge="DeepThink",
+        hint="MCTS latente a 64 rami con Process Reward Model dopaminergico.",
+        sla_ms=650,
+        is_default=False,
+    ),
+    ReasoningModeInfo(
+        id=CognitiveEngineVersion.AUTO_6_5.value,
+        name="Nuxiva 6.5 Auto Thalamic-Adaptive",
+        version=CognitiveEngineVersion.AUTO_6_5.value,
+        badge="Auto",
+        hint="Meta-Orchestratore Talamico su principio energia libera e carico hardware.",
+        sla_ms=45,
+        is_default=True,
+    ),
+)
+COGNITIVE_ENGINES_BY_ID = {m.id: m for m in COGNITIVE_ENGINES}
+
+REASONING_MODES: tuple[ReasoningModeInfo, ...] = (
+    ReasoningModeInfo(
+        id="fast",
+        name="Nuxiva 5.0 Veloce",
+        version="5.0-flash",
+        badge="Veloce",
+        hint="Risposta istantanea (<180ms) per conversazione fluida e comandi rapidi.",
+        sla_ms=180,
+        is_default=False,
+    ),
+    ReasoningModeInfo(
+        id="reasoning",
+        name="Nuxiva 5.0 Pro Ragionamento",
+        version="5.0-pro",
+        badge="Ragionamento",
+        hint="Pensiero profondo multi-corsia corticale con validazione critica.",
+        sla_ms=1200,
+        is_default=True,
+    ),
+)
+REASONING_MODES_BY_ID = {
+    **{m.id: m for m in REASONING_MODES},
+    **COGNITIVE_ENGINES_BY_ID,
+    "nuxiva-5.0-veloce": REASONING_MODES[0],
+    "nuxiva-6.0-pro": REASONING_MODES[1],
+}
+DEFAULT_REASONING_MODE_ID = CognitiveEngineVersion.AUTO_6_5.value
+
 
 
 class PresetError(ValueError):
@@ -76,4 +206,4 @@ def plan(preset_id: str, role_id: str, cat: dict) -> tuple[list[str], str]:
 def clean_profile(value: str | None, custom: bool) -> str:
     if value in BY_ID or value == "custom":
         return value
-    return "custom" if custom else "auto"
+    return "custom" if custom else DEFAULT_PRESET_ID

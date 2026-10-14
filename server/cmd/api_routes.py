@@ -30,6 +30,7 @@ from server.features.human_affective_engine.controller import affective_router
 from server.features.wearable_vitals_hub.controller import wearable_router
 from server.features.user_presence_vitals.controller import emergency_presence_router
 from server.features.cognitive_triage_agents.controller import cognitive_triage_router
+from server.features.brain.controller import brain_router
 from server.core.sensory_bus.event_router import sensory_bus
 from server.core.event_sourcing.universal_space import UniversalObservation
 
@@ -49,6 +50,10 @@ router.include_router(affective_router)
 router.include_router(wearable_router)
 router.include_router(emergency_presence_router)
 router.include_router(cognitive_triage_router)
+router.include_router(brain_router)
+
+router_v2 = APIRouter(prefix="/api/v2")
+router_v2.include_router(brain_router)
 
 class AuthExchangeRequest(BaseModel):
     client_id: str

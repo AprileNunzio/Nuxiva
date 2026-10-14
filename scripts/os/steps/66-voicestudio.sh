@@ -56,13 +56,24 @@ step_apply() {
         return 0
     fi
     [ "$(uname -m)" = "x86_64" ] || fail "Lo Studio delle voci funziona solo su computer x86-64: installalo su un altro PC e scegli «Su un altro computer»"
-    local free_gb
-    free_gb=$(df -BG --output=avail /var/lib 2>/dev/null | tail -1 | tr -dc '0-9')
-    [ "${free_gb:-0}" -ge 12 ] || fail "Servono almeno 12 GB liberi sul disco (ora ${free_gb:-0} GB)"
+    local free_var free_root max_free
+    free_var=$(df -BG --output=avail /var/lib 2>/dev/null | tail -1 | tr -dc '0-9')
+    free_root=$(df -BG --output=avail / 2>/dev/null | tail -1 | tr -dc '0-9')
+    max_free=$(( free_var > free_root ? free_var : free_root ))
+    [ "${max_free:-0}" -ge 6 ] || fail "Servono almeno 6 GB liberi sul disco (ora ${max_free:-0} GB)"
     ensure_docker
     ensure_key
-    progress 20 "Scarico lo Studio delle voci (circa 6 GB, può richiedere molti minuti)"
-    retry 3 20 docker pull -q "$IMAGE" >/dev/null
+    progress 20 "Scarico lo Studio delle voci (può richiedere diversi minuti)"
+    docker pull "$IMAGE" 2>&1 | while IFS= read -r line; do
+        if [[ "$line" =~ ([0-9a-f]+):\ +Downloading\ +([0-9.]+MB)/([0-9.]+MB) ]]; then
+            detail "Download ${BASH_REMATCH[1]}: ${BASH_REMATCH[2]}/${BASH_REMATCH[3]}"
+        elif [[ "$line" =~ ([0-9a-f]+):\ +Extracting ]]; then
+            detail "Estrazione layer ${BASH_REMATCH[1]}"
+        elif [[ "$line" =~ ([0-9a-f]+):\ +Pull\ complete ]]; then
+            detail "Layer ${BASH_REMATCH[1]} completato"
+        fi
+    done
+    docker image inspect "$IMAGE" >/dev/null 2>&1 || retry 2 10 docker pull "$IMAGE" || fail "Download dell'immagine Studio delle voci non riuscito"
     if docker inspect "$NAME" >/dev/null 2>&1 && [ "$(running_signature)" != "$(signature)" ]; then
         docker rm -f "$NAME" >/dev/null
     fi
@@ -70,7 +81,6 @@ step_apply() {
         progress 60 "Avvio dello Studio delle voci"
         local flags
         flags=$(gpu_flags)
-        # shellcheck disable=SC2086
         OMNIVOICE_API_KEY="$NUXIVA_VOICESTUDIO_KEY" docker run -d --name "$NAME" --restart unless-stopped $flags \
             --label "nuxiva.signature=$(signature)" \
             -p "127.0.0.1:$PORT:$PORT" \
@@ -81,7 +91,17 @@ step_apply() {
         docker start "$NAME" >/dev/null
     fi
     progress 75 "Attendo che lo Studio delle voci sia pronto"
-    wait_for 600 healthy || fail "Lo Studio delle voci non risponde: guarda «docker logs $NAME»"
+    local t=0
+    until healthy; do
+        if have_docker && docker inspect "$NAME" >/dev/null 2>&1 && ! running; then
+            local logs
+            logs=$(docker logs "$NAME" --tail 25 2>&1)
+            fail "Lo Studio delle voci si è arrestato: $logs"
+        fi
+        t=$((t + 2))
+        [ "$t" -ge 300 ] && fail "Lo Studio delle voci non risponde: guarda «docker logs $NAME»"
+        sleep 2
+    done
     progress 100 "Studio delle voci pronto su questo computer$( [ -n "$(gpu_flags)" ] && echo ' con la scheda video' )"
 }
 

@@ -105,6 +105,25 @@ def preferred_languages(slug: str | None) -> tuple[str, str]:
     return str(profile.get("ui_language") or ""), str(profile.get("voice_language") or "")
 
 
+def preferred_reasoning_mode(slug: str | None) -> str:
+    profile = load(slug) if slug else None
+    if not profile:
+        return "reasoning"
+    return str(profile.get("reasoning_mode") or "reasoning")
+
+
+def set_preferred_reasoning_mode(slug: str | None, mode: str) -> str:
+    cleaned = "fast" if mode in ("fast", "chat", "veloce", "5.0-flash") else "reasoning"
+    if not slug:
+        return cleaned
+    with _lock:
+        profile = load(slug)
+        if profile:
+            profile["reasoning_mode"] = cleaned
+            save(profile)
+    return cleaned
+
+
 def ensure(slug: str, name: str) -> dict:
     with _lock:
         profile = load(slug)

@@ -44,6 +44,36 @@ step_apply() {
     info "Versione sorgente Core: $NUXIVA_SRC_HASH"
     progress 3 "Preparazione build del Core"
 
+    if [ -f "$NUXIVA_ENV_FILE" ]; then
+        python3 -c '
+from pathlib import Path
+import re
+p = Path("'"$NUXIVA_ENV_FILE"'")
+if p.exists():
+    out = []
+    seen = set()
+    for line in p.read_text(encoding="utf-8", errors="ignore").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        if line.startswith("#"):
+            out.append(line)
+            continue
+        if "=" in line:
+            k, v = line.split("=", 1)
+            k = k.strip().strip("\"'\t ")
+            if not re.match(r"^[A-Za-z_][A-Za-z0-9_]*$", k) or k in seen:
+                continue
+            seen.add(k)
+            v = v.strip()
+            while len(v) >= 2 and ((v.startswith("\"") and v.endswith("\"")) or (v.startswith("\x27") and v.endswith("\x27"))):
+                v = v[1:-1].strip()
+            escaped = v.replace("\\", "\\\\").replace("\"", "\\\"")
+            out.append(f"{k}=\"{escaped}\"")
+    p.write_text("\n".join(out) + "\n", encoding="utf-8")
+' 2>/dev/null || true
+    fi
+
     if ! compose --progress=plain build nuxiva-core 2>&1 | while IFS= read -r line; do
         echo "$line"
         if [[ "$line" =~ \[([^]/]*\ )?([0-9]+)/([0-9]+)\]\ (.*) ]]; then

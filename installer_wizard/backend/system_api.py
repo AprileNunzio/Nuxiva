@@ -183,11 +183,18 @@ async def admin_action(action: str, request: Request, user: str = Depends(requir
         code, out = (0, "demo") if DEMO else await health.sh(*command, timeout=180)
         return {"ok": code == 0, "output": out[-500:]}
     elif action == "update-check":
-        return await updater.check()
+        return await updater.check(allow_bad=True)
     elif action == "update-apply":
-        if not (await updater.check()).get("available"):
+        info = await updater.check(allow_bad=True)
+        target = info.get("target_rev") or info.get("remote_rev")
+        local = info.get("local_rev")
+        if not target or target == local:
             return {"ok": False, "message": "Nessun aggiornamento disponibile"}
-        background(updater.apply("manuale"))
+        background(updater.apply("manuale", force=True))
+        return {"ok": True, "message": "Aggiornamento avviato"}
+    elif action == "update-clear-bad":
+        updater.clear_bad_rev()
+        return await updater.check(allow_bad=True)
     elif action == "reboot":
         background(delayed("systemctl", "reboot"))
     elif action == "restart-supervisor":

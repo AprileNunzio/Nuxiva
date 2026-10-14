@@ -1,0 +1,201 @@
+import json
+import tempfile
+import time
+import unittest
+from pathlib import Path
+from unittest import mock
+
+import updater
+
+
+class UpdaterTest(unittest.IsolatedAsyncioTestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.root = Path(self.tmp.name)
+        self.bad_file = self.root / "bad_revs"
+        self.pending_file = self.root / "update_pending.json"
+        self.last_good = self.root / "last_good_rev"
+        updater._ci.clear()
+        updater._unreachable_since = 0.0
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    async def test_bad_revs_recording_and_clearing(self):
+        with mock.patch("updater.BAD_REVS_FILE", self.bad_file):
+            self.assertEqual(updater._bad_revs(), set())
+            updater.mark_bad_rev("abc123456789")
+            self.assertIn("abc123456789", updater._bad_revs())
+            updater.clear_bad_rev("abc1234")
+            self.assertEqual(updater._bad_revs(), set())
+
+    async def test_bad_revs_cooldown_expiration(self):
+        with mock.patch("updater.BAD_REVS_FILE", self.bad_file):
+            self.bad_file.write_text(f"old1234 {time.time() - 3600}\n")
+            self.assertEqual(updater._bad_revs(cooldown=1800), set())
+            self.bad_file.write_text(f"recent1234 {time.time() - 60}\n")
+            self.assertEqual(updater._bad_revs(cooldown=1800), {"recent1234"})
+
+    async def test_ci_status_check_runs_success(self):
+        payload = {
+            "check_runs": [
+                {"name": "validate-python", "status": "completed", "conclusion": "success"},
+                {"name": "tests", "status": "completed", "conclusion": "success"},
+                {"name": "kernel-tests", "status": "completed", "conclusion": "success"},
+            ]
+        }
+        res_mock = mock.MagicMock()
+        res_mock.status_code = 200
+        res_mock.json.return_value = payload
+        res_mock.raise_for_status = mock.MagicMock()
+
+        client_mock = mock.AsyncMock()
+        client_mock.get.return_value = res_mock
+        client_mock.__aenter__.return_value = client_mock
+
+        with mock.patch("updater._slug", new_callable=mock.AsyncMock, return_value="AprileNunzio/Nuxiva"), \
+                mock.patch("httpx.AsyncClient", return_value=client_mock):
+            status = await updater.ci_status("111122223333")
+            self.assertEqual(status, "success")
+
+    async def test_ci_status_check_runs_failure(self):
+        payload = {
+            "check_runs": [
+                {"name": "validate-python", "status": "completed", "conclusion": "failure"},
+                {"name": "tests", "status": "completed", "conclusion": "success"},
+            ]
+        }
+        res_mock = mock.MagicMock()
+        res_mock.status_code = 200
+        res_mock.json.return_value = payload
+        res_mock.raise_for_status = mock.MagicMock()
+
+        client_mock = mock.AsyncMock()
+        client_mock.get.return_value = res_mock
+        client_mock.__aenter__.return_value = client_mock
+
+        with mock.patch("updater._slug", new_callable=mock.AsyncMock, return_value="AprileNunzio/Nuxiva"), \
+                mock.patch("httpx.AsyncClient", return_value=client_mock):
+            status = await updater.ci_status("444455556666")
+            self.assertEqual(status, "failure")
+
+    async def test_ci_status_fallback_to_workflow_runs(self):
+        cr_mock = mock.MagicMock()
+        cr_mock.status_code = 200
+        cr_mock.json.return_value = {"check_runs": []}
+        cr_mock.raise_for_status = mock.MagicMock()
+
+        wf_mock = mock.MagicMock()
+        wf_mock.status_code = 200
+        wf_mock.json.return_value = {
+            "workflow_runs": [
+                {"name": "Nuxiva CI Pipeline", "status": "completed", "conclusion": "success"}
+            ]
+        }
+        wf_mock.raise_for_status = mock.MagicMock()
+
+        client_mock = mock.AsyncMock()
+        client_mock.get.side_effect = [cr_mock, wf_mock]
+        client_mock.__aenter__.return_value = client_mock
+
+        with mock.patch("updater._slug", new_callable=mock.AsyncMock, return_value="AprileNunzio/Nuxiva"), \
+                mock.patch("httpx.AsyncClient", return_value=client_mock):
+            status = await updater.ci_status("777788889999")
+            self.assertEqual(status, "success")
+
+    async def test_ci_status_old_commit_with_no_runs_is_untested_not_pending(self):
+        cr_mock = mock.MagicMock()
+        cr_mock.status_code = 200
+        cr_mock.json.return_value = {"check_runs": []}
+        cr_mock.raise_for_status = mock.MagicMock()
+
+        wf_mock = mock.MagicMock()
+        wf_mock.status_code = 200
+        wf_mock.json.return_value = {"workflow_runs": []}
+        wf_mock.raise_for_status = mock.MagicMock()
+
+        client_mock = mock.AsyncMock()
+        client_mock.get.side_effect = [cr_mock, wf_mock]
+        client_mock.__aenter__.return_value = client_mock
+
+        old_time = str(int(time.time() - 7200))
+        with mock.patch("updater._slug", new_callable=mock.AsyncMock, return_value="AprileNunzio/Nuxiva"), \
+                mock.patch("httpx.AsyncClient", return_value=client_mock), \
+                mock.patch("updater.git", new_callable=mock.AsyncMock, return_value=(0, old_time)):
+            status = await updater.ci_status("aaaaabbbbb")
+            self.assertEqual(status, "untested")
+
+    async def test_pick_target_skips_bad_rev_in_auto_mode_and_reports_it(self):
+        with mock.patch("updater.BAD_REVS_FILE", self.bad_file), \
+                mock.patch("updater.require_ci", return_value=True), \
+                mock.patch("updater.git", new_callable=mock.AsyncMock, return_value=(0, "bad1111\nold2222")), \
+                mock.patch("updater.ci_status", new_callable=mock.AsyncMock) as ci_mock:
+            updater.mark_bad_rev("bad1111")
+            ci_mock.side_effect = lambda sha: "untested" if sha == "old2222" else "success"
+            sha, note = await updater.pick_target("remote123", allow_bad=False)
+            self.assertEqual(sha, "")
+            self.assertIn("bad1111", note)
+
+    async def test_pick_target_allows_bad_rev_when_allow_bad_true(self):
+        with mock.patch("updater.BAD_REVS_FILE", self.bad_file), \
+                mock.patch("updater.require_ci", return_value=True), \
+                mock.patch("updater.git", new_callable=mock.AsyncMock, return_value=(0, "bad1111\nold2222")), \
+                mock.patch("updater.ci_status", new_callable=mock.AsyncMock, return_value="success"):
+            updater.mark_bad_rev("bad1111")
+            sha, note = await updater.pick_target("remote123", allow_bad=True)
+            self.assertEqual(sha, "bad1111")
+            self.assertEqual(note, "")
+
+    async def test_check_makes_available_even_if_target_was_previously_bad(self):
+        info_dict = {}
+        with mock.patch("updater.DEMO", False), \
+                mock.patch("updater.store.update", info_dict), \
+                mock.patch("updater.store.touch"), \
+                mock.patch("updater.git", new_callable=mock.AsyncMock) as git_mock, \
+                mock.patch("updater.pick_target", new_callable=mock.AsyncMock) as pick_mock:
+            git_mock.side_effect = [
+                (0, ""),
+                (0, "local111"),
+                (0, "remote999"),
+                (0, "commit log"),
+            ]
+            pick_mock.side_effect = [("", "bad note"), ("target888", "")]
+            res = await updater.check()
+            self.assertTrue(res["available"])
+            self.assertEqual(res["target_rev"], "target888")
+
+    async def test_apply_force_clears_bad_rev_and_resets(self):
+        with mock.patch("updater.BAD_REVS_FILE", self.bad_file), \
+                mock.patch("updater.PENDING_FILE", self.pending_file), \
+                mock.patch("updater.check", new_callable=mock.AsyncMock) as check_mock, \
+                mock.patch("updater.git", new_callable=mock.AsyncMock, return_value=(0, "")), \
+                mock.patch("updater.sh", new_callable=mock.AsyncMock, return_value=(0, "")), \
+                mock.patch("updater.asyncio.sleep", new_callable=mock.AsyncMock):
+            updater.mark_bad_rev("target999")
+            check_mock.return_value = {
+                "available": True,
+                "target_rev": "target999",
+                "local_rev": "local111",
+                "remote_rev": "target999",
+            }
+            applied = await updater.apply("manuale", force=True)
+            self.assertTrue(applied)
+            self.assertNotIn("target999", updater._bad_revs())
+            self.assertTrue(self.pending_file.exists())
+            pending_data = json.loads(self.pending_file.read_text())
+            self.assertEqual(pending_data["to"], "target999")
+
+    async def test_finish_pending_cleans_bad_rev_on_success(self):
+        with mock.patch("updater.BAD_REVS_FILE", self.bad_file), \
+                mock.patch("updater.PENDING_FILE", self.pending_file), \
+                mock.patch("updater.mark_good", new_callable=mock.AsyncMock):
+            updater.mark_bad_rev("good999")
+            self.pending_file.write_text(json.dumps({"from": "old", "to": "good999", "at": time.time()}))
+            rollback = await updater.finish_pending(True)
+            self.assertFalse(rollback)
+            self.assertNotIn("good999", updater._bad_revs())
+            self.assertFalse(self.pending_file.exists())
+
+
+if __name__ == "__main__":
+    unittest.main()

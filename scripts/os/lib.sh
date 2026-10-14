@@ -179,15 +179,36 @@ set_env() {
     mkdir -p "$NUXIVA_ETC"
     touch "$NUXIVA_ENV_FILE"
     chmod 600 "$NUXIVA_ENV_FILE"
-    if grep -q "^${key}=" "$NUXIVA_ENV_FILE"; then
-        local tmp
-        tmp=$(mktemp)
-        awk -v k="$key" -v v="$value" 'BEGIN{FS=OFS="="} $1==k {print k "=" v; next} {print}' "$NUXIVA_ENV_FILE" > "$tmp"
-        cat "$tmp" > "$NUXIVA_ENV_FILE"
-        rm -f "$tmp"
-    else
-        echo "${key}=${value}" >> "$NUXIVA_ENV_FILE"
-    fi
+    python3 -c '
+import sys, re
+from pathlib import Path
+k, v, f = sys.argv[1], sys.argv[2], Path(sys.argv[3])
+lines = f.read_text(encoding="utf-8", errors="ignore").splitlines() if f.exists() else []
+out = []
+found = False
+while len(v) >= 2 and ((v.startswith("\"") and v.endswith("\"")) or (v.startswith("\x27") and v.endswith("\x27"))):
+    v = v[1:-1].strip()
+esc = v.replace("\\", "\\\\").replace("\"", "\\\"")
+formatted = f"{k}=\"{esc}\""
+for line in lines:
+    stripped = line.strip()
+    if not stripped:
+        continue
+    if stripped.startswith("#"):
+        out.append(stripped)
+        continue
+    if "=" in stripped:
+        cur_k, cur_v = stripped.split("=", 1)
+        cur_k = cur_k.strip().strip("\"'\t ")
+        if cur_k == k:
+            found = True
+            out.append(formatted)
+        elif re.match(r"^[A-Za-z_][A-Za-z0-9_]*$", cur_k):
+            out.append(line)
+if not found:
+    out.append(formatted)
+f.write_text("\n".join(out) + "\n", encoding="utf-8")
+' "$key" "$value" "$NUXIVA_ENV_FILE" 2>/dev/null || echo "${key}=\"${value}\"" >> "$NUXIVA_ENV_FILE"
     export "$key=$value"
 }
 

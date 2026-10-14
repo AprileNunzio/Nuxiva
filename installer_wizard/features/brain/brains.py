@@ -221,11 +221,16 @@ class Brains:
             return "deep", "calcolo"
         return "chat", "conversazione"
 
-    async def route(self, text: str) -> dict:
+    async def route(self, text: str, mode_override: str | None = None) -> dict:
         cfg, installed = self.config(), {norm(n) for n in await self.installed()}
         routing = cfg["routing"]
         split = routing == "1" or (routing == "auto" and norm(cfg["chat"][0]) != norm(cfg["deep"][0]))
-        kind, reason = self.classify(text) if split else ("deep", "cervello unico")
+        if mode_override in ("fast", "chat", "veloce", "5.0-flash"):
+            kind, reason = "chat", "modalità veloce (Nuxiva 5.0 Veloce)"
+        elif mode_override in ("reasoning", "deep", "ragionamento", "pro", "5.0-pro"):
+            kind, reason = "deep", "modalità ragionamento (Nuxiva 5.0 Pro)"
+        else:
+            kind, reason = self.classify(text) if split else ("deep", "cervello unico")
         planned = self.effective(kind, cfg, cfg["deep" if kind == "chat" else "chat"])
         chain = [m for m in _dedupe(planned) if self.usable(m, installed)]
         skipped = [{"ref": m, "why": "non disponibile"} for m in _dedupe(planned) if m not in chain]

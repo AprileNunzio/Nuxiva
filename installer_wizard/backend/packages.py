@@ -41,6 +41,7 @@ PACKAGES = (
     Package("brain_local", ("ollama", "brain", "soup"), "NUXIVA_BRAIN", "Cervello locale", "Modelli linguistici su questo computer con Ollama", 8.0,
             removable=False),
     Package("brain_models", ("models", "warmup"), "NUXIVA_BRAIN", "Modelli del cervello", "Scarica e prepara i modelli scelti", 2.0),
+    Package("voicestudio", ("voicestudio",), "NUXIVA_VOICESTUDIO", "Studio delle voci", "Voci personalizzate con VoiceStudio", 6.0),
 )
 PACKAGE_BY_ID = {p.id: p for p in PACKAGES}
 PACKAGE_BY_STEP = {s: p for p in PACKAGES for s in p.steps}

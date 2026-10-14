@@ -229,7 +229,7 @@ class Registry:
         return bool(hook["get"]()) if hook else None
 
     async def sync(self) -> None:
-        if store.phase not in ("READY", "DEGRADED"):
+        if store.phase not in ("READY", "DEGRADED", "ERROR"):
             return
         env, effective = read_env(), self.evaluate()
         env_updates, steps, changed = {}, [], []

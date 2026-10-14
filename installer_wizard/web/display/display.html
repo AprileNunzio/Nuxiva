@@ -16,6 +16,7 @@
 <link rel="stylesheet" href="/static/display/camera.css">
 <link rel="stylesheet" href="/static/display/flow.css">
 <link rel="stylesheet" href="/static/shared/bgqueue.css">
+<link rel="stylesheet" href="/static/display/reasoning_mode/mode_selector.css">
 </head>
 <body class="holo-grid face">
 <canvas id="core"></canvas>
@@ -74,6 +75,27 @@
     </div>
     <div class="flow-detail" id="flow-detail"></div>
     <div class="flow-bar" id="flow-bar"></div>
+  </div>
+
+  <div class="dock-mode-wrapper">
+    <div class="reasoning-selector-root" id="reasoning-selector-root" role="group" aria-label="Reasoning Mode">
+      <div class="reasoning-pill-track">
+        <button type="button" class="reasoning-mode-btn" id="btn-mode-fast" data-mode="fast">
+          <span class="mode-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
+          <span class="mode-text-wrap">
+            <span class="mode-name" id="mode-fast-name-text"></span>
+            <span class="mode-badge" id="mode-fast-ver-text"></span>
+          </span>
+        </button>
+        <button type="button" class="reasoning-mode-btn" id="btn-mode-reasoning" data-mode="reasoning">
+          <span class="mode-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a6 6 0 0 0-6 6c0 2.22 1.2 4.16 3 5.2V17a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-3.8c1.8-1.04 3-2.98 3-5.2a6 6 0 0 0-6-6zM9 21h6"/></svg></span>
+          <span class="mode-text-wrap">
+            <span class="mode-name" id="mode-reasoning-name-text"></span>
+            <span class="mode-badge" id="mode-reasoning-ver-text"></span>
+          </span>
+        </button>
+      </div>
+    </div>
   </div>
 
   <div class="dock">
@@ -139,6 +161,7 @@
 <script src="/static/display/person_lang.js"></script>
 <script src="/static/display/mood.js"></script>
 <script src="/static/display/ambient.js"></script>
+<script src="/static/display/reasoning_mode/mode_selector.js"></script>
 <script src="/static/display/chat.js"></script>
 <script src="/static/display/musicout.js"></script>
 <script src="/static/display/ducking.js"></script>

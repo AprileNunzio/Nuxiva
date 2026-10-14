@@ -109,4 +109,13 @@ class AffectiveFusionEngine:
             []
         )
 
+    def compute_limbic_update(self, payload: PhysiologicalMultimodalPayload) -> Any:
+        from server.core.kernel.domain.limbic_state import LimbicState
+        res = self.infer_affective_state(payload)
+        na = min(1.0, 0.15 + 0.6 * res.anxiety_stress_score)
+        c = min(1.0, 0.10 + 0.5 * res.anxiety_stress_score + 0.3 * res.fatigue_burnout_score)
+        d = max(0.1, 0.7 - 0.5 * res.depression_risk_score - 0.3 * res.fatigue_burnout_score)
+        s = max(0.2, 0.8 - 0.5 * res.anxiety_stress_score)
+        return LimbicState(dopamine=d, noradrenaline=na, serotonin=s, cortisol=c, last_update_ts=payload.timestamp)
+
 affective_fusion_engine = AffectiveFusionEngine()

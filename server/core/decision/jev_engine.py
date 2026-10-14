@@ -38,7 +38,7 @@ class JevDecisionEngine:
     def register_candidate(self, candidate: CandidateAction) -> None:
         self._action_registry[candidate.action_id] = candidate
 
-    def evaluate(self, query: str, context: ContextDimension) -> JevDecision:
+    def evaluate(self, query: str, context: ContextDimension, limbic_vector: Optional[List[float]] = None) -> JevDecision:
         t0 = time.perf_counter()
         query_lower = query.lower()
         scored_candidates: List[tuple[CandidateAction, float, Dict[str, float]]] = []
@@ -49,6 +49,13 @@ class JevDecisionEngine:
             cost = candidate.execution_cost
             if context.system_load > 0.8:
                 cost *= 1.5
+
+            if limbic_vector and len(limbic_vector) >= 4:
+                d, na, s, c = limbic_vector[0], limbic_vector[1], limbic_vector[2], limbic_vector[3]
+                utility *= (1.0 + 0.3 * d + 0.2 * s)
+                cost *= (1.0 + 0.5 * na)
+                if c > 0.4 and candidate.privacy_risk > 0.1:
+                    cost += (c * 4.0)
 
             jev_score = (prob_success * utility) - cost
 

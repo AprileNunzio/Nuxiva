@@ -209,12 +209,18 @@ def read_env() -> dict:
 def read_global_env() -> dict:
     env = {}
     if ENV_FILE.exists():
-        for line in ENV_FILE.read_text(encoding="utf-8").splitlines():
+        for line in ENV_FILE.read_text(encoding="utf-8", errors="ignore").splitlines():
             line = line.strip()
             if not line or line.startswith("#") or "=" not in line:
                 continue
             key, value = line.split("=", 1)
-            env[key.strip()] = value.strip().strip('"').strip("'")
+            key = key.strip().strip('"\'')
+            if not _KEY_RE.match(key):
+                continue
+            val = value.strip()
+            while len(val) >= 2 and ((val.startswith('"') and val.endswith('"')) or (val.startswith("'") and val.endswith("'"))):
+                val = val[1:-1].strip()
+            env[key] = val
     return env
 
 
@@ -243,38 +249,82 @@ def ollama_remote() -> bool:
 
 def _format_env_line(key: str, value: str) -> str:
     s = str(value).strip()
-    if (s.startswith('"') and s.endswith('"')) or (s.startswith("'") and s.endswith("'")):
-        return f"{key}={s}"
-    if any(c in s for c in " \t'\"$#;*?()[]{}|&<>~`="):
-        escaped = s.replace("\\", "\\\\").replace('"', '\\"')
-        return f'{key}="{escaped}"'
-    return f"{key}={s}"
+    while len(s) >= 2 and ((s.startswith('"') and s.endswith('"')) or (s.startswith("'") and s.endswith("'"))):
+        s = s[1:-1].strip()
+    escaped = s.replace("\\", "\\\\").replace('"', '\\"')
+    return f'{key}="{escaped}"'
+
+
+def sanitize_env_file() -> None:
+    if not ENV_FILE.exists():
+        return
+    try:
+        lines = ENV_FILE.read_text(encoding="utf-8", errors="ignore").splitlines()
+        out = []
+        seen = set()
+        for line in lines:
+            stripped = line.strip()
+            if not stripped:
+                continue
+            if stripped.startswith("#"):
+                out.append(stripped)
+                continue
+            if "=" in stripped:
+                k, v = stripped.split("=", 1)
+                k = k.strip().strip('"\'')
+                if not _KEY_RE.match(k) or k in seen:
+                    continue
+                seen.add(k)
+                out.append(_format_env_line(k, v))
+        tmp = ENV_FILE.with_suffix(".tmp")
+        tmp.write_text("\n".join(out) + "\n", encoding="utf-8")
+        try:
+            os.chmod(tmp, 0o600)
+        except OSError:
+            pass
+        os.replace(tmp, ENV_FILE)
+    except OSError:
+        pass
 
 
 def write_env(updates: dict) -> None:
     for key, value in updates.items():
         if not _KEY_RE.match(key) or "\n" in str(value):
             raise ValueError(f"Chiave o valore non valido: {key}")
-    lines = ENV_FILE.read_text(encoding="utf-8").splitlines() if ENV_FILE.exists() else []
+    lines = ENV_FILE.read_text(encoding="utf-8", errors="ignore").splitlines() if ENV_FILE.exists() else []
     pending = dict(updates)
     out = []
+    seen = set()
     for line in lines:
-        if "=" in line and not line.lstrip().startswith("#"):
-            k, v = line.split("=", 1)
-            k = k.strip()
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if stripped.startswith("#"):
+            out.append(stripped)
+            continue
+        if "=" in stripped:
+            k, v = stripped.split("=", 1)
+            k = k.strip().strip('"\'')
+            if not _KEY_RE.match(k) or k in seen:
+                continue
+            seen.add(k)
             if k in pending:
                 val = pending.pop(k)
                 if val != "":
                     out.append(_format_env_line(k, val))
             else:
                 out.append(_format_env_line(k, v))
-        else:
-            out.append(line)
-    out.extend(_format_env_line(k, v) for k, v in pending.items() if v != "")
+    for k, v in pending.items():
+        if v != "":
+            out.append(_format_env_line(k, v))
     tmp = ENV_FILE.with_suffix(".tmp")
     tmp.write_text("\n".join(out) + "\n", encoding="utf-8")
-    os.chmod(tmp, 0o600)
+    try:
+        os.chmod(tmp, 0o600)
+    except OSError:
+        pass
     os.replace(tmp, ENV_FILE)
+
 
 
 def env_get(key: str, default: str = "") -> str:

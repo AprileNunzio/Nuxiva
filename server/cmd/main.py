@@ -17,7 +17,7 @@ from server.features.analytic_agent.analytic_agent import AnalyticReasonerAgent
 from server.features.parametric.designer_agent import ParametricDesignerAgent
 from server.features.skill_synthesis.composition import dynamic_tools_agent, tool_builder_agent
 from server.features.sysops_automation.sysops_agent import SysOpsAutomationAgent
-from server.cmd.api_routes import router
+from server.cmd.api_routes import router, router_v2
 
 logging.basicConfig(
     level=logging.INFO,
@@ -85,6 +85,7 @@ def create_application() -> FastAPI:
         logger.error("Errore nel caricare computer control UI: %s", str(e))
 
     app.include_router(router)
+    app.include_router(router_v2)
 
     web_dir = Path(__file__).resolve().parent.parent / "web"
     if web_dir.exists():

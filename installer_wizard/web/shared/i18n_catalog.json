@@ -18351,6 +18351,86 @@
     [
       "🪶 Leggeri (≤ 3 GB)",
       "🪶 Light (≤ 3 GB)"
+    ],
+    [
+      "Empatico",
+      "Empathic"
+    ],
+    [
+      "Global Workspace a 8 corsie parallele con fusione biometrica 10Hz.",
+      "8-Lane Global Workspace with 10Hz biometric fusion."
+    ],
+    [
+      "Identificativo utente non valido",
+      "Invalid user identifier"
+    ],
+    [
+      "Legacy",
+      "Legacy"
+    ],
+    [
+      "MCTS latente a 64 rami con Process Reward Model dopaminergico.",
+      "64-branch latent MCTS with dopaminergic Process Reward Model."
+    ],
+    [
+      "Meta-Orchestratore Talamico su principio energia libera e carico hardware.",
+      "Thalamic Meta-Orchestrator based on free energy principle and hardware load."
+    ],
+    [
+      "Nuxiva 4.2 Legacy Chain-Sync",
+      "Nuxiva 4.2 Legacy Chain-Sync"
+    ],
+    [
+      "Nuxiva 5.0 Empatico Synapse-Limbic",
+      "Nuxiva 5.0 Empathic Synapse-Limbic"
+    ],
+    [
+      "Nuxiva 5.0 Pro Ragionamento",
+      "Nuxiva 5.0 Pro Reasoning"
+    ],
+    [
+      "Nuxiva 5.0 Veloce",
+      "Nuxiva 5.0 Fast"
+    ],
+    [
+      "Nuxiva 5.0 Veloce Synapse-Flash",
+      "Nuxiva 5.0 Fast Synapse-Flash"
+    ],
+    [
+      "Nuxiva 6.0 Pro Omni-Latent",
+      "Nuxiva 6.0 Pro Omni-Latent"
+    ],
+    [
+      "Nuxiva 6.5 Auto Thalamic-Adaptive",
+      "Nuxiva 6.5 Auto Thalamic-Adaptive"
+    ],
+    [
+      "Nuxiva Neuro-Core 5.0",
+      "Nuxiva Neuro-Core 5.0"
+    ],
+    [
+      "Pensiero profondo multi-corsia corticale con validazione critica.",
+      "Deep multi-lane cortical thinking with critical validation."
+    ],
+    [
+      "Piano Corticale Neuro-Biologico e Parallelismo Corticale con dinamica LIF, modulazione limbica e inibizione GABA.",
+      "Neuro-Biological Cortical Plane and Cortical Parallelism with LIF dynamics, limbic modulation and GABA inhibition."
+    ],
+    [
+      "Pipeline sequenziale a token con fallback seriale.",
+      "Sequential token pipeline with serial fallback."
+    ],
+    [
+      "Spazio Latente Continuo JEPA/Coconut con plasticita TTT live in VRAM.",
+      "Continuous Latent Space JEPA/Coconut with live TTT plasticity in VRAM."
+    ],
+    [
+      "Ternary 1.58-bit con Liquid LNN e bus spiking zero-copy.",
+      "1.58-bit Ternary with Liquid LNN and zero-copy spiking bus."
+    ],
+    [
+      "Voci personalizzate con VoiceStudio",
+      "Custom voices with VoiceStudio"
     ]
   ],
   "reverse": [
@@ -18581,6 +18661,10 @@
     [
       "🖨️ Print",
       "🖨️ Stampa"
+    ],
+    [
+      "Reasoning Mode",
+      "Modalita di Ragionamento"
     ]
   ],
   "same": [
@@ -36495,6 +36579,90 @@
     [
       "🪶 Leggeri (≤ 3 GB)",
       "🪶 Légers (≤ 3 Go)"
+    ],
+    [
+      "Empatico",
+      "Empathique"
+    ],
+    [
+      "Global Workspace a 8 corsie parallele con fusione biometrica 10Hz.",
+      "Global Workspace a 8 voies paralleles avec fusion biometrique 10Hz."
+    ],
+    [
+      "Identificativo utente non valido",
+      "Identifiant utilisateur non valide"
+    ],
+    [
+      "Legacy",
+      "Herite"
+    ],
+    [
+      "MCTS latente a 64 rami con Process Reward Model dopaminergico.",
+      "MCTS latent a 64 branches avec Process Reward Model dopaminergique."
+    ],
+    [
+      "Meta-Orchestratore Talamico su principio energia libera e carico hardware.",
+      "Meta-Orchestrateur Thalamique base sur le principe d energie libre et charge materielle."
+    ],
+    [
+      "Nuxiva 4.2 Legacy Chain-Sync",
+      "Nuxiva 4.2 Legacy Chain-Sync"
+    ],
+    [
+      "Nuxiva 5.0 Empatico Synapse-Limbic",
+      "Nuxiva 5.0 Empathique Synapse-Limbique"
+    ],
+    [
+      "Nuxiva 5.0 Pro Ragionamento",
+      "Nuxiva 5.0 Pro Raisonnement"
+    ],
+    [
+      "Nuxiva 5.0 Veloce",
+      "Nuxiva 5.0 Rapide"
+    ],
+    [
+      "Nuxiva 5.0 Veloce Synapse-Flash",
+      "Nuxiva 5.0 Rapide Synapse-Flash"
+    ],
+    [
+      "Nuxiva 6.0 Pro Omni-Latent",
+      "Nuxiva 6.0 Pro Omni-Latent"
+    ],
+    [
+      "Nuxiva 6.5 Auto Thalamic-Adaptive",
+      "Nuxiva 6.5 Auto Thalamique-Adaptatif"
+    ],
+    [
+      "Nuxiva Neuro-Core 5.0",
+      "Nuxiva Neuro-Core 5.0"
+    ],
+    [
+      "Pensiero profondo multi-corsia corticale con validazione critica.",
+      "Pensee corticale multi-voies profonde avec validation critique."
+    ],
+    [
+      "Piano Corticale Neuro-Biologico e Parallelismo Corticale con dinamica LIF, modulazione limbica e inibizione GABA.",
+      "Plan Cortical Neuro-Biologique et Parallelisme Cortical avec dynamique LIF, modulation limbique et inhibition GABA."
+    ],
+    [
+      "Pipeline sequenziale a token con fallback seriale.",
+      "Pipeline sequentiel de jetons avec repli en serie."
+    ],
+    [
+      "Spazio Latente Continuo JEPA/Coconut con plasticita TTT live in VRAM.",
+      "Espace Latent Continu JEPA/Coconut avec plasticite TTT en direct dans la VRAM."
+    ],
+    [
+      "Ternary 1.58-bit con Liquid LNN e bus spiking zero-copy.",
+      "Ternaire 1.58-bit avec LNN Liquide et bus spiking zero-copy."
+    ],
+    [
+      "Voci personalizzate con VoiceStudio",
+      "Voix personnalisees avec VoiceStudio"
+    ],
+    [
+      "Reasoning Mode",
+      "Mode de Raisonnement"
     ]
   ]
 }
