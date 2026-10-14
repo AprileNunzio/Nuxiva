@@ -5,94 +5,38 @@ if (-not $script:AppRoot) {
     $script:AppRoot = (Get-Location).Path
 }
 
-$script:Lang = [System.Globalization.CultureInfo]::CurrentUICulture.TwoLetterISOLanguageName
-if ($script:Lang -ne "it" -and $script:Lang -ne "fr") {
+$script:LangDir = Join-Path $script:AppRoot "installer_wizard\language"
+$script:Lang = if ($env:NUXIVA_LANG) { $env:NUXIVA_LANG.ToLowerInvariant() } else { [System.Globalization.CultureInfo]::CurrentUICulture.TwoLetterISOLanguageName.ToLowerInvariant() }
+if (-not (Test-Path (Join-Path $script:LangDir "$($script:Lang).json"))) {
     $script:Lang = "en"
 }
 
-$script:Loc = @{
-    "it" = @{
-        "title" = "Nuxiva Orchestrator Installer - NunzioTech"
-        "banner_sub" = "ORCHESTRATORE COGNITIVO AUTONOMO"
-        "step_prefix" = "[Passo Nuxiva] "
-        "success_prefix" = "[SUCCESSO] "
-        "error_prefix" = "[ERRORE] "
-        "step_1" = "1/5 - Verifica ambiente runtime Python e Node.js..."
-        "step_2" = "2/5 - Creazione e verifica ambiente virtuale isolato..."
-        "step_3" = "3/5 - Configurazione storage sicuro e directory isolate..."
-        "step_4" = "4/5 - Installazione dipendenze server con autoriparazione..."
-        "step_5" = "5/5 - Configurazione interfaccia web e avvio orchestratore..."
-        "py_missing" = "Python non trovato su PATH. Installare Python 3.11 o superiore."
-        "py_old" = "Versione Python non supportata ({0}). Richiesto Python 3.11+."
-        "py_detected" = "Ambiente Python rilevato: {0}"
-        "node_detected" = "Ambiente Node.js rilevato: {0}"
-        "node_missing" = "Node.js non rilevato. L'interfaccia client_web richiedera l'installazione manuale."
-        "venv_ready" = "Ambiente virtuale isolato pronto: {0}"
-        "dirs_ready" = "Directory di memorizzazione isolate e sicure create."
-        "deps_installing" = "Installazione pacchetti server in corso..."
-        "deps_retry" = "Anomalia rilevata nelle dipendenze. Esecuzione autoriparazione e reinstallazione pulita..."
-        "deps_success" = "Tutte le dipendenze server sono state verificate e installate."
-        "client_ready" = "Console web compilata e pronta."
-        "ready_banner" = "NUXIVA PRONTO ALL'USO SULLA MACCHINA LOCALE"
-        "powered_by" = "NunzioTech Autonomous System 2026"
-    };
-    "en" = @{
-        "title" = "Nuxiva Orchestrator Installer - NunzioTech"
-        "banner_sub" = "AUTONOMOUS COGNITIVE ORCHESTRATOR"
-        "step_prefix" = "[Nuxiva Step] "
-        "success_prefix" = "[SUCCESS] "
-        "error_prefix" = "[ERROR] "
-        "step_1" = "1/5 - Verifying Python and Node.js runtime environments..."
-        "step_2" = "2/5 - Creating and verifying isolated virtual environment..."
-        "step_3" = "3/5 - Setting up secure storage and isolated directories..."
-        "step_4" = "4/5 - Installing server dependencies with self-healing..."
-        "step_5" = "5/5 - Configuring web interface and launching orchestrator..."
-        "py_missing" = "Python not found on PATH. Install Python 3.11 or higher."
-        "py_old" = "Unsupported Python version ({0}). Python 3.11+ required."
-        "py_detected" = "Detected Python runtime: {0}"
-        "node_detected" = "Detected Node.js runtime: {0}"
-        "node_missing" = "Node.js not detected. The client_web interface will require manual setup."
-        "venv_ready" = "Isolated virtual environment ready: {0}"
-        "dirs_ready" = "Secure isolated storage directories created."
-        "deps_installing" = "Installing server packages..."
-        "deps_retry" = "Dependency fault detected. Executing self-healing clean reinstallation..."
-        "deps_success" = "All server dependencies verified and installed."
-        "client_ready" = "Web console compiled and ready."
-        "ready_banner" = "NUXIVA READY FOR EXECUTION ON LOCAL SYSTEM"
-        "powered_by" = "NunzioTech Autonomous System 2026"
-    };
-    "fr" = @{
-        "title" = "Installateur Nuxiva Orchestrator - NunzioTech"
-        "banner_sub" = "ORCHESTRATEUR COGNITIF AUTONOME"
-        "step_prefix" = "[Étape Nuxiva] "
-        "success_prefix" = "[SUCCÈS] "
-        "error_prefix" = "[ERREUR] "
-        "step_1" = "1/5 - Vérification des environnements d'exécution Python et Node.js..."
-        "step_2" = "2/5 - Création et vérification de l'environnement virtuel isolé..."
-        "step_3" = "3/5 - Configuration du stockage sécurisé et des répertoires isolés..."
-        "step_4" = "4/5 - Installation des dépendances du serveur avec autoréparation..."
-        "step_5" = "5/5 - Configuration de l'interface web et lancement de l'orchestrateur..."
-        "py_missing" = "Python introuvable sur PATH. Veuillez installer Python 3.11 ou supérieur."
-        "py_old" = "Version Python non prise en charge ({0}). Python 3.11+ requis."
-        "py_detected" = "Environnement Python détecté : {0}"
-        "node_detected" = "Environnement Node.js détecté : {0}"
-        "node_missing" = "Node.js non détecté. L'interface client_web nécessitera une installation manuelle."
-        "venv_ready" = "Environnement virtuel isolé prêt : {0}"
-        "dirs_ready" = "Répertoires de stockage isolés et sécurisés créés."
-        "deps_installing" = "Installation des dépendances serveur en cours..."
-        "deps_retry" = "Anomalie détectée dans les dépendances. Exécution de l'autoréparation..."
-        "deps_success" = "Toutes les dépendances serveur ont été vérifiées et installées."
-        "client_ready" = "Console web compilée et prête."
-        "ready_banner" = "NUXIVA PRÊT POUR L'EXÉCUTION SUR LA MACHINE LOCALE"
-        "powered_by" = "NunzioTech Autonomous System 2026"
+$script:Dict = @{}
+$baseLangPath = Join-Path $script:LangDir "en.json"
+if (Test-Path $baseLangPath) {
+    $baseObj = Get-Content $baseLangPath -Raw -Encoding UTF8 | ConvertFrom-Json
+    if ($baseObj.dictionary) {
+        foreach ($prop in $baseObj.dictionary.PSObject.Properties) {
+            $script:Dict[$prop.Name] = [string]$prop.Value
+        }
+    }
+}
+
+$targetLangPath = Join-Path $script:LangDir "$($script:Lang).json"
+if ((Test-Path $targetLangPath) -and ($targetLangPath -ne $baseLangPath)) {
+    $targetObj = Get-Content $targetLangPath -Raw -Encoding UTF8 | ConvertFrom-Json
+    if ($targetObj.dictionary) {
+        foreach ($prop in $targetObj.dictionary.PSObject.Properties) {
+            $script:Dict[$prop.Name] = [string]$prop.Value
+        }
     }
 }
 
 function Get-T {
     param([string]$Key, [object[]]$Args)
-    $msg = $script:Loc[$script:Lang][$Key]
+    $msg = $script:Dict[$Key]
     if (-not $msg) {
-        $msg = $script:Loc["en"][$Key]
+        $msg = $Key
     }
     if ($Args -and $Args.Count -gt 0) {
         return [string]::Format($msg, $Args)

@@ -40,3 +40,18 @@ body:not([data-level="explorer"]) .only-explorer { display: none !important; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+@media (min-width: 2560px) {
+  body { font-size: 18px; }
+  .view { max-width: 2200px; }
+}
+
+@media (min-width: 3840px) {
+  body { font-size: 24px; }
+  .view { max-width: 3400px; }
+}
+
+@media (min-width: 7680px) {
+  body { font-size: 44px; }
+  .view { max-width: 6800px; }
+}

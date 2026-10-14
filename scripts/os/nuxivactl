@@ -3,40 +3,9 @@ set -euo pipefail
 API=http://127.0.0.1:8080/api/internal
 C='\033[0;36m'; G='\033[0;32m'; R='\033[0;31m'; N='\033[0m'
 
-ui_lang=""
-if [ -r /etc/nuxiva/nuxiva.env ]; then
-    ui_lang=$(sed -n 's/^NUXIVA_UI_LANG=//p' /etc/nuxiva/nuxiva.env | tail -n 1)
-fi
-
-case "${ui_lang:-${LC_ALL:-${LC_MESSAGES:-${LANG:-}}}}" in
-    it*) UI_LANG=it ;;
-    fr*) UI_LANG=fr ;;
-    *) UI_LANG=en ;;
-esac
-
-declare -A L
-if [ "$UI_LANG" = it ]; then
-    L=(
-        [sup_unresponsive]="Il supervisore non risponde (systemctl status nuxiva-supervisor)"
-        [checking_updates]="Controllo aggiornamenti su GitHub…"
-        [sources_err]="Sorgenti valide: install supervisor core ollama voice vision ear"
-        [usage]="Uso: nuxivactl status | update [--force] | force-upgrade | ripara | logs [install|supervisor|core|ollama|voice|vision|ear] | setup-code | background | version"
-    )
-elif [ "$UI_LANG" = fr ]; then
-    L=(
-        [sup_unresponsive]="Le superviseur ne répond pas (systemctl status nuxiva-supervisor)"
-        [checking_updates]="Vérification des mises à jour sur GitHub…"
-        [sources_err]="Sources valides: install supervisor core ollama voice vision ear"
-        [usage]="Usage: nuxivactl status | update [--force] | force-upgrade | ripara | logs [install|supervisor|core|ollama|voice|vision|ear] | setup-code | background | version"
-    )
-else
-    L=(
-        [sup_unresponsive]="Supervisor is not responding (systemctl status nuxiva-supervisor)"
-        [checking_updates]="Checking for updates on GitHub…"
-        [sources_err]="Valid sources: install supervisor core ollama voice vision ear"
-        [usage]="Usage: nuxivactl status | update [--force] | force-upgrade | ripara | logs [install|supervisor|core|ollama|voice|vision|ear] | setup-code | background | version"
-    )
-fi
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/i18n.sh"
+load_os_language
 
 call() {
     curl -fsS --max-time "${2:-30}" -X POST -H "X-Nuxiva-Request: 1" "$API/$1" \
@@ -45,15 +14,21 @@ call() {
 
 case "${1:-status}" in
     status)
-        curl -fsS --max-time 10 http://127.0.0.1/api/state | jq -r '
-          "Fase:      \(.phase_label) (\(.phase)) — \(.progress)%",
-          "Messaggio: \(.message)",
-          (if .last_error != "" then "Errore:    \(.last_error)" else empty end),
-          "Modello:   \(.llm_model)",
+        curl -fsS --max-time 10 http://127.0.0.1/api/state | jq -r \
+          --arg phase "${L[status_phase]}" \
+          --arg msg "${L[status_message]}" \
+          --arg err "${L[status_error]}" \
+          --arg model "${L[status_model]}" \
+          --arg comps "${L[status_components]}" \
+          --arg steps "${L[status_steps]}" '
+          "\($phase):      \(.phase_label) (\(.phase)) — \(.progress)%",
+          "\($msg): \(.message)",
+          (if .last_error != "" then "\($err):    \(.last_error)" else empty end),
+          "\($model):   \(.llm_model)",
           "",
-          "Componenti:", (.components | to_entries[] | "  \(.value.status | if . == "ok" then "●" else "○" end) \(.value.label): \(.value.detail)"),
+          "\($comps):", (.components | to_entries[] | "  \(.value.status | if . == "ok" then "●" else "○" end) \(.value.label): \(.value.detail)"),
           "",
-          "Step:", (.catalog[] as $c | "  \($c.title): \(.steps[$c.id].status // "in attesa")")'
+          "\($steps):", (.catalog[] as $c | "  \($c.title): \(.steps[$c.id].status // "in attesa")")'
         ;;
     update|upgrade)
         if [[ "${2:-}" == "--force" || "${2:-}" == "-f" ]]; then
@@ -83,13 +58,16 @@ case "${1:-status}" in
         esac
         ;;
     setup-code)
-        curl -fsS --max-time 10 http://127.0.0.1/api/setup | jq -r '
-          if .needed then "Codice per la prima configurazione: \(.code)" else "La prima configurazione è già completata" end'
+        curl -fsS --max-time 10 http://127.0.0.1/api/setup | jq -r \
+          --arg pfx "${L[setup_code_prefix]}" \
+          --arg done "${L[setup_code_done]}" '
+          if .needed then "\($pfx) \(.code)" else "\($done)" end'
         ;;
     background)
-        curl -fsS --max-time 10 http://127.0.0.1/api/state | jq -r '.background |
-          "Installazioni in background: \(.done)/\(.total) — \(.progress)%\(if .paused then " (in pausa)" else "" end)",
-          (.items[] | "  \(if .status == "done" then "●" elif .status == "running" then "◐" else "○" end) \(.title) (\(.size_gb) GB): \(.status)")'
+        curl -fsS --max-time 10 http://127.0.0.1/api/state | jq -r \
+          --arg title "${L[background_status]}" '
+          "\($title): \(.background.done)/\(.background.total) — \(.background.progress)%\(if .background.paused then " (in pausa)" else "" end)",
+          (.background.items[] | "  \(if .status == "done" then "●" elif .status == "running" then "◐" else "○" end) \(.title) (\(.size_gb) GB): \(.status)")'
         ;;
     version)
         git -c safe.directory='*' -C /opt/Nuxiva log -1 --format='%h %ci %s'

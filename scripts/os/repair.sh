@@ -29,67 +29,10 @@ done
 mkdir -p "$STATE" "$LOG_DIR"
 chmod 750 "$LOG_DIR"
 
-ui_lang=""
-if [ -r /etc/nuxiva/nuxiva.env ]; then ui_lang=$(sed -n 's/^NUXIVA_UI_LANG=//p' /etc/nuxiva/nuxiva.env | tail -n 1); fi
-case "${ui_lang:-${LC_ALL:-${LC_MESSAGES:-${LANG:-}}}}" in
-    it*) UI_LANG=it ;;
-    fr*) UI_LANG=fr ;;
-    *) UI_LANG=en ;;
-esac
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/i18n.sh"
+load_os_language
 
-declare -A L
-if [ "$UI_LANG" = it ]; then
-    L=(
-        [title]="Riparazione di Nuxiva" [busy]="Un'altra riparazione è già in corso"
-        [disk]="Spazio su disco" [apt]="Gestore dei pacchetti" [network]="Connessione a internet"
-        [code]="File di Nuxiva" [python]="Librerie Python" [system]="File di sistema" [ports]="Porte di rete"
-        [service]="Avvio di Nuxiva"
-        [disk_ok]="liberi" [disk_cleaned]="liberati con la pulizia" [disk_full]="spazio insufficiente: libera almeno 2 GB e riprova"
-        [apt_wait]="attendo che finisca un'altra installazione" [apt_fixed]="installazione interrotta completata" [apt_failed]="il gestore dei pacchetti non risponde"
-        [net_fixed]="ripristinata riavviando la risoluzione dei nomi" [net_offline]="assente: controlla cavo o Wi-Fi"
-        [code_fixed]="file danneggiati ripristinati" [code_fetched]="riscaricati da GitHub" [code_failed]="non è stato possibile ripristinarli"
-        [py_fixed]="reinstallate" [py_rebuilt]="ambiente ricostruito da zero" [py_failed]="installazione non riuscita" [py_wait]="in attesa di un'altra installazione"
-        [sys_fixed]="ripristinati"
-        [port_busy]="la porta %s è occupata da %s: chiudi quel programma"
-        [svc_ok]="attiva" [svc_safe]="partita in modalità sicura" [svc_failed]="non risponde"
-        [ok]="ok" [done]="Riparazione completata: Nuxiva funziona" [partial]="Riparazione terminata con problemi da risolvere a mano"
-        [log]="Log completo"
-    )
-elif [ "$UI_LANG" = fr ]; then
-    L=(
-        [title]="Réparation de Nuxiva" [busy]="Une autre réparation est déjà en cours"
-        [disk]="Espace disque" [apt]="Gestionnaire de paquets" [network]="Connexion Internet"
-        [code]="Fichiers Nuxiva" [python]="Bibliothèques Python" [system]="Fichiers système" [ports]="Ports réseau"
-        [service]="Démarrage de Nuxiva"
-        [disk_ok]="libres" [disk_cleaned]="libérés par le nettoyage" [disk_full]="espace insuffisant : libérez au moins 2 Go et réessayez"
-        [apt_wait]="en attente de la fin d'une autre installation" [apt_fixed]="installation interrompue terminée" [apt_failed]="le gestionnaire de paquets ne répond pas"
-        [net_fixed]="restaurée par le redémarrage de la résolution DNS" [net_offline]="absente : vérifiez le câble ou le Wi-Fi"
-        [code_fixed]="fichiers endommagés restaurés" [code_fetched]="téléchargés à nouveau depuis GitHub" [code_failed]="impossible de les restaurer"
-        [py_fixed]="réinstallées" [py_rebuilt]="environnement reconstruit à neuf" [py_failed]="installation échouée" [py_wait]="en attente d'une autre installation"
-        [sys_fixed]="restaurés"
-        [port_busy]="le port %s est occupé par %s : fermez ce programme"
-        [svc_ok]="actif" [svc_safe]="démarré en mode sans échec" [svc_failed]="ne répond pas"
-        [ok]="ok" [done]="Réparation terminée : Nuxiva est opérationnel" [partial]="Réparation terminée avec des problèmes à résoudre manuellement"
-        [log]="Journal complet"
-    )
-else
-    L=(
-        [title]="Nuxiva repair" [busy]="Another repair is already running"
-        [disk]="Disk space" [apt]="Package manager" [network]="Internet connection"
-        [code]="Nuxiva files" [python]="Python libraries" [system]="System files" [ports]="Network ports"
-        [service]="Starting Nuxiva"
-        [disk_ok]="free" [disk_cleaned]="freed by cleanup" [disk_full]="not enough space: free at least 2 GB and try again"
-        [apt_wait]="waiting for another installation to finish" [apt_fixed]="interrupted installation completed" [apt_failed]="the package manager is not responding"
-        [net_fixed]="restored by restarting name resolution" [net_offline]="offline: check the cable or Wi-Fi"
-        [code_fixed]="damaged files restored" [code_fetched]="downloaded again from GitHub" [code_failed]="could not be restored"
-        [py_fixed]="reinstalled" [py_rebuilt]="environment rebuilt from scratch" [py_failed]="installation failed" [py_wait]="waiting for another installation"
-        [sys_fixed]="restored"
-        [port_busy]="port %s is used by %s: close that program"
-        [svc_ok]="running" [svc_safe]="started in safe mode" [svc_failed]="not responding"
-        [ok]="ok" [done]="Repair complete: Nuxiva is working" [partial]="Repair finished with problems to fix by hand"
-        [log]="Full log"
-    )
-fi
 
 if [ -t 1 ] && [ "$QUIET" = 0 ]; then
     C_OK=$'\033[32m' C_WARN=$'\033[33m' C_BAD=$'\033[31m' C_DIM=$'\033[2m' C_CYAN=$'\033[36m' C_OFF=$'\033[0m'
