@@ -164,4 +164,10 @@ export const it = {
   engine_pro_badge: "Omni-Latent",
   engine_ultra_badge: "DeepThink",
   engine_auto_badge: "Adattivo",
+  widgets_title: "Widget Dinamici",
+  widgets_subtitle: "Moduli reattivi scansionati a caldo in tempo reale",
+  widgets_empty: "Nessun widget attivo rilevato dallo scanner",
+  widgets_live_stream: "Flusso Live Connesso",
+  widgets_action_executed: "Azione eseguita con successo",
+  widgets_refresh: "Aggiorna Widget",
 } as const;

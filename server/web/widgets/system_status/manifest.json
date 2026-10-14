@@ -1,0 +1,10 @@
+{
+  "id": "system_status",
+  "name": "System Status",
+  "version": "1.0.0",
+  "category": "widget",
+  "description": "Kernel telemetry, latency and system health overview",
+  "icon": "⚡",
+  "render_type": "metric",
+  "grid_span": {"col": 1, "row": 1}
+}

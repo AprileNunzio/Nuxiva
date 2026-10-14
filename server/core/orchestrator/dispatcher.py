@@ -224,8 +224,8 @@ class OrchestratorDispatcher:
             journey.step("decision", "Instradamento → browser", f"System 1: browser_action · ricerca: {search_query}")
             with journey.span("tool", "Ricerca web", search_query) as web_span:
                 try:
-                    from server.features.agent_tools.web_search_tool import web_search
-                    details = await web_search(search_query)
+                    from server.features.agent_tools.scanner import tool_scanner
+                    details = await tool_scanner.execute("web_search", query=search_query)
                     web_span.ok(str(details)[:600])
                 except Exception as exc:
                     web_span.fail(f"{type(exc).__name__}: {exc}")
@@ -468,40 +468,8 @@ class OrchestratorDispatcher:
         return response
 
     async def _acquire_skill(self, task_id: str, intent: str, query: str, device_id: str) -> AgentTaskResponse:
-        started = time.time()
-        outcome = await skill_synthesizer.acquire({
-            "missing_intent": intent,
-            "context": {"query": query, "device_id": device_id},
-        })
-        graph_client.upsert_node(
-            node_id=task_id,
-            node_type=NodeType.CONCEPT,
-            label=f"Task: {query[:40]}",
-            properties={"status": "COMPLETED" if outcome.ok else "FAILED", "acquired_tool": outcome.tool_name},
-        )
-        if not outcome.ok:
-            return AgentTaskResponse(
-                task_id=task_id,
-                agent_id="skill_synthesizer",
-                status="SYNTHESIS_FAILED",
-                result_data={"reason": outcome.message, "attempts": outcome.attempts},
-                speech_output=outcome.speech,
-                execution_time_ms=(time.time() - started) * 1000,
-            )
-        return AgentTaskResponse(
-            task_id=task_id,
-            agent_id="skill_synthesizer",
-            status="SUCCESS",
-            result_data={
-                "tool": outcome.tool_name,
-                "data": outcome.data,
-                "egress_hosts": list(outcome.egress_hosts),
-                "attempts": outcome.attempts,
-                "acquired": True,
-            },
-            speech_output=outcome.speech,
-            execution_time_ms=(time.time() - started) * 1000,
-        )
+        from server.core.orchestrator.skill_acquisition import acquire_missing_skill
+        return await acquire_missing_skill(task_id, intent, query, device_id)
 
 
 orchestrator_dispatcher = OrchestratorDispatcher()

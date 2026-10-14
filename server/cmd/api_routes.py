@@ -17,43 +17,23 @@ from server.core.reasoning.system2_engine import system2_engine
 from server.core.onboarding.hardware_detector import hardware_detector
 from server.core.onboarding.setup_wizard import onboarding_wizard, OnboardingConfig
 from server.core.telemetry.journey import journey
-from server.features.weather.weather_controller import weather_router
-from server.features.presence_privacy.presence_controller import presence_router, system_router, privacy_router
-from server.features.cognitive_flow.flow_controller import flow_router
-from server.features.chatbot_mesh.chatbot_controller import chatbot_router
-from server.features.project_workspace.project_controller import project_router
 from server.core.agent_registry.agent_controller import agent_registry_router
 from server.core.security_guard.rbac_controller import rbac_router
-from server.features.llm_gateway.ternary_controller import ternary_router
-from server.features.multimodal_surveillance.controller import surveillance_router
-from server.features.human_affective_engine.controller import affective_router
-from server.features.wearable_vitals_hub.controller import wearable_router
-from server.features.user_presence_vitals.controller import emergency_presence_router
-from server.features.cognitive_triage_agents.controller import cognitive_triage_router
+from server.cmd.route_scanner import route_scanner
+from server.web.widgets.controller import widget_router
 from server.features.brain.controller import brain_router
 from server.core.sensory_bus.event_router import sensory_bus
 from server.core.event_sourcing.universal_space import UniversalObservation
 
 router = APIRouter(prefix="/api/v1")
-router.include_router(weather_router)
-router.include_router(presence_router)
-router.include_router(system_router)
-router.include_router(privacy_router)
-router.include_router(flow_router)
-router.include_router(chatbot_router)
-router.include_router(project_router)
 router.include_router(agent_registry_router)
 router.include_router(rbac_router)
-router.include_router(ternary_router)
-router.include_router(surveillance_router)
-router.include_router(affective_router)
-router.include_router(wearable_router)
-router.include_router(emergency_presence_router)
-router.include_router(cognitive_triage_router)
-router.include_router(brain_router)
+for discovered_router in route_scanner.scan_routers():
+    router.include_router(discovered_router)
 
 router_v2 = APIRouter(prefix="/api/v2")
 router_v2.include_router(brain_router)
+router_v2.include_router(widget_router)
 
 class AuthExchangeRequest(BaseModel):
     client_id: str

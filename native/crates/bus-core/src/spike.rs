@@ -42,6 +42,7 @@ impl SynapticSpike {
     }
 }
 
+#[derive(Debug)]
 pub struct RingBufferLockFree<T, const N: usize = DEFAULT_BUFFER_SIZE> {
     buffer: [Option<T>; N],
     head: AtomicUsize,
@@ -50,8 +51,7 @@ pub struct RingBufferLockFree<T, const N: usize = DEFAULT_BUFFER_SIZE> {
 
 impl<T: Clone, const N: usize> Default for RingBufferLockFree<T, N> {
     fn default() -> Self {
-        const INIT: Option<()> = None;
-        let mut buffer: [Option<T>; N] = std::array::from_fn(|_| None);
+        let buffer: [Option<T>; N] = std::array::from_fn(|_| None);
         Self {
             buffer,
             head: AtomicUsize::new(0),

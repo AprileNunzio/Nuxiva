@@ -1,11 +1,16 @@
+#[cfg(target_os = "linux")]
 use std::path::Path;
 
+#[cfg(target_os = "linux")]
 use landlock::{
     ABI, Access, AccessFs, AccessNet, CompatLevel, Compatible, NetPort, Ruleset, RulesetAttr,
     RulesetCreatedAttr, RulesetError, RulesetStatus, Scope, path_beneath_rules,
 };
 
+#[cfg(target_os = "linux")]
 const ABI_TARGET: ABI = ABI::V6;
+
+#[cfg(target_os = "linux")]
 const READ_ONLY: [&str; 6] = [
     "/etc",
     "/usr",
@@ -14,6 +19,8 @@ const READ_ONLY: [&str; 6] = [
     "/run/systemd/resolve",
     "/run/nscd",
 ];
+
+#[cfg(target_os = "linux")]
 const DNS_PORT: u16 = 53;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -34,6 +41,21 @@ impl Enforcement {
     }
 }
 
+#[cfg(not(target_os = "linux"))]
+#[derive(Debug)]
+pub struct RulesetError;
+
+#[cfg(not(target_os = "linux"))]
+impl std::fmt::Display for RulesetError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "sandbox unsupported on non-linux")
+    }
+}
+
+#[cfg(not(target_os = "linux"))]
+impl std::error::Error for RulesetError {}
+
+#[cfg(target_os = "linux")]
 pub fn restrict(connect_ports: &[u16]) -> Result<Enforcement, RulesetError> {
     let readable: Vec<&str> = READ_ONLY
         .into_iter()
@@ -58,4 +80,9 @@ pub fn restrict(connect_ports: &[u16]) -> Result<Enforcement, RulesetError> {
         RulesetStatus::PartiallyEnforced => Enforcement::Partial,
         RulesetStatus::NotEnforced => Enforcement::None,
     })
+}
+
+#[cfg(not(target_os = "linux"))]
+pub fn restrict(_connect_ports: &[u16]) -> Result<Enforcement, RulesetError> {
+    Ok(Enforcement::None)
 }

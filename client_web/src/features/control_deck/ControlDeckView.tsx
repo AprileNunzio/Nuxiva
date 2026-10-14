@@ -20,6 +20,7 @@ import { NeuralAnalysisFlow } from './NeuralAnalysisFlow';
 import { ProjectWidget } from './ProjectWidget';
 import { useI18n } from '../../shared/i18n/I18nContext';
 import { CognitiveEngineSelector } from '../cognitive_engine';
+import { DynamicWidgetDeck } from '../dynamic_widgets';
 
 interface ControlDeckViewProps {
   nodes: KnowledgeNode[];
@@ -272,12 +273,12 @@ export const ControlDeckView: React.FC<ControlDeckViewProps> = ({ nodes, onRefre
         </div>
       </div>
       
-      {/* Neural Telemetry Flow Section */}
+      <div className="mt-6 8k:mt-12">
+        <DynamicWidgetDeck />
+      </div>
       <div className="mt-6 8k:mt-12">
         <NeuralAnalysisFlow />
       </div>
-      
-      {/* Floating Project Mode Widget */}
       <ProjectWidget />
     </div>
   );

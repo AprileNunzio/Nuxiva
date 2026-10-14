@@ -1,9 +1,11 @@
 #![forbid(unsafe_code)]
 
+mod fast_scanner;
 mod router;
 mod spike;
 mod topic;
 
+pub use fast_scanner::{DiscoveredEntry, FastScannerRegistry, ScanReport};
 pub use router::{MAX_SUBSCRIPTIONS, RouterError, SubscriptionId, TopicRouter};
 pub use spike::{
     DEFAULT_BUFFER_SIZE, RingBufferLockFree, SynapticSpike, SynapticWeightMatrix, TransmitterType,

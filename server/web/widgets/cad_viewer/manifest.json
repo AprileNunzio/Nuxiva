@@ -1,0 +1,10 @@
+{
+  "id": "cad_viewer",
+  "name": "CAD DXF Vector Viewer",
+  "version": "1.0.0",
+  "category": "widget",
+  "description": "Interactive technical CAD and vector DXF viewport",
+  "icon": "📐",
+  "render_type": "canvas",
+  "grid_span": {"col": 2, "row": 2}
+}

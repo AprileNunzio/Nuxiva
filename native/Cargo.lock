@@ -21,45 +21,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "683d7910e743518b0e34f1186f92494becacb047c7b6bf616c96772180fef923"
 
 [[package]]
-name = "nuxiva-bus-core"
-version = "4.1.53"
-
-[[package]]
-name = "nuxiva-egress"
-version = "4.1.53"
-dependencies = [
- "landlock",
- "serde",
- "serde_json",
- "tokio",
-]
-
-[[package]]
-name = "nuxiva-langid"
-version = "4.1.53"
-dependencies = [
- "whatlang",
-]
-
-[[package]]
-name = "nuxiva-native"
-version = "4.1.53"
-dependencies = [
- "nuxiva-bus-core",
- "nuxiva-langid",
- "pyo3",
-]
-
-[[package]]
-name = "nuxiva-netguard"
-version = "4.1.53"
-dependencies = [
- "serde",
- "serde_json",
- "socket2",
-]
-
-[[package]]
 name = "autocfg"
 version = "1.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -169,6 +130,45 @@ dependencies = [
  "libc",
  "wasi",
  "windows-sys",
+]
+
+[[package]]
+name = "nuxiva-bus-core"
+version = "4.1.53"
+
+[[package]]
+name = "nuxiva-egress"
+version = "4.1.53"
+dependencies = [
+ "landlock",
+ "serde",
+ "serde_json",
+ "tokio",
+]
+
+[[package]]
+name = "nuxiva-langid"
+version = "4.1.53"
+dependencies = [
+ "whatlang",
+]
+
+[[package]]
+name = "nuxiva-native"
+version = "4.1.53"
+dependencies = [
+ "nuxiva-bus-core",
+ "nuxiva-langid",
+ "pyo3",
+]
+
+[[package]]
+name = "nuxiva-netguard"
+version = "4.1.53"
+dependencies = [
+ "serde",
+ "serde_json",
+ "socket2",
 ]
 
 [[package]]
