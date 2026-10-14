@@ -6,7 +6,7 @@ function assign(el, props) {
     if (key === "class") el.setAttribute("class", value);
     else if (key === "dataset") Object.assign(el.dataset, value);
     else if (key === "style") {
-      if (typeof value === "string") el.setAttribute("style", value);
+      if (typeof value === "string") el.style.cssText = value;
       else if (typeof value === "object") Object.assign(el.style, value);
     }
     else if (key.startsWith("on") && typeof value === "function") el.addEventListener(key.slice(2), value);
