@@ -465,3 +465,11 @@ canvas {
   cursor: pointer;
   box-shadow: 0 0 30px var(--cyan);
 }
+
+@media (max-width: 540px) {
+  .lang-matrix-grid,
+  .ha-inputs,
+  .readiness-matrix-grid {
+    grid-template-columns: 1fr;
+  }
+}
