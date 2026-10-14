@@ -24,7 +24,10 @@ from setup_config import (
     VOICES_BY_LANG_GENDER, VOICE_CHOICES, WIZARD_PACKAGES
 )
 
+from setup_routes import router as setup_routes_router
+
 public_routes = APIRouter()
+public_routes.include_router(setup_routes_router)
 admin_routes = APIRouter()
 PREVIEW_TEXT = "Ciao, sono Nuxiva. Questa è la mia voce: ti piace?"
 PREVIEW_GAP_S = 2.0
@@ -475,7 +478,7 @@ async def _store_wakeword(request: Request) -> dict:
     WAKE_DIR.mkdir(parents=True, exist_ok=True)
     target = WAKE_DIR / "ehi_nuxiva.onnx"
     tmp = target.with_name(f".{secrets.token_hex(8)}.part")
-    fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o644)
+    fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_NOFOLLOW", 0), 0o644)
     with os.fdopen(fd, "wb") as fh:
         fh.write(data)
         fh.flush()

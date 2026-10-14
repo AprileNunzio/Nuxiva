@@ -17,7 +17,16 @@ MODEL_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,63}")
 
 def model_name() -> str:
     name = os.environ.get("NUXIVA_WAKEWORD_MODEL", "").strip()
-    return name if MODEL_RE.fullmatch(name) and ".." not in name else DEFAULT_MODEL
+    if name and MODEL_RE.fullmatch(name) and ".." not in name:
+        return name
+    assist_name = os.environ.get("NUXIVA_ASSISTANT_NAME", "").strip().lower()
+    clean = re.sub(r"^(?:hey|hei|ehi|hi|ok|okay)\s+", "", assist_name).strip()
+    if clean and clean != "nuxiva":
+        custom = f"ehi_{clean}"
+        if (MODELS / f"{custom}.onnx").exists():
+            return custom
+        return clean
+    return DEFAULT_MODEL
 
 
 MODEL_NAME = model_name()
@@ -32,6 +41,10 @@ class WakeWord:
         self.pending = np.zeros(0, dtype=np.int16)
         self.last_hit = 0.0
         self.score = 0.0
+        assist_name = os.environ.get("NUXIVA_ASSISTANT_NAME", "").strip().lower()
+        clean = re.sub(r"^(?:hey|hei|ehi|hi|ok|okay)\s+", "", assist_name).strip()
+        if clean and clean != "nuxiva" and MODEL_NAME == DEFAULT_MODEL:
+            return
         files = [MODELS / f"{MODEL_NAME}.onnx", MODELS / "melspectrogram.onnx", MODELS / "embedding_model.onnx"]
         if os.environ.get("NUXIVA_WAKEWORD", "1") == "0" or not all(f.exists() for f in files):
             log.info("Rilevatore istantaneo non disponibile: uso solo il riconoscimento del parlato")

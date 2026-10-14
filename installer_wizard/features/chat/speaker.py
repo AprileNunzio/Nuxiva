@@ -5,7 +5,11 @@ from config import env_get
 from features.chat import context as request_context
 from features.people import identity
 
-SELF_VOCATIVE = re.compile(r"([,!]\s*|^)(?:A\.\s?T\.\s?E\.\s?N\.\s?A\.?|Nuxiva)(?=\s*[!?.,;:]|\s*$)", re.I)
+def _self_vocative_re() -> re.Pattern:
+    assist_name = env_get("NUXIVA_ASSISTANT_NAME", "Nuxiva").strip() or "Nuxiva"
+    if assist_name.lower() == "nuxiva":
+        return re.compile(r"([,!]\s*|^)(?:A\.\s?T\.\s?E\.\s?N\.\s?A\.?|Nuxiva)(?=\s*[!?.,;:]|\s*$)", re.I)
+    return re.compile(rf"([,!]\s*|^)(?:{re.escape(assist_name)}|Nuxiva)(?=\s*[!?.,;:]|\s*$)", re.I)
 
 
 def name() -> str:
@@ -17,8 +21,12 @@ def name() -> str:
 
 def instruction() -> str:
     who = name()
-    base = ("Tu sei Nuxiva (NUXIVA), l'assistente. La persona che ti parla NON si chiama Nuxiva: "
-            "non chiamarla mai «Nuxiva» o «NUXIVA».")
+    assist_name = env_get("NUXIVA_ASSISTANT_NAME", "Nuxiva").strip() or "Nuxiva"
+    if assist_name.lower() != "nuxiva":
+        base = f"Tu sei {assist_name}. Il tuo unico nome è {assist_name}. Non chiamarti mai Nuxiva."
+    else:
+        base = ("Tu sei Nuxiva (NUXIVA), l'assistente. La persona che ti parla NON si chiama Nuxiva: "
+                "non chiamarla mai «Nuxiva» o «NUXIVA».")
     if who:
         return f"{base} Stai parlando con {who}: chiamalo {who} oppure «signore»."
     return f"{base} Non conosci ancora il suo nome: chiamalo «signore»."
@@ -35,4 +43,4 @@ def fix_address(reply: str) -> str:
             return f"{lead}{who}"
         return "" if lead.strip() in (",", "") else lead.strip()
 
-    return SELF_VOCATIVE.sub(swap, reply)
+    return _self_vocative_re().sub(swap, reply)

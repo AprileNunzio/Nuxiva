@@ -17,6 +17,11 @@ def clean_names(raw: dict) -> tuple[str, str]:
         raise HTTPException(400, "Scrivi il tuo nome: serve per riconoscerti e salutarti")
     if not FIRST_RE.fullmatch(first):
         raise HTTPException(400, "Il nome può contenere solo lettere e trattini, senza spazi")
+    assist_name = str(raw.get("assistant_name") or "").strip().lower()
+    if assist_name:
+        clean_assist = re.sub(r"^(?:hey|hei|ehi|hi|ok|okay)\s+", "", assist_name).strip()
+        if first.lower() == clean_assist or first.lower() == assist_name:
+            raise HTTPException(400, "Il nome del proprietario non può coincidere con il nome dell'assistente")
     if last and not LAST_RE.fullmatch(last):
         raise HTTPException(400, "Il cognome può contenere solo lettere, spazi, apostrofi e trattini")
     return first, last

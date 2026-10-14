@@ -14,7 +14,26 @@ def _num(key: str, default: float, lo: float, hi: float) -> float:
     except ValueError:
         return default
 
-NAME = re.compile(r"\b(?:nuxiva|nuxiva|attena)\b", re.I)
+def _active_name_pattern() -> str:
+    raw = env_get("NUXIVA_ASSISTANT_NAME", "Nuxiva").strip()
+    clean = re.sub(r"^(?:hey|hei|ehi|hi|ok|okay)\s+", "", raw, flags=re.I).strip()
+    primary = clean.lower() or "nuxiva"
+    aliases_raw = env_get("NUXIVA_WAKE_PHONETIC_ALIASES", "").strip()
+    aliases = [a.strip().lower() for a in aliases_raw.split(",") if a.strip()] if aliases_raw else []
+    if primary not in aliases:
+        aliases.insert(0, primary)
+    if primary == "nuxiva":
+        if "attena" not in aliases:
+            aliases.append("attena")
+    return "|".join(re.escape(a) for a in aliases)
+
+def get_name_re() -> re.Pattern:
+    return re.compile(rf"\b(?:{_active_name_pattern()})\b", re.I)
+
+def get_third_person_re() -> re.Pattern:
+    p = _active_name_pattern()
+    return re.compile(rf"\b(?:lui|lei|(?:{p}) (?:è|e'|ha|fa|sta)|il computer|questo coso)\b", re.I)
+
 FILLER = re.compile(r"^\W*(?:mh+|m+|eh+|ah+|oh+|boh|mah|ok(?:ay)?|va be(?:ne)?|beh|allora|niente|nulla|ahah\w*)\W*$", re.I)
 ANSWER = re.compile(r"^\W*(?:s[iì]|no|certo|esatto|giusto|perfetto|grazie|ok|va bene|d'accordo|fallo|procedi|annulla|"
                     r"lascia (?:stare|perdere)|non importa)\b", re.I)
@@ -25,7 +44,6 @@ REQUEST = re.compile(r"\?\s*$|^\W*(?:e\s+)?(?:come|cosa|cos'|dove|quando|quanto|
 COMMAND = re.compile(r"^\W*(?:accendi|spegni|metti|alza|abbassa|apri|chiudi|avvia|ferma|imposta|attiva|disattiva|"
                      r"riproduci|mostrami|dimmi|ricordami|aggiungi|cerca|chiama|manda|leggimi|calcola)\b", re.I)
 SECOND_PERSON = re.compile(r"\b(?:tu|ti|te|tuo|tua|puoi|sai|hai|potresti|vorresti|pensi|dimmi|fammi)\b", re.I)
-THIRD_PERSON = re.compile(r"\b(?:lui|lei|(?:nuxiva|nuxiva) (?:è|e'|ha|fa|sta)|il computer|questo coso)\b", re.I)
 WORD = re.compile(r"[a-zà-ÿ]{4,}", re.I)
 
 
@@ -52,7 +70,9 @@ def _overlap(device: str, text: str) -> float:
 
 
 def judge(text: str, device: str) -> Verdict:
-    if NAME.search(text) and not THIRD_PERSON.search(text):
+    name_re = get_name_re()
+    third_re = get_third_person_re()
+    if name_re.search(text) and not third_re.search(text):
         return Verdict(True, 1.0, "mi ha chiamato per nome")
     people = store.presence.get("people", [])
     alone = len(people) <= 1

@@ -328,7 +328,7 @@ def write_env(updates: dict) -> None:
 
 
 def env_get(key: str, default: str = "") -> str:
-    return read_env().get(key, default)
+    return os.environ.get(key) if key in os.environ else read_env().get(key, default)
 
 
 def kiosk_log() -> Path:

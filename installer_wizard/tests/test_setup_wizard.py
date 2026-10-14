@@ -153,7 +153,8 @@ class WizardTest(unittest.TestCase):
             self.assertEqual(read_env().get("NUXIVA_SMB_PASSWORD"), password)
             self.assertEqual(read_env().get("NUXIVA_USER_NAME"), "Nunzio")
             self.assertTrue(setup_api.done())
-            self.assertEqual(os.stat(setup_api.SETUP_FILE).st_mode & 0o777, 0o600)
+            if os.name != "nt":
+                self.assertEqual(os.stat(setup_api.SETUP_FILE).st_mode & 0o777, 0o600)
             self.assertFalse(self.public.get("/api/setup").json()["needed"])
             self.assertEqual(self.public.post("/api/setup", json={}, headers=HEADERS).status_code, 410)
             self.assertEqual(self.public.get("/setup", follow_redirects=False).status_code, 303)
@@ -164,7 +165,8 @@ class WizardTest(unittest.TestCase):
             self.assertEqual(r.status_code, 200, r.text)
             target = Path(self.wake_dir.name) / "ehi_nuxiva.onnx"
             self.assertEqual(target.read_bytes(), ONNX)
-            self.assertEqual(os.stat(target).st_mode & 0o777, 0o644)
+            if os.name != "nt":
+                self.assertEqual(os.stat(target).st_mode & 0o777, 0o644)
             self.assertEqual(sorted(p.name for p in target.parent.iterdir()), ["ehi_nuxiva.onnx"])
             for data, headers, status in ((b"\x08tiny", BINARY, 400), (b"#!" + ONNX, BINARY, 400),
                                           (ONNX, {**HEADERS, "Content-Type": "multipart/form-data"}, 415),
@@ -192,8 +194,11 @@ class WizardTest(unittest.TestCase):
             real = Path(root) / "real.env"
             real.write_text("NUXIVA_USER_NAME=Nunzio\n", encoding="utf-8")
             link = Path(root) / "answers.env"
-            link.symlink_to(real)
-            self.assertFalse(asyncio.run(setup_api.apply_answers_file(link)))
+            try:
+                link.symlink_to(real)
+                self.assertFalse(asyncio.run(setup_api.apply_answers_file(link)))
+            except OSError:
+                pass
             bad = Path(root) / "bad.env"
             bad.write_text("NUXIVA_USER_NAME=Mario Rossi\n", encoding="utf-8")
             self.assertFalse(asyncio.run(setup_api.apply_answers_file(bad)))
