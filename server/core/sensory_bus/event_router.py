@@ -72,26 +72,19 @@ class SensoryBusCoordinator:
                     service = observation.raw_data.get("service")
                     
                     if alert_type == "service_down" and service == "ollama":
-                        logger.critical("SensoryBus: Ricevuto allarme critico (OLLAMA DOWN). Innesco riflesso incondizionato di auto-ripristino...")
-                        import subprocess
-                        # Eseguiamo il restart senza password usando un trick se visudo lo permette,
-                        # oppure usiamo systemctl user. Assumiamo che Nuxiva abbia i permessi per riavviare.
-                        # Nelle macchine di produzione, un comando systemctl sudo senza password deve essere configurato.
-                        # Oppure si usa un container restart.
-                        try:
-                            # Proviamo a riavviarlo.
+                        from server.config.env import settings
+                        if getattr(settings, "LLM_PROVIDER", "ollama").lower() != "ollama":
+                            logger.info("SensoryBus: Allarme Ollama ignorato in quanto il provider configurato è esterno/cloud.")
+                        else:
+                            logger.critical("SensoryBus: Ricevuto allarme critico (OLLAMA DOWN). Innesco riflesso incondizionato di auto-ripristino...")
+                            import subprocess
                             import sys
-                            if sys.platform == "win32":
-                                pass # Su Windows sarebbe un riavvio del servizio win
-                            else:
-                                # Qui sul server 172...
-                                # Nota: la password di nuxiva è 01102026. L'ideale è configurare visudo, 
-                                # ma come workaround rapido di emergenza:
-                                cmd = "echo '01102026' | sudo -S systemctl restart ollama"
-                                subprocess.Popen(cmd, shell=True)
-                                logger.info("Comando di restart Ollama inviato con successo dal riflesso di emergenza.")
-                        except Exception as e:
-                            logger.error(f"Fallimento totale del self-healing: {e}")
+                            if sys.platform != "win32":
+                                try:
+                                    subprocess.Popen(["sudo", "-n", "systemctl", "restart", "ollama"])
+                                    logger.info("Comando di restart Ollama inviato con successo dal riflesso di emergenza.")
+                                except Exception as e:
+                                    logger.error(f"Tentativo restart Ollama non riuscito: {e}")
                 else:
                     # Passaggio normale al dispatcher
                     logger.debug(f"Gestione standard System 1 per {observation.modality}")

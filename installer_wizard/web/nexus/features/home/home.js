@@ -7,7 +7,6 @@ import { Orb } from "../../components/orb.js";
 import {
   statTiles,
   processesPanel,
-  widgetsConsumptionPanel,
   satellitesControlPanel,
   connectedServersPanel,
   activityPanel,
@@ -16,8 +15,6 @@ import {
   todoPanel
 } from "./panels.js";
 import { trackSystem } from "./series.js";
-import { cachedWidgets } from "../../core/widgets.js";
-import { api } from "../../core/http.js";
 
 trackSystem();
 
@@ -27,7 +24,6 @@ export function renderHome(outlet) {
   const ringBox = h("div", { class: "ring-box" });
   const stats = h("div", { class: "stats-futuristic" });
   const processes = h("div", { class: "panel-futuristic" });
-  const widgetsConsumption = h("div", { class: "panel-futuristic" });
   const satellites = h("div", { class: "panel-futuristic" });
   const servers = h("div", { class: "panel-futuristic" });
   const todos = h("div", { class: "panel-futuristic" });
@@ -52,7 +48,7 @@ export function renderHome(outlet) {
           h("span", { class: "hud-tag-pill-green" }, "METODO UNIFICATO")),
         sayStatus,
         h("p", { class: "dashboard-lead" },
-          "Monitoraggio centralizzato di consumi e velocità in tempo reale: acceleratori hardware GPU, CPU clock, memoria RAM, matrice processi attivi, consumo di ogni singolo widget, controllo dei satelliti e nodi server cluster."),
+          "Monitoraggio olografico di risorse e velocità in tempo reale: acceleratori hardware GPU, clock CPU dinamico, memoria RAM, matrice processi attivi, controllo satelliti distribuiti e nodi del cluster cognitivo."),
         h("div", { class: "ready-futuristic" },
           ringBox,
           h("div", { class: "ready-copy" },
@@ -72,12 +68,11 @@ export function renderHome(outlet) {
       h("span", { class: "sec-title" }, "MATRICE PROCESSI & SERVER COLLEGATI")),
     h("div", { class: "cols-2" }, processes, servers),
 
-    // SEZIONE 3: CONTROLLO CONSUMI DEI SATELLITI & CONSUMI DEI WIDGET
+    // SEZIONE 3: CONTROLLO INFRASTRUTTURA SATELLITI & PERIFERICHE
     h("div", { class: "dashboard-section-label" },
       h("span", { class: "sec-num" }, "03"),
-      h("span", { class: "sec-title" }, "COSTELLAZIONE SATELLITI & RISORSE WIDGET")),
+      h("span", { class: "sec-title" }, "COSTELLAZIONE SATELLITI & INFRASTRUTTURA NODI")),
     satellites,
-    widgetsConsumption,
 
     // SEZIONE 4: ATTIVITÀ & EVENTI DEL SISTEMA
     h("div", { class: "dashboard-section-label" },
@@ -92,14 +87,6 @@ export function renderHome(outlet) {
 
   const orb = new Orb(canvas);
   orb.start();
-
-  let currentWidgets = cachedWidgets();
-  const loadWidgets = () => api("/api/widgets").then((data) => {
-    currentWidgets = (data.widgets || []).filter((w) => w.enabled && w.id !== "alarm");
-    if (view.isConnected) mount(widgetsConsumption, widgetsConsumptionPanel(currentWidgets));
-  }).catch(() => {});
-  loadWidgets();
-  const widgetTimer = setInterval(() => (view.isConnected ? loadWidgets() : clearInterval(widgetTimer)), 15000);
 
   const paintSummary = (data) => {
     if (!data) return;
@@ -123,7 +110,6 @@ export function renderHome(outlet) {
     mount(processes, processesPanel(sys));
     mount(servers, connectedServersPanel(snapshot?.connected_servers));
     mount(satellites, satellitesControlPanel(snapshot?.satellites));
-    mount(widgetsConsumption, widgetsConsumptionPanel(currentWidgets));
     mount(activity, activityPanel(snapshot?.events));
   };
 

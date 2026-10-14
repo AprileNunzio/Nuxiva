@@ -38,7 +38,7 @@ def trusted_binary(path: str) -> bool:
     return (
         stat.S_ISREG(info.st_mode)
         and os.access(path, os.X_OK)
-        and info.st_uid in (0, os.getuid())
+        and info.st_uid in (0, getattr(os, "getuid", lambda: 0)())
         and not info.st_mode & (stat.S_IWGRP | stat.S_IWOTH)
     )
 

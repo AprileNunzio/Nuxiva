@@ -25,9 +25,15 @@ class LLMGateway:
         
         pref = getattr(settings, "LLM_PROVIDER", "ollama").lower()
         chain = [pref]
-        for p in ["ollama", "gemini", "openai", "claude"]:
-            if p not in chain:
-                chain.append(p)
+        if self._openai_api_key and "openai" not in chain:
+            chain.append("openai")
+        if self._claude_api_key and "claude" not in chain:
+            chain.append("claude")
+        if self._gemini_api_key and "gemini" not in chain:
+            chain.append("gemini")
+        nuxiva_brain = os.getenv("NUXIVA_BRAIN", "").lower()
+        if nuxiva_brain != "cloud" and "ollama" not in chain:
+            chain.append("ollama")
         self._provider_chain = chain
 
     def stream_completion(self, request: LLMRequest) -> AsyncIterator[str]:
@@ -226,7 +232,7 @@ class LLMGateway:
         elapsed = (time.time() - start_time) * 1000
         user_query = request.messages[-1].content if request.messages else ""
         content_msg = global_translator.translate(self._module_path, "fallback.synthetic_response", query=user_query, error=error)
-        if "connection attempts failed" in error.lower() or "ollama" in error.lower():
+        if ("connection attempts failed" in error.lower() or "ollama" in error.lower()) and "ollama" in self._provider_chain and getattr(settings, "LLM_PROVIDER", "ollama").lower() == "ollama":
             self._raise_ollama_alarm()
         return LLMResponse(
             content=content_msg,
@@ -236,6 +242,8 @@ class LLMGateway:
         )
 
     def _raise_ollama_alarm(self) -> None:
+        if getattr(settings, "LLM_PROVIDER", "ollama").lower() != "ollama":
+            return
         from server.core.event_sourcing.universal_space import UniversalObservation
         from server.core.sensory_bus.event_router import sensory_bus
         observation = UniversalObservation(

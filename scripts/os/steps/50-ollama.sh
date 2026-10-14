@@ -46,6 +46,10 @@ ensure_ollama_user() {
     chmod 755 /usr/share/ollama 2>/dev/null || true
 }
 
+unit_present() {
+    [ -f /etc/systemd/system/ollama.service ] || [ -f /lib/systemd/system/ollama.service ] || [ -f /usr/lib/systemd/system/ollama.service ]
+}
+
 ensure_unit() {
     ensure_ollama_user
     unit_present && return 0
@@ -76,14 +80,15 @@ step_check() {
         api_ok && local_off
         return
     fi
-    if [ "${NUXIVA_BRAIN:-}" != "local" ]; then
+    if [ "${NUXIVA_BRAIN:-}" != "local" ] && [ -n "${NUXIVA_BRAIN:-}" ]; then
+        return 0
+    fi
+    if [ "${NUXIVA_BRAIN:-}" = "cloud" ]; then
         return 0
     fi
     command -v ollama >/dev/null 2>&1 \
         && runner_present \
         && unit_present \
-        && override_conf | same_content "$OVERRIDE" \
-        && systemctl is-enabled ollama >/dev/null 2>&1 \
         && api_ok
 }
 

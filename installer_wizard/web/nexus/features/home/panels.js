@@ -119,32 +119,38 @@ export function widgetsConsumptionPanel(widgetsList) {
       h("div", { class: "head-title-wrap" },
         h("span", { class: "hud-pill-tag-violet" }, "RISORSE MODULI"),
         h("p", { class: "ptitle" }, "Consumo Singoli Widget")),
-      h("a", { class: "btn ghost small", href: "#/widgets" }, "Tutti i Widget →")),
+      h("span", { class: "dim-mono-small" }, `${items.length} moduli telemetrici attivi`)),
     items.length ? h("div", { class: "widget-consumption-grid" },
-      items.map((w) => h("div", { class: "widget-consumption-card" },
-        h("div", { class: "wcard-top" },
-          h("span", { class: "wcard-icon" }, w.icon || "▣"),
-          h("div", { class: "wcard-meta" },
-            h("b", { class: "wcard-title" }, w.name),
-            h("span", { class: "wcard-sub" }, w.id)),
-          h("span", { class: `wcard-badge ${w.on_screen ? "active" : "ready"}` }, w.on_screen ? "Sul display" : "Pronto")),
-        h("div", { class: "wcard-metrics" },
-          h("div", { class: "wmetric" },
-            h("span", { class: "wmetric-lbl" }, "CPU"),
-            h("span", { class: "wmetric-val" }, fmtCost(w.cost))),
-          h("div", { class: "wmetric" },
-            h("span", { class: "wmetric-lbl" }, "ULTIMA LETTURA"),
-            h("span", { class: "wmetric-val" }, w.cost ? `${w.cost.last_ms} ms` : "—")),
-          h("div", { class: "wmetric" },
-            h("span", { class: "wmetric-lbl" }, "LETTURE"),
-            h("span", { class: "wmetric-val" }, w.cost ? String(w.cost.calls) : "—"))),
-        h("button", {
-          type: "button",
-          class: "btn ghost small wcard-btn",
-          onclick: () => recall(w).catch(fail),
-        }, "Proietta sul Display ↗"))))
+      items.map((w) => {
+        const cpuNum = w.cost ? Number(w.cost.cpu_percent) || 0 : 0;
+        const cpuPct = Math.min(100, Math.max(0, cpuNum * 10));
+        return h("div", { class: "widget-consumption-card" },
+          h("div", { class: "wcard-top" },
+            h("span", { class: "wcard-icon" }, w.icon || "▣"),
+            h("div", { class: "wcard-meta" },
+              h("b", { class: "wcard-title" }, w.name),
+              h("span", { class: "wcard-sub" }, w.id)),
+            h("span", { class: `wcard-badge ${w.on_screen ? "active" : "ready"}` }, w.on_screen ? "Attivo" : "Pronto")),
+          h("div", { class: "wcard-metrics" },
+            h("div", { class: "wmetric" },
+              h("span", { class: "wmetric-lbl" }, "CPU"),
+              h("span", { class: "wmetric-val cyan" }, fmtCost(w.cost))),
+            h("div", { class: "wmetric" },
+              h("span", { class: "wmetric-lbl" }, "LATENZA"),
+              h("span", { class: "wmetric-val" }, w.cost ? `${w.cost.last_ms} ms` : "—")),
+            h("div", { class: "wmetric" },
+              h("span", { class: "wmetric-lbl" }, "CICLI"),
+              h("span", { class: "wmetric-val" }, w.cost ? String(w.cost.calls) : "—"))),
+          h("div", { class: "mini-bar-track", title: `Carico CPU: ${cpuNum.toFixed(2)}%` },
+            h("div", { class: "mini-bar-fill", style: `width:${cpuPct}%;` })),
+          h("button", {
+            type: "button",
+            class: "btn ghost small wcard-btn",
+            onclick: () => recall(w).catch(fail),
+          }, "Proietta sul Display ↗"));
+      }))
       : h("p", { class: "dim" }, "Nessun widget attivo."),
-    h("p", { class: "dim-small" }, "Il consumo è il tempo di CPU del server speso a leggere i dati di ogni widget; «—» indica un widget senza sorgente dati dal vivo."),
+    h("p", { class: "dim-small" }, "Il consumo indica il tempo di calcolo impiegato dal kernel per aggiornare lo stato di ogni modulo in tempo reale."),
   ];
 }
 
