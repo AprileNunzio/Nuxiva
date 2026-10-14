@@ -30,7 +30,8 @@ class NexusParityTest(unittest.TestCase):
             for tab in re.findall(r'id="tab-([a-z0-9_-]+)"', html.read_text(encoding="utf-8")):
                 self.assertIn(tab, panels, f"{html.parent.name}: la scheda «{tab}» non è collegata a nessun manifest")
         tool = TOOL_JS.read_text(encoding="utf-8")
-        self.assertIn('{ id: "panel", label: "Plancia", min: "explorer", has: (tool) => Boolean(tool.panel) }', tool)
+        self.assertIn('{ id: "panel", label: "Controllo", has: (tool) => Boolean(tool.panel) }', tool)
+        self.assertNotIn("min:", tool)
         self.assertIn("hasPanel(tool.panel) ? nativePanel(tool.panel, { tool })", tool)
 
     def test_native_panels_exist_and_export_a_renderer(self):
@@ -49,15 +50,13 @@ class NexusParityTest(unittest.TestCase):
         for path in (ROOT / "features").glob("*/feature.json"):
             self.assertTrue(classify(json.loads(path.read_text(encoding="utf-8"))).zone)
 
-    def test_classic_panel_can_be_embedded_only_by_itself(self):
+    def test_old_panel_is_gone_and_never_embedded(self):
         with mock.patch("setup_api.done", return_value=True):
-            r = TestClient(nuxiva_supervisor.admin).get("/classic")
-        self.assertEqual(r.headers["content-security-policy"], "frame-ancestors 'self'")
-        self.assertEqual(r.headers["x-frame-options"], "SAMEORIGIN")
-        self.assertIn("/static/admin/embed.js", r.text)
-        with mock.patch("setup_api.done", return_value=True):
-            nexus = TestClient(nuxiva_supervisor.admin).get("/")
-        self.assertIn("frame-src 'self'", nexus.headers["content-security-policy"])
+            r = TestClient(nuxiva_supervisor.admin).get("/classic", follow_redirects=False)
+        self.assertEqual((r.status_code, r.headers["location"]), (308, "/"))
+        frame = (ROOT / "web" / "nexus" / "components" / "classic-frame.js").read_text(encoding="utf-8")
+        self.assertNotIn("iframe", frame)
+        self.assertNotIn("/classic", frame)
 
 
 if __name__ == "__main__":

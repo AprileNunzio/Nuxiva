@@ -61,7 +61,7 @@ export function renderAwakening(outlet) {
     const id = state.steps[index].id, step = STEPS[id];
     const ok = step.valid(answers, state.current);
     return h("div", { class: "panel aw-card" },
-      h("div", { class: "aw-optional-tag", style: "display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 6px; background: rgba(41, 224, 255, 0.15); color: var(--cyan); margin-bottom: 6px;" }, "PROCEDURA FACOLTATIVA"),
+      h("div", { class: "aw-optional-tag" }, "PROCEDURA FACOLTATIVA"),
       h("p", { class: "eyebrow" }, `Configurazione Iniziale · Passo ${index + 1} di ${state.steps.length}`),
       h("h2", {}, step.title), h("p", { class: "aw-lead" }, step.text),
       step.form(answers, set, state.current),

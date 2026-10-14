@@ -1,4 +1,5 @@
 import json
+import os
 import re
 import tempfile
 import unittest
@@ -42,7 +43,8 @@ class PreferencesRepositoryTest(unittest.TestCase):
             service.update("nunzio", {"level": "architect"})
             self.assertEqual(service.get("anna").as_dict(), {"level": "explorer", "favorites": ["chat"]})
             self.assertEqual(service.get("nunzio").level, "architect")
-            self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+            if os.name != "nt":
+                self.assertEqual(path.stat().st_mode & 0o777, 0o600)
 
     def test_rejects_unsafe_user_names(self):
         repo = JsonPreferencesRepository(Path(tempfile.mkdtemp()) / "p.json")
@@ -89,9 +91,9 @@ class NexusApiTest(unittest.TestCase):
         legacy = TestClient(nuxiva_supervisor.admin).get("/nexus", follow_redirects=False)
         self.assertEqual((legacy.status_code, legacy.headers["location"]), (308, "/"))
         with mock.patch("setup_api.done", return_value=True):
-            classic = TestClient(nuxiva_supervisor.admin).get("/classic")
+            classic = TestClient(nuxiva_supervisor.admin).get("/classic", follow_redirects=False)
             nexus = TestClient(nuxiva_supervisor.admin).get("/")
-        self.assertIn("/static/admin/shell.js", classic.text)
+        self.assertEqual((classic.status_code, classic.headers["location"]), (308, "/"))
         self.assertIn("/static/nexus/app.js", nexus.text)
         self.assertIn("/static/shared/translate.js", nexus.text)
 

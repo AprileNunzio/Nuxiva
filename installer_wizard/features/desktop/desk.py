@@ -35,6 +35,7 @@ class Desk:
         self.instances: dict[str, dict] = {}
         self.last: dict[str, dict] = {}
         self.sources: dict = {}
+        self.cost: dict[str, dict] = {}
         self.suppressed: set = set()
         self.request_at = 0.0
         self.dismissed: dict[str, tuple[str, float]] = {}
@@ -338,6 +339,26 @@ class Desk:
     def register_source(self, name: str, fn) -> None:
         self.sources[name] = fn
 
+    def _measured(self, wid: str, fn):
+        wall, cpu = time.perf_counter(), time.thread_time()
+        try:
+            return fn()
+        finally:
+            spent_cpu = (time.thread_time() - cpu) * 1000
+            spent_wall = (time.perf_counter() - wall) * 1000
+            rec = self.cost.setdefault(wid, {"calls": 0, "cpu_ms": 0.0, "last_ms": 0.0, "since": time.time()})
+            rec["calls"] += 1
+            rec["cpu_ms"] += spent_cpu
+            rec["last_ms"] = round(spent_wall, 2)
+
+    def cost_of(self, wid: str) -> dict | None:
+        rec = self.cost.get(wid)
+        if not rec or not rec["calls"]:
+            return None
+        elapsed = max(1.0, time.time() - rec["since"])
+        return {"calls": rec["calls"], "last_ms": rec["last_ms"], "avg_cpu_ms": round(rec["cpu_ms"] / rec["calls"], 3),
+                "cpu_percent": round(rec["cpu_ms"] / (elapsed * 10), 3)}
+
     def _bindings(self) -> None:
         for m in self.widgets.values():
             bind = m.get("bind")
@@ -346,7 +367,7 @@ class Desk:
             attr, when = (bind, None) if isinstance(bind, str) else (bind.get("attr"), bind.get("when"))
             source = self.sources.get(attr)
             try:
-                value = source() if source else getattr(store, attr, None) if attr else None
+                value = self._measured(m["id"], source) if source else getattr(store, attr, None) if attr else None
             except Exception:
                 log.exception("Sorgente del widget %s", m["id"])
                 value = None
@@ -363,7 +384,8 @@ class Desk:
 
     def listing(self) -> dict:
         return {"widgets": [{k: v for k, v in m.items() if k != "dir"} | {"enabled": self.enabled(m["id"]),
-                             "effective_priority": self.priority(m["id"])}
+                             "effective_priority": self.priority(m["id"]), "cost": self.cost_of(m["id"]),
+                             "on_screen": sum(1 for i in self.instances.values() if i["id"] == m["id"])}
                             for m in sorted(self.widgets.values(), key=lambda x: -self.priority(x["id"]))],
                 "active": self.active(), "errors": self.errors, "user_dir": str(USER_DIR)}
 

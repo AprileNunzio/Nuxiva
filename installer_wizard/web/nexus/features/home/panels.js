@@ -4,7 +4,7 @@ import { freshBadge } from "../../components/badge.js";
 import { SERIES } from "./series.js";
 import { sectionHref } from "../section/section.js";
 import { recall } from "../../core/widgets.js";
-import { toast, fail } from "../../core/toast.js";
+import { fail } from "../../core/toast.js";
 
 const GB = 1024 ** 3;
 const gb = (bytes) => (bytes / GB).toLocaleString(document.documentElement.lang || "it", { maximumFractionDigits: 1 });
@@ -23,7 +23,7 @@ function formatRate(bps) {
 }
 
 function tile(label, value, unit, note, series, max = 100, badge = null, extraBar = null) {
-  return h("div", { class: "panel stat futuristic-stat-card" },
+  return h("div", { class: "stat-card-futuristic" },
     h("div", { class: "stat-header" },
       h("p", { class: "ptitle" }, label),
       badge ? h("span", { class: "hud-mini-tag" }, badge) : null),
@@ -36,28 +36,29 @@ function tile(label, value, unit, note, series, max = 100, badge = null, extraBa
 export function statTiles(sys) {
   if (!sys) return [1, 2, 3, 4].map(() => h("div", { class: "panel stat skeleton-tile" }, h("div", { class: "skeleton" })));
 
-  const cpuSpeed = sys.cpu_freq ? `${(sys.cpu_freq >= 1000 ? (sys.cpu_freq / 1000).toFixed(2) + " GHz" : sys.cpu_freq + " MHz")}` : "Dinamica";
+  const cpuSpeed = sys.cpu_freq ? `${(sys.cpu_freq >= 1000 ? (sys.cpu_freq / 1000).toFixed(2) + " GHz" : sys.cpu_freq + " MHz")}` : "—";
   const cpuLoadNote = `${sys.cpu_count} core · clock ${cpuSpeed} · carico ${sys.load?.[0] ?? "—"}`;
   
   // CPU per-core micro bar
   const coreBars = (sys.per_cpu && sys.per_cpu.length) ? h("div", { class: "core-meter-row", title: "Carico singoli core logici" },
     sys.per_cpu.slice(0, 16).map((val, idx) => h("div", {
       class: "core-bar-item",
-      style: `height: ${Math.max(4, Math.min(val, 100))}%;`,
+      style: `height:${Math.max(4, Math.min(val, 100))}%;`,
       title: `Core ${idx}: ${val}%`
     }))) : null;
 
   // GPU telemetry
-  const gpu = sys.gpu || { name: "NUXIVA Graphics Accelerator", gpu_percent: 0, vram_used: 0, vram_total: 0, vram_percent: 0, clock_mhz: null, temp: null };
-  const gpuSpeed = gpu.clock_mhz ? `${Math.round(gpu.clock_mhz)} MHz` : "Auto";
-  const gpuNote = `${gpu.name} · clock ${gpuSpeed} · VRAM ${Math.round(gpu.vram_used)}/${Math.round(gpu.vram_total || 4096)} MB`;
-  const gpuBar = h("div", { class: "hud-linear-meter" },
-    h("div", { class: "hud-linear-meter-fill gpu-accent", style: `width: ${Math.min(gpu.vram_percent || gpu.gpu_percent, 100)}%;` }));
+  const gpu = sys.gpu && sys.gpu.available !== false ? sys.gpu : null;
+  const gpuNote = gpu
+    ? `${gpu.name} · clock ${gpu.clock_mhz ? `${Math.round(gpu.clock_mhz)} MHz` : "—"} · VRAM ${Math.round(gpu.vram_used || 0)}/${Math.round(gpu.vram_total || 0)} MB`
+    : "Nessuna GPU dedicata rilevata";
+  const gpuBar = gpu ? h("div", { class: "hud-linear-meter" },
+    h("div", { class: "meter-fill-gpu", style: `width:${Math.min(gpu.vram_percent || gpu.gpu_percent || 0, 100)}%;` })) : null;
 
   // RAM telemetry
   const ramNote = `${gb(sys.mem_used)} di ${gb(sys.mem_total)} GB · swap ${Math.round(sys.swap_percent ?? 0)}%`;
   const ramBar = h("div", { class: "hud-linear-meter" },
-    h("div", { class: "hud-linear-meter-fill ram-accent", style: `width: ${Math.min(sys.mem_percent, 100)}%;` }));
+    h("div", { class: "meter-fill-ram", style: `width:${Math.min(sys.mem_percent, 100)}%;` }));
 
   // I/O & Network Net Speed
   const netRx = formatRate(sys.net_rx_rate);
@@ -66,146 +67,123 @@ export function statTiles(sys) {
 
   return [
     tile("Processore (CPU)", Math.round(sys.cpu_percent), "%", cpuLoadNote, SERIES.cpu, 100, cpuSpeed, coreBars),
-    tile("Scheda Video (GPU)", Math.round(gpu.gpu_percent), "%", gpuNote, SERIES.gpu, 100, gpu.temp != null ? `${Math.round(gpu.temp)}°C` : "ACCEL", gpuBar),
+    tile("Scheda Video (GPU)", gpu ? Math.round(gpu.gpu_percent || 0) : null, "%", gpuNote, SERIES.gpu, 100, gpu?.temp != null ? `${Math.round(gpu.temp)}°C` : null, gpuBar),
     tile("Memoria (RAM)", Math.round(sys.mem_percent), "%", ramNote, SERIES.mem, 100, `${gb(sys.mem_total - sys.mem_used)} GB liberi`, ramBar),
-    tile("Velocità Rete & Disco", Math.round(sys.disk_percent), "%", netNote, SERIES.disk, 100, sys.temperature != null ? `${Math.round(sys.temperature)}°C` : "I/O LIVE"),
+    tile("Velocità Rete & Disco", Math.round(sys.disk_percent), "%", netNote, SERIES.disk, 100, sys.temperature != null ? `${Math.round(sys.temperature)}°C` : null),
   ];
 }
 
 export function processesPanel(sys) {
   const procs = sys?.top_processes || [];
   return [
-    h("div", { class: "panel-head hud-flex-head" },
+    h("div", { class: "head-futuristic" },
       h("div", { class: "head-title-wrap" },
-        h("span", { class: "hud-pill-tag cyan" }, "VELOCITÀ & CARICO"),
+        h("span", { class: "hud-pill-tag-cyan" }, "VELOCITÀ & CARICO"),
         h("p", { class: "ptitle" }, "Matrice Processi in Tempo Reale")),
-      h("span", { class: "dim mono small" }, `${procs.length} processi prioritari monitorati`)),
+      h("span", { class: "dim-mono-small" }, `${procs.length} processi prioritari monitorati`)),
     h("div", { class: "tbl-wrap" },
       h("table", { class: "futuristic-table" },
         h("thead", {}, h("tr", {},
           h("th", {}, "PID"),
           h("th", {}, "PROCESSO"),
           h("th", {}, "STATO"),
-          h("th", { style: "text-align: right;" }, "CPU %"),
-          h("th", { style: "text-align: right;" }, "RAM (MB)"))),
+          h("th", { class: "col-r" }, "CPU %"),
+          h("th", { class: "col-r" }, "RAM (MB)"))),
         h("tbody", {}, procs.length ? procs.map((p) => h("tr", { class: "proc-row" },
-          h("td", { class: "mono dim text-cyan" }, String(p.pid)),
-          h("td", { class: "mono text-bold" }, p.name),
+          h("td", { class: "mono-dim-cyan" }, String(p.pid)),
+          h("td", { class: "mono-bold" }, p.name),
           h("td", {}, h("span", { class: `proc-status ${p.status === "running" ? "live" : "idle"}` }, p.status.toUpperCase())),
-          h("td", { style: "text-align: right;" },
+          h("td", { class: "col-r" },
             h("div", { class: "val-with-bar" },
-              h("span", { class: "mono text-accent" }, `${p.cpu.toFixed(1)}%`),
-              h("div", { class: "mini-bar-track" }, h("div", { class: "mini-bar-fill", style: `width: ${Math.min(p.cpu * 2, 100)}%;` })))),
-          h("td", { class: "mono text-dim", style: "text-align: right;" }, `${p.mem_mb.toFixed(1)} MB`)))
-          : [h("tr", {}, h("td", { colspan: "5", class: "dim text-center" }, "Lettura telemetria processi in corso…"))])))
+              h("span", { class: "mono-accent" }, `${p.cpu.toFixed(1)}%`),
+              h("div", { class: "mini-bar-track" }, h("div", { class: "mini-bar-fill", style: `width:${Math.min(p.cpu * 2, 100)}%;` })))),
+          h("td", { class: "mono-dim-r" }, `${p.mem_mb.toFixed(1)} MB`)))
+          : [h("tr", {}, h("td", { colspan: "5", class: "dim-text-center" }, "Lettura telemetria processi in corso…"))])))
   ];
 }
 
 export function widgetsConsumptionPanel(widgetsList) {
-  const items = widgetsList || [
-    { id: "clock", name: "Orologio Neurale", icon: "🕒", cpu: "0.2%", mem: "12 MB", rate: "1 Hz", status: "Pronto" },
-    { id: "weather", name: "Meteo & Clima Spaziale", icon: "🌤", cpu: "0.4%", mem: "18 MB", rate: "0.1 Hz", status: "Pronto" },
-    { id: "audio", name: "Audio Matrix Player", icon: "🎵", cpu: "1.2%", mem: "34 MB", rate: "10 Hz", status: "In Esecuzione" },
-    { id: "system", name: "HUD Telemetria Kernel", icon: "⚡", cpu: "0.8%", mem: "24 MB", rate: "2 Hz", status: "Attivo" },
-    { id: "vision", name: "Scanner Visivo Frigate", icon: "👁", cpu: "2.1%", mem: "58 MB", rate: "15 Hz", status: "Pronto" },
-    { id: "notes", name: "Quaderno Olografico", icon: "📝", cpu: "0.1%", mem: "14 MB", rate: "On-demand", status: "Pronto" },
-  ];
-
+  const items = widgetsList || [];
+  const fmtCost = (c) => (c ? `${c.cpu_percent.toFixed(2)}%` : "—");
   return [
-    h("div", { class: "panel-head hud-flex-head" },
+    h("div", { class: "head-futuristic" },
       h("div", { class: "head-title-wrap" },
-        h("span", { class: "hud-pill-tag violet" }, "RISORSE MODULI"),
+        h("span", { class: "hud-pill-tag-violet" }, "RISORSE MODULI"),
         h("p", { class: "ptitle" }, "Consumo Singoli Widget")),
       h("a", { class: "btn ghost small", href: "#/widgets" }, "Tutti i Widget →")),
-    h("div", { class: "widget-consumption-grid" },
+    items.length ? h("div", { class: "widget-consumption-grid" },
       items.map((w) => h("div", { class: "widget-consumption-card" },
         h("div", { class: "wcard-top" },
           h("span", { class: "wcard-icon" }, w.icon || "▣"),
           h("div", { class: "wcard-meta" },
             h("b", { class: "wcard-title" }, w.name),
-            h("span", { class: "wcard-sub" }, `ID: ${w.id} · Refresh: ${w.rate || "1 Hz"}`)),
-          h("span", { class: `wcard-badge ${w.status === "In Esecuzione" || w.status === "Attivo" ? "active" : "ready"}` }, w.status || "Pronto")),
+            h("span", { class: "wcard-sub" }, w.id)),
+          h("span", { class: `wcard-badge ${w.on_screen ? "active" : "ready"}` }, w.on_screen ? "Sul display" : "Pronto")),
         h("div", { class: "wcard-metrics" },
           h("div", { class: "wmetric" },
             h("span", { class: "wmetric-lbl" }, "CPU"),
-            h("span", { class: "wmetric-val cyan" }, w.cpu || "0.3%")),
+            h("span", { class: "wmetric-val" }, fmtCost(w.cost))),
           h("div", { class: "wmetric" },
-            h("span", { class: "wmetric-lbl" }, "RAM"),
-            h("span", { class: "wmetric-val" }, w.mem || "16 MB")),
+            h("span", { class: "wmetric-lbl" }, "ULTIMA LETTURA"),
+            h("span", { class: "wmetric-val" }, w.cost ? `${w.cost.last_ms} ms` : "—")),
           h("div", { class: "wmetric" },
-            h("span", { class: "wmetric-lbl" }, "FREQUENZA"),
-            h("span", { class: "wmetric-val dim" }, w.rate || "1 Hz"))),
+            h("span", { class: "wmetric-lbl" }, "LETTURE"),
+            h("span", { class: "wmetric-val" }, w.cost ? String(w.cost.calls) : "—"))),
         h("button", {
           type: "button",
           class: "btn ghost small wcard-btn",
-          onclick: () => recall(w).then(() => toast(`${w.name}: richiamato sul display`)).catch(fail)
+          onclick: () => recall(w).catch(fail),
         }, "Proietta sul Display ↗"))))
+      : h("p", { class: "dim" }, "Nessun widget attivo."),
+    h("p", { class: "dim-small" }, "Il consumo è il tempo di CPU del server speso a leggere i dati di ogni widget; «—» indica un widget senza sorgente dati dal vivo."),
   ];
 }
 
-export function satellitesControlPanel(satellites, linkState = true) {
-  const sats = (satellites && satellites.length) ? satellites : [
-    { id: "sat-audio-core", name: "Satellite Host Primario", room: "Plancia Master", type_label: "Satellite Audio", online: Boolean(linkState), ping_ms: 1.2, cpu: 1.5, ram: 42, ip: "127.0.0.1", last_seen: Date.now() / 1000 },
-    { id: "sat-living-room", name: "Satellite Soggiorno (Voice)", room: "Soggiorno", type_label: "Microfono Perimetrale", online: true, ping_ms: 4.8, cpu: 2.1, ram: 28, ip: "192.168.1.104", last_seen: Date.now() / 1000 },
-    { id: "sat-pc-desk", name: "Assistente PC Studio (Windows)", room: "Studio", type_label: "Desktop Link & RPA", online: true, ping_ms: 2.4, cpu: 3.4, ram: 65, ip: "192.168.1.112", last_seen: Date.now() / 1000 },
-  ];
-
+export function satellitesControlPanel(satellites) {
+  const sats = satellites || [];
+  const metric = (s, key, unit) => (s.metrics?.[key] != null ? `${s.metrics[key]}${unit}` : "—");
   return [
-    h("div", { class: "panel-head hud-flex-head" },
+    h("div", { class: "head-futuristic" },
       h("div", { class: "head-title-wrap" },
-        h("span", { class: "hud-pill-tag green" }, "COSTELLAZIONE PERIFERICHE"),
+        h("span", { class: "hud-pill-tag-green" }, "COSTELLAZIONE PERIFERICHE"),
         h("p", { class: "ptitle" }, "Controllo Consumi Satelliti Collegati")),
-      h("span", { class: "mono small text-dim" }, `${sats.filter(s => s.online).length}/${sats.length} satelliti online`)),
-    h("div", { class: "satellites-grid" },
+      h("span", { class: "dim-small" }, `${sats.filter((s) => s.online).length}/${sats.length} satelliti online`)),
+    sats.length ? h("div", { class: "satellites-grid" },
       sats.map((s) => h("div", { class: `satellite-card ${s.online ? "is-online" : "is-offline"}` },
         h("div", { class: "sat-top" },
           h("div", { class: "sat-radar-dot" }, h("span", { class: `dot-pulse ${s.online ? "green" : "red"}` })),
           h("div", { class: "sat-title-block" },
             h("b", { class: "sat-name" }, s.name),
-            h("span", { class: "sat-loc dim small" }, `${s.room || "Ambiente"} · ${s.type_label || "Nodo Satellite"}`)),
+            h("span", { class: "sat-loc" }, [s.room, s.type_label].filter(Boolean).join(" · "))),
           h("span", { class: `sat-state-pill ${s.online ? "online" : "offline"}` }, s.online ? "ONLINE" : "OFFLINE")),
         h("div", { class: "sat-telemetry-row" },
-          h("div", { class: "sat-stat-box" },
-            h("span", { class: "s-lbl" }, "PING"),
-            h("span", { class: "s-val" }, `${s.ping_ms ? s.ping_ms.toFixed(1) : (s.online ? "3.2" : "—")} ms`)),
-          h("div", { class: "sat-stat-box" },
-            h("span", { class: "s-lbl" }, "CPU"),
-            h("span", { class: "s-val cyan" }, `${s.metrics?.cpu ?? s.cpu ?? (s.online ? "1.8" : "0")}%`)),
-          h("div", { class: "sat-stat-box" },
-            h("span", { class: "s-lbl" }, "RAM"),
-            h("span", { class: "s-val" }, `${s.metrics?.ram ?? s.ram ?? (s.online ? "38" : "0")} MB`)),
-          h("div", { class: "sat-stat-box" },
-            h("span", { class: "s-lbl" }, "IP"),
-            h("span", { class: "s-val dim mono" }, s.ip || "Local"))))))
+          h("div", { class: "sat-stat-box" }, h("span", { class: "s-lbl" }, "CPU"), h("span", { class: "s-val" }, metric(s, "cpu", "%"))),
+          h("div", { class: "sat-stat-box" }, h("span", { class: "s-lbl" }, "RAM"), h("span", { class: "s-val" }, metric(s, "ram", "%"))),
+          h("div", { class: "sat-stat-box" }, h("span", { class: "s-lbl" }, "IP"), h("span", { class: "s-val" }, s.ip || "—"))))))
+      : h("p", { class: "dim" }, "Nessun satellite collegato. Aggiungine uno dalla sezione Dispositivi."),
   ];
 }
 
 export function connectedServersPanel(connectedServers) {
-  const servers = (connectedServers && connectedServers.length) ? connectedServers : [
-    { id: "supervisor", name: "Supervisor Admin Core", port: 8080, protocol: "HTTP/REST+SSE", status: "online", role: "Master Controller", latency_ms: 0.2 },
-    { id: "kiosk", name: "Public Kiosk & Displays", port: 8000, protocol: "HTTP/WebSocket", status: "online", role: "Visual Interface", latency_ms: 0.5 },
-    { id: "ollama", name: "LLM Neural Inference Engine", port: 11434, protocol: "HTTP/REST", status: "online", role: "Cognitive Processing", latency_ms: 1.2 },
-    { id: "homeassistant", name: "Home Assistant IoT Bridge", port: 8123, protocol: "REST/WebSocket", status: "online", role: "Domotic Automation", latency_ms: 4.1 },
-    { id: "sandbox", name: "Sandbox Broker Isolation Cell", port: 9001, protocol: "IPC/gRPC", status: "online", role: "Safe Execution Environment", latency_ms: 0.1 },
-  ];
-
+  const servers = connectedServers || [];
   return [
-    h("div", { class: "panel-head hud-flex-head" },
+    h("div", { class: "head-futuristic" },
       h("div", { class: "head-title-wrap" },
-        h("span", { class: "hud-pill-tag amber" }, "INFRASTRUTTURA CLUSTER"),
+        h("span", { class: "hud-pill-tag-amber" }, "INFRASTRUTTURA CLUSTER"),
         h("p", { class: "ptitle" }, "Server & Nodi Collegati")),
-      h("span", { class: "mono small text-dim" }, "Cluster Mesh Sincronizzato")),
-    h("div", { class: "servers-grid" },
+      h("span", { class: "dim-small" }, `${servers.filter((s) => s.status === "online").length}/${servers.length} raggiungibili`)),
+    servers.length ? h("div", { class: "servers-grid" },
       servers.map((srv) => h("div", { class: `server-node-card ${srv.status === "online" ? "server-live" : "server-idle"}` },
         h("div", { class: "server-header" },
           h("div", { class: "server-indicator" }),
           h("b", { class: "server-title" }, srv.name),
-          h("span", { class: "server-port-tag mono" }, `:${srv.port}`)),
-        h("div", { class: "server-desc dim small" }, srv.role || "Servizio di supporto"),
+          h("span", { class: "server-port-tag" }, `:${srv.port}`)),
+        h("div", { class: "server-desc" }, srv.role || ""),
         h("div", { class: "server-footer" },
-          h("span", { class: "server-proto mono" }, srv.protocol || "TCP/IP"),
-          h("span", { class: "server-lat mono text-cyan" }, `${srv.latency_ms ?? 0.8} ms`),
-          h("span", { class: `server-state-tag ${srv.status}` }, (srv.status || "ATTIVO").toUpperCase())))))
+          h("span", { class: "server-proto" }, srv.protocol || ""),
+          h("span", { class: "server-lat" }, srv.latency_ms != null ? `${srv.latency_ms} ms` : "—"),
+          h("span", { class: `server-state-tag ${srv.status}` }, srv.status === "online" ? "ONLINE" : "OFFLINE")))))
+      : h("p", { class: "dim" }, "Verifica dei servizi in corso…"),
   ];
 }
 

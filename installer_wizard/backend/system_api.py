@@ -9,7 +9,7 @@ import machine
 import updater
 from access import NO_CACHE, require_admin, require_internal, session_user
 import setup_api
-from config import DEMO, EDITABLE_KEYS, NUXIVA_DIR, NODE, PUBLIC_PORT, is_secret, kiosk_log, read_env
+from config import DEMO, EDITABLE_KEYS, NUXIVA_DIR, NODE, is_secret, kiosk_log, read_env
 from orchestrator import orch
 from pages import page
 from features.locale.api import page_language

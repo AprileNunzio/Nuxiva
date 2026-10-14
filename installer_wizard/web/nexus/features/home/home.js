@@ -16,48 +16,48 @@ import {
   todoPanel
 } from "./panels.js";
 import { trackSystem } from "./series.js";
-import { cachedWidgets, widgets } from "../../core/widgets.js";
+import { cachedWidgets } from "../../core/widgets.js";
+import { api } from "../../core/http.js";
 
 trackSystem();
 
 export function renderHome(outlet) {
   const canvas = h("canvas", { "aria-hidden": "true", class: "futuristic-orb-canvas" });
-  const sayStatus = h("h2", { class: "home-say futuristic-title" }, "Inizializzazione Telemetria Neurale…");
+  const sayStatus = h("h2", { class: "home-say-futuristic" }, "Inizializzazione Telemetria Neurale…");
   const ringBox = h("div", { class: "ring-box" });
-  const stats = h("div", { class: "stats futuristic-stats-grid" });
-  const processes = h("div", { class: "panel futuristic-card" });
-  const widgetsConsumption = h("div", { class: "panel futuristic-card" });
-  const satellites = h("div", { class: "panel futuristic-card" });
-  const servers = h("div", { class: "panel futuristic-card" });
-  const todos = h("div", { class: "panel futuristic-card" });
-  const activity = h("div", { class: "panel futuristic-card" });
-  const components = h("div", { class: "panel futuristic-card" });
+  const stats = h("div", { class: "stats-futuristic" });
+  const processes = h("div", { class: "panel-futuristic" });
+  const widgetsConsumption = h("div", { class: "panel-futuristic" });
+  const satellites = h("div", { class: "panel-futuristic" });
+  const servers = h("div", { class: "panel-futuristic" });
+  const todos = h("div", { class: "panel-futuristic" });
+  const activity = h("div", { class: "panel-futuristic" });
+  const components = h("div", { class: "panel-futuristic" });
   const fresh = h("div", { class: "panel fresh-panel", hidden: true });
   
   const awakeningLink = h("a", { class: "btn primary hud-glow-btn", href: "#/awakening" }, "Configurazione Iniziale (Facoltativa)");
 
-  const view = h("section", { class: "view dashboard-view" },
+  const view = h("section", { class: "dashboard-view" },
     // HERO: HUD OLOGRAFICO CON SFERA FUTURISTICA
-    h("div", { class: "home-hero futuristic-hero" },
+    h("div", { class: "home-hero-futuristic" },
       h("div", { class: "orb-container" },
         h("div", { class: "orb-reticle-ring" }),
         h("div", { class: "orb-radar-sweep" }),
         h("div", { class: "orb-box home-orb" }, canvas),
         h("div", { class: "orb-caption" },
-          h("span", { class: "orb-badge-live" }, "NEURAL CORE ACTIVE"),
-          h("span", { class: "mono small text-dim" }, "QUANTUM 60 FPS"))),
+          h("span", { class: "orb-badge-live" }, "NEURAL CORE ACTIVE"))),
       h("div", { class: "home-copy" },
         h("div", { class: "hud-tag-row" },
-          h("span", { class: "hud-tag-pill cyan" }, "DASHBOARD AMMINISTRATIVA :8080"),
-          h("span", { class: "hud-tag-pill green" }, "KERNEL v4.1 · METODO UNIFICATO")),
+          h("span", { class: "hud-tag-pill-cyan" }, "DASHBOARD AMMINISTRATIVA :8080"),
+          h("span", { class: "hud-tag-pill-green" }, "METODO UNIFICATO")),
         sayStatus,
-        h("p", { class: "dashboard-lead-text dim" },
+        h("p", { class: "dashboard-lead" },
           "Monitoraggio centralizzato di consumi e velocità in tempo reale: acceleratori hardware GPU, CPU clock, memoria RAM, matrice processi attivi, consumo di ogni singolo widget, controllo dei satelliti e nodi server cluster."),
-        h("div", { class: "ready futuristic-ready-bar" },
+        h("div", { class: "ready-futuristic" },
           ringBox,
           h("div", { class: "ready-copy" },
             h("b", {}, "Integrità del Kernel"),
-            h("span", { class: "dim small block" }, "Verifica continua dello stato dei sottosistemi")),
+            h("span", { class: "dim-small-block" }, "Verifica continua dello stato dei sottosistemi")),
           awakeningLink))),
 
     // SEZIONE 1: TELEMETRIA CONSUMI E VELOCITÀ (CPU, GPU, RAM, I/O RETE)
@@ -94,12 +94,12 @@ export function renderHome(outlet) {
   orb.start();
 
   let currentWidgets = cachedWidgets();
-  widgets().then((list) => {
-    currentWidgets = list;
-    if (view.isConnected) {
-      mount(widgetsConsumption, widgetsConsumptionPanel(currentWidgets));
-    }
+  const loadWidgets = () => api("/api/widgets").then((data) => {
+    currentWidgets = (data.widgets || []).filter((w) => w.enabled && w.id !== "alarm");
+    if (view.isConnected) mount(widgetsConsumption, widgetsConsumptionPanel(currentWidgets));
   }).catch(() => {});
+  loadWidgets();
+  const widgetTimer = setInterval(() => (view.isConnected ? loadWidgets() : clearInterval(widgetTimer)), 15000);
 
   const paintSummary = (data) => {
     if (!data) return;
@@ -122,7 +122,7 @@ export function renderHome(outlet) {
     mount(stats, statTiles(sys));
     mount(processes, processesPanel(sys));
     mount(servers, connectedServersPanel(snapshot?.connected_servers));
-    mount(satellites, satellitesControlPanel(snapshot?.satellites, store.get().link));
+    mount(satellites, satellitesControlPanel(snapshot?.satellites));
     mount(widgetsConsumption, widgetsConsumptionPanel(currentWidgets));
     mount(activity, activityPanel(snapshot?.events));
   };
