@@ -272,6 +272,8 @@ async def converge_step(step: Step, force: bool = False, quiet: bool = False) ->
         code, _ = await run_step_action(step, "check", stream=False, quiet=quiet)
         if code == 0:
             rec.update(status="done", progress=100, message="Operativo", error="", speed="")
+            if store.last_error.startswith(f"{step.title}:"):
+                store.last_error = ""
             _recompute_progress()
             return True
 
@@ -290,6 +292,8 @@ async def converge_step(step: Step, force: bool = False, quiet: bool = False) ->
             if check_code == 0:
                 rec.update(status="done", progress=100, message="Completato", error="",
                            speed="", duration=round(time.time() - started))
+                if store.last_error.startswith(f"{step.title}:"):
+                    store.last_error = ""
                 store.event("INFO", f"'{step.title}' completato in {rec['duration']}s", step.id)
                 store.save()
                 _recompute_progress()
