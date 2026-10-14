@@ -58,7 +58,7 @@
         <div class="hud-security-seal">
           <span class="seal-icon">🛡️</span>
           <div class="seal-meta">
-            <b>ZERO-TRUST SUBSYSTEM</b>
+            <b data-i18n="seal-subsystem-title"></b>
             <small data-i18n="seal-security-desc"></small>
           </div>
         </div>
@@ -126,7 +126,7 @@
       <div class="stage-screen" data-step="4" id="screen-4" hidden>
         <div class="bio-split-stage">
           <div class="bio-col">
-            <span class="split-tag">DNA VOCALE (128-DIM)</span>
+            <span class="split-tag" data-i18n="tag-voice-dna"></span>
             <canvas id="canvas-voiceprint" width="280" height="200"></canvas>
             <div class="owner-inputs">
               <input type="text" class="hud-text-input" id="owner-first-input" data-i18n-ph="lbl-owner-name">
@@ -134,7 +134,7 @@
             </div>
           </div>
           <div class="bio-col">
-            <span class="split-tag">SCANNER FACCIALE 3D</span>
+            <span class="split-tag" data-i18n="tag-face-scanner"></span>
             <div class="face-viewfinder">
               <div class="reticle-box"></div>
               <span class="viewfinder-scan-line"></span>
@@ -166,8 +166,8 @@
         <div class="brain-presets-grid" id="brain-presets"></div>
         <div class="ha-bridge-card">
           <div class="ha-header">
-            <span>🏠 HOME ASSISTANT BRIDGE</span>
-            <span class="ha-status-badge" id="ha-status">AUTO-DISCOVERED</span>
+            <span data-i18n="ha-bridge-title"></span>
+            <span class="ha-status-badge" id="ha-status" data-i18n="ha-status-auto"></span>
           </div>
           <div class="ha-inputs">
             <input type="text" class="hud-text-input" id="ha-url-in" placeholder="http://homeassistant.local:8123">
@@ -217,6 +217,10 @@
   </footer>
 </div>
 
+<script src="/static/setup/language/dict_it.js"></script>
+<script src="/static/setup/language/dict_en.js"></script>
+<script src="/static/setup/language/dict_es.js"></script>
+<script src="/static/setup/language/dict_fr.js"></script>
 <script src="/static/setup/language/setup_i18n.js"></script>
 <script src="/static/setup/setup_canvas.js"></script>
 <script src="/static/setup/setup_steps.js"></script>

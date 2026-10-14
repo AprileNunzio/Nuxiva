@@ -54,6 +54,7 @@
     renderGuide,
     renderAnalytics,
     goToStep,
+    switchLanguage,
     getActiveEventSource: () => activeEventSource,
     setActiveEventSource: (es) => { activeEventSource = es; }
   };
@@ -92,11 +93,42 @@
     api("/api/setup/release-hardware", { method: "POST" }).catch(() => {});
   }
 
+  function switchLanguage(lang) {
+    if (!["it", "en", "es", "fr"].includes(lang)) lang = "it";
+    window.SetupI18n.applyLanguage(lang);
+    const locMap = { it: "it-IT", en: "en-US", es: "es-ES", fr: "fr-FR" };
+    session.config.locale = locMap[lang] || "it-IT";
+    document.querySelectorAll(".lang-pill").forEach((b) => {
+      b.classList.toggle("active", b.dataset.lang === lang);
+    });
+    api("/api/locale/prepare", {
+      method: "POST",
+      body: JSON.stringify({ locale: session.config.locale })
+    }).catch(() => {});
+    api("/api/locale/ui", {
+      method: "PUT",
+      body: JSON.stringify({ lang })
+    }).catch(() => {});
+    renderStepper();
+    renderGuide(session.current_step);
+    renderAnalytics(session.current_step);
+    renderCurrentStep();
+  }
+
   async function loadSession() {
     try {
       const data = await api("/api/setup/session");
       if (data && data.config) {
         session = data;
+        if (session.config.locale) {
+          const lCode = session.config.locale.slice(0, 2).toLowerCase();
+          if (["it", "en", "es", "fr"].includes(lCode)) {
+            window.SetupI18n.applyLanguage(lCode);
+            document.querySelectorAll(".lang-pill").forEach((b) => {
+              b.classList.toggle("active", b.dataset.lang === lCode);
+            });
+          }
+        }
       }
     } catch (e) {
       appendLog(`Ripristino: ${e.message}`);
@@ -197,7 +229,9 @@
   function renderCurrentStep() {
     const step = session.current_step;
     document.querySelectorAll(".stage-screen").forEach((s) => {
-      s.hidden = parseInt(s.dataset.step) !== step;
+      const active = parseInt(s.dataset.step) === step;
+      s.hidden = !active;
+      s.style.display = active ? "flex" : "none";
     });
     renderGuide(step);
     renderAnalytics(step);
@@ -272,16 +306,20 @@
 
   document.querySelectorAll(".lang-pill").forEach((btn) => {
     btn.addEventListener("click", () => {
-      document.querySelectorAll(".lang-pill").forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-      const lang = btn.dataset.lang;
-      window.SetupI18n.applyLanguage(lang);
-      renderGuide(session.current_step);
-      renderAnalytics(session.current_step);
+      switchLanguage(btn.dataset.lang);
     });
   });
 
   window.addEventListener("DOMContentLoaded", () => {
+    let initialLang = "it";
+    try {
+      initialLang = localStorage.getItem("nuxiva_ui_lang") || (document.documentElement.lang || "").slice(0, 2) || "it";
+    } catch (_) {}
+    if (!["it", "en", "es", "fr"].includes(initialLang)) initialLang = "it";
+    window.SetupI18n.applyLanguage(initialLang);
+    document.querySelectorAll(".lang-pill").forEach((b) => {
+      b.classList.toggle("active", b.dataset.lang === initialLang);
+    });
     loadSession();
   });
 })();

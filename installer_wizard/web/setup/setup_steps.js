@@ -4,10 +4,17 @@
   const $ = (id) => document.getElementById(id);
 
   function setupStep1(ctx) {
-    const { session, api, renderGuide, renderAnalytics } = ctx;
+    const { session, switchLanguage } = ctx;
+    const tzEl = $("lbl-detected-tz");
+    if (tzEl) {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || session.config.timezone || "Europe/Rome";
+      session.config.timezone = tz;
+      tzEl.textContent = tz;
+    }
     const grid = $("lang-cards");
     if (!grid) return;
     grid.innerHTML = "";
+    const currentCode = (session.config.locale || "it").slice(0, 2);
     const langs = [
       { code: "it", name: "Italiano", flag: "🇮🇹" },
       { code: "en", name: "English", flag: "🇬🇧" },
@@ -16,19 +23,13 @@
     ];
     langs.forEach((l) => {
       const card = document.createElement("div");
-      const isAct = session.config.locale.startsWith(l.code);
+      const isAct = currentCode === l.code;
       card.className = `lang-hud-card ${isAct ? "active" : ""}`;
       card.innerHTML = `<span style="font-size:1.6rem">${l.flag}</span><div><b>${l.name}</b><br><small style="color:#7fa4bf">${l.code.toUpperCase()}</small></div>`;
       card.addEventListener("click", () => {
-        session.config.locale = `${l.code}-${l.code.toUpperCase()}`;
-        window.SetupI18n.applyLanguage(l.code);
-        api("/api/locale/prepare", {
-          method: "POST",
-          body: JSON.stringify({ locale: session.config.locale })
-        }).catch(() => {});
-        setupStep1(ctx);
-        renderGuide(1);
-        renderAnalytics(1);
+        if (typeof switchLanguage === "function") {
+          switchLanguage(l.code);
+        }
       });
       grid.appendChild(card);
     });

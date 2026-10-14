@@ -1,272 +1,17 @@
 (() => {
   "use strict";
 
-  const DICTIONARIES = {
-    it: {
-      "app-title": "PIATTAFORMA OPERATIVA OLOGRAFICA · FIRST-BOOT SETUP",
-      "conn-online": "ONLINE (SSE/WS)",
-      "latency-label": "LATENZA",
-      "step-1-name": "Lingua",
-      "step-2-name": "Acustica",
-      "step-3-name": "Identità",
-      "step-4-name": "Biometria",
-      "step-5-name": "Camere",
-      "step-6-name": "Cervello",
-      "step-7-name": "Lancio",
-      "badge-step-1": "STEP 01 · MATRICE LINGUISTICA",
-      "badge-step-2": "STEP 02 · LABORATORIO ACUSTICO",
-      "badge-step-3": "STEP 03 · GENESI IDENTITÀ",
-      "badge-step-4": "STEP 04 · IMPRONTA BIOMETRICA",
-      "badge-step-5": "STEP 05 · TOPOLOGIA SPATIALE",
-      "badge-step-6": "STEP 06 · ARCHITETTURA CORTICALE",
-      "badge-step-7": "STEP 07 · DIAGNOSTICA GLOBALE",
-      "title-step-1": "Matrice Linguistica & Fuso Orario",
-      "desc-step-1": "Configura la lingua primaria, la mappatura fonetica e l'allineamento orario con il cluster atomico NTP.",
-      "chk-step-1-1": "Localizzazione runtime pronta",
-      "chk-step-1-2": "Sincronizzazione orologio NTP",
-      "chk-step-1-3": "Dizionario fonetico caricato",
-      "title-step-2": "Allineamento DSP & Calibrazione Microfono",
-      "desc-step-2": "Misura il rumore di fondo della stanza, imposta i filtri anti-rimbombo ed allinea il guadagno hardware del microfono.",
-      "chk-step-2-1": "Campionamento silenzio completato",
-      "chk-step-2-2": "Filtro passa-alto 80Hz attivo",
-      "chk-step-2-3": "Rapporto segnale/rumore verificato",
-      "title-step-3": "Genesi Identità & Training Vocale",
-      "desc-step-3": "Battezza il tuo assistente, seleziona il timbro vocale ed allinea il modello di risveglio con tre pronunce vocali.",
-      "chk-step-3-1": "Nome primario assegnato",
-      "chk-step-3-2": "Voce neurale calibrata",
-      "chk-step-3-3": "Varianti fonetiche acquisite",
-      "title-step-4": "DNA Vocale & Scansione 3D Proprietario",
-      "desc-step-4": "Registra il profilo biometrico del proprietario principale per l'autenticazione continua e privilegi di controllo.",
-      "chk-step-4-1": "Controllo anti-conflitto superato",
-      "chk-step-4-2": "Vettore embedding vocale estratto",
-      "chk-step-4-3": "Liveness facciale confermata",
-      "title-step-5": "Radar Ottico & Topologia Camere",
-      "desc-step-5": "Rilevamento automatico di telecamere RTSP, ONVIF e sensori ottici USB nella rete locale per ciascuna stanza.",
-      "chk-step-5-1": "Scansione sottorete completata",
-      "chk-step-5-2": "Flussi video agganciati",
-      "chk-step-5-3": "Mappatura stanze definita",
-      "title-step-6": "Configurazione Cervello Neurale & Domotica",
-      "desc-step-6": "Seleziona la topologia neurale adatta al tuo hardware ed esegui il benchmark cognitivo sul Time-To-First-Token.",
-      "chk-step-6-1": "VRAM e GPU profilate",
-      "chk-step-6-2": "Benchmark inferenza eseguito",
-      "chk-step-6-3": "Interfaccia domotica verificata",
-      "title-step-7": "Matrice di Prontezza Operativa & Lancio",
-      "desc-step-7": "Riepilogo finale dei sistemi e sigillo crittografico di configurazione prima dell'attivazione dei moduli cognitivi.",
-      "chk-step-7-1": "Database e Bus verificati",
-      "chk-step-7-2": "Microfono e sintesi pronti",
-      "chk-step-7-3": "Sigillo crittografico apposto",
-      "iso-it": "Italiano (IT)",
-      "iso-en": "English (EN)",
-      "iso-es": "Español (ES)",
-      "iso-fr": "Français (FR)",
-      "iso-de": "Deutsch (DE)",
-      "banner-mic-alert": "MODALITÀ ISOLAMENTO ACUSTICO RICHIESTA",
-      "banner-mic-desc": "Mantieni il massimo silenzio nella stanza. Il sistema analizzerà il rumore ambientale per allineare guadagno, filtri e soglia vocale.",
-      "btn-start-mic": "Avvia Allineamento Microfono",
-      "mic-phase-silence": "FASE 1: Campionamento Silenzio (5s)...",
-      "mic-phase-dsp": "FASE 2: Allineamento DSP Hardware...",
-      "mic-phase-voice": "FASE 3: Parla normalmente al microfono...",
-      "mic-phase-done": "Allineamento Acustico Completato con Successo",
-      "mic-paused-alert": "Picco acustico rilevato: ristabilire il silenzio per riprendere l'allineamento.",
-      "lbl-assist-name": "Come vuoi chiamare il tuo Assistente?",
-      "lbl-quick-names": "Suggerimenti rapidi:",
-      "lbl-voice-preview": "Ascolta Presentazione Neurale",
-      "lbl-voice-female": "Voce Femminile (Sara)",
-      "lbl-voice-male": "Voce Maschile (Nicola)",
-      "lbl-test-1": "Test 1 · Voce Naturale: Dì «{name}»",
-      "lbl-test-2": "Test 2 · Chiamata Colloquiale: Dì «Ehi {name}»",
-      "lbl-test-3": "Test 3 · Chiamata a Distanza: Dì «Ok {name}»",
-      "lbl-owner-name": "Nome Proprietario",
-      "lbl-owner-last": "Cognome (Facoltativo)",
-      "btn-scan-face": "Avvia Scansione Mesh Facciale",
-      "lbl-cam-scan": "Scansione Flussi RTSP / ONVIF / USB",
-      "lbl-no-cam": "Nessuna telecamera richiesta: modalità solo vocale attiva.",
-      "btn-benchmark": "Esegui Benchmark Neurale",
-      "btn-back": "← Indietro",
-      "btn-recalibrate": "Ripeti Test / Ricalibra",
-      "btn-next": "Avanti →",
-      "btn-activate": "ATTIVA {name}",
-      "analytics-title": "LIVE ANALYTICS & HUD DIAGNOSTICO",
-      "analytics-stt-status": "Stato Modelli STT/TTS",
-      "analytics-clock-drift": "Offset Orologio NTP",
-      "analytics-nlu-coverage": "Copertura Intenti NLU",
-      "analytics-noise-floor": "Tappeto di Rumore (Noise Floor)",
-      "analytics-snr": "Rapporto Segnale/Rumore (SNR)",
-      "analytics-gain": "Guadagno Hardware DSP",
-      "analytics-purity": "Indice di Purezza Acustica",
-      "analytics-active-wake": "Wake-Word Primaria Attiva",
-      "analytics-aliases": "Vettore Fonetico Acquisito",
-      "analytics-wake-score": "Score Confidenza Riconoscimento",
-      "analytics-voice-dim": "Dimensione Vettore Vocale",
-      "analytics-liveness": "Liveness Check Visivo 3D",
-      "analytics-cams-found": "Dispositivi Ottici Rilevati",
-      "analytics-bandwidth": "Banda Video Complessiva",
-      "analytics-hw-info": "Telemetria Hardware Server",
-      "analytics-ttft": "Time-To-First-Token (TTFT)",
-      "analytics-tokens-sec": "Velocità Generazione Neurale",
-      "analytics-matrix-readiness": "Indice Prontezza Globale",
-      "orbit-badge-label": "SISTEMA OPERATIVO",
-      "wake-prompt-prefix": "Pronuncia",
-      "wake-prompt-suffix": "per sincronizzare l'orbita acustica",
-      "err-name-conflict": "Il nome del proprietario non può coincidere con il nome dell'assistente.",
-      "chk-hdr-status": "PREREQUISITI DI STATO",
-      "seal-security-desc": "Crittografia End-to-End & Isolamento Sandbox",
-      "lbl-shot-natural": "Naturale",
-      "lbl-shot-casual": "Colloquiale",
-      "lbl-shot-distant": "Distanza",
-      "lbl-face-active": "Mesh 3D: Attivo",
-      "lbl-cam-searching": "In ricerca flussi ottici sulla rete...",
-      "lbl-status-ready": "Pronto per la calibrazione",
-      "synapse-log-title": "STREAMING LOG SINAPTICO",
-      "btn-activate-system": "ATTIVA SISTEMA",
-      "lbl-ha-token": "Long-Lived Access Token",
-      "brain-50-fast": "5.0 Fast",
-      "brain-50-emp": "5.0 Empathetic",
-      "brain-60-pro": "6.0 Pro",
-      "brain-65-ultra": "6.5 Ultra",
-      "brain-65-auto": "6.5 Auto (Consigliato)",
-      "brain-sub-3": "3 rami paralleli",
-      "brain-sub-6": "6 rami + Limbico",
-      "brain-sub-8": "8 rami + MCTS 3",
-      "brain-sub-16": "16 rami + MCTS 5",
-      "brain-sub-dyn": "Adattamento dinamico"
-    },
-    en: {
-      "app-title": "HOLOGRAPHIC OPERATING PLATFORM · FIRST-BOOT SETUP",
-      "conn-online": "ONLINE (SSE/WS)",
-      "latency-label": "LATENCY",
-      "step-1-name": "Language",
-      "step-2-name": "Acoustics",
-      "step-3-name": "Identity",
-      "step-4-name": "Biometrics",
-      "step-5-name": "Cameras",
-      "step-6-name": "Brain",
-      "step-7-name": "Launch",
-      "badge-step-1": "STEP 01 · LANGUAGE MATRIX",
-      "badge-step-2": "STEP 02 · ACOUSTIC LAB",
-      "badge-step-3": "STEP 03 · IDENTITY GENESIS",
-      "badge-step-4": "STEP 04 · BIOMETRIC PROFILE",
-      "badge-step-5": "STEP 05 · SPATIAL TOPOLOGY",
-      "badge-step-6": "STEP 06 · CORTICAL ARCHITECTURE",
-      "badge-step-7": "STEP 07 · GLOBAL DIAGNOSTICS",
-      "title-step-1": "Language Matrix & Time Synchronization",
-      "desc-step-1": "Configure the primary system language, phonetic map, and atomic NTP clock synchronization.",
-      "chk-step-1-1": "Runtime localization ready",
-      "chk-step-1-2": "NTP atomic clock synchronized",
-      "chk-step-1-3": "Phonetic dictionary loaded",
-      "title-step-2": "DSP Alignment & Microphone Calibration",
-      "desc-step-2": "Measure ambient room noise, engage high-pass filter and adjust hardware microphone gain.",
-      "chk-step-2-1": "Silence sampling completed",
-      "chk-step-2-2": "80Hz High-pass filter engaged",
-      "chk-step-2-3": "Signal-to-noise ratio verified",
-      "title-step-3": "Identity Genesis & Wake-Word Training",
-      "desc-step-3": "Name your assistant, choose a neural voice, and train the wake detector with three voice samples.",
-      "chk-step-3-1": "Primary name assigned",
-      "chk-step-3-2": "Neural voice calibrated",
-      "chk-step-3-3": "Phonetic aliases recorded",
-      "title-step-4": "Voice DNA & 3D Facial Mesh",
-      "desc-step-4": "Register the primary owner biometric profile for persistent authorization and zero-trust control.",
-      "chk-step-4-1": "Anti-conflict verification passed",
-      "chk-step-4-2": "Voice embedding vector extracted",
-      "chk-step-4-3": "Facial liveness confirmed",
-      "title-step-5": "Optical Radar & Camera Topology",
-      "desc-step-5": "Automated discovery of RTSP, ONVIF and USB video sensors across rooms in your local network.",
-      "chk-step-5-1": "Subnet probing completed",
-      "chk-step-5-2": "Video streams linked",
-      "chk-step-5-3": "Room assignments configured",
-      "title-step-6": "Neural Brain Engine & Smart Home",
-      "desc-step-6": "Select the cortical topology suited for your hardware and run the Time-To-First-Token micro-benchmark.",
-      "chk-step-6-1": "VRAM and GPU profiled",
-      "chk-step-6-2": "Inference benchmark executed",
-      "chk-step-6-3": "Smart home bridge verified",
-      "title-step-7": "Operational Readiness Matrix & Launch",
-      "desc-step-7": "Final overview of all modules and cryptographic sealing before cognitive activation.",
-      "chk-step-7-1": "Database and Bus validated",
-      "chk-step-7-2": "Audio hardware operational",
-      "chk-step-7-3": "Cryptographic seal applied",
-      "iso-it": "Italiano (IT)",
-      "iso-en": "English (EN)",
-      "iso-es": "Español (ES)",
-      "iso-fr": "Français (FR)",
-      "iso-de": "Deutsch (DE)",
-      "banner-mic-alert": "ACOUSTIC ISOLATION MODE REQUIRED",
-      "banner-mic-desc": "Keep absolute silence in the room. The system will analyze background noise to align hardware gain and filters.",
-      "btn-start-mic": "Start Microphone Alignment",
-      "mic-phase-silence": "PHASE 1: Sampling Silence (5s)...",
-      "mic-phase-dsp": "PHASE 2: Hardware DSP Alignment...",
-      "mic-phase-voice": "PHASE 3: Speak normally into microphone...",
-      "mic-phase-done": "Acoustic Calibration Completed Successfully",
-      "mic-paused-alert": "Acoustic spike detected: restore silence to resume calibration.",
-      "lbl-assist-name": "What would you like to call your Assistant?",
-      "lbl-quick-names": "Quick suggestions:",
-      "lbl-voice-preview": "Listen to Neural Presentation",
-      "lbl-voice-female": "Female Voice (Sara/Heart)",
-      "lbl-voice-male": "Male Voice (Nicola/Michael)",
-      "lbl-test-1": "Test 1 · Natural Voice: Say \"{name}\"",
-      "lbl-test-2": "Test 2 · Casual Call: Say \"Hey {name}\"",
-      "lbl-test-3": "Test 3 · Distant Call: Say \"Ok {name}\"",
-      "lbl-owner-name": "Owner First Name",
-      "lbl-owner-last": "Owner Last Name (Optional)",
-      "btn-scan-face": "Start 3D Facial Mesh Scan",
-      "lbl-cam-scan": "RTSP / ONVIF / USB Streams Scan",
-      "lbl-no-cam": "No cameras required: voice-only mode active.",
-      "btn-benchmark": "Run Neural Benchmark",
-      "btn-back": "← Back",
-      "btn-recalibrate": "Repeat Test / Recalibrate",
-      "btn-next": "Next →",
-      "btn-activate": "ACTIVATE {name}",
-      "analytics-title": "LIVE ANALYTICS & DIAGNOSTIC HUD",
-      "analytics-stt-status": "STT/TTS Models Status",
-      "analytics-clock-drift": "NTP Clock Drift",
-      "analytics-nlu-coverage": "NLU Intent Coverage",
-      "analytics-noise-floor": "Ambient Noise Floor",
-      "analytics-snr": "Signal-to-Noise Ratio (SNR)",
-      "analytics-gain": "Hardware DSP Gain",
-      "analytics-purity": "Acoustic Purity Index",
-      "analytics-active-wake": "Active Primary Wake-Word",
-      "analytics-aliases": "Acquired Phonetic Vector",
-      "analytics-wake-score": "Recognition Confidence Score",
-      "analytics-voice-dim": "Voice Vector Dimension",
-      "analytics-liveness": "Visual 3D Liveness Check",
-      "analytics-cams-found": "Optical Devices Detected",
-      "analytics-bandwidth": "Total Video Bandwidth",
-      "analytics-hw-info": "Server Hardware Telemetry",
-      "analytics-ttft": "Time-To-First-Token (TTFT)",
-      "analytics-tokens-sec": "Neural Generation Speed",
-      "analytics-matrix-readiness": "Global Readiness Index",
-      "orbit-badge-label": "OPERATING SYSTEM",
-      "wake-prompt-prefix": "Say",
-      "wake-prompt-suffix": "to synchronize the acoustic orbit",
-      "err-name-conflict": "Owner name cannot match the assistant name.",
-      "chk-hdr-status": "STATE PREREQUISITES",
-      "seal-security-desc": "End-to-End Encryption & Sandbox Isolation",
-      "lbl-shot-natural": "Natural",
-      "lbl-shot-casual": "Casual",
-      "lbl-shot-distant": "Distant",
-      "lbl-face-active": "3D Mesh: Active",
-      "lbl-cam-searching": "Searching optical network streams...",
-      "lbl-status-ready": "Ready for calibration",
-      "synapse-log-title": "SYNAPTIC LOG STREAM",
-      "btn-activate-system": "ACTIVATE SYSTEM",
-      "lbl-ha-token": "Long-Lived Access Token",
-      "brain-50-fast": "5.0 Fast",
-      "brain-50-emp": "5.0 Empathetic",
-      "brain-60-pro": "6.0 Pro",
-      "brain-65-ultra": "6.5 Ultra",
-      "brain-65-auto": "6.5 Auto (Recommended)",
-      "brain-sub-3": "3 parallel branches",
-      "brain-sub-6": "6 branches + Limbic",
-      "brain-sub-8": "8 branches + MCTS 3",
-      "brain-sub-16": "16 branches + MCTS 5",
-      "brain-sub-dyn": "Dynamic adaptation"
-    }
-  };
-
   let activeLang = "it";
 
+  function getDict(lang) {
+    const dicts = window.SetupDict || {};
+    return dicts[lang] || dicts.it || {};
+  }
+
   function t(key, vars = {}) {
-    const dict = DICTIONARIES[activeLang] || DICTIONARIES["it"];
-    let text = dict[key] || DICTIONARIES["it"][key] || key;
+    const dict = getDict(activeLang);
+    const fallback = getDict("it");
+    let text = dict[key] !== undefined ? dict[key] : fallback[key] !== undefined ? fallback[key] : key;
     for (const [k, v] of Object.entries(vars)) {
       text = text.replaceAll(`{${k}}`, v);
     }
@@ -274,26 +19,36 @@
   }
 
   function applyLanguage(lang) {
-    if (DICTIONARIES[lang]) {
-      activeLang = lang;
-    } else {
-      activeLang = "it";
-    }
+    const dicts = window.SetupDict || {};
+    activeLang = dicts[lang] ? lang : "it";
     document.documentElement.lang = activeLang;
-    const elements = document.querySelectorAll("[data-i18n]");
-    elements.forEach((el) => {
+
+    try {
+      localStorage.setItem("nuxiva_ui_lang", activeLang);
+    } catch (_) {}
+
+    document.querySelectorAll("[data-i18n]").forEach((el) => {
       const key = el.getAttribute("data-i18n");
       if (key) {
-        el.textContent = t(key);
+        if (el.tagName === "TITLE") {
+          document.title = t(key);
+        } else {
+          el.textContent = t(key);
+        }
       }
     });
-    const placeholders = document.querySelectorAll("[data-i18n-ph]");
-    placeholders.forEach((el) => {
+
+    document.querySelectorAll("[data-i18n-ph]").forEach((el) => {
       const key = el.getAttribute("data-i18n-ph");
       if (key) {
         el.setAttribute("placeholder", t(key));
       }
     });
+
+    if (window.NuxivaI18n && typeof window.NuxivaI18n.setLanguage === "function") {
+      window.NuxivaI18n.setLanguage(activeLang).catch(() => {});
+    }
+
     window.dispatchEvent(new CustomEvent("setup-i18n-changed", { detail: { lang: activeLang } }));
   }
 
@@ -301,6 +56,6 @@
     t,
     applyLanguage,
     get current() { return activeLang; },
-    get supported() { return Object.keys(DICTIONARIES); }
+    get supported() { return ["it", "en", "es", "fr"]; }
   };
 })();
