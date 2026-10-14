@@ -223,6 +223,17 @@ class SoupTrainer:
             return self.engine._in_hours()
         return 2 <= datetime.now().hour < 6
 
+    async def consolidate_synapses(self) -> None:
+        try:
+            from features.brain.assignments import load_synaptic_weights, save_synaptic_weights
+            weights = load_synaptic_weights()
+            if weights:
+                reinforced = {k: round(min(2.5, v * 1.02), 3) for k, v in weights.items()}
+                save_synaptic_weights(reinforced)
+                store.event("INFO", f"Soup REM: consolidati {len(reinforced)} pesi sinaptici", "study")
+        except Exception:
+            pass
+
     async def run(self) -> None:
         await self.probe_gpu()
         await asyncio.sleep(120)
@@ -234,6 +245,7 @@ class SoupTrainer:
                     if (examples >= MIN_EXAMPLES
                             and examples - self.data.get("trained_examples", 0) >= MIN_NEW_EXAMPLES):
                         await self.train("notturno automatico")
+                        await self.consolidate_synapses()
             except Exception:
                 log.exception("Pianificazione Soup non riuscita")
             await asyncio.sleep(1800)

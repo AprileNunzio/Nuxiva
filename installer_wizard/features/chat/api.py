@@ -111,6 +111,11 @@ async def _core_call(query: str, device: str, speech_lang: dict, mode: str | Non
         return data
 
     try:
+        from loops import default_mode_network
+        default_mode_network.record_activity()
+    except Exception:
+        pass
+    try:
         return await brain_chain.ask(query, device, context, route, core_local)
     except brain_chain.NoBrainAvailable as exc:
         store.event("ERROR", f"Nessun cervello ha risposto: {exc}", "core")

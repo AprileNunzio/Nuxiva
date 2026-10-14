@@ -100,6 +100,14 @@ class PresenceFusion:
             snapshot = {"at": now, "people": sorted(people, key=lambda x: -x["probability"]), "context": dict(self.context)}
         if changed:
             self.publish("fusion.presence", snapshot, True)
+            try:
+                from features.chat.brain_chain import cortical_chain
+                avg_prob = sum(x["probability"] for x in people) / max(1, len(people)) if people else 0.0
+                sys_pressure = 0.2 if len(people) > 3 else 0.0
+                facial_val = (avg_prob - 0.5) * 1.5
+                cortical_chain.limbic.ingest_biometrics(system_pressure=sys_pressure, facial_valence=facial_val)
+            except Exception:
+                pass
         for slug in arrived:
             self.publish("fusion.arrival", {"slug": slug, "name": self.labels.get(slug, slug)}, False)
         for slug in left:

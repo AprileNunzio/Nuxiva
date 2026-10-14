@@ -8,10 +8,13 @@ from features.brain import brains as brains_module
 from features.brain import presets
 from features.brain.assignments import load_synaptic_weights, save_synaptic_weights
 from features.brain.components import LimbicModulator, SpikingNeuron, SpikingNeuronNode, SynapticSpike
-from features.chat.brain_chain import CorticalBrainChain
+from features.chat.brain_chain import CorticalBrainChain, cortical_chain
 from features.mind.scoring import compute_emotional_salience, score_memory_retention
 from features.people import people
+from features.scene.fusion import PresenceFusion
 from features.twin.simulator import predict_user_impact
+from features.vision.nightly import consolidate_synapses
+from loops import DefaultModeNetwork
 from nuxiva_bus import NuxivaBus
 
 
@@ -148,6 +151,31 @@ class ReasoningModesTest(unittest.IsolatedAsyncioTestCase):
         loaded = load_synaptic_weights(file_path=p)
         p.unlink(missing_ok=True)
         self.assertEqual(loaded.get("conversation:qwen2.5:1.5b"), 1.25)
+
+    def test_sensory_limbic_biometrics_binding(self):
+        fusion = PresenceFusion(publish=lambda t, p, r=False: None)
+        fusion.add("user_test", "face", 0.9, "User Test")
+        snapshot = fusion.step()
+        self.assertGreaterEqual(len(snapshot["people"]), 1)
+        self.assertGreater(cortical_chain.limbic.valence, -1.0)
+
+    async def test_default_mode_network_idle_cycle(self):
+        dmn = DefaultModeNetwork(idle_threshold_s=0.01)
+        dmn.last_interaction = 0.0
+        await dmn._cycle()
+        self.assertGreaterEqual(dmn.last_dmn_run, 0.0)
+
+    def test_rem_synaptic_consolidation(self):
+        with tempfile.NamedTemporaryFile(delete=False) as tf:
+            p = Path(tf.name)
+        save_synaptic_weights({"analytic_reasoner:qwen2.5:14b": 1.4}, file_path=p)
+        with patch("features.brain.assignments.load_synaptic_weights", return_value={"analytic_reasoner:qwen2.5:14b": 1.4}), \
+             patch("features.brain.assignments.save_synaptic_weights") as mock_save:
+            res = consolidate_synapses()
+            self.assertEqual(res["status"], "ok")
+            self.assertEqual(res["count"], 1)
+            mock_save.assert_called_once()
+        p.unlink(missing_ok=True)
 
 
 if __name__ == "__main__":

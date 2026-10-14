@@ -120,6 +120,22 @@ class PresenceMonitor:
                 if now - self.observed.get(p["slug"], 0) > 5:
                     self.observed[p["slug"]] = now
                     people.observe(p["slug"], p["name"], now)
+                    conf = float(p.get("confidence", 0.8))
+                    facial_valence = max(-1.0, min(1.0, (conf - 0.5) * 2.0))
+                    try:
+                        from nuxiva_bus import nuxiva_bus
+                        nuxiva_bus.publish(
+                            "biometrics.presence",
+                            {"slug": p["slug"], "name": p["name"], "facial_valence": facial_valence, "near": bool(p.get("near"))},
+                            origin="presence",
+                        )
+                    except Exception:
+                        pass
+                    try:
+                        from features.chat.brain_chain import cortical_chain
+                        cortical_chain.limbic.ingest_biometrics(facial_valence=facial_valence)
+                    except Exception:
+                        pass
 
         unknown_near = [p for p in stable if not p["known"] and p["near"]]
         newcomers = [p for p in arrivals if p.get("auto")]

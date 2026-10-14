@@ -131,6 +131,20 @@ def optimize_all() -> dict:
     return summary
 
 
+def consolidate_synapses() -> dict:
+    from features.brain.assignments import load_synaptic_weights, save_synaptic_weights
+    weights = load_synaptic_weights()
+    if not weights:
+        return {"status": "skipped", "count": 0}
+    consolidated = {}
+    for key, weight in weights.items():
+        decayed = max(0.1, min(2.5, 0.5 + (weight - 0.5) * 0.95))
+        consolidated[key] = round(decayed, 3)
+    save_synaptic_weights(consolidated)
+    store.event("INFO", f"Ciclo REM notturno: consolidamento di {len(consolidated)} connessioni sinaptiche completato", "brain")
+    return {"status": "ok", "count": len(consolidated)}
+
+
 class NightlyVisionOptimizer:
     def __init__(self) -> None:
         self.last_run_day = ""
@@ -145,6 +159,7 @@ class NightlyVisionOptimizer:
                 if now.hour == NIGHTLY_HOUR and now.minute >= NIGHTLY_MINUTE and self.last_run_day != today_str:
                     log.info("Esecuzione programmata: ottimizzazione notturna del riconoscimento facciale...")
                     await asyncio.to_thread(optimize_all)
+                    await asyncio.to_thread(consolidate_synapses)
                     self.last_run_day = today_str
             except Exception as exc:
                 log.warning("Eccezione durante il ciclo notturno di ottimizzazione: %s", exc)
