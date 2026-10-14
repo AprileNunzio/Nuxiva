@@ -78,6 +78,8 @@ from features.maps import api as maps_api
 from features.mind import api as mind_api
 from features.authz import api as authz_api
 from features.locale import api as locale_api
+from features.locale.colocated import api as i18n_bundle_api
+from features.locale.colocated import handlers as i18n_handlers
 from features.firewall import api as firewall_api
 from features.firewall.events import monitor as firewall_monitor
 from features.vpn import api as vpn_api
@@ -178,6 +180,7 @@ FEATURE_APIS = (
     mind_api,
     authz_api,
     locale_api,
+    i18n_bundle_api,
     firewall_api,
     vpn_api,
     places_api,
@@ -223,6 +226,7 @@ def build(admin: bool) -> FastAPI:
     title = "Nuxiva OS Admin" if admin else "Nuxiva OS"
     app = FastAPI(title=title, docs_url=None, redoc_url=None, openapi_url=None)
     body_errors.install(app)
+    i18n_handlers.install(app)
     if admin:
         pages.mount_static(app, "shared", "admin", "nexus")
     else:

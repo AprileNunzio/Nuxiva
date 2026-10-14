@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/cyber_alert",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Cyber Alert",
+    "status_ready": "Pronto",
+    "action_refresh": "Aggiorna",
+    "empty_message": "Nessun dato disponibile per questo widget."
+  }
+}

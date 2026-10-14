@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/sport_table",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Sport Table",
+    "status_ready": "Prêt",
+    "action_refresh": "Actualiser",
+    "empty_message": "Aucune donnée disponible pour ce widget."
+  }
+}

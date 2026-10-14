@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/ssh_sessions",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Ssh Sessions",
+    "status_ready": "Ready",
+    "action_refresh": "Refresh",
+    "empty_message": "No data available for this widget."
+  }
+}

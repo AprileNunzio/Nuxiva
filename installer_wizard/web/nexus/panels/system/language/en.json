@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "web/nexus/panels/system",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "System Panel",
+    "tab_logs": "Logs",
+    "tab_updates": "Updates",
+    "tab_packages": "Packages",
+    "action_check_updates": "Check for updates"
+  }
+}

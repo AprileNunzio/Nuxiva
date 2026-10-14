@@ -22,5 +22,38 @@
     "NUXIVA_CAMERAS_MOTION_COOLDOWN": "Pause entre deux alertes de mouvement",
     "NUXIVA_CAMERAS_PHOTOS_MAX": "Photos stockées par l'appareil photo",
     "NUXIVA_IR_AUTO": "Configurez vous-même l'émetteur infrarouge si l'image est dans l'obscurité"
+  },
+  "meta": {
+    "locale": "fr",
+    "scope": "features/cameras",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "tab.title": "Caméras",
+    "a11y.tabs": "Sections caméras",
+    "privacy.title": "Confidentialité — à lire avant d'enregistrer",
+    "privacy.body": "L'enregistrement est désactivé par défaut. Activez-le uniquement avec le consentement des personnes susceptibles d'être filmées ; les personnes présentes doivent pouvoir savoir que la caméra enregistre (voyant allumé). Les vidéos restent sur l'appareil pendant la durée de la boucle choisie, puis sont supprimées. La détection de mouvement compare uniquement la différence entre deux petites images et ne conserve rien.",
+    "privacy.analysis": "L'analyse automatique des vidéos (lecture labiale, reconnaissance du locuteur) n'est pas active.",
+    "tabs.live": "En direct",
+    "tabs.add": "Ajouter",
+    "tabs.archive": "Photos et clips",
+    "tabs.events": "Événements",
+    "tabs.devices": "Webcams et infrarouge",
+    "kind.local": "Webcam",
+    "kind.ip": "Réseau",
+    "kind.infrared": "Infrarouge",
+    "status.summary": "{{live}} sources vidéo · {{recording}} en enregistrement · {{motion}} avec alerte de mouvement",
+    "status.ffmpeg_missing": "ffmpeg non installé : nécessaire pour les caméras réseau",
+    "status.v4l_missing": "v4l-utils non installé : nécessaire pour les réglages de la webcam",
+    "card.no_image": "Aucune image",
+    "card.recording": "REC",
+    "badge.main": "utilisée par la vision",
+    "badge.motion": "mouvement",
+    "badge.hidden": "masquée",
+    "actions.view": "Agrandir",
+    "actions.photo": "Photo",
+    "actions.options": "Options",
+    "live.empty": "Aucune source. Branchez une webcam (elle est détectée automatiquement) ou utilisez « Ajouter » pour une caméra réseau.",
+    "toast.photo_saved": "Photo enregistrée ({{size}})"
   }
 }

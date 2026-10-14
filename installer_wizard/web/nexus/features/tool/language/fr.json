@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "web/nexus/features/tool",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Détail de l'outil",
+    "action_configure": "Configurer",
+    "action_test": "Tester l'outil",
+    "status_active": "Actif"
+  }
+}

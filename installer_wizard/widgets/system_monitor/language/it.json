@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/system_monitor",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "System Monitor",
+    "status_ready": "Pronto",
+    "action_refresh": "Aggiorna",
+    "empty_message": "Nessun dato disponibile per questo widget."
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/network_devices",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Network Devices",
+    "status_ready": "Ready",
+    "action_refresh": "Refresh",
+    "empty_message": "No data available for this widget."
+  }
+}

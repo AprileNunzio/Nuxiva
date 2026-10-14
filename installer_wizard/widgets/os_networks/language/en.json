@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/os_networks",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Os Networks",
+    "status_ready": "Ready",
+    "action_refresh": "Refresh",
+    "empty_message": "No data available for this widget."
+  }
+}

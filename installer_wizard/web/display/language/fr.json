@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "web/display",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Affichage Principal",
+    "avatar_listening": "À l'écoute...",
+    "avatar_speaking": "En train de parler...",
+    "panel_audio": "Panneau Audio",
+    "panel_tools": "Outils actifs"
+  }
+}

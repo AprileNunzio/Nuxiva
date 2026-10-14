@@ -35,4 +35,14 @@
 #tab-cameras .bio-line { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; align-items: center; }
 #tab-cameras .bio-dev { padding: 10px 0; border-bottom: 1px solid var(--line, #22303d); }
 #tab-cameras .bio-ir { width: 100%; max-height: 240px; object-fit: contain; border-radius: 10px; border: 1px solid var(--line, #22303d); background: #000; margin-top: 8px; }
-@media (max-width: 640px) { #tab-cameras .cam-grid { grid-template-columns: 1fr; } }
+#tab-cameras .cam-privacy { margin-bottom: 16px; }
+#tab-cameras .cam-privacy-title { display: flex; align-items: center; gap: 8px; }
+#tab-cameras .cam-privacy-body { display: flex; flex-direction: column; gap: 6px; }
+#tab-cameras .cam-status-line { display: block; }
+#tab-cameras .cam-badge-text { white-space: nowrap; }
+@media (max-width: 640px) {
+  #tab-cameras .cam-grid { grid-template-columns: 1fr; }
+  #tab-cameras .cam-tabs { flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch; padding-bottom: 4px; }
+  #tab-cameras .cam-tabs .btn { flex: 0 0 auto; min-height: 44px; scroll-snap-align: start; }
+  #tab-cameras .cam-actions .btn { flex: 1 1 auto; min-height: 44px; }
+}

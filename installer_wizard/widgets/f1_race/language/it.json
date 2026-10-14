@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/f1_race",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "F1 Race",
+    "status_ready": "Pronto",
+    "action_refresh": "Aggiorna",
+    "empty_message": "Nessun dato disponibile per questo widget."
+  }
+}

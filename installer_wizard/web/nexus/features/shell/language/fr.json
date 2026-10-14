@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "web/nexus/features/shell",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Nexus Shell",
+    "search_placeholder": "Rechercher des commandes ou outils...",
+    "status_online": "En ligne",
+    "status_offline": "Hors ligne"
+  }
+}

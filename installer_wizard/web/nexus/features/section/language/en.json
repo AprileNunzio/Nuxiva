@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "web/nexus/features/section",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Section Management",
+    "action_add": "New Section",
+    "action_remove": "Remove"
+  }
+}

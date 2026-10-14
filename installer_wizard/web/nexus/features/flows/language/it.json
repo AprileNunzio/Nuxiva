@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "web/nexus/features/flows",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Studio Flussi",
+    "action_run": "Esegui",
+    "action_save": "Salva bozza",
+    "action_clear": "Pulisci",
+    "bench_status": "Pronto"
+  }
+}

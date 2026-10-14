@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "web/nexus/features/home",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Home Overview",
+    "filter_all": "All",
+    "filter_favorites": "Favorites",
+    "empty_state": "No item configured"
+  }
+}

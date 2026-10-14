@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "web/nexus/features/zone",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Zone Setup",
+    "action_create_zone": "Create new zone",
+    "label_devices": "Associated devices"
+  }
+}

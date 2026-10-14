@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "web/nexus/features/flows",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Studio des Flux",
+    "action_run": "Exécuter",
+    "action_save": "Enregistrer le brouillon",
+    "action_clear": "Effacer",
+    "bench_status": "Prêt"
+  }
+}

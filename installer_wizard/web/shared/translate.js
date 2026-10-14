@@ -65,7 +65,7 @@
   }
 
   function skipped(el) {
-    return !el || SKIP.has(el.tagName) || (el.closest && el.closest("[data-no-i18n],[contenteditable=true]"));
+    return !el || SKIP.has(el.tagName) || (el.closest && el.closest("[data-no-i18n],[contenteditable=true],[data-i18n]"));
   }
 
   function textNode(node) {
@@ -86,7 +86,7 @@
   }
 
   function element(el) {
-    if (skipped(el)) return;
+    if (skipped(el) || el.hasAttribute("data-i18n-attr")) return;
     for (const name of ATTRS) {
       const value = el.getAttribute(name);
       if (value) localized(el, name, value, (next) => el.setAttribute(name, next));

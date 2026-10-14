@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/active_tasks",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Active Tasks",
+    "status_ready": "Ready",
+    "action_refresh": "Refresh",
+    "empty_message": "No data available for this widget."
+  }
+}

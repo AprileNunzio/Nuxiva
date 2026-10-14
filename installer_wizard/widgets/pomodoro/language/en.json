@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/pomodoro",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Pomodoro",
+    "status_ready": "Ready",
+    "action_refresh": "Refresh",
+    "empty_message": "No data available for this widget."
+  }
+}

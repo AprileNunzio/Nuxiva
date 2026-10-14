@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/home_rooms",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Home Rooms",
+    "status_ready": "Ready",
+    "action_refresh": "Refresh",
+    "empty_message": "No data available for this widget."
+  }
+}

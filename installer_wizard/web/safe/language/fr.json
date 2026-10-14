@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "web/safe",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Mode Sans Échec",
+    "status_checking": "Vérification de l'intégrité du système en cours",
+    "diagnostics": "Diagnostics de récupération",
+    "action_retry": "Réessayer la vérification",
+    "action_reboot": "Redémarrer le système"
+  }
+}

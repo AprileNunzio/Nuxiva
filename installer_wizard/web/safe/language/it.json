@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "web/safe",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Modalità Sicura",
+    "status_checking": "Verifica integrità di sistema in corso",
+    "diagnostics": "Diagnostica di ripristino",
+    "action_retry": "Riprova verifica",
+    "action_reboot": "Riavvia sistema"
+  }
+}

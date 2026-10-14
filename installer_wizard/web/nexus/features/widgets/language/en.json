@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "web/nexus/features/widgets",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Widget Gallery",
+    "action_add_to_desk": "Add to desk",
+    "filter_category": "Category"
+  }
+}

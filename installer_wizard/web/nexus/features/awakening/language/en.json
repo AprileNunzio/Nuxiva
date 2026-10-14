@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "web/nexus/features/awakening",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "System Awakening",
+    "step_language": "Language",
+    "step_brain": "Brain",
+    "step_senses": "Senses",
+    "step_home": "Home",
+    "step_trust": "Trust"
+  }
+}

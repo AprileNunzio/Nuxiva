@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "skills/finanza/percentuali",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Pourcentages",
+    "desc": "Variation en pourcentage, remises et majorations",
+    "error_number": "Nombre non valide",
+    "result_pct": "Résultat: {{pct}}%"
+  }
+}

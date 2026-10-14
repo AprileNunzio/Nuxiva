@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "web/nexus/features/login",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Nexus Login",
+    "btn_login": "Sign In",
+    "placeholder_user": "Username",
+    "placeholder_password": "Password",
+    "error_invalid": "Invalid credentials"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/clipboard_sync",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Clipboard Sync",
+    "status_ready": "Pronto",
+    "action_refresh": "Aggiorna",
+    "empty_message": "Nessun dato disponibile per questo widget."
+  }
+}

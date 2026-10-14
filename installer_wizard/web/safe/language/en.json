@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "web/safe",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Safe Mode",
+    "status_checking": "System integrity check in progress",
+    "diagnostics": "Recovery diagnostics",
+    "action_retry": "Retry check",
+    "action_reboot": "Reboot system"
+  }
+}

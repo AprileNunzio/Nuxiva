@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "web/screen",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Écran Satellite",
+    "screen_name": "ÉCRAN",
+    "idle_hint": "Faites glisser un widget ici depuis le bord de l'autre écran, ou demandez à Nuxiva de le déplacer.",
+    "link_lost": "Reconnexion au superviseur"
+  }
+}
