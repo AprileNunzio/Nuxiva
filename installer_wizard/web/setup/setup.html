@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="referrer" content="no-referrer">
-<title data-i18n="app-title">PIATTAFORMA OPERATIVA OLOGRAFICA · FIRST-BOOT SETUP</title>
+<title data-i18n="app-title"></title>
 <link rel="stylesheet" href="/static/shared/nuxiva.css">
 <link rel="stylesheet" href="/static/setup/setup_base.css">
 <link rel="stylesheet" href="/static/setup/setup_layout.css">
@@ -21,17 +21,17 @@
       <span class="hud-sub-badge">OS 6.5</span>
     </div>
 
-    <nav class="hud-stepper" id="hud-stepper" aria-label="Step Navigation">
+    <nav class="hud-stepper" id="hud-stepper">
       <ol class="stepper-nodes" id="stepper-track"></ol>
     </nav>
 
     <div class="hud-top-telemetry">
       <div class="hud-tele-pill" id="conn-pill">
         <span class="tele-dot online"></span>
-        <span class="tele-txt" data-i18n="conn-online">ONLINE (SSE/WS)</span>
+        <span class="tele-txt" data-i18n="conn-online"></span>
       </div>
       <div class="hud-tele-pill">
-        <span class="tele-label" data-i18n="latency-label">LATENZA</span>
+        <span class="tele-label" data-i18n="latency-label"></span>
         <b class="tele-val" id="tele-ping">12 ms</b>
       </div>
       <div class="hud-lang-picker" id="hud-lang-picker">
@@ -46,12 +46,12 @@
   <div class="hud-main-grid" id="hud-main">
     <aside class="hud-quadrant quadrant-left" id="quad-left">
       <div class="q-card q-guide">
-        <div class="hud-sec-badge" id="guide-badge">STEP 01</div>
-        <h1 class="hud-title" id="guide-title">Caricamento...</h1>
-        <p class="hud-lead" id="guide-desc">Inizializzazione sottosistemi...</p>
+        <div class="hud-sec-badge" id="guide-badge"></div>
+        <h1 class="hud-title" id="guide-title"></h1>
+        <p class="hud-lead" id="guide-desc"></p>
         
         <div class="hud-checklist-wrap">
-          <span class="chk-hdr">PREREQUISITI DI STATO</span>
+          <span class="chk-hdr" data-i18n="chk-hdr-status"></span>
           <ul class="hud-checklist" id="guide-checklist"></ul>
         </div>
 
@@ -59,7 +59,7 @@
           <span class="seal-icon">🛡️</span>
           <div class="seal-meta">
             <b>ZERO-TRUST SUBSYSTEM</b>
-            <small>Crittografia End-to-End & Isolamento Sandbox</small>
+            <small data-i18n="seal-security-desc"></small>
           </div>
         </div>
       </div>
@@ -71,7 +71,7 @@
           <div class="map-grid-lines"></div>
           <div class="tz-ping" id="tz-ping" style="top:38%; left:52%;">
             <span class="ping-circle"></span>
-            <span class="tz-label" id="lbl-detected-tz">Europe/Rome (NTP ±0.4ms)</span>
+            <span class="tz-label" id="lbl-detected-tz"></span>
           </div>
         </div>
         <div class="lang-matrix-grid" id="lang-cards"></div>
@@ -81,8 +81,8 @@
         <div class="hud-banner-alert" id="banner-mic">
           <span class="banner-icon">⚠️</span>
           <div>
-            <b data-i18n="banner-mic-alert">MODALITÀ ISOLAMENTO ACUSTICO RICHIESTA</b>
-            <p data-i18n="banner-mic-desc">Mantieni il massimo silenzio nella stanza.</p>
+            <b data-i18n="banner-mic-alert"></b>
+            <p data-i18n="banner-mic-desc"></p>
           </div>
         </div>
         <div class="canvas-viewport">
@@ -91,35 +91,35 @@
         <div class="mic-stage-controls">
           <button type="button" class="hud-btn-primary glow" id="btn-start-mic-cal">
             <span class="btn-dot"></span>
-            <span data-i18n="btn-start-mic">Avvia Allineamento Microfono</span>
+            <span data-i18n="btn-start-mic"></span>
           </button>
-          <div class="mic-phase-status" id="mic-phase-msg">In attesa di avvio</div>
+          <div class="mic-phase-status" id="mic-phase-msg"></div>
         </div>
       </div>
 
       <div class="stage-screen" data-step="3" id="screen-3" hidden>
         <div class="orbit-header">
-          <span class="orbit-badge" id="orbit-assistant-title">SISTEMA OPERATIVO: ARIA</span>
+          <span class="orbit-badge" id="orbit-assistant-title"></span>
         </div>
         <div class="naming-input-group">
-          <label class="hud-input-label" data-i18n="lbl-assist-name">Come vuoi chiamare il tuo Assistente?</label>
+          <label class="hud-input-label" data-i18n="lbl-assist-name"></label>
           <div class="name-chips" id="quick-name-chips"></div>
-          <input type="text" class="hud-text-input" id="input-assistant-name" maxlength="32" value="Aria" autocomplete="off">
+          <input type="text" class="hud-text-input" id="input-assistant-name" maxlength="32" autocomplete="off">
         </div>
         <div class="voice-timbre-picker">
           <div class="voice-cards-row" id="voice-cards"></div>
           <button type="button" class="hud-btn-ghost" id="btn-voice-preview">
             <span>🔊</span>
-            <span data-i18n="lbl-voice-preview">Ascolta Presentazione Neurale</span>
+            <span data-i18n="lbl-voice-preview"></span>
           </button>
         </div>
         <div class="wake-rings-chamber">
           <div class="rings-row">
-            <div class="chamber-ring" id="ring-1" data-shot="1"><span class="r-num">1</span><small>Naturale</small></div>
-            <div class="chamber-ring" id="ring-2" data-shot="2"><span class="r-num">2</span><small>Colloquiale</small></div>
-            <div class="chamber-ring" id="ring-3" data-shot="3"><span class="r-num">3</span><small>Distanza</small></div>
+            <div class="chamber-ring" id="ring-1" data-shot="1"><span class="r-num">1</span><small data-i18n="lbl-shot-natural"></small></div>
+            <div class="chamber-ring" id="ring-2" data-shot="2"><span class="r-num">2</span><small data-i18n="lbl-shot-casual"></small></div>
+            <div class="chamber-ring" id="ring-3" data-shot="3"><span class="r-num">3</span><small data-i18n="lbl-shot-distant"></small></div>
           </div>
-          <div class="ring-prompt-banner" id="ring-prompt-txt">Dì «Aria» con voce chiara</div>
+          <div class="ring-prompt-banner" id="ring-prompt-txt"></div>
         </div>
       </div>
 
@@ -129,8 +129,8 @@
             <span class="split-tag">DNA VOCALE (128-DIM)</span>
             <canvas id="canvas-voiceprint" width="280" height="200"></canvas>
             <div class="owner-inputs">
-              <input type="text" class="hud-text-input" id="owner-first-input" data-i18n-ph="lbl-owner-name" placeholder="Nome">
-              <input type="text" class="hud-text-input" id="owner-last-input" data-i18n-ph="lbl-owner-last" placeholder="Cognome">
+              <input type="text" class="hud-text-input" id="owner-first-input" data-i18n-ph="lbl-owner-name">
+              <input type="text" class="hud-text-input" id="owner-last-input" data-i18n-ph="lbl-owner-last">
             </div>
           </div>
           <div class="bio-col">
@@ -138,9 +138,9 @@
             <div class="face-viewfinder">
               <div class="reticle-box"></div>
               <span class="viewfinder-scan-line"></span>
-              <span class="viewfinder-status" id="face-liveness-val">Mesh 3D: Attivo</span>
+              <span class="viewfinder-status" id="face-liveness-val"></span>
             </div>
-            <button type="button" class="hud-btn-ghost" id="btn-trigger-face" data-i18n="btn-scan-face">Scansiona Mesh</button>
+            <button type="button" class="hud-btn-ghost" id="btn-trigger-face" data-i18n="btn-scan-face"></button>
           </div>
         </div>
       </div>
@@ -152,8 +152,8 @@
             <span class="radar-core-blip"></span>
           </div>
           <div class="radar-text-info">
-            <b data-i18n="lbl-cam-scan">Scansione Flussi RTSP / ONVIF / USB</b>
-            <small id="cams-count-text">In ricerca flussi ottici sulla rete...</small>
+            <b data-i18n="lbl-cam-scan"></b>
+            <small id="cams-count-text"></small>
           </div>
         </div>
         <div class="cam-matrix-grid" id="cam-matrix"></div>
@@ -171,7 +171,7 @@
           </div>
           <div class="ha-inputs">
             <input type="text" class="hud-text-input" id="ha-url-in" placeholder="http://homeassistant.local:8123">
-            <input type="password" class="hud-text-input" id="ha-token-in" placeholder="Long-Lived Access Token">
+            <input type="password" class="hud-text-input" id="ha-token-in" data-i18n-ph="lbl-ha-token">
           </div>
         </div>
       </div>
@@ -181,7 +181,7 @@
         <div class="final-launch-zone">
           <button type="button" class="hud-btn-launch" id="btn-final-launch">
             <span class="launch-halo"></span>
-            <b id="launch-btn-label">ATTIVA SISTEMA</b>
+            <b id="launch-btn-label"></b>
           </button>
           <div class="synaptic-test-bars" id="selftest-bars"></div>
         </div>
@@ -190,11 +190,11 @@
 
     <aside class="hud-quadrant quadrant-right" id="quad-right">
       <div class="q-card q-analytics">
-        <div class="hud-sec-badge" data-i18n="analytics-title">LIVE ANALYTICS & HUD DIAGNOSTICO</div>
+        <div class="hud-sec-badge" data-i18n="analytics-title"></div>
         <div class="analytics-metrics-list" id="analytics-list"></div>
         <div class="streaming-synapse-log" id="synapse-log-box">
-          <span class="log-title">STREAMING LOG SINAPTICO</span>
-          <pre class="log-pre" id="synapse-log-stream">[CORE] Inizializzazione bus neurale...</pre>
+          <span class="log-title" data-i18n="synapse-log-title"></span>
+          <pre class="log-pre" id="synapse-log-stream"></pre>
         </div>
       </div>
     </aside>
@@ -202,17 +202,17 @@
 
   <footer class="hud-bottom-bar" id="hud-bottom">
     <div class="bar-col left">
-      <button type="button" class="hud-nav-btn secondary" id="btn-back" data-i18n="btn-back">← Indietro</button>
+      <button type="button" class="hud-nav-btn secondary" id="btn-back" data-i18n="btn-back"></button>
     </div>
     <div class="bar-col center">
       <div class="status-indicator-bar" id="bottom-status-wrap">
         <span class="status-bullet"></span>
-        <span class="status-msg" id="bottom-status-msg">Pronto per la calibrazione</span>
+        <span class="status-msg" id="bottom-status-msg" data-i18n="lbl-status-ready"></span>
       </div>
-      <button type="button" class="hud-nav-btn small ghost" id="btn-recalibrate" data-i18n="btn-recalibrate">Ripeti Test</button>
+      <button type="button" class="hud-nav-btn small ghost" id="btn-recalibrate" data-i18n="btn-recalibrate"></button>
     </div>
     <div class="bar-col right">
-      <button type="button" class="hud-nav-btn primary glow" id="btn-next" data-i18n="btn-next">Avanti →</button>
+      <button type="button" class="hud-nav-btn primary glow" id="btn-next" data-i18n="btn-next"></button>
     </div>
   </footer>
 </div>

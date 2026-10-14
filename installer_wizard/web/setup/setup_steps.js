@@ -56,7 +56,7 @@
           if (ctx.visualizers.osc) {
             ctx.visualizers.osc.update(d.fft_bins, (d.vad_probability || 0.28));
           }
-          $("bottom-status-msg").textContent = `RMS: ${d.rms_db} dB | SNR: +${d.snr_db} dB`;
+          $("bottom-status-msg").textContent = ["RMS:", `${d.rms_db}dB`, "| SNR:", `+${d.snr_db}dB`].join(" ");
           if (d.paused) {
             $("mic-phase-msg").textContent = window.SetupI18n.t("mic-paused-alert");
           } else if (d.calibration_phase === "dsp") {
@@ -215,15 +215,15 @@
             <small style="color:#7fa4bf">${d.type} · ${d.resolution} · ${d.fps}fps</small>
           </div>
           <select class="hud-text-input" style="width:110px; padding:4px 8px; font-size:0.75rem">
-            <option>Area 1</option>
-            <option>Area 2</option>
-            <option>Area 3</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
           </select>
         `;
         matrix.appendChild(card);
       });
       const cCount = $("cams-count-text");
-      if (cCount) cCount.textContent = `${data.count} · ${data.total_bandwidth_mbps} Mbps`;
+      if (cCount) cCount.textContent = [data.count, "·", data.total_bandwidth_mbps, "Mb/s"].join(" ");
       renderAnalytics(5);
     }).catch(() => {});
   }
@@ -239,16 +239,16 @@
     if (!presetsBox) return;
     presetsBox.innerHTML = "";
     const list = [
-      { id: "nuxiva-5.0-veloce", name: "5.0 Fast", sub: "3 rami" },
-      { id: "nuxiva-5.0-empatico", name: "5.0 Empathetic", sub: "6 rami" },
-      { id: "nuxiva-6.0-pro", name: "6.0 Pro", sub: "8 rami" },
-      { id: "nuxiva-6.5-ultra", name: "6.5 Ultra", sub: "16 rami" },
-      { id: "nuxiva-6.5-auto", name: "6.5 Auto", sub: "Dinamico" }
+      { id: "nuxiva-5.0-veloce", nameKey: "brain-50-fast", subKey: "brain-sub-3" },
+      { id: "nuxiva-5.0-empatico", nameKey: "brain-50-emp", subKey: "brain-sub-6" },
+      { id: "nuxiva-6.0-pro", nameKey: "brain-60-pro", subKey: "brain-sub-8" },
+      { id: "nuxiva-6.5-ultra", nameKey: "brain-65-ultra", subKey: "brain-sub-16" },
+      { id: "nuxiva-6.5-auto", nameKey: "brain-65-auto", subKey: "brain-sub-dyn" }
     ];
     list.forEach((p) => {
       const card = document.createElement("div");
       card.className = `brain-card ${session.config.brain_preset === p.id ? "active" : ""}`;
-      card.innerHTML = `<b>${p.name}</b><br><small style="color:#7fa4bf">${p.sub}</small>`;
+      card.innerHTML = `<b>${window.SetupI18n.t(p.nameKey)}</b><br><small style="color:#7fa4bf">${window.SetupI18n.t(p.subKey)}</small>`;
       card.addEventListener("click", () => {
         session.config.brain_preset = p.id;
         if (ctx.visualizers.neural) ctx.visualizers.neural.setPreset(p.id);
@@ -270,22 +270,22 @@
     if (!matrix) return;
     matrix.innerHTML = "";
     const modules = [
-      { step: 1, name: "Lingua & Fuso", val: session.config.locale },
-      { step: 2, name: "Calibrazione Acustica", val: `${session.config.mic_noise_floor_db} dBFS` },
-      { step: 3, name: "Identità & Risveglio", val: session.config.assistant_name },
-      { step: 4, name: "Proprietario & Bio", val: session.config.owner_name || "OK" },
-      { step: 5, name: "Topologia Camere", val: `${(session.config.cameras || []).length || 1} Cam` },
-      { step: 6, name: "Cervello Neurale", val: session.config.brain_preset }
+      { step: 1, key: "step-1-name", val: session.config.locale },
+      { step: 2, key: "step-2-name", val: `${session.config.mic_noise_floor_db} dBFS` },
+      { step: 3, key: "step-3-name", val: session.config.assistant_name },
+      { step: 4, key: "step-4-name", val: session.config.owner_name || "OK" },
+      { step: 5, key: "step-5-name", val: `${(session.config.cameras || []).length || 1}` },
+      { step: 6, key: "step-6-name", val: session.config.brain_preset }
     ];
     modules.forEach((m) => {
       const card = document.createElement("div");
       card.className = "ready-summary-card";
       card.innerHTML = `
         <div>
-          <b style="color:#ffffff">${m.name}</b><br>
+          <b style="color:#ffffff">${window.SetupI18n.t(m.key)}</b><br>
           <small style="color:var(--cyan)">${m.val}</small>
         </div>
-        <button type="button" class="hud-btn-ghost" style="padding:4px 8px; font-size:0.72rem">Step ${m.step}</button>
+        <button type="button" class="hud-btn-ghost" style="padding:4px 8px; font-size:0.72rem">${m.step}</button>
       `;
       card.querySelector("button").onclick = () => goToStep(m.step);
       matrix.appendChild(card);

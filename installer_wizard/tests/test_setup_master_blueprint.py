@@ -1,7 +1,5 @@
-import asyncio
 import os
 import unittest
-from pathlib import Path
 from unittest import mock
 from fastapi.testclient import TestClient
 
@@ -10,7 +8,6 @@ import setup_api
 from setup_session import session_manager
 from features.ear import learner as learner_module
 from features.chat import speaker
-from config import read_env, write_env
 
 HEADERS = {"X-Nuxiva-Request": "1"}
 

@@ -1,9 +1,7 @@
-import json
 import time
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import JSONResponse
 from access import NO_CACHE
-from config import DEMO, read_env
 from setup_session import session_manager
 from setup_telemetry import telemetry_routes
 import setup_owner
@@ -37,7 +35,7 @@ async def update_setup_session(request: Request):
     step = int(body.get("step", session_manager.current_step))
     updates = body.get("updates", {})
     if not isinstance(updates, dict):
-        raise HTTPException(400, "Updates must be a dictionary")
+        raise HTTPException(400, "Gli aggiornamenti devono essere un dizionario")
     try:
         updated = session_manager.update_config(step, updates)
     except Exception as e:
@@ -76,7 +74,6 @@ async def finalize_setup(request: Request):
         env_updates["NUXIVA_USER_NAME"] = owner_name
         setup_owner.register_owner(owner_name, owner_last, env_updates["NUXIVA_UI_LANG"], env_updates["NUXIVA_UI_LANG"])
     await apply_config(env_updates, "master blueprint setup wizard")
-    from state import store
     import setup_api
     setup_api._mark_done("master blueprint setup wizard")
     try:

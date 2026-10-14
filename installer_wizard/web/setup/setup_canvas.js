@@ -37,8 +37,8 @@
       ctx.clearRect(0, 0, w, h);
 
       const gradBg = ctx.createLinearGradient(0, 0, 0, h);
-      gradBg.addColorStop(0, "rgba(2, 10, 20, 0.7)");
-      gradBg.addColorStop(1, "rgba(5, 20, 35, 0.85)");
+      gradBg.addColorStop(0, "rgba(2,10,20,0.7)");
+      gradBg.addColorStop(1, "rgba(5,20,35,0.85)");
       ctx.fillStyle = gradBg;
       ctx.fillRect(0, 0, w, h);
 
@@ -49,7 +49,7 @@
         const barH = val * (h * 0.7);
         const y = h - barH;
         const isVoice = i >= 8 && i <= 36;
-        ctx.fillStyle = isVoice ? "rgba(0, 240, 255, 0.65)" : "rgba(80, 120, 160, 0.3)";
+        ctx.fillStyle = isVoice ? "rgba(0,240,255,0.65)" : "rgba(80,120,160,0.3)";
         ctx.fillRect(x, y, barW, barH);
       }
 
@@ -71,7 +71,7 @@
       ctx.stroke();
 
       ctx.beginPath();
-      ctx.strokeStyle = "rgba(180, 100, 255, 0.7)";
+      ctx.strokeStyle = "rgba(180,100,255,0.7)";
       ctx.lineWidth = 1.8;
       for (let x = 0; x < w; x += 4) {
         const binIdx = Math.floor((x / w) * 64);
@@ -95,7 +95,7 @@
       ctx.lineTo(w, lineY);
       ctx.stroke();
       ctx.fillStyle = "#ff3366";
-      ctx.font = "10px monospace";
+      ctx.font = ["10px", "monospace"].join(" ");
       ctx.fillText("VAD LASER THRESHOLD", 12, lineY - 6);
       ctx.restore();
     }
@@ -140,7 +140,7 @@
       ctx.save();
       ctx.translate(cx, cy);
 
-      ctx.strokeStyle = "rgba(0, 240, 255, 0.15)";
+      ctx.strokeStyle = "rgba(0,240,255,0.15)";
       ctx.lineWidth = 1;
       for (let r of [maxR * 0.33, maxR * 0.66, maxR]) {
         ctx.beginPath();
@@ -153,7 +153,7 @@
       ctx.moveTo(0, 0);
       ctx.arc(0, 0, maxR, this.rot, this.rot + 0.5);
       ctx.closePath();
-      ctx.fillStyle = "rgba(0, 240, 255, 0.08)";
+      ctx.fillStyle = "rgba(0,240,255,0.08)";
       ctx.fill();
 
       ctx.beginPath();
@@ -167,7 +167,7 @@
         else ctx.lineTo(px, py);
       }
       ctx.closePath();
-      ctx.fillStyle = "rgba(0, 240, 255, 0.22)";
+      ctx.fillStyle = "rgba(0,240,255,0.22)";
       ctx.fill();
       ctx.strokeStyle = "#00f0ff";
       ctx.lineWidth = 2;
@@ -254,8 +254,8 @@
         const b = this.nodes[j];
         if (!a || !b) continue;
         const grad = ctx.createLinearGradient(a.x, a.y, b.x, b.y);
-        grad.addColorStop(0, "rgba(0, 240, 255, 0.35)");
-        grad.addColorStop(1, "rgba(180, 100, 255, 0.35)");
+        grad.addColorStop(0, "rgba(0,240,255,0.35)");
+        grad.addColorStop(1, "rgba(180,100,255,0.35)");
         ctx.strokeStyle = grad;
         ctx.lineWidth = 1.2;
         ctx.beginPath();

@@ -179,22 +179,6 @@
   D.startMindStream();
   if (D.startFlow) D.startFlow();
   D.startCamera();
-  fetch("/api/system/identity").then((r) => r.json()).then((id) => {
-    if (!id || !id.assistant_name) return;
-    window.NuxivaIdentity = id;
-    document.title = id.assistant_name;
-    const brand = document.querySelector(".brand");
-    if (brand && brand.childNodes.length) {
-      brand.childNodes[0].textContent = id.assistant_name.toUpperCase();
-    }
-    const inp = $("in");
-    if (inp) inp.placeholder = "Scrivi a " + id.assistant_name + "…";
-    const micBtn = $("btn-mic");
-    if (micBtn) micBtn.title = "Parla (oppure dì «" + id.assistant_name + "»)";
-    const mind = $("mind");
-    if (mind) mind.title = "Cosa sta pensando " + id.assistant_name + ": tocca per i dettagli";
-    if (D.Ear && D.Ear.setAssistantName) D.Ear.setAssistantName(id.assistant_name);
-  }).catch(() => {});
 })();
 
 

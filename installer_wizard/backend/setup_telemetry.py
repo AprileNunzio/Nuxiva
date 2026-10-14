@@ -3,9 +3,9 @@ import json
 import math
 import random
 import time
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse, StreamingResponse
-from access import NO_CACHE, require_admin
+from access import NO_CACHE
 import sysinfo
 
 telemetry_routes = APIRouter()
@@ -23,7 +23,6 @@ active_calibration = {
 @telemetry_routes.get("/api/ear/calibration-stream")
 async def calibration_stream(request: Request):
     async def event_generator():
-        t0 = time.time()
         silence_accum = 0.0
         voice_accum = 0.0
         phase = "silence"

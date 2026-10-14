@@ -103,7 +103,7 @@ def judge(text: str, device: str) -> Verdict:
     if _others_named(text):
         score -= 0.6
         reasons.append("parla con un'altra persona")
-    if THIRD_PERSON.search(text):
+    if third_re.search(text):
         score -= 0.3
         reasons.append("parla di me in terza persona")
     if not alone and not facing:

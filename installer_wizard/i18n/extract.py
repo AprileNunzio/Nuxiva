@@ -35,7 +35,8 @@ def normal(text: str) -> str:
 LABEL_WORD = re.compile(r"^[A-ZÀ-Ý][a-zà-ÿ]{2,}$")
 SKIP_WORDS = {"Nuxiva", "Telegram", "Spotify", "Google", "Ollama", "Chromecast", "Bluetooth", "Docker", "Kokoro", "Piper", "Samba",
               "Linux", "Windows", "Moonraker", "Klipper", "Whisper", "Deepgram", "Groq", "Gemini", "Claude", "Auto", "Maps", "Home",
-              "Display", "Desktop", "Shazam", "Subsonic", "Thermostat", "Spectrum", "Clipboard", "Tasks", "Containers", "Temperature"}
+              "Display", "Desktop", "Shazam", "Subsonic", "Thermostat", "Spectrum", "Clipboard", "Tasks", "Containers", "Temperature",
+              "Aria", "Atlas", "Athena", "Orion", "Venerdi"}
 
 
 def visible(text: str) -> bool:

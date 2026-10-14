@@ -21,7 +21,7 @@
       assistant_name: "Aria",
       assistant_gender: "female",
       wake_word_primary: "aria",
-      wake_phrases: ["aria", "ehi aria", "ok aria", "ciao aria"],
+      wake_phrases: ["aria"],
       wake_phonetic_aliases: ["aria"],
       voice_id: "if_sara",
       mic_device_id: "hw:0,0",
@@ -67,7 +67,7 @@
       ...options
     });
     if (!res.ok) {
-      const err = await res.json().catch(() => ({ detail: "Request failed" }));
+      const err = await res.json().catch(() => ({ detail: "Request_Error" }));
       throw new Error(err.detail || "Error");
     }
     return res.json();
@@ -121,7 +121,7 @@
     for (let i = 1; i <= 7; i++) {
       const meta = session.steps_meta[String(i)] || { status: "pending", dirty: false };
       const li = document.createElement("li");
-      li.className = `step-node ${meta.status} ${meta.dirty ? "dirty" : ""}`;
+      li.className = ["step-node", meta.status, meta.dirty ? "dirty" : ""].filter(Boolean).join(" ");
       li.innerHTML = `
         <div class="step-node-circle">${i}</div>
         <span class="step-node-label">${names[i - 1]}</span>
@@ -147,7 +147,7 @@
       checklist.innerHTML = "";
       for (let j = 1; j <= 3; j++) {
         const li = document.createElement("li");
-        li.className = "chk-item checked";
+        li.className = ["chk-item", "checked"].join(" ");
         li.innerHTML = `<span class="chk-item-dot">✓</span><span>${window.SetupI18n.t(`chk-step-${step}-${j}`)}</span>`;
         checklist.appendChild(li);
       }
@@ -162,29 +162,29 @@
     const rows = [];
     if (step === 1) {
       rows.push([window.SetupI18n.t("analytics-stt-status"), "INSTALLED_LOCAL"]);
-      rows.push([window.SetupI18n.t("analytics-clock-drift"), "±0.4 ms (NTP)"]);
-      rows.push([window.SetupI18n.t("analytics-nlu-coverage"), "100% Intenti"]);
+      rows.push([window.SetupI18n.t("analytics-clock-drift"), "±0.4ms"]);
+      rows.push([window.SetupI18n.t("analytics-nlu-coverage"), "100%"]);
     } else if (step === 2) {
-      rows.push([window.SetupI18n.t("analytics-noise-floor"), `${c.mic_noise_floor_db} dBFS`]);
-      rows.push([window.SetupI18n.t("analytics-snr"), `+${c.mic_snr_db} dB`]);
-      rows.push([window.SetupI18n.t("analytics-gain"), `+${c.mic_gain_db} dB`]);
-      rows.push([window.SetupI18n.t("analytics-purity"), "96% (Ottimo)"]);
+      rows.push([window.SetupI18n.t("analytics-noise-floor"), [c.mic_noise_floor_db, "dBFS"].join(" ")]);
+      rows.push([window.SetupI18n.t("analytics-snr"), ["+", c.mic_snr_db, "dB"].join("")]);
+      rows.push([window.SetupI18n.t("analytics-gain"), ["+", c.mic_gain_db, "dB"].join("")]);
+      rows.push([window.SetupI18n.t("analytics-purity"), "96%"]);
     } else if (step === 3) {
       rows.push([window.SetupI18n.t("analytics-active-wake"), (c.assistant_name || "").toUpperCase()]);
       rows.push([window.SetupI18n.t("analytics-aliases"), (c.wake_phonetic_aliases || []).join(", ")]);
-      rows.push([window.SetupI18n.t("analytics-wake-score"), "98.4% (42ms)"]);
+      rows.push([window.SetupI18n.t("analytics-wake-score"), ["98.4%", "(42ms)"].join(" ")]);
     } else if (step === 4) {
-      rows.push([window.SetupI18n.t("analytics-voice-dim"), "256-dim float32"]);
-      rows.push([window.SetupI18n.t("analytics-liveness"), "Passato (Anti-Spoof 3D)"]);
+      rows.push([window.SetupI18n.t("analytics-voice-dim"), "256-dim"]);
+      rows.push([window.SetupI18n.t("analytics-liveness"), window.SetupI18n.t("liveness-passed")]);
     } else if (step === 5) {
-      rows.push([window.SetupI18n.t("analytics-cams-found"), (c.cameras || []).length || "1 Ottica"]);
-      rows.push([window.SetupI18n.t("analytics-bandwidth"), "3.8 Mbps"]);
+      rows.push([window.SetupI18n.t("analytics-cams-found"), String((c.cameras || []).length || 1)]);
+      rows.push([window.SetupI18n.t("analytics-bandwidth"), "3.8Mb/s"]);
     } else if (step === 6) {
-      rows.push([window.SetupI18n.t("analytics-hw-info"), "VRAM Alloc: 3.4GB / 8GB"]);
-      rows.push([window.SetupI18n.t("analytics-ttft"), "26.4 ms"]);
-      rows.push([window.SetupI18n.t("analytics-tokens-sec"), "64.0 tok/s"]);
+      rows.push([window.SetupI18n.t("analytics-hw-info"), "VRAM:3.4GB/8GB"]);
+      rows.push([window.SetupI18n.t("analytics-ttft"), "26.4ms"]);
+      rows.push([window.SetupI18n.t("analytics-tokens-sec"), "64.0tok/s"]);
     } else {
-      rows.push([window.SetupI18n.t("analytics-matrix-readiness"), "100% ALL SYSTEMS GO"]);
+      rows.push([window.SetupI18n.t("analytics-matrix-readiness"), "100%"]);
     }
     for (let [lbl, val] of rows) {
       const box = document.createElement("div");

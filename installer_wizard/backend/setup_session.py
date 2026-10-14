@@ -1,7 +1,5 @@
 import json
-import time
-from pathlib import Path
-from config import DEMO, STATE_DIR, read_env
+from config import STATE_DIR, read_env
 
 SESSION_FILE = STATE_DIR / "setup_session.json"
 
@@ -93,7 +91,6 @@ class SetupSession:
             raise ValueError("Target step out of bounds")
         if target_step > self.max_reached_step + 1:
             raise ValueError("Target step locked")
-        prev_step = self.current_step
         self.current_step = target_step
         if target_step > self.max_reached_step:
             self.max_reached_step = target_step
