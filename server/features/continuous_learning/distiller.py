@@ -1,6 +1,6 @@
 import logging
 import asyncio
-from datetime import datetime
+from datetime import datetime, timezone
 
 logger = logging.getLogger("nuxiva.memory_distiller")
 
@@ -44,7 +44,7 @@ class DeepMemoryDistiller:
             
             # 4. Swap dei pesi (Sveglia)
             logger.info("Fase 4: Reload dei pesi neurali completato. Nuxiva si 'sveglia' piu' intelligente.")
-            self.last_run = datetime.utcnow()
+            self.last_run = datetime.now(timezone.utc)
             
         except Exception as e:
             logger.error(f"Errore critico durante il sonno di Nuxiva (Incubo/Crash): {e}")

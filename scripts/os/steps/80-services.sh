@@ -27,7 +27,7 @@ native_check() {
 
 stop_containers() {
     command -v docker >/dev/null 2>&1 || return 0
-    docker rm -f nuxiva-core nuxiva-qdrant nuxiva-inference >/dev/null 2>&1 || true
+    docker rm -f nuxiva-core nuxiva-qdrant nuxiva-inference atena-core atena-qdrant atena-inference >/dev/null 2>&1 || true
 }
 
 stop_native() {
@@ -118,6 +118,12 @@ step_check() {
 
 remove_foreign_containers() {
     local c project
+    for c in atena-core atena-qdrant atena-inference; do
+        if docker inspect "$c" >/dev/null 2>&1; then
+            warn "Rimozione container deprecato $c"
+            docker rm -f "$c" >/dev/null 2>&1 || true
+        fi
+    done
     for c in nuxiva-core nuxiva-qdrant nuxiva-inference; do
         project=$(docker inspect -f '{{ index .Config.Labels "com.docker.compose.project" }}' "$c" 2>/dev/null || true)
         if [ -n "$project" ] && [ "$project" != "nuxiva" ]; then

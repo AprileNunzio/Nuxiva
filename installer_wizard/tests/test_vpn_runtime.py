@@ -48,7 +48,9 @@ class VpnBase(unittest.TestCase):
             patcher = mock.patch.object(runner, name, side_effect=fake)
             patcher.start()
             self.addCleanup(patcher.stop)
-        guard = mock.patch.object(service, "apply_guard", side_effect=lambda: asyncio.sleep(0))
+        async def fake_guard():
+            pass
+        guard = mock.patch.object(service, "apply_guard", side_effect=fake_guard)
         guard.start()
         self.addCleanup(guard.stop)
 

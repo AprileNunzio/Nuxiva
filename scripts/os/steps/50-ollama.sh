@@ -26,6 +26,10 @@ override_conf() {
 
 api_ok() { curl -fsS --max-time 5 "$OLLAMA_URL/api/version" >/dev/null 2>&1; }
 
+runner_present() {
+    [ -x /usr/local/lib/ollama/llama-server ] || [ -x /usr/lib/ollama/llama-server ]
+}
+
 local_off() { ! systemctl is-active --quiet ollama 2>/dev/null; }
 
 ensure_ollama_user() {
@@ -76,6 +80,7 @@ step_check() {
         return 0
     fi
     command -v ollama >/dev/null 2>&1 \
+        && runner_present \
         && unit_present \
         && override_conf | same_content "$OVERRIDE" \
         && systemctl is-enabled ollama >/dev/null 2>&1 \
@@ -103,8 +108,8 @@ step_apply() {
         progress 100 "In attesa di scelta LLM"
         return 0
     fi
-    if ! command -v ollama >/dev/null 2>&1; then
-        progress 10 "Download del motore neurale Ollama"
+    if ! command -v ollama >/dev/null 2>&1 || ! runner_present; then
+        progress 10 "Download e installazione/riparazione del motore neurale Ollama"
         ensure_ollama_user
         local installer
         installer=$(mktemp)

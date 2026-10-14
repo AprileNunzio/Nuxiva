@@ -69,6 +69,10 @@ case "$step" in
     ollama|models|warmup)
         if systemctl list-unit-files ollama.service >/dev/null 2>&1; then
             warn "Diagnosi e ripristino del motore neurale Ollama"
+            if [ ! -x /usr/local/lib/ollama/llama-server ] && [ ! -x /usr/lib/ollama/llama-server ]; then
+                warn "Binari runner llama-server mancanti: reinstallazione Ollama"
+                curl -fsSL https://ollama.com/install.sh | sh 2>&1 || true
+            fi
             getent group ollama >/dev/null || groupadd -r ollama 2>/dev/null || true
             id -u ollama >/dev/null 2>&1 || useradd -r -g ollama -s /bin/false -m -d /usr/share/ollama ollama 2>/dev/null || true
             mkdir -p /usr/share/ollama/.ollama/models

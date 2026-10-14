@@ -1,4 +1,6 @@
 import os
+from pathlib import Path
+import tempfile
 import unittest
 from unittest import mock
 from fastapi.testclient import TestClient
@@ -68,7 +70,7 @@ class MasterBlueprintTest(unittest.TestCase):
             self.assertTrue(data["is_custom_name"])
 
     def test_learner_completely_excludes_nuxiva_when_renamed(self):
-        with mock.patch.dict(os.environ, {"NUXIVA_ASSISTANT_NAME": "Atlas", "NUXIVA_WAKE_PHONETIC_ALIASES": "atlas,atlass"}):
+        with tempfile.TemporaryDirectory() as tmp, mock.patch.dict(os.environ, {"NUXIVA_ASSISTANT_NAME": "Atlas", "NUXIVA_WAKE_PHONETIC_ALIASES": "atlas,atlass"}), mock.patch.object(learner_module, "LEARN_FILE", Path(tmp) / "learn.json"):
             learner = learner_module.Learner()
             found_custom = learner.find_wake("Atlas accendi la luce")
             self.assertIsNotNone(found_custom)

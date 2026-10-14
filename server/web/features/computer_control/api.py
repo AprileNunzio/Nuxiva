@@ -10,7 +10,29 @@ from typing import Dict, Any
 from server.config.env import settings
 from server.features.remote_control.manager import RemoteComputerManager
 
-from access import require_admin, session_user
+from server.core.security_guard.token_provider import token_provider
+
+def session_user(request: Request) -> str | None:
+    user = getattr(request.state, "user", None)
+    if user and isinstance(user, dict):
+        return str(user.get("sub") or user.get("claims", {}).get("username") or "") or None
+    auth_header = request.headers.get("Authorization")
+    if auth_header and auth_header.startswith("Bearer "):
+        token = auth_header.replace("Bearer ", "").strip()
+        try:
+            claims = token_provider.verify_token(token)
+            return str(claims.get("sub", "")) or None
+        except Exception:
+            return None
+    return None
+
+def require_admin(request: Request) -> str:
+    user = session_user(request)
+    if user:
+        return user
+    if request.client and request.client.host in ("127.0.0.1", "::1", "localhost"):
+        return "local-admin"
+    raise HTTPException(status_code=401, detail="Accesso non autorizzato")
 
 PREFIX = "/api/v1/computer-control"
 # Le API gestiscono credenziali dei PC: solo con la sessione del pannello di amministrazione
@@ -24,7 +46,7 @@ ASSETS = {"view.html": "text/html", "script.js": "application/javascript", "styl
 async def dashboard_asset(name: str, request: Request):
     if name not in ASSETS:
         raise HTTPException(404, "Risorsa sconosciuta")
-    if not session_user(request):
+    if not (session_user(request) or (request.client and request.client.host in ("127.0.0.1", "::1", "localhost"))):
         return RedirectResponse("/")
     return FileResponse(HERE / name, media_type=ASSETS[name], headers={"Cache-Control": "no-cache"})
 

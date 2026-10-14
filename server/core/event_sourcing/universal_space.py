@@ -1,6 +1,6 @@
 from typing import Any, Dict, Optional
 from pydantic import BaseModel, Field
-from datetime import datetime
+from datetime import datetime, timezone
 import uuid
 
 class UniversalObservation(BaseModel):
@@ -10,7 +10,7 @@ class UniversalObservation(BaseModel):
     un pacchetto di rete, o un interrupt USB.
     """
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     modality: str = Field(..., description="Es: 'text', 'vision', 'network_packet', 'usb_interrupt'")
     source_id: str = Field(..., description="ID del sensore o dell'utente (es: 'webcam_1', 'user_primary', 'eth0')")
     
@@ -28,7 +28,7 @@ class UniversalAction(BaseModel):
     Può essere una risposta testuale, un comando HTTP, un movimento XYZ per un braccio, ecc.
     """
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     target_modality: str = Field(..., description="Es: 'tts', 'servo_controller', 'http_client', 'ui_widget'")
     target_id: str = Field(..., description="ID dell'attuatore (es: 'speaker_1', 'arm_joint_3')")
     

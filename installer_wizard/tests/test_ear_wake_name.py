@@ -18,10 +18,13 @@ class WakeNameTest(unittest.TestCase):
         self.dir = tempfile.TemporaryDirectory()
         self.file = Path(self.dir.name) / "learn.json"
         self.old = learner_module.LEARN_FILE
+        self.old_people = learner_module.PEOPLE_DIR
         learner_module.LEARN_FILE = self.file
+        learner_module.PEOPLE_DIR = Path(self.dir.name) / "people"
 
     def tearDown(self):
         learner_module.LEARN_FILE = self.old
+        learner_module.PEOPLE_DIR = self.old_people
         self.dir.cleanup()
 
     def test_ehi_nuxiva_wakes_and_leaves_the_command(self):

@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 import os
 import logging
 from pathlib import Path
@@ -26,12 +27,50 @@ logging.basicConfig(
 )
 logger = logging.getLogger("nuxiva.main")
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    from server.features.music_library.scanner import music_organizer
+    from server.core.sensory_bus.event_router import sensory_bus
+    from server.core.sensory_bus.actuator_gateway import actuator_gateway
+    from server.features.project_workspace.autonomous_runner import autonomous_runner
+    import asyncio
+    asyncio.create_task(music_organizer.scan_loop())
+    sensory_bus.start()
+    actuator_gateway.attach_to_bus()
+    autonomous_runner.start()
+
+    try:
+        from server.core.db.database import engine, Base
+        Base.metadata.create_all(bind=engine)
+        logger.info("Database ORM Inizializzato (Tabelle sincronizzate).")
+    except Exception as e:
+        logger.error("Impossibile connettersi al database: %s", str(e))
+
+    from server.core.cognitive_audit.embedding_engine import embedding_engine
+    from server.core.context_graph.graph_client import graph_client
+
+    model_ok = await embedding_engine.ensure_model_available()
+    if not model_ok:
+        logger.warning("Embedding model not found! Run: ollama pull nomic-embed-text")
+
+    from server.core.orchestrator.interrupt_manager import project_manager
+    project_manager.mark_interrupted_projects()
+
+    logger.info(
+        "Nuxiva v2.0.0 online — %d agents, %d graph nodes, %d graph edges",
+        len(agent_pool.list_agents()),
+        graph_client.node_count(),
+        graph_client.edge_count(),
+    )
+    yield
+
 def create_application() -> FastAPI:
     app = FastAPI(
         title="Nuxiva Autonomous Cognitive Orchestrator",
         version="4.1.53",
         docs_url="/docs",
         redoc_url="/redoc",
+        lifespan=lifespan,
     )
 
     origins = [o.strip() for o in settings.NUXIVA_CORS_ORIGINS.split(",") if o.strip() and o.strip() != "*"]
@@ -92,42 +131,6 @@ def create_application() -> FastAPI:
         async def serve_web_page():
             return FileResponse(str(web_dir / "index.html"))
 
-    @app.on_event("startup")
-    async def on_startup() -> None:
-        from server.features.music_library.scanner import music_organizer
-        from server.core.sensory_bus.event_router import sensory_bus
-        from server.core.sensory_bus.actuator_gateway import actuator_gateway
-        from server.features.project_workspace.autonomous_runner import autonomous_runner
-        import asyncio
-        asyncio.create_task(music_organizer.scan_loop())
-        sensory_bus.start()
-        actuator_gateway.attach_to_bus()
-        autonomous_runner.start()
-
-
-        try:
-            from server.core.db.database import engine, Base
-            Base.metadata.create_all(bind=engine)
-            logger.info("Database ORM Inizializzato (Tabelle sincronizzate).")
-        except Exception as e:
-            logger.error("Impossibile connettersi al database: %s", str(e))
-
-        from server.core.cognitive_audit.embedding_engine import embedding_engine
-        from server.core.context_graph.graph_client import graph_client
-
-        model_ok = await embedding_engine.ensure_model_available()
-        if not model_ok:
-            logger.warning("Embedding model not found! Run: ollama pull nomic-embed-text")
-
-        from server.core.orchestrator.interrupt_manager import project_manager
-        project_manager.mark_interrupted_projects()
-
-        logger.info(
-            "Nuxiva v2.0.0 online — %d agents, %d graph nodes, %d graph edges",
-            len(agent_pool.list_agents()),
-            graph_client.node_count(),
-            graph_client.edge_count(),
-        )
 
     @app.get("/health")
     async def health_check():

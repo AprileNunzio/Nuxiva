@@ -91,7 +91,7 @@ class Learner:
             saved = json.loads(LEARN_FILE.read_text(encoding="utf-8"))
         except (OSError, ValueError):
             saved = {}
-        if isinstance(saved, dict) and saved.get("name") in (name, "nuxiva"):
+        if isinstance(saved, dict) and saved.get("name") == name:
             self.data.update(saved)
         self.data["name"] = name
         self.recent_miss = None
@@ -109,17 +109,15 @@ class Learner:
 
     def hotwords(self) -> str:
         name = current_name().capitalize()
-        names = {name}
-        if current_name() == "nuxiva":
-            names.add("Nuxiva")
+        names = set()
         try:
             for f in list(PEOPLE_DIR.glob("*.json"))[:50]:
                 first = json.loads(f.read_text(encoding="utf-8")).get("first_name")
-                if first and not first.lower().startswith("ospite"):
+                if first and not first.lower().startswith("ospite") and first.lower() != name.lower():
                     names.add(first)
         except (OSError, ValueError):
             pass
-        return " ".join(sorted(names))
+        return " ".join([name] + sorted(names))
 
     def find_wake(self, text: str):
         exact = get_wake_re().search(text)

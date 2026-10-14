@@ -75,6 +75,6 @@ async def apply_config(updates: dict, user: str, extra_steps: list | None = None
             if machine.core_runtime() == "native":
                 await health.sh("systemctl", "stop", "nuxiva-core", timeout=60)
             else:
-                await health.sh("docker", "rm", "-f", "nuxiva-core", timeout=60)
+                await health.sh("docker", "rm", "-f", "nuxiva-core", "atena-core", timeout=60)
         background(converge_steps(needs, "Applicazione della nuova configurazione"))
     return needs
