@@ -2601,6 +2601,10 @@
       "Loaded and opened on the display"
     ],
     [
+      "Carico CPU: {0}%",
+      "CPU load: {0}%"
+    ],
+    [
       "Carico la sezione…",
       "Loading the section…"
     ],
@@ -4023,6 +4027,10 @@
     [
       "Controllo",
       "Control"
+    ],
+    [
+      "Controllo & Telemetria Moduli",
+      "Module Control & Telemetry"
     ],
     [
       "Controllo aggiornamenti ogni N minuti (default 5)",
@@ -6725,6 +6733,10 @@
       "The last name may only contain letters, spaces, apostrophes and hyphens"
     ],
     [
+      "Il consumo indica il tempo di calcolo impiegato dal kernel per aggiornare lo stato di ogni modulo in tempo reale.",
+      "Consumption indicates the computing time used by the kernel to update the state of each module in real time."
+    ],
+    [
       "Il consumo è il tempo di CPU del server speso a leggere i dati di ogni widget; «—» indica un widget senza sorgente dati dal vivo.",
       "Usage is the server CPU time spent reading each widget's data; «—» indicates a widget without a live data source."
     ],
@@ -8617,6 +8629,10 @@
       "Real-Time Process Matrix"
     ],
     [
+      "Matrice Widget",
+      "Widget Matrix"
+    ],
+    [
       "MCTS latente a 64 rami con Process Reward Model dopaminergico.",
       "64-branch latent MCTS with dopaminergic Process Reward Model."
     ],
@@ -9203,6 +9219,10 @@
     [
       "Monitoraggio file di sistema in corso (Daemon)",
       "System file monitoring running (daemon)"
+    ],
+    [
+      "Monitoraggio olografico di risorse e velocità in tempo reale: acceleratori hardware GPU, clock CPU dinamico, memoria RAM, matrice processi attivi, controllo satelliti distribuiti e nodi del cluster cognitivo.",
+      "Holographic monitoring of resources and speed in real time: GPU hardware accelerators, dynamic CPU clock, RAM memory, active processes matrix, distributed satellites control and cognitive cluster nodes."
     ],
     [
       "Monossido di carbonio",
@@ -15865,6 +15885,10 @@
       "Tap a widget to show it on the display right away: with live data when available, otherwise with the last shown. You also find them with Ctrl+K from any page."
     ],
     [
+      "Tocca un widget per proiettarlo subito sul display centrale. Di seguito puoi monitorare il consumo CPU e la latenza dei dati dal vivo.",
+      "Tap a widget to project it immediately onto the central display. Below you can monitor CPU consumption and live data latency."
+    ],
+    [
       "toggle deve indicare env oppure hook",
       "toggle must set env or hook"
     ],
@@ -17565,6 +17589,10 @@
       "{0} changes to save"
     ],
     [
+      "{0} moduli telemetrici attivi",
+      "{0} active telemetry modules"
+    ],
+    [
       "{0} nelle vicinanze",
       "{0} nearby"
     ],
@@ -18579,12 +18607,12 @@
       "Tutto schermo"
     ],
     [
-      "GPU Mem",
-      "Memoria GPU"
-    ],
-    [
       "Git Diff Visualizer",
       "Visualizzatore delle differenze Git"
+    ],
+    [
+      "GPU Mem",
+      "Memoria GPU"
     ],
     [
       "Job sent.",
@@ -18655,12 +18683,12 @@
       "Stampa (laser, getto, 3D, incisore)"
     ],
     [
-      "RTSP Stream",
-      "Flusso RTSP"
+      "Reasoning Mode",
+      "Modalita di Ragionamento"
     ],
     [
-      "SSH Logins",
-      "Accessi SSH"
+      "RTSP Stream",
+      "Flusso RTSP"
     ],
     [
       "Save to memory",
@@ -18669,6 +18697,10 @@
     [
       "Shared Clipboard",
       "Appunti condivisi"
+    ],
+    [
+      "SSH Logins",
+      "Accessi SSH"
     ],
     [
       "Talk to the teacher",
@@ -18709,10 +18741,6 @@
     [
       "🖨️ Print",
       "🖨️ Stampa"
-    ],
-    [
-      "Reasoning Mode",
-      "Modalita di Ragionamento"
     ]
   ],
   "same": [
@@ -18959,6 +18987,7 @@
     "Venerdi",
     "Via Toledo 10, Napoli",
     "view awakening",
+    "view dashboard-view",
     "Voix française",
     "Volume",
     "VPN",
@@ -18978,6 +19007,7 @@
     "wk-sub st-d",
     "wk-sub wk-faint",
     "wk-text wk-faint",
+    "wmetric-val cyan",
     "{0} h {1} min",
     "© OpenStreetMap",
     "◎ Radio",
@@ -21509,6 +21539,10 @@
       "Chargé et ouvert sur l'écran"
     ],
     [
+      "Carico CPU: {0}%",
+      "Charge CPU : {0}%"
+    ],
+    [
       "Carico la sezione…",
       "Chargement de la section…"
     ],
@@ -22887,6 +22921,10 @@
     [
       "Controllo",
       "Contrôle"
+    ],
+    [
+      "Controllo & Telemetria Moduli",
+      "Contrôle & Télémétrie des Modules"
     ],
     [
       "Controllo aggiornamenti ogni N minuti (default 5)",
@@ -25497,6 +25535,10 @@
       "Le nom ne peut contenir que des lettres, des espaces, des apostrophes et des tirets"
     ],
     [
+      "Il consumo indica il tempo di calcolo impiegato dal kernel per aggiornare lo stato di ogni modulo in tempo reale.",
+      "La consommation indique le temps de calcul utilisé par le noyau pour mettre à jour l'état de chaque module en temps réel."
+    ],
+    [
       "Il consumo è il tempo di CPU del server speso a leggere i dati di ogni widget; «—» indica un widget senza sorgente dati dal vivo.",
       "L'utilisation correspond au temps CPU du serveur passé à lire les données de chaque widget ; «—» indique un widget sans source de données en direct."
     ],
@@ -27317,6 +27359,10 @@
       "Matrice des processus en temps réel"
     ],
     [
+      "Matrice Widget",
+      "Matrice de Widgets"
+    ],
+    [
       "MCTS latente a 64 rami con Process Reward Model dopaminergico.",
       "MCTS latent a 64 branches avec Process Reward Model dopaminergique."
     ],
@@ -27887,6 +27933,10 @@
     [
       "Monitoraggio delle risorse hardware, CPU e RAM",
       "Surveillance des ressources matérielles, du processeur et de la RAM"
+    ],
+    [
+      "Monitoraggio olografico di risorse e velocità in tempo reale: acceleratori hardware GPU, clock CPU dinamico, memoria RAM, matrice processi attivi, controllo satelliti distribuiti e nodi del cluster cognitivo.",
+      "Surveillance holographique des ressources et de la vitesse en temps réel : accélérateurs matériels GPU, horloge CPU dynamique, mémoire RAM, matrice des processus actifs, contrôle des satellites distribués et nœuds du cluster cognitif."
     ],
     [
       "Monossido di carbonio",
@@ -34325,6 +34375,10 @@
       "Touchez un widget pour l'afficher tout de suite à l'écran : avec les données en direct quand elles existent, sinon avec les dernières affichées. Vous les trouvez aussi avec Ctrl+K depuis n'importe quelle page."
     ],
     [
+      "Tocca un widget per proiettarlo subito sul display centrale. Di seguito puoi monitorare il consumo CPU e la latenza dei dati dal vivo.",
+      "Touchez un widget pour le projeter immédiatement sur l'écran central. Ci-dessous, vous pouvez surveiller la consommation CPU et la latence des données en direct."
+    ],
+    [
       "toggle deve indicare env oppure hook",
       "toggle doit indiquer env ou hook"
     ],
@@ -35943,6 +35997,10 @@
     [
       "{0} modifiche da salvare",
       "{0} modifications à enregistrer"
+    ],
+    [
+      "{0} moduli telemetrici attivi",
+      "{0} modules télémétriques actifs"
     ],
     [
       "{0} neuroni · {1} sinapsi",
