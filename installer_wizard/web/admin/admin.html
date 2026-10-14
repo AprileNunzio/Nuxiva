@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-
 <html lang="it">
 <head>
 <meta charset="utf-8"/>
 <meta content="notranslate" name="google"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
 <title>Nuxiva OS Admin</title>
 <link href="/static/shared/nuxiva.css" rel="stylesheet"/>
 <link href="/static/admin/admin.css" rel="stylesheet"/>
@@ -30,7 +29,7 @@
 <div class="brand">NUXIVA<small data-i18n="admin:nav.admin">ADMIN</small></div>
 <a class="on" data-tab="overview"><span class="ic">◉</span><span class="lb" data-i18n="admin:nav.overview">Panoramica</span></a>
 <a data-tab="features"><span class="ic">▦</span><span class="lb" data-i18n="admin:nav.features">Funzionalità</span></a>
-<a href="/"><span class="ic">✦</span><span class="lb">Nexus</span></a>
+<a href="/"><span class="ic">✦</span><span class="lb" data-i18n="admin:nav.nexus">Nexus</span></a>
 <div class="sec" data-i18n="admin:nav.favorites">Preferiti</div>
 <div id="nav-pinned" style="display:contents"></div>
 <div class="sec" data-i18n="admin:nav.system">Sistema</div>
@@ -43,10 +42,10 @@
 <div class="spacer"></div>
 <div class="who" id="who"></div>
 <a id="logout"><span class="ic">⎋</span><span class="lb" data-i18n="admin:nav.logout">Esci</span></a>
-<div style="padding: 10px 12px; margin-bottom: 12px;">
-<select id="lang-selector" style="width: 100%; background: rgba(41, 224, 255, 0.06); color: var(--text-dim); border: 1px solid var(--line); border-radius: 6px; padding: 6px; font-size: 13px; cursor: pointer; outline: none; appearance: none; text-align: center;">
-</select>
-</div></nav>
+<div class="nav-lang-box">
+<select id="lang-selector" class="nav-lang-select"></select>
+</div>
+</nav>
 <div class="content">
 <div class="topbar">
 <h1 data-i18n="admin:overview.title" id="title">Panoramica</h1>
@@ -60,7 +59,7 @@
 <div class="feat-tools">
 <input autocomplete="off" data-i18n-placeholder="admin:features.search" id="feat-q" placeholder="Cerca una funzionalità…"/>
 <div class="seg" id="feat-state"><button class="on" data-i18n="admin:features.all" data-st="all">Tutte</button><button data-i18n="admin:features.active" data-st="on">Attive</button><button data-i18n="admin:features.inactive" data-st="off">Spente</button></div>
-<button class="btn" data-i18n="admin:features.rescan" id="feat-rescan" title="Rileggi le cartelle delle funzionalità e l'hardware">⟳ Scansiona</button>
+<button class="btn" data-i18n="admin:features.rescan" data-i18n-title="admin:features.rescan_title" id="feat-rescan" title="Rileggi le cartelle delle funzionalità e l'hardware">⟳ Scansiona</button>
 </div>
 <div class="chips" id="feat-cats"></div>
 <div class="feat-grid" id="feat-grid"></div>
@@ -77,17 +76,17 @@
 <div class="grid g2">
 <div class="panel">
 <div class="panel-title" data-i18n="admin:overview.components">Componenti</div>
-<table><thead><tr><th></th><th>Componente</th><th>Stato</th><th></th></tr></thead><tbody id="comp-body"></tbody></table>
+<table><thead><tr><th></th><th data-i18n="admin:overview.th_component">Componente</th><th data-i18n="admin:overview.th_status">Stato</th><th></th></tr></thead><tbody id="comp-body"></tbody></table>
 </div>
 <div class="panel">
 <div class="panel-title" data-i18n="admin:overview.quick_actions">Azioni rapide</div>
 <div class="actions" style="margin-bottom:16px">
 <button class="btn primary" data-action="repair" data-i18n="admin:overview.repair">Verifica e ripara tutto</button>
 <button class="btn" data-action="update-check" data-i18n="admin:overview.update_check">Controlla aggiornamenti</button>
-<button class="btn" data-action="restart-supervisor" data-confirm="Riavviare il supervisore? L'interfaccia si ricollegherà automaticamente." data-i18n="admin:overview.restart_sup">Riavvia supervisore</button>
-<button class="btn danger" data-action="reboot" data-confirm="Riavviare il sistema?" data-i18n="admin:overview.reboot">Riavvia sistema</button>
+<button class="btn" data-action="restart-supervisor" data-confirm-i18n="admin:overview.confirm_restart_sup" data-i18n="admin:overview.restart_sup">Riavvia supervisore</button>
+<button class="btn danger" data-action="reboot" data-confirm-i18n="admin:overview.confirm_reboot" data-i18n="admin:overview.reboot">Riavvia sistema</button>
 </div>
-<div class="panel-title">Stato corrente</div>
+<div class="panel-title" data-i18n="admin:overview.current_state">Stato corrente</div>
 <div id="cur-msg" style="font-size:14px"></div>
 <div class="mono dim" id="cur-detail" style="margin-top:6px"></div>
 <div id="cur-err" style="margin-top:8px; color:var(--red); font-size:13px"></div>
@@ -98,40 +97,44 @@
 </section>
 <section class="tab" id="tab-packages">
 <div class="panel">
-<div class="panel-title">Cervello</div>
+<div class="panel-title" data-i18n="admin:packages.brain_title">Cervello</div>
 <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap">
-<div class="seg" id="brain-mode" role="radiogroup" aria-label="Cervello"><button type="button" data-mode="local">Su questo computer</button><button type="button" data-mode="remote">Su un altro computer</button><button type="button" data-mode="cloud">Nel cloud</button></div>
+<div class="seg" id="brain-mode" role="radiogroup" aria-label="Cervello">
+<button type="button" data-mode="local" data-i18n="admin:packages.brain_local">Su questo computer</button>
+<button type="button" data-mode="remote" data-i18n="admin:packages.brain_remote">Su un altro computer</button>
+<button type="button" data-mode="cloud" data-i18n="admin:packages.brain_cloud">Nel cloud</button>
+</div>
 <input id="brain-url" autocomplete="off" spellcheck="false" placeholder="192.168.1.20" hidden style="max-width:240px">
-<button class="btn sm primary" id="brain-save" type="button">Applica</button>
+<button class="btn sm primary" id="brain-save" type="button" data-i18n="admin:packages.brain_apply">Applica</button>
 </div>
 <div class="muted-note" id="brain-note"></div>
 </div>
 <div class="panel" style="margin-top:18px">
-<div class="panel-title">Pacchetti</div>
-<table><thead><tr><th>Pacchetto</th><th>Dimensione</th><th>Stato</th><th></th></tr></thead><tbody id="pkg-body"></tbody></table>
-<div class="muted-note">Nuxiva installa solo quello che usi. Puoi aggiungere un pacchetto da qui oppure chiederlo a voce, ad esempio «installa i documenti Office».</div>
+<div class="panel-title" data-i18n="admin:packages.title">Pacchetti</div>
+<table><thead><tr><th data-i18n="admin:packages.th_pkg">Pacchetto</th><th data-i18n="admin:packages.th_size">Dimensione</th><th data-i18n="admin:packages.th_status">Stato</th><th></th></tr></thead><tbody id="pkg-body"></tbody></table>
+<div class="muted-note" data-i18n="admin:packages.note">Nuxiva installa solo quello che usi. Puoi aggiungere un pacchetto da qui oppure chiederlo a voce, ad esempio «installa i documenti Office».</div>
 </div>
 </section>
 <section class="tab" id="tab-steps">
 <div class="panel" id="bg-panel">
-<div class="panel-title">Installazioni in background</div>
+<div class="panel-title" data-i18n="admin:steps.bg_title">Installazioni in background</div>
 <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:12px">
 <span class="badge" id="bg-state">—</span><span class="dim" id="bg-summary"></span>
 <span style="flex:1"></span>
-<button class="btn sm" id="bg-toggle" type="button">Metti in pausa</button>
+<button class="btn sm" id="bg-toggle" type="button" data-i18n="admin:steps.bg_pause">Metti in pausa</button>
 </div>
 <div class="bar" style="margin-bottom:12px"><i id="bg-progress"></i></div>
-<table><thead><tr><th>Componente</th><th>Dimensione</th><th>Stato</th><th>Dettaglio</th><th></th></tr></thead><tbody id="bg-body"></tbody></table>
-<div class="muted-note">Le parti pesanti si installano dopo l'avvio, una alla volta, con priorità bassa, e si fermano mentre parli con Nuxiva. «Prima» sposta un componente in cima alla coda.</div>
+<table><thead><tr><th data-i18n="admin:steps.th_comp">Componente</th><th data-i18n="admin:steps.th_size">Dimensione</th><th data-i18n="admin:steps.th_status">Stato</th><th data-i18n="admin:steps.th_detail">Dettaglio</th><th></th></tr></thead><tbody id="bg-body"></tbody></table>
+<div class="muted-note" data-i18n="admin:steps.bg_note">Le parti pesanti si installano dopo l'avvio, una alla volta, con priorità bassa, e si fermano mentre parli con Nuxiva. «Prima» sposta un componente in cima alla coda.</div>
 <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:14px">
-<label class="btn sm" for="wake-file">Carica modello «Ehi, Nuxiva» (.onnx)</label>
+<label class="btn sm" for="wake-file" data-i18n="admin:steps.wake_model_label">Carica modello «Ehi, Nuxiva» (.onnx)</label>
 <input type="file" id="wake-file" accept=".onnx" hidden>
 <span class="dim" id="wake-note"></span>
 </div>
 </div>
 <div class="panel">
 <div class="panel-title" data-i18n="admin:steps.title">Step di convergenza</div>
-<table><thead><tr><th>Step</th><th>Stato</th><th>Tentativi</th><th>Durata</th><th>Dettaglio</th><th></th></tr></thead><tbody id="steps-body"></tbody></table>
+<table><thead><tr><th data-i18n="admin:steps.th_step">Step</th><th data-i18n="admin:steps.th_status">Stato</th><th data-i18n="admin:steps.th_attempts">Tentativi</th><th data-i18n="admin:steps.th_duration">Durata</th><th data-i18n="admin:steps.th_detail">Dettaglio</th><th></th></tr></thead><tbody id="steps-body"></tbody></table>
 <div class="muted-note" data-i18n="admin:steps.note">Ogni step è idempotente: a ogni avvio viene verificato e riparato solo se necessario. "Riesegui" forza la reinstallazione del componente.</div>
 </div>
 </section>
@@ -153,10 +156,10 @@
 <div class="panel-title" data-i18n="admin:updates.title">Aggiornamento autonomo da GitHub</div>
 <table><tbody id="upd-body"></tbody></table>
 <div class="actions" style="margin-top:16px">
-<button class="btn" data-action="update-check">Controlla ora</button>
-<button class="btn primary" data-action="update-apply" data-confirm="Applicare l'aggiornamento? Nuxiva verrà riavviata e, in caso di problemi, ripristinato automaticamente." data-i18n="admin:updates.apply">Aggiorna ora</button>
+<button class="btn" data-action="update-check" data-i18n="admin:updates.check_now">Controlla ora</button>
+<button class="btn primary" data-action="update-apply" data-confirm-i18n="admin:updates.confirm_apply" data-i18n="admin:updates.apply">Aggiorna ora</button>
 </div>
-<div class="panel-title" style="margin-top:22px">Novità disponibili</div>
+<div class="panel-title" style="margin-top:22px" data-i18n="admin:updates.news">Novità disponibili</div>
 <pre class="log" id="upd-log" style="height:auto; max-height:40vh"></pre>
 </div>
 </section>
@@ -164,30 +167,30 @@
 <div class="panel">
 <div class="row" style="margin-bottom:12px; flex-wrap:wrap">
 <select id="log-src" style="max-width:260px">
-<option value="install">Installazione e step</option>
-<option value="supervisor">Supervisore</option>
-<option value="core">Nuxiva Core</option>
-<option value="ollama">Motore neurale</option>
-<option value="kiosk">Display kiosk</option>
-<option value="rollback">Rollback</option>
+<option value="install" data-i18n="admin:logs.src_install">Installazione e step</option>
+<option value="supervisor" data-i18n="admin:logs.src_supervisor">Supervisore</option>
+<option value="core" data-i18n="admin:logs.src_core">Nuxiva Core</option>
+<option value="ollama" data-i18n="admin:logs.src_ollama">Motore neurale</option>
+<option value="kiosk" data-i18n="admin:logs.src_kiosk">Display kiosk</option>
+<option value="rollback" data-i18n="admin:logs.src_rollback">Rollback</option>
 </select>
-<button class="btn" id="log-refresh">Aggiorna</button>
-<label class="row" style="margin:0; gap:6px"><input checked="" id="log-auto" style="width:auto" type="checkbox"/> auto</label>
+<button class="btn" id="log-refresh" data-i18n="admin:logs.refresh">Aggiorna</button>
+<label class="row" style="margin:0; gap:6px"><input checked="" id="log-auto" style="width:auto" type="checkbox"/><span data-i18n="admin:logs.auto">auto</span></label>
 </div>
-<pre class="log" id="log-text">Caricamento…</pre>
+<pre class="log" id="log-text" data-i18n="admin:logs.loading">Caricamento…</pre>
 </div>
 </section>
 <section class="tab" id="tab-events">
 <div class="panel events">
 <div class="panel-title" data-i18n="admin:events.title">Registro eventi (audit)</div>
-<table><thead><tr><th>Ora</th><th>Livello</th><th>Componente</th><th>Evento</th></tr></thead><tbody id="events-body"></tbody></table>
+<table><thead><tr><th data-i18n="admin:events.th_time">Ora</th><th data-i18n="admin:events.th_level">Livello</th><th data-i18n="admin:events.th_component">Componente</th><th data-i18n="admin:events.th_event">Evento</th></tr></thead><tbody id="events-body"></tbody></table>
 </div>
 </section>
 <nuxiva-slot name="feature-tabs"></nuxiva-slot>
 </div>
 </div>
 <div class="toast" id="toast"></div>
-<div class="link-lost" data-i18n="admin:global.reconnect" id="link"><div class="spinner"></div>Riconnessione al supervisore</div>
+<div class="link-lost" id="link"><div class="spinner"></div><span data-i18n="admin:global.reconnect">Riconnessione al supervisore</span></div>
 <script src="/static/shared/core.js"></script>
 <script src="/static/admin/shell.js"></script>
 <script src="/static/admin/sortable.js"></script>
@@ -208,7 +211,7 @@
     if (langSelect) {
       langSelect.innerHTML = '';
       let names = {};
-      try { names = (await (await fetch('/i18n/languages')).json()).names || {}; } catch (err) { console.warn('language names unavailable', err); }
+      try { names = (await (await fetch('/i18n/languages')).json()).names || {}; } catch (err) {}
       availableLangs.forEach((l) => {
         const opt = document.createElement('option');
         opt.value = l;

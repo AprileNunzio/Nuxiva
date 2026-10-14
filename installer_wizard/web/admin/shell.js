@@ -26,8 +26,9 @@
   };
 
   A.t = (key, vars) => {
-    let text = key;
-    try { const value = window.i18n && window.i18n.translate("admin", key); if (typeof value === "string") text = value; } catch (e) { text = key; }
+    const clean = key ? String(key).replace(/^admin:/, "") : "";
+    let text = clean;
+    try { const value = window.i18n && window.i18n.translate("admin", clean); if (typeof value === "string") text = value; } catch (e) { text = clean; }
     return vars ? text.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m)) : text;
   };
 
