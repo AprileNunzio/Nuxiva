@@ -69,17 +69,8 @@ def face_options() -> dict:
 
     hands = choice("NUXIVA_HANDS", ("auto", "1", "0"), "auto")
     
-    model_url = "/static/shared/models/head.glb"
-    active_file = STATE_DIR / "avatars" / "active.txt"
-    if active_file.exists():
-        active_name = active_file.read_text().strip()
-        if active_name:
-            d = STATE_DIR / "avatars" / active_name
-            if d.exists():
-                for f in d.iterdir():
-                    if f.suffix in (".glb", ".fbx"):
-                        model_url = f"/api/avatars/serve/{active_name}/{f.name}"
-                        break
+    from features.avatars.store import active_model_url
+    model_url = active_model_url() or "/static/shared/models/head.glb"
 
     return {"avatar": choice("NUXIVA_AVATAR", ("auto", "full", "light"), "auto"),
             "style": choice("NUXIVA_AVATAR_STYLE", ("character", "hologram"), "character"), "color": color("NUXIVA_FACE_COLOR", "#29e0ff"),

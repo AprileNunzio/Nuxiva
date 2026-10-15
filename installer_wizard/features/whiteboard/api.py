@@ -2,9 +2,9 @@ import asyncio
 import base64
 import binascii
 
-from fastapi import APIRouter, HTTPException, Request, Response
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
 
-from access import require_display
+from access import require_admin, require_display
 from features.whiteboard import service, teacher
 from features.whiteboard.board import MAX_SNAPSHOT, board
 from features.whiteboard.pdf_exporter import export_pages_to_pdf
@@ -24,6 +24,12 @@ async def body_of(request: Request) -> dict:
     except ValueError:
         raise HTTPException(400, "Richiesta non valida")
     return data if isinstance(data, dict) else {}
+
+
+def page_of(value) -> int:
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise HTTPException(400, "Pagina non valida")
+    return value
 
 @public_routes.get("/api/board")
 async def read(request: Request, rev: int = 0):
@@ -100,15 +106,14 @@ async def page_new(request: Request):
 @public_routes.post("/api/board/page/switch")
 async def page_switch(request: Request):
     data = await body_of(request)
-    target = int(data.get("page", 0))
-    idx = board.switch_page(target)
+    idx = board.switch_page(page_of(data.get("page", 0)))
     return {"page": idx, "pages": len(board.pages), "rev": board.rev}
 
 @public_routes.post("/api/board/page/delete")
 async def page_delete(request: Request):
     data = await body_of(request)
     target = data.get("page")
-    idx = board.delete_page(int(target) if target is not None else None)
+    idx = board.delete_page(page_of(target) if target is not None else None)
     return {"page": idx, "pages": len(board.pages), "rev": board.rev}
 
 @public_routes.post("/api/board/ai/toggle")
@@ -125,18 +130,34 @@ async def list_boards(request: Request):
 @public_routes.post("/api/board/save")
 async def save_board(request: Request):
     data = await body_of(request)
-    name = data.get("name", "")
-    if name:
-        board.save_as(name)
-    return {"rev": board.rev}
+    try:
+        saved = board.save_as(str(data.get("name", "")))
+    except ValueError as exc:
+        raise HTTPException(400, str(exc))
+    return {"rev": board.rev, "name": saved}
 
 @public_routes.post("/api/board/load")
 async def load_board(request: Request):
     data = await body_of(request)
-    name = data.get("name", "")
-    if name:
-        board.load_from(name)
+    try:
+        board.load_from(str(data.get("name", "")))
+    except ValueError as exc:
+        raise HTTPException(400, str(exc))
+    except FileNotFoundError:
+        raise HTTPException(404, "Lavagna non trovata")
     return {"rev": board.rev}
+
+
+@public_routes.post("/api/board/delete_save")
+async def delete_saved_board(request: Request):
+    data = await body_of(request)
+    try:
+        board.delete_save(str(data.get("name", "")))
+    except ValueError as exc:
+        raise HTTPException(400, str(exc))
+    except FileNotFoundError:
+        raise HTTPException(404, "Lavagna non trovata")
+    return {"boards": board.get_save_names()}
 
 @public_routes.get("/api/board/pdf")
 async def download_pdf(request: Request):
@@ -176,3 +197,6 @@ async def ask_nuxiva(request: Request):
         return {"reply": reply, "rev": board.rev}
     except Exception as exc:
         raise HTTPException(400, str(exc))
+
+
+admin_routes.include_router(public_routes, dependencies=[Depends(require_admin)])

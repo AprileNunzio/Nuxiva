@@ -31,6 +31,21 @@ async def bluetooth_scan(_: str = Depends(require_admin)):
     return {"ok": True, "seconds": 20}
 
 
+@admin_routes.post("/api/bluetooth/power")
+async def bluetooth_power(request: Request, user: str = Depends(require_admin)):
+    body = await request.json()
+    if not isinstance(body, dict) or not isinstance(body.get("on"), bool):
+        raise HTTPException(400, "Valore non valido")
+    if not service.state["controller"].get("installed"):
+        raise HTTPException(409, "Nessun adattatore Bluetooth pronto")
+    try:
+        await adapter.power(body["on"])
+    except adapter.BluetoothError as exc:
+        raise HTTPException(502, f"L'adattatore non ha risposto: {exc}")
+    store.event("INFO", f"Bluetooth {'acceso' if body['on'] else 'spento'} da {user}", "bluetooth")
+    return _view(await service.refresh())
+
+
 @admin_routes.post("/api/bluetooth/devices/{mac}/{action}")
 async def bluetooth_action(mac: str, action: str, user: str = Depends(require_admin)):
     if action not in ACTIONS:
@@ -54,8 +69,11 @@ async def bluetooth_action(mac: str, action: str, user: str = Depends(require_ad
 
 @admin_routes.put("/api/bluetooth/prefs")
 async def bluetooth_prefs(request: Request, _: str = Depends(require_admin)):
+    body = await request.json()
+    if not isinstance(body, dict):
+        raise HTTPException(400, "Valore non valido")
     try:
-        prefs.update(await request.json())
-    except ValueError as exc:
+        prefs.update(body)
+    except (ValueError, AttributeError, TypeError) as exc:
         raise HTTPException(400, str(exc))
     return _view(await service.refresh())

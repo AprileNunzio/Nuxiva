@@ -282,7 +282,9 @@ async def get_config(_: str = Depends(require_admin)):
 @admin_routes.put("/api/config")
 async def put_config(request: Request, user: str = Depends(require_admin)):
     body = await request.json()
-    updates = {k: str(v).strip() for k, v in body.items() if k in EDITABLE_KEYS}
+    if not isinstance(body, dict):
+        raise HTTPException(400, "Valore non valido")
+    updates = {k: str(v).strip()[:4096] for k, v in body.items() if k in EDITABLE_KEYS and isinstance(v, (str, int, float, bool))}
     updates = {k: v for k, v in updates.items() if not (is_secret(k) and v.startswith("••••"))}
     if not updates:
         return {"ok": True, "changed": []}

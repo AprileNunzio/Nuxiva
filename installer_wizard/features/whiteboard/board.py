@@ -131,23 +131,38 @@ class Board:
         self.sync_page()
         self.save()
 
-    def get_save_names(self) -> list[str]:
-        return [p.stem.replace("whiteboard_", "", 1) for p in FILE.parent.glob("whiteboard_*.json")]
+    @staticmethod
+    def _save_path(name: str):
+        safe = "".join(c for c in str(name) if c.isalnum() or c in " -_")[:50].strip()
+        if not safe:
+            raise ValueError("Nome non valido")
+        return safe, FILE.parent / f"whiteboard_{safe}.json"
 
-    def save_as(self, name: str) -> None:
+    def get_save_names(self) -> list[str]:
+        return sorted(p.stem.replace("whiteboard_", "", 1) for p in FILE.parent.glob("whiteboard_*.json"))
+
+    def save_as(self, name: str) -> str:
+        safe, target = self._save_path(name)
         self.sync_page()
         self.save()
-        safe = "".join(c for c in name if c.isalnum() or c in " -_")[:50].strip() or "unnamed"
-        target = FILE.parent / f"whiteboard_{safe}.json"
-        target.write_text(FILE.read_text(encoding="utf-8"), encoding="utf-8")
+        tmp = target.with_suffix(".tmp")
+        tmp.write_text(FILE.read_text(encoding="utf-8"), encoding="utf-8")
+        tmp.replace(target)
+        return safe
 
     def load_from(self, name: str) -> None:
-        safe = "".join(c for c in name if c.isalnum() or c in " -_")[:50].strip() or "unnamed"
-        target = FILE.parent / f"whiteboard_{safe}.json"
-        if target.exists():
-            FILE.write_text(target.read_text(encoding="utf-8"), encoding="utf-8")
-            self.load()
-            self.touch()
+        _, target = self._save_path(name)
+        if not target.is_file():
+            raise FileNotFoundError(name)
+        FILE.write_text(target.read_text(encoding="utf-8"), encoding="utf-8")
+        self.load()
+        self.touch()
+
+    def delete_save(self, name: str) -> None:
+        _, target = self._save_path(name)
+        if not target.is_file():
+            raise FileNotFoundError(name)
+        target.unlink()
 
     def add_page(self) -> int:
         self.sync_page()

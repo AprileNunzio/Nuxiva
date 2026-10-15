@@ -18,24 +18,7 @@ from access import require_admin
 router = APIRouter(prefix="/api/v5/nodes", tags=["Node Plane"], dependencies=[Depends(require_admin)])
 admin_routes = router
 
-# In-memory storage for node app configurations
-_NODE_APP_CONFIGS: Dict[str, Dict[str, Any]] = {}
-
-AVAILABLE_NODE_APPS = [
-    {"id": "brain", "name": "Brain", "icon": "Cpu", "category": "node_plane"},
-    {"id": "audio", "name": "Audio", "icon": "Volume2", "category": "node_plane"},
-    {"id": "mic", "name": "Mic", "icon": "Mic", "category": "node_plane"},
-    {"id": "camera", "name": "Camera", "icon": "Camera", "category": "node_plane"},
-    {"id": "printers", "name": "Printers", "icon": "Printer", "category": "node_plane"},
-    {"id": "bluetooth", "name": "Bluetooth", "icon": "Bluetooth", "category": "node_plane"},
-    {"id": "display", "name": "Display", "icon": "Monitor", "category": "node_plane"},
-    {"id": "whiteboard", "name": "Whiteboard", "icon": "Edit3", "category": "node_plane"},
-    {"id": "client_link", "name": "Client Link", "icon": "Smartphone", "category": "node_plane"},
-]
-
-class ConfigUpdateRequest(BaseModel):
-    settings: Dict[str, Any] = {}
-    enabled: bool = True
+_BRAIN_CONFIGS: Dict[str, Dict[str, Any]] = {}
 
 
 class ProvisionRequest(BaseModel):
@@ -128,38 +111,6 @@ def get_node(node_id: str) -> Dict[str, Any]:
         },
     }
 
-
-
-@router.get("/{node_id}/apps")
-def list_node_apps(node_id: str) -> List[Dict[str, Any]]:
-    return AVAILABLE_NODE_APPS
-
-
-@router.get("/{node_id}/apps/{app_id}")
-def get_node_app_config(node_id: str, app_id: str) -> Dict[str, Any]:
-    key = f"{node_id}:{app_id}"
-    config = _NODE_APP_CONFIGS.get(key, {
-        "nodeId": node_id,
-        "appId": app_id,
-        "enabled": True,
-        "settings": {},
-        "updatedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-    })
-    return config
-
-
-@router.post("/{node_id}/apps/{app_id}/config")
-def update_node_app_config(node_id: str, app_id: str, req: ConfigUpdateRequest) -> Dict[str, Any]:
-    key = f"{node_id}:{app_id}"
-    config = {
-        "nodeId": node_id,
-        "appId": app_id,
-        "enabled": req.enabled,
-        "settings": req.settings,
-        "updatedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-    }
-    _NODE_APP_CONFIGS[key] = config
-    return config
 
 
 @router.post("/{node_id}/provision")
@@ -435,7 +386,7 @@ def save_node_remote_mesh_instances(node_id: str, req: RemoteMeshSaveRequest) ->
 
     # Sync into node app config & CRDT
     key = f"{node_id}:brain"
-    stored = _NODE_APP_CONFIGS.setdefault(key, {"nodeId": node_id, "appId": "brain", "settings": {}})
+    stored = _BRAIN_CONFIGS.setdefault(key, {"nodeId": node_id, "appId": "brain", "settings": {}})
     stored["settings"]["remote_mesh_instances"] = saved_instances
 
     try:
@@ -489,7 +440,7 @@ async def test_remote_mesh_instance(node_id: str, req: RemoteMeshTestRequest) ->
 async def get_node_brain(node_id: str) -> Dict[str, Any]:
     """Recupera la configurazione del cervello LLM per questo nodo, probe Ollama locale e nodi remoti."""
     key = f"{node_id}:brain"
-    stored = _NODE_APP_CONFIGS.get(key, {}).get("settings", {})
+    stored = _BRAIN_CONFIGS.get(key, {}).get("settings", {})
     
     # 1. Proba Ollama locale con verifica binario e demone
     local_ollama = probe_local_ollama_status()
@@ -717,7 +668,7 @@ def save_node_brain(node_id: str, req: BrainConfigRequest) -> Dict[str, Any]:
     if req.remote_mesh_instances:
         _NODE_REMOTE_MESH_INSTANCES[node_id] = req.remote_mesh_instances
 
-    _NODE_APP_CONFIGS[key] = {
+    _BRAIN_CONFIGS[key] = {
         "nodeId": node_id,
         "appId": "brain",
         "enabled": True,

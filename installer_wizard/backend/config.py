@@ -85,6 +85,7 @@ EDITABLE_KEYS = {
     "NUXIVA_EAR_MAX_GAIN": "Amplificazione massima del microfono per il campo lontano (2 - 80)",
     "NUXIVA_EAR_TARGET_RMS": "Livello vocale obiettivo dell'autolivellamento (0.03 - 0.2)",
     "NUXIVA_AVATAR": "Aspetto dell'assistente (auto = in base al dispositivo, full = ologramma 3D con volto, light = nucleo leggero)",
+    "NUXIVA_AVATAR_STYLE": "Stile dell'aspetto (character = personaggio 3D, hologram = ologramma wireframe)",
     "NUXIVA_FACE_COLOR": "Colore dell'ologramma (colore, es. #29e0ff)",
     "NUXIVA_AUTO_UPDATE": "Aggiornamenti automatici (1/0)",
     "NUXIVA_UPDATE_INTERVAL_MIN": "Controllo aggiornamenti ogni N minuti (default 5)",

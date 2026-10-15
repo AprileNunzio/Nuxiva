@@ -1,66 +1,62 @@
-import shutil
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
-from access import require_admin
-from config import STATE_DIR
-
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse
+
+from access import require_admin
+from state import store as state_store
+
+from features.avatars import store
+
 public_routes = APIRouter()
 admin_routes = APIRouter()
 
-from pydantic import BaseModel
-
-AVATARS_DIR = STATE_DIR / "avatars"
-ACTIVE_FILE = AVATARS_DIR / "active.txt"
-AVATARS_DIR.mkdir(parents=True, exist_ok=True)
-
-class ActiveAvatarReq(BaseModel):
-    name: str
 
 @admin_routes.get("/api/avatars")
 async def get_avatars(_: str = Depends(require_admin)):
-    avatars = []
-    for item in AVATARS_DIR.iterdir():
-        if item.is_dir():
-            avatars.append({"name": item.name, "files": [f.name for f in item.iterdir()]})
-    active = ""
-    if ACTIVE_FILE.exists():
-        active = ACTIVE_FILE.read_text(encoding="utf-8").strip()
-    return {"avatars": avatars, "active": active}
+    return store.listing()
+
 
 @admin_routes.post("/api/avatars/active")
-async def set_active_avatar(req: ActiveAvatarReq, _: str = Depends(require_admin)):
-    if not req.name:
-        if ACTIVE_FILE.exists():
-            ACTIVE_FILE.unlink()
-    else:
-        ACTIVE_FILE.write_text(req.name, encoding="utf-8")
-    return {"status": "ok"}
+async def set_active_avatar(request: Request, user: str = Depends(require_admin)):
+    body = await request.json()
+    name = body.get("name") if isinstance(body, dict) else None
+    if not isinstance(name, str):
+        raise HTTPException(400, "Valore non valido")
+    try:
+        store.set_active(name)
+    except store.AvatarError as exc:
+        raise HTTPException(400, str(exc))
+    state_store.event("INFO", f"Aspetto attivo: {name or 'predefinito'} ({user})", "avatars")
+    return store.listing()
+
 
 @admin_routes.post("/api/avatars/upload")
-async def upload_avatar(name: str = Form(...), file: UploadFile = File(...), _: str = Depends(require_admin)):
-    if not name.isalnum():
-        raise HTTPException(400, "Nome non valido, usa solo lettere e numeri senza spazi")
-    p = AVATARS_DIR / name
-    p.mkdir(parents=True, exist_ok=True)
-    out_path = p / file.filename
-    with open(out_path, "wb") as f:
-        shutil.copyfileobj(file.file, f)
-    return {"status": "ok", "avatar": name, "file": file.filename}
+async def upload_avatar(name: str = Form(...), file: UploadFile = File(...), user: str = Depends(require_admin)):
+    try:
+        saved = store.save(name, file.filename or "", file.file)
+    except store.AvatarError as exc:
+        raise HTTPException(400, str(exc))
+    finally:
+        await file.close()
+    state_store.event("INFO", f"Aspetto caricato: {saved['avatar']}/{saved['file']} ({user})", "avatars")
+    return {**store.listing(), "saved": saved}
+
 
 @admin_routes.delete("/api/avatars/{name}")
-async def delete_avatar(name: str, _: str = Depends(require_admin)):
-    if not name.isalnum():
-        raise HTTPException(400, "Nome non valido")
-    p = AVATARS_DIR / name
-    if p.exists():
-        shutil.rmtree(p)
-    return {"status": "ok"}
+async def delete_avatar(name: str, user: str = Depends(require_admin)):
+    try:
+        store.remove(name)
+    except store.AvatarError as exc:
+        raise HTTPException(400, str(exc))
+    state_store.event("INFO", f"Aspetto rimosso: {name} ({user})", "avatars")
+    return store.listing()
+
 
 @public_routes.get("/api/avatars/serve/{name}/{filename}")
 async def serve_avatar_file(name: str, filename: str):
-    if not name.isalnum() or ".." in filename:
+    try:
+        path = store.resolve(name, filename)
+    except store.AvatarError:
         raise HTTPException(400)
-    p = AVATARS_DIR / name / filename
-    if not p.exists():
+    except FileNotFoundError:
         raise HTTPException(404)
-    return FileResponse(p)
+    return FileResponse(path, headers={"Cache-Control": "private, max-age=300", "X-Content-Type-Options": "nosniff"})

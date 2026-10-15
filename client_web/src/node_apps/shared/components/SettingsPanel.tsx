@@ -46,6 +46,18 @@ const Field: React.FC<{ readonly spec: SettingSpec; readonly state: NodeSettings
             {spec.unit ?? ''}
           </span>
         )}
+        {spec.kind === 'color' && (
+          <span className="flex items-center gap-2">
+            <span className="font-mono text-xs text-slate-300">{String(value)}</span>
+            <input
+              id={id}
+              type="color"
+              value={String(value)}
+              onChange={(event) => /^#[0-9a-f]{6}$/i.test(event.target.value) && state.change(spec.key, event.target.value.toLowerCase())}
+              className="h-8 w-10 cursor-pointer rounded-lg border border-slate-700 bg-slate-950 p-0.5"
+            />
+          </span>
+        )}
         {spec.kind === 'choice' && (
           <select
             id={id}
