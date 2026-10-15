@@ -34,6 +34,18 @@
     "error_node_audio_unavailable": "Audio status unavailable.",
     "error_node_audio_update_failed": "Audio change not applied.",
     "error_node_sounds_unavailable": "Sound list unavailable.",
-    "error_node_sound_play_failed": "Sound playback failed."
+    "error_node_sound_play_failed": "Sound playback failed.",
+    "error_node_cameras_unavailable": "Cameras unavailable.",
+    "error_node_camera_photo_failed": "Photo not taken.",
+    "error_node_camera_controls_failed": "Camera controls not applied.",
+    "error_node_camera_options_failed": "Camera options not saved.",
+    "error_node_camera_photos_failed": "Photos unavailable.",
+    "error_node_printers_unavailable": "Printers unavailable.",
+    "error_node_printer_test_failed": "Test page not sent.",
+    "error_node_printer_remove_failed": "Printer not removed.",
+    "error_node_printer_options_failed": "Printer options not saved.",
+    "error_node_printer_discover_failed": "Printer discovery failed.",
+    "error_node_printer_install_failed": "Printer installation failed.",
+    "error_node_printer_add_failed": "Printer not added."
   }
 }

@@ -313,11 +313,6 @@ class BrainPullRequest(BaseModel):
     model: str = "llama3.2:latest"
 
 
-class HardwareTestPrintRequest(BaseModel):
-    printer_id: str = "default"
-    paper_size: str = "A4"
-
-
 class WhiteboardSaveRequest(BaseModel):
     title: str = "Nuova Lavagna"
     data_url: str = ""
@@ -1053,21 +1048,6 @@ def probe_real_node_hardware(node_id: str, force: bool = False) -> Dict[str, Any
 def get_node_hardware(node_id: str) -> Dict[str, Any]:
     """Rileva periferiche audio, webcam, stampanti e bluetooth realmente disponibili (0 dati inventati)."""
     return probe_real_node_hardware(node_id)
-
-
-@router.post("/{node_id}/hardware/test_print")
-def test_node_print(node_id: str, req: HardwareTestPrintRequest) -> Dict[str, Any]:
-    """Accoda un job di stampa diagnostico per la stampante selezionata."""
-    job_id = f"job-print-{int(time.time())}"
-    return {
-        "success": True,
-        "node_id": node_id,
-        "printer_id": req.printer_id,
-        "job_id": job_id,
-        "paper_size": req.paper_size,
-        "pages": 1,
-        "status": "sent_to_spooler"
-    }
 
 
 @router.get("/{node_id}/whiteboards")

@@ -54,6 +54,31 @@ async def printer_probe(pid: str, _: str = Depends(require_admin)):
         raise HTTPException(404, "printers.error.unknown")
 
 
+@admin_routes.post("/api/printers/{pid}/test")
+async def printer_test_page(pid: str, user: str = Depends(require_admin)):
+    import asyncio
+    from datetime import datetime
+
+    from features.printers.testpage import build_test_page
+    from features.whiteboard.printer import printer_manager
+    from identity import assistant_name
+    from state import store
+
+    try:
+        target = printers.find(pid)
+    except KeyError:
+        raise HTTPException(404, "printers.error.unknown")
+    if target.get("type") not in ("laser_2d", "inkjet_2d", "virtual_pdf"):
+        raise HTTPException(409, "printers.error.test_unsupported")
+    document = await asyncio.to_thread(build_test_page, str(target.get("name", "")), assistant_name(), datetime.now())
+    try:
+        result = await asyncio.to_thread(printer_manager.send_document, target, document, printers.options.get(pid, {}))
+    except (RuntimeError, OSError) as exc:
+        raise HTTPException(502, str(exc)[:300])
+    store.event("INFO", f"Pagina di prova inviata a {target.get('name')} da {user}", "printers")
+    return result
+
+
 @admin_routes.post("/api/printers/discover")
 async def printer_discover(_: str = Depends(require_admin)):
     return await printers.discover()

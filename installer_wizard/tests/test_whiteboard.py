@@ -420,11 +420,10 @@ class AdvancedTeacherAndPrinterTest(Base):
     def test_universal_printer_manager(self):
         from features.whiteboard.printer import printer_manager
         printers = printer_manager.list_printers()
-        self.assertGreaterEqual(len(printers), 3)
         types = {p["type"] for p in printers}
         self.assertIn("virtual_pdf", types)
-        self.assertIn("engraver", types)
-        self.assertIn("3d", types)
+        self.assertNotIn("laser_grbl_local", {p["id"] for p in printers})
+        self.assertNotIn("klipper_3d_local", {p["id"] for p in printers})
 
         gcode_laser = printer_manager.generate_grbl_gcode(self.board.pages, power=350, feed=1000)
         self.assertIn("G21", gcode_laser)

@@ -33,6 +33,18 @@ const KNOWN_CODES = new Set([
   'node_audio_update_failed',
   'node_sounds_unavailable',
   'node_sound_play_failed',
+  'node_cameras_unavailable',
+  'node_camera_photo_failed',
+  'node_camera_controls_failed',
+  'node_camera_options_failed',
+  'node_camera_photos_failed',
+  'node_printers_unavailable',
+  'node_printer_test_failed',
+  'node_printer_remove_failed',
+  'node_printer_options_failed',
+  'node_printer_discover_failed',
+  'node_printer_install_failed',
+  'node_printer_add_failed',
 ]);
 
 export const ErrorToastHost: React.FC = () => {

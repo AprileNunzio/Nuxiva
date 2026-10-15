@@ -125,11 +125,9 @@ class NodesProvisioningApiTests(unittest.TestCase):
     def test_node_hardware_and_whiteboards(self):
         from node_api import (
             get_node_hardware,
-            test_node_print,
             list_node_whiteboards,
             save_node_whiteboard,
             delete_node_whiteboard,
-            HardwareTestPrintRequest,
             WhiteboardSaveRequest,
         )
 
@@ -141,11 +139,6 @@ class NodesProvisioningApiTests(unittest.TestCase):
         self.assertIn("printers", hw)
         self.assertIn("bluetooth", hw)
         self.assertIn("display", hw)
-
-        # Print test
-        print_res = test_node_print("node-test-01", HardwareTestPrintRequest(printer_id="printer-hp-laser"))
-        self.assertTrue(print_res["success"])
-        self.assertIn("job-print", print_res["job_id"])
 
         # Whiteboards
         wb_save = save_node_whiteboard("node-test-01", WhiteboardSaveRequest(title="Diagramma Architettura Mesh", strokes_count=25))

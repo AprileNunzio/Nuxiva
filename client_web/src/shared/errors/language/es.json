@@ -34,6 +34,18 @@
     "error_node_audio_unavailable": "Estado de audio no disponible.",
     "error_node_audio_update_failed": "Cambio de audio no aplicado.",
     "error_node_sounds_unavailable": "Lista de sonidos no disponible.",
-    "error_node_sound_play_failed": "Falló la reproducción del sonido."
+    "error_node_sound_play_failed": "Falló la reproducción del sonido.",
+    "error_node_cameras_unavailable": "Cámaras no disponibles.",
+    "error_node_camera_photo_failed": "No se tomó la foto.",
+    "error_node_camera_controls_failed": "Controles de la cámara no aplicados.",
+    "error_node_camera_options_failed": "Opciones de la cámara no guardadas.",
+    "error_node_camera_photos_failed": "Fotos no disponibles.",
+    "error_node_printers_unavailable": "Impresoras no disponibles.",
+    "error_node_printer_test_failed": "Página de prueba no enviada.",
+    "error_node_printer_remove_failed": "Impresora no eliminada.",
+    "error_node_printer_options_failed": "Opciones de impresora no guardadas.",
+    "error_node_printer_discover_failed": "Detección de impresoras fallida.",
+    "error_node_printer_install_failed": "Instalación de impresora fallida.",
+    "error_node_printer_add_failed": "Impresora no añadida."
   }
 }

@@ -1,5 +1,6 @@
 # flake8: noqa: E501
 import json
+import logging
 import os
 import platform
 import re
@@ -14,6 +15,7 @@ from features.whiteboard.board import board
 from features.whiteboard.pdf_exporter import export_pages_to_pdf
 
 PRINTERS_FILE = STATE_DIR / "printers.json"
+log = logging.getLogger("nuxiva.printers")
 
 
 class PrinterManager:
@@ -161,22 +163,6 @@ class PrinterManager:
                 "connection": "virtual",
                 "status": "ready",
             },
-            {
-                "id": "laser_grbl_local",
-                "name": "Incisore Laser GRBL (USB / Seriale)",
-                "type": "engraver",
-                "connection": "usb",
-                "address": "/dev/ttyUSB0",
-                "status": "standby",
-            },
-            {
-                "id": "klipper_3d_local",
-                "name": "Stampante 3D Klipper / Moonraker",
-                "type": "3d",
-                "connection": "network",
-                "address": "http://127.0.0.1:7125",
-                "status": "standby",
-            },
         ]
         all_p = {p["id"]: p for p in defaults}
         for op in os_printers:
@@ -283,6 +269,42 @@ class PrinterManager:
             args += ["-o", f"print-quality={quality}"]
         return args
 
+    @staticmethod
+    def _powershell_quote(value: str) -> str:
+        return "'" + str(value).replace("'", "''") + "'"
+
+    def send_document(self, p: dict, pdf_bytes: bytes, opts: dict) -> dict:
+        if p.get("type") == "virtual_pdf":
+            out_path = STATE_DIR / f"stampa_{int(time.time())}.pdf"
+            out_path.write_bytes(pdf_bytes)
+            return {"status": "ok", "message": f"PDF salvato in {out_path.name}", "file": str(out_path)}
+        if p.get("connection") == "network" and p.get("address"):
+            host, port = p["address"], int(p.get("port", 9100))
+            try:
+                with socket.create_connection((host, port), timeout=6) as s:
+                    s.sendall(pdf_bytes)
+            except OSError as exc:
+                raise RuntimeError(f"Errore connessione stampante di rete: {exc}") from exc
+            return {"status": "ok", "message": f"Inviato alla stampante di rete {p['name']} ({host}:{port})"}
+        fd, tmp_path = tempfile.mkstemp(suffix=".pdf")
+        try:
+            with os.fdopen(fd, "wb") as tmp:
+                tmp.write(pdf_bytes)
+            if platform.system().lower() == "windows":
+                name = p.get("name", "")
+                target = f" -Verb PrintTo -ArgumentList {self._powershell_quote(chr(34) + name + chr(34))}" if name else " -Verb Print"
+                ps_cmd = f"Start-Process -FilePath {self._powershell_quote(tmp_path)}{target} -Wait"
+                res = subprocess.run(["powershell", "-NoProfile", "-Command", ps_cmd], capture_output=True, timeout=30)
+            else:
+                cups_name = p.get("name", "")
+                cmd = ["lp", *(["-d", cups_name] if cups_name else []), *self.lp_options(opts), tmp_path]
+                res = subprocess.run(cmd, capture_output=True, timeout=30)
+            if res.returncode != 0:
+                raise RuntimeError(res.stderr.decode("utf-8", "replace")[:300] or "stampa rifiutata")
+        finally:
+            os.unlink(tmp_path)
+        return {"status": "ok", "message": f"Lavoro di stampa inviato a {p['name']}"}
+
     def print_job(self, printer_id: str, options: dict | None = None) -> dict:
         opts = options or {}
         printers = {p["id"]: p for p in self.list_printers()}
@@ -300,54 +322,7 @@ class PrinterManager:
                 "file": str(out_path),
             }
         if p_type in ("laser_2d", "inkjet_2d"):
-            conn = p.get("connection")
-            if conn == "network" and p.get("address"):
-                host = p["address"]
-                port = int(p.get("port", 9100))
-                try:
-                    with socket.create_connection((host, port), timeout=6) as s:
-                        s.sendall(pdf_bytes)
-                    return {
-                        "status": "ok",
-                        "message": f"Inviato alla stampante di rete {p['name']} ({host}:{port})",
-                    }
-                except Exception as exc:
-                    raise RuntimeError(f"Errore connessione stampante di rete: {exc}")
-            is_win = platform.system().lower() == "windows"
-            with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
-                tmp.write(pdf_bytes)
-                tmp_path = tmp.name
-            try:
-                if is_win:
-                    p_name = p.get("name", "")
-                    ps_cmd = (
-                        f"Start-Process -FilePath '{tmp_path}' -Verb PrintTo -ArgumentList '\"{p_name}\"' -Wait"
-                        if p_name
-                        else f"Start-Process -FilePath '{tmp_path}' -Verb Print -Wait"
-                    )
-                    res = subprocess.run(
-                        ["powershell", "-NoProfile", "-Command", ps_cmd],
-                        capture_output=True,
-                        timeout=30,
-                    )
-                    if res.returncode != 0:
-                        raise RuntimeError(res.stderr)
-                else:
-                    cups_name = p.get("name", "")
-                    cmd = ["lp", *(["-d", cups_name] if cups_name else []), *self.lp_options(opts), tmp_path]
-                    res = subprocess.run(cmd, capture_output=True, timeout=30)
-                    if res.returncode != 0:
-                        raise RuntimeError(res.stderr)
-            finally:
-                try:
-                    # Rimuoviamo il tempfile solo dopo che il processo ha finito
-                    os.unlink(tmp_path)
-                except Exception:
-                    pass
-            return {
-                "status": "ok",
-                "message": f"Lavoro di stampa inviato a {p['name']}",
-            }
+            return self.send_document(p, pdf_bytes, opts)
         if p_type == "engraver":
             power = int(opts.get("laser_power", 400))
             feed = int(opts.get("laser_feed", 1200))
@@ -388,8 +363,8 @@ class PrinterManager:
                         "status": "ok",
                         "message": f"G-code inviato a {p['name']} ({addr})",
                     }
-                except Exception:
-                    pass
+                except (OSError, ValueError) as exc:
+                    log.warning("Invio G-code a %s non riuscito, salvo su file: %s", p["name"], exc)
             out_file = STATE_DIR / f"3d_print_{int(time.time())}.gcode"
             out_file.write_text(gcode, encoding="utf-8")
             return {
