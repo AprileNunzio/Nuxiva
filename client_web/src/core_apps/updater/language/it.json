@@ -48,6 +48,18 @@
     "force_align": "Forza Allineamento & Re-flash Cluster",
     "aligning": "Allineamento in corso...",
     "update_now": "Installa Aggiornamento Ora",
-    "cluster_synced_toast": "Tutti i nodi sono perfettamente sincronizzati e collaudati!"
+    "cluster_synced_toast": "Tutti i nodi sono perfettamente sincronizzati e collaudati!",
+    "install_immediately": "Installa Subito sul Cluster",
+    "reinstall_now": "Re-Installa / Aggiorna Subito",
+    "rollout_modal_title": "Installazione & Rollout Aggiornamento in Tempo Reale",
+    "rollout_modal_desc": "Distribuzione firmware atomica, checkpoint fail-safe A/B e diagnosi su tutti i nodi",
+    "rollout_phase_1": "1. Download payload e verifica crittografica SHA-256",
+    "rollout_phase_2": "2. Snapshot checkpoint A/B per auto-rollback fail-safe",
+    "rollout_phase_3": "3. Staging atomico codice e sincronizzazione ledger CRDT",
+    "rollout_phase_4": "4. Hot-reload supervisore e daemon di bordo",
+    "rollout_phase_5": "5. Esecuzione automatica collaudo diagnostico 10 punti",
+    "rollout_completed_badge": "INSTALLAZIONE COMPLETATA SUBITO CON SUCCESSO",
+    "close_modal": "Chiudi Panoramica",
+    "nodes_updating_title": "Nodi del Cluster in Aggiornamento"
   }
 }

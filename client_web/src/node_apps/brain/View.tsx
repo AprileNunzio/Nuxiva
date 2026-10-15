@@ -873,7 +873,7 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             {/* Slot 1: Conversazione Veloce */}
             <div className="p-6 rounded-2xl border border-cyan-500/30 bg-slate-900/60 backdrop-blur-md flex flex-col justify-between shadow-xl">
               <div>
@@ -937,6 +937,7 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
                           'gpt-4o-mini',
                           'llama-3.3-70b-versatile',
                           'claude-3-5-haiku-20241022',
+                          'sonar',
                         ]
                       ).map((m) => (
                         <option key={m} value={m}>
@@ -1049,6 +1050,7 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
                           'o3-mini',
                           'claude-3-7-sonnet-20250219',
                           'gemini-2.0-pro-exp-02-05',
+                          'sonar-reasoning-pro',
                         ]
                       ).map((m) => (
                         <option key={m} value={m}>
@@ -1091,6 +1093,119 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
                 <button
                   onClick={() => handleRunTest('deep_reasoning')}
                   className="px-4 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-purple-300 border border-purple-500/40 text-xs font-semibold transition"
+                >
+                  <Play className="w-3.5 h-3.5 inline mr-1" />
+                  {t('test_role_inference')}
+                </button>
+              </div>
+            </div>
+
+            {/* Slot 3: Visione, Multimodale & OCR */}
+            <div className="p-6 rounded-2xl border border-emerald-500/30 bg-slate-900/60 backdrop-blur-md flex flex-col justify-between shadow-xl">
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2.5">
+                    <Eye className="w-5 h-5 text-emerald-400" />
+                    <div>
+                      <h3 className="text-sm font-bold text-white">{t('role_vision')}</h3>
+                      <span className="text-[10px] text-emerald-400 font-mono">Vision & Camera OCR Multimodal</span>
+                    </div>
+                  </div>
+                  <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold uppercase">
+                    Slot Visione
+                  </span>
+                </div>
+
+                <div className="space-y-4">
+                  {/* Provider Dropdown */}
+                  <div>
+                    <label className="text-[11px] text-slate-400 block mb-1">{t('select_provider')}</label>
+                    <select
+                      value={cloudSlots.vision.provider}
+                      onChange={(e) => {
+                        const prov = cloudProviders.find((p) => p.id === e.target.value);
+                        setCloudSlots((prev) => ({
+                          ...prev,
+                          vision: {
+                            ...prev.vision,
+                            provider: e.target.value,
+                            base_url: prov?.base_url || prev.vision.base_url,
+                            model: prov?.default_model || prev.vision.model,
+                          },
+                        }));
+                      }}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500"
+                    >
+                      {cloudProviders.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Cascading Model Dropdown */}
+                  <div>
+                    <label className="text-[11px] text-slate-400 block mb-1">{t('select_cloud_model')}</label>
+                    <select
+                      value={cloudSlots.vision.model}
+                      onChange={(e) =>
+                        setCloudSlots((prev) => ({
+                          ...prev,
+                          vision: { ...prev.vision, model: e.target.value },
+                        }))
+                      }
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500"
+                    >
+                      {(
+                        cloudProviders.find((p) => p.id === cloudSlots.vision.provider)?.models || [
+                          'gpt-4o',
+                          'gemini-2.0-flash',
+                          'claude-3-7-sonnet-20250219',
+                          'pixtral-large-latest',
+                          'grok-2-vision-latest',
+                        ]
+                      ).map((m) => (
+                        <option key={m} value={m}>
+                          {m}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* API Key */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="text-[11px] text-slate-400">{t('api_key')}</label>
+                      <button
+                        type="button"
+                        onClick={() => setShowKeys((prev) => ({ ...prev, vision: !prev.vision }))}
+                        className="text-[10px] text-emerald-400 hover:text-emerald-300 flex items-center gap-1"
+                      >
+                        {showKeys.vision ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                        <span>{showKeys.vision ? 'Nascondi' : 'Mostra'}</span>
+                      </button>
+                    </div>
+                    <input
+                      type={showKeys.vision ? 'text' : 'password'}
+                      value={cloudSlots.vision.api_key}
+                      onChange={(e) =>
+                        setCloudSlots((prev) => ({
+                          ...prev,
+                          vision: { ...prev.vision, api_key: e.target.value },
+                        }))
+                      }
+                      placeholder={t('api_key_placeholder') || 'sk-...'}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2 text-xs text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-5 pt-3 border-t border-slate-800 flex justify-end">
+                <button
+                  onClick={() => handleRunTest('vision')}
+                  className="px-4 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 border border-emerald-500/40 text-xs font-semibold transition cursor-pointer"
                 >
                   <Play className="w-3.5 h-3.5 inline mr-1" />
                   {t('test_role_inference')}

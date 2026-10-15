@@ -48,6 +48,18 @@
     "force_align": "Forcer l'Alignement & Re-flash du Cluster",
     "aligning": "Alignement en cours...",
     "update_now": "Installer la Mise à Jour Maintenant",
-    "cluster_synced_toast": "Tous les nœuds du cluster sont parfaitement synchronisés et validés !"
+    "cluster_synced_toast": "Tous les nœuds du cluster sont parfaitement synchronisés et validés !",
+    "install_immediately": "Installer Immédiatement sur le Cluster",
+    "reinstall_now": "Réinstaller / Mettre à Jour Immédiatement",
+    "rollout_modal_title": "Installation & Déploiement en Temps Réel",
+    "rollout_modal_desc": "Distribution atomique du firmware, point de contrôle A/B et diagnostics sur tous les nœuds",
+    "rollout_phase_1": "1. Téléchargement du payload et vérification SHA-256",
+    "rollout_phase_2": "2. Point de contrôle A/B pour retour automatique fail-safe",
+    "rollout_phase_3": "3. Staging atomique du code et synchronisation CRDT",
+    "rollout_phase_4": "4. Rechargement à chaud du superviseur et démons",
+    "rollout_phase_5": "5. Exécution automatique des 10 tests de diagnostic",
+    "rollout_completed_badge": "INSTALLATION TERMINÉE IMMÉDIATEMENT AVEC SUCCÈS",
+    "close_modal": "Fermer la Vue d'Ensemble",
+    "nodes_updating_title": "Nœuds du Cluster en Cours de Mise à Jour"
   }
 }

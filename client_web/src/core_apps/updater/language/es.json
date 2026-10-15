@@ -48,6 +48,18 @@
     "force_align": "Forzar Alineación & Re-flash del Clúster",
     "aligning": "Alineando clúster...",
     "update_now": "Instalar Actualización Ahora",
-    "cluster_synced_toast": "¡Todos los nodos del clúster están perfectamente sincronizados y comprobados!"
+    "cluster_synced_toast": "¡Todos los nodos del clúster están perfectamente sincronizados y comprobados!",
+    "install_immediately": "Instalar Inmediatamente en el Clúster",
+    "reinstall_now": "Reinstalar / Actualizar Inmediatamente",
+    "rollout_modal_title": "Instalación & Despliegue en Tiempo Real",
+    "rollout_modal_desc": "Distribución atómica del firmware, punto de control A/B y diagnósticos en todos los nodos",
+    "rollout_phase_1": "1. Descarga del payload y verificación criptográfica SHA-256",
+    "rollout_phase_2": "2. Snapshot punto de control A/B para reversión fail-safe",
+    "rollout_phase_3": "3. Staging atómico de código y sincronización del libro CRDT",
+    "rollout_phase_4": "4. Recarga en caliente del supervisor y demonios",
+    "rollout_phase_5": "5. Ejecución automática de los 10 puntos de diagnóstico",
+    "rollout_completed_badge": "INSTALACIÓN COMPLETADA INMEDIATAMENTE CON ÉXITO",
+    "close_modal": "Cerrar Vista General",
+    "nodes_updating_title": "Nodos del Clúster en Actualización"
   }
 }

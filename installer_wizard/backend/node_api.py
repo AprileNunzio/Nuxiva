@@ -669,11 +669,11 @@ async def get_node_brain(node_id: str) -> Dict[str, Any]:
             {"id": "node-server-studio", "name": "Server-Studio-M2", "ip": "192.168.1.20", "host_url": "http://192.168.1.20:11434", "tier": "Tier-1 (Compute Cluster)", "is_compute": True}
         ]
 
-    # 3. Provider Cloud Completi e Aggiornati
+    # 3. Provider Cloud Completi e Verificati (Tutti i modelli deprecati rimossi)
     cloud_providers = [
         {
             "id": "anthropic",
-            "name": "Anthropic Claude",
+            "name": "Anthropic Claude (v3.7 / v3.5)",
             "base_url": "https://api.anthropic.com/v1",
             "default_model": "claude-3-7-sonnet-20250219",
             "models": [
@@ -685,7 +685,7 @@ async def get_node_brain(node_id: str) -> Dict[str, Any]:
         },
         {
             "id": "openai",
-            "name": "OpenAI",
+            "name": "OpenAI (GPT-4o & Serie o)",
             "base_url": "https://api.openai.com/v1",
             "default_model": "gpt-4o",
             "models": [
@@ -693,25 +693,26 @@ async def get_node_brain(node_id: str) -> Dict[str, Any]:
                 "gpt-4o-mini",
                 "o3-mini",
                 "o1",
-                "o1-mini"
+                "chatgpt-4o-latest"
             ]
         },
         {
             "id": "gemini",
-            "name": "Google Gemini",
+            "name": "Google Gemini (2.0 & 1.5 Pro/Flash)",
             "base_url": "https://generativelanguage.googleapis.com/v1beta",
             "default_model": "gemini-2.0-flash",
             "models": [
                 "gemini-2.0-flash",
+                "gemini-2.0-flash-lite",
                 "gemini-2.0-pro-exp-02-05",
-                "gemini-2.0-flash-thinking-exp",
+                "gemini-2.0-flash-thinking-exp-01-21",
                 "gemini-1.5-pro",
                 "gemini-1.5-flash"
             ]
         },
         {
             "id": "deepseek",
-            "name": "DeepSeek AI",
+            "name": "DeepSeek AI (V3 & R1 Reasoning)",
             "base_url": "https://api.deepseek.com/v1",
             "default_model": "deepseek-reasoner",
             "models": [
@@ -728,7 +729,8 @@ async def get_node_brain(node_id: str) -> Dict[str, Any]:
                 "llama-3.3-70b-versatile",
                 "llama-3.1-8b-instant",
                 "deepseek-r1-distill-llama-70b",
-                "mixtral-8x7b-32768"
+                "qwen-2.5-32b",
+                "gemma2-9b-it"
             ]
         },
         {
@@ -738,27 +740,30 @@ async def get_node_brain(node_id: str) -> Dict[str, Any]:
             "default_model": "mistral-large-latest",
             "models": [
                 "mistral-large-latest",
-                "open-mistral-nemo",
                 "codestral-latest",
-                "pixtral-12b-2409"
+                "pixtral-large-latest",
+                "ministral-8b-latest",
+                "open-mistral-nemo"
             ]
         },
         {
             "id": "xai",
-            "name": "xAI (Grok)",
+            "name": "xAI (Grok-2)",
             "base_url": "https://api.x.ai/v1",
-            "default_model": "grok-2-1212",
+            "default_model": "grok-2-latest",
             "models": [
-                "grok-2-1212",
-                "grok-2-vision-1212"
+                "grok-2-latest",
+                "grok-2-vision-latest",
+                "grok-2-1212"
             ]
         },
         {
             "id": "perplexity",
-            "name": "Perplexity AI",
+            "name": "Perplexity AI (Sonar API)",
             "base_url": "https://api.perplexity.ai",
-            "default_model": "sonar-reasoning",
+            "default_model": "sonar-reasoning-pro",
             "models": [
+                "sonar-reasoning-pro",
                 "sonar-reasoning",
                 "sonar-pro",
                 "sonar"
@@ -766,22 +771,24 @@ async def get_node_brain(node_id: str) -> Dict[str, Any]:
         },
         {
             "id": "openrouter",
-            "name": "OpenRouter",
+            "name": "OpenRouter (Unified Gateway)",
             "base_url": "https://openrouter.ai/api/v1",
             "default_model": "openrouter/auto",
             "models": [
                 "openrouter/auto",
                 "deepseek/deepseek-r1",
+                "anthropic/claude-3.7-sonnet",
                 "meta-llama/llama-3.3-70b-instruct",
-                "qwen/qwen-2.5-72b-instruct"
+                "qwen/qwen-2.5-coder-32b-instruct",
+                "google/gemini-2.0-flash-001"
             ]
         },
         {
             "id": "custom",
-            "name": "Endpoint Personalizzato Compatibile OpenAI (vLLM / LM Studio / LocalAI / SGLang)",
+            "name": "Endpoint Personalizzato OpenAI (vLLM / LM Studio / LocalAI / SGLang)",
             "base_url": "http://127.0.0.1:8000/v1",
             "default_model": "custom-model",
-            "models": ["custom-model"]
+            "models": ["custom-model", "vllm-model", "lmstudio-local"]
         }
     ]
 

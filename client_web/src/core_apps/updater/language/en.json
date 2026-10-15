@@ -48,6 +48,18 @@
     "force_align": "Force Cluster Alignment & Re-flash",
     "aligning": "Aligning cluster...",
     "update_now": "Install Update Now",
-    "cluster_synced_toast": "All cluster nodes are verified, synchronized, and collaudo-approved!"
+    "cluster_synced_toast": "All cluster nodes are verified, synchronized, and collaudo-approved!",
+    "install_immediately": "Install Immediately on Cluster",
+    "reinstall_now": "Re-Install / Update Immediately",
+    "rollout_modal_title": "Real-Time Update Rollout & Installation",
+    "rollout_modal_desc": "Atomic firmware distribution, A/B fail-safe checkpoint, and diagnostics across all nodes",
+    "rollout_phase_1": "1. Download payload and verify cryptographic SHA-256",
+    "rollout_phase_2": "2. Snapshot A/B checkpoint for fail-safe auto-rollback",
+    "rollout_phase_3": "3. Atomic code staging and CRDT ledger sync",
+    "rollout_phase_4": "4. Supervisor and onboard daemon hot-reload",
+    "rollout_phase_5": "5. Automated 10-point diagnostic collaudo execution",
+    "rollout_completed_badge": "INSTALLATION COMPLETED IMMEDIATELY WITH SUCCESS",
+    "close_modal": "Close Overview",
+    "nodes_updating_title": "Updating Cluster Nodes"
   }
 }
