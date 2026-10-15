@@ -1,7 +1,6 @@
 import asyncio
 import json
 import logging
-import time
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Request
 from fastapi.responses import JSONResponse
 

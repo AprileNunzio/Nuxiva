@@ -1,4 +1,3 @@
-import json
 import unittest
 from pathlib import Path
 import sys
@@ -18,6 +17,12 @@ class MeshCrdtP2PTests(unittest.TestCase):
     def setUp(self):
         self.node_a = NuxivaMeshCoordinator(node_id="pc-node-a")
         self.node_b = NuxivaMeshCoordinator(node_id="pc-node-b")
+        self.ledger = TimeTravelLedger(db_path=":memory:", node_id="ledger-test")
+
+    def test_ledger_crdt_event_synchronization(self):
+        self.ledger.append_event("device.living_room", "UPDATED", {"brightness": 75, "state": "ON"})
+        self.assertEqual(self.ledger.get_crdt_value("device.living_room.brightness"), "75")
+        self.assertIn("device.living_room.state", self.ledger.export_crdt_state())
 
     def test_crdt_virtual_core_settings_replication(self):
         # Imposta una chiave sul nodo A

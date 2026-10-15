@@ -20,32 +20,42 @@ class TimeTravelLedger:
     def __init__(self, db_path="nuxiva_ledger.db", node_id: str = "node-local"):
         self.db_path = db_path
         self.node_id = node_id
+        self._conn = sqlite3.connect(":memory:", check_same_thread=False) if db_path == ":memory:" else None
         self._init_db()
         self._crdt = RustCrdtMesh() if RustCrdtMesh is not None else None
         self._fallback_crdt: dict[str, dict] = {}
 
+    def _get_conn(self):
+        if self._conn is not None:
+            return self._conn
+        return sqlite3.connect(self.db_path)
+
     def _init_db(self):
-        with sqlite3.connect(self.db_path) as conn:
-            conn.execute('''
-                CREATE TABLE IF NOT EXISTS events (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    timestamp REAL,
-                    aggregate_id TEXT,
-                    event_type TEXT,
-                    payload JSON
-                )
-            ''')
-            conn.commit()
+        conn = self._get_conn()
+        conn.execute('''
+            CREATE TABLE IF NOT EXISTS events (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                timestamp REAL,
+                aggregate_id TEXT,
+                event_type TEXT,
+                payload JSON
+            )
+        ''')
+        conn.commit()
+        if self._conn is None:
+            conn.close()
 
     def append_event(self, aggregate_id: str, event_type: str, payload: dict):
         """Aggiunge un evento immutabile al ledger e aggiorna lo stato CRDT."""
         ts = time.time()
-        with sqlite3.connect(self.db_path) as conn:
-            conn.execute(
-                "INSERT INTO events (timestamp, aggregate_id, event_type, payload) VALUES (?, ?, ?, ?)",
-                (ts, aggregate_id, event_type, json.dumps(payload))
-            )
-            conn.commit()
+        conn = self._get_conn()
+        conn.execute(
+            "INSERT INTO events (timestamp, aggregate_id, event_type, payload) VALUES (?, ?, ?, ?)",
+            (ts, aggregate_id, event_type, json.dumps(payload))
+        )
+        conn.commit()
+        if self._conn is None:
+            conn.close()
 
         ts_ms = int(ts * 1000)
         for key, val in payload.items():

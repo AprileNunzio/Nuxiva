@@ -4,7 +4,7 @@ import threading
 import logging
 import uuid
 import time
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 log = logging.getLogger("nuxiva.mesh")
 

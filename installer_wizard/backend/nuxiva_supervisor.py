@@ -274,8 +274,6 @@ def build(admin: bool) -> FastAPI:
             app.include_router(computer_control_router)
 
         if client_web_dist.exists() and (client_web_dist / "index.html").exists():
-            from fastapi.responses import FileResponse
-
             @app.get("/")
             @app.get("/canvas")
             @app.get("/node/{node_id:path}")
