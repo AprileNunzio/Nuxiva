@@ -9,7 +9,7 @@ Verifica la totale assenza di falsi positivi (0.001% tolleranza errori):
 """
 
 import unittest
-from features.team.ceo import CEOExecutive, MIN_SCORE_THRESHOLD
+from features.team.ceo import CEOExecutive
 from features.team.stopwords import is_conversational_query, clean_tokens
 
 

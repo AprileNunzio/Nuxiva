@@ -6,7 +6,6 @@ azzerando i falsi positivi nel routing degli agenti e dei widget.
 """
 
 import re
-import unicodedata
 
 # Espressione regolare per estrazione token
 TOKEN_RE = re.compile(r"[a-z0-9_-]{2,}", re.IGNORECASE)
