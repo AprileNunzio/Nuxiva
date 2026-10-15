@@ -37,7 +37,28 @@ class CEOExecutiveEnterpriseRoutingTest(unittest.TestCase):
             "raccontami di te",
             "hello",
             "how are you?",
-            "what can you do?"
+            "what can you do?",
+            "who are you?",
+            "hola",
+            "cómo estás?",
+            "como estas",
+            "qué tal?",
+            "quién eres?",
+            "qué puedes hacer?",
+            "bonjour",
+            "comment ça va?",
+            "comment ca va",
+            "qui es-tu?",
+            "que peux-tu faire?",
+            "hallo",
+            "wie geht's?",
+            "wie geht es dir?",
+            "wer bist du?",
+            "was kannst du tun?",
+            "olá",
+            "tudo bem?",
+            "como vai?",
+            "quem é você?"
         ]
         for query in conversational_samples:
             with self.subTest(query=query):

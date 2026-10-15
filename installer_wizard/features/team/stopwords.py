@@ -1,8 +1,9 @@
 """
-Filtro stopwords e normalizzatore semantico enterprise per Nuxiva.
-Fornisce insiemi esaustivi di stopwords (italiano e inglese) e rilevatori
-deterministici per saluti, convenevoli e richieste di identità dell'assistente,
-azzerando i falsi positivi nel routing degli agenti e dei widget.
+Filtro stopwords e normalizzatore semantico enterprise multilingue per Nuxiva.
+Fornisce insiemi esaustivi di stopwords per le principali lingue mondiali
+(Italiano, Inglese, Spagnolo, Francese, Tedesco, Portoghese) e rilevatori
+deterministici per saluti, convenevoli e richieste di identità, azzerando i falsi positivi
+nel routing degli agenti e dei widget su qualsiasi lingua ricevuta.
 """
 
 import re
@@ -12,10 +13,8 @@ TOKEN_RE = re.compile(r"[a-z0-9_-]{2,}", re.IGNORECASE)
 
 # Stopwords esaustive in Italiano
 ITALIAN_STOPWORDS: frozenset[str] = frozenset({
-    # Articoli e determinativi
     "il", "lo", "la", "i", "gli", "le", "l",
     "un", "uno", "una", "un'",
-    # Preposizioni semplici e articolate
     "di", "a", "da", "in", "con", "su", "per", "tra", "fra",
     "del", "dello", "della", "dei", "degli", "delle",
     "al", "allo", "alla", "ai", "agli", "alle",
@@ -23,7 +22,6 @@ ITALIAN_STOPWORDS: frozenset[str] = frozenset({
     "nel", "nello", "nella", "nei", "negli", "nelle",
     "sul", "sullo", "sulla", "sui", "sugli", "sulle",
     "col", "coi", "pel", "pei",
-    # Pronomi personali, relativi e dimostrativi
     "io", "tu", "lui", "lei", "noi", "voi", "loro", "esso", "essa", "essi", "esse",
     "me", "te", "se", "ne", "ci", "vi", "ti", "mi", "si", "li", "le",
     "questo", "questa", "questi", "queste", "quest",
@@ -33,7 +31,6 @@ ITALIAN_STOPWORDS: frozenset[str] = frozenset({
     "mio", "mia", "miei", "mie", "tuo", "tua", "tuoi", "tue",
     "suo", "sua", "suoi", "sue", "nostro", "nostra", "nostri", "nostre",
     "vostro", "vostra", "vostri", "vostre",
-    # Congiunzioni e avverbi comuni
     "e", "ed", "o", "od", "oppure", "ovvero", "ma", "però", "pero", "tuttavia",
     "quindi", "dunque", "perciò", "percio", "infatti", "invece",
     "se", "come", "dove", "quando", "mentre", "finché", "finche", "perché", "perche",
@@ -46,7 +43,6 @@ ITALIAN_STOPWORDS: frozenset[str] = frozenset({
     "così", "cosi", "allora", "dopo", "prima", "poi", "ora", "adesso", "subito",
     "qui", "qua", "lì", "li", "là", "la",
     "si", "sì", "no", "non", "niente", "nulla",
-    # Verbi ausiliari e ad altissima frequenza (forme flesse)
     "essere", "avere", "fare", "dire", "andare", "potere", "volere", "dovere",
     "è", "e'", "sono", "sei", "siamo", "siete", "era", "erano", "ero", "eri",
     "sarà", "sara", "sarai", "sarò", "saro", "saremo", "sarete", "saranno",
@@ -60,7 +56,6 @@ ITALIAN_STOPWORDS: frozenset[str] = frozenset({
     "vuoi", "vuole", "voglio", "vogliamo", "volete", "vogliono",
     "devi", "deve", "devo", "dobbiamo", "dovete", "devono",
     "va", "vai", "andiamo", "andate", "vanno", "andato", "andata",
-    # Riempitivi e interiezioni
     "beh", "boh", "mah", "ok", "okay", "va bene", "grazie", "prego", "scusa", "scusami",
     "per favore", "per cortesia", "dimmi", "ascolta", "senti"
 })
@@ -89,36 +84,144 @@ ENGLISH_STOPWORDS: frozenset[str] = frozenset({
     "yourself", "yourselves", "tell", "please", "thanks", "thank"
 })
 
-ALL_STOPWORDS: frozenset[str] = ITALIAN_STOPWORDS | ENGLISH_STOPWORDS
+# Stopwords in Spagnolo
+SPANISH_STOPWORDS: frozenset[str] = frozenset({
+    "el", "la", "los", "las", "un", "una", "unos", "unas",
+    "de", "del", "a", "al", "en", "con", "por", "para", "sobre", "entre", "tras", "sin",
+    "como", "cómo", "cuando", "cuándo", "donde", "dónde", "porque", "por qué",
+    "que", "qué", "quien", "quién", "cual", "cuál", "cuales", "cuáles", "cuanto", "cuánto",
+    "pero", "mas", "y", "e", "o", "u", "ni", "si", "sino",
+    "este", "esta", "estos", "estas", "ese", "esa", "esos", "esas", "aquel", "aquella",
+    "mi", "mis", "tu", "tus", "su", "sus", "nuestro", "nuestra", "vuestro", "vuestra",
+    "yo", "tú", "él", "ella", "ello", "nosotros", "vosotros", "ellos", "ellas", "usted", "ustedes",
+    "me", "te", "se", "nos", "os", "lo", "la", "le", "los", "las", "les",
+    "muy", "mucho", "mucha", "muchos", "muchas", "poco", "poca", "pocos", "pocas",
+    "todo", "toda", "todos", "todas", "otro", "otra", "otros", "otras",
+    "ser", "estar", "haber", "hacer", "decir", "ir", "poder", "tener",
+    "soy", "eres", "es", "somos", "sois", "son", "era", "eras", "éramos", "eran", "fui", "fue",
+    "estoy", "estás", "está", "estamos", "estáis", "están",
+    "he", "has", "ha", "hemos", "habéis", "han", "había",
+    "hago", "haces", "hace", "hacemos", "hacéis", "hacen",
+    "puedo", "puedes", "puede", "podemos", "podéis", "pueden",
+    "tengo", "tienes", "tiene", "tenemos", "tenéis", "tienen",
+    "voy", "vas", "va", "vamos", "vais", "van",
+    "hola", "buenos días", "buenas tardes", "buenas noches", "gracias", "por favor"
+})
 
-# Pattern per saluti, convenevoli e general conversation
+# Stopwords in Francese
+FRENCH_STOPWORDS: frozenset[str] = frozenset({
+    "le", "la", "les", "l'", "un", "une", "des", "du", "de", "d'",
+    "à", "au", "aux", "en", "dans", "par", "pour", "sur", "sous", "avec", "sans", "chez",
+    "comme", "comment", "quand", "lorsque", "où", "ou", "et", "mais", "donc", "car", "ni",
+    "que", "qui", "quoi", "dont", "lequel", "laquelle", "lesquels", "lesquelles",
+    "ce", "cet", "cette", "ces", "ceci", "cela", "ça",
+    "mon", "ma", "mes", "ton", "ta", "tes", "son", "sa", "ses", "notre", "nos", "votre", "vos", "leur", "leurs",
+    "je", "tu", "il", "elle", "on", "nous", "vous", "ils", "elles",
+    "me", "te", "se", "lui", "leur", "y", "en",
+    "être", "avoir", "faire", "dire", "aller", "pouvoir", "vouloir", "devoir",
+    "suis", "es", "est", "sommes", "êtes", "sont", "étais", "était", "étions", "étiez", "étaient", "été",
+    "ai", "as", "a", "avons", "avez", "ont", "avais", "avait", "avions", "aviez", "avaient", "eu",
+    "fais", "fait", "faisons", "faites", "font",
+    "peux", "peut", "pouvons", "pouvez", "peuvent",
+    "veux", "veut", "voulons", "voulez", "veulent",
+    "dois", "doit", "devons", "devez", "doivent",
+    "vais", "vas", "va", "allons", "allez", "vont",
+    "bonjour", "bonsoir", "salut", "merci", "s'il vous plaît", "s'il te plaît"
+})
+
+# Stopwords in Tedesco
+GERMAN_STOPWORDS: frozenset[str] = frozenset({
+    "der", "die", "das", "den", "dem", "des",
+    "ein", "eine", "einer", "eines", "einem", "einen",
+    "in", "an", "auf", "aus", "bei", "mit", "nach", "von", "zu", "über", "unter", "vor", "zwischen",
+    "durch", "für", "ohne", "um", "gegen",
+    "wie", "wenn", "wann", "wo", "warum", "wer", "was", "welche", "welcher", "welches", "welchen", "welchem",
+    "und", "oder", "aber", "denn", "doch", "sondern",
+    "nicht", "kein", "keine", "keiner", "keines", "keinem", "keinen",
+    "dieser", "diese", "dieses", "diesen", "diesem", "jeder", "jede", "jedes",
+    "mein", "meine", "dein", "deine", "sein", "seine", "ihr", "ihre", "unser", "unsere", "euer", "eure",
+    "ich", "du", "er", "sie", "es", "wir", "ihr", "sie", "Sie",
+    "mich", "dich", "ihn", "uns", "euch", "mir", "dir", "ihm", "ihnen",
+    "sein", "haben", "werden", "können", "müssen", "wollen", "sollen",
+    "bin", "bist", "ist", "sind", "war", "waren", "gewesen",
+    "habe", "hast", "hat", "haben", "hatte", "hatten", "gehabt",
+    "kann", "kannst", "können", "muss", "musst", "müssen", "will", "willst", "wollen",
+    "hallo", "guten morgen", "guten tag", "guten abend", "gute nacht", "danke", "bitte"
+})
+
+# Stopwords in Portoghese
+PORTUGUESE_STOPWORDS: frozenset[str] = frozenset({
+    "o", "a", "os", "as", "um", "uma", "uns", "umas",
+    "de", "do", "da", "dos", "das", "em", "no", "na", "nos", "nas", "por", "pelo", "pela", "pelos", "pelas",
+    "para", "com", "sem", "sob", "sobre", "entre", "até",
+    "como", "quando", "onde", "porque", "por que", "que", "quem", "qual", "quais", "quanto", "quantos",
+    "mas", "e", "ou", "nem", "se", "senão",
+    "este", "esta", "estes", "estas", "esse", "essa", "esses", "essas", "aquele", "aquela",
+    "meu", "minha", "meus", "minhas", "teu", "tua", "teus", "tuas", "seu", "sua", "seus", "suas",
+    "nosso", "nossa", "nossos", "nossas",
+    "eu", "tu", "ele", "ela", "nós", "vós", "eles", "elas", "você", "vocês",
+    "me", "te", "se", "nos", "vos", "o", "a", "lhe", "os", "as", "lhes",
+    "muito", "muita", "muitos", "muitas", "pouco", "pouca", "poucos", "poucas", "tudo", "todos", "todas",
+    "ser", "estar", "ter", "haver", "fazer", "dizer", "ir", "poder",
+    "sou", "és", "é", "somos", "sois", "são", "era", "fui", "foi", "sido",
+    "estou", "estás", "está", "estamos", "estais", "estão",
+    "tenho", "tens", "tem", "temos", "tendes", "têm", "tinha", "tive",
+    "posso", "podes", "pode", "podemos", "podeis", "podem",
+    "faço", "fazes", "faz", "fazemos", "fazeis", "fazem",
+    "olá", "bom dia", "boa tarde", "boa noite", "obrigado", "obrigada", "por favor"
+})
+
+ALL_STOPWORDS: frozenset[str] = (
+    ITALIAN_STOPWORDS | ENGLISH_STOPWORDS | SPANISH_STOPWORDS |
+    FRENCH_STOPWORDS | GERMAN_STOPWORDS | PORTUGUESE_STOPWORDS
+)
+
+# Pattern multilingue per saluti, convenevoli e general conversation
 GREETING_PATTERN = re.compile(
-    r"^(ciao|buongiorno|buond[iì]|buonasera|buonanotte|salve|hey|ehi|hello|hi|good morning|good evening)"
-    r"(\s+(nuxiva|assistente|amico|tutti|a tutti))?"
-    r"([\s,!.?]+(come\s+va|come\s+stai|tutto\s+bene|come\s+butta|how\s+are\s+you|what's\s+up))?[\s.?!]*$",
+    r"^(ciao|buongiorno|buond[iì]|buonasera|buonanotte|salve|hey|ehi"
+    r"|hello|hi|good morning|good evening|good afternoon"
+    r"|hola|buenos d[ií]as|buenas tardes|buenas noches"
+    r"|bonjour|bonsoir|salut"
+    r"|hallo|guten morgen|guten tag|guten abend"
+    r"|ol[aá]|bom dia|boa tarde|boa noite)"
+    r"(\s+(nuxiva|assistente|amico|tutti|a tutti|assistant|friend))?"
+    r"([\s,!.?]+(come\s+va|come\s+stai|tutto\s+bene|come\s+butta"
+    r"|how\s+are\s+you|what's\s+up|how\s+is\s+it\s+going"
+    r"|c[oó]mo\s+est[aá]s|c[oó]mo\s+te\s+va|qu[eé]\s+tal|todo\s+bien"
+    r"|comment\s+[cç]a\s+va|comment\s+vas-tu|tout\s+va\s+bien"
+    r"|wie\s+geht\s+es\s+dir|wie\s+geht's|alles\s+gut"
+    r"|tudo\s+bem|como\s+vai))?[\s.?!]*$",
     re.IGNORECASE
 )
 
 SMALLTALK_PATTERN = re.compile(
-    r"^(come\s+va|come\s+stai|tutto\s+bene|come\s+vanno\s+le\s+cose|how\s+are\s+you|how\s+is\s+it\s+going)"
-    r"(\s+(oggi|ora|adesso|con\s+te))?[\s.?!]*$",
+    r"^(come\s+va|come\s+stai|tutto\s+bene|come\s+vanno\s+le\s+cose"
+    r"|how\s+are\s+you|how\s+is\s+it\s+going|what's\s+up"
+    r"|c[oó]mo\s+est[aá]s|c[oó]mo\s+te\s+va|qu[eé]\s+tal|todo\s+bien"
+    r"|comment\s+[cç]a\s+va|comment\s+vas-tu|tout\s+va\s+bien"
+    r"|wie\s+geht\s+es\s+dir|wie\s+geht's|alles\s+gut"
+    r"|tudo\s+bem|como\s+vai)"
+    r"(\s+(oggi|ora|adesso|today|now|hoy|ahora|aujourd'hui|maintenant|heute|jetzt|hoje|agora))?[\s.?!]*$",
     re.IGNORECASE
 )
 
-# Pattern per richieste di identità, scopo e capacità generali dell'assistente
+# Pattern multilingue per richieste di identità, scopo e capacità generali dell'assistente
 IDENTITY_PATTERN = re.compile(
     r"^(chi\s+sei|come\s+ti\s+chiami|qual\s+[eè]\s+il\s+tuo\s+nome|qual\s+[eè]\s+la\s+tua\s+funzione"
     r"|presentati|raccontami\s+di\s+te|cosa\s+sai\s+fare|cosa\s+puoi\s+fare|cosa\s+fai"
-    r"|who\s+are\s+you|what\s+is\s+your\s+name|what\s+can\s+you\s+do)[\s.?!]*$",
+    r"|who\s+are\s+you|what\s+is\s+your\s+name|what\s+can\s+you\s+do|introduce\s+yourself"
+    r"|qui[eé]n\s+eres|c[oó]mo\s+te\s+llamas|qu[eé]\s+puedes\s+hacer|qu[eé]\s+sabes\s+hacer|pres[eé]ntate"
+    r"|qui\s+es-tu|comment\s+t'appelles-tu|que\s+peux-tu\s+faire|pr[eé]sente-toi"
+    r"|wer\s+bist\s+du|wie\s+hei[sß]t\s+du|was\s+kannst\s+du\s+tun|stelle\s+dich\s+vor"
+    r"|quem\s+[eé]\s+voc[eê]|como\s+voc[eê]\s+se\s+chama|o\s+que\s+voc[eê]\s+pode\s+fazer|apresente-se)[\s.?!]*$",
     re.IGNORECASE
 )
 
 
 def normalize_text(text: str) -> str:
-    """Normalizza testo rimuovendo accenti speciali e uniformando a minuscolo."""
+    """Normalizza testo rimuovendo caratteri speciali e uniformando a minuscolo."""
     if not text:
         return ""
-    # Sostituisce apostrofi vari con spazio o apostrofo standard
     cleaned = text.replace("’", "'").replace("`", "'")
     return cleaned.strip().lower()
 
@@ -126,7 +229,7 @@ def normalize_text(text: str) -> str:
 def is_conversational_query(text: str) -> bool:
     """
     Rileva se la richiesta è una tipica interazione conversazionale generica
-    (saluti, convenevoli, convenzioni sociali o richieste d'identità).
+    (saluti, convenevoli, convenzioni sociali o richieste d'identità) in qualsiasi lingua supportata.
     """
     clean = normalize_text(text)
     if not clean:
@@ -142,7 +245,8 @@ def is_conversational_query(text: str) -> bool:
 
 def clean_tokens(text: str) -> set[str]:
     """
-    Estrae solo i token semantici significativi (non-stopwords) con lunghezza >= 3.
+    Estrae solo i token semantici significativi (non-stopwords) con lunghezza >= 3,
+    filtrando le stopwords delle principali lingue internazionali.
     """
     clean = normalize_text(text)
     words = TOKEN_RE.findall(clean)
