@@ -27,6 +27,13 @@
     "error_updater_nodes_failed": "Invio dell'aggiornamento ai nodi non riuscito.",
     "error_updater_collaudo_failed": "Collaudo non eseguito.",
     "error_updater_history_failed": "Cronologia non disponibile.",
-    "error_identity_unavailable": "Impossibile leggere il nome dell'assistente."
+    "error_identity_unavailable": "Impossibile leggere il nome dell'assistente.",
+    "error_node_settings_unavailable": "Impostazioni del nodo non disponibili.",
+    "error_node_settings_save_failed": "Salvataggio delle impostazioni non riuscito.",
+    "error_node_inventory_unavailable": "Inventario del nodo non disponibile.",
+    "error_node_audio_unavailable": "Stato audio non disponibile.",
+    "error_node_audio_update_failed": "Modifica audio non applicata.",
+    "error_node_sounds_unavailable": "Elenco suoni non disponibile.",
+    "error_node_sound_play_failed": "Riproduzione del suono non riuscita."
   }
 }

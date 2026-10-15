@@ -27,6 +27,13 @@
     "error_updater_nodes_failed": "Échec de l'envoi de la mise à jour aux nœuds.",
     "error_updater_collaudo_failed": "Recette non exécutée.",
     "error_updater_history_failed": "Historique indisponible.",
-    "error_identity_unavailable": "Impossible de lire le nom de l'assistant."
+    "error_identity_unavailable": "Impossible de lire le nom de l'assistant.",
+    "error_node_settings_unavailable": "Réglages du nœud indisponibles.",
+    "error_node_settings_save_failed": "Échec de l'enregistrement des réglages.",
+    "error_node_inventory_unavailable": "Inventaire du nœud indisponible.",
+    "error_node_audio_unavailable": "État audio indisponible.",
+    "error_node_audio_update_failed": "Modification audio non appliquée.",
+    "error_node_sounds_unavailable": "Liste des sons indisponible.",
+    "error_node_sound_play_failed": "Lecture du son échouée."
   }
 }

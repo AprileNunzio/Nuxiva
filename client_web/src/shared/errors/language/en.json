@@ -27,6 +27,13 @@
     "error_updater_nodes_failed": "Failed to send the update to nodes.",
     "error_updater_collaudo_failed": "Self-test not executed.",
     "error_updater_history_failed": "History unavailable.",
-    "error_identity_unavailable": "Unable to read the assistant name."
+    "error_identity_unavailable": "Unable to read the assistant name.",
+    "error_node_settings_unavailable": "Node settings unavailable.",
+    "error_node_settings_save_failed": "Failed to save settings.",
+    "error_node_inventory_unavailable": "Node inventory unavailable.",
+    "error_node_audio_unavailable": "Audio status unavailable.",
+    "error_node_audio_update_failed": "Audio change not applied.",
+    "error_node_sounds_unavailable": "Sound list unavailable.",
+    "error_node_sound_play_failed": "Sound playback failed."
   }
 }

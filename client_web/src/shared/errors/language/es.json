@@ -27,6 +27,13 @@
     "error_updater_nodes_failed": "No se pudo enviar la actualización a los nodos.",
     "error_updater_collaudo_failed": "Pruebas no ejecutadas.",
     "error_updater_history_failed": "Historial no disponible.",
-    "error_identity_unavailable": "No se puede leer el nombre del asistente."
+    "error_identity_unavailable": "No se puede leer el nombre del asistente.",
+    "error_node_settings_unavailable": "Ajustes del nodo no disponibles.",
+    "error_node_settings_save_failed": "No se pudieron guardar los ajustes.",
+    "error_node_inventory_unavailable": "Inventario del nodo no disponible.",
+    "error_node_audio_unavailable": "Estado de audio no disponible.",
+    "error_node_audio_update_failed": "Cambio de audio no aplicado.",
+    "error_node_sounds_unavailable": "Lista de sonidos no disponible.",
+    "error_node_sound_play_failed": "Falló la reproducción del sonido."
   }
 }

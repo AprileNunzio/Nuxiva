@@ -104,7 +104,11 @@ export const NodeConsoleView: React.FC<NodeConsoleViewProps> = ({ nodeId, initia
       </nav>
 
       <section className="min-h-0 flex-1">
-        <ActiveModule nodeId={nodeId} />
+        {control ? (
+          <ActiveModule key={`${activeModule}-${control.scope}`} nodeId={nodeId} scope={control.scope} />
+        ) : (
+          <Loader2 className="h-5 w-5 animate-spin text-cyan-300" aria-label={t('loading')} />
+        )}
       </section>
     </div>
   );

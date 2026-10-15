@@ -26,6 +26,13 @@ const KNOWN_CODES = new Set([
   'updater_collaudo_failed',
   'updater_history_failed',
   'identity_unavailable',
+  'node_settings_unavailable',
+  'node_settings_save_failed',
+  'node_inventory_unavailable',
+  'node_audio_unavailable',
+  'node_audio_update_failed',
+  'node_sounds_unavailable',
+  'node_sound_play_failed',
 ]);
 
 export const ErrorToastHost: React.FC = () => {

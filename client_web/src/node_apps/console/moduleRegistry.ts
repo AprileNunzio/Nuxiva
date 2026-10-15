@@ -1,4 +1,5 @@
 import React from 'react';
+import { ControlScope } from './data/nodeConsoleApi';
 import { Bluetooth, Camera, Cpu, Edit3, LucideIcon, Mic, Monitor, Printer, Smartphone, Volume2 } from 'lucide-react';
 import AudioView from '../audio';
 import BluetoothView from '../bluetooth';
@@ -13,7 +14,7 @@ import WhiteboardView from '../whiteboard';
 export interface NodeModule {
   readonly id: string;
   readonly icon: LucideIcon;
-  readonly component: React.FC<{ nodeId?: string }>;
+  readonly component: React.FC<{ nodeId?: string; scope?: ControlScope }>;
 }
 
 export const NODE_MODULES: readonly NodeModule[] = [

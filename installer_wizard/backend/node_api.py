@@ -313,12 +313,6 @@ class BrainPullRequest(BaseModel):
     model: str = "llama3.2:latest"
 
 
-class HardwareTestToneRequest(BaseModel):
-    output_device: str = "default"
-    frequency: int = 440
-    duration_ms: int = 1000
-
-
 class HardwareTestPrintRequest(BaseModel):
     printer_id: str = "default"
     paper_size: str = "A4"
@@ -1059,19 +1053,6 @@ def probe_real_node_hardware(node_id: str, force: bool = False) -> Dict[str, Any
 def get_node_hardware(node_id: str) -> Dict[str, Any]:
     """Rileva periferiche audio, webcam, stampanti e bluetooth realmente disponibili (0 dati inventati)."""
     return probe_real_node_hardware(node_id)
-
-
-@router.post("/{node_id}/hardware/test_audio")
-def test_node_audio(node_id: str, req: HardwareTestToneRequest) -> Dict[str, Any]:
-    """Genera un tono sonoro di diagnostica per verificare le casse del nodo."""
-    return {
-        "success": True,
-        "node_id": node_id,
-        "device": req.output_device,
-        "frequency": req.frequency,
-        "duration_ms": req.duration_ms,
-        "status": "tone_emitted"
-    }
 
 
 @router.post("/{node_id}/hardware/test_print")
