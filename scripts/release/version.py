@@ -29,6 +29,7 @@ TARGETS = (
     Target("client_web/package-lock.json", rf'(?s)(  "packages": \{{\s+"": \{{\s+"name": "[^"]+",\s+"version": "){V}(")'),
     Target("native/Cargo.toml", rf'(?m)^(version = "){V}(")'),
     Target("native/Cargo.lock", rf'(name = "nuxiva-bus-core"\r?\nversion = "){V}(")'),
+    Target("native/Cargo.lock", rf'(name = "nuxiva-crdt-core"\r?\nversion = "){V}(")'),
     Target("native/Cargo.lock", rf'(name = "nuxiva-egress"\r?\nversion = "){V}(")'),
     Target("native/Cargo.lock", rf'(name = "nuxiva-native"\r?\nversion = "){V}(")'),
     Target("native/Cargo.lock", rf'(name = "nuxiva-netguard"\r?\nversion = "){V}(")'),
