@@ -86,5 +86,19 @@
   "tokens": "Tokens",
   "speed": "Speed",
   "err_prefix": "Error",
-  "vram_est": "Estimated Memory Usage"
+  "vram_est": "Estimated Memory Usage",
+  "master_assignments_title": "Node Cognitive Assignment Matrix",
+  "master_assignments_desc": "Real-time supervision: decide which engine handles voice conversation and which handles deep reasoning.",
+  "active_routing": "Active Routing",
+  "role_fast_chat_title": "Fast Conversation (Real-Time Voice)",
+  "role_deep_reasoning_title": "Deep Reasoning & Planner",
+  "role_vision_title": "Vision & Multimodal Cameras",
+  "assign_fast_chat": "Assign to Fast Conversation",
+  "assign_deep_reasoning": "Assign to Deep Reasoning",
+  "assign_vision": "Assign to Vision",
+  "assigned_as_fast_chat": "Active on Fast Conversation ✓",
+  "assigned_as_deep_reasoning": "Active on Deep Reasoning ✓",
+  "assigned_as_vision": "Active on Vision ✓",
+  "configure_role": "Configure Engine",
+  "assign_selected_model": "Assign this model:"
 }

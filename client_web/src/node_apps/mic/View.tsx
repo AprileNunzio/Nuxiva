@@ -35,12 +35,8 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
   const [saved, setSaved] = useState(false);
 
   // Input devices
-  const [devices, setDevices] = useState<AudioInputDevice[]>([
-    { id: 'hw:1,0', name: 'USB ReSpeaker 4-Mic Circular Array (I2S/USB)', type: 'mic_array', channels: 4, vad_supported: true },
-    { id: 'hw:0,0', name: 'Analog 3.5mm Mic In (Realtek ALC897)', type: 'mic', channels: 1, vad_supported: false },
-    { id: 'cam:mic', name: 'Integrated Webcam Microphone', type: 'mic', channels: 1, vad_supported: true },
-  ]);
-  const [selectedDevice, setSelectedDevice] = useState('hw:1,0');
+  const [devices, setDevices] = useState<AudioInputDevice[]>([]);
+  const [selectedDevice, setSelectedDevice] = useState('');
 
   // Controls
   const [gain, setGain] = useState(80);
@@ -51,7 +47,7 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
   const [wakeWord, setWakeWord] = useState('Ehi Nuxiva');
 
   // VU Meter & Live Test
-  const [vuLevel, setVuLevel] = useState(15);
+  const [vuLevel, setVuLevel] = useState(0);
   const [isRecording, setIsRecording] = useState(false);
   const [recordSecondsLeft, setRecordSecondsLeft] = useState(0);
   const [recordedAudioUrl, setRecordedAudioUrl] = useState<string | null>(null);
@@ -59,46 +55,36 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
 
-  useEffect(() => {
-    let isMounted = true;
-    const fetchHardware = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch(`/api/v5/nodes/${nodeId}/hardware`);
-        if (res.ok) {
-          const data = await res.json();
-          if (isMounted && Array.isArray(data.audio_inputs) && data.audio_inputs.length > 0) {
+  const fetchHardware = async (isMounted = true) => {
+    try {
+      setLoading(true);
+      const res = await fetch(`/api/v5/nodes/${nodeId}/hardware`);
+      if (res.ok) {
+        const data = await res.json();
+        if (isMounted) {
+          if (Array.isArray(data.audio_inputs) && data.audio_inputs.length > 0) {
             setDevices(data.audio_inputs);
             setSelectedDevice(data.audio_inputs[0].id);
+          } else {
+            setDevices([]);
+            setSelectedDevice('');
           }
         }
-      } catch (err) {
-        console.warn('Hardware fetch failed', err);
-      } finally {
-        if (isMounted) setLoading(false);
       }
-    };
-    fetchHardware();
+    } catch (err) {
+      console.warn('Hardware fetch failed', err);
+    } finally {
+      if (isMounted) setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    let isMounted = true;
+    fetchHardware(isMounted);
     return () => {
       isMounted = false;
     };
   }, [nodeId]);
-
-  // Audio-reactive VU Meter simulation
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (isRecording) {
-        // Strong voice fluctuations
-        const base = 40 + Math.random() * 45;
-        setVuLevel(Math.min(95, base));
-      } else {
-        // Ambient room noise level
-        const ambient = 8 + Math.random() * 12;
-        setVuLevel(ambient);
-      }
-    }, 80);
-    return () => clearInterval(interval);
-  }, [isRecording]);
 
   const handleStartTestRecord = async () => {
     if (isRecording) return;
@@ -107,12 +93,37 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
     setRecordedAudioUrl(null);
     audioChunksRef.current = [];
 
-    // Attempt browser mic recording if available
+    // Attempt browser mic recording with real Web Audio analyser
     try {
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         const mediaRecorder = new MediaRecorder(stream);
         mediaRecorderRef.current = mediaRecorder;
+
+        const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+        if (AudioCtx) {
+          const audioCtx = new AudioCtx();
+          const source = audioCtx.createMediaStreamSource(stream);
+          const analyser = audioCtx.createAnalyser();
+          analyser.fftSize = 128;
+          source.connect(analyser);
+          const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+          const updateVu = () => {
+            if (!mediaRecorderRef.current || mediaRecorderRef.current.state !== 'recording') {
+              setVuLevel(0);
+              audioCtx.close().catch(() => {});
+              return;
+            }
+            analyser.getByteFrequencyData(dataArray);
+            let sum = 0;
+            for (let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+            const avg = sum / dataArray.length;
+            setVuLevel(Math.min(100, Math.round((avg / 128) * 100)));
+            requestAnimationFrame(updateVu);
+          };
+          requestAnimationFrame(updateVu);
+        }
 
         mediaRecorder.ondataavailable = (e) => {
           if (e.data.size > 0) audioChunksRef.current.push(e.data);
@@ -122,13 +133,14 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
           const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
           const url = URL.createObjectURL(audioBlob);
           setRecordedAudioUrl(url);
+          setVuLevel(0);
           stream.getTracks().forEach((track) => track.stop());
         };
 
         mediaRecorder.start();
       }
     } catch {
-      // Graceful fallback to synthetic audio playback if browser mic permission denied
+      // Browser mic permission denied or not supported
     }
 
     const timer = setInterval(() => {
@@ -136,6 +148,7 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
         if (prev <= 1) {
           clearInterval(timer);
           setIsRecording(false);
+          setVuLevel(0);
           if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
             mediaRecorderRef.current.stop();
           }
@@ -233,25 +246,31 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
           </div>
 
           <div className="space-y-2">
-            {devices.map((dev) => (
-              <div
-                key={dev.id}
-                onClick={() => setSelectedDevice(dev.id)}
-                className={`p-3.5 rounded-xl border cursor-pointer transition flex items-center justify-between ${
-                  selectedDevice === dev.id
-                    ? 'bg-cyan-950/30 border-cyan-500/60 ring-1 ring-cyan-500/40'
-                    : 'bg-slate-950/70 border-slate-800 hover:border-slate-700'
-                }`}
-              >
-                <div>
-                  <div className="text-xs font-bold text-white">{dev.name}</div>
-                  <div className="text-[10px] text-slate-500 mt-0.5">
-                    Port: {dev.id} · {dev.channels} Canali · {dev.vad_supported ? 'VAD Hardware Supportato' : 'VAD Software'}
-                  </div>
-                </div>
-                {selectedDevice === dev.id && <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#06b6d4]" />}
+            {devices.length === 0 ? (
+              <div className="text-xs text-slate-500 text-center py-6 bg-slate-950/40 rounded-xl border border-slate-800/80">
+                Nessun microfono rilevato sul nodo.
               </div>
-            ))}
+            ) : (
+              devices.map((dev) => (
+                <div
+                  key={dev.id}
+                  onClick={() => setSelectedDevice(dev.id)}
+                  className={`p-3.5 rounded-xl border cursor-pointer transition flex items-center justify-between ${
+                    selectedDevice === dev.id
+                      ? 'bg-cyan-950/30 border-cyan-500/60 ring-1 ring-cyan-500/40'
+                      : 'bg-slate-950/70 border-slate-800 hover:border-slate-700'
+                  }`}
+                >
+                  <div>
+                    <div className="text-xs font-bold text-white">{dev.name}</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">
+                      Port: {dev.id} · {dev.channels} Canali · {dev.vad_supported ? 'VAD Hardware Supportato' : 'VAD Software'}
+                    </div>
+                  </div>
+                  {selectedDevice === dev.id && <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#06b6d4]" />}
+                </div>
+              ))
+            )}
           </div>
         </div>
 

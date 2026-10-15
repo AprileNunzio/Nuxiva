@@ -31,40 +31,6 @@ AVAILABLE_NODE_APPS = [
     {"id": "client_link", "name": "Client Link", "icon": "Smartphone", "category": "node_plane"},
 ]
 
-DEFAULT_NODES = [
-    {
-        "id": "node-pc-master",
-        "name": "PC-Workstation-i9",
-        "tier": "Tier-1 Compute",
-        "ip": "192.168.1.10",
-        "os": "Linux x86_64",
-        "is_virtual_core": True,
-        "status": "online",
-        "metrics": {"cpu": 18.4, "ram": "5.4/32GB", "temp": 46.2, "ping": 1.2}
-    },
-    {
-        "id": "node-rpi-cam",
-        "name": "RaspberryPi-5-LivingRoom",
-        "tier": "Tier-2 Satellite",
-        "ip": "192.168.1.15",
-        "os": "Linux arm64",
-        "is_virtual_core": False,
-        "status": "online",
-        "metrics": {"cpu": 12.1, "ram": "1.2/8GB", "temp": 41.5, "ping": 2.4}
-    },
-    {
-        "id": "node-esp32-sensor",
-        "name": "ESP32-S3-Studio",
-        "tier": "Tier-3 ESP32",
-        "ip": "192.168.1.55",
-        "os": "FreeRTOS",
-        "is_virtual_core": False,
-        "status": "online",
-        "metrics": {"cpu": 3.0, "ram": "180KB", "temp": 32.0, "ping": 6.8}
-    }
-]
-
-
 class ConfigUpdateRequest(BaseModel):
     settings: Dict[str, Any] = {}
     enabled: bool = True
@@ -72,7 +38,7 @@ class ConfigUpdateRequest(BaseModel):
 
 class ProvisionRequest(BaseModel):
     target: str  # pc | raspberry | esp32 | android
-    parent_ip: str = "192.168.1.10"
+    parent_ip: str = "127.0.0.1"
     wifi_ssid: str = ""
     wifi_key: str = ""
 
@@ -91,22 +57,32 @@ class OnboardNodeRequest(BaseModel):
 
 @router.get("/usb_ports")
 def get_usb_ports() -> List[Dict[str, str]]:
-    """Rileva le porte seriali e USB connesse al server host."""
+    """Rileva le porte seriali e USB realmente connesse al server host (nessun dato inventato)."""
     ports: List[Dict[str, str]] = []
-    try:
-        import serial.tools.list_ports
-        for p in serial.tools.list_ports.comports():
-            ports.append({"device": str(p.device), "description": str(p.description or p.device)})
-    except Exception:
-        import glob
-        for dev in glob.glob("/dev/ttyUSB*") + glob.glob("/dev/ttyACM*") + glob.glob("/dev/cu.*"):
-            ports.append({"device": dev, "description": dev})
+    if os.name == "nt":
+        try:
+            import json
+            cmd = "Get-PnpDevice -Class Ports -Status OK | Select-Object FriendlyName, InstanceId | ConvertTo-Json -Compress"
+            p = subprocess.run(["powershell", "-NoProfile", "-Command", cmd], capture_output=True, text=True, timeout=5)
+            if p.stdout.strip():
+                raw = json.loads(p.stdout)
+                items = [raw] if isinstance(raw, dict) else raw
+                for item in items:
+                    fname = item.get("FriendlyName", "")
+                    iid = item.get("InstanceId", "")
+                    ports.append({"device": iid or fname, "description": fname})
+        except Exception:
+            pass
+    else:
+        try:
+            import serial.tools.list_ports
+            for p in serial.tools.list_ports.comports():
+                ports.append({"device": str(p.device), "description": str(p.description or p.device)})
+        except Exception:
+            import glob
+            for dev in glob.glob("/dev/ttyUSB*") + glob.glob("/dev/ttyACM*") + glob.glob("/dev/cu.*"):
+                ports.append({"device": dev, "description": dev})
 
-    if not ports:
-        ports = [
-            {"device": "/dev/ttyUSB0", "description": "Silicon Labs CP210x (ESP32 / NodeMCU)"},
-            {"device": "/dev/ttyACM0", "description": "Raspberry Pi Pico / USB Serial Device"},
-        ]
     return ports
 
 
@@ -355,6 +331,7 @@ class BrainConfigRequest(BaseModel):
     fallback_provider: str = "local_ollama"
     cloud_slots: Optional[Dict[str, Any]] = None
     remote_mesh_instances: Optional[List[Dict[str, Any]]] = None
+    assignments: Optional[Dict[str, Any]] = None
 
 
 class BrainTestRequest(BaseModel):
@@ -494,29 +471,7 @@ def uninstall_local_ollama(node_id: str) -> Dict[str, Any]:
 @router.get("/{node_id}/brain/remote_mesh")
 def get_node_remote_mesh_instances(node_id: str) -> Dict[str, Any]:
     """Restituisce le istanze Ollama remote associate su rete mesh."""
-    instances = _NODE_REMOTE_MESH_INSTANCES.get(node_id)
-    if instances is None:
-        instances = [
-            {
-                "id": f"inst-{node_id}-1",
-                "name": "PC-Workstation-i9",
-                "host_url": "http://192.168.1.10:11434",
-                "model": "llama3.2:latest",
-                "task": "fast_chat",
-                "latency_ms": 1.4,
-                "status": "online"
-            },
-            {
-                "id": f"inst-{node_id}-2",
-                "name": "Server-Studio-M2",
-                "host_url": "http://192.168.1.20:11434",
-                "model": "deepseek-r1:7b",
-                "task": "deep_reasoning",
-                "latency_ms": 3.8,
-                "status": "online"
-            }
-        ]
-        _NODE_REMOTE_MESH_INSTANCES[node_id] = instances
+    instances = _NODE_REMOTE_MESH_INSTANCES.get(node_id, [])
     return {"node_id": node_id, "instances": instances}
 
 
@@ -584,22 +539,49 @@ async def get_node_brain(node_id: str) -> Dict[str, Any]:
     key = f"{node_id}:brain"
     stored = _NODE_APP_CONFIGS.get(key, {}).get("settings", {})
     
+    # 1. Proba Ollama locale con verifica binario e demone
+    local_ollama = probe_local_ollama_status()
+
+    has_local_models = bool(local_ollama.get("models"))
     default_cfg = {
         "node_id": node_id,
-        "mode": stored.get("mode", "local_ollama"),
-        "local_model": stored.get("local_model", "llama3.2:latest"),
+        "mode": stored.get("mode", "local_ollama" if has_local_models else "cloud_llm"),
+        "local_model": stored.get("local_model", local_ollama["models"][0] if has_local_models else ""),
         "remote_node_id": stored.get("remote_node_id", ""),
-        "remote_host": stored.get("remote_host", "http://192.168.1.10:11434"),
-        "remote_model": stored.get("remote_model", "llama3.2:latest"),
-        "cloud_provider": stored.get("cloud_provider", "deepseek"),
-        "cloud_model": stored.get("cloud_model", "deepseek-chat"),
+        "remote_host": stored.get("remote_host", ""),
+        "remote_model": stored.get("remote_model", ""),
+        "cloud_provider": stored.get("cloud_provider", "gemini"),
+        "cloud_model": stored.get("cloud_model", "gemini-2.0-flash"),
         "cloud_api_key": stored.get("cloud_api_key", ""),
-        "cloud_base_url": stored.get("cloud_base_url", "https://api.deepseek.com/v1"),
+        "cloud_base_url": stored.get("cloud_base_url", "https://generativelanguage.googleapis.com/v1beta"),
         "system_prompt": stored.get("system_prompt", f"Sei l'assistente IA di Nuxiva dedicato per il nodo {node_id}."),
         "temperature": stored.get("temperature", 0.7),
         "max_tokens": stored.get("max_tokens", 2048),
         "fallback_enabled": stored.get("fallback_enabled", True),
         "fallback_provider": stored.get("fallback_provider", "local_ollama"),
+        "assignments": stored.get("assignments", {
+            "fast_chat": {
+                "source": "local_ollama" if has_local_models else "none",
+                "model": local_ollama["models"][0] if has_local_models else "",
+                "provider": "ollama_local" if has_local_models else "",
+                "label": f"Ollama Locale ({local_ollama['models'][0]})" if has_local_models else "Non Assegnato",
+                "endpoint": "http://127.0.0.1:11434" if has_local_models else "",
+            },
+            "deep_reasoning": {
+                "source": "none",
+                "model": "",
+                "provider": "",
+                "label": "Non Assegnato",
+                "endpoint": "",
+            },
+            "vision": {
+                "source": "none",
+                "model": "",
+                "provider": "",
+                "label": "Non Assegnato",
+                "endpoint": "",
+            }
+        }),
         "cloud_slots": stored.get("cloud_slots", {
             "fast_chat": {
                 "provider": "gemini",
@@ -608,10 +590,10 @@ async def get_node_brain(node_id: str) -> Dict[str, Any]:
                 "base_url": "https://generativelanguage.googleapis.com/v1beta",
             },
             "deep_reasoning": {
-                "provider": "deepseek",
-                "model": "deepseek-reasoner",
+                "provider": "gemini",
+                "model": "gemini-2.0-pro-exp-02-05",
                 "api_key": "",
-                "base_url": "https://api.deepseek.com/v1",
+                "base_url": "https://generativelanguage.googleapis.com/v1beta",
             },
             "vision": {
                 "provider": "openai",
@@ -620,32 +602,10 @@ async def get_node_brain(node_id: str) -> Dict[str, Any]:
                 "base_url": "https://api.openai.com/v1",
             }
         }),
-        "remote_mesh_instances": _NODE_REMOTE_MESH_INSTANCES.get(node_id, [
-            {
-                "id": f"inst-{node_id}-1",
-                "name": "PC-Workstation-i9",
-                "host_url": "http://192.168.1.10:11434",
-                "model": "llama3.2:latest",
-                "task": "fast_chat",
-                "latency_ms": 1.4,
-                "status": "online"
-            },
-            {
-                "id": f"inst-{node_id}-2",
-                "name": "Server-Studio-M2",
-                "host_url": "http://192.168.1.20:11434",
-                "model": "deepseek-r1:7b",
-                "task": "deep_reasoning",
-                "latency_ms": 3.8,
-                "status": "online"
-            }
-        ])
+        "remote_mesh_instances": _NODE_REMOTE_MESH_INSTANCES.get(node_id, [])
     }
 
-    # 1. Proba Ollama locale con verifica binario e demone
-    local_ollama = probe_local_ollama_status()
-
-    # 2. Scopri nodi remoti disponibili nella rete Mesh
+    # 2. Scopri nodi remoti disponibili nella rete Mesh (niente nodi inventati)
     remote_nodes: List[Dict[str, Any]] = []
     try:
         from server.features.mesh_coordinator.p2p_mesh import p2p_mesh
@@ -662,12 +622,6 @@ async def get_node_brain(node_id: str) -> Dict[str, Any]:
                 })
     except Exception:
         pass
-
-    if not remote_nodes:
-        remote_nodes = [
-            {"id": "node-pc-master", "name": "PC-Workstation-i9", "ip": "192.168.1.10", "host_url": "http://192.168.1.10:11434", "tier": "Tier-1 (Workstation / Compute)", "is_compute": True},
-            {"id": "node-server-studio", "name": "Server-Studio-M2", "ip": "192.168.1.20", "host_url": "http://192.168.1.20:11434", "tier": "Tier-1 (Compute Cluster)", "is_compute": True}
-        ]
 
     # 3. Provider Cloud Completi e Verificati (Tutti i modelli deprecati rimossi)
     cloud_providers = [
@@ -945,50 +899,203 @@ async def pull_node_brain_model(node_id: str, req: BrainPullRequest) -> Dict[str
 # Hardware Discovery & Diagnostic Endpoints
 # =====================================================================
 
+_HW_PROBE_CACHE: Dict[str, Any] = {"ts": 0, "data": None}
+
+
+def probe_real_node_hardware(node_id: str, force: bool = False) -> Dict[str, Any]:
+    """Rileva periferiche hardware realmente presenti sull'host o nodo (nessun dato inventato)."""
+    now = time.time()
+    if not force and _HW_PROBE_CACHE["data"] is not None and (now - _HW_PROBE_CACHE["ts"] < 10):
+        cached = dict(_HW_PROBE_CACHE["data"])
+        cached["node_id"] = node_id
+        return cached
+
+    audio_outputs: List[Dict[str, Any]] = []
+    audio_inputs: List[Dict[str, Any]] = []
+    cameras: List[Dict[str, Any]] = []
+    printers: List[Dict[str, Any]] = []
+    bluetooth: Dict[str, Any] = {
+        "adapter": None,
+        "chipset": "",
+        "mac": "",
+        "powered": False,
+        "discoverable": False,
+        "paired_devices": []
+    }
+    display: Dict[str, Any] = {
+        "resolution": "1920x1080",
+        "orientation": "landscape",
+        "kiosk_active": False,
+        "refresh_rate": 60,
+        "brightness": 100
+    }
+
+    if os.name == "nt":
+        import json
+        # 1. Real Audio Endpoints via Windows PnP
+        try:
+            cmd = "Get-PnpDevice -Class AudioEndpoint -Status OK | Select-Object FriendlyName, InstanceId | ConvertTo-Json -Compress"
+            p = subprocess.run(["powershell", "-NoProfile", "-Command", cmd], capture_output=True, text=True, timeout=6)
+            if p.stdout.strip():
+                raw = json.loads(p.stdout)
+                items = [raw] if isinstance(raw, dict) else raw
+                for it in items:
+                    fname = it.get("FriendlyName", "Audio Device")
+                    iid = it.get("InstanceId", "")
+                    if "{0.0.0." in iid:
+                        audio_outputs.append({
+                            "id": iid,
+                            "name": fname,
+                            "type": "speaker",
+                            "channels": 2,
+                            "sample_rate": 48000
+                        })
+                    elif "{0.0.1." in iid:
+                        audio_inputs.append({
+                            "id": iid,
+                            "name": fname,
+                            "type": "mic",
+                            "channels": 1,
+                            "vad_supported": True
+                        })
+        except Exception:
+            pass
+
+        # 2. Real Cameras via Windows PnP
+        try:
+            cmd = "Get-PnpDevice -Class Camera -Status OK | Select-Object FriendlyName, InstanceId | ConvertTo-Json -Compress"
+            p = subprocess.run(["powershell", "-NoProfile", "-Command", cmd], capture_output=True, text=True, timeout=6)
+            if p.stdout.strip():
+                raw = json.loads(p.stdout)
+                items = [raw] if isinstance(raw, dict) else raw
+                for it in items:
+                    cameras.append({
+                        "id": it.get("InstanceId", ""),
+                        "name": it.get("FriendlyName", "Camera"),
+                        "resolution": "HD",
+                        "fps": 30,
+                        "status": "ready"
+                    })
+        except Exception:
+            pass
+
+        # 3. Real Printers via Windows Get-Printer
+        try:
+            cmd = "Get-Printer | Select-Object Name, DriverName, PortName | ConvertTo-Json -Compress"
+            p = subprocess.run(["powershell", "-NoProfile", "-Command", cmd], capture_output=True, text=True, timeout=6)
+            if p.stdout.strip():
+                raw = json.loads(p.stdout)
+                items = [raw] if isinstance(raw, dict) else raw
+                for it in items:
+                    printers.append({
+                        "id": it.get("Name", ""),
+                        "name": it.get("Name", ""),
+                        "type": it.get("DriverName", "standard"),
+                        "connection": it.get("PortName", "Local"),
+                        "status": "ready"
+                    })
+        except Exception:
+            pass
+
+        # 4. Real Bluetooth via Windows PnP
+        try:
+            cmd = "Get-PnpDevice -Class Bluetooth -Status OK | Select-Object FriendlyName, InstanceId | ConvertTo-Json -Compress"
+            p = subprocess.run(["powershell", "-NoProfile", "-Command", cmd], capture_output=True, text=True, timeout=6)
+            if p.stdout.strip():
+                raw = json.loads(p.stdout)
+                items = [raw] if isinstance(raw, dict) else raw
+                for it in items:
+                    fname = it.get("FriendlyName", "")
+                    if "Bluetooth" in fname:
+                        bluetooth["adapter"] = fname
+                        bluetooth["chipset"] = fname
+                        bluetooth["powered"] = True
+                        break
+        except Exception:
+            pass
+
+    else:
+        # Linux detection
+        import glob
+        # 1. Real Audio ALSA
+        if os.path.exists("/proc/asound/cards"):
+            try:
+                with open("/proc/asound/cards", "r") as f:
+                    for line in f:
+                        if "[" in line and "]" in line:
+                            parts = line.strip().split("[")
+                            idx = parts[0].strip()
+                            name = parts[1].split("]")[0].strip()
+                            audio_outputs.append({
+                                "id": f"hw:{idx},0",
+                                "name": name,
+                                "type": "speaker",
+                                "channels": 2,
+                                "sample_rate": 48000
+                            })
+                            audio_inputs.append({
+                                "id": f"hw:{idx},0",
+                                "name": name,
+                                "type": "mic",
+                                "channels": 1,
+                                "vad_supported": True
+                            })
+            except Exception:
+                pass
+
+        # 2. Real Cameras V4L2
+        for dev in sorted(glob.glob("/dev/video*")):
+            cameras.append({
+                "id": dev,
+                "name": f"V4L2 Video Device ({dev})",
+                "resolution": "HD",
+                "fps": 30,
+                "status": "ready"
+            })
+
+        # 3. Real Bluetooth BlueZ
+        bt_adapters = glob.glob("/sys/class/bluetooth/hci*")
+        if bt_adapters:
+            adapter_name = os.path.basename(bt_adapters[0])
+            bluetooth["adapter"] = adapter_name
+            bluetooth["chipset"] = "Linux BlueZ HCI"
+            bluetooth["powered"] = True
+
+        # 4. Real CUPS Printers
+        try:
+            p = subprocess.run(["lpstat", "-p"], capture_output=True, text=True, timeout=3)
+            if p.stdout:
+                for line in p.stdout.strip().splitlines():
+                    if line.startswith("printer "):
+                        pname = line.split()[1]
+                        printers.append({
+                            "id": pname,
+                            "name": pname,
+                            "type": "CUPS IPP",
+                            "connection": "Spooler",
+                            "status": "ready"
+                        })
+        except Exception:
+            pass
+
+    result = {
+        "node_id": node_id,
+        "audio_outputs": audio_outputs,
+        "audio_inputs": audio_inputs,
+        "cameras": cameras,
+        "printers": printers,
+        "bluetooth": bluetooth,
+        "display": display
+    }
+    _HW_PROBE_CACHE["data"] = result
+    _HW_PROBE_CACHE["ts"] = now
+    return result
+
+
 @router.get("/{node_id}/hardware")
 def get_node_hardware(node_id: str) -> Dict[str, Any]:
-    """Rileva periferiche audio, webcam, stampanti e bluetooth disponibili."""
-    return {
-        "node_id": node_id,
-        "audio_outputs": [
-            {"id": "hw:0,0", "name": "Realtek ALSA High Definition Audio (Default)", "type": "speaker", "channels": 2, "sample_rate": 48000},
-            {"id": "hw:0,3", "name": "HDMI / DisplayPort Digital Audio Out", "type": "hdmi", "channels": 8, "sample_rate": 96000},
-            {"id": "usb:dac", "name": "USB Audio DAC Hi-Res 24-bit", "type": "dac", "channels": 2, "sample_rate": 192000}
-        ],
-        "audio_inputs": [
-            {"id": "hw:1,0", "name": "USB ReSpeaker 4-Mic Circular Array (I2S/USB)", "type": "mic_array", "channels": 4, "vad_supported": True},
-            {"id": "hw:0,0", "name": "Analog 3.5mm Mic In (Realtek ALC897)", "type": "mic", "channels": 1, "vad_supported": False},
-            {"id": "cam:mic", "name": "Integrated Webcam Microphone", "type": "mic", "channels": 1, "vad_supported": True}
-        ],
-        "cameras": [
-            {"id": "/dev/video0", "name": "Sony IMX708 Wide 4K Ultra-HD", "resolution": "3840x2160", "fps": 30, "status": "active"},
-            {"id": "/dev/video2", "name": "Logitech C920 HD Pro (USB)", "resolution": "1920x1080", "fps": 60, "status": "standby"},
-            {"id": "rtsp://camera", "name": "ESP32-CAM Satellite RTSP Stream", "resolution": "1280x720", "fps": 25, "status": "streaming"}
-        ],
-        "printers": [
-            {"id": "printer-hp-laser", "name": "HP LaserJet Pro M404dw", "type": "laser", "connection": "USB 2.0 / RAW", "status": "idle", "ink": {"black": 82}},
-            {"id": "printer-epson-ink", "name": "Epson EcoTank L3250", "type": "inkjet", "connection": "IPP / Wi-Fi", "status": "idle", "ink": {"cyan": 76, "magenta": 68, "yellow": 85, "black": 92}},
-            {"id": "printer-3d-ender", "name": "Creality Ender 3 S1 (OctoPrint)", "type": "3d_printer", "connection": "USB Serial", "status": "ready", "bed_temp": 60.0, "nozzle_temp": 205.0}
-        ],
-        "bluetooth": {
-            "adapter": "hci0",
-            "chipset": "Intel Bluetooth 5.3 AX211 Controller",
-            "mac": "F4:4D:30:8A:2B:1C",
-            "powered": True,
-            "discoverable": False,
-            "paired_devices": [
-                {"mac": "70:26:05:AA:11:22", "name": "Sony WH-1000XM5", "type": "audio", "connected": True, "battery": 85},
-                {"mac": "DC:2C:26:BB:33:44", "name": "Logitech MX Master 3S", "type": "hid", "connected": True, "battery": 90}
-            ]
-        },
-        "display": {
-            "resolution": "1920x1080",
-            "orientation": "landscape",
-            "kiosk_active": False,
-            "refresh_rate": 60,
-            "brightness": 85
-        }
-    }
+    """Rileva periferiche audio, webcam, stampanti e bluetooth realmente disponibili (0 dati inventati)."""
+    return probe_real_node_hardware(node_id)
 
 
 @router.post("/{node_id}/hardware/test_audio")
@@ -1021,16 +1128,8 @@ def test_node_print(node_id: str, req: HardwareTestPrintRequest) -> Dict[str, An
 
 @router.get("/{node_id}/whiteboards")
 def list_node_whiteboards(node_id: str) -> List[Dict[str, Any]]:
-    """Restituisce le lavagne salvate per questo nodo."""
-    return _NODE_WHITEBOARDS.get(node_id, [
-        {
-            "id": f"wb-default-{node_id}",
-            "title": "Note Condivise & Schema Nodo",
-            "created_at": time.strftime("%Y-%m-%d %H:%M", time.localtime()),
-            "strokes_count": 14,
-            "preview": ""
-        }
-    ])
+    """Restituisce le lavagne salvate per questo nodo (nessun dato inventato)."""
+    return _NODE_WHITEBOARDS.get(node_id, [])
 
 
 @router.post("/{node_id}/whiteboards")

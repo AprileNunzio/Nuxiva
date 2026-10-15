@@ -35,6 +35,20 @@ export interface LocalOllamaStatus {
   catalog?: string[];
 }
 
+export interface RoleAssignment {
+  source: 'local_ollama' | 'remote_mesh' | 'cloud_llm';
+  model: string;
+  provider: string;
+  label: string;
+  endpoint: string;
+}
+
+export interface BrainAssignments {
+  fast_chat: RoleAssignment;
+  deep_reasoning: RoleAssignment;
+  vision: RoleAssignment;
+}
+
 export interface BrainConfig {
   nodeId: string;
   enabled: boolean;
@@ -55,6 +69,7 @@ export interface BrainConfig {
     fallback_provider: string;
     cloud_slots?: Record<string, CloudSlotConfig>;
     remote_mesh_instances?: RemoteOllamaInstance[];
+    assignments?: BrainAssignments;
   };
   updatedAt: string;
 }

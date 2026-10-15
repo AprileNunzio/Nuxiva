@@ -86,5 +86,19 @@
   "tokens": "Tokens",
   "speed": "Vitesse",
   "err_prefix": "Erreur",
-  "vram_est": "Consommation Mémoire Estimée"
+  "vram_est": "Consommation Mémoire Estimée",
+  "master_assignments_title": "Matrice d'Attribution Cognitive du Nœud",
+  "master_assignments_desc": "Supervision en temps réel: décidez quel moteur gère la conversation vocale et quel moteur gère le raisonnement profond.",
+  "active_routing": "Routage Actif",
+  "role_fast_chat_title": "Conversation Rapide (Voix Temps Réel)",
+  "role_deep_reasoning_title": "Raisonnement Profond & Planificateur",
+  "role_vision_title": "Vision & Caméras Multimodales",
+  "assign_fast_chat": "Assigner à Conversation Rapide",
+  "assign_deep_reasoning": "Assigner à Raisonnement",
+  "assign_vision": "Assigner à Vision",
+  "assigned_as_fast_chat": "Actif sur Conversation Rapide ✓",
+  "assigned_as_deep_reasoning": "Actif sur Raisonnement ✓",
+  "assigned_as_vision": "Actif sur Vision ✓",
+  "configure_role": "Configurer Moteur",
+  "assign_selected_model": "Assigner ce modèle:"
 }

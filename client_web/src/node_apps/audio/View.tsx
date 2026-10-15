@@ -34,12 +34,8 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
   const [saved, setSaved] = useState(false);
 
   // Audio parameters
-  const [devices, setDevices] = useState<AudioDevice[]>([
-    { id: 'hw:0,0', name: 'Realtek ALSA High Definition Audio (Default)', type: 'speaker', channels: 2, sample_rate: 48000 },
-    { id: 'hw:0,3', name: 'HDMI / DisplayPort Digital Audio Out', type: 'hdmi', channels: 8, sample_rate: 96000 },
-    { id: 'usb:dac', name: 'USB Audio DAC Hi-Res 24-bit', type: 'dac', channels: 2, sample_rate: 192000 },
-  ]);
-  const [selectedDevice, setSelectedDevice] = useState('hw:0,0');
+  const [devices, setDevices] = useState<AudioDevice[]>([]);
+  const [selectedDevice, setSelectedDevice] = useState('');
   const [volume, setVolume] = useState(75);
   const [isMuted, setIsMuted] = useState(false);
   const [profile, setProfile] = useState<'voice' | 'music' | 'night' | 'chime'>('voice');
@@ -54,26 +50,32 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioCtxRef = useRef<AudioContext | null>(null);
 
-  useEffect(() => {
-    let isMounted = true;
-    const fetchHardware = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch(`/api/v5/nodes/${nodeId}/hardware`);
-        if (res.ok) {
-          const data = await res.json();
-          if (isMounted && Array.isArray(data.audio_outputs) && data.audio_outputs.length > 0) {
+  const fetchHardware = async (isMounted = true) => {
+    try {
+      setLoading(true);
+      const res = await fetch(`/api/v5/nodes/${nodeId}/hardware`);
+      if (res.ok) {
+        const data = await res.json();
+        if (isMounted) {
+          if (Array.isArray(data.audio_outputs) && data.audio_outputs.length > 0) {
             setDevices(data.audio_outputs);
             setSelectedDevice(data.audio_outputs[0].id);
+          } else {
+            setDevices([]);
+            setSelectedDevice('');
           }
         }
-      } catch (err) {
-        console.warn('Hardware fetch failed', err);
-      } finally {
-        if (isMounted) setLoading(false);
       }
-    };
-    fetchHardware();
+    } catch (err) {
+      console.warn('Hardware fetch failed', err);
+    } finally {
+      if (isMounted) setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    let isMounted = true;
+    fetchHardware(isMounted);
     return () => {
       isMounted = false;
       if (audioCtxRef.current) {
@@ -205,25 +207,31 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
           </div>
 
           <div className="space-y-2">
-            {devices.map((dev) => (
-              <div
-                key={dev.id}
-                onClick={() => setSelectedDevice(dev.id)}
-                className={`p-3.5 rounded-xl border cursor-pointer transition flex items-center justify-between ${
-                  selectedDevice === dev.id
-                    ? 'bg-cyan-950/30 border-cyan-500/60 ring-1 ring-cyan-500/40'
-                    : 'bg-slate-950/70 border-slate-800 hover:border-slate-700'
-                }`}
-              >
-                <div>
-                  <div className="text-xs font-bold text-white">{dev.name}</div>
-                  <div className="text-[10px] text-slate-500 mt-0.5">
-                    ID: {dev.id} · {dev.channels} Canali · {dev.sample_rate / 1000} kHz
-                  </div>
-                </div>
-                {selectedDevice === dev.id && <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#06b6d4]" />}
+            {devices.length === 0 ? (
+              <div className="text-xs text-slate-500 text-center py-6 bg-slate-950/40 rounded-xl border border-slate-800/80">
+                Nessun dispositivo di output audio rilevato sul nodo.
               </div>
-            ))}
+            ) : (
+              devices.map((dev) => (
+                <div
+                  key={dev.id}
+                  onClick={() => setSelectedDevice(dev.id)}
+                  className={`p-3.5 rounded-xl border cursor-pointer transition flex items-center justify-between ${
+                    selectedDevice === dev.id
+                      ? 'bg-cyan-950/30 border-cyan-500/60 ring-1 ring-cyan-500/40'
+                      : 'bg-slate-950/70 border-slate-800 hover:border-slate-700'
+                  }`}
+                >
+                  <div>
+                    <div className="text-xs font-bold text-white">{dev.name}</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">
+                      ID: {dev.id} · {dev.channels} Canali · {dev.sample_rate / 1000} kHz
+                    </div>
+                  </div>
+                  {selectedDevice === dev.id && <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#06b6d4]" />}
+                </div>
+              ))
+            )}
           </div>
         </div>
 

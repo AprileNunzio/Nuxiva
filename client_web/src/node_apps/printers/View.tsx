@@ -40,60 +40,39 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
-  const [printers, setPrinters] = useState<PrinterItem[]>([
-    {
-      id: 'printer-hp-laser',
-      name: 'HP LaserJet Pro M404dw',
-      type: 'laser',
-      connection: 'USB 2.0 / RAW',
-      status: 'idle',
-      ink: { black: 82 },
-    },
-    {
-      id: 'printer-epson-ink',
-      name: 'Epson EcoTank L3250',
-      type: 'inkjet',
-      connection: 'IPP / Wi-Fi',
-      status: 'idle',
-      ink: { cyan: 76, magenta: 68, yellow: 85, black: 92 },
-    },
-    {
-      id: 'printer-3d-ender',
-      name: 'Creality Ender 3 S1 (OctoPrint)',
-      type: '3d_printer',
-      connection: 'USB Serial',
-      status: 'ready',
-      bed_temp: 60.0,
-      nozzle_temp: 205.0,
-    },
-  ]);
-
-  const [selectedPrinterId, setSelectedPrinterId] = useState('printer-hp-laser');
+  const [printers, setPrinters] = useState<PrinterItem[]>([]);
+  const [selectedPrinterId, setSelectedPrinterId] = useState<string>('');
   const [isPrintingTest, setIsPrintingTest] = useState(false);
   const [testSuccess, setTestSuccess] = useState<string | null>(null);
   const [isCleaning, setIsCleaning] = useState(false);
   const [cleaningDone, setCleaningDone] = useState(false);
 
-  useEffect(() => {
-    let isMounted = true;
-    const fetchHardware = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch(`/api/v5/nodes/${nodeId}/hardware`);
-        if (res.ok) {
-          const data = await res.json();
-          if (isMounted && Array.isArray(data.printers) && data.printers.length > 0) {
+  const fetchHardware = async (isMounted = true) => {
+    try {
+      setLoading(true);
+      const res = await fetch(`/api/v5/nodes/${nodeId}/hardware`);
+      if (res.ok) {
+        const data = await res.json();
+        if (isMounted) {
+          if (Array.isArray(data.printers) && data.printers.length > 0) {
             setPrinters(data.printers);
             setSelectedPrinterId(data.printers[0].id);
+          } else {
+            setPrinters([]);
+            setSelectedPrinterId('');
           }
         }
-      } catch (err) {
-        console.warn('Hardware fetch failed', err);
-      } finally {
-        if (isMounted) setLoading(false);
       }
-    };
-    fetchHardware();
+    } catch (err) {
+      console.warn('Hardware fetch failed', err);
+    } finally {
+      if (isMounted) setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    let isMounted = true;
+    fetchHardware(isMounted);
     return () => {
       isMounted = false;
     };
@@ -195,43 +174,63 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
       )}
 
       {/* Printer List & Selection */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {printers.map((p) => {
-          const isSelected = selectedPrinterId === p.id;
-          return (
-            <div
-              key={p.id}
-              onClick={() => setSelectedPrinterId(p.id)}
-              className={`p-4 rounded-xl border cursor-pointer transition flex flex-col justify-between ${
-                isSelected
-                  ? 'bg-cyan-950/30 border-cyan-500/60 ring-1 ring-cyan-500/40 shadow-lg shadow-cyan-950/20'
-                  : 'bg-slate-900/60 border-slate-800 hover:border-slate-700'
-              }`}
-            >
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <div className="p-2 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
-                    {p.type === '3d_printer' ? <Box className="w-4 h-4" /> : <Printer className="w-4 h-4" />}
+      {printers.length === 0 ? (
+        <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-12 text-center flex flex-col items-center justify-center gap-3">
+          <div className="p-4 rounded-2xl bg-slate-800/60 border border-slate-700/50 text-slate-500">
+            <Printer className="w-8 h-8 text-slate-400" />
+          </div>
+          <h3 className="text-sm font-bold text-white tracking-wide">Nessuna Stampante Rilevata</h3>
+          <p className="text-xs text-slate-400 max-w-md leading-relaxed">
+            Nessuna stampante fisica (USB) o stampante di rete (CUPS / IPP / WSD) è attualmente configurata su questo nodo.
+            Collega o installa una stampante sul sistema operativo e clicca su Aggiorna.
+          </p>
+          <button
+            onClick={() => fetchHardware(true)}
+            className="mt-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-cyan-400 border border-cyan-500/30 rounded-xl text-xs font-semibold flex items-center gap-2 cursor-pointer transition shadow-md"
+          >
+            <RefreshCw className="w-3.5 h-3.5" />
+            <span>Rileva Periferiche</span>
+          </button>
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {printers.map((p) => {
+              const isSelected = selectedPrinterId === p.id;
+              return (
+                <div
+                  key={p.id}
+                  onClick={() => setSelectedPrinterId(p.id)}
+                  className={`p-4 rounded-xl border cursor-pointer transition flex flex-col justify-between ${
+                    isSelected
+                      ? 'bg-cyan-950/30 border-cyan-500/60 ring-1 ring-cyan-500/40 shadow-lg shadow-cyan-950/20'
+                      : 'bg-slate-900/60 border-slate-800 hover:border-slate-700'
+                  }`}
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="p-2 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                        {p.type === '3d_printer' ? <Box className="w-4 h-4" /> : <Printer className="w-4 h-4" />}
+                      </div>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                        {p.status.toUpperCase()}
+                      </span>
+                    </div>
+                    <h3 className="text-xs font-bold text-white leading-snug">{p.name}</h3>
+                    <div className="text-[10px] text-slate-400 mt-1">{p.connection}</div>
                   </div>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-                    {p.status.toUpperCase()}
-                  </span>
+
+                  <div className="mt-3 pt-2.5 border-t border-slate-800/80 text-[10px] text-slate-500 flex justify-between items-center">
+                    <span>Tipo: {t(`type_${p.type}`) || p.type}</span>
+                    {isSelected && <span className="w-2 h-2 rounded-full bg-cyan-400" />}
+                  </div>
                 </div>
-                <h3 className="text-xs font-bold text-white leading-snug">{p.name}</h3>
-                <div className="text-[10px] text-slate-400 mt-1">{p.connection}</div>
-              </div>
+              );
+            })}
+          </div>
 
-              <div className="mt-3 pt-2.5 border-t border-slate-800/80 text-[10px] text-slate-500 flex justify-between items-center">
-                <span>Tipo: {t(`type_${p.type}`) || p.type}</span>
-                {isSelected && <span className="w-2 h-2 rounded-full bg-cyan-400" />}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Selected Printer Cockpit */}
-      {selectedPrinter && (
+          {/* Selected Printer Cockpit */}
+          {selectedPrinter && (
         <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 space-y-6">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
             <div>
@@ -372,6 +371,8 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
             </div>
           </div>
         </div>
+      )}
+        </>
       )}
     </div>
   );

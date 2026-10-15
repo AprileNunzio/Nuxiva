@@ -34,6 +34,7 @@ import {
   CloudSlotConfig,
   LocalOllamaStatus,
   TestResult,
+  BrainAssignments,
 } from './types';
 import {
   fetchBrainData,
@@ -119,6 +120,50 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
     vision: false,
   });
 
+  const [assignments, setAssignments] = useState<BrainAssignments>({
+    fast_chat: {
+      source: 'local_ollama',
+      model: '',
+      provider: 'ollama_local',
+      label: 'Non Assegnato',
+      endpoint: '',
+    },
+    deep_reasoning: {
+      source: 'cloud_llm',
+      model: '',
+      provider: '',
+      label: 'Non Assegnato',
+      endpoint: '',
+    },
+    vision: {
+      source: 'cloud_llm',
+      model: '',
+      provider: '',
+      label: 'Non Assegnato',
+      endpoint: '',
+    },
+  });
+
+  const assignRole = (
+    role: 'fast_chat' | 'deep_reasoning' | 'vision',
+    source: 'local_ollama' | 'remote_mesh' | 'cloud_llm',
+    model: string,
+    provider: string,
+    label: string,
+    endpoint: string
+  ) => {
+    setAssignments((prev) => ({
+      ...prev,
+      [role]: {
+        source,
+        model,
+        provider,
+        label,
+        endpoint,
+      },
+    }));
+  };
+
   // Hyperparameters & Personality
   const [systemPrompt, setSystemPrompt] = useState(`Sei l'assistente IA di Nuxiva dedicato per il nodo ${nodeId}.`);
   const [temperature, setTemperature] = useState(0.7);
@@ -161,6 +206,10 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
 
       if (cfg.remote_mesh_instances) {
         setRemoteInstances(cfg.remote_mesh_instances);
+      }
+
+      if (cfg.assignments) {
+        setAssignments(cfg.assignments);
       }
     } catch (err: any) {
       console.error('Failed to load brain config:', err);
@@ -303,6 +352,7 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
         fallback_provider: 'local_ollama',
         cloud_slots: cloudSlots,
         remote_mesh_instances: remoteInstances,
+        assignments,
       };
 
       await saveBrainConfig(nodeId, payload);
@@ -419,6 +469,154 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
               <Save className={`w-4 h-4 ${saving ? 'animate-spin' : ''}`} />
               <span>{saving ? t('saving') : t('save')}</span>
             </button>
+          </div>
+        </div>
+      </div>
+
+      {/* MASTER COGNITIVE MATRIX / HUD (Sopra a Ollama Locale, Ollama Remoto e Cloud LLM) */}
+      <div className="bg-slate-900/90 border border-cyan-500/30 rounded-2xl p-5 shadow-2xl relative overflow-hidden backdrop-blur-xl">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-800">
+          <div>
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-cyan-400" />
+              <h2 className="text-sm font-extrabold uppercase tracking-widest text-cyan-300">
+                {t('master_assignments_title') || 'Matrice di Assegnazione Ruoli Cognitivi LLM'}
+              </h2>
+            </div>
+            <p className="text-[11px] text-slate-400 mt-0.5">
+              {t('master_assignments_desc') || 'Supervisione dell\'architettura neurale attiva: assegna i compiti direttamente da ogni sezione sottostante'}
+            </p>
+          </div>
+          <span className="text-[10px] px-2.5 py-1 rounded-full font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 self-start md:self-auto">
+            {t('active_routing') || 'Routing Multi-Modello Attivo'}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Card 1: Conversazione Veloce */}
+          <div className={`p-4 rounded-xl border transition flex flex-col justify-between ${
+            assignments.fast_chat.model
+              ? 'bg-cyan-950/20 border-cyan-500/40 shadow-lg shadow-cyan-950/20'
+              : 'bg-slate-950/60 border-slate-800'
+          }`}>
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                  <Zap className="w-4 h-4 text-amber-400" />
+                  {t('role_fast_chat_title') || 'Conversazione Veloce'}
+                </span>
+                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold border ${
+                  assignments.fast_chat.model
+                    ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                    : 'bg-slate-800 text-slate-500 border-slate-700'
+                }`}>
+                  {assignments.fast_chat.model ? 'ATTIVO (<300ms)' : 'NON ASSEGNATO'}
+                </span>
+              </div>
+              <div className="text-sm font-extrabold text-cyan-300 truncate">
+                {assignments.fast_chat.model || 'Nessun LLM associato'}
+              </div>
+              <div className="text-[11px] text-slate-400 mt-1 truncate">
+                Sorgente: <strong className="text-slate-200">{assignments.fast_chat.label || 'Da configurare'}</strong>
+              </div>
+            </div>
+            <div className="mt-3 pt-2 border-t border-slate-800/80 text-[10px] text-slate-500 flex items-center justify-between">
+              <span className="truncate">Target: {assignments.fast_chat.endpoint || 'Locale / Mesh'}</span>
+              <button
+                onClick={() => {
+                  if (assignments.fast_chat.source === 'local_ollama') setMode('local_ollama');
+                  else if (assignments.fast_chat.source === 'remote_mesh') setMode('remote_ollama');
+                  else setMode('cloud_llm');
+                }}
+                className="text-cyan-400 hover:text-cyan-300 font-semibold underline ml-2 shrink-0 cursor-pointer"
+              >
+                Configura
+              </button>
+            </div>
+          </div>
+
+          {/* Card 2: Ragionamento Profondo & Coding */}
+          <div className={`p-4 rounded-xl border transition flex flex-col justify-between ${
+            assignments.deep_reasoning.model
+              ? 'bg-purple-950/20 border-purple-500/40 shadow-lg shadow-purple-950/20'
+              : 'bg-slate-950/60 border-slate-800'
+          }`}>
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                  <Brain className="w-4 h-4 text-purple-400" />
+                  {t('role_deep_reasoning_title') || 'Ragionamento & Coding'}
+                </span>
+                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold border ${
+                  assignments.deep_reasoning.model
+                    ? 'bg-purple-500/20 text-purple-300 border-purple-500/40'
+                    : 'bg-slate-800 text-slate-500 border-slate-700'
+                }`}>
+                  {assignments.deep_reasoning.model ? 'ATTIVO (Chain of Thought)' : 'NON ASSEGNATO'}
+                </span>
+              </div>
+              <div className="text-sm font-extrabold text-purple-300 truncate">
+                {assignments.deep_reasoning.model || 'Nessun LLM associato'}
+              </div>
+              <div className="text-[11px] text-slate-400 mt-1 truncate">
+                Sorgente: <strong className="text-slate-200">{assignments.deep_reasoning.label || 'Da configurare'}</strong>
+              </div>
+            </div>
+            <div className="mt-3 pt-2 border-t border-slate-800/80 text-[10px] text-slate-500 flex items-center justify-between">
+              <span className="truncate">Target: {assignments.deep_reasoning.endpoint || 'Cloud / Remote'}</span>
+              <button
+                onClick={() => {
+                  if (assignments.deep_reasoning.source === 'local_ollama') setMode('local_ollama');
+                  else if (assignments.deep_reasoning.source === 'remote_mesh') setMode('remote_ollama');
+                  else setMode('cloud_llm');
+                }}
+                className="text-purple-400 hover:text-purple-300 font-semibold underline ml-2 shrink-0 cursor-pointer"
+              >
+                Configura
+              </button>
+            </div>
+          </div>
+
+          {/* Card 3: Visione & Multimodale */}
+          <div className={`p-4 rounded-xl border transition flex flex-col justify-between ${
+            assignments.vision.model
+              ? 'bg-emerald-950/20 border-emerald-500/40 shadow-lg shadow-emerald-950/20'
+              : 'bg-slate-950/60 border-slate-800'
+          }`}>
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                  <Eye className="w-4 h-4 text-emerald-400" />
+                  {t('role_vision_title') || 'Visione & Multimodale'}
+                </span>
+                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold border ${
+                  assignments.vision.model
+                    ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                    : 'bg-slate-800 text-slate-500 border-slate-700'
+                }`}>
+                  {assignments.vision.model ? 'ATTIVO (OCR & Video)' : 'NON ASSEGNATO'}
+                </span>
+              </div>
+              <div className="text-sm font-extrabold text-emerald-300 truncate">
+                {assignments.vision.model || 'Nessun LLM associato'}
+              </div>
+              <div className="text-[11px] text-slate-400 mt-1 truncate">
+                Sorgente: <strong className="text-slate-200">{assignments.vision.label || 'Da configurare'}</strong>
+              </div>
+            </div>
+            <div className="mt-3 pt-2 border-t border-slate-800/80 text-[10px] text-slate-500 flex items-center justify-between">
+              <span className="truncate">Target: {assignments.vision.endpoint || 'VLM Multimodale'}</span>
+              <button
+                onClick={() => {
+                  if (assignments.vision.source === 'local_ollama') setMode('local_ollama');
+                  else if (assignments.vision.source === 'remote_mesh') setMode('remote_ollama');
+                  else setMode('cloud_llm');
+                }}
+                className="text-emerald-400 hover:text-emerald-300 font-semibold underline ml-2 shrink-0 cursor-pointer"
+              >
+                Configura
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -588,6 +786,80 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
                     </option>
                   ))}
                 </select>
+
+                {/* 1-Click Role Assignment Buttons from Local Ollama */}
+                {selectedLocalModel && (
+                  <div className="mt-4 pt-3 border-t border-slate-800 space-y-2">
+                    <div className="text-[11px] font-semibold text-slate-300 flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>{t('assign_selected_model') || 'Assegna Modello Selezionato a Ruolo Cognitivo:'}</span>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                      <button
+                        onClick={() =>
+                          assignRole(
+                            'fast_chat',
+                            'local_ollama',
+                            selectedLocalModel,
+                            'ollama_local',
+                            `Ollama Locale (${selectedLocalModel})`,
+                            'http://127.0.0.1:11434'
+                          )
+                        }
+                        className={`px-2.5 py-1.5 rounded-lg text-[11px] font-bold border transition flex items-center justify-center gap-1 cursor-pointer ${
+                          assignments.fast_chat.source === 'local_ollama' && assignments.fast_chat.model === selectedLocalModel
+                            ? 'bg-amber-500/20 text-amber-300 border-amber-500/60 shadow-[0_0_10px_rgba(245,158,11,0.25)]'
+                            : 'bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700'
+                        }`}
+                      >
+                        <Zap className="w-3 h-3 text-amber-400" />
+                        <span>Conversazione</span>
+                      </button>
+
+                      <button
+                        onClick={() =>
+                          assignRole(
+                            'deep_reasoning',
+                            'local_ollama',
+                            selectedLocalModel,
+                            'ollama_local',
+                            `Ollama Locale (${selectedLocalModel})`,
+                            'http://127.0.0.1:11434'
+                          )
+                        }
+                        className={`px-2.5 py-1.5 rounded-lg text-[11px] font-bold border transition flex items-center justify-center gap-1 cursor-pointer ${
+                          assignments.deep_reasoning.source === 'local_ollama' && assignments.deep_reasoning.model === selectedLocalModel
+                            ? 'bg-purple-500/20 text-purple-300 border-purple-500/60 shadow-[0_0_10px_rgba(168,85,247,0.25)]'
+                            : 'bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700'
+                        }`}
+                      >
+                        <Brain className="w-3 h-3 text-purple-400" />
+                        <span>Ragionamento</span>
+                      </button>
+
+                      <button
+                        onClick={() =>
+                          assignRole(
+                            'vision',
+                            'local_ollama',
+                            selectedLocalModel,
+                            'ollama_local',
+                            `Ollama Locale (${selectedLocalModel})`,
+                            'http://127.0.0.1:11434'
+                          )
+                        }
+                        className={`px-2.5 py-1.5 rounded-lg text-[11px] font-bold border transition flex items-center justify-center gap-1 cursor-pointer ${
+                          assignments.vision.source === 'local_ollama' && assignments.vision.model === selectedLocalModel
+                            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/60 shadow-[0_0_10px_rgba(16,185,129,0.25)]'
+                            : 'bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700'
+                        }`}
+                      >
+                        <Eye className="w-3 h-3 text-emerald-400" />
+                        <span>Visione</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="mt-4 pt-4 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
@@ -831,6 +1103,86 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
                           <span className="text-emerald-400 font-bold">{inst.latency_ms || 2.4} ms</span>
                         </div>
                       </div>
+
+                      {/* Assegna Ruolo Cognitivo Direttamente */}
+                      <div className="mt-3 pt-3 border-t border-slate-800">
+                        <div className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                          Assegna come Ruolo Nodo:
+                        </div>
+                        <div className="grid grid-cols-3 gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              assignRole(
+                                'fast_chat',
+                                'remote_mesh',
+                                inst.model,
+                                'ollama_remote',
+                                `${inst.name} (${inst.model})`,
+                                inst.host_url
+                              )
+                            }
+                            className={`px-2 py-1 rounded-md text-[10px] font-bold border transition flex items-center justify-center gap-1 cursor-pointer ${
+                              assignments.fast_chat.source === 'remote_mesh' &&
+                              assignments.fast_chat.endpoint === inst.host_url &&
+                              assignments.fast_chat.model === inst.model
+                                ? 'bg-amber-500/20 text-amber-300 border-amber-500/60 shadow-[0_0_10px_rgba(245,158,11,0.25)]'
+                                : 'bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700'
+                            }`}
+                          >
+                            <Zap className="w-2.5 h-2.5 text-amber-400" />
+                            <span>Chat</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() =>
+                              assignRole(
+                                'deep_reasoning',
+                                'remote_mesh',
+                                inst.model,
+                                'ollama_remote',
+                                `${inst.name} (${inst.model})`,
+                                inst.host_url
+                              )
+                            }
+                            className={`px-2 py-1 rounded-md text-[10px] font-bold border transition flex items-center justify-center gap-1 cursor-pointer ${
+                              assignments.deep_reasoning.source === 'remote_mesh' &&
+                              assignments.deep_reasoning.endpoint === inst.host_url &&
+                              assignments.deep_reasoning.model === inst.model
+                                ? 'bg-purple-500/20 text-purple-300 border-purple-500/60 shadow-[0_0_10px_rgba(168,85,247,0.25)]'
+                                : 'bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700'
+                            }`}
+                          >
+                            <Brain className="w-2.5 h-2.5 text-purple-400" />
+                            <span>Reason</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() =>
+                              assignRole(
+                                'vision',
+                                'remote_mesh',
+                                inst.model,
+                                'ollama_remote',
+                                `${inst.name} (${inst.model})`,
+                                inst.host_url
+                              )
+                            }
+                            className={`px-2 py-1 rounded-md text-[10px] font-bold border transition flex items-center justify-center gap-1 cursor-pointer ${
+                              assignments.vision.source === 'remote_mesh' &&
+                              assignments.vision.endpoint === inst.host_url &&
+                              assignments.vision.model === inst.model
+                                ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/60 shadow-[0_0_10px_rgba(16,185,129,0.25)]'
+                                : 'bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700'
+                            }`}
+                          >
+                            <Eye className="w-2.5 h-2.5 text-emerald-400" />
+                            <span>Vision</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="mt-5 pt-3 border-t border-slate-800/80 flex items-center justify-between">
@@ -973,6 +1325,86 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
                       className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2 text-xs text-slate-200 font-mono focus:outline-none focus:border-cyan-500"
                     />
                   </div>
+
+                  {/* Assegna Ruolo Cognitivo Direttamente */}
+                  <div className="pt-3 border-t border-slate-800/80">
+                    <div className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                      Assegna come Ruolo Nodo:
+                    </div>
+                    <div className="grid grid-cols-3 gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const pName = cloudProviders.find(p => p.id === cloudSlots.fast_chat.provider)?.name || cloudSlots.fast_chat.provider;
+                          assignRole(
+                            'fast_chat',
+                            'cloud_llm',
+                            cloudSlots.fast_chat.model,
+                            cloudSlots.fast_chat.provider,
+                            `${pName} (${cloudSlots.fast_chat.model})`,
+                            'Cloud API'
+                          );
+                        }}
+                        className={`px-2 py-1 rounded-md text-[10px] font-bold border transition flex items-center justify-center gap-1 cursor-pointer ${
+                          assignments.fast_chat.source === 'cloud_llm' &&
+                          assignments.fast_chat.model === cloudSlots.fast_chat.model
+                            ? 'bg-amber-500/20 text-amber-300 border-amber-500/60 shadow-[0_0_10px_rgba(245,158,11,0.25)]'
+                            : 'bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700'
+                        }`}
+                      >
+                        <Zap className="w-2.5 h-2.5 text-amber-400" />
+                        <span>Chat</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const pName = cloudProviders.find(p => p.id === cloudSlots.fast_chat.provider)?.name || cloudSlots.fast_chat.provider;
+                          assignRole(
+                            'deep_reasoning',
+                            'cloud_llm',
+                            cloudSlots.fast_chat.model,
+                            cloudSlots.fast_chat.provider,
+                            `${pName} (${cloudSlots.fast_chat.model})`,
+                            'Cloud API'
+                          );
+                        }}
+                        className={`px-2 py-1 rounded-md text-[10px] font-bold border transition flex items-center justify-center gap-1 cursor-pointer ${
+                          assignments.deep_reasoning.source === 'cloud_llm' &&
+                          assignments.deep_reasoning.model === cloudSlots.fast_chat.model
+                            ? 'bg-purple-500/20 text-purple-300 border-purple-500/60 shadow-[0_0_10px_rgba(168,85,247,0.25)]'
+                            : 'bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700'
+                        }`}
+                      >
+                        <Brain className="w-2.5 h-2.5 text-purple-400" />
+                        <span>Reason</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const pName = cloudProviders.find(p => p.id === cloudSlots.fast_chat.provider)?.name || cloudSlots.fast_chat.provider;
+                          assignRole(
+                            'vision',
+                            'cloud_llm',
+                            cloudSlots.fast_chat.model,
+                            cloudSlots.fast_chat.provider,
+                            `${pName} (${cloudSlots.fast_chat.model})`,
+                            'Cloud API'
+                          );
+                        }}
+                        className={`px-2 py-1 rounded-md text-[10px] font-bold border transition flex items-center justify-center gap-1 cursor-pointer ${
+                          assignments.vision.source === 'cloud_llm' &&
+                          assignments.vision.model === cloudSlots.fast_chat.model
+                            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/60 shadow-[0_0_10px_rgba(16,185,129,0.25)]'
+                            : 'bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700'
+                        }`}
+                      >
+                        <Eye className="w-2.5 h-2.5 text-emerald-400" />
+                        <span>Vision</span>
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -1086,6 +1518,86 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
                       className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2 text-xs text-slate-200 font-mono focus:outline-none focus:border-purple-500"
                     />
                   </div>
+
+                  {/* Assegna Ruolo Cognitivo Direttamente */}
+                  <div className="pt-3 border-t border-slate-800/80">
+                    <div className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                      Assegna come Ruolo Nodo:
+                    </div>
+                    <div className="grid grid-cols-3 gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const pName = cloudProviders.find(p => p.id === cloudSlots.deep_reasoning.provider)?.name || cloudSlots.deep_reasoning.provider;
+                          assignRole(
+                            'fast_chat',
+                            'cloud_llm',
+                            cloudSlots.deep_reasoning.model,
+                            cloudSlots.deep_reasoning.provider,
+                            `${pName} (${cloudSlots.deep_reasoning.model})`,
+                            'Cloud API'
+                          );
+                        }}
+                        className={`px-2 py-1 rounded-md text-[10px] font-bold border transition flex items-center justify-center gap-1 cursor-pointer ${
+                          assignments.fast_chat.source === 'cloud_llm' &&
+                          assignments.fast_chat.model === cloudSlots.deep_reasoning.model
+                            ? 'bg-amber-500/20 text-amber-300 border-amber-500/60 shadow-[0_0_10px_rgba(245,158,11,0.25)]'
+                            : 'bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700'
+                        }`}
+                      >
+                        <Zap className="w-2.5 h-2.5 text-amber-400" />
+                        <span>Chat</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const pName = cloudProviders.find(p => p.id === cloudSlots.deep_reasoning.provider)?.name || cloudSlots.deep_reasoning.provider;
+                          assignRole(
+                            'deep_reasoning',
+                            'cloud_llm',
+                            cloudSlots.deep_reasoning.model,
+                            cloudSlots.deep_reasoning.provider,
+                            `${pName} (${cloudSlots.deep_reasoning.model})`,
+                            'Cloud API'
+                          );
+                        }}
+                        className={`px-2 py-1 rounded-md text-[10px] font-bold border transition flex items-center justify-center gap-1 cursor-pointer ${
+                          assignments.deep_reasoning.source === 'cloud_llm' &&
+                          assignments.deep_reasoning.model === cloudSlots.deep_reasoning.model
+                            ? 'bg-purple-500/20 text-purple-300 border-purple-500/60 shadow-[0_0_10px_rgba(168,85,247,0.25)]'
+                            : 'bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700'
+                        }`}
+                      >
+                        <Brain className="w-2.5 h-2.5 text-purple-400" />
+                        <span>Reason</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const pName = cloudProviders.find(p => p.id === cloudSlots.deep_reasoning.provider)?.name || cloudSlots.deep_reasoning.provider;
+                          assignRole(
+                            'vision',
+                            'cloud_llm',
+                            cloudSlots.deep_reasoning.model,
+                            cloudSlots.deep_reasoning.provider,
+                            `${pName} (${cloudSlots.deep_reasoning.model})`,
+                            'Cloud API'
+                          );
+                        }}
+                        className={`px-2 py-1 rounded-md text-[10px] font-bold border transition flex items-center justify-center gap-1 cursor-pointer ${
+                          assignments.vision.source === 'cloud_llm' &&
+                          assignments.vision.model === cloudSlots.deep_reasoning.model
+                            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/60 shadow-[0_0_10px_rgba(16,185,129,0.25)]'
+                            : 'bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700'
+                        }`}
+                      >
+                        <Eye className="w-2.5 h-2.5 text-emerald-400" />
+                        <span>Vision</span>
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -1198,6 +1710,86 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
                       placeholder={t('api_key_placeholder') || 'sk-...'}
                       className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2 text-xs text-slate-200 font-mono focus:outline-none focus:border-emerald-500"
                     />
+                  </div>
+
+                  {/* Assegna Ruolo Cognitivo Direttamente */}
+                  <div className="pt-3 border-t border-slate-800/80">
+                    <div className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                      Assegna come Ruolo Nodo:
+                    </div>
+                    <div className="grid grid-cols-3 gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const pName = cloudProviders.find(p => p.id === cloudSlots.vision.provider)?.name || cloudSlots.vision.provider;
+                          assignRole(
+                            'fast_chat',
+                            'cloud_llm',
+                            cloudSlots.vision.model,
+                            cloudSlots.vision.provider,
+                            `${pName} (${cloudSlots.vision.model})`,
+                            'Cloud API'
+                          );
+                        }}
+                        className={`px-2 py-1 rounded-md text-[10px] font-bold border transition flex items-center justify-center gap-1 cursor-pointer ${
+                          assignments.fast_chat.source === 'cloud_llm' &&
+                          assignments.fast_chat.model === cloudSlots.vision.model
+                            ? 'bg-amber-500/20 text-amber-300 border-amber-500/60 shadow-[0_0_10px_rgba(245,158,11,0.25)]'
+                            : 'bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700'
+                        }`}
+                      >
+                        <Zap className="w-2.5 h-2.5 text-amber-400" />
+                        <span>Chat</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const pName = cloudProviders.find(p => p.id === cloudSlots.vision.provider)?.name || cloudSlots.vision.provider;
+                          assignRole(
+                            'deep_reasoning',
+                            'cloud_llm',
+                            cloudSlots.vision.model,
+                            cloudSlots.vision.provider,
+                            `${pName} (${cloudSlots.vision.model})`,
+                            'Cloud API'
+                          );
+                        }}
+                        className={`px-2 py-1 rounded-md text-[10px] font-bold border transition flex items-center justify-center gap-1 cursor-pointer ${
+                          assignments.deep_reasoning.source === 'cloud_llm' &&
+                          assignments.deep_reasoning.model === cloudSlots.vision.model
+                            ? 'bg-purple-500/20 text-purple-300 border-purple-500/60 shadow-[0_0_10px_rgba(168,85,247,0.25)]'
+                            : 'bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700'
+                        }`}
+                      >
+                        <Brain className="w-2.5 h-2.5 text-purple-400" />
+                        <span>Reason</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const pName = cloudProviders.find(p => p.id === cloudSlots.vision.provider)?.name || cloudSlots.vision.provider;
+                          assignRole(
+                            'vision',
+                            'cloud_llm',
+                            cloudSlots.vision.model,
+                            cloudSlots.vision.provider,
+                            `${pName} (${cloudSlots.vision.model})`,
+                            'Cloud API'
+                          );
+                        }}
+                        className={`px-2 py-1 rounded-md text-[10px] font-bold border transition flex items-center justify-center gap-1 cursor-pointer ${
+                          assignments.vision.source === 'cloud_llm' &&
+                          assignments.vision.model === cloudSlots.vision.model
+                            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/60 shadow-[0_0_10px_rgba(16,185,129,0.25)]'
+                            : 'bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700'
+                        }`}
+                      >
+                        <Eye className="w-2.5 h-2.5 text-emerald-400" />
+                        <span>Vision</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

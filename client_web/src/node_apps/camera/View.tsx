@@ -33,12 +33,8 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
-  const [cameras, setCameras] = useState<CameraDevice[]>([
-    { id: '/dev/video0', name: 'Sony IMX708 Wide 4K Ultra-HD', resolution: '3840x2160', fps: 30, status: 'active' },
-    { id: '/dev/video2', name: 'Logitech C920 HD Pro (USB)', resolution: '1920x1080', fps: 60, status: 'standby' },
-    { id: 'rtsp://camera', name: 'ESP32-CAM Satellite RTSP Stream', resolution: '1280x720', fps: 25, status: 'streaming' },
-  ]);
-  const [selectedCam, setSelectedCam] = useState('/dev/video0');
+  const [cameras, setCameras] = useState<CameraDevice[]>([]);
+  const [selectedCam, setSelectedCam] = useState('');
 
   // Privacy Shutter
   const [privacyShutter, setPrivacyShutter] = useState(false);
@@ -55,26 +51,32 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
   // Snapshot
   const [snapshotTaken, setSnapshotTaken] = useState(false);
 
-  useEffect(() => {
-    let isMounted = true;
-    const fetchHardware = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch(`/api/v5/nodes/${nodeId}/hardware`);
-        if (res.ok) {
-          const data = await res.json();
-          if (isMounted && Array.isArray(data.cameras) && data.cameras.length > 0) {
+  const fetchHardware = async (isMounted = true) => {
+    try {
+      setLoading(true);
+      const res = await fetch(`/api/v5/nodes/${nodeId}/hardware`);
+      if (res.ok) {
+        const data = await res.json();
+        if (isMounted) {
+          if (Array.isArray(data.cameras) && data.cameras.length > 0) {
             setCameras(data.cameras);
             setSelectedCam(data.cameras[0].id);
+          } else {
+            setCameras([]);
+            setSelectedCam('');
           }
         }
-      } catch (err) {
-        console.warn('Hardware fetch failed', err);
-      } finally {
-        if (isMounted) setLoading(false);
       }
-    };
-    fetchHardware();
+    } catch (err) {
+      console.warn('Hardware fetch failed', err);
+    } finally {
+      if (isMounted) setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    let isMounted = true;
+    fetchHardware(isMounted);
     return () => {
       isMounted = false;
     };
@@ -201,25 +203,31 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
           </div>
 
           <div className="space-y-2">
-            {cameras.map((cam) => (
-              <div
-                key={cam.id}
-                onClick={() => setSelectedCam(cam.id)}
-                className={`p-3.5 rounded-xl border cursor-pointer transition flex items-center justify-between ${
-                  selectedCam === cam.id
-                    ? 'bg-cyan-950/30 border-cyan-500/60 ring-1 ring-cyan-500/40'
-                    : 'bg-slate-950/70 border-slate-800 hover:border-slate-700'
-                }`}
-              >
-                <div>
-                  <div className="text-xs font-bold text-white">{cam.name}</div>
-                  <div className="text-[10px] text-slate-500 mt-0.5">
-                    ID: {cam.id} · Max: {cam.resolution} @ {cam.fps}fps
-                  </div>
-                </div>
-                {selectedCam === cam.id && <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#06b6d4]" />}
+            {cameras.length === 0 ? (
+              <div className="text-xs text-slate-500 text-center py-6 bg-slate-950/40 rounded-xl border border-slate-800/80">
+                Nessuna telecamera o webcam rilevata sul nodo.
               </div>
-            ))}
+            ) : (
+              cameras.map((cam) => (
+                <div
+                  key={cam.id}
+                  onClick={() => setSelectedCam(cam.id)}
+                  className={`p-3.5 rounded-xl border cursor-pointer transition flex items-center justify-between ${
+                    selectedCam === cam.id
+                      ? 'bg-cyan-950/30 border-cyan-500/60 ring-1 ring-cyan-500/40'
+                      : 'bg-slate-950/70 border-slate-800 hover:border-slate-700'
+                  }`}
+                >
+                  <div>
+                    <div className="text-xs font-bold text-white">{cam.name}</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">
+                      ID: {cam.id} · Max: {cam.resolution} @ {cam.fps}fps
+                    </div>
+                  </div>
+                  {selectedCam === cam.id && <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#06b6d4]" />}
+                </div>
+              ))
+            )}
           </div>
         </div>
 

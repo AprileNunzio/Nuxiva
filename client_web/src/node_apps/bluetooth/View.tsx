@@ -43,76 +43,65 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
   const [saved, setSaved] = useState(false);
 
   // Controller state
-  const [powered, setPowered] = useState(true);
+  const [powered, setPowered] = useState(false);
   const [discoverable, setDiscoverable] = useState(false);
   const [adapterInfo, setAdapterInfo] = useState({
-    adapter: 'hci0',
-    chipset: 'Intel Bluetooth 5.3 AX211 Controller',
-    mac: 'F4:4D:30:8A:2B:1C',
+    adapter: '',
+    chipset: '',
+    mac: '',
   });
 
   // Devices
-  const [pairedDevices, setPairedDevices] = useState<PairedDevice[]>([
-    { mac: '70:26:05:AA:11:22', name: 'Sony WH-1000XM5', type: 'audio', connected: true, battery: 85 },
-    { mac: 'DC:2C:26:BB:33:44', name: 'Logitech MX Master 3S', type: 'hid', connected: true, battery: 90 },
-  ]);
-
+  const [pairedDevices, setPairedDevices] = useState<PairedDevice[]>([]);
   const [isScanning, setIsScanning] = useState(false);
-  const [discoveredDevices, setDiscoveredDevices] = useState<DiscoveredDevice[]>([
-    { mac: 'A4:C1:38:12:34:56', name: 'Xiaomi Mijia BLE Thermometer & Hygro', type: 'sensor', rssi: -58 },
-    { mac: '58:24:AB:FE:DC:BA', name: 'Smart Ring Health Beacon', type: 'wearable', rssi: -72 },
-  ]);
+  const [discoveredDevices, setDiscoveredDevices] = useState<DiscoveredDevice[]>([]);
+
+  const fetchHardware = async (isMounted = true) => {
+    try {
+      setLoading(true);
+      const res = await fetch(`/api/v5/nodes/${nodeId}/hardware`);
+      if (res.ok) {
+        const data = await res.json();
+        if (isMounted && data.bluetooth) {
+          setPowered(!!data.bluetooth.powered);
+          setDiscoverable(!!data.bluetooth.discoverable);
+          setAdapterInfo({
+            adapter: data.bluetooth.adapter || '',
+            chipset: data.bluetooth.chipset || data.bluetooth.adapter || '',
+            mac: data.bluetooth.mac || '',
+          });
+          if (Array.isArray(data.bluetooth.paired_devices)) {
+            setPairedDevices(data.bluetooth.paired_devices);
+          } else {
+            setPairedDevices([]);
+          }
+        }
+      }
+    } catch (err) {
+      console.warn('Hardware fetch failed', err);
+    } finally {
+      if (isMounted) setLoading(false);
+    }
+  };
 
   useEffect(() => {
     let isMounted = true;
-    const fetchHardware = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch(`/api/v5/nodes/${nodeId}/hardware`);
-        if (res.ok) {
-          const data = await res.json();
-          if (isMounted && data.bluetooth) {
-            setPowered(!!data.bluetooth.powered);
-            setDiscoverable(!!data.bluetooth.discoverable);
-            setAdapterInfo({
-              adapter: data.bluetooth.adapter || 'hci0',
-              chipset: data.bluetooth.chipset || 'Intel Bluetooth 5.3 AX211 Controller',
-              mac: data.bluetooth.mac || 'F4:4D:30:8A:2B:1C',
-            });
-            if (Array.isArray(data.bluetooth.paired_devices)) {
-              setPairedDevices(data.bluetooth.paired_devices);
-            }
-          }
-        }
-      } catch (err) {
-        console.warn('Hardware fetch failed', err);
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
-    fetchHardware();
+    fetchHardware(isMounted);
     return () => {
       isMounted = false;
     };
   }, [nodeId]);
 
-  const handleToggleScan = () => {
+  const handleToggleScan = async () => {
     if (isScanning) {
       setIsScanning(false);
     } else {
       setIsScanning(true);
-      setTimeout(() => {
-        setDiscoveredDevices((prev) => [
-          ...prev,
-          {
-            mac: `00:1B:44:${Math.floor(Math.random() * 89 + 10)}:${Math.floor(Math.random() * 89 + 10)}:${Math.floor(Math.random() * 89 + 10)}`,
-            name: 'Nuovo Dispositivo BLE Trovato',
-            type: 'audio',
-            rssi: -64,
-          },
-        ]);
+      try {
+        await fetchHardware(true);
+      } finally {
         setIsScanning(false);
-      }, 3500);
+      }
     }
   };
 
@@ -265,7 +254,12 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
           <span className="text-[10px] text-slate-500">{pairedDevices.length} accoppiati</span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {pairedDevices.length === 0 ? (
+          <div className="text-xs text-slate-500 text-center py-6 bg-slate-950/40 rounded-xl border border-slate-800/80">
+            Nessun dispositivo Bluetooth attualmente associato al nodo.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {pairedDevices.map((dev) => (
             <div key={dev.mac} className="bg-slate-950 border border-slate-800 p-4 rounded-xl flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -307,6 +301,7 @@ export const View: React.FC<Props> = ({ nodeId = 'node-01' }) => {
             </div>
           ))}
         </div>
+      )}
       </div>
 
       {/* Real-Time BLE Scanner */}
