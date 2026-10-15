@@ -1,13 +1,23 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { MeshTopologyNode, MeshTopologyLink, MeshTopologyState } from '../shared/types';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { MeshTopologyNode, MeshTopologyState } from '../shared/types';
 import { TelemetryHUDCard } from './TelemetryHUDCard';
 import { ParentBindingModal } from './ParentBindingModal';
-import { Activity, Shield, Cpu, Wifi, Radio, Server, Smartphone, Video, Mic, RefreshCw, Link2 } from 'lucide-react';
+import {
+  Activity,
+  Cpu,
+  Server,
+  Smartphone,
+  Video,
+  Mic,
+  RefreshCw,
+  Layers,
+  Sparkles,
+} from 'lucide-react';
 import { useScopedI18n } from '../shared/i18n/useScopedI18n';
 
 interface MeshTopologyCanvasProps {
   onOpenCoreControl: () => void;
-  onOpenNodeControl: (nodeId: string) => void;
+  onOpenNodeControl: (node: { id: string; name: string; tier: string; ip: string }) => void;
 }
 
 export const MeshTopologyCanvas: React.FC<MeshTopologyCanvasProps> = ({
@@ -16,7 +26,6 @@ export const MeshTopologyCanvas: React.FC<MeshTopologyCanvasProps> = ({
 }) => {
   const { t } = useScopedI18n('mesh_canvas');
   const [nodes, setNodes] = useState<MeshTopologyNode[]>([]);
-  const [links, setLinks] = useState<MeshTopologyLink[]>([]);
   const [hoveredNode, setHoveredNode] = useState<MeshTopologyNode | null>(null);
   const [bindingSatellite, setBindingSatellite] = useState<MeshTopologyNode | null>(null);
   const [wsConnected, setWsConnected] = useState<boolean>(false);
@@ -33,9 +42,6 @@ export const MeshTopologyCanvas: React.FC<MeshTopologyCanvasProps> = ({
         if (data && data.nodes && data.nodes.length > 0) {
           setNodes(data.nodes);
           setHoveredNode((prev) => prev || data.nodes[0]);
-        }
-        if (data && data.links) {
-          setLinks(data.links);
         }
       })
       .catch((err) => {
@@ -55,32 +61,22 @@ export const MeshTopologyCanvas: React.FC<MeshTopologyCanvasProps> = ({
         const ws = new WebSocket(wsUrl);
         wsRef.current = ws;
 
-        ws.onopen = () => {
-          setWsConnected(true);
-        };
-
+        ws.onopen = () => setWsConnected(true);
         ws.onmessage = (event) => {
           try {
             const data: MeshTopologyState = JSON.parse(event.data);
             if (data.nodes && data.nodes.length > 0) {
               setNodes(data.nodes);
             }
-            if (data.links && data.links.length > 0) {
-              setLinks(data.links);
-            }
           } catch {
-            // ignore json parse error
+            // ignore
           }
         };
-
         ws.onclose = () => {
           setWsConnected(false);
           setTimeout(connectWs, 3000);
         };
-
-        ws.onerror = () => {
-          setWsConnected(false);
-        };
+        ws.onerror = () => setWsConnected(false);
       } catch {
         setWsConnected(false);
       }
@@ -89,9 +85,7 @@ export const MeshTopologyCanvas: React.FC<MeshTopologyCanvasProps> = ({
     connectWs();
 
     return () => {
-      if (wsRef.current) {
-        wsRef.current.close();
-      }
+      if (wsRef.current) wsRef.current.close();
     };
   }, []);
 
@@ -113,7 +107,6 @@ export const MeshTopologyCanvas: React.FC<MeshTopologyCanvasProps> = ({
         }),
       });
 
-      // Update local state
       setNodes((prev) =>
         prev.map((n) => (n.id === satelliteId ? { ...n, parent_id: parentId } : n))
       );
@@ -122,35 +115,37 @@ export const MeshTopologyCanvas: React.FC<MeshTopologyCanvasProps> = ({
     }
   };
 
-  // Posizioni topologiche fisse/bilanciate per rendering visivo spaziale
-  const getNodePosition = (node: MeshTopologyNode, index: number, total: number) => {
-    if (node.type === 'core') {
-      return { cx: '50%', cy: '48%' };
-    }
-    if (node.id === 'node-pc-i9') {
-      return { cx: '25%', cy: '36%' };
-    }
-    if (node.id === 'node-mini-pc') {
-      return { cx: '75%', cy: '36%' };
-    }
-    if (node.id === 'sat-rpi-cam') {
-      return { cx: '14%', cy: '68%' };
-    }
-    if (node.id === 'sat-esp32-audio') {
-      return { cx: '34%', cy: '74%' };
-    }
-    if (node.id === 'sat-mobile-nunzio') {
-      return { cx: '86%', cy: '68%' };
-    }
-    const angle = (index / total) * 2 * Math.PI;
-    const r = 240;
-    return { cx: `calc(50% + ${Math.cos(angle) * r}px)`, cy: `calc(48% + ${Math.sin(angle) * r}px)` };
-  };
+  // Separiamo i nodi satellite/compute dal Nucleo Centrale
+  const satelliteNodes = useMemo(() => {
+    return nodes.filter((n) => n.type !== 'core');
+  }, [nodes]);
+
+  // Calcolo dinamico posizioni spaziali dei nodi attorno al Nucleo Centrale
+  const nodePositions = useMemo(() => {
+    const total = satelliteNodes.length;
+    const positions: Record<string, { cx: string; cy: string; xPct: number; yPct: number }> = {};
+
+    satelliteNodes.forEach((node, idx) => {
+      // Distribuzione su orbita ellittica
+      const angle = total === 1 ? -Math.PI / 2 : (idx / total) * 2 * Math.PI - Math.PI / 2;
+      const rx = 34; // percentuale orizzontale dal centro
+      const ry = 28; // percentuale verticale dal centro
+      const xPct = 50 + Math.cos(angle) * rx;
+      const yPct = 46 + Math.sin(angle) * ry;
+
+      positions[node.id] = {
+        cx: `${xPct.toFixed(1)}%`,
+        cy: `${yPct.toFixed(1)}%`,
+        xPct,
+        yPct,
+      };
+    });
+
+    return positions;
+  }, [satelliteNodes]);
 
   const getNodeIcon = (node: MeshTopologyNode) => {
     switch (node.type) {
-      case 'core':
-        return <Activity className="w-8 h-8 text-cyan-300 animate-pulse" />;
       case 'compute':
         return <Server className="w-6 h-6 text-cyan-400" />;
       case 'satellite':
@@ -165,122 +160,187 @@ export const MeshTopologyCanvas: React.FC<MeshTopologyCanvasProps> = ({
   };
 
   return (
-    <div className="relative w-full h-[calc(100vh-68px)] overflow-hidden bg-[#030712] select-none">
-      {/* Background radial cosmic grid */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(14,165,233,0.15),rgba(255,255,255,0))] pointer-events-none" />
-      <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:32px_32px] opacity-25 pointer-events-none" />
+    <div className="relative w-full h-[calc(100vh-62px)] overflow-hidden bg-[#030712] select-none font-mono">
+      {/* Background Cyber Starfield & Isometric Grid */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_40%,rgba(6,182,212,0.12),rgba(2,6,23,0.95))] pointer-events-none" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_46%,#000_70%,transparent_100%)] opacity-35 pointer-events-none" />
 
-      {/* Top Banner Status */}
-      <div className="absolute top-4 left-6 z-20 flex items-center gap-3">
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900/80 border border-cyan-500/30 backdrop-blur-md">
-          <div className={`w-2.5 h-2.5 rounded-full ${wsConnected ? 'bg-emerald-400 animate-ping' : 'bg-yellow-400'}`} />
-          <span className="text-xs font-mono font-bold text-cyan-300 tracking-wider">
+      {/* Top Banner Status & Instructions */}
+      <div className="absolute top-4 left-6 z-20 flex flex-wrap items-center gap-3">
+        <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-slate-900/80 border border-cyan-500/40 backdrop-blur-md shadow-[0_0_20px_rgba(6,182,212,0.15)]">
+          <div className={`w-2.5 h-2.5 rounded-full ${wsConnected ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
+          <span className="text-xs font-bold text-cyan-300 tracking-wider">
             PORT :8080 | MESH DECENTRALIZZATA
           </span>
         </div>
-        <div className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/60 border border-slate-800 text-[11px] font-mono text-slate-400">
-          <Link2 className="w-3.5 h-3.5 text-cyan-400" />
-          <span>{t('drag_drop_hint')}</span>
+        <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-slate-900/60 border border-slate-800 text-xs text-slate-400 backdrop-blur-md">
+          <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+          <span>Clicca sul Nucleo per i 24 Applicativi • Clicca sui Nodi per l'Hardware</span>
         </div>
       </div>
 
-      {/* SVG Canvas for Topological Lines & Links */}
+      {/* SVG Canvas for Dynamic Laser Energy Conduits */}
       <svg className="absolute inset-0 w-full h-full pointer-events-none">
         <defs>
-          <linearGradient id="crdtGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <linearGradient id="coreBeam" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#00f0ff" stopOpacity="0.8" />
-            <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.3" />
+            <stop offset="100%" stopColor="#6366f1" stopOpacity="0.4" />
           </linearGradient>
-          <linearGradient id="p2pGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#10b981" stopOpacity="0.8" />
-            <stop offset="100%" stopColor="#00f0ff" stopOpacity="0.4" />
-          </linearGradient>
+          <filter id="laserGlow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
         </defs>
 
-        {/* Dynamic connection lines */}
-        <line x1="50%" y1="48%" x2="25%" y2="36%" stroke="url(#crdtGrad)" strokeWidth="2.5" strokeDasharray="6 4" />
-        <line x1="50%" y1="48%" x2="75%" y2="36%" stroke="url(#crdtGrad)" strokeWidth="2.5" strokeDasharray="6 4" />
-        <line x1="25%" y1="36%" x2="14%" y2="68%" stroke="url(#p2pGrad)" strokeWidth="2.5" />
-        <line x1="25%" y1="36%" x2="34%" y2="74%" stroke="url(#p2pGrad)" strokeWidth="2.5" />
-        <line x1="25%" y1="36%" x2="86%" y2="68%" stroke="#a855f7" strokeWidth="2" strokeDasharray="4 4" />
-      </svg>
-
-      {/* Interactive Graph Nodes */}
-      <div className="absolute inset-0 w-full h-full pointer-events-auto">
-        {nodes.map((node, index) => {
-          const pos = getNodePosition(node, index, nodes.length);
-          const isCore = node.type === 'core';
-          const isHovered = hoveredNode?.id === node.id;
+        {/* Dynamic laser lines connecting Central Nucleus (50%, 46%) to each node */}
+        {satelliteNodes.map((node) => {
+          const pos = nodePositions[node.id];
+          if (!pos) return null;
 
           return (
-            <div
-              key={node.id}
-              style={{ left: pos.cx, top: pos.cy, transform: 'translate(-50%, -50%)' }}
-              className="absolute cursor-pointer transition-all duration-300"
-              onMouseEnter={() => setHoveredNode(node)}
-              onClick={() => {
-                if (isCore) {
-                  onOpenCoreControl();
-                } else {
-                  onOpenNodeControl(node.id);
-                }
-              }}
-            >
-              <div
-                className={`group relative flex flex-col items-center justify-center transition-all duration-300 ${
-                  isCore
-                    ? 'w-28 h-28 md:w-36 md:h-36 rounded-full bg-slate-950/90 border-2 border-cyan-400 shadow-[0_0_50px_rgba(0,240,255,0.5)] hover:scale-105'
-                    : 'w-20 h-20 md:w-24 md:h-24 rounded-2xl bg-slate-900/90 border border-cyan-500/40 hover:border-cyan-300 shadow-lg hover:shadow-[0_0_25px_rgba(0,240,255,0.4)] hover:scale-110'
-                } ${isHovered ? 'ring-2 ring-cyan-400 ring-offset-2 ring-offset-slate-950' : ''}`}
-              >
-                {/* Node icon */}
-                {getNodeIcon(node)}
-
-                {/* Node Label */}
-                <span
-                  className={`mt-1 font-mono font-bold text-center px-1 text-white tracking-wider ${
-                    isCore ? 'text-xs md:text-sm text-cyan-300' : 'text-[10px] md:text-xs'
-                  }`}
-                >
-                  {node.name}
-                </span>
-
-                {/* Node IP / Badge */}
-                <span className="text-[9px] font-mono text-cyan-400/80">
-                  {node.ip}
-                </span>
-
-                {/* Badges */}
-                {node.is_remote_vpn && (
-                  <span className="absolute -top-2 px-1.5 py-0.5 rounded-full bg-purple-600 text-[8px] font-bold text-white shadow">
-                    REMOTE-VPN
-                  </span>
-                )}
-
-                {node.type === 'satellite' && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setBindingSatellite(node);
-                    }}
-                    title="Parent Binding"
-                    className="absolute -bottom-2 px-1.5 py-0.5 rounded-md bg-emerald-700 hover:bg-emerald-600 text-[8px] font-mono text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    P2P BIND
-                  </button>
-                )}
-              </div>
-            </div>
+            <g key={`link-${node.id}`}>
+              {/* Outer soft glow */}
+              <line
+                x1="50%"
+                y1="46%"
+                x2={pos.cx}
+                y2={pos.cy}
+                stroke="#00f0ff"
+                strokeWidth="4"
+                strokeOpacity="0.2"
+                filter="url(#laserGlow)"
+              />
+              {/* Inner high-intensity laser conduit with animated pulses */}
+              <line
+                x1="50%"
+                y1="46%"
+                x2={pos.cx}
+                y2={pos.cy}
+                stroke="url(#coreBeam)"
+                strokeWidth="2"
+                strokeDasharray="8 6"
+                className="animate-pulse"
+              />
+            </g>
           );
         })}
+      </svg>
+
+      {/* Central Interactive Nucleus (Virtual Core) */}
+      <div
+        style={{ left: '50%', top: '46%', transform: 'translate(-50%, -50%)' }}
+        className="absolute z-10 flex flex-col items-center cursor-pointer group"
+        onClick={onOpenCoreControl}
+      >
+        {/* Outer Rotating Holographic HUD Rings */}
+        <div className="relative flex items-center justify-center">
+          {/* Ring 1 - Outer segmented */}
+          <div className="absolute w-44 h-44 sm:w-56 sm:h-56 rounded-full border border-cyan-500/20 border-dashed animate-spin [animation-duration:35s] pointer-events-none" />
+
+          {/* Ring 2 - Inner counter-rotating */}
+          <div className="absolute w-36 h-36 sm:w-48 sm:h-48 rounded-full border border-indigo-500/30 border-t-cyan-400 border-b-transparent animate-spin [animation-duration:20s] [animation-direction:reverse] pointer-events-none" />
+
+          {/* Central Reactor Core Sphere */}
+          <div className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-full bg-slate-950/90 border-2 border-cyan-400/80 shadow-[0_0_60px_rgba(6,182,212,0.45)] flex flex-col items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:border-cyan-300 group-hover:shadow-[0_0_90px_rgba(6,182,212,0.7)]">
+            <div className="absolute inset-0 rounded-full bg-radial from-cyan-400/20 via-transparent to-transparent pointer-events-none" />
+            <Activity className="w-9 h-9 sm:w-11 sm:h-11 text-cyan-300 animate-pulse mb-1" />
+            <span className="text-[11px] sm:text-xs font-bold text-white tracking-widest uppercase">
+              NUCLEO
+            </span>
+            <span className="text-[9px] font-bold text-cyan-400 tracking-wider">
+              CENTRALE
+            </span>
+            <div className="mt-1 px-2 py-0.5 rounded-full bg-cyan-950/80 border border-cyan-800 text-[8px] text-cyan-300 uppercase font-semibold">
+              CRDT VIRTUAL CORE
+            </div>
+          </div>
+        </div>
+
+        {/* Hover / Action Prompt */}
+        <div className="mt-3 px-3 py-1 rounded-full bg-slate-900/80 border border-cyan-500/30 text-[10px] text-cyan-300 shadow-md group-hover:bg-cyan-500/20 group-hover:border-cyan-400 transition-all">
+          Clicca per Aprire il Pannello Generale (24 App)
+        </div>
       </div>
 
-      {/* Floating Hover Telemetry Card (Top Right / FIG 5.1) */}
+      {/* Orbiting Hardware Nodes */}
+      {satelliteNodes.map((node) => {
+        const pos = nodePositions[node.id];
+        if (!pos) return null;
+        const isHovered = hoveredNode?.id === node.id;
+
+        return (
+          <div
+            key={node.id}
+            style={{ left: pos.cx, top: pos.cy, transform: 'translate(-50%, -50%)' }}
+            className="absolute z-10 cursor-pointer transition-all duration-300"
+            onMouseEnter={() => setHoveredNode(node)}
+            onClick={() => {
+              onOpenNodeControl({
+                id: node.id,
+                name: node.name,
+                tier: node.tier,
+                ip: node.ip,
+              });
+            }}
+          >
+            <div
+              className={`group relative flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl bg-slate-900/90 backdrop-blur-xl border transition-all duration-300 min-w-[120px] sm:min-w-[140px] shadow-lg ${
+                isHovered
+                  ? 'border-cyan-400 shadow-[0_0_35px_rgba(6,182,212,0.4)] scale-110 ring-2 ring-cyan-400/60'
+                  : 'border-slate-800 hover:border-cyan-500/60 hover:scale-105'
+              }`}
+            >
+              {/* Online beacon dot */}
+              <div className="absolute top-2.5 right-2.5 flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              </div>
+
+              {/* Hardware Icon */}
+              <div className="p-2 rounded-xl bg-slate-950/80 border border-slate-800 mb-2 group-hover:border-cyan-500/40">
+                {getNodeIcon(node)}
+              </div>
+
+              {/* Node Name */}
+              <span className="font-bold text-xs text-white text-center truncate max-w-[120px]">
+                {node.name}
+              </span>
+
+              {/* Node IP */}
+              <span className="text-[10px] text-cyan-400/90 font-mono mt-0.5">
+                {node.ip}
+              </span>
+
+              {/* Tier badge */}
+              <span className="mt-1.5 text-[8px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-cyan-950/60 text-cyan-300 border border-cyan-800/80">
+                {node.tier.split(' ')[0]}
+              </span>
+
+              {/* Click prompt */}
+              <span className="text-[8px] text-slate-500 group-hover:text-cyan-300 transition-colors mt-1">
+                Gestisci Hardware →
+              </span>
+            </div>
+          </div>
+        );
+      })}
+
+      {/* Floating Holographic Telemetry HUD Card in bottom-left */}
       {hoveredNode && (
-        <div className="absolute top-4 right-6 z-30">
+        <div className="absolute bottom-6 left-6 z-30">
           <TelemetryHUDCard
             node={hoveredNode}
-            onOpenNodeControl={onOpenNodeControl}
+            onOpenNodeControl={(nodeId) => {
+              const target = nodes.find((n) => n.id === nodeId);
+              if (target) {
+                onOpenNodeControl({
+                  id: target.id,
+                  name: target.name,
+                  tier: target.tier,
+                  ip: target.ip,
+                });
+              }
+            }}
             onOpenCoreControl={onOpenCoreControl}
           />
         </div>
@@ -290,7 +350,7 @@ export const MeshTopologyCanvas: React.FC<MeshTopologyCanvasProps> = ({
       {bindingSatellite && (
         <ParentBindingModal
           satellite={bindingSatellite}
-          availableParents={nodes}
+          availableParents={nodes.filter((n) => n.type === 'compute')}
           onClose={() => setBindingSatellite(null)}
           onSaveBinding={handleSaveBinding}
         />

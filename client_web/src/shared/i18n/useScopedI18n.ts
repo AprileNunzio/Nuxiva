@@ -118,3 +118,13 @@ export function useScopedI18n(scope: string) {
 
   return { t, lang, setLang };
 }
+
+export function getScopedString(scope: string, lang: string, key: string, fallback?: string): string {
+  const scopeData = dictionaryCache[scope];
+  if (scopeData) {
+    if (scopeData[lang] && scopeData[lang][key]) return scopeData[lang][key];
+    if (scopeData['it'] && scopeData['it'][key]) return scopeData['it'][key];
+    if (scopeData['en'] && scopeData['en'][key]) return scopeData['en'][key];
+  }
+  return fallback || key;
+}

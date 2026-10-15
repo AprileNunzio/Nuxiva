@@ -281,6 +281,34 @@ class NuxivaMeshCoordinator:
             return True
         return False
 
+    def register_node(self, node_id: str, peer_info: Dict[str, Any], telemetry: Optional[Dict[str, Any]] = None) -> None:
+        """Registra esplicitamente un nodo onboardato nel cluster mesh."""
+        self.peers[node_id] = peer_info
+        if telemetry:
+            self.telemetry_store[node_id] = telemetry
+        else:
+            self.telemetry_store[node_id] = {
+                "node_id": node_id,
+                "name": peer_info.get("name", node_id),
+                "ip": peer_info.get("ip", "127.0.0.1"),
+                "tier": peer_info.get("tier", "Tier-2 Satellite"),
+                "status": "Connesso via P2P Mesh",
+                "last_updated": time.time(),
+            }
+
+    def remove_node(self, node_id: str) -> bool:
+        """Rimuove un nodo dal cluster mesh e revoca i suoi binding di stream."""
+        removed = False
+        if node_id in self.peers:
+            del self.peers[node_id]
+            removed = True
+        if node_id in self.telemetry_store:
+            del self.telemetry_store[node_id]
+            removed = True
+        if node_id in self._bindings:
+            del self._bindings[node_id]
+        return removed
+
     # ---------------- LIVE HOVER TELEMETRY (2Hz STREAM) ----------------
     def get_node_telemetry(self, node_id: str) -> Dict[str, Any]:
         """Ritorna la telemetria real-time del nodo specificato (senza dati inventati)."""

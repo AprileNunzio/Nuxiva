@@ -1,138 +1,181 @@
-import React, { useState, useEffect } from 'react';
-import { NavigationTab, KnowledgeNode } from './shared/types';
+import React, { useState } from 'react';
+import { NavigationTab } from './shared/types';
 import { AppNavbar } from './shared/layout/AppNavbar';
-import { I18nProvider, useI18n } from './shared/i18n/I18nContext';
-import { NeuralCoreCanvas } from './features/core_visualizer_3d/NeuralCoreCanvas';
-import { SpatialWorldView } from './features/world_3d/SpatialWorldView';
-import { Studio3DView } from './features/studio_3d/Studio3DView';
-import { ControlDeckView } from './features/control_deck/ControlDeckView';
+import { I18nProvider } from './shared/i18n/I18nContext';
 import { MeshTopologyCanvas } from './mesh_canvas';
 import { GlobalCommandGrid } from './core_apps';
+import { NodeDetailView } from './node_apps/NodeDetailView';
+import { ArrowLeft, Layers, Network } from 'lucide-react';
+
+// Core Apps Dynamic Components Map
+import { View as UpdaterView } from './core_apps/updater/View';
+import { View as NodesView } from './core_apps/nodes/View';
+import { View as AgentsView } from './core_apps/agents/View';
+import { View as AlgorithmsView } from './core_apps/algorithms/View';
+import { View as AutomationsView } from './core_apps/automations/View';
+import { View as FlowsView } from './core_apps/flows/View';
+import { View as HabitsView } from './core_apps/habits/View';
+import { View as HandsView } from './core_apps/hands/View';
+import { View as LawsView } from './core_apps/laws/View';
+import { View as MusicView } from './core_apps/music/View';
+import { View as PeopleView } from './core_apps/people/View';
+import { View as PlacesView } from './core_apps/places/View';
+import { View as StudyView } from './core_apps/study/View';
+import { View as TwinView } from './core_apps/twin/View';
+import { View as VaultView } from './core_apps/vault/View';
+import { View as VpnView } from './core_apps/vpn/View';
+import { View as FeaturesHubView } from './core_apps/features_hub/View';
+import { View as GoogleView } from './core_apps/google/View';
+import { View as IptvView } from './core_apps/iptv/View';
+import { View as CamerasView } from './core_apps/cameras/View';
+import { View as FirewallView } from './core_apps/firewall/View';
+import { View as OfficeView } from './core_apps/office/View';
+import { View as EmergencyView } from './core_apps/emergency/View';
+import { View as BackupView } from './core_apps/backup/View';
+
+const CORE_APP_COMPONENTS: Record<string, React.FC> = {
+  updater: UpdaterView,
+  nodes: NodesView,
+  agents: AgentsView,
+  algorithms: AlgorithmsView,
+  automations: AutomationsView,
+  flows: FlowsView,
+  habits: HabitsView,
+  hands: HandsView,
+  laws: LawsView,
+  music: MusicView,
+  people: PeopleView,
+  places: PlacesView,
+  study: StudyView,
+  twin: TwinView,
+  vault: VaultView,
+  vpn: VpnView,
+  features_hub: FeaturesHubView,
+  google: GoogleView,
+  iptv: IptvView,
+  cameras: CamerasView,
+  firewall: FirewallView,
+  office: OfficeView,
+  emergency: EmergencyView,
+  backup: BackupView,
+};
 
 export const MainConsole: React.FC = () => {
-  const { t } = useI18n();
   const [currentTab, setCurrentTab] = useState<NavigationTab>('MESH_CANVAS');
-  const [nodes, setNodes] = useState<KnowledgeNode[]>([
-    {
-      id: 'nuxiva_core',
-      node_type: 'AGENT',
-      label: 'Nuxiva Orchestrator',
-      properties: { status: 'ONLINE' },
-      created_at: Date.now(),
-      updated_at: Date.now()
-    },
-    {
-      id: 'user_master',
-      node_type: 'USER',
-      label: 'Proprietario (Admin)',
-      properties: { biometric_verified: true },
-      created_at: Date.now(),
-      updated_at: Date.now()
-    },
-    {
-      id: 'home_assistant_node',
-      node_type: 'DEVICE',
-      label: 'Home Assistant Hub',
-      properties: { domain: 'iot' },
-      created_at: Date.now(),
-      updated_at: Date.now()
-    }
-  ]);
+  const [selectedNode, setSelectedNode] = useState<{
+    id: string;
+    name: string;
+    tier: string;
+    ip: string;
+  } | null>(null);
+  const [selectedAppId, setSelectedAppId] = useState<string | null>(null);
 
-  const fetchGraphNodes = async () => {
-    try {
-      const res = await fetch('/api/v1/knowledge/graph');
-      if (res.ok) {
-        const data = await res.json();
-        if (data.graph?.nodes) {
-          setNodes(data.graph.nodes);
-        }
-      }
-    } catch {
-    }
+  const handleOpenCoreControl = () => {
+    setSelectedAppId(null);
+    setCurrentTab('CORE_APPS');
   };
 
-  useEffect(() => {
-    fetchGraphNodes();
-  }, []);
-
-  const handleSendCommand = async (command: string): Promise<string> => {
-    try {
-      const res = await fetch('/api/v1/command', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer v1.local.mock_token_for_browser'
-        },
-        body: JSON.stringify({
-          query: command,
-          device_id: 'web_dashboard_client'
-        })
-      });
-
-      if (res.ok) {
-        const payload = await res.json();
-        fetchGraphNodes();
-        return payload.speech_output || t('cmd_executed_default');
-      }
-    } catch {
-    }
-
-    const lower = command.toLowerCase();
-    if (lower.includes('luci') || lower.includes('luce') || lower.includes('light')) {
-      return t('cmd_ha_lights');
-    }
-    if (lower.includes('telecamera') || lower.includes('sicurezza') || lower.includes('camera') || lower.includes('security')) {
-      return t('cmd_security_frigate');
-    }
-    if (lower.includes('codice') || lower.includes('programma') || lower.includes('code') || lower.includes('software')) {
-      return t('cmd_sandbox_code');
-    }
-    return `${t('cmd_received')}: "${command}". ${t('cmd_routed')}`;
+  const handleOpenNodeControl = (node: {
+    id: string;
+    name: string;
+    tier: string;
+    ip: string;
+  }) => {
+    setSelectedNode(node);
+    setCurrentTab('NODE_CONTROL');
   };
+
+  const handleSelectApp = (appId: string) => {
+    setSelectedAppId(appId);
+    setCurrentTab('APP_VIEW');
+  };
+
+  const SelectedAppComponent = selectedAppId ? CORE_APP_COMPONENTS[selectedAppId] : null;
 
   return (
-    <div className="min-h-screen bg-[#030712] text-slate-100 flex flex-col font-['Inter'] selection:bg-cyan-500 selection:text-slate-950">
-      <AppNavbar 
-        currentTab={currentTab} 
-        onTabChange={setCurrentTab} 
-        isMeshConnected={true} 
+    <div className="min-h-screen bg-[#030712] text-slate-100 flex flex-col font-['Inter'] selection:bg-cyan-500 selection:text-slate-950 overflow-hidden">
+      {/* Sleek Top Navbar with Breadcrumb */}
+      <AppNavbar
+        currentTab={currentTab}
+        onTabChange={(tab) => {
+          if (tab === 'MESH_CANVAS') {
+            setSelectedAppId(null);
+          }
+          setCurrentTab(tab);
+        }}
+        isMeshConnected={true}
+        selectedNodeName={selectedNode?.name}
+        selectedAppName={selectedAppId ? selectedAppId.toUpperCase() : undefined}
       />
 
-      <main className="flex-1 w-full flex flex-col overflow-hidden">
+      {/* Main Dynamic Viewport */}
+      <main className="flex-1 w-full flex flex-col overflow-y-auto">
+        {/* Level 0: The Spatial Holographic Mesh Canvas */}
         {currentTab === 'MESH_CANVAS' && (
           <MeshTopologyCanvas
-            onOpenCoreControl={() => setCurrentTab('CORE_APPS')}
-            onOpenNodeControl={(nodeId) => console.log('Open node:', nodeId)}
+            onOpenCoreControl={handleOpenCoreControl}
+            onOpenNodeControl={handleOpenNodeControl}
           />
         )}
 
+        {/* Level 1: Central Nucleus General Control Panel (24 Core Apps A-Z) */}
         {currentTab === 'CORE_APPS' && (
           <GlobalCommandGrid
             onBackToCanvas={() => setCurrentTab('MESH_CANVAS')}
-            onSelectApp={(appId) => console.log('Selected app:', appId)}
+            onSelectApp={handleSelectApp}
           />
         )}
 
-        {currentTab === 'CORE' && (
-          <NeuralCoreCanvas 
-            onSendCommand={handleSendCommand} 
-            activeNodes={nodes} 
-          />
+        {/* Level 1.5: Inside Specific Core App */}
+        {currentTab === 'APP_VIEW' && selectedAppId && (
+          <div className="flex-1 flex flex-col">
+            {/* Top Sub-Navigation Bar */}
+            <div className="flex items-center justify-between px-6 py-3 bg-slate-950/80 border-b border-slate-800">
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setCurrentTab('CORE_APPS')}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-cyan-500 text-xs text-slate-300 font-mono transition"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  <span>Torna al Nucleo</span>
+                </button>
+                <div className="h-4 w-px bg-slate-800" />
+                <button
+                  onClick={() => setCurrentTab('MESH_CANVAS')}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-cyan-500 text-xs text-slate-300 font-mono transition"
+                >
+                  <Network className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>Mappa Spaziale</span>
+                </button>
+              </div>
+
+              <div className="flex items-center gap-2 text-xs font-mono text-cyan-400">
+                <Layers className="w-4 h-4" />
+                <span className="uppercase font-bold tracking-wider">{selectedAppId}</span>
+              </div>
+            </div>
+
+            {/* App View Content */}
+            <div className="flex-1 overflow-y-auto">
+              {SelectedAppComponent ? (
+                <SelectedAppComponent />
+              ) : (
+                <div className="p-8 text-center text-slate-500 font-mono">
+                  Applicativo '{selectedAppId}' in fase di caricamento...
+                </div>
+              )}
+            </div>
+          </div>
         )}
 
-        {currentTab === 'WORLD_3D' && (
-          <SpatialWorldView />
-        )}
-
-        {currentTab === 'STUDIO_3D' && (
-          <Studio3DView />
-        )}
-
-        {currentTab === 'CONTROL_DECK' && (
-          <ControlDeckView 
-            nodes={nodes} 
-            onRefreshGraph={fetchGraphNodes} 
+        {/* Level 2: Personal Node Control Panel (9 Hardware Modules) */}
+        {currentTab === 'NODE_CONTROL' && selectedNode && (
+          <NodeDetailView
+            nodeId={selectedNode.id}
+            nodeName={selectedNode.name}
+            nodeTier={selectedNode.tier}
+            ipAddress={selectedNode.ip}
+            onBack={() => setCurrentTab('MESH_CANVAS')}
           />
         )}
       </main>

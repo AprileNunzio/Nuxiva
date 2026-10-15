@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useI18n } from '../shared/i18n/I18nContext';
-import { useScopedI18n } from '../shared/i18n/useScopedI18n';
+import { useScopedI18n, getScopedString } from '../shared/i18n/useScopedI18n';
 import {
   Clock, Users, Binary, Hand, Workflow, Grid, Home, Music, Mail, Tv,
   Scale, Server, Video, ShieldCheck, Zap, Lock, UserCheck, FileText,
@@ -123,16 +123,15 @@ export const GlobalCommandGrid: React.FC<{
 
     // Otteniamo per ogni app il titolo nella lingua attiva
     const itemsWithTitle = CORE_APPS_LIST.map((app) => {
-      // Importante: useScopedI18n usa la cache globale dinamica dei dizionari colocated
+      const translatedTitle = getScopedString(`core_apps/${app.id}`, lang, 'title', app.id);
       return {
         ...app,
-        sortKey: app.id, // Verrà ordinato dal collator sul titolo tradotto
+        translatedTitle,
       };
     });
 
     return itemsWithTitle.sort((a, b) => {
-      // In base alla lingua corrente
-      return collator.compare(a.id, b.id);
+      return collator.compare(a.translatedTitle, b.translatedTitle);
     });
   }, [lang]);
 

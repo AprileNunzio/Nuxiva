@@ -1,4 +1,4 @@
-export type NavigationTab = 'MESH_CANVAS' | 'CORE_APPS' | 'NODE_CONTROL' | 'CORE' | 'WORLD_3D' | 'STUDIO_3D' | 'CONTROL_DECK';
+export type NavigationTab = 'MESH_CANVAS' | 'CORE_APPS' | 'NODE_CONTROL' | 'APP_VIEW' | 'CORE' | 'WORLD_3D' | 'STUDIO_3D' | 'CONTROL_DECK';
 
 export type NodeTier = 'Tier-0 (Virtual Core)' | 'Tier-1 (Compute & Core)' | 'Tier-2 (Smart Edge Satellite)' | 'Tier-3 (Pure Micro-Satellite)';
 
