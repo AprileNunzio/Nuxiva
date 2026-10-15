@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Backup e Snapshot",
+    "description": "Snapshot di sistema e ripristino istantaneo",
+    "status": "Attivo",
+    "open_app": "Apri"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Flows",
+    "description": "DAG nodal editor of Nuxiva reasoning",
+    "status": "Active",
+    "open_app": "Open"
+  }
+}

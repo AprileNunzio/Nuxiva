@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Places & Rooms",
+    "description": "Topological floorplan and room builder",
+    "status": "Active",
+    "open_app": "Open"
+  }
+}

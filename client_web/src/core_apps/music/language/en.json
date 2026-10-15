@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Music Manager",
+    "description": "Multi-room media center DLNA and Spotify",
+    "status": "Active",
+    "open_app": "Open"
+  }
+}

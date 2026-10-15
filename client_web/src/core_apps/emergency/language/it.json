@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Allerta Rossa",
+    "description": "Protocollo di emergenza e blocco perimetrale",
+    "status": "Attivo",
+    "open_app": "Apri"
+  }
+}

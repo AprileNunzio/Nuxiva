@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Caja Fuerte",
+    "description": "Depósito cifrado de claves y secretos",
+    "status": "Activo",
+    "open_app": "Abrir"
+  }
+}

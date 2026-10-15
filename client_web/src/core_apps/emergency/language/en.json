@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Red Alert",
+    "description": "Emergency lockdown protocol and perimeter safety",
+    "status": "Active",
+    "open_app": "Open"
+  }
+}

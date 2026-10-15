@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Habitudes",
+    "description": "Journal chronologique et prédiction des habitudes",
+    "status": "Actif",
+    "open_app": "Ouvrir"
+  }
+}

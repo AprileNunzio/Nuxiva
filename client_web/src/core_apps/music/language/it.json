@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Gestore Musica",
+    "description": "Media center multi-room DLNA e Spotify",
+    "status": "Attivo",
+    "open_app": "Apri"
+  }
+}

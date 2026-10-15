@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Seguridad y Cortafuegos",
+    "description": "NetGuard y reglas de cortafuegos",
+    "status": "Activo",
+    "open_app": "Abrir"
+  }
+}

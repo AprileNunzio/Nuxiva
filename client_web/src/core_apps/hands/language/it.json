@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Comandi con le Mani",
+    "description": "Studio tracking 21-point live skeleton",
+    "status": "Attivo",
+    "open_app": "Apri"
+  }
+}

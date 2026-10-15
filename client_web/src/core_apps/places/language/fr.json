@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Gestion Pièces et Étages",
+    "description": "Constructeur topologique des pièces",
+    "status": "Actif",
+    "open_app": "Ouvrir"
+  }
+}

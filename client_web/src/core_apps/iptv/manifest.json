@@ -1,0 +1,7 @@
+{
+  "id": "iptv",
+  "name": "IPTV & Streaming",
+  "icon": "Tv",
+  "version": "5.0.0",
+  "description": "TV streaming proxy relay and M3U playlists"
+}

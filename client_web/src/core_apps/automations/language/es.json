@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Automatizaciones",
+    "description": "Motor de escenarios domóticos",
+    "status": "Activo",
+    "open_app": "Abrir"
+  }
+}

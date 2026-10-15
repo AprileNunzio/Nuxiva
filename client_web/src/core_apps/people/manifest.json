@@ -1,0 +1,7 @@
+{
+  "id": "people",
+  "name": "People & Presence",
+  "icon": "UserCheck",
+  "version": "5.0.0",
+  "description": "Biometric face and voice identification"
+}

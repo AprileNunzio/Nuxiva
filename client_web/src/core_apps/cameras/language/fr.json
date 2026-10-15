@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Caméras et NVR",
+    "description": "Enregistrement continu et flux RTSP",
+    "status": "Actif",
+    "open_app": "Ouvrir"
+  }
+}

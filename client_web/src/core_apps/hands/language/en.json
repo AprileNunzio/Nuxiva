@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Hand Gestures",
+    "description": "Interactive 21-point hand tracking studio",
+    "status": "Active",
+    "open_app": "Open"
+  }
+}

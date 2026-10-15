@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Documents et Bureau",
+    "description": "OCR et gestion de documents",
+    "status": "Actif",
+    "open_app": "Ouvrir"
+  }
+}

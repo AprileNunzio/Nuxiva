@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Cámaras y NVR",
+    "description": "Grabación continua y flujos RTSP",
+    "status": "Activo",
+    "open_app": "Abrir"
+  }
+}

@@ -7,6 +7,7 @@ import { SpatialWorldView } from './features/world_3d/SpatialWorldView';
 import { Studio3DView } from './features/studio_3d/Studio3DView';
 import { ControlDeckView } from './features/control_deck/ControlDeckView';
 import { MeshTopologyCanvas } from './mesh_canvas';
+import { GlobalCommandGrid } from './core_apps';
 
 export const MainConsole: React.FC = () => {
   const { t } = useI18n();
@@ -101,8 +102,15 @@ export const MainConsole: React.FC = () => {
       <main className="flex-1 w-full flex flex-col overflow-hidden">
         {currentTab === 'MESH_CANVAS' && (
           <MeshTopologyCanvas
-            onOpenCoreControl={() => setCurrentTab('CONTROL_DECK')}
+            onOpenCoreControl={() => setCurrentTab('CORE_APPS')}
             onOpenNodeControl={(nodeId) => console.log('Open node:', nodeId)}
+          />
+        )}
+
+        {currentTab === 'CORE_APPS' && (
+          <GlobalCommandGrid
+            onBackToCanvas={() => setCurrentTab('MESH_CANVAS')}
+            onSelectApp={(appId) => console.log('Selected app:', appId)}
           />
         )}
 

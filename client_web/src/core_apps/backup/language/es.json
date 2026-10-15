@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Respaldo e Instantáneas",
+    "description": "Instantáneas del sistema y restauración",
+    "status": "Activo",
+    "open_app": "Abrir"
+  }
+}

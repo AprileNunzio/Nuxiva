@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Documents & Office",
+    "description": "OCR, document management and file server",
+    "status": "Active",
+    "open_app": "Open"
+  }
+}

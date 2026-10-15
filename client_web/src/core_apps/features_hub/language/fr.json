@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Fonctionnalités",
+    "description": "Centre des fonctionnalités",
+    "status": "Actif",
+    "open_app": "Ouvrir"
+  }
+}

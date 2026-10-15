@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Noeuds et Serveurs",
+    "description": "Inventaire des noeuds et assistant",
+    "status": "Actif",
+    "open_app": "Ouvrir"
+  }
+}

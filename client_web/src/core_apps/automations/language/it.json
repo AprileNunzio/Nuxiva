@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Automazioni",
+    "description": "Motore eventi e scenari multi-stanza",
+    "status": "Attivo",
+    "open_app": "Apri"
+  }
+}

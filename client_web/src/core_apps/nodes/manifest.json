@@ -1,0 +1,7 @@
+{
+  "id": "nodes",
+  "name": "Nodes & Servers",
+  "icon": "Server",
+  "version": "5.0.0",
+  "description": "Mesh nodes inventory and provisioning wizard"
+}

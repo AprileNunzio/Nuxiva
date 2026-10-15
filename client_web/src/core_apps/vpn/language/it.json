@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Rete VPN Mesh",
+    "description": "Tunnel crittografato WireGuard per nodi remoti",
+    "status": "Attivo",
+    "open_app": "Apri"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "id": "habits",
+  "name": "Habits",
+  "icon": "Clock",
+  "version": "5.0.0",
+  "description": "Chronological log and predictive habit foresight"
+}

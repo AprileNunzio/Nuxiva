@@ -1,0 +1,7 @@
+{
+  "id": "backup",
+  "name": "Backup & Snapshot",
+  "icon": "Archive",
+  "version": "5.0.0",
+  "description": "System snapshots and instant point-in-time restore"
+}

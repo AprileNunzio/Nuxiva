@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Agenti",
+    "description": "Store gerarchico con CEO e team di agenti",
+    "status": "Attivo",
+    "open_app": "Apri"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Gestor de Música",
+    "description": "Centro multimedia multi-sala",
+    "status": "Activo",
+    "open_app": "Abrir"
+  }
+}

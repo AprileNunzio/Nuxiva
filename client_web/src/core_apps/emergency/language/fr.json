@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Alerte Rouge",
+    "description": "Protocole d'urgence et verrouillage",
+    "status": "Actif",
+    "open_app": "Ouvrir"
+  }
+}

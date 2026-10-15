@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Agents",
+    "description": "Équipe hiérarchique d'agents",
+    "status": "Actif",
+    "open_app": "Ouvrir"
+  }
+}

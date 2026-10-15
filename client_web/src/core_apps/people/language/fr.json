@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Personnes et Présences",
+    "description": "Reconnaissance faciale et vocale",
+    "status": "Actif",
+    "open_app": "Ouvrir"
+  }
+}

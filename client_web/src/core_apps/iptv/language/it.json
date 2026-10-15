@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "IPTV e Streaming",
+    "description": "Proxy relay stream TV e playlist M3U",
+    "status": "Attivo",
+    "open_app": "Apri"
+  }
+}

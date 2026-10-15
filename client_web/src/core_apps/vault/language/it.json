@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Cassaforte",
+    "description": "Deposito crittografato chiavi e credenziali",
+    "status": "Attivo",
+    "open_app": "Apri"
+  }
+}

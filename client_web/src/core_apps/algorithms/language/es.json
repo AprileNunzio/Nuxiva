@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Algoritmos",
+    "description": "Almacén universal de algoritmos",
+    "status": "Activo",
+    "open_app": "Abrir"
+  }
+}

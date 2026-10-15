@@ -1,0 +1,7 @@
+{
+  "id": "vault",
+  "name": "Vault",
+  "icon": "Lock",
+  "version": "5.0.0",
+  "description": "Encrypted store for keys and credentials"
+}

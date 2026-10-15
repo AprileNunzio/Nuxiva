@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Red VPN Mesh",
+    "description": "Túnel WireGuard para nodos remotos",
+    "status": "Activo",
+    "open_app": "Abrir"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Nuxiva Update",
+    "description": "Synchronous 03:00 AM update and selftest",
+    "status": "Active",
+    "open_app": "Open"
+  }
+}

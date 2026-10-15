@@ -1,0 +1,7 @@
+{
+  "id": "flows",
+  "name": "Flows",
+  "icon": "Workflow",
+  "version": "5.0.0",
+  "description": "DAG nodal editor of Nuxiva reasoning"
+}

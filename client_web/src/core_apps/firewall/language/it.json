@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Sicurezza e Firewall",
+    "description": "NetGuard, monitoraggio ARP e regole nftables",
+    "status": "Attivo",
+    "open_app": "Apri"
+  }
+}

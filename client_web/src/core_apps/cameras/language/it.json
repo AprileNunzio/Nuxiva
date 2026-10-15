@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Telecamere e NVR",
+    "description": "Registrazione continua, motion RTSP e AI",
+    "status": "Attivo",
+    "open_app": "Apri"
+  }
+}

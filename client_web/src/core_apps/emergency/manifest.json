@@ -1,0 +1,7 @@
+{
+  "id": "emergency",
+  "name": "Red Alert",
+  "icon": "AlertTriangle",
+  "version": "5.0.0",
+  "description": "Emergency lockdown protocol and perimeter safety"
+}

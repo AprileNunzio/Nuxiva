@@ -1,0 +1,7 @@
+{
+  "id": "hands",
+  "name": "Hand Gestures",
+  "icon": "Hand",
+  "version": "5.0.0",
+  "description": "Interactive 21-point hand tracking studio"
+}

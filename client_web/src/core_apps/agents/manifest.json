@@ -1,0 +1,7 @@
+{
+  "id": "agents",
+  "name": "Agents",
+  "icon": "Users",
+  "version": "5.0.0",
+  "description": "Hierarchical team of anthropomorphic agents"
+}

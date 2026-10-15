@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Backup & Snapshot",
+    "description": "System snapshots and instant point-in-time restore",
+    "status": "Active",
+    "open_app": "Open"
+  }
+}

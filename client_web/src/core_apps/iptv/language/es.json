@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "IPTV y Streaming",
+    "description": "Retransmisión de TV y listas M3U",
+    "status": "Activo",
+    "open_app": "Abrir"
+  }
+}

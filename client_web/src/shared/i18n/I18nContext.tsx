@@ -12,11 +12,11 @@ const I18nContext = createContext<I18nContextType | null>(null);
 export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [lang, setLangState] = useState<SupportedLanguage>(() => {
     const saved = localStorage.getItem('nuxiva_ui_lang');
-    if (saved === 'it' || saved === 'en' || saved === 'fr') {
+    if (saved === 'it' || saved === 'en' || saved === 'fr' || saved === 'es') {
       return saved;
     }
     const nav = navigator.language.slice(0, 2).toLowerCase();
-    if (nav === 'it' || nav === 'fr') return nav;
+    if (nav === 'it' || nav === 'fr' || nav === 'es') return nav;
     return 'it'; 
   });
 

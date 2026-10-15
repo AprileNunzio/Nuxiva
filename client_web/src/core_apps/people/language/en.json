@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "People & Presence",
+    "description": "Biometric face and voice identification",
+    "status": "Active",
+    "open_app": "Open"
+  }
+}

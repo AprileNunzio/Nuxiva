@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Vault",
+    "description": "Encrypted store for keys and credentials",
+    "status": "Active",
+    "open_app": "Open"
+  }
+}

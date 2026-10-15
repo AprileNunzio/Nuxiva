@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Jumeau Numérique 3D",
+    "description": "Jumeau numérique interactif",
+    "status": "Actif",
+    "open_app": "Ouvrir"
+  }
+}

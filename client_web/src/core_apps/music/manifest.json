@@ -1,0 +1,7 @@
+{
+  "id": "music",
+  "name": "Music Manager",
+  "icon": "Music",
+  "version": "5.0.0",
+  "description": "Multi-room media center DLNA and Spotify"
+}

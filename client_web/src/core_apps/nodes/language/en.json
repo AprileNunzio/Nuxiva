@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Nodes & Servers",
+    "description": "Mesh nodes inventory and provisioning wizard",
+    "status": "Active",
+    "open_app": "Open"
+  }
+}

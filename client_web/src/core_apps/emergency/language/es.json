@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Alerta Roja",
+    "description": "Protocolo de emergencia y bloqueo",
+    "status": "Activo",
+    "open_app": "Abrir"
+  }
+}

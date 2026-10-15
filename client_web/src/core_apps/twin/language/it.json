@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Digital Twin 3D",
+    "description": "Gemello digitale interattivo tridimensionale",
+    "status": "Attivo",
+    "open_app": "Apri"
+  }
+}

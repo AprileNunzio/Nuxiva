@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "IPTV et Streaming",
+    "description": "Relais de flux TV et listes M3U",
+    "status": "Actif",
+    "open_app": "Ouvrir"
+  }
+}

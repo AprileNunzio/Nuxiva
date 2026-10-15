@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Nodi e Server",
+    "description": "Inventario completo nodi e wizard di aggiunta",
+    "status": "Attivo",
+    "open_app": "Apri"
+  }
+}

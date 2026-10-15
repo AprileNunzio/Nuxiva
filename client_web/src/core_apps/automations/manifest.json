@@ -1,0 +1,7 @@
+{
+  "id": "automations",
+  "name": "Automations",
+  "icon": "Zap",
+  "version": "5.0.0",
+  "description": "Multi-room scenario and event engine"
+}

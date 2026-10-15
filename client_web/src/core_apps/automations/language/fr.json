@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Automatisations",
+    "description": "Moteur de scénarios domotiques",
+    "status": "Actif",
+    "open_app": "Ouvrir"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Abitudini",
+    "description": "Log cronologico e analisi predittiva delle abitudini",
+    "status": "Attivo",
+    "open_app": "Apri"
+  }
+}

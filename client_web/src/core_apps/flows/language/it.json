@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Flussi",
+    "description": "Editor nodale DAG del ragionamento Nuxiva",
+    "status": "Attivo",
+    "open_app": "Apri"
+  }
+}

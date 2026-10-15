@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Algorithms",
+    "description": "Universal deterministic algorithm store",
+    "status": "Active",
+    "open_app": "Open"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Robotic Laws",
+    "description": "Robotic constitution and ethical guardrails",
+    "status": "Active",
+    "open_app": "Open"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Flux",
+    "description": "Éditeur nodal DAG du raisonnement",
+    "status": "Actif",
+    "open_app": "Ouvrir"
+  }
+}

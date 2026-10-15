@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Actualización Nuxiva",
+    "description": "Actualización sincronizada a las 03:00",
+    "status": "Activo",
+    "open_app": "Abrir"
+  }
+}

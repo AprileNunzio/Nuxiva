@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Digital Twin 3D",
+    "description": "Interactive 3D home digital twin",
+    "status": "Active",
+    "open_app": "Open"
+  }
+}

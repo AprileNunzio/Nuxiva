@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Persone e Presenze",
+    "description": "Riconoscimento biometrico volti e voci",
+    "status": "Attivo",
+    "open_app": "Apri"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Habits",
+    "description": "Chronological log and predictive habit foresight",
+    "status": "Active",
+    "open_app": "Open"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "id": "vpn",
+  "name": "WireGuard VPN Mesh",
+  "icon": "Radio",
+  "version": "5.0.0",
+  "description": "Encrypted WireGuard mesh for remote nodes"
+}

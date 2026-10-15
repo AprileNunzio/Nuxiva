@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Automations",
+    "description": "Multi-room scenario and event engine",
+    "status": "Active",
+    "open_app": "Open"
+  }
+}

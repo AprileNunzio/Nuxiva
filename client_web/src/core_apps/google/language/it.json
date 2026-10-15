@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Google Suite",
+    "description": "OAuth multi-account Gmail, Calendar e Drive",
+    "status": "Attivo",
+    "open_app": "Apri"
+  }
+}

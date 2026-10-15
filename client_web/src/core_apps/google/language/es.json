@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Suite Google",
+    "description": "Integración OAuth Gmail y Drive",
+    "status": "Activo",
+    "open_app": "Abrir"
+  }
+}

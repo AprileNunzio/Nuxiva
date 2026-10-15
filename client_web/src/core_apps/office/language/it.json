@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Documenti e Ufficio",
+    "description": "OCR, gestione documentale e file server",
+    "status": "Attivo",
+    "open_app": "Apri"
+  }
+}

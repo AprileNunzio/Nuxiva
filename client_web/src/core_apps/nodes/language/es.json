@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Nodos y Servidores",
+    "description": "Inventario de nodos y asistente",
+    "status": "Activo",
+    "open_app": "Abrir"
+  }
+}

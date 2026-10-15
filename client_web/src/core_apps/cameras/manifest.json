@@ -1,0 +1,7 @@
+{
+  "id": "cameras",
+  "name": "Cameras & NVR",
+  "icon": "Video",
+  "version": "5.0.0",
+  "description": "Continuous recording, RTSP motion and AI"
+}

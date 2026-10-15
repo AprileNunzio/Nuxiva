@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Lois Robotiques",
+    "description": "Constitution éthique inviolable",
+    "status": "Actif",
+    "open_app": "Ouvrir"
+  }
+}

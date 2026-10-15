@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Documentos y Oficina",
+    "description": "OCR y gestión documental",
+    "status": "Activo",
+    "open_app": "Abrir"
+  }
+}

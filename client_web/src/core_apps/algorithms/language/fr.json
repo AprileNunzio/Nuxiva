@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Algorithmes",
+    "description": "Magasin d'algorithmes",
+    "status": "Actif",
+    "open_app": "Ouvrir"
+  }
+}

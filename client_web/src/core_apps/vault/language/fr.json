@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Coffre-fort",
+    "description": "Coffre sécurisé pour clés et secrets",
+    "status": "Actif",
+    "open_app": "Ouvrir"
+  }
+}

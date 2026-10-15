@@ -1,0 +1,7 @@
+{
+  "id": "google",
+  "name": "Google Suite",
+  "icon": "Mail",
+  "version": "5.0.0",
+  "description": "Multi-account OAuth Gmail, Calendar and Drive"
+}

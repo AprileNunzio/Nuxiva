@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Gestionnaire de Musique",
+    "description": "Centre multimédia multi-pièces",
+    "status": "Actif",
+    "open_app": "Ouvrir"
+  }
+}

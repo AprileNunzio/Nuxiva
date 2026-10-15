@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Mise à jour Nuxiva",
+    "description": "Mise à jour synchrone à 03h00 et auto-test",
+    "status": "Actif",
+    "open_app": "Ouvrir"
+  }
+}

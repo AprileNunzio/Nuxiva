@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Réseau VPN Mesh",
+    "description": "Tunnel WireGuard pour noeuds distants",
+    "status": "Actif",
+    "open_app": "Ouvrir"
+  }
+}

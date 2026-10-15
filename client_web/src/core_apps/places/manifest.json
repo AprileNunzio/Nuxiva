@@ -1,0 +1,7 @@
+{
+  "id": "places",
+  "name": "Places & Rooms",
+  "icon": "Home",
+  "version": "5.0.0",
+  "description": "Topological floorplan and room builder"
+}

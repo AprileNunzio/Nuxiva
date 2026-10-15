@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Gestione Piani e Stanze",
+    "description": "Costruttore topologico di piani e stanze",
+    "status": "Attivo",
+    "open_app": "Apri"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "WireGuard VPN Mesh",
+    "description": "Encrypted WireGuard mesh for remote nodes",
+    "status": "Active",
+    "open_app": "Open"
+  }
+}

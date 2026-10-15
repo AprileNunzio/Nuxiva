@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Sauvegarde et Instantané",
+    "description": "Instantanés système et restauration",
+    "status": "Actif",
+    "open_app": "Ouvrir"
+  }
+}

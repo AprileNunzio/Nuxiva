@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Gestes de la Main",
+    "description": "Studio de suivi des mains à 21 points",
+    "status": "Actif",
+    "open_app": "Ouvrir"
+  }
+}

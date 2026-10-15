@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Sécurité et Pare-feu",
+    "description": "NetGuard et surveillance du pare-feu",
+    "status": "Actif",
+    "open_app": "Ouvrir"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Gestión Pisos y Habitaciones",
+    "description": "Constructor topológico de pisos",
+    "status": "Activo",
+    "open_app": "Abrir"
+  }
+}

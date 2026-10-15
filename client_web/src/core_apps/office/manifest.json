@@ -1,0 +1,7 @@
+{
+  "id": "office",
+  "name": "Documents & Office",
+  "icon": "FileText",
+  "version": "5.0.0",
+  "description": "OCR, document management and file server"
+}

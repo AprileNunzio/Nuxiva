@@ -1,0 +1,7 @@
+{
+  "id": "firewall",
+  "name": "Security & Firewall",
+  "icon": "ShieldCheck",
+  "version": "5.0.0",
+  "description": "NetGuard, ARP inspection and firewall rules"
+}

@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Flujos",
+    "description": "Editor nodal DAG del razonamiento",
+    "status": "Activo",
+    "open_app": "Abrir"
+  }
+}
