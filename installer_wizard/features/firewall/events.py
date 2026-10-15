@@ -18,6 +18,8 @@ SOCKET = Path("/run/nuxiva/netguard/netguard.sock")
 SEVERITY = {name: rank for rank, name in enumerate(model.SEVERITIES)}
 KINDS = {"port_scan", "host_sweep", "syn_flood", "brute_force", "arp_spoof", "dns_tunnel", "icmp_flood", "exfiltration"}
 MAX_LINE = 1 << 20
+SPOOFABLE_KINDS = frozenset({"syn_flood", "icmp_flood"})
+MAX_AUTO_BLOCKS = 256
 log = logging.getLogger("nuxiva.firewall")
 
 
@@ -33,9 +35,15 @@ def protected() -> set[str]:
 def clean_alert(raw: dict) -> dict | None:
     if not isinstance(raw, dict) or raw.get("kind") not in KINDS or raw.get("severity") not in SEVERITY:
         return None
+    count = raw.get("count")
     return {"kind": raw["kind"], "severity": raw["severity"], "src": str(raw.get("src", ""))[:64],
-            "dst": str(raw.get("dst", ""))[:64], "count": int(raw.get("count") or 0),
+            "dst": str(raw.get("dst", ""))[:64], "count": count if isinstance(count, int) and count >= 0 else 0,
             "detail": model.comment(str(raw.get("detail", "")))[:200], "at": time.time()}
+
+
+def _private(value: str) -> bool:
+    network = ipaddress.ip_network(value, strict=False)
+    return network.is_private or network.is_link_local
 
 
 def self_inflicted(alert: dict) -> bool:
@@ -69,6 +77,13 @@ class Monitor:
         except ValueError:
             return None
         if address.family == "set" or address.value in protected() or store.trusted(address):
+            return None
+        if alert["kind"] in SPOOFABLE_KINDS and address.family in ("ip4", "ip6") and _private(address.value):
+            return None
+        with store.lock:
+            automatic = sum(1 for b in store.blocks.values() if b.reason.startswith("auto"))
+        if automatic >= MAX_AUTO_BLOCKS:
+            log.warning("Limite di %d blocchi automatici raggiunto: %s non bloccato", MAX_AUTO_BLOCKS, address.value)
             return None
         return address
 
@@ -108,11 +123,12 @@ class Monitor:
 
     async def block(self, address: model.Address, minutes: int, reason: str) -> dict:
         from features.firewall.applier import applier
+        block = Block(address, time.time() + minutes * 60, model.comment(reason))
         with store.lock:
             store.checkpoint(f"blocco {address.value}")
-            store.blocks[address.value] = Block(address, time.time() + minutes * 60, model.comment(reason))
+            store.blocks[address.value] = block
             store.save()
-        return await applier.apply(f"blocco di {address.value} per {minutes} min ({reason})")
+        return await applier.add_block(block, f"blocco di {address.value} per {minutes} min ({reason})")
 
     def _publish(self, alert: dict) -> None:
         try:

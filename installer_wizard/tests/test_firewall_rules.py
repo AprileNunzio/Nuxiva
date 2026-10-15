@@ -124,3 +124,34 @@ class CompilerTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class HardeningOrderTests(unittest.TestCase):
+
+    def _script(self, mode="protect", rules=(), blocks=()):
+        from features.firewall import model as fw_model
+        from features.firewall.nft import compile_script
+        policy = fw_model.policy({"mode": mode})
+        return compile_script(policy, [fw_model.rule(r) for r in rules], {}, list(blocks), now=1000.0)
+
+    def _input_chain(self, script):
+        return script[script.index("chain input"):script.index("chain forward")]
+
+    def test_blocked_sources_are_dropped_before_established_connections(self):
+        chain = self._input_chain(self._script())
+        self.assertLess(chain.index("@blocked_4 counter drop"), chain.index("ct state established,related accept"))
+
+    def test_user_drop_rules_win_over_lan_admin_access(self):
+        chain = self._input_chain(self._script(rules=[{"action": "drop", "sources": ["192.168.1.66"]}]))
+        self.assertLess(chain.index("192.168.1.66"), chain.index("tcp dport { 22, 80, 443, 8080 } accept"))
+
+    def test_sub_second_block_is_not_made_permanent(self):
+        from features.firewall.model import address
+        from features.firewall.nft import Block
+        script = self._script(blocks=[Block(address("203.0.113.9"), 1000.4)])
+        self.assertIn("203.0.113.9 timeout 1s", script)
+
+    def test_reserved_group_names_are_refused(self):
+        from features.firewall.model import address_set
+        with self.assertRaises(ValueError):
+            address_set("trusted", ["192.168.1.2"])

@@ -54,19 +54,19 @@ def _action(raw: dict, suspects: set[str]) -> dict | None:
     kind = raw["type"]
     why = model.comment(str(raw.get("why") or ""))[:160]
     try:
+        minutes = max(5, min(int(raw.get("minutes") or 60), 10_080))
         if kind == "close_port":
             port = model.port(raw.get("port"))
             protocol = str(raw.get("protocol") or "tcp").lower()
-            if protocol not in ("tcp", "udp") or "-" in port:
+            if protocol not in ("tcp", "udp") or "-" in port or port in store.policy.admin_ports:
                 return None
-            return {"type": kind, "port": port, "protocol": protocol, "why": why, "suspect": False}
+            return {"type": kind, "port": port, "protocol": protocol, "why": why, "suspect": False, "minutes": minutes}
         target = model.address(str(raw.get("target") or ""))
     except (TypeError, ValueError):
         return None
     if target.family == "set" or target.value in events.protected() or store.trusted(target):
         return None
-    action = {"type": kind, "target": target.value, "why": why, "suspect": target.value in suspects,
-              "minutes": max(5, min(int(raw.get("minutes") or 60), 10_080))}
+    action = {"type": kind, "target": target.value, "why": why, "suspect": target.value in suspects, "minutes": minutes}
     if kind == "rate_limit":
         try:
             action["rate"] = model.rate(str(raw.get("rate") or "20/minute"))
@@ -153,9 +153,9 @@ class Analyst:
                 done.append(f"bloccato {action['target']}")
                 continue
             rule = {"action": "limit" if action["type"] == "rate_limit" else "drop", "comment": f"IA {action['why']}"[:80],
-                    "priority": 20}
+                    "priority": 20, "expires": time.time() + action["minutes"] * 60}
             if action["type"] == "rate_limit":
-                rule.update(sources=[action["target"]], rate=action["rate"], expires=time.time() + action["minutes"] * 60)
+                rule.update(sources=[action["target"]], rate=action["rate"])
             else:
                 rule.update(protocol=action["protocol"], ports=[action["port"]])
             built = model.rule(rule)

@@ -15,6 +15,7 @@ IFACE = re.compile(r"^[A-Za-z0-9_.:-]{1,15}$")
 RATE = re.compile(r"^(\d{1,7})/(second|minute|hour|day)(?:\s+burst\s+(\d{1,6})(?:\s+packets)?)?$")
 COMMENT = re.compile(r"[^\w\s.,:()/-]", re.UNICODE)
 MAX_ENTRIES = 4096
+RESERVED_SETS = frozenset({"trusted", "blocked"})
 
 
 @dataclass(frozen=True)
@@ -144,6 +145,8 @@ def rule(data: dict) -> Rule:
 def address_set(name: str, entries) -> list[Address]:
     if not NAME.match(str(name or "")):
         raise ValueError(f"nome di gruppo non valido: {name}")
+    if name in RESERVED_SETS:
+        raise ValueError(f"nome di gruppo riservato: {name}")
     parsed = _list(entries, address, MAX_ENTRIES)
     if any(a.family == "set" for a in parsed):
         raise ValueError("un gruppo non può contenere altri gruppi")

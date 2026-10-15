@@ -1,3 +1,4 @@
+import math
 import time
 from dataclasses import dataclass
 
@@ -103,36 +104,50 @@ def _tail(rule: Rule) -> list[str]:
     return parts
 
 
+def block_timeout(expires: float, now: float) -> int | None:
+    if not expires:
+        return None
+    left = math.ceil(expires - now)
+    return left if left > 0 else 0
+
+
 def _blocks(blocks: list[Block], family: str, now: float) -> list[str]:
     values = []
     for b in blocks:
-        left = int(b.expires - now) if b.expires else 0
-        if b.address.family != family or (b.expires and left <= 0):
+        if b.address.family != family:
             continue
-        values.append(f"{b.address.value} timeout {left}s" if left else b.address.value)
+        left = block_timeout(b.expires, now)
+        if left == 0:
+            continue
+        values.append(b.address.value if left is None else f"{b.address.value} timeout {left}s")
     return values
 
 
-def _guards(policy: Policy) -> list[str]:
-    lines = [
+def _guards() -> list[str]:
+    return [
         '        iifname "lo" accept',
-        "        ct state established,related accept",
-        "        ct state invalid counter drop",
         "        ip saddr @trusted_4 accept",
         "        ip6 saddr @trusted_6 accept",
         "        ether saddr @trusted_mac accept",
         "        ip saddr @blocked_4 counter drop",
         "        ip6 saddr @blocked_6 counter drop",
         "        ether saddr @blocked_mac counter drop",
+        "        ct state established,related accept",
+        "        ct state invalid counter drop",
         "        udp sport 67 udp dport 68 accept",
         "        udp sport 547 udp dport 546 accept",
         "        meta l4proto ipv6-icmp icmpv6 type { nd-neighbor-solicit, nd-neighbor-advert, nd-router-advert } accept",
     ]
-    if policy.admin_ports:
-        ports = _elements(policy.admin_ports)
-        lines.append(f"        ip saddr {_elements(list(LAN4))} tcp dport {ports} accept")
-        lines.append(f"        ip6 saddr {_elements(list(LAN6))} tcp dport {ports} accept")
-    return lines
+
+
+def _admin_access(policy: Policy) -> list[str]:
+    if not policy.admin_ports:
+        return []
+    ports = _elements(policy.admin_ports)
+    return [
+        f"        ip saddr {_elements(list(LAN4))} tcp dport {ports} accept",
+        f"        ip6 saddr {_elements(list(LAN6))} tcp dport {ports} accept",
+    ]
 
 
 def _fallbacks(policy: Policy) -> list[str]:
@@ -168,15 +183,17 @@ def compile_script(policy: Policy, rules: list[Rule], sets: dict[str, list[Addre
         body.append(f"    chain {chain} {{")
         body.append(f"        type filter hook {hook} priority filter - 5; policy {policy_verdict};")
         if chain == "input":
-            body += _guards(policy)
+            body += _guards()
         else:
-            body.append("        ct state established,related accept")
             side = "d" if chain == "output" else "s"
             body.append(f"        ip {side}addr @blocked_4 counter drop")
             body.append(f"        ip6 {side}addr @blocked_6 counter drop")
+            body.append("        ct state established,related accept")
         for rule in active:
             if rule.direction == chain:
                 body += _rule_lines(rule)
+        if chain == "input":
+            body += _admin_access(policy)
         if chain == "input" and policy.mode == "lockdown":
             body += _fallbacks(policy)
         body.append("    }")

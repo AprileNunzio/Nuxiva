@@ -1,3 +1,4 @@
+import asyncio
 import time
 
 from fastapi import APIRouter, Depends, HTTPException, Request
@@ -15,6 +16,7 @@ from features.firewall.store import store
 
 admin_routes = APIRouter()
 CONFIRM_SECONDS = 90
+_changes = asyncio.Lock()
 
 
 async def _body(request: Request) -> dict:
@@ -25,6 +27,11 @@ async def _body(request: Request) -> dict:
 
 
 async def _change(user: str, reason: str, mutate, confirm: bool = True) -> dict:
+    async with _changes:
+        return await _apply_change(user, reason, mutate, confirm)
+
+
+async def _apply_change(user: str, reason: str, mutate, confirm: bool) -> dict:
     with store.lock:
         store.checkpoint(reason)
         try:

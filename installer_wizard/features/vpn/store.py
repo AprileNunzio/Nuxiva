@@ -24,6 +24,7 @@ class VpnStore:
         self.lock = threading.RLock()
         self.profiles: dict[str, model.Profile] = {}
         self.wanted: dict[str, bool] = {}
+        self.verified: dict[str, bool] = {}
         self.load()
 
     def load(self) -> None:
@@ -34,7 +35,7 @@ class VpnStore:
         except (OSError, ValueError) as exc:
             log.error("Profili VPN illeggibili: %s", exc)
             return
-        profiles, wanted = {}, {}
+        profiles, wanted, verified = {}, {}, {}
         for item in data.get("profiles") or []:
             try:
                 p = _restore(item)
@@ -43,13 +44,15 @@ class VpnStore:
                 continue
             profiles[p.id] = p
             wanted[p.id] = bool(item.get("wanted", p.autostart))
+            verified[p.id] = bool(item.get("verified"))
         with self.lock:
-            self.profiles, self.wanted = profiles, wanted
+            self.profiles, self.wanted, self.verified = profiles, wanted, verified
 
     def save(self) -> None:
         with self.lock:
             VPN_DIR.mkdir(parents=True, exist_ok=True)
-            rows = [p.export() | {"wanted": self.wanted.get(p.id, False)} for p in self.profiles.values()]
+            rows = [p.export() | {"wanted": self.wanted.get(p.id, False), "verified": self.verified.get(p.id, False)}
+                    for p in self.profiles.values()]
             tmp = PROFILES_FILE.with_suffix(".tmp")
             tmp.write_text(json.dumps({"profiles": rows}, ensure_ascii=False, indent=1), encoding="utf-8")
             tmp.replace(PROFILES_FILE)
@@ -69,6 +72,12 @@ class VpnStore:
             data = SECRETS.load()
             if data.pop(pid, None) is not None:
                 SECRETS.save(data)
+
+    def mark_verified(self, pid: str) -> None:
+        with self.lock:
+            if not self.verified.get(pid):
+                self.verified[pid] = True
+                self.save()
 
     def get(self, pid: str) -> model.Profile:
         with self.lock:

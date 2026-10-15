@@ -6,7 +6,7 @@ import time
 
 from state import store as system_store
 
-from features.firewall.nft import compile_script
+from features.firewall.nft import TABLE, Block, block_timeout, compile_script
 from features.firewall.store import FIREWALL_DIR, store
 
 NFT_TIMEOUT = 20.0
@@ -72,6 +72,25 @@ class Applier:
             system_store.event("INFO", f"Firewall applicato: {reason}", "firewall")
             self._arm(confirm_seconds)
             return {**self.last, "confirm_by": self.deadline if confirm_seconds else 0.0}
+
+    async def add_block(self, block: Block, reason: str) -> dict:
+        if not available() or store.policy.mode not in ("protect", "lockdown"):
+            return await self.apply(reason)
+        left = block_timeout(block.expires, time.time())
+        if left == 0:
+            return await self.apply(reason)
+        set_name = {"ip4": "blocked_4", "ip6": "blocked_6", "mac": "blocked_mac"}[block.address.family]
+        element = block.address.value if left is None else f"{block.address.value} timeout {left}s"
+        async with self.lock:
+            try:
+                await run_nft("add", "element", "inet", TABLE, set_name, "{ " + element + " }")
+            except FirewallError as exc:
+                system_store.event("WARN", f"Blocco incrementale non riuscito, ricarico il firewall: {exc}", "firewall")
+            else:
+                self.last = {"at": time.time(), "ok": True, "error": "", "mode": store.policy.mode}
+                system_store.event("INFO", f"Firewall applicato: {reason}", "firewall")
+                return dict(self.last)
+        return await self.apply(reason)
 
     def _arm(self, seconds: int) -> None:
         self.confirm()

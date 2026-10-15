@@ -54,15 +54,18 @@ class VpnService:
         self.endpoints: dict[str, tuple] = {}
         self.lock = asyncio.Lock()
         self.guard_error = ""
+        self.resolving = False
 
     def tunnels(self) -> list[guard.Tunnel]:
         with store.lock:
             active = [p for p in store.profiles.values() if store.wanted.get(p.id)]
-        return [guard.Tunnel(p, self.endpoints.get(p.id, ())) for p in active]
+        with store.lock:
+            verified = dict(store.verified)
+        return [guard.Tunnel(p, self.endpoints.get(p.id, ()), verified.get(p.id, False)) for p in active]
 
     async def apply_guard(self) -> None:
         from features.firewall.applier import FirewallError, available, run_nft
-        script = guard.compile_script(self.tunnels())
+        script = guard.compile_script(self.tunnels(), allow_dns=self.resolving)
         if not available():
             return
         VPN_DIR.mkdir(parents=True, exist_ok=True)
@@ -90,8 +93,20 @@ class VpnService:
                 return {"connected": False, "error": str(exc)}
             self.failures.pop(pid, None)
             self.state[pid] = await runner.status(p)
+            if self.state[pid].get("connected"):
+                store.mark_verified(pid)
+                await self.apply_guard()
             system_store.event("INFO", f"VPN «{p.name}» collegata", "vpn")
             return self.state[pid]
+
+    async def _refresh_endpoints(self, p: model.Profile) -> None:
+        self.resolving = True
+        try:
+            await self.apply_guard()
+            self.endpoints[p.id] = await asyncio.to_thread(_endpoints, p)
+        finally:
+            self.resolving = False
+            await self.apply_guard()
 
     async def disconnect(self, pid: str) -> dict:
         async with self.lock:
@@ -133,6 +148,7 @@ class VpnService:
             except runner.VpnError as exc:
                 log.info("Arresto prima della riconnessione: %s", exc)
             async with self.lock:
+                await self._refresh_endpoints(p)
                 try:
                     await runner.up(p, store.secrets(p.id))
                     self.failures.pop(p.id, None)

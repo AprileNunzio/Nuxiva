@@ -13,6 +13,7 @@ MESH_IFACES = {"tailscale": ["tailscale0"], "zerotier": ["zt*"]}
 class Tunnel:
     profile: model.Profile
     endpoints: tuple[tuple[str, int, str], ...] = ()
+    verified: bool = True
 
 
 def interfaces(profile: model.Profile) -> list[str]:
@@ -27,12 +28,14 @@ def _iface_set(names: list[str]) -> str:
     return _set([f'"{n}"' for n in names])
 
 
-def compile_script(tunnels: list[Tunnel]) -> str:
+def compile_script(tunnels: list[Tunnel], allow_dns: bool = False) -> str:
     head = [f"table inet {TABLE}", f"delete table inet {TABLE}"]
     clients = [t for t in tunnels if t.profile.role == "client"]
     servers = [t.profile for t in tunnels if t.profile.role == "server"]
-    guarded = [t for t in clients if t.profile.kill_switch]
-    dns_guarded = [t for t in clients if t.profile.block_dns_leaks and t.profile.split.mode != "include"]
+    guarded = [t for t in clients if t.profile.kill_switch and t.verified]
+    dns_guarded = [] if allow_dns else [
+        t for t in clients if t.profile.block_dns_leaks and t.profile.split.mode != "include" and t.verified
+    ]
     full = [t for t in guarded if t.profile.split.mode != "include"]
     partial = [n for t in guarded if t.profile.split.mode == "include" for n in t.profile.split.networks]
     if not guarded and not dns_guarded and not servers:

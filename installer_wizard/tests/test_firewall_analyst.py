@@ -24,13 +24,14 @@ class ValidationTests(FirewallBase):
                              {"type": "block", "target": "192.168.1.1"},
                              {"type": "block", "target": "@tutti"},
                              {"type": "close_port", "port": 22, "protocol": "tcp"},
+                             {"type": "close_port", "port": 23, "protocol": "tcp"},
                              {"type": "close_port", "port": "1-65535"},
                              {"type": "rate_limit", "target": "203.0.113.4", "rate": "boom"},
                              {"type": "shell", "target": "rm -rf /"}]}
         report = validate(reply, [ATTACK])
         self.assertEqual(report["confidence"], 1.0)
         self.assertEqual([(a["type"], a.get("target") or a.get("port")) for a in report["actions"]],
-                         [("block", "198.51.100.7"), ("close_port", "22")])
+                         [("block", "198.51.100.7"), ("close_port", "23")])
         self.assertTrue(report["actions"][0]["suspect"])
         self.assertEqual(report["actions"][0]["minutes"], 10_080)
         self.assertNotIn('"', report["summary"])

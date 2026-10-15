@@ -178,6 +178,17 @@ class GuardTests(unittest.TestCase):
         script = guard.compile_script([guard.Tunnel(p)])
         self.assertIn(f'ip saddr 10.66.0.0/24 oifname != "{p.interface}" masquerade', script)
 
+    def test_unverified_profile_fails_open_until_first_handshake(self):
+        p = model.profile({"name": "Nuovo", "kind": "wireguard", "kill_switch": True}, {})
+        script = guard.compile_script([guard.Tunnel(p, (("203.0.113.1", 51820, "udp"),), verified=False)])
+        self.assertNotIn("counter reject", script)
+        self.assertNotIn("53, 853", script)
+
+    def test_endpoint_refresh_lifts_only_dns_block(self):
+        script = guard.compile_script([self.tunnel(kill_switch=True)], allow_dns=True)
+        self.assertNotIn("53, 853", script)
+        self.assertIn("counter reject", script)
+
     def test_nothing_active_removes_the_table(self):
         self.assertEqual(guard.compile_script([]).splitlines(), ["table inet nuxiva_vpn", "delete table inet nuxiva_vpn"])
 
