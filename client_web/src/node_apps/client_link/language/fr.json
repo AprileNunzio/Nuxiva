@@ -1,0 +1,8 @@
+{
+  "title": "Lien Client et WireGuard",
+  "description": "Appairage des assistants APK Android, Windows Assistant et chiffrement WireGuard",
+  "save": "Enregistrer la configuration",
+  "saved": "Configuration enregistrée avec succès",
+  "status": "État du module",
+  "active": "Actif et synchronisé"
+}

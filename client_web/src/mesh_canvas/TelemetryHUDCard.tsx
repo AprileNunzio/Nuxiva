@@ -53,10 +53,20 @@ export const TelemetryHUDCard: React.FC<TelemetryHUDCardProps> = ({
           </div>
         )}
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <Zap className="w-3.5 h-3.5 text-yellow-400 shrink-0" />
           <span>
-            <strong className="text-white">{t('power_consumption')}:</strong> {telem.power_watts || 0}W | <Thermometer className="w-3 h-3 inline text-rose-400" /> {telem.temp_c || 0}°C | <Wifi className="w-3 h-3 inline text-cyan-400" /> {telem.ping_ms || 0}ms
+            {telem.power_watts != null && (
+              <>
+                <strong className="text-white">{t('power_consumption')}:</strong> {telem.power_watts}W |{' '}
+              </>
+            )}
+            {telem.temp_c != null && (
+              <>
+                <Thermometer className="w-3 h-3 inline text-rose-400" /> {telem.temp_c}°C |{' '}
+              </>
+            )}
+            <Wifi className="w-3 h-3 inline text-cyan-400" /> {telem.ping_ms || 0.1}ms
           </span>
         </div>
       </div>

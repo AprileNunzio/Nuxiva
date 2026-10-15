@@ -1,0 +1,8 @@
+{
+  "title": "Audio Routing",
+  "description": "Audio output routing, master volume, equalization, and DLNA/Cast streaming",
+  "save": "Save configuration",
+  "saved": "Configuration saved successfully",
+  "status": "Module Status",
+  "active": "Active and synchronized"
+}

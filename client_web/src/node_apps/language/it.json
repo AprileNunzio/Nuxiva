@@ -1,0 +1,16 @@
+{
+  "node_details": "Dettagli Nodo Mesh",
+  "hardware_plane": "Piano Hardware & Dispositivi",
+  "virtual_core_member": "Membro Virtual Core",
+  "satellite_leaf": "Satellite P2P Leaf",
+  "reboot_node": "Riavvia Nodo",
+  "reboot_confirm": "Sei sicuro di voler riavviare questo nodo?",
+  "provision_node": "Provisioning Hardware",
+  "bind_parent": "Associa Genitore P2P",
+  "select_app": "Seleziona un modulo hardware per configurarlo",
+  "cpu_load": "Carico CPU",
+  "ram_usage": "Memoria RAM",
+  "temperature": "Temperatura",
+  "latency": "Latenza Mesh",
+  "back_to_canvas": "Torna al Canvas Mesh"
+}

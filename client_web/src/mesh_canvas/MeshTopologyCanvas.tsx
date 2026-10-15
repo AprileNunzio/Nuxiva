@@ -22,179 +22,30 @@ export const MeshTopologyCanvas: React.FC<MeshTopologyCanvasProps> = ({
   const [wsConnected, setWsConnected] = useState<boolean>(false);
   const wsRef = useRef<WebSocket | null>(null);
 
-  // Fallback default topology matching Blueprint FIG 1.1 & FIG 5.1
-  const loadDefaultTopology = () => {
-    const defaultNodes: MeshTopologyNode[] = [
-      {
-        id: 'virtual-core',
-        name: 'NUCLEO GLOBALE',
-        tier: 'Tier-0 (Virtual Core)',
-        type: 'core',
-        ip: '0.0.0.0',
-        telemetry: {
-          node_id: 'virtual-core',
-          name: 'NUCLEO GLOBALE',
-          tier: 'Tier-0 (Virtual Core)',
-          cpu_percent: 15,
-          ram_used_gb: 4.5,
-          ram_total_gb: 16.0,
-          power_watts: 80,
-          temp_c: 45,
-          ping_ms: 0.5,
-          tx_kbps: 450,
-          rx_kbps: 680,
-          status: 'CRDT Ledger Replicato su ogni PC',
-          last_updated: Date.now(),
-        },
-      },
-      {
-        id: 'node-pc-i9',
-        name: 'NODO PC-i9 (Soggiorno)',
-        tier: 'Tier-1 (Compute & Core)',
-        type: 'compute',
-        ip: '192.168.1.10',
-        parent_id: 'virtual-core',
-        telemetry: {
-          node_id: 'node-pc-i9',
-          name: 'NODO PC-i9 (Soggiorno)',
-          tier: 'Tier-1 (Compute & Core)',
-          cpu_percent: 44,
-          cpu_name: 'Intel Core i9',
-          ram_used_gb: 14.2,
-          ram_total_gb: 32.0,
-          gpu_name: 'RTX 20GB',
-          vram_used_gb: 16.4,
-          vram_total_gb: 20.0,
-          active_model: 'Llama-3-70B',
-          power_watts: 215,
-          temp_c: 64,
-          ping_ms: 1.2,
-          tx_kbps: 1800,
-          rx_kbps: 3400,
-          child_satellites: ['RPi-Cam (Video 1080p)', 'ESP32 (Audio)'],
-          status: 'Elaborazione Vision + Voice Stream P2P Attiva',
-          last_updated: Date.now(),
-        },
-      },
-      {
-        id: 'node-mini-pc',
-        name: 'NODO PC-B (Server/Mini-PC)',
-        tier: 'Tier-1 (Compute & Core)',
-        type: 'compute',
-        ip: '192.168.1.11',
-        parent_id: 'virtual-core',
-        telemetry: {
-          node_id: 'node-mini-pc',
-          name: 'NODO PC-B (Server/Mini-PC)',
-          tier: 'Tier-1 (Compute & Core)',
-          cpu_percent: 22,
-          cpu_name: 'AMD Ryzen 7',
-          ram_used_gb: 8.4,
-          ram_total_gb: 16.0,
-          power_watts: 55,
-          temp_c: 52,
-          ping_ms: 1.4,
-          tx_kbps: 420,
-          rx_kbps: 580,
-          child_satellites: [],
-          status: 'Replica Nucleo + Spooler / NVR / Domotica',
-          last_updated: Date.now(),
-        },
-      },
-      {
-        id: 'sat-rpi-cam',
-        name: 'RPi-Cam Ingresso',
-        tier: 'Tier-2 (Smart Edge Satellite)',
-        type: 'satellite',
-        ip: '192.168.1.50',
-        parent_id: 'node-pc-i9',
-        telemetry: {
-          node_id: 'sat-rpi-cam',
-          name: 'RPi-Cam Ingresso',
-          tier: 'Tier-2 (Smart Edge Satellite)',
-          cpu_percent: 28,
-          cpu_name: 'BCM2711 ARM64',
-          ram_used_gb: 1.2,
-          ram_total_gb: 4.0,
-          power_watts: 6.8,
-          temp_c: 49,
-          ping_ms: 2.8,
-          tx_kbps: 2400,
-          rx_kbps: 50,
-          stream: 'Direct RTSP 1080p -> PC-i9',
-          status: 'Stream P2P Live verso PC-i9',
-          last_updated: Date.now(),
-        },
-      },
-      {
-        id: 'sat-esp32-audio',
-        name: 'ESP32 Audio Cucina',
-        tier: 'Tier-3 (Pure Micro-Satellite)',
-        type: 'micro',
-        ip: '192.168.1.65',
-        parent_id: 'node-pc-i9',
-        telemetry: {
-          node_id: 'sat-esp32-audio',
-          name: 'ESP32 Audio Cucina',
-          tier: 'Tier-3 (Pure Micro-Satellite)',
-          cpu_percent: 38,
-          cpu_name: 'Xtensa LX7',
-          ram_used_gb: 0.0003,
-          ram_total_gb: 0.0005,
-          power_watts: 1.1,
-          temp_c: 38,
-          ping_ms: 7.5,
-          tx_kbps: 128,
-          rx_kbps: 5,
-          stream: 'Direct Audio PCM -> PC-i9',
-          status: 'Acquisizione Microfono I2S P2P',
-          last_updated: Date.now(),
-        },
-      },
-      {
-        id: 'sat-mobile-nunzio',
-        name: 'Nunzio Phone (APK)',
-        tier: 'Tier-2 (Smart Edge Satellite)',
-        type: 'mobile',
-        ip: '10.88.0.2',
-        parent_id: 'node-pc-i9',
-        is_remote_vpn: true,
-        telemetry: {
-          node_id: 'sat-mobile-nunzio',
-          name: 'Nunzio Phone (APK)',
-          tier: 'Tier-2 (Smart Edge Satellite)',
-          cpu_percent: 14,
-          cpu_name: 'Snapdragon 8 Gen 2',
-          ram_used_gb: 3.4,
-          ram_total_gb: 8.0,
-          power_watts: 3.2,
-          temp_c: 35,
-          ping_ms: 24.5,
-          tx_kbps: 180,
-          rx_kbps: 420,
-          is_remote_vpn: true,
-          status: 'WireGuard Mesh Tunnel Attivo',
-          last_updated: Date.now(),
-        },
-      },
-    ];
-
-    const defaultLinks: MeshTopologyLink[] = [
-      { source: 'virtual-core', target: 'node-pc-i9', protocol: 'mTLS / CRDT' },
-      { source: 'virtual-core', target: 'node-mini-pc', protocol: 'mTLS / CRDT' },
-      { source: 'node-pc-i9', target: 'sat-rpi-cam', protocol: 'Direct RTSP 1080p' },
-      { source: 'node-pc-i9', target: 'sat-esp32-audio', protocol: 'Direct Audio PCM' },
-      { source: 'node-pc-i9', target: 'sat-mobile-nunzio', protocol: 'WireGuard Mesh' },
-    ];
-
-    setNodes(defaultNodes);
-    setLinks(defaultLinks);
-    setHoveredNode(defaultNodes[1]); // default hover su PC-i9
+  // Caricamento telemetria reale da backend
+  const fetchRealTopology = () => {
+    fetch('/api/v5/mesh/topology')
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to fetch topology');
+        return res.json();
+      })
+      .then((data: MeshTopologyState) => {
+        if (data && data.nodes && data.nodes.length > 0) {
+          setNodes(data.nodes);
+          setHoveredNode((prev) => prev || data.nodes[0]);
+        }
+        if (data && data.links) {
+          setLinks(data.links);
+        }
+      })
+      .catch((err) => {
+        console.warn('Real topology fetch error', err);
+      });
   };
 
   // WebSocket 2Hz telemetry stream
   useEffect(() => {
-    loadDefaultTopology();
+    fetchRealTopology();
 
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const wsUrl = `${protocol}//${window.location.host}/api/v5/mesh/telemetry/stream`;

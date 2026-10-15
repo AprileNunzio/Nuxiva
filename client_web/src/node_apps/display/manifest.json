@@ -1,0 +1,9 @@
+{
+  "id": "display",
+  "name": "Display",
+  "icon": "Monitor",
+  "version": "5.0.0",
+  "category": "node_plane",
+  "requires_reboot": false,
+  "description": "Local screen resolution, brightness adjustment, and telemetry HUD overlay"
+}

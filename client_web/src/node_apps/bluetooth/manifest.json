@@ -1,0 +1,9 @@
+{
+  "id": "bluetooth",
+  "name": "Bluetooth",
+  "icon": "Bluetooth",
+  "version": "5.0.0",
+  "category": "node_plane",
+  "requires_reboot": false,
+  "description": "Bluetooth radio scanning, peripheral pairing, and automatic reconnection"
+}

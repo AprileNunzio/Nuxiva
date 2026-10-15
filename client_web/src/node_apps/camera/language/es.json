@@ -1,0 +1,8 @@
+{
+  "title": "Cámaras y Visión",
+  "description": "Transmisión RTSP/USB, resolución, velocidad de fotogramas y transmisión P2P directa al nodo padre",
+  "save": "Guardar configuración",
+  "saved": "Configuración guardada con éxito",
+  "status": "Estado del módulo",
+  "active": "Activo y sincronizado"
+}

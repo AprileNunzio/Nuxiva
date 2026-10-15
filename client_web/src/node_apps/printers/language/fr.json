@@ -1,0 +1,8 @@
+{
+  "title": "Imprimantes 2D / 3D",
+  "description": "Gestion des imprimantes USB locales CUPS et des imprimantes 3D Klipper/Moonraker",
+  "save": "Enregistrer la configuration",
+  "saved": "Configuration enregistrée avec succès",
+  "status": "État du module",
+  "active": "Actif et synchronisé"
+}

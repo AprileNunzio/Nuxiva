@@ -1,0 +1,8 @@
+{
+  "title": "Módulo Cerebro LLM",
+  "description": "Selección y configuración del proveedor de LLM (Ollama local, servidor remoto o API en la nube)",
+  "save": "Guardar configuración",
+  "saved": "Configuración guardada con éxito",
+  "status": "Estado del módulo",
+  "active": "Activo y sincronizado"
+}

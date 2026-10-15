@@ -1,0 +1,9 @@
+{
+  "id": "brain",
+  "name": "Brain",
+  "icon": "Cpu",
+  "version": "5.0.0",
+  "category": "node_plane",
+  "requires_reboot": false,
+  "description": "LLM provider selection and configuration (local Ollama, remote server or cloud API)"
+}

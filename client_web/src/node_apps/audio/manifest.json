@@ -1,0 +1,9 @@
+{
+  "id": "audio",
+  "name": "Audio",
+  "icon": "Volume2",
+  "version": "5.0.0",
+  "category": "node_plane",
+  "requires_reboot": false,
+  "description": "Audio output routing, master volume, equalization, and DLNA/Cast streaming"
+}

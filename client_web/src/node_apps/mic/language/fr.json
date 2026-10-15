@@ -1,0 +1,8 @@
+{
+  "title": "Microphone et VAD",
+  "description": "Sensibilité du microphone I2S/USB, seuil VAD et détection du mot d'activation",
+  "save": "Enregistrer la configuration",
+  "saved": "Configuration enregistrée avec succès",
+  "status": "État du module",
+  "active": "Actif et synchronisé"
+}

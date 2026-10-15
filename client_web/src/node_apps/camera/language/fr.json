@@ -1,0 +1,8 @@
+{
+  "title": "Caméras et Vision",
+  "description": "Flux RTSP/USB, résolution, fréquence d'images et streaming P2P direct vers le parent",
+  "save": "Enregistrer la configuration",
+  "saved": "Configuration enregistrée avec succès",
+  "status": "État du module",
+  "active": "Actif et synchronisé"
+}

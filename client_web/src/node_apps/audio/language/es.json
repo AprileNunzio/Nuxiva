@@ -1,0 +1,8 @@
+{
+  "title": "Enrutamiento de Audio",
+  "description": "Enrutamiento de salidas de audio, volumen maestro, ecualización y transmisión DLNA/Cast",
+  "save": "Guardar configuración",
+  "saved": "Configuración guardada con éxito",
+  "status": "Estado del módulo",
+  "active": "Activo y sincronizado"
+}

@@ -1,0 +1,8 @@
+{
+  "title": "Microphone & VAD",
+  "description": "I2S/USB microphone sensitivity, VAD threshold, and wake-word detection",
+  "save": "Save configuration",
+  "saved": "Configuration saved successfully",
+  "status": "Module Status",
+  "active": "Active and synchronized"
+}

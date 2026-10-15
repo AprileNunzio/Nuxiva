@@ -1,0 +1,8 @@
+{
+  "title": "LLM Brain Module",
+  "description": "LLM provider selection and configuration (local Ollama, remote server or cloud API)",
+  "save": "Save configuration",
+  "saved": "Configuration saved successfully",
+  "status": "Module Status",
+  "active": "Active and synchronized"
+}

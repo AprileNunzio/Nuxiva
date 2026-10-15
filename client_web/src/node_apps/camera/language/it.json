@@ -1,0 +1,8 @@
+{
+  "title": "Telecamere e Visione",
+  "description": "Feed RTSP/USB, risoluzione, framerate e streaming P2P diretto al nodo genitore",
+  "save": "Salva configurazione",
+  "saved": "Configurazione salvata con successo",
+  "status": "Stato Modulo",
+  "active": "Attivo e sincronizzato"
+}

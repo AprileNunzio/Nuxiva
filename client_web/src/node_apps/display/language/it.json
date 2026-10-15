@@ -1,0 +1,8 @@
+{
+  "title": "Schermo e HUD",
+  "description": "Risoluzione schermo locale, regolazione luminosità e HUD telemetrico in sovrimpressione",
+  "save": "Salva configurazione",
+  "saved": "Configurazione salvata con successo",
+  "status": "Stato Modulo",
+  "active": "Attivo e sincronizzato"
+}

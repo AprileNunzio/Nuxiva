@@ -1,0 +1,8 @@
+{
+  "title": "Display & HUD",
+  "description": "Local screen resolution, brightness adjustment, and telemetry HUD overlay",
+  "save": "Save configuration",
+  "saved": "Configuration saved successfully",
+  "status": "Module Status",
+  "active": "Active and synchronized"
+}

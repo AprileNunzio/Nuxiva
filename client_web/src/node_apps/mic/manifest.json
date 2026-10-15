@@ -1,0 +1,9 @@
+{
+  "id": "mic",
+  "name": "Mic",
+  "icon": "Mic",
+  "version": "5.0.0",
+  "category": "node_plane",
+  "requires_reboot": false,
+  "description": "I2S/USB microphone sensitivity, VAD threshold, and wake-word detection"
+}

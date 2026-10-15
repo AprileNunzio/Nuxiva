@@ -2,7 +2,6 @@ import socket
 import json
 import threading
 import logging
-import uuid
 import time
 from typing import Any, Dict, Optional
 
@@ -15,6 +14,89 @@ except ImportError:
     RustP2PStreamManager = None
 
 
+def collect_real_system_telemetry(node_id: Optional[str] = None) -> Dict[str, Any]:
+    hostname = socket.gethostname()
+    actual_id = node_id or hostname
+
+    # Real primary IP
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(('8.8.8.8', 80))
+        real_ip = s.getsockname()[0]
+    except Exception:
+        real_ip = '127.0.0.1'
+    finally:
+        s.close()
+
+    cpu_percent = 0.0
+    cpu_cores = 1
+    cpu_name = None
+    try:
+        import psutil
+        cpu_percent = psutil.cpu_percent(interval=None)
+        cpu_cores = psutil.cpu_count(logical=True) or 1
+        mem = psutil.virtual_memory()
+        ram_used_gb = round(mem.used / (1024**3), 2)
+        ram_total_gb = round(mem.total / (1024**3), 2)
+    except Exception:
+        ram_used_gb = 0.0
+        ram_total_gb = 1.0
+
+    import platform
+    os_info = f"{platform.system()} {platform.machine()}"
+    try:
+        with open("/proc/cpuinfo", "r") as f:
+            for line in f:
+                if "model name" in line:
+                    cpu_name = line.split(":", 1)[1].strip()
+                    break
+    except Exception:
+        cpu_name = platform.processor() or f"CPU {cpu_cores} Cores"
+
+    temp_c = None
+    try:
+        with open("/sys/class/thermal/thermal_zone0/temp", "r") as f:
+            temp_c = round(int(f.read().strip()) / 1000.0, 1)
+    except Exception:
+        pass
+
+    tx_kbps = 0.0
+    rx_kbps = 0.0
+    try:
+        import psutil
+        net = psutil.net_io_counters()
+        tx_kbps = round(net.bytes_sent / 1024.0, 1)
+        rx_kbps = round(net.bytes_recv / 1024.0, 1)
+    except Exception:
+        pass
+
+    return {
+        "node_id": actual_id,
+        "name": hostname,
+        "tier": "Tier-1 (Compute & Virtual Core)",
+        "ip": real_ip,
+        "os": os_info,
+        "cpu_percent": cpu_percent,
+        "cpu_name": cpu_name,
+        "cpu_cores": cpu_cores,
+        "ram_used_gb": ram_used_gb,
+        "ram_total_gb": ram_total_gb,
+        "gpu_name": None,
+        "vram_used_gb": None,
+        "vram_total_gb": None,
+        "active_model": None,
+        "power_watts": None,
+        "temp_c": temp_c,
+        "ping_ms": 0.1,
+        "tx_kbps": tx_kbps,
+        "rx_kbps": rx_kbps,
+        "child_satellites": [],
+        "status": "Attivo (Host Reale)",
+        "is_remote_vpn": False,
+        "last_updated": time.time()
+    }
+
+
 class NuxivaMeshCoordinator:
     """
     Nuxiva Mesh OS v5.0 — Coordinatore P2P Decentralizzato.
@@ -24,7 +106,7 @@ class NuxivaMeshCoordinator:
     3. Telemetria real-time ad alta frequenza (2Hz) per l'HUD Spaziale.
     """
     def __init__(self, port: int = 9999, node_id: Optional[str] = None):
-        self.node_id = node_id or str(uuid.uuid4())
+        self.node_id = node_id or socket.gethostname()
         self.port = port
         self.peers: Dict[str, Dict[str, Any]] = {}
         self.running = False
@@ -93,8 +175,8 @@ class NuxivaMeshCoordinator:
                 payload = {
                     "node_id": self.node_id,
                     "action": "HELLO",
-                    "capabilities": {"gpus": 1, "cpu_cores": 8},
-                    "load": 0.2,
+                    "capabilities": {"gpus": 0, "cpu_cores": 4},
+                    "load": 0.1,
                     "timestamp": time.time()
                 }
                 msg = json.dumps(payload).encode('utf-8')
@@ -201,177 +283,62 @@ class NuxivaMeshCoordinator:
 
     # ---------------- LIVE HOVER TELEMETRY (2Hz STREAM) ----------------
     def get_node_telemetry(self, node_id: str) -> Dict[str, Any]:
-        """Ritorna la telemetria real-time del nodo specificato."""
+        """Ritorna la telemetria real-time del nodo specificato (senza dati inventati)."""
         if node_id in self.telemetry_store:
             return self.telemetry_store[node_id]
-
-        # Telemetria di fallback per nodo locale o sconosciuto
-        return {
-            "node_id": node_id,
-            "name": f"Nodo {node_id[:8]}",
-            "tier": "Tier-1 (Compute & Core)",
-            "cpu_percent": 18.5,
-            "ram_used_gb": 14.2,
-            "ram_total_gb": 32.0,
-            "gpu_name": "RTX 20GB",
-            "vram_used_gb": 16.4,
-            "vram_total_gb": 20.0,
-            "active_model": "Llama-3-70B",
-            "power_watts": 215.0,
-            "temp_c": 64.0,
-            "ping_ms": 1.2,
-            "tx_kbps": 1280.0,
-            "rx_kbps": 3400.0,
-            "child_satellites": ["RPi-Cam (Video 1080p)", "ESP32 (Audio)"],
-            "status": "Elaborazione Vision + Voice Stream P2P Attiva",
-            "is_remote_vpn": False,
-            "last_updated": time.time()
-        }
+        return collect_real_system_telemetry(node_id)
 
     def get_mesh_canvas_state(self) -> Dict[str, Any]:
         """
         Ritorna lo stato topologico per il Mesh Topology Canvas:
-        - Nucleo Centrale (Shared Control Plane)
-        - Nodi Primari (Tier-1)
-        - Satelliti Edge (Tier-2)
-        - Micro-Satelliti (Tier-3)
+        Nessun nodo inventato, solo host reale e satelliti effettivamente connessi.
         """
+        local_telem = self.get_node_telemetry(self.node_id)
+        local_id = self.node_id
+
         nodes = [
             {
-                "id": "virtual-core",
-                "name": "NUCLEO GLOBALE",
-                "tier": "Tier-0 (Virtual Core)",
-                "type": "core",
-                "ip": "0.0.0.0",
-                "status": "CRDT Replicato Attivo",
+                "id": local_id,
+                "name": local_telem.get("name", local_id),
+                "tier": "Tier-1 (Compute & Virtual Core)",
+                "type": "compute",
+                "ip": local_telem.get("ip", "127.0.0.1"),
+                "status": "Host Locale Attivo",
                 "x": 0,
                 "y": 0,
-                "telemetry": {
-                    "crdt_keys": len(self._crdt) if self._crdt is not None else len(self._py_crdt),
-                    "active_peers": len(self.peers) + 1,
-                    "consensus": "Sync 100%"
-                }
-            },
-            {
-                "id": "node-pc-i9",
-                "name": "PC-i9 Soggiorno",
-                "tier": "Tier-1 (Compute & Core)",
-                "type": "compute",
-                "ip": "192.168.1.10",
-                "parent_id": "virtual-core",
-                "telemetry": self.get_node_telemetry("node-pc-i9")
-            },
-            {
-                "id": "node-mini-pc",
-                "name": "Mini-PC Studio",
-                "tier": "Tier-1 (Compute & Core)",
-                "type": "compute",
-                "ip": "192.168.1.11",
-                "parent_id": "virtual-core",
-                "telemetry": {
-                    "node_id": "node-mini-pc",
-                    "name": "Mini-PC Studio",
-                    "tier": "Tier-1 (Compute & Core)",
-                    "cpu_percent": 12.0,
-                    "ram_used_gb": 6.8,
-                    "ram_total_gb": 16.0,
-                    "gpu_name": "Intel Iris Xe",
-                    "vram_used_gb": 2.1,
-                    "vram_total_gb": 4.0,
-                    "active_model": "Whisper-Large-v3",
-                    "power_watts": 45.0,
-                    "temp_c": 51.0,
-                    "ping_ms": 1.8,
-                    "tx_kbps": 320.0,
-                    "rx_kbps": 450.0,
-                    "child_satellites": [],
-                    "status": "Idle / Spooler NVR",
-                    "is_remote_vpn": False,
-                    "last_updated": time.time()
-                }
-            },
-            {
-                "id": "sat-rpi-cam",
-                "name": "RPi-Cam Ingresso",
-                "tier": "Tier-2 (Smart Edge Satellite)",
-                "type": "satellite",
-                "ip": "192.168.1.50",
-                "parent_id": "node-pc-i9",
-                "telemetry": {
-                    "node_id": "sat-rpi-cam",
-                    "name": "RPi-Cam Ingresso",
-                    "tier": "Tier-2 (Smart Edge Satellite)",
-                    "cpu_percent": 24.0,
-                    "ram_used_gb": 1.1,
-                    "ram_total_gb": 4.0,
-                    "power_watts": 6.5,
-                    "temp_c": 48.0,
-                    "ping_ms": 3.4,
-                    "tx_kbps": 2200.0,
-                    "rx_kbps": 45.0,
-                    "stream": "Direct RTSP 1080p -> PC-i9",
-                    "is_remote_vpn": False,
-                    "last_updated": time.time()
-                }
-            },
-            {
-                "id": "sat-esp32-mic",
-                "name": "ESP32 Cucina",
-                "tier": "Tier-3 (Pure Micro-Satellite)",
-                "type": "micro",
-                "ip": "192.168.1.65",
-                "parent_id": "node-pc-i9",
-                "telemetry": {
-                    "node_id": "sat-esp32-mic",
-                    "name": "ESP32 Cucina",
-                    "tier": "Tier-3 (Pure Micro-Satellite)",
-                    "cpu_percent": 42.0,
-                    "ram_used_gb": 0.0003,
-                    "ram_total_gb": 0.0005,
-                    "power_watts": 1.2,
-                    "temp_c": 39.0,
-                    "ping_ms": 8.1,
-                    "tx_kbps": 128.0,
-                    "rx_kbps": 4.0,
-                    "stream": "Direct Audio PCM -> PC-i9",
-                    "is_remote_vpn": False,
-                    "last_updated": time.time()
-                }
-            },
-            {
-                "id": "sat-apk-phone",
-                "name": "Smartphone Nunzio",
-                "tier": "Tier-2 (Smart Edge Satellite)",
-                "type": "mobile",
-                "ip": "10.88.0.2",
-                "parent_id": "node-pc-i9",
-                "is_remote_vpn": True,
-                "telemetry": {
-                    "node_id": "sat-apk-phone",
-                    "name": "Smartphone Nunzio",
-                    "tier": "Tier-2 (Smart Edge Satellite)",
-                    "cpu_percent": 15.0,
-                    "ram_used_gb": 3.8,
-                    "ram_total_gb": 8.0,
-                    "power_watts": 3.5,
-                    "temp_c": 36.0,
-                    "ping_ms": 28.4,
-                    "tx_kbps": 110.0,
-                    "rx_kbps": 320.0,
-                    "stream": "WireGuard Tunnel",
-                    "is_remote_vpn": True,
-                    "last_updated": time.time()
-                }
+                "telemetry": local_telem
             }
         ]
+        links = []
 
-        links = [
-            {"source": "virtual-core", "target": "node-pc-i9", "protocol": "mTLS / CRDT"},
-            {"source": "virtual-core", "target": "node-mini-pc", "protocol": "mTLS / CRDT"},
-            {"source": "node-pc-i9", "target": "sat-rpi-cam", "protocol": "Direct RTSP 1080p"},
-            {"source": "node-pc-i9", "target": "sat-esp32-mic", "protocol": "Direct Audio PCM"},
-            {"source": "node-pc-i9", "target": "sat-apk-phone", "protocol": "WireGuard VPN"}
-        ]
+        # Aggiunge SOLO i nodi satelliti/peer reali che hanno effettuato handshake
+        for peer_id, peer_info in self.peers.items():
+            peer_telem = self.telemetry_store.get(peer_id, {})
+            p_ip = peer_info.get("ip", peer_telem.get("ip", "0.0.0.0"))
+            p_name = peer_info.get("name", peer_id)
+            p_tier = peer_info.get("tier", "Tier-2 (Smart Edge Satellite)")
+            nodes.append({
+                "id": peer_id,
+                "name": p_name,
+                "tier": p_tier,
+                "type": peer_info.get("type", "satellite"),
+                "ip": p_ip,
+                "parent_id": local_id,
+                "is_remote_vpn": peer_info.get("is_remote_vpn", False),
+                "telemetry": peer_telem or {
+                    "node_id": peer_id,
+                    "name": p_name,
+                    "ip": p_ip,
+                    "tier": p_tier,
+                    "status": "Connesso via P2P Mesh",
+                    "last_updated": time.time()
+                }
+            })
+            links.append({
+                "source": local_id,
+                "target": peer_id,
+                "protocol": peer_info.get("protocol", "P2P Stream")
+            })
 
         return {"nodes": nodes, "links": links, "timestamp": time.time()}
 

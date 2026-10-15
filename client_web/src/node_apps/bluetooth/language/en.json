@@ -1,0 +1,8 @@
+{
+  "title": "Bluetooth & Peripherals",
+  "description": "Bluetooth radio scanning, peripheral pairing, and automatic reconnection",
+  "save": "Save configuration",
+  "saved": "Configuration saved successfully",
+  "status": "Module Status",
+  "active": "Active and synchronized"
+}

@@ -1,0 +1,8 @@
+{
+  "title": "Cameras & Vision",
+  "description": "RTSP/USB feed, resolution, framerate, and direct P2P streaming to parent node",
+  "save": "Save configuration",
+  "saved": "Configuration saved successfully",
+  "status": "Module Status",
+  "active": "Active and synchronized"
+}

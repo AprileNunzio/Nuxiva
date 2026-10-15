@@ -1,0 +1,8 @@
+{
+  "title": "2D / 3D Printers",
+  "description": "Management of local USB CUPS printers and 3D Klipper/Moonraker printers",
+  "save": "Save configuration",
+  "saved": "Configuration saved successfully",
+  "status": "Module Status",
+  "active": "Active and synchronized"
+}

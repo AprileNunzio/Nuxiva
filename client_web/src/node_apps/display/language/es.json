@@ -1,0 +1,8 @@
+{
+  "title": "Pantalla y HUD",
+  "description": "Resolución de pantalla local, ajuste de brillo y superposición de HUD de telemetría",
+  "save": "Guardar configuración",
+  "saved": "Configuración guardada con éxito",
+  "status": "Estado del módulo",
+  "active": "Activo y sincronizado"
+}

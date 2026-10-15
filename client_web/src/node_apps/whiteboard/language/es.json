@@ -1,0 +1,8 @@
+{
+  "title": "Pizarra Interactiva",
+  "description": "Pizarra gráfica interactiva para notas en pantalla y sincronización de trazos P2P",
+  "save": "Guardar configuración",
+  "saved": "Configuración guardada con éxito",
+  "status": "Estado del módulo",
+  "active": "Activo y sincronizado"
+}

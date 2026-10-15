@@ -1,0 +1,9 @@
+{
+  "id": "client_link",
+  "name": "Client Link",
+  "icon": "Smartphone",
+  "version": "5.0.0",
+  "category": "node_plane",
+  "requires_reboot": false,
+  "description": "Pairing of Android APK companions, Windows Assistant, and WireGuard encryption"
+}

@@ -1,0 +1,8 @@
+{
+  "title": "Micrófono y VAD",
+  "description": "Sensibilidad de micrófono I2S/USB, umbral VAD y detección de palabra de activación",
+  "save": "Guardar configuración",
+  "saved": "Configuración guardada con éxito",
+  "status": "Estado del módulo",
+  "active": "Activo y sincronizado"
+}

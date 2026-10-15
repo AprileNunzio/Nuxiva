@@ -1,0 +1,9 @@
+{
+  "id": "printers",
+  "name": "Printers",
+  "icon": "Printer",
+  "version": "5.0.0",
+  "category": "node_plane",
+  "requires_reboot": false,
+  "description": "Management of local USB CUPS printers and 3D Klipper/Moonraker printers"
+}

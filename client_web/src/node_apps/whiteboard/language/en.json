@@ -1,0 +1,8 @@
+{
+  "title": "Interactive Whiteboard",
+  "description": "Interactive graphical whiteboard for on-screen notes and P2P stroke synchronization",
+  "save": "Save configuration",
+  "saved": "Configuration saved successfully",
+  "status": "Module Status",
+  "active": "Active and synchronized"
+}

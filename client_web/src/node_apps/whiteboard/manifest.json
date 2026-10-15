@@ -1,0 +1,9 @@
+{
+  "id": "whiteboard",
+  "name": "Whiteboard",
+  "icon": "Edit3",
+  "version": "5.0.0",
+  "category": "node_plane",
+  "requires_reboot": false,
+  "description": "Interactive graphical whiteboard for on-screen notes and P2P stroke synchronization"
+}

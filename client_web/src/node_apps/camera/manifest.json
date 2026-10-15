@@ -1,0 +1,9 @@
+{
+  "id": "camera",
+  "name": "Camera",
+  "icon": "Camera",
+  "version": "5.0.0",
+  "category": "node_plane",
+  "requires_reboot": false,
+  "description": "RTSP/USB feed, resolution, framerate, and direct P2P streaming to parent node"
+}

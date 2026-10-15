@@ -79,8 +79,13 @@ class MeshCrdtP2PTests(unittest.TestCase):
         self.assertIn("nodes", state)
         self.assertIn("links", state)
         node_ids = [n["id"] for n in state["nodes"]]
-        self.assertIn("virtual-core", node_ids)
-        self.assertIn("node-pc-i9", node_ids)
+        self.assertIn(self.node_a.node_id, node_ids)
+
+        # Simula registrazione peer reale
+        self.node_a.peers["peer-satellite"] = {"ip": "192.168.1.50", "name": "Satellite-1"}
+        state_updated = self.node_a.get_mesh_canvas_state()
+        updated_node_ids = [n["id"] for n in state_updated["nodes"]]
+        self.assertIn("peer-satellite", updated_node_ids)
 
 
 if __name__ == "__main__":

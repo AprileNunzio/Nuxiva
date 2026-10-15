@@ -1,0 +1,8 @@
+{
+  "title": "Bluetooth y Periféricos",
+  "description": "Escaneo de radio Bluetooth, emparejamiento de periféricos y reconexión automática",
+  "save": "Guardar configuración",
+  "saved": "Configuración guardada con éxito",
+  "status": "Estado del módulo",
+  "active": "Activo y sincronizado"
+}

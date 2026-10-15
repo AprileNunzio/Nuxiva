@@ -1,0 +1,8 @@
+{
+  "id": "raspberry",
+  "name": "Raspberry Pi 4 / 5",
+  "target": "arm64",
+  "tier": "tier2_satellite",
+  "version": "5.0.0",
+  "description": "Satellite provisioner for Raspberry Pi with I2S audio array and camera"
+}
