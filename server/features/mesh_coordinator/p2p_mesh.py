@@ -5,6 +5,11 @@ import logging
 import time
 from typing import Any, Dict, Optional
 
+try:
+    from .node_registry import NodeRegistry
+except ImportError:
+    from node_registry import NodeRegistry
+
 log = logging.getLogger("nuxiva.mesh")
 
 VIRTUAL_CORE_ID = "virtual-core"
@@ -124,6 +129,21 @@ class NuxivaMeshCoordinator:
 
         # Telemetry State for all known nodes
         self.telemetry_store: Dict[str, Dict[str, Any]] = {}
+        self.registry = NodeRegistry()
+        self._restore_bindings()
+
+    def _restore_bindings(self) -> None:
+        for node_id, binding in self.registry.bindings().items():
+            self._apply_binding(
+                node_id,
+                binding.get("satellite_ip", "0.0.0.0"),
+                binding.get("parent_node_id", VIRTUAL_CORE_ID),
+                binding.get("parent_ip", "127.0.0.1"),
+                binding.get("stream_type", "audio_pcm"),
+            )
+
+    def display_name(self, node_id: str, fallback: Optional[str] = None) -> str:
+        return self.registry.custom_name(node_id) or fallback or node_id
 
     @property
     def crdt(self):
@@ -161,6 +181,7 @@ class NuxivaMeshCoordinator:
                 if sender_id and sender_id != self.node_id:
                     if action == "HELLO":
                         self.peers[sender_id] = {
+                            **self.peers.get(sender_id, {}),
                             "ip": addr[0],
                             "capabilities": msg.get("capabilities", {}),
                             "load": msg.get("load", 0.0),
@@ -246,10 +267,22 @@ class NuxivaMeshCoordinator:
         parent_ip: str,
         stream_type: str = "audio"
     ) -> None:
-        """
-        Associa direttamente un Satellite a un Nodo Padre specifico.
-        Lo streaming diretto fluirà dall'IP del satellite all'IP del padre.
-        """
+        self._apply_binding(satellite_id, satellite_ip, parent_node_id, parent_ip, stream_type)
+        self.registry.set_binding(satellite_id, {
+            "parent_node_id": parent_node_id,
+            "parent_ip": parent_ip,
+            "satellite_ip": satellite_ip,
+            "stream_type": stream_type,
+        })
+
+    def _apply_binding(
+        self,
+        satellite_id: str,
+        satellite_ip: str,
+        parent_node_id: str,
+        parent_ip: str,
+        stream_type: str,
+    ) -> None:
         if self._stream_mgr is not None:
             self._stream_mgr.register_binding(
                 satellite_id, satellite_ip, parent_node_id, parent_ip, stream_type
@@ -314,39 +347,19 @@ class NuxivaMeshCoordinator:
             removed = True
         if node_id in self._bindings:
             del self._bindings[node_id]
+        self.registry.forget(node_id)
         return removed
 
-    def rename_node(self, node_id: str, new_name: str) -> bool:
-        """Assegna un nome personalizzato al nodo specificato e aggiorna la telemetria/CRDT."""
-        new_name = new_name.strip()
-        if not new_name:
-            return False
-
-        if node_id == self.node_id:
-            if node_id not in self.telemetry_store:
-                self.telemetry_store[node_id] = self.get_node_telemetry(node_id)
-            self.telemetry_store[node_id]["name"] = new_name
-            self.telemetry_store[node_id]["custom_name"] = new_name
-        else:
-            if node_id in self.peers:
-                self.peers[node_id]["name"] = new_name
-            if node_id in self.telemetry_store:
-                self.telemetry_store[node_id]["name"] = new_name
-
-        if hasattr(self, "crdt") and self.crdt:
-            try:
-                self.crdt.set(f"node:{node_id}:name", {"name": new_name, "updated_at": time.time()})
-            except Exception:
-                pass
-        return True
-
+    def rename_node(self, node_id: str, new_name: str) -> str:
+        return self.registry.set_custom_name(node_id, new_name)
 
     # ---------------- LIVE HOVER TELEMETRY (2Hz STREAM) ----------------
     def get_node_telemetry(self, node_id: str) -> Dict[str, Any]:
         """Ritorna la telemetria real-time del nodo specificato (senza dati inventati)."""
-        if node_id in self.telemetry_store:
-            return self.telemetry_store[node_id]
-        return collect_real_system_telemetry(node_id)
+        source = self.telemetry_store.get(node_id) or collect_real_system_telemetry(node_id)
+        telemetry = dict(source)
+        telemetry["name"] = self.display_name(node_id, source.get("name"))
+        return telemetry
 
     def _resolve_parent(self, node_id: str, default_parent: str) -> Optional[str]:
         binding = self._bindings.get(node_id)
@@ -386,7 +399,7 @@ class NuxivaMeshCoordinator:
         for peer_id, peer_info in self.peers.items():
             peer_telem = self.telemetry_store.get(peer_id, {})
             p_ip = peer_info.get("ip", peer_telem.get("ip", "0.0.0.0"))
-            p_name = peer_info.get("name", peer_id)
+            p_name = self.display_name(peer_id, peer_info.get("name") or peer_telem.get("name"))
             p_tier = peer_info.get("tier", "Tier-2 (Smart Edge Satellite)")
             p_parent = self._resolve_parent(peer_id, local_id)
             nodes.append({
@@ -397,7 +410,7 @@ class NuxivaMeshCoordinator:
                 "ip": p_ip,
                 "parent_id": p_parent,
                 "is_remote_vpn": peer_info.get("is_remote_vpn", False),
-                "telemetry": peer_telem or {
+                "telemetry": {**peer_telem, "name": p_name} if peer_telem else {
                     "node_id": peer_id,
                     "name": p_name,
                     "ip": p_ip,

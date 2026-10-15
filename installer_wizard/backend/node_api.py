@@ -11,7 +11,7 @@ import subprocess
 import time
 from typing import Any, Dict, List, Optional
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 router = APIRouter(prefix="/api/v5/nodes", tags=["Node Plane"])
 admin_routes = router
@@ -107,37 +107,24 @@ def list_nodes() -> List[Dict[str, Any]]:
 
 @router.get("/{node_id}")
 def get_node(node_id: str) -> Dict[str, Any]:
-    custom_name = _NODE_APP_CONFIGS.get(f"{node_id}:meta", {}).get("name")
-    try:
-        from server.features.mesh_coordinator.p2p_mesh import p2p_mesh
-        telem = p2p_mesh.get_node_telemetry(node_id)
-        return {
-            "id": node_id,
-            "name": custom_name or telem.get("name", node_id),
-            "tier": telem.get("tier", "Tier-1 (Compute & Virtual Core)"),
-            "ip": telem.get("ip", "127.0.0.1"),
-            "os": telem.get("os", "Linux"),
-            "is_virtual_core": True,
-            "status": "online",
-            "metrics": {
-                "cpu": telem.get("cpu_percent", 0.0),
-                "ram": f"{telem.get('ram_used_gb', 0)}/{telem.get('ram_total_gb', 0)}GB",
-                "temp": telem.get("temp_c", 0.0),
-                "ping": telem.get("ping_ms", 0.1)
-            }
-        }
-    except Exception:
-        import socket
-        return {
-            "id": node_id,
-            "name": custom_name or socket.gethostname(),
-            "tier": "Tier-1 Compute",
-            "ip": "127.0.0.1",
-            "os": "Linux",
-            "is_virtual_core": True,
-            "status": "online",
-            "metrics": {"cpu": 0.0, "ram": "N/A", "temp": 0.0, "ping": 0.1}
-        }
+    from server.features.mesh_coordinator.p2p_mesh import p2p_mesh
+
+    telem = p2p_mesh.get_node_telemetry(node_id)
+    return {
+        "id": node_id,
+        "name": telem.get("name", node_id),
+        "tier": telem.get("tier"),
+        "ip": telem.get("ip"),
+        "os": telem.get("os"),
+        "is_local": node_id == p2p_mesh.node_id,
+        "metrics": {
+            "cpu": telem.get("cpu_percent"),
+            "ram_used_gb": telem.get("ram_used_gb"),
+            "ram_total_gb": telem.get("ram_total_gb"),
+            "temp": telem.get("temp_c"),
+            "ping": telem.get("ping_ms"),
+        },
+    }
 
 
 
@@ -254,36 +241,20 @@ def delete_node(node_id: str) -> Dict[str, Any]:
 
 
 class RenameNodeRequest(BaseModel):
-    name: str
+    name: str = Field(min_length=1, max_length=128)
 
 
 @router.post("/{node_id}/name")
 @router.patch("/{node_id}/name")
 def rename_node(node_id: str, req: RenameNodeRequest) -> Dict[str, Any]:
-    """Assegna o modifica il nome personalizzato del nodo specificato."""
-    new_name = req.name.strip()
-    if not new_name:
-        raise HTTPException(status_code=400, detail="Il nome del nodo non può essere vuoto.")
-
-    key = f"{node_id}:meta"
-    _NODE_APP_CONFIGS[key] = {
-        "nodeId": node_id,
-        "name": new_name,
-        "updatedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-    }
+    from server.features.mesh_coordinator.node_registry import NodeRegistryError
+    from server.features.mesh_coordinator.p2p_mesh import p2p_mesh
 
     try:
-        from server.features.mesh_coordinator.p2p_mesh import p2p_mesh
-        p2p_mesh.rename_node(node_id, new_name)
-    except Exception:
-        pass
-
-    return {
-        "node_id": node_id,
-        "name": new_name,
-        "status": "renamed",
-        "message": f"Nome personalizzato '{new_name}' assegnato con successo al nodo."
-    }
+        name = p2p_mesh.rename_node(node_id, req.name)
+    except NodeRegistryError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    return {"node_id": node_id, "name": name, "status": "renamed"}
 
 
 
