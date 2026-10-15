@@ -1,6 +1,7 @@
 /// <reference types="vite/client" />
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useI18n } from './I18nContext';
+import { useAssistantIdentity } from '../identity/IdentityContext';
 
 // Scoperta automatica e dinamica di TUTTI i file di lingua colocated presenti nell'albero src.
 // Qualsiasi nuova lingua aggiunta a runtime o in fase di build (it, en, fr, es, de, ja, zh, ecc.)
@@ -103,17 +104,18 @@ export function useScopedI18n(scope: string) {
     return scopeData['en'] || scopeData['it'] || {};
   }, [scope]);
 
+  const { name: assistant } = useAssistantIdentity();
+
   const t = useCallback(
     (key: string, params?: Record<string, string | number>): string => {
       let text = activeDictionary[key] ?? fallbackDictionary[key] ?? key;
-      if (params) {
-        Object.entries(params).forEach(([k, v]) => {
-          text = text.replace(new RegExp(`\\{${k}\\}`, 'g'), String(v));
-        });
-      }
+      const merged: Record<string, string | number> = { assistant, ...params };
+      Object.entries(merged).forEach(([k, v]) => {
+        text = text.split(`{${k}}`).join(String(v));
+      });
       return text;
     },
-    [activeDictionary, fallbackDictionary]
+    [activeDictionary, fallbackDictionary, assistant]
   );
 
   return { t, lang, setLang };

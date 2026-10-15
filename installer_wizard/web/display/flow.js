@@ -212,7 +212,7 @@
       canvas.innerHTML = `
         <div class="flow-empty">
           <b>Nessun percorso registrato finora.</b><br>
-          Fai una domanda ad Nuxiva sul dock: il grafo si costruirà in tempo reale dalla A alla Z,<br>
+          Fai una domanda a ${D.assistantName()} sul dock: il grafo si costruirà in tempo reale dalla A alla Z,<br>
           mostrando la memoria, le leggi, i giudizi di consenso, i cicli ReAct e i ritorni.
         </div>`;
       bar.innerHTML = `<span><i class="dot"></i>In attesa di richieste</span><span></span><span></span>`;

@@ -80,7 +80,7 @@
   "preset_who": "Who are you and which node are you running on?",
   "preset_latency": "Verify latency and calculate 2+2",
   "preset_summary": "Summarize cluster status in one sentence",
-  "term_header": "Nuxiva Inference Diagnostic Terminal",
+  "term_header": "{assistant} Inference Diagnostic Terminal",
   "term_waiting": "Waiting for test execution...",
   "latency": "Latency",
   "tokens": "Tokens",

@@ -77,7 +77,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ expired, onSignedIn }) => 
           <span className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-cyan-300/40 bg-cyan-400/10 shadow-[0_0_30px_rgba(34,211,238,0.35)]">
             <ShieldCheck className="h-7 w-7 text-cyan-200" aria-hidden="true" />
           </span>
-          <h1 className="font-['Rajdhani'] text-3xl font-bold tracking-[0.3em] text-white">{t('brand')}</h1>
+          <h1 className="font-['Rajdhani'] text-3xl font-bold uppercase tracking-[0.3em] text-white">{t('brand')}</h1>
           <p className="mt-1 text-sm text-slate-400">{t(expired ? 'subtitle_expired' : 'subtitle')}</p>
         </div>
 

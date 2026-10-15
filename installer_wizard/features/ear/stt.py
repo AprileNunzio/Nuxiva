@@ -33,8 +33,21 @@ HOME_LANG = os.environ.get("NUXIVA_REPLY_LANG", "it").strip().lower()[:3] or "it
 LANGUAGES = langpick.allowed()
 LANG_MIN_PROB = 0.75
 LANG_MIN_SECONDS = 0.9
-PROMPTS = {"it": "Ehi, Nuxiva, assistente digitale.", "en": "Hey Nuxiva, digital assistant.", "es": "Oye, Nuxiva, asistente digital.",
-           "fr": "Hé, Nuxiva, assistante numérique.", "de": "Hey Nuxiva, digitale Assistentin.", "pt": "Ei, Nuxiva, assistente digital."}
+PROMPTS = {"it": "Ehi, {name}, assistente digitale.", "en": "Hey {name}, digital assistant.", "es": "Oye, {name}, asistente digital.",
+           "fr": "Hé, {name}, assistante numérique.", "de": "Hey {name}, digitale Assistentin.", "pt": "Ei, {name}, assistente digital."}
+
+
+def _prompt(lang: str) -> str:
+    from identity import assistant_name
+
+    name = assistant_name()
+    return PROMPTS.get(lang, "{name}.").format(name=name)
+
+
+def _hotwords(lang: str) -> str:
+    from identity import assistant_name
+
+    return HOTWORDS["value"] if lang == HOME_LANG else assistant_name()
 HALLUCINATIONS = {"", "grazie.", "grazie", "sottotitoli a cura di qtss", "sottotitoli creati dalla comunità amara.org",
                   "thank you.", "thanks for watching!", "you"}
 
@@ -122,8 +135,8 @@ def transcribe(audio: np.ndarray, fast: bool = False, detect: bool = False) -> t
 
     m = wake_model if fast else ACTIVE["model"]
     segments, _ = m.transcribe(audio, language=lang, beam_size=1, vad_filter=False,
-                               initial_prompt=PROMPTS.get(lang, "Nuxiva."), condition_on_previous_text=False,
-                               hotwords=HOTWORDS["value"] if lang == HOME_LANG else "Nuxiva")
+                               initial_prompt=_prompt(lang), condition_on_previous_text=False,
+                               hotwords=_hotwords(lang))
     text = " ".join(s.text.strip() for s in segments).strip()
     if not fast:
         _adapt(time.time() - started, len(audio) / RATE)
@@ -153,8 +166,8 @@ def review_model(name: str):
 def transcribe_segments(audio: np.ndarray, name: str = "same", offset: float = 0.0) -> list[dict]:
     lang = spoken_language(audio)
     segments, _ = review_model(name).transcribe(audio, language=lang, beam_size=3, vad_filter=False,
-                                                initial_prompt=PROMPTS.get(lang, "Nuxiva."),
+                                                initial_prompt=_prompt(lang),
                                                 condition_on_previous_text=False,
-                                                hotwords=HOTWORDS["value"] if lang == HOME_LANG else "Nuxiva")
+                                                hotwords=_hotwords(lang))
     return [{"start": round(offset + s.start, 2), "end": round(offset + s.end, 2), "text": s.text.strip()}
             for s in segments if s.text.strip() and not hallucination(s.text)]

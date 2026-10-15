@@ -26,6 +26,7 @@
     "error_updater_policy_failed": "Failed to save the schedule.",
     "error_updater_nodes_failed": "Failed to send the update to nodes.",
     "error_updater_collaudo_failed": "Self-test not executed.",
-    "error_updater_history_failed": "History unavailable."
+    "error_updater_history_failed": "History unavailable.",
+    "error_identity_unavailable": "Unable to read the assistant name."
   }
 }

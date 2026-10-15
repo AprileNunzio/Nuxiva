@@ -26,6 +26,7 @@
     "error_updater_policy_failed": "No se pudo guardar la planificación.",
     "error_updater_nodes_failed": "No se pudo enviar la actualización a los nodos.",
     "error_updater_collaudo_failed": "Pruebas no ejecutadas.",
-    "error_updater_history_failed": "Historial no disponible."
+    "error_updater_history_failed": "Historial no disponible.",
+    "error_identity_unavailable": "No se puede leer el nombre del asistente."
   }
 }

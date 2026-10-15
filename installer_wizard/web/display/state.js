@@ -1,6 +1,7 @@
 (() => {
   const $ = (id) => document.getElementById(id);
   const D = window.NuxivaDisplay = {
+    assistantName: () => (window.NUXIVA_ASSISTANT && window.NUXIVA_ASSISTANT.name) || "Nuxiva",
     $,
     fmt: Nuxiva.fmt,
     FACE: window.NUXIVA_FACE || {},

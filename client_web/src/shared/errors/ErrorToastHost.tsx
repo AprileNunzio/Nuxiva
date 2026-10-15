@@ -25,6 +25,7 @@ const KNOWN_CODES = new Set([
   'updater_nodes_failed',
   'updater_collaudo_failed',
   'updater_history_failed',
+  'identity_unavailable',
 ]);
 
 export const ErrorToastHost: React.FC = () => {

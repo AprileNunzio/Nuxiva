@@ -1,6 +1,6 @@
 {
   "title": "Apariencia del Asistente & Pantalla del Nodo",
-  "description": "Personaliza el rostro visual del asistente Nuxiva en la pantalla de este nodo, el modo Quiosco y los parámetros de pantalla",
+  "description": "Personaliza el rostro visual de {assistant} en la pantalla de este nodo, el modo Quiosco y los parámetros de pantalla",
   "active": "Controlador de Pantalla & Framebuffer Activo",
   "save": "Guardar Ajustes de Pantalla",
   "saving": "Guardando...",

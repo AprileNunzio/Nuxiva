@@ -3,7 +3,7 @@
     "locale": "fr"
   },
   "dictionary": {
-    "brand_name": "NUXIVA",
+    "brand_name": "{assistant}",
     "brand_tagline": "Mesh domestique autonome",
     "home_aria": "Retour à la carte neuronale",
     "breadcrumb_aria": "Chemin de navigation",

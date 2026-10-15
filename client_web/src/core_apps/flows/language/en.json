@@ -4,7 +4,7 @@
   },
   "dictionary": {
     "title": "Flows",
-    "description": "DAG nodal editor of Nuxiva reasoning",
+    "description": "DAG nodal editor of {assistant} reasoning",
     "status": "Active",
     "open_app": "Open"
   }

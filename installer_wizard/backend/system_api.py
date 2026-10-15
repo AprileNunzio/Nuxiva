@@ -80,25 +80,23 @@ async def public_state():
 @public_routes.get("/api/system/identity")
 @admin_routes.get("/api/system/identity")
 async def system_identity():
-    import re
     from config import env_get
-    name = env_get("NUXIVA_ASSISTANT_NAME", "Nuxiva").strip() or "Nuxiva"
-    clean = re.sub(r"^(?:hey|hei|ehi|hi|ok|okay)\s+", "", name, flags=re.I).strip()
-    primary = clean.lower() or "nuxiva"
+    from identity import assistant_identity
+
+    ident = assistant_identity()
     aliases_raw = env_get("NUXIVA_WAKE_PHONETIC_ALIASES", "").strip()
-    aliases = [a.strip() for a in aliases_raw.split(",") if a.strip()] if aliases_raw else [primary]
-    if primary not in aliases:
-        aliases.insert(0, primary)
-    phrases = [primary, f"ehi {primary}", f"ok {primary}", f"ciao {primary}"]
+    aliases = [a.strip() for a in aliases_raw.split(",") if a.strip()] or [ident.wake_word]
+    if ident.wake_word not in aliases:
+        aliases.insert(0, ident.wake_word)
     return JSONResponse({
-        "assistant_name": name,
-        "assistant_gender": env_get("NUXIVA_ASSISTANT_GENDER", "female"),
-        "wake_word_primary": primary,
-        "wake_phrases": phrases,
+        "assistant_name": ident.name,
+        "assistant_gender": ident.gender,
+        "wake_word_primary": ident.wake_word,
+        "wake_phrases": list(ident.wake_phrases),
         "wake_phonetic_aliases": aliases,
         "voice_id": env_get("NUXIVA_VOICE", "if_sara"),
         "locale": env_get("NUXIVA_UI_LANG", "it"),
-        "is_custom_name": primary != "nuxiva"
+        "is_custom_name": ident.is_custom,
     }, headers=NO_CACHE)
 
 

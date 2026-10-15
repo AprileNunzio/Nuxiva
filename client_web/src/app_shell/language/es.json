@@ -3,7 +3,7 @@
     "locale": "es"
   },
   "dictionary": {
-    "brand_name": "NUXIVA",
+    "brand_name": "{assistant}",
     "brand_tagline": "Malla doméstica autónoma",
     "home_aria": "Volver al mapa neuronal",
     "breadcrumb_aria": "Ruta de navegación",

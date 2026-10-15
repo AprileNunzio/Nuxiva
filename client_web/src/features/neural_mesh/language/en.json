@@ -3,8 +3,8 @@
     "locale": "en"
   },
   "dictionary": {
-    "stage_label": "Nuxiva mesh neural map",
-    "core_title": "NUXIVA",
+    "stage_label": "{assistant} neural map",
+    "core_title": "{assistant}",
     "core_subtitle": "Central core",
     "core_counter": "{online}/{total} active",
     "core_aria": "Open the general control panel, {counter}",

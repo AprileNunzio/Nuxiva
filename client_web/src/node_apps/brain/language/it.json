@@ -80,7 +80,7 @@
   "preset_who": "Chi sei e su quale nodo sei?",
   "preset_latency": "Verifica latenza e calcola 2+2",
   "preset_summary": "Riassumi lo stato del cluster in una riga",
-  "term_header": "Terminale Diagnostico Inferenza Nuxiva",
+  "term_header": "Terminale Diagnostico Inferenza {assistant}",
   "term_waiting": "In attesa di esecuzione test...",
   "latency": "Latenza",
   "tokens": "Token",

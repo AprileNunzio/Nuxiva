@@ -3,7 +3,7 @@
     "locale": "it"
   },
   "dictionary": {
-    "brand": "NUXIVA",
+    "brand": "{assistant}",
     "subtitle": "Accedi alla console di controllo",
     "subtitle_expired": "Sessione scaduta: accedi di nuovo",
     "username": "Utente",

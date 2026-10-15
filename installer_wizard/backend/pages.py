@@ -1,5 +1,6 @@
 import json
 import re
+from html import escape
 import time
 from pathlib import Path
 
@@ -112,7 +113,13 @@ def ui_language() -> str:
 
 
 def render(html: str, lang: str = "") -> Response:
-    html = html.replace("</head>", f"<script>window.NUXIVA_FACE = {json.dumps(face_options())}; "
+    from identity import assistant_name
+
+    name = assistant_name()
+    assistant_json = json.dumps({"name": name}).replace("<", "\\u003c")
+    html = html.replace("{{assistant}}", escape(name))
+    html = html.replace("</head>", f"<script>window.NUXIVA_ASSISTANT = {assistant_json}; "
+                                   f"window.NUXIVA_FACE = {json.dumps(face_options())}; "
                                    f"window.NUXIVA_ASSET_V = {json.dumps(ASSET_VERSION)}; "
                                    f"window.NUXIVA_UI_LANG = {json.dumps(lang or ui_language())};</script>\n"
                                    '<script src="/static/shared/translate.js"></script>\n'

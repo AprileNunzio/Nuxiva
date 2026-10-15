@@ -37,6 +37,7 @@ from features.study import study
 from features.voices import languages
 from features.voices.catalog import home_lang
 from features.voices.downloads import ensure_language
+from identity import assistant_name
 
 public_routes = APIRouter()
 admin_routes = APIRouter()
@@ -113,7 +114,7 @@ async def _core_call(query: str, device: str, speech_lang: dict, mode: str | Non
                 eng = engine_scanner.get_engine(mode)
             except Exception:
                 pass
-            label = eng.name if eng else ("Nuxiva 5.0 Veloce (5.0-flash)" if route["kind"] == "chat" else "Nuxiva 6.0 Pro (6.0-pro)")
+            label = eng.name if eng else (f"{assistant_name()} Veloce" if route["kind"] == "chat" else f"{assistant_name()} Pro")
             data["agent_id"] = f"{data.get('agent_id') or 'core'} · {model} ({label})"
         return data
 
@@ -147,7 +148,7 @@ async def assistant_chat(text: str, device: str, heard_lang: str | None = None, 
     if len(text) > 4000:
         raise HTTPException(413, "Messaggio troppo lungo")
     if store.phase not in ("READY", "DEGRADED"):
-        raise HTTPException(503, "Nuxiva non è ancora operativa")
+        raise HTTPException(503, f"{assistant_name()} non è ancora operativa")
     study.engine.activity("chat")
     request_context.device.set(device)
     request_context.voice.set(heard.get("speaker") or "")
@@ -233,7 +234,7 @@ def _demo_graph() -> dict:
 
 @public_routes.post("/api/assistant/chat")
 async def public_chat(request: Request):
-    require_display(request, "Per parlare con Nuxiva da remoto accedi al pannello :8080")
+    require_display(request, f"Per parlare con {assistant_name()} da remoto accedi al pannello :8080")
     body = await request.json()
     return await assistant_chat(body.get("text", ""), "kiosk" if is_local(request) else "remote", lang_of(body),
                                 _heard(body))
@@ -274,7 +275,7 @@ def _streaming_response(generator) -> StreamingResponse:
 
 @public_routes.post("/api/assistant/chat/stream")
 async def public_chat_stream(request: Request):
-    require_display(request, "Per parlare con Nuxiva da remoto accedi al pannello :8080")
+    require_display(request, f"Per parlare con {assistant_name()} da remoto accedi al pannello :8080")
     body = await request.json()
     return _streaming_response(_stream_chat(body.get("text", ""), "kiosk" if is_local(request) else "remote", lang_of(body), _heard(body)))
 
@@ -300,7 +301,7 @@ async def public_wake(request: Request):
     desk.wake()
     result = await wake.greeting(wake.wake_language())
     desk.show("g_notify", result["card"], key="wake", ttl=25)
-    dialogue.remember(request_context.device.get(), "Nuxiva", result["reply"], "wake")
+    dialogue.remember(request_context.device.get(), assistant_name(), result["reply"], "wake")
     return result
 
 

@@ -3,8 +3,8 @@
     "locale": "es"
   },
   "dictionary": {
-    "stage_label": "Mapa neuronal de la malla Nuxiva",
-    "core_title": "NUXIVA",
+    "stage_label": "Mapa neuronal de {assistant}",
+    "core_title": "{assistant}",
     "core_subtitle": "Núcleo central",
     "core_counter": "{online}/{total} activos",
     "core_aria": "Abrir el panel de control general, {counter}",

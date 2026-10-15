@@ -41,7 +41,7 @@ export const ShellNavbar: React.FC<ShellNavbarProps> = ({ route, onNavigateMesh,
             <Radio className="h-4 w-4" aria-hidden="true" />
           </span>
           <span className="flex flex-col items-start leading-tight">
-            <span className="bg-gradient-to-r from-cyan-300 via-sky-300 to-indigo-300 bg-clip-text font-['Rajdhani'] text-lg font-bold tracking-[0.3em] text-transparent sm:text-xl">
+            <span className="bg-gradient-to-r from-cyan-300 via-sky-300 to-indigo-300 bg-clip-text font-['Rajdhani'] text-lg font-bold uppercase tracking-[0.3em] text-transparent sm:text-xl">
               {t('brand_name')}
             </span>
             <span className="hidden font-mono text-[10px] uppercase tracking-[0.2em] text-slate-500 sm:block">{t('brand_tagline')}</span>

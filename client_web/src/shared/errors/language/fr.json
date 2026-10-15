@@ -26,6 +26,7 @@
     "error_updater_policy_failed": "Échec de l'enregistrement de la planification.",
     "error_updater_nodes_failed": "Échec de l'envoi de la mise à jour aux nœuds.",
     "error_updater_collaudo_failed": "Recette non exécutée.",
-    "error_updater_history_failed": "Historique indisponible."
+    "error_updater_history_failed": "Historique indisponible.",
+    "error_identity_unavailable": "Impossible de lire le nom de l'assistant."
   }
 }

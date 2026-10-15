@@ -26,6 +26,7 @@
     "error_updater_policy_failed": "Salvataggio della pianificazione non riuscito.",
     "error_updater_nodes_failed": "Invio dell'aggiornamento ai nodi non riuscito.",
     "error_updater_collaudo_failed": "Collaudo non eseguito.",
-    "error_updater_history_failed": "Cronologia non disponibile."
+    "error_updater_history_failed": "Cronologia non disponibile.",
+    "error_identity_unavailable": "Impossibile leggere il nome dell'assistente."
   }
 }

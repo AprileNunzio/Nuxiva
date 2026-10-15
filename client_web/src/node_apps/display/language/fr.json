@@ -1,6 +1,6 @@
 {
   "title": "Apparence de l'Assistant & Écran du Nœud",
-  "description": "Personnalisez le visage visuel de l'assistant Nuxiva sur l'écran de ce nœud, le mode Kiosque et les paramètres d'affichage",
+  "description": "Personnalisez le visage visuel de {assistant} sur l'écran de ce nœud, le mode Kiosque et les paramètres d'affichage",
   "active": "Pilote Écran & Framebuffer Actif",
   "save": "Enregistrer les Paramètres Écran",
   "saving": "Enregistrement...",

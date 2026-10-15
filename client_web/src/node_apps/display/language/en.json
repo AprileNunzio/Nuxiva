@@ -1,6 +1,6 @@
 {
   "title": "Assistant Appearance & Node Display",
-  "description": "Customize Nuxiva's visual avatar face on this node's screen, enable Kiosk fullscreen mode, and configure display parameters",
+  "description": "Customize {assistant}'s visual avatar face on this node's screen, enable Kiosk fullscreen mode, and configure display parameters",
   "active": "Screen & Framebuffer Driver Active",
   "save": "Save Display Settings",
   "saving": "Saving...",

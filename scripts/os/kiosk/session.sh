@@ -28,8 +28,14 @@ healthy() {
     grep -q '"ok": *true' <<<"$body" && ! grep -q '"safe_mode": *true' <<<"$body"
 }
 
+booted() {
+    local body
+    body=$(curl -fs --max-time 3 "$BASE/healthz" 2>/dev/null) || return 1
+    grep -q '"ok": *true' <<<"$body" && ! grep -q '"phase": *"BOOTING"' <<<"$body" && ! grep -q '"safe_mode": *true' <<<"$body"
+}
+
 waited=0
-until healthy; do
+until booted; do
     if [ "$waited" -ge "$BOOT_WAIT_SECONDS" ]; then
         echo "[$(date -Is)] Server non pronto dopo ${BOOT_WAIT_SECONDS}s: apro comunque, il watchdog ricaricherà"
         break

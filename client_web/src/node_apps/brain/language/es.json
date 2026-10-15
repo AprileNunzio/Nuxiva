@@ -80,7 +80,7 @@
   "preset_who": "¿Quién eres y en qué nodo estás ejecutándote?",
   "preset_latency": "Verifica latencia y calcula 2+2",
   "preset_summary": "Resume el estado del clúster en una frase",
-  "term_header": "Terminal Diagnóstico de Inferencia Nuxiva",
+  "term_header": "Terminal Diagnóstico de Inferencia {assistant}",
   "term_waiting": "Esperando ejecución de prueba...",
   "latency": "Latencia",
   "tokens": "Tokens",

@@ -3,8 +3,8 @@
     "locale": "fr"
   },
   "dictionary": {
-    "stage_label": "Carte neuronale du mesh Nuxiva",
-    "core_title": "NUXIVA",
+    "stage_label": "Carte neuronale de {assistant}",
+    "core_title": "{assistant}",
     "core_subtitle": "Noyau central",
     "core_counter": "{online}/{total} actifs",
     "core_aria": "Ouvrir le panneau de contrôle général, {counter}",

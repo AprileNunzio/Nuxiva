@@ -1,6 +1,6 @@
 {
   "title": "Aspetto Assistente & Display Nodo",
-  "description": "Personalizza il volto visivo dell'assistente Nuxiva sullo schermo di questo nodo, la modalità Kiosk e i parametri display",
+  "description": "Personalizza il volto visivo di {assistant} sullo schermo di questo nodo, la modalità Kiosk e i parametri display",
   "active": "Driver Schermo & Framebuffer Attivo",
   "save": "Salva Impostazioni Display",
   "saving": "Salvataggio...",

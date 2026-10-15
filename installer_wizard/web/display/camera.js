@@ -39,7 +39,7 @@
     bar.id = "cam-bar";
     bar.innerHTML = [
       ["mirror", "↔", "Specchio"], ["zoom-out", "−", "Riduci"], ["zoom-in", "+", "Ingrandisci"], ["shot", "◉", "Scatta"],
-      ["draw", "✎", "Disegna"], ["clear", "⌫", "Cancella disegno"], ["nuxiva", "◌", "Mostra o nascondi Nuxiva"], ["close", "✕", "Chiudi la webcam"],
+      ["draw", "✎", "Disegna"], ["clear", "⌫", "Cancella disegno"], ["nuxiva", "◌", `Mostra o nascondi ${D.assistantName()}`], ["close", "✕", "Chiudi la webcam"],
     ].map(([a, g, t]) => `<button type="button" data-cam="${a}" title="${t}" aria-label="${t}">${g}</button>`).join("")
       + `<span class="cam-colors">${COLORS.map((c) => `<button type="button" data-color="${c}" style="--c:${c}" aria-label="Colore"></button>`).join("")}</span>`;
     document.body.appendChild(bar);

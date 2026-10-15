@@ -4,7 +4,7 @@
   },
   "dictionary": {
     "title": "Flussi",
-    "description": "Editor nodale DAG del ragionamento Nuxiva",
+    "description": "Editor nodale DAG del ragionamento di {assistant}",
     "status": "Attivo",
     "open_app": "Apri"
   }

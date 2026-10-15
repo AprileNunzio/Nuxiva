@@ -20,7 +20,7 @@
   let ws = null, ctx = null, stream = null, state = "off", history = new Array(28).fill(0);
   const WORKLET = `class Tap extends AudioWorkletProcessor { process(inp) { const c = inp[0] && inp[0][0]; if (c) this.port.postMessage(c.slice(0)); return true; } }
       registerProcessor("nuxiva-tap", Tap);`;
-  const TITLES = { idle: "Parla (oppure dì «Nuxiva»)", listening: "In ascolto", transcribing: "In ascolto", off: "Microfono non attivo" };
+  const TITLES = { idle: `Parla (oppure dì «${D.assistantName()}»)`, listening: "In ascolto", transcribing: "In ascolto", off: "Microfono non attivo" };
 
   async function report(ok, error) {
     let inputs = 0, label = "";

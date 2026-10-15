@@ -183,7 +183,7 @@
     });
     if (!D.local) {
       fetch("/api/auth/me", { credentials: "include" }).then((r) => {
-        if (!r.ok) $("note").textContent = "Accesso remoto in sola visione — per parlare con Nuxiva accedi al pannello :8080";
+        if (!r.ok) $("note").textContent = `Accesso remoto in sola visione — per parlare con ${D.assistantName()} accedi al pannello :8080`;
       }).catch(() => {});
     }
   };
