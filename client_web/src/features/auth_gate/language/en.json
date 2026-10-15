@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "brand": "NUXIVA",
+    "subtitle": "Sign in to the control console",
+    "subtitle_expired": "Session expired: sign in again",
+    "username": "User",
+    "password": "Password",
+    "show_password": "Show password",
+    "hide_password": "Hide password",
+    "submit": "Sign in",
+    "hint_admin": "Use a server administrator account (sudo or nuxiva-admin group).",
+    "language_label": "Language",
+    "error_invalid_credentials": "Invalid credentials or unauthorized user.",
+    "error_rate_limited": "Too many attempts: try again in a few minutes.",
+    "error_rejected": "Request rejected by the server.",
+    "error_unreachable": "Server unreachable."
+  }
+}

@@ -12,6 +12,9 @@ const KNOWN_CODES = new Set([
   'render_failure',
   'unhandled_exception',
   'unhandled_rejection',
+  'session_check_failed',
+  'login_failed',
+  'logout_failed',
 ]);
 
 export const ErrorToastHost: React.FC = () => {

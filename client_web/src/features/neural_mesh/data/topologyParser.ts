@@ -43,6 +43,7 @@ function parseTelemetry(value: unknown): NeuronTelemetry {
     txKbps: cleanNumber(t.tx_kbps, 0, 1e9),
     rxKbps: cleanNumber(t.rx_kbps, 0, 1e9),
     lastUpdated: cleanNumber(t.last_updated, 0, MAX_EPOCH_SECONDS),
+    uptimeSeconds: cleanNumber(t.uptime_s, 0, 1e10),
   };
 }
 
@@ -62,6 +63,9 @@ function parseNeuron(value: unknown): MeshNeuron | null {
     ip: cleanIp(value.ip),
     parentId: cleanId(value.parent_id),
     isRemoteVpn: cleanBoolean(value.is_remote_vpn),
+    online: typeof value.online === 'boolean' ? value.online : null,
+    room: cleanText(value.room, 60),
+    paired: value.source === 'paired',
     telemetry: parseTelemetry(value.telemetry),
   };
 }

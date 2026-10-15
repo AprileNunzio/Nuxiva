@@ -62,6 +62,12 @@
     "hint_pointer": "Hover a node for telemetry · click to open it · click the core for the general panel",
     "hint_touch": "Tap a node for telemetry · tap again to open it",
     "mesh_loading": "Synchronizing the mesh",
-    "mesh_empty": "No nodes detected in the mesh"
+    "mesh_empty": "No nodes detected in the mesh",
+    "field_room": "Room",
+    "field_link": "Channel",
+    "link_paired": "Paired with secure token",
+    "link_mesh": "Discovered on P2P mesh",
+    "metric_uptime": "Uptime",
+    "uptime_value": "{days} d {hours} h"
   }
 }

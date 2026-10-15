@@ -13,6 +13,9 @@
     "error_bind_failed": "La asociación del nodo falló.",
     "error_render_failure": "No se pudo cargar un componente de la interfaz.",
     "error_unhandled_exception": "Error de aplicación no gestionado.",
-    "error_unhandled_rejection": "Falló una operación asíncrona."
+    "error_unhandled_rejection": "Falló una operación asíncrona.",
+    "error_session_check_failed": "No se puede verificar la sesión.",
+    "error_login_failed": "El acceso falló por un error del servidor.",
+    "error_logout_failed": "No se pudo cerrar la sesión."
   }
 }

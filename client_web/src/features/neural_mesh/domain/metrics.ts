@@ -26,6 +26,9 @@ export function cpuRatio(neuron: MeshNeuron): number | null {
 }
 
 export function isStale(neuron: MeshNeuron, nowMs: number): boolean {
+  if (neuron.online !== null) {
+    return !neuron.online;
+  }
   const updated = neuron.telemetry.lastUpdated;
   if (updated === null) {
     return false;

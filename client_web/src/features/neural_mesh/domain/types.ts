@@ -27,6 +27,7 @@ export interface NeuronTelemetry {
   readonly txKbps: number | null;
   readonly rxKbps: number | null;
   readonly lastUpdated: number | null;
+  readonly uptimeSeconds: number | null;
 }
 
 export interface MeshNeuron {
@@ -37,6 +38,9 @@ export interface MeshNeuron {
   readonly ip: string | null;
   readonly parentId: string | null;
   readonly isRemoteVpn: boolean;
+  readonly online: boolean | null;
+  readonly room: string | null;
+  readonly paired: boolean;
   readonly telemetry: NeuronTelemetry;
 }
 

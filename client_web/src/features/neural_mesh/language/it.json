@@ -62,6 +62,12 @@
     "hint_pointer": "Passa sopra un nodo per la telemetria · clicca per aprirlo · clicca sul nucleo per il pannello generale",
     "hint_touch": "Tocca un nodo per la telemetria · tocca di nuovo per aprirlo",
     "mesh_loading": "Sincronizzazione della mesh in corso",
-    "mesh_empty": "Nessun nodo rilevato nella mesh"
+    "mesh_empty": "Nessun nodo rilevato nella mesh",
+    "field_room": "Stanza",
+    "field_link": "Canale",
+    "link_paired": "Abbinato con token sicuro",
+    "link_mesh": "Rilevato in mesh P2P",
+    "metric_uptime": "Attivo da",
+    "uptime_value": "{days} g {hours} h"
   }
 }

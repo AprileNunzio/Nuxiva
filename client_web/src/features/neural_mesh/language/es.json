@@ -62,6 +62,12 @@
     "hint_pointer": "Pasa sobre un nodo para la telemetría · haz clic para abrirlo · haz clic en el núcleo para el panel general",
     "hint_touch": "Toca un nodo para la telemetría · tócalo de nuevo para abrirlo",
     "mesh_loading": "Sincronizando la malla",
-    "mesh_empty": "No se detectaron nodos en la malla"
+    "mesh_empty": "No se detectaron nodos en la malla",
+    "field_room": "Habitación",
+    "field_link": "Canal",
+    "link_paired": "Emparejado con token seguro",
+    "link_mesh": "Detectado en la malla P2P",
+    "metric_uptime": "Activo desde",
+    "uptime_value": "{days} d {hours} h"
   }
 }

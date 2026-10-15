@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "brand": "NUXIVA",
+    "subtitle": "Accedi alla console di controllo",
+    "subtitle_expired": "Sessione scaduta: accedi di nuovo",
+    "username": "Utente",
+    "password": "Password",
+    "show_password": "Mostra password",
+    "hide_password": "Nascondi password",
+    "submit": "Accedi",
+    "hint_admin": "Usa un utente amministratore del server (gruppo sudo o nuxiva-admin).",
+    "language_label": "Lingua",
+    "error_invalid_credentials": "Credenziali non valide o utente non autorizzato.",
+    "error_rate_limited": "Troppi tentativi: riprova tra qualche minuto.",
+    "error_rejected": "Richiesta rifiutata dal server.",
+    "error_unreachable": "Server non raggiungibile."
+  }
+}

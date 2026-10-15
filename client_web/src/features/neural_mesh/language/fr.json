@@ -62,6 +62,12 @@
     "hint_pointer": "Survolez un nœud pour la télémétrie · cliquez pour l'ouvrir · cliquez sur le noyau pour le panneau général",
     "hint_touch": "Touchez un nœud pour la télémétrie · touchez à nouveau pour l'ouvrir",
     "mesh_loading": "Synchronisation du mesh en cours",
-    "mesh_empty": "Aucun nœud détecté dans le mesh"
+    "mesh_empty": "Aucun nœud détecté dans le mesh",
+    "field_room": "Pièce",
+    "field_link": "Canal",
+    "link_paired": "Associé avec jeton sécurisé",
+    "link_mesh": "Découvert sur le mesh P2P",
+    "metric_uptime": "Actif depuis",
+    "uptime_value": "{days} j {hours} h"
   }
 }

@@ -67,6 +67,8 @@ def verify(token: str | None) -> str | None:
         username, expires, sig = base64.urlsafe_b64decode(token.encode()).decode().rsplit("|", 2)
     except (ValueError, UnicodeDecodeError):
         return None
+    if not expires.isdigit():
+        return None
     expected = hmac.new(_secret(), f"{username}|{expires}".encode(), hashlib.sha256).hexdigest()
     if not hmac.compare_digest(sig, expected) or int(expires) < time.time():
         return None

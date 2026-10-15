@@ -11,8 +11,10 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
 import { installGlobalErrorHandlers } from './shared/errors/installGlobalErrorHandlers';
+import { installSecureFetch } from './shared/http/installSecureFetch';
 
 installGlobalErrorHandlers();
+installSecureFetch();
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>

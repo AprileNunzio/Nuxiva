@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "brand": "NUXIVA",
+    "subtitle": "Accede a la consola de control",
+    "subtitle_expired": "Sesión caducada: vuelve a acceder",
+    "username": "Usuario",
+    "password": "Contraseña",
+    "show_password": "Mostrar contraseña",
+    "hide_password": "Ocultar contraseña",
+    "submit": "Acceder",
+    "hint_admin": "Usa una cuenta de administrador del servidor (grupo sudo o nuxiva-admin).",
+    "language_label": "Idioma",
+    "error_invalid_credentials": "Credenciales no válidas o usuario no autorizado.",
+    "error_rate_limited": "Demasiados intentos: inténtalo de nuevo en unos minutos.",
+    "error_rejected": "El servidor rechazó la solicitud.",
+    "error_unreachable": "Servidor inalcanzable."
+  }
+}

@@ -10,10 +10,12 @@ import shutil
 import subprocess
 import time
 from typing import Any, Dict, List, Optional
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 
-router = APIRouter(prefix="/api/v5/nodes", tags=["Node Plane"])
+from access import require_admin
+
+router = APIRouter(prefix="/api/v5/nodes", tags=["Node Plane"], dependencies=[Depends(require_admin)])
 admin_routes = router
 
 # In-memory storage for node app configurations

@@ -71,6 +71,14 @@ export const NeuronDetails: React.FC<NeuronDetailsProps> = ({
           <dd className="truncate font-mono text-cyan-200">{neuron.ip ?? t('value_unavailable')}</dd>
           <dt className="text-slate-500">{t('field_parent')}</dt>
           <dd className="truncate text-slate-200">{parentName}</dd>
+          {neuron.room && (
+            <>
+              <dt className="text-slate-500">{t('field_room')}</dt>
+              <dd className="truncate text-slate-200">{neuron.room}</dd>
+            </>
+          )}
+          <dt className="text-slate-500">{t('field_link')}</dt>
+          <dd className="truncate text-slate-200">{t(neuron.paired ? 'link_paired' : 'link_mesh')}</dd>
           <dt className="text-slate-500">{t('field_children')}</dt>
           <dd className="font-mono text-slate-200">{childCount}</dd>
         </dl>
@@ -103,6 +111,15 @@ export const NeuronDetails: React.FC<NeuronDetailsProps> = ({
         <TelemetryMetric label={t('metric_os')} value={tm.os} color={color} />
       </div>
       <TelemetryMetric label={t('metric_model')} value={tm.activeModel} color={color} />
+      <TelemetryMetric
+        label={t('metric_uptime')}
+        value={
+          tm.uptimeSeconds === null
+            ? null
+            : t('uptime_value', { days: Math.floor(tm.uptimeSeconds / 86400), hours: Math.floor((tm.uptimeSeconds % 86400) / 3600) })
+        }
+        color={color}
+      />
       <TelemetryMetric label={t('metric_traffic')} value={traffic} color={color} />
 
       <div className="mt-1 flex flex-col gap-2 sm:flex-row xl:flex-col">

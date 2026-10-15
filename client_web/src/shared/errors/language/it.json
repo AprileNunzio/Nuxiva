@@ -13,6 +13,9 @@
     "error_bind_failed": "Associazione del nodo non riuscita.",
     "error_render_failure": "Un componente dell'interfaccia non è stato caricato.",
     "error_unhandled_exception": "Errore applicativo non gestito.",
-    "error_unhandled_rejection": "Un'operazione asincrona è fallita."
+    "error_unhandled_rejection": "Un'operazione asincrona è fallita.",
+    "error_session_check_failed": "Impossibile verificare la sessione.",
+    "error_login_failed": "Accesso non riuscito per un errore del server.",
+    "error_logout_failed": "Disconnessione non riuscita."
   }
 }

@@ -361,16 +361,17 @@ class NuxivaMeshCoordinator:
         telemetry["name"] = self.display_name(node_id, source.get("name"))
         return telemetry
 
-    def _resolve_parent(self, node_id: str, default_parent: str) -> Optional[str]:
+    def resolve_parent(
+        self, node_id: str, default_parent: Optional[str], known_ids: Optional[set] = None
+    ) -> Optional[str]:
         binding = self._bindings.get(node_id)
         if not binding or not binding.get("active"):
             return default_parent
         parent = binding.get("parent_node_id")
         if parent == VIRTUAL_CORE_ID:
             return None
-        if parent == self.node_id or parent in self.peers:
-            return parent
-        return default_parent
+        known = known_ids if known_ids is not None else {self.node_id, *self.peers.keys()}
+        return parent if parent in known and parent != node_id else default_parent
 
     def get_mesh_canvas_state(self) -> Dict[str, Any]:
         """
@@ -401,7 +402,7 @@ class NuxivaMeshCoordinator:
             p_ip = peer_info.get("ip", peer_telem.get("ip", "0.0.0.0"))
             p_name = self.display_name(peer_id, peer_info.get("name") or peer_telem.get("name"))
             p_tier = peer_info.get("tier", "Tier-2 (Smart Edge Satellite)")
-            p_parent = self._resolve_parent(peer_id, local_id)
+            p_parent = self.resolve_parent(peer_id, local_id)
             nodes.append({
                 "id": peer_id,
                 "name": p_name,

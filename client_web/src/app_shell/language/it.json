@@ -16,6 +16,8 @@
     "language_it": "IT",
     "language_en": "EN",
     "language_fr": "FR",
-    "language_es": "ES"
+    "language_es": "ES",
+    "logout": "Esci",
+    "signed_in_as": "Connesso come {user}"
   }
 }

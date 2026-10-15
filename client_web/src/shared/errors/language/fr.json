@@ -13,6 +13,9 @@
     "error_bind_failed": "L'association du nœud a échoué.",
     "error_render_failure": "Un composant de l'interface n'a pas pu se charger.",
     "error_unhandled_exception": "Erreur applicative non gérée.",
-    "error_unhandled_rejection": "Une opération asynchrone a échoué."
+    "error_unhandled_rejection": "Une opération asynchrone a échoué.",
+    "error_session_check_failed": "Impossible de vérifier la session.",
+    "error_login_failed": "Échec de la connexion suite à une erreur serveur.",
+    "error_logout_failed": "Échec de la déconnexion."
   }
 }

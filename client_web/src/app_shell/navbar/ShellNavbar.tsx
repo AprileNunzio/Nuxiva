@@ -1,5 +1,7 @@
 import React from 'react';
-import { Atom, ChevronRight, Globe, Network, Radio } from 'lucide-react';
+import { Atom, ChevronRight, Globe, LogOut, Network, Radio } from 'lucide-react';
+import { useAuthenticatedSession } from '../../features/auth_gate';
+import { reportError } from '../../shared/errors/errorBus';
 import { useI18n } from '../../shared/i18n/I18nContext';
 import { SupportedLanguage } from '../../shared/i18n/translations';
 import { useScopedI18n } from '../../shared/i18n/useScopedI18n';
@@ -20,6 +22,10 @@ const crumb = 'flex items-center gap-1.5 rounded-md px-1.5 py-0.5 transition hov
 export const ShellNavbar: React.FC<ShellNavbarProps> = ({ route, onNavigateMesh, onNavigateCore }) => {
   const { t } = useScopedI18n(SHELL_SCOPE);
   const { lang, setLang } = useI18n();
+  const { user, signOut } = useAuthenticatedSession();
+  const handleSignOut = () => {
+    signOut().catch((cause: unknown) => reportError('logout_failed', cause));
+  };
   const inCore = route.view === 'core' || route.view === 'app';
 
   return (
@@ -86,6 +92,16 @@ export const ShellNavbar: React.FC<ShellNavbarProps> = ({ route, onNavigateMesh,
               <span className="hidden sm:inline">{t('back_to_mesh')}</span>
             </button>
           )}
+          <button
+            type="button"
+            onClick={handleSignOut}
+            title={t('signed_in_as', { user })}
+            aria-label={`${t('logout')} · ${t('signed_in_as', { user })}`}
+            className="flex items-center gap-1.5 rounded-xl border border-slate-800 bg-slate-900/70 px-2.5 py-1.5 text-xs text-slate-300 transition hover:border-rose-400/50 hover:text-rose-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
+          >
+            <span className="hidden max-w-[8rem] truncate font-mono lg:inline">{user}</span>
+            <LogOut className="h-3.5 w-3.5" aria-hidden="true" />
+          </button>
           <label className="flex items-center gap-1.5 rounded-xl border border-slate-800 bg-slate-900/70 px-2.5 py-1.5">
             <Globe className="h-3.5 w-3.5 text-slate-400" aria-hidden="true" />
             <span className="sr-only">{t('language_label')}</span>

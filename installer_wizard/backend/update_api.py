@@ -11,12 +11,14 @@ import shutil
 import socket
 import time
 from typing import Any, Dict, List
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
+
+from access import require_admin
 
 log = logging.getLogger("nuxiva.updater")
 
-router = APIRouter(prefix="/api/v5/updater", tags=["Unified Updater"])
+router = APIRouter(prefix="/api/v5/updater", tags=["Unified Updater"], dependencies=[Depends(require_admin)])
 admin_routes = router
 
 # In-memory update settings state
