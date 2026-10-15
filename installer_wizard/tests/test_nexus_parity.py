@@ -19,6 +19,10 @@ HEADERS = {"X-Nuxiva-Request": "1"}
 
 
 class NexusParityTest(unittest.TestCase):
+    def setUp(self):
+        if not ADMIN.is_file() or not ZONES_JS.is_file():
+            self.skipTest("Legacy web/admin and web/nexus retired in v5.0.0")
+
     def test_every_classic_section_is_reachable_from_nexus(self):
         classic_tabs = set(re.findall(r'data-tab="([a-z0-9_-]+)"', ADMIN.read_text(encoding="utf-8"))) - {"feature", "features"}
         linked = set(re.findall(r'\["([a-z0-9_/-]+)", "', ZONES_JS.read_text(encoding="utf-8")))

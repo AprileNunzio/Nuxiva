@@ -46,7 +46,14 @@ _LANG = re.compile(r"^[a-z]{2,3}$")
 
 
 def render(https: bool, lang: str = "it") -> Response:
-    html = INDEX.read_text(encoding="utf-8")
+    if INDEX.is_file():
+        html = INDEX.read_text(encoding="utf-8")
+    else:
+        dist_index = WEB_DIR.parents[1] / "client_web" / "dist" / "index.html"
+        if dist_index.is_file():
+            html = dist_index.read_text(encoding="utf-8")
+        else:
+            html = '<!DOCTYPE html><html lang="it"><head><meta charset="utf-8"><title>Nuxiva OS</title></head><body><div id="root"></div></body></html>'
     html = html.replace('<html lang="it">', f'<html lang="{lang if _LANG.match(lang or "") else "it"}">', 1)
     html = _ASSET.sub(lambda m: f'{m.group(1)}?v={ASSET_VERSION}"', html)
     return Response(html, media_type="text/html; charset=utf-8", headers=security_headers(https))

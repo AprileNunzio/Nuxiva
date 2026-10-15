@@ -22,12 +22,10 @@ impl LwwEntry {
 
     #[must_use]
     pub fn supersedes(&self, other: &Self) -> bool {
-        if self.timestamp_ms > other.timestamp_ms {
-            true
-        } else if self.timestamp_ms == other.timestamp_ms {
-            self.node_id > other.node_id
-        } else {
-            false
+        match self.timestamp_ms.cmp(&other.timestamp_ms) {
+            std::cmp::Ordering::Greater => true,
+            std::cmp::Ordering::Equal => self.node_id > other.node_id,
+            std::cmp::Ordering::Less => false,
         }
     }
 }
@@ -45,7 +43,13 @@ impl CrdtState {
         }
     }
 
-    pub fn set(&mut self, key: impl Into<String>, value: impl Into<String>, timestamp_ms: u64, node_id: impl Into<String>) -> bool {
+    pub fn set(
+        &mut self,
+        key: impl Into<String>,
+        value: impl Into<String>,
+        timestamp_ms: u64,
+        node_id: impl Into<String>,
+    ) -> bool {
         let entry = LwwEntry::new(value.into(), timestamp_ms, node_id.into(), false);
         let key = key.into();
         if let Some(existing) = self.entries.get(&key) {

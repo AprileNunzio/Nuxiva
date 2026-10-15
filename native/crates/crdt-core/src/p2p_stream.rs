@@ -81,11 +81,7 @@ impl P2PStreamManager {
     #[must_use]
     pub fn resolve_direct_target(&self, satellite_id: &str) -> Option<&str> {
         let b = self.bindings.get(satellite_id)?;
-        if b.active {
-            Some(&b.parent_ip)
-        } else {
-            None
-        }
+        if b.active { Some(&b.parent_ip) } else { None }
     }
 
     pub fn record_transfer(&mut self, satellite_id: &str, bytes: u64) -> bool {
@@ -135,7 +131,7 @@ mod tests {
         assert_eq!(target_ip, Some("192.168.1.10"));
 
         assert!(manager.record_transfer("rpi-cam-1", 1024));
-        let binding = manager.get_binding("rpi-cam-1").unwrap();
-        assert_eq!(binding.bytes_transferred, 1024);
+        let binding = manager.get_binding("rpi-cam-1");
+        assert_eq!(binding.map(|b| b.bytes_transferred), Some(1024));
     }
 }

@@ -319,7 +319,9 @@ impl RustCrdtMesh {
 
     fn to_json(&self) -> PyResult<String> {
         let guard = self.inner.read().map_err(|_| poisoned())?;
-        guard.to_json().map_err(|e| PyRuntimeError::new_err(e.to_string()))
+        guard
+            .to_json()
+            .map_err(|e| PyRuntimeError::new_err(e.to_string()))
     }
 
     fn merge_json(&self, remote_json: &str) -> PyResult<usize> {

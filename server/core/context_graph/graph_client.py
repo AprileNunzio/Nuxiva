@@ -67,7 +67,7 @@ class GraphClient:
                 "INSERT INTO nodes (id, node_type, label, properties, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
                 ("nuxiva_core", NodeType.AGENT.value if hasattr(NodeType.AGENT, "value") else str(NodeType.AGENT),
                  "Nuxiva Orchestrator",
-                 json.dumps({"version": "4.1.53", "status": "ONLINE"}),
+                 json.dumps({"version": "5.0.0", "status": "ONLINE"}),
                  now, now),
             )
             self._conn.commit()
