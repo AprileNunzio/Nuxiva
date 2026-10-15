@@ -98,6 +98,23 @@
     "error_team_settings_failed": "Réglages non enregistrés.",
     "error_team_tool_failed": "Outil non mis à jour.",
     "error_team_widget_failed": "Widget non mis à jour.",
-    "error_team_create_failed": "Création impossible : vérifiez les données."
+    "error_team_create_failed": "Création impossible : vérifiez les données.",
+    "error_people_unavailable": "Personnes indisponibles.",
+    "error_people_presence_failed": "Présences indisponibles.",
+    "error_people_schema_failed": "Structure du profil indisponible.",
+    "error_people_create_failed": "Personne non créée.",
+    "error_people_update_failed": "Modifications non enregistrées.",
+    "error_people_delete_failed": "Personne non supprimée.",
+    "error_people_profile_failed": "Profil indisponible.",
+    "error_people_photos_failed": "Photos indisponibles.",
+    "error_people_upload_failed": "Photo non importée (8 Mo max).",
+    "error_people_capture_failed": "Capture échouée : vérifiez la caméra.",
+    "error_people_photo_delete_failed": "Photo non supprimée.",
+    "error_people_reproject_failed": "Recalibrage échoué.",
+    "error_people_voice_failed": "Opération vocale échouée.",
+    "error_people_memories_failed": "Souvenirs indisponibles.",
+    "error_people_memory_failed": "Souvenir non enregistré.",
+    "error_people_mood_failed": "Humeur non enregistrée.",
+    "error_people_associate_failed": "Association échouée."
   }
 }

@@ -97,6 +97,23 @@ const KNOWN_CODES = new Set([
   'team_tool_failed',
   'team_widget_failed',
   'team_create_failed',
+  'people_unavailable',
+  'people_presence_failed',
+  'people_schema_failed',
+  'people_create_failed',
+  'people_update_failed',
+  'people_delete_failed',
+  'people_profile_failed',
+  'people_photos_failed',
+  'people_upload_failed',
+  'people_capture_failed',
+  'people_photo_delete_failed',
+  'people_reproject_failed',
+  'people_voice_failed',
+  'people_memories_failed',
+  'people_memory_failed',
+  'people_mood_failed',
+  'people_associate_failed',
 ]);
 
 export const ErrorToastHost: React.FC = () => {

@@ -98,6 +98,23 @@
     "error_team_settings_failed": "Impostazioni non salvate.",
     "error_team_tool_failed": "Strumento non aggiornato.",
     "error_team_widget_failed": "Widget non aggiornato.",
-    "error_team_create_failed": "Creazione non riuscita: controlla i dati."
+    "error_team_create_failed": "Creazione non riuscita: controlla i dati.",
+    "error_people_unavailable": "Persone non disponibili.",
+    "error_people_presence_failed": "Presenze non disponibili.",
+    "error_people_schema_failed": "Struttura del profilo non disponibile.",
+    "error_people_create_failed": "Persona non creata.",
+    "error_people_update_failed": "Modifiche non salvate.",
+    "error_people_delete_failed": "Persona non eliminata.",
+    "error_people_profile_failed": "Profilo non disponibile.",
+    "error_people_photos_failed": "Foto non disponibili.",
+    "error_people_upload_failed": "Foto non caricata (massimo 8 MB).",
+    "error_people_capture_failed": "Scatto non riuscito: controlla la telecamera.",
+    "error_people_photo_delete_failed": "Foto non eliminata.",
+    "error_people_reproject_failed": "Ricalibrazione non riuscita.",
+    "error_people_voice_failed": "Operazione sulla voce non riuscita.",
+    "error_people_memories_failed": "Ricordi non disponibili.",
+    "error_people_memory_failed": "Ricordo non salvato.",
+    "error_people_mood_failed": "Stato d'animo non salvato.",
+    "error_people_associate_failed": "Associazione non riuscita."
   }
 }

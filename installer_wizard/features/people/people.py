@@ -1,4 +1,5 @@
 import json
+import logging
 import re
 import threading
 import time
@@ -6,8 +7,10 @@ from collections import Counter
 from datetime import date, timedelta
 
 from config import STATE_DIR
+from features.people import private_store
 from features.people.schema import FIELD_INDEX, RELATIONS, ROLES, SECTIONS
 
+log = logging.getLogger("nuxiva.people")
 PEOPLE_DIR = STATE_DIR / "people"
 SESSION_GAP = 5 * 60
 MAX_SESSIONS = 500
@@ -83,9 +86,17 @@ def _migrate(p: dict) -> dict:
 
 def load(slug: str) -> dict | None:
     try:
-        return _migrate(json.loads(_path(slug).read_text(encoding="utf-8")))
-    except (OSError, ValueError):
+        profile = json.loads(_path(slug).read_text(encoding="utf-8"))
+    except FileNotFoundError:
         return None
+    except (OSError, ValueError) as exc:
+        log.warning("Profilo %s illeggibile: %s", slug, exc)
+        return None
+    try:
+        profile.update(private_store.load(PEOPLE_DIR, slugify(slug)))
+    except (OSError, ValueError) as exc:
+        log.error("Dati riservati di %s non decifrabili: %s", slug, exc)
+    return _migrate(profile)
 
 
 def save(profile: dict) -> None:
@@ -93,9 +104,9 @@ def save(profile: dict) -> None:
     profile["updated_at"] = time.time()
     profile["name"] = display_name(profile)
     path = _path(profile["slug"])
-    tmp = path.with_suffix(".tmp")
-    tmp.write_text(json.dumps(profile, ensure_ascii=False, indent=1), encoding="utf-8")
-    tmp.replace(path)
+    public, private = private_store.split(profile)
+    private_store.save(PEOPLE_DIR, slugify(profile["slug"]), private)
+    private_store.write_public(path, json.dumps(public, ensure_ascii=False, indent=1).encode("utf-8"))
 
 
 def preferred_languages(slug: str | None) -> tuple[str, str]:
@@ -189,7 +200,27 @@ def _clean(field: dict, value):
     return str(value).strip()[:4000]
 
 
+def _clean_voice(value) -> dict:
+    if not isinstance(value, dict):
+        raise ValueError("voce non valida")
+    out = {}
+    if "tts_voice" in value:
+        from features.voices.catalog import VOICES
+        voice = str(value["tts_voice"] or "")
+        if voice and voice not in VOICES:
+            raise ValueError("voce non disponibile")
+        out["tts_voice"] = voice
+    if "speed" in value:
+        try:
+            out["speed"] = round(max(0.5, min(2.0, float(value["speed"]))), 2)
+        except (TypeError, ValueError):
+            raise ValueError("velocità non valida")
+    return out
+
+
 def update(slug: str, changes: dict) -> dict:
+    if not isinstance(changes, dict):
+        raise ValueError("modifiche non valide")
     with _lock:
         profile = load(slug)
         if profile is None:
@@ -197,9 +228,7 @@ def update(slug: str, changes: dict) -> dict:
         old_relations = list(profile.get("relations", []))
         for key, value in changes.items():
             if key == "voice":
-                if not isinstance(value, dict):
-                    raise ValueError("voce non valida")
-                profile["voice"] = {**profile.get("voice", {}), **value}
+                profile["voice"] = {**profile.get("voice", {}), **_clean_voice(value)}
             elif key in FIELD_INDEX:
                 profile[key] = _clean(FIELD_INDEX[key][1], value)
             elif key == "name":
@@ -237,6 +266,7 @@ def delete(slug: str) -> bool:
         if not path.exists():
             return False
         path.unlink()
+        private_store.remove(PEOPLE_DIR, slugify(slug))
     for p in all_profiles(light=True):
         rels = p.get("relations", [])
         kept = [r for r in rels if r.get("person") != slug]

@@ -24,8 +24,9 @@ from features.team import tools as tools_team
 from features.team.board import board
 from features.shares import archive
 from features.whiteboard import tools as tools_whiteboard
+from features.people import tools as tools_people
 
-MODULES = (tools_cameras, tools_comm, tools_display, tools_files, tools_media, tools_packages, tools_rpa, tools_system, tools_autonomy, tools_automations, tools_documents, tools_team, tools_forge, tools_whiteboard, tools_firewall, tools_vpn, tools_proxmox, tools_voicestudio, tools_network, tools_redalert)
+MODULES = (tools_cameras, tools_comm, tools_display, tools_files, tools_media, tools_packages, tools_rpa, tools_system, tools_autonomy, tools_automations, tools_documents, tools_team, tools_forge, tools_whiteboard, tools_firewall, tools_vpn, tools_proxmox, tools_voicestudio, tools_network, tools_redalert, tools_people)
 MAX_STEPS = 8
 PENDING_TTL = 180
 

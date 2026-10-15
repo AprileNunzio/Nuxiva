@@ -19,6 +19,7 @@ ROLES = {"owner": "Proprietario", "family": "Famiglia", "friend": "Amico", "gues
          "service": "Servizi (medico, tecnico…)"}
 SUBROLES = {"": "Nessuna mansione specifica", "butler": "Maggiordomo (Gestione Casa)",
             "nanny": "Tata / Babysitter (Bambini)", "cleaner": "Collaboratore Domestico / Pulizie"}
+MEMBERSHIPS = {"": "Nessuna", "home": "Casa", "business": "Attività", "both": "Casa e attività"}
 AUTHORIZATIONS = {"": "Come il ruolo", "info": "Solo informazioni", "home": "Casa e dispositivi", "personal": "Anche dati personali",
                   "files": "Anche creare e modificare file", "critical": "Tutto, anche azioni delicate"}
 
@@ -44,6 +45,8 @@ SECTIONS = [
         {"key": "religion", "label": "Religione", "type": "text"},
         {"key": "marital_status", "label": "Stato civile", "type": "select", "options": ["", "Celibe/Nubile", "Fidanzato/a", "Convivente", "Sposato/a", "Unito/a civilmente", "Separato/a", "Divorziato/a", "Vedovo/a"]},
         {"key": "role", "label": "Ruolo per Nuxiva", "type": "select", "options": list(ROLES), "labels": ROLES},
+        {"key": "membership", "label": "Appartiene a", "type": "select", "options": list(MEMBERSHIPS), "labels": MEMBERSHIPS},
+        {"key": "business_role", "label": "Ruolo nell'attività", "type": "text", "placeholder": "es. socio, dipendente, cliente abituale"},
         {"key": "subrole", "label": "Mansione specifica (Staff)", "type": "select", "options": list(SUBROLES), "labels": SUBROLES},
         {"key": "allowed_zones", "label": "Stanze e zone autorizzate", "type": "tags"},
         {"key": "allowed_schedule", "label": "Orario di servizio (es. 08:00-18:00)", "type": "text", "placeholder": "es. 08:30-17:30 (vuoto = sempre)"},
@@ -150,6 +153,18 @@ SECTIONS = [
             {"key": "model", "label": "Marca e modello", "type": "text"}, {"key": "plate", "label": "Targa", "type": "text"},
             {"key": "insurance", "label": "Scadenza assicurazione", "type": "date"}, {"key": "inspection", "label": "Scadenza revisione", "type": "date"},
             {"key": "tax", "label": "Scadenza bollo", "type": "date"}]},
+    ]},
+    {"id": "life", "title": "Vita e carattere", "icon": "🌿", "private": True, "fields": [
+        {"key": "biography", "label": "Storia di vita", "type": "textarea"},
+        {"key": "personality", "label": "Carattere", "type": "tags"},
+        {"key": "values", "label": "Valori importanti", "type": "tags"},
+        {"key": "goals", "label": "Obiettivi e sogni", "type": "tags"},
+        {"key": "worries", "label": "Preoccupazioni e paure", "type": "tags"},
+        {"key": "comfort", "label": "Cosa la fa stare meglio", "type": "tags"},
+        {"key": "triggers", "label": "Argomenti delicati da evitare", "type": "tags"},
+        {"key": "life_events", "label": "Momenti importanti", "type": "list", "fields": [
+            {"key": "date", "label": "Data", "type": "date"}, {"key": "title", "label": "Evento", "type": "text"},
+            {"key": "feeling", "label": "Come l'ha vissuto", "type": "text"}]},
     ]},
     {"id": "notes", "title": "Note e privacy", "icon": "📝", "fields": [
         {"key": "tags", "label": "Etichette", "type": "tags"},

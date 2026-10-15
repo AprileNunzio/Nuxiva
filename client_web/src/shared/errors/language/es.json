@@ -98,6 +98,23 @@
     "error_team_settings_failed": "Ajustes no guardados.",
     "error_team_tool_failed": "Herramienta no actualizada.",
     "error_team_widget_failed": "Widget no actualizado.",
-    "error_team_create_failed": "Creación fallida: revisa los datos."
+    "error_team_create_failed": "Creación fallida: revisa los datos.",
+    "error_people_unavailable": "Personas no disponibles.",
+    "error_people_presence_failed": "Presencias no disponibles.",
+    "error_people_schema_failed": "Estructura del perfil no disponible.",
+    "error_people_create_failed": "Persona no creada.",
+    "error_people_update_failed": "Cambios no guardados.",
+    "error_people_delete_failed": "Persona no eliminada.",
+    "error_people_profile_failed": "Perfil no disponible.",
+    "error_people_photos_failed": "Fotos no disponibles.",
+    "error_people_upload_failed": "Foto no subida (máx. 8 MB).",
+    "error_people_capture_failed": "Captura fallida: revisa la cámara.",
+    "error_people_photo_delete_failed": "Foto no eliminada.",
+    "error_people_reproject_failed": "Recalibración fallida.",
+    "error_people_voice_failed": "Operación de voz fallida.",
+    "error_people_memories_failed": "Recuerdos no disponibles.",
+    "error_people_memory_failed": "Recuerdo no guardado.",
+    "error_people_mood_failed": "Estado de ánimo no guardado.",
+    "error_people_associate_failed": "Asociación fallida."
   }
 }
