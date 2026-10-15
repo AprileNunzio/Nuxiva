@@ -1,0 +1,18 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "fallback_title": "A critical error occurred",
+    "fallback_body": "The console stopped rendering to protect the system. Reload the page to restore the session.",
+    "fallback_reload": "Reload console",
+    "dismiss": "Dismiss notification",
+    "error_generic": "An unexpected anomaly occurred.",
+    "error_topology_unavailable": "Unable to read the mesh topology.",
+    "error_telemetry_frame_rejected": "An invalid telemetry packet was discarded.",
+    "error_bind_failed": "Node binding failed.",
+    "error_render_failure": "An interface component failed to load.",
+    "error_unhandled_exception": "Unhandled application error.",
+    "error_unhandled_rejection": "An asynchronous operation failed."
+  }
+}

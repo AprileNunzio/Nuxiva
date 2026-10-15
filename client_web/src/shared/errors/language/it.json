@@ -1,0 +1,18 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "fallback_title": "Si è verificato un errore critico",
+    "fallback_body": "La console ha interrotto il rendering per proteggere il sistema. Ricarica la pagina per ripristinare la sessione.",
+    "fallback_reload": "Ricarica console",
+    "dismiss": "Chiudi notifica",
+    "error_generic": "Si è verificata un'anomalia imprevista.",
+    "error_topology_unavailable": "Impossibile leggere la topologia della mesh.",
+    "error_telemetry_frame_rejected": "Un pacchetto di telemetria non valido è stato scartato.",
+    "error_bind_failed": "Associazione del nodo non riuscita.",
+    "error_render_failure": "Un componente dell'interfaccia non è stato caricato.",
+    "error_unhandled_exception": "Errore applicativo non gestito.",
+    "error_unhandled_rejection": "Un'operazione asincrona è fallita."
+  }
+}

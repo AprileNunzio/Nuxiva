@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "brand_name": "NUXIVA",
+    "brand_tagline": "Mesh domestique autonome",
+    "home_aria": "Retour à la carte neuronale",
+    "breadcrumb_aria": "Chemin de navigation",
+    "crumb_mesh": "Carte neuronale",
+    "crumb_core": "Noyau central",
+    "back_to_mesh": "Carte neuronale",
+    "back_to_core": "Retour au noyau",
+    "app_unavailable": "Application indisponible",
+    "language_label": "Langue",
+    "language_it": "IT",
+    "language_en": "EN",
+    "language_fr": "FR",
+    "language_es": "ES"
+  }
+}

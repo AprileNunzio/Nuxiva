@@ -7,6 +7,8 @@ from typing import Any, Dict, Optional
 
 log = logging.getLogger("nuxiva.mesh")
 
+VIRTUAL_CORE_ID = "virtual-core"
+
 try:
     from nuxiva_native import RustCrdtMesh, RustP2PStreamManager
 except ImportError:
@@ -346,6 +348,17 @@ class NuxivaMeshCoordinator:
             return self.telemetry_store[node_id]
         return collect_real_system_telemetry(node_id)
 
+    def _resolve_parent(self, node_id: str, default_parent: str) -> Optional[str]:
+        binding = self._bindings.get(node_id)
+        if not binding or not binding.get("active"):
+            return default_parent
+        parent = binding.get("parent_node_id")
+        if parent == VIRTUAL_CORE_ID:
+            return None
+        if parent == self.node_id or parent in self.peers:
+            return parent
+        return default_parent
+
     def get_mesh_canvas_state(self) -> Dict[str, Any]:
         """
         Ritorna lo stato topologico per il Mesh Topology Canvas:
@@ -375,13 +388,14 @@ class NuxivaMeshCoordinator:
             p_ip = peer_info.get("ip", peer_telem.get("ip", "0.0.0.0"))
             p_name = peer_info.get("name", peer_id)
             p_tier = peer_info.get("tier", "Tier-2 (Smart Edge Satellite)")
+            p_parent = self._resolve_parent(peer_id, local_id)
             nodes.append({
                 "id": peer_id,
                 "name": p_name,
                 "tier": p_tier,
                 "type": peer_info.get("type", "satellite"),
                 "ip": p_ip,
-                "parent_id": local_id,
+                "parent_id": p_parent,
                 "is_remote_vpn": peer_info.get("is_remote_vpn", False),
                 "telemetry": peer_telem or {
                     "node_id": peer_id,
@@ -393,7 +407,7 @@ class NuxivaMeshCoordinator:
                 }
             })
             links.append({
-                "source": local_id,
+                "source": p_parent or VIRTUAL_CORE_ID,
                 "target": peer_id,
                 "protocol": peer_info.get("protocol", "P2P Stream")
             })

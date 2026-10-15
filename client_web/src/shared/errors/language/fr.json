@@ -1,0 +1,18 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "fallback_title": "Une erreur critique est survenue",
+    "fallback_body": "La console a interrompu l'affichage pour protéger le système. Rechargez la page pour restaurer la session.",
+    "fallback_reload": "Recharger la console",
+    "dismiss": "Fermer la notification",
+    "error_generic": "Une anomalie inattendue est survenue.",
+    "error_topology_unavailable": "Impossible de lire la topologie du mesh.",
+    "error_telemetry_frame_rejected": "Un paquet de télémétrie invalide a été rejeté.",
+    "error_bind_failed": "L'association du nœud a échoué.",
+    "error_render_failure": "Un composant de l'interface n'a pas pu se charger.",
+    "error_unhandled_exception": "Erreur applicative non gérée.",
+    "error_unhandled_rejection": "Une opération asynchrone a échoué."
+  }
+}

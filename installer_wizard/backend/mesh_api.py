@@ -1,23 +1,29 @@
 import asyncio
+import ipaddress
 import json
 import logging
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Request
+from typing import Literal
+
+from fastapi import APIRouter, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 log = logging.getLogger("nuxiva.mesh_api")
 
 public_routes = APIRouter(prefix="/api/v5/mesh", tags=["mesh"])
 admin_routes = APIRouter(prefix="/api/v5/mesh", tags=["mesh"])
 
+NODE_ID_PATTERN = r"^[A-Za-z0-9._:@-]{1,128}$"
+
 try:
-    from server.features.mesh_coordinator.p2p_mesh import p2p_mesh
+    from server.features.mesh_coordinator.p2p_mesh import VIRTUAL_CORE_ID, p2p_mesh
 except ImportError:
     import sys
     from pathlib import Path
     server_dir = Path(__file__).resolve().parent.parent.parent / "server"
     if str(server_dir) not in sys.path:
         sys.path.insert(0, str(server_dir))
-    from features.mesh_coordinator.p2p_mesh import p2p_mesh
+    from features.mesh_coordinator.p2p_mesh import VIRTUAL_CORE_ID, p2p_mesh
 
 
 @admin_routes.get("/topology")
@@ -53,23 +59,37 @@ async def websocket_telemetry_stream(websocket: WebSocket):
         log.debug(f"Errore stream telemetrico: {exc}")
 
 
+class BindParentRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    satellite_id: str = Field(pattern=NODE_ID_PATTERN, max_length=128)
+    satellite_ip: str = Field(default="0.0.0.0", max_length=45)
+    parent_node_id: str = Field(pattern=NODE_ID_PATTERN, max_length=128)
+    parent_ip: str = Field(default="127.0.0.1", max_length=45)
+    stream_type: Literal["audio_pcm", "rtsp_video", "sensor_telemetry"] = "audio_pcm"
+
+    @field_validator("satellite_ip", "parent_ip")
+    @classmethod
+    def _valid_ip(cls, value: str) -> str:
+        ipaddress.ip_address(value)
+        return value
+
+
 @admin_routes.post("/bind_parent")
-async def bind_satellite_parent(request: Request):
-    """
-    Associazione topologica (Parent Binding) via Drag & Drop o pulsante.
-    """
-    data = await request.json()
-    sat_id = data.get("satellite_id")
-    sat_ip = data.get("satellite_ip", "0.0.0.0")
-    parent_id = data.get("parent_node_id")
-    parent_ip = data.get("parent_ip", "127.0.0.1")
-    stream_type = data.get("stream_type", "audio")
-
-    if not sat_id or not parent_id:
-        return JSONResponse({"ok": False, "error": "Parametri mancanti"}, status_code=400)
-
-    p2p_mesh.bind_satellite_to_parent(sat_id, sat_ip, parent_id, parent_ip, stream_type)
-    return {"ok": True, "satellite_id": sat_id, "parent_node_id": parent_id, "target_ip": parent_ip}
+async def bind_satellite_parent(req: BindParentRequest):
+    if req.satellite_id == req.parent_node_id:
+        raise HTTPException(status_code=422, detail="self_binding_forbidden")
+    if req.satellite_id == p2p_mesh.node_id:
+        raise HTTPException(status_code=422, detail="host_binding_forbidden")
+    if req.satellite_id not in p2p_mesh.peers:
+        raise HTTPException(status_code=404, detail="node_not_found")
+    known_parents = {p2p_mesh.node_id, VIRTUAL_CORE_ID, *p2p_mesh.peers.keys()}
+    if req.parent_node_id not in known_parents:
+        raise HTTPException(status_code=404, detail="parent_not_found")
+    p2p_mesh.bind_satellite_to_parent(
+        req.satellite_id, req.satellite_ip, req.parent_node_id, req.parent_ip, req.stream_type
+    )
+    return {"ok": True, "satellite_id": req.satellite_id, "parent_node_id": req.parent_node_id}
 
 
 @admin_routes.get("/crdt")

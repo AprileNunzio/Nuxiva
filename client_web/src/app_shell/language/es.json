@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "brand_name": "NUXIVA",
+    "brand_tagline": "Malla doméstica autónoma",
+    "home_aria": "Volver al mapa neuronal",
+    "breadcrumb_aria": "Ruta de navegación",
+    "crumb_mesh": "Mapa neuronal",
+    "crumb_core": "Núcleo central",
+    "back_to_mesh": "Mapa neuronal",
+    "back_to_core": "Volver al núcleo",
+    "app_unavailable": "Aplicación no disponible",
+    "language_label": "Idioma",
+    "language_it": "IT",
+    "language_en": "EN",
+    "language_fr": "FR",
+    "language_es": "ES"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "brand_name": "NUXIVA",
+    "brand_tagline": "Autonomous home mesh",
+    "home_aria": "Back to the neural map",
+    "breadcrumb_aria": "Navigation path",
+    "crumb_mesh": "Neural map",
+    "crumb_core": "Central core",
+    "back_to_mesh": "Neural map",
+    "back_to_core": "Back to core",
+    "app_unavailable": "Application unavailable",
+    "language_label": "Language",
+    "language_it": "IT",
+    "language_en": "EN",
+    "language_fr": "FR",
+    "language_es": "ES"
+  }
+}

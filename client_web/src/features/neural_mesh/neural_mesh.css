@@ -1,0 +1,134 @@
+.nm-stage {
+  background:
+    radial-gradient(ellipse 65% 55% at 50% 50%, rgba(14, 116, 144, 0.16), transparent 70%),
+    radial-gradient(ellipse 90% 60% at 50% 115%, rgba(76, 29, 149, 0.2), transparent 65%),
+    radial-gradient(ellipse 60% 40% at 50% -10%, rgba(30, 64, 175, 0.14), transparent 70%),
+    #02040a;
+}
+
+.nm-vignette {
+  box-shadow: inset 0 0 220px 60px rgba(1, 2, 6, 0.9);
+}
+
+.nm-display {
+  font-family: 'Rajdhani', 'Inter', system-ui, sans-serif;
+}
+
+.nm-glass {
+  background: linear-gradient(160deg, rgba(15, 23, 42, 0.82), rgba(2, 6, 23, 0.9));
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+}
+
+@keyframes nm-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes nm-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.88;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+@keyframes nm-flow {
+  to {
+    stroke-dashoffset: -64;
+  }
+}
+
+@keyframes nm-ripple {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(1.75);
+    opacity: 0;
+  }
+}
+
+@keyframes nm-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.nm-spin-slow,
+.nm-spin-mid,
+.nm-spin-fast {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.nm-spin-slow {
+  animation: nm-spin 48s linear infinite;
+}
+
+.nm-spin-mid {
+  animation: nm-spin 26s linear infinite reverse;
+}
+
+.nm-spin-fast {
+  animation: nm-spin 14s linear infinite;
+}
+
+.nm-breathe {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: nm-breathe 4.2s ease-in-out infinite;
+}
+
+.nm-flow {
+  stroke-dasharray: 2 14;
+  animation: nm-flow 2.4s linear infinite;
+}
+
+.nm-ripple {
+  animation: nm-ripple 2.8s ease-out infinite;
+}
+
+.nm-enter {
+  animation: nm-enter 0.35s ease-out both;
+}
+
+.nm-lift {
+  transition:
+    transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+    filter 0.25s ease;
+}
+
+.nm-lift:hover,
+.nm-lift:focus-visible,
+.nm-lift[data-active='true'] {
+  transform: scale(1.12);
+  filter: brightness(1.15);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nm-spin-slow,
+  .nm-spin-mid,
+  .nm-spin-fast,
+  .nm-breathe,
+  .nm-flow,
+  .nm-ripple,
+  .nm-enter {
+    animation: none;
+  }
+
+  .nm-lift {
+    transition: none;
+  }
+}

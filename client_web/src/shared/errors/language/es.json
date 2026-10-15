@@ -1,0 +1,18 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "fallback_title": "Se produjo un error crítico",
+    "fallback_body": "La consola detuvo el renderizado para proteger el sistema. Recarga la página para restaurar la sesión.",
+    "fallback_reload": "Recargar consola",
+    "dismiss": "Cerrar notificación",
+    "error_generic": "Se produjo una anomalía inesperada.",
+    "error_topology_unavailable": "No se puede leer la topología de la malla.",
+    "error_telemetry_frame_rejected": "Se descartó un paquete de telemetría no válido.",
+    "error_bind_failed": "La asociación del nodo falló.",
+    "error_render_failure": "No se pudo cargar un componente de la interfaz.",
+    "error_unhandled_exception": "Error de aplicación no gestionado.",
+    "error_unhandled_rejection": "Falló una operación asíncrona."
+  }
+}
