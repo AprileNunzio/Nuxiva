@@ -67,6 +67,93 @@ class NodesProvisioningApiTests(unittest.TestCase):
         del_res = delete_node(res["node_id"])
         self.assertTrue(del_res["removed"])
 
+    def test_node_brain_lifecycle(self):
+        import asyncio
+        from node_api import (
+            get_node_brain,
+            save_node_brain,
+            test_node_brain,
+            BrainConfigRequest,
+            BrainTestRequest,
+        )
+
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            # 1. Fetch default brain config
+            brain_data = loop.run_until_complete(get_node_brain("node-test-01"))
+            self.assertIn("config", brain_data)
+            self.assertIn("local_ollama", brain_data)
+            self.assertIn("cloud_providers", brain_data)
+
+            # 2. Save new brain config
+            save_req = BrainConfigRequest(
+                mode="cloud_llm",
+                cloud_provider="deepseek",
+                cloud_model="deepseek-chat",
+                cloud_api_key="sk-testkey123",
+                temperature=0.5,
+            )
+            saved = save_node_brain("node-test-01", save_req)
+            self.assertEqual(saved["status"], "saved")
+            self.assertEqual(saved["config"]["cloud_provider"], "deepseek")
+
+            # 3. Test brain inference error handling for missing key or offline host
+            test_req = BrainTestRequest(
+                mode="cloud_llm",
+                cloud_provider="deepseek",
+                cloud_api_key="",
+            )
+            test_res = loop.run_until_complete(test_node_brain("node-test-01", test_req))
+            self.assertFalse(test_res["success"])
+            self.assertIn("mancante", test_res["error"])
+        finally:
+            loop.close()
+
+    def test_node_hardware_and_whiteboards(self):
+        from node_api import (
+            get_node_hardware,
+            test_node_audio,
+            test_node_print,
+            list_node_whiteboards,
+            save_node_whiteboard,
+            delete_node_whiteboard,
+            HardwareTestToneRequest,
+            HardwareTestPrintRequest,
+            WhiteboardSaveRequest,
+        )
+
+        # Hardware
+        hw = get_node_hardware("node-test-01")
+        self.assertIn("audio_outputs", hw)
+        self.assertIn("audio_inputs", hw)
+        self.assertIn("cameras", hw)
+        self.assertIn("printers", hw)
+        self.assertIn("bluetooth", hw)
+        self.assertIn("display", hw)
+
+        # Audio tone test
+        audio_res = test_node_audio("node-test-01", HardwareTestToneRequest(frequency=880))
+        self.assertTrue(audio_res["success"])
+        self.assertEqual(audio_res["frequency"], 880)
+
+        # Print test
+        print_res = test_node_print("node-test-01", HardwareTestPrintRequest(printer_id="printer-hp-laser"))
+        self.assertTrue(print_res["success"])
+        self.assertIn("job-print", print_res["job_id"])
+
+        # Whiteboards
+        wb_save = save_node_whiteboard("node-test-01", WhiteboardSaveRequest(title="Diagramma Architettura Mesh", strokes_count=25))
+        self.assertEqual(wb_save["status"], "saved")
+        wb_id = wb_save["whiteboard"]["id"]
+
+        wbs = list_node_whiteboards("node-test-01")
+        self.assertTrue(any(w["id"] == wb_id for w in wbs))
+
+        del_wb = delete_node_whiteboard("node-test-01", wb_id)
+        self.assertEqual(del_wb["status"], "deleted")
+
 
 if __name__ == "__main__":
     unittest.main()
+

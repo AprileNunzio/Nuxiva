@@ -1,8 +1,20 @@
 {
-  "title": "Interactive Whiteboard",
-  "description": "Interactive graphical whiteboard for on-screen notes and P2P stroke synchronization",
-  "save": "Save configuration",
-  "saved": "Configuration saved successfully",
-  "status": "Module Status",
-  "active": "Active and synchronized"
+  "title": "Interactive Whiteboard & Node Notes",
+  "description": "Sketch diagrams, quick memos, and shared network drawings saved in real-time across the mesh for this node",
+  "active": "Vector Canvas Active",
+  "save_mesh": "Save to Mesh Cluster",
+  "saving": "Saving...",
+  "saved": "Whiteboard saved to cluster successfully!",
+  "save_error": "Error saving whiteboard",
+  "export_png": "Export PNG",
+  "clear": "Clear Canvas",
+  "tool_pen": "Fine Pen",
+  "tool_highlighter": "Neon Highlighter",
+  "tool_eraser": "Eraser",
+  "stroke_width": "Stroke Width",
+  "palette_title": "Cyber Neon Colors",
+  "saved_boards_title": "Saved Whiteboards & Notes on this Node",
+  "no_boards": "No saved boards yet. Draw something above and save it!",
+  "strokes": "strokes",
+  "delete": "Delete"
 }

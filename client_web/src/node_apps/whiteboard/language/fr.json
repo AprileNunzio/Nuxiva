@@ -1,8 +1,20 @@
 {
-  "title": "Tableau Interactif",
-  "description": "Tableau blanc graphique interactif pour notes d'écran et synchronisation de traits P2P",
-  "save": "Enregistrer la configuration",
-  "saved": "Configuration enregistrée avec succès",
-  "status": "État du module",
-  "active": "Actif et synchronisé"
+  "title": "Tableau Blanc Interactif & Notes du Nœud",
+  "description": "Dessinez des schémas, notes rapides et diagrammes partagés enregistrés en temps réel sur le réseau mesh pour ce nœud",
+  "active": "Canevas Vectoriel Actif",
+  "save_mesh": "Enregistrer dans le Cluster Mesh",
+  "saving": "Enregistrement...",
+  "saved": "Tableau blanc enregistré dans le cluster avec succès !",
+  "save_error": "Erreur lors de l'enregistrement",
+  "export_png": "Exporter PNG",
+  "clear": "Effacer le Tableau",
+  "tool_pen": "Stylo Fin",
+  "tool_highlighter": "Surligneur Néon",
+  "tool_eraser": "Gomme",
+  "stroke_width": "Épaisseur du Trait",
+  "palette_title": "Couleurs Cyber Néon",
+  "saved_boards_title": "Tableaux & Notes Enregistrés pour ce Nœud",
+  "no_boards": "Aucun tableau enregistré. Dessinez quelque chose et enregistrez-le !",
+  "strokes": "traits",
+  "delete": "Supprimer"
 }

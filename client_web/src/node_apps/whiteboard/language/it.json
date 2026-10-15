@@ -1,8 +1,20 @@
 {
-  "title": "Lavagna Interattiva",
-  "description": "Lavagna grafica interattiva per note su schermo e sincronizzazione tratti P2P",
-  "save": "Salva configurazione",
-  "saved": "Configurazione salvata con successo",
-  "status": "Stato Modulo",
-  "active": "Attivo e sincronizzato"
+  "title": "Lavagna Interattiva & Note Nodo",
+  "description": "Disegna diagrammi, appunti veloci e schemi condivisi salvati in tempo reale sulla rete mesh per questo nodo",
+  "active": "Canvas Vettoriale Attivo",
+  "save_mesh": "Salva nel Cluster Mesh",
+  "saving": "Salvataggio...",
+  "saved": "Lavagna salvata nel cluster con successo!",
+  "save_error": "Errore salvataggio lavagna",
+  "export_png": "Esporta PNG",
+  "clear": "Pulisci Canvas",
+  "tool_pen": "Penna Tratto Sottile",
+  "tool_highlighter": "Evidenziatore Neon",
+  "tool_eraser": "Gomma per Cancellare",
+  "stroke_width": "Spessore Tratto",
+  "palette_title": "Colori Cyber Neon",
+  "saved_boards_title": "Lavagne & Note Salvate per Questo Nodo",
+  "no_boards": "Nessuna lavagna salvata. Disegna qualcosa sopra e salvala!",
+  "strokes": "tratti",
+  "delete": "Elimina"
 }

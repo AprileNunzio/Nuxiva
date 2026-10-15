@@ -1,8 +1,20 @@
 {
-  "title": "Pizarra Interactiva",
-  "description": "Pizarra gráfica interactiva para notas en pantalla y sincronización de trazos P2P",
-  "save": "Guardar configuración",
-  "saved": "Configuración guardada con éxito",
-  "status": "Estado del módulo",
-  "active": "Activo y sincronizado"
+  "title": "Pizarra Interactiva & Notas del Nodo",
+  "description": "Dibuja diagramas, notas rápidas y esquemas compartidos guardados en tiempo real en la red mesh para este nodo",
+  "active": "Lienzo Vectorial Activo",
+  "save_mesh": "Guardar en Clúster Mesh",
+  "saving": "Guardando...",
+  "saved": "¡Pizarra guardada en el clúster con éxito!",
+  "save_error": "Error al guardar pizarra",
+  "export_png": "Exportar PNG",
+  "clear": "Limpiar Lienzo",
+  "tool_pen": "Bolígrafo Fino",
+  "tool_highlighter": "Subrayador Neón",
+  "tool_eraser": "Borrador",
+  "stroke_width": "Grosor del Trazo",
+  "palette_title": "Colores Cyber Neón",
+  "saved_boards_title": "Pizarras & Notas Guardadas para este Nodo",
+  "no_boards": "No hay pizarras guardadas aún. ¡Dibuja algo arriba y guárdalo!",
+  "strokes": "trazos",
+  "delete": "Eliminar"
 }
