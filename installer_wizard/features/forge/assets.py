@@ -33,6 +33,7 @@ def create_widget(spec: dict) -> dict:
     manifest = {"id": wid, "name": str(spec.get("name") or wid)[:60], "icon": str(spec.get("icon") or "▣")[:4], "size": spec.get("size") if spec.get("size") in SIZES else "m",
                 "priority": max(0, min(100, int(spec.get("priority", 40)))), "ttl": max(0, min(3600, int(spec.get("ttl", 300)))),
                 "description": str(spec.get("description", ""))[:300], "personal": spec.get("personal") is True, "source": "ai",
+                "agent": str(spec.get("agent")) if ID.match(str(spec.get("agent") or "")) else "forge",
                 "demo": spec.get("demo") if isinstance(spec.get("demo"), dict) else {"title": str(spec.get("name") or wid), "text": "Esempio"}}
     folder = desk_module.USER_DIR / wid
     folder.mkdir(parents=True, exist_ok=True)
@@ -55,17 +56,17 @@ def delete_widget(wid: str) -> bool:
     return True
 
 
-def create_feature(spec: dict) -> dict:
+def create_feature(spec: dict, source: str = "ai") -> dict:
     fid = str(spec.get("id", ""))
     if not ID.match(fid):
         raise ValueError("id non valido: minuscole, cifre, - e _ (da 3 a 41 caratteri)")
     features.scan()
     current = features.features.get(fid)
-    if current and current["source"] != "ai":
+    if current and current["source"] not in ("ai", "user"):
         raise ValueError(f"«{fid}» è già una funzionalità esistente")
     manifest = {"id": fid, "name": str(spec.get("name") or fid)[:60], "icon": str(spec.get("icon") or "◆")[:4], "category": spec.get("category", "altro"),
                 "description": str(spec.get("description", ""))[:400], "capabilities": [str(c)[:200] for c in (spec.get("capabilities") or [])[:12]],
-                "settings": [], "source": "ai"}
+                "settings": [], "source": source if source in ("ai", "user") else "ai"}
     features._validate(dict(manifest), fid)
     folder = FEATURE_DIR / fid
     folder.mkdir(parents=True, exist_ok=True)
@@ -78,7 +79,7 @@ def delete_feature(fid: str) -> bool:
     features.scan()
     current = features.features.get(fid)
     folder = FEATURE_DIR / fid
-    if not current or current["source"] != "ai" or not _own(folder, FEATURE_DIR):
+    if not current or current["source"] not in ("ai", "user") or not _own(folder, FEATURE_DIR):
         return False
     shutil.rmtree(folder)
     features.scan()

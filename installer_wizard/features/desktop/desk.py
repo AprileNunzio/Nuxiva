@@ -255,11 +255,23 @@ class Desk:
         if keys:
             self.publish()
 
+    @staticmethod
+    def _present() -> set[str]:
+        presence = store.presence if isinstance(store.presence, dict) else {}
+        return {p["slug"] for p in presence.get("people", []) if isinstance(p, dict) and p.get("known") and p.get("slug")}
+
+    def audience_ok(self, wid: str, present: set[str]) -> bool:
+        from features.team.control import control
+        allowed = control.widget_people(wid)
+        return not allowed or bool(present & set(allowed))
+
     def active(self) -> list[dict]:
         now = time.time()
         out, replaced = [], set()
+        present = self._present()
         items = [i for i in self.instances.values()
-                 if (not i["expires_at"] or i["expires_at"] > now) and i["id"] in self.widgets and self.enabled(i["id"])]
+                 if (not i["expires_at"] or i["expires_at"] > now) and i["id"] in self.widgets and self.enabled(i["id"])
+                 and self.audience_ok(i["id"], present)]
         for i in items:
             replaced.update(self.widgets[i["id"]]["replaces"])
         for i in items:

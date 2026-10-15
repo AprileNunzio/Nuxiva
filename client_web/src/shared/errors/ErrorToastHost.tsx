@@ -88,6 +88,15 @@ const KNOWN_CODES = new Set([
   'node_brain_cloud_test_failed',
   'node_brain_servers_unavailable',
   'node_brain_server_failed',
+  'team_unavailable',
+  'team_message_failed',
+  'team_mode_failed',
+  'team_update_failed',
+  'team_delete_failed',
+  'team_settings_failed',
+  'team_tool_failed',
+  'team_widget_failed',
+  'team_create_failed',
 ]);
 
 export const ErrorToastHost: React.FC = () => {

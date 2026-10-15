@@ -1,11 +1,13 @@
 import inspect
 import json
+import logging
 import re
 
 from config import STATE_DIR
 from features.agent import registry
 from features.authz import risk
 
+log = logging.getLogger("nuxiva.forge")
 DIR = STATE_DIR / "tools"
 NAME = re.compile(r"^[a-z][a-z0-9_]{2,40}$")
 PARAM = re.compile(r"^[a-z][a-z0-9_]{0,30}$")
@@ -113,6 +115,7 @@ def load() -> int:
         try:
             register(validate(json.loads(path.read_text(encoding="utf-8"))))
             count += 1
-        except (OSError, ValueError, TypeError):
+        except (OSError, ValueError, TypeError) as exc:
+            log.warning("Strumento %s non caricato: %s", path.name, exc)
             continue
     return count

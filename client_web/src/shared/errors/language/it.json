@@ -89,6 +89,15 @@
     "error_node_brain_cloud_failed": "Fornitore non salvato.",
     "error_node_brain_cloud_test_failed": "Prova del fornitore non riuscita.",
     "error_node_brain_servers_unavailable": "Server di modelli non disponibili.",
-    "error_node_brain_server_failed": "Operazione sul server non riuscita."
+    "error_node_brain_server_failed": "Operazione sul server non riuscita.",
+    "error_team_unavailable": "Squadra di agenti non disponibile.",
+    "error_team_message_failed": "Messaggio non consegnato.",
+    "error_team_mode_failed": "Modalità non cambiata.",
+    "error_team_update_failed": "Agente non aggiornato.",
+    "error_team_delete_failed": "Agente non eliminato.",
+    "error_team_settings_failed": "Impostazioni non salvate.",
+    "error_team_tool_failed": "Strumento non aggiornato.",
+    "error_team_widget_failed": "Widget non aggiornato.",
+    "error_team_create_failed": "Creazione non riuscita: controlla i dati."
   }
 }

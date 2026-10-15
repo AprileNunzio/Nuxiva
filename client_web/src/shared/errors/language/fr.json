@@ -89,6 +89,15 @@
     "error_node_brain_cloud_failed": "Fournisseur non enregistré.",
     "error_node_brain_cloud_test_failed": "Test du fournisseur échoué.",
     "error_node_brain_servers_unavailable": "Serveurs de modèles indisponibles.",
-    "error_node_brain_server_failed": "Opération sur le serveur échouée."
+    "error_node_brain_server_failed": "Opération sur le serveur échouée.",
+    "error_team_unavailable": "Équipe d'agents indisponible.",
+    "error_team_message_failed": "Message non remis.",
+    "error_team_mode_failed": "Mode non modifié.",
+    "error_team_update_failed": "Agent non mis à jour.",
+    "error_team_delete_failed": "Agent non supprimé.",
+    "error_team_settings_failed": "Réglages non enregistrés.",
+    "error_team_tool_failed": "Outil non mis à jour.",
+    "error_team_widget_failed": "Widget non mis à jour.",
+    "error_team_create_failed": "Création impossible : vérifiez les données."
   }
 }

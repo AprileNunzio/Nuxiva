@@ -47,6 +47,8 @@
     "step4_success_title": "Appareil configuré avec succès !",
     "step4_success_desc": "Le nœud a terminé l'échange cryptographique et est actif dans le maillage.",
     "close_wizard": "Fermer et afficher dans le maillage",
-    "terminal_log": "Journal d'Exécution du Provisionnement"
+    "terminal_log": "Journal d'Exécution du Provisionnement",
+    "open_app": "Ouvrir",
+    "status": "Actif"
   }
 }

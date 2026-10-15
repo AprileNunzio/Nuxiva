@@ -89,6 +89,15 @@
     "error_node_brain_cloud_failed": "Provider not saved.",
     "error_node_brain_cloud_test_failed": "Provider test failed.",
     "error_node_brain_servers_unavailable": "Model servers unavailable.",
-    "error_node_brain_server_failed": "Server operation failed."
+    "error_node_brain_server_failed": "Server operation failed.",
+    "error_team_unavailable": "Agent team unavailable.",
+    "error_team_message_failed": "Message not delivered.",
+    "error_team_mode_failed": "Mode not changed.",
+    "error_team_update_failed": "Agent not updated.",
+    "error_team_delete_failed": "Agent not deleted.",
+    "error_team_settings_failed": "Settings not saved.",
+    "error_team_tool_failed": "Tool not updated.",
+    "error_team_widget_failed": "Widget not updated.",
+    "error_team_create_failed": "Creation failed: check the details."
   }
 }

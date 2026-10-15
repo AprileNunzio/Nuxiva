@@ -1,7 +1,15 @@
-export async function fetchAgentsState() {
-  try {
-    const res = await fetch('/api/v5/agents/state');
-    if (res.ok) return await res.json();
-  } catch {}
-  return { active: true, id: 'agents' };
-}
+export {
+  createAgent,
+  createTool,
+  createWidget,
+  deleteAgent,
+  deleteTool,
+  deleteWidget,
+  fetchTeam,
+  messageAgent,
+  saveAgentSettings,
+  setAgentMode,
+  updateAgent,
+  updateTool,
+  updateWidget,
+} from './data/teamApi';

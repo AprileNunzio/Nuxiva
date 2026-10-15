@@ -72,6 +72,8 @@
     "check_mesh_engine": "CRDT mesh engine",
     "check_unknown": "Check",
     "history_title": "Update history",
-    "history_empty": "No events recorded."
+    "history_empty": "No events recorded.",
+    "open_app": "Open",
+    "status": "Active"
   }
 }

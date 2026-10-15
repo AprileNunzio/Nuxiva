@@ -12,5 +12,11 @@ MODULE_OWNER = {
 }
 
 
-def of(agent_id: str) -> int:
+def base(agent_id: str) -> int:
     return PRIORITY.get(agent_id, DEFAULT)
+
+
+def of(agent_id: str) -> int:
+    from features.team.control import control
+    override = control.priority(agent_id)
+    return override if override is not None else base(agent_id)

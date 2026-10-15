@@ -47,6 +47,8 @@
     "step4_success_title": "Device Provisioned Successfully!",
     "step4_success_desc": "The node completed cryptographic handshake and is now active in the spatial mesh.",
     "close_wizard": "Close and View in Mesh",
-    "terminal_log": "Provisioning Execution Log"
+    "terminal_log": "Provisioning Execution Log",
+    "open_app": "Open",
+    "status": "Active"
   }
 }

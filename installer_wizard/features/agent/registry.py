@@ -23,8 +23,17 @@ def tool(name: str, description: str, args: dict, confirm=False, full_only: bool
     return wrap
 
 
+def _control():
+    from features.team.control import control
+    return control
+
+
+def enabled(name: str) -> bool:
+    return _control().tool_enabled(name)
+
+
 def available(level: str) -> list[dict]:
-    return [t for t in TOOLS.values() if level == "completo" or not t["full_only"]]
+    return [t for t in TOOLS.values() if (level == "completo" or not t["full_only"]) and enabled(t["name"])]
 
 
 def describe(level: str) -> str:
@@ -53,6 +62,8 @@ def clean_args(name: str, args) -> dict:
 
 
 def needs_confirm(name: str, args: dict) -> bool:
+    if _control().tool_forced_confirm(name):
+        return True
     rule = TOOLS[name]["confirm"]
     if callable(rule):
         try:
@@ -73,6 +84,12 @@ def precheck(name: str, args: dict) -> str:
     return ""
 
 
+class ToolDisabled(PermissionError):
+    pass
+
+
 async def run(name: str, args: dict) -> str:
+    if not enabled(name):
+        raise ToolDisabled(f"lo strumento «{name}» è disattivato dalla console")
     out = await TOOLS[name]["fn"](**clean_args(name, args))
     return str(out)[:6000]

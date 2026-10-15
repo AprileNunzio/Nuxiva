@@ -72,6 +72,8 @@
     "check_mesh_engine": "Motore mesh CRDT",
     "check_unknown": "Controllo",
     "history_title": "Cronologia aggiornamenti",
-    "history_empty": "Nessun evento registrato."
+    "history_empty": "Nessun evento registrato.",
+    "open_app": "Apri",
+    "status": "Attivo"
   }
 }

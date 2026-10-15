@@ -47,6 +47,8 @@
     "step4_success_title": "¡Dispositivo Configurado con Éxito!",
     "step4_success_desc": "El nodo completó el apretón de manos criptográfico y está activo en el mesh espacial.",
     "close_wizard": "Cerrar y Ver en el Mesh",
-    "terminal_log": "Registro de Ejecución del Aprovisionamiento"
+    "terminal_log": "Registro de Ejecución del Aprovisionamiento",
+    "open_app": "Abrir",
+    "status": "Activo"
   }
 }

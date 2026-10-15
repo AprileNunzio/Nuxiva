@@ -47,6 +47,8 @@
     "step4_success_title": "Dispositivo Configurato con Successo!",
     "step4_success_desc": "Il nodo ha completato l'handshake crittografico ed è ora visibile nel mesh spaziale.",
     "close_wizard": "Chiudi e Visualizza nel Mesh",
-    "terminal_log": "Log Esecuzione Provisioning"
+    "terminal_log": "Log Esecuzione Provisioning",
+    "open_app": "Apri",
+    "status": "Attivo"
   }
 }
