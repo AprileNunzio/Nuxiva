@@ -20,3 +20,11 @@ repos:
     rev: 6.1.0
     hooks:
     -   id: flake8
+-   repo: local
+    hooks:
+    -   id: colocated-i18n-ast
+        name: Colocated i18n AST and Parity Linter
+        entry: python installer_wizard/tests/test_colocated_i18n.py
+        language: system
+        pass_filenames: false
+        always_run: true

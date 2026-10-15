@@ -75,3 +75,4 @@ secrets*
 credentials*
 
 target/
+.temp_trash/

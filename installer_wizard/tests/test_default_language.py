@@ -65,14 +65,5 @@ class WakeGreetingTest(unittest.TestCase):
         self.assertTrue(result["reply"])
 
 
-class ExpertToggleTest(unittest.TestCase):
-    def test_toggle_lives_in_the_top_bar_and_hints_are_clickable(self):
-        script = (ROOT / "web" / "admin" / "uimode.js").read_text(encoding="utf-8")
-        self.assertIn('document.querySelector(".topbar .row")', script)
-        self.assertIn("data-ui-mode-set", script)
-        brain = (ROOT / "features" / "brain" / "admin.html").read_text(encoding="utf-8")
-        self.assertIn('data-ui-mode-set="expert"', brain)
-
-
 if __name__ == "__main__":
     unittest.main()

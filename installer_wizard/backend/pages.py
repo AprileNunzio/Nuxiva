@@ -139,7 +139,9 @@ class FreshStatic(StaticFiles):
 
 def mount_static(app: FastAPI, *components: str) -> None:
     for component in components:
-        app.mount(f"/static/{component}", FreshStatic(directory=WEB_DIR / component), name=f"static-{component}")
+        comp_dir = WEB_DIR / component
+        if comp_dir.exists():
+            app.mount(f"/static/{component}", FreshStatic(directory=comp_dir), name=f"static-{component}")
 
 
 public_routes = APIRouter()

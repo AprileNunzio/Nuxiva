@@ -233,8 +233,12 @@ def build(admin: bool) -> FastAPI:
     app = FastAPI(title=title, docs_url=None, redoc_url=None, openapi_url=None)
     body_errors.install(app)
     i18n_handlers.install(app)
+    client_web_dist = Path(__file__).resolve().parent.parent.parent / "client_web" / "dist"
     if admin:
-        pages.mount_static(app, "shared", "admin", "nexus")
+        pages.mount_static(app, "shared")
+        if (client_web_dist / "assets").exists():
+            from fastapi.staticfiles import StaticFiles
+            app.mount("/assets", StaticFiles(directory=str(client_web_dist / "assets")), name="client-web-assets")
     else:
         pages.mount_static(app, "shared", "display", "monitor", "screen", "setup")
 
@@ -267,6 +271,17 @@ def build(admin: bool) -> FastAPI:
             log.error("Router computer_control non caricato: %s", exc)
         else:
             app.include_router(computer_control_router)
+
+        if client_web_dist.exists() and (client_web_dist / "index.html").exists():
+            from fastapi.responses import FileResponse
+
+            @app.get("/")
+            @app.get("/canvas")
+            @app.get("/node/{node_id:path}")
+            @app.get("/apps/{app_id:path}")
+            @app.get("/app/{app_id:path}")
+            async def serve_admin_master_ui():
+                return FileResponse(str(client_web_dist / "index.html"), headers={"Cache-Control": "no-cache"})
 
     allowed = f'{env_get("NUXIVA_ALLOWED_HOSTS")},{os.environ.get("NUXIVA_ALLOWED_HOSTS", "")}'
     app.add_middleware(OriginGuard, extra_hosts=allowed.split(","))
