@@ -84,7 +84,7 @@ class Client:
         return {"Authorization": f"Bearer {token}"} if token else {}
 
     async def _call(self, method: str, path: str, base: str | None = None, key: str | None = None,
-                    timeout: float = 15, **kw) -> httpx.Response:
+                    timeout: float = 30, **kw) -> httpx.Response:
         try:
             async with httpx.AsyncClient(timeout=timeout, follow_redirects=False, transport=self.transport) as client:
                 res = await client.request(method, (base or self.base()) + path, headers=self.headers(key), **kw)
@@ -101,8 +101,8 @@ class Client:
 
     async def check(self, url: str | None = None, key: str | None = None) -> dict:
         base = safe_url(url) if url else self.base()
-        caps = (await self._call("GET", "/.well-known/voicestudio-speech", base=base, key=key, timeout=8)).json()
-        await self._call("GET", "/v1/audio/voices", base=base, key=key, timeout=8)
+        caps = (await self._call("GET", "/.well-known/voicestudio-speech", base=base, key=key, timeout=15)).json()
+        await self._call("GET", "/v1/audio/voices", base=base, key=key, timeout=30)
         return {"ok": True, "protocol": str(caps.get("protocol", ""))[:40]}
 
     async def voices(self, fresh: bool = False) -> list[dict]:

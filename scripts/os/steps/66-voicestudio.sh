@@ -7,7 +7,8 @@ PORT=3900
 DEFAULT_IMAGE=ghcr.io/debpalash/voicestudio:0.5.6
 IMAGE="${NUXIVA_VOICESTUDIO_IMAGE:-$DEFAULT_IMAGE}"
 [[ "$IMAGE" =~ ^[a-z0-9][a-z0-9./_-]{0,120}:[A-Za-z0-9._-]{1,64}$ ]] || IMAGE=$DEFAULT_IMAGE
-HEALTH="http://127.0.0.1:$PORT/.well-known/voicestudio-speech"
+HEALTH="http://127.0.0.1:$PORT/health"
+CAPS="http://127.0.0.1:$PORT/.well-known/voicestudio-speech"
 
 wanted() { [ "${NUXIVA_VOICESTUDIO:-0}" = "1" ] && [ "${NUXIVA_VOICESTUDIO_WHERE:-local}" != "remote" ]; }
 have_docker() { command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; }
@@ -15,7 +16,13 @@ gpu_flags() { has_usable_gpu && docker info 2>/dev/null | grep -qi nvidia && ech
 signature() { printf '%s|%s|%s' "$IMAGE" "$(gpu_flags)" "$(printf '%s' "${NUXIVA_VOICESTUDIO_KEY:-}" | sha1sum | cut -c1-12)"; }
 running_signature() { docker inspect -f '{{ index .Config.Labels "nuxiva.signature" }}' "$NAME" 2>/dev/null || true; }
 running() { [ "$(docker inspect -f '{{.State.Running}}' "$NAME" 2>/dev/null)" = "true" ]; }
-healthy() { curl -fsS --max-time 5 "$HEALTH" >/dev/null 2>&1; }
+healthy() {
+    curl -fsS --max-time 5 "$HEALTH" >/dev/null 2>&1 && return 0
+    if [ -n "${NUXIVA_VOICESTUDIO_KEY:-}" ]; then
+        curl -fsS --max-time 5 -H "Authorization: Bearer $NUXIVA_VOICESTUDIO_KEY" "$CAPS" >/dev/null 2>&1 && return 0
+    fi
+    curl -fsS --max-time 5 "$CAPS" >/dev/null 2>&1
+}
 
 remove_container() {
     have_docker || return 0
