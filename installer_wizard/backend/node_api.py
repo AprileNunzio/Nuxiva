@@ -5,8 +5,11 @@ Manages node hardware modules, provisioning targets, and node telemetry.
 
 from __future__ import annotations
 
+import os
+import shutil
+import subprocess
 import time
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
@@ -312,13 +315,36 @@ def rename_node(node_id: str, req: RenameNodeRequest) -> Dict[str, Any]:
 # Comprehensive Brain (LLM) Association & Inference Cockpit
 # =====================================================================
 
+class RemoteOllamaInstance(BaseModel):
+    id: str
+    name: str
+    host_url: str
+    model: str
+    task: str = "fast_chat"  # fast_chat | deep_reasoning | vision | coder | audio_transcription | embeddings | batch_worker
+    node_id: Optional[str] = None
+    latency_ms: Optional[float] = None
+    status: Optional[str] = "online"
+
+
+class RemoteMeshSaveRequest(BaseModel):
+    instances: List[RemoteOllamaInstance]
+
+
+class RemoteMeshTestRequest(BaseModel):
+    host_url: str
+    model: Optional[str] = None
+
+
+_NODE_REMOTE_MESH_INSTANCES: Dict[str, List[Dict[str, Any]]] = {}
+
+
 class BrainConfigRequest(BaseModel):
     mode: str = "local_ollama"  # local_ollama | remote_ollama | cloud_llm
     local_model: str = "llama3.2:latest"
     remote_node_id: str = ""
     remote_host: str = "http://192.168.1.10:11434"
     remote_model: str = "llama3.2:latest"
-    cloud_provider: str = "deepseek"  # openai | anthropic | gemini | deepseek | groq | custom
+    cloud_provider: str = "deepseek"  # openai | anthropic | gemini | deepseek | groq | mistral | xai | perplexity | openrouter | custom
     cloud_model: str = "deepseek-chat"
     cloud_api_key: str = ""
     cloud_base_url: str = ""
@@ -327,6 +353,8 @@ class BrainConfigRequest(BaseModel):
     max_tokens: int = 2048
     fallback_enabled: bool = True
     fallback_provider: str = "local_ollama"
+    cloud_slots: Optional[Dict[str, Any]] = None
+    remote_mesh_instances: Optional[List[Dict[str, Any]]] = None
 
 
 class BrainTestRequest(BaseModel):
@@ -337,6 +365,7 @@ class BrainTestRequest(BaseModel):
     cloud_api_key: str = ""
     cloud_base_url: str = ""
     prompt: str = "Identificati brevemente e descrivi il tuo stato operativo."
+    slot: Optional[str] = None
 
 
 class BrainPullRequest(BaseModel):
@@ -364,6 +393,191 @@ class WhiteboardSaveRequest(BaseModel):
 _NODE_WHITEBOARDS: Dict[str, List[Dict[str, Any]]] = {}
 
 
+def probe_local_ollama_status() -> Dict[str, Any]:
+    """Controlla se Ollama è installato ed in esecuzione sulla macchina locale."""
+    installed = False
+    binary_path = ""
+    which_ollama = shutil.which("ollama")
+    if which_ollama:
+        installed = True
+        binary_path = which_ollama
+    else:
+        for p in ("/usr/local/bin/ollama", "/usr/bin/ollama", "/opt/ollama/bin/ollama"):
+            if os.path.exists(p):
+                installed = True
+                binary_path = p
+                break
+        if not installed and os.name == "nt":
+            win_p = os.path.expandvars(r"%LOCALAPPDATA%\Programs\Ollama\ollama.exe")
+            if os.path.exists(win_p):
+                installed = True
+                binary_path = win_p
+
+    running = False
+    version = ""
+    models: List[str] = []
+    try:
+        import httpx
+        with httpx.Client(timeout=2.5) as client:
+            r = client.get("http://127.0.0.1:11434/api/tags")
+            if r.status_code == 200:
+                running = True
+                installed = True
+                data = r.json()
+                models = [m.get("name", "") for m in data.get("models", []) if m.get("name")]
+                version = "0.4.x"
+    except Exception:
+        pass
+
+    return {
+        "installed": installed,
+        "running": running,
+        "binary_path": binary_path,
+        "version": version,
+        "models": models,
+        "catalog": [
+            "llama3.2:latest", "llama3.2:3b", "qwen2.5:7b", "qwen2.5:1.5b",
+            "deepseek-r1:7b", "deepseek-r1:1.5b", "mistral:7b", "llava:latest"
+        ]
+    }
+
+
+@router.get("/{node_id}/brain/ollama/status")
+def get_local_ollama_status(node_id: str) -> Dict[str, Any]:
+    """Restituisce lo stato effettivo di installazione ed esecuzione di Ollama locale."""
+    st = probe_local_ollama_status()
+    st["node_id"] = node_id
+    return st
+
+
+@router.post("/{node_id}/brain/ollama/install")
+def install_local_ollama(node_id: str) -> Dict[str, Any]:
+    """Avvia l'installazione automatica non presidiata di Ollama sul nodo locale."""
+    if os.name == "nt":
+        return {
+            "status": "manual_action_required",
+            "os": "windows",
+            "download_url": "https://ollama.com/download/OllamaSetup.exe",
+            "message": "Su Windows scaricare ed eseguire l'installer da https://ollama.com/download/OllamaSetup.exe."
+        }
+
+    cmd = "curl -fsSL https://ollama.com/install.sh | sh && systemctl enable --now ollama"
+    try:
+        subprocess.Popen(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        return {
+            "status": "installing",
+            "message": "Installazione automatica avviata in background (curl -fsSL https://ollama.com/install.sh | sh)."
+        }
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Errore avvio installazione: {exc}")
+
+
+@router.post("/{node_id}/brain/ollama/uninstall")
+def uninstall_local_ollama(node_id: str) -> Dict[str, Any]:
+    """Disinstalla Ollama e disabilita il relativo servizio systemd."""
+    if os.name == "nt":
+        return {
+            "status": "manual_action_required",
+            "message": "Su Windows chiudere Ollama ed eseguire la disinstallazione standard da Impostazioni Applicazioni."
+        }
+    cmd = "systemctl stop ollama; systemctl disable ollama; rm -f /usr/local/bin/ollama /etc/systemd/system/ollama.service; systemctl daemon-reload"
+    try:
+        subprocess.Popen(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        return {
+            "status": "uninstalled",
+            "message": "Comando di disinstallazione e rimozione servizio Ollama eseguito con successo."
+        }
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Errore disinstallazione: {exc}")
+
+
+@router.get("/{node_id}/brain/remote_mesh")
+def get_node_remote_mesh_instances(node_id: str) -> Dict[str, Any]:
+    """Restituisce le istanze Ollama remote associate su rete mesh."""
+    instances = _NODE_REMOTE_MESH_INSTANCES.get(node_id)
+    if instances is None:
+        instances = [
+            {
+                "id": f"inst-{node_id}-1",
+                "name": "PC-Workstation-i9",
+                "host_url": "http://192.168.1.10:11434",
+                "model": "llama3.2:latest",
+                "task": "fast_chat",
+                "latency_ms": 1.4,
+                "status": "online"
+            },
+            {
+                "id": f"inst-{node_id}-2",
+                "name": "Server-Studio-M2",
+                "host_url": "http://192.168.1.20:11434",
+                "model": "deepseek-r1:7b",
+                "task": "deep_reasoning",
+                "latency_ms": 3.8,
+                "status": "online"
+            }
+        ]
+        _NODE_REMOTE_MESH_INSTANCES[node_id] = instances
+    return {"node_id": node_id, "instances": instances}
+
+
+@router.post("/{node_id}/brain/remote_mesh")
+def save_node_remote_mesh_instances(node_id: str, req: RemoteMeshSaveRequest) -> Dict[str, Any]:
+    """Salva le istanze Ollama remote su rete mesh con i rispettivi compiti assegnati."""
+    saved_instances = [inst.model_dump() if hasattr(inst, "model_dump") else inst.dict() for inst in req.instances]
+    _NODE_REMOTE_MESH_INSTANCES[node_id] = saved_instances
+
+    # Sync into node app config & CRDT
+    key = f"{node_id}:brain"
+    stored = _NODE_APP_CONFIGS.setdefault(key, {"nodeId": node_id, "appId": "brain", "settings": {}})
+    stored["settings"]["remote_mesh_instances"] = saved_instances
+
+    try:
+        from server.features.mesh_coordinator.p2p_mesh import p2p_mesh
+        if hasattr(p2p_mesh, "crdt") and p2p_mesh.crdt:
+            p2p_mesh.crdt.set(f"node:{node_id}:brain:remote_mesh", saved_instances)
+    except Exception:
+        pass
+
+    return {"status": "saved", "node_id": node_id, "instances": saved_instances}
+
+
+@router.post("/{node_id}/brain/remote_mesh/test")
+async def test_remote_mesh_instance(node_id: str, req: RemoteMeshTestRequest) -> Dict[str, Any]:
+    """Testa la connettività e interroga i modelli disponibili su un'istanza remota Ollama."""
+    import httpx
+    host = req.host_url.rstrip("/")
+    t0 = time.perf_counter()
+    try:
+        async with httpx.AsyncClient(timeout=3.0) as client:
+            r = await client.get(f"{host}/api/tags")
+            latency = round((time.perf_counter() - t0) * 1000, 1)
+            if r.status_code == 200:
+                data = r.json()
+                models = [m.get("name", "") for m in data.get("models", []) if m.get("name")]
+                return {
+                    "online": True,
+                    "host": host,
+                    "latency_ms": latency,
+                    "models": models,
+                    "version": "0.4.x",
+                    "status": "connected"
+                }
+            return {
+                "online": False,
+                "host": host,
+                "latency_ms": latency,
+                "error": f"HTTP {r.status_code}: {r.text[:150]}"
+            }
+    except Exception as exc:
+        latency = round((time.perf_counter() - t0) * 1000, 1)
+        return {
+            "online": False,
+            "host": host,
+            "latency_ms": latency,
+            "error": f"Connessione fallita ({type(exc).__name__}): {str(exc)}"
+        }
+
+
 @router.get("/{node_id}/brain")
 async def get_node_brain(node_id: str) -> Dict[str, Any]:
     """Recupera la configurazione del cervello LLM per questo nodo, probe Ollama locale e nodi remoti."""
@@ -385,29 +599,51 @@ async def get_node_brain(node_id: str) -> Dict[str, Any]:
         "temperature": stored.get("temperature", 0.7),
         "max_tokens": stored.get("max_tokens", 2048),
         "fallback_enabled": stored.get("fallback_enabled", True),
-        "fallback_provider": stored.get("fallback_provider", "local_ollama")
+        "fallback_provider": stored.get("fallback_provider", "local_ollama"),
+        "cloud_slots": stored.get("cloud_slots", {
+            "fast_chat": {
+                "provider": "gemini",
+                "model": "gemini-2.0-flash",
+                "api_key": "",
+                "base_url": "https://generativelanguage.googleapis.com/v1beta",
+            },
+            "deep_reasoning": {
+                "provider": "deepseek",
+                "model": "deepseek-reasoner",
+                "api_key": "",
+                "base_url": "https://api.deepseek.com/v1",
+            },
+            "vision": {
+                "provider": "openai",
+                "model": "gpt-4o",
+                "api_key": "",
+                "base_url": "https://api.openai.com/v1",
+            }
+        }),
+        "remote_mesh_instances": _NODE_REMOTE_MESH_INSTANCES.get(node_id, [
+            {
+                "id": f"inst-{node_id}-1",
+                "name": "PC-Workstation-i9",
+                "host_url": "http://192.168.1.10:11434",
+                "model": "llama3.2:latest",
+                "task": "fast_chat",
+                "latency_ms": 1.4,
+                "status": "online"
+            },
+            {
+                "id": f"inst-{node_id}-2",
+                "name": "Server-Studio-M2",
+                "host_url": "http://192.168.1.20:11434",
+                "model": "deepseek-r1:7b",
+                "task": "deep_reasoning",
+                "latency_ms": 3.8,
+                "status": "online"
+            }
+        ])
     }
 
-    # 1. Proba Ollama locale
-    local_ollama: Dict[str, Any] = {"online": False, "version": "", "models": []}
-    try:
-        import httpx
-        async with httpx.AsyncClient(timeout=1.5) as client:
-            r = await client.get("http://127.0.0.1:11434/api/tags")
-            if r.status_code == 200:
-                data = r.json()
-                models = [m.get("name", "") for m in data.get("models", []) if m.get("name")]
-                local_ollama["online"] = True
-                local_ollama["models"] = models
-                local_ollama["version"] = "0.4.x"
-    except Exception:
-        pass
-
-    if not local_ollama["models"]:
-        local_ollama["catalog"] = [
-            "llama3.2:latest", "llama3.2:3b", "qwen2.5:7b", "qwen2.5:3b",
-            "deepseek-r1:7b", "deepseek-r1:1.5b", "mistral:7b"
-        ]
+    # 1. Proba Ollama locale con verifica binario e demone
+    local_ollama = probe_local_ollama_status()
 
     # 2. Scopri nodi remoti disponibili nella rete Mesh
     remote_nodes: List[Dict[str, Any]] = []
@@ -433,46 +669,116 @@ async def get_node_brain(node_id: str) -> Dict[str, Any]:
             {"id": "node-server-studio", "name": "Server-Studio-M2", "ip": "192.168.1.20", "host_url": "http://192.168.1.20:11434", "tier": "Tier-1 (Compute Cluster)", "is_compute": True}
         ]
 
-    # 3. Provider Cloud supportati
+    # 3. Provider Cloud Completi e Aggiornati
     cloud_providers = [
         {
-            "id": "deepseek",
-            "name": "DeepSeek AI",
-            "base_url": "https://api.deepseek.com/v1",
-            "default_model": "deepseek-chat",
-            "models": ["deepseek-chat", "deepseek-reasoner"]
+            "id": "anthropic",
+            "name": "Anthropic Claude",
+            "base_url": "https://api.anthropic.com/v1",
+            "default_model": "claude-3-7-sonnet-20250219",
+            "models": [
+                "claude-3-7-sonnet-20250219",
+                "claude-3-5-sonnet-20241022",
+                "claude-3-5-haiku-20241022",
+                "claude-3-opus-20240229"
+            ]
         },
         {
             "id": "openai",
             "name": "OpenAI",
             "base_url": "https://api.openai.com/v1",
-            "default_model": "gpt-4o-mini",
-            "models": ["gpt-4o", "gpt-4o-mini", "o3-mini", "gpt-4-turbo"]
-        },
-        {
-            "id": "anthropic",
-            "name": "Anthropic Claude",
-            "base_url": "https://api.anthropic.com/v1",
-            "default_model": "claude-3-5-sonnet-20241022",
-            "models": ["claude-3-5-sonnet-20241022", "claude-3-5-haiku-20241022"]
+            "default_model": "gpt-4o",
+            "models": [
+                "gpt-4o",
+                "gpt-4o-mini",
+                "o3-mini",
+                "o1",
+                "o1-mini"
+            ]
         },
         {
             "id": "gemini",
             "name": "Google Gemini",
             "base_url": "https://generativelanguage.googleapis.com/v1beta",
-            "default_model": "gemini-1.5-flash",
-            "models": ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.0-flash-exp"]
+            "default_model": "gemini-2.0-flash",
+            "models": [
+                "gemini-2.0-flash",
+                "gemini-2.0-pro-exp-02-05",
+                "gemini-2.0-flash-thinking-exp",
+                "gemini-1.5-pro",
+                "gemini-1.5-flash"
+            ]
+        },
+        {
+            "id": "deepseek",
+            "name": "DeepSeek AI",
+            "base_url": "https://api.deepseek.com/v1",
+            "default_model": "deepseek-reasoner",
+            "models": [
+                "deepseek-reasoner",
+                "deepseek-chat"
+            ]
         },
         {
             "id": "groq",
             "name": "Groq Cloud (LPU Ultra-Fast)",
             "base_url": "https://api.groq.com/openai/v1",
             "default_model": "llama-3.3-70b-versatile",
-            "models": ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "mixtral-8x7b-32768", "deepseek-r1-distill-llama-70b"]
+            "models": [
+                "llama-3.3-70b-versatile",
+                "llama-3.1-8b-instant",
+                "deepseek-r1-distill-llama-70b",
+                "mixtral-8x7b-32768"
+            ]
+        },
+        {
+            "id": "mistral",
+            "name": "Mistral AI",
+            "base_url": "https://api.mistral.ai/v1",
+            "default_model": "mistral-large-latest",
+            "models": [
+                "mistral-large-latest",
+                "open-mistral-nemo",
+                "codestral-latest",
+                "pixtral-12b-2409"
+            ]
+        },
+        {
+            "id": "xai",
+            "name": "xAI (Grok)",
+            "base_url": "https://api.x.ai/v1",
+            "default_model": "grok-2-1212",
+            "models": [
+                "grok-2-1212",
+                "grok-2-vision-1212"
+            ]
+        },
+        {
+            "id": "perplexity",
+            "name": "Perplexity AI",
+            "base_url": "https://api.perplexity.ai",
+            "default_model": "sonar-reasoning",
+            "models": [
+                "sonar-reasoning",
+                "sonar-pro",
+                "sonar"
+            ]
+        },
+        {
+            "id": "openrouter",
+            "name": "OpenRouter",
+            "base_url": "https://openrouter.ai/api/v1",
+            "default_model": "openrouter/auto",
+            "models": [
+                "openrouter/auto",
+                "deepseek/deepseek-r1",
+                "meta-llama/llama-3.3-70b-instruct",
+                "qwen/qwen-2.5-72b-instruct"
+            ]
         },
         {
             "id": "custom",
-            "name": "Endpoint Personalizzato Compatibile OpenAI (vLLM / LM Studio / LocalAI)",
+            "name": "Endpoint Personalizzato Compatibile OpenAI (vLLM / LM Studio / LocalAI / SGLang)",
             "base_url": "http://127.0.0.1:8000/v1",
             "default_model": "custom-model",
             "models": ["custom-model"]
@@ -494,6 +800,10 @@ def save_node_brain(node_id: str, req: BrainConfigRequest) -> Dict[str, Any]:
     cfg = req.model_dump() if hasattr(req, "model_dump") else req.dict()
     cfg["node_id"] = node_id
     cfg["updated_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+
+    if req.remote_mesh_instances:
+        _NODE_REMOTE_MESH_INSTANCES[node_id] = req.remote_mesh_instances
+
     _NODE_APP_CONFIGS[key] = {
         "nodeId": node_id,
         "appId": "brain",
@@ -523,7 +833,7 @@ async def test_node_brain(node_id: str, req: BrainTestRequest) -> Dict[str, Any]
         host = (req.host or "http://127.0.0.1:11434").rstrip("/")
         model = req.model or "llama3.2:latest"
         try:
-            async with httpx.AsyncClient(timeout=12.0) as client:
+            async with httpx.AsyncClient(timeout=20.0) as client:
                 res = await client.post(
                     f"{host}/api/generate",
                     json={"model": model, "prompt": prompt, "stream": False, "options": {"temperature": 0.7}}

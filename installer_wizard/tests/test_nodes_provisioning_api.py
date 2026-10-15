@@ -165,6 +165,63 @@ class NodesProvisioningApiTests(unittest.TestCase):
         del_wb = delete_node_whiteboard("node-test-01", wb_id)
         self.assertEqual(del_wb["status"], "deleted")
 
+    def test_ollama_local_and_remote_mesh_endpoints(self):
+        from node_api import (
+            get_local_ollama_status,
+            install_local_ollama,
+            uninstall_local_ollama,
+            get_node_remote_mesh_instances,
+            save_node_remote_mesh_instances,
+            RemoteMeshSaveRequest,
+            RemoteOllamaInstance,
+        )
+
+        # 1. Local Ollama status probe
+        status = get_local_ollama_status("node-test-01")
+        self.assertIn("installed", status)
+        self.assertIn("running", status)
+        self.assertIn("models", status)
+        self.assertIn("catalog", status)
+
+        # 2. Automated Install & Uninstall invocation
+        install_res = install_local_ollama("node-test-01")
+        self.assertIn("status", install_res)
+        self.assertIn(install_res["status"], ("installing", "manual_action_required", "success"))
+
+        uninstall_res = uninstall_local_ollama("node-test-01")
+        self.assertIn("status", uninstall_res)
+        self.assertIn(uninstall_res["status"], ("uninstalled", "manual_action_required"))
+
+        # 3. Multi-instance Remote Mesh Ollama configuration
+        remote_res = get_node_remote_mesh_instances("node-test-01")
+        self.assertIn("instances", remote_res)
+        self.assertGreaterEqual(len(remote_res["instances"]), 1)
+
+        # Save multiple remote instances with specialized tasks
+        new_instances = [
+            RemoteOllamaInstance(
+                id="inst-test-fast",
+                name="Workstation-RTX4090",
+                host_url="http://192.168.1.50:11434",
+                model="llama3.2:3b",
+                task="fast_chat",
+                latency_ms=1.8,
+            ),
+            RemoteOllamaInstance(
+                id="inst-test-reasoning",
+                name="Server-Studio-GPU",
+                host_url="http://192.168.1.60:11434",
+                model="deepseek-r1:7b",
+                task="deep_reasoning",
+                latency_ms=4.2,
+            ),
+        ]
+        save_remote_res = save_node_remote_mesh_instances("node-test-01", RemoteMeshSaveRequest(instances=new_instances))
+        self.assertEqual(save_remote_res["status"], "saved")
+        self.assertEqual(len(save_remote_res["instances"]), 2)
+        self.assertEqual(save_remote_res["instances"][0]["task"], "fast_chat")
+        self.assertEqual(save_remote_res["instances"][1]["task"], "deep_reasoning")
+
 
 if __name__ == "__main__":
     unittest.main()
