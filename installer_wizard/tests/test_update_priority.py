@@ -87,6 +87,7 @@ class UpdaterPriorityTest(unittest.IsolatedAsyncioTestCase):
             with mock.patch("updater.PENDING_FILE", pending_file), \
                     mock.patch("updater.check", new_callable=mock.AsyncMock, return_value=info), \
                     mock.patch("updater.git", new_callable=mock.AsyncMock, return_value=(0, "")), \
+                    mock.patch("updater.current_rev", new_callable=mock.AsyncMock, return_value="fixed"), \
                     mock.patch("updater.sh", new_callable=mock.AsyncMock, return_value=(0, "")), \
                     mock.patch("updater.asyncio.sleep", new_callable=mock.AsyncMock):
                 self.assertTrue(await updater.apply("correttivo dopo un errore"))

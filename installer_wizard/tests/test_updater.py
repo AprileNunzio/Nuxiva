@@ -169,6 +169,7 @@ class UpdaterTest(unittest.IsolatedAsyncioTestCase):
                 mock.patch("updater.PENDING_FILE", self.pending_file), \
                 mock.patch("updater.check", new_callable=mock.AsyncMock) as check_mock, \
                 mock.patch("updater.git", new_callable=mock.AsyncMock, return_value=(0, "")), \
+                mock.patch("updater.current_rev", new_callable=mock.AsyncMock, return_value="target999"), \
                 mock.patch("updater.sh", new_callable=mock.AsyncMock, return_value=(0, "")), \
                 mock.patch("updater.asyncio.sleep", new_callable=mock.AsyncMock):
             updater.mark_bad_rev("target999")
@@ -188,6 +189,7 @@ class UpdaterTest(unittest.IsolatedAsyncioTestCase):
     async def test_finish_pending_cleans_bad_rev_on_success(self):
         with mock.patch("updater.BAD_REVS_FILE", self.bad_file), \
                 mock.patch("updater.PENDING_FILE", self.pending_file), \
+                mock.patch("updater.current_rev", new_callable=mock.AsyncMock, return_value="good999"), \
                 mock.patch("updater.mark_good", new_callable=mock.AsyncMock):
             updater.mark_bad_rev("good999")
             self.pending_file.write_text(json.dumps({"from": "old", "to": "good999", "at": time.time()}))
@@ -195,6 +197,29 @@ class UpdaterTest(unittest.IsolatedAsyncioTestCase):
             self.assertFalse(rollback)
             self.assertNotIn("good999", updater._bad_revs())
             self.assertFalse(self.pending_file.exists())
+
+    async def test_apply_refuses_when_revision_does_not_change(self):
+        with mock.patch("updater.PENDING_FILE", self.pending_file), \
+                mock.patch("updater.check", new_callable=mock.AsyncMock) as check_mock, \
+                mock.patch("updater.git", new_callable=mock.AsyncMock, return_value=(0, "")), \
+                mock.patch("updater.current_rev", new_callable=mock.AsyncMock, return_value="local111"), \
+                mock.patch("updater.sh", new_callable=mock.AsyncMock) as sh_mock:
+            check_mock.return_value = {"available": True, "target_rev": "target999", "local_rev": "local111",
+                                       "remote_rev": "target999"}
+            applied = await updater.apply("manuale")
+            self.assertFalse(applied)
+            self.assertFalse(self.pending_file.exists())
+            self.assertIn("non applicato", check_mock.return_value["last_result"])
+            sh_mock.assert_not_called()
+
+    async def test_finish_pending_does_not_claim_success_on_wrong_revision(self):
+        with mock.patch("updater.PENDING_FILE", self.pending_file), \
+                mock.patch("updater.current_rev", new_callable=mock.AsyncMock, return_value="old0000"), \
+                mock.patch("updater.mark_good", new_callable=mock.AsyncMock) as good_mock:
+            self.pending_file.write_text(json.dumps({"from": "old0000", "to": "new9999", "at": time.time()}))
+            await updater.finish_pending(True)
+            good_mock.assert_not_called()
+            self.assertIn("non attivo", updater.store.update["last_result"])
 
 
 if __name__ == "__main__":

@@ -2,7 +2,7 @@ import os
 import sys
 from pathlib import Path
 
-VERSION = "5.0.0"
+VERSION = "5.3.0"
 FROZEN = bool(getattr(sys, "frozen", False))
 APP_DIR = Path(sys.executable).resolve().parent if FROZEN else Path(__file__).resolve().parent.parent
 DATA_DIR = Path(os.environ.get("APPDATA") or Path.home()) / "NUXIVA"

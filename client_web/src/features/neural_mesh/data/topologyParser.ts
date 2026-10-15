@@ -33,6 +33,7 @@ function parseTelemetry(value: unknown): NeuronTelemetry {
     ramUsedGb: cleanNumber(t.ram_used_gb, 0, 1e5),
     ramTotalGb: cleanNumber(t.ram_total_gb, 0, 1e5),
     gpuName: cleanText(t.gpu_name, 96),
+    gpuCount: cleanNumber(t.gpu_count, 0, 64),
     vramUsedGb: cleanNumber(t.vram_used_gb, 0, 1e4),
     vramTotalGb: cleanNumber(t.vram_total_gb, 0, 1e4),
     activeModel: cleanText(t.active_model, 96),

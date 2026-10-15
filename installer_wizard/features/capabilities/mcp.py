@@ -7,7 +7,7 @@ from features.capabilities import audit, catalog, schema
 from features.team import roster, runner
 
 SUPPORTED = ("2025-06-18", "2025-03-26", "2024-11-05")
-INFO = {"name": "nuxiva-os", "version": "5.0.0"}
+INFO = {"name": "nuxiva-os", "version": "5.3.0"}
 SAFE_AGENTS = {"music", "cameras", "desktop", "agent", "whiteboard"}
 INSTRUCTIONS = ("Nuxiva OS: ogni strumento appartiene a un agente con una priorità. Leggi il prompt «panoramica» e le risorse nuxiva://capabilities e "
                 "nuxiva://team per sapere cosa fa la squadra. Le azioni delicate richiedono _confirm=true dopo la conferma dell'utente.")

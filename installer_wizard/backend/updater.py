@@ -248,9 +248,12 @@ async def apply(reason: str = "automatico", fetch_timeout: float = 180, force: b
     store.set_phase("UPDATING", "Download del nuovo firmware cognitivo…")
     PENDING_FILE.write_text(json.dumps({"from": rollback_to, "to": target, "at": time.time()}))
     code, out = await git("reset", "--hard", target)
-    if code != 0:
+    landed = await current_rev() if code == 0 else ""
+    if code != 0 or landed != target:
         PENDING_FILE.unlink(missing_ok=True)
-        store.event("ERROR", f"Aggiornamento non applicato: {out[:200]}", "updater")
+        detail = out[:200] if code != 0 else f"la revisione attiva è {landed[:7] or '?'} invece di {target[:7]}"
+        info["last_result"] = f"Aggiornamento non applicato: {detail}"
+        store.event("ERROR", info["last_result"], "updater")
         store.set_phase("READY", "Aggiornamento annullato")
         return False
     store.message = "Riavvio del supervisore sulla nuova versione…"
@@ -280,6 +283,12 @@ async def finish_pending(success: bool) -> bool:
     if not data:
         return False
     PENDING_FILE.unlink(missing_ok=True)
+    running = await current_rev()
+    if success and running != data["to"]:
+        store.update["last_result"] = (f"Aggiornamento a {data['to'][:7]} non attivo: "
+                                       f"è in esecuzione {running[:7] or '?'}")
+        store.event("ERROR", store.update["last_result"], "updater")
+        return False
     if success:
         from datetime import datetime
         local_time = datetime.now().astimezone().strftime('%d/%m/%Y %H:%M:%S')

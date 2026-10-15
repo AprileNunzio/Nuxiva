@@ -6,8 +6,10 @@ import time
 from typing import Any, Dict, Optional
 
 try:
+    from .gpu_probe import gpu_probe
     from .node_registry import NodeRegistry
 except ImportError:
+    from gpu_probe import gpu_probe
     from node_registry import NodeRegistry
 
 log = logging.getLogger("nuxiva.mesh")
@@ -77,6 +79,7 @@ def collect_real_system_telemetry(node_id: Optional[str] = None) -> Dict[str, An
     except Exception:
         pass
 
+    gpu = gpu_probe.summary()
     return {
         "node_id": actual_id,
         "name": hostname,
@@ -88,11 +91,13 @@ def collect_real_system_telemetry(node_id: Optional[str] = None) -> Dict[str, An
         "cpu_cores": cpu_cores,
         "ram_used_gb": ram_used_gb,
         "ram_total_gb": ram_total_gb,
-        "gpu_name": None,
-        "vram_used_gb": None,
-        "vram_total_gb": None,
+        "gpu_name": gpu["gpu_name"],
+        "gpu_count": gpu["gpu_count"],
+        "gpus": gpu["gpus"],
+        "vram_used_gb": gpu["vram_used_gb"],
+        "vram_total_gb": gpu["vram_total_gb"],
         "active_model": None,
-        "power_watts": None,
+        "power_watts": gpu["gpu_power_watts"],
         "temp_c": temp_c,
         "ping_ms": 0.1,
         "tx_kbps": tx_kbps,
@@ -102,6 +107,19 @@ def collect_real_system_telemetry(node_id: Optional[str] = None) -> Dict[str, An
         "is_remote_vpn": False,
         "last_updated": time.time()
     }
+
+
+def _cpu_cores() -> int:
+    import os
+    return os.cpu_count() or 1
+
+
+def _load() -> float:
+    import os
+    try:
+        return round(os.getloadavg()[0] / _cpu_cores(), 3)
+    except (AttributeError, OSError):
+        return 0.0
 
 
 class NuxivaMeshCoordinator:
@@ -203,8 +221,8 @@ class NuxivaMeshCoordinator:
                 payload = {
                     "node_id": self.node_id,
                     "action": "HELLO",
-                    "capabilities": {"gpus": 0, "cpu_cores": 4},
-                    "load": 0.1,
+                    "capabilities": {"gpus": gpu_probe.summary()["gpu_count"], "cpu_cores": _cpu_cores()},
+                    "load": _load(),
                     "timestamp": time.time()
                 }
                 msg = json.dumps(payload).encode('utf-8')

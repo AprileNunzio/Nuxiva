@@ -62,7 +62,7 @@ export function aggregateMesh(neurons: readonly MeshNeuron[], nowMs: number): Me
     }
     ramUsedGb += t.ramUsedGb ?? 0;
     ramTotalGb += t.ramTotalGb ?? 0;
-    gpuCount += t.gpuName ? 1 : 0;
+    gpuCount += t.gpuCount ?? (t.gpuName ? 1 : 0);
     if (t.powerWatts !== null) {
       powerWatts += t.powerWatts;
       powerSamples += 1;

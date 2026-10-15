@@ -17,6 +17,7 @@ export interface NeuronTelemetry {
   readonly ramUsedGb: number | null;
   readonly ramTotalGb: number | null;
   readonly gpuName: string | null;
+  readonly gpuCount: number | null;
   readonly vramUsedGb: number | null;
   readonly vramTotalGb: number | null;
   readonly activeModel: string | null;

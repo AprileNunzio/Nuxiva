@@ -67,7 +67,7 @@ async def lifespan(app: FastAPI):
 def create_application() -> FastAPI:
     app = FastAPI(
         title="Nuxiva Autonomous Cognitive Orchestrator",
-        version="5.0.0",
+        version="5.3.0",
         docs_url="/docs",
         redoc_url="/redoc",
         lifespan=lifespan,
@@ -137,7 +137,7 @@ def create_application() -> FastAPI:
         from server.core.context_graph.graph_client import graph_client
         return {
             "status": "HEALTHY",
-            "version": "5.0.0",
+            "version": "5.3.0",
             "orchestrator": "ONLINE",
             "active_agents": agent_pool.list_agents(),
             "knowledge_graph": {
