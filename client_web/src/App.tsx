@@ -176,6 +176,9 @@ export const MainConsole: React.FC = () => {
             nodeTier={selectedNode.tier}
             ipAddress={selectedNode.ip}
             onBack={() => setCurrentTab('MESH_CANVAS')}
+            onRename={(nodeId, newName) => {
+              setSelectedNode((prev) => (prev && prev.id === nodeId ? { ...prev, name: newName } : prev));
+            }}
           />
         )}
       </main>

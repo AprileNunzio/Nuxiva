@@ -128,12 +128,13 @@ def list_nodes() -> List[Dict[str, Any]]:
 
 @router.get("/{node_id}")
 def get_node(node_id: str) -> Dict[str, Any]:
+    custom_name = _NODE_APP_CONFIGS.get(f"{node_id}:meta", {}).get("name")
     try:
         from server.features.mesh_coordinator.p2p_mesh import p2p_mesh
         telem = p2p_mesh.get_node_telemetry(node_id)
         return {
             "id": node_id,
-            "name": telem.get("name", node_id),
+            "name": custom_name or telem.get("name", node_id),
             "tier": telem.get("tier", "Tier-1 (Compute & Virtual Core)"),
             "ip": telem.get("ip", "127.0.0.1"),
             "os": telem.get("os", "Linux"),
@@ -150,7 +151,7 @@ def get_node(node_id: str) -> Dict[str, Any]:
         import socket
         return {
             "id": node_id,
-            "name": socket.gethostname(),
+            "name": custom_name or socket.gethostname(),
             "tier": "Tier-1 Compute",
             "ip": "127.0.0.1",
             "os": "Linux",
@@ -158,6 +159,7 @@ def get_node(node_id: str) -> Dict[str, Any]:
             "status": "online",
             "metrics": {"cpu": 0.0, "ram": "N/A", "temp": 0.0, "ping": 0.1}
         }
+
 
 
 @router.get("/{node_id}/apps")
@@ -270,6 +272,40 @@ def delete_node(node_id: str) -> Dict[str, Any]:
         return {"node_id": node_id, "removed": removed, "status": "deleted" if removed else "not_found"}
     except Exception as exc:
         return {"node_id": node_id, "removed": False, "error": str(exc)}
+
+
+class RenameNodeRequest(BaseModel):
+    name: str
+
+
+@router.post("/{node_id}/name")
+@router.patch("/{node_id}/name")
+def rename_node(node_id: str, req: RenameNodeRequest) -> Dict[str, Any]:
+    """Assegna o modifica il nome personalizzato del nodo specificato."""
+    new_name = req.name.strip()
+    if not new_name:
+        raise HTTPException(status_code=400, detail="Il nome del nodo non può essere vuoto.")
+
+    key = f"{node_id}:meta"
+    _NODE_APP_CONFIGS[key] = {
+        "nodeId": node_id,
+        "name": new_name,
+        "updatedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    }
+
+    try:
+        from server.features.mesh_coordinator.p2p_mesh import p2p_mesh
+        p2p_mesh.rename_node(node_id, new_name)
+    except Exception:
+        pass
+
+    return {
+        "node_id": node_id,
+        "name": new_name,
+        "status": "renamed",
+        "message": f"Nome personalizzato '{new_name}' assegnato con successo al nodo."
+    }
+
 
 
 # =====================================================================

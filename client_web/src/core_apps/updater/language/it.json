@@ -21,7 +21,8 @@
     "saving": "Salvataggio...",
     "policy_saved": "Criteri aggiornati con successo",
     "collaudo_title": "Collaudo Hardware & Diagnosi Pre-Flight",
-    "collaudo_desc": "Suite di test diagnostici per verificare integrità memoria, disco, rete e CRDT prima del rollout",
+    "collaudo_desc": "Suite di test diagnostici a 10 punti per verificare integrità memoria, disco, rete, audio, camera e CRDT prima del rollout",
+    "collaudo_10_points": "Suite Diagnostica 10 Punti Hardware",
     "run_collaudo": "Esegui Collaudo Adesso",
     "collaudo_running": "Diagnosi in corso...",
     "collaudo_all_passed": "Collaudo Superato al 100%",
@@ -39,6 +40,14 @@
     "terminal_title": "Console Telemetrica di Rollout",
     "terminal_live": "LIVE STREAM",
     "virtual_core": "Nucleo Virtuale",
-    "satellite": "Satellite"
+    "satellite": "Satellite",
+    "scan_step1": "Interrogazione server upstream GitHub & release catalog...",
+    "scan_step2": "Verifica hash commit cluster e parità git...",
+    "scan_step3": "Controllo integrità ledger CRDT e binari Rust...",
+    "scan_step4": "Scansione telemetria e firmware nodi mesh...",
+    "force_align": "Forza Allineamento & Re-flash Cluster",
+    "aligning": "Allineamento in corso...",
+    "update_now": "Installa Aggiornamento Ora",
+    "cluster_synced_toast": "Tutti i nodi sono perfettamente sincronizzati e collaudati!"
   }
 }

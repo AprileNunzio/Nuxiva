@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useScopedI18n } from '../shared/i18n/useScopedI18n';
 import { 
   Cpu, Volume2, Mic, Camera, Printer, Bluetooth, 
   Monitor, Edit3, Smartphone, ArrowLeft, RefreshCw, 
-  Sliders, ShieldCheck, Activity, Wifi
+  Sliders, ShieldCheck, Activity, Wifi, Check, X
 } from 'lucide-react';
 
 import BrainView from './brain';
@@ -22,6 +22,7 @@ interface NodeDetailProps {
   nodeTier?: string;
   ipAddress?: string;
   onBack?: () => void;
+  onRename?: (nodeId: string, newName: string) => void;
 }
 
 export const NodeDetailView: React.FC<NodeDetailProps> = ({
@@ -30,10 +31,60 @@ export const NodeDetailView: React.FC<NodeDetailProps> = ({
   nodeTier = 'Tier-2 Satellite',
   ipAddress = '192.168.1.15',
   onBack,
+  onRename,
 }) => {
   const { t } = useScopedI18n('node_apps');
   const [activeTab, setActiveTab] = useState<string>('brain');
   const [isRebooting, setIsRebooting] = useState(false);
+
+  // Custom Node Name state
+  const [currentDisplayName, setCurrentDisplayName] = useState(nodeName);
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [nameInput, setNameInput] = useState(nodeName);
+  const [isSavingName, setIsSavingName] = useState(false);
+  const [nameSaveSuccess, setNameSaveSuccess] = useState(false);
+
+  useEffect(() => {
+    setCurrentDisplayName(nodeName);
+    setNameInput(nodeName);
+  }, [nodeName]);
+
+  const handleStartEditing = () => {
+    setNameInput(currentDisplayName);
+    setIsEditingName(true);
+    setNameSaveSuccess(false);
+  };
+
+  const handleCancelEditing = () => {
+    setNameInput(currentDisplayName);
+    setIsEditingName(false);
+  };
+
+  const handleSaveName = async () => {
+    const trimmed = nameInput.trim();
+    if (!trimmed) return;
+    setIsSavingName(true);
+    try {
+      const res = await fetch(`/api/v5/nodes/${nodeId}/name`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: trimmed }),
+      });
+      if (res.ok) {
+        setCurrentDisplayName(trimmed);
+        setIsEditingName(false);
+        setNameSaveSuccess(true);
+        if (onRename) {
+          onRename(nodeId, trimmed);
+        }
+        setTimeout(() => setNameSaveSuccess(false), 3000);
+      }
+    } catch (err) {
+      console.error('Error renaming node', err);
+    } finally {
+      setIsSavingName(false);
+    }
+  };
 
   const modules = [
     { id: 'brain', icon: Cpu, label: 'Brain', component: BrainView },
@@ -77,7 +128,56 @@ export const NodeDetailView: React.FC<NodeDetailProps> = ({
           )}
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold tracking-tight text-white">{nodeName}</h1>
+              {isEditingName ? (
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={nameInput}
+                    onChange={(e) => setNameInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleSaveName();
+                      if (e.key === 'Escape') handleCancelEditing();
+                    }}
+                    placeholder={t('node_name_placeholder') || 'Nome nodo...'}
+                    className="bg-slate-900 border border-cyan-500/80 rounded-lg px-3 py-1 text-xl font-bold text-white focus:outline-none focus:ring-2 focus:ring-cyan-500/50"
+                    autoFocus
+                    disabled={isSavingName}
+                  />
+                  <button
+                    onClick={handleSaveName}
+                    disabled={isSavingName || !nameInput.trim()}
+                    className="p-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white transition disabled:opacity-50"
+                    title={t('save_name') || 'Salva'}
+                  >
+                    <Check className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={handleCancelEditing}
+                    disabled={isSavingName}
+                    className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition"
+                    title={t('cancel_name') || 'Annulla'}
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <h1 className="text-2xl font-bold tracking-tight text-white">{currentDisplayName}</h1>
+                  <button
+                    onClick={handleStartEditing}
+                    className="p-1.5 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-800 hover:border-cyan-500/60 text-slate-400 hover:text-cyan-400 transition"
+                    title={t('edit_name') || 'Modifica nome'}
+                  >
+                    <Edit3 className="w-4 h-4" />
+                  </button>
+                  {nameSaveSuccess && (
+                    <span className="text-xs px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center gap-1">
+                      <Check className="w-3.5 h-3.5" />
+                      {t('node_renamed_success')}
+                    </span>
+                  )}
+                </div>
+              )}
               <span className="text-xs px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
                 {nodeTier}
               </span>

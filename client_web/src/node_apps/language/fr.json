@@ -1,16 +1,22 @@
 {
   "node_details": "Détails du Nœud Mesh",
-  "hardware_plane": "Plan Matériel et Périphériques",
-  "virtual_core_member": "Membre Virtual Core",
+  "hardware_plane": "Plan Matériel & Périphériques",
+  "virtual_core_member": "Membre du Cœur Virtuel",
   "satellite_leaf": "Satellite P2P Leaf",
   "reboot_node": "Redémarrer le Nœud",
   "reboot_confirm": "Êtes-vous sûr de vouloir redémarrer ce nœud ?",
   "provision_node": "Provisionnement Matériel",
-  "bind_parent": "Associer Parent P2P",
+  "bind_parent": "Associer le Parent P2P",
   "select_app": "Sélectionnez un module matériel pour le configurer",
   "cpu_load": "Charge CPU",
   "ram_usage": "Mémoire RAM",
   "temperature": "Température",
   "latency": "Latence Mesh",
-  "back_to_canvas": "Retour au Canvas Mesh"
+  "back_to_canvas": "Retour au Canevas Mesh",
+  "edit_name": "Modifier le Nom Personnalisé",
+  "save_name": "Enregistrer le Nom",
+  "cancel_name": "Annuler",
+  "node_name_placeholder": "Entrez un nom personnalisé pour ce nœud (ex: Salon, Bureau, Chambre)",
+  "node_renamed_success": "Nom personnalisé du nœud mis à jour avec succès !",
+  "custom_name_label": "Nom du Nœud"
 }

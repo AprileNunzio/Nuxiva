@@ -314,6 +314,31 @@ class NuxivaMeshCoordinator:
             del self._bindings[node_id]
         return removed
 
+    def rename_node(self, node_id: str, new_name: str) -> bool:
+        """Assegna un nome personalizzato al nodo specificato e aggiorna la telemetria/CRDT."""
+        new_name = new_name.strip()
+        if not new_name:
+            return False
+
+        if node_id == self.node_id:
+            if node_id not in self.telemetry_store:
+                self.telemetry_store[node_id] = self.get_node_telemetry(node_id)
+            self.telemetry_store[node_id]["name"] = new_name
+            self.telemetry_store[node_id]["custom_name"] = new_name
+        else:
+            if node_id in self.peers:
+                self.peers[node_id]["name"] = new_name
+            if node_id in self.telemetry_store:
+                self.telemetry_store[node_id]["name"] = new_name
+
+        if hasattr(self, "crdt") and self.crdt:
+            try:
+                self.crdt.set(f"node:{node_id}:name", {"name": new_name, "updated_at": time.time()})
+            except Exception:
+                pass
+        return True
+
+
     # ---------------- LIVE HOVER TELEMETRY (2Hz STREAM) ----------------
     def get_node_telemetry(self, node_id: str) -> Dict[str, Any]:
         """Ritorna la telemetria real-time del nodo specificato (senza dati inventati)."""

@@ -67,6 +67,18 @@ class NodesProvisioningApiTests(unittest.TestCase):
         del_res = delete_node(res["node_id"])
         self.assertTrue(del_res["removed"])
 
+    def test_rename_node(self):
+        from node_api import rename_node, get_node, RenameNodeRequest
+        req = RenameNodeRequest(name="Salotto Principale Nuxiva")
+        res = rename_node("node-test-rename", req)
+        self.assertEqual(res["status"], "renamed")
+        self.assertEqual(res["name"], "Salotto Principale Nuxiva")
+
+        # Verify get_node reflects the custom name
+        node = get_node("node-test-rename")
+        self.assertEqual(node["name"], "Salotto Principale Nuxiva")
+
+
     def test_node_brain_lifecycle(self):
         import asyncio
         from node_api import (
