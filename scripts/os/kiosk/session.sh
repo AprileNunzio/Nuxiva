@@ -19,10 +19,25 @@ if pkill -u "$(id -u)" -f "user-data-dir=$PROFILE" 2>/dev/null; then
     sleep 2
 fi
 
-for _ in $(seq 1 180); do
-    curl -fs -o /dev/null --max-time 2 "$BASE/healthz" && break
-    sleep 1
+BOOT_WAIT_SECONDS="${NUXIVA_KIOSK_BOOT_WAIT:-600}"
+RECOVERY_DOWN_SECONDS=10
+
+healthy() {
+    local body
+    body=$(curl -fs --max-time 3 "$BASE/healthz" 2>/dev/null) || return 1
+    grep -q '"ok": *true' <<<"$body" && ! grep -q '"safe_mode": *true' <<<"$body"
+}
+
+waited=0
+until healthy; do
+    if [ "$waited" -ge "$BOOT_WAIT_SECONDS" ]; then
+        echo "[$(date -Is)] Server non pronto dopo ${BOOT_WAIT_SECONDS}s: apro comunque, il watchdog ricaricherà"
+        break
+    fi
+    sleep 2
+    waited=$((waited + 2))
 done
+echo "[$(date -Is)] Server pronto dopo ${waited}s"
 
 outputs() { xrandr --query 2>/dev/null | awk '/ connected/{print $1}'; }
 
@@ -108,6 +123,7 @@ stop_all() {
 trap 'stop_all; exit 0' TERM INT
 start_all
 current=$(signature)
+down_since=0
 while true; do
     sleep 5
     next=$(signature)
@@ -117,5 +133,16 @@ while true; do
         stop_all
         start_all
         current=$(signature)
+    fi
+    if healthy; then
+        if [ "$down_since" -gt 0 ] && [ $(( $(date +%s) - down_since )) -ge "$RECOVERY_DOWN_SECONDS" ]; then
+            echo "[$(date -Is)] Server tornato disponibile: ricarico le finestre"
+            stop_all
+            start_all
+        fi
+        down_since=0
+    elif [ "$down_since" -eq 0 ]; then
+        down_since=$(date +%s)
+        echo "[$(date -Is)] Server non raggiungibile: attendo il ritorno"
     fi
 done

@@ -174,7 +174,20 @@
     onStage: (zone) => { if (D.cam && D.cam.on) { D.cam.prevZone = zone; return; } D.stageZone = zone; D.applyStage(); },
     screen: 0, x: +(new URLSearchParams(location.search).get("x") || 0),
   });
-  Nuxiva.connectState("/api/stream", (s) => (window.nuxivaPerf ? window.nuxivaPerf.measure("stato", () => onState(s)) : onState(s)), (ok) => $("link").classList.toggle("show", !ok));
+  let linkLostAt = 0;
+  const onLink = (ok) => {
+    $("link").classList.toggle("show", !ok);
+    if (!ok) {
+      linkLostAt = linkLostAt || Date.now();
+      return;
+    }
+    if (linkLostAt && Date.now() - linkLostAt > 8000) {
+      location.reload();
+      return;
+    }
+    linkLostAt = 0;
+  };
+  Nuxiva.connectState("/api/stream", (s) => (window.nuxivaPerf ? window.nuxivaPerf.measure("stato", () => onState(s)) : onState(s)), onLink);
   D.startBrain();
   D.startMindStream();
   if (D.startFlow) D.startFlow();
