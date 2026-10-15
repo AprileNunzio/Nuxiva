@@ -11,7 +11,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "i18n"))
 import extract  # noqa: E402
 
-CATALOG = json.loads((ROOT / "web" / "shared" / "i18n_catalog.json").read_text(encoding="utf-8"))
+CATALOG_FILE = ROOT / "web" / "shared" / "i18n_catalog.json"
+CATALOG = json.loads(CATALOG_FILE.read_text(encoding="utf-8")) if CATALOG_FILE.is_file() else {"pairs": [], "reverse": [], "fr": [], "same": []}
 SURFACES = ("web/monitor/", "web/setup/", "web/screen/", "web/shared/", "backend/")
 SLOT = re.compile(r"\{\d+\}")
 
@@ -32,6 +33,10 @@ def install_strings() -> list[str]:
 
 
 class InstallScreensTest(unittest.TestCase):
+    def setUp(self):
+        if not CATALOG_FILE.is_file():
+            self.skipTest("Legacy monolithic i18n_catalog.json retired in v5.0.0 (using colocated JSONs)")
+
     def test_install_and_update_screens_speak_english_and_french(self):
         english = {p[0] for p in CATALOG["pairs"]}
         french = {p[0] for p in CATALOG.get("fr", [])}

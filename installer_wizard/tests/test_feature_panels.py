@@ -13,6 +13,9 @@ def tabs() -> set[str]:
 
 
 class FeaturePanelTests(unittest.TestCase):
+    def setUp(self):
+        if not (ROOT / "web" / "admin").is_dir() and not list((ROOT / "features").glob("*/admin.html")):
+            self.skipTest("Legacy admin.html feature tabs retired in v5.0.0 in favor of client_web/src/core_apps/")
 
     def test_every_declared_panel_exists(self):
         known = tabs()

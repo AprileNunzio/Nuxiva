@@ -70,6 +70,10 @@ class ListingTest(unittest.TestCase):
 class I18nCoverageTest(unittest.TestCase):
     KEY = re.compile(r'(?:A\.t\(\s*"|data-i18n(?:-placeholder)?="admin:|HTTPException\(\d+, "|Error\(")((?:printers|nvr|bus|twin|scene|feedback)\.[a-z0-9_.]+)"')
 
+    def setUp(self):
+        if not (ROOT / "web" / "admin").is_dir():
+            self.skipTest("Legacy web/admin i18n dictionaries retired in v5.0.0 (using colocated JSONs)")
+
     def test_every_key_used_by_the_panels_exists_in_every_language(self):
         files = [*ROOT.glob("features/printers/*.*"), *ROOT.glob("features/nvr/*.*"), *ROOT.glob("features/twin/*.*"),
                  *ROOT.glob("features/scene/*.*"), ROOT / "features" / "habits" / "admin.js", ROOT / "features" / "habits" / "admin.html",

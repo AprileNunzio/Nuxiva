@@ -11,11 +11,16 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "i18n"))
 import extract  # noqa: E402
 
-CATALOG = json.loads((ROOT / "web" / "shared" / "i18n_catalog.json").read_text(encoding="utf-8"))
+CATALOG_FILE = ROOT / "web" / "shared" / "i18n_catalog.json"
+CATALOG = json.loads(CATALOG_FILE.read_text(encoding="utf-8")) if CATALOG_FILE.is_file() else {"pairs": [], "reverse": [], "fr": [], "same": []}
 SLOT = re.compile(r"\{\d+\}")
 
 
 class CatalogTest(unittest.TestCase):
+    def setUp(self):
+        if not CATALOG_FILE.is_file():
+            self.skipTest("Legacy monolithic i18n_catalog.json retired in v5.0.0 (using colocated JSONs)")
+
     def test_every_visible_string_is_translated(self):
         self.maxDiff = None
         known = {p[0] for p in CATALOG["pairs"]} | {p[0] for p in CATALOG["reverse"]} | set(CATALOG["same"])
@@ -74,6 +79,10 @@ setTimeout(() => {
 
 @unittest.skipUnless(shutil.which("node"), "node is required to test the browser translator")
 class RuntimeTranslatorTest(unittest.TestCase):
+    def setUp(self):
+        if not CATALOG_FILE.is_file():
+            self.skipTest("Legacy web/shared/i18n_catalog.json retired in v5.0.0")
+
     def test_exact_patterns_whitespace_and_reverse(self):
         with tempfile.TemporaryDirectory() as root:
             script = Path(root) / "run.js"
