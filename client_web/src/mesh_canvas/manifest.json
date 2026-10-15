@@ -1,0 +1,7 @@
+{
+  "id": "mesh_canvas",
+  "name": "Mesh Topology Canvas",
+  "version": "5.0.0",
+  "icon": "Network",
+  "description": "Interactive spatial mesh topology with live telemetry HUD, zero-bottleneck P2P stream routing, and parent binding."
+}

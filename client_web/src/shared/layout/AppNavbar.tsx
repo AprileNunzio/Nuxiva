@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavigationTab } from '../types';
-import { Activity, ShieldCheck, Cpu, Terminal, Radio, Globe, Box, Gamepad2, Menu, X } from 'lucide-react';
+import { Activity, ShieldCheck, Cpu, Terminal, Radio, Globe, Box, Gamepad2, Menu, X, Network } from 'lucide-react';
 import { useI18n } from '../i18n/I18nContext';
 import { SupportedLanguage } from '../i18n/translations';
 
@@ -14,7 +14,8 @@ export const AppNavbar: React.FC<AppNavbarProps> = ({ currentTab, onTabChange, i
   const { lang, setLang, t } = useI18n();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const navItems: { tab: NavigationTab; labelKey: 'nav_core' | 'nav_world_3d' | 'nav_studio_3d' | 'nav_control_deck'; icon: React.ReactNode }[] = [
+  const navItems: { tab: NavigationTab; labelKey: 'nav_mesh_canvas' | 'nav_core' | 'nav_world_3d' | 'nav_studio_3d' | 'nav_control_deck'; icon: React.ReactNode }[] = [
+    { tab: 'MESH_CANVAS', labelKey: 'nav_mesh_canvas', icon: <Network className="w-4 h-4 8k:w-7 8k:h-7 text-cyan-400" /> },
     { tab: 'CORE', labelKey: 'nav_core', icon: <Activity className="w-4 h-4 8k:w-7 8k:h-7 text-cyan-400" /> },
     { tab: 'WORLD_3D', labelKey: 'nav_world_3d', icon: <Gamepad2 className="w-4 h-4 8k:w-7 8k:h-7 text-emerald-400" /> },
     { tab: 'STUDIO_3D', labelKey: 'nav_studio_3d', icon: <Box className="w-4 h-4 8k:w-7 8k:h-7 text-purple-400" /> },

@@ -1,4 +1,54 @@
-export type NavigationTab = 'CORE' | 'WORLD_3D' | 'STUDIO_3D' | 'CONTROL_DECK';
+export type NavigationTab = 'MESH_CANVAS' | 'CORE_APPS' | 'NODE_CONTROL' | 'CORE' | 'WORLD_3D' | 'STUDIO_3D' | 'CONTROL_DECK';
+
+export type NodeTier = 'Tier-0 (Virtual Core)' | 'Tier-1 (Compute & Core)' | 'Tier-2 (Smart Edge Satellite)' | 'Tier-3 (Pure Micro-Satellite)';
+
+export interface MeshNodeTelemetry {
+  node_id: string;
+  name: string;
+  tier: string;
+  cpu_percent: number;
+  ram_used_gb: number;
+  ram_total_gb: number;
+  gpu_name?: string;
+  vram_used_gb?: number;
+  vram_total_gb?: number;
+  active_model?: string;
+  power_watts: number;
+  temp_c: number;
+  ping_ms: number;
+  tx_kbps: number;
+  rx_kbps: number;
+  child_satellites?: string[];
+  status: string;
+  is_remote_vpn?: boolean;
+  stream?: string;
+  last_updated: number;
+}
+
+export interface MeshTopologyNode {
+  id: string;
+  name: string;
+  tier: string;
+  type: 'core' | 'compute' | 'satellite' | 'micro' | 'mobile';
+  ip: string;
+  parent_id?: string;
+  is_remote_vpn?: boolean;
+  x?: number;
+  y?: number;
+  telemetry: MeshNodeTelemetry | Record<string, unknown>;
+}
+
+export interface MeshTopologyLink {
+  source: string;
+  target: string;
+  protocol: string;
+}
+
+export interface MeshTopologyState {
+  nodes: MeshTopologyNode[];
+  links: MeshTopologyLink[];
+  timestamp: number;
+}
 
 export interface SpatialAsset {
   id: string;

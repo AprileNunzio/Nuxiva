@@ -1,6 +1,7 @@
 export const it = {
   brand_name: "NUXIVA",
-  app_version: "v4.5.0",
+  app_version: "v5.0.0",
+  nav_mesh_canvas: "Topologia Mesh",
   nav_core: "Visione Core 3D",
   nav_world_3d: "Mondo Spaziale 3D",
   nav_studio_3d: "Laboratorio CAD 3D",

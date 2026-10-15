@@ -1,0 +1,29 @@
+{
+  "meta": { "locale": "en" },
+  "dictionary": {
+    "title": "Nuxiva Mesh Topology v5.0",
+    "subtitle": "Decentralized Coreless Mesh & P2P Streaming",
+    "hover_title": "HOVER TELEMETRY",
+    "click_open_node": "CLICK TO OPEN NODE CONTROL PANEL",
+    "click_open_core": "CLICK CORE TO OPEN GLOBAL APPS CATALOG",
+    "hw_label": "HW",
+    "ram_label": "RAM",
+    "gpu_label": "GPU",
+    "vram_alloc": "Allocated VRAM",
+    "power_consumption": "Power Consumption",
+    "temp_label": "Temp",
+    "ping_label": "Ping",
+    "active_satellites": "Active Child Satellites",
+    "status_label": "Status",
+    "remote_vpn_badge": "REMOTE-VPN",
+    "p2p_stream_badge": "P2P STREAM",
+    "bind_parent_title": "Parent Node Association (Parent Binding)",
+    "select_parent": "Select Parent Node",
+    "auto_balance_core": "Automatic Balancing (Virtual Core)",
+    "pin_to_node": "Pin to Specific Node",
+    "stream_type_label": "P2P Stream Type",
+    "save_binding": "Save Association",
+    "cancel": "Cancel",
+    "drag_drop_hint": "Drag a satellite onto a PC node to bind it directly via P2P"
+  }
+}

@@ -6,10 +6,11 @@ import { NeuralCoreCanvas } from './features/core_visualizer_3d/NeuralCoreCanvas
 import { SpatialWorldView } from './features/world_3d/SpatialWorldView';
 import { Studio3DView } from './features/studio_3d/Studio3DView';
 import { ControlDeckView } from './features/control_deck/ControlDeckView';
+import { MeshTopologyCanvas } from './mesh_canvas';
 
 export const MainConsole: React.FC = () => {
   const { t } = useI18n();
-  const [currentTab, setCurrentTab] = useState<NavigationTab>('WORLD_3D');
+  const [currentTab, setCurrentTab] = useState<NavigationTab>('MESH_CANVAS');
   const [nodes, setNodes] = useState<KnowledgeNode[]>([
     {
       id: 'nuxiva_core',
@@ -98,6 +99,13 @@ export const MainConsole: React.FC = () => {
       />
 
       <main className="flex-1 w-full flex flex-col overflow-hidden">
+        {currentTab === 'MESH_CANVAS' && (
+          <MeshTopologyCanvas
+            onOpenCoreControl={() => setCurrentTab('CONTROL_DECK')}
+            onOpenNodeControl={(nodeId) => console.log('Open node:', nodeId)}
+          />
+        )}
+
         {currentTab === 'CORE' && (
           <NeuralCoreCanvas 
             onSendCommand={handleSendCommand} 
