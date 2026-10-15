@@ -76,6 +76,19 @@
     "error_node_board_delete_failed": "Board not deleted.",
     "error_node_board_printers_failed": "Printers unavailable.",
     "error_node_board_print_failed": "Printing failed.",
-    "error_node_board_ask_failed": "Request not completed."
+    "error_node_board_ask_failed": "Request not completed.",
+    "error_node_brain_unavailable": "Brain unavailable.",
+    "error_node_brain_pool_unavailable": "Model list unavailable.",
+    "error_node_brain_role_failed": "Role not saved.",
+    "error_node_brain_route_failed": "Routing test failed.",
+    "error_node_brain_models_unavailable": "Local engine unreachable.",
+    "error_node_brain_pull_unavailable": "Download progress unavailable.",
+    "error_node_brain_pull_failed": "Download not started.",
+    "error_node_brain_delete_failed": "Model not deleted: it may be in use.",
+    "error_node_brain_cloud_unavailable": "Cloud providers unavailable.",
+    "error_node_brain_cloud_failed": "Provider not saved.",
+    "error_node_brain_cloud_test_failed": "Provider test failed.",
+    "error_node_brain_servers_unavailable": "Model servers unavailable.",
+    "error_node_brain_server_failed": "Server operation failed."
   }
 }

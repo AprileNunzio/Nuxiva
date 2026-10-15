@@ -76,6 +76,19 @@
     "error_node_board_delete_failed": "Tableau non supprimé.",
     "error_node_board_printers_failed": "Imprimantes indisponibles.",
     "error_node_board_print_failed": "Échec de l'impression.",
-    "error_node_board_ask_failed": "Demande non aboutie."
+    "error_node_board_ask_failed": "Demande non aboutie.",
+    "error_node_brain_unavailable": "Cerveau indisponible.",
+    "error_node_brain_pool_unavailable": "Liste des modèles indisponible.",
+    "error_node_brain_role_failed": "Rôle non enregistré.",
+    "error_node_brain_route_failed": "Test d'aiguillage échoué.",
+    "error_node_brain_models_unavailable": "Moteur local injoignable.",
+    "error_node_brain_pull_unavailable": "Progression du téléchargement indisponible.",
+    "error_node_brain_pull_failed": "Téléchargement non lancé.",
+    "error_node_brain_delete_failed": "Modèle non supprimé : il est peut-être utilisé.",
+    "error_node_brain_cloud_unavailable": "Fournisseurs cloud indisponibles.",
+    "error_node_brain_cloud_failed": "Fournisseur non enregistré.",
+    "error_node_brain_cloud_test_failed": "Test du fournisseur échoué.",
+    "error_node_brain_servers_unavailable": "Serveurs de modèles indisponibles.",
+    "error_node_brain_server_failed": "Opération sur le serveur échouée."
   }
 }

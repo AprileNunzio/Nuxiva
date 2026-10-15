@@ -1,5 +1,7 @@
 import json
+import logging
 import re
+from pathlib import Path
 
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, Request
@@ -21,6 +23,7 @@ admin_routes.include_router(assignments_api.admin_routes)
 admin_routes.include_router(bridge.admin_routes)
 admin_routes.include_router(chains_api.admin_routes)
 public_routes = assignments_api.public_routes
+log = logging.getLogger("nuxiva.brain")
 _MODEL_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:/-]{0,119}$")
 
 
@@ -64,8 +67,9 @@ async def list_models(_: str = Depends(require_admin)):
 
 @admin_routes.post("/api/models/pull")
 async def admin_pull(request: Request, _: str = Depends(require_admin)):
-    name = str((await request.json()).get("name", "")).strip()
-    if not name or len(name) > 120 or any(c.isspace() for c in name):
+    body = await request.json()
+    name = str(body.get("name", "")).strip() if isinstance(body, dict) else ""
+    if not _MODEL_RE.match(name):
         raise HTTPException(400, "Nome modello non valido")
     background(pull_model(name))
     return {"ok": True, "license": licensing.describe(licensing.model_license(name))}
@@ -138,17 +142,14 @@ async def admin_ollama_test(request: Request, _: str = Depends(require_admin)):
 @admin_routes.get("/api/projects/status")
 @public_routes.get("/api/projects/status")
 async def get_projects_status():
-    import os, json
-    projects_dir = "data/projects"
+    folder = Path("data/projects")
     running = []
-    if os.path.exists(projects_dir):
-        for f in os.listdir(projects_dir):
-            if f.endswith(".json"):
-                try:
-                    with open(os.path.join(projects_dir, f), "r", encoding="utf-8") as file:
-                        data = json.load(file)
-                        if data.get("status") in ["running", "paused"]:
-                            running.append(data)
-                except:
-                    pass
+    for path in sorted(folder.glob("*.json")) if folder.is_dir() else []:
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError) as exc:
+            log.warning("Progetto %s illeggibile: %s", path.name, exc)
+            continue
+        if isinstance(data, dict) and data.get("status") in ("running", "paused"):
+            running.append(data)
     return {"projects": running}

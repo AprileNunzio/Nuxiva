@@ -75,6 +75,19 @@ const KNOWN_CODES = new Set([
   'node_board_printers_failed',
   'node_board_print_failed',
   'node_board_ask_failed',
+  'node_brain_unavailable',
+  'node_brain_pool_unavailable',
+  'node_brain_role_failed',
+  'node_brain_route_failed',
+  'node_brain_models_unavailable',
+  'node_brain_pull_unavailable',
+  'node_brain_pull_failed',
+  'node_brain_delete_failed',
+  'node_brain_cloud_unavailable',
+  'node_brain_cloud_failed',
+  'node_brain_cloud_test_failed',
+  'node_brain_servers_unavailable',
+  'node_brain_server_failed',
 ]);
 
 export const ErrorToastHost: React.FC = () => {

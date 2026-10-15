@@ -1,3 +1,4 @@
+import logging
 import re
 import time
 
@@ -10,6 +11,8 @@ from features.cloud.vault import vault
 from features.brain import scope
 from features.brain.presets import clean_profile
 from features.brain.roles import FALLBACK_ROLE, ROLES, split_order
+
+log = logging.getLogger("nuxiva.brains")
 
 CATALOG = [
     {"name": "qwen2.5:7b", "label": "Qwen 2.5 · 7 B", "size_gb": 4.7, "roles": ["deep"], "category": "deep", "rank": 1,
@@ -230,8 +233,8 @@ class Brains:
             try:
                 from server.core.reasoning.engines.scanner import engine_scanner
                 eng = engine_scanner.get_engine(mode_override)
-            except Exception:
-                pass
+            except (ImportError, AttributeError, KeyError, ValueError) as exc:
+                log.warning("Motore cognitivo %s non disponibile: %s", mode_override, exc)
             if eng:
                 sla = eng.latency_sla_ms
                 kind = "chat" if sla <= 50 else "deep"

@@ -76,6 +76,19 @@
     "error_node_board_delete_failed": "Pizarra no eliminada.",
     "error_node_board_printers_failed": "Impresoras no disponibles.",
     "error_node_board_print_failed": "Impresión fallida.",
-    "error_node_board_ask_failed": "Solicitud no completada."
+    "error_node_board_ask_failed": "Solicitud no completada.",
+    "error_node_brain_unavailable": "Cerebro no disponible.",
+    "error_node_brain_pool_unavailable": "Lista de modelos no disponible.",
+    "error_node_brain_role_failed": "Rol no guardado.",
+    "error_node_brain_route_failed": "Prueba de reparto fallida.",
+    "error_node_brain_models_unavailable": "Motor local inaccesible.",
+    "error_node_brain_pull_unavailable": "Progreso de descarga no disponible.",
+    "error_node_brain_pull_failed": "Descarga no iniciada.",
+    "error_node_brain_delete_failed": "Modelo no eliminado: puede estar en uso.",
+    "error_node_brain_cloud_unavailable": "Proveedores cloud no disponibles.",
+    "error_node_brain_cloud_failed": "Proveedor no guardado.",
+    "error_node_brain_cloud_test_failed": "Prueba del proveedor fallida.",
+    "error_node_brain_servers_unavailable": "Servidores de modelos no disponibles.",
+    "error_node_brain_server_failed": "Operación en el servidor fallida."
   }
 }
