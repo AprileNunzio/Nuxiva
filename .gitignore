@@ -76,3 +76,6 @@ credentials*
 
 target/
 .temp_trash/
+
+!client_web/dist/
+!client_web/dist/**
