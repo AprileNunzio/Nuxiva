@@ -19,6 +19,13 @@
     "error_logout_failed": "Sign-out failed.",
     "error_node_control_unavailable": "Unable to read node commands.",
     "error_node_command_failed": "Node command failed.",
-    "error_node_rename_failed": "Node rename failed."
+    "error_node_rename_failed": "Node rename failed.",
+    "error_updater_unreachable": "Unable to read update status.",
+    "error_updater_check_failed": "Update check failed.",
+    "error_updater_apply_failed": "Failed to start the update.",
+    "error_updater_policy_failed": "Failed to save the schedule.",
+    "error_updater_nodes_failed": "Failed to send the update to nodes.",
+    "error_updater_collaudo_failed": "Self-test not executed.",
+    "error_updater_history_failed": "History unavailable."
   }
 }

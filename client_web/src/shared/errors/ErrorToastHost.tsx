@@ -18,6 +18,13 @@ const KNOWN_CODES = new Set([
   'node_control_unavailable',
   'node_command_failed',
   'node_rename_failed',
+  'updater_unreachable',
+  'updater_check_failed',
+  'updater_apply_failed',
+  'updater_policy_failed',
+  'updater_nodes_failed',
+  'updater_collaudo_failed',
+  'updater_history_failed',
 ]);
 
 export const ErrorToastHost: React.FC = () => {

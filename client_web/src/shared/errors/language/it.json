@@ -19,6 +19,13 @@
     "error_logout_failed": "Disconnessione non riuscita.",
     "error_node_control_unavailable": "Impossibile leggere i comandi del nodo.",
     "error_node_command_failed": "Comando al nodo non riuscito.",
-    "error_node_rename_failed": "Rinomina del nodo non riuscita."
+    "error_node_rename_failed": "Rinomina del nodo non riuscita.",
+    "error_updater_unreachable": "Impossibile leggere lo stato degli aggiornamenti.",
+    "error_updater_check_failed": "Controllo aggiornamenti non riuscito.",
+    "error_updater_apply_failed": "Avvio dell'aggiornamento non riuscito.",
+    "error_updater_policy_failed": "Salvataggio della pianificazione non riuscito.",
+    "error_updater_nodes_failed": "Invio dell'aggiornamento ai nodi non riuscito.",
+    "error_updater_collaudo_failed": "Collaudo non eseguito.",
+    "error_updater_history_failed": "Cronologia non disponibile."
   }
 }

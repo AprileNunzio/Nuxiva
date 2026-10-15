@@ -1,45 +1,65 @@
-export interface RolloutNode {
-  id: string;
-  name: string;
-  tier: string;
-  ip: string;
-  current_version: string;
-  target_version: string;
-  status: 'ready' | 'pending' | 'precaching' | 'updating' | 'complete' | 'failed' | 'rolled_back';
-  collaudo_passed: boolean;
+export type UpdaterPhase = 'BOOTING' | 'READY' | 'UPDATING' | 'ERROR' | string;
+
+export interface UpdatePolicy {
+  readonly auto_update: boolean;
+  readonly window: string;
+  readonly interval_minutes: number;
+  readonly sync_nodes: boolean;
+  readonly require_ci: boolean;
 }
 
-export interface CollaudoTest {
-  id: string;
-  name: string;
-  status: 'PASS' | 'WARN' | 'FAIL';
-  metric: string;
-  passed: boolean;
-  detail: string;
+export interface RolloutNode {
+  readonly id: string;
+  readonly name: string;
+  readonly type: string | null;
+  readonly room: string | null;
+  readonly online: boolean;
+  readonly version: string | null;
+  readonly last_seen: number | null;
+  readonly update_queued: boolean;
+}
+
+export interface PendingUpdate {
+  readonly from: string;
+  readonly to: string;
+  readonly at: number;
+}
+
+export interface UpdaterStatus {
+  readonly version: string | null;
+  readonly local_rev: string | null;
+  readonly remote_rev: string | null;
+  readonly target_rev: string | null;
+  readonly available: boolean;
+  readonly changelog: readonly string[];
+  readonly last_check: string | null;
+  readonly last_result: string | null;
+  readonly ci_note: string | null;
+  readonly phase: UpdaterPhase;
+  readonly message: string | null;
+  readonly pending: PendingUpdate | null;
+  readonly policy: UpdatePolicy;
+  readonly next_window: string | null;
+  readonly nodes: readonly RolloutNode[];
+}
+
+export type CheckStatus = 'PASS' | 'WARN' | 'FAIL';
+
+export interface CollaudoCheck {
+  readonly id: string;
+  readonly status: CheckStatus;
+  readonly metric: string;
+  readonly detail: string;
 }
 
 export interface CollaudoResult {
-  timestamp: number;
-  all_passed: boolean;
-  tests: CollaudoTest[];
+  readonly timestamp: number;
+  readonly all_passed: boolean;
+  readonly tests: readonly CollaudoCheck[];
 }
 
-export interface UpdateLog {
-  timestamp: number;
-  level: string;
-  message: string;
-}
-
-export interface UpdateStatus {
-  current_version: string;
-  latest_version: string;
-  update_available: boolean;
-  last_check_ts: number;
-  scheduled_time: string;
-  synchronized: boolean;
-  auto_rollback: boolean;
-  channel: string;
-  status: string;
-  nodes: RolloutNode[];
-  logs: UpdateLog[];
+export interface HistoryEvent {
+  readonly ts: string;
+  readonly level: string;
+  readonly msg: string;
 }

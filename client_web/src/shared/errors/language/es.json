@@ -19,6 +19,13 @@
     "error_logout_failed": "No se pudo cerrar la sesión.",
     "error_node_control_unavailable": "No se pueden leer los comandos del nodo.",
     "error_node_command_failed": "Falló el comando al nodo.",
-    "error_node_rename_failed": "Falló el cambio de nombre del nodo."
+    "error_node_rename_failed": "Falló el cambio de nombre del nodo.",
+    "error_updater_unreachable": "No se puede leer el estado de las actualizaciones.",
+    "error_updater_check_failed": "Falló la comprobación de actualizaciones.",
+    "error_updater_apply_failed": "No se pudo iniciar la actualización.",
+    "error_updater_policy_failed": "No se pudo guardar la planificación.",
+    "error_updater_nodes_failed": "No se pudo enviar la actualización a los nodos.",
+    "error_updater_collaudo_failed": "Pruebas no ejecutadas.",
+    "error_updater_history_failed": "Historial no disponible."
   }
 }

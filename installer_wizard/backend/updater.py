@@ -296,6 +296,27 @@ async def finish_pending(success: bool) -> bool:
     return True
 
 
+async def _scheduled_cycle(stuck: bool) -> None:
+    from datetime import datetime
+
+    from features.update_center.policy import in_window, load_policy
+
+    policy = load_policy(env_get)
+    if not policy.auto_update:
+        await check()
+        return
+    if not stuck and not in_window(datetime.now(), policy.window):
+        await check()
+        return
+    applied = await apply("correttivo (sistema bloccato)" if stuck else "automatico")
+    if applied and policy.sync_nodes:
+        from features.nodes.registry import registry
+        from features.update_center.rollout import queue_updates
+
+        queued = queue_updates(registry, [n["id"] for n in registry.listing()])
+        store.event("INFO", f"Aggiornamento simultaneo inviato a {len(queued)} nodi", "updater")
+
+
 async def scheduler() -> None:
     await asyncio.sleep(120)
     while True:
@@ -304,10 +325,7 @@ async def scheduler() -> None:
             await asyncio.sleep(60)
             continue
         try:
-            if env_get("NUXIVA_AUTO_UPDATE", "1") != "0":
-                await apply("automatico" if store.phase == "READY" else "correttivo (sistema bloccato)")
-            else:
-                await check()
+            await _scheduled_cycle(stuck)
         except Exception as exc:
             store.event("ERROR", f"Errore updater: {exc}", "updater")
         try:

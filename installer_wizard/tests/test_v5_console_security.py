@@ -20,13 +20,13 @@ import auth
 import mesh_api
 import mesh_topology
 import node_api
-import update_api
+from features.update_center import api as update_center_api
 from server.features.mesh_coordinator.p2p_mesh import p2p_mesh
 
 
 def _admin_app() -> FastAPI:
     app = FastAPI()
-    for module in (mesh_api, node_api, update_api):
+    for module in (mesh_api, node_api, update_center_api):
         app.include_router(module.admin_routes)
     app.dependency_overrides[mesh_topology.paired_nodes] = lambda: []
     app.dependency_overrides[mesh_topology.paired_source] = lambda: (lambda: [])

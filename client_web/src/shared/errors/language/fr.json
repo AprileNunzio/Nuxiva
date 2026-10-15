@@ -19,6 +19,13 @@
     "error_logout_failed": "Échec de la déconnexion.",
     "error_node_control_unavailable": "Impossible de lire les commandes du nœud.",
     "error_node_command_failed": "Échec de la commande au nœud.",
-    "error_node_rename_failed": "Échec du renommage du nœud."
+    "error_node_rename_failed": "Échec du renommage du nœud.",
+    "error_updater_unreachable": "Impossible de lire l'état des mises à jour.",
+    "error_updater_check_failed": "Échec de la vérification des mises à jour.",
+    "error_updater_apply_failed": "Échec du lancement de la mise à jour.",
+    "error_updater_policy_failed": "Échec de l'enregistrement de la planification.",
+    "error_updater_nodes_failed": "Échec de l'envoi de la mise à jour aux nœuds.",
+    "error_updater_collaudo_failed": "Recette non exécutée.",
+    "error_updater_history_failed": "Historique indisponible."
   }
 }
