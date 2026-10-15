@@ -54,6 +54,10 @@
     "module_bluetooth": "Bluetooth",
     "module_display": "Pantalla",
     "module_whiteboard": "Pizarra",
-    "module_client_link": "Client Link"
+    "module_client_link": "Client Link",
+    "command_setup": "Rehacer la configuración inicial",
+    "confirm_setup_title": "¿Rehacer la configuración inicial?",
+    "confirm_setup_local": "El asistente de configuración vuelve a aparecer en la pantalla de casa: podrás cambiar el nombre del asistente, la voz, el idioma y los servicios. Las personas, los datos y los ajustes se conservan hasta que los cambies.",
+    "confirm_setup_remote": "El asistente de configuración vuelve a aparecer en la pantalla de casa: podrás cambiar el nombre del asistente, la voz, el idioma y los servicios. Las personas, los datos y los ajustes se conservan hasta que los cambies."
   }
 }

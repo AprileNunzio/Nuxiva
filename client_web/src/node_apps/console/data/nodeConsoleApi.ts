@@ -1,8 +1,8 @@
 export type ControlScope = 'local' | 'paired' | 'mesh';
-export type NodeCommand = 'identify' | 'adapt' | 'restart' | 'update' | 'reboot';
+export type NodeCommand = 'identify' | 'adapt' | 'restart' | 'update' | 'reboot' | 'setup';
 
-export const KNOWN_COMMANDS: readonly NodeCommand[] = ['identify', 'adapt', 'update', 'restart', 'reboot'];
-export const DESTRUCTIVE_COMMANDS: ReadonlySet<NodeCommand> = new Set(['restart', 'update', 'reboot']);
+export const KNOWN_COMMANDS: readonly NodeCommand[] = ['identify', 'adapt', 'update', 'setup', 'restart', 'reboot'];
+export const DESTRUCTIVE_COMMANDS: ReadonlySet<NodeCommand> = new Set(['restart', 'update', 'reboot', 'setup']);
 
 export interface NodeControl {
   readonly scope: ControlScope;

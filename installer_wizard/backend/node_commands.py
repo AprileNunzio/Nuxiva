@@ -8,7 +8,8 @@ LOCAL_COMMANDS: Dict[str, tuple] = {
     "reboot": ("systemctl", "reboot"),
     "restart": ("systemctl", "restart", "nuxiva-supervisor"),
 }
-DESTRUCTIVE: FrozenSet[str] = frozenset({"reboot", "restart", "update"})
+SETUP = "setup"
+DESTRUCTIVE: FrozenSet[str] = frozenset({"reboot", "restart", "update", SETUP})
 
 
 class NodeCommandError(Exception):
@@ -34,7 +35,7 @@ def _paired_registry():
 def describe(node_id: str, local_id: str, registry_loader: Callable = _paired_registry) -> NodeControl:
     if node_id == local_id:
         commands = tuple(LOCAL_COMMANDS) if os.name == "posix" else ()
-        return NodeControl(node_id, "local", commands)
+        return NodeControl(node_id, "local", (*commands, SETUP))
     registry, paired_commands = registry_loader()
     if node_id in registry.data.get("nodes", {}):
         return NodeControl(node_id, "paired", tuple(paired_commands))
@@ -47,11 +48,17 @@ def execute(
     confirmed: bool,
     schedule_local: Callable[[tuple], None],
     registry_loader: Callable = _paired_registry,
+    reopen_setup: Optional[Callable[[], None]] = None,
 ) -> Dict[str, str]:
     if command not in control.commands:
         raise NodeCommandError("command_not_available", 409)
     if command in DESTRUCTIVE and not confirmed:
         raise NodeCommandError("confirmation_required", 428)
+    if control.scope == "local" and command == SETUP:
+        if reopen_setup is None:
+            raise NodeCommandError("command_not_available", 409)
+        reopen_setup()
+        return {"node_id": control.node_id, "command": command, "status": "executing"}
     if control.scope == "local":
         schedule_local(LOCAL_COMMANDS[command])
         return {"node_id": control.node_id, "command": command, "status": "executing"}

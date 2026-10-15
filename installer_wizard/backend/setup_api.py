@@ -73,6 +73,18 @@ def _mark_done(source: str) -> None:
     store.touch()
 
 
+def reopen(user: str) -> None:
+    global guard
+    SETUP_FILE.parent.mkdir(parents=True, exist_ok=True)
+    tmp = SETUP_FILE.with_suffix(".tmp")
+    tmp.write_text(json.dumps({"done": False, "reopened_at": time.time(), "by": str(user)[:64]}), encoding="utf-8")
+    os.chmod(tmp, 0o600)
+    os.replace(tmp, SETUP_FILE)
+    guard = Guard()
+    store.event("WARN", f"Configurazione iniziale riaperta da {user}: il display mostra la procedura guidata", "setup")
+    store.touch()
+
+
 def _private_client(request: Request) -> bool:
     if is_local(request):
         return True

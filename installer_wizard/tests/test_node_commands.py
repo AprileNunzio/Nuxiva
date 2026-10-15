@@ -34,6 +34,24 @@ class NodeCommandTests(unittest.TestCase):
         self.assertEqual(result["status"], "executing")
         self.assertEqual(self.scheduled, [("systemctl", "reboot")])
 
+    def test_local_setup_reopens_only_when_confirmed(self):
+        calls = []
+        control = describe("server", "server", self.loader)
+        self.assertIn("setup", control.commands)
+        with self.assertRaises(NodeCommandError) as ctx:
+            execute(control, "setup", False, self.scheduled.append, self.loader, reopen_setup=lambda: calls.append(1))
+        self.assertEqual(ctx.exception.status, 428)
+        result = execute(control, "setup", True, self.scheduled.append, self.loader, reopen_setup=lambda: calls.append(1))
+        self.assertEqual(result["status"], "executing")
+        self.assertEqual(calls, [1])
+        self.assertEqual(self.scheduled, [])
+
+    def test_paired_nodes_cannot_reopen_server_setup(self):
+        control = describe("sat-cucina", "server", self.loader)
+        with self.assertRaises(NodeCommandError) as ctx:
+            execute(control, "setup", True, self.scheduled.append, self.loader, reopen_setup=lambda: None)
+        self.assertEqual(ctx.exception.status, 409)
+
     def test_paired_reboot_is_queued_to_agent(self):
         control = describe("sat-cucina", "server", self.loader)
         self.assertEqual(control.scope, "paired")

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Download, Fingerprint, Power, RotateCw, ScanLine } from 'lucide-react';
+import { Download, Fingerprint, Power, RotateCw, ScanLine, Wand2 } from 'lucide-react';
 import { reportError } from '../../../shared/errors/errorBus';
 import { useScopedI18n } from '../../../shared/i18n/useScopedI18n';
 import { ConfirmDialog } from '../../../shared/ui/ConfirmDialog';
@@ -12,6 +12,7 @@ const ICONS: Readonly<Record<NodeCommand, typeof Power>> = {
   update: Download,
   restart: RotateCw,
   reboot: Power,
+  setup: Wand2,
 };
 
 interface NodeCommandBarProps {

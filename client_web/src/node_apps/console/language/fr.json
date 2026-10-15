@@ -54,6 +54,10 @@
     "module_bluetooth": "Bluetooth",
     "module_display": "Écran",
     "module_whiteboard": "Tableau",
-    "module_client_link": "Client Link"
+    "module_client_link": "Client Link",
+    "command_setup": "Refaire la configuration initiale",
+    "confirm_setup_title": "Refaire la configuration initiale ?",
+    "confirm_setup_local": "L'assistant de configuration réapparaît sur l'écran de la maison : vous pourrez changer le nom de l'assistant, la voix, la langue et les services. Les personnes, données et réglages restent enregistrés tant que vous ne les modifiez pas.",
+    "confirm_setup_remote": "L'assistant de configuration réapparaît sur l'écran de la maison : vous pourrez changer le nom de l'assistant, la voix, la langue et les services. Les personnes, données et réglages restent enregistrés tant que vous ne les modifiez pas."
   }
 }

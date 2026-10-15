@@ -54,6 +54,10 @@
     "module_bluetooth": "Bluetooth",
     "module_display": "Display",
     "module_whiteboard": "Lavagna",
-    "module_client_link": "Client Link"
+    "module_client_link": "Client Link",
+    "command_setup": "Rifai configurazione iniziale",
+    "confirm_setup_title": "Rifare la configurazione iniziale?",
+    "confirm_setup_local": "La procedura guidata ricompare sullo schermo di casa: potrai cambiare nome dell'assistente, voce, lingua e servizi. Persone, dati e impostazioni restano salvati finché non li modifichi.",
+    "confirm_setup_remote": "La procedura guidata ricompare sullo schermo di casa: potrai cambiare nome dell'assistente, voce, lingua e servizi. Persone, dati e impostazioni restano salvati finché non li modifichi."
   }
 }

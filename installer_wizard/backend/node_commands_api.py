@@ -39,6 +39,12 @@ def _schedule_local(command: tuple) -> None:
     background(delayed(*command))
 
 
+def _reopen_setup(user: str) -> None:
+    import setup_api
+
+    setup_api.reopen(user)
+
+
 @admin_routes.get("/{node_id}/control")
 def node_control(node_id: str) -> Dict[str, Any]:
     mesh = _mesh()
@@ -52,7 +58,7 @@ def node_command(node_id: str, command: str, req: CommandRequest, user: str = De
         raise HTTPException(status_code=422, detail="invalid_command")
     control = describe(_validated(node_id), _mesh().node_id)
     try:
-        result = execute(control, command, req.confirm, _schedule_local)
+        result = execute(control, command, req.confirm, _schedule_local, reopen_setup=lambda: _reopen_setup(user))
     except NodeCommandError as exc:
         raise HTTPException(status_code=exc.status, detail=exc.code) from exc
     store.event("WARN" if command == "reboot" else "INFO", f"Comando {command} al nodo {node_id} da {user}", "nodes")
