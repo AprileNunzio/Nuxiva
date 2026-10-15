@@ -13,6 +13,7 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 nuxiva-bus-core = { path = "../bus-core" }
 nuxiva-langid = { path = "../langid" }
+nuxiva-crdt-core = { path = "../crdt-core" }
 pyo3 = { version = "0.27.2", features = ["abi3-py311"] }
 
 [features]

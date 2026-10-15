@@ -134,11 +134,19 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-bus-core"
-version = "4.1.53"
+version = "5.0.0"
+
+[[package]]
+name = "nuxiva-crdt-core"
+version = "5.0.0"
+dependencies = [
+ "serde",
+ "serde_json",
+]
 
 [[package]]
 name = "nuxiva-egress"
-version = "4.1.53"
+version = "5.0.0"
 dependencies = [
  "landlock",
  "serde",
@@ -148,23 +156,24 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-langid"
-version = "4.1.53"
+version = "5.0.0"
 dependencies = [
  "whatlang",
 ]
 
 [[package]]
 name = "nuxiva-native"
-version = "4.1.53"
+version = "5.0.0"
 dependencies = [
  "nuxiva-bus-core",
+ "nuxiva-crdt-core",
  "nuxiva-langid",
  "pyo3",
 ]
 
 [[package]]
 name = "nuxiva-netguard"
-version = "4.1.53"
+version = "5.0.0"
 dependencies = [
  "serde",
  "serde_json",
