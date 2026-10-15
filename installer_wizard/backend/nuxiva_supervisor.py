@@ -28,6 +28,7 @@ import packages_api
 import system_api
 import mesh_api
 import node_api
+import node_commands_api
 import update_api
 import updater
 from config import ADMIN_PORT, DEMO, PUBLIC_PORT, VERSION, env_get
@@ -262,7 +263,7 @@ def build(admin: bool) -> FastAPI:
                 return FileResponse(str(web_dir / "index.html"))
 
     kind = "admin_routes" if admin else "public_routes"
-    for module in (*FEATURE_APIS, bus_api, licensing_api, registry_api, pages, setup_api, packages_api, system_api, mesh_api, node_api, update_api):
+    for module in (*FEATURE_APIS, bus_api, licensing_api, registry_api, pages, setup_api, packages_api, system_api, mesh_api, node_api, node_commands_api, update_api):
         routes = getattr(module, kind, None)
         if routes is not None:
             app.include_router(routes)

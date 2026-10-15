@@ -15,6 +15,9 @@ const KNOWN_CODES = new Set([
   'session_check_failed',
   'login_failed',
   'logout_failed',
+  'node_control_unavailable',
+  'node_command_failed',
+  'node_rename_failed',
 ]);
 
 export const ErrorToastHost: React.FC = () => {

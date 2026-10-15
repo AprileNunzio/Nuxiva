@@ -16,6 +16,9 @@
     "error_unhandled_rejection": "Falló una operación asíncrona.",
     "error_session_check_failed": "No se puede verificar la sesión.",
     "error_login_failed": "El acceso falló por un error del servidor.",
-    "error_logout_failed": "No se pudo cerrar la sesión."
+    "error_logout_failed": "No se pudo cerrar la sesión.",
+    "error_node_control_unavailable": "No se pueden leer los comandos del nodo.",
+    "error_node_command_failed": "Falló el comando al nodo.",
+    "error_node_rename_failed": "Falló el cambio de nombre del nodo."
   }
 }

@@ -16,6 +16,9 @@
     "error_unhandled_rejection": "Une opération asynchrone a échoué.",
     "error_session_check_failed": "Impossible de vérifier la session.",
     "error_login_failed": "Échec de la connexion suite à une erreur serveur.",
-    "error_logout_failed": "Échec de la déconnexion."
+    "error_logout_failed": "Échec de la déconnexion.",
+    "error_node_control_unavailable": "Impossible de lire les commandes du nœud.",
+    "error_node_command_failed": "Échec de la commande au nœud.",
+    "error_node_rename_failed": "Échec du renommage du nœud."
   }
 }

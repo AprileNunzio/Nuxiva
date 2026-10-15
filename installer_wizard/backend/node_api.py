@@ -162,16 +162,6 @@ def update_node_app_config(node_id: str, app_id: str, req: ConfigUpdateRequest) 
     return config
 
 
-@router.post("/{node_id}/reboot")
-def reboot_node(node_id: str) -> Dict[str, Any]:
-    return {
-        "nodeId": node_id,
-        "action": "reboot",
-        "status": "initiated",
-        "timestamp": time.time()
-    }
-
-
 @router.post("/{node_id}/provision")
 def provision_node(node_id: str, req: ProvisionRequest) -> Dict[str, Any]:
     valid_targets = {"pc", "raspberry", "esp32", "android"}

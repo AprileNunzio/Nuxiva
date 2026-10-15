@@ -16,6 +16,9 @@
     "error_unhandled_rejection": "Un'operazione asincrona è fallita.",
     "error_session_check_failed": "Impossibile verificare la sessione.",
     "error_login_failed": "Accesso non riuscito per un errore del server.",
-    "error_logout_failed": "Disconnessione non riuscita."
+    "error_logout_failed": "Disconnessione non riuscita.",
+    "error_node_control_unavailable": "Impossibile leggere i comandi del nodo.",
+    "error_node_command_failed": "Comando al nodo non riuscito.",
+    "error_node_rename_failed": "Rinomina del nodo non riuscita."
   }
 }

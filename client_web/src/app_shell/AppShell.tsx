@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { GlobalCommandGrid } from '../core_apps';
 import { NeuralMeshView, NeuronOpenTarget } from '../features/neural_mesh';
-import { NodeDetailView } from '../node_apps/NodeDetailView';
+import { NodeConsoleView } from '../node_apps/console/NodeConsoleView';
 import { AppViewFrame } from './AppViewFrame';
 import { ShellNavbar } from './navbar/ShellNavbar';
 import { CORE_ROUTE, MESH_ROUTE, ShellRoute } from './shellRoute';
@@ -27,14 +27,7 @@ export const AppShell: React.FC = () => {
         {route.view === 'core' && <GlobalCommandGrid onBackToCanvas={goMesh} onSelectApp={openApp} />}
         {route.view === 'app' && <AppViewFrame appId={route.appId} onBackToCore={goCore} onBackToMesh={goMesh} />}
         {route.view === 'node' && (
-          <NodeDetailView
-            nodeId={route.node.id}
-            nodeName={route.node.name}
-            nodeTier={route.node.tier}
-            ipAddress={route.node.ip}
-            onBack={goMesh}
-            onRename={renameNode}
-          />
+          <NodeConsoleView key={route.node.id} nodeId={route.node.id} initialName={route.node.name} onBack={goMesh} onRenamed={renameNode} />
         )}
       </main>
     </div>

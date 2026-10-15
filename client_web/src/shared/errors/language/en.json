@@ -16,6 +16,9 @@
     "error_unhandled_rejection": "An asynchronous operation failed.",
     "error_session_check_failed": "Unable to verify the session.",
     "error_login_failed": "Sign-in failed due to a server error.",
-    "error_logout_failed": "Sign-out failed."
+    "error_logout_failed": "Sign-out failed.",
+    "error_node_control_unavailable": "Unable to read node commands.",
+    "error_node_command_failed": "Node command failed.",
+    "error_node_rename_failed": "Node rename failed."
   }
 }
