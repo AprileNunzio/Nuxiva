@@ -176,15 +176,28 @@ class CEOExecutive:
         executed_intent = str(result.get("intent") or "").lower()
 
         active_agent = decision.primary_agent
-        if executed_intent in ("conversation", "chat", "assistente"):
-            active_agent = self._get_conversation_agent(agents)
-        elif executed_intent and executed_intent in agents:
+        current_agent = result.get("agent") or "core"
+        current_agent_lower = current_agent.lower()
+
+        # Allineamento con lo specialista reale
+        if current_agent_lower in agents and current_agent_lower not in ("core", "chat", "agent"):
+            active_agent = agents[current_agent_lower]
+        elif executed_intent in agents and executed_intent not in ("conversation", "chat", "assistente"):
             active_agent = agents[executed_intent]
         elif executed_intent == "whiteboard" and "whiteboard" in agents:
             active_agent = agents["whiteboard"]
+        elif active_agent.id not in ("chat", "agent") and (
+            active_agent.id in current_agent_lower or active_agent.name.lower() in current_agent_lower
+        ):
+            # Lo specialista delegato corrisponde all'agente esecutivo confermato
+            pass
+        elif executed_intent in ("conversation", "chat", "assistente") and not any(
+            specialist in current_agent_lower for specialist in ("whiteboard", "camera", "music", "sport")
+        ):
+            active_agent = self._get_conversation_agent(agents)
 
         agent_name = active_agent.name
-        is_general_conversation = active_agent.id in ("chat", "agent") or executed_intent in ("conversation", "chat")
+        is_general_conversation = active_agent.id in ("chat", "agent")
 
         result["ceo"] = {
             "orchestrator": "CEO Executive",
@@ -197,7 +210,6 @@ class CEOExecutive:
             "confidence": decision.confidence
         }
 
-        current_agent = result.get("agent") or "core"
         clean_current = current_agent
         if clean_current.startswith("CEO"):
             # Rimuove prefissi duplicati se presenti
