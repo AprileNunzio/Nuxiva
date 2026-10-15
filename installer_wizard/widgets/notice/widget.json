@@ -6,6 +6,11 @@
   "priority": 60,
   "size": "s",
   "ttl": 120,
+  "agent": "agent",
+  "intents": [
+    "notice",
+    "avvisi"
+  ],
   "description": "Promemoria e messaggi dei moduli (compleanni, dispositivi nuovi, avvisi di sistema).",
   "demo": {
     "icon": "🎂",

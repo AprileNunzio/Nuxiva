@@ -4,7 +4,12 @@
   "icon": "🏎️",
   "priority": 55,
   "size": "m",
-  "intents": [],
+  "agent": "sports",
+  "intents": [
+    "f1",
+    "formula1",
+    "f1_race"
+  ],
   "ttl": 120,
   "description": "Formula 1: prossima sessione con conto alla rovescia, gara in corso, risultati e classifiche.",
   "demo": {

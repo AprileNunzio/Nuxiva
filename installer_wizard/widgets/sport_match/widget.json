@@ -4,7 +4,12 @@
   "icon": "⚽",
   "priority": 60,
   "size": "m",
-  "intents": [],
+  "agent": "sports",
+  "intents": [
+    "sport_match",
+    "partita",
+    "calcio"
+  ],
   "ttl": 120,
   "description": "Partita della squadra preferita: diretta, gol, risultato o prossimo incontro.",
   "demo": {

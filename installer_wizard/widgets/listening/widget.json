@@ -11,6 +11,11 @@
     "y": 0.86
   },
   "bind": "ear_widget",
+  "agent": "ear",
+  "intents": [
+    "listening",
+    "ascolto"
+  ],
   "description": "Indicatore semitrasparente dell'ascolto: si accende quando Nuxiva ti ascolta e segnala se il microfono non funziona.",
   "tone": "violet"
 }

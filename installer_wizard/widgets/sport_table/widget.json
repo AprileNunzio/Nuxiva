@@ -4,7 +4,11 @@
   "icon": "🏆",
   "priority": 45,
   "size": "m",
-  "intents": [],
+  "agent": "sports",
+  "intents": [
+    "sport_table",
+    "classifica"
+  ],
   "ttl": 120,
   "description": "Classifica di un campionato con la squadra preferita evidenziata.",
   "demo": {

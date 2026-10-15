@@ -4,6 +4,11 @@
   "icon": "🚨",
   "priority": 100,
   "size": "full",
+  "agent": "home_assistant",
+  "intents": [
+    "alarm",
+    "allarme"
+  ],
   "description": "Fumo, gas, allagamento, intrusione: occupa tutto lo schermo e lo ripete a voce.",
   "demo": {
     "kind": "smoke",

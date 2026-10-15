@@ -5,6 +5,11 @@
   "priority": 35,
   "size": "m",
   "bind": "now_playing",
+  "agent": "music",
+  "intents": [
+    "music",
+    "musica"
+  ],
   "description": "Il brano che suona nella stanza, riconosciuto dall'ascolto (Shazam).",
   "demo": {
     "title": "Caruso",

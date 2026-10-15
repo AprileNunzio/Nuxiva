@@ -8,6 +8,10 @@
   "replaces": [
     "music"
   ],
+  "agent": "spotify",
+  "intents": [
+    "spotify"
+  ],
   "description": "Il brano in riproduzione sul tuo account Spotify quando sei davanti allo schermo.",
   "demo": {
     "source": "spotify",

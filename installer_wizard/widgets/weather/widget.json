@@ -4,8 +4,10 @@
   "icon": "\u26c5",
   "priority": 50,
   "size": "m",
+  "agent": "chat",
   "intents": [
-    "weather"
+    "weather",
+    "meteo"
   ],
   "panel_type": "forecast",
   "ttl": 900,

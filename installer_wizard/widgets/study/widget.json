@@ -10,6 +10,11 @@
       "state": "studying"
     }
   },
+  "agent": "study",
+  "intents": [
+    "study",
+    "studio"
+  ],
   "description": "Materia e livello che Nuxiva sta studiando nei momenti di riposo.",
   "demo": {
     "state": "studying",

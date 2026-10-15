@@ -7,12 +7,12 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from config import FEATURES_DIR, STATE_DIR, WIDGETS_DIR
+from features.team.stopwords import clean_tokens
 
 log = logging.getLogger("nuxiva.team.scanner")
 
 USER_FEATURES_DIR = STATE_DIR / "features"
 USER_WIDGETS_DIR = STATE_DIR / "widgets"
-WORD_RE = re.compile(r"[a-zà-ÿ0-9_-]{3,}", re.IGNORECASE)
 
 
 @dataclass
@@ -39,6 +39,30 @@ class DiscoveredAgent:
             details.append(f"{widgets_count} widget")
         detail_str = f" ({', '.join(details)})" if details else ""
         return f"«{self.name}» [{self.id}]{detail_str}: {self.description[:110]}"
+
+
+WIDGET_AGENT_DEFAULTS: dict[str, tuple[str, list[str]]] = {
+    "lavagna": ("whiteboard", ["whiteboard", "lavagna"]),
+    "alarm": ("home_assistant", ["alarm", "allarme"]),
+    "brief": ("agent", ["brief", "scheda_rapida"]),
+    "f1_race": ("sports", ["f1", "formula1"]),
+    "g_notify": ("google", ["g_notify", "google"]),
+    "home_rooms": ("home_assistant", ["home_rooms", "stanze"]),
+    "karaoke": ("music", ["karaoke"]),
+    "listening": ("ear", ["listening"]),
+    "live_cam": ("cameras", ["live_cam", "webcam"]),
+    "music": ("music", ["music", "musica"]),
+    "notice": ("agent", ["notice", "avvisi"]),
+    "sport_match": ("sports", ["sport_match", "partita"]),
+    "sport_table": ("sports", ["sport_table", "classifica"]),
+    "spotify": ("spotify", ["spotify"]),
+    "study": ("study", ["study", "studio"]),
+    "subsystem_alert": ("governor", ["subsystem_alert"]),
+    "sun_cycle": ("location", ["sun_cycle", "astronomy"]),
+    "system_update": ("auto_update", ["system_update", "aggiornamento"]),
+    "tv_player": ("tv", ["tv", "tv_player"]),
+    "weather": ("chat", ["weather", "meteo"]),
+}
 
 
 class AgentScanner:
@@ -153,7 +177,7 @@ class AgentScanner:
         self.agents = discovered_agents
         self._sync_registered_tools()
 
-        # 4. Estrazione semantica dinamica dei vocaboli e keyword per ciascun agente
+        # 4. Estrazione semantica dinamica dei vocaboli e keyword per ciascun agente (senza stopwords)
         for agent in self.agents.values():
             self._build_semantic_index(agent)
 
@@ -168,12 +192,20 @@ class AgentScanner:
             try:
                 data = json.loads(path_obj.read_text(encoding="utf-8"))
                 wid = str(data.get("id") or wid).strip()
+                target_agent = data.get("agent")
+                target_intents = list(data.get("intents") or [])
+                if not target_agent and wid in WIDGET_AGENT_DEFAULTS:
+                    def_agent, def_intents = WIDGET_AGENT_DEFAULTS[wid]
+                    target_agent = def_agent
+                    if not target_intents:
+                        target_intents = list(def_intents)
+
                 widgets[wid] = {
                     "id": wid,
                     "name": str(data.get("name") or wid).strip(),
                     "description": str(data.get("description") or "").strip(),
-                    "agent": data.get("agent"),
-                    "intents": list(data.get("intents") or []),
+                    "agent": target_agent,
+                    "intents": target_intents,
                     "size": data.get("size", "m"),
                     "dir": str(folder)
                 }
@@ -253,9 +285,7 @@ class AgentScanner:
 
         def add_text(t: str) -> None:
             if t:
-                for w in WORD_RE.findall(t.lower()):
-                    if len(w) >= 3:
-                        tokens.add(w)
+                tokens.update(clean_tokens(t))
 
         add_text(agent.id)
         add_text(agent.name)

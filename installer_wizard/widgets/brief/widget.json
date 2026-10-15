@@ -6,6 +6,11 @@
   "priority": 62,
   "size": "m",
   "ttl": 120,
+  "agent": "agent",
+  "intents": [
+    "brief",
+    "scheda_rapida"
+  ],
   "description": "Informazioni da avere a colpo d'occhio, scelte e impaginate da Nuxiva: un dato, un riepilogo, un elenco breve o una piccola immagine.",
   "demo": {
     "title": "Diodo",
