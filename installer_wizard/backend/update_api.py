@@ -407,7 +407,7 @@ def trigger_update(req: TriggerUpdateRequest) -> Dict[str, Any]:
     _UPDATE_LOGS.append({
         "timestamp": int(time.time()),
         "level": "INFO",
-        "message": f"[2/5] Verifica crittografica firma SHA-256 completata. Snapshot checkpoint A/B fail-safe registrato con successo.",
+        "message": "[2/5] Verifica crittografica firma SHA-256 completata. Snapshot checkpoint A/B fail-safe registrato con successo.",
     })
 
     # Step 3: Apply delta & CRDT broadcast
@@ -428,7 +428,7 @@ def trigger_update(req: TriggerUpdateRequest) -> Dict[str, Any]:
     _UPDATE_LOGS.append({
         "timestamp": int(time.time()),
         "level": "INFO",
-        "message": f"[3/5] Applicazione delta codice al filesystem e propagazione bus mesh CRDT a tutti i peer.",
+        "message": "[3/5] Applicazione delta codice al filesystem e propagazione bus mesh CRDT a tutti i peer.",
     })
 
     # Step 4: Daemon restart / hot-reload
@@ -437,7 +437,7 @@ def trigger_update(req: TriggerUpdateRequest) -> Dict[str, Any]:
     _UPDATE_LOGS.append({
         "timestamp": int(time.time()),
         "level": "INFO",
-        "message": f"[4/5] Ricaricamento a caldo del supervisore Nuxiva e riallineamento dei daemon di bordo.",
+        "message": "[4/5] Ricaricamento a caldo del supervisore Nuxiva e riallineamento dei daemon di bordo.",
     })
 
     # Step 5: Post-install collaudo diagnostics
