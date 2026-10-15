@@ -84,12 +84,15 @@ class CorticalBrainChain:
         self.active_mode: str = "nuxiva-6.5-auto"
 
     def set_mode(self, mode_id: str) -> str:
-        from server.core.reasoning.engines.scanner import engine_scanner
-        eng = engine_scanner.get_engine(mode_id)
-        if eng:
-            ver_str = getattr(eng.version, "value", str(eng.version))
-            self.active_mode = ver_str
-            return self.active_mode
+        try:
+            from server.core.reasoning.engines.scanner import engine_scanner
+            eng = engine_scanner.get_engine(mode_id)
+            if eng:
+                ver_str = getattr(eng.version, "value", str(eng.version))
+                self.active_mode = ver_str
+                return self.active_mode
+        except Exception:
+            pass
         aliases = {
             "fast": "nuxiva-5.0-fast",
             "veloce": "nuxiva-5.0-fast",
@@ -122,8 +125,12 @@ class CorticalBrainChain:
         if self.active_mode != "nuxiva-6.5-auto":
             if self.active_mode in REASONING_PROFILES:
                 return REASONING_PROFILES[self.active_mode]
-            from server.core.reasoning.engines.scanner import engine_scanner
-            eng = engine_scanner.get_engine(self.active_mode)
+            eng = None
+            try:
+                from server.core.reasoning.engines.scanner import engine_scanner
+                eng = engine_scanner.get_engine(self.active_mode)
+            except Exception:
+                pass
             sla = getattr(eng, "latency_sla_ms", 1000) if eng else 1000
             branches = 16 if sla > 600 else (8 if sla > 200 else (4 if sla > 50 else 2))
             depth = 4 if sla > 600 else (3 if sla > 200 else 1)
@@ -239,10 +246,13 @@ cortical_chain = CorticalBrainChain()
 
 def _label(kind: str, mode_id: str | None = None) -> str:
     if mode_id:
-        from server.core.reasoning.engines.scanner import engine_scanner
-        eng = engine_scanner.get_engine(mode_id)
-        if eng:
-            return eng.name
+        try:
+            from server.core.reasoning.engines.scanner import engine_scanner
+            eng = engine_scanner.get_engine(mode_id)
+            if eng:
+                return eng.name
+        except Exception:
+            pass
     return "Nuxiva 5.0 Veloce (5.0-flash)" if kind == "chat" else "Nuxiva 6.0 Pro (6.0-pro)"
 
 
@@ -288,13 +298,20 @@ async def ask(query: str, device: str, context: dict, route: dict, core_local: C
         raise NoBrainAvailable("nessun cervello configurato")
 
     mode_id = route.get("reasoning_mode") or ("nuxiva-5.0-fast" if route.get("kind") == "chat" else "nuxiva-6.0-pro")
-    from server.core.reasoning.engines.scanner import engine_scanner
-    engine = engine_scanner.get_engine(mode_id)
-    if not engine:
-        engine = engine_scanner.get_default_engine()
+    engine = None
+    try:
+        from server.core.reasoning.engines.scanner import engine_scanner
+        engine = engine_scanner.get_engine(mode_id)
+        if not engine:
+            engine = engine_scanner.get_default_engine()
+    except Exception:
+        pass
 
-    ver_val = getattr(engine.version, "value", str(engine.version))
-    cortical_chain.set_mode(ver_val)
+    if engine:
+        ver_val = getattr(engine.version, "value", str(engine.version))
+        cortical_chain.set_mode(ver_val)
+    else:
+        cortical_chain.set_mode(mode_id)
 
     branch_generators: List[Callable[[str, Dict[str, Any], LimbicModulator], Awaitable[Dict[str, Any]]]] = []
     for ctype, target in candidates:

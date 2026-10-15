@@ -49,7 +49,8 @@ if ! git fetch --prune --tags origin; then
     exit 1
 fi
 
-git checkout -B "$BRANCH" "origin/$BRANCH"
+git reset --hard HEAD 2>/dev/null || true
+git checkout -f -B "$BRANCH" "origin/$BRANCH"
 git reset --hard "origin/$BRANCH"
 git clean -fd -e .env -e "local_*"
 

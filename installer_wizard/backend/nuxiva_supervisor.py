@@ -5,7 +5,13 @@ import os
 import sys
 from pathlib import Path
 
-sys.path.insert(1, str(Path(__file__).resolve().parent.parent))
+_BACKEND = Path(__file__).resolve().parent
+_WIZARD = _BACKEND.parent
+_ROOT = _WIZARD.parent
+
+for _p in (str(_ROOT), str(_WIZARD), str(_BACKEND)):
+    if _p not in sys.path:
+        sys.path.insert(0, _p)
 
 import uvicorn
 from fastapi import FastAPI

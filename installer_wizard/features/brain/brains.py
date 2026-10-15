@@ -226,8 +226,12 @@ class Brains:
         routing = cfg["routing"]
         split = routing == "1" or (routing == "auto" and norm(cfg["chat"][0]) != norm(cfg["deep"][0]))
         if mode_override:
-            from server.core.reasoning.engines.scanner import engine_scanner
-            eng = engine_scanner.get_engine(mode_override)
+            eng = None
+            try:
+                from server.core.reasoning.engines.scanner import engine_scanner
+                eng = engine_scanner.get_engine(mode_override)
+            except Exception:
+                pass
             if eng:
                 sla = eng.latency_sla_ms
                 kind = "chat" if sla <= 50 else "deep"

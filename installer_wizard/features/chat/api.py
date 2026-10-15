@@ -107,8 +107,12 @@ async def _core_call(query: str, device: str, speech_lang: dict, mode: str | Non
             trace.note(call, f"gestita dall'agente {data.get('agent_id') or 'core'}")
         trace.finish(call, model, (time.time() - started) * 1000, data.get("speech_output") or "")
         if model:
-            from server.core.reasoning.engines.scanner import engine_scanner
-            eng = engine_scanner.get_engine(mode)
+            eng = None
+            try:
+                from server.core.reasoning.engines.scanner import engine_scanner
+                eng = engine_scanner.get_engine(mode)
+            except Exception:
+                pass
             label = eng.name if eng else ("Nuxiva 5.0 Veloce (5.0-flash)" if route["kind"] == "chat" else "Nuxiva 6.0 Pro (6.0-pro)")
             data["agent_id"] = f"{data.get('agent_id') or 'core'} · {model} ({label})"
         return data
