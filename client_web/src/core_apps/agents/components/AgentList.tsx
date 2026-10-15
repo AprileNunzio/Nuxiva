@@ -10,17 +10,28 @@ interface AgentListProps {
   readonly onSelect: (id: string) => void;
 }
 
+const CORE_AGENTS = new Set(['ceo', 'agent', 'forge']);
+
+export function isOperative(agent: Agent, toolCount: Readonly<Record<string, number>>): boolean {
+  return CORE_AGENTS.has(agent.id) || agent.source !== 'system' || (toolCount[agent.id] ?? 0) > 0 || Boolean(agent.instructions);
+}
+
 export const AgentList: React.FC<AgentListProps> = ({ agents, selected, toolCount, onSelect }) => {
   const { t } = useAgentsI18n();
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('all');
+  const [everything, setEverything] = useState(false);
   const categories = useMemo(() => ['all', ...Array.from(new Set(agents.map((a) => a.category))).sort()], [agents]);
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase();
     return agents.filter(
-      (a) => (category === 'all' || a.category === category) && (!q || `${a.id} ${a.name} ${a.description}`.toLowerCase().includes(q)),
+      (a) =>
+        (everything || isOperative(a, toolCount)) &&
+        (category === 'all' || a.category === category) &&
+        (!q || `${a.id} ${a.name} ${a.description}`.toLowerCase().includes(q)),
     );
-  }, [agents, query, category]);
+  }, [agents, query, category, everything, toolCount]);
+  const hidden = agents.filter((a) => !isOperative(a, toolCount)).length;
 
   return (
     <div className="flex min-h-0 flex-col gap-3">
@@ -51,6 +62,10 @@ export const AgentList: React.FC<AgentListProps> = ({ agents, selected, toolCoun
           </button>
         ))}
       </div>
+      <label className="flex cursor-pointer items-center justify-between gap-2 rounded-lg border border-slate-800/80 bg-slate-950/40 px-3 py-1.5 text-xs text-slate-400">
+        {t('show_all_features', { count: hidden })}
+        <input type="checkbox" role="switch" checked={everything} onChange={(event) => setEverything(event.target.checked)} className="h-4 w-8 accent-cyan-400" />
+      </label>
       <ul className="flex max-h-[70vh] flex-col gap-1.5 overflow-y-auto pr-1">
         {visible.map((agent) => (
           <li key={agent.id}>

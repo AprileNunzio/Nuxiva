@@ -1,10 +1,11 @@
+import { PAGE_CLASS } from '../../shared/ui/layout';
 import React, { useMemo, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { setAgentMode } from './data/teamApi';
 import { useTeam } from './hooks/useTeam';
 import { ActivityFeed } from './components/ActivityFeed';
 import { AgentDetail } from './components/AgentDetail';
-import { AgentList } from './components/AgentList';
+import { AgentList, isOperative } from './components/AgentList';
 import { CreateAgentDialog } from './components/CreateAgentDialog';
 import { CreateToolDialog } from './components/CreateToolDialog';
 import { CreateWidgetDialog } from './components/CreateWidgetDialog';
@@ -34,22 +35,27 @@ export const View: React.FC = () => {
     );
   }
 
-  const agent = team.agents.find((a) => a.id === selected) ?? team.agents[0] ?? null;
+  const agent = team.agents.find((a) => a.id === selected) ?? team.agents.find((a) => isOperative(a, toolCount)) ?? team.agents[0] ?? null;
 
   return (
-    <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-3 py-4 sm:px-6">
+    <div className={PAGE_CLASS}>
       <TeamHeader
         team={team}
         busy={handle.busy !== null}
         onCreate={setCreating}
         onAutonomy={(enabled) => void handle.run('autonomy', () => setAgentMode('forge', enabled ? '1' : '0'), 'team_mode_failed')}
       />
-      <div className="grid gap-4 lg:grid-cols-[20rem_minmax(0,1fr)]">
+      <div className="grid gap-4 lg:grid-cols-[20rem_minmax(0,1fr)] 3xl:grid-cols-[22rem_minmax(0,1fr)_26rem]">
         <aside className={panelClass} aria-label={t('team_list')}>
           <AgentList agents={team.agents} selected={agent?.id ?? null} toolCount={toolCount} onSelect={setSelected} />
         </aside>
         <div className="flex min-w-0 flex-col gap-4">
           {agent && <AgentDetail key={agent.id} agent={agent} team={team} handle={handle} onDeleted={() => setSelected(null)} />}
+          <div className="3xl:hidden">
+            <ActivityFeed messages={team.messages} agents={team.agents} />
+          </div>
+        </div>
+        <div className="hidden min-w-0 3xl:block">
           <ActivityFeed messages={team.messages} agents={team.agents} />
         </div>
       </div>

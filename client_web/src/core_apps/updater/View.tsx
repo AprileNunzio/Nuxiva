@@ -1,3 +1,4 @@
+import { PAGE_CLASS } from '../../shared/ui/layout';
 import React from 'react';
 import { Loader2, WifiOff } from 'lucide-react';
 import { ChangelogPanel } from './components/ChangelogPanel';
@@ -23,7 +24,7 @@ export const View: React.FC = () => {
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-3 py-4 sm:px-6">
+    <div className={PAGE_CLASS}>
       <VersionHero status={status} applying={applying} unreachable={unreachable} onStatus={setStatus} onApplying={markApplying} />
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
         <div className="flex min-w-0 flex-col gap-4">

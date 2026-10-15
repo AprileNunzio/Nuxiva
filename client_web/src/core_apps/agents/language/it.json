@@ -117,6 +117,7 @@
     "personal_data": "Contiene dati personali (si chiude quando non c'è nessuno)",
     "create_widget": "Crea widget",
     "open_app": "Apri",
-    "status": "Attivo"
+    "status": "Attivo",
+    "show_all_features": "Mostra anche le funzionalità senza strumenti ({count})"
   }
 }

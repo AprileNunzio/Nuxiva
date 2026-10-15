@@ -118,7 +118,7 @@ export const View: React.FC = () => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6 font-mono text-slate-100">
+    <div className="mx-auto max-w-[1800px] space-y-6 p-6 font-mono text-slate-100 3xl:max-w-[2400px] 4xl:max-w-none 4xl:px-10">
       {/* Fleet Overview Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-6 rounded-2xl border border-slate-800 bg-slate-900/70 backdrop-blur-xl shadow-lg">
         <div className="flex items-center gap-4">

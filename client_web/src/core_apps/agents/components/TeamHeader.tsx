@@ -2,6 +2,7 @@ import React from 'react';
 import { Bot, Hammer, LayoutGrid, Plus, Sparkles, Wrench } from 'lucide-react';
 import { TeamOverview } from '../data/teamApi';
 import { chipClass, panelClass, useAgentsI18n } from '../scope';
+import { isOperative } from './AgentList';
 
 export type CreateKind = 'agent' | 'tool' | 'widget';
 
@@ -15,10 +16,15 @@ interface TeamHeaderProps {
 export const TeamHeader: React.FC<TeamHeaderProps> = ({ team, busy, onCreate, onAutonomy }) => {
   const { t } = useAgentsI18n();
   const forge = team.agents.find((a) => a.id === 'forge');
-  const active = team.agents.filter((a) => a.enabled).length;
+  const toolCount: Record<string, number> = {};
+  team.tools.forEach((tool) => {
+    toolCount[tool.owner] = (toolCount[tool.owner] ?? 0) + 1;
+  });
+  const operative = team.agents.filter((a) => isOperative(a, toolCount));
+  const active = operative.filter((a) => a.enabled).length;
   const working = team.agents.filter((a) => a.doing).length;
   const stats = [
-    [Bot, t('stat_agents'), `${active}/${team.agents.length}`],
+    [Bot, t('stat_agents'), `${active}/${operative.length}`],
     [Sparkles, t('stat_working'), String(working)],
     [Wrench, t('stat_tools'), String(team.tools.filter((x) => x.enabled).length)],
     [LayoutGrid, t('stat_widgets'), String(team.widgets.length)],

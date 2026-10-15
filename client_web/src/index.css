@@ -3,43 +3,7 @@
 @tailwind utilities;
 
 :root {
-  font-size: 14px;
-}
-
-@media (min-width: 640px) {
-  :root {
-    font-size: 15px;
-  }
-}
-
-@media (min-width: 1024px) {
-  :root {
-    font-size: 16px;
-  }
-}
-
-@media (min-width: 2560px) {
-  :root {
-    font-size: 18px;
-  }
-}
-
-@media (min-width: 3840px) {
-  :root {
-    font-size: 22px;
-  }
-}
-
-@media (min-width: 5120px) {
-  :root {
-    font-size: 26px;
-  }
-}
-
-@media (min-width: 7680px) {
-  :root {
-    font-size: 34px;
-  }
+  font-size: clamp(14px, calc(0.42vw + 8px), 34px);
 }
 
 html, body {
