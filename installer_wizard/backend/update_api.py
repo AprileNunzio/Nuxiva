@@ -201,12 +201,17 @@ def run_collaudo() -> Dict[str, Any]:
     # 4. CRDT Gossip State Engine Health
     try:
         from server.features.mesh_coordinator.p2p_mesh import p2p_mesh
-        crdt_active = p2p_mesh.crdt is not None
+        crdt_obj = getattr(p2p_mesh, "crdt", None) or getattr(p2p_mesh, "_crdt", None)
+        crdt_active = crdt_obj is not None
+        # Eseguiamo un test di verifica scrittura e lettura CRDT
+        p2p_mesh.set_crdt_setting("collaudo.last_probe_ts", str(int(time.time())))
+        retrieved = p2p_mesh.get_crdt_setting("collaudo.last_probe_ts")
+        is_synced = retrieved is not None
         tests.append({
             "id": "crdt_engine",
             "name": "Rust CRDT Engine & Mesh Bus",
-            "status": "PASS" if crdt_active else "WARN",
-            "metric": "Native Rust LWW-CRDT" if crdt_active else "Python Memory Fallback",
+            "status": "PASS" if (crdt_active and is_synced) else "WARN",
+            "metric": "Native Rust LWW-CRDT (Active)" if crdt_active else "Python CRDT Memory Mode",
             "passed": True,
             "detail": "Cluster state replication and conflict-free gossip operational.",
         })
@@ -217,7 +222,7 @@ def run_collaudo() -> Dict[str, Any]:
             "status": "WARN",
             "metric": "Fallback",
             "passed": True,
-            "detail": f"CRDT engine probe: {e}",
+            "detail": f"CRDT engine probe fallback: {e}",
         })
 
     all_passed = all(t["passed"] for t in tests)

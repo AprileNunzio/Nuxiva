@@ -123,6 +123,11 @@ class NuxivaMeshCoordinator:
         # Telemetry State for all known nodes
         self.telemetry_store: Dict[str, Dict[str, Any]] = {}
 
+    @property
+    def crdt(self):
+        """Accesso diretto all'istanza RustCrdtMesh."""
+        return self._crdt
+
     def start_discovery(self):
         try:
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
