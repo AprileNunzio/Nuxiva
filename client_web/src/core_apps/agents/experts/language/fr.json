@@ -77,6 +77,14 @@
     "free_tools_empty": "Tous les outils appartiennent à une compétence.",
     "skill_procedure": "Procédure",
     "skill_rules": "Contraintes",
-    "template_layers": "{skills} compétences · {tools} outils réels"
+    "template_layers": "{skills} compétences · {tools} outils réels",
+    "search": "Rechercher un expert",
+    "groups": "Catégories d'experts",
+    "group_all": "Tous",
+    "group_teacher": "Enseignants",
+    "group_professional": "Professionnels",
+    "group_technical": "Techniques",
+    "group_custom": "Personnalisés",
+    "no_match": "Aucun expert ne correspond à la recherche."
   }
 }

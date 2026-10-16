@@ -22,7 +22,7 @@ class IsolatedStore(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         base = Path(self.tmp.name)
-        for name, path in (("PROFILES", "experts.json"), ("HISTORY", "experts_history.sealed"), ("HISTORY_KEY", "experts_history.key")):
+        for name, path in (("PROFILES", "experts.json"), ("HISTORY", "experts_history.sealed"), ("HISTORY_KEY", "experts_history.key"), ("SEEDED", "experts_seeded.json")):
             patch = mock.patch.object(store_module, name, base / path)
             patch.start()
             self.addCleanup(patch.stop)
@@ -218,7 +218,8 @@ class ApiTest(IsolatedStore):
 
     def test_crud_and_live(self):
         overview = self.client.get("/api/experts", headers=HEADERS).json()
-        self.assertEqual({t["id"] for t in overview["templates"]}, {"debian", "football"})
+        self.assertEqual({t["id"] for t in overview["templates"]}, set(templates.ids()))
+        self.assertTrue({"debian", "football", "teacher-math", "lawyer"} <= set(templates.ids()))
         self.assertEqual({s["id"] for s in overview["skills"]}, set(skills.SKILLS))
         self.assertFalse(any(t["name"].startswith("expert_") for t in overview["tools"]))
         created = self.client.post("/api/experts", json={"template": "debian"}, headers=HEADERS)

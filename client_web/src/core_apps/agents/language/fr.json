@@ -92,7 +92,6 @@
     "capabilities_hint": "Ex. : surveille la température des pièces",
     "create_agent": "Créer l'agent",
     "open_app": "Ouvrir",
-    "status": "Actif",
-    "show_all_features": "Afficher aussi les modules système ({count})"
+    "status": "Actif"
   }
 }

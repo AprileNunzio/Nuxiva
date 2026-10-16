@@ -37,7 +37,8 @@ export const View: React.FC = () => {
     );
   }
 
-  const agent = team.agents.find((a) => a.id === selected) ?? team.agents.find((a) => isOperative(a)) ?? team.agents[0] ?? null;
+  const members = team.agents.filter(isOperative);
+  const agent = members.find((a) => a.id === selected) ?? members[0] ?? null;
 
   return (
     <div className={PAGE_CLASS}>
@@ -50,16 +51,16 @@ export const View: React.FC = () => {
       />
       <div className="grid gap-4 lg:grid-cols-[20rem_minmax(0,1fr)] 3xl:grid-cols-[22rem_minmax(0,1fr)_26rem]">
         <aside className={panelClass} aria-label={t('team_list')}>
-          <AgentList agents={team.agents} selected={agent?.id ?? null} toolCount={toolCount} onSelect={setSelected} />
+          <AgentList agents={members} selected={agent?.id ?? null} toolCount={toolCount} onSelect={setSelected} />
         </aside>
         <div className="flex min-w-0 flex-col gap-4">
           {agent && <AgentDetail key={agent.id} agent={agent} team={team} handle={handle} onDeleted={() => setSelected(null)} />}
           <div className="3xl:hidden">
-            <ActivityFeed messages={team.messages} agents={team.agents} />
+            <ActivityFeed messages={team.messages} agents={members} />
           </div>
         </div>
         <div className="hidden min-w-0 3xl:block">
-          <ActivityFeed messages={team.messages} agents={team.agents} />
+          <ActivityFeed messages={team.messages} agents={members} />
         </div>
       </div>
       {creating === 'agent' && (

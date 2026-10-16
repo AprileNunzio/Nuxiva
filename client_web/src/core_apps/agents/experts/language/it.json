@@ -77,6 +77,14 @@
     "free_tools_empty": "Tutti gli strumenti sono dentro le competenze.",
     "skill_procedure": "Procedura",
     "skill_rules": "Vincoli",
-    "template_layers": "{skills} competenze · {tools} strumenti reali"
+    "template_layers": "{skills} competenze · {tools} strumenti reali",
+    "search": "Cerca un esperto",
+    "groups": "Categorie di esperti",
+    "group_all": "Tutti",
+    "group_teacher": "Docenti",
+    "group_professional": "Professionisti",
+    "group_technical": "Tecnici",
+    "group_custom": "Personalizzati",
+    "no_match": "Nessun esperto corrisponde alla ricerca."
   }
 }

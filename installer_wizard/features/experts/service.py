@@ -53,6 +53,28 @@ def create(body: dict, lang: str, author: str) -> Expert:
     return expert
 
 
+def seed_defaults(lang: str) -> list[str]:
+    done = experts.seeded()
+    present = {e.template for e in experts.all() if e.template}
+    created: list[str] = []
+    for template in templates.ids():
+        if template in done or template in present:
+            done.add(template)
+            continue
+        raw = templates.blueprint(template, lang, experts.free_id(template))
+        try:
+            experts.put(build(raw, known_tools()), create=True)
+        except ExpertError as exc:
+            store.event("WARN", f"Esperto predefinito {template} non aggiunto: {exc}", "experts")
+            continue
+        done.add(template)
+        created.append(template)
+    experts.mark_seeded(done)
+    if created:
+        store.event("INFO", f"{len(created)} esperti predefiniti aggiunti alla squadra", "experts")
+    return created
+
+
 def update(expert_id: str, body: dict) -> Expert:
     current = experts.get(expert_id).to_dict()
     editable = ("role", "specialty", "knowledge", "tools", "skills", "instructions", "icon", "color", "enabled")

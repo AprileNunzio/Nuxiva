@@ -111,7 +111,7 @@ function parseExpert(value: unknown): Expert | null {
     tools: tools(e.tools),
     skills: skillIds(e.skills),
     instructions: typeof e.instructions === 'string' ? e.instructions.slice(0, 1200) : '',
-    template: asString(e.template, 20) ?? '',
+    template: asString(e.template, 40) ?? '',
     live: (LIVE_KINDS as readonly string[]).includes(live) ? (live as LiveKind) : 'activity',
     enabled: e.enabled !== false,
     doing: asString(e.doing, 200) ?? '',

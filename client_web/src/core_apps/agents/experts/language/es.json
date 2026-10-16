@@ -77,6 +77,14 @@
     "free_tools_empty": "Todas las herramientas están dentro de las competencias.",
     "skill_procedure": "Procedimiento",
     "skill_rules": "Límites",
-    "template_layers": "{skills} competencias · {tools} herramientas reales"
+    "template_layers": "{skills} competencias · {tools} herramientas reales",
+    "search": "Buscar un experto",
+    "groups": "Categorías de expertos",
+    "group_all": "Todos",
+    "group_teacher": "Docentes",
+    "group_professional": "Profesionales",
+    "group_technical": "Técnicos",
+    "group_custom": "Personalizados",
+    "no_match": "Ningún experto coincide con la búsqueda."
   }
 }

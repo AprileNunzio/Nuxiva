@@ -382,7 +382,16 @@ BACKGROUND = (
 )
 
 
+def seed_experts() -> None:
+    from features.experts import service as experts_service
+    try:
+        experts_service.seed_defaults(pages.ui_language() or "it")
+    except Exception:
+        log.exception("Esperti predefiniti non aggiunti")
+
+
 async def main() -> None:
+    seed_experts()
     servers = [
         uvicorn.Server(
             uvicorn.Config(

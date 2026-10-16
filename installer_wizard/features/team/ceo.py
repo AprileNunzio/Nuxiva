@@ -155,6 +155,19 @@ class CEOExecutive:
             confidence=confidence
         )
 
+    def pick_expert(self, text: str):
+        from features.experts import routing
+        from features.experts.store import experts
+        choice = routing.choose(experts.all(), text)
+        if choice is None:
+            return None
+        plan = f"Il CEO delega a «{choice.expert.role}» (competenza {choice.score})"
+        if choice.shortlist:
+            plan += f"; alternative valutate: {', '.join(choice.shortlist)}"
+        board.post("ceo", f"expert:{choice.expert.id}", f"Incarico per {choice.expert.role}: {text[:120]}", "direttiva")
+        store.event("INFO", f"CEO: {plan}", "ceo")
+        return choice
+
     def on_conversation_start(self, text: str, context: dict | None = None) -> CEODecision:
         decision = self.analyze_request(text, context)
         store.event("INFO", f"CEO ha orchestrato la conversazione: {decision.delegation_plan}", "ceo")
@@ -198,6 +211,9 @@ class CEOExecutive:
 
         agent_name = active_agent.name
         is_general_conversation = active_agent.id in ("chat", "agent")
+        if current_agent_lower.startswith("esperto ·"):
+            agent_name = current_agent.split("·", 1)[1].strip()
+            is_general_conversation = False
 
         result["ceo"] = {
             "orchestrator": "CEO Executive",

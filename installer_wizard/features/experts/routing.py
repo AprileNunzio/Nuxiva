@@ -1,10 +1,14 @@
 import re
 import unicodedata
+from dataclasses import dataclass
 
 from features.experts import templates
 from features.experts.model import Expert
 
 STEM = 5
+HEAVY = 6
+DELEGATE_MIN = 2
+SHORTLIST = 3
 ASK_EXPERT = re.compile(r"\b(chiedi|domanda|passa|fai\s+rispondere|senti)\b.{0,30}\b(all'?|a\s+un\s+|al\s+|l'?)?esperto\b|\besperto\s+(di|in|del|della|dei)\b")
 
 
@@ -13,16 +17,36 @@ def flat(text: str) -> str:
     return re.sub(r"\s+", " ", plain).strip()
 
 
+@dataclass(frozen=True)
+class Delegation:
+    expert: Expert
+    score: int
+    shortlist: tuple[str, ...]
+
+
 def _terms(expert: Expert) -> set[str]:
+    curated = {flat(k) for k in templates.keywords(expert.template)}
+    if curated:
+        return {k for k in curated if k}
     words = re.findall(r"[a-z]{5,}", flat(f"{expert.role} {expert.specialty} {' '.join(expert.knowledge)}"))
-    terms = {w[:STEM] for w in words}
-    terms.update(flat(k) for k in templates.keywords(expert.template))
-    return terms
+    return {w[:STEM] for w in words}
+
+
+def _weight(term: str) -> int:
+    return 2 if len(term.strip()) >= HEAVY else 1
 
 
 def score(expert: Expert, text: str) -> int:
     body = flat(text)
-    return sum(1 for term in _terms(expert) if term and term in body)
+    return sum(_weight(t) for t in _terms(expert) if re.search(rf"(?<![a-z0-9]){re.escape(t)}", body))
+
+
+def choose(experts: list[Expert], text: str, minimum: int = DELEGATE_MIN) -> Delegation | None:
+    ranked = sorted(((score(e, text), e.created, e) for e in experts if e.enabled), key=lambda r: (-r[0], r[1]))
+    if not ranked or ranked[0][0] < minimum:
+        return None
+    top = ranked[0][0]
+    return Delegation(ranked[0][2], top, tuple(e.role for s, _, e in ranked[1:SHORTLIST + 1] if s >= minimum and s >= top * 0.6))
 
 
 def addressed(experts: list[Expert], text: str) -> Expert | None:

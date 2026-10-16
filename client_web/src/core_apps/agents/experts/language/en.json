@@ -77,6 +77,14 @@
     "free_tools_empty": "All tools belong to a skill.",
     "skill_procedure": "Procedure",
     "skill_rules": "Constraints",
-    "template_layers": "{skills} skills · {tools} real tools"
+    "template_layers": "{skills} skills · {tools} real tools",
+    "search": "Search experts",
+    "groups": "Expert categories",
+    "group_all": "All",
+    "group_teacher": "Teachers",
+    "group_professional": "Professionals",
+    "group_technical": "Technical",
+    "group_custom": "Custom",
+    "no_match": "No expert matches your search."
   }
 }

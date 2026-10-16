@@ -218,8 +218,26 @@ async def _diagnose(text: str) -> tuple[str, dict] | None:
         return None
 
 
+async def _delegate(text: str) -> tuple[str, str, dict] | None:
+    from features.experts import commands as expert_cmd
+    from features.team.ceo import ceo
+    choice = ceo.pick_expert(text)
+    if choice is None:
+        return None
+    async with stages.attempt("agent", f"Esperto · {choice.expert.role}") as probe:
+        found = await expert_cmd.run(choice.expert, text)
+        if found is None:
+            probe.skip()
+    if found is None:
+        return None
+    return f"esperto · {choice.expert.role}", *found
+
+
 async def _converse(text: str, core_call) -> tuple[str, str, dict]:
     from features.agent import commands as agent_cmd
+    delegated = await _delegate(text)
+    if delegated:
+        return delegated
     if agent_cmd.weak(text) and not code.wanted(text):
         async with stages.stage("agent", "Agente con strumenti"):
             speech, ui = await agent_cmd.answer(text)

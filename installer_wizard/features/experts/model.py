@@ -88,7 +88,7 @@ def build(raw: dict, known_tools: set[str]) -> Expert:
         color=color if COLOR_RE.fullmatch(color) else "#29e0ff",
         knowledge=knowledge, tools=tools, skills=chosen,
         instructions=clean(raw.get("instructions"), LIMITS["instructions"]),
-        template=str(raw.get("template") or "")[:20],
+        template=str(raw.get("template") or "")[:40],
         live=live if live in LIVE_KINDS else "activity",
         enabled=raw.get("enabled", True) is not False,
         created=float(raw.get("created") or time.time()),

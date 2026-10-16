@@ -6,7 +6,11 @@ LANG_DIR = Path(__file__).resolve().parent / "language"
 LANGS = ("it", "en", "es", "fr")
 FALLBACK = "it"
 
-SPECS = {
+CATALOG_FILE = Path(__file__).resolve().parent / "catalog.json"
+DEFAULT_SKILLS: list[str] = []
+DEFAULT_LIVE = "activity"
+
+BUILTIN = {
     "debian": {
         "icon": "🐧", "color": "#d70a53", "live": "debian",
         "skills": ["system_health", "service_diagnosis", "log_analysis", "security_updates"],
@@ -22,6 +26,15 @@ SPECS = {
                      "squadr", "campionat", "giornata", "marcator", "allenator", "risultat"],
     },
 }
+
+
+def _catalog() -> dict:
+    rows = json.loads(CATALOG_FILE.read_text(encoding="utf-8"))
+    return {r["id"]: {"icon": r["icon"], "color": r["color"], "live": DEFAULT_LIVE, "skills": DEFAULT_SKILLS, "group": r["group"],
+                      "tools": r["tools"], "keywords": r["keywords"]} for r in rows}
+
+
+SPECS = {**BUILTIN, **_catalog()}
 
 
 def lang_of(lang: str) -> str:
@@ -42,8 +55,22 @@ def text(template: str, lang: str) -> dict:
     return dict(texts.get(template) or {})
 
 
+@lru_cache(maxsize=8)
+def _groups(lang: str) -> dict:
+    return json.loads((LANG_DIR / f"{lang}.json").read_text(encoding="utf-8")).get("groups") or {}
+
+
+def group_rules(group: str, lang: str) -> str:
+    rules = _groups(lang_of(lang))
+    return str(rules.get(group) or _groups(FALLBACK).get(group) or "")
+
+
 def catalog(lang: str) -> list[dict]:
     return [{"id": tid, **spec, **text(tid, lang)} for tid, spec in SPECS.items()]
+
+
+def ids() -> list[str]:
+    return list(SPECS)
 
 
 def blueprint(template: str, lang: str, expert_id: str) -> dict:
@@ -51,10 +78,10 @@ def blueprint(template: str, lang: str, expert_id: str) -> dict:
         raise KeyError(template)
     spec, words = SPECS[template], text(template, lang)
     return {"id": expert_id, "role": words["role"], "specialty": words["specialty"],
-            "knowledge": list(words.get("knowledge") or []), "instructions": words.get("instructions", ""),
+            "knowledge": list(words.get("knowledge") or []),
+            "instructions": words.get("instructions") or group_rules(spec.get("group", ""), lang),
             "icon": spec["icon"], "color": spec["color"], "live": spec["live"], "tools": list(spec["tools"]),
-            "skills": list(spec["skills"]),
-            "template": template}
+            "skills": list(spec["skills"]), "template": template}
 
 
 def keywords(template: str) -> list[str]:

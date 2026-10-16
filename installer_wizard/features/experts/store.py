@@ -12,8 +12,9 @@ log = logging.getLogger("nuxiva.experts")
 PROFILES = STATE_DIR / "experts.json"
 HISTORY = STATE_DIR / "experts_history.sealed"
 HISTORY_KEY = STATE_DIR / "experts_history.key"
+SEEDED = STATE_DIR / "experts_seeded.json"
 KEEP_TURNS = 40
-MAX_EXPERTS = 64
+MAX_EXPERTS = 100
 
 
 class ExpertStore:
@@ -90,6 +91,17 @@ class ExpertStore:
             history = self._history.load()
             if history.pop(expert_id, None) is not None:
                 self._history.save(history)
+
+    def seeded(self) -> set[str]:
+        try:
+            rows = json.loads(SEEDED.read_text(encoding="utf-8")) if SEEDED.exists() else []
+        except (OSError, ValueError) as exc:
+            log.error("Elenco degli esperti predefiniti non leggibile: %s", exc)
+            raise
+        return {str(r) for r in rows} if isinstance(rows, list) else set()
+
+    def mark_seeded(self, ids: set[str]) -> None:
+        write_private(SEEDED, json.dumps(sorted(ids), ensure_ascii=False).encode("utf-8"))
 
     def history(self, expert_id: str) -> list[dict]:
         with self._lock:

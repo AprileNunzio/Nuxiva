@@ -10,3 +10,6 @@ export const glassClass =
 export const labelClass = 'mb-2 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400';
 
 export const GIB = 1024 ** 3;
+
+export const fieldClass =
+  'rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:border-cyan-400/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400';
