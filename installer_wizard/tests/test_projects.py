@@ -77,6 +77,31 @@ class ProjectTest(Isolated):
         self.store.save(project)
         self.assertEqual(store_module.ProjectStore().get(project.id).steps[0].status, "pending")
 
+    def test_3d_project_models_first_and_opens_the_studio(self):
+        import asyncio
+        from features.models3d import studio
+        plain = service.start("Organizzare la ristrutturazione del bagno", "it")
+        project = service.start("Progetta un portapenne in 3D da stampare", "it")
+        self.assertEqual((plain.kind, project.kind), ("general", "3d"))
+
+        async def fake(prompt, **kw):
+            return {"steps": [{"text": "Scegliere le misure"}, {"text": "Preparare il file per la stampa"}]}
+
+        async def create(subject):
+            return {"id": "portapenne-abc123", "title": "Portapenne", "parts": [{}, {}]}
+
+        import asyncio
+        with mock.patch.object(llm, "generate", fake), mock.patch.object(routing, "best", return_value=None), \
+                mock.patch("features.models3d.generator.create", create), mock.patch.object(studio, "open_studio") as opened:
+            asyncio.run(service.plan(project))
+            self.assertEqual([s.action for s in project.steps], ["model3d", "", ""])
+            self.assertEqual([s.id for s in project.steps], ["s1", "s2", "s3"])
+            asyncio.run(service.advance(project))
+        opened.assert_called_once()
+        self.assertEqual(project.model_id, "portapenne-abc123")
+        self.assertEqual(project.steps[0].status, "done")
+        self.assertEqual(store_module.ProjectStore().get(project.id).kind, "3d")
+
     def test_chat_commands(self):
         import asyncio
         reply, _ = asyncio.run(commands.answer("avvia un progetto per riordinare la cantina"))

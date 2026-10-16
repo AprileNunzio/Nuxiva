@@ -73,15 +73,20 @@ async def design(subject: str) -> tuple[str, list[dict], str]:
     raise ValueError("Il cervello non è riuscito a progettare l'oggetto")
 
 
-async def create(subject: str) -> dict:
-    title, parts, how = await design(subject)
+def render(meta: dict) -> dict:
+    title, parts = meta["title"], meta["parts"]
     meshes = export.build(parts)
     base = library.slug(title)
-    meta = library.create(title, "ai", {"parts": parts, "how": how, "prompt": subject[:200]})
     library.add_file(meta, f"{base}.glb", export.glb(meshes, title), main=True)
     library.add_file(meta, f"{base}.stl", export.stl(meshes, title))
     obj, mtl = export.obj(meshes, title, f"{base}.mtl")
     library.add_file(meta, f"{base}.obj", obj)
     meta = library.add_file(meta, f"{base}.mtl", mtl)
     meta["main"] = f"{base}.glb"
-    return library.export(library.save_meta(meta))
+    return library.save_meta(meta)
+
+
+async def create(subject: str) -> dict:
+    title, parts, how = await design(subject)
+    meta = library.create(title, "ai", {"parts": parts, "how": how, "prompt": subject[:200]})
+    return library.export(render(meta))

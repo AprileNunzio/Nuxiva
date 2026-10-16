@@ -21,6 +21,8 @@ def payload(project: Project) -> dict:
         "current": running.text if running else "",
         "expert": running.expert_role if running else "",
         "error": project.error,
+        "kind": project.kind,
+        "model_id": project.model_id,
         "steps": [{"text": s.text, "status": s.status, "expert": s.expert_role} for s in project.steps],
     }
 

@@ -11,6 +11,9 @@
     "Generazione da una frase: GLB a colori, STL in millimetri per la stampa, OBJ con materiali",
     "Visualizzatore: glTF/GLB, OBJ+MTL, STL, 3MF, AMF, PLY, FBX, DAE, 3DS, VRML, DXF, STEP/STP, IGES/IGS, BREP",
     "Conversione sul server: BLEND e USD/USDZ con Blender, DWG con LibreDWG",
-    "Comandi: «mostrami il modello del martello», «quali modelli hai», «chiudi il modello»"
+    "Comandi: «mostrami il modello del martello», «quali modelli hai», «chiudi il modello»",
+    "Studio 3D: modifica parti, aggiungi forme, cambia misure, colori e posizioni a tocco o a voce, con annulla e ripeti",
+    "Comandi di studio: «sposta il manico a destra di 3 cm», «colora la testa di rosso», «aggiungi una sfera blu», «quanto è alto», «annulla»",
+    "I progetti 3D aprono da soli lo studio sul display"
   ]
 }

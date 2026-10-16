@@ -17,6 +17,7 @@
     "error_library": "Libreria 3D non disponibile",
     "error_dxf": "Nessuna entità DXF riconosciuta",
     "error_cad": "File CAD non leggibile",
-    "error_format": "Formato non visualizzabile"
+    "error_format": "Formato non visualizzabile",
+    "studio": "Modifica nello studio 3D"
   }
 }

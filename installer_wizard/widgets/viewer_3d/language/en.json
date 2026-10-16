@@ -17,6 +17,7 @@
     "error_library": "3D library unavailable",
     "error_dxf": "No DXF entity recognised",
     "error_cad": "CAD file not readable",
-    "error_format": "Format cannot be displayed"
+    "error_format": "Format cannot be displayed",
+    "studio": "Edit in the 3D studio"
   }
 }

@@ -17,6 +17,7 @@
     "error_library": "Bibliothèque 3D indisponible",
     "error_dxf": "Aucune entité DXF reconnue",
     "error_cad": "Fichier CAO illisible",
-    "error_format": "Format non affichable"
+    "error_format": "Format non affichable",
+    "studio": "Modifier dans le studio 3D"
   }
 }

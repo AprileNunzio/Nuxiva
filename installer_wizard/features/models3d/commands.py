@@ -1,7 +1,7 @@
 import re
 
 from features.desktop.desk import desk
-from features.models3d import generator, library
+from features.models3d import generator, library, studio, voice
 from state import store
 from tasks import background
 
@@ -31,6 +31,10 @@ async def _build(subject: str) -> None:
 
 
 async def answer(text: str) -> tuple[str, dict]:
+    try:
+        return voice.answer(text)
+    except LookupError:
+        pass
     m = CREATE_MODEL.search(text) or CREATE.search(text)
     if m:
         subject = re.sub(r"[.?!]+$", "", m.group("what")).strip()

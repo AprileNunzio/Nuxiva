@@ -60,6 +60,7 @@ from features.home_assistant import home
 from features.location import api as location_api
 from features.cameras import api as cameras_api
 from features.models3d import api as models3d_api
+from features.models3d import studio_api as models3d_studio_api
 from features.ear import api as ear_api
 from features.automations import api as automations_api
 from features.automations.engine import engine as automations_engine
@@ -209,6 +210,7 @@ FEATURE_APIS = (
     redalert_api,
     laws_api,
     cameras_api,
+    models3d_studio_api,
     models3d_api,
     documents_api,
     ear_api,

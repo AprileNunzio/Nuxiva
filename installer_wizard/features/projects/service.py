@@ -8,7 +8,7 @@ from features.brain import llm
 from features.experts import routing, service as expert_service
 from features.experts.store import experts
 from features.projects import publish
-from features.projects.model import ACTIVE, Project, ProjectError, Step, create as new_project, steps_from
+from features.projects.model import ACTIVE, Project, ProjectError, Step, create as new_project, steps_from, with_modelling
 from features.projects.store import projects
 from features.team.board import board
 
@@ -87,6 +87,8 @@ async def plan(project: Project) -> None:
     try:
         data = await llm.generate(prompt, as_json=True, max_tokens=PLAN_TOKENS, temperature=0.2, component="projects")
         project.steps = steps_from(data.get("steps") if isinstance(data, dict) else data)
+        if project.kind == "3d":
+            project.steps = with_modelling(project.steps, project.lang)
     except llm.BrainUnavailable as exc:
         project.error = str(exc)[:300]
         projects.save(project)
@@ -120,7 +122,19 @@ def brief(project: Project, step: Step) -> str:
             + f"Esegui solo questo passo e riporta il risultato concreto: {step.text}")
 
 
+async def model_in_studio(project: Project, step: Step) -> None:
+    from features.models3d import generator, studio
+    meta = await generator.create(project.goal)
+    project.model_id = meta["id"]
+    studio.open_studio(meta["id"], f"Ecco {meta['title']}: puoi modificarlo nello studio 3D.")
+    step.result = f"{meta['title']}: {len(meta.get('parts', []))} parti"
+    step.status, step.error, step.finished = "done", "", time.time()
+
+
 async def execute(project: Project, step: Step) -> None:
+    if step.action == "model3d":
+        await model_in_studio(project, step)
+        return
     prompt = brief(project, step)
     if step.expert_id:
         try:
@@ -159,7 +173,7 @@ async def advance(project: Project) -> None:
     publish.push(project)
     try:
         await execute(project, step)
-    except (llm.BrainUnavailable, expert_service.ExpertError) as exc:
+    except (llm.BrainUnavailable, expert_service.ExpertError, ValueError) as exc:
         step.status, step.error = "failed", str(exc)[:300]
     projects.save(project)
     publish.push(project)

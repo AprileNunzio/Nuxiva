@@ -169,7 +169,7 @@
     el.innerHTML = `${ctx.head({ icon: "cube", label: ctx.t("label"), title: d.title || "", chip: LABEL[d.format] || String(d.format || "").toUpperCase() })}
       <div class="v3-stage"><canvas></canvas><div class="v3-msg">${ctx.esc(ctx.t("loading"))}</div>
         <div class="v3-tools"><button class="wk-btn icon" type="button" data-a="spin" title="${ctx.esc(ctx.t("spin"))}">${ctx.icon("refresh")}</button><button class="wk-btn icon" type="button" data-a="wire" title="${ctx.esc(ctx.t("wire"))}">${ctx.icon("cube")}</button>
-          <button class="wk-btn icon" type="button" data-a="fit" title="${ctx.esc(ctx.t("fit"))}">${ctx.icon("expand")}</button></div></div>
+          <button class="wk-btn icon" type="button" data-a="fit" title="${ctx.esc(ctx.t("fit"))}">${ctx.icon("expand")}</button>${d.parts > 0 ? `<button class="wk-btn icon" type="button" data-a="studio" title="${ctx.esc(ctx.t("studio"))}">${ctx.icon("pen")}</button>` : ""}</div></div>
       <div class="v3-info"><span class="v3-stats"></span>${d.note ? `<span class="v3-note">${ctx.esc(d.note)}</span>` : ""}</div>
       <div class="v3-files">${href ? files.slice(0, 12).map((f) => `<a class="wk-btn" href="${ctx.esc(href + encodeURIComponent(f.name))}" download>${ctx.icon("download")} ${ctx.esc(f.name)}</a>`).join("") : ""}</div>`;
     const st = { el, id: d.id, alive: true, spin: true, wire: false };
@@ -215,6 +215,7 @@
       const a = e.target.dataset.a;
       if (a === "spin") controls.autoRotate = st.spin = !st.spin;
       if (a === "fit") fit();
+      if (a === "studio") fetch(`/api/models3d/${encodeURIComponent(d.id)}/studio/open`, { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" }).catch(() => {});
       if (a === "wire") {
         st.wire = !st.wire;
         obj.traverse((o) => { if (o.material) [].concat(o.material).forEach((m) => { m.wireframe = st.wire; }); });

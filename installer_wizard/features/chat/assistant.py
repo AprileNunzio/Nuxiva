@@ -136,6 +136,11 @@ async def _route(text: str, core_call, speech_lang: dict | None = None) -> dict:
     project = await _connect(text, started, PROJECT_FIRST)
     if project:
         return project
+    from features.models3d import studio
+    if studio.ACTIVE["id"]:
+        modelling = await _connect(text, started, ("models3d",))
+        if modelling:
+            return modelling
     expert = await _connect(text, started, ("experts",))
     if expert:
         return expert

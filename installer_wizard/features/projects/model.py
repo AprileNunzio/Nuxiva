@@ -12,6 +12,10 @@ STEP_STATES = ("pending", "running", "done", "failed", "waiting")
 ACTIVE = ("planning", "running")
 MAX_STEPS = 12
 MAX_PROJECTS = 50
+KINDS = ("general", "3d")
+THREE_D = re.compile(r"\b3\s*d\b|\btridimension\w*|\btre\s+dimensioni\b|\bthree[- ]dimensional\b|\bstampa\s+3\s*d\b|\b3d\s+print\w*", re.I)
+MODEL_STEP = {"it": "Modella l'oggetto in 3D nello studio", "en": "Model the object in 3D in the studio",
+              "es": "Modela el objeto en 3D en el estudio", "fr": "Modéliser l'objet en 3D dans le studio"}
 LIMITS = {"title": 80, "goal": 1500, "text": 300, "result": 2000, "error": 300}
 
 
@@ -30,6 +34,7 @@ class Step:
     error: str = ""
     started: float = 0.0
     finished: float = 0.0
+    action: str = ""
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -44,6 +49,8 @@ class Project:
     status: str = "planning"
     steps: list[Step] = field(default_factory=list)
     error: str = ""
+    kind: str = "general"
+    model_id: str = ""
     created: float = field(default_factory=time.time)
     updated: float = field(default_factory=time.time)
 
@@ -70,7 +77,15 @@ def create(goal: str, lang: str, title: str = "") -> Project:
     goal = clean(goal, LIMITS["goal"])
     if len(goal) < 8:
         raise ProjectError("Descrivi l'obiettivo del progetto con qualche parola in più")
-    return Project(new_id(), clean(title, LIMITS["title"]) or title_of(goal), goal, lang if lang in ("it", "en", "es", "fr") else "it")
+    return Project(new_id(), clean(title, LIMITS["title"]) or title_of(goal), goal, lang if lang in ("it", "en", "es", "fr") else "it",
+                   kind="3d" if THREE_D.search(goal) else "general")
+
+
+def with_modelling(steps: list[Step], lang: str) -> list[Step]:
+    ordered = [Step("s1", MODEL_STEP.get(lang, MODEL_STEP["it"]), action="model3d")] + steps[:MAX_STEPS - 1]
+    for i, step in enumerate(ordered):
+        step.id = f"s{i + 1}"
+    return ordered
 
 
 def steps_from(rows) -> list[Step]:
@@ -96,8 +111,10 @@ def restore(row: dict) -> Project:
         status = item.get("status") if item.get("status") in STEP_STATES else "pending"
         steps.append(Step(item["id"], clean(item.get("text"), LIMITS["text"]), status, clean(item.get("expert_id"), 40),
                           clean(item.get("expert_role"), 80), clean(item.get("result"), LIMITS["result"]),
-                          clean(item.get("error"), LIMITS["error"]), float(item.get("started") or 0), float(item.get("finished") or 0)))
+                          clean(item.get("error"), LIMITS["error"]), float(item.get("started") or 0), float(item.get("finished") or 0),
+                          "model3d" if item.get("action") == "model3d" else ""))
     status = row.get("status") if row.get("status") in PROJECT_STATES else "paused"
     return Project(row["id"], clean(row.get("title"), LIMITS["title"]), clean(row.get("goal"), LIMITS["goal"]),
                    row.get("lang") if row.get("lang") in ("it", "en", "es", "fr") else "it", status, steps,
-                   clean(row.get("error"), LIMITS["error"]), float(row.get("created") or time.time()), float(row.get("updated") or time.time()))
+                   clean(row.get("error"), LIMITS["error"]), row.get("kind") if row.get("kind") in KINDS else "general",
+                   clean(row.get("model_id"), 80), float(row.get("created") or time.time()), float(row.get("updated") or time.time()))
