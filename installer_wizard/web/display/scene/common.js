@@ -3,13 +3,13 @@
   const THREE = global.THREE;
 
   const REGIONS = {
-    CONCEPT:  { name: "Lobo frontale",     role: "Pensiero e ragionamento", color: "#3d9bff" },
-    MEMORY:   { name: "Ippocampo",         role: "Memoria",                 color: "#ffc53d" },
-    USER:     { name: "Sistema limbico",   role: "Persone e relazioni",     color: "#ff8a3d" },
-    AGENT:    { name: "Lobo parietale",    role: "Agenti operativi",        color: "#b36bff" },
-    SKILL:    { name: "Corteccia motoria", role: "Abilità",                 color: "#3dffa8" },
-    DEVICE:   { name: "Lobo occipitale",   role: "Sensi e dispositivi",     color: "#ff4dd2" },
-    LOCATION: { name: "Cervelletto",       role: "Spazio e luoghi",         color: "#ff4d6a" },
+    CONCEPT:  { color: "#3d9bff" },
+    MEMORY:   { color: "#ffc53d" },
+    USER:     { color: "#ff8a3d" },
+    AGENT:    { color: "#b36bff" },
+    SKILL:    { color: "#3dffa8" },
+    DEVICE:   { color: "#ff4dd2" },
+    LOCATION: { color: "#ff4d6a" },
   };
 
   const damp = (a, b, k, dt) => a + (b - a) * (1 - Math.exp(-k * dt));

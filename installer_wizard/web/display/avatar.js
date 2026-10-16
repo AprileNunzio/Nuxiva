@@ -44,18 +44,18 @@
   }
 
   function decideAuto(info) {
-    if (!info.webgl) return ["light", "WebGL non disponibile"];
-    if (info.software) return ["light", "grafica senza accelerazione hardware"];
+    if (!info.webgl) return ["light", ["why_no_webgl", {}]];
+    if (info.software) return ["light", ["why_software", {}]];
     const cached = JSON.parse(store.get(KEY_FPS) || "null");
-    if (cached && cached.renderer === info.renderer) return ["light", `3D poco fluido su questo dispositivo (${cached.fps} fps)`];
-    if (info.mobile) return ["light", "dispositivo mobile: risparmio di batteria"];
+    if (cached && cached.renderer === info.renderer) return ["light", ["why_slow", { fps: cached.fps }]];
+    if (info.mobile) return ["light", ["why_mobile", {}]];
     if (info.dedicated) {
-      if ((info.cores && info.cores < 4) || (info.memory && info.memory < 4)) return ["light", "GPU dedicata ma processore o memoria limitati"];
-      return ["full", `GPU dedicata: ${gpuName(info.renderer)}`];
+      if ((info.cores && info.cores < 4) || (info.memory && info.memory < 4)) return ["light", ["why_dedicated_weak", {}]];
+      return ["full", ["why_dedicated", { gpu: gpuName(info.renderer) }]];
     }
-    if (info.integrated) return ["light", `GPU integrata: ${gpuName(info.renderer)}`];
+    if (info.integrated) return ["light", ["why_integrated", { gpu: gpuName(info.renderer) }]];
     return info.cores >= 8 && (!info.memory || info.memory >= 8)
-      ? ["full", `hardware potente (${info.cores} core)`] : ["light", "hardware nella media"];
+      ? ["full", ["why_powerful", { cores: info.cores }]] : ["light", ["why_average", {}]];
   }
 
   function choose(systemPref) {
@@ -64,8 +64,8 @@
     const pref = devicePref || (MODES.includes(systemPref) ? systemPref : "auto");
     const info = probe();
     let mode, reason;
-    if (pref === "light") [mode, reason] = ["light", "scelta nelle impostazioni"];
-    else if (pref === "full") [mode, reason] = info.webgl ? ["full", "scelta nelle impostazioni"] : ["light", "WebGL non disponibile"];
+    if (pref === "light") [mode, reason] = ["light", ["why_chosen", {}]];
+    else if (pref === "full") [mode, reason] = info.webgl ? ["full", ["why_chosen", {}]] : ["light", ["why_no_webgl", {}]];
     else [mode, reason] = decideAuto(info);
     return { mode, reason, pref, devicePref, auto: pref === "auto", info };
   }

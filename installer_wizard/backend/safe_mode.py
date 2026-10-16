@@ -12,6 +12,7 @@ import time
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from urllib.parse import parse_qs
 
 BACKEND_DIR = Path(__file__).resolve().parent
 APP_DIR = BACKEND_DIR.parent
@@ -25,6 +26,8 @@ REPAIR_FILE = STATE_DIR / "repair.json"
 AUTO_STAMP = STATE_DIR / "safe_autorepair"
 REPAIR_SCRIPT = NUXIVA_DIR / "scripts/os/repair.sh"
 PAGE_FILE = APP_DIR / "web/safe/safe.html"
+LANG_DIR = APP_DIR / "web/safe/language"
+LANG_RE = re.compile(r"[a-z]{2}")
 PUBLIC_PORT = int(os.environ.get("NUXIVA_PUBLIC_PORT", 8000 if DEMO else 80))
 ADMIN_PORT = int(os.environ.get("NUXIVA_ADMIN_PORT", 8001 if DEMO else 8080))
 AUTO_REPAIR_EVERY = 1800
@@ -94,6 +97,23 @@ def ui_lang() -> str:
             if re.fullmatch(r"[a-z]{2}", value):
                 return value
     return ""
+
+
+def texts(*preferred: str) -> dict:
+    for code in (*preferred, "en", "it"):
+        if not LANG_RE.fullmatch(code or ""):
+            continue
+        try:
+            data = json.loads((LANG_DIR / f"{code}.json").read_text(encoding="utf-8"))
+        except FileNotFoundError:
+            continue
+        except (OSError, ValueError) as exc:
+            log.warning("Testi della modalità sicura in %s non leggibili: %s", code, exc)
+            continue
+        words = data.get("dictionary") if isinstance(data, dict) else None
+        if isinstance(words, dict):
+            return {"lang": code, "text": {k: v for k, v in words.items() if isinstance(k, str) and isinstance(v, str)}}
+    return {"lang": "", "text": {}}
 
 
 def repair_running() -> bool:
@@ -170,9 +190,10 @@ class SafeState:
         self.since = int(time.time())
         self.page, self.csp = load_page()
 
-    def snapshot(self) -> dict:
+    def snapshot(self, wanted: str = "", browser: str = "") -> dict:
+        words = texts(wanted, ui_lang(), browser)
         return {"safe_mode": True, "reason": self.reason, "error": self.error, "since": self.since,
-                "lang": ui_lang(), "repair": _read_json(REPAIR_FILE)}
+                "lang": words["lang"], "text": words["text"], "repair": _read_json(REPAIR_FILE)}
 
 
 def handler_for(state: SafeState) -> type[BaseHTTPRequestHandler]:
@@ -209,7 +230,8 @@ def handler_for(state: SafeState) -> type[BaseHTTPRequestHandler]:
             if path == "/healthz":
                 self._json(HTTPStatus.OK, {"ok": True, "safe_mode": True, "reason": state.reason})
             elif path == "/api/safe":
-                self._json(HTTPStatus.OK, state.snapshot())
+                query = parse_qs(self.path.split("?", 1)[1] if "?" in self.path else "")
+                self._json(HTTPStatus.OK, state.snapshot(query.get("lang", [""])[0][:2], query.get("browser", [""])[0][:2]))
             elif path.startswith("/api/"):
                 self._json(HTTPStatus.SERVICE_UNAVAILABLE, {"safe_mode": True})
             else:

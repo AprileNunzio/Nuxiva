@@ -6,9 +6,9 @@
     const { scene } = D;
     const counts = scene.brain.counts();
     const total = Object.values(counts).reduce((a, b) => a + b, 0);
-    $("legend").innerHTML = `<div class="panel-title">Regioni cerebrali</div>` + Object.entries(D.regions()).map(([k, r]) =>
-      `<div class="r"><i style="background:${r.color}; box-shadow:0 0 8px ${r.color}"></i><div>${r.name}<small>${r.role}</small></div><b>${counts[k] || 0}</b></div>`).join("")
-      + `<div class="tot">${total} neuroni · ${(scene.brain.edges || []).length} sinapsi<br>Trascina per ruotare · rotella per lo zoom · tocca un neurone</div>`;
+    $("legend").innerHTML = `<div class="panel-title">${PageText.html("brain_regions")}</div>` + Object.entries(D.regions()).map(([k, r]) =>
+      `<div class="r"><i style="background:${r.color}; box-shadow:0 0 8px ${r.color}"></i><div>${PageText.html(`region_${k.toLowerCase()}`)}${PageText.html(`region_${k.toLowerCase()}_role`, {}, "small")}</div><b>${counts[k] || 0}</b></div>`).join("")
+      + `<div class="tot">${PageText.html("brain_totals", { neurons: total, synapses: (scene.brain.edges || []).length })}<br>${PageText.html("brain_hint")}</div>`;
   }
 
   D.refreshBrain = async (announce) => {
@@ -21,7 +21,8 @@
       if (D.scene) { D.scene.brain.setGraph(graph, true); renderLegend(); }
       if (announce && fresh.length) {
         const t = $("toast-mem");
-        t.textContent = `✦ ${fresh.length === 1 ? "Nuovo neurone" : `${fresh.length} nuovi neuroni`}: ${fresh[0].label}`;
+        t.replaceChildren();
+        PageText.bind(t, fresh.length === 1 ? "brain_new_one" : "brain_new_many", { n: fresh.length, label: fresh[0].label });
         t.classList.add("show"); setTimeout(() => t.classList.remove("show"), 3500);
       }
     } catch (e) { console.warn(e); }
@@ -33,12 +34,13 @@
     D.selectedId = node.id;
     const regions = D.regions(), r = regions[node.node_type] || regions.CONCEPT;
     const links = D.scene.brain.neighbours(node.id);
-    const created = node.created_at ? new Date(node.created_at * 1000).toLocaleString("it-IT") : "—";
-    $("inspector").innerHTML = `<div class="type" style="color:${r.color}">${r.name} · ${fmt.esc(node.node_type)}</div>
-      <h3>${fmt.esc(node.label)}</h3><div class="faint mono" style="font-size:11px">${fmt.esc(node.id)} · creato ${created}</div>
-      <div class="panel-title" style="margin-top:16px">Proprietà</div><pre>${fmt.esc(JSON.stringify(node.properties || {}, null, 2))}</pre>
-      <div class="panel-title" style="margin-top:16px">Sinapsi (${links.length})</div>
-      ${links.map((l) => `<button class="link" data-id="${fmt.esc(l.other.id)}"><span style="color:${(regions[l.other.node_type] || r).color}">●</span> ${fmt.esc(l.other.label)} <span class="faint">— ${fmt.esc(l.edge.relation_type)}</span></button>`).join("") || '<div class="faint">Nessuna connessione</div>'}`;
+    const created = node.created_at ? new Date(node.created_at * 1000).toLocaleString(fmt.locale()) : "—";
+    const typeKey = `region_${String(regions[node.node_type] ? node.node_type : "CONCEPT").toLowerCase()}`;
+    $("inspector").innerHTML = `<div class="type" style="color:${r.color}">${PageText.html(typeKey)} · ${fmt.esc(node.node_type)}</div>
+      <h3>${fmt.esc(node.label)}</h3><div class="faint mono" style="font-size:11px">${fmt.esc(node.id)} · ${PageText.html("brain_created", { when: created })}</div>
+      <div class="panel-title" style="margin-top:16px">${PageText.html("brain_properties")}</div><pre>${fmt.esc(JSON.stringify(node.properties || {}, null, 2))}</pre>
+      <div class="panel-title" style="margin-top:16px">${PageText.html("brain_synapses", { n: links.length })}</div>
+      ${links.map((l) => `<button class="link" data-id="${fmt.esc(l.other.id)}"><span style="color:${(regions[l.other.node_type] || r).color}">●</span> ${fmt.esc(l.other.label)} <span class="faint">— ${fmt.esc(l.edge.relation_type)}</span></button>`).join("") || `<div class="faint">${PageText.html("brain_no_links")}</div>`}`;
     $("inspector").classList.add("show");
   };
 

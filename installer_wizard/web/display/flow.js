@@ -62,7 +62,6 @@
     return list.find((j) => j.id === state.pick) || list[0] || null;
   }
 
-  // Costruisce la matrice a colonne posizionali a partire dall'albero di dipendenze dei nodi
   function layout(j) {
     const nodes = j.nodes || [];
     const edges = j.edges || [];
@@ -77,7 +76,6 @@
       }
     });
 
-    // Calcolo della colonna per profondità topologica
     const colOf = new Map();
     function computeCol(id, depth) {
       colOf.set(id, Math.max(colOf.get(id) || 0, depth));
@@ -86,7 +84,6 @@
     const roots = nodes.filter((n) => n.p === null || n.p === undefined);
     roots.forEach((r) => computeCol(r.i, 0));
 
-    // Nodi terminali (answer o error) sempre all'ultima colonna
     let maxCol = Math.max(...Array.from(colOf.values()), 0);
     nodes.forEach((n) => {
       if (n.k === "answer" || n.k === "error") {
@@ -107,7 +104,7 @@
     const key = `${jId}:${n.i}`;
     const icon = ICONS[n.k] || "•";
     const statusClass = n.s === "running" ? "live" : n.s === "fail" ? "bad" : n.s === "skip" ? "wait" : "ok";
-    const duration = n.b !== null && n.b !== undefined ? `${(n.b - (n.a || 0)).toFixed(2)}s` : "in corso";
+    const duration = n.b !== null && n.b !== undefined ? `${(n.b - (n.a || 0)).toFixed(2)}s` : PageText.html("flow_running");
 
     return `<div class="fnode ${n.k} ${statusClass} ${state.sel === key ? "sel" : ""}" data-k="${key}">
       <div class="fnode-top">
@@ -141,7 +138,6 @@
       let x1, y1, x2, y2, d;
 
       if (isBack) {
-        // Linea curva di ritorno (loop indietro sopra o sotto il nodo)
         x1 = ra.left + (ra.width / 2) - sr.left;
         y1 = ra.top - sr.top;
         x2 = rb.left + (rb.width / 2) - sr.left;
@@ -167,7 +163,6 @@
         out += `<text x="${midX}" y="${midY}" fill="rgba(${rgb}, 0.9)" font-size="9" font-family="monospace" text-anchor="middle">${esc(label)}</text>`;
       }
 
-      // Animazione particella di luce lungo il tragitto
       out += `<circle r="${isBack ? 3.5 : 2.8}" class="flow-dot" style="${tone(rgb)}">
         <animateMotion dur="${isBack ? '1.8s' : '2.4s'}" repeatCount="indefinite" path="${d}"/>
       </circle>`;
@@ -183,15 +178,15 @@
     const node = (j.nodes || []).find((n) => n.i === nodeId);
     if (!node) { box.classList.remove("show"); return; }
 
-    const statusBadge = node.s === "ok" ? "✓ SUCCESSO" : node.s === "fail" ? "✕ FALLITO / RIPROVA" : node.s === "running" ? "⌁ IN CORSO" : "SALTO";
+    const statusBadge = PageText.html(node.s === "ok" ? "flow_badge_ok" : node.s === "fail" ? "flow_badge_fail" : node.s === "running" ? "flow_badge_running" : "flow_badge_skip");
     box.innerHTML = `
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
         <span style="font-weight:bold; color:var(--cyan); letter-spacing:0.1em;">${esc(node.k.toUpperCase())} · ${esc(node.n)}</span>
         <span style="font-size:11px; padding:2px 8px; border-radius:4px; background:rgba(255,255,255,0.08); font-family:monospace;">${statusBadge}</span>
       </div>
-      <div style="font-size:12px; line-height:1.6; color:#cbd5e1; word-break:break-word; white-space:pre-wrap;">${esc(node.d || "Nessun dettaglio aggiuntivo disponibile per questo passaggio.")}</div>
+      <div style="font-size:12px; line-height:1.6; color:#cbd5e1; word-break:break-word; white-space:pre-wrap;">${node.d ? esc(node.d) : PageText.html("flow_no_detail")}</div>
       <div style="margin-top:10px; font-size:10px; color:var(--text-faint); font-family:monospace;">
-        Inizio: +${(node.a || 0).toFixed(3)}s | Concluso: ${node.b !== null ? `+${node.b.toFixed(3)}s` : 'attivo'}
+        ${PageText.html("flow_timing", { start: `+${(node.a || 0).toFixed(3)}s`, end: node.b !== null ? `+${node.b.toFixed(3)}s` : "…" })}
       </div>
     `;
     box.classList.add("show");
@@ -204,18 +199,17 @@
 
     tabs.innerHTML = list.map((x) => `
       <button class="flow-tab ${x.id === (j && j.id) ? "sel" : ""} ${x.state === "running" ? "live" : x.state === "failed" ? "failed" : ""}" data-id="${x.id}">
-        ${esc(x.query || "Domanda")} · ${x.state === "running" ? "in corso" : secs((x.elapsed || 0) * 1000)}
+        ${x.query ? esc(x.query) : PageText.html("flow_question")} · ${x.state === "running" ? PageText.html("flow_running") : secs((x.elapsed || 0) * 1000)}
       </button>
     `).join("");
 
     if (!j) {
       canvas.innerHTML = `
         <div class="flow-empty">
-          <b>Nessun percorso registrato finora.</b><br>
-          Fai una domanda a ${D.assistantName()} sul dock: il grafo si costruirà in tempo reale dalla A alla Z,<br>
-          mostrando la memoria, le leggi, i giudizi di consenso, i cicli ReAct e i ritorni.
+          ${PageText.html("flow_empty_title", {}, "b")}<br>
+          ${PageText.html("flow_empty_text", { assistant: D.assistantName() })}
         </div>`;
-      bar.innerHTML = `<span><i class="dot"></i>In attesa di richieste</span><span></span><span></span>`;
+      bar.innerHTML = `<span><i class="dot"></i>${PageText.html("flow_waiting")}</span><span></span><span></span>`;
       $("flow-detail").classList.remove("show");
       return;
     }
@@ -224,7 +218,7 @@
     const colsHtml = cols.map((colNodes, idx) => {
       if (!colNodes.length) return "";
       return `<div class="flow-col">
-        <div class="flow-col-title">Fase ${idx + 1}</div>
+        <div class="flow-col-title">${PageText.html("flow_phase", { n: idx + 1 })}</div>
         ${colNodes.map((n) => nodeHtml(n, j.id)).join("")}
       </div>`;
     }).join("");
@@ -235,10 +229,10 @@
 
     const live = j.state === "running";
     bar.innerHTML = `
-      <span><i class="dot ${live ? "live" : j.state}"></i>Stato: <b>${live ? "in esecuzione" : j.state === "failed" ? "fallito" : "concluso"}</b></span>
-      <span>Agente: <b>${esc(j.agent || "Dispatcher")}</b></span>
-      <span>Passi: <b>${(j.nodes || []).length}</b></span>
-      <span>Tempo: <b>${secs((j.elapsed || 0) * 1000)}</b></span>
+      <span><i class="dot ${live ? "live" : esc(j.state)}"></i>${PageText.html("flow_state")} <b>${PageText.html(live ? "flow_state_running" : j.state === "failed" ? "flow_state_failed" : "flow_state_done")}</b></span>
+      <span>${PageText.html("flow_agent")} <b>${esc(j.agent || "Dispatcher")}</b></span>
+      <span>${PageText.html("flow_steps")} <b>${(j.nodes || []).length}</b></span>
+      <span>${PageText.html("flow_time")} <b>${secs((j.elapsed || 0) * 1000)}</b></span>
     `;
   }
 

@@ -33,36 +33,36 @@
     quote: (p) => `<blockquote class="p-quote">${fmt.esc(p.body)}${p.source ? `<cite>— ${fmt.esc(p.source)}</cite>` : ""}</blockquote>`,
     route(p) {
       const d = p.data || {};
-      const traffic = d.delay != null ? (d.delay >= 3 ? `<span style="color:#ffb547">+${d.delay} min di traffico</span>` : '<span style="color:#3ddc97">traffico scorrevole</span>') : '<span class="dim">stima senza traffico</span>';
-      return `<div class="p-list"><div><span class="dim">Tempo ${fmt.esc(d.mode || "")}</span><span class="v" style="font-size:22px;color:var(--cyan)">${fmt.esc(d.duration)}</span></div>
-        ${row("Traffico", traffic)}
-        ${row("Distanza", fmt.esc(d.distance))}
-        ${d.via ? row("Via", fmt.esc(d.via)) : ""}
-        ${d.leave_by ? row("Parti entro", fmt.esc(d.leave_by)) : ""}
-        ${row("Arrivo", fmt.esc(d.arrive_at))}</div>`;
+      const traffic = d.delay != null ? (d.delay >= 3 ? `<span style="color:#ffb547">${PageText.html("route_traffic_delay", { n: d.delay })}</span>` : `<span style="color:#3ddc97">${PageText.html("route_traffic_ok")}</span>`) : `<span class="dim">${PageText.html("route_no_traffic")}</span>`;
+      return `<div class="p-list"><div><span class="dim">${PageText.html("route_time", { mode: d.mode || "" })}</span><span class="v" style="font-size:22px;color:var(--cyan)">${fmt.esc(d.duration)}</span></div>
+        ${row(PageText.html("route_traffic"), traffic)}
+        ${row(PageText.html("route_distance"), fmt.esc(d.distance))}
+        ${d.via ? row(PageText.html("route_via"), fmt.esc(d.via)) : ""}
+        ${d.leave_by ? row(PageText.html("route_leave_by"), fmt.esc(d.leave_by)) : ""}
+        ${row(PageText.html("route_arrival"), fmt.esc(d.arrive_at))}</div>`;
     },
     routemap(p) {
       const d = p.data || {};
-      const traffic = d.delay != null ? (d.delay >= 3 ? `<span class="rm-bad">+${d.delay} min di traffico</span>` : '<span class="rm-ok">traffico scorrevole</span>') : '<span class="dim">stima senza traffico</span>';
+      const traffic = d.delay != null ? (d.delay >= 3 ? `<span class="rm-bad">${PageText.html("route_traffic_delay", { n: d.delay })}</span>` : `<span class="rm-ok">${PageText.html("route_traffic_ok")}</span>`) : `<span class="dim">${PageText.html("route_no_traffic")}</span>`;
       const steps = (d.steps || []).map((s, i) => `<li><span class="rm-n">${i + 1}</span>${fmt.esc(s)}</li>`).join("");
       return `<div class="rm-wrap"><div class="rm-map" data-route></div>
         <div class="rm-side">
           <div class="rm-dest">${fmt.esc(d.to || "")}</div>
           ${d.to_detail ? `<div class="rm-from dim">${fmt.esc(d.to_detail)}</div>` : ""}
-          <div class="rm-from dim">da ${fmt.esc(d.from || "")} · ${fmt.esc(d.mode || "")}</div>
+          <div class="rm-from dim">${PageText.html("route_from", { from: d.from || "" })} · ${fmt.esc(d.mode || "")}</div>
           <div class="rm-time">${fmt.esc(d.duration || "")}</div>
           <div class="rm-traffic">${traffic}</div>
           <div class="rm-grid">
-            <div><small>Distanza</small><b>${fmt.esc(d.distance || "")}</b></div>
-            <div><small>${d.leave_by ? "Appuntamento" : "Arrivo"}</small><b>${fmt.esc(d.arrive_at || "")}</b></div>
-            ${d.leave_by ? `<div><small>Parti entro</small><b>${fmt.esc(d.leave_by)}</b></div>` : ""}
-            ${d.via ? `<div class="rm-via"><small>Via</small><b>${fmt.esc(d.via)}</b></div>` : ""}
+            <div>${PageText.html("route_distance", {}, "small")}<b>${fmt.esc(d.distance || "")}</b></div>
+            <div>${PageText.html(d.leave_by ? "route_appointment" : "route_arrival", {}, "small")}<b>${fmt.esc(d.arrive_at || "")}</b></div>
+            ${d.leave_by ? `<div>${PageText.html("route_leave_by", {}, "small")}<b>${fmt.esc(d.leave_by)}</b></div>` : ""}
+            ${d.via ? `<div class="rm-via">${PageText.html("route_via", {}, "small")}<b>${fmt.esc(d.via)}</b></div>` : ""}
           </div>
-          ${steps ? `<div class="rm-steps-title dim">Indicazioni</div><ol class="rm-steps">${steps}</ol>` : ""}
+          ${steps ? `<div class="rm-steps-title dim">${PageText.html("route_directions")}</div><ol class="rm-steps">${steps}</ol>` : ""}
         </div></div>`;
     },
-    code: (p) => `<div class="p-code"><div class="p-code-head"><span class="p-code-lang">${fmt.esc(p.language || "testo")}</span>
-      <span class="dim">${String(p.content || "").split("\n").length} righe</span><button class="p-code-copy" type="button">Copia</button></div>
+    code: (p) => `<div class="p-code"><div class="p-code-head"><span class="p-code-lang">${p.language ? fmt.esc(p.language) : PageText.html("code_text")}</span>
+      <span class="dim">${PageText.html("code_lines", { n: String(p.content || "").split("\n").length })}</span><button class="p-code-copy" type="button" data-i18n="code_copy"></button></div>
       <pre><code>${fmt.esc(p.content || "")}</code></pre></div>`,
     kv: (p) => `<div class="p-list">${Object.entries(p.data || {}).map(([k, v]) => row(fmt.esc(k), fmt.esc(v))).join("")}</div>`,
   };
@@ -74,7 +74,7 @@
     const s = document.createElement("script"); s.src = `/vendor/leaflet.js${v}`; s.onload = () => ok(window.L); s.onerror = ko; document.head.appendChild(s);
   }));
   const copyText = (text, button) => {
-    const done = () => { button.textContent = "Copiato"; setTimeout(() => { button.textContent = "Copia"; }, 1500); };
+    const done = () => { PageText.bind(button, "code_copied"); setTimeout(() => PageText.bind(button, "code_copy"), 1500); };
     if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(text).then(done).catch(() => {}); return; }
     const area = document.createElement("textarea");
     area.value = text; area.style.position = "fixed"; area.style.opacity = "0";
@@ -111,8 +111,8 @@
   const spanOf = (p) => Math.max(1, Math.min(12, parseInt(p.span, 10) || 12));
 
   D.renderStage = (ui) => {
-    $("stage-title").textContent = ui.title || "";
-    $("stage-sub").textContent = ui.subtitle || "";
+    PageText.plain($("stage-title"), ui.title || "");
+    PageText.plain($("stage-sub"), ui.subtitle || "");
     const grid = ui.layout === "grid";
     $("stage-body").classList.toggle("grid12", grid);
     $("stage-body").innerHTML = (ui.panels || []).map((p, i) => `<div class="panel ${!grid && WIDE[p.type] ? "wide" : ""}" style="animation-delay:${i * 90}ms${grid ? `;--span:${spanOf(p)}` : ""}">
@@ -122,7 +122,7 @@
 
   D.renderSkeleton = (sk) => {
     $("stage-body").classList.remove("grid12");
-    $("stage-title").textContent = "Elaborazione…"; $("stage-sub").textContent = "Preparo le informazioni";
+    PageText.bind($("stage-title"), "stage_working"); PageText.bind($("stage-sub"), "stage_preparing");
     $("stage-body").innerHTML = sk.panels.map((p) => `<div class="panel ${WIDE[p.type] ? "wide" : ""}"><h3 class="panel-title">${fmt.esc(p.title)}</h3><div class="skeleton"></div></div>`).join("");
   };
 })();

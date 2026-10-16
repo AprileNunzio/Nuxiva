@@ -48,6 +48,26 @@ def normalize_ollama(value: str) -> str:
     return url
 
 
+RELOAD_PREFIXES = {
+    "nuxiva-ear": ("NUXIVA_ASSISTANT_", "NUXIVA_WAKE", "NUXIVA_EAR_", "NUXIVA_VOICEPRINT_"),
+}
+
+
+def services_to_reload(keys) -> list[str]:
+    return [unit for unit, prefixes in RELOAD_PREFIXES.items() if any(k.startswith(prefixes) for k in keys)]
+
+
+async def reload_services(keys) -> None:
+    if DEMO:
+        return
+    for unit in services_to_reload(keys):
+        code, _ = await health.sh("systemctl", "is-active", "--quiet", f"{unit}.service", timeout=10)
+        if code == 0:
+            restart, out = await health.sh("systemctl", "restart", "--no-block", f"{unit}.service", timeout=15)
+            if restart != 0:
+                store.event("WARN", f"Riavvio di {unit} non riuscito: {out[:160]}", "admin")
+
+
 async def apply_config(updates: dict, user: str, extra_steps: list | None = None) -> list:
     if "NUXIVA_OLLAMA_URL" in updates:
         updates["NUXIVA_OLLAMA_URL"] = normalize_ollama(updates["NUXIVA_OLLAMA_URL"])
@@ -64,6 +84,7 @@ async def apply_config(updates: dict, user: str, extra_steps: list | None = None
         _ollama_cache.clear()
     brains.invalidate()
     store.event("INFO", f"Configurazione aggiornata da {user}: {', '.join(updates)}", "admin")
+    await reload_services(updates.keys())
     needs = list(extra_steps or [])
     for keys, steps in STEP_TRIGGERS:
         if keys & updates.keys():

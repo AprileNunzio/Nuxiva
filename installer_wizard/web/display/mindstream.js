@@ -27,9 +27,9 @@
     if (!entry) { box.classList.add("empty"); return; }
     const live = entry.state === "thinking";
     box.className = `mind ${live ? "live" : entry.state} ${open ? "open" : ""}`;
-    const kind = live ? (entry.model ? "sta ragionando" : "in ascolto") : entry.state === "failed" ? "nessuna risposta" : "ha risposto";
+    const kind = live ? (entry.model ? "mind_thinking" : "mind_listening") : entry.state === "failed" ? "mind_failed" : "mind_answered";
     const last = entry.steps[entry.steps.length - 1];
-    $("mind-who").innerHTML = `<small>${kind}</small>${esc(entry.label)}`;
+    $("mind-who").innerHTML = `${PageText.html(kind, {}, "small")}${esc(entry.label)}`;
     $("mind-time").textContent = live ? seconds(entry.elapsed_ms || 0) : seconds(entry.ms || 0);
     $("mind-model").innerHTML = modelLine(entry.model) || "&nbsp;";
     $("mind-line").textContent = live ? (last ? last.text : "") : (entry.snippet || (last ? last.text : ""));

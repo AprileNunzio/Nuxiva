@@ -80,3 +80,30 @@ class NodeCommandTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class NodeCommandApiTests(unittest.TestCase):
+    def test_local_commands_answer_through_the_real_endpoint(self):
+        from unittest import mock
+        from fastapi.testclient import TestClient
+        import nuxiva_supervisor
+        import node_commands_api
+        import setup_api
+        from server.features.mesh_coordinator.p2p_mesh import p2p_mesh
+
+        self.addCleanup(setup_api.SETUP_FILE.unlink, missing_ok=True)
+        client = TestClient(nuxiva_supervisor.admin)
+        headers = {"X-Nuxiva-Request": "1"}
+        client.post("/api/auth/login", json={"username": "admin", "password": "nuxiva"}, headers=headers)
+        scheduled = []
+        with mock.patch.object(node_commands_api, "delayed", side_effect=lambda *cmd: scheduled.append(cmd) or _noop()):
+            for command in ("restart", "reboot", "setup"):
+                with self.subTest(command=command):
+                    r = client.post(f"/api/v5/nodes/{p2p_mesh.node_id}/commands/{command}", json={"confirm": True}, headers=headers)
+                    self.assertEqual(r.status_code, 200, r.text)
+                    self.assertEqual(r.json()["status"], "executing")
+        self.assertEqual(scheduled, [("systemctl", "restart", "nuxiva-supervisor"), ("systemctl", "reboot")])
+
+
+async def _noop():
+    return None

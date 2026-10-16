@@ -47,7 +47,6 @@
           ? data.engines
           : [];
 
-        // Rilevamento dinamico al 100% dei motori scoperti dallo scanner delle directory
         this.engines = rawEngines.map((m) => {
           const rawId = String(m.id || m.raw_version || m.version || "").trim();
           const cleanBadge = String(m.badge || m.version || rawId).replace(/^nuxiva-/i, "");
@@ -72,7 +71,6 @@
           };
         });
 
-        // Risoluzione modalità attiva
         const serverActive = data.mode ? String(data.mode).trim() : "";
         const defaultMode = data.default ? String(data.default).trim() : (this.engines[0] ? this.engines[0].id : "");
 
@@ -173,14 +171,14 @@
       this.itemsContainer.innerHTML = "";
 
       if (this.countEl) {
-        this.countEl.textContent = `${this.engines.length} ${this.engines.length === 1 ? "VERSIONE" : "VERSIONI"}`;
+        PageText.bind(this.countEl, this.engines.length === 1 ? "model_count_one" : "model_count_many", { n: this.engines.length });
       }
 
       if (!this.engines.length) {
         const empty = document.createElement("div");
         empty.className = "opt-hint";
         empty.style.padding = "10px";
-        empty.textContent = "Scansione motori in corso…";
+        PageText.bind(empty, "model_scanning");
         this.itemsContainer.appendChild(empty);
         return;
       }
@@ -193,16 +191,17 @@
         btn.setAttribute("role", "menuitem");
         btn.setAttribute("data-engine-id", eng.id);
         btn.title = `${eng.name} (${eng.version})${eng.hint ? `: ${eng.hint}` : ""}`;
+        const esc = window.Nuxiva.fmt.esc;
 
         btn.innerHTML = `
-          <span class="opt-icon-col">${eng.icon}</span>
+          <span class="opt-icon-col">${esc(eng.icon)}</span>
           <span class="opt-info">
             <span class="opt-top-row">
-              <span class="opt-name">${eng.name}</span>
-              <span class="opt-badge">${eng.version}</span>
-              <span class="opt-sla">${eng.sla}</span>
+              <span class="opt-name">${esc(eng.name)}</span>
+              <span class="opt-badge">${esc(eng.version)}</span>
+              <span class="opt-sla">${esc(eng.sla)}</span>
             </span>
-            ${eng.hint ? `<span class="opt-hint">${eng.hint}</span>` : ""}
+            ${eng.hint ? `<span class="opt-hint">${esc(eng.hint)}</span>` : ""}
           </span>
           <span class="opt-check">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -229,7 +228,7 @@
       if (this.nameEl) this.nameEl.textContent = eng.shortName;
       if (this.verEl) this.verEl.textContent = eng.version;
       if (this.triggerBtn) {
-        this.triggerBtn.title = `Motore: ${eng.name} (${eng.version}) · SLA ${eng.sla}`;
+        PageText.attr(this.triggerBtn, { title: "model_active", "aria-label": "model_active" }, { name: eng.name, version: eng.version, sla: eng.sla });
       }
 
       if (this.itemsContainer) {

@@ -2,7 +2,7 @@
   const { fmt, Reactor, connectState } = Nuxiva;
   const $ = (id) => document.getElementById(id);
   const reactor = new Reactor($("reactor"));
-  const STATUS_TEXT = { pending: "in attesa", checking: "verifica", running: "", retrying: "nuovo tentativo", done: "ok", failed: "errore", skipped: "saltato", background: "dopo l'avvio" };
+  const STATUS_KEYS = { pending: "status_pending", checking: "status_checking", retrying: "status_retrying", done: "status_done", failed: "status_failed", skipped: "status_skipped", background: "status_background" };
   let state = null;
 
   setInterval(() => {
@@ -28,7 +28,13 @@
       const rec = s.steps[c.id] || { status: "pending" };
       if (rec.status === "done" || rec.status === "skipped" || rec.status === "background") done++;
       li.className = `${rec.status}${s.current_step === c.id ? " active" : ""}`;
-      li.querySelector(".s").textContent = rec.status === "running" ? `${rec.progress || 0}%` : (STATUS_TEXT[rec.status] ?? "");
+      const badge = li.querySelector(".s");
+      if (rec.status === "running" || !STATUS_KEYS[rec.status]) {
+        badge.removeAttribute("data-i18n");
+        badge.textContent = rec.status === "running" ? `${rec.progress || 0}%` : "";
+      } else {
+        PageText.bind(badge, STATUS_KEYS[rec.status]);
+      }
     });
     $("steps-count").textContent = `${done}/${s.catalog.length}`;
     $("steps-rail").style.width = `${(done * 100) / Math.max(1, s.catalog.length)}%`;
@@ -59,7 +65,7 @@
     if (!sys || !sys.mem_total) return;
     $("host").textContent = sys.hostname;
     $("ip").textContent = sys.ip;
-    $("cpu").textContent = `${sys.cpu_percent.toFixed(0)}% · ${sys.cpu_count} core`;
+    PageText.bind($("cpu"), "cpu_value", { pct: sys.cpu_percent.toFixed(0), cores: sys.cpu_count });
     $("cpu-bar").style.width = `${sys.cpu_percent}%`;
     $("mem").textContent = `${fmt.bytes(sys.mem_used)} / ${fmt.bytes(sys.mem_total)}`;
     $("mem-bar").style.width = `${sys.mem_percent}%`;
@@ -100,12 +106,15 @@
     reactor.progress = s.progress;
     reactor.activity = s.phase === "ERROR" ? 0.15 : 0.55;
     $("pct").textContent = `${Math.floor(s.progress)}%`;
+    $("phase").removeAttribute("data-i18n");
     $("phase").textContent = s.phase_label;
     $("msg").textContent = s.message || "";
     $("detail").textContent = s.detail || "";
-    $("err").textContent = s.phase === "ERROR"
-      ? `${s.last_error || "Errore"} — nuovo tentativo automatico tra ${fmt.duration(s.retry_in)}`
-      : (s.last_error && s.phase !== "INSTALLING" ? "" : "");
+    if (s.phase === "ERROR") PageText.bind($("err"), "error_retry", { error: s.last_error || "", wait: fmt.duration(s.retry_in) });
+    else {
+      $("err").removeAttribute("data-i18n");
+      $("err").textContent = "";
+    }
     renderSteps(s);
     renderSystem(s.system);
     renderComponents(s.components);

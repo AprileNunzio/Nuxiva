@@ -19,7 +19,7 @@
 
   render.gcal = (p) => {
     const d = p.data || {}, events = d.events || [];
-    if (!events.length) return '<div class="g-empty">Nessun impegno</div>';
+    if (!events.length) return `<div class="g-empty">${PageText.html("g_no_events")}</div>`;
     const now = Date.now() / 1000;
     const next = events.find((e) => e.ts > now);
     let day = "";
@@ -29,10 +29,10 @@
       const cls = e.ts < now && !e.all_day ? "past" : e === next ? "next" : "";
       const left = e === next ? Math.round((e.ts - now) / 60) : null;
       return `${head}<div class="g-ev ${cls}" ${delay(i)} style="--c:${hue(e.calendar || e.title)}">
-        <div class="g-time">${e.all_day ? "tutto il giorno" : `${esc(e.start)}${e.end ? `<small>${esc(e.end)}</small>` : ""}`}</div>
+        <div class="g-time">${e.all_day ? PageText.html("g_all_day") : `${esc(e.start)}${e.end ? `<small>${esc(e.end)}</small>` : ""}`}</div>
         <div class="g-bar"></div>
         <div class="g-info"><b>${esc(e.title)}</b>${e.where ? `<span>📍 ${esc(e.where)}</span>` : ""}${e.calendar ? `<span class="g-tag">${esc(e.calendar)}</span>` : ""}
-        ${left != null && left < 24 * 60 ? `<em>tra ${left < 60 ? `${left} min` : `${Math.floor(left / 60)} h ${left % 60} min`}</em>` : ""}</div></div>`;
+        ${left != null && left < 24 * 60 ? `<em>${PageText.html("g_in", { when: left < 60 ? Nuxiva.fmt.unit(left, "minute") : `${Nuxiva.fmt.unit(Math.floor(left / 60), "hour")} ${Nuxiva.fmt.unit(left % 60, "minute")}` })}</em>` : ""}</div></div>`;
     }).join("")}</div>`;
   };
 
@@ -51,8 +51,8 @@
 
   render.gmail = (p) => {
     const d = p.data || {};
-    if (!(d.items || []).length) return '<div class="g-empty">📭 Casella in ordine</div>';
-    return `<div class="g-mails"><div class="g-count"><b>${d.total}</b><span>non lett${d.total === 1 ? "a" : "e"}</span></div>
+    if (!(d.items || []).length) return `<div class="g-empty">📭 ${PageText.html("g_inbox_clear")}</div>`;
+    return `<div class="g-mails"><div class="g-count"><b>${d.total}</b>${PageText.html(d.total === 1 ? "g_unread_one" : "g_unread_many")}</div>
       ${d.items.map((m, i) => `<div class="g-mail" ${delay(i)}>${avatar(m.from)}<div class="g-mbody">
         <div class="g-mtop"><b>${esc(m.from)}</b><small>${esc(m.when)}</small></div>
         <div class="g-subj">${esc(m.subject)}</div><div class="g-snip">${esc(m.snippet)}</div></div></div>`).join("")}</div>`;
@@ -68,7 +68,7 @@
     const d = p.data || {}, items = d.items || [];
     const late = items.filter((t) => t.late).length;
     return `<div class="g-tasks"><div class="g-thead">${ring(items.length - late, items.length)}
-        <div><b>${items.length ? `${items.length} da fare` : "Tutto fatto!"}</b>${late ? `<span class="late">${late} in ritardo</span>` : ""}
+        <div><b>${items.length ? PageText.html("g_todo", { n: items.length }) : PageText.html("g_all_done")}</b>${late ? `<span class="late">${PageText.html("g_late", { n: late })}</span>` : ""}
         ${d.done ? `<span class="g-done">✓ ${esc(d.done)}</span>` : ""}</div></div>
       ${items.map((t, i) => `<div class="g-task ${t.late ? "late" : ""}" ${delay(i)}><i></i><div><b>${esc(t.title)}</b>
         ${t.notes ? `<small>${esc(t.notes)}</small>` : ""}</div>${t.due ? `<span>${esc(t.due)}</span>` : ""}</div>`).join("")}</div>`;

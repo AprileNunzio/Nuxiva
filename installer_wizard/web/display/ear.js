@@ -20,7 +20,8 @@
   let ws = null, ctx = null, stream = null, state = "off", history = new Array(28).fill(0);
   const WORKLET = `class Tap extends AudioWorkletProcessor { process(inp) { const c = inp[0] && inp[0][0]; if (c) this.port.postMessage(c.slice(0)); return true; } }
       registerProcessor("nuxiva-tap", Tap);`;
-  const TITLES = { idle: `Parla (oppure dì «${D.assistantName()}»)`, listening: "In ascolto", transcribing: "In ascolto", off: "Microfono non attivo" };
+  const TITLES = { idle: ["ear_idle", {}], listening: ["ear_listening", {}], transcribing: ["ear_listening", {}], off: ["ear_off", {}] };
+  let assistant = D.assistantName();
 
   async function report(ok, error) {
     let inputs = 0, label = "";
@@ -33,12 +34,15 @@
   function setState(s, text) {
     const { avatar } = D;
     state = s;
-    window.dispatchEvent(new CustomEvent("nuxiva-ear", { detail: { state: s, text: text || TITLES[s] } }));
+    const [key, params] = text || TITLES[s];
+    const full = { assistant, ...params };
+    window.dispatchEvent(new CustomEvent("nuxiva-ear", { detail: { state: s, key } }));
+    PageText.bind($("ear-text"), key, full);
+    PageText.attr($("btn-mic"), { title: key, "aria-label": key }, full);
     $("ear").className = `ear ${s}`;
     $("btn-mic").className = `ibtn mic ${s === "listening" ? "listening" : s === "off" ? "off" : ""}`;
     document.body.classList.toggle("listening", s === "listening");
     document.body.classList.toggle("transcribing", s === "transcribing");
-    $("btn-mic").title = text || TITLES[s];
     if (avatar && avatar.face) { avatar.face.listening = s === "listening"; if (!D.busy) avatar.setTint(s === "listening" ? "#3dffa8" : s === "transcribing" ? "#b36bff" : D.tint || "#29e0ff"); }
   }
 
@@ -103,11 +107,11 @@
       try { stream && stream.getTracks().forEach((t) => t.stop()); } catch (e) {}
       try { ctx && ctx.close(); } catch (e) {}
       stream = null; ctx = null;
-      const why = err && err.name === "Timeout" ? err.message : err && err.name === "NotFoundError" ? "nessun microfono trovato" : err && err.name === "NotAllowedError"
-        ? "accesso al microfono negato dal browser" : err && err.name === "NotReadableError" ? "microfono occupato da un altro programma"
-        : (err && (err.name + " " + err.message)) || "errore sconosciuto";
+      const why = err && err.name === "Timeout" ? ["ear_err_timeout", {}] : err && err.name === "NotFoundError" ? ["ear_err_missing", {}]
+        : err && err.name === "NotAllowedError" ? ["ear_err_denied", {}] : err && err.name === "NotReadableError" ? ["ear_err_busy", {}]
+        : ["ear_err_other", { detail: err ? `${err.name} ${err.message}` : "" }];
       report(false, why);
-      setState("off", `Microfono non disponibile: ${why}`);
+      setState("off", ["ear_unavailable", { why: PageText.t("web/display", why[0], why[1]) || why[0] }]);
       return false;
     }
   }
@@ -120,7 +124,7 @@
     if (!micAllowed() || parked) return;
     const confirmed = Date.now() - heardAt < 10000;
     if (confirmed && state === "off") setState("idle");
-    else if (!confirmed && state !== "off" && !(ws && ws.readyState === 1 && micLive())) setState("off", "Microfono non attivo");
+    else if (!confirmed && state !== "off" && !(ws && ws.readyState === 1 && micLive())) setState("off");
     if (!confirmed && !restarting && Date.now() - lastTry > 15000) {
       lastTry = Date.now();
       if (!micLive()) restartMic();
@@ -154,13 +158,13 @@
         ws = null; parked = true;
         try { stream && stream.getTracks().forEach((t) => t.stop()); } catch (err) {}
         stream = null;
-        setState("off", "Ascolto lasciato alla pagina visibile");
+        setState("off", ["ear_parked", {}]);
         return;
       }
       ws = null;
       wsFails++;
       if (wsFails % 5 === 1) report(false, `servizio di ascolto non raggiungibile da ${location.hostname}:8093 (codice ${e.code}, tentativo ${wsFails})`);
-      setState("off", "Ascolto in riconnessione…");
+      setState("off", ["ear_reconnecting", {}]);
       setTimeout(connect, 3000);
     };
     sock.onmessage = (e) => {
@@ -172,7 +176,7 @@
         if (old && old !== sock) { try { old.close(); } catch (err) {} }
       }
       const ev = JSON.parse(e.data);
-      if (ev.type === "level") { heardAt = Date.now(); level(ev.rms); if (state === "off") setState("idle"); }
+      if (ev.type === "level") { heardAt = Date.now(); level(ev.rms); if (D.Enroll && D.Enroll.active) D.Enroll.level(ev.rms); if (state === "off") setState("idle"); }
       else if (ev.type === "state") { setState(ev.state); document.body.classList.toggle("conversing", !!ev.conversation); }
       else if (ev.type === "wake") { D.lastInteraction = Date.now(); D.pingActivity(true); setState("listening"); if (D.mode === "brain") D.setMode("face"); if (D.wakeDesk) D.wakeDesk(); }
       else if (ev.type === "barge") { if (D.hush) D.hush(); }
@@ -201,8 +205,8 @@
   }
 
   function offReason() {
-    if (secure()) return "Tocca il microfono per usare quello di questo dispositivo";
-    return "Microfono di questo dispositivo: apri Nuxiva con https:// (vedi il certificato su /nuxiva-ca.crt)";
+    if (secure()) return ["ear_tap_local", {}];
+    return ["ear_need_https", {}];
   }
 
   let activated = false;
@@ -246,7 +250,7 @@
 
   const Ear = D.Ear = window.nuxivaEar = {
     resetFrom(t) { if (!t || t === resetSeen) return; if (resetSeen) restartMic(); resetSeen = t; },
-    setAssistantName(name) { if (!name) return; TITLES.idle = TITLES.idle.replace(/«[^»]+»/, "«" + name + "»"); if (state === "idle" && $("ear-text")) $("ear-text").textContent = TITLES.idle; },
+    setAssistantName(name) { if (!name || name === assistant) return; assistant = name; setState(state); },
     start, send, restartMic, debugState: setState, debugLevel: level,
     listen() { if (ctx && ctx.state === "suspended") ctx.resume(); D.pingActivity(true); send({ type: "listen" }); setState("listening"); },
     speaking(on) { send({ type: "speaking", on }); },

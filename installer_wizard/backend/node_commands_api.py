@@ -46,14 +46,14 @@ def _reopen_setup(user: str) -> None:
 
 
 @admin_routes.get("/{node_id}/control")
-def node_control(node_id: str) -> Dict[str, Any]:
+async def node_control(node_id: str) -> Dict[str, Any]:
     mesh = _mesh()
     control = describe(_validated(node_id), mesh.node_id)
     return control_payload(control, True if control.scope == "local" else None)
 
 
 @admin_routes.post("/{node_id}/commands/{command}")
-def node_command(node_id: str, command: str, req: CommandRequest, user: str = Depends(require_admin)) -> Dict[str, Any]:
+async def node_command(node_id: str, command: str, req: CommandRequest, user: str = Depends(require_admin)) -> Dict[str, Any]:
     if not _COMMAND.match(command):
         raise HTTPException(status_code=422, detail="invalid_command")
     control = describe(_validated(node_id), _mesh().node_id)

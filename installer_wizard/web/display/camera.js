@@ -37,11 +37,12 @@
     document.body.appendChild(mini);
     bar = document.createElement("div");
     bar.id = "cam-bar";
+    const params = D.fmt.esc(JSON.stringify({ assistant: D.assistantName() }));
     bar.innerHTML = [
-      ["mirror", "↔", "Specchio"], ["zoom-out", "−", "Riduci"], ["zoom-in", "+", "Ingrandisci"], ["shot", "◉", "Scatta"],
-      ["draw", "✎", "Disegna"], ["clear", "⌫", "Cancella disegno"], ["nuxiva", "◌", `Mostra o nascondi ${D.assistantName()}`], ["close", "✕", "Chiudi la webcam"],
-    ].map(([a, g, t]) => `<button type="button" data-cam="${a}" title="${t}" aria-label="${t}">${g}</button>`).join("")
-      + `<span class="cam-colors">${COLORS.map((c) => `<button type="button" data-color="${c}" style="--c:${c}" aria-label="Colore"></button>`).join("")}</span>`;
+      ["mirror", "↔", "cam_mirror"], ["zoom-out", "−", "cam_zoom_out"], ["zoom-in", "+", "cam_zoom_in"], ["shot", "◉", "cam_shot"],
+      ["draw", "✎", "cam_draw"], ["clear", "⌫", "cam_clear"], ["nuxiva", "◌", "cam_toggle_assistant"], ["close", "✕", "cam_close"],
+    ].map(([a, g, k]) => `<button type="button" data-cam="${a}" data-i18n-attr="title:${k},aria-label:${k}" data-i18n-params="${params}">${g}</button>`).join("")
+      + `<span class="cam-colors">${COLORS.map((c) => `<button type="button" data-color="${c}" style="--c:${c}" data-i18n-attr="aria-label:cam_color"></button>`).join("")}</span>`;
     document.body.appendChild(bar);
     strip = document.createElement("div");
     strip.id = "cam-shots";
@@ -179,7 +180,7 @@
   }
 
   function renderShots() {
-    strip.innerHTML = cam.shots.map((u, i) => `<a href="${fmt.esc(u)}" download="nuxiva-${Date.now()}-${i + 1}.png" title="Salva la foto"><img src="${fmt.esc(u)}" alt="Foto ${i + 1}"></a>`).join("");
+    strip.innerHTML = cam.shots.map((u, i) => `<a href="${fmt.esc(u)}" download="nuxiva-${Date.now()}-${i + 1}.png" data-i18n-attr="title:cam_save"><img src="${fmt.esc(u)}" data-i18n-attr="alt:cam_photo_n" data-i18n-params='{"n":"${i + 1}"}'></a>`).join("");
   }
 
   function useServerFeed() {

@@ -114,6 +114,7 @@ def render(html: str, lang: str = "") -> Response:
                                    f"window.NUXIVA_ASSET_V = {json.dumps(ASSET_VERSION)}; "
                                    f"window.NUXIVA_UI_LANG = {json.dumps(lang or ui_language())};</script>\n"
                                    '<script src="/static/shared/translate.js"></script>\n'
+                                   '<script src="/static/shared/page_text.js"></script>\n'
                                    '<script type="module" src="/static/shared/i18n/runtime.js"></script>\n</head>', 1)
     html = _ASSET_RE.sub(lambda m: f'{m.group(1)}?v={ASSET_VERSION}"', html)
     return Response(html, media_type="text/html", headers=NO_CACHE)

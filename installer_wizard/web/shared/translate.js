@@ -1,191 +1,67 @@
 (function (global) {
   "use strict";
-  const LANGS = ["it", "en", "fr", "es"];
-  const RTL = ["ar", "he", "fa", "ur"];
-  const REFRESH_MS = 20000;
-  const allowed = (lang) => /^[a-z]{2,3}$/.test(String(lang || ""));
-  const TABLES = { en: "pairs", fr: "fr", es: "es", it: "reverse" };
-  const ATTRS = ["placeholder", "title", "aria-label", "alt"];
-  const SKIP = new Set(["SCRIPT", "STYLE", "TEXTAREA", "CODE", "PRE", "NOSCRIPT"]);
-  const state = { lang: "it", exact: new Map(), patterns: [], ready: false, observer: null };
 
-  function cached() {
-    try { return localStorage.getItem("nuxiva_ui_lang") || ""; } catch (e) { return ""; }
+  const LANGS = Object.freeze(["it", "en", "fr", "es"]);
+  const RTL = Object.freeze(["ar", "he", "fa", "ur"]);
+  const allowed = (lang) => LANGS.includes(String(lang || ""));
+
+  function stored() {
+    try {
+      return localStorage.getItem("nuxiva_ui_lang") || "";
+    } catch (error) {
+      console.warn("i18n: preferenza lingua non leggibile", error);
+      return "";
+    }
   }
 
   function pick() {
-    const chosen = String(global.NUXIVA_UI_LANG || cached() || "").toLowerCase();
-    if (allowed(chosen)) return chosen;
-    const code = (document.documentElement.lang || navigator.language || "it").slice(0, 2).toLowerCase();
-    return LANGS.includes(code) ? code : "it";
+    const candidates = [global.NUXIVA_UI_LANG, stored(), document.documentElement.lang, navigator.language];
+    const found = candidates.map((c) => String(c || "").slice(0, 2).toLowerCase()).find(allowed);
+    return found || "it";
   }
 
-  function escapeRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
+  let current = pick();
 
-  function build(pairs, lang) {
-    const exact = new Map(), patterns = [];
-    for (const pair of pairs) {
-      const source = pair[0], target = pair[1];
-      if (!source || !target || source === target) continue;
-      if (/\{\d+\}/.test(source)) {
-        const order = [];
-        const re = new RegExp("^" + escapeRe(source).replace(/\\\{(\d+)\\\}/g, (m, n) => { order.push(Number(n)); return "(.+?)"; }) + "$", "s");
-        patterns.push({ re, order, target });
-      } else {
-        exact.set(source, target);
-      }
-    }
-    patterns.sort((a, b) => b.re.source.length - a.re.source.length);
-    return { exact, patterns };
-  }
-
-  function translate(text) {
-    if (!text || !state.ready) return text;
-    const core = text.trim();
-    if (!core || core.length > 2000) return text;
-    const norm = core.replace(/\s+/g, " ");
-    let out = state.exact.get(norm);
-    if (out === undefined && /\S/.test(norm)) {
-      for (const p of state.patterns) {
-        const m = p.re.exec(norm);
-        if (m) {
-          out = p.target.replace(/\{(\d+)\}/g, (all, n) => { const i = p.order.indexOf(Number(n)); return i >= 0 ? translate(m[i + 1]) : all; });
-          break;
-        }
-      }
-    }
-    if (out === undefined) {
-      const icon = norm.match(/^([^\p{L}\p{N}«"'(]+)(\p{L}.*)$/u);
-      const inner = icon && state.exact.get(icon[2]);
-      if (inner === undefined || inner === null) return text;
-      out = icon[1] + inner;
-    }
-    const lead = text.match(/^\s*/)[0], tail = text.match(/\s*$/)[0];
-    return lead + out + tail;
-  }
-
-  function skipped(el) {
-    return !el || SKIP.has(el.tagName) || (el.closest && el.closest("[data-no-i18n],[contenteditable=true],[data-i18n]"));
-  }
-
-  function textNode(node) {
-    if (skipped(node.parentElement)) return;
-    if (node.__jt !== node.nodeValue) node.__src = node.nodeValue;
-    const next = translate(node.__src);
-    if (next !== node.nodeValue) node.nodeValue = next;
-    node.__jt = node.nodeValue;
-  }
-
-  function localized(el, key, current, apply) {
-    el.__src = el.__src || {};
-    el.__jt = el.__jt || {};
-    if (el.__jt[key] !== current) el.__src[key] = current;
-    const next = translate(el.__src[key]);
-    if (next !== current) apply(next);
-    el.__jt[key] = next;
-  }
-
-  function element(el) {
-    if (skipped(el) || el.hasAttribute("data-i18n-attr")) return;
-    for (const name of ATTRS) {
-      const value = el.getAttribute(name);
-      if (value) localized(el, name, value, (next) => el.setAttribute(name, next));
-    }
-    if (el.tagName === "INPUT" && (el.type === "button" || el.type === "submit") && el.value) {
-      localized(el, "value", el.value, (next) => { el.value = next; });
-    }
-  }
-
-  function walk(root) {
-    if (!root) return;
-    if (root.nodeType === 3) return textNode(root);
-    if (root.nodeType !== 1 && root.nodeType !== 9 && root.nodeType !== 11) return;
-    if (root.nodeType === 1) element(root);
-    const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT);
-    let node = walker.nextNode();
-    while (node) {
-      node.nodeType === 3 ? textNode(node) : element(node);
-      node = walker.nextNode();
-    }
-  }
-
-  function observe() {
-    if (state.observer || !global.MutationObserver) return;
-    state.observer = new MutationObserver((records) => {
-      for (const r of records) {
-        if (r.type === "characterData") textNode(r.target);
-        else if (r.type === "attributes") element(r.target);
-        else r.addedNodes.forEach(walk);
-      }
-    });
-    state.observer.observe(document.documentElement, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ATTRS });
-  }
-
-  async function table(lang) {
-    if (TABLES[lang]) {
-      const v = global.NUXIVA_ASSET_V ? `?v=${global.NUXIVA_ASSET_V}` : "";
-      const data = await (await fetch(`/static/shared/i18n_catalog.json${v}`, { cache: "force-cache" })).json();
-      return { pairs: data[TABLES[lang]] || [], complete: true };
-    }
-    const res = await fetch(`/i18n/catalog/${lang}`, { cache: "no-store" });
-    if (!res.ok) throw new Error(`lingua ${lang} non disponibile`);
-    const data = await res.json();
-    return { pairs: data.pairs || [], complete: data.done >= data.total || !data.running };
-  }
-
-  async function load(lang) {
-    const got = await table(lang);
-    const built = build(got.pairs, lang);
-    state.lang = lang;
-    state.exact = built.exact;
-    state.patterns = built.patterns;
-    state.ready = true;
+  function apply(lang) {
+    current = lang;
     document.documentElement.lang = lang;
     document.documentElement.dir = RTL.includes(lang) ? "rtl" : "ltr";
-    walk(document.body);
-    clearTimeout(state.refresh);
-    if (!got.complete) state.refresh = setTimeout(() => { if (state.lang === lang) load(lang).catch((e) => console.warn("i18n refresh failed", e)); }, REFRESH_MS);
     document.dispatchEvent(new CustomEvent("nuxiva-translated", { detail: lang }));
   }
 
-  async function start(lang) {
-    state.lang = lang || pick();
-    document.documentElement.lang = state.lang;
+  async function remember(lang) {
     try {
-      await load(state.lang);
-      observe();
-    } catch (e) {
-      console.warn("i18n catalog unavailable", e);
+      localStorage.setItem("nuxiva_ui_lang", lang);
+    } catch (error) {
+      console.warn("i18n: preferenza lingua non salvata", error);
     }
-  }
-
-  function remember(lang) {
-    try { localStorage.setItem("nuxiva_ui_lang", lang); } catch (e) { console.warn("language preference not saved", e); }
     global.NUXIVA_UI_LANG = lang;
-    return fetch("/api/locale/ui", {
-      method: "PUT", credentials: "same-origin",
+    const response = await fetch("/api/locale/ui", {
+      method: "PUT",
+      credentials: "same-origin",
       headers: { "Content-Type": "application/json", "X-Nuxiva-Request": "1" },
       body: JSON.stringify({ lang }),
-    }).then((r) => { if (!r.ok) console.warn("language preference not saved", r.status); })
-      .catch((e) => console.warn("language preference not saved", e));
+    });
+    if (!response.ok) console.warn("i18n: lingua non salvata sul server", response.status);
   }
 
   async function switchTo(lang, persist = true) {
-    if (!allowed(lang) || lang === state.lang) return;
-    if (persist) remember(lang);
-    try {
-      await load(lang);
-    } catch (e) {
-      console.warn(e);
+    if (!allowed(lang) || lang === current) return;
+    if (persist) {
+      try {
+        await remember(lang);
+      } catch (error) {
+        console.warn("i18n: lingua non salvata", error);
+      }
     }
+    apply(lang);
   }
 
-  function setLanguage(lang) {
-    if (!allowed(lang) || lang === state.lang) return Promise.resolve();
-    return switchTo(lang, true);
-  }
-
-  global.NuxivaI18n = { start, setLanguage, switchTo, translate, language: () => state.lang, languages: LANGS };
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => start());
-  else start();
+  document.documentElement.lang = current;
+  global.NuxivaI18n = Object.freeze({
+    setLanguage: (lang) => switchTo(lang, true),
+    switchTo,
+    language: () => current,
+    languages: LANGS,
+  });
 })(window);

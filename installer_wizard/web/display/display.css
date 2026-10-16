@@ -190,6 +190,11 @@ body.desk-whiteboard #core, body.desk-full #core { display: none !important; }
 .en-text { font-size: clamp(20px, 3.2vh, 30px); font-weight: 300; line-height: 1.45; margin: 22px 0; }
 .en-note { font-size: 13px; color: var(--text-dim); margin-bottom: 18px; }
 body.conversing .ear { border-color: var(--green); box-shadow: 0 0 18px rgba(61, 255, 168, 0.25); }
+.en-meter { height: 4px; border-radius: 4px; background: rgba(255, 255, 255, 0.06); margin: 0 auto 14px; max-width: 320px; overflow: hidden; }
+.en-meter i { display: block; height: 100%; width: 0; background: var(--green); transition: width 0.1s linear; }
+.en-note.ok { color: var(--green); }
+.en-note.warn { color: #ffb547; }
+.en-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 @media (max-width: 600px) { .en-card { padding: 20px 16px; } }
 #ambient { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
 

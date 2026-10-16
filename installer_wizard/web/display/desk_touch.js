@@ -31,10 +31,11 @@
     const key = widget.dataset.key, full = isFull(widget);
     const el = document.createElement("div");
     el.className = "wt-menu";
+    el.setAttribute("data-i18n-scope", "web/shared");
     el.innerHTML = `<div class="wt-menu-card" role="menu">
-      <button type="button" data-wt="${full ? "shrink" : "grow"}">${full ? "Riduci" : "Ingrandisci"}</button>
-      <button type="button" data-wt="close">Chiudi</button>
-      <button type="button" data-wt="cancel">Annulla</button></div>`;
+      <button type="button" data-wt="${full ? "shrink" : "grow"}" data-i18n="${full ? "widget_shrink" : "widget_grow"}"></button>
+      <button type="button" data-wt="close" data-i18n="widget_close"></button>
+      <button type="button" data-wt="cancel" data-i18n="widget_cancel"></button></div>`;
     document.body.appendChild(el);
     const card = el.firstElementChild, W = window.innerWidth, H = window.innerHeight;
     const r = card.getBoundingClientRect();
@@ -67,14 +68,15 @@
     const meta = [d.source, d.at].filter(Boolean).map(esc).join(" · ");
     const el = document.createElement("div");
     el.className = "wt-sheet";
+    el.setAttribute("data-i18n-scope", "web/shared");
     el.innerHTML = `<article class="wt-sheet-card">
-      <button type="button" class="wt-x" data-wt="close" aria-label="Chiudi">✕</button>
+      <button type="button" class="wt-x" data-wt="close" data-i18n-attr="aria-label:widget_close">✕</button>
       ${meta ? `<div class="wt-meta">${meta}</div>` : ""}
       <h1>${esc(String(d.title || "").slice(0, 200))}</h1>
       ${img ? `<img src="${esc(img)}" alt="" referrerpolicy="no-referrer">` : ""}
       ${d.text ? `<p>${esc(String(d.text).slice(0, 4000))}</p>` : ""}
       ${d.link ? `<div class="wt-link">${esc(String(d.link).slice(0, 200))}</div>` : ""}
-      <div class="wt-actions">${d.text || d.title ? '<button type="button" data-wt="read">Leggimelo</button>' : ""}<button type="button" data-wt="close">Chiudi</button></div>
+      <div class="wt-actions">${d.text || d.title ? '<button type="button" data-wt="read" data-i18n="widget_read"></button>' : ""}<button type="button" data-wt="close" data-i18n="widget_close"></button></div>
     </article>`;
     el.addEventListener("click", (e) => {
       const b = e.target.closest("[data-wt]");
@@ -123,7 +125,8 @@
     const b = document.createElement("button");
     b.type = "button";
     b.className = "wt-exit";
-    b.textContent = "✕ Riduci";
+    b.setAttribute("data-i18n-scope", "web/shared");
+    b.append("✕ ", PageText.bind(document.createElement("span"), "widget_shrink"));
     b.addEventListener("click", () => {
       const full = document.querySelector(".desk > .widget.fullscreen");
       if (full) fullscreen(full.dataset.key, false);

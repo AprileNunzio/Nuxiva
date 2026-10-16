@@ -16,7 +16,7 @@ for noisy in ("websockets", "faster_whisper"):
 import earconf
 import enhance
 import stt
-from learner import learner, name_variant
+from learner import current_name, learner, name_variant
 from music import MusicTap
 from recorder import Recorder, write_chunk
 from reviewer import Reviewer, activity
@@ -294,16 +294,19 @@ class Session:
         if not self.enroll.get("train"):
             await self.send(type="enroll_progress", count=self.enroll["count"], ok=emb is not None)
             return
+        expect = self.enroll.get("expect")
+        stt.refresh_hotwords()
         async with stt.lock:
             heard, _ = await asyncio.to_thread(stt.transcribe, clean, False, True)
-        variant = name_variant(heard) if self.enroll.get("expect") in ("wake", "command") else None
+        variant = name_variant(heard) if expect in ("wake", "command") else None
         taught = bool(variant) and learner.teach(variant)
+        matched = variant is not None if expect in ("wake", "command") else bool(heard.strip())
         peak = float(np.abs(raw).max()) if len(raw) else 0.0
         level = {"rms": round(float(np.sqrt(np.mean(raw * raw))) if len(raw) else 0.0, 4), "peak": round(peak, 4),
                  "clipping": round(float(np.mean(np.abs(raw) >= 0.985)) if len(raw) else 0.0, 4),
                  "advice": self.autolevel.status()["advice"]}
-        await self.send(type="enroll_progress", count=self.enroll["count"], ok=bool(heard) or emb is not None,
-                        heard=heard, variant=variant, taught=taught, level=level)
+        await self.send(type="enroll_progress", count=self.enroll["count"], ok=matched, heard=heard, variant=variant,
+                        taught=taught, level=level, expect=expect, name=current_name())
 
     async def _transcribe_raw(self) -> None:
         pcm, self.raw = b"".join(self.raw or []), None
@@ -335,6 +338,7 @@ class Session:
             if SLUG_RE.match(slug) and (voiceprints.ready or msg.get("train")):
                 count = voiceprints.count(slug) if voiceprints.ready else 0
                 self.enroll = {"slug": slug, "count": count, "train": bool(msg.get("train")), "expect": ""}
+                stt.HOTWORDS["at"] = 0.0
                 await self.send(type="enroll_progress", count=self.enroll["count"], ok=True)
             else:
                 await self.send(type="enroll_unavailable")

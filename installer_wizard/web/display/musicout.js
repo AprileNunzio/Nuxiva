@@ -9,7 +9,7 @@
   } catch (err) { id = `t${Math.random().toString(36).slice(2, 9)}`; }
   const device = `display:${id}`;
   const node = new URLSearchParams(location.search).get("node");
-  const name = node ? `Schermo ${node}` : D.local ? `Schermo di ${D.assistantName()}` : `Schermo ${id.slice(0, 4)}`;
+  const name = node || (D.local ? `display · ${D.assistantName()}` : `display · ${id.slice(0, 4)}`);
   let audio = null, target = 0.6, reported = 0;
 
   const post = (state, ended) => {

@@ -1,4 +1,3 @@
-import os
 import re
 import time
 import unicodedata
@@ -27,6 +26,14 @@ PLANS = {
                     "I would like to know what the weather will be like tomorrow afternoon.",
                     "My voice is unique: from today you will recognise me even without seeing me."],
     },
+    "es": {
+        "wake": ["Nuxiva", "Nuxiva", "Nuxiva", "Hey Nuxiva", "Hey Nuxiva", "Oye Nuxiva"],
+        "command": ["Nuxiva, ¿qué hora es?", "Nuxiva, enciende la luz del salón", "Hey Nuxiva, pon un poco de música",
+                    "Nuxiva, recuérdame llamar a mamá mañana a las nueve"],
+        "reading": ["Buenos días Nuxiva, hoy es un día estupendo para aprender algo nuevo.",
+                    "Me gustaría saber qué tiempo hará mañana por la tarde.",
+                    "Mi voz es única: desde hoy me reconocerás incluso sin verme."],
+    },
     "fr": {
         "wake": ["Nuxiva", "Nuxiva", "Nuxiva", "Hey Nuxiva", "Hey Nuxiva", "Dis Nuxiva"],
         "command": ["Nuxiva, quelle heure est-il ?", "Nuxiva, allume la lumière du salon", "Hey Nuxiva, mets un peu de musique",
@@ -39,16 +46,8 @@ PLANS = {
 
 
 def get_assistant_name() -> str:
-    raw = ""
-    try:
-        from config import read_env
-        raw = read_env().get("NUXIVA_ASSISTANT_NAME", "").strip()
-    except Exception:
-        pass
-    if not raw:
-        raw = os.environ.get("NUXIVA_ASSISTANT_NAME", "").strip()
-    clean = re.sub(r"^(?:hey|hei|ehi|hi|ok|okay)\s+", "", raw or "Nuxiva", flags=re.I).strip()
-    return clean.capitalize() or "Nuxiva"
+    from identity import assistant_name
+    return assistant_name()
 
 
 def language(lang: str | None) -> str:

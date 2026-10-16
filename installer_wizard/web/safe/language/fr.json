@@ -2,13 +2,37 @@
   "meta": {
     "locale": "fr",
     "scope": "web/safe",
-    "version": "1.0.0"
+    "version": "2.0.0"
   },
   "dictionary": {
-    "title": "Mode Sans Échec",
-    "status_checking": "Vérification de l'intégrité du système en cours",
-    "diagnostics": "Diagnostics de récupération",
-    "action_retry": "Réessayer la vérification",
-    "action_reboot": "Redémarrer le système"
+    "page_title": "Nuxiva · Mode sans échec",
+    "brand": "NUXIVA",
+    "title": "Nuxiva est en mode sans échec",
+    "title_ok": "Nuxiva fonctionne à nouveau",
+    "reason_missing_library": "Il manque certaines bibliothèques dont Nuxiva a besoin pour démarrer.",
+    "reason_broken_code": "Certains fichiers de Nuxiva sont endommagés ou incomplets.",
+    "reason_system": "Un problème du système empêche Nuxiva de démarrer.",
+    "reason_unknown": "Nuxiva n'a pas pu démarrer normalement.",
+    "calm": "Vos données sont en sécurité. Nuxiva peut se réparer toute seule : il suffit d'un geste.",
+    "repair": "Réparer maintenant",
+    "repairing": "Réparation en cours…",
+    "retry": "Réessayer la réparation",
+    "started": "Réparation lancée, suivez les étapes ci-dessus.",
+    "busy": "Une réparation est déjà en cours.",
+    "wait": "Attendez quelques secondes avant de réessayer.",
+    "unavailable": "La réparation automatique n'est pas disponible : utilisez la commande ci-dessous.",
+    "offline": "Nuxiva ne répond pas, nouvelle tentative…",
+    "done": "Réparation terminée, redémarrage de Nuxiva…",
+    "failed": "Certains problèmes doivent être résolus à la main : lisez les étapes en rouge.",
+    "tech": "Détails techniques",
+    "cli": "sudo nuxivactl repair",
+    "step_disk": "Espace disque",
+    "step_apt": "Gestionnaire de paquets",
+    "step_network": "Connexion à Internet",
+    "step_code": "Fichiers de Nuxiva",
+    "step_python": "Bibliothèques Python",
+    "step_system": "Fichiers système",
+    "step_ports": "Ports réseau",
+    "step_service": "Démarrage de Nuxiva"
   }
 }

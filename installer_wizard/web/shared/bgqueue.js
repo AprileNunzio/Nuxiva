@@ -1,7 +1,17 @@
 (() => {
   "use strict";
   const SVG = "http://www.w3.org/2000/svg";
-  const STATUS = { queued: "in coda", failed: "riproverò", waiting_disk: "serve spazio", done: "pronta" };
+  const STATUS = { queued: "bgq_status_queued", failed: "bgq_status_failed", waiting_disk: "bgq_status_disk", done: "bgq_status_done" };
+  const put = (node, key, params) => {
+    if (node.childElementCount) node.replaceChildren();
+    return PageText.bind(node, key, params);
+  };
+  const raw = (node, text) => {
+    if (node.childElementCount) node.replaceChildren();
+    node.removeAttribute("data-i18n");
+    node.removeAttribute("data-i18n-params");
+    node.textContent = text;
+  };
   const FAREWELL_MS = 6000;
   const reduced = matchMedia("(prefers-reduced-motion: reduce)");
 
@@ -46,29 +56,42 @@
   }
 
   function eta(seconds) {
-    if (!Number.isFinite(seconds) || seconds <= 0) return "";
-    if (seconds < 90) return "meno di 2 min";
-    if (seconds < 3600) return `circa ${Math.round(seconds / 60)} min`;
-    return `circa ${(seconds / 3600).toFixed(1).replace(".0", "")} ore`;
+    if (!Number.isFinite(seconds) || seconds <= 0) return null;
+    if (seconds < 90) return ["bgq_eta_short", {}];
+    if (seconds < 3600) return ["bgq_eta_min", { n: Math.round(seconds / 60) }];
+    return ["bgq_eta_hours", { n: (seconds / 3600).toFixed(1).replace(".0", "") }];
+  }
+
+  function line(node, parts) {
+    const span = (part) => {
+      const s = el("span");
+      if (Array.isArray(part)) put(s, part[0], part[1]);
+      else s.textContent = part;
+      return s;
+    };
+    const items = parts.filter(Boolean);
+    node.removeAttribute("data-i18n");
+    node.replaceChildren(...items.flatMap((p, i) => (i ? [document.createTextNode(" · "), span(p)] : [span(p)])));
   }
 
   function mount() {
     const root = el("aside", "bgq");
+    root.setAttribute("data-i18n-scope", "web/shared");
     root.setAttribute("aria-live", "polite");
-    root.setAttribute("aria-label", "Installazioni in background");
+    PageText.attr(root, { "aria-label": "bgq_title" });
 
     const panel = el("section", "bgq-panel");
     panel.id = "bgq-panel";
     panel.hidden = true;
     const head = el("div", "bgq-head");
-    const title = el("h3", null, "Installazioni in background");
+    const title = put(el("h3"), "bgq_title");
     const sub = el("p");
     const bar = el("div", "bgq-bar");
     const fill = el("i");
     bar.append(fill);
     head.append(title, sub, bar);
     const list = el("ul", "bgq-list");
-    const foot = el("div", "bgq-foot", "Nuxiva è già pronta: queste parti si aggiungono da sole, senza riavvii.");
+    const foot = put(el("div", "bgq-foot"), "bgq_foot");
     panel.append(head, list, foot);
 
     const pill = el("button", "bgq-pill");
@@ -109,7 +132,8 @@
       }
       if (item.status !== "running") return "";
       const now = Date.now() / 1000;
-      const doneGb = (Number(item.size_gb) || 0.5) * (Number(item.progress) || 0) / 100;
+      if (!Number(item.size_gb)) return "";
+      const doneGb = Number(item.size_gb) * (Number(item.progress) || 0) / 100;
       let history = itemSamples.get(item.id);
       if (!history) {
         history = [];
@@ -159,7 +183,7 @@
       while (samples.length > 2 && now - samples[0][0] > 300) samples.shift();
       const [t0, g0] = samples[0];
       const dt = now - t0;
-      if (dt < 20 || doneGb <= g0) return "";
+      if (dt < 20 || doneGb <= g0) return null;
       return eta((totalGb - doneGb) / ((doneGb - g0) / dt));
     }
 
@@ -180,10 +204,11 @@
       main.set(bg.progress, finished ? "✓" : `${pct}%`);
       fill.style.width = `${pct}%`;
 
+      const ready = ["bgq_ready_count", { done: bg.done, total: bg.total }];
       if (finished) {
-        line1.textContent = "Nuxiva è al completo";
-        line2.textContent = "Tutte le parti sono installate";
-        sub.textContent = `${bg.total} di ${bg.total} pronte`;
+        put(line1, "bgq_complete");
+        put(line2, "bgq_complete_sub");
+        put(sub, "bgq_ready_count", { done: bg.total, total: bg.total });
         if (!farewell) {
           farewell = setTimeout(() => { gone = true; toggle(false); root.classList.remove("show"); }, FAREWELL_MS);
         }
@@ -193,25 +218,21 @@
         gone = false;
         const left = speed(bg, totalGb);
         if (bg.paused) {
-          line1.textContent = "Installazioni in pausa";
-          line2.textContent = `${bg.done} di ${bg.total} pronte`;
+          put(line1, "bgq_paused");
+          put(line2, ready[0], ready[1]);
         } else if (bg.conversation) {
-          line1.textContent = current ? current.title : "In attesa";
-          line2.textContent = "Riprendo quando finisci di parlare";
+          if (current) raw(line1, current.title);
+          else put(line1, "bgq_waiting");
+          put(line2, "bgq_resume_after_talk");
         } else if (current) {
-          line1.textContent = `${current.title} · ${current.progress}%`;
-          line2.textContent = [
-            curSpeed ? `↓ ${curSpeed}` : "in corso",
-            `${bg.done} di ${bg.total} pronte`,
-            left
-          ].filter(Boolean).join(" · ");
+          raw(line1, `${current.title} · ${current.progress}%`);
+          line(line2, [curSpeed ? `↓ ${curSpeed}` : ["bgq_running", {}], ready, left]);
         } else {
-          line1.textContent = "Preparazione del prossimo componente";
-          line2.textContent = [`${bg.done} di ${bg.total} pronte`, left].filter(Boolean).join(" · ");
+          put(line1, "bgq_next");
+          line(line2, [ready, left]);
         }
-        sub.textContent = bg.paused
-          ? `${bg.done} di ${bg.total} pronte · ${totalGb.toFixed(1)} GB in tutto · in pausa`
-          : `${bg.done} di ${bg.total} pronte · ${totalGb.toFixed(1)} GB in tutto${curSpeed ? ` · ↓ ${curSpeed}` : ""}`;
+        const total = ["bgq_total_gb", { gb: totalGb.toFixed(1) }];
+        line(sub, bg.paused ? [ready, total, ["bgq_paused_short", {}]] : [ready, total, curSpeed ? `↓ ${curSpeed}` : ""]);
       }
 
       bg.items.forEach((item, idx) => {
@@ -229,20 +250,21 @@
         r.miniFill.style.width = isRunning ? `${itemProg}%` : item.status === "done" ? "100%" : "0%";
 
         if (isRunning) {
-          r.pctEl.textContent = `${itemProg}%`;
-          r.speedEl.textContent = itemSpd ? `↓ ${itemSpd}` : "in corso";
-          r.small.textContent = item.detail ? item.detail : `${Number(item.size_gb).toFixed(1)} GB · ${item.description}`;
+          raw(r.pctEl, `${itemProg}%`);
+          if (itemSpd) raw(r.speedEl, `↓ ${itemSpd}`);
+          else put(r.speedEl, "bgq_running");
+          r.small.textContent = item.detail || [Number(item.size_gb) ? `${Number(item.size_gb).toFixed(1)} GB` : "", item.description].filter(Boolean).join(" · ");
         } else if (item.status === "done") {
-          r.pctEl.textContent = "100%";
-          r.speedEl.textContent = "pronta";
-          r.small.textContent = `${Number(item.size_gb).toFixed(1)} GB · ${item.description}`;
+          raw(r.pctEl, "100%");
+          put(r.speedEl, "bgq_status_done");
+          r.small.textContent = [Number(item.size_gb) ? `${Number(item.size_gb).toFixed(1)} GB` : "", item.description].filter(Boolean).join(" · ");
         } else if (item.status === "waiting_disk" || item.status === "failed") {
-          r.pctEl.textContent = STATUS[item.status] || item.status;
-          r.speedEl.textContent = item.status === "failed" ? "riproverà" : "serve spazio";
+          put(r.pctEl, STATUS[item.status]);
+          put(r.speedEl, item.status === "failed" ? "bgq_will_retry" : "bgq_status_disk");
           r.small.textContent = item.message || item.description;
         } else {
-          r.pctEl.textContent = STATUS[item.status] || "in coda";
-          r.speedEl.textContent = `${Number(item.size_gb).toFixed(1)} GB`;
+          put(r.pctEl, STATUS[item.status] || "bgq_status_queued");
+          raw(r.speedEl, Number(item.size_gb) ? `${Number(item.size_gb).toFixed(1)} GB` : "");
           r.small.textContent = item.description;
         }
 

@@ -2,12 +2,14 @@
   "meta": {
     "locale": "es",
     "scope": "web/screen",
-    "version": "1.0.0"
+    "version": "2.0.0"
   },
   "dictionary": {
-    "title": "Pantalla Satélite",
-    "screen_name": "PANTALLA",
-    "idle_hint": "Arrastra aquí un widget desde el borde de la otra pantalla, o pídele a Nuxiva que lo mueva.",
-    "link_lost": "Reconexión al supervisor"
+    "page_title": "{{assistant}} · Pantalla",
+    "screen_label": "PANTALLA",
+    "screen_n": "PANTALLA {{n}}",
+    "mirror_label": "WIDGETS DE {{assistant}}",
+    "idle_hint": "Arrastra aquí un widget desde el borde de la otra pantalla, o pide a {{assistant}} que lo mueva.",
+    "link_lost": "Reconectando con el supervisor"
   }
 }

@@ -38,17 +38,20 @@
       return `${n.toFixed(n >= 100 || i === 0 ? 0 : 1)} ${u[i]}`;
     },
     rate(n) { return `${fmt.bytes(n)}/s`; },
+    unit(value, unit) {
+      return new Intl.NumberFormat(fmt.locale(), { style: "unit", unit, unitDisplay: "narrow" }).format(value);
+    },
     duration(s) {
       s = Math.max(0, Math.floor(s));
       const d = Math.floor(s / 86400), h = Math.floor((s % 86400) / 3600), m = Math.floor((s % 3600) / 60);
-      if (d) return `${d}g ${h}h`;
-      if (h) return `${h}h ${m}m`;
-      if (m) return `${m}m ${s % 60}s`;
-      return `${s}s`;
+      if (d) return `${fmt.unit(d, "day")} ${fmt.unit(h, "hour")}`;
+      if (h) return `${fmt.unit(h, "hour")} ${fmt.unit(m, "minute")}`;
+      if (m) return `${fmt.unit(m, "minute")} ${fmt.unit(s % 60, "second")}`;
+      return fmt.unit(s, "second");
     },
     locale: () => document.documentElement.lang || "it",
-    clock(d = new Date()) { return d.toLocaleTimeString(document.documentElement.lang || "it", { hour: "2-digit", minute: "2-digit", second: "2-digit" }); },
-    date(d = new Date()) { return d.toLocaleDateString(document.documentElement.lang || "it", { weekday: "long", day: "numeric", month: "long", year: "numeric" }); },
+    clock(d = new Date()) { return d.toLocaleTimeString(fmt.locale(), { hour: "2-digit", minute: "2-digit", second: "2-digit" }); },
+    date(d = new Date()) { return d.toLocaleDateString(fmt.locale(), { weekday: "long", day: "numeric", month: "long", year: "numeric" }); },
     esc(s) { return String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); },
   };
 

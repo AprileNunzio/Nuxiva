@@ -2,13 +2,35 @@
   "meta": {
     "locale": "es",
     "scope": "web/monitor",
-    "version": "1.0.0"
+    "version": "2.0.0"
   },
   "dictionary": {
-    "title": "Secuencia de Activación",
+    "page_title": "{{assistant}} · Arranque",
+    "brand_sub": "SISTEMA OPERATIVO COGNITIVO",
     "activation_sequence": "Secuencia de activación",
     "completed": "completado",
-    "connecting": "Conexión al supervisor",
-    "brand_sub": "SISTEMA OPERATIVO COGNITIVO"
+    "connecting": "Conectando con el supervisor",
+    "telemetry": "Telemetría",
+    "cpu": "Procesador",
+    "cpu_value": "{{pct}}% · {{cores}} núcleos",
+    "memory": "Memoria",
+    "storage": "Almacenamiento",
+    "network": "Red ↓ / ↑",
+    "temperature": "Temperatura",
+    "uptime": "Encendido desde",
+    "phase_time": "Tiempo de fase",
+    "subsystems": "Subsistemas",
+    "waiting_diagnosis": "Esperando el primer diagnóstico…",
+    "link_lost": "Reconectando con el supervisor",
+    "online": "EN LÍNEA",
+    "all_ok": "Todos los sistemas están operativos",
+    "status_pending": "en espera",
+    "status_checking": "comprobando",
+    "status_retrying": "reintentando",
+    "status_done": "ok",
+    "status_failed": "error",
+    "status_skipped": "omitido",
+    "status_background": "tras el arranque",
+    "error_retry": "{{error}} — nuevo intento automático en {{wait}}"
   }
 }

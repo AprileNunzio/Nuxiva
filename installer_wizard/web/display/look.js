@@ -25,7 +25,7 @@
 
   function startLight() {
     $("scene").style.display = "none"; $("core").style.display = "block";
-    if (window.nuxivaPerf) window.nuxivaPerf.lite(D.look.reason || "modalità leggera");
+    if (window.nuxivaPerf) window.nuxivaPerf.lite(D.look.reason ? D.look.reason[0] : "light");
     D.avatar = window.nuxivaAvatar = new NuxivaAvatar.ThoughtCore($("core"));
     D.avatar.setMode(D.mode);
   }
@@ -50,7 +50,7 @@
       D.refreshBrain(false);
     } catch (err) {
       console.warn("3D non disponibile, uso il nucleo leggero", err);
-      look.mode = "light"; look.reason = "3D non disponibile su questo dispositivo";
+      look.mode = "light"; look.reason = ["why_no_3d", {}];
       startLight();
     }
   }
@@ -67,7 +67,7 @@
 
   D.startLook = () => {
     const look = D.look = window.nuxivaLook = NuxivaAvatar.choose(D.FACE.avatar);
-    console.info(`Aspetto: ${look.mode} (${look.reason})`, look.info);
+    console.info(`Aspetto: ${look.mode} (${look.reason[0]})`, look.info);
     if (look.mode === "full") startFull(); else startLight();
   };
 

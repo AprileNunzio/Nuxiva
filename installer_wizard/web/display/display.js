@@ -31,10 +31,10 @@
     $("clock").textContent = d.toLocaleTimeString(document.documentElement.lang || "it", { hour: "2-digit", minute: "2-digit" });
     $("date").textContent = fmt.date(d);
     const h = d.getHours();
-    const g = h < 6 ? "Buonanotte" : h < 13 ? "Buongiorno" : h < 18 ? "Buon pomeriggio" : "Buonasera";
+    const g = h < 6 ? "greet_night" : h < 13 ? "greet_morning" : h < 18 ? "greet_afternoon" : "greet_evening";
     if (D.presentNames.length) { D.greetNames = D.presentNames; D.greetSeen = Date.now(); }
-    const who = D.greetNames && Date.now() - (D.greetSeen || 0) < 20000 ? D.greetNames.join(" e ") : "";
-    if ($("greet")) $("greet").textContent = `${g}${who ? ", " + who : ""}.`;
+    const who = D.greetNames && Date.now() - (D.greetSeen || 0) < 20000 ? new Intl.ListFormat(Nuxiva.fmt.locale(), { type: "conjunction" }).format(D.greetNames) : "";
+    if ($("greet")) PageText.bind($("greet"), who ? `${g}_named` : g, who ? { who } : {});
     const quiet = !D.busy && !D.isSpeaking() && Date.now() - D.lastInteraction;
     if (D.mode !== "face" && quiet > (D.mode === "brain" ? 90000 : 60000)) goHome();
     else if (D.mode === "face" && quiet > 60000 && (NuxivaDesk.all || []).some((w) => w.intent)) goHome();
@@ -50,8 +50,8 @@
     $("you").textContent = "";
     $("focus-say").textContent = "";
     $("stage-body").innerHTML = "";
-    $("stage-title").textContent = "";
-    $("stage-sub").textContent = "";
+    PageText.plain($("stage-title"), "");
+    PageText.plain($("stage-sub"), "");
     if (!$("greet")) $("say").innerHTML = '<span class="greet" id="greet"></span>';
   }
 
@@ -77,7 +77,7 @@
     const box = $("presence");
     if (!names.length && !strangers) { box.classList.remove("show"); return; }
     box.innerHTML = names.map((n) => `<span class="who ${near.has(n) ? "near" : ""}"><i></i>${fmt.esc(n)}</span>`).join("")
-      + (strangers ? `<span class="who unknown"><i></i>${strangers === 1 ? "Ospite" : `${strangers} ospiti`}</span>` : "");
+      + (strangers ? `<span class="who unknown"><i></i>${strangers === 1 ? PageText.html("guest_one") : PageText.html("guest_many", { n: strangers })}</span>` : "");
     box.classList.add("show");
   }
 
@@ -90,7 +90,7 @@
     D.Mood.joy();
     if (g.names && g.names.length) {
       $("welcome-name").textContent = [...new Set(g.names)].join(" · ");
-      $("welcome-sub").textContent = "Identità riconosciuta";
+      PageText.bind($("welcome-sub"), "identity_recognized");
       $("welcome").classList.add("show");
       setTimeout(() => $("welcome").classList.remove("show"), 5000);
     }
@@ -112,8 +112,18 @@
     D.state = s;
     if (s.assistant_name) {
       const clean = s.assistant_name.replace(/^(?:hey|hei|ehi|hi|ok|okay)\s+/i, "").trim() || s.assistant_name;
-      const brand = document.querySelector(".brand");
-      if (brand) brand.innerHTML = `${fmt.esc(clean.toUpperCase())}<small>ASSISTENTE DIGITALE</small>`;
+      if ($("brand-name")) $("brand-name").textContent = clean.toUpperCase();
+      if (window.NUXIVA_ASSISTANT && window.NUXIVA_ASSISTANT.name !== clean) {
+        window.NUXIVA_ASSISTANT.name = clean;
+        document.querySelectorAll("[data-i18n-params]").forEach((el) => {
+          try {
+            const params = JSON.parse(el.getAttribute("data-i18n-params"));
+            if ("assistant" in params) el.setAttribute("data-i18n-params", JSON.stringify({ ...params, assistant: clean }));
+          } catch (err) {
+            console.warn("Parametri di traduzione non validi", err);
+          }
+        });
+      }
       if (D.Ear && D.Ear.setAssistantName) D.Ear.setAssistantName(clean);
     }
     privacy = s.privacy || privacy;
@@ -197,8 +207,7 @@
 
 const projectWidget = {
   async tick() {
-    const token = localStorage.getItem("token") || "";
-    const res = await fetch("/api/projects/status", { headers: { "Authorization": "Bearer " + token } });
+    const res = await fetch("/api/projects/status", { credentials: "same-origin" });
     if (res.status === 404 || res.status === 401 || res.status === 403) return window.nuxivaGovernor ? window.nuxivaGovernor.STOP : undefined;
     if (!res.ok) throw new Error(`stato progetti ${res.status}`);
     const data = await res.json();
@@ -210,7 +219,11 @@ const projectWidget = {
     const pct = document.getElementById("proj-pct"), bar = document.getElementById("proj-bar"), name = document.getElementById("proj-name");
     if (pct) pct.textContent = p.progress + "%";
     if (bar) bar.style.width = p.progress + "%";
-    if (name) name.textContent = p.name.replace("tsk_", "Progetto #");
+    if (name) {
+      const id = String(p.name || "").replace(/^tsk_/, "");
+      if (/^tsk_/.test(String(p.name || ""))) PageText.bind(name, "project_n", { id });
+      else { name.removeAttribute("data-i18n"); name.textContent = p.name || ""; }
+    }
     return undefined;
   },
 };

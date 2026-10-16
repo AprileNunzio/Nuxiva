@@ -94,13 +94,13 @@
           $("say").textContent = said;
           speakReady();
         } else if (ev.type === "error") {
-          throw new Error(ev.detail || "Errore");
+          throw new Error(ev.detail || PageText.t("web/display", "chat_error"));
         } else if (ev.type === "done") {
           final = ev;
         }
       }
     }
-    if (!final) throw new Error("Risposta interrotta");
+    if (!final) throw new Error(PageText.t("web/display", "chat_interrupted"));
     if (voice) {
       parseActions(final);
       const reply = final.reply || "", flat = cleanLive(reply), prefix = said.slice(0, cut);
@@ -183,8 +183,8 @@
     });
     if (!D.local) {
       fetch("/api/auth/me", { credentials: "include" }).then((r) => {
-        if (!r.ok) $("note").textContent = `Accesso remoto in sola visione — per parlare con ${D.assistantName()} accedi al pannello :8080`;
-      }).catch(() => {});
+        if (!r.ok) PageText.bind($("note"), "chat_view_only", { assistant: D.assistantName() });
+      }).catch((err) => console.warn("Sessione non verificata", err));
     }
   };
 })();

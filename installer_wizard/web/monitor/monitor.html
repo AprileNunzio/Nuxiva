@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="it" translate="no">
+<html lang="it" translate="no" data-i18n-scope="web/monitor">
 <head>
 <meta charset="UTF-8">
 <meta name="google" content="notranslate">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nuxiva OS</title>
+<title data-i18n="page_title" data-i18n-params='{"assistant":"{{assistant}}"}'>{{assistant}}</title>
 <link rel="stylesheet" href="/static/shared/nuxiva.css">
 <link rel="stylesheet" href="/static/monitor/monitor.css">
 <link rel="stylesheet" href="/static/shared/bgqueue.css">
@@ -12,7 +12,7 @@
 <body class="holo-grid">
 <div class="shell">
   <header>
-    <div class="brand">NUXIVA<small>SISTEMA OPERATIVO COGNITIVO</small></div>
+    <div class="brand"><span id="brand-name">{{assistant}}</span><small data-i18n="brand_sub"></small></div>
     <div class="hdr-right">
       <span class="dim" id="host">—</span>
       <span class="dim mono" id="ip">—</span>
@@ -23,7 +23,7 @@
   <main>
     <section class="col">
       <div class="panel steps-panel" style="flex:1; min-height:0">
-        <div class="steps-head"><h3 class="panel-title">Sequenza di attivazione</h3><span class="count" id="steps-count"></span></div>
+        <div class="steps-head"><h3 class="panel-title" data-i18n="activation_sequence"></h3><span class="count" id="steps-count"></span></div>
         <ul class="steps" id="steps"></ul>
         <div class="steps-rail"><i id="steps-rail"></i></div>
       </div>
@@ -32,10 +32,10 @@
     <section class="center">
       <div class="reactor-wrap">
         <canvas id="reactor"></canvas>
-        <div class="pct"><b id="pct">0%</b><span id="pct-lbl">completato</span></div>
+        <div class="pct"><b id="pct">0%</b><span id="pct-lbl" data-i18n="completed"></span></div>
       </div>
       <div class="phase">
-        <h1 id="phase">Connessione al supervisore</h1>
+        <h1 id="phase" data-i18n="connecting"></h1>
         <div class="msg" id="msg"></div>
         <div class="detail" id="detail"></div>
         <div class="err" id="err"></div>
@@ -44,20 +44,20 @@
 
     <section class="col">
       <div class="panel">
-        <h3 class="panel-title">Telemetria</h3>
-        <div class="metric"><div class="row"><span>Processore</span><b id="cpu">—</b></div><div class="bar"><i id="cpu-bar"></i></div></div>
-        <div class="metric"><div class="row"><span>Memoria</span><b id="mem">—</b></div><div class="bar"><i id="mem-bar"></i></div></div>
-        <div class="metric"><div class="row"><span>Archiviazione</span><b id="disk">—</b></div><div class="bar"><i id="disk-bar"></i></div></div>
+        <h3 class="panel-title" data-i18n="telemetry"></h3>
+        <div class="metric"><div class="row"><span data-i18n="cpu"></span><b id="cpu">—</b></div><div class="bar"><i id="cpu-bar"></i></div></div>
+        <div class="metric"><div class="row"><span data-i18n="memory"></span><b id="mem">—</b></div><div class="bar"><i id="mem-bar"></i></div></div>
+        <div class="metric"><div class="row"><span data-i18n="storage"></span><b id="disk">—</b></div><div class="bar"><i id="disk-bar"></i></div></div>
         <div class="kv">
-          <span>Rete ↓ / ↑</span><span id="net">—</span>
-          <span>Temperatura</span><span id="temp">—</span>
-          <span>Uptime</span><span id="uptime">—</span>
-          <span>Tempo di fase</span><span id="elapsed">—</span>
+          <span data-i18n="network"></span><span id="net">—</span>
+          <span data-i18n="temperature"></span><span id="temp">—</span>
+          <span data-i18n="uptime"></span><span id="uptime">—</span>
+          <span data-i18n="phase_time"></span><span id="elapsed">—</span>
         </div>
       </div>
       <div class="panel" style="flex:1; min-height:0">
-        <h3 class="panel-title">Sottosistemi</h3>
-        <div class="comps" id="comps"><div class="faint">In attesa della prima diagnosi…</div></div>
+        <h3 class="panel-title" data-i18n="subsystems"></h3>
+        <div class="comps" id="comps"><div class="faint" data-i18n="waiting_diagnosis"></div></div>
       </div>
     </section>
   </main>
@@ -65,8 +65,8 @@
   <footer class="panel console" id="console"></footer>
 </div>
 
-<div class="link-lost" id="link"><div class="spinner"></div>Riconnessione al supervisore</div>
-<div class="handoff" id="handoff"><h2>ONLINE</h2><p>Tutti i sistemi sono operativi</p></div>
+<div class="link-lost" id="link"><div class="spinner"></div><span data-i18n="link_lost"></span></div>
+<div class="handoff" id="handoff"><h2 data-i18n="online"></h2><p data-i18n="all_ok"></p></div>
 
 <script src="/static/shared/core.js"></script>
 <script src="/static/monitor/monitor.js"></script>

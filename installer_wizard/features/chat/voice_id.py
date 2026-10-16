@@ -69,4 +69,4 @@ def command(text: str) -> tuple[str, dict] | None:
 def session(profile: dict) -> dict:
     lang = voice_training.language(profile.get("language") or read_env().get("NUXIVA_UI_LANG"))
     return {"mode": "enroll", "train": True, "slug": profile["slug"], "name": identity.first_name(profile), "lang": lang,
-            "plan": voice_training.plan(lang)}
+            "assistant": voice_training.get_assistant_name(), "plan": voice_training.plan(lang)}

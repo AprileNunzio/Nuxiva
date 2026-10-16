@@ -1,7 +1,3 @@
-/* ==========================================================================
-   Nuxiva Display — Selettore Motori Cognitivi Affiancato alla Chat
-   Touch & Mouse Ergonomic Selector (6 Versioni Complete)
-   ========================================================================== */
 
 .dock-model-selector {
   position: relative;
@@ -13,7 +9,6 @@
   flex-shrink: 0;
 }
 
-/* Trigger Button affiancato all'input di chat */
 .dock-model-trigger {
   height: 48px;
   min-height: 48px;
@@ -55,7 +50,6 @@
   box-shadow: 0 0 20px rgba(41, 224, 255, 0.4), inset 0 0 10px rgba(41, 224, 255, 0.15);
 }
 
-/* Icona versione attiva */
 .dock-model-icon {
   font-size: 15px;
   line-height: 1;
@@ -103,7 +97,6 @@
   color: var(--cyan, #29e0ff);
 }
 
-/* Dropdown Menu a comparsa verso l'alto (Flyout HUD) */
 .dock-model-menu {
   position: absolute;
   bottom: calc(100% + 12px);
@@ -176,7 +169,6 @@
   scrollbar-color: rgba(41, 224, 255, 0.3) transparent;
 }
 
-/* Singola opzione motore (ergonomica Touch + Mouse) */
 .dock-model-option {
   display: flex;
   align-items: center;
@@ -306,7 +298,6 @@
   opacity: 1;
 }
 
-/* Responsività su schermi piccoli (tablet e smartphone) */
 @media (max-width: 768px) {
   .dock-model-trigger {
     padding: 0 10px;

@@ -2,13 +2,35 @@
   "meta": {
     "locale": "fr",
     "scope": "web/monitor",
-    "version": "1.0.0"
+    "version": "2.0.0"
   },
   "dictionary": {
-    "title": "Séquence d'Activation",
+    "page_title": "{{assistant}} · Démarrage",
+    "brand_sub": "SYSTÈME D'EXPLOITATION COGNITIF",
     "activation_sequence": "Séquence d'activation",
     "completed": "terminé",
     "connecting": "Connexion au superviseur",
-    "brand_sub": "SYSTÈME D'EXPLOITATION COGNITIF"
+    "telemetry": "Télémétrie",
+    "cpu": "Processeur",
+    "cpu_value": "{{pct}} % · {{cores}} cœurs",
+    "memory": "Mémoire",
+    "storage": "Stockage",
+    "network": "Réseau ↓ / ↑",
+    "temperature": "Température",
+    "uptime": "Allumé depuis",
+    "phase_time": "Durée de la phase",
+    "subsystems": "Sous-systèmes",
+    "waiting_diagnosis": "En attente du premier diagnostic…",
+    "link_lost": "Reconnexion au superviseur",
+    "online": "EN LIGNE",
+    "all_ok": "Tous les systèmes sont opérationnels",
+    "status_pending": "en attente",
+    "status_checking": "vérification",
+    "status_retrying": "nouvel essai",
+    "status_done": "ok",
+    "status_failed": "erreur",
+    "status_skipped": "ignoré",
+    "status_background": "après le démarrage",
+    "error_retry": "{{error}} — nouvel essai automatique dans {{wait}}"
   }
 }
