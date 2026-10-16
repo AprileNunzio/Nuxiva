@@ -2,326 +2,333 @@
   "use strict";
 
   const $ = (id) => document.getElementById(id);
+  const Audio = window.SetupAudio;
+  const NAME_RE = /^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,31}$/;
+  const FIRST_RE = /^[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ-]{0,39}$/;
+  const WAKE_PREFIX = /^(?:hey|hei|ehi|hi|ok|okay)\s+/i;
+  const SUGGESTED_NAMES = Object.freeze(["Aria", "Atlas", "Athena", "Orion", "Nova"]);
+  const FACE_KINDS = Object.freeze(["front", "three_left", "three_right"]);
+  const LANGS = Object.freeze([["it", "Italiano"], ["en", "English"], ["es", "Español"], ["fr", "Français"]]);
+  let scope = null;
 
-  function setupStep1(ctx) {
-    const { session, switchLanguage } = ctx;
-    const tzEl = $("lbl-detected-tz");
-    if (tzEl) {
-      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || session.config.timezone || "Europe/Rome";
-      session.config.timezone = tz;
-      tzEl.textContent = tz;
-    }
-    const grid = $("lang-cards");
-    if (!grid) return;
-    grid.innerHTML = "";
-    const currentCode = (session.config.locale || "it").slice(0, 2);
-    const langs = [
-      { code: "it", name: "Italiano", flag: "🇮🇹" },
-      { code: "en", name: "English", flag: "🇬🇧" },
-      { code: "es", name: "Español", flag: "🇪🇸" },
-      { code: "fr", name: "Français", flag: "🇫🇷" }
-    ];
-    langs.forEach((l) => {
-      const card = document.createElement("div");
-      const isAct = currentCode === l.code;
-      card.className = `lang-hud-card ${isAct ? "active" : ""}`;
-      card.innerHTML = `<span style="font-size:1.6rem">${l.flag}</span><div><b>${l.name}</b><br><small style="color:#7fa4bf">${l.code.toUpperCase()}</small></div>`;
-      card.addEventListener("click", () => {
-        if (typeof switchLanguage === "function") {
-          switchLanguage(l.code);
-        }
-      });
-      grid.appendChild(card);
-    });
+  const db = (v) => (typeof v === "number" ? `${v.toFixed(1)} dB` : null);
+  const wakeWord = (name) => String(name || "").trim().replace(WAKE_PREFIX, "").trim().toLowerCase();
+
+  function stopMic() {
+    if (scope) scope.stop();
+    Audio.close();
   }
 
-  function setupStep2(ctx) {
-    const { session, abortActiveStreams, renderAnalytics } = ctx;
-    const canvas = $("canvas-oscilloscope");
-    if (!canvas) return;
-    if (!ctx.visualizers.osc && window.SetupCanvas) {
-      ctx.visualizers.osc = new window.SetupCanvas.Oscilloscope(canvas);
-    }
-    if (ctx.visualizers.osc) ctx.visualizers.osc.start();
-    const btn = $("btn-start-mic-cal");
-    if (!btn) return;
-    btn.onclick = () => {
-      abortActiveStreams();
-      if (ctx.visualizers.osc) ctx.visualizers.osc.start();
-      $("mic-phase-msg").textContent = window.SetupI18n.t("mic-phase-silence");
-      ctx.setActiveEventSource(new EventSource("/api/ear/calibration-stream"));
-      const es = ctx.getActiveEventSource();
-      if (es) {
-        es.onmessage = (e) => {
-          const d = JSON.parse(e.data);
-          if (ctx.visualizers.osc) {
-            ctx.visualizers.osc.update(d.fft_bins, (d.vad_probability || 0.28));
-          }
-          $("bottom-status-msg").textContent = ["RMS:", `${d.rms_db}dB`, "| SNR:", `+${d.snr_db}dB`].join(" ");
-          if (d.paused) {
-            $("mic-phase-msg").textContent = window.SetupI18n.t("mic-paused-alert");
-          } else if (d.calibration_phase === "dsp") {
-            $("mic-phase-msg").textContent = window.SetupI18n.t("mic-phase-dsp");
-          } else if (d.calibration_phase === "voice") {
-            $("mic-phase-msg").textContent = window.SetupI18n.t("mic-phase-voice");
-          } else if (d.calibration_phase === "calibrated") {
-            $("mic-phase-msg").textContent = window.SetupI18n.t("mic-phase-done");
-            session.config.mic_noise_floor_db = d.rms_db;
-            session.config.mic_snr_db = d.snr_db;
-            abortActiveStreams();
-            renderAnalytics(2);
-          }
-        };
+  async function micOrExplain(ctx, target) {
+    if (!Audio.available()) throw new Error("mic-unavailable");
+    try {
+      const mic = await Audio.open();
+      if (target) {
+        if (!scope) scope = new window.SetupCanvas.LiveScope(target);
+        scope.attach(mic.analyser);
       }
-    };
+      return mic;
+    } catch (error) {
+      if (error && error.name === "NotAllowedError") throw new Error("mic-denied");
+      if (error && error.name === "NotFoundError") throw new Error("mic-missing");
+      throw error;
+    }
   }
 
-  function setupStep3(ctx) {
-    const { session, api, abortActiveStreams, appendLog, renderAnalytics } = ctx;
-    const input = $("input-assistant-name");
-    const orbit = $("orbit-assistant-title");
-    const launchLbl = $("launch-btn-label");
-    const chipsBox = $("quick-name-chips");
-    const suggestions = ["Aria", "Atlas", "Athena", "Orion", "Venerdi"];
-    if (chipsBox) {
-      chipsBox.innerHTML = "";
-      suggestions.forEach((nm) => {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "chip";
-        btn.textContent = nm;
-        btn.addEventListener("click", () => {
-          if (input) input.value = nm;
-          updateAssistantName(nm);
-        });
-        chipsBox.appendChild(btn);
+  const step1 = {
+    async render(ctx) {
+      const browserTz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+      ctx.draft.browserTz = browserTz;
+      $("tz-browser").textContent = browserTz || "—";
+      const grid = $("lang-cards");
+      grid.replaceChildren();
+      LANGS.forEach(([code, name]) => {
+        const card = ctx.el("button", `lang-hud-card ${ctx.lang() === code ? "active" : ""}`);
+        card.type = "button";
+        card.setAttribute("aria-pressed", String(ctx.lang() === code));
+        card.append(ctx.el("b", "", name), ctx.el("small", "", code.toUpperCase()));
+        card.addEventListener("click", () => ctx.switchLanguage(code).catch(ctx.fail));
+        grid.append(card);
       });
-    }
-    function updateAssistantName(nm) {
-      session.config.assistant_name = nm;
-      const clean = nm.toLowerCase().replace("hey ", "").replace("ehi ", "").trim();
-      session.config.wake_word_primary = clean;
-      session.config.wake_phrases = [clean, `ehi ${clean}`, `ok ${clean}`, `ciao ${clean}`];
-      session.config.wake_phonetic_aliases = [clean];
-      if (orbit) orbit.textContent = `${window.SetupI18n.t("orbit-badge-label")}: ${nm.toUpperCase()}`;
-      if (launchLbl) launchLbl.textContent = window.SetupI18n.t("btn-activate", { name: nm.toUpperCase() });
-      const promptEl = $("ring-prompt-txt");
-      if (promptEl) {
-        promptEl.textContent = `${window.SetupI18n.t("wake-prompt-prefix")} «${nm}» ${window.SetupI18n.t("wake-prompt-suffix")}`;
-      }
-      renderAnalytics(3);
-    }
-    if (input) {
-      input.oninput = () => updateAssistantName(input.value.trim() || "Aria");
-      updateAssistantName(input.value.trim() || "Aria");
-    }
-
-    const vcards = $("voice-cards");
-    if (vcards) {
-      vcards.innerHTML = `
-        <div class="voice-card active" data-gender="female">${window.SetupI18n.t("lbl-voice-female")}</div>
-        <div class="voice-card" data-gender="male">${window.SetupI18n.t("lbl-voice-male")}</div>
-      `;
-      vcards.querySelectorAll(".voice-card").forEach((c) => {
-        c.addEventListener("click", () => {
-          vcards.querySelectorAll(".voice-card").forEach((el) => el.classList.remove("active"));
-          c.classList.add("active");
-          session.config.assistant_gender = c.dataset.gender;
-        });
-      });
-    }
-    const btnPreview = $("btn-voice-preview");
-    if (btnPreview) {
-      btnPreview.onclick = () => {
-        api("/api/setup/voice_preview", {
-          method: "POST",
-          body: JSON.stringify({
-            lang: session.config.locale.split("-")[0],
-            gender: session.config.assistant_gender,
-            name: session.config.assistant_name
-          })
-        }).catch(() => {});
-        appendLog(`TTS: "${session.config.assistant_name}"`);
-      };
-    }
-
-    [1, 2, 3].forEach((shot) => {
-      const ring = $(`ring-${shot}`);
-      if (ring) {
-        ring.onclick = () => {
-          ring.classList.add("active");
-          ctx.setActiveEventSource(new EventSource(`/api/ear/wakeword-training-stream?name=${encodeURIComponent(session.config.assistant_name)}&sample=${shot}`));
-          const es = ctx.getActiveEventSource();
-          if (es) {
-            es.onmessage = (e) => {
-              const d = JSON.parse(e.data);
-              appendLog(`[TRAIN] Shot ${shot}: ${d.confidence_pct}% (${d.latency_ms}ms)`);
-              if (d.step >= 28) {
-                ring.classList.remove("active");
-                ring.classList.add("passed");
-                abortActiveStreams();
-              }
-            };
-          }
-        };
-      }
-    });
-  }
-
-  function setupStep4(ctx) {
-    const { session, renderAnalytics } = ctx;
-    const canvas = $("canvas-voiceprint");
-    if (canvas && !ctx.visualizers.bio && window.SetupCanvas) {
-      ctx.visualizers.bio = new window.SetupCanvas.BiometricRadar(canvas);
-    }
-    if (ctx.visualizers.bio) ctx.visualizers.bio.start();
-    const btn = $("btn-trigger-face");
-    if (btn) {
-      btn.onclick = () => {
-        btn.textContent = "...";
-        setTimeout(() => {
-          btn.textContent = "OK ✓";
-          session.config.face_enrolled = true;
-          renderAnalytics(4);
-        }, 1500);
-      };
-    }
-    const oFirst = $("owner-first-input");
-    if (oFirst) {
-      oFirst.oninput = (e) => {
-        session.config.owner_name = e.target.value.trim();
-      };
-    }
-    const oLast = $("owner-last-input");
-    if (oLast) {
-      oLast.oninput = (e) => {
-        session.config.owner_last = e.target.value.trim();
-      };
-    }
-  }
-
-  function setupStep5(ctx) {
-    const { session, api, renderAnalytics } = ctx;
-    api("/api/cameras/scan", { method: "POST" }).then((data) => {
-      session.config.cameras = data.devices;
-      const matrix = $("cam-matrix");
-      if (!matrix) return;
-      matrix.innerHTML = "";
-      data.devices.forEach((d) => {
-        const card = document.createElement("div");
-        card.className = "metric-box";
-        card.innerHTML = `
-          <div>
-            <b>${d.name}</b><br>
-            <small style="color:#7fa4bf">${d.type} · ${d.resolution} · ${d.fps}fps</small>
-          </div>
-          <select class="hud-text-input" style="width:110px; padding:4px 8px; font-size:0.75rem">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-          </select>
-        `;
-        matrix.appendChild(card);
-      });
-      const cCount = $("cams-count-text");
-      if (cCount) cCount.textContent = [data.count, "·", data.total_bandwidth_mbps, "Mb/s"].join(" ");
-      renderAnalytics(5);
-    }).catch(() => {});
-  }
-
-  function setupStep6(ctx) {
-    const { session, api, appendLog } = ctx;
-    const canvas = $("canvas-neural-graph");
-    if (canvas && !ctx.visualizers.neural && window.SetupCanvas) {
-      ctx.visualizers.neural = new window.SetupCanvas.NeuralSpike(canvas);
-    }
-    if (ctx.visualizers.neural) ctx.visualizers.neural.start();
-    const presetsBox = $("brain-presets");
-    if (!presetsBox) return;
-    presetsBox.innerHTML = "";
-    const list = [
-      { id: "nuxiva-5.0-veloce", nameKey: "brain-50-fast", subKey: "brain-sub-3" },
-      { id: "nuxiva-5.0-empatico", nameKey: "brain-50-emp", subKey: "brain-sub-6" },
-      { id: "nuxiva-6.0-pro", nameKey: "brain-60-pro", subKey: "brain-sub-8" },
-      { id: "nuxiva-6.5-ultra", nameKey: "brain-65-ultra", subKey: "brain-sub-16" },
-      { id: "nuxiva-6.5-auto", nameKey: "brain-65-auto", subKey: "brain-sub-dyn" }
-    ];
-    list.forEach((p) => {
-      const card = document.createElement("div");
-      card.className = `brain-card ${session.config.brain_preset === p.id ? "active" : ""}`;
-      card.innerHTML = `<b>${window.SetupI18n.t(p.nameKey)}</b><br><small style="color:#7fa4bf">${window.SetupI18n.t(p.subKey)}</small>`;
-      card.addEventListener("click", () => {
-        session.config.brain_preset = p.id;
-        if (ctx.visualizers.neural) ctx.visualizers.neural.setPreset(p.id);
-        setupStep6(ctx);
-        api("/api/brain/benchmark", {
-          method: "POST",
-          body: JSON.stringify({ preset: p.id })
-        }).then((res) => {
-          appendLog(`[BENCH] TTFT: ${res.benchmark.ttft_ms}ms · ${res.benchmark.tok_sec} tok/s`);
-        }).catch(() => {});
-      });
-      presetsBox.appendChild(card);
-    });
-  }
-
-  function setupStep7(ctx) {
-    const { session, api, appendLog, goToStep } = ctx;
-    const matrix = $("matrix-summary");
-    if (!matrix) return;
-    matrix.innerHTML = "";
-    const modules = [
-      { step: 1, key: "step-1-name", val: session.config.locale },
-      { step: 2, key: "step-2-name", val: `${session.config.mic_noise_floor_db} dBFS` },
-      { step: 3, key: "step-3-name", val: session.config.assistant_name },
-      { step: 4, key: "step-4-name", val: session.config.owner_name || "OK" },
-      { step: 5, key: "step-5-name", val: `${(session.config.cameras || []).length || 1}` },
-      { step: 6, key: "step-6-name", val: session.config.brain_preset }
-    ];
-    modules.forEach((m) => {
-      const card = document.createElement("div");
-      card.className = "ready-summary-card";
-      card.innerHTML = `
-        <div>
-          <b style="color:#ffffff">${window.SetupI18n.t(m.key)}</b><br>
-          <small style="color:var(--cyan)">${m.val}</small>
-        </div>
-        <button type="button" class="hud-btn-ghost" style="padding:4px 8px; font-size:0.72rem">${m.step}</button>
-      `;
-      card.querySelector("button").onclick = () => goToStep(m.step);
-      matrix.appendChild(card);
-    });
-    const launchBtn = $("btn-final-launch");
-    if (launchBtn) {
-      launchBtn.onclick = async () => {
-        launchBtn.disabled = true;
-        launchBtn.style.opacity = "0.7";
-        appendLog("Sigillatura...");
-        try {
-          const res = await api("/api/setup/finalize", {
-            method: "POST",
-            body: JSON.stringify(session.config)
-          });
-          appendLog(`${res.assistant_name} online.`);
-          setTimeout(() => {
-            window.location.href = "/";
-          }, 1200);
-        } catch (e) {
-          appendLog(`Errore: ${e.message}`);
-          launchBtn.disabled = false;
-          launchBtn.style.opacity = "1";
-        }
-      };
-    }
-  }
-
-  window.SetupSteps = {
-    setupStep1,
-    setupStep2,
-    setupStep3,
-    setupStep4,
-    setupStep5,
-    setupStep6,
-    setupStep7
+      const hw = await ctx.hardware();
+      $("tz-server").textContent = hw.timezone || "—";
+      $("tz-mismatch").hidden = !browserTz || !hw.timezone || browserTz === hw.timezone;
+      ctx.refresh();
+    },
+    collect: (ctx) => ({ locale: ctx.locales[ctx.lang()] }),
+    checks: (ctx) => {
+      const server = $("tz-server").textContent;
+      return [
+        { key: "chk-lang", ok: true, vars: { lang: ctx.lang().toUpperCase() } },
+        { key: "chk-tz-read", ok: server !== "—" ? true : null },
+        { key: "chk-tz-match", ok: server === "—" ? null : server === ctx.draft.browserTz }
+      ];
+    },
+    analytics: (ctx) => [["an-locale", ctx.locales[ctx.lang()]], ["an-tz-browser", ctx.draft.browserTz], ["an-tz-server", $("tz-server").textContent]]
   };
+
+  function micVerdict(snr) {
+    if (typeof snr !== "number") return null;
+    return snr >= 25 ? "mic-good" : snr >= 15 ? "mic-ok" : "mic-poor";
+  }
+
+  function paintMic(ctx) {
+    const mic = ctx.draft.mic || ctx.config.mic;
+    const box = $("mic-results");
+    box.replaceChildren();
+    if (!mic) return;
+    [["an-noise", db(mic.noise_db)], ["an-voice", db(mic.voice_db)], ["an-snr", db(mic.snr_db)]]
+      .forEach(([k, v]) => {
+        const cell = ctx.el("div", "metric-box");
+        cell.append(ctx.el("span", "m-label", ctx.t(k)), ctx.el("b", "m-val", v));
+        box.append(cell);
+      });
+  }
+
+  const step2 = {
+    render(ctx) {
+      const button = $("btn-mic-measure");
+      const msg = $("mic-phase-msg");
+      button.disabled = !Audio.available();
+      msg.textContent = Audio.available() ? "" : ctx.t("mic-unavailable");
+      paintMic(ctx);
+      button.onclick = async () => {
+        button.disabled = true;
+        try {
+          const mic = await micOrExplain(ctx, $("canvas-scope"));
+          scope.setMarks([]);
+          msg.textContent = ctx.t("mic-phase-silence");
+          const quiet = await Audio.sampleLevels(mic, 3000);
+          scope.setMarks([{ label: ctx.t("mark-noise"), db: quiet.low, color: "#ff3366" }]);
+          msg.textContent = ctx.t("mic-phase-voice");
+          const voice = await Audio.sampleLevels(mic, 4000);
+          const result = { noise_db: Math.round(quiet.low * 10) / 10, voice_db: Math.round(voice.high * 10) / 10,
+                           snr_db: Math.round((voice.high - quiet.low) * 10) / 10, sample_rate: mic.rate, device: mic.label.slice(0, 120) };
+          scope.setMarks([{ label: ctx.t("mark-noise"), db: result.noise_db, color: "#ff3366" },
+                          { label: ctx.t("mark-voice"), db: result.voice_db, color: "#00ffaa" }]);
+          ctx.draft.mic = result;
+          msg.textContent = ctx.t(micVerdict(result.snr_db));
+          ctx.log(ctx.t("log-mic", { snr: result.snr_db.toFixed(1) }));
+          paintMic(ctx);
+          ctx.refresh();
+        } catch (error) {
+          msg.textContent = ctx.t(error.message);
+          ctx.fail(error);
+        } finally {
+          button.disabled = !Audio.available();
+        }
+      };
+    },
+    leave: stopMic,
+    collect: (ctx) => (ctx.draft.mic ? { mic: ctx.draft.mic } : {}),
+    checks: (ctx) => {
+      const mic = ctx.draft.mic || ctx.config.mic;
+      return [
+        { key: "chk-mic-access", ok: Audio.available() },
+        { key: "chk-mic-noise", ok: mic ? true : null },
+        { key: "chk-mic-snr", ok: mic ? mic.snr_db >= 15 : null }
+      ];
+    },
+    analytics: (ctx) => {
+      const mic = ctx.draft.mic || ctx.config.mic;
+      return [["an-noise", mic && db(mic.noise_db)], ["an-voice", mic && db(mic.voice_db)], ["an-snr", mic && db(mic.snr_db)],
+              ["an-device", mic && mic.device], ["an-rate", mic && `${mic.sample_rate} Hz`]];
+    }
+  };
+
+  function voiceFor(ctx, gender) {
+    const id = ((ctx.boot.voices_by_lang_gender || {})[ctx.lang()] || {})[gender] || "";
+    return { id, label: (ctx.boot.voices || {})[id] || id };
+  }
+
+  function assistantName(ctx) {
+    return ctx.draft.assistant_name ?? ctx.config.assistant_name ?? "";
+  }
+
+  function paintRings(ctx) {
+    const name = assistantName(ctx).trim();
+    $("ring-prompt-txt").textContent = name ? ctx.t("wake-prompt", { name }) : ctx.t("wake-need-name");
+    const box = $("wake-rings");
+    box.replaceChildren();
+    const samples = ctx.config.wake_samples || {};
+    [1, 2, 3].forEach((i) => {
+      const sample = samples[String(i)];
+      const ring = ctx.el("button", `chamber-ring ${sample ? (sample.usable ? "passed" : "failed") : ""}`);
+      ring.type = "button";
+      ring.disabled = !name || !Audio.available();
+      ring.append(ctx.el("span", "r-num", i), ctx.el("small", "", ctx.t(`wake-shot-${i}`, { name })));
+      if (sample) ring.append(ctx.el("small", "r-metric", `SNR ${sample.snr_db.toFixed(1)} dB · ${ctx.t(sample.usable ? "wake-usable" : `wake-${sample.reason || "weak"}`)}`));
+      ring.addEventListener("click", () => recordShot(ctx, i, ring));
+      box.append(ring);
+    });
+  }
+
+  async function recordShot(ctx, index, ring) {
+    const name = assistantName(ctx).trim();
+    if (!NAME_RE.test(name)) return ctx.fail(new Error("err-assistant-name"));
+    ring.classList.add("active");
+    try {
+      const mic = await micOrExplain(ctx);
+      await ctx.save({ assistant_name: name, assistant_gender: ctx.draft.gender || ctx.config.assistant_gender });
+      ctx.status(ctx.t("wake-recording", { name }));
+      const blob = await Audio.record(mic, 2200);
+      const result = await ctx.net.json(`/api/setup/wake-sample?index=${index}`, { method: "POST", body: blob, headers: { "Content-Type": "audio/wav" } });
+      ctx.config.wake_samples = { ...(ctx.config.wake_samples || {}), [String(index)]: result };
+      ctx.status(ctx.t(result.usable ? "wake-usable" : `wake-${result.reason || "weak"}`), result.usable ? "ok" : "error");
+      ctx.log(ctx.t("log-wake", { n: index, snr: result.snr_db.toFixed(1), speech: result.speech_db.toFixed(1) }));
+    } catch (error) {
+      ctx.fail(error);
+    } finally {
+      ring.classList.remove("active");
+      paintRings(ctx);
+      ctx.refresh();
+    }
+  }
+
+  function paintVoices(ctx) {
+    const box = $("voice-cards");
+    box.replaceChildren();
+    const gender = ctx.draft.gender || ctx.config.assistant_gender || "female";
+    ["female", "male"].forEach((g) => {
+      const card = ctx.el("button", `voice-card ${g === gender ? "active" : ""}`);
+      card.type = "button";
+      card.setAttribute("aria-pressed", String(g === gender));
+      card.append(ctx.el("b", "", ctx.t(`voice-${g}`)), ctx.el("small", "", voiceFor(ctx, g).label));
+      card.addEventListener("click", () => {
+        ctx.draft.gender = g;
+        paintVoices(ctx);
+        ctx.refresh();
+      });
+      box.append(card);
+    });
+  }
+
+  const step3 = {
+    render(ctx) {
+      const input = $("input-assistant-name");
+      input.value = assistantName(ctx);
+      input.oninput = () => {
+        ctx.draft.assistant_name = input.value;
+        paintRings(ctx);
+        ctx.refresh();
+      };
+      const chips = $("quick-name-chips");
+      chips.replaceChildren();
+      SUGGESTED_NAMES.forEach((name) => {
+        const chip = ctx.el("button", "chip", name);
+        chip.type = "button";
+        chip.addEventListener("click", () => { input.value = name; input.oninput(); });
+        chips.append(chip);
+      });
+      paintVoices(ctx);
+      paintRings(ctx);
+      $("btn-voice-preview").onclick = async () => {
+        const name = assistantName(ctx).trim() || "Nuxiva";
+        try {
+          const response = await ctx.net.request("/api/setup/voice_preview", { method: "POST", json: { lang: ctx.lang(), gender: ctx.draft.gender || ctx.config.assistant_gender, name } });
+          const url = URL.createObjectURL(await response.blob());
+          const player = new window.Audio(url);
+          player.onended = () => URL.revokeObjectURL(url);
+          await player.play();
+          ctx.draft.previewOk = true;
+          ctx.log(ctx.t("log-preview", { voice: voiceFor(ctx, ctx.draft.gender || ctx.config.assistant_gender).label }));
+        } catch (error) {
+          ctx.draft.previewOk = false;
+          ctx.fail(error);
+        }
+        ctx.refresh();
+      };
+    },
+    leave: stopMic,
+    collect(ctx) {
+      const name = assistantName(ctx).trim();
+      if (!NAME_RE.test(name)) throw new Error("err-assistant-name");
+      return { assistant_name: name, assistant_gender: ctx.draft.gender || ctx.config.assistant_gender || "female" };
+    },
+    checks(ctx) {
+      const samples = Object.values(ctx.config.wake_samples || {});
+      return [
+        { key: "chk-name", ok: NAME_RE.test(assistantName(ctx).trim()) },
+        { key: "chk-voice-heard", ok: ctx.draft.previewOk === undefined ? null : ctx.draft.previewOk },
+        { key: "chk-wake", ok: samples.length ? samples.some((s) => s.usable) : null, vars: { n: samples.filter((s) => s.usable).length } }
+      ];
+    },
+    analytics(ctx) {
+      const samples = Object.values(ctx.config.wake_samples || {});
+      const best = samples.reduce((m, s) => Math.max(m, s.snr_db), -Infinity);
+      return [["an-wake-word", wakeWord(assistantName(ctx))], ["an-voice-id", voiceFor(ctx, ctx.draft.gender || ctx.config.assistant_gender).label],
+              ["an-wake-samples", `${samples.filter((s) => s.usable).length} / 3`], ["an-wake-best", samples.length ? db(best) : null]];
+    }
+  };
+
+  function ownerNames(ctx) {
+    return { first: ($("owner-first-input").value || "").trim(), last: ($("owner-last-input").value || "").trim() };
+  }
+
+  function validateOwner(ctx) {
+    const { first, last } = ownerNames(ctx);
+    if (!FIRST_RE.test(first)) throw new Error("err-owner-name");
+    const assistant = wakeWord(ctx.config.assistant_name);
+    if (assistant && first.toLowerCase() === assistant) throw new Error("err-name-conflict");
+    return { owner_name: first, owner_last: last };
+  }
+
+  function paintFaces(ctx) {
+    const box = $("face-shots");
+    box.replaceChildren();
+    const done = ctx.config.face_views || [];
+    FACE_KINDS.forEach((kind) => {
+      const button = ctx.el("button", `face-shot ${done.includes(kind) ? "passed" : ""}`);
+      button.type = "button";
+      button.append(ctx.el("b", "", ctx.t(`face-${kind}`)), ctx.el("small", "", ctx.t(done.includes(kind) ? "face-done" : "face-todo")));
+      button.addEventListener("click", () => captureFace(ctx, kind, button));
+      box.append(button);
+    });
+  }
+
+  async function captureFace(ctx, kind, button) {
+    const msg = $("face-msg");
+    button.disabled = true;
+    try {
+      await ctx.save(validateOwner(ctx));
+      msg.textContent = ctx.t("face-capturing");
+      const result = await ctx.net.json(`/api/setup/face?kind=${kind}`, { method: "POST" });
+      ctx.config.face_views = result.views;
+      msg.textContent = ctx.t("face-ok", { n: result.views.length });
+      ctx.log(ctx.t("log-face", { kind: ctx.t(`face-${kind}`) }));
+    } catch (error) {
+      msg.textContent = error instanceof ctx.net.SetupError ? error.message : ctx.t(error.message);
+      ctx.fail(error);
+    } finally {
+      button.disabled = false;
+      paintFaces(ctx);
+      ctx.refresh();
+    }
+  }
+
+  const step4 = {
+    render(ctx) {
+      $("owner-first-input").value = ctx.config.owner_name || "";
+      $("owner-last-input").value = ctx.config.owner_last || "";
+      $("owner-first-input").oninput = ctx.refresh;
+      $("face-msg").textContent = "";
+      paintFaces(ctx);
+    },
+    collect: validateOwner,
+    checks(ctx) {
+      const { first } = ownerNames(ctx);
+      const assistant = wakeWord(ctx.config.assistant_name);
+      return [
+        { key: "chk-owner", ok: FIRST_RE.test(first) },
+        { key: "chk-owner-unique", ok: first ? first.toLowerCase() !== assistant : null },
+        { key: "chk-face", ok: (ctx.config.face_views || []).length ? true : null, vars: { n: (ctx.config.face_views || []).length } }
+      ];
+    },
+    analytics(ctx) {
+      const { first, last } = ownerNames(ctx);
+      return [["an-owner", `${first} ${last}`.trim()], ["an-face-views", `${(ctx.config.face_views || []).length} / 3`]];
+    }
+  };
+
+  window.SetupStepDefs = Object.assign(window.SetupStepDefs || {}, { 1: step1, 2: step2, 3: step3, 4: step4 });
 })();

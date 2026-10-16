@@ -2,324 +2,229 @@
   "use strict";
 
   const $ = (id) => document.getElementById(id);
+  const I18n = window.SetupI18n;
+  const Net = window.SetupNet;
+  const LOCALES = Object.freeze({ it: "it-IT", en: "en-US", es: "es-ES", fr: "fr-FR" });
 
-  let session = {
-    current_step: 1,
-    max_reached_step: 1,
-    steps_meta: {
-      "1": { status: "active", dirty: false, score: 100 },
-      "2": { status: "pending", dirty: false, score: 0 },
-      "3": { status: "pending", dirty: false, score: 0 },
-      "4": { status: "pending", dirty: false, score: 0 },
-      "5": { status: "pending", dirty: false, score: 0 },
-      "6": { status: "pending", dirty: false, score: 0 },
-      "7": { status: "pending", dirty: false, score: 0 }
-    },
-    config: {
-      locale: "it-IT",
-      timezone: "Europe/Rome",
-      assistant_name: "Aria",
-      assistant_gender: "female",
-      wake_word_primary: "aria",
-      wake_phrases: ["aria"],
-      wake_phonetic_aliases: ["aria"],
-      voice_id: "if_sara",
-      mic_device_id: "hw:0,0",
-      mic_noise_floor_db: -58.2,
-      mic_snr_db: 27.4,
-      mic_gain_db: 4.5,
-      mic_vad_threshold: 0.28,
-      brain_preset: "nuxiva-6.5-auto",
-      owner_name: "",
-      owner_last: "",
-      face_enrolled: false,
-      ha_url: "",
-      ha_token: ""
-    }
-  };
+  const state = { session: null, boot: null, hardware: null, draft: {}, busy: false, link: null };
 
-  let activeEventSource = null;
-  const visualizers = {
-    osc: null,
-    bio: null,
-    neural: null
-  };
-
-  const stepContext = {
-    get session() { return session; },
-    visualizers,
-    api,
-    appendLog,
-    abortActiveStreams,
-    renderGuide,
-    renderAnalytics,
-    goToStep,
-    switchLanguage,
-    getActiveEventSource: () => activeEventSource,
-    setActiveEventSource: (es) => { activeEventSource = es; }
-  };
-
-  async function api(path, options = {}) {
-    const res = await fetch(path, {
-      headers: {
-        "Content-Type": "application/json",
-        "X-Nuxiva-Request": "1"
-      },
-      ...options
-    });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({ detail: "Request_Error" }));
-      throw new Error(err.detail || "Error");
-    }
-    return res.json();
+  function el(tag, className, text) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text !== undefined && text !== null) node.textContent = String(text);
+    return node;
   }
 
-  function appendLog(line) {
+  function log(line) {
     const box = $("synapse-log-stream");
-    if (!box) return;
-    const ts = new Date().toISOString().substring(11, 19);
-    box.textContent += `\n[${ts}] ${line}`;
+    const ts = new Date().toLocaleTimeString(I18n.current, { hour12: false });
+    box.textContent = `${box.textContent}${box.textContent ? "\n" : ""}[${ts}] ${line}`.split("\n").slice(-80).join("\n");
     box.scrollTop = box.scrollHeight;
   }
 
-  function abortActiveStreams() {
-    if (activeEventSource) {
-      activeEventSource.close();
-      activeEventSource = null;
-    }
-    if (visualizers.osc) visualizers.osc.stop();
-    if (visualizers.bio) visualizers.bio.stop();
-    if (visualizers.neural) visualizers.neural.stop();
-    api("/api/setup/release-hardware", { method: "POST" }).catch(() => {});
+  function status(text, tone = "") {
+    const node = $("bottom-status-msg");
+    node.textContent = text || "";
+    node.dataset.tone = tone;
   }
 
-  function switchLanguage(lang) {
-    if (!["it", "en", "es", "fr"].includes(lang)) lang = "it";
-    window.SetupI18n.applyLanguage(lang);
-    const locMap = { it: "it-IT", en: "en-US", es: "es-ES", fr: "fr-FR" };
-    session.config.locale = locMap[lang] || "it-IT";
-    document.querySelectorAll(".lang-pill").forEach((b) => {
-      b.classList.toggle("active", b.dataset.lang === lang);
-    });
-    api("/api/locale/prepare", {
-      method: "POST",
-      body: JSON.stringify({ locale: session.config.locale })
-    }).catch(() => {});
-    api("/api/locale/ui", {
-      method: "PUT",
-      body: JSON.stringify({ lang })
-    }).catch(() => {});
-    renderStepper();
-    renderGuide(session.current_step);
-    renderAnalytics(session.current_step);
-    renderCurrentStep();
+  function fail(error) {
+    const message = error instanceof Net.SetupError ? (error.message || I18n.t("err-generic")) : I18n.t(error.message || "err-generic");
+    status(message, "error");
+    log(message);
   }
 
-  async function loadSession() {
-    try {
-      const data = await api("/api/setup/session");
-      if (data && data.config) {
-        session = data;
-        if (session.config.locale) {
-          const lCode = session.config.locale.slice(0, 2).toLowerCase();
-          if (["it", "en", "es", "fr"].includes(lCode)) {
-            window.SetupI18n.applyLanguage(lCode);
-            document.querySelectorAll(".lang-pill").forEach((b) => {
-              b.classList.toggle("active", b.dataset.lang === lCode);
-            });
-          }
-        }
-      }
-    } catch (e) {
-      appendLog(`Ripristino: ${e.message}`);
-    }
-    renderStepper();
-    renderCurrentStep();
+  function defs() {
+    return window.SetupStepDefs || {};
   }
+
+  function current() {
+    return defs()[state.session.current_step];
+  }
+
+  async function hardware() {
+    if (!state.hardware) state.hardware = await Net.json("/api/setup/hardware");
+    return state.hardware;
+  }
+
+  async function save(updates, step = state.session.current_step) {
+    state.session = await Net.json("/api/setup/session/update", { method: "POST", json: { step, updates } });
+    return state.session;
+  }
+
+  const ctx = {
+    el, log, status, fail, save, hardware,
+    t: I18n.t,
+    net: Net,
+    locales: LOCALES,
+    get session() { return state.session; },
+    get config() { return state.session.config; },
+    get boot() { return state.boot; },
+    get draft() { return state.draft; },
+    lang: () => I18n.current,
+    refresh: () => { renderGuide(); renderAnalytics(); },
+    goToStep: (n) => goToStep(n),
+    switchLanguage: (lang) => switchLanguage(lang)
+  };
 
   function renderStepper() {
     const track = $("stepper-track");
-    if (!track) return;
-    track.innerHTML = "";
-    const names = [
-      window.SetupI18n.t("step-1-name"),
-      window.SetupI18n.t("step-2-name"),
-      window.SetupI18n.t("step-3-name"),
-      window.SetupI18n.t("step-4-name"),
-      window.SetupI18n.t("step-5-name"),
-      window.SetupI18n.t("step-6-name"),
-      window.SetupI18n.t("step-7-name")
-    ];
-    for (let i = 1; i <= 7; i++) {
-      const meta = session.steps_meta[String(i)] || { status: "pending", dirty: false };
-      const li = document.createElement("li");
-      li.className = ["step-node", meta.status, meta.dirty ? "dirty" : ""].filter(Boolean).join(" ");
-      li.innerHTML = `
-        <div class="step-node-circle">${i}</div>
-        <span class="step-node-label">${names[i - 1]}</span>
-      `;
-      li.addEventListener("click", () => {
-        if (i <= session.max_reached_step) {
-          goToStep(i);
-        }
-      });
-      track.appendChild(li);
+    track.replaceChildren();
+    for (let i = 1; i <= state.session.steps; i++) {
+      const done = state.session.completed.includes(i);
+      const active = i === state.session.current_step;
+      const li = el("li", ["step-node", active ? "active" : done ? "completed" : "pending"].join(" "));
+      const button = el("button", "step-node-btn");
+      button.type = "button";
+      button.disabled = i > state.session.max_reached_step || state.busy;
+      button.setAttribute("aria-current", active ? "step" : "false");
+      button.append(el("span", "step-node-circle", done && !active ? "✓" : i), el("span", "step-node-label", I18n.t(`step-${i}-name`)));
+      button.addEventListener("click", () => goToStep(i));
+      li.append(button);
+      track.append(li);
     }
   }
 
-  function renderGuide(step) {
-    const badge = $("guide-badge");
-    const title = $("guide-title");
-    const desc = $("guide-desc");
-    const checklist = $("guide-checklist");
-    if (badge) badge.textContent = window.SetupI18n.t(`badge-step-${step}`);
-    if (title) title.textContent = window.SetupI18n.t(`title-step-${step}`);
-    if (desc) desc.textContent = window.SetupI18n.t(`desc-step-${step}`);
-    if (checklist) {
-      checklist.innerHTML = "";
-      for (let j = 1; j <= 3; j++) {
-        const li = document.createElement("li");
-        li.className = ["chk-item", "checked"].join(" ");
-        li.innerHTML = `<span class="chk-item-dot">✓</span><span>${window.SetupI18n.t(`chk-step-${step}-${j}`)}</span>`;
-        checklist.appendChild(li);
-      }
-    }
-  }
-
-  function renderAnalytics(step) {
-    const list = $("analytics-list");
-    if (!list) return;
-    list.innerHTML = "";
-    const c = session.config;
-    const rows = [];
-    if (step === 1) {
-      rows.push([window.SetupI18n.t("analytics-stt-status"), "INSTALLED_LOCAL"]);
-      rows.push([window.SetupI18n.t("analytics-clock-drift"), "±0.4ms"]);
-      rows.push([window.SetupI18n.t("analytics-nlu-coverage"), "100%"]);
-    } else if (step === 2) {
-      rows.push([window.SetupI18n.t("analytics-noise-floor"), [c.mic_noise_floor_db, "dBFS"].join(" ")]);
-      rows.push([window.SetupI18n.t("analytics-snr"), ["+", c.mic_snr_db, "dB"].join("")]);
-      rows.push([window.SetupI18n.t("analytics-gain"), ["+", c.mic_gain_db, "dB"].join("")]);
-      rows.push([window.SetupI18n.t("analytics-purity"), "96%"]);
-    } else if (step === 3) {
-      rows.push([window.SetupI18n.t("analytics-active-wake"), (c.assistant_name || "").toUpperCase()]);
-      rows.push([window.SetupI18n.t("analytics-aliases"), (c.wake_phonetic_aliases || []).join(", ")]);
-      rows.push([window.SetupI18n.t("analytics-wake-score"), ["98.4%", "(42ms)"].join(" ")]);
-    } else if (step === 4) {
-      rows.push([window.SetupI18n.t("analytics-voice-dim"), "256-dim"]);
-      rows.push([window.SetupI18n.t("analytics-liveness"), window.SetupI18n.t("liveness-passed")]);
-    } else if (step === 5) {
-      rows.push([window.SetupI18n.t("analytics-cams-found"), String((c.cameras || []).length || 1)]);
-      rows.push([window.SetupI18n.t("analytics-bandwidth"), "3.8Mb/s"]);
-    } else if (step === 6) {
-      rows.push([window.SetupI18n.t("analytics-hw-info"), "VRAM:3.4GB/8GB"]);
-      rows.push([window.SetupI18n.t("analytics-ttft"), "26.4ms"]);
-      rows.push([window.SetupI18n.t("analytics-tokens-sec"), "64.0tok/s"]);
-    } else {
-      rows.push([window.SetupI18n.t("analytics-matrix-readiness"), "100%"]);
-    }
-    for (let [lbl, val] of rows) {
-      const box = document.createElement("div");
-      box.className = "metric-box";
-      box.innerHTML = `<span class="m-label">${lbl}</span><b class="m-val">${val}</b>`;
-      list.appendChild(box);
-    }
-  }
-
-  function renderCurrentStep() {
-    const step = session.current_step;
-    document.querySelectorAll(".stage-screen").forEach((s) => {
-      const active = parseInt(s.dataset.step) === step;
-      s.hidden = !active;
-      s.style.display = active ? "flex" : "none";
+  function renderGuide() {
+    const step = state.session.current_step;
+    $("guide-badge").textContent = I18n.t("badge", { n: String(step).padStart(2, "0"), total: String(state.session.steps).padStart(2, "0") });
+    $("guide-title").textContent = I18n.t(`title-step-${step}`);
+    $("guide-desc").textContent = I18n.t(`desc-step-${step}`);
+    const list = $("guide-checklist");
+    list.replaceChildren();
+    const checks = current() && current().checks ? current().checks(ctx) : [];
+    checks.forEach((check) => {
+      const li = el("li", `chk-item ${check.ok ? "checked" : check.ok === false ? "failed" : ""}`);
+      li.append(el("span", "chk-item-dot", check.ok ? "✓" : check.ok === false ? "✕" : "○"), el("span", "", I18n.t(check.key, check.vars || {})));
+      list.append(li);
     });
-    renderGuide(step);
-    renderAnalytics(step);
+  }
+
+  function renderAnalytics() {
+    const list = $("analytics-list");
+    list.replaceChildren();
+    const rows = current() && current().analytics ? current().analytics(ctx) : [];
+    rows.forEach(([key, value]) => {
+      const box = el("div", "metric-box");
+      box.append(el("span", "m-label", I18n.t(key)), el("b", "m-val", value === null || value === undefined || value === "" ? "—" : value));
+      list.append(box);
+    });
+  }
+
+  function renderStep() {
+    const step = state.session.current_step;
+    document.querySelectorAll(".stage-screen").forEach((screen) => { screen.hidden = Number(screen.dataset.step) !== step; });
+    $("btn-back").hidden = step <= 1;
+    $("btn-next").hidden = step >= state.session.steps;
     renderStepper();
-    const btnBack = $("btn-back");
-    if (btnBack) btnBack.style.visibility = step > 1 ? "visible" : "hidden";
-    if (window.SetupSteps) {
-      const fnName = `setupStep${step}`;
-      if (typeof window.SetupSteps[fnName] === "function") {
-        window.SetupSteps[fnName](stepContext);
-      }
+    if (current() && current().render) {
+      Promise.resolve(current().render(ctx)).catch(fail).finally(() => ctx.refresh());
     }
+    ctx.refresh();
+  }
+
+  function leave() {
+    if (current() && current().leave) current().leave(ctx);
   }
 
   async function goToStep(target) {
-    abortActiveStreams();
+    if (state.busy || target === state.session.current_step) return;
+    leave();
     try {
-      await api("/api/setup/session/navigate", {
-        method: "POST",
-        body: JSON.stringify({ target_step: target })
-      });
-      session.current_step = target;
-      if (target > session.max_reached_step) session.max_reached_step = target;
-      renderCurrentStep();
-    } catch (e) {
-      appendLog(`Navigazione: ${e.message}`);
+      state.session = await Net.json("/api/setup/session/navigate", { method: "POST", json: { target_step: target } });
+      status("");
+      renderStep();
+    } catch (error) {
+      fail(error);
     }
   }
 
-  const bBack = $("btn-back");
-  if (bBack) {
-    bBack.addEventListener("click", () => {
-      if (session.current_step > 1) {
-        goToStep(session.current_step - 1);
-      }
+  async function next() {
+    if (state.busy) return;
+    const def = current();
+    state.busy = true;
+    $("btn-next").disabled = true;
+    try {
+      const updates = def && def.collect ? await def.collect(ctx) : {};
+      await save(updates);
+      log(I18n.t("log-step-saved", { step: I18n.t(`step-${state.session.current_step}-name`) }));
+      state.busy = false;
+      await goToStep(state.session.current_step + 1);
+    } catch (error) {
+      fail(error);
+    } finally {
+      state.busy = false;
+      $("btn-next").disabled = false;
+    }
+  }
+
+  async function switchLanguage(lang) {
+    const code = I18n.supported.includes(lang) ? lang : "it";
+    await I18n.applyLanguage(code);
+    document.querySelectorAll(".lang-pill").forEach((b) => b.classList.toggle("active", b.dataset.lang === code));
+    state.draft.locale = LOCALES[code];
+    if (state.session) renderStep();
+  }
+
+  function paintConnection() {
+    if (!state.link) return;
+    $("conn-dot").className = `tele-dot ${state.link.online ? "online" : "offline"}`;
+    $("conn-txt").textContent = I18n.t(state.link.online ? "conn-online" : "conn-offline");
+    if (state.link.ms !== undefined) $("tele-ping").textContent = `${state.link.ms} ms`;
+  }
+
+  function watchConnection() {
+    Net.onStatus((s) => {
+      state.link = s;
+      paintConnection();
     });
   }
 
-  const bNext = $("btn-next");
-  if (bNext) {
-    bNext.addEventListener("click", async () => {
-      const cur = session.current_step;
-      if (cur === 4) {
-        const first = (session.config.owner_name || "").toLowerCase();
-        const assist = (session.config.assistant_name || "").toLowerCase();
-        if (first && (first === assist || assist.includes(first))) {
-          alert(window.SetupI18n.t("err-name-conflict"));
-          return;
-        }
-      }
-      try {
-        await api("/api/setup/session/update", {
-          method: "POST",
-          body: JSON.stringify({ step: cur, updates: session.config })
-        });
-      } catch (e) {
-        appendLog(`Salvataggio: ${e.message}`);
-      }
-      if (cur < 7) {
-        goToStep(cur + 1);
-      }
+  function bind() {
+    $("btn-back").addEventListener("click", () => goToStep(state.session.current_step - 1));
+    $("btn-next").addEventListener("click", next);
+    $("btn-recalibrate").addEventListener("click", () => {
+      leave();
+      renderStep();
     });
+    document.querySelectorAll(".lang-pill").forEach((b) => b.addEventListener("click", () => switchLanguage(b.dataset.lang).catch(fail)));
+    window.addEventListener("pagehide", leave);
   }
 
-  const bRecal = $("btn-recalibrate");
-  if (bRecal) {
-    bRecal.addEventListener("click", () => {
-      abortActiveStreams();
-      renderCurrentStep();
-    });
+  async function start() {
+    let initial = "it";
+    let remembered = "";
+    try {
+      remembered = localStorage.getItem("nuxiva_ui_lang") || "";
+      initial = (remembered || navigator.language || "it").slice(0, 2);
+    } catch (error) {
+      console.warn("setup: lingua salvata non leggibile", error);
+    }
+    await switchLanguage(initial);
+    watchConnection();
+    bind();
+    state.boot = await Net.json("/api/setup");
+    if (!state.boot.needed) {
+      window.location.replace("/");
+      return;
+    }
+    if (state.boot.local && state.boot.code) log(I18n.t("log-code", { code: state.boot.code }));
+    state.session = await Net.json("/api/setup/session");
+    const saved = (state.session.config.locale || "").slice(0, 2);
+    if (saved && saved !== I18n.current && !remembered) await switchLanguage(saved);
+    $("hud-brand-text").textContent = (state.session.config.assistant_name || "NUXIVA").toUpperCase();
+    renderStep();
   }
 
-  document.querySelectorAll(".lang-pill").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      switchLanguage(btn.dataset.lang);
-    });
+  window.addEventListener("setup-i18n-changed", () => {
+    paintConnection();
+    if (state.session) ctx.refresh();
   });
 
-  window.addEventListener("DOMContentLoaded", () => {
-    let initialLang = "it";
-    try {
-      initialLang = localStorage.getItem("nuxiva_ui_lang") || (document.documentElement.lang || "").slice(0, 2) || "it";
-    } catch (_) {}
-    if (!["it", "en", "es", "fr"].includes(initialLang)) initialLang = "it";
-    window.SetupI18n.applyLanguage(initialLang);
-    document.querySelectorAll(".lang-pill").forEach((b) => {
-      b.classList.toggle("active", b.dataset.lang === initialLang);
+  document.addEventListener("DOMContentLoaded", () => {
+    start().catch((error) => {
+      fail(error);
+      log(I18n.t("err-start"));
     });
-    loadSession();
   });
 })();

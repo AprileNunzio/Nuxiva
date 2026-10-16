@@ -254,7 +254,6 @@ async def setup_verify(_: None = Depends(require_setup)):
 
 @public_routes.post("/api/setup/voice")
 async def setup_voice_preview(voice: str, request: Request, _: None = Depends(require_setup)):
-    import asyncio
     if voice not in VOICE_CHOICES:
         raise HTTPException(400, "Voce non disponibile")
     if _preview["lock"] is None:
@@ -286,7 +285,7 @@ async def setup_state(request: Request):
         "needed": True, "local": is_local(request), "code": guard.code if is_local(request) else None,
         "hardware": hardware(), "languages": LANGS, "voices": VOICE_CHOICES,
         "voice_languages": {k: v[1] for k, v in setup_owner.VOICE_LANGUAGES.items()},
-        "profiles": {k: {kk: vv for kk, vv in v.items() if kk != "min_ram_gb"} for k, v in PROFILES.items()},
+        "profiles": PROFILES,
         "clouds": {k: v[0] for k, v in CLOUD_PICK.items()},
         "suggested": suggested_packages(),
         "packages": _wizard_packages(),
@@ -324,12 +323,9 @@ async def setup_assistant(request: Request, _: None = Depends(require_setup)):
         "NUXIVA_UI_LANG": lang,
     }, "configurazione assistente")
 
-    try:
-        from features.ear import learner as learner_mod
-        clean_word = name.lower().replace("hey ", "").replace("ehi ", "").strip()
-        learner_mod.learner.teach(clean_word)
-    except Exception:
-        pass
+    from features.ear import learner as learner_mod
+    import setup_complete
+    learner_mod.learner.teach(setup_complete.wake_word(name))
 
     return JSONResponse({
         "ok": True,
@@ -340,70 +336,37 @@ async def setup_assistant(request: Request, _: None = Depends(require_setup)):
     }, headers=NO_CACHE)
 
 
-@public_routes.post("/api/setup/custom_wake_sample")
-async def setup_custom_wake_sample(request: Request, _: None = Depends(require_setup)):
-    try:
-        raw = await request.json()
-    except Exception:
-        raise HTTPException(400, "Dati JSON non validi")
-    index = int(raw.get("index", 1))
-    assistant_name = str(raw.get("name") or "Hey NUXIVA").strip()
-    audio_base64 = raw.get("audio_base64")
-
-    clean_word = assistant_name.lower().replace("hey ", "").replace("ehi ", "").strip()
-    learned = False
-    try:
-        from features.ear import learner as learner_mod
-        learned = learner_mod.learner.teach(clean_word)
-    except Exception:
-        pass
-
-    sample_dir = Path("/var/lib/nuxiva/wakeword/samples")
-    try:
-        sample_dir.mkdir(parents=True, exist_ok=True)
-        if audio_base64:
-            import base64
-            audio_bytes = base64.b64decode(str(audio_base64).split(",")[-1])
-            (sample_dir / f"sample_{clean_word}_{index}.wav").write_bytes(audio_bytes)
-    except Exception:
-        pass
-
-    return JSONResponse({
-        "ok": True,
-        "index": index,
-        "name": assistant_name,
-        "quality": "optimal",
-        "snr_db": round(28.4 + index * 1.5, 1),
-        "confidence_pct": min(99, 88 + index * 4),
-        "learned": learned,
-    }, headers=NO_CACHE)
-
-
 @public_routes.post("/api/setup/voice_preview")
 async def setup_voice_greeting_preview(request: Request, _: None = Depends(require_setup)):
     try:
         raw = await request.json()
-    except Exception:
-        raw = {}
+    except ValueError:
+        raise HTTPException(400, "Dati non validi")
+    if not isinstance(raw, dict):
+        raise HTTPException(400, "Dati non validi")
     lang = str(raw.get("lang") or "it").lower()
     gender = str(raw.get("gender") or "female").lower()
-    name = str(raw.get("name") or "Nuxiva").strip()
+    name = " ".join(str(raw.get("name") or "Nuxiva").split())[:32]
+    if lang not in VOICES_BY_LANG_GENDER or gender not in ("female", "male"):
+        raise HTTPException(400, "Lingua o voce non valida")
+    if time.time() - _preview["at"] < PREVIEW_GAP_S:
+        raise HTTPException(429, "Un momento: sto ancora parlando")
+    _preview["at"] = time.time()
 
     voice = VOICES_BY_LANG_GENDER.get(lang, {}).get(gender, "if_sara")
     tmpl = GREETING_TEMPLATES.get(lang, GREETING_TEMPLATES["it"])
     text = tmpl.format(name=name)
 
     if DEMO:
-        return JSONResponse({"ok": True, "demo": True, "text": text}, headers=NO_CACHE)
-
+        raise HTTPException(409, "Sintesi vocale non disponibile in modalità dimostrativa")
+    from features.voices import catalog, synthesis
+    if catalog.is_piper(voice) and not catalog.piper_installed(voice):
+        raise HTTPException(409, "Voce non ancora installata: la potrai ascoltare tra poco")
     try:
-        import asyncio
-        from features.voices import synthesis
         wav = await asyncio.wait_for(synthesis.speak_with(text, voice, 1.0), timeout=15)
-        return Response(wav, media_type="audio/wav", headers=NO_CACHE)
-    except Exception:
-        return JSONResponse({"ok": True, "fallback": True, "text": text}, headers=NO_CACHE)
-
+    except (asyncio.TimeoutError, OSError, RuntimeError) as exc:
+        raise HTTPException(503, f"Sintesi vocale non riuscita: {str(exc)[:160]}")
+    return Response(wav, media_type="audio/wav", headers=NO_CACHE)
 
 
 @public_routes.post("/api/setup")
@@ -414,47 +377,9 @@ async def setup_save(request: Request, _: None = Depends(require_setup)):
         raise HTTPException(400, "Dati non validi")
     if not isinstance(raw, dict):
         raise HTTPException(400, "Dati non validi")
-    first, last = setup_owner.clean_names(raw)
-    updates = _clean(raw)
-    voice_lang = setup_owner.clean_voice_language(raw, updates["NUXIVA_UI_LANG"])
-    _store_cloud(raw)
-    password = ""
-    if raw.get("shares") is True:
-        password = secrets.token_urlsafe(18)
-        updates.update(NUXIVA_SMB_PASSWORD=password, NUXIVA_SHARES="1")
-    await _apply(updates, "procedura guidata")
-    owner = setup_owner.register_owner(first, last, updates["NUXIVA_UI_LANG"], voice_lang)
-    _mark_done("procedura guidata")
-    training = is_local(request)
-    if training:
-        from features.chat import voice_id
-        async def _queue_voice():
-            from orchestrator import orch
-            while orch.busy or not store.installed or store.phase not in ("READY", "DEGRADED"):
-                await asyncio.sleep(2)
-            store.voice_training = {"id": secrets.token_hex(6), "at": time.time(), **voice_id.session(owner)}
-            store.touch()
-        if not DEMO and (not store.installed or store.phase not in ("READY", "DEGRADED")):
-            from tasks import background
-            background(_queue_voice())
-        else:
-            store.voice_training = {"id": secrets.token_hex(6), "at": time.time(), **voice_id.session(owner)}
-            store.touch()
-    return JSONResponse({"ok": True, "shares_password": password, "owner": owner["slug"], "voice_training": training},
-                        headers=NO_CACHE)
-
-
-@public_routes.post("/api/setup/face")
-async def setup_face(request: Request, _: None = Depends(require_setup)):
-    try:
-        raw = await request.json()
-    except ValueError:
-        raise HTTPException(400, "Dati non validi")
-    if not isinstance(raw, dict):
-        raise HTTPException(400, "Dati non validi")
-    first, last = setup_owner.clean_names(raw)
-    img = str(raw.get("image") or raw.get("photo_base64") or "")
-    return JSONResponse(await setup_owner.enroll_face(first, last, img), headers=NO_CACHE)
+    import setup_complete
+    result = await setup_complete.complete(raw, request, "procedura guidata")
+    return JSONResponse({k: result[k] for k in ("ok", "shares_password", "owner", "voice_training")}, headers=NO_CACHE)
 
 
 @public_routes.post("/api/setup/wakeword")

@@ -1,0 +1,387 @@
+.live-card {
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  border: var(--border-neon);
+  border-radius: 14px;
+  background: var(--bg-card);
+}
+
+.live-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.live-row b {
+  color: var(--text-main);
+  font-family: var(--font-mono);
+}
+
+.live-note {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.live-note.warn {
+  color: var(--yellow);
+}
+
+.live-grid,
+.package-grid,
+.face-shots {
+  width: 90%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.live-card .package-grid,
+.live-card .face-shots {
+  width: 100%;
+}
+
+.face-shot,
+.lang-hud-card,
+.brain-card,
+.voice-card,
+.chamber-ring,
+.step-node-btn {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.face-shot {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+  border: 1px dashed #446688;
+  border-radius: 12px;
+  background: rgba(4, 12, 24, 0.7);
+  text-align: left;
+}
+
+.face-shot.passed {
+  border: 1px solid var(--green);
+  background: rgba(0, 255, 170, 0.12);
+}
+
+.face-shot small,
+.brain-card small,
+.voice-card small,
+.lang-hud-card small {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+}
+
+.brain-mode-row {
+  width: 90%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.brain-card {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.brain-card.warn {
+  border-color: rgba(255, 204, 0, 0.6);
+}
+
+.brain-card.mode.active {
+  box-shadow: 0 0 18px rgba(0, 240, 255, 0.35);
+}
+
+.chamber-ring {
+  width: auto;
+  min-width: 120px;
+  height: auto;
+  min-height: 92px;
+  border-radius: 18px;
+  padding: 10px;
+  gap: 4px;
+  background: transparent;
+}
+
+.chamber-ring:disabled,
+.face-shot:disabled,
+.hud-btn-launch:disabled,
+.step-node-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.chamber-ring.failed {
+  border: 2px solid var(--red);
+  background: rgba(255, 51, 102, 0.12);
+}
+
+.r-metric {
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+}
+
+.chk-item.failed .chk-item-dot {
+  color: var(--red);
+  border-color: var(--red);
+}
+
+.step-node-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  background: transparent;
+}
+
+.status-msg[data-tone="error"] {
+  color: var(--red);
+}
+
+.status-msg[data-tone="ok"] {
+  color: var(--green);
+}
+
+.radar-sweep-arm {
+  animation-play-state: paused;
+  opacity: 0.25;
+}
+
+.radar-circle.scanning .radar-sweep-arm {
+  animation-play-state: running;
+  opacity: 1;
+}
+
+.ready-summary-card.missing {
+  border-color: rgba(255, 204, 0, 0.6);
+}
+
+.ready-summary-card small {
+  color: var(--cyan);
+}
+
+.cam-card {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.code-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(2, 6, 12, 0.85);
+  backdrop-filter: blur(6px);
+}
+
+.code-card {
+  width: min(420px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px;
+  border: var(--border-active);
+  border-radius: 16px;
+  background: var(--bg-card);
+}
+
+.code-card input {
+  font-family: var(--font-mono);
+  font-size: 1.6rem;
+  letter-spacing: 0.4em;
+  text-align: center;
+}
+
+#canvas-scope {
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 760px) {
+  .brain-mode-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 2560px) {
+  .live-card,
+  .live-grid,
+  .brain-mode-row {
+    width: 94%;
+  }
+}
+
+.voice-card,
+.ready-summary-card > div,
+.live-grid .metric-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.live-grid .metric-box .m-val {
+  font-size: 1.05rem;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 960px) {
+  html,
+  body,
+  .hud-app {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .hud-top-bar {
+    height: auto;
+    min-height: 0;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px 16px;
+  }
+
+  .hud-stepper {
+    display: flex;
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .stepper-nodes {
+    flex-wrap: nowrap;
+  }
+
+  .step-node:not(.active) .step-node-label {
+    display: none;
+  }
+
+  .hud-top-telemetry {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .hud-main-grid {
+    width: 100%;
+  }
+
+  .hud-quadrant {
+    padding: 16px;
+  }
+
+  .quadrant-left {
+    order: 1;
+  }
+
+  .quadrant-center {
+    order: 2;
+  }
+
+  .hud-security-seal {
+    display: none;
+  }
+
+  .live-card,
+  .live-grid,
+  .brain-mode-row,
+  .cam-matrix-grid,
+  .optical-radar-top,
+  .lang-matrix-grid,
+  .readiness-matrix-grid,
+  .canvas-viewport,
+  .hud-banner-alert,
+  .wake-rings-chamber,
+  .voice-timbre-picker,
+  .naming-input-group,
+  .brain-presets-grid,
+  .ha-bridge-card {
+    width: 100%;
+  }
+
+  .hud-bottom-bar {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    height: auto;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 16px;
+  }
+
+  .rings-row {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .bar-col.center {
+    order: -1;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .bar-col.left,
+  .bar-col.right {
+    width: calc(50% - 4px);
+  }
+
+  .bar-col .hud-nav-btn {
+    width: 100%;
+    padding: 12px 10px;
+  }
+}
+
+@media (min-width: 2560px) {
+  :root {
+    font-size: 16px;
+  }
+
+  .hud-app {
+    zoom: 1.35;
+    width: calc(100dvw / 1.35);
+    height: calc(100dvh / 1.35);
+  }
+
+  .hud-main-grid {
+    grid-template-columns: 28% 44% 28%;
+    height: calc(100dvh / 1.35 - 160px);
+  }
+}
+
+@media (min-width: 3840px) {
+  .hud-app {
+    zoom: 2;
+    width: 50dvw;
+    height: 50dvh;
+  }
+
+  .hud-main-grid {
+    height: calc(50dvh - 160px);
+  }
+}
+
+@media (min-width: 7680px) {
+  .hud-app {
+    zoom: 4;
+    width: 25dvw;
+    height: 25dvh;
+  }
+
+  .hud-main-grid {
+    height: calc(25dvh - 160px);
+  }
+}

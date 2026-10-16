@@ -36,7 +36,7 @@ def _gpu() -> dict:
         return _last_gpu["data"]
 
     data = {
-        "name": "NUXIVA Accelerated Video/DirectX Core",
+        "name": "",
         "gpu_percent": 0.0,
         "vram_used": 0.0,
         "vram_total": 0.0,
@@ -70,8 +70,8 @@ def _gpu() -> dict:
                         "clock_mhz": float(parts[5]),
                         "available": True,
                     }
-        except Exception:
-            pass
+        except (OSError, subprocess.SubprocessError, ValueError) as exc:
+            data["error"] = str(exc)[:200]
 
     _last_gpu["t"] = now
     _last_gpu["data"] = data
