@@ -15,13 +15,12 @@ interface NewExpertDialogProps {
 
 export const NewExpertDialog: React.FC<NewExpertDialogProps> = ({ templates, handle, onClose }) => {
   const { t } = useExpertsI18n();
-  const [name, setName] = useState('');
   const [role, setRole] = useState('');
   const [specialty, setSpecialty] = useState('');
   const [knowledge, setKnowledge] = useState('');
   const [icon, setIcon] = useState('🧑‍💼');
   const [color, setColor] = useState('#29e0ff');
-  const valid = name.trim().length > 1 && role.trim().length > 2 && specialty.trim().length > 2;
+  const valid = role.trim().length > 2 && specialty.trim().length > 2;
 
   const hire = async (template: string) => {
     const made = await handle.run('create', () => createExpert({ template }), 'expert_create_failed');
@@ -39,7 +38,6 @@ export const NewExpertDialog: React.FC<NewExpertDialogProps> = ({ templates, han
       'create',
       () =>
         createExpert({
-          name: name.trim(),
           role: role.trim(),
           specialty: specialty.trim(),
           knowledge: knowledge.split('\n').map((k) => k.trim()).filter(Boolean).slice(0, 16),
@@ -70,12 +68,11 @@ export const NewExpertDialog: React.FC<NewExpertDialogProps> = ({ templates, han
           >
             <ExpertAvatar icon={tpl.icon} color={tpl.color} />
             <span className="min-w-0">
-              <span className="block font-['Rajdhani'] text-lg font-bold text-white">{tpl.name}</span>
-              <span className="block text-xs font-semibold" style={{ color: tpl.color }}>
+              <span className="block font-['Rajdhani'] text-lg font-bold" style={{ color: tpl.color }}>
                 {tpl.role}
               </span>
               <span className="mt-1 block text-[0.6875rem] text-slate-400">{tpl.specialty}</span>
-              <span className="mt-1 block font-mono text-[0.625rem] text-slate-500">{t('template_tools', { count: tpl.tools.length })}</span>
+              <span className="mt-1 block font-mono text-[0.625rem] text-slate-500">{t('template_layers', { skills: tpl.skills.length, tools: tpl.tools.length })}</span>
             </span>
           </button>
         ))}
@@ -94,10 +91,6 @@ export const NewExpertDialog: React.FC<NewExpertDialogProps> = ({ templates, han
           <input type="color" value={color} onChange={(e) => setColor(e.target.value)} className="h-10 w-full cursor-pointer rounded-xl border border-slate-700 bg-slate-950" />
         </label>
         <label className="grid gap-1 text-xs text-slate-400">
-          {t('name')}
-          <input value={name} maxLength={40} required onChange={(e) => setName(e.target.value)} className={fieldClass} />
-        </label>
-        <label className="grid gap-1 text-xs text-slate-400 sm:col-span-3">
           {t('role')}
           <input value={role} maxLength={80} required placeholder={t('role_hint')} onChange={(e) => setRole(e.target.value)} className={fieldClass} />
         </label>

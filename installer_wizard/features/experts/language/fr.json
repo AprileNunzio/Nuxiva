@@ -1,18 +1,17 @@
 {
   "name": "Experts",
-  "description": "Des agents comme des personnes expertes : chacun a un nom, une spécialité, des connaissances, ses propres outils et un panneau en direct. Vous pouvez leur parler directement et Nuxiva leur transmet les questions de leur domaine.",
+  "description": "Des agents experts identifiés par leur rôle, sans noms de personne : chacun est un agent orienté objectif qui active les compétences de son domaine et n'utilise que les outils de ces compétences. Vous pouvez leur parler directement et Nuxiva leur transmet les questions de leur domaine.",
   "capabilities": [
-    "Experts avec nom, rôle, spécialité et connaissances",
-    "Outils attribués à chaque expert, avec les mêmes confirmations de sécurité",
-    "Panneau en direct avec les données réelles de l'expert et ce qu'il fait",
-    "Chat « demander à l'expert » avec historique chiffré",
+    "Trois niveaux : outils atomiques, compétences procédurales et un agent expert qui décide",
+    "Chaque compétence ne charge que sa procédure, ses contraintes et ses outils",
+    "Panneau en direct avec les données réelles de l'expert, la compétence active et ce qu'il fait",
+    "Chat « demander à l'expert » avec historique chiffré et confirmation des actions risquées",
     "Nuxiva oriente les questions vers le bon expert et peut en créer de nouveaux"
   ],
   "settings": {},
   "templates": {
     "debian": {
-      "name": "Marc",
-      "role": "Administrateur système Debian",
+      "role": "Expert Debian",
       "specialty": "Debian, services systemd, paquets apt, journaux et performances du serveur",
       "knowledge": [
         "Gestion des paquets avec apt et dpkg, mises à jour de sécurité",
@@ -24,7 +23,6 @@
       "instructions": "Vérifiez toujours l'état réel avec vos outils avant de proposer des changements. Expliquez ce que vous avez trouvé et proposez des commandes précises ; n'exécutez rien de destructif."
     },
     "football": {
-      "name": "Luc",
       "role": "Expert en football",
       "specialty": "Football : scores en direct, classements, calendriers, équipes et buteurs",
       "knowledge": [
@@ -34,6 +32,50 @@
         "Matchs en direct avec buts, minutes et expulsions"
       ],
       "instructions": "Répondez uniquement avec des données vérifiées par vos outils : si une donnée n'est pas disponible, dites-le clairement."
+    }
+  },
+  "skills": {
+    "system_health": {
+      "name": "Santé du système",
+      "purpose": "Évaluer l'état général du serveur",
+      "procedure": ["Lisez l'état réel avec debian_status", "Comparez mémoire, disque et charge aux seuils", "Résumez les points critiques par gravité"],
+      "rules": ["Seuils : disque ou mémoire au-delà de 85 % est un avertissement, au-delà de 95 % c'est critique", "Une charge moyenne supérieure au nombre de CPU indique une surcharge", "Ne proposez aucun changement sans avoir lu les données"]
+    },
+    "service_diagnosis": {
+      "name": "Diagnostic des services",
+      "purpose": "Comprendre pourquoi un service systemd ne fonctionne pas",
+      "procedure": ["Vérifiez l'état du service avec debian_service", "Lisez les erreurs récentes du service avec debian_logs", "Identifiez la cause et proposez la correction avec la commande exacte"],
+      "rules": ["Utilisez le nom exact du service", "Lecture seule : les redémarrages sont proposés, jamais lancés seuls", "Citez la ligne de journal qui prouve la cause"]
+    },
+    "log_analysis": {
+      "name": "Analyse des journaux",
+      "purpose": "Trouver et expliquer les erreurs et avertissements du journal système",
+      "procedure": ["Lisez les journaux de gravité err, puis warning si besoin", "Regroupez les messages répétés", "Expliquez leur sens et s'ils demandent une intervention"],
+      "rules": ["N'affichez aucune donnée personnelle présente dans les journaux", "Indiquez l'heure et le service de chaque problème"]
+    },
+    "security_updates": {
+      "name": "Mises à jour de sécurité",
+      "purpose": "Vérifier et planifier les mises à jour des paquets",
+      "procedure": ["Listez les paquets à mettre à jour avec apt_upgradable", "Séparez les mises à jour de sécurité des autres", "Proposez la commande de mise à jour ; lancez-la seulement après la confirmation du propriétaire"],
+      "rules": ["Jamais de mise à jour sans confirmation", "Prévenez si une mise à jour touche le noyau ou demande un redémarrage"]
+    },
+    "live_results": {
+      "name": "Résultats en direct",
+      "purpose": "Matchs du jour ou d'une date, avec scores et buteurs",
+      "procedure": ["Choisissez le bon championnat (ita.1 par défaut)", "Lisez les matchs avec football_scores", "Indiquez score, minute et buteurs"],
+      "rules": ["Utilisez seulement les données renvoyées par l'outil", "Précisez si un match est en cours, terminé ou à jouer"]
+    },
+    "standings": {
+      "name": "Classements",
+      "purpose": "Positions, points et écarts dans un championnat",
+      "procedure": ["Lisez le classement avec football_table", "Répondez à la position ou à l'écart demandé", "Ajoutez les matchs joués pour le contexte"],
+      "rules": ["N'estimez pas les points manquants", "Précisez le championnat concerné"]
+    },
+    "team_analysis": {
+      "name": "Analyse d'une équipe",
+      "purpose": "Derniers résultats, forme et prochains matchs d'une équipe",
+      "procedure": ["Cherchez l'équipe avec football_team", "Évaluez la forme d'après les derniers résultats", "Indiquez les prochains matchs avec date et adversaire"],
+      "rules": ["Si l'équipe est introuvable, demandez le championnat", "Aucun pronostic présenté comme une certitude"]
     }
   }
 }

@@ -10,7 +10,8 @@ CONTROL = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f<>]")
 LIVE_KINDS = ("activity", "debian", "football")
 MAX_KNOWLEDGE = 16
 MAX_TOOLS = 24
-LIMITS = {"name": 40, "role": 80, "specialty": 240, "instructions": 1200, "icon": 8}
+MAX_SKILLS = 12
+LIMITS = {"role": 80, "specialty": 240, "instructions": 1200, "icon": 8}
 
 
 class ExpertError(ValueError):
@@ -32,13 +33,13 @@ def slug(name: str) -> str:
 @dataclass
 class Expert:
     id: str
-    name: str
     role: str
     specialty: str
     icon: str = "🧑‍💼"
     color: str = "#29e0ff"
     knowledge: list[str] = field(default_factory=list)
     tools: list[str] = field(default_factory=list)
+    skills: list[str] = field(default_factory=list)
     instructions: str = ""
     template: str = ""
     live: str = "activity"
@@ -55,11 +56,10 @@ def build(raw: dict, known_tools: set[str]) -> Expert:
     expert_id = str(raw.get("id") or "")
     if not ID_RE.fullmatch(expert_id):
         raise ExpertError("Identificativo dell'esperto non valido")
-    name = clean(raw.get("name"), LIMITS["name"])
     role = clean(raw.get("role"), LIMITS["role"])
     specialty = clean(raw.get("specialty"), LIMITS["specialty"])
-    if len(name) < 2 or len(role) < 3 or len(specialty) < 3:
-        raise ExpertError("Nome, ruolo e specialità sono obbligatori")
+    if len(role) < 3 or len(specialty) < 3:
+        raise ExpertError("Ruolo e specialità sono obbligatori")
     knowledge = raw.get("knowledge") or []
     if not isinstance(knowledge, list):
         raise ExpertError("Le conoscenze devono essere un elenco")
@@ -71,13 +71,22 @@ def build(raw: dict, known_tools: set[str]) -> Expert:
     unknown = [t for t in tools if not TOOL_RE.fullmatch(t) or t not in known_tools]
     if unknown:
         raise ExpertError(f"Strumenti sconosciuti: {', '.join(unknown[:5])}")
+    from features.experts import skills as catalog
+    chosen = raw.get("skills") or []
+    if not isinstance(chosen, list):
+        raise ExpertError("Le competenze devono essere un elenco")
+    chosen = list(dict.fromkeys(str(s) for s in chosen[:MAX_SKILLS]))
+    unknown_skills = [s for s in chosen if not catalog.exists(s)]
+    if unknown_skills:
+        raise ExpertError(f"Competenze sconosciute: {', '.join(unknown_skills[:5])}")
+    tools = list(dict.fromkeys(tools + [t for s in chosen for t in catalog.tools_of(s) if t in known_tools]))[:MAX_TOOLS]
     color = str(raw.get("color") or "#29e0ff").lower()
     live = str(raw.get("live") or "activity")
     return Expert(
-        id=expert_id, name=name, role=role, specialty=specialty,
+        id=expert_id, role=role, specialty=specialty,
         icon=clean(raw.get("icon"), LIMITS["icon"]) or "🧑‍💼",
         color=color if COLOR_RE.fullmatch(color) else "#29e0ff",
-        knowledge=knowledge, tools=tools,
+        knowledge=knowledge, tools=tools, skills=chosen,
         instructions=clean(raw.get("instructions"), LIMITS["instructions"]),
         template=str(raw.get("template") or "")[:20],
         live=live if live in LIVE_KINDS else "activity",

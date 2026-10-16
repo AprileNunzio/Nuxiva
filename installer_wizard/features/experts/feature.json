@@ -10,12 +10,12 @@
     "env": "NUXIVA_EXPERTS",
     "apply": []
   },
-  "description": "Agenti come persone esperte: ognuno ha un nome, una specialità, conoscenze, strumenti propri e un pannello dal vivo. Puoi parlarci direttamente e Nuxiva passa loro le domande del loro campo.",
+  "description": "Agenti esperti identificati dal ruolo, senza nomi di persona: ognuno è un agente che ragiona per obiettivi, attiva le competenze (skill) del suo campo e usa solo gli strumenti di quelle competenze. Puoi parlarci direttamente e Nuxiva passa loro le domande del loro campo.",
   "capabilities": [
-    "Esperti con nome, ruolo, specialità e conoscenze",
-    "Strumenti assegnati a ciascun esperto, con le stesse conferme di sicurezza",
-    "Pannello dal vivo con i dati reali dell'esperto e cosa sta facendo",
-    "Chat «chiedi all'esperto» con cronologia cifrata",
+    "Tre livelli: strumenti atomici, competenze procedurali, agente esperto che decide",
+    "Ogni competenza carica solo la sua procedura, i suoi vincoli e i suoi strumenti",
+    "Pannello dal vivo con i dati reali dell'esperto, la competenza attiva e cosa sta facendo",
+    "Chat «chiedi all'esperto» con cronologia cifrata e conferma delle azioni rischiose",
     "Nuxiva instrada le domande all'esperto giusto e può crearne di nuovi"
   ],
   "settings": []

@@ -1,15 +1,22 @@
-import React, { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
+import React, { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Check, Eraser, Loader2, MessageCircle, SendHorizontal, ShieldAlert, X } from 'lucide-react';
 import { reportError } from '../../../../shared/errors/errorBus';
 import { fieldClass } from '../../scope';
-import { AskResult, ChatTurn, Expert, PendingAction, askExpert, confirmExpert, fetchHistory, forgetChat } from '../data/expertsApi';
+import { AskResult, ChatTurn, Expert, PendingAction, SKILL_STEP, Skill, askExpert, confirmExpert, fetchHistory, forgetChat } from '../data/expertsApi';
 import { glassClass, labelClass, useExpertsI18n } from '../scope';
 import { ExpertAvatar } from './ExpertAvatar';
 
 const LIMIT = 2000;
 
-export const ExpertChat: React.FC<{ readonly expert: Expert; readonly onChange: () => void }> = ({ expert, onChange }) => {
+interface ExpertChatProps {
+  readonly expert: Expert;
+  readonly skills: readonly Skill[];
+  readonly onChange: () => void;
+}
+
+export const ExpertChat: React.FC<ExpertChatProps> = ({ expert, skills, onChange }) => {
   const { t } = useExpertsI18n();
+  const skillNames = useMemo(() => new Map(skills.map((s) => [s.id, s.name])), [skills]);
   const [turns, setTurns] = useState<readonly ChatTurn[]>([]);
   const [pending, setPending] = useState<PendingAction | null>(null);
   const [draft, setDraft] = useState('');
@@ -79,7 +86,7 @@ export const ExpertChat: React.FC<{ readonly expert: Expert; readonly onChange: 
     <section className={`${glassClass} flex min-h-[26rem] flex-col`} aria-labelledby="expert-chat">
       <h3 id="expert-chat" className={labelClass}>
         <MessageCircle className="h-3.5 w-3.5 text-cyan-300" aria-hidden="true" />
-        {t('chat_title', { name: expert.name })}
+        {t('chat_title', { role: expert.role })}
         {turns.length > 0 && (
           <button type="button" onClick={() => void clear()} className="ml-auto flex items-center gap-1 rounded-lg px-2 py-1 text-[0.625rem] normal-case tracking-normal text-slate-400 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400">
             <Eraser className="h-3 w-3" aria-hidden="true" />
@@ -88,7 +95,7 @@ export const ExpertChat: React.FC<{ readonly expert: Expert; readonly onChange: 
         )}
       </h3>
       <ol ref={scroller} className="flex max-h-[32rem] flex-1 flex-col gap-3 overflow-y-auto pr-1 3xl:max-h-[48rem]" aria-live="polite">
-        {turns.length === 0 && !thinking && <li className="m-auto max-w-sm text-center text-sm text-slate-500">{t('chat_empty', { name: expert.name, specialty: expert.specialty })}</li>}
+        {turns.length === 0 && !thinking && <li className="m-auto max-w-sm text-center text-sm text-slate-500">{t('chat_empty', { role: expert.role, specialty: expert.specialty })}</li>}
         {turns.map((turn, i) =>
           turn.role === 'user' ? (
             <li key={`${turn.at}-${i}`} className="ml-auto max-w-[85%] rounded-2xl rounded-br-md bg-gradient-to-br from-cyan-500/25 to-indigo-500/25 px-3.5 py-2 text-sm text-white">
@@ -101,11 +108,17 @@ export const ExpertChat: React.FC<{ readonly expert: Expert; readonly onChange: 
                 <p className="whitespace-pre-wrap break-words text-sm text-slate-100">{turn.text}</p>
                 {turn.steps.length > 0 && (
                   <p className="mt-2 flex flex-wrap gap-1" aria-label={t('chat_steps')}>
-                    {turn.steps.map((s, n) => (
-                      <span key={`${s.tool}-${n}`} className={`rounded-full border px-2 py-0.5 font-mono text-[0.625rem] ${s.ok ? 'border-emerald-400/40 text-emerald-200' : 'border-rose-400/40 text-rose-200'}`}>
-                        {s.tool}
-                      </span>
-                    ))}
+                    {turn.steps.map((s, n) =>
+                      s.tool.startsWith(SKILL_STEP) ? (
+                        <span key={`${s.tool}-${n}`} className="rounded-full border border-indigo-400/50 bg-indigo-400/10 px-2 py-0.5 text-[0.625rem] font-semibold text-indigo-100">
+                          ✦ {skillNames.get(s.tool.slice(SKILL_STEP.length)) ?? s.tool.slice(SKILL_STEP.length)}
+                        </span>
+                      ) : (
+                        <span key={`${s.tool}-${n}`} className={`rounded-full border px-2 py-0.5 font-mono text-[0.625rem] ${s.ok ? 'border-emerald-400/40 text-emerald-200' : 'border-rose-400/40 text-rose-200'}`}>
+                          {s.tool}
+                        </span>
+                      ),
+                    )}
                   </p>
                 )}
               </div>
@@ -115,14 +128,14 @@ export const ExpertChat: React.FC<{ readonly expert: Expert; readonly onChange: 
         {thinking && (
           <li className="flex items-center gap-2 text-sm text-slate-400" role="status">
             <Loader2 className="h-4 w-4 animate-spin" style={{ color: expert.color }} aria-hidden="true" />
-            {t('chat_thinking', { name: expert.name })}
+            {t('chat_thinking', { role: expert.role })}
           </li>
         )}
         {pending && !thinking && (
           <li className="rounded-2xl border border-amber-400/50 bg-amber-400/10 p-3 text-sm text-amber-50">
             <p className="flex items-center gap-2 font-semibold">
               <ShieldAlert className="h-4 w-4" aria-hidden="true" />
-              {t('confirm_title', { name: expert.name })}
+              {t('confirm_title', { role: expert.role })}
             </p>
             <pre className="mt-2 overflow-x-auto rounded-lg bg-slate-950/70 p-2 font-mono text-[0.6875rem] text-amber-100">{`${pending.tool} ${JSON.stringify(pending.args)}`}</pre>
             <div className="mt-2 flex gap-2">
@@ -140,7 +153,7 @@ export const ExpertChat: React.FC<{ readonly expert: Expert; readonly onChange: 
       </ol>
       <form onSubmit={submit} className="mt-3 flex items-end gap-2">
         <label className="sr-only" htmlFor="expert-question">
-          {t('chat_placeholder', { name: expert.name })}
+          {t('chat_placeholder', { role: expert.role })}
         </label>
         <textarea
           id="expert-question"
@@ -148,7 +161,7 @@ export const ExpertChat: React.FC<{ readonly expert: Expert; readonly onChange: 
           maxLength={LIMIT}
           rows={1}
           disabled={!expert.enabled}
-          placeholder={expert.enabled ? t('chat_placeholder', { name: expert.name }) : t('chat_disabled')}
+          placeholder={expert.enabled ? t('chat_placeholder', { role: expert.role }) : t('chat_disabled')}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) {

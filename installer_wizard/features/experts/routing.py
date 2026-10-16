@@ -27,9 +27,9 @@ def score(expert: Expert, text: str) -> int:
 
 def addressed(experts: list[Expert], text: str) -> Expert | None:
     body = flat(text)
-    for expert in experts:
-        name = re.escape(flat(expert.name))
-        if re.match(rf"^(ehi\s+|ciao\s+)?{name}\b", body) or re.search(rf"\b(chiedi|domanda|passa)\s+(a|ad)\s+{name}\b", body):
+    for expert in sorted(experts, key=lambda e: -len(e.role)):
+        role = re.escape(flat(expert.role))
+        if re.search(rf"(^|\b)(ehi\s+|ciao\s+|chiedi\s+(a\s+|al\s+|all')?)?{role}\b", body):
             return expert
     return None
 

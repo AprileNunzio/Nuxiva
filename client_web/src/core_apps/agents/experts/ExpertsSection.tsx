@@ -57,10 +57,10 @@ export const ExpertsSection: React.FC = () => {
         {expert ? (
           <div className="grid min-w-0 gap-4 2xl:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
             <div className="flex min-w-0 flex-col gap-4">
-              <ExpertProfile key={`p-${expert.id}`} expert={expert} tools={overview.tools} handle={handle} onDeleted={() => setSelected(null)} />
+              <ExpertProfile key={`p-${expert.id}`} expert={expert} skills={overview.skills} tools={overview.tools} handle={handle} onDeleted={() => setSelected(null)} />
               <LivePanel key={`l-${expert.id}`} expert={expert} />
             </div>
-            <ExpertChat key={`c-${expert.id}`} expert={expert} onChange={handle.refresh} />
+            <ExpertChat key={`c-${expert.id}`} expert={expert} skills={overview.skills} onChange={handle.refresh} />
           </div>
         ) : (
           <div className={`${glassClass} flex flex-col items-center justify-center gap-3 text-center`}>

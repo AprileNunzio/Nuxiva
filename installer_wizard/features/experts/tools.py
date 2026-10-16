@@ -124,7 +124,7 @@ async def football_team(team: str, league: str = "ita.1") -> str:
 @tool("expert_list", "elenca gli esperti della squadra con nome, ruolo e specialità", {}, agent=OWNER)
 async def expert_list() -> str:
     from features.experts.store import experts
-    rows = [f"- {e.id}: {e.name}, {e.role} — {e.specialty}" + ("" if e.enabled else " [spento]") for e in experts.all()]
+    rows = [f"- {e.id}: {e.role} — {e.specialty}" + ("" if e.enabled else " [spento]") for e in experts.all()]
     return "\n".join(rows) or "nessun esperto: se ne può creare uno con expert_create"
 
 
@@ -134,13 +134,13 @@ async def expert_ask(expert: str, question: str) -> str:
     from features.experts import service
     target = service.resolve(expert)
     reply = await service.ask(target.id, question, "it", origin="nuxiva")
-    return f"{target.name} ({target.role}): {reply['text']}"
+    return f"{target.role}: {reply['text']}"
 
 
-@tool("expert_create", "crea un nuovo esperto da un modello (debian, football) oppure da nome, ruolo e specialità",
-      {"template": "debian o football (facoltativo)", "name": "nome", "role": "ruolo", "specialty": "specialità"}, agent=OWNER)
-async def expert_create(template: str = "", name: str = "", role: str = "", specialty: str = "") -> str:
+@tool("expert_create", "crea un nuovo esperto da un modello (debian, football) oppure da ruolo e specialità; gli esperti non hanno nomi di persona",
+      {"template": "debian o football (facoltativo)", "role": "ruolo", "specialty": "specialità"}, agent=OWNER)
+async def expert_create(template: str = "", role: str = "", specialty: str = "") -> str:
     from features.experts import service
-    body = {"template": template} if template else {"name": name, "role": role, "specialty": specialty}
+    body = {"template": template} if template else {"role": role, "specialty": specialty}
     expert = service.create(body, "it", "nuxiva")
-    return f"esperto creato: {expert.name}, {expert.role} ({expert.id})"
+    return f"esperto creato: {expert.role} ({expert.id})"

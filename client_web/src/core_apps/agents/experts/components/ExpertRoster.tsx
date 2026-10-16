@@ -31,13 +31,13 @@ export const ExpertRoster: React.FC<ExpertRosterProps> = ({ experts, selected, o
             <ExpertAvatar icon={e.icon} color={e.color} busy={busy} />
             <span className="min-w-0 flex-1">
               <span className="flex items-center gap-2">
-                <span className="truncate font-['Rajdhani'] text-lg font-bold text-white">{e.name}</span>
+                <span className="truncate font-['Rajdhani'] text-lg font-bold text-white">{e.role}</span>
                 <span
                   className={`h-2 w-2 shrink-0 rounded-full ${e.pending ? 'bg-amber-300' : busy ? 'animate-pulse bg-emerald-300' : e.enabled ? 'bg-cyan-300/70' : 'bg-slate-600'}`}
                   aria-hidden="true"
                 />
               </span>
-              <span className="block truncate text-xs text-slate-400">{e.role}</span>
+              <span className="block truncate text-xs text-slate-400">{e.specialty}</span>
               <span className="block truncate text-[0.6875rem] text-cyan-200/80">
                 {e.pending ? t('status_waiting') : busy ? t('status_busy', { what: e.doing }) : e.enabled ? t('status_ready') : t('status_off')}
               </span>

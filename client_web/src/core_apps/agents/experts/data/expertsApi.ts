@@ -2,7 +2,9 @@ import { NodeModuleError, asRecord, asString, asStringList, requestJson } from '
 
 export const EXPERT_ID = /^[a-z][a-z0-9_-]{2,40}$/;
 const TOOL_NAME = /^[a-z][a-z0-9_]{1,60}$/;
+const SKILL_ID = /^[a-z][a-z0-9_]{2,40}$/;
 const COLOR = /^#[0-9a-f]{6}$/i;
+export const SKILL_STEP = 'skill:';
 export const LIVE_KINDS = ['activity', 'debian', 'football'] as const;
 export type LiveKind = (typeof LIVE_KINDS)[number];
 
@@ -13,13 +15,13 @@ export interface PendingAction {
 
 export interface Expert {
   readonly id: string;
-  readonly name: string;
   readonly role: string;
   readonly specialty: string;
   readonly icon: string;
   readonly color: string;
   readonly knowledge: readonly string[];
   readonly tools: readonly string[];
+  readonly skills: readonly string[];
   readonly instructions: string;
   readonly template: string;
   readonly live: LiveKind;
@@ -30,12 +32,20 @@ export interface Expert {
 
 export interface ExpertTemplate {
   readonly id: string;
-  readonly name: string;
   readonly role: string;
   readonly specialty: string;
   readonly icon: string;
   readonly color: string;
-  readonly knowledge: readonly string[];
+  readonly skills: readonly string[];
+  readonly tools: readonly string[];
+}
+
+export interface Skill {
+  readonly id: string;
+  readonly name: string;
+  readonly purpose: string;
+  readonly procedure: readonly string[];
+  readonly rules: readonly string[];
   readonly tools: readonly string[];
 }
 
@@ -47,6 +57,7 @@ export interface AssignableTool {
 export interface ExpertsOverview {
   readonly experts: readonly Expert[];
   readonly templates: readonly ExpertTemplate[];
+  readonly skills: readonly Skill[];
   readonly tools: readonly AssignableTool[];
 }
 
@@ -74,6 +85,8 @@ const color = (value: unknown): string => {
   const text = asString(value, 7) ?? '';
   return COLOR.test(text) ? text : '#29e0ff';
 };
+const tools = (value: unknown) => asStringList(value, 24).filter((t) => TOOL_NAME.test(t));
+const skillIds = (value: unknown) => asStringList(value, 12).filter((s) => SKILL_ID.test(s));
 
 function parsePending(value: unknown): PendingAction | null {
   const p = asRecord(value);
@@ -90,13 +103,13 @@ function parseExpert(value: unknown): Expert | null {
   const live = asString(e.live, 12) ?? 'activity';
   return {
     id,
-    name: asString(e.name, 40) ?? id,
-    role: asString(e.role, 80) ?? '',
+    role: asString(e.role, 80) ?? id,
     specialty: asString(e.specialty, 240) ?? '',
     icon: asString(e.icon, 8) ?? '◆',
     color: color(e.color),
     knowledge: asStringList(e.knowledge, 16),
-    tools: asStringList(e.tools, 24).filter((t) => TOOL_NAME.test(t)),
+    tools: tools(e.tools),
+    skills: skillIds(e.skills),
     instructions: typeof e.instructions === 'string' ? e.instructions.slice(0, 1200) : '',
     template: asString(e.template, 20) ?? '',
     live: (LIVE_KINDS as readonly string[]).includes(live) ? (live as LiveKind) : 'activity',
@@ -109,18 +122,24 @@ function parseExpert(value: unknown): Expert | null {
 function parseTemplate(value: unknown): ExpertTemplate | null {
   const t = asRecord(value);
   const id = asString(t.id, 20);
-  if (!id) {
+  return id
+    ? { id, role: asString(t.role, 80) ?? id, specialty: asString(t.specialty, 240) ?? '', icon: asString(t.icon, 8) ?? '◆', color: color(t.color), skills: skillIds(t.skills), tools: tools(t.tools) }
+    : null;
+}
+
+function parseSkill(value: unknown): Skill | null {
+  const s = asRecord(value);
+  const id = asString(s.id, 41);
+  if (!id || !SKILL_ID.test(id)) {
     return null;
   }
   return {
     id,
-    name: asString(t.name, 40) ?? id,
-    role: asString(t.role, 80) ?? '',
-    specialty: asString(t.specialty, 240) ?? '',
-    icon: asString(t.icon, 8) ?? '◆',
-    color: color(t.color),
-    knowledge: asStringList(t.knowledge, 16),
-    tools: asStringList(t.tools, 24),
+    name: asString(s.name, 80) ?? id,
+    purpose: asString(s.purpose, 240) ?? '',
+    procedure: asStringList(s.procedure, 12),
+    rules: asStringList(s.rules, 12),
+    tools: tools(s.tools),
   };
 }
 
@@ -137,10 +156,7 @@ function parseSteps(value: unknown): ChatStep[] {
 function parseTurn(value: unknown): ChatTurn | null {
   const t = asRecord(value);
   const text = typeof t.text === 'string' ? t.text.slice(0, 4000) : '';
-  if (!text) {
-    return null;
-  }
-  return { at: num(t.at), role: t.role === 'user' ? 'user' : 'expert', text, steps: parseSteps(t.steps) };
+  return text ? { at: num(t.at), role: t.role === 'user' ? 'user' : 'expert', text, steps: parseSteps(t.steps) } : null;
 }
 
 const guard = (id: string): string => {
@@ -158,6 +174,7 @@ export async function fetchExperts(signal?: AbortSignal): Promise<ExpertsOvervie
   return {
     experts: list(raw.experts).map(parseExpert).filter((e): e is Expert => e !== null),
     templates: list(raw.templates).map(parseTemplate).filter((t): t is ExpertTemplate => t !== null),
+    skills: list(raw.skills).map(parseSkill).filter((s): s is Skill => s !== null),
     tools: list(raw.tools)
       .map(asRecord)
       .flatMap((t) => {
@@ -169,11 +186,11 @@ export async function fetchExperts(signal?: AbortSignal): Promise<ExpertsOvervie
 
 export interface ExpertDraft {
   readonly template?: string;
-  readonly name?: string;
   readonly role?: string;
   readonly specialty?: string;
   readonly knowledge?: readonly string[];
   readonly tools?: readonly string[];
+  readonly skills?: readonly string[];
   readonly instructions?: string;
   readonly icon?: string;
   readonly color?: string;

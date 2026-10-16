@@ -4,7 +4,7 @@ from access import require_admin
 from state import store
 
 from features.agent import registry
-from features.experts import live, service, templates
+from features.experts import live, service, skills, templates
 from features.experts.model import ID_RE, ExpertError
 from features.experts.store import experts
 from features.team.board import board
@@ -61,7 +61,9 @@ def _tools() -> list[dict]:
 
 @admin_routes.get("/api/experts")
 async def overview(request: Request, _: str = Depends(require_admin)):
-    return {"experts": [_profile(e) for e in experts.all()], "templates": templates.catalog(_lang(request)), "tools": _tools()}
+    lang = _lang(request)
+    return {"experts": [_profile(e) for e in experts.all()], "templates": templates.catalog(lang), "tools": _tools(),
+            "skills": skills.catalog(lang)}
 
 
 @admin_routes.post("/api/experts")

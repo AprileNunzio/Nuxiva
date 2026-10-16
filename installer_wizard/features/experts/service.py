@@ -7,17 +7,18 @@ from state import store
 from features.agent import registry
 from features.agent.paths import level
 from features.authz import gate
-from features.experts import templates
+from features.experts import skills, templates
 from features.experts.model import Expert, ExpertError, build, clean, slug
 from features.experts.store import experts
 from features.team.board import ACTING, board
 
-MAX_STEPS = 6
+MAX_STEPS = 8
 PENDING_TTL = 300
 HISTORY_TURNS = 8
 QUESTION_LIMIT = 2000
 LANG_NAMES = {"it": "italiano", "en": "English", "es": "español", "fr": "français"}
 FAILED = ("ERRORE", "NEGATO")
+SKILL_STEP = "skill:"
 _pending: dict[str, dict] = {}
 
 
@@ -42,19 +43,19 @@ def create(body: dict, lang: str, author: str) -> Expert:
             raw = templates.blueprint(template, lang, "")
         except KeyError:
             raise ExpertError("Modello di esperto sconosciuto")
-        raw.update({k: body[k] for k in ("name", "instructions") if body.get(k)})
+        raw.update({k: body[k] for k in ("instructions",) if body.get(k)})
     else:
-        raw = {k: body.get(k) for k in ("name", "role", "specialty", "knowledge", "tools", "instructions", "icon", "color")}
-    raw["id"] = experts.free_id(slug(clean(raw.get("name"), 40) or "esperto"))
+        raw = {k: body.get(k) for k in ("role", "specialty", "knowledge", "tools", "skills", "instructions", "icon", "color")}
+    raw["id"] = experts.free_id(slug(clean(raw.get("role"), 40) or "esperto"))
     expert = experts.put(build(raw, known_tools()), create=True)
-    board.post(board_key(expert.id), "tutti", f"{expert.name} si unisce alla squadra come {expert.role}", "creazione")
+    board.post(board_key(expert.id), "tutti", f"{expert.role} si unisce alla squadra", "creazione")
     store.event("INFO", f"Esperto {expert.id} creato da {author}", "experts")
     return expert
 
 
 def update(expert_id: str, body: dict) -> Expert:
     current = experts.get(expert_id).to_dict()
-    editable = ("name", "role", "specialty", "knowledge", "tools", "instructions", "icon", "color", "enabled")
+    editable = ("role", "specialty", "knowledge", "tools", "skills", "instructions", "icon", "color", "enabled")
     current.update({k: body[k] for k in editable if k in body})
     return experts.put(build(current, known_tools()), create=False)
 
@@ -68,7 +69,7 @@ def resolve(text: str) -> Expert:
     wanted = clean(text, 60).lower()
     rows = experts.all()
     for expert in rows:
-        if wanted in (expert.id, expert.name.lower()):
+        if wanted in (expert.id, expert.role.lower()):
             return expert
     for expert in rows:
         if wanted and (wanted in expert.role.lower() or wanted in expert.specialty.lower() or wanted == expert.template):
@@ -76,41 +77,77 @@ def resolve(text: str) -> Expert:
     raise KeyError(text)
 
 
-def _allowed(expert: Expert) -> list[dict]:
+def _usable(names: list[str]) -> list[dict]:
     open_tools = {t["name"] for t in registry.available(level())}
-    return [registry.TOOLS[n] for n in expert.tools if n in open_tools and gate.within_role(n)]
+    return [registry.TOOLS[n] for n in names if n in open_tools and gate.within_role(n)]
 
 
-def _system(expert: Expert, lang: str, tools: list[dict]) -> str:
-    listed = "\n".join(f"- {t['name']}({', '.join(f'{k}: {v}' for k, v in t['args'].items())}): {t['description']}" for t in tools)
+def _free_tools(expert: Expert) -> list[str]:
+    covered = {t for s in expert.skills for t in skills.tools_of(s)}
+    return [t for t in expert.tools if t not in covered]
+
+
+def scope(expert: Expert, active: str | None) -> list[dict]:
+    names = list(_free_tools(expert))
+    if active:
+        names += [t for t in skills.tools_of(active) if t in expert.tools]
+    elif not expert.skills:
+        names = list(expert.tools)
+    return _usable(list(dict.fromkeys(names)))
+
+
+def _listing(tools: list[dict]) -> str:
+    return "\n".join(f"- {t['name']}({', '.join(f'{k}: {v}' for k, v in t['args'].items())}): {t['description']}" for t in tools)
+
+
+def _system(expert: Expert, lang: str) -> str:
     knowledge = "\n".join(f"- {k}" for k in expert.knowledge)
     owner_rules = f"\nIstruzioni del proprietario: {expert.instructions}" if expert.instructions else ""
+    catalog = "\n".join(f"- {c['id']}: {c['name']} — {c['purpose']}" for c in (skills.card(s, lang) for s in expert.skills))
+    moves = ('{"skill": "id_competenza"} per attivare una competenza: carica la sua procedura e i suoi strumenti;\n' if expert.skills else "")
     return (
-        f"Sei {expert.name}, {expert.role}, membro della squadra di esperti di {assistant_name()}.\n"
+        f"Sei l'agente esperto «{expert.role}» della squadra di {assistant_name()}. Non hai un nome di persona.\n"
         f"Specialità: {expert.specialty}.\nConoscenze:\n{knowledge or '- generali del tuo ruolo'}{owner_rules}\n\n"
-        f"Strumenti che puoi usare (solo questi):\n{listed or '- nessuno: rispondi con le tue conoscenze'}\n\n"
-        "Rispondi SEMPRE e SOLO con un oggetto JSON, uno di questi due:\n"
-        '{"tool": "nome_strumento", "args": {...}} per usare UNO strumento e vederne l\'esito;\n'
+        + (f"Competenze disponibili (attivane una per usare i suoi strumenti, puoi cambiarla):\n{catalog}\n\n" if catalog else "")
+        + "Lavori a ciclo: osserva, ragiona, agisci, verifica l'esito e ripeti finché l'obiettivo è raggiunto.\n"
+        "Rispondi SEMPRE e SOLO con un oggetto JSON, uno di questi:\n" + moves
+        + '{"tool": "nome_strumento", "args": {...}} per usare UNO strumento della competenza attiva e vederne l\'esito;\n'
         '{"answer": "risposta finale"} quando hai finito.\n'
         f"Regole: la risposta finale va scritta in {LANG_NAMES.get(lang, 'italiano')}, da esperto, chiara e concreta; "
-        "usa gli strumenti per ogni dato che può cambiare nel tempo; non inventare esiti né numeri; "
-        "se uno strumento fallisce dillo e proponi un'alternativa; se la domanda è fuori dalla tua specialità dillo."
+        "usa gli strumenti per ogni dato che può cambiare nel tempo; non inventare esiti né numeri; se uno strumento fallisce "
+        "prova un'alternativa o spiega il problema; se la domanda è fuori dalla tua specialità dillo."
     )
 
 
-def _prompt(expert: Expert, question: str, steps: list[dict]) -> str:
+def _prompt(expert: Expert, question: str, steps: list[dict], active: str | None, lang: str, hint: str | None) -> str:
     past = experts.history(expert.id)[-HISTORY_TURNS:]
-    convo = "\n".join(f"{'Utente' if t['role'] == 'user' else expert.name}: {t['text'][:600]}" for t in past)
+    convo = "\n".join(f"{'Utente' if t['role'] == 'user' else 'Esperto'}: {t['text'][:600]}" for t in past)
     done = "\n".join(f"{i + 1}. {s['tool']}({json.dumps(s['args'], ensure_ascii=False)[:300]}) → {s['result'][:1500]}"
                      for i, s in enumerate(steps))
-    head = f"Conversazione recente:\n{convo}\n\n" if convo else ""
-    return head + f"Domanda: {question}\n\n" + (f"Passi già eseguiti:\n{done}\n\nProssima mossa?" if steps else "Prima mossa?")
+    tools = scope(expert, active)
+    parts = [f"Conversazione recente:\n{convo}" if convo else "", f"Obiettivo: {question}"]
+    if active:
+        parts.append(skills.briefing(active, lang))
+    elif hint:
+        parts.append(f"Competenza suggerita per questa domanda: {hint}")
+    parts.append(f"Strumenti utilizzabili ora:\n{_listing(tools) or '- nessuno: attiva una competenza o rispondi'}")
+    parts.append(f"Passi già eseguiti:\n{done}\n\nProssima mossa?" if steps else "Prima mossa?")
+    return "\n\n".join(p for p in parts if p)
 
 
-def _show(expert: Expert, question: str, status: str, steps: list[dict], answer: str = "") -> None:
+def _active(steps: list[dict]) -> str | None:
+    for s in reversed(steps):
+        if s["tool"].startswith(SKILL_STEP) and not s["result"].startswith(FAILED):
+            return s["tool"][len(SKILL_STEP):]
+    return None
+
+
+def _show(expert: Expert, question: str, status: str, steps: list[dict], lang: str, answer: str = "") -> None:
+    active = _active(steps)
     try:
         from features.desktop.desk import desk
-        desk.show("expert_work", {"name": expert.name, "role": expert.role, "icon": expert.icon, "color": expert.color,
+        desk.show("expert_work", {"role": expert.role, "specialty": expert.specialty, "icon": expert.icon, "color": expert.color,
+                                  "skill": skills.card(active, lang)["name"] if active else "",
                                   "question": question[:240], "status": status, "answer": answer[:400],
                                   "steps": [{"tool": s["tool"], "ok": not s["result"].startswith(FAILED)} for s in steps][-8:]},
                   key=f"expert:{expert.id}", ttl=90 if status == "done" else 600)
@@ -136,24 +173,38 @@ async def _execute(expert: Expert, name: str, args: dict, steps: list[dict]) -> 
     steps.append({"tool": name, "args": registry.clean_args(name, args), "result": result})
 
 
+def _activate(expert: Expert, skill_id: str, steps: list[dict], lang: str) -> None:
+    if skill_id not in expert.skills:
+        steps.append({"tool": f"{SKILL_STEP}{skill_id[:40]}", "args": {}, "result": "ERRORE: competenza non posseduta da questo esperto"})
+        return
+    card = skills.card(skill_id, lang)
+    board.post(board_key(expert.id), "tutti", f"competenza attivata: {card['name']}", "competenza")
+    steps.append({"tool": f"{SKILL_STEP}{skill_id}", "args": {}, "result": f"attivata: {card['name']}"})
+
+
 async def _loop(expert: Expert, question: str, lang: str, steps: list[dict]) -> dict:
     from features.brain.llm import BrainUnavailable, generate
-    tools = _allowed(expert)
-    allowed = {t["name"] for t in tools}
-    system = _system(expert, lang, tools)
+    system = _system(expert, lang)
+    hint = skills.suggest(expert.skills, question)
     for _ in range(MAX_STEPS):
-        _show(expert, question, "thinking", steps)
+        active = _active(steps)
+        _show(expert, question, "thinking", steps, lang)
         try:
-            move = await generate(_prompt(expert, question, steps), as_json=True, max_tokens=900, temperature=0.15,
-                                  kind="deep", system=system, timeout=240)
+            move = await generate(_prompt(expert, question, steps, active, lang, hint), as_json=True, max_tokens=900,
+                                  temperature=0.15, kind="deep", system=system, timeout=240)
         except BrainUnavailable as exc:
-            return {"text": f"{expert.name}: il modello non è raggiungibile ({exc}).", "steps": steps, "error": "brain"}
+            return {"text": f"Il modello non è raggiungibile ({exc}).", "steps": steps, "error": "brain"}
         move = move if isinstance(move, dict) else {}
+        if move.get("skill") and not move.get("tool"):
+            _activate(expert, str(move["skill"]), steps, lang)
+            continue
         if move.get("answer") or not move.get("tool"):
             return {"text": str(move.get("answer") or "").strip()[:4000], "steps": steps}
         name, args = str(move["tool"]), move.get("args") if isinstance(move.get("args"), dict) else {}
+        allowed = {t["name"] for t in scope(expert, active)}
         if name not in allowed:
-            steps.append({"tool": name, "args": {}, "result": "ERRORE: strumento non assegnato a questo esperto"})
+            reason = "attiva prima la competenza che lo contiene" if name in expert.tools else "strumento non assegnato a questo esperto"
+            steps.append({"tool": name, "args": {}, "result": f"ERRORE: {reason}"})
             continue
         if registry.needs_confirm(name, args):
             problem = registry.precheck(name, args)
@@ -162,19 +213,19 @@ async def _loop(expert: Expert, question: str, lang: str, steps: list[dict]) -> 
                 continue
             _pending[expert.id] = {"question": question, "lang": lang, "steps": steps, "tool": name, "args": args, "at": time.time()}
             return {"text": "", "steps": steps, "pending": {"tool": name, "args": registry.clean_args(name, args)}}
-        _show(expert, question, "working", steps)
+        _show(expert, question, "working", steps, lang)
         await _execute(expert, name, args, steps)
-    done = sum(1 for s in steps if not s["result"].startswith(FAILED))
-    return {"text": f"{expert.name}: ho eseguito {done} passi senza arrivare a una risposta completa.", "steps": steps, "error": "steps"}
+    done = sum(1 for s in steps if not s["result"].startswith(FAILED) and not s["tool"].startswith(SKILL_STEP))
+    return {"text": f"Ho eseguito {done} passi senza arrivare a una risposta completa.", "steps": steps, "error": "steps"}
 
 
-def _finish(expert: Expert, question: str, out: dict) -> dict:
+def _finish(expert: Expert, question: str, out: dict, lang: str) -> dict:
     if out.get("pending"):
-        _show(expert, question, "waiting", out["steps"])
+        _show(expert, question, "waiting", out["steps"], lang)
         return out
-    text = out["text"] or f"{expert.name}: nessuna risposta."
+    text = out["text"] or "Nessuna risposta."
     row = experts.remember(expert.id, "expert", text, out["steps"])
-    _show(expert, question, "done", out["steps"], text)
+    _show(expert, question, "done", out["steps"], lang, text)
     return {**out, "text": text, "turn": row}
 
 
@@ -186,12 +237,12 @@ async def ask(expert_id: str, question: str, lang: str, origin: str = "console")
     if len(question) < 2:
         raise ExpertError("Domanda vuota")
     if board.current().get(board_key(expert.id)):
-        raise ExpertBusy(expert.name)
+        raise ExpertBusy(expert.role)
     lang = templates.lang_of(lang)
     _pending.pop(expert.id, None)
     experts.remember(expert.id, "user", question)
     board.post(origin, board_key(expert.id), question[:200], "domanda")
-    return _finish(expert, question, await _loop(expert, question, lang, []))
+    return _finish(expert, question, await _loop(expert, question, lang, []), lang)
 
 
 def pending(expert_id: str) -> dict | None:
@@ -212,4 +263,4 @@ async def confirm(expert_id: str, yes: bool) -> dict:
         steps.append({"tool": item["tool"], "args": registry.clean_args(item["tool"], item["args"]), "result": "NEGATO: rifiutato dal proprietario"})
     else:
         await _execute(expert, item["tool"], item["args"], steps)
-    return _finish(expert, item["question"], await _loop(expert, item["question"], item["lang"], steps))
+    return _finish(expert, item["question"], await _loop(expert, item["question"], item["lang"], steps), item["lang"])

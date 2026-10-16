@@ -1,18 +1,17 @@
 {
   "name": "Experts",
-  "description": "Agents as expert people: each one has a name, a specialty, knowledge, its own tools and a live panel. You can talk to them directly and Nuxiva hands them the questions in their field.",
+  "description": "Expert agents identified by role, with no personal names: each one is a goal-driven agent that activates the skills of its field and uses only the tools of those skills. You can talk to them directly and Nuxiva hands them the questions in their field.",
   "capabilities": [
-    "Experts with name, role, specialty and knowledge",
-    "Tools assigned to each expert, with the same safety confirmations",
-    "Live panel with the expert's real data and what it is doing",
-    "\"Ask the expert\" chat with encrypted history",
+    "Three layers: atomic tools, procedural skills, an expert agent that decides",
+    "Each skill loads only its own procedure, constraints and tools",
+    "Live panel with the expert's real data, the active skill and what it is doing",
+    "\"Ask the expert\" chat with encrypted history and confirmation of risky actions",
     "Nuxiva routes questions to the right expert and can create new ones"
   ],
   "settings": {},
   "templates": {
     "debian": {
-      "name": "Mark",
-      "role": "Debian system administrator",
+      "role": "Debian expert",
       "specialty": "Debian, systemd services, apt packages, logs and server performance",
       "knowledge": [
         "Package management with apt and dpkg, security updates",
@@ -24,7 +23,6 @@
       "instructions": "Always check the real state with your tools before proposing changes. Explain what you found and propose precise commands; never run anything destructive."
     },
     "football": {
-      "name": "Luke",
       "role": "Football expert",
       "specialty": "Football: live scores, standings, fixtures, teams and scorers",
       "knowledge": [
@@ -34,6 +32,50 @@
         "Live matches with goals, minutes and red cards"
       ],
       "instructions": "Answer only with data verified by your tools: if something is not available, say so clearly."
+    }
+  },
+  "skills": {
+    "system_health": {
+      "name": "System health",
+      "purpose": "Assess the overall state of the server",
+      "procedure": ["Read the real state with debian_status", "Compare memory, disk and load with the thresholds", "Summarise the critical points by severity"],
+      "rules": ["Thresholds: disk or memory above 85% is a warning, above 95% is critical", "Average load above the CPU count means overload", "Never propose changes before reading the data"]
+    },
+    "service_diagnosis": {
+      "name": "Service diagnosis",
+      "purpose": "Find out why a systemd service is not working",
+      "procedure": ["Check the service status with debian_service", "Read the service's recent errors with debian_logs", "Identify the cause and propose the fix with the exact command"],
+      "rules": ["Use the exact service name", "Read only: restarts are proposed, never run on their own", "Quote the log line that proves the cause"]
+    },
+    "log_analysis": {
+      "name": "Log analysis",
+      "purpose": "Find and explain errors and warnings in the system log",
+      "procedure": ["Read logs with err severity, then warning if needed", "Group repeated messages", "Explain what they mean and whether action is needed"],
+      "rules": ["Never show personal data found in logs", "Give the time and service of each problem"]
+    },
+    "security_updates": {
+      "name": "Security updates",
+      "purpose": "Check and plan package updates",
+      "procedure": ["List upgradable packages with apt_upgradable", "Separate security updates from the others", "Propose the upgrade command; run it only after the owner confirms"],
+      "rules": ["Never upgrade without confirmation", "Warn if an update touches the kernel or needs a reboot"]
+    },
+    "live_results": {
+      "name": "Live results",
+      "purpose": "Matches of today or a given date, with scores and scorers",
+      "procedure": ["Pick the right league (ita.1 if not specified)", "Read the matches with football_scores", "Report score, minute and scorers"],
+      "rules": ["Use only data returned by the tool", "State clearly whether a match is live, finished or still to be played"]
+    },
+    "standings": {
+      "name": "Standings",
+      "purpose": "Positions, points and gaps in a league",
+      "procedure": ["Read the table with football_table", "Answer the requested position or gap", "Add games played for context"],
+      "rules": ["Never estimate missing points", "State which league the table refers to"]
+    },
+    "team_analysis": {
+      "name": "Team analysis",
+      "purpose": "Recent results, form and upcoming matches of a team",
+      "procedure": ["Look up the team with football_team", "Assess form from the latest results", "List the next matches with date and opponent"],
+      "rules": ["If the team is not found, ask for the league", "No predictions presented as certainties"]
     }
   }
 }
