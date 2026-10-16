@@ -18,6 +18,7 @@
 <link rel="stylesheet" href="/static/shared/bgqueue.css">
 <link rel="stylesheet" href="/static/display/reasoning_mode/mode_selector.css">
 <link rel="stylesheet" href="/static/display/reasoning_mode/mode_info.css">
+<link rel="stylesheet" href="/static/display/dock.css">
 </head>
 <body class="holo-grid face">
 <canvas id="core"></canvas>
@@ -79,10 +80,8 @@
 
 
 
-  <div class="dock">
-    <button class="ibtn" id="btn-brain" data-i18n-attr="title:btn_brain,aria-label:btn_brain"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 5 2V4.5A2.5 2.5 0 0 0 9 4zm6 0a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-5 2V4.5A2.5 2.5 0 0 1 15 4z"/></svg></button>
-    <button class="ibtn" id="btn-flow" data-i18n-attr="title:btn_flow,aria-label:btn_flow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="4" cy="12" r="2.5"/><circle cx="12" cy="5" r="2.5"/><circle cx="12" cy="19" r="2.5"/><circle cx="20" cy="12" r="2.5"/><path d="M6.5 12h3M12 7.5v9M14.5 12h3M6 10.5l4-4M6 13.5l4 4M14 6.5l4 4M14 17.5l4-4"/></svg></button>
-    <button class="ibtn mic off" id="btn-mic" data-i18n-attr="title:btn_mic,aria-label:btn_mic" data-i18n-params='{"assistant":"{{assistant}}"}'><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+  <div class="dock" role="toolbar" data-i18n-attr="aria-label:dock_label">
+    <div class="dock-bar">
     <div class="dock-model-selector" id="reasoning-selector-root">
       <button type="button" class="dock-model-trigger" id="btn-model-trigger" aria-haspopup="true" aria-expanded="false" data-i18n-attr="title:model_trigger,aria-label:model_trigger">
         <span class="dock-model-icon" id="dock-model-icon">✨</span>
@@ -100,9 +99,17 @@
         <div class="dock-model-items" id="dock-model-items"></div>
       </div>
     </div>
-    <input id="in" data-i18n-attr="placeholder:input_placeholder,aria-label:input_placeholder" data-i18n-params='{"assistant":"{{assistant}}"}' autocomplete="off">
-    <button class="ibtn" id="btn-vol" data-i18n-attr="title:btn_audio,aria-label:btn_audio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg></button>
-    <button class="ibtn" id="btn-voice" data-i18n-attr="title:btn_voice,aria-label:btn_voice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path id="wave" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12"/></svg></button>
+      <input id="in" data-i18n-attr="placeholder:input_placeholder,aria-label:input_placeholder" data-i18n-params='{"assistant":"{{assistant}}"}' autocomplete="off">
+      <button class="dock-send" id="btn-send" type="button" disabled data-i18n-attr="title:btn_send,aria-label:btn_send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12l16-8-6 16-2.5-6.5L4 12z"/></svg></button>
+      <button class="ibtn mic off" id="btn-mic" data-i18n-attr="title:btn_mic,aria-label:btn_mic" data-i18n-params='{"assistant":"{{assistant}}"}'><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+    </div>
+    <button class="ibtn dock-more" id="btn-tools" type="button" aria-expanded="false" aria-controls="dock-tools" data-i18n-attr="title:btn_tools,aria-label:btn_tools"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>
+    <div class="dock-tools" id="dock-tools">
+      <button class="ibtn" id="btn-brain" data-i18n-attr="title:btn_brain,aria-label:btn_brain"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 5 2V4.5A2.5 2.5 0 0 0 9 4zm6 0a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-5 2V4.5A2.5 2.5 0 0 1 15 4z"/></svg></button>
+      <button class="ibtn" id="btn-flow" data-i18n-attr="title:btn_flow,aria-label:btn_flow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="4" cy="12" r="2.5"/><circle cx="12" cy="5" r="2.5"/><circle cx="12" cy="19" r="2.5"/><circle cx="20" cy="12" r="2.5"/><path d="M6.5 12h3M12 7.5v9M14.5 12h3M6 10.5l4-4M6 13.5l4 4M14 6.5l4 4M14 17.5l4-4"/></svg></button>
+      <button class="ibtn" id="btn-vol" data-i18n-attr="title:btn_audio,aria-label:btn_audio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg></button>
+      <button class="ibtn" id="btn-voice" data-i18n-attr="title:btn_voice,aria-label:btn_voice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path id="wave" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12"/></svg></button>
+    </div>
   </div>
   <div class="dock-note" id="note"></div>
   <div class="panel vol-panel" id="vol-panel">

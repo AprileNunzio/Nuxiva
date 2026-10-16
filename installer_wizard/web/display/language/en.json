@@ -251,6 +251,9 @@
     "ri_l_dopamine": "Dopamine",
     "ri_l_noradrenaline": "Noradrenaline",
     "ri_l_serotonin": "Serotonin",
-    "ri_l_cortisol": "Cortisol"
+    "ri_l_cortisol": "Cortisol",
+    "dock_label": "Command bar",
+    "btn_send": "Send",
+    "btn_tools": "More commands"
   }
 }

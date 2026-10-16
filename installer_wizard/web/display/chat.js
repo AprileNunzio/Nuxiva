@@ -175,11 +175,24 @@
   };
 
   D.startChat = () => {
-    $("in").addEventListener("input", () => D.pingActivity(false));
-    $("in").addEventListener("keydown", (e) => {
-      if (e.key !== "Enter") return;
-      const text = $("in").value.trim(); if (!text || D.busy) return;
-      $("in").value = ""; D.ask(text);
+    const send = () => {
+      const text = $("in").value.trim();
+      if (!text || D.busy) return;
+      $("in").value = "";
+      $("btn-send").disabled = true;
+      D.ask(text);
+    };
+    $("in").addEventListener("input", () => {
+      D.pingActivity(false);
+      $("btn-send").disabled = !$("in").value.trim();
+    });
+    $("in").addEventListener("keydown", (e) => { if (e.key === "Enter") send(); });
+    $("btn-send").addEventListener("click", send);
+    const dock = document.querySelector(".dock");
+    $("btn-tools").addEventListener("click", () => {
+      const open = !dock.classList.contains("tools-open");
+      dock.classList.toggle("tools-open", open);
+      $("btn-tools").setAttribute("aria-expanded", String(open));
     });
     if (!D.local) {
       fetch("/api/auth/me", { credentials: "include" }).then((r) => {
