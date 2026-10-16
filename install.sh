@@ -55,7 +55,7 @@ PY
 }
 
 BOOTSTRAP_LOCAL="$SCRIPT_DIR/installer_wizard/bootstrap.sh"
-BOOTSTRAP_URL="${NUXIVA_BOOTSTRAP_URL:-https://raw.githubusercontent.com/AprileNunzio/NUXIVA/main/installer_wizard/bootstrap.sh}"
+BOOTSTRAP_URL="${NUXIVA_BOOTSTRAP_URL:-https://raw.githubusercontent.com/AprileNunzio/Nuxiva/main/installer_wizard/bootstrap.sh}"
 
 if [ -f "$BOOTSTRAP_LOCAL" ]; then
     exec bash "$BOOTSTRAP_LOCAL" "$@"

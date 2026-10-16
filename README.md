@@ -180,7 +180,7 @@ Nuxiva is not a simple script or monolithic chatbot wrapper, but a **Distributed
 Execute the following command in a clean terminal session with sudo privileges:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/aprilenunzio88/Nuxiva/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/AprileNunzio/Nuxiva/main/install.sh | sudo bash
 ```
 
 The script performs pre-flight checks, clones the repository into `/opt/Nuxiva`, configures system permissions, installs Python and basic build tools, and registers the `nuxiva-supervisor` systemd service. The supervisor immediately takes over and automates the rest of the setup.
@@ -189,7 +189,7 @@ The script performs pre-flight checks, clones the repository into `/opt/Nuxiva`,
 
 ```bash
 # 1. Clone the repository
-sudo git clone https://github.com/aprilenunzio88/Nuxiva.git /opt/Nuxiva
+sudo git clone https://github.com/AprileNunzio/Nuxiva.git /opt/Nuxiva
 cd /opt/Nuxiva
 
 # 2. Run the automated installer script
@@ -207,7 +207,7 @@ wsl
 ```
 Inside the WSL2 Linux environment, simply execute the standard one-liner:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/aprilenunzio88/Nuxiva/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/AprileNunzio/Nuxiva/main/install.sh | sudo bash
 ```
 For native Windows experimentation, an administrative PowerShell script is provided:
 ```powershell
@@ -883,7 +883,7 @@ Nuxiva adheres strictly to Clean Architecture, decoupling core cognitive logic f
 
 ```bash
 # Clone the repository
-git clone https://github.com/aprilenunzio88/Nuxiva.git
+git clone https://github.com/AprileNunzio/Nuxiva.git
 cd Nuxiva
 
 # Create Python virtual environment

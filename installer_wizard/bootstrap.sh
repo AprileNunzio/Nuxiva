@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-REPO_URL="${NUXIVA_REPO:-https://github.com/AprileNunzio/NUXIVA.git}"
+REPO_URL="${NUXIVA_REPO:-https://github.com/AprileNunzio/Nuxiva.git}"
 BRANCH="${NUXIVA_BRANCH:-main}"
 NUXIVA_DIR=/opt/Nuxiva
 WIZ="$NUXIVA_DIR/installer_wizard"
@@ -31,7 +31,7 @@ if [ "$UI_LANG" = it ]; then
         [installpy]="Installazione delle librerie" [build]="Compilazione" [lock]="In attesa di un'altra installazione"
         [config]="Configurazione dei servizi" [admin_user]="pannello abilitato per" [start]="Avvio del servizio"
         [waiting]="In attesa della risposta" [ready]="attivo"
-        [error]="ERRORE" [root]="Eseguire come root (sudo)." [debian]="Nuxiva OS richiede Debian o Ubuntu."
+        [error]="ERRORE" [root]="Eseguire come root (sudo)." [sudo]="Servono i permessi di amministratore: inserisci la password di sudo." [debian]="Nuxiva OS richiede Debian o Ubuntu."
         [stopped]="Installazione interrotta al passo" [line]="riga" [lastlog]="Ultime righe del log" [fulllog]="Log completo"
         [noresp]="Il Supervisor non risponde" [done]="Installazione di base completata"
         [autonomy]="Il Supervisor completa l'installazione in autonomia."
@@ -60,7 +60,7 @@ else
         [installpy]="Installing libraries" [build]="Building" [lock]="Waiting for another installation"
         [config]="Configuring services" [admin_user]="panel enabled for" [start]="Starting the service"
         [waiting]="Waiting for a response" [ready]="running"
-        [error]="ERROR" [root]="Run as root (sudo)." [debian]="Nuxiva OS requires Debian or Ubuntu."
+        [error]="ERROR" [root]="Run as root (sudo)." [sudo]="Administrator rights are needed: enter your sudo password." [debian]="Nuxiva OS requires Debian or Ubuntu."
         [stopped]="Installation stopped at step" [line]="line" [lastlog]="Last log lines" [fulllog]="Full log"
         [noresp]="The Supervisor is not responding" [done]="Base installation complete"
         [autonomy]="The Supervisor finishes the installation on its own."
@@ -434,17 +434,13 @@ on_err() { die "${T[stopped]} $CUR (${T[line]} $1)"; }
 cleanup() { if [ "$TTY" = 1 ]; then printf '\033[?25h\033[?7h'; fi; }
 
 if [ "$EUID" -ne 0 ]; then
-    if [ ! -t 0 ]; then
-        echo -e "\033[31mERRORE: Lo script richiede i permessi di root.\033[0m" >&2
-        echo "Stai eseguendo lo script via pipe. Se usassimo 'sudo' ora," >&2
-        echo "la richiesta di password potrebbe inghiottire parte dello script." >&2
-        echo "Per favore esegui il comando in questo modo:" >&2
-        echo -e "\033[32m  curl -fsSL https://raw.githubusercontent.com/AprileNunzio/NUXIVA/main/install.sh | sudo bash\033[0m" >&2
-        exit 1
+    if [ -f "$0" ] && command -v sudo >/dev/null 2>&1 && ( : </dev/tty ) 2>/dev/null; then
+        echo "${T[sudo]}" >&2
+        exec sudo env "NUXIVA_BOOTSTRAP_LANG=$UI_LANG" "NUXIVA_REPO=$REPO_URL" "NUXIVA_BRANCH=$BRANCH" bash "$0" "$@" </dev/tty
     fi
-    echo -e "\033[33mQuesto script richiede i permessi di root. Richiesta sudo in corso...\033[0m" >&2
-    exec sudo bash "$0" "$@"
-    exit $?
+    echo "${T[error]}: ${T[root]}" >&2
+    echo "  curl -fsSL https://raw.githubusercontent.com/AprileNunzio/Nuxiva/main/install.sh | sudo bash" >&2
+    exit 1
 fi
 command -v apt-get >/dev/null 2>&1 || { echo "${T[debian]}" >&2; exit 1; }
 export DEBIAN_FRONTEND=noninteractive
