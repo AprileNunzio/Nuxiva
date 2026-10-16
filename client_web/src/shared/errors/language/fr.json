@@ -115,6 +115,12 @@
     "error_people_memories_failed": "Souvenirs indisponibles.",
     "error_people_memory_failed": "Souvenir non enregistré.",
     "error_people_mood_failed": "Humeur non enregistrée.",
-    "error_people_associate_failed": "Association échouée."
+    "error_people_associate_failed": "Association échouée.",
+    "error_experts_unavailable": "Équipe d'experts indisponible.",
+    "error_expert_create_failed": "Expert non créé : vérifiez les données.",
+    "error_expert_update_failed": "Expert non mis à jour.",
+    "error_expert_delete_failed": "Expert non supprimé.",
+    "error_expert_ask_failed": "L'expert n'a pas pu répondre.",
+    "error_expert_live_failed": "Données en direct indisponibles."
   }
 }

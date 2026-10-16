@@ -80,6 +80,25 @@
   };
   const detail = (obj) => (obj && typeof obj === "object" ? ` data-detail="${esc(JSON.stringify(obj).slice(0, 8000))}"` : "");
   const ctx = { esc, mmss, icon, head, bar, ring, pct, detail, speak: (t) => hooks.speak(t), now: () => Date.now() / 1000 };
+  const i18n = () => window.NuxivaScopedI18n;
+  const scopeOf = (id) => `widgets/${id}`;
+  const contexts = new Map();
+  function ctxFor(id) {
+    if (!contexts.has(id)) contexts.set(id, Object.freeze({ ...ctx, t: (key, params) => (i18n() ? i18n().t(scopeOf(id), key, params) : "") }));
+    return contexts.get(id);
+  }
+  async function preload(id) {
+    if (!i18n()) return;
+    try { await i18n().preload(scopeOf(id)); } catch (err) { console.warn(`widget ${id}: traduzioni non caricate`, err); }
+  }
+  document.addEventListener("nuxiva-translated", () => {
+    setTimeout(async () => {
+      for (const card of cards.values()) {
+        await preload(card.inst.id);
+        try { gov(card.inst.id, () => card.impl.render(card.el.firstChild, card.inst.data, ctxFor(card.inst.id)), card.el, false); } catch (err) { console.warn(`widget ${card.inst.id}:`, err); }
+      }
+    }, 0);
+  });
 
   function load(inst) {
     const key = `${inst.id}@${inst.rev}`;
@@ -90,10 +109,11 @@
       l.rel = "stylesheet"; l.href = `/widgets/${inst.id}/widget.css?r=${inst.rev}`; l.dataset.widget = inst.id; l.dataset.rev = inst.rev;
       document.head.appendChild(l);
     }
+    const words = preload(inst.id);
     loading[key] = new Promise((ok, ko) => {
       const s = document.createElement("script");
       s.src = `/widgets/${inst.id}/widget.js?r=${inst.rev}`;
-      s.onload = () => (impls[inst.id] ? (impls[inst.id].rev = inst.rev, ok(impls[inst.id])) : ko(new Error(`widget ${inst.id} non registrato`)));
+      s.onload = () => (impls[inst.id] ? (impls[inst.id].rev = inst.rev, words.then(() => ok(impls[inst.id]))) : ko(new Error(`widget ${inst.id} non registrato`)));
       s.onerror = () => ko(new Error(`widget ${inst.id} non caricato`));
       document.head.appendChild(s);
     });
@@ -117,11 +137,11 @@
       host.appendChild(el);
       enableDrag(card);
       if (resizeObs) resizeObs.observe(el);
-      try { gov(inst.id, () => impl.render(el.firstChild, inst.data, ctx), el, true); } catch (err) { console.warn(`widget ${inst.id}:`, err); }
+      try { gov(inst.id, () => impl.render(el.firstChild, inst.data, ctxFor(inst.id)), el, true); } catch (err) { console.warn(`widget ${inst.id}:`, err); }
       if ((inst.takeover || (inst.data && inst.data.announce)) && inst.data && inst.data.speak) ctx.speak(inst.data.speak);
     } else {
       card.sig = sig; card.inst = inst;
-      try { gov(inst.id, () => (impl.update || impl.render)(card.el.firstChild, inst.data, ctx), card.el, false); } catch (err) { console.warn(`widget ${inst.id}:`, err); }
+      try { gov(inst.id, () => (impl.update || impl.render)(card.el.firstChild, inst.data, ctxFor(inst.id)), card.el, false); } catch (err) { console.warn(`widget ${inst.id}:`, err); }
     }
     return card;
   }

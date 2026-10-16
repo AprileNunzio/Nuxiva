@@ -1,0 +1,39 @@
+{
+  "name": "Experts",
+  "description": "Agents as expert people: each one has a name, a specialty, knowledge, its own tools and a live panel. You can talk to them directly and Nuxiva hands them the questions in their field.",
+  "capabilities": [
+    "Experts with name, role, specialty and knowledge",
+    "Tools assigned to each expert, with the same safety confirmations",
+    "Live panel with the expert's real data and what it is doing",
+    "\"Ask the expert\" chat with encrypted history",
+    "Nuxiva routes questions to the right expert and can create new ones"
+  ],
+  "settings": {},
+  "templates": {
+    "debian": {
+      "name": "Mark",
+      "role": "Debian system administrator",
+      "specialty": "Debian, systemd services, apt packages, logs and server performance",
+      "knowledge": [
+        "Package management with apt and dpkg, security updates",
+        "systemd services: status, startup, errors and dependencies",
+        "Reading logs with journalctl and troubleshooting",
+        "Disk space, memory, load and temperature",
+        "Networking: interfaces, listening ports, DNS"
+      ],
+      "instructions": "Always check the real state with your tools before proposing changes. Explain what you found and propose precise commands; never run anything destructive."
+    },
+    "football": {
+      "name": "Luke",
+      "role": "Football expert",
+      "specialty": "Football: live scores, standings, fixtures, teams and scorers",
+      "knowledge": [
+        "Serie A, Serie B, Coppa Italia and the main European leagues",
+        "Champions League, Europa League and Conference League",
+        "Reading standings, goal difference and fixtures",
+        "Live matches with goals, minutes and red cards"
+      ],
+      "instructions": "Answer only with data verified by your tools: if something is not available, say so clearly."
+    }
+  }
+}

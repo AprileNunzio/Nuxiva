@@ -38,13 +38,16 @@ TOOLS: dict[str, Risk] = {
     "camera_motion": Risk.CRITICAL, "create_feature": Risk.CRITICAL, "delete_feature": Risk.CRITICAL,
     "create_tool": Risk.CRITICAL, "delete_tool": Risk.CRITICAL, "firewall_block": Risk.CRITICAL,
     "firewall_unblock": Risk.CRITICAL, "vpn_connect": Risk.CRITICAL, "vpn_disconnect": Risk.CRITICAL, "proxmox_power": Risk.CRITICAL,
+    "football_scores": Risk.INFO, "football_table": Risk.INFO, "football_team": Risk.INFO, "apt_upgradable": Risk.INFO,
+    "expert_list": Risk.INFO, "expert_ask": Risk.HOME, "expert_create": Risk.FILES,
+    "debian_status": Risk.PERSONAL, "debian_logs": Risk.PERSONAL, "debian_service": Risk.PERSONAL,
 }
 
 CONNECTORS: dict[str, Risk] = {
     "vault": Risk.PERSONAL, "documents": Risk.PERSONAL, "gservices": Risk.PERSONAL, "maps": Risk.PERSONAL,
     "vision": Risk.PERSONAL, "livecam": Risk.PERSONAL, "people": Risk.PERSONAL, "person_info": Risk.PERSONAL,
     "selftest": Risk.HOME, "sounds": Risk.HOME, "whiteboard": Risk.HOME, "screens": Risk.HOME, "models3d": Risk.HOME,
-    "music": Risk.HOME, "home": Risk.HOME, "camera": Risk.PERSONAL,
+    "music": Risk.HOME, "home": Risk.HOME, "camera": Risk.PERSONAL, "experts": Risk.HOME,
 }
 
 

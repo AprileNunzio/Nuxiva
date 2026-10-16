@@ -7,9 +7,8 @@ import { ActivityFeed } from './components/ActivityFeed';
 import { AgentDetail } from './components/AgentDetail';
 import { AgentList, isOperative } from './components/AgentList';
 import { CreateAgentDialog } from './components/CreateAgentDialog';
-import { CreateToolDialog } from './components/CreateToolDialog';
-import { CreateWidgetDialog } from './components/CreateWidgetDialog';
 import { CreateKind, TeamHeader } from './components/TeamHeader';
+import { ExpertsSection } from './experts/ExpertsSection';
 import { panelClass, useAgentsI18n } from './scope';
 
 export const View: React.FC = () => {
@@ -28,9 +27,12 @@ export const View: React.FC = () => {
 
   if (!team) {
     return (
-      <div className="flex min-h-[40vh] items-center justify-center gap-2 text-sm text-slate-400" role="status">
-        <Loader2 className="h-5 w-5 animate-spin text-cyan-300" aria-hidden="true" />
-        {t('loading')}
+      <div className={PAGE_CLASS}>
+        <ExpertsSection />
+        <div className="flex min-h-[20vh] items-center justify-center gap-2 text-sm text-slate-400" role="status">
+          <Loader2 className="h-5 w-5 animate-spin text-cyan-300" aria-hidden="true" />
+          {t('loading')}
+        </div>
       </div>
     );
   }
@@ -39,6 +41,7 @@ export const View: React.FC = () => {
 
   return (
     <div className={PAGE_CLASS}>
+      <ExpertsSection />
       <TeamHeader
         team={team}
         busy={handle.busy !== null}
@@ -70,8 +73,6 @@ export const View: React.FC = () => {
           }}
         />
       )}
-      {creating === 'tool' && <CreateToolDialog agents={team.agents} tools={team.tools} handle={handle} onClose={() => setCreating(null)} />}
-      {creating === 'widget' && <CreateWidgetDialog agents={team.agents} handle={handle} onClose={() => setCreating(null)} />}
     </div>
   );
 };

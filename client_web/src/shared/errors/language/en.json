@@ -115,6 +115,12 @@
     "error_people_memories_failed": "Memories unavailable.",
     "error_people_memory_failed": "Memory not saved.",
     "error_people_mood_failed": "Mood not saved.",
-    "error_people_associate_failed": "Linking failed."
+    "error_people_associate_failed": "Linking failed.",
+    "error_experts_unavailable": "Expert team unavailable.",
+    "error_expert_create_failed": "Expert not created: check the data.",
+    "error_expert_update_failed": "Expert not updated.",
+    "error_expert_delete_failed": "Expert not deleted.",
+    "error_expert_ask_failed": "The expert could not answer.",
+    "error_expert_live_failed": "Live data unavailable."
   }
 }

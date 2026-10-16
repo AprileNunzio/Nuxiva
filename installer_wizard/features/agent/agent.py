@@ -7,6 +7,7 @@ from features.agent import registry, tools_cameras, tools_comm, tools_display, t
 from features.agent.paths import FILES, AccessDenied, layout, level
 from features.automations import tools as tools_automations
 from features.documents import tools as tools_documents
+from features.experts import tools as tools_experts
 from features.firewall import tools as tools_firewall
 from features.vpn import tools as tools_vpn
 from features.proxmox import tools as tools_proxmox
@@ -26,7 +27,7 @@ from features.shares import archive
 from features.whiteboard import tools as tools_whiteboard
 from features.people import tools as tools_people
 
-MODULES = (tools_cameras, tools_comm, tools_display, tools_files, tools_media, tools_packages, tools_rpa, tools_system, tools_autonomy, tools_automations, tools_documents, tools_team, tools_forge, tools_whiteboard, tools_firewall, tools_vpn, tools_proxmox, tools_voicestudio, tools_network, tools_redalert, tools_people)
+MODULES = (tools_cameras, tools_comm, tools_display, tools_files, tools_media, tools_packages, tools_rpa, tools_system, tools_autonomy, tools_automations, tools_documents, tools_team, tools_forge, tools_whiteboard, tools_firewall, tools_vpn, tools_proxmox, tools_voicestudio, tools_network, tools_redalert, tools_people, tools_experts)
 MAX_STEPS = 8
 PENDING_TTL = 180
 

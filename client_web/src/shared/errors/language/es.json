@@ -115,6 +115,12 @@
     "error_people_memories_failed": "Recuerdos no disponibles.",
     "error_people_memory_failed": "Recuerdo no guardado.",
     "error_people_mood_failed": "Estado de ánimo no guardado.",
-    "error_people_associate_failed": "Asociación fallida."
+    "error_people_associate_failed": "Asociación fallida.",
+    "error_experts_unavailable": "Equipo de expertos no disponible.",
+    "error_expert_create_failed": "Experto no creado: revisa los datos.",
+    "error_expert_update_failed": "Experto no actualizado.",
+    "error_expert_delete_failed": "Experto no eliminado.",
+    "error_expert_ask_failed": "El experto no pudo responder.",
+    "error_expert_live_failed": "Datos en vivo no disponibles."
   }
 }

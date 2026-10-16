@@ -130,6 +130,7 @@ from features.spotify.spotify import spotify
 from features.study import api as study_api
 from features.study import study
 from features.team import api as team_api
+from features.experts import api as experts_api
 from features.telegram import api as telegram_api
 from features.understanding import api as understanding_api
 from features.telegram.bot import bot
@@ -219,6 +220,7 @@ FEATURE_APIS = (
     governor_api,
     capabilities_api,
     team_api,
+    experts_api,
     mcpclient_api,
     whiteboard_api,
     understanding_api,

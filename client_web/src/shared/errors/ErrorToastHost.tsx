@@ -6,6 +6,12 @@ import { useScopedI18n } from '../i18n/useScopedI18n';
 const VISIBLE_LIMIT = 3;
 const AUTO_DISMISS_MS = 8000;
 const KNOWN_CODES = new Set([
+  'experts_unavailable',
+  'expert_create_failed',
+  'expert_update_failed',
+  'expert_delete_failed',
+  'expert_ask_failed',
+  'expert_live_failed',
   'topology_unavailable',
   'telemetry_frame_rejected',
   'bind_failed',
