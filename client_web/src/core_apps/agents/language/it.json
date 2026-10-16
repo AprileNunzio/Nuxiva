@@ -93,6 +93,6 @@
     "create_agent": "Crea agente",
     "open_app": "Apri",
     "status": "Attivo",
-    "show_all_features": "Mostra anche le funzionalità senza strumenti ({count})"
+    "show_all_features": "Mostra anche i moduli di sistema ({count})"
   }
 }

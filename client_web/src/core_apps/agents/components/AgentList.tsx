@@ -12,8 +12,8 @@ interface AgentListProps {
 
 const CORE_AGENTS = new Set(['ceo', 'agent', 'forge']);
 
-export function isOperative(agent: Agent, toolCount: Readonly<Record<string, number>>): boolean {
-  return CORE_AGENTS.has(agent.id) || agent.source !== 'system' || (toolCount[agent.id] ?? 0) > 0 || Boolean(agent.instructions);
+export function isOperative(agent: Agent): boolean {
+  return CORE_AGENTS.has(agent.id) || agent.source !== 'system' || Boolean(agent.instructions);
 }
 
 export const AgentList: React.FC<AgentListProps> = ({ agents, selected, toolCount, onSelect }) => {
@@ -26,12 +26,12 @@ export const AgentList: React.FC<AgentListProps> = ({ agents, selected, toolCoun
     const q = query.trim().toLowerCase();
     return agents.filter(
       (a) =>
-        (everything || isOperative(a, toolCount)) &&
+        (everything || isOperative(a)) &&
         (category === 'all' || a.category === category) &&
         (!q || `${a.id} ${a.name} ${a.description}`.toLowerCase().includes(q)),
     );
-  }, [agents, query, category, everything, toolCount]);
-  const hidden = agents.filter((a) => !isOperative(a, toolCount)).length;
+  }, [agents, query, category, everything]);
+  const hidden = agents.filter((a) => !isOperative(a)).length;
 
   return (
     <div className="flex min-h-0 flex-col gap-3">

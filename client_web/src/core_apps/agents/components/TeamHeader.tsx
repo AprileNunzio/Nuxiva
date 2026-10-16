@@ -16,11 +16,7 @@ interface TeamHeaderProps {
 export const TeamHeader: React.FC<TeamHeaderProps> = ({ team, busy, onCreate, onAutonomy }) => {
   const { t } = useAgentsI18n();
   const forge = team.agents.find((a) => a.id === 'forge');
-  const toolCount: Record<string, number> = {};
-  team.tools.forEach((tool) => {
-    toolCount[tool.owner] = (toolCount[tool.owner] ?? 0) + 1;
-  });
-  const operative = team.agents.filter((a) => isOperative(a, toolCount));
+  const operative = team.agents.filter((a) => isOperative(a));
   const active = operative.filter((a) => a.enabled).length;
   const working = team.agents.filter((a) => a.doing).length;
   const stats = [

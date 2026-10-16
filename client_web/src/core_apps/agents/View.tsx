@@ -37,7 +37,7 @@ export const View: React.FC = () => {
     );
   }
 
-  const agent = team.agents.find((a) => a.id === selected) ?? team.agents.find((a) => isOperative(a, toolCount)) ?? team.agents[0] ?? null;
+  const agent = team.agents.find((a) => a.id === selected) ?? team.agents.find((a) => isOperative(a)) ?? team.agents[0] ?? null;
 
   return (
     <div className={PAGE_CLASS}>
