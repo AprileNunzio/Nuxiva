@@ -87,7 +87,7 @@
           window.NuxivaDisplay.reasoningMode = this.currentMode;
         }
       } catch (err) {
-        console.warn("[Nuxiva Mode Selector] Rilevamento scanner fallito:", err);
+        console.warn("Motori di ragionamento non letti", err);
       }
     }
 
@@ -116,7 +116,7 @@
           body: JSON.stringify({ mode, speaker }),
         });
       } catch (err) {
-        return;
+        console.warn("Motore di ragionamento non salvato", err);
       }
     }
 
@@ -216,7 +216,20 @@
           this.closeMenu();
         });
 
-        this.itemsContainer.appendChild(btn);
+        const row = document.createElement("div");
+        row.className = "dock-model-row";
+        const info = document.createElement("button");
+        info.type = "button";
+        info.className = "dock-model-info";
+        info.textContent = "i";
+        PageText.attr(info, { title: "model_info", "aria-label": "model_info" }, { name: eng.name });
+        info.addEventListener("click", (e) => {
+          e.stopPropagation();
+          this.closeMenu();
+          if (window.NuxivaReasoningInfo) window.NuxivaReasoningInfo.open(eng.id);
+        });
+        row.append(btn, info);
+        this.itemsContainer.appendChild(row);
       });
     }
 

@@ -21,6 +21,17 @@ from features.cloud.client import CloudError
 from features.twin.simulator import predict_user_impact
 
 
+CONFIDENCE_OK = 0.88
+CONFIDENCE_BAD = 0.35
+CONFIDENCE_WEIGHT = 0.55
+CRITIC_WEIGHT = 0.45
+PRUNE_FACTOR = 0.45
+COMPLEXITY_WORDS = 45.0
+AUTO_FAST_NORADRENALINE = 0.75
+AUTO_FAST_COMPLEXITY = 0.3
+AUTO_EMPATHY_VALENCE = 0.65
+AUTO_COMPLEX = 0.65
+
 REASONING_PROFILES: Dict[str, Dict[str, Any]] = {
     "nuxiva-4.2-legacy": {
         "parallel_branches": 1,
@@ -142,12 +153,12 @@ class CorticalBrainChain:
                 "use_limbic": True,
                 "use_twin_critic": sla > 100,
             }
-        complexity = min(1.0, len(query.split()) / 45.0)
-        if self.limbic.noradrenaline > 0.75 and complexity < 0.3:
+        complexity = min(1.0, len(query.split()) / COMPLEXITY_WORDS)
+        if self.limbic.noradrenaline > AUTO_FAST_NORADRENALINE and complexity < AUTO_FAST_COMPLEXITY:
             return REASONING_PROFILES["nuxiva-5.0-fast"]
-        if abs(self.limbic.valence) > 0.65:
+        if abs(self.limbic.valence) > AUTO_EMPATHY_VALENCE:
             return REASONING_PROFILES["nuxiva-5.0-empathetic"]
-        if complexity > 0.65:
+        if complexity > AUTO_COMPLEX:
             return REASONING_PROFILES["nuxiva-6.5-ultra"]
         return REASONING_PROFILES["nuxiva-6.0-pro"]
 
@@ -196,7 +207,7 @@ class CorticalBrainChain:
                         critic_score = await critic_fn(candidate, self.limbic)
                     except Exception:
                         critic_score = 0.5
-                    step_score = (raw_conf * 0.55) + (critic_score * 0.45)
+                    step_score = (raw_conf * CONFIDENCE_WEIGHT) + (critic_score * CRITIC_WEIGHT)
                 else:
                     step_score = raw_conf
                 cumulative_score = ((cumulative_score * step) + step_score) / (step + 1)
@@ -211,7 +222,7 @@ class CorticalBrainChain:
                         winner = candidate
                         ignition_event.set()
                         return
-                if step_score < (ignition_threshold * 0.45):
+                if step_score < (ignition_threshold * PRUNE_FACTOR):
                     return
                 current_context["latent_refinement"] = candidate.get("text", "")
 
@@ -319,7 +330,7 @@ async def ask(query: str, device: str, context: dict, route: dict, core_local: C
             async def branch_gen(q: str, ctx: Dict[str, Any], limbic: LimbicModulator) -> Dict[str, Any]:
                 res = await _run_candidate(ct, tg, q, device, ctx, route, core_local)
                 text = str(res.get("speech_output", ""))
-                conf = 0.88 if text and not text.lower().startswith("errore") else 0.35
+                conf = CONFIDENCE_OK if text and not text.lower().startswith("errore") else CONFIDENCE_BAD
                 return {
                     "text": text,
                     "confidence": conf,

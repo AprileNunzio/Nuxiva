@@ -79,17 +79,23 @@ def review(state: HomeState, plan: dict, rules: list[str], correct: bool = True)
     return Review(current, conflicts, dropped, changes)
 
 
+CRITIC = {"base": 0.5, "risk_weight": 0.25, "risk_step": 0.2, "dopamine": 0.2, "cortisol": -0.15, "valence": 0.1,
+          "clarity": 0.1, "clarity_words": 25.0}
+RISK_TERMS = ("errore", "fallito", "non riesco", "impossibile", "pericolo")
+
+
 async def predict_user_impact(candidate: dict, limbic: object = None) -> float:
     text = str(candidate.get("text", candidate.get("speech_output", ""))).lower()
     if not text:
         return 0.5
     risk = 0.0
-    for term in ("errore", "fallito", "non riesco", "impossibile", "pericolo"):
+    for term in RISK_TERMS:
         if term in text:
-            risk += 0.2
+            risk += CRITIC["risk_step"]
     valence = float(getattr(limbic, "valence", 0.0))
     cortisol = float(getattr(limbic, "cortisol", 0.1))
     dopamine = float(getattr(limbic, "dopamine", 0.5))
-    clarity = min(1.0, len(text.split()) / 25.0)
-    score = 0.5 + (0.25 * (1.0 - min(1.0, risk))) + (0.2 * dopamine) - (0.15 * cortisol) + (0.1 * valence) + (0.1 * clarity)
+    clarity = min(1.0, len(text.split()) / CRITIC["clarity_words"])
+    score = (CRITIC["base"] + CRITIC["risk_weight"] * (1.0 - min(1.0, risk)) + CRITIC["dopamine"] * dopamine
+             + CRITIC["cortisol"] * cortisol + CRITIC["valence"] * valence + CRITIC["clarity"] * clarity)
     return max(0.05, min(1.0, score))

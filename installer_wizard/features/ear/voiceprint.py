@@ -143,20 +143,10 @@ class Voiceprints:
         self._refresh()
         result = self.verdict(probe)
         score = float(result.get("score") or 0.0)
-        vocal_stress = max(0.05, min(0.95, (1.0 - score) if result.get("slug") else 0.45))
         try:
             from nuxiva_bus import nuxiva_bus
-            nuxiva_bus.publish(
-                "biometrics.voice",
-                {"slug": result.get("slug"), "score": score, "vocal_stress": vocal_stress},
-                origin="voiceprint",
-            )
-        except Exception:
-            pass
-        try:
-            from features.chat.brain_chain import cortical_chain
-            cortical_chain.limbic.ingest_biometrics(vocal_stress=vocal_stress)
-        except Exception:
+            nuxiva_bus.publish("biometrics.voice", {"slug": result.get("slug"), "score": score}, origin="voiceprint")
+        except ImportError:
             pass
         return result["slug"], result["score"]
 

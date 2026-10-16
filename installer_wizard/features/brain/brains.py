@@ -12,6 +12,7 @@ from features.brain import scope
 from features.brain.presets import clean_profile
 from features.brain.roles import FALLBACK_ROLE, ROLES, split_order
 
+CHAT_SLA_MS = 50
 log = logging.getLogger("nuxiva.brains")
 
 CATALOG = [
@@ -237,7 +238,7 @@ class Brains:
                 log.warning("Motore cognitivo %s non disponibile: %s", mode_override, exc)
             if eng:
                 sla = eng.latency_sla_ms
-                kind = "chat" if sla <= 50 else "deep"
+                kind = "chat" if sla <= CHAT_SLA_MS else "deep"
                 reason = f"motore cognitivo: {eng.name}"
             elif mode_override in ("fast", "chat", "veloce", "5.0-flash"):
                 kind, reason = "chat", "modalità veloce (Nuxiva 5.0 Veloce)"

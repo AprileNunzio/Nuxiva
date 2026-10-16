@@ -370,7 +370,6 @@ async def get_assistant_mode(request: Request):
     from features.people.people import preferred_reasoning_mode
     active_mode = preferred_reasoning_mode(principal.slug)
 
-    # Scans the reasoning engines directory dynamically via EngineScanner
     engines = []
     default_id = "nuxiva-6.5-auto"
     try:
@@ -404,6 +403,17 @@ async def get_assistant_mode(request: Request):
         "modes": engines,
         "engines": engines,
     }
+
+
+@public_routes.get("/api/assistant/mode/explain")
+async def explain_assistant_mode(mode: str):
+    from features.chat import reasoning_explain
+    try:
+        return JSONResponse(reasoning_explain.explain(mode), headers=NO_CACHE)
+    except ValueError as exc:
+        raise HTTPException(400, str(exc))
+    except LookupError:
+        raise HTTPException(404, "Motore non trovato")
 
 
 @public_routes.post("/api/assistant/mode")
