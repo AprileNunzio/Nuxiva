@@ -4,7 +4,6 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-import tests  # noqa: F401
 from features.backup import service
 
 

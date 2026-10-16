@@ -1,3 +1,4 @@
+import asyncio
 import tempfile
 import unittest
 from pathlib import Path
@@ -38,7 +39,6 @@ class ProjectTest(Isolated):
         async def fake(prompt, **kw):
             return {"steps": [{"text": "Raccogliere argomenti"}, {"text": "Fissare le scadenze"}]} if kw.get("as_json") else "fatto"
 
-        import asyncio
         with mock.patch.object(llm, "generate", fake), mock.patch.object(routing, "best", return_value=None):
             asyncio.run(service.plan(project))
             self.assertEqual(project.status, "running")
@@ -54,7 +54,6 @@ class ProjectTest(Isolated):
         async def down(prompt, **kw):
             raise llm.BrainUnavailable("nessun modello")
 
-        import asyncio
         with mock.patch.object(llm, "generate", down):
             asyncio.run(service.plan(project))
         self.assertEqual(project.status, "planning")
@@ -78,7 +77,6 @@ class ProjectTest(Isolated):
         self.assertEqual(store_module.ProjectStore().get(project.id).steps[0].status, "pending")
 
     def test_3d_project_models_first_and_opens_the_studio(self):
-        import asyncio
         from features.models3d import studio
         plain = service.start("Organizzare la ristrutturazione del bagno", "it")
         project = service.start("Progetta un portapenne in 3D da stampare", "it")
@@ -90,7 +88,6 @@ class ProjectTest(Isolated):
         async def create(subject):
             return {"id": "portapenne-abc123", "title": "Portapenne", "parts": [{}, {}]}
 
-        import asyncio
         with mock.patch.object(llm, "generate", fake), mock.patch.object(routing, "best", return_value=None), \
                 mock.patch("features.models3d.generator.create", create), mock.patch.object(studio, "open_studio") as opened:
             asyncio.run(service.plan(project))
@@ -103,7 +100,6 @@ class ProjectTest(Isolated):
         self.assertEqual(store_module.ProjectStore().get(project.id).kind, "3d")
 
     def test_chat_commands(self):
-        import asyncio
         reply, _ = asyncio.run(commands.answer("avvia un progetto per riordinare la cantina"))
         self.assertIn("avviato", reply)
         reply, _ = asyncio.run(commands.answer("a che punto sono i progetti"))

@@ -1,7 +1,7 @@
 import re
 
 from features.desktop.desk import desk
-from features.models3d import generator, library, studio, voice
+from features.models3d import generator, library, voice
 from state import store
 from tasks import background
 

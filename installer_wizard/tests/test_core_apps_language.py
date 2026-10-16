@@ -3,7 +3,6 @@ import re
 import unittest
 from pathlib import Path
 
-import tests  # noqa: F401
 
 ROOT = Path(__file__).resolve().parents[2] / "client_web" / "src" / "core_apps"
 LANGS = ("it", "en", "es", "fr")
