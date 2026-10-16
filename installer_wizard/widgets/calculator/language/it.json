@@ -5,9 +5,8 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Calculator",
-    "status_ready": "Pronto",
-    "action_refresh": "Aggiorna",
-    "empty_message": "Nessun dato disponibile per questo widget."
+    "label": "Calcolatrice",
+    "scientific": "Sci",
+    "error": "Errore"
   }
 }

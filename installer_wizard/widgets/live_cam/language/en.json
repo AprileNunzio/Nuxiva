@@ -5,9 +5,10 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Live Cam",
-    "status_ready": "Ready",
-    "action_refresh": "Refresh",
-    "empty_message": "No data available for this widget."
+    "label": "Live camera",
+    "connecting": "Connecting…",
+    "unavailable": "Stream unavailable",
+    "fullscreen": "Full screen",
+    "close": "Close"
   }
 }

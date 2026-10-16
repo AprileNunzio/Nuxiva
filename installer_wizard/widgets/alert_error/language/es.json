@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/alert_error",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Error",
+    "chip": "Crítico",
+    "fallback_title": "Error del sistema"
+  }
+}

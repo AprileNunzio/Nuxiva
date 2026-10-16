@@ -17,5 +17,6 @@
     "ascolto"
   ],
   "description": "Indicatore semitrasparente dell'ascolto: si accende quando Nuxiva ti ascolta e segnala se il microfono non funziona.",
-  "tone": "violet"
+  "tone": "violet",
+  "standalone": true
 }

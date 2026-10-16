@@ -13,8 +13,8 @@
         if (l.startsWith("-")) return `<span class="gd-del">${t}</span>`;
         return t;
       }).join("\n");
-      el.innerHTML = `${ctx.head({ icon: "git", label: "Modifiche", title: file, chip: add || del ? `+${add} −${del}` : "" })}
-        ${out.trim() ? `<pre class="wk-pre">${out}</pre>` : `<div class="wk-empty"><span>Nessuna modifica</span></div>`}`;
+      el.innerHTML = `${ctx.head({ icon: "git", label: ctx.t("label"), title: file, chip: add || del ? `+${add} −${del}` : "" })}
+        ${out.trim() ? `<pre class="wk-pre">${out}</pre>` : `${ctx.empty(ctx.t("none"))}`}`;
     },
   });
 })();

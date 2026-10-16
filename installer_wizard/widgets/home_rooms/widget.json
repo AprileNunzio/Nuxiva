@@ -13,7 +13,5 @@
     "stanze"
   ],
   "description": "Le stanze in cui i sensori di Home Assistant rilevano qualcuno in questo momento.",
-  "demo": {
-    "rooms": ["Soggiorno", "Cucina"]
-  }
+  "refresh": 10
 }

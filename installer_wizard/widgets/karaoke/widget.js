@@ -9,13 +9,13 @@
   function paint(el, d, ctx) {
     const synced = lines(d);
     const name = [d.title, d.artist].filter(Boolean).map((x) => String(x).slice(0, 80)).join(" — ");
-    const head = ctx.head({ icon: "mic", label: "Karaoke", title: name, chip: synced ? "sincronizzato" : "", live: !!synced });
+    const head = ctx.head({ icon: "mic", label: ctx.t("label"), title: name, chip: synced ? ctx.t("synced") : "", live: !!synced });
     if (!synced) {
       el._lines = null;
       const plain = String((d.lyrics && d.lyrics.plain) || "").slice(0, 8000);
       el.innerHTML = head + (plain
         ? `<div class="ka-plain">${ctx.esc(plain)}</div>`
-        : `<div class="wk-empty">Testo non disponibile per questo brano.</div>`);
+        : ctx.empty(ctx.t("no_lyrics")));
       return;
     }
     el.innerHTML = head + `<div class="ka-lines">${synced.map((l, i) =>

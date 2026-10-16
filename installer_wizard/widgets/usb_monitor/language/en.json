@@ -5,9 +5,10 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Usb Monitor",
-    "status_ready": "Ready",
-    "action_refresh": "Refresh",
-    "empty_message": "No data available for this widget."
+    "label": "New USB device",
+    "chip": "Connected",
+    "mounted": "Mounted at",
+    "product": "Product",
+    "serial": "Serial"
   }
 }

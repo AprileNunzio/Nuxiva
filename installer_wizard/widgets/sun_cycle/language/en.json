@@ -5,9 +5,10 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Sun Cycle",
-    "status_ready": "Ready",
-    "action_refresh": "Refresh",
-    "empty_message": "No data available for this widget."
+    "label": "Sun",
+    "sunrise": "Sunrise",
+    "sunset": "Sunset",
+    "daylight": "Daylight",
+    "hours_minutes": "{{h}} h {{m}} min"
   }
 }

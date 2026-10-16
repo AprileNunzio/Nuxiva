@@ -18,8 +18,8 @@
     copy(doc.body, target, 0);
   };
   NuxivaDesk.register("text_long", {
-    render(el, d) {
-      el.innerHTML = `<div class="wk-text tx-long"><i>Caricamento testo esteso…</i></div>`;
+    render(el, d, ctx) {
+      el.innerHTML = `<div class="wk-text tx-long"><i>${ctx.esc(ctx.t("loading"))}</i></div>`;
       if (d.content) {
         const box = el.firstChild;
         box.textContent = "";

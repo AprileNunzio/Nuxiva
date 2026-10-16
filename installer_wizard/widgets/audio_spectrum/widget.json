@@ -1,7 +1,7 @@
 {
   "id": "audio_spectrum",
   "name": "Spettro Audio",
-  "icon": "\ud83c\udfb5",
+  "icon": "🎵",
   "priority": 50,
   "size": "l",
   "intents": [
@@ -9,8 +9,5 @@
   ],
   "description": "Spettro animato dell'audio in riproduzione.",
   "ttl": 120,
-  "demo": {
-    "content": "Daft Punk \u2014 Get Lucky\nRandom Access Memories \u00b7 116 BPM"
-  },
   "tone": "violet"
 }

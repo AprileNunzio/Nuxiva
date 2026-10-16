@@ -5,9 +5,7 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Audio Spectrum",
-    "status_ready": "Pronto",
-    "action_refresh": "Aggiorna",
-    "empty_message": "Nessun dato disponibile per questo widget."
+    "label": "Spettro audio",
+    "silent": "Silenzio"
   }
 }

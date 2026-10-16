@@ -5,9 +5,9 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Ssh Sessions",
-    "status_ready": "Ready",
-    "action_refresh": "Refresh",
-    "empty_message": "No data available for this widget."
+    "label": "SSH sessions",
+    "none": "No active sessions",
+    "active_one": "{{n}} active",
+    "active_other": "{{n}} active"
   }
 }

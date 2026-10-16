@@ -79,17 +79,47 @@
       + `<circle class="value" cx="48" cy="48" r="42" stroke-dasharray="${(arc * pct(v)) / 100} ${c}"/></svg><b><span>${esc(text)}${sub ? `<small>${esc(sub)}</small>` : ""}</span></b></span>`;
   };
   const detail = (obj) => (obj && typeof obj === "object" ? ` data-detail="${esc(JSON.stringify(obj).slice(0, 8000))}"` : "");
-  const ctx = { esc, mmss, icon, head, bar, ring, pct, detail, speak: (t) => hooks.speak(t), now: () => Date.now() / 1000 };
+  const LOCALES = { it: "it-IT", en: "en-GB", es: "es-ES", fr: "fr-FR" };
+  const lang = () => (LOCALES[String(document.documentElement.lang || "").slice(0, 2)] ? String(document.documentElement.lang).slice(0, 2) : "it");
+  const locale = () => LOCALES[lang()];
+  const plain = (v, max = 6000) => {
+    const s = String(v ?? "").slice(0, max).replace(/<br\s*\/?>/gi, "\n").replace(/<\/(p|div|li|tr|h[1-6])>/gi, "\n");
+    return s.includes("<") ? new DOMParser().parseFromString(s, "text/html").body.textContent : s;
+  };
+  const lines = (v, max = 10, size = 6000) => plain(v, size).split("\n").map((l) => l.trim()).filter(Boolean).slice(0, max);
+  const pair = (line, size = 48) => line.match(new RegExp(`^([^:]{1,${size}}):\\s+(.+)$`));
+  const empty = (text) => `<div class="wk-empty">${esc(text)}</div>`;
+  const ctx = { esc, mmss, icon, head, bar, ring, pct, detail, plain, lines, pair, empty, locale, lang, speak: (t) => hooks.speak(t), now: () => Date.now() / 1000 };
   const i18n = () => window.NuxivaScopedI18n;
   const scopeOf = (id) => `widgets/${id}`;
+  const COMMON = scopeOf("common");
+  const word = (scope, key, params) => (i18n() ? i18n().t(scope, key, params) : "");
   const contexts = new Map();
   function ctxFor(id) {
-    if (!contexts.has(id)) contexts.set(id, Object.freeze({ ...ctx, t: (key, params) => (i18n() ? i18n().t(scopeOf(id), key, params) : "") }));
+    if (!contexts.has(id)) {
+      const t = (key, params) => word(scopeOf(id), key, params);
+      const tc = (key, params) => word(COMMON, key, params);
+      const count = (key, n) => t(n === 1 ? `${key}_one` : `${key}_other`, { n });
+      const metrics = (content) => {
+        const rows = lines(content, 10);
+        if (!rows.length) return empty(tc("waiting"));
+        const pairs = rows.map((l) => pair(l, 32));
+        if (!pairs.every(Boolean)) return `<p class="wk-text">${rows.map(esc).join("<br>")}</p>`;
+        const [first, ...rest] = pairs;
+        const hero = first[2].length <= 14;
+        const items = hero ? rest : pairs;
+        const pc = first[2].match(/(\d+(?:[.,]\d+)?)\s*%/);
+        const level = pc ? Number(pc[1].replace(",", ".")) : null;
+        return `${hero ? `<div class="wk-hero"><span class="wk-num sm">${esc(first[2])}</span><span class="wk-sub">${esc(first[1])}</span></div>${level === null ? "" : bar(level, level >= 90 ? "bad" : level >= 75 ? "warn" : "")}` : ""}
+          ${items.length ? `<dl class="wk-kv">${items.map((p) => `<dt>${esc(p[1])}</dt><dd class="mono">${esc(p[2])}</dd>`).join("")}</dl>` : ""}`;
+      };
+      contexts.set(id, Object.freeze({ ...ctx, t, tc, count, metrics }));
+    }
     return contexts.get(id);
   }
   async function preload(id) {
     if (!i18n()) return;
-    try { await i18n().preload(scopeOf(id)); } catch (err) { console.warn(`widget ${id}: traduzioni non caricate`, err); }
+    try { await Promise.all([i18n().preload(scopeOf(id)), i18n().preload(COMMON)]); } catch (err) { console.warn(`widget ${id}: traduzioni non caricate`, err); }
   }
   document.addEventListener("nuxiva-translated", () => {
     setTimeout(async () => {
@@ -123,7 +153,12 @@
   async function draw(inst) {
     let card = cards.get(inst.key);
     const sig = JSON.stringify(inst.data);
-    if (card && card.sig === sig && card.rev === inst.rev) { card.inst = inst; return card; }
+    if (card && card.sig === sig && card.rev === inst.rev) {
+      const renewed = card.inst.refreshed_at !== inst.refreshed_at;
+      card.inst = inst;
+      if (renewed) pulse(card);
+      return card;
+    }
     let impl;
     try { impl = await load(inst); } catch (err) { console.warn(err); return null; }
     if (!card || card.rev !== inst.rev) {
@@ -131,7 +166,7 @@
       const el = document.createElement("section");
       el.className = `widget size-${inst.size} w-${inst.id} tone-${TONES.has(inst.tone) ? inst.tone : "cyan"}${inst.essential ? " essential" : ""}${inst.urgent ? " urgent" : ""}${inst.takeover ? " takeover" : ""}${inst.chrome === false ? " frameless" : ""} hidden`;
       el.dataset.key = inst.key;
-      el.innerHTML = '<div class="w-body"></div>';
+      el.innerHTML = '<div class="w-body"></div><i class="w-cycle" aria-hidden="true"></i>';
       card = { el, sig, rev: inst.rev, impl, inst, placed: false };
       cards.set(inst.key, card);
       host.appendChild(el);
@@ -143,7 +178,20 @@
       card.sig = sig; card.inst = inst;
       try { gov(inst.id, () => (impl.update || impl.render)(card.el.firstChild, inst.data, ctxFor(inst.id)), card.el, false); } catch (err) { console.warn(`widget ${inst.id}:`, err); }
     }
+    pulse(card);
     return card;
+  }
+
+  function pulse(card) {
+    const cycle = card.el.querySelector(".w-cycle"), every = Number(card.inst.refresh) || 0;
+    if (!cycle) return;
+    card.el.classList.toggle("has-cycle", every > 0);
+    if (!every) return;
+    cycle.style.setProperty("--cycle", `${every}s`);
+    cycle.classList.remove("run");
+    void cycle.offsetWidth;
+    cycle.classList.add("run");
+    card.el.title = `${ctxFor(card.inst.id).tc("refresh_every", { n: every })}`;
   }
 
   function remove(key, now) {

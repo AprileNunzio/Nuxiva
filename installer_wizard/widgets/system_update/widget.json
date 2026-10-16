@@ -13,9 +13,5 @@
     "aggiornamento"
   ],
   "description": "Avvisa quando su GitHub c'è una nuova versione di Nuxiva con i test superati, con le novità.",
-  "demo": {
-    "local": "e451196",
-    "remote": "7c2a9f1",
-    "changes": ["Widget in stile visore", "Nuovi widget: orologio, sole, salute del sistema"]
-  }
+  "refresh": 300
 }

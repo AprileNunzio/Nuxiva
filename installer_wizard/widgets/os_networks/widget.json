@@ -1,7 +1,7 @@
 {
   "id": "os_networks",
   "name": "Gestione Reti (Wi-Fi / BT)",
-  "icon": "\ud83d\udce1",
+  "icon": "📡",
   "priority": 85,
   "size": "l",
   "intents": [
@@ -11,29 +11,6 @@
   ],
   "description": "Scansione e connessione a reti Wi-Fi e dispositivi Bluetooth.",
   "ttl": 300,
-  "demo": {
-    "type": "wifi",
-    "devices": [
-      {
-        "name": "Nuxiva_5G_Core",
-        "signal": 98,
-        "secure": true,
-        "connected": true
-      },
-      {
-        "name": "Guest_Net",
-        "signal": 45,
-        "secure": false,
-        "connected": false
-      },
-      {
-        "name": "Sony WH-1000XM5 (Bluetooth)",
-        "signal": 80,
-        "secure": true,
-        "connected": false
-      }
-    ]
-  },
   "tone": "blue",
   "essential": true
 }

@@ -12,10 +12,6 @@
     "webcam"
   ],
   "description": "Immagine in diretta di una webcam o telecamera: si apre con la voce («apri la webcam salotto»), anche a tutto schermo.",
-  "demo": {
-    "source": "w-00000000",
-    "name": "Webcam di prova"
-  },
   "tone": "red",
   "essential": true
 }

@@ -10,5 +10,5 @@
     "time"
   ],
   "description": "Ora, data e settimana dell'anno, quando chiedi che ore sono o che giorno è.",
-  "demo": {}
+  "standalone": true
 }

@@ -5,9 +5,8 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Thinking Tree",
-    "status_ready": "Ready",
-    "action_refresh": "Refresh",
-    "empty_message": "No data available for this widget."
+    "label": "Reasoning",
+    "steps_one": "{{n}} step",
+    "steps_other": "{{n}} steps"
   }
 }

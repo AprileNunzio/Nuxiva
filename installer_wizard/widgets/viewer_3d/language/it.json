@@ -5,9 +5,18 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Viewer 3D",
-    "status_ready": "Pronto",
-    "action_refresh": "Aggiorna",
-    "empty_message": "Nessun dato disponibile per questo widget."
+    "label": "Modello 3D",
+    "loading": "Caricamento del modello…",
+    "spin": "Rotazione automatica",
+    "wire": "Reticolo",
+    "fit": "Inquadra",
+    "triangles_one": "{{n}} triangolo",
+    "triangles_other": "{{n}} triangoli",
+    "animations_one": "{{n}} animazione",
+    "animations_other": "{{n}} animazioni",
+    "error_library": "Libreria 3D non disponibile",
+    "error_dxf": "Nessuna entità DXF riconosciuta",
+    "error_cad": "File CAD non leggibile",
+    "error_format": "Formato non visualizzabile"
   }
 }

@@ -25,6 +25,14 @@ REQUEST_HOLD = 120
 SNOOZE = 600
 AUTO_PREFIXES = ("briefing:", "welcome:", "sport-near:")
 SNOOZE_FORGET = 6 * 3600
+REFRESH_MIN = 1
+REFRESH_MAX = 86400
+
+
+def clamp_refresh(value) -> int | None:
+    if value in (None, "", False):
+        return None
+    return max(REFRESH_MIN, min(REFRESH_MAX, int(value)))
 
 
 class Desk:
@@ -35,6 +43,8 @@ class Desk:
         self.instances: dict[str, dict] = {}
         self.last: dict[str, dict] = {}
         self.sources: dict = {}
+        self.providers: dict = {}
+        self.polled: dict[str, float] = {}
         self.cost: dict[str, dict] = {}
         self.suppressed: set = set()
         self.request_at = 0.0
@@ -88,6 +98,8 @@ class Desk:
             m["tone"] = m.get("tone") if m.get("tone") in TONES else "cyan"
             m["overlay"] = m.get("overlay") is True
             m["personal"] = m.get("personal") is True
+            m["refresh"] = clamp_refresh(m.get("refresh"))
+            m["standalone"] = m.get("standalone") is True
             m["source"] = "system" if folder.is_relative_to(SYSTEM_DIR) else (m.get("source") if m.get("source") in ("ai", "user") else "user")
             m["dir"] = str(folder)
             m["has_css"] = (folder / "widget.css").exists()
@@ -109,6 +121,12 @@ class Desk:
         p = self.prefs.get(wid, {}).get("priority")
         return int(p) if p is not None else self.widgets.get(wid, {}).get("priority", 50)
 
+    def refresh_of(self, wid: str) -> int | None:
+        rec = self.prefs.get(wid, {})
+        if "refresh" in rec:
+            return rec["refresh"]
+        return self.widgets.get(wid, {}).get("refresh")
+
     def set_prefs(self, wid: str, body: dict) -> None:
         if wid not in self.widgets:
             raise KeyError(wid)
@@ -117,6 +135,11 @@ class Desk:
             rec["enabled"] = bool(body["enabled"])
         if "priority" in body:
             rec["priority"] = None if body["priority"] in ("", None) else max(0, min(100, int(body["priority"])))
+        if "refresh" in body:
+            if body["refresh"] in ("", None):
+                rec.pop("refresh", None)
+            else:
+                rec["refresh"] = clamp_refresh(body["refresh"])
         self._save()
         self.publish()
 
@@ -166,7 +189,7 @@ class Desk:
         old = self.instances.get(key)
         self.instances[key] = {
             "key": key, "id": wid, "data": data or {}, "priority": priority, "intent": intent,
-            "shown_at": old["shown_at"] if old else time.time(),
+            "shown_at": old["shown_at"] if old else time.time(), "refreshed_at": time.time(),
             "opened_at": time.time() if intent or not old else old.get("opened_at", time.time()),
             "fullscreen": bool(old and old.get("fullscreen")) if fullscreen is None else fullscreen,
             "expires_at": time.time() + float(ttl) if ttl else None,
@@ -284,7 +307,7 @@ class Desk:
                         "essential": m.get("essential", False), "urgent": m.get("urgent", False), "tone": m.get("tone", "cyan"),
                         "pos": self.position(i["id"]), "overlay": m.get("overlay", False),
                         "takeover": prio >= 90 and m["size"] == "full", "fullscreen": bool(i.get("fullscreen")),
-                        "personal": m.get("personal", False)})
+                        "personal": m.get("personal", False), "refresh": self.refresh_of(i["id"])})
         out.sort(key=lambda x: (-x["priority"], -x["shown_at"]))
         wanted = {wid: p["screen"] for wid, p in self.prefs.items() if p.get("screen") is not None}
         return screens.assign(out, wanted)
@@ -337,8 +360,7 @@ class Desk:
         elif self.last.get(wid):
             origin, data = "last", self.last[wid]
         else:
-            origin = "preview" if m.get("demo") else "live"
-            data = {**m.get("demo", {}), "started_at": time.time() - 30}
+            origin, data = ("live" if m.get("standalone") else "empty"), {}
         self.dismissed.pop(f"recall:{wid}", None)
         self.show(wid, data, key=f"recall:{wid}", ttl=m.get("ttl") or 120, intent=True)
         if target and f"recall:{wid}" in self.instances:
@@ -350,6 +372,43 @@ class Desk:
 
     def register_source(self, name: str, fn) -> None:
         self.sources[name] = fn
+
+    def register_provider(self, wid: str, fn) -> None:
+        self.providers[wid] = fn
+
+    def refresh_instance(self, key: str, data: dict) -> None:
+        inst = self.instances.get(key)
+        if inst:
+            inst.update(data=data, refreshed_at=time.time())
+            self.publish()
+
+    def _due(self, wid: str, now: float) -> bool:
+        every = self.refresh_of(wid)
+        if not every:
+            return True
+        if now - self.polled.get(wid, 0.0) < every:
+            return False
+        self.polled[wid] = now
+        return True
+
+    async def _providers(self) -> None:
+        now = time.time()
+        for key, inst in list(self.instances.items()):
+            fn = self.providers.get(inst["id"])
+            every = self.refresh_of(inst["id"])
+            if not fn or not every or now - inst.get("refreshed_at", 0.0) < every:
+                continue
+            try:
+                data = fn()
+                data = await data if asyncio.iscoroutine(data) else data
+            except Exception:
+                log.exception("Aggiornamento del widget %s", inst["id"])
+                inst["refreshed_at"] = now
+                continue
+            if isinstance(data, dict) and data:
+                self.refresh_instance(key, data)
+            else:
+                inst["refreshed_at"] = now
 
     def _measured(self, wid: str, fn):
         wall, cpu = time.perf_counter(), time.thread_time()
@@ -372,9 +431,10 @@ class Desk:
                 "cpu_percent": round(rec["cpu_ms"] / (elapsed * 10), 3)}
 
     def _bindings(self) -> None:
+        now = time.time()
         for m in self.widgets.values():
             bind = m.get("bind")
-            if not bind:
+            if not bind or not self._due(m["id"], now):
                 continue
             attr, when = (bind, None) if isinstance(bind, str) else (bind.get("attr"), bind.get("when"))
             source = self.sources.get(attr)
@@ -391,6 +451,8 @@ class Desk:
                 current = self.instances.get(key)
                 if not current or current["data"] != value:
                     self.show(m["id"], value if isinstance(value, dict) else {"value": value}, key=key, ttl=m.get("ttl", 0))
+                elif self.refresh_of(m["id"]):
+                    self.refresh_instance(key, current["data"])
             elif key in self.instances:
                 self.hide(key=key)
 
@@ -416,7 +478,7 @@ class Desk:
                     self.scan()
                 self.sweep_private()
                 self._bindings()
-
+                await self._providers()
                 if screens.changed():
                     self.publish()
                 expired = [k for k, i in self.instances.items() if i["expires_at"] and i["expires_at"] <= time.time()]

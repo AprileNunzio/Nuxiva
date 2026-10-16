@@ -15,7 +15,7 @@
 
   const script = (name) => scripts[name] || (scripts[name] = new Promise((ok, ko) => {
     const s = document.createElement("script");
-    s.src = `/vendor/${name}${VER}`; s.onload = ok; s.onerror = () => ko(new Error(`${name} non disponibile`));
+    s.src = `/vendor/${name}${VER}`; s.onload = ok; s.onerror = () => ko(new Error("library"));
     document.head.appendChild(s);
   }));
 
@@ -99,7 +99,7 @@
       g.computeVertexNormals();
       group.add(new THREE.Mesh(g, Object.assign(steel(), { side: THREE.DoubleSide })));
     }
-    if (!group.children.length) throw new Error("Nessuna entità DXF riconosciuta");
+    if (!group.children.length) throw new Error("dxf");
     return group;
   }
 
@@ -109,7 +109,7 @@
     const buf = new Uint8Array(await (await fetch(url)).arrayBuffer());
     const read = { step: "ReadStepFile", stp: "ReadStepFile", iges: "ReadIgesFile", igs: "ReadIgesFile", brep: "ReadBrepFile" }[fmt];
     const res = occt[read](buf, null);
-    if (!res.success) throw new Error("File CAD non leggibile");
+    if (!res.success) throw new Error("cad");
     const group = new THREE.Group();
     for (const m of res.meshes) {
       const g = new THREE.BufferGeometry();
@@ -147,7 +147,7 @@
     if (fmt === "wrl") return { obj: await new THREE.VRMLLoader().loadAsync(url) };
     if (fmt === "dxf") return { obj: parseDXF(await (await fetch(url)).text()) };
     if (NEEDS[fmt]) return { obj: await loadCad(fmt, url) };
-    throw new Error(`Formato .${fmt} non visualizzabile`);
+    throw new Error("format");
   }
 
   function stats(obj) {
@@ -160,24 +160,25 @@
     return Math.round(tris);
   }
 
+  const ERRORS = new Set(["library", "dxf", "cad", "format"]);
   const fmtSize = (v) => (v >= 100 ? `${(v / 100).toFixed(2)} m` : v >= 1 ? `${v.toFixed(1)} cm` : `${(v * 10).toFixed(1)} mm`);
 
   function mount(el, d, ctx) {
     const files = d.files || [];
     const href = /^(https?:\/\/|\/(?!\/))/i.test(String(d.url || "")) ? String(d.url) : "";
-    el.innerHTML = `${ctx.head({ icon: "cube", label: "Modello 3D", title: d.title || "", chip: LABEL[d.format] || String(d.format || "").toUpperCase() })}
-      <div class="v3-stage"><canvas></canvas><div class="v3-msg">Caricamento del modello…</div>
-        <div class="v3-tools"><button class="wk-btn icon" type="button" data-a="spin" title="Rotazione automatica">${ctx.icon("refresh")}</button><button class="wk-btn icon" type="button" data-a="wire" title="Reticolo">${ctx.icon("cube")}</button>
-          <button class="wk-btn icon" type="button" data-a="fit" title="Inquadra">${ctx.icon("expand")}</button></div></div>
+    el.innerHTML = `${ctx.head({ icon: "cube", label: ctx.t("label"), title: d.title || "", chip: LABEL[d.format] || String(d.format || "").toUpperCase() })}
+      <div class="v3-stage"><canvas></canvas><div class="v3-msg">${ctx.esc(ctx.t("loading"))}</div>
+        <div class="v3-tools"><button class="wk-btn icon" type="button" data-a="spin" title="${ctx.esc(ctx.t("spin"))}">${ctx.icon("refresh")}</button><button class="wk-btn icon" type="button" data-a="wire" title="${ctx.esc(ctx.t("wire"))}">${ctx.icon("cube")}</button>
+          <button class="wk-btn icon" type="button" data-a="fit" title="${ctx.esc(ctx.t("fit"))}">${ctx.icon("expand")}</button></div></div>
       <div class="v3-info"><span class="v3-stats"></span>${d.note ? `<span class="v3-note">${ctx.esc(d.note)}</span>` : ""}</div>
       <div class="v3-files">${href ? files.slice(0, 12).map((f) => `<a class="wk-btn" href="${ctx.esc(href + encodeURIComponent(f.name))}" download>${ctx.icon("download")} ${ctx.esc(f.name)}</a>`).join("") : ""}</div>`;
     const st = { el, id: d.id, alive: true, spin: true, wire: false };
     el._v3 = st;
-    start(st, d).catch((err) => { const m = el.querySelector(".v3-msg"); if (m) { m.textContent = err.message; m.classList.add("err"); } });
+    start(st, d, ctx).catch((err) => { const m = el.querySelector(".v3-msg"); if (m) { m.textContent = ERRORS.has(err.message) ? ctx.t(`error_${err.message}`) : err.message; m.classList.add("err"); } });
   }
 
-  async function start(st, d) {
-    if (!d.main || !NEEDS[d.format]) throw new Error(d.note || `Formato .${d.format} non visualizzabile`);
+  async function start(st, d, ctx) {
+    if (!d.main || !NEEDS[d.format]) throw new Error(d.note || "format");
     const { obj, clips } = await loadModel(d);
     if (!st.alive) return;
     const stage = st.el.querySelector(".v3-stage"), canvas = stage.querySelector("canvas");
@@ -208,8 +209,7 @@
     const mixer = clips && clips.length ? new THREE.AnimationMixer(obj) : null;
     if (mixer) mixer.clipAction(clips[0]).play();
     const unit = ["glb", "gltf"].includes(d.format) ? 100 : ["stl", "3mf", "amf", "step", "stp", "iges", "igs", "brep"].includes(d.format) ? 0.1 : 1;
-    st.el.querySelector(".v3-stats").textContent = `${stats(obj).toLocaleString("it-IT")} triangoli · ${[size.x, size.y, size.z]
-      .map((v) => fmtSize(v * unit)).join(" × ")}${clips && clips.length ? ` · ${clips.length} animazioni` : ""}`;
+    st.el.querySelector(".v3-stats").textContent = `${ctx.count("triangles", stats(obj))} · ${[size.x, size.y, size.z].map((v) => fmtSize(v * unit)).join(" × ")}${clips && clips.length ? ` · ${ctx.count("animations", clips.length)}` : ""}`;
     st.el.querySelector(".v3-msg").remove();
     st.el.querySelector(".v3-tools").addEventListener("click", (e) => {
       const a = e.target.dataset.a;

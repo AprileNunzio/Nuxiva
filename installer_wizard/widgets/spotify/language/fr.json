@@ -5,9 +5,7 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Spotify",
-    "status_ready": "Prêt",
-    "action_refresh": "Actualiser",
-    "empty_message": "Aucune donnée disponible pour ce widget."
+    "listening": "Spotify",
+    "playing": "Lecture"
   }
 }

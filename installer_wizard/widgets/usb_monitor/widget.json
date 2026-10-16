@@ -9,12 +9,5 @@
   ],
   "description": "Dettagli hardware quando viene inserita una periferica USB.",
   "ttl": 60,
-  "demo": {
-    "vendor": "SanDisk Corp.",
-    "product": "Cruzer Blade",
-    "serial": "4C530001...",
-    "mount": "E:\\",
-    "size": "32 GB"
-  },
   "tone": "blue"
 }

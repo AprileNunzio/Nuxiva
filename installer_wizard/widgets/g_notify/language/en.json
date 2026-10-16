@@ -5,9 +5,11 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "G Notify",
-    "status_ready": "Ready",
-    "action_refresh": "Refresh",
-    "empty_message": "No data available for this widget."
+    "appointment": "Appointment",
+    "soon": "Soon",
+    "new_mail": "New email",
+    "new": "New",
+    "your_day": "Your day",
+    "more": "and {{n}} more"
   }
 }

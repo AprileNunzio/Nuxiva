@@ -5,9 +5,13 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Cam Stream",
-    "status_ready": "Ready",
-    "action_refresh": "Refresh",
-    "empty_message": "No data available for this widget."
+    "label": "Camera",
+    "no_stream": "No stream available",
+    "source": "Source",
+    "state": "Status",
+    "chip_motion": "Motion",
+    "chip_listening": "Monitoring",
+    "motion": "Motion detected",
+    "no_motion": "No motion"
   }
 }

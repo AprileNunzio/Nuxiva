@@ -5,9 +5,9 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Subsystem Alert",
-    "status_ready": "Ready",
-    "action_refresh": "Refresh",
-    "empty_message": "No data available for this widget."
+    "label": "System",
+    "title": "Repair in progress",
+    "faults_one": "{{n}} fault",
+    "faults_other": "{{n}} faults"
   }
 }

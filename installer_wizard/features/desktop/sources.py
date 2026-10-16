@@ -41,4 +41,34 @@ def components_down() -> dict | None:
     return {"items": down[:8]} if down else None
 
 
+def system_monitor() -> dict | None:
+    from features.governor.service import governor
+    last = governor.last or {}
+    if "cpu" not in last or "mem" not in last:
+        return None
+    return {"cpu": last["cpu"], "ram": last["mem"]}
+
+
+def system_health() -> dict | None:
+    from features.desktop import briefing
+    return briefing.resources()[1]
+
+
+def network_devices() -> dict | None:
+    from features.network.explorer import explorer
+    online = [d for d in explorer.devices.values() if d.get("online")]
+    if not online:
+        return None
+    return {"items": [{"label": str(explorer.label(d))[:60], "value": str(d.get("ip") or "")[:45]} for d in online[:20]]}
+
+
+async def weather() -> dict | None:
+    from features.chat.skills.weather import weather_skill
+    _, ui = await weather_skill("")
+    panel = next((p for p in ui.get("panels", []) if p.get("type") == "forecast"), None)
+    return panel["data"] if panel else None
+
+
 SOURCES = {"sun_cycle": sun_cycle, "home_rooms": home_rooms, "update_ready": update_ready, "components_down": components_down}
+PROVIDERS = {"system_monitor": system_monitor, "system_health": system_health, "network_devices": network_devices,
+             "sun_cycle": sun_cycle, "weather": weather}

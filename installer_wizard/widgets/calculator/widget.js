@@ -14,8 +14,8 @@
       el.innerHTML = `
         <div class="calc-wrapper">
           <div class="calc-head">
-            ${ctx.head({ icon: "calc", label: "Calcolatrice" })}
-            <button class="calc-mode-btn wk-btn" type="button">Sci</button>
+            ${ctx.head({ icon: "calc", label: ctx.t("label") })}
+            <button class="calc-mode-btn wk-btn" type="button">${ctx.esc(ctx.t("scientific"))}</button>
           </div>
           <div class="calc-screen">
             <div class="calc-history"></div>
@@ -151,7 +151,7 @@
             parts = [...out];
             currEl.textContent = out;
           } catch (err) {
-            currEl.textContent = "Errore";
+            currEl.textContent = ctx.t("error");
             parts = [];
           }
         } else {

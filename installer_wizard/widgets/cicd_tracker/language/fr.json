@@ -5,9 +5,10 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Cicd Tracker",
-    "status_ready": "Prêt",
-    "action_refresh": "Actualiser",
-    "empty_message": "Aucune donnée disponible pour ce widget."
+    "label": "Pipelines CI/CD",
+    "failed_one": "{{n}} échouée",
+    "failed_other": "{{n}} échouées",
+    "running_one": "{{n}} en cours",
+    "running_other": "{{n}} en cours"
   }
 }

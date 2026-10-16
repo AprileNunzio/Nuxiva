@@ -5,9 +5,17 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "F1 Race",
-    "status_ready": "Prêt",
-    "action_refresh": "Actualiser",
-    "empty_message": "Aucune donnée disponible pour ce widget."
+    "label": "Formule 1",
+    "drivers_title": "Pilotes",
+    "results": "Résultats",
+    "circuit": "Circuit",
+    "place": "Lieu",
+    "round": "Manche",
+    "live_now": "En cours",
+    "next": "Prochaine course",
+    "unit_d": "j",
+    "unit_h": "h",
+    "unit_m": "m",
+    "unit_min": "min"
   }
 }

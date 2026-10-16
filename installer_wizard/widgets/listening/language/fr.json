@@ -5,9 +5,9 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Listening",
-    "status_ready": "Prêt",
-    "action_refresh": "Actualiser",
-    "empty_message": "Aucune donnée disponible pour ce widget."
+    "state_idle": "Dites « {{name}} » pour me parler",
+    "state_listening": "Je vous écoute…",
+    "state_transcribing": "Je comprends…",
+    "state_off": "Microphone éteint"
   }
 }

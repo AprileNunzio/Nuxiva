@@ -2,7 +2,7 @@
   "id": "clipboard_sync",
   "personal": true,
   "name": "Appunti Condivisi",
-  "icon": "\ud83d\udccb",
+  "icon": "📋",
   "priority": 55,
   "size": "m",
   "intents": [
@@ -10,8 +10,5 @@
   ],
   "description": "Ultimo testo copiato, condiviso tra i dispositivi.",
   "ttl": 60,
-  "demo": {
-    "content": "ssh nuxiva@192.168.1.40 -p 2222\nPassword Wi-Fi ospiti nel gestore password"
-  },
   "tone": "blue"
 }

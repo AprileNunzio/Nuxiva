@@ -5,9 +5,8 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Home Rooms",
-    "status_ready": "Ready",
-    "action_refresh": "Refresh",
-    "empty_message": "No data available for this widget."
+    "label": "Rooms",
+    "occupied_one": "{{n}} occupied",
+    "occupied_other": "{{n}} occupied"
   }
 }

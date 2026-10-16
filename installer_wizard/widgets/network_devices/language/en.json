@@ -5,9 +5,9 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Network Devices",
-    "status_ready": "Ready",
-    "action_refresh": "Refresh",
-    "empty_message": "No data available for this widget."
+    "label": "Network devices",
+    "more": "and {{n}} more",
+    "connected_one": "{{n}} connected",
+    "connected_other": "{{n}} connected"
   }
 }

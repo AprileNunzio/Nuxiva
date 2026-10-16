@@ -5,9 +5,8 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Alert Error",
-    "status_ready": "Pronto",
-    "action_refresh": "Aggiorna",
-    "empty_message": "Nessun dato disponibile per questo widget."
+    "label": "Errore",
+    "chip": "Critico",
+    "fallback_title": "Errore di sistema"
   }
 }

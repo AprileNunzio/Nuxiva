@@ -15,7 +15,7 @@
   NuxivaDesk.register("notice", {
     render(el, d, ctx) {
       const warn = d.level === "warn";
-      el.innerHTML = `${ctx.head({ label: warn ? "Attenzione" : "Avviso" })}
+      el.innerHTML = `${ctx.head({ label: ctx.t(warn ? "warning" : "notice") })}
         <div class="no-row"><span class="no-ic">${ctx.icon(pick(d.icon))}</span><div>
           <div class="wk-title">${ctx.esc(String(d.title || "").slice(0, 120))}</div>
           ${d.text ? `<div class="wk-sub">${ctx.esc(String(d.text).slice(0, 300))}</div>` : ""}</div></div>`;

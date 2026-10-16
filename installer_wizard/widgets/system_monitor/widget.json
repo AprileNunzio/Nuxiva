@@ -1,7 +1,7 @@
 {
   "id": "system_monitor",
   "name": "Monitor di Sistema",
-  "icon": "\ud83d\udcca",
+  "icon": "📊",
   "priority": 20,
   "size": "l",
   "ttl": 60,
@@ -9,9 +9,6 @@
     "system_monitor"
   ],
   "description": "Diagnostica CPU e memoria del nodo.",
-  "demo": {
-    "cpu": 34,
-    "ram": 61
-  },
-  "tone": "cyan"
+  "tone": "cyan",
+  "refresh": 5
 }

@@ -10,8 +10,5 @@
     "reminder"
   ],
   "description": "Promemoria.",
-  "demo": {
-    "content": "Chiamare il dentista alle 16:00"
-  },
   "tone": "amber"
 }

@@ -11,14 +11,5 @@
   ],
   "panel_type": "list",
   "description": "I dispositivi connessi alla rete di casa, quando chiedi chi è connesso.",
-  "demo": {
-    "title": "Connessi (5)",
-    "items": [
-      {"label": "📱 iPhone di Nunzio", "value": "192.168.1.21", "status": "ok"},
-      {"label": "💻 MacBook", "value": "192.168.1.34", "status": "ok"},
-      {"label": "📺 Televisore", "value": "192.168.1.50", "status": "ok"},
-      {"label": "🖨 Stampante", "value": "192.168.1.60", "status": "ok"},
-      {"label": "💡 Lampadina cucina", "value": "192.168.1.71", "status": "ok"}
-    ]
-  }
+  "refresh": 30
 }

@@ -6,33 +6,6 @@
   const WIDTHS = { s: 4, m: 9, l: 18 };
   const CALLOUT = { info: ["#29e0ff", "ⓘ"], tip: ["#7cfc9a", "✱"], warning: ["#ff4d6a", "!"], definition: ["#ffd166", "§"], formula: ["#c792ea", "∑"], example: ["#f4a261", "✎"] };
   const SERIES = ["#29e0ff", "#ffd166", "#ff4d6a", "#7cfc9a", "#c792ea", "#f4a261", "#90e0ef", "#e9c46a"];
-  const STRINGS = {
-    it: { pen: "Penna", eraser: "Gomma", text: "Testo", color: "Colore", undo: "Annulla", clear: "Cancella lavagna", sure: "Sicuro?", save: "Salva",
-      saveTitle: "Salva in memoria", load: "Carica", loadTitle: "Carica da memoria", aiTitle: "Attiva o disattiva la valutazione autonoma", aiOn: "AI: ON",
-      aiOff: "AI: OFF", micOff: "Microfono", micOn: "Ascolto…", micTitle: "Parla con l'insegnante", prev: "Pagina precedente", next: "Pagina successiva",
-      newPage: "Nuova pagina", delPage: "Elimina pagina", page: "Pag", pdfTitle: "Esporta in PDF", print: "Stampa", printTitle: "Stampa (laser, getto, 3D, incisore)",
-      full: "Tutto schermo", close: "Chiudi", printHead: "Stampa", searching: "Ricerca stampanti in corso…", noPrinters: "Nessuna stampante rilevata.",
-      printersError: "Errore nel caricamento delle stampanti.", cancel: "Annulla", confirm: "Conferma stampa", sending: "Invio in corso…", sent: "Lavoro inviato.",
-      error: "Errore", noMic: "Il browser non supporta il microfono in questa modalità.", thinking: "Sto pensando: ", boardName: "Nome della lavagna:",
-      saved: "Lavagna salvata.", available: "Lavagne disponibili:", none: "Nessuna", loadName: "Nome della lavagna da caricare:", loaded: "Lavagna caricata.",
-      aiEnabled: "Valutazione automatica attivata", aiDisabled: "Valutazione automatica disattivata", pdfStarted: "Download del PDF avviato…",
-      types: { laser_2d: "Laser 2D", inkjet_2d: "Getto d'inchiostro", "3d": "Stampante 3D", engraver: "Incisore laser", virtual_pdf: "PDF" }, speech: "it-IT" },
-    en: { pen: "Pen", eraser: "Eraser", text: "Text", color: "Colour", undo: "Undo", clear: "Clear board", sure: "Sure?", save: "Save",
-      saveTitle: "Save to memory", load: "Load", loadTitle: "Load from memory", aiTitle: "Turn autonomous checking on or off", aiOn: "AI: ON",
-      aiOff: "AI: OFF", micOff: "Microphone", micOn: "Listening…", micTitle: "Talk to the teacher", prev: "Previous page", next: "Next page",
-      newPage: "New page", delPage: "Delete page", page: "Page", pdfTitle: "Export to PDF", print: "Print", printTitle: "Print (laser, inkjet, 3D, engraver)",
-      full: "Full screen", close: "Close", printHead: "Print", searching: "Looking for printers…", noPrinters: "No printers found.",
-      printersError: "Could not load the printers.", cancel: "Cancel", confirm: "Confirm print", sending: "Sending…", sent: "Job sent.",
-      error: "Error", noMic: "This browser does not support the microphone here.", thinking: "Thinking: ", boardName: "Board name:",
-      saved: "Board saved.", available: "Available boards:", none: "None", loadName: "Name of the board to load:", loaded: "Board loaded.",
-      aiEnabled: "Autonomous checking on", aiDisabled: "Autonomous checking off", pdfStarted: "PDF download started…",
-      types: { laser_2d: "Laser 2D", inkjet_2d: "Inkjet", "3d": "3D printer", engraver: "Laser engraver", virtual_pdf: "PDF" }, speech: "en-GB" },
-  };
-  const lang = () => {
-    const code = (document.documentElement.lang || navigator.language || "it").slice(0, 2);
-    return code in STRINGS ? code : "it";
-  };
-  const L = () => STRINGS[lang()];
   const icon = (name) => (window.NuxivaIcons ? window.NuxivaIcons.icon(name) : "");
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const post = (path, body) => fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body || {}) }).then((r) => r.json()).catch(() => ({}));
@@ -249,10 +222,12 @@
     g.globalCompositeOperation = "source-over";
   }
 
-  function mount(el, ctx) {
+  function mount(el, d, ctx) {
     if (el._lv) el._lv.stop();
     document.body.classList.add("desk-whiteboard");
-    const t = L();
+    const t = new Proxy({ types: new Proxy({}, { get: (_, k) => ctx.t(`type_${k}`) }) }, {
+      get: (o, k) => (k in o ? o[k] : ctx.t(String(k).replace(/[A-Z]/g, (c) => `_${c.toLowerCase()}`))),
+    });
 
     el.innerHTML = `<div class="lv">
       <div class="lv-bar">
@@ -500,7 +475,7 @@
               <span class="lv-printer-name">${esc(p.name)}</span>
               <span class="lv-printer-meta">${esc(p.address || p.connection)} · ${esc(p.status || "")}</span>
             </div>
-            <span class="lv-printer-badge ${badgeClass}">${esc(t.types[p.type] || p.type)}</span>
+            <span class="lv-printer-badge ${badgeClass}">${esc(ctx.t(`type_${p.type}`) || p.type)}</span>
           </div>`;
         }).join("");
       }).catch(() => {

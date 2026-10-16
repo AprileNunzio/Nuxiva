@@ -5,9 +5,7 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Git Diff",
-    "status_ready": "Ready",
-    "action_refresh": "Refresh",
-    "empty_message": "No data available for this widget."
+    "label": "Git changes",
+    "none": "No changes"
   }
 }

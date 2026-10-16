@@ -5,9 +5,12 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Document Viewer",
-    "status_ready": "Ready",
-    "action_refresh": "Refresh",
-    "empty_message": "No data available for this widget."
+    "viewer": "Preview",
+    "document": "Document",
+    "project": "Project",
+    "documents": "Documents",
+    "shared_folder": "Shared folder",
+    "failed": "Failed:",
+    "no_preview": "Preview not available"
   }
 }

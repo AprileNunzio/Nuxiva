@@ -13,12 +13,5 @@
     "tramonto"
   ],
   "description": "Arco del sole di oggi con alba, tramonto e ore di luce, calcolati dalla posizione della casa.",
-  "demo": {
-    "sunrise": "07:12",
-    "sunset": "18:41",
-    "up": true,
-    "progress": 62,
-    "daylight_min": 689,
-    "place": "Napoli"
-  }
+  "refresh": 60
 }

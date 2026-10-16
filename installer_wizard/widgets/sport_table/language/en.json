@@ -5,9 +5,9 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Sport Table",
-    "status_ready": "Ready",
-    "action_refresh": "Refresh",
-    "empty_message": "No data available for this widget."
+    "label": "Standings",
+    "col_played": "P",
+    "col_diff": "GD",
+    "col_points": "Pts"
   }
 }

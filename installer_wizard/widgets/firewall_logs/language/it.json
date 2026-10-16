@@ -5,9 +5,9 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Firewall Logs",
-    "status_ready": "Pronto",
-    "action_refresh": "Aggiorna",
-    "empty_message": "Nessun dato disponibile per questo widget."
+    "label": "Firewall",
+    "none": "Nessun blocco registrato",
+    "blocked_one": "{{n}} bloccato",
+    "blocked_other": "{{n}} bloccati"
   }
 }

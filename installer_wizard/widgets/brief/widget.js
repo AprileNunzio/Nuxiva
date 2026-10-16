@@ -12,7 +12,7 @@
       const details = Array.isArray(d.details) ? d.details : [];
       const lines = (Array.isArray(d.lines) ? d.lines : []).slice(0, 8).map((l, i) => (details[i] && ctx.detail
         ? `<li class="wk-tap"${ctx.detail(details[i])}>${ctx.esc(l)}</li>` : `<li>${ctx.esc(l)}</li>`)).join("");
-      el.innerHTML = `${ctx.head({ icon: "pin", label: "Scheda", title: d.title ? String(d.title).slice(0, 80) : "" })}
+      el.innerHTML = `${ctx.head({ icon: "pin", label: ctx.t("label"), title: d.title ? String(d.title).slice(0, 80) : "" })}
         ${image}${lines ? `<ul class="br-lines">${lines}</ul>` : ""}`;
     },
   });

@@ -5,9 +5,13 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Tv Player",
-    "status_ready": "Pronto",
-    "action_refresh": "Aggiorna",
-    "empty_message": "Nessun dato disponibile per questo widget."
+    "label": "TV",
+    "no_channel": "Nessun canale",
+    "state_loading": "In collegamento",
+    "state_playing": "In onda",
+    "state_blocked": "Audio disattivato",
+    "state_error": "Non disponibile",
+    "open_failed": "Il canale non si apre: {{reason}}",
+    "player_missing": "lettore non disponibile"
   }
 }

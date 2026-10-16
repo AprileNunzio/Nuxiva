@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/clipboard_sync",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Portapapeles",
+    "empty": "Portapapeles vacío",
+    "chars_one": "{{n}} carácter",
+    "chars_other": "{{n}} caracteres"
+  }
+}

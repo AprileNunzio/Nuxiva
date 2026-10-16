@@ -5,9 +5,8 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Home Rooms",
-    "status_ready": "Pronto",
-    "action_refresh": "Aggiorna",
-    "empty_message": "Nessun dato disponibile per questo widget."
+    "label": "Stanze",
+    "occupied_one": "{{n}} occupata",
+    "occupied_other": "{{n}} occupate"
   }
 }

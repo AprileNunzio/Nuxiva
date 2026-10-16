@@ -9,10 +9,6 @@
     "error"
   ],
   "description": "Notifiche di errore critiche di sistema.",
-  "demo": {
-    "title": "Connessione Fallita",
-    "content": "Il nodo locale non è raggiungibile."
-  },
   "ttl": 45,
   "tone": "red",
   "essential": true

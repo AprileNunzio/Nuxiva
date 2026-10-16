@@ -13,12 +13,12 @@
         <a class="dv-link" href="/api/documents/${id}/file/${i}" target="_blank" rel="noopener noreferrer"><b>${ctx.esc(base(f))}</b></a>
         <span class="wk-val">${ctx.esc(ext(f))}</span></li>`).join("");
     const errs = Array.isArray(d.errors) ? d.errors.slice(0, 6) : [];
-    const errors = errs.length ? `<div class="dv-err"><span>Non riusciti</span> <span>${errs.map(ctx.esc).join("; ")}</span></div>` : "";
+    const errors = errs.length ? `<div class="dv-err"><span>${ctx.esc(ctx.t("failed"))}</span> <span>${errs.map(ctx.esc).join("; ")}</span></div>` : "";
     const preview = d.preview ? `<div class="wk-media dv-prev"><iframe class="dv-frame" src="/api/documents/${id}/preview.pdf#view=FitH&toolbar=0"></iframe></div>` : "";
-    el.innerHTML = `${ctx.head({ icon: "doc", label: d.kind === "progetto" ? "Progetto" : "Documento", title: d.title || "Documento" })}
+    el.innerHTML = `${ctx.head({ icon: "doc", label: ctx.t(d.kind === "progetto" ? "project" : "document"), title: d.title || ctx.t("document") })}
       ${d.summary ? `<div class="wk-sub">${ctx.esc(d.summary)}</div>` : ""}
       <div class="dv-body${preview ? " with-preview" : ""}"><div><ul class="wk-list">${files}</ul>${errors}
-        <div class="wk-faint dv-where"><span>Cartella condivisa</span> › 01 <span>Documenti</span>${d.project ? ` › ${ctx.esc(base(d.project))}` : ""}</div></div>${preview}</div>`;
+        <div class="wk-faint dv-where"><span>${ctx.esc(ctx.t("shared_folder"))}</span> › 01 <span>${ctx.esc(ctx.t("documents"))}</span>${d.project ? ` › ${ctx.esc(base(d.project))}` : ""}</div></div>${preview}</div>`;
   }
 
   NuxivaDesk.register("document_viewer", {
@@ -26,8 +26,8 @@
       if (d.type === "office") return office(el, d, ctx);
       const url = safeUrl(d.url);
       const content = url ? `<div class="wk-media dv-prev"><iframe class="dv-frame" src="${ctx.esc(url)}"></iframe></div>`
-        : `<div class="wk-empty"><span>Anteprima non disponibile per questo formato</span> (${ctx.esc(d.type || "file")})</div>`;
-      el.innerHTML = `${ctx.head({ icon: "doc", label: "Visualizzatore", title: d.title || "", chip: d.type || "file" })}${content}`;
+        : `<div class="wk-empty">${ctx.esc(ctx.t("no_preview"))} (${ctx.esc(d.type || "file")})</div>`;
+      el.innerHTML = `${ctx.head({ icon: "doc", label: ctx.t("viewer"), title: d.title || "", chip: d.type || "file" })}${content}`;
     },
   });
 })();

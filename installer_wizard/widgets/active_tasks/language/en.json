@@ -5,9 +5,9 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Active Tasks",
-    "status_ready": "Ready",
-    "action_refresh": "Refresh",
-    "empty_message": "No data available for this widget."
+    "label": "Tasks",
+    "idle": "No task in progress",
+    "active_one": "{{n}} active",
+    "active_other": "{{n}} active"
   }
 }

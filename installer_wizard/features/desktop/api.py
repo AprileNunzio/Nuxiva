@@ -5,7 +5,7 @@ from fastapi.responses import FileResponse
 
 from access import is_local, require_admin, require_display, require_internal
 from features.desktop.desk import FILES, desk
-from features.desktop.sources import SOURCES
+from features.desktop.sources import PROVIDERS, SOURCES
 from features.music import music
 from features.spotify.spotify import spotify
 from state import store
@@ -17,6 +17,8 @@ desk.register_source("now_playing", music.watcher.current)
 desk.register_source("spotify", spotify.current)
 for _name, _fn in SOURCES.items():
     desk.register_source(_name, _fn)
+for _name, _fn in PROVIDERS.items():
+    desk.register_provider(_name, _fn)
 
 
 def _alert(body: dict, red: bool = True) -> dict:
@@ -29,7 +31,7 @@ def _alert(body: dict, red: bool = True) -> dict:
         store.event("INFO", f"Allarme {kind} rientrato", "alarm")
         return {"ok": True, "cleared": key}
     data = {"kind": kind, "room": str(body.get("room") or "")[:60], "title": str(body.get("title") or "")[:80],
-            "message": str(body.get("message") or "")[:300], "at": time.time()}
+            "message": str(body.get("message") or "")[:300], "at": time.time(), "test": body.get("test") is True}
     where = ("in " + data["room"]) if data["room"] else ""
     data["speak"] = str(body.get("speak") or f"Attenzione! {data['title'] or 'Allarme'} {where}.")[:200]
     desk.show("alarm", data, key=key, priority=int(body.get("priority", 100)))
@@ -154,10 +156,10 @@ async def admin_widget_test(wid: str, _: str = Depends(require_admin)):
     if not m:
         raise HTTPException(404, "Widget sconosciuto")
     if wid == "alarm":
-        _alert({**m.get("demo", {}), "title": "Prova allarme", "message": "Questa è una prova dal pannello: nessun pericolo."}, red=False)
+        _alert({"kind": "generic", "test": True}, red=False)
         desk.instances[next(k for k in desk.instances if k.startswith("alarm:"))]["expires_at"] = time.time() + 20
     else:
-        desk.show(wid, {**m.get("demo", {}), "started_at": time.time() - 30}, key=f"test:{wid}", ttl=30)
+        desk.show(wid, {}, key=f"test:{wid}", ttl=30)
     return desk.listing()
 
 

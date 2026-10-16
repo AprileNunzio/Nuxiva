@@ -5,9 +5,10 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Os Networks",
-    "status_ready": "Ready",
-    "action_refresh": "Refresh",
-    "empty_message": "No data available for this widget."
+    "label": "Wi‑Fi networks",
+    "connected": "Connected",
+    "none": "No networks found",
+    "nearby_one": "{{n}} nearby",
+    "nearby_other": "{{n}} nearby"
   }
 }

@@ -24,11 +24,11 @@ def resources() -> tuple[str, dict, int]:
     from features.governor.service import governor
     last = governor.last or {}
     disk = psutil.disk_usage("/").percent
-    items = [{"label": "Processore", "value": f"{last.get('cpu', 0):.0f}%", "percent": last.get("cpu", 0)},
-             {"label": "Memoria", "value": f"{last.get('mem', 0):.0f}%", "percent": last.get("mem", 0)},
-             {"label": "Disco", "value": f"{disk:.0f}%", "percent": disk}]
+    items = [{"id": "cpu", "value": f"{last.get('cpu', 0):.0f}%", "percent": last.get("cpu", 0)},
+             {"id": "memory", "value": f"{last.get('mem', 0):.0f}%", "percent": last.get("mem", 0)},
+             {"id": "disk", "value": f"{disk:.0f}%", "percent": disk}]
     if last.get("temp"):
-        items.append({"label": "Temperatura", "value": f"{last['temp']:.0f} °C", "percent": min(100, last["temp"])})
+        items.append({"id": "temperature", "value": f"{last['temp']:.0f} °C", "percent": min(100, last["temp"])})
     hot = any(i["percent"] >= HOT for i in items)
     return "system_health", {"items": items}, 80 if hot else 45
 

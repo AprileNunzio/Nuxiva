@@ -5,9 +5,7 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "People Seen",
-    "status_ready": "Ready",
-    "action_refresh": "Refresh",
-    "empty_message": "No data available for this widget."
+    "label": "People seen",
+    "none": "Nobody in sight"
   }
 }

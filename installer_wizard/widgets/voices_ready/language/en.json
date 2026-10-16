@@ -5,9 +5,8 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Voices Ready",
-    "status_ready": "Ready",
-    "action_refresh": "Refresh",
-    "empty_message": "No data available for this widget."
+    "label": "Voices ready",
+    "languages_one": "{{n}} language",
+    "languages_other": "{{n}} languages"
   }
 }

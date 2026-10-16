@@ -5,9 +5,10 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Thermostat",
-    "status_ready": "Prêt",
-    "action_refresh": "Actualiser",
-    "empty_message": "Aucune donnée disponible pour ce widget."
+    "label": "Climat",
+    "standby": "En veille",
+    "now": "maintenant",
+    "target": "Cible",
+    "humidity": "Humidité"
   }
 }

@@ -5,9 +5,8 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Port Scanner",
-    "status_ready": "Ready",
-    "action_refresh": "Refresh",
-    "empty_message": "No data available for this widget."
+    "label": "Open ports",
+    "open_one": "{{n}} open",
+    "open_other": "{{n}} open"
   }
 }

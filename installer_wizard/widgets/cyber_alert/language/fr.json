@@ -5,9 +5,11 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Cyber Alert",
-    "status_ready": "Prêt",
-    "action_refresh": "Actualiser",
-    "empty_message": "Aucune donnée disponible pour ce widget."
+    "label": "Alerte cyber",
+    "fallback_title": "Menace détectée",
+    "threat_default": "élevée",
+    "attack": "Attaque",
+    "origin": "Origine",
+    "action": "Action"
   }
 }

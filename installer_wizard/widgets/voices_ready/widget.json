@@ -1,7 +1,7 @@
 {
   "id": "voices_ready",
   "name": "Lingue e voci",
-  "icon": "\ud83d\udde3",
+  "icon": "🗣",
   "priority": 45,
   "size": "s",
   "tone": "violet",
@@ -10,24 +10,5 @@
     "voices"
   ],
   "panel_type": "list",
-  "description": "Le lingue in cui Nuxiva sa gi\u00e0 parlare, quando chiedi quali voci ha.",
-  "demo": {
-    "items": [
-      {
-        "label": "Italiano",
-        "value": "6 voci pronte",
-        "status": "ok"
-      },
-      {
-        "label": "English",
-        "value": "9 voci pronte",
-        "status": "ok"
-      },
-      {
-        "label": "Fran\u00e7ais",
-        "value": "2 voci pronte",
-        "status": "ok"
-      }
-    ]
-  }
+  "description": "Le lingue in cui Nuxiva sa già parlare, quando chiedi quali voci ha."
 }

@@ -10,12 +10,6 @@
     "allarme"
   ],
   "description": "Fumo, gas, allagamento, intrusione: occupa tutto lo schermo e lo ripete a voce.",
-  "demo": {
-    "kind": "smoke",
-    "room": "Cucina",
-    "message": "Il sensore ha rilevato fumo. Verifica subito la stanza.",
-    "speak": "Attenzione: rilevato fumo in cucina."
-  },
   "tone": "red",
   "essential": true,
   "urgent": true

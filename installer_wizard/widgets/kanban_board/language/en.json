@@ -5,9 +5,10 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Kanban Board",
-    "status_ready": "Ready",
-    "action_refresh": "Refresh",
-    "empty_message": "No data available for this widget."
+    "label": "Board",
+    "todo": "To do",
+    "doing": "In progress",
+    "doing_chip_one": "{{n}} in progress",
+    "doing_chip_other": "{{n}} in progress"
   }
 }

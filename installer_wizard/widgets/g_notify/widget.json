@@ -14,13 +14,5 @@
     "calendario"
   ],
   "description": "Nuove email, appuntamenti in arrivo e riepilogo della giornata di chi è davanti ad Nuxiva.",
-  "demo": {
-    "kind": "event",
-    "who": "Nunzio",
-    "title": "Dentista",
-    "text": "Via Roma 12",
-    "at": 0,
-    "icon": "📅"
-  },
   "tone": "violet"
 }

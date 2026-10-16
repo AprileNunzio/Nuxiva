@@ -5,9 +5,10 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "System Monitor",
-    "status_ready": "Ready",
-    "action_refresh": "Refresh",
-    "empty_message": "No data available for this widget."
+    "label": "Node telemetry",
+    "cpu": "CPU",
+    "ram": "RAM",
+    "loaded": "Under load",
+    "nominal": "Nominal"
   }
 }

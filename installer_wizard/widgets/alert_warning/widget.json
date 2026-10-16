@@ -9,10 +9,6 @@
     "alert_warning"
   ],
   "description": "Avviso di attenzione.",
-  "demo": {
-    "title": "Disco quasi pieno",
-    "content": "Restano 3 GB liberi sul volume dati."
-  },
   "tone": "amber",
   "essential": true
 }

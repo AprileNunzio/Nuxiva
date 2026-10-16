@@ -5,13 +5,13 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "label": "Expert",
-    "status_thinking": "Réfléchit",
-    "status_working": "Utilise ses outils",
-    "status_waiting": "Attend votre confirmation",
-    "status_done": "Réponse prête",
+    "label": "Expert à l'œuvre",
     "question": "Question",
-    "steps": "Outils utilisés",
-    "answer": "Réponse"
+    "answer": "Réponse",
+    "steps": "Étapes",
+    "status_thinking": "Réfléchit",
+    "status_working": "Au travail",
+    "status_waiting": "En attente",
+    "status_done": "Terminé"
   }
 }

@@ -11,14 +11,15 @@ HEADERS = {"X-Nuxiva-Request": "1"}
 class WidgetRecallTest(unittest.TestCase):
     def setUp(self):
         desk.scan()
-        self.wid = next(w for w, m in desk.widgets.items() if not m.get("bind") and m.get("demo") and w != "alarm")
+        self.wid = next(w for w, m in desk.widgets.items() if not m.get("bind") and not m.get("standalone") and w != "alarm")
         desk.last.pop(self.wid, None)
 
     def tearDown(self):
         desk.hide(key=f"recall:{self.wid}")
 
-    def test_preview_then_last_real_data(self):
-        self.assertEqual(desk.recall(self.wid), "preview")
+    def test_empty_then_last_real_data(self):
+        self.assertEqual(desk.recall(self.wid), "empty")
+        self.assertEqual(desk.instances[f"recall:{self.wid}"]["data"], {})
         desk.show(self.wid, {"content": "dati veri"}, key="vero")
         self.assertEqual(desk.recall(self.wid), "last")
         self.assertEqual(desk.instances[f"recall:{self.wid}"]["data"], {"content": "dati veri"})
@@ -27,7 +28,7 @@ class WidgetRecallTest(unittest.TestCase):
         desk.hide(key="vero")
 
     def test_self_sufficient_widgets_open_live(self):
-        clock = next((w for w, m in desk.widgets.items() if not m.get("bind") and not m.get("demo")), None)
+        clock = next((w for w, m in desk.widgets.items() if m.get("standalone")), None)
         if clock is None:
             self.skipTest("nessun widget autonomo")
         desk.last.pop(clock, None)
@@ -55,7 +56,7 @@ class WidgetRecallTest(unittest.TestCase):
         admin = TestClient(nuxiva_supervisor.admin)
         admin.post("/api/auth/login", json={"username": "admin", "password": "nuxiva"}, headers=HEADERS)
         self.assertEqual(admin.post(f"/api/widgets/{self.wid}/recall").status_code, 403)
-        self.assertEqual(admin.post(f"/api/widgets/{self.wid}/recall", headers=HEADERS).json()["origin"], "preview")
+        self.assertEqual(admin.post(f"/api/widgets/{self.wid}/recall", headers=HEADERS).json()["origin"], "empty")
         self.assertEqual(admin.post("/api/widgets/nope/recall", headers=HEADERS).status_code, 404)
         self.assertEqual(admin.post("/api/widgets/alarm/recall", headers=HEADERS).status_code, 400)
 

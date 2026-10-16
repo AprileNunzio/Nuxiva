@@ -5,9 +5,9 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Network Devices",
-    "status_ready": "Pronto",
-    "action_refresh": "Aggiorna",
-    "empty_message": "Nessun dato disponibile per questo widget."
+    "label": "Dispositivi in rete",
+    "more": "e altri {{n}}",
+    "connected_one": "{{n}} connesso",
+    "connected_other": "{{n}} connessi"
   }
 }

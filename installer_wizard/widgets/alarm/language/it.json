@@ -5,9 +5,14 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Alarm",
-    "status_ready": "Pronto",
-    "action_refresh": "Aggiorna",
-    "empty_message": "Nessun dato disponibile per questo widget."
+    "label": "Allarme",
+    "status_test": "Prova",
+    "status_active": "In corso",
+    "kind_smoke": "Fumo rilevato",
+    "kind_gas": "Perdita di gas",
+    "kind_flood": "Allagamento",
+    "kind_intrusion": "Intrusione",
+    "kind_co": "Monossido di carbonio",
+    "kind_generic": "Allarme"
   }
 }

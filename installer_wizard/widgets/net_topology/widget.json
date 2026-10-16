@@ -9,8 +9,5 @@
   ],
   "description": "Mappa dei dispositivi della rete locale.",
   "ttl": 300,
-  "demo": {
-    "content": "12 dispositivi attivi su 192.168.1.0/24, gateway 192.168.1.1, 2 nuovi nelle ultime 24 ore."
-  },
   "tone": "green"
 }

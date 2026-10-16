@@ -10,10 +10,6 @@
   ],
   "description": "Flusso della videocamera di sicurezza con avviso di movimento.",
   "ttl": 300,
-  "demo": {
-    "camera": "Ingresso Principale",
-    "motion_detected": true
-  },
   "tone": "red",
   "essential": true
 }

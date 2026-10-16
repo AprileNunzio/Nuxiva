@@ -5,9 +5,11 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Route",
-    "status_ready": "Ready",
-    "action_refresh": "Refresh",
-    "empty_message": "No data available for this widget."
+    "trip": "Route",
+    "leave_by": "Leave by",
+    "appointment": "Appointment",
+    "arrival": "Arrival",
+    "delay": "{{n}} min delay",
+    "clear": "Traffic is clear"
   }
 }

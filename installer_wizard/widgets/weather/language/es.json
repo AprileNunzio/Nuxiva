@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/weather",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Tiempo",
+    "feels": "sensación {{feels}}° · viento {{wind}} km/h"
+  }
+}

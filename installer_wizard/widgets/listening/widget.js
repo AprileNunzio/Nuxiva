@@ -1,13 +1,15 @@
 (() => {
-  const LABEL = { idle: "Di' «Nuxiva»", listening: "Ti ascolto…", transcribing: "Sto capendo…", off: "Microfono non attivo" };
+  const STATES = new Set(["idle", "listening", "transcribing", "off"]);
+  const wake = () => (window.NUXIVA_ASSISTANT && window.NUXIVA_ASSISTANT.name) || "";
   NuxivaDesk.register("listening", {
     render(el, d, ctx) {
-      el.innerHTML = `<div class="ls-box idle"><span class="ls-ic">${ctx.icon("mic")}</span><span class="ls-bars">${"<i></i>".repeat(10)}</span><span class="ls-t">${LABEL.idle}</span></div>`;
+      const label = (s) => ctx.t(`state_${STATES.has(s) ? s : "idle"}`, { name: wake() });
+      el.innerHTML = `<div class="ls-box idle"><span class="ls-ic">${ctx.icon("mic")}</span><span class="ls-bars">${"<i></i>".repeat(10)}</span><span class="ls-t">${ctx.esc(label("idle"))}</span></div>`;
       const box = el.firstChild, bars = [...box.querySelectorAll(".ls-bars i")], text = box.querySelector(".ls-t");
       const onState = (e) => {
         const s = String(e.detail.state || "idle");
-        box.className = `ls-box ${/^[a-z_-]{1,20}$/.test(s) ? s : "idle"}`;
-        text.textContent = s === "off" ? String(e.detail.text || LABEL.off).replace(/^Microfono non disponibile: /, "Microfono: ") : Object.hasOwn(LABEL, s) ? LABEL[s] : s;
+        box.className = `ls-box ${STATES.has(s) ? s : "idle"}`;
+        text.textContent = label(s);
       };
       const onLevel = (e) => {
         const v = Number(e.detail) || 0;

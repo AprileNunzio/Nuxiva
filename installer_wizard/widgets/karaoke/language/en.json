@@ -5,9 +5,8 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "Karaoke",
-    "status_ready": "Ready",
-    "action_refresh": "Refresh",
-    "empty_message": "No data available for this widget."
+    "label": "Karaoke",
+    "synced": "Synced",
+    "no_lyrics": "Lyrics not available"
   }
 }

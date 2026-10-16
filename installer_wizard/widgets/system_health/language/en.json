@@ -5,9 +5,12 @@
     "version": "1.0.0"
   },
   "dictionary": {
-    "title": "System Health",
-    "status_ready": "Ready",
-    "action_refresh": "Refresh",
-    "empty_message": "No data available for this widget."
+    "label": "System",
+    "title": "Resources",
+    "unavailable": "Data not available yet",
+    "res_cpu": "Processor",
+    "res_memory": "Memory",
+    "res_disk": "Disk",
+    "res_temperature": "Temperature"
   }
 }
