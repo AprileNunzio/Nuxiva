@@ -5,6 +5,8 @@ USER_NAME="$NUXIVA_KIOSK_USER"
 GETTY_OVERRIDE=/etc/systemd/system/getty@tty1.service.d/override.conf
 POLICY=/etc/chromium/policies/managed/nuxiva.json
 SESSION="$NUXIVA_DIR/scripts/os/kiosk/session.sh"
+LAUNCH="$NUXIVA_DIR/scripts/os/kiosk/launch.sh"
+XWRAPPER=/etc/X11/Xwrapper.config
 
 kiosk_enabled() { [ "${NUXIVA_KIOSK:-1}" != "0" ]; }
 user_home() { getent passwd "$USER_NAME" | cut -d: -f6; }
@@ -23,7 +25,7 @@ bash_profile() {
     printf '%s\n' \
         '# Gestito da Nuxiva OS: avvia la sessione grafica kiosk su tty1' \
         'if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then' \
-        "    exec startx /bin/bash $SESSION -- :0 vt1 -nolisten tcp -keeptty >\"\$HOME/.cache/xorg-session.log\" 2>&1" \
+        "    exec /bin/bash $LAUNCH" \
         'fi'
 }
 
@@ -50,6 +52,13 @@ chromium_policy() {
         '}'
 }
 
+xwrapper_conf() {
+    printf '%s\n' \
+        '# Gestito da Nuxiva OS' \
+        'allowed_users=anybody' \
+        'needs_root_rights=yes'
+}
+
 legacy_root_session() {
     grep -qs 'startx' /root/.bash_profile
 }
@@ -59,9 +68,10 @@ step_check() {
     id "$USER_NAME" >/dev/null 2>&1 || return 1
     getty_conf | same_content "$GETTY_OVERRIDE" || return 1
     bash_profile | same_content "$(user_home)/.bash_profile" || return 1
-    [ -x "$SESSION" ] || return 1
+    [ -x "$SESSION" ] && [ -x "$LAUNCH" ] || return 1
+    xwrapper_conf | same_content "$XWRAPPER" || return 1
     chromium_policy | same_content "$POLICY" || return 1
-    code_current kiosk "$SESSION" || return 1
+    code_current kiosk "$SESSION" "$LAUNCH" || return 1
     ! legacy_root_session
 }
 
@@ -76,12 +86,13 @@ step_apply() {
         passwd -l "$USER_NAME" >/dev/null
     fi
     local group
-    for group in video audio input render; do
+    for group in tty video audio input render; do
         getent group "$group" >/dev/null && usermod -aG "$group" "$USER_NAME"
     done
 
     progress 40 "Configurazione sessione grafica"
-    chmod +x "$SESSION"
+    chmod +x "$SESSION" "$LAUNCH"
+    xwrapper_conf | write_if_changed "$XWRAPPER" 0644 && changed=1
     local home changed=0
     home=$(user_home)
     mkdir -p "$home/.cache"
@@ -100,7 +111,7 @@ step_apply() {
 
     progress 80 "Autologin su tty1"
     getty_conf | write_if_changed "$GETTY_OVERRIDE" && changed=1
-    code_current kiosk "$SESSION" || changed=1
+    code_current kiosk "$SESSION" "$LAUNCH" || changed=1
     systemctl daemon-reload
     systemctl set-default multi-user.target >/dev/null 2>&1 || true
 
@@ -110,7 +121,7 @@ step_apply() {
         sleep 1
         systemctl restart getty@tty1 || true
     fi
-    code_mark kiosk "$SESSION"
+    code_mark kiosk "$SESSION" "$LAUNCH"
     progress 100 "Display kiosk configurato (una finestra per ogni monitor collegato)"
 }
 

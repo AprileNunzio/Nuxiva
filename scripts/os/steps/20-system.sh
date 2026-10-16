@@ -4,7 +4,7 @@
 PACKAGES=(
     ca-certificates curl gnupg git jq zstd pciutils lsb-release ufw
     python3 python3-venv python3-pip
-    xserver-xorg x11-xserver-utils xinit openbox chromium unclutter
+    xserver-xorg xserver-xorg-legacy xserver-xorg-video-fbdev libpam-systemd x11-xserver-utils xinit openbox chromium unclutter
     fonts-dejavu-core fonts-noto-color-emoji
     alsa-utils pulseaudio speech-dispatcher espeak-ng ffmpeg v4l-utils
     nmap avahi-daemon avahi-utils
