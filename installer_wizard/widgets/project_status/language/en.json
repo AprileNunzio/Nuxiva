@@ -1,0 +1,18 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/project_status",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Project",
+    "status_planning": "Planning",
+    "status_running": "Running",
+    "status_paused": "Paused",
+    "status_done": "Done",
+    "status_failed": "Failed",
+    "status_cancelled": "Cancelled",
+    "steps_done": "{{done}} of {{total}} steps",
+    "planning": "Preparing the plan…"
+  }
+}

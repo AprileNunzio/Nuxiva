@@ -1,0 +1,14 @@
+{
+  "id": "project_status",
+  "personal": true,
+  "name": "Progetti",
+  "icon": "🗂",
+  "priority": 70,
+  "size": "l",
+  "intents": [
+    "project_status",
+    "progetti"
+  ],
+  "description": "Avanzamento in tempo reale dei progetti di lunga durata e degli esperti assegnati ai passi.",
+  "tone": "violet"
+}

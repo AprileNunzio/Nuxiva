@@ -18,9 +18,10 @@ from features.locale.pivot import pivot
 from features.chat.templates import remember_template
 from features.understanding import router as understanding
 
-CONNECTORS = {"places": "features.places.commands", "vault": "features.vault.commands", "selftest": "features.selftest.commands", "sounds": "features.sounds.commands", "whiteboard": "features.whiteboard.commands", "screens": "features.desktop.commands", "models3d": "features.models3d.commands", "documents": "features.documents.commands", "music": "features.music.commands", "livecam": "features.cameras.commands", "vision": "features.vision.sight", "gservices": "features.google.commands", "maps": "features.maps.maps", "sports": "features.sports.commands", "tv": "features.tv.commands", "experts": "features.experts.commands"}
+CONNECTORS = {"places": "features.places.commands", "vault": "features.vault.commands", "selftest": "features.selftest.commands", "sounds": "features.sounds.commands", "whiteboard": "features.whiteboard.commands", "screens": "features.desktop.commands", "models3d": "features.models3d.commands", "documents": "features.documents.commands", "music": "features.music.commands", "livecam": "features.cameras.commands", "vision": "features.vision.sight", "gservices": "features.google.commands", "maps": "features.maps.maps", "sports": "features.sports.commands", "tv": "features.tv.commands", "experts": "features.experts.commands", "projects": "features.projects.commands"}
 
 EARLY = ("whiteboard", "livecam")
+PROJECT_FIRST = ("projects",)
 PERSONAL = {"gservices", "vault", "documents", "maps", "vision", "livecam"}
 
 
@@ -132,6 +133,9 @@ async def _route(text: str, core_call, speech_lang: dict | None = None) -> dict:
     located = await _connect(text, started, ("places",))
     if located:
         return located
+    project = await _connect(text, started, PROJECT_FIRST)
+    if project:
+        return project
     expert = await _connect(text, started, ("experts",))
     if expert:
         return expert
