@@ -39,6 +39,7 @@
     "shape_torus": "Torus",
     "shape_capsule": "Capsule",
     "shape_wedge": "Wedge",
-    "error_library": "3D library unavailable"
+    "error_library": "3D library unavailable",
+    "hint_hands": "With two hands: pinch and spread to zoom, rotate your hands to turn, move them to shift the selected part."
   }
 }

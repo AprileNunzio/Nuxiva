@@ -55,6 +55,10 @@ def _vector(value, low=-LIMIT, high=LIMIT) -> list[float]:
     return [_number(v, low, high) for v in value]
 
 
+def vector(value) -> list[float]:
+    return _vector(value)
+
+
 def clean(part) -> dict:
     if not isinstance(part, dict) or part.get("shape") not in SHAPES:
         raise PartError("Forma non valida")

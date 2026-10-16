@@ -122,7 +122,7 @@
         <div class="s3-side"><section class="s3-sec"><h4>${ctx.esc(ctx.t("parts"))}</h4><div class="s3-parts"></div></section>
           <section class="s3-sec"><h4>${ctx.esc(ctx.t("add"))}</h4><div class="s3-row">${addHtml(ctx)}</div></section>
           <section class="s3-sec"><h4>${ctx.esc(ctx.t("inspector"))}</h4><div class="s3-ins"></div></section>
-          <section class="s3-sec"><h4>${ctx.esc(ctx.t("hints_title"))}</h4><div class="s3-hints">${hints}</div></section>
+          <section class="s3-sec"><h4>${ctx.esc(ctx.t("hints_title"))}</h4><div class="s3-hints">${hints}</div><p class="s3-info">${ctx.esc(ctx.t("hint_hands"))}</p></section>
           ${files ? `<section class="s3-sec"><h4>${ctx.esc(ctx.t("export"))}</h4><div class="s3-files">${files}</div></section>` : ""}</div></div></div>
       <div class="s3-info"><span class="s3-stats"></span></div>`;
   }
@@ -272,6 +272,46 @@
     send(st, { op: "update", index: sel, changes: { [f]: current } });
   }
 
+  const screenAxes = (st) => ({ right: new THREE.Vector3().setFromMatrixColumn(st.camera.matrixWorld, 0), up: new THREE.Vector3().setFromMatrixColumn(st.camera.matrixWorld, 1) });
+
+  function orbit(st, g) {
+    const target = st.controls.target, offset = st.camera.position.clone().sub(target), { right, up } = screenAxes(st);
+    offset.applyAxisAngle(new THREE.Vector3(0, 1, 0), -g.rotate);
+    offset.setLength(Math.max(5, Math.min(2000, offset.length() / g.scale)));
+    target.addScaledVector(right, -g.pan.x * offset.length()).addScaledVector(up, g.pan.y * offset.length());
+    st.camera.position.copy(target).add(offset);
+    st.controls.update();
+  }
+
+  function flush(st) {
+    clearTimeout(st.flushTimer);
+    st.flushTimer = 0;
+    const a = st.acc, sel = st.state.selected;
+    if (!a || sel === null || (a.scale === 1 && !a.rot && !a.move.some(Boolean))) return;
+    if (st.busy) { st.flushTimer = setTimeout(() => flush(st), 120); return; }
+    st.acc = { scale: 1, rot: 0, move: [0, 0, 0] };
+    send(st, { op: "transform", index: sel, factor: a.scale, degrees: (a.rot * 180) / Math.PI, delta: a.move.map(round) });
+  }
+
+  function gesture(st, e) {
+    const g = e.detail;
+    if (!st.group || !st.stage || !st.stage.isConnected) return;
+    e.preventDefault();
+    if (g.phase === "start") { st.acc = { scale: 1, rot: 0, move: [0, 0, 0] }; return; }
+    if (g.phase === "end") return flush(st);
+    const sel = st.state.selected, part = sel === null ? null : st.state.parts[sel];
+    if (!part) return orbit(st, g);
+    const size = Math.max(10, ...st.state.measures.overall.size), { right, up } = screenAxes(st);
+    st.acc = st.acc || { scale: 1, rot: 0, move: [0, 0, 0] };
+    st.acc.scale *= g.scale;
+    st.acc.rot += g.rotate;
+    const step = right.multiplyScalar(g.pan.x * size * 2).addScaledVector(up, -g.pan.y * size * 2);
+    st.acc.move = st.acc.move.map((v, i) => v + [step.x, step.y, step.z][i]);
+    const m = st.group.children[sel];
+    if (m) { m.scale.multiplyScalar(g.scale); m.rotation.y += g.rotate; m.position.add(step); }
+    if (!st.flushTimer) st.flushTimer = setTimeout(() => flush(st), 300);
+  }
+
   function mount(el, d, ctx) {
     const st = { el, id: d.id, ctx, alive: true, state: d, step: 1, wire: false, busy: false };
     el._s3 = st;
@@ -279,6 +319,7 @@
     refresh(st, ctx);
     el.addEventListener("click", (e) => onClick(st, e));
     el.addEventListener("change", (e) => onChange(st, e));
+    el.addEventListener("nuxiva-gesture", (e) => gesture(st, e));
     boot(st, ctx).catch((err) => {
       const m = el.querySelector(".s3-msg");
       if (m) { m.textContent = err.message === "library" ? ctx.t("error_library") : err.message; m.classList.add("err"); }
@@ -294,6 +335,6 @@
       st.state = d;
       refresh(st, ctx);
     },
-    destroy(el) { const st = el._s3; if (st) { st.alive = false; cancelAnimationFrame(st.raf); clearTimeout(st.timer); if (st.renderer) st.renderer.dispose(); } },
+    destroy(el) { const st = el._s3; if (st) { st.alive = false; cancelAnimationFrame(st.raf); clearTimeout(st.timer); clearTimeout(st.flushTimer); if (st.renderer) st.renderer.dispose(); } },
   });
 })();

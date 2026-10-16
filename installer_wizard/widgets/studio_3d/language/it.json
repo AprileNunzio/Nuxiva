@@ -39,6 +39,7 @@
     "shape_torus": "Toro",
     "shape_capsule": "Capsula",
     "shape_wedge": "Cuneo",
-    "error_library": "Libreria 3D non disponibile"
+    "error_library": "Libreria 3D non disponibile",
+    "hint_hands": "Con due mani: pizzica e allontana per ingrandire, ruota le mani per girare, spostale per muovere la parte selezionata."
   }
 }

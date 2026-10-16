@@ -13,6 +13,11 @@
     "status_failed": "Fallito",
     "status_cancelled": "Annullato",
     "steps_done": "{{done}} di {{total}} passi",
-    "planning": "Preparo il piano…"
+    "planning": "Preparo il piano…",
+    "action_pause": "Metti in pausa",
+    "action_resume": "Riprendi",
+    "action_cancel": "Annulla progetto",
+    "action_retry": "Riprova",
+    "open_studio": "Apri lo studio 3D"
   }
 }

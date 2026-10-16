@@ -4,7 +4,7 @@
   const PINCH_ON = 0.32, PINCH_OFF = 0.5, IDLE_FPS = 4, BUDGET = 0.25, WARMUP = 3, PROBE = 12, MEMORY = 86400000, BOX = { x0: 0.12, x1: 0.88, y0: 0.08, y1: 0.78 };
   const FLICK = 2.2, POINTER = 77;
   const st = { model: null, img: null, cursor: null, last: 0, ts: 0, x: 0, y: 0, seen: 0, pinch: false, target: null,
-               trail: [], pair: null, failures: 0, cost: 0, delegate: "", samples: 0, probe: 0, status: "spente", stopped: false };
+               trail: [], duo: null, ignore: false, failures: 0, cost: 0, delegate: "", samples: 0, probe: 0, status: "spente", stopped: false };
   const opt = () => D.FACE || {};
   const VERDICT = "nuxiva.hands.verdict";
 
@@ -84,17 +84,46 @@
     }
   }
 
-  function zoom(hands) {
-    const pts = hands.map((h) => ({ x: (h[4].x + h[8].x) / 2, y: (h[4].y + h[8].y) / 2 }));
-    const span = dist(pts[0], pts[1]);
-    if (st.pair) {
-      const canvas = pointAt(st.x, st.y);
-      const target = canvas && canvas.closest(".v3-stage canvas");
-      if (target) target.dispatchEvent(new WheelEvent("wheel", { bubbles: true, cancelable: true, deltaY: (st.pair - span) * 2400,
-        clientX: st.x, clientY: st.y }));
-      else spread(canvas, span);
-    }
-    st.pair = span;
+  const mirror = (hand) => hand.map((p) => ({ x: 1 - p.x, y: p.y }));
+  const screen = (m) => ({ x: clamp((m.x - BOX.x0) / (BOX.x1 - BOX.x0)) * window.innerWidth, y: clamp((m.y - BOX.y0) / (BOX.y1 - BOX.y0)) * window.innerHeight });
+
+  function emit(phase, d) {
+    const duo = st.duo;
+    if (!duo || !duo.el) return false;
+    const event = new CustomEvent("nuxiva-gesture", { bubbles: true, cancelable: true, detail: { phase, hands: 2, x: duo.x, y: duo.y,
+      scale: d ? d.scale : 1, rotate: d ? d.rotate : 0, pan: d ? d.pan : { x: 0, y: 0 } } });
+    duo.el.dispatchEvent(event);
+    return event.defaultPrevented;
+  }
+
+  function beginDuo(cur) {
+    if (st.pinch) { st.pinch = false; release(st.x, st.y); }
+    const at = screen(cur.mid);
+    st.duo = { last: cur, x: at.x, y: at.y, el: pointAt(at.x, at.y), start: cur.span };
+    emit("start");
+  }
+
+  function endDuo() {
+    if (!st.duo) return;
+    emit("end");
+    st.duo = null;
+    st.spread = null;
+    st.ignore = true;
+  }
+
+  function duo(hands) {
+    const G = window.NuxivaGesture;
+    const cur = G.pair(hands.map(mirror));
+    if (!st.duo) { beginDuo(cur); return; }
+    const next = G.blend(st.duo.last, cur), d = G.delta(st.duo.last, next);
+    st.duo.last = next;
+    const at = screen(next.mid);
+    st.duo.x = at.x; st.duo.y = at.y;
+    if (emit("update", d)) return;
+    const target = st.duo.el && st.duo.el.closest(".v3-stage canvas");
+    if (target) {
+      if (d.scale !== 1) target.dispatchEvent(new WheelEvent("wheel", { bubbles: true, cancelable: true, deltaY: -Math.log(d.scale) * 900, clientX: at.x, clientY: at.y }));
+    } else spread(st.duo.el, next.span);
   }
 
   function track(lm) {
@@ -106,9 +135,11 @@
     const k = st.seen && performance.now() - st.seen < 400 ? 0.45 : 1;
     st.x += (tx - st.x) * k; st.y += (ty - st.y) * k;
     st.seen = performance.now();
-    if (!st.pinch && ratio < PINCH_ON) { st.pinch = true; press(st.x, st.y); }
-    else if (st.pinch && ratio > PINCH_OFF) { st.pinch = false; release(st.x, st.y); }
-    else if (st.pinch) drag(st.x, st.y);
+    if (st.ignore && ratio > PINCH_OFF) st.ignore = false;
+    const locked = st.duo || st.ignore;
+    if (!locked && !st.pinch && ratio < PINCH_ON) { st.pinch = true; press(st.x, st.y); }
+    else if (!locked && st.pinch && ratio > PINCH_OFF) { st.pinch = false; release(st.x, st.y); }
+    else if (!locked && st.pinch) drag(st.x, st.y);
     st.cursor.style.transform = `translate(${st.x}px, ${st.y}px)`;
     st.cursor.classList.toggle("pinch", st.pinch);
     st.cursor.classList.add("on");
@@ -171,12 +202,13 @@
     const hands = res.landmarks || [];
     if (hands.length) {
       track(hands[0]);
-      if (hands.length === 2 && hands.every((h) => dist(h[4], h[8]) / (dist(h[0], h[9]) || 0.1) < PINCH_ON)) zoom(hands);
-      else { st.pair = null; st.spread = null; }
+      if (hands.length === 2 && hands.every((h) => dist(h[4], h[8]) / (dist(h[0], h[9]) || 0.1) < PINCH_ON)) duo(hands);
+      else endDuo();
     } else if (st.seen && now - st.seen > 700) {
       if (st.pinch) { st.pinch = false; release(st.x, st.y); }
       st.cursor.classList.remove("on", "pinch");
-      st.pair = null;
+      endDuo();
+      st.ignore = false;
     }
   }
 

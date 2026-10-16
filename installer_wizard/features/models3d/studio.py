@@ -155,6 +155,16 @@ def operate(mid: str, body: dict) -> dict:
             ops.rotate(part, _axis(body), float(body.get("degrees") or 0))
         elif name == "scale":
             ops.scale_by(part, float(body.get("factor") or 1), body.get("axis") if body.get("axis") in ops.AXES else None)
+        elif name == "transform":
+            factor, degrees = float(body.get("factor") or 1), float(body.get("degrees") or 0)
+            delta = ops.vector(body.get("delta") or [0, 0, 0])
+            if factor != 1:
+                ops.scale_by(part, factor)
+            if degrees:
+                ops.rotate(part, "y", degrees)
+            for axis, value in zip(ops.AXES, delta):
+                if value:
+                    ops.translate(part, axis, value)
         elif name == "dimension":
             ops.set_dimension(part, _axis(body), float(body.get("value") or 0))
         else:

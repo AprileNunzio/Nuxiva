@@ -39,6 +39,7 @@
     "shape_torus": "Tore",
     "shape_capsule": "Capsule",
     "shape_wedge": "Biseau",
-    "error_library": "Bibliothèque 3D indisponible"
+    "error_library": "Bibliothèque 3D indisponible",
+    "hint_hands": "À deux mains : pincez et écartez pour agrandir, tournez les mains pour pivoter, déplacez-les pour bouger la pièce sélectionnée."
   }
 }

@@ -99,6 +99,23 @@ class ProjectTest(Isolated):
         self.assertEqual(project.steps[0].status, "done")
         self.assertEqual(store_module.ProjectStore().get(project.id).kind, "3d")
 
+    def test_display_controls_pause_resume_and_reject_unknown(self):
+        from fastapi import HTTPException
+        from features.projects import api
+        project = service.start("Imparare le basi della chitarra", "it")
+        request = mock.Mock()
+        with mock.patch.object(api, "require_display"), mock.patch.object(api, "projects", self.store):
+            asyncio.run(api.display_control(project.id, "pause", request))
+            self.assertEqual(project.status, "paused")
+            asyncio.run(api.display_control(project.id, "resume", request))
+            self.assertEqual(project.status, "planning")
+            with self.assertRaises(HTTPException) as unknown:
+                asyncio.run(api.display_control(project.id, "delete", request))
+            self.assertEqual(unknown.exception.status_code, 404)
+            with self.assertRaises(HTTPException) as missing:
+                asyncio.run(api.display_control("pdeadbeef00", "pause", request))
+            self.assertEqual(missing.exception.status_code, 404)
+
     def test_chat_commands(self):
         reply, _ = asyncio.run(commands.answer("avvia un progetto per riordinare la cantina"))
         self.assertIn("avviato", reply)

@@ -1,13 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
 
-from access import require_admin
+from access import require_admin, require_display
 from state import store
 
 from features.projects import service
 from features.projects.model import ID_RE, ProjectError
 from features.projects.store import projects
 
+public_routes = APIRouter()
 admin_routes = APIRouter()
+DISPLAY_ACTIONS = {"pause": service.pause, "resume": service.resume, "retry": service.retry, "cancel": service.cancel}
 
 
 def _lang(request: Request) -> str:
@@ -84,3 +86,13 @@ async def delete(project_id: str, user: str = Depends(require_admin)):
     service.delete(_id(project_id))
     store.event("INFO", f"Progetto {project_id} eliminato da {user}", "projects")
     return {"ok": True}
+
+
+@public_routes.post("/api/projects/{project_id}/control/{action}")
+async def display_control(project_id: str, action: str, request: Request):
+    require_display(request, "Solo dal display")
+    handler = DISPLAY_ACTIONS.get(action)
+    if handler is None:
+        raise HTTPException(404, "Azione sconosciuta")
+    store.event("INFO", f"Progetto {project_id}: {action} dal display", "projects")
+    return _act(handler, project_id)

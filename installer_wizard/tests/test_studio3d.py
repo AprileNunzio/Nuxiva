@@ -72,6 +72,22 @@ class StudioTests(unittest.TestCase):
         studio.operate(self.mid, {"op": "scale", "index": 0, "factor": 2})
         self.assertNotEqual((library.folder(self.mid) / self.meta["main"]).read_bytes(), before)
 
+    def test_transform_is_a_single_undoable_step(self):
+        original = library.get(self.mid)["parts"]
+        studio.operate(self.mid, {"op": "transform", "index": 0, "factor": 1.5, "degrees": 30, "delta": [2, 0, -1]})
+        part = library.get(self.mid)["parts"][0]
+        self.assertAlmostEqual(part["position"][0], original[0]["position"][0] + 2)
+        self.assertAlmostEqual(part["position"][2], original[0]["position"][2] - 1)
+        self.assertEqual(part["rotation"][1], 30.0)
+        self.assertAlmostEqual(part["scale"][0], 1.5)
+        self.assertEqual(len(library.get(self.mid)["undo"]), 1)
+        studio.undo(self.mid)
+        self.assertEqual(library.get(self.mid)["parts"], original)
+        with self.assertRaises(studio.StudioError):
+            studio.operate(self.mid, {"op": "transform", "index": 0, "delta": [1, 2]})
+        with self.assertRaises(studio.StudioError):
+            studio.operate(self.mid, {"op": "transform", "index": 0, "factor": -2})
+
     def test_invalid_operations_are_rejected(self):
         for body in ({"op": "remove", "index": 99}, {"op": "move", "index": 0, "axis": "w", "delta": 1},
                      {"op": "update", "index": 0, "changes": {"color": "nope"}}, {"op": "boom"}, {"op": "add", "shape": "cube"}):

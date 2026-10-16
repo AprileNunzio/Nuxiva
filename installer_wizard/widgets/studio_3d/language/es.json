@@ -39,6 +39,7 @@
     "shape_torus": "Toro",
     "shape_capsule": "Cápsula",
     "shape_wedge": "Cuña",
-    "error_library": "Biblioteca 3D no disponible"
+    "error_library": "Biblioteca 3D no disponible",
+    "hint_hands": "Con dos manos: pellizca y separa para ampliar, gira las manos para rotar, muévelas para desplazar la pieza seleccionada."
   }
 }
