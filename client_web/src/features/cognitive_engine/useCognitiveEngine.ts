@@ -1,103 +1,49 @@
-import { useState, useEffect, useCallback } from 'react';
-import {
-  CognitiveEngineId,
-  CognitiveEngineProfile,
-  EngineVersionStatusResponse,
-  EngineTelemetryUpdate,
-} from './types';
+import { useCallback, useEffect, useState } from 'react';
+import { reportError } from '../../shared/errors/errorBus';
+import { CognitiveEngineId, CognitiveEngineProfile, EngineVersionStatusResponse } from './types';
+
+const ENDPOINT = '/api/v2/brain/engine-version';
+
+async function request(init?: RequestInit): Promise<EngineVersionStatusResponse> {
+  const res = await fetch(ENDPOINT, { cache: 'no-store', ...init, headers: { Accept: 'application/json', 'Content-Type': 'application/json', ...init?.headers } });
+  if (!res.ok) {
+    throw new Error(`HTTP_${res.status}`);
+  }
+  return (await res.json()) as EngineVersionStatusResponse;
+}
 
 export const useCognitiveEngine = () => {
-  const [configuredVersion, setConfiguredVersion] = useState<CognitiveEngineId>('nuxiva-6.5-auto');
-  const [activeRuntime, setActiveRuntime] = useState<CognitiveEngineId>('nuxiva-5.0-veloce');
-  const [latencyMs, setLatencyMs] = useState<number>(25);
-  const [vramMb, setVramMb] = useState<number>(1200);
+  const [configuredVersion, setConfiguredVersion] = useState<CognitiveEngineId | null>(null);
   const [engines, setEngines] = useState<CognitiveEngineProfile[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const apply = (data: EngineVersionStatusResponse) => {
+    setConfiguredVersion(data.current_configured);
+    setEngines(data.engines);
+  };
 
   const fetchStatus = useCallback(async () => {
     try {
-      const res = await fetch('/api/v2/brain/engine-version', {
-        headers: { Accept: 'application/json' },
-      });
-      if (!res.ok) {
-        throw new Error(`HTTP_${res.status}`);
-      }
-      const data: EngineVersionStatusResponse = await res.json();
-      setConfiguredVersion(data.current_configured);
-      setActiveRuntime(data.active_runtime);
-      setLatencyMs(data.latency_sla_ms);
-      setVramMb(data.vram_mb);
-      setEngines(data.engines);
-      setErrorMessage(null);
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'FETCH_ERROR';
-      setErrorMessage(msg);
+      apply(await request());
+    } catch (cause) {
+      reportError('engine_status_failed', cause);
     }
   }, []);
 
   const switchEngine = useCallback(async (version: CognitiveEngineId) => {
     setIsLoading(true);
-    setErrorMessage(null);
     try {
-      const res = await fetch('/api/v2/brain/engine-version', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify({ version }),
-      });
-      if (!res.ok) {
-        throw new Error(`HTTP_${res.status}`);
-      }
-      const data: EngineVersionStatusResponse = await res.json();
-      setConfiguredVersion(data.current_configured);
-      setActiveRuntime(data.active_runtime);
-      setLatencyMs(data.latency_sla_ms);
-      setVramMb(data.vram_mb);
-      setEngines(data.engines);
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'SWITCH_ERROR';
-      setErrorMessage(msg);
+      apply(await request({ method: 'POST', body: JSON.stringify({ version }) }));
+    } catch (cause) {
+      reportError('engine_switch_failed', cause);
     } finally {
       setIsLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    fetchStatus();
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.host}/api/v2/brain/engine-version/ws`;
-    let ws: WebSocket | null = null;
-    try {
-      ws = new WebSocket(wsUrl);
-      ws.onmessage = (event) => {
-        try {
-          const telemetry: EngineTelemetryUpdate = JSON.parse(event.data);
-          setActiveRuntime(telemetry.version);
-          setLatencyMs(telemetry.synaptic_latency_ms);
-          setVramMb(telemetry.vram_allocated_mb);
-        } catch {}
-      };
-    } catch {}
-
-    return () => {
-      if (ws) {
-        ws.close();
-      }
-    };
+    void fetchStatus();
   }, [fetchStatus]);
 
-  return {
-    configuredVersion,
-    activeRuntime,
-    latencyMs,
-    vramMb,
-    engines,
-    isLoading,
-    errorMessage,
-    switchEngine,
-    refetch: fetchStatus,
-  };
+  return { configuredVersion, engines, isLoading, switchEngine, refetch: fetchStatus };
 };

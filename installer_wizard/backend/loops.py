@@ -135,44 +135,15 @@ class Supervisor:
 
 
 class DefaultModeNetwork:
-    def __init__(self, idle_threshold_s: float = 600.0) -> None:
-        self.idle_threshold_s = idle_threshold_s
+    def __init__(self) -> None:
         self.last_interaction = time.time()
-        self.last_dmn_run = 0.0
 
     def record_activity(self) -> None:
         self.last_interaction = time.time()
 
-    async def run(self) -> None:
-        while True:
-            await asyncio.sleep(30)
-            now = time.time()
-            if (now - self.last_interaction) >= self.idle_threshold_s and (now - self.last_dmn_run) >= 300.0:
-                self.last_dmn_run = now
-                try:
-                    await self._cycle()
-                except Exception as exc:
-                    log.warning("Ciclo autonomo Default Mode Network non riuscito: %s", exc)
-
-    async def _cycle(self) -> None:
-        from features.mind.memory import LongTermMemory
-        from features.habits.foresight import foresight
-        from features.chat.brain_chain import cortical_chain
-        mem = LongTermMemory()
-        recent = mem.listing()[:5]
-        summary_tokens = [f.get("text", "") for f in recent if f.get("text")]
-        if not summary_tokens:
-            return
-        thought_query = f"Consolida i ricordi e prepara azioni proattive: {'; '.join(summary_tokens[:3])}"
-        foresight_actions = foresight.listing()
-        res = await cortical_chain.execute_parallel_thought(
-            thought_query,
-            {"context": "default_mode_network", "foresight": foresight_actions},
-            [],
-        )
-        store.event("INFO", f"Default Mode Network: riflessione autonoma completata ({res.get('latency_ms', 0)}ms)", "brain")
+    def idle_for(self) -> float:
+        return time.time() - self.last_interaction
 
 
 default_mode_network = DefaultModeNetwork()
 supervisor = Supervisor()
-supervisor.add("default_mode_network", default_mode_network.run, period=60.0)

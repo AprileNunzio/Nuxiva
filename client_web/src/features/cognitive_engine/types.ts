@@ -6,33 +6,26 @@ export type CognitiveEngineId =
   | 'nuxiva-6.5-ultra'
   | 'nuxiva-6.5-auto';
 
+export type EnginePick = 'sequential' | 'first' | 'best';
+
+export interface EngineStrategy {
+  kind: 'chat' | 'deep';
+  candidates: number;
+  pick: EnginePick;
+  critic: boolean;
+  wait_s: number;
+}
+
 export interface CognitiveEngineProfile {
   id: CognitiveEngineId;
   name: string;
   architecture: string;
-  latency_sla_ms: number;
-  vram_mb: number;
+  strategy: EngineStrategy;
   active: boolean;
 }
 
 export interface EngineVersionStatusResponse {
   current_configured: CognitiveEngineId;
-  active_runtime: CognitiveEngineId;
-  latency_sla_ms: number;
-  vram_mb: number;
   engines: CognitiveEngineProfile[];
   success: boolean;
-}
-
-export interface EngineTelemetryUpdate {
-  version: CognitiveEngineId;
-  synaptic_latency_ms: number;
-  vram_allocated_mb: number;
-  complexity_psi: number;
-  neuromodulators: {
-    dopamine: number;
-    noradrenaline: number;
-    serotonin: number;
-    cortisol: number;
-  };
 }

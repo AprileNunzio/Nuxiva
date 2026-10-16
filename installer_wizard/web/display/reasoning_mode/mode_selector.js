@@ -50,13 +50,7 @@
         this.engines = rawEngines.map((m) => {
           const rawId = String(m.id || m.raw_version || m.version || "").trim();
           const cleanBadge = String(m.badge || m.version || rawId).replace(/^nuxiva-/i, "");
-          const slaVal = m.sla_ms != null ? m.sla_ms : m.latency_sla_ms;
-          const slaFormatted =
-            slaVal != null
-              ? typeof slaVal === "number" && slaVal < 1000
-                ? `<${slaVal}ms`
-                : `${(slaVal / 1000).toFixed(1)}s`
-              : "—";
+          const st = m.strategy || {};
 
           return {
             id: rawId,
@@ -65,7 +59,8 @@
             version: cleanBadge,
             badge: cleanBadge,
             icon: m.icon || "🧠",
-            sla: slaFormatted,
+            pick: st.pick || "",
+            pickParams: { n: st.candidates || 1, wait: st.wait_s || 0 },
             hint: m.hint || m.architecture || "",
             isDefault: !!m.is_default,
           };
@@ -199,7 +194,7 @@
             <span class="opt-top-row">
               <span class="opt-name">${esc(eng.name)}</span>
               <span class="opt-badge">${esc(eng.version)}</span>
-              <span class="opt-sla">${esc(eng.sla)}</span>
+              <span class="opt-sla">${eng.pick ? PageText.html(`ms_${eng.pick}`, eng.pickParams) : ""}</span>
             </span>
             ${eng.hint ? `<span class="opt-hint">${esc(eng.hint)}</span>` : ""}
           </span>
@@ -241,7 +236,7 @@
       if (this.nameEl) this.nameEl.textContent = eng.shortName;
       if (this.verEl) this.verEl.textContent = eng.version;
       if (this.triggerBtn) {
-        PageText.attr(this.triggerBtn, { title: "model_active", "aria-label": "model_active" }, { name: eng.name, version: eng.version, sla: eng.sla });
+        PageText.attr(this.triggerBtn, { title: "model_active", "aria-label": "model_active" }, { name: eng.name, version: eng.version });
       }
 
       if (this.itemsContainer) {

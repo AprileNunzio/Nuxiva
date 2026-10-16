@@ -78,6 +78,7 @@ async def _core_call(query: str, device: str, speech_lang: dict, mode: str | Non
         context["long_term"] = long_term
     route = await brains.route(query, mode_override=mode)
     route["reasoning_mode"] = mode
+    route["lang"] = speech_lang["lang"]
     rule = languages.instruction(speech_lang["lang"], speech_lang["teach"])
     if rule:
         context["reply_language"] = rule
@@ -370,32 +371,11 @@ async def get_assistant_mode(request: Request):
     from features.people.people import preferred_reasoning_mode
     active_mode = preferred_reasoning_mode(principal.slug)
 
-    engines = []
-    default_id = "nuxiva-6.5-auto"
-    try:
-        from server.core.reasoning.engines.scanner import engine_scanner
-        engine_scanner.scan()
-        for eng in engine_scanner.list_engines():
-            prof = eng.get_profile(is_active=(getattr(eng.version, "value", str(eng.version)) == active_mode))
-            engines.append(prof)
-            if getattr(eng, "is_default", False):
-                default_id = prof["id"]
-    except Exception:
-        from features.brain.presets import COGNITIVE_ENGINES, DEFAULT_REASONING_MODE_ID
-        default_id = DEFAULT_REASONING_MODE_ID
-        engines = [
-            {
-                "id": m.id,
-                "name": m.name,
-                "version": m.version,
-                "badge": m.badge,
-                "hint": m.hint,
-                "sla_ms": m.sla_ms,
-                "icon": "🧠",
-                "is_default": m.is_default,
-            }
-            for m in COGNITIVE_ENGINES
-        ]
+    from features.locale.api import page_language
+    from server.core.reasoning.engines.scanner import engine_scanner
+    lang = page_language(request, False)
+    engines = [eng.get_profile(is_active=eng.version.value == active_mode, lang=lang) for eng in engine_scanner.list_engines()]
+    default_id = engine_scanner.get_default_engine().version.value
 
     return {
         "mode": active_mode,
@@ -406,10 +386,11 @@ async def get_assistant_mode(request: Request):
 
 
 @public_routes.get("/api/assistant/mode/explain")
-async def explain_assistant_mode(mode: str):
+async def explain_assistant_mode(mode: str, request: Request):
     from features.chat import reasoning_explain
+    from features.locale.api import page_language
     try:
-        return JSONResponse(reasoning_explain.explain(mode), headers=NO_CACHE)
+        return JSONResponse(reasoning_explain.explain(mode, page_language(request, False)), headers=NO_CACHE)
     except ValueError as exc:
         raise HTTPException(400, str(exc))
     except LookupError:

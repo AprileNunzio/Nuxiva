@@ -121,6 +121,8 @@
     "error_expert_update_failed": "Expert not updated.",
     "error_expert_delete_failed": "Expert not deleted.",
     "error_expert_ask_failed": "The expert could not answer.",
-    "error_expert_live_failed": "Live data unavailable."
+    "error_expert_live_failed": "Live data unavailable.",
+    "error_engine_status_failed": "Reasoning engine status unavailable.",
+    "error_engine_switch_failed": "Engine switch failed."
   }
 }

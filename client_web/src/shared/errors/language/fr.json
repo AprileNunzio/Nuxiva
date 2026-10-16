@@ -121,6 +121,8 @@
     "error_expert_update_failed": "Expert non mis à jour.",
     "error_expert_delete_failed": "Expert non supprimé.",
     "error_expert_ask_failed": "L'expert n'a pas pu répondre.",
-    "error_expert_live_failed": "Données en direct indisponibles."
+    "error_expert_live_failed": "Données en direct indisponibles.",
+    "error_engine_status_failed": "État du moteur de raisonnement indisponible.",
+    "error_engine_switch_failed": "Changement de moteur impossible."
   }
 }

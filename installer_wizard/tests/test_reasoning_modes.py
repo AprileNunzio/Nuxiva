@@ -26,21 +26,7 @@ class ReasoningModesTest(unittest.IsolatedAsyncioTestCase):
 
     def test_presets_order_has_neuro_core_first(self):
         self.assertEqual(presets.PRESETS[0].id, "neuro_core")
-        self.assertEqual(presets.PRESETS[0].label, "Nuxiva Neuro-Core 5.0")
-
-    def test_commercial_reasoning_modes(self):
-        self.assertEqual(len(presets.REASONING_MODES), 2)
-        fast = presets.REASONING_MODES_BY_ID["fast"]
-        reasoning = presets.REASONING_MODES_BY_ID["reasoning"]
-
-        self.assertEqual(fast.name, "Nuxiva 5.0 Veloce")
-        self.assertEqual(fast.version, "5.0-flash")
-        self.assertEqual(fast.badge, "Veloce")
-
-        self.assertEqual(reasoning.name, "Nuxiva 5.0 Pro Ragionamento")
-        self.assertEqual(reasoning.version, "5.0-pro")
-        self.assertEqual(reasoning.badge, "Ragionamento")
-        self.assertTrue(reasoning.is_default)
+        self.assertEqual(presets.PRESETS[0].label, "Tutte le fonti")
 
     def test_permanent_user_preference_storage(self):
         test_slug = "test-user-reasoning"
@@ -114,25 +100,58 @@ class ReasoningModesTest(unittest.IsolatedAsyncioTestCase):
         w = neuron.apply_stdp("motor_1", post_fired_at=neuron.last_fired_at + 0.01, reward_signal=1.2)
         self.assertGreater(w, 0.8)
 
-    async def test_cortical_brain_chain_parallel_thought(self):
+    async def test_fast_mode_race_returns_first_valid_answer(self):
         chain = CorticalBrainChain()
         chain.set_mode("nuxiva-5.0-fast")
+        self.assertEqual(chain.active_mode, "nuxiva-5.0-veloce")
+        calls = []
 
         async def branch_slow(q, ctx, limbic):
-            await asyncio.sleep(0.05)
-            return {"text": "slow result", "confidence": 0.5}
+            calls.append("slow")
+            await asyncio.sleep(5)
+            return {"text": "slow result", "confidence": 0.9}
 
         async def branch_fast(q, ctx, limbic):
-            return {"text": "fast ignited result", "confidence": 0.95}
+            calls.append("fast")
+            await asyncio.sleep(0.6)
+            return {"text": "fast result", "confidence": 0.88}
 
-        res = await chain.execute_parallel_thought(
-            "calcola il teorema",
-            {},
-            [branch_slow, branch_fast],
-            critic_fn=predict_user_impact,
-        )
-        self.assertIn("fast ignited result", res.get("text", ""))
+        res = await chain.execute_parallel_thought("calcola il teorema", {}, [branch_slow, branch_fast], predict_user_impact)
+        self.assertEqual(res["text"], "fast result")
+        self.assertEqual(sorted(calls), ["fast", "slow"])
+        self.assertLess(res["latency_ms"], 3000)
+        self.assertEqual(res["strategy"]["pick"], "first")
         self.assertIn("limbic_snapshot", res)
+
+    async def test_compare_mode_waits_and_uses_critic(self):
+        chain = CorticalBrainChain()
+        chain.set_mode("pro")
+
+        async def short(q, ctx, limbic):
+            return {"text": "si", "confidence": 0.88}
+
+        async def clear(q, ctx, limbic):
+            await asyncio.sleep(0.05)
+            return {"text": "La caldaia è accesa da due ore e la temperatura di casa è 21 gradi.", "confidence": 0.88}
+
+        res = await chain.execute_parallel_thought("stato caldaia", {}, [short, clear], predict_user_impact)
+        self.assertEqual(res["candidates_answered"], 2)
+        self.assertIn("caldaia", res["text"])
+        self.assertIn("critic", res)
+
+    async def test_failed_models_are_reported_not_rerun(self):
+        chain = CorticalBrainChain()
+        chain.set_mode("veloce")
+        calls = []
+
+        async def broken(q, ctx, limbic):
+            calls.append(1)
+            raise RuntimeError("offline")
+
+        res = await chain.execute_parallel_thought("ciao", {}, [broken, broken, broken], None)
+        self.assertEqual(res["text"], "")
+        self.assertEqual(len(calls), 3)
+        self.assertEqual(len(res["errors"]), 3)
 
     def test_emotional_salience_and_retention(self):
         s_neutral = compute_emotional_salience(valence=0.0, arousal=0.1)
@@ -159,11 +178,12 @@ class ReasoningModesTest(unittest.IsolatedAsyncioTestCase):
         self.assertGreaterEqual(len(snapshot["people"]), 1)
         self.assertGreater(cortical_chain.limbic.valence, -1.0)
 
-    async def test_default_mode_network_idle_cycle(self):
-        dmn = DefaultModeNetwork(idle_threshold_s=0.01)
+    def test_default_mode_network_tracks_activity_only(self):
+        dmn = DefaultModeNetwork()
         dmn.last_interaction = 0.0
-        await dmn._cycle()
-        self.assertGreaterEqual(dmn.last_dmn_run, 0.0)
+        dmn.record_activity()
+        self.assertLess(dmn.idle_for(), 5)
+        self.assertFalse(hasattr(dmn, "_cycle"))
 
     def test_rem_synaptic_consolidation(self):
         with tempfile.NamedTemporaryFile(delete=False) as tf:

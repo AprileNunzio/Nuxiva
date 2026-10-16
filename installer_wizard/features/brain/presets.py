@@ -15,35 +15,14 @@ class Preset:
     sources: tuple[str, ...]
 
 
-from enum import Enum
-
-class CognitiveEngineVersion(str, Enum):
-    LEGACY_4_2 = "nuxiva-4.2-legacy"
-    VELOCE_5_0 = "nuxiva-5.0-veloce"
-    EMPATICO_5_0 = "nuxiva-5.0-empatico"
-    PRO_6_0 = "nuxiva-6.0-pro"
-    ULTRA_6_5 = "nuxiva-6.5-ultra"
-    AUTO_6_5 = "nuxiva-6.5-auto"
-
-@dataclass(frozen=True)
-class ReasoningModeInfo:
-    id: str
-    name: str
-    version: str
-    badge: str
-    hint: str
-    sla_ms: int
-    is_default: bool = False
-
-
 DEFAULT_PRESET_ID = "neuro_core"
 
 PRESETS: tuple[Preset, ...] = (
     Preset(
         "neuro_core",
         "🧠",
-        "Nuxiva Neuro-Core 5.0",
-        "Piano Corticale Neuro-Biologico e Parallelismo Corticale con dinamica LIF, modulazione limbica e inibizione GABA.",
+        "Tutte le fonti",
+        "Usa insieme modelli in casa, server della rete e cloud collegati, in quest'ordine.",
         "anywhere",
         ("local", "servers", "cloud"),
     ),
@@ -68,114 +47,6 @@ PRESETS: tuple[Preset, ...] = (
     Preset("cloud", "☁️", "Solo cloud", "Solo servizi cloud collegati, niente modelli locali.", "anywhere", ("cloud",)),
 )
 BY_ID = {p.id: p for p in PRESETS}
-
-COGNITIVE_ENGINES: tuple[ReasoningModeInfo, ...] = (
-    ReasoningModeInfo(
-        id=CognitiveEngineVersion.AUTO_6_5.value,
-        name="Nuxiva 6.5 Auto Adattivo",
-        version="6.5-auto",
-        badge="Auto",
-        hint="Meta-Orchestratore Talamico su principio energia libera e carico hardware.",
-        sla_ms=45,
-        is_default=True,
-    ),
-    ReasoningModeInfo(
-        id=CognitiveEngineVersion.VELOCE_5_0.value,
-        name="Nuxiva 5.0 Veloce",
-        version="5.0-flash",
-        badge="Flash",
-        hint="Ternary 1.58-bit con Liquid LNN e risposte sub-25ms per comandi rapidi.",
-        sla_ms=25,
-        is_default=False,
-    ),
-    ReasoningModeInfo(
-        id=CognitiveEngineVersion.PRO_6_0.value,
-        name="Nuxiva 6.0 Pro",
-        version="6.0-pro",
-        badge="Pro",
-        hint="Spazio Latente Continuo JEPA/Coconut con pensiero profondo multi-corsia.",
-        sla_ms=1200,
-        is_default=False,
-    ),
-    ReasoningModeInfo(
-        id=CognitiveEngineVersion.ULTRA_6_5.value,
-        name="Nuxiva 6.5 Ultra",
-        version="6.5-ultra",
-        badge="Ultra",
-        hint="MCTS latente a 64 rami con Process Reward Model dopaminergico.",
-        sla_ms=650,
-        is_default=False,
-    ),
-    ReasoningModeInfo(
-        id=CognitiveEngineVersion.EMPATICO_5_0.value,
-        name="Nuxiva 5.0 Empatico",
-        version="5.0-limbic",
-        badge="Limbico",
-        hint="Global Workspace a 8 corsie parallele con fusione biometrica 10Hz.",
-        sla_ms=120,
-        is_default=False,
-    ),
-    ReasoningModeInfo(
-        id=CognitiveEngineVersion.LEGACY_4_2.value,
-        name="Nuxiva 4.2 Legacy",
-        version="4.2-legacy",
-        badge="Legacy",
-        hint="Pipeline sequenziale a token con fallback seriale di riserva.",
-        sla_ms=2500,
-        is_default=False,
-    ),
-)
-COGNITIVE_ENGINES_BY_ID = {m.id: m for m in COGNITIVE_ENGINES}
-
-REASONING_MODES: tuple[ReasoningModeInfo, ...] = (
-    ReasoningModeInfo(
-        id="fast",
-        name="Nuxiva 5.0 Veloce",
-        version="5.0-flash",
-        badge="Veloce",
-        hint="Risposta istantanea (<180ms) per conversazione fluida e comandi rapidi.",
-        sla_ms=180,
-        is_default=False,
-    ),
-    ReasoningModeInfo(
-        id="reasoning",
-        name="Nuxiva 5.0 Pro Ragionamento",
-        version="5.0-pro",
-        badge="Ragionamento",
-        hint="Pensiero profondo multi-corsia corticale con validazione critica.",
-        sla_ms=1200,
-        is_default=True,
-    ),
-)
-REASONING_MODES_BY_ID = {
-    **{m.id: m for m in REASONING_MODES},
-    **COGNITIVE_ENGINES_BY_ID,
-    "nuxiva-5.0-veloce": REASONING_MODES[0],
-    "nuxiva-6.0-pro": REASONING_MODES[1],
-    "auto": COGNITIVE_ENGINES_BY_ID[CognitiveEngineVersion.AUTO_6_5.value],
-    "6.5-auto": COGNITIVE_ENGINES_BY_ID[CognitiveEngineVersion.AUTO_6_5.value],
-    "nuxiva-6.5-auto": COGNITIVE_ENGINES_BY_ID[CognitiveEngineVersion.AUTO_6_5.value],
-    "fast": REASONING_MODES[0],
-    "veloce": REASONING_MODES[0],
-    "5.0-flash": REASONING_MODES[0],
-    "reasoning": REASONING_MODES[1],
-    "pro": REASONING_MODES[1],
-    "5.0-pro": REASONING_MODES[1],
-    "6.0-pro": COGNITIVE_ENGINES_BY_ID[CognitiveEngineVersion.PRO_6_0.value],
-    "ultra": COGNITIVE_ENGINES_BY_ID[CognitiveEngineVersion.ULTRA_6_5.value],
-    "6.5-ultra": COGNITIVE_ENGINES_BY_ID[CognitiveEngineVersion.ULTRA_6_5.value],
-    "nuxiva-6.5-ultra": COGNITIVE_ENGINES_BY_ID[CognitiveEngineVersion.ULTRA_6_5.value],
-    "empatico": COGNITIVE_ENGINES_BY_ID[CognitiveEngineVersion.EMPATICO_5_0.value],
-    "empathetic": COGNITIVE_ENGINES_BY_ID[CognitiveEngineVersion.EMPATICO_5_0.value],
-    "5.0-limbic": COGNITIVE_ENGINES_BY_ID[CognitiveEngineVersion.EMPATICO_5_0.value],
-    "nuxiva-5.0-empatico": COGNITIVE_ENGINES_BY_ID[CognitiveEngineVersion.EMPATICO_5_0.value],
-    "legacy": COGNITIVE_ENGINES_BY_ID[CognitiveEngineVersion.LEGACY_4_2.value],
-    "4.2-legacy": COGNITIVE_ENGINES_BY_ID[CognitiveEngineVersion.LEGACY_4_2.value],
-    "nuxiva-4.2-legacy": COGNITIVE_ENGINES_BY_ID[CognitiveEngineVersion.LEGACY_4_2.value],
-}
-DEFAULT_REASONING_MODE_ID = CognitiveEngineVersion.AUTO_6_5.value
-
-
 
 class PresetError(ValueError):
     pass

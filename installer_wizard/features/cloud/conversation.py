@@ -54,10 +54,15 @@ def persona(context: dict) -> str:
     return text
 
 
-async def reply(ref: str, query: str, device: str, context: dict, max_tokens: int) -> Reply:
+def remember(device: str, query: str, text: str) -> None:
     history = _history[device]
-    messages = [*history, {"role": "user", "content": query}]
-    answer = await complete(ref, messages, persona(context), max_tokens=max_tokens, temperature=0.6)
     history.append({"role": "user", "content": query})
-    history.append({"role": "assistant", "content": answer.text})
+    history.append({"role": "assistant", "content": text})
+
+
+async def reply(ref: str, query: str, device: str, context: dict, max_tokens: int, remember_turn: bool = True) -> Reply:
+    messages = [*_history[device], {"role": "user", "content": query}]
+    answer = await complete(ref, messages, persona(context), max_tokens=max_tokens, temperature=0.6)
+    if remember_turn:
+        remember(device, query, answer.text)
     return answer

@@ -10,7 +10,7 @@ os.environ["TMPDIR"] = SANDBOX
 os.environ["NUXIVA_DEMO"] = "1"
 os.environ.setdefault("NUXIVA_ALLOWED_HOSTS", "testserver")
 os.environ.setdefault("NUXIVA_DIR", str(ROOT.parent))
-for p in (str(ROOT / "backend"), str(ROOT)):
+for p in (str(ROOT.parent), str(ROOT / "backend"), str(ROOT)):
     if p not in sys.path:
         sys.path.insert(0, p)
 os.chdir(ROOT / "backend")

@@ -1,82 +1,73 @@
-from typing import Any, Dict, List, Optional
-from server.core.reasoning.engines.base import BaseReasoningEngine
+from typing import Any, Dict, List, Tuple
+
+from server.core.reasoning.engines.base import BaseReasoningEngine, Strategy, stage
 from server.features.llm_gateway.contracts import CognitiveEngineVersion
 
-class ThalamicAdaptiveEngine(BaseReasoningEngine):
+COMPLEXITY_WORDS = 45.0
+FAST_NORADRENALINE = 0.75
+FAST_COMPLEXITY = 0.3
+EMPATHY_VALENCE = 0.65
+COMPLEX = 0.65
+RULES = (
+    ("fast", CognitiveEngineVersion.VELOCE_5_0, {"noradrenaline_above": FAST_NORADRENALINE, "complexity_below": FAST_COMPLEXITY}),
+    ("empathy", CognitiveEngineVersion.EMPATICO_5_0, {"abs_valence_above": EMPATHY_VALENCE}),
+    ("complex", CognitiveEngineVersion.ULTRA_6_5, {"complexity_above": COMPLEX}),
+    ("default", CognitiveEngineVersion.PRO_6_0, {}),
+)
+
+
+def complexity(query: str) -> float:
+    return min(1.0, len(str(query or "").split()) / COMPLEXITY_WORDS)
+
+
+def choose(query: str, limbic: Any) -> Tuple[str, CognitiveEngineVersion]:
+    level = complexity(query)
+    noradrenaline = float(getattr(limbic, "noradrenaline", 0.0))
+    valence = float(getattr(limbic, "valence", 0.0))
+    if noradrenaline > FAST_NORADRENALINE and level < FAST_COMPLEXITY:
+        return "fast", CognitiveEngineVersion.VELOCE_5_0
+    if abs(valence) > EMPATHY_VALENCE:
+        return "empathy", CognitiveEngineVersion.EMPATICO_5_0
+    if level > COMPLEX:
+        return "complex", CognitiveEngineVersion.ULTRA_6_5
+    return "default", CognitiveEngineVersion.PRO_6_0
+
+
+def _engine(version: CognitiveEngineVersion) -> BaseReasoningEngine:
+    from server.core.reasoning.engines.scanner import engine_scanner
+    found = engine_scanner.get_engine(version.value)
+    if found is None:
+        raise LookupError(version.value)
+    return found
+
+
+class AutoEngine(BaseReasoningEngine):
+    @property
+    def key(self) -> str:
+        return "auto"
+
     @property
     def version(self) -> CognitiveEngineVersion:
         return CognitiveEngineVersion.AUTO_6_5
 
     @property
-    def name(self) -> str:
-        return "Nuxiva 6.5 Auto Thalamic-Adaptive"
-
-    @property
-    def architecture(self) -> str:
-        return "Thalamic Meta-Router (Friston Free Energy)"
-
-    @property
-    def latency_sla_ms(self) -> int:
-        return 45
+    def strategy(self) -> Strategy:
+        return _engine(CognitiveEngineVersion.PRO_6_0).strategy
 
     @property
     def icon(self) -> str:
         return "✨"
 
     @property
-    def vram_mb(self) -> int:
-        return 4096
-
-    @property
     def is_default(self) -> bool:
         return True
 
-    def get_flow_stages(self, query: str = "", context: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
-        words = len(query.split()) if query else 1
-        psi = min(1.0, words / 45.0 + 0.12)
-        if psi < 0.25:
-            routed_to = "Nuxiva 5.0 Veloce (Synapse-Flash)"
-            routed_arch = "Ternary 1.58-bit & Liquid LNN"
-            routed_sla = "25ms"
-        elif psi < 0.50:
-            routed_to = "Nuxiva 5.0 Empatico (Synapse-Limbic)"
-            routed_arch = "Global Workspace Theory & Biometria 10Hz"
-            routed_sla = "120ms"
-        elif psi < 0.75:
-            routed_to = "Nuxiva 6.0 Pro (Omni-Latent)"
-            routed_arch = "Spazio Latente Continuo JEPA/Coconut & TTT"
-            routed_sla = "1200ms"
-        else:
-            routed_to = "Nuxiva 6.5 Ultra (DeepThink-MCTS)"
-            routed_arch = "MCTS 64 Rami & PRM Dopaminergico"
-            routed_sla = "650ms"
+    def effective(self, query: str = "", limbic: Any = None) -> BaseReasoningEngine:
+        return _engine(choose(query, limbic)[1])
 
-        return [
-            {
-                "kind": "router",
-                "name": "Meta-Instradamento Talamico (Friston Free Energy)",
-                "detail": f"Principio Energia Libera: Sorpresa semantica Ψ={psi:.2f} · Bilanciamento termodinamico su {words} token · Instradamento a energia minima verso {routed_to}.",
-                "label": "energia libera",
-            },
-            {
-                "kind": "reasoning",
-                "name": f"Corsia Esecutiva · {routed_to}",
-                "detail": f"Architettura: {routed_arch} · SLA target: {routed_sla} · Adattamento dinamico al carico computazionale.",
-                "label": "esecuzione",
-            },
-            {
-                "kind": "decision",
-                "name": "Validazione Omeostatica Talamica",
-                "detail": "Chiusura del ciclo sensomotorio · Convergenza omeostatica e abbattimento entropia residua.",
-                "label": "omeostasi",
-            },
-        ]
-
-    async def process_latent_state(
-        self,
-        sensory_tensor: Any,
-        limbic_vector: Optional[Any] = None,
-        context: Optional[Dict[str, Any]] = None,
-    ) -> Any:
-        return sensory_tensor
-
+    def route_stages(self, query: str, limbic: Any, lang: Any) -> List[Dict[str, Any]]:
+        reason, version = choose(query, limbic)
+        from server.core.reasoning.engines.base import text
+        return [stage("router", "route", "route", lang, words=len(str(query or "").split()),
+                      complexity=f"{complexity(query):.2f}", chosen=_engine(version).label(lang),
+                      reason=text("stages", f"reason_{reason}", lang))]

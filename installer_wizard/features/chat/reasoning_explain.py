@@ -1,53 +1,27 @@
-import logging
 import re
 
 from features.brain.brains import CHAT_SLA_MS, brains
+from features.chat.brain_chain import CONFIDENCE_BAD, CONFIDENCE_OK, CONFIDENCE_WEIGHT, CRITIC_WEIGHT, HARD_TIMEOUT_S, LEGACY_IDS, cortical_chain
 from features.twin.simulator import CRITIC, RISK_TERMS
-from features.chat.brain_chain import (
-    AUTO_COMPLEX, AUTO_EMPATHY_VALENCE, AUTO_FAST_COMPLEXITY, AUTO_FAST_NORADRENALINE, COMPLEXITY_WORDS, CONFIDENCE_BAD, CONFIDENCE_OK, CONFIDENCE_WEIGHT, CRITIC_WEIGHT, PRUNE_FACTOR,
-    REASONING_PROFILES, cortical_chain,
-)
+from server.core.reasoning.engines.auto_6_5 import engine as auto
 
-log = logging.getLogger("nuxiva.reasoning")
 MODE_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{0,48}$")
-AUTO = "nuxiva-6.5-auto"
 
 
 def _engine(mode: str):
     from server.core.reasoning.engines.scanner import engine_scanner
-    engine_scanner.scan()
-    return engine_scanner.get_engine(mode)
-
-
-def _profile(mode: str, sla: int) -> tuple[dict, str]:
-    if mode in REASONING_PROFILES:
-        return dict(REASONING_PROFILES[mode]), "table"
-    branches = 16 if sla > 600 else (8 if sla > 200 else (4 if sla > 50 else 2))
-    depth = 4 if sla > 600 else (3 if sla > 200 else 1)
-    return {"parallel_branches": branches, "mcts_depth": depth, "ignition_threshold": 0.85,
-            "timeout_s": max(0.5, sla / 1000.0 * 2.0), "use_limbic": True, "use_twin_critic": sla > 100}, "sla"
+    return engine_scanner.get_engine(LEGACY_IDS.get(mode, mode))
 
 
 def _limbic() -> dict:
-    l = cortical_chain.limbic
-    return {k: round(float(getattr(l, k)), 3) for k in
-            ("valence", "arousal", "dopamine", "noradrenaline", "serotonin", "cortisol")}
+    limbic = cortical_chain.limbic
+    return {k: round(float(getattr(limbic, k)), 3) for k in ("valence", "arousal", "dopamine", "noradrenaline", "serotonin", "cortisol")}
 
 
-def _budget(limbic: dict, branches: int) -> dict:
-    if limbic["cortisol"] > 0.8:
-        return {"rule": "stress", "factor": 0.25, "result": max(1, branches // 4)}
-    factor = 0.5 + limbic["dopamine"] * 0.5 + limbic["serotonin"] * 0.2
-    return {"rule": "explore", "factor": round(factor, 3), "result": max(1, min(branches, int(round(branches * factor))))}
-
-
-def _candidates(models: list[dict]) -> int:
+def _groups(models: list[dict]) -> int:
     from itertools import groupby
     from features.cloud.catalog import is_cloud
-    count = 0
-    for cloud, group in groupby((m["ref"] for m in models), key=is_cloud):
-        count += len(list(group)) if cloud else 1
-    return count
+    return sum(len(list(group)) if cloud else 1 for cloud, group in groupby((m["ref"] for m in models), key=is_cloud))
 
 
 def _models(kind: str) -> list[dict]:
@@ -60,43 +34,34 @@ def _models(kind: str) -> list[dict]:
     return out
 
 
-def explain(mode: str) -> dict:
+def _card(engine, lang: str) -> dict:
+    return {"id": engine.version.value, "name": engine.label(lang), "summary": engine.summary(lang), "strategy": engine.strategy.as_dict()}
+
+
+def explain(mode: str, lang: str = "it") -> dict:
     mode = str(mode or "").strip().lower()
     if not MODE_RE.fullmatch(mode):
         raise ValueError("Motore non valido")
     engine = _engine(mode)
     if engine is None:
         raise LookupError(mode)
-    version = getattr(engine.version, "value", str(engine.version))
-    sla = int(engine.latency_sla_ms)
-    kind = "chat" if sla <= CHAT_SLA_MS else "deep"
-    profile, source = _profile(version, sla)
-    limbic = _limbic()
+    kind = "chat" if engine.latency_sla_ms <= CHAT_SLA_MS else "deep"
     models = _models(kind)
-    auto_rules = None
-    if version == AUTO:
-        source = "auto"
-        auto_rules = [
-            {"when": "fast", "noradrenaline_above": AUTO_FAST_NORADRENALINE, "complexity_below": AUTO_FAST_COMPLEXITY,
-             "profile": "nuxiva-5.0-fast"},
-            {"when": "empathetic", "abs_valence_above": AUTO_EMPATHY_VALENCE, "profile": "nuxiva-5.0-empathetic"},
-            {"when": "complex", "complexity_above": AUTO_COMPLEX, "profile": "nuxiva-6.5-ultra"},
-            {"when": "default", "profile": "nuxiva-6.0-pro"},
-        ]
-        for rule in auto_rules:
-            rule["params"] = dict(REASONING_PROFILES[rule["profile"]])
+    groups = _groups(models)
+    strategy = engine.strategy
+    rules = None
+    if engine.version.value == auto.CognitiveEngineVersion.AUTO_6_5.value:
+        rules = [{"when": when, **params, "engine": _card(_engine(version.value), lang)} for when, version, params in auto.RULES]
     return {
-        "id": version, "name": engine.name, "icon": getattr(engine, "icon", ""), "sla_ms": sla,
-        "vram_mb": int(engine.vram_mb), "label": engine.architecture,
-        "routing": {"kind": kind, "threshold_ms": CHAT_SLA_MS, "models": models, "candidates": _candidates(models)},
-        "profile": {**profile, "source": source},
-        "auto_rules": auto_rules,
-        "complexity_words": int(COMPLEXITY_WORDS),
-        "limbic": limbic,
-        "budget": _budget(limbic, int(profile["parallel_branches"])),
+        **_card(engine, lang),
+        "icon": engine.icon,
+        "routing": {"kind": kind, "models": models, "candidates": groups},
+        "launched": groups if strategy.pick == "sequential" else min(strategy.candidates, groups),
+        "hard_timeout_s": HARD_TIMEOUT_S,
+        "auto_rules": rules,
+        "complexity_words": auto.COMPLEXITY_WORDS,
+        "limbic": _limbic(),
         "scoring": {"confidence_ok": CONFIDENCE_OK, "confidence_bad": CONFIDENCE_BAD,
-                    "confidence_weight": CONFIDENCE_WEIGHT, "critic_weight": CRITIC_WEIGHT,
-                    "prune_factor": PRUNE_FACTOR,
-                    "prune_below": round(float(profile["ignition_threshold"]) * PRUNE_FACTOR, 3)},
+                    "confidence_weight": CONFIDENCE_WEIGHT, "critic_weight": CRITIC_WEIGHT},
         "critic": {**CRITIC, "risk_terms": list(RISK_TERMS)},
     }

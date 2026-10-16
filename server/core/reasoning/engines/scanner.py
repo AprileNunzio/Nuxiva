@@ -39,6 +39,7 @@ class EngineScanner:
                     self._registry[instance.version] = instance
                     ver_str = getattr(instance.version, "value", str(instance.version)).strip().lower()
                     self._registry[ver_str] = instance
+                    self._registry[instance.key] = instance
                     # Folder and directory name aliases
                     self._registry[item.name.lower()] = instance
                     self._registry[item.name.lower().replace("_", ".")] = instance

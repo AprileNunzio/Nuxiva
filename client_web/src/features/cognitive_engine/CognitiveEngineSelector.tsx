@@ -1,29 +1,22 @@
 import React, { useState, useId } from 'react';
-import { Cpu, Zap, Activity, HardDrive, ShieldCheck, ChevronDown, Check } from 'lucide-react';
+import { Cpu, Layers, Scale, ShieldCheck, ChevronDown, Check } from 'lucide-react';
 import { useI18n } from '../../shared/i18n/I18nContext';
 import { useCognitiveEngine } from './useCognitiveEngine';
-import { CognitiveEngineId } from './types';
+import { CognitiveEngineId, EngineStrategy } from './types';
 
 export const CognitiveEngineSelector: React.FC = () => {
   const { t } = useI18n();
   const selectId = useId();
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const {
-    configuredVersion,
-    activeRuntime,
-    latencyMs,
-    vramMb,
-    engines,
-    isLoading,
-    switchEngine,
-  } = useCognitiveEngine();
+  const { configuredVersion, engines, isLoading, switchEngine } = useCognitiveEngine();
+  const describe = (st: EngineStrategy) => `${t(st.kind === 'chat' ? 'engine_kind_chat' : 'engine_kind_deep')} · ${t(`engine_pick_${st.pick}` as any).replace('{n}', String(st.candidates)).replace('{wait}', String(st.wait_s))}`;
 
   const handleSelect = (version: CognitiveEngineId) => {
     switchEngine(version);
     setIsOpen(false);
   };
 
-  const getBadgeKey = (id: CognitiveEngineId): any => {
+  const getBadgeKey = (id: CognitiveEngineId | null): any => {
     switch (id) {
       case 'nuxiva-4.2-legacy':
         return 'engine_legacy_badge';
@@ -48,7 +41,7 @@ export const CognitiveEngineSelector: React.FC = () => {
       <div className="flex items-center justify-between sm:justify-start gap-2">
         <div className="flex items-center gap-2">
           <div className="p-1.5 rounded-lg bg-cyan-500/10 text-cyan-400">
-            <Cpu className="w-4 h-4 sm:w-5 sm:h-5 animate-pulse" />
+            <Cpu className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
           </div>
           <div>
             <div className="text-[10px] sm:text-xs font-mono uppercase tracking-wider text-cyan-400 font-semibold">
@@ -75,18 +68,20 @@ export const CognitiveEngineSelector: React.FC = () => {
       </div>
 
       <div className="flex items-center gap-3 sm:gap-4 pt-1 sm:pt-0 border-t sm:border-t-0 sm:border-l border-slate-800 sm:pl-4 text-xs font-mono">
-        <div className="flex items-center gap-1.5 text-emerald-400">
-          <Zap className="w-3.5 h-3.5" />
-          <span>{latencyMs} {t('engine_latency_ms')}</span>
-        </div>
-        <div className="flex items-center gap-1.5 text-indigo-400">
-          <HardDrive className="w-3.5 h-3.5" />
-          <span>{vramMb} {t('engine_vram_mb')}</span>
-        </div>
-        <div className="hidden md:flex items-center gap-1 text-slate-400">
-          <Activity className="w-3.5 h-3.5 text-cyan-400" />
-          <span className="text-[11px]">{activeRuntime.replace('nuxiva-', '')}</span>
-        </div>
+        {activeProfile && (
+          <>
+            <div className="flex items-center gap-1.5 text-emerald-400">
+              <Layers className="w-3.5 h-3.5" aria-hidden="true" />
+              <span>{describe(activeProfile.strategy)}</span>
+            </div>
+            {activeProfile.strategy.critic && (
+              <div className="hidden md:flex items-center gap-1.5 text-indigo-300">
+                <Scale className="w-3.5 h-3.5" aria-hidden="true" />
+                <span>{t('engine_critic')}</span>
+              </div>
+            )}
+          </>
+        )}
       </div>
 
       <div className="hidden sm:block">
@@ -135,11 +130,7 @@ export const CognitiveEngineSelector: React.FC = () => {
                     <div className="text-[10px] text-slate-400 truncate mt-0.5">
                       {engine.architecture}
                     </div>
-                    <div className="text-[10px] text-slate-500 flex gap-2 mt-1">
-                      <span>{engine.latency_sla_ms} {t('engine_latency_ms')}</span>
-                      <span>•</span>
-                      <span>{engine.vram_mb} {t('engine_vram_mb')}</span>
-                    </div>
+                    <div className="text-[10px] text-slate-500 mt-1">{describe(engine.strategy)}</div>
                   </div>
                   {isSelected && <Check className="w-4 h-4 text-cyan-400 flex-shrink-0" />}
                 </button>

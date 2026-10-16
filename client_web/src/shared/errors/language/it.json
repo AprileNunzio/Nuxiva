@@ -121,6 +121,8 @@
     "error_expert_update_failed": "Esperto non aggiornato.",
     "error_expert_delete_failed": "Esperto non eliminato.",
     "error_expert_ask_failed": "L'esperto non ha potuto rispondere.",
-    "error_expert_live_failed": "Dati dal vivo non disponibili."
+    "error_expert_live_failed": "Dati dal vivo non disponibili.",
+    "error_engine_status_failed": "Stato del motore di ragionamento non disponibile.",
+    "error_engine_switch_failed": "Cambio del motore non riuscito."
   }
 }
