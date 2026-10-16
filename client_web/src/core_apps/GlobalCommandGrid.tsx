@@ -1,6 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import { useI18n } from '../shared/i18n/I18nContext';
 import { useScopedI18n, getScopedString } from '../shared/i18n/useScopedI18n';
+import { useResource } from './shared/useResource';
+import { FeaturesOverview } from './shared/featureTypes';
 import {
   Clock, Users, Binary, Hand, Workflow, Grid, Home, Music, Mail, Tv,
   Scale, Server, Video, ShieldCheck, Zap, Lock, UserCheck, FileText,
@@ -83,34 +85,25 @@ export const CATEGORIES: {
 ];
 
 const CORE_APPS_LIST: CoreAppDef[] = [
-  // 1) Intelligenza & Agenti (4)
   { id: 'agents', iconName: 'Users', category: 'ai', accent: 'purple' },
   { id: 'algorithms', iconName: 'Binary', category: 'ai', accent: 'purple' },
   { id: 'study', iconName: 'BookOpen', category: 'ai', accent: 'purple' },
   { id: 'twin', iconName: 'Box', category: 'ai', accent: 'purple' },
-
-  // 2) Infrastruttura & Mesh (5)
   { id: 'nodes', iconName: 'Server', category: 'infra', accent: 'cyan' },
   { id: 'vpn', iconName: 'Radio', category: 'infra', accent: 'cyan' },
   { id: 'firewall', iconName: 'ShieldCheck', category: 'infra', accent: 'cyan' },
   { id: 'updater', iconName: 'RefreshCw', category: 'infra', accent: 'cyan' },
   { id: 'backup', iconName: 'Archive', category: 'infra', accent: 'cyan' },
-
-  // 3) Automazione & Flussi (5)
   { id: 'automations', iconName: 'Zap', category: 'automation', accent: 'amber' },
   { id: 'flows', iconName: 'Workflow', category: 'automation', accent: 'amber' },
   { id: 'habits', iconName: 'Clock', category: 'automation', accent: 'amber' },
   { id: 'hands', iconName: 'Hand', category: 'automation', accent: 'amber' },
   { id: 'laws', iconName: 'Scale', category: 'automation', accent: 'amber' },
-
-  // 4) Sicurezza & Sorveglianza (5)
   { id: 'emergency', iconName: 'AlertTriangle', category: 'security', accent: 'rose' },
   { id: 'vault', iconName: 'Lock', category: 'security', accent: 'rose' },
   { id: 'people', iconName: 'UserCheck', category: 'security', accent: 'rose' },
   { id: 'places', iconName: 'Home', category: 'security', accent: 'rose' },
   { id: 'cameras', iconName: 'Video', category: 'security', accent: 'rose' },
-
-  // 5) Produttività & Media (5)
   { id: 'office', iconName: 'FileText', category: 'media', accent: 'emerald' },
   { id: 'google', iconName: 'Mail', category: 'media', accent: 'emerald' },
   { id: 'music', iconName: 'Music', category: 'media', accent: 'emerald' },
@@ -241,15 +234,14 @@ export const GlobalCommandGrid: React.FC<{
   onBackToCanvas?: () => void;
 }> = ({ onSelectApp, onBackToCanvas }) => {
   const { lang } = useI18n();
+  const { t } = useScopedI18n('app_shell/command_grid');
+  const features = useResource<FeaturesOverview>('/api/features', 30000);
+  const running = features.data ? features.data.features.filter((item) => item.state.enabled).length : null;
   const [selectedCategory, setSelectedCategory] = useState<CoreAppCategory>('all');
   const [search, setSearch] = useState('');
   const [viewMode, setViewMode] = useState<'grouped' | 'dense'>('grouped');
-
-  // Sorted and filtered apps
   const processedApps = useMemo(() => {
     const collator = new Intl.Collator(lang, { sensitivity: 'base' });
-
-    // Retrieve translated titles for natural ordering
     const items = CORE_APPS_LIST.map((app) => {
       const translatedTitle = getScopedString(`core_apps/${app.id}`, lang, 'title', app.id);
       const translatedDesc = getScopedString(`core_apps/${app.id}`, lang, 'description', '');
@@ -259,8 +251,6 @@ export const GlobalCommandGrid: React.FC<{
         translatedDesc,
       };
     });
-
-    // Filter by search
     const query = search.trim().toLowerCase();
     const filtered = items.filter((app) => {
       const matchesCategory = selectedCategory === 'all' || app.category === selectedCategory;
@@ -273,12 +263,8 @@ export const GlobalCommandGrid: React.FC<{
         app.translatedDesc.toLowerCase().includes(query)
       );
     });
-
-    // Sort alphabetically by translated title
     return filtered.sort((a, b) => collator.compare(a.translatedTitle, b.translatedTitle));
   }, [lang, selectedCategory, search]);
-
-  // Counts per category
   const categoryCounts = useMemo(() => {
     const counts: Record<CoreAppCategory, number> = {
       all: CORE_APPS_LIST.length,
@@ -296,55 +282,53 @@ export const GlobalCommandGrid: React.FC<{
 
   return (
     <div className="w-full min-h-[calc(100vh-68px)] bg-[#030712] p-5 lg:p-8 font-sans text-slate-100 flex flex-col gap-5">
-      {/* HUD Header Bar: High-Tech Cockpit */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800/80 pb-5">
         <div>
           <div className="flex flex-wrap items-center gap-2.5">
             <h1 className="text-xl lg:text-2xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-blue-500">
-              NUCLEO CENTRALE — GLOBAL COMMAND GRID
+              {t('heading')}
             </h1>
-            <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-xs font-mono font-bold">
-              <Activity className="w-3.5 h-3.5 animate-pulse text-cyan-400" />
-              <span>24 SERVIZI ATTIVI</span>
-            </div>
+            {running !== null && (
+              <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-xs font-mono font-bold">
+                <Activity className="w-3.5 h-3.5 animate-pulse text-cyan-400" />
+                <span>{t('active_services', { count: running })}</span>
+              </div>
+            )}
             <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[11px] font-mono font-semibold">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-              <span>ZERO-TRUST MESH</span>
+              <span>{t('zero_trust')}</span>
             </div>
           </div>
           <p className="text-xs text-slate-400 mt-1 font-mono">
-            Control Plane Neurale e Cockpit Applicativo Mesh Distribuito
+            {t('subtitle')}
           </p>
         </div>
-
-        {/* Top Right Controls: Search & Graph Link */}
         <div className="flex items-center gap-3">
-          {/* Quick Search Input */}
           <div className="relative w-full sm:w-64">
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Cerca applicativo..."
+              placeholder={t('search_placeholder')}
+              aria-label={t('search_placeholder')}
               className="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl pl-9 pr-8 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 font-mono transition"
             />
             {search && (
               <button
                 onClick={() => setSearch('')}
+                aria-label={t('clear')}
                 className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
             )}
           </div>
-
-          {/* View Mode Toggle when category is 'all' */}
           {selectedCategory === 'all' && !search && (
             <div className="hidden md:flex items-center bg-slate-900 border border-slate-800 rounded-xl p-0.5">
               <button
                 onClick={() => setViewMode('grouped')}
-                title="Vista Raggruppata per Categoria"
+                title={t('view_grouped')}
                 className={`p-1.5 rounded-lg transition ${
                   viewMode === 'grouped' ? 'bg-cyan-500/20 text-cyan-300' : 'text-slate-400 hover:text-white'
                 }`}
@@ -353,7 +337,7 @@ export const GlobalCommandGrid: React.FC<{
               </button>
               <button
                 onClick={() => setViewMode('dense')}
-                title="Griglia Compatta"
+                title={t('view_dense')}
                 className={`p-1.5 rounded-lg transition ${
                   viewMode === 'dense' ? 'bg-cyan-500/20 text-cyan-300' : 'text-slate-400 hover:text-white'
                 }`}
@@ -369,13 +353,11 @@ export const GlobalCommandGrid: React.FC<{
               className="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs text-slate-200 hover:text-white transition flex items-center gap-1.5 shrink-0 cursor-pointer font-mono"
             >
               <Cpu className="w-3.5 h-3.5 text-cyan-400" />
-              <span className="hidden sm:inline">Grafo Spaziale</span>
+              <span className="hidden sm:inline">{t('spatial_graph')}</span>
             </button>
           )}
         </div>
       </div>
-
-      {/* Category Navigation Bar */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
         {CATEGORIES.map((cat) => {
           const Icon = cat.icon;
@@ -404,21 +386,18 @@ export const GlobalCommandGrid: React.FC<{
           );
         })}
       </div>
-
-      {/* Main Apps Display Area */}
       {processedApps.length === 0 ? (
         <div className="p-12 text-center rounded-2xl border border-slate-800 bg-slate-900/40 text-slate-400 flex flex-col items-center justify-center gap-3">
           <Search className="w-8 h-8 text-slate-600" />
-          <p className="text-sm">Nessun applicativo trovato corrispondente alla ricerca "{search}"</p>
+          <p className="text-sm">{t('no_results', { query: search })}</p>
           <button
             onClick={() => { setSearch(''); setSelectedCategory('all'); }}
             className="px-4 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold"
           >
-            Ripristina Filtri
+            {t('reset_filters')}
           </button>
         </div>
       ) : selectedCategory === 'all' && viewMode === 'grouped' && !search ? (
-        // Grouped by Category View
         <div className="space-y-6">
           {CATEGORIES.filter((c) => c.id !== 'all').map((cat) => {
             const groupApps = processedApps.filter((a) => a.category === cat.id);
@@ -444,7 +423,7 @@ export const GlobalCommandGrid: React.FC<{
                     onClick={() => setSelectedCategory(cat.id)}
                     className="text-[11px] font-mono text-cyan-400 hover:text-cyan-300 transition"
                   >
-                    Vedi Tutti &rarr;
+                    {t('see_all')} &rarr;
                   </button>
                 </div>
 
@@ -463,7 +442,6 @@ export const GlobalCommandGrid: React.FC<{
           })}
         </div>
       ) : (
-        // Flat Responsive Matrix
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 3xl:grid-cols-7 4xl:grid-cols-8 5xl:grid-cols-10 gap-3.5">
           {processedApps.map((app) => (
             <CoreAppCard

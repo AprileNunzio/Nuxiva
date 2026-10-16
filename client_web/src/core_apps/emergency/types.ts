@@ -1,5 +1,6 @@
-export interface EmergencyState {
-  id: string;
-  active: boolean;
-  lastUpdated: number;
+export interface RedAlertStatus {
+  readonly enabled: boolean;
+  readonly active: boolean;
+  readonly message: string;
+  readonly seconds: number;
 }

@@ -137,6 +137,8 @@
     "section_preferences": "Gusti e preferenze",
     "section_assets": "Documenti e beni",
     "section_life": "Vita e carattere",
-    "section_notes": "Note e privacy"
+    "section_notes": "Note e privacy",
+    "field_title": "Titolo",
+    "field_jobs": "Esperienze lavorative"
   }
 }

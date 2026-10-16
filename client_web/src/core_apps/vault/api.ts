@@ -1,7 +1,8 @@
-export async function fetchVaultState() {
-  try {
-    const res = await fetch('/api/v5/vault/state');
-    if (res.ok) return await res.json();
-  } catch {}
-  return { active: true, id: 'vault' };
+import { sendJson } from '../shared/http';
+
+export interface SyncResult {
+  readonly imported: readonly string[];
+  readonly written: number;
 }
+
+export const syncVault = () => sendJson<SyncResult>('/api/vault/sync', 'POST');

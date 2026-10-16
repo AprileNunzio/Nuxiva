@@ -1,7 +1,7 @@
 import re
 
 from fastapi import APIRouter, Depends, HTTPException
-from fastapi.responses import Response
+from fastapi.responses import JSONResponse, Response
 
 from access import NO_CACHE, require_admin
 from features.redalert.broadcast import clips
@@ -18,6 +18,13 @@ async def redalert_audio(token: str):
     if wav is None:
         raise HTTPException(404, "Messaggio scaduto")
     return Response(wav, media_type="audio/wav", headers=NO_CACHE)
+
+
+@admin_routes.get("/api/redalert")
+async def redalert_status(_: str = Depends(require_admin)):
+    from features.redalert.service import enabled, seconds
+    return JSONResponse({"enabled": enabled(), "active": redalert.active, "message": redalert.message if redalert.active else "",
+                         "seconds": seconds()}, headers=NO_CACHE)
 
 
 @admin_routes.post("/api/redalert/test")

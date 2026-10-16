@@ -131,6 +131,8 @@ from features.study import api as study_api
 from features.study import study
 from features.team import api as team_api
 from features.experts import api as experts_api
+from features.backup import api as backup_api
+from features.backup import service as backup_service
 from features.projects import api as projects_api
 from features.projects import service as projects_service
 from features.telegram import api as telegram_api
@@ -224,6 +226,7 @@ FEATURE_APIS = (
     team_api,
     experts_api,
     projects_api,
+    backup_api,
     mcpclient_api,
     whiteboard_api,
     understanding_api,
@@ -380,6 +383,7 @@ BACKGROUND = (
     ("stanze", places_service.run, 0.0),
     ("sport", sports_watcher.run, 0.0),
     ("progetti", projects_service.run, 0.0),
+    ("backup", backup_service.run, 0.0),
     ("tv", tv_service.run, 0.0),
     ("lingue-casa", locale_household.run, 0.0),
     ("flussi-sicurezza", flows_watchdog.run, 0.0),

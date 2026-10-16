@@ -1,7 +1,4 @@
-export async function fetchEmergencyState() {
-  try {
-    const res = await fetch('/api/v5/emergency/state');
-    if (res.ok) return await res.json();
-  } catch {}
-  return { active: true, id: 'emergency' };
-}
+import { sendJson } from '../shared/http';
+
+export const testAlert = () => sendJson('/api/redalert/test', 'POST');
+export const stopAlert = () => sendJson('/api/redalert/stop', 'POST');

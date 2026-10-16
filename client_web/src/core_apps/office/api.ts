@@ -1,7 +1,5 @@
-export async function fetchOfficeState() {
-  try {
-    const res = await fetch('/api/v5/office/state');
-    if (res.ok) return await res.json();
-  } catch {}
-  return { active: true, id: 'office' };
-}
+import { sendJson } from '../shared/http';
+
+export const createDocument = (request: string) => sendJson('/api/documents', 'POST', { request });
+export const fileUrl = (id: string, index: number) => `/api/documents/${encodeURIComponent(id)}/file/${index}`;
+export const previewUrl = (id: string) => `/api/documents/${encodeURIComponent(id)}/preview.pdf`;

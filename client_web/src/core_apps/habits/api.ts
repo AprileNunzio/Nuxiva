@@ -1,7 +1,6 @@
-export async function fetchHabitsState() {
-  try {
-    const res = await fetch('/api/v5/habits/state');
-    if (res.ok) return await res.json();
-  } catch {}
-  return { active: true, id: 'habits' };
-}
+import { sendJson } from '../shared/http';
+
+export type Verdict = 'accept' | 'reject' | 'snooze';
+
+export const decide = (id: string, verdict: Verdict) => sendJson<{ message: string }>(`/api/habits/${encodeURIComponent(id)}`, 'POST', { verdict });
+export const analyse = () => sendJson<{ found: number }>('/api/habits/analyse', 'POST');

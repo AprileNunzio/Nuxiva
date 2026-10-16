@@ -6,6 +6,24 @@
     "title": "Leyes Robóticas",
     "description": "Constitución ética inviolable",
     "status": "Activo",
-    "open_app": "Abrir"
+    "open_app": "Abrir",
+    "loading": "Cargando…",
+    "unreachable": "Servidor no accesible",
+    "on": "Activo",
+    "off": "Apagado",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "add": "Añadir",
+    "stat_fixed": "Leyes fundamentales",
+    "stat_custom": "Tus reglas",
+    "fixed_title": "Leyes inmutables",
+    "fixed_note": "Tienen prioridad absoluta sobre cualquier instrucción y no se pueden modificar.",
+    "custom_title": "Reglas añadidas por ti",
+    "custom_empty": "Aún no hay reglas personales: añade una arriba.",
+    "add_placeholder": "Escribe una regla que Nuxiva debe respetar siempre",
+    "move_up": "Subir",
+    "move_down": "Bajar"
   }
 }

@@ -1,0 +1,49 @@
+{
+  "id": "backup",
+  "name": "Backup",
+  "icon": "🗄",
+  "category": "sistema",
+  "order": 90,
+  "pinned": false,
+  "panel": "",
+  "toggle": {
+    "env": "NUXIVA_BACKUP",
+    "default": "1",
+    "apply": []
+  },
+  "description": "Copie di sicurezza dello stato di Nuxiva (impostazioni, memoria, progetti, automazioni): archivi compressi con impronta SHA-256, verificabili e scaricabili, creati a mano o a intervalli regolari.",
+  "capabilities": [
+    "Archivio compresso dello stato, con permessi riservati al solo sistema",
+    "Impronta SHA-256 per verificare che l'archivio non sia stato alterato",
+    "Backup automatico a intervalli regolari",
+    "Conserva solo gli ultimi backup, eliminando i più vecchi",
+    "Download e cancellazione dal pannello"
+  ],
+  "settings": [
+    {
+      "key": "NUXIVA_BACKUP_HOURS",
+      "label": "Ogni quante ore",
+      "type": "select",
+      "default": "24",
+      "options": [
+        {"value": "0", "label": "Solo manuale"},
+        {"value": "6", "label": "6 ore"},
+        {"value": "12", "label": "12 ore"},
+        {"value": "24", "label": "Ogni giorno"},
+        {"value": "168", "label": "Ogni settimana"}
+      ]
+    },
+    {
+      "key": "NUXIVA_BACKUP_KEEP",
+      "label": "Backup da conservare",
+      "type": "select",
+      "default": "7",
+      "options": [
+        {"value": "3", "label": "3"},
+        {"value": "7", "label": "7"},
+        {"value": "14", "label": "14"},
+        {"value": "30", "label": "30"}
+      ]
+    }
+  ]
+}

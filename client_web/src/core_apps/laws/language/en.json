@@ -6,6 +6,24 @@
     "title": "Robotic Laws",
     "description": "Robotic constitution and ethical guardrails",
     "status": "Active",
-    "open_app": "Open"
+    "open_app": "Open",
+    "loading": "Loading…",
+    "unreachable": "Server unreachable",
+    "on": "On",
+    "off": "Off",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "stat_fixed": "Fundamental laws",
+    "stat_custom": "Your rules",
+    "fixed_title": "Immutable laws",
+    "fixed_note": "They take absolute priority over any instruction and cannot be changed.",
+    "custom_title": "Rules you added",
+    "custom_empty": "No personal rules yet: add one above.",
+    "add_placeholder": "Write a rule Nuxiva must always follow",
+    "move_up": "Move up",
+    "move_down": "Move down"
   }
 }
