@@ -1,6 +1,5 @@
 import json
 import os
-from pathlib import Path
 
 from config import STATE_DIR
 
