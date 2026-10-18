@@ -1,10 +1,21 @@
 import re
 
 from features.home_assistant.nlu.calls import build_call, is_sensitive
-from features.home_assistant.nlu.matching import (Catalog, detect_action, detect_params, match_areas, match_domains,
-                                                  resolve_targets)
+from features.home_assistant.nlu.matching import (
+    Catalog,
+    detect_action,
+    detect_params,
+    match_areas,
+    match_domains,
+    resolve_targets,
+)
 from features.home_assistant.nlu.text import find_phrase, norm, stem
-from features.home_assistant.nlu.vocabulary import PROTOCOLS, QUERY_RE, DOMAIN_TOKEN_STEMS
+from features.home_assistant.nlu.vocabulary import (
+    DOMAIN_TOKEN_STEMS,
+    PROTOCOLS,
+    QUERY_RE,
+)
+from features.home_assistant.readings import reading_query
 
 
 def _names_hit(t: str, cat: Catalog) -> bool:
@@ -80,7 +91,12 @@ def parse_query(text: str, cat: Catalog) -> dict | None:
         return q | {"topic": "presence"}
     if re.search(r"\b(temperatura|quanti gradi|che gradi|umidita|quanto fa (caldo|freddo)|fa caldo|fa freddo)\b", t) \
             and not detect_action(t):
-        return q | {"topic": "climate_read"}
+        metrics = ["humidity"] if "umidita" in t else ["temperature"]
+        if "umidita" in t and re.search(r"\b(temperatura|gradi|caldo|freddo)\b", t):
+            metrics = ["temperature", "humidity"]
+        return q | {"topic": "climate_read", "metrics": metrics}
+    if not detect_action(t) and (reading := reading_query(t)):
+        return q | reading
     if re.search(r"\b(porte|finestre|finestra|porta|cosa e aperto|aperture|chi ha lasciato)\b", t) and \
             re.search(r"\b(apert\w*|chius\w*)\b", t) and not detect_action(t):
         return q | {"topic": "open"}

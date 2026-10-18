@@ -17,5 +17,20 @@
     "NUXIVA_HOME_MOTION_MIN": "Minutes d'occupation après le dernier mouvement",
     "NUXIVA_HOME_CONFIRM": "Demander une confirmation pour les serrures, alarmes, portails et garages",
     "HOME_ASSISTANT_VERIFY_SSL": "Vérifiez le certificat HTTPS"
+  },
+  "readings": {
+    "missing_reading": "Aucun capteur ne correspond à la mesure, au dispositif ou à la période demandée.",
+    "unavailable": "mesure indisponible",
+    "multiple": "Plusieurs capteurs correspondent ; voici leurs mesures individuelles, sans les additionner.",
+    "power": "Puissance électrique",
+    "energy": "Énergie électrique",
+    "sensor_values": "Valeurs des capteurs Home Assistant",
+    "sensors": "Capteurs",
+    "temperature": "Température",
+    "humidity": "Humidité",
+    "missing_temperature": "température indisponible",
+    "missing_humidity": "humidité indisponible",
+    "climate": "Climat de la maison",
+    "rooms": "Pièces"
   }
 }

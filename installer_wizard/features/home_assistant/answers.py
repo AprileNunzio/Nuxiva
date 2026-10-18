@@ -1,5 +1,11 @@
-from features.home_assistant.constants import DOMAIN_PLURAL, FEMININE, PROTO_LABEL, STATE_IT
+from features.home_assistant.constants import (
+    DOMAIN_PLURAL,
+    FEMININE,
+    PROTO_LABEL,
+    STATE_IT,
+)
 from features.home_assistant.helpers import ago, join_words
+from features.home_assistant.readings import climate_answer, sensor_answer
 
 
 class HomeAnswers:
@@ -73,21 +79,10 @@ class HomeAnswers:
         from features.places.context import area as speaker_area
         here = speaker_area() or self.catalog.default_area
         ids = q.get("area_ids") or ([here] if here else self._rooms_for(q))
-        rooms = [r for r in (self.room_status(a) for a in ids) if r["temperature"] is not None or r["humidity"] is not None]
-        if not rooms:
-            return "Non ho sensori di temperatura in quella stanza.", {"mode": "face"}
-        parts = [f"in {r['name']} ci sono {str(r['temperature']).rstrip('0').rstrip('.')} gradi" if r["temperature"] is not None
-                 else f"in {r['name']}" for r in rooms[:6]]
-        for i, r in enumerate(rooms[:6]):
-            if r["humidity"] is not None:
-                parts[i] += f" con umidità al {round(r['humidity'])}%"
-        items = [{"label": r["name"], "value": " · ".join(x for x in (
-            f"{r['temperature']} °C" if r["temperature"] is not None else "",
-            f"{round(r['humidity'])}%" if r["humidity"] is not None else "") if x), "status": ""} for r in rooms]
-        joined = join_words(parts)
-        return (joined[:1].upper() + joined[1:] + ".",
-                {"mode": "focus" if len(rooms) > 1 else "face", "title": "Clima in casa", "subtitle": "Sensori delle stanze",
-                 "panels": [{"type": "list", "title": "Stanze", "items": items}]})
+        return climate_answer([self.room_status(a) for a in ids], q)
+
+    def _a_sensor_read(self, q: dict) -> tuple[str, dict]:
+        return sensor_answer(self.catalog, q, self.states)
 
     def _a_open(self, q: dict) -> tuple[str, dict]:
         rooms = [self.room_status(a) for a in self._rooms_for(q)]
