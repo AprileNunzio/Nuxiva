@@ -1,3 +1,4 @@
+import math
 import time
 from datetime import datetime
 
@@ -25,6 +26,16 @@ def ago(ts: float) -> str:
 def join_words(items: list[str]) -> str:
     items = [i for i in items if i]
     return items[0] if len(items) == 1 else ", ".join(items[:-1]) + " e " + items[-1] if items else ""
+
+
+def finite_number(value) -> float | None:
+    if isinstance(value, bool):
+        return None
+    try:
+        number = float(str(value).replace(",", "."))
+    except (TypeError, ValueError, OverflowError):
+        return None
+    return number if math.isfinite(number) else None
 
 
 def capabilities(domain: str, attrs: dict) -> set[str]:

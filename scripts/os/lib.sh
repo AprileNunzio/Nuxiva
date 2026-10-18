@@ -10,28 +10,14 @@ NUXIVA_ENV_FILE="$NUXIVA_ETC/nuxiva.env"
 NUXIVA_KIOSK_USER="${NUXIVA_KIOSK_USER:-nuxiva-kiosk}"
 OLLAMA_URL="${OLLAMA_URL:-http://127.0.0.1:11434}"
 CORE_URL="${CORE_URL:-http://127.0.0.1:8443}"
+NUXIVA_ENV_TOOL="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../installer_wizard/backend" && pwd)/env_format.py"
 
 load_env_file() {
-    local file="$1" line key val
+    local file="$1" line
     [ -f "$file" ] || return 0
-    while IFS= read -r line || [ -n "$line" ]; do
-        line="${line#"${line%%[![:space:]]*}"}"
-        line="${line%$'\r'}"
-        case "$line" in ""|\#* ) continue ;; *=*) ;; *) continue ;; esac
-        key="${line%%=*}"
-        val="${line#*=}"
-        key="${key#"${key%%[![:space:]]*}"}"
-        key="${key%"${key##*[![:space:]]}"}"
-        [[ "$key" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]] || continue
-        val="${val#"${val%%[![:space:]]*}"}"
-        val="${val%"${val##*[![:space:]]}"}"
-        if [[ "$val" =~ ^\"(.*)\"$ ]]; then
-            val="${BASH_REMATCH[1]}"
-        elif [[ "$val" =~ ^\'(.*)\'$ ]]; then
-            val="${BASH_REMATCH[1]}"
-        fi
-        export "$key=$val"
-    done < "$file"
+    while IFS= read -r -d '' line; do
+        export "$line"
+    done < <(python3 "$NUXIVA_ENV_TOOL" export "$file")
 }
 
 load_env_file "$NUXIVA_ENV_FILE"
@@ -179,37 +165,12 @@ set_env() {
     mkdir -p "$NUXIVA_ETC"
     touch "$NUXIVA_ENV_FILE"
     chmod 600 "$NUXIVA_ENV_FILE"
-    python3 -c '
-import sys, re
-from pathlib import Path
-k, v, f = sys.argv[1], sys.argv[2], Path(sys.argv[3])
-lines = f.read_text(encoding="utf-8", errors="ignore").splitlines() if f.exists() else []
-out = []
-found = False
-while len(v) >= 2 and ((v.startswith("\"") and v.endswith("\"")) or (v.startswith("\x27") and v.endswith("\x27"))):
-    v = v[1:-1].strip()
-esc = v.replace("\\", "\\\\").replace("\"", "\\\"")
-formatted = f"{k}=\"{esc}\""
-for line in lines:
-    stripped = line.strip()
-    if not stripped:
-        continue
-    if stripped.startswith("#"):
-        out.append(stripped)
-        continue
-    if "=" in stripped:
-        cur_k, cur_v = stripped.split("=", 1)
-        cur_k = cur_k.strip().strip("\"").strip("\x27").strip()
-        if cur_k == k:
-            found = True
-            out.append(formatted)
-        elif re.match(r"^[A-Za-z_][A-Za-z0-9_]*$", cur_k):
-            out.append(line)
-if not found:
-    out.append(formatted)
-f.write_text("\n".join(out) + "\n", encoding="utf-8")
-' "$key" "$value" "$NUXIVA_ENV_FILE" 2>/dev/null || echo "${key}=\"${value}\"" >> "$NUXIVA_ENV_FILE"
+    python3 "$NUXIVA_ENV_TOOL" set "$NUXIVA_ENV_FILE" "$key" "$value"
     export "$key=$value"
+}
+
+normalize_env_file() {
+    [ ! -f "$NUXIVA_ENV_FILE" ] || python3 "$NUXIVA_ENV_TOOL" normalize "$NUXIVA_ENV_FILE"
 }
 
 write_if_changed() {

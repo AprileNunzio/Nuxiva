@@ -3,10 +3,19 @@ import json
 import time
 
 from features.home_assistant.connection import HAError
-from features.home_assistant.constants import (BT_INT, CLOUD_INT, LAN_INT, VIRTUAL_INT, WIFI_INT, ZIGBEE_HUBS,
-                                               ZIGBEE_INT, ZWAVE_INT, log)
+from features.home_assistant.constants import (
+    BT_INT,
+    CLOUD_INT,
+    LAN_INT,
+    VIRTUAL_INT,
+    WIFI_INT,
+    ZIGBEE_HUBS,
+    ZIGBEE_INT,
+    ZWAVE_INT,
+    log,
+)
 from features.home_assistant.helpers import capabilities, parse_ts
-from features.home_assistant.nlu.matching import Catalog, DOMAIN_PRIORITY, area_names
+from features.home_assistant.nlu.matching import DOMAIN_PRIORITY, Catalog, area_names
 from features.home_assistant.nlu.text import find_phrase, norm, phrase_stems
 from features.home_assistant.nlu.vocabulary import DOMAIN_PHRASES
 from state import store
@@ -220,17 +229,19 @@ class HomeRegistry:
         for eid, e in self.entities.items():
             if e.get("area_id"):
                 area_entities.setdefault(e["area_id"], []).append(eid)
-            if not e.get("controllable"):
+            if not e.get("controllable") and (e["domain"] != "sensor" or e.get("hidden") or e.get("disabled")):
                 continue
             st = self.states.get(eid, {})
             names = {e["name"]} | set(e["aliases"]) | set(self.aliases.get(f"entity:{eid}", []))
             dev = self.devices.get(e["device_id"] or "")
-            if dev and (not e.get("original_name") or e["name"] == dev["name"]):
+            if dev and (e["domain"] == "sensor" or not e.get("original_name") or e["name"] == dev["name"]):
                 names.add(dev["name"])
             phrases = [p for p in {phrase_stems(n) for n in names if n} if p]
             cat.entities[eid] = {
                 "entity_id": eid, "domain": e["domain"], "name": e["name"], "area_id": e.get("area_id"),
-                "device_id": e.get("device_id"), "device_class": e.get("device_class", ""), "controllable": True,
+                "device_id": e.get("device_id"), "device_class": e.get("device_class", ""),
+                "device_name": dev["name"] if dev else "",
+                "controllable": bool(e.get("controllable")),
                 "names": phrases, "caps": set(e.get("capabilities") or []), "state": st.get("state"),
                 "attrs": st.get("attrs", {}), "is_group": isinstance(st.get("attrs", {}).get("entity_id"), list),
                 "as_light": e["domain"] == "switch" and any(find_phrase(list(p), lw) >= 0

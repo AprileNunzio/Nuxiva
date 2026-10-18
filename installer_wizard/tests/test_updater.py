@@ -38,11 +38,7 @@ class UpdaterTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_ci_status_check_runs_success(self):
         payload = {
-            "check_runs": [
-                {"name": "validate-python", "status": "completed", "conclusion": "success"},
-                {"name": "tests", "status": "completed", "conclusion": "success"},
-                {"name": "kernel-tests", "status": "completed", "conclusion": "success"},
-            ]
+            "check_runs": [{"name": name, "status": "completed", "conclusion": "success"} for name in updater.GATED_JOBS]
         }
         res_mock = mock.MagicMock()
         res_mock.status_code = 200
@@ -79,7 +75,7 @@ class UpdaterTest(unittest.IsolatedAsyncioTestCase):
             status = await updater.ci_status("444455556666")
             self.assertEqual(status, "failure")
 
-    async def test_ci_status_fallback_to_workflow_runs(self):
+    async def test_ci_workflow_success_does_not_replace_required_job_results(self):
         cr_mock = mock.MagicMock()
         cr_mock.status_code = 200
         cr_mock.json.return_value = {"check_runs": []}
@@ -101,7 +97,45 @@ class UpdaterTest(unittest.IsolatedAsyncioTestCase):
         with mock.patch("updater._slug", new_callable=mock.AsyncMock, return_value="AprileNunzio/Nuxiva"), \
                 mock.patch("httpx.AsyncClient", return_value=client_mock):
             status = await updater.ci_status("777788889999")
-            self.assertEqual(status, "success")
+            self.assertEqual(status, "pending")
+
+    async def test_ci_requires_every_job_and_rejects_skipped_or_neutral_results(self):
+        for missing in updater.GATED_JOBS:
+            runs = [{"name": name, "status": "completed", "conclusion": "success"}
+                    for name in updater.GATED_JOBS if name != missing]
+            response = mock.Mock()
+            client = mock.AsyncMock()
+            client.__aenter__.return_value = client
+            client.get.return_value = response
+            with mock.patch("updater._slug", return_value="AprileNunzio/Nuxiva"), \
+                    mock.patch("httpx.AsyncClient", return_value=client):
+                for conclusion, expected in ((None, "pending"), ("skipped", "failure"), ("neutral", "failure")):
+                    with self.subTest(missing=missing, conclusion=conclusion):
+                        updater._ci.clear()
+                        response.json.return_value = {"check_runs": runs + ([] if conclusion is None else
+                            [{"name": missing, "status": "completed", "conclusion": conclusion}])}
+                        self.assertEqual(await updater.ci_status("abc123"), expected)
+
+    async def test_ci_uses_latest_result_for_each_exact_job_name(self):
+        runs = [{"id": 2, "name": name, "status": "completed", "conclusion": "success"} for name in updater.GATED_JOBS]
+        runs += [{"id": 1, "name": "tests", "status": "completed", "conclusion": "failure"},
+                 {"id": 3, "name": "unrelated-tests", "status": "completed", "conclusion": "failure"}]
+        response = mock.Mock()
+        response.json.return_value = {"check_runs": runs}
+        client = mock.AsyncMock()
+        client.__aenter__.return_value = client
+        client.get.return_value = response
+        with mock.patch("updater._slug", return_value="AprileNunzio/Nuxiva"), mock.patch("httpx.AsyncClient", return_value=client):
+            self.assertEqual(await updater.ci_status("abc123"), "success")
+
+    async def test_github_outage_never_bypasses_ci_after_an_hour(self):
+        updater._unreachable_since = time.time() - 7200
+        with mock.patch("updater.require_ci", return_value=True), \
+                mock.patch("updater.git", return_value=(0, "abc123")), \
+                mock.patch("updater.ci_status", return_value="unknown"):
+            sha, note = await updater.pick_target("remote")
+        self.assertEqual(sha, "")
+        self.assertIn("attendo", note)
 
     async def test_ci_status_old_commit_with_no_runs_is_untested_not_pending(self):
         cr_mock = mock.MagicMock()

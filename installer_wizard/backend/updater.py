@@ -13,7 +13,6 @@ PENDING_FILE = STATE_DIR / "update_pending.json"
 BAD_REVS_FILE = STATE_DIR / "bad_revs"
 LAST_GOOD_FILE = STATE_DIR / "last_good_rev"
 GATED_JOBS = {"validate-python", "tests", "kernel-tests", "native-core", "validate-scripts", "validate-web-client"}
-UNREACHABLE_GRACE = 3600
 BAD_REVS_COOLDOWN = 1800.0
 PRIORITY_FETCH_TIMEOUT = 45
 _ci: dict[str, tuple[str, float]] = {}
@@ -109,20 +108,22 @@ async def ci_status(sha: str) -> str:
             r = await client.get(
                 f"https://api.github.com/repos/{slug}/commits/{sha}/check-runs",
                 headers={"Accept": "application/vnd.github+json"},
-                params={"per_page": 50},
+                params={"per_page": 100},
             )
             r.raise_for_status()
             check_runs = r.json().get("check_runs", [])
             _unreachable_since = 0.0
 
-            runs = [c for c in check_runs if any(j in c.get("name", "") for j in GATED_JOBS)]
-            if not runs and check_runs:
-                runs = check_runs
-
-            if runs:
-                if any(c.get("conclusion") in ("failure", "cancelled", "timed_out", "action_required") for c in runs):
+            latest = {}
+            for check in check_runs:
+                name = check.get("name", "")
+                if name in GATED_JOBS and check.get("id", 0) >= latest.get(name, {}).get("id", 0):
+                    latest[name] = check
+            runs = list(latest.values())
+            if check_runs:
+                if any(c.get("status") == "completed" and c.get("conclusion") != "success" for c in runs):
                     status = "failure"
-                elif any(c.get("status") in ("in_progress", "queued") or c.get("status") != "completed" for c in runs):
+                elif set(latest) != GATED_JOBS or any(c.get("status") != "completed" for c in runs):
                     status = "pending"
                 else:
                     status = "success"
@@ -139,8 +140,6 @@ async def ci_status(sha: str) -> str:
                         status = "failure"
                     elif any(w.get("status") in ("queued", "in_progress") for w in w_runs):
                         status = "pending"
-                    elif any(w.get("status") == "completed" and w.get("conclusion") == "success" for w in w_runs):
-                        status = "success"
                     else:
                         status = "pending"
                 else:
@@ -180,8 +179,6 @@ async def pick_target(remote: str, allow_bad: bool = False) -> tuple[str, str]:
         if status == "untested" and not waiting:
             waiting = f"{sha[:7]} non ha test automatici su GitHub"
         if status == "unknown":
-            if _unreachable_since and time.time() - _unreachable_since > UNREACHABLE_GRACE:
-                return sha, "GitHub non raggiungibile da oltre un'ora: aggiorno senza conferma dei test"
             return "", "GitHub non raggiungibile: attendo la conferma dei test"
     if skipped_bad:
         waiting = f"{skipped_bad[:7]} ripristinata in precedenza (riprova con Aggiorna ora)"
@@ -244,7 +241,7 @@ async def apply(reason: str = "automatico", fetch_timeout: float = 180, force: b
         clear_bad_rev(target)
     previous = pending()
     rollback_to = previous["from"] if previous else info["local_rev"]
-    store.event("INFO", f"Aggiornamento {reason}: {info['local_rev'][:7]} → {target[:7]} (test superati)", "updater")
+    store.event("INFO", f"Aggiornamento {reason}: {info['local_rev'][:7]} → {target[:7]}", "updater")
     store.set_phase("UPDATING", "Download del nuovo firmware cognitivo…")
     PENDING_FILE.write_text(json.dumps({"from": rollback_to, "to": target, "at": time.time()}))
     code, out = await git("reset", "--hard", target)

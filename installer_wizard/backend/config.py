@@ -1,9 +1,12 @@
 import json
+import logging
 import os
 import re
 import tempfile
 from contextvars import ContextVar
 from pathlib import Path
+
+from env_format import decode_value, format_line
 
 BACKEND_DIR = Path(__file__).resolve().parent
 APP_DIR = BACKEND_DIR.parent
@@ -218,10 +221,7 @@ def read_global_env() -> dict:
             key = key.strip().strip('"\'')
             if not _KEY_RE.match(key):
                 continue
-            val = value.strip()
-            while len(val) >= 2 and ((val.startswith('"') and val.endswith('"')) or (val.startswith("'") and val.endswith("'"))):
-                val = val[1:-1].strip()
-            env[key] = val
+            env[key] = decode_value(value)
     return env
 
 
@@ -249,11 +249,7 @@ def ollama_remote() -> bool:
 
 
 def _format_env_line(key: str, value: str) -> str:
-    s = str(value).strip()
-    while len(s) >= 2 and ((s.startswith('"') and s.endswith('"')) or (s.startswith("'") and s.endswith("'"))):
-        s = s[1:-1].strip()
-    escaped = s.replace("\\", "\\\\").replace('"', '\\"')
-    return f'{key}="{escaped}"'
+    return format_line(key, decode_value(str(value)))
 
 
 def sanitize_env_file() -> None:
@@ -282,10 +278,12 @@ def sanitize_env_file() -> None:
         try:
             os.chmod(tmp, 0o600)
         except OSError:
-            pass
+            logging.getLogger("nuxiva.config").exception("Unable to restrict configuration file permissions")
+            raise
         os.replace(tmp, ENV_FILE)
     except OSError:
-        pass
+        logging.getLogger("nuxiva.config").exception("Unable to normalize configuration file")
+        raise
 
 
 def write_env(updates: dict) -> None:
@@ -323,7 +321,8 @@ def write_env(updates: dict) -> None:
     try:
         os.chmod(tmp, 0o600)
     except OSError:
-        pass
+        logging.getLogger("nuxiva.config").exception("Unable to restrict configuration file permissions")
+        raise
     os.replace(tmp, ENV_FILE)
 
 

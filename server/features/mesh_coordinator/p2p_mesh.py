@@ -163,6 +163,11 @@ class NuxivaMeshCoordinator:
     def display_name(self, node_id: str, fallback: Optional[str] = None) -> str:
         return self.registry.custom_name(node_id) or fallback or node_id
 
+    def commit_state_event(self, event: Dict[str, Any]) -> None:
+        from .state_events import record_state_event
+
+        record_state_event(event)
+
     @property
     def crdt(self):
         """Accesso diretto all'istanza RustCrdtMesh."""

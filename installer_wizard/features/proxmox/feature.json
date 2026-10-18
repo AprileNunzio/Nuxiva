@@ -52,6 +52,12 @@
       "type": "secret"
     },
     {
+      "key": "PROXMOX_CA_FILE",
+      "label": "Certificato CA personalizzato (percorso sul server Nuxiva)",
+      "type": "text",
+      "placeholder": "/etc/nuxiva/proxmox-ca.pem"
+    },
+    {
       "key": "PROXMOX_VERIFY_SSL",
       "label": "Verifica SSL",
       "type": "bool",

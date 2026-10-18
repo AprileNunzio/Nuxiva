@@ -1,5 +1,8 @@
 import base64
+import asyncio
 import json
+import logging
+import sqlite3
 from typing import Dict, Any, AsyncGenerator
 from fastapi import APIRouter, HTTPException, Request, Response, WebSocket, WebSocketDisconnect
 from fastapi.responses import StreamingResponse
@@ -195,20 +198,26 @@ async def handle_user_command(payload: UserCommandPayload) -> Dict[str, Any]:
         context_override=payload.context or None,
     )
 
-    p2p_mesh.commit_state_event({
-        "event_type": "USER_COMMAND_EXECUTED",
-        "task_id": response.task_id,
-        "agent": response.agent_id,
-        "status": response.status,
-    })
+    event_recorded = True
+    try:
+        await asyncio.to_thread(p2p_mesh.commit_state_event, {
+            "event_type": "USER_COMMAND_EXECUTED",
+            "task_id": response.task_id,
+            "agent": response.agent_id,
+            "status": response.status,
+        })
+    except (OSError, sqlite3.Error):
+        logging.getLogger("nuxiva.commands").exception("Command event persistence failed for task %s", response.task_id)
+        event_recorded = False
 
     return {
-        "status": "success",
+        "status": response.status.lower(),
         "task_id": response.task_id,
         "agent_id": response.agent_id,
         "speech_output": response.speech_output,
         "execution_time_ms": response.execution_time_ms,
         "result_data": response.result_data,
+        "state_event_recorded": event_recorded,
     }
 
 CONTEXT_KEYS = ("people_present", "knowledge", "models", "max_tokens", "reply_language", "speaker", "dialogue",

@@ -3,8 +3,16 @@ import json
 import time
 
 from features.home_assistant.connection import HAError
-from features.home_assistant.constants import FLUSH_EVERY, HISTORY_DAYS, MOTION, OPENING, PRESENCE, TRACKED, log
-from features.home_assistant.helpers import ago, parse_ts
+from features.home_assistant.constants import (
+    FLUSH_EVERY,
+    HISTORY_DAYS,
+    MOTION,
+    OPENING,
+    PRESENCE,
+    TRACKED,
+    log,
+)
+from features.home_assistant.helpers import ago, finite_number, parse_ts
 from state import store
 
 
@@ -147,19 +155,16 @@ class HomeLive:
                   and (self.states.get(eid) or {}).get("state") == "on" and self.entities[eid].get("controllable")]
 
         def num(xs):
-            vals = []
-            for x in xs:
-                try:
-                    vals.append(float(x["state"]))
-                except (TypeError, ValueError):
-                    pass
+            vals = [v for x in xs if (v := finite_number(x["state"])) is not None
+                    and (x["class"] != "humidity" or 0 <= v <= 100)]
             return round(sum(vals) / len(vals), 1) if vals else None
         temperature = num(temps)
         if temperature is None:
             for eid in self.area_entities.get(aid, []):
                 if eid.startswith("climate.") and (t := (self.states.get(eid) or {}).get("attrs", {}).get("current_temperature")) is not None:
-                    temperature = t
-                    break
+                    temperature = finite_number(t)
+                    if temperature is not None:
+                        break
         return {"area_id": aid, "name": self.areas.get(aid, {}).get("name", aid), "occupied": occupied, "label": label,
                 "has_sensors": bool(motion or presence), "motion": [x["name"] for x in moving],
                 "presence": [x["name"] for x in present], "last_motion": last or None,
