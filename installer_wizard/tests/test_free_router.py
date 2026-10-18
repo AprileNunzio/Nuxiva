@@ -72,7 +72,11 @@ class FreeRouterFailoverTests(unittest.IsolatedAsyncioTestCase):
                 raise ConnectionResetError("upstream closed before response commit")
             return "completed response"
 
-        with patch.object(failover_engine.telemetry_emitter, "emit", return_value={}):
+        metrics = {"vision-primary": {"quota_pct": 100}, "vision-backup": {"quota_pct": 50}}
+        limiter = RateLimiter()
+        with patch.object(failover_engine.telemetry_emitter, "emit", return_value={}), \
+                patch.object(failover_engine.rate_limiter, "rate_limiter", limiter), \
+                patch.object(limiter, "metrics", return_value=metrics):
             result = await failover_engine.run(models, "vision", call)
         self.assertEqual(result, "completed response")
         self.assertEqual(called, ["vision-primary", "vision-backup"])
