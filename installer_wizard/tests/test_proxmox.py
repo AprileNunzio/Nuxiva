@@ -1,5 +1,6 @@
 import asyncio
 import json
+import ssl
 import unittest
 from unittest import mock
 
@@ -66,6 +67,22 @@ class ClientTests(unittest.TestCase):
             asyncio.run(self.client.overview())
         self.assertFalse(any(c.url.path.endswith("/access/ticket") for c in self.fake.calls))
         self.assertEqual(self.fake.calls[0].headers["authorization"], "PVEAPIToken=root@pam!nuxiva=abc-123")
+
+    def test_custom_ca_enables_certificate_verification_even_when_boolean_is_off(self):
+        context = ssl.create_default_context()
+        with env(PROXMOX_CA_FILE="/etc/nuxiva/proxmox-ca.pem", PROXMOX_VERIFY_SSL="0"), \
+                mock.patch.object(client_module.ssl, "create_default_context", return_value=context) as build_context, \
+                mock.patch.object(client_module.httpx, "AsyncClient") as http_client:
+            self.client._client(client_module.settings())
+        build_context.assert_called_once_with(cafile="/etc/nuxiva/proxmox-ca.pem")
+        self.assertIs(http_client.call_args.kwargs["verify"], context)
+
+    def test_invalid_custom_ca_fails_without_disabling_verification(self):
+        with env(PROXMOX_CA_FILE="missing-ca.pem"), \
+                mock.patch.object(client_module.ssl, "create_default_context", side_effect=FileNotFoundError), \
+                self.assertRaisesRegex(ProxmoxError, "CA Proxmox"):
+            asyncio.run(self.client.overview())
+        self.assertEqual(self.fake.calls, [])
 
     def test_invalid_requests_never_reach_proxmox(self):
         with env():

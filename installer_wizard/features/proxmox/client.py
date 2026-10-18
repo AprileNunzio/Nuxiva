@@ -1,4 +1,5 @@
 import re
+import ssl
 import time
 from dataclasses import dataclass
 
@@ -27,6 +28,7 @@ class Settings:
     token_id: str
     token_secret: str
     verify: bool
+    ca_file: str = ""
 
     @property
     def base(self) -> str:
@@ -42,7 +44,8 @@ def settings() -> Settings:
     host = env_get("PROXMOX_HOST", "").strip().removeprefix("https://").removeprefix("http://").rstrip("/")
     return Settings(host, env_get("PROXMOX_USER", "").strip(), env_get("PROXMOX_PASSWORD", ""),
                     env_get("PROXMOX_TOKEN_ID", "").strip(), env_get("PROXMOX_TOKEN_SECRET", ""),
-                    env_get("PROXMOX_VERIFY_SSL", "0").strip().lower() in ("1", "true", "on", "si", "sì"))
+                    env_get("PROXMOX_VERIFY_SSL", "0").strip().lower() in ("1", "true", "on", "si", "sì"),
+                    env_get("PROXMOX_CA_FILE", "").strip())
 
 
 def validate(s: Settings) -> None:
@@ -65,7 +68,11 @@ class ProxmoxClient:
         self.ticket: dict = {}
 
     def _client(self, s: Settings) -> httpx.AsyncClient:
-        return httpx.AsyncClient(base_url=s.base, verify=s.verify, timeout=TIMEOUT, transport=self.transport)
+        try:
+            verify = ssl.create_default_context(cafile=s.ca_file) if s.ca_file else s.verify
+        except (OSError, ssl.SSLError) as exc:
+            raise ProxmoxError("Certificato CA Proxmox non valido o non leggibile") from exc
+        return httpx.AsyncClient(base_url=s.base, verify=verify, timeout=TIMEOUT, transport=self.transport)
 
     async def _auth(self, client: httpx.AsyncClient, s: Settings, write: bool) -> dict:
         if s.uses_token:
