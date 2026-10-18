@@ -4,6 +4,7 @@ import { Btn, Pill, Row, inputClass } from '../../shared/kit';
 import { setMode, setPinned } from '../../shared/featureApi';
 import { FeatureRow } from '../../shared/featureTypes';
 import { SettingsEditor } from '../../shared/SettingsEditor';
+import { VoiceStudioPanel } from '../../../features/voice_studio/VoiceStudioPanel';
 
 interface FeatureCardProps {
   readonly feature: FeatureRow;
@@ -19,6 +20,7 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({ feature, busy, t, run 
     <Row
       actions={
         <>
+          {feature.id === 'voicestudio' && <Btn onClick={() => setOpen(true)}>{t('studio_open')}</Btn>}
           <select
             className={`${inputClass} w-36`}
             value={feature.state.mode}
@@ -57,6 +59,7 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({ feature, busy, t, run 
             </ul>
           ) : null}
           <SettingsEditor feature={feature} busy={busy} t={t} run={run} />
+          {feature.id === 'voicestudio' && <VoiceStudioPanel />}
         </div>
       ) : null}
     </Row>

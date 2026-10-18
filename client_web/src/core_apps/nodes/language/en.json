@@ -49,6 +49,14 @@
     "close_wizard": "Close and View in Mesh",
     "terminal_log": "Provisioning Execution Log",
     "open_app": "Open",
-    "status": "Active"
+    "status": "Active",
+    "loading": "Loading…",
+    "empty": "No connected nodes.",
+    "online": "Online",
+    "offline": "Offline",
+    "local_host": "Current server: cannot be removed here.",
+    "cancel": "Cancel",
+    "pc_link_hint": "You do not need to install the full Nuxiva server on the second PC; Linux and Python 3 are enough. Copy and run this command on that PC to install the small Nuxiva agent, then approve its request on this page. If the server uses a local HTTPS certificate, install the Nuxiva CA on the PC first.",
+    "pc_code_hint": "Alternatively generate a code and use --code CODE instead of --join. Codes expire after ten minutes."
   }
 }

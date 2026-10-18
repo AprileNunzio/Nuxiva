@@ -14,7 +14,7 @@ def _source_args(cam: dict) -> list:
     if cam["kind"] == "webcam":
         dev = cam["url"] or "0"
         return ["-f", "v4l2", "-i", dev if dev.startswith("/dev/") else f"/dev/video{dev}"]
-    return ["-rtsp_transport", "tcp", "-i", cam["url"]] if cam["kind"] in ("rtsp", "onvif", "hikvision") \
+    return ["-rtsp_transport", "tcp", "-i", cam["url"]] if cam["url"].lower().startswith(("rtsp://", "rtsps://")) \
         else ["-i", cam["url"]]
 
 

@@ -90,6 +90,7 @@
     "error_node_brain_cloud_test_failed": "Test du fournisseur échoué.",
     "error_node_brain_servers_unavailable": "Serveurs de modèles indisponibles.",
     "error_node_brain_server_failed": "Opération sur le serveur échouée.",
+    "error_node_brain_free_matrix_failed": "La matrice LLM gratuite est indisponible.",
     "error_team_unavailable": "Équipe d'agents indisponible.",
     "error_team_message_failed": "Message non remis.",
     "error_team_mode_failed": "Mode non modifié.",
@@ -123,6 +124,11 @@
     "error_expert_ask_failed": "L'expert n'a pas pu répondre.",
     "error_expert_live_failed": "Données en direct indisponibles.",
     "error_engine_status_failed": "État du moteur de raisonnement indisponible.",
-    "error_engine_switch_failed": "Changement de moteur impossible."
+    "error_engine_switch_failed": "Changement de moteur impossible.",
+    "nodes_load_failed": "Impossible de lire les nœuds connectés.",
+    "nodes_usb_failed": "Impossible de détecter les ports USB.",
+    "nodes_delete_failed": "Le nœud n’a pas été supprimé. Réessayez.",
+    "nodes_onboard_failed": "La connexion a échoué.",
+    "nodes_copy_failed": "Impossible de copier la commande : sélectionnez-la et copiez-la manuellement."
   }
 }

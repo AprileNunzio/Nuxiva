@@ -116,10 +116,10 @@ async def studio_preview(request: Request, _: str = Depends(require_admin)):
 @admin_routes.put("/api/voicestudio/use")
 async def studio_use(request: Request, user: str = Depends(require_admin)):
     voice = str((await request.json()).get("voice") or "")
-    known = {v["id"] for v in await _voices()}
+    known = {v["id"] for v in await _voices()} if voice else set()
     if voice and voice not in known:
         raise HTTPException(404, "Voce non trovata nello Studio")
-    rest = [v for v in catalog.custom_order() or [catalog.voice_name()] if not catalog.is_studio(v)]
+    rest = [v for v in catalog.custom_order() or [catalog.voice_name()] if not catalog.is_studio(v)] or [catalog.DEFAULT_VOICE]
     order = ([voice] if voice else []) + rest
     write_env({"NUXIVA_VOICE_ORDER": ",".join(dict.fromkeys(order)), "NUXIVA_VOICE": order[0]})
     store.event("INFO", f"Voce di Nuxiva: {client.name_of(voice) if voice else order[0]} ({user})", "voice")
@@ -128,19 +128,19 @@ async def studio_use(request: Request, user: str = Depends(require_admin)):
 
 @admin_routes.delete("/api/voicestudio/voices/{voice}")
 async def studio_delete(voice: str, user: str = Depends(require_admin)):
-    if voice in catalog.custom_order():
-        _drop(voice)
     try:
         await client.delete(voice)
     except StudioError as exc:
         raise _fail(exc)
+    if voice in catalog.custom_order() or voice == catalog.voice_name():
+        _drop(voice)
     store.event("INFO", f"Voce eliminata dallo Studio: {voice} ({user})", "voice")
     return {"ok": True}
 
 
 def _drop(voice: str) -> None:
-    rest = [v for v in catalog.custom_order() if v != voice]
-    write_env({"NUXIVA_VOICE_ORDER": ",".join(rest), "NUXIVA_VOICE": rest[0] if rest else ""})
+    rest = [v for v in catalog.custom_order() if v != voice] or [catalog.DEFAULT_VOICE]
+    write_env({"NUXIVA_VOICE_ORDER": ",".join(rest), "NUXIVA_VOICE": rest[0]})
 
 
 async def _voices() -> list[dict]:

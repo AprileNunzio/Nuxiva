@@ -1,0 +1,21 @@
+{
+  "meta": {"locale": "fr"},
+  "dictionary": {
+    "module.title": "Matrice LLM gratuite et basculement",
+    "module.subtitle": "Routage entre des modèles dont le prix officiel est nul",
+    "mode.free_matrix": "Matrice cloud sans coût",
+    "pool.chat": "Conversation",
+    "pool.voice_fast": "Voix rapide mesurée",
+    "pool.agent_tools": "Agents et outils",
+    "pool.vision": "Vision et images",
+    "pool.deep_code": "Raisonnement et code",
+    "status.available": "Prêt",
+    "status.cooldown_429": "Pause après limite de requêtes",
+    "status.degraded": "Fournisseur ralenti",
+    "status.key_invalid": "Clé invalide",
+    "failover.reason.rate_limit_429": "Limite de requêtes atteinte",
+    "failover.reason.provider_error": "Fournisseur temporairement indisponible",
+    "failover.reason.timeout": "Délai de réponse dépassé",
+    "catalog.unavailable": "Catalogue indisponible"
+  }
+}

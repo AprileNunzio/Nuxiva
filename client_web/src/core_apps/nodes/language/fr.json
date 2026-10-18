@@ -49,6 +49,14 @@
     "close_wizard": "Fermer et afficher dans le maillage",
     "terminal_log": "Journal d'Exécution du Provisionnement",
     "open_app": "Ouvrir",
-    "status": "Actif"
+    "status": "Actif",
+    "loading": "Chargement…",
+    "empty": "Aucun nœud connecté.",
+    "online": "En ligne",
+    "offline": "Hors ligne",
+    "local_host": "Serveur actuel : il ne peut pas être supprimé ici.",
+    "cancel": "Annuler",
+    "pc_link_hint": "Il n’est pas nécessaire d’installer le serveur Nuxiva complet sur le deuxième PC : Linux et Python 3 suffisent. Copiez et exécutez cette commande sur ce PC pour installer le petit agent Nuxiva, puis approuvez sa demande sur cette page. Si le serveur utilise un certificat HTTPS local, installez d’abord l’autorité Nuxiva sur le PC.",
+    "pc_code_hint": "Vous pouvez aussi générer un code et utiliser --code CODE à la place de --join. Le code expire après dix minutes."
   }
 }

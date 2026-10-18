@@ -77,11 +77,6 @@ class InstantAutoSetupPayload(BaseModel):
 LOOPBACK = {"127.0.0.1", "::1", "localhost"}
 
 async def _stream_reasoning_generator(query: str, context: Dict[str, Any]) -> AsyncGenerator[str, None]:
-    cached = await semantic_cache.lookup(query)
-    if cached.hit and cached.action_result:
-        yield f"event: cache_hit\ndata: {json.dumps({'speech_output': cached.action_result.get('speech_output', ''), 'similarity': cached.similarity, 'latency_ms': cached.lookup_latency_ms, 'strategy': cached.strategy})}\n\n"
-        yield f"event: done\ndata: {json.dumps({'status': 'completed', 'source': 'semantic_cache'})}\n\n"
-        return
 
     decision = await system1_router.classify(query)
     yield f"event: system1\ndata: {json.dumps(decision.model_dump())}\n\n"
@@ -98,11 +93,6 @@ async def _stream_reasoning_generator(query: str, context: Dict[str, Any]) -> As
         if active_j:
             yield f"event: journey_snapshot\ndata: {json.dumps(active_j.snapshot())}\n\n"
         yield f"event: response\ndata: {json.dumps({'chunk': res.speech_output, 'surface': res.result_data.get('surface'), 'action': res.result_data.get('action'), 'widget_html': res.result_data.get('widget_html')})}\n\n"
-        await semantic_cache.record_success(query, {
-            "agent_id": res.agent_id,
-            "speech_output": res.speech_output,
-            "result_data": res.result_data,
-        })
         yield f"event: done\ndata: {json.dumps({'status': 'completed', 'source': decision.intent.value})}\n\n"
         return
 
@@ -128,11 +118,6 @@ async def _stream_reasoning_generator(query: str, context: Dict[str, Any]) -> As
     if accumulated_response:
         j.finish("ok", accumulated_response, "system2_latent_engine")
         yield f"event: journey_snapshot\ndata: {json.dumps(j.snapshot())}\n\n"
-        await semantic_cache.record_success(query, {
-            "agent_id": "system2_latent_engine",
-            "speech_output": accumulated_response,
-            "thinking": accumulated_thinking,
-        })
 
     yield f"event: done\ndata: {json.dumps({'status': 'completed', 'source': 'system2_latent'})}\n\n"
 

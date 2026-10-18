@@ -27,5 +27,7 @@ export async function deleteNode(nodeId: string): Promise<{ removed: boolean; st
     method: 'DELETE',
   });
   if (!res.ok) throw new Error(`HTTP error ${res.status}`);
-  return res.json();
+  const result = await res.json();
+  if (result.removed !== true) throw new Error(result.error || result.status || 'node_not_removed');
+  return result;
 }

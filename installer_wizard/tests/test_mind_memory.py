@@ -13,7 +13,7 @@ class LongTermMemoryTests(unittest.TestCase):
         folder = tempfile.TemporaryDirectory()
         self.addCleanup(folder.cleanup)
         root = Path(folder.name)
-        for name, value in (("MIND_DIR", root), ("FACTS_FILE", root / "facts.json")):
+        for name, value in (("MIND_DIR", root), ("FACTS_FILE", root / "facts.json"), ("MEMORY_KEY", root / "mind.key")):
             patcher = mock.patch.object(memory_module, name, value)
             patcher.start()
             self.addCleanup(patcher.stop)
@@ -21,7 +21,7 @@ class LongTermMemoryTests(unittest.TestCase):
 
     def test_someone_else_never_receives_personal_memories(self):
         self.memory.add("Nunzio è allergico alle arachidi", who="nunzio")
-        self.memory.add("La casa ha il riscaldamento a pavimento allergico", who="")
+        self.memory.add("La casa ha il riscaldamento a pavimento allergico", who="", scope="shared")
         self.assertEqual([f["who"] for f in self.memory.recall("allergico", who="")], [""])
         self.assertEqual([f["who"] for f in self.memory.recall("allergico", who="anna")], [""])
         self.assertIn("nunzio", [f["who"] for f in self.memory.recall("allergico", who="nunzio")])

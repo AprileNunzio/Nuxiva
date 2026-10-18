@@ -6,6 +6,7 @@ from config import EDITABLE_KEYS, NUXIVA_DIR, NODE, node_keys, read_global_env
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import FileResponse
 from state import store
+from config import PUBLIC_PORT
 
 from features.nodes import server
 from features.nodes.beacon import beacon
@@ -158,6 +159,14 @@ async def nodes_code(user: str = Depends(require_admin)):
     store.event("INFO", f"Codice di abbinamento nodi generato da {user}", "nodes")
     from features.nodes import trust
     return {**registry.new_code(), "ca_fingerprint": trust.ca_fingerprint()}
+
+
+@admin_routes.get("/api/nodes/connection")
+async def nodes_connection(request: Request, _: str = Depends(require_admin)):
+    url = request.url.replace(path="", query="")
+    if not request.scope.get("root_path", "").endswith("/admin"):
+        url = url.replace(scheme="http", port=PUBLIC_PORT)
+    return {"server": str(url).rstrip("/")}
 
 
 @admin_routes.put("/api/nodes/{node_id}")

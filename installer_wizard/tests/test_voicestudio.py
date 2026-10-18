@@ -202,6 +202,21 @@ class ApiTest(StudioCase):
         self.assertEqual(r.json()["voice"], "studio_ee11ff22")
         self.assertIn(("POST", "/profiles/ee11ff22/consent"), self.fake.calls)
 
+    def test_reset_sole_studio_voice_uses_default_even_when_studio_is_offline(self):
+        with mock.patch.object(catalog, "custom_order", return_value=["studio_ab12cd34"]), \
+                mock.patch.object(studio_api, "_voices", new_callable=mock.AsyncMock) as voices:
+            response = self.http.put("/api/voicestudio/use", json={"voice": ""})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.written["NUXIVA_VOICE"], catalog.DEFAULT_VOICE)
+        voices.assert_not_awaited()
+
+    def test_failed_delete_does_not_change_selected_voice(self):
+        with mock.patch.object(catalog, "custom_order", return_value=["studio_ab12cd34"]), \
+                mock.patch.object(client, "delete", new_callable=mock.AsyncMock, side_effect=StudioError("offline")):
+            response = self.http.delete("/api/voicestudio/voices/studio_ab12cd34")
+        self.assertEqual(response.status_code, 502)
+        self.assertEqual(self.written, {})
+
     def test_check_reports_problems_without_raising(self):
         r = self.http.post("/api/voicestudio/check", json={"url": "http://8.8.8.8:3900", "key": "x"}).json()
         self.assertFalse(r["ok"])

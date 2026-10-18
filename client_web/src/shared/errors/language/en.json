@@ -90,6 +90,7 @@
     "error_node_brain_cloud_test_failed": "Provider test failed.",
     "error_node_brain_servers_unavailable": "Model servers unavailable.",
     "error_node_brain_server_failed": "Server operation failed.",
+    "error_node_brain_free_matrix_failed": "The free LLM matrix is unavailable.",
     "error_team_unavailable": "Agent team unavailable.",
     "error_team_message_failed": "Message not delivered.",
     "error_team_mode_failed": "Mode not changed.",
@@ -123,6 +124,11 @@
     "error_expert_ask_failed": "The expert could not answer.",
     "error_expert_live_failed": "Live data unavailable.",
     "error_engine_status_failed": "Reasoning engine status unavailable.",
-    "error_engine_switch_failed": "Engine switch failed."
+    "error_engine_switch_failed": "Engine switch failed.",
+    "nodes_load_failed": "Cannot read connected nodes.",
+    "nodes_usb_failed": "Cannot detect USB ports.",
+    "nodes_delete_failed": "The node was not removed. Please retry.",
+    "nodes_onboard_failed": "Connection failed.",
+    "nodes_copy_failed": "Cannot copy the command: select and copy it manually."
   }
 }

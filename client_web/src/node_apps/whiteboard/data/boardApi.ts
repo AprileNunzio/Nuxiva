@@ -1,3 +1,4 @@
+import { adminPath } from '../../../shared/http/basePath';
 import { asRecord, asString, requestJson } from '../../shared/data/http';
 import { Item } from '../render/primitives';
 
@@ -72,4 +73,4 @@ export async function listBoardPrinters(signal?: AbortSignal): Promise<{ printer
 }
 
 export const printBoard = (printerId: string) => post('/api/board/print', { printer_id: printerId });
-export const PDF_URL = '/api/board/pdf';
+export const PDF_URL = adminPath('/api/board/pdf');

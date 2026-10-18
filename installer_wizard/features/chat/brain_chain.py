@@ -1,5 +1,6 @@
 import asyncio
 import time
+from dataclasses import replace
 from itertools import groupby
 from typing import Any, Awaitable, Callable, Dict, List, Optional
 
@@ -172,6 +173,9 @@ async def _cloud(ref: str, query: str, device: str, context: dict, route: dict) 
         trace.abort(call, str(exc))
         raise
     brains.record(ref, answer.ms, True, route["kind"])
+    if route.get("free_matrix_active"):
+        from features.brain.free_router.failover_engine import pool_for, succeeded
+        succeeded(ref, ref.removeprefix("cloud:openrouter/"), answer.ms, pool_for(ref, route.get("task_pool", "chat")))
     trace.finish(call, ref, answer.ms, answer.text)
     background(touch(ref))
     return {
@@ -199,12 +203,23 @@ def _candidates(models: List[str]) -> List[tuple]:
 
 
 async def ask(query: str, device: str, context: dict, route: dict, core_local: Callable) -> dict:
-    candidates = _candidates(route["models"])
+    pool = route.get("task_pool") if route.get("task_pool") in ("chat", "agent_tools", "vision", "deep_code", "voice_fast") else ("deep_code" if route.get("kind") == "deep" else "chat")
+    from features.brain.free_router.failover_engine import configured_refs
+    free_models = await configured_refs(pool)
+    free_matrix_active = free_models is not None
+    model_refs = route["models"]
+    if free_matrix_active:
+        local_models = [model for model in model_refs if not is_cloud(model)]
+        model_refs = list(dict.fromkeys([*free_models, *local_models]))
+        route = {**route, "models": model_refs, "free_matrix_active": True, "task_pool": pool}
+    candidates = _candidates(model_refs)
     if not candidates:
         raise NoBrainAvailable("nessun cervello configurato")
     cortical_chain.set_mode(route.get("reasoning_mode") or ("nuxiva-5.0-veloce" if route.get("kind") == "chat" else DEFAULT_MODE))
     engine = cortical_chain.engine()
     plan = engine.effective(query, cortical_chain.limbic).strategy
+    if free_matrix_active:
+        plan = replace(plan, candidates=1, pick="sequential", critic=False)
     parallel = plan.pick != "sequential" and min(plan.candidates, len(candidates)) > 1
     run_route = {**route, "remember": not parallel}
 

@@ -1,4 +1,5 @@
 import { MeshSnapshot, StreamState } from '../domain/types';
+import { adminPath } from '../../../shared/http/basePath';
 import { TELEMETRY_STREAM_PATH } from './meshApi';
 import { TopologyParseError, parseTopology } from './topologyParser';
 
@@ -15,7 +16,7 @@ export interface MeshStreamHandlers {
 
 function streamUrl(): string {
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-  return `${protocol}//${window.location.host}${TELEMETRY_STREAM_PATH}`;
+  return `${protocol}//${window.location.host}${adminPath(TELEMETRY_STREAM_PATH)}`;
 }
 
 export class MeshTelemetryStream {

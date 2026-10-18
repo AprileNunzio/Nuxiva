@@ -45,6 +45,9 @@ async def cloud_update(pid: str, request: Request, user: str = Depends(require_a
         vault.update(pid, changes)
     except ValueError as exc:
         raise HTTPException(400, str(exc))
+    if pid == "openrouter" and "key" in changes:
+        from features.brain.free_router.rate_limiter import rate_limiter
+        rate_limiter.clear("openrouter")
     brains.invalidate()
     store.event("INFO", f"Cervello cloud {pid} aggiornato da {user}: {', '.join(changes)}", "cloud")
     return _describe(BY_ID[pid])

@@ -83,8 +83,19 @@ async def generate(prompt: str, *, as_json: bool = False, max_tokens: int = 500,
         system = _govern(system)
     errors = []
     models = list(dict.fromkeys([m for m in prefer or [] if m] + await component_chain(component) + await chain(kind)))
+    pool = "agent_tools" if as_json else "deep_code" if kind == "deep" else "chat"
+    from features.brain.free_router.failover_engine import configured_refs, pool_for, succeeded
+    free_models = await configured_refs(pool)
+    free_matrix_active = free_models is not None
+    if free_matrix_active:
+        local_models = [model for model in models if not is_cloud(model)]
+        models = list(dict.fromkeys([*free_models, *local_models]))
     call = trace.begin(component or kind, "richiesta di ragionamento" if kind == "deep" else "richiesta veloce", models)
     for model in models:
+        if free_matrix_active and model.startswith("cloud:openrouter/"):
+            from features.brain.free_router.rate_limiter import rate_limiter
+            if not rate_limiter.available("openrouter", model.removeprefix("cloud:openrouter/")):
+                continue
         trace.attempt(call, model)
         started = time.perf_counter()
         try:
@@ -109,6 +120,8 @@ async def generate(prompt: str, *, as_json: bool = False, max_tokens: int = 500,
                     pass
             continue
         elapsed = (time.perf_counter() - started) * 1000
+        if free_matrix_active and model.startswith("cloud:openrouter/"):
+            succeeded(model, model.removeprefix("cloud:openrouter/"), elapsed, pool_for(model, pool))
         brains.record(model, elapsed, True, kind)
         trace.finish(call, model, elapsed, text)
         background(touch(model))

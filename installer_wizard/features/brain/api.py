@@ -11,6 +11,7 @@ from access import require_admin
 from config import DEMO, ollama_url, read_env, write_env
 from feature_registry import registry
 from features.brain import assignments_api, bridge, chains_api
+from features.brain.free_router.api import admin_routes as free_matrix_routes
 from features.brain.brains import brains
 from features.brain.residency import rebalance
 from features.brain.roles import ROLES
@@ -22,6 +23,7 @@ admin_routes = APIRouter()
 admin_routes.include_router(assignments_api.admin_routes)
 admin_routes.include_router(bridge.admin_routes)
 admin_routes.include_router(chains_api.admin_routes)
+admin_routes.include_router(free_matrix_routes)
 public_routes = assignments_api.public_routes
 log = logging.getLogger("nuxiva.brain")
 _MODEL_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:/-]{0,119}$")

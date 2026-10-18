@@ -72,7 +72,8 @@ def get_usb_ports() -> List[Dict[str, str]]:
 def list_nodes() -> List[Dict[str, Any]]:
     try:
         from server.features.mesh_coordinator.p2p_mesh import p2p_mesh
-        canvas = p2p_mesh.get_mesh_canvas_state()
+        from mesh_topology import compose_topology, paired_nodes
+        canvas = compose_topology(p2p_mesh, paired_nodes())
         return canvas.get("nodes", [])
     except Exception:
         import socket
@@ -82,7 +83,8 @@ def list_nodes() -> List[Dict[str, Any]]:
             "tier": "Tier-1 (Host & Virtual Core)",
             "type": "compute",
             "ip": "127.0.0.1",
-            "status": "online"
+            "status": "online",
+            "source": "local", "online": True
         }]
 
 
@@ -171,12 +173,20 @@ def onboard_node(req: OnboardNodeRequest) -> Dict[str, Any]:
 @router.delete("/{node_id}")
 def delete_node(node_id: str) -> Dict[str, Any]:
     """Rimuove un nodo dal cluster mesh."""
-    try:
-        from server.features.mesh_coordinator.p2p_mesh import p2p_mesh
-        removed = p2p_mesh.remove_node(node_id)
-        return {"node_id": node_id, "removed": removed, "status": "deleted" if removed else "not_found"}
-    except Exception as exc:
-        return {"node_id": node_id, "removed": False, "error": str(exc)}
+    from server.features.mesh_coordinator.p2p_mesh import p2p_mesh
+    from features.nodes.registry import registry
+    from state import store
+
+    if node_id in (p2p_mesh.node_id, "virtual-core", "virtual_core"):
+        raise HTTPException(409, "Il server attuale e il nucleo non possono essere rimossi")
+    paired = node_id in registry.data["nodes"]
+    if paired:
+        registry.remove(node_id)
+    removed = p2p_mesh.remove_node(node_id) or paired
+    if not removed:
+        raise HTTPException(404, "Nodo non trovato")
+    store.event("INFO", f"Nodo {node_id} rimosso; autorizzazione revocata", "nodes")
+    return {"node_id": node_id, "removed": True, "status": "deleted"}
 
 
 class RenameNodeRequest(BaseModel):

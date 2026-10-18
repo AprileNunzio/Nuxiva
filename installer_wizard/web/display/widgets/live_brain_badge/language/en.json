@@ -1,0 +1,16 @@
+{
+  "meta": {"locale": "en"},
+  "dictionary": {
+    "free": "Free",
+    "active_model": "Active model: {model}",
+    "active_model_title": "Model used for this response",
+    "model": "Model ID: {model}",
+    "pool": "Task: {pool}",
+    "pool_chat": "Conversation",
+    "pool_agent_tools": "Agents and tools",
+    "pool_vision": "Vision",
+    "pool_deep_code": "Reasoning and code",
+    "pool_voice_fast": "Fast voice",
+    "switched": "Automatically switched from {previous} to {next}"
+  }
+}

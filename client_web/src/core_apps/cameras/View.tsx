@@ -114,7 +114,7 @@ export const View: React.FC = () => {
               </select>
             </Field>
             <Field label={needsUrl ? t('field_url') : t('field_device')}>
-              <input className={inputClass} value={url} onChange={(event) => setUrl(event.target.value)} placeholder={needsUrl ? 'rtsp://…' : '0'} required={needsUrl} />
+              <input className={inputClass} value={url} onChange={(event) => setUrl(event.target.value)} placeholder={needsUrl ? (kind === 'rtsps' ? 'rtsps://…' : 'rtsp://…') : '0'} required={needsUrl} />
             </Field>
             <Field label={t('field_retention')}>
               <select className={inputClass} value={retention} onChange={(event) => setRetention(Number(event.target.value))}>

@@ -1,3 +1,4 @@
+import { adminPath } from '../../../shared/http/basePath';
 import { asRecord, asString, requestJson } from '../../shared/data/http';
 
 export interface CameraOptions {
@@ -93,9 +94,9 @@ function parseSource(value: unknown): CameraSource | null {
   };
 }
 
-export const sourcePath = (id: string, suffix = ''): string => `/api/cameras/source/${encodeURIComponent(id)}${suffix}`;
+export const sourcePath = (id: string, suffix = ''): string => adminPath(`/api/cameras/source/${encodeURIComponent(id)}${suffix}`);
 export const liveUrl = (id: string, stream: boolean): string =>
-  `/api/cameras/live/${encodeURIComponent(id)}.${stream ? 'mjpg' : 'jpg'}`;
+  adminPath(`/api/cameras/live/${encodeURIComponent(id)}.${stream ? 'mjpg' : 'jpg'}`);
 export const photoUrl = (id: string, name: string): string => sourcePath(id, `/photos/${encodeURIComponent(name)}`);
 
 export async function fetchOverview(signal?: AbortSignal): Promise<CameraOverview> {

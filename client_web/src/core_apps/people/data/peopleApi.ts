@@ -1,3 +1,4 @@
+import { adminPath } from '../../../shared/http/basePath';
 import { NodeModuleError, asRecord, asString, asStringList, requestJson } from '../../../node_apps/shared/data/http';
 
 export const SLUG = /^[a-z0-9][a-z0-9-]{0,39}$/;
@@ -183,7 +184,7 @@ export async function fetchPhotos(slug: string, signal?: AbortSignal): Promise<P
     .flatMap((p) => {
       const id = asString(p.id, 130);
       const url = asString(p.url, 300);
-      return id && url && url.startsWith('/api/') ? [{ id, url, kind: asString(p.kind, 20) ?? 'sample', primary: p.is_primary === true, createdAt: num(p.created_at) }] : [];
+      return id && url && url.startsWith('/api/') ? [{ id, url: adminPath(url), kind: asString(p.kind, 20) ?? 'sample', primary: p.is_primary === true, createdAt: num(p.created_at) }] : [];
     });
 }
 

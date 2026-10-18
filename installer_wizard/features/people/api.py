@@ -236,21 +236,11 @@ async def admin_person_photo_delete(slug: str, photo_id: str, user: str = Depend
     d = FACES / clean
     if not d.is_dir():
         raise HTTPException(404, "Persona non trovata")
-    photos_dir = d / "photos"
-    target = None
-    if photo_id in ("photo_primary", "photo.jpg"):
-        target = d / "photo.jpg"
-    elif (photos_dir / photo_id).is_file():
-        target = photos_dir / photo_id
-    if not target or not target.is_file():
-        raise HTTPException(404, "Foto non trovata")
     try:
-        target.unlink()
-        if target.name == "photo.jpg":
-            remaining = sorted((p for p in photos_dir.glob("*.jpg") if views.kind_of(p.stem) not in views.BODY),
-                               key=lambda p: -p.stat().st_mtime)
-            if remaining:
-                shutil.copy(remaining[0], d / "photo.jpg")
+        from features.people.photos import delete_photo
+        delete_photo(d, photo_id, views.kind_of)
+    except FileNotFoundError:
+        raise HTTPException(404, "Foto non trovata")
     except OSError as exc:
         raise HTTPException(500, f"Foto non eliminata: {exc}")
 

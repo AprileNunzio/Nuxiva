@@ -256,6 +256,7 @@
     "ri_f_stop_best": "After the first valid answer it waits at most {{wait}} s for the others, then picks the highest score.",
     "ms_sequential": "1 at a time",
     "ms_first": "{{n}} racing",
-    "ms_best": "{{n}} compared"
+    "ms_best": "{{n}} compared",
+    "manage_nuxiva": "Manage Nuxiva"
   }
 }

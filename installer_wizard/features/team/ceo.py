@@ -1,8 +1,10 @@
 import time
 from dataclasses import dataclass, field
 from typing import Any
+from config import env_get
 
 from features.team.board import board
+from features.team.outcomes import describe, execution_outcome
 from features.team.scanner import DiscoveredAgent, scanner
 from features.team.stopwords import clean_tokens, is_conversational_query, normalize_text
 from state import store
@@ -210,6 +212,10 @@ class CEOExecutive:
             active_agent = self._get_conversation_agent(agents)
 
         agent_name = active_agent.name
+        outcome = execution_outcome(result)
+        result["outcome"] = outcome
+        result["execution_status"] = outcome["status"]
+        result["verified"] = outcome["verified"]
         is_general_conversation = active_agent.id in ("chat", "agent")
         if current_agent_lower.startswith("esperto ·"):
             agent_name = current_agent.split("·", 1)[1].strip()
@@ -223,7 +229,8 @@ class CEOExecutive:
             "tools_count": len(active_agent.tools),
             "widgets_count": len(active_agent.widgets),
             "plan": decision.delegation_plan,
-            "confidence": decision.confidence
+            "confidence": decision.confidence,
+            "outcome": outcome,
         }
 
         clean_current = current_agent
@@ -237,7 +244,8 @@ class CEOExecutive:
         else:
             result["agent"] = f"CEO [{agent_name}] · {clean_current}"
 
-        board.post("ceo", "tutti", f"Incarico completato con successo da {agent_name}", "conferma")
+        message, kind = describe(outcome, agent_name, env_get("NUXIVA_UI_LANG", "it"))
+        board.post("ceo", "tutti", message, kind)
         return result
 
     def get_team_overview(self) -> dict[str, Any]:

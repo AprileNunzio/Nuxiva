@@ -141,7 +141,7 @@ async def login(request: Request):
     store.event("INFO", f"Accesso admin: {username} da {ip}", "auth")
     resp = JSONResponse({"user": username})
     resp.set_cookie(auth.SESSION_COOKIE, auth.issue(username), max_age=auth.SESSION_TTL,
-                    httponly=True, samesite="strict")
+                    httponly=True, samesite="strict", secure=request.url.scheme == "https")
     return resp
 
 

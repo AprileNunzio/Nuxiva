@@ -1,4 +1,4 @@
-import json
+import logging
 import time
 import uuid
 
@@ -7,10 +7,13 @@ from state import store
 
 from features.mind import extract, scoring
 from features.mind.memory import MIND_DIR, LongTermMemory
+from features.mind.persistence import MemoryStorageError, PrivateDocument
+from features.mind.records import validate_state
 
 STATE_FILE = MIND_DIR / "mind.json"
 SKIP_STUDY = {"weather", "time", "system", "vision", "network", "brain", "music", "study", "voice_id"}
 DEFAULTS = {"long_term": True, "study_feed": True, "llm_facts": True, "min_memorability": 0.5}
+log = logging.getLogger("nuxiva.mind")
 
 
 class Mind:
@@ -22,42 +25,54 @@ class Mind:
         self.counters = {"evaluated": 0, "stored": 0, "ignored": 0, "study": 0}
         self.views: dict = {}
         self.suggestions: list = []
+        self.storage_error = ""
+        self.storage = PrivateDocument(STATE_FILE, self.memory.storage.key, validate_state)
         try:
-            saved = json.loads(STATE_FILE.read_text(encoding="utf-8"))
+            saved = self.storage.load({})
             self.settings.update({k: saved.get("settings", {}).get(k, v) for k, v in DEFAULTS.items()})
             self.diary = saved.get("diary", [])[:120]
             self.counters.update(saved.get("counters", {}))
             self.views = saved.get("views", {})
             self.suggestions = saved.get("suggestions", [])
-        except (OSError, ValueError):
-            pass
+        except (MemoryStorageError, AttributeError, TypeError) as exc:
+            self.storage_error = str(exc) if isinstance(exc, MemoryStorageError) else "storage_invalid"
+            log.error("Diario della memoria non disponibile: %s", self.storage_error)
         self.publish()
 
     def enabled(self) -> bool:
         return env_get("NUXIVA_MIND", "1") != "0"
 
     def save(self) -> None:
-        tmp = STATE_FILE.with_suffix(".tmp")
-        tmp.write_text(json.dumps({"settings": self.settings, "diary": self.diary[:120],
-                                   "counters": self.counters, "views": self.views,
-                                   "suggestions": self.suggestions}, ensure_ascii=False, indent=1), encoding="utf-8")
-        tmp.replace(STATE_FILE)
+        if self.storage_error:
+            raise MemoryStorageError(self.storage_error)
+        try:
+            self.storage.save({"settings": self.settings, "diary": self.diary[:120], "counters": self.counters,
+                               "views": self.views, "suggestions": self.suggestions})
+        except MemoryStorageError as exc:
+            self.storage_error = str(exc)
+            self.publish()
+            raise
 
     def publish(self) -> None:
         store.mind = {"enabled": self.enabled(), "facts": self.memory.stats()["count"],
                       "evaluated": self.counters["evaluated"], "stored": self.counters["stored"],
-                      "last": self.diary[0] if self.diary else None}
+                      "last": self.diary[0] if self.diary else None,
+                      "storage_error": self.memory.storage_error or self.storage_error}
         store.touch()
 
     def recall(self, query: str, who: str = "") -> str:
-        if not self.enabled() or not self.settings.get("long_term"):
+        if not self.enabled() or not self.settings.get("long_term") or self.memory.storage_error:
             return ""
-        hits = self.memory.recall(query, k=4, who=who)
+        try:
+            hits = self.memory.recall(query, k=4, who=who)
+        except MemoryStorageError:
+            self.publish()
+            return ""
         return "\n".join(f"- ({h['kind']}) {h['text']}" for h in hits)
 
     async def evaluate(self, said: str, reply: str, intent: str, device: str, directed: bool, confidence: float,
                        ui_mode: str, agent: str, who: str = "") -> None:
-        if not self.enabled() or not said:
+        if not self.enabled() or not said or self.memory.storage_error or self.storage_error:
             return
         try:
             from features.chat.dialogue import dialogue
@@ -167,8 +182,9 @@ class Mind:
 
     def summary(self) -> dict:
         return {"enabled": self.enabled(), "settings": self.settings, "defaults": DEFAULTS,
-                "counters": self.counters, "facts": self.memory.listing(), "facts_stats": self.memory.stats(),
-                "suggestions": self.suggestions, "diary": self.diary[:60]}
+                "counters": self.counters, "facts": [] if self.memory.storage_error else self.memory.listing(),
+                "facts_stats": self.memory.stats(), "suggestions": self.suggestions, "diary": self.diary[:60],
+                "storage_error": self.memory.storage_error or self.storage_error}
 
     def update_settings(self, changes: dict) -> dict:
         for key, default in DEFAULTS.items():

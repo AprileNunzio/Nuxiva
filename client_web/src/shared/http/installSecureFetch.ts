@@ -1,4 +1,5 @@
 import { emitSessionExpired } from './sessionEvents';
+import { adminPath } from './basePath';
 
 export const CSRF_HEADER = 'X-Nuxiva-Request';
 const AUTH_PREFIX = '/api/auth/';
@@ -25,7 +26,11 @@ export function installSecureFetch(): void {
     }
     const headers = new Headers(init?.headers ?? (input instanceof Request ? input.headers : undefined));
     headers.set(CSRF_HEADER, '1');
-    const response = await nativeFetch(input, { ...init, headers, credentials: 'same-origin' });
+    const target = adminPath(url.pathname);
+    const request = target === url.pathname ? input : input instanceof Request
+      ? new Request(`${url.origin}${target}${url.search}`, input)
+      : `${url.origin}${target}${url.search}`;
+    const response = await nativeFetch(request, { ...init, headers, credentials: 'same-origin' });
     if (response.status === 401 && !url.pathname.startsWith(AUTH_PREFIX)) {
       emitSessionExpired();
     }

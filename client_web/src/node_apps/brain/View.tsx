@@ -1,9 +1,10 @@
 import React, { useCallback, useState } from 'react';
-import { Brain, Cloud, HardDrive, Loader2, Workflow } from 'lucide-react';
+import { Brain, BrainCircuit, Cloud, HardDrive, Loader2, Workflow } from 'lucide-react';
 import { ControlScope } from '../console/data/nodeConsoleApi';
 import { ModuleFrame, Notice } from '../shared/components/ModuleFrame';
 import { useAction, usePolled } from '../shared/hooks/useAction';
 import { CloudTab } from './components/CloudTab';
+import { FreeMatrixTab } from './components/FreeMatrixTab';
 import { ModelsTab } from './components/ModelsTab';
 import { RolesTab } from './components/RolesTab';
 import { fetchBrains, fetchPool } from './data/brainApi';
@@ -18,6 +19,7 @@ const TABS = [
   ['roles', Workflow],
   ['models', HardDrive],
   ['cloud', Cloud],
+  ['free_matrix', BrainCircuit],
 ] as const;
 
 type Tab = (typeof TABS)[number][0];
@@ -66,8 +68,10 @@ export const View: React.FC<Props> = ({ scope = 'mesh' }) => {
             <RolesTab overview={overview.data} pool={pool.data ?? []} action={action} onSaved={overview.setData} />
           ) : tab === 'models' ? (
             <ModelsTab overview={overview.data} action={action} onChanged={refreshAll} />
-          ) : (
+          ) : tab === 'cloud' ? (
             <CloudTab action={action} onChanged={refreshAll} />
+          ) : (
+            <FreeMatrixTab action={action} onChanged={refreshAll} />
           )}
         </>
       )}

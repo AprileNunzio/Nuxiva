@@ -1,3 +1,4 @@
+import { adminPath } from '../../../shared/http/basePath';
 import React, { useEffect, useState } from 'react';
 import { VideoOff } from 'lucide-react';
 
@@ -26,7 +27,7 @@ export const Snapshot: React.FC<SnapshotProps> = ({ sourceId, name, offline }) =
       ) : (
         <img
           key={stamp}
-          src={`/api/cameras/live/${encodeURIComponent(sourceId)}.jpg?t=${stamp}`}
+          src={adminPath(`/api/cameras/live/${encodeURIComponent(sourceId)}.jpg?t=${stamp}`)}
           alt={name}
           onError={() => setFailed(true)}
           onLoad={() => setFailed(false)}

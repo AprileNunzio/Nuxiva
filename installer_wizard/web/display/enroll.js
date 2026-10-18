@@ -107,9 +107,9 @@
 
   D.Enroll = {
     start(ui) {
-      if (!D.local || session) return;
+      if (!D.Ear.micReady || session) return false;
       const plan = Array.isArray(ui.plan) && ui.plan.length ? ui.plan : (ui.sentences || []).map((text) => ({ kind: "reading", text }));
-      if (!plan.length) return;
+      if (!plan.length) return false;
       const assistant = (window.NUXIVA_ASSISTANT && window.NUXIVA_ASSISTANT.name) || "";
       session = { slug: ui.slug, name: ui.name, assistant: ui.assistant || assistant, lang: ui.lang || "it", train: !!ui.train,
                   plan, index: 0, tries: 0, answers: [], heard: "", note: { key: "enroll_get_ready", params: {}, tone: "" } };
@@ -121,6 +121,7 @@
         draw();
         expect();
       }, START_DELAY);
+      return true;
     },
     level(rms) {
       const bar = document.getElementById("en-level");
@@ -166,8 +167,11 @@
         if (ear.status && ear.status !== "done") return;
         if (voice.status && voice.status !== "done") return;
       }
-      seenRequest = request.id;
-      if (Date.now() / 1000 - (request.at || 0) < 600) this.start(request);
+      if (Date.now() / 1000 - (request.at || 0) >= 600) {
+        seenRequest = request.id;
+        return;
+      }
+      if (this.start(request)) seenRequest = request.id;
     },
     unavailable() {
       session = null;

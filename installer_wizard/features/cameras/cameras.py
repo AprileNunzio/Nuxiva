@@ -8,7 +8,7 @@ from state import store
 
 CAM_DIR = STATE_DIR / "cameras"
 REGISTRY = SealedFile(CAM_DIR / "registry.vault", ETC_DIR / "cameras.key")
-KINDS = ("webcam", "rtsp", "onvif", "hikvision")
+KINDS = ("webcam", "rtsp", "rtsps", "onvif", "hikvision")
 RETENTIONS = (5, 15, 60)
 _URL_RE = re.compile(r"^(?:rtsp|rtsps|http|https)://[^\s]{3,300}$", re.I)
 _DEV_RE = re.compile(r"^(?:/dev/video\d+|\d+)$")
@@ -51,6 +51,8 @@ class Cameras:
                 url = "0"
         elif not _URL_RE.match(url):
             raise ValueError("URL della telecamera non valido")
+        elif kind == "rtsps" and not url.lower().startswith("rtsps://"):
+            raise ValueError("Per RTSPS usa un indirizzo rtsps://")
         retention = int(body.get("retention_min", base.get("retention_min", 5)))
         if retention not in RETENTIONS:
             retention = 5

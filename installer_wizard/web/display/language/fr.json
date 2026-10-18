@@ -256,6 +256,7 @@
     "ri_f_stop_best": "Après la première réponse valide il attend au plus {{wait}} s les autres, puis choisit le meilleur score.",
     "ms_sequential": "1 à la fois",
     "ms_first": "{{n}} en course",
-    "ms_best": "{{n}} comparés"
+    "ms_best": "{{n}} comparés",
+    "manage_nuxiva": "Gérer Nuxiva"
   }
 }

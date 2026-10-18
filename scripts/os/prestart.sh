@@ -11,8 +11,7 @@ mkdir -p /etc/nuxiva /var/lib/nuxiva /var/log/nuxiva
 touch /etc/nuxiva/nuxiva.env
 chmod 700 /etc/nuxiva
 chmod 600 /etc/nuxiva/nuxiva.env
-chmod +x "$NUXIVA_DIR/scripts/os/kiosk/session.sh" "$NUXIVA_DIR/scripts/os/nuxivactl" \
-    "$NUXIVA_DIR/scripts/os/"*.sh "$NUXIVA_DIR/scripts/os/steps/"*.sh 2>/dev/null || true
+bash "$NUXIVA_DIR/scripts/os/kiosk/permissions.sh"
 
 if ! "$VENV/bin/python" -c "import fastapi, uvicorn, httpx, psutil, pam" >/dev/null 2>&1 \
         && [ -f "$STAMP" ]; then

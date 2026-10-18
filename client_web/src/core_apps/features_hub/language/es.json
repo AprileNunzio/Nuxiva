@@ -34,6 +34,7 @@
     "running": "En marcha",
     "stopped": "Detenida",
     "new": "Nueva",
-    "no_settings": "Esta función no tiene ajustes."
+    "no_settings": "Esta función no tiene ajustes.",
+    "studio_open": "Estudio de voces"
   }
 }

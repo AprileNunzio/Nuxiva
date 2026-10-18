@@ -1,3 +1,4 @@
+import { adminPath } from '../../shared/http/basePath';
 import { useState, useEffect, useCallback, useRef } from "react";
 import { WidgetItem, WidgetActionPayload } from "./types";
 
@@ -56,7 +57,7 @@ export function useDynamicWidgets() {
 
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
     const host = window.location.host;
-    const wsUrl = `${protocol}//${host}/api/v2/widgets/ws`;
+    const wsUrl = `${protocol}//${host}${adminPath("/api/v2/widgets/ws")}`;
 
     let active = true;
     let socket: WebSocket | null = null;

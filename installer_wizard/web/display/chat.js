@@ -88,7 +88,9 @@
         buffer = buffer.slice(split + 2);
         if (!line.startsWith("data: ")) continue;
         const ev = JSON.parse(line.slice(6));
-        if (ev.type === "token") {
+        if (ev.type === "brain_route") {
+          window.dispatchEvent(new CustomEvent("nuxiva-brain-route", { detail: ev.route }));
+        } else if (ev.type === "token") {
           if (!voice) { voice = D.speakStream(lang); D.setMode("face"); }
           said = cleanLive(said + ev.t);
           $("say").textContent = said;

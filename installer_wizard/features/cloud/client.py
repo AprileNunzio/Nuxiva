@@ -8,7 +8,10 @@ from features.cloud.vault import vault
 
 
 class CloudError(RuntimeError):
-    pass
+    def __init__(self, message: str, status_code: int | None = None, headers: dict | None = None) -> None:
+        super().__init__(message)
+        self.status_code = status_code
+        self.headers = dict(headers or {})
 
 
 @dataclass
@@ -112,14 +115,24 @@ async def complete(ref: str, messages: list[dict], system: str = "", max_tokens:
     started = time.perf_counter()
     try:
         res = await _post(url, body, head, timeout)
+        elapsed = (time.perf_counter() - started) * 1000
+        if pid == "openrouter":
+            from features.brain.free_router.failover_engine import observe
+            observe(ref, dict(res.headers), res.status_code, elapsed)
         if res.status_code == 400 and spec.kind != "anthropic":
             for extra in ("response_format", "temperature", "top_p", "reasoning_effort"):
                 body.pop(extra, None)
             res = await _post(url, body, head, timeout)
+            if pid == "openrouter":
+                from features.brain.free_router.failover_engine import observe
+                observe(ref, dict(res.headers), res.status_code, (time.perf_counter() - started) * 1000)
     except httpx.HTTPError as exc:
-        raise CloudError(f"{spec.name}: {type(exc).__name__}") from exc
+        if pid == "openrouter":
+            from features.brain.free_router.failover_engine import failed
+            failed(ref, 503)
+        raise CloudError(f"{spec.name}: {type(exc).__name__}", 503) from exc
     if res.status_code >= 400:
-        raise CloudError(f"{spec.name} {res.status_code}: {res.text[:240]}")
+        raise CloudError(f"{spec.name} {res.status_code}", res.status_code, dict(res.headers))
     text, tokens = _text(spec, res.json())
     if not text.strip():
         raise CloudError(f"{spec.name}: risposta vuota")

@@ -250,11 +250,12 @@ def build(admin: bool) -> FastAPI:
     client_web_dist = Path(__file__).resolve().parent.parent.parent / "client_web" / "dist"
     if admin:
         pages.mount_static(app, "shared")
-        if (client_web_dist / "assets").exists():
-            from fastapi.staticfiles import StaticFiles
-            app.mount("/assets", StaticFiles(directory=str(client_web_dist / "assets")), name="client-web-assets")
     else:
         pages.mount_static(app, "shared", "display", "monitor", "screen", "setup")
+
+    if (client_web_dist / "assets").exists():
+        from fastapi.staticfiles import StaticFiles
+        app.mount("/assets", StaticFiles(directory=str(client_web_dist / "assets")), name="client-web-assets")
 
     web_dir = Path(__file__).resolve().parent.parent.parent / "server" / "web"
     if web_dir.exists():
@@ -302,6 +303,8 @@ def build(admin: bool) -> FastAPI:
 
 public = build(admin=False)
 admin = build(admin=True)
+from remote_admin import RemoteAdmin
+public.mount("/admin", RemoteAdmin(admin), name="remote-admin")
 
 
 def secure_server():

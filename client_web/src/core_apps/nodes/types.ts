@@ -7,6 +7,8 @@ export interface MeshNodeItem {
   type: string;
   ip: string;
   status: string;
+  online?: boolean;
+  source?: 'local' | 'paired' | 'mesh';
   parent_id?: string;
   is_remote_vpn?: boolean;
   telemetry?: {

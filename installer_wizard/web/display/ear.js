@@ -257,6 +257,7 @@
     followup(seconds = 20) { send({ type: "followup", seconds, conversation: true }); },
     presence(alone) { if (alone !== lastAlone) { lastAlone = alone; send({ type: "presence", alone: alone || "" }); } },
     get state() { return state; },
+    get micReady() { return micAllowed() && !!stream && stream.getAudioTracks().some((track) => track.readyState === "live"); },
     get link() { return `pagina=${PAGE} ${document.visibilityState} v=${(window.NUXIVA_ASSET_V || "").slice(0, 7)} ws=${ws ? ["connessione", "aperto", "chiusura", "chiuso"][ws.readyState] : "nessuno"} mic=${micLive() ? "attivo" : "spento"} audio=${heardAt ? Math.round((Date.now() - heardAt) / 1000) + "s" : "mai"} errori=${wsFails} t=${Math.round(performance.now() / 1000)}s ws_creati=${stats.made} aperti=${stats.opens} msg=${stats.msgs} inviati=${stats.sends} mic_ok=${stats.mic}`; },
   };
 })();

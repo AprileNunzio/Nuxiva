@@ -90,6 +90,7 @@
     "error_node_brain_cloud_test_failed": "Prueba del proveedor fallida.",
     "error_node_brain_servers_unavailable": "Servidores de modelos no disponibles.",
     "error_node_brain_server_failed": "Operación en el servidor fallida.",
+    "error_node_brain_free_matrix_failed": "La matriz LLM gratuita no está disponible.",
     "error_team_unavailable": "Equipo de agentes no disponible.",
     "error_team_message_failed": "Mensaje no entregado.",
     "error_team_mode_failed": "Modo no cambiado.",
@@ -123,6 +124,11 @@
     "error_expert_ask_failed": "El experto no pudo responder.",
     "error_expert_live_failed": "Datos en vivo no disponibles.",
     "error_engine_status_failed": "Estado del motor de razonamiento no disponible.",
-    "error_engine_switch_failed": "No se pudo cambiar el motor."
+    "error_engine_switch_failed": "No se pudo cambiar el motor.",
+    "nodes_load_failed": "No se pueden leer los nodos conectados.",
+    "nodes_usb_failed": "No se detectan los puertos USB.",
+    "nodes_delete_failed": "El nodo no se ha eliminado. Inténtalo de nuevo.",
+    "nodes_onboard_failed": "La conexión ha fallado.",
+    "nodes_copy_failed": "No se puede copiar el comando: selecciónalo y cópialo manualmente."
   }
 }

@@ -12,7 +12,6 @@ from server.core.orchestrator.intent_classifier import intent_classifier
 from server.core.planner.task_decomposer import task_planner
 from server.shared.utils.text_sanitizer import TextSanitizer
 from server.core.reasoning.conversation import conversation_engine
-from server.core.memory.semantic_cache import semantic_cache
 from server.core.orchestrator.system1_router import system1_router, System1Intent
 from server.core.reasoning.system2_engine import system2_engine
 from server.core.telemetry.journey import journey
@@ -102,28 +101,6 @@ class OrchestratorDispatcher:
             laws_book.update(str((context_override or {}).get("laws") or ""))
             laws_span.ok("Leggi conformi (Asimov 0, 1, 2, 3)")
 
-        with journey.span("cache", "Memoria Semantica", "Lookup cache rapida") as cache_span:
-            cached_res = await semantic_cache.lookup(sanitized_query)
-            if cached_res.hit and cached_res.action_result:
-                cache_span.ok(f"Cache HIT (similarità: {cached_res.similarity:.2f})")
-                act = cached_res.action_result
-                res = AgentTaskResponse(
-                    task_id=f"tsk_cache_{uuid.uuid4().hex[:8]}",
-                    agent_id=act.get("agent_id", "semantic_cache"),
-                    status="SUCCESS",
-                    result_data={
-                        **act.get("result_data", {}),
-                        "cache_hit": True,
-                        "similarity": cached_res.similarity,
-                        "strategy": cached_res.strategy,
-                    },
-                    speech_output=act.get("speech_output", ""),
-                    execution_time_ms=cached_res.lookup_latency_ms,
-                )
-                journey.finish(res.speech_output, res.status, res.agent_id)
-                return res
-            else:
-                cache_span.fail("Cache MISS · procedo con analisi cognitiva")
 
         task_id = f"tsk_{uuid.uuid4().hex[:12]}"
 
@@ -202,14 +179,6 @@ class OrchestratorDispatcher:
                 speech_output=speech,
                 execution_time_ms=sys1_decision.latency_ms,
             )
-            await semantic_cache.record_success(
-                sanitized_query,
-                {
-                    "agent_id": res.agent_id,
-                    "speech_output": res.speech_output,
-                    "result_data": res.result_data,
-                },
-            )
             journey.finish(res.speech_output, res.status, res.agent_id)
             return res
 
@@ -247,14 +216,6 @@ class OrchestratorDispatcher:
                 },
                 speech_output=speech,
                 execution_time_ms=(time.time() - started) * 1000,
-            )
-            await semantic_cache.record_success(
-                sanitized_query,
-                {
-                    "agent_id": res.agent_id,
-                    "speech_output": res.speech_output,
-                    "result_data": res.result_data,
-                },
             )
             journey.finish(res.speech_output, res.status, res.agent_id)
             return res
@@ -297,14 +258,6 @@ class OrchestratorDispatcher:
                 },
                 speech_output=answer,
                 execution_time_ms=(time.time() - started) * 1000,
-            )
-            await semantic_cache.record_success(
-                sanitized_query,
-                {
-                    "agent_id": res.agent_id,
-                    "speech_output": res.speech_output,
-                    "result_data": res.result_data,
-                },
             )
             journey.finish(res.speech_output, res.status, res.agent_id)
             return res
@@ -371,14 +324,6 @@ class OrchestratorDispatcher:
                 },
                 speech_output=sys2_result.response,
                 execution_time_ms=sys2_result.latency_ms,
-            )
-            await semantic_cache.record_success(
-                sanitized_query,
-                {
-                    "agent_id": res.agent_id,
-                    "speech_output": res.speech_output,
-                    "result_data": res.result_data,
-                },
             )
             journey.finish(res.speech_output, res.status, res.agent_id)
             return res
@@ -453,15 +398,6 @@ class OrchestratorDispatcher:
             },
         )
 
-        if response.status == "SUCCESS":
-            await semantic_cache.record_success(
-                sanitized_query,
-                {
-                    "agent_id": response.agent_id,
-                    "speech_output": response.speech_output,
-                    "result_data": response.result_data,
-                },
-            )
 
         journey.finish(response.speech_output, response.status, response.agent_id)
         return response

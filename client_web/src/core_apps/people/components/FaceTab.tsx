@@ -109,7 +109,7 @@ export const FaceTab: React.FC<FaceTabProps> = ({ slug, quality, busy, run }) =>
                   disabled={busy !== null}
                   aria-label={t('delete_photo')}
                   onClick={() => void act(`photo:${photo.id}`, () => deletePhoto(slug, photo.id), 'people_photo_delete_failed')}
-                  className="absolute right-1 top-1 rounded-lg bg-black/60 p-1 text-slate-200 opacity-0 transition hover:text-rose-300 focus:opacity-100 group-hover:opacity-100"
+                  className="absolute right-1 top-1 flex min-h-10 min-w-10 items-center justify-center rounded-lg bg-black/75 p-2 text-slate-200 transition hover:text-rose-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
                 >
                   <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                 </button>

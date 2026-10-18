@@ -1,10 +1,12 @@
 {
-  "name": "Agent Swarm Team",
-  "description": "Multi-agent coordination: dispatches parallel sub-agents (coder, researcher, critic, sysops, designer).",
-  "capabilities": [
-    "Parallel sub-agent orchestration",
-    "Consensus jury voting and self-critique",
-    "DAG task dependency resolution"
-  ],
-  "settings": {}
+  "outcomes": {
+    "verified": "The task completed and was verified by {agent}.",
+    "completed_unverified": "{agent} finished, but the outcome was not verified.",
+    "failed": "{agent} did not complete the task.",
+    "blocked": "{agent}'s task was blocked.",
+    "cancelled": "{agent}'s task was cancelled.",
+    "pending": "{agent}'s task is waiting for approval.",
+    "running": "{agent}'s task is still running.",
+    "unverified": "The outcome of {agent}'s task is unverified."
+  }
 }

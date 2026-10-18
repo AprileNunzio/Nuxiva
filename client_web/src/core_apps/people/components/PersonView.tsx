@@ -1,3 +1,4 @@
+import { adminPath } from '../../../shared/http/basePath';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Loader2, ScanFace, Trash2 } from 'lucide-react';
 import { reportError } from '../../../shared/errors/errorBus';
@@ -79,7 +80,7 @@ export const PersonView: React.FC<PersonViewProps> = ({ summary, sections, voice
       <header className="flex flex-wrap items-start gap-4">
         <span className="relative flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-cyan-400/40 bg-slate-900 text-2xl font-bold text-cyan-100">
           {initials(summary.name)}
-          {summary.quality > 0 && <img src={photo} alt="" className="absolute inset-0 h-full w-full object-cover" onError={(event) => event.currentTarget.remove()} />}
+          {summary.quality > 0 && <img src={adminPath(photo)} alt="" className="absolute inset-0 h-full w-full object-cover" onError={(event) => event.currentTarget.remove()} />}
         </span>
         <div className="min-w-0 flex-1">
           <h2 id="person-title" className="font-['Rajdhani'] text-2xl font-bold text-white sm:text-3xl">
