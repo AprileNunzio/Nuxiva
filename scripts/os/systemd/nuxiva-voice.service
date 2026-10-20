@@ -1,0 +1,17 @@
+[Unit]
+Description=Nuxiva OS Voice (sintesi vocale neurale Kokoro)
+After=nuxiva-supervisor.service
+PartOf=nuxiva-supervisor.service
+
+[Service]
+Type=simple
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/opt/nuxiva-voice/kokoro/venv/bin/python /opt/Nuxiva/installer_wizard/features/voices/service.py
+Restart=always
+RestartSec=5
+MemoryMax=2G
+Nice=-3
+CPUWeight=300
+
+[Install]
+WantedBy=multi-user.target

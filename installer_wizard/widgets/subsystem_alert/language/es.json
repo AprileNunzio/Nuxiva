@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/subsystem_alert",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Sistema",
+    "title": "Reparación en curso",
+    "faults_one": "{{n}} fallo",
+    "faults_other": "{{n}} fallos"
+  }
+}

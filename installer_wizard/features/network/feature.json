@@ -1,0 +1,30 @@
+{
+  "id": "network",
+  "name": "Esploratore della rete",
+  "icon": "📡",
+  "category": "casa",
+  "order": 100,
+  "panel": "network",
+  "description": "Scopre, studia e classifica i dispositivi della rete di casa e ne impara le abitudini.",
+  "toggle": {
+    "env": "NUXIVA_NETWORK",
+    "apply": []
+  },
+  "requires": {
+    "commands": [
+      "nmap"
+    ]
+  },
+  "capabilities": [
+    "Scansione ogni 10 minuti",
+    "Riconoscimento del tipo di dispositivo",
+    "Nuovi dispositivi segnalati"
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "J2fYkPtfcYwj",
+    "url": "https://img.icons8.com/?size=240&id=J2fYkPtfcYwj&format=png"
+  }
+}

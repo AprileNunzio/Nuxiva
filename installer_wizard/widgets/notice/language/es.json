@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/notice",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "notice": "Aviso",
+    "warning": "Atención"
+  }
+}

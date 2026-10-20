@@ -1,0 +1,9 @@
+{
+  "name": "Registros del sistema",
+  "description": "Los recuentos y analisis solo cubren dispositivo, fuente y filtros seleccionados. No certifican el estado de todo el sistema.",
+  "capabilities": [
+    "Las fuentes se descubren en esta maquina. Inventario actualizado cada 15 segundos. Selecciona una fila para leerla.",
+    "Los secretos reconocibles se ocultan en la vista y los archivos exportados. Revisa los archivos antes de compartirlos.",
+    "Solo hay eventos del servidor asociados explicitamente a este dispositivo. El dispositivo no ofrece sus propios registros remotos."
+  ]
+}

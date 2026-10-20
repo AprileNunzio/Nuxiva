@@ -1,0 +1,17 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/expert_work",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Expert at work",
+    "question": "Question",
+    "answer": "Answer",
+    "steps": "Steps",
+    "status_thinking": "Thinking",
+    "status_working": "Working",
+    "status_waiting": "Waiting",
+    "status_done": "Done"
+  }
+}

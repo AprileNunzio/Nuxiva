@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/people_seen",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "People seen",
+    "none": "Nobody in sight"
+  }
+}

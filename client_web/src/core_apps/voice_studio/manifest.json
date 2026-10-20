@@ -1,0 +1,37 @@
+{
+  "id": "voice_studio",
+  "name": "Voice Studio",
+  "kind": "app",
+  "description": "Studio professionale per sintesi vocale neurale, equalizzatore parametrico, clonazione e voice control.",
+  "scope": "core_apps/voice_studio",
+  "category": "media",
+  "target": "global",
+  "launcher": true,
+  "version": "5.4.0",
+  "icon3d": "./icon.png",
+  "window": {
+    "defaultWidth": 84,
+    "defaultHeight": 88,
+    "minWidth": 32,
+    "resizable": true
+  },
+  "toolbars": [
+    {
+      "id": "navigation",
+      "items": [
+        {
+          "type": "action",
+          "id": "refresh",
+          "labelKey": "refresh",
+          "shortcut": "F5"
+        }
+      ]
+    }
+  ],
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "6xRZJrVWQLNn",
+    "url": "https://img.icons8.com/?size=240&id=6xRZJrVWQLNn&format=png"
+  }
+}

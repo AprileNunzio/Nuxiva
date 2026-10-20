@@ -1,0 +1,16 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "features/cloud",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Servizi Cloud",
+    "desc": "Connettori e provider cloud per modelli avanzati",
+    "error.unknown_provider": "Fornitore sconosciuto",
+    "error.invalid_key": "Chiave API non valida",
+    "error.missing_address": "Indirizzo del servizio mancante",
+    "status.connected": "Connessione cloud stabilita",
+    "status.unconfigured": "Servizio non configurato"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/clock",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Orologio",
+    "week": "Settimana"
+  }
+}

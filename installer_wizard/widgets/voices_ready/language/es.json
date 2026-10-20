@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/voices_ready",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Voces listas",
+    "languages_one": "{{n}} idioma",
+    "languages_other": "{{n}} idiomas"
+  }
+}

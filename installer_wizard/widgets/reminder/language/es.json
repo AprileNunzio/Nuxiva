@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/reminder",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Recordatorio",
+    "pending": "Pendiente",
+    "new": "Nuevo recordatorio"
+  }
+}

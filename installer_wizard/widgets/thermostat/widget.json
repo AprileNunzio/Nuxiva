@@ -1,0 +1,13 @@
+{
+  "id": "thermostat",
+  "name": "Thermostat",
+  "icon": "🌡️",
+  "priority": 45,
+  "size": "m",
+  "intents": [
+    "thermostat"
+  ],
+  "description": "Temperature",
+  "ttl": 120,
+  "tone": "green"
+}

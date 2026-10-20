@@ -1,0 +1,15 @@
+{
+  "id": "tv_player",
+  "name": "TV",
+  "icon": "📺",
+  "priority": 72,
+  "size": "l",
+  "agent": "tv",
+  "intents": [
+    "tv",
+    "tv_player"
+  ],
+  "ttl": 0,
+  "description": "Canale TV in diretta da una playlist IPTV.",
+  "tone": "violet"
+}

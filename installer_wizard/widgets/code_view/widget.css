@@ -1,0 +1,2 @@
+.w-code_view .cv-code { max-height: 60vh; overflow: auto; color: var(--text); white-space: pre; tab-size: 2; }
+.w-code_view .cv-code code { font: inherit; }

@@ -1,0 +1,37 @@
+{
+  "id": "bluetooth",
+  "name": "Bluetooth",
+  "icon": "Bluetooth",
+  "version": "5.0.0",
+  "category": "devices",
+  "requires_reboot": false,
+  "description": "Bluetooth radio scanning, peripheral pairing, and automatic reconnection",
+  "scope": "node_apps/bluetooth",
+  "target": "node",
+  "window": {
+    "defaultWidth": 65,
+    "defaultHeight": 75,
+    "minWidth": 25,
+    "resizable": true
+  },
+  "toolbars": [
+    {
+      "id": "system",
+      "items": [
+        {
+          "type": "action",
+          "id": "refresh",
+          "labelKey": "os_refresh",
+          "shortcut": "F5"
+        }
+      ]
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "J2fYkPtfcYwj",
+    "url": "https://img.icons8.com/?size=240&id=J2fYkPtfcYwj&format=png"
+  }
+}

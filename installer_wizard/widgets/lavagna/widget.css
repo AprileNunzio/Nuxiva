@@ -1,0 +1,58 @@
+.lv { position: relative; display: flex; flex-direction: column; width: 100%; height: 100%; box-sizing: border-box; overflow: hidden; user-select: none;
+  background: rgba(4, 12, 18, 0.9); border-radius: 16px; box-shadow: 0 0 0 1px rgba(var(--tone), 0.22) inset; backdrop-filter: blur(10px); }
+.lv-bar { z-index: 20; display: flex; flex-wrap: wrap; align-items: center; gap: 2px; padding: 8px 10px; box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06); }
+.lv-bar button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-width: 32px; height: 32px; padding: 0 9px; border: 0; border-radius: 999px;
+  background: none; color: var(--text-dim); font: 500 12px var(--font); cursor: pointer; transition: color 0.15s, box-shadow 0.15s; }
+.lv-bar button .wk-svg { font-size: 15px; pointer-events: none; }
+.lv-bar button:hover, .lv-bar button:focus-visible { outline: none; color: var(--text); box-shadow: 0 0 0 1px rgba(var(--tone), 0.45) inset; }
+.lv-bar button.on { color: rgb(var(--tone)); box-shadow: 0 0 0 1px rgba(var(--tone), 0.6) inset; }
+.lv-ai-btn { font-family: var(--mono) !important; letter-spacing: 0.08em; }
+.lv-ai-btn.active { color: rgb(var(--tone)) !important; }
+.lv-ai-btn.inactive { opacity: 0.5; }
+.lv-page-ctrl { display: inline-flex; align-items: center; gap: 2px; }
+.lv-page-badge { padding: 0 4px; font: 500 11px var(--mono); color: var(--text-dim); white-space: nowrap; }
+.lv-dot { min-width: 18px !important; width: 18px; height: 18px !important; margin: 0 3px; padding: 0 !important; border-radius: 50% !important; background: var(--c) !important; opacity: 0.85; }
+.lv-dot.on { box-shadow: 0 0 0 2px rgba(4, 12, 18, 1), 0 0 0 3px var(--c) !important; opacity: 1; }
+.lv-sep { width: 1px; height: 16px; margin: 0 6px; background: rgba(255, 255, 255, 0.1); }
+.lv-fill { flex: 1; }
+.lv-stage { position: relative; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; touch-action: none; }
+.lv-canvas { touch-action: none; background: transparent; }
+.lv-input { position: absolute; z-index: 15; min-width: 260px; padding: 6px 10px; transform: translateY(-50%); border: 0; border-radius: 8px; outline: none;
+  background: rgba(0, 0, 0, 0.7); box-shadow: 0 0 0 1px rgba(var(--tone), 0.6) inset; color: var(--text); font-size: 26px; }
+.lv-nuxiva { position: absolute; left: 16px; bottom: 16px; z-index: 12; display: flex; align-items: flex-end; gap: 10px; max-width: 40%; opacity: 0; pointer-events: none; transition: opacity 0.35s ease; }
+.lv-nuxiva:has(.lv-orb.busy), .lv-nuxiva:has(.lv-says:not([hidden])), .lv-nuxiva.active { opacity: 1; }
+.lv-orb { flex: none; width: 22px; height: 22px; border-radius: 50%; box-shadow: 0 0 0 1px rgba(var(--tone), 0.8) inset, 0 0 14px rgba(var(--tone), 0.45); background: radial-gradient(circle, rgba(var(--tone), 0.5), transparent 70%); }
+.lv-orb.busy { animation: lv-pulse 0.7s ease-in-out infinite alternate; }
+.lv-says { padding: 6px 12px; border-radius: 10px; background: rgba(4, 12, 18, 0.85); box-shadow: 0 0 0 1px rgba(var(--tone), 0.3) inset; color: var(--text); font-size: 14px; line-height: 1.35; }
+.lv-modal-mask { position: absolute; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); }
+.lv-modal { display: flex; flex-direction: column; width: 92%; max-width: 560px; max-height: 85%; overflow: hidden; border-radius: 16px; background: rgba(6, 14, 22, 0.96); box-shadow: 0 0 0 1px rgba(var(--tone), 0.3) inset; color: var(--text); }
+.lv-modal-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 8px; }
+.lv-modal-head h3 { display: flex; align-items: center; gap: 8px; margin: 0; font: 600 10px/1 var(--mono); letter-spacing: 0.24em; text-transform: uppercase; color: rgba(var(--tone), 0.85); }
+.lv-modal-head h3 .wk-svg { font-size: 14px; }
+.lv-modal-body { flex: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 4px 16px 12px; }
+.lv-printer-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 10px; border-radius: 10px; cursor: pointer; transition: box-shadow 0.15s; }
+.lv-printer-row + .lv-printer-row { margin-top: 2px; }
+.lv-printer-row:hover { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1) inset; }
+.lv-printer-row.selected { box-shadow: 0 0 0 1px rgba(var(--tone), 0.6) inset; }
+.lv-printer-row.selected .lv-printer-name { color: rgb(var(--tone)); }
+.lv-printer-info { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.lv-printer-name { font-size: 13px; }
+.lv-printer-meta { font: 11px var(--mono); color: var(--text-faint); }
+.lv-printer-badge { flex: none; font: 500 10px var(--mono); letter-spacing: 0.08em; text-transform: lowercase; color: var(--text-dim); }
+.lv-printer-badge.laser { color: var(--red); }
+.lv-printer-badge.ink { color: rgb(var(--tone)); }
+.lv-printer-badge.threed { color: var(--green); }
+.lv-printer-badge.engraver { color: var(--amber); }
+.lv-modal-foot { display: flex; justify-content: flex-end; gap: 6px; padding: 10px 16px 14px; }
+.lv-btn-action, .lv-btn-plain { padding: 7px 14px; border: 0; border-radius: 999px; background: none; font: 500 12px var(--font); cursor: pointer; }
+.lv-btn-action { color: rgb(var(--tone)); box-shadow: 0 0 0 1px rgba(var(--tone), 0.55) inset; }
+.lv-btn-action:hover { box-shadow: 0 0 0 1px rgba(var(--tone), 0.9) inset; }
+.lv-btn-plain { color: var(--text-dim); }
+.lv-btn-plain:hover { color: var(--text); }
+.lv-modal-x { display: inline-grid; place-items: center; width: 28px; height: 28px; border: 0; border-radius: 50%; background: none; color: var(--text-dim); font-size: 14px; cursor: pointer; }
+.lv-modal-x .wk-svg { pointer-events: none; }
+.lv-modal-note { padding: 20px; text-align: center; font-size: 12px; color: var(--text-faint); }
+.lv-modal-note.lv-err { color: var(--red); }
+.lv-toast { position: absolute; top: 58px; right: 18px; z-index: 60; padding: 8px 14px; border-radius: 10px; background: rgba(4, 12, 18, 0.92); box-shadow: 0 0 0 1px rgba(var(--tone), 0.35) inset; color: var(--text); font-size: 12.5px; animation: lv-fade-in 0.25s ease; }
+@keyframes lv-fade-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes lv-pulse { from { transform: scale(1); } to { transform: scale(1.18); } }

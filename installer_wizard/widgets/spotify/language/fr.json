@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/spotify",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "listening": "Spotify",
+    "playing": "Lecture"
+  }
+}

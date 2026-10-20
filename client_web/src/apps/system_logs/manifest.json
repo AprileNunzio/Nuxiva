@@ -1,0 +1,102 @@
+{
+  "id": "system_logs",
+  "name": "System Logs",
+  "scope": "apps/system_logs",
+  "kind": "app",
+  "category": "system",
+  "target": "universal",
+  "icon3d": "./icon.png",
+  "version": "1.0.0",
+  "window": {
+    "defaultWidth": 1100,
+    "defaultHeight": 760,
+    "minWidth": 480,
+    "resizable": true,
+    "minHeight": 360,
+    "maximizable": true,
+    "singleton": false,
+    "mobileMode": "fullscreen"
+  },
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "9QHudN9uBhDv",
+    "url": "https://img.icons8.com/?size=240&id=9QHudN9uBhDv&format=png"
+  },
+  "featureIds": [
+    "system_logs"
+  ],
+  "i18nScope": "system_logs",
+  "capabilities": [
+    "logs.read"
+  ],
+  "ui": {
+    "searchable": true,
+    "searchPlaceholderKey": "search",
+    "tabs": [
+      {
+        "id": "overview",
+        "labelKey": "overview",
+        "icon": "diagnostics"
+      },
+      {
+        "id": "records",
+        "labelKey": "records",
+        "icon": "changes"
+      },
+      {
+        "id": "sources",
+        "labelKey": "sources",
+        "icon": "history"
+      },
+      {
+        "id": "device",
+        "labelKey": "device",
+        "icon": "network"
+      }
+    ],
+    "actions": [
+      {
+        "id": "refresh",
+        "labelKey": "os_refresh",
+        "icon": "refresh-cw"
+      },
+      {
+        "id": "export_txt",
+        "labelKey": "export_txt",
+        "icon": "download",
+        "permissions": [
+          "logs.export"
+        ]
+      },
+      {
+        "id": "export_json",
+        "labelKey": "export_json",
+        "icon": "download",
+        "permissions": [
+          "logs.export"
+        ]
+      },
+      {
+        "id": "export_csv",
+        "labelKey": "export_csv",
+        "icon": "download",
+        "permissions": [
+          "logs.export"
+        ]
+      },
+      {
+        "id": "export_report",
+        "labelKey": "export_report",
+        "icon": "download",
+        "permissions": [
+          "logs.export"
+        ]
+      }
+    ],
+    "statusBar": {
+      "showConnectionState": true,
+      "showItemCount": true
+    }
+  }
+}

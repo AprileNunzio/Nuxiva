@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/live_cam",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Live camera",
+    "connecting": "Connecting…",
+    "unavailable": "Stream unavailable",
+    "fullscreen": "Full screen",
+    "close": "Close"
+  }
+}

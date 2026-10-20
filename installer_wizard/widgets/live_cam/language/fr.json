@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/live_cam",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Caméra en direct",
+    "connecting": "Connexion en cours…",
+    "unavailable": "Flux indisponible",
+    "fullscreen": "Plein écran",
+    "close": "Fermer"
+  }
+}

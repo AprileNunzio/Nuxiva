@@ -1,0 +1,9 @@
+{
+  "dictionary": {
+    "title": "Calendario",
+    "previous": "Mese precedente",
+    "next": "Mese successivo",
+    "today": "Oggi",
+    "close": "Chiudi"
+  }
+}

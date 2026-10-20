@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/cyber_alert",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Allerta cyber",
+    "fallback_title": "Minaccia rilevata",
+    "threat_default": "alta",
+    "attack": "Attacco",
+    "origin": "Origine",
+    "action": "Azione"
+  }
+}

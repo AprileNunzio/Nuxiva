@@ -1,0 +1,35 @@
+{
+  "name": "nuxiva-web-console",
+  "version": "5.3.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "prebuild": "npm test",
+    "test": "node tests/window-store.test.cjs && node tests/app-manifests.test.cjs && node tests/localized-ordering.test.cjs && node tests/updater-state.test.cjs && node tests/updater-history.test.cjs && node tests/latest-request.test.cjs && node tests/taskbar-groups.test.cjs && node tests/declarative-contract.test.cjs",
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/rajdhani": "^5.3.0",
+    "@types/three": "^0.162.0",
+    "hls.js": "^1.7.3",
+    "lucide-react": "^0.359.0",
+    "monaco-editor": "^0.57.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "three": "^0.162.0",
+    "xterm": "^5.3.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.2.2",
+    "vite": "^5.1.6"
+  }
+}

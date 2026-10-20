@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "features/secure",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Sicurezza e Certificati",
+    "desc": "Protezione endpoint, crittografia e trust store",
+    "error.no_cert": "Certificato non ancora generato",
+    "error.renewal_failed": "Rinnovo certificato non riuscito",
+    "status.valid": "Certificati attivi e verificati",
+    "action.renew": "Rigenera certificati"
+  }
+}

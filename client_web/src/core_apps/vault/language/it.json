@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Cassaforte",
+    "description": "Deposito crittografato chiavi e credenziali",
+    "status": "Attivo",
+    "open_app": "Apri",
+    "loading": "Caricamento…",
+    "unreachable": "Server non raggiungibile",
+    "on": "Attivo",
+    "off": "Spento",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "edit": "Modifica",
+    "delete": "Elimina",
+    "add": "Aggiungi",
+    "sync": "Sincronizza",
+    "sync_done": "Sincronizzati {written} file, {imported} modifiche lette",
+    "stat_state": "Stato",
+    "stat_files": "File in memoria",
+    "stat_last_export": "Ultima esportazione",
+    "files_title": "File della cassaforte",
+    "files_empty": "Nessun file ancora esportato.",
+    "diary_title": "Diario di oggi",
+    "diary_empty": "Il diario di oggi è ancora vuoto."
+  }
+}

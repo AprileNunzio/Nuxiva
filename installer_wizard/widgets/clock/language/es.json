@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/clock",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Reloj",
+    "week": "Semana"
+  }
+}

@@ -1,0 +1,189 @@
+:root:has(.dock) {
+  --dock-clear: calc(clamp(44px, 2.8vw, 64px) + 36px);
+}
+
+.dock {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(14px, 2.4vh, 40px);
+  transform: translateX(-50%);
+  width: min(1100px, calc(100vw - 32px));
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dock-bar {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: linear-gradient(180deg, rgba(10, 24, 40, 0.86), rgba(2, 8, 16, 0.86));
+  backdrop-filter: blur(16px);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.dock-bar:focus-within {
+  border-color: var(--cyan);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45), 0 0 0 4px rgba(41, 224, 255, 0.12), 0 0 30px rgba(41, 224, 255, 0.18);
+}
+
+.dock-bar input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 8px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: clamp(15px, 1vw, 22px);
+}
+
+.dock-bar input:disabled {
+  opacity: 0.5;
+}
+
+.dock-bar .dock-model-trigger {
+  border-radius: 999px;
+}
+
+.dock-send,
+.dock-bar .ibtn.mic {
+  flex: none;
+  width: clamp(44px, 2.8vw, 64px);
+  height: clamp(44px, 2.8vw, 64px);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.dock-send {
+  border: 0;
+  background: linear-gradient(135deg, var(--cyan), #7a6bff);
+  color: #031018;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.dock-send:disabled {
+  opacity: 0;
+  width: 0;
+  margin: 0;
+  pointer-events: none;
+}
+
+.dock-send:not(:disabled):hover {
+  transform: scale(1.06);
+}
+
+.dock-send svg {
+  width: 45%;
+  height: 45%;
+}
+
+.dock-bar .ibtn.mic {
+  border: 1px solid rgba(41, 224, 255, 0.5);
+  background: radial-gradient(circle at 50% 35%, rgba(41, 224, 255, 0.35), rgba(41, 224, 255, 0.08));
+  box-shadow: 0 0 18px rgba(41, 224, 255, 0.3);
+}
+
+.dock-bar .ibtn.mic svg {
+  width: 48%;
+  height: 48%;
+}
+
+.dock-tools {
+  display: flex;
+  gap: 8px;
+}
+
+.dock-tools .ibtn,
+.dock-more {
+  width: clamp(44px, 2.8vw, 60px);
+  height: clamp(44px, 2.8vw, 60px);
+  background: rgba(2, 8, 16, 0.72);
+  backdrop-filter: blur(12px);
+}
+
+.dock-more {
+  display: none;
+}
+
+.dock .ibtn:focus-visible,
+.dock-send:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+
+@media (max-width: 900px) {
+  .dock {
+    width: calc(100vw - 24px);
+    gap: 8px;
+  }
+
+  .dock-more {
+    display: grid;
+  }
+
+  .dock-tools {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 10px);
+    padding: 8px;
+    border-radius: 18px;
+    border: 1px solid var(--line-strong);
+    background: rgba(2, 8, 16, 0.92);
+    backdrop-filter: blur(14px);
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+
+  body:has(.dock.tools-open) .bgq,
+  body:has(.dock.tools-open) .setup-cta {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .dock.tools-open .dock-tools {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .dock-bar .dock-model-text {
+    display: none;
+  }
+}
+
+@media (min-width: 2560px) {
+  .dock {
+    width: min(1700px, calc(100vw - 64px));
+  }
+}
+
+@media (min-width: 3840px) {
+  .dock {
+    width: min(2400px, calc(100vw - 96px));
+    gap: 16px;
+  }
+}
+
+.dock-bar .dock-model-trigger {
+  height: auto;
+  min-height: clamp(40px, 2.6vw, 58px);
+  box-shadow: none;
+  background: rgba(41, 224, 255, 0.08);
+  border-color: rgba(41, 224, 255, 0.22);
+}
+
+.dock-bar .dock-model-name {
+  display: none;
+}

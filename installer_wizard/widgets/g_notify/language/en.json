@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/g_notify",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "appointment": "Appointment",
+    "soon": "Soon",
+    "new_mail": "New email",
+    "new": "New",
+    "your_day": "Your day",
+    "more": "and {{n}} more"
+  }
+}

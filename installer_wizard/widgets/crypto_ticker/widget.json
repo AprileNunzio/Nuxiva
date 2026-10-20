@@ -1,0 +1,13 @@
+{
+  "id": "crypto_ticker",
+  "name": "Cripto",
+  "icon": "🪙",
+  "priority": 25,
+  "size": "m",
+  "intents": [
+    "crypto_ticker"
+  ],
+  "description": "Prezzi di Bitcoin ed Ethereum.",
+  "ttl": 300,
+  "tone": "amber"
+}

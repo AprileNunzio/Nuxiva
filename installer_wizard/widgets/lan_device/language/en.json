@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/lan_device",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Network device",
+    "chip": "New",
+    "vendor": "Vendor"
+  }
+}

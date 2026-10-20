@@ -1,0 +1,19 @@
+{
+  "id": "firewall",
+  "name": "Firewall",
+  "title": "Firewall",
+  "description": "Firewall interno con analisi del traffico in tempo reale, regole da esperto e difesa assistita dall'intelligenza artificiale",
+  "icon": "🛡",
+  "version": "1.0",
+  "widgets": [],
+  "has_admin": true,
+  "panel": "firewall",
+  "category": "sistema",
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "Qv15MoNYxkA7",
+    "url": "https://img.icons8.com/?size=240&id=Qv15MoNYxkA7&format=png"
+  }
+}

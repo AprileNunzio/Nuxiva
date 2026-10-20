@@ -1,0 +1,37 @@
+{
+  "id": "whiteboard",
+  "name": "Whiteboard",
+  "icon": "Edit3",
+  "version": "5.0.0",
+  "category": "productivity",
+  "requires_reboot": false,
+  "description": "Interactive graphical whiteboard for on-screen notes and P2P stroke synchronization",
+  "scope": "node_apps/whiteboard",
+  "target": "node",
+  "window": {
+    "defaultWidth": 65,
+    "defaultHeight": 75,
+    "minWidth": 25,
+    "resizable": true
+  },
+  "toolbars": [
+    {
+      "id": "system",
+      "items": [
+        {
+          "type": "action",
+          "id": "refresh",
+          "labelKey": "os_refresh",
+          "shortcut": "F5"
+        }
+      ]
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "hlnLMra14Qpa",
+    "url": "https://img.icons8.com/?size=240&id=hlnLMra14Qpa&format=png"
+  }
+}

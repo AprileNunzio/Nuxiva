@@ -1,0 +1,23 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/sport_match",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "football": "Football",
+    "versus": "vs",
+    "in_progress": "En cours",
+    "chip_final": "Terminé",
+    "chip_goal": "But !",
+    "chip_red": "Rouge",
+    "chip_kickoff": "Coup d'envoi",
+    "chip_soon": "Bientôt",
+    "chip_today": "Aujourd'hui",
+    "chip_next": "Prochain",
+    "today_cap": "Aujourd'hui",
+    "tomorrow": "Demain",
+    "penalty": "pén.",
+    "own_goal": "c.s.c."
+  }
+}

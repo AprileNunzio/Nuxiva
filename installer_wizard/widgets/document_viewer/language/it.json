@@ -1,0 +1,16 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/document_viewer",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "viewer": "Anteprima",
+    "document": "Documento",
+    "project": "Progetto",
+    "documents": "Documenti",
+    "shared_folder": "Cartella condivisa",
+    "failed": "Non riuscito:",
+    "no_preview": "Anteprima non disponibile"
+  }
+}

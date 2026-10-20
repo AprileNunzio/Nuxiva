@@ -1,0 +1,17 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/cam_stream",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Cámara",
+    "no_stream": "Sin transmisión disponible",
+    "source": "Fuente",
+    "state": "Estado",
+    "chip_motion": "Movimiento",
+    "chip_listening": "Vigilando",
+    "motion": "Movimiento detectado",
+    "no_motion": "Sin movimiento"
+  }
+}

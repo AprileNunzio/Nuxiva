@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "web/screen",
+    "version": "2.0.0"
+  },
+  "dictionary": {
+    "page_title": "{{assistant}} · Pantalla",
+    "screen_label": "PANTALLA",
+    "screen_n": "PANTALLA {{n}}",
+    "mirror_label": "WIDGETS DE {{assistant}}",
+    "idle_hint": "Arrastra aquí un widget desde el borde de la otra pantalla, o pide a {{assistant}} que lo mueva.",
+    "link_lost": "Reconectando con el supervisor"
+  }
+}

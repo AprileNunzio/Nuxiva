@@ -1,0 +1,47 @@
+{
+  "id": "spotify",
+  "name": "Spotify",
+  "icon": "🎧",
+  "category": "comunicazione",
+  "order": 145,
+  "panel": "spotify",
+  "description": "Collega il tuo account: quando sei davanti allo schermo il brano in riproduzione compare come widget.",
+  "toggle": {
+    "env": "NUXIVA_SPOTIFY",
+    "apply": []
+  },
+  "requires": {
+    "env": [
+      "NUXIVA_SPOTIFY_REFRESH_TOKEN"
+    ]
+  },
+  "capabilities": [
+    "Brano, artista, copertina e avanzamento",
+    "Solo quando ti vede (o sempre)"
+  ],
+  "settings": [
+    {
+      "key": "NUXIVA_SPOTIFY_WHEN",
+      "label": "Quando mostrare il brano",
+      "type": "select",
+      "default": "present",
+      "options": [
+        {
+          "value": "present",
+          "label": "Solo se la webcam mi vede"
+        },
+        {
+          "value": "always",
+          "label": "Sempre"
+        }
+      ]
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "qUrjwzmP7ZFz",
+    "url": "https://img.icons8.com/?size=240&id=qUrjwzmP7ZFz&format=png"
+  }
+}

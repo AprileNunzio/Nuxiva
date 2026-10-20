@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/ssh_sessions",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Sessions SSH",
+    "none": "Aucune session active",
+    "active_one": "{{n}} active",
+    "active_other": "{{n}} actives"
+  }
+}

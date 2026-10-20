@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/sport_table",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Clasificación",
+    "col_played": "PJ",
+    "col_diff": "DG",
+    "col_points": "Pts"
+  }
+}

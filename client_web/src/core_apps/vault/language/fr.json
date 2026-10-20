@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Coffre-fort",
+    "description": "Coffre sécurisé pour clés et secrets",
+    "status": "Actif",
+    "open_app": "Ouvrir",
+    "loading": "Chargement…",
+    "unreachable": "Serveur injoignable",
+    "on": "Actif",
+    "off": "Éteint",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "add": "Ajouter",
+    "sync": "Synchroniser",
+    "sync_done": "{written} fichiers synchronisés, {imported} modifications lues",
+    "stat_state": "État",
+    "stat_files": "Fichiers en mémoire",
+    "stat_last_export": "Dernier export",
+    "files_title": "Fichiers du coffre",
+    "files_empty": "Aucun fichier exporté pour l'instant.",
+    "diary_title": "Journal du jour",
+    "diary_empty": "Le journal du jour est encore vide."
+  }
+}

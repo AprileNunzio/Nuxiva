@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/os_networks",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Reti Wi‑Fi",
+    "connected": "Connesso",
+    "none": "Nessuna rete trovata",
+    "nearby_one": "{{n}} vicina",
+    "nearby_other": "{{n}} vicine"
+  }
+}

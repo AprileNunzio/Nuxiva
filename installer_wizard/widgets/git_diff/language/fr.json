@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/git_diff",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Modifications Git",
+    "none": "Aucune modification"
+  }
+}

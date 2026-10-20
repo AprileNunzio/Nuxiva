@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/net_topology",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Red",
+    "title": "Topología",
+    "loading": "Escaneando la red…"
+  }
+}

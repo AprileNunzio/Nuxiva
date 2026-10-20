@@ -1,0 +1,18 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/chess_3d",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Ajedrez 3D",
+    "status_ready": "Listo",
+    "status_playing": "Partida en curso",
+    "action_fullscreen": "Pantalla completa",
+    "action_close": "Cerrar",
+    "turn_white": "Turno de las Blancas",
+    "turn_black": "Turno de las Negras (Nuxiva)",
+    "action_hint": "Pista",
+    "action_restart": "Nueva partida"
+  }
+}

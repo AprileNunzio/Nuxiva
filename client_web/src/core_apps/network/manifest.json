@@ -1,0 +1,44 @@
+{
+  "id": "network",
+  "name": "Network",
+  "scope": "core_apps/network",
+  "category": "security",
+  "target": "global",
+  "launcher": true,
+  "version": "1.0.0",
+  "icon3d": "./icon.png",
+  "window": {
+    "defaultWidth": 80,
+    "defaultHeight": 88,
+    "minWidth": 25,
+    "resizable": true
+  },
+  "toolbars": [
+    {
+      "id": "navigation",
+      "items": [
+        {
+          "type": "search",
+          "id": "search",
+          "placeholderKey": "search"
+        },
+        {
+          "type": "button",
+          "id": "rescan",
+          "labelKey": "rescan"
+        },
+        {
+          "type": "button",
+          "id": "add",
+          "labelKey": "add_devices"
+        }
+      ]
+    }
+  ],
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "J2fYkPtfcYwj",
+    "url": "https://img.icons8.com/?size=240&id=J2fYkPtfcYwj&format=png"
+  }
+}

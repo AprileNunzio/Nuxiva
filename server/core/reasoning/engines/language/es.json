@@ -1,0 +1,62 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "server/reasoning"
+  },
+  "engines": {
+    "classico": {
+      "name": "Nuxiva Clásico",
+      "summary": "Un modelo cada vez, en el orden configurado, hasta que uno responde"
+    },
+    "veloce": {
+      "name": "Nuxiva Rápido",
+      "summary": "Carrera entre los modelos rápidos: gana la primera respuesta válida"
+    },
+    "empatico": {
+      "name": "Nuxiva Empático",
+      "summary": "Compara dos respuestas y elige la más clara y atenta al tono"
+    },
+    "pro": {
+      "name": "Nuxiva Pro",
+      "summary": "Compara dos modelos profundos y un crítico elige la mejor respuesta"
+    },
+    "ultra": {
+      "name": "Nuxiva Ultra",
+      "summary": "Compara hasta tres modelos profundos con más tiempo y elige con el crítico"
+    },
+    "auto": {
+      "name": "Nuxiva Auto",
+      "summary": "Elige el método por sí solo según la longitud de la pregunta y el estado emocional"
+    }
+  },
+  "stages": {
+    "route": {
+      "name": "Elección automática del método",
+      "detail": "{words} palabras · complejidad {complexity} · elegido {chosen}: {reason}"
+    },
+    "reason_fast": "estás agitado y la pregunta es corta",
+    "reason_empathy": "el tono emocional es fuerte",
+    "reason_complex": "la pregunta es larga y compleja",
+    "reason_default": "pregunta normal",
+    "sequential": {
+      "name": "Un modelo cada vez",
+      "detail": "Prueba {count} grupos de modelos en orden y se detiene en el primero que responde"
+    },
+    "first": {
+      "name": "Carrera entre modelos rápidos",
+      "detail": "{count} modelos en paralelo: gana la primera respuesta válida, los demás se detienen"
+    },
+    "best": {
+      "name": "Comparación entre modelos",
+      "detail": "{count} modelos en paralelo: tras la primera respuesta espera como máximo {wait} s a las demás"
+    },
+    "critic": {
+      "name": "Evaluación con el crítico",
+      "detail": "puntuación = {cw} × fiabilidad + {kw} × crítico (riesgos, claridad, tono)"
+    },
+    "decision": {
+      "name": "Respuesta elegida",
+      "detail": "Se devuelve la respuesta con la puntuación más alta"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/clipboard_sync",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Clipboard",
+    "empty": "Clipboard is empty",
+    "chars_one": "{{n}} character",
+    "chars_other": "{{n}} characters"
+  }
+}

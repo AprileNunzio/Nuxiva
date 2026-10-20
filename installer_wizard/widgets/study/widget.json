@@ -1,0 +1,21 @@
+{
+  "id": "study",
+  "name": "Studio in corso",
+  "icon": "🎓",
+  "priority": 10,
+  "size": "s",
+  "bind": {
+    "attr": "study",
+    "when": {
+      "state": "studying"
+    }
+  },
+  "agent": "study",
+  "intents": [
+    "study",
+    "studio"
+  ],
+  "description": "Materia e livello che Nuxiva sta studiando nei momenti di riposo.",
+  "tone": "violet",
+  "refresh": 30
+}

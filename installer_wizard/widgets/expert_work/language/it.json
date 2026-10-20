@@ -1,0 +1,17 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/expert_work",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Esperto al lavoro",
+    "question": "Domanda",
+    "answer": "Risposta",
+    "steps": "Passaggi",
+    "status_thinking": "Ragiona",
+    "status_working": "Al lavoro",
+    "status_waiting": "In attesa",
+    "status_done": "Completato"
+  }
+}

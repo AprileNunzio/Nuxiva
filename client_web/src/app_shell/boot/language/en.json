@@ -1,0 +1,11 @@
+{
+  "dictionary": {
+    "starting": "Starting workspace",
+    "connecting": "Connecting system services…",
+    "assets": "Preparing interface…",
+    "ready": "Workspace ready",
+    "unavailable": "Server unavailable",
+    "retry": "Retry",
+    "workspace": "YOUR WORKSPACE"
+  }
+}

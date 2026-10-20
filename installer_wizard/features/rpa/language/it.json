@@ -1,0 +1,19 @@
+{
+  "name": "Controllo del computer",
+  "description": "NUXIVA vive anche sul tuo PC Windows come assistente digitale, un po' come Gemini su Android: la chiami con la voce (\"Nuxiva…\") o con Ctrl+Alt+Spazio, ti risponde a voce, guarda lo schermo o la webcam quando glielo chiedi e lavora per te: crea cartelle e file, apre documenti e programmi, ti aiuta a scrivere, a creare siti web e a usare AutoCAD o Archicad.",
+  "capabilities": [
+    "Assistente vocale sul PC: parola di attivazione «Nuxiva», risposte con la voce neurale di NUXIVA, interruzione con Esc",
+    "Vede quello che vedi: legge il documento o la pagina su cui lavori e, se serve, guarda lo schermo o la webcam",
+    "Lavora per te: crea cartelle e file, apre documenti, app e siti, scrive o incolla testo nel programma aperto",
+    "Aiuto ai progetti: siti web pronti in Visual Studio Code, script AutoCAD (.scr/.lsp), guida passo-passo per Archicad",
+    "Sicuro per progetto: scrive solo nelle tue cartelle, non cancella mai, chiede conferma prima di sovrascrivere",
+    "Controllo remoto dei PC via WinRM/SSH dalla Dashboard, con crittografia End-to-End"
+  ],
+  "settings": {
+    "NUXIVA_RPA_PSK": "Chiave PSK per crittografia Satellite E2E (Autogenerata)",
+    "NUXIVA_RPA_AUTO_SYNC": "Ping e Sincronizzazione automatica dei PC in background",
+    "NUXIVA_RPA_DASHBOARD_LINK": "Dashboard Controllo Remoto (aggiungi IP, password e verifica lo stato)",
+    "NUXIVA_RPA_DOWNLOAD_LINK": "Scarica l'Assistente NUXIVA per Windows (.ZIP)",
+    "NUXIVA_RPA_NODES": "Compatibilità Nodi Legacy (id separati da virgola)"
+  }
+}

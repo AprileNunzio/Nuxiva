@@ -1,0 +1,12 @@
+{
+  "outcomes": {
+    "verified": "La tarea se completó y fue verificada por {agent}.",
+    "completed_unverified": "{agent} terminó, pero el resultado no se verificó.",
+    "failed": "{agent} no completó la tarea.",
+    "blocked": "La tarea de {agent} quedó bloqueada.",
+    "cancelled": "La tarea de {agent} se canceló.",
+    "pending": "La tarea de {agent} espera aprobación.",
+    "running": "La tarea de {agent} sigue en curso.",
+    "unverified": "El resultado de la tarea de {agent} no está verificado."
+  }
+}

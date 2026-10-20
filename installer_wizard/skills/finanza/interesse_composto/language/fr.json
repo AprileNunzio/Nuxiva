@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "skills/finanza/interesse_composto",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Intérêt Composé",
+    "desc": "Simulation de rendement avec réinvestissement",
+    "error_rate": "Taux d'intérêt non valide",
+    "result_total": "Capital final: {{total}}"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/system_health",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "System",
+    "title": "Resources",
+    "unavailable": "Data not available yet",
+    "res_cpu": "Processor",
+    "res_memory": "Memory",
+    "res_disk": "Disk",
+    "res_temperature": "Temperature"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "web/monitor",
+    "version": "2.0.0"
+  },
+  "dictionary": {
+    "page_title": "{{assistant}} · Startup",
+    "brand_sub": "COGNITIVE OPERATING SYSTEM",
+    "activation_sequence": "Activation sequence",
+    "completed": "complete",
+    "connecting": "Connecting to the supervisor",
+    "telemetry": "Telemetry",
+    "cpu": "Processor",
+    "cpu_value": "{{pct}}% · {{cores}} cores",
+    "memory": "Memory",
+    "storage": "Storage",
+    "network": "Network ↓ / ↑",
+    "temperature": "Temperature",
+    "uptime": "Uptime",
+    "phase_time": "Phase time",
+    "subsystems": "Subsystems",
+    "waiting_diagnosis": "Waiting for the first diagnosis…",
+    "link_lost": "Reconnecting to the supervisor",
+    "online": "ONLINE",
+    "all_ok": "All systems are operational",
+    "status_pending": "waiting",
+    "status_checking": "checking",
+    "status_retrying": "retrying",
+    "status_done": "ok",
+    "status_failed": "error",
+    "status_skipped": "skipped",
+    "status_background": "after startup",
+    "error_retry": "{{error}} — automatic retry in {{wait}}"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "id": "weather",
+  "name": "Weather & Climate",
+  "version": "1.0.0",
+  "category": "widget",
+  "description": "Real-time atmospheric conditions and local forecast",
+  "icon": "⛅",
+  "render_type": "card",
+  "grid_span": {"col": 1, "row": 1}
+}

@@ -1,0 +1,43 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "scope_local": "serveur local",
+    "scope_paired": "nœud associé",
+    "scope_mesh": "non associé",
+    "channel_title": "Périphérique actif",
+    "channel_device": "Périphérique",
+    "channel_none": "Aucun périphérique détecté",
+    "channel_mute": "Couper le son",
+    "channel_unmute": "Rétablir le son",
+    "channel_volume": "Volume",
+    "channel_boost_warning": "Au-delà de 100 % le signal est amplifié : il peut saturer.",
+    "channel_unavailable": "Système audio indisponible sur le serveur : {error}",
+    "inventory_empty": "Le nœud n'a signalé aucun périphérique.",
+    "title": "Audio",
+    "description": "Sortie audio, volume et voix de {assistant} sur ce nœud",
+    "notice_unpaired": "Ce nœud est seulement découvert sur le mesh : associez-le depuis Nœuds et serveurs pour gérer son audio.",
+    "notice_paired": "Le nœud applique les réglages de voix au prochain contact. La sortie audio se choisit sur l'appareil.",
+    "inventory_title": "Sorties audio signalées par le nœud",
+    "voice_title": "Voix et sons",
+    "test_title": "Test des haut-parleurs",
+    "test_hint": "Joue un son système sur les haut-parleurs du serveur.",
+    "test_sound": "Son à jouer",
+    "test_play": "Jouer",
+    "test_ok": "Son envoyé aux haut-parleurs.",
+    "test_failed": "Lecture échouée.",
+    "setting_NUXIVA_VOICE_VOLUME": "Volume de la voix",
+    "setting_NUXIVA_VOICE_VOLUME_hint": "Multiplicateur appliqué à la synthèse vocale (0,4 - 2).",
+    "setting_NUXIVA_VOICE_SPEED": "Vitesse de la voix",
+    "setting_NUXIVA_VOICE_SPEED_hint": "1 est la vitesse naturelle.",
+    "setting_NUXIVA_VOICE_PITCH": "Tonalité de la voix",
+    "setting_NUXIVA_VOICE_PITCH_hint": "Demi-tons : négatif plus grave, positif plus aigu.",
+    "setting_NUXIVA_QUIET_VOICE": "Voix en mode silencieux",
+    "setting_NUXIVA_QUIET_VOICE_hint": "Volume utilisé quand la maison est au calme.",
+    "setting_NUXIVA_SOUNDS_VOLUME": "Effets sonores",
+    "setting_NUXIVA_SOUNDS_VOLUME_hint": "Volume des alertes et confirmations.",
+    "setting_NUXIVA_SOUNDS_AMBIENT_VOLUME": "Fond sonore",
+    "setting_NUXIVA_SOUNDS_AMBIENT_VOLUME_hint": "Volume du fond sonore."
+  }
+}

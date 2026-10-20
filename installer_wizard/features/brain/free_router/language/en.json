@@ -1,0 +1,21 @@
+{
+  "meta": {"locale": "en"},
+  "dictionary": {
+    "module.title": "Free-tier LLM matrix and failover",
+    "module.subtitle": "Routing across models with officially zero pricing",
+    "mode.free_matrix": "Zero-cost cloud matrix",
+    "pool.chat": "Conversation",
+    "pool.voice_fast": "Measured fast voice",
+    "pool.agent_tools": "Agents and tools",
+    "pool.vision": "Vision and images",
+    "pool.deep_code": "Reasoning and code",
+    "status.available": "Ready",
+    "status.cooldown_429": "Rate limit cooldown",
+    "status.degraded": "Provider degraded",
+    "status.key_invalid": "Invalid key",
+    "failover.reason.rate_limit_429": "Request limit reached",
+    "failover.reason.provider_error": "Provider temporarily unavailable",
+    "failover.reason.timeout": "Response timed out",
+    "catalog.unavailable": "Catalog unavailable"
+  }
+}

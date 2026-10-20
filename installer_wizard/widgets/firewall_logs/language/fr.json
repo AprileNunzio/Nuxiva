@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/firewall_logs",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Pare-feu",
+    "none": "Aucun blocage enregistré",
+    "blocked_one": "{{n}} bloqué",
+    "blocked_other": "{{n}} bloqués"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Sports",
+    "app_name": "Nuxiva Sports Live",
+    "description": "Multi-discipline sports hub: pick a sport to explore competitions, standings, live scores, and TV channels",
+    "status": "Active",
+    "all_sports": "All Sports",
+    "categories_all": "All",
+    "categories_team": "Team",
+    "categories_motors": "Motorsports",
+    "categories_racket": "Racket",
+    "categories_combat": "Combat",
+    "categories_individual": "Individual",
+    "back_to_sports": "All Sports",
+    "active_competitions": "active competitions",
+    "live_badge": "LIVE NOW",
+    "search_sport": "Search sport, league, or athlete…",
+    "football": "Football / Soccer",
+    "formula1": "Formula 1",
+    "motogp": "MotoGP",
+    "basketball": "Basketball",
+    "tennis": "Tennis",
+    "volleyball": "Volleyball",
+    "cycling": "Cycling",
+    "combat": "Boxing & MMA",
+    "rugby": "Rugby",
+    "nfl": "NFL Football",
+    "baseball": "MLB Baseball",
+    "athletics": "Athletics & Swimming",
+    "hockey": "Ice Hockey"
+  }
+}

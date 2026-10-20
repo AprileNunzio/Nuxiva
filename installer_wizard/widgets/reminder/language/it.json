@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/reminder",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Promemoria",
+    "pending": "In attesa",
+    "new": "Nuovo promemoria"
+  }
+}

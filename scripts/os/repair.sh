@@ -1,0 +1,307 @@
+#!/usr/bin/env bash
+set -uo pipefail
+export DEBIAN_FRONTEND=noninteractive
+
+NUXIVA_DIR="${NUXIVA_DIR:-/opt/Nuxiva}"
+WIZ="$NUXIVA_DIR/installer_wizard"
+VENV="$WIZ/venv"
+REQ="$WIZ/backend/requirements.txt"
+STAMP="$VENV/.requirements.sha1"
+STATE=/var/lib/nuxiva
+STATUS="$STATE/repair.json"
+LOG_DIR=/var/log/nuxiva
+LOG="$LOG_DIR/repair.log"
+UNIT=nuxiva-supervisor.service
+CORE_IMPORTS="import fastapi, uvicorn, httpx, psutil, pam"
+RESTART=1
+QUIET=0
+ORIGIN=manual
+
+for arg in "$@"; do
+    case "$arg" in
+        --no-restart) RESTART=0 ;;
+        --quiet) QUIET=1 ;;
+        --origin=*) ORIGIN=${arg#--origin=} ;;
+    esac
+done
+
+[ "$EUID" -eq 0 ] || { echo "sudo nuxivactl ripara" >&2; exit 2; }
+mkdir -p "$STATE" "$LOG_DIR"
+chmod 750 "$LOG_DIR"
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/i18n.sh"
+load_os_language
+
+
+if [ -t 1 ] && [ "$QUIET" = 0 ]; then
+    C_OK=$'\033[32m' C_WARN=$'\033[33m' C_BAD=$'\033[31m' C_DIM=$'\033[2m' C_CYAN=$'\033[36m' C_OFF=$'\033[0m'
+else
+    C_OK="" C_WARN="" C_BAD="" C_DIM="" C_CYAN="" C_OFF=""
+fi
+
+exec 8>/run/nuxiva-repair.lock
+if ! flock -n 8; then
+    [ "$QUIET" = 1 ] || echo "${L[busy]}"
+    exit 0
+fi
+
+KEYS=(disk apt network code python system ports service)
+declare -A ST DT
+for k in "${KEYS[@]}"; do ST[$k]=pending DT[$k]=""; done
+STARTED=$EPOCHSECONDS
+OVERALL=running
+FAILED=0
+
+write_status() {
+    local steps=() k tmp
+    for k in "${KEYS[@]}"; do
+        steps+=("$(jq -cn --arg k "$k" --arg s "${ST[$k]}" --arg d "${DT[$k]}" '{key:$k,status:$s,detail:$d}')")
+    done
+    tmp=$(mktemp "$STATE/.repair.XXXXXX") || return 0
+    printf '[%s]' "$(IFS=,; echo "${steps[*]}")" \
+        | jq -c --arg st "$OVERALL" --arg o "$ORIGIN" --argjson t0 "$STARTED" --argjson t1 "$EPOCHSECONDS" --arg lang "$UI_LANG" \
+            '{state:$st,origin:$o,started:$t0,updated:$t1,lang:$lang,steps:.}' > "$tmp" 2>/dev/null \
+        && chmod 644 "$tmp" && mv -f "$tmp" "$STATUS"
+    rm -f "$tmp"
+}
+
+mark() {
+    local key=$1 status=$2 detail=${3:-} icon color
+    ST[$key]=$status DT[$key]=$detail
+    write_status
+    printf '[%s] %s %s %s\n' "$(date -Is)" "$key" "$status" "$detail" >> "$LOG"
+    [ "$QUIET" = 1 ] && return 0
+    case "$status" in
+        running) return 0 ;;
+        ok) icon="✓" color=$C_OK ;;
+        fixed) icon="✓" color=$C_WARN ;;
+        *) icon="✗" color=$C_BAD ;;
+    esac
+    printf '   %s%s%s %-24s %s%s%s\n' "$color" "$icon" "$C_OFF" "${L[$key]}" "$C_DIM" "${detail:-${L[ok]}}" "$C_OFF"
+}
+
+fail_step() { FAILED=1; mark "$1" failed "$2"; }
+
+human_mb() {
+    local mb=$1 dec=","
+    [ "$UI_LANG" = it ] || dec="."
+    if (( mb >= 1024 )); then printf '%d%s%d GB' $(( mb / 1024 )) "$dec" $(( mb % 1024 * 10 / 1024 )); else printf '%d MB' "$mb"; fi
+}
+
+free_mb() { df -Pm / | awk 'NR==2 {print $4+0}'; }
+
+check_disk() {
+    mark disk running
+    local before after
+    before=$(free_mb)
+    if (( before >= 3072 )); then mark disk ok "$(human_mb "$before") ${L[disk_ok]}"; return 0; fi
+    apt-get clean >>"$LOG" 2>&1
+    journalctl --vacuum-size=200M >>"$LOG" 2>&1
+    [ -x "$VENV/bin/pip" ] && "$VENV/bin/pip" cache purge >>"$LOG" 2>&1
+    rm -rf /root/.cache/pip
+    find /tmp -xdev -type f -atime +2 -delete 2>/dev/null
+    command -v docker >/dev/null 2>&1 && docker image prune -f >>"$LOG" 2>&1
+    after=$(free_mb)
+    if (( after < 2048 )); then fail_step disk "$(human_mb "$after") ${L[disk_ok]}: ${L[disk_full]}"; return 1; fi
+    mark disk fixed "$(human_mb $(( after - before ))) ${L[disk_cleaned]}"
+}
+
+apt_busy() { pgrep -x apt-get >/dev/null || pgrep -x apt >/dev/null || pgrep -x dpkg >/dev/null || pgrep -x unattended-upgr >/dev/null; }
+
+check_apt() {
+    mark apt running
+    local waited=0 fixed=0
+    while apt_busy && (( waited < 900 )); do
+        (( waited == 0 )) && mark apt running "${L[apt_wait]}"
+        sleep 5
+        waited=$(( waited + 5 ))
+    done
+    if apt_busy; then fail_step apt "${L[apt_failed]}"; return 1; fi
+    if [ -n "$(dpkg --audit 2>/dev/null)" ]; then
+        dpkg --configure -a >>"$LOG" 2>&1
+        apt-get -f install -y -q >>"$LOG" 2>&1
+        fixed=1
+    fi
+    if [ -n "$(dpkg --audit 2>/dev/null)" ]; then fail_step apt "${L[apt_failed]}"; return 1; fi
+    if (( fixed )); then mark apt fixed "${L[apt_fixed]}"; else mark apt ok; fi
+}
+
+online() {
+    curl -fsS --proto '=https' --max-time 8 -o /dev/null "https://github.com/AprileNunzio/NUXIVA.git/info/refs?service=git-upload-pack" \
+        && curl -fsS --proto '=https' --max-time 8 -o /dev/null https://pypi.org/simple/pip/
+}
+
+NET=1
+check_network() {
+    mark network running
+    if online; then mark network ok; return 0; fi
+    systemctl restart systemd-resolved >>"$LOG" 2>&1
+    systemctl restart NetworkManager >>"$LOG" 2>&1
+    local i
+    for i in 1 2 3 4 5 6; do
+        sleep 5
+        if online; then mark network fixed "${L[net_fixed]}"; return 0; fi
+    done
+    NET=0
+    fail_step network "${L[net_offline]}"
+    return 1
+}
+
+git_a() { git -c safe.directory='*' -C "$NUXIVA_DIR" "$@"; }
+
+check_code() {
+    mark code running
+    local head branch remote tmp
+    branch=$(sed -n 's/^NUXIVA_UPDATE_BRANCH=//p' /etc/nuxiva/nuxiva.env 2>/dev/null | tail -n 1)
+    branch=${branch:-main}
+    if head=$(git_a rev-parse --verify -q HEAD 2>>"$LOG") && git_a fsck --connectivity-only --no-dangling >>"$LOG" 2>&1; then
+        if git_a diff --quiet HEAD -- 2>>"$LOG"; then mark code ok "${head:0:7}"; return 0; fi
+        if git_a reset --hard -q HEAD >>"$LOG" 2>&1; then mark code fixed "${L[code_fixed]}"; return 0; fi
+    fi
+    if (( NET == 0 )); then fail_step code "${L[code_failed]}"; return 1; fi
+    remote=$(git_a remote get-url origin 2>/dev/null || echo "https://github.com/AprileNunzio/NUXIVA.git")
+    case "$remote" in https://*) ;; *) remote="https://github.com/AprileNunzio/NUXIVA.git" ;; esac
+    tmp="$NUXIVA_DIR.repair.$$"
+    rm -rf "$tmp"
+    if ! git clone -q --branch "$branch" "$remote" "$tmp" >>"$LOG" 2>&1; then rm -rf "$tmp"; fail_step code "${L[code_failed]}"; return 1; fi
+    if [ -n "${head:-}" ] && git -C "$tmp" cat-file -e "$head^{commit}" 2>/dev/null; then git -C "$tmp" reset -q --hard "$head" >>"$LOG" 2>&1; fi
+    rm -rf "$NUXIVA_DIR.broken"
+    mv "$NUXIVA_DIR" "$NUXIVA_DIR.broken" && mv "$tmp" "$NUXIVA_DIR" && rm -rf "$NUXIVA_DIR.broken"
+    mark code fixed "${L[code_fetched]}"
+}
+
+pip_install() {
+    "$VENV/bin/pip" install -q --disable-pip-version-check --no-input --upgrade pip >>"$LOG" 2>&1 \
+        && "$VENV/bin/pip" install -q --disable-pip-version-check --no-input -r "$REQ" >>"$LOG" 2>&1 \
+        && "$VENV/bin/python" -c "$CORE_IMPORTS" >>"$LOG" 2>&1 \
+        && echo "$want" > "$STAMP.tmp" && mv -f "$STAMP.tmp" "$STAMP"
+}
+
+safe_reason() { jq -r '.reason // ""' "$STATE/safe_mode.json" 2>/dev/null; }
+
+check_python() {
+    mark python running
+    want=$(sha1sum "$REQ" 2>/dev/null | cut -c1-40)
+    local healthy=1
+    [ -x "$VENV/bin/python" ] || healthy=0
+    (( healthy )) && { "$VENV/bin/python" -c "$CORE_IMPORTS" >/dev/null 2>&1 || healthy=0; }
+    (( healthy )) && { [ "$(cat "$STAMP" 2>/dev/null)" = "$want" ] || healthy=0; }
+    (( healthy )) && { "$VENV/bin/pip" check >>"$LOG" 2>&1 || healthy=0; }
+    [ "$(safe_reason)" = missing_library ] && healthy=0
+    if (( healthy )); then mark python ok; return 0; fi
+    if (( NET == 0 )); then fail_step python "${L[py_failed]}"; return 1; fi
+    exec 9>>"$VENV/.requirements.lock" 2>/dev/null || exec 9>/run/nuxiva-requirements.lock
+    if ! flock -n 9; then
+        mark python running "${L[py_wait]}"
+        flock -w 1800 9 || { fail_step python "${L[py_failed]}"; return 1; }
+    fi
+    if [ -x "$VENV/bin/pip" ] && pip_install; then exec 9>&-; mark python fixed "${L[py_fixed]}"; return 0; fi
+    rm -rf /root/.cache/pip "$VENV"
+    python3 -m venv "$VENV" >>"$LOG" 2>&1 || { exec 9>&-; fail_step python "${L[py_failed]}"; return 1; }
+    exec 9>>"$VENV/.requirements.lock"
+    if "$VENV/bin/pip" install -q --no-cache-dir --disable-pip-version-check --no-input --upgrade pip >>"$LOG" 2>&1 \
+        && "$VENV/bin/pip" install -q --no-cache-dir --disable-pip-version-check --no-input -r "$REQ" >>"$LOG" 2>&1 \
+        && "$VENV/bin/python" -c "$CORE_IMPORTS" >>"$LOG" 2>&1; then
+        echo "$want" > "$STAMP"
+        exec 9>&-
+        mark python fixed "${L[py_rebuilt]}"
+        return 0
+    fi
+    exec 9>&-
+    fail_step python "${L[py_failed]}"
+    return 1
+}
+
+check_system() {
+    mark system running
+    local changed=0 unit
+    for unit in nuxiva-supervisor.service nuxiva-rollback.service; do
+        if [ -f "$NUXIVA_DIR/scripts/os/systemd/$unit" ] && ! cmp -s "$NUXIVA_DIR/scripts/os/systemd/$unit" "/etc/systemd/system/$unit"; then
+            install -m 0644 "$NUXIVA_DIR/scripts/os/systemd/$unit" /etc/systemd/system/
+            changed=1
+        fi
+    done
+    (( changed )) && systemctl daemon-reload >>"$LOG" 2>&1
+    if [ ! -f /etc/pam.d/nuxiva-admin ]; then
+        printf '%s\n' '@include common-auth' '@include common-account' > /etc/pam.d/nuxiva-admin
+        changed=1
+    fi
+    getent group nuxiva-admin >/dev/null || { groupadd --system nuxiva-admin; changed=1; }
+    mkdir -p /etc/nuxiva /var/lib/nuxiva /var/log/nuxiva
+    touch /etc/nuxiva/nuxiva.env
+    chmod +x "$NUXIVA_DIR/scripts/os/kiosk/session.sh" "$NUXIVA_DIR/scripts/os/nuxivactl" \
+        "$NUXIVA_DIR/scripts/os/"*.sh "$NUXIVA_DIR/scripts/os/steps/"*.sh 2>/dev/null || true
+    [ "$(stat -c %a /etc/nuxiva)" = 700 ] || { chmod 700 /etc/nuxiva; changed=1; }
+    [ "$(stat -c %a /etc/nuxiva/nuxiva.env)" = 600 ] || { chmod 600 /etc/nuxiva/nuxiva.env; changed=1; }
+    systemctl is-enabled -q "$UNIT" 2>/dev/null || { systemctl enable -q "$UNIT" >>"$LOG" 2>&1; changed=1; }
+    if (( changed )); then mark system fixed "${L[sys_fixed]}"; else mark system ok; fi
+}
+
+port_owner() {
+    ss -Hltnp "sport = :$1" 2>/dev/null | grep -o 'users:(("[^"]*",pid=[0-9]*' | head -n 1 | sed 's/users:(("\([^"]*\)",pid=\([0-9]*\)/\1 \2/'
+}
+
+check_ports() {
+    mark ports running
+    local port owner name pid msg
+    if systemctl is-active -q "$UNIT"; then mark ports ok; return 0; fi
+    for port in 80 8080; do
+        owner=$(port_owner "$port")
+        [ -n "$owner" ] || continue
+        read -r name pid <<< "$owner"
+        if [ -n "$pid" ] && tr '\0' ' ' < "/proc/$pid/cmdline" 2>/dev/null | grep -q "$WIZ/"; then
+            kill "$pid" 2>/dev/null
+            continue
+        fi
+        printf -v msg "${L[port_busy]}" "$port" "$name"
+        fail_step ports "$msg"
+        return 1
+    done
+    mark ports ok
+}
+
+healthz() { curl -fsS --max-time 3 http://127.0.0.1/healthz 2>/dev/null; }
+
+check_service() {
+    mark service running
+    if (( RESTART == 0 )); then mark service ok; return 0; fi
+    systemctl reset-failed "$UNIT" >>"$LOG" 2>&1
+    systemctl restart --no-block "$UNIT" >>"$LOG" 2>&1
+    local i body=""
+    sleep 3
+    for (( i = 0; i < 90; i++ )); do
+        body=$(healthz) && break
+        sleep 2
+    done
+    if [ -z "$body" ]; then
+        journalctl -u "$UNIT" -n 60 --no-pager >>"$LOG" 2>&1
+        fail_step service "${L[svc_failed]}"
+        return 1
+    fi
+    if jq -e '.safe_mode == true' >/dev/null 2>&1 <<< "$body"; then fail_step service "${L[svc_safe]}"; return 1; fi
+    curl -fsS --max-time 10 -X POST -H "X-Nuxiva-Request: 1" http://127.0.0.1:8080/api/internal/repair >>"$LOG" 2>&1
+    mark service ok "${L[svc_ok]}"
+}
+
+[ "$QUIET" = 1 ] || printf '\n   %s%s%s\n\n' "$C_CYAN" "${L[title]}" "$C_OFF"
+printf '\n=== %s repair (%s) ===\n' "$(date -Is)" "$ORIGIN" >> "$LOG"
+write_status
+
+if check_disk; then
+    check_apt
+    check_network
+    check_code
+    check_python
+    check_system
+    if check_ports; then check_service; else ST[service]=skipped; fi
+fi
+for k in "${KEYS[@]}"; do [ "${ST[$k]}" = pending ] && ST[$k]=skipped; done
+
+if (( FAILED )); then OVERALL=failed; else OVERALL=done; fi
+write_status
+if [ "$QUIET" = 0 ]; then
+    if (( FAILED )); then printf '\n   %s%s%s\n' "$C_BAD" "${L[partial]}" "$C_OFF"; else printf '\n   %s%s%s\n' "$C_OK" "${L[done]}" "$C_OFF"; fi
+    printf '   %s%s: %s%s\n\n' "$C_DIM" "${L[log]}" "$LOG" "$C_OFF"
+fi
+exit "$FAILED"

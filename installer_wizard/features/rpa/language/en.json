@@ -1,0 +1,107 @@
+{
+  "name": "Computer control",
+  "description": "NUXIVA also lives on your Windows PC as a digital assistant, a bit like Gemini on Android: call it by voice (\"Nuxiva…\") or with Ctrl+Alt+Space, it answers out loud, looks at the screen or webcam when you ask, and works for you: it creates folders and files, opens documents and apps, helps you write, build websites and use AutoCAD or Archicad.",
+  "capabilities": [
+    "Voice assistant on the PC: wake word «Nuxiva», answers with NUXIVA's neural voice, Esc to interrupt",
+    "Sees what you see: reads the document or page you are working on and, when needed, looks at the screen or webcam",
+    "Works for you: creates folders and files, opens documents, apps and websites, types or pastes text into the open app",
+    "Project help: websites ready in Visual Studio Code, AutoCAD scripts (.scr/.lsp), step-by-step Archicad guidance",
+    "Safe by design: writes only in your folders, never deletes, asks before overwriting",
+    "Remote control of PCs via WinRM/SSH from the Dashboard, with End-to-End encryption"
+  ],
+  "settings": {
+    "NUXIVA_RPA_DOWNLOAD_LINK": "Download the NUXIVA Assistant for Windows (.ZIP)",
+    "NUXIVA_RPA_DASHBOARD_LINK": "Remote Control Dashboard (add IP, password and check status)",
+    "NUXIVA_RPA_DOWNLOAD_ZIP": "Alternative for advanced users: sources as ZIP (requires Python)"
+  },
+  "guide": [
+    {
+      "title": "What it is and what it's for (in plain words)",
+      "text": "With the Windows Assistant, NUXIVA also \"lives\" on your computer. It appears as a small glowing orb in the corner of the screen: unobtrusive, but always ready. Call it by saying \"Nuxiva…\", pressing Ctrl+Alt+Space, or clicking the orb to type. It answers out loud, can read the document you're working on, look at the screen or webcam (only when you ask) and do things for you: create folders and files, open programs, write text, prepare a website.",
+      "tip": "The intelligence stays on the NUXIVA server: the PC only runs a light program acting as ears, eyes and hands."
+    },
+    {
+      "title": "Before you start: what you need",
+      "steps": [
+        "A Windows 10 or 11 PC (64-bit) on the same network (same Wi-Fi or router) as the computer running NUXIVA.",
+        "No need to install Python or other programs: the installer already contains everything.",
+        "Optional but recommended: microphone and speakers (or headphones) to talk to NUXIVA, a webcam if you want it to be able to look at you."
+      ]
+    },
+    {
+      "title": "Download and install the assistant",
+      "steps": [
+        "From the Windows PC open this page and press «Download the Windows Assistant»: you get NUXIVA_Assistente_Setup.exe.",
+        "Open the downloaded file. If the blue «Windows protected your PC» warning appears, click «More info» and then «Run anyway».",
+        "Follow the setup: no administrator rights are needed and NUXIVA installs only for your user, with a Start menu shortcut.",
+        "Later updates arrive by themselves: NUXIVA installs them only if they are digitally signed by the developer."
+      ],
+      "tip": "If Windows asks to allow NUXIVA network access, choose «Private networks» and press «Allow»."
+    },
+    {
+      "title": "Connect the PC to NUXIVA (with a code)",
+      "steps": [
+        "In the NUXIVA admin panel open Features → Nodes and servers and press «+ Add a node»: a 6-digit code and NUXIVA's certificate fingerprint appear.",
+        "In the «Collega questo PC ad NUXIVA» window type NUXIVA's address (e.g. 192.168.1.100) and press «Verifica».",
+        "Check that the fingerprint shown is identical to the one in the panel and tick «L'impronta coincide»: this way you are sure you are talking to your NUXIVA and not to an intruder on the network.",
+        "Type the code and a name for the PC, then press «Collega». The glowing orb appears bottom right: NUXIVA is ready."
+      ]
+    },
+    {
+      "title": "Everyday use",
+      "steps": [
+        "To talk: say \"Nuxiva\" followed by your request, or press Ctrl+Alt+Space. While listening the orb pulses blue, while thinking it turns purple, while speaking it turns green.",
+        "To type: click the orb, write in the box at the bottom and press Enter. The panel closes by itself when not needed.",
+        "To interrupt it while speaking: press Esc. Right-click the orb to pause the microphone, open settings or quit.",
+        "You can drag the orb wherever you like: it remembers the position."
+      ]
+    },
+    {
+      "title": "Things you can ask",
+      "steps": [
+        "\"Create a folder Quotes 2026 on the Desktop with Clients and Suppliers inside\"",
+        "\"Summarize the document I'm reading\" or \"Fix the mistakes in the text I'm writing\"",
+        "\"Write a polite email to move the meeting to Thursday\" (NUXIVA types it directly into the open app)",
+        "\"Create a website for a pizzeria and open it in Visual Studio Code\"",
+        "\"In AutoCAD how do I make a polar array?\" or \"Prepare an AutoCAD script that draws a 5x5 grid\"",
+        "\"Look at my screen: what am I doing wrong in this Archicad drawing?\"",
+        "\"Open Excel\", \"Open the Downloads folder\", \"Find the contract file\"",
+        "Everything else works as usual: \"What's the weather tomorrow?\", \"Turn on the studio light\", \"Play some music\"."
+      ]
+    },
+    {
+      "title": "Privacy, permissions and security",
+      "steps": [
+        "You decide what NUXIVA can do: right-click the orb → Permissions. For each capability choose «Allow», «Ask every time» or «Never».",
+        "With «Ask every time» NUXIVA always shows the exact action before running it: the PowerShell command, the script content, the SSH command or the file to change.",
+        "Commands that delete, format or download and run programs always ask for confirmation, even if you chose «Allow».",
+        "NUXIVA works in your personal folders; add other folders in Permissions. Before changing a file it saves a safety copy.",
+        "Communication with NUXIVA is encrypted (HTTPS) and bound to the certificate verified at pairing: an intruder on the network cannot pretend to be NUXIVA.",
+        "Microphone, screen and webcam are used only when needed and you can forbid them in Permissions. To disconnect the PC: Settings → «Scollega questo PC»."
+      ]
+    },
+    {
+      "title": "Troubleshooting",
+      "steps": [
+        "«NUXIVA is reachable only over HTTPS» or «not reachable»: check the PC is on the same network and that NUXIVA is on and up to date: HTTPS is always active on port 443.",
+        "«Invalid or expired pairing code»: generate a new code in Nodes and servers and type it within a few minutes.",
+        "The fingerprint does not match: do not connect the PC and check the network. If you reinstalled NUXIVA, the fingerprint changes and reconnecting is normal.",
+        "«The certificate presented is not signed by NUXIVA's authority»: NUXIVA was reinstalled or someone is intruding on the network. Reconnect the PC only if you are sure.",
+        "The orb is grey or NUXIVA doesn't hear you: NUXIVA's listening service may be off; meanwhile you can type by clicking the orb.",
+        "For any other problem the log is in %APPDATA%/NUXIVA/assistant.log."
+      ]
+    }
+  ],
+  "buttons": {
+    "NUXIVA_RPA_DASHBOARD_LINK": "Open PC Dashboard",
+    "NUXIVA_RPA_DOWNLOAD_LINK": "Download the Windows Assistant",
+    "NUXIVA_RPA_DOWNLOAD_ZIP": "Download the ZIP"
+  },
+  "help": {
+    "NUXIVA_RPA_PSK": "No need to change it: it's created automatically. Change it only if you know what you're doing.",
+    "NUXIVA_RPA_AUTO_SYNC": "When on, NUXIVA periodically checks by itself that connected PCs are on and reachable.",
+    "NUXIVA_RPA_DASHBOARD_LINK": "For advanced users: add PCs manually via WinRM or SSH and check whether they are online.",
+    "NUXIVA_RPA_DOWNLOAD_LINK": "Installer for Windows 10/11: no Python needed. It updates itself with digitally signed updates.",
+    "NUXIVA_RPA_NODES": "Leave empty. Only needed for old installations."
+  }
+}

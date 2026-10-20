@@ -1,0 +1,15 @@
+{
+  "id": "cyber_alert",
+  "name": "Rilevatore Intrusioni",
+  "icon": "🛡️",
+  "priority": 100,
+  "size": "m",
+  "intents": [
+    "cyber_alert"
+  ],
+  "description": "Avviso istantaneo per brute-force o cyber attack.",
+  "ttl": 300,
+  "tone": "red",
+  "essential": true,
+  "urgent": true
+}

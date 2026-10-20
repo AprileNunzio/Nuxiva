@@ -1,0 +1,10 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/crypto_ticker",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Cryptomonnaies"
+  }
+}

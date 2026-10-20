@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "web/shared",
+    "version": "2.0.0"
+  },
+  "dictionary": {
+    "setup_cta": "Configurer Nuxiva",
+    "setup_cta_sub": "Deux minutes suffisent, même pendant l'installation",
+    "bgq_title": "Installations en arrière-plan",
+    "bgq_foot": "Nuxiva est déjà prête : ces éléments s'ajoutent tout seuls, sans redémarrage.",
+    "bgq_status_queued": "en attente",
+    "bgq_status_failed": "je réessaierai",
+    "bgq_status_disk": "manque d'espace",
+    "bgq_status_done": "prête",
+    "bgq_will_retry": "nouvel essai prévu",
+    "bgq_eta_short": "moins de 2 min",
+    "bgq_eta_min": "environ {{n}} min",
+    "bgq_eta_hours": "environ {{n}} h",
+    "bgq_complete": "Nuxiva est complète",
+    "bgq_complete_sub": "Tous les éléments sont installés",
+    "bgq_ready_count": "{{done}} sur {{total}} prêtes",
+    "bgq_paused": "Installations en pause",
+    "bgq_paused_short": "en pause",
+    "bgq_waiting": "En attente",
+    "bgq_resume_after_talk": "Je reprends quand vous avez fini de parler",
+    "bgq_running": "en cours",
+    "bgq_next": "Préparation du composant suivant",
+    "bgq_total_gb": "{{gb}} Go au total",
+    "widget_grow": "Agrandir",
+    "widget_shrink": "Réduire",
+    "widget_close": "Fermer",
+    "widget_cancel": "Annuler",
+    "widget_read": "Lis-le-moi"
+  }
+}

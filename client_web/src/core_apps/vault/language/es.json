@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Caja Fuerte",
+    "description": "Depósito cifrado de claves y secretos",
+    "status": "Activo",
+    "open_app": "Abrir",
+    "loading": "Cargando…",
+    "unreachable": "Servidor no accesible",
+    "on": "Activo",
+    "off": "Apagado",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "add": "Añadir",
+    "sync": "Sincronizar",
+    "sync_done": "Sincronizados {written} archivos, {imported} cambios leídos",
+    "stat_state": "Estado",
+    "stat_files": "Archivos en memoria",
+    "stat_last_export": "Última exportación",
+    "files_title": "Archivos de la caja fuerte",
+    "files_empty": "Aún no hay archivos exportados.",
+    "diary_title": "Diario de hoy",
+    "diary_empty": "El diario de hoy aún está vacío."
+  }
+}

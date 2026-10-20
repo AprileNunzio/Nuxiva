@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/home_rooms",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Pièces",
+    "occupied_one": "{{n}} occupée",
+    "occupied_other": "{{n}} occupées"
+  }
+}

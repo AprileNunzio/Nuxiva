@@ -1,0 +1,10 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/docker_matrix",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Contenedores Docker"
+  }
+}

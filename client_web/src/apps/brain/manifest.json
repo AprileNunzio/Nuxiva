@@ -1,0 +1,38 @@
+{
+  "id": "brain",
+  "name": "Cervello",
+  "icon": "Cpu",
+  "version": "5.3.0",
+  "description": "Centro di comando LLM: gestione modelli interni ed esterni, assegnazione a ciascun Agente e Dispositivo, e playground di test",
+  "scope": "apps/brain",
+  "kind": "app",
+  "target": "global",
+  "window": {
+    "defaultWidth": 82,
+    "defaultHeight": 86,
+    "minWidth": 35,
+    "minHeight": 26,
+    "resizable": true
+  },
+  "toolbars": [
+    {
+      "id": "system",
+      "items": [
+        {
+          "type": "action",
+          "id": "refresh",
+          "labelKey": "os_refresh",
+          "shortcut": "F5"
+        }
+      ]
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "nQuaNO36nu68",
+    "url": "https://img.icons8.com/?size=240&id=nQuaNO36nu68&format=png"
+  },
+  "category": "intelligence"
+}

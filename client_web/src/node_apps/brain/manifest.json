@@ -1,0 +1,37 @@
+{
+  "id": "brain",
+  "name": "Brain",
+  "icon": "Cpu",
+  "version": "5.0.0",
+  "category": "intelligence",
+  "requires_reboot": false,
+  "description": "LLM provider selection and configuration (local Ollama, remote server or cloud API)",
+  "scope": "node_apps/brain",
+  "target": "node",
+  "window": {
+    "defaultWidth": 65,
+    "defaultHeight": 75,
+    "minWidth": 25,
+    "resizable": true
+  },
+  "toolbars": [
+    {
+      "id": "system",
+      "items": [
+        {
+          "type": "action",
+          "id": "refresh",
+          "labelKey": "os_refresh",
+          "shortcut": "F5"
+        }
+      ]
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "nQuaNO36nu68",
+    "url": "https://img.icons8.com/?size=240&id=nQuaNO36nu68&format=png"
+  }
+}

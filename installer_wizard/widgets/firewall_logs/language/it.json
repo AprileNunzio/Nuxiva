@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/firewall_logs",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Firewall",
+    "none": "Nessun blocco registrato",
+    "blocked_one": "{{n}} bloccato",
+    "blocked_other": "{{n}} bloccati"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "id": "projects",
+  "name": "Progetti",
+  "icon": "🗂",
+  "category": "assistente",
+  "order": 20,
+  "pinned": false,
+  "panel": "",
+  "toggle": {
+    "env": "NUXIVA_PROJECTS",
+    "apply": []
+  },
+  "description": "Progetti di lunga durata: Nuxiva li scompone in passi, assegna ogni passo all'esperto più adatto e li porta avanti in background, anche dopo un riavvio, mostrando l'avanzamento in un widget.",
+  "capabilities": [
+    "Piano a passi generato dal cervello, mai inventato",
+    "Assegnazione automatica di ogni passo all'esperto più competente",
+    "Esecuzione in background con ripresa dopo il riavvio",
+    "Pausa, ripresa e annullamento in qualsiasi momento",
+    "Widget di avanzamento in tempo reale"
+  ],
+  "settings": [],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "hlnLMra14Qpa",
+    "url": "https://img.icons8.com/?size=240&id=hlnLMra14Qpa&format=png"
+  }
+}
