@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/system_update",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Aggiornamento",
+    "available": "Disponibile",
+    "installed": "Installata",
+    "new": "Nuova"
+  }
+}

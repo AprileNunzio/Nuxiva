@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/f1_race",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Formula 1",
+    "drivers_title": "Piloti",
+    "results": "Risultati",
+    "circuit": "Circuito",
+    "place": "Luogo",
+    "round": "Round",
+    "live_now": "In corso",
+    "next": "Prossima gara",
+    "unit_d": "g",
+    "unit_h": "h",
+    "unit_m": "m",
+    "unit_min": "min"
+  }
+}

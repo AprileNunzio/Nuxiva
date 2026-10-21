@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Applicazioni",
+    "description": "Catalogo universale delle applicazioni e media center di Nuxiva",
+    "search_placeholder": "Cerca applicazioni o strumenti…",
+    "search": "Cerca",
+    "clear_search": "Cancella ricerca",
+    "navigation": "Categorie",
+    "all_categories": "Tutte le Applicazioni",
+    "empty": "Nessuna applicazione trovata",
+    "empty_hint": "Prova a modificare i termini di ricerca o la categoria selezionata.",
+    "state_filter": "Stato",
+    "all_states": "Tutti gli stati",
+    "running": "In esecuzione",
+    "stopped": "Inattiva",
+    "reset_filters": "Reimposta filtri",
+    "category_media": "Multimedia & Audio",
+    "category_creativity": "Creatività & 3D",
+    "category_productivity": "Produttività & Ufficio",
+    "category_intelligence": "Intelligenza Artificiale",
+    "category_security": "Sicurezza & Privacy",
+    "category_development": "Sviluppo & Strumenti",
+    "category_spaces": "Spazi & Ambienti",
+    "category_system": "Sistema & Rete",
+    "pin_to_desktop": "Aggiungi al Desktop",
+    "unpin_from_desktop": "Rimuovi dal Desktop",
+    "open_app": "Apri"
+  }
+}

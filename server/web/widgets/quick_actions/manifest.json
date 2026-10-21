@@ -1,0 +1,10 @@
+{
+  "id": "quick_actions",
+  "name": "Quick Actions",
+  "version": "1.0.0",
+  "category": "widget",
+  "description": "Contextual single-click action buttons and shortcuts",
+  "icon": "🕹️",
+  "render_type": "grid",
+  "grid_span": {"col": 1, "row": 1}
+}

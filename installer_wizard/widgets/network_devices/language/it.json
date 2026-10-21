@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/network_devices",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Dispositivi in rete",
+    "more": "e altri {{n}}",
+    "connected_one": "{{n}} connesso",
+    "connected_other": "{{n}} connessi"
+  }
+}

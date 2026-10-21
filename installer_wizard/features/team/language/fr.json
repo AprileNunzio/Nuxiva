@@ -1,0 +1,12 @@
+{
+  "outcomes": {
+    "verified": "La tâche a été terminée et vérifiée par {agent}.",
+    "completed_unverified": "{agent} a terminé, mais le résultat n’a pas été vérifié.",
+    "failed": "{agent} n’a pas terminé la tâche.",
+    "blocked": "La tâche de {agent} a été bloquée.",
+    "cancelled": "La tâche de {agent} a été annulée.",
+    "pending": "La tâche de {agent} attend une approbation.",
+    "running": "La tâche de {agent} est toujours en cours.",
+    "unverified": "Le résultat de la tâche de {agent} n’est pas vérifié."
+  }
+}

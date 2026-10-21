@@ -1,0 +1,21 @@
+{
+  "id": "system_logs",
+  "name": "Log di sistema",
+  "icon": "📋",
+  "category": "sistema",
+  "description": "Registri reali della macchina e dei dispositivi, analisi tecnica ed esportazione protetta.",
+  "capabilities": [
+    "Scansione di servizi, container e file di registro",
+    "Filtri, dettagli ed esportazione TXT, JSON e CSV",
+    "Gestione del dispositivo selezionato",
+    "Oscuramento dei segreti riconoscibili"
+  ],
+  "settings": [],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "9QHudN9uBhDv",
+    "url": "https://img.icons8.com/?size=240&id=9QHudN9uBhDv&format=png"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/home_rooms",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Habitaciones",
+    "occupied_one": "{{n}} ocupada",
+    "occupied_other": "{{n}} ocupadas"
+  }
+}

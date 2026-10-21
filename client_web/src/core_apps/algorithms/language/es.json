@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Algoritmos",
+    "description": "Almacén universal de algoritmos",
+    "status": "Activo",
+    "open_app": "Abrir",
+    "loading": "Cargando…",
+    "unreachable": "Servidor no accesible",
+    "on": "Activo",
+    "off": "Apagado",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "add": "Añadir",
+    "stat_total": "Algoritmos",
+    "stat_enabled": "Activos",
+    "stat_uses": "Usos totales",
+    "stat_errors": "Errores de carga",
+    "library_title": "Biblioteca de algoritmos",
+    "search": "Buscar un algoritmo",
+    "category": "Categoría",
+    "all_categories": "Todas las categorías",
+    "empty": "Ningún algoritmo coincide.",
+    "enabled": "Activo",
+    "created_by_nuxiva": "Creado por Nuxiva",
+    "usage": "{uses} usos · {fails} fallos",
+    "try_label": "Frase de prueba",
+    "try": "Probar",
+    "matches": "reconocida",
+    "no_match": "no reconocida"
+  }
+}

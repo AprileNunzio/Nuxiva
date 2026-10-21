@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/system_update",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Update",
+    "available": "Available",
+    "installed": "Installed",
+    "new": "New"
+  }
+}

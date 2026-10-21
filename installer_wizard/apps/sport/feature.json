@@ -1,0 +1,27 @@
+{
+  "id": "sport",
+  "name": "Sport",
+  "icon": "🏆",
+  "category": "intrattenimento",
+  "kind": "app",
+  "order": 151,
+  "panel": "sport",
+  "description": "Centro sportivo universale a step per tutte le discipline: Calcio, Formula 1, MotoGP, Basket, Tennis, Ciclismo, Boxe/MMA, Rugby, NFL, Baseball, Pallavolo e Atletica, con live scores, classifiche e canali TV IPTV collegati.",
+  "toggle": {
+    "env": "NUXIVA_SPORT_APP",
+    "apply": []
+  },
+  "capabilities": [
+    "Griglia iniziale di tutti gli sport con card indipendenti e badge live",
+    "Navigazione a 6 step per ogni disciplina: Competizioni, Calendario & Live, Classifiche, Dettagli Match, Canale TV/IPTV, Preferiti",
+    "Integrazione diretta con la visione IPTV dei match e gare in corso",
+    "Accessibile da interfaccia grafica, assistente vocale, API e tool MCP"
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "NNiLa5wndFCN",
+    "url": "https://img.icons8.com/?size=240&id=NNiLa5wndFCN&format=png"
+  }
+}

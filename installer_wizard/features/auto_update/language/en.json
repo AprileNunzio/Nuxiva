@@ -1,0 +1,12 @@
+{
+  "name": "Automatic Updates",
+  "description": "Nuxiva automatically updates itself from GitHub, verifies the new release integrity, and performs automatic rollbacks if any anomaly occurs.",
+  "capabilities": [
+    "Periodic update checks",
+    "Integrity verification and automated rollback"
+  ],
+  "settings": {
+    "NUXIVA_UPDATE_INTERVAL": "Check interval (minutes)",
+    "NUXIVA_UPDATE_BRANCH": "GitHub Branch"
+  }
+}

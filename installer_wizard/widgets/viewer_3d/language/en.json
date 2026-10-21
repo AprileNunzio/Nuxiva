@@ -1,0 +1,23 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/viewer_3d",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "3D model",
+    "loading": "Loading the model…",
+    "spin": "Auto-rotate",
+    "wire": "Wireframe",
+    "fit": "Fit to view",
+    "triangles_one": "{{n}} triangle",
+    "triangles_other": "{{n}} triangles",
+    "animations_one": "{{n}} animation",
+    "animations_other": "{{n}} animations",
+    "error_library": "3D library unavailable",
+    "error_dxf": "No DXF entity recognised",
+    "error_cad": "CAD file not readable",
+    "error_format": "Format cannot be displayed",
+    "studio": "Edit in the 3D studio"
+  }
+}

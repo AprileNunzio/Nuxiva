@@ -1,0 +1,10 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/energy_chart",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Energia"
+  }
+}

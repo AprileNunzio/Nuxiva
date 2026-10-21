@@ -1,0 +1,49 @@
+{
+  "id": "terminal",
+  "name": "Nuxiva Terminal",
+  "scope": "apps/terminal",
+  "kind": "app",
+  "category": "development",
+  "target": "global",
+  "icon3d": "./icon.png",
+  "version": "1.0.0",
+  "window": {
+    "defaultWidth": 65,
+    "defaultHeight": 75,
+    "minWidth": 25,
+    "resizable": true
+  },
+  "toolbars": [
+    {
+      "id": "commands",
+      "items": [
+        {
+          "type": "button",
+          "id": "health",
+          "labelKey": "health"
+        },
+        {
+          "type": "button",
+          "id": "nodes",
+          "labelKey": "nodes"
+        },
+        {
+          "type": "button",
+          "id": "clear",
+          "labelKey": "clear"
+        },
+        {
+          "type": "button",
+          "id": "stop",
+          "labelKey": "stop"
+        }
+      ]
+    }
+  ],
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "9QHudN9uBhDv",
+    "url": "https://img.icons8.com/?size=240&id=9QHudN9uBhDv&format=png"
+  }
+}

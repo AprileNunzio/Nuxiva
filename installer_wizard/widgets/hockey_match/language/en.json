@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/hockey_match",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "hockey": "Hockey",
+    "versus": "vs",
+    "period_in_progress": "In progress",
+    "chip_final": "Final",
+    "chip_goal": "Goal!",
+    "chip_ot": "Overtime",
+    "chip_faceoff": "Faceoff",
+    "chip_soon": "Soon",
+    "chip_today": "Today",
+    "chip_next": "Next",
+    "today_cap": "Today",
+    "tomorrow": "Tomorrow"
+  }
+}

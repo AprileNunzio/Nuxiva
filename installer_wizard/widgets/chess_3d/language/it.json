@@ -1,0 +1,18 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/chess_3d",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Scacchi 3D",
+    "status_ready": "Pronto",
+    "status_playing": "Partita in corso",
+    "action_fullscreen": "Tutto schermo",
+    "action_close": "Chiudi",
+    "turn_white": "Tocca al Bianco",
+    "turn_black": "Tocca al Nero (Nuxiva)",
+    "action_hint": "Suggerimento",
+    "action_restart": "Nuova partita"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "inherited": "ereditato",
+    "loading": "Caricamento",
+    "settings_unavailable": "Impostazioni non disponibili per questo nodo.",
+    "reset": "Annulla modifiche",
+    "save": "Salva impostazioni",
+    "saved": "Impostazioni salvate"
+  }
+}

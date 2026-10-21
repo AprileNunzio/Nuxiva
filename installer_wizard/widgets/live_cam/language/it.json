@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/live_cam",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Telecamera in diretta",
+    "connecting": "Connessione in corso…",
+    "unavailable": "Flusso non disponibile",
+    "fullscreen": "Schermo intero",
+    "close": "Chiudi"
+  }
+}

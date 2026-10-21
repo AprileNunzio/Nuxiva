@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Algorithmes",
+    "description": "Magasin d'algorithmes",
+    "status": "Actif",
+    "open_app": "Ouvrir",
+    "loading": "Chargement…",
+    "unreachable": "Serveur injoignable",
+    "on": "Actif",
+    "off": "Éteint",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "add": "Ajouter",
+    "stat_total": "Algorithmes",
+    "stat_enabled": "Actifs",
+    "stat_uses": "Utilisations totales",
+    "stat_errors": "Erreurs de chargement",
+    "library_title": "Bibliothèque d'algorithmes",
+    "search": "Rechercher un algorithme",
+    "category": "Catégorie",
+    "all_categories": "Toutes les catégories",
+    "empty": "Aucun algorithme ne correspond.",
+    "enabled": "Actif",
+    "created_by_nuxiva": "Créé par Nuxiva",
+    "usage": "{uses} utilisations · {fails} échecs",
+    "try_label": "Phrase de test",
+    "try": "Tester",
+    "matches": "reconnue",
+    "no_match": "non reconnue"
+  }
+}

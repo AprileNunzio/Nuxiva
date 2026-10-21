@@ -1,0 +1,38 @@
+{
+  "id": "auto_update",
+  "name": "Aggiornamenti automatici",
+  "icon": "⟳",
+  "category": "sistema",
+  "order": 170,
+  "panel": "updates",
+  "description": "Nuxiva si aggiorna da sola da GitHub, verifica la nuova versione e torna indietro se qualcosa non va.",
+  "toggle": {
+    "env": "NUXIVA_AUTO_UPDATE",
+    "apply": []
+  },
+  "capabilities": [
+    "Controllo periodico",
+    "Verifica e rollback automatico"
+  ],
+  "settings": [
+    {
+      "key": "NUXIVA_UPDATE_INTERVAL_MIN",
+      "label": "Controlla ogni (minuti)",
+      "type": "number",
+      "default": "5"
+    },
+    {
+      "key": "NUXIVA_UPDATE_BRANCH",
+      "label": "Ramo GitHub",
+      "type": "text",
+      "default": "main"
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "xsg8DrPwYfql",
+    "url": "https://img.icons8.com/?size=240&id=xsg8DrPwYfql&format=png"
+  }
+}

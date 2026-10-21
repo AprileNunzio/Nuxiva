@@ -1,0 +1,43 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "scope_local": "servidor local",
+    "scope_paired": "nodo emparejado",
+    "scope_mesh": "no emparejado",
+    "channel_title": "Dispositivo activo",
+    "channel_device": "Dispositivo",
+    "channel_none": "No se detectó ningún dispositivo",
+    "channel_mute": "Silenciar",
+    "channel_unmute": "Reactivar",
+    "channel_volume": "Volumen",
+    "channel_boost_warning": "Por encima del 100% la señal se amplifica: puede distorsionar.",
+    "channel_unavailable": "Sistema de audio no disponible en el servidor: {error}",
+    "inventory_empty": "El nodo no comunicó dispositivos.",
+    "title": "Audio",
+    "description": "Salida de audio, volumen y voz de {assistant} en este nodo",
+    "notice_unpaired": "Este nodo solo se detectó en la malla: emparéjalo desde Nodos y servidores para gestionar su audio.",
+    "notice_paired": "El nodo aplica los ajustes de voz en el próximo contacto. La salida de audio se elige en el dispositivo.",
+    "inventory_title": "Salidas de audio comunicadas por el nodo",
+    "voice_title": "Voz y sonidos",
+    "test_title": "Prueba de altavoces",
+    "test_hint": "Reproduce un sonido del sistema en los altavoces del servidor.",
+    "test_sound": "Sonido a reproducir",
+    "test_play": "Reproducir",
+    "test_ok": "Sonido enviado a los altavoces.",
+    "test_failed": "La reproducción falló.",
+    "setting_NUXIVA_VOICE_VOLUME": "Volumen de la voz",
+    "setting_NUXIVA_VOICE_VOLUME_hint": "Multiplicador aplicado a la síntesis de voz (0,4 - 2).",
+    "setting_NUXIVA_VOICE_SPEED": "Velocidad de la voz",
+    "setting_NUXIVA_VOICE_SPEED_hint": "1 es la velocidad natural.",
+    "setting_NUXIVA_VOICE_PITCH": "Tono de la voz",
+    "setting_NUXIVA_VOICE_PITCH_hint": "Semitonos: negativo más grave, positivo más agudo.",
+    "setting_NUXIVA_QUIET_VOICE": "Voz en modo silencioso",
+    "setting_NUXIVA_QUIET_VOICE_hint": "Volumen usado cuando la casa está en silencio.",
+    "setting_NUXIVA_SOUNDS_VOLUME": "Efectos de sonido",
+    "setting_NUXIVA_SOUNDS_VOLUME_hint": "Volumen de avisos y confirmaciones.",
+    "setting_NUXIVA_SOUNDS_AMBIENT_VOLUME": "Fondo",
+    "setting_NUXIVA_SOUNDS_AMBIENT_VOLUME_hint": "Volumen del fondo ambiental."
+  }
+}

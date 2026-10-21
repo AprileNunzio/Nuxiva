@@ -1,0 +1,32 @@
+{
+  "id": "mesh",
+  "name": "Neural Mesh",
+  "scope": "core_apps/mesh",
+  "target": "global",
+  "window": {
+    "defaultWidth": 85,
+    "defaultHeight": 90,
+    "minWidth": 25,
+    "resizable": true
+  },
+  "toolbars": [
+    {
+      "id": "system",
+      "items": [
+        {
+          "type": "action",
+          "id": "refresh",
+          "labelKey": "os_refresh"
+        }
+      ]
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "J2fYkPtfcYwj",
+    "url": "https://img.icons8.com/?size=240&id=J2fYkPtfcYwj&format=png"
+  },
+  "category": "system"
+}

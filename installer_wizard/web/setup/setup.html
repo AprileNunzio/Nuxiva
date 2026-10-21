@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="it" translate="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<title data-st="app-title"></title>
+<link rel="stylesheet" href="/static/shared/nuxiva.css">
+<link rel="stylesheet" href="/static/setup/setup_base.css">
+<link rel="stylesheet" href="/static/setup/setup_layout.css">
+<link rel="stylesheet" href="/static/setup/setup_screens.css">
+<link rel="stylesheet" href="/static/setup/setup_live.css">
+</head>
+<body class="holo-hud-body">
+<div class="hud-stars-bg" aria-hidden="true"></div>
+
+<div class="hud-app" id="hud-app" data-no-i18n>
+  <header class="hud-top-bar" id="hud-top">
+    <div class="hud-brand">
+      <span class="hud-pulse-ring"></span>
+      <b class="hud-logo-text" id="hud-brand-text">NUXIVA</b>
+    </div>
+    <nav class="hud-stepper" id="hud-stepper" data-st-aria="nav-steps">
+      <ol class="stepper-nodes" id="stepper-track"></ol>
+    </nav>
+    <div class="hud-top-telemetry">
+      <div class="hud-tele-pill" id="conn-pill">
+        <span class="tele-dot" id="conn-dot"></span>
+        <span class="tele-txt" id="conn-txt"></span>
+      </div>
+      <div class="hud-tele-pill">
+        <span class="tele-label" data-st="latency-label"></span>
+        <b class="tele-val" id="tele-ping">—</b>
+      </div>
+      <div class="hud-lang-picker" id="hud-lang-picker">
+        <button type="button" class="lang-pill" data-lang="it">IT</button>
+        <button type="button" class="lang-pill" data-lang="en">EN</button>
+        <button type="button" class="lang-pill" data-lang="es">ES</button>
+        <button type="button" class="lang-pill" data-lang="fr">FR</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="hud-main-grid" id="hud-main">
+    <aside class="hud-quadrant quadrant-left" id="quad-left">
+      <div class="q-card q-guide">
+        <div class="hud-sec-badge" id="guide-badge"></div>
+        <h1 class="hud-title" id="guide-title"></h1>
+        <p class="hud-lead" id="guide-desc"></p>
+        <div class="hud-checklist-wrap">
+          <span class="chk-hdr" data-st="chk-hdr-status"></span>
+          <ul class="hud-checklist" id="guide-checklist"></ul>
+        </div>
+        <div class="hud-security-seal">
+          <span class="seal-icon" aria-hidden="true">🛡️</span>
+          <div class="seal-meta">
+            <b data-st="seal-title"></b>
+            <small data-st="seal-desc"></small>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="hud-quadrant quadrant-center" id="quad-center">
+      <div class="stage-screen" data-step="1" id="screen-1">
+        <div class="live-card">
+          <div class="live-row"><span data-st="tz-browser"></span><b id="tz-browser">—</b></div>
+          <div class="live-row"><span data-st="tz-server"></span><b id="tz-server">—</b></div>
+          <p class="live-note warn" id="tz-mismatch" data-st="tz-mismatch" hidden></p>
+        </div>
+        <div class="lang-matrix-grid" id="lang-cards"></div>
+      </div>
+
+      <div class="stage-screen" data-step="2" id="screen-2" hidden>
+        <div class="hud-banner-alert">
+          <span class="banner-icon" aria-hidden="true">🎙️</span>
+          <div>
+            <b data-st="mic-banner-title"></b>
+            <p data-st="mic-banner-desc"></p>
+          </div>
+        </div>
+        <div class="canvas-viewport">
+          <canvas id="canvas-scope" width="760" height="220" data-st-aria="mic-scope"></canvas>
+        </div>
+        <div class="mic-stage-controls">
+          <button type="button" class="hud-btn-primary glow" id="btn-mic-measure">
+            <span class="btn-dot"></span>
+            <span data-st="mic-start"></span>
+          </button>
+          <div class="mic-phase-status" id="mic-phase-msg" role="status" aria-live="polite"></div>
+        </div>
+        <div class="live-grid" id="mic-results"></div>
+      </div>
+
+      <div class="stage-screen" data-step="3" id="screen-3" hidden>
+        <div class="naming-input-group">
+          <label class="hud-input-label" for="input-assistant-name" data-st="assist-name"></label>
+          <div class="name-chips" id="quick-name-chips"></div>
+          <input type="text" class="hud-text-input" id="input-assistant-name" maxlength="32" autocomplete="off">
+        </div>
+        <div class="voice-timbre-picker">
+          <div class="voice-cards-row" id="voice-cards"></div>
+          <button type="button" class="hud-btn-ghost" id="btn-voice-preview">
+            <span aria-hidden="true">🔊</span>
+            <span data-st="voice-preview"></span>
+          </button>
+        </div>
+        <div class="wake-rings-chamber">
+          <p class="ring-prompt-banner" id="ring-prompt-txt"></p>
+          <div class="rings-row" id="wake-rings"></div>
+        </div>
+      </div>
+
+      <div class="stage-screen" data-step="4" id="screen-4" hidden>
+        <div class="owner-inputs live-card">
+          <label class="hud-input-label" for="owner-first-input" data-st="owner-name"></label>
+          <input type="text" class="hud-text-input" id="owner-first-input" maxlength="40" autocomplete="given-name">
+          <label class="hud-input-label" for="owner-last-input" data-st="owner-last"></label>
+          <input type="text" class="hud-text-input" id="owner-last-input" maxlength="60" autocomplete="family-name">
+        </div>
+        <div class="live-card">
+          <b data-st="face-title"></b>
+          <p class="live-note" data-st="face-desc"></p>
+          <div class="face-shots" id="face-shots"></div>
+          <p class="mic-phase-status" id="face-msg" role="status" aria-live="polite"></p>
+        </div>
+      </div>
+
+      <div class="stage-screen" data-step="5" id="screen-5" hidden>
+        <div class="optical-radar-top">
+          <div class="radar-circle" id="cam-radar">
+            <span class="radar-sweep-arm"></span>
+            <span class="radar-core-blip"></span>
+          </div>
+          <div class="radar-text-info">
+            <b data-st="cam-scan"></b>
+            <small id="cams-count-text"></small>
+            <button type="button" class="hud-btn-ghost" id="btn-cam-scan" data-st="cam-rescan"></button>
+          </div>
+        </div>
+        <div class="cam-matrix-grid" id="cam-matrix"></div>
+      </div>
+
+      <div class="stage-screen" data-step="6" id="screen-6" hidden>
+        <div class="live-grid" id="hw-grid"></div>
+        <div class="brain-mode-row" id="brain-modes"></div>
+        <div class="brain-presets-grid" id="brain-presets"></div>
+        <div class="live-card" id="brain-remote" hidden>
+          <label class="hud-input-label" for="ollama-url-in" data-st="brain-remote-url"></label>
+          <input type="url" class="hud-text-input" id="ollama-url-in" maxlength="200" placeholder="http://192.168.1.20:11434">
+        </div>
+        <div class="live-card" id="brain-cloud" hidden>
+          <label class="hud-input-label" for="cloud-provider-in" data-st="brain-cloud-provider"></label>
+          <select class="hud-text-input" id="cloud-provider-in"></select>
+          <label class="hud-input-label" for="cloud-key-in" data-st="brain-cloud-key"></label>
+          <input type="password" class="hud-text-input" id="cloud-key-in" maxlength="256" autocomplete="off">
+        </div>
+        <div class="live-card">
+          <b data-st="packages-title"></b>
+          <div class="package-grid" id="package-grid"></div>
+        </div>
+        <div class="ha-bridge-card">
+          <div class="ha-header"><span data-st="ha-title"></span><span class="ha-status-badge" data-st="ha-optional"></span></div>
+          <div class="ha-inputs">
+            <input type="url" class="hud-text-input" id="ha-url-in" maxlength="260" placeholder="http://homeassistant.local:8123" data-st-aria="ha-url">
+            <input type="password" class="hud-text-input" id="ha-token-in" maxlength="512" autocomplete="off" data-st-ph="ha-token" data-st-aria="ha-token">
+          </div>
+        </div>
+      </div>
+
+      <div class="stage-screen" data-step="7" id="screen-7" hidden>
+        <div class="readiness-matrix-grid" id="matrix-summary"></div>
+        <div class="final-launch-zone">
+          <button type="button" class="hud-btn-launch" id="btn-final-launch">
+            <span class="launch-halo"></span>
+            <b id="launch-btn-label"></b>
+          </button>
+          <p class="mic-phase-status" id="launch-msg" role="status" aria-live="polite"></p>
+        </div>
+      </div>
+    </main>
+
+    <aside class="hud-quadrant quadrant-right" id="quad-right">
+      <div class="q-card q-analytics">
+        <div class="hud-sec-badge" data-st="analytics-title"></div>
+        <div class="analytics-metrics-list" id="analytics-list"></div>
+        <div class="streaming-synapse-log">
+          <span class="log-title" data-st="log-title"></span>
+          <pre class="log-pre" id="synapse-log-stream" aria-live="polite"></pre>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <footer class="hud-bottom-bar" id="hud-bottom">
+    <div class="bar-col left">
+      <button type="button" class="hud-nav-btn secondary" id="btn-back" data-st="btn-back"></button>
+    </div>
+    <div class="bar-col center">
+      <div class="status-indicator-bar">
+        <span class="status-bullet"></span>
+        <span class="status-msg" id="bottom-status-msg" role="status" aria-live="polite"></span>
+      </div>
+      <button type="button" class="hud-nav-btn small ghost" id="btn-recalibrate" data-st="btn-redo"></button>
+    </div>
+    <div class="bar-col right">
+      <button type="button" class="hud-nav-btn primary glow" id="btn-next" data-st="btn-next"></button>
+    </div>
+  </footer>
+</div>
+
+<div class="code-overlay" id="code-overlay" data-no-i18n role="dialog" aria-modal="true" aria-labelledby="code-title" hidden>
+  <form class="code-card" id="code-form">
+    <b id="code-title" data-st="code-title"></b>
+    <p data-st="code-desc"></p>
+    <input type="text" class="hud-text-input" id="code-input" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" required>
+    <p class="live-note warn" id="code-error" hidden></p>
+    <button type="submit" class="hud-btn-primary" data-st="code-confirm"></button>
+  </form>
+</div>
+
+<script src="/static/setup/language/setup_i18n.js"></script>
+<script src="/static/setup/setup_net.js"></script>
+<script src="/static/setup/setup_audio.js"></script>
+<script src="/static/setup/setup_canvas.js"></script>
+<script src="/static/setup/setup_steps.js"></script>
+<script src="/static/setup/setup_steps_more.js"></script>
+<script src="/static/setup/setup.js"></script>
+</body>
+</html>

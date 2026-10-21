@@ -1,0 +1,37 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Abitudini",
+    "description": "Log cronologico e analisi predittiva delle abitudini",
+    "status": "Attivo",
+    "open_app": "Apri",
+    "loading": "Caricamento…",
+    "unreachable": "Server non raggiungibile",
+    "on": "Attivo",
+    "off": "Spento",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "edit": "Modifica",
+    "delete": "Elimina",
+    "add": "Aggiungi",
+    "analyse": "Analizza ora",
+    "found": "{n} nuove abitudini trovate",
+    "stat_state": "Apprendimento",
+    "stat_events": "Eventi osservati",
+    "stat_proposals": "Proposte aperte",
+    "stat_foresight_hits": "Previsioni azzeccate",
+    "proposals_title": "Automazioni proposte",
+    "proposals_empty": "Nessuna proposta: Nuxiva ne farà quando riconosce un'abitudine.",
+    "accept": "Crea l'automazione",
+    "snooze": "Più tardi",
+    "reject": "Non mi serve",
+    "evidence": "Osservata {support} volte su {observed} · affidabilità {confidence}%",
+    "closed": "{n} proposte già gestite",
+    "foresight_title": "Cosa si aspetta Nuxiva",
+    "foresight_empty": "Nessuna previsione al momento.",
+    "anomalies_title": "Situazioni insolite",
+    "anomalies_empty": "Nulla di strano è stato notato."
+  }
+}

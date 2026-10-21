@@ -1,0 +1,10 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/vram_allocator",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Memoria video"
+  }
+}

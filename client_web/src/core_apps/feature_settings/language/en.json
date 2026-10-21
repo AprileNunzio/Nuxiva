@@ -1,0 +1,41 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Feature settings",
+    "description": "Central hub of general capabilities",
+    "status": "Active",
+    "open_app": "Open",
+    "loading": "Loading…",
+    "unreachable": "Server unreachable",
+    "on": "On",
+    "off": "Off",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "rescan": "Rescan features",
+    "stat_total": "Features",
+    "stat_running": "Running",
+    "stat_stopped": "Stopped",
+    "stat_errors": "Errors",
+    "search": "Search a feature",
+    "category": "Category",
+    "all_categories": "All categories",
+    "empty": "No feature matches.",
+    "mode": "Mode",
+    "mode_auto": "Automatic",
+    "mode_on": "Always on",
+    "mode_off": "Always off",
+    "pin": "Pin",
+    "details": "Details",
+    "running": "Running",
+    "stopped": "Stopped",
+    "new": "New",
+    "no_settings": "This feature has no settings.",
+    "studio_open": "Voice Studio",
+    "settings_title": "Settings"
+  }
+}

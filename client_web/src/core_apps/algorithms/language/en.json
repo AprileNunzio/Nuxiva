@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Algorithms",
+    "description": "Universal deterministic algorithm store",
+    "status": "Active",
+    "open_app": "Open",
+    "loading": "Loading…",
+    "unreachable": "Server unreachable",
+    "on": "On",
+    "off": "Off",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "stat_total": "Algorithms",
+    "stat_enabled": "Enabled",
+    "stat_uses": "Total uses",
+    "stat_errors": "Load errors",
+    "library_title": "Algorithm library",
+    "search": "Search an algorithm",
+    "category": "Category",
+    "all_categories": "All categories",
+    "empty": "No algorithm matches.",
+    "enabled": "Enabled",
+    "created_by_nuxiva": "Created by Nuxiva",
+    "usage": "{uses} uses · {fails} failures",
+    "try_label": "Test phrase",
+    "try": "Test",
+    "matches": "recognised",
+    "no_match": "not recognised"
+  }
+}

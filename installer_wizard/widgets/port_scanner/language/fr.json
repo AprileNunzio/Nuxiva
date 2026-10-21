@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/port_scanner",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Ports ouverts",
+    "open_one": "{{n}} ouvert",
+    "open_other": "{{n}} ouverts"
+  }
+}

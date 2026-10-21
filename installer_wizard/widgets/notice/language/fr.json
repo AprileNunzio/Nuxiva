@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/notice",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "notice": "Avis",
+    "warning": "Attention"
+  }
+}

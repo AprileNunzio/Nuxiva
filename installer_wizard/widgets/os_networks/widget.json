@@ -1,0 +1,16 @@
+{
+  "id": "os_networks",
+  "name": "Gestione Reti (Wi-Fi / BT)",
+  "icon": "📡",
+  "priority": 85,
+  "size": "l",
+  "intents": [
+    "os_networks",
+    "wifi",
+    "bluetooth"
+  ],
+  "description": "Scansione e connessione a reti Wi-Fi e dispositivi Bluetooth.",
+  "ttl": 300,
+  "tone": "blue",
+  "essential": true
+}

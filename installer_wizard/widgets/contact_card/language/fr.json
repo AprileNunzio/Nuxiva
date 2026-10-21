@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/contact_card",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Contact",
+    "phone": "Téléphone",
+    "email": "E-mail",
+    "no_number": "Aucun numéro",
+    "unknown": "Inconnu"
+  }
+}

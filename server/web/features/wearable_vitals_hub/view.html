@@ -1,0 +1,134 @@
+<section id="deck-wearables-vitals" class="plancia-section">
+  <div class="wearables-container">
+    <div class="wearables-header-bar">
+      <div>
+        <h2 class="wearables-title" data-i18n="title">Hub Funzioni Vitali &amp; Dispositivi Indossabili</h2>
+        <p class="wearables-subtitle" data-i18n="subtitle">Connessione continua per Google Fitbit Edge, BLE standard, Google Fit e bilance Renpho in tempo reale</p>
+      </div>
+      <div class="wearables-actions">
+        <button id="btn-sync-wearables" class="tactical-btn primary" data-i18n="sync_btn">⚡ Sincronizza Dispositivi Indossabili</button>
+      </div>
+    </div>
+
+    <div class="wearables-grid">
+      <div class="tactical-card wearable-card">
+        <div class="card-header">
+          <span class="card-title">⌚ Google Fitbit Edge (Telemetria Real-Time)</span>
+          <span id="badge-fitbit-status" class="badge-tag wearable-live-badge">CONNESSO (BLE)</span>
+        </div>
+        <div class="card-body">
+          <div class="vitals-dashboard-row">
+            <div class="vital-tile vital-heart">
+              <span class="tile-icon">💓</span>
+              <div class="tile-content">
+                <span class="tile-label" data-i18n="bpm_label">Frequenza Cardiaca:</span>
+                <strong id="val-wearable-bpm" class="tile-val">68 BPM</strong>
+              </div>
+            </div>
+
+            <div class="vital-tile vital-oxygen">
+              <span class="tile-icon">🫁</span>
+              <div class="tile-content">
+                <span class="tile-label" data-i18n="spo2_label">Ossigeno SpO2:</span>
+                <strong id="val-wearable-spo2" class="tile-val">99%</strong>
+              </div>
+            </div>
+
+            <div class="vital-tile vital-hrv">
+              <span class="tile-icon">📈</span>
+              <div class="tile-content">
+                <span class="tile-label" data-i18n="hrv_label">Variabilità HRV:</span>
+                <strong id="val-wearable-hrv" class="tile-val">48.2 ms</strong>
+              </div>
+            </div>
+
+            <div class="vital-tile vital-temp">
+              <span class="tile-icon">🌡️</span>
+              <div class="tile-content">
+                <span class="tile-label" data-i18n="temp_label">Temp. Cutanea:</span>
+                <strong id="val-wearable-temp" class="tile-val">36.5°C</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="vitals-submetrics-panel">
+            <div class="submetric-item">
+              <span class="submetric-name" data-i18n="steps_label">Passi Odierni:</span>
+              <strong id="val-wearable-steps">8.420</strong>
+            </div>
+            <div class="submetric-item">
+              <span class="submetric-name" data-i18n="cals_label">Calorie Bruciate:</span>
+              <strong id="val-wearable-calories">2.140 kcal</strong>
+            </div>
+            <div class="submetric-item">
+              <span class="submetric-name">Frequenza Respiratoria:</span>
+              <strong id="val-wearable-resp">13.5 rpm</strong>
+            </div>
+            <div class="submetric-item">
+              <span class="submetric-name">Batteria Dispositivo:</span>
+              <strong id="val-wearable-battery">88%</strong>
+            </div>
+          </div>
+
+          <div class="wearable-ecg-canvas-box">
+            <canvas id="canvas-wearable-ecg" width="600" height="90"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="tactical-card wearable-card">
+        <div class="card-header">
+          <span class="card-title">⚖️ Bilancia Intelligente Renpho &amp; Composizione Corporea</span>
+          <span id="badge-scale-status" class="badge-tag scale-live-badge">SINCRONIZZATO</span>
+        </div>
+        <div class="card-body">
+          <div class="scale-hero-weight">
+            <div class="hero-weight-content">
+              <span class="hero-weight-label" data-i18n="weight_label">Peso Corporeo Attuale:</span>
+              <div class="hero-weight-display">
+                <strong id="val-scale-weight">74.6</strong>
+                <span class="hero-weight-unit">KG</span>
+              </div>
+            </div>
+            <div class="hero-bmi-badge">
+              <span class="bmi-title" data-i18n="bmi_label">Indice BMI:</span>
+              <strong id="val-scale-bmi">23.4</strong>
+              <span class="bmi-category">Normopeso Ottimale</span>
+            </div>
+          </div>
+
+          <div class="body-composition-grid">
+            <div class="composition-tile">
+              <span class="comp-label" data-i18n="fat_label">Grasso Corporeo:</span>
+              <strong id="val-scale-fat">15.8%</strong>
+              <div class="comp-bar"><div id="bar-scale-fat" class="comp-bar-fill" style="width: 15.8%; background: #10b981;"></div></div>
+            </div>
+
+            <div class="composition-tile">
+              <span class="comp-label" data-i18n="muscle_label">Massa Muscolare:</span>
+              <strong id="val-scale-muscle">35.2 kg</strong>
+              <div class="comp-bar"><div id="bar-scale-muscle" class="comp-bar-fill" style="width: 47%; background: #00f0ff;"></div></div>
+            </div>
+
+            <div class="composition-tile">
+              <span class="comp-label" data-i18n="water_label">Idratazione:</span>
+              <strong id="val-scale-water">59.4%</strong>
+              <div class="comp-bar"><div id="bar-scale-water" class="comp-bar-fill" style="width: 59.4%; background: #3b82f6;"></div></div>
+            </div>
+
+            <div class="composition-tile">
+              <span class="comp-label">Età Metabolica:</span>
+              <strong id="val-scale-meta-age">27 Anni</strong>
+              <div class="comp-bar"><div class="comp-bar-fill" style="width: 27%; background: #c084fc;"></div></div>
+            </div>
+          </div>
+
+          <div class="connected-hardware-registry">
+            <span class="registry-title" data-i18n="connected_devices">Dispositivi Connessi:</span>
+            <div id="list-wearable-devices" class="hardware-pill-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

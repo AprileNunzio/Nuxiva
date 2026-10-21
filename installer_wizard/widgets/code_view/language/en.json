@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/code_view",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "copy": "Copy",
+    "copied": "Copied",
+    "plain_text": "Text",
+    "lines_one": "{{n}} line",
+    "lines_other": "{{n}} lines"
+  }
+}

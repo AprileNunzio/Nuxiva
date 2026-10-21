@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/cicd_tracker",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "CI/CD pipelines",
+    "failed_one": "{{n}} failed",
+    "failed_other": "{{n}} failed",
+    "running_one": "{{n}} running",
+    "running_other": "{{n}} running"
+  }
+}

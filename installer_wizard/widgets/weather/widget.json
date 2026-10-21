@@ -1,0 +1,17 @@
+{
+  "id": "weather",
+  "name": "Meteo",
+  "icon": "⛅",
+  "priority": 50,
+  "size": "m",
+  "agent": "chat",
+  "intents": [
+    "weather",
+    "meteo"
+  ],
+  "panel_type": "forecast",
+  "ttl": 900,
+  "description": "Condizioni attuali e prossimi giorni, dopo una domanda sul tempo (resta 15 minuti).",
+  "tone": "cyan",
+  "refresh": 900
+}

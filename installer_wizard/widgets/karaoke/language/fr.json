@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/karaoke",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Karaoké",
+    "synced": "Synchronisé",
+    "no_lyrics": "Paroles indisponibles"
+  }
+}

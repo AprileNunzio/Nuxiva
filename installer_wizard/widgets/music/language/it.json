@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/music",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "listening": "Musica",
+    "playing": "In riproduzione"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/system_monitor",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Node telemetry",
+    "cpu": "CPU",
+    "ram": "RAM",
+    "loaded": "Under load",
+    "nominal": "Nominal"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "inherited": "hérité",
+    "loading": "Chargement",
+    "settings_unavailable": "Réglages indisponibles pour ce nœud.",
+    "reset": "Annuler les modifications",
+    "save": "Enregistrer les réglages",
+    "saved": "Réglages enregistrés"
+  }
+}

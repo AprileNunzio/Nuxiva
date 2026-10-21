@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "web/screen",
+    "version": "2.0.0"
+  },
+  "dictionary": {
+    "page_title": "{{assistant}} · Schermo",
+    "screen_label": "SCHERMO",
+    "screen_n": "SCHERMO {{n}}",
+    "mirror_label": "WIDGET DI {{assistant}}",
+    "idle_hint": "Trascina qui un widget dal bordo dell'altro schermo, oppure chiedi a {{assistant}} di spostarlo.",
+    "link_lost": "Riconnessione al supervisore"
+  }
+}

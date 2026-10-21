@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "skills/date/giorni",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Calcul des Jours",
+    "desc": "Différence entre dates et jours ouvrés",
+    "error_date": "Date non valide",
+    "result_days": "Jours écoulés: {{days}}"
+  }
+}

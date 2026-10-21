@@ -1,0 +1,17 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/cam_stream",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Telecamera",
+    "no_stream": "Nessun flusso disponibile",
+    "source": "Sorgente",
+    "state": "Stato",
+    "chip_motion": "Movimento",
+    "chip_listening": "In ascolto",
+    "motion": "Movimento rilevato",
+    "no_motion": "Nessun movimento"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "session": "Your session",
+    "close": "Close",
+    "role": "Access profile",
+    "devices": "Assigned devices",
+    "all_devices": "All devices",
+    "device_count": "{count} devices",
+    "language": "Session language",
+    "permissions": "Effective permissions",
+    "all_permissions": "All permissions",
+    "settings": "Control panel",
+    "sign_out": "Sign out",
+    "signing_out": "Signing out…",
+    "loading": "Checking…",
+    "access_failed": "Unable to verify permissions",
+    "unavailable": "Unavailable",
+    "role_administrator": "Administrator",
+    "role_operator": "Operator",
+    "role_auditor": "Auditor",
+    "role_viewer": "Viewer"
+  }
+}

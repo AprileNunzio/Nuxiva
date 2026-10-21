@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "web/monitor",
+    "version": "2.0.0"
+  },
+  "dictionary": {
+    "page_title": "{{assistant}} · Avvio",
+    "brand_sub": "SISTEMA OPERATIVO COGNITIVO",
+    "activation_sequence": "Sequenza di attivazione",
+    "completed": "completato",
+    "connecting": "Connessione al supervisore",
+    "telemetry": "Telemetria",
+    "cpu": "Processore",
+    "cpu_value": "{{pct}}% · {{cores}} core",
+    "memory": "Memoria",
+    "storage": "Archiviazione",
+    "network": "Rete ↓ / ↑",
+    "temperature": "Temperatura",
+    "uptime": "Acceso da",
+    "phase_time": "Tempo di fase",
+    "subsystems": "Sottosistemi",
+    "waiting_diagnosis": "In attesa della prima diagnosi…",
+    "link_lost": "Riconnessione al supervisore",
+    "online": "ONLINE",
+    "all_ok": "Tutti i sistemi sono operativi",
+    "status_pending": "in attesa",
+    "status_checking": "verifica",
+    "status_retrying": "nuovo tentativo",
+    "status_done": "ok",
+    "status_failed": "errore",
+    "status_skipped": "saltato",
+    "status_background": "dopo l'avvio",
+    "error_retry": "{{error}} — nuovo tentativo automatico tra {{wait}}"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "avatars",
+  "name": "Ologrammi e Avatar",
+  "icon": "🧍‍♀️",
+  "category": "assistente",
+  "order": 38,
+  "pinned": false,
+  "panel": "avatars",
+  "description": "",
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "x0qTmzjcFRhW",
+    "url": "https://img.icons8.com/?size=240&id=x0qTmzjcFRhW&format=png"
+  }
+}

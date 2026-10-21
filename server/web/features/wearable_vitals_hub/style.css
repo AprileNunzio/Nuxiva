@@ -1,0 +1,309 @@
+.wearables-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.wearables-header-bar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(0, 240, 255, 0.15);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .wearables-header-bar {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.wearables-title {
+  font-family: var(--font-display, "Space Grotesk", sans-serif);
+  font-size: 1.35rem;
+  color: #fff;
+  margin: 0;
+}
+
+.wearables-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted, #94a3b8);
+  margin-top: 0.25rem;
+}
+
+.wearables-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .wearables-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.wearable-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.wearable-live-badge {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.scale-live-badge {
+  background: rgba(0, 240, 255, 0.2);
+  color: var(--cyan-glow, #00f0ff);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+}
+
+.vitals-dashboard-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 480px) {
+  .vitals-dashboard-row {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.vital-tile {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.tile-icon {
+  font-size: 1.4rem;
+}
+
+.tile-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.tile-label {
+  font-size: 0.7rem;
+  color: var(--text-muted, #94a3b8);
+}
+
+.tile-val {
+  font-family: var(--font-mono, monospace);
+  font-size: 1.05rem;
+  color: #fff;
+  margin-top: 2px;
+}
+
+.vital-heart .tile-val { color: #f87171; }
+.vital-oxygen .tile-val { color: #38bdf8; }
+.vital-hrv .tile-val { color: #34d399; }
+.vital-temp .tile-val { color: #fbbf24; }
+
+.vitals-submetrics-panel {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 480px) {
+  .vitals-submetrics-panel {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.submetric-item {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  padding: 0.5rem 0.7rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.submetric-name {
+  font-size: 0.7rem;
+  color: var(--text-muted, #94a3b8);
+}
+
+.submetric-item strong {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.88rem;
+  color: #e2e8f0;
+  margin-top: 2px;
+}
+
+.wearable-ecg-canvas-box {
+  background: #050811;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.wearable-ecg-canvas-box canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.scale-hero-weight {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+@media (min-width: 600px) {
+  .scale-hero-weight {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.hero-weight-label {
+  font-size: 0.8rem;
+  color: var(--text-muted, #94a3b8);
+}
+
+.hero-weight-display {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  margin-top: 4px;
+}
+
+.hero-weight-display strong {
+  font-family: var(--font-mono, monospace);
+  font-size: 2.2rem;
+  color: #00f0ff;
+  line-height: 1;
+}
+
+.hero-weight-unit {
+  font-family: var(--font-mono, monospace);
+  font-size: 1rem;
+  color: var(--text-muted, #94a3b8);
+}
+
+.hero-bmi-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 0.6rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.bmi-title {
+  font-size: 0.72rem;
+  color: var(--text-muted, #94a3b8);
+}
+
+.hero-bmi-badge strong {
+  font-family: var(--font-mono, monospace);
+  font-size: 1.3rem;
+  color: #34d399;
+}
+
+.bmi-category {
+  font-size: 0.72rem;
+  color: #94a3b8;
+}
+
+.body-composition-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.composition-tile {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.comp-label {
+  font-size: 0.72rem;
+  color: var(--text-muted, #94a3b8);
+}
+
+.composition-tile strong {
+  font-family: var(--font-mono, monospace);
+  font-size: 1rem;
+  color: #fff;
+  margin: 3px 0 6px 0;
+}
+
+.comp-bar {
+  width: 100%;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.comp-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+}
+
+.connected-hardware-registry {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.registry-title {
+  font-size: 0.75rem;
+  color: var(--text-muted, #94a3b8);
+}
+
+.hardware-pill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.hardware-pill {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  color: #cbd5e1;
+  padding: 3px 8px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.hardware-pill.online {
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #34d399;
+}

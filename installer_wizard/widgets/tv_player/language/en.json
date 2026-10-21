@@ -1,0 +1,17 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/tv_player",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "TV",
+    "no_channel": "No channel",
+    "state_loading": "Connecting",
+    "state_playing": "On air",
+    "state_blocked": "Audio muted",
+    "state_error": "Unavailable",
+    "open_failed": "The channel won't open: {{reason}}",
+    "player_missing": "player unavailable"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/live_cam",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Cámara en directo",
+    "connecting": "Conectando…",
+    "unavailable": "Transmisión no disponible",
+    "fullscreen": "Pantalla completa",
+    "close": "Cerrar"
+  }
+}

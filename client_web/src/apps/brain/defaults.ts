@@ -1,0 +1,1633 @@
+import {
+  BrainTargetConfig,
+  LlmProvider,
+  OllamaMachine,
+  DownloadableModel,
+  McpToolDefinition,
+  DiscoveredOllamaModel,
+  RemoteOllamaServer,
+  RecommendedLocalModel,
+  BrainGlobalDefault,
+  BrainProviderType,
+} from './types';
+import { sendJson } from '../shared/http';
+
+export const DEFAULT_BRAIN_TARGETS: readonly BrainTargetConfig[] = [
+  // 1. I Due Cervelli Principali
+  {
+    id: 'fast_conversation',
+    name: 'Conversazione Veloce',
+    roleKey: 'role_fast_conversation',
+    descriptionKey: 'desc_fast_conversation',
+    category: 'core_brain',
+    method: 'api_key',
+    providerId: 'google',
+    assignedModel: 'Gemini 2.5 Flash',
+    temperature: 0.2,
+    contextWindow: '1.048.576 token',
+    status: 'connected',
+    latencyMs: 95,
+    speedTokensSec: 155,
+    avatarIcon: 'Zap',
+    accentColor: 'from-blue-50/80 via-white to-cyan-50/40 border-2 border-blue-200 text-blue-700',
+    mcpToolsEnabled: ['mcp_home_assistant', 'mcp_filesystem', 'mcp_web_search', 'mcp_system_terminal'],
+  },
+  {
+    id: 'reasoning',
+    name: 'Ragionamento',
+    roleKey: 'role_reasoning',
+    descriptionKey: 'desc_reasoning',
+    category: 'core_brain',
+    method: 'ollama_remote',
+    assignedModel: 'Gemma4',
+    temperature: 0.1,
+    contextWindow: '128.000 token',
+    status: 'connected',
+    latencyMs: 45,
+    speedTokensSec: 85,
+    avatarIcon: 'Brain',
+    accentColor: 'from-indigo-50/80 via-white to-purple-50/40 border-2 border-indigo-200 text-indigo-700',
+    mcpToolsEnabled: ['mcp_filesystem', 'mcp_web_search', 'mcp_system_terminal', 'mcp_context_graph', 'mcp_biomolecular'],
+  },
+
+  // 2. Trascrizione / Conversazione Live Audio
+  {
+    id: 'live_audio',
+    name: 'Trascrizione / Conversazione Live Audio',
+    roleKey: 'role_live_audio',
+    descriptionKey: 'desc_live_audio',
+    category: 'live_audio',
+    method: 'api_key',
+    providerId: 'google',
+    assignedModel: 'Gemini Live',
+    temperature: 0.0,
+    contextWindow: 'Stream Audio Nativo',
+    status: 'ready',
+    latencyMs: 25,
+    speedTokensSec: 250,
+    avatarIcon: 'Mic',
+    accentColor: 'from-emerald-50/80 via-white to-teal-50/40 border-2 border-emerald-200 text-emerald-700',
+    mcpToolsEnabled: ['mcp_filesystem', 'mcp_home_assistant'],
+  },
+
+  // 3. Il CEO
+  {
+    id: 'ceo',
+    name: 'Il CEO (Chief Executive Officer)',
+    roleKey: 'role_ceo',
+    descriptionKey: 'desc_ceo',
+    category: 'ceo',
+    method: 'ollama_local',
+    localMachineId: 'local_workstation',
+    assignedModel: 'Google Gemini 4 Argon Next-Gen',
+    temperature: 0.2,
+    contextWindow: '2.000.000+ token',
+    status: 'ready',
+    latencyMs: 65,
+    speedTokensSec: 120,
+    avatarIcon: 'Crown',
+    accentColor: 'from-slate-100 via-white to-indigo-50/40 border-2 border-slate-300 text-slate-900',
+    mcpToolsEnabled: ['mcp_home_assistant', 'mcp_filesystem', 'mcp_web_search', 'mcp_system_terminal', 'mcp_context_graph', 'mcp_biomolecular'],
+  },
+
+  // 4. Tutti gli Agenti della Squadra Autonoma
+  {
+    id: 'developer',
+    name: 'Software Engineer',
+    roleKey: 'role_developer',
+    descriptionKey: 'desc_developer',
+    category: 'agent',
+    method: 'ollama_local',
+    localMachineId: 'local_workstation',
+    assignedModel: 'qwen2.5-coder:32b',
+    temperature: 0.1,
+    contextWindow: '128.000 token',
+    status: 'ready',
+    latencyMs: 40,
+    speedTokensSec: 90,
+    avatarIcon: 'Code',
+    accentColor: 'from-cyan-50/80 via-white to-sky-50/40 border-2 border-cyan-200 text-cyan-800',
+    mcpToolsEnabled: ['mcp_filesystem', 'mcp_system_terminal', 'mcp_web_search'],
+  },
+  {
+    id: 'researcher',
+    name: 'Ricercatore & Data Analyst',
+    roleKey: 'role_researcher',
+    descriptionKey: 'desc_researcher',
+    category: 'agent',
+    method: 'api_key',
+    providerId: 'perplexity',
+    assignedModel: 'sonar-reasoning-pro',
+    temperature: 0.25,
+    contextWindow: '128.000 token',
+    status: 'connected',
+    latencyMs: 140,
+    speedTokensSec: 80,
+    avatarIcon: 'Search',
+    accentColor: 'from-indigo-50/80 via-white to-blue-50/40 border-2 border-indigo-200 text-indigo-800',
+    mcpToolsEnabled: ['mcp_web_search', 'mcp_context_graph', 'mcp_biomolecular'],
+  },
+  {
+    id: 'sentinel',
+    name: 'Sentinella Cyber & Firewall',
+    roleKey: 'role_sentinel',
+    descriptionKey: 'desc_sentinel',
+    category: 'agent',
+    method: 'api_key',
+    providerId: 'groq',
+    assignedModel: 'llama-3.1-8b-instant',
+    temperature: 0.05,
+    contextWindow: '128.000 token',
+    status: 'connected',
+    latencyMs: 18,
+    speedTokensSec: 480,
+    avatarIcon: 'ShieldAlert',
+    accentColor: 'from-rose-50/80 via-white to-pink-50/40 border-2 border-rose-200 text-rose-800',
+    mcpToolsEnabled: ['mcp_system_terminal', 'mcp_filesystem'],
+  },
+  {
+    id: 'home',
+    name: 'Assistente Casa & Domotica',
+    roleKey: 'role_home',
+    descriptionKey: 'desc_home',
+    category: 'agent',
+    method: 'ollama_local',
+    localMachineId: 'local_workstation',
+    assignedModel: 'llama3.2:3b',
+    temperature: 0.1,
+    contextWindow: '128.000 token',
+    status: 'ready',
+    latencyMs: 15,
+    speedTokensSec: 180,
+    avatarIcon: 'Home',
+    accentColor: 'from-teal-50/80 via-white to-emerald-50/40 border-2 border-teal-200 text-teal-800',
+    mcpToolsEnabled: ['mcp_home_assistant', 'mcp_filesystem'],
+  },
+  {
+    id: 'media',
+    name: 'Esperto Media & Intrattenimento',
+    roleKey: 'role_media',
+    descriptionKey: 'desc_media',
+    category: 'agent',
+    method: 'ollama_local',
+    localMachineId: 'local_workstation',
+    assignedModel: 'llama3.2:3b',
+    temperature: 0.35,
+    contextWindow: '128.000 token',
+    status: 'ready',
+    latencyMs: 18,
+    speedTokensSec: 175,
+    avatarIcon: 'Tv',
+    accentColor: 'from-orange-50/80 via-white to-amber-50/40 border-2 border-orange-200 text-orange-800',
+    mcpToolsEnabled: ['mcp_filesystem', 'mcp_web_search'],
+  },
+  {
+    id: 'whiteboard',
+    name: 'Docente Lavagna Visiva',
+    roleKey: 'role_whiteboard',
+    descriptionKey: 'desc_whiteboard',
+    category: 'agent',
+    method: 'api_key',
+    providerId: 'google',
+    assignedModel: 'gemini-2.0-flash',
+    temperature: 0.2,
+    contextWindow: '1.048.576 token',
+    status: 'connected',
+    latencyMs: 95,
+    speedTokensSec: 155,
+    avatarIcon: 'GraduationCap',
+    accentColor: 'from-sky-50/80 via-white to-cyan-50/40 border-2 border-sky-200 text-sky-800',
+    mcpToolsEnabled: ['mcp_filesystem', 'mcp_context_graph'],
+  },
+  {
+    id: 'social',
+    name: 'Social Media Strategist',
+    roleKey: 'role_social',
+    descriptionKey: 'desc_social',
+    category: 'agent',
+    method: 'api_key',
+    providerId: 'anthropic',
+    assignedModel: 'claude-3-5-haiku-20241022',
+    temperature: 0.4,
+    contextWindow: '200.000 token',
+    status: 'connected',
+    latencyMs: 85,
+    speedTokensSec: 160,
+    avatarIcon: 'Share2',
+    accentColor: 'from-fuchsia-50/80 via-white to-pink-50/40 border-2 border-fuchsia-200 text-fuchsia-800',
+    mcpToolsEnabled: ['mcp_web_search', 'mcp_filesystem'],
+  },
+  {
+    id: 'cad_engineer',
+    name: 'AutoCAD & 3D Specialist',
+    roleKey: 'role_cad_engineer',
+    descriptionKey: 'desc_cad_engineer',
+    category: 'agent',
+    method: 'ollama_local',
+    localMachineId: 'local_workstation',
+    assignedModel: 'qwen2.5-coder:32b',
+    temperature: 0.1,
+    contextWindow: '128.000 token',
+    status: 'ready',
+    latencyMs: 40,
+    speedTokensSec: 90,
+    avatarIcon: 'Compass',
+    accentColor: 'from-amber-50/80 via-white to-yellow-50/40 border-2 border-amber-200 text-amber-800',
+    mcpToolsEnabled: ['mcp_filesystem', 'mcp_system_terminal'],
+  },
+];
+
+export const DEFAULT_PROVIDERS: readonly LlmProvider[] = [
+  // 1. Google AI
+  {
+    id: 'google',
+    name: 'Google AI',
+    description: 'Frontier AI con finestra fino a 2M token, multimodalità nativa e latenza ultra-bassa.',
+    iconName: 'Sparkles',
+    defaultEndpoint: 'https://generativelanguage.googleapis.com/v1beta',
+    isConfigured: true,
+    apiKey: '',
+    models: [
+      {
+        id: 'google/gemini-4-argon',
+        name: 'gemini-4-argon',
+        provider: 'Google AI',
+        type: 'cloud',
+        contextWindow: '1.048.576 token',
+        latencyMs: 120,
+        speedTokensSec: 160,
+        capabilities: ['reasoning', 'code', 'vision', 'tools'],
+        notes: 'Flagship reasoning model di Google per software engineering, problem solving matematico avanzato e agenti autonomi.',
+      },
+      {
+        id: 'google/gemini-live',
+        name: 'gemini-live',
+        provider: 'Google AI',
+        type: 'cloud',
+        contextWindow: 'Stream Audio & Video Bidirezionale',
+        latencyMs: 35,
+        speedTokensSec: 250,
+        capabilities: ['vision', 'tools', 'reasoning'],
+        notes: 'Conversazione live vocale e visiva bidirezionale a bassissima latenza con interruzione naturale.',
+      },
+      {
+        id: 'google/gemini-3.8-flash',
+        name: 'gemini-3.8-flash',
+        provider: 'Google AI',
+        type: 'cloud',
+        contextWindow: '2.097.152 token',
+        latencyMs: 45,
+        speedTokensSec: 280,
+        capabilities: ['vision', 'code', 'tools', 'reasoning'],
+        notes: 'Frontier-level intelligence ottimizzata per compiti reali, generazione codice ed esecuzione agentica rapida.',
+      },
+      {
+        id: 'google/gemini-3.6-flash',
+        name: 'gemini-3.6-flash',
+        provider: 'Google AI',
+        type: 'cloud',
+        contextWindow: '1.048.576 token',
+        latencyMs: 50,
+        speedTokensSec: 240,
+        capabilities: ['vision', 'code', 'tools'],
+        notes: 'Modello ad altissima efficienza e throughput per elaborazioni multimodali scalabili.',
+      },
+      {
+        id: 'google/gemini-3.1-pro',
+        name: 'gemini-3.1-pro',
+        provider: 'Google AI',
+        type: 'cloud',
+        contextWindow: '2.097.152 token',
+        latencyMs: 130,
+        speedTokensSec: 140,
+        capabilities: ['reasoning', 'code', 'vision', 'tools'],
+        notes: 'Modello di ragionamento avanzato orientato a compiti complessi e solide capacità di scrittura codice.',
+      },
+      {
+        id: 'google/gemini-3.1-flash-lite',
+        name: 'gemini-3.1-flash-lite',
+        provider: 'Google AI',
+        type: 'cloud',
+        contextWindow: '1.048.576 token',
+        latencyMs: 40,
+        speedTokensSec: 290,
+        capabilities: ['code', 'tools'],
+        notes: 'Progettato per compiti ad altissimo volume, estrazione dati frequente e latenza/costi minimi.',
+      },
+      {
+        id: 'google/gemini-2.5-flash',
+        name: 'gemini-2.5-flash',
+        provider: 'Google AI',
+        type: 'cloud',
+        contextWindow: '1.048.576 token',
+        latencyMs: 75,
+        speedTokensSec: 180,
+        capabilities: ['vision', 'code', 'tools'],
+        notes: 'Velocità eccezionale per interazioni multimodali, sintesi e compiti esecutivi veloci.',
+      },
+      {
+        id: 'google/gemini-omni-1.1-flash',
+        name: 'gemini-omni-1.1-flash',
+        provider: 'Google AI',
+        type: 'cloud',
+        contextWindow: 'Stream Video/Audio Nativo',
+        latencyMs: 60,
+        speedTokensSec: 200,
+        capabilities: ['vision', 'tools'],
+        notes: 'Generazione ed editing video conversazionale da linguaggio naturale e video-to-video.',
+      },
+      {
+        id: 'google/gemini-nano-banana-2.1',
+        name: 'gemini-nano-banana-2.1',
+        provider: 'Google AI',
+        type: 'cloud',
+        contextWindow: 'Multimodal Vision',
+        latencyMs: 30,
+        speedTokensSec: 300,
+        capabilities: ['vision'],
+        notes: 'Generazione immagini ed editing conversazionale con fusione multi-immagine da 1K a 4K.',
+      },
+      {
+        id: 'google/gemini-2.0-flash',
+        name: 'gemini-2.0-flash',
+        provider: 'Google AI',
+        type: 'cloud',
+        contextWindow: '1.048.576 token',
+        latencyMs: 95,
+        speedTokensSec: 155,
+        capabilities: ['vision', 'code', 'tools', 'reasoning'],
+        notes: 'Velocità eccezionale, multimodalità nativa e latenza ultra-bassa per interazioni real-time.',
+      },
+      {
+        id: 'google/gemini-2.0-flash-thinking-exp-01-21',
+        name: 'gemini-2.0-flash-thinking-exp-01-21',
+        provider: 'Google AI',
+        type: 'cloud',
+        contextWindow: '1.048.576 token',
+        latencyMs: 140,
+        speedTokensSec: 120,
+        capabilities: ['reasoning', 'code', 'tools'],
+        notes: 'Modello con pensiero e catena di deduzione logica visibile prima di generare la risposta.',
+      },
+      {
+        id: 'google/gemini-2.0-pro-exp-02-05',
+        name: 'gemini-2.0-pro-exp-02-05',
+        provider: 'Google AI',
+        type: 'cloud',
+        contextWindow: '2.097.152 token',
+        latencyMs: 180,
+        speedTokensSec: 90,
+        capabilities: ['reasoning', 'code', 'vision', 'tools'],
+        notes: 'La punta di diamante di Google per benchmark di programmazione, matematica e compiti complessi.',
+      },
+      {
+        id: 'google/gemini-2.0-flash-lite',
+        name: 'gemini-2.0-flash-lite',
+        provider: 'Google AI',
+        type: 'cloud',
+        contextWindow: '1.048.576 token',
+        latencyMs: 65,
+        speedTokensSec: 195,
+        capabilities: ['code', 'tools'],
+        notes: 'Costi minimi ed altissimo throughput, ideale per micro-agenti, classificazione e streaming.',
+      },
+      {
+        id: 'google/gemini-1.5-pro',
+        name: 'gemini-1.5-pro',
+        provider: 'Google AI',
+        type: 'cloud',
+        contextWindow: '2.097.152 token',
+        latencyMs: 190,
+        speedTokensSec: 85,
+        capabilities: ['reasoning', 'vision', 'code', 'tools'],
+        notes: 'Capacità logiche e analitiche superiori con finestra monumentale da oltre 2 milioni di token.',
+      },
+      {
+        id: 'google/gemini-1.5-flash',
+        name: 'gemini-1.5-flash',
+        provider: 'Google AI',
+        type: 'cloud',
+        contextWindow: '1.048.576 token',
+        latencyMs: 105,
+        speedTokensSec: 145,
+        capabilities: ['vision', 'code', 'tools'],
+        notes: 'Cavallo di battaglia affidabile e collaudato per sintesi documentali e multimodalità.',
+      },
+      {
+        id: 'google/gemini-1.5-flash-8b',
+        name: 'gemini-1.5-flash-8b',
+        provider: 'Google AI',
+        type: 'cloud',
+        contextWindow: '1.048.576 token',
+        latencyMs: 60,
+        speedTokensSec: 210,
+        capabilities: ['code', 'tools'],
+        notes: 'Modello ultra-leggero e veloce da 8 miliardi di parametri, ideale per routing ed estrazione dati.',
+      },
+      {
+        id: 'google/gemini-exp-1206',
+        name: 'gemini-exp-1206',
+        provider: 'Google AI',
+        type: 'cloud',
+        contextWindow: '2.097.152 token',
+        latencyMs: 160,
+        speedTokensSec: 100,
+        capabilities: ['reasoning', 'code', 'vision'],
+        notes: 'Release sperimentale avanzata di fine 2024 per compiti multimodali ad altissima fedeltà.',
+      },
+      {
+        id: 'google/gemma-2-27b-it',
+        name: 'gemma-2-27b-it',
+        provider: 'Google AI',
+        type: 'cloud',
+        contextWindow: '8.192 token',
+        latencyMs: 80,
+        speedTokensSec: 110,
+        capabilities: ['code', 'reasoning'],
+        notes: 'Architettura open di Google da 27B parametri ottimizzata per risposte precise e istruzioni puntuali.',
+      },
+      {
+        id: 'google/gemma-2-9b-it',
+        name: 'gemma-2-9b-it',
+        provider: 'Google AI',
+        type: 'cloud',
+        contextWindow: '8.192 token',
+        latencyMs: 50,
+        speedTokensSec: 160,
+        capabilities: ['code'],
+        notes: 'Modello compatto da 9B parametri ad alta densità per compiti ordinari a costo quasi nullo.',
+      },
+      {
+        id: 'google/text-embedding-004',
+        name: 'text-embedding-004',
+        provider: 'Google AI',
+        type: 'cloud',
+        contextWindow: '2.048 token',
+        latencyMs: 25,
+        speedTokensSec: 400,
+        capabilities: ['tools'],
+        notes: 'Vettorizzazione semantica di testi e documenti per ricerca RAG e similarity search.',
+      },
+    ],
+  },
+
+  // 2. Anthropic
+  {
+    id: 'anthropic',
+    name: 'Anthropic',
+    description: 'Punto di riferimento per generazione di codice, pensiero ibrido e comprensione complessa.',
+    iconName: 'Cpu',
+    defaultEndpoint: 'https://api.anthropic.com/v1',
+    isConfigured: true,
+    apiKey: '',
+    models: [
+      {
+        id: 'anthropic/claude-3-7-sonnet-20250219',
+        name: 'claude-3-7-sonnet-20250219',
+        provider: 'Anthropic',
+        type: 'cloud',
+        contextWindow: '200.000 token',
+        latencyMs: 120,
+        speedTokensSec: 85,
+        capabilities: ['code', 'reasoning', 'vision', 'tools'],
+        notes: 'Il modello di frontiera più avanzato per ingegneria software e deduzione ibrida guidata.',
+      },
+      {
+        id: 'anthropic/claude-3-5-sonnet-20241022',
+        name: 'claude-3-5-sonnet-20241022',
+        provider: 'Anthropic',
+        type: 'cloud',
+        contextWindow: '200.000 token',
+        latencyMs: 135,
+        speedTokensSec: 75,
+        capabilities: ['code', 'reasoning', 'vision', 'tools'],
+        notes: 'Gold standard consolidato per refactoring del codice e analisi rigorosa.',
+      },
+      {
+        id: 'anthropic/claude-3-5-haiku-20241022',
+        name: 'claude-3-5-haiku-20241022',
+        provider: 'Anthropic',
+        type: 'cloud',
+        contextWindow: '200.000 token',
+        latencyMs: 85,
+        speedTokensSec: 160,
+        capabilities: ['code', 'tools'],
+        notes: 'Latenza ultra-bassa con prestazioni di codifica paragonabili a Sonnet 3.0.',
+      },
+      {
+        id: 'anthropic/claude-3-opus-20240229',
+        name: 'claude-3-opus-20240229',
+        provider: 'Anthropic',
+        type: 'cloud',
+        contextWindow: '200.000 token',
+        latencyMs: 350,
+        speedTokensSec: 42,
+        capabilities: ['reasoning', 'vision', 'tools'],
+        notes: 'Profondità concettuale ed espressività adatta per riflessioni filosofiche e testi lunghi.',
+      },
+    ],
+  },
+
+  // 3. OpenAI
+  {
+    id: 'openai',
+    name: 'OpenAI',
+    description: 'Modelli multimodali GPT-4o e deep reasoning o1/o3 per logica, matematica e agenti.',
+    iconName: 'Globe',
+    defaultEndpoint: 'https://api.openai.com/v1',
+    isConfigured: true,
+    apiKey: '',
+    models: [
+      {
+        id: 'openai/gpt-4o',
+        name: 'gpt-4o',
+        provider: 'OpenAI',
+        type: 'cloud',
+        contextWindow: '128.000 token',
+        latencyMs: 160,
+        speedTokensSec: 95,
+        capabilities: ['vision', 'code', 'reasoning', 'tools'],
+        notes: 'Omnimodel multimodale nativo versatile per testo, visione e compiti complessi.',
+      },
+      {
+        id: 'openai/gpt-4o-mini',
+        name: 'gpt-4o-mini',
+        provider: 'OpenAI',
+        type: 'cloud',
+        contextWindow: '128.000 token',
+        latencyMs: 90,
+        speedTokensSec: 155,
+        capabilities: ['vision', 'code', 'tools'],
+        notes: 'Compatto ed economico per automazioni quotidiane ad alto volume.',
+      },
+      {
+        id: 'openai/o1',
+        name: 'o1',
+        provider: 'OpenAI',
+        type: 'cloud',
+        contextWindow: '200.000 token',
+        latencyMs: 290,
+        speedTokensSec: 45,
+        capabilities: ['reasoning', 'code', 'tools'],
+        notes: 'Ragionamento ponderato e pianificazione rigorosa passo-passo.',
+      },
+      {
+        id: 'openai/o3-mini',
+        name: 'o3-mini',
+        provider: 'OpenAI',
+        type: 'cloud',
+        contextWindow: '200.000 token',
+        latencyMs: 220,
+        speedTokensSec: 80,
+        capabilities: ['reasoning', 'code', 'tools'],
+        notes: 'Modello di pensiero matematico e logico specializzato in STEM e codice rigoroso.',
+      },
+    ],
+  },
+
+  // 4. DeepSeek
+  {
+    id: 'deepseek',
+    name: 'DeepSeek',
+    description: 'Architettura MoE ad altissima efficienza con catena di pensiero esplicita non censurata.',
+    iconName: 'Zap',
+    defaultEndpoint: 'https://api.deepseek.com/v1',
+    isConfigured: true,
+    apiKey: '',
+    models: [
+      {
+        id: 'deepseek/deepseek-reasoner',
+        name: 'deepseek-reasoner',
+        provider: 'DeepSeek',
+        type: 'cloud',
+        contextWindow: '64.000 token',
+        latencyMs: 150,
+        speedTokensSec: 70,
+        capabilities: ['reasoning', 'code'],
+        notes: 'Modello R1 completo con catena di ragionamento esplicita e profonda per problemi complessi.',
+      },
+      {
+        id: 'deepseek/deepseek-chat',
+        name: 'deepseek-chat',
+        provider: 'DeepSeek',
+        type: 'cloud',
+        contextWindow: '64.000 token',
+        latencyMs: 110,
+        speedTokensSec: 90,
+        capabilities: ['code', 'tools'],
+        notes: 'Modello V3 MoE generale ad alta velocità ed eccezionale fedeltà semantica.',
+      },
+    ],
+  },
+
+  // 5. Groq LPU
+  {
+    id: 'groq',
+    name: 'Groq LPU',
+    description: 'Inferenza hardware proprietaria su chip LPU: oltre 300 token/sec a latenza quasi istantanea.',
+    iconName: 'Flame',
+    defaultEndpoint: 'https://api.groq.com/openai/v1',
+    isConfigured: true,
+    apiKey: '',
+    models: [
+      {
+        id: 'groq/llama-3.3-70b-versatile',
+        name: 'llama-3.3-70b-versatile',
+        provider: 'Groq',
+        type: 'cloud',
+        contextWindow: '128.000 token',
+        latencyMs: 40,
+        speedTokensSec: 330,
+        capabilities: ['code', 'tools', 'reasoning'],
+        notes: 'Velocità strabiliante per risposte in tempo reale su architettura Llama 3.3 70B.',
+      },
+      {
+        id: 'groq/deepseek-r1-distill-llama-70b',
+        name: 'deepseek-r1-distill-llama-70b',
+        provider: 'Groq',
+        type: 'cloud',
+        contextWindow: '128.000 token',
+        latencyMs: 55,
+        speedTokensSec: 280,
+        capabilities: ['reasoning', 'code', 'tools'],
+        notes: 'Distillazione di DeepSeek R1 su Llama 70B accelerata dai chip LPU.',
+      },
+      {
+        id: 'groq/llama-3.1-8b-instant',
+        name: 'llama-3.1-8b-instant',
+        provider: 'Groq',
+        type: 'cloud',
+        contextWindow: '128.000 token',
+        latencyMs: 25,
+        speedTokensSec: 520,
+        capabilities: ['code', 'tools'],
+        notes: 'Oltre 500 token/sec per routing istantaneo, guardrail e sicurezza.',
+      },
+    ],
+  },
+
+  // 6. Mistral AI
+  {
+    id: 'mistral',
+    name: 'Mistral AI',
+    description: 'Eccellenza europea per modelli compatti, multilingue e sviluppo software specialistico.',
+    iconName: 'ShieldCheck',
+    defaultEndpoint: 'https://api.mistral.ai/v1',
+    isConfigured: true,
+    apiKey: '',
+    models: [
+      {
+        id: 'mistral/codestral-2501',
+        name: 'codestral-2501',
+        provider: 'Mistral AI',
+        type: 'cloud',
+        contextWindow: '256.000 token',
+        latencyMs: 120,
+        speedTokensSec: 100,
+        capabilities: ['code', 'tools'],
+        notes: 'Specializzato nella generazione e correzione di codice in oltre 80 linguaggi software.',
+      },
+      {
+        id: 'mistral/mistral-large-2411',
+        name: 'mistral-large-2411',
+        provider: 'Mistral AI',
+        type: 'cloud',
+        contextWindow: '128.000 token',
+        latencyMs: 155,
+        speedTokensSec: 80,
+        capabilities: ['reasoning', 'code', 'tools'],
+        notes: 'Capacità multilingue native di livello primario e logica deduttiva robusta.',
+      },
+      {
+        id: 'mistral/pixtral-12b-2409',
+        name: 'pixtral-12b-2409',
+        provider: 'Mistral AI',
+        type: 'cloud',
+        contextWindow: '128.000 token',
+        latencyMs: 135,
+        speedTokensSec: 90,
+        capabilities: ['vision', 'tools'],
+        notes: 'Comprensione visiva di diagrammi complessi, documenti scansionati e screenshot.',
+      },
+      {
+        id: 'mistral/mistral-small-2409',
+        name: 'mistral-small-2409',
+        provider: 'Mistral AI',
+        type: 'cloud',
+        contextWindow: '128.000 token',
+        latencyMs: 95,
+        speedTokensSec: 130,
+        capabilities: ['code', 'tools'],
+        notes: 'Compatto ed estremamente rapido per compiti continui di segreteria e automazione.',
+      },
+    ],
+  },
+
+  // 7. xAI (Grok)
+  {
+    id: 'xai',
+    name: 'xAI',
+    description: 'Comprensione dinamica, informazioni aggiornate e visione multimodale nitida.',
+    iconName: 'Eye',
+    defaultEndpoint: 'https://api.x.ai/v1',
+    isConfigured: true,
+    apiKey: '',
+    models: [
+      {
+        id: 'xai/grok-2-1212',
+        name: 'grok-2-1212',
+        provider: 'xAI',
+        type: 'cloud',
+        contextWindow: '128.000 token',
+        latencyMs: 165,
+        speedTokensSec: 85,
+        capabilities: ['reasoning', 'vision', 'tools'],
+        notes: 'Capacità di visione e ragionamento rapido aggiornato.',
+      },
+      {
+        id: 'xai/grok-2-vision-1212',
+        name: 'grok-2-vision-1212',
+        provider: 'xAI',
+        type: 'cloud',
+        contextWindow: '128.000 token',
+        latencyMs: 185,
+        speedTokensSec: 75,
+        capabilities: ['vision', 'reasoning', 'tools'],
+        notes: 'Ispezione visiva ad alta fedeltà di screenshot, tabelle e grafici.',
+      },
+    ],
+  },
+
+  // 8. Perplexity AI
+  {
+    id: 'perplexity',
+    name: 'Perplexity AI',
+    description: 'Motore di ricerca neurale con citazioni in tempo reale sul web e sintesi verificata.',
+    iconName: 'Globe',
+    defaultEndpoint: 'https://api.perplexity.ai',
+    isConfigured: true,
+    apiKey: '',
+    models: [
+      {
+        id: 'perplexity/sonar-reasoning-pro',
+        name: 'sonar-reasoning-pro',
+        provider: 'Perplexity AI',
+        type: 'cloud',
+        contextWindow: '128.000 token',
+        latencyMs: 230,
+        speedTokensSec: 70,
+        capabilities: ['reasoning', 'tools'],
+        notes: 'Deep research multi-passo sul web con sintesi deduttiva accurata e fonti citate.',
+      },
+      {
+        id: 'perplexity/sonar-pro',
+        name: 'sonar-pro',
+        provider: 'Perplexity AI',
+        type: 'cloud',
+        contextWindow: '128.000 token',
+        latencyMs: 170,
+        speedTokensSec: 90,
+        capabilities: ['tools', 'reasoning'],
+        notes: 'Ricerca web in tempo reale per sintesi informative rapide e aggiornate.',
+      },
+      {
+        id: 'perplexity/sonar',
+        name: 'sonar',
+        provider: 'Perplexity AI',
+        type: 'cloud',
+        contextWindow: '128.000 token',
+        latencyMs: 120,
+        speedTokensSec: 130,
+        capabilities: ['tools'],
+        notes: 'Ricerca veloce ad alta frequenza per recupero rapido di notizie ed entità.',
+      },
+    ],
+  },
+
+  // 9. Cohere
+  {
+    id: 'cohere',
+    name: 'Cohere',
+    description: 'Specializzato in RAG aziendale, ricerca semantica, embedding e strumenti multilingue.',
+    iconName: 'Layers',
+    defaultEndpoint: 'https://api.cohere.com/v2',
+    isConfigured: true,
+    apiKey: '',
+    models: [
+      {
+        id: 'cohere/command-r-plus-08-2024',
+        name: 'command-r-plus-08-2024',
+        provider: 'Cohere',
+        type: 'cloud',
+        contextWindow: '128.000 token',
+        latencyMs: 180,
+        speedTokensSec: 75,
+        capabilities: ['tools', 'reasoning'],
+        notes: 'Ottimizzato per recupero documentale RAG avanzato e citazione di fonti aziendali.',
+      },
+      {
+        id: 'cohere/command-r-08-2024',
+        name: 'command-r-08-2024',
+        provider: 'Cohere',
+        type: 'cloud',
+        contextWindow: '128.000 token',
+        latencyMs: 125,
+        speedTokensSec: 115,
+        capabilities: ['tools'],
+        notes: 'Versione ad alta velocità ed economica per elaborazioni documentali continue.',
+      },
+    ],
+  },
+
+  // 10. Together AI
+  {
+    id: 'together',
+    name: 'Together AI',
+    description: 'Infrastruttura cloud ultra-veloce per i più potenti modelli open-weights su cluster H100.',
+    iconName: 'Network',
+    defaultEndpoint: 'https://api.together.xyz/v1',
+    isConfigured: true,
+    apiKey: '',
+    models: [
+      {
+        id: 'together/meta-llama-3.3-70b-instruct-turbo',
+        name: 'meta-llama/Llama-3.3-70B-Instruct-Turbo',
+        provider: 'Together AI',
+        type: 'cloud',
+        contextWindow: '128.000 token',
+        latencyMs: 85,
+        speedTokensSec: 165,
+        capabilities: ['code', 'tools', 'reasoning'],
+        notes: 'Hosting ultra-ottimizzato per Llama 3.3 70B con latenze minime.',
+      },
+      {
+        id: 'together/deepseek-ai-deepseek-r1',
+        name: 'deepseek-ai/DeepSeek-R1',
+        provider: 'Together AI',
+        type: 'cloud',
+        contextWindow: '64.000 token',
+        latencyMs: 145,
+        speedTokensSec: 75,
+        capabilities: ['reasoning', 'code'],
+        notes: 'Deep reasoning ad alta disponibilità su cluster NVIDIA H100.',
+      },
+      {
+        id: 'together/qwen-qwen2.5-72b-instruct-turbo',
+        name: 'Qwen/Qwen2.5-72B-Instruct-Turbo',
+        provider: 'Together AI',
+        type: 'cloud',
+        contextWindow: '32.000 token',
+        latencyMs: 115,
+        speedTokensSec: 110,
+        capabilities: ['reasoning', 'code', 'tools'],
+        notes: 'Eccellenza multilingue e capacità logico-matematiche aperte.',
+      },
+    ],
+  },
+
+  // 11. Cerebras
+  {
+    id: 'cerebras',
+    name: 'Cerebras Wafer-Scale',
+    description: 'Chip wafer-scale ultra-rapidi con velocità di generazione oltre 1400 token/sec.',
+    iconName: 'Zap',
+    defaultEndpoint: 'https://api.cerebras.ai/v1',
+    isConfigured: true,
+    apiKey: '',
+    models: [
+      {
+        id: 'cerebras/llama3.3-70b',
+        name: 'llama3.3-70b',
+        provider: 'Cerebras',
+        type: 'cloud',
+        contextWindow: '128.000 token',
+        latencyMs: 22,
+        speedTokensSec: 1400,
+        capabilities: ['code', 'tools', 'reasoning'],
+        notes: 'Velocità di inferenza istantanea su hardware wafer-scale CS-3.',
+      },
+      {
+        id: 'cerebras/llama3.1-8b',
+        name: 'llama3.1-8b',
+        provider: 'Cerebras',
+        type: 'cloud',
+        contextWindow: '128.000 token',
+        latencyMs: 16,
+        speedTokensSec: 1850,
+        capabilities: ['code', 'tools'],
+        notes: 'Oltre 1800 token/sec per generazione di codice e streaming in tempo reale.',
+      },
+    ],
+  },
+
+  // 12. Fireworks AI
+  {
+    id: 'fireworks',
+    name: 'Fireworks AI',
+    description: 'Piattaforma di inferenza ad alte prestazioni con accelerazione compound e MoE.',
+    iconName: 'Flame',
+    defaultEndpoint: 'https://api.fireworks.ai/inference/v1',
+    isConfigured: true,
+    apiKey: '',
+    models: [
+      {
+        id: 'fireworks/deepseek-r1',
+        name: 'accounts/fireworks/models/deepseek-r1',
+        provider: 'Fireworks AI',
+        type: 'cloud',
+        contextWindow: '64.000 token',
+        latencyMs: 125,
+        speedTokensSec: 90,
+        capabilities: ['reasoning', 'code'],
+        notes: 'Inference engine MoE ottimizzato specificamente per DeepSeek R1.',
+      },
+      {
+        id: 'fireworks/llama-v3p3-70b-instruct',
+        name: 'accounts/fireworks/models/llama-v3p3-70b-instruct',
+        provider: 'Fireworks AI',
+        type: 'cloud',
+        contextWindow: '128.000 token',
+        latencyMs: 65,
+        speedTokensSec: 180,
+        capabilities: ['code', 'tools'],
+        notes: 'Basso TTFT (Time to First Token) per agenti operativi reattivi.',
+      },
+    ],
+  },
+
+  // 13. NVIDIA NIM
+  {
+    id: 'nvidia',
+    name: 'NVIDIA NIM',
+    description: 'Microservizi di inferenza ottimizzati su TensorRT-LLM e GPU NVIDIA datacenter.',
+    iconName: 'Cpu',
+    defaultEndpoint: 'https://integrate.api.nvidia.com/v1',
+    isConfigured: true,
+    apiKey: '',
+    models: [
+      {
+        id: 'nvidia/llama-3.3-70b-instruct',
+        name: 'meta/llama-3.3-70b-instruct',
+        provider: 'NVIDIA NIM',
+        type: 'cloud',
+        contextWindow: '128.000 token',
+        latencyMs: 75,
+        speedTokensSec: 150,
+        capabilities: ['code', 'tools', 'reasoning'],
+        notes: 'Esecuzione accelerata su cluster HGX H100 con microservizi NIM.',
+      },
+      {
+        id: 'nvidia/llama-3.1-nemotron-70b-instruct',
+        name: 'nvidia/llama-3.1-nemotron-70b-instruct',
+        provider: 'NVIDIA NIM',
+        type: 'cloud',
+        contextWindow: '128.000 token',
+        latencyMs: 100,
+        speedTokensSec: 125,
+        capabilities: ['reasoning', 'tools'],
+        notes: 'Allineato da NVIDIA per eccellere in benchmark di fedeltà e aderenza alle istruzioni.',
+      },
+    ],
+  },
+
+  // 14. Amazon Bedrock
+  {
+    id: 'amazon_bedrock',
+    name: 'Amazon Bedrock',
+    description: 'Servizio cloud gestito AWS con Claude, Amazon Nova Pro e governance aziendale.',
+    iconName: 'ShieldCheck',
+    defaultEndpoint: 'https://bedrock-runtime.us-east-1.amazonaws.com',
+    isConfigured: true,
+    apiKey: '',
+    models: [
+      {
+        id: 'bedrock/claude-3-5-sonnet',
+        name: 'anthropic.claude-3-5-sonnet-20241022-v2:0',
+        provider: 'Amazon Bedrock',
+        type: 'cloud',
+        contextWindow: '200.000 token',
+        latencyMs: 145,
+        speedTokensSec: 72,
+        capabilities: ['code', 'reasoning', 'vision', 'tools'],
+        notes: 'Conformità enterprise e infrastruttura AWS scalabile con Claude 3.5 Sonnet.',
+      },
+      {
+        id: 'bedrock/amazon-nova-pro',
+        name: 'amazon.nova-pro-v1:0',
+        provider: 'Amazon Bedrock',
+        type: 'cloud',
+        contextWindow: '300.000 token',
+        latencyMs: 155,
+        speedTokensSec: 85,
+        capabilities: ['vision', 'code', 'tools'],
+        notes: 'Modello multimodale proprietario Amazon per testi, immagini e video.',
+      },
+    ],
+  },
+
+  // 15. Microsoft Azure OpenAI
+  {
+    id: 'azure_openai',
+    name: 'Microsoft Azure OpenAI',
+    description: 'Gateway cloud aziendale Microsoft per modelli GPT-4o, o1 e sicurezza enterprise.',
+    iconName: 'Globe',
+    defaultEndpoint: 'https://nuxiva-openai.openai.azure.com',
+    isConfigured: true,
+    apiKey: '',
+    models: [
+      {
+        id: 'azure/gpt-4o',
+        name: 'gpt-4o',
+        provider: 'Microsoft Azure OpenAI',
+        type: 'cloud',
+        contextWindow: '128.000 token',
+        latencyMs: 165,
+        speedTokensSec: 95,
+        capabilities: ['vision', 'code', 'reasoning', 'tools'],
+        notes: 'Hosting enterprise con conformità GDPR e crittografia dedicata.',
+      },
+      {
+        id: 'azure/o1',
+        name: 'o1',
+        provider: 'Microsoft Azure OpenAI',
+        type: 'cloud',
+        contextWindow: '200.000 token',
+        latencyMs: 285,
+        speedTokensSec: 50,
+        capabilities: ['reasoning', 'code', 'tools'],
+        notes: 'Deep reasoning in ambiente cloud isolato e certificato.',
+      },
+    ],
+  },
+
+  // 16. OpenRouter
+  {
+    id: 'openrouter',
+    name: 'OpenRouter',
+    description: 'Gateway universale aggregato per oltre 300 modelli con failover dinamico trasparente.',
+    iconName: 'Network',
+    defaultEndpoint: 'https://openrouter.ai/api/v1',
+    isConfigured: true,
+    apiKey: '',
+    models: [
+      {
+        id: 'openrouter/auto',
+        name: 'openrouter/auto',
+        provider: 'OpenRouter',
+        type: 'cloud',
+        contextWindow: '128.000 token',
+        latencyMs: 180,
+        capabilities: ['reasoning', 'code', 'tools'],
+        notes: 'Instradamento dinamico automatico verso il provider più veloce al miglior costo.',
+      },
+      {
+        id: 'openrouter/claude-3-7-sonnet',
+        name: 'anthropic/claude-3.7-sonnet',
+        provider: 'OpenRouter',
+        type: 'cloud',
+        contextWindow: '200.000 token',
+        latencyMs: 150,
+        speedTokensSec: 80,
+        capabilities: ['code', 'reasoning', 'tools'],
+        notes: 'Accesso unificato a Claude 3.7 Sonnet con supporto a hybrid reasoning.',
+      },
+      {
+        id: 'openrouter/deepseek-r1',
+        name: 'deepseek/deepseek-r1',
+        provider: 'OpenRouter',
+        type: 'cloud',
+        contextWindow: '64.000 token',
+        latencyMs: 160,
+        speedTokensSec: 70,
+        capabilities: ['reasoning', 'code'],
+        notes: 'Accesso unificato a DeepSeek R1 senza abbonamenti separati.',
+      },
+    ],
+  },
+];
+
+export function detectRealLocalHardware(): OllamaMachine {
+  let gpu = 'NVIDIA / AMD / Intel GPU';
+  const vramGb = 16;
+  try {
+    if (typeof document !== 'undefined') {
+      const canvas = document.createElement('canvas');
+      const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+      if (gl) {
+        const debugInfo = (gl as any).getExtension('WEBGL_debug_renderer_info');
+        if (debugInfo) {
+          const raw = (gl as any).getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+          if (raw && typeof raw === 'string') {
+            const clean = raw.replace(/ANGLE \(([^,]+).*\)/, '$1').replace('Direct3D11 vs_5_0 ps_5_0', '').trim();
+            if (clean) gpu = clean;
+          }
+        }
+      }
+    }
+  } catch {}
+
+  const cores = typeof navigator !== 'undefined' && navigator.hardwareConcurrency ? navigator.hardwareConcurrency : 16;
+  const ramGb = typeof navigator !== 'undefined' && (navigator as any).deviceMemory ? (navigator as any).deviceMemory : 32;
+  let os = 'Windows 11 / Nuxiva Host';
+  if (typeof navigator !== 'undefined') {
+    if (navigator.userAgent.includes('Windows')) os = 'Windows 11 / Nuxiva Host';
+    else if (navigator.userAgent.includes('Mac')) os = 'macOS / Nuxiva Host';
+    else if (navigator.userAgent.includes('Linux')) os = 'Linux / Nuxiva Host';
+  }
+
+  return {
+    id: 'local_workstation',
+    name: 'Questo PC (Host Locale)',
+    ip: typeof window !== 'undefined' && window.location.hostname ? window.location.hostname : '127.0.0.1',
+    ramGb,
+    cores,
+    gpu,
+    vramGb,
+    os,
+    isLocal: true,
+    ollamaInstalled: true,
+    ollamaVersion: '0.5.8 (LTS)',
+    installedModels: [
+      'deepseek-r1:70b',
+      'whisper-large-v3',
+      'llama3.3:70b',
+      'llama3.2:3b',
+      'qwen2.5-coder:32b',
+      'qwen2.5:7b',
+    ],
+  };
+}
+
+export const DEFAULT_OLLAMA_MACHINES: readonly OllamaMachine[] = [
+  detectRealLocalHardware(),
+];
+
+export const DOWNLOADABLE_MODELS_CATALOG: readonly DownloadableModel[] = [
+  {
+    id: 'deepseek-r1-70b',
+    name: 'DeepSeek R1 (70B)',
+    tag: 'deepseek-r1:70b',
+    sizeGb: 43.0,
+    vramRequiredGb: 40,
+    minRamGb: 48,
+    capabilities: ['reasoning', 'code'],
+    recommendedFor: 'Frontier reasoning deduttivo non censurato ad altissima precisione per compiti complessi',
+    isInstalled: true,
+  },
+  {
+    id: 'deepseek-r1-32b',
+    name: 'DeepSeek R1 (32B)',
+    tag: 'deepseek-r1:32b',
+    sizeGb: 20.0,
+    vramRequiredGb: 20,
+    minRamGb: 24,
+    capabilities: ['reasoning', 'code'],
+    recommendedFor: 'Logica matematica e programmazione complessa per schede da 24GB VRAM o RAM 32GB+',
+    isInstalled: false,
+  },
+  {
+    id: 'deepseek-r1-14b',
+    name: 'DeepSeek R1 (14B)',
+    tag: 'deepseek-r1:14b',
+    sizeGb: 9.0,
+    vramRequiredGb: 10,
+    minRamGb: 16,
+    capabilities: ['reasoning', 'code'],
+    recommendedFor: 'Risoluzione logica di alto livello ottimale per sistemi con 16GB di memoria',
+    isInstalled: false,
+  },
+  {
+    id: 'deepseek-r1-8b',
+    name: 'DeepSeek R1 (8B)',
+    tag: 'deepseek-r1:8b',
+    sizeGb: 4.9,
+    vramRequiredGb: 5,
+    minRamGb: 12,
+    capabilities: ['reasoning', 'code'],
+    recommendedFor: 'Pensiero logico passo-passo compatto e veloce per schede grafiche commerciali',
+    isInstalled: true,
+  },
+  {
+    id: 'deepseek-r1-7b',
+    name: 'DeepSeek R1 (7B)',
+    tag: 'deepseek-r1:7b',
+    sizeGb: 4.7,
+    vramRequiredGb: 5,
+    minRamGb: 10,
+    capabilities: ['reasoning', 'code'],
+    recommendedFor: 'Deduzione logica snella ed efficiente basata su architettura Qwen 7B',
+    isInstalled: false,
+  },
+  {
+    id: 'llama3.3-70b',
+    name: 'Llama 3.3 (70B)',
+    tag: 'llama3.3:70b',
+    sizeGb: 43.0,
+    vramRequiredGb: 40,
+    minRamGb: 48,
+    capabilities: ['code', 'tools', 'reasoning'],
+    recommendedFor: 'Il modello open-weights Meta di riferimento per sintesi, orchestrazione e tool use',
+    isInstalled: true,
+  },
+  {
+    id: 'llama3.2-3b',
+    name: 'Llama 3.2 (3B)',
+    tag: 'llama3.2:3b',
+    sizeGb: 2.0,
+    vramRequiredGb: 3,
+    minRamGb: 6,
+    capabilities: ['tools', 'code'],
+    recommendedFor: 'Ultra-veloce ed efficiente: ideale per domotica IoT, comandi rapidi ed edge computing',
+    isInstalled: true,
+  },
+  {
+    id: 'llama3.2-1b',
+    name: 'Llama 3.2 (1B)',
+    tag: 'llama3.2:1b',
+    sizeGb: 1.3,
+    vramRequiredGb: 2,
+    minRamGb: 4,
+    capabilities: ['tools'],
+    recommendedFor: 'Minimo ingombro di memoria per micro-server, raspberry e nodi mesh a bassa potenza',
+    isInstalled: false,
+  },
+  {
+    id: 'llama3.1-8b',
+    name: 'Llama 3.1 (8B)',
+    tag: 'llama3.1:8b',
+    sizeGb: 4.7,
+    vramRequiredGb: 5,
+    minRamGb: 12,
+    capabilities: ['code', 'tools'],
+    recommendedFor: 'Versatile e affidabile con finestra contesto da 128k token per flussi operativi generali',
+    isInstalled: true,
+  },
+  {
+    id: 'qwen2.5-7b',
+    name: 'Qwen 2.5 (7B)',
+    tag: 'qwen2.5:7b',
+    sizeGb: 4.7,
+    vramRequiredGb: 5,
+    minRamGb: 12,
+    capabilities: ['code', 'tools', 'reasoning'],
+    recommendedFor: 'Eccellente comprensione multilingue e aderenza alle istruzioni di sistema',
+    isInstalled: true,
+  },
+  {
+    id: 'qwen2.5-14b',
+    name: 'Qwen 2.5 (14B)',
+    tag: 'qwen2.5:14b',
+    sizeGb: 9.0,
+    vramRequiredGb: 10,
+    minRamGb: 16,
+    capabilities: ['code', 'tools', 'reasoning'],
+    recommendedFor: 'Bilanciamento ideale tra velocità e intelligenza analitica su sistemi desktop medi',
+    isInstalled: false,
+  },
+  {
+    id: 'qwen2.5-32b',
+    name: 'Qwen 2.5 (32B)',
+    tag: 'qwen2.5:32b',
+    sizeGb: 20.0,
+    vramRequiredGb: 20,
+    minRamGb: 24,
+    capabilities: ['code', 'tools', 'reasoning'],
+    recommendedFor: 'Intelligenza vicina ai modelli 70B con requisiti computazionali dimezzati',
+    isInstalled: false,
+  },
+  {
+    id: 'qwen2.5-coder-7b',
+    name: 'Qwen 2.5 Coder (7B)',
+    tag: 'qwen2.5-coder:7b',
+    sizeGb: 4.7,
+    vramRequiredGb: 5,
+    minRamGb: 12,
+    capabilities: ['code'],
+    recommendedFor: 'Specialista in scrittura codice e autocompletamento rapido in decine di linguaggi',
+    isInstalled: true,
+  },
+  {
+    id: 'qwen2.5-coder-32b',
+    name: 'Qwen 2.5 Coder (32B)',
+    tag: 'qwen2.5-coder:32b',
+    sizeGb: 20.0,
+    vramRequiredGb: 20,
+    minRamGb: 24,
+    capabilities: ['code', 'reasoning'],
+    recommendedFor: 'Ingegnere software locale completo: refactoring di interi repository e architettura',
+    isInstalled: true,
+  },
+  {
+    id: 'mistral-7b',
+    name: 'Mistral (7B)',
+    tag: 'mistral:7b',
+    sizeGb: 4.1,
+    vramRequiredGb: 5,
+    minRamGb: 10,
+    capabilities: ['tools', 'reasoning'],
+    recommendedFor: 'Modello compatto europeo ad alte prestazioni per compiti di classificazione e sintesi',
+    isInstalled: false,
+  },
+  {
+    id: 'phi4-14b',
+    name: 'Phi-4 (14B)',
+    tag: 'phi4:14b',
+    sizeGb: 9.1,
+    vramRequiredGb: 10,
+    minRamGb: 16,
+    capabilities: ['reasoning', 'code'],
+    recommendedFor: 'Architettura Microsoft ad alta densità sintetica per logica matematica e deduttiva',
+    isInstalled: false,
+  },
+  {
+    id: 'gemma2-9b',
+    name: 'Gemma 2 (9B)',
+    tag: 'gemma2:9b',
+    sizeGb: 5.5,
+    vramRequiredGb: 6,
+    minRamGb: 12,
+    capabilities: ['reasoning', 'code', 'tools'],
+    recommendedFor: 'Google Gemma 2 da 9B parametri: ad alta densità di conoscenza per risposte rapide',
+    isInstalled: false,
+  },
+  {
+    id: 'gemma2-27b',
+    name: 'Gemma 2 (27B)',
+    tag: 'gemma2:27b',
+    sizeGb: 16.0,
+    vramRequiredGb: 16,
+    minRamGb: 20,
+    capabilities: ['reasoning', 'code', 'tools'],
+    recommendedFor: 'Rendimento straordinario nei benchmark di ragionamento logico e comparativo',
+    isInstalled: false,
+  },
+  {
+    id: 'whisper-large-v3',
+    name: 'Whisper Large v3',
+    tag: 'whisper:large-v3',
+    sizeGb: 3.1,
+    vramRequiredGb: 4,
+    minRamGb: 8,
+    capabilities: ['tools'],
+    recommendedFor: 'Riconoscimento vocale continuo e trascrizione live multilingue a latenza minima',
+    isInstalled: true,
+  },
+];
+
+export const MCP_TOOLS_CATALOG: readonly McpToolDefinition[] = [
+  {
+    id: 'mcp_home_assistant',
+    name: 'Home Assistant & Domotica IoT',
+    description: 'Controllo di luci, termostati, tapparelle, sensori Zigbee/Matter e scenari residenziali.',
+    iconName: 'Home',
+    category: 'smart_home',
+  },
+  {
+    id: 'mcp_filesystem',
+    name: 'Filesystem & Document Workspace',
+    description: 'Lettura e scrittura sicura di file di progetto, documenti e archivi locali su Nuxiva.',
+    iconName: 'HardDrive',
+    category: 'filesystem',
+  },
+  {
+    id: 'mcp_web_search',
+    name: 'Live Web Search & Scraping',
+    description: 'Navigazione web in tempo reale, estrazione fonti verificate e attualità sul web.',
+    iconName: 'Globe',
+    category: 'search',
+  },
+  {
+    id: 'mcp_system_terminal',
+    name: 'Nuxiva System & Mesh Controller',
+    description: 'Monitoraggio hardware, esecuzione script sandbox, stato nodi e diagnostica rete.',
+    iconName: 'Terminal',
+    category: 'system',
+  },
+  {
+    id: 'mcp_context_graph',
+    name: 'Context Graph & Memoria Semantica',
+    description: 'Accesso alla memoria a lungo termine vettoriale e alle preferenze dell’utente.',
+    iconName: 'Layers',
+    category: 'memory',
+  },
+  {
+    id: 'mcp_biomolecular',
+    name: 'Biomolecular & Scientific Viewer',
+    description: 'Visualizzazione 3D di strutture biologiche, molecole e annotazioni di laboratorio.',
+    iconName: 'Dna',
+    category: 'science',
+  },
+];
+
+export const RECOMMENDED_LOCAL_MODELS: readonly RecommendedLocalModel[] = [
+  {
+    id: 'lfm2.5-24b-a2b',
+    name: 'richardyoung/lfm2.5-24b-a2b',
+    cliCommand: 'ollama run richardyoung/lfm2.5-24b-a2b',
+    parameters: '24B',
+    activeParameters: '2B',
+    recommendedVramGb: 16,
+  },
+  {
+    id: 'qwen2.5-coder-7b',
+    name: 'qwen2.5-coder:7b',
+    cliCommand: 'ollama run qwen2.5-coder:7b',
+    parameters: '7B',
+    activeParameters: '7B',
+    recommendedVramGb: 8,
+  },
+  {
+    id: 'llama3.1-8b',
+    name: 'llama3.1:8b',
+    cliCommand: 'ollama run llama3.1:8b',
+    parameters: '8B',
+    activeParameters: '8B',
+    recommendedVramGb: 8,
+  },
+  {
+    id: 'deepseek-r1-14b',
+    name: 'deepseek-r1:14b',
+    cliCommand: 'ollama run deepseek-r1:14b',
+    parameters: '14B',
+    activeParameters: '14B',
+    recommendedVramGb: 12,
+  },
+];
+
+export const DEFAULT_REMOTE_SERVERS: readonly RemoteOllamaServer[] = [];
+
+export const DEFAULT_GLOBAL_BRAIN: BrainGlobalDefault = {
+  provider: 'ollama_local',
+  serverId: 'local_workstation',
+  baseUrl: 'http://127.0.0.1:11434',
+  modelName: 'richardyoung/lfm2.5-24b-a2b',
+  temperature: 0.2,
+  contextWindow: '128.000 token',
+  mcpToolsEnabled: ['mcp_filesystem', 'mcp_home_assistant', 'mcp_web_search'],
+};
+
+export function normalizeOllamaUrl(rawInput: string): string {
+  const trimmed = rawInput.trim().replace(/\/+$/, '');
+  if (!trimmed) {
+    return 'http://127.0.0.1:11434';
+  }
+  const withProtocol = /^https?:\/\//i.test(trimmed) ? trimmed : `http://${trimmed}`;
+  try {
+    const parsed = new URL(withProtocol);
+    if (!parsed.port) {
+      parsed.port = '11434';
+    }
+    return parsed.origin;
+  } catch {
+    return withProtocol.includes(':') ? withProtocol : `${withProtocol}:11434`;
+  }
+}
+
+export async function fetchOllamaModels(baseUrl: string): Promise<{
+  models: DiscoveredOllamaModel[];
+  latencyMs: number;
+  online: boolean;
+  error?: string;
+}> {
+  const normalized = normalizeOllamaUrl(baseUrl);
+  const start = performance.now();
+  let probeError: string | undefined;
+
+  const probeEndpoints = [
+    '/api/v2/brain/ollama/probe',
+    '/api/brain/ollama/probe',
+    '/api/models/probe',
+  ];
+
+  for (const endpoint of probeEndpoints) {
+    try {
+      const res = await sendJson<{
+        online?: boolean;
+        latency_ms?: number;
+        models?: Array<{
+          name?: string;
+          size?: number;
+          parameter_size?: string;
+          quantization_level?: string;
+          family?: string;
+          modified_at?: string;
+        }>;
+        error?: string;
+      }>(endpoint, 'POST', { host: normalized });
+
+      if (res && res.online) {
+        const latencyMs = Number(res.latency_ms || Math.round(performance.now() - start));
+        const rawList = Array.isArray(res.models) ? res.models : [];
+        const models: DiscoveredOllamaModel[] = rawList.map((item) => ({
+          name: String(item.name || ''),
+          sizeBytes: Number(item.size || 0),
+          parameterSize: String(item.parameter_size || ''),
+          quantizationLevel: String(item.quantization_level || ''),
+          family: String(item.family || ''),
+          modifiedAt: String(item.modified_at || ''),
+        }));
+        return { models, latencyMs, online: true };
+      }
+      if (res && res.error) {
+        probeError = res.error;
+      }
+    } catch (e: any) {
+      probeError = String(e?.message || '');
+    }
+  }
+
+  try {
+    const response = await fetch(`${normalized}/api/tags`, {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+      signal: AbortSignal.timeout(8000),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      const latencyMs = Math.round(performance.now() - start);
+      const rawModels = Array.isArray(data?.models) ? data.models : [];
+
+      const models: DiscoveredOllamaModel[] = rawModels.map((item: Record<string, any>) => ({
+        name: String(item.name || item.model || ''),
+        sizeBytes: Number(item.size || 0),
+        parameterSize: String(item.details?.parameter_size || ''),
+        quantizationLevel: String(item.details?.quantization_level || ''),
+        family: String(item.details?.family || ''),
+        modifiedAt: String(item.modified_at || ''),
+      }));
+
+      return { models, latencyMs, online: true };
+    }
+  } catch (directErr: any) {
+    probeError = String(directErr?.message || '');
+  }
+
+  try {
+    const rootRes = await fetch(`${normalized}/`, {
+      method: 'GET',
+      signal: AbortSignal.timeout(4000),
+    });
+    if (rootRes.ok) {
+      const text = await rootRes.text();
+      if (text.toLowerCase().includes('ollama') || text.toLowerCase().includes('running')) {
+        const latencyMs = Math.round(performance.now() - start);
+        return { models: [], latencyMs, online: true };
+      }
+    }
+  } catch {}
+
+  try {
+    const noCorsRes = await fetch(`${normalized}/`, {
+      method: 'GET',
+      mode: 'no-cors',
+      signal: AbortSignal.timeout(3000),
+    });
+    if (noCorsRes.type === 'opaque' || noCorsRes.status === 0 || noCorsRes.ok) {
+      const latencyMs = Math.round(performance.now() - start);
+      return { models: [], latencyMs, online: true };
+    }
+  } catch {}
+
+  const finalErr = probeError || 'timeout_or_offline';
+  throw new Error(finalErr);
+}
+
+export function applyDefaultToAllTargets(
+  targets: readonly BrainTargetConfig[],
+  payload: {
+    provider: BrainProviderType;
+    serverId: string | null;
+    baseUrl: string;
+    modelName: string;
+    temperature?: number;
+    contextWindow?: string;
+    mcpToolsEnabled?: readonly string[];
+  }
+): readonly BrainTargetConfig[] {
+  const normalized = normalizeOllamaUrl(payload.baseUrl);
+  let parsedHost = '';
+  let parsedPort = 11434;
+
+  try {
+    const urlObj = new URL(normalized);
+    parsedHost = urlObj.hostname;
+    parsedPort = urlObj.port ? Number(urlObj.port) : 11434;
+  } catch {}
+
+  return targets.map((target) => ({
+    ...target,
+    inheritsGlobalDefault: true,
+    method: payload.provider,
+    assignedModel: payload.modelName,
+    baseUrl: normalized,
+    remoteHost: payload.provider === 'ollama_remote' ? parsedHost : target.remoteHost,
+    remotePort: payload.provider === 'ollama_remote' ? parsedPort : target.remotePort,
+    providerId: payload.provider === 'api_key' ? (target.providerId || 'google') : target.providerId,
+    temperature: payload.temperature !== undefined ? payload.temperature : target.temperature,
+    contextWindow: payload.contextWindow || target.contextWindow,
+    mcpToolsEnabled: payload.mcpToolsEnabled || target.mcpToolsEnabled,
+    status: 'connected' as const,
+  }));
+}
+

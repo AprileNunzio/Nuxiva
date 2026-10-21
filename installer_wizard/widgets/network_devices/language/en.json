@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/network_devices",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Network devices",
+    "more": "and {{n}} more",
+    "connected_one": "{{n}} connected",
+    "connected_other": "{{n}} connected"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/thermostat",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Climate",
+    "standby": "Standby",
+    "now": "now",
+    "target": "Target",
+    "humidity": "Humidity"
+  }
+}

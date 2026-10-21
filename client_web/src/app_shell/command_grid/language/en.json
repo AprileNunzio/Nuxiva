@@ -1,0 +1,28 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "loading": "Loading…",
+    "unreachable": "Server unreachable",
+    "on": "On",
+    "off": "Off",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "heading": "CENTRAL CORE — GLOBAL COMMAND GRID",
+    "subtitle": "Neural control plane and application cockpit of the distributed mesh",
+    "active_services": "{count} features running",
+    "zero_trust": "ZERO-TRUST MESH",
+    "search_placeholder": "Search app…",
+    "view_grouped": "Grouped by category",
+    "view_dense": "Compact grid",
+    "spatial_graph": "Spatial graph",
+    "no_results": "No app matches «{query}»",
+    "reset_filters": "Reset filters",
+    "see_all": "See all",
+    "clear": "Clear search"
+  }
+}

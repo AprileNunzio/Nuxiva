@@ -1,0 +1,43 @@
+{
+  "id": "music",
+  "name": "Nexus Media Player",
+  "icon": "Music",
+  "version": "5.3.0",
+  "description": "Media center autonomo con libreria, playlist, karaoke sincronizzato e video musicali.",
+  "scope": "apps/music",
+  "kind": "app",
+  "target": "global",
+  "category": "media",
+  "window": {
+    "defaultWidth": 75,
+    "defaultHeight": 82,
+    "minWidth": 32,
+    "resizable": true
+  },
+  "toolbars": [
+    {
+      "id": "system",
+      "items": [
+        {
+          "type": "search",
+          "id": "search",
+          "placeholderKey": "search_placeholder"
+        },
+        {
+          "type": "button",
+          "id": "refresh",
+          "labelKey": "os_refresh",
+          "icon": "refresh-cw",
+          "shortcut": "F5"
+        }
+      ]
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "qUrjwzmP7ZFz",
+    "url": "https://img.icons8.com/?size=240&id=qUrjwzmP7ZFz&format=png"
+  }
+}

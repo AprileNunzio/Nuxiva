@@ -1,0 +1,14 @@
+[build-system]
+requires = ["maturin>=1.9,<2"]
+build-backend = "maturin"
+
+[project]
+name = "nuxiva-native"
+version = "5.3.0"
+requires-python = ">=3.11"
+license = "MIT"
+
+[tool.maturin]
+module-name = "nuxiva_native"
+features = ["extension-module"]
+strip = true

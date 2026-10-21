@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/sport_table",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Classement",
+    "col_played": "J",
+    "col_diff": "Diff",
+    "col_points": "Pts"
+  }
+}

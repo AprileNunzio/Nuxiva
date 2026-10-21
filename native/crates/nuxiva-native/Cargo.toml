@@ -1,0 +1,27 @@
+[package]
+name = "nuxiva-native"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lib]
+name = "nuxiva_native"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+nuxiva-audio-dsp = { path = "../audio-dsp" }
+nuxiva-bus-core = { path = "../bus-core" }
+nuxiva-langid = { path = "../langid" }
+nuxiva-crdt-core = { path = "../crdt-core" }
+nuxiva-spatial-core = { path = "../spatial-core" }
+pyo3 = { version = "0.27.2", features = ["abi3-py311"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[features]
+extension-module = ["pyo3/extension-module"]
+
+[lints]
+workspace = true

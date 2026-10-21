@@ -1,0 +1,62 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "server/reasoning"
+  },
+  "engines": {
+    "classico": {
+      "name": "Nuxiva Classico",
+      "summary": "Un modello alla volta, nell'ordine configurato, finché uno risponde"
+    },
+    "veloce": {
+      "name": "Nuxiva Veloce",
+      "summary": "Gara tra i modelli rapidi: vince la prima risposta valida"
+    },
+    "empatico": {
+      "name": "Nuxiva Empatico",
+      "summary": "Confronta due risposte e sceglie la più chiara e attenta al tono"
+    },
+    "pro": {
+      "name": "Nuxiva Pro",
+      "summary": "Confronta due modelli profondi e un critico sceglie la risposta migliore"
+    },
+    "ultra": {
+      "name": "Nuxiva Ultra",
+      "summary": "Confronta fino a tre modelli profondi con più tempo e sceglie col critico"
+    },
+    "auto": {
+      "name": "Nuxiva Auto",
+      "summary": "Sceglie da solo il metodo in base alla lunghezza della domanda e allo stato emotivo"
+    }
+  },
+  "stages": {
+    "route": {
+      "name": "Scelta automatica del metodo",
+      "detail": "{words} parole · complessità {complexity} · scelto {chosen}: {reason}"
+    },
+    "reason_fast": "sei agitato e la domanda è breve",
+    "reason_empathy": "il tono emotivo è forte",
+    "reason_complex": "la domanda è lunga e complessa",
+    "reason_default": "domanda normale",
+    "sequential": {
+      "name": "Un modello alla volta",
+      "detail": "Prova {count} gruppi di modelli in ordine e si ferma al primo che risponde"
+    },
+    "first": {
+      "name": "Gara tra modelli rapidi",
+      "detail": "{count} modelli in parallelo: vince la prima risposta valida, gli altri vengono fermati"
+    },
+    "best": {
+      "name": "Confronto tra modelli",
+      "detail": "{count} modelli in parallelo: dopo la prima risposta aspetta al massimo {wait} s le altre"
+    },
+    "critic": {
+      "name": "Valutazione con il critico",
+      "detail": "punteggio = {cw} × affidabilità + {kw} × critico (rischi, chiarezza, tono)"
+    },
+    "decision": {
+      "name": "Risposta scelta",
+      "detail": "Viene restituita la risposta con il punteggio più alto"
+    }
+  }
+}

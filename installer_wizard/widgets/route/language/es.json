@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/route",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "trip": "Ruta",
+    "leave_by": "Salir antes de",
+    "appointment": "Cita",
+    "arrival": "Llegada",
+    "delay": "Retraso de {{n}} min",
+    "clear": "Tráfico fluido"
+  }
+}

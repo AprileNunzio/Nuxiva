@@ -1,0 +1,23 @@
+{
+  "id": "people",
+  "name": "Persone",
+  "icon": "☺",
+  "category": "casa",
+  "order": 50,
+  "pinned": true,
+  "panel": "people",
+  "description": "Anagrafe completa: volti, relazioni, ricorrenze, preferenze e abitudini di ogni persona.",
+  "capabilities": [
+    "Registrazione automatica dei volti",
+    "Compleanni e onomastici",
+    "Relazioni",
+    "Abitudini"
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "x0qTmzjcFRhW",
+    "url": "https://img.icons8.com/?size=240&id=x0qTmzjcFRhW&format=png"
+  }
+}

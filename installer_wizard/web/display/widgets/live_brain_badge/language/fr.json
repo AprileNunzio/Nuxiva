@@ -1,0 +1,16 @@
+{
+  "meta": {"locale": "fr"},
+  "dictionary": {
+    "free": "Gratuit",
+    "active_model": "Modèle actif : {model}",
+    "active_model_title": "Modèle utilisé pour cette réponse",
+    "model": "Identifiant : {model}",
+    "pool": "Tâche : {pool}",
+    "pool_chat": "Conversation",
+    "pool_agent_tools": "Agents et outils",
+    "pool_vision": "Vision",
+    "pool_deep_code": "Raisonnement et code",
+    "pool_voice_fast": "Voix rapide",
+    "switched": "Basculement automatique de {previous} vers {next}"
+  }
+}

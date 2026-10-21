@@ -1,0 +1,17 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/tv_player",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "TV",
+    "no_channel": "Aucune chaîne",
+    "state_loading": "Connexion",
+    "state_playing": "À l'antenne",
+    "state_blocked": "Audio coupé",
+    "state_error": "Indisponible",
+    "open_failed": "La chaîne ne s'ouvre pas : {{reason}}",
+    "player_missing": "lecteur indisponible"
+  }
+}

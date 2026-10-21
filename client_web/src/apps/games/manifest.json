@@ -1,0 +1,46 @@
+{
+  "id": "games",
+  "name": "Giochi",
+  "icon": "Gamepad2",
+  "version": "1.0.0",
+  "description": "Centro di controllo dei giochi Nuxiva: scansione automatica, comandi vocali, controllo permessi e stato esecuzione.",
+  "scope": "apps/games",
+  "kind": "app",
+  "target": "global",
+  "category": "system",
+  "window": {
+    "defaultWidth": 78,
+    "defaultHeight": 82,
+    "minWidth": 32,
+    "minHeight": 26,
+    "resizable": true
+  },
+  "toolbars": [
+    {
+      "id": "system",
+      "items": [
+        {
+          "type": "search",
+          "id": "search",
+          "placeholderKey": "search_placeholder"
+        },
+        {
+          "type": "action",
+          "id": "rescan",
+          "labelKey": "rescan_games",
+          "shortcut": "F5"
+        }
+      ]
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "games-console-3d",
+    "url": "https://img.icons8.com/?size=240&id=gamepad&format=png"
+  },
+  "desktop": {
+    "order": 2
+  }
+}

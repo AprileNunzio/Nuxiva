@@ -1,0 +1,16 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/document_viewer",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "viewer": "Vista previa",
+    "document": "Documento",
+    "project": "Proyecto",
+    "documents": "Documentos",
+    "shared_folder": "Carpeta compartida",
+    "failed": "Fallido:",
+    "no_preview": "Vista previa no disponible"
+  }
+}

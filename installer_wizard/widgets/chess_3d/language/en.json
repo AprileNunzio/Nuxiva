@@ -1,0 +1,18 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/chess_3d",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "3D Chess",
+    "status_ready": "Ready",
+    "status_playing": "Match in progress",
+    "action_fullscreen": "Fullscreen",
+    "action_close": "Close",
+    "turn_white": "White's turn",
+    "turn_black": "Black's turn (Nuxiva)",
+    "action_hint": "Hint",
+    "action_restart": "New game"
+  }
+}

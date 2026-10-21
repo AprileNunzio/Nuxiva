@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/clipboard_sync",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Presse-papiers",
+    "empty": "Presse-papiers vide",
+    "chars_one": "{{n}} caractère",
+    "chars_other": "{{n}} caractères"
+  }
+}

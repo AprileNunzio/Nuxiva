@@ -1,0 +1,7 @@
+import React, { useMemo, useState } from 'react';
+export interface DataColumn<T> { id:string;label:string;value:(row:T)=>React.ReactNode;sort?:(row:T)=>string|number; }
+export function DataGrid<T>({rows,columns,rowId,onSelect,emptyLabel}:{rows:readonly T[];columns:DataColumn<T>[];rowId:(row:T)=>string;onSelect?:(row:T)=>void;emptyLabel:string}) {
+  const [order,setOrder]=useState<{id:string;reverse:boolean}|null>(null);
+  const sorted=useMemo(()=>{const column=columns.find(column=>column.id===order?.id);return column?.sort ? [...rows].sort((a,b)=>{const left=column.sort!(a),right=column.sort!(b);return (typeof left==='number'&&typeof right==='number'?left-right:String(left).localeCompare(String(right)))*(order?.reverse?-1:1);}) : rows;},[rows,columns,order]);
+  return <div className="os-data-grid"><table><thead><tr>{columns.map(column=><th key={column.id} aria-sort={order?.id===column.id?(order.reverse?'descending':'ascending'):'none'}>{column.sort?<button onClick={()=>setOrder({id:column.id,reverse:order?.id===column.id&&!order.reverse})}>{column.label}</button>:column.label}</th>)}</tr></thead><tbody>{sorted.map(row=><tr key={rowId(row)} tabIndex={onSelect?0:undefined} onClick={()=>onSelect?.(row)} onKeyDown={event=>{if(event.key==='Enter')onSelect?.(row);}}>{columns.map(column=><td key={column.id}>{column.value(row)}</td>)}</tr>)}</tbody></table>{rows.length===0&&<p role="status">{emptyLabel}</p>}</div>;
+}

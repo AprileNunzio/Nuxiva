@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/thinking_tree",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Reasoning",
+    "steps_one": "{{n}} step",
+    "steps_other": "{{n}} steps"
+  }
+}

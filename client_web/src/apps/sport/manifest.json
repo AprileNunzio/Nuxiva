@@ -1,0 +1,38 @@
+{
+  "id": "sport",
+  "name": "Sport",
+  "icon": "Trophy",
+  "version": "5.2.0",
+  "description": "Centro sportivo multi-disciplina a step: Calcio, Formula 1, MotoGP, Basket, Tennis, Ciclismo, Boxe, Rugby e altri",
+  "scope": "apps/sport",
+  "kind": "app",
+  "target": "global",
+  "window": {
+    "defaultWidth": 80,
+    "defaultHeight": 85,
+    "minWidth": 34,
+    "minHeight": 26,
+    "resizable": true
+  },
+  "toolbars": [
+    {
+      "id": "system",
+      "items": [
+        {
+          "type": "action",
+          "id": "refresh",
+          "labelKey": "os_refresh",
+          "shortcut": "F5"
+        }
+      ]
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "NNiLa5wndFCN",
+    "url": "https://img.icons8.com/?size=240&id=NNiLa5wndFCN&format=png"
+  },
+  "category": "media"
+}

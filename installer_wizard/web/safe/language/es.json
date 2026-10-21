@@ -1,0 +1,38 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "web/safe",
+    "version": "2.0.0"
+  },
+  "dictionary": {
+    "page_title": "Nuxiva · Modo seguro",
+    "brand": "NUXIVA",
+    "title": "Nuxiva está en modo seguro",
+    "title_ok": "Nuxiva vuelve a funcionar",
+    "reason_missing_library": "Faltan algunas bibliotecas que Nuxiva necesita para arrancar.",
+    "reason_broken_code": "Algunos archivos de Nuxiva están dañados o incompletos.",
+    "reason_system": "Un problema del sistema impide que Nuxiva arranque.",
+    "reason_unknown": "Nuxiva no ha podido arrancar con normalidad.",
+    "calm": "Tus datos están a salvo. Nuxiva puede repararse sola con un toque.",
+    "repair": "Reparar ahora",
+    "repairing": "Reparando…",
+    "retry": "Reintentar la reparación",
+    "started": "Reparación iniciada, sigue los pasos de arriba.",
+    "busy": "Ya hay una reparación en curso.",
+    "wait": "Espera unos segundos antes de volver a intentarlo.",
+    "unavailable": "La reparación automática no está disponible: usa el comando de abajo.",
+    "offline": "Nuxiva no responde, reintentando…",
+    "done": "Reparación completada, reiniciando Nuxiva…",
+    "failed": "Algunos problemas deben resolverse a mano: lee los pasos en rojo.",
+    "tech": "Detalles técnicos",
+    "cli": "sudo nuxivactl repair",
+    "step_disk": "Espacio en disco",
+    "step_apt": "Gestor de paquetes",
+    "step_network": "Conexión a internet",
+    "step_code": "Archivos de Nuxiva",
+    "step_python": "Bibliotecas Python",
+    "step_system": "Archivos del sistema",
+    "step_ports": "Puertos de red",
+    "step_service": "Arranque de Nuxiva"
+  }
+}

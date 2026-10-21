@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "web/shared",
+    "version": "2.0.0"
+  },
+  "dictionary": {
+    "setup_cta": "Set up Nuxiva",
+    "setup_cta_sub": "It takes two minutes, even while installation continues",
+    "bgq_title": "Background installs",
+    "bgq_foot": "Nuxiva is already ready: these parts are added on their own, no restarts.",
+    "bgq_status_queued": "queued",
+    "bgq_status_failed": "will retry",
+    "bgq_status_disk": "needs space",
+    "bgq_status_done": "ready",
+    "bgq_will_retry": "will retry",
+    "bgq_eta_short": "under 2 min",
+    "bgq_eta_min": "about {{n}} min",
+    "bgq_eta_hours": "about {{n}} h",
+    "bgq_complete": "Nuxiva is complete",
+    "bgq_complete_sub": "All parts are installed",
+    "bgq_ready_count": "{{done}} of {{total}} ready",
+    "bgq_paused": "Installs paused",
+    "bgq_paused_short": "paused",
+    "bgq_waiting": "Waiting",
+    "bgq_resume_after_talk": "I'll resume when you finish talking",
+    "bgq_running": "in progress",
+    "bgq_next": "Preparing the next component",
+    "bgq_total_gb": "{{gb}} GB in total",
+    "widget_grow": "Enlarge",
+    "widget_shrink": "Shrink",
+    "widget_close": "Close",
+    "widget_cancel": "Cancel",
+    "widget_read": "Read it to me"
+  }
+}

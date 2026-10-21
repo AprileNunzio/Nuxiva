@@ -1,0 +1,36 @@
+{
+  "id": "places",
+  "name": "Places & Rooms",
+  "icon": "Home",
+  "version": "5.0.0",
+  "description": "Topological floorplan and room builder",
+  "scope": "core_apps/places",
+  "target": "global",
+  "window": {
+    "defaultWidth": 65,
+    "defaultHeight": 75,
+    "minWidth": 25,
+    "resizable": true
+  },
+  "toolbars": [
+    {
+      "id": "system",
+      "items": [
+        {
+          "type": "action",
+          "id": "refresh",
+          "labelKey": "os_refresh",
+          "shortcut": "F5"
+        }
+      ]
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "gvQUkpW15e1x",
+    "url": "https://img.icons8.com/?size=240&id=gvQUkpW15e1x&format=png"
+  },
+  "category": "spaces"
+}

@@ -1,0 +1,36 @@
+{
+  "id": "habits",
+  "name": "Habits",
+  "icon": "Clock",
+  "version": "5.0.0",
+  "description": "Chronological log and predictive habit foresight",
+  "scope": "core_apps/habits",
+  "target": "global",
+  "window": {
+    "defaultWidth": 65,
+    "defaultHeight": 75,
+    "minWidth": 25,
+    "resizable": true
+  },
+  "toolbars": [
+    {
+      "id": "system",
+      "items": [
+        {
+          "type": "action",
+          "id": "refresh",
+          "labelKey": "os_refresh",
+          "shortcut": "F5"
+        }
+      ]
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "ebsq6nILBjBv",
+    "url": "https://img.icons8.com/?size=240&id=ebsq6nILBjBv&format=png"
+  },
+  "category": "intelligence"
+}

@@ -1,0 +1,69 @@
+{
+  "id": "voicestudio",
+  "name": "Studio delle voci",
+  "icon": "🎙",
+  "category": "assistente",
+  "order": 31,
+  "pinned": true,
+  "panel": "voicestudio",
+  "description": "Crea nuove voci per Nuxiva: inventale scegliendo com'è fatta o copia la tua leggendo una frase. Funziona con VoiceStudio, un programma separato che gira su questo computer o su un altro PC di casa.",
+  "toggle": {
+    "env": "NUXIVA_VOICESTUDIO",
+    "default": "0",
+    "initial": "0",
+    "apply": [
+      "voicestudio"
+    ]
+  },
+  "requires": {
+    "ram_gb": 8
+  },
+  "capabilities": [
+    "Voci inventate scegliendo figure: donna o uomo, età, tono, sussurro",
+    "Copia della tua voce leggendo una frase, con il consenso registrato",
+    "Nuxiva parla con la voce che scegli, in oltre 600 lingue",
+    "Trascrizione di audio e video della cartella condivisa",
+    "Audiolibri e letture di documenti salvati come file audio",
+    "Installazione con un clic su questo computer o collegamento a un altro PC di casa"
+  ],
+  "settings": [
+    {
+      "key": "NUXIVA_VOICESTUDIO_WHERE",
+      "label": "Dove funziona lo Studio delle voci",
+      "type": "select",
+      "default": "local",
+      "apply": [
+        "voicestudio"
+      ],
+      "options": [
+        {
+          "value": "local",
+          "label": "Su questo computer"
+        },
+        {
+          "value": "remote",
+          "label": "Su un altro computer"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_VOICESTUDIO_URL",
+      "label": "Indirizzo dell'altro computer",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "key": "NUXIVA_VOICESTUDIO_KEY",
+      "label": "Chiave dello Studio delle voci",
+      "type": "secret",
+      "default": ""
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "6xRZJrVWQLNn",
+    "url": "https://img.icons8.com/?size=240&id=6xRZJrVWQLNn&format=png"
+  }
+}

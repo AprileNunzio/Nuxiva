@@ -1,0 +1,1017 @@
+[
+ {
+  "id": "teacher-math",
+  "group": "teacher",
+  "icon": "📐",
+  "color": "#4f8cff",
+  "tools": [
+   "now"
+  ],
+  "keywords": [
+   "matematic",
+   "equazion",
+   "algebra",
+   "geometri",
+   "trigonometri",
+   "derivat",
+   "integral",
+   "frazion",
+   "polinom",
+   "teorema",
+   "calcolo",
+   "math",
+   "equation",
+   "calculus",
+   "derivative",
+   "fraction",
+   "percentual",
+   "problema di matem",
+   "radice",
+   "logaritm",
+   "probabilit"
+  ]
+ },
+ {
+  "id": "teacher-physics",
+  "group": "teacher",
+  "icon": "⚛️",
+  "color": "#29e0ff",
+  "tools": [
+   "now"
+  ],
+  "keywords": [
+   "fisica",
+   "cinematic",
+   "dinamica",
+   "termodinamic",
+   "elettromagnet",
+   "ottica",
+   "meccanica quant",
+   "relativit",
+   "newton",
+   "energia cinetic",
+   "physics",
+   "velocit",
+   "accelerazion"
+  ]
+ },
+ {
+  "id": "teacher-chemistry",
+  "group": "teacher",
+  "icon": "🧪",
+  "color": "#3dffa8",
+  "tools": [
+   "now"
+  ],
+  "keywords": [
+   "chimic",
+   "molecol",
+   "atomo",
+   "reazion",
+   "tavola periodic",
+   "stechiometri",
+   "acid",
+   "legame chimic",
+   "ossidoriduz",
+   "chemistry",
+   "composto",
+   "elemento chimic"
+  ]
+ },
+ {
+  "id": "teacher-biology",
+  "group": "teacher",
+  "icon": "🧬",
+  "color": "#7ddc5a",
+  "tools": [
+   "now"
+  ],
+  "keywords": [
+   "biologi",
+   "cellula",
+   "dna",
+   "genetic",
+   "evoluzion",
+   "fotosintesi",
+   "ecosistem",
+   "anatomia",
+   "organismo",
+   "biology",
+   "mitosi",
+   "proteine",
+   "specie"
+  ]
+ },
+ {
+  "id": "teacher-italian",
+  "group": "teacher",
+  "icon": "📖",
+  "color": "#ff9f43",
+  "tools": [
+   "now"
+  ],
+  "keywords": [
+   "letteratur",
+   "grammatic",
+   "analisi del testo",
+   "analisi logic",
+   "poesia",
+   "dante",
+   "manzoni",
+   "leopardi",
+   "riassunto",
+   "tema di italiano",
+   "italiano",
+   "sintassi",
+   "romanzo",
+   "novella",
+   "figure retoric"
+  ]
+ },
+ {
+  "id": "teacher-history",
+  "group": "teacher",
+  "icon": "🏛️",
+  "color": "#c8a15a",
+  "tools": [
+   "now"
+  ],
+  "keywords": [
+   "storia",
+   "guerra mondial",
+   "impero",
+   "rivoluzion",
+   "medioevo",
+   "rinascimento",
+   "risorgimento",
+   "antica roma",
+   "egizi",
+   "history",
+   "fascismo",
+   "napoleon",
+   "secolo"
+  ]
+ },
+ {
+  "id": "teacher-geography",
+  "group": "teacher",
+  "icon": "🌍",
+  "color": "#2fb5a0",
+  "tools": [
+   "now"
+  ],
+  "keywords": [
+   "geografi",
+   "capitale di",
+   "continent",
+   "fiume",
+   "montagn",
+   "clima",
+   "popolazione",
+   "geography",
+   "mappa",
+   "oceano",
+   "stati del mondo",
+   "cartografi"
+  ]
+ },
+ {
+  "id": "teacher-english",
+  "group": "teacher",
+  "icon": "🇬🇧",
+  "color": "#5b7cff",
+  "tools": [
+   "now"
+  ],
+  "keywords": [
+   "inglese",
+   "english",
+   "grammar",
+   "past simple",
+   "present perfect",
+   "phrasal",
+   "pronuncia inglese",
+   "ielts",
+   "toefl",
+   "how do you say",
+   "vocabolario inglese",
+   "verbi irregolari"
+  ]
+ },
+ {
+  "id": "teacher-languages",
+  "group": "teacher",
+  "icon": "🗣️",
+  "color": "#e056a0",
+  "tools": [
+   "now"
+  ],
+  "keywords": [
+   "spagnolo",
+   "francese",
+   "tedesco",
+   "portoghese",
+   "russo",
+   "giapponese",
+   "cinese",
+   "arabo",
+   "spanish",
+   "french",
+   "german",
+   "coniugazione",
+   "imparare una lingua",
+   "lingua straniera"
+  ]
+ },
+ {
+  "id": "teacher-programming",
+  "group": "teacher",
+  "icon": "💻",
+  "color": "#8b5cf6",
+  "tools": [
+   "now"
+  ],
+  "keywords": [
+   "programmazion",
+   "imparare a programmare",
+   "algoritm",
+   "strutture dati",
+   "python",
+   "javascript",
+   "java ",
+   "c++",
+   "linguaggio di programmazione",
+   "ricorsion",
+   "orientata agli oggetti",
+   "coding",
+   "esercizio di codice",
+   "complessit"
+  ]
+ },
+ {
+  "id": "teacher-philosophy",
+  "group": "teacher",
+  "icon": "🦉",
+  "color": "#9aa5b1",
+  "tools": [
+   "now"
+  ],
+  "keywords": [
+   "filosofi",
+   "platone",
+   "aristotele",
+   "kant",
+   "nietzsche",
+   "etica",
+   "metafisica",
+   "epistemolog",
+   "socrate",
+   "philosophy",
+   "esistenzial",
+   "illuminismo"
+  ]
+ },
+ {
+  "id": "teacher-music",
+  "group": "teacher",
+  "icon": "🎼",
+  "color": "#f06292",
+  "tools": [
+   "now"
+  ],
+  "keywords": [
+   "musica",
+   "teoria musicale",
+   "solfeggio",
+   "accord",
+   "scala maggiore",
+   "pianoforte",
+   "chitarra",
+   "armonia",
+   "spartito",
+   "composizione music",
+   "tonalit",
+   "ritmo",
+   "music theory"
+  ]
+ },
+ {
+  "id": "teacher-art",
+  "group": "teacher",
+  "icon": "🎨",
+  "color": "#ff7a59",
+  "tools": [
+   "now"
+  ],
+  "keywords": [
+   "storia dell'arte",
+   "pittur",
+   "scultur",
+   "rinascimento artistic",
+   "impressionis",
+   "michelangelo",
+   "leonardo",
+   "caravaggio",
+   "barocco",
+   "museo",
+   "art history",
+   "avanguardi",
+   "architettura storica"
+  ]
+ },
+ {
+  "id": "teacher-economics",
+  "group": "teacher",
+  "icon": "📊",
+  "color": "#f5b942",
+  "tools": [
+   "now"
+  ],
+  "keywords": [
+   "economia",
+   "microeconomia",
+   "macroeconomia",
+   "inflazione",
+   "pil ",
+   "domanda e offerta",
+   "bilancio aziendale",
+   "economics",
+   "politica monetaria",
+   "ragioneria",
+   "tassi di interesse"
+  ]
+ },
+ {
+  "id": "teacher-astronomy",
+  "group": "teacher",
+  "icon": "🔭",
+  "color": "#6c63ff",
+  "tools": [
+   "now"
+  ],
+  "keywords": [
+   "astronomi",
+   "pianeta",
+   "stelle",
+   "galassi",
+   "buco nero",
+   "sistema solare",
+   "telescopio",
+   "cosmolog",
+   "astrophysics",
+   "costellazion",
+   "eclissi",
+   "big bang"
+  ]
+ },
+ {
+  "id": "lawyer",
+  "group": "professional",
+  "icon": "⚖️",
+  "color": "#8d6e63",
+  "tools": [
+   "now",
+   "http_get"
+  ],
+  "keywords": [
+   "avvocato",
+   "legale",
+   "contratto",
+   "causa",
+   "tribunale",
+   "diritto",
+   "sentenza",
+   "denuncia",
+   "risarcimento",
+   "multa",
+   "ricorso",
+   "eredit",
+   "locazione",
+   "affitto",
+   "lawyer",
+   "legal ",
+   "sfratto",
+   "licenziamento",
+   "privacy gdpr"
+  ]
+ },
+ {
+  "id": "accountant",
+  "group": "professional",
+  "icon": "🧾",
+  "color": "#6d8b74",
+  "tools": [
+   "now",
+   "http_get"
+  ],
+  "keywords": [
+   "commercialista",
+   "fiscal",
+   "tasse",
+   "partita iva",
+   "dichiarazione dei redditi",
+   "730",
+   "iva ",
+   "irpef",
+   "fattura",
+   "contribut",
+   "regime forfettario",
+   "detrazion",
+   "tax ",
+   "imu",
+   "f24"
+  ]
+ },
+ {
+  "id": "financial",
+  "group": "professional",
+  "icon": "💶",
+  "color": "#2e9e6b",
+  "tools": [
+   "now",
+   "http_get"
+  ],
+  "keywords": [
+   "investiment",
+   "risparmio",
+   "etf",
+   "obbligazion",
+   "azioni in borsa",
+   "portafoglio",
+   "pensione",
+   "mutuo",
+   "prestito",
+   "interessi composti",
+   "consulente finanziario",
+   "finanza personale",
+   "budget familiare",
+   "fondo di emergenza",
+   "financial advisor"
+  ]
+ },
+ {
+  "id": "doctor",
+  "group": "professional",
+  "icon": "🩺",
+  "color": "#e5484d",
+  "tools": [
+   "now"
+  ],
+  "keywords": [
+   "medico",
+   "sintomi",
+   "febbre",
+   "dolore",
+   "farmaco",
+   "medicina",
+   "malattia",
+   "pressione arteriosa",
+   "visita",
+   "terapia",
+   "analisi del sangue",
+   "infezione",
+   "mal di",
+   "symptom",
+   "doctor",
+   "allergia"
+  ]
+ },
+ {
+  "id": "nutritionist",
+  "group": "professional",
+  "icon": "🥗",
+  "color": "#8bc34a",
+  "tools": [
+   "now"
+  ],
+  "keywords": [
+   "nutrizion",
+   "dieta",
+   "calorie",
+   "proteine",
+   "carboidrat",
+   "vitamin",
+   "alimentazione",
+   "perdere peso",
+   "dimagrire",
+   "integrator",
+   "macronutrient",
+   "nutrition",
+   "intolleranz",
+   "menu settimanale"
+  ]
+ },
+ {
+  "id": "trainer",
+  "group": "professional",
+  "icon": "🏋️",
+  "color": "#ff6b35",
+  "tools": [
+   "now"
+  ],
+  "keywords": [
+   "allenamento",
+   "palestra",
+   "esercizi",
+   "massa muscolare",
+   "cardio",
+   "scheda di allenamento",
+   "stretching",
+   "personal trainer",
+   "workout",
+   "corsa",
+   "ipertrofia",
+   "mobilit",
+   "squat",
+   "addominali"
+  ]
+ },
+ {
+  "id": "psychologist",
+  "group": "professional",
+  "icon": "🧠",
+  "color": "#a78bfa",
+  "tools": [
+   "now"
+  ],
+  "keywords": [
+   "psicolog",
+   "ansia",
+   "stress",
+   "autostima",
+   "relazione di coppia",
+   "motivazione",
+   "emozion",
+   "depressione",
+   "terapia psicolog",
+   "benessere mentale",
+   "mindfulness",
+   "burnout",
+   "anxiety",
+   "attacchi di panico"
+  ]
+ },
+ {
+  "id": "electrician",
+  "group": "professional",
+  "icon": "⚡",
+  "color": "#ffd43b",
+  "tools": [
+   "now",
+   "http_get"
+  ],
+  "keywords": [
+   "elettricista",
+   "impianto elettrico",
+   "interruttore",
+   "salvavita",
+   "differenziale",
+   "cavo elettrico",
+   "presa elettrica",
+   "quadro elettrico",
+   "magnetotermico",
+   "lampadina",
+   "cablaggio",
+   "messa a terra",
+   "sezione dei cavi",
+   "electrician",
+   "wiring",
+   "corto circuito",
+   "fase e neutro"
+  ]
+ },
+ {
+  "id": "electronics-engineer",
+  "group": "professional",
+  "icon": "🔌",
+  "color": "#00c2a8",
+  "tools": [
+   "now",
+   "http_get"
+  ],
+  "keywords": [
+   "elettronica",
+   "circuito",
+   "resistenza",
+   "condensatore",
+   "transistor",
+   "arduino",
+   "esp32",
+   "raspberry",
+   "microcontrollore",
+   "saldatura",
+   "schema elettrico",
+   "sensore",
+   "pcb",
+   "led ",
+   "tensione e corrente",
+   "electronics",
+   "oscilloscopio",
+   "multimetro",
+   "mosfet"
+  ]
+ },
+ {
+  "id": "architect",
+  "group": "professional",
+  "icon": "🏗️",
+  "color": "#b08968",
+  "tools": [
+   "now"
+  ],
+  "keywords": [
+   "architett",
+   "ristrutturazion",
+   "progetto casa",
+   "planimetria",
+   "arredamento",
+   "interior design",
+   "permessi edilizi",
+   "cantiere",
+   "muratura",
+   "isolamento termico",
+   "bonus edilizi",
+   "renovation",
+   "geometra",
+   "ampliamento"
+  ]
+ },
+ {
+  "id": "plumber",
+  "group": "professional",
+  "icon": "🔧",
+  "color": "#3b82f6",
+  "tools": [
+   "now"
+  ],
+  "keywords": [
+   "idraulico",
+   "perdita d'acqua",
+   "rubinetto",
+   "tubo",
+   "scarico",
+   "caldaia",
+   "sifone",
+   "water",
+   "sanitari",
+   "otturat",
+   "scaldabagno",
+   "plumber",
+   "pressione dell'acqua",
+   "radiator"
+  ]
+ },
+ {
+  "id": "mechanic",
+  "group": "professional",
+  "icon": "🚗",
+  "color": "#6b7280",
+  "tools": [
+   "now"
+  ],
+  "keywords": [
+   "meccanico",
+   "automobile",
+   "motore",
+   "freni",
+   "cambio olio",
+   "pneumatic",
+   "batteria auto",
+   "tagliando",
+   "revisione",
+   "spia",
+   "frizione",
+   "car repair",
+   "mechanic",
+   "carrozzeria",
+   "moto "
+  ]
+ },
+ {
+  "id": "chef",
+  "group": "professional",
+  "icon": "👨‍🍳",
+  "color": "#f97316",
+  "tools": [
+   "now"
+  ],
+  "keywords": [
+   "ricetta",
+   "cucinare",
+   "cuoco",
+   "chef",
+   "ingredienti",
+   "cottura",
+   "impasto",
+   "sugo",
+   "dolce",
+   "cena",
+   "pranzo",
+   "come si cucina",
+   "recipe",
+   "forno",
+   "pasta fresca",
+   "lievitazione"
+  ]
+ },
+ {
+  "id": "gardener",
+  "group": "professional",
+  "icon": "🌱",
+  "color": "#4caf50",
+  "tools": [
+   "now"
+  ],
+  "keywords": [
+   "giardin",
+   "piante",
+   "orto",
+   "potatura",
+   "concime",
+   "irrigazione",
+   "semin",
+   "terriccio",
+   "agronom",
+   "parassiti",
+   "fiori",
+   "garden",
+   "prato",
+   "vaso",
+   "bonsai"
+  ]
+ },
+ {
+  "id": "veterinarian",
+  "group": "professional",
+  "icon": "🐾",
+  "color": "#14b8a6",
+  "tools": [
+   "now"
+  ],
+  "keywords": [
+   "veterinari",
+   "cane",
+   "gatto",
+   "animale domestico",
+   "vaccino animale",
+   "cucciolo",
+   "pet ",
+   "pulci",
+   "addestramento",
+   "mangime",
+   "criceto",
+   "coniglio",
+   "pappagallo"
+  ]
+ },
+ {
+  "id": "cybersecurity",
+  "group": "professional",
+  "icon": "🛡️",
+  "color": "#ef4444",
+  "tools": [
+   "now",
+   "http_get"
+  ],
+  "keywords": [
+   "sicurezza informatica",
+   "cybersecurity",
+   "phishing",
+   "malware",
+   "ransomware",
+   "vulnerabilit",
+   "password manager",
+   "crittograf",
+   "vpn",
+   "autenticazione a due",
+   "hacker",
+   "firewall",
+   "owasp",
+   "cve-",
+   "truffa online"
+  ]
+ },
+ {
+  "id": "software-engineer",
+  "group": "professional",
+  "icon": "🧑‍💻",
+  "color": "#6366f1",
+  "tools": [
+   "now",
+   "http_get"
+  ],
+  "keywords": [
+   "sviluppatore",
+   "software",
+   "bug",
+   "debug",
+   "refactor",
+   "architettura software",
+   "api rest",
+   "database",
+   "sql",
+   "docker",
+   "git ",
+   "framework",
+   "unit test",
+   "code review",
+   "typescript",
+   "rust ",
+   "deploy"
+  ]
+ },
+ {
+  "id": "marketing",
+  "group": "professional",
+  "icon": "📣",
+  "color": "#ec4899",
+  "tools": [
+   "now"
+  ],
+  "keywords": [
+   "marketing",
+   "social media",
+   "seo",
+   "campagna",
+   "brand",
+   "pubblicit",
+   "newsletter",
+   "strategia di vendita",
+   "instagram",
+   "conversion",
+   "posizionamento",
+   "advertising"
+  ]
+ },
+ {
+  "id": "writer",
+  "group": "professional",
+  "icon": "✍️",
+  "color": "#d97706",
+  "tools": [
+   "now"
+  ],
+  "keywords": [
+   "scrivere un testo",
+   "copywriting",
+   "articolo",
+   "racconto",
+   "editing",
+   "sceneggiatura",
+   "blog",
+   "storytelling",
+   "lettera di",
+   "discorso",
+   "slogan",
+   "romanzo mio",
+   "revisione del testo",
+   "scrittore"
+  ]
+ },
+ {
+  "id": "translator",
+  "group": "professional",
+  "icon": "🌐",
+  "color": "#0ea5e9",
+  "tools": [
+   "now"
+  ],
+  "keywords": [
+   "traduci",
+   "traduzione",
+   "tradurre",
+   "come si dice",
+   "translate",
+   "interprete",
+   "localizzazion",
+   "sottotitoli",
+   "traduttore",
+   "in inglese si",
+   "in francese si",
+   "in spagnolo si"
+  ]
+ },
+ {
+  "id": "project-manager",
+  "group": "professional",
+  "icon": "📋",
+  "color": "#64748b",
+  "tools": [
+   "now"
+  ],
+  "keywords": [
+   "project manag",
+   "gestione progetto",
+   "roadmap",
+   "kanban",
+   "scrum",
+   "agile",
+   "diagramma di gantt",
+   "milestone",
+   "stima dei tempi",
+   "organizzare il lavoro"
+  ]
+ },
+ {
+  "id": "travel",
+  "group": "professional",
+  "icon": "✈️",
+  "color": "#38bdf8",
+  "tools": [
+   "now",
+   "http_get"
+  ],
+  "keywords": [
+   "viaggio",
+   "vacanza",
+   "itinerario",
+   "volo",
+   "hotel",
+   "cosa vedere a",
+   "visto",
+   "valigia",
+   "weekend a",
+   "travel",
+   "crociera",
+   "agriturismo",
+   "interrail",
+   "alloggio"
+  ]
+ },
+ {
+  "id": "home-automation",
+  "group": "professional",
+  "icon": "🏠",
+  "color": "#22c55e",
+  "tools": [
+   "now",
+   "list_automations"
+  ],
+  "keywords": [
+   "domotica",
+   "home assistant",
+   "automazione casa",
+   "zigbee",
+   "matter",
+   "z-wave",
+   "smart home",
+   "mqtt",
+   "sensore di movimento",
+   "termostato intelligente",
+   "knx",
+   "shelly",
+   "tasmota",
+   "esphome"
+  ]
+ },
+ {
+  "id": "photographer",
+  "group": "professional",
+  "icon": "📷",
+  "color": "#a3a3a3",
+  "tools": [
+   "now"
+  ],
+  "keywords": [
+   "fotografi",
+   "obiettivo",
+   "esposizione",
+   "apertura",
+   "iso ",
+   "scatto",
+   "lightroom",
+   "composizione foto",
+   "videomaker",
+   "montaggio video",
+   "reflex",
+   "mirrorless",
+   "luce naturale",
+   "ritratto",
+   "drone"
+  ]
+ },
+ {
+  "id": "career-coach",
+  "group": "professional",
+  "icon": "💼",
+  "color": "#0d9488",
+  "tools": [
+   "now"
+  ],
+  "keywords": [
+   "curriculum",
+   "colloquio di lavoro",
+   "cv ",
+   "carriera",
+   "cover letter",
+   "stipendio",
+   "dimissioni",
+   "linkedin",
+   "cambiare lavoro",
+   "soft skills",
+   "busta paga",
+   "contratto di lavoro",
+   "negoziare"
+  ]
+ }
+]

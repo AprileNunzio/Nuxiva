@@ -1,0 +1,15 @@
+{
+  "id": "alert_error",
+  "name": "Avviso Errore",
+  "icon": "🚨",
+  "priority": 95,
+  "size": "l",
+  "intents": [
+    "alert_error",
+    "error"
+  ],
+  "description": "Notifiche di errore critiche di sistema.",
+  "ttl": 45,
+  "tone": "red",
+  "essential": true
+}
