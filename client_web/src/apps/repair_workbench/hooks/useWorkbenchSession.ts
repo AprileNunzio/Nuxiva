@@ -17,7 +17,8 @@ export function useWorkbenchSession(
   lang: string,
   defaultBenchName: string,
   defaultProjectTitle: string,
-  initialProjectId?: string
+  initialProjectId?: string,
+  initialSessionId?: string
 ) {
   const [cameras, setCameras] = useState<CameraSourceItem[]>([]);
   const [projects, setProjects] = useState<ProjectSummaryItem[]>([]);
@@ -73,6 +74,14 @@ export function useWorkbenchSession(
         if (targetProjId) {
           setSelectedProjectId(targetProjId);
         }
+        if (initialSessionId) {
+          const restored = await getWorkbenchSession(initialSessionId);
+          if (!mounted) return;
+          setSession(restored);
+          setSelectedProjectId(restored.project_id);
+          setSelectedCameraId(restored.camera_id);
+          setCameraName(restored.camera_name);
+        }
       } catch (cause: unknown) {
         reportError('repair_workbench_init_failed', cause);
       } finally {
@@ -83,7 +92,7 @@ export function useWorkbenchSession(
     return () => {
       mounted = false;
     };
-  }, [initialProjectId]);
+  }, [initialProjectId, initialSessionId]);
 
   const startOrEnsureSession = useCallback(async () => {
     setBusy(true);

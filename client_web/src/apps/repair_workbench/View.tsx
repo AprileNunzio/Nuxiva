@@ -10,6 +10,7 @@ import type { BoardDossier, CircuitSpec } from './types';
 interface WorkbenchViewProps {
   readonly initialPayload?: {
     readonly projectId?: string;
+    readonly sessionId?: string;
     readonly takeover?: boolean;
   };
 }
@@ -56,7 +57,8 @@ export const View: React.FC<WorkbenchViewProps> = ({ initialPayload }) => {
     lang,
     t('camera_default_bench'),
     t('project_new_amp'),
-    initialPayload?.projectId
+    initialPayload?.projectId,
+    initialPayload?.sessionId
   );
 
   useEffect(() => {
@@ -106,6 +108,7 @@ export const View: React.FC<WorkbenchViewProps> = ({ initialPayload }) => {
             onChange={(e) => setCameraName(e.target.value)}
             className="rounded-lg border border-slate-700 bg-slate-950 px-2.5 py-1 text-xs text-cyan-200"
           />
+          {session?.vision_model && <span className="text-xs text-slate-400">{t('vision_model')}: {session.vision_model}</span>}
         </div>
 
         <div className="flex flex-wrap items-center gap-2">

@@ -2,6 +2,7 @@ import importlib
 import time
 
 import httpx
+from feature_api_scanner import discover_feature_connectors
 from state import store
 
 from features.actions import router as actions
@@ -21,7 +22,9 @@ from features.understanding import router as understanding
 CONNECTORS = {"places": "features.places.commands", "vault": "features.vault.commands", "selftest": "features.selftest.commands", "sounds": "features.sounds.commands", "whiteboard": "features.whiteboard.commands", "games": "features.games.commands", "screens": "features.desktop.commands", "models3d": "features.models3d.commands", "documents": "features.documents.commands", "music": "features.music.commands", "livecam": "features.cameras.commands", "vision": "features.vision.sight", "gservices": "features.google.commands", "maps": "features.maps.maps", "sports": "features.sports.commands", "tv": "features.tv.commands", "experts": "features.experts.commands", "projects": "features.projects.commands"}
 
 EARLY = ("whiteboard", "livecam", "games")
-PROJECT_FIRST = ("projects",)
+_DISCOVERED_CONNECTORS = discover_feature_connectors()
+CONNECTORS = {**_DISCOVERED_CONNECTORS, **CONNECTORS}
+PROJECT_FIRST = (*_DISCOVERED_CONNECTORS, "projects")
 PERSONAL = {"gservices", "vault", "documents", "maps", "vision", "livecam"}
 
 

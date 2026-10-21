@@ -66,6 +66,7 @@ export interface AgentNote {
 }
 
 export interface WorkbenchSession {
+  readonly vision_model?: string;
   readonly session_id: string;
   readonly project_id: string;
   readonly camera_id: string;

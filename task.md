@@ -11,8 +11,9 @@
 - [x] Collegare le API al supervisore attraverso manifest e scanner.
 - [x] Aggiungere test API, numerici, proxy e regressioni del client.
 - [x] Aggiornare docs/WORKBENCH_VISION_PCB_BLUEPRINT.md con comportamento reale e limiti.
-- [ ] Pubblicare commit bilingue e verificare i controlli remoti della revisione.
-- [ ] Installare la revisione sul server di prova e verificare la telecamera del banco.
+- [x] Pubblicare il primo commit bilingue e verificare tutti i sei controlli remoti verdi.
+- [x] Installare il primo commit sul server; rilevata intercettazione errata del comando nella pagina principale.
+- [ ] Installare e verificare la correzione del connettore pubblico, della scena grafica e della selezione visiva.
 - [ ] Registrare il risultato della prova fisica, inclusi errori del modello e tempi osservati.
 
 ## Limiti e sviluppi futuri

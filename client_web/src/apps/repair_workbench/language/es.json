@@ -3,6 +3,7 @@
     "locale": "es"
   },
   "dictionary": {
+    "vision_model": "Modelo visual activo",
     "title": "Banco de Reparación en Vivo",
     "description": "Visión artificial en tiempo real, popups AR en componentes, esquema en segundo plano y equipo multi-agente",
     "loading": "Inicializando banco de reparación...",

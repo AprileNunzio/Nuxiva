@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, Path, Query
 
 from server.features.repair_workbench.collaboration_service import WorkbenchCollaboration
 from server.features.repair_workbench.launch_queue import workbench_launch_queue
-from server.features.repair_workbench.ollama_vision import OllamaVisionAnalyzer
+from server.features.repair_workbench.supervisor_vision import ConfiguredVisionAnalyzer
 from server.features.repair_workbench.session_requests import (
     AnalyzeFrameRequest,
     ChatRequest,
@@ -18,7 +18,7 @@ from server.features.repair_workbench.workbench_service import WorkbenchService
 IDENTIFIER_PATTERN = r"^[A-Za-z0-9_\-][A-Za-z0-9_.\-]{0,63}$"
 
 workbench_router = APIRouter(prefix="/repair-workbench")
-workbench_service = WorkbenchService(EncryptedSessionStore(), OllamaVisionAnalyzer())
+workbench_service = WorkbenchService(EncryptedSessionStore(), ConfiguredVisionAnalyzer())
 workbench_collaboration = WorkbenchCollaboration(workbench_service)
 
 SessionId = Annotated[str, Path(pattern=IDENTIFIER_PATTERN)]

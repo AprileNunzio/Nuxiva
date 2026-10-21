@@ -3,6 +3,7 @@
     "locale": "en"
   },
   "dictionary": {
+    "vision_model": "Active vision model",
     "title": "Live Repair Workbench",
     "description": "Real-time computer vision, AR component popups, background schematic synthesis and multi-agent team",
     "loading": "Initializing repair workbench...",

@@ -3,6 +3,7 @@
     "locale": "fr"
   },
   "dictionary": {
+    "vision_model": "Modèle visuel actif",
     "title": "Banc de Réparation Live",
     "description": "Vision par ordinateur en temps réel, popups AR sur composants, schéma en arrière-plan et équipe multi-agents",
     "loading": "Initialisation du banc de réparation...",

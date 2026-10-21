@@ -34,11 +34,11 @@ def verify(key: str, method: str, path: str, timestamp: int, body: bytes, signat
     return hmac.compare_digest(sign(key, method, path, timestamp, body), signature)
 
 
-async def _authorised(request: Request, path: str) -> bytes:
+async def _authorised(request: Request, path: str, max_body_bytes: int = MAX_BODY_BYTES) -> bytes:
     if not is_local(request):
         raise HTTPException(403, "Consentito solo in locale")
     body = await request.body()
-    if len(body) > MAX_BODY_BYTES:
+    if len(body) > max_body_bytes:
         raise HTTPException(413, "Richiesta troppo grande")
     try:
         stamp = int(request.headers.get(TIMESTAMP_HEADER, ""))

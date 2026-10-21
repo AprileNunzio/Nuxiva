@@ -3,6 +3,7 @@
     "locale": "it"
   },
   "dictionary": {
+    "vision_model": "Modello visivo in uso",
     "title": "Banco Riparazioni Live",
     "description": "Visione artificiale in tempo reale, popup AR sui componenti, sintesi schema elettrico in background e squadra multi-agente",
     "loading": "Inizializzazione banco riparazioni...",

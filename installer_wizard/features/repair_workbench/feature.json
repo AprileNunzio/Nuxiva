@@ -1,6 +1,8 @@
 {
   "id": "repair_workbench",
   "api": "api.py",
+  "connector": "commands.py",
+  "connector_risk": "personal",
   "name": "Banco Riparazioni Live",
   "category": "assistente",
   "description": "Collega il banco riparazioni al motore di analisi e agli specialisti del progetto.",

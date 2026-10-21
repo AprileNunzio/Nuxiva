@@ -58,6 +58,7 @@ class ConnectionHint(BaseModel):
 
 
 class VisionObservation(BaseModel):
+    model_used: str = Field(default="", max_length=200)
     title: ShortText = ""
     board_kind: ShortText = ""
     summary: LongText = ""
@@ -95,6 +96,7 @@ class AgentNote(BaseModel):
 
 
 class WorkbenchSession(BaseModel):
+    vision_model: str = Field(default="", max_length=200)
     session_id: Identifier
     project_id: Identifier
     owner_id: Identifier

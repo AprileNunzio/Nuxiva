@@ -54,6 +54,8 @@ class OllamaVisionAnalyzer:
         if not isinstance(body, dict):
             raise VisionUnavailableException("invalid_model_output")
         try:
-            return VisionObservation.model_validate_json(str(body.get("response", "")))
+            observation = VisionObservation.model_validate_json(str(body.get("response", "")))
+            observation.model_used = self._model
+            return observation
         except ValidationError as exc:
             raise VisionUnavailableException("invalid_model_output") from exc

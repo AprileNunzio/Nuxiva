@@ -216,8 +216,7 @@
     toggle($("ear"), cfg.show_mic !== false);
     toggle($("chips"), cfg.show_telemetry_chips !== false);
     toggle($("presence"), cfg.show_presence !== false);
-    if ($("core")) $("core").style.display = "block";
-    toggle($("scene"), cfg.show_holo_avatar !== false);
+    if (D.applyLookVisibility) D.applyLookVisibility(cfg.show_holo_avatar !== false);
     toggle($("desk"), cfg.show_desk_widgets !== false);
   }
   try {

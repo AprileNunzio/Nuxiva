@@ -55,7 +55,7 @@ async def _ollama(model: str, prompt: str, jpeg: bytes, as_json: bool, max_token
 
 
 async def look(jpeg: bytes, prompt: str, *, system: str = "", as_json: bool = False, max_tokens: int = 900,
-               history: list | None = None) -> tuple[object, str]:
+               history: list | None = None, validator=None) -> tuple[object, str]:
     errors = []
     for ref in await models():
         try:
@@ -65,7 +65,10 @@ async def look(jpeg: bytes, prompt: str, *, system: str = "", as_json: bool = Fa
                 text = reply.text
             else:
                 text = await _ollama(ref, (system + "\n\n" if system else "") + prompt, jpeg, as_json, max_tokens)
-            return decode(text, as_json), ref
+            result = decode(text, as_json)
+            if validator:
+                validator(result)
+            return result, ref
         except (httpx.HTTPError, CloudError, ValueError) as exc:
             errors.append(f"{ref}: {str(exc)[:120]}")
     raise BrainUnavailable("; ".join(errors) or "nessun modello capace di vedere immagini")

@@ -83,3 +83,13 @@ I test API impiegano un analizzatore controllato: verificano il flusso applicati
 The implemented baseline includes named camera selection, immersive launch, periodic frame analysis, stabilized overlays, saved label/value corrections, a partial connectivity graph, guarded linear simulation, specialist chat and recruitment, encrypted session storage, and a bounded supervisor proxy discovered from its feature manifest.
 
 Automated API tests use a controlled vision analyzer. Physical camera recognition, continuous voice interaction, neural few-shot learning, hidden-trace reconstruction, nonlinear simulation and complete multi-account isolation must not be described as verified or complete. Maintain a stable installation secret for encrypted session recovery. Record actual server test results separately from automated checks.
+
+## Integrazione della pagina principale e prova reale
+
+La prima prova fisica del 21 ottobre ha mostrato che il connettore dei progetti generici intercettava il comando prima del core: il messaggio annunciava un progetto ma il banco non si apriva. La correzione introduce un connettore del banco dichiarato nel manifest e scoperto prima dei progetti generici. Crea progetto e sessione sulla telecamera nominata, apre il widget dedicato e incorpora la medesima applicazione React tramite /repair-workbench. Le domande tecniche successive vengono inoltrate alla sessione attiva.
+
+Il banco usa ora, per impostazione predefinita, il selettore visivo del supervisore: modelli configurati compatibili con immagini e modelli locali disponibili, con tentativi successivi in caso di errore o risultato strutturato invalido. Un valore esplicito di NUXIVA_VISION_MODEL mantiene il percorso locale dedicato. Il modello effettivamente usato viene riportato nella sessione e nell'interfaccia. Questa selezione non costituisce una misura di accuratezza elettronica: la precisione deve essere valutata su osservazioni e misure reali.
+
+La modalità Nuxiva 6.5-auto è un selettore di strategie cognitive, distinto dal modello di inferenza. Attualmente le sue regole considerano complessità testuale e stato del motore; non attestano automaticamente l'affidabilità diagnostica di ogni modello. Il banco deve distinguere ipotesi visive, simulazioni e misure confermate.
+
+È stato inoltre corretto il ripristino delle impostazioni grafiche della pagina principale: la scena 3D inizializzata deve conservare display:block, il nucleo leggero viene inizializzato quando necessario e la vista del cervello resta accessibile. I relativi controlli sono coperti da una regressione del client.

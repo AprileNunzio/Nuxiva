@@ -28,6 +28,7 @@ from server.features.repair_workbench.session_models import VisionObservation
 from server.features.repair_workbench.session_requests import AnalyzeFrameRequest
 from server.features.repair_workbench.session_store import EncryptedSessionStore
 from server.features.repair_workbench.workbench_service import WorkbenchService
+from server.features.repair_workbench.supervisor_vision import ConfiguredVisionAnalyzer
 from server.shared.errors.global_handler import register_global_error_handlers
 
 FRAME = base64.b64encode(b"\xff\xd8\xff" + b"sample-frame").decode()
@@ -268,6 +269,18 @@ class TestRepairWorkbenchAPI(unittest.TestCase):
 
 
 class TestWorkbenchNumerics(unittest.TestCase):
+    def test_configured_vision_uses_supervisor_and_reports_model(self):
+        import httpx
+        async def run():
+            response = httpx.Response(200, json={"summary": "Scheda", "model_used": "configured-vision"},
+                                      request=httpx.Request("POST", "http://supervisor/analyze"))
+            with patch.dict("os.environ", {"NUXIVA_VISION_MODEL": ""}), \
+                 patch("server.features.repair_workbench.supervisor_vision.bridge._post", new=AsyncMock(return_value=response)) as post:
+                result = await ConfiguredVisionAnalyzer().analyze(b"frame", "it", ["R1"])
+            self.assertEqual(result.model_used, "configured-vision")
+            self.assertEqual(post.call_args.args[0], "/api/internal/repair-workbench/analyze")
+        asyncio.run(run())
+
     def test_production_scanner_discovers_workbench_router(self):
         scanner = FeatureRouteScanner()
         directory = str(Path(scanner.features_dir) / "repair_workbench")

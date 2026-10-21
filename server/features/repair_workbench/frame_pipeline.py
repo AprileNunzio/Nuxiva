@@ -52,6 +52,7 @@ def _label_of(session: WorkbenchSession, component: DetectedComponent) -> str:
 def apply_observation(
     session: WorkbenchSession, engine: WorkbenchEngine, observation: VisionObservation
 ) -> None:
+    session.vision_model = observation.model_used
     components, taught_refs = _resolve_components(session, observation)
     detections = [
         {"label": _label_of(session, original), "bbox": resolved.bbox, "score": resolved.score}

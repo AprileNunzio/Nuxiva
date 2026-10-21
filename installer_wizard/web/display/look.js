@@ -71,6 +71,18 @@
     if (look.mode === "full") startFull(); else startLight();
   };
 
+  D.applyLookVisibility = (enabled = true) => {
+    D.holoVisible = enabled;
+    if (!enabled && D.avatar === D.scene) startLight();
+    if (enabled && D.scene && D.look.mode === "full") {
+      if (D.avatar && D.avatar !== D.scene && D.avatar.destroy) D.avatar.destroy();
+      D.avatar = D.scene;
+      D.scene.setMode(D.mode);
+    }
+    $("core").style.display = D.avatar && D.avatar !== D.scene && D.mode !== "brain" ? "block" : "none";
+    $("scene").style.display = D.scene && (D.avatar === D.scene || D.mode === "brain") ? "block" : "none";
+  };
+
   D.setMode = (m) => {
     const { avatar, scene } = D;
     D.mode = m;
@@ -81,6 +93,7 @@
     else if (m === "brain" && D.look.mode === "light") ensureBrain().then((s) => s.setMode(D.mode)).catch((err) => { console.warn(err); D.setMode("face"); });
     if (m === "brain") D.refreshBrain(false);
     else { $("inspector").classList.remove("show"); D.selectedId = null; if (scene) scene.brain.select(null); }
+    D.applyLookVisibility(D.holoVisible !== false);
   };
 
   const PRESENCE = { large: 1.15, normal: 1, small: 0.82, mini: 0.22 };
