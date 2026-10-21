@@ -99,8 +99,49 @@ export interface ProjectSummaryItem {
   readonly assigned_agents: readonly string[];
 }
 
+export interface RepairProjectFolder {
+  readonly project_id: string;
+  readonly name: string;
+  readonly status: string;
+  readonly created_at: number;
+  readonly updated_at: number;
+  readonly latest_session_id?: string | null;
+  readonly event_count: number;
+}
+
 export interface WorkbenchLaunchItem {
   readonly launch_id: string;
   readonly project_id: string;
   readonly created_at: number;
+}
+
+export type TeamWorkStatus = 'idle' | 'running' | 'completed' | 'blocked' | 'failed';
+export interface RepairTeamIssue {
+  readonly id: string;
+  readonly title: string;
+  readonly source: string;
+  readonly severity: 'low' | 'medium' | 'high';
+  readonly status: string;
+  readonly created_at: number;
+}
+export interface RepairTeamState {
+  readonly running: boolean;
+  readonly workers: readonly {
+    readonly id: string;
+    readonly status: TeamWorkStatus;
+    readonly task_id?: string;
+    readonly summary: string;
+    readonly updated_at: number;
+  }[];
+  readonly issues: readonly RepairTeamIssue[];
+  readonly tasks: readonly {
+    readonly id: string;
+    readonly worker_id: string;
+    readonly issue_ids: readonly string[];
+    readonly status: TeamWorkStatus;
+    readonly summary: string;
+    readonly evidence: readonly { readonly url: string; readonly title: string }[];
+    readonly created_at: number;
+    readonly updated_at: number;
+  }[];
 }

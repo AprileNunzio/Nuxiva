@@ -5,7 +5,7 @@
   "size": "full",
   "ttl": 0,
   "agent": "repair_workbench",
-  "intents": ["repair_workbench"],
+  "intents": [],
   "description": "Banco live per osservare la scheda, correggere i componenti e consultare gli specialisti.",
   "tone": "cyan",
   "essential": true

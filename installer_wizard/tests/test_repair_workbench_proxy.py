@@ -51,6 +51,13 @@ class WorkbenchProxyTest(unittest.TestCase):
         self.assertEqual(self.client.get("/api/v1/repair-workbench/admin").status_code, 404)
         self.request.assert_not_awaited()
 
+    def test_project_archive_filters_and_issue_status_are_forwarded(self):
+        self.assertEqual(self.client.get("/api/v1/repair-workbench/projects/archive?include_closed=true").status_code, 200)
+        self.assertEqual(self.request.call_args.kwargs["params"]["include_closed"], "true")
+        for path in ("projects/project/resume", "projects/project/close", "sessions/session/issues/issue/status"):
+            response = self.client.post("/api/v1/repair-workbench/" + path, json={}, headers={"X-Nuxiva-Request": "1"})
+            self.assertEqual(response.status_code, 200, path)
+
     def test_core_unavailable_is_explicit(self):
         self.request.side_effect = httpx.ConnectError("offline")
         self.assertEqual(self.client.get("/api/v1/repair-workbench/launch-requests").status_code, 502)
@@ -65,6 +72,13 @@ class WorkbenchProxyTest(unittest.TestCase):
 
 
 class WorkbenchCommandTest(unittest.IsolatedAsyncioTestCase):
+    async def test_vision_tries_next_model_after_timeout(self):
+        from features.brain import sight
+        with patch.object(sight, "models", new=AsyncMock(return_value=["slow", "ready"])), \
+             patch.object(sight, "_ollama", new=AsyncMock(side_effect=[TimeoutError(), '{"summary":"Scheda"}'])):
+            result, model = await sight.look(b"frame", "Inspect", as_json=True, attempt_timeout=1)
+        self.assertEqual((model, result["summary"]), ("ready", "Scheda"))
+
     async def test_vision_falls_back_when_structured_output_is_invalid(self):
         from features.brain import sight
         from server.features.repair_workbench.session_models import VisionObservation

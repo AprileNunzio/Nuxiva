@@ -35,6 +35,9 @@ def build_popups(
 ) -> List[ARComponentPopup]:
     popups: List[ARComponentPopup] = []
     for track in tracks:
+        # Retain identity internally during occlusion without drawing stale boxes.
+        if track.get("missed", 0):
+            continue
         label = str(track["label"])
         detected = components_by_key.get(label)
         ref = detected.ref if detected and detected.ref else None

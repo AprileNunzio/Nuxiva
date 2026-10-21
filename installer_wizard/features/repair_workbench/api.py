@@ -1,3 +1,4 @@
+import asyncio
 import re
 import json
 from pathlib import Path
@@ -13,8 +14,8 @@ from features.brain.bridge import _authorised
 public_routes = APIRouter()
 admin_routes = public_routes
 _ID = r"[A-Za-z0-9_\-][A-Za-z0-9_.\-]{0,63}"
-_READ = re.compile(rf"(?:sessions/{_ID}|launch-requests|projects)")
-_WRITE = re.compile(rf"(?:sessions|projects|sessions/{_ID}/(?:analyze-frame|teach-component|chat|escalate))")
+_READ = re.compile(rf"(?:sessions/{_ID}(?:/team)?|launch-requests|projects(?:/archive)?)")
+_WRITE = re.compile(rf"(?:sessions|projects(?:/{_ID}/(?:resume|close))?|sessions/{_ID}/(?:analyze-frame|teach-component|chat|escalate|issues(?:/{_ID}/status)?|team/run))")
 _MAX_BODY = 6_100_000
 
 
@@ -31,10 +32,11 @@ async def internal_vision(request: Request):
         jpeg = decode_frame(data["frame_base64"])
         prompt = PROMPT_TEMPLATE.format(language=str(data.get("language", "it"))[:12],
                                         known=", ".join(data.get("known_refs", [])[:60]))
-        result, model = await sight.look(jpeg, prompt, as_json=True, max_tokens=3000,
-                                         validator=VisionObservation.model_validate)
+        async with asyncio.timeout(125):
+            result, model = await sight.look(jpeg, prompt, as_json=True, max_tokens=6000,
+                                             validator=VisionObservation.model_validate, attempt_timeout=55)
         observation = VisionObservation.model_validate(result)
-    except BrainUnavailable as exc:
+    except (BrainUnavailable, TimeoutError) as exc:
         raise HTTPException(503, "vision_models_unavailable") from exc
     except (ValueError, KeyError, TypeError) as exc:
         raise HTTPException(422, "invalid_vision_request") from exc
@@ -75,6 +77,8 @@ async def workbench_proxy(path: str, request: Request):
     params = {"user_id": "user_primary"}
     if path == "launch-requests":
         params["since"] = request.query_params.get("since", "0")
+    if path == "projects/archive":
+        params["include_closed"] = request.query_params.get("include_closed", "false")
     try:
         response = await core.request(request.method, target, params=params, json=payload, timeout=150)
         return JSONResponse(response.json(), status_code=response.status_code, headers={"Cache-Control": "no-store"})

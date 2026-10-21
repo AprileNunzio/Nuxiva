@@ -10,7 +10,7 @@ import unicodedata
 from fastapi.responses import Response, StreamingResponse
 
 from config import env_get
-from features.cameras import options
+from features.cameras import options, capture
 from features.cameras.cameras import cameras
 from features.vision.proxy import frame, ir_frame, vision_stream
 from features.vision.webcams import webcams
@@ -69,7 +69,8 @@ def all_rows() -> list[dict]:
     for device in state.get("devices", []):
         if device.get("rgb"):
             rows.append({"id": local_id(device), "name": device["name"], "kind": "local", "device": device["rgb"], "node": device["rgb"],
-                         "main": device["rgb"] == main, "ir": bool(device.get("has_ir")), "stream": True})
+                         "main": device["rgb"] == main, "ir": bool(device.get("has_ir")), "stream": True,
+                         "capture_mode": device.get("rgb_mode") or {}})
         if device.get("ir"):
             rows.append({"id": ir_id(device), "name": f"{device['name']} (infrarossi)", "kind": "infrared", "device": device["ir"],
                          "node": device["ir"], "main": device["ir"] == main_ir, "ir": True, "stream": False})
@@ -128,7 +129,13 @@ def ffmpeg_input(source: dict) -> list[str]:
     if source["kind"] == "ip":
         return ["-i", target]
     path = target if target.startswith("/dev/") else f"/dev/video{target}"
-    return ["-f", "v4l2", "-i", path]
+    mode = source.get("capture_mode") or {}
+    negotiated = []
+    if mode.get("fourcc") == "MJPG":
+        negotiated = ["-input_format", "mjpeg"]
+    if mode.get("width") and mode.get("height"):
+        negotiated += ["-video_size", f"{int(mode['width'])}x{int(mode['height'])}"]
+    return ["-f", "v4l2", *negotiated, "-i", path]
 
 
 def ffmpeg_command(source: dict, fps: int, width: int, single: bool = False) -> list[str]:
@@ -155,23 +162,25 @@ async def stream(source: dict):
     fps, width, limit = settings()
     if _active["count"] >= limit:
         raise RuntimeError("Troppe telecamere in diretta: chiudine una")
-    command = ffmpeg_command(source, fps, width)
-    proc = await asyncio.create_subprocess_exec(*command, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.DEVNULL)
+    command = ffmpeg_command(source, fps, max(width, 1280))
+    first = await capture.snapshot(source["id"], command)
+    if not first:
+        raise RuntimeError("Flusso della telecamera non disponibile")
     _active["count"] += 1
-    started = time.time()
+    started = time.monotonic()
 
     async def relay():
         try:
-            while time.time() - started < MAX_SECONDS:
-                data = await proc.stdout.read(CHUNK)
+            data = first
+            while time.monotonic() - started < MAX_SECONDS:
+                if data:
+                    yield b"--frame\r\nContent-Type: image/jpeg\r\nContent-Length: " + str(len(data)).encode() + b"\r\n\r\n" + data + b"\r\n"
+                await asyncio.sleep(1 / fps)
+                data = await capture.snapshot(source["id"], command)
                 if not data:
                     break
-                yield data
         finally:
             _active["count"] = max(0, _active["count"] - 1)
-            if proc.returncode is None:
-                proc.kill()
-            await proc.wait()
 
     return StreamingResponse(relay(), media_type="multipart/x-mixed-replace; boundary=frame", headers={"Cache-Control": "no-store"})
 
@@ -183,10 +192,10 @@ async def snapshot_bytes(source: dict) -> bytes | None:
         return await frame()
     fps, width, _ = settings()
     try:
-        command = ffmpeg_command(source, fps, width, True)
+        command = ffmpeg_command(source, fps, max(width, 1280))
     except RuntimeError:
         return None
-    result = await asyncio.to_thread(run_once, command)
+    result = await capture.snapshot(source["id"], command)
     return result or None
 
 

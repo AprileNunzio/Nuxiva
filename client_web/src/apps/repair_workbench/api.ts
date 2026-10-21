@@ -5,6 +5,8 @@ import type {
   ProjectSummaryItem,
   WorkbenchLaunchItem,
   WorkbenchSession,
+  RepairTeamState,
+  RepairProjectFolder,
 } from './types';
 
 const CONTROL_CHARS = /[\u0000-\u001f\u007f<>`]/g;
@@ -137,4 +139,38 @@ export async function fetchPendingWorkbenchLaunches(
     `/api/v1/repair-workbench/launch-requests?since=${encodeURIComponent(String(since))}`
   );
   return Array.isArray(res.requests) ? res.requests : [];
+}
+
+export async function fetchRepairTeam(sessionId: string): Promise<RepairTeamState> {
+  const safeId = encodeURIComponent(sanitizeField(sessionId, 64));
+  const res = await getJson<{ team: RepairTeamState }>(`/api/v1/repair-workbench/sessions/${safeId}/team`);
+  return res.team;
+}
+
+export async function reportRepairIssue(sessionId: string, title: string, severity: 'low' | 'medium' | 'high'): Promise<void> {
+  const safeId = encodeURIComponent(sanitizeField(sessionId, 64));
+  await sendJson(`/api/v1/repair-workbench/sessions/${safeId}/issues`, 'POST', {
+    title: sanitizeField(title, 1000), severity, source: 'operator',
+  });
+}
+
+export async function runRepairTeam(sessionId: string): Promise<void> {
+  const safeId = encodeURIComponent(sanitizeField(sessionId, 64));
+  await sendJson(`/api/v1/repair-workbench/sessions/${safeId}/team/run`, 'POST', {});
+}
+
+export async function fetchRepairProjectFolders(includeClosed = false): Promise<RepairProjectFolder[]> {
+  const res = await getJson<{ projects: RepairProjectFolder[] }>(`/api/v1/repair-workbench/projects/archive${includeClosed ? '?include_closed=true' : ''}`);
+  return res.projects;
+}
+
+export async function resumeRepairProject(projectId: string): Promise<WorkbenchSession> {
+  const safeId = encodeURIComponent(sanitizeField(projectId, 64));
+  const res = await sendJson<{ session: WorkbenchSession }>(`/api/v1/repair-workbench/projects/${safeId}/resume`, 'POST', {});
+  return res.session;
+}
+
+export async function closeRepairProject(projectId: string): Promise<void> {
+  const safeId = encodeURIComponent(sanitizeField(projectId, 64));
+  await sendJson(`/api/v1/repair-workbench/projects/${safeId}/close`, 'POST', {});
 }

@@ -57,6 +57,12 @@ function find(tree, type) {
 const flush = () => new Promise(resolve => setImmediate(resolve));
 
 (async () => {
+  for (const lang of ['it', 'en', 'es', 'fr']) {
+    const locale = JSON.parse(readFileSync(resolve(__dirname, `../src/apps/repair_workbench/language/${lang}.json`), 'utf8'));
+    for (const key of ['archive_projects', 'archive_resume', 'archive_close', 'analysis_running', 'tab_team', 'component_3d_illustrative']) {
+      assert.equal(typeof locale.dictionary[key], 'string', `${lang}: ${key} must be in the active dictionary`);
+    }
+  }
   const { containRect } = load('videoGeometry.ts', {});
   const landscape = containRect(1000, 1000, 1920, 1080);
   assert.equal(landscape.top, 218.75);
@@ -74,6 +80,7 @@ const flush = () => new Promise(resolve => setImmediate(resolve));
     '../../../shared/http/basePath': { adminPath: url => url },
     '../../../shared/errors/errorBus': { reportError: () => {} },
     '../videoGeometry': { containRect },
+    './ComponentPreview3D': { ComponentPreview3D: () => null },
   }, {
     navigator: { mediaDevices: { getUserMedia: async input => { constraints = input; return stream; } } },
     window: { setInterval: () => 1, clearInterval: () => {} }, document: { hidden: false },
@@ -119,6 +126,7 @@ const flush = () => new Promise(resolve => setImmediate(resolve));
     '../../../shared/errors/errorBus': { reportError: () => {} },
     '../api': {
       fetchCamerasList: async () => [], fetchProjectsList: async () => [],
+      fetchRepairProjectFolders: async () => [],
       startWorkbenchSession: async () => session,
       analyzeWorkbenchFrame: () => { analyses++; return new Promise(resolve => { finish = resolve; }); },
     },
@@ -133,5 +141,39 @@ const flush = () => new Promise(resolve => setImmediate(resolve));
   state.setSelectedCameraId('usb:other-camera');
   state = sessionHooks.render(() => useWorkbenchSession('it', 'Banco', 'Riparazione', 'project'));
   assert.equal(state.session, null, 'camera changes require a new session');
+  const resumeHooks = hooks();
+  let createdSessions = 0, resumeCalls = 0, completeResume;
+  const restored = { session_id: 'persisted', project_id: 'saved', camera_id: 'bench', camera_name: 'Banco', notes: [{ message: 'saved' }] };
+  const resumeModule = load('hooks/useWorkbenchSession.ts', {
+    react: resumeHooks.react,
+    '../../../shared/errors/errorBus': { reportError() {} },
+    '../api': {
+      fetchRepairProjectFolders: async () => [{ project_id: 'saved', latest_session_id: 'persisted', status: 'ACTIVE' }],
+      resumeRepairProject: () => { resumeCalls++; return new Promise(resolve => { completeResume = resolve; }); },
+      startWorkbenchSession: async () => { createdSessions++; return restored; },
+    },
+  }, { navigator: {} });
+  const renderResume = () => resumeHooks.render(() => resumeModule.useWorkbenchSession('it', 'Banco', 'Riparazione', 'saved'));
+  let resumedState = renderResume();
+  const pendingResume = resumedState.startOrEnsureSession();
+  const duplicateResume = resumedState.startOrEnsureSession();
+  await flush();
+  assert.equal(resumeCalls, 1, 'double clicks share the existing session resume request');
+  completeResume(restored);
+  await Promise.all([pendingResume, duplicateResume]);
+  resumedState = renderResume();
+  assert.equal(resumedState.session.session_id, 'persisted');
+  assert.equal(resumedState.session.notes[0].message, 'saved', 'resuming preserves project notes');
+  await resumedState.startOrEnsureSession();
+  assert.equal(createdSessions, 0, 'start does not silently create another session');
+  resumedState.setSelectedProjectId('saved');
+  resumedState = renderResume();
+  const staleResume = resumedState.resumeProject('saved');
+  resumedState.setSelectedProjectId('other');
+  completeResume(restored);
+  await staleResume;
+  resumedState = renderResume();
+  assert.equal(resumedState.selectedProjectId, 'other');
+  assert.equal(resumedState.session, null, 'a delayed resume cannot replace the newly selected project');
   console.log('Repair workbench: webcam lifecycle, device selection, AR geometry, automatic takeover, launch deduplication and inference backpressure passed.');
 })().catch(error => { console.error(error); process.exitCode = 1; });

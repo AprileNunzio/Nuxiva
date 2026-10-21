@@ -16,6 +16,9 @@ ORDERS = {"chat": ["fast"], "deep": ["big", "mid"], "coder": ["code"], "ricercat
 
 
 class RegistryTest(unittest.TestCase):
+    def test_project_planning_has_an_assignable_model_chain(self):
+        self.assertEqual(model.resolve("projects", {}, ORDERS), ["big", "mid"])
+
     def test_every_component_defaults_to_a_known_role(self):
         for component in COMPONENTS:
             self.assertIn(component.role, ROLES, component.id)

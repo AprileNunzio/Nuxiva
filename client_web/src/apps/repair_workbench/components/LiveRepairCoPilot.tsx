@@ -142,7 +142,9 @@ export const LiveRepairCoPilot: React.FC<LiveRepairCoPilotProps> = ({
                   <Bot className="mt-0.5 h-3.5 w-3.5 shrink-0 text-cyan-400" aria-hidden="true" />
                   <div className="flex-1">
                     <span className="mr-1.5 font-mono text-[10px] font-semibold text-cyan-300">
-                      [{note.agent_id}]
+                      {SPECIALIST_OPTIONS.some((spec) => spec.id === note.agent_id)
+                        ? t(SPECIALIST_OPTIONS.find((spec) => spec.id === note.agent_id)!.labelKey)
+                        : note.agent_id.replace(/^expert_/, '').replace(/_/g, ' ')}
                     </span>
                     <span className="text-slate-200">{renderLocalized(t, note.message)}</span>
                   </div>

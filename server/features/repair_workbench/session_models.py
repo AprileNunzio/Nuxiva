@@ -2,6 +2,7 @@ from enum import Enum
 from typing import Dict, List, Optional
 
 from pydantic import BaseModel, Field, field_validator
+from server.features.repair_workbench.team_models import WorkbenchTeam
 
 from server.features.repair_workbench.circuit_schemas import (
     CircuitSpec,
@@ -39,6 +40,13 @@ class DetectedComponent(BaseModel):
     score: float = Field(default=0.5, ge=0.0, le=1.0)
     health: ComponentHealth = ComponentHealth.UNKNOWN
     notes: MediumText = ""
+
+    @field_validator("ref", mode="before")
+    @classmethod
+    def _missing_reference(cls, value):
+        # Models commonly emit an empty field for an unreadable reference.
+        # Absence is valid; it must not invalidate every other observation.
+        return None if isinstance(value, str) and not value.strip() else value
 
     @field_validator("bbox")
     @classmethod
@@ -96,6 +104,7 @@ class AgentNote(BaseModel):
 
 
 class WorkbenchSession(BaseModel):
+    team: WorkbenchTeam = Field(default_factory=WorkbenchTeam)
     vision_model: str = Field(default="", max_length=200)
     session_id: Identifier
     project_id: Identifier

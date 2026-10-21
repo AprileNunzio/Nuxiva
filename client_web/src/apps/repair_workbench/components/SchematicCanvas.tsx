@@ -92,7 +92,7 @@ export const SchematicCanvas: React.FC<SchematicCanvasProps> = ({
                   {comp.ref}
                 </text>
                 <text x={45} y={33} fill="#94a3b8" fontSize="9.5" textAnchor="middle">
-                  {(comp.value || comp.category).slice(0, 14)}
+                  {(comp.value || t(`category_${comp.category}`)).slice(0, 14)}
                 </text>
               </g>
             );

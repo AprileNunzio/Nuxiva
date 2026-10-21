@@ -5,6 +5,7 @@ import { useWorkbenchSession } from './hooks/useWorkbenchSession';
 import { ARVideoStage } from './components/ARVideoStage';
 import { BoardDossierPanel } from './components/BoardDossierPanel';
 import { LiveRepairCoPilot } from './components/LiveRepairCoPilot';
+import { ProjectArchivePanel } from './components/ProjectArchivePanel';
 import type { BoardDossier, CircuitSpec } from './types';
 
 interface WorkbenchViewProps {
@@ -46,6 +47,7 @@ export const View: React.FC<WorkbenchViewProps> = ({ initialPayload }) => {
     selectedProjectId,
     setSelectedProjectId,
     session,
+    analysisStatus,
     busy,
     initialized,
     startOrEnsureSession,
@@ -53,6 +55,8 @@ export const View: React.FC<WorkbenchViewProps> = ({ initialPayload }) => {
     teachComponent,
     sendChat,
     escalateSpecialist,
+    resumeProject,
+    closeProject,
   } = useWorkbenchSession(
     lang,
     t('camera_default_bench'),
@@ -88,7 +92,7 @@ export const View: React.FC<WorkbenchViewProps> = ({ initialPayload }) => {
             <select
               aria-label={t('project_select')}
               value={selectedProjectId}
-              onChange={(e) => setSelectedProjectId(e.target.value)}
+              onChange={(e) => { launchAttempted.current = true; setSelectedProjectId(e.target.value); }}
               className="rounded-lg border border-slate-700 bg-slate-950 px-2.5 py-1 text-xs text-slate-200"
             >
               <option value="">{t('project_new_amp')}</option>
@@ -109,9 +113,15 @@ export const View: React.FC<WorkbenchViewProps> = ({ initialPayload }) => {
             className="rounded-lg border border-slate-700 bg-slate-950 px-2.5 py-1 text-xs text-cyan-200"
           />
           {session?.vision_model && <span className="text-xs text-slate-400">{t('vision_model')}: {session.vision_model}</span>}
+          <span role="status" aria-live="polite" className={analysisStatus === 'error' ? 'text-amber-300' : 'text-cyan-300'}>
+            {analysisStatus === 'analyzing' ? t('analysis_running') : analysisStatus === 'error' ? t('analysis_failed') : ''}
+          </span>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          {window.parent !== window && <button type="button"
+            onClick={() => window.parent.postMessage({ type: 'nuxiva:repair-exit' }, window.location.origin)}
+            className="rounded-xl border border-slate-700 px-3 py-1.5 text-slate-200">{t('exit_workbench')}</button>}
           <button
             type="button"
             disabled={busy}
@@ -137,6 +147,10 @@ export const View: React.FC<WorkbenchViewProps> = ({ initialPayload }) => {
         </div>
       </header>
 
+      <ProjectArchivePanel t={t} busy={busy} activeProjectId={selectedProjectId}
+        onResume={async (id) => { launchAttempted.current = true; await resumeProject(id); }}
+        onClose={async (id) => { launchAttempted.current = true; await closeProject(id); }} />
+
       <div className="grid min-h-0 flex-1 grid-cols-1 gap-3 lg:grid-cols-12">
         <div className="min-h-[18rem] lg:col-span-8">
           <ARVideoStage
@@ -160,6 +174,7 @@ export const View: React.FC<WorkbenchViewProps> = ({ initialPayload }) => {
         <div className="min-h-[16rem] lg:col-span-4">
           <BoardDossierPanel
             t={t}
+            sessionId={session?.session_id}
             dossier={session?.dossier || EMPTY_DOSSIER}
             circuit={session?.circuit || EMPTY_CIRCUIT}
             expectedVoltages={session?.expected_voltages || {}}

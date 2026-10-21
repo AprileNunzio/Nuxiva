@@ -272,6 +272,7 @@
     const full = ordered.find((c) => c.inst.fullscreen);
     ordered.forEach((c) => c.el.classList.toggle("fullscreen", c === full));
     document.body.classList.toggle("desk-full", !!full);
+    document.body.dataset.deskFullscreen = full ? full.inst.id : "";
     document.body.classList.toggle("desk-whiteboard", ordered.some((c) => c.inst.id === "lavagna"));
     if (!full) return false;
     const isPriority = (card) => card.inst.urgent || card.inst.essential || (card.inst.priority && card.inst.priority >= 80);

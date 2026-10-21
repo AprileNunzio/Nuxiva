@@ -1,4 +1,6 @@
+import asyncio
 import base64
+import logging
 import re
 
 import httpx
@@ -15,6 +17,7 @@ VISION_FAMILIES = re.compile(r"gpt-4o|gpt-4\.1|gpt-5|o3|o4|claude-(?:3|sonnet|op
                              r"glm-4\.?\d*v|kimi.*vl", re.I)
 LOCAL_VISION = re.compile(r"llava|bakllava|moondream|llama3\.2-vision|qwen2\.5vl|qwen2-vl|minicpm-v|gemma3|granite3\.2-vision|"
                           r"mistral-small3", re.I)
+log = logging.getLogger("nuxiva.vision.models")
 
 
 def _cloud_vision(ref: str) -> bool:
@@ -55,20 +58,25 @@ async def _ollama(model: str, prompt: str, jpeg: bytes, as_json: bool, max_token
 
 
 async def look(jpeg: bytes, prompt: str, *, system: str = "", as_json: bool = False, max_tokens: int = 900,
-               history: list | None = None, validator=None) -> tuple[object, str]:
+               history: list | None = None, validator=None, attempt_timeout: float = 300) -> tuple[object, str]:
     errors = []
     for ref in await models():
         try:
             if is_cloud(ref):
                 messages = [*(history or []), _message(ref, prompt, jpeg)]
-                reply = await complete(ref, messages, system, max_tokens=max_tokens, temperature=0.2, json_mode=as_json)
+                reply = await asyncio.wait_for(
+                    complete(ref, messages, system, max_tokens=max_tokens, temperature=0.2, json_mode=as_json),
+                    timeout=attempt_timeout)
                 text = reply.text
             else:
-                text = await _ollama(ref, (system + "\n\n" if system else "") + prompt, jpeg, as_json, max_tokens)
+                text = await asyncio.wait_for(
+                    _ollama(ref, (system + "\n\n" if system else "") + prompt, jpeg, as_json, max_tokens),
+                    timeout=attempt_timeout)
             result = decode(text, as_json)
             if validator:
                 validator(result)
             return result, ref
-        except (httpx.HTTPError, CloudError, ValueError) as exc:
+        except (TimeoutError, httpx.HTTPError, CloudError, ValueError) as exc:
+            log.warning("Vision attempt failed: model=%s error=%s", ref, type(exc).__name__)
             errors.append(f"{ref}: {str(exc)[:120]}")
     raise BrainUnavailable("; ".join(errors) or "nessun modello capace di vedere immagini")

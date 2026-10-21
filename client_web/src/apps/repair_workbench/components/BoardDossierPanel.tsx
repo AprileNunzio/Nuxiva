@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { AlertTriangle, CheckCircle2, CircuitBoard, Cpu, FileSpreadsheet, Layers } from 'lucide-react';
 import { SchematicCanvas } from './SchematicCanvas';
+import { RepairTeamPanel } from './RepairTeamPanel';
 import type { BoardDossier, CircuitSpec, LocalizedMessage } from '../types';
 
 interface BoardDossierPanelProps {
@@ -8,6 +9,7 @@ interface BoardDossierPanelProps {
   readonly dossier: BoardDossier;
   readonly circuit: CircuitSpec;
   readonly expectedVoltages: Record<string, number>;
+  readonly sessionId?: string;
 }
 
 function renderLocalized(
@@ -25,8 +27,9 @@ export const BoardDossierPanel: React.FC<BoardDossierPanelProps> = ({
   dossier,
   circuit,
   expectedVoltages,
+  sessionId,
 }) => {
-  const [activeTab, setActiveTab] = useState<'dossier' | 'schematic'>('dossier');
+  const [activeTab, setActiveTab] = useState<'dossier' | 'schematic' | 'team'>('dossier');
   const isEmpty = !dossier.title && !dossier.summary && dossier.component_count === 0;
 
   return (
@@ -57,6 +60,10 @@ export const BoardDossierPanel: React.FC<BoardDossierPanelProps> = ({
             <CircuitBoard className="h-3.5 w-3.5" aria-hidden="true" />
             {t('tab_schematic')}
           </button>
+          <button type="button" onClick={() => setActiveTab('team')}
+            className={`rounded-lg px-2.5 py-1 font-medium ${activeTab === 'team' ? 'bg-cyan-500/20 text-cyan-300' : 'text-slate-400 hover:text-slate-200'}`}>
+            {t('tab_team')}
+          </button>
         </div>
         <span className="inline-flex items-center gap-1 rounded-full border border-slate-700 bg-slate-800 px-2.5 py-0.5 text-[11px] font-semibold text-cyan-300">
           <Cpu className="h-3 w-3" aria-hidden="true" />
@@ -65,7 +72,7 @@ export const BoardDossierPanel: React.FC<BoardDossierPanelProps> = ({
       </header>
 
       <div className="flex-1 overflow-y-auto p-3 text-xs text-slate-200">
-        {activeTab === 'schematic' ? (
+        {activeTab === 'team' ? <RepairTeamPanel sessionId={sessionId} t={t} /> : activeTab === 'schematic' ? (
           <SchematicCanvas t={t} circuit={circuit} expectedVoltages={expectedVoltages} />
         ) : isEmpty ? (
           <div className="flex h-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-slate-800 p-6 text-center text-slate-400">

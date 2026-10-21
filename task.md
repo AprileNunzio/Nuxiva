@@ -13,7 +13,14 @@
 - [x] Aggiornare docs/WORKBENCH_VISION_PCB_BLUEPRINT.md con comportamento reale e limiti.
 - [x] Pubblicare il primo commit bilingue e verificare tutti i sei controlli remoti verdi.
 - [x] Installare il primo commit sul server; rilevata intercettazione errata del comando nella pagina principale.
-- [ ] Installare e verificare la correzione del connettore pubblico, della scena grafica e della selezione visiva.
+- [x] Installare e verificare apertura del banco dalla pagina principale, scena grafica e selezione visiva.
+- [x] Integrare contorni selezionabili, pannello unico e modelli 3D illustrativi dei componenti.
+- [x] Implementare cattura persistente condivisa fra video e istantanee.
+- [x] Integrare compiti concorrenti, problemi con priorità, fonti e stati espliciti.
+- [x] Creare fascicoli cifrati per progetto con immagini campionate, schema, compiti e registro.
+- [x] Integrare ripresa esplicita, più progetti aperti e chiusura senza riapertura implicita.
+- [ ] Verificare sul server flusso condiviso, popup 3D, squadra, ripresa e traduzioni della versione integrata.
+- [x] Pubblicare il commit bilingue delle correzioni verificate e controllare tutti gli esiti remoti.
 - [ ] Registrare il risultato della prova fisica, inclusi errori del modello e tempi osservati.
 
 ## Limiti e sviluppi futuri
@@ -22,7 +29,12 @@
 - [ ] Conversazione vocale continua dedicata al banco.
 - [ ] Conferma manuale dei collegamenti, confidenza e simulazione non lineare.
 - [ ] Identità e isolamento completi fra account del supervisore e core.
-- [ ] Gestione esplicita di chiusura e ripresa delle sessioni.
+- [x] Gestione esplicita di chiusura e ripresa delle sessioni.
+- [ ] Riconoscimento visivo della scheda fra progetti, con conferma nei casi ambigui.
+- [ ] Tracking geometrico durante rotazioni, occlusioni e saldature; registrazione fronte/retro.
+- [ ] Ritagli alla risoluzione originale per telecamere IP 8K e prova fisica dedicata.
+- [ ] Ricostruzione 3D della scheda osservata, distinta dalle anteprime illustrative.
+- [ ] Verifica di schemi, compatibilità e prezzi presso le fonti trovate.
 
 ## English
 

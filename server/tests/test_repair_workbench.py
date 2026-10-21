@@ -29,6 +29,7 @@ from server.features.repair_workbench.session_requests import AnalyzeFrameReques
 from server.features.repair_workbench.session_store import EncryptedSessionStore
 from server.features.repair_workbench.workbench_service import WorkbenchService
 from server.features.repair_workbench.supervisor_vision import ConfiguredVisionAnalyzer
+from server.features.repair_workbench.team_service import WorkbenchTeamService
 from server.shared.errors.global_handler import register_global_error_handlers
 
 FRAME = base64.b64encode(b"\xff\xd8\xff" + b"sample-frame").decode()
@@ -64,6 +65,29 @@ def observation():
 
 
 class TestRepairWorkbenchAPI(unittest.TestCase):
+    def test_project_archive_resume_and_close_preserve_history(self):
+        self.assertEqual(self.analyze().status_code, 200)
+        prefix = "/api/v1/repair-workbench"
+        listing = self.client.get(prefix + "/projects/archive").json()["projects"]
+        self.assertEqual(listing[0]["project_id"], self.project.project_id)
+        restored = self.client.post(prefix + f"/projects/{self.project.project_id}/resume")
+        self.assertEqual(restored.status_code, 200)
+        self.assertEqual(restored.json()["session"]["circuit"]["components"][1]["ref"], "R1")
+        closed = self.client.post(prefix + f"/projects/{self.project.project_id}/close")
+        self.assertEqual(closed.status_code, 200)
+        self.assertEqual(self.client.get(prefix + "/projects/archive").json()["projects"], [])
+        self.assertEqual(len(self.client.get(prefix + "/projects/archive?include_closed=true").json()["projects"]), 1)
+        self.assertEqual(self.client.post(prefix + f"/projects/{self.project.project_id}/resume").status_code, 404)
+
+    def test_registered_issue_is_resolved_and_retained_by_team_api(self):
+        created = self.client.post(self.url + "/issues", json={"title": "Il pulsante non risponde", "severity": "high"})
+        self.assertEqual(created.status_code, 200)
+        issue_id = created.json()["team"]["issues"][0]["id"]
+        resolved = self.client.post(self.url + f"/issues/{issue_id}/status", json={"status": "resolved", "resolution": "Contatto ripristinato"})
+        self.assertEqual(resolved.status_code, 200)
+        issue = self.client.get(self.url + "/team").json()["team"]["issues"][0]
+        self.assertEqual((issue["status"], issue["resolution"]), ("resolved", "Contatto ripristinato"))
+
     def setUp(self):
         temporary = tempfile.TemporaryDirectory()
         self.addCleanup(temporary.cleanup)
@@ -82,6 +106,8 @@ class TestRepairWorkbenchAPI(unittest.TestCase):
         self.service = WorkbenchService(self.store, self.analyzer, clock=lambda: self.clock[0])
         self._patch(controller, "workbench_service", self.service)
         self._patch(controller, "workbench_collaboration", WorkbenchCollaboration(self.service))
+        self._patch(controller, "workbench_team", WorkbenchTeamService(
+            self.service, controller.workbench_collaboration, executors={}))
         self._patch(controller, "workbench_launch_queue", WorkbenchLaunchQueue())
         self.project = project_manager.create_project("user_primary", "Banco", "riparazione scheda elettronica amplificatore")
         app = FastAPI()
@@ -337,6 +363,14 @@ class TestWorkbenchNumerics(unittest.TestCase):
     def test_invalid_boxes_are_rejected(self):
         with self.assertRaises(ValidationError):
             VisionObservation.model_validate({"components": [{"label": "R1", "bbox": [0, 0, math.nan, 1]}]})
+
+    def test_unreadable_reference_does_not_discard_other_components(self):
+        result = VisionObservation.model_validate({"components": [
+            {"ref": "", "label": "Condensatore", "bbox": [0.1, 0.2, 0.3, 0.4]},
+            {"ref": "R1", "label": "Resistenza", "bbox": [0.4, 0.2, 0.5, 0.4]},
+        ]})
+        self.assertIsNone(result.components[0].ref)
+        self.assertEqual(result.components[1].ref, "R1")
 
     def test_malformed_vision_envelope_is_unavailable(self):
         async def run():

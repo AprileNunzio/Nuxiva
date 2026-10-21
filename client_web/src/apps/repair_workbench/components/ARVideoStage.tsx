@@ -4,6 +4,7 @@ import { adminPath } from '../../../shared/http/basePath';
 import { reportError } from '../../../shared/errors/errorBus';
 import type { ARComponentPopup, CameraSourceItem } from '../types';
 import { containRect } from '../videoGeometry';
+import { ComponentPreview3D } from './ComponentPreview3D';
 
 interface ARVideoStageProps {
   readonly t: (key: string, params?: Record<string, string | number>) => string;
@@ -45,12 +46,16 @@ export const ARVideoStage: React.FC<ARVideoStageProps> = ({
   const [sourceSize, setSourceSize] = useState({ width: 0, height: 0 });
   const [stageSize, setStageSize] = useState({ width: 0, height: 0 });
   const [streamReady, setStreamReady] = useState<boolean>(false);
+  const [snapshotFallback, setSnapshotFallback] = useState(false);
   const [autoAnalyze, setAutoAnalyze] = useState<boolean>(true);
   const [stamp, setStamp] = useState<number>(() => Date.now());
   const [editingTrack, setEditingTrack] = useState<number | null>(null);
+  const [selectedTrack, setSelectedTrack] = useState<number | null>(null);
   const [teachLabel, setTeachLabel] = useState<string>('');
   const [teachValue, setTeachValue] = useState<string>('');
 
+  const visiblePopups = sceneState === 'operator_working' ? [] : popups;
+  const selectedPopup = visiblePopups.find((popup) => popup.track_id === selectedTrack);
   const isLocalUsb = selectedCameraId === 'local_usb' || selectedCameraId.startsWith('usb:');
   const videoRect = containRect(stageSize.width, stageSize.height, sourceSize.width, sourceSize.height);
 
@@ -66,6 +71,7 @@ export const ARVideoStage: React.FC<ARVideoStageProps> = ({
 
   useEffect(() => {
     setStreamReady(false);
+    setSnapshotFallback(false);
     if (!isLocalUsb) {
       const timer = window.setInterval(() => {
         if (!document.hidden) setStamp(Date.now());
@@ -111,14 +117,19 @@ export const ARVideoStage: React.FC<ARVideoStageProps> = ({
   const captureAndSend = useCallback(() => {
     if (!sessionActive || editingTrack !== null || document.hidden) return;
     const canvas = document.createElement('canvas');
-    canvas.width = 640;
-    canvas.height = sourceSize.width > 0 ? Math.max(1, Math.round(640 * sourceSize.height / sourceSize.width)) : 360;
+    const sourceWidth = isLocalUsb ? videoRef.current?.videoWidth : imgRef.current?.naturalWidth;
+    const sourceHeight = isLocalUsb ? videoRef.current?.videoHeight : imgRef.current?.naturalHeight;
+    canvas.width = Math.min(sourceWidth || 1280, 1280);
+    canvas.height = sourceWidth && sourceHeight ? Math.max(1, Math.round(canvas.width * sourceHeight / sourceWidth)) : 720;
+    if (sourceWidth && sourceHeight && (sourceWidth !== sourceSize.width || sourceHeight !== sourceSize.height)) {
+      setSourceSize({ width: sourceWidth, height: sourceHeight });
+    }
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
     if (isLocalUsb && videoRef.current && videoRef.current.readyState >= 2) {
       ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-    } else if (!isLocalUsb && imgRef.current && imgRef.current.complete && imgRef.current.naturalWidth > 0) {
+    } else if (!isLocalUsb && imgRef.current && imgRef.current.naturalWidth > 0) {
       ctx.drawImage(imgRef.current, 0, 0, canvas.width, canvas.height);
     } else {
       return;
@@ -240,8 +251,7 @@ export const ARVideoStage: React.FC<ARVideoStageProps> = ({
         ) : (
           <img
             ref={imgRef}
-            key={stamp}
-            src={adminPath(`/api/cameras/live/${encodeURIComponent(selectedCameraId)}.jpg?t=${stamp}`)}
+            src={adminPath(`/api/cameras/live/${encodeURIComponent(selectedCameraId)}${snapshotFallback ? `.jpg?t=${stamp}` : '.mjpg'}`)}
             alt={cameraName}
             crossOrigin="anonymous"
             onLoad={(event) => {
@@ -249,70 +259,45 @@ export const ARVideoStage: React.FC<ARVideoStageProps> = ({
               const { naturalWidth: width, naturalHeight: height } = event.currentTarget;
               setSourceSize((previous) => previous.width === width && previous.height === height ? previous : { width, height });
             }}
-            onError={() => setStreamReady(false)}
+            onError={() => { setStreamReady(false); setSnapshotFallback(true); }}
             className="h-full w-full object-contain"
           />
         )}
 
         <div className="pointer-events-none absolute" style={videoRect}>
-          {popups.map((popup) => {
+          {visiblePopups.map((popup) => {
             const [x1, y1, x2, y2] = popup.bbox;
-            const left = `${Math.max(0, Math.min(95, x1 * 100))}%`;
-            const top = `${Math.max(0, Math.min(95, y1 * 100))}%`;
-            const width = `${Math.max(4, Math.min(100, (x2 - x1) * 100))}%`;
-            const height = `${Math.max(4, Math.min(100, (y2 - y1) * 100))}%`;
-            const tone = HEALTH_TONE[popup.health] || HEALTH_TONE.unknown;
-            const voltages = Object.entries(popup.expected_voltages);
-
-            return (
-              <div
-                key={popup.track_id}
-                style={{ left, top, width, height }}
-                className={`pointer-events-auto absolute rounded-lg border-2 transition-all duration-150 ${tone}`}
-              >
-                <div className="absolute -top-7 left-0 z-10 flex items-center gap-1 whitespace-nowrap rounded-md border border-slate-700 bg-slate-950/95 px-2 py-0.5 text-[11px] shadow-lg">
-                  <Cpu className="h-3 w-3 text-cyan-400" aria-hidden="true" />
-                  <strong className="font-semibold text-white">{popup.key}</strong>
-                  {popup.value && <span className="text-cyan-300">{popup.value}</span>}
-                  {popup.taught && (
-                    <span className="inline-flex items-center gap-0.5 text-emerald-400">
-                      <CheckCircle2 className="h-3 w-3" aria-hidden="true" />
-                      {t('popup_taught_badge')}
-                    </span>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => openTeachModal(popup)}
-                    title={t('popup_teach')}
-                    className="ml-1 rounded bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-200 hover:bg-cyan-600 hover:text-white"
-                  >
-                    <Edit3 className="h-2.5 w-2.5" aria-hidden="true" />
-                  </button>
-                </div>
-
-                {(popup.notes || voltages.length > 0) && (
-                  <div className="absolute left-0 top-full z-10 mt-1 max-w-xs rounded-md border border-slate-700 bg-slate-950/95 p-1.5 text-[10px] text-slate-200 shadow-xl">
-                    {popup.notes && <p className="mb-1 text-slate-300">{popup.notes}</p>}
-                    {voltages.length > 0 && (
-                      <div className="flex flex-wrap items-center gap-1">
-                        <Zap className="h-3 w-3 text-amber-400" aria-hidden="true" />
-                        <span className="text-slate-400">{t('popup_voltages')}:</span>
-                        {voltages.map(([pin, v]) => (
-                          <span
-                            key={pin}
-                            className="rounded bg-slate-800 px-1 py-0.5 font-mono text-amber-300"
-                          >
-                            P{pin}: {v}V
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            );
+            return <button
+              type="button"
+              key={popup.track_id}
+              aria-label={`${popup.key} ${popup.label}`}
+              aria-expanded={selectedTrack === popup.track_id}
+              onClick={() => setSelectedTrack(selectedTrack === popup.track_id ? null : popup.track_id)}
+              onKeyDown={(event) => { if (event.key === 'Escape') setSelectedTrack(null); }}
+              style={{ left: `${x1 * 100}%`, top: `${y1 * 100}%`,
+                width: `${Math.max(1, (x2 - x1) * 100)}%`, height: `${Math.max(1, (y2 - y1) * 100)}%` }}
+              className={`pointer-events-auto absolute cursor-pointer rounded border-2 !bg-transparent focus:outline focus:outline-2 focus:outline-white ${HEALTH_TONE[popup.health] || HEALTH_TONE.unknown}`}
+            />;
           })}
         </div>
+
+        {selectedPopup && <aside className="absolute right-2 top-2 z-20 max-h-[calc(100%-1rem)] w-72 max-w-[calc(100%-1rem)] overflow-y-auto rounded-xl border border-slate-600 bg-slate-950/95 p-3 text-xs text-slate-200 shadow-xl"
+          aria-label={`${selectedPopup.key} ${selectedPopup.label}`}>
+          <div className="flex items-center justify-between gap-2">
+            <strong className="inline-flex items-center gap-1"><Cpu className="h-3 w-3" />{selectedPopup.key}</strong>
+            <button type="button" aria-label={t('popup_cancel')} onClick={() => setSelectedTrack(null)} className="rounded border border-slate-600 px-2 py-1">×</button>
+          </div>
+          <p className="mt-2 font-semibold">{selectedPopup.label || t(`category_${selectedPopup.category}`)}</p>
+          {selectedPopup.value && <p className="text-cyan-300">{selectedPopup.value}</p>}
+          {selectedPopup.notes && <p className="mt-2 leading-relaxed">{selectedPopup.notes}</p>}
+          {selectedPopup.taught && <p className="mt-2 inline-flex items-center gap-1 text-emerald-300"><CheckCircle2 className="h-3 w-3" />{t('popup_taught_badge')}</p>}
+          {Object.entries(selectedPopup.expected_voltages).length > 0 && <div className="mt-2">
+            <span className="inline-flex items-center gap-1"><Zap className="h-3 w-3" />{t('popup_voltages')}</span>
+            {Object.entries(selectedPopup.expected_voltages).map(([pin, voltage]) => <p key={pin} className="font-mono text-amber-300">P{pin}: {voltage}V</p>)}
+          </div>}
+          <button type="button" onClick={() => openTeachModal(selectedPopup)} className="mt-2 inline-flex items-center gap-1 rounded border border-slate-600 px-2 py-1"><Edit3 className="h-3 w-3" />{t('popup_teach')}</button>
+          <ComponentPreview3D category={selectedPopup.category} value={selectedPopup.value} t={t} />
+        </aside>}
 
         {editingTrack !== null && (
           <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">

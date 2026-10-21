@@ -16,13 +16,20 @@ PROMPT_TEMPLATE = (
     "You are an electronics repair vision analyst. Inspect the photographed board. "
     "Answer in language '{language}' for free-text fields. "
     "Return ONLY a JSON object with keys: title, board_kind, summary, characteristics (list of strings), "
-    "components (list of objects with ref, label, value, category, bbox [x1,y1,x2,y2] normalised 0..1, score 0..1, "
+    "components (up to 12 most clearly visible objects with ref, label, value, category, bbox [x1,y1,x2,y2] normalised 0..1, score 0..1, "
     "health one of ok|suspect|fault|unknown, notes), "
     "connections (list of objects with net and pins [{{ref,pin}}]) only for traces you can actually see, "
-    "advice (list of short next repair steps). "
+    "advice (up to 3 short next repair steps). Keep notes under 120 characters and summary under 400 characters. "
+    "ref is null when no printed reference is readable; do not invent a board reference. "
     "category must be one of resistor,capacitor,inductor,diode,led,transistor,mosfet,ic,regulator,opamp,"
     "microcontroller,connector,crystal,relay,transformer,fuse,switch,sensor,voltage_source,current_source,other. "
-    "Never invent values you cannot read. Already identified references: {known}."
+    "Never invent values you cannot read: use an empty string. An unseen trace is not a connection. "
+    "A photo alone cannot confirm electrical health: use unknown unless visible damage provides evidence. "
+    "Distinguish visible observations from hypotheses and explain what measurement could verify a hypothesis. "
+    "Do not identify the board model or purpose without readable evidence. "
+    "Every title, label, summary, characteristic, note and advice MUST use language '{language}'; "
+    "it means italiano, en English, es español, fr français. Keep schema keys and category enums unchanged. "
+    "Already identified references: {known}."
 )
 
 
