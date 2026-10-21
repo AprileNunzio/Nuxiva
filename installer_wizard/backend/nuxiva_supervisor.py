@@ -17,6 +17,7 @@ import uvicorn
 from fastapi import FastAPI, Request, Response
 
 import body_errors
+from feature_api_scanner import discover_feature_apis
 import bus_api
 import licensing_api
 import health
@@ -295,7 +296,7 @@ def build(admin: bool) -> FastAPI:
                 return FileResponse(str(web_dir / "index.html"))
 
     kind = "admin_routes" if admin else "public_routes"
-    for module in (*FEATURE_APIS, bus_api, licensing_api, registry_api, pages, setup_api, packages_api, system_api, mesh_api, node_api, node_commands_api, update_center_api):
+    for module in (*FEATURE_APIS, *discover_feature_apis(), bus_api, licensing_api, registry_api, pages, setup_api, packages_api, system_api, mesh_api, node_api, node_commands_api, update_center_api):
         routes = getattr(module, kind, None)
         if routes is not None:
             app.include_router(routes)

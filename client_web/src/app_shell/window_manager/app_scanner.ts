@@ -18,6 +18,7 @@ const KNOWN_APPLICATION_IDS = new Set([
   'home_assistant', // Home Assistant (gestione dispositivi, stanze, consumi, assist)
   'voice_studio', // Studio delle Voci (sintesi, equalizzatore, clonazione microfonica)
   'network',      // Rete & Mesh (dispositivi, satelliti, PC)
+  'repair_workbench',
 ]);
 
 /**

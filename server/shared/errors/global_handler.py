@@ -13,7 +13,9 @@ def register_global_error_handlers(app: FastAPI) -> None:
             "BIOMETRIC_REJECTED": 403,
             "ENTITY_NOT_FOUND": 404,
             "AGENT_EXECUTION_FAILURE": 502,
-            "SANDBOX_VIOLATION": 400
+            "SANDBOX_VIOLATION": 400,
+            "INVALID_FRAME": 422,
+            "VISION_UNAVAILABLE": 503
         }
         status_code = status_map.get(exc.code, 500)
         return JSONResponse(

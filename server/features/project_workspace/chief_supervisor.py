@@ -132,7 +132,12 @@ class ChiefSupervisor:
         Il Capo Agente valuta, autorizza e aggiorna la War Room e i componenti.
         """
         from server.core.agent_registry.forge import agent_forge
+        from server.shared.errors.domain_errors import EntityNotFoundException
+        if requester_agent_id not in project.assigned_agents:
+            raise EntityNotFoundException("project_agent", requester_agent_id)
         spec = agent_forge.get_agent(target_agent_id)
+        if spec is None:
+            raise EntityNotFoundException("agent", target_agent_id)
         target_name = spec.name if spec else target_agent_id
 
         if target_agent_id in project.assigned_agents:
@@ -168,6 +173,33 @@ class ChiefSupervisor:
             "message": recruitment_msg.content,
         }
 
+
+    def escalate_to_specialist(
+        self,
+        project: ProjectStateExtended,
+        requester_agent_id: str,
+        specialty: str,
+        justification: str,
+    ) -> Dict[str, Any]:
+        from server.core.agent_registry.forge import agent_forge
+        from server.core.agent_registry.specialist_factory import (
+            build_specialist_spec,
+            specialist_id,
+        )
+
+        from server.shared.errors.domain_errors import EntityNotFoundException
+        if requester_agent_id not in project.assigned_agents:
+            raise EntityNotFoundException("project_agent", requester_agent_id)
+        target_id = specialty if agent_forge.get_agent(specialty) else specialist_id(specialty)
+        forged = agent_forge.get_agent(target_id) is None
+        if forged:
+            agent_forge.forge_custom_agent(build_specialist_spec(specialty, justification))
+        result = self.request_agent_recruitment(
+            project, requester_agent_id, target_id, justification
+        )
+        result["forged"] = forged
+        result["specialist_id"] = target_id
+        return result
 
     def generate_war_room_analytics(self, project: ProjectStateExtended) -> Dict[str, Any]:
         """

@@ -1,5 +1,7 @@
 #![forbid(unsafe_code)]
 
+mod workbench;
+
 use std::sync::{Arc, RwLock};
 
 use nuxiva_bus_core::{
@@ -960,6 +962,8 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<RustResourceGovernor>()?;
     m.add_class::<RustMeshTaskGovernor>()?;
     m.add_class::<RustNetworkGovernor>()?;
+    m.add_class::<workbench::RustWorkbenchTracker>()?;
+    m.add_function(wrap_pyfunction!(workbench::validate_netlist_json, m)?)?;
     m.add_function(wrap_pyfunction!(matches, m)?)?;
     m.add_function(wrap_pyfunction!(valid_topic, m)?)?;
     m.add_function(wrap_pyfunction!(valid_pattern, m)?)?;

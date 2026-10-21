@@ -1,18 +1,6 @@
-import time
-from typing import List, Dict
-from pydantic import BaseModel, Field
+from typing import Dict
 
-class AgentCapabilitySpec(BaseModel):
-    id: str
-    name: str
-    role_category: str # "executive", "engineering", "social", "productivity", "household", "design"
-    avatar_icon: str
-    description: str
-    system_prompt: str
-    tools: List[str] = Field(default_factory=list)
-    widgets: List[str] = Field(default_factory=list)
-    is_custom: bool = False
-    created_at: float = Field(default_factory=time.time)
+from server.core.agent_registry.agent_spec import AgentCapabilitySpec
 
 DEFAULT_AGENT_CATALOG: Dict[str, AgentCapabilitySpec] = {
     "chief_supervisor": AgentCapabilitySpec(
@@ -126,3 +114,7 @@ DEFAULT_AGENT_CATALOG: Dict[str, AgentCapabilitySpec] = {
         is_custom=False,
     ),
 }
+
+from server.core.agent_registry.catalog_hardware import HARDWARE_AGENT_CATALOG
+
+DEFAULT_AGENT_CATALOG.update(HARDWARE_AGENT_CATALOG)

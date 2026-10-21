@@ -11,7 +11,16 @@ pub mod network_governor;
 pub mod priority;
 pub mod resource_governor;
 pub mod task_governor;
+pub mod workbench_netlist;
+pub mod workbench_stability;
+pub mod workbench_tracker;
 pub mod z_stack;
+
+pub use workbench_netlist::{
+    NetlistIssue, NetlistIssueKind, NetlistNet, PinReference, validate_netlist,
+};
+pub use workbench_stability::{SceneState, StabilityGate};
+pub use workbench_tracker::{BoundingBox, ComponentTracker, Detection, TrackedComponent};
 
 pub use arbiter::{ArbitrationAction, ArbitrationResult, PriorityArbiter};
 pub use co_pilot::{CoPilotAction, CoPilotActionKind, LiveCoPilotEngine};
@@ -218,6 +227,10 @@ mod tests {
             Some("app.nuxiva.whisper")
         );
         assert_eq!(router.resolve_intent("unrecognized_input"), None);
+        assert_eq!(
+            router.resolve_intent("Apri un nuovo progetto per aggiustare una scheda elettronica"),
+            Some("app.nuxiva.repair_workbench")
+        );
     }
 
     #[test]

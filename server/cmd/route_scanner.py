@@ -21,7 +21,8 @@ class FeatureRouteScanner:
                 if (file.endswith("_controller.py") or file == "controller.py") and not file.startswith("__"):
                     full_path = os.path.join(root, file)
                     rel_path = os.path.relpath(full_path, os.path.dirname(self.features_dir))
-                    mod_path = rel_path.replace(os.path.sep, ".").replace(".py", "")
+                    package = __name__.split(".cmd.", 1)[0]
+                    mod_path = package + "." + rel_path.replace(os.path.sep, ".").removesuffix(".py")
 
                     try:
                         mod = importlib.import_module(mod_path)

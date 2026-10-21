@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from server.features.project_workspace.manager import project_manager
 from server.features.project_workspace.chief_supervisor import chief_supervisor
 from server.features.project_workspace.project_models import WarRoomMessage, WarRoomMessageType
+from server.features.project_workspace.inter_agent_dialogue import post_inter_agent_message
 
 project_router = APIRouter()
 
@@ -23,6 +24,11 @@ class WarRoomPostPayload(BaseModel):
     message_type: str = "user_input"
     content: str
     attachments: List[Any] = []
+
+class AgentEscalatePayload(BaseModel):
+    requester_agent_id: str
+    specialty: str
+    justification: str
 
 class AgentRecruitPayload(BaseModel):
     requester_agent_id: str
@@ -112,6 +118,40 @@ async def recruit_agent_to_project(project_id: str, payload: AgentRecruitPayload
         requester_agent_id=payload.requester_agent_id,
         target_agent_id=payload.target_agent_id,
         justification=payload.justification,
+    )
+    project_manager.save(user_id, project)
+    return {"status": "success", "result": result}
+
+class AgentDialoguePayload(BaseModel):
+    sender_id: str
+    recipient_id: str
+    content: str
+    message_type: str = "thought"
+
+@project_router.post("/projects/{project_id}/agents/dialogue")
+async def post_inter_agent_dialogue(project_id: str, payload: AgentDialoguePayload, user_id: str = "user_primary"):
+    project = project_manager.get_by_id(user_id, project_id)
+    if not project:
+        raise HTTPException(status_code=404, detail="Progetto non trovato")
+    try:
+        msg_type = WarRoomMessageType(payload.message_type)
+    except ValueError:
+        raise HTTPException(status_code=422, detail="Tipo di messaggio non valido")
+    message = post_inter_agent_message(
+        project, payload.sender_id, payload.recipient_id, payload.content[:1200], msg_type
+    )
+    if message is None:
+        raise HTTPException(status_code=400, detail="Dialogo non consentito")
+    project_manager.save(user_id, project)
+    return {"status": "success", "message": message.model_dump()}
+
+@project_router.post("/projects/{project_id}/agents/escalate")
+async def escalate_specialist(project_id: str, payload: AgentEscalatePayload, user_id: str = "user_primary"):
+    project = project_manager.get_by_id(user_id, project_id)
+    if not project:
+        raise HTTPException(status_code=404, detail="Progetto non trovato")
+    result = chief_supervisor.escalate_to_specialist(
+        project, payload.requester_agent_id, payload.specialty[:80], payload.justification[:1200]
     )
     project_manager.save(user_id, project)
     return {"status": "success", "result": result}

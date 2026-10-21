@@ -17,6 +17,13 @@ impl IntentRouter {
         registry.insert("silent", "app.nuxiva.whisper");
         registry.insert("idle", "app.nuxiva.idle");
         registry.insert("home", "app.nuxiva.idle");
+        registry.insert("banco riparazioni", "app.nuxiva.repair_workbench");
+        registry.insert("aggiustare una scheda", "app.nuxiva.repair_workbench");
+        registry.insert("riparare una scheda", "app.nuxiva.repair_workbench");
+        registry.insert("scheda elettronica", "app.nuxiva.repair_workbench");
+        registry.insert("riparazione scheda", "app.nuxiva.repair_workbench");
+        registry.insert("repair workbench", "app.nuxiva.repair_workbench");
+        registry.insert("repair a board", "app.nuxiva.repair_workbench");
 
         Self {
             intent_registry: registry,

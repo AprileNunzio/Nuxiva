@@ -15,6 +15,7 @@ import { AccountCard } from './account/AccountCard';
 import { StartMenu } from './start/StartMenu';
 import { useAssistantIdentity } from '../shared/identity/IdentityContext';
 import { useDesktopShortcuts } from './desktopShortcuts';
+import { useWorkbenchAutoLaunch } from '../apps/repair_workbench/hooks/useWorkbenchAutoLaunch';
 
 export const AppShell: React.FC = () => {
   const { user, signOut } = useAuthenticatedSession();
@@ -22,6 +23,7 @@ export const AppShell: React.FC = () => {
 };
 
 export function WebOSDesktop({ user, onSignOut }: { user: string; onSignOut: () => Promise<void> }) {
+  useWorkbenchAutoLaunch(Boolean(user));
   const windows = useWindowStore();
   const assistant = useAssistantIdentity();
   const { t, lang } = useScopedI18n('app_shell');

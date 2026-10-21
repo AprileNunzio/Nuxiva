@@ -15,6 +15,8 @@ from server.features.project_workspace.project_models import (
 )
 from server.features.project_workspace.chief_supervisor import chief_supervisor
 from server.core.agent_registry.forge import agent_forge
+from server.features.repair_workbench.launch_queue import workbench_launch_queue
+from server.features.repair_workbench.repair_intent import is_repair_request, repair_team
 
 class ProjectWorkspaceManager:
     _instance = None
@@ -112,6 +114,8 @@ class ProjectWorkspaceManager:
 
         if any(w in lower for w in ["dati", "analisi", "statistiche", "grafici", "report", "kpi"]):
             team.append("data_analyst")
+
+        team.extend(repair_team(lower))
 
         # Rimuove duplicati preservando l'ordine
         return list(dict.fromkeys(team))
@@ -295,6 +299,8 @@ class ProjectWorkspaceManager:
             elif "cad" in lower or "disegno" in lower: name = "Progetto CAD & Struttura"
             elif "instagram" in lower or "social" in lower: name = "Campagna Social & Media"
             elif "telegram" in lower: name = "Canale Telegram Bot"
+            repair = is_repair_request(query)
+            if repair: name = "Riparazione Elettronica"
 
             auto = "autonomia" in lower or "notte" in lower or "background" in lower or "24h" in lower or "24 ore" in lower
             new_state = self.create_project(
@@ -303,6 +309,8 @@ class ProjectWorkspaceManager:
                 goal=query,
                 autonomous_247=auto,
             )
+            if repair:
+                workbench_launch_queue.push(user_id, new_state.project_id)
             return f"[PROJECT_START: {name} (24/7:{auto}) Team:{len(new_state.assigned_agents)} agenti] {query}"
 
         if state and state.status == "ACTIVE":
