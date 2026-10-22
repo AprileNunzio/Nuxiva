@@ -4,7 +4,6 @@ import unittest
 from pathlib import Path
 
 from fastapi import FastAPI
-from fastapi.testclient import TestClient
 
 from server.core.core_platform.errors import CortexFailure, fail, translate_code
 from server.core.core_platform.input_sanitizer import sanitize_identifier, sanitize_utterance
@@ -12,7 +11,7 @@ from server.core.core_platform.native_bridge import call_native
 from server.core.core_platform.result import Err, Ok
 from server.core.core_platform.zero_trust_crypto import SignedBlob, ZeroTrustVault
 from server.shared.errors.global_handler import register_global_error_handlers
-from server.tests.cortex_support import SECRET, requires_native
+from server.tests.cortex_support import SECRET, asgi_get, requires_native
 
 ROOT = Path(__file__).resolve().parents[2]
 RUST_ERRORS = ROOT / "native" / "crates" / "cortex-core" / "src" / "platform" / "error.rs"
@@ -100,11 +99,10 @@ class ErrorCatalogTests(unittest.TestCase):
         async def missing():
             raise CortexFailure("cortex.neuron.unknown", "en")
 
-        client = TestClient(app)
-        response = client.get("/empty")
-        self.assertEqual(response.status_code, 422)
-        self.assertEqual(response.json()["code"], "cortex.input.empty")
-        self.assertEqual(client.get("/missing").status_code, 404)
+        status, body = asgi_get(app, "/empty")
+        self.assertEqual(status, 422)
+        self.assertEqual(body["code"], "cortex.input.empty")
+        self.assertEqual(asgi_get(app, "/missing")[0], 404)
 
     def test_failure_message_is_localised(self):
         self.assertIn("vuoto", CortexFailure("cortex.input.empty", "it").message)

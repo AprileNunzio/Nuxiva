@@ -5,7 +5,6 @@ from pathlib import Path
 from typing import Any, Optional
 
 from fastapi import FastAPI
-from fastapi.testclient import TestClient
 
 from server.core.core_platform.errors import fail
 from server.core.core_platform.result import Ok
@@ -16,7 +15,7 @@ from server.core.hippocampus_router.contracts import ArbiterThresholds, Verdict
 from server.core.hippocampus_router.hippocampus_service import HippocampusService
 from server.core.hippocampus_router.neuron_memory import NeuronMemory
 from server.core.hippocampus_router.neuron_repository import EncryptedNeuronRepository
-from server.tests.cortex_support import SECRET, requires_native
+from server.tests.cortex_support import SECRET, asgi_get, requires_native
 
 VECTORS = {
     "accendi la luce": [1.0, 0.0, 0.0],
@@ -256,9 +255,9 @@ class StatusTests(unittest.TestCase):
         self.addCleanup(setattr, composition, "_service", previous)
         app = FastAPI()
         app.include_router(hippocampus_api.router)
-        response = TestClient(app).get("/api/v1/cognition/hippocampus/status")
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["embedding"]["model"], "test-double-embedder")
+        status, body = asgi_get(app, "/api/v1/cognition/hippocampus/status")
+        self.assertEqual(status, 200)
+        self.assertEqual(body["embedding"]["model"], "test-double-embedder")
 
 
 if __name__ == "__main__":
