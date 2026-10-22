@@ -57,7 +57,9 @@
         "untrusted": "La firma de la habilidad no es válida: no se ejecuta.",
         "timeout": "La habilidad superó el tiempo máximo.",
         "runtime_failed": "La ejecución de la habilidad falló.",
-        "output_invalid": "La habilidad devolvió un resultado no válido."
+        "output_invalid": "La habilidad devolvió un resultado no válido.",
+        "violation": "La habilidad intentó una operación de sistema prohibida y fue detenida.",
+        "author_invalid": "La habilidad redactada por el modelo no es válida."
       },
       "plasticity": {
         "invalid": "La valoración no es válida."

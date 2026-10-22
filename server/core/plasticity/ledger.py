@@ -1,13 +1,12 @@
 import logging
 import sqlite3
-import threading
 import time
-from contextlib import closing
 from pathlib import Path
 from typing import Optional
 
-from server.core.core_platform.errors import CortexFailure, fail
+from server.core.core_platform.errors import CortexFailure
 from server.core.core_platform.result import Ok, Result
+from server.core.core_platform.sealed_sqlite import SealedSqlite
 from server.core.core_platform.zero_trust_crypto import ZeroTrustVault
 
 logger = logging.getLogger("nuxiva.plasticity.ledger")
@@ -25,34 +24,9 @@ SCHEMA = (
 MAX_EXAMPLES_PER_NEURON = 500
 
 
-class PlasticityLedger:
+class PlasticityLedger(SealedSqlite):
     def __init__(self, path: Path, vault: ZeroTrustVault) -> None:
-        self._path = path
-        self._vault = vault
-        self._lock = threading.Lock()
-        self._ready = False
-
-    def _connect(self) -> sqlite3.Connection:
-        if not self._ready:
-            self._path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-        connection = sqlite3.connect(self._path, timeout=10)
-        if not self._ready:
-            for statement in SCHEMA:
-                connection.execute(statement)
-            connection.commit()
-            self._ready = True
-        return connection
-
-    def _run(self, action) -> Result[object, CortexFailure]:
-        with self._lock:
-            try:
-                with closing(self._connect()) as connection:
-                    value = action(connection)
-                    connection.commit()
-                    return Ok(value)
-            except sqlite3.Error as exc:
-                logger.error("Plasticity ledger failure (%s)", type(exc).__name__)
-                return fail("platform.storage.io_failed")
+        super().__init__(path, vault, SCHEMA, logger)
 
     def touch(self, neuron_id: str, success: Optional[bool], now: Optional[float] = None) -> Result[object, CortexFailure]:
         moment = time.time() if now is None else now
@@ -125,6 +99,18 @@ class PlasticityLedger:
         return self._run(lambda c: c.execute(
             "INSERT INTO meta (key, value) VALUES ('last_consolidation', ?)"
             " ON CONFLICT(key) DO UPDATE SET value = excluded.value", (moment,)))
+
+    def meta(self, key: str) -> Result[Optional[float], CortexFailure]:
+        def action(connection: sqlite3.Connection) -> Optional[float]:
+            row = connection.execute("SELECT value FROM meta WHERE key = ?", (key,)).fetchone()
+            return None if row is None else row[0]
+
+        return self._run(action)
+
+    def set_meta(self, key: str, value: float) -> Result[None, CortexFailure]:
+        return self._run(lambda c: c.execute(
+            "INSERT INTO meta (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value",
+            (key, value)))
 
     def totals(self) -> Result[object, CortexFailure]:
         def action(connection: sqlite3.Connection) -> dict:

@@ -57,7 +57,9 @@
         "untrusted": "La signature de la compétence n'est pas valide : elle n'est pas exécutée.",
         "timeout": "La compétence a dépassé le temps maximal.",
         "runtime_failed": "L'exécution de la compétence a échoué.",
-        "output_invalid": "La compétence a renvoyé un résultat non valide."
+        "output_invalid": "La compétence a renvoyé un résultat non valide.",
+        "violation": "La compétence a tenté une opération système interdite et a été arrêtée.",
+        "author_invalid": "La compétence rédigée par le modèle n'est pas valide."
       },
       "plasticity": {
         "invalid": "Le retour n'est pas valide."

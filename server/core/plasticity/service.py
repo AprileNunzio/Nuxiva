@@ -15,10 +15,11 @@ MAX_UTTERANCE_CHARS = 500
 
 
 class PlasticityService:
-    def __init__(self, hippocampus: HippocampusService, ledger: PlasticityLedger, protected: Any = None) -> None:
+    def __init__(self, hippocampus: HippocampusService, ledger: PlasticityLedger, protected: Any = None, retire: Any = None) -> None:
         self._hippocampus = hippocampus
         self._ledger = ledger
         self._protected = protected or (lambda neuron_id: False)
+        self._retire = retire or (lambda neuron_id: Ok(False))
 
     def feedback(self, neuron_id: str, utterance: str, outcome: str, corrected_to: Optional[str] = None,
                  now: Optional[float] = None) -> Result[dict[str, Any], CortexFailure]:
@@ -106,7 +107,13 @@ class PlasticityService:
             logger.error("Neuron %s could not be pruned (%s)", neuron_id, removed.error.code)
             return
         self._ledger.forget(neuron_id)
+        retired = self._retire(neuron_id)
+        if not retired.is_ok:
+            logger.error("Skill %s could not be retired after pruning (%s)", neuron_id, retired.error.code)
         pruned.append(neuron_id)
+
+    def last_run(self) -> Result[Any, CortexFailure]:
+        return self._ledger.last_run()
 
     def status(self) -> Result[Any, CortexFailure]:
         return self._ledger.totals()

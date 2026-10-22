@@ -7,7 +7,8 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from server.config.env import settings
 from server.core.plasticity import distillation
-from server.core.plasticity.composition import plasticity_ledger, plasticity_service
+from server.core.plasticity.composition import auto_trainer, plasticity_ledger, plasticity_service
+from server.core.plasticity.scheduler import last_night
 
 router = APIRouter(prefix="/api/v1/cognition/plasticity", tags=["Nuxiva Plasticity"])
 
@@ -41,7 +42,8 @@ def _unwrap(result):
 async def status() -> Dict[str, Any]:
     missing = distillation.missing_dependencies()
     return {"ledger": _unwrap(await asyncio.to_thread(plasticity_service().status)),
-            "distillation": {"available": not missing and distillation.gpu_available(), "missing": missing}}
+            "distillation": {"available": not missing and distillation.gpu_available(), "missing": missing},
+            "training": _unwrap(await asyncio.to_thread(auto_trainer().status)), "last_night": last_night()}
 
 
 @router.post("/feedback")

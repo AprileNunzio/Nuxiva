@@ -109,6 +109,21 @@ class HippocampusService:
             logger.warning("Neuron %s learned in memory only (%s)", neuron_id, persisted.error.code)
         return Ok(len(vectors))
 
+    def embed_many(self, utterances: Sequence[str]) -> Result[list[list[float]], CortexFailure]:
+        dimension = self._embedder.ensure_dimension()
+        if not dimension.is_ok:
+            return dimension
+        vectors: list[list[float]] = []
+        for utterance in utterances:
+            clean = sanitize_utterance(utterance)
+            if not clean.is_ok:
+                return clean
+            vector = self._embedder.embed(clean.value)
+            if not vector.is_ok:
+                return vector
+            vectors.append(vector.value)
+        return Ok(vectors)
+
     def _live_index(self) -> Result[Any, CortexFailure]:
         dimension = self._embedder.ensure_dimension()
         return dimension if not dimension.is_ok else self._memory.index(dimension.value)

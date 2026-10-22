@@ -4,7 +4,13 @@
   "capabilities": [
     "Arbitro con tre esiti: rapido, zona grigia, lento, con motivazione",
     "Memoria dei neuroni cifrata e firmata, senza testo degli utenti nella telemetria",
-    "Nucleo in Rust con degrado esplicito se un componente manca"
+    "Nucleo in Rust con degrado esplicito se un componente manca",
+    "Impara da solo le richieste ripetute: il modello scrive la competenza, Nuxiva la prova e la isola prima di adottarla",
+    "Addestramento QLoRA automatico se rileva una scheda video e l'utente lo consente",
+    "Consolidamento notturno: dimentica ciò che non serve, recupera le notti perse"
   ],
-  "settings": {}
+  "settings": {
+    "NUXIVA_CORTEX_AUTOFORGE": "Impara da solo le richieste ripetute",
+    "NUXIVA_CORTEX_TRAINING": "Addestramento sulla scheda video (QLoRA)"
+  }
 }

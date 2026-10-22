@@ -57,7 +57,9 @@
         "untrusted": "La firma della competenza non è valida: non viene eseguita.",
         "timeout": "La competenza ha superato il tempo massimo.",
         "runtime_failed": "L'esecuzione della competenza non è riuscita.",
-        "output_invalid": "La competenza ha restituito un risultato non valido."
+        "output_invalid": "La competenza ha restituito un risultato non valido.",
+        "violation": "La competenza ha tentato un'operazione di sistema vietata ed è stata fermata.",
+        "author_invalid": "La competenza scritta dal modello non è valida."
       },
       "plasticity": {
         "invalid": "Il riscontro non è valido."

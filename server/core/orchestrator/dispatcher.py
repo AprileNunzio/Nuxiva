@@ -16,7 +16,7 @@ from server.core.orchestrator.system1_router import system1_router, System1Inten
 from server.core.reasoning.system2_engine import system2_engine
 from server.core.decision.decision_engine import ContextDimension, decision_engine
 from server.core.telemetry.journey import journey
-from server.core.orchestrator.hippocampus_gate import try_fast_path
+from server.core.orchestrator.hippocampus_gate import record_slow_path, try_fast_path
 
 logger = logging.getLogger("nuxiva.dispatcher")
 
@@ -111,6 +111,8 @@ class OrchestratorDispatcher:
         if fast is not None:
             journey.finish(fast.speech_output, fast.status, fast.agent_id)
             return fast
+        from server.core.skill_forge.composition import autoforge_enabled, miss_ledger
+        record_slow_path(sanitized_query, autoforge_enabled, miss_ledger)
 
         task_id = f"tsk_{uuid.uuid4().hex[:12]}"
 

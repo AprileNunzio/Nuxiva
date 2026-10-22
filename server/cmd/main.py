@@ -38,9 +38,9 @@ async def lifespan(app: FastAPI):
     sensory_bus.start()
     actuator_gateway.attach_to_bus()
     autonomous_runner.start()
-    from server.core.plasticity.composition import plasticity_service
+    from server.core.plasticity.composition import night_tasks, plasticity_service
     from server.core.plasticity.scheduler import rem_loop
-    rem_task = asyncio.create_task(rem_loop(plasticity_service))
+    rem_task = asyncio.create_task(rem_loop(plasticity_service, night_tasks()))
 
     try:
         from server.core.db.database import engine, Base

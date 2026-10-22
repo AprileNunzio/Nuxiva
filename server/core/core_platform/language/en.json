@@ -57,7 +57,9 @@
         "untrusted": "The skill signature is not valid: it is not executed.",
         "timeout": "The skill exceeded the time limit.",
         "runtime_failed": "The skill execution failed.",
-        "output_invalid": "The skill returned an invalid result."
+        "output_invalid": "The skill returned an invalid result.",
+        "violation": "The skill tried a forbidden system operation and was stopped.",
+        "author_invalid": "The authored skill is not valid."
       },
       "plasticity": {
         "invalid": "The feedback is not valid."

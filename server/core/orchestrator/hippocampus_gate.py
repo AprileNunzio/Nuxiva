@@ -38,3 +38,11 @@ async def try_fast_path(query: str, language: Optional[str], factory: Callable[[
         execution_time_ms=outcome.latency_ms,
     )
     return response, summary
+
+
+def record_slow_path(query: str, enabled: Callable[[], bool], recorder: Callable[[], Any]) -> None:
+    try:
+        if enabled():
+            recorder().note(query)
+    except Exception as exc:
+        logger.error("Slow-path request not recorded (%s)", type(exc).__name__)

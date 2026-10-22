@@ -4,8 +4,9 @@ from typing import Any, Dict, List
 from fastapi import APIRouter, Path
 from pydantic import BaseModel, ConfigDict, Field
 
-from server.core.skill_forge.composition import skill_forge
+from server.core.skill_forge.composition import auto_forge, autoforge_enabled, skill_forge
 from server.core.skill_forge.contracts import MAX_SOURCE_CHARS
+from server.core.skill_forge.sandbox import isolation_report
 
 router = APIRouter(prefix="/api/v1/cognition/skills", tags=["Nuxiva Skill Forge"])
 
@@ -28,6 +29,17 @@ def _unwrap(result):
 @router.get("")
 async def list_skills() -> List[Dict[str, Any]]:
     return _unwrap(skill_forge().listing())
+
+
+@router.get("/auto")
+async def auto_status() -> Dict[str, Any]:
+    state = _unwrap(await asyncio.to_thread(auto_forge().status))
+    return {"enabled": autoforge_enabled(), **state, "isolation": isolation_report()}
+
+
+@router.post("/auto/run")
+async def auto_run() -> Dict[str, Any]:
+    return _unwrap(await auto_forge().cycle())
 
 
 @router.post("", status_code=201)

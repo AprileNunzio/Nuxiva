@@ -4,7 +4,13 @@
   "capabilities": [
     "Arbitre à trois issues : rapide, zone grise, lent, avec motif",
     "Mémoire des neurones chiffrée et signée, sans texte utilisateur dans la télémétrie",
-    "Noyau Rust avec dégradation explicite si un composant manque"
+    "Noyau Rust avec dégradation explicite si un composant manque",
+    "Apprend seul les demandes répétées : le modèle écrit la compétence, Nuxiva la teste et l'isole avant de l'adopter",
+    "Entraînement QLoRA automatique si une carte graphique est détectée et que l'utilisateur l'autorise",
+    "Consolidation nocturne : oublie l'inutile et rattrape les nuits manquées"
   ],
-  "settings": {}
+  "settings": {
+    "NUXIVA_CORTEX_AUTOFORGE": "Apprend seul les demandes répétées",
+    "NUXIVA_CORTEX_TRAINING": "Entraînement sur la carte graphique (QLoRA)"
+  }
 }
