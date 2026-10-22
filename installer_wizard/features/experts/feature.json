@@ -18,7 +18,18 @@
     "Chat «chiedi all'esperto» con cronologia cifrata e conferma delle azioni rischiose",
     "Nuxiva instrada le domande all'esperto giusto e può crearne di nuovi"
   ],
-  "settings": [],
+  "settings": [
+    {
+      "key": "NUXIVA_EXPERTS_AUTO",
+      "label": "Crea esperti da solo per domande nuove",
+      "type": "select",
+      "options": [
+        "1",
+        "0"
+      ],
+      "default": "1"
+    }
+  ],
   "icon3d": "./icon.png",
   "icon3dSource": {
     "provider": "Icons8",

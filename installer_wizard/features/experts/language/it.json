@@ -8,7 +8,9 @@
     "Chat «chiedi all'esperto» con cronologia cifrata e conferma delle azioni rischiose",
     "Nuxiva instrada le domande all'esperto giusto e può crearne di nuovi"
   ],
-  "settings": {},
+  "settings": {
+    "NUXIVA_EXPERTS_AUTO": "Crea esperti da solo per domande nuove"
+  },
   "templates": {
     "debian": {
       "role": "Esperto Debian",

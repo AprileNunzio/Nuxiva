@@ -8,7 +8,9 @@
     "Chat « demander à l'expert » avec historique chiffré et confirmation des actions risquées",
     "Nuxiva oriente les questions vers le bon expert et peut en créer de nouveaux"
   ],
-  "settings": {},
+  "settings": {
+    "NUXIVA_EXPERTS_AUTO": "Créer des experts automatiquement pour les nouvelles questions"
+  },
   "templates": {
     "debian": {
       "role": "Expert Debian",

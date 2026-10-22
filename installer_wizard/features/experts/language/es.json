@@ -8,7 +8,9 @@
     "Chat «pregunta al experto» con historial cifrado y confirmación de acciones de riesgo",
     "Nuxiva dirige las preguntas al experto adecuado y puede crear nuevos"
   ],
-  "settings": {},
+  "settings": {
+    "NUXIVA_EXPERTS_AUTO": "Crear expertos automáticamente para preguntas nuevas"
+  },
   "templates": {
     "debian": {
       "role": "Experto en Debian",

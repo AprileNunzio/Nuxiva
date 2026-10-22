@@ -8,7 +8,9 @@
     "\"Ask the expert\" chat with encrypted history and confirmation of risky actions",
     "Nuxiva routes questions to the right expert and can create new ones"
   ],
-  "settings": {},
+  "settings": {
+    "NUXIVA_EXPERTS_AUTO": "Create experts automatically for new questions"
+  },
   "templates": {
     "debian": {
       "role": "Debian expert",

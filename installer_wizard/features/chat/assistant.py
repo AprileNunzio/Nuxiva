@@ -247,15 +247,25 @@ async def _delegate(text: str) -> tuple[str, str, dict] | None:
     from features.experts import commands as expert_cmd
     from features.team.ceo import ceo
     choice = ceo.pick_expert(text)
-    if choice is None:
+    expert = choice.expert if choice else await _forged(text)
+    if expert is None:
         return None
-    async with stages.attempt("agent", f"Esperto · {choice.expert.role}") as probe:
-        found = await expert_cmd.run(choice.expert, text)
+    async with stages.attempt("agent", f"Esperto · {expert.role}") as probe:
+        found = await expert_cmd.run(expert, text)
         if found is None:
             probe.skip()
     if found is None:
         return None
-    return f"esperto · {choice.expert.role}", *found
+    return f"esperto · {expert.role}", *found
+
+
+async def _forged(text: str):
+    from features.experts import autonomy
+    async with stages.attempt("agent", "Nuovo esperto per la domanda") as probe:
+        expert = await autonomy.create_for(text)
+        if expert is None:
+            probe.skip()
+    return expert
 
 
 async def _converse(text: str, core_call) -> tuple[str, str, dict]:

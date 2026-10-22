@@ -5,7 +5,7 @@ import unittest.mock
 from pathlib import Path
 
 FEATURES = Path(__file__).resolve().parents[1] / "features"
-CONFIGURED = ("research", "fleet", "brain", "location", "study", "avatars", "models3d", "firewall", "vpn", "telegram")
+CONFIGURED = ("research", "fleet", "brain", "location", "study", "avatars", "models3d", "firewall", "vpn", "telegram", "experts")
 
 
 class SettingsContractTest(unittest.TestCase):
