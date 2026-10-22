@@ -98,6 +98,14 @@ Nuxiva non è un semplice script o un wrapper monolitico di chatbot, ma un **Sis
 
 ## 2. Evoluzione Architetturale e Cronologia Versioni
 
+### Aggiornamento ottobre 2026: Architettura Cognitiva Ibrida Ippocampo-Corteccia
+- **Ippocampo nel dispatcher**: il percorso rapido interroga per primo i neuroni; se uno supera l'arbitro ed esegue una competenza la risposta arriva senza generare token, altrimenti si passa al percorso lento e lo si dichiara nel diario del percorso. Il nucleo Rust (`nuxiva-native`) resta un componente opzionale con degradazione esplicita.
+- **Forgia di competenze (`server/core/skill_forge/`)**: scanner AST con elenco chiuso di moduli, firma Ed25519 del codice, archivio cifrato, esecuzione in un processo isolato con limiti di CPU, memoria e tempo, dati sintetici dichiarati.
+- **Plasticità sinaptica (`server/core/plasticity/`)**: potenziamento e depressione dei neuroni dai riscontri, consolidamento REM notturno (03:30) con decadimento e potatura, dataset e addestramento QLoRA solo con dipendenze e GPU presenti.
+- **Agenti e strumenti scoperti dal vivo**: `tool_scanner` carica da solo i `tools.py` di ogni funzionalità, senza elenchi nel codice; nuovo agente di ricerca online con rete blindata e regola assoluta di non inventare mai.
+- **App «Agenti»**: gestione della flotta di agenti (archivio a 256 shard, paginazione a cursore) con strumenti e widget associati.
+- **Widget**: rotazione giornaliera in base a quanto già visti, al massimo quattro automatici, stile più sobrio.
+
 ### Versione 5.3.0: L'Era del Framework Giochi Autonomo e Desktop Anticolisione
 - **Ecosistema Giochi Autonomo & GamesScanner**: Rilevamento disaccoppiato dei giochi nativi in `giochi/` via `games_scanner.py`, rendering Three.js WebGL dedicato ed integrazione desktop reattiva.
 - **Scacchi 3D (Wizard Chess 3D)**: Ambiente ad alte prestazioni in cattedrale gotica, pezzi 3D autentici, validazione delle posizioni con `wizardChessEngine.js` e comandi vocali.
