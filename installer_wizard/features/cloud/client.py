@@ -43,6 +43,11 @@ def headers(spec: Provider, entry: dict) -> dict:
     return base
 
 
+THINKING_HEADROOM = {"gemini": 2048}
+RETRY_TOKENS = 8192
+CUT = ("length", "max_tokens", "MAX_TOKENS")
+
+
 def _limit(opts: dict, asked: int) -> int:
     cap = int(opts.get("max_tokens") or 0)
     return min(asked, cap) if cap else asked
@@ -59,6 +64,10 @@ def _openai_body(spec: Provider, model: str, messages: list, system: str, max_to
         body["top_p"] = float(opts["top_p"])
     if spec.reasoning and opts.get("reasoning"):
         body["reasoning_effort"] = opts["reasoning"]
+    elif spec.id in THINKING_HEADROOM:
+        body["reasoning_effort"] = "low"
+    if spec.id in THINKING_HEADROOM:
+        body[spec.token_param] += THINKING_HEADROOM[spec.id]
     if json_mode and spec.json_mode:
         body["response_format"] = {"type": "json_object"}
     return body
@@ -93,13 +102,19 @@ def _text(spec: Provider, data: dict) -> tuple[str, int]:
     return (choice.get("message") or {}).get("content") or "", (data.get("usage") or {}).get("completion_tokens", 0)
 
 
+def _cut(spec: Provider, data: dict) -> bool:
+    if spec.kind == "anthropic":
+        return data.get("stop_reason") in CUT
+    return str((data.get("choices") or [{}])[0].get("finish_reason") or "") in CUT
+
+
 async def _post(url: str, body: dict, head: dict, timeout: float) -> httpx.Response:
     async with httpx.AsyncClient(timeout=timeout) as client:
         return await client.post(url, json=body, headers=head)
 
 
 async def complete(ref: str, messages: list[dict], system: str = "", max_tokens: int = 800, temperature=None,
-                   json_mode: bool = False) -> Reply:
+                   json_mode: bool = False, _retried: bool = False) -> Reply:
     pid, model = parse_ref(ref)
     spec, entry = BY_ID[pid], vault.get(pid)
     if not vault.configured(pid):
@@ -137,6 +152,10 @@ async def complete(ref: str, messages: list[dict], system: str = "", max_tokens:
         data = res.json()
     except (ValueError, KeyError) as exc:
         raise CloudError(f"{spec.name}: risposta non valida dal server ({exc})", res.status_code) from exc
+    if _cut(spec, data) and json_mode:
+        if _retried:
+            raise CloudError(f"{spec.name}: risposta troncata dal limite di lunghezza")
+        return await complete(ref, messages, system, min(RETRY_TOKENS, max(max_tokens * 3, 1500)), temperature, json_mode, True)
     text, tokens = _text(spec, data)
     if not text.strip():
         raise CloudError(f"{spec.name}: risposta vuota")
