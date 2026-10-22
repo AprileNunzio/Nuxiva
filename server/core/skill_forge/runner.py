@@ -1,7 +1,9 @@
 import builtins
+import importlib.util
 import json
 import resource
 import sys
+from pathlib import Path
 
 ALLOWED = frozenset({
     "math", "statistics", "decimal", "fractions", "datetime", "re", "json", "itertools",
@@ -15,6 +17,13 @@ SAFE_NAMES = (
 )
 MEMORY_BYTES = 256 * 2 ** 20
 CPU_SECONDS = 2
+
+
+def load_isolation():
+    spec = importlib.util.spec_from_file_location("skill_isolation", Path(__file__).with_name("isolation.py"))
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 def limit() -> None:
@@ -41,10 +50,11 @@ def main() -> int:
     request = json.loads(sys.stdin.buffer.read())
     scope = environment()
     code = compile(request["source"], "skill", "exec")
+    isolation = load_isolation().apply()
     limit()
     exec(code, scope)
     result = scope["run"](request["slots"])
-    sys.stdout.write(json.dumps({"ok": True, "result": result}, ensure_ascii=False))
+    sys.stdout.write(json.dumps({"ok": True, "result": result, "isolation": isolation}, ensure_ascii=False))
     return 0
 
 
