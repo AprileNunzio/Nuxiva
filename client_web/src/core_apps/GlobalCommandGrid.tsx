@@ -87,6 +87,7 @@ export const CATEGORIES: {
 const CORE_APPS_LIST: CoreAppDef[] = [
   { id: 'agents', iconName: 'Users', category: 'ai', accent: 'purple' },
   { id: 'algorithms', iconName: 'Binary', category: 'ai', accent: 'purple' },
+  { id: 'hippocampus_router', iconName: 'Brain', category: 'ai', accent: 'purple' },
   { id: 'study', iconName: 'BookOpen', category: 'ai', accent: 'purple' },
   { id: 'twin', iconName: 'Box', category: 'ai', accent: 'purple' },
   { id: 'nodes', iconName: 'Server', category: 'infra', accent: 'cyan' },
@@ -112,6 +113,7 @@ const CORE_APPS_LIST: CoreAppDef[] = [
 ];
 
 const ICON_MAP: Record<string, React.ReactNode> = {
+  Brain: <Brain className="w-5 h-5 text-purple-400" />,
   Clock: <Clock className="w-5 h-5 text-amber-400" />,
   Users: <Users className="w-5 h-5 text-purple-400" />,
   Binary: <Binary className="w-5 h-5 text-purple-400" />,

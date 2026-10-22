@@ -1,0 +1,43 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Hipocampo",
+    "description": "Enrutamiento rápido de neuronas: decisiones sin generar tokens",
+    "loading": "Cargando…",
+    "unreachable": "Servidor inaccesible",
+    "on": "Activo",
+    "off": "Ausente",
+    "ready": "Listo",
+    "unavailable": "No disponible",
+    "persistent": "Cifrado",
+    "volatile": "Solo memoria",
+    "stat_native": "Núcleo Rust",
+    "stat_embedding": "Embeddings",
+    "stat_storage": "Almacenamiento",
+    "stat_neurons": "Neuronas",
+    "stat_decisions": "Decisiones",
+    "stat_latency": "Latencia media",
+    "issues_title": "Componentes degradados",
+    "verdicts_title": "Veredictos",
+    "verdict_fast": "Rápido",
+    "verdict_grey": "Zona gris",
+    "verdict_slow": "Lento",
+    "executed": "Ejecutadas sin tokens: {n}",
+    "latency_max": "Latencia máxima: {ms} ms",
+    "reason_no_neurons": "Sin neuronas",
+    "reason_low_similarity": "Similitud baja",
+    "reason_inhibited": "Inhibido",
+    "reason_low_weight": "Peso bajo",
+    "thresholds_title": "Umbrales del árbitro",
+    "threshold_fast_similarity": "Rápido: similitud mínima",
+    "threshold_grey_similarity": "Zona gris: similitud mínima",
+    "threshold_inhibition_limit": "Límite de inhibición",
+    "threshold_fast_weight": "Rápido: peso sináptico mínimo",
+    "threshold_grey_weight": "Zona gris: peso sináptico mínimo",
+    "recent_title": "Decisiones recientes",
+    "recent_empty": "Aún no hay decisiones. No se guarda nada de lo que dices.",
+    "recent_metrics": "Coincidencia {positive} · inhibición {negative} · peso {weight} · {ms} ms"
+  }
+}

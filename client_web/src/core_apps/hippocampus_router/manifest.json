@@ -1,0 +1,36 @@
+{
+  "id": "hippocampus_router",
+  "name": "Hippocampus",
+  "icon": "Brain",
+  "version": "1.0.0",
+  "description": "Fast neuron routing without token generation",
+  "scope": "core_apps/hippocampus_router",
+  "target": "global",
+  "window": {
+    "defaultWidth": 65,
+    "defaultHeight": 75,
+    "minWidth": 25,
+    "resizable": true
+  },
+  "toolbars": [
+    {
+      "id": "system",
+      "items": [
+        {
+          "type": "action",
+          "id": "refresh",
+          "labelKey": "os_refresh",
+          "shortcut": "F5"
+        }
+      ]
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "9QHudN9uBhDv",
+    "url": "https://img.icons8.com/?size=240&id=9QHudN9uBhDv&format=png"
+  },
+  "category": "intelligence"
+}
