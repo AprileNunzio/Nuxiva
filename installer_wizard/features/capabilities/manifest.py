@@ -1,5 +1,5 @@
 from config import env_get
-from features.agent import agent as agent_module
+from features.agent import tool_scanner
 from features.agent import registry
 from features.agent.paths import level
 from features.team import roster
@@ -21,7 +21,8 @@ def enabled() -> bool:
 
 
 def tools() -> list[dict]:
-    if not agent_module.MODULES:
+    tool_scanner.sync()
+    if not tool_scanner.loaded():
         return []
     return [{"name": t["name"], "description": t["description"], "args": t["args"], "needs_confirmation": bool(t["confirm"])}
             for t in registry.available(level())]

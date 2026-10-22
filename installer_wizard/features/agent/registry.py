@@ -32,7 +32,13 @@ def enabled(name: str) -> bool:
     return _control().tool_enabled(name)
 
 
+def refresh() -> None:
+    from features.agent import tool_scanner
+    tool_scanner.sync()
+
+
 def available(level: str) -> list[dict]:
+    refresh()
     return [t for t in TOOLS.values() if (level == "completo" or not t["full_only"]) and enabled(t["name"])]
 
 
@@ -91,5 +97,7 @@ class ToolDisabled(PermissionError):
 async def run(name: str, args: dict) -> str:
     if not enabled(name):
         raise ToolDisabled(f"lo strumento «{name}» è disattivato dalla console")
-    out = await TOOLS[name]["fn"](**clean_args(name, args))
+    out = TOOLS[name]["fn"](**clean_args(name, args))
+    if inspect.isawaitable(out):
+        out = await out
     return str(out)[:6000]

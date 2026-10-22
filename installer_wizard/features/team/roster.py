@@ -11,6 +11,7 @@ SHORT = 110
 def ensure() -> None:
     if not features.features:
         features.scan()
+    tools.refresh()
 
 
 def default_owner(tool_name: str) -> str:

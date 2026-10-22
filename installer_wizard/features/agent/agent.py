@@ -3,33 +3,17 @@ import time
 
 from state import store
 
-from features.agent import registry, tools_cameras, tools_comm, tools_display, tools_files, tools_media, tools_packages, tools_rpa, tools_system
+from features.agent import registry, tool_scanner
 from features.agent.paths import FILES, AccessDenied, layout, level
-from features.automations import tools as tools_automations
-from features.documents import tools as tools_documents
-from features.experts import tools as tools_experts
-from features.firewall import tools as tools_firewall
-from features.vpn import tools as tools_vpn
-from features.proxmox import tools as tools_proxmox
-from features.voicestudio import tools as tools_voicestudio
-from features.network import tools as tools_network
-from features.redalert import tools as tools_redalert
-from features.autonomy import tools as tools_autonomy
 from features.authz import gate
 from features.authz.principal import SYSTEM, act_as, current
 from features.brain.llm import BrainUnavailable, generate
 from features.chat.context import session_key
-from features.forge import tools as tools_forge
 from features.team import runner
-from features.team import tools as tools_team
 from features.team.board import board
 from features.shares import archive
-from features.sports import tools as tools_sports
-from features.whiteboard import tools as tools_whiteboard
-from features.people import tools as tools_people
-from features.home_assistant import tools as tools_home
 
-MODULES = (tools_cameras, tools_comm, tools_display, tools_files, tools_media, tools_packages, tools_rpa, tools_system, tools_autonomy, tools_automations, tools_documents, tools_team, tools_forge, tools_sports, tools_whiteboard, tools_firewall, tools_vpn, tools_proxmox, tools_voicestudio, tools_network, tools_redalert, tools_people, tools_experts, tools_home)
+tool_scanner.sync(force=True)
 MAX_STEPS = 8
 PENDING_TTL = 180
 
@@ -50,7 +34,11 @@ RULES = (
     "find_contact; se uno strumento fallisce prova un'alternativa o spiega il problema. Esegui SUBITO ciò che "
     "viene chiesto con gli strumenti diretti (create_site, write_file, make_dir, create_3d, share_folder…): crea "
     "automazioni o compiti programmati solo se l'utente chiede esplicitamente qualcosa di ricorrente, programmato "
-    "o condizionato. Tutto ciò che crei va nella cartella condivisa di Nuxiva, già organizzata in sottocartelle."
+    "o condizionato. Tutto ciò che crei va nella cartella condivisa di Nuxiva, già organizzata in sottocartelle.\n"
+    "REGOLA ASSOLUTA: non inventare MAI fatti, date, orari, risultati, numeri, nomi o fonti. Di' solo ciò che arriva dagli strumenti "
+    "o che sai con certezza. Per notizie, eventi, orari, prezzi, risultati, persone o qualunque dato che può essere cambiato usa lo "
+    "strumento specialistico adatto oppure web_research, e cita la fonte. Se non trovi nulla di affidabile o uno strumento non risponde, "
+    "dillo apertamente alla persona (cosa manca e perché) invece di tirare a indovinare."
 )
 
 
@@ -211,4 +199,4 @@ class Agent:
 
 
 agent = Agent()
-__all__ = ["agent", "MODULES"]
+__all__ = ["agent"]

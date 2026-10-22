@@ -8,7 +8,7 @@ from unittest import mock
 from fastapi.testclient import TestClient
 
 import nuxiva_supervisor
-from features.agent import agent as agent_module
+from features.agent import tool_scanner
 from features.agent import registry
 from features.experts import live, routing, service, skills, store as store_module, templates, tools
 from features.experts.model import ExpertError, build, slug
@@ -150,7 +150,7 @@ class ToolsTest(unittest.TestCase):
             asyncio.run(tools.football_table("xyz"))
 
     def test_tools_registered_to_main_agent(self):
-        self.assertIn(tools, agent_module.MODULES)
+        self.assertEqual(tool_scanner.loaded().get("features.experts.tools"), "experts")
         for name in ("expert_ask", "expert_create", "debian_status", "football_scores"):
             self.assertEqual(registry.TOOLS[name]["agent"], "experts")
 

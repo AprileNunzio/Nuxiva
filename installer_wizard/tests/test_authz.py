@@ -213,9 +213,10 @@ class CatalogCoverageTests(unittest.TestCase):
             risk.forget(name)
 
     def test_every_registered_tool_has_an_explicit_risk(self):
-        from features.agent import agent
+        from features.agent import tool_scanner
         from features.authz.risk import TOOLS
-        self.assertTrue(agent.MODULES)
+        tool_scanner.sync(force=True)
+        self.assertTrue(tool_scanner.loaded())
         missing = sorted(set(registry.TOOLS) - set(TOOLS))
         self.assertEqual(missing, [], "classify these tools in features/authz/risk.py")
 

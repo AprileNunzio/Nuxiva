@@ -263,7 +263,7 @@ async def _converse(text: str, core_call) -> tuple[str, str, dict]:
     delegated = await _delegate(text)
     if delegated:
         return delegated
-    if agent_cmd.weak(text) and not code.wanted(text):
+    if (agent_cmd.weak(text) or agent_cmd.fresh(text)) and not code.wanted(text):
         async with stages.stage("agent", "Agente con strumenti"):
             speech, ui = await agent_cmd.answer(text)
         return "agente · strumenti", speech, ui
