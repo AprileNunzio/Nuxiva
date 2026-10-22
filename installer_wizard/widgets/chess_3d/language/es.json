@@ -13,6 +13,7 @@
     "turn_white": "Turno de las Blancas",
     "turn_black": "Turno de las Negras (Nuxiva)",
     "action_hint": "Pista",
-    "action_restart": "Nueva partida"
+    "action_restart": "Nueva partida",
+    "hint_question": "¿Qué jugada me aconsejas en ajedrez?"
   }
 }

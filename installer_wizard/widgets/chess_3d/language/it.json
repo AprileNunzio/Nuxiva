@@ -13,6 +13,7 @@
     "turn_white": "Tocca al Bianco",
     "turn_black": "Tocca al Nero (Nuxiva)",
     "action_hint": "Suggerimento",
-    "action_restart": "Nuova partita"
+    "action_restart": "Nuova partita",
+    "hint_question": "Che mossa mi consigli a scacchi?"
   }
 }

@@ -8,6 +8,8 @@ import time
 from pathlib import Path
 
 from config import STATE_DIR, WIDGETS_DIR
+from features.desktop import manifest
+from features.desktop.manifest import clamp_refresh
 from features.desktop.novelty import AUTO_CAP, Novelty
 from features.desktop.privacy import privacy
 from features.desktop.screens import screens
@@ -20,22 +22,12 @@ USER_DIR = STATE_DIR / "widgets"
 STATE_FILE = STATE_DIR / "widgets.json"
 NOVELTY_FILE = STATE_DIR / "widget_novelty.json"
 FORCED_KEY_PREFIXES = ("recall:", "test:")
-SIZES = ("s", "m", "l", "full")
-TONES = ("cyan", "green", "blue", "violet", "amber", "red")
 FILES = {"widget.js": "application/javascript", "widget.css": "text/css"}
 _ID_RE = re.compile(r"^[a-z0-9][a-z0-9_-]{1,40}$")
 REQUEST_HOLD = 120
 SNOOZE = 600
 AUTO_PREFIXES = ("briefing:", "welcome:", "sport-near:")
 SNOOZE_FORGET = 6 * 3600
-REFRESH_MIN = 1
-REFRESH_MAX = 86400
-
-
-def clamp_refresh(value) -> int | None:
-    if value in (None, "", False):
-        return None
-    return max(REFRESH_MIN, min(REFRESH_MAX, int(value)))
 
 
 class Desk:
@@ -90,24 +82,7 @@ class Desk:
             except (OSError, ValueError, TypeError) as exc:
                 errors.append({"path": p, "error": str(exc)[:200]})
                 continue
-            m["priority"] = max(0, min(100, int(m.get("priority", 50))))
-            m["size"] = m.get("size") if m.get("size") in SIZES else "m"
-            m.setdefault("icon", "▣")
-            m.setdefault("description", "")
-            m.setdefault("intents", [])
-            m.setdefault("replaces", [])
-            m["chrome"] = m.get("chrome", True) is not False
-            m["essential"] = m.get("essential") is True
-            m["urgent"] = m.get("urgent") is True
-            m["tone"] = m.get("tone") if m.get("tone") in TONES else "cyan"
-            m["overlay"] = m.get("overlay") is True
-            m["personal"] = m.get("personal") is True
-            m["refresh"] = clamp_refresh(m.get("refresh"))
-            m["standalone"] = m.get("standalone") is True
-            m["source"] = "system" if folder.is_relative_to(SYSTEM_DIR) else (m.get("source") if m.get("source") in ("ai", "user") else "user")
-            m["dir"] = str(folder)
-            m["has_css"] = (folder / "widget.css").exists()
-            m["rev"] = str(int(max(os.path.getmtime(f) for f in folder.glob("widget.*"))))
+            manifest.normalize(m, folder, SYSTEM_DIR)
             found[m["id"]] = m
         new = [w for w in found if w not in self.widgets and self.widgets]
         self.widgets, self.errors = found, errors
@@ -196,6 +171,7 @@ class Desk:
             "shown_at": old["shown_at"] if old else time.time(), "refreshed_at": time.time(),
             "opened_at": time.time() if intent or not old else old.get("opened_at", time.time()),
             "fullscreen": bool(old and old.get("fullscreen")) if fullscreen is None else fullscreen,
+            "sticky": bool(m.get("sticky")),
             "expires_at": time.time() + float(ttl) if ttl else None,
         }
         self.publish()
@@ -276,7 +252,7 @@ class Desk:
                 self.show(m["id"], (panel or {}).get("data") or {"title": ui.get("title", "")}, intent=True)
 
     def dismiss_intents(self, keep: set | None = None) -> None:
-        keys = [k for k, i in self.instances.items() if i.get("intent") and i["id"] not in (keep or set())]
+        keys = [k for k, i in self.instances.items() if i.get("intent") and not i.get("sticky") and i["id"] not in (keep or set())]
         for k in keys:
             self.instances.pop(k, None)
         if keys:
@@ -311,6 +287,7 @@ class Desk:
                         "essential": m.get("essential", False), "urgent": m.get("urgent", False), "tone": m.get("tone", "cyan"),
                         "pos": self.position(i["id"]), "overlay": m.get("overlay", False),
                         "takeover": prio >= 90 and m["size"] == "full", "fullscreen": bool(i.get("fullscreen")),
+                        "sticky": bool(m.get("sticky")), "immersive": bool(m.get("immersive")),
                         "personal": m.get("personal", False), "refresh": self.refresh_of(i["id"])})
         out = self._rotate(out)
         wanted = {wid: p["screen"] for wid, p in self.prefs.items() if p.get("screen") is not None}

@@ -164,7 +164,7 @@
     if (!card || card.rev !== inst.rev) {
       if (card) remove(inst.key, true);
       const el = document.createElement("section");
-      el.className = `widget size-${inst.size} w-${inst.id} tone-${TONES.has(inst.tone) ? inst.tone : "cyan"}${inst.essential ? " essential" : ""}${inst.urgent ? " urgent" : ""}${inst.takeover ? " takeover" : ""}${inst.chrome === false ? " frameless" : ""} hidden`;
+      el.className = `widget size-${inst.size} w-${inst.id} tone-${TONES.has(inst.tone) ? inst.tone : "cyan"}${inst.essential ? " essential" : ""}${inst.urgent ? " urgent" : ""}${inst.takeover ? " takeover" : ""}${inst.immersive ? " immersive" : ""}${inst.chrome === false ? " frameless" : ""} hidden`;
       el.dataset.key = inst.key;
       el.innerHTML = '<div class="w-body"></div><i class="w-cycle" aria-hidden="true"></i>';
       card = { el, sig, rev: inst.rev, impl, inst, placed: false };
@@ -272,6 +272,7 @@
     const full = ordered.find((c) => c.inst.fullscreen);
     ordered.forEach((c) => c.el.classList.toggle("fullscreen", c === full));
     document.body.classList.toggle("desk-full", !!full);
+    document.body.classList.toggle("desk-immersive", !!(full && full.inst.immersive));
     document.body.dataset.deskFullscreen = full ? full.inst.id : "";
     document.body.classList.toggle("desk-whiteboard", ordered.some((c) => c.inst.id === "lavagna"));
     if (!full) return false;

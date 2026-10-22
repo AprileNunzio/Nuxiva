@@ -13,6 +13,7 @@
     "turn_white": "White's turn",
     "turn_black": "Black's turn (Nuxiva)",
     "action_hint": "Hint",
-    "action_restart": "New game"
+    "action_restart": "New game",
+    "hint_question": "What move do you suggest in chess?"
   }
 }

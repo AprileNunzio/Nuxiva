@@ -6,7 +6,8 @@ from unittest import mock
 
 from config import WIDGETS_DIR
 from features.desktop import sources
-from features.desktop.desk import TONES, Desk
+from features.desktop.manifest import TONES
+from features.desktop.desk import Desk
 from state import store
 
 EMOJI = re.compile("[\U0001F300-\U0001FAFF\u2600-\u26FF]")

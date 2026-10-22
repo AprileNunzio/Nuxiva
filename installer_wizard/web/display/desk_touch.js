@@ -126,10 +126,16 @@
     b.type = "button";
     b.className = "wt-exit";
     b.setAttribute("data-i18n-scope", "web/shared");
-    b.append("✕ ", PageText.bind(document.createElement("span"), "widget_shrink"));
+    const label = document.createElement("span");
+    b.append("✕ ", label);
+    const sync = () => PageText.bind(label, document.body.classList.contains("desk-immersive") ? "widget_close" : "widget_shrink");
+    sync();
+    new MutationObserver(sync).observe(document.body, { attributes: true, attributeFilter: ["class"] });
     b.addEventListener("click", () => {
       const full = document.querySelector(".desk > .widget.fullscreen");
-      if (full) fullscreen(full.dataset.key, false);
+      if (!full) return;
+      if (full.classList.contains("immersive")) close(full.dataset.key);
+      else fullscreen(full.dataset.key, false);
     });
     document.body.appendChild(b);
   }

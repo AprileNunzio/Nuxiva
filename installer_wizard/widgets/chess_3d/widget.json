@@ -3,7 +3,7 @@
   "name": "Scacchi 3D",
   "icon": "♟",
   "priority": 95,
-  "size": "l",
+  "size": "full",
   "agent": "games",
   "intents": [
     "chess_3d",
@@ -14,5 +14,8 @@
   "ttl": 0,
   "description": "Scacchiera tridimensionale interattiva a tutto schermo con sfide contro Nuxiva e motore tattico.",
   "tone": "blue",
-  "essential": true
+  "essential": true,
+  "chrome": false,
+  "sticky": true,
+  "immersive": true
 }

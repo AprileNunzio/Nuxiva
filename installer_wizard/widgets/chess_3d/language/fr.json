@@ -13,6 +13,7 @@
     "turn_white": "Tour des Blancs",
     "turn_black": "Tour des Noirs (Nuxiva)",
     "action_hint": "Conseil",
-    "action_restart": "Nouvelle partie"
+    "action_restart": "Nouvelle partie",
+    "hint_question": "Quel coup me conseilles-tu aux échecs ?"
   }
 }

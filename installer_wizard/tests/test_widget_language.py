@@ -3,7 +3,8 @@ import re
 import unittest
 from pathlib import Path
 
-from features.desktop.desk import REFRESH_MAX, REFRESH_MIN, clamp_refresh, desk
+from features.desktop.desk import desk
+from features.desktop.manifest import REFRESH_MAX, REFRESH_MIN, clamp_refresh
 
 WIDGETS = Path(__file__).resolve().parent.parent / "widgets"
 LANGS = ("it", "en", "es", "fr")
