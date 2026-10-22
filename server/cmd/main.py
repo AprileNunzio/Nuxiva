@@ -38,6 +38,9 @@ async def lifespan(app: FastAPI):
     sensory_bus.start()
     actuator_gateway.attach_to_bus()
     autonomous_runner.start()
+    from server.core.plasticity.composition import plasticity_service
+    from server.core.plasticity.scheduler import rem_loop
+    rem_task = asyncio.create_task(rem_loop(plasticity_service))
 
     try:
         from server.core.db.database import engine, Base
@@ -63,6 +66,7 @@ async def lifespan(app: FastAPI):
         graph_client.edge_count(),
     )
     yield
+    rem_task.cancel()
 
 def create_application() -> FastAPI:
     app = FastAPI(
@@ -124,6 +128,10 @@ def create_application() -> FastAPI:
 
     from server.core.hippocampus_router.api import router as hippocampus_router
     app.include_router(hippocampus_router)
+    from server.core.skill_forge.api import router as skill_forge_router
+    from server.core.plasticity.api import router as plasticity_router
+    app.include_router(skill_forge_router)
+    app.include_router(plasticity_router)
     app.include_router(router)
     app.include_router(router_v2)
 

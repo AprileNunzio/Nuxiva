@@ -44,6 +44,23 @@
         "required_missing": "Falta un parámetro obligatorio.",
         "type_mismatch": "El tipo del parámetro no coincide con el esquema.",
         "value_not_allowed": "El valor del parámetro no está entre los permitidos."
+      },
+      "forge": {
+        "manifest_invalid": "El manifiesto de la habilidad no es válido.",
+        "source_too_large": "El código de la habilidad es demasiado grande.",
+        "syntax": "El código de la habilidad tiene errores de sintaxis.",
+        "forbidden_import": "El código usa un módulo no permitido.",
+        "forbidden_call": "El código usa una función no permitida.",
+        "forbidden_syntax": "El código usa una construcción no permitida.",
+        "missing_entry": "Falta la función run(slots).",
+        "unknown_skill": "Habilidad desconocida.",
+        "untrusted": "La firma de la habilidad no es válida: no se ejecuta.",
+        "timeout": "La habilidad superó el tiempo máximo.",
+        "runtime_failed": "La ejecución de la habilidad falló.",
+        "output_invalid": "La habilidad devolvió un resultado no válido."
+      },
+      "plasticity": {
+        "invalid": "La valoración no es válida."
       }
     },
     "platform": {
@@ -72,6 +89,10 @@
       },
       "service": {
         "degraded": "El servicio del hipocampo funciona en modo reducido."
+      },
+      "distillation": {
+        "unavailable": "La destilación requiere dependencias y una GPU que esta máquina no tiene.",
+        "no_data": "Aún no hay suficientes ejemplos verificados para destilar."
       }
     },
     "gliner": {

@@ -109,6 +109,50 @@ class HippocampusService:
             logger.warning("Neuron %s learned in memory only (%s)", neuron_id, persisted.error.code)
         return Ok(len(vectors))
 
+    def _live_index(self) -> Result[Any, CortexFailure]:
+        dimension = self._embedder.ensure_dimension()
+        return dimension if not dimension.is_ok else self._memory.index(dimension.value)
+
+    def _persisted(self, value: Any) -> Result[Any, CortexFailure]:
+        saved = self._memory.persist()
+        if not saved.is_ok:
+            logger.warning("Neuron memory changed in memory only (%s)", saved.error.code)
+        return Ok(value)
+
+    def forget(self, neuron_id: str) -> Result[bool, CortexFailure]:
+        index = self._live_index()
+        if not index.is_ok:
+            return index
+        removed = call_native(lambda _: index.value.remove(neuron_id))
+        return removed if not removed.is_ok else self._persisted(removed.value)
+
+    def weights(self) -> Result[dict[str, float], CortexFailure]:
+        index = self._live_index()
+        if not index.is_ok:
+            return index
+        return call_native(lambda _: {nid: index.value.weight(nid) for nid in index.value.neuron_ids()})
+
+    def set_weight(self, neuron_id: str, weight: float) -> Result[float, CortexFailure]:
+        index = self._live_index()
+        if not index.is_ok:
+            return index
+        changed = call_native(lambda _: index.value.set_weight(neuron_id, weight))
+        return changed if not changed.is_ok else self._persisted(weight)
+
+    def reinforce_with(self, neuron_id: str, utterance: str, inhibit: bool = False) -> Result[None, CortexFailure]:
+        clean = sanitize_utterance(utterance)
+        if not clean.is_ok:
+            return clean
+        vector = self._embedder.embed(clean.value)
+        if not vector.is_ok:
+            return vector
+        index = self._live_index()
+        if not index.is_ok:
+            return index
+        action = index.value.add_inhibition if inhibit else index.value.add_dendrite
+        stored = call_native(lambda _: action(neuron_id, vector.value))
+        return stored if not stored.is_ok else self._persisted(None)
+
     def status(self, lang: Optional[str] = None) -> dict[str, Any]:
         storage = self._memory.storage_error
         embedding = self._embedder.state()

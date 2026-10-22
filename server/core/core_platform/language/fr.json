@@ -44,6 +44,23 @@
         "required_missing": "Un paramètre obligatoire est manquant.",
         "type_mismatch": "Le type du paramètre ne correspond pas au schéma.",
         "value_not_allowed": "La valeur du paramètre ne fait pas partie de celles autorisées."
+      },
+      "forge": {
+        "manifest_invalid": "Le manifeste de la compétence n'est pas valide.",
+        "source_too_large": "Le code de la compétence est trop volumineux.",
+        "syntax": "Le code de la compétence contient des erreurs de syntaxe.",
+        "forbidden_import": "Le code utilise un module non autorisé.",
+        "forbidden_call": "Le code utilise une fonction non autorisée.",
+        "forbidden_syntax": "Le code utilise une construction non autorisée.",
+        "missing_entry": "La fonction run(slots) est absente.",
+        "unknown_skill": "Compétence inconnue.",
+        "untrusted": "La signature de la compétence n'est pas valide : elle n'est pas exécutée.",
+        "timeout": "La compétence a dépassé le temps maximal.",
+        "runtime_failed": "L'exécution de la compétence a échoué.",
+        "output_invalid": "La compétence a renvoyé un résultat non valide."
+      },
+      "plasticity": {
+        "invalid": "Le retour n'est pas valide."
       }
     },
     "platform": {
@@ -72,6 +89,10 @@
       },
       "service": {
         "degraded": "Le service hippocampe fonctionne en mode dégradé."
+      },
+      "distillation": {
+        "unavailable": "La distillation exige des dépendances et un GPU absents de cette machine.",
+        "no_data": "Il n'y a pas encore assez d'exemples vérifiés pour distiller."
       }
     },
     "gliner": {

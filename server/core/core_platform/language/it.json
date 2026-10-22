@@ -44,6 +44,23 @@
         "required_missing": "Manca un parametro obbligatorio.",
         "type_mismatch": "Il tipo del parametro non corrisponde allo schema.",
         "value_not_allowed": "Il valore del parametro non è fra quelli ammessi."
+      },
+      "forge": {
+        "manifest_invalid": "Il manifesto della competenza non è valido.",
+        "source_too_large": "Il codice della competenza è troppo grande.",
+        "syntax": "Il codice della competenza ha errori di sintassi.",
+        "forbidden_import": "Il codice usa un modulo non consentito.",
+        "forbidden_call": "Il codice usa una funzione non consentita.",
+        "forbidden_syntax": "Il codice usa un costrutto non consentito.",
+        "missing_entry": "Manca la funzione run(slots).",
+        "unknown_skill": "Competenza sconosciuta.",
+        "untrusted": "La firma della competenza non è valida: non viene eseguita.",
+        "timeout": "La competenza ha superato il tempo massimo.",
+        "runtime_failed": "L'esecuzione della competenza non è riuscita.",
+        "output_invalid": "La competenza ha restituito un risultato non valido."
+      },
+      "plasticity": {
+        "invalid": "Il riscontro non è valido."
       }
     },
     "platform": {
@@ -72,6 +89,10 @@
       },
       "service": {
         "degraded": "Il servizio ippocampo funziona in modalità ridotta."
+      },
+      "distillation": {
+        "unavailable": "La distillazione richiede dipendenze e una GPU non presenti su questa macchina.",
+        "no_data": "Non ci sono ancora abbastanza esempi verificati per distillare."
       }
     },
     "gliner": {

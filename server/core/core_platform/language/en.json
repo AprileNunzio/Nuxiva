@@ -44,6 +44,23 @@
         "required_missing": "A required parameter is missing.",
         "type_mismatch": "The parameter type does not match the schema.",
         "value_not_allowed": "The parameter value is not among the allowed ones."
+      },
+      "forge": {
+        "manifest_invalid": "The skill manifest is not valid.",
+        "source_too_large": "The skill code is too large.",
+        "syntax": "The skill code has syntax errors.",
+        "forbidden_import": "The code uses a module that is not allowed.",
+        "forbidden_call": "The code uses a function that is not allowed.",
+        "forbidden_syntax": "The code uses a construct that is not allowed.",
+        "missing_entry": "The run(slots) function is missing.",
+        "unknown_skill": "Unknown skill.",
+        "untrusted": "The skill signature is not valid: it is not executed.",
+        "timeout": "The skill exceeded the time limit.",
+        "runtime_failed": "The skill execution failed.",
+        "output_invalid": "The skill returned an invalid result."
+      },
+      "plasticity": {
+        "invalid": "The feedback is not valid."
       }
     },
     "platform": {
@@ -72,6 +89,10 @@
       },
       "service": {
         "degraded": "The hippocampus service is running in degraded mode."
+      },
+      "distillation": {
+        "unavailable": "Distillation needs dependencies and a GPU that this machine does not have.",
+        "no_data": "There are not yet enough verified examples to distil."
       }
     },
     "gliner": {

@@ -16,6 +16,7 @@ from server.core.orchestrator.system1_router import system1_router, System1Inten
 from server.core.reasoning.system2_engine import system2_engine
 from server.core.decision.decision_engine import ContextDimension, decision_engine
 from server.core.telemetry.journey import journey
+from server.core.orchestrator.hippocampus_gate import try_fast_path
 
 logger = logging.getLogger("nuxiva.dispatcher")
 
@@ -60,8 +61,8 @@ class OrchestratorDispatcher:
                 ))
                 if banter and banter.content:
                     response.speech_output = banter.content
-            except Exception:
-                pass
+            except Exception as exc:
+                logger.warning("Project banter skipped (%s)", type(exc).__name__)
 
         if response and response.speech_output:
             project_manager.add_response(speaker_id, response.speech_output)
@@ -101,6 +102,15 @@ class OrchestratorDispatcher:
             laws_book.update(str((context_override or {}).get("laws") or ""))
             laws_span.ok("Leggi conformi (Asimov 0, 1, 2, 3)")
 
+
+        with journey.span("hippocampus", "Ippocampo", "Instradamento rapido senza generazione di token") as hip_span:
+            from server.core.hippocampus_router.composition import hippocampus_service
+            fast, hip_summary = await try_fast_path(
+                sanitized_query, str((context_override or {}).get("reply_language") or "") or None, hippocampus_service)
+            hip_span.ok(hip_summary)
+        if fast is not None:
+            journey.finish(fast.speech_output, fast.status, fast.agent_id)
+            return fast
 
         task_id = f"tsk_{uuid.uuid4().hex[:12]}"
 
