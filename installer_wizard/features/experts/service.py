@@ -7,12 +7,19 @@ from state import store
 from features.agent import registry
 from features.agent.paths import level
 from features.authz import gate
+from features.devstudio.rules import RULES
 from features.experts import skills, templates
-from features.experts.model import Expert, ExpertError, build, clean, slug
+from features.experts.model import MAX_TOOLS, Expert, ExpertError, build, clean, slug
 from features.experts.store import experts
 from features.team.board import ACTING, board
 
 MAX_STEPS = 8
+BUILD_STEPS = 18
+BUILD_GUIDE = (
+    "\nProgetti complessi: con dev_new crea il progetto, con dev_plan salva il piano completo dei file, poi chiama dev_build ripetutamente "
+    "finché non restano file in attesa (dev_status mostra lo stato e serve per riprendere un progetto esistente: non ricominciare mai da capo). "
+    "Non scrivere un sito intero con un solo dev_write. Direttive obbligatorie per ogni codice:\n"
+)
 PENDING_TTL = 300
 HISTORY_TURNS = 8
 QUESTION_LIMIT = 2000
@@ -62,7 +69,23 @@ def create(body: dict, lang: str, author: str) -> Expert:
     return expert
 
 
+BUILD_TOOLS = ("dev_plan", "dev_build", "dev_status")
+
+
+def grant_build_tools() -> int:
+    granted = 0
+    for expert in experts.all():
+        if "dev_write" in expert.tools and not all(t in expert.tools for t in BUILD_TOOLS):
+            merged = list(dict.fromkeys(expert.tools + list(BUILD_TOOLS)))[:MAX_TOOLS]
+            experts.put(build({**expert.to_dict(), "tools": merged}, known_tools()), create=False)
+            granted += 1
+    return granted
+
+
 def seed_defaults(lang: str) -> list[str]:
+    granted = grant_build_tools()
+    if granted:
+        store.event("INFO", f"{granted} esperti di programmazione hanno ora gli strumenti per i progetti complessi", "experts")
     done = experts.seeded()
     present = {e.template for e in experts.all() if e.template}
     created: list[str] = []
@@ -136,6 +159,7 @@ def _system(expert: Expert, lang: str) -> str:
     owner_rules = f"\nIstruzioni del proprietario: {expert.instructions}" if expert.instructions else ""
     catalog = "\n".join(f"- {c['id']}: {c['name']} — {c['purpose']}" for c in (skills.card(s, lang) for s in expert.skills))
     moves = ('{"skill": "id_competenza"} per attivare una competenza: carica la sua procedura e i suoi strumenti;\n' if expert.skills else "")
+    build = BUILD_GUIDE + RULES if "dev_build" in expert.tools else ""
     return (
         f"Sei l'agente esperto «{expert.role}» della squadra di {assistant_name()}. Non hai un nome di persona.\n"
         f"Specialità: {expert.specialty}.\nConoscenze:\n{knowledge or '- generali del tuo ruolo'}{owner_rules}\n\n"
@@ -146,7 +170,7 @@ def _system(expert: Expert, lang: str) -> str:
         '{"answer": "risposta finale"} quando hai finito.\n'
         f"Regole: la risposta finale va scritta in {LANG_NAMES.get(lang, 'italiano')}, da esperto, chiara e concreta; "
         "usa gli strumenti per ogni dato che può cambiare nel tempo; non inventare esiti né numeri; se uno strumento fallisce "
-        "prova un'alternativa o spiega il problema; se la domanda è fuori dalla tua specialità dillo."
+        "prova un'alternativa o spiega il problema; se la domanda è fuori dalla tua specialità dillo." + build
     )
 
 
@@ -217,7 +241,7 @@ async def _loop(expert: Expert, question: str, lang: str, steps: list[dict]) -> 
     from features.brain.llm import BrainUnavailable, generate
     system = _system(expert, lang)
     hint = skills.suggest(expert.skills, question)
-    for _ in range(MAX_STEPS):
+    for _ in range(BUILD_STEPS if "dev_build" in expert.tools else MAX_STEPS):
         active = _active(steps)
         _show(expert, question, "thinking", steps, lang)
         try:

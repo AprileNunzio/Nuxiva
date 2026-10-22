@@ -1,7 +1,9 @@
 import json
 from textwrap import dedent
 
-KINDS = ("static_site", "python_cli", "fastapi_service", "node_cli", "react_vite")
+from features.devstudio.starter_php import php_site
+
+KINDS = ("static_site", "php_site", "python_cli", "fastapi_service", "node_cli", "react_vite")
 
 
 def _clean(text: str) -> str:
@@ -221,7 +223,7 @@ def _react(name: str) -> dict:
     }
 
 
-BUILDERS = {"static_site": _static, "python_cli": _python_cli, "fastapi_service": _fastapi, "node_cli": _node_cli,
+BUILDERS = {"static_site": _static, "php_site": php_site, "python_cli": _python_cli, "fastapi_service": _fastapi, "node_cli": _node_cli,
             "react_vite": _react}
 
 

@@ -1,7 +1,7 @@
 from functools import partial
 
 from features.agent.registry import tool
-from features.devstudio import publish, runner, starters, workspace
+from features.devstudio import builder, plan as plans, publish, runner, starters, workspace
 from features.devstudio.workspace import DevError
 
 dev_tool = partial(tool, agent="devstudio")
@@ -11,9 +11,9 @@ def _failed(exc: Exception) -> str:
     return f"ERRORE: {exc}"
 
 
-@dev_tool("dev_new", "crea un nuovo progetto software con una struttura di partenza funzionante (sito statico, app Python da riga di comando, "
+@dev_tool("dev_new", "crea un nuovo progetto software con una struttura di partenza funzionante (sito statico, sito PHP modulare, app Python da riga di comando, "
           "servizio FastAPI, app Node, app React con Vite) nella cartella condivisa del codice",
-          {"name": "nome del progetto (lettere minuscole, numeri, trattini)", "kind": "static_site, python_cli, fastapi_service, node_cli o react_vite"})
+          {"name": "nome del progetto (lettere minuscole, numeri, trattini)", "kind": "static_site, php_site, python_cli, fastapi_service, node_cli o react_vite"})
 async def dev_new(name: str, kind: str = "static_site") -> str:
     kind = str(kind or "static_site").strip().lower()
     if kind not in starters.KINDS:
@@ -79,3 +79,35 @@ async def dev_publish(project: str) -> str:
         return f"pubblicato: {publish.publish(project)}"
     except DevError as exc:
         return _failed(exc)
+
+
+@dev_tool("dev_plan", "progetta un progetto complesso: crea il piano completo dei file (struttura per funzionalità, sicurezza, lingue) e lo salva per riprenderlo anche dopo giorni",
+          {"project": "nome di un progetto già creato con dev_new", "goal": "cosa deve fare il sito o l'app, con tutti i requisiti", "stack": "tecnologie volute, per esempio php e javascript (facoltativo)"})
+async def dev_plan(project: str, goal: str, stack: str = "") -> str:
+    try:
+        plan = await builder.make_plan(project, goal, stack)
+    except DevError as exc:
+        return _failed(exc)
+    return f"piano salvato: {len(plan.items)} file ({plan.stack}); usa dev_build per scriverli\n" + "\n".join(f"- {i.path}: {i.purpose}" for i in plan.items)
+
+
+@dev_tool("dev_build", "scrive i prossimi file del piano, uno alla volta con tutto il contesto, rispettando le regole di qualità; richiamalo finché non restano file in attesa",
+          {"project": "nome del progetto", "count": "quanti file scrivere ora, da 1 a 4"})
+async def dev_build(project: str, count: int = 3) -> str:
+    try:
+        plan, report = await builder.build_next(project, int(count or 3))
+    except (DevError, ValueError) as exc:
+        return _failed(exc)
+    counts = plan.counts()
+    return "\n".join(report) + f"\nstato: {counts['done']} scritti, {counts['pending']} in attesa, {counts['failed']} da rivedere"
+
+
+@dev_tool("dev_status", "mostra a che punto è un progetto: file scritti, in attesa e da rivedere; serve per riprendere il lavoro dopo giorni", {"project": "nome del progetto"})
+async def dev_status(project: str) -> str:
+    try:
+        plan = plans.load(project)
+    except DevError as exc:
+        return _failed(exc)
+    counts = plan.counts()
+    rows = [f"{i.status}: {i.path}" + (f" ({i.note})" if i.note else "") for i in plan.items]
+    return f"{plan.project} · {plan.stack} · {counts['done']} scritti, {counts['pending']} in attesa, {counts['failed']} da rivedere\nobiettivo: {plan.goal[:300]}\n" + "\n".join(rows)

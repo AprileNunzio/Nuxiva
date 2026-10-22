@@ -17,7 +17,7 @@ MIN_CHARS = 20
 MIN_WORDS = 5
 MAX_CHARS = 400
 DAY = 86400
-CODING_TOOLS = ["dev_new", "dev_tree", "dev_read", "dev_write", "dev_run"]
+CODING_TOOLS = ["dev_new", "dev_plan", "dev_build", "dev_status", "dev_tree", "dev_read", "dev_write", "dev_run"]
 BASE_TOOLS = ["now", "web_research"]
 QUESTION = re.compile(r"\?|^\s*(come|cosa|che\s+cosa|perch[eé]|quando|dove|chi|quale|quali|quanto|quanti|spiegami|dimmi|aiutami|"
                       r"mi\s+(spieghi|aiuti)|posso|devo|conviene|what|how|why|when|where|who|which|explain|help)\b", re.I)
