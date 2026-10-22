@@ -85,7 +85,6 @@ export const CATEGORIES: {
 ];
 
 const CORE_APPS_LIST: CoreAppDef[] = [
-  { id: 'agent_fleet', iconName: 'Users', category: 'ai', accent: 'purple' },
   { id: 'agents', iconName: 'Users', category: 'ai', accent: 'purple' },
   { id: 'algorithms', iconName: 'Binary', category: 'ai', accent: 'purple' },
   { id: 'hippocampus_router', iconName: 'Brain', category: 'ai', accent: 'purple' },
@@ -108,8 +107,6 @@ const CORE_APPS_LIST: CoreAppDef[] = [
   { id: 'cameras', iconName: 'Video', category: 'security', accent: 'rose' },
   { id: 'office', iconName: 'FileText', category: 'media', accent: 'emerald' },
   { id: 'google', iconName: 'Mail', category: 'media', accent: 'emerald' },
-  { id: 'music', iconName: 'Music', category: 'media', accent: 'emerald' },
-  { id: 'iptv', iconName: 'Tv', category: 'media', accent: 'emerald' },
   { id: 'features_hub', iconName: 'Grid', category: 'media', accent: 'emerald' },
 ];
 

@@ -249,6 +249,18 @@ async def admin_person_photo_delete(slug: str, photo_id: str, user: str = Depend
     return {"ok": True, "optimization": opt}
 
 
+@admin_routes.post("/api/people/{slug}/samples/clear")
+async def admin_person_samples_clear(slug: str, user: str = Depends(require_admin)):
+    from features.people.photos import clear_samples
+    clean = people.slugify(slug)
+    d = FACES / clean
+    if not d.is_dir():
+        raise HTTPException(404, "Persona non trovata")
+    removed = clear_samples(d)
+    store.event("INFO", f"Campioni di riconoscimento azzerati per {clean} da {user}", "vision")
+    return {"ok": True, "removed": removed}
+
+
 @admin_routes.post("/api/people/{slug}/reproject")
 async def admin_person_reproject(slug: str, user: str = Depends(require_admin)):
     clean = people.slugify(slug)

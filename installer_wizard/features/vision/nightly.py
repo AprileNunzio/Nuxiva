@@ -2,7 +2,6 @@ import asyncio
 import json
 import logging
 import os
-import shutil
 import time
 from datetime import datetime
 from pathlib import Path
@@ -29,16 +28,6 @@ def optimize_person(slug: str) -> dict:
     emb_file = d / "embeddings.npy"
     photos_dir = d / "photos"
     photos_dir.mkdir(parents=True, exist_ok=True)
-
-    # Ensure main photo.jpg exists in photos_dir as baseline
-    primary = d / "photo.jpg"
-    if primary.is_file():
-        baseline_copy = photos_dir / "photo_primary.jpg"
-        if not baseline_copy.exists():
-            try:
-                shutil.copy(primary, baseline_copy)
-            except OSError:
-                pass
 
     samples_count = 0
     ir_count = 0

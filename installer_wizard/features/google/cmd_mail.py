@@ -1,4 +1,8 @@
 import re
+import unicodedata
+from pathlib import Path
+
+from config import STATE_DIR
 from features.google import panels
 from features.google.commands import Ctx
 
@@ -62,3 +66,64 @@ async def read(text: str, ctx: Ctx) -> tuple[str, dict]:
     speech = f"Email di {m['from']}, oggetto «{m['subject']}». {body[:600]}"
     return speech, {"mode": "focus", "title": m["subject"], "subtitle": f"{m['from']} · {ctx.email}",
                     "panels": [panels.mail_body(m, body)]}
+
+
+MAX_FILES = 20
+MAX_BYTES = 25 * 2 ** 20
+ROOT = STATE_DIR / "downloads" / "gmail"
+_TOPIC_DL = re.compile(r"\b(?:tutt[eio]\s+)?(?:le|i|gli|l'|la|il)\s*([A-Za-zÀ-ÿ]{3,30})\b", re.I)
+_OWNER_DL = re.compile(r"\b(?:di|da|del|della)\s+([A-Za-zÀ-ÿ][\wÀ-ÿ&.-]{1,30})", re.I)
+_FOLDER_DL = re.compile(r"\bcartella\s+(.{1,60})$", re.I)
+_SKIP_TOPIC = {"mail", "email", "posta", "allegati", "allegato", "pdf", "file"}
+
+
+def _slug(value: str) -> str:
+    plain = unicodedata.normalize("NFKD", value).encode("ascii", "ignore").decode()
+    return re.sub(r"[^a-z0-9]+", "-", plain.lower()).strip("-")[:40] or "varie"
+
+
+def _safe_name(name: str) -> str:
+    stem = _slug(Path(name).stem)
+    return f"{stem}.pdf"
+
+
+def attachment_request(text: str) -> tuple[str, str]:
+    clean = text.strip(" ?!.")
+    folder = _FOLDER_DL.search(clean)
+    if folder:
+        clean = clean[:folder.start()].strip()
+    topic = next((m.group(1) for m in _TOPIC_DL.finditer(clean) if m.group(1).lower() not in _SKIP_TOPIC), "")
+    who = next((m.group(1) for m in _OWNER_DL.finditer(clean) if m.group(1).lower() not in _SKIP_TOPIC), "")
+    terms = " ".join(x for x in (topic, who) if x)
+    query = f"{terms} has:attachment filename:pdf".strip()
+    return query, _slug(folder.group(1) if folder else terms)
+
+
+async def download(text: str, ctx: Ctx) -> tuple[str, dict]:
+    if not ctx.private:
+        return (f"{ctx.name}, per scaricare i suoi allegati aspetto di essere da solo con lei.", {"mode": "face"})
+    query, folder = attachment_request(text)
+    files = (await ctx.session.pdf_attachments(query, MAX_FILES))[:MAX_FILES]
+    if not files:
+        return f"Non trovo allegati PDF per «{query.replace(' has:attachment filename:pdf', '')}».", {"mode": "face"}
+    target = ROOT / _slug(ctx.email or ctx.name) / folder
+    target.mkdir(parents=True, exist_ok=True)
+    saved, skipped = [], 0
+    for item in files:
+        if item["size"] > MAX_BYTES:
+            skipped += 1
+            continue
+        raw = await ctx.session.attachment_bytes(item["mail_id"], item["attachment_id"])
+        if not raw.startswith(b"%PDF") or len(raw) > MAX_BYTES:
+            skipped += 1
+            continue
+        path = target / f"{int(item['at'])}-{_safe_name(item['name'])}"
+        path.write_bytes(raw)
+        saved.append(path.name)
+    where = str(target)
+    if not saved:
+        return f"Ho trovato {len(files)} allegati ma nessuno era un PDF valido o entro i limiti.", {"mode": "face"}
+    extra = f" Ne ho saltati {skipped}." if skipped else ""
+    speech = f"{ctx.name}, ho scaricato {len(saved)} PDF nella cartella {where}.{extra}"
+    return speech, {"mode": "focus", "title": "Allegati scaricati", "subtitle": where,
+                    "panels": [{"type": "list", "title": "File", "items": [{"label": n, "value": "", "status": ""} for n in saved]}]}

@@ -32,6 +32,9 @@ COMMANDS = [
                                 r"|\bcosa (?:ho|c'è|c'e) (?:da fare )?(?:oggi|domani|dopodomani|stasera|lunedì|martedì|"
                                 r"mercoledì|giovedì|venerdì|sabato|domenica|questa settimana)\s*[?.!]?$"
                                 r"|\bsono libero\b")),
+    ("mail_download", "gmail", _R(r"\b(?:scarica\w*|salva\w*|download)\b[^.?!]{0,60}\b(?:allegat\w+|pdf|bollett\w+|fattur\w+)\b"
+                                  r"|\b(?:allegat\w+|bollett\w+|fattur\w+)\b[^.?!]{0,60}\b(?:mail|e-?mail|posta|gmail)\b[^.?!]{0,60}\b(?:scarica\w*|salva\w*)\b"
+                                  r"|\b(?:mail|e-?mail|posta|gmail)\b[^.?!]{0,80}\b(?:scarica\w*|salva\w*)\b")),
     ("mail_read", "gmail", _R(r"\b(?:leggi(?:mi)?|cosa dice|di cosa parla|apri)\b[^.?!]{0,20}\b(?:l'|la )?(?:ultima|ultim[ae]|"
                               r"prima|nuova) (?:e-?mail|mail)\b|\bcosa (?:mi )?(?:ha scritto|scrive)\b"
                               r"|^\W*(?:leggi(?:me)?l[ao]|leggila)\W*$")),
@@ -144,7 +147,7 @@ async def answer(text: str) -> tuple[str, dict]:
     ctx = _context(service, cmd in _SOFT or not _EXPLICIT.search(text))
     from features.google import cmd_calendar, cmd_mail, cmd_misc, cmd_tasks
     handlers = {"calendar": cmd_calendar.agenda, "calendar_add": cmd_calendar.add, "calendar_delete": cmd_calendar.delete,
-                "calendar_free": cmd_calendar.free, "mail": cmd_mail.inbox, "mail_read": cmd_mail.read,
+                "calendar_free": cmd_calendar.free, "mail": cmd_mail.inbox, "mail_read": cmd_mail.read, "mail_download": cmd_mail.download,
                 "tasks": cmd_tasks.listing, "task_add": cmd_tasks.add, "task_done": cmd_tasks.done,
                 "contact": cmd_misc.contact, "drive": cmd_misc.drive, "notes": cmd_misc.notes,
                 "note_add": cmd_misc.note_add}

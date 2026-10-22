@@ -160,6 +160,31 @@ class GoogleData:
         body = re.split(r"\n(?:>|On .+ wrote:|Il giorno .+ ha scritto:)", body)[0]
         return re.sub(r"\s+", " ", body).strip()[:limit]
 
+    async def pdf_attachments(self, query: str, limit: int = 20) -> list[dict]:
+        base = "https://gmail.googleapis.com/gmail/v1/users/me/messages"
+        data = await self._get(base, q=query, maxResults=str(max(1, limit)))
+        found = []
+        for ref in data.get("messages", [])[:limit]:
+            msg = await self._get(f"{base}/{urllib.parse.quote(ref['id'])}", format="full")
+            headers = {x["name"].lower(): x["value"] for x in msg.get("payload", {}).get("headers", [])}
+            parts = [msg.get("payload", {})]
+            while parts:
+                part = parts.pop(0)
+                parts.extend(part.get("parts") or [])
+                name = part.get("filename") or ""
+                body = part.get("body") or {}
+                if name and body.get("attachmentId") and (name.lower().endswith(".pdf") or part.get("mimeType") == "application/pdf"):
+                    found.append({"mail_id": ref["id"], "attachment_id": body["attachmentId"], "name": name,
+                                  "size": int(body.get("size") or 0), "subject": headers.get("subject", ""),
+                                  "at": int(msg.get("internalDate", "0")) / 1000})
+        return found
+
+    async def attachment_bytes(self, mail_id: str, attachment_id: str) -> bytes:
+        url = (f"https://gmail.googleapis.com/gmail/v1/users/me/messages/{urllib.parse.quote(mail_id)}"
+               f"/attachments/{urllib.parse.quote(attachment_id)}")
+        data = (await self._get(url)).get("data") or ""
+        return base64.urlsafe_b64decode(data + "=" * (-len(data) % 4))
+
     async def free_slots(self, day: date, start_hour: int = 8, end_hour: int = 20) -> list[tuple[datetime, datetime]]:
         begin = datetime.combine(day, datetime.min.time()).replace(hour=start_hour).astimezone()
         finish = begin.replace(hour=end_hour)

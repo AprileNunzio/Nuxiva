@@ -1,5 +1,4 @@
 import React from 'react';
-import { View as AgentFleetView } from '../core_apps/agent_fleet/View';
 import { View as AgentsView } from '../core_apps/agents/View';
 import { View as AlgorithmsView } from '../core_apps/algorithms/View';
 import { View as AutomationsView } from '../core_apps/automations/View';
@@ -28,7 +27,6 @@ import { View as VaultView } from '../core_apps/vault/View';
 import { View as VpnView } from '../core_apps/vpn/View';
 
 const CORE_APP_COMPONENTS: Readonly<Record<string, React.FC>> = {
-  agent_fleet: AgentFleetView,
   agents: AgentsView,
   algorithms: AlgorithmsView,
   automations: AutomationsView,

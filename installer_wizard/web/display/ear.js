@@ -11,7 +11,7 @@
   const optedIn = () => { try { return localStorage.getItem(OPT_IN) === "1"; } catch (e) { return false; } };
   const secure = () => window.isSecureContext && !!navigator.mediaDevices;
   const micAllowed = () => D.local || (secure() && optedIn());
-  const socketUrl = () => (location.protocol === "https:" ? `wss://${location.host}/ws/ear` : `ws://${location.hostname}:8093`);
+  const socketUrl = () => `${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/ws/ear`;
   let parked = false;
   document.addEventListener("visibilitychange", () => {
     send({ type: "client", page: PAGE, visible: document.visibilityState });
@@ -163,7 +163,7 @@
       }
       ws = null;
       wsFails++;
-      if (wsFails % 5 === 1) report(false, `servizio di ascolto non raggiungibile da ${location.hostname}:8093 (codice ${e.code}, tentativo ${wsFails})`);
+      if (wsFails % 5 === 1) report(false, `servizio di ascolto non raggiungibile da ${location.host}/ws/ear (codice ${e.code}, tentativo ${wsFails})`);
       setState("off", ["ear_reconnecting", {}]);
       setTimeout(connect, 3000);
     };

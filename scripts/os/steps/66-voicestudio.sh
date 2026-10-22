@@ -14,8 +14,8 @@ wanted() { [ "${NUXIVA_VOICESTUDIO:-0}" = "1" ] && [ "${NUXIVA_VOICESTUDIO_WHERE
 have_docker() { command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; }
 gpu_flags() { has_usable_gpu && docker info 2>/dev/null | grep -qi nvidia && echo "--gpus all" || true; }
 signature() { printf '%s|%s|%s' "$IMAGE" "$(gpu_flags)" "$(printf '%s' "${NUXIVA_VOICESTUDIO_KEY:-}" | sha1sum | cut -c1-12)"; }
-running_signature() { docker inspect -f '{{ index .Config.Labels "nuxiva.signature" }}' "$NAME" 2>/dev/null || true; }
-running() { [ "$(docker inspect -f '{{.State.Running}}' "$NAME" 2>/dev/null)" = "true" ]; }
+running_signature() { docker container inspect -f '{{ index .Config.Labels "nuxiva.signature" }}' "$NAME" 2>/dev/null || true; }
+running() { [ "$(docker container inspect -f '{{.State.Running}}' "$NAME" 2>/dev/null)" = "true" ]; }
 healthy() {
     curl -fsS --max-time 5 "$HEALTH" >/dev/null 2>&1 && return 0
     if [ -n "${NUXIVA_VOICESTUDIO_KEY:-}" ]; then
@@ -26,14 +26,14 @@ healthy() {
 
 remove_container() {
     have_docker || return 0
-    docker inspect "$NAME" >/dev/null 2>&1 || return 0
+    docker container inspect "$NAME" >/dev/null 2>&1 || return 0
     docker rm -f "$NAME" >/dev/null
     info "Studio delle voci locale fermato: le voci create restano nel volume $VOLUME"
 }
 
 step_check() {
     if ! wanted; then
-        ! have_docker || ! docker inspect "$NAME" >/dev/null 2>&1
+        ! have_docker || ! docker container inspect "$NAME" >/dev/null 2>&1
         return
     fi
     # Se il container Docker è attivo ed healthy, eccellente
@@ -83,10 +83,10 @@ step_apply() {
     if [ "$try_container" = "1" ] && have_docker && [ "$(uname -m)" = "x86_64" ]; then
         progress 25 "Verifica immagine container Studio delle voci"
         if timeout 60 docker pull "$IMAGE" >/dev/null 2>&1; then
-            if docker inspect "$NAME" >/dev/null 2>&1 && [ "$(running_signature)" != "$(signature)" ]; then
+            if docker container inspect "$NAME" >/dev/null 2>&1 && [ "$(running_signature)" != "$(signature)" ]; then
                 docker rm -f "$NAME" >/dev/null
             fi
-            if ! docker inspect "$NAME" >/dev/null 2>&1; then
+            if ! docker container inspect "$NAME" >/dev/null 2>&1; then
                 progress 60 "Avvio dello Studio delle voci"
                 local flags
                 flags=$(gpu_flags)

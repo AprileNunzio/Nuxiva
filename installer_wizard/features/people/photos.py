@@ -19,3 +19,13 @@ def delete_photo(folder: Path, photo_id: str, kind_of) -> None:
                            key=lambda p: -p.stat().st_mtime)
         if remaining:
             shutil.copyfile(remaining[0], primary)
+
+
+def clear_samples(folder: Path) -> int:
+    removed = 0
+    for name in ("embeddings.npy", "embeddings_ir.npy"):
+        target = folder / name
+        if target.is_file():
+            target.unlink()
+            removed += 1
+    return removed

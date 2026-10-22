@@ -1,8 +1,10 @@
 import asyncio
 import logging
 import os
+import sys
 import time
 from collections import deque
+from pathlib import Path
 
 import numpy as np
 try:
@@ -12,6 +14,10 @@ except ImportError:
     WhisperModel = None
     VadOptions = None
     get_speech_timestamps = None
+
+BACKEND = str(Path(__file__).resolve().parents[2] / "backend")
+if BACKEND not in sys.path:
+    sys.path.append(BACKEND)
 
 import langpick
 from learner import learner
