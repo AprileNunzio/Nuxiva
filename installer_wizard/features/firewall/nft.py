@@ -140,6 +140,20 @@ def _guards() -> list[str]:
     ]
 
 
+def _hardening() -> list[str]:
+    return [
+        '        iifname != "lo" ip saddr 127.0.0.0/8 counter drop',
+        '        iifname != "lo" ip6 saddr ::1 counter drop',
+        "        ip saddr 224.0.0.0/4 counter drop",
+        "        tcp flags & (fin | syn) == fin | syn counter drop",
+        "        tcp flags & (syn | rst) == syn | rst counter drop",
+        "        tcp flags & (fin | syn | rst | psh | ack | urg) == 0 counter drop",
+        "        tcp flags syn tcp option maxseg size 1-535 counter drop",
+        "        tcp flags syn limit rate over 400/second burst 800 packets counter drop",
+        "        ct state new limit rate over 2000/second burst 4000 packets counter drop",
+    ]
+
+
 def _admin_access(policy: Policy) -> list[str]:
     if not policy.admin_ports:
         return []
@@ -184,6 +198,7 @@ def compile_script(policy: Policy, rules: list[Rule], sets: dict[str, list[Addre
         body.append(f"        type filter hook {hook} priority filter - 5; policy {policy_verdict};")
         if chain == "input":
             body += _guards()
+            body += _hardening()
         else:
             side = "d" if chain == "output" else "s"
             body.append(f"        ip {side}addr @blocked_4 counter drop")

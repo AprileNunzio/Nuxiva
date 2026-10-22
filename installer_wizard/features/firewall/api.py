@@ -12,6 +12,7 @@ from features.firewall.analyst import analyst
 from features.firewall.applier import FirewallError, applier, render
 from features.firewall.events import monitor
 from features.firewall.nft import Block
+from features.firewall import events as firewall_events
 from features.firewall.store import store
 
 admin_routes = APIRouter()
@@ -134,10 +135,36 @@ async def admin_block(request: Request, user: str = Depends(require_admin)):
         address = model.address(str(body.get("address") or ""))
         if address.family == "set":
             raise ValueError("si può bloccare un indirizzo o un MAC, non un gruppo")
+        if address.value in firewall_events.protected():
+            raise ValueError("questo indirizzo è il server o il router: bloccarlo ti taglierebbe fuori")
+        if store.trusted(address):
+            raise ValueError("questo dispositivo è attendibile: toglilo dagli attendibili prima di bloccarlo")
         expires = time.time() + minutes * 60 if minutes else 0.0
         store.blocks[address.value] = Block(address, expires, model.comment(body.get("reason") or "manuale"))
 
     return await _change(user, f"blocco di {body.get('address')}", mutate, confirm=False)
+
+
+@admin_routes.put("/api/firewall/trusted")
+async def admin_trust(request: Request, user: str = Depends(require_admin)):
+    body = await _body(request)
+    trusted = bool(body.get("trusted"))
+
+    def mutate():
+        target = model.address(str(body.get("address") or ""))
+        if target.family == "set":
+            raise ValueError("un gruppo non può essere attendibile")
+        current = {model.text_of(a): a for a in store.policy.trusted}
+        key = model.text_of(target)
+        if trusted:
+            current[key] = target
+            store.blocks.pop(target.value, None)
+        else:
+            current.pop(key, None)
+        store.policy = model.policy({"trusted": list(current)}, store.policy)
+
+    verb = "attendibile" if trusted else "non più attendibile"
+    return await _change(user, f"{body.get('address')} {verb}", mutate, confirm=False)
 
 
 @admin_routes.delete("/api/firewall/blocks/{address:path}")
