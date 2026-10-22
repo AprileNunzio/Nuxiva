@@ -1,0 +1,11 @@
+{
+  "name": "Agent fleet",
+  "description": "Scalable catalogue of specialised agents: Nuxiva creates them when needed, attaches tools and widgets, and you see and manage them all, even at millions or billions.",
+  "capabilities": [
+    "256-shard store with cursor pagination and incremental counters: cost does not grow with the number of agents",
+    "Nuxiva creates an agent when needed, avoiding duplicates, and picks tools and widgets that fit the purpose",
+    "Attach existing tools and widgets, or a brand-new widget created on the fly",
+    "Agent instructions encrypted at rest; active, paused or archived state, also in bulk"
+  ],
+  "settings": {}
+}

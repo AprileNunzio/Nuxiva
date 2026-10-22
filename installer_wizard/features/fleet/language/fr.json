@@ -1,0 +1,11 @@
+{
+  "name": "Flotte d'agents",
+  "description": "Catalogue évolutif d'agents spécialisés : Nuxiva les crée au besoin, leur associe outils et widgets, et vous les voyez et gérez tous, même par millions ou milliards.",
+  "capabilities": [
+    "Stockage en 256 partitions avec pagination par curseur et compteurs incrémentaux : le coût ne croît pas avec le nombre d'agents",
+    "Nuxiva crée un agent au besoin, sans doublon, et choisit outils et widgets adaptés",
+    "Association d'outils et de widgets existants, ou d'un nouveau widget créé à la volée",
+    "Instructions chiffrées au repos ; état actif, en pause ou archivé, aussi en masse"
+  ],
+  "settings": {}
+}
