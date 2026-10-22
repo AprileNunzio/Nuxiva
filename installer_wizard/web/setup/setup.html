@@ -142,6 +142,23 @@
       </div>
 
       <div class="stage-screen" data-step="6" id="screen-6" hidden>
+        <div class="live-card">
+          <b data-st="purposes-title"></b>
+          <div class="package-grid" id="purpose-grid"></div>
+          <p class="live-note" id="purpose-none" data-st="purposes-none" hidden></p>
+        </div>
+      </div>
+
+      <div class="stage-screen" data-step="7" id="screen-7" hidden>
+        <div class="consent-list" id="consent-list"></div>
+        <p class="live-note" id="consent-none" data-st="consent-none" hidden></p>
+        <div class="live-card" id="feature-card" hidden>
+          <b data-st="features-title"></b>
+          <div class="package-grid" id="feature-grid"></div>
+        </div>
+      </div>
+
+      <div class="stage-screen" data-step="8" id="screen-8" hidden>
         <div class="live-grid" id="hw-grid"></div>
         <div class="brain-mode-row" id="brain-modes"></div>
         <div class="brain-presets-grid" id="brain-presets"></div>
@@ -168,7 +185,7 @@
         </div>
       </div>
 
-      <div class="stage-screen" data-step="7" id="screen-7" hidden>
+      <div class="stage-screen" data-step="9" id="screen-9" hidden>
         <div class="readiness-matrix-grid" id="matrix-summary"></div>
         <div class="final-launch-zone">
           <button type="button" class="hud-btn-launch" id="btn-final-launch">
@@ -224,6 +241,7 @@
 <script src="/static/setup/setup_audio.js"></script>
 <script src="/static/setup/setup_canvas.js"></script>
 <script src="/static/setup/setup_steps.js"></script>
+<script src="/static/setup/setup_steps_plan.js"></script>
 <script src="/static/setup/setup_steps_more.js"></script>
 <script src="/static/setup/setup.js"></script>
 </body>

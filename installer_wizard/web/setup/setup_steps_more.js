@@ -69,13 +69,24 @@
     }
   };
 
+  function suggestedPackages(ctx) {
+    const plan = window.SetupPlan;
+    const base = ["voice"];
+    if (!plan || plan.chosen(ctx).length === 0) return ctx.boot.suggested || [];
+    const catalogue = (ctx.boot.plan || {}).purposes || {};
+    const answers = plan.answers(ctx);
+    const wanted = plan.chosen(ctx).flatMap((id) => (catalogue[id] || {}).packages || []);
+    const consented = Object.entries(answers).filter(([, yes]) => yes).map(([id]) => ((ctx.boot.plan || {}).consents[id] || {}).package).filter(Boolean);
+    return [...new Set([...base, ...wanted, ...consented])];
+  }
+
   function brain(ctx) {
     const d = ctx.draft;
     const c = ctx.config;
     return {
       mode: d.brain || c.brain || "local",
       profile: d.profile || c.profile || "auto",
-      packages: d.packages || c.packages || ctx.boot.suggested || []
+      packages: d.packages || c.packages || suggestedPackages(ctx)
     };
   }
 
@@ -137,7 +148,7 @@
     });
   }
 
-  const step6 = {
+  const step8 = {
     async render(ctx) {
       const provider = $("cloud-provider-in");
       provider.replaceChildren(ctx.el("option", "", ctx.t("brain-cloud-pick")), ...Object.entries(ctx.boot.clouds || {}).map(([id, name]) => {
@@ -187,6 +198,21 @@
     }
   };
 
+  function privacySummary(ctx) {
+    const plan = window.SetupPlan;
+    const asked = plan.asked(ctx);
+    if (!asked.length) return ctx.t("sum-skipped");
+    const given = plan.answers(ctx);
+    if (asked.some((id) => typeof given[id] !== "boolean")) return null;
+    return ctx.t("sum-privacy", { yes: asked.filter((id) => given[id]).length, no: asked.filter((id) => !given[id]).length });
+  }
+
+  function privacyReady(ctx) {
+    const plan = window.SetupPlan;
+    const given = plan.answers(ctx);
+    return plan.asked(ctx).every((id) => typeof given[id] === "boolean");
+  }
+
   function summary(ctx) {
     const c = ctx.config;
     const samples = Object.values(c.wake_samples || {});
@@ -196,11 +222,13 @@
       [3, "step-3-name", c.assistant_name ? `${c.assistant_name} · ${samples.filter((s) => s.usable).length}/3` : null],
       [4, "step-4-name", [c.owner_name, c.owner_last].filter(Boolean).join(" ") ? `${[c.owner_name, c.owner_last].filter(Boolean).join(" ")} · ${(c.face_views || []).length}/3` : null],
       [5, "step-5-name", Array.isArray(c.cameras) ? String(c.cameras.length) : ctx.t("sum-skipped")],
-      [6, "step-6-name", c.brain === "local" ? ctx.t(`profile-${c.profile}`) : ctx.t(`brain-${c.brain}`)]
+      [6, "sum-purposes", (c.purposes || []).length ? c.purposes.map((id) => ctx.t(`purpose-${id}`)).join(", ") : ctx.t("sum-skipped")],
+      [7, "step-7-name", privacySummary(ctx)],
+      [8, "step-8-name", c.brain === "local" ? ctx.t(`profile-${c.profile}`) : ctx.t(`brain-${c.brain}`)]
     ];
   }
 
-  const step7 = {
+  const step9 = {
     render(ctx) {
       const grid = $("matrix-summary");
       grid.replaceChildren(...summary(ctx).map(([step, key, value]) => {
@@ -216,8 +244,8 @@
       const button = $("btn-final-launch");
       const msg = $("launch-msg");
       $("launch-btn-label").textContent = ctx.t("btn-activate", { name: (ctx.config.assistant_name || "").toUpperCase() });
-      button.disabled = !ctx.config.assistant_name || !ctx.config.owner_name;
-      msg.textContent = button.disabled ? ctx.t("launch-missing") : "";
+      button.disabled = !ctx.config.assistant_name || !ctx.config.owner_name || !privacyReady(ctx);
+      msg.textContent = !privacyReady(ctx) ? ctx.t("launch-privacy") : button.disabled ? ctx.t("launch-missing") : "";
       button.onclick = async () => {
         button.disabled = true;
         msg.textContent = ctx.t("launch-running");
@@ -238,13 +266,14 @@
       return [
         { key: "chk-ready-name", ok: Boolean(c.assistant_name) },
         { key: "chk-ready-owner", ok: Boolean(c.owner_name) },
-        { key: "chk-ready-brain", ok: ctx.session.completed.includes(6) }
+        { key: "chk-ready-privacy", ok: privacyReady(ctx) },
+        { key: "chk-ready-brain", ok: ctx.session.completed.includes(8) }
       ];
     },
     analytics(ctx) {
-      return [["an-steps-done", `${ctx.session.completed.filter((s) => s < 7).length} / 6`]];
+      return [["an-steps-done", `${ctx.session.completed.filter((s) => s < 9).length} / 8`]];
     }
   };
 
-  window.SetupStepDefs = Object.assign(window.SetupStepDefs || {}, { 5: step5, 6: step6, 7: step7 });
+  window.SetupStepDefs = Object.assign(window.SetupStepDefs || {}, { 5: step5, 8: step8, 9: step9 });
 })();

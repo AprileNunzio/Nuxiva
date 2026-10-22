@@ -9,6 +9,7 @@ from fastapi.responses import JSONResponse, RedirectResponse, Response
 import machine
 from access import NO_CACHE, is_local, require_admin
 import setup_owner
+import setup_purposes
 from config import DEMO, STATE_DIR, read_env
 from state import store
 
@@ -294,6 +295,7 @@ async def setup_state(request: Request):
         "assistant_gender": env.get("NUXIVA_ASSISTANT_GENDER", "female"),
         "voices_by_lang_gender": VOICES_BY_LANG_GENDER,
         "wakeword": (WAKE_DIR / "ehi_nuxiva.onnx").exists(),
+        "plan": setup_purposes.describe(),
     }, headers=NO_CACHE)
 
 

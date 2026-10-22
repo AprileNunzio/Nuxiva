@@ -6,10 +6,11 @@ import threading
 from config import STATE_DIR, read_env
 from sealed import write_private
 from setup_config import CLOUD_PICK, PROFILES, WIZARD_PACKAGES
+from setup_purposes import CONSENTS, PURPOSES
 
 log = logging.getLogger("nuxiva.setup")
 SESSION_FILE = STATE_DIR / "setup_session.json"
-STEPS = 7
+STEPS = 9
 LOCALES = {"it": "it-IT", "en": "en-US", "es": "es-ES", "fr": "fr-FR"}
 SECRET_KEYS = ("ha_token", "cloud_key")
 TEXT_RE = re.compile(r"[^\x00-\x1f\x7f<>]*")
@@ -61,7 +62,29 @@ def _packages(value: object) -> list[str]:
     return list(dict.fromkeys(value))
 
 
+def _purposes(value: object) -> list[str]:
+    if not isinstance(value, list) or len(value) > len(PURPOSES) or any(p not in PURPOSES for p in value):
+        raise ValueError("Scopo non valido")
+    return list(dict.fromkeys(value))
+
+
+def _consents(value: object) -> dict:
+    if not isinstance(value, dict) or any(k not in CONSENTS or not isinstance(v, bool) for k, v in value.items()):
+        raise ValueError("Consenso non valido")
+    return dict(value)
+
+
+def _skipped(value: object) -> list[str]:
+    known = {k for spec in PURPOSES.values() for k in spec["enable"]}
+    if not isinstance(value, list) or any(k not in known for k in value):
+        raise ValueError("Funzione non valida")
+    return list(dict.fromkeys(value))
+
+
 FIELDS = {
+    "purposes": _purposes,
+    "consents": _consents,
+    "skip": _skipped,
     "locale": _choice(set(LOCALES.values())),
     "assistant_name": _assistant,
     "assistant_gender": _choice({"female", "male"}),
@@ -85,7 +108,7 @@ def defaults() -> dict:
     return {"locale": LOCALES.get(lang, "it-IT"), "assistant_name": env.get("NUXIVA_ASSISTANT_NAME", ""),
             "assistant_gender": env.get("NUXIVA_ASSISTANT_GENDER", "female") if env.get("NUXIVA_ASSISTANT_GENDER") in ("male", "female") else "female",
             "owner_name": env.get("NUXIVA_USER_NAME", ""), "owner_last": "", "mic": None, "brain": "local", "profile": "auto",
-            "ollama_url": "", "cloud_provider": "", "packages": None, "ha_url": "", "wake_samples": {}, "face_views": [],
+            "ollama_url": "", "cloud_provider": "", "packages": None, "purposes": [], "consents": {}, "skip": [], "ha_url": "", "wake_samples": {}, "face_views": [],
             "cameras": None}
 
 

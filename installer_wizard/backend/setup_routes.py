@@ -6,6 +6,7 @@ from fastapi.responses import JSONResponse
 
 import setup_audio
 import setup_probe
+import setup_purposes
 from access import NO_CACHE
 from config import STATE_DIR
 from sealed import write_private
@@ -145,6 +146,16 @@ async def setup_wake_sample(request: Request, _: None = Depends(require_open)):
     return JSONResponse({"index": index, **samples[str(index)]}, headers=NO_CACHE)
 
 
+@router.post("/api/setup/plan")
+async def setup_plan(request: Request, _: None = Depends(require_open)):
+    body = await _json(request)
+    try:
+        plan = setup_purposes.build(body.get("purposes") or [], body.get("consents") or {}, body.get("skip") or [])
+    except setup_purposes.PlanError as exc:
+        raise HTTPException(400, str(exc))
+    return JSONResponse(plan.to_dict(), headers=NO_CACHE)
+
+
 @router.post("/api/setup/finalize")
 async def finalize_setup(request: Request, _: None = Depends(require_open)):
     import setup_complete
@@ -156,7 +167,8 @@ async def finalize_setup(request: Request, _: None = Depends(require_open)):
            "voice": VOICES_BY_LANG_GENDER.get(lang, {}).get(cfg.get("assistant_gender") or "female", "if_sara"),
            "brain": cfg.get("brain"), "profile": cfg.get("profile"), "ollama_url": cfg.get("ollama_url"),
            "cloud_provider": cfg.get("cloud_provider"), "cloud_key": secrets.get("cloud_key", ""),
-           "packages": cfg.get("packages") or [], "ha_url": cfg.get("ha_url"), "ha_token": secrets.get("ha_token", "")}
+           "packages": cfg.get("packages") or [], "purposes": cfg.get("purposes") or [], "consents": cfg.get("consents") or {},
+           "skip": cfg.get("skip") or [], "ha_url": cfg.get("ha_url"), "ha_token": secrets.get("ha_token", "")}
     result = await setup_complete.complete(raw, request, "procedura guidata")
     session_manager.clear()
     return JSONResponse(result, headers=NO_CACHE)

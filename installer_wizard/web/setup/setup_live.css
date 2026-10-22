@@ -385,3 +385,35 @@
     height: calc(25dvh - 160px);
   }
 }
+
+.consent-list {
+  display: grid;
+  gap: 12px;
+}
+
+.consent-item {
+  display: grid;
+  gap: 10px;
+}
+
+.consent-item .brain-mode-row {
+  margin: 0;
+}
+
+.hud-stepper {
+  min-width: 0;
+}
+
+.hud-top-bar > * {
+  min-width: 0;
+}
+
+@media (max-width: 1700px) {
+  .step-node:not(.active) .step-node-label {
+    display: none;
+  }
+
+  .hud-stepper {
+    margin: 0 16px;
+  }
+}
