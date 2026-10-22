@@ -81,8 +81,15 @@ Matplotlib (PSF-based), PyYAML (MIT), SQLAlchemy (MIT), sherpa-onnx (Apache-2.0)
 ### Native core (Rust)
 
 PyO3, tokio, serde, serde_json, socket2 and landlock (MIT or Apache-2.0); whatlang by Sergey Potapov (MIT) for language
-detection; unicode-ident (MIT or Apache-2.0, and Unicode-3.0).
+detection; unicode-ident (MIT or Apache-2.0, and Unicode-3.0). The cognitive core (`cortex-core`) adds aes-gcm, ed25519-dalek,
+getrandom, hkdf, sha2, unicode-normalization and zeroize (MIT or Apache-2.0).
 `cargo metadata` lists every crate with its license.
+
+### Optional local models for the hippocampus router
+
+fastembed (Apache-2.0) with the sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 embedding model (Apache-2.0)
+and GLiNER (Apache-2.0) with the urchade/gliner_multi-v2.1 model (Apache-2.0). They are not installed by default: without
+them the router reports the missing model and every request takes the normal reasoning path.
 
 ### Web
 

@@ -1,0 +1,82 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "server/core/core_platform"
+  },
+  "errors": {
+    "cortex": {
+      "input": {
+        "empty": "Il testo è vuoto dopo la sanificazione.",
+        "too_long": "Il testo supera la lunghezza consentita.",
+        "forbidden_characters": "Il testo contiene caratteri di controllo non ammessi.",
+        "invalid_identifier": "L'identificativo contiene caratteri non ammessi."
+      },
+      "crypto": {
+        "invalid_key_length": "La chiave crittografica ha una lunghezza non valida.",
+        "encryption_failed": "Cifratura non riuscita.",
+        "decryption_failed": "Decifratura non riuscita: dati alterati o chiave errata.",
+        "malformed_ciphertext": "I dati cifrati sono incompleti.",
+        "malformed_signature": "La firma digitale è malformata.",
+        "key_derivation_failed": "Derivazione della chiave non riuscita.",
+        "random_unavailable": "Il generatore casuale del sistema non è disponibile."
+      },
+      "vector": {
+        "empty": "Il vettore è vuoto o nullo.",
+        "non_finite": "Il vettore contiene valori non finiti.",
+        "dimension_mismatch": "La dimensione del vettore non corrisponde all'indice.",
+        "invalid_dimension": "La dimensione dell'indice non è valida."
+      },
+      "neuron": {
+        "invalid_weight": "Il peso sinaptico deve essere compreso fra 0 e 1.",
+        "duplicate_vector": "Il vettore è già presente nel neurone.",
+        "capacity_exceeded": "Limite di capacità raggiunto.",
+        "unknown": "Neurone non trovato."
+      },
+      "router": {
+        "invalid_thresholds": "Le soglie dell'arbitro non sono valide."
+      },
+      "snapshot": {
+        "invalid": "L'istantanea della memoria non è valida."
+      },
+      "slots": {
+        "schema_invalid": "Lo schema dei parametri non è valido.",
+        "unknown": "È stato estratto un parametro non previsto dallo schema.",
+        "required_missing": "Manca un parametro obbligatorio.",
+        "type_mismatch": "Il tipo del parametro non corrisponde allo schema.",
+        "value_not_allowed": "Il valore del parametro non è fra quelli ammessi."
+      }
+    },
+    "platform": {
+      "native": {
+        "unavailable": "Il modulo nativo Rust non è installato.",
+        "outdated": "Il modulo nativo Rust è obsoleto: reinstallalo."
+      },
+      "vault": {
+        "weak_secret": "Il segreto principale è troppo corto per cifrare in sicurezza."
+      },
+      "storage": {
+        "io_failed": "Lettura o scrittura su disco non riuscita."
+      }
+    },
+    "hippocampus": {
+      "embedding": {
+        "unavailable": "Il modello di embedding locale non è installato.",
+        "failed": "Calcolo dell'embedding non riuscito."
+      },
+      "storage": {
+        "undecryptable": "La memoria dei neuroni non è decifrabile con la chiave attuale.",
+        "corrupted": "La memoria dei neuroni è danneggiata."
+      },
+      "skills": {
+        "unavailable": "Nessuna abilità eseguibile è disponibile per questo neurone."
+      },
+      "service": {
+        "degraded": "Il servizio ippocampo funziona in modalità ridotta."
+      }
+    },
+    "gliner": {
+      "unavailable": "Il modello GLiNER non è installato.",
+      "inference_failed": "Estrazione dei parametri non riuscita."
+    }
+  }
+}

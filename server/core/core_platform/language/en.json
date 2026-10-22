@@ -1,0 +1,82 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "server/core/core_platform"
+  },
+  "errors": {
+    "cortex": {
+      "input": {
+        "empty": "The text is empty after sanitisation.",
+        "too_long": "The text exceeds the allowed length.",
+        "forbidden_characters": "The text contains forbidden control characters.",
+        "invalid_identifier": "The identifier contains forbidden characters."
+      },
+      "crypto": {
+        "invalid_key_length": "The cryptographic key has an invalid length.",
+        "encryption_failed": "Encryption failed.",
+        "decryption_failed": "Decryption failed: data tampered with or wrong key.",
+        "malformed_ciphertext": "The encrypted data is incomplete.",
+        "malformed_signature": "The digital signature is malformed.",
+        "key_derivation_failed": "Key derivation failed.",
+        "random_unavailable": "The system random generator is unavailable."
+      },
+      "vector": {
+        "empty": "The vector is empty or zero.",
+        "non_finite": "The vector contains non-finite values.",
+        "dimension_mismatch": "The vector dimension does not match the index.",
+        "invalid_dimension": "The index dimension is invalid."
+      },
+      "neuron": {
+        "invalid_weight": "The synaptic weight must be between 0 and 1.",
+        "duplicate_vector": "The vector is already present in the neuron.",
+        "capacity_exceeded": "Capacity limit reached.",
+        "unknown": "Neuron not found."
+      },
+      "router": {
+        "invalid_thresholds": "The arbiter thresholds are invalid."
+      },
+      "snapshot": {
+        "invalid": "The memory snapshot is invalid."
+      },
+      "slots": {
+        "schema_invalid": "The parameter schema is invalid.",
+        "unknown": "A parameter outside the schema was extracted.",
+        "required_missing": "A required parameter is missing.",
+        "type_mismatch": "The parameter type does not match the schema.",
+        "value_not_allowed": "The parameter value is not among the allowed ones."
+      }
+    },
+    "platform": {
+      "native": {
+        "unavailable": "The native Rust module is not installed.",
+        "outdated": "The native Rust module is outdated: reinstall it."
+      },
+      "vault": {
+        "weak_secret": "The master secret is too short to encrypt safely."
+      },
+      "storage": {
+        "io_failed": "Reading or writing to disk failed."
+      }
+    },
+    "hippocampus": {
+      "embedding": {
+        "unavailable": "The local embedding model is not installed.",
+        "failed": "Embedding computation failed."
+      },
+      "storage": {
+        "undecryptable": "The neuron memory cannot be decrypted with the current key.",
+        "corrupted": "The neuron memory is corrupted."
+      },
+      "skills": {
+        "unavailable": "No executable skill is available for this neuron."
+      },
+      "service": {
+        "degraded": "The hippocampus service is running in degraded mode."
+      }
+    },
+    "gliner": {
+      "unavailable": "The GLiNER model is not installed.",
+      "inference_failed": "Parameter extraction failed."
+    }
+  }
+}

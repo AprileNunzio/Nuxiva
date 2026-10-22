@@ -122,6 +122,8 @@ def create_application() -> FastAPI:
     except Exception as e:
         logger.error("Errore nel caricare games scanner API: %s", str(e))
 
+    from server.core.hippocampus_router.api import router as hippocampus_router
+    app.include_router(hippocampus_router)
     app.include_router(router)
     app.include_router(router_v2)
 

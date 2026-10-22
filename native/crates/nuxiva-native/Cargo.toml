@@ -15,6 +15,7 @@ nuxiva-audio-dsp = { path = "../audio-dsp" }
 nuxiva-bus-core = { path = "../bus-core" }
 nuxiva-langid = { path = "../langid" }
 nuxiva-crdt-core = { path = "../crdt-core" }
+nuxiva-cortex-core = { path = "../cortex-core" }
 nuxiva-spatial-core = { path = "../spatial-core" }
 pyo3 = { version = "0.27.2", features = ["abi3-py311"] }
 serde = { version = "1", features = ["derive"] }

@@ -3,6 +3,7 @@
 mod arbitration;
 mod audio;
 mod bus;
+mod cortex;
 mod errors;
 mod governors;
 mod language;
@@ -15,6 +16,11 @@ mod workbench;
 use arbitration::{RustIntentRouter, RustSpatialArbiter};
 use audio::{RustAudioCleaner, RustDeviceRouter, RustMultiMicTriage};
 use bus::{PySynapticSpike, RustSynapticBus, SynapticWeightMatrix};
+use cortex::{
+    CortexError, RustNeuronIndex, RustSigner, cortex_derive_key, cortex_generate_key, cortex_open,
+    cortex_sanitize_identifier, cortex_sanitize_utterance, cortex_seal, cortex_validate_slots,
+    cortex_verify,
+};
 use governors::{RustMeshTaskGovernor, RustNetworkGovernor, RustResourceGovernor};
 use language::{detect_language, supported_languages};
 use memory::{RustFastMemory, RustLiveCoPilot};
@@ -45,6 +51,17 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<RustMeshTaskGovernor>()?;
     m.add_class::<RustNetworkGovernor>()?;
     m.add_class::<workbench::RustWorkbenchTracker>()?;
+    m.add_class::<RustNeuronIndex>()?;
+    m.add_class::<RustSigner>()?;
+    m.add("CortexError", m.py().get_type::<CortexError>())?;
+    m.add_function(wrap_pyfunction!(cortex_sanitize_utterance, m)?)?;
+    m.add_function(wrap_pyfunction!(cortex_sanitize_identifier, m)?)?;
+    m.add_function(wrap_pyfunction!(cortex_generate_key, m)?)?;
+    m.add_function(wrap_pyfunction!(cortex_derive_key, m)?)?;
+    m.add_function(wrap_pyfunction!(cortex_seal, m)?)?;
+    m.add_function(wrap_pyfunction!(cortex_open, m)?)?;
+    m.add_function(wrap_pyfunction!(cortex_verify, m)?)?;
+    m.add_function(wrap_pyfunction!(cortex_validate_slots, m)?)?;
     m.add_function(wrap_pyfunction!(workbench::validate_netlist_json, m)?)?;
     m.add_function(wrap_pyfunction!(matches, m)?)?;
     m.add_function(wrap_pyfunction!(valid_topic, m)?)?;

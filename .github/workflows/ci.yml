@@ -119,6 +119,10 @@ jobs:
           python -m pip install httpx==0.28.1 pydantic==2.13.5 pydantic-settings==2.15.0 psutil pyyaml
           python -m unittest server.tests.test_sandbox_native_egress server.tests.test_sandbox_egress -v
 
+      - name: Cortex Native Tests
+        working-directory: .
+        run: python -m unittest server.tests.test_cortex_core_platform server.tests.test_hippocampus_router server.tests.test_gliner_slots -v
+
   validate-scripts:
     runs-on: ubuntu-latest
     steps:

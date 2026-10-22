@@ -17,7 +17,7 @@ def register_global_error_handlers(app: FastAPI) -> None:
             "INVALID_FRAME": 422,
             "VISION_UNAVAILABLE": 503
         }
-        status_code = status_map.get(exc.code, 500)
+        status_code = getattr(exc, "status_code", None) or status_map.get(exc.code, 500)
         return JSONResponse(
             status_code=status_code,
             content={
