@@ -75,11 +75,11 @@ class DelegationTest(IsolatedStore):
             "Mi spieghi la fotosintesi e la mitosi?": "teacher-biology",
             "Quanto tempo ci vuole per la dichiarazione dei redditi con partita iva?": "accountant",
             "Che sezione dei cavi serve per il differenziale e il quadro elettrico?": "electrician",
-            "Come collego un sensore a un ESP32 con Arduino?": "electronics-engineer",
+            "Come collego un sensore a un ESP32 con Arduino?": "robotics-maker",
             "Mi dai una scheda di allenamento per la palestra?": "trainer",
             "Ho ricevuto una mail di phishing, cosa faccio?": "cybersecurity",
             "Il rubinetto ha una perdita d'acqua": "plumber",
-            "Come si fa la lievitazione dell'impasto della pizza?": "chef",
+            "Come si fa la lievitazione dell'impasto della pizza?": "pastry-chef",
             "Mi aiuti col curriculum per un colloquio di lavoro?": "career-coach",
         }
         for text, template in cases.items():
@@ -103,6 +103,24 @@ class DelegationTest(IsolatedStore):
         self.assertGreater(choice.score, 1)
         after = len(board.log) if hasattr(board, "log") else 1
         self.assertGreaterEqual(after, before)
+
+
+class WideCatalogTest(unittest.TestCase):
+    def test_catalog_is_wide_and_can_search_the_web(self):
+        self.assertGreaterEqual(len(templates.ids()), 85)
+        for tid, spec in templates.SPECS.items():
+            if tid in ("debian", "football"):
+                continue
+            with self.subTest(template=tid):
+                self.assertIn("web_research", spec["tools"])
+                self.assertGreaterEqual(len(spec["keywords"]), 8)
+
+    def test_ids_are_unique_and_valid_slugs(self):
+        ids = templates.ids()
+        self.assertEqual(len(ids), len(set(ids)))
+        for tid in ids:
+            self.assertRegex(tid, r"^[a-z][a-z0-9-]*$")
+
 
 
 if __name__ == "__main__":

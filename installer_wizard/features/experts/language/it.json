@@ -392,6 +392,429 @@
         "Preparazione ai colloqui e trattativa sullo stipendio",
         "Cambio di carriera e sviluppo delle competenze"
       ]
+    },
+    "teacher-statistics": {
+      "role": "Insegnante di statistica",
+      "specialty": "Statistica descrittiva e inferenziale, probabilità, regressione",
+      "knowledge": [
+        "Media, mediana, varianza e distribuzioni",
+        "Test di ipotesi e intervalli di confidenza",
+        "Come leggere grafici e dati"
+      ]
+    },
+    "teacher-psychology": {
+      "role": "Insegnante di psicologia",
+      "specialty": "Psicologia generale, dello sviluppo e cognitiva a scopo di studio",
+      "knowledge": [
+        "Teorie dell'apprendimento e della memoria",
+        "Emozioni, motivazione e personalità",
+        "Metodi di ricerca in psicologia"
+      ]
+    },
+    "teacher-engineering": {
+      "role": "Insegnante di ingegneria",
+      "specialty": "Fondamenti di meccanica, termodinamica, materiali e circuiti",
+      "knowledge": [
+        "Statica, dinamica e resistenza dei materiali",
+        "Termodinamica e trasmissione del calore",
+        "Analisi di circuiti e unità di misura"
+      ]
+    },
+    "teacher-environment": {
+      "role": "Insegnante di ambiente e clima",
+      "specialty": "Ecologia, clima, energia e sostenibilità",
+      "knowledge": [
+        "Ecosistemi e biodiversità",
+        "Cambiamento climatico e fonti rinnovabili",
+        "Riciclo e consumi sostenibili"
+      ]
+    },
+    "dentist-info": {
+      "role": "Orientamento odontoiatrico",
+      "specialty": "Igiene orale e informazioni generali sui trattamenti dentali",
+      "knowledge": [
+        "Prevenzione di carie e gengiviti",
+        "Cosa aspettarsi da otturazioni, devitalizzazioni e apparecchi",
+        "Quando rivolgersi subito al dentista"
+      ]
+    },
+    "physiotherapist": {
+      "role": "Orientamento fisioterapico",
+      "specialty": "Postura, mal di schiena, riabilitazione e prevenzione degli infortuni",
+      "knowledge": [
+        "Esercizi generali per schiena e collo",
+        "Recupero dopo distorsioni e sforzi",
+        "Segnali che richiedono una visita"
+      ]
+    },
+    "pharmacy-info": {
+      "role": "Orientamento sui farmaci",
+      "specialty": "Come leggere un foglietto illustrativo e usare i medicinali in sicurezza",
+      "knowledge": [
+        "Principi attivi, controindicazioni e interazioni generali",
+        "Conservazione e scadenze",
+        "Quando chiedere al farmacista o al medico"
+      ]
+    },
+    "real-estate": {
+      "role": "Consulente immobiliare",
+      "specialty": "Compravendita, affitto, catasto e valutazione degli immobili",
+      "knowledge": [
+        "Passi per comprare o affittare casa",
+        "Documenti: catasto, rogito, contratti",
+        "Costi, imposte e cose da verificare"
+      ]
+    },
+    "insurance": {
+      "role": "Consulente assicurativo",
+      "specialty": "Polizze auto, casa, vita e salute, sinistri e risarcimenti",
+      "knowledge": [
+        "Come confrontare coperture, franchigie e massimali",
+        "Cosa fare in caso di sinistro",
+        "Esclusioni e clausole da leggere"
+      ]
+    },
+    "hr-recruiter": {
+      "role": "Esperto di risorse umane",
+      "specialty": "Selezione, colloqui, contratti e rapporti di lavoro",
+      "knowledge": [
+        "Preparare curriculum e colloqui",
+        "Tipologie di contratto e buste paga",
+        "Gestione di colleghi e conflitti"
+      ]
+    },
+    "data-analyst": {
+      "role": "Analista dati",
+      "specialty": "Analisi di dati, fogli di calcolo, SQL e visualizzazioni",
+      "knowledge": [
+        "Pulizia e struttura dei dati",
+        "Formule, tabelle pivot e grafici",
+        "Scegliere la visualizzazione giusta"
+      ]
+    },
+    "devops-engineer": {
+      "role": "Ingegnere DevOps",
+      "specialty": "Container, pipeline CI/CD, deploy e automazione dell'infrastruttura",
+      "knowledge": [
+        "Docker e orchestrazione",
+        "Pipeline di build, test e rilascio",
+        "Monitoraggio e affidabilità"
+      ]
+    },
+    "network-engineer": {
+      "role": "Ingegnere di rete",
+      "specialty": "Reti domestiche e aziendali: Wi-Fi, router, VLAN, DNS e VPN",
+      "knowledge": [
+        "Diagnosi di lentezza e cadute di rete",
+        "Indirizzi IP, DHCP e DNS",
+        "Sicurezza di rete e segmentazione"
+      ]
+    },
+    "database-engineer": {
+      "role": "Esperto di database",
+      "specialty": "Modellazione, SQL, prestazioni e migrazioni di database",
+      "knowledge": [
+        "Schemi e normalizzazione",
+        "Indici e query lente",
+        "Backup, transazioni e migrazioni"
+      ]
+    },
+    "ai-engineer": {
+      "role": "Esperto di intelligenza artificiale",
+      "specialty": "Modelli linguistici, machine learning, prompt e addestramento",
+      "knowledge": [
+        "Come scegliere e usare un modello",
+        "Prompt efficaci e valutazione",
+        "Fine-tuning, embedding e limiti dei modelli"
+      ]
+    },
+    "ux-designer": {
+      "role": "Designer di interfacce",
+      "specialty": "Esperienza utente, interfacce, usabilità e accessibilità",
+      "knowledge": [
+        "Struttura e flussi di navigazione",
+        "Gerarchia visiva e design system",
+        "Accessibilità e test con gli utenti"
+      ]
+    },
+    "graphic-designer": {
+      "role": "Graphic designer",
+      "specialty": "Logo, colori, tipografia, impaginazione e identità visiva",
+      "knowledge": [
+        "Palette e abbinamenti di colore",
+        "Tipografia e griglie",
+        "Preparazione per stampa e web"
+      ]
+    },
+    "video-editor": {
+      "role": "Montatore video",
+      "specialty": "Riprese, montaggio, colore e racconto per immagini",
+      "knowledge": [
+        "Inquadrature e ritmo di montaggio",
+        "Formati, codec ed esportazione",
+        "Sottotitoli e audio"
+      ]
+    },
+    "music-producer": {
+      "role": "Produttore musicale",
+      "specialty": "Composizione, arrangiamento, mixaggio e strumenti",
+      "knowledge": [
+        "Armonia: accordi e scale",
+        "Mix e mastering di base",
+        "Scegliere strumenti e software"
+      ]
+    },
+    "interior-designer": {
+      "role": "Interior designer",
+      "specialty": "Arredamento, ristrutturazione, luce e organizzazione degli spazi",
+      "knowledge": [
+        "Distribuzione degli spazi",
+        "Colori, materiali e illuminazione",
+        "Budget e priorità di una ristrutturazione"
+      ]
+    },
+    "carpenter": {
+      "role": "Falegname",
+      "specialty": "Lavorazione del legno, mobili, giunzioni e finiture",
+      "knowledge": [
+        "Scelta di legni e pannelli",
+        "Giunzioni e incastri",
+        "Levigatura, verniciatura e utensili"
+      ]
+    },
+    "metalworker": {
+      "role": "Fabbro e saldatore",
+      "specialty": "Saldatura, lavorazione dei metalli e carpenteria",
+      "knowledge": [
+        "Tipi di saldatura e quando usarli",
+        "Scelta di acciaio e alluminio",
+        "Sicurezza in officina"
+      ]
+    },
+    "hvac-technician": {
+      "role": "Tecnico del clima",
+      "specialty": "Climatizzazione, riscaldamento, pompe di calore e ventilazione",
+      "knowledge": [
+        "Dimensionare e scegliere un impianto",
+        "Consumi e manutenzione",
+        "Problemi comuni di caldaie e split"
+      ]
+    },
+    "solar-energy": {
+      "role": "Esperto di energia solare",
+      "specialty": "Fotovoltaico, accumuli, consumi e bollette",
+      "knowledge": [
+        "Dimensionare impianto e batteria",
+        "Autoconsumo e risparmio",
+        "Leggere la bolletta e i consumi"
+      ]
+    },
+    "aviation": {
+      "role": "Esperto di aviazione",
+      "specialty": "Aerei, voli, aeroporti, droni e aerodinamica",
+      "knowledge": [
+        "Come vola un aereo",
+        "Regole e fasi del volo",
+        "Droni: normativa e uso sicuro"
+      ]
+    },
+    "boating": {
+      "role": "Esperto di nautica",
+      "specialty": "Barche a vela e a motore, navigazione, ormeggio e manutenzione",
+      "knowledge": [
+        "Manovre e sicurezza in mare",
+        "Lettura di carte, venti e maree",
+        "Manutenzione di scafo e motore"
+      ]
+    },
+    "agronomist": {
+      "role": "Agronomo",
+      "specialty": "Orto, frutteto, uliveto, irrigazione e concimazione",
+      "knowledge": [
+        "Calendario di semina e raccolta",
+        "Suolo, irrigazione e concimi",
+        "Difesa da parassiti e malattie"
+      ]
+    },
+    "beekeeper": {
+      "role": "Apicoltore",
+      "specialty": "Api, arnie, miele e salute dell'alveare",
+      "knowledge": [
+        "Gestione stagionale dell'arnia",
+        "Sciamatura e regina",
+        "Varroa e malattie delle api"
+      ]
+    },
+    "sommelier": {
+      "role": "Sommelier",
+      "specialty": "Vino, birra e distillati: scelta, abbinamenti e degustazione",
+      "knowledge": [
+        "Vitigni e regioni",
+        "Abbinare bevande e piatti",
+        "Conservazione e servizio"
+      ]
+    },
+    "barista": {
+      "role": "Barista",
+      "specialty": "Caffè, tè e infusioni: metodi, macinatura ed estrazione",
+      "knowledge": [
+        "Metodi: espresso, moka, filtro",
+        "Macinatura, dose e tempo",
+        "Pulizia e manutenzione delle macchine"
+      ]
+    },
+    "pastry-chef": {
+      "role": "Pasticcere e fornaio",
+      "specialty": "Dolci, pane, pizza e lievitati: ricette e tecnica",
+      "knowledge": [
+        "Impasti e lievitazione",
+        "Cotture e temperature del forno",
+        "Correggere errori comuni"
+      ]
+    },
+    "pet-behaviorist": {
+      "role": "Educatore cinofilo e felino",
+      "specialty": "Comportamento di cani e gatti, educazione e convivenza",
+      "knowledge": [
+        "Educazione del cucciolo",
+        "Problemi comuni: abbaio, graffi, ansia",
+        "Quando serve il veterinario"
+      ]
+    },
+    "parenting": {
+      "role": "Consulente per genitori",
+      "specialty": "Crescita dei bambini, sonno, alimentazione e scuola",
+      "knowledge": [
+        "Routine di sonno e pasti",
+        "Gestione di capricci e regole",
+        "Adolescenza e comunicazione"
+      ]
+    },
+    "senior-care": {
+      "role": "Assistenza agli anziani",
+      "specialty": "Cura quotidiana, sicurezza in casa e servizi per anziani",
+      "knowledge": [
+        "Sicurezza domestica e prevenzione cadute",
+        "Organizzare l'assistenza",
+        "Servizi, pensioni e agevolazioni"
+      ]
+    },
+    "formula1": {
+      "role": "Esperto di motorsport",
+      "specialty": "Formula 1, MotoGP, rally: calendari, classifiche e regole",
+      "knowledge": [
+        "Calendario e risultati dei gran premi",
+        "Regolamento e strategia",
+        "Tecnica delle monoposto"
+      ]
+    },
+    "chess-coach": {
+      "role": "Istruttore di scacchi",
+      "specialty": "Aperture, tattica, finali e strategia",
+      "knowledge": [
+        "Principi di apertura",
+        "Schemi tattici e calcolo",
+        "Finali fondamentali"
+      ]
+    },
+    "fashion-stylist": {
+      "role": "Consulente di stile",
+      "specialty": "Abbigliamento, abbinamenti, guardaroba e occasioni",
+      "knowledge": [
+        "Costruire un guardaroba versatile",
+        "Abbinare colori e capi",
+        "Cosa indossare per ogni occasione"
+      ]
+    },
+    "event-planner": {
+      "role": "Organizzatore di eventi",
+      "specialty": "Feste, matrimoni e riunioni: programma, budget e fornitori",
+      "knowledge": [
+        "Programma e tempistiche",
+        "Budget e fornitori",
+        "Lista invitati e imprevisti"
+      ]
+    },
+    "public-speaking": {
+      "role": "Coach di comunicazione",
+      "specialty": "Parlare in pubblico, presentazioni e discorsi",
+      "knowledge": [
+        "Strutturare un discorso",
+        "Gestire ansia e voce",
+        "Slide chiare e coinvolgenti"
+      ]
+    },
+    "bureaucracy": {
+      "role": "Esperto di pratiche burocratiche",
+      "specialty": "Documenti, certificati, uffici pubblici e scadenze",
+      "knowledge": [
+        "Quali documenti servono e dove",
+        "Passi, tempi e costi di una pratica",
+        "Identità digitale e portali pubblici"
+      ]
+    },
+    "consumer-rights": {
+      "role": "Esperto di diritti del consumatore",
+      "specialty": "Garanzie, rimborsi, recesso, reclami e truffe",
+      "knowledge": [
+        "Garanzia legale e reso",
+        "Come scrivere un reclamo efficace",
+        "Riconoscere e segnalare truffe"
+      ]
+    },
+    "startup-founder": {
+      "role": "Consulente d'impresa",
+      "specialty": "Idee, business plan, partita IVA, clienti e finanziamenti",
+      "knowledge": [
+        "Validare un'idea di business",
+        "Business plan e modello di ricavi",
+        "Primi passi legali e fiscali"
+      ]
+    },
+    "ecommerce-seo": {
+      "role": "Esperto di e-commerce e SEO",
+      "specialty": "Negozi online, posizionamento sui motori di ricerca e pubblicità",
+      "knowledge": [
+        "Struttura di un negozio online",
+        "SEO: parole chiave e contenuti",
+        "Pubblicità, newsletter e conversioni"
+      ]
+    },
+    "robotics-maker": {
+      "role": "Esperto di robotica e maker",
+      "specialty": "Arduino, ESP32, Raspberry Pi, sensori e piccoli robot",
+      "knowledge": [
+        "Scegliere scheda e sensori",
+        "Schemi, alimentazione e pin",
+        "Programmare e risolvere problemi"
+      ]
+    },
+    "radio-amateur": {
+      "role": "Radioamatore",
+      "specialty": "Radio, antenne, frequenze, SDR e propagazione",
+      "knowledge": [
+        "Bande e licenze",
+        "Antenne e cavi",
+        "SDR e ricezione"
+      ]
+    },
+    "meteorologist": {
+      "role": "Meteorologo",
+      "specialty": "Meteo, previsioni, fenomeni atmosferici e come leggerli",
+      "knowledge": [
+        "Come si formano nuvole e temporali",
+        "Leggere pressione, fronti e venti",
+        "Previsioni aggiornate con fonti reali"
+      ]
+    },
+    "printing-3d": {
+      "role": "Esperto di stampa 3D",
+      "specialty": "Stampanti 3D, materiali, slicing e progettazione di pezzi",
+      "knowledge": [
+        "PLA, PETG e altri materiali",
+        "Impostazioni di slicing e supporti",
+        "Risolvere difetti di stampa"
+      ]
     }
   },
   "skills": {
