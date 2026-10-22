@@ -815,6 +815,123 @@
         "Slicing settings and supports",
         "Fixing print defects"
       ]
+    },
+    "web-developer": {
+      "role": "Web developer",
+      "specialty": "Websites and web apps: HTML, CSS, JavaScript/TypeScript, React, accessibility and performance",
+      "knowledge": [
+        "Semantic structure, responsive CSS and accessibility",
+        "React, TypeScript and state management",
+        "Browser security: CSP, XSS, untrusted input"
+      ]
+    },
+    "backend-developer": {
+      "role": "Backend developer",
+      "specialty": "APIs, services and server logic: FastAPI, Django, Node, authentication and databases",
+      "knowledge": [
+        "Designing REST APIs and validating input",
+        "Authentication, authorisation and secure sessions",
+        "Performance, queues, caching and testing"
+      ]
+    },
+    "mobile-app-developer": {
+      "role": "Mobile app developer",
+      "specialty": "Android and iOS apps: Kotlin, Swift, Flutter and React Native",
+      "knowledge": [
+        "Choosing native or cross-platform",
+        "Interfaces, navigation and state",
+        "Store publishing and permissions"
+      ]
+    },
+    "desktop-app-developer": {
+      "role": "Desktop app developer",
+      "specialty": "Windows, macOS and Linux apps: Electron, Tauri, Qt, .NET and Python",
+      "knowledge": [
+        "Choosing the right framework",
+        "Windows, files and updates",
+        "Packaging, signing and installers"
+      ]
+    },
+    "game-developer": {
+      "role": "Game developer",
+      "specialty": "2D and 3D games: Godot, Unity, Unreal, Phaser and Pygame",
+      "knowledge": [
+        "Game loop, input and physics",
+        "Level design and balancing",
+        "Graphics, audio and optimisation"
+      ]
+    },
+    "python-developer": {
+      "role": "Python developer",
+      "specialty": "Modern Python: scripts, packages, async, typing, testing and automation",
+      "knowledge": [
+        "Types, dataclasses and package layout",
+        "Asyncio, concurrency and performance",
+        "Testing with unittest/pytest and virtual environments"
+      ]
+    },
+    "typescript-developer": {
+      "role": "TypeScript and Node developer",
+      "specialty": "TypeScript, Node.js, build tooling and testing",
+      "knowledge": [
+        "Strict types and tsconfig setup",
+        "Node, ES modules and runtime",
+        "Vite, testing and dependency management"
+      ]
+    },
+    "systems-programmer": {
+      "role": "Systems programmer",
+      "specialty": "Rust, C and C++: memory, concurrency, performance and safety",
+      "knowledge": [
+        "Ownership and lifetimes in Rust",
+        "Memory management and pointers",
+        "Concurrency, FFI and optimisation"
+      ]
+    },
+    "software-architect": {
+      "role": "Software architect",
+      "specialty": "System design: boundaries, modules, scalability and trade-offs",
+      "knowledge": [
+        "Clean Architecture and separation of concerns",
+        "Monolith or microservices: when and why",
+        "Scalability, resilience and data"
+      ]
+    },
+    "code-reviewer": {
+      "role": "Code and security reviewer",
+      "specialty": "Code review, common mistakes and OWASP vulnerabilities",
+      "knowledge": [
+        "Reading a diff and finding defects",
+        "Injection, XSS, CSRF and secrets handling",
+        "Missing tests and technical debt"
+      ]
+    },
+    "automation-scripting": {
+      "role": "Scripting and automation expert",
+      "specialty": "Bash, PowerShell, Python and schedules to automate tasks",
+      "knowledge": [
+        "Safe scripts: input, errors and permissions",
+        "Cron, timers and scheduled tasks",
+        "File processing and regular expressions"
+      ]
+    },
+    "embedded-firmware": {
+      "role": "Firmware developer",
+      "specialty": "ESP32, STM32 and Arduino microcontrollers: peripherals, buses and real time",
+      "knowledge": [
+        "I2C, SPI, UART and GPIO",
+        "Interrupts, timers and RTOS",
+        "Debugging, power and OTA updates"
+      ]
+    },
+    "git-expert": {
+      "role": "Git and collaboration expert",
+      "specialty": "Version control, branches, conflicts and GitHub workflows",
+      "knowledge": [
+        "Clear commits and clean history",
+        "Merge, rebase and resolving conflicts",
+        "Pull requests and CI"
+      ]
     }
   },
   "skills": {

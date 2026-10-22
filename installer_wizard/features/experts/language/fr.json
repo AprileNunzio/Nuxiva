@@ -815,6 +815,123 @@
         "Réglages de tranchage et supports",
         "Corriger les défauts d'impression"
       ]
+    },
+    "web-developer": {
+      "role": "Développeur web",
+      "specialty": "Sites et applications web : HTML, CSS, JavaScript/TypeScript, React, accessibilité et performance",
+      "knowledge": [
+        "Structure sémantique, CSS adaptatif et accessibilité",
+        "React, TypeScript et gestion d'état",
+        "Sécurité navigateur : CSP, XSS, entrées non fiables"
+      ]
+    },
+    "backend-developer": {
+      "role": "Développeur backend",
+      "specialty": "API, services et logique serveur : FastAPI, Django, Node, authentification et bases de données",
+      "knowledge": [
+        "Concevoir des API REST et valider les entrées",
+        "Authentification, autorisation et sessions sûres",
+        "Performance, files, cache et tests"
+      ]
+    },
+    "mobile-app-developer": {
+      "role": "Développeur d'applications mobiles",
+      "specialty": "Applications Android et iOS : Kotlin, Swift, Flutter et React Native",
+      "knowledge": [
+        "Choisir natif ou multiplateforme",
+        "Interfaces, navigation et état",
+        "Publication sur les stores et permissions"
+      ]
+    },
+    "desktop-app-developer": {
+      "role": "Développeur d'applications de bureau",
+      "specialty": "Applications Windows, macOS et Linux : Electron, Tauri, Qt, .NET et Python",
+      "knowledge": [
+        "Choisir le bon framework",
+        "Fenêtres, fichiers et mises à jour",
+        "Empaquetage, signature et installeurs"
+      ]
+    },
+    "game-developer": {
+      "role": "Développeur de jeux vidéo",
+      "specialty": "Jeux 2D et 3D : Godot, Unity, Unreal, Phaser et Pygame",
+      "knowledge": [
+        "Boucle de jeu, entrées et physique",
+        "Level design et équilibrage",
+        "Graphismes, audio et optimisation"
+      ]
+    },
+    "python-developer": {
+      "role": "Développeur Python",
+      "specialty": "Python moderne : scripts, paquets, async, typage, tests et automatisation",
+      "knowledge": [
+        "Types, dataclasses et structure des paquets",
+        "Asyncio, concurrence et performance",
+        "Tests avec unittest/pytest et environnements virtuels"
+      ]
+    },
+    "typescript-developer": {
+      "role": "Développeur TypeScript et Node",
+      "specialty": "TypeScript, Node.js, outils de build et tests",
+      "knowledge": [
+        "Types stricts et configuration tsconfig",
+        "Node, modules ES et exécution",
+        "Vite, tests et gestion des dépendances"
+      ]
+    },
+    "systems-programmer": {
+      "role": "Programmeur système",
+      "specialty": "Rust, C et C++ : mémoire, concurrence, performance et sécurité",
+      "knowledge": [
+        "Ownership et durées de vie en Rust",
+        "Gestion de la mémoire et pointeurs",
+        "Concurrence, FFI et optimisation"
+      ]
+    },
+    "software-architect": {
+      "role": "Architecte logiciel",
+      "specialty": "Conception de systèmes : frontières, modules, scalabilité et compromis",
+      "knowledge": [
+        "Clean Architecture et séparation des responsabilités",
+        "Monolithe ou microservices : quand et pourquoi",
+        "Scalabilité, résilience et données"
+      ]
+    },
+    "code-reviewer": {
+      "role": "Réviseur de code et sécurité",
+      "specialty": "Revue de code, erreurs courantes et vulnérabilités OWASP",
+      "knowledge": [
+        "Lire un diff et trouver les défauts",
+        "Injections, XSS, CSRF et gestion des secrets",
+        "Tests manquants et dette technique"
+      ]
+    },
+    "automation-scripting": {
+      "role": "Expert en scripts et automatisation",
+      "specialty": "Bash, PowerShell, Python et planifications pour automatiser",
+      "knowledge": [
+        "Scripts sûrs : entrées, erreurs et permissions",
+        "Cron, minuteurs et tâches planifiées",
+        "Traitement de fichiers et expressions régulières"
+      ]
+    },
+    "embedded-firmware": {
+      "role": "Développeur de firmware",
+      "specialty": "Microcontrôleurs ESP32, STM32 et Arduino : périphériques, bus et temps réel",
+      "knowledge": [
+        "I2C, SPI, UART et GPIO",
+        "Interruptions, minuteurs et RTOS",
+        "Débogage, consommation et mises à jour OTA"
+      ]
+    },
+    "git-expert": {
+      "role": "Expert Git et collaboration",
+      "specialty": "Gestion de versions, branches, conflits et flux GitHub",
+      "knowledge": [
+        "Commits clairs et historique propre",
+        "Merge, rebase et résolution de conflits",
+        "Pull requests et CI"
+      ]
     }
   },
   "skills": {

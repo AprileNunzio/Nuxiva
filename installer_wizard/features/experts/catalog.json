@@ -239,7 +239,12 @@
     "color": "#8b5cf6",
     "tools": [
       "now",
-      "web_research"
+      "web_research",
+      "dev_new",
+      "dev_tree",
+      "dev_read",
+      "dev_write",
+      "dev_run"
     ],
     "keywords": [
       "programmazion",
@@ -830,7 +835,12 @@
     "tools": [
       "now",
       "http_get",
-      "web_research"
+      "web_research",
+      "dev_new",
+      "dev_tree",
+      "dev_read",
+      "dev_write",
+      "dev_run"
     ],
     "keywords": [
       "sviluppatore",
@@ -2262,6 +2272,400 @@
       "humidity",
       "wind",
       "climate zone"
+    ]
+  },
+  {
+    "id": "web-developer",
+    "group": "professional",
+    "icon": "💻",
+    "color": "#3b82f6",
+    "tools": [
+      "now",
+      "web_research",
+      "dev_new",
+      "dev_tree",
+      "dev_read",
+      "dev_write",
+      "dev_run",
+      "dev_publish"
+    ],
+    "keywords": [
+      "sito web",
+      "pagina web",
+      "html",
+      "css",
+      "javascript",
+      "responsive",
+      "landing page",
+      "frontend",
+      "react",
+      "vue",
+      "tailwind",
+      "website",
+      "web page",
+      "web app",
+      "frontend"
+    ]
+  },
+  {
+    "id": "backend-developer",
+    "group": "professional",
+    "icon": "🧩",
+    "color": "#10b981",
+    "tools": [
+      "now",
+      "web_research",
+      "dev_new",
+      "dev_tree",
+      "dev_read",
+      "dev_write",
+      "dev_run"
+    ],
+    "keywords": [
+      "backend",
+      "api",
+      "rest",
+      "graphql",
+      "fastapi",
+      "django",
+      "flask",
+      "express",
+      "nestjs",
+      "autenticazione",
+      "jwt",
+      "microservizi",
+      "server api",
+      "endpoint",
+      "authentication",
+      "microservice"
+    ]
+  },
+  {
+    "id": "mobile-app-developer",
+    "group": "professional",
+    "icon": "📱",
+    "color": "#8b5cf6",
+    "tools": [
+      "now",
+      "web_research",
+      "dev_new",
+      "dev_tree",
+      "dev_read",
+      "dev_write",
+      "dev_run"
+    ],
+    "keywords": [
+      "app mobile",
+      "android",
+      "ios",
+      "kotlin",
+      "swift",
+      "flutter",
+      "react native",
+      "app store",
+      "play store",
+      "notifiche push",
+      "mobile app",
+      "swiftui",
+      "jetpack compose"
+    ]
+  },
+  {
+    "id": "desktop-app-developer",
+    "group": "professional",
+    "icon": "🖥️",
+    "color": "#0ea5e9",
+    "tools": [
+      "now",
+      "web_research",
+      "dev_new",
+      "dev_tree",
+      "dev_read",
+      "dev_write",
+      "dev_run"
+    ],
+    "keywords": [
+      "applicazione desktop",
+      "app per windows",
+      "app per mac",
+      "electron",
+      "tauri",
+      "wpf",
+      "qt",
+      "tkinter",
+      "finestra",
+      "installer",
+      "desktop app",
+      "windows app",
+      "gui"
+    ]
+  },
+  {
+    "id": "game-developer",
+    "group": "professional",
+    "icon": "🎮",
+    "color": "#f43f5e",
+    "tools": [
+      "now",
+      "web_research",
+      "dev_new",
+      "dev_tree",
+      "dev_read",
+      "dev_write",
+      "dev_run",
+      "create_3d"
+    ],
+    "keywords": [
+      "videogioco",
+      "gioco",
+      "unity",
+      "unreal",
+      "godot",
+      "game engine",
+      "sprite",
+      "fisica del gioco",
+      "livello",
+      "game design",
+      "videogame",
+      "game dev",
+      "pygame",
+      "phaser"
+    ]
+  },
+  {
+    "id": "python-developer",
+    "group": "professional",
+    "icon": "🐍",
+    "color": "#facc15",
+    "tools": [
+      "now",
+      "web_research",
+      "dev_new",
+      "dev_tree",
+      "dev_read",
+      "dev_write",
+      "dev_run"
+    ],
+    "keywords": [
+      "python",
+      "pip",
+      "venv",
+      "pandas",
+      "numpy",
+      "django",
+      "flask",
+      "script python",
+      "pytest",
+      "asyncio",
+      "dataclass",
+      "type hints",
+      "python script"
+    ]
+  },
+  {
+    "id": "typescript-developer",
+    "group": "professional",
+    "icon": "🟦",
+    "color": "#2563eb",
+    "tools": [
+      "now",
+      "web_research",
+      "dev_new",
+      "dev_tree",
+      "dev_read",
+      "dev_write",
+      "dev_run"
+    ],
+    "keywords": [
+      "typescript",
+      "node",
+      "nodejs",
+      "npm",
+      "pnpm",
+      "deno",
+      "bun",
+      "vite",
+      "eslint",
+      "jest",
+      "vitest",
+      "zod",
+      "tsconfig"
+    ]
+  },
+  {
+    "id": "systems-programmer",
+    "group": "professional",
+    "icon": "⚙️",
+    "color": "#f97316",
+    "tools": [
+      "now",
+      "web_research",
+      "dev_new",
+      "dev_tree",
+      "dev_read",
+      "dev_write",
+      "dev_run"
+    ],
+    "keywords": [
+      "rust",
+      "c++",
+      "cargo",
+      "puntatori",
+      "memoria",
+      "concorrenza",
+      "assembly",
+      "linguaggio c",
+      "ownership",
+      "borrow",
+      "segfault",
+      "kernel module",
+      "systems programming",
+      "pointer",
+      "memory safety"
+    ]
+  },
+  {
+    "id": "software-architect",
+    "group": "professional",
+    "icon": "🏗️",
+    "color": "#64748b",
+    "tools": [
+      "now",
+      "web_research",
+      "dev_tree",
+      "dev_read"
+    ],
+    "keywords": [
+      "architettura",
+      "design pattern",
+      "clean architecture",
+      "microservizi",
+      "monolite",
+      "scalabilità",
+      "event driven",
+      "ddd",
+      "hexagonal",
+      "system design",
+      "architecture",
+      "scalability",
+      "trade-off"
+    ]
+  },
+  {
+    "id": "code-reviewer",
+    "group": "professional",
+    "icon": "🔍",
+    "color": "#ef4444",
+    "tools": [
+      "now",
+      "web_research",
+      "dev_tree",
+      "dev_read",
+      "dev_run"
+    ],
+    "keywords": [
+      "revisione del codice",
+      "code review",
+      "vulnerabilità nel codice",
+      "owasp",
+      "sql injection",
+      "xss",
+      "csrf",
+      "codice sicuro",
+      "audit",
+      "analisi statica",
+      "secure coding",
+      "security review",
+      "code smell"
+    ]
+  },
+  {
+    "id": "automation-scripting",
+    "group": "professional",
+    "icon": "📜",
+    "color": "#14b8a6",
+    "tools": [
+      "now",
+      "web_research",
+      "dev_new",
+      "dev_tree",
+      "dev_read",
+      "dev_write",
+      "dev_run",
+      "create_automation"
+    ],
+    "keywords": [
+      "script",
+      "automatizzare",
+      "bash",
+      "powershell",
+      "cron",
+      "batch",
+      "scraping",
+      "macro",
+      "automazione di file",
+      "shell script",
+      "automate",
+      "scheduled task",
+      "regex",
+      "one-liner"
+    ]
+  },
+  {
+    "id": "embedded-firmware",
+    "group": "professional",
+    "icon": "🔌",
+    "color": "#a3e635",
+    "tools": [
+      "now",
+      "web_research",
+      "dev_new",
+      "dev_tree",
+      "dev_read",
+      "dev_write",
+      "dev_run"
+    ],
+    "keywords": [
+      "firmware",
+      "microcontrollore",
+      "esp32",
+      "stm32",
+      "arduino ide",
+      "platformio",
+      "i2c",
+      "spi",
+      "uart",
+      "interrupt",
+      "rtos",
+      "embedded",
+      "bare metal",
+      "micropython"
+    ]
+  },
+  {
+    "id": "git-expert",
+    "group": "professional",
+    "icon": "🌿",
+    "color": "#f59e0b",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "git",
+      "commit",
+      "branch",
+      "merge",
+      "rebase",
+      "pull request",
+      "conflitto",
+      "github",
+      "gitlab",
+      "cherry-pick",
+      "stash",
+      "repository",
+      "merge conflict",
+      "version control"
     ]
   }
 ]

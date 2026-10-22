@@ -107,7 +107,7 @@ class DelegationTest(IsolatedStore):
 
 class WideCatalogTest(unittest.TestCase):
     def test_catalog_is_wide_and_can_search_the_web(self):
-        self.assertGreaterEqual(len(templates.ids()), 85)
+        self.assertGreaterEqual(len(templates.ids()), 100)
         for tid, spec in templates.SPECS.items():
             if tid in ("debian", "football"):
                 continue

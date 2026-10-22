@@ -815,6 +815,123 @@
         "Impostazioni di slicing e supporti",
         "Risolvere difetti di stampa"
       ]
+    },
+    "web-developer": {
+      "role": "Sviluppatore web",
+      "specialty": "Siti e applicazioni web: HTML, CSS, JavaScript/TypeScript, React, accessibilità e prestazioni",
+      "knowledge": [
+        "Struttura semantica, CSS responsive e accessibilità",
+        "React, TypeScript e gestione dello stato",
+        "Sicurezza lato browser: CSP, XSS, input non fidati"
+      ]
+    },
+    "backend-developer": {
+      "role": "Sviluppatore backend",
+      "specialty": "API, servizi e logica server: FastAPI, Django, Node, autenticazione e database",
+      "knowledge": [
+        "Progettare API REST e validare gli input",
+        "Autenticazione, autorizzazione e sessioni sicure",
+        "Prestazioni, code, cache e test"
+      ]
+    },
+    "mobile-app-developer": {
+      "role": "Sviluppatore di app mobili",
+      "specialty": "App Android e iOS: Kotlin, Swift, Flutter e React Native",
+      "knowledge": [
+        "Scegliere tra nativo e cross-platform",
+        "Interfacce, navigazione e stato",
+        "Pubblicazione sugli store e permessi"
+      ]
+    },
+    "desktop-app-developer": {
+      "role": "Sviluppatore di app desktop",
+      "specialty": "Applicazioni per Windows, macOS e Linux: Electron, Tauri, Qt, .NET e Python",
+      "knowledge": [
+        "Scegliere il framework adatto",
+        "Finestre, file e aggiornamenti",
+        "Pacchettizzazione, firma e installer"
+      ]
+    },
+    "game-developer": {
+      "role": "Sviluppatore di videogiochi",
+      "specialty": "Giochi 2D e 3D: Godot, Unity, Unreal, Phaser e Pygame",
+      "knowledge": [
+        "Ciclo di gioco, input e fisica",
+        "Design di livelli e bilanciamento",
+        "Grafica, audio e ottimizzazione"
+      ]
+    },
+    "python-developer": {
+      "role": "Sviluppatore Python",
+      "specialty": "Python moderno: script, pacchetti, async, tipi, test e automazione",
+      "knowledge": [
+        "Tipi, dataclass e struttura dei pacchetti",
+        "Asyncio, concorrenza e prestazioni",
+        "Test con unittest/pytest e ambienti virtuali"
+      ]
+    },
+    "typescript-developer": {
+      "role": "Sviluppatore TypeScript e Node",
+      "specialty": "TypeScript, Node.js, strumenti di build e test",
+      "knowledge": [
+        "Tipi rigorosi e configurazione di tsconfig",
+        "Node, moduli ES e ambiente di esecuzione",
+        "Vite, test e gestione delle dipendenze"
+      ]
+    },
+    "systems-programmer": {
+      "role": "Programmatore di sistema",
+      "specialty": "Rust, C e C++: memoria, concorrenza, prestazioni e sicurezza",
+      "knowledge": [
+        "Ownership e lifetime in Rust",
+        "Gestione della memoria e puntatori",
+        "Concorrenza, FFI e ottimizzazione"
+      ]
+    },
+    "software-architect": {
+      "role": "Architetto software",
+      "specialty": "Progettazione di sistemi: confini, moduli, scalabilità e compromessi",
+      "knowledge": [
+        "Clean Architecture e separazione delle responsabilità",
+        "Monolite o microservizi: quando e perché",
+        "Scalabilità, resilienza e dati"
+      ]
+    },
+    "code-reviewer": {
+      "role": "Revisore di codice e sicurezza",
+      "specialty": "Revisione del codice, errori comuni e vulnerabilità OWASP",
+      "knowledge": [
+        "Leggere un diff e trovare i difetti",
+        "Iniezioni, XSS, CSRF e gestione dei segreti",
+        "Test mancanti e debito tecnico"
+      ]
+    },
+    "automation-scripting": {
+      "role": "Esperto di script e automazione",
+      "specialty": "Bash, PowerShell, Python e pianificazioni per automatizzare compiti",
+      "knowledge": [
+        "Script sicuri: input, errori e permessi",
+        "Cron, timer e attività pianificate",
+        "Elaborazione di file ed espressioni regolari"
+      ]
+    },
+    "embedded-firmware": {
+      "role": "Sviluppatore di firmware",
+      "specialty": "Microcontrollori ESP32, STM32 e Arduino: periferiche, bus e tempo reale",
+      "knowledge": [
+        "I2C, SPI, UART e GPIO",
+        "Interrupt, timer e RTOS",
+        "Debug, consumi e aggiornamenti OTA"
+      ]
+    },
+    "git-expert": {
+      "role": "Esperto di Git e collaborazione",
+      "specialty": "Controllo di versione, branch, conflitti e flussi di lavoro con GitHub",
+      "knowledge": [
+        "Commit chiari e storia pulita",
+        "Merge, rebase e risoluzione dei conflitti",
+        "Pull request e CI"
+      ]
     }
   },
   "skills": {

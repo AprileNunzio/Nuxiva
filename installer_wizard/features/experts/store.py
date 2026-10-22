@@ -14,7 +14,7 @@ HISTORY = STATE_DIR / "experts_history.sealed"
 HISTORY_KEY = STATE_DIR / "experts_history.key"
 SEEDED = STATE_DIR / "experts_seeded.json"
 KEEP_TURNS = 40
-MAX_EXPERTS = 100
+MAX_EXPERTS = 400
 
 
 class ExpertStore:
