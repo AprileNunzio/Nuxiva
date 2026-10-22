@@ -19,6 +19,12 @@ class ActionRoutesTest(unittest.TestCase):
         for text in ["il sito che hai creato ieri non si apre?", "che tempo fa", "apri il sito del comune"]:
             self.assertNotEqual(route(text), "site", text)
 
+    def test_complex_sites_go_to_the_project_team_not_the_one_page_generator(self):
+        for text in ["Creami un sito di moda in php con pagine di login, contatti, acquisto, tutto separato, usa md3 expressive",
+                     "creami un sito con carrello e pagamento", "fammi un sito moderno con area admin e database",
+                     "crea un sito in javascript con più pagine"]:
+            self.assertNotEqual(route(text), "site", text)
+
     def test_sites_list(self):
         for text in ["dove vedo il sito che hai creato?", "quali siti hai creato?", "mostrami i miei siti"]:
             self.assertEqual(route(text), "sites_list", text)

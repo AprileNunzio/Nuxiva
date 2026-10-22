@@ -146,10 +146,20 @@ ACTIONISH = re.compile(
 )
 
 
+COMPLEX_SITE = re.compile(
+    r"\b(php|javascript|js|typescript|node|react|vue|laravel|symfony|mysql|database|sql|login|accesso|registrazion\w*"
+    r"|autenticazion\w*|carrello|acquist\w*|e-?commerce|checkout|pagament\w*|backend|api|md3|material|dashboard"
+    r"|admin|pagine|separat\w+|multi-?pagina|sicurezza|modern\w*)\b",
+    re.I,
+)
+
+
 def match(text: str) -> tuple[str, object] | None:
     if re.search(r"\b(google|drive|keep|gmail|calendario|agenda)\b", text, re.I):
         return None
     for name, pattern, fn in ROUTES:
+        if name == "site" and COMPLEX_SITE.search(text):
+            continue
         if pattern.search(text):
             return name, fn
     return None
