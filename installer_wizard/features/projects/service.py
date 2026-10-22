@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import re
 import time
 
 from state import store as state
@@ -7,14 +8,17 @@ from state import store as state
 from features.brain import llm
 from features.experts import routing, service as expert_service
 from features.experts.store import experts
-from features.projects import publish
-from features.projects.model import ACTIVE, Project, ProjectError, Step, create as new_project, steps_from, with_modelling
+from features.devstudio import workspace as dev_workspace
+from features.projects import director, publish
+from features.projects.model import ACTIVE, Project, ProjectError, Step, create as new_project, note, steps_from, with_modelling
 from features.projects.store import projects
 from features.team.board import board
 
 log = logging.getLogger("nuxiva.projects")
 TICK_SECONDS = 5
-PLAN_TOKENS = 700
+PLAN_TOKENS = 2800
+PARALLEL = 2
+CODING = re.compile(r"\b(sito|siti|app|applicazion\w*|api|php|python|react|javascript|node|software|programm\w*|backend|frontend|website|web\s*app|gestionale|widget)\b", re.I)
 CONTEXT_STEPS = 3
 CONTEXT_CHARS = 400
 LANG_NAMES = {"it": "italiano", "en": "English", "es": "español", "fr": "français"}
@@ -78,10 +82,22 @@ def retry(project_id: str) -> Project:
     return project
 
 
+def workspace_name(project: Project) -> str:
+    if not CODING.search(project.goal):
+        return ""
+    try:
+        base = dev_workspace.slug(project.title)[:30].rstrip("-")
+        return dev_workspace.slug(f"{base}-{project.id[1:5]}")
+    except dev_workspace.DevError:
+        return dev_workspace.slug(f"progetto-{project.id[1:7]}")
+
+
 async def plan(project: Project) -> None:
     prompt = (
-        f"Scomponi questo progetto in 3-8 passi concreti, ordinati e verificabili, ciascuno eseguibile da un esperto.\n"
-        f"Rispondi in {LANG_NAMES[project.lang]} con JSON: {{\"steps\": [{{\"text\": \"...\"}}]}}\n"
+        f"Scomponi questo progetto in passi concreti, ordinati e verificabili (da 4 a 30, secondo la complessità), ciascuno eseguibile da un esperto.\n"
+        f"Per ogni passo indica il criterio di accettazione e da quali passi precedenti dipende (numeri, 1 è il primo); i passi indipendenti possono procedere in parallelo.\n"
+        f"Includi sempre un passo finale di verifica complessiva. Rispondi in {LANG_NAMES[project.lang]} con JSON: "
+        f"{{\"steps\": [{{\"text\": \"...\", \"acceptance\": \"...\", \"depends\": [1]}}]}}\n"
         f"Progetto: {project.goal}"
     )
     try:
@@ -100,13 +116,20 @@ async def plan(project: Project) -> None:
         publish.push(project)
         return
     project.status, project.error = "running", ""
+    project.workspace = project.workspace or workspace_name(project)
+    note(project, "piano", f"{len(project.steps)} passi")
     projects.save(project)
     board.post("progetti", f"project:{project.id}", f"Piano pronto: {len(project.steps)} passi", "progetto")
     publish.push(project)
 
 
-def assign(step: Step) -> None:
+async def assign(step: Step, project: Project) -> None:
     expert = routing.best(experts.all(), step.text)
+    if expert is None:
+        from features.experts import autonomy
+        expert = await autonomy.create_for(f"{step.text}. {project.goal}"[:400], project.lang)
+        if expert:
+            note(project, "squadra", f"nuovo esperto «{expert.role}» per: {step.text}")
     step.expert_id = expert.id if expert else ""
     step.expert_role = expert.role if expert else ""
 
@@ -118,8 +141,20 @@ def context(project: Project) -> str:
 
 def brief(project: Project, step: Step) -> str:
     previous = context(project)
-    return (f"Progetto: {project.goal}\n" + (f"Già fatto:\n{previous}\n" if previous else "")
-            + f"Esegui solo questo passo e riporta il risultato concreto: {step.text}")
+    parts = [f"Progetto: {project.goal}"]
+    if project.directives:
+        parts.append("Indicazioni del proprietario:\n" + "\n".join(f"- {d}" for d in project.directives))
+    if project.workspace:
+        parts.append(f"Progetto di sviluppo: «{project.workspace}». Se non esiste crealo con dev_new; se esiste riprendilo con dev_status e "
+                     "continua dal piano, senza ricominciare. Per lavori grandi usa dev_plan e dev_build.")
+    if previous:
+        parts.append(f"Già fatto:\n{previous}")
+    if step.acceptance:
+        parts.append(f"Criterio di accettazione: {step.acceptance}")
+    if step.feedback:
+        parts.append(f"Il CEO ha respinto il lavoro precedente. Correggi esattamente questo: {step.feedback}")
+    parts.append(f"Esegui solo questo passo e riporta il risultato concreto: {step.text}")
+    return "\n".join(parts)
 
 
 async def model_in_studio(project: Project, step: Step) -> None:
@@ -149,32 +184,83 @@ async def execute(project: Project, step: Step) -> None:
         step.result = out["text"]
     else:
         step.result = str(await llm.generate(prompt, max_tokens=900, temperature=0.3, component="projects"))
-    step.status, step.error, step.finished = "done", "", time.time()
+    step.status, step.error = "review", ""
+
+
+def ready(project: Project) -> list[Step]:
+    done = {s.id for s in project.steps if s.status == "done"}
+    known = {s.id for s in project.steps}
+    return [s for s in project.steps if s.status == "pending" and all(d in done or d not in known for d in s.depends)]
+
+
+def retry_after_failure(step: Step, reason: str) -> None:
+    if step.round < director.MAX_ROUNDS:
+        step.status, step.round, step.feedback = "pending", step.round + 1, f"il tentativo precedente è fallito: {reason}"
+    else:
+        step.status = "failed"
+    step.error = reason
+
+
+async def work(project: Project, step: Step) -> None:
+    if step.status != "review":
+        try:
+            if not step.expert_id:
+                await assign(step, project)
+            step.status, step.started = "running", time.time()
+            await execute(project, step)
+        except (llm.BrainUnavailable, expert_service.ExpertError, ValueError) as exc:
+            retry_after_failure(step, str(exc)[:300])
+            return
+    if step.status != "review":
+        return
+    try:
+        await director.review_step(project, step)
+    except llm.BrainUnavailable as exc:
+        step.error = str(exc)[:300]
+        return
+    except ValueError as exc:
+        step.status, step.error = "done", f"revisione non conclusiva: {str(exc)[:200]}"
+    if step.status == "done":
+        step.finished = time.time()
+
+
+async def conclude(project: Project) -> None:
+    for step in project.steps:
+        if step.status == "pending":
+            step.status, step.error = "failed", "dipendenza non soddisfatta"
+    waiting = [s for s in project.steps if s.status == "waiting"]
+    failed = [s for s in project.steps if s.status == "failed"]
+    if waiting:
+        project.status = "paused"
+    elif failed:
+        project.status, project.error = "failed", failed[0].error
+    elif project.final_rounds >= director.MAX_FINAL:
+        project.status = "done"
+    else:
+        try:
+            project.final_rounds += 1
+            complete = await director.final_review(project)
+        except llm.BrainUnavailable as exc:
+            project.final_rounds -= 1
+            project.error = str(exc)[:300]
+            return
+        project.status = "done" if complete else "running"
+    if project.status == "done":
+        note(project, "chiuso", project.title)
+        board.post("progetti", "tutti", f"Progetto concluso: {project.title}", "progetto")
 
 
 async def advance(project: Project) -> None:
-    step = next((s for s in project.steps if s.status == "pending"), None)
-    if step is None:
-        waiting = [s for s in project.steps if s.status == "waiting"]
-        failed = [s for s in project.steps if s.status == "failed"]
-        if waiting:
-            project.status = "paused"
-        elif failed:
-            project.status, project.error = "failed", failed[0].error
-        else:
-            project.status = "done"
-            board.post("progetti", "tutti", f"Progetto concluso: {project.title}", "progetto")
-        projects.save(project)
+    batch = [s for s in project.steps if s.status == "review"] + ready(project)
+    batch = batch[:max(PARALLEL, sum(1 for s in project.steps if s.status == "review"))]
+    if not batch:
+        await conclude(project)
+    else:
+        for step in batch:
+            if step.status == "pending":
+                step.status, step.started = "running", time.time()
         publish.push(project)
-        return
-    if not step.expert_id:
-        assign(step)
-    step.status, step.started = "running", time.time()
-    publish.push(project)
-    try:
-        await execute(project, step)
-    except (llm.BrainUnavailable, expert_service.ExpertError, ValueError) as exc:
-        step.status, step.error = "failed", str(exc)[:300]
+        await asyncio.gather(*(work(project, step) for step in batch))
     projects.save(project)
     publish.push(project)
 
@@ -187,8 +273,7 @@ async def tick() -> None:
         for project in projects.all():
             if project.status == "planning":
                 await plan(project)
-            elif project.status == "running":
-                await advance(project)
+        await asyncio.gather(*(advance(p) for p in projects.all() if p.status == "running"))
     finally:
         current.reset(token)
 

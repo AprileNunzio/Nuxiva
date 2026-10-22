@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from access import require_admin, require_display
 from state import store
 
-from features.projects import service
+from features.projects import management, service
 from features.projects.model import ID_RE, ProjectError
 from features.projects.store import projects
 
@@ -79,6 +79,48 @@ async def retry(project_id: str, _: str = Depends(require_admin)):
 @admin_routes.post("/api/projects/{project_id}/cancel")
 async def cancel(project_id: str, _: str = Depends(require_admin)):
     return _act(service.cancel, project_id)
+
+
+def _managed(action, project_id: str, *args):
+    try:
+        return action(_id(project_id), *args).to_dict()
+    except (ProjectError, KeyError) as exc:
+        raise HTTPException(400, str(exc).strip("'"))
+
+
+@admin_routes.post("/api/projects/{project_id}/directives")
+async def add_directive(project_id: str, request: Request, _: str = Depends(require_admin)):
+    return _managed(management.direct, project_id, str((await _body(request)).get("text") or ""))
+
+
+@admin_routes.post("/api/projects/{project_id}/steps")
+async def add_step(project_id: str, request: Request, _: str = Depends(require_admin)):
+    body = await _body(request)
+    return _managed(management.add_step, project_id, str(body.get("text") or ""), str(body.get("acceptance") or ""),
+                    str(body.get("expert_id") or ""))
+
+
+@admin_routes.delete("/api/projects/{project_id}/steps/{step_id}")
+async def remove_step(project_id: str, step_id: str, _: str = Depends(require_admin)):
+    return _managed(management.remove_step, project_id, step_id)
+
+
+@admin_routes.put("/api/projects/{project_id}/steps/{step_id}/expert")
+async def assign_expert(project_id: str, step_id: str, request: Request, _: str = Depends(require_admin)):
+    return _managed(management.assign_expert, project_id, step_id, str((await _body(request)).get("expert_id") or ""))
+
+
+@admin_routes.post("/api/projects/{project_id}/steps/{step_id}/redo")
+async def redo_step(project_id: str, step_id: str, request: Request, _: str = Depends(require_admin)):
+    return _managed(management.redo, project_id, step_id, str((await _body(request)).get("feedback") or ""))
+
+
+@admin_routes.post("/api/projects/{project_id}/team")
+async def add_team(project_id: str, request: Request, _: str = Depends(require_admin)):
+    try:
+        return await management.add_expert(_id(project_id), str((await _body(request)).get("need") or ""))
+    except ProjectError as exc:
+        raise HTTPException(400, str(exc))
 
 
 @admin_routes.delete("/api/projects/{project_id}")
