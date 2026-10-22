@@ -123,7 +123,8 @@ CALC = re.compile(
 
 REFUSAL = re.compile(
     r"\b(non (ho|possiedo) (la )?(capacit[àa]|accesso|possibilit[àa])|non (posso|riesco a|sono in grado)"
-    r"|come (assistente|intelligenza artificiale|ia|ai)\b|non ho (modo|strumenti)|non mi [èe] possibile)",
+    r"|come (assistente|intelligenza artificiale|ia|ai)\b|non ho (modo|strumenti)|non mi [èe] possibile"
+    r"|non dispongo\b|non ho (accesso|dati|informazioni|notizie)\b|non sono a conoscenza|dati in tempo reale|informazioni aggiornate)",
     re.I,
 )
 ACTIONISH = re.compile(
