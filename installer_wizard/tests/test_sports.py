@@ -1,5 +1,6 @@
 import tempfile
 import unittest
+import unittest.mock
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -134,3 +135,53 @@ class SpeechTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class AnswerRefreshTest(unittest.IsolatedAsyncioTestCase):
+    def setUp(self):
+        self.saved = dict(commands._INDEX)
+        commands._INDEX.update(at=0.0, teams=[])
+        self.addCleanup(commands._INDEX.update, self.saved)
+
+    async def test_unknown_index_is_loaded_by_the_question_itself(self):
+        napoli = {"id": "114", "name": "Napoli", "short": "Napoli", "abbr": "NAP", "color": ""}
+        calls = []
+
+        async def teams(code):
+            calls.append(code)
+            return [napoli] if code == "ita.1" else []
+
+        async def team_card(team):
+            return {"kind": "next", "match": {"id": "9", "home": {"id": "114", "short": "Napoli"}, "away": {"id": "110", "short": "Inter"},
+                                              "start": "2030-01-01T18:00:00Z", "venue": "", "league_name": "Serie A"}, "team": team}
+
+        shown = []
+
+        class Desk:
+            def show(self, *args, **kwargs):
+                shown.append(args[0])
+
+        with unittest.mock.patch.object(football, "teams", teams), unittest.mock.patch.object(commands.spotlight, "team_card", team_card), \
+                unittest.mock.patch.object(commands, "_desk", lambda: Desk()):
+            text, _ = await commands.answer("quando gioca il napoli?")
+        self.assertIn("Napoli contro Inter", text)
+        self.assertEqual(shown, ["sport_match"])
+        self.assertIn("ita.1", calls)
+
+    async def test_offline_index_is_reported_not_guessed(self):
+        async def teams(code):
+            raise commands.SportsUnavailable("offline")
+
+        with unittest.mock.patch.object(football, "teams", teams):
+            text, _ = await commands.answer("quando gioca il napoli?")
+        self.assertIn("Non riesco a raggiungere", text)
+
+    async def test_tool_answers_or_asks_for_clarification(self):
+        from features.sports import tools
+
+        async def answer(question):
+            raise LookupError("sports")
+
+        with unittest.mock.patch.object(commands, "answer", answer):
+            with self.assertRaises(ValueError):
+                await tools.sport_query("gioca qualcuno?")

@@ -24,11 +24,12 @@ from features.team import runner
 from features.team import tools as tools_team
 from features.team.board import board
 from features.shares import archive
+from features.sports import tools as tools_sports
 from features.whiteboard import tools as tools_whiteboard
 from features.people import tools as tools_people
 from features.home_assistant import tools as tools_home
 
-MODULES = (tools_cameras, tools_comm, tools_display, tools_files, tools_media, tools_packages, tools_rpa, tools_system, tools_autonomy, tools_automations, tools_documents, tools_team, tools_forge, tools_whiteboard, tools_firewall, tools_vpn, tools_proxmox, tools_voicestudio, tools_network, tools_redalert, tools_people, tools_experts, tools_home)
+MODULES = (tools_cameras, tools_comm, tools_display, tools_files, tools_media, tools_packages, tools_rpa, tools_system, tools_autonomy, tools_automations, tools_documents, tools_team, tools_forge, tools_sports, tools_whiteboard, tools_firewall, tools_vpn, tools_proxmox, tools_voicestudio, tools_network, tools_redalert, tools_people, tools_experts, tools_home)
 MAX_STEPS = 8
 PENDING_TTL = 180
 

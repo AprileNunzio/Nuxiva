@@ -44,6 +44,8 @@ async def refresh_index() -> None:
             rows += [{**t, "league": code} for t in teams]
     if rows:
         _INDEX.update(at=time.time(), teams=rows)
+    elif not _INDEX["teams"]:
+        raise SportsUnavailable("elenco squadre non raggiungibile")
 
 
 def known_teams() -> list[dict]:
@@ -112,6 +114,7 @@ async def answer(text: str) -> tuple[str, dict]:
     if not FOOTBALL.search(flat) and not find_league(flat):
         raise LookupError("sports")
     try:
+        await refresh_index()
         team = find_team(flat, known_teams())
         league = find_league(flat) or (team["league"] if team else None)
         if TABLE.search(flat) and league and league in BY_CODE and not BY_CODE[league].cup:
