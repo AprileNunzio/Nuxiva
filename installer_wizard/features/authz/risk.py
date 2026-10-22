@@ -48,7 +48,7 @@ TOOLS: dict[str, Risk] = {
     "create_tool": Risk.CRITICAL, "delete_tool": Risk.CRITICAL, "firewall_block": Risk.CRITICAL,
     "firewall_unblock": Risk.CRITICAL, "vpn_connect": Risk.CRITICAL, "vpn_disconnect": Risk.CRITICAL, "proxmox_power": Risk.CRITICAL,
     "football_scores": Risk.INFO, "football_table": Risk.INFO, "football_team": Risk.INFO, "apt_upgradable": Risk.INFO,
-    "sport_query": Risk.HOME, "web_research": Risk.HOME, "fleet_find": Risk.INFO, "dev_new": Risk.FILES, "dev_write": Risk.FILES, "dev_plan": Risk.FILES, "dev_build": Risk.FILES, "dev_status": Risk.INFO, "dev_publish": Risk.FILES, "dev_tree": Risk.INFO, "dev_read": Risk.INFO, "dev_run": Risk.CRITICAL, "fleet_create": Risk.FILES, "fleet_attach": Risk.FILES, "fleet_retire": Risk.FILES,
+    "sport_query": Risk.HOME, "web_research": Risk.HOME, "fleet_find": Risk.INFO, "dev_new": Risk.FILES, "dev_write": Risk.FILES, "camsense_list": Risk.PERSONAL, "camsense_state": Risk.PERSONAL, "camsense_create": Risk.FILES, "camsense_learn": Risk.PERSONAL, "dev_plan": Risk.FILES, "dev_build": Risk.FILES, "dev_status": Risk.INFO, "dev_publish": Risk.FILES, "dev_tree": Risk.INFO, "dev_read": Risk.INFO, "dev_run": Risk.CRITICAL, "fleet_create": Risk.FILES, "fleet_attach": Risk.FILES, "fleet_retire": Risk.FILES,
     "expert_list": Risk.INFO, "expert_ask": Risk.HOME, "expert_create": Risk.FILES,
     "debian_status": Risk.PERSONAL, "debian_logs": Risk.PERSONAL, "debian_service": Risk.PERSONAL,
 }

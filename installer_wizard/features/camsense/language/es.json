@@ -1,0 +1,14 @@
+{
+  "name": "Sensores de cámara",
+  "description": "Convierte una zona de una cámara en un sensor: tú enseñas los estados (puerta abierta o cerrada, luz encendida o apagada) y Nuxiva los reconoce solo, sin servicios externos y sin enviar imágenes fuera de casa.",
+  "capabilities": [
+    "Zona de la imagen a elección y estados enseñados con ejemplos reales",
+    "Lectura continua confirmada en varias lecturas para evitar falsos cambios",
+    "Rechaza las escenas nunca vistas en lugar de adivinar",
+    "Índice de calidad: precisión y parecido entre estados",
+    "Eventos en el registro de cámaras y en el bus, para automatizaciones y avisos"
+  ],
+  "settings": {
+    "NUXIVA_CAMSENSE_SECONDS": "Segundos entre lecturas"
+  }
+}

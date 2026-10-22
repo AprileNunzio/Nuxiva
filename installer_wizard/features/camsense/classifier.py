@@ -36,3 +36,34 @@ def classify(samples: dict[str, list[list[float]]], probe: list[float]) -> Verdi
     if margin < MIN_MARGIN:
         return Verdict("", best[0], margin, "ambiguous")
     return Verdict(best[1], best[0], margin, "ok")
+
+
+TOO_SIMILAR = 0.985
+MIN_EXAMPLES = 2
+
+
+def _centroid(rows: list[list[float]]) -> np.ndarray:
+    mean = np.array(rows, dtype=np.float64).mean(axis=0)
+    norm = float(np.linalg.norm(mean))
+    return mean / norm if norm > 1e-9 else mean
+
+
+def quality(samples: dict[str, list[list[float]]]) -> dict:
+    usable = {label: rows for label, rows in samples.items() if rows}
+    if len(usable) < 2:
+        return {"ready": False, "accuracy": None, "overlap": None, "weak": [], "reason": "needs_two_states"}
+    centres = {label: _centroid(rows) for label, rows in usable.items()}
+    labels = sorted(centres)
+    overlap = max(float(centres[a] @ centres[b]) for i, a in enumerate(labels) for b in labels[i + 1:])
+    right = total = 0
+    weak = [label for label, rows in usable.items() if len(rows) < MIN_EXAMPLES]
+    for label, rows in usable.items():
+        for index in range(len(rows)):
+            rest = {k: ([r for j, r in enumerate(v) if not (k == label and j == index)]) for k, v in usable.items()}
+            if len([k for k, v in rest.items() if v]) < 2:
+                continue
+            total += 1
+            right += classify(rest, rows[index]).label == label
+    accuracy = round(right / total, 3) if total else None
+    reason = "too_similar" if overlap >= TOO_SIMILAR else "more_examples" if weak else "ok"
+    return {"ready": reason == "ok", "accuracy": accuracy, "overlap": round(overlap, 3), "weak": weak, "reason": reason}
