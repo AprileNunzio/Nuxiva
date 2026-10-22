@@ -6,5 +6,7 @@
     "Three.js real-time rendering and slicing",
     "STL and 3MF export for 3D printing"
   ],
-  "settings": {}
+  "settings": {
+    "NUXIVA_3D_CONVERT": "3D file conversion on the server"
+  }
 }

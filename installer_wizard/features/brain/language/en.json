@@ -7,7 +7,7 @@
     "Local neural embeddings and semantic caching"
   ],
   "settings": {
-    "NUXIVA_EMBED_MODEL": "Embedding Model",
-    "NUXIVA_REASONING_BUDGET": "Reasoning Token Budget"
+    "NUXIVA_LLM_ROUTING": "Routing between fast and powerful brain",
+    "NUXIVA_OLLAMA_URL": "Ollama server address"
   }
 }

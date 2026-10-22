@@ -7,8 +7,9 @@
     "Proximity to points of interest"
   ],
   "settings": {
-    "NUXIVA_LATITUDE": "Latitude",
-    "NUXIVA_LONGITUDE": "Longitude",
-    "NUXIVA_CITY": "City"
+    "NUXIVA_LOCATION_MODE": "Location mode (auto or fixed)",
+    "NUXIVA_LOCATION": "Default location name",
+    "NUXIVA_LOCATION_LAT": "Default latitude",
+    "NUXIVA_LOCATION_LON": "Default longitude"
   }
 }

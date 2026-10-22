@@ -13,7 +13,7 @@ export function useNodeControl(nodeId: string): NodeControl | null {
       .catch((cause: unknown) => {
         if (!controller.signal.aborted) {
           reportError('node_control_unavailable', cause);
-          setControl({ scope: 'mesh', commands: [] });
+          setControl({ scope: 'mesh', commands: [], unsupportedModules: [] });
         }
       });
     return () => controller.abort();

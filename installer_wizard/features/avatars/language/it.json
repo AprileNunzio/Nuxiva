@@ -2,5 +2,9 @@
   "name": "Ologrammi e Avatar",
   "description": "",
   "capabilities": [],
-  "settings": {}
+  "settings": {
+    "NUXIVA_AVATAR": "Aspetto dell'assistente",
+    "NUXIVA_AVATAR_STYLE": "Stile dell'aspetto",
+    "NUXIVA_FACE_COLOR": "Colore dell'ologramma"
+  }
 }

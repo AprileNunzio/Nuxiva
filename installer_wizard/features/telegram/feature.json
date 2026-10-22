@@ -22,5 +22,13 @@
     "technique": "3d",
     "id": "9QHudN9uBhDv",
     "url": "https://img.icons8.com/?size=240&id=9QHudN9uBhDv&format=png"
-  }
+  },
+  "settings": [
+    {
+      "key": "NUXIVA_TELEGRAM_TOKEN",
+      "label": "Token del bot Telegram",
+      "type": "secret",
+      "default": ""
+    }
+  ]
 }

@@ -2,5 +2,9 @@
   "name": "Hologrammes et avatars",
   "description": "",
   "capabilities": [],
-  "settings": {}
+  "settings": {
+    "NUXIVA_AVATAR": "Apparence de l'assistant",
+    "NUXIVA_AVATAR_STYLE": "Style de l'apparence",
+    "NUXIVA_FACE_COLOR": "Couleur de l'hologramme"
+  }
 }

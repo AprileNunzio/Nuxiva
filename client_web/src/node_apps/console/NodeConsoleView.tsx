@@ -36,7 +36,11 @@ export const NodeConsoleView: React.FC<NodeConsoleViewProps> = ({
   const name = renamed ?? neuron?.name ?? initialName;
   const online = neuron ? !isStale(neuron, Date.now()) : null;
   const color = neuron ? KIND_COLORS[neuron.kind] : '#22d3ee';
-  const ActiveModule = (NODE_MODULES.find((m) => m.id === activeModule) ?? NODE_MODULES[0]).component;
+  const modules = useMemo(
+    () => NODE_MODULES.filter((m) => !control?.unsupportedModules.includes(m.id)),
+    [control],
+  );
+  const ActiveModule = (modules.find((m) => m.id === activeModule) ?? modules[0] ?? NODE_MODULES[0]).component;
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-4 bg-[#02040a] px-3 py-4 text-slate-100 sm:px-6">
@@ -91,7 +95,7 @@ export const NodeConsoleView: React.FC<NodeConsoleViewProps> = ({
       </section>
 
       {!standaloneApps && <><nav aria-label={t('modules_label')} className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
-        {NODE_MODULES.map(({ id, icon: Icon }) => {
+        {modules.map(({ id, icon: Icon }) => {
           const selected = id === activeModule;
           return (
             <button

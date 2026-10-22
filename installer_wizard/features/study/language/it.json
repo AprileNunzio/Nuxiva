@@ -6,5 +6,8 @@
     "Ripasso ed esami di livello",
     "Memoria binaria → ternaria → coseno"
   ],
-  "settings": {}
+  "settings": {
+    "NUXIVA_STUDY_FINETUNE": "Affinamento del modello durante lo studio",
+    "NUXIVA_STUDY_BASE_MODEL": "Modello base per l'affinamento"
+  }
 }

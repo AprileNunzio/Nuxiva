@@ -7,5 +7,7 @@
     "Notifications de photos",
     "Commandes de gestion"
   ],
-  "settings": {}
+  "settings": {
+    "NUXIVA_TELEGRAM_TOKEN": "Jeton du bot Telegram"
+  }
 }

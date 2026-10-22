@@ -8,5 +8,8 @@
     "Kill switch et blocage des fuites DNS",
     "Split tunneling pour réseaux inclus ou exclus",
     "Reconnexion automatique et clés chiffrées"
-  ]
+  ],
+  "settings": {
+    "NUXIVA_VPN": "Outils VPN"
+  }
 }

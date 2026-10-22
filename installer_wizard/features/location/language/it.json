@@ -7,5 +7,10 @@
     "Consenso tra più servizi IP",
     "«Abito a Napoli» detto a voce"
   ],
-  "settings": {}
+  "settings": {
+    "NUXIVA_LOCATION_MODE": "Modalità posizione (auto o fissa)",
+    "NUXIVA_LOCATION": "Nome della posizione predefinita",
+    "NUXIVA_LOCATION_LAT": "Latitudine predefinita",
+    "NUXIVA_LOCATION_LON": "Longitudine predefinita"
+  }
 }

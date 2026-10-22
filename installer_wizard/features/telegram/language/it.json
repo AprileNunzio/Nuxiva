@@ -7,5 +7,7 @@
     "Notifiche con foto",
     "Comandi di gestione"
   ],
-  "settings": {}
+  "settings": {
+    "NUXIVA_TELEGRAM_TOKEN": "Token del bot Telegram"
+  }
 }

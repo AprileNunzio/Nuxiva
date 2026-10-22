@@ -7,5 +7,10 @@
     "Consensus entre plusieurs services IP",
     "«J'habite à Naples» dit verbalement"
   ],
-  "settings": {}
+  "settings": {
+    "NUXIVA_LOCATION_MODE": "Mode de position (auto ou fixe)",
+    "NUXIVA_LOCATION": "Nom de la position par défaut",
+    "NUXIVA_LOCATION_LAT": "Latitude par défaut",
+    "NUXIVA_LOCATION_LON": "Longitude par défaut"
+  }
 }

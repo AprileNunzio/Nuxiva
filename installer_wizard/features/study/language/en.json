@@ -6,5 +6,8 @@
     "Knowledge graph node extraction",
     "Daily synthesis digest generation"
   ],
-  "settings": {}
+  "settings": {
+    "NUXIVA_STUDY_FINETUNE": "Model fine-tuning while studying",
+    "NUXIVA_STUDY_BASE_MODEL": "Base model for fine-tuning"
+  }
 }

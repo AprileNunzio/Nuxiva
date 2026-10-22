@@ -6,5 +6,8 @@
     "Examens de révision et de niveau",
     "Binaire → ternaire → mémoire cosinus"
   ],
-  "settings": {}
+  "settings": {
+    "NUXIVA_STUDY_FINETUNE": "Affinage du modèle pendant l'étude",
+    "NUXIVA_STUDY_BASE_MODEL": "Modèle de base pour l'affinage"
+  }
 }

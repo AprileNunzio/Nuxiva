@@ -10,5 +10,8 @@
     "Catalogo locale con valutazione dell'hardware e download",
     "Instradamento automatico tra conversazione e ragionamento"
   ],
-  "settings": {}
+  "settings": {
+    "NUXIVA_LLM_ROUTING": "Instradamento tra cervello veloce e potente",
+    "NUXIVA_OLLAMA_URL": "Indirizzo del server Ollama"
+  }
 }

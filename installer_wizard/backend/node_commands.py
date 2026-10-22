@@ -67,5 +67,20 @@ def execute(
     return {"node_id": control.node_id, "command": command, "status": "queued"}
 
 
-def control_payload(control: NodeControl, online: Optional[bool]) -> Dict[str, object]:
-    return {"node_id": control.node_id, "scope": control.scope, "commands": list(control.commands), "online": online}
+HARDWARE_MODULES = {"audio": frozenset({"audio"}), "mic": frozenset({"audio"}),
+                    "camera": frozenset({"camera", "ir_camera"}), "bluetooth": frozenset({"bluetooth"})}
+
+
+def unsupported_modules(control: NodeControl, registry_loader: Callable = _paired_registry) -> list:
+    if control.scope != "paired":
+        return []
+    registry, _ = registry_loader()
+    reported = registry.data.get("nodes", {}).get(control.node_id, {}).get("capabilities") or []
+    if not reported:
+        return []
+    return sorted(name for name, needed in HARDWARE_MODULES.items() if not needed & set(reported))
+
+
+def control_payload(control: NodeControl, online: Optional[bool], unsupported: Optional[list] = None) -> Dict[str, object]:
+    return {"node_id": control.node_id, "scope": control.scope, "commands": list(control.commands), "online": online,
+            "unsupported_modules": list(unsupported or [])}

@@ -22,5 +22,31 @@
     "technique": "3d",
     "id": "nQuaNO36nu68",
     "url": "https://img.icons8.com/?size=240&id=nQuaNO36nu68&format=png"
-  }
+  },
+  "settings": [
+    {
+      "key": "NUXIVA_LLM_ROUTING",
+      "label": "Instradamento tra cervello veloce e potente",
+      "type": "select",
+      "options": [
+        "auto",
+        "1",
+        "0"
+      ],
+      "default": "auto"
+    },
+    {
+      "key": "NUXIVA_OLLAMA_URL",
+      "label": "Indirizzo del server Ollama",
+      "type": "text",
+      "default": "",
+      "apply": [
+        "ollama",
+        "models",
+        "brain",
+        "warmup",
+        "services"
+      ]
+    }
+  ]
 }

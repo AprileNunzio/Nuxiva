@@ -9,5 +9,9 @@
     "Blocage automatique temporaire des attaquants",
     "Analyste IA qui propose des contre-mesures à approuver",
     "Confirmation sous 90 secondes avec restauration automatique"
-  ]
+  ],
+  "settings": {
+    "NUXIVA_NETGUARD": "Analyse du trafic",
+    "NUXIVA_NETGUARD_INTERFACES": "Interfaces analysées (vide = toutes)"
+  }
 }

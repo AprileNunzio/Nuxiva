@@ -7,6 +7,7 @@ export const DESTRUCTIVE_COMMANDS: ReadonlySet<NodeCommand> = new Set(['restart'
 export interface NodeControl {
   readonly scope: ControlScope;
   readonly commands: readonly NodeCommand[];
+  readonly unsupportedModules: readonly string[];
 }
 
 export class NodeConsoleError extends Error {
@@ -36,12 +37,15 @@ export async function fetchNodeControl(nodeId: string, signal: AbortSignal): Pro
   if (!response.ok) {
     throw new NodeConsoleError(await detail(response), response.status);
   }
-  const payload = (await response.json()) as { scope?: unknown; commands?: unknown };
+  const payload = (await response.json()) as { scope?: unknown; commands?: unknown; unsupported_modules?: unknown };
   const scope: ControlScope = payload.scope === 'local' || payload.scope === 'paired' ? payload.scope : 'mesh';
   const commands = Array.isArray(payload.commands)
     ? payload.commands.filter((c): c is NodeCommand => KNOWN_COMMANDS.includes(c as NodeCommand))
     : [];
-  return { scope, commands };
+  const unsupportedModules = Array.isArray(payload.unsupported_modules)
+    ? payload.unsupported_modules.filter((m): m is string => typeof m === 'string')
+    : [];
+  return { scope, commands, unsupportedModules };
 }
 
 export async function sendNodeCommand(nodeId: string, command: NodeCommand): Promise<'executing' | 'queued'> {

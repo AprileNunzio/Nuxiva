@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, ConfigDict
 
 from access import require_admin
-from node_commands import NodeCommandError, control_payload, describe, execute
+from node_commands import NodeCommandError, control_payload, describe, execute, unsupported_modules
 from state import store
 from tasks import background, delayed
 
@@ -49,7 +49,7 @@ def _reopen_setup(user: str) -> None:
 async def node_control(node_id: str) -> Dict[str, Any]:
     mesh = _mesh()
     control = describe(_validated(node_id), mesh.node_id)
-    return control_payload(control, True if control.scope == "local" else None)
+    return control_payload(control, True if control.scope == "local" else None, unsupported_modules(control))
 
 
 @admin_routes.post("/{node_id}/commands/{command}")

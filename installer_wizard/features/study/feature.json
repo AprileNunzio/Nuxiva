@@ -23,5 +23,27 @@
     "technique": "3d",
     "id": "hlnLMra14Qpa",
     "url": "https://img.icons8.com/?size=240&id=hlnLMra14Qpa&format=png"
-  }
+  },
+  "settings": [
+    {
+      "key": "NUXIVA_STUDY_FINETUNE",
+      "label": "Affinamento del modello durante lo studio",
+      "type": "select",
+      "options": [
+        "auto",
+        "1",
+        "0"
+      ],
+      "default": "auto",
+      "apply": [
+        "soup"
+      ]
+    },
+    {
+      "key": "NUXIVA_STUDY_BASE_MODEL",
+      "label": "Modello base per l'affinamento",
+      "type": "text",
+      "default": ""
+    }
+  ]
 }

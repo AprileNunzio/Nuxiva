@@ -7,5 +7,7 @@
     "Conversion de serveur : BLEND et USD/USDZ avec Blender, DWG avec LibreDWG",
     "Commandes : « montre-moi le modèle du marteau », « quels modèles as-tu », « ferme le modèle »"
   ],
-  "settings": {}
+  "settings": {
+    "NUXIVA_3D_CONVERT": "Conversion des fichiers 3D sur le serveur"
+  }
 }

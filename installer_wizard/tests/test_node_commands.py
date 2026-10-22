@@ -7,7 +7,7 @@ for p in (str(_ROOT), str(_ROOT / "installer_wizard"), str(_ROOT / "installer_wi
     if p not in sys.path:
         sys.path.insert(0, p)
 
-from node_commands import NodeCommandError, describe, execute
+from node_commands import NodeCommandError, control_payload, describe, execute, unsupported_modules
 
 
 class _FakeRegistry:
@@ -107,3 +107,28 @@ class NodeCommandApiTests(unittest.TestCase):
 
 async def _noop():
     return None
+
+
+class UnsupportedModulesTests(unittest.TestCase):
+    def loader_for(self, capabilities):
+        registry = _FakeRegistry()
+        registry.data["nodes"]["sat-cucina"]["capabilities"] = capabilities
+        return lambda: (registry, {"identify": ""})
+
+    def test_node_without_camera_and_bluetooth_hides_them(self):
+        loader = self.loader_for(["audio"])
+        control = describe("sat-cucina", "server", loader)
+        self.assertEqual(unsupported_modules(control, loader), ["bluetooth", "camera"])
+
+    def test_unknown_capabilities_hide_nothing(self):
+        loader = self.loader_for([])
+        self.assertEqual(unsupported_modules(describe("sat-cucina", "server", loader), loader), [])
+
+    def test_local_server_and_mesh_nodes_hide_nothing(self):
+        loader = self.loader_for(["audio"])
+        self.assertEqual(unsupported_modules(describe("server", "server", loader), loader), [])
+        self.assertEqual(unsupported_modules(describe("other", "server", loader), loader), [])
+
+    def test_payload_carries_the_list(self):
+        control = describe("sat-cucina", "server", self.loader_for(["camera"]))
+        self.assertEqual(control_payload(control, None, ["audio", "mic"])["unsupported_modules"], ["audio", "mic"])

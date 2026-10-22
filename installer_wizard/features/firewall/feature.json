@@ -15,5 +15,29 @@
     "technique": "3d",
     "id": "Qv15MoNYxkA7",
     "url": "https://img.icons8.com/?size=240&id=Qv15MoNYxkA7&format=png"
-  }
+  },
+  "settings": [
+    {
+      "key": "NUXIVA_NETGUARD",
+      "label": "Analisi del traffico",
+      "type": "select",
+      "options": [
+        "1",
+        "0"
+      ],
+      "default": "1",
+      "apply": [
+        "netguard"
+      ]
+    },
+    {
+      "key": "NUXIVA_NETGUARD_INTERFACES",
+      "label": "Interfacce analizzate (vuoto = tutte)",
+      "type": "text",
+      "default": "",
+      "apply": [
+        "netguard"
+      ]
+    }
+  ]
 }

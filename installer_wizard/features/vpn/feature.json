@@ -15,5 +15,20 @@
     "technique": "3d",
     "id": "J2fYkPtfcYwj",
     "url": "https://img.icons8.com/?size=240&id=J2fYkPtfcYwj&format=png"
-  }
+  },
+  "settings": [
+    {
+      "key": "NUXIVA_VPN",
+      "label": "Strumenti VPN",
+      "type": "select",
+      "options": [
+        "1",
+        "0"
+      ],
+      "default": "1",
+      "apply": [
+        "vpn"
+      ]
+    }
+  ]
 }

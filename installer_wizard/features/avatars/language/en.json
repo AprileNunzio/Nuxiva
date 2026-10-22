@@ -7,6 +7,8 @@
     "Skins, accessories, and atmospheric shaders"
   ],
   "settings": {
-    "NUXIVA_ACTIVE_AVATAR": "Active avatar model"
+    "NUXIVA_AVATAR": "Assistant appearance",
+    "NUXIVA_AVATAR_STYLE": "Appearance style",
+    "NUXIVA_FACE_COLOR": "Hologram colour"
   }
 }

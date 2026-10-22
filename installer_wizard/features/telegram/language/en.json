@@ -7,6 +7,6 @@
     "Photo snapshots and security notifications"
   ],
   "settings": {
-    "TELEGRAM_BOT_TOKEN": "Telegram Bot Token"
+    "NUXIVA_TELEGRAM_TOKEN": "Telegram bot token"
   }
 }
