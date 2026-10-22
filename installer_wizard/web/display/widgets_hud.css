@@ -1,50 +1,19 @@
 .widget:not(.frameless):not(.fullscreen):not(.takeover) {
   --edge: rgba(var(--tone), 0.9);
-  padding: 15px 17px 18px;
-  border-radius: 18px;
+  padding: 14px 16px 16px;
+  border-radius: 20px;
   overflow: hidden;
   background:
-    radial-gradient(120% 90% at 0% 0%, rgba(var(--tone), 0.16), transparent 55%),
-    linear-gradient(160deg, rgba(10, 24, 42, 0.66), rgba(3, 9, 18, 0.58));
-  -webkit-backdrop-filter: blur(20px) saturate(1.5);
-  backdrop-filter: blur(20px) saturate(1.5);
+    radial-gradient(110% 80% at 0% 0%, rgba(var(--tone), 0.12), transparent 60%),
+    linear-gradient(165deg, rgba(12, 26, 44, 0.72), rgba(4, 10, 20, 0.64));
+  -webkit-backdrop-filter: blur(22px) saturate(1.4);
+  backdrop-filter: blur(22px) saturate(1.4);
   box-shadow:
-    0 0 0 1px rgba(var(--tone), 0.2) inset,
-    0 1px 0 rgba(255, 255, 255, 0.09) inset,
-    0 18px 44px -22px rgba(var(--tone), 0.55),
-    0 2px 14px rgba(0, 0, 0, 0.35);
+    0 0 0 1px rgba(255, 255, 255, 0.07) inset,
+    0 1px 0 rgba(255, 255, 255, 0.1) inset,
+    0 3px 0 -2px rgba(var(--tone), 0.9) inset,
+    0 16px 40px -24px rgba(0, 0, 0, 0.7);
   text-shadow: none;
-}
-
-.widget:not(.frameless):not(.fullscreen):not(.takeover)::before {
-  content: "";
-  position: absolute;
-  inset: 6px;
-  z-index: 1;
-  pointer-events: none;
-  border-radius: 13px;
-  opacity: 0.8;
-  background:
-    linear-gradient(var(--edge), var(--edge)) top left / 14px 1.5px no-repeat,
-    linear-gradient(var(--edge), var(--edge)) top left / 1.5px 14px no-repeat,
-    linear-gradient(var(--edge), var(--edge)) top right / 14px 1.5px no-repeat,
-    linear-gradient(var(--edge), var(--edge)) top right / 1.5px 14px no-repeat,
-    linear-gradient(var(--edge), var(--edge)) bottom left / 14px 1.5px no-repeat,
-    linear-gradient(var(--edge), var(--edge)) bottom left / 1.5px 14px no-repeat,
-    linear-gradient(var(--edge), var(--edge)) bottom right / 14px 1.5px no-repeat,
-    linear-gradient(var(--edge), var(--edge)) bottom right / 1.5px 14px no-repeat;
-  filter: drop-shadow(0 0 4px rgba(var(--tone), 0.7));
-}
-
-.widget:not(.frameless):not(.fullscreen):not(.takeover)::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  border-radius: inherit;
-  mix-blend-mode: screen;
-  background: linear-gradient(105deg, transparent 42%, rgba(var(--tone), 0.11) 50%, transparent 58%) 160% 0 / 260% 100% no-repeat;
-  animation: wh-sweep 11s ease-in-out infinite;
 }
 
 .widget > .w-body { position: relative; z-index: 2; }
@@ -74,7 +43,7 @@
 }
 .widget > .w-cycle.run::after { animation: wh-cycle var(--cycle, 60s) linear forwards; }
 
-.widget .wk-head { padding-bottom: 8px; margin-bottom: 10px; border-bottom: 1px solid rgba(var(--tone), 0.16); }
+.widget .wk-head { padding-bottom: 7px; margin-bottom: 9px; border-bottom: 1px solid rgba(255, 255, 255, 0.07); letter-spacing: 0.04em; }
 .widget .wk-head > .wk-svg { display: block; font-size: 15px; color: rgb(var(--tone)); filter: drop-shadow(0 0 5px rgba(var(--tone), 0.7)); }
 .widget .wk-head { align-items: center; }
 .widget .wk-k { color: rgb(var(--tone)); text-shadow: 0 0 12px rgba(var(--tone), 0.55); }
@@ -91,7 +60,6 @@
 .widget.enter { animation: wh-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
 
 @keyframes wh-in { from { opacity: 0; transform: translateY(14px) scale(0.97); filter: blur(8px); } to { opacity: 1; transform: none; filter: none; } }
-@keyframes wh-sweep { 0%, 62% { background-position: 160% 0; } 100% { background-position: -60% 0; } }
 @keyframes wh-cycle { to { transform: scaleX(1); } }
 
 @media (max-width: 700px) {
@@ -103,9 +71,6 @@
   .widget > .w-cycle { left: 26px; right: 26px; height: 3px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .widget:not(.frameless):not(.fullscreen):not(.takeover)::after { animation: none; display: none; }
   .widget.enter { animation: w-in 0.2s ease both; }
   .widget > .w-cycle.run::after { animation: none; transform: scaleX(1); }
 }
-body.lite .widget:not(.frameless):not(.fullscreen):not(.takeover)::after,
-body.tier-minimal .widget:not(.frameless):not(.fullscreen):not(.takeover)::after { display: none; }

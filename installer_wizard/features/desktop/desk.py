@@ -8,6 +8,7 @@ import time
 from pathlib import Path
 
 from config import STATE_DIR, WIDGETS_DIR
+from features.desktop.novelty import AUTO_CAP, Novelty
 from features.desktop.privacy import privacy
 from features.desktop.screens import screens
 from state import store
@@ -17,6 +18,8 @@ log = logging.getLogger("nuxiva.widgets")
 SYSTEM_DIR = WIDGETS_DIR
 USER_DIR = STATE_DIR / "widgets"
 STATE_FILE = STATE_DIR / "widgets.json"
+NOVELTY_FILE = STATE_DIR / "widget_novelty.json"
+FORCED_KEY_PREFIXES = ("recall:", "test:")
 SIZES = ("s", "m", "l", "full")
 TONES = ("cyan", "green", "blue", "violet", "amber", "red")
 FILES = {"widget.js": "application/javascript", "widget.css": "text/css"}
@@ -51,6 +54,7 @@ class Desk:
         self.dismissed: dict[str, tuple[str, float]] = {}
         self.idle_at = 0.0
         self.prefs = self._load()
+        self.novelty = Novelty(NOVELTY_FILE)
         USER_DIR.mkdir(parents=True, exist_ok=True)
 
     @staticmethod
@@ -308,9 +312,22 @@ class Desk:
                         "pos": self.position(i["id"]), "overlay": m.get("overlay", False),
                         "takeover": prio >= 90 and m["size"] == "full", "fullscreen": bool(i.get("fullscreen")),
                         "personal": m.get("personal", False), "refresh": self.refresh_of(i["id"])})
-        out.sort(key=lambda x: (-x["priority"], -x["shown_at"]))
+        out = self._rotate(out)
         wanted = {wid: p["screen"] for wid, p in self.prefs.items() if p.get("screen") is not None}
         return screens.assign(out, wanted)
+
+    @staticmethod
+    def _forced(item: dict) -> bool:
+        return bool(item.get("intent") or item.get("urgent") or item.get("essential") or item.get("takeover")
+                    or item.get("fullscreen") or item["key"].startswith(FORCED_KEY_PREFIXES))
+
+    def _rotate(self, items: list[dict]) -> list[dict]:
+        for item in items:
+            item["rank"] = item["priority"] if self._forced(item) else item["priority"] - self.novelty.penalty(item["id"])
+        items.sort(key=lambda x: (self._forced(x) is False, -x["rank"], -x["shown_at"]))
+        forced = [i for i in items if self._forced(i)]
+        optional = [i for i in items if not self._forced(i)][:AUTO_CAP]
+        return forced + optional
 
     def sweep_private(self) -> bool:
         privacy.watch()
@@ -477,6 +494,8 @@ class Desk:
                 if tick % 20 == 0:
                     self.scan()
                 self.sweep_private()
+                self.novelty.tick([(i["id"], self._sig(i["data"]), bool(i.get("refresh"))) for i in store.desk
+                                   if isinstance(i, dict) and i.get("id")], 1.0)
                 self._bindings()
                 await self._providers()
                 if screens.changed():
