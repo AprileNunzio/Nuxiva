@@ -34,6 +34,14 @@ def known_tools() -> set[str]:
     return set(registry.TOOLS)
 
 
+def reflect(expert: Expert) -> None:
+    from features.fleet import mirror
+    try:
+        mirror.add(expert)
+    except Exception as exc:
+        store.event("WARN", f"Esperto {expert.id} non riportato nella flotta: {type(exc).__name__}", "experts")
+
+
 def create(body: dict, lang: str, author: str) -> Expert:
     if not isinstance(body, dict):
         raise ExpertError("Richiesta non valida")
@@ -50,6 +58,7 @@ def create(body: dict, lang: str, author: str) -> Expert:
     expert = experts.put(build(raw, known_tools()), create=True)
     board.post(board_key(expert.id), "tutti", f"{expert.role} si unisce alla squadra", "creazione")
     store.event("INFO", f"Esperto {expert.id} creato da {author}", "experts")
+    reflect(expert)
     return expert
 
 

@@ -81,6 +81,7 @@ async def create_for(text: str, lang: str = "it") -> Expert | None:
                 return found
             raw.update(id=experts.free_id(slug(raw["role"])), template=TEMPLATE)
             expert = experts.put(build(raw, service.known_tools()), create=True)
+            service.reflect(expert)
         except Exception as exc:
             store.event("WARN", f"Creazione automatica dell'esperto non riuscita: {type(exc).__name__}", "experts")
             return None

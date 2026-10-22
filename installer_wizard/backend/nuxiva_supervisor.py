@@ -429,6 +429,11 @@ def seed_experts() -> None:
         experts_service.seed_defaults(pages.ui_language() or "it")
     except Exception:
         log.exception("Esperti predefiniti non aggiunti")
+    try:
+        from features.fleet import mirror
+        mirror.sync_all()
+    except Exception:
+        log.exception("Esperti non riportati nella flotta")
 
 
 async def main() -> None:
