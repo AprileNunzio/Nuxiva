@@ -7,5 +7,8 @@
     "Attach existing tools and widgets, or a brand-new widget created on the fly",
     "Agent instructions encrypted at rest; active, paused or archived state, also in bulk"
   ],
-  "settings": {}
+  "settings": {
+    "NUXIVA_FLEET_AUTO_CREATE": "Nuxiva may create agents on its own (1 = yes, 0 = manual only)",
+    "NUXIVA_FLEET_PAGE": "Agents shown per page"
+  }
 }

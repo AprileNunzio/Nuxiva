@@ -7,5 +7,8 @@
     "Collegamento di strumenti e widget esistenti, o di un widget nuovo creato al volo",
     "Istruzioni degli agenti cifrate a riposo; stato attivo, in pausa o archiviato anche in blocco"
   ],
-  "settings": {}
+  "settings": {
+    "NUXIVA_FLEET_AUTO_CREATE": "Nuxiva può creare agenti da solo (1 = sì, 0 = solo a mano)",
+    "NUXIVA_FLEET_PAGE": "Agenti mostrati per pagina"
+  }
 }

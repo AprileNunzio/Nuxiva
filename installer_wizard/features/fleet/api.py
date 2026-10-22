@@ -1,8 +1,9 @@
+from config import env_get
 from fastapi import APIRouter, Depends, HTTPException, Request
 
 from access import require_admin
 from features.fleet import catalog
-from features.fleet.model import CATEGORIES, DEFAULT_LIMIT, KINDS, LINK_KINDS, ORIGINS, STATES, FleetError, clean_text
+from features.fleet.model import CATEGORIES, DEFAULT_LIMIT, KINDS, MAX_LIMIT, LINK_KINDS, ORIGINS, STATES, FleetError, clean_text
 from features.fleet.service import fleet
 from features.fleet.store import Filter
 
@@ -37,12 +38,19 @@ async def summary(_: str = Depends(require_admin)):
     return fleet.store.summary()
 
 
+def _page_size() -> int:
+    try:
+        return max(10, min(MAX_LIMIT, int(env_get("NUXIVA_FLEET_PAGE", str(DEFAULT_LIMIT)))))
+    except ValueError:
+        return DEFAULT_LIMIT
+
+
 @admin_routes.get("/api/fleet/agents")
-async def agents(cursor: str = "", limit: int = DEFAULT_LIMIT, state: str = "", kind: str = "", category: str = "", origin: str = "",
+async def agents(cursor: str = "", limit: int = 0, state: str = "", kind: str = "", category: str = "", origin: str = "",
                  q: str = "", tool: str = "", widget: str = "", _: str = Depends(require_admin)):
     flt = _filter(state, kind, category, origin, q, tool, widget)
     try:
-        return fleet.store.list(flt, cursor, limit)
+        return fleet.store.list(flt, cursor, limit or _page_size())
     except FleetError as error:
         raise _fail(error)
 

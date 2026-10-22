@@ -1,3 +1,4 @@
+from config import env_get
 from functools import partial
 
 from features.agent.registry import tool
@@ -32,6 +33,8 @@ async def fleet_find(query: str = "", tool: str = "", widget: str = "") -> str:
              "new_widget": "nome di un nuovo widget da creare e collegare (facoltativo)"})
 async def fleet_create(name: str, purpose: str, kind: str = "custom", category: str = "altro", instructions: str = "",
                        tools: list | None = None, widgets: list | None = None, new_widget: str = "") -> str:
+    if env_get("NUXIVA_FLEET_AUTO_CREATE", "1") == "0":
+        return "la creazione automatica di agenti è disattivata nelle impostazioni della flotta: la persona può crearli dall'app Agenti"
     clean_name = clean_text(name, 80)
     existing = fleet.store.list(Filter(prefix=clean_name), "", 1)["items"]
     if existing and existing[0]["name"].lower() == clean_name.lower():

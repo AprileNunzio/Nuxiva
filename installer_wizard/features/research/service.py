@@ -92,10 +92,17 @@ async def _gather(query: str, days: int) -> tuple[list[providers.Hit], list[str]
     return hits, errors
 
 
+def _setting(name: str, fallback: int, low: int, high: int) -> int:
+    try:
+        return max(low, min(high, int(env_get(name, str(fallback)))))
+    except ValueError:
+        return fallback
+
+
 async def research(question: str, days: int = 0, limit: int = 5) -> dict:
     query = scrub(question)
-    days = max(0, min(366, int(days)))
-    limit = max(1, min(8, int(limit)))
+    days = max(0, min(366, int(days))) or _setting("NUXIVA_RESEARCH_DAYS", 0, 0, 366)
+    limit = max(1, min(_setting("NUXIVA_RESEARCH_MAX_SOURCES", 8, 1, 8), int(limit)))
     key = (query.lower(), days, limit)
     cached = _cache.get(key)
     if cached and time.time() - cached[0] < CACHE_TTL:

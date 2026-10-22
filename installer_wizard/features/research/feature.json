@@ -19,7 +19,37 @@
     "Se non trova fonti o la rete non risponde lo dichiara, mai risposte inventate",
     "Rete protetta: niente indirizzi interni, redirect controllati, dimensioni e tipi limitati; dati personali tolti dalla domanda"
   ],
-  "settings": [],
+  "settings": [
+    {
+      "key": "NUXIVA_RESEARCH_DAYS",
+      "label": "Finestra di freschezza",
+      "type": "select",
+      "options": [
+        "0",
+        "7",
+        "30",
+        "365"
+      ],
+      "default": "0"
+    },
+    {
+      "key": "NUXIVA_RESEARCH_MAX_SOURCES",
+      "label": "Fonti massime per risposta",
+      "type": "select",
+      "options": [
+        "3",
+        "5",
+        "8"
+      ],
+      "default": "5"
+    },
+    {
+      "key": "NUXIVA_SEARXNG_URL",
+      "label": "Istanza SearXNG (facoltativa)",
+      "type": "text",
+      "default": ""
+    }
+  ],
   "icon3d": "./icon.png",
   "icon3dSource": {
     "provider": "Icons8",

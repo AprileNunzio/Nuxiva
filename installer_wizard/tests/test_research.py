@@ -191,3 +191,12 @@ class TestArticle:
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class SettingsTest(unittest.TestCase):
+    def test_setting_falls_back_and_clamps(self):
+        from features.research import service
+        with unittest.mock.patch.object(service, "env_get", return_value="abc"):
+            self.assertEqual(service._setting("X", 5, 1, 8), 5)
+        with unittest.mock.patch.object(service, "env_get", return_value="99"):
+            self.assertEqual(service._setting("X", 5, 1, 8), 8)

@@ -8,5 +8,9 @@
     "Se non trova fonti o la rete non risponde lo dichiara, mai risposte inventate",
     "Rete protetta: niente indirizzi interni, redirect controllati, dimensioni e tipi limitati; dati personali tolti dalla domanda"
   ],
-  "settings": {}
+  "settings": {
+    "NUXIVA_RESEARCH_DAYS": "Finestra di freschezza in giorni (0 = nessun limite)",
+    "NUXIVA_RESEARCH_MAX_SOURCES": "Fonti massime per risposta",
+    "NUXIVA_SEARXNG_URL": "Indirizzo SearXNG privato (facoltativo)"
+  }
 }

@@ -7,5 +7,8 @@
     "Association d'outils et de widgets existants, ou d'un nouveau widget créé à la volée",
     "Instructions chiffrées au repos ; état actif, en pause ou archivé, aussi en masse"
   ],
-  "settings": {}
+  "settings": {
+    "NUXIVA_FLEET_AUTO_CREATE": "Nuxiva peut créer des agents seul (1 = oui, 0 = à la main)",
+    "NUXIVA_FLEET_PAGE": "Agents affichés par page"
+  }
 }

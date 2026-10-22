@@ -18,7 +18,29 @@
     "Collegamento di strumenti e widget esistenti, o di un widget nuovo creato al volo",
     "Istruzioni degli agenti cifrate a riposo; stato attivo, in pausa o archiviato anche in blocco"
   ],
-  "settings": [],
+  "settings": [
+    {
+      "key": "NUXIVA_FLEET_AUTO_CREATE",
+      "label": "Creazione automatica",
+      "type": "select",
+      "options": [
+        "1",
+        "0"
+      ],
+      "default": "1"
+    },
+    {
+      "key": "NUXIVA_FLEET_PAGE",
+      "label": "Agenti per pagina",
+      "type": "select",
+      "options": [
+        "25",
+        "50",
+        "100"
+      ],
+      "default": "50"
+    }
+  ],
   "icon3d": "./icon.png",
   "icon3dSource": {
     "provider": "Icons8",

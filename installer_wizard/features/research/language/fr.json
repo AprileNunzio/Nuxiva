@@ -8,5 +8,9 @@
     "Sans source ou si le réseau ne répond pas, il le déclare, jamais de réponses inventées",
     "Réseau protégé : pas d'adresses internes, redirections contrôlées, tailles et types limités ; données personnelles retirées de la requête"
   ],
-  "settings": {}
+  "settings": {
+    "NUXIVA_RESEARCH_DAYS": "Fenêtre de fraîcheur en jours (0 = sans limite)",
+    "NUXIVA_RESEARCH_MAX_SOURCES": "Sources maximales par réponse",
+    "NUXIVA_SEARXNG_URL": "Adresse SearXNG privée (facultatif)"
+  }
 }

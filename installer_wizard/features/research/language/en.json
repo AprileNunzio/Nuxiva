@@ -8,5 +8,9 @@
     "If no sources are found or the network is down it says so, never invented answers",
     "Protected networking: no internal addresses, checked redirects, limited sizes and types; personal data removed from the query"
   ],
-  "settings": {}
+  "settings": {
+    "NUXIVA_RESEARCH_DAYS": "Freshness window in days (0 = no limit)",
+    "NUXIVA_RESEARCH_MAX_SOURCES": "Maximum sources per answer",
+    "NUXIVA_SEARXNG_URL": "Private SearXNG address (optional)"
+  }
 }
