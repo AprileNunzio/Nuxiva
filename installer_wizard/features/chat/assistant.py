@@ -275,7 +275,7 @@ async def _converse(text: str, core_call) -> tuple[str, str, dict]:
         data = await core_call(text)
         probe.note(f"Modello: {data.get('agent_id') or 'core'}")
     reply = data.get("speech_output") or "…"
-    refused = bool(actions.REFUSAL.search(reply))
+    refused = bool(actions.REFUSAL.search(reply)) or actions.promised(reply)
     if refused and not actions.ACTIONISH.search(text):
         found = await _diagnose(text)
         if found:

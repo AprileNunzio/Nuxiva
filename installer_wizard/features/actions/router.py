@@ -16,7 +16,7 @@ from features.actions.smb import smb_action
 from features.actions.speed import speed_action
 from features.actions.updates import updates_action
 
-__all__ = ["CALC", "REFUSAL", "ACTIONISH", "match", "handle", "calc_action", "try_calc", "diagnose_action", "note_gap"]
+__all__ = ["CALC", "REFUSAL", "PROMISE", "promised", "ACTIONISH", "match", "handle", "calc_action", "try_calc", "diagnose_action", "note_gap"]
 MAKE = (r"(?!\w*at[oaie]\b)(?:cre[aiou]\w*|fa(?:i|mmi|rmi|resti|rebbe|re)|fammi|gener\w*|costru\w*|realizz\w*"
         r"|progett\w*|svilupp\w*|prepar\w*|pubblic\w*)")
 ROUTES = [
@@ -127,6 +127,16 @@ REFUSAL = re.compile(
     r"|non dispongo\b|non ho (accesso|dati|informazioni|notizie)\b|non sono a conoscenza|dati in tempo reale|informazioni aggiornate)",
     re.I,
 )
+PROMISE = re.compile(
+    r"^\W*(?:subito|certamente|certo|ricevuto|ok|va bene|perfetto)?\W*(?:signore\W+)?(?:procedo|mi metto|inizio|avvio|"
+    r"lo faccio|ci penso io|sto (?:scaricando|controllando|cercando|procedendo))\b", re.I)
+
+
+def promised(reply: str) -> bool:
+    text = (reply or "").strip()
+    return len(text) < 220 and bool(PROMISE.search(text) or re.search(r"\bsubito,? signore\W+procedo\b", text, re.I))
+
+
 ACTIONISH = re.compile(
     r"\b(controlla|verifica|dimmi|mostrami|elenca|trova|cerca|quant[aieo]|qual[ei]?|che|come)\b.*"
     r"\b(rete|ip|porte?|servizi|processi|dispositiv\w*|wi-?fi|kernel|versione|uptime|acceso|dns|ping"

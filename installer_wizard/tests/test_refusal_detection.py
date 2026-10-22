@@ -34,3 +34,15 @@ class FreshnessRoutingTest(unittest.TestCase):
         for text in ("raccontami una barzelletta", "come si fa il tiramisù", "spiegami la fotosintesi"):
             with self.subTest(text=text):
                 self.assertFalse(commands.fresh(text))
+
+
+class PromiseDetectionTest(unittest.TestCase):
+    def test_bare_promises_are_detected(self):
+        from features.actions.router import promised
+        self.assertTrue(promised("Subito, signore. Procedo…"))
+        self.assertTrue(promised("Certo, procedo con lo scaricamento."))
+
+    def test_real_answers_are_not_promises(self):
+        from features.actions.router import promised
+        self.assertFalse(promised("Il Napoli gioca domenica alle 18 contro la Roma."))
+        self.assertFalse(promised("x" * 400))
