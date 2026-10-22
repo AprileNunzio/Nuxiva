@@ -211,7 +211,6 @@
     toggle($("date"), cfg.show_date !== false);
     toggle($("mind"), cfg.show_thinking !== false);
     toggle(document.querySelector(".dock"), cfg.show_dock !== false);
-    toggle($("reasoning-selector-root"), cfg.show_model_selector !== false);
     toggle($("btn-mic"), cfg.show_mic !== false);
     toggle($("ear"), cfg.show_mic !== false);
     toggle($("chips"), cfg.show_telemetry_chips !== false);

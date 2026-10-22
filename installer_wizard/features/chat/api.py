@@ -1,5 +1,6 @@
 import asyncio
 import json
+import logging
 import random
 import re
 import time
@@ -39,6 +40,7 @@ from features.voices.catalog import home_lang
 from features.voices.downloads import ensure_language
 from identity import assistant_name
 
+log = logging.getLogger("nuxiva.chat")
 public_routes = APIRouter()
 admin_routes = APIRouter()
 
@@ -60,7 +62,7 @@ async def _demo_core(query: str) -> dict:
     return {"agent_id": "demo", "speech_output": text}
 
 
-async def _core_call(query: str, device: str, speech_lang: dict, mode: str | None = None) -> dict:
+async def _core_call(query: str, device: str, speech_lang: dict) -> dict:
     present = [p["slug"] for p in store.presence.get("people", []) if p.get("known")]
     context = {"people_present": people.context_for(present)} if present else {}
     context["laws"] = laws.preamble()
@@ -76,8 +78,7 @@ async def _core_call(query: str, device: str, speech_lang: dict, mode: str | Non
     long_term = mind.recall(query, who=acting().slug)
     if long_term:
         context["long_term"] = long_term
-    route = await brains.route(query, mode_override=mode)
-    route["reasoning_mode"] = mode
+    route = await brains.route(query)
     route["lang"] = speech_lang["lang"]
     rule = languages.instruction(speech_lang["lang"], speech_lang["teach"])
     if rule:
@@ -109,21 +110,14 @@ async def _core_call(query: str, device: str, speech_lang: dict, mode: str | Non
             trace.note(call, f"gestita dall'agente {data.get('agent_id') or 'core'}")
         trace.finish(call, model, (time.time() - started) * 1000, data.get("speech_output") or "")
         if model:
-            eng = None
-            try:
-                from server.core.reasoning.engines.scanner import engine_scanner
-                eng = engine_scanner.get_engine(mode)
-            except Exception:
-                pass
-            label = eng.name if eng else (f"{assistant_name()} Veloce" if route["kind"] == "chat" else f"{assistant_name()} Pro")
-            data["agent_id"] = f"{data.get('agent_id') or 'core'} · {model} ({label})"
+            data["agent_id"] = f"{data.get('agent_id') or 'core'} · {model} ({brain_chain.engine_label(route.get('lang'))})"
         return data
 
     try:
         from loops import default_mode_network
         default_mode_network.record_activity()
-    except Exception:
-        pass
+    except (ImportError, AttributeError, RuntimeError) as exc:
+        log.warning("Attività non registrata: %s", exc)
     try:
         return await brain_chain.ask(query, device, context, route, core_local)
     except brain_chain.NoBrainAvailable as exc:
@@ -134,10 +128,8 @@ async def _core_call(query: str, device: str, speech_lang: dict, mode: str | Non
 def _heard(body: dict) -> dict:
     slug = str(body.get("speaker") or "")
     known = body.get("voice_known")
-    mode = str(body.get("reasoning_mode") or body.get("mode") or "").strip()
     return {"followup": bool(body.get("followup")), "speaker": slug if SLUG_RE.match(slug) else "",
-            "voice_known": known if isinstance(known, bool) else None,
-            "reasoning_mode": mode or None}
+            "voice_known": known if isinstance(known, bool) else None}
 
 
 async def assistant_chat(text: str, device: str, heard_lang: str | None = None, heard: dict | None = None, internal: bool = False) -> JSONResponse:
@@ -163,8 +155,8 @@ async def assistant_chat(text: str, device: str, heard_lang: str | None = None, 
             from nuxiva_bus import BusError, nuxiva_bus
             nuxiva_bus.publish("voice.speaker", {"speaker": heard["speaker"], "known": bool(heard.get("voice_known")), "device": device[:60]},
                                origin="voice")
-        except (ImportError, BusError):
-            pass
+        except (ImportError, BusError) as exc:
+            log.warning("Evento del parlante non pubblicato: %s", exc)
     directed, confidence = True, 1.0
     if heard.get("followup"):
         verdict = addressee.judge(text, device)
@@ -176,13 +168,8 @@ async def assistant_chat(text: str, device: str, heard_lang: str | None = None, 
     if speech_lang["lang"] != home_lang():
         background(ensure_language(speech_lang["lang"]))
 
-    mode = heard.get("reasoning_mode")
-    if not mode:
-        from features.people.people import preferred_reasoning_mode
-        mode = preferred_reasoning_mode(principal.slug)
-
     async def core_call(query: str) -> dict:
-        return await (_demo_core(query) if DEMO else _core_call(query, device, speech_lang, mode))
+        return await (_demo_core(query) if DEMO else _core_call(query, device, speech_lang))
 
     flow = ChatJourney(said, text, device, heard.get("speaker") or "utente", internal=internal)
     enroll = voice_id.command(text)
@@ -374,15 +361,12 @@ async def public_stream_reasoning(request: Request):
 
 @public_routes.get("/api/assistant/mode")
 async def get_assistant_mode(request: Request):
-    principal = authz_resolve.for_request("kiosk" if is_local(request) else "remote", "", "")
-    from features.people.people import preferred_reasoning_mode
-    active_mode = preferred_reasoning_mode(principal.slug)
-
     from features.locale.api import page_language
     from server.core.reasoning.engines.scanner import engine_scanner
     lang = page_language(request, False)
-    engines = [eng.get_profile(is_active=eng.version.value == active_mode, lang=lang) for eng in engine_scanner.list_engines()]
     default_id = engine_scanner.get_default_engine().version.value
+    active_mode = default_id
+    engines = [eng.get_profile(is_active=eng.version.value == active_mode, lang=lang) for eng in engine_scanner.list_engines()]
 
     return {
         "mode": active_mode,
@@ -402,18 +386,5 @@ async def explain_assistant_mode(mode: str, request: Request):
         raise HTTPException(400, str(exc))
     except LookupError:
         raise HTTPException(404, "Motore non trovato")
-
-
-@public_routes.post("/api/assistant/mode")
-async def set_assistant_mode(request: Request):
-    body = await request.json()
-    mode = str(body.get("mode") or "").strip().lower()
-    speaker = str(body.get("speaker") or "").strip()
-    if speaker and not SLUG_RE.match(speaker):
-        raise HTTPException(400, "Identificativo utente non valido")
-    principal = authz_resolve.for_request("kiosk" if is_local(request) else "remote", speaker, "")
-    from features.people.people import set_preferred_reasoning_mode
-    saved = set_preferred_reasoning_mode(principal.slug, mode)
-    return {"status": "ok", "mode": saved, "user": principal.slug}
 
 

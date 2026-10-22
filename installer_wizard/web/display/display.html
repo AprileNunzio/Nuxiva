@@ -18,8 +18,6 @@
 <link rel="stylesheet" href="/static/display/camera.css">
 <link rel="stylesheet" href="/static/display/flow.css">
 <link rel="stylesheet" href="/static/shared/bgqueue.css">
-<link rel="stylesheet" href="/static/display/reasoning_mode/mode_selector.css">
-<link rel="stylesheet" href="/static/display/reasoning_mode/mode_info.css">
 <link rel="stylesheet" href="/static/display/dock.css">
 </head>
 <body class="holo-grid face">
@@ -84,23 +82,6 @@
 
   <div class="dock" role="toolbar" data-i18n-attr="aria-label:dock_label">
     <div class="dock-bar">
-    <div class="dock-model-selector" id="reasoning-selector-root">
-      <button type="button" class="dock-model-trigger" id="btn-model-trigger" aria-haspopup="true" aria-expanded="false" data-i18n-attr="title:model_trigger,aria-label:model_trigger">
-        <span class="dock-model-icon" id="dock-model-icon">✨</span>
-        <span class="dock-model-text" id="dock-model-text">
-          <span class="dock-model-name" id="dock-model-name"></span>
-          <span class="dock-model-badge" id="dock-model-ver-text"></span>
-        </span>
-        <svg class="dock-model-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
-      <div class="dock-model-menu" id="dock-model-menu" role="menu" hidden>
-        <div class="dock-model-menu-head">
-          <span class="menu-head-title" data-i18n="model_menu_title"></span>
-          <span class="menu-head-count" id="dock-model-count"></span>
-        </div>
-        <div class="dock-model-items" id="dock-model-items"></div>
-      </div>
-    </div>
       <input id="in" data-i18n-attr="placeholder:input_placeholder,aria-label:input_placeholder" data-i18n-params='{"assistant":"{{assistant}}"}' autocomplete="off">
       <button class="dock-send" id="btn-send" type="button" disabled data-i18n-attr="title:btn_send,aria-label:btn_send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12l16-8-6 16-2.5-6.5L4 12z"/></svg></button>
       <button class="ibtn mic off" id="btn-mic" data-i18n-attr="title:btn_mic,aria-label:btn_mic" data-i18n-params='{"assistant":"{{assistant}}"}'><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
@@ -169,8 +150,6 @@
 <script src="/static/display/person_lang.js"></script>
 <script src="/static/display/mood.js"></script>
 <script src="/static/display/ambient.js"></script>
-<script src="/static/display/reasoning_mode/mode_selector.js"></script>
-<script src="/static/display/reasoning_mode/mode_info.js"></script>
 <script src="/static/display/chat.js"></script>
 <script src="/static/display/widgets/live_brain_badge/badge.js"></script>
 <script src="/static/display/musicout.js"></script>

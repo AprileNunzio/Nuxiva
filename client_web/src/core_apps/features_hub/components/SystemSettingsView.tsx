@@ -17,8 +17,7 @@ import {
   ShieldCheck,
   CheckCircle2,
   RefreshCw,
-  ArrowLeft,
-  ChevronDown
+  ArrowLeft
 } from 'lucide-react';
 import { DisplaySettings, BackendSettings } from '../types';
 import {
@@ -217,13 +216,6 @@ export const SystemSettingsView: React.FC<SystemSettingsViewProps> = ({ t, onBac
                     desc={t('opt_dock_desc')}
                     active={display.show_dock}
                     onToggle={() => void handleToggleDisplay('show_dock')}
-                  />
-                  <SettingRow
-                    icon={<ChevronDown className="h-4 w-4 text-cyan-400" />}
-                    title={t('opt_model_selector')}
-                    desc={t('opt_model_selector_desc')}
-                    active={display.show_model_selector}
-                    onToggle={() => void handleToggleDisplay('show_model_selector')}
                   />
                   <SettingRow
                     icon={<Mic className="h-4 w-4 text-cyan-400" />}

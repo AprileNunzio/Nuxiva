@@ -74,8 +74,6 @@
     "section_dock_controls": "Dock & Controlli Inferiori",
     "opt_dock": "Barra Chat & Dock",
     "opt_dock_desc": "Mostra o nasconde l'intera barra di input inferiore con campo testo e invio.",
-    "opt_model_selector": "Selettore Motore di Ragionamento",
-    "opt_model_selector_desc": "Mostra o nasconde il selettore rapido dei modelli cognitivi nel dock.",
     "opt_mic": "Microfono Vocale & Ascolto",
     "opt_mic_desc": "Mostra o nasconde il pulsante del microfono e l'indicatore delle onde audio.",
     "section_telemetry_graphics": "Telemetria, Presenza & Ologramma",

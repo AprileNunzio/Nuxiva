@@ -1,5 +1,6 @@
 import asyncio
 import json
+import logging
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import JSONResponse, RedirectResponse
@@ -20,6 +21,8 @@ from state import INSTALL_LOG, store
 from steps import STEP_BY_ID
 from tasks import background, delayed
 from features.brain.brains import brains
+
+log = logging.getLogger("nuxiva.system_api")
 
 public_routes = APIRouter()
 admin_routes = APIRouter()
@@ -304,7 +307,6 @@ DEFAULT_DISPLAY_SETTINGS = {
     "show_date": True,
     "show_thinking": True,
     "show_dock": True,
-    "show_model_selector": True,
     "show_mic": True,
     "show_telemetry_chips": True,
     "show_presence": True,
@@ -333,8 +335,8 @@ def get_display_settings() -> dict:
                 data = json.load(f)
                 if isinstance(data, dict):
                     return {**DEFAULT_DISPLAY_SETTINGS, **data}
-        except Exception:
-            pass
+        except (OSError, ValueError) as exc:
+            log.warning("Impostazioni del display non lette: %s", exc)
     return dict(DEFAULT_DISPLAY_SETTINGS)
 
 
@@ -348,8 +350,8 @@ def save_display_settings(data: dict) -> dict:
         path.parent.mkdir(parents=True, exist_ok=True)
         with open(path, "w", encoding="utf-8") as f:
             json.dump(current, f, indent=2)
-    except Exception:
-        pass
+    except OSError as exc:
+        log.error("Impostazioni del display non salvate: %s", exc)
     store.display_settings = current
     return current
 
@@ -364,8 +366,8 @@ def get_backend_settings() -> dict:
                 loaded = json.load(f)
                 if isinstance(loaded, dict):
                     local_data = loaded
-        except Exception:
-            pass
+        except (OSError, ValueError) as exc:
+            log.warning("Impostazioni del backend non lette: %s", exc)
     return {
         **DEFAULT_BACKEND_SETTINGS,
         **local_data,
@@ -399,8 +401,8 @@ def save_backend_settings(data: dict) -> dict:
         path.parent.mkdir(parents=True, exist_ok=True)
         with open(path, "w", encoding="utf-8") as f:
             json.dump(current, f, indent=2)
-    except Exception:
-        pass
+    except OSError as exc:
+        log.error("Impostazioni del backend non salvate: %s", exc)
     if env_updates:
         write_env(env_updates)
         _ollama_cache.clear()

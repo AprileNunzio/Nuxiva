@@ -6,7 +6,6 @@ export interface DisplaySettings {
   show_date: boolean;
   show_thinking: boolean;
   show_dock: boolean;
-  show_model_selector: boolean;
   show_mic: boolean;
   show_telemetry_chips: boolean;
   show_presence: boolean;

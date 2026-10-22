@@ -156,8 +156,8 @@ class CorticalBrainChain:
 cortical_chain = CorticalBrainChain()
 
 
-def _label(mode_id: str | None, lang: Any = None) -> str:
-    engine = _scanner().get_engine(LEGACY_IDS.get(str(mode_id or ""), str(mode_id or ""))) or _scanner().get_default_engine()
+def engine_label(lang: Any = None) -> str:
+    engine = _scanner().get_engine(DEFAULT_MODE) or _scanner().get_default_engine()
     return engine.label(lang)
 
 
@@ -165,7 +165,7 @@ async def _cloud(ref: str, query: str, device: str, context: dict, route: dict) 
     started = time.time()
     call = trace.begin("conversation", route["reason"], route["models"])
     trace.attempt(call, ref)
-    label = _label(route.get("reasoning_mode"), route.get("lang"))
+    label = engine_label(route.get("lang"))
     try:
         answer = await conversation.reply(ref, query, device, context, route["max_tokens"], remember_turn=route.get("remember", True))
     except CloudError as exc:
@@ -215,7 +215,7 @@ async def ask(query: str, device: str, context: dict, route: dict, core_local: C
     candidates = _candidates(model_refs)
     if not candidates:
         raise NoBrainAvailable("nessun cervello configurato")
-    cortical_chain.set_mode(route.get("reasoning_mode") or ("nuxiva-5.0-veloce" if route.get("kind") == "chat" else DEFAULT_MODE))
+    cortical_chain.set_mode(DEFAULT_MODE)
     engine = cortical_chain.engine()
     plan = engine.effective(query, cortical_chain.limbic).strategy
     if free_matrix_active:
@@ -255,5 +255,5 @@ async def ask(query: str, device: str, context: dict, route: dict, core_local: C
     return raw
 
 
-__all__ = ["CONFIDENCE_BAD", "CONFIDENCE_OK", "CONFIDENCE_WEIGHT", "CRITIC_WEIGHT", "COMPLEXITY_WORDS", "CorticalBrainChain",
+__all__ = ["DEFAULT_MODE", "CONFIDENCE_BAD", "CONFIDENCE_OK", "CONFIDENCE_WEIGHT", "CRITIC_WEIGHT", "COMPLEXITY_WORDS", "CorticalBrainChain",
            "NoBrainAvailable", "ask", "cortical_chain", "valid"]

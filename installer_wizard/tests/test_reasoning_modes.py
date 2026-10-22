@@ -1,4 +1,5 @@
 import asyncio
+import inspect
 import tempfile
 import unittest
 from pathlib import Path
@@ -8,6 +9,7 @@ from features.brain import brains as brains_module
 from features.brain import presets
 from features.brain.assignments import load_synaptic_weights, save_synaptic_weights
 from features.brain.components import LimbicModulator, SpikingNeuron, SpikingNeuronNode, SynapticSpike
+from features.chat import brain_chain
 from features.chat.brain_chain import CorticalBrainChain, cortical_chain
 from features.mind.scoring import compute_emotional_salience, score_memory_retention
 from features.people import people
@@ -28,29 +30,24 @@ class ReasoningModesTest(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(presets.PRESETS[0].id, "neuro_core")
         self.assertEqual(presets.PRESETS[0].label, "Tutte le fonti")
 
-    def test_permanent_user_preference_storage(self):
-        test_slug = "test-user-reasoning"
-        people.ensure(test_slug, "Test User")
+    def test_users_cannot_choose_the_reasoning_engine(self):
+        self.assertFalse(hasattr(people, "preferred_reasoning_mode"))
+        self.assertFalse(hasattr(people, "set_preferred_reasoning_mode"))
+        self.assertEqual(brain_chain.DEFAULT_MODE, "nuxiva-6.5-auto")
+        self.assertEqual(inspect.signature(brains_module.Brains.route).parameters.keys(), {"self", "text"})
 
-        mode = people.preferred_reasoning_mode(test_slug)
-        self.assertEqual(mode, "reasoning")
+    def test_every_engine_stays_available_to_the_automatic_selector(self):
+        from server.core.reasoning.engines.scanner import engine_scanner
+        versions = {engine.version.value for engine in engine_scanner.list_engines()}
+        self.assertGreaterEqual(len(versions), 6)
+        self.assertEqual(engine_scanner.get_default_engine().version.value, brain_chain.DEFAULT_MODE)
 
-        saved = people.set_preferred_reasoning_mode(test_slug, "fast")
-        self.assertEqual(saved, "fast")
-        self.assertEqual(people.preferred_reasoning_mode(test_slug), "fast")
-
-        saved_pro = people.set_preferred_reasoning_mode(test_slug, "5.0-pro")
-        self.assertEqual(saved_pro, "reasoning")
-        self.assertEqual(people.preferred_reasoning_mode(test_slug), "reasoning")
-
-    async def test_brain_route_with_mode_override(self):
+    async def test_brain_route_classifies_each_request_on_its_own(self):
         b = brains_module.Brains()
         with patch.object(b, "installed", return_value=["granite3.3:2b", "qwen2.5:1.5b"]):
-            fast_route = await b.route("dimostrami questo teorema matematico complesso", mode_override="fast")
-            self.assertEqual(fast_route["kind"], "chat")
-
-            deep_route = await b.route("ciao", mode_override="reasoning")
-            self.assertEqual(deep_route["kind"], "deep")
+            route = await b.route("ciao")
+            self.assertIn(route["kind"], ("chat", "deep"))
+            self.assertNotIn("reasoning_mode", route)
 
     async def test_components_spiking_neuron_lif(self):
         neuron = SpikingNeuronNode("cortex_unit", threshold=0.7)

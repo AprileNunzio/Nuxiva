@@ -146,8 +146,7 @@
   D.ask = async (text, lang, heard = {}) => {
     D.busy = true; D.lastInteraction = Date.now();
     thinking(true);
-    const activeMode = (D.getReasoningMode ? D.getReasoningMode() : D.reasoningMode) || localStorage.getItem("nuxiva_reasoning_mode") || "reasoning";
-    const payload = { reasoning_mode: activeMode, ...heard };
+    const payload = { ...heard };
     if (!heard.followup) {
       $("you").textContent = `« ${text} »`;
       $("say").textContent = "…";

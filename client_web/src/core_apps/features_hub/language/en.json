@@ -74,8 +74,6 @@
     "section_dock_controls": "Dock & Bottom Controls",
     "opt_dock": "Chat Bar & Dock",
     "opt_dock_desc": "Show or hide the bottom dock with chat input and send button.",
-    "opt_model_selector": "Reasoning Engine Selector",
-    "opt_model_selector_desc": "Show or hide the quick model picker in the dock.",
     "opt_mic": "Voice Microphone & Hearing",
     "opt_mic_desc": "Show or hide the microphone button and audio wave listener.",
     "section_telemetry_graphics": "Telemetry, Presence & Hologram",

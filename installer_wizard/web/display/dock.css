@@ -49,10 +49,6 @@
   opacity: 0.5;
 }
 
-.dock-bar .dock-model-trigger {
-  border-radius: 999px;
-}
-
 .dock-send,
 .dock-bar .ibtn.mic {
   flex: none;
@@ -157,10 +153,6 @@
     transform: none;
     pointer-events: auto;
   }
-
-  .dock-bar .dock-model-text {
-    display: none;
-  }
 }
 
 @media (min-width: 2560px) {
@@ -174,16 +166,4 @@
     width: min(2400px, calc(100vw - 96px));
     gap: 16px;
   }
-}
-
-.dock-bar .dock-model-trigger {
-  height: auto;
-  min-height: clamp(40px, 2.6vw, 58px);
-  box-shadow: none;
-  background: rgba(41, 224, 255, 0.08);
-  border-color: rgba(41, 224, 255, 0.22);
-}
-
-.dock-bar .dock-model-name {
-  display: none;
 }

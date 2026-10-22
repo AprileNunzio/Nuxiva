@@ -74,8 +74,6 @@
     "section_dock_controls": "Dock & Contrôles Inférieurs",
     "opt_dock": "Barre Chat & Dock",
     "opt_dock_desc": "Afficher ou masquer la barre inférieure avec champ de saisie et envoi.",
-    "opt_model_selector": "Sélecteur de Moteur de Raisonnement",
-    "opt_model_selector_desc": "Afficher ou masquer le sélecteur rapide de modèle dans le dock.",
     "opt_mic": "Microphone Vocal & Écoute",
     "opt_mic_desc": "Afficher ou masquer le bouton microphone et l'indicateur d'ondes audio.",
     "section_telemetry_graphics": "Télémétrie, Présence & Hologramme",
