@@ -1,0 +1,10 @@
+{
+  "name": "Hippocampe",
+  "description": "Routage rapide des neurones : reconnaît les demandes déjà apprises et décide sans générer de tokens, ne laissant au cortex que ce qui demande du raisonnement.",
+  "capabilities": [
+    "Arbitre à trois issues : rapide, zone grise, lent, avec motif",
+    "Mémoire des neurones chiffrée et signée, sans texte utilisateur dans la télémétrie",
+    "Noyau Rust avec dégradation explicite si un composant manque"
+  ],
+  "settings": {}
+}

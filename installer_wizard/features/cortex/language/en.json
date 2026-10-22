@@ -1,0 +1,10 @@
+{
+  "name": "Hippocampus",
+  "description": "Fast neuron routing: recognises learned requests and decides without generating tokens, leaving only what needs reasoning to the cortex.",
+  "capabilities": [
+    "Three-outcome arbiter: fast, grey zone, slow, with a reason",
+    "Encrypted and signed neuron memory, no user text in telemetry",
+    "Rust core with explicit degradation when a component is missing"
+  ],
+  "settings": {}
+}
