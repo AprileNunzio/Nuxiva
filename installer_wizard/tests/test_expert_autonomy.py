@@ -2,7 +2,7 @@ import asyncio
 import unittest
 import unittest.mock
 
-from features.experts import autonomy, service
+from features.experts import autonomy
 from tests.test_experts import IsolatedStore
 
 
