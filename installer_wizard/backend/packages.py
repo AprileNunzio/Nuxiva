@@ -22,6 +22,7 @@ class Package:
     size_gb: float
     detect: str = ""
     removable: bool = True
+    auto: bool = False
 
 
 PACKAGES = (
@@ -37,7 +38,8 @@ PACKAGES = (
     Package("shares", ("shares",), "NUXIVA_SHARES", "Cartelle condivise", "Cartelle visibili da Windows e Mac", 0.05),
     Package("sandbox", ("sandbox", "gvisor", "firecracker"), "NUXIVA_SANDBOX", "Sandbox", "Esegue in sicurezza il codice che Nuxiva scrive", 0.6,
             removable=False),
-    Package("native", ("native",), "NUXIVA_NATIVE", "Core nativo", "Componenti in Rust più veloci, con ritorno automatico a Python", 0.3),
+    Package("native", ("native",), "NUXIVA_NATIVE", "Core nativo", "Componenti in Rust più veloci, con ritorno automatico a Python", 0.3,
+            auto=True),
     Package("brain_local", ("ollama", "brain", "soup"), "NUXIVA_BRAIN", "Cervello locale", "Modelli linguistici su questo computer con Ollama", 8.0,
             removable=False),
     Package("brain_models", ("models", "warmup"), "NUXIVA_BRAIN", "Modelli del cervello", "Scarica e prepara i modelli scelti", 2.0),
@@ -86,6 +88,8 @@ def wanted(pkg: Package, env: dict | None = None) -> bool:
     value = env.get(pkg.env, "").strip().lower()
     if value:
         return value in ON
+    if pkg.auto:
+        return not machine.heavy(pkg.id, env)
     return bool(pkg.detect) and _detect(pkg.detect)
 
 

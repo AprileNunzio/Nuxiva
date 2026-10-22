@@ -26,11 +26,18 @@ class PackageRulesTest(unittest.TestCase):
 
     def test_optional_packages_wait_for_a_request(self):
         env = {}
-        for pid in ("voice", "ear", "documents", "convert3d", "sandbox", "shares", "native", "music"):
+        for pid in ("voice", "ear", "documents", "convert3d", "sandbox", "shares", "music"):
             with self.subTest(pid=pid):
                 self.assertFalse(packages.wanted(P[pid], env))
                 for sid in P[pid].steps:
                     self.assertFalse(packages.step_wanted(sid, env))
+
+    def test_native_core_installs_by_itself_unless_machine_is_too_small(self):
+        self.assertTrue(packages.wanted(P["native"], {"NUXIVA_MACHINE": "standard"}))
+        with mock.patch("machine.DEMO", False):
+            self.assertFalse(packages.wanted(P["native"], {"NUXIVA_MACHINE": "pi"}))
+        self.assertFalse(packages.wanted(P["native"], {"NUXIVA_MACHINE": "standard", "NUXIVA_NATIVE": "0"}))
+        self.assertTrue(packages.wanted(P["native"], {"NUXIVA_MACHINE": "pi", "NUXIVA_NATIVE": "1"}))
 
     def test_core_steps_are_never_gated(self):
         for sid in ("preflight", "system", "docker", "security", "core", "services", "maintenance"):
