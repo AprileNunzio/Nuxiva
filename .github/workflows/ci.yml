@@ -121,7 +121,7 @@ jobs:
 
       - name: Cortex Native Tests
         working-directory: .
-        run: python -m unittest server.tests.test_cortex_core_platform server.tests.test_hippocampus_router server.tests.test_gliner_slots -v
+        run: python -m unittest server.tests.test_cortex_core_platform server.tests.test_hippocampus_router server.tests.test_gliner_slots server.tests.test_skill_forge server.tests.test_plasticity server.tests.test_skill_auto server.tests.test_skill_isolation -v
 
   validate-scripts:
     runs-on: ubuntu-latest

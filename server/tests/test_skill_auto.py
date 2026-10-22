@@ -72,6 +72,7 @@ class AuthorTests(unittest.TestCase):
         self.assertEqual(author.parse(json.dumps(thin)).error.code, "cortex.forge.author_invalid")
 
 
+@requires_native
 class LedgerTests(unittest.TestCase):
     def setUp(self):
         self.directory = tempfile.TemporaryDirectory()
@@ -222,6 +223,7 @@ class NightTests(unittest.TestCase):
         self.assertEqual(scheduler.seconds_until_rem(datetime(2026, 1, 1, 3, 0)), 1800.0)
 
 
+@requires_native
 class TrainerTests(unittest.TestCase):
     def setUp(self):
         self.directory = tempfile.TemporaryDirectory()
