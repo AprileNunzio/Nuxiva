@@ -19,6 +19,27 @@ export interface Motion {
   readonly span: number;
 }
 
+export interface RecipePart {
+  readonly shape: 'box' | 'cylinder' | 'cone' | 'sphere';
+  readonly x: number;
+  readonly y: number;
+  readonly z: number;
+  readonly w: number;
+  readonly h: number;
+  readonly d: number;
+  readonly r: number;
+  readonly r2: number;
+  readonly rot: number;
+  readonly material: string;
+  readonly color: string;
+  readonly tint: boolean;
+}
+
+export interface Recipe {
+  readonly parts: readonly RecipePart[];
+  readonly mover: boolean;
+}
+
 export interface Base {
   readonly w: number;
   readonly d: number;
@@ -54,6 +75,7 @@ export interface Diorama {
   readonly base: Base;
   readonly look: Look;
   readonly items: readonly Item[];
+  readonly recipes: Readonly<Record<string, Recipe>>;
   readonly revision: number;
   readonly job: Job;
 }

@@ -34,7 +34,15 @@ def new_id() -> str:
     return secrets.token_hex(4)
 
 
+def learned_kinds() -> dict:
+    from features.diorama import learned
+    return learned.load()
+
+
 def clean_params(kind: str, raw) -> dict:
+    if kind not in BY_ID:
+        value = raw.get("color") if isinstance(raw, dict) else None
+        return {"color": value if isinstance(value, str) and HEX.fullmatch(value) else "#b0b0b0"}
     definition = BY_ID[kind].params
     source = raw if isinstance(raw, dict) else {}
     out = {}
@@ -62,11 +70,16 @@ def clean_motion(raw) -> dict:
     return {"axis": "z" if raw.get("axis") == "z" else "x", "speed": speed, "span": _number(raw.get("span"), 4.0, 60.0, 24.0)}
 
 
+def _mover(kind: str) -> bool:
+    row = learned_kinds().get(kind)
+    return bool(row and row["recipe"]["mover"])
+
+
 def clean_item(raw, existing_id: str = "") -> dict:
     if not isinstance(raw, dict):
         raise SpecError("item_invalid")
     kind = raw.get("kind")
-    if kind not in BY_ID:
+    if kind not in BY_ID and kind not in learned_kinds():
         raise SpecError("kind_unknown")
     return {
         "id": existing_id or (raw.get("id") if ID_RE.fullmatch(str(raw.get("id", ""))) else new_id()),
@@ -77,7 +90,7 @@ def clean_item(raw, existing_id: str = "") -> dict:
         "rot": _number(raw.get("rot"), -360.0, 360.0, 0.0),
         "scale": _number(raw.get("scale"), 0.1, 5.0, 1.0),
         "params": clean_params(kind, raw.get("params")),
-        "motion": clean_motion(raw.get("motion")) if kind in MOVERS else {},
+        "motion": clean_motion(raw.get("motion")) if kind in MOVERS or _mover(kind) else {},
     }
 
 

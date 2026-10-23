@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import type { Base, Item, Look } from '../types';
+import type { Base, Item, Look, Recipe } from '../types';
 import { buildBase } from './base';
 import { buildItem } from './builders';
 import type { BuildContext } from './builders/kit';
@@ -226,7 +226,7 @@ export class DioramaStage {
     this.controls.autoRotate = look.orbit;
   }
 
-  sync(items: readonly Item[], animate: boolean): void {
+  sync(items: readonly Item[], animate: boolean, recipes: Readonly<Record<string, Recipe>> = {}): void {
     const seen = new Set<string>();
     const ctx: BuildContext = { lamps: { left: MAX_LAMP_LIGHTS } };
     const now = performance.now();
@@ -239,7 +239,7 @@ export class DioramaStage {
         this.world.remove(existing.group);
         release(existing.group);
       }
-      const group = buildItem(item, ctx);
+      const group = buildItem(item, ctx, recipes);
       const born = existing || !animate ? now - POP_MS : now;
       const settled = born !== now;
       this.entries.set(item.id, { group, signature, born, scale: item.scale, baseY: item.y, x: item.x, z: item.z, motion: item.motion, phase: item.motion ? Math.abs(item.x * 7.3 + item.z * 3.1) % item.motion.span : 0, settled });

@@ -1,5 +1,5 @@
 import { asList, asObject, getJson, num, sendJson, text } from '../../core_apps/shared/http';
-import type { Base, Catalog, Diorama, Item, Job, KindInfo, LensId, LightId, Look, Motion, Params, Summary } from './types';
+import type { Base, Catalog, Diorama, Item, Job, KindInfo, LensId, LightId, Look, Motion, Params, Recipe, RecipePart, Summary } from './types';
 
 const LIGHTS: readonly LightId[] = ['golden_hour', 'overcast', 'blue_hour', 'noon', 'night'];
 const LENSES: readonly LensId[] = ['macro', 'tilt_shift', 'standard_50mm'];
@@ -42,11 +42,30 @@ const parseJob = (value: unknown): Job => {
   return { state: (state as Job['state']) ?? 'idle', stage: text(row.stage), stages: asList<string>(row.stages).filter((s) => typeof s === 'string'), mode: text(row.mode) };
 };
 
+const SHAPES = ['box', 'cylinder', 'cone', 'sphere'];
+
+const parseRecipes = (value: unknown): Record<string, Recipe> => {
+  const out: Record<string, Recipe> = {};
+  for (const [kind, raw] of Object.entries(asObject(value))) {
+    const row = asObject(raw);
+    const parts = asList(row.parts).map((p): RecipePart => {
+      const o = asObject(p);
+      const shape = SHAPES.find((x) => x === o.shape) as RecipePart['shape'] | undefined;
+      return {
+        shape: shape ?? 'box', x: num(o.x), y: num(o.y), z: num(o.z), w: num(o.w, 0.3), h: num(o.h, 0.3), d: num(o.d, 0.3), r: num(o.r, 0.15), r2: num(o.r2, 0.15),
+        rot: num(o.rot), material: text(o.material, 'paint'), color: text(o.color, '#b0b0b0'), tint: o.tint === true,
+      };
+    });
+    out[kind] = { parts, mover: row.mover === true };
+  }
+  return out;
+};
+
 export const parseDiorama = (value: unknown): Diorama => {
   const row = asObject(value);
   return {
     id: text(row.id), title: text(row.title), story: text(row.story), prompt: text(row.prompt), base: parseBase(row.base), look: parseLook(row.look),
-    items: asList(row.items).map(parseItem).filter((i) => i.id && i.kind), revision: num(row.revision), job: parseJob(row.job),
+    items: asList(row.items).map(parseItem).filter((i) => i.id && i.kind), recipes: parseRecipes(row.recipes), revision: num(row.revision), job: parseJob(row.job),
   };
 };
 

@@ -8,9 +8,11 @@
     "Catálogo de 27 elementos: ferrocarril, arquitectura, vegetación, mobiliario, personas y volúmenes libres",
     "Aspecto fotográfico: tilt-shift, macro y 50 mm, hora dorada, cielo nublado, hora azul, mediodía, noche",
     "Ediciones con palabras: «añade un cerezo a la izquierda», «haz un atardecer», «quita el banco»",
-    "También funciona sin cerebro disponible con composiciones de reserva"
+    "También funciona sin cerebro disponible con composiciones de reserva",
+    "En reposo estudia las conversaciones sobre temas visuales, diseña solo nuevos elementos y los añade al catálogo (eliminables)"
   ],
   "settings": {
-    "NUXIVA_DIORAMA_AMBIENT": "Dioramas espontáneos durante la conversación"
+    "NUXIVA_DIORAMA_AMBIENT": "Dioramas espontáneos durante la conversación",
+    "NUXIVA_DIORAMA_LEARN": "Nuevos elementos del catálogo aprendidos en reposo"
   }
 }

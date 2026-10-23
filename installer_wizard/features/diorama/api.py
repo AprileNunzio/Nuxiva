@@ -5,7 +5,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 
 from access import NO_CACHE, require_admin, require_display
-from features.diorama import catalog, service, spec as S, store
+from features.diorama import catalog, learned, learning, service, spec as S, store
 
 admin_routes = APIRouter(prefix="/api/diorama", tags=["Diorama"])
 public_routes = APIRouter(tags=["Diorama"])
@@ -83,9 +83,36 @@ async def create(body: CreateIn, _: str = Depends(require_admin)):
     return JSONResponse({"id": record["id"]}, headers=NO_CACHE)
 
 
+def _with_recipes(record: dict) -> dict:
+    kinds = {i["kind"] for i in record["items"]}
+    return {**record, "job": service.status(record["id"]), "recipes": learned.recipes_for(kinds)}
+
+
+@admin_routes.get("/learned")
+async def learned_list(_: str = Depends(require_admin)):
+    rows = [{"id": k, "label": v["label"], "hint": v["hint"], "created": v["created"], "parts": len(v["recipe"]["parts"])} for k, v in learned.load().items()]
+    return JSONResponse({"items": rows, "enabled": learning.enabled()}, headers=NO_CACHE)
+
+
+@admin_routes.post("/learned/study")
+async def learned_study(_: str = Depends(require_admin)):
+    if learning.state["running"]:
+        raise HTTPException(409, "busy")
+    from tasks import background
+    background(learning.study_once())
+    return {"ok": True}
+
+
+@admin_routes.delete("/learned/{kind}")
+async def learned_delete(kind: str, _: str = Depends(require_admin)):
+    if not learned.ID_RE.fullmatch(kind) or not learned.remove(kind):
+        raise HTTPException(404, "learned_unknown")
+    return {"ok": True}
+
+
 @admin_routes.get("/{did}")
 async def get_one(did: str, _: str = Depends(require_admin)):
-    return JSONResponse({**_record(did), "job": service.status(did)}, headers=NO_CACHE)
+    return JSONResponse(_with_recipes(_record(did)), headers=NO_CACHE)
 
 
 @admin_routes.delete("/{did}")
@@ -168,4 +195,4 @@ async def stage_page(request: Request):
 @public_routes.get("/api/diorama/{did}/display")
 async def display_state(did: str, request: Request):
     require_display(request, "display_only")
-    return JSONResponse({**_record(did), "job": service.status(did)}, headers=NO_CACHE)
+    return JSONResponse(_with_recipes(_record(did)), headers=NO_CACHE)

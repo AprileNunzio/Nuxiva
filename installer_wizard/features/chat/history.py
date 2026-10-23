@@ -72,6 +72,17 @@ class HistoryStore:
             return []
         return list(reversed(rows))
 
+    def recent_all(self, since: float, limit: int) -> list[tuple[str, str]]:
+        if self.broken:
+            return []
+        try:
+            with self.lock, self._session() as conn:
+                rows = conn.execute("SELECT text, reply FROM turns WHERE at >= ? ORDER BY at DESC LIMIT ?", (since, limit)).fetchall()
+        except (sqlite3.Error, OSError, ValueError) as exc:
+            log.warning("Storia della conversazione non leggibile: %s", exc)
+            return []
+        return list(reversed(rows))
+
     def forget(self, device: str = "") -> int:
         try:
             with self.lock, self._session() as conn:

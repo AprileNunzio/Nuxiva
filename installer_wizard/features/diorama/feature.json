@@ -15,7 +15,8 @@
     "Catalogo di 27 elementi: ferrovia, architettura, vegetazione, arredi, persone e volumi liberi",
     "Look fotografico: tilt-shift, macro e 50 mm, ora d'oro, cielo coperto, ora blu, mezzogiorno, notte",
     "Modifiche a parole: «aggiungi un ciliegio a sinistra», «fai tramonto», «togli la panchina»",
-    "Funziona anche senza cervello disponibile con composizioni di riserva"
+    "Funziona anche senza cervello disponibile con composizioni di riserva",
+    "A riposo studia le conversazioni su temi visivi, progetta da solo nuovi elementi e li aggiunge al catalogo (eliminabili)"
   ],
   "settings": [
     {
@@ -31,6 +32,22 @@
         {
           "value": "off",
           "label": "No, solo su richiesta"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_DIORAMA_LEARN",
+      "label": "Nuovi elementi del catalogo imparati a riposo",
+      "type": "select",
+      "default": "on",
+      "options": [
+        {
+          "value": "on",
+          "label": "Sì, dalle conversazioni su temi visivi"
+        },
+        {
+          "value": "off",
+          "label": "No"
         }
       ]
     }

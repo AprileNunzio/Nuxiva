@@ -42,8 +42,8 @@ export const Viewport: React.FC<ViewportProps> = ({ diorama, animate, selected, 
     if (!current) return;
     current.setBase(diorama.base);
     current.setLook(diorama.look);
-    current.sync(diorama.items, animate);
-  }, [diorama.look, diorama.base, diorama.items, animate]);
+    current.sync(diorama.items, animate, diorama.recipes);
+  }, [diorama.look, diorama.base, diorama.items, diorama.recipes, animate]);
 
   useEffect(() => {
     stage.current?.select(selected);

@@ -250,3 +250,79 @@ class AmbientTest(Sandbox):
         self.run_decide({"show": False, "scene": ""})
         self.run_decide({"show": True, "scene": "x"})
         self.assertEqual(self.shown, [])
+
+
+class LearningTest(Sandbox):
+    def setUp(self):
+        super().setUp()
+        from features.diorama import learned, learning
+        self.learned, self.learning = learned, learning
+        patch = mock.patch.object(learned, "FILE", store.DIRECTORY / "learned.json")
+        patch.start()
+        self.addCleanup(patch.stop)
+        learning.state.update({"last_turn": 0.0, "last_run": 0.0, "running": False})
+
+    def recipe(self, count=6):
+        return {"parts": [{"shape": "box", "x": i * 0.2, "w": 0.3, "h": 0.4, "d": 0.3, "color": "#aa5533", "tint": i == 0} for i in range(count)], "mover": False}
+
+    def test_recipe_validation_and_dedupe(self):
+        self.assertIsNone(self.learned.clean_recipe({"parts": [{"shape": "box"}]}))
+        self.assertIsNone(self.learned.clean_recipe({"parts": [{"shape": "laser"}] * 5}))
+        kind = self.learned.add("Fontana", "una fontana", self.recipe(), 1)
+        self.assertEqual(kind, "x_fontana")
+        self.assertIsNone(self.learned.add("Fontana", "dup", self.recipe(), 2))
+        self.assertIsNone(self.learned.add("Treno", "x", {"parts": []}, 3))
+
+    def test_part_limits(self):
+        row = self.learned.clean_recipe({"parts": [{"shape": "box", "w": 9999, "x": -9999, "color": "red", "material": "lava"}] * 60})
+        self.assertEqual(len(row["parts"]), self.learned.MAX_PARTS)
+        self.assertEqual((row["parts"][0]["w"], row["parts"][0]["x"], row["parts"][0]["material"], row["parts"][0]["color"]), (12.0, -8.0, "paint", "#b0b0b0"))
+
+    def test_learned_kind_usable_in_scene_and_catalog(self):
+        self.learned.add("Fontana", "una fontana", self.recipe(), 1)
+        item = spec.clean_item({"kind": "x_fontana", "x": 2, "params": {"color": "#112233", "evil": 1}})
+        self.assertEqual(item["params"], {"color": "#112233"})
+        self.assertIn("x_fontana", [k["id"] for k in catalog.public()["kinds"]])
+        self.assertIn("x_fontana", catalog.prompt_catalog())
+        with self.assertRaises(spec.SpecError):
+            spec.clean_item({"kind": "x_missing"})
+
+    def test_remove(self):
+        self.learned.add("Fontana", "", self.recipe(), 1)
+        self.assertTrue(self.learned.remove("x_fontana"))
+        self.assertFalse(self.learned.remove("x_fontana"))
+
+    def test_gate(self):
+        self.assertFalse(self.learning.due(100.0))
+        with mock.patch.object(self.learning, "enabled", return_value=True):
+            self.assertTrue(self.learning.due(self.learning.INTERVAL_SECONDS + 700))
+            self.learning.state["last_turn"] = self.learning.INTERVAL_SECONDS + 600
+            self.assertFalse(self.learning.due(self.learning.INTERVAL_SECONDS + 700))
+
+    def test_study_designs_and_filters_private(self):
+        rows = [("parliamo dei vecchi trattori a cingoli nel campo", "r"), ("il mio conto in banca è in rosso", "r"), ("accendi la luce del salotto", "r")]
+        picks = {"subjects": [{"label": "Trattore", "hint": "un trattore agricolo"}, {"label": "Diagnosi", "hint": "una malattia"}]}
+        calls = []
+
+        async def fake(prompt, **kw):
+            calls.append(prompt)
+            return picks if "curate" in kw["system"] else self.recipe()
+
+        with mock.patch.object(self.learning.history, "recent_all", return_value=rows), mock.patch.object(self.learning, "generate", fake):
+            made = asyncio.run(self.learning.study_once())
+        self.assertEqual(made, ["x_trattore"])
+        self.assertNotIn("conto", calls[0])
+        self.assertNotIn("luce del salotto", calls[0])
+        self.assertFalse(self.learning.state["running"])
+
+    def test_api_learned(self):
+        self.learned.add("Fontana", "una fontana", self.recipe(), 1)
+        app = FastAPI()
+        app.dependency_overrides[api.require_admin] = lambda: "admin"
+        app.include_router(api.admin_routes)
+        client = TestClient(app)
+        body = client.get("/api/diorama/learned").json()
+        self.assertEqual(body["items"][0]["id"], "x_fontana")
+        self.assertEqual(client.delete("/api/diorama/learned/x_fontana").status_code, 200)
+        self.assertEqual(client.delete("/api/diorama/learned/x_fontana").status_code, 404)
+        self.assertEqual(client.delete("/api/diorama/learned/X_bad").status_code, 404)

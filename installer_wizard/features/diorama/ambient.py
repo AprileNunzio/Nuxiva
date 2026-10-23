@@ -60,5 +60,7 @@ async def decide(question: str, reply: str) -> None:
 
 
 def watch(question: str, reply: str) -> None:
+    from features.diorama import learning
+    learning.touch()
     if worthwhile(question, reply, time.time()):
         background(decide(question, reply))

@@ -98,6 +98,10 @@ def public() -> dict:
     kinds = [{"id": k.id, "label": k.label, "group": k.group, "hint": k.hint,
               "params": {n: {"type": p.kind, "min": p.low, "max": p.high, "default": p.default, "choices": list(p.choices)}
                          for n, p in k.params.items()}} for k in KINDS]
+    from features.diorama import learned
+    for kind, row in learned.load().items():
+        kinds.append({"id": kind, "label": row["label"], "group": "Appresi", "hint": row["hint"], "learned": True,
+                      "params": {"color": {"type": "color", "min": 0, "max": 0, "default": "#b0b0b0", "choices": []}}})
     return {"kinds": kinds, "lights": list(LIGHTS), "lenses": list(LENSES), "materials": list(MATERIALS)}
 
 
@@ -120,4 +124,6 @@ def prompt_catalog() -> str:
             else:
                 spec.append(f"{name}:text")
         rows.append(f"- {k.id} ({k.hint}) params {{{', '.join(spec)}}}")
+    from features.diorama import learned
+    rows += [f"- {kind} ({row['hint'] or row['label']}) params {{color:#hex}}" for kind, row in learned.load().items()]
     return "\n".join(rows) + "\n" + MOTION_NOTE
