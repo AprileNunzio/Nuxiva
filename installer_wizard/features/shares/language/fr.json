@@ -9,6 +9,13 @@
     "La mémoire personnelle reste uniquement sur le serveur, jamais sur le réseau"
   ],
   "settings": {
-    "NUXIVA_SMB_PASSWORD": "Mot de passe utilisateur nuxiva-share (vide = généré)"
+    "NUXIVA_SMB_PASSWORD": "Mot de passe utilisateur nuxiva-share (vide = généré)",
+    "NUXIVA_SHARES_READONLY": "Accès au dossier",
+    "NUXIVA_SHARES_NETWORKS": "Réseaux autorisés (préfixes, IP ou CIDR séparés par des espaces ; vide = réseaux domestiques)",
+    "NUXIVA_SHARES_RECYCLE": "Corbeille réseau (les fichiers supprimés sont récupérables)",
+    "NUXIVA_SHARES_DISCOVERY": "Visible dans le Réseau Windows",
+    "NUXIVA_SHARES_PROTOCOL": "Protocole SMB minimum",
+    "NUXIVA_SHARES_ENCRYPT": "Chiffrement du trafic",
+    "NUXIVA_SHARES_UPLOAD_MB": "Limite d'envoi depuis le panneau"
   }
 }

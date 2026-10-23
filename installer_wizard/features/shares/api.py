@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from access import require_admin
 from config import DEMO, env_get
 from features.actions.common import SMB_CONF, my_ip
+from features.shares import policy, status
 from state import store
 
 public_routes = APIRouter()
@@ -36,7 +37,7 @@ async def overview(_: str = Depends(require_admin)):
         store.event("WARN", f"Cartelle condivise non create: {exc}", "shares")
     return {"active": active, "ip": ip, "windows": f"\\\\{ip}", "unc": archive.unc(ip), "user": USER,
             "password": env_get("NUXIVA_SMB_PASSWORD", ""), "shares": shares, "folders": archive.overview(),
-            "root": str(archive.ROOT)}
+            "root": str(archive.ROOT), "settings": policy.read(), "sessions": await status.sessions()}
 
 
 @admin_routes.get("/api/shares/files")
@@ -129,12 +130,10 @@ async def create_folder(payload: dict, _: str = Depends(require_admin)):
     return {"ok": True, "name": name, "path": str(new_dir.relative_to(base)).replace("\\", "/")}
 
 
-MAX_UPLOAD_SHARE = 1000 * 1024 * 1024  # 1 GB
-
-
 @admin_routes.put("/api/shares/upload")
 async def upload_share_file(request: Request, subpath: str = "", name: str = "", _: str = Depends(require_admin)):
     from features.shares import archive
+    limit = policy.upload_limit_mb() * 1024 * 1024
     base = archive.ROOT.resolve()
     target_dir = (base / subpath.strip("/\\")).resolve()
     if not target_dir.is_relative_to(base):
@@ -151,7 +150,7 @@ async def upload_share_file(request: Request, subpath: str = "", name: str = "",
         with open(out_file, "wb") as handle:
             async for chunk in request.stream():
                 written += len(chunk)
-                if written > MAX_UPLOAD_SHARE:
+                if written > limit:
                     raise HTTPException(413, "File troppo grande")
                 handle.write(chunk)
     except HTTPException:

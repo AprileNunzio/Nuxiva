@@ -22,6 +22,7 @@ import { View as PeopleView } from '../core_apps/people/View';
 import { View as PlacesView } from '../core_apps/places/View';
 import { View as StudyView } from '../core_apps/study/View';
 import { View as TwinView } from '../core_apps/twin/View';
+import { View as SharesView } from '../core_apps/shares/View';
 import { View as UpdaterView } from '../core_apps/updater/View';
 import { View as VaultView } from '../core_apps/vault/View';
 import { View as VpnView } from '../core_apps/vpn/View';
@@ -48,6 +49,7 @@ const CORE_APP_COMPONENTS: Readonly<Record<string, React.FC>> = {
   office: OfficeView,
   people: PeopleView,
   places: PlacesView,
+  shares: SharesView,
   study: StudyView,
   twin: TwinView,
   updater: UpdaterView,

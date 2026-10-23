@@ -17,7 +17,9 @@
     "Sottocartelle: 01 Documenti, 02 Siti web, 03 Modelli 3D, 04 Codice, 05 Scambio, 06 Musica",
     "Nomi con data inversa: 20261002_nome.estensione",
     "Accesso solo con l'utente nuxiva-share e password, compatibile con Windows 11 (SMB2/3)",
-    "La memoria personale resta solo sul server, mai in rete"
+    "La memoria personale resta solo sul server, mai in rete",
+    "Sola lettura, reti ammesse, cestino di rete, protocollo e cifratura SMB a scelta",
+    "Sessioni collegate in tempo reale e limite di caricamento dal pannello"
   ],
   "settings": [
     {
@@ -27,6 +29,142 @@
       "default": "",
       "apply": [
         "shares"
+      ]
+    },
+    {
+      "key": "NUXIVA_SHARES_READONLY",
+      "label": "Accesso alla cartella",
+      "type": "select",
+      "default": "0",
+      "apply": [
+        "shares"
+      ],
+      "options": [
+        {
+          "value": "0",
+          "label": "Lettura e scrittura"
+        },
+        {
+          "value": "1",
+          "label": "Sola lettura"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_SHARES_NETWORKS",
+      "label": "Reti ammesse (prefissi, IP o CIDR separati da spazio; vuoto = reti domestiche)",
+      "type": "text",
+      "default": "",
+      "apply": [
+        "shares"
+      ]
+    },
+    {
+      "key": "NUXIVA_SHARES_RECYCLE",
+      "label": "Cestino di rete (i file eliminati si recuperano)",
+      "type": "select",
+      "default": "0",
+      "apply": [
+        "shares"
+      ],
+      "options": [
+        {
+          "value": "1",
+          "label": "Attivo"
+        },
+        {
+          "value": "0",
+          "label": "Spento"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_SHARES_DISCOVERY",
+      "label": "Visibile in Rete di Windows",
+      "type": "select",
+      "default": "1",
+      "apply": [
+        "shares"
+      ],
+      "options": [
+        {
+          "value": "1",
+          "label": "Sì"
+        },
+        {
+          "value": "0",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_SHARES_PROTOCOL",
+      "label": "Protocollo SMB minimo",
+      "type": "select",
+      "default": "SMB2_10",
+      "apply": [
+        "shares"
+      ],
+      "options": [
+        {
+          "value": "SMB2_10",
+          "label": "SMB 2.1 (compatibile)"
+        },
+        {
+          "value": "SMB3_00",
+          "label": "SMB 3.0 (sicuro)"
+        },
+        {
+          "value": "SMB3_11",
+          "label": "SMB 3.1.1 (massima sicurezza)"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_SHARES_ENCRYPT",
+      "label": "Cifratura del traffico",
+      "type": "select",
+      "default": "default",
+      "apply": [
+        "shares"
+      ],
+      "options": [
+        {
+          "value": "default",
+          "label": "Predefinita"
+        },
+        {
+          "value": "desired",
+          "label": "Richiesta ai client che la supportano"
+        },
+        {
+          "value": "required",
+          "label": "Obbligatoria"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_SHARES_UPLOAD_MB",
+      "label": "Limite di caricamento dal pannello",
+      "type": "select",
+      "default": "1000",
+      "options": [
+        {
+          "value": "100",
+          "label": "100 MB"
+        },
+        {
+          "value": "500",
+          "label": "500 MB"
+        },
+        {
+          "value": "1000",
+          "label": "1000 MB"
+        },
+        {
+          "value": "4000",
+          "label": "4000 MB"
+        }
       ]
     }
   ],

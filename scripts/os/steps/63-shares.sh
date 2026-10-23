@@ -10,7 +10,11 @@ MEMORY=/var/lib/nuxiva/memoria
 CONF=/etc/samba/smb.conf
 
 wanted() { [ "${NUXIVA_SHARES:-1}" != "0" ]; }
-password_hash() { printf '%s' "${NUXIVA_SMB_PASSWORD:-}" | sha1sum | cut -c1-12; }
+password_hash() {
+    printf '%s|%s|%s|%s|%s|%s|%s|%s' "${NUXIVA_SMB_PASSWORD:-}" "${NUXIVA_SHARES_READONLY:-0}" "${NUXIVA_SHARES_NETWORKS:-}" \
+        "${NUXIVA_SHARES_RECYCLE:-0}" "${NUXIVA_SHARES_DISCOVERY:-1}" "${NUXIVA_SHARES_PROTOCOL:-SMB2_10}" \
+        "${NUXIVA_SHARES_ENCRYPT:-default}" "" | sha1sum | cut -c1-12
+}
 
 step_check() {
     wanted || return 0
@@ -40,8 +44,41 @@ sections = re.split(r"(?m)^(?=\[)", text)
 head = [s for s in sections if not s.startswith("[")]
 blocks = {re.match(r"\[([^\]]+)\]", s).group(1).lower(): s for s in sections if s.startswith("[")}
 glob = blocks.get("global", "[global]\n   workgroup = WORKGROUP\n")
-wanted = {"server min protocol": "SMB2_10", "map to guest": "Bad User", "server signing": "auto",
+import ipaddress
+import os
+
+protocol = os.environ.get("NUXIVA_SHARES_PROTOCOL", "SMB2_10")
+protocol = protocol if protocol in ("SMB2_10", "SMB3_00", "SMB3_11") else "SMB2_10"
+encrypt = os.environ.get("NUXIVA_SHARES_ENCRYPT", "default")
+readonly = os.environ.get("NUXIVA_SHARES_READONLY", "0") == "1"
+recycle = os.environ.get("NUXIVA_SHARES_RECYCLE", "0") == "1"
+defaults = ["127.", "10.", "172.16.0.0/12", "192.168."]
+
+
+def network(item):
+    if re.fullmatch(r"(?:\d{1,3}\.){1,3}", item) and all(int(p) < 256 for p in item.rstrip(".").split(".")):
+        return item
+    try:
+        return str(ipaddress.ip_network(item, strict=False)) if "/" in item else str(ipaddress.ip_address(item))
+    except ValueError:
+        return None
+
+
+allowed = []
+for item in re.split(r"[\s,;]+", os.environ.get("NUXIVA_SHARES_NETWORKS", "")):
+    if item:
+        clean = network(item)
+        if clean is None:
+            allowed = []
+            break
+        allowed.append(clean)
+allowed = list(dict.fromkeys(allowed)) or defaults
+wanted = {"server min protocol": protocol, "map to guest": "Bad User", "server signing": "auto",
           "netbios name": "NUXIVA", "server string": "Nuxiva", "usershare allow guests": "yes"}
+if encrypt in ("desired", "required"):
+    wanted["server smb encrypt"] = encrypt
+if protocol != "SMB2_10":
+    wanted["server signing"] = "mandatory"
 for key, value in wanted.items():
     if re.search(rf"(?mi)^\s*{key}\s*=", glob):
         glob = re.sub(rf"(?mi)^\s*{key}\s*=.*$", f"   {key} = {value}", glob)
@@ -52,7 +89,11 @@ for unused in ("homes", "printers", "print$", "memoria-nuxiva", "file-nuxiva"):
     blocks.pop(unused, None)
 for key in [k for k, v in blocks.items() if re.search(rf"(?mi)^\s*path\s*=\s*{re.escape(old_root)}", v)]:
     blocks.pop(key)
-common = "   browseable = yes\n   read only = no\n   create mask = 0664\n   directory mask = 2775\n   hosts allow = 127. 10. 172.16.0.0/12 192.168.\n"
+common = (f"   browseable = yes\n   read only = {'yes' if readonly else 'no'}\n   create mask = 0664\n   directory mask = 2775\n"
+          f"   hosts allow = {' '.join(allowed)}\n")
+if recycle:
+    common += ("   vfs objects = recycle\n   recycle:repository = .cestino/%U\n   recycle:keeptree = yes\n"
+               "   recycle:versions = yes\n   recycle:touch = yes\n")
 blocks["condivisa"] = (f"[condivisa]\n   comment = Creazioni di Nuxiva (con password)\n   path = {root}\n{common}"
                        f"   guest ok = no\n   valid users = {user}\n   force user = root\n\n")
 order = ["global"] + [k for k in blocks if k != "global"]
@@ -115,7 +156,11 @@ step_apply() {
     systemctl enable --now smbd >/dev/null 2>&1
     systemctl reload-or-restart smbd
     systemctl enable --now nmbd >/dev/null 2>&1 || true
-    for unit in wsdd2 wsdd; do systemctl enable --now "$unit" >/dev/null 2>&1 && break; done
+    if [ "${NUXIVA_SHARES_DISCOVERY:-1}" = "0" ]; then
+        for unit in wsdd2 wsdd; do systemctl disable --now "$unit" >/dev/null 2>&1 || true; done
+    else
+        for unit in wsdd2 wsdd; do systemctl enable --now "$unit" >/dev/null 2>&1 && break; done
+    fi
     if command -v ufw >/dev/null 2>&1 && ufw status 2>/dev/null | grep -q 'Status: active'; then
         for net in 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16; do
             ufw allow from "$net" to any app Samba >/dev/null 2>&1 || ufw allow from "$net" to any port 445 proto tcp >/dev/null 2>&1

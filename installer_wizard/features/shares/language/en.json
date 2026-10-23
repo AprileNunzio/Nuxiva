@@ -2,9 +2,22 @@
   "name": "Shared Folders (SMB/NFS)",
   "description": "File sharing service: mounts and serves network folders across Windows, macOS, and Linux.",
   "capabilities": [
-    "Samba SMB server and client management",
-    "Network share discovery and mounting",
-    "Access permission management"
+    "\\\\SERVER-IP\\condivisa from Windows File Explorer, smb://IP/condivisa from Mac and Linux",
+    "Subfolders: 01 Documents, 02 Websites, 03 3D models, 04 Code, 05 Exchange, 06 Music",
+    "Names with reverse date: 20261002_name.extension",
+    "Access only with the nuxiva-share user and password, Windows 11 compatible (SMB2/3)",
+    "Personal memory stays on the server, never on the network",
+    "Read-only mode, allowed networks, network recycle bin, SMB protocol and encryption of your choice",
+    "Live connected sessions and upload limit from the panel"
   ],
-  "settings": {}
+  "settings": {
+    "NUXIVA_SMB_PASSWORD": "Password of the nuxiva-share user (empty = generated)",
+    "NUXIVA_SHARES_READONLY": "Folder access",
+    "NUXIVA_SHARES_NETWORKS": "Allowed networks (prefixes, IPs or CIDR separated by spaces; empty = home networks)",
+    "NUXIVA_SHARES_RECYCLE": "Network recycle bin (deleted files can be recovered)",
+    "NUXIVA_SHARES_DISCOVERY": "Visible in Windows Network",
+    "NUXIVA_SHARES_PROTOCOL": "Minimum SMB protocol",
+    "NUXIVA_SHARES_ENCRYPT": "Traffic encryption",
+    "NUXIVA_SHARES_UPLOAD_MB": "Upload limit from the panel"
+  }
 }

@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Dossier partagé",
+    "description": "État, accès, sécurité et sessions connectées du dossier réseau de Nuxiva.",
+    "loading": "Chargement…",
+    "unreachable": "Serveur injoignable",
+    "no_settings": "Aucun réglage.",
+    "on": "Oui",
+    "off": "Non",
+    "service_on": "Actif",
+    "service_off": "Arrêté",
+    "stat_state": "Service",
+    "stat_sessions": "Sessions",
+    "stat_protocol": "Protocole",
+    "stat_access": "Accès",
+    "readonly": "Lecture seule",
+    "readwrite": "Lecture et écriture",
+    "access_title": "Comment se connecter",
+    "windows_path": "Windows",
+    "unix_path": "Mac et Linux",
+    "user": "Utilisateur",
+    "password": "Mot de passe",
+    "copy": "Copier",
+    "new_password": "Générer un nouveau mot de passe",
+    "new_password_hint": "Le service se reconfigure seul et les sessions ouvertes devront se reconnecter.",
+    "sessions_title": "Sessions connectées",
+    "sessions_empty": "Aucun appareil connecté pour le moment.",
+    "encryption": "Chiffrement",
+    "signing": "Signature",
+    "folders_title": "Dossiers",
+    "folders_empty": "Aucun dossier.",
+    "items": "{n} éléments",
+    "settings_title": "Réglages",
+    "settings_hint": "Les modifications reconfigurent Samba automatiquement. Les réseaux autorisés valent pour tout le partage."
+  }
+}

@@ -22,7 +22,7 @@ STEP_TRIGGERS = (
     ({"NUXIVA_3D_CONVERT"}, ["convert3d"]),
     ({"NUXIVA_COMMERCIAL", "NUXIVA_UNOFFICIAL_SERVICES"}, ["voice", "ear", "music", "models", "brain"]),
     ({"NUXIVA_GPU_DRIVER"}, ["display_driver"]),
-    ({"NUXIVA_SHARES", "NUXIVA_SMB_PASSWORD"}, ["shares"]),
+    ({"NUXIVA_SHARES", "NUXIVA_SMB_PASSWORD", "NUXIVA_SHARES_READONLY", "NUXIVA_SHARES_NETWORKS", "NUXIVA_SHARES_RECYCLE", "NUXIVA_SHARES_DISCOVERY", "NUXIVA_SHARES_PROTOCOL", "NUXIVA_SHARES_ENCRYPT"}, ["shares"]),
     ({"NUXIVA_OLLAMA_URL"}, ["ollama", "models", "brain", "warmup", "services"]),
     ({"NUXIVA_BRAIN"}, ["ollama", "models", "brain", "warmup", "services"]),
     ({"NUXIVA_VOICE_PACKAGE"}, ["voice"]),

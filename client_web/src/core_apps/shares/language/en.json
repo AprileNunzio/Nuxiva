@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Shared folder",
+    "description": "Status, access, security and connected sessions of Nuxiva's network folder.",
+    "loading": "Loading…",
+    "unreachable": "Server unreachable",
+    "no_settings": "No settings.",
+    "on": "Yes",
+    "off": "No",
+    "service_on": "Active",
+    "service_off": "Stopped",
+    "stat_state": "Service",
+    "stat_sessions": "Sessions",
+    "stat_protocol": "Protocol",
+    "stat_access": "Access",
+    "readonly": "Read only",
+    "readwrite": "Read and write",
+    "access_title": "How to connect",
+    "windows_path": "Windows",
+    "unix_path": "Mac and Linux",
+    "user": "User",
+    "password": "Password",
+    "copy": "Copy",
+    "new_password": "Generate a new password",
+    "new_password_hint": "The service reconfigures itself and open sessions will have to sign in again.",
+    "sessions_title": "Connected sessions",
+    "sessions_empty": "No device is connected right now.",
+    "encryption": "Encryption",
+    "signing": "Signing",
+    "folders_title": "Folders",
+    "folders_empty": "No folders.",
+    "items": "{n} items",
+    "settings_title": "Settings",
+    "settings_hint": "Changes reconfigure Samba automatically. Allowed networks apply to the whole share."
+  }
+}

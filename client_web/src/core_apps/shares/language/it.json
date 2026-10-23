@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Cartella condivisa",
+    "description": "Stato, accesso, sicurezza e sessioni collegate della cartella di rete di Nuxiva.",
+    "loading": "Caricamento…",
+    "unreachable": "Server non raggiungibile",
+    "no_settings": "Nessuna impostazione.",
+    "on": "Sì",
+    "off": "No",
+    "service_on": "Attiva",
+    "service_off": "Ferma",
+    "stat_state": "Servizio",
+    "stat_sessions": "Sessioni",
+    "stat_protocol": "Protocollo",
+    "stat_access": "Accesso",
+    "readonly": "Sola lettura",
+    "readwrite": "Lettura e scrittura",
+    "access_title": "Come collegarsi",
+    "windows_path": "Windows",
+    "unix_path": "Mac e Linux",
+    "user": "Utente",
+    "password": "Password",
+    "copy": "Copia",
+    "new_password": "Genera una nuova password",
+    "new_password_hint": "Il servizio si riconfigura da solo e le sessioni aperte dovranno ripetere l'accesso.",
+    "sessions_title": "Sessioni collegate",
+    "sessions_empty": "Nessun dispositivo collegato in questo momento.",
+    "encryption": "Cifratura",
+    "signing": "Firma",
+    "folders_title": "Cartelle",
+    "folders_empty": "Nessuna cartella.",
+    "items": "{n} elementi",
+    "settings_title": "Impostazioni",
+    "settings_hint": "Le modifiche riconfigurano Samba in automatico. Le reti ammesse valgono per tutta la condivisione."
+  }
+}
