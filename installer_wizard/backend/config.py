@@ -99,6 +99,7 @@ EDITABLE_KEYS = {
     "NUXIVA_TELEGRAM_TOKEN": "Token del bot Telegram (da @BotFather)",
     "NUXIVA_TELEGRAM": "Bot Telegram attivo (1/0)",
     "NUXIVA_NETWORK": "Esploratore della rete locale (1/0)",
+    "NUXIVA_PEOPLE_LEARN": "Aggiorna da solo le persone dalle conversazioni: stato d'animo e informazioni (1/0)",
     "NUXIVA_GOOGLE": "Google: connettori Calendar, Gmail, Tasks, Contatti, Drive, Keep attivi (1/0)",
     "NUXIVA_GOOGLE_CLIENT_ID": "Google: Client ID OAuth (App desktop, console.cloud.google.com)",
     "NUXIVA_GOOGLE_CLIENT_SECRET": "Google: Client Secret OAuth",

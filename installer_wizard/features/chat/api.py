@@ -32,7 +32,7 @@ from features.laws.laws import laws
 from features.mind.mind import mind
 from features.chat import context as request_context
 from features.desktop.desk import desk
-from features.people import people
+from features.people import learning, people
 from features.skills.library import library as skill_library
 from features.study import study
 from features.voices import languages
@@ -207,6 +207,9 @@ async def assistant_chat(text: str, device: str, heard_lang: str | None = None, 
         background(mind.evaluate(said, result.get("reply", ""), result.get("intent", ""), device, directed, confidence,
                                  (result.get("ui") or {}).get("mode", ""), str(result.get("agent", "")),
                                  heard.get("speaker") or ""))
+        learner = heard.get("speaker") or principal.slug
+        if directed and learner and people.load(learner):
+            background(learning.observe_async(said, learner))
     return JSONResponse(result)
 
 

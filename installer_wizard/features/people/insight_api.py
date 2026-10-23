@@ -3,7 +3,7 @@ import json
 from fastapi import APIRouter, Depends, HTTPException, Request
 
 from access import require_admin
-from features.people import mood, people
+from features.people import learning, mood, people
 from features.mind.api_errors import failure
 from features.mind.persistence import MemoryStorageError
 from features.mind.records import MemoryInputError
@@ -119,3 +119,37 @@ async def person_mood_delete(slug: str, entry_id: str, _: str = Depends(require_
     if not mood.remove(slug, entry_id):
         raise HTTPException(404, "Annotazione non trovata")
     return {"ok": True}
+
+
+@admin_routes.post("/api/people/{slug}/mood/{entry_id}/feedback")
+async def person_mood_feedback(slug: str, entry_id: str, request: Request, user: str = Depends(require_admin)):
+    _profile(slug)
+    body = await _body(request)
+    try:
+        result = mood.feedback(slug, entry_id, str(body.get("verdict", "")), str(body.get("mood") or ""), body.get("intensity"))
+    except ValueError as exc:
+        raise HTTPException(400, str(exc))
+    if result is None:
+        raise HTTPException(404, "Annotazione non trovata")
+    store.event("INFO", f"Giudizio sullo stato d'animo di {slug} da {user}: {body.get('verdict')}", "people")
+    return result
+
+
+@admin_routes.get("/api/people/{slug}/learned")
+async def person_learned(slug: str, _: str = Depends(require_admin)):
+    _profile(slug)
+    return {"enabled": learning.enabled(), "learned": learning.listing(slug)}
+
+
+@admin_routes.post("/api/people/{slug}/learned/{entry_id}/feedback")
+async def person_learned_feedback(slug: str, entry_id: str, request: Request, user: str = Depends(require_admin)):
+    _profile(slug)
+    body = await _body(request)
+    try:
+        row = learning.feedback(slug, entry_id, str(body.get("verdict", "")))
+    except ValueError as exc:
+        raise HTTPException(400, str(exc))
+    if row is None:
+        raise HTTPException(404, "Informazione non trovata")
+    store.event("INFO", f"Giudizio su un'informazione appresa su {slug} da {user}: {body.get('verdict')}", "people")
+    return row

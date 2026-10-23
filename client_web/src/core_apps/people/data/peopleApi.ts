@@ -71,6 +71,17 @@ export interface MoodEntry {
   readonly intensity: number;
   readonly note: string;
   readonly source: string;
+  readonly evidence: string;
+  readonly feedback: string;
+}
+
+export interface Learned {
+  readonly id: string;
+  readonly at: number;
+  readonly field: string;
+  readonly value: string;
+  readonly evidence: string;
+  readonly status: string;
 }
 
 export interface Voiceprint {
@@ -248,7 +259,7 @@ export async function fetchMood(slug: string, signal?: AbortSignal): Promise<{ m
       .flatMap((e) => {
         const id = asString(e.id, 16);
         return id
-          ? [{ id, at: num(e.at), mood: asString(e.mood, 20) ?? '', intensity: num(e.intensity, 3), note: asString(e.note, 300) ?? '', source: asString(e.source, 12) ?? '' }]
+          ? [{ id, at: num(e.at), mood: asString(e.mood, 20) ?? '', intensity: num(e.intensity, 3), note: asString(e.note, 300) ?? '', source: asString(e.source, 12) ?? '', evidence: asString(e.evidence, 160) ?? '', feedback: asString(e.feedback, 12) ?? '' }]
           : [];
       }),
   };
@@ -317,3 +328,30 @@ export async function fetchObservedHabits(slug: string, signal?: AbortSignal): P
     }),
   };
 }
+
+const entryId = (id: string): string => {
+  if (!/^[0-9a-f]{6,16}$/.test(id)) {
+    throw new NodeModuleError('invalid_entry', 400);
+  }
+  return id;
+};
+
+export const moodFeedback = (slug: string, id: string, verdict: 'ok' | 'wrong', fix?: { mood: string; intensity: number }) =>
+  requestJson<unknown>(`/api/people/${slugOf(slug)}/mood/${entryId(id)}/feedback`, { method: 'POST', body: JSON.stringify({ verdict, ...fix }) });
+
+export async function fetchLearned(slug: string, signal?: AbortSignal): Promise<{ enabled: boolean; learned: Learned[] }> {
+  const raw = asRecord(await requestJson<unknown>(`/api/people/${slugOf(slug)}/learned`, { signal }));
+  return {
+    enabled: raw.enabled !== false,
+    learned: list(raw.learned).map(asRecord).flatMap((e) => {
+      const id = asString(e.id, 16);
+      const field = asString(e.field, 40);
+      return id && field && /^[0-9a-f]{6,16}$/.test(id)
+        ? [{ id, at: num(e.at), field, value: asString(String(e.value ?? ''), 60) ?? '', evidence: asString(e.evidence, 160) ?? '', status: asString(e.status, 12) ?? 'auto' }]
+        : [];
+    }),
+  };
+}
+
+export const learnedFeedback = (slug: string, id: string, verdict: 'ok' | 'wrong') =>
+  requestJson<unknown>(`/api/people/${slugOf(slug)}/learned/${entryId(id)}/feedback`, { method: 'POST', body: JSON.stringify({ verdict }) });

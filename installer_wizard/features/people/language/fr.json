@@ -5,7 +5,10 @@
     "Enregistrement automatique du visage",
     "Anniversaires et jours fériés",
     "Rapports",
-    "Habitudes"
+    "Habitudes",
+    "Met à jour seule le profil de la personne qui parle et note son humeur, avec votre avis"
   ],
-  "settings": {}
+  "settings": {
+    "NUXIVA_PEOPLE_LEARN": "Apprendre des conversations"
+  }
 }

@@ -14,7 +14,8 @@
     "Abitudini",
     "Ricorrenze imminenti",
     "Abitudini dichiarate e rilevate di ogni persona",
-    "Abitudini della casa (proposte, previsioni, situazioni insolite)"
+    "Abitudini della casa (proposte, previsioni, situazioni insolite)",
+    "Aggiorna da sola le informazioni della persona che parla e annota lo stato d'animo, con il tuo giudizio"
   ],
   "icon3d": "./icon.png",
   "icon3dSource": {
@@ -24,5 +25,13 @@
     "url": "https://img.icons8.com/?size=240&id=x0qTmzjcFRhW&format=png"
   },
   "surface": "hidden",
-  "kind": "app"
+  "kind": "app",
+  "settings": [
+    {
+      "key": "NUXIVA_PEOPLE_LEARN",
+      "label": "Impara dalle conversazioni",
+      "type": "bool",
+      "default": "1"
+    }
+  ]
 }

@@ -3,6 +3,7 @@ import { Brain, Plus, Trash2 } from 'lucide-react';
 import { reportError } from '../../../shared/errors/errorBus';
 import { Memory, addMemory, deleteMemory, fetchMemories } from '../data/peopleApi';
 import { chipClass, fieldClass, relative, usePeopleI18n } from '../scope';
+import { LearnedPanel } from './LearnedPanel';
 
 interface Props {
   readonly slug: string;
@@ -34,6 +35,7 @@ export const MemoriesTab: React.FC<Props> = ({ slug, busy, run }) => {
 
   return (
     <div className="flex flex-col gap-3">
+      <LearnedPanel slug={slug} busy={busy} run={run} />
       <p className="text-xs text-slate-600">{t('memories_hint')}</p>
       <form onSubmit={submit} className="flex gap-2">
         <input maxLength={200} value={text} onChange={(event) => setText(event.target.value)} placeholder={t('memory_placeholder')} aria-label={t('memory_placeholder')} className={`${fieldClass} min-w-0 flex-1`} />

@@ -1,7 +1,7 @@
 import React, { FormEvent, useEffect, useState } from 'react';
-import { Plus, Trash2 } from 'lucide-react';
+import { Check, Plus, Sparkles, Trash2, X } from 'lucide-react';
 import { reportError } from '../../../shared/errors/errorBus';
-import { MoodEntry, addMood, deleteMood, fetchMood } from '../data/peopleApi';
+import { MoodEntry, addMood, deleteMood, fetchMood, moodFeedback } from '../data/peopleApi';
 import { chipClass, fieldClass, usePeopleI18n } from '../scope';
 
 const TONE: Readonly<Record<string, string>> = {
@@ -41,6 +41,11 @@ export const MoodTab: React.FC<Props> = ({ slug, busy, run }) => {
     event.preventDefault();
     if (mood && (await run('mood', () => addMood(slug, mood, intensity, note.trim()), 'people_mood_failed'))) {
       setNote('');
+      setTick((v) => v + 1);
+    }
+  };
+  const act = async (key: string, task: () => Promise<unknown>) => {
+    if (await run(key, task, 'people_mood_failed')) {
       setTick((v) => v + 1);
     }
   };
@@ -86,7 +91,35 @@ export const MoodTab: React.FC<Props> = ({ slug, busy, run }) => {
                 {t(`mood_${e.mood}`)} <span className="font-mono text-xs text-slate-600">{e.intensity}/5</span>
               </p>
               {e.note && <p className="text-xs text-slate-700">{e.note}</p>}
-              <p className="text-[10px] text-slate-500">{[format.format(new Date(e.at * 1000)), t(`source_${e.source}`)].join(' · ')}</p>
+              {e.evidence && <p className="text-xs italic text-slate-600">«{e.evidence}»</p>}
+              <p className="text-[10px] text-slate-500">{[format.format(new Date(e.at * 1000)), t(`source_${e.source}`), e.feedback && t(`feedback_${e.feedback}`)].filter(Boolean).join(' · ')}</p>
+              {e.source === 'assistente' && e.feedback === '' && (
+                <div className="mt-2 flex flex-wrap items-center gap-1.5" role="group" aria-label={t('mood_feedback')}>
+                  <Sparkles className="h-3.5 w-3.5 text-blue-700" aria-hidden="true" />
+                  <button type="button" disabled={busy !== null} onClick={() => void act(`mood-ok:${e.id}`, () => moodFeedback(slug, e.id, 'ok'))} className={`${chipClass} border-emerald-300 px-2 text-emerald-800`}>
+                    <Check className="h-3 w-3" aria-hidden="true" />
+                    {t('feedback_right')}
+                  </button>
+                  <button type="button" disabled={busy !== null} onClick={() => void act(`mood-no:${e.id}`, () => moodFeedback(slug, e.id, 'wrong'))} className={`${chipClass} border-rose-300 px-2 text-rose-800`}>
+                    <X className="h-3 w-3" aria-hidden="true" />
+                    {t('feedback_wrong')}
+                  </button>
+                  <select
+                    aria-label={t('feedback_fix')}
+                    value=""
+                    disabled={busy !== null}
+                    onChange={(event) => event.target.value && void act(`mood-fix:${e.id}`, () => moodFeedback(slug, e.id, 'wrong', { mood: event.target.value, intensity: e.intensity }))}
+                    className={`${fieldClass} w-auto py-0.5 text-xs`}
+                  >
+                    <option value="">{t('feedback_fix')}</option>
+                    {moods.filter((m) => m !== e.mood).map((m) => (
+                      <option key={m} value={m}>
+                        {t(`mood_${m}`)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
             </div>
             <button
               type="button"
