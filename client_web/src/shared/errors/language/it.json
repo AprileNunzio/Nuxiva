@@ -131,6 +131,7 @@
     "nodes_delete_failed": "Il nodo non è stato rimosso. Riprova.",
     "nodes_onboard_failed": "Il collegamento non è riuscito.",
     "nodes_copy_failed": "Non riesco a copiare il comando: selezionalo e copialo manualmente.",
-    "error_access_unavailable": "Impossibile verificare i permessi."
+    "error_access_unavailable": "Impossibile verificare i permessi.",
+    "error_people_wellbeing_failed": "Percorso di benessere non riuscito."
   }
 }

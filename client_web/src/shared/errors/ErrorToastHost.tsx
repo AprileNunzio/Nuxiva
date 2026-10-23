@@ -127,6 +127,7 @@ const KNOWN_CODES = new Set([
   'people_memories_failed',
   'people_memory_failed',
   'people_mood_failed',
+  'people_wellbeing_failed',
   'people_associate_failed',
 ]);
 

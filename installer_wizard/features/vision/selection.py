@@ -29,6 +29,10 @@ def ir_enabled() -> bool:
     return os.environ.get("NUXIVA_IR_MODE", "auto").strip().lower() != "off"
 
 
+def affect_enabled() -> bool:
+    return os.environ.get("NUXIVA_AFFECT", "on").strip().lower() != "off"
+
+
 def liveness_mode() -> str:
     value = os.environ.get("NUXIVA_LIVENESS", "advisory").strip().lower()
     return value if value in ("off", "advisory", "strict") else "advisory"

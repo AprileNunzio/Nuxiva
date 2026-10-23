@@ -131,6 +131,7 @@
     "nodes_delete_failed": "El nodo no se ha eliminado. Inténtalo de nuevo.",
     "nodes_onboard_failed": "La conexión ha fallado.",
     "nodes_copy_failed": "No se puede copiar el comando: selecciónalo y cópialo manualmente.",
-    "error_access_unavailable": "No se pueden verificar los permisos."
+    "error_access_unavailable": "No se pueden verificar los permisos.",
+    "error_people_wellbeing_failed": "No se pudo completar el recorrido de bienestar."
   }
 }

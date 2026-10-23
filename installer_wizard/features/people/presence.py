@@ -69,6 +69,7 @@ class PresenceMonitor:
         self.greeting_id = 0
         self.observed: dict = {}
         self.languages: dict = {}
+        self.affect_at: dict = {}
 
     def smooth(self, visible: list) -> list:
         now = time.time()
@@ -85,6 +86,13 @@ class PresenceMonitor:
         elif now - self.unknown_held[1] >= HOLD_SECONDS:
             self.unknown_held = ([], 0.0)
         return [p for p, _ in self.held.values()] + self.unknown_held[0]
+
+    def _affect(self, visible: list) -> None:
+        from features.people.wellbeing import service as wellbeing
+        for p in visible:
+            if p.get("known") and p.get("slug") and isinstance(p.get("affect"), dict) and p["affect"].get("at") != self.affect_at.get(p["slug"]):
+                self.affect_at[p["slug"]] = p["affect"].get("at")
+                wellbeing.ingest(p["slug"], p["affect"])
 
     def _greet(self, text: str, names: list, slug: str = "") -> None:
         from features.locale import service
@@ -207,6 +215,7 @@ class PresenceMonitor:
                     if [(p["name"], p["near"]) for p in visible] != [(p["name"], p["near"]) for p in previous]:
                         store.touch()
                     self._publish(data, visible)
+                    self._affect(visible)
                     if store.phase in ("READY", "DEGRADED"):
                         self._evaluate(visible)
                         from features.automations.bus import bus as automation_bus

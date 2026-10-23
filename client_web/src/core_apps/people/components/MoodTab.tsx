@@ -3,6 +3,7 @@ import { Check, Plus, Sparkles, Trash2, X } from 'lucide-react';
 import { reportError } from '../../../shared/errors/errorBus';
 import { MoodEntry, addMood, deleteMood, fetchMood, moodFeedback } from '../data/peopleApi';
 import { chipClass, fieldClass, usePeopleI18n } from '../scope';
+import { WellbeingPanel } from './WellbeingPanel';
 
 const TONE: Readonly<Record<string, string>> = {
   felice: 'bg-emerald-400', sereno: 'bg-teal-400', entusiasta: 'bg-lime-400', innamorato: 'bg-pink-400', grato: 'bg-emerald-300',
@@ -53,6 +54,7 @@ export const MoodTab: React.FC<Props> = ({ slug, busy, run }) => {
 
   return (
     <div className="flex flex-col gap-4">
+      <WellbeingPanel slug={slug} />
       <p className="text-xs text-slate-600">{t('mood_hint')}</p>
       {recent.length > 0 && (
         <div className="flex h-24 items-end gap-1 rounded-xl border border-slate-200 bg-slate-50 p-3" role="img" aria-label={t('mood_timeline')}>

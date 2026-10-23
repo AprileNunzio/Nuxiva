@@ -3,6 +3,7 @@ from collections import Counter, deque
 
 import numpy as np
 
+from affect import AffectMeter
 from gallery import UNKNOWN
 
 
@@ -21,6 +22,8 @@ class Track:
         self.last_learn = 0.0
         self.facing = False
         self.face = None
+        self.meter = AffectMeter()
+        self.affect: dict | None = None
         self.last_view = 0.0
         self.echo_of: str | None = None
         self.ir_feature = None

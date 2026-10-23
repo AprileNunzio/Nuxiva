@@ -18,6 +18,9 @@ class SealedFile:
         self.data_path = data_path
         self.key_path = key_path
 
+    def cipher(self) -> Fernet:
+        return self._cipher()
+
     def _cipher(self) -> Fernet:
         if not self.key_path.exists():
             write_private(self.key_path, Fernet.generate_key())

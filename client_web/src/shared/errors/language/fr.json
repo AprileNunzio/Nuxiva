@@ -131,6 +131,7 @@
     "nodes_delete_failed": "Le nœud n’a pas été supprimé. Réessayez.",
     "nodes_onboard_failed": "La connexion a échoué.",
     "nodes_copy_failed": "Impossible de copier la commande : sélectionnez-la et copiez-la manuellement.",
-    "error_access_unavailable": "Verification des permissions impossible."
+    "error_access_unavailable": "Verification des permissions impossible.",
+    "error_people_wellbeing_failed": "Parcours de bien-être impossible."
   }
 }
