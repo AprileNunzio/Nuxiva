@@ -334,3 +334,16 @@ class RecallTests(unittest.TestCase):
         a = recall.tokens("stazione giapponese sotto la neve con treno")
         self.assertGreaterEqual(recall.score(a, recall.tokens("una stazione giapponese con il treno sotto la neve")), recall.THRESHOLD)
         self.assertLess(recall.score(a, recall.tokens("giardino zen con laghetto")), recall.THRESHOLD)
+
+
+class VisualShowTests(unittest.TestCase):
+    def test_pattern(self):
+        from features.diorama import commands
+        for ok in ("mostrami un treno", "fammi vedere una locomotiva", "mostrami il Colosseo", "fammi vedere un castello medievale"):
+            with self.subTest(ok=ok):
+                self.assertTrue(commands.VISUAL.match(ok))
+                self.assertFalse(commands.NOT_VISUAL.search(ok))
+        for no in ("mostrami il modello 3d di un martello", "mostrami la telecamera del garage", "mostrami il meteo", "mostrami le foto"):
+            with self.subTest(no=no):
+                m = commands.VISUAL.match(no)
+                self.assertTrue(not m or commands.NOT_VISUAL.search(no) or commands.FOREIGN.search(no))

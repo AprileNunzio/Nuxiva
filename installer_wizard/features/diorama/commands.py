@@ -8,6 +8,12 @@ NOUN = r"(?:diorama|diorami|plastico|modellino\s+in\s+miniatura|scena\s+in\s+min
 CREATE_VERB = (r"(?:cre[aiou]\w*|costru\w*|realizz\w*|fa(?:i|mmi|re|rmi)|fammi|genera\w*|progett\w*|disegn\w*|prepar\w*|inventa\w*|componi\w*|compon\w*)")
 CREATE = re.compile(rf"\b{CREATE_VERB}\b(?:\s+(?:mi|me|ci|per\s+me|pure|subito|per\s+favore))*\s+(?:(?:un|uno|una|il|lo|la|l')\s*)?{NOUN}\b(?P<what>.*)$", re.I)
 SHOW = re.compile(rf"\b(?:mostra\w*|apri\w*|riapri\w*|rivedi|fammi\s+vedere|visualizza)\b.*\b{NOUN}\b(?P<what>.*)$", re.I)
+VISUAL = re.compile(r"^\W*(?:(?:per\s+favore|dai|su|jarvis)\s+)*(?:mostr\w*|(?:fa|fai|fammi|facci|voglio)\s+vedere|fammi\s+un\s+vedere)\s+(?:(?:mi|ci)\s+)?"
+                    r"(?:(?:un|uno|una|il|lo|la|l')\s*|(?:dei|delle|degli)\s+)(?P<what>[^\W\d_][^.?!]{1,70})\W*$", re.I)
+NOT_VISUAL = re.compile(r"\b(?:modell\w*|3\s*d|file|foto\w*|video|immagin\w*|camera|telecamer\w*|meteo|film|canale|app|applicazion\w*|finestr\w*|widget|"
+                        r"schermat\w*|pannell\w*|log|elenco|lista|documento|document\w*|mappa|partit\w*|risultat\w*|orologio|ora|data|calendario|"
+                        r"messaggi\w*|email|mail|canzon\w*|musica|diorama|diorami|grafico|tabella|password|conto|volto|faccia|avatar|ologramma|"
+                        r"sorgente|codice|errore|errori|stato|sistema|dispositiv\w*|stanza|casa|giardino\s+di\s+casa)\b", re.I)
 LIST = re.compile(rf"\b(?:quali|che|elenca)\b.*\b{NOUN}\b", re.I)
 CLOSE = re.compile(rf"\b(?:chiudi|nascondi|togli|esci\s+da\w*)\b.*\b{NOUN}\b", re.I)
 EDIT = re.compile(r"\b(?:aggiung\w*|inserisc\w*|togli|rimuov\w*|elimin\w*|cancell\w*|sposta\w*|muov\w*|ruota\w*|ingrandisc\w*|rimpicciolisc\w*|colora\w*|cambia\w*|trasforma\w*|rendi|metti|pianta\w*|sostituisc\w*|raddoppia|dimezza|allunga\w*|allarga\w*|accorcia\w*|fai|fammi|aggiorna\w*)\b", re.I)
@@ -120,6 +126,16 @@ async def answer(text: str) -> tuple[str, dict]:
             return ("Descrivimi meglio la scena." if str(exc) == "prompt_short" else "Ho raggiunto il numero massimo di diorami: elimina qualcosa e riprova."), face
         present(record["id"])
         return "Comincio a costruirlo: lo vedrai nascere pezzo per pezzo.", face
+    v = VISUAL.match(text)
+    if v and not NOT_VISUAL.search(text) and not FOREIGN.search(text):
+        subject = _clean(v.group("what"))
+        if len(subject) >= 3:
+            try:
+                record = service.create(subject)
+            except S.SpecError:
+                raise LookupError
+            present(record["id"])
+            return (f"Ecco {record['title'] or subject}." if record["items"] else f"Lo costruisco: {subject}."), face
     s = SHOW.search(text)
     if s:
         rows = store.listing()
