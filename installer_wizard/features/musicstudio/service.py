@@ -1,11 +1,15 @@
 import asyncio
+import io
 import logging
 import random
 import re
 import time
+import wave
 
 from features.brain.llm import BrainUnavailable
 from tasks import background
+
+from features.tasks.registry import registry as board
 
 from features.voices import languages
 from features.musicstudio import composer, songtext, generator, lyrics as lyr, schema as S, store
@@ -20,8 +24,14 @@ def status(pid: str) -> dict:
     return dict(jobs.get(pid) or {"state": "idle", "stage": ""})
 
 
+PROGRESS = {"plan": 0.1, "lyrics": 0.3, "translate": 0.45, "voices": 0.6, "render": 0.85}
+
+
 def _set(pid: str, **changes) -> None:
     jobs[pid] = {**jobs.get(pid, {"state": "idle", "stage": ""}), **changes}
+    task = jobs[pid].get("task")
+    if task and changes.get("stage") in PROGRESS:
+        board.update(task, progress=PROGRESS[changes["stage"]], stage=changes["stage"])
 
 
 def create(prompt: str) -> dict:
@@ -33,12 +43,53 @@ def create(prompt: str) -> dict:
     spec = composer.heuristic(clean)
     project = generator.arrange({**spec, "seed": random.SystemRandom().randrange(1 << 30)})
     store.save(project)
-    _set(project["id"], state="building", stage="plan")
+    task = board.start("song", clean[:80], "musicstudio", project["id"], clean)
+    _set(project["id"], state="building", stage="plan", task=task)
     background(_enrich(project["id"], clean))
     return project
 
 
 async def _enrich(pid: str, prompt: str) -> None:
+    task = jobs.get(pid, {}).get("task", "")
+    try:
+        await _compose(pid, prompt)
+        if board.is_cancelled(task):
+            _set(pid, state="error", stage="", error="cancelled")
+            return
+        await _deliver(pid, task)
+    except asyncio.CancelledError:
+        board.fail(task, "cancelled")
+        raise
+    except Exception as exc:
+        log.exception("musicstudio %s: creation failed", pid)
+        _set(pid, state="error", stage="", error="failed")
+        board.fail(task, type(exc).__name__)
+
+
+async def _deliver(pid: str, task: str) -> None:
+    from features.musicstudio import exporter, renderer
+    _set(pid, stage="render")
+    project = store.load(pid)
+    board.update(task, title=project["title"] or project["prompt"][:80])
+    wav = await asyncio.to_thread(renderer.render, project)
+    try:
+        shelf = await asyncio.to_thread(exporter.save, project, wav)
+    except OSError:
+        shelf = {"folder": "", "library": ""}
+    _set(pid, state="done", stage="", published=shelf.get("library", ""))
+    title = project["title"] or project["prompt"] or "Canzone"
+    try:
+        from features.desktop.desk import desk
+        desk.show("notice", {"title": "Studio Musicale", "text": f"«{title}» è pronta. Vuoi ascoltarla, aprire lo Studio o parlarne?"}, ttl=180)
+    except (ImportError, AttributeError, OSError):
+        pass
+    board.finish(task, f"«{title}» è pronta" + (" e la trovi nel Media Player." if shelf.get("library") else "."),
+                 {"app": "musicstudio", "payload": {"project": pid}, "file": shelf.get("library", "")},
+                 {"question": f"«{title}» è pronta. Vuoi ascoltarla, aprire lo Studio o parlarne con me?",
+                  "actions": [{"id": "listen", "label": "listen"}, {"id": "open", "label": "open"}, {"id": "talk", "label": "talk"}]})
+
+
+async def _compose(pid: str, prompt: str) -> None:
     try:
         try:
             spec = await composer.plan(prompt)
@@ -56,9 +107,10 @@ async def _enrich(pid: str, prompt: str) -> None:
             borrowed = await _library_song(prompt)
             if borrowed:
                 text = ""
-                _set(pid, notice="lyrics_from_library")
+                _set(pid, notice="lyrics_from_library" if borrowed.get("source") == "library" else "lyrics_from_web")
             else:
-                _set(pid, notice="original_lyrics")
+                _set(pid, notice="lyrics_not_found")
+                spec = {**spec, "vocals": False}
         if borrowed:
             project["lyrics"] = S.clean_lyrics({"lang": languages.detect(borrowed["text"], "it"), "text": borrowed["text"]})
             project["revision"] += 1
@@ -68,7 +120,6 @@ async def _enrich(pid: str, prompt: str) -> None:
                 await translate(pid, spec.get("lang", "it"), True)
             except (S.SpecError, *FAILURES):
                 _set(pid, notice="translation_failed")
-            _set(pid, state="done", stage="")
             return
         if spec.get("vocals") and not text:
             try:
@@ -82,11 +133,12 @@ async def _enrich(pid: str, prompt: str) -> None:
             store.save(project)
             _set(pid, stage="voices")
             await voice_assets(pid)
-        _set(pid, state="done", stage="")
     except KeyError:
         _set(pid, state="error", stage="", error="missing")
+        raise
     except OSError:
         _set(pid, state="error", stage="", error="storage")
+        raise
 
 
 async def _library_song(prompt: str) -> dict | None:
@@ -96,17 +148,39 @@ async def _library_song(prompt: str) -> dict | None:
         return None
 
 
-async def voice_assets(pid: str) -> int:
+def wav_seconds(data: bytes) -> float:
+    try:
+        with wave.open(io.BytesIO(data), "rb") as clip:
+            return clip.getnframes() / float(clip.getframerate())
+    except (wave.Error, EOFError, ZeroDivisionError):
+        return 0.0
+
+
+async def sing(vocal: dict, slot: float) -> bytes:
     from features.voices import synthesis
+    speed = vocal["speed"]
+    voice = vocal["voice"] or None
+    wav = await synthesis.synthesize(vocal["text"], voice, speed, vocal["lang"], vocal["pitch"] or None)
+    length = wav_seconds(wav)
+    if slot > 0 and length > slot:
+        faster = min(1.6, speed * length / slot * 1.02)
+        if faster > speed + 0.04:
+            wav = await synthesis.synthesize(vocal["text"], voice, faster, vocal["lang"], vocal["pitch"] or None)
+            vocal["speed"] = round(faster, 3)
+    return wav
+
+
+async def voice_assets(pid: str) -> int:
     project = store.load(pid)
     made = 0
+    seconds_per_beat = 60.0 / project["tempo"]
     for track in project["tracks"]:
         for clip in track["clips"]:
             vocal = clip.get("vocal")
             if not vocal or not vocal["text"] or vocal["asset"]:
                 continue
             try:
-                wav = await synthesis.synthesize(vocal["text"], vocal["voice"] or None, vocal["speed"], vocal["lang"])
+                wav = await sing(vocal, clip["length"] * seconds_per_beat)
             except (ValueError, RuntimeError, asyncio.TimeoutError, OSError) as exc:
                 log.info("musicstudio %s: voice skipped (%s)", pid, type(exc).__name__)
                 continue

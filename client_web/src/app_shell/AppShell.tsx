@@ -4,6 +4,7 @@ import { useWindowStore, windowStore } from './window_manager/WindowStore';
 import { OSWindowFrame } from './window_manager/OSWindowFrame';
 import { getScopedString, useScopedI18n } from '../shared/i18n/useScopedI18n';
 import { NotificationCenter } from './NotificationCenter';
+import { TaskTray } from './tasks/TaskTray';
 import './webos.css';
 import { useAuthenticatedSession } from '../features/auth_gate';
 import { WindowTopologyProvider } from './WindowTopology';
@@ -90,6 +91,7 @@ export function WebOSDesktop({ user, onSignOut }: { user: string; onSignOut: () 
     {userMenu&&<AccountCard user={user} onClose={closeUserMenu} onSettings={()=>open('features_hub')} onSignOut={onSignOut}/>}
     {launcher&&<StartMenu user={user} windows={windows} onOpen={open} onClose={closeLauncher} onAccount={()=>{setLauncher(false);setUserMenu(true);}} onSettings={()=>open('features_hub')} onNotifications={()=>{setNotifications(true);setLauncher(false);}} notificationCount={notificationCount}/>}
     {calendar && <Calendar now={clock} onClose={()=>setCalendar(false)} />}
+    <TaskTray />
     <NotificationCenter visible={notifications} onClose={()=>setNotifications(false)} onCountChange={setNotificationCount} />
 
   </div>;

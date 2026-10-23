@@ -199,3 +199,59 @@ class CEORelevanceTest(unittest.TestCase):
         self.assertEqual(result["ceo"]["delegated_to"], "musicstudio")
         self.assertIn("riallineato", result["ceo"]["plan"])
         self.assertIn("musicstudio", learning.table().get("lavag", {}))
+
+
+class CEOReasoningTest(unittest.TestCase):
+    def setUp(self):
+        import asyncio
+        import tempfile
+        from pathlib import Path
+        from unittest import mock
+        from features.team import learning, reasoning
+        self.asyncio, self.mock, self.reasoning = asyncio, mock, reasoning
+        self.ceo = CEOExecutive()
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        patch = mock.patch.object(learning, "FILE", Path(tmp.name) / "learned.json")
+        patch.start()
+        self.addCleanup(patch.stop)
+        learning.reset()
+        reasoning.cache.clear()
+
+    def test_strong_requests_skip_the_model(self):
+        decision = self.ceo.analyze_request("crea una canzone blues di Napule è in versione inglese")
+        self.assertFalse(self.reasoning.needs_reasoning(decision.ranked, decision.conversational))
+
+    def test_ambiguous_request_is_reasoned(self):
+        ranked = [("a", 8.0, []), ("b", 7.0, [])]
+        self.assertTrue(self.reasoning.needs_reasoning(ranked, False))
+        self.assertFalse(self.reasoning.needs_reasoning(ranked, True))
+
+    def test_verdict_overrides_and_is_validated(self):
+        ranked = self.ceo.analyze_request("fammi sentire quella canzone").ranked
+        helper = next(aid for aid, _, _ in ranked[:6] if aid not in ("music", "chat"))
+        verdict = {"agent": "music", "reason": "vuole ascoltare un brano esistente", "confidence": 0.9, "also": ["nope", helper]}
+        with self.mock.patch.object(self.reasoning, "generate", self.mock.AsyncMock(return_value=verdict)), \
+                self.mock.patch.object(self.reasoning, "needs_reasoning", return_value=True):
+            decision = self.asyncio.run(self.ceo.decide("fammi sentire quella canzone", {}))
+        self.assertTrue(decision.reasoned)
+        self.assertEqual(decision.primary_agent.id, "music")
+        self.assertIn("vuole ascoltare", decision.delegation_plan)
+        self.assertEqual([a.id for a in decision.secondary_agents], [helper])
+
+    def test_invalid_or_unavailable_model_falls_back(self):
+        from features.brain.llm import BrainUnavailable
+        for outcome in ({"agent": "ghost"}, BrainUnavailable("off")):
+            self.reasoning.cache.clear()
+            patcher = self.mock.AsyncMock(side_effect=outcome) if isinstance(outcome, Exception) else self.mock.AsyncMock(return_value=outcome)
+            with self.mock.patch.object(self.reasoning, "generate", patcher), self.mock.patch.object(self.reasoning, "needs_reasoning", return_value=True):
+                decision = self.asyncio.run(self.ceo.decide("metti un po' di musica", {}))
+            self.assertFalse(decision.reasoned)
+            self.assertEqual(decision.primary_agent.id, "music")
+
+    def test_reasoned_decision_steers_the_connector(self):
+        from features.chat import assistant
+        decision = self.ceo.analyze_request("crea una canzone blues")
+        self.assertEqual(assistant._hint(decision), "musicstudio")
+        weak = self.ceo.analyze_request("ciao come va?")
+        self.assertEqual(assistant._hint(weak), "")

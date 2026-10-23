@@ -19,8 +19,12 @@ def publish(project: dict, wav: bytes) -> str:
     target = naming.destination(info, ".wav")
     if target is None:
         raise OSError("library_unavailable")
+    previous = store.published(project["id"])
+    existing = (layout.root() / previous) if previous else None
+    if existing is not None and existing.is_file() and layout.root() in existing.resolve().parents:
+        target = existing
     target.parent.mkdir(parents=True, exist_ok=True)
-    target = _free(target, project["id"])
+    target = target if target == existing else _free(target, project["id"])
     target.write_bytes(wav)
     tagwriter.write(target, info)
     text = project["lyrics"]["text"]

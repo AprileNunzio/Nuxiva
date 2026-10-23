@@ -29,6 +29,7 @@ COMPONENTS: tuple[Component, ...] = (
     Component("firewall", "Analista di sicurezza di rete", "Servizi", "deep", "Valuta gli allarmi del firewall e propone contromisure."),
     Component("skills", "Abilità", "Servizi", "studio", "Generazione di nuove abilità."),
     Component("study", "Studio autonomo", "Servizi", "studio", "Lettura di fonti, esercizi ed esami a riposo."),
+    Component("ceo", "CEO Orchestrator", "Dialogo", "chat", "Ragiona sulle richieste ambigue e sceglie lo specialista giusto."),
     Component("diorama", "Creatore di diorami", "Servizi", "deep", "Compone diorami fotorealistici dal vivo, a strati."),
     Component("musicstudio", "Studio musicale", "Servizi", "deep", "Pianifica canzoni, scrive testi e li traduce nello studio musicale."),
     Component("models3d", "Editor modelli 3D", "Servizi", "modello3d", "Disegno di oggetti nell'editor."),

@@ -49,7 +49,7 @@ class AssistantPivotTests(unittest.TestCase):
     def run_handle(self, text, lang, switched=False):
         seen = {}
 
-        async def route(routing, core_call, speech_lang):
+        async def route(routing, core_call, speech_lang, hint=""):
             seen["routing"] = routing
             return {"reply": "Ho acceso Luce studio.", "intent": "home"}
 
@@ -68,7 +68,7 @@ class AssistantPivotTests(unittest.TestCase):
         self.assertEqual(result["reply"], "I turned on the study light.")
 
     def test_model_replies_already_in_english_are_not_retranslated(self):
-        async def route(routing, core_call, speech_lang):
+        async def route(routing, core_call, speech_lang, hint=""):
             data = await core_call(routing)
             return {"reply": f"Sure, here is the answer about {data['query']} and the weather today.", "intent": "conversation"}
 

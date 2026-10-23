@@ -49,9 +49,10 @@ async def answer(text: str) -> tuple[str, dict]:
         except S.SpecError as exc:
             return ("Descrivimi meglio la canzone." if str(exc) == "prompt_short" else "Ho raggiunto il numero massimo di progetti musicali."), face
         state["active"] = project["id"]
-        _announce(project, f"Sto componendo: {what}. Lo trovi in Applicazioni › Studio Musicale.")
+        _announce(project, f"Sto componendo: {what}. Segui l'avanzamento nel widget Attività.")
         note = " Cerco il testo nella libreria del Media Player e lo faccio tradurre dall'agente traduttore; se il brano non c'è, scrivo un testo originale sullo stesso tema." if composer.REFERENCE.search(text) else ""
-        return "Mi metto al lavoro: scelgo genere, tonalità e strumenti, poi scrivo il testo. Lo trovi nello Studio Musicale." + note, face
+        return ("Ho aperto l'attività: scelgo genere, tonalità e strumenti, scrivo il testo e registro la canzone in un file vero. "
+                "Puoi seguire l'avanzamento nel widget Attività; quando è pronta ti chiedo se vuoi ascoltarla, aprirla o parlarne." + note), face
     if LIST.search(text):
         rows = store.listing()
         if not rows:

@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from typing import Any
 from config import env_get
 
-from features.team import learning, relevance
+from features.team import learning, reasoning, relevance
 from features.team.board import board
 from features.team.outcomes import describe, execution_outcome
 from features.team.scanner import DiscoveredAgent, scanner
@@ -21,6 +21,9 @@ class CEODecision:
     delegation_plan: str
     confidence: float
     query: str = ""
+    ranked: list = field(default_factory=list)
+    conversational: bool = False
+    reasoned: bool = False
     timestamp: float = field(default_factory=time.time)
 
 
@@ -70,7 +73,8 @@ class CEOExecutive:
                 secondary_agents=[],
                 delegation_plan=plan,
                 confidence=1.0,
-                query=text
+                query=text,
+                conversational=True
             )
 
         ranked = relevance.rank(agents, text, learning.table())
@@ -105,7 +109,8 @@ class CEOExecutive:
             secondary_agents=secondaries,
             delegation_plan=plan,
             confidence=confidence,
-            query=text
+            query=text,
+            ranked=ranked
         )
 
     @staticmethod
@@ -129,8 +134,28 @@ class CEOExecutive:
         store.event("INFO", f"CEO: {plan}", "ceo")
         return choice
 
-    def on_conversation_start(self, text: str, context: dict | None = None) -> CEODecision:
+    async def decide(self, text: str, context: dict | None = None) -> CEODecision:
         decision = self.analyze_request(text, context)
+        agents = self.scan_team()
+        if reasoning.needs_reasoning(decision.ranked, decision.conversational):
+            verdict = await reasoning.think(text, agents, decision.ranked)
+            if verdict:
+                decision = self._apply_verdict(decision, verdict, agents)
+        return self._announce(decision, text)
+
+    def _apply_verdict(self, decision: CEODecision, verdict: dict, agents: dict[str, DiscoveredAgent]) -> CEODecision:
+        chosen = self._get_conversation_agent(agents) if verdict["agent"] == reasoning.ASSISTANT else agents[verdict["agent"]]
+        helpers = [agents[a] for a in verdict["also"] if a in agents]
+        plan = f"Il CEO ha ragionato sulla richiesta e assegna «{chosen.name}» [{chosen.id}]: {verdict['reason']}"
+        if helpers:
+            plan += f" Supporto: {', '.join(h.name for h in helpers)}."
+        return CEODecision(primary_agent=chosen, secondary_agents=helpers, delegation_plan=plan, confidence=round(max(0.5, verdict["confidence"]), 3),
+                           query=decision.query, ranked=decision.ranked, conversational=False, reasoned=True)
+
+    def on_conversation_start(self, text: str, context: dict | None = None) -> CEODecision:
+        return self._announce(self.analyze_request(text, context), text)
+
+    def _announce(self, decision: CEODecision, text: str) -> CEODecision:
         store.event("INFO", f"CEO ha orchestrato la conversazione: {decision.delegation_plan}", "ceo")
         board.post(
             "ceo",

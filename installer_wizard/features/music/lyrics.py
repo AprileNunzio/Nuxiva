@@ -53,3 +53,34 @@ async def fetch(title: str, artist: str, album: str = "", duration: float | None
     if len(_cache) > 60:
         _cache.pop(next(iter(_cache)))
     return result
+
+
+LRCLIB_SEARCH = "https://lrclib.net/api/search"
+_search_cache: dict = {}
+
+
+async def search(query: str) -> list[dict]:
+    key = str(query or "").strip().lower()[:120]
+    if len(key) < 2:
+        return []
+    if key in _search_cache:
+        return _search_cache[key]
+    rows: list[dict] = []
+    try:
+        async with httpx.AsyncClient(timeout=8, headers={"User-Agent": USER_AGENT}) as client:
+            reply = await client.get(LRCLIB_SEARCH, params={"q": key})
+            data = reply.json() if reply.status_code == 200 else []
+    except (httpx.HTTPError, ValueError):
+        data = []
+    for item in (data if isinstance(data, list) else [])[:12]:
+        if not isinstance(item, dict):
+            continue
+        synced = _parse(item.get("syncedLyrics") or "")
+        plain = (item.get("plainLyrics") or "").strip()
+        if synced or plain:
+            rows.append({"title": str(item.get("trackName") or ""), "artist": str(item.get("artistName") or ""), "album": str(item.get("albumName") or ""),
+                         "duration": float(item.get("duration") or 0), "synced": synced, "plain": plain[:4000]})
+    _search_cache[key] = rows
+    if len(_search_cache) > 60:
+        _search_cache.pop(next(iter(_search_cache)))
+    return rows

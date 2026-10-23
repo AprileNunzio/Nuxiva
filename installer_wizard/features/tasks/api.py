@@ -1,0 +1,46 @@
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel, ConfigDict, Field
+
+from access import NO_CACHE, require_admin
+from features.tasks import sources
+from features.tasks.registry import ID_RE, registry
+
+admin_routes = APIRouter(prefix="/api/tasks", tags=["Attività"])
+
+
+class AnswerIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    action: str = Field(default="", max_length=20)
+
+
+def snapshot() -> dict:
+    rows = sorted([*registry.rows(), *sources.projects()], key=lambda r: r["updated"], reverse=True)
+    active = [r for r in rows if r["state"] in ("queued", "running")]
+    waiting = [r for r in rows if r["state"] == "done" and r.get("offer") and not r.get("answered")]
+    return {"tasks": rows[:60], "active": len(active), "waiting": len(waiting)}
+
+
+@admin_routes.get("")
+async def overview(_: str = Depends(require_admin)):
+    return JSONResponse(snapshot(), headers=NO_CACHE)
+
+
+@admin_routes.post("/{task_id}/answer")
+async def answer(task_id: str, body: AnswerIn, _: str = Depends(require_admin)):
+    if not ID_RE.fullmatch(task_id):
+        raise HTTPException(404, "task_unknown")
+    row = registry.answer(task_id)
+    if row is None:
+        raise HTTPException(404, "task_unknown")
+    return JSONResponse({"task": row, "action": body.action}, headers=NO_CACHE)
+
+
+@admin_routes.post("/{task_id}/cancel")
+async def cancel(task_id: str, _: str = Depends(require_admin)):
+    if not ID_RE.fullmatch(task_id):
+        raise HTTPException(404, "task_unknown")
+    if not registry.cancel(task_id):
+        raise HTTPException(409, "not_active")
+    return {"ok": True}

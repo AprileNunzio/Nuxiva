@@ -1,0 +1,11 @@
+{
+  "name": "Attività in background",
+  "description": "Ogni creazione che richiede tempo diventa un'attività: progresso, passi, annullamento e, a lavoro finito, la domanda se vuoi ascoltarla, aprirla o parlarne.",
+  "capabilities": [
+    "Registro unico delle attività: canzoni, progetti e creazioni lunghe",
+    "Progresso e passi in tempo reale nel widget Attività",
+    "A lavoro finito propone: ascolta, apri, parlane",
+    "Risponde a «a che punto sei?»"
+  ],
+  "settings": []
+}

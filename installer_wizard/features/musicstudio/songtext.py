@@ -50,10 +50,31 @@ async def lyrics_of(track: dict) -> str:
     return S.text(data.get("plain"), 2400, True)
 
 
+def _plain(row: dict) -> str:
+    if row.get("synced"):
+        return S.text("\n".join(l["text"] for l in row["synced"] if l["text"]), 2400, True)
+    return S.text(row.get("plain"), 2400, True)
+
+
+async def from_web(ref: str) -> dict | None:
+    wanted = _words(ref)
+    if not wanted:
+        return None
+    for row in await online.search(ref):
+        if wanted <= _words(f"{row['title']} {row['artist']}"):
+            text = _plain(row)
+            if text:
+                return {"id": 0, "title": row["title"], "artist": row["artist"], "text": text, "source": "web"}
+    return None
+
+
 async def find(prompt: str) -> dict | None:
     ref = reference(prompt)
-    track = match(ref) if ref else None
-    if track is None:
+    if not ref:
         return None
-    text = await lyrics_of(track)
-    return {"id": int(track["id"]), "title": track["title"], "artist": track["artist"], "text": text} if text else None
+    track = match(ref)
+    if track is not None:
+        text = await lyrics_of(track)
+        if text:
+            return {"id": int(track["id"]), "title": track["title"], "artist": track["artist"], "text": text, "source": "library"}
+    return await from_web(ref)

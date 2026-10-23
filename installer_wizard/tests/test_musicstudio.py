@@ -11,6 +11,8 @@ from fastapi.testclient import TestClient
 from features.brain.llm import BrainUnavailable
 from features.musicstudio import api, catalog, commands, composer, exporter, expert, generator, agent, broadcast, edits, genres, imports, library, songtext, schema, service, store, theory, voicebank
 from features.shares import archive
+from features.tasks import registry as registry_module
+from features.tasks.registry import registry
 
 
 class Sandbox(unittest.TestCase):
@@ -18,7 +20,8 @@ class Sandbox(unittest.TestCase):
         tmp = tempfile.TemporaryDirectory()
         self.addCleanup(tmp.cleanup)
         self.root = Path(tmp.name)
-        for target in (mock.patch.object(store, "DIRECTORY", self.root / "store"), mock.patch.object(archive, "ROOT", self.root / "share")):
+        registry._items = None
+        for target in (mock.patch.object(registry_module, "FILE", self.root / "tasks.json"), mock.patch.object(store, "DIRECTORY", self.root / "store"), mock.patch.object(archive, "ROOT", self.root / "share")):
             target.start()
             self.addCleanup(target.stop)
         service.jobs.clear()
@@ -135,15 +138,19 @@ class ServiceTest(Sandbox):
         with mock.patch.object(composer, "generate", mock.AsyncMock(side_effect=BrainUnavailable("off"))), mock.patch.object(service, "background", lambda coro: asyncio.get_event_loop().create_task(coro)):
             async def main():
                 project = await run()
-                for _ in range(50):
-                    await asyncio.sleep(0.01)
-                    if service.status(project["id"])["state"] == "done":
+                for _ in range(1200):
+                    await asyncio.sleep(0.05)
+                    if service.status(project["id"])["state"] in ("done", "error"):
                         break
                 return project
 
             project = asyncio.run(main())
         self.assertEqual(service.status(project["id"])["state"], "done")
         self.assertEqual(store.load(project["id"])["genre"], "house")
+        task = registry.get(service.status(project["id"])["task"])
+        self.assertEqual(task["state"], "done")
+        self.assertEqual(task["offer"]["actions"][0]["id"], "listen")
+        self.assertTrue(list((self.root / "share").rglob("*.wav")))
 
     def test_effect_and_tempo(self):
         project = generator.arrange({"genre": "pop", "seed": 1})
@@ -372,6 +379,18 @@ class SongTextTest(Sandbox):
             self.assertEqual(songtext.match("Napule è")["id"], 2)
             self.assertIsNone(songtext.match("Roma capoccia"))
 
+    def test_web_search_requires_all_words(self):
+        rows = [{"title": "Altro", "artist": "X", "plain": "no", "synced": []}, {"title": "Napule è", "artist": "Y", "plain": "uno\ndue", "synced": []}]
+        with mock.patch.object(songtext.online, "search", mock.AsyncMock(return_value=rows)):
+            found = asyncio.run(songtext.from_web("Napule è"))
+            self.assertEqual((found["artist"], found["source"]), ("Y", "web"))
+            self.assertIsNone(asyncio.run(songtext.from_web("Roma capoccia")))
+
+    def test_find_prefers_library_then_web(self):
+        web = {"id": 0, "title": "T", "artist": "A", "text": "w", "source": "web"}
+        with mock.patch.object(songtext, "match", return_value=None), mock.patch.object(songtext, "from_web", mock.AsyncMock(return_value=web)):
+            self.assertEqual(asyncio.run(songtext.find("crea una canzone di Brano"))["source"], "web")
+
     def run_enrich(self, found, spec):
         with mock.patch.object(service, "background", lambda coro: coro.close()):
             project = service.create("crea una canzone blues di Brano in versione inglese")
@@ -384,17 +403,63 @@ class SongTextTest(Sandbox):
         return project["id"]
 
     def test_enrich_translates_library_lyrics(self):
-        found = {"id": 5, "title": "Brano", "artist": "Artista", "text": "uno due\n\ntre quattro"}
+        found = {"id": 5, "title": "Brano", "artist": "Artista", "text": "uno due\n\ntre quattro", "source": "library"}
         pid = self.run_enrich(found, {"genre": "blues", "lang": "en", "vocals": True, "reference": True, "mood": "", "title": "Blues", "bars": 16})
         saved = store.load(pid)
         self.assertEqual(service.status(pid)["notice"], "lyrics_from_library")
         self.assertEqual(saved["lyrics"]["translations"]["en"], "one two\n\nthree four")
         self.assertTrue(any(t["role"] == "vocal" for t in saved["tracks"]))
 
-    def test_enrich_falls_back_to_original_lyrics(self):
+    def test_enrich_never_invents_lyrics_of_a_named_song(self):
         pid = self.run_enrich(None, {"genre": "blues", "lang": "en", "vocals": True, "reference": True, "mood": "", "title": "Blues", "bars": 16, "lyrics": "own words\n\nmore words"})
-        self.assertEqual(service.status(pid)["notice"], "original_lyrics")
-        self.assertEqual(store.load(pid)["lyrics"]["text"], "own words\n\nmore words")
+        self.assertEqual(service.status(pid)["notice"], "lyrics_not_found")
+        saved = store.load(pid)
+        self.assertEqual(saved["lyrics"]["text"], "")
+        self.assertFalse(any(t["role"] == "vocal" for t in saved["tracks"]))
+
+
+def silence(seconds: float) -> bytes:
+    import io
+    import wave
+    buffer = io.BytesIO()
+    with wave.open(buffer, "wb") as clip:
+        clip.setnchannels(1)
+        clip.setsampwidth(2)
+        clip.setframerate(8000)
+        clip.writeframes(b"\x00\x00" * int(8000 * seconds))
+    return buffer.getvalue()
+
+
+class VocalFitTest(unittest.TestCase):
+    def test_lines_become_beat_aligned_clips(self):
+        project = generator.arrange({"genre": "pop", "seed": 1, "bars": 32})
+        clips = generator.lyric_clips(project, "uno\ndue\ntre\nquattro\n\ncinque\nsei", "it", "")
+        self.assertGreaterEqual(len(clips), 5)
+        self.assertTrue(all(c["vocal"]["text"] and c["length"] >= 0.5 for c in clips))
+        self.assertEqual(clips[0]["start"], min(c["start"] for c in clips))
+        self.assertLessEqual(max(abs(c["vocal"]["pitch"]) for c in clips), 5)
+
+    def test_speed_is_raised_to_fit_the_slot(self):
+        calls = []
+
+        async def synth(text, voice, speed, lang, pitch):
+            calls.append(speed)
+            return silence(4.0 / speed)
+
+        vocal = {"text": "x", "lang": "it", "voice": "", "speed": 1.0, "pitch": 0, "asset": ""}
+        with mock.patch("features.voices.synthesis.synthesize", synth):
+            asyncio.run(service.sing(vocal, 2.5))
+        self.assertEqual(len(calls), 2)
+        self.assertGreater(vocal["speed"], 1.5)
+
+    def test_short_line_is_left_natural(self):
+        async def synth(text, voice, speed, lang, pitch):
+            return silence(1.0)
+
+        vocal = {"text": "x", "lang": "it", "voice": "", "speed": 1.0, "pitch": 0, "asset": ""}
+        with mock.patch("features.voices.synthesis.synthesize", synth):
+            asyncio.run(service.sing(vocal, 3.0))
+        self.assertEqual(vocal["speed"], 1.0)
 
 
 class ExpertTest(unittest.TestCase):
@@ -500,3 +565,100 @@ class BroadcastTest(Sandbox):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class RendererTest(unittest.TestCase):
+    def test_every_genre_renders_audible_audio(self):
+        from features.musicstudio import renderer
+        for genre in ("blues", "house", "bossa_nova"):
+            with self.subTest(genre=genre):
+                project = generator.arrange({"genre": genre, "seed": 3, "bars": 4})
+                mix = renderer.mixdown(project)
+                self.assertGreater(float(abs(mix).max()), 0.05)
+                self.assertLessEqual(float(abs(mix).max()), 0.9)
+
+    def test_all_effects_keep_length_and_stay_finite(self):
+        import numpy as np
+        from features.musicstudio import dsp_fx
+        x = (np.random.default_rng(1).standard_normal((2, 22050)) * 0.1).astype(np.float32)
+        for effect in catalog.EFFECTS:
+            with self.subTest(effect=effect.id):
+                params = {k: v.default for k, v in effect.knobs.items()}
+                y = dsp_fx.chain(x, [{"type": effect.id, "on": True, "params": params}], 0.5)
+                self.assertEqual(y.shape, x.shape)
+                self.assertTrue(np.isfinite(y).all())
+
+    def test_too_long_projects_are_refused(self):
+        from features.musicstudio import renderer
+        project = generator.arrange({"genre": "pop", "seed": 1, "bars": 8})
+        project["tempo"] = 40
+        project["bars"] = 256
+        with self.assertRaises(renderer.RenderError):
+            renderer.mixdown(project)
+
+
+class TaskRegistryTest(unittest.TestCase):
+    def setUp(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        patch = mock.patch.object(registry_module, "FILE", Path(tmp.name) / "tasks.json")
+        patch.start()
+        self.addCleanup(patch.stop)
+        registry._items = None
+        self.addCleanup(setattr, registry, "_items", None)
+
+    def test_lifecycle_and_offer(self):
+        task = registry.start("song", "Blues", "musicstudio", "ref")
+        registry.update(task, progress=0.4, stage="voices")
+        registry.update(task, progress=0.1)
+        self.assertEqual(registry.get(task)["progress"], 0.4)
+        registry.finish(task, "ok", {"app": "musicstudio"}, {"question": "?", "actions": []})
+        row = registry.get(task)
+        self.assertEqual((row["state"], row["progress"], row["answered"]), ("done", 1.0, False))
+        registry.answer(task)
+        self.assertTrue(registry.get(task)["answered"])
+        registry.update(task, progress=0.2)
+        self.assertEqual(registry.get(task)["progress"], 1.0)
+
+    def test_cancel_and_restart_marks_interrupted(self):
+        a = registry.start("song", "A", "musicstudio")
+        b = registry.start("song", "B", "musicstudio")
+        self.assertTrue(registry.cancel(a))
+        self.assertTrue(registry.is_cancelled(a))
+        self.assertFalse(registry.cancel(a))
+        registry._items = None
+        self.assertEqual(registry.get(a)["state"], "cancelled")
+        self.assertEqual((registry.get(b)["state"], registry.get(b)["error"]), ("error", "interrupted"))
+
+    def test_api_snapshot_and_answer(self):
+        from features.tasks import api as tasks_api
+        task = registry.start("song", "Blues", "musicstudio")
+        registry.finish(task, "ok", {}, {"question": "?", "actions": []})
+        app = FastAPI()
+        app.dependency_overrides[tasks_api.require_admin] = lambda: "admin"
+        app.include_router(tasks_api.admin_routes)
+        client = TestClient(app)
+        body = client.get("/api/tasks").json()
+        self.assertEqual((body["active"], body["waiting"]), (0, 1))
+        self.assertEqual(client.post(f"/api/tasks/{task}/answer", json={"action": "listen"}).status_code, 200)
+        self.assertEqual(client.get("/api/tasks").json()["waiting"], 0)
+        self.assertEqual(client.post("/api/tasks/zzz/answer", json={}).status_code, 404)
+
+
+class TaskVoiceTest(TaskRegistryTest):
+    def test_status_question_lists_active_and_waiting(self):
+        from features.tasks import commands as task_commands
+        registry.start("song", "Blues di Napoli", "musicstudio")
+        done = registry.start("song", "Lo-fi", "musicstudio")
+        registry.finish(done, "ok", {}, {"question": "?", "actions": []})
+        speech, _ = asyncio.run(task_commands.answer("a che punto sei?"))
+        self.assertIn("Blues di Napoli", speech)
+        self.assertIn("Vuoi ascoltarlo", speech)
+        with self.assertRaises(LookupError):
+            asyncio.run(task_commands.answer("che tempo fa"))
+
+    def test_big_builds_open_a_project(self):
+        from features.projects import commands as project_commands
+        self.assertTrue(project_commands.BUILD.search("creami un sito con 100 pagine"))
+        self.assertTrue(project_commands.BUILD.search("sviluppa una piattaforma gestionale"))
+        self.assertFalse(project_commands.BUILD.search("crea una canzone blues"))

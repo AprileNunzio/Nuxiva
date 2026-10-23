@@ -1,0 +1,30 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "client_web/src/app_shell/tasks",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Tareas",
+    "running": "{n} en curso",
+    "ready": "{n} listas",
+    "state_running": "Trabajando…",
+    "state_queued": "En cola",
+    "state_paused": "En pausa",
+    "stage_plan": "Planificando el arreglo…",
+    "stage_lyrics": "Preparando la letra…",
+    "stage_translate": "Traduciendo la letra…",
+    "stage_voices": "Grabando las voces…",
+    "stage_render": "Grabando el archivo de audio…",
+    "error_interrupted": "Interrumpida por un reinicio del sistema",
+    "error_cancelled": "Cancelada",
+    "failed": "No se pudo completar",
+    "question": "«{title}» está lista. ¿Quieres escucharla, abrirla o hablar de ella?",
+    "action_listen": "Escuchar",
+    "action_open": "Abrir",
+    "action_talk": "Hablar de ella",
+    "later": "Más tarde",
+    "cancel": "Cancelar tarea",
+    "dismiss": "Ocultar"
+  }
+}

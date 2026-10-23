@@ -15,7 +15,7 @@ TRACK_FX = {
     "drums": (("compressor", {"threshold": -14, "ratio": 3}),), "bass": (("compressor", {"threshold": -20, "ratio": 4}),),
     "chords": (("chorus", {"mix": 0.3}), ("reverb", {"size": 1.6, "mix": 0.18})), "pad": (("reverb", {"size": 3.2, "mix": 0.4}),),
     "lead": (("delay", {"time": 0.375, "feedback": 0.35, "mix": 0.22}), ("reverb", {"size": 2.2, "mix": 0.2})), "arp": (("delay", {"time": 0.1875, "feedback": 0.4, "mix": 0.3}),),
-    "vocal": (("compressor", {"threshold": -22, "ratio": 3}), ("reverb", {"size": 1.4, "mix": 0.16})), "fx": (),
+    "vocal": (("eq3", {"low": -5, "mid": 1, "high": 3}), ("compressor", {"threshold": -22, "ratio": 3}), ("reverb", {"size": 1.2, "mix": 0.14})), "fx": (),
 }
 LEVELS = {"drums": 0.9, "bass": 0.85, "chords": 0.62, "pad": 0.5, "lead": 0.62, "arp": 0.45, "vocal": 1.0, "fx": 0.4}
 def _step(pattern: str, i: int) -> str:
@@ -192,13 +192,27 @@ def build_track(project: dict, role: str, rng: random.Random, instrument: str = 
                           "effects": [{"type": t, "params": p} for t, p in TRACK_FX.get(role, ())], "pan": {"arp": 0.3, "chords": -0.15, "pad": 0.0}.get(role, 0.0)})
 
 
+CONTOUR = (0, 2, 1, 3, 2, 0)
+MAX_LINES = 4
+
+
 def lyric_clips(project: dict, lyrics: str, lang: str, voice: str) -> list[dict]:
     stanzas = [s.strip() for s in lyrics.replace("\r", "").split("\n\n") if s.strip()] or ([lyrics.strip()] if lyrics.strip() else [])
     spots = [s for s in project["structure"] if s["name"] in ("verse", "chorus", "bridge")]
     clips = []
     for stanza, section in zip(stanzas, spots):
-        clips.append({"name": _label(section, "vocal"), "start": section["start"] * project["beats"], "length": section["bars"] * project["beats"], "notes": [],
-                      "vocal": {"text": stanza, "lang": lang, "voice": voice, "speed": 1.0, "pitch": 0}})
+        lines = [l.strip() for l in stanza.splitlines() if l.strip()][:MAX_LINES * 2]
+        if not lines:
+            continue
+        count = min(len(lines), max(1, section["bars"]))
+        group = -(-len(lines) // count)
+        merged = [" ".join(lines[i:i + group]) for i in range(0, len(lines), group)][:count]
+        slot = section["bars"] * project["beats"] / len(merged)
+        base = 2 if section["name"] == "chorus" else 0
+        for index, line in enumerate(merged):
+            last = index == len(merged) - 1
+            clips.append({"name": _label(section, "vocal"), "start": section["start"] * project["beats"] + index * slot, "length": max(0.5, slot * 0.96), "notes": [],
+                          "vocal": {"text": line, "lang": lang, "voice": voice, "speed": 1.0, "pitch": base + CONTOUR[index % len(CONTOUR)] - (2 if last else 0)}})
     return clips
 
 

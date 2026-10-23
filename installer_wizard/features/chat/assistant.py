@@ -108,7 +108,7 @@ async def handle(text: str, core_call, speech_lang: dict | None = None) -> dict:
     routing = text if switched else await pivot.to_pivot(text, lang)
 
     from features.team.ceo import ceo
-    ceo_decision = ceo.on_conversation_start(routing, {"lang": lang})
+    ceo_decision = await ceo.decide(routing, {"lang": lang})
 
     generated = {"by_model": False}
 
@@ -117,7 +117,7 @@ async def handle(text: str, core_call, speech_lang: dict | None = None) -> dict:
         return await core_call(text)
 
     async with stages.stage("ceo", "CEO Orchestrator", ceo_decision.delegation_plan):
-        raw_result = await _route(routing, ask, speech_lang)
+        raw_result = await _route(routing, ask, speech_lang, _hint(ceo_decision))
         result = ceo.synthesize(ceo_decision, raw_result)
 
     if lang != pivot.PIVOT and result.get("reply"):
@@ -125,7 +125,12 @@ async def handle(text: str, core_call, speech_lang: dict | None = None) -> dict:
     return result
 
 
-async def _route(text: str, core_call, speech_lang: dict | None = None) -> dict:
+def _hint(decision) -> str:
+    agent = decision.primary_agent.id
+    return agent if (decision.reasoned or decision.confidence >= 0.85) and agent in CONNECTORS else ""
+
+
+async def _route(text: str, core_call, speech_lang: dict | None = None, hint: str = "") -> dict:
     started = time.time()
     from features.automations.bus import emit
     emit("voice_command", {"text": text})
@@ -202,6 +207,8 @@ async def _route(text: str, core_call, speech_lang: dict | None = None) -> dict:
         decision = await understanding.route(text, request_context.device.get())
         probe.note(understanding.describe(decision))
     domains = decision.domains if understanding.enabled() else list(EARLY)
+    if hint:
+        domains = [hint] + [d for d in domains if d != hint]
     if understanding.enabled() and domains and (refused := _refused(domains[0], started)):
         return refused
     for domain in domains:
