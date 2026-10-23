@@ -312,7 +312,13 @@ async def _converse(text: str, core_call) -> tuple[str, str, dict]:
         return "agente · strumenti", speech, ui
     if refused:
         actions.note_gap(text, "il modello ha rifiutato e nessuno strumento è adatto")
+    ambient_diorama(text, reply)
     return data.get("agent_id") or "core", *(code.answer(reply, text) or await _presented(reply, text) or compose_generic(reply, text))
+
+
+def ambient_diorama(text: str, reply: str) -> None:
+    from features.diorama import ambient
+    ambient.watch(text, reply)
 
 
 async def _presented(reply: str, text: str):

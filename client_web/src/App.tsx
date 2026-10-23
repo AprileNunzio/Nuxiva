@@ -7,8 +7,10 @@ import { I18nProvider } from './shared/i18n/I18nContext';
 import { UpdateBanner } from './shared/updates/UpdateBanner';
 import { IdentityProvider } from './shared/identity/IdentityContext';
 const Workbench = lazy(() => import('./apps/repair_workbench/View'));
+const DioramaEmbed = lazy(() => import('./apps/diorama/DioramaEmbed'));
 
 function ApplicationSurface() {
+  if (window.location.pathname === '/diorama-stage') return <Suspense fallback={null}><DioramaEmbed /></Suspense>;
   if (window.location.pathname === '/repair-workbench') {
     const query = new URLSearchParams(window.location.search);
     return <Suspense fallback={null}><Workbench initialPayload={{
