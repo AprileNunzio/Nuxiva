@@ -70,7 +70,7 @@
     const features = included(ctx);
     $("feature-card").hidden = features.length === 0;
     const off = skipped(ctx);
-    $("feature-grid").replaceChildren(...features.map((key) => choice(ctx, ctx.t(`feat-${key}`), "", !off.includes(key), () => {
+    $("feature-grid").replaceChildren(...features.map((key) => choice(ctx, ctx.t(`feat-${key.replace(/^NUXIVA_/, "").toLowerCase()}`), "", !off.includes(key), () => {
       ctx.draft.skip = off.includes(key) ? off.filter((k) => k !== key) : [...off, key];
       paintConsents(ctx);
     })));
