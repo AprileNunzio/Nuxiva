@@ -3,6 +3,7 @@ import json
 import sqlite3
 
 from config import DEMO, read_env
+from features.home_assistant import address
 from features.home_assistant.answers import HomeAnswers
 from features.home_assistant.commands import HomeCommands
 from features.home_assistant.connection import HomeConnection
@@ -48,12 +49,14 @@ class HomeBrain(HomeConnection, HomeRegistry, HomeLive, HomeCommands, HomeAnswer
         self._activity: list = []
         self._resync: asyncio.Task | None = None
         self._creds = ("", "")
+        self._joined = False
         self._load_from_db()
 
     @staticmethod
     def settings() -> dict:
         env = read_env()
-        return {"url": env.get("HOME_ASSISTANT_URL", "").strip().rstrip("/"),
+        urls = address.candidates(env.get("HOME_ASSISTANT_URL", ""), env.get("HOME_ASSISTANT_URLS", ""))
+        return {"url": urls[0] if urls else "", "urls": urls,
                 "token": env.get("HOME_ASSISTANT_TOKEN", "").strip(),
                 "enabled": env.get("NUXIVA_HOME_ASSISTANT", "1") != "0",
                 "room": env.get("NUXIVA_HOME_ROOM", "").strip(),

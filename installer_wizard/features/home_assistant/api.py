@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 
 from access import require_admin
 from config import DEMO
-from features.home_assistant import control_api, home
+from features.home_assistant import connection_api, control_api, home
 from features.home_assistant.automations import api as automations_api
 from features.home_assistant.connection import HAError
 from state import store
@@ -12,6 +12,7 @@ from state import store
 admin_routes = APIRouter()
 admin_routes.include_router(automations_api.admin_routes)
 admin_routes.include_router(control_api.admin_routes)
+admin_routes.include_router(connection_api.admin_routes)
 
 
 @admin_routes.get("/api/home")

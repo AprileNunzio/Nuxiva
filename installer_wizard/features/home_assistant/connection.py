@@ -33,12 +33,12 @@ class HomeConnection:
         asyncio.create_task(self._flusher())
         while True:
             s = self.settings()
-            self._creds = (s["url"], s["token"])
+            self._creds = self._signature(s)
             if not s["enabled"]:
                 self._set_status("disabled", "")
                 await asyncio.sleep(5)
                 continue
-            if not s["url"] or not s["token"]:
+            if not s["urls"] or not s["token"]:
                 self._set_status("not_configured", "")
                 await asyncio.sleep(5)
                 continue
@@ -48,7 +48,7 @@ class HomeConnection:
                 continue
             try:
                 self._set_status("connecting", "")
-                await self._session(s)
+                await self._try_addresses(s)
                 backoff = 2
             except AuthError as exc:
                 self._set_status("auth_failed", str(exc) or "Token non valido")
@@ -71,9 +71,32 @@ class HomeConnection:
         end = time.time() + seconds
         while time.time() < end:
             s = self.settings()
-            if (s["url"], s["token"]) != self._creds or not s["enabled"]:
+            if self._signature(s) != self._creds or not s["enabled"]:
                 return
             await asyncio.sleep(2)
+
+    @staticmethod
+    def _signature(s: dict) -> tuple:
+        return (tuple(s["urls"]), s["token"], s["verify_ssl"])
+
+    def _order(self, urls: list) -> list:
+        return sorted(urls, key=lambda u: u != self.url)
+
+    async def _try_addresses(self, s: dict) -> None:
+        failures = []
+        for url in self._order(s["urls"]):
+            self._joined = False
+            try:
+                await self._session({**s, "url": url})
+                return
+            except AuthError:
+                raise
+            except Exception as exc:
+                if self._joined:
+                    raise
+                failures.append(f"{url}: {type(exc).__name__}")
+                log.info("Home Assistant non raggiungibile su %s: %s", url, exc)
+        raise HAError("Nessun indirizzo risponde (" + "; ".join(failures) + ")" if len(failures) > 1 else failures[0])
 
     def _set_status(self, status: str, error: str) -> None:
         if (status, error) != (self.status, self.error):
@@ -98,7 +121,7 @@ class HomeConnection:
             auth = json.loads(await asyncio.wait_for(ws.recv(), 15))
             if auth.get("type") != "auth_ok":
                 raise AuthError(auth.get("message", "Token non valido"))
-            self._ws, self.url = ws, url
+            self._ws, self.url, self._joined = ws, url, True
             self.ha_version = auth.get("ha_version", "")
             reader = asyncio.create_task(self._reader(ws))
             try:
@@ -124,7 +147,7 @@ class HomeConnection:
         while True:
             await asyncio.sleep(3)
             s = self.settings()
-            if (s["url"], s["token"]) != self._creds or not s["enabled"]:
+            if self._signature(s) != self._creds or not s["enabled"]:
                 await ws.close()
                 return
             if time.time() - self.synced_at > RESYNC_EVERY:

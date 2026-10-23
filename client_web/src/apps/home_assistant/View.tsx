@@ -27,6 +27,7 @@ import {
   syncHome,
   importPlaces,
 } from './api';
+import { ConnectionPanel } from './components/ConnectionPanel';
 import type {
   Entity,
   Area,
@@ -86,6 +87,10 @@ export function View() {
   const [assistBusy, setAssistBusy] = useState(false);
 
   // Load all home data
+  useEffect(() => {
+    if (overview?.status === 'not_configured') setTab('settings');
+  }, [overview?.status]);
+
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
@@ -920,10 +925,17 @@ export function View() {
               </div>
             </div>
 
-            <p className="text-xs text-slate-400">
-              Per modificare token, indirizzo o cartella configurazione (/config), usa il Pannello di Controllo.
-            </p>
+
           </div>
+        </Panel>
+      ) : null}
+      {tab === 'settings' ? <ConnectionPanel t={t} onSaved={loadData} /> : null}
+      {tab !== 'settings' && (overview?.status === 'not_configured' || overview?.status === 'auth_failed') ? (
+        <Panel title={t('conn_title')}>
+          <p className="mb-3 text-xs text-slate-400">{t(overview.status === 'auth_failed' ? 'conn_banner_auth' : 'conn_banner_missing')}</p>
+          <Btn tone="cyan" onClick={() => setTab('settings')}>
+            {t('conn_open')}
+          </Btn>
         </Panel>
       ) : null}
     </AppFrame>
