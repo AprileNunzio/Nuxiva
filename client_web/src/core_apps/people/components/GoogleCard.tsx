@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ExternalLink, Mail, Unlink } from 'lucide-react';
 import { GoogleState, googleAuthUrl, googleCancel, googleFinish, googleUnlink } from '../data/connectorsApi';
 import { chipClass, fieldClass, usePeopleI18n } from '../scope';
+import { CredentialsForm } from './CredentialsForm';
 
 interface Props {
   readonly slug: string;
@@ -41,7 +42,7 @@ export const GoogleCard: React.FC<Props> = ({ slug, state, busy, run }) => {
           {t(state.linked ? 'connector_linked' : 'connector_not_linked')}
         </span>
       </header>
-      {!state.available && <p className="text-sm text-amber-800">{t('gg_not_configured')}</p>}
+      {!state.available && <CredentialsForm feature="google" fields={[{ key: 'NUXIVA_GOOGLE_CLIENT_ID', label: t('gg_client_id'), secret: false }, { key: 'NUXIVA_GOOGLE_CLIENT_SECRET', label: t('gg_client_secret'), secret: true }]} hint={t('gg_not_configured')} busy={busy} run={run} />}
       {state.linked && (
         <p className="text-sm text-slate-800">
           {t('gg_linked_as', { email: state.email || '—' })}

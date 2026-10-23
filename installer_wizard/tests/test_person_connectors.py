@@ -142,5 +142,21 @@ class ApiTest(unittest.TestCase):
             update.assert_called_with("anna", {"telegram_id": ""})
 
 
+class CredentialSettingsTest(unittest.TestCase):
+    def test_credentials_can_be_saved_from_the_person_cards(self):
+        import json
+        base = Path(__file__).resolve().parents[1] / "features"
+        wanted = {"telegram": {"NUXIVA_TELEGRAM_TOKEN"}, "google": {"NUXIVA_GOOGLE_CLIENT_ID", "NUXIVA_GOOGLE_CLIENT_SECRET"}}
+        for feature, keys in wanted.items():
+            manifest = json.loads((base / feature / "feature.json").read_text(encoding="utf-8"))
+            declared = {item["key"]: item["type"] for item in manifest["settings"]}
+            self.assertTrue(keys <= set(declared), feature)
+            for key in keys:
+                self.assertEqual(declared[key] == "secret", "SECRET" in key or "TOKEN" in key, key)
+            for lang in ("it", "en", "fr"):
+                labels = json.loads((base / feature / "language" / f"{lang}.json").read_text(encoding="utf-8")).get("settings", {})
+                self.assertEqual(sorted(labels), sorted(declared), f"{feature}/{lang}")
+
+
 if __name__ == "__main__":
     unittest.main()

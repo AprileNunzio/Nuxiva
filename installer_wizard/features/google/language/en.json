@@ -7,6 +7,8 @@
     "Drive file retrieval and cloud backup"
   ],
   "settings": {
-    "GOOGLE_CLIENT_ID": "Google Client ID"
+    "NUXIVA_GOOGLE_CLIENT_ID": "OAuth Client ID",
+    "NUXIVA_GOOGLE_CLIENT_SECRET": "OAuth Client Secret",
+    "NUXIVA_GOOGLE_REMIND_MIN": "Remind me before an appointment (minutes, 0 = never)"
   }
 }
