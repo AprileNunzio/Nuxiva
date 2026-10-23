@@ -26,6 +26,7 @@ export interface FeatureRow {
   readonly pinned: boolean;
   readonly source: string;
   readonly new: boolean;
+  readonly surface?: 'hub' | 'settings' | 'hidden';
 }
 
 export interface FeaturesOverview {

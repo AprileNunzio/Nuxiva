@@ -110,6 +110,27 @@
     "opt_verbose_telemetry_desc": "Log detailed analytical reasoning steps to the sensory bus.",
     "btn_save_backend": "Save Backend Configuration",
     "backend_saved_success": "Backend configuration saved successfully!",
-    "saving": "Saving…"
+    "saving": "Saving…",
+    "settings_tab_general": "General",
+    "settings_tab_agent": "Agent with tools",
+    "settings_tab_redalert": "Red alert",
+    "agent_title": "Agent with tools",
+    "agent_intro": "When needed, Nuxiva reasons step by step and uses real tools (files, display, music, email, terminal) until the task is done. Choose here whether it is active and how much access it has.",
+    "agent_capabilities": "What it can do",
+    "refresh": "Refresh",
+    "redalert_title": "Red alert",
+    "redalert_intro": "When an alarm goes off (smoke, water, intrusion) the lights slowly flash red and the urgent message repeats on the Chromecasts. When it ends everything returns as before.",
+    "redalert_active": "Running",
+    "redalert_test": "Test",
+    "redalert_stop": "Stop",
+    "redalert_behaviour": "Behaviour",
+    "redalert_duration": "Alarm duration",
+    "redalert_repeat": "Repeat the message every",
+    "redalert_seconds": "{n} seconds",
+    "redalert_lights": "Red flashing lights",
+    "redalert_cast": "Voice message on Chromecasts",
+    "redalert_excluded_title": "Excluded lights",
+    "redalert_excluded_hint": "Tap a light to exclude it from the alarm (for example bedrooms): it stays as it is.",
+    "redalert_no_lights": "No lights found: Home Assistant is not connected."
   }
 }

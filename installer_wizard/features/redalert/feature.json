@@ -13,10 +13,11 @@
   },
   "capabilities": [
     "Luci di casa rosse lampeggianti (lente, sicure per chi è sensibile alla luce)",
-    "Messaggio vocale urgente su tutti i Chromecast, ripetuto ogni 25 secondi",
+    "Luci escluse a scelta (camere da letto, luci di cortesia)",
+    "Messaggio vocale urgente su tutti i Chromecast, con intervallo di ripetizione regolabile",
     "Ripristino automatico delle luci com'erano",
     "Si ferma chiudendo il widget dell'allarme o quando l'allarme rientra",
-    "Prova con un pulsante"
+    "Prova e stop con un pulsante, stato in tempo reale"
   ],
   "settings": [
     {
@@ -74,6 +75,36 @@
           "label": "5 minuti"
         }
       ]
+    },
+    {
+      "key": "NUXIVA_REDALERT_REPEAT",
+      "label": "Ripeti il messaggio vocale ogni",
+      "type": "select",
+      "default": "25",
+      "options": [
+        {
+          "value": "10",
+          "label": "10 secondi"
+        },
+        {
+          "value": "25",
+          "label": "25 secondi"
+        },
+        {
+          "value": "45",
+          "label": "45 secondi"
+        },
+        {
+          "value": "90",
+          "label": "90 secondi"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_REDALERT_EXCLUDE",
+      "label": "Luci da non far lampeggiare",
+      "type": "text",
+      "default": ""
     }
   ],
   "icon3d": "./icon.png",
@@ -82,5 +113,6 @@
     "technique": "3d",
     "id": "Qv15MoNYxkA7",
     "url": "https://img.icons8.com/?size=240&id=Qv15MoNYxkA7&format=png"
-  }
+  },
+  "surface": "settings"
 }

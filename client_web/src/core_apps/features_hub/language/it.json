@@ -110,6 +110,27 @@
     "opt_verbose_telemetry_desc": "Registra i passaggi analitici dettagliati nel bus di telemetria.",
     "btn_save_backend": "Salva Configurazione Backend",
     "backend_saved_success": "Configurazione backend salvata con successo!",
-    "saving": "Salvataggio…"
+    "saving": "Salvataggio…",
+    "settings_tab_general": "Generali",
+    "settings_tab_agent": "Agente con strumenti",
+    "settings_tab_redalert": "Allarme rosso",
+    "agent_title": "Agente con strumenti",
+    "agent_intro": "Quando serve, Nuxiva ragiona a passi e usa strumenti veri (file, display, musica, email, terminale) finché il compito è finito. Qui scegli se è attivo e quanto accesso ha.",
+    "agent_capabilities": "Cosa può fare",
+    "refresh": "Aggiorna",
+    "redalert_title": "Allarme rosso",
+    "redalert_intro": "Quando scatta un allarme (fumo, acqua, intrusione) le luci lampeggiano lentamente di rosso e il messaggio urgente viene ripetuto sui Chromecast. Finito l'allarme tutto torna come prima.",
+    "redalert_active": "In corso",
+    "redalert_test": "Prova",
+    "redalert_stop": "Ferma",
+    "redalert_behaviour": "Comportamento",
+    "redalert_duration": "Durata dell'allarme",
+    "redalert_repeat": "Ripeti il messaggio ogni",
+    "redalert_seconds": "{n} secondi",
+    "redalert_lights": "Luci rosse lampeggianti",
+    "redalert_cast": "Messaggio vocale sui Chromecast",
+    "redalert_excluded_title": "Luci escluse",
+    "redalert_excluded_hint": "Tocca una luce per escluderla dall'allarme (per esempio le camere da letto): resterà com'è.",
+    "redalert_no_lights": "Nessuna luce trovata: Home Assistant non è collegato."
   }
 }

@@ -11,6 +11,8 @@
   "settings": {
     "NUXIVA_REDALERT_LIGHTS": "Flash the lights red",
     "NUXIVA_REDALERT_CAST": "Announce on every Chromecast",
-    "NUXIVA_REDALERT_SECONDS": "For how long"
+    "NUXIVA_REDALERT_SECONDS": "For how long",
+    "NUXIVA_REDALERT_REPEAT": "Repeat the voice message every",
+    "NUXIVA_REDALERT_EXCLUDE": "Lights that must not flash"
   }
 }

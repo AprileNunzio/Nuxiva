@@ -9,7 +9,7 @@ import { useResource } from '../shared/useResource';
 import { FeaturesOverview } from '../shared/featureTypes';
 import { overviewUrl } from './api';
 import { isApplication } from '../../app_shell/window_manager/app_scanner';
-import { SystemSettingsView } from './components/SystemSettingsView';
+import { SystemSettingsTabs } from './components/SystemSettingsTabs';
 
 export function View() {
   const { openApp } = useOSApp();
@@ -70,7 +70,7 @@ export function View() {
 
       <div className="flex-1 overflow-y-auto">
         {viewMode === 'settings' ? (
-          <SystemSettingsView t={t} lang={lang} onBack={() => setViewMode('catalog')} />
+          <SystemSettingsTabs t={t} lang={lang} onBack={() => setViewMode('catalog')} />
         ) : data ? (
           <ApplicationCatalog
             lang={lang}
@@ -97,7 +97,7 @@ export function View() {
               ])
             )}
             items={data.features
-              .filter((f) => !isExcludedFromHub(f.id))
+              .filter((f) => !isExcludedFromHub(f.id) && (f.surface ?? 'hub') === 'hub')
               .map((feature) => ({
                 id: feature.id,
                 label: feature.name,

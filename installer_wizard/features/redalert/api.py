@@ -22,9 +22,18 @@ async def redalert_audio(token: str):
 
 @admin_routes.get("/api/redalert")
 async def redalert_status(_: str = Depends(require_admin)):
-    from features.redalert.service import enabled, seconds
+    from features.redalert.service import enabled, excluded, repeat_after, seconds
     return JSONResponse({"enabled": enabled(), "active": redalert.active, "message": redalert.message if redalert.active else "",
-                         "seconds": seconds()}, headers=NO_CACHE)
+                         "seconds": seconds(), "repeat": repeat_after(), "excluded": sorted(excluded())}, headers=NO_CACHE)
+
+
+@admin_routes.get("/api/redalert/lights")
+async def redalert_lights(_: str = Depends(require_admin)):
+    from features.redalert import lights
+    states = lights.snapshot()
+    from features.home_assistant.home import brain
+    rows = [{"id": eid, "name": str((brain.states.get(eid, {}).get("attrs") or {}).get("friendly_name") or eid)} for eid in sorted(states)]
+    return JSONResponse({"lights": rows}, headers=NO_CACHE)
 
 
 @admin_routes.post("/api/redalert/test")

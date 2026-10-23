@@ -11,6 +11,8 @@
   "settings": {
     "NUXIVA_REDALERT_LIGHTS": "Faire clignoter les lumières en rouge",
     "NUXIVA_REDALERT_CAST": "Prévenir à voix haute sur tous les Chromecast",
-    "NUXIVA_REDALERT_SECONDS": "Pendant combien de temps"
+    "NUXIVA_REDALERT_SECONDS": "Pendant combien de temps",
+    "NUXIVA_REDALERT_REPEAT": "Répéter le message vocal toutes les",
+    "NUXIVA_REDALERT_EXCLUDE": "Lumières à ne pas faire clignoter"
   }
 }

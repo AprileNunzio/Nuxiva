@@ -26,6 +26,28 @@ class SettingsContractTest(unittest.TestCase):
                     self.assertIn(item["default"], item["options"], item["key"])
 
 
+class SurfaceTest(unittest.TestCase):
+    def manifest(self, feature):
+        return json.loads((FEATURES / feature / "feature.json").read_text(encoding="utf-8"))
+
+    def test_system_options_leave_the_control_panel(self):
+        self.assertEqual(self.manifest("agent")["surface"], "settings")
+        self.assertEqual(self.manifest("redalert")["surface"], "settings")
+        self.assertEqual(self.manifest("auto_update")["surface"], "hidden")
+
+    def test_redalert_languages_cover_every_setting(self):
+        keys = sorted(item["key"] for item in self.manifest("redalert")["settings"])
+        for lang in ("it", "en", "fr"):
+            labels = json.loads((FEATURES / "redalert" / "language" / f"{lang}.json").read_text(encoding="utf-8"))["settings"]
+            self.assertEqual(sorted(labels), keys, lang)
+
+    def test_registry_rejects_an_unknown_surface(self):
+        from feature_registry import Registry
+        with self.assertRaises(ValueError):
+            Registry._validate({"id": "prova", "name": "Prova", "surface": "elsewhere"}, "prova")
+        self.assertEqual(Registry._validate({"id": "prova", "name": "Prova"}, "prova")["surface"], "hub")
+
+
 class FleetAutoCreateTest(unittest.TestCase):
     def test_creation_can_be_switched_off(self):
         from features.fleet import tools

@@ -110,6 +110,27 @@
     "opt_verbose_telemetry_desc": "Enregistrer les étapes analytiques détaillées dans le bus sensoriel.",
     "btn_save_backend": "Enregistrer la Configuration Backend",
     "backend_saved_success": "Configuration backend enregistrée avec succès !",
-    "saving": "Enregistrement…"
+    "saving": "Enregistrement…",
+    "settings_tab_general": "Général",
+    "settings_tab_agent": "Agent avec outils",
+    "settings_tab_redalert": "Alerte rouge",
+    "agent_title": "Agent avec outils",
+    "agent_intro": "Au besoin, Nuxiva raisonne pas à pas et utilise de vrais outils (fichiers, écran, musique, e-mail, terminal) jusqu'à la fin de la tâche. Choisissez ici s'il est actif et son niveau d'accès.",
+    "agent_capabilities": "Ce qu'il peut faire",
+    "refresh": "Actualiser",
+    "redalert_title": "Alerte rouge",
+    "redalert_intro": "Quand une alarme se déclenche (fumée, eau, intrusion), les lumières clignotent lentement en rouge et le message urgent est répété sur les Chromecast. Ensuite tout revient comme avant.",
+    "redalert_active": "En cours",
+    "redalert_test": "Tester",
+    "redalert_stop": "Arrêter",
+    "redalert_behaviour": "Comportement",
+    "redalert_duration": "Durée de l'alarme",
+    "redalert_repeat": "Répéter le message toutes les",
+    "redalert_seconds": "{n} secondes",
+    "redalert_lights": "Lumières rouges clignotantes",
+    "redalert_cast": "Message vocal sur les Chromecast",
+    "redalert_excluded_title": "Lumières exclues",
+    "redalert_excluded_hint": "Touchez une lumière pour l'exclure de l'alarme (par exemple les chambres) : elle reste telle quelle.",
+    "redalert_no_lights": "Aucune lumière trouvée : Home Assistant n'est pas connecté."
   }
 }

@@ -87,6 +87,43 @@ class ServiceTest(unittest.TestCase):
             self.assertFalse(RedAlert().trigger("x"))
 
 
+class SettingsTest(unittest.TestCase):
+    def read(self, env):
+        return mock.patch.object(service, "env_get", side_effect=lambda k, d="": env.get(k, d))
+
+    def test_repeat_is_clamped_and_bad_values_fall_back(self):
+        with self.read({"NUXIVA_REDALERT_REPEAT": "3"}):
+            self.assertEqual(service.repeat_after(), 10)
+        with self.read({"NUXIVA_REDALERT_REPEAT": "9999"}):
+            self.assertEqual(service.repeat_after(), 120)
+        with self.read({"NUXIVA_REDALERT_REPEAT": "abc"}):
+            self.assertEqual(service.repeat_after(), 25)
+
+    def test_only_valid_light_ids_are_excluded(self):
+        with self.read({"NUXIVA_REDALERT_EXCLUDE": "light.camera, switch.x,light.Bad, light.sala ,../etc"}):
+            self.assertEqual(service.excluded(), {"light.camera", "light.sala"})
+
+    def test_excluded_lights_never_flash(self):
+        alert = RedAlert()
+        flashed = []
+
+        async def flash(entities, stop, seconds):
+            flashed.append(entities)
+
+        async def restore(saved):
+            return None
+
+        env = {"NUXIVA_REDALERT": "1", "NUXIVA_REDALERT_CAST": "0", "NUXIVA_REDALERT_EXCLUDE": "light.camera"}
+        snap = {"light.camera": {"on": False}, "light.sala": {"on": True}}
+        with self.read(env), mock.patch.object(lights, "snapshot", return_value=snap), \
+                mock.patch.object(lights, "flash", side_effect=flash), mock.patch.object(lights, "restore", side_effect=restore):
+            async def run():
+                alert.trigger("x")
+                await alert.task
+            asyncio.run(run())
+        self.assertEqual(flashed, [["light.sala"]])
+
+
 class RoutesTest(unittest.TestCase):
     def test_audio_clip_is_one_token_and_expires(self):
         app = FastAPI()

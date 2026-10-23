@@ -137,6 +137,8 @@ class Registry:
             s.setdefault("type", "text")
             s.setdefault("label", s["key"])
         m.setdefault("capabilities", [])
+        if m.setdefault("surface", "hub") not in ("hub", "settings", "hidden"):
+            raise ValueError("surface non valida")
         m.setdefault("requires", {})
         return m
 

@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import re
 
 from config import env_get
 from state import store
@@ -9,6 +10,7 @@ from features.redalert import broadcast, lights
 log = logging.getLogger("nuxiva.redalert")
 
 REPEAT_AFTER = 25
+LIGHT_ID = re.compile(r"^light\.[a-z0-9_]{1,80}$")
 
 
 def enabled() -> bool:
@@ -17,6 +19,17 @@ def enabled() -> bool:
 
 def _flag(key: str) -> bool:
     return env_get(key, "1") != "0"
+
+
+def repeat_after() -> int:
+    try:
+        return max(10, min(120, int(env_get("NUXIVA_REDALERT_REPEAT", str(REPEAT_AFTER)))))
+    except ValueError:
+        return REPEAT_AFTER
+
+
+def excluded() -> set[str]:
+    return {item for item in (part.strip() for part in env_get("NUXIVA_REDALERT_EXCLUDE", "").split(",")) if LIGHT_ID.match(item)}
 
 
 def seconds() -> int:
@@ -50,7 +63,8 @@ class RedAlert:
         self.stop_event.set()
 
     async def _run(self, duration: int) -> None:
-        saved = lights.snapshot() if _flag("NUXIVA_REDALERT_LIGHTS") else {}
+        skip = excluded()
+        saved = {k: v for k, v in lights.snapshot().items() if k not in skip} if _flag("NUXIVA_REDALERT_LIGHTS") else {}
         store.event("ERROR", f"Allarme rosso: {self.message}", "alarm")
         jobs = []
         if saved:
@@ -89,7 +103,7 @@ class RedAlert:
                 return
             store.event("INFO", f"Messaggio urgente su: {', '.join(names)}", "alarm")
             try:
-                await asyncio.wait_for(self.stop_event.wait(), REPEAT_AFTER)
+                await asyncio.wait_for(self.stop_event.wait(), repeat_after())
             except asyncio.TimeoutError:
                 continue
 
