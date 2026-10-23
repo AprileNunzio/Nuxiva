@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { ExternalLink, Mail, Unlink } from 'lucide-react';
 import { GoogleState, googleAuthUrl, googleCancel, googleFinish, googleUnlink } from '../data/connectorsApi';
 import { chipClass, fieldClass, usePeopleI18n } from '../scope';
-import { CredentialsForm } from './CredentialsForm';
+import { GoogleServices } from './GoogleServices';
+import { SetupLink } from './SetupLink';
 
 interface Props {
   readonly slug: string;
@@ -42,13 +43,13 @@ export const GoogleCard: React.FC<Props> = ({ slug, state, busy, run }) => {
           {t(state.linked ? 'connector_linked' : 'connector_not_linked')}
         </span>
       </header>
-      {!state.available && <CredentialsForm feature="google" fields={[{ key: 'NUXIVA_GOOGLE_CLIENT_ID', label: t('gg_client_id'), secret: false }, { key: 'NUXIVA_GOOGLE_CLIENT_SECRET', label: t('gg_client_secret'), secret: true }]} hint={t('gg_not_configured')} busy={busy} run={run} />}
+      {!state.available && <SetupLink feature="google" hint={t('gg_not_configured')} />}
       {state.linked && (
         <p className="text-sm text-slate-800">
           {t('gg_linked_as', { email: state.email || '—' })}
-          {state.granted.length > 0 && <span className="block text-xs text-slate-600">{state.granted.join(' · ')}</span>}
         </p>
       )}
+      {state.services.length > 0 && <GoogleServices slug={slug} services={state.services} linked={state.linked} available={state.available} busy={busy} run={run} />}
       {state.pending && (
         <div className="flex flex-col gap-2">
           <p className="text-xs text-slate-600">{t('gg_paste_hint')}</p>

@@ -2,7 +2,7 @@ import React from 'react';
 import { Send, Unlink } from 'lucide-react';
 import { TelegramState, telegramChat, telegramPair, telegramUnlink } from '../data/connectorsApi';
 import { chipClass, usePeopleI18n } from '../scope';
-import { CredentialsForm } from './CredentialsForm';
+import { SetupLink } from './SetupLink';
 
 interface Props {
   readonly slug: string;
@@ -26,7 +26,7 @@ export const TelegramCard: React.FC<Props> = ({ slug, state, busy, run }) => {
           {t(state.linked ? 'connector_linked' : 'connector_not_linked')}
         </span>
       </header>
-      {!state.available && <CredentialsForm feature="telegram" fields={[{ key: 'NUXIVA_TELEGRAM_TOKEN', label: t('tg_token'), secret: true }]} hint={t('tg_not_configured')} busy={busy} run={run} />}
+      {!state.available && <SetupLink feature="telegram" hint={t('tg_not_configured')} />}
       {state.chats.map((chat) => (
         <div key={chat.id} className="flex flex-wrap items-center gap-3 rounded-lg border border-slate-200 px-3 py-2 text-sm">
           <span className="min-w-0 flex-1 truncate text-slate-900">{[chat.name, chat.username && `@${chat.username}`].filter(Boolean).join(' · ')}</span>

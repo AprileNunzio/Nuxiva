@@ -24,6 +24,13 @@ export interface GoogleState {
   readonly pending: boolean;
   readonly email: string;
   readonly granted: readonly string[];
+  readonly services: readonly GoogleService[];
+}
+
+export interface GoogleService {
+  readonly id: string;
+  readonly icon: string;
+  readonly granted: boolean;
 }
 
 export interface Connectors {
@@ -36,6 +43,12 @@ const slugOf = (slug: string): string => {
     throw new NodeModuleError('invalid_person', 400);
   }
   return encodeURIComponent(slug);
+};
+const serviceOf = (service: string): string => {
+  if (!/^[a-z_]{2,24}$/.test(service)) {
+    throw new NodeModuleError('invalid_service', 400);
+  }
+  return service;
 };
 const list = (value: unknown): unknown[] => (Array.isArray(value) ? value : []);
 
@@ -58,7 +71,17 @@ export function parseTelegram(value: unknown): TelegramState {
 
 function parseGoogle(value: unknown): GoogleState {
   const raw = asRecord(value);
-  return { available: raw.available === true, linked: raw.linked === true, pending: raw.pending === true, email: asString(raw.email, 120) ?? '', granted: asStringList(raw.granted, 16) };
+  return {
+    available: raw.available === true,
+    linked: raw.linked === true,
+    pending: raw.pending === true,
+    email: asString(raw.email, 120) ?? '',
+    granted: asStringList(raw.granted, 16),
+    services: list(raw.services).map(asRecord).flatMap((x) => {
+      const id = asString(x.id, 24) ?? '';
+      return /^[a-z_]{2,24}$/.test(id) ? [{ id, icon: asString(x.icon, 8) ?? '', granted: x.granted === true }] : [];
+    }),
+  };
 }
 
 export async function fetchConnectors(slug: string, signal?: AbortSignal): Promise<Connectors> {
@@ -89,10 +112,22 @@ export const googleAuthUrl = async (slug: string): Promise<string> => {
 };
 export const googleFinish = (slug: string, url: string) =>
   requestJson<unknown>('/api/google/finish', { method: 'POST', body: JSON.stringify({ slug, url: url.slice(0, 4000) }) });
+export const googleEnableService = async (slug: string, service: string): Promise<string> => {
+  const raw = asRecord(await requestJson<unknown>(`/api/google/${slugOf(slug)}/services/${serviceOf(service)}`, { method: 'POST', body: '{}' }));
+  const url = asString(raw.url, 4000) ?? '';
+  if (url && !/^https:\/\/accounts\.google\.com\//.test(url)) {
+    throw new NodeModuleError('invalid_url', 502);
+  }
+  return url;
+};
+export const googleDisableService = (slug: string, service: string) =>
+  requestJson<unknown>(`/api/google/${slugOf(slug)}/services/${serviceOf(service)}`, { method: 'DELETE' });
 export const googleCancel = (slug: string) => requestJson<unknown>(`/api/google/${slugOf(slug)}/pending`, { method: 'DELETE' });
 export const googleUnlink = (slug: string) => requestJson<unknown>(`/api/google/${slugOf(slug)}`, { method: 'DELETE' });
 
 export type VitalKind = 'ble' | 'push' | 'phone';
+export type VitalState = 'off' | 'waiting' | 'seen' | 'connected' | 'streaming' | 'unsupported';
+const VITAL_STATES: readonly string[] = ['off', 'waiting', 'seen', 'connected', 'streaming', 'unsupported'];
 
 export interface VitalDevice {
   readonly id: string;
@@ -100,6 +135,7 @@ export interface VitalDevice {
   readonly label: string;
   readonly address: string;
   readonly last: number;
+  readonly state: VitalState;
 }
 
 export interface VitalValue {
@@ -115,6 +151,7 @@ export interface VitalsState {
   readonly values: readonly VitalValue[];
   readonly leaseNode: string;
   readonly cloudReady: boolean;
+  readonly nodes: readonly string[];
 }
 
 export interface NewVitalDevice {
@@ -136,7 +173,7 @@ export async function fetchVitals(slug: string, signal?: AbortSignal): Promise<V
       const id = asString(d.id, 24) ?? '';
       const kind = String(d.kind ?? '');
       return /^[a-f0-9]{4,24}$/.test(id) && VITAL_KINDS.includes(kind)
-        ? [{ id, kind: kind as VitalKind, label: asString(d.label, 40) ?? kind, address: asString(d.address, 17) ?? '', last: typeof d.last === 'number' ? d.last : 0 }]
+        ? [{ id, kind: kind as VitalKind, label: asString(d.label, 40) ?? kind, address: asString(d.address, 17) ?? '', last: typeof d.last === 'number' ? d.last : 0, state: (VITAL_STATES.includes(String(d.state)) ? d.state : 'waiting') as VitalState }]
         : [];
     }),
     values: Object.entries(values).flatMap(([metric, entry]) => {
@@ -145,14 +182,16 @@ export async function fetchVitals(slug: string, signal?: AbortSignal): Promise<V
     }),
     leaseNode: asString(lease.node, 60) ?? '',
     cloudReady: cloud.ready === true,
+    nodes: list(raw.nodes).flatMap((n) => (typeof n === 'string' ? [n.slice(0, 60)] : [])),
   };
 }
 
-export async function addVitalDevice(slug: string, body: { kind: VitalKind; label: string; address: string }): Promise<NewVitalDevice> {
+export async function addVitalDevice(slug: string, body: { kind: VitalKind; label: string; address?: string; ref?: string }): Promise<NewVitalDevice> {
   const raw = asRecord(await requestJson<unknown>(`/api/people/${slugOf(slug)}/vitals/devices`, { method: 'POST', body: JSON.stringify(body) }));
   const device = asRecord(raw.device);
   return { kind: body.kind, label: asString(device.label, 40) ?? body.label, address: asString(device.address, 17) ?? '', token: asString(raw.token, 120) ?? '' };
 }
+
 
 const deviceBase = (slug: string, id: string): string => {
   if (!/^[a-f0-9]{4,24}$/.test(id)) {
@@ -165,3 +204,62 @@ export const rotateVitalDevice = async (slug: string, id: string): Promise<strin
   const raw = asRecord(await requestJson<unknown>(`${deviceBase(slug, id)}/token`, { method: 'POST' }));
   return asString(raw.token, 120) ?? '';
 };
+
+export const switchVitalDevice = (slug: string, id: string, action: 'disconnect' | 'reconnect') =>
+  requestJson<unknown>(`${deviceBase(slug, id)}/${action}`, { method: 'POST' });
+
+export interface NearbyDevice {
+  readonly ref: string;
+  readonly name: string;
+  readonly level: number;
+  readonly standard: boolean;
+}
+
+export interface NearbyState {
+  readonly active: boolean;
+  readonly nodes: readonly string[];
+  readonly found: readonly NearbyDevice[];
+}
+
+const vitalsBase = (slug: string): string => `/api/people/${slugOf(slug)}/vitals`;
+
+export const startVitalsSearch = (slug: string) => requestJson<unknown>(`${vitalsBase(slug)}/search`, { method: 'POST' });
+
+export async function fetchNearby(slug: string, signal?: AbortSignal): Promise<NearbyState> {
+  const raw = asRecord(await requestJson<unknown>(`${vitalsBase(slug)}/nearby`, { signal }));
+  return {
+    active: raw.active === true,
+    nodes: list(raw.nodes).flatMap((n) => (typeof n === 'string' ? [n.slice(0, 60)] : [])),
+    found: list(raw.found).map(asRecord).flatMap((d) => {
+      const ref = asString(d.ref, 16) ?? '';
+      return /^[a-f0-9]{4,16}$/.test(ref)
+        ? [{ ref, name: asString(d.name, 60) ?? '', level: Math.max(0, Math.min(4, Number(d.level) || 0)), standard: d.standard === true }]
+        : [];
+    }),
+  };
+}
+
+export interface VitalLogEntry {
+  readonly at: number;
+  readonly level: 'info' | 'warn' | 'error';
+  readonly code: string;
+  readonly params: Readonly<Record<string, string>>;
+}
+
+export async function fetchVitalsLog(slug: string, signal?: AbortSignal): Promise<readonly VitalLogEntry[]> {
+  const raw = asRecord(await requestJson<unknown>(`${vitalsBase(slug)}/log`, { signal }));
+  return list(raw.entries).map(asRecord).flatMap((e) => {
+    const code = asString(e.code, 40) ?? '';
+    const level = String(e.level);
+    if (!/^[a-z_]{3,40}$/.test(code) || typeof e.at !== 'number' || !['info', 'warn', 'error'].includes(level)) {
+      return [];
+    }
+    const params = Object.fromEntries(Object.entries(asRecord(e.params)).map(([k, v]) => [k.slice(0, 24), String(v).slice(0, 80)]));
+    return [{ at: e.at, level: level as VitalLogEntry['level'], code, params }];
+  });
+}
+
+export async function createPhoneCode(slug: string): Promise<{ code: string; expiresIn: number }> {
+  const raw = asRecord(await requestJson<unknown>(`${vitalsBase(slug)}/phone-code`, { method: 'POST' }));
+  return { code: asString(raw.code, 6) ?? '', expiresIn: Number(raw.expires_in) || 600 };
+}

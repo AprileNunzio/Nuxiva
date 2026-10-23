@@ -1,8 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Copy, HeartPulse, KeyRound, Trash2 } from 'lucide-react';
+import { Copy, HeartPulse, KeyRound, Link2Off, Plug, Trash2 } from 'lucide-react';
 import { reportError } from '../../../shared/errors/errorBus';
-import { NewVitalDevice, VitalKind, VitalsState, addVitalDevice, fetchVitals, removeVitalDevice, rotateVitalDevice } from '../data/connectorsApi';
+import { NewVitalDevice, VitalKind, VitalState, VitalsState, addVitalDevice, fetchVitals, removeVitalDevice, rotateVitalDevice, switchVitalDevice } from '../data/connectorsApi';
 import { chipClass, fieldClass, usePeopleI18n } from '../scope';
+import { VitalsLog } from './VitalsLog';
+import { VitalsSearch } from './VitalsSearch';
 
 interface Props {
   readonly slug: string;
@@ -12,6 +14,14 @@ interface Props {
 
 const cardClass = 'flex flex-col gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4';
 const REFRESH_MS = 5000;
+const STATE_TONE: Record<VitalState, string> = {
+  off: 'border-slate-300 text-slate-600',
+  waiting: 'border-slate-300 text-slate-700',
+  seen: 'border-blue-300 text-blue-800',
+  connected: 'border-emerald-300 text-emerald-800',
+  streaming: 'border-emerald-400 bg-emerald-50 text-emerald-900',
+  unsupported: 'border-amber-300 text-amber-900',
+};
 const MAC = /^[0-9A-Fa-f]{2}([:-][0-9A-Fa-f]{2}){5}$/;
 
 export const VitalsCard: React.FC<Props> = ({ slug, busy, run }) => {
@@ -105,24 +115,40 @@ export const VitalsCard: React.FC<Props> = ({ slug, busy, run }) => {
       )}
       {state.leaseNode && <p className="text-xs text-slate-700">{t('vitals_lease', { node: state.leaseNode })}</p>}
       <p className={`text-xs ${state.cloudReady ? 'text-emerald-800' : 'text-slate-600'}`}>{t(state.cloudReady ? 'vitals_cloud_on' : 'vitals_cloud_off')}</p>
+      {state.devices.length === 0 && <p className="text-xs text-slate-600">{t('vitals_empty')}</p>}
       {state.devices.map((device) => (
-        <div key={device.id} className="flex flex-wrap items-center gap-3 rounded-lg border border-slate-200 px-3 py-2 text-sm">
-          <span className="min-w-0 flex-1 truncate text-slate-900">
-            {device.label} · {t(`vitals_kind_${device.kind}`)}
-            {device.address && <span className="ml-2 font-mono text-xs text-slate-600">{device.address}</span>}
-          </span>
-          {device.kind !== 'ble' && (
-            <button type="button" disabled={busy !== null} onClick={() => void rotate(device.id, device.label)} className={`${chipClass} border-slate-300 px-3 text-slate-800`}>
-              <KeyRound className="h-4 w-4" aria-hidden="true" />
-              {t('vitals_new_key')}
+        <div key={device.id} className="flex flex-col gap-1 rounded-lg border border-slate-200 px-3 py-2 text-sm">
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="min-w-0 flex-1 truncate text-slate-900">
+              {device.label} · {t(`vitals_kind_${device.kind}`)}
+            </span>
+            <span className={`rounded-full border px-2 py-0.5 text-xs ${STATE_TONE[device.state]}`}>{t(`vitals_state_${device.state}`)}</span>
+            {device.state === 'off' ? (
+              <button type="button" disabled={busy !== null} onClick={() => void act(`vitals-on:${device.id}`, () => switchVitalDevice(slug, device.id, 'reconnect'))} className={`${chipClass} border-emerald-300 px-3 text-emerald-900`}>
+                <Plug className="h-4 w-4" aria-hidden="true" />
+                {t('vitals_reconnect')}
+              </button>
+            ) : (
+              <button type="button" disabled={busy !== null} onClick={() => void act(`vitals-off:${device.id}`, () => switchVitalDevice(slug, device.id, 'disconnect'))} className={`${chipClass} border-slate-300 px-3 text-slate-800`}>
+                <Link2Off className="h-4 w-4" aria-hidden="true" />
+                {t('vitals_disconnect')}
+              </button>
+            )}
+            {device.kind !== 'ble' && (
+              <button type="button" disabled={busy !== null} onClick={() => void rotate(device.id, device.label)} className={`${chipClass} border-slate-300 px-3 text-slate-800`}>
+                <KeyRound className="h-4 w-4" aria-hidden="true" />
+                {t('vitals_new_key')}
+              </button>
+            )}
+            <button type="button" disabled={busy !== null} onClick={() => void act(`vitals-del:${device.id}`, () => removeVitalDevice(slug, device.id))} className={`${chipClass} border-rose-300 px-3 text-rose-800`}>
+              <Trash2 className="h-4 w-4" aria-hidden="true" />
+              {t('vitals_remove')}
             </button>
-          )}
-          <button type="button" disabled={busy !== null} onClick={() => void act(`vitals-del:${device.id}`, () => removeVitalDevice(slug, device.id))} className={`${chipClass} border-rose-300 px-3 text-rose-800`}>
-            <Trash2 className="h-4 w-4" aria-hidden="true" />
-            {t('vitals_remove')}
-          </button>
+          </div>
+          <p className="text-xs text-slate-600">{t(`vitals_state_hint_${device.state}`)}</p>
         </div>
       ))}
+      <VitalsSearch slug={slug} nodes={state.nodes} busy={busy} act={act} onAdded={(device) => setSecret(device.token ? device : null)} />
       {secret && (
         <div className="flex flex-col gap-2 rounded-lg border border-blue-300 bg-blue-50 p-3 text-sm text-blue-900" role="status">
           <p>{t(secret.kind === 'phone' ? 'vitals_secret_phone' : 'vitals_secret_push', { name: secret.label })}</p>
@@ -138,6 +164,9 @@ export const VitalsCard: React.FC<Props> = ({ slug, busy, run }) => {
           </div>
         </div>
       )}
+      <details className="rounded-lg border border-slate-200 bg-white p-3">
+        <summary className="cursor-pointer text-xs font-semibold text-slate-800">{t('vitals_advanced')}</summary>
+        <div className="mt-3">
       <div className="flex flex-wrap items-end gap-2">
         <label className="flex flex-col gap-1 text-xs text-slate-700">
           {t('vitals_kind')}
@@ -162,6 +191,9 @@ export const VitalsCard: React.FC<Props> = ({ slug, busy, run }) => {
           {t('vitals_add')}
         </button>
       </div>
+        </div>
+      </details>
+      <VitalsLog slug={slug} tick={tick} />
     </section>
   );
 };
