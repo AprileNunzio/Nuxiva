@@ -11,6 +11,7 @@ from features.brain import stages
 from features.brain.llm import BrainUnavailable
 from features.chat import code
 from features.chat import context as request_context
+from features.chat.claims import ConnectorClaims
 from features.chat.compose import compose_generic
 from features.chat.intents import detect_intent
 from features.chat.skill_dispatch import run_skill
@@ -25,6 +26,7 @@ EARLY = ("whiteboard", "livecam", "games")
 _DISCOVERED_CONNECTORS = discover_feature_connectors()
 CONNECTORS = {**_DISCOVERED_CONNECTORS, **CONNECTORS}
 PROJECT_FIRST = (*_DISCOVERED_CONNECTORS, "projects")
+CLAIMS = ConnectorClaims(CONNECTORS)
 PERSONAL = {"gservices", "vault", "documents", "maps", "vision", "livecam"}
 
 
@@ -67,6 +69,17 @@ async def _connect(text: str, started: float, only: tuple | None = None, skip: t
         if connector in PERSONAL and ui.get("mode") == "focus":
             ui["personal"] = True
         return {"reply": speech, "ui": ui, "intent": connector, "agent": connector, "elapsed_ms": elapsed}
+    return None
+
+
+async def _claimed(text: str, started: float) -> dict | None:
+    for connector in CLAIMS.claiming(text):
+        refused = _refused(connector, started)
+        if refused:
+            return refused
+        out = await _connect(text, started, (connector,))
+        if out:
+            return out
     return None
 
 
@@ -133,6 +146,9 @@ async def _route(text: str, core_call, speech_lang: dict | None = None) -> dict:
     if spatial:
         return {"reply": spatial, "ui": {"mode": "face"}, "intent": "scene", "agent": "scena",
                 "elapsed_ms": int((time.time() - started) * 1000)}
+    claimed = await _claimed(text, started)
+    if claimed:
+        return claimed
     located = await _connect(text, started, ("places",))
     if located:
         return located

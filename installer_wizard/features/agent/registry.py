@@ -15,10 +15,11 @@ def asked_for_recurring() -> bool:
 
 
 def tool(name: str, description: str, args: dict, confirm=False, full_only: bool = False, agent: str = "", verify=None,
-         precheck=None):
+         precheck=None, intent: str = ""):
     def wrap(fn):
         TOOLS[name] = {"name": name, "description": description, "args": args, "fn": fn, "confirm": confirm,
-                       "full_only": full_only, "agent": agent, "verify": verify, "precheck": precheck}
+                       "full_only": full_only, "agent": agent, "verify": verify, "precheck": precheck,
+                       "intent": re.compile(intent, re.I) if intent else None}
         return fn
     return wrap
 
@@ -77,6 +78,13 @@ def needs_confirm(name: str, args: dict) -> bool:
         except Exception:
             return True
     return bool(rule)
+
+
+def unrequested(name: str) -> str:
+    rule = TOOLS[name].get("intent")
+    if rule and not rule.search(REQUEST.get()):
+        return f"l'utente non ha chiesto questa azione: «{name}» richiede una richiesta esplicita"
+    return ""
 
 
 def precheck(name: str, args: dict) -> str:

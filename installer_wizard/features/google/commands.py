@@ -57,6 +57,8 @@ COMMANDS = [
     ("note_add", "keep", _R(r"\b(?:aggiungi|crea|scrivi|prendi) (?:una |la )?not[ae]\b|\bannota(?:ti)? che\b")),
     ("notes", "keep", _R(r"\b(?:(?:le )?mie note|note di keep|google keep|leggi (?:le )?(?:mie )?note)\b")),
 ]
+_ADDRESS_LOOKUP = _R(r"\bindirizzo(?: di)? e-?mail\b|\b(?:qual è|dimmi|dammi|trovami|mi serve|cerca)\b[^.?!]{0,15}"
+                     r"\b(?:l'|la )e-?mail (?:di|del|della)\s+[A-Za-zÀ-ÿ']")
 _SOFT = {"task_add", "task_done", "tasks", "contact", "drive", "note_add"}
 _EXPLICIT = _R(r"\b(?:agenda|calendario|gmail|e-?mail|mail|posta|google|keep|drive|rubrica|contatti|appuntament[oi]|impegni)\b")
 
@@ -78,7 +80,7 @@ class Ctx:
 
 def match(text: str) -> tuple[str, str] | None:
     for name, service, rx in COMMANDS:
-        if name == "mail" and re.search(r"\b(?:indirizzo )?e-?mail (?:di|del|della)\s+[A-Za-zÀ-ÿ']", text, re.I) \
+        if name == "mail" and _ADDRESS_LOOKUP.search(text) \
                 and not re.search(r"\b(?:ultime|nuove|non lette|ricevut[ea]|arrivat[ea])\b", text, re.I):
             continue
         if name == "task_done" and not re.search(r"\b(?:attività|task|lista|cose da fare)\b", text, re.I):
@@ -122,14 +124,24 @@ def _context(service: str, soft: bool) -> Ctx:
     return Ctx(profile, session, identity.alone(profile) or request_context.trusted())
 
 
-def _follow_up(text: str) -> tuple[str, str, str] | None:
+def _pending(text: str) -> tuple[dict, str] | None:
     if not FOLLOW_UP.search(text):
         return None
     profile = _who()
     window = 180 if YES_ONLY.search(text) else 900
     kind = notifier.recent(profile["slug"], window) if profile else None
-    if not kind:
+    return (profile, kind) if kind else None
+
+
+def recognizes(text: str) -> bool:
+    return match(text) is not None or _pending(text) is not None
+
+
+def _follow_up(text: str) -> tuple[str, str, str] | None:
+    found = _pending(text)
+    if not found:
         return None
+    profile, kind = found
     notifier.consume(profile["slug"])
     cmd, service = FOLLOW_SERVICE[kind]
     return cmd, service, "prossimi appuntamenti" if cmd == "calendar" else "leggimi l'ultima email" if cmd == "mail_read" else text

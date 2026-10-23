@@ -128,6 +128,10 @@ class Agent:
             decision = gate.tool(name)
             if not decision.allowed:
                 return gate.refusal(decision)
+            unasked = registry.unrequested(name)
+            if unasked:
+                steps.append({"tool": name, "args": {}, "result": f"ERRORE: {unasked}"})
+                continue
             if registry.needs_confirm(name, args) and not (auto and trusted):
                 problem = registry.precheck(name, args)
                 if problem:

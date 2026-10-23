@@ -21,7 +21,7 @@ def _list(value) -> list[str]:
 
 @tool("send_email", "invia un'email, con allegati facoltativi (percorsi di file; le cartelle vengono compresse in .zip)",
       {"to": "indirizzi separati da virgola", "subject": "oggetto", "body": "testo", "attachments": "elenco di percorsi"},
-      confirm=True)
+      confirm=True, intent=r"\b(?:invia\w*|inviar\w+|manda\w*|spedi\w+|inoltra\w*|rispondi\w*|rispondere|send)\b")
 async def send_email(to, subject: str, body: str, attachments=None) -> str:
     files = []
     for raw in _list(attachments):
