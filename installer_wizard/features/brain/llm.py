@@ -8,6 +8,7 @@ import httpx
 from config import ollama_url
 from tasks import background
 
+from features.brain import scope
 from features.brain.assignments import load_synaptic_weights, save_synaptic_weights
 from features.brain.brains import brains
 from features.brain.trace import trace
@@ -88,7 +89,7 @@ async def generate(prompt: str, *, as_json: bool = False, max_tokens: int = 500,
     free_models = await configured_refs(pool)
     free_matrix_active = free_models is not None
     if free_matrix_active:
-        local_models = [model for model in models if not is_cloud(model)]
+        local_models = [model for model in models if scope.origin(model) != scope.CLOUD]
         models = list(dict.fromkeys([*free_models, *local_models]))
     call = trace.begin(component or kind, "richiesta di ragionamento" if kind == "deep" else "richiesta veloce", models)
     for model in models:

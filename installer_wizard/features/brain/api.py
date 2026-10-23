@@ -15,6 +15,7 @@ from features.brain import assignments_api, bridge, cervello_state, chains_api
 from features.brain.free_router.api import admin_routes as free_matrix_routes
 from features.brain.decision_lab.api import admin_routes as decision_lab_routes, public_routes as decision_lab_public_routes
 from features.brain.brains import brains
+from features.brain.configuration import bound_selection
 from features.brain.residency import rebalance
 from features.brain.roles import ROLES
 import licensing
@@ -256,27 +257,12 @@ async def batch_save_brain_assignments(request: Request):
 async def single_save_brain_assignment(request: Request):
     body = await request.json()
     target_id = str(body.get("targetId", "")).strip()
-    assigned_model = str(body.get("assignedModel", "")).strip()
-    base_url = str(body.get("baseUrl", "")).strip()
-    method = str(body.get("method", "")).strip()
-    if method in ("api_key", "cloud"):
-        from features.cloud.catalog import make_ref, parse_ref, is_cloud
-        pid = str(body.get("providerId") or body.get("serverId") or "")
-        pid = {"google": "gemini"}.get(pid, pid)
-        assigned_model = assigned_model if is_cloud(assigned_model) else make_ref(pid, assigned_model)
-        try:
-            parse_ref(assigned_model)
-        except ValueError as exc:
-            raise HTTPException(400, str(exc))
+    try:
+        assigned_model, base_url = bound_selection(body)
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
 
     updates = {}
-    if base_url and method == "ollama_remote":
-        base_url = base_url.rstrip("/")
-        if not base_url.startswith(("http://", "https://")):
-            base_url = f"http://{base_url}"
-        if not re.search(r":\d+$", base_url.split("//", 1)[1]):
-            base_url = f"{base_url}:11434"
-        updates["NUXIVA_OLLAMA_URL"] = base_url
 
     if assigned_model:
         if target_id in ("conversation", "jarvis_page80", "core_brain"):
@@ -299,14 +285,11 @@ async def single_save_brain_assignment(request: Request):
             pass
         brains.invalidate()
 
-    if method in ("ollama_remote", "cloud") or (base_url and "127.0.0.1" not in base_url and "localhost" not in base_url):
-        await unload_local_ollama_vram()
-
     return {
         "status": "ok",
         "targetId": target_id,
         "assignedModel": assigned_model,
-        "applied_url": updates.get("NUXIVA_OLLAMA_URL", ollama_url()),
+        "applied_url": base_url or ollama_url(),
     }
 
 

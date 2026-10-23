@@ -50,6 +50,12 @@ I dati creati stanno nella cartella di stato (`tools/`, `widgets/`, `features/`)
 
 ## Limiti noti
 
+Le assegnazioni dei ruoli LLM in Cervello conservano il modello insieme al server Ollama scelto nel
+vault esistente: conversazione locale e ragionamento remoto possono convivere senza cambiare
+`NUXIVA_OLLAMA_URL` o scaricare i modelli locali degli altri ruoli. I vecchi nomi di modello senza
+riferimento al server usano ancora l'indirizzo globale. **Sincronizza tutti i moduli** sostituisce
+esplicitamente le assegnazioni con il default globale.
+
 - L'MCP è su HTTP nella rete locale: per l'uso fuori casa serve un canale cifrato (VPN o proxy HTTPS).
 - Un token con accesso completo equivale a un amministratore: crealo solo per client fidati e revocalo quando non serve.
 - Niente è stato provato su dispositivi reali.
