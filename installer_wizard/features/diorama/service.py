@@ -5,7 +5,7 @@ import time
 from features.brain.llm import BrainUnavailable
 from tasks import background
 
-from features.diorama import planner, spec as S, store, templates
+from features.diorama import planner, recall, spec as S, store, templates
 
 log = logging.getLogger("nuxiva.diorama")
 CHUNK = 5
@@ -26,6 +26,9 @@ def create(prompt: str, ambient: bool = False) -> dict:
     clean = S.clean_text(prompt, 600)
     if len(clean) < 3:
         raise S.SpecError("prompt_short")
+    known = recall.find(clean)
+    if known:
+        return store.load(known)
     if not ambient and store.count() >= store.MAX_DIORAMAS:
         raise S.SpecError("library_full")
     did = S.new_id()

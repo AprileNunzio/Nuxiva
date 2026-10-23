@@ -87,6 +87,13 @@ class WizardTest(unittest.TestCase):
         self.assertEqual(out["NUXIVA_VOICE"], "if_sara")
         self.assertEqual(out["NUXIVA_COMMERCIAL"], "0")
 
+    def test_male_voice_choice_is_honoured(self):
+        male = setup_api._clean({"lang": "it", "assistant_gender": "male"})
+        self.assertEqual(male["NUXIVA_VOICE"], "im_nicola")
+        self.assertEqual(male["NUXIVA_VOICE_ORDER"], "im_nicola")
+        explicit = setup_api._clean({"voice": "if_sara", "assistant_gender": "male"})
+        self.assertEqual(explicit["NUXIVA_VOICE"], "if_sara")
+
     def test_brain_choices(self):
         local = setup_api._clean({"brain": "local", "profile": "bilanciato"})
         self.assertEqual((local["NUXIVA_BRAIN"], local["NUXIVA_LLM_MODEL"]), ("local", "granite3.3:8b"))

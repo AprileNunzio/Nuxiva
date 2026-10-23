@@ -102,7 +102,7 @@ step_apply() {
     code_mark voice "$CODE"
 
     if [ ! -f "$MIGRATION" ]; then
-        set_env NUXIVA_VOICE if_sara
+        [ -n "${NUXIVA_VOICE:-}" ] || set_env NUXIVA_VOICE if_sara
         touch "$MIGRATION"
     fi
     info "Voce neurale: ${NUXIVA_VOICE:-if_sara} (riserva: $FALLBACK)"

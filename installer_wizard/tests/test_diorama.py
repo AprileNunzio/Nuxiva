@@ -326,3 +326,11 @@ class LearningTest(Sandbox):
         self.assertEqual(client.delete("/api/diorama/learned/x_fontana").status_code, 200)
         self.assertEqual(client.delete("/api/diorama/learned/x_fontana").status_code, 404)
         self.assertEqual(client.delete("/api/diorama/learned/X_bad").status_code, 404)
+
+
+class RecallTests(unittest.TestCase):
+    def test_similar_prompts_match_and_unrelated_do_not(self):
+        from features.diorama import recall
+        a = recall.tokens("stazione giapponese sotto la neve con treno")
+        self.assertGreaterEqual(recall.score(a, recall.tokens("una stazione giapponese con il treno sotto la neve")), recall.THRESHOLD)
+        self.assertLess(recall.score(a, recall.tokens("giardino zen con laghetto")), recall.THRESHOLD)

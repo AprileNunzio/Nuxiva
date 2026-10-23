@@ -302,11 +302,12 @@
 /* Declarative OSAppLayout */
 .os-app-layout { display:grid; grid-template-columns:auto 1fr auto; height:100%; width:100%; min-height:100%; background:#f8fafc; overflow:hidden; }
 .os-app-sidebar { width:14rem; border-right:1px solid #e2e8f0; background:#fcfdff; overflow-y:auto; flex-shrink:0; }
-.os-app-workspace { flex:1; min-width:0; height:100%; overflow-y:auto; }
+.os-app-workspace { grid-column:2; min-width:0; height:100%; overflow-y:auto; }
 .os-app-inspector { width:20rem; border-left:1px solid #e2e8f0; background:#ffffff; overflow-y:auto; flex-shrink:0; box-shadow:-4px 0 16px rgba(15,23,42,0.03); }
 
 @container (max-width: 48rem) {
   .os-app-layout { grid-template-columns:1fr; }
+  .os-app-sidebar, .os-app-workspace, .os-app-inspector { grid-column:1; }
   .os-app-sidebar { width:100%; max-height:10rem; border-right:0; border-bottom:1px solid #e2e8f0; }
   .os-app-inspector { width:100%; border-left:0; border-top:1px solid #e2e8f0; box-shadow:none; }
 }

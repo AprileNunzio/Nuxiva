@@ -167,10 +167,13 @@ def _clean(raw: dict) -> dict:
     if not isinstance(picked, list) or any(p not in WIZARD_PACKAGES for p in picked):
         raise HTTPException(400, "Pacchetto non valido")
     out.update({WIZARD_PACKAGES[p]: "1" for p in picked})
-    voice = str(raw.get("voice") or "if_sara")
+    chosen_gender = str(raw.get("assistant_gender") or "").strip().lower()
+    by_gender = VOICES_BY_LANG_GENDER.get(lang, {}).get(chosen_gender, "")
+    voice = str(raw.get("voice") or by_gender or "if_sara")
     if voice not in VOICE_CHOICES:
         raise HTTPException(400, "Voce non disponibile")
     out["NUXIVA_VOICE"] = voice
+    out["NUXIVA_VOICE_ORDER"] = voice
     ha_url, ha_token = str(raw.get("ha_url") or "").strip(), str(raw.get("ha_token") or "").strip()
     if ha_url or ha_token:
         if not (HA_URL_RE.fullmatch(ha_url) and HA_TOKEN_RE.fullmatch(ha_token)):
@@ -322,6 +325,7 @@ async def setup_assistant(request: Request, _: None = Depends(require_setup)):
         "NUXIVA_ASSISTANT_NAME": name,
         "NUXIVA_ASSISTANT_GENDER": gender,
         "NUXIVA_VOICE": voice,
+        "NUXIVA_VOICE_ORDER": voice,
         "NUXIVA_UI_LANG": lang,
     }, "configurazione assistente")
 
