@@ -1,13 +1,17 @@
+import importlib
 import sys
 import types
 import unittest
 from unittest import mock
 
 from features.agent import registry
-from features.agent import tools_comm  # noqa: F401
 from features.chat import assistant
 from features.chat.claims import ConnectorClaims
 from features.google import commands as google
+
+def setUpModule():
+    importlib.import_module("features.agent.tools_comm")
+
 
 GOOGLE_PHRASES = {
     "scarica le bollette di Octopus dalla mail nella cartella bollette": "mail_download",
