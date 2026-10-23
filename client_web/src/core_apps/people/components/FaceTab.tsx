@@ -40,17 +40,17 @@ export const FaceTab: React.FC<FaceTabProps> = ({ slug, quality, busy, run }) =>
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-4">
         <div className="flex-1">
-          <p className="text-sm text-slate-200">{t('face_coverage', { done, total: PHOTO_KINDS.length })}</p>
-          <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-slate-800">
-            <div className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-emerald-400" style={{ width: `${(done / PHOTO_KINDS.length) * 100}%` }} />
+          <p className="text-sm text-slate-800">{t('face_coverage', { done, total: PHOTO_KINDS.length })}</p>
+          <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-slate-200">
+            <div className="h-full rounded-full bg-gradient-to-r from-blue-500 to-emerald-500" style={{ width: `${(done / PHOTO_KINDS.length) * 100}%` }} />
           </div>
           <p className="mt-1 text-[11px] text-slate-500">{t('face_quality', { quality: Math.round(quality) })}</p>
         </div>
-        <button type="button" disabled={busy !== null} onClick={() => void act('reproject', () => reproject(slug), 'people_reproject_failed')} className={`${chipClass} border-slate-700 py-2 text-slate-200`}>
+        <button type="button" disabled={busy !== null} onClick={() => void act('reproject', () => reproject(slug), 'people_reproject_failed')} className={`${chipClass} border-slate-300 py-2 text-slate-800`}>
           {busy === 'reproject' ? <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" /> : <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />}
           {t('recalibrate')}
         </button>
-        <button type="button" disabled={busy !== null} onClick={() => input.current?.click()} className={`${chipClass} border-cyan-400/50 bg-cyan-400/10 py-2 text-cyan-100`}>
+        <button type="button" disabled={busy !== null} onClick={() => input.current?.click()} className={`${chipClass} border-blue-300 bg-blue-50 py-2 text-blue-900`}>
           <Upload className="h-3.5 w-3.5" aria-hidden="true" />
           {t('upload_photo')}
         </button>
@@ -71,7 +71,7 @@ export const FaceTab: React.FC<FaceTabProps> = ({ slug, quality, busy, run }) =>
         />
       </div>
       <div>
-        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">{t('scan_title')}</p>
+        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">{t('scan_title')}</p>
         <p className="mb-3 text-xs text-slate-500">{t('scan_hint')}</p>
         <div className="grid grid-cols-3 gap-2 sm:grid-cols-5 xl:grid-cols-9">
           {PHOTO_KINDS.map((kind: PhotoKind) => {
@@ -82,8 +82,8 @@ export const FaceTab: React.FC<FaceTabProps> = ({ slug, quality, busy, run }) =>
                 type="button"
                 disabled={busy !== null}
                 onClick={() => void act(`capture:${kind}`, () => capturePhoto(slug, kind), 'people_capture_failed')}
-                className={`flex flex-col items-center gap-1 rounded-xl border p-2 text-center text-[11px] transition disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${
-                  count ? 'border-emerald-400/50 bg-emerald-400/10 text-emerald-100' : 'border-slate-700 bg-slate-950/40 text-slate-300 hover:border-cyan-400/50'
+                className={`flex flex-col items-center gap-1 rounded-xl border p-2 text-center text-[11px] transition disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
+                  count ? 'border-emerald-300 bg-emerald-50 text-emerald-800' : 'border-slate-300 bg-slate-50 text-slate-700 hover:border-blue-400'
                 }`}
               >
                 {busy === `capture:${kind}` ? <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" /> : <Camera className="h-5 w-5" aria-hidden="true" />}
@@ -95,21 +95,21 @@ export const FaceTab: React.FC<FaceTabProps> = ({ slug, quality, busy, run }) =>
         </div>
       </div>
       <div>
-        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">{t('gallery', { count: photos.length })}</p>
+        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">{t('gallery', { count: photos.length })}</p>
         {photos.length === 0 ? (
           <p className="text-sm text-slate-500">{t('gallery_empty')}</p>
         ) : (
           <ul className="grid grid-cols-3 gap-2 sm:grid-cols-4 xl:grid-cols-6 3xl:grid-cols-8 5xl:grid-cols-12">
             {photos.map((photo) => (
-              <li key={photo.id} className="group relative overflow-hidden rounded-xl border border-slate-800/80 bg-slate-950">
+              <li key={photo.id} className="group relative overflow-hidden rounded-xl border border-slate-200 bg-white">
                 <img src={photo.url} alt={t(`view_${photo.kind}`)} loading="lazy" className="aspect-square w-full object-cover" />
-                <span className="absolute left-1 top-1 rounded bg-black/60 px-1.5 py-0.5 text-[10px] text-white">{photo.primary ? t('primary') : t(`view_${photo.kind}`)}</span>
+                <span className="absolute left-1 top-1 rounded bg-black/60 px-1.5 py-0.5 text-[10px] text-slate-900">{photo.primary ? t('primary') : t(`view_${photo.kind}`)}</span>
                 <button
                   type="button"
                   disabled={busy !== null}
                   aria-label={t('delete_photo')}
                   onClick={() => void act(`photo:${photo.id}`, () => deletePhoto(slug, photo.id), 'people_photo_delete_failed')}
-                  className="absolute right-1 top-1 flex min-h-10 min-w-10 items-center justify-center rounded-lg bg-black/75 p-2 text-slate-200 transition hover:text-rose-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
+                  className="absolute right-1 top-1 flex min-h-10 min-w-10 items-center justify-center rounded-lg bg-black/75 p-2 text-slate-800 transition hover:text-rose-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
                 >
                   <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                 </button>

@@ -11,9 +11,9 @@ interface RemindersTabProps {
 const RANGES = [30, 90, 365] as const;
 
 const iconOf = (type: string) => {
-  if (type === 'compleanno') return <Cake className="h-4 w-4 text-pink-300" aria-hidden="true" />;
-  if (type === 'onomastico') return <Gift className="h-4 w-4 text-amber-300" aria-hidden="true" />;
-  return <CalendarDays className="h-4 w-4 text-cyan-300" aria-hidden="true" />;
+  if (type === 'compleanno') return <Cake className="h-4 w-4 text-pink-700" aria-hidden="true" />;
+  if (type === 'onomastico') return <Gift className="h-4 w-4 text-amber-700" aria-hidden="true" />;
+  return <CalendarDays className="h-4 w-4 text-blue-700" aria-hidden="true" />;
 };
 
 export const RemindersTab: React.FC<RemindersTabProps> = ({ onOpen }) => {
@@ -34,10 +34,10 @@ export const RemindersTab: React.FC<RemindersTabProps> = ({ onOpen }) => {
     <section className={panelClass} aria-label={t('reminders_title')}>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-lg font-bold text-white">{t('reminders_title')}</h2>
-          <p className="text-xs text-slate-400">{t('reminders_hint')}</p>
+          <h2 className="text-lg font-bold text-slate-900">{t('reminders_title')}</h2>
+          <p className="text-xs text-slate-600">{t('reminders_hint')}</p>
         </div>
-        <div role="tablist" aria-label={t('reminders_range')} className="flex gap-1 rounded-xl border border-slate-800/80 bg-slate-950/60 p-1">
+        <div role="tablist" aria-label={t('reminders_range')} className="flex gap-1 rounded-xl border border-slate-200 bg-slate-50 p-1">
           {RANGES.map((days) => (
             <button
               key={days}
@@ -45,7 +45,7 @@ export const RemindersTab: React.FC<RemindersTabProps> = ({ onOpen }) => {
               role="tab"
               aria-selected={range === days}
               onClick={() => setRange(days)}
-              className={`rounded-lg px-3 py-1 text-xs font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${range === days ? 'bg-cyan-400/15 text-cyan-100' : 'text-slate-400 hover:text-white'}`}
+              className={`rounded-lg px-3 py-1 text-xs font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${range === days ? 'bg-blue-100 text-blue-900' : 'text-slate-600 hover:text-slate-900'}`}
             >
               {t('reminders_days', { n: days })}
             </button>
@@ -61,14 +61,14 @@ export const RemindersTab: React.FC<RemindersTabProps> = ({ onOpen }) => {
               <button
                 type="button"
                 onClick={() => onOpen(reminder.slug)}
-                className="flex w-full items-center gap-3 rounded-xl border border-slate-800/80 bg-slate-950/40 px-3 py-2 text-left transition hover:border-cyan-400/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+                className="flex w-full items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-left transition hover:border-blue-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               >
                 {iconOf(reminder.type)}
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate text-sm font-semibold text-slate-100">{reminder.title}</span>
+                  <span className="block truncate text-sm font-semibold text-slate-900">{reminder.title}</span>
                   <span className="block text-[11px] text-slate-500">{format(reminder.date)}</span>
                 </span>
-                <span className={`shrink-0 rounded-full border px-2 py-0.5 text-[11px] ${reminder.days <= 7 ? 'border-amber-400/50 text-amber-200' : 'border-slate-700 text-slate-400'}`}>
+                <span className={`shrink-0 rounded-full border px-2 py-0.5 text-[11px] ${reminder.days <= 7 ? 'border-amber-300 text-amber-800' : 'border-slate-300 text-slate-600'}`}>
                   {reminder.days === 0 ? t('reminders_today') : t('reminders_in', { n: reminder.days })}
                 </span>
               </button>

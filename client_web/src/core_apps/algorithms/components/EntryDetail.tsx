@@ -69,7 +69,7 @@ export const EntryDetail: React.FC<EntryDetailProps> = ({ entry, t, onChanged, o
     <aside className={`${panelClass} flex flex-col gap-4`} aria-label={entry.name}>
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <h2 className="break-words text-base font-bold text-white">{entry.name}</h2>
+          <h2 className="break-words text-base font-bold text-slate-900">{entry.name}</h2>
           <div className="mt-1 flex flex-wrap gap-1.5">
             <Pill tone="purple">{t(`kind_${entry.kind}`)}</Pill>
             <Pill>{entry.group}</Pill>
@@ -78,25 +78,25 @@ export const EntryDetail: React.FC<EntryDetailProps> = ({ entry, t, onChanged, o
         </div>
         {entry.manageable ? <Toggle checked={entry.enabled} disabled={busy} label={t('enabled')} onChange={(value) => void run(() => setEnabled(entry.ref, value), 'algorithms_toggle_failed')} /> : <Pill tone={entry.enabled ? 'emerald' : 'slate'}>{entry.enabled ? t('on') : t('off')}</Pill>}
       </header>
-      <p className="text-sm text-slate-300">{entry.description || t('no_description')}</p>
+      <p className="text-sm text-slate-700">{entry.description || t('no_description')}</p>
 
       {entry.kind === 'tool' ? (
-        <dl className="grid gap-2 text-xs text-slate-400">
-          <div><dt className="font-semibold text-slate-300">{t('tool_arguments')}</dt><dd>{entry.arguments?.length ? entry.arguments.join(', ') : '—'}</dd></div>
-          <div><dt className="font-semibold text-slate-300">{t('tool_confirm')}</dt><dd>{entry.confirm ? t('yes') : t('no')}</dd></div>
+        <dl className="grid gap-2 text-xs text-slate-600">
+          <div><dt className="font-semibold text-slate-700">{t('tool_arguments')}</dt><dd>{entry.arguments?.length ? entry.arguments.join(', ') : '—'}</dd></div>
+          <div><dt className="font-semibold text-slate-700">{t('tool_confirm')}</dt><dd>{entry.confirm ? t('yes') : t('no')}</dd></div>
         </dl>
       ) : null}
-      {entry.kind === 'connector' ? <p className="text-xs text-slate-400">{entry.declares_requests ? t('connector_declares') : t('connector_legacy')}</p> : null}
+      {entry.kind === 'connector' ? <p className="text-xs text-slate-600">{entry.declares_requests ? t('connector_declares') : t('connector_legacy')}</p> : null}
 
       {isSkill ? (
         <>
           <p className="text-xs text-slate-500">{t('usage', { uses: entry.uses ?? 0, fails: entry.fails ?? 0 })}</p>
           {entry.patterns?.length ? (
             <div>
-              <h3 className="mb-1 text-xs font-semibold text-slate-300">{t('patterns')}</h3>
+              <h3 className="mb-1 text-xs font-semibold text-slate-700">{t('patterns')}</h3>
               <ul className="flex flex-col gap-1">
                 {entry.patterns.map((pattern) => (
-                  <li key={pattern}><code className="break-all rounded bg-slate-950 px-2 py-0.5 text-[11px] text-cyan-200">{pattern}</code></li>
+                  <li key={pattern}><code className="break-all rounded bg-white px-2 py-0.5 text-[11px] text-blue-800">{pattern}</code></li>
                 ))}
               </ul>
             </div>
@@ -109,13 +109,13 @@ export const EntryDetail: React.FC<EntryDetailProps> = ({ entry, t, onChanged, o
             </Btn>
           </div>
           {outcome ? (
-            <p className={`text-xs ${outcome.ok ? 'text-emerald-300' : 'text-rose-300'}`}>
+            <p className={`text-xs ${outcome.ok ? 'text-emerald-700' : 'text-rose-700'}`}>
               {outcome.ok ? outcome.speech ?? String(outcome.result ?? '') : outcome.error} · {outcome.total_ms} ms · {outcome.matches ? t('matches') : t('no_match')}
             </p>
           ) : null}
           {code !== null ? (
             <div className="flex flex-col gap-2">
-              <h3 className="text-xs font-semibold text-slate-300">{t('code')}</h3>
+              <h3 className="text-xs font-semibold text-slate-700">{t('code')}</h3>
               <textarea
                 className={`${inputClass} h-64 font-mono text-xs`}
                 spellCheck={false}
@@ -124,7 +124,7 @@ export const EntryDetail: React.FC<EntryDetailProps> = ({ entry, t, onChanged, o
                 aria-label={t('code')}
                 onChange={(event) => setDraft(event.target.value)}
               />
-              {problem ? <p role="alert" className="text-xs text-rose-300">{problem}</p> : null}
+              {problem ? <p role="alert" className="text-xs text-rose-700">{problem}</p> : null}
               {entry.editable ? (
                 <div className="flex flex-wrap gap-2">
                   <Btn tone="emerald" busy={busy} disabled={draft === code} onClick={() => void saveCode()}>

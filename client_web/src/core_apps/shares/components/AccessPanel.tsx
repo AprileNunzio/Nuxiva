@@ -17,10 +17,10 @@ const Line: React.FC<{ readonly label: string; readonly value: string; readonly 
     void navigator.clipboard?.writeText(value).catch(() => undefined);
   };
   return (
-    <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-800 bg-slate-950/60 px-3 py-2">
+    <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-800 bg-slate-50 px-3 py-2">
       <div className="min-w-0">
         <span className="block text-[10px] font-semibold uppercase tracking-wider text-slate-500">{label}</span>
-        <code className="break-all text-sm text-cyan-200">{secret && !shown ? '••••••••••••' : value || '—'}</code>
+        <code className="break-all text-sm text-blue-800">{secret && !shown ? '••••••••••••' : value || '—'}</code>
       </div>
       <div className="flex gap-1.5">
         {secret ? (
@@ -42,7 +42,7 @@ export const AccessPanel: React.FC<AccessPanelProps> = ({ data, t, onChanged }) 
   return (
     <Panel
       title={t('access_title')}
-      icon={<Network className="h-4 w-4 text-cyan-300" aria-hidden="true" />}
+      icon={<Network className="h-4 w-4 text-blue-700" aria-hidden="true" />}
       actions={<Pill tone={online ? 'emerald' : 'rose'}>{online ? t('service_on') : t('service_off')}</Pill>}
     >
       <div className="grid gap-2 lg:grid-cols-2">

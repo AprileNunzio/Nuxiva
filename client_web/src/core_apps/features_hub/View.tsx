@@ -20,6 +20,8 @@ export function View() {
   const findApp = (id: string) =>
     appRegistry.find((app) => (app.id === id || app.featureIds?.includes(id)) && app.target !== 'node');
 
+  const isFolded = (id: string) => appRegistry.some((app) => app.id !== id && app.featureIds?.includes(id));
+
   const isExcludedFromHub = (id: string) => isApplication({ id }) || id === 'applications';
 
   if (!data && viewMode === 'catalog') {
@@ -97,7 +99,7 @@ export function View() {
               ])
             )}
             items={data.features
-              .filter((f) => !isExcludedFromHub(f.id) && !findApp(f.id) && (f.surface ?? 'hub') === 'hub')
+              .filter((f) => !isExcludedFromHub(f.id) && !isFolded(f.id) && (f.surface ?? 'hub') === 'hub')
               .map((feature) => ({
                 id: feature.id,
                 label: feature.name,

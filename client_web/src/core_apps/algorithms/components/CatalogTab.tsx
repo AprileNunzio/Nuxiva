@@ -11,9 +11,9 @@ interface CatalogTabProps {
 }
 
 const ICONS: Record<EntryKind, React.ReactNode> = {
-  skill: <Binary className="h-4 w-4 text-purple-300" aria-hidden="true" />,
-  tool: <Wrench className="h-4 w-4 text-amber-300" aria-hidden="true" />,
-  connector: <Cable className="h-4 w-4 text-cyan-300" aria-hidden="true" />
+  skill: <Binary className="h-4 w-4 text-purple-700" aria-hidden="true" />,
+  tool: <Wrench className="h-4 w-4 text-amber-700" aria-hidden="true" />,
+  connector: <Cable className="h-4 w-4 text-blue-700" aria-hidden="true" />
 };
 
 export const CatalogTab: React.FC<CatalogTabProps> = ({ catalog, t, onChanged }) => {
@@ -59,17 +59,17 @@ export const CatalogTab: React.FC<CatalogTabProps> = ({ catalog, t, onChanged })
                   type="button"
                   onClick={() => setSelected(entry.key)}
                   aria-pressed={entry.key === selected}
-                  className={`flex w-full items-start gap-3 rounded-xl border px-3 py-2 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${entry.key === selected ? 'border-cyan-500/60 bg-cyan-500/10' : 'border-slate-800 bg-slate-900/60 hover:border-slate-600'}`}
+                  className={`flex w-full items-start gap-3 rounded-xl border px-3 py-2 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${entry.key === selected ? 'border-cyan-500/60 bg-cyan-500/10' : 'border-slate-800 bg-slate-900/60 hover:border-slate-400'}`}
                 >
                   <span className="mt-0.5 shrink-0">{ICONS[entry.kind]}</span>
                   <span className="min-w-0 flex-1">
                     <span className="flex flex-wrap items-center gap-2">
-                      <b className="break-all text-sm text-slate-100">{entry.name}</b>
+                      <b className="break-all text-sm text-slate-900">{entry.name}</b>
                       <Pill>{entry.group}</Pill>
                       {entry.source !== 'system' ? <Pill tone="cyan">{t(`source_${entry.source}`)}</Pill> : null}
                       {!entry.enabled ? <Pill tone="rose">{t('off')}</Pill> : null}
                     </span>
-                    <span className="mt-0.5 block truncate text-xs text-slate-400">{entry.description}</span>
+                    <span className="mt-0.5 block truncate text-xs text-slate-600">{entry.description}</span>
                   </span>
                 </button>
               </li>

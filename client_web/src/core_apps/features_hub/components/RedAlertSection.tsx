@@ -43,11 +43,11 @@ export const RedAlertSection: React.FC<RedAlertSectionProps> = ({ feature, t, on
     <div className="flex flex-col gap-4">
       <Panel
         title={t('redalert_title')}
-        icon={<Siren className="h-4 w-4 text-rose-300" aria-hidden="true" />}
+        icon={<Siren className="h-4 w-4 text-rose-700" aria-hidden="true" />}
         actions={<Pill tone={active ? 'rose' : feature.state.enabled ? 'emerald' : 'slate'}>{active ? t('redalert_active') : feature.state.enabled ? t('on') : t('off')}</Pill>}
       >
-        <p className="mb-4 text-sm text-slate-400">{t('redalert_intro')}</p>
-        {active && status.data?.message ? <p className="mb-3 rounded-xl border border-rose-500/40 bg-rose-500/10 px-3 py-2 text-sm text-rose-200">{status.data.message}</p> : null}
+        <p className="mb-4 text-sm text-slate-600">{t('redalert_intro')}</p>
+        {active && status.data?.message ? <p className="mb-3 rounded-xl border border-rose-500/40 bg-rose-500/10 px-3 py-2 text-sm text-rose-800">{status.data.message}</p> : null}
         <div className="flex flex-wrap items-center gap-2">
           <Btn tone="amber" busy={busy} disabled={!feature.state.enabled || active} onClick={() => void run(testRedAlert, 'redalert_test_failed')}>
             <Play className="h-3.5 w-3.5" aria-hidden="true" />
@@ -60,7 +60,7 @@ export const RedAlertSection: React.FC<RedAlertSectionProps> = ({ feature, t, on
         </div>
       </Panel>
 
-      <Panel title={t('redalert_behaviour')} icon={<Megaphone className="h-4 w-4 text-amber-300" aria-hidden="true" />}>
+      <Panel title={t('redalert_behaviour')} icon={<Megaphone className="h-4 w-4 text-amber-700" aria-hidden="true" />}>
         <div className="grid gap-4 lg:grid-cols-2">
           <Field label={t('mode')}>
             <select className={inputClass} disabled={busy} value={feature.state.mode} onChange={(event) => void run(() => setMode(feature.id, event.target.value), 'features_mode_failed')}>
@@ -87,7 +87,7 @@ export const RedAlertSection: React.FC<RedAlertSectionProps> = ({ feature, t, on
               ))}
             </select>
           </Field>
-          <div className="flex flex-col gap-3 text-xs font-semibold text-slate-300">
+          <div className="flex flex-col gap-3 text-xs font-semibold text-slate-700">
             <div className="flex items-center justify-between gap-3">
               <span>{t('redalert_lights')}</span>
               <Toggle checked={value('NUXIVA_REDALERT_LIGHTS', '1') !== '0'} disabled={busy} label={t('redalert_lights')} onChange={(next) => save({ NUXIVA_REDALERT_LIGHTS: next ? '1' : '0' })} />
@@ -101,7 +101,7 @@ export const RedAlertSection: React.FC<RedAlertSectionProps> = ({ feature, t, on
       </Panel>
 
       <Panel title={t('redalert_excluded_title')} icon={<Lightbulb className="h-4 w-4 text-yellow-300" aria-hidden="true" />}>
-        <p className="mb-3 text-xs text-slate-400">{t('redalert_excluded_hint')}</p>
+        <p className="mb-3 text-xs text-slate-600">{t('redalert_excluded_hint')}</p>
         {!lights.data || lights.data.lights.length === 0 ? (
           <Empty>{t('redalert_no_lights')}</Empty>
         ) : (
@@ -115,7 +115,7 @@ export const RedAlertSection: React.FC<RedAlertSectionProps> = ({ feature, t, on
                     aria-pressed={skipped}
                     disabled={busy}
                     onClick={() => toggleLight(light.id)}
-                    className={`rounded-xl border px-3 py-1.5 text-xs font-semibold transition disabled:opacity-50 ${skipped ? 'border-slate-600 bg-slate-800 text-slate-400 line-through' : 'border-rose-500/40 bg-rose-500/10 text-rose-200'}`}
+                    className={`rounded-xl border px-3 py-1.5 text-xs font-semibold transition disabled:opacity-50 ${skipped ? 'border-slate-300 bg-slate-200 text-slate-600 line-through' : 'border-rose-500/40 bg-rose-500/10 text-rose-800'}`}
                   >
                     {light.name}
                   </button>

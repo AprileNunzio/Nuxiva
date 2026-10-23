@@ -48,9 +48,9 @@ export const MoodTab: React.FC<Props> = ({ slug, busy, run }) => {
 
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-xs text-slate-400">{t('mood_hint')}</p>
+      <p className="text-xs text-slate-600">{t('mood_hint')}</p>
       {recent.length > 0 && (
-        <div className="flex h-24 items-end gap-1 rounded-xl border border-slate-800/80 bg-slate-950/40 p-3" role="img" aria-label={t('mood_timeline')}>
+        <div className="flex h-24 items-end gap-1 rounded-xl border border-slate-200 bg-slate-50 p-3" role="img" aria-label={t('mood_timeline')}>
           {recent.map((e) => (
             <span key={e.id} className={`w-full max-w-[18px] flex-1 rounded-t opacity-90 ${TONE[e.mood] ?? 'bg-slate-500'}`} style={{ height: `${e.intensity * 20}%` }} title={`${format.format(new Date(e.at * 1000))} · ${t(`mood_${e.mood}`)}`} />
           ))}
@@ -65,13 +65,13 @@ export const MoodTab: React.FC<Props> = ({ slug, busy, run }) => {
             </option>
           ))}
         </select>
-        <label className="flex min-w-0 items-center gap-2 text-xs text-slate-400">
+        <label className="flex min-w-0 items-center gap-2 text-xs text-slate-600">
           {t('intensity')}
           <input type="range" min={1} max={5} value={intensity} onChange={(event) => setIntensity(Number(event.target.value))} className="min-w-0 flex-1 accent-cyan-400" />
-          <span className="font-mono text-white">{intensity}</span>
+          <span className="font-mono text-slate-900">{intensity}</span>
         </label>
         <input maxLength={300} value={note} onChange={(event) => setNote(event.target.value)} placeholder={t('mood_note')} aria-label={t('mood_note')} className={fieldClass} />
-        <button type="submit" disabled={!mood || busy !== null} className={`${chipClass} justify-center border-cyan-400/50 bg-cyan-400/10 py-2 text-cyan-100`}>
+        <button type="submit" disabled={!mood || busy !== null} className={`${chipClass} justify-center border-blue-300 bg-blue-50 py-2 text-blue-900`}>
           <Plus className="h-4 w-4" aria-hidden="true" />
           {t('add_mood')}
         </button>
@@ -79,13 +79,13 @@ export const MoodTab: React.FC<Props> = ({ slug, busy, run }) => {
       {journal !== null && journal.length === 0 && <p className="text-sm text-slate-500">{t('mood_empty')}</p>}
       <ul className="grid gap-2 xl:grid-cols-2 4xl:grid-cols-3">
         {(journal ?? []).map((e) => (
-          <li key={e.id} className="flex items-start gap-3 rounded-xl border border-slate-800/80 bg-slate-950/40 px-3 py-2">
+          <li key={e.id} className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
             <span className={`mt-1 h-3 w-3 shrink-0 rounded-full ${TONE[e.mood] ?? 'bg-slate-500'}`} aria-hidden="true" />
             <div className="min-w-0 flex-1">
-              <p className="text-sm text-slate-100">
-                {t(`mood_${e.mood}`)} <span className="font-mono text-xs text-slate-400">{e.intensity}/5</span>
+              <p className="text-sm text-slate-900">
+                {t(`mood_${e.mood}`)} <span className="font-mono text-xs text-slate-600">{e.intensity}/5</span>
               </p>
-              {e.note && <p className="text-xs text-slate-300">{e.note}</p>}
+              {e.note && <p className="text-xs text-slate-700">{e.note}</p>}
               <p className="text-[10px] text-slate-500">{[format.format(new Date(e.at * 1000)), t(`source_${e.source}`)].join(' · ')}</p>
             </div>
             <button
@@ -93,7 +93,7 @@ export const MoodTab: React.FC<Props> = ({ slug, busy, run }) => {
               disabled={busy !== null}
               aria-label={t('delete_mood')}
               onClick={() => void run(`mood:${e.id}`, () => deleteMood(slug, e.id), 'people_mood_failed').then((ok) => ok && setTick((v) => v + 1))}
-              className="rounded-lg p-1 text-slate-500 hover:text-rose-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
+              className="rounded-lg p-1 text-slate-500 hover:text-rose-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
             >
               <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
             </button>

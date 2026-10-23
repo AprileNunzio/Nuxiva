@@ -43,8 +43,8 @@ export const View: React.FC = () => {
         <FoldersPanel folders={data.folders} root={data.root} t={t} />
       </div>
       {feature ? (
-        <Panel title={t('settings_title')} icon={<ShieldCheck className="h-4 w-4 text-emerald-300" aria-hidden="true" />}>
-          <p className="mb-4 text-xs text-slate-400">{t('settings_hint')}</p>
+        <Panel title={t('settings_title')} icon={<ShieldCheck className="h-4 w-4 text-emerald-700" aria-hidden="true" />}>
+          <p className="mb-4 text-xs text-slate-600">{t('settings_hint')}</p>
           <SettingsEditor key={feature.id} feature={feature} busy={busy} t={t} run={run} />
         </Panel>
       ) : null}

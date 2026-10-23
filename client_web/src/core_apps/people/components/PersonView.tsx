@@ -71,7 +71,7 @@ export const PersonView: React.FC<PersonViewProps> = ({ summary, sections, voice
 
   if (!profile) {
     return (
-      <section className={`${panelClass} flex items-center gap-2 text-sm text-slate-400`}>
+      <section className={`${panelClass} flex items-center gap-2 text-sm text-slate-600`}>
         <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
         {t('loading')}
       </section>
@@ -84,38 +84,38 @@ export const PersonView: React.FC<PersonViewProps> = ({ summary, sections, voice
   return (
     <section className={panelClass} aria-labelledby="person-title">
       <header className="flex flex-wrap items-start gap-4">
-        <span className="relative flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-cyan-400/40 bg-slate-900 text-2xl font-bold text-cyan-100">
+        <span className="relative flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-blue-300 bg-slate-100 text-2xl font-bold text-blue-900">
           {initials(summary.name)}
           {summary.quality > 0 && <img src={adminPath(photo)} alt="" className="absolute inset-0 h-full w-full object-cover" onError={(event) => event.currentTarget.remove()} />}
         </span>
         <div className="min-w-0 flex-1">
-          <h2 id="person-title" className="font-['Rajdhani'] text-2xl font-bold text-white sm:text-3xl">
+          <h2 id="person-title" className="font-['Rajdhani'] text-2xl font-bold text-slate-900 sm:text-3xl">
             {summary.scanned ? t('unknown_face') : summary.name}
           </h2>
           <p className="mt-1 flex flex-wrap gap-1.5 text-xs">
-            <span className="rounded-full border border-cyan-400/40 px-2 py-0.5 text-cyan-200">{roles[summary.role] ?? summary.role}</span>
-            {summary.membership && <span className="rounded-full border border-indigo-400/40 px-2 py-0.5 text-indigo-200">{t(`membership_${summary.membership}`)}</span>}
-            <span className={`rounded-full border px-2 py-0.5 ${present ? 'border-emerald-400/50 text-emerald-200' : 'border-slate-700 text-slate-400'}`}>
+            <span className="rounded-full border border-blue-300 px-2 py-0.5 text-blue-800">{roles[summary.role] ?? summary.role}</span>
+            {summary.membership && <span className="rounded-full border border-indigo-300 px-2 py-0.5 text-indigo-700">{t(`membership_${summary.membership}`)}</span>}
+            <span className={`rounded-full border px-2 py-0.5 ${present ? 'border-emerald-300 text-emerald-800' : 'border-slate-300 text-slate-600'}`}>
               {present ? t('present_now') : summary.lastSeen ? t('seen', { when: relative(summary.lastSeen, lang) }) : t('never_seen')}
             </span>
-            <span className={`rounded-full border px-2 py-0.5 ${summary.quality > 0 ? 'border-emerald-400/40 text-emerald-200' : 'border-slate-700 text-slate-400'}`}>{t('face_badge', { quality: Math.round(summary.quality) })}</span>
-            <span className={`rounded-full border px-2 py-0.5 ${print.enrolled ? 'border-emerald-400/40 text-emerald-200' : 'border-slate-700 text-slate-400'}`}>{t(print.enrolled ? 'voice_badge_on' : 'voice_badge_off')}</span>
+            <span className={`rounded-full border px-2 py-0.5 ${summary.quality > 0 ? 'border-emerald-300 text-emerald-800' : 'border-slate-300 text-slate-600'}`}>{t('face_badge', { quality: Math.round(summary.quality) })}</span>
+            <span className={`rounded-full border px-2 py-0.5 ${print.enrolled ? 'border-emerald-300 text-emerald-800' : 'border-slate-300 text-slate-600'}`}>{t(print.enrolled ? 'voice_badge_on' : 'voice_badge_off')}</span>
           </p>
         </div>
-        <button type="button" disabled={busy !== null} onClick={() => setConfirm(true)} className={`${chipClass} border-rose-400/40 py-2 text-rose-200`}>
+        <button type="button" disabled={busy !== null} onClick={() => setConfirm(true)} className={`${chipClass} border-rose-300 py-2 text-rose-800`}>
           <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
           {t('delete_person')}
         </button>
       </header>
       {summary.scanned && (
-        <div className="mt-4 grid gap-2 rounded-xl border border-amber-400/40 bg-amber-400/5 p-3 lg:grid-cols-2">
-          <p className="flex items-center gap-2 text-sm text-amber-100 lg:col-span-2">
+        <div className="mt-4 grid gap-2 rounded-xl border border-amber-300 bg-amber-50 p-3 lg:grid-cols-2">
+          <p className="flex items-center gap-2 text-sm text-amber-900 lg:col-span-2">
             <ScanFace className="h-4 w-4" aria-hidden="true" />
             {t('scanned_hint')}
           </p>
           <div className="flex gap-2">
             <input value={naming} maxLength={40} onChange={(event) => setNaming(event.target.value)} placeholder={t('give_name')} aria-label={t('give_name')} className={`${fieldClass} min-w-0 flex-1`} />
-            <button type="button" disabled={!naming.trim() || busy !== null} onClick={() => void act('name', () => updatePerson(summary.slug, { name: naming.trim() }), 'people_update_failed')} className={`${chipClass} border-cyan-400/50 bg-cyan-400/10 px-3 text-cyan-100`}>
+            <button type="button" disabled={!naming.trim() || busy !== null} onClick={() => void act('name', () => updatePerson(summary.slug, { name: naming.trim() }), 'people_update_failed')} className={`${chipClass} border-blue-300 bg-blue-50 px-3 text-blue-900`}>
               {t('save')}
             </button>
           </div>
@@ -128,13 +128,13 @@ export const PersonView: React.FC<PersonViewProps> = ({ summary, sections, voice
                 </option>
               ))}
             </select>
-            <button type="button" disabled={!target || busy !== null} onClick={() => void run('associate', () => associatePerson(summary.slug, target), 'people_associate_failed').then((ok) => ok && onDeleted())} className={`${chipClass} border-cyan-400/50 bg-cyan-400/10 px-3 text-cyan-100`}>
+            <button type="button" disabled={!target || busy !== null} onClick={() => void run('associate', () => associatePerson(summary.slug, target), 'people_associate_failed').then((ok) => ok && onDeleted())} className={`${chipClass} border-blue-300 bg-blue-50 px-3 text-blue-900`}>
               {t('associate')}
             </button>
           </div>
         </div>
       )}
-      <div role="tablist" aria-label={summary.name} className="mt-4 flex gap-1 overflow-x-auto rounded-xl border border-slate-800/80 bg-slate-950/60 p-1">
+      <div role="tablist" aria-label={summary.name} className="mt-4 flex gap-1 overflow-x-auto rounded-xl border border-slate-200 bg-slate-50 p-1">
         {TABS.map((id) => (
           <button
             key={id}
@@ -142,7 +142,7 @@ export const PersonView: React.FC<PersonViewProps> = ({ summary, sections, voice
             role="tab"
             aria-selected={tab === id}
             onClick={() => setTab(id)}
-            className={`shrink-0 rounded-lg px-3 py-1.5 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${tab === id ? 'bg-cyan-400/15 text-cyan-100' : 'text-slate-400 hover:text-white'}`}
+            className={`shrink-0 rounded-lg px-3 py-1.5 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${tab === id ? 'bg-blue-100 text-blue-900' : 'text-slate-600 hover:text-slate-900'}`}
           >
             {t(`tab_${id}`)}
           </button>
@@ -158,7 +158,7 @@ export const PersonView: React.FC<PersonViewProps> = ({ summary, sections, voice
                   type="button"
                   aria-current={current.id === s.id}
                   onClick={() => setSection(s.id)}
-                  className={`flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-left text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${current.id === s.id ? 'bg-cyan-400/15 text-cyan-100' : 'text-slate-400 hover:text-white'}`}
+                  className={`flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-left text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${current.id === s.id ? 'bg-blue-100 text-blue-900' : 'text-slate-600 hover:text-slate-900'}`}
                 >
                   <span aria-hidden="true">{s.icon}</span>
                   {localLabel(t, lang, `section_${s.id}`, s.title)}

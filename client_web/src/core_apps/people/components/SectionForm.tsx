@@ -34,10 +34,10 @@ export const SectionForm: React.FC<SectionFormProps> = ({ slug, title, isPrivate
       }}
       className="flex flex-col gap-3"
     >
-      <h3 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+      <h3 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">
         {title}
         {isPrivate && (
-          <span className="flex items-center gap-1 rounded-full border border-emerald-400/40 px-2 py-0.5 text-[10px] normal-case tracking-normal text-emerald-200">
+          <span className="flex items-center gap-1 rounded-full border border-emerald-300 px-2 py-0.5 text-[10px] normal-case tracking-normal text-emerald-800">
             <Lock className="h-3 w-3" aria-hidden="true" />
             {t('encrypted')}
           </span>
@@ -49,8 +49,8 @@ export const SectionForm: React.FC<SectionFormProps> = ({ slug, title, isPrivate
           const label = localLabel(t, lang, `field_${field.key}`, field.label);
           const wide = field.type === 'list' || field.type === 'textarea' || field.type === 'tags';
           return (
-            <div key={field.key} className={`flex flex-col gap-1.5 ${wide ? 'md:col-span-2 3xl:col-span-3' : ''} ${field.type === 'bool' ? 'flex-row items-center justify-between rounded-xl border border-slate-800/80 bg-slate-950/40 px-3 py-2' : ''}`}>
-              <label htmlFor={id} className="text-xs text-slate-400">
+            <div key={field.key} className={`flex flex-col gap-1.5 ${wide ? 'md:col-span-2 3xl:col-span-3' : ''} ${field.type === 'bool' ? 'flex-row items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-3 py-2' : ''}`}>
+              <label htmlFor={id} className="text-xs text-slate-600">
                 {label}
               </label>
               <FieldInput id={id} field={field} value={draft[field.key]} people={people} onChange={(value) => setDraft((current) => ({ ...current, [field.key]: value }))} />

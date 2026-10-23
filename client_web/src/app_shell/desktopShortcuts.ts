@@ -7,6 +7,7 @@ const EVENT_NAME = 'nuxiva:desktop_shortcuts_updated';
 // Scorciatoie di sistema di DEFAULT decise nel codice
 export const DEFAULT_DESKTOP_IDS: readonly string[] = [
   'explorer',
+  'people',
   'applications',
   'games',
   'network',

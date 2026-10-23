@@ -25,8 +25,8 @@ export const View: React.FC = () => {
 
   if (!list.data || !schema.data) {
     return (
-      <div className="flex min-h-[40vh] items-center justify-center gap-2 text-sm text-slate-400" role="status">
-        <Loader2 className="h-5 w-5 animate-spin text-cyan-300" aria-hidden="true" />
+      <div className="flex min-h-[40vh] items-center justify-center gap-2 text-sm text-slate-600" role="status">
+        <Loader2 className="h-5 w-5 animate-spin text-blue-700" aria-hidden="true" />
         {t('loading')}
       </div>
     );
@@ -46,23 +46,23 @@ export const View: React.FC = () => {
     <div className={PAGE_CLASS}>
       <section className={`${panelClass} flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between`}>
         <div>
-          <h1 className="flex items-center gap-2 font-['Rajdhani'] text-3xl font-bold tracking-wide text-white">
-            <UsersRound className="h-7 w-7 text-cyan-300" aria-hidden="true" />
+          <h1 className="flex items-center gap-2 font-['Rajdhani'] text-3xl font-bold tracking-wide text-slate-900">
+            <UsersRound className="h-7 w-7 text-blue-700" aria-hidden="true" />
             {t('title')}
           </h1>
-          <p className="mt-1 text-sm text-slate-400">{t('description')}</p>
-          {presence.data && presence.data.status !== 'ok' && <p className="mt-1 text-xs text-amber-200">{t('presence_off')}</p>}
+          <p className="mt-1 text-sm text-slate-600">{t('description')}</p>
+          {presence.data && presence.data.status !== 'ok' && <p className="mt-1 text-xs text-amber-800">{t('presence_off')}</p>}
         </div>
         <dl className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           {stats.map(([label, value]) => (
-            <div key={label} className="rounded-xl border border-slate-800/80 bg-slate-950/50 px-3 py-2">
+            <div key={label} className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
               <dt className="text-[10px] uppercase tracking-[0.14em] text-slate-500">{label}</dt>
-              <dd className="font-mono text-xl text-white">{value}</dd>
+              <dd className="font-mono text-xl text-slate-900">{value}</dd>
             </div>
           ))}
         </dl>
       </section>
-      <div role="tablist" aria-label={t('title')} className="flex gap-1 self-start rounded-xl border border-slate-800/80 bg-slate-950/60 p-1">
+      <div role="tablist" aria-label={t('title')} className="flex gap-1 self-start rounded-xl border border-slate-200 bg-slate-50 p-1">
         {(['people', 'reminders', 'house'] as const).map((id) => (
           <button
             key={id}
@@ -70,7 +70,7 @@ export const View: React.FC = () => {
             role="tab"
             aria-selected={tab === id}
             onClick={() => setTab(id)}
-            className={`rounded-lg px-4 py-1.5 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${tab === id ? 'bg-cyan-400/15 text-cyan-100' : 'text-slate-400 hover:text-white'}`}
+            className={`rounded-lg px-4 py-1.5 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${tab === id ? 'bg-blue-100 text-blue-900' : 'text-slate-600 hover:text-slate-900'}`}
           >
             {t(`main_tab_${id}`)}
           </button>
@@ -118,7 +118,7 @@ export const View: React.FC = () => {
             }}
           />
         ) : (
-          <section className={`${panelClass} text-sm text-slate-400`}>{t('empty')}</section>
+          <section className={`${panelClass} text-sm text-slate-600`}>{t('empty')}</section>
         )}
       </div>
     </div>

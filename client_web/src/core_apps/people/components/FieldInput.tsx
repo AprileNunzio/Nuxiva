@@ -28,11 +28,11 @@ const TagsInput: React.FC<{ readonly id: string; readonly value: Value; readonly
     }
   };
   return (
-    <div className="flex flex-wrap items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-950/70 px-2 py-1.5">
+    <div className="flex flex-wrap items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-2 py-1.5">
       {tags.map((tag) => (
-        <span key={tag} className="flex items-center gap-1 rounded-full border border-cyan-400/30 bg-cyan-400/10 px-2 py-0.5 text-xs text-cyan-100">
+        <span key={tag} className="flex items-center gap-1 rounded-full border border-blue-300 bg-blue-50 px-2 py-0.5 text-xs text-blue-900">
           {tag}
-          <button type="button" aria-label={t('remove_tag', { tag })} onClick={() => onChange(tags.filter((x) => x !== tag))} className="text-cyan-300 hover:text-white">
+          <button type="button" aria-label={t('remove_tag', { tag })} onClick={() => onChange(tags.filter((x) => x !== tag))} className="text-blue-700 hover:text-slate-900">
             <X className="h-3 w-3" aria-hidden="true" />
           </button>
         </span>
@@ -50,7 +50,7 @@ const TagsInput: React.FC<{ readonly id: string; readonly value: Value; readonly
         }}
         onBlur={add}
         placeholder={t('add_tag')}
-        className="min-w-[8rem] flex-1 bg-transparent px-1 py-0.5 text-sm text-slate-100 outline-none"
+        className="min-w-[8rem] flex-1 bg-transparent px-1 py-0.5 text-sm text-slate-900 outline-none"
       />
     </div>
   );
@@ -93,21 +93,21 @@ export const FieldInput: React.FC<FieldInputProps> = ({ field, value, people, on
       return (
         <div className="flex flex-col gap-2">
           {rows.map((row, index) => (
-            <div key={index} className="grid gap-2 rounded-xl border border-slate-800/80 bg-slate-950/40 p-2 sm:grid-cols-2 3xl:grid-cols-3">
+            <div key={index} className="grid gap-2 rounded-xl border border-slate-200 bg-slate-50 p-2 sm:grid-cols-2 3xl:grid-cols-3">
               {field.fields.map((sub) => (
-                <label key={sub.key} className="flex flex-col gap-1 text-[11px] text-slate-400">
+                <label key={sub.key} className="flex flex-col gap-1 text-[11px] text-slate-600">
                   {localLabel(t, lang, `field_${sub.key}`, sub.label)}
                   <FieldInput field={sub} value={row[sub.key]} people={people} onChange={(v) => set(index, sub.key, v)} id={`${id}-${index}-${sub.key}`} />
                 </label>
               ))}
-              <button type="button" onClick={() => onChange(rows.filter((_, i) => i !== index))} className={`${chipClass} self-end justify-self-start border-slate-700 text-slate-400 hover:text-rose-300`}>
+              <button type="button" onClick={() => onChange(rows.filter((_, i) => i !== index))} className={`${chipClass} self-end justify-self-start border-slate-300 text-slate-600 hover:text-rose-700`}>
                 <Minus className="h-3.5 w-3.5" aria-hidden="true" />
                 {t('remove_row')}
               </button>
             </div>
           ))}
           {rows.length < 100 && (
-            <button type="button" onClick={() => onChange([...rows, {}])} className={`${chipClass} self-start border-slate-700 text-slate-300`}>
+            <button type="button" onClick={() => onChange([...rows, {}])} className={`${chipClass} self-start border-slate-300 text-slate-700`}>
               <Plus className="h-3.5 w-3.5" aria-hidden="true" />
               {t('add_row')}
             </button>

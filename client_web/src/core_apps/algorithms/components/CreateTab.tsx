@@ -47,8 +47,8 @@ export const CreateTab: React.FC<CreateTabProps> = ({ categories, canGenerate, t
 
   return (
     <div className="grid gap-4 xl:grid-cols-2">
-      <Panel title={t('generate_title')} icon={<Sparkles className="h-4 w-4 text-amber-300" aria-hidden="true" />}>
-        <p className="mb-3 text-xs text-slate-400">{canGenerate ? t('generate_hint') : t('generate_disabled')}</p>
+      <Panel title={t('generate_title')} icon={<Sparkles className="h-4 w-4 text-amber-700" aria-hidden="true" />}>
+        <p className="mb-3 text-xs text-slate-600">{canGenerate ? t('generate_hint') : t('generate_disabled')}</p>
         <textarea className={`${inputClass} h-32`} value={description} maxLength={500} aria-label={t('generate_title')} placeholder={t('generate_placeholder')} onChange={(event) => setDescription(event.target.value)} />
         <div className="mt-3">
           <Btn tone="amber" busy={working} disabled={!canGenerate || !description.trim()} onClick={() => void run(() => guarded(() => generateAlgorithm(description.trim())))}>
@@ -58,7 +58,7 @@ export const CreateTab: React.FC<CreateTabProps> = ({ categories, canGenerate, t
         </div>
       </Panel>
 
-      <Panel title={t('manual_title')} icon={<Hammer className="h-4 w-4 text-cyan-300" aria-hidden="true" />}>
+      <Panel title={t('manual_title')} icon={<Hammer className="h-4 w-4 text-blue-700" aria-hidden="true" />}>
         <div className="grid gap-3">
           <div className="grid gap-3 sm:grid-cols-2">
             <Field label={t('field_name')}>
@@ -88,7 +88,7 @@ export const CreateTab: React.FC<CreateTabProps> = ({ categories, canGenerate, t
             <textarea className={`${inputClass} h-56 font-mono text-xs`} value={code} spellCheck={false} onChange={(event) => setCode(event.target.value)} />
           </Field>
           <p className="text-[11px] text-slate-500">{t('manual_rules')}</p>
-          {problem ? <p role="alert" className="text-xs text-rose-300">{problem}</p> : null}
+          {problem ? <p role="alert" className="text-xs text-rose-700">{problem}</p> : null}
           <div>
             <Btn tone="emerald" busy={working} disabled={!name.trim() || !patterns.trim() || !probe.trim()} onClick={() => void run(() => guarded(() => createAlgorithm(draft())))}>
               {t('manual_action')}

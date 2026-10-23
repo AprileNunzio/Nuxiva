@@ -59,8 +59,8 @@ export const PeopleList: React.FC<PeopleListProps> = ({ people, roles, present, 
             role="tab"
             aria-selected={filter === f}
             onClick={() => setFilter(f)}
-            className={`shrink-0 rounded-full border px-3 py-1 text-xs transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${
-              filter === f ? 'border-cyan-400/60 bg-cyan-400/15 text-cyan-100' : 'border-slate-700 text-slate-400 hover:text-white'
+            className={`shrink-0 rounded-full border px-3 py-1 text-xs transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
+              filter === f ? 'border-blue-300 bg-blue-100 text-blue-900' : 'border-slate-300 text-slate-600 hover:text-slate-900'
             }`}
           >
             {t(`filter_${f}`)}
@@ -74,16 +74,16 @@ export const PeopleList: React.FC<PeopleListProps> = ({ people, roles, present, 
               type="button"
               aria-current={selected === p.slug}
               onClick={() => onSelect(p.slug)}
-              className={`flex w-full items-center gap-3 rounded-xl border px-3 py-2 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${
-                selected === p.slug ? 'border-cyan-400/60 bg-cyan-400/10' : 'border-slate-800/80 bg-slate-950/40 hover:border-slate-600'
+              className={`flex w-full items-center gap-3 rounded-xl border px-3 py-2 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
+                selected === p.slug ? 'border-blue-300 bg-blue-50' : 'border-slate-200 bg-slate-50 hover:border-slate-400'
               }`}
             >
-              <span className={`relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-sm font-bold ${p.scanned ? 'border-amber-400/50 bg-amber-400/10 text-amber-200' : 'border-slate-700 bg-slate-900 text-cyan-100'}`}>
+              <span className={`relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-sm font-bold ${p.scanned ? 'border-amber-300 bg-amber-50 text-amber-800' : 'border-slate-300 bg-slate-100 text-blue-900'}`}>
                 {p.scanned ? <ScanFace className="h-5 w-5" aria-hidden="true" /> : initials(p.name)}
-                {present.has(p.slug) && <span className="absolute -right-0.5 -top-0.5 h-3 w-3 rounded-full border-2 border-slate-950 bg-emerald-400" aria-label={t('present_now')} />}
+                {present.has(p.slug) && <span className="absolute -right-0.5 -top-0.5 h-3 w-3 rounded-full border-2 border-white bg-emerald-500" aria-label={t('present_now')} />}
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-sm font-semibold text-slate-100">{p.scanned ? t('unknown_face') : p.name}</span>
+                <span className="block truncate text-sm font-semibold text-slate-900">{p.scanned ? t('unknown_face') : p.name}</span>
                 <span className="block truncate text-[11px] text-slate-500">
                   {[roles[p.role] ?? p.role, p.age !== null ? t('age', { age: p.age }) : '', p.lastSeen ? relative(p.lastSeen, lang) : t('never_seen')].filter(Boolean).join(' · ')}
                 </span>
@@ -94,9 +94,9 @@ export const PeopleList: React.FC<PeopleListProps> = ({ people, roles, present, 
         ))}
         {visible.length === 0 && <li className="px-3 py-6 text-center text-sm text-slate-500">{t('no_people')}</li>}
       </ul>
-      <form onSubmit={submit} className="flex gap-2 border-t border-slate-800/80 pt-3">
+      <form onSubmit={submit} className="flex gap-2 border-t border-slate-200 pt-3">
         <input maxLength={40} value={name} onChange={(event) => setName(event.target.value)} placeholder={t('new_person')} aria-label={t('new_person')} className={`${fieldClass} min-w-0 flex-1`} />
-        <button type="submit" disabled={busy || !name.trim()} aria-label={t('add_person')} className={`${chipClass} border-cyan-400/50 bg-cyan-400/10 px-3 text-cyan-100`}>
+        <button type="submit" disabled={busy || !name.trim()} aria-label={t('add_person')} className={`${chipClass} border-blue-300 bg-blue-50 px-3 text-blue-900`}>
           <Plus className="h-4 w-4" aria-hidden="true" />
         </button>
       </form>

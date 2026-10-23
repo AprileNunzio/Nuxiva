@@ -31,46 +31,46 @@ export const GoogleCard: React.FC<Props> = ({ slug, state, busy, run }) => {
   };
 
   return (
-    <section className="flex flex-col gap-3 rounded-xl border border-slate-800/80 bg-slate-950/40 p-4" aria-labelledby="connector-google">
+    <section className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4" aria-labelledby="connector-google">
       <header className="flex items-center gap-2">
-        <Mail className="h-4 w-4 text-rose-300" aria-hidden="true" />
-        <h3 id="connector-google" className="font-semibold text-white">
+        <Mail className="h-4 w-4 text-rose-700" aria-hidden="true" />
+        <h3 id="connector-google" className="font-semibold text-slate-900">
           Google
         </h3>
-        <span className={`ml-auto rounded-full border px-2 py-0.5 text-xs ${state.linked ? 'border-emerald-400/40 text-emerald-200' : 'border-slate-700 text-slate-400'}`}>
+        <span className={`ml-auto rounded-full border px-2 py-0.5 text-xs ${state.linked ? 'border-emerald-300 text-emerald-800' : 'border-slate-300 text-slate-600'}`}>
           {t(state.linked ? 'connector_linked' : 'connector_not_linked')}
         </span>
       </header>
-      {!state.available && <p className="text-sm text-amber-200">{t('gg_not_configured')}</p>}
+      {!state.available && <p className="text-sm text-amber-800">{t('gg_not_configured')}</p>}
       {state.linked && (
-        <p className="text-sm text-slate-200">
+        <p className="text-sm text-slate-800">
           {t('gg_linked_as', { email: state.email || '—' })}
-          {state.granted.length > 0 && <span className="block text-xs text-slate-400">{state.granted.join(' · ')}</span>}
+          {state.granted.length > 0 && <span className="block text-xs text-slate-600">{state.granted.join(' · ')}</span>}
         </p>
       )}
       {state.pending && (
         <div className="flex flex-col gap-2">
-          <p className="text-xs text-slate-400">{t('gg_paste_hint')}</p>
+          <p className="text-xs text-slate-600">{t('gg_paste_hint')}</p>
           <div className="flex gap-2">
             <input value={pasted} maxLength={4000} onChange={(event) => setPasted(event.target.value)} placeholder={t('gg_paste')} aria-label={t('gg_paste')} className={`${fieldClass} min-w-0 flex-1`} />
-            <button type="button" disabled={busy !== null || pasted.trim().length < 10} onClick={() => void finish()} className={`${chipClass} border-cyan-400/50 bg-cyan-400/10 px-3 text-cyan-100`}>
+            <button type="button" disabled={busy !== null || pasted.trim().length < 10} onClick={() => void finish()} className={`${chipClass} border-blue-300 bg-blue-50 px-3 text-blue-900`}>
               {t('gg_finish')}
             </button>
           </div>
         </div>
       )}
       <div className="flex flex-wrap gap-2">
-        <button type="button" disabled={busy !== null || !state.available} onClick={() => void open()} className={`${chipClass} border-cyan-400/50 bg-cyan-400/10 px-3 text-cyan-100`}>
+        <button type="button" disabled={busy !== null || !state.available} onClick={() => void open()} className={`${chipClass} border-blue-300 bg-blue-50 px-3 text-blue-900`}>
           <ExternalLink className="h-4 w-4" aria-hidden="true" />
           {t(state.linked ? 'gg_relink' : 'gg_link')}
         </button>
         {state.pending && (
-          <button type="button" disabled={busy !== null} onClick={() => void run('gg-cancel', () => googleCancel(slug), 'people_connectors_failed')} className={`${chipClass} border-slate-600 px-3 text-slate-200`}>
+          <button type="button" disabled={busy !== null} onClick={() => void run('gg-cancel', () => googleCancel(slug), 'people_connectors_failed')} className={`${chipClass} border-slate-300 px-3 text-slate-800`}>
             {t('cancel')}
           </button>
         )}
         {state.linked && (
-          <button type="button" disabled={busy !== null} onClick={() => void run('gg-unlink', () => googleUnlink(slug), 'people_connectors_failed')} className={`${chipClass} border-rose-400/40 px-3 text-rose-200`}>
+          <button type="button" disabled={busy !== null} onClick={() => void run('gg-unlink', () => googleUnlink(slug), 'people_connectors_failed')} className={`${chipClass} border-rose-300 px-3 text-rose-800`}>
             <Unlink className="h-4 w-4" aria-hidden="true" />
             {t('connector_unlink')}
           </button>
