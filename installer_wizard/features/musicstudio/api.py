@@ -5,7 +5,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 
 from access import NO_CACHE, require_admin
-from features.musicstudio import catalog, imports, lyrics as lyr, schema as S, service, store, voicebank
+from features.musicstudio import agent, catalog, imports, lyrics as lyr, schema as S, service, store, voicebank
 
 admin_routes = APIRouter(prefix="/api/musicstudio", tags=["Studio musicale"])
 MAX_EXPORT = 160 * 1024 * 1024
@@ -56,6 +56,20 @@ class ImportIn(BaseModel):
 
     source: str = Field(min_length=3, max_length=12)
     path: str = Field(min_length=1, max_length=400)
+
+
+class ChatTurn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    who: str = Field(max_length=8)
+    text: str = Field(max_length=400)
+
+
+class ChatIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    message: str = Field(min_length=1, max_length=500)
+    history: list[ChatTurn] = Field(default_factory=list, max_length=12)
 
 
 class WriteIn(BaseModel):
@@ -192,6 +206,20 @@ async def import_audio(pid: str, body: ImportIn, _: str = Depends(require_admin)
         return _view(await imports.bring(pid, body.source, body.path))
     except S.SpecError as exc:
         raise _fail(exc)
+
+
+@admin_routes.post("/projects/{pid}/chat")
+async def chat(pid: str, body: ChatIn, _: str = Depends(require_admin)):
+    _project(pid)
+    if service.status(pid)["state"] == "building":
+        raise HTTPException(409, "busy")
+    try:
+        result = await agent.chat(pid, body.message, [t.model_dump() for t in body.history])
+    except S.SpecError as exc:
+        raise _fail(exc)
+    except (ValueError, RuntimeError, KeyError):
+        raise HTTPException(503, "brain_unavailable")
+    return JSONResponse({**result, "project": {**result["project"], "job": service.status(pid)}}, headers=NO_CACHE)
 
 
 @admin_routes.post("/lyrics")

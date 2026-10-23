@@ -8,7 +8,7 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from features.brain.llm import BrainUnavailable
-from features.musicstudio import api, catalog, commands, composer, exporter, generator, imports, library, schema, service, store, theory, voicebank
+from features.musicstudio import api, catalog, commands, composer, exporter, generator, agent, edits, imports, library, schema, service, store, theory, voicebank
 from features.shares import archive
 
 
@@ -295,6 +295,67 @@ class BridgeTest(Sandbox):
         with mock.patch.object(library, "_rescan"):
             ok = client.post(f"/api/musicstudio/projects/{pid}/export", content=b"RIFF" + b"\x00" * 40).json()
         self.assertTrue(ok["library"])
+
+
+class BluesTest(unittest.TestCase):
+    def test_twelve_bar_shuffle(self):
+        project = generator.arrange({"genre": "blues", "seed": 4, "root": 9, "bars": 24})
+        self.assertEqual(project["key"]["mode"], "blues")
+        self.assertGreater(project["swing"], 0.3)
+        self.assertEqual([c["quality"] for c in project["harmony"][:12]], ["dom7"] * 12)
+        self.assertEqual([c["root"] for c in project["harmony"][:12]], [9, 9, 9, 9, 2, 2, 9, 9, 4, 2, 9, 4])
+        self.assertEqual(next(t for t in project["tracks"] if t["role"] == "lead")["instrument"], "lead_guitar")
+
+    def test_english_version_request(self):
+        spec = composer.heuristic("Creami una canzone con sound blues di Napule è in versione inglese")
+        self.assertEqual((spec["genre"], spec["lang"], spec["reference"]), ("blues", "en", True))
+
+
+class EditsTest(unittest.TestCase):
+    def setUp(self):
+        self.project = generator.arrange({"genre": "blues", "seed": 1})
+
+    def test_apply_valid_and_skip_invalid(self):
+        done = edits.apply(self.project, [{"op": "set_track", "track": "bass", "volume": 9, "mute": True}, {"op": "add_effect", "track": "lead", "type": "reverb", "params": {"mix": 0.5}},
+                                          {"op": "add_effect", "track": "lead", "type": "evil"}, {"op": "nope"}, "x", {"op": "set_tempo", "tempo": 1000}])
+        self.assertEqual([d["op"] for d in done], ["set_track", "add_effect", "set_tempo"])
+        bass = edits.find(self.project, "bass")
+        self.assertEqual((bass["volume"], bass["mute"]), (1.5, True))
+        self.assertEqual(self.project["tempo"], 220)
+
+    def test_master_effect_and_instrument_role_guard(self):
+        edits.apply(self.project, [{"op": "add_effect", "track": "master", "type": "compressor"}, {"op": "set_track", "track": "lead", "instrument": "kit_808"}])
+        self.assertEqual([e["type"] for e in self.project["master"]["effects"]], ["compressor"])
+        self.assertNotEqual(edits.find(self.project, "lead")["instrument"], "kit_808")
+
+    def test_regenerate_and_remove(self):
+        count = len(self.project["tracks"])
+        edits.apply(self.project, [{"op": "regenerate", "track": "lead", "instrument": "lead_harmonica"}, {"op": "remove_track", "track": "arp"}])
+        self.assertEqual(edits.find(self.project, "lead")["instrument"], "lead_harmonica")
+        self.assertEqual(len(self.project["tracks"]), count - 1)
+
+
+class AgentTest(Sandbox):
+    def test_chat_applies_ops(self):
+        project = generator.arrange({"genre": "blues", "seed": 3})
+        store.save(project)
+        reply = {"reply": "Ecco il riverbero.", "ops": [{"op": "add_effect", "track": "lead", "type": "reverb"}, {"op": "set_track", "track": "drums", "volume": 0.4}]}
+        with mock.patch.object(agent, "generate", mock.AsyncMock(return_value=reply)):
+            result = asyncio.run(agent.chat(project["id"], "più riverbero alla chitarra e batteria piano", []))
+        self.assertEqual(len(result["applied"]), 2)
+        saved = store.load(project["id"])
+        self.assertEqual(edits.find(saved, "drums")["volume"], 0.4)
+        self.assertIn("reverb", [e["type"] for e in edits.find(saved, "lead")["effects"]])
+
+    def test_chat_endpoint_without_brain(self):
+        project = generator.arrange({"genre": "blues", "seed": 3})
+        store.save(project)
+        app = FastAPI()
+        app.dependency_overrides[api.require_admin] = lambda: "admin"
+        app.include_router(api.admin_routes)
+        with mock.patch.object(agent, "generate", mock.AsyncMock(side_effect=BrainUnavailable("off"))):
+            code = TestClient(app).post(f"/api/musicstudio/projects/{project['id']}/chat", json={"message": "ciao"}).status_code
+        self.assertEqual(code, 503)
 
 
 if __name__ == "__main__":

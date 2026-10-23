@@ -1,10 +1,10 @@
 from dataclasses import dataclass, field
 
 ROLES = ("drums", "bass", "chords", "pad", "lead", "arp", "vocal", "fx")
-MODES = ("major", "minor", "dorian", "mixolydian", "pentatonic")
+MODES = ("major", "minor", "dorian", "mixolydian", "pentatonic", "blues")
 NOTE_NAMES = ("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
 LANES = {"kick": 36, "rim": 37, "snare": 38, "clap": 39, "hat": 42, "tom": 45, "open_hat": 46, "crash": 49, "ride": 51, "perc": 56}
-GENRES = ("pop", "rock", "house", "techno", "hiphop", "trap", "lofi", "reggaeton", "disco", "ballad", "dnb", "ambient", "funk", "latin")
+GENRES = ("pop", "rock", "house", "techno", "hiphop", "trap", "lofi", "reggaeton", "disco", "ballad", "dnb", "ambient", "funk", "latin", "blues")
 
 
 @dataclass(frozen=True)
@@ -47,6 +47,8 @@ INSTRUMENTS: tuple[Instrument, ...] = (
     Instrument("lead_square", "Lead 8-bit", "lead", "#f43f5e", synth([osc("square", 0.8)], 0.005, 0.1, 0.8, 0.1, 6200, 0.6, 0, True), ("lead", "retro", "chiptune", "8bit")),
     Instrument("lead_bell", "Campana", "lead", "#db2777", synth([osc("sine", 0.8), osc("sine", 0.35, 0, 2), osc("sine", 0.2, 0, 3)], 0.002, 1.4, 0.0, 1.2, 9000), ("bell", "campana", "lofi", "ambient")),
     Instrument("lead_flute", "Flauto", "lead", "#e879f9", synth([osc("sine", 1.0), osc("triangle", 0.25, 0, 1)], 0.06, 0.2, 0.8, 0.2, 5200, 0.6, 0, True, 0.04), ("flute", "flauto", "melodia", "folk")),
+    Instrument("lead_guitar", "Chitarra elettrica", "lead", "#be185d", synth([osc("sawtooth", 0.7, -4), osc("square", 0.35, 4)], 0.006, 0.35, 0.45, 0.25, 3000, 1.6, 1800, True, 0.05), ("guitar", "chitarra", "blues", "rock")),
+    Instrument("lead_harmonica", "Armonica", "lead", "#c026d3", synth([osc("square", 0.55, -6), osc("sawtooth", 0.45, 6)], 0.05, 0.15, 0.85, 0.15, 2600, 2.2, 600, True, 0.06), ("harmonica", "armonica", "blues", "folk")),
     Instrument("arp_pluck", "Arpeggio pizzicato", "arp", "#a855f7", synth([osc("sawtooth", 0.6), osc("square", 0.3, 5)], 0.002, 0.18, 0.0, 0.12, 3600, 1.8, 2600), ("arp", "arpeggio", "pluck", "dance")),
     Instrument("fx_sweep", "Sweep e riser", "fx", "#64748b", {"engine": "noise", "sweep": 1}, ("riser", "sweep", "fx", "effetto")),
     Instrument("voice_tts", "Voce", "vocal", "#22c55e", {"engine": "voice"}, ("voce", "vocal", "cantato", "rap", "parlato")),

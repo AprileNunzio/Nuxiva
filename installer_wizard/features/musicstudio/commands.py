@@ -1,7 +1,7 @@
 import re
 
 from features.desktop.desk import desk
-from features.musicstudio import lyrics as lyr, schema as S, service, store, voicebank
+from features.musicstudio import composer, lyrics as lyr, schema as S, service, store, voicebank
 
 CREATE = re.compile(r"\b(?:cre\w+|compon\w+|fa(?:mmi|i)|scriv\w+|produc\w+|produ\w+|invent\w+|gener\w+|realizz\w+)\b(?:\s+(?:mi|ci|per\s+me))*\s+(?:(?:una|un|uno|il|la|dei|delle)\s+)?"
                     r"(?:nuov[ao]\s+)?(?:canzone|brano|pezzo\s+musicale|base\s+musicale|base|beat|strumentale|jingle|colonna\s+sonora)\b(?P<what>.*)$", re.I)
@@ -47,7 +47,8 @@ async def answer(text: str) -> tuple[str, dict]:
             return ("Descrivimi meglio la canzone." if str(exc) == "prompt_short" else "Ho raggiunto il numero massimo di progetti musicali."), face
         state["active"] = project["id"]
         _announce(project, f"Sto componendo: {what}. Lo trovi in Applicazioni › Studio Musicale.")
-        return "Mi metto al lavoro: scelgo genere, tonalità e strumenti, poi scrivo il testo. Lo trovi nello Studio Musicale.", face
+        note = " Non riproduco il testo di canzoni esistenti: ne scrivo uno originale sullo stesso tema; se mi dai il tuo testo lo traduco." if composer.REFERENCE.search(text) else ""
+        return "Mi metto al lavoro: scelgo genere, tonalità e strumenti, poi scrivo il testo. Lo trovi nello Studio Musicale." + note, face
     if LIST.search(text):
         rows = store.listing()
         if not rows:

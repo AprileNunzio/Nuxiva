@@ -41,6 +41,8 @@ async def _enrich(pid: str, prompt: str) -> None:
     try:
         try:
             spec = await composer.plan(prompt)
+            if spec.get("reference"):
+                _set(pid, notice="original_lyrics")
             project = generator.arrange({**spec, "seed": random.SystemRandom().randrange(1 << 30)})
             project = S.clean_project({**project, "id": pid, "created": store.load(pid)["created"]}, pid)
         except FAILURES as exc:

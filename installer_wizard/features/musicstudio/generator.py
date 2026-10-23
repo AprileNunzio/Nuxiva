@@ -18,6 +18,7 @@ TRACK_FX = {
     "vocal": (("compressor", {"threshold": -22, "ratio": 3}), ("reverb", {"size": 1.4, "mix": 0.16})), "fx": (),
 }
 LEVELS = {"drums": 0.9, "bass": 0.85, "chords": 0.62, "pad": 0.5, "lead": 0.62, "arp": 0.45, "vocal": 1.0, "fx": 0.4}
+SWING = {"lofi": 0.18, "funk": 0.18, "hiphop": 0.18, "blues": 0.33}
 MINOR_HINT = ("triste", "dark", "oscur", "malinc", "sad", "notte", "night", "minor", "epic", "cinemat", "dramm")
 
 
@@ -207,13 +208,13 @@ def arrange(spec: dict) -> dict:
     genre = spec.get("genre") if spec.get("genre") in C.GENRES else "pop"
     low, high = P.TEMPO[genre]
     mood = str(spec.get("mood") or spec.get("title") or "").lower()
-    mode = spec.get("mode") if spec.get("mode") in C.MODES else ("minor" if any(h in mood for h in MINOR_HINT) or genre in ("trap", "dnb", "techno") else "major")
+    mode = spec.get("mode") if spec.get("mode") in C.MODES else ("minor" if any(h in mood for h in MINOR_HINT) or genre in ("trap", "dnb", "techno") else "blues" if genre == "blues" else "major")
     project = S.clean_project({"title": spec.get("title") or "", "prompt": spec.get("prompt") or "", "created": int(time.time()), "genre": genre,
                                "tempo": spec.get("tempo") or rng.randint(low, high), "beats": spec.get("beats") or 4,
                                "key": {"root": spec.get("root") if isinstance(spec.get("root"), int) else rng.randrange(12), "mode": mode},
-                               "bars": spec.get("bars") or 32, "swing": 0.18 if genre in ("lofi", "funk", "hiphop") else 0.0})
+                               "bars": spec.get("bars") or 32, "swing": SWING.get(genre, 0.0)})
     project["structure"] = sections(project["bars"])
-    project["harmony"] = T.harmony(project["key"]["root"], mode, project["bars"], rng, genre in ("lofi", "funk", "disco", "ballad", "hiphop"), 2 if genre in ("ballad", "ambient") else 1)
+    project["harmony"] = T.blues(project["key"]["root"], project["bars"]) if genre == "blues" else T.harmony(project["key"]["root"], mode, project["bars"], rng, genre in ("lofi", "funk", "disco", "ballad", "hiphop"), 2 if genre in ("ballad", "ambient") else 1)
     wanted = [r for r in (spec.get("roles") or ("drums", "bass", "chords", "pad", "lead", "arp")) if r in PRESENCE and r != "vocal"]
     instruments = spec.get("instruments") if isinstance(spec.get("instruments"), dict) else {}
     project["tracks"] = [build_track(project, role, rng, instruments.get(role, "")) for role in wanted]

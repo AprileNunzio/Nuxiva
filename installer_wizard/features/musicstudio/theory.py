@@ -1,7 +1,7 @@
 import random
 
 SCALES = {"major": (0, 2, 4, 5, 7, 9, 11), "minor": (0, 2, 3, 5, 7, 8, 10), "dorian": (0, 2, 3, 5, 7, 9, 10), "mixolydian": (0, 2, 4, 5, 7, 9, 10),
-          "pentatonic": (0, 3, 5, 7, 10)}
+          "pentatonic": (0, 3, 5, 7, 10), "blues": (0, 3, 5, 6, 7, 10)}
 INTERVALS = {"maj": (0, 4, 7), "min": (0, 3, 7), "dim": (0, 3, 6), "dom7": (0, 4, 7, 10), "min7": (0, 3, 7, 10), "maj7": (0, 4, 7, 11), "sus4": (0, 5, 7)}
 PROGRESSIONS = {
     "major": ((0, 4, 5, 3), (0, 5, 3, 4), (0, 3, 4, 3), (0, 2, 3, 4), (3, 4, 2, 5), (0, 4, 3, 4)),
@@ -13,7 +13,7 @@ PROGRESSIONS = {
 
 
 def degrees(mode: str) -> tuple[int, ...]:
-    return SCALES["major" if mode == "pentatonic" else mode]
+    return SCALES["major" if mode == "pentatonic" else "mixolydian" if mode == "blues" else mode]
 
 
 def triad(root: int, mode: str, degree: int, seventh: bool = False) -> tuple[int, str]:
@@ -40,6 +40,14 @@ def harmony(root: int, mode: str, bars: int, rng: random.Random, seventh: bool, 
         bar += per_chord
         index += 1
     return out
+
+
+BLUES_BARS = ((0, 0, 0, 0), (5, 5, 0, 0), (7, 5, 0, 7))
+
+
+def blues(root: int, bars: int) -> list[dict]:
+    steps = [degree for row in BLUES_BARS for degree in row]
+    return [{"bar": bar, "root": (root + steps[bar % 12]) % 12, "quality": "dom7"} for bar in range(bars)]
 
 
 def chord_at(chords: list[dict], bar: int) -> dict:

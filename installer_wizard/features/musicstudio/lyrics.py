@@ -3,7 +3,8 @@ from features.brain.llm import generate
 from features.musicstudio import schema as S
 
 LANGUAGES = {"it": "Italian", "en": "English", "fr": "French", "es": "Spanish", "de": "German", "pt": "Portuguese", "ja": "Japanese", "nl": "Dutch", "pl": "Polish", "ru": "Russian"}
-SYSTEM = "You are a professional lyricist and translator. Reply with the text only, no comments, no quotes, no markdown."
+SYSTEM = ("You are a professional lyricist and translator. Reply with the text only, no comments, no quotes, no markdown. "
+          "Always write original lyrics. Never reproduce, quote or paraphrase the lyrics of an existing published song; if the topic names one, only use its theme and mood.")
 
 
 async def write(topic: str, genre: str, lang: str, mood: str = "") -> str:
