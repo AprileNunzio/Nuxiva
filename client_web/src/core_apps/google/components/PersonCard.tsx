@@ -73,9 +73,9 @@ export const PersonCard: React.FC<PersonCardProps> = ({ person, services, defaul
       {view ? (
         <div className="mt-2 grid gap-2 sm:grid-cols-3">
           {Object.entries(view).map(([group, items]) => (
-            <div key={group} className="rounded-lg border border-slate-800 bg-slate-950/60 p-2">
+            <div key={group} className="rounded-lg border border-slate-200 bg-white p-2">
               <div className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">{t(`group_${group}`)} ({items.length})</div>
-              <ul className="mt-1 space-y-0.5 text-xs text-slate-300">
+              <ul className="mt-1 space-y-0.5 text-xs text-slate-700">
                 {items.slice(0, 5).map((item, index) => (
                   <li key={`${group}-${index}`} className="truncate">{labelOf(item)}</li>
                 ))}
@@ -89,7 +89,7 @@ export const PersonCard: React.FC<PersonCardProps> = ({ person, services, defaul
           <fieldset className="flex flex-wrap gap-3">
             <legend className="sr-only">{t('services')}</legend>
             {services.map((service) => (
-              <label key={service.id} className="flex items-center gap-1.5 text-xs text-slate-300">
+              <label key={service.id} className="flex items-center gap-1.5 text-xs text-slate-700">
                 <input
                   type="checkbox"
                   checked={chosen.includes(service.id)}
@@ -110,7 +110,7 @@ export const PersonCard: React.FC<PersonCardProps> = ({ person, services, defaul
             ) : null}
           </div>
           {link ? (
-            <a href={link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-cyan-300 underline">
+            <a href={link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-cyan-700 underline">
               <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
               {t('open_google')}
             </a>

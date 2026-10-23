@@ -35,8 +35,8 @@ export const IdentityStep: React.FC<Props> = ({ options, onBack, onIssued, t }) 
 
   return (
     <form onSubmit={submit} autoComplete="off">
-      <Panel title={t('identity_title')} icon={<KeyRound className="h-4 w-4 text-amber-300" aria-hidden="true" />}>
-        <p className="mb-3 text-sm text-slate-300">{t('identity_body')}</p>
+      <Panel title={t('identity_title')} icon={<KeyRound className="h-4 w-4 text-amber-700" aria-hidden="true" />}>
+        <p className="mb-3 text-sm text-slate-700">{t('identity_body')}</p>
         <Field label={t('password_label')}>
           <input
             className={inputClass}

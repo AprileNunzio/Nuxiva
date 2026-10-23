@@ -43,7 +43,7 @@ export const View: React.FC = () => {
       </StatRow>
       {data.guard_error ? <Pill tone="rose">{data.guard_error}</Pill> : null}
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
-        <Panel title={t('profiles_title')} icon={<Network className="h-4 w-4 text-cyan-300" aria-hidden="true" />}>
+        <Panel title={t('profiles_title')} icon={<Network className="h-4 w-4 text-cyan-700" aria-hidden="true" />}>
           {data.profiles.length === 0 ? (
             <Empty>{t('profiles_empty')}</Empty>
           ) : (
@@ -76,7 +76,7 @@ export const View: React.FC = () => {
                     <Pill tone={profile.role === 'server' ? 'purple' : 'slate'}>{profile.role}</Pill>
                     <Pill tone={profile.status.connected ? 'emerald' : 'slate'}>{profile.status.connected ? t('state_connected') : t('state_disconnected')}</Pill>
                   </div>
-                  {profile.status.error ? <p className="mt-1 text-xs text-rose-300">{profile.status.error}</p> : null}
+                  {profile.status.error ? <p className="mt-1 text-xs text-rose-700">{profile.status.error}</p> : null}
                   {profile.kind === 'wireguard' && profile.role === 'server' ? (
                     <div className="mt-2 flex flex-wrap gap-2">
                       <input className={`${inputClass} max-w-xs`} value={peerName} maxLength={32} onChange={(event) => setPeerName(event.target.value)} placeholder={t('peer_placeholder')} aria-label={t('peer_placeholder')} />
@@ -91,16 +91,16 @@ export const View: React.FC = () => {
             </List>
           )}
           {issued ? (
-            <div className="mt-4 rounded-xl border border-emerald-500/40 bg-emerald-500/5 p-3">
-              <div className="mb-2 flex items-center justify-between gap-2 text-xs font-semibold text-emerald-200">
+            <div className="mt-4 rounded-xl border border-emerald-300 bg-emerald-50 p-3">
+              <div className="mb-2 flex items-center justify-between gap-2 text-xs font-semibold text-emerald-800">
                 <span>{t('peer_ready', { name: issued.peer.name })}</span>
                 <Btn tone="slate" onClick={() => void navigator.clipboard.writeText(issued.config)}>
                   <Copy className="h-3.5 w-3.5" aria-hidden="true" />
                   {t('copy')}
                 </Btn>
               </div>
-              <pre className="max-h-56 overflow-auto whitespace-pre-wrap break-all font-mono text-[11px] text-slate-300">{issued.config}</pre>
-              <p className="mt-2 text-[11px] text-amber-300">{t('peer_once')}</p>
+              <pre className="max-h-56 overflow-auto whitespace-pre-wrap break-all font-mono text-[11px] text-slate-700">{issued.config}</pre>
+              <p className="mt-2 text-[11px] text-amber-700">{t('peer_once')}</p>
             </div>
           ) : null}
         </Panel>

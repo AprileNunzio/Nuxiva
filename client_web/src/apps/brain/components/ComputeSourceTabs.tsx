@@ -1,3 +1,4 @@
+import { ProviderCredentials, CredentialsDraft } from './ProviderCredentials';
 import React, { useState } from 'react';
 import {
   AlertTriangle,
@@ -37,6 +38,7 @@ interface ComputeSourceTabsProps {
   readonly onReloadLocalModels: () => Promise<void>;
   readonly onUpdateApiKey: (providerId: string, apiKey: string) => void;
   readonly onSaveApiKey: (providerId: string) => Promise<boolean>;
+  readonly onSaveCredentials: (providerId: string, draft: CredentialsDraft) => Promise<boolean>;
   readonly t: (key: string) => string;
 }
 
@@ -54,6 +56,7 @@ export const ComputeSourceTabs: React.FC<ComputeSourceTabsProps> = ({
   onReloadLocalModels,
   onUpdateApiKey,
   onSaveApiKey,
+  onSaveCredentials,
   t,
 }) => {
   const [selectedRemoteId, setSelectedRemoteId] = useState<string>(
@@ -511,23 +514,7 @@ export const ComputeSourceTabs: React.FC<ComputeSourceTabsProps> = ({
           })}
         </div>
 
-        {activeProviderObj && (
-          <div className="p-4 rounded-2xl border border-slate-200 bg-slate-50 space-y-3">
-            <div className="text-xs font-bold text-slate-800">
-              {t('credentials_for')} {activeProviderObj.name}
-            </div>
-            <input
-              type="password"
-              value={activeProviderObj.apiKey || ''}
-              onChange={(e) => onUpdateApiKey(activeProviderObj.id, e.target.value)}
-              onBlur={() => {
-                void onSaveApiKey(activeProviderObj.id);
-              }}
-              placeholder="sk-..."
-              className="w-full px-3 py-2 rounded-xl text-xs border border-slate-300 bg-white"
-            />
-          </div>
-        )}
+        {activeProviderObj && <ProviderCredentials provider={activeProviderObj} onSave={onSaveCredentials} t={t} />}
       </div>
 
       <div className="space-y-4 p-5 rounded-2xl border border-amber-200 bg-amber-50/30">

@@ -71,7 +71,7 @@ export const View: React.FC = () => {
       </StatRow>
       {note ? <Pill tone="emerald">{note}</Pill> : null}
       <div className="grid gap-4 lg:grid-cols-2">
-        <Panel title={t('floors_title')} icon={<Layers className="h-4 w-4 text-cyan-300" aria-hidden="true" />}>
+        <Panel title={t('floors_title')} icon={<Layers className="h-4 w-4 text-cyan-700" aria-hidden="true" />}>
           {data.floors.length === 0 ? (
             <Empty>{t('floors_empty')}</Empty>
           ) : (
@@ -90,7 +90,7 @@ export const View: React.FC = () => {
             <Btn type="submit" busy={busy}><Plus className="h-3.5 w-3.5" aria-hidden="true" />{t('add')}</Btn>
           </form>
         </Panel>
-        <Panel title={t('rooms_title')} icon={<DoorOpen className="h-4 w-4 text-emerald-300" aria-hidden="true" />}>
+        <Panel title={t('rooms_title')} icon={<DoorOpen className="h-4 w-4 text-emerald-700" aria-hidden="true" />}>
           {data.rooms.length === 0 ? (
             <Empty>{t('rooms_empty')}</Empty>
           ) : (
@@ -116,7 +116,7 @@ export const View: React.FC = () => {
           </form>
         </Panel>
       </div>
-      <Panel title={t('devices_title')} icon={<MapPin className="h-4 w-4 text-amber-300" aria-hidden="true" />}>
+      <Panel title={t('devices_title')} icon={<MapPin className="h-4 w-4 text-amber-700" aria-hidden="true" />}>
         {data.devices.length === 0 ? (
           <Empty>{t('devices_empty')}</Empty>
         ) : (

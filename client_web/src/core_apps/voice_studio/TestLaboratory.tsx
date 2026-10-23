@@ -50,16 +50,16 @@ export const TestLaboratory: React.FC<Props> = ({ voices, defaultVoiceId, eq, fx
 
   return (
     <div className="space-y-6">
-      <div className="border-b border-cyan-500/30 pb-4">
-        <h4 className="flex items-center gap-2 text-base font-bold text-white">
-          <Sparkles className="h-5 w-5 text-cyan-400" aria-hidden="true" />
+      <div className="border-b border-cyan-300 pb-4">
+        <h4 className="flex items-center gap-2 text-base font-bold text-slate-950">
+          <Sparkles className="h-5 w-5 text-cyan-600" aria-hidden="true" />
           {t('test_lab_title')}
         </h4>
-        <p className="text-xs text-slate-300">{t('test_lab_subtitle')}</p>
+        <p className="text-xs text-slate-700">{t('test_lab_subtitle')}</p>
       </div>
 
       {error && (
-        <p role="alert" className="rounded-xl border border-rose-500/40 bg-rose-500/20 p-4 text-xs font-semibold text-rose-200">
+        <p role="alert" className="rounded-xl border border-rose-300 bg-rose-100 p-4 text-xs font-semibold text-rose-800">
           {error}
         </p>
       )}
@@ -82,7 +82,7 @@ export const TestLaboratory: React.FC<Props> = ({ voices, defaultVoiceId, eq, fx
         </Field>
 
         <div>
-          <label className="mb-2 block text-xs font-bold text-slate-200">
+          <label className="mb-2 block text-xs font-bold text-slate-800">
             {t('quick_samples')}:
           </label>
           <div className="flex flex-wrap gap-2" role="group" aria-label="Frasi di test preconfigurate">
@@ -91,7 +91,7 @@ export const TestLaboratory: React.FC<Props> = ({ voices, defaultVoiceId, eq, fx
                 key={idx}
                 type="button"
                 onClick={() => setTestText(s.text)}
-                className="rounded-xl border border-slate-600 bg-slate-800 px-3.5 py-1.5 text-xs font-bold text-white transition hover:border-cyan-400 hover:bg-cyan-500 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 shadow-sm"
+                className="rounded-xl border border-slate-300 bg-slate-100 px-3.5 py-1.5 text-xs font-bold text-white transition hover:border-cyan-400 hover:bg-cyan-500 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 shadow-sm"
               >
                 {s.label}
               </button>
@@ -111,7 +111,7 @@ export const TestLaboratory: React.FC<Props> = ({ voices, defaultVoiceId, eq, fx
           onChange={(e) => setTestText(e.target.value)}
           placeholder="Digita qui il testo da sintetizzare per ascoltare il risultato..."
         />
-        <div className="mt-1.5 flex justify-between text-xs font-medium text-slate-300">
+        <div className="mt-1.5 flex justify-between text-xs font-medium text-slate-700">
           <span>{t('max_chars_hint')}</span>
           <span>{testText.length} / 500</span>
         </div>

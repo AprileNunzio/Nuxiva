@@ -7,6 +7,7 @@ import {
   DownloadableModel,
   McpToolDefinition,
 } from '../types';
+import { CredentialsDraft } from './ProviderCredentials';
 import { StepMethodSelection } from './steps/StepMethodSelection';
 import { StepApiKeyConfig } from './steps/StepApiKeyConfig';
 import { StepOllamaLocalConfig } from './steps/StepOllamaLocalConfig';
@@ -29,6 +30,7 @@ interface StepWizardProps {
   readonly onSaveTarget: (updatedTarget: BrainTargetConfig) => void;
   readonly onUpdateApiKey: (providerId: string, apiKey: string) => void;
   readonly onSaveApiKey: (providerId: string) => Promise<boolean>;
+  readonly onSaveCredentials: (providerId: string, draft: CredentialsDraft) => Promise<boolean>;
   readonly onUpdateRemoteHost?: (host: string) => void;
   readonly onUpdateRemotePort?: (port: number) => void;
   readonly onModelInstalledOnMachine: (machineId: string, modelName: string) => void;
@@ -47,6 +49,7 @@ export const StepWizard: React.FC<StepWizardProps> = ({
   onSaveTarget,
   onUpdateApiKey,
   onSaveApiKey,
+  onSaveCredentials,
   onUpdateRemoteHost,
   onUpdateRemotePort,
   onModelInstalledOnMachine,
@@ -251,11 +254,7 @@ export const StepWizard: React.FC<StepWizardProps> = ({
                 providers={providers}
                 selectedProviderId={providerId}
                 onSelectProvider={setProviderId}
-                apiKey={selectedProvider?.apiKey || ''}
-                onUpdateApiKey={onUpdateApiKey}
-                onSaveApiKey={onSaveApiKey}
-                customEndpoint={customEndpoint}
-                onUpdateEndpoint={setCustomEndpoint}
+                onSaveCredentials={onSaveCredentials}
                 selectedModelId={assignedModel}
                 onSelectModel={(_id, name) => setAssignedModel(name)}
                 t={t}

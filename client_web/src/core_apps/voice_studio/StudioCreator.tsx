@@ -30,12 +30,12 @@ export const StudioCreator: React.FC<Props> = ({ status, busy, run, onSuccess })
 
   return (
     <form onSubmit={handleCreate} className="space-y-6">
-      <div className="border-b border-cyan-500/30 pb-4">
-        <h4 className="flex items-center gap-2 text-base font-bold text-white">
-          <Wand2 className="h-5 w-5 text-cyan-400" aria-hidden="true" />
+      <div className="border-b border-cyan-300 pb-4">
+        <h4 className="flex items-center gap-2 text-base font-bold text-slate-950">
+          <Wand2 className="h-5 w-5 text-cyan-600" aria-hidden="true" />
           {t('design')}
         </h4>
-        <p className="text-xs text-slate-300">
+        <p className="text-xs text-slate-700">
           Personalizza timbro, genere, età e intonazione per generare un nuovo profilo vocale sintetico esclusivo.
         </p>
       </div>
@@ -68,8 +68,8 @@ export const StudioCreator: React.FC<Props> = ({ status, busy, run, onSuccess })
         </Field>
       </div>
 
-      <div className="rounded-2xl border border-slate-700 bg-slate-900/90 p-5 shadow-lg">
-        <span className="mb-3 block text-xs font-bold text-cyan-300">Caratteristiche Vocali:</span>
+      <div className="rounded-2xl border border-slate-300 bg-white p-5 shadow-lg">
+        <span className="mb-3 block text-xs font-bold text-cyan-700">Caratteristiche Vocali:</span>
         <div className="grid gap-4 sm:grid-cols-2">
           {Object.entries(status.choices).map(([key, options]) => (
             <Field key={key} label={t(key)}>

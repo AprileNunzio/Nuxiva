@@ -29,8 +29,8 @@ export const View: React.FC = () => {
     return (
       <div className={PAGE_CLASS}>
         <ExpertsSection />
-        <div className="flex min-h-[20vh] items-center justify-center gap-2 text-sm text-slate-400" role="status">
-          <Loader2 className="h-5 w-5 animate-spin text-cyan-300" aria-hidden="true" />
+        <div className="flex min-h-[20vh] items-center justify-center gap-2 text-sm text-slate-600" role="status">
+          <Loader2 className="h-5 w-5 animate-spin text-cyan-700" aria-hidden="true" />
           {t('loading')}
         </div>
       </div>

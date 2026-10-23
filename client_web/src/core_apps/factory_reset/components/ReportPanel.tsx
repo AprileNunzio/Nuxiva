@@ -13,7 +13,7 @@ interface Props {
 const Check: React.FC<{ readonly ok: boolean; readonly label: string; readonly detail?: string }> = ({ ok, label, detail }) => (
   <Row actions={<Pill tone={ok ? 'emerald' : 'rose'}>{ok ? 'OK' : '!'}</Pill>}>
     <div className="min-w-0">
-      <p className="text-sm text-slate-100">{label}</p>
+      <p className="text-sm text-slate-900">{label}</p>
       {detail ? <p className="text-xs text-slate-500">{detail}</p> : null}
     </div>
   </Row>
@@ -23,7 +23,7 @@ export const ReportPanel: React.FC<Props> = ({ report, lang, t, title }) => {
   if (report === null) {
     return (
       <Panel title={title ?? t('report_title')}>
-        <p className="text-sm text-slate-300">{t('report_signed_out')}</p>
+        <p className="text-sm text-slate-700">{t('report_signed_out')}</p>
       </Panel>
     );
   }
@@ -35,9 +35,9 @@ export const ReportPanel: React.FC<Props> = ({ report, lang, t, title }) => {
   return (
     <Panel
       title={title ?? t('report_title')}
-      icon={verified ? <CheckCircle2 className="h-4 w-4 text-emerald-300" aria-hidden="true" /> : <ShieldAlert className="h-4 w-4 text-rose-300" aria-hidden="true" />}
+      icon={verified ? <CheckCircle2 className="h-4 w-4 text-emerald-700" aria-hidden="true" /> : <ShieldAlert className="h-4 w-4 text-rose-700" aria-hidden="true" />}
     >
-      <p className={`mb-3 text-sm font-semibold ${verified ? 'text-emerald-300' : 'text-rose-300'}`} role="status">
+      <p className={`mb-3 text-sm font-semibold ${verified ? 'text-emerald-700' : 'text-rose-700'}`} role="status">
         {t(verified ? 'report_verified' : 'report_incomplete')}
       </p>
       <p className="mb-3 text-xs text-slate-500">{t('report_when', { time: formatTime(report.finished, lang) })}</p>
@@ -49,10 +49,10 @@ export const ReportPanel: React.FC<Props> = ({ report, lang, t, title }) => {
         <Check ok label={t('check_secrets', { rotated: report.envRotated, removed: report.envRemoved })} />
         <Check ok={report.notStarted.length === 0} label={t('check_services')} detail={report.notStarted.length ? report.notStarted.join(', ') : undefined} />
       </List>
-      {report.kept.length ? <p className="mt-3 text-xs text-amber-300/80">{t('report_kept', { items: report.kept.join(', ') })}</p> : null}
-      {report.skippedMounts ? <p className="mt-2 text-xs text-amber-300/80">{t('report_mounts', { n: report.skippedMounts })}</p> : null}
+      {report.kept.length ? <p className="mt-3 text-xs text-amber-700">{t('report_kept', { items: report.kept.join(', ') })}</p> : null}
+      {report.skippedMounts ? <p className="mt-2 text-xs text-amber-700">{t('report_mounts', { n: report.skippedMounts })}</p> : null}
       <p className="mt-3 text-xs text-slate-500">{t('report_ssd_note')}</p>
-      {verified ? <p className="mt-2 text-sm text-slate-300">{t('report_next')}</p> : null}
+      {verified ? <p className="mt-2 text-sm text-slate-700">{t('report_next')}</p> : null}
     </Panel>
   );
 };

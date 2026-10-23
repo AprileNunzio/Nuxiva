@@ -33,14 +33,14 @@ export const View: React.FC = () => {
         <Stat label={t('stat_enabled')} value={enabled ? t('yes') : t('no')} tone={enabled ? 'emerald' : 'slate'} />
         <Stat label={t('stat_duration')} value={`${seconds} s`} />
       </StatRow>
-      <Panel title={t('control')} icon={<Siren className="h-4 w-4 text-rose-300" aria-hidden="true" />}>
+      <Panel title={t('control')} icon={<Siren className="h-4 w-4 text-rose-700" aria-hidden="true" />}>
         {active ? (
           <div className="mb-3 flex flex-wrap items-center gap-2" role="alert">
             <Pill tone="rose">{t('state_active')}</Pill>
-            <span className="text-sm text-slate-200">{message}</span>
+            <span className="text-sm text-slate-800">{message}</span>
           </div>
         ) : (
-          <p className="mb-3 text-sm text-slate-400">{t('idle_hint')}</p>
+          <p className="mb-3 text-sm text-slate-600">{t('idle_hint')}</p>
         )}
         <div className="flex flex-wrap gap-2">
           <Btn tone="amber" busy={busy} disabled={!enabled || active} onClick={() => void run(testAlert, 'emergency_test_failed')}>

@@ -5,17 +5,17 @@ import { PAGE_CLASS } from '../../shared/ui/layout';
 export type Tone = 'cyan' | 'emerald' | 'amber' | 'rose' | 'purple' | 'slate';
 
 const TONES: Record<Tone, string> = {
-  cyan: 'border-cyan-500/40 bg-cyan-500/10 text-cyan-200',
-  emerald: 'border-emerald-500/40 bg-emerald-500/10 text-emerald-200',
-  amber: 'border-amber-500/40 bg-amber-500/10 text-amber-200',
-  rose: 'border-rose-500/40 bg-rose-500/10 text-rose-200',
-  purple: 'border-purple-500/40 bg-purple-500/10 text-purple-200',
-  slate: 'border-slate-600/60 bg-slate-800/60 text-slate-300',
+  cyan: 'border-cyan-300 bg-cyan-50 text-cyan-800',
+  emerald: 'border-emerald-300 bg-emerald-50 text-emerald-800',
+  amber: 'border-amber-300 bg-amber-50 text-amber-800',
+  rose: 'border-rose-300 bg-rose-50 text-rose-800',
+  purple: 'border-purple-300 bg-purple-50 text-purple-800',
+  slate: 'border-slate-300 bg-slate-100 text-slate-700',
 };
 
-export const panelClass = 'rounded-2xl border border-slate-800/80 bg-gradient-to-br from-slate-900/70 to-slate-950/90 p-4 sm:p-5';
+export const panelClass = 'rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-white p-4 sm:p-5';
 export const inputClass =
-  'w-full rounded-xl border border-slate-700/80 bg-slate-950/80 px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500';
+  'w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500';
 export const gridClass = 'grid gap-4 lg:grid-cols-2 3xl:grid-cols-3';
 
 interface FrameProps {
@@ -30,8 +30,8 @@ export const AppFrame: React.FC<FrameProps> = ({ title, description, onReload, a
   <div className={PAGE_CLASS}>
     <header className="flex flex-wrap items-start justify-between gap-3">
       <div className="min-w-0">
-        <h1 className="text-xl font-black tracking-wide text-cyan-300">{title}</h1>
-        <p className="mt-1 max-w-3xl text-sm text-slate-400">{description}</p>
+        <h1 className="text-xl font-black tracking-wide text-cyan-700">{title}</h1>
+        <p className="mt-1 max-w-3xl text-sm text-slate-600">{description}</p>
       </div>
       <div className="flex items-center gap-2">
         {actions}
@@ -40,7 +40,7 @@ export const AppFrame: React.FC<FrameProps> = ({ title, description, onReload, a
             type="button"
             onClick={onReload}
             aria-label="refresh"
-            className="rounded-xl border border-slate-700 bg-slate-900 p-2 text-slate-300 transition hover:border-cyan-500 hover:text-cyan-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+            className="rounded-xl border border-slate-300 bg-white p-2 text-slate-700 transition hover:border-cyan-500 hover:text-cyan-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
           >
             <RefreshCw className="h-4 w-4" aria-hidden="true" />
           </button>
@@ -62,7 +62,7 @@ interface PanelProps {
 export const Panel: React.FC<PanelProps> = ({ title, icon, actions, className = '', children }) => (
   <section className={`${panelClass} ${className} min-w-0`}>
     <div className="mb-3 flex items-center justify-between gap-2">
-      <h2 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+      <h2 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">
         {icon}
         {title}
       </h2>
@@ -73,7 +73,7 @@ export const Panel: React.FC<PanelProps> = ({ title, icon, actions, className = 
 );
 
 export const Stat: React.FC<{ readonly label: string; readonly value: React.ReactNode; readonly tone?: Tone }> = ({ label, value, tone = 'cyan' }) => (
-  <div className="rounded-xl border border-slate-800/80 bg-slate-950/60 px-3 py-2.5">
+  <div className="rounded-xl border border-slate-200 bg-white px-3 py-2.5">
     <div className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">{label}</div>
     <div className={`mt-0.5 truncate font-mono text-lg font-bold ${TONES[tone].split(' ').pop()}`}>{value}</div>
   </div>
@@ -111,8 +111,8 @@ export const Btn: React.FC<BtnProps> = ({ onClick, busy = false, disabled = fals
 );
 
 export const Row: React.FC<{ readonly children: React.ReactNode; readonly actions?: React.ReactNode }> = ({ children, actions }) => (
-  <li className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-800/70 bg-slate-950/50 px-3 py-2">
-    <div className="min-w-0 flex-1 text-sm text-slate-200">{children}</div>
+  <li className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
+    <div className="min-w-0 flex-1 text-sm text-slate-800">{children}</div>
     {actions ? <div className="flex shrink-0 flex-wrap items-center gap-2">{actions}</div> : null}
   </li>
 );
@@ -120,25 +120,25 @@ export const Row: React.FC<{ readonly children: React.ReactNode; readonly action
 export const List: React.FC<{ readonly children: React.ReactNode }> = ({ children }) => <ul className="flex flex-col gap-2">{children}</ul>;
 
 export const Empty: React.FC<{ readonly children: React.ReactNode }> = ({ children }) => (
-  <p className="rounded-xl border border-dashed border-slate-700/70 px-3 py-6 text-center text-sm text-slate-500">{children}</p>
+  <p className="rounded-xl border border-dashed border-slate-300 px-3 py-6 text-center text-sm text-slate-500">{children}</p>
 );
 
 export const Loading: React.FC<{ readonly label: string }> = ({ label }) => (
-  <div className="flex min-h-[40vh] flex-col items-center justify-center gap-3 text-sm text-slate-400" role="status">
-    <Loader2 className="h-6 w-6 animate-spin text-cyan-300" aria-hidden="true" />
+  <div className="flex min-h-[40vh] flex-col items-center justify-center gap-3 text-sm text-slate-600" role="status">
+    <Loader2 className="h-6 w-6 animate-spin text-cyan-700" aria-hidden="true" />
     {label}
   </div>
 );
 
 export const Unreachable: React.FC<{ readonly label: string }> = ({ label }) => (
-  <div className="flex min-h-[40vh] flex-col items-center justify-center gap-3 text-sm text-slate-400" role="alert">
-    <WifiOff className="h-6 w-6 text-rose-300" aria-hidden="true" />
+  <div className="flex min-h-[40vh] flex-col items-center justify-center gap-3 text-sm text-slate-600" role="alert">
+    <WifiOff className="h-6 w-6 text-rose-700" aria-hidden="true" />
     {label}
   </div>
 );
 
 export const Field: React.FC<{ readonly label: string; readonly children: React.ReactNode }> = ({ label, children }) => (
-  <label className="flex flex-col gap-1 text-xs font-semibold text-slate-400">
+  <label className="flex flex-col gap-1 text-xs font-semibold text-slate-600">
     {label}
     {children}
   </label>
@@ -157,7 +157,7 @@ export const Toggle: React.FC<{ readonly checked: boolean; readonly onChange: (v
     aria-label={label}
     disabled={disabled}
     onClick={() => onChange(!checked)}
-    className={`relative h-6 w-11 shrink-0 rounded-full border transition disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${checked ? 'border-cyan-500 bg-cyan-500/30' : 'border-slate-600 bg-slate-800'}`}
+    className={`relative h-6 w-11 shrink-0 rounded-full border transition disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${checked ? 'border-cyan-500 bg-cyan-100' : 'border-slate-300 bg-slate-100'}`}
   >
     <span className={`absolute top-0.5 h-4 w-4 rounded-full bg-white transition-all ${checked ? 'left-6' : 'left-0.5'}`} />
   </button>
@@ -191,7 +191,7 @@ export const OSSectionHeader: React.FC<{
 }> = ({ title, eyebrow, description, badge, actions }) => (
   <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/80 pb-3 mb-4">
     <div>
-      {eyebrow && <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-400">{eyebrow}</span>}
+      {eyebrow && <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-600">{eyebrow}</span>}
       <div className="flex items-center gap-2">
         <h1 className="text-base font-bold text-slate-800">{title}</h1>
         {badge}
@@ -231,7 +231,7 @@ export const OSFilterTabs: React.FC<{
         {option.count !== undefined && (
           <span
             className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono ${
-              selected === option.id ? 'bg-blue-700 text-blue-100' : 'bg-slate-100 text-slate-500'
+              selected === option.id ? 'bg-blue-700 text-blue-900' : 'bg-slate-100 text-slate-500'
             }`}
           >
             {option.count}
@@ -256,7 +256,7 @@ export const OSEnergyBar: React.FC<{
         <div className="font-semibold text-slate-800 truncate mr-2">{label}</div>
         <div className="font-mono font-bold text-blue-700 shrink-0">{formattedValue}</div>
       </div>
-      {sublabel && <div className="text-[11px] text-slate-400">{sublabel}</div>}
+      {sublabel && <div className="text-[11px] text-slate-600">{sublabel}</div>}
       <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden mt-1">
         <div
           className="bg-blue-600 h-full rounded-full transition-all duration-300"
@@ -282,7 +282,7 @@ export const OSSidebar: React.FC<{
   readonly footer?: React.ReactNode;
 }> = ({ title, items, activeId, onSelect, footer }) => (
   <nav className="flex h-full flex-col gap-1 overflow-y-auto p-2" aria-label={title}>
-    {title && <span className="px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">{title}</span>}
+    {title && <span className="px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-600">{title}</span>}
     <div className="flex flex-col gap-0.5 flex-1">
       {items.map((item) => (
         <button
@@ -303,7 +303,7 @@ export const OSSidebar: React.FC<{
           {item.count !== undefined && (
             <span
               className={`rounded-full px-1.5 py-0.2 text-[10px] font-mono ${
-                activeId === item.id ? 'bg-blue-700 text-blue-100' : 'bg-slate-200/70 text-slate-600'
+                activeId === item.id ? 'bg-blue-700 text-blue-900' : 'bg-slate-200/70 text-slate-600'
               }`}
             >
               {item.count}
@@ -327,14 +327,14 @@ export const OSInspector: React.FC<{
     <header className="flex items-center justify-between border-b border-slate-200/80 px-4 py-2.5">
       <div className="min-w-0 flex-1">
         <h3 className="truncate text-xs font-bold text-slate-800">{title}</h3>
-        {subtitle && <p className="truncate text-[11px] text-slate-400">{subtitle}</p>}
+        {subtitle && <p className="truncate text-[11px] text-slate-600">{subtitle}</p>}
       </div>
       {onClose && (
         <button
           type="button"
           onClick={onClose}
           aria-label="Chiudi riquadro dettagli"
-          className="rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+          className="rounded-md p-1 text-slate-600 hover:bg-slate-100 hover:text-slate-600"
         >
           <X className="h-4 w-4" />
         </button>
@@ -420,23 +420,23 @@ export const OSAppLayout: React.FC<OSAppLayoutProps> = ({
 
         {/* Universal Drop Overlay for single or multiple files */}
         {isDragging && onFilesDrop && (
-          <div className="absolute inset-0 z-50 flex flex-col items-center justify-center gap-3 bg-blue-900/85 p-8 text-center text-white backdrop-blur-xs animate-fadeIn">
-            <div className="rounded-full bg-white/10 p-5 ring-4 ring-white/20">
-              <UploadCloud className="h-12 w-12 text-white animate-bounce" />
+          <div className="absolute inset-0 z-50 flex flex-col items-center justify-center gap-3 bg-blue-900/85 p-8 text-center text-slate-950 backdrop-blur-xs animate-fadeIn">
+            <div className="rounded-full bg-slate-100 p-5 ring-4 ring-white/20">
+              <UploadCloud className="h-12 w-12 text-slate-950 animate-bounce" />
             </div>
             <strong className="text-base font-bold">{dropLabel}</strong>
-            <p className="max-w-md text-xs text-blue-100">{dropHint}</p>
+            <p className="max-w-md text-xs text-blue-900">{dropHint}</p>
           </div>
         )}
 
         {/* Universal Upload Progress Floating Badge */}
         {(isUploading || uploadStatus) && (
-          <div className="absolute bottom-4 right-4 z-40 flex items-center gap-2.5 rounded-xl border border-slate-700/80 bg-slate-900/95 px-4 py-2.5 text-xs text-white shadow-2xl backdrop-blur-md animate-fadeIn">
-            <Loader2 className="h-4 w-4 animate-spin text-blue-400 shrink-0" />
+          <div className="absolute bottom-4 right-4 z-40 flex items-center gap-2.5 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs text-slate-950 shadow-2xl backdrop-blur-md animate-fadeIn">
+            <Loader2 className="h-4 w-4 animate-spin text-blue-600 shrink-0" />
             <div className="flex flex-col gap-1 min-w-[140px]">
-              <span className="font-semibold text-slate-100">{uploadStatus || 'Caricamento file…'}</span>
+              <span className="font-semibold text-slate-900">{uploadStatus || 'Caricamento file…'}</span>
               {uploadProgress !== null && uploadProgress !== undefined && (
-                <div className="h-1.5 w-full rounded-full bg-slate-800 overflow-hidden">
+                <div className="h-1.5 w-full rounded-full bg-slate-100 overflow-hidden">
                   <div
                     className="h-full bg-blue-500 rounded-full transition-all duration-200"
                     style={{ width: `${Math.min(100, Math.max(0, uploadProgress))}%` }}

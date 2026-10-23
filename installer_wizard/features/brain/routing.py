@@ -11,7 +11,7 @@ from features.brain import assignments as model
 from features.brain import scope
 from features.brain.assignments import Assignment
 from features.brain.brains import brains
-from features.brain.components import COMPONENTS
+from features.brain.components import BY_ID, COMPONENTS, COMPONENTS_STATIC as STATIC
 from features.brain.keepalive import keep_alive_policy
 from features.brain.tuning import Tuning
 
@@ -77,11 +77,11 @@ class AssignmentService:
         self._write(self._routes, json.dumps({**payload, "updated": int(time.time())}, ensure_ascii=False, separators=(",", ":")))
         self._published = payload
 
-    def overview(self, installed: set[str]) -> list[dict]:
+    def overview(self, installed: set[str], extra: tuple[str, ...] = ()) -> list[dict]:
         from features.brain.trace import trace
         assignments, orders, stats = self.assignments(), self.role_orders(), trace.summary()
         rows = []
-        for component in COMPONENTS:
+        for component in (*COMPONENTS, *(BY_ID[c] for c in extra if c in BY_ID and c not in STATIC)):
             own = assignments.get(component.id)
             chain = model.resolve(component.id, assignments, orders)
             rows.append({

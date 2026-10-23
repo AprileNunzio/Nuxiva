@@ -32,55 +32,55 @@ export const CATEGORIES: {
     id: 'all',
     label: { it: 'Tutti i Moduli', en: 'All Modules', es: 'Todos los Módulos', fr: 'Tous les Modules' },
     icon: Grid,
-    accent: 'text-cyan-400',
+    accent: 'text-cyan-600',
     borderActive: 'border-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.3)]',
-    bgActive: 'bg-cyan-500/15 text-white',
-    badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+    bgActive: 'bg-cyan-50 text-slate-950',
+    badgeColor: 'bg-cyan-100 text-cyan-700 border-cyan-300',
   },
   {
     id: 'ai',
     label: { it: 'Intelligenza & Agenti', en: 'AI & Agents', es: 'IA y Agentes', fr: 'IA et Agents' },
     icon: Brain,
-    accent: 'text-purple-400',
+    accent: 'text-purple-600',
     borderActive: 'border-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.3)]',
-    bgActive: 'bg-purple-500/15 text-white',
-    badgeColor: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+    bgActive: 'bg-purple-50 text-slate-950',
+    badgeColor: 'bg-purple-100 text-purple-700 border-purple-300',
   },
   {
     id: 'infra',
     label: { it: 'Infrastruttura & Mesh', en: 'Infra & Mesh', es: 'Infraestructura y Malla', fr: 'Infrastructure et Mesh' },
     icon: Server,
-    accent: 'text-cyan-400',
+    accent: 'text-cyan-600',
     borderActive: 'border-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.3)]',
-    bgActive: 'bg-cyan-500/15 text-white',
-    badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+    bgActive: 'bg-cyan-50 text-slate-950',
+    badgeColor: 'bg-cyan-100 text-cyan-700 border-cyan-300',
   },
   {
     id: 'automation',
     label: { it: 'Automazione & Flussi', en: 'Automation & Ops', es: 'Automatización y Flujos', fr: 'Automatisation & Flux' },
     icon: Zap,
-    accent: 'text-amber-400',
+    accent: 'text-amber-600',
     borderActive: 'border-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.3)]',
-    bgActive: 'bg-amber-500/15 text-white',
-    badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+    bgActive: 'bg-amber-50 text-slate-950',
+    badgeColor: 'bg-amber-100 text-amber-700 border-amber-300',
   },
   {
     id: 'security',
     label: { it: 'Sicurezza & Sorveglianza', en: 'Security & Space', es: 'Seguridad y Espacio', fr: 'Sécurité & Espace' },
     icon: Shield,
-    accent: 'text-rose-400',
+    accent: 'text-rose-600',
     borderActive: 'border-rose-500 shadow-[0_0_15px_rgba(244,63,94,0.3)]',
-    bgActive: 'bg-rose-500/15 text-white',
-    badgeColor: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
+    bgActive: 'bg-rose-50 text-slate-950',
+    badgeColor: 'bg-rose-100 text-rose-700 border-rose-300',
   },
   {
     id: 'media',
     label: { it: 'Produttività & Media', en: 'Productivity & Media', es: 'Productividad y Medios', fr: 'Productivité & Médias' },
     icon: Layers,
-    accent: 'text-emerald-400',
+    accent: 'text-emerald-600',
     borderActive: 'border-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.3)]',
-    bgActive: 'bg-emerald-500/15 text-white',
-    badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+    bgActive: 'bg-emerald-50 text-slate-950',
+    badgeColor: 'bg-emerald-100 text-emerald-700 border-emerald-300',
   },
 ];
 
@@ -112,34 +112,34 @@ const CORE_APPS_LIST: CoreAppDef[] = [
 ];
 
 const ICON_MAP: Record<string, React.ReactNode> = {
-  Brain: <Brain className="w-5 h-5 text-purple-400" />,
-  RotateCcw: <RotateCcw className="w-5 h-5 text-rose-400" />,
-  CloudSun: <CloudSun className="w-5 h-5 text-emerald-400" />,
-  Clock: <Clock className="w-5 h-5 text-amber-400" />,
-  Users: <Users className="w-5 h-5 text-purple-400" />,
-  Binary: <Binary className="w-5 h-5 text-purple-400" />,
-  Hand: <Hand className="w-5 h-5 text-amber-400" />,
-  Workflow: <Workflow className="w-5 h-5 text-amber-400" />,
-  Grid: <Grid className="w-5 h-5 text-emerald-400" />,
-  Home: <Home className="w-5 h-5 text-rose-400" />,
-  Music: <Music className="w-5 h-5 text-emerald-400" />,
-  Mail: <Mail className="w-5 h-5 text-emerald-400" />,
-  Tv: <Tv className="w-5 h-5 text-emerald-400" />,
-  Scale: <Scale className="w-5 h-5 text-amber-400" />,
-  Mic: <Mic className="w-5 h-5 text-purple-400" />,
-  Server: <Server className="w-5 h-5 text-cyan-400" />,
-  Video: <Video className="w-5 h-5 text-rose-400" />,
-  ShieldCheck: <ShieldCheck className="w-5 h-5 text-cyan-400" />,
-  Zap: <Zap className="w-5 h-5 text-amber-400" />,
-  Lock: <Lock className="w-5 h-5 text-rose-400" />,
-  UserCheck: <UserCheck className="w-5 h-5 text-rose-400" />,
-  FileText: <FileText className="w-5 h-5 text-emerald-400" />,
-  Box: <Box className="w-5 h-5 text-purple-400" />,
-  BookOpen: <BookOpen className="w-5 h-5 text-purple-400" />,
+  Brain: <Brain className="w-5 h-5 text-purple-600" />,
+  RotateCcw: <RotateCcw className="w-5 h-5 text-rose-600" />,
+  CloudSun: <CloudSun className="w-5 h-5 text-emerald-600" />,
+  Clock: <Clock className="w-5 h-5 text-amber-600" />,
+  Users: <Users className="w-5 h-5 text-purple-600" />,
+  Binary: <Binary className="w-5 h-5 text-purple-600" />,
+  Hand: <Hand className="w-5 h-5 text-amber-600" />,
+  Workflow: <Workflow className="w-5 h-5 text-amber-600" />,
+  Grid: <Grid className="w-5 h-5 text-emerald-600" />,
+  Home: <Home className="w-5 h-5 text-rose-600" />,
+  Music: <Music className="w-5 h-5 text-emerald-600" />,
+  Mail: <Mail className="w-5 h-5 text-emerald-600" />,
+  Tv: <Tv className="w-5 h-5 text-emerald-600" />,
+  Scale: <Scale className="w-5 h-5 text-amber-600" />,
+  Mic: <Mic className="w-5 h-5 text-purple-600" />,
+  Server: <Server className="w-5 h-5 text-cyan-600" />,
+  Video: <Video className="w-5 h-5 text-rose-600" />,
+  ShieldCheck: <ShieldCheck className="w-5 h-5 text-cyan-600" />,
+  Zap: <Zap className="w-5 h-5 text-amber-600" />,
+  Lock: <Lock className="w-5 h-5 text-rose-600" />,
+  UserCheck: <UserCheck className="w-5 h-5 text-rose-600" />,
+  FileText: <FileText className="w-5 h-5 text-emerald-600" />,
+  Box: <Box className="w-5 h-5 text-purple-600" />,
+  BookOpen: <BookOpen className="w-5 h-5 text-purple-600" />,
   AlertTriangle: <AlertTriangle className="w-5 h-5 text-rose-500 animate-pulse" />,
-  Archive: <Archive className="w-5 h-5 text-cyan-400" />,
-  Radio: <Radio className="w-5 h-5 text-cyan-400" />,
-  RefreshCw: <RefreshCw className="w-5 h-5 text-cyan-400" />,
+  Archive: <Archive className="w-5 h-5 text-cyan-600" />,
+  Radio: <Radio className="w-5 h-5 text-cyan-600" />,
+  RefreshCw: <RefreshCw className="w-5 h-5 text-cyan-600" />,
 };
 
 const ACCENT_STYLES: Record<string, {
@@ -151,37 +151,37 @@ const ACCENT_STYLES: Record<string, {
 }> = {
   purple: {
     border: 'border-purple-900/40',
-    hoverBorder: 'hover:border-purple-500/60',
+    hoverBorder: 'hover:border-purple-300',
     shadow: 'hover:shadow-[0_0_20px_rgba(168,85,247,0.2)]',
-    badge: 'bg-purple-950/60 text-purple-300 border-purple-800/80',
+    badge: 'bg-purple-950/60 text-purple-700 border-purple-800/80',
     iconBg: 'bg-purple-950/30 border-purple-800/40',
   },
   cyan: {
     border: 'border-cyan-900/40',
-    hoverBorder: 'hover:border-cyan-500/60',
+    hoverBorder: 'hover:border-cyan-300',
     shadow: 'hover:shadow-[0_0_20px_rgba(6,182,212,0.2)]',
-    badge: 'bg-cyan-950/60 text-cyan-300 border-cyan-800/80',
+    badge: 'bg-cyan-950/60 text-cyan-700 border-cyan-800/80',
     iconBg: 'bg-cyan-950/30 border-cyan-800/40',
   },
   amber: {
     border: 'border-amber-900/40',
-    hoverBorder: 'hover:border-amber-500/60',
+    hoverBorder: 'hover:border-amber-300',
     shadow: 'hover:shadow-[0_0_20px_rgba(245,158,11,0.2)]',
-    badge: 'bg-amber-950/60 text-amber-300 border-amber-800/80',
+    badge: 'bg-amber-950/60 text-amber-700 border-amber-800/80',
     iconBg: 'bg-amber-950/30 border-amber-800/40',
   },
   rose: {
     border: 'border-rose-900/40',
-    hoverBorder: 'hover:border-rose-500/60',
+    hoverBorder: 'hover:border-rose-300',
     shadow: 'hover:shadow-[0_0_20px_rgba(244,63,94,0.2)]',
-    badge: 'bg-rose-950/60 text-rose-300 border-rose-800/80',
+    badge: 'bg-rose-950/60 text-rose-700 border-rose-800/80',
     iconBg: 'bg-rose-950/30 border-rose-800/40',
   },
   emerald: {
     border: 'border-emerald-900/40',
-    hoverBorder: 'hover:border-emerald-500/60',
+    hoverBorder: 'hover:border-emerald-300',
     shadow: 'hover:shadow-[0_0_20px_rgba(16,185,129,0.2)]',
-    badge: 'bg-emerald-950/60 text-emerald-300 border-emerald-800/80',
+    badge: 'bg-emerald-950/60 text-emerald-700 border-emerald-800/80',
     iconBg: 'bg-emerald-950/30 border-emerald-800/40',
   },
 };
@@ -202,12 +202,12 @@ const CoreAppCard: React.FC<CoreAppCardProps> = ({ app, onSelect }) => {
   return (
     <div
       onClick={() => onSelect(app.id)}
-      className={`group relative backdrop-blur-xl bg-slate-900/70 hover:bg-slate-900/95 border ${style.border} ${style.hoverBorder} ${style.shadow} rounded-xl p-3.5 cursor-pointer transition-all duration-200 hover:scale-[1.015] flex flex-col justify-between`}
+      className={`group relative backdrop-blur-xl bg-white hover:bg-white border ${style.border} ${style.hoverBorder} ${style.shadow} rounded-xl p-3.5 cursor-pointer transition-all duration-200 hover:scale-[1.015] flex flex-col justify-between`}
     >
       <div>
         <div className="flex items-center justify-between mb-2.5">
           <div className={`w-9 h-9 rounded-lg ${style.iconBg} border flex items-center justify-center transition-transform group-hover:scale-105`}>
-            {ICON_MAP[app.iconName] || <Grid className="w-5 h-5 text-cyan-400" />}
+            {ICON_MAP[app.iconName] || <Grid className="w-5 h-5 text-cyan-600" />}
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
@@ -217,15 +217,15 @@ const CoreAppCard: React.FC<CoreAppCardProps> = ({ app, onSelect }) => {
           </div>
         </div>
 
-        <h3 className="text-sm font-bold text-white group-hover:text-cyan-300 transition-colors truncate">
+        <h3 className="text-sm font-bold text-slate-950 group-hover:text-cyan-700 transition-colors truncate">
           {title}
         </h3>
-        <p className="text-[11px] text-slate-400 mt-1 line-clamp-2 leading-relaxed">
+        <p className="text-[11px] text-slate-600 mt-1 line-clamp-2 leading-relaxed">
           {description}
         </p>
       </div>
 
-      <div className="mt-3 pt-2.5 border-t border-slate-800/70 flex items-center justify-between text-[11px] font-mono text-slate-400 group-hover:text-cyan-300 transition-colors">
+      <div className="mt-3 pt-2.5 border-t border-slate-200 flex items-center justify-between text-[11px] font-mono text-slate-600 group-hover:text-cyan-700 transition-colors">
         <span className="font-semibold">{openLabel}</span>
         <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform" />
       </div>
@@ -285,56 +285,56 @@ export const GlobalCommandGrid: React.FC<{
   }, []);
 
   return (
-    <div className="w-full min-h-[calc(100vh-68px)] bg-[#030712] p-5 lg:p-8 font-sans text-slate-100 flex flex-col gap-5">
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800/80 pb-5">
+    <div className="w-full min-h-[calc(100vh-68px)] bg-[#030712] p-5 lg:p-8 font-sans text-slate-900 flex flex-col gap-5">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
           <div className="flex flex-wrap items-center gap-2.5">
             <h1 className="text-xl lg:text-2xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-blue-500">
               {t('heading')}
             </h1>
             {running !== null && (
-              <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-xs font-mono font-bold">
-                <Activity className="w-3.5 h-3.5 animate-pulse text-cyan-400" />
+              <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-cyan-50 text-cyan-600 border border-cyan-300 text-xs font-mono font-bold">
+                <Activity className="w-3.5 h-3.5 animate-pulse text-cyan-600" />
                 <span>{t('active_services', { count: running })}</span>
               </div>
             )}
-            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[11px] font-mono font-semibold">
+            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-300 text-[11px] font-mono font-semibold">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
               <span>{t('zero_trust')}</span>
             </div>
           </div>
-          <p className="text-xs text-slate-400 mt-1 font-mono">
+          <p className="text-xs text-slate-600 mt-1 font-mono">
             {t('subtitle')}
           </p>
         </div>
         <div className="flex items-center gap-3">
           <div className="relative w-full sm:w-64">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Search className="w-4 h-4 text-slate-600 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={t('search_placeholder')}
               aria-label={t('search_placeholder')}
-              className="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl pl-9 pr-8 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 font-mono transition"
+              className="w-full bg-white border border-slate-300 rounded-xl pl-9 pr-8 py-1.5 text-xs text-slate-800 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 font-mono transition"
             />
             {search && (
               <button
                 onClick={() => setSearch('')}
                 aria-label={t('clear')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-600 hover:text-slate-950"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
             )}
           </div>
           {selectedCategory === 'all' && !search && (
-            <div className="hidden md:flex items-center bg-slate-900 border border-slate-800 rounded-xl p-0.5">
+            <div className="hidden md:flex items-center bg-white border border-slate-200 rounded-xl p-0.5">
               <button
                 onClick={() => setViewMode('grouped')}
                 title={t('view_grouped')}
                 className={`p-1.5 rounded-lg transition ${
-                  viewMode === 'grouped' ? 'bg-cyan-500/20 text-cyan-300' : 'text-slate-400 hover:text-white'
+                  viewMode === 'grouped' ? 'bg-cyan-100 text-cyan-700' : 'text-slate-600 hover:text-slate-950'
                 }`}
               >
                 <ListFilter className="w-4 h-4" />
@@ -343,7 +343,7 @@ export const GlobalCommandGrid: React.FC<{
                 onClick={() => setViewMode('dense')}
                 title={t('view_dense')}
                 className={`p-1.5 rounded-lg transition ${
-                  viewMode === 'dense' ? 'bg-cyan-500/20 text-cyan-300' : 'text-slate-400 hover:text-white'
+                  viewMode === 'dense' ? 'bg-cyan-100 text-cyan-700' : 'text-slate-600 hover:text-slate-950'
                 }`}
               >
                 <LayoutGrid className="w-4 h-4" />
@@ -354,9 +354,9 @@ export const GlobalCommandGrid: React.FC<{
           {onBackToCanvas && (
             <button
               onClick={onBackToCanvas}
-              className="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs text-slate-200 hover:text-white transition flex items-center gap-1.5 shrink-0 cursor-pointer font-mono"
+              className="px-3.5 py-1.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 text-xs text-slate-800 hover:text-slate-950 transition flex items-center gap-1.5 shrink-0 cursor-pointer font-mono"
             >
-              <Cpu className="w-3.5 h-3.5 text-cyan-400" />
+              <Cpu className="w-3.5 h-3.5 text-cyan-600" />
               <span className="hidden sm:inline">{t('spatial_graph')}</span>
             </button>
           )}
@@ -376,13 +376,13 @@ export const GlobalCommandGrid: React.FC<{
               className={`flex items-center gap-2 px-3.5 py-2 rounded-xl border text-xs font-semibold transition-all duration-200 shrink-0 cursor-pointer ${
                 isActive
                   ? `${cat.borderActive} ${cat.bgActive} font-bold`
-                  : 'bg-slate-900/60 border-slate-800/80 text-slate-400 hover:text-slate-200 hover:border-slate-700'
+                  : 'bg-white border-slate-200 text-slate-600 hover:text-slate-800 hover:border-slate-300'
               }`}
             >
-              <Icon className={`w-4 h-4 ${isActive ? cat.accent : 'text-slate-400'}`} />
+              <Icon className={`w-4 h-4 ${isActive ? cat.accent : 'text-slate-600'}`} />
               <span>{label}</span>
               <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full border ${
-                isActive ? cat.badgeColor : 'bg-slate-800 text-slate-500 border-slate-700'
+                isActive ? cat.badgeColor : 'bg-slate-100 text-slate-500 border-slate-300'
               }`}>
                 {count}
               </span>
@@ -391,7 +391,7 @@ export const GlobalCommandGrid: React.FC<{
         })}
       </div>
       {processedApps.length === 0 ? (
-        <div className="p-12 text-center rounded-2xl border border-slate-800 bg-slate-900/40 text-slate-400 flex flex-col items-center justify-center gap-3">
+        <div className="p-12 text-center rounded-2xl border border-slate-200 bg-slate-50 text-slate-600 flex flex-col items-center justify-center gap-3">
           <Search className="w-8 h-8 text-slate-600" />
           <p className="text-sm">{t('no_results', { query: search })}</p>
           <button
@@ -411,12 +411,12 @@ export const GlobalCommandGrid: React.FC<{
 
             return (
               <div key={cat.id} className="space-y-3">
-                <div className="flex items-center justify-between border-b border-slate-800/60 pb-2">
+                <div className="flex items-center justify-between border-b border-slate-200 pb-2">
                   <div className="flex items-center gap-2">
-                    <div className="p-1 rounded-lg bg-slate-900 border border-slate-800">
+                    <div className="p-1 rounded-lg bg-white border border-slate-200">
                       <Icon className={`w-4 h-4 ${cat.accent}`} />
                     </div>
-                    <h2 className="text-sm font-bold text-white uppercase tracking-wider font-mono">
+                    <h2 className="text-sm font-bold text-slate-950 uppercase tracking-wider font-mono">
                       {label}
                     </h2>
                     <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${cat.badgeColor}`}>
@@ -425,7 +425,7 @@ export const GlobalCommandGrid: React.FC<{
                   </div>
                   <button
                     onClick={() => setSelectedCategory(cat.id)}
-                    className="text-[11px] font-mono text-cyan-400 hover:text-cyan-300 transition"
+                    className="text-[11px] font-mono text-cyan-600 hover:text-cyan-700 transition"
                   >
                     {t('see_all')} &rarr;
                   </button>

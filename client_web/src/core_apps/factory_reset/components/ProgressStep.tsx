@@ -45,8 +45,8 @@ export const ProgressStep: React.FC<Props> = ({ resetId, onFinished, t }) => {
   return (
     <Panel title={t('running_title')}>
       <div className="flex flex-col items-center gap-3 py-8 text-center" role="status" aria-live="polite">
-        <Loader2 className="h-8 w-8 animate-spin text-rose-300" aria-hidden="true" />
-        <p className="text-sm text-slate-200">{t(phase === 'down' ? 'running_down' : 'running_working')}</p>
+        <Loader2 className="h-8 w-8 animate-spin text-rose-700" aria-hidden="true" />
+        <p className="text-sm text-slate-800">{t(phase === 'down' ? 'running_down' : 'running_working')}</p>
         <p className="max-w-md text-xs text-slate-500">{t('running_hint')}</p>
         {stuck ? (
           <Btn tone="slate" onClick={() => onFinished(null)}>

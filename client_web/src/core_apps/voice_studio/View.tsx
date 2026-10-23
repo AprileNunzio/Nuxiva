@@ -135,16 +135,16 @@ export const View: React.FC = () => {
   return (
     <OSAppLayout
       content={
-        <div className="flex flex-col h-full overflow-y-auto p-4 sm:p-6 lg:p-8 bg-slate-950 text-slate-100">
+        <div className="flex flex-col h-full overflow-y-auto p-4 sm:p-6 lg:p-8 bg-white text-slate-900">
           <div className="space-y-6 w-full flex-1 min-h-0">
             {/* Intestazione Applicazione ad Alto Contrasto */}
-            <header className="flex flex-wrap items-center justify-between gap-4 border-b border-cyan-500/30 pb-5">
+            <header className="flex flex-wrap items-center justify-between gap-4 border-b border-cyan-300 pb-5">
           <div>
-            <h1 className="flex items-center gap-3 text-2xl font-extrabold tracking-tight text-white">
-              <Radio className="h-7 w-7 text-cyan-400" aria-hidden="true" />
+            <h1 className="flex items-center gap-3 text-2xl font-extrabold tracking-tight text-slate-950">
+              <Radio className="h-7 w-7 text-cyan-600" aria-hidden="true" />
               {t('title')}
             </h1>
-            <p className="mt-1 text-sm font-medium text-slate-300">
+            <p className="mt-1 text-sm font-medium text-slate-700">
               {t('suite_description')}
             </p>
           </div>
@@ -171,7 +171,7 @@ export const View: React.FC = () => {
               type="button"
               disabled={busy}
               onClick={() => setTick((c) => c + 1)}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-600 bg-slate-800 hover:bg-slate-700 px-3.5 py-2 text-xs font-bold text-white transition hover:text-cyan-200 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 bg-slate-100 hover:bg-slate-200 px-3.5 py-2 text-xs font-bold text-slate-950 transition hover:text-cyan-800 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 disabled:opacity-50"
             >
               <RefreshCw className={`h-4 w-4 ${busy ? 'animate-spin' : ''}`} aria-hidden="true" />
               {t('refresh')}
@@ -180,20 +180,20 @@ export const View: React.FC = () => {
         </header>
 
         {error && (
-          <div role="alert" className="rounded-2xl border border-rose-500/40 bg-rose-500/20 p-4 text-sm font-semibold text-rose-200 shadow-lg">
+          <div role="alert" className="rounded-2xl border border-rose-300 bg-rose-100 p-4 text-sm font-semibold text-rose-800 shadow-lg">
             {error}
           </div>
         )}
 
         {!status ? (
-          <p className="text-sm font-medium text-slate-300">{t('loading')}</p>
+          <p className="text-sm font-medium text-slate-700">{t('loading')}</p>
         ) : (
           <>
             {/* Navigazione Schede (Tablist Accessibile) */}
             <nav
               role="tablist"
               aria-label="Sezioni Studio delle Voci"
-              className="flex flex-wrap gap-2 rounded-2xl border border-slate-800 bg-slate-900/80 p-1.5 shadow-md"
+              className="flex flex-wrap gap-2 rounded-2xl border border-slate-200 bg-white p-1.5 shadow-md"
             >
               {[
                 { id: 'library', label: t('tab_library'), icon: Radio },
@@ -216,7 +216,7 @@ export const View: React.FC = () => {
                     className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 ${
                       isActive
                         ? 'bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/30 font-extrabold'
-                        : 'text-slate-200 hover:bg-slate-800 hover:text-white'
+                        : 'text-slate-800 hover:bg-slate-100 hover:text-slate-950'
                     }`}
                   >
                     <Icon className="h-4 w-4" aria-hidden="true" />
@@ -235,14 +235,14 @@ export const View: React.FC = () => {
                 className="space-y-4"
               >
                 <div className="flex flex-wrap items-center justify-between gap-3">
-                  <span className="text-sm font-bold text-white">
+                  <span className="text-sm font-bold text-slate-950">
                     {status.voices.length} {t('voices_registered')}
                   </span>
                   <button
                     type="button"
                     disabled={busy}
                     onClick={() => void run(() => useVoice(''))}
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-slate-600 bg-slate-800 hover:bg-slate-700 px-3.5 py-2 text-xs font-bold text-white transition hover:text-cyan-200 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 disabled:opacity-50"
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 bg-slate-100 hover:bg-slate-200 px-3.5 py-2 text-xs font-bold text-slate-950 transition hover:text-cyan-800 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 disabled:opacity-50"
                   >
                     {t('restore')}
                   </button>
@@ -259,25 +259,25 @@ export const View: React.FC = () => {
                           key={voice.id}
                           className={`flex flex-col justify-between rounded-2xl border p-5 shadow-lg transition ${
                             isSelected
-                              ? 'border-emerald-500/80 bg-gradient-to-b from-emerald-950/40 to-slate-900/90 shadow-emerald-500/10'
-                              : 'border-slate-700 bg-slate-900/80 hover:border-cyan-500/50 hover:bg-slate-850/90'
+                              ? 'border-emerald-300 bg-gradient-to-b from-emerald-950/40 to-white shadow-emerald-500/10'
+                              : 'border-slate-300 bg-white hover:border-cyan-300 hover:bg-slate-850/90'
                           }`}
                         >
                           <div>
                             <div className="flex items-center justify-between gap-2">
-                              <span className="text-base font-extrabold text-white truncate">{voice.name}</span>
+                              <span className="text-base font-extrabold text-slate-950 truncate">{voice.name}</span>
                               {isSelected && (
-                                <span className="inline-flex items-center rounded-md border border-emerald-500/60 bg-emerald-500/20 px-2 py-0.5 text-[10px] font-bold uppercase text-emerald-300">
+                                <span className="inline-flex items-center rounded-md border border-emerald-300 bg-emerald-100 px-2 py-0.5 text-[10px] font-bold uppercase text-emerald-700">
                                   {t('selected')}
                                 </span>
                               )}
                             </div>
-                            <span className="mt-1 block text-xs font-medium text-slate-300">
+                            <span className="mt-1 block text-xs font-medium text-slate-700">
                               Lingua: {voice.language.toUpperCase()} • Tipo: {voice.kind === 'clone' ? 'Clonata da Microfono' : 'Creata con AI'}
                             </span>
                           </div>
 
-                          <div className="mt-5 flex flex-wrap items-center gap-2 pt-3 border-t border-slate-800">
+                          <div className="mt-5 flex flex-wrap items-center gap-2 pt-3 border-t border-slate-200">
                             <button
                               type="button"
                               disabled={busy}
@@ -288,14 +288,14 @@ export const View: React.FC = () => {
                                   setAudioUrl(URL.createObjectURL(blob));
                                 })
                               }
-                              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-600 bg-slate-800 hover:bg-slate-700 px-3 py-1.5 text-xs font-bold text-white transition hover:text-cyan-200 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 disabled:opacity-50"
+                              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 text-xs font-bold text-slate-950 transition hover:text-cyan-800 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 disabled:opacity-50"
                             >
                               <Volume2 className="h-4 w-4" aria-hidden="true" />
                               {t('preview')}
                             </button>
 
                             {isSelected ? (
-                              <span className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-500/60 bg-emerald-500/20 px-3 py-1.5 text-xs font-bold text-emerald-300 shadow-sm cursor-default">
+                              <span className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-300 bg-emerald-100 px-3 py-1.5 text-xs font-bold text-emerald-700 shadow-sm cursor-default">
                                 <Check className="h-4 w-4" aria-hidden="true" />
                                 {t('selected')}
                               </span>
@@ -314,7 +314,7 @@ export const View: React.FC = () => {
                             <button
                               type="button"
                               onClick={() => handleSelectVoiceForEQ(voice)}
-                              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-600 bg-slate-800 hover:bg-slate-700 px-3 py-1.5 text-xs font-bold text-white transition hover:text-cyan-200 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+                              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 text-xs font-bold text-slate-950 transition hover:text-cyan-800 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
                             >
                               <Sliders className="h-4 w-4" aria-hidden="true" />
                               {t('edit_eq')}
@@ -325,7 +325,7 @@ export const View: React.FC = () => {
                               disabled={busy}
                               aria-label={`Elimina ${voice.name}`}
                               onClick={() => setRemoving(voice)}
-                              className="inline-flex items-center justify-center rounded-xl border border-rose-500/50 bg-rose-500/20 hover:bg-rose-600 hover:text-white p-2 text-xs font-bold text-rose-200 transition shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400 disabled:opacity-50"
+                              className="inline-flex items-center justify-center rounded-xl border border-rose-300 bg-rose-100 hover:bg-rose-600 hover:text-white p-2 text-xs font-bold text-rose-800 transition shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-400 disabled:opacity-50"
                             >
                               <Trash2 className="h-4 w-4" aria-hidden="true" />
                             </button>
@@ -397,7 +397,7 @@ export const View: React.FC = () => {
 
             {/* Player Waveform Fisso in Basso se c'è un'anteprima */}
             {audioUrl && activeTab !== 'test' && (
-              <div className="pt-4 border-t border-cyan-500/30">
+              <div className="pt-4 border-t border-cyan-300">
                 <WaveformPlayer src={audioUrl} />
               </div>
             )}

@@ -57,7 +57,7 @@ export const ExpertRoster: React.FC<ExpertRosterProps> = ({ experts, selected, o
             aria-selected={group === g}
             onClick={() => setGroup(g)}
             className={`shrink-0 rounded-full border px-3 py-1 text-xs transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${
-              group === g ? 'border-cyan-400/60 bg-cyan-400/15 text-cyan-100' : 'border-slate-700 text-slate-400 hover:text-white'
+              group === g ? 'border-cyan-300 bg-cyan-50 text-cyan-900' : 'border-slate-300 text-slate-600 hover:text-slate-950'
             }`}
           >
             {t(`group_${g}`)}
@@ -75,20 +75,20 @@ export const ExpertRoster: React.FC<ExpertRosterProps> = ({ experts, selected, o
               onClick={() => onSelect(e.id)}
               aria-current={active ? 'true' : undefined}
               className={`group flex min-w-[15rem] snap-start items-center gap-3 rounded-2xl border px-3 py-2.5 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 lg:min-w-0 ${
-                active ? 'border-cyan-400/60 bg-cyan-400/10 shadow-[0_0_24px_rgba(34,211,238,0.15)]' : 'border-slate-800 bg-slate-950/50 hover:border-cyan-400/40'
+                active ? 'border-cyan-300 bg-cyan-50 shadow-[0_0_24px_rgba(34,211,238,0.15)]' : 'border-slate-200 bg-slate-50 hover:border-cyan-300'
               } ${e.enabled ? '' : 'opacity-60'}`}
             >
               <ExpertAvatar icon={e.icon} color={e.color} busy={busy} />
               <span className="min-w-0 flex-1">
                 <span className="flex items-center gap-2">
-                  <span className="truncate font-['Rajdhani'] text-lg font-bold text-white">{e.role}</span>
+                  <span className="truncate font-['Rajdhani'] text-lg font-bold text-slate-950">{e.role}</span>
                   <span
                     className={`h-2 w-2 shrink-0 rounded-full ${e.pending ? 'bg-amber-300' : busy ? 'animate-pulse bg-emerald-300' : e.enabled ? 'bg-cyan-300/70' : 'bg-slate-600'}`}
                     aria-hidden="true"
                   />
                 </span>
-                <span className="block truncate text-xs text-slate-400">{e.specialty}</span>
-                <span className="block truncate text-[0.6875rem] text-cyan-200/80">
+                <span className="block truncate text-xs text-slate-600">{e.specialty}</span>
+                <span className="block truncate text-[0.6875rem] text-cyan-800">
                   {e.pending ? t('status_waiting') : busy ? t('status_busy', { what: e.doing }) : e.enabled ? t('status_ready') : t('status_off')}
                 </span>
               </span>
@@ -99,7 +99,7 @@ export const ExpertRoster: React.FC<ExpertRosterProps> = ({ experts, selected, o
         <button
           type="button"
           onClick={onCreate}
-          className="flex min-w-[12rem] snap-start items-center justify-center gap-2 rounded-2xl border border-dashed border-cyan-400/40 px-3 py-3 text-sm font-semibold text-cyan-100 transition hover:bg-cyan-400/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 lg:min-w-0"
+          className="flex min-w-[12rem] snap-start items-center justify-center gap-2 rounded-2xl border border-dashed border-cyan-300 px-3 py-3 text-sm font-semibold text-cyan-900 transition hover:bg-cyan-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 lg:min-w-0"
         >
           <Plus className="h-4 w-4" aria-hidden="true" />
           {t('new_expert')}

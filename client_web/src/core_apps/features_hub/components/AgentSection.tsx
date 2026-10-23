@@ -41,7 +41,7 @@ export const AgentSection: React.FC<AgentSectionProps> = ({ feature, t, onChange
         <h2 className="mb-3 text-sm font-bold text-slate-900">{t('agent_capabilities')}</h2>
         <ul className="grid gap-2 text-xs text-slate-700 lg:grid-cols-2">
           {feature.capabilities.map((capability) => (
-            <li key={capability} className="rounded-xl border border-slate-800 bg-slate-50 px-3 py-2">
+            <li key={capability} className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
               {capability}
             </li>
           ))}

@@ -48,15 +48,15 @@ export const CreateAgentDialog: React.FC<{ readonly handle: TeamHandle; readonly
   return (
     <Dialog title={t('new_agent')} closeLabel={t('cancel')} onClose={() => onClose()}>
       <form onSubmit={submit} className="grid gap-3 sm:grid-cols-[5rem_minmax(0,1fr)]">
-        <label className="flex flex-col gap-1 text-xs text-slate-400">
+        <label className="flex flex-col gap-1 text-xs text-slate-600">
           {t('icon')}
           <input maxLength={4} value={icon} onChange={(event) => setIcon(event.target.value)} className={`${fieldClass} text-center text-lg`} />
         </label>
-        <label className="flex flex-col gap-1 text-xs text-slate-400">
+        <label className="flex flex-col gap-1 text-xs text-slate-600">
           {t('name')}
           <input required maxLength={60} value={name} onChange={(event) => setName(event.target.value)} className={fieldClass} />
         </label>
-        <label className="flex flex-col gap-1 text-xs text-slate-400 sm:col-span-2">
+        <label className="flex flex-col gap-1 text-xs text-slate-600 sm:col-span-2">
           {t('agent_id')}
           <input
             maxLength={41}
@@ -67,7 +67,7 @@ export const CreateAgentDialog: React.FC<{ readonly handle: TeamHandle; readonly
           />
           <span className="text-[11px] text-slate-500">{t('agent_id_hint')}</span>
         </label>
-        <label className="flex flex-col gap-1 text-xs text-slate-400 sm:col-span-2">
+        <label className="flex flex-col gap-1 text-xs text-slate-600 sm:col-span-2">
           {t('category')}
           <select value={category} onChange={(event) => setCategory(event.target.value)} className={fieldClass}>
             {CATEGORIES.map((c) => (
@@ -77,22 +77,22 @@ export const CreateAgentDialog: React.FC<{ readonly handle: TeamHandle; readonly
             ))}
           </select>
         </label>
-        <label className="flex flex-col gap-1 text-xs text-slate-400 sm:col-span-2">
+        <label className="flex flex-col gap-1 text-xs text-slate-600 sm:col-span-2">
           {t('agent_description')}
           <textarea rows={2} maxLength={400} value={description} onChange={(event) => setDescription(event.target.value)} className={`${fieldClass} resize-y`} />
         </label>
-        <label className="flex flex-col gap-1 text-xs text-slate-400 sm:col-span-2">
+        <label className="flex flex-col gap-1 text-xs text-slate-600 sm:col-span-2">
           {t('capabilities')}
           <textarea rows={3} maxLength={2400} value={capabilities} onChange={(event) => setCapabilities(event.target.value)} placeholder={t('capabilities_hint')} className={`${fieldClass} resize-y`} />
         </label>
-        <label className="flex flex-col gap-1 text-xs text-slate-400 sm:col-span-2">
+        <label className="flex flex-col gap-1 text-xs text-slate-600 sm:col-span-2">
           {t('instructions')}
           <textarea rows={3} maxLength={1500} value={instructions} onChange={(event) => setInstructions(event.target.value)} placeholder={t('instructions_placeholder')} className={`${fieldClass} resize-y`} />
         </label>
-        <label className="flex flex-col gap-1 text-xs text-slate-400 sm:col-span-2">
+        <label className="flex flex-col gap-1 text-xs text-slate-600 sm:col-span-2">
           <span className="flex justify-between">
             {t('priority')}
-            <span className="font-mono text-white">{priority}</span>
+            <span className="font-mono text-slate-950">{priority}</span>
           </span>
           <input type="range" min={0} max={200} value={priority} onChange={(event) => setPriority(Number(event.target.value))} className="accent-cyan-400" />
         </label>

@@ -97,6 +97,7 @@
     "error_team_update_failed": "Agent non mis à jour.",
     "error_team_delete_failed": "Agent non supprimé.",
     "error_team_settings_failed": "Réglages non enregistrés.",
+    "error_agent_model_failed": "Impossible de lire ou d'enregistrer le modèle de l'agent.",
     "error_team_tool_failed": "Outil non mis à jour.",
     "error_team_widget_failed": "Widget non mis à jour.",
     "error_team_create_failed": "Création impossible : vérifiez les données.",

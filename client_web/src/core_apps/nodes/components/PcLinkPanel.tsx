@@ -30,14 +30,14 @@ export const PcLinkPanel: React.FC<{ readonly handle: LinksHandle }> = ({ handle
   };
   return (
     <div className="min-w-0 space-y-3">
-      <h3 className="text-sm font-bold text-white">{t('step2_pc_title')}</h3>
-      <p className="text-xs text-slate-400">{t('pc_link_hint')}</p>
-      <code className="block overflow-x-auto rounded-xl border border-cyan-500/30 bg-slate-950 p-3 text-xs text-cyan-200">{command}</code>
-      <button type="button" disabled={!server} onClick={() => void copy()} className="flex min-h-11 items-center gap-2 rounded-xl border border-cyan-500/40 px-3 py-2 text-xs text-cyan-100 disabled:opacity-50">
+      <h3 className="text-sm font-bold text-slate-950">{t('step2_pc_title')}</h3>
+      <p className="text-xs text-slate-600">{t('pc_link_hint')}</p>
+      <code className="block overflow-x-auto rounded-xl border border-cyan-300 bg-white p-3 text-xs text-cyan-800">{command}</code>
+      <button type="button" disabled={!server} onClick={() => void copy()} className="flex min-h-11 items-center gap-2 rounded-xl border border-cyan-300 px-3 py-2 text-xs text-cyan-900 disabled:opacity-50">
         <Copy className="h-4 w-4" aria-hidden="true" />
         {t(copied ? 'command_copied' : 'copy_command')}
       </button>
-      <p className="text-xs text-slate-400">{t('pc_code_hint')}</p>
+      <p className="text-xs text-slate-600">{t('pc_code_hint')}</p>
       <PairingPanel />
       <RequestsPanel handle={handle} />
     </div>

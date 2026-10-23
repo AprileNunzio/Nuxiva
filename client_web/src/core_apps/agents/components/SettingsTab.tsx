@@ -25,8 +25,8 @@ export const SettingsTab: React.FC<{ readonly agent: Agent; readonly handle: Tea
         const id = `setting-${agent.id}-${s.key}`;
         const value = draft[s.key] ?? '';
         return (
-          <div key={s.key} className="flex flex-col gap-1.5 rounded-xl border border-slate-800/80 bg-slate-950/40 px-3 py-2.5">
-            <label htmlFor={id} className="text-sm text-slate-100">
+          <div key={s.key} className="flex flex-col gap-1.5 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5">
+            <label htmlFor={id} className="text-sm text-slate-900">
               {s.label}
               <span className="ml-2 font-mono text-[10px] text-slate-500">{s.key}</span>
             </label>

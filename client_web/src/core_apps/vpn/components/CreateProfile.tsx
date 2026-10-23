@@ -49,7 +49,7 @@ export const CreateProfile: React.FC<CreateProfileProps> = ({ tools, busy, t, ru
   };
 
   return (
-    <Panel title={t('create_title')} icon={<Plus className="h-4 w-4 text-cyan-300" aria-hidden="true" />}>
+    <Panel title={t('create_title')} icon={<Plus className="h-4 w-4 text-cyan-700" aria-hidden="true" />}>
       <form onSubmit={submit} className="flex flex-col gap-3">
         <Field label={t('field_kind')}>
           <select className={inputClass} value={kind} onChange={(event) => setKind(event.target.value as Kind)}>
@@ -60,7 +60,7 @@ export const CreateProfile: React.FC<CreateProfileProps> = ({ tools, busy, t, ru
             ))}
           </select>
         </Field>
-        {tools[tool] === false ? <p className="text-xs text-amber-300">{t('tool_missing', { tool })}</p> : null}
+        {tools[tool] === false ? <p className="text-xs text-amber-700">{t('tool_missing', { tool })}</p> : null}
         <Field label={t('field_name')}>
           <input className={inputClass} value={name} maxLength={48} onChange={(event) => setName(event.target.value)} required />
         </Field>

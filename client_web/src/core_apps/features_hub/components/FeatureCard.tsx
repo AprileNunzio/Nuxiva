@@ -48,10 +48,10 @@ export const FeatureCard: React.FC<FeatureCardProps> = ({ feature, busy, t, run 
       </div>
       <p className="mt-1 text-xs text-slate-500">{feature.state.reason}</p>
       {open ? (
-        <div className="mt-3 flex flex-col gap-3 border-t border-slate-800 pt-3">
-          <p className="text-sm text-slate-300">{feature.description}</p>
+        <div className="mt-3 flex flex-col gap-3 border-t border-slate-200 pt-3">
+          <p className="text-sm text-slate-700">{feature.description}</p>
           {feature.capabilities.length ? (
-            <ul className="list-disc space-y-0.5 pl-5 text-xs text-slate-400">
+            <ul className="list-disc space-y-0.5 pl-5 text-xs text-slate-600">
               {feature.capabilities.map((capability) => (
                 <li key={capability}>{capability}</li>
               ))}

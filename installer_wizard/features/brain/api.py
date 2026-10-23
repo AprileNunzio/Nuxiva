@@ -228,7 +228,7 @@ async def batch_save_brain_assignments(request: Request):
         free_config = free_settings.load()
         if free_config["enabled"]:
             free_settings.save(False, free_config["pools"])
-        assignment_service.save({key: None for key in assignment_service.assignments()})
+        assignment_service.save({key: None for key in assignment_service.assignments() if not key.startswith("agent:")})
         cervello_state.save({
             "globalDefault": {
                 **(body.get("globalDefault") or {}),
@@ -282,8 +282,9 @@ async def single_save_brain_assignment(request: Request):
         if target_id in ("conversation", "jarvis_page80", "core_brain"):
             updates["NUXIVA_LLM_MODEL"] = assigned_model
             updates["NUXIVA_LLM_CHAT_ORDER"] = assigned_model
+        role_id = {"fast_conversation": "chat", "reasoning": "deep"}.get(target_id, target_id)
         for role in ROLES:
-            if role.id == target_id:
+            if role.id == role_id:
                 updates[role.env_key] = assigned_model
 
     if updates:

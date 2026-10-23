@@ -29,16 +29,16 @@ export function View() {
   }
 
   return (
-    <div className="flex h-full flex-col overflow-hidden bg-slate-950">
-      <div className="flex shrink-0 items-center justify-between border-b border-slate-800/80 bg-slate-950/80 px-4 py-2 backdrop-blur-md">
-        <div className="flex items-center gap-1.5 rounded-xl border border-slate-800 bg-slate-900/90 p-1">
+    <div className="flex h-full flex-col overflow-hidden bg-white">
+      <div className="flex shrink-0 items-center justify-between border-b border-slate-200 bg-white px-4 py-2 backdrop-blur-md">
+        <div className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white p-1">
           <button
             type="button"
             onClick={() => setViewMode('catalog')}
             className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
               viewMode === 'catalog'
                 ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md shadow-cyan-500/20'
-                : 'text-slate-400 hover:text-slate-200'
+                : 'text-slate-600 hover:text-slate-800'
             }`}
           >
             <Grid className="h-3.5 w-3.5" />
@@ -50,7 +50,7 @@ export function View() {
             className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
               viewMode === 'settings'
                 ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/20'
-                : 'text-slate-400 hover:text-slate-200'
+                : 'text-slate-600 hover:text-slate-800'
             }`}
           >
             <Sliders className="h-3.5 w-3.5" />
@@ -62,7 +62,7 @@ export function View() {
           <button
             type="button"
             onClick={() => setViewMode('settings')}
-            className="flex items-center gap-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-300 transition hover:bg-emerald-500/20"
+            className="flex items-center gap-1.5 rounded-xl border border-emerald-300 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-100"
           >
             <Sliders className="h-3.5 w-3.5" />
             <span>{t('open_settings_shortcut')}</span>

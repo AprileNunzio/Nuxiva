@@ -29,11 +29,11 @@ export const WidgetsTab: React.FC<WidgetsTabProps> = ({ agent, agents, widgets, 
       {mine.length === 0 && <p className="text-sm text-slate-500">{t('widgets_empty')}</p>}
       <ul className="flex flex-col gap-2">
         {mine.map((widget) => (
-          <li key={widget.id} className="rounded-xl border border-slate-800/80 bg-slate-950/40 px-3 py-2.5">
+          <li key={widget.id} className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5">
             <div className="flex items-center gap-2">
               <span className="text-lg" aria-hidden="true">{widget.icon || '▣'}</span>
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-sm text-slate-100">{widget.name}</span>
+                <span className="block truncate text-sm text-slate-900">{widget.name}</span>
                 <span className="block font-mono text-[10px] text-slate-500">
                   {widget.id}
                   {widget.personal ? ` · ${t('personal')}` : ''}
@@ -61,14 +61,14 @@ export const WidgetsTab: React.FC<WidgetsTabProps> = ({ agent, agents, widgets, 
                   disabled={busy}
                   aria-label={t('delete_widget')}
                   onClick={() => void handle.run(`widget:${widget.id}`, () => deleteWidget(widget.id), 'team_widget_failed')}
-                  className="rounded-lg p-1.5 text-slate-500 transition hover:text-rose-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
+                  className="rounded-lg p-1.5 text-slate-500 transition hover:text-rose-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
                 >
                   <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                 </button>
               )}
             </div>
             <div className="mt-2">
-              <p className="mb-1 flex items-center gap-1.5 text-[11px] text-slate-400">
+              <p className="mb-1 flex items-center gap-1.5 text-[11px] text-slate-600">
                 <Users className="h-3.5 w-3.5" aria-hidden="true" />
                 {widget.people.length ? t('people_only') : t('people_all')}
               </p>
@@ -80,7 +80,7 @@ export const WidgetsTab: React.FC<WidgetsTabProps> = ({ agent, agents, widgets, 
                     aria-pressed={widget.people.includes(person.slug)}
                     disabled={busy}
                     onClick={() => togglePerson(widget, person.slug)}
-                    className={`${chipClass} ${widget.people.includes(person.slug) ? 'border-emerald-400/60 bg-emerald-400/10 text-emerald-100' : 'border-slate-700 text-slate-400'}`}
+                    className={`${chipClass} ${widget.people.includes(person.slug) ? 'border-emerald-300 bg-emerald-50 text-emerald-900' : 'border-slate-300 text-slate-600'}`}
                   >
                     {person.name}
                   </button>
@@ -91,7 +91,7 @@ export const WidgetsTab: React.FC<WidgetsTabProps> = ({ agent, agents, widgets, 
           </li>
         ))}
       </ul>
-      <div className="flex gap-2 border-t border-slate-800/80 pt-3">
+      <div className="flex gap-2 border-t border-slate-200 pt-3">
         <select value={adding} onChange={(event) => setAdding(event.target.value)} aria-label={t('assign_widget')} className={`${fieldClass} min-w-0 flex-1`}>
           <option value="">{t('assign_widget')}</option>
           {others.map((w) => (
@@ -104,7 +104,7 @@ export const WidgetsTab: React.FC<WidgetsTabProps> = ({ agent, agents, widgets, 
           type="button"
           disabled={busy || !adding}
           onClick={() => void handle.run('assign', () => updateWidget(adding, { agent: agent.id }), 'team_widget_failed').then((ok) => ok && setAdding(''))}
-          className={`${chipClass} border-cyan-400/50 bg-cyan-400/10 px-3 text-cyan-100`}
+          className={`${chipClass} border-cyan-300 bg-cyan-50 px-3 text-cyan-900`}
         >
           {t('assign')}
         </button>

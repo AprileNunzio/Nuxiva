@@ -14,7 +14,7 @@ export const ExpertAvatar: React.FC<ExpertAvatarProps> = ({ icon, color, busy = 
       className={`relative flex shrink-0 items-center justify-center rounded-2xl border ${box}`}
       style={{
         borderColor: `${color}99`,
-        background: `radial-gradient(circle at 30% 25%, ${color}55, rgba(2,6,23,0.92) 70%)`,
+        background: `radial-gradient(circle at 30% 25%, ${color}55, rgba(255,255,255,0.95) 70%)`,
         boxShadow: `0 0 ${busy ? 28 : 16}px ${color}${busy ? '88' : '40'}`,
       }}
       aria-hidden="true"

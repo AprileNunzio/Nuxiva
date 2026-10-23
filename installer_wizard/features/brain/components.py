@@ -1,4 +1,5 @@
 import math
+import re
 import time
 from dataclasses import dataclass, field
 from typing import Any, Awaitable, Callable, Dict, List, Optional
@@ -48,7 +49,37 @@ COMPONENTS: tuple[Component, ...] = (
     Component("consensus_reversibility", "Consenso: reversibilità", "Cervello cognitivo", "deep", "Voto sulla recuperabilità degli errori.", "core"),
 )
 
-BY_ID: dict[str, Component] = {c.id: c for c in COMPONENTS}
+AGENT_PREFIX = "agent:"
+AGENT_REF = re.compile(r"^agent:[a-z0-9][a-z0-9_-]{0,63}$")
+
+
+class ComponentIndex(dict):
+
+    def __contains__(self, key) -> bool:
+        return dict.__contains__(self, key) or (isinstance(key, str) and AGENT_REF.fullmatch(key) is not None)
+
+    def __missing__(self, key) -> Component:
+        if isinstance(key, str) and AGENT_REF.fullmatch(key):
+            return Component(key, key[len(AGENT_PREFIX):], "Agenti", "deep", "Modello scelto per questo agente.", "agents")
+        raise KeyError(key)
+
+    def get(self, key, default=None):
+        try:
+            return self[key]
+        except KeyError:
+            return default
+
+
+BY_ID: dict[str, Component] = ComponentIndex((c.id, c) for c in COMPONENTS)
+
+
+def agent_component(agent_id: str) -> str:
+    if agent_id in COMPONENTS_STATIC:
+        return agent_id
+    return f"{AGENT_PREFIX}{re.sub(r'[^a-z0-9_-]', '-', str(agent_id).lower()).strip('-')[:64] or 'agent'}"
+
+
+COMPONENTS_STATIC = frozenset(c.id for c in COMPONENTS)
 
 
 @dataclass

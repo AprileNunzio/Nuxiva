@@ -27,6 +27,25 @@ class RegistryTest(unittest.TestCase):
         self.assertEqual(len(BY_ID), len(COMPONENTS))
 
 
+class AgentComponentTest(unittest.TestCase):
+    def test_agents_get_their_own_component_and_inherit_reasoning(self):
+        self.assertIn("agent:ceo", BY_ID)
+        self.assertNotIn("agent:Bad Id", BY_ID)
+        self.assertNotIn("nope", BY_ID)
+        self.assertEqual(model.resolve("agent:ceo", {}, ORDERS), ["big", "mid"])
+
+    def test_agent_choice_overrides_and_survives_parsing(self):
+        parsed = model.parse_all({"agent:ceo": {"order": ["cloud:gemini/x"], "mode": "only"}})
+        self.assertEqual(model.resolve("agent:ceo", parsed, ORDERS), ["cloud:gemini/x"])
+        with self.assertRaises(AssignmentError):
+            model.parse_all({"agent:Bad Id": {"order": ["a"]}})
+
+    def test_agent_component_maps_known_features_to_themselves(self):
+        from features.brain.components import agent_component
+        self.assertEqual(agent_component("projects"), "projects")
+        self.assertEqual(agent_component("Social Media!"), "agent:social-media")
+
+
 class ParsingTest(unittest.TestCase):
     def test_empty_assignment_is_dropped(self):
         self.assertEqual(model.parse_all({"research": {"role": "", "order": []}}), {})

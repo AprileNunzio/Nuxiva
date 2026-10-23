@@ -72,19 +72,19 @@ export const NodeWizard: React.FC<Props> = ({ nodes, usbPorts, links, onChanged,
 
   return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto bg-black/80 backdrop-blur-md">
-          <div className="relative my-auto max-h-[90dvh] overflow-y-auto w-full max-w-3xl rounded-2xl border border-cyan-500/40 bg-slate-950 p-6 shadow-[0_0_50px_rgba(6,182,212,0.25)] space-y-6">
+          <div className="relative my-auto max-h-[90dvh] overflow-y-auto w-full max-w-3xl rounded-2xl border border-cyan-300 bg-white p-6 shadow-[0_0_50px_rgba(6,182,212,0.25)] space-y-6">
 
-            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-4">
               <div>
-                <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                  <Usb className="w-5 h-5 text-cyan-400" />
+                <h2 className="text-xl font-bold text-slate-950 flex items-center gap-2">
+                  <Usb className="w-5 h-5 text-cyan-600" />
                   <span>{t('wizard_title')}</span>
                 </h2>
-                <p className="text-xs text-slate-400 mt-0.5">{t('wizard_subtitle')}</p>
+                <p className="text-xs text-slate-600 mt-0.5">{t('wizard_subtitle')}</p>
               </div>
               <button
                 onClick={resetWizard}
-                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
+                className="p-1 rounded-lg text-slate-600 hover:text-slate-950 hover:bg-slate-100"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -96,10 +96,10 @@ export const NodeWizard: React.FC<Props> = ({ nodes, usbPorts, links, onChanged,
                   key={step}
                   className={`py-2 rounded-lg font-bold border transition-all ${
                     currentStep === step
-                      ? 'bg-cyan-500/20 text-cyan-300 border-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.3)]'
+                      ? 'bg-cyan-100 text-cyan-700 border-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.3)]'
                       : currentStep > step
-                      ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
-                      : 'bg-slate-900 text-slate-500 border-slate-800'
+                      ? 'bg-emerald-50 text-emerald-600 border-emerald-300'
+                      : 'bg-white text-slate-500 border-slate-200'
                   }`}
                 >
                   {t(`step_${step}` as any)}
@@ -115,14 +115,14 @@ export const NodeWizard: React.FC<Props> = ({ nodes, usbPorts, links, onChanged,
                     className={`p-4 rounded-xl border cursor-pointer transition-all ${
                       selectedTarget === 'pc'
                         ? 'border-cyan-400 bg-cyan-950/40 shadow-[0_0_15px_rgba(6,182,212,0.25)]'
-                        : 'border-slate-800 bg-slate-900/60 hover:border-slate-700'
+                        : 'border-slate-200 bg-white hover:border-slate-300'
                     }`}
                   >
-                    <div className="flex items-center gap-2 text-cyan-400 mb-1">
+                    <div className="flex items-center gap-2 text-cyan-600 mb-1">
                       <Cpu className="w-5 h-5" />
                       <span className="font-bold text-sm">{t('target_pc_title')}</span>
                     </div>
-                    <p className="text-xs text-slate-400">{t('target_pc_desc')}</p>
+                    <p className="text-xs text-slate-600">{t('target_pc_desc')}</p>
                   </div>
 
                   <div
@@ -130,14 +130,14 @@ export const NodeWizard: React.FC<Props> = ({ nodes, usbPorts, links, onChanged,
                     className={`p-4 rounded-xl border cursor-pointer transition-all ${
                       selectedTarget === 'raspberry'
                         ? 'border-indigo-400 bg-indigo-950/40 shadow-[0_0_15px_rgba(99,102,241,0.25)]'
-                        : 'border-slate-800 bg-slate-900/60 hover:border-slate-700'
+                        : 'border-slate-200 bg-white hover:border-slate-300'
                     }`}
                   >
-                    <div className="flex items-center gap-2 text-indigo-400 mb-1">
+                    <div className="flex items-center gap-2 text-indigo-600 mb-1">
                       <Tv className="w-5 h-5" />
                       <span className="font-bold text-sm">{t('target_rpi_title')}</span>
                     </div>
-                    <p className="text-xs text-slate-400">{t('target_rpi_desc')}</p>
+                    <p className="text-xs text-slate-600">{t('target_rpi_desc')}</p>
                   </div>
 
                   <div
@@ -145,14 +145,14 @@ export const NodeWizard: React.FC<Props> = ({ nodes, usbPorts, links, onChanged,
                     className={`p-4 rounded-xl border cursor-pointer transition-all ${
                       selectedTarget === 'esp32'
                         ? 'border-emerald-400 bg-emerald-950/40 shadow-[0_0_15px_rgba(16,185,129,0.25)]'
-                        : 'border-slate-800 bg-slate-900/60 hover:border-slate-700'
+                        : 'border-slate-200 bg-white hover:border-slate-300'
                     }`}
                   >
-                    <div className="flex items-center gap-2 text-emerald-400 mb-1">
+                    <div className="flex items-center gap-2 text-emerald-600 mb-1">
                       <Radio className="w-5 h-5" />
                       <span className="font-bold text-sm">{t('target_esp32_title')}</span>
                     </div>
-                    <p className="text-xs text-slate-400">{t('target_esp32_desc')}</p>
+                    <p className="text-xs text-slate-600">{t('target_esp32_desc')}</p>
                   </div>
 
                   <div
@@ -160,14 +160,14 @@ export const NodeWizard: React.FC<Props> = ({ nodes, usbPorts, links, onChanged,
                     className={`p-4 rounded-xl border cursor-pointer transition-all ${
                       selectedTarget === 'android'
                         ? 'border-purple-400 bg-purple-950/40 shadow-[0_0_15px_rgba(168,85,247,0.25)]'
-                        : 'border-slate-800 bg-slate-900/60 hover:border-slate-700'
+                        : 'border-slate-200 bg-white hover:border-slate-300'
                     }`}
                   >
-                    <div className="flex items-center gap-2 text-purple-400 mb-1">
+                    <div className="flex items-center gap-2 text-purple-600 mb-1">
                       <Tablet className="w-5 h-5" />
                       <span className="font-bold text-sm">{t('target_android_title')}</span>
                     </div>
-                    <p className="text-xs text-slate-400">{t('target_android_desc')}</p>
+                    <p className="text-xs text-slate-600">{t('target_android_desc')}</p>
                   </div>
                 </div>
 
@@ -189,17 +189,17 @@ export const NodeWizard: React.FC<Props> = ({ nodes, usbPorts, links, onChanged,
                   <PcLinkPanel handle={links} />
                 ) : (
                   <div className="space-y-3">
-                    <div className="p-4 rounded-xl bg-slate-900 border border-slate-800">
-                      <h3 className="text-sm font-bold text-white mb-1">{t('step2_usb_title')}</h3>
-                      <p className="text-xs text-slate-400 mb-4">{t('step2_usb_desc')}</p>
+                    <div className="p-4 rounded-xl bg-white border border-slate-200">
+                      <h3 className="text-sm font-bold text-slate-950 mb-1">{t('step2_usb_title')}</h3>
+                      <p className="text-xs text-slate-600 mb-4">{t('step2_usb_desc')}</p>
 
-                      <label className="text-xs font-semibold text-slate-300 block mb-1.5">
+                      <label className="text-xs font-semibold text-slate-700 block mb-1.5">
                         {t('select_port')}
                       </label>
                       <select
                         value={selectedPort}
                         onChange={(e) => setSelectedPort(e.target.value)}
-                        className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white font-mono text-xs focus:outline-none focus:border-cyan-400"
+                        className="w-full bg-slate-100 border border-slate-300 rounded-xl px-4 py-2.5 text-slate-950 font-mono text-xs focus:outline-none focus:border-cyan-400"
                       >
                         {usbPorts.map((p) => (
                           <option key={p.device} value={p.device}>
@@ -214,7 +214,7 @@ export const NodeWizard: React.FC<Props> = ({ nodes, usbPorts, links, onChanged,
                 <div className="flex justify-between pt-4">
                   <button
                     onClick={() => setCurrentStep(1)}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-all"
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-all"
                   >
                     <ArrowLeft className="w-4 h-4" />
                     <span>{t('back')}</span>
@@ -235,7 +235,7 @@ export const NodeWizard: React.FC<Props> = ({ nodes, usbPorts, links, onChanged,
               <div className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs font-semibold text-slate-300 block mb-1">
+                    <label className="text-xs font-semibold text-slate-700 block mb-1">
                       {t('node_name_label')}
                     </label>
                     <input
@@ -243,18 +243,18 @@ export const NodeWizard: React.FC<Props> = ({ nodes, usbPorts, links, onChanged,
                       placeholder="es. Micro-Salotto"
                       value={nodeName}
                       onChange={(e) => setNodeName(e.target.value)}
-                      className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2 text-white font-mono text-xs focus:outline-none focus:border-cyan-400"
+                      className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-slate-950 font-mono text-xs focus:outline-none focus:border-cyan-400"
                     />
                   </div>
 
                   <div>
-                    <label className="text-xs font-semibold text-slate-300 block mb-1">
+                    <label className="text-xs font-semibold text-slate-700 block mb-1">
                       {t('parent_node_label')}
                     </label>
                     <select
                       value={parentId}
                       onChange={(e) => setParentId(e.target.value)}
-                      className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2 text-white font-mono text-xs focus:outline-none focus:border-cyan-400"
+                      className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-slate-950 font-mono text-xs focus:outline-none focus:border-cyan-400"
                     >
                       <option value="virtual_core">{t('virtual_core_option')}</option>
                       {nodes
@@ -270,8 +270,8 @@ export const NodeWizard: React.FC<Props> = ({ nodes, usbPorts, links, onChanged,
                   {selectedTarget === 'esp32' && (
                     <>
                       <div>
-                        <label className="text-xs font-semibold text-slate-300 block mb-1 flex items-center gap-1">
-                          <Wifi className="w-3.5 h-3.5 text-cyan-400" />
+                        <label className="text-xs font-semibold text-slate-700 block mb-1 flex items-center gap-1">
+                          <Wifi className="w-3.5 h-3.5 text-cyan-600" />
                           <span>{t('wifi_ssid_label')}</span>
                         </label>
                         <input
@@ -279,19 +279,19 @@ export const NodeWizard: React.FC<Props> = ({ nodes, usbPorts, links, onChanged,
                           placeholder="Home_WiFi"
                           value={wifiSsid}
                           onChange={(e) => setWifiSsid(e.target.value)}
-                          className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2 text-white font-mono text-xs focus:outline-none focus:border-cyan-400"
+                          className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-slate-950 font-mono text-xs focus:outline-none focus:border-cyan-400"
                         />
                       </div>
                       <div>
-                        <label className="text-xs font-semibold text-slate-300 block mb-1 flex items-center gap-1">
-                          <Key className="w-3.5 h-3.5 text-indigo-400" />
+                        <label className="text-xs font-semibold text-slate-700 block mb-1 flex items-center gap-1">
+                          <Key className="w-3.5 h-3.5 text-indigo-600" />
                           <span>{t('wifi_key_label')}</span>
                         </label>
                         <input
                           type="password"
                           value={wifiKey}
                           onChange={(e) => setWifiKey(e.target.value)}
-                          className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2 text-white font-mono text-xs focus:outline-none focus:border-cyan-400"
+                          className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-slate-950 font-mono text-xs focus:outline-none focus:border-cyan-400"
                         />
                       </div>
                     </>
@@ -300,25 +300,25 @@ export const NodeWizard: React.FC<Props> = ({ nodes, usbPorts, links, onChanged,
                   {selectedTarget === 'raspberry' && (
                     <>
                       <div>
-                        <label className="text-xs font-semibold text-slate-300 block mb-1">
+                        <label className="text-xs font-semibold text-slate-700 block mb-1">
                           {t('root_user_label')}
                         </label>
                         <input
                           type="text"
                           value={rootUser}
                           onChange={(e) => setRootUser(e.target.value)}
-                          className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2 text-white font-mono text-xs focus:outline-none focus:border-cyan-400"
+                          className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-slate-950 font-mono text-xs focus:outline-none focus:border-cyan-400"
                         />
                       </div>
                       <div>
-                        <label className="text-xs font-semibold text-slate-300 block mb-1">
+                        <label className="text-xs font-semibold text-slate-700 block mb-1">
                           {t('root_pass_label')}
                         </label>
                         <input
                           type="password"
                           value={rootPass}
                           onChange={(e) => setRootPass(e.target.value)}
-                          className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2 text-white font-mono text-xs focus:outline-none focus:border-cyan-400"
+                          className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-slate-950 font-mono text-xs focus:outline-none focus:border-cyan-400"
                         />
                       </div>
                     </>
@@ -328,7 +328,7 @@ export const NodeWizard: React.FC<Props> = ({ nodes, usbPorts, links, onChanged,
                 <div className="flex justify-between pt-4">
                   <button
                     onClick={() => setCurrentStep(2)}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-all"
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-all"
                   >
                     <ArrowLeft className="w-4 h-4" />
                     <span>{t('back')}</span>
@@ -347,23 +347,23 @@ export const NodeWizard: React.FC<Props> = ({ nodes, usbPorts, links, onChanged,
 
             {currentStep === 4 && (
               <div className="space-y-4">
-                <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 flex items-start gap-3">
-                  <CheckCircle2 className="w-6 h-6 text-emerald-400 shrink-0" />
+                <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-700 flex items-start gap-3">
+                  <CheckCircle2 className="w-6 h-6 text-emerald-600 shrink-0" />
                   <div>
                     <h3 className="font-bold text-sm">{t('step4_success_title')}</h3>
-                    <p className="text-xs text-emerald-400/80 mt-1">{t('step4_success_desc')}</p>
+                    <p className="text-xs text-emerald-600 mt-1">{t('step4_success_desc')}</p>
                   </div>
                 </div>
 
-                <div className="p-4 rounded-xl bg-black border border-slate-800 font-mono text-xs space-y-2">
-                  <div className="flex items-center gap-2 text-slate-400 pb-2 border-b border-slate-800">
-                    <Terminal className="w-4 h-4 text-cyan-400" />
+                <div className="p-4 rounded-xl bg-black border border-slate-200 font-mono text-xs space-y-2">
+                  <div className="flex items-center gap-2 text-slate-600 pb-2 border-b border-slate-200">
+                    <Terminal className="w-4 h-4 text-cyan-600" />
                     <span>{t('terminal_log')}</span>
                   </div>
-                  <div className="text-cyan-400">[PROVISION] Dispositivo: {onboardResult?.name}</div>
-                  <div className="text-slate-300">[TIER] {onboardResult?.tier}</div>
-                  <div className="text-slate-400">[LOG] {onboardResult?.log}</div>
-                  <div className="text-emerald-400">[STATUS] HANDSHAKE CRITTOGRAFICO COMPLETATO (P2P DIRECT STREAM READY)</div>
+                  <div className="text-cyan-600">[PROVISION] Dispositivo: {onboardResult?.name}</div>
+                  <div className="text-slate-700">[TIER] {onboardResult?.tier}</div>
+                  <div className="text-slate-600">[LOG] {onboardResult?.log}</div>
+                  <div className="text-emerald-600">[STATUS] HANDSHAKE CRITTOGRAFICO COMPLETATO (P2P DIRECT STREAM READY)</div>
                 </div>
 
                 <div className="flex justify-end pt-4">

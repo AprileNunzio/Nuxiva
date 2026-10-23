@@ -17,7 +17,7 @@ const Line: React.FC<{ readonly label: string; readonly value: string; readonly 
     void navigator.clipboard?.writeText(value).catch(() => undefined);
   };
   return (
-    <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-800 bg-slate-50 px-3 py-2">
+    <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
       <div className="min-w-0">
         <span className="block text-[10px] font-semibold uppercase tracking-wider text-slate-500">{label}</span>
         <code className="break-all text-sm text-blue-800">{secret && !shown ? '••••••••••••' : value || '—'}</code>

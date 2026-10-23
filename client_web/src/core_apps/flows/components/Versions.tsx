@@ -30,7 +30,7 @@ export const Versions: React.FC<VersionsProps> = ({ versions, lang, busy, t, onR
         >
           <b>v{item.version}</b> <span className="text-xs text-slate-500">{formatTime(item.at, lang)} · {item.author}</span>
           {item.auto ? <Pill tone="rose">{t('auto')}</Pill> : null}
-          <p className="text-xs text-slate-400">{item.note}</p>
+          <p className="text-xs text-slate-600">{item.note}</p>
         </Row>
       ))}
     </List>

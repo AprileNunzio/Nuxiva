@@ -67,7 +67,7 @@ export const PlaceSearch: React.FC<Props> = ({ t, onAdded }) => {
               }
             >
               <div className="min-w-0">
-                <div className="truncate text-sm font-medium text-slate-100">{hit.name}</div>
+                <div className="truncate text-sm font-medium text-slate-900">{hit.name}</div>
                 <div className="truncate text-xs text-slate-500">{hit.detail}</div>
               </div>
             </Row>

@@ -32,7 +32,7 @@ export const Composer: React.FC<ComposerProps> = ({ busy, t, run }) => {
   const name = typeof draft?.automation.name === 'string' ? draft.automation.name : '';
 
   return (
-    <Panel title={t('compose_title')} icon={<Sparkles className="h-4 w-4 text-purple-300" aria-hidden="true" />}>
+    <Panel title={t('compose_title')} icon={<Sparkles className="h-4 w-4 text-purple-700" aria-hidden="true" />}>
       <form onSubmit={submit} className="flex flex-col gap-3">
         <Field label={t('compose_label')}>
           <textarea className={`${inputClass} h-24`} value={text} maxLength={1000} onChange={(event) => setText(event.target.value)} placeholder={t('compose_placeholder')} />
@@ -42,13 +42,13 @@ export const Composer: React.FC<ComposerProps> = ({ busy, t, run }) => {
         </Btn>
       </form>
       {draft ? (
-        <div className="mt-4 flex flex-col gap-2 rounded-xl border border-slate-700 bg-slate-950/60 p-3">
+        <div className="mt-4 flex flex-col gap-2 rounded-xl border border-slate-300 bg-white p-3">
           <div className="flex items-center justify-between gap-2">
             <b className="text-sm">{name}</b>
             <Pill tone={draft.errors.length ? 'rose' : 'emerald'}>{draft.errors.length ? t('draft_errors', { n: draft.errors.length }) : t('draft_valid')}</Pill>
           </div>
-          {draft.errors.length ? <pre className="max-h-40 overflow-auto whitespace-pre-wrap text-[11px] text-rose-200">{JSON.stringify(draft.errors, null, 1)}</pre> : null}
-          <pre className="max-h-56 overflow-auto whitespace-pre-wrap font-mono text-[11px] text-slate-300">{JSON.stringify(draft.automation, null, 1)}</pre>
+          {draft.errors.length ? <pre className="max-h-40 overflow-auto whitespace-pre-wrap text-[11px] text-rose-800">{JSON.stringify(draft.errors, null, 1)}</pre> : null}
+          <pre className="max-h-56 overflow-auto whitespace-pre-wrap font-mono text-[11px] text-slate-700">{JSON.stringify(draft.automation, null, 1)}</pre>
           <Btn tone="emerald" busy={busy} disabled={draft.errors.length > 0} onClick={() => void save()}>
             {t('draft_save')}
           </Btn>

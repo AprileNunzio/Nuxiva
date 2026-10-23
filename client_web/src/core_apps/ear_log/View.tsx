@@ -81,7 +81,7 @@ export const View: React.FC = () => {
         <Stat label={t('stat_audio')} value={journal.stats.audioMb} tone="purple" />
       </StatRow>
       <div className="mt-4 grid gap-4">
-        <Panel title={t('live_title')} icon={<Mic className="h-4 w-4 text-emerald-300" aria-hidden="true" />}>
+        <Panel title={t('live_title')} icon={<Mic className="h-4 w-4 text-emerald-700" aria-hidden="true" />}>
           <LivePanel live={journal.live} t={t} />
           <p className="mt-2 text-xs text-slate-500">{t('privacy_note')}</p>
         </Panel>

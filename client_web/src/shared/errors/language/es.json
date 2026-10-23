@@ -97,6 +97,7 @@
     "error_team_update_failed": "Agente no actualizado.",
     "error_team_delete_failed": "Agente no eliminado.",
     "error_team_settings_failed": "Ajustes no guardados.",
+    "error_agent_model_failed": "No se pudo leer o guardar el modelo del agente.",
     "error_team_tool_failed": "Herramienta no actualizada.",
     "error_team_widget_failed": "Widget no actualizado.",
     "error_team_create_failed": "Creación fallida: revisa los datos.",

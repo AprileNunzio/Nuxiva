@@ -52,7 +52,7 @@ export const AgentList: React.FC<AgentListProps> = ({ agents, selected, toolCoun
             aria-selected={category === c}
             onClick={() => setCategory(c)}
             className={`shrink-0 rounded-full border px-3 py-1 text-xs transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${
-              category === c ? 'border-cyan-400/60 bg-cyan-400/15 text-cyan-100' : 'border-slate-700 text-slate-400 hover:text-white'
+              category === c ? 'border-cyan-300 bg-cyan-50 text-cyan-900' : 'border-slate-300 text-slate-600 hover:text-slate-950'
             }`}
           >
             {t(`category_${c}`)}
@@ -67,20 +67,20 @@ export const AgentList: React.FC<AgentListProps> = ({ agents, selected, toolCoun
               onClick={() => onSelect(agent.id)}
               aria-current={selected === agent.id}
               className={`flex w-full items-center gap-3 rounded-xl border px-3 py-2 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${
-                selected === agent.id ? 'border-cyan-400/60 bg-cyan-400/10' : 'border-slate-800/80 bg-slate-950/40 hover:border-slate-600'
+                selected === agent.id ? 'border-cyan-300 bg-cyan-50' : 'border-slate-200 bg-slate-50 hover:border-slate-300'
               }`}
             >
-              <span className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-700 bg-slate-900 text-lg">
+              <span className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-slate-300 bg-white text-lg">
                 <span aria-hidden="true">{agent.icon || '◆'}</span>
                 <span
-                  className={`absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border border-slate-950 ${
+                  className={`absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border-2 border-white ${
                     agent.doing ? 'animate-pulse bg-cyan-300' : agent.enabled ? 'bg-emerald-400' : 'bg-slate-600'
                   }`}
                   aria-hidden="true"
                 />
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-sm font-semibold text-slate-100">{agent.name}</span>
+                <span className="block truncate text-sm font-semibold text-slate-900">{agent.name}</span>
                 <span className="block truncate text-[11px] text-slate-500">
                   {agent.doing ? t('doing', { what: agent.doing }) : t('tools_count', { count: toolCount[agent.id] ?? 0 })}
                 </span>

@@ -24,7 +24,7 @@ export const TopicsPanel: React.FC<TopicsPanelProps> = ({ data, busy, t, run }) 
   };
 
   return (
-    <Panel title={t('topics_title')} icon={<BookOpen className="h-4 w-4 text-purple-300" aria-hidden="true" />}>
+    <Panel title={t('topics_title')} icon={<BookOpen className="h-4 w-4 text-purple-700" aria-hidden="true" />}>
       {data.topics.length === 0 ? (
         <Empty>{t('topics_empty')}</Empty>
       ) : (
@@ -49,7 +49,7 @@ export const TopicsPanel: React.FC<TopicsPanelProps> = ({ data, busy, t, run }) 
                 {topic.source === 'auto' ? <Pill tone="cyan">{t('auto')}</Pill> : null}
                 {topic.due_reviews > 0 ? <Pill tone="amber">{t('reviews_due', { n: topic.due_reviews })}</Pill> : null}
               </div>
-              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-800" role="progressbar" aria-valuenow={Math.round(topic.progress * 100)} aria-valuemin={0} aria-valuemax={100}>
+              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-100" role="progressbar" aria-valuenow={Math.round(topic.progress * 100)} aria-valuemin={0} aria-valuemax={100}>
                 <div className="h-full bg-gradient-to-r from-purple-500 to-cyan-400" style={{ width: `${Math.round(topic.progress * 100)}%` }} />
               </div>
               <p className="mt-1 text-[11px] text-slate-500">{t('topic_meta', { progress: Math.round(topic.progress * 100), cells: topic.cells, target: data.levels[String(topic.target_level)] ?? topic.target_level })}</p>
@@ -57,7 +57,7 @@ export const TopicsPanel: React.FC<TopicsPanelProps> = ({ data, busy, t, run }) 
           ))}
         </List>
       )}
-      <form onSubmit={submit} className="mt-4 grid grid-cols-2 gap-3 border-t border-slate-800 pt-4">
+      <form onSubmit={submit} className="mt-4 grid grid-cols-2 gap-3 border-t border-slate-200 pt-4">
         <div className="col-span-2">
           <Field label={t('field_topic')}>
             <input className={inputClass} value={name} maxLength={80} onChange={(event) => setName(event.target.value)} required />

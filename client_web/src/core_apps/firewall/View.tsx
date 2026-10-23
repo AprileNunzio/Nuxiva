@@ -57,7 +57,7 @@ export const View: React.FC = () => {
       </StatRow>
       {data.status.error ? <Pill tone="rose">{data.status.error}</Pill> : null}
       <div className="grid gap-4 lg:grid-cols-2">
-        <Panel title={t('policy_title')} icon={<ShieldCheck className="h-4 w-4 text-emerald-300" aria-hidden="true" />}>
+        <Panel title={t('policy_title')} icon={<ShieldCheck className="h-4 w-4 text-emerald-700" aria-hidden="true" />}>
           <Field label={t('policy_mode')}>
             <select className={inputClass} value={policy.mode} disabled={busy} onChange={(event) => change({ mode: event.target.value })}>
               {MODES.map((mode) => (
@@ -76,7 +76,7 @@ export const View: React.FC = () => {
             ))}
           </List>
         </Panel>
-        <Panel title={t('blocks_title')} icon={<Ban className="h-4 w-4 text-rose-300" aria-hidden="true" />}>
+        <Panel title={t('blocks_title')} icon={<Ban className="h-4 w-4 text-rose-700" aria-hidden="true" />}>
           <form onSubmit={block} className="mb-3 flex flex-wrap gap-2">
             <input className={`${inputClass} flex-1`} value={address} onChange={(event) => setAddress(event.target.value)} placeholder={t('block_placeholder')} aria-label={t('block_placeholder')} />
             <select className={`${inputClass} w-32`} value={minutes} onChange={(event) => setMinutes(Number(event.target.value))} aria-label={t('block_duration')}>
@@ -105,7 +105,7 @@ export const View: React.FC = () => {
         </Panel>
       </div>
       <RulesPanel rules={data.rules} busy={busy} t={t} run={run} />
-      <Panel title={t('alerts_title')} icon={<Radar className="h-4 w-4 text-amber-300" aria-hidden="true" />}>
+      <Panel title={t('alerts_title')} icon={<Radar className="h-4 w-4 text-amber-700" aria-hidden="true" />}>
         {data.alerts.length === 0 ? (
           <Empty>{data.engine.connected ? t('alerts_empty') : t('engine_offline')}</Empty>
         ) : (
@@ -113,7 +113,7 @@ export const View: React.FC = () => {
             {[...data.alerts].reverse().map((alert) => (
               <Row key={`${alert.at}-${alert.src}-${alert.kind}`} actions={<Pill tone={SEVERITY_TONE[alert.severity] ?? 'slate'}>{alert.severity}</Pill>}>
                 <b>{alert.kind}</b>
-                <span className="ml-2 font-mono text-xs text-slate-400">{alert.src} → {alert.dst}</span>
+                <span className="ml-2 font-mono text-xs text-slate-600">{alert.src} → {alert.dst}</span>
                 <p className="text-[11px] text-slate-500">{formatTime(alert.at, lang)} · {alert.detail}</p>
               </Row>
             ))}

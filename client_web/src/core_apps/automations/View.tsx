@@ -32,7 +32,7 @@ export const View: React.FC = () => {
         <Stat label={t('stat_running')} value={data.active.length} tone="amber" />
       </StatRow>
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
-        <Panel title={t('list_title')} icon={<Workflow className="h-4 w-4 text-amber-300" aria-hidden="true" />}>
+        <Panel title={t('list_title')} icon={<Workflow className="h-4 w-4 text-amber-700" aria-hidden="true" />}>
           {data.automations.length === 0 ? (
             <Empty>{t('list_empty')}</Empty>
           ) : (
@@ -56,7 +56,7 @@ export const View: React.FC = () => {
                   }
                 >
                   <b>{item.name}</b>
-                  {item.description ? <p className="text-xs text-slate-400">{item.description}</p> : null}
+                  {item.description ? <p className="text-xs text-slate-600">{item.description}</p> : null}
                   <p className="mt-1 text-[11px] text-slate-500">
                     {t('runs', { n: item.runs ?? 0 })}
                     {item.last_run ? ` · ${formatTime(item.last_run, lang)} · ${item.last_status ?? ''}` : ''}
@@ -75,7 +75,7 @@ export const View: React.FC = () => {
                 {templates.map((template) => (
                   <Row key={template.index} actions={<Btn busy={busy} onClick={() => void run(() => fromTemplate(template.index), 'automations_template_failed')}>{t('use')}</Btn>}>
                     <b>{template.name}</b>
-                    <p className="text-xs text-slate-400">{template.description}</p>
+                    <p className="text-xs text-slate-600">{template.description}</p>
                   </Row>
                 ))}
               </List>
@@ -83,7 +83,7 @@ export const View: React.FC = () => {
           ) : null}
         </div>
       </div>
-      <Panel title={t('runs_title')} icon={<History className="h-4 w-4 text-cyan-300" aria-hidden="true" />}>
+      <Panel title={t('runs_title')} icon={<History className="h-4 w-4 text-cyan-700" aria-hidden="true" />}>
         {data.active.length + data.recent.length === 0 ? (
           <Empty>{t('runs_empty')}</Empty>
         ) : (
@@ -102,7 +102,7 @@ export const View: React.FC = () => {
                 <b>{item.name}</b>
                 <Pill tone={item.error ? 'rose' : item.ended === null ? 'amber' : 'emerald'}>{item.status}</Pill>
                 <span className="ml-2 text-[11px] text-slate-500">{formatTime(item.started, lang)} · {t('steps', { n: item.steps })} · {item.ms} ms</span>
-                {item.error ? <p className="text-xs text-rose-300">{item.error}</p> : null}
+                {item.error ? <p className="text-xs text-rose-700">{item.error}</p> : null}
               </Row>
             ))}
           </List>

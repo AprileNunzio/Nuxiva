@@ -37,15 +37,15 @@ export const RolloutPanel: React.FC<RolloutPanelProps> = ({ nodes, onChanged }) 
   return (
     <section className={panelClass} aria-labelledby="upd-rollout-title">
       <div className="mb-3 flex items-center justify-between gap-3">
-        <h2 id="upd-rollout-title" className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
-          <Network className="h-4 w-4 text-cyan-300" aria-hidden="true" />
+        <h2 id="upd-rollout-title" className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">
+          <Network className="h-4 w-4 text-cyan-700" aria-hidden="true" />
           {t('rollout_title', { count: nodes.length })}
         </h2>
         <button
           type="button"
           onClick={() => setTarget({ kind: 'all' })}
           disabled={nodes.length === 0}
-          className={`${buttonClass} border-slate-700 bg-slate-900/70 px-3 py-1.5 text-xs text-slate-200 hover:border-cyan-400/60`}
+          className={`${buttonClass} border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-800 hover:border-cyan-300`}
         >
           <Download className="h-3.5 w-3.5" aria-hidden="true" />
           {t('rollout_all')}
@@ -56,9 +56,9 @@ export const RolloutPanel: React.FC<RolloutPanelProps> = ({ nodes, onChanged }) 
       ) : (
         <ul className="flex flex-col gap-2">
           {nodes.map((node) => (
-            <li key={node.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-800/80 bg-slate-950/40 px-3 py-2.5">
+            <li key={node.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5">
               <div className="min-w-0">
-                <p className="flex items-center gap-2 text-sm font-semibold text-slate-100">
+                <p className="flex items-center gap-2 text-sm font-semibold text-slate-900">
                   <span className={`h-2 w-2 rounded-full ${node.online ? 'bg-emerald-400' : 'bg-slate-600'}`} aria-hidden="true" />
                   <span className="truncate">{node.name}</span>
                 </p>
@@ -73,12 +73,12 @@ export const RolloutPanel: React.FC<RolloutPanelProps> = ({ nodes, onChanged }) 
                 </p>
               </div>
               {node.update_queued ? (
-                <span className="rounded-full border border-amber-400/40 px-2.5 py-1 text-[11px] font-semibold text-amber-200">{t('rollout_queued')}</span>
+                <span className="rounded-full border border-amber-300 px-2.5 py-1 text-[11px] font-semibold text-amber-800">{t('rollout_queued')}</span>
               ) : (
                 <button
                   type="button"
                   onClick={() => setTarget({ kind: 'one', node })}
-                  className={`${buttonClass} border-slate-700 px-3 py-1.5 text-xs text-slate-300 hover:border-cyan-400/60`}
+                  className={`${buttonClass} border-slate-300 px-3 py-1.5 text-xs text-slate-700 hover:border-cyan-300`}
                 >
                   {t('rollout_one')}
                 </button>

@@ -45,7 +45,7 @@ export const View: React.FC = () => {
       </StatRow>
       {result ? <Pill tone="emerald">{t('sync_done', { written: result.written, imported: result.imported })}</Pill> : null}
       <div className="grid gap-4 lg:grid-cols-2">
-        <Panel title={t('files_title')} icon={<FolderLock className="h-4 w-4 text-rose-300" aria-hidden="true" />}>
+        <Panel title={t('files_title')} icon={<FolderLock className="h-4 w-4 text-rose-700" aria-hidden="true" />}>
           <p className="mb-3 break-all font-mono text-[11px] text-slate-500">{data.root}</p>
           {data.files.length === 0 ? (
             <Empty>{t('files_empty')}</Empty>
@@ -59,8 +59,8 @@ export const View: React.FC = () => {
             </List>
           )}
         </Panel>
-        <Panel title={t('diary_title')} icon={<FileText className="h-4 w-4 text-cyan-300" aria-hidden="true" />}>
-          {data.today ? <pre className="max-h-[60vh] overflow-auto whitespace-pre-wrap text-xs leading-relaxed text-slate-300">{data.today}</pre> : <Empty>{t('diary_empty')}</Empty>}
+        <Panel title={t('diary_title')} icon={<FileText className="h-4 w-4 text-cyan-700" aria-hidden="true" />}>
+          {data.today ? <pre className="max-h-[60vh] overflow-auto whitespace-pre-wrap text-xs leading-relaxed text-slate-700">{data.today}</pre> : <Empty>{t('diary_empty')}</Empty>}
         </Panel>
       </div>
     </AppFrame>

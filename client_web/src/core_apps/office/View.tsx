@@ -36,7 +36,7 @@ export const View: React.FC = () => {
         <Stat label={t('stat_engine')} value={data.office ? t('engine_ready') : t('engine_missing')} tone={data.office ? 'emerald' : 'amber'} />
         <Stat label={t('stat_recipes')} value={data.recipes.length} tone="purple" />
       </StatRow>
-      <Panel title={t('create_title')} icon={<FilePlus className="h-4 w-4 text-cyan-300" aria-hidden="true" />}>
+      <Panel title={t('create_title')} icon={<FilePlus className="h-4 w-4 text-cyan-700" aria-hidden="true" />}>
         <form onSubmit={(event) => void submit(event)} className="flex flex-col gap-2 sm:flex-row">
           <textarea className={`${inputClass} min-h-20 flex-1`} value={request} maxLength={600} placeholder={t('create_placeholder')} onChange={(event) => setRequest(event.target.value)} />
           <Btn type="submit" busy={busy} disabled={request.trim().length < 8}>
@@ -57,12 +57,12 @@ export const View: React.FC = () => {
                   actions={
                     <>
                       {item.preview ? (
-                        <a className="rounded-xl border border-slate-700 p-2 text-slate-300 hover:border-cyan-500" href={previewUrl(item.id)} target="_blank" rel="noopener noreferrer" aria-label={t('preview')}>
+                        <a className="rounded-xl border border-slate-300 p-2 text-slate-700 hover:border-cyan-500" href={previewUrl(item.id)} target="_blank" rel="noopener noreferrer" aria-label={t('preview')}>
                           <Eye className="h-3.5 w-3.5" aria-hidden="true" />
                         </a>
                       ) : null}
                       {item.files.map((file, index) => (
-                        <a key={file} className="rounded-xl border border-slate-700 p-2 text-slate-300 hover:border-emerald-500" href={fileUrl(item.id, index)} download aria-label={`${t('download')} ${file.split('/').pop()}`} title={file.split('/').pop()}>
+                        <a key={file} className="rounded-xl border border-slate-300 p-2 text-slate-700 hover:border-emerald-500" href={fileUrl(item.id, index)} download aria-label={`${t('download')} ${file.split('/').pop()}`} title={file.split('/').pop()}>
                           <Download className="h-3.5 w-3.5" aria-hidden="true" />
                         </a>
                       ))}
@@ -73,7 +73,7 @@ export const View: React.FC = () => {
                     <b className="text-sm">{item.title}</b>
                     <Pill tone="cyan">{item.kind}</Pill>
                   </div>
-                  <p className="text-xs text-slate-400">{item.summary}</p>
+                  <p className="text-xs text-slate-600">{item.summary}</p>
                   <p className="text-xs text-slate-500">{formatTime(item.created, lang)}{item.seconds ? ` · ${item.seconds} s` : ''}</p>
                 </Row>
               ))}
@@ -88,7 +88,7 @@ export const View: React.FC = () => {
               {data.recipes.map((recipe) => (
                 <Row key={recipe.conversion}>
                   <b className="text-sm">{recipe.conversion}</b>
-                  <p className="text-xs text-slate-400">{recipe.steps}</p>
+                  <p className="text-xs text-slate-600">{recipe.steps}</p>
                   <p className="text-xs text-slate-500">{t('recipe_uses', { count: recipe.uses })}{recipe.avg_s ? ` · ${recipe.avg_s.toFixed(1)} s` : ''}</p>
                 </Row>
               ))}

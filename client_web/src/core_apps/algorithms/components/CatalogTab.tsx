@@ -59,7 +59,7 @@ export const CatalogTab: React.FC<CatalogTabProps> = ({ catalog, t, onChanged })
                   type="button"
                   onClick={() => setSelected(entry.key)}
                   aria-pressed={entry.key === selected}
-                  className={`flex w-full items-start gap-3 rounded-xl border px-3 py-2 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${entry.key === selected ? 'border-cyan-500/60 bg-cyan-500/10' : 'border-slate-800 bg-slate-900/60 hover:border-slate-400'}`}
+                  className={`flex w-full items-start gap-3 rounded-xl border px-3 py-2 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${entry.key === selected ? 'border-cyan-300 bg-cyan-50' : 'border-slate-200 bg-white hover:border-slate-400'}`}
                 >
                   <span className="mt-0.5 shrink-0">{ICONS[entry.kind]}</span>
                   <span className="min-w-0 flex-1">

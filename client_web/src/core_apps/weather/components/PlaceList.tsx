@@ -83,7 +83,7 @@ export const PlaceList: React.FC<Props> = ({ places, defaultId, selected, busy, 
           ) : (
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <span className="truncate text-sm font-medium text-slate-100">{item.name}</span>
+                <span className="truncate text-sm font-medium text-slate-900">{item.name}</span>
                 {item.id === defaultId ? <Pill tone="amber">{t('default')}</Pill> : null}
               </div>
               <div className="truncate text-xs text-slate-500">{item.detail || `${item.lat.toFixed(2)}, ${item.lon.toFixed(2)}`}</div>

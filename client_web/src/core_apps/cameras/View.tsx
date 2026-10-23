@@ -52,7 +52,7 @@ export const View: React.FC = () => {
         <Stat label={t('stat_recording')} value={recording} tone="rose" />
       </StatRow>
       {live.length > 0 ? (
-        <Panel title={t('live_title')} icon={<Video className="h-4 w-4 text-rose-300" aria-hidden="true" />}>
+        <Panel title={t('live_title')} icon={<Video className="h-4 w-4 text-rose-700" aria-hidden="true" />}>
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3 3xl:grid-cols-4">
             {live.map((source) => (
               <Snapshot key={source.id} sourceId={source.id} name={source.name} offline={t('offline')} />
@@ -80,7 +80,7 @@ export const View: React.FC = () => {
                     <Pill>{camera.kind}</Pill>
                     {camera.recording ? <Pill tone="rose">{t('recording')}</Pill> : null}
                   </div>
-                  <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-slate-400">
+                  <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-slate-600">
                     <label className="flex items-center gap-2">
                       <Toggle checked={camera.enabled} disabled={busy} label={t('enabled')} onChange={(value) => void run(() => patchCamera(camera.id, { enabled: value }), 'cameras_patch_failed')} />
                       {t('enabled')}
@@ -99,7 +99,7 @@ export const View: React.FC = () => {
             </List>
           )}
         </Panel>
-        <Panel title={t('add_title')} icon={<Plus className="h-4 w-4 text-cyan-300" aria-hidden="true" />}>
+        <Panel title={t('add_title')} icon={<Plus className="h-4 w-4 text-cyan-700" aria-hidden="true" />}>
           <form onSubmit={submit} className="flex flex-col gap-3">
             <Field label={t('field_name')}>
               <input className={inputClass} value={name} maxLength={60} onChange={(event) => setName(event.target.value)} required />

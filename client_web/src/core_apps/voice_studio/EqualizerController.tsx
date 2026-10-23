@@ -58,23 +58,23 @@ export const EqualizerController: React.FC<Props> = ({
   return (
     <div className="space-y-6">
       {/* Header e Selezione Preset con Alto Contrasto */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-cyan-500/30 pb-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-cyan-300 pb-4">
         <div>
-          <h4 className="flex items-center gap-2 text-base font-bold text-white">
-            <Sliders className="h-5 w-5 text-cyan-400" aria-hidden="true" />
+          <h4 className="flex items-center gap-2 text-base font-bold text-slate-950">
+            <Sliders className="h-5 w-5 text-cyan-600" aria-hidden="true" />
             {t('equalizer_title')}
-            {selectedVoiceName && <span className="text-xs font-medium text-cyan-200">({selectedVoiceName})</span>}
+            {selectedVoiceName && <span className="text-xs font-medium text-cyan-800">({selectedVoiceName})</span>}
           </h4>
-          <p className="text-xs text-slate-300">{t('equalizer_subtitle')}</p>
+          <p className="text-xs text-slate-700">{t('equalizer_subtitle')}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-bold text-slate-200">{t('presets')}:</span>
+          <span className="text-xs font-bold text-slate-800">{t('presets')}:</span>
           {presets.map((p) => (
             <button
               key={p.id}
               type="button"
               onClick={() => onApplyPreset(p.id)}
-              className="rounded-xl border border-slate-600 bg-slate-800 px-3.5 py-1.5 text-xs font-bold text-white transition hover:border-cyan-400 hover:bg-cyan-500 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 shadow-sm"
+              className="rounded-xl border border-slate-300 bg-slate-100 px-3.5 py-1.5 text-xs font-bold text-white transition hover:border-cyan-400 hover:bg-cyan-500 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 shadow-sm"
             >
               {p.name}
             </button>
@@ -82,7 +82,7 @@ export const EqualizerController: React.FC<Props> = ({
           <button
             type="button"
             onClick={onReset}
-            className="flex items-center gap-1.5 rounded-xl border border-slate-600 bg-slate-800 px-3.5 py-1.5 text-xs font-bold text-white transition hover:bg-slate-700 hover:border-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 shadow-sm"
+            className="flex items-center gap-1.5 rounded-xl border border-slate-300 bg-slate-100 px-3.5 py-1.5 text-xs font-bold text-slate-950 transition hover:bg-slate-200 hover:border-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 shadow-sm"
             title={t('reset')}
           >
             <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
@@ -92,10 +92,10 @@ export const EqualizerController: React.FC<Props> = ({
       </div>
 
       {/* Visualizzatore e Cursori Equalizzatore a 5 Bande */}
-      <div className="rounded-2xl border border-slate-700 bg-slate-900/90 p-5 shadow-lg">
+      <div className="rounded-2xl border border-slate-300 bg-white p-5 shadow-lg">
         <div className="mb-4 flex items-center justify-between text-xs">
-          <span className="font-bold text-cyan-300">{t('graphic_eq')} (5 Bande)</span>
-          <span className="text-slate-300">Regolazione guadagno da -12 dB a +12 dB</span>
+          <span className="font-bold text-cyan-700">{t('graphic_eq')} (5 Bande)</span>
+          <span className="text-slate-700">Regolazione guadagno da -12 dB a +12 dB</span>
         </div>
 
         <div className="grid grid-cols-5 gap-3 pt-2 text-center" role="group" aria-label="Equalizzatore a 5 bande">
@@ -103,10 +103,10 @@ export const EqualizerController: React.FC<Props> = ({
             const val = eq[b.key] ?? 0;
             return (
               <div key={b.key} className="flex flex-col items-center">
-                <span className="text-xs font-bold text-white">
+                <span className="text-xs font-bold text-slate-950">
                   {val > 0 ? `+${val.toFixed(1)}` : val.toFixed(1)} dB
                 </span>
-                <div className="relative my-3 flex h-40 w-10 items-center justify-center rounded-xl border border-slate-700/80 bg-slate-950/80 py-3">
+                <div className="relative my-3 flex h-40 w-10 items-center justify-center rounded-xl border border-slate-300 bg-white py-3">
                   {/* Linea zero centrale */}
                   <div className="absolute top-1/2 h-0.5 w-full -translate-y-1/2 bg-slate-600" aria-hidden="true" />
                   <input
@@ -124,8 +124,8 @@ export const EqualizerController: React.FC<Props> = ({
                     style={{ WebkitAppearance: 'slider-vertical' }}
                   />
                 </div>
-                <span className="text-xs font-bold text-slate-100">{b.label}</span>
-                <span className="text-[11px] font-medium text-cyan-400">{b.freq}</span>
+                <span className="text-xs font-bold text-slate-900">{b.label}</span>
+                <span className="text-[11px] font-medium text-cyan-600">{b.freq}</span>
               </div>
             );
           })}
@@ -133,9 +133,9 @@ export const EqualizerController: React.FC<Props> = ({
       </div>
 
       {/* Sezione Voice Controller Dinamico */}
-      <div className="rounded-2xl border border-slate-700 bg-slate-900/90 p-5 shadow-lg">
-        <h5 className="mb-4 flex items-center gap-2 text-sm font-bold text-cyan-300">
-          <Wand2 className="h-4 w-4 text-cyan-400" aria-hidden="true" />
+      <div className="rounded-2xl border border-slate-300 bg-white p-5 shadow-lg">
+        <h5 className="mb-4 flex items-center gap-2 text-sm font-bold text-cyan-700">
+          <Wand2 className="h-4 w-4 text-cyan-600" aria-hidden="true" />
           {t('voice_controller_title')}
         </h5>
 
@@ -153,7 +153,7 @@ export const EqualizerController: React.FC<Props> = ({
               onChange={(e) => updateFX('pitch', parseFloat(e.target.value))}
               className="w-full cursor-pointer accent-cyan-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
             />
-            <div className="flex justify-between text-xs font-medium text-slate-300">
+            <div className="flex justify-between text-xs font-medium text-slate-700">
               <span>{t('pitch_deep')} (-8)</span>
               <span>{t('normal')} (0)</span>
               <span>{t('pitch_high')} (+8)</span>
@@ -173,7 +173,7 @@ export const EqualizerController: React.FC<Props> = ({
               onChange={(e) => updateFX('speed', parseFloat(e.target.value))}
               className="w-full cursor-pointer accent-cyan-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
             />
-            <div className="flex justify-between text-xs font-medium text-slate-300">
+            <div className="flex justify-between text-xs font-medium text-slate-700">
               <span>0.6x</span>
               <span>1.0x</span>
               <span>1.6x</span>
@@ -193,7 +193,7 @@ export const EqualizerController: React.FC<Props> = ({
               onChange={(e) => updateFX('deesser', parseFloat(e.target.value))}
               className="w-full cursor-pointer accent-cyan-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
             />
-            <div className="flex justify-between text-xs font-medium text-slate-300">
+            <div className="flex justify-between text-xs font-medium text-slate-700">
               <span>{t('off')}</span>
               <span>{t('attenuate_sibilants')}</span>
             </div>
@@ -212,7 +212,7 @@ export const EqualizerController: React.FC<Props> = ({
               onChange={(e) => updateFX('reverb', parseFloat(e.target.value))}
               className="w-full cursor-pointer accent-cyan-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
             />
-            <div className="flex justify-between text-xs font-medium text-slate-300">
+            <div className="flex justify-between text-xs font-medium text-slate-700">
               <span>{t('dry')}</span>
               <span>{t('room_ambience')}</span>
             </div>
@@ -231,7 +231,7 @@ export const EqualizerController: React.FC<Props> = ({
               onChange={(e) => updateFX('compressor', parseFloat(e.target.value))}
               className="w-full cursor-pointer accent-cyan-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
             />
-            <div className="flex justify-between text-xs font-medium text-slate-300">
+            <div className="flex justify-between text-xs font-medium text-slate-700">
               <span>{t('dynamic')}</span>
               <span>{t('punch_broadcast')}</span>
             </div>
@@ -241,8 +241,8 @@ export const EqualizerController: React.FC<Props> = ({
 
       {/* Azioni Anteprima e Salva */}
       <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-        <div className="flex items-center gap-2 text-xs text-slate-300">
-          <Sparkles className="h-4 w-4 text-cyan-400" aria-hidden="true" />
+        <div className="flex items-center gap-2 text-xs text-slate-700">
+          <Sparkles className="h-4 w-4 text-cyan-600" aria-hidden="true" />
           <span>{t('realtime_fx_hint')}</span>
         </div>
         <div className="flex flex-wrap items-center gap-2">

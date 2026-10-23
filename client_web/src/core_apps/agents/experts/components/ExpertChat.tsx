@@ -85,10 +85,10 @@ export const ExpertChat: React.FC<ExpertChatProps> = ({ expert, skills, onChange
   return (
     <section className={`${glassClass} flex min-h-[26rem] flex-col`} aria-labelledby="expert-chat">
       <h3 id="expert-chat" className={labelClass}>
-        <MessageCircle className="h-3.5 w-3.5 text-cyan-300" aria-hidden="true" />
+        <MessageCircle className="h-3.5 w-3.5 text-cyan-700" aria-hidden="true" />
         {t('chat_title', { role: expert.role })}
         {turns.length > 0 && (
-          <button type="button" onClick={() => void clear()} className="ml-auto flex items-center gap-1 rounded-lg px-2 py-1 text-[0.625rem] normal-case tracking-normal text-slate-400 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400">
+          <button type="button" onClick={() => void clear()} className="ml-auto flex items-center gap-1 rounded-lg px-2 py-1 text-[0.625rem] normal-case tracking-normal text-slate-600 hover:text-slate-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400">
             <Eraser className="h-3 w-3" aria-hidden="true" />
             {t('chat_clear')}
           </button>
@@ -98,23 +98,23 @@ export const ExpertChat: React.FC<ExpertChatProps> = ({ expert, skills, onChange
         {turns.length === 0 && !thinking && <li className="m-auto max-w-sm text-center text-sm text-slate-500">{t('chat_empty', { role: expert.role, specialty: expert.specialty })}</li>}
         {turns.map((turn, i) =>
           turn.role === 'user' ? (
-            <li key={`${turn.at}-${i}`} className="ml-auto max-w-[85%] rounded-2xl rounded-br-md bg-gradient-to-br from-cyan-500/25 to-indigo-500/25 px-3.5 py-2 text-sm text-white">
+            <li key={`${turn.at}-${i}`} className="ml-auto max-w-[85%] rounded-2xl rounded-br-md bg-gradient-to-br from-cyan-100 to-indigo-100 px-3.5 py-2 text-sm text-slate-950">
               {turn.text}
             </li>
           ) : (
             <li key={`${turn.at}-${i}`} className="flex max-w-[92%] gap-2">
               <ExpertAvatar icon={expert.icon} color={expert.color} />
-              <div className="min-w-0 rounded-2xl rounded-tl-md border border-slate-700/70 bg-slate-950/70 px-3.5 py-2">
-                <p className="whitespace-pre-wrap break-words text-sm text-slate-100">{turn.text}</p>
+              <div className="min-w-0 rounded-2xl rounded-tl-md border border-slate-300 bg-white px-3.5 py-2">
+                <p className="whitespace-pre-wrap break-words text-sm text-slate-900">{turn.text}</p>
                 {turn.steps.length > 0 && (
                   <p className="mt-2 flex flex-wrap gap-1" aria-label={t('chat_steps')}>
                     {turn.steps.map((s, n) =>
                       s.tool.startsWith(SKILL_STEP) ? (
-                        <span key={`${s.tool}-${n}`} className="rounded-full border border-indigo-400/50 bg-indigo-400/10 px-2 py-0.5 text-[0.625rem] font-semibold text-indigo-100">
+                        <span key={`${s.tool}-${n}`} className="rounded-full border border-indigo-300 bg-indigo-50 px-2 py-0.5 text-[0.625rem] font-semibold text-indigo-900">
                           ✦ {skillNames.get(s.tool.slice(SKILL_STEP.length)) ?? s.tool.slice(SKILL_STEP.length)}
                         </span>
                       ) : (
-                        <span key={`${s.tool}-${n}`} className={`rounded-full border px-2 py-0.5 font-mono text-[0.625rem] ${s.ok ? 'border-emerald-400/40 text-emerald-200' : 'border-rose-400/40 text-rose-200'}`}>
+                        <span key={`${s.tool}-${n}`} className={`rounded-full border px-2 py-0.5 font-mono text-[0.625rem] ${s.ok ? 'border-emerald-300 text-emerald-800' : 'border-rose-300 text-rose-800'}`}>
                           {s.tool}
                         </span>
                       ),
@@ -126,24 +126,24 @@ export const ExpertChat: React.FC<ExpertChatProps> = ({ expert, skills, onChange
           ),
         )}
         {thinking && (
-          <li className="flex items-center gap-2 text-sm text-slate-400" role="status">
+          <li className="flex items-center gap-2 text-sm text-slate-600" role="status">
             <Loader2 className="h-4 w-4 animate-spin" style={{ color: expert.color }} aria-hidden="true" />
             {t('chat_thinking', { role: expert.role })}
           </li>
         )}
         {pending && !thinking && (
-          <li className="rounded-2xl border border-amber-400/50 bg-amber-400/10 p-3 text-sm text-amber-50">
+          <li className="rounded-2xl border border-amber-300 bg-amber-50 p-3 text-sm text-amber-50">
             <p className="flex items-center gap-2 font-semibold">
               <ShieldAlert className="h-4 w-4" aria-hidden="true" />
               {t('confirm_title', { role: expert.role })}
             </p>
-            <pre className="mt-2 overflow-x-auto rounded-lg bg-slate-950/70 p-2 font-mono text-[0.6875rem] text-amber-100">{`${pending.tool} ${JSON.stringify(pending.args)}`}</pre>
+            <pre className="mt-2 overflow-x-auto rounded-lg bg-white p-2 font-mono text-[0.6875rem] text-amber-900">{`${pending.tool} ${JSON.stringify(pending.args)}`}</pre>
             <div className="mt-2 flex gap-2">
               <button type="button" onClick={() => void settle(() => confirmExpert(expert.id, true))} className="flex items-center gap-1 rounded-xl bg-amber-400 px-3 py-1.5 text-xs font-bold text-slate-950 hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-200">
                 <Check className="h-3.5 w-3.5" aria-hidden="true" />
                 {t('confirm_yes')}
               </button>
-              <button type="button" onClick={() => void settle(() => confirmExpert(expert.id, false))} className="flex items-center gap-1 rounded-xl border border-slate-600 px-3 py-1.5 text-xs text-slate-200 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400">
+              <button type="button" onClick={() => void settle(() => confirmExpert(expert.id, false))} className="flex items-center gap-1 rounded-xl border border-slate-300 px-3 py-1.5 text-xs text-slate-800 hover:text-slate-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400">
                 <X className="h-3.5 w-3.5" aria-hidden="true" />
                 {t('confirm_no')}
               </button>

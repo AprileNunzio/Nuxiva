@@ -33,17 +33,17 @@ export const View: React.FC = () => {
   return (
     <AppFrame title={t('title')} description={t('description')} onReload={reload}>
       <div className="grid gap-4 lg:grid-cols-2">
-        <Panel title={t('places_title')} icon={<MapPin className="h-4 w-4 text-rose-300" aria-hidden="true" />}>
+        <Panel title={t('places_title')} icon={<MapPin className="h-4 w-4 text-rose-700" aria-hidden="true" />}>
           <div className="grid gap-4">
             <PlaceSearch t={t} onAdded={reload} />
             <PlaceList places={overview.places} defaultId={overview.defaultId} selected={selected} busy={busy} run={run} onSelect={setSelected} t={t} />
           </div>
         </Panel>
-        <Panel title={t('preview_title')} icon={<CloudSun className="h-4 w-4 text-amber-300" aria-hidden="true" />}>
+        <Panel title={t('preview_title')} icon={<CloudSun className="h-4 w-4 text-amber-700" aria-hidden="true" />}>
           {overview.preview ? <PreviewPanel preview={overview.preview} t={t} /> : <Empty>{t(overview.error === 'no_location' ? 'preview_no_location' : 'preview_unavailable')}</Empty>}
         </Panel>
         {shown ? (
-          <Panel className="lg:col-span-2" title={t('settings_title')} icon={<SlidersHorizontal className="h-4 w-4 text-cyan-300" aria-hidden="true" />}>
+          <Panel className="lg:col-span-2" title={t('settings_title')} icon={<SlidersHorizontal className="h-4 w-4 text-cyan-700" aria-hidden="true" />}>
             <SettingsEditor
               key={shown.id}
               feature={shown}

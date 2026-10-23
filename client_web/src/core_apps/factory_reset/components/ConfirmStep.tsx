@@ -48,9 +48,9 @@ export const ConfirmStep: React.FC<Props> = ({ challenge, options, onBack, onExp
 
   return (
     <form onSubmit={submit} autoComplete="off">
-      <Panel title={t('confirm_title')} icon={<ShieldAlert className="h-4 w-4 text-rose-300" aria-hidden="true" />}>
-        <p className="text-sm text-slate-300">{t('confirm_body')}</p>
-        <p className="my-4 select-all rounded-xl border border-rose-500/40 bg-slate-950 px-4 py-3 text-center font-mono text-xl tracking-[0.3em] text-rose-200" aria-label={t('phrase_label')}>
+      <Panel title={t('confirm_title')} icon={<ShieldAlert className="h-4 w-4 text-rose-700" aria-hidden="true" />}>
+        <p className="text-sm text-slate-700">{t('confirm_body')}</p>
+        <p className="my-4 select-all rounded-xl border border-rose-300 bg-white px-4 py-3 text-center font-mono text-xl tracking-[0.3em] text-rose-800" aria-label={t('phrase_label')}>
           {challenge.phrase}
         </p>
         <Field label={t('phrase_label')}>
@@ -66,7 +66,7 @@ export const ConfirmStep: React.FC<Props> = ({ challenge, options, onBack, onExp
             onPaste={(event) => event.preventDefault()}
           />
         </Field>
-        <label className="mt-3 flex items-start gap-2 text-sm text-slate-300">
+        <label className="mt-3 flex items-start gap-2 text-sm text-slate-700">
           <input className="mt-1" type="checkbox" checked={understood} onChange={(event) => setUnderstood(event.target.checked)} />
           <span>{t('understood')}</span>
         </label>

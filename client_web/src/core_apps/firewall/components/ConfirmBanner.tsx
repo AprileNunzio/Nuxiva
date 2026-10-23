@@ -25,7 +25,7 @@ export const ConfirmBanner: React.FC<ConfirmBannerProps> = ({ deadline, busy, me
     return null;
   }
   return (
-    <div role="alert" className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-amber-500/50 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
+    <div role="alert" className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
       <span className="flex items-center gap-2">
         <ShieldAlert className="h-5 w-5" aria-hidden="true" />
         {message.replace('{seconds}', String(left))}

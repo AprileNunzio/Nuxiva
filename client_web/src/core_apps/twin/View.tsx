@@ -46,7 +46,7 @@ export const View: React.FC = () => {
         <Stat label={t('stat_verdicts')} value={data.history.length} tone="rose" />
       </StatRow>
       <div className="grid gap-4 lg:grid-cols-2">
-        <Panel title={t('rules_title')} icon={<Boxes className="h-4 w-4 text-purple-300" aria-hidden="true" />}>
+        <Panel title={t('rules_title')} icon={<Boxes className="h-4 w-4 text-purple-700" aria-hidden="true" />}>
           <List>
             {data.available.map((rule) => (
               <Row key={rule} actions={<Toggle checked={data.rules[rule] === true} disabled={busy} onChange={(value) => toggle(rule, value)} label={t(`rule_${rule}`)} />}>
@@ -56,7 +56,7 @@ export const View: React.FC = () => {
             ))}
           </List>
         </Panel>
-        <Panel title={t('simulate_title')} icon={<FlaskConical className="h-4 w-4 text-cyan-300" aria-hidden="true" />}>
+        <Panel title={t('simulate_title')} icon={<FlaskConical className="h-4 w-4 text-cyan-700" aria-hidden="true" />}>
           <form onSubmit={test} className="flex flex-col gap-3">
             <Field label={t('service')}>
               <input className={inputClass} value={service} onChange={(event) => setService(event.target.value)} placeholder="light.turn_off" />
@@ -74,7 +74,7 @@ export const View: React.FC = () => {
                 {verdict.blocked ? t('verdict_blocked') : verdict.conflicts.length ? t('verdict_warn') : t('verdict_ok')}
               </Pill>
               {verdict.conflicts.map((conflict) => (
-                <p key={`${conflict.rule}-${conflict.culprits.join()}`} className="text-xs text-slate-300">
+                <p key={`${conflict.rule}-${conflict.culprits.join()}`} className="text-xs text-slate-700">
                   {t(`rule_${conflict.rule}`)}: {conflict.culprits.join(', ')}
                 </p>
               ))}
@@ -82,7 +82,7 @@ export const View: React.FC = () => {
           ) : null}
         </Panel>
       </div>
-      <Panel title={t('history_title')} icon={<History className="h-4 w-4 text-amber-300" aria-hidden="true" />}>
+      <Panel title={t('history_title')} icon={<History className="h-4 w-4 text-amber-700" aria-hidden="true" />}>
         {data.history.length === 0 ? (
           <Empty>{t('history_empty')}</Empty>
         ) : (
@@ -91,7 +91,7 @@ export const View: React.FC = () => {
               <Row key={`${entry.at}-${index}`} actions={<Pill tone={entry.blocked ? 'rose' : 'amber'}>{entry.blocked ? t('verdict_blocked') : t('verdict_warn')}</Pill>}>
                 <span className="text-xs text-slate-500">{formatTime(entry.at, lang)} · {entry.source}</span>
                 <p className="truncate">{entry.text}</p>
-                <p className="text-xs text-slate-400">{entry.conflicts.map((conflict) => t(`rule_${conflict.rule}`)).join(' · ')}</p>
+                <p className="text-xs text-slate-600">{entry.conflicts.map((conflict) => t(`rule_${conflict.rule}`)).join(' · ')}</p>
               </Row>
             ))}
           </List>

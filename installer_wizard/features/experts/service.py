@@ -263,6 +263,7 @@ async def _escalate(expert: Expert, task: str, steps: list[dict]) -> None:
 
 
 async def _loop(expert: Expert, question: str, lang: str, steps: list[dict]) -> dict:
+    from features.brain.components import agent_component
     from features.brain.llm import BrainUnavailable, generate
     system = _system(expert, lang)
     hint = skills.suggest(expert.skills, question)
@@ -271,7 +272,8 @@ async def _loop(expert: Expert, question: str, lang: str, steps: list[dict]) -> 
         _show(expert, question, "thinking", steps, lang)
         try:
             move = await generate(_prompt(expert, question, steps, active, lang, hint), as_json=True, max_tokens=900,
-                                  temperature=0.15, kind="deep", system=system, timeout=240)
+                                  temperature=0.15, kind="deep", system=system, timeout=240,
+                                  component=agent_component(f"expert-{expert.id}"))
         except BrainUnavailable as exc:
             return {"text": f"Il modello non è raggiungibile ({exc}).", "steps": steps, "error": "brain"}
         move = move if isinstance(move, dict) else {}

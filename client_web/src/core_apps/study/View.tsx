@@ -55,14 +55,14 @@ export const View: React.FC = () => {
         <Stat label={t('stat_lessons')} value={data.stats.lessons} tone="purple" />
         <Stat label={t('stat_cells')} value={data.memory.cells} tone="amber" />
       </StatRow>
-      <p className="text-xs text-slate-400">
+      <p className="text-xs text-slate-600">
         {data.status.detail}
         {data.status.topic ? ` · ${data.status.topic}` : ''}
       </p>
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
         <TopicsPanel data={data} busy={busy} t={t} run={run} />
         <div className="flex min-w-0 flex-col gap-4">
-          <Panel title={t('settings_title')} icon={<Brain className="h-4 w-4 text-cyan-300" aria-hidden="true" />}>
+          <Panel title={t('settings_title')} icon={<Brain className="h-4 w-4 text-cyan-700" aria-hidden="true" />}>
             <List>
               {SWITCHES.map((key) => (
                 <Row key={key} actions={<Toggle checked={data.settings[key] === true} disabled={busy} label={t(`setting_${key}`)} onChange={(value) => void run(() => saveSettings({ [key]: value }), 'study_settings_failed')} />}>
@@ -91,7 +91,7 @@ export const View: React.FC = () => {
               </Row>
             </List>
           </Panel>
-          <Panel title={t('mentions_title')} icon={<Lightbulb className="h-4 w-4 text-amber-300" aria-hidden="true" />}>
+          <Panel title={t('mentions_title')} icon={<Lightbulb className="h-4 w-4 text-amber-700" aria-hidden="true" />}>
             {data.mentions.length === 0 ? (
               <Empty>{t('mentions_empty')}</Empty>
             ) : (
@@ -121,7 +121,7 @@ export const View: React.FC = () => {
           </Panel>
         </div>
       </div>
-      <Panel title={t('search_title')} icon={<Search className="h-4 w-4 text-emerald-300" aria-hidden="true" />}>
+      <Panel title={t('search_title')} icon={<Search className="h-4 w-4 text-emerald-700" aria-hidden="true" />}>
         <form onSubmit={search} className="flex gap-2">
           <input className={inputClass} value={query} maxLength={300} onChange={(event) => setQuery(event.target.value)} placeholder={t('search_placeholder')} aria-label={t('search_placeholder')} />
           <Btn type="submit" busy={busy}>

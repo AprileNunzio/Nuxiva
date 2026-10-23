@@ -34,7 +34,7 @@ export const View: React.FC = () => {
       <Panel title={t('gestures')}>
         <List>
           {feature.capabilities.map((capability) => (
-            <li key={capability} className="rounded-xl border border-slate-800 bg-slate-950/60 px-3 py-2 text-sm text-slate-300">
+            <li key={capability} className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700">
               {capability}
             </li>
           ))}

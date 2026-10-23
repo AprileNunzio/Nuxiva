@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from features.brain.assignments import AssignmentError, parse_assignment
 from features.brain.brains import brains, norm
 from features.brain.components import BY_ID as COMPONENTS
+from features.brain.components import agent_component
 from features.brain.journey import journeys
 from features.brain.keepalive import CHOICES, keep_alive_policy
 from features.brain.residency import apply
@@ -31,9 +32,10 @@ async def _pool(installed: set[str]) -> list[dict]:
 
 
 @admin_routes.get("/api/brains/assignments")
-async def assignments_overview(_: str = Depends(require_admin)):
+async def assignments_overview(agents: str = "", _: str = Depends(require_admin)):
     installed = {norm(n) for n in await brains.installed()}
-    return {"components": assignment_service.overview(installed),
+    extra = tuple(agent_component(a) for a in agents.split(",") if a.strip())[:64]
+    return {"components": assignment_service.overview(installed, extra),
             "roles": [{"id": r.id, "icon": r.icon, "label": r.label} for r in ROLES],
             "pool": await _pool(installed)}
 
@@ -55,7 +57,7 @@ async def assignments_save(request: Request, user: str = Depends(require_admin))
     assignment_service.save(updates)
     store.event("INFO", f"Assegnazioni dei cervelli aggiornate da {user}: {', '.join(sorted(updates))}", "models")
     installed = {norm(n) for n in await brains.installed()}
-    return {"components": assignment_service.overview(installed)}
+    return {"components": assignment_service.overview(installed, tuple(k for k in updates if k.startswith("agent:")))}
 
 
 @admin_routes.get("/api/brains/keepalive")

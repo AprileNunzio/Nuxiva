@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { LlmProvider } from '../../types';
+import { CredentialsDraft, ProviderCredentials } from '../ProviderCredentials';
 import {
   Key,
   Globe,
@@ -22,11 +23,7 @@ interface StepApiKeyConfigProps {
   readonly providers: readonly LlmProvider[];
   readonly selectedProviderId: string;
   readonly onSelectProvider: (providerId: string) => void;
-  readonly apiKey: string;
-  readonly onUpdateApiKey: (providerId: string, apiKey: string) => void;
-  readonly onSaveApiKey: (providerId: string) => Promise<boolean>;
-  readonly customEndpoint: string;
-  readonly onUpdateEndpoint: (endpoint: string) => void;
+  readonly onSaveCredentials: (providerId: string, draft: CredentialsDraft) => Promise<boolean>;
   readonly selectedModelId: string;
   readonly onSelectModel: (modelId: string, modelName: string) => void;
   readonly t: (key: string) => string;
@@ -36,41 +33,14 @@ export const StepApiKeyConfig: React.FC<StepApiKeyConfigProps> = ({
   providers,
   selectedProviderId,
   onSelectProvider,
-  apiKey,
-  onUpdateApiKey,
-  onSaveApiKey,
-  customEndpoint,
-  onUpdateEndpoint,
+  onSaveCredentials,
   selectedModelId,
   onSelectModel,
   t,
 }) => {
-  const [showKey, setShowKey] = useState(false);
-  const [testingConnection, setTestingConnection] = useState(false);
-  const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
   const [customModelInput, setCustomModelInput] = useState('');
 
   const currentProvider = providers.find((p) => p.id === selectedProviderId) || providers[0];
-
-  const handleTestConnection = () => {
-    setTestingConnection(true);
-    setTestResult(null);
-
-    setTimeout(() => {
-      setTestingConnection(false);
-      if (apiKey.trim().length > 0 || currentProvider.id === 'openrouter') {
-        setTestResult({
-          success: true,
-          message: `${t('test_connection_ok')} (Ping: 34ms a ${currentProvider.name})`,
-        });
-      } else {
-        setTestResult({
-          success: false,
-          message: t('test_connection_missing_key'),
-        });
-      }
-    }, 600);
-  };
 
   const renderProviderIcon = (iconName: string) => {
     switch (iconName) {
@@ -114,8 +84,7 @@ export const StepApiKeyConfig: React.FC<StepApiKeyConfigProps> = ({
                   if (p.models.length > 0) {
                     onSelectModel(p.models[0].id, p.models[0].name);
                   }
-                  setTestResult(null);
-                }}
+                                  }}
                 className={`flex flex-col items-center justify-center p-3 rounded-2xl border text-center transition-all ${
                   isSelected
                     ? 'bg-amber-100 text-amber-950 font-black border-2 border-amber-400 shadow-xs ring-2 ring-amber-200'
@@ -135,97 +104,7 @@ export const StepApiKeyConfig: React.FC<StepApiKeyConfigProps> = ({
         </div>
       </div>
 
-      {/* 2. Configurazione Chiave API & Connessione (MD3 Expressive Light Container) */}
-      <div className="rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50/70 via-white to-amber-50/20 p-5 sm:p-6 space-y-4 shadow-xs w-full">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-amber-200/80 pb-3">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-amber-100 text-amber-900 border border-amber-200 font-black">
-              <Key className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="text-base font-black text-slate-950">
-                2. {t('credentials_for')} {currentProvider.name}
-              </h3>
-              <p className="text-xs text-slate-600 font-medium">{currentProvider.description}</p>
-            </div>
-          </div>
-
-          <span className="text-xs font-mono text-slate-700 bg-white px-3 py-1 rounded-full border border-slate-200 shadow-2xs">
-            {currentProvider.defaultEndpoint}
-          </span>
-        </div>
-
-        <div className="space-y-3.5">
-          <div>
-            <label className="text-xs font-bold text-slate-800 block mb-1.5">
-              API Key ({currentProvider.name})
-            </label>
-            <div className="relative">
-              <input
-                type={showKey ? 'text' : 'password'}
-                placeholder={`Inserisci la chiave API ufficiale per ${currentProvider.name}...`}
-                value={apiKey}
-                onChange={(e) => onUpdateApiKey(currentProvider.id, e.target.value)}
-                onBlur={() => { void onSaveApiKey(currentProvider.id); }}
-                className="w-full pl-3.5 pr-32 py-2.5 text-xs sm:text-sm font-mono rounded-xl bg-white border border-slate-300 text-slate-950 placeholder:text-slate-400 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-100 shadow-2xs"
-              />
-              <div className="absolute right-2 top-1.5 flex items-center gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => setShowKey(!showKey)}
-                  className="p-1 rounded-lg text-slate-400 hover:text-slate-700 transition"
-                  title="Mostra / Nascondi"
-                >
-                  {showKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
-                <button
-                  type="button"
-                  onClick={handleTestConnection}
-                  disabled={testingConnection}
-                  className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-white disabled:opacity-50 transition shadow-2xs"
-                >
-                  {testingConnection ? (
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  ) : (
-                    <Sparkles className="w-3.5 h-3.5" />
-                  )}
-                  <span>{t('test_key_btn')}</span>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {testResult && (
-            <div
-              className={`flex items-center gap-2.5 p-3 rounded-xl border text-xs sm:text-sm font-bold shadow-2xs ${
-                testResult.success
-                  ? 'bg-emerald-50 border-emerald-300 text-emerald-950'
-                  : 'bg-rose-50 border-rose-300 text-rose-950'
-              }`}
-            >
-              {testResult.success ? (
-                <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600" />
-              ) : (
-                <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
-              )}
-              <span>{testResult.message}</span>
-            </div>
-          )}
-
-          <div>
-            <label className="text-xs font-bold text-slate-600 block mb-1">
-              {t('custom_endpoint_optional')}
-            </label>
-            <input
-              type="text"
-              placeholder={currentProvider.defaultEndpoint || 'https://...'}
-              value={customEndpoint}
-              onChange={(e) => onUpdateEndpoint(e.target.value)}
-              className="w-full px-3.5 py-2 text-xs font-mono rounded-xl bg-white border border-slate-300 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-amber-500 shadow-2xs"
-            />
-          </div>
-        </div>
-      </div>
+      <ProviderCredentials provider={currentProvider} onSave={onSaveCredentials} t={t} />
 
       {/* 3. Selezione Modello Reale del Provider (Full-width Responsive Grid) */}
       <div className="space-y-4 w-full">

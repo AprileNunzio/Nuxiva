@@ -17,7 +17,7 @@ export const liveState = (live: EarLive): { readonly key: string; readonly tone:
 export const LivePanel: React.FC<Props> = ({ live, t }) => {
   const state = liveState(live);
   return (
-    <div className="flex flex-wrap items-center gap-2 text-sm text-slate-300">
+    <div className="flex flex-wrap items-center gap-2 text-sm text-slate-700">
       <Pill tone={state.tone}>{t(state.key)}</Pill>
       <span className="text-xs text-slate-500">{t(`live_mode_${live.mode}`)}</span>
       {live.available && live.mode !== 'off' ? (

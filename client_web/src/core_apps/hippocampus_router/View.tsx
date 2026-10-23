@@ -37,7 +37,7 @@ export const View: React.FC = () => {
         <Stat label={t('stat_latency')} value={`${telemetry.latency_ms.average} ms`} tone="cyan" />
       </StatRow>
       {issues.length > 0 ? (
-        <Panel title={t('issues_title')} icon={<Activity className="h-4 w-4 text-amber-300" aria-hidden="true" />}>
+        <Panel title={t('issues_title')} icon={<Activity className="h-4 w-4 text-amber-700" aria-hidden="true" />}>
           <List>
             {issues.map((issue) => (
               <Row key={issue.code}>
@@ -49,7 +49,7 @@ export const View: React.FC = () => {
         </Panel>
       ) : null}
       <div className="grid gap-4 lg:grid-cols-2">
-        <Panel title={t('verdicts_title')} icon={<Gauge className="h-4 w-4 text-emerald-300" aria-hidden="true" />}>
+        <Panel title={t('verdicts_title')} icon={<Gauge className="h-4 w-4 text-emerald-700" aria-hidden="true" />}>
           <div className="flex flex-wrap gap-2">
             {(['fast', 'grey', 'slow'] as const).map((verdict) => (
               <Pill key={verdict} tone={VERDICT_TONE[verdict]}>
@@ -69,7 +69,7 @@ export const View: React.FC = () => {
             </div>
           ) : null}
         </Panel>
-        <Panel title={t('thresholds_title')} icon={<SlidersHorizontal className="h-4 w-4 text-cyan-300" aria-hidden="true" />}>
+        <Panel title={t('thresholds_title')} icon={<SlidersHorizontal className="h-4 w-4 text-cyan-700" aria-hidden="true" />}>
           <List>
             {THRESHOLD_KEYS.map((key) => (
               <Row key={key} actions={<Pill tone="cyan">{percent(data.thresholds[key] ?? 0)}</Pill>}>
@@ -79,7 +79,7 @@ export const View: React.FC = () => {
           </List>
         </Panel>
       </div>
-      <Panel title={t('recent_title')} icon={<ListChecks className="h-4 w-4 text-purple-300" aria-hidden="true" />}>
+      <Panel title={t('recent_title')} icon={<ListChecks className="h-4 w-4 text-purple-700" aria-hidden="true" />}>
         {telemetry.recent.length === 0 ? (
           <Empty>{t('recent_empty')}</Empty>
         ) : (

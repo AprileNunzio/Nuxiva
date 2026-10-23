@@ -43,15 +43,15 @@ export const PolicyPanel: React.FC<PolicyPanelProps> = ({ status, onStatus }) =>
   const nightly = draft.window !== '';
   return (
     <form onSubmit={submit} className={panelClass} aria-labelledby="upd-policy-title">
-      <h2 id="upd-policy-title" className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
-        <CalendarClock className="h-4 w-4 text-cyan-300" aria-hidden="true" />
+      <h2 id="upd-policy-title" className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">
+        <CalendarClock className="h-4 w-4 text-cyan-700" aria-hidden="true" />
         {t('policy_title')}
       </h2>
       <div className="flex flex-col gap-3">
         {TOGGLES.map((key) => (
-          <label key={key} className="flex cursor-pointer items-start justify-between gap-4 rounded-xl border border-slate-800/80 bg-slate-950/40 px-3 py-2.5">
+          <label key={key} className="flex cursor-pointer items-start justify-between gap-4 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5">
             <span>
-              <span className="block text-sm font-medium text-slate-100">{t(`policy_${key}`)}</span>
+              <span className="block text-sm font-medium text-slate-900">{t(`policy_${key}`)}</span>
               <span className="block text-xs text-slate-500">{t(`policy_${key}_hint`)}</span>
             </span>
             <input
@@ -63,10 +63,10 @@ export const PolicyPanel: React.FC<PolicyPanelProps> = ({ status, onStatus }) =>
             />
           </label>
         ))}
-        <fieldset className="rounded-xl border border-slate-800/80 bg-slate-950/40 px-3 py-2.5" disabled={!draft.auto_update}>
+        <fieldset className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5" disabled={!draft.auto_update}>
           <legend className="sr-only">{t('policy_window')}</legend>
           <label className="flex items-center justify-between gap-4">
-            <span className="text-sm font-medium text-slate-100">{t('policy_window')}</span>
+            <span className="text-sm font-medium text-slate-900">{t('policy_window')}</span>
             <input
               type="checkbox"
               role="switch"
@@ -82,31 +82,31 @@ export const PolicyPanel: React.FC<PolicyPanelProps> = ({ status, onStatus }) =>
               required
               onChange={(event) => setDraft({ ...draft, window: event.target.value })}
               aria-label={t('policy_window_time')}
-              className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 font-mono text-sm text-white focus:border-cyan-400 focus:outline-none"
+              className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-950 focus:border-cyan-400 focus:outline-none"
             />
           )}
           <p className="mt-1 text-xs text-slate-500">
             {nightly ? t('policy_window_hint', { time: draft.window }) : t('policy_window_anytime')}
           </p>
         </fieldset>
-        <label className="flex items-center justify-between gap-4 rounded-xl border border-slate-800/80 bg-slate-950/40 px-3 py-2.5">
-          <span className="text-sm font-medium text-slate-100">{t('policy_interval')}</span>
+        <label className="flex items-center justify-between gap-4 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5">
+          <span className="text-sm font-medium text-slate-900">{t('policy_interval')}</span>
           <input
             type="number"
             min={1}
             max={1440}
             value={draft.interval_minutes}
             onChange={(event) => setDraft({ ...draft, interval_minutes: Math.max(1, Math.min(1440, Number(event.target.value) || 1)) })}
-            className="w-24 rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-right font-mono text-sm text-white focus:border-cyan-400 focus:outline-none"
+            className="w-24 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-right font-mono text-sm text-slate-950 focus:border-cyan-400 focus:outline-none"
           />
         </label>
         {status.next_window && (
-          <p className="text-xs text-cyan-200/80">{t('policy_next', { when: formatDateTime(status.next_window, lang) ?? '' })}</p>
+          <p className="text-xs text-cyan-800">{t('policy_next', { when: formatDateTime(status.next_window, lang) ?? '' })}</p>
         )}
         <button
           type="submit"
           disabled={!dirty || saving}
-          className={`${buttonClass} border-cyan-400/40 bg-cyan-400/10 text-cyan-100 hover:bg-cyan-400/20`}
+          className={`${buttonClass} border-cyan-300 bg-cyan-50 text-cyan-900 hover:bg-cyan-100`}
         >
           {saving ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <Save className="h-4 w-4" aria-hidden="true" />}
           {t(saved && !dirty ? 'policy_saved' : 'policy_save')}

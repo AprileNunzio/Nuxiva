@@ -45,7 +45,7 @@ export const RulesPanel: React.FC<RulesPanelProps> = ({ rules, busy, t, run }) =
   };
 
   return (
-    <Panel title={t('rules_title')} icon={<ListChecks className="h-4 w-4 text-cyan-300" aria-hidden="true" />}>
+    <Panel title={t('rules_title')} icon={<ListChecks className="h-4 w-4 text-cyan-700" aria-hidden="true" />}>
       {rules.length === 0 ? (
         <Empty>{t('rules_empty')}</Empty>
       ) : (
@@ -68,14 +68,14 @@ export const RulesPanel: React.FC<RulesPanelProps> = ({ rules, busy, t, run }) =
                 <Pill>{rule.protocol}</Pill>
                 {rule.ports.length ? <span className="font-mono text-xs">:{rule.ports.join(',')}</span> : null}
               </div>
-              <p className="mt-1 truncate text-xs text-slate-400">
+              <p className="mt-1 truncate text-xs text-slate-600">
                 {rule.sources.length ? rule.sources.join(', ') : t('any_source')} {rule.comment ? `· ${rule.comment}` : ''}
               </p>
             </Row>
           ))}
         </List>
       )}
-      <form onSubmit={submit} className="mt-4 grid grid-cols-2 gap-3 border-t border-slate-800 pt-4 sm:grid-cols-3">
+      <form onSubmit={submit} className="mt-4 grid grid-cols-2 gap-3 border-t border-slate-200 pt-4 sm:grid-cols-3">
         <Field label={t('field_action')}>
           <select className={inputClass} value={action} onChange={(event) => setAction(event.target.value)}>
             {ACTIONS.filter((item) => item !== 'limit').map((item) => (

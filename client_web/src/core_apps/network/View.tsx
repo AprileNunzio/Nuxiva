@@ -177,7 +177,7 @@ export const View: React.FC = () => {
         }}
         footer={
           <div className="flex flex-col gap-1 p-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{t('view')}</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600">{t('view')}</span>
             <div className="flex rounded-lg border border-slate-200 p-0.5 bg-slate-50">
               <button
                 type="button"
@@ -226,7 +226,7 @@ export const View: React.FC = () => {
           </button>
           <button
             type="button"
-            className="w-full rounded-lg border border-cyan-500/50 bg-cyan-950/20 py-2 text-xs font-semibold text-cyan-600 dark:text-cyan-300 shadow-xs hover:bg-cyan-900/30 transition"
+            className="w-full rounded-lg border border-cyan-300 bg-cyan-950/20 py-2 text-xs font-semibold text-cyan-600 dark:text-cyan-700 shadow-xs hover:bg-cyan-900/30 transition"
             onClick={() =>
               os.openApp({
                 appId: 'node_apps/console',
@@ -239,7 +239,7 @@ export const View: React.FC = () => {
           </button>
           <button
             type="button"
-            className="w-full rounded-lg border border-slate-700 bg-slate-800/80 py-2 text-xs font-semibold text-slate-200 hover:bg-slate-750 transition"
+            className="w-full rounded-lg border border-slate-300 bg-slate-100 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-750 transition"
             onClick={() =>
               os.openApp({
                 appId: 'node_apps/console',
@@ -286,31 +286,31 @@ export const View: React.FC = () => {
                 {!isStale(selectedNode, Date.now()) && selectedNode.online !== false ? t('online') : t('offline')}
               </span>
             </div>
-            <span className="text-xs text-slate-400">{t(selectedNode.kind)}</span>
+            <span className="text-xs text-slate-600">{t(selectedNode.kind)}</span>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-2">
           <div className="rounded-lg border border-slate-200/80 p-2.5">
-            <span className="block text-[10px] text-slate-400">{t('power')}</span>
+            <span className="block text-[10px] text-slate-600">{t('power')}</span>
             <strong className="text-sm font-semibold text-slate-800">
               {selectedNode.telemetry.powerWatts != null ? `${format(selectedNode.telemetry.powerWatts)} W` : '—'}
             </strong>
           </div>
           <div className="rounded-lg border border-slate-200/80 p-2.5">
-            <span className="block text-[10px] text-slate-400">{t('latency')}</span>
+            <span className="block text-[10px] text-slate-600">{t('latency')}</span>
             <strong className="text-sm font-semibold text-slate-800">
               {selectedNode.telemetry.pingMs != null ? `${selectedNode.telemetry.pingMs} ms` : '—'}
             </strong>
           </div>
           <div className="rounded-lg border border-slate-200/80 p-2.5">
-            <span className="block text-[10px] text-slate-400">CPU</span>
+            <span className="block text-[10px] text-slate-600">CPU</span>
             <strong className="text-sm font-semibold text-slate-800">
               {selectedNode.telemetry.cpuPercent != null ? `${format(selectedNode.telemetry.cpuPercent)}%` : '—'}
             </strong>
           </div>
           <div className="rounded-lg border border-slate-200/80 p-2.5">
-            <span className="block text-[10px] text-slate-400">RAM</span>
+            <span className="block text-[10px] text-slate-600">RAM</span>
             <strong className="text-xs font-semibold text-slate-800 truncate block">
               {selectedNode.telemetry.ramUsedGb != null
                 ? `${format(selectedNode.telemetry.ramUsedGb)} / ${format(selectedNode.telemetry.ramTotalGb || 0)} GB`
@@ -320,20 +320,20 @@ export const View: React.FC = () => {
         </div>
 
         <div className="rounded-lg border border-slate-200/80 bg-slate-50/50 p-3 text-xs">
-          <span className="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-400">
+          <span className="mb-2 block text-[10px] font-bold uppercase tracking-wider text-slate-600">
             {t('technical')}
           </span>
           <div className="flex flex-col gap-1.5 text-slate-600">
             <div className="flex justify-between">
-              <span className="text-slate-400">{t('address')}</span>
+              <span className="text-slate-600">{t('address')}</span>
               <span className="font-mono">{selectedNode.ip || '—'}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-400">{t('platform')}</span>
+              <span className="text-slate-600">{t('platform')}</span>
               <span>{selectedNode.telemetry.os || '—'}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-400">ID Nodo</span>
+              <span className="text-slate-600">ID Nodo</span>
               <span className="font-mono truncate max-w-[10rem]">{selectedNode.id}</span>
             </div>
           </div>
@@ -354,10 +354,10 @@ export const View: React.FC = () => {
       </div>
     </OSInspector>
   ) : (
-    <div className="flex h-full flex-col items-center justify-center p-6 text-center text-slate-400">
+    <div className="flex h-full flex-col items-center justify-center p-6 text-center text-slate-600">
       <OSIcon3D name="Preview" source={icon} size="md" />
       <p className="mt-3 text-xs font-medium text-slate-600">Seleziona un dispositivo</p>
-      <span className="mt-1 text-[11px] text-slate-400">
+      <span className="mt-1 text-[11px] text-slate-600">
         Fai clic su qualsiasi elemento per visualizzarne dettagli tecnici, telemetria in tempo reale e insight MCP.
       </span>
     </div>

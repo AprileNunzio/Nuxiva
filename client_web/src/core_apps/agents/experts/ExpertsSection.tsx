@@ -17,8 +17,8 @@ export const ExpertsSection: React.FC = () => {
 
   if (!overview) {
     return (
-      <div className="flex min-h-[30vh] items-center justify-center gap-2 text-sm text-slate-400" role="status">
-        <Loader2 className="h-5 w-5 animate-spin text-cyan-300" aria-hidden="true" />
+      <div className="flex min-h-[30vh] items-center justify-center gap-2 text-sm text-slate-600" role="status">
+        <Loader2 className="h-5 w-5 animate-spin text-cyan-700" aria-hidden="true" />
         {t('loading')}
       </div>
     );
@@ -30,23 +30,23 @@ export const ExpertsSection: React.FC = () => {
   return (
     <section aria-labelledby="experts-title" className="flex flex-col gap-4">
       <header className={glassClass}>
-        <div className="pointer-events-none absolute -left-24 -top-24 h-64 w-64 rounded-full bg-cyan-500/10 blur-3xl" aria-hidden="true" />
+        <div className="pointer-events-none absolute -left-24 -top-24 h-64 w-64 rounded-full bg-cyan-50 blur-3xl" aria-hidden="true" />
         <div className="relative flex flex-wrap items-center gap-4">
-          <Users className="h-8 w-8 text-cyan-300" aria-hidden="true" />
+          <Users className="h-8 w-8 text-cyan-700" aria-hidden="true" />
           <div className="min-w-0 flex-1">
-            <h1 id="experts-title" className="font-['Rajdhani'] text-3xl font-bold tracking-wide text-white 3xl:text-5xl">
+            <h1 id="experts-title" className="font-['Rajdhani'] text-3xl font-bold tracking-wide text-slate-950 3xl:text-5xl">
               {t('title')}
             </h1>
-            <p className="mt-1 text-sm text-slate-400">{t('description')}</p>
+            <p className="mt-1 text-sm text-slate-600">{t('description')}</p>
           </div>
           <dl className="flex w-full gap-2 sm:w-auto">
-            <div className="flex-1 rounded-xl border border-slate-800 bg-slate-950/50 px-3 py-2 sm:flex-none">
+            <div className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 sm:flex-none">
               <dt className="text-[0.625rem] uppercase tracking-[0.14em] text-slate-500">{t('stat_experts')}</dt>
-              <dd className="font-mono text-xl text-white">{overview.experts.length}</dd>
+              <dd className="font-mono text-xl text-slate-950">{overview.experts.length}</dd>
             </div>
-            <div className="flex-1 rounded-xl border border-slate-800 bg-slate-950/50 px-3 py-2 sm:flex-none">
+            <div className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 sm:flex-none">
               <dt className="text-[0.625rem] uppercase tracking-[0.14em] text-slate-500">{t('stat_working')}</dt>
-              <dd className="font-mono text-xl text-emerald-200">{working}</dd>
+              <dd className="font-mono text-xl text-emerald-800">{working}</dd>
             </div>
           </dl>
         </div>
@@ -64,7 +64,7 @@ export const ExpertsSection: React.FC = () => {
           </div>
         ) : (
           <div className={`${glassClass} flex flex-col items-center justify-center gap-3 text-center`}>
-            <p className="max-w-md text-sm text-slate-400">{t('empty')}</p>
+            <p className="max-w-md text-sm text-slate-600">{t('empty')}</p>
             <button
               type="button"
               onClick={() => setCreating(true)}

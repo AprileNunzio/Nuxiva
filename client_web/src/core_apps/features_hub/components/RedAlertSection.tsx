@@ -47,7 +47,7 @@ export const RedAlertSection: React.FC<RedAlertSectionProps> = ({ feature, t, on
         actions={<Pill tone={active ? 'rose' : feature.state.enabled ? 'emerald' : 'slate'}>{active ? t('redalert_active') : feature.state.enabled ? t('on') : t('off')}</Pill>}
       >
         <p className="mb-4 text-sm text-slate-600">{t('redalert_intro')}</p>
-        {active && status.data?.message ? <p className="mb-3 rounded-xl border border-rose-500/40 bg-rose-500/10 px-3 py-2 text-sm text-rose-800">{status.data.message}</p> : null}
+        {active && status.data?.message ? <p className="mb-3 rounded-xl border border-rose-300 bg-rose-50 px-3 py-2 text-sm text-rose-800">{status.data.message}</p> : null}
         <div className="flex flex-wrap items-center gap-2">
           <Btn tone="amber" busy={busy} disabled={!feature.state.enabled || active} onClick={() => void run(testRedAlert, 'redalert_test_failed')}>
             <Play className="h-3.5 w-3.5" aria-hidden="true" />
@@ -100,7 +100,7 @@ export const RedAlertSection: React.FC<RedAlertSectionProps> = ({ feature, t, on
         </div>
       </Panel>
 
-      <Panel title={t('redalert_excluded_title')} icon={<Lightbulb className="h-4 w-4 text-yellow-300" aria-hidden="true" />}>
+      <Panel title={t('redalert_excluded_title')} icon={<Lightbulb className="h-4 w-4 text-yellow-700" aria-hidden="true" />}>
         <p className="mb-3 text-xs text-slate-600">{t('redalert_excluded_hint')}</p>
         {!lights.data || lights.data.lights.length === 0 ? (
           <Empty>{t('redalert_no_lights')}</Empty>
@@ -115,7 +115,7 @@ export const RedAlertSection: React.FC<RedAlertSectionProps> = ({ feature, t, on
                     aria-pressed={skipped}
                     disabled={busy}
                     onClick={() => toggleLight(light.id)}
-                    className={`rounded-xl border px-3 py-1.5 text-xs font-semibold transition disabled:opacity-50 ${skipped ? 'border-slate-300 bg-slate-200 text-slate-600 line-through' : 'border-rose-500/40 bg-rose-500/10 text-rose-800'}`}
+                    className={`rounded-xl border px-3 py-1.5 text-xs font-semibold transition disabled:opacity-50 ${skipped ? 'border-slate-300 bg-slate-200 text-slate-600 line-through' : 'border-rose-300 bg-rose-50 text-rose-800'}`}
                   >
                     {light.name}
                   </button>

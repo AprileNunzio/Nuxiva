@@ -59,7 +59,7 @@ export const WaveformPlayer: React.FC<Props> = ({ src, title, onEnded }) => {
   const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   return (
-    <div className="rounded-2xl border border-slate-700 bg-slate-900/95 p-5 shadow-2xl">
+    <div className="rounded-2xl border border-slate-300 bg-white p-5 shadow-2xl">
       <audio
         ref={audioRef}
         src={src}
@@ -71,14 +71,14 @@ export const WaveformPlayer: React.FC<Props> = ({ src, title, onEnded }) => {
         }}
       />
 
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-700/80 pb-3">
-        <span className="text-sm font-bold text-white">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-300 pb-3">
+        <span className="text-sm font-bold text-slate-950">
           {title || 'Player Audio Studio'}
         </span>
         <a
           href={src}
           download="voicestudio_output.wav"
-          className="flex items-center gap-2 rounded-xl border border-slate-600 bg-slate-800 px-3.5 py-1.5 text-xs font-bold text-white transition hover:bg-slate-700 hover:border-cyan-400 hover:text-cyan-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 shadow-sm"
+          className="flex items-center gap-2 rounded-xl border border-slate-300 bg-slate-100 px-3.5 py-1.5 text-xs font-bold text-slate-950 transition hover:bg-slate-200 hover:border-cyan-400 hover:text-cyan-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 shadow-sm"
           title="Scarica file WAV generato"
         >
           <Download className="h-4 w-4" aria-hidden="true" />
@@ -88,7 +88,7 @@ export const WaveformPlayer: React.FC<Props> = ({ src, title, onEnded }) => {
 
       {/* Visualizzazione Waveform Fluida */}
       <div
-        className="my-4 flex h-16 items-center justify-between gap-1 overflow-hidden rounded-xl border border-slate-800 bg-slate-950 px-4"
+        className="my-4 flex h-16 items-center justify-between gap-1 overflow-hidden rounded-xl border border-slate-200 bg-white px-4"
         aria-hidden="true"
       >
         {Array.from({ length: barsCount }).map((_, i) => {
@@ -105,7 +105,7 @@ export const WaveformPlayer: React.FC<Props> = ({ src, title, onEnded }) => {
               className={`w-1.5 rounded-full transition-all duration-100 ${
                 isPassed
                   ? 'bg-cyan-400 shadow-sm shadow-cyan-400/60'
-                  : 'bg-slate-700'
+                  : 'bg-slate-200'
               }`}
               style={{ height: `${animatedHeight}%` }}
             />
@@ -129,7 +129,7 @@ export const WaveformPlayer: React.FC<Props> = ({ src, title, onEnded }) => {
       />
 
       {/* Controlli */}
-      <div className="mt-3 flex items-center justify-between text-xs font-semibold text-slate-300">
+      <div className="mt-3 flex items-center justify-between text-xs font-semibold text-slate-700">
         <div className="flex items-center gap-3">
           <button
             type="button"
@@ -152,13 +152,13 @@ export const WaveformPlayer: React.FC<Props> = ({ src, title, onEnded }) => {
               }
             }}
             aria-label={muted ? 'Attiva audio' : 'Disattiva audio'}
-            className="rounded-lg p-1.5 text-slate-300 transition hover:bg-slate-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+            className="rounded-lg p-1.5 text-slate-700 transition hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
           >
-            {muted ? <VolumeX className="h-5 w-5 text-rose-400" /> : <Volume2 className="h-5 w-5" />}
+            {muted ? <VolumeX className="h-5 w-5 text-rose-600" /> : <Volume2 className="h-5 w-5" />}
           </button>
         </div>
 
-        <div className="font-mono text-xs font-bold text-cyan-300">
+        <div className="font-mono text-xs font-bold text-cyan-700">
           {formatTime(currentTime)} / {formatTime(duration)}
         </div>
       </div>

@@ -34,7 +34,7 @@ export const FeaturePanel: React.FC<FeaturePanelProps> = ({ feature, busy, t, ru
       </div>
       <p className="mt-1 text-xs text-slate-500">{feature.state.reason}</p>
     </Row>
-    <p className="my-3 text-sm text-slate-300">{feature.description}</p>
+    <p className="my-3 text-sm text-slate-700">{feature.description}</p>
     <SettingsEditor feature={feature} busy={busy} t={t} run={run} />
   </Panel>
 );

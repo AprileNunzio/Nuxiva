@@ -38,7 +38,7 @@ export const LiveAffect: React.FC<Props> = ({ live }) => {
               <span className="font-mono text-base font-semibold text-slate-900">{Math.round(live.arousal)}/100</span>
             </div>
             <div className="relative h-3 rounded-full bg-gradient-to-r from-indigo-200 via-sky-200 to-rose-300" role="meter" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(live.arousal)} aria-label={t('wb_arousal')}>
-              <span className="absolute top-1/2 h-5 w-1.5 -translate-y-1/2 rounded bg-slate-900 transition-all" style={{ left: `calc(${Math.round(live.arousal)}% - 3px)` }} />
+              <span className="absolute top-1/2 h-5 w-1.5 -translate-y-1/2 rounded bg-white transition-all" style={{ left: `calc(${Math.round(live.arousal)}% - 3px)` }} />
             </div>
           </div>
           <ul className="grid grid-cols-2 gap-2 lg:grid-cols-4">

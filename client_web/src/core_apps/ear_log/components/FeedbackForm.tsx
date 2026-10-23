@@ -27,8 +27,8 @@ export const FeedbackForm: React.FC<Props> = ({ entry, people, busy, t, run, onC
   };
 
   return (
-    <form onSubmit={submit} className="mt-3 grid gap-3 rounded-xl border border-rose-500/30 bg-rose-500/5 p-3">
-      <p className="text-xs font-semibold text-rose-200">{t('wrong_title')}</p>
+    <form onSubmit={submit} className="mt-3 grid gap-3 rounded-xl border border-rose-300 bg-rose-50 p-3">
+      <p className="text-xs font-semibold text-rose-800">{t('wrong_title')}</p>
       <Field label={t('correction_label')}>
         <input className={inputClass} value={correction} maxLength={600} onChange={(event) => setCorrection(event.target.value)} />
       </Field>

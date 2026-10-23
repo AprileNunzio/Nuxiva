@@ -18,7 +18,7 @@ export const Snapshot: React.FC<SnapshotProps> = ({ sourceId, name, offline }) =
   }, []);
 
   return (
-    <figure className="relative aspect-video overflow-hidden rounded-xl border border-slate-800 bg-black">
+    <figure className="relative aspect-video overflow-hidden rounded-xl border border-slate-200 bg-black">
       {failed ? (
         <div className="flex h-full flex-col items-center justify-center gap-2 text-xs text-slate-500">
           <VideoOff className="h-6 w-6" aria-hidden="true" />
@@ -34,7 +34,7 @@ export const Snapshot: React.FC<SnapshotProps> = ({ sourceId, name, offline }) =
           className="h-full w-full object-cover"
         />
       )}
-      <figcaption className="absolute bottom-0 left-0 right-0 bg-black/60 px-2 py-1 text-[11px] text-slate-200">{name}</figcaption>
+      <figcaption className="absolute bottom-0 left-0 right-0 bg-black/60 px-2 py-1 text-[11px] text-slate-800">{name}</figcaption>
     </figure>
   );
 };

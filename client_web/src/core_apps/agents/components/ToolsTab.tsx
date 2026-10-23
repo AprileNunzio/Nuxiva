@@ -24,19 +24,19 @@ export const ToolsTab: React.FC<ToolsTabProps> = ({ agent, agents, tools, handle
       {mine.length === 0 && <p className="text-sm text-slate-500">{t('tools_empty')}</p>}
       <ul className="flex flex-col gap-2">
         {mine.map((tool) => (
-          <li key={tool.name} className={`rounded-xl border px-3 py-2.5 ${tool.enabled ? 'border-slate-800/80 bg-slate-950/40' : 'border-slate-800/60 bg-slate-950/20 opacity-70'}`}>
+          <li key={tool.name} className={`rounded-xl border px-3 py-2.5 ${tool.enabled ? 'border-slate-200 bg-slate-50' : 'border-slate-200 bg-slate-50 opacity-70'}`}>
             <div className="flex flex-wrap items-start gap-2">
               <div className="min-w-0 flex-1">
-                <p className="font-mono text-sm text-cyan-100">
+                <p className="font-mono text-sm text-cyan-900">
                   {tool.name}
-                  {tool.custom && <span className="ml-2 rounded border border-indigo-400/40 px-1 text-[10px] text-indigo-200">{t('custom')}</span>}
+                  {tool.custom && <span className="ml-2 rounded border border-indigo-300 px-1 text-[10px] text-indigo-800">{t('custom')}</span>}
                 </p>
-                <p className="text-xs text-slate-400">{tool.description}</p>
+                <p className="text-xs text-slate-600">{tool.description}</p>
                 {Object.keys(tool.args).length > 0 && (
                   <p className="mt-1 font-mono text-[10px] text-slate-500">({Object.keys(tool.args).join(', ')})</p>
                 )}
               </div>
-              <label className="flex items-center gap-2 text-xs text-slate-300">
+              <label className="flex items-center gap-2 text-xs text-slate-700">
                 {t('tool_enabled')}
                 <input
                   type="checkbox"
@@ -49,8 +49,8 @@ export const ToolsTab: React.FC<ToolsTabProps> = ({ agent, agents, tools, handle
               </label>
             </div>
             <div className="mt-2 flex flex-wrap items-center gap-2">
-              <label className="flex items-center gap-1.5 text-[11px] text-slate-400">
-                <ShieldCheck className={`h-3.5 w-3.5 ${tool.confirm || tool.alwaysConfirm ? 'text-amber-300' : 'text-slate-600'}`} aria-hidden="true" />
+              <label className="flex items-center gap-1.5 text-[11px] text-slate-600">
+                <ShieldCheck className={`h-3.5 w-3.5 ${tool.confirm || tool.alwaysConfirm ? 'text-amber-700' : 'text-slate-600'}`} aria-hidden="true" />
                 <input
                   type="checkbox"
                   disabled={busy}
@@ -60,7 +60,7 @@ export const ToolsTab: React.FC<ToolsTabProps> = ({ agent, agents, tools, handle
                 />
                 {tool.confirm && !tool.alwaysConfirm ? t('confirm_builtin') : t('confirm_always')}
               </label>
-              <label className="ml-auto flex items-center gap-1.5 text-[11px] text-slate-400">
+              <label className="ml-auto flex items-center gap-1.5 text-[11px] text-slate-600">
                 {t('owner')}
                 <select
                   disabled={busy || coordination(tool.name)}
@@ -84,7 +84,7 @@ export const ToolsTab: React.FC<ToolsTabProps> = ({ agent, agents, tools, handle
                   disabled={busy}
                   aria-label={t('delete_tool')}
                   onClick={() => void handle.run(`tool:${tool.name}`, () => deleteTool(tool.name), 'team_tool_failed')}
-                  className="rounded-lg p-1.5 text-slate-500 transition hover:text-rose-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
+                  className="rounded-lg p-1.5 text-slate-500 transition hover:text-rose-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
                 >
                   <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                 </button>
@@ -93,7 +93,7 @@ export const ToolsTab: React.FC<ToolsTabProps> = ({ agent, agents, tools, handle
           </li>
         ))}
       </ul>
-      <div className="flex gap-2 border-t border-slate-800/80 pt-3">
+      <div className="flex gap-2 border-t border-slate-200 pt-3">
         <select value={adding} onChange={(event) => setAdding(event.target.value)} aria-label={t('assign_tool')} className={`${fieldClass} min-w-0 flex-1`}>
           <option value="">{t('assign_tool')}</option>
           {others.map((tool) => (
@@ -106,7 +106,7 @@ export const ToolsTab: React.FC<ToolsTabProps> = ({ agent, agents, tools, handle
           type="button"
           disabled={busy || !adding}
           onClick={() => void handle.run('assign', () => updateTool(adding, { agent: agent.id }), 'team_tool_failed').then((ok) => ok && setAdding(''))}
-          className={`${chipClass} border-cyan-400/50 bg-cyan-400/10 px-3 text-cyan-100`}
+          className={`${chipClass} border-cyan-300 bg-cyan-50 px-3 text-cyan-900`}
         >
           {t('assign')}
         </button>

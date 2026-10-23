@@ -24,11 +24,11 @@ export const PreviewPanel: React.FC<Props> = ({ preview, t }) => {
   return (
     <div className="grid gap-4">
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-3xl font-semibold text-slate-50">
+        <span className="text-3xl font-semibold text-slate-900">
           {convert(preview.temp, unit)}
           {degrees(unit)}
         </span>
-        <span className="text-sm text-slate-300">{preview.desc}</span>
+        <span className="text-sm text-slate-700">{preview.desc}</span>
         {preview.stale ? <Pill tone="amber">{t('stale')}</Pill> : null}
       </div>
       <StatRow>
@@ -41,9 +41,9 @@ export const PreviewPanel: React.FC<Props> = ({ preview, t }) => {
       </StatRow>
       <ul className="grid gap-1.5 sm:grid-cols-2" aria-label={t('forecast')}>
         {preview.days.map((day) => (
-          <li key={day.label} className="flex items-center justify-between rounded-xl border border-slate-800/80 px-3 py-2 text-sm">
-            <span className="text-slate-300">{day.label}</span>
-            <span className="text-slate-100">
+          <li key={day.label} className="flex items-center justify-between rounded-xl border border-slate-200 px-3 py-2 text-sm">
+            <span className="text-slate-700">{day.label}</span>
+            <span className="text-slate-900">
               {convert(day.tmin, unit)}° / {convert(day.tmax, unit)}°
             </span>
           </li>

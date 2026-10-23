@@ -21,8 +21,8 @@ export const EntryCard: React.FC<Props> = ({ entry, people, busy, lang, t, run }
   const shown = entry.speaker ? name(entry.speaker) : t('speaker_unknown');
 
   return (
-    <li className="rounded-xl border border-slate-800/70 bg-slate-950/50 p-3">
-      <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-400">
+    <li className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+      <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-600">
         <span>{formatTime(entry.ts, lang)}</span>
         <Pill tone={entry.kind === 'command' ? 'cyan' : 'slate'}>{t(entry.kind === 'command' ? 'kind_command' : 'kind_heard')}</Pill>
         <Pill tone={entry.speaker ? 'purple' : 'slate'}>{shown}</Pill>
@@ -33,15 +33,15 @@ export const EntryCard: React.FC<Props> = ({ entry, people, busy, lang, t, run }
         {entry.verdict === 'wrong' ? <Pill tone="rose">{t('verdict_wrong')}</Pill> : null}
         {entry.verdict ? <span>{entry.applied ? t('applied') : t('queued')}</span> : null}
       </div>
-      <p className="mt-1.5 text-sm text-slate-100">{entry.text}</p>
+      <p className="mt-1.5 text-sm text-slate-900">{entry.text}</p>
       {entry.correction ? (
-        <p className="mt-1 text-sm text-emerald-300">
+        <p className="mt-1 text-sm text-emerald-700">
           <span className="text-[11px] uppercase tracking-wide text-slate-500">{t('correction_label')}: </span>
           {entry.correction}
         </p>
       ) : null}
-      {entry.fixSpeaker ? <p className="mt-0.5 text-xs text-purple-300">{t('speaker_label')} {name(entry.fixSpeaker)}</p> : null}
-      {entry.note ? <p className="mt-0.5 text-xs text-slate-400">{entry.note}</p> : null}
+      {entry.fixSpeaker ? <p className="mt-0.5 text-xs text-purple-700">{t('speaker_label')} {name(entry.fixSpeaker)}</p> : null}
+      {entry.note ? <p className="mt-0.5 text-xs text-slate-600">{entry.note}</p> : null}
       {playing && entry.audio ? <audio className="mt-2 h-8 w-full" controls autoPlay src={audioUrl(entry.id)} onEnded={() => setPlaying(false)} /> : null}
       <div className="mt-2 flex flex-wrap gap-2">
         <Btn tone="slate" disabled={!entry.audio} onClick={() => setPlaying((value) => !value)} title={entry.audio ? t('play') : t('no_audio')}>

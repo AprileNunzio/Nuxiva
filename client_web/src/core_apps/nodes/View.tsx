@@ -62,8 +62,8 @@ export const View: React.FC = () => {
                       <Trash2 className="h-4 w-4" aria-hidden="true" />{t('deprovision')}
                     </Btn>
                   ) : undefined}>
-                    <div className="flex flex-wrap items-center gap-2"><Server className="h-4 w-4 text-cyan-300" aria-hidden="true" /><b>{node.name}</b><Pill tone={node.online ? 'emerald' : 'slate'}>{node.online === undefined ? node.status || '—' : t(node.online ? 'online' : 'offline')}</Pill></div>
-                    <p className="mt-1 break-all text-xs text-slate-400">{[node.tier, node.ip].filter(Boolean).join(' · ')}</p>
+                    <div className="flex flex-wrap items-center gap-2"><Server className="h-4 w-4 text-cyan-700" aria-hidden="true" /><b>{node.name}</b><Pill tone={node.online ? 'emerald' : 'slate'}>{node.online === undefined ? node.status || '—' : t(node.online ? 'online' : 'offline')}</Pill></div>
+                    <p className="mt-1 break-all text-xs text-slate-600">{[node.tier, node.ip].filter(Boolean).join(' · ')}</p>
                     {node.source === 'local' && <p className="mt-1 text-xs text-slate-500">{t('local_host')}</p>}
                   </Row>
               ))}

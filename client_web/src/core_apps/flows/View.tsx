@@ -58,7 +58,7 @@ export const View: React.FC = () => {
           </ul>
         </Panel>
         <Panel title={t('publish_title')}>
-          <p className="mb-3 text-xs text-slate-400">{t('publish_hint')}</p>
+          <p className="mb-3 text-xs text-slate-600">{t('publish_hint')}</p>
           <Field label={t('password')}>
             <input className={inputClass} type="password" autoComplete="current-password" value={password} maxLength={200} onChange={(event) => setPassword(event.target.value)} />
           </Field>
@@ -70,7 +70,7 @@ export const View: React.FC = () => {
               {t('discard')}
             </Btn>
           </div>
-          <h3 className="mb-2 mt-5 text-xs font-bold uppercase tracking-wider text-slate-400">{t('versions')}</h3>
+          <h3 className="mb-2 mt-5 text-xs font-bold uppercase tracking-wider text-slate-600">{t('versions')}</h3>
           <Versions versions={data.versions} lang={lang} busy={busy || !password} t={t} onRollback={(version) => void apply((secret) => rollback(version, secret), 'flows_rollback_failed')} />
         </Panel>
       </div>

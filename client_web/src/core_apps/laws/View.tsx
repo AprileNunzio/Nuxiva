@@ -54,7 +54,7 @@ export const View: React.FC = () => {
         <Stat label={t('stat_custom')} value={`${data.custom.length}/${data.max}`} tone="amber" />
       </StatRow>
       <div className="grid gap-4 lg:grid-cols-2">
-        <Panel title={t('fixed_title')} icon={<Scale className="h-4 w-4 text-rose-300" aria-hidden="true" />}>
+        <Panel title={t('fixed_title')} icon={<Scale className="h-4 w-4 text-rose-700" aria-hidden="true" />}>
           <List>
             {data.fixed.map((law) => (
               <Row key={law.id}>
@@ -62,13 +62,13 @@ export const View: React.FC = () => {
                   <Pill tone="rose">{law.n}</Pill>
                   <b>{law.title}</b>
                 </div>
-                <p className="mt-1 text-xs text-slate-400">{law.text}</p>
+                <p className="mt-1 text-xs text-slate-600">{law.text}</p>
               </Row>
             ))}
           </List>
           <p className="mt-3 text-xs text-slate-500">{t('fixed_note')}</p>
         </Panel>
-        <Panel title={t('custom_title')} icon={<Gavel className="h-4 w-4 text-amber-300" aria-hidden="true" />}>
+        <Panel title={t('custom_title')} icon={<Gavel className="h-4 w-4 text-amber-700" aria-hidden="true" />}>
           <form onSubmit={submit} className="mb-3 flex gap-2">
             <input className={inputClass} value={draft} maxLength={400} onChange={(event) => setDraft(event.target.value)} placeholder={t('add_placeholder')} aria-label={t('add_placeholder')} />
             <Btn type="submit" busy={busy} disabled={data.custom.length >= data.max}>

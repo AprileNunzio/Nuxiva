@@ -8,6 +8,7 @@ import {
   LlmProvider,
   McpToolDefinition,
 } from '../types';
+import { CredentialsDraft } from './ProviderCredentials';
 import { TargetCard } from './TargetCard';
 import { ComputeSourceTabs } from './ComputeSourceTabs';
 import { ProbabilisticArbiterPanel } from './ProbabilisticArbiterPanel';
@@ -46,6 +47,7 @@ interface MainDashboardProps {
   readonly onReloadLocalModels: () => Promise<void>;
   readonly onUpdateApiKey: (providerId: string, apiKey: string) => void;
   readonly onSaveApiKey: (providerId: string) => Promise<boolean>;
+  readonly onSaveCredentials: (providerId: string, draft: CredentialsDraft) => Promise<boolean>;
   readonly t: (key: string) => string;
 }
 
@@ -66,6 +68,7 @@ export const MainDashboard: React.FC<MainDashboardProps> = ({
   onReloadLocalModels,
   onUpdateApiKey,
   onSaveApiKey,
+  onSaveCredentials,
   t,
 }) => {
   const [activeTab, setActiveTab] = useState<
@@ -243,6 +246,7 @@ export const MainDashboard: React.FC<MainDashboardProps> = ({
             onReloadLocalModels={onReloadLocalModels}
             onUpdateApiKey={onUpdateApiKey}
             onSaveApiKey={onSaveApiKey}
+            onSaveCredentials={onSaveCredentials}
             t={t}
           />
         )}

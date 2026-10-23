@@ -29,12 +29,12 @@ export const View: React.FC = () => {
         <Stat label={t('stat_services')} value={data.services.length} tone="purple" />
       </StatRow>
       {!data.has_credentials ? (
-        <Panel title={t('credentials_title')} icon={<KeyRound className="h-4 w-4 text-amber-300" aria-hidden="true" />}>
-          <p className="text-sm text-slate-300">{t('credentials_help')}</p>
+        <Panel title={t('credentials_title')} icon={<KeyRound className="h-4 w-4 text-amber-700" aria-hidden="true" />}>
+          <p className="text-sm text-slate-700">{t('credentials_help')}</p>
           <p className="mt-2 break-all font-mono text-xs text-slate-500">{t('redirect_hint', { uri: data.redirect_uri })}</p>
         </Panel>
       ) : null}
-      <Panel title={t('people_title')} icon={<Users className="h-4 w-4 text-cyan-300" aria-hidden="true" />}>
+      <Panel title={t('people_title')} icon={<Users className="h-4 w-4 text-cyan-700" aria-hidden="true" />}>
         {data.people.length === 0 ? (
           <Empty>{t('people_empty')}</Empty>
         ) : (

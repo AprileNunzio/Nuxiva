@@ -28,6 +28,8 @@ import { StepWizard } from './components/StepWizard';
 import { Brain, CheckCircle2 } from 'lucide-react';
 import { getJson, sendJson } from '../shared/http';
 
+const BRAIN_TARGET_IDS: readonly string[] = ['cognitive_arbiter', 'fast_conversation', 'reasoning', 'live_audio'];
+
 interface PersistedBrainState {
   servers: RemoteOllamaServer[];
   targets: BrainTargetConfig[];
@@ -44,7 +46,7 @@ export const View: React.FC = () => {
   const [localModels, setLocalModels] = useState<readonly DiscoveredOllamaModel[]>([]);
   const [targets, setTargets] = useState<readonly BrainTargetConfig[]>(() => [
     buildLiveArbiterTarget(DEFAULT_GLOBAL_BRAIN),
-    ...DEFAULT_BRAIN_TARGETS,
+    ...DEFAULT_BRAIN_TARGETS.filter((item) => BRAIN_TARGET_IDS.includes(item.id)),
   ]);
   const [providers, setProviders] = useState<readonly LlmProvider[]>(DEFAULT_PROVIDERS);
   const [machines, setMachines] = useState<readonly OllamaMachine[]>(DEFAULT_OLLAMA_MACHINES);
@@ -114,15 +116,17 @@ export const View: React.FC = () => {
       setHydrated(loadedFromServer);
     };
     void hydrate();
-    getJson<{ providers: Array<{ id: string; configured: boolean }> }>('/api/cloud')
+    getJson<{ providers: Array<{ id: string; configured: boolean; base_url?: string }> }>('/api/cloud')
       .then((res) =>
         setProviders((prev) =>
-          prev.map((p) => ({
-            ...p,
-            isConfigured: res.providers.some(
-              (v) => v.id === (p.id === 'google' ? 'gemini' : p.id) && v.configured
-            ),
-          }))
+          prev.map((p) => {
+            const remote = res.providers.find((v) => v.id === (p.id === 'google' ? 'gemini' : p.id));
+            return {
+              ...p,
+              isConfigured: remote?.configured === true,
+              endpointUrl: typeof remote?.base_url === 'string' ? remote.base_url : '',
+            };
+          })
         )
       )
       .catch(() => {});
@@ -174,43 +178,6 @@ export const View: React.FC = () => {
           if (realMeshNodes.length > 0) {
             setMachines((prev) => [...prev.filter((m) => m.isLocal), ...realMeshNodes]);
           }
-        }
-      })
-      .catch(() => {});
-
-    getJson<{ catalog?: Array<{ id: string; name: string; description: string; avatar_icon: string }> }>(
-      '/api/v1/agents/catalog'
-    )
-      .then((res) => {
-        if (res && Array.isArray(res.catalog)) {
-          setTargets((prev) => {
-            const currentIds = new Set(prev.map((item) => item.id));
-            const newAgents: BrainTargetConfig[] = [];
-            res.catalog?.forEach((cat) => {
-              if (!currentIds.has(cat.id)) {
-                newAgents.push({
-                  id: cat.id,
-                  name: cat.name,
-                  roleKey: 'agent_custom_role',
-                  descriptionKey: 'agent_custom_desc',
-                  category: 'agent',
-                  method: globalDefault.provider,
-                  serverId: globalDefault.serverId,
-                  baseUrl: globalDefault.baseUrl,
-                  assignedModel: globalDefault.modelName,
-                  temperature: globalDefault.temperature,
-                  contextWindow: globalDefault.contextWindow,
-                  status: 'ready',
-                  avatarIcon: 'Brain',
-                  accentColor:
-                    'from-slate-50 via-white to-slate-100 border border-slate-200 text-slate-800',
-                  mcpToolsEnabled: globalDefault.mcpToolsEnabled,
-                  inheritsGlobalDefault: true,
-                });
-              }
-            });
-            return newAgents.length > 0 ? [...prev, ...newAgents] : prev;
-          });
         }
       })
       .catch(() => {});
@@ -436,6 +403,40 @@ export const View: React.FC = () => {
     }
   };
 
+  const handleSaveCredentials = async (
+    providerId: string,
+    draft: { key?: string; baseUrl?: string }
+  ): Promise<boolean> => {
+    const body: Record<string, string> = {};
+    if (draft.key !== undefined) body.key = draft.key;
+    if (draft.baseUrl !== undefined) body.base_url = draft.baseUrl;
+    if (Object.keys(body).length === 0) return true;
+    try {
+      const saved = await sendJson<{ configured: boolean; base_url?: string }>(
+        `/api/cloud/${providerId === 'google' ? 'gemini' : providerId}`,
+        'PUT',
+        body
+      );
+      setProviders((prev) =>
+        prev.map((p) =>
+          p.id === providerId
+            ? {
+                ...p,
+                apiKey: undefined,
+                isConfigured: saved.configured,
+                endpointUrl: typeof saved.base_url === 'string' ? saved.base_url : p.endpointUrl,
+              }
+            : p
+        )
+      );
+      showToast(t('credentials_saved'));
+      return true;
+    } catch {
+      showToast(t('credentials_save_failed'));
+      return false;
+    }
+  };
+
   const handleSaveTarget = async (updatedTarget: BrainTargetConfig) => {
     if (
       updatedTarget.method === 'api_key' &&
@@ -475,7 +476,7 @@ export const View: React.FC = () => {
     <div className="h-full flex flex-col bg-slate-50 text-slate-900 overflow-hidden select-none font-sans">
       <header className="shrink-0 flex items-center justify-between border-b border-slate-200/90 bg-white/95 backdrop-blur-md px-4 sm:px-6 lg:px-8 py-3.5 shadow-xs z-20">
         <div className="flex items-center gap-3.5">
-          <div className="p-2.5 rounded-2xl bg-indigo-600 text-white shadow-md shadow-indigo-600/20 flex items-center justify-center">
+          <div className="p-2.5 rounded-2xl bg-gradient-to-br from-indigo-600 to-fuchsia-500 text-white shadow-lg shadow-indigo-500/30 flex items-center justify-center">
             <Brain className="w-5 h-5 stroke-[2.5]" />
           </div>
           <div>
@@ -516,6 +517,7 @@ export const View: React.FC = () => {
             onSaveTarget={handleSaveTarget}
             onUpdateApiKey={handleUpdateApiKey}
             onSaveApiKey={handleSaveApiKey}
+            onSaveCredentials={handleSaveCredentials}
             onModelInstalledOnMachine={() => {}}
             onCancel={() => setActiveTarget(null)}
             t={t}
@@ -539,6 +541,7 @@ export const View: React.FC = () => {
             onReloadLocalModels={handleReloadLocalModels}
             onUpdateApiKey={handleUpdateApiKey}
             onSaveApiKey={handleSaveApiKey}
+            onSaveCredentials={handleSaveCredentials}
             t={t}
           />
         )}

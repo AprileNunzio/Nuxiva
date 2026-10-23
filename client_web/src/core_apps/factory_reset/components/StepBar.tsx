@@ -13,10 +13,10 @@ export const StepBar: React.FC<{ readonly stage: ResetStage; readonly t: Transla
           aria-current={index === current ? 'step' : undefined}
           className={`rounded-full border px-3 py-1 ${
             index === current
-              ? 'border-rose-400/60 bg-rose-500/15 text-rose-200'
+              ? 'border-rose-300 bg-rose-50 text-rose-800'
               : index < current
-                ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300'
-                : 'border-slate-700 text-slate-500'
+                ? 'border-emerald-300 bg-emerald-50 text-emerald-700'
+                : 'border-slate-300 text-slate-500'
           }`}
         >
           {index + 1}. {t(`step_${item}`)}

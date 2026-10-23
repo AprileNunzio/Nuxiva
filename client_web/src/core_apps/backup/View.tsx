@@ -65,7 +65,7 @@ export const View: React.FC = () => {
                     <Btn tone="slate" busy={busy} title={t('verify')} onClick={() => void verify(item.id)}>
                       <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
                     </Btn>
-                    <a className="rounded-xl border border-slate-700 p-2 text-slate-300 hover:border-emerald-500" href={downloadUrl(item.id)} download aria-label={t('download')}>
+                    <a className="rounded-xl border border-slate-300 p-2 text-slate-700 hover:border-emerald-500" href={downloadUrl(item.id)} download aria-label={t('download')}>
                       <Download className="h-3.5 w-3.5" aria-hidden="true" />
                     </a>
                     <Btn tone="rose" busy={busy} title={t('delete')} onClick={() => void run(() => deleteBackup(item.id), 'backup_delete_failed')}>
@@ -77,7 +77,7 @@ export const View: React.FC = () => {
                 <div className="flex flex-wrap items-center gap-2">
                   <b className="text-sm">{formatTime(item.created, lang)}</b>
                   <Pill tone={item.kind === 'auto' ? 'cyan' : 'slate'}>{item.kind === 'auto' ? t('kind_auto') : t('kind_manual')}</Pill>
-                  <span className="text-xs text-slate-400">{formatBytes(item.size)}</span>
+                  <span className="text-xs text-slate-600">{formatBytes(item.size)}</span>
                   {item.id in checks ? <Pill tone={checks[item.id] ? 'emerald' : 'rose'}>{checks[item.id] ? t('verified_ok') : t('verified_bad')}</Pill> : null}
                 </div>
                 <p className="mt-1 break-all font-mono text-[11px] text-slate-500">{item.sha256}</p>
