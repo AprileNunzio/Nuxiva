@@ -79,9 +79,9 @@ def _look(did: str, text: str) -> str | None:
     elif SHARPER.search(text):
         patch["blur"], spoken = max(0.0, look["blur"] - 0.2), "Più nitido."
     if MISTIER.search(text):
-        patch["mist"], spoken = min(1.0, look["mist"] + 0.2), "Più foschia."
+        patch["mist"], spoken = min(0.5, look["mist"] + 0.1), "Più foschia."
     elif CLEARER.search(text):
-        patch["mist"], spoken = max(0.0, look["mist"] - 0.2), "Aria più limpida."
+        patch["mist"], spoken = max(0.0, look["mist"] - 0.1), "Aria più limpida."
     if TOP.search(text):
         patch["angle"], spoken = min(85.0, look["angle"] + 22), "Inquadratura più alta."
     elif LOW.search(text):

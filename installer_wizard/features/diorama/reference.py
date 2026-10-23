@@ -5,9 +5,9 @@ from features.diorama import learned
 from features.diorama.catalog import BY_ID, KINDS, MOTION_NOTE, Kind, Param
 from features.diorama.recall import tokens
 
-PREFIX = {"Terreno": "TER", "Ferrovia": "FER", "Architettura": "ARC", "Vegetazione": "VEG", "Arredo": "ARR", "Libero": "LIB", "Appresi": "APP"}
+PREFIX = {"Terreno": "TER", "Ferrovia": "FER", "Architettura": "ARC", "Vegetazione": "VEG", "Arredo": "ARR", "Libero": "LIB", "Fortificazioni": "FOR", "Appresi": "APP"}
 UNITS = {"w": "m", "d": "m", "h": "m", "length": "m", "width": "m", "height": "m", "radius": "m", "top": "m", "car_length": "m", "count": "pz",
-         "density": "0-1", "bloom": "0-1", "tracks": "pz", "cars": "pz"}
+         "density": "0-1", "bloom": "0-1", "thickness": "m", "ring": "m", "tracks": "pz", "cars": "pz"}
 MOVERS = ("train", "person", "car")
 FULL_LIMIT = 10
 
@@ -49,6 +49,14 @@ ENTRIES: dict[str, Entry] = {
     "sign": Entry("Sign", ("cartello", "insegna", "segnale", "scritta", "sign", "signpost", "board"), "metal", ("platform", "road")),
     "person": Entry("Person", ("persona", "uomo", "donna", "passeggero", "pedone", "person", "people", "passenger", "pedestrian"), "plastic", ("platform", "path", "bench"), "suolo"),
     "car": Entry("Car", ("auto", "macchina", "automobile", "veicolo", "car", "vehicle"), "paint", ("road", "crossing"), "strada"),
+    "castle_wall": Entry("Castle wall", ("mura", "muro", "cinta", "merli", "fortificazione", "castello", "wall", "rampart", "battlement", "castle"), "stone", ("tower_round", "gatehouse", "moat")),
+    "tower_round": Entry("Round tower", ("torre", "torrione", "castello", "rocca", "tower", "turret", "castle"), "stone", ("castle_wall", "keep", "flag")),
+    "keep": Entry("Castle keep", ("mastio", "castello", "fortezza", "rocca", "palazzo", "keep", "castle", "fortress", "citadel"), "stone", ("tower_round", "castle_wall", "gatehouse", "hill")),
+    "gatehouse": Entry("Gatehouse", ("portale", "ingresso", "porta", "saracinesca", "gatehouse", "gate", "portcullis", "castle"), "stone", ("drawbridge", "castle_wall", "moat")),
+    "drawbridge": Entry("Drawbridge", ("ponte", "levatoio", "passerella", "drawbridge", "bridge", "castle"), "wood", ("gatehouse", "moat")),
+    "moat": Entry("Moat", ("fossato", "canale", "acqua", "castello", "moat", "water", "ditch", "castle"), "glass", ("drawbridge", "castle_wall")),
+    "flag": Entry("Flag", ("bandiera", "stendardo", "gonfalone", "vessillo", "flag", "banner", "pennant"), "paint", ("tower_round", "keep")),
+    "hill": Entry("Hill", ("collina", "altura", "promontorio", "colle", "montagna", "hill", "mound", "promontory"), "grass", ("keep", "tree_pine", "rock")),
     "block": Entry("Free block", ("blocco", "cubo", "parallelepipedo", "muro", "edificio", "block", "box", "wall", "custom"), "concrete", ("cylinder",)),
     "cylinder": Entry("Free cylinder", ("cilindro", "cono", "colonna", "torre", "serbatoio", "cylinder", "cone", "column", "tower"), "concrete", ("block",)),
 }
@@ -79,6 +87,14 @@ DIMS: dict[str, Dims] = {
     "sign": lambda p: (0.62, 0.06, p["height"]),
     "person": lambda p: (0.23 * p["height"] / 0.75, 0.15 * p["height"] / 0.75, p["height"]),
     "car": lambda p: (1.5, 0.68, 0.5),
+    "castle_wall": lambda p: (p["length"], p["thickness"] + 0.16, p["height"] + 0.35),
+    "tower_round": lambda p: (p["radius"] * 2.6, p["radius"] * 2.6, p["height"] + 0.5 + (p["radius"] * 2.3 if p["roofed"] else 0.3)),
+    "keep": lambda p: (p["w"] + 0.9, p["d"] + 0.9, p["h"] * 1.75 + 1.0),
+    "gatehouse": lambda p: (p["width"] * 0.5 + 2.7, 1.7, p["height"] + 0.9),
+    "drawbridge": lambda p: (p["width"] + 0.1, p["length"], 0.5),
+    "moat": lambda p: (p["w"] + p["ring"] * 2, p["d"] + p["ring"] * 2, 0.1),
+    "flag": lambda p: (max(0.35, p["height"] * 0.35) + 0.05, 0.05, p["height"]),
+    "hill": lambda p: (p["radius"] * 2, p["radius"] * 2, p["height"]),
     "block": lambda p: (p["w"], p["d"], p["h"]),
     "cylinder": lambda p: (max(p["radius"], p["top"]) * 2, max(p["radius"], p["top"]) * 2, p["h"]),
 }

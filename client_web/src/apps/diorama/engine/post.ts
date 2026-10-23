@@ -23,10 +23,10 @@ const TILT = {
 };
 
 const FINISH = {
-  uniforms: { tDiffuse: { value: null as THREE.Texture | null }, time: { value: 0 }, vignette: { value: 0.32 }, grain: { value: 0.025 }, aberration: { value: 0.0014 }, warmth: { value: 0.0 } },
+  uniforms: { tDiffuse: { value: null as THREE.Texture | null }, time: { value: 0 }, vignette: { value: 0.32 }, grain: { value: 0.025 }, aberration: { value: 0.0014 }, warmth: { value: 0.0 }, saturation: { value: 1.08 } },
   vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
   fragmentShader: `
-    uniform sampler2D tDiffuse; uniform float time; uniform float vignette; uniform float grain; uniform float aberration; uniform float warmth; varying vec2 vUv;
+    uniform sampler2D tDiffuse; uniform float time; uniform float vignette; uniform float grain; uniform float aberration; uniform float warmth; uniform float saturation; varying vec2 vUv;
     float hash(vec2 p){ return fract(sin(dot(p, vec2(12.9898, 78.233)) + time) * 43758.5453); }
     void main(){
       vec2 c = vUv - 0.5;
@@ -35,6 +35,8 @@ const FINISH = {
       vec3 col = vec3(texture2D(tDiffuse, vUv + shift).r, texture2D(tDiffuse, vUv).g, texture2D(tDiffuse, vUv - shift).b);
       col *= 1.0 - vignette * smoothstep(0.1, 0.75, edge * 2.0);
       col += (hash(vUv * 1024.0) - 0.5) * grain;
+      float luma = dot(col, vec3(0.2126, 0.7152, 0.0722));
+      col = mix(vec3(luma), col, saturation);
       col *= vec3(1.0 + warmth * 0.06, 1.0, 1.0 - warmth * 0.08);
       gl_FragColor = vec4(col, 1.0);
     }`,

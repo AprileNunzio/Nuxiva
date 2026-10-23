@@ -54,7 +54,7 @@ export const LookPanel: React.FC<LookPanelProps> = ({ look, base, t, onLook, onB
     </section>
     <section className="space-y-4">
       <Slider label={t('blur')} value={look.blur} min={0} max={1} step={0.05} onCommit={(blur) => onLook({ blur })} />
-      <Slider label={t('mist')} value={look.mist} min={0} max={1} step={0.05} onCommit={(mist) => onLook({ mist })} />
+      <Slider label={t('mist')} value={look.mist} min={0} max={0.5} step={0.02} onCommit={(mist) => onLook({ mist })} />
       <Slider label={t('angle')} value={look.angle} min={10} max={85} step={1} onCommit={(angle) => onLook({ angle })} />
       <button type="button" onClick={() => onLook({ orbit: !look.orbit })} className={`flex w-full items-center justify-between rounded-xl border px-3 py-2.5 text-xs font-semibold transition ${look.orbit ? 'border-sky-400 bg-sky-50 text-sky-800' : 'border-slate-200 bg-white text-slate-600'}`}>
         <span className="flex items-center gap-2"><Orbit className="h-4 w-4" />{t('orbit')}</span>

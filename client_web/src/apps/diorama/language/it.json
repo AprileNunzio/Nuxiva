@@ -30,7 +30,7 @@
     "stage_terrain": "Terreno",
     "stage_structures": "Strutture",
     "stage_vegetation": "Vegetazione",
-    "stage_props": "Dettagli",
+    "stage_props": "Arredi",
     "stage_life": "Vita",
     "stage_refine": "Modifica",
     "light": "Luce",
@@ -65,6 +65,7 @@
     "error_busy": "L'agente sta ancora lavorando.",
     "error_refine_failed": "Non sono riuscito a eseguire la modifica.",
     "error_request_failed": "Operazione non riuscita. Riprova.",
-    "error_diorama_unknown": "Diorama non trovato."
+    "error_diorama_unknown": "Diorama non trovato.",
+    "stage_details": "Rifiniture"
   }
 }

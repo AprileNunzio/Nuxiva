@@ -158,7 +158,7 @@ export class DioramaStage {
       this.world.remove(this.baseGroup);
       release(this.baseGroup);
     }
-    this.baseGroup = buildBase(base, LIGHTS[this.look?.light ?? 'golden_hour'].table);
+    this.baseGroup = buildBase(base);
     this.world.add(this.baseGroup);
     this.fitSun();
     this.lensKey = '';
@@ -201,11 +201,9 @@ export class DioramaStage {
       this.hemi.intensity = preset.hemiPower;
       this.renderer.toneMappingExposure = preset.exposure;
       this.post.bloom.strength = preset.bloom;
-      const table = this.baseGroup?.getObjectByName('table') as THREE.Mesh | undefined;
-      (table?.material as THREE.MeshStandardMaterial | undefined)?.color.set(preset.table);
       for (const lamp of this.lamps) lamp.intensity = preset.lamps ? (lamp.userData.night as number) : 0;
     }
-    this.scene.fog = new THREE.FogExp2(preset.fog, 0.0035 + look.mist * 0.018);
+    this.scene.fog = new THREE.FogExp2(preset.fog, 0.0006 + look.mist * 0.006);
     const lens = LENSES[look.lens];
     const strength = lens.blur * (0.25 + look.blur * 1.2);
     for (const pass of this.post.tilt) {

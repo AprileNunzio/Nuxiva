@@ -27,7 +27,7 @@ def load(did: str) -> dict:
     return {"id": did, "title": S.clean_text(data.get("title"), 80), "story": S.clean_text(data.get("story"), 400),
             "prompt": S.clean_text(data.get("prompt"), 600), "created": int(data.get("created") or 0),
             "base": S.clean_base(data.get("base")), "look": S.clean_look(data.get("look")), "items": S.clean_items(data.get("items")),
-            "revision": int(data.get("revision") or 0), "ambient": bool(data.get("ambient"))}
+            "revision": int(data.get("revision") or 0), "ambient": bool(data.get("ambient")), "brief": S.clean_brief(data.get("brief"))}
 
 
 def save(record: dict) -> None:

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import type { Item, Recipe } from '../../types';
 import { seeded } from '../rng';
+import { castleWall, drawbridge, flag, gatehouse, hill, keep, moat, towerRound } from './castle';
 import { learnedBuilder } from './learned';
 import { canopy, footbridge, house, stationBuilding } from './buildings';
 import { block, cylinder, grassPatch, path, petals, pond, road, rock } from './ground';
@@ -12,6 +13,7 @@ import { crossing, platform, rails, train } from './rail';
 const BUILDERS: Record<string, Builder> = {
   grass_patch: grassPatch, path, pond, rock, petals, road, block, cylinder, platform, rails, train, crossing, station_building: stationBuilding, canopy, footbridge,
   house, tree_cherry: treeCherry, tree_pine: treePine, tree_maple: treeMaple, bush, lamp, bench, fence, vending, sign, person, car,
+  castle_wall: castleWall, tower_round: towerRound, keep, gatehouse, drawbridge, moat, flag, hill,
 };
 
 export function buildItem(item: Item, ctx: BuildContext, recipes: Readonly<Record<string, Recipe>> = {}): THREE.Group {

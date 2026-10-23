@@ -1,11 +1,12 @@
 import asyncio
 import logging
+import random
 import time
 
 from features.brain.llm import BrainUnavailable
 from tasks import background
 
-from features.diorama import export, planner, recall, spec as S, store, templates
+from features.diorama import export, layout, planner, recall, spec as S, store, templates
 
 log = logging.getLogger("nuxiva.diorama")
 CHUNK = 5
@@ -57,6 +58,7 @@ async def _apply_outline(did: str, data: dict) -> dict:
     record["story"] = S.clean_text(data.get("story"), 400)
     record["base"] = S.clean_base({**record["base"], **(data.get("base") if isinstance(data.get("base"), dict) else {})})
     record["look"] = S.clean_look({**record["look"], **(data.get("look") if isinstance(data.get("look"), dict) else {})})
+    record["brief"] = S.clean_brief(data)
     record["revision"] += 1
     store.save(record)
     return record
@@ -84,11 +86,14 @@ async def _build(did: str) -> None:
         for stage in templates.STAGES:
             _set(did, stage=stage)
             try:
-                rows = await planner.stage_items(prompt, record["title"], record["base"], stage, store.load(did)["items"])
+                rows = await planner.stage_items(prompt, record["title"], record["base"], stage, store.load(did)["items"], record["brief"])
             except FAILURES as exc:
                 log.info("diorama %s: stage %s skipped (%s)", did, stage, type(exc).__name__)
                 rows = templates.compose(prompt, seed=int(did, 16))["stages"].get(stage, [])
-            await _reveal(did, rows)
+            current = store.load(did)
+            if stage == "details":
+                rows = [*rows, *layout.dress([*current["items"], *rows], record["base"], record["brief"]["palette"], random.Random(int(did, 16)))]
+            await _reveal(did, layout.settle(rows, current["items"], record["base"]))
         _set(did, state="done", stage="", mode="brain")
         export.save(did)
     except KeyError:

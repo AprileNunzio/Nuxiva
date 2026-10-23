@@ -11,7 +11,7 @@ void main(){
   vec3 low = mix(horizon, ground, pow(clamp(-h, 0.0, 1.0), 0.45));
   vec3 base = h >= 0.0 ? sky : low;
   float glowCore = pow(max(dot(normalize(vDir), sunDir), 0.0), 220.0) * 6.0;
-  float glowHalo = pow(max(dot(normalize(vDir), sunDir), 0.0), 7.0) * 0.55;
+  float glowHalo = pow(max(dot(normalize(vDir), sunDir), 0.0), 7.0) * 0.1;
   gl_FragColor = vec4(base + sunColor * (glowCore + glowHalo), 1.0);
 }`;
 

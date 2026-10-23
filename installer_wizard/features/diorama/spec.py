@@ -100,7 +100,7 @@ def clean_base(raw) -> dict:
     soil = source.get("soil")
     top = source.get("top")
     base["soil"] = soil if isinstance(soil, str) and HEX.fullmatch(soil) else "#6b4a2f"
-    base["top"] = top if isinstance(top, str) and HEX.fullmatch(top) else "#7da04a"
+    base["top"] = top if isinstance(top, str) and HEX.fullmatch(top) else "#6b8f45"
     return base
 
 
@@ -109,8 +109,22 @@ def clean_look(raw) -> dict:
     light = source.get("light")
     lens = source.get("lens")
     return {"light": light if light in LIGHTS else LIGHT_DEFAULT, "lens": lens if lens in LENSES else LENS_DEFAULT,
-            "blur": _number(source.get("blur"), 0.0, 1.0, 0.6), "mist": _number(source.get("mist"), 0.0, 1.0, 0.25),
+            "blur": _number(source.get("blur"), 0.0, 1.0, 0.45), "mist": _number(source.get("mist"), 0.0, 0.5, 0.1),
             "angle": _number(source.get("angle"), 10.0, 85.0, 38.0), "orbit": bool(source.get("orbit", True))}
+
+
+def clean_brief(raw) -> dict:
+    source = raw if isinstance(raw, dict) else {}
+    palette = source.get("palette") if isinstance(source.get("palette"), dict) else {}
+    zones = []
+    for zone in (source.get("zones") if isinstance(source.get("zones"), list) else [])[:8]:
+        if isinstance(zone, dict):
+            zones.append({"name": clean_text(zone.get("name"), 40), "role": clean_text(zone.get("role"), 80),
+                          "x": _number(zone.get("x"), -COORD, COORD, 0.0), "z": _number(zone.get("z"), -COORD, COORD, 0.0),
+                          "w": _number(zone.get("w"), 0.5, 60.0, 4.0), "d": _number(zone.get("d"), 0.5, 60.0, 4.0)})
+    details = [clean_text(v, 110) for v in (source.get("details") if isinstance(source.get("details"), list) else [])[:16]]
+    return {"palette": {clean_text(k, 20): v for k, v in list(palette.items())[:12] if isinstance(v, str) and HEX.fullmatch(v)},
+            "zones": zones, "details": [d for d in details if d]}
 
 
 def clean_items(rows) -> list[dict]:

@@ -179,7 +179,7 @@ class VoiceTest(Sandbox):
         self.say("più sfocato")
         self.say("vista dall'alto")
         look = store.load("0a1b2c3d")["look"]
-        self.assertAlmostEqual(look["blur"], 0.8)
+        self.assertAlmostEqual(look["blur"], 0.65)
         self.assertGreater(look["angle"], 38)
 
     def test_edit_goes_to_agent(self):
@@ -384,3 +384,26 @@ class ReferenceTests(unittest.TestCase):
         self.assertIn("- train [", focused)
         self.assertIn("Also valid with default params", focused)
         self.assertLess(len(focused), len(reference.prompt_catalog()))
+
+
+class LayoutTests(unittest.TestCase):
+    def test_castle_template_is_valid_and_settles(self):
+        from features.diorama import layout
+        plan = templates.compose("costruiscimi un castello", seed=1)
+        rows = [r for stage in templates.STAGES for r in plan["stages"][stage]]
+        self.assertGreater(len(rows), 40)
+        self.assertTrue(any(r["kind"] == "keep" for r in rows))
+        placed = layout.settle(rows, [], plan["base"])
+        for item in placed:
+            hx, hz = layout.footprint(item)
+            self.assertLessEqual(abs(item["x"]) - min(hx, 13), plan["base"]["w"] / 2)
+
+    def test_overlap_is_resolved_and_hill_lifts(self):
+        from features.diorama import layout
+        base = {"w": 20, "d": 20, "depth": 1.2}
+        hill = spec.clean_item({"kind": "hill", "x": 0, "z": 0, "params": {"radius": 5, "height": 2}})
+        a = spec.clean_item({"kind": "house", "x": 0, "z": 0})
+        b = spec.clean_item({"kind": "house", "x": 0.2, "z": 0})
+        out = layout.settle([hill, a, b], [], base)
+        self.assertGreater(out[1]["y"], 1.5)
+        self.assertGreater(abs(out[2]["x"] - out[1]["x"]) + abs(out[2]["z"] - out[1]["z"]), 2)
