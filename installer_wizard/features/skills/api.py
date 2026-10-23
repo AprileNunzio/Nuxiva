@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import PlainTextResponse
 
 from access import require_admin
+from features.skills import authoring, catalog
 from features.skills.library import library
 from state import store
 
@@ -11,6 +12,46 @@ admin_routes = APIRouter()
 @admin_routes.get("/api/skills")
 async def admin_skills(_: str = Depends(require_admin)):
     return library.listing()
+
+
+@admin_routes.get("/api/algorithms/catalog")
+async def admin_algorithms_catalog(_: str = Depends(require_admin)):
+    return catalog.scan()
+
+
+@admin_routes.post("/api/skills")
+async def admin_skill_create(request: Request, user: str = Depends(require_admin)):
+    body = await request.json()
+    try:
+        key = await authoring.create(body, str(body.get("probe", "")) if isinstance(body, dict) else "")
+    except authoring.AuthoringError as exc:
+        raise HTTPException(422, str(exc))
+    store.event("INFO", f"Algoritmo {key} creato da {user}", "skills")
+    return {"key": key}
+
+
+@admin_routes.post("/api/skills/generate")
+async def admin_skill_generate(request: Request, user: str = Depends(require_admin)):
+    body = await request.json()
+    try:
+        key = await authoring.generate(str(body.get("description", "")) if isinstance(body, dict) else "")
+    except authoring.AuthoringError as exc:
+        raise HTTPException(422, str(exc))
+    store.event("INFO", f"Algoritmo {key} scritto da Nuxiva su richiesta di {user}", "skills")
+    return {"key": key}
+
+
+@admin_routes.put("/api/skills/{key:path}/code")
+async def admin_skill_code_set(key: str, request: Request, user: str = Depends(require_admin)):
+    body = await request.json()
+    try:
+        await authoring.replace_code(key, str(body.get("code", "")) if isinstance(body, dict) else "")
+    except KeyError:
+        raise HTTPException(404, "Algoritmo sconosciuto")
+    except authoring.AuthoringError as exc:
+        raise HTTPException(422, str(exc))
+    store.event("INFO", f"Codice dell'algoritmo {key} modificato da {user}", "skills")
+    return {"ok": True}
 
 
 @admin_routes.get("/api/skills/{key:path}/code")

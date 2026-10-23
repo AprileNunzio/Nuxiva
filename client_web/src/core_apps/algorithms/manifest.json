@@ -3,12 +3,12 @@
   "name": "Algorithms",
   "icon": "Binary",
   "version": "5.0.0",
-  "description": "Universal deterministic algorithm store",
+  "description": "Catalog of every algorithm, tool and connector in the system, with management and creation",
   "scope": "core_apps/algorithms",
   "target": "global",
   "window": {
-    "defaultWidth": 65,
-    "defaultHeight": 75,
+    "defaultWidth": 80,
+    "defaultHeight": 85,
     "minWidth": 25,
     "resizable": true
   },
@@ -32,5 +32,9 @@
     "id": "9QHudN9uBhDv",
     "url": "https://img.icons8.com/?size=240&id=9QHudN9uBhDv&format=png"
   },
-  "category": "development"
+  "category": "development",
+  "kind": "app",
+  "featureIds": [
+    "skills"
+  ]
 }

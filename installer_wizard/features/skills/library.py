@@ -5,6 +5,7 @@ import json
 import logging
 import os
 import re
+import shutil
 import sys
 import time
 import unicodedata
@@ -73,7 +74,7 @@ class Worker:
     async def _ensure(self) -> asyncio.subprocess.Process:
         if self.proc is None or self.proc.returncode is not None:
             self.proc = await asyncio.create_subprocess_exec(
-                sys.executable, "-I", str(WORKER), stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE,
+                sys.executable, "-I", "-B", str(WORKER), stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.DEVNULL, cwd="/" if os.name != "nt" else None, limit=1 << 20)
         return self.proc
 
@@ -191,14 +192,9 @@ class Library:
     def needs_algorithm(self, text: str) -> bool:
         return bool(NEED.search(text)) and len(text) < 400
 
-    async def learn(self, text: str, models: list[str]) -> None:
-        if not (self.enabled() and self.may_generate()) or DEMO:
-            return
-        sig = _slug(text)[:30]
-        if time.time() - self.generating.get(sig, 0) < 600:
-            return
-        self.generating[sig] = time.time()
-        prompt = (
+    @staticmethod
+    def prompt_for(text: str) -> str:
+        return (
             "Scrivi un algoritmo Python riutilizzabile che risolve richieste come questa (in italiano):\n"
             f"«{text}»\n\n"
             "Rispondi SOLO con un oggetto JSON con i campi:\n"
@@ -211,6 +207,15 @@ class Library:
             'non contiene i dati necessari restituisci {"ok": False, "error": "motivo"}. Usa solo i moduli: '
             + ", ".join(sorted(ALLOWED_IMPORTS)) + ". Niente file, rete, input, eval o exec. Numeri italiani: "
             "accetta la virgola decimale e le parole (più, meno, per, diviso). Arrotonda i risultati in modo leggibile.")
+
+    async def learn(self, text: str, models: list[str]) -> None:
+        if not (self.enabled() and self.may_generate()) or DEMO:
+            return
+        sig = _slug(text)[:30]
+        if time.time() - self.generating.get(sig, 0) < 600:
+            return
+        self.generating[sig] = time.time()
+        prompt = self.prompt_for(text)
         from features.brain.llm import BrainUnavailable, generate
         for temperature in (0.2, 0.45):
             try:
@@ -224,7 +229,7 @@ class Library:
                 log.info("Creazione dell'algoritmo non riuscita: %s", exc)
         log.info("Nessun algoritmo creato per «%s»", text[:80])
 
-    async def _install(self, spec: dict, text: str) -> str | None:
+    async def _install(self, spec: dict, text: str, source: str = "ai") -> str | None:
         code = str(spec.get("code", ""))
         check_code(code)
         patterns = [str(p) for p in spec.get("patterns", [])][:4]
@@ -243,14 +248,12 @@ class Library:
         (tmp / "main.py").write_text(code, encoding="utf-8")
         out = await self.worker.call(tmp / "main.py", text)
         if not out.get("ok") or not (out.get("speech") or out.get("result") is not None):
-            for f in tmp.iterdir():
-                f.unlink()
-            tmp.rmdir()
+            shutil.rmtree(tmp, ignore_errors=True)
             raise ValueError(f"prova fallita: {out.get('error') or 'nessun risultato'}")
         (tmp / "skill.json").write_text(json.dumps({
             "id": folder.name, "name": name, "description": str(spec.get("description", ""))[:200],
             "patterns": patterns, "examples": [str(e)[:120] for e in spec.get("examples", [])][:5],
-            "source": "ai", "created_at": time.time(), "created_from": text[:200],
+            "source": source, "created_at": time.time(), "created_from": text[:200],
             "test": {"input": text, "output": out.get("speech") or str(out.get("result"))}},
             ensure_ascii=False, indent=2), encoding="utf-8")
         tmp.rename(folder)
@@ -287,9 +290,7 @@ class Library:
         if m["source"] == "system":
             raise ValueError("Gli algoritmi di sistema si possono solo disattivare")
         folder = m["path"].parent
-        for f in folder.iterdir():
-            f.unlink()
-        folder.rmdir()
+        shutil.rmtree(folder, ignore_errors=True)
         self.stats.pop(key, None)
         self._save_stats()
         self.signature = ""

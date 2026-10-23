@@ -86,7 +86,6 @@ export const CATEGORIES: {
 
 const CORE_APPS_LIST: CoreAppDef[] = [
   { id: 'agents', iconName: 'Users', category: 'ai', accent: 'purple' },
-  { id: 'algorithms', iconName: 'Binary', category: 'ai', accent: 'purple' },
   { id: 'hippocampus_router', iconName: 'Brain', category: 'ai', accent: 'purple' },
   { id: 'study', iconName: 'BookOpen', category: 'ai', accent: 'purple' },
   { id: 'twin', iconName: 'Box', category: 'ai', accent: 'purple' },
