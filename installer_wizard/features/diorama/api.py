@@ -5,7 +5,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 
 from access import NO_CACHE, require_admin, require_display
-from features.diorama import catalog, learned, learning, service, spec as S, store
+from features.diorama import catalog, export, learned, learning, service, spec as S, store
 
 admin_routes = APIRouter(prefix="/api/diorama", tags=["Diorama"])
 public_routes = APIRouter(tags=["Diorama"])
@@ -61,6 +61,7 @@ def _record(did: str) -> dict:
 def _save(record: dict) -> dict:
     record["revision"] += 1
     store.save(record)
+    export.save(record["id"])
     return record
 
 

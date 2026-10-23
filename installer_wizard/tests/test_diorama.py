@@ -347,3 +347,16 @@ class VisualShowTests(unittest.TestCase):
             with self.subTest(no=no):
                 m = commands.VISUAL.match(no)
                 self.assertTrue(not m or commands.NOT_VISUAL.search(no) or commands.FOREIGN.search(no))
+
+
+class ExportTests(unittest.TestCase):
+    def test_saved_to_share(self):
+        from features.diorama import export
+        from features.shares import archive
+        with tempfile.TemporaryDirectory() as tmp, mock.patch.object(archive, "ROOT", Path(tmp)), mock.patch.object(store, "DIRECTORY", Path(tmp) / "st"):
+            record = {"id": "a1b2c3d4", "title": "Treno", "story": "", "prompt": "un treno", "created": 1, "base": spec.clean_base({}),
+                      "look": spec.clean_look({}), "items": [spec.clean_item({"kind": "house", "x": 0, "z": 0})], "revision": 1, "ambient": False}
+            store.save(record)
+            export.save(record["id"])
+            files = list((Path(tmp) / archive.FOLDERS["diorami"]).glob("*.json"))
+            self.assertEqual(len(files), 1)

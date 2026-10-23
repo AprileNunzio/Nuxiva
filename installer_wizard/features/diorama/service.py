@@ -5,7 +5,7 @@ import time
 from features.brain.llm import BrainUnavailable
 from tasks import background
 
-from features.diorama import planner, recall, spec as S, store, templates
+from features.diorama import export, planner, recall, spec as S, store, templates
 
 log = logging.getLogger("nuxiva.diorama")
 CHUNK = 5
@@ -79,6 +79,7 @@ async def _build(did: str) -> None:
             log.info("diorama %s: outline fallback (%s)", did, type(exc).__name__)
             await _from_template(did, prompt)
             _set(did, state="done", stage="", mode="template")
+            export.save(did)
             return
         for stage in templates.STAGES:
             _set(did, stage=stage)
@@ -89,6 +90,7 @@ async def _build(did: str) -> None:
                 rows = templates.compose(prompt, seed=int(did, 16))["stages"].get(stage, [])
             await _reveal(did, rows)
         _set(did, state="done", stage="", mode="brain")
+        export.save(did)
     except KeyError:
         _set(did, state="error", stage="", error="missing")
     except OSError:
@@ -141,4 +143,5 @@ async def refine(did: str, instruction: str) -> dict:
         _set(did, state="done", stage="", error="refine")
         raise S.SpecError("refine_failed")
     _set(did, state="done", stage="", error="")
+    export.save(did)
     return {"changed": changed, "revision": record["revision"]}

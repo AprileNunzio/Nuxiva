@@ -1,7 +1,7 @@
 import re
 
 from features.desktop.desk import desk
-from features.diorama import service, spec as S, store
+from features.diorama import export, service, spec as S, store
 from tasks import background
 
 NOUN = r"(?:diorama|diorami|plastico|modellino\s+in\s+miniatura|scena\s+in\s+miniatura)"
@@ -95,6 +95,7 @@ def _look(did: str, text: str) -> str | None:
     record["look"] = S.clean_look({**look, **patch})
     record["revision"] += 1
     store.save(record)
+    export.save(did)
     return spoken
 
 
