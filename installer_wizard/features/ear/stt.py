@@ -149,6 +149,16 @@ def transcribe(audio: np.ndarray, fast: bool = False, detect: bool = False) -> t
     return text, lang
 
 
+def live_transcribe(audio: np.ndarray, lang: str) -> str:
+    if wake_model is None:
+        return ""
+    segments, _ = wake_model.transcribe(audio, language=lang, beam_size=1, vad_filter=False,
+                                        initial_prompt=_prompt(lang), condition_on_previous_text=False,
+                                        hotwords=_hotwords(lang))
+    text = " ".join(s.text.strip() for s in segments).strip()
+    return "" if hallucination(text) else text
+
+
 def head(audio: np.ndarray) -> np.ndarray:
     return audio[:int(RATE * HEAD_SECONDS)]
 

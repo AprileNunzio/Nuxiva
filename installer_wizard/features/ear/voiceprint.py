@@ -53,6 +53,7 @@ class Voiceprints:
     def __init__(self) -> None:
         self.extractor = None
         self.lock = threading.Lock()
+        self.embed_lock = threading.Lock()
         self.samples: dict[str, np.ndarray] = {}
         self.centres: dict[str, np.ndarray] = {}
         self.limits: dict[str, float] = {}
@@ -112,12 +113,13 @@ class Voiceprints:
     def embed(self, audio: np.ndarray) -> np.ndarray | None:
         if not self.ready or len(audio) < RATE * MIN_SECONDS:
             return None
-        stream = self.extractor.create_stream()
-        stream.accept_waveform(RATE, audio.astype(np.float32))
-        stream.input_finished()
-        if not self.extractor.is_ready(stream):
-            return None
-        return emb.unit(np.array(self.extractor.compute(stream), dtype=np.float32))
+        with self.embed_lock:
+            stream = self.extractor.create_stream()
+            stream.accept_waveform(RATE, audio.astype(np.float32))
+            stream.input_finished()
+            if not self.extractor.is_ready(stream):
+                return None
+            return emb.unit(np.array(self.extractor.compute(stream), dtype=np.float32))
 
     def _refresh(self) -> None:
         try:

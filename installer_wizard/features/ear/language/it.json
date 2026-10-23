@@ -13,7 +13,10 @@
     "Registra la voce a blocchi e la rivede a riposo per capire se ha capito bene",
     "Impara dagli errori: nuove varianti del nome, sensibilità e amplificazione automatiche",
     "Impronta vocale che migliora da sola, con campioni diversi e protezione dalle contaminazioni",
-    "Voci molto simili (gemelli) distinte con un margine più severo"
+    "Voci molto simili (gemelli) distinte con un margine più severo",
+    "Trascrizione live elegante sul display, che si adatta alle prestazioni del PC",
+    "Riconosce chi ha pronunciato ogni frase",
+    "Registro cifrato di ciò che sente, con riascolto e feedback per migliorare"
   ],
   "settings": {
     "NUXIVA_EAR_MODE": "Modalità di ascolto e riconoscimento",
@@ -50,10 +53,27 @@
     "NUXIVA_VOICE_TWIN_SIM": "Due voci sono «simili» oltre questa somiglianza (0,2 - 0,95)",
     "NUXIVA_VOICE_TWIN_MARGIN": "Distacco richiesto tra voci simili, per esempio gemelli (0 - 0,6)",
     "NUXIVA_ONLINE_STT_URL": "Server personalizzato: indirizzo (es. http://192.168.1.50:8000)",
-    "NUXIVA_ONLINE_STT_MODEL": "Server personalizzato: nome del modello (es. google/gemma-3n-E4B-it o whisper-large-v3)"
+    "NUXIVA_ONLINE_STT_MODEL": "Server personalizzato: nome del modello (es. google/gemma-3n-E4B-it o whisper-large-v3)",
+    "NUXIVA_EAR_LIVE": "Trascrizione live mentre parli",
+    "NUXIVA_EAR_LIVE_SPEAKER": "Riconosci chi sta parlando durante la trascrizione",
+    "NUXIVA_CAPTIONS": "Sottotitoli sul display",
+    "NUXIVA_CAPTIONS_SCOPE": "Quali frasi mostrare",
+    "NUXIVA_CAPTIONS_SPEAKER": "Mostra il nome di chi parla",
+    "NUXIVA_CAPTIONS_SIZE": "Dimensione dei sottotitoli",
+    "NUXIVA_CAPTIONS_POSITION": "Posizione dei sottotitoli",
+    "NUXIVA_CAPTIONS_HOLD": "Secondi di permanenza del testo dopo la frase (2 - 30)",
+    "NUXIVA_EAR_JOURNAL": "Registro di tutto ciò che sente",
+    "NUXIVA_EAR_JOURNAL_AUDIO": "Conserva anche l'audio delle frasi",
+    "NUXIVA_EAR_JOURNAL_FULL": "Trascrivi per intero anche le frasi non rivolte all'assistente",
+    "NUXIVA_EAR_JOURNAL_DAYS": "Giorni di conservazione del registro (1 - 365)",
+    "NUXIVA_EAR_JOURNAL_AUDIO_DAYS": "Giorni di conservazione dell'audio (0 - 60)",
+    "NUXIVA_EAR_JOURNAL_MAX_MB": "Spazio massimo per l'audio del registro (MB, 20 - 5000)"
   },
   "help": {
     "NUXIVA_MIC_AGC": "Automatico: NUXIVA misura la tua voce e, se il microfono è troppo alto o distorce, attiva da sola il controllo del volume del browser che abbassa il microfono nel sistema. Sì: sempre attivo. No: mai.",
-    "NUXIVA_ONLINE_STT_URL": "Qualsiasi server con l'API di trascrizione compatibile OpenAI (/v1/audio/transcriptions). La chiave API è facoltativa."
+    "NUXIVA_ONLINE_STT_URL": "Qualsiasi server con l'API di trascrizione compatibile OpenAI (/v1/audio/transcriptions). La chiave API è facoltativa.",
+    "NUXIVA_EAR_LIVE": "Automatica: la trascrizione compare mentre parli e si sospende da sola se il PC è sotto carico o troppo lento, per poi riprovare. Sempre attiva: non si sospende mai. Disattivata: il testo compare solo a fine frase.",
+    "NUXIVA_CAPTIONS_SCOPE": "Tutto ciò che sente include anche le conversazioni nella stanza non rivolte all'assistente.",
+    "NUXIVA_EAR_JOURNAL": "Salva ogni frase capita con chi l'ha detta, così nell'app Registro ascolto puoi correggerla e migliorare il riconoscimento. Testo e audio sono cifrati sul dispositivo."
   }
 }

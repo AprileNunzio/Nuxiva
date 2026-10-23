@@ -66,7 +66,7 @@ class GovernorApiTest(unittest.TestCase):
         self.assertEqual(self.stranger.get("/api/ear/config").status_code, 401)
         self.client_is_local = True
         config = self.display.get("/api/ear/config").json()
-        self.assertEqual(set(config), {"echoCancellation", "noiseSuppression", "autoGainControl", "autoLevel"})
+        self.assertEqual(set(config), {"echoCancellation", "noiseSuppression", "autoGainControl", "autoLevel", "captions", "speakers"})
         self.assertTrue(config["echoCancellation"])
         self.assertFalse(config["noiseSuppression"])
         self.assertTrue(config["autoLevel"])

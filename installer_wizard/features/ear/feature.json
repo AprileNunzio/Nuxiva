@@ -27,7 +27,10 @@
     "Registra la voce a blocchi e la rivede a riposo per capire se ha capito bene",
     "Impara dagli errori: nuove varianti del nome, sensibilità e amplificazione automatiche",
     "Impronta vocale che migliora da sola, con campioni diversi e protezione dalle contaminazioni",
-    "Voci molto simili (gemelli) distinte con un margine più severo"
+    "Voci molto simili (gemelli) distinte con un margine più severo",
+    "Trascrizione live elegante sul display, che si adatta alle prestazioni del PC",
+    "Riconosce chi ha pronunciato ogni frase",
+    "Registro cifrato di ciò che sente, con riascolto e feedback per migliorare"
   ],
   "settings": [
     {
@@ -531,6 +534,231 @@
       "label": "Distacco richiesto tra voci simili, per esempio gemelli (0 - 0,6)",
       "type": "number",
       "default": "0.12",
+      "apply": [
+        "ear"
+      ]
+    },
+    {
+      "key": "NUXIVA_EAR_LIVE",
+      "label": "Trascrizione live mentre parli",
+      "type": "select",
+      "default": "auto",
+      "apply": [
+        "ear"
+      ],
+      "options": [
+        {
+          "value": "auto",
+          "label": "Automatica (si adatta alle prestazioni del PC)"
+        },
+        {
+          "value": "on",
+          "label": "Sempre attiva"
+        },
+        {
+          "value": "off",
+          "label": "Disattivata"
+        }
+      ],
+      "help": "Automatica: la trascrizione compare mentre parli e si sospende da sola se il PC è sotto carico o troppo lento, per poi riprovare. Sempre attiva: non si sospende mai. Disattivata: il testo compare solo a fine frase."
+    },
+    {
+      "key": "NUXIVA_EAR_LIVE_SPEAKER",
+      "label": "Riconosci chi sta parlando durante la trascrizione",
+      "type": "select",
+      "default": "1",
+      "apply": [
+        "ear"
+      ],
+      "options": [
+        {
+          "value": "1",
+          "label": "Sì"
+        },
+        {
+          "value": "0",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_CAPTIONS",
+      "label": "Sottotitoli sul display",
+      "type": "select",
+      "default": "1",
+      "apply": [],
+      "options": [
+        {
+          "value": "1",
+          "label": "Mostra le parole capite"
+        },
+        {
+          "value": "0",
+          "label": "Nascondi"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_CAPTIONS_SCOPE",
+      "label": "Quali frasi mostrare",
+      "type": "select",
+      "default": "all",
+      "apply": [],
+      "options": [
+        {
+          "value": "all",
+          "label": "Tutto ciò che sente"
+        },
+        {
+          "value": "addressed",
+          "label": "Solo quando parlo con l'assistente"
+        }
+      ],
+      "help": "Tutto ciò che sente include anche le conversazioni nella stanza non rivolte all'assistente."
+    },
+    {
+      "key": "NUXIVA_CAPTIONS_SPEAKER",
+      "label": "Mostra il nome di chi parla",
+      "type": "select",
+      "default": "1",
+      "apply": [],
+      "options": [
+        {
+          "value": "1",
+          "label": "Sì"
+        },
+        {
+          "value": "0",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_CAPTIONS_SIZE",
+      "label": "Dimensione dei sottotitoli",
+      "type": "select",
+      "default": "medium",
+      "apply": [],
+      "options": [
+        {
+          "value": "small",
+          "label": "Piccola"
+        },
+        {
+          "value": "medium",
+          "label": "Media"
+        },
+        {
+          "value": "large",
+          "label": "Grande"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_CAPTIONS_POSITION",
+      "label": "Posizione dei sottotitoli",
+      "type": "select",
+      "default": "bottom",
+      "apply": [],
+      "options": [
+        {
+          "value": "bottom",
+          "label": "In basso"
+        },
+        {
+          "value": "center",
+          "label": "Al centro"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_CAPTIONS_HOLD",
+      "label": "Secondi di permanenza del testo dopo la frase",
+      "type": "number",
+      "default": "6",
+      "apply": []
+    },
+    {
+      "key": "NUXIVA_EAR_JOURNAL",
+      "label": "Registro di tutto ciò che sente",
+      "type": "select",
+      "default": "1",
+      "apply": [
+        "ear"
+      ],
+      "options": [
+        {
+          "value": "1",
+          "label": "Attivo (testo e voce cifrati)"
+        },
+        {
+          "value": "0",
+          "label": "Disattivato"
+        }
+      ],
+      "help": "Salva ogni frase capita con chi l'ha detta, così nell'app Registro ascolto puoi correggerla e migliorare il riconoscimento. Testo e audio sono cifrati sul dispositivo."
+    },
+    {
+      "key": "NUXIVA_EAR_JOURNAL_AUDIO",
+      "label": "Conserva anche l'audio delle frasi",
+      "type": "select",
+      "default": "1",
+      "apply": [
+        "ear"
+      ],
+      "options": [
+        {
+          "value": "1",
+          "label": "Sì (serve per riascoltare e correggere la voce)"
+        },
+        {
+          "value": "0",
+          "label": "No, solo testo"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_EAR_JOURNAL_FULL",
+      "label": "Trascrivi per intero anche le frasi non rivolte all'assistente",
+      "type": "select",
+      "default": "1",
+      "apply": [
+        "ear"
+      ],
+      "options": [
+        {
+          "value": "1",
+          "label": "Sì (quando il PC è libero)"
+        },
+        {
+          "value": "0",
+          "label": "No, solo l'inizio"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_EAR_JOURNAL_DAYS",
+      "label": "Giorni di conservazione del registro",
+      "type": "number",
+      "default": "14",
+      "apply": [
+        "ear"
+      ]
+    },
+    {
+      "key": "NUXIVA_EAR_JOURNAL_AUDIO_DAYS",
+      "label": "Giorni di conservazione dell'audio",
+      "type": "number",
+      "default": "3",
+      "apply": [
+        "ear"
+      ]
+    },
+    {
+      "key": "NUXIVA_EAR_JOURNAL_MAX_MB",
+      "label": "Spazio massimo per l'audio del registro (MB)",
+      "type": "number",
+      "default": "300",
       "apply": [
         "ear"
       ]

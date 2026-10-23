@@ -8,11 +8,14 @@ from fastapi import APIRouter, HTTPException, Request, WebSocket
 from access import require_admin, require_display
 from config import env_get
 from features.desktop.desk import desk
+from features.people import people
 from features.ear import keycheck, proxy
+from features.ear.journal_api import routes as journal_routes
 from state import store
 
 public_routes = APIRouter()
 admin_routes = APIRouter()
+admin_routes.include_router(journal_routes)
 REVIEW_DIR = Path(os.environ.get("NUXIVA_EAR_REVIEW_DIR", "/var/lib/nuxiva/ear_review"))
 TUNING_FILE = Path(os.environ.get("NUXIVA_EAR_TUNING", "/var/lib/nuxiva/ear_tuning.json"))
 
@@ -21,12 +24,31 @@ def on(key: str, default: str) -> bool:
     return env_get(key, default).strip().lower() not in ("0", "off", "no", "false")
 
 
+def captions_config() -> dict:
+    def pick(key: str, default: str, allowed: tuple) -> str:
+        value = env_get(key, default).strip().lower()
+        return value if value in allowed else default
+
+    try:
+        hold = max(2.0, min(30.0, float(env_get("NUXIVA_CAPTIONS_HOLD", "6"))))
+    except ValueError:
+        hold = 6.0
+    return {"enabled": on("NUXIVA_CAPTIONS", "1"), "scope": pick("NUXIVA_CAPTIONS_SCOPE", "all", ("all", "addressed")),
+            "speaker": on("NUXIVA_CAPTIONS_SPEAKER", "1"), "size": pick("NUXIVA_CAPTIONS_SIZE", "medium", ("small", "medium", "large")),
+            "hold": hold, "position": pick("NUXIVA_CAPTIONS_POSITION", "bottom", ("bottom", "center"))}
+
+
+def speaker_names() -> dict:
+    return {p["slug"]: people.display_name(p) for p in people.all_profiles(light=True)}
+
+
 @public_routes.get("/api/ear/config")
 async def ear_config(request: Request):
     require_display(request, "Solo dal display")
     agc = env_get("NUXIVA_MIC_AGC", "auto").strip().lower()
     return {"echoCancellation": on("NUXIVA_MIC_EC", "1"), "noiseSuppression": on("NUXIVA_MIC_NS", "0"),
-            "autoGainControl": agc in ("1", "on", "yes", "true"), "autoLevel": agc == "auto"}
+            "autoGainControl": agc in ("1", "on", "yes", "true"), "autoLevel": agc == "auto",
+            "captions": captions_config(), "speakers": speaker_names()}
 
 
 @admin_routes.get("/api/ear/review")

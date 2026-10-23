@@ -4,17 +4,37 @@
   "capabilities": [
     "Local wake-word detection (Sherpa/Porcupine/Whisper)",
     "Continuous multi-lingual speech-to-text",
-    "Acoustic event identification"
+    "Acoustic event identification",
+    "Elegant live transcript on the display, adapting to the PC's performance",
+    "Recognises who said each sentence",
+    "Encrypted log of what it hears, with playback and feedback to improve"
   ],
   "settings": {
     "NUXIVA_WAKE_WORD": "Wake word",
     "NUXIVA_STT_ENGINE": "STT Engine",
     "NUXIVA_MIC_AGC": "Automatic microphone level",
     "NUXIVA_ONLINE_STT_URL": "Custom server: address (e.g. http://192.168.1.50:8000)",
-    "NUXIVA_ONLINE_STT_MODEL": "Custom server: model name (e.g. google/gemma-3n-E4B-it or whisper-large-v3)"
+    "NUXIVA_ONLINE_STT_MODEL": "Custom server: model name (e.g. google/gemma-3n-E4B-it or whisper-large-v3)",
+    "NUXIVA_EAR_LIVE": "Live transcription while you speak",
+    "NUXIVA_EAR_LIVE_SPEAKER": "Recognise who is speaking during transcription",
+    "NUXIVA_CAPTIONS": "Captions on the display",
+    "NUXIVA_CAPTIONS_SCOPE": "Which sentences to show",
+    "NUXIVA_CAPTIONS_SPEAKER": "Show the speaker's name",
+    "NUXIVA_CAPTIONS_SIZE": "Caption size",
+    "NUXIVA_CAPTIONS_POSITION": "Caption position",
+    "NUXIVA_CAPTIONS_HOLD": "Seconds the text stays after the sentence (2 - 30)",
+    "NUXIVA_EAR_JOURNAL": "Log of everything it hears",
+    "NUXIVA_EAR_JOURNAL_AUDIO": "Also keep the audio of sentences",
+    "NUXIVA_EAR_JOURNAL_FULL": "Fully transcribe sentences not addressed to the assistant",
+    "NUXIVA_EAR_JOURNAL_DAYS": "Days to keep the log (1 - 365)",
+    "NUXIVA_EAR_JOURNAL_AUDIO_DAYS": "Days to keep the audio (0 - 60)",
+    "NUXIVA_EAR_JOURNAL_MAX_MB": "Maximum space for the log audio (MB, 20 - 5000)"
   },
   "help": {
     "NUXIVA_MIC_AGC": "Automatic: NUXIVA measures your voice and, if the microphone is too loud or distorts, it turns on the browser volume control by itself, which lowers the microphone in the system. Yes: always on. No: never.",
-    "NUXIVA_ONLINE_STT_URL": "Any server with the OpenAI-compatible transcription API (/v1/audio/transcriptions). The API key is optional."
+    "NUXIVA_ONLINE_STT_URL": "Any server with the OpenAI-compatible transcription API (/v1/audio/transcriptions). The API key is optional.",
+    "NUXIVA_EAR_LIVE": "Automatic: the transcript appears as you speak and pauses by itself if the PC is under load or too slow, then tries again. Always on: never pauses. Off: text only appears when the sentence ends.",
+    "NUXIVA_CAPTIONS_SCOPE": "Everything it hears also includes conversations in the room that are not meant for the assistant.",
+    "NUXIVA_EAR_JOURNAL": "Saves every sentence understood with who said it, so in the Listening log app you can correct it and improve recognition. Text and audio are encrypted on the device."
   }
 }

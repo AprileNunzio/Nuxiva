@@ -245,6 +245,7 @@
     "rl_present_one": "{{n}} présent",
     "enroll_tone_soft": "Parlez doucement, presque en chuchotant",
     "enroll_tone_raised": "Parlez fort",
-    "enroll_dist_far": "Éloignez-vous de 2 à 3 mètres du micro"
+    "enroll_dist_far": "Éloignez-vous de 2 à 3 mètres du micro",
+    "cap_unknown": "Voix inconnue"
   }
 }

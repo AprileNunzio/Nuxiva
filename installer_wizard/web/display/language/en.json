@@ -245,6 +245,7 @@
     "rl_present_one": "{{n}} present",
     "enroll_tone_soft": "Speak softly, almost whispering",
     "enroll_tone_raised": "Speak loudly",
-    "enroll_dist_far": "Step 2-3 metres away from the microphone"
+    "enroll_dist_far": "Step 2-3 metres away from the microphone",
+    "cap_unknown": "Unknown voice"
   }
 }

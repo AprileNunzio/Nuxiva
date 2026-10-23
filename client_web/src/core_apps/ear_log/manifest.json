@@ -1,0 +1,36 @@
+{
+  "id": "ear_log",
+  "name": "Listening Log",
+  "icon": "Mic",
+  "version": "1.0.0",
+  "description": "Everything the assistant hears, who said it, with playback and feedback",
+  "scope": "core_apps/ear_log",
+  "target": "global",
+  "window": {
+    "defaultWidth": 70,
+    "defaultHeight": 80,
+    "minWidth": 30,
+    "resizable": true
+  },
+  "toolbars": [
+    {
+      "id": "system",
+      "items": [
+        {
+          "type": "action",
+          "id": "refresh",
+          "labelKey": "os_refresh",
+          "shortcut": "F5"
+        }
+      ]
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "DBPvuRGXy2ZM",
+    "url": "https://img.icons8.com/?size=240&id=DBPvuRGXy2ZM&format=png"
+  },
+  "category": "ai"
+}

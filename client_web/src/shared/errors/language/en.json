@@ -132,6 +132,7 @@
     "nodes_onboard_failed": "Connection failed.",
     "nodes_copy_failed": "Cannot copy the command: select and copy it manually.",
     "error_access_unavailable": "Unable to verify permissions.",
-    "error_people_wellbeing_failed": "Wellbeing session failed."
+    "error_people_wellbeing_failed": "Wellbeing session failed.",
+    "error_ear_log_failed": "Listening log operation failed."
   }
 }

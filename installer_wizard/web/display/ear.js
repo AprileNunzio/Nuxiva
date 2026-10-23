@@ -176,6 +176,7 @@
         if (old && old !== sock) { try { old.close(); } catch (err) {} }
       }
       const ev = JSON.parse(e.data);
+      if (D.Captions) D.Captions.event(ev);
       if (ev.type === "level") { heardAt = Date.now(); level(ev.rms); if (D.Enroll && D.Enroll.active) D.Enroll.level(ev.rms); if (state === "off") setState("idle"); }
       else if (ev.type === "state") { setState(ev.state); document.body.classList.toggle("conversing", !!ev.conversation); }
       else if (ev.type === "wake") { D.lastInteraction = Date.now(); D.pingActivity(true); setState("listening"); if (D.mode === "brain") D.setMode("face"); if (D.wakeDesk) D.wakeDesk(); }

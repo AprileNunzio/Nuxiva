@@ -132,6 +132,7 @@
     "nodes_onboard_failed": "La connexion a échoué.",
     "nodes_copy_failed": "Impossible de copier la commande : sélectionnez-la et copiez-la manuellement.",
     "error_access_unavailable": "Verification des permissions impossible.",
-    "error_people_wellbeing_failed": "Parcours de bien-être impossible."
+    "error_people_wellbeing_failed": "Parcours de bien-être impossible.",
+    "error_ear_log_failed": "Opération sur le journal d'écoute impossible."
   }
 }

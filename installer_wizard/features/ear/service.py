@@ -15,9 +15,13 @@ for noisy in ("websockets", "faster_whisper"):
 
 import earconf
 import enhance
+import capture
+import feedback
 import stt
 from learner import current_name, learner, name_variant
 from music import MusicTap
+from livecap import LiveCaptions
+from livegov import LiveGovernor
 from recorder import Recorder, write_chunk
 from reviewer import Reviewer, activity
 from voiceprint import ENROLLED_AT, Voiceprints
@@ -39,6 +43,7 @@ SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]{0,40}$")
 BARGE_IN = float(os.environ.get("NUXIVA_BARGE_IN", "0.7"))
 
 voiceprints = Voiceprints()
+governor = LiveGovernor()
 LINK_FILE = os.environ.get("NUXIVA_EAR_LINK", "/var/lib/nuxiva/ear_link.json")
 LINK = {"clients": 0, "last_audio": 0.0, "level": 0.0, "since": time.time(), "pages": []}
 SESSIONS: set = set()
@@ -56,6 +61,7 @@ def save_link() -> None:
 
 async def link_writer() -> None:
     while True:
+        LINK["live"] = governor.status()
         save_link()
         await asyncio.sleep(5)
 
@@ -89,6 +95,8 @@ class Session:
         self.recorder = Recorder(secrets.token_hex(3))
         self.page: dict = {}
         self.opened = time.time()
+        self.lang = stt.HOME_LANG
+        self.live = LiveCaptions(self.send, governor, stt.live_transcribe, self._identify_live, stt.lock)
 
     async def send(self, **event) -> None:
         try:
@@ -144,6 +152,7 @@ class Session:
 
         if self.nuxiva_speaking:
             self.in_speech, self.speech = False, []
+            await self._drop_caption()
             if self.enroll is None and self.wake.feed(frame) and self.wake.score >= BARGE_IN:
                 self.nuxiva_speaking = False
                 await self.send(type="barge")
@@ -162,9 +171,11 @@ class Session:
             if voiced:
                 self.in_speech, self.speech_start, self.last_voice = True, now, now
                 self.speech = [self.ring.copy()]
+                self.live.begin(self._addressed())
             return
 
         self.speech.append(frame)
+        self.live.tick(self.speech, self.lang, self._addressed())
         if voiced:
             self.last_voice = now
         duration = now - self.speech_start
@@ -172,9 +183,12 @@ class Session:
             audio = np.concatenate(self.speech)
             self.in_speech, self.speech, self.ring = False, [], np.zeros(0, dtype=np.float32)
             instant, self.instant = self.instant, False
+            caption = self.live.end()
             if duration >= MIN_UTTERANCE:
                 asyncio.create_task(self._utterance(audio, self.mode == "listening" or instant,
-                                                    self.conversation, instant))
+                                                    self.conversation, instant, caption))
+            elif caption["utt"]:
+                await self.send(type="caption_drop", utt=caption["utt"])
 
     async def _save(self, chunk) -> None:
         try:
@@ -182,9 +196,22 @@ class Session:
         except OSError as exc:
             note_error("salvataggio della registrazione", exc)
 
+    def _addressed(self) -> bool:
+        return self.mode == "listening" or self.instant
+
+    async def _drop_caption(self) -> None:
+        caption = self.live.end()
+        if caption["utt"]:
+            await self.send(type="caption_drop", utt=caption["utt"])
+
+    def _identify_live(self, audio: np.ndarray) -> tuple:
+        slug, score = voiceprints.identify(voiceprints.embed(audio))
+        return slug, score, self._known(slug)
+
     async def _listen_timeout(self) -> None:
         if self.in_speech:
             self.in_speech, self.speech, self.ring = False, [], np.zeros(0, dtype=np.float32)
+            await self._drop_caption()
         if self.awaiting_command:
             self.awaiting_command = False
             learner.on_false_wake()
@@ -201,9 +228,10 @@ class Session:
         await self.send(type="wake", source="instant")
         await self.set_mode("listening")
 
-    async def _utterance(self, audio: np.ndarray, attentive: bool, followup: bool, instant: bool) -> None:
+    async def _utterance(self, audio: np.ndarray, attentive: bool, followup: bool, instant: bool, caption: dict) -> None:
         self.recorder.hold(20)
         if not await asyncio.to_thread(stt.has_speech, audio):
+            await self.send(type="caption_drop", utt=caption["utt"])
             if instant:
                 await self._wake_only()
             elif attentive and self.mode == "listening" and time.time() > self.listen_until:
@@ -211,12 +239,15 @@ class Session:
             return
         clean = await asyncio.to_thread(enhance.clean, audio, self.profile)
         if self.enroll is not None:
+            await self.send(type="caption_drop", utt=caption["utt"])
             await self._enroll_sample(clean, audio)
             return
         if not attentive and self.waiting >= 2:
+            await self.send(type="caption_drop", utt=caption["utt"])
             return
         self.waiting += 0 if attentive else 1
         woke = instant
+        overheard = None
         try:
             async with stt.lock:
                 t = time.time()
@@ -226,25 +257,48 @@ class Session:
                     if not learner.find_wake(probe):
                         learner.on_miss(probe)
                         self.recorder.note("heard", text=probe)
-                        await self.send(type="heard", text=probe)
-                        return
-                    woke = True
-                    self.recorder.note("wake", source="speech")
-                    await self.send(type="wake", source="speech")
-                await self.send(type="state", state="transcribing", conversation=followup)
-                text, lang = await asyncio.to_thread(stt.transcribe, clean, False, True)
-                ms = int((time.time() - t) * 1000)
+                        overheard = await self._overheard(clean, probe, caption)
+                    else:
+                        woke = True
+                        self.recorder.note("wake", source="speech")
+                        await self.send(type="wake", source="speech")
+                if overheard is None:
+                    await self.send(type="state", state="transcribing", conversation=followup)
+                    text, lang = await asyncio.to_thread(stt.transcribe, clean, False, True)
+                    ms = int((time.time() - t) * 1000)
         finally:
             self.waiting -= 0 if attentive else 1
-        await self._deliver(text, lang, ms, clean, woke, followup)
+        if overheard is not None:
+            await self._heard(overheard, clean, caption)
+            return
+        await self._deliver(text, lang, ms, clean, woke, followup, caption)
 
-    async def _deliver(self, text: str, lang: str, ms: int, clean: np.ndarray, woke: bool, followup: bool) -> None:
+    async def _overheard(self, clean: np.ndarray, probe: str, caption: dict) -> str:
+        if capture.journal_on() and capture.full_text_on() and len(clean) > len(stt.head(clean)) and governor.background_ok():
+            full, _ = await asyncio.to_thread(stt.transcribe, clean, True, False)
+            if full and not stt.hallucination(full):
+                return full
+        return caption["text"] or probe
+
+    async def _heard(self, text: str, clean: np.ndarray, caption: dict) -> None:
+        if not text.strip():
+            await self.send(type="caption_drop", utt=caption["utt"])
+            return
+        slug, score = await asyncio.to_thread(lambda: voiceprints.identify(voiceprints.embed(clean)))
+        await self.send(type="heard", text=text, utt=caption["utt"], speaker=slug, speaker_score=round(score, 3),
+                        voice_known=self._known(slug))
+        asyncio.create_task(capture.store(note_error, "heard", text, self.lang, slug, score, False, 0, caption, clean))
+
+    async def _deliver(self, text: str, lang: str, ms: int, clean: np.ndarray, woke: bool, followup: bool,
+                       caption: dict) -> None:
+        self.lang = lang
         found = learner.find_wake(text)
         command = text[found[1]:].strip(" ,.!?") if found and found[0] < 3 else text.strip()
         log.info("Sentito (%d ms, attivazione=%s, conversazione=%s): %s", ms, woke, followup, text)
         if woke and found:
             learner.on_wake(found[2], ms)
         if stt.hallucination(command) or len(command) <= 2:
+            await self.send(type="caption_drop", utt=caption["utt"])
             if woke or self.awaiting_command:
                 await self._wake_only()
             else:
@@ -254,15 +308,18 @@ class Session:
         learner.on_command()
         self.recorder.note("transcript", text=command, dur=round(len(clean) / RATE, 2), woke=woke, ms=ms)
         speaker, score = await asyncio.to_thread(self._speaker, clean)
+        asyncio.create_task(capture.store(note_error, "command", command, lang, speaker, score, woke, ms, caption, clean))
         enforce_speaker = earconf.flag("NUXIVA_VOICEPRINT_ENFORCE", False)
         if enforce_speaker and voiceprints.ready and len(voiceprints.samples) > 0:
             if not speaker:
                 log.info("Voce non riconosciuta tra i profili registrati (score=%.2f): comando ignorato per sicurezza", score)
+                await self.send(type="caption_drop", utt=caption["utt"])
                 await self.set_mode("idle")
                 return
 
         await self.send(type="transcript", text=command, ms=ms, lang=lang, followup=followup and not woke,
-                        speaker=speaker, speaker_score=round(score, 3), voice_known=self._known(self.alone))
+                        speaker=speaker, speaker_score=round(score, 3), voice_known=self._known(self.alone),
+                        utt=caption["utt"])
         auto_followup = earconf.number("NUXIVA_EAR_AUTO_FOLLOWUP", 8.0, 0.0, 30.0)
         if auto_followup > 0.0:
             await self.set_mode("listening", seconds=auto_followup, conversation=True)
@@ -361,6 +418,7 @@ class Session:
             await park_hidden()
         elif kind == "cancel":
             self.in_speech, self.speech = False, []
+            await self._drop_caption()
             await self.set_mode("idle")
 
 
@@ -413,6 +471,7 @@ async def handler(ws) -> None:
             except Exception as exc:
                 note_error("elaborazione dell'audio" if isinstance(message, bytes) else "comando", exc)
                 session.in_speech, session.speech = False, []
+                session.live.end()
     except websockets.ConnectionClosed:
         log.debug("Connessione chiusa dal display")
     finally:
@@ -426,7 +485,7 @@ async def handler(ws) -> None:
 async def main() -> None:
     reviewer = Reviewer(lambda: any(s.mode != "idle" or s.in_speech or s.nuxiva_speaking for s in SESSIONS))
     async with websockets.serve(handler, "127.0.0.1", PORT, max_size=2 ** 20, ping_interval=20, ping_timeout=90):
-        await asyncio.gather(link_writer(), reviewer.run())
+        await asyncio.gather(link_writer(), reviewer.run(), capture.maintenance(), feedback.run(voiceprints))
 
 
 if __name__ == "__main__":

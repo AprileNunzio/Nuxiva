@@ -7,7 +7,7 @@ import {
   Clock, Users, Binary, Hand, Workflow, Grid, Home, Music, Mail, Tv,
   Scale, Server, Video, ShieldCheck, Zap, Lock, UserCheck, FileText,
   Box, BookOpen, AlertTriangle, Archive, Radio, RefreshCw, ArrowRight,
-  Search, X, Brain, Shield, Layers, LayoutGrid, ListFilter, Cpu, Activity
+  Search, X, Brain, Shield, Layers, LayoutGrid, ListFilter, Cpu, Activity, Mic
 } from 'lucide-react';
 
 export type CoreAppCategory = 'all' | 'ai' | 'infra' | 'automation' | 'security' | 'media';
@@ -87,6 +87,7 @@ export const CATEGORIES: {
 const CORE_APPS_LIST: CoreAppDef[] = [
   { id: 'agents', iconName: 'Users', category: 'ai', accent: 'purple' },
   { id: 'hippocampus_router', iconName: 'Brain', category: 'ai', accent: 'purple' },
+  { id: 'ear_log', iconName: 'Mic', category: 'ai', accent: 'purple' },
   { id: 'study', iconName: 'BookOpen', category: 'ai', accent: 'purple' },
   { id: 'twin', iconName: 'Box', category: 'ai', accent: 'purple' },
   { id: 'nodes', iconName: 'Server', category: 'infra', accent: 'cyan' },
@@ -120,6 +121,7 @@ const ICON_MAP: Record<string, React.ReactNode> = {
   Mail: <Mail className="w-5 h-5 text-emerald-400" />,
   Tv: <Tv className="w-5 h-5 text-emerald-400" />,
   Scale: <Scale className="w-5 h-5 text-amber-400" />,
+  Mic: <Mic className="w-5 h-5 text-purple-400" />,
   Server: <Server className="w-5 h-5 text-cyan-400" />,
   Video: <Video className="w-5 h-5 text-rose-400" />,
   ShieldCheck: <ShieldCheck className="w-5 h-5 text-cyan-400" />,
