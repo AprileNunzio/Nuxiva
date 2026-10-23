@@ -498,47 +498,47 @@ export const View: React.FC = () => {
     {
       id: 'home',
       label: t('tab_home'),
-      icon: <Compass className="h-4 w-4 text-sky-400" />,
+      icon: <Compass className="h-4 w-4 text-sky-600" />,
     },
     {
       id: 'tracks',
       label: t('tab_tracks'),
-      icon: <Music className="h-4 w-4 text-emerald-400" />,
+      icon: <Music className="h-4 w-4 text-emerald-600" />,
       count: tracks.length,
     },
     {
       id: 'playlists',
       label: t('tab_playlists'),
-      icon: <ListMusic className="h-4 w-4 text-purple-400" />,
+      icon: <ListMusic className="h-4 w-4 text-purple-600" />,
       count: playlists.length,
     },
     {
       id: 'karaoke',
       label: t('tab_karaoke'),
-      icon: <Mic2 className="h-4 w-4 text-amber-400" />,
+      icon: <Mic2 className="h-4 w-4 text-amber-600" />,
     },
     {
       id: 'upload',
       label: t('tab_upload'),
-      icon: <UploadCloud className="h-4 w-4 text-blue-400" />,
+      icon: <UploadCloud className="h-4 w-4 text-blue-600" />,
     },
     {
       id: 'settings',
       label: t('tab_settings'),
-      icon: <Sliders className="h-4 w-4 text-cyan-400" />,
+      icon: <Sliders className="h-4 w-4 text-cyan-600" />,
     },
   ];
 
   const sidebarFooter = library ? (
-    <div className="flex flex-col gap-1.5 rounded-lg border border-slate-700/60 bg-slate-900/80 p-2.5 text-[11px] text-slate-300">
+    <div className="flex flex-col gap-1.5 rounded-lg border border-slate-300/60 bg-white/80 p-2.5 text-[11px] text-slate-600">
       <div className="flex items-center justify-between font-semibold">
-        <span className="flex items-center gap-1.5 text-sky-400">
+        <span className="flex items-center gap-1.5 text-sky-600">
           <Disc className="h-3.5 w-3.5" />
           <span>{t('library_smb')}</span>
         </span>
-        <span className="font-mono text-slate-400">{t('tracks_count', { count: library.tracks })}</span>
+        <span className="font-mono text-slate-500">{t('tracks_count', { count: library.tracks })}</span>
       </div>
-      <div className="text-[10px] text-slate-400 font-mono truncate" title={library.root}>
+      <div className="text-[10px] text-slate-500 font-mono truncate" title={library.root}>
         {library.root}
       </div>
     </div>
@@ -576,11 +576,11 @@ export const View: React.FC = () => {
           />
         }
         content={
-          <div className="flex h-full flex-col overflow-hidden bg-slate-950 text-slate-100">
+          <div className="flex h-full flex-col overflow-hidden bg-slate-50 text-slate-900">
             {/* Top Workspace Header Bar */}
-            <header className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800/80 bg-slate-900/60 px-5 py-3">
+            <header className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/80 bg-white/60 px-5 py-3">
               <div className="flex items-center gap-3">
-                <span className="text-sm font-bold text-white capitalize">
+                <span className="text-sm font-bold text-slate-900 capitalize">
                   {selectedPlaylist ? selectedPlaylist.name : t(`tab_${activeTab}`)}
                 </span>
                 {currentTrack && isPlaying && (
@@ -596,16 +596,16 @@ export const View: React.FC = () => {
               {/* Quick AI & Actions */}
               <div className="flex items-center gap-2">
                 <form onSubmit={handleAskAI} className="relative flex items-center">
-                  <Sparkles className="absolute left-2.5 h-3.5 w-3.5 text-amber-400" />
+                  <Sparkles className="absolute left-2.5 h-3.5 w-3.5 text-amber-600" />
                   <input
                     type="text"
                     placeholder={t('ask_ai_placeholder')}
                     value={aiQuery}
                     onChange={(e) => setAiQuery(e.target.value)}
-                    className="w-56 rounded-full border border-slate-700 bg-slate-900 py-1 pl-8 pr-3 text-xs text-white placeholder-slate-500 focus:border-sky-400 focus:outline-none"
+                    className="w-56 rounded-full border border-slate-300 bg-white py-1 pl-8 pr-3 text-xs text-slate-900 placeholder-slate-500 focus:border-sky-400 focus:outline-none"
                   />
                   {aiLoading && (
-                    <span className="absolute right-2.5 text-[10px] text-amber-400 animate-pulse">…</span>
+                    <span className="absolute right-2.5 text-[10px] text-amber-600 animate-pulse">…</span>
                   )}
                 </form>
 
@@ -616,7 +616,7 @@ export const View: React.FC = () => {
                     void triggerLibraryScan();
                   }}
                   title={t('refresh_library')}
-                  className="rounded-lg border border-slate-700 bg-slate-800 p-1.5 text-slate-300 hover:bg-slate-700 transition"
+                  className="rounded-lg border border-slate-300 bg-slate-100 p-1.5 text-slate-600 hover:bg-slate-200 transition"
                 >
                   <RefreshCw className="h-3.5 w-3.5" />
                 </button>
@@ -625,15 +625,15 @@ export const View: React.FC = () => {
 
             {/* AI Response Banner if present */}
             {aiResponse && (
-              <div className="flex items-center justify-between border-b border-amber-500/30 bg-amber-500/10 px-5 py-2 text-xs text-amber-200">
+              <div className="flex items-center justify-between border-b border-amber-500/30 bg-amber-500/10 px-5 py-2 text-xs text-amber-800">
                 <div className="flex items-center gap-2">
-                  <Sparkles className="h-4 w-4 text-amber-400 shrink-0" />
+                  <Sparkles className="h-4 w-4 text-amber-600 shrink-0" />
                   <span>{aiResponse}</span>
                 </div>
                 <button
                   type="button"
                   onClick={() => setAiResponse(null)}
-                  className="p-1 hover:text-white"
+                  className="p-1 hover:text-slate-900"
                 >
                   ×
                 </button>
@@ -662,15 +662,15 @@ export const View: React.FC = () => {
                             className="h-full w-full object-cover"
                           />
                         ) : (
-                          <Music className="h-12 w-12 text-white drop-shadow-md" />
+                          <Music className="h-12 w-12 text-slate-900 drop-shadow-md" />
                         )}
                       </div>
                       <div className="flex-1 text-center sm:text-left">
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-0.5 text-[11px] font-bold tracking-wider text-white uppercase backdrop-blur-md border border-white/25">
-                          <Sparkles className="h-3 w-3 text-amber-300" />
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-0.5 text-[11px] font-bold tracking-wider text-slate-900 uppercase backdrop-blur-md border border-white/25">
+                          <Sparkles className="h-3 w-3 text-amber-700" />
                           <span>{currentTrack ? t('hero_now_playing') : 'Nexus Media Player'}</span>
                         </span>
-                        <h2 className="text-2xl font-black text-white tracking-tight drop-shadow-sm mt-2">
+                        <h2 className="text-2xl font-black text-slate-900 tracking-tight drop-shadow-sm mt-2">
                           {currentTrack ? currentTrack.title : t('hero_explore_title')}
                         </h2>
                         <p className="text-sm font-medium text-sky-100 mt-1 leading-relaxed">
@@ -693,9 +693,9 @@ export const View: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => setActiveTab('karaoke')}
-                            className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/15 px-4 py-2.5 text-xs font-semibold text-white hover:bg-white/25 backdrop-blur-md shadow-md transition transform hover:scale-105"
+                            className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/15 px-4 py-2.5 text-xs font-semibold text-slate-900 hover:bg-white/25 backdrop-blur-md shadow-md transition transform hover:scale-105"
                           >
-                            <Mic2 className="h-3.5 w-3.5 text-amber-300" />
+                            <Mic2 className="h-3.5 w-3.5 text-amber-700" />
                             <span>{t('btn_karaoke_mode')}</span>
                           </button>
                         </div>
@@ -706,8 +706,8 @@ export const View: React.FC = () => {
                   {/* Recently Played / Mixes */}
                   {homeData?.recent && homeData.recent.length > 0 && (
                     <section>
-                      <h3 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
-                        <Clock className="h-4 w-4 text-sky-400" />
+                      <h3 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
+                        <Clock className="h-4 w-4 text-sky-600" />
                         <span>{t('recent_tracks')}</span>
                       </h3>
                       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
@@ -715,9 +715,9 @@ export const View: React.FC = () => {
                           <div
                             key={track.id}
                             onClick={() => handlePlayTrack(track)}
-                            className="group flex flex-col gap-2 rounded-xl border border-slate-800 bg-slate-900/60 p-3 hover:border-sky-500/50 hover:bg-slate-850 cursor-pointer transition"
+                            className="group flex flex-col gap-2 rounded-xl border border-slate-200 bg-white/60 p-3 hover:border-sky-500/50 hover:bg-slate-100 cursor-pointer transition"
                           >
-                            <div className="relative aspect-square w-full rounded-lg overflow-hidden bg-slate-800 flex items-center justify-center">
+                            <div className="relative aspect-square w-full rounded-lg overflow-hidden bg-slate-100 flex items-center justify-center">
                               {track.cover ? (
                                 <img src={getCoverUrl(track.album_key)} alt="" className="h-full w-full object-cover" />
                               ) : (
@@ -730,10 +730,10 @@ export const View: React.FC = () => {
                                 <Play className="h-4 w-4" />
                               </button>
                             </div>
-                            <span className="truncate text-xs font-bold text-white" title={track.title}>
+                            <span className="truncate text-xs font-bold text-slate-900" title={track.title}>
                               {track.title}
                             </span>
-                            <span className="truncate text-[11px] text-slate-400" title={track.artist}>
+                            <span className="truncate text-[11px] text-slate-500" title={track.artist}>
                               {track.artist}
                             </span>
                           </div>
@@ -746,14 +746,14 @@ export const View: React.FC = () => {
                   {tracks.length > 0 && (
                     <section>
                       <div className="flex items-center justify-between mb-3">
-                        <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                          <Music className="h-4 w-4 text-emerald-400" />
+                        <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                          <Music className="h-4 w-4 text-emerald-600" />
                           <span>{t('latest_additions')}</span>
                         </h3>
                         <button
                           type="button"
                           onClick={() => setActiveTab('tracks')}
-                          className="text-xs text-sky-400 hover:text-sky-300 font-medium"
+                          className="text-xs text-sky-600 hover:text-sky-700 font-medium"
                         >
                           {t('all_tracks')} ({tracks.length}) →
                         </button>
@@ -763,13 +763,13 @@ export const View: React.FC = () => {
                           <div
                             key={track.id}
                             onClick={() => handlePlayTrack(track)}
-                            className="group flex flex-col gap-2 rounded-xl border border-slate-800 bg-slate-900/60 p-3 hover:border-emerald-500/50 hover:bg-slate-850 cursor-pointer transition shadow-sm"
+                            className="group flex flex-col gap-2 rounded-xl border border-slate-200 bg-white/60 p-3 hover:border-emerald-500/50 hover:bg-slate-100 cursor-pointer transition shadow-sm"
                           >
-                            <div className="relative aspect-square w-full rounded-lg overflow-hidden bg-slate-800 flex items-center justify-center">
+                            <div className="relative aspect-square w-full rounded-lg overflow-hidden bg-slate-100 flex items-center justify-center">
                               {track.cover ? (
                                 <img src={getCoverUrl(track.album_key)} alt="" className="h-full w-full object-cover" />
                               ) : track.is_video ? (
-                                <Film className="h-8 w-8 text-purple-400" />
+                                <Film className="h-8 w-8 text-purple-600" />
                               ) : (
                                 <Music className="h-8 w-8 text-slate-500" />
                               )}
@@ -780,10 +780,10 @@ export const View: React.FC = () => {
                                 <Play className="h-4 w-4 fill-slate-950" />
                               </button>
                             </div>
-                            <span className="truncate text-xs font-bold text-white" title={track.title}>
+                            <span className="truncate text-xs font-bold text-slate-900" title={track.title}>
                               {track.title}
                             </span>
-                            <span className="truncate text-[11px] text-slate-400" title={track.artist}>
+                            <span className="truncate text-[11px] text-slate-500" title={track.artist}>
                               {track.artist}
                             </span>
                           </div>
@@ -795,14 +795,14 @@ export const View: React.FC = () => {
                   {/* Playlists grid */}
                   <section>
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                        <ListMusic className="h-4 w-4 text-purple-400" />
+                      <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                        <ListMusic className="h-4 w-4 text-purple-600" />
                         <span>{t('tab_playlists')}</span>
                       </h3>
                       <button
                         type="button"
                         onClick={() => setNewPlaylistOpen(true)}
-                        className="inline-flex items-center gap-1 text-xs text-sky-400 hover:text-sky-300"
+                        className="inline-flex items-center gap-1 text-xs text-sky-600 hover:text-sky-700"
                       >
                         <Plus className="h-3.5 w-3.5" />
                         <span>{t('new_playlist')}</span>
@@ -820,13 +820,13 @@ export const View: React.FC = () => {
                               setActiveTab('playlists');
                               void fetchPlaylistDetails(pl.id).then(setSelectedPlaylist);
                             }}
-                            className="group flex flex-col gap-2 rounded-xl border border-slate-800 bg-slate-900/60 p-3 hover:border-purple-500/50 cursor-pointer transition"
+                            className="group flex flex-col gap-2 rounded-xl border border-slate-200 bg-white/60 p-3 hover:border-purple-500/50 cursor-pointer transition"
                           >
-                            <div className="aspect-square w-full rounded-lg bg-gradient-to-br from-purple-900/50 to-slate-800 flex items-center justify-center">
-                              <ListMusic className="h-10 w-10 text-purple-400 group-hover:scale-110 transition" />
+                            <div className="aspect-square w-full rounded-lg bg-gradient-to-br from-purple-900/50 to-slate-100 flex items-center justify-center">
+                              <ListMusic className="h-10 w-10 text-purple-600 group-hover:scale-110 transition" />
                             </div>
-                            <span className="truncate text-xs font-bold text-white">{pl.name}</span>
-                            <span className="text-[11px] text-slate-400">{t('tracks_count', { count: pl.count })}</span>
+                            <span className="truncate text-xs font-bold text-slate-900">{pl.name}</span>
+                            <span className="text-[11px] text-slate-500">{t('tracks_count', { count: pl.count })}</span>
                           </div>
                         ))}
                       </div>
@@ -840,10 +840,10 @@ export const View: React.FC = () => {
                 <div className="flex flex-col gap-3">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h2 className="text-base font-bold text-white">
+                      <h2 className="text-base font-bold text-slate-900">
                         {selectedPlaylist ? selectedPlaylist.name : t('all_tracks')}
                       </h2>
-                      <span className="text-xs text-slate-400">
+                      <span className="text-xs text-slate-500">
                         {t('tracks_found', { count: displayedTracks.length })}
                       </span>
                     </div>
@@ -864,10 +864,10 @@ export const View: React.FC = () => {
                   {displayedTracks.length === 0 ? (
                     <Empty>{t('empty_library')}</Empty>
                   ) : (
-                    <div className="overflow-hidden rounded-xl border border-slate-800 bg-slate-900/50 shadow-sm">
+                    <div className="overflow-hidden rounded-xl border border-slate-200 bg-white/50 shadow-sm">
                       <table className="w-full text-left text-xs">
                         <thead>
-                          <tr className="border-b border-slate-800 bg-slate-900/80 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                          <tr className="border-b border-slate-200 bg-white/80 text-[11px] font-bold uppercase tracking-wider text-slate-500">
                             <th className="px-3 py-2 w-10 text-center">{t('th_index')}</th>
                             <th className="px-3 py-2">{t('th_title')}</th>
                             <th className="px-3 py-2 hidden md:table-cell">{t('th_album')}</th>
@@ -875,7 +875,7 @@ export const View: React.FC = () => {
                             <th className="px-3 py-2 w-16 text-center">{t('th_actions')}</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-800/60">
+                        <tbody className="divide-y divide-slate-200/60">
                           {displayedTracks.map((track, idx) => {
                             const isCurrent = currentTrack?.id === track.id;
                             const isSelected = selectedTrack?.id === track.id;
@@ -886,13 +886,13 @@ export const View: React.FC = () => {
                                 onDoubleClick={() => handlePlayTrack(track)}
                                 className={`group cursor-pointer transition ${
                                   isCurrent
-                                    ? 'bg-sky-500/10 text-sky-300 font-semibold'
+                                    ? 'bg-sky-500/10 text-sky-700 font-semibold'
                                     : isSelected
-                                    ? 'bg-slate-800/60'
-                                    : 'hover:bg-slate-850'
+                                    ? 'bg-slate-100/60'
+                                    : 'hover:bg-slate-100'
                                 }`}
                               >
-                                <td className="px-3 py-2 text-center text-slate-400">
+                                <td className="px-3 py-2 text-center text-slate-500">
                                   {isCurrent && isPlaying ? (
                                     <div className="flex items-center justify-center gap-0.5">
                                       <span className="nexus-eq-bar !h-3" />
@@ -908,32 +908,32 @@ export const View: React.FC = () => {
                                       e.stopPropagation();
                                       handlePlayTrack(track);
                                     }}
-                                    className="hidden group-hover:inline-flex text-sky-400"
+                                    className="hidden group-hover:inline-flex text-sky-600"
                                   >
                                     <Play className="h-3.5 w-3.5" />
                                   </button>
                                 </td>
                                 <td className="px-3 py-2">
                                   <div className="flex items-center gap-2.5 truncate">
-                                    <div className="h-8 w-8 shrink-0 overflow-hidden rounded bg-slate-800 flex items-center justify-center">
+                                    <div className="h-8 w-8 shrink-0 overflow-hidden rounded bg-slate-100 flex items-center justify-center">
                                       {track.cover ? (
                                         <img src={getCoverUrl(track.album_key)} alt="" className="h-full w-full object-cover" />
                                       ) : track.is_video ? (
-                                        <Film className="h-4 w-4 text-purple-400" />
+                                        <Film className="h-4 w-4 text-purple-600" />
                                       ) : (
                                         <Music className="h-4 w-4 text-slate-500" />
                                       )}
                                     </div>
                                     <div className="truncate">
-                                      <span className="block truncate font-medium text-white">{track.title}</span>
-                                      <span className="block truncate text-[11px] text-slate-400">{track.artist}</span>
+                                      <span className="block truncate font-medium text-slate-900">{track.title}</span>
+                                      <span className="block truncate text-[11px] text-slate-500">{track.artist}</span>
                                     </div>
                                   </div>
                                 </td>
-                                <td className="px-3 py-2 text-slate-400 hidden md:table-cell truncate">
+                                <td className="px-3 py-2 text-slate-500 hidden md:table-cell truncate">
                                   {track.album || '—'}
                                 </td>
-                                <td className="px-3 py-2 text-right font-mono text-slate-400">
+                                <td className="px-3 py-2 text-right font-mono text-slate-500">
                                   {formatDuration(track.duration)}
                                 </td>
                                 <td className="px-3 py-2 text-center">
@@ -944,7 +944,7 @@ export const View: React.FC = () => {
                                       void handleToggleLike(track);
                                     }}
                                     className={`p-1 transition ${
-                                      track.liked ? 'text-rose-500' : 'text-slate-500 hover:text-slate-300'
+                                      track.liked ? 'text-rose-500' : 'text-slate-500 hover:text-slate-600'
                                     }`}
                                   >
                                     <Heart className="h-3.5 w-3.5 fill-current" />
@@ -964,7 +964,7 @@ export const View: React.FC = () => {
               {!loading && activeTab === 'playlists' && !selectedPlaylist && (
                 <div className="flex flex-col gap-4">
                   <div className="flex items-center justify-between">
-                    <h2 className="text-base font-bold text-white">{t('tab_playlists')}</h2>
+                    <h2 className="text-base font-bold text-slate-900">{t('tab_playlists')}</h2>
                     <button
                       type="button"
                       onClick={() => setNewPlaylistOpen(true)}
@@ -983,13 +983,13 @@ export const View: React.FC = () => {
                           setSelectedPlaylist(pl);
                           void fetchPlaylistDetails(pl.id).then(setSelectedPlaylist);
                         }}
-                        className="group flex flex-col gap-2 rounded-xl border border-slate-800 bg-slate-900/60 p-4 hover:border-purple-500 cursor-pointer transition"
+                        className="group flex flex-col gap-2 rounded-xl border border-slate-200 bg-white/60 p-4 hover:border-purple-500 cursor-pointer transition"
                       >
-                        <div className="aspect-square w-full rounded-lg bg-gradient-to-br from-purple-900/50 to-slate-800 flex items-center justify-center">
-                          <ListMusic className="h-12 w-12 text-purple-400 group-hover:scale-110 transition" />
+                        <div className="aspect-square w-full rounded-lg bg-gradient-to-br from-purple-900/50 to-slate-100 flex items-center justify-center">
+                          <ListMusic className="h-12 w-12 text-purple-600 group-hover:scale-110 transition" />
                         </div>
-                        <span className="truncate text-sm font-bold text-white">{pl.name}</span>
-                        <span className="text-xs text-slate-400">{t('tracks_count', { count: pl.count })}</span>
+                        <span className="truncate text-sm font-bold text-slate-900">{pl.name}</span>
+                        <span className="text-xs text-slate-500">{t('tracks_count', { count: pl.count })}</span>
                       </div>
                     ))}
                   </div>
@@ -1000,7 +1000,7 @@ export const View: React.FC = () => {
               {!loading && activeTab === 'karaoke' && (
                 <div className="flex h-full flex-col lg:flex-row gap-6">
                   {/* Left: Video / Visualizer Player */}
-                  <div className="flex-1 flex flex-col items-center justify-center rounded-2xl border border-slate-800 bg-slate-900/80 p-6 overflow-hidden">
+                  <div className="flex-1 flex flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white/80 p-6 overflow-hidden">
                     {currentTrack?.is_video || currentTrack?.path?.match(/\.(mp4|webm|mkv)$/i) ? (
                       <div className="w-full aspect-video rounded-xl overflow-hidden bg-black flex items-center justify-center shadow-2xl">
                         <video
@@ -1014,7 +1014,7 @@ export const View: React.FC = () => {
                       </div>
                     ) : (
                       <div className="flex flex-col items-center justify-center gap-4 text-center my-auto">
-                        <div className="relative h-44 w-44 rounded-2xl overflow-hidden border border-sky-500/30 bg-slate-800 shadow-2xl flex items-center justify-center">
+                        <div className="relative h-44 w-44 rounded-2xl overflow-hidden border border-sky-500/30 bg-slate-100 shadow-2xl flex items-center justify-center">
                           {currentTrack?.cover ? (
                             <img
                               src={getCoverUrl(currentTrack.album_key)}
@@ -1022,25 +1022,25 @@ export const View: React.FC = () => {
                               className="h-full w-full object-cover"
                             />
                           ) : (
-                            <Disc className="h-20 w-20 text-sky-400 animate-spin" style={{ animationDuration: '8s' }} />
+                            <Disc className="h-20 w-20 text-sky-600 animate-spin" style={{ animationDuration: '8s' }} />
                           )}
                         </div>
                         <div>
-                          <h3 className="text-lg font-black text-white">{currentTrack?.title || t('select_track_prompt')}</h3>
-                          <p className="text-sm text-slate-400">{currentTrack?.artist || 'Nexus Media Player'}</p>
+                          <h3 className="text-lg font-black text-slate-900">{currentTrack?.title || t('select_track_prompt')}</h3>
+                          <p className="text-sm text-slate-500">{currentTrack?.artist || 'Nexus Media Player'}</p>
                         </div>
                       </div>
                     )}
                   </div>
 
                   {/* Right: Synchronized Karaoke Lyrics */}
-                  <div className="w-full lg:w-96 flex flex-col rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
-                    <header className="border-b border-slate-800 pb-3 mb-3">
+                  <div className="w-full lg:w-96 flex flex-col rounded-2xl border border-slate-200 bg-white/60 p-4">
+                    <header className="border-b border-slate-200 pb-3 mb-3">
                       <div className="flex items-center gap-2">
-                        <Mic2 className="h-4 w-4 text-amber-400" />
-                        <h4 className="text-xs font-bold text-white uppercase tracking-wider">{t('karaoke_title')}</h4>
+                        <Mic2 className="h-4 w-4 text-amber-600" />
+                        <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">{t('karaoke_title')}</h4>
                       </div>
-                      <p className="text-[11px] text-slate-400 mt-0.5">{t('karaoke_hint')}</p>
+                      <p className="text-[11px] text-slate-500 mt-0.5">{t('karaoke_hint')}</p>
                     </header>
 
                     <div
@@ -1059,7 +1059,7 @@ export const View: React.FC = () => {
                           </div>
                         ))
                       ) : lyricsData.plain ? (
-                        <pre className="whitespace-pre-wrap font-sans text-xs text-slate-300 leading-relaxed">
+                        <pre className="whitespace-pre-wrap font-sans text-xs text-slate-600 leading-relaxed">
                           {lyricsData.plain}
                         </pre>
                       ) : (
@@ -1074,13 +1074,13 @@ export const View: React.FC = () => {
 
               {/* TAB 5: UPLOAD / DRAG & DROP */}
               {!loading && activeTab === 'upload' && (
-                <div className="flex flex-col items-center justify-center gap-6 rounded-2xl border border-slate-800 bg-slate-900/50 p-8 text-center max-w-xl mx-auto my-auto">
-                  <div className="rounded-2xl bg-sky-500/10 p-5 text-sky-400">
+                <div className="flex flex-col items-center justify-center gap-6 rounded-2xl border border-slate-200 bg-white/50 p-8 text-center max-w-xl mx-auto my-auto">
+                  <div className="rounded-2xl bg-sky-500/10 p-5 text-sky-600">
                     <UploadCloud className="h-12 w-12" />
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-white">{t('upload_title')}</h3>
-                    <p className="text-xs text-slate-400 mt-1 max-w-md">{t('drop_hint')}</p>
+                    <h3 className="text-base font-bold text-slate-900">{t('upload_title')}</h3>
+                    <p className="text-xs text-slate-500 mt-1 max-w-md">{t('drop_hint')}</p>
                   </div>
 
                   <button
@@ -1092,10 +1092,10 @@ export const View: React.FC = () => {
                   </button>
 
                   {uploadStatus && (
-                    <div className="w-full rounded-xl border border-sky-500/30 bg-sky-500/10 p-3 text-xs text-sky-200">
+                    <div className="w-full rounded-xl border border-sky-500/30 bg-sky-500/10 p-3 text-xs text-sky-800">
                       <span>{uploadStatus}</span>
                       {uploadProgress !== null && (
-                        <div className="mt-2 h-1.5 w-full rounded-full bg-slate-800 overflow-hidden">
+                        <div className="mt-2 h-1.5 w-full rounded-full bg-slate-100 overflow-hidden">
                           <div
                             className="h-full bg-sky-400 transition-all duration-300"
                             style={{ width: `${uploadProgress}%` }}
@@ -1110,16 +1110,16 @@ export const View: React.FC = () => {
               {/* TAB 6: SETTINGS */}
               {!loading && activeTab === 'settings' && (
                 <div className="flex flex-col gap-6 max-w-3xl pb-10">
-                  <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                  <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                     <div>
-                      <h2 className="text-base font-bold text-white flex items-center gap-2">
-                        <Sliders className="h-5 w-5 text-cyan-400" />
+                      <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                        <Sliders className="h-5 w-5 text-cyan-600" />
                         <span>{t('settings_title')}</span>
                       </h2>
                     </div>
                     <div className="flex items-center gap-3">
                       {settingsFeedback && (
-                        <span className="text-xs font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-lg">
+                        <span className="text-xs font-semibold text-emerald-600 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-lg">
                           {settingsFeedback}
                         </span>
                       )}
@@ -1140,8 +1140,8 @@ export const View: React.FC = () => {
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                       {/* Section 1: Scanner della Libreria */}
-                      <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4 flex flex-col gap-4">
-                        <div className="flex items-center gap-2 text-cyan-400 font-bold text-xs uppercase tracking-wider border-b border-slate-800/80 pb-2">
+                      <div className="rounded-xl border border-slate-200 bg-white/60 p-4 flex flex-col gap-4">
+                        <div className="flex items-center gap-2 text-cyan-600 font-bold text-xs uppercase tracking-wider border-b border-slate-200/80 pb-2">
                           <Disc className="h-4 w-4" />
                           <span>{t('settings_scanner_title')}</span>
                         </div>
@@ -1156,20 +1156,20 @@ export const View: React.FC = () => {
                                 NUXIVA_MUSIC_SCANNER_ENABLED: e.target.checked ? '1' : '0',
                               }))
                             }
-                            className="mt-0.5 rounded border-slate-700 bg-slate-950 text-cyan-500 focus:ring-cyan-500"
+                            className="mt-0.5 rounded border-slate-300 bg-slate-50 text-cyan-500 focus:ring-cyan-500"
                           />
                           <div>
-                            <span className="block text-xs font-bold text-white">
+                            <span className="block text-xs font-bold text-slate-900">
                               {t('settings_scanner_enable')}
                             </span>
-                            <span className="block text-[11px] text-slate-400 leading-relaxed">
+                            <span className="block text-[11px] text-slate-500 leading-relaxed">
                               {t('settings_scanner_enable_desc')}
                             </span>
                           </div>
                         </label>
 
                         <div>
-                          <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                          <label className="block text-xs font-semibold text-slate-600 mb-1.5">
                             {t('settings_scan_interval')}
                           </label>
                           <select
@@ -1180,7 +1180,7 @@ export const View: React.FC = () => {
                                 NUXIVA_MUSIC_SCAN_MIN: e.target.value,
                               }))
                             }
-                            className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-white focus:border-cyan-500 focus:outline-none"
+                            className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs text-slate-900 focus:border-cyan-500 focus:outline-none"
                           >
                             <option value="5">{t('settings_scan_5min')}</option>
                             <option value="15">{t('settings_scan_15min')}</option>
@@ -1189,22 +1189,22 @@ export const View: React.FC = () => {
                           </select>
                         </div>
 
-                        <div className="pt-2 border-t border-slate-800/60">
+                        <div className="pt-2 border-t border-slate-200/60">
                           <button
                             type="button"
                             onClick={() => void handleTriggerScan()}
                             disabled={scanTriggered}
-                            className="w-full flex items-center justify-center gap-2 rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-200 hover:bg-slate-750 transition"
+                            className="w-full flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-200 transition"
                           >
-                            <RefreshCw className={`h-3.5 w-3.5 ${scanTriggered ? 'animate-spin text-cyan-400' : ''}`} />
+                            <RefreshCw className={`h-3.5 w-3.5 ${scanTriggered ? 'animate-spin text-cyan-600' : ''}`} />
                             <span>{t('settings_scan_now')}</span>
                           </button>
                         </div>
                       </div>
 
                       {/* Section 2: Riconoscimento Musicale & Acustico */}
-                      <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4 flex flex-col gap-4">
-                        <div className="flex items-center gap-2 text-amber-400 font-bold text-xs uppercase tracking-wider border-b border-slate-800/80 pb-2">
+                      <div className="rounded-xl border border-slate-200 bg-white/60 p-4 flex flex-col gap-4">
+                        <div className="flex items-center gap-2 text-amber-600 font-bold text-xs uppercase tracking-wider border-b border-slate-200/80 pb-2">
                           <Mic2 className="h-4 w-4" />
                           <span>{t('settings_recognition_title')}</span>
                         </div>
@@ -1219,13 +1219,13 @@ export const View: React.FC = () => {
                                 NUXIVA_MUSIC_RECOGNITION: e.target.checked ? '1' : '0',
                               }))
                             }
-                            className="mt-0.5 rounded border-slate-700 bg-slate-950 text-amber-500 focus:ring-amber-500"
+                            className="mt-0.5 rounded border-slate-300 bg-slate-50 text-amber-500 focus:ring-amber-500"
                           />
                           <div>
-                            <span className="block text-xs font-bold text-white">
+                            <span className="block text-xs font-bold text-slate-900">
                               {t('settings_recognition_enable')}
                             </span>
-                            <span className="block text-[11px] text-slate-400 leading-relaxed">
+                            <span className="block text-[11px] text-slate-500 leading-relaxed">
                               {t('settings_recognition_desc')}
                             </span>
                           </div>
@@ -1241,13 +1241,13 @@ export const View: React.FC = () => {
                                 NUXIVA_MUSIC_IDENTIFY: e.target.checked ? '1' : '0',
                               }))
                             }
-                            className="mt-0.5 rounded border-slate-700 bg-slate-950 text-amber-500 focus:ring-amber-500"
+                            className="mt-0.5 rounded border-slate-300 bg-slate-50 text-amber-500 focus:ring-amber-500"
                           />
                           <div>
-                            <span className="block text-xs font-bold text-white">
+                            <span className="block text-xs font-bold text-slate-900">
                               {t('settings_ambient_identify')}
                             </span>
-                            <span className="block text-[11px] text-slate-400 leading-relaxed">
+                            <span className="block text-[11px] text-slate-500 leading-relaxed">
                               {t('settings_ambient_identify_desc')}
                             </span>
                           </div>
@@ -1263,13 +1263,13 @@ export const View: React.FC = () => {
                                 NUXIVA_MUSIC_VOICE: e.target.checked ? '1' : '0',
                               }))
                             }
-                            className="mt-0.5 rounded border-slate-700 bg-slate-950 text-amber-500 focus:ring-amber-500"
+                            className="mt-0.5 rounded border-slate-300 bg-slate-50 text-amber-500 focus:ring-amber-500"
                           />
                           <div>
-                            <span className="block text-xs font-bold text-white">
+                            <span className="block text-xs font-bold text-slate-900">
                               {t('settings_voice_commands')}
                             </span>
-                            <span className="block text-[11px] text-slate-400 leading-relaxed">
+                            <span className="block text-[11px] text-slate-500 leading-relaxed">
                               {t('settings_voice_commands_desc')}
                             </span>
                           </div>
@@ -1277,8 +1277,8 @@ export const View: React.FC = () => {
                       </div>
 
                       {/* Section 3: Metadati e Testi Online */}
-                      <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4 flex flex-col gap-4">
-                        <div className="flex items-center gap-2 text-purple-400 font-bold text-xs uppercase tracking-wider border-b border-slate-800/80 pb-2">
+                      <div className="rounded-xl border border-slate-200 bg-white/60 p-4 flex flex-col gap-4">
+                        <div className="flex items-center gap-2 text-purple-600 font-bold text-xs uppercase tracking-wider border-b border-slate-200/80 pb-2">
                           <Sparkles className="h-4 w-4" />
                           <span>{t('settings_metadata_title')}</span>
                         </div>
@@ -1293,13 +1293,13 @@ export const View: React.FC = () => {
                                 NUXIVA_MUSIC_COVERS: e.target.checked ? '1' : '0',
                               }))
                             }
-                            className="mt-0.5 rounded border-slate-700 bg-slate-950 text-purple-500 focus:ring-purple-500"
+                            className="mt-0.5 rounded border-slate-300 bg-slate-50 text-purple-500 focus:ring-purple-500"
                           />
                           <div>
-                            <span className="block text-xs font-bold text-white">
+                            <span className="block text-xs font-bold text-slate-900">
                               {t('settings_covers_online')}
                             </span>
-                            <span className="block text-[11px] text-slate-400 leading-relaxed">
+                            <span className="block text-[11px] text-slate-500 leading-relaxed">
                               {t('settings_covers_online_desc')}
                             </span>
                           </div>
@@ -1315,13 +1315,13 @@ export const View: React.FC = () => {
                                 NUXIVA_MUSIC_LYRICS: e.target.checked ? '1' : '0',
                               }))
                             }
-                            className="mt-0.5 rounded border-slate-700 bg-slate-950 text-purple-500 focus:ring-purple-500"
+                            className="mt-0.5 rounded border-slate-300 bg-slate-50 text-purple-500 focus:ring-purple-500"
                           />
                           <div>
-                            <span className="block text-xs font-bold text-white">
+                            <span className="block text-xs font-bold text-slate-900">
                               {t('settings_lyrics_online')}
                             </span>
-                            <span className="block text-[11px] text-slate-400 leading-relaxed">
+                            <span className="block text-[11px] text-slate-500 leading-relaxed">
                               {t('settings_lyrics_online_desc')}
                             </span>
                           </div>
@@ -1337,13 +1337,13 @@ export const View: React.FC = () => {
                                 NUXIVA_MUSIC_ORGANIZE: e.target.checked ? '1' : '0',
                               }))
                             }
-                            className="mt-0.5 rounded border-slate-700 bg-slate-950 text-purple-500 focus:ring-purple-500"
+                            className="mt-0.5 rounded border-slate-300 bg-slate-50 text-purple-500 focus:ring-purple-500"
                           />
                           <div>
-                            <span className="block text-xs font-bold text-white">
+                            <span className="block text-xs font-bold text-slate-900">
                               {t('settings_auto_organize')}
                             </span>
-                            <span className="block text-[11px] text-slate-400 leading-relaxed">
+                            <span className="block text-[11px] text-slate-500 leading-relaxed">
                               {t('settings_auto_organize_desc')}
                             </span>
                           </div>
@@ -1359,13 +1359,13 @@ export const View: React.FC = () => {
                                 NUXIVA_MUSIC_TAGS: e.target.checked ? '1' : '0',
                               }))
                             }
-                            className="mt-0.5 rounded border-slate-700 bg-slate-950 text-purple-500 focus:ring-purple-500"
+                            className="mt-0.5 rounded border-slate-300 bg-slate-50 text-purple-500 focus:ring-purple-500"
                           />
                           <div>
-                            <span className="block text-xs font-bold text-white">
+                            <span className="block text-xs font-bold text-slate-900">
                               {t('settings_write_tags')}
                             </span>
-                            <span className="block text-[11px] text-slate-400 leading-relaxed">
+                            <span className="block text-[11px] text-slate-500 leading-relaxed">
                               {t('settings_write_tags_desc')}
                             </span>
                           </div>
@@ -1373,14 +1373,14 @@ export const View: React.FC = () => {
                       </div>
 
                       {/* Section 4: Riproduzione & Streaming */}
-                      <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4 flex flex-col gap-4">
-                        <div className="flex items-center gap-2 text-emerald-400 font-bold text-xs uppercase tracking-wider border-b border-slate-800/80 pb-2">
+                      <div className="rounded-xl border border-slate-200 bg-white/60 p-4 flex flex-col gap-4">
+                        <div className="flex items-center gap-2 text-emerald-600 font-bold text-xs uppercase tracking-wider border-b border-slate-200/80 pb-2">
                           <Volume2 className="h-4 w-4" />
                           <span>{t('settings_playback_title')}</span>
                         </div>
 
                         <div>
-                          <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                          <label className="block text-xs font-semibold text-slate-600 mb-1.5">
                             {t('settings_transcode')}
                           </label>
                           <select
@@ -1391,7 +1391,7 @@ export const View: React.FC = () => {
                                 NUXIVA_MUSIC_TRANSCODE: e.target.value,
                               }))
                             }
-                            className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-white focus:border-cyan-500 focus:outline-none"
+                            className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs text-slate-900 focus:border-cyan-500 focus:outline-none"
                           >
                             <option value="auto">{t('settings_transcode_auto')}</option>
                             <option value="never">{t('settings_transcode_never')}</option>
@@ -1400,7 +1400,7 @@ export const View: React.FC = () => {
                         </div>
 
                         <div>
-                          <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                          <label className="block text-xs font-semibold text-slate-600 mb-1.5">
                             {t('settings_bitrate')}
                           </label>
                           <select
@@ -1411,7 +1411,7 @@ export const View: React.FC = () => {
                                 NUXIVA_MUSIC_TRANSCODE_KBPS: e.target.value,
                               }))
                             }
-                            className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-white focus:border-cyan-500 focus:outline-none"
+                            className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs text-slate-900 focus:border-cyan-500 focus:outline-none"
                           >
                             <option value="128">128 kbps</option>
                             <option value="192">192 kbps</option>
@@ -1421,7 +1421,7 @@ export const View: React.FC = () => {
                         </div>
 
                         <div>
-                          <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                          <label className="block text-xs font-semibold text-slate-600 mb-1.5">
                             {t('settings_crossfade')}
                           </label>
                           <select
@@ -1432,7 +1432,7 @@ export const View: React.FC = () => {
                                 NUXIVA_MUSIC_CROSSFADE: e.target.value,
                               }))
                             }
-                            className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-white focus:border-cyan-500 focus:outline-none"
+                            className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs text-slate-900 focus:border-cyan-500 focus:outline-none"
                           >
                             <option value="0">{t('settings_crossfade_none')}</option>
                             <option value="3">{t('settings_crossfade_3s')}</option>
@@ -1451,10 +1451,10 @@ export const View: React.FC = () => {
                                 NUXIVA_MUSIC_RADIO: e.target.checked ? '1' : '0',
                               }))
                             }
-                            className="mt-0.5 rounded border-slate-700 bg-slate-950 text-emerald-500 focus:ring-emerald-500"
+                            className="mt-0.5 rounded border-slate-300 bg-slate-50 text-emerald-500 focus:ring-emerald-500"
                           />
                           <div>
-                            <span className="block text-xs font-bold text-white">
+                            <span className="block text-xs font-bold text-slate-900">
                               {t('settings_radio')}
                             </span>
                           </div>
@@ -1470,10 +1470,10 @@ export const View: React.FC = () => {
                                 NUXIVA_MUSIC_CAST: e.target.checked ? '1' : '0',
                               }))
                             }
-                            className="mt-0.5 rounded border-slate-700 bg-slate-950 text-emerald-500 focus:ring-emerald-500"
+                            className="mt-0.5 rounded border-slate-300 bg-slate-50 text-emerald-500 focus:ring-emerald-500"
                           />
                           <div>
-                            <span className="block text-xs font-bold text-white">
+                            <span className="block text-xs font-bold text-slate-900">
                               {t('settings_cast')}
                             </span>
                           </div>
@@ -1486,10 +1486,10 @@ export const View: React.FC = () => {
             </div>
 
             {/* Persistent Player Bottom Bar */}
-            <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-800 bg-slate-900 px-4 py-2.5">
+            <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 bg-white px-4 py-2.5">
               {/* Left: Track Info */}
               <div className="flex items-center gap-3 min-w-0 w-60">
-                <div className="h-11 w-11 shrink-0 overflow-hidden rounded-lg bg-slate-800 flex items-center justify-center">
+                <div className="h-11 w-11 shrink-0 overflow-hidden rounded-lg bg-slate-100 flex items-center justify-center">
                   {currentTrack?.cover ? (
                     <img src={getCoverUrl(currentTrack.album_key)} alt="" className="h-full w-full object-cover" />
                   ) : (
@@ -1497,10 +1497,10 @@ export const View: React.FC = () => {
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <span className="block truncate text-xs font-bold text-white">
+                  <span className="block truncate text-xs font-bold text-slate-900">
                     {currentTrack ? currentTrack.title : t('no_track_selected')}
                   </span>
-                  <span className="block truncate text-[11px] text-slate-400">
+                  <span className="block truncate text-[11px] text-slate-500">
                     {currentTrack ? currentTrack.artist : t('select_from_library')}
                   </span>
                 </div>
@@ -1509,7 +1509,7 @@ export const View: React.FC = () => {
                     type="button"
                     onClick={() => void handleToggleLike(currentTrack)}
                     className={`p-1 transition ${
-                      currentTrack.liked ? 'text-rose-500' : 'text-slate-500 hover:text-slate-300'
+                      currentTrack.liked ? 'text-rose-500' : 'text-slate-500 hover:text-slate-600'
                     }`}
                   >
                     <Heart className="h-4 w-4 fill-current" />
@@ -1524,7 +1524,7 @@ export const View: React.FC = () => {
                     type="button"
                     onClick={() => setIsShuffle((v) => !v)}
                     title={t('shuffle')}
-                    className={`p-1 transition ${isShuffle ? 'text-sky-400' : 'text-slate-500 hover:text-white'}`}
+                    className={`p-1 transition ${isShuffle ? 'text-sky-600' : 'text-slate-500 hover:text-slate-900'}`}
                   >
                     <Shuffle className="h-3.5 w-3.5" />
                   </button>
@@ -1532,7 +1532,7 @@ export const View: React.FC = () => {
                     type="button"
                     onClick={handlePrev}
                     title={t('prev')}
-                    className="p-1 text-slate-300 hover:text-white transition"
+                    className="p-1 text-slate-600 hover:text-slate-900 transition"
                   >
                     <SkipBack className="h-4 w-4" />
                   </button>
@@ -1548,7 +1548,7 @@ export const View: React.FC = () => {
                     type="button"
                     onClick={handleNext}
                     title={t('next')}
-                    className="p-1 text-slate-300 hover:text-white transition"
+                    className="p-1 text-slate-600 hover:text-slate-900 transition"
                   >
                     <SkipForward className="h-4 w-4" />
                   </button>
@@ -1556,14 +1556,14 @@ export const View: React.FC = () => {
                     type="button"
                     onClick={() => setIsRepeat((v) => !v)}
                     title={t('repeat')}
-                    className={`p-1 transition ${isRepeat ? 'text-sky-400' : 'text-slate-500 hover:text-white'}`}
+                    className={`p-1 transition ${isRepeat ? 'text-sky-600' : 'text-slate-500 hover:text-slate-900'}`}
                   >
                     <Repeat className="h-3.5 w-3.5" />
                   </button>
                 </div>
 
                 {/* Progress bar */}
-                <div className="flex items-center gap-2 w-full text-[10px] font-mono text-slate-400">
+                <div className="flex items-center gap-2 w-full text-[10px] font-mono text-slate-500">
                   <span>{formatDuration(currentTime)}</span>
                   <input
                     type="range"
@@ -1576,7 +1576,7 @@ export const View: React.FC = () => {
                       const el = currentTrack?.is_video ? videoRef.current : audioRef.current;
                       if (el) el.currentTime = newTime;
                     }}
-                    className="h-1 flex-1 cursor-pointer accent-sky-400 rounded-lg bg-slate-800"
+                    className="h-1 flex-1 cursor-pointer accent-sky-400 rounded-lg bg-slate-100"
                   />
                   <span>{formatDuration(duration)}</span>
                 </div>
@@ -1589,7 +1589,7 @@ export const View: React.FC = () => {
                   onClick={() => setActiveTab('karaoke')}
                   title={t('open_karaoke')}
                   className={`rounded-lg p-1.5 transition ${
-                    activeTab === 'karaoke' ? 'bg-amber-500/20 text-amber-400' : 'text-slate-400 hover:text-white'
+                    activeTab === 'karaoke' ? 'bg-amber-500/20 text-amber-600' : 'text-slate-500 hover:text-slate-900'
                   }`}
                 >
                   <Mic2 className="h-4 w-4" />
@@ -1604,7 +1604,7 @@ export const View: React.FC = () => {
                       const el = currentTrack?.is_video ? videoRef.current : audioRef.current;
                       if (el) el.muted = nextMute;
                     }}
-                    className="text-slate-400 hover:text-white"
+                    className="text-slate-500 hover:text-slate-900"
                   >
                     {isMuted || volume === 0 ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
                   </button>
@@ -1624,13 +1624,13 @@ export const View: React.FC = () => {
                         el.muted = false;
                       }
                     }}
-                    className="h-1 w-18 cursor-pointer accent-sky-400 rounded-lg bg-slate-800"
+                    className="h-1 w-18 cursor-pointer accent-sky-400 rounded-lg bg-slate-100"
                   />
 
                   <button
                     type="button"
                     onClick={() => setCastModalOpen(true)}
-                    className="ml-1 rounded-lg p-1.5 text-slate-400 hover:text-sky-300 hover:bg-slate-800 transition"
+                    className="ml-1 rounded-lg p-1.5 text-slate-500 hover:text-sky-700 hover:bg-slate-100 transition"
                     title="Trasmetti Musica (Google Home, Nest Hub, Sonos, Bose, Smart TV)"
                   >
                     <Cast className="h-4 w-4" />
@@ -1644,29 +1644,29 @@ export const View: React.FC = () => {
               <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-2xs">
                 <form
                   onSubmit={handleCreatePlaylist}
-                  className="flex flex-col gap-4 rounded-2xl border border-slate-700 bg-slate-900 p-6 max-w-sm w-full shadow-2xl"
+                  className="flex flex-col gap-4 rounded-2xl border border-slate-300 bg-white p-6 max-w-sm w-full shadow-2xl"
                 >
-                  <h3 className="text-sm font-bold text-white">{t('new_playlist')}</h3>
+                  <h3 className="text-sm font-bold text-slate-900">{t('new_playlist')}</h3>
                   <input
                     type="text"
                     autoFocus
                     placeholder={t('playlist_name')}
                     value={playlistName}
                     onChange={(e) => setPlaylistName(e.target.value)}
-                    className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-xs text-white placeholder-slate-500 focus:border-sky-400 focus:outline-none"
+                    className="rounded-lg border border-slate-300 bg-slate-100 px-3 py-2 text-xs text-slate-900 placeholder-slate-500 focus:border-sky-400 focus:outline-none"
                   />
                   <input
                     type="text"
                     placeholder={t('playlist_desc')}
                     value={playlistDesc}
                     onChange={(e) => setPlaylistDesc(e.target.value)}
-                    className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-xs text-white placeholder-slate-500 focus:border-sky-400 focus:outline-none"
+                    className="rounded-lg border border-slate-300 bg-slate-100 px-3 py-2 text-xs text-slate-900 placeholder-slate-500 focus:border-sky-400 focus:outline-none"
                   />
                   <div className="flex items-center justify-end gap-2">
                     <button
                       type="button"
                       onClick={() => setNewPlaylistOpen(false)}
-                      className="rounded-lg border border-slate-700 px-3 py-1.5 text-xs text-slate-400 hover:text-white"
+                      className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs text-slate-500 hover:text-slate-900"
                     >
                       {t('cancel')}
                     </button>
@@ -1691,7 +1691,7 @@ export const View: React.FC = () => {
           >
             {selectedTrack ? (
               <div className="flex flex-col gap-4 text-xs">
-                <div className="aspect-square w-full rounded-xl overflow-hidden bg-slate-800 flex items-center justify-center border border-slate-700 shadow-sm">
+                <div className="aspect-square w-full rounded-xl overflow-hidden bg-slate-100 flex items-center justify-center border border-slate-300 shadow-sm">
                   {selectedTrack.cover ? (
                     <img src={getCoverUrl(selectedTrack.album_key)} alt="" className="h-full w-full object-cover" />
                   ) : (
@@ -1706,20 +1706,20 @@ export const View: React.FC = () => {
 
                 <div className="flex flex-col gap-2 rounded-lg border border-slate-200/80 bg-slate-50 p-3">
                   <div>
-                    <span className="block text-[10px] font-bold uppercase text-slate-400">{t('th_album')}</span>
+                    <span className="block text-[10px] font-bold uppercase text-slate-500">{t('th_album')}</span>
                     <span className="text-slate-700 font-medium">{selectedTrack.album || '—'}</span>
                   </div>
                   <div>
-                    <span className="block text-[10px] font-bold uppercase text-slate-400">{t('genre_and_year')}</span>
+                    <span className="block text-[10px] font-bold uppercase text-slate-500">{t('genre_and_year')}</span>
                     <span className="text-slate-700">{selectedTrack.genre || t('generic_genre')} · {selectedTrack.year || '—'}</span>
                   </div>
                   <div>
-                    <span className="block text-[10px] font-bold uppercase text-slate-400">{t('duration_and_bitrate')}</span>
+                    <span className="block text-[10px] font-bold uppercase text-slate-500">{t('duration_and_bitrate')}</span>
                     <span className="font-mono text-slate-700">{formatDuration(selectedTrack.duration)} · {selectedTrack.bitrate ? `${selectedTrack.bitrate} kbps` : 'Audio'}</span>
                   </div>
                   {selectedTrack.path && (
                     <div>
-                      <span className="block text-[10px] font-bold uppercase text-slate-400">{t('smb_path')}</span>
+                      <span className="block text-[10px] font-bold uppercase text-slate-500">{t('smb_path')}</span>
                       <div className="flex items-center justify-between gap-1 mt-0.5">
                         <span className="font-mono text-[10px] text-slate-600 truncate">{selectedTrack.path}</span>
                         <button
@@ -1729,7 +1729,7 @@ export const View: React.FC = () => {
                             setCopiedUnc(true);
                             setTimeout(() => setCopiedUnc(false), 2000);
                           }}
-                          className="p-1 text-slate-400 hover:text-slate-700"
+                          className="p-1 text-slate-500 hover:text-slate-700"
                           title={t('copy_path')}
                         >
                           {copiedUnc ? <Check className="h-3 w-3 text-emerald-600" /> : <Copy className="h-3 w-3" />}
@@ -1763,8 +1763,8 @@ export const View: React.FC = () => {
                 </div>
               </div>
             ) : (
-              <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center text-slate-400">
-                <Disc className="h-10 w-10 text-slate-300" />
+              <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center text-slate-500">
+                <Disc className="h-10 w-10 text-slate-600" />
                 <p className="text-xs">{t('inspector_empty_desc')}</p>
               </div>
             )}

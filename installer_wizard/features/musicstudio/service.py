@@ -25,13 +25,20 @@ def status(pid: str) -> dict:
 
 
 PROGRESS = {"plan": 0.1, "lyrics": 0.3, "translate": 0.45, "voices": 0.6, "render": 0.85}
+LABELS = {"plan": "Arrangiamento: genere, tonalità, strumenti", "lyrics": "Testo della canzone", "translate": "Traduzione del testo", "voices": "Registrazione delle voci", "render": "Mix e file audio"}
+
+
+def _steps(current: str) -> list[dict]:
+    order = list(PROGRESS)
+    index = order.index(current)
+    return [{"text": LABELS[k], "state": "done" if i < index else "running" if i == index else "pending"} for i, k in enumerate(order)]
 
 
 def _set(pid: str, **changes) -> None:
     jobs[pid] = {**jobs.get(pid, {"state": "idle", "stage": ""}), **changes}
     task = jobs[pid].get("task")
     if task and changes.get("stage") in PROGRESS:
-        board.update(task, progress=PROGRESS[changes["stage"]], stage=changes["stage"])
+        board.update(task, progress=PROGRESS[changes["stage"]], stage=changes["stage"], steps=_steps(changes["stage"]))
 
 
 def create(prompt: str) -> dict:

@@ -23,7 +23,7 @@ export const StepNavigator: React.FC<StepNavigatorProps> = ({
   ];
 
   return (
-    <div className="flex flex-wrap items-center gap-1.5 rounded-xl border border-slate-800 bg-slate-900/80 p-1.5 backdrop-blur-sm">
+    <div className="flex flex-wrap items-center gap-1.5 rounded-xl border border-slate-200 bg-white/80 p-1.5 backdrop-blur-sm">
       {steps.map((st) => {
         const isActive = currentStep === st.id;
         return (
@@ -33,8 +33,8 @@ export const StepNavigator: React.FC<StepNavigatorProps> = ({
             onClick={() => onSelectStep(st.id)}
             className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
               isActive
-                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm'
-                : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+                ? 'bg-cyan-500/20 text-cyan-700 border border-cyan-500/40 shadow-sm'
+                : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800'
             }`}
           >
             {st.icon}

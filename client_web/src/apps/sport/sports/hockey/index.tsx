@@ -250,8 +250,8 @@ export const HockeyModule: React.FC<HockeyModuleProps> = ({ onOpenTvChannel }) =
 
       {/* Banner Salvataggio */}
       {saveSuccess && (
-        <div className="flex items-center gap-2 rounded-xl border border-emerald-500/40 bg-emerald-950/40 px-4 py-2.5 text-xs font-semibold text-emerald-300">
-          <Check className="h-4 w-4 text-emerald-400" />
+        <div className="flex items-center gap-2 rounded-xl border border-emerald-500/40 bg-emerald-950/40 px-4 py-2.5 text-xs font-semibold text-emerald-700">
+          <Check className="h-4 w-4 text-emerald-600" />
           <span>Preferenze Hockey salvate stabilmente su Nuxiva!</span>
         </div>
       )}
@@ -259,9 +259,9 @@ export const HockeyModule: React.FC<HockeyModuleProps> = ({ onOpenTvChannel }) =
       {/* STEP 1: COMPETIZIONI */}
       {currentStep === 'competition' && (
         <div className="flex flex-col gap-4">
-          <div className="rounded-2xl border border-slate-750 bg-slate-900/90 p-4 shadow-sm">
-            <h3 className="text-sm font-bold text-white mb-1">Campionati e Coppe Mondiali di Hockey</h3>
-            <p className="text-xs text-slate-300">
+          <div className="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900 mb-1">Campionati e Coppe Mondiali di Hockey</h3>
+            <p className="text-xs text-slate-600">
               Dalla leggendaria Stanley Cup della NHL ai tornei mondiali IIHF ed europei della Champions Hockey League.
             </p>
           </div>
@@ -276,26 +276,26 @@ export const HockeyModule: React.FC<HockeyModuleProps> = ({ onOpenTvChannel }) =
                 }}
                 className={`flex flex-col justify-between p-4 rounded-2xl border transition-all cursor-pointer ${
                   selectedLeague === lg.code
-                    ? 'border-cyan-500/80 bg-gradient-to-r from-cyan-950/40 to-slate-900 shadow-md ring-1 ring-cyan-500/40'
-                    : 'border-slate-800 bg-slate-900/80 hover:border-slate-700 hover:bg-slate-850'
+                    ? 'border-cyan-500/80 bg-gradient-to-r from-cyan-950/40 to-slate-50 shadow-md ring-1 ring-cyan-500/40'
+                    : 'border-slate-200 bg-white/80 hover:border-slate-300 hover:bg-slate-100'
                 }`}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
                     <span className="text-3xl filter drop-shadow">{lg.flag}</span>
                     <div>
-                      <h4 className="text-sm font-bold text-white">{lg.name}</h4>
-                      <span className="text-xs text-cyan-400 font-semibold">{lg.count} franchigie/squadre</span>
+                      <h4 className="text-sm font-bold text-slate-900">{lg.name}</h4>
+                      <span className="text-xs text-cyan-600 font-semibold">{lg.count} franchigie/squadre</span>
                     </div>
                   </div>
                   <button
                     type="button"
-                    className="rounded-xl bg-cyan-600/20 border border-cyan-500/30 px-3 py-1.5 text-xs font-bold text-cyan-300 hover:bg-cyan-600/30 transition"
+                    className="rounded-xl bg-cyan-600/20 border border-cyan-500/30 px-3 py-1.5 text-xs font-bold text-cyan-700 hover:bg-cyan-600/30 transition"
                   >
                     Esplora
                   </button>
                 </div>
-                <p className="mt-3 text-xs text-slate-300">{lg.desc}</p>
+                <p className="mt-3 text-xs text-slate-600">{lg.desc}</p>
               </div>
             ))}
           </div>
@@ -305,15 +305,15 @@ export const HockeyModule: React.FC<HockeyModuleProps> = ({ onOpenTvChannel }) =
       {/* STEP 2: CALENDARIO & PARTITE LIVE */}
       {currentStep === 'schedule' && (
         <div className="flex flex-col gap-4">
-          <div className="flex items-center justify-between rounded-2xl border border-slate-750 bg-slate-900/90 p-4 shadow-sm">
+          <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm">
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-xl">🏒</span>
-                <h3 className="text-sm font-bold text-white">Partite & Risultati Live - Periodi & Penalità</h3>
+                <h3 className="text-sm font-bold text-slate-900">Partite & Risultati Live - Periodi & Penalità</h3>
               </div>
-              <p className="text-xs text-slate-300 mt-0.5">Marcature per frazione (P1, P2, P3, OT) e situazioni di Power Play</p>
+              <p className="text-xs text-slate-600 mt-0.5">Marcature per frazione (P1, P2, P3, OT) e situazioni di Power Play</p>
             </div>
-            <span className="flex items-center gap-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/30 px-3 py-1 text-xs font-bold text-emerald-400">
+            <span className="flex items-center gap-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/30 px-3 py-1 text-xs font-bold text-emerald-600">
               <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
               2 Partite Live
             </span>
@@ -323,7 +323,7 @@ export const HockeyModule: React.FC<HockeyModuleProps> = ({ onOpenTvChannel }) =
             {matches.map((m) => (
               <div
                 key={m.id}
-                className="flex flex-col gap-3 p-4 rounded-2xl border border-slate-800 bg-slate-900/85 hover:border-slate-700 transition"
+                className="flex flex-col gap-3 p-4 rounded-2xl border border-slate-200 bg-white/85 hover:border-slate-300 transition"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="flex items-center gap-4 flex-1">
@@ -331,47 +331,47 @@ export const HockeyModule: React.FC<HockeyModuleProps> = ({ onOpenTvChannel }) =
                       <span
                         className={`text-xs font-bold px-2.5 py-1 rounded-lg ${
                           m.status === 'in'
-                            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 animate-pulse'
+                            ? 'bg-emerald-500/20 text-emerald-700 border border-emerald-500/40 animate-pulse'
                             : m.status === 'post'
-                            ? 'bg-slate-800 text-slate-300'
-                            : 'bg-cyan-500/20 text-cyan-300'
+                            ? 'bg-slate-100 text-slate-600'
+                            : 'bg-cyan-500/20 text-cyan-700'
                         }`}
                       >
                         {m.period} · {m.clock}
                       </span>
-                      <span className="text-[10px] text-slate-400 mt-1 truncate">{m.venue.split(',')[0]}</span>
+                      <span className="text-[10px] text-slate-500 mt-1 truncate">{m.venue.split(',')[0]}</span>
                     </div>
 
                     <div className="flex-1">
                       <div className="flex items-center justify-between max-w-sm">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-bold text-white">{m.home}</span>
+                          <span className="text-sm font-bold text-slate-900">{m.home}</span>
                           {favoriteTeams.includes(m.home) && (
-                            <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                            <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-600" />
                           )}
                         </div>
                         <div className="flex items-center gap-3">
-                          <span className="text-xs text-slate-400 font-mono">({m.sogHome} SOG)</span>
-                          <span className="text-base font-black font-mono text-cyan-300">{m.homeScore}</span>
+                          <span className="text-xs text-slate-500 font-mono">({m.sogHome} SOG)</span>
+                          <span className="text-base font-black font-mono text-cyan-700">{m.homeScore}</span>
                         </div>
                       </div>
 
                       <div className="flex items-center justify-between max-w-sm mt-1">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-bold text-white">{m.away}</span>
+                          <span className="text-sm font-bold text-slate-900">{m.away}</span>
                           {favoriteTeams.includes(m.away) && (
-                            <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                            <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-600" />
                           )}
                         </div>
                         <div className="flex items-center gap-3">
-                          <span className="text-xs text-slate-400 font-mono">({m.sogAway} SOG)</span>
-                          <span className="text-base font-black font-mono text-cyan-300">{m.awayScore}</span>
+                          <span className="text-xs text-slate-500 font-mono">({m.sogAway} SOG)</span>
+                          <span className="text-base font-black font-mono text-cyan-700">{m.awayScore}</span>
                         </div>
                       </div>
 
                       {m.powerPlay && (
-                        <div className="mt-2 flex items-center gap-1.5 text-[11px] font-bold text-amber-300">
-                          <Zap className="h-3.5 w-3.5 text-amber-400 animate-bounce" />
+                        <div className="mt-2 flex items-center gap-1.5 text-[11px] font-bold text-amber-700">
+                          <Zap className="h-3.5 w-3.5 text-amber-600 animate-bounce" />
                           <span>{m.powerPlay}</span>
                         </div>
                       )}
@@ -392,7 +392,7 @@ export const HockeyModule: React.FC<HockeyModuleProps> = ({ onOpenTvChannel }) =
                     <button
                       type="button"
                       onClick={() => setCurrentStep('details')}
-                      className="rounded-xl border border-slate-700 bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-200 hover:text-white transition"
+                      className="rounded-xl border border-slate-300 bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-800 hover:text-slate-900 transition"
                     >
                       Statistiche
                     </button>
@@ -401,10 +401,10 @@ export const HockeyModule: React.FC<HockeyModuleProps> = ({ onOpenTvChannel }) =
 
                 {/* Marcature periodi */}
                 {m.goals.length > 0 && (
-                  <div className="pt-2 border-t border-slate-800/80 flex flex-wrap gap-2 text-[11px] text-slate-300">
-                    <span className="font-semibold text-slate-400">Marcature:</span>
+                  <div className="pt-2 border-t border-slate-200/80 flex flex-wrap gap-2 text-[11px] text-slate-600">
+                    <span className="font-semibold text-slate-500">Marcature:</span>
                     {m.goals.map((g, idx) => (
-                      <span key={idx} className="rounded-md bg-slate-800 px-2 py-0.5 font-mono">
+                      <span key={idx} className="rounded-md bg-slate-100 px-2 py-0.5 font-mono">
                         🏒 {g.player} ({g.period} {g.minute}) {g.type ? `[${g.type}]` : ''}
                       </span>
                     ))}
@@ -419,14 +419,14 @@ export const HockeyModule: React.FC<HockeyModuleProps> = ({ onOpenTvChannel }) =
       {/* STEP 3: CLASSIFICHE COMPLETE NHL PER DIVISION */}
       {currentStep === 'standings' && (
         <div className="flex flex-col gap-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-slate-750 bg-slate-900/90 p-4 shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm">
             <div>
-              <h3 className="text-sm font-bold text-white">Classifica Ufficiale NHL per Division (32 Squadre)</h3>
-              <p className="text-xs text-slate-300 mt-0.5">Punti: 2 per vittoria (W), 1 per sconfitta OT (OTL), 0 per sconfitta (L)</p>
+              <h3 className="text-sm font-bold text-slate-900">Classifica Ufficiale NHL per Division (32 Squadre)</h3>
+              <p className="text-xs text-slate-600 mt-0.5">Punti: 2 per vittoria (W), 1 per sconfitta OT (OTL), 0 per sconfitta (L)</p>
             </div>
 
             {/* Selettore Division */}
-            <div className="flex flex-wrap items-center gap-1.5 rounded-xl border border-slate-800 bg-slate-950 p-1">
+            <div className="flex flex-wrap items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 p-1">
               {['Atlantic', 'Metropolitan', 'Central', 'Pacific'].map((div) => (
                 <button
                   key={div}
@@ -435,7 +435,7 @@ export const HockeyModule: React.FC<HockeyModuleProps> = ({ onOpenTvChannel }) =
                   className={`rounded-lg px-3 py-1 text-xs font-bold transition ${
                     selectedDivision === div
                       ? 'bg-cyan-600 text-white shadow-sm'
-                      : 'text-slate-400 hover:text-slate-200'
+                      : 'text-slate-500 hover:text-slate-800'
                   }`}
                 >
                   {div}
@@ -444,9 +444,9 @@ export const HockeyModule: React.FC<HockeyModuleProps> = ({ onOpenTvChannel }) =
             </div>
           </div>
 
-          <div className="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-900/80 shadow-md">
+          <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white/80 shadow-md">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-950/90 text-[11px] font-bold uppercase text-slate-400 border-b border-slate-800">
+              <thead className="bg-slate-50/90 text-[11px] font-bold uppercase text-slate-500 border-b border-slate-200">
                 <tr>
                   <th className="py-3 px-3.5">#</th>
                   <th className="py-3 px-3.5">Franchigia</th>
@@ -460,7 +460,7 @@ export const HockeyModule: React.FC<HockeyModuleProps> = ({ onOpenTvChannel }) =
                   <th className="py-3 px-3.5 text-right">Punti</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60 font-mono">
+              <tbody className="divide-y divide-slate-200/60 font-mono">
                 {filteredStandings.map((s, idx) => {
                   const isPlayoff = idx < 3;
                   return (
@@ -473,29 +473,29 @@ export const HockeyModule: React.FC<HockeyModuleProps> = ({ onOpenTvChannel }) =
                       <td className="py-3 px-3.5 font-bold">
                         <span
                           className={`inline-block w-5 text-center rounded text-[11px] ${
-                            isPlayoff ? 'bg-cyan-500/20 text-cyan-300 font-extrabold' : 'text-slate-400'
+                            isPlayoff ? 'bg-cyan-500/20 text-cyan-700 font-extrabold' : 'text-slate-500'
                           }`}
                         >
                           {s.rank}
                         </span>
                       </td>
-                      <td className="py-3 px-3.5 font-sans font-semibold text-white flex items-center gap-2">
-                        <span className="font-bold text-cyan-300 font-mono text-[11px]">{s.abbr}</span>
+                      <td className="py-3 px-3.5 font-sans font-semibold text-slate-900 flex items-center gap-2">
+                        <span className="font-bold text-cyan-700 font-mono text-[11px]">{s.abbr}</span>
                         <span>{s.name}</span>
                         {favoriteTeams.includes(s.name) && (
-                          <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                          <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-600" />
                         )}
                       </td>
-                      <td className="py-3 px-2.5 text-center text-slate-300">{s.gp}</td>
-                      <td className="py-3 px-2.5 text-center text-slate-300">{s.w}</td>
-                      <td className="py-3 px-2.5 text-center text-slate-300">{s.l}</td>
-                      <td className="py-3 px-2.5 text-center text-slate-300">{s.otl}</td>
-                      <td className="py-3 px-2.5 text-center text-slate-300">{s.gf}</td>
-                      <td className="py-3 px-2.5 text-center text-slate-300">{s.ga}</td>
-                      <td className="py-3 px-2.5 text-center text-slate-300">
+                      <td className="py-3 px-2.5 text-center text-slate-600">{s.gp}</td>
+                      <td className="py-3 px-2.5 text-center text-slate-600">{s.w}</td>
+                      <td className="py-3 px-2.5 text-center text-slate-600">{s.l}</td>
+                      <td className="py-3 px-2.5 text-center text-slate-600">{s.otl}</td>
+                      <td className="py-3 px-2.5 text-center text-slate-600">{s.gf}</td>
+                      <td className="py-3 px-2.5 text-center text-slate-600">{s.ga}</td>
+                      <td className="py-3 px-2.5 text-center text-slate-600">
                         {s.diff > 0 ? `+${s.diff}` : s.diff}
                       </td>
-                      <td className="py-3 px-3.5 text-right font-bold text-cyan-300 text-sm">
+                      <td className="py-3 px-3.5 text-right font-bold text-cyan-700 text-sm">
                         {s.pts}
                       </td>
                     </tr>
@@ -510,34 +510,34 @@ export const HockeyModule: React.FC<HockeyModuleProps> = ({ onOpenTvChannel }) =
       {/* STEP 4: DETTAGLI & WIDGET DEDICATI HOCKEY */}
       {currentStep === 'details' && (
         <div className="flex flex-col gap-4">
-          <div className="rounded-2xl border border-slate-750 bg-slate-900/90 p-4 shadow-sm">
-            <h3 className="text-sm font-bold text-white mb-1">Dettagli di Gara & Widget Tattici Hockey</h3>
-            <p className="text-xs text-slate-300">
+          <div className="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900 mb-1">Dettagli di Gara & Widget Tattici Hockey</h3>
+            <p className="text-xs text-slate-600">
               Analisi approfondita: tracciatore dei periodi, mappa tiri sul ghiaccio (Slot/Point) e duello tra portieri.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* WIDGET 1: PERIOD & POWER PLAY TRACKER */}
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-5 shadow-md flex flex-col justify-between">
+            <div className="rounded-2xl border border-slate-200 bg-white/90 p-5 shadow-md flex flex-col justify-between">
               <div>
-                <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
+                <div className="flex items-center justify-between border-b border-slate-200 pb-3 mb-3">
                   <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-cyan-400" />
-                    <h4 className="text-xs font-bold text-white">Period & Penalty Tracker HUD</h4>
+                    <Clock className="h-4 w-4 text-cyan-600" />
+                    <h4 className="text-xs font-bold text-slate-900">Period & Penalty Tracker HUD</h4>
                   </div>
-                  <span className="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-500/20 px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] font-mono text-emerald-600 font-bold bg-emerald-500/20 px-2 py-0.5 rounded-full">
                     3° PERIODO (P3)
                   </span>
                 </div>
 
                 <div className="flex flex-col gap-3">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-slate-400">Progresso Match (60:00 Reg.)</span>
-                    <span className="font-mono font-bold text-white">54:22 / 60:00</span>
+                    <span className="text-slate-500">Progresso Match (60:00 Reg.)</span>
+                    <span className="font-mono font-bold text-slate-900">54:22 / 60:00</span>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-1.5 h-3 rounded-full bg-slate-950 p-0.5 overflow-hidden border border-slate-800">
+                  <div className="grid grid-cols-3 gap-1.5 h-3 rounded-full bg-slate-50 p-0.5 overflow-hidden border border-slate-200">
                     <div className="h-full bg-cyan-500 rounded-sm" title="P1: Concluso" />
                     <div className="h-full bg-cyan-500 rounded-sm" title="P2: Concluso" />
                     <div className="h-full bg-amber-400 rounded-sm animate-pulse" title="P3: In corso" />
@@ -546,36 +546,36 @@ export const HockeyModule: React.FC<HockeyModuleProps> = ({ onOpenTvChannel }) =
                   {/* Box Situazione Power Play attiva */}
                   <div className="mt-2 rounded-xl border border-amber-500/40 bg-amber-950/20 p-3 flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
-                      <Zap className="h-5 w-5 text-amber-400 animate-bounce" />
+                      <Zap className="h-5 w-5 text-amber-600 animate-bounce" />
                       <div>
-                        <span className="text-xs font-bold text-amber-200 block">Power Play 5v4 Rangers</span>
-                        <span className="text-[10px] text-slate-400">Penalità minore: 2 min per Slashing (Bruins)</span>
+                        <span className="text-xs font-bold text-amber-800 block">Power Play 5v4 Rangers</span>
+                        <span className="text-[10px] text-slate-500">Penalità minore: 2 min per Slashing (Bruins)</span>
                       </div>
                     </div>
-                    <span className="text-sm font-mono font-black text-amber-300">01:18</span>
+                    <span className="text-sm font-mono font-black text-amber-700">01:18</span>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-slate-800 flex justify-between text-[11px] text-slate-400">
+              <div className="mt-4 pt-3 border-t border-slate-200 flex justify-between text-[11px] text-slate-500">
                 <span>Timeout Rangers: 1/1</span>
                 <span>Timeout Bruins: 1/1</span>
               </div>
             </div>
 
             {/* WIDGET 2: RINK SHOT MAP / ZONE RADAR */}
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-5 shadow-md flex flex-col justify-between">
+            <div className="rounded-2xl border border-slate-200 bg-white/90 p-5 shadow-md flex flex-col justify-between">
               <div>
-                <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
+                <div className="flex items-center justify-between border-b border-slate-200 pb-3 mb-3">
                   <div className="flex items-center gap-2">
-                    <Target className="h-4 w-4 text-cyan-400" />
-                    <h4 className="text-xs font-bold text-white">Rink Shot Map & Distribuzione Tiri</h4>
+                    <Target className="h-4 w-4 text-cyan-600" />
+                    <h4 className="text-xs font-bold text-slate-900">Rink Shot Map & Distribuzione Tiri</h4>
                   </div>
-                  <span className="text-[11px] font-mono text-cyan-400">28 vs 25 SOG</span>
+                  <span className="text-[11px] font-mono text-cyan-600">28 vs 25 SOG</span>
                 </div>
 
                 {/* Grafica stilizzata pista da hockey */}
-                <div className="relative h-36 rounded-xl border border-cyan-800/40 bg-gradient-to-r from-cyan-950/40 via-slate-950 to-cyan-950/40 p-2 flex items-center justify-between overflow-hidden">
+                <div className="relative h-36 rounded-xl border border-cyan-800/40 bg-gradient-to-r from-cyan-950/40 via-slate-50 to-cyan-950/40 p-2 flex items-center justify-between overflow-hidden">
                   {/* Linee di porta e linea rossa centrale */}
                   <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-rose-500/50" />
                   <div className="absolute left-1/3 top-0 bottom-0 w-1 bg-blue-600/60" />
@@ -584,67 +584,67 @@ export const HockeyModule: React.FC<HockeyModuleProps> = ({ onOpenTvChannel }) =
                   <div className="absolute right-6 top-0 bottom-0 w-0.5 bg-rose-500/50" />
 
                   {/* Zone Shots Counters */}
-                  <div className="relative z-10 flex flex-col items-center justify-center p-2 rounded-lg bg-slate-900/80 border border-slate-700 text-center">
-                    <span className="text-[10px] text-slate-400">High Slot</span>
-                    <span className="text-xs font-bold text-cyan-300 font-mono">11 tiri</span>
+                  <div className="relative z-10 flex flex-col items-center justify-center p-2 rounded-lg bg-white/80 border border-slate-300 text-center">
+                    <span className="text-[10px] text-slate-500">High Slot</span>
+                    <span className="text-xs font-bold text-cyan-700 font-mono">11 tiri</span>
                   </div>
-                  <div className="relative z-10 flex flex-col items-center justify-center p-2 rounded-lg bg-slate-900/80 border border-slate-700 text-center">
-                    <span className="text-[10px] text-slate-400">Low Slot (Gabbia)</span>
-                    <span className="text-xs font-bold text-emerald-400 font-mono">9 tiri (2 gol)</span>
+                  <div className="relative z-10 flex flex-col items-center justify-center p-2 rounded-lg bg-white/80 border border-slate-300 text-center">
+                    <span className="text-[10px] text-slate-500">Low Slot (Gabbia)</span>
+                    <span className="text-xs font-bold text-emerald-600 font-mono">9 tiri (2 gol)</span>
                   </div>
-                  <div className="relative z-10 flex flex-col items-center justify-center p-2 rounded-lg bg-slate-900/80 border border-slate-700 text-center">
-                    <span className="text-[10px] text-slate-400">Point (Blue Line)</span>
-                    <span className="text-xs font-bold text-purple-400 font-mono">8 tiri (1 gol)</span>
+                  <div className="relative z-10 flex flex-col items-center justify-center p-2 rounded-lg bg-white/80 border border-slate-300 text-center">
+                    <span className="text-[10px] text-slate-500">Point (Blue Line)</span>
+                    <span className="text-xs font-bold text-purple-600 font-mono">8 tiri (1 gol)</span>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-3 text-[11px] text-slate-400 flex justify-between">
+              <div className="mt-3 text-[11px] text-slate-500 flex justify-between">
                 <span>Efficienza di realizzazione: 10.7%</span>
                 <span>Tiri respinti dalla difesa: 14</span>
               </div>
             </div>
 
             {/* WIDGET 3: GOALTENDER DUEL */}
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-5 shadow-md md:col-span-2">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+            <div className="rounded-2xl border border-slate-200 bg-white/90 p-5 shadow-md md:col-span-2">
+              <div className="flex items-center justify-between border-b border-slate-200 pb-3 mb-4">
                 <div className="flex items-center gap-2">
-                  <Shield className="h-4 w-4 text-cyan-400" />
-                  <h4 className="text-xs font-bold text-white">Goaltender Duel (Duello tra Portieri)</h4>
+                  <Shield className="h-4 w-4 text-cyan-600" />
+                  <h4 className="text-xs font-bold text-slate-900">Goaltender Duel (Duello tra Portieri)</h4>
                 </div>
-                <span className="text-xs text-slate-400">Statistiche Parate e Save Percentage (SV%)</span>
+                <span className="text-xs text-slate-500">Statistiche Parate e Save Percentage (SV%)</span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="p-3.5 rounded-xl border border-slate-800 bg-slate-950/60 flex items-center justify-between">
+                <div className="p-3.5 rounded-xl border border-slate-200 bg-slate-50/60 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-950 border border-cyan-800 font-mono font-bold text-cyan-300 text-xs">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-950 border border-cyan-800 font-mono font-bold text-cyan-700 text-xs">
                       #31
                     </div>
                     <div>
-                      <h5 className="text-xs font-bold text-white">Igor Shesterkin</h5>
-                      <span className="text-[10px] text-slate-400">New York Rangers</span>
+                      <h5 className="text-xs font-bold text-slate-900">Igor Shesterkin</h5>
+                      <span className="text-[10px] text-slate-500">New York Rangers</span>
                     </div>
                   </div>
                   <div className="text-right font-mono">
-                    <span className="text-sm font-bold text-emerald-400 block">.920 SV%</span>
-                    <span className="text-[10px] text-slate-400">23 Parate / 25 Tiri</span>
+                    <span className="text-sm font-bold text-emerald-600 block">.920 SV%</span>
+                    <span className="text-[10px] text-slate-500">23 Parate / 25 Tiri</span>
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-xl border border-slate-800 bg-slate-950/60 flex items-center justify-between">
+                <div className="p-3.5 rounded-xl border border-slate-200 bg-slate-50/60 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-950 border border-amber-800 font-mono font-bold text-amber-300 text-xs">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-950 border border-amber-800 font-mono font-bold text-amber-700 text-xs">
                       #1
                     </div>
                     <div>
-                      <h5 className="text-xs font-bold text-white">Jeremy Swayman</h5>
-                      <span className="text-[10px] text-slate-400">Boston Bruins</span>
+                      <h5 className="text-xs font-bold text-slate-900">Jeremy Swayman</h5>
+                      <span className="text-[10px] text-slate-500">Boston Bruins</span>
                     </div>
                   </div>
                   <div className="text-right font-mono">
-                    <span className="text-sm font-bold text-cyan-400 block">.893 SV%</span>
-                    <span className="text-[10px] text-slate-400">25 Parate / 28 Tiri</span>
+                    <span className="text-sm font-bold text-cyan-600 block">.893 SV%</span>
+                    <span className="text-[10px] text-slate-500">25 Parate / 28 Tiri</span>
                   </div>
                 </div>
               </div>
@@ -656,9 +656,9 @@ export const HockeyModule: React.FC<HockeyModuleProps> = ({ onOpenTvChannel }) =
       {/* STEP 5: CANALI TV / IPTV COLLEGATI */}
       {currentStep === 'tv_stream' && (
         <div className="flex flex-col gap-4">
-          <div className="rounded-2xl border border-slate-750 bg-slate-900/90 p-4 shadow-sm">
-            <h3 className="text-sm font-bold text-white mb-1">Canali TV & IPTV per lo Streaming dell'Hockey</h3>
-            <p className="text-xs text-slate-300">
+          <div className="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900 mb-1">Canali TV & IPTV per lo Streaming dell'Hockey</h3>
+            <p className="text-xs text-slate-600">
               Sintonizzazione automatica immediata con l'applicazione IPTV di Nuxiva.
             </p>
           </div>
@@ -675,15 +675,15 @@ export const HockeyModule: React.FC<HockeyModuleProps> = ({ onOpenTvChannel }) =
                 className={`flex flex-col justify-between p-4 rounded-2xl border transition ${
                   preferredTvChannel === ch.name
                     ? 'border-cyan-500/80 bg-cyan-950/20 ring-1 ring-cyan-500/40'
-                    : 'border-slate-800 bg-slate-900/80 hover:border-slate-700'
+                    : 'border-slate-200 bg-white/80 hover:border-slate-300'
                 }`}
               >
                 <div>
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-2xl">{ch.icon}</span>
-                    <h4 className="text-xs font-bold text-white">{ch.name}</h4>
+                    <h4 className="text-xs font-bold text-slate-900">{ch.name}</h4>
                   </div>
-                  <p className="text-[11px] text-slate-300">{ch.desc}</p>
+                  <p className="text-[11px] text-slate-600">{ch.desc}</p>
                 </div>
 
                 <div className="mt-4 flex items-center gap-2">
@@ -699,8 +699,8 @@ export const HockeyModule: React.FC<HockeyModuleProps> = ({ onOpenTvChannel }) =
                     }}
                     className={`flex-1 rounded-xl px-3 py-1.5 text-xs font-semibold border transition ${
                       preferredTvChannel === ch.name
-                        ? 'bg-cyan-500/20 border-cyan-500/40 text-cyan-300'
-                        : 'bg-slate-800 border-slate-700 text-slate-300 hover:text-white'
+                        ? 'bg-cyan-500/20 border-cyan-500/40 text-cyan-700'
+                        : 'bg-slate-100 border-slate-300 text-slate-600 hover:text-slate-900'
                     }`}
                   >
                     {preferredTvChannel === ch.name ? 'Canale Predefinito ✓' : 'Imposta Predefinito'}
@@ -725,22 +725,22 @@ export const HockeyModule: React.FC<HockeyModuleProps> = ({ onOpenTvChannel }) =
       {/* STEP 6: PREFERITI E OPZIONI */}
       {currentStep === 'favorites' && (
         <div className="flex flex-col gap-4 max-w-3xl">
-          <div className="rounded-2xl border border-slate-750 bg-slate-900/90 p-4 shadow-sm">
-            <h3 className="text-sm font-bold text-white mb-1">Squadre del Cuore & Avvisi Vocali Hockey</h3>
-            <p className="text-xs text-slate-300">
+          <div className="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900 mb-1">Squadre del Cuore & Avvisi Vocali Hockey</h3>
+            <p className="text-xs text-slate-600">
               Seleziona le franchigie NHL e squadre che vuoi seguire: Nuxiva ti avvisa a voce e con widget sul desktop quando c'è un gol o inizia una frazione.
             </p>
           </div>
 
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/80 p-5 flex flex-col gap-4">
-            <h4 className="text-xs font-bold text-white">Opzioni Vocali e Notifiche</h4>
+          <div className="rounded-2xl border border-slate-200 bg-white/80 p-5 flex flex-col gap-4">
+            <h4 className="text-xs font-bold text-slate-900">Opzioni Vocali e Notifiche</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <label className="flex items-center justify-between p-3.5 rounded-xl border border-slate-800 bg-slate-950/60 cursor-pointer">
+              <label className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 bg-slate-50/60 cursor-pointer">
                 <div className="flex items-center gap-3">
-                  <Volume2 className="h-5 w-5 text-cyan-400" />
+                  <Volume2 className="h-5 w-5 text-cyan-600" />
                   <div>
-                    <span className="text-xs font-bold text-white block">Sirena Gol & Annuncio Vocale</span>
-                    <span className="text-[10px] text-slate-400">Riproduce il suono della sirena e annuncia il gol</span>
+                    <span className="text-xs font-bold text-slate-900 block">Sirena Gol & Annuncio Vocale</span>
+                    <span className="text-[10px] text-slate-500">Riproduce il suono della sirena e annuncia il gol</span>
                   </div>
                 </div>
                 <input
@@ -760,12 +760,12 @@ export const HockeyModule: React.FC<HockeyModuleProps> = ({ onOpenTvChannel }) =
                 />
               </label>
 
-              <label className="flex items-center justify-between p-3.5 rounded-xl border border-slate-800 bg-slate-950/60 cursor-pointer">
+              <label className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 bg-slate-50/60 cursor-pointer">
                 <div className="flex items-center gap-3">
-                  <Bell className="h-5 w-5 text-amber-400" />
+                  <Bell className="h-5 w-5 text-amber-600" />
                   <div>
-                    <span className="text-xs font-bold text-white block">Avviso Overtime e Rigori</span>
-                    <span className="text-[10px] text-slate-400">Notifica se la partita prosegue ai supplementari</span>
+                    <span className="text-xs font-bold text-slate-900 block">Avviso Overtime e Rigori</span>
+                    <span className="text-[10px] text-slate-500">Notifica se la partita prosegue ai supplementari</span>
                   </div>
                 </div>
                 <input
@@ -787,8 +787,8 @@ export const HockeyModule: React.FC<HockeyModuleProps> = ({ onOpenTvChannel }) =
             </div>
           </div>
 
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/80 p-5">
-            <h4 className="text-xs font-bold text-white mb-3">Franchigie NHL & Squadre Selezionabili</h4>
+          <div className="rounded-2xl border border-slate-200 bg-white/80 p-5">
+            <h4 className="text-xs font-bold text-slate-900 mb-3">Franchigie NHL & Squadre Selezionabili</h4>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
               {[
                 'New York Rangers',
@@ -816,12 +816,12 @@ export const HockeyModule: React.FC<HockeyModuleProps> = ({ onOpenTvChannel }) =
                     onClick={() => toggleFavorite(team)}
                     className={`flex items-center justify-between p-3 rounded-xl border text-xs font-semibold transition ${
                       isFav
-                        ? 'border-amber-500/60 bg-gradient-to-r from-amber-500/20 to-slate-900 text-amber-200 shadow-sm'
-                        : 'border-slate-800 bg-slate-950/70 text-slate-300 hover:border-slate-700 hover:text-white'
+                        ? 'border-amber-500/60 bg-gradient-to-r from-amber-500/20 to-slate-50 text-amber-800 shadow-sm'
+                        : 'border-slate-200 bg-slate-50/70 text-slate-600 hover:border-slate-300 hover:text-slate-900'
                     }`}
                   >
                     <span>{team}</span>
-                    <Star className={`h-4 w-4 ${isFav ? 'fill-amber-400 text-amber-400' : 'text-slate-600'}`} />
+                    <Star className={`h-4 w-4 ${isFav ? 'fill-amber-400 text-amber-600' : 'text-slate-600'}`} />
                   </button>
                 );
               })}

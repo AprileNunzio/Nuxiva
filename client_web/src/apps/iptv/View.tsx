@@ -417,16 +417,16 @@ export const View: React.FC = () => {
   ];
 
   return (
-    <div className="relative h-full w-full select-none overflow-hidden bg-slate-950 text-slate-100">
+    <div className="relative h-full w-full select-none overflow-hidden bg-slate-50 text-slate-900">
       {fileInput}
       {/* Banner di caricamento in corso */}
       {uploadStatus && (
-        <div className="absolute top-4 right-4 z-40 flex items-center gap-3 rounded-xl border border-cyan-500/40 bg-slate-900/90 backdrop-blur-md px-4 py-2.5 shadow-xl">
-          <RefreshCw className="h-4 w-4 text-cyan-400 animate-spin" />
+        <div className="absolute top-4 right-4 z-40 flex items-center gap-3 rounded-xl border border-cyan-500/40 bg-white/90 backdrop-blur-md px-4 py-2.5 shadow-xl">
+          <RefreshCw className="h-4 w-4 text-cyan-600 animate-spin" />
           <div className="text-xs">
-            <p className="font-semibold text-white">{uploadStatus}</p>
+            <p className="font-semibold text-slate-900">{uploadStatus}</p>
             {uploadProgress !== null && (
-              <div className="mt-1 h-1 w-32 rounded-full bg-slate-800 overflow-hidden">
+              <div className="mt-1 h-1 w-32 rounded-full bg-slate-100 overflow-hidden">
                 <div
                   className="h-full bg-cyan-400 transition-all duration-300"
                   style={{ width: `${uploadProgress}%` }}
@@ -445,14 +445,14 @@ export const View: React.FC = () => {
             activeId={activeTab}
             onSelect={(id) => setActiveTab(id as any)}
             footer={
-              <div className="flex flex-col gap-2 pt-2 border-t border-slate-800">
+              <div className="flex flex-col gap-2 pt-2 border-t border-slate-200">
                 <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-500">
                   {t('playback_target')}
                 </span>
                 <select
                   value={selectedTarget}
                   onChange={(e) => setSelectedTarget(e.target.value)}
-                  className="w-full rounded-lg border border-slate-800 bg-slate-900 px-2.5 py-1.5 text-xs text-slate-200 focus:border-cyan-500 focus:outline-none"
+                  className="w-full rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs text-slate-800 focus:border-cyan-500 focus:outline-none"
                 >
                   <option value="display">{t('this_display')}</option>
                   {targetList.map((tgt) => (
@@ -465,9 +465,9 @@ export const View: React.FC = () => {
                 <button
                   type="button"
                   onClick={openPicker}
-                  className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900 px-3 py-1.5 text-xs text-slate-300 hover:text-white transition"
+                  className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-600 hover:text-slate-900 transition"
                 >
-                  <UploadCloud className="h-3.5 w-3.5 text-cyan-400" />
+                  <UploadCloud className="h-3.5 w-3.5 text-cyan-600" />
                   <span>{t('load_m3u_file')}</span>
                 </button>
 
@@ -475,7 +475,7 @@ export const View: React.FC = () => {
                   <button
                     type="button"
                     onClick={handleStopAll}
-                    className="mt-1 flex w-full items-center justify-center gap-1.5 rounded-lg bg-rose-500/20 border border-rose-500/30 px-3 py-1.5 text-xs font-semibold text-rose-300 hover:bg-rose-500/30 transition"
+                    className="mt-1 flex w-full items-center justify-center gap-1.5 rounded-lg bg-rose-500/20 border border-rose-500/30 px-3 py-1.5 text-xs font-semibold text-rose-700 hover:bg-rose-500/30 transition"
                   >
                     <Square className="h-3.5 w-3.5 fill-rose-400" />
                     <span>{t('stop_stream')}</span>
@@ -488,7 +488,7 @@ export const View: React.FC = () => {
         content={
           <div className="flex h-full flex-col overflow-hidden">
             {/* Topbar: Ricerca e Filtri */}
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 bg-slate-950/60 p-3 backdrop-blur-sm">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-slate-50/60 p-3 backdrop-blur-sm">
               <div className="flex items-center gap-2 flex-1 max-w-md">
                 <div className="relative w-full">
                   <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
@@ -497,13 +497,13 @@ export const View: React.FC = () => {
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder={t('search_channels')}
-                    className="w-full rounded-xl border border-slate-800 bg-slate-900/80 pl-9 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-none"
+                    className="w-full rounded-xl border border-slate-200 bg-white/80 pl-9 pr-3 py-1.5 text-xs text-slate-900 placeholder-slate-500 focus:border-cyan-500 focus:outline-none"
                   />
                   {query && (
                     <button
                       type="button"
                       onClick={() => setQuery('')}
-                      className="absolute right-3 top-2.5 text-slate-400 hover:text-white"
+                      className="absolute right-3 top-2.5 text-slate-500 hover:text-slate-900"
                     >
                       ×
                     </button>
@@ -516,7 +516,7 @@ export const View: React.FC = () => {
                   <select
                     value={selectedGroup}
                     onChange={(e) => setSelectedGroup(e.target.value)}
-                    className="rounded-lg border border-slate-800 bg-slate-900 px-3 py-1.5 text-xs text-slate-200 focus:border-cyan-500 focus:outline-none"
+                    className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-800 focus:border-cyan-500 focus:outline-none"
                   >
                     <option value="">{t('all_categories')}</option>
                     {groupsList.map((g) => (
@@ -532,11 +532,11 @@ export const View: React.FC = () => {
                   onClick={() => setOnlyFavorites(!onlyFavorites)}
                   className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold transition ${
                     onlyFavorites
-                      ? 'border-amber-500/50 bg-amber-500/20 text-amber-300'
-                      : 'border-slate-800 bg-slate-900 text-slate-400 hover:text-slate-200'
+                      ? 'border-amber-500/50 bg-amber-500/20 text-amber-700'
+                      : 'border-slate-200 bg-white text-slate-500 hover:text-slate-800'
                   }`}
                 >
-                  <Star className={`h-3.5 w-3.5 ${onlyFavorites ? 'fill-amber-400 text-amber-400' : ''}`} />
+                  <Star className={`h-3.5 w-3.5 ${onlyFavorites ? 'fill-amber-400 text-amber-600' : ''}`} />
                   <span>{t('favorites_only')}</span>
                 </button>
               </div>
@@ -549,12 +549,12 @@ export const View: React.FC = () => {
                 <div className="flex flex-col gap-4">
                   {/* Player Video Streaming Live */}
                   {activeStreamChannel && (
-                    <div className="relative rounded-2xl overflow-hidden border border-slate-700/80 bg-black shadow-2xl">
+                    <div className="relative rounded-2xl overflow-hidden border border-slate-300/80 bg-black shadow-2xl">
                       {streamError || hlsError ? (
                         <div className="flex flex-col items-center justify-center p-8 text-center bg-rose-950/40 border border-rose-500/50 rounded-2xl m-2">
-                          <AlertTriangle className="h-10 w-10 text-rose-400 mb-2 animate-bounce" />
-                          <h4 className="text-sm font-bold text-white mb-1">Errore Riproduzione</h4>
-                          <p className="text-xs text-rose-200 max-w-md mb-4">{streamError || hlsError}</p>
+                          <AlertTriangle className="h-10 w-10 text-rose-600 mb-2 animate-bounce" />
+                          <h4 className="text-sm font-bold text-slate-900 mb-1">Errore Riproduzione</h4>
+                          <p className="text-xs text-rose-800 max-w-md mb-4">{streamError || hlsError}</p>
                           {(streamError || hlsError || '').includes('VPN') ? (
                             <button
                               type="button"
@@ -567,7 +567,7 @@ export const View: React.FC = () => {
                             <button
                               type="button"
                               onClick={() => handlePlayInApp(activeStreamChannel)}
-                              className="rounded-xl bg-slate-800 border border-slate-700 px-4 py-2 text-xs font-semibold text-slate-200 hover:bg-slate-700 transition"
+                              className="rounded-xl bg-slate-100 border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-200 transition"
                             >
                               Riprova Connessione
                             </button>
@@ -585,8 +585,8 @@ export const View: React.FC = () => {
                         >
                           {streamLoading && (
                             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm">
-                              <RefreshCw className="h-8 w-8 text-cyan-400 animate-spin mb-2" />
-                              <span className="text-xs font-medium text-slate-300">Connessione allo stream HLS in corso...</span>
+                              <RefreshCw className="h-8 w-8 text-cyan-600 animate-spin mb-2" />
+                              <span className="text-xs font-medium text-slate-600">Connessione allo stream HLS in corso...</span>
                             </div>
                           )}
                           <video
@@ -601,18 +601,18 @@ export const View: React.FC = () => {
                       )}
 
                       {/* Header Player Controls */}
-                      <div className="flex items-center justify-between border-t border-slate-800 bg-slate-900/90 px-4 py-3">
+                      <div className="flex items-center justify-between border-t border-slate-200 bg-white/90 px-4 py-3">
                         <div className="flex items-center gap-3">
                           <ChannelLogo url={activeStreamChannel.logo} name={activeStreamChannel.name} size="sm" />
                           <div>
                             <div className="flex items-center gap-2">
-                              <span className="text-sm font-bold text-white">{activeStreamChannel.name}</span>
-                              <span className="flex items-center gap-1 rounded-full bg-emerald-500/20 border border-emerald-500/30 px-2 py-0.5 text-[10px] font-bold text-emerald-400">
+                              <span className="text-sm font-bold text-slate-900">{activeStreamChannel.name}</span>
+                              <span className="flex items-center gap-1 rounded-full bg-emerald-500/20 border border-emerald-500/30 px-2 py-0.5 text-[10px] font-bold text-emerald-600">
                                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-ping" />
                                 LIVE HLS
                               </span>
                             </div>
-                            <span className="text-[11px] text-slate-400">
+                            <span className="text-[11px] text-slate-500">
                               {activeStreamChannel.group || t('generic_category')}
                             </span>
                           </div>
@@ -622,7 +622,7 @@ export const View: React.FC = () => {
                           <select
                             value={aspectRatio}
                             onChange={(e) => setAspectRatio(e.target.value as any)}
-                            className="rounded-lg border border-slate-700 bg-slate-800 px-2.5 py-1 text-xs text-slate-200 focus:outline-none"
+                            className="rounded-lg border border-slate-300 bg-slate-100 px-2.5 py-1 text-xs text-slate-800 focus:outline-none"
                           >
                             <option value="16/9">16:9</option>
                             <option value="4/3">4:3</option>
@@ -632,15 +632,15 @@ export const View: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => setIsMuted(!isMuted)}
-                            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-white transition"
+                            className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition"
                           >
-                            {isMuted ? <VolumeX className="h-4 w-4 text-rose-400" /> : <Volume2 className="h-4 w-4" />}
+                            {isMuted ? <VolumeX className="h-4 w-4 text-rose-600" /> : <Volume2 className="h-4 w-4" />}
                           </button>
 
                           <button
                             type="button"
                             onClick={() => setIsCastOpen(true)}
-                            className="rounded-lg p-1.5 text-cyan-400 hover:bg-slate-800 hover:text-cyan-300 transition"
+                            className="rounded-lg p-1.5 text-cyan-600 hover:bg-slate-100 hover:text-cyan-700 transition"
                             title="Trasmetti su Dispositivo (Chromecast, Sonos, Bose, Smart TV)"
                           >
                             <Cast className="h-4 w-4" />
@@ -653,7 +653,7 @@ export const View: React.FC = () => {
                                 void videoRef.current.requestFullscreen();
                               }
                             }}
-                            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-white transition"
+                            className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition"
                             title={t('fullscreen')}
                           >
                             <Maximize2 className="h-4 w-4" />
@@ -673,9 +673,9 @@ export const View: React.FC = () => {
 
                   {/* BARRA PAGINAZIONE SUPERIORE */}
                   {totalChannels > 0 && (
-                    <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-800 bg-slate-900/70 px-4 py-2.5 text-xs text-slate-300">
+                    <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white/70 px-4 py-2.5 text-xs text-slate-600">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="font-bold text-white">
+                        <span className="font-bold text-slate-900">
                           {t('total_channels', { count: totalChannels })}
                         </span>
                         <span className="text-slate-500">|</span>
@@ -688,7 +688,7 @@ export const View: React.FC = () => {
                               className={`rounded-lg px-2.5 py-1 font-semibold transition ${
                                 pageSize === sz
                                   ? 'bg-cyan-500 text-slate-950 font-bold shadow-sm'
-                                  : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800 hover:text-white'
+                                  : 'bg-slate-100/80 text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                               }`}
                             >
                               {t('per_page', { count: sz })}
@@ -700,7 +700,7 @@ export const View: React.FC = () => {
                             className={`rounded-lg px-2.5 py-1 font-semibold transition ${
                               pageSize === 0
                                 ? 'bg-cyan-500 text-slate-950 font-bold shadow-sm'
-                                : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800 hover:text-white'
+                                : 'bg-slate-100/80 text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                             }`}
                           >
                             {t('all_channels_btn', { total: totalChannels })}
@@ -714,19 +714,19 @@ export const View: React.FC = () => {
                             type="button"
                             disabled={currentPage <= 1}
                             onClick={() => setPage((p) => Math.max(1, p - 1))}
-                            className="flex items-center gap-1 rounded-lg border border-slate-700 bg-slate-800 px-2.5 py-1 font-medium text-slate-200 transition hover:bg-slate-700 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="flex items-center gap-1 rounded-lg border border-slate-300 bg-slate-100 px-2.5 py-1 font-medium text-slate-800 transition hover:bg-slate-200 hover:text-slate-900 disabled:opacity-40 disabled:cursor-not-allowed"
                           >
                             <ChevronLeft className="h-3.5 w-3.5" />
                             <span>{t('page_prev')}</span>
                           </button>
-                          <span className="font-semibold text-cyan-300 px-1">
+                          <span className="font-semibold text-cyan-700 px-1">
                             {t('page_info', { page: currentPage, pages: totalPages })}
                           </span>
                           <button
                             type="button"
                             disabled={currentPage >= totalPages}
                             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                            className="flex items-center gap-1 rounded-lg border border-slate-700 bg-slate-800 px-2.5 py-1 font-medium text-slate-200 transition hover:bg-slate-700 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="flex items-center gap-1 rounded-lg border border-slate-300 bg-slate-100 px-2.5 py-1 font-medium text-slate-800 transition hover:bg-slate-200 hover:text-slate-900 disabled:opacity-40 disabled:cursor-not-allowed"
                           >
                             <span>{t('page_next')}</span>
                             <ChevronRight className="h-3.5 w-3.5" />
@@ -752,8 +752,8 @@ export const View: React.FC = () => {
                             onClick={() => setSelectedChannel(channel)}
                             className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl border p-3.5 transition-all duration-200 cursor-pointer ${
                               selectedChannel?.id === channel.id
-                                ? 'border-cyan-500/80 bg-gradient-to-b from-cyan-950/30 to-slate-900/90 shadow-lg shadow-cyan-500/10 ring-1 ring-cyan-500/50'
-                                : 'border-slate-850 bg-slate-900/60 hover:border-slate-700 hover:bg-slate-850/80 hover:shadow-md'
+                                ? 'border-cyan-500/80 bg-gradient-to-b from-cyan-950/30 to-slate-50/90 shadow-lg shadow-cyan-500/10 ring-1 ring-cyan-500/50'
+                                : 'border-slate-850 bg-white/60 hover:border-slate-300 hover:bg-slate-100/80 hover:shadow-md'
                             }`}
                           >
                             <div className="flex items-start justify-between gap-3">
@@ -769,7 +769,7 @@ export const View: React.FC = () => {
                                     void handleToggleFavorite(channel);
                                   }}
                                   className={`rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-amber-400 transition ${
-                                    channel.favorite ? 'text-amber-400' : ''
+                                    channel.favorite ? 'text-amber-600' : ''
                                   }`}
                                   title={t('favorite')}
                                 >
@@ -779,16 +779,16 @@ export const View: React.FC = () => {
                             </div>
 
                             <div className="mt-2.5">
-                              <h4 className="text-xs font-bold text-white truncate group-hover:text-cyan-300 transition">
+                              <h4 className="text-xs font-bold text-slate-900 truncate group-hover:text-cyan-700 transition">
                                 {channel.name}
                               </h4>
-                              <p className="text-[10px] text-slate-400 truncate mt-0.5">
+                              <p className="text-[10px] text-slate-500 truncate mt-0.5">
                                 {channel.group || t('generic_category')}
                               </p>
                             </div>
 
                             {/* Hover Play Button */}
-                            <div className="mt-3 flex items-center justify-between gap-1 border-t border-slate-800/80 pt-2">
+                            <div className="mt-3 flex items-center justify-between gap-1 border-t border-slate-200/80 pt-2">
                               <span className="text-[10px] font-mono text-slate-500">
                                 LCN {pageSize > 0 ? (currentPage - 1) * pageSize + idx + 1 : idx + 1}
                               </span>
@@ -798,7 +798,7 @@ export const View: React.FC = () => {
                                   e.stopPropagation();
                                   handlePlayInApp(channel);
                                 }}
-                                className="flex items-center gap-1 rounded-md bg-cyan-500/20 px-2 py-1 text-[10px] font-bold text-cyan-300 hover:bg-cyan-500/30 transition"
+                                className="flex items-center gap-1 rounded-md bg-cyan-500/20 px-2 py-1 text-[10px] font-bold text-cyan-700 hover:bg-cyan-500/30 transition"
                               >
                                 <Play className="h-3 w-3 fill-cyan-400" />
                                 <span>{t('watch')}</span>
@@ -810,24 +810,24 @@ export const View: React.FC = () => {
 
                       {/* BARRA PAGINAZIONE INFERIORE */}
                       {pageSize > 0 && totalPages > 1 && (
-                        <div className="mt-4 flex items-center justify-center gap-3 rounded-xl border border-slate-800 bg-slate-900/60 p-3 text-xs">
+                        <div className="mt-4 flex items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white/60 p-3 text-xs">
                           <button
                             type="button"
                             disabled={currentPage <= 1}
                             onClick={() => setPage((p) => Math.max(1, p - 1))}
-                            className="flex items-center gap-1 rounded-lg border border-slate-700 bg-slate-800 px-3 py-1.5 font-medium text-slate-200 transition hover:bg-slate-700 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="flex items-center gap-1 rounded-lg border border-slate-300 bg-slate-100 px-3 py-1.5 font-medium text-slate-800 transition hover:bg-slate-200 hover:text-slate-900 disabled:opacity-40 disabled:cursor-not-allowed"
                           >
                             <ChevronLeft className="h-4 w-4" />
                             <span>{t('page_prev')}</span>
                           </button>
-                          <span className="font-bold text-cyan-300 px-2">
+                          <span className="font-bold text-cyan-700 px-2">
                             {t('page_info', { page: currentPage, pages: totalPages })}
                           </span>
                           <button
                             type="button"
                             disabled={currentPage >= totalPages}
                             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                            className="flex items-center gap-1 rounded-lg border border-slate-700 bg-slate-800 px-3 py-1.5 font-medium text-slate-200 transition hover:bg-slate-700 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="flex items-center gap-1 rounded-lg border border-slate-300 bg-slate-100 px-3 py-1.5 font-medium text-slate-800 transition hover:bg-slate-200 hover:text-slate-900 disabled:opacity-40 disabled:cursor-not-allowed"
                           >
                             <span>{t('page_next')}</span>
                             <ChevronRight className="h-4 w-4" />
@@ -842,17 +842,17 @@ export const View: React.FC = () => {
               {/* TAB 2: GUIDA TV (EPG) */}
               {activeTab === 'epg' && (
                 <div className="flex flex-col gap-4">
-                  <div className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900/50 p-4">
+                  <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white/50 p-4">
                     <div>
-                      <h3 className="text-sm font-bold text-white mb-1">{t('epg_title')}</h3>
-                      <p className="text-xs text-slate-400">{t('epg_description')}</p>
+                      <h3 className="text-sm font-bold text-slate-900 mb-1">{t('epg_title')}</h3>
+                      <p className="text-xs text-slate-500">{t('epg_description')}</p>
                     </div>
                     {tvSettings.epg_url && (
                       <button
                         type="button"
                         disabled={epgRefreshing}
                         onClick={handleRefreshEpgNow}
-                        className="flex items-center gap-1.5 rounded-lg border border-cyan-500/40 bg-cyan-500/10 px-3 py-1.5 text-xs font-semibold text-cyan-300 hover:bg-cyan-500/20 transition disabled:opacity-50"
+                        className="flex items-center gap-1.5 rounded-lg border border-cyan-500/40 bg-cyan-500/10 px-3 py-1.5 text-xs font-semibold text-cyan-700 hover:bg-cyan-500/20 transition disabled:opacity-50"
                       >
                         <RefreshCw className={`h-3.5 w-3.5 ${epgRefreshing ? 'animate-spin' : ''}`} />
                         <span>{t('refresh')}</span>
@@ -861,7 +861,7 @@ export const View: React.FC = () => {
                   </div>
 
                   {epgStatusMessage && (
-                    <div className="rounded-lg bg-cyan-950/40 border border-cyan-500/30 px-3 py-2 text-xs text-cyan-300">
+                    <div className="rounded-lg bg-cyan-950/40 border border-cyan-500/30 px-3 py-2 text-xs text-cyan-700">
                       {epgStatusMessage}
                     </div>
                   )}
@@ -871,31 +871,31 @@ export const View: React.FC = () => {
                       <div
                         key={channel.id}
                         onClick={() => setSelectedChannel(channel)}
-                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl border border-slate-800/80 bg-slate-900/60 p-3 hover:border-slate-700 transition cursor-pointer"
+                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl border border-slate-200/80 bg-white/60 p-3 hover:border-slate-300 transition cursor-pointer"
                       >
                         <div className="flex items-center gap-3 min-w-[200px]">
                           <ChannelLogo url={channel.logo} name={channel.name} size="sm" />
                           <div>
-                            <h4 className="text-xs font-bold text-white">{channel.name}</h4>
-                            <span className="text-[10px] text-cyan-400">{channel.group || 'TV'}</span>
+                            <h4 className="text-xs font-bold text-slate-900">{channel.name}</h4>
+                            <span className="text-[10px] text-cyan-600">{channel.group || 'TV'}</span>
                           </div>
                         </div>
 
                         {/* Palinsesto reale o stato vuoto chiaro */}
                         <div className="flex-1 flex flex-col gap-1 max-w-lg">
                           <div className="flex items-center justify-between text-[11px]">
-                            <span className="font-semibold text-slate-200">
+                            <span className="font-semibold text-slate-800">
                               {channelEpg?.channel_id === channel.id && channelEpg.now
                                 ? channelEpg.now.title
                                 : t('live_broadcast_title', { name: channel.name })}
                             </span>
-                            <span className="text-slate-400 text-[10px]">
+                            <span className="text-slate-500 text-[10px]">
                               {channelEpg?.channel_id === channel.id && channelEpg.now?.time_remaining_min
                                 ? `${channelEpg.now.time_remaining_min} min rimasti`
                                 : 'In diretta'}
                             </span>
                           </div>
-                          <div className="h-1.5 w-full rounded-full bg-slate-800 overflow-hidden">
+                          <div className="h-1.5 w-full rounded-full bg-slate-100 overflow-hidden">
                             <div
                               className="h-full bg-gradient-to-r from-cyan-500 to-blue-500"
                               style={{
@@ -931,10 +931,10 @@ export const View: React.FC = () => {
               {/* TAB 3: SORGENTI & TUNER REALI */}
               {activeTab === 'tuners' && (
                 <div className="flex flex-col gap-4">
-                  <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-800 bg-slate-900/50 p-4">
+                  <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white/50 p-4">
                     <div>
-                      <h3 className="text-sm font-bold text-white mb-1">{t('tuners_title')}</h3>
-                      <p className="text-xs text-slate-400">{t('tuners_description')}</p>
+                      <h3 className="text-sm font-bold text-slate-900 mb-1">{t('tuners_title')}</h3>
+                      <p className="text-xs text-slate-500">{t('tuners_description')}</p>
                     </div>
 
                     <div className="flex items-center gap-2">
@@ -942,9 +942,9 @@ export const View: React.FC = () => {
                         type="button"
                         disabled={discoveringTuners}
                         onClick={handleDiscoverTuners}
-                        className="flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-200 hover:bg-slate-700 disabled:opacity-50 transition"
+                        className="flex items-center gap-1.5 rounded-lg border border-slate-300 bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-800 hover:bg-slate-200 disabled:opacity-50 transition"
                       >
-                        <RefreshCw className={`h-3.5 w-3.5 ${discoveringTuners ? 'animate-spin text-cyan-400' : ''}`} />
+                        <RefreshCw className={`h-3.5 w-3.5 ${discoveringTuners ? 'animate-spin text-cyan-600' : ''}`} />
                         <span>{discoveringTuners ? t('discovering_tuners') : t('discover_tuners')}</span>
                       </button>
 
@@ -961,13 +961,13 @@ export const View: React.FC = () => {
 
                   {/* Form Modale / Inline per aggiungere un tuner manuale */}
                   {showAddTunerModal && (
-                    <div className="rounded-xl border border-cyan-500/40 bg-slate-900/90 p-4 shadow-xl">
-                      <h4 className="text-xs font-bold text-white mb-3 flex items-center justify-between">
+                    <div className="rounded-xl border border-cyan-500/40 bg-white/90 p-4 shadow-xl">
+                      <h4 className="text-xs font-bold text-slate-900 mb-3 flex items-center justify-between">
                         <span>{t('add_tuner_manual')}</span>
                         <button
                           type="button"
                           onClick={() => setShowAddTunerModal(false)}
-                          className="text-slate-400 hover:text-white"
+                          className="text-slate-500 hover:text-slate-900"
                         >
                           ×
                         </button>
@@ -975,23 +975,23 @@ export const View: React.FC = () => {
                       <form onSubmit={handleAddTunerSubmit} className="flex flex-col gap-3">
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                           <div>
-                            <label className="block text-[11px] font-bold text-slate-400 mb-1">{t('tuner_name')}</label>
+                            <label className="block text-[11px] font-bold text-slate-500 mb-1">{t('tuner_name')}</label>
                             <input
                               type="text"
                               required
                               value={newTunerName}
                               onChange={(e) => setNewTunerName(e.target.value)}
                               placeholder="es. Ricevitore USB DVB-T2"
-                              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-white focus:border-cyan-500 focus:outline-none"
+                              className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs text-slate-900 focus:border-cyan-500 focus:outline-none"
                             />
                           </div>
 
                           <div>
-                            <label className="block text-[11px] font-bold text-slate-400 mb-1">{t('tuner_type')}</label>
+                            <label className="block text-[11px] font-bold text-slate-500 mb-1">{t('tuner_type')}</label>
                             <select
                               value={newTunerType}
                               onChange={(e) => setNewTunerType(e.target.value)}
-                              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-white focus:border-cyan-500 focus:outline-none"
+                              className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs text-slate-900 focus:border-cyan-500 focus:outline-none"
                             >
                               <option value="dvb_t2">DVB-T / DVB-T2 (Digitale Terrestre)</option>
                               <option value="hdhomerun">HDHomeRun (Sintonizzatore di Rete)</option>
@@ -1001,14 +1001,14 @@ export const View: React.FC = () => {
                           </div>
 
                           <div>
-                            <label className="block text-[11px] font-bold text-slate-400 mb-1">{t('tuner_device')}</label>
+                            <label className="block text-[11px] font-bold text-slate-500 mb-1">{t('tuner_device')}</label>
                             <input
                               type="text"
                               required
                               value={newTunerDevice}
                               onChange={(e) => setNewTunerDevice(e.target.value)}
                               placeholder="/dev/dvb/adapter0 oppure 192.168.1.150:65001"
-                              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-white focus:border-cyan-500 focus:outline-none"
+                              className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs text-slate-900 focus:border-cyan-500 focus:outline-none"
                             />
                           </div>
                         </div>
@@ -1017,7 +1017,7 @@ export const View: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => setShowAddTunerModal(false)}
-                            className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-300"
+                            className="rounded-lg border border-slate-300 bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-600"
                           >
                             Annulla
                           </button>
@@ -1034,15 +1034,15 @@ export const View: React.FC = () => {
 
                   {/* Lista Tuner o Empty State reale */}
                   {tunersList.length === 0 ? (
-                    <div className="rounded-xl border border-slate-800/80 bg-slate-900/40 p-8 text-center">
+                    <div className="rounded-xl border border-slate-200/80 bg-white/40 p-8 text-center">
                       <Radio className="mx-auto h-12 w-12 text-slate-600 mb-3" />
-                      <h4 className="text-sm font-bold text-white mb-1">Nessun Tuner Rilevato</h4>
-                      <p className="text-xs text-slate-400 max-w-md mx-auto mb-4">{t('tuners_empty')}</p>
+                      <h4 className="text-sm font-bold text-slate-900 mb-1">Nessun Tuner Rilevato</h4>
+                      <p className="text-xs text-slate-500 max-w-md mx-auto mb-4">{t('tuners_empty')}</p>
                       <div className="flex items-center justify-center gap-3">
                         <button
                           type="button"
                           onClick={handleDiscoverTuners}
-                          className="rounded-lg border border-slate-700 bg-slate-800 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-700 transition"
+                          className="rounded-lg border border-slate-300 bg-slate-100 px-4 py-2 text-xs font-semibold text-slate-900 hover:bg-slate-200 transition"
                         >
                           {t('discover_tuners')}
                         </button>
@@ -1060,13 +1060,13 @@ export const View: React.FC = () => {
                       {tunersList.map((tuner) => (
                         <div
                           key={tuner.id}
-                          className="flex flex-col justify-between rounded-xl border border-slate-800 bg-slate-900/70 p-4 shadow-sm"
+                          className="flex flex-col justify-between rounded-xl border border-slate-200 bg-white/70 p-4 shadow-sm"
                         >
                           <div>
                             <div className="flex items-center justify-between gap-2">
                               <div className="flex items-center gap-2">
-                                <Radio className="h-5 w-5 text-emerald-400" />
-                                <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                                <Radio className="h-5 w-5 text-emerald-600" />
+                                <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
                                   {tuner.type.toUpperCase()}
                                 </span>
                               </div>
@@ -1074,8 +1074,8 @@ export const View: React.FC = () => {
                                 <span
                                   className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
                                     tuner.status === 'online'
-                                      ? 'bg-emerald-500/20 text-emerald-300'
-                                      : 'bg-amber-500/20 text-amber-300'
+                                      ? 'bg-emerald-500/20 text-emerald-700'
+                                      : 'bg-amber-500/20 text-amber-700'
                                   }`}
                                 >
                                   {tuner.status.toUpperCase()}
@@ -1083,7 +1083,7 @@ export const View: React.FC = () => {
                                 <button
                                   type="button"
                                   onClick={() => handleRemoveTuner(tuner.id)}
-                                  className="text-slate-500 hover:text-rose-400 p-1"
+                                  className="text-slate-500 hover:text-rose-600 p-1"
                                   title={t('delete_tuner')}
                                 >
                                   <Trash2 className="h-3.5 w-3.5" />
@@ -1091,16 +1091,16 @@ export const View: React.FC = () => {
                               </div>
                             </div>
 
-                            <h4 className="mt-2 text-sm font-bold text-white">{tuner.name}</h4>
-                            <p className="text-[11px] font-mono text-slate-400 mt-0.5">{tuner.device}</p>
+                            <h4 className="mt-2 text-sm font-bold text-slate-900">{tuner.name}</h4>
+                            <p className="text-[11px] font-mono text-slate-500 mt-0.5">{tuner.device}</p>
 
-                            <div className="mt-4 flex flex-col gap-2 rounded-lg bg-slate-950/60 p-3 border border-slate-800">
+                            <div className="mt-4 flex flex-col gap-2 rounded-lg bg-slate-50/60 p-3 border border-slate-200">
                               <div>
-                                <div className="flex justify-between text-[10px] font-bold text-slate-400">
+                                <div className="flex justify-between text-[10px] font-bold text-slate-500">
                                   <span>{t('signal_strength')}</span>
-                                  <span className="text-emerald-400">{tuner.signal_strength}%</span>
+                                  <span className="text-emerald-600">{tuner.signal_strength}%</span>
                                 </div>
-                                <div className="mt-1 h-1.5 w-full rounded-full bg-slate-800 overflow-hidden">
+                                <div className="mt-1 h-1.5 w-full rounded-full bg-slate-100 overflow-hidden">
                                   <div
                                     className="h-full bg-emerald-500"
                                     style={{ width: `${tuner.signal_strength}%` }}
@@ -1109,11 +1109,11 @@ export const View: React.FC = () => {
                               </div>
 
                               <div>
-                                <div className="flex justify-between text-[10px] font-bold text-slate-400">
+                                <div className="flex justify-between text-[10px] font-bold text-slate-500">
                                   <span>{t('signal_quality')}</span>
-                                  <span className="text-cyan-400">{tuner.signal_quality}%</span>
+                                  <span className="text-cyan-600">{tuner.signal_quality}%</span>
                                 </div>
-                                <div className="mt-1 h-1.5 w-full rounded-full bg-slate-800 overflow-hidden">
+                                <div className="mt-1 h-1.5 w-full rounded-full bg-slate-100 overflow-hidden">
                                   <div
                                     className="h-full bg-cyan-500"
                                     style={{ width: `${tuner.signal_quality}%` }}
@@ -1122,21 +1122,21 @@ export const View: React.FC = () => {
                               </div>
 
                               <div className="flex justify-between pt-1 text-[11px]">
-                                <span className="text-slate-400">{t('channels_locked')}</span>
-                                <span className="font-bold text-white">{tuner.channels_count} canali</span>
+                                <span className="text-slate-500">{t('channels_locked')}</span>
+                                <span className="font-bold text-slate-900">{tuner.channels_count} canali</span>
                               </div>
                             </div>
                           </div>
 
-                          <div className="mt-4 pt-3 border-t border-slate-800">
+                          <div className="mt-4 pt-3 border-t border-slate-200">
                             <button
                               type="button"
                               disabled={scanningTunerId === tuner.id}
                               onClick={() => handleScanTuner(tuner.id)}
-                              className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-xs font-semibold text-slate-200 hover:bg-slate-700 disabled:opacity-50 transition"
+                              className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-slate-300 bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-200 disabled:opacity-50 transition"
                             >
                               <RefreshCw
-                                className={`h-3.5 w-3.5 ${scanningTunerId === tuner.id ? 'animate-spin text-cyan-400' : ''}`}
+                                className={`h-3.5 w-3.5 ${scanningTunerId === tuner.id ? 'animate-spin text-cyan-600' : ''}`}
                               />
                               <span>{scanningTunerId === tuner.id ? t('scanning') : t('scan_frequencies')}</span>
                             </button>
@@ -1152,9 +1152,9 @@ export const View: React.FC = () => {
               {activeTab === 'playlists' && (
                 <div className="flex flex-col gap-6 max-w-4xl">
                   {/* Playlist Esistenti */}
-                  <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
-                    <h3 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
-                      <ListVideo className="h-4 w-4 text-purple-400" />
+                  <div className="rounded-xl border border-slate-200 bg-white/60 p-4">
+                    <h3 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
+                      <ListVideo className="h-4 w-4 text-purple-600" />
                       <span>{t('active_playlists')}</span>
                     </h3>
 
@@ -1165,11 +1165,11 @@ export const View: React.FC = () => {
                         {data.playlists.map((pl) => (
                           <div
                             key={pl.id}
-                            className="flex items-center justify-between gap-3 rounded-lg border border-slate-800 bg-slate-950/70 p-3"
+                            className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-slate-50/70 p-3"
                           >
                             <div>
-                              <h4 className="text-xs font-bold text-white">{pl.name}</h4>
-                              <p className="text-[10px] text-slate-400">
+                              <h4 className="text-xs font-bold text-slate-900">{pl.name}</h4>
+                              <p className="text-[10px] text-slate-500">
                                 {pl.source === 'url' ? t('source_remote_url') : t('source_uploaded_file')} ·{' '}
                                 {pl.count} canali
                               </p>
@@ -1180,7 +1180,7 @@ export const View: React.FC = () => {
                                 <button
                                   type="button"
                                   onClick={() => void run(() => refreshPlaylist(pl.id))}
-                                  className="p-1.5 text-slate-400 hover:text-white transition"
+                                  className="p-1.5 text-slate-500 hover:text-slate-900 transition"
                                   title={t('refresh')}
                                 >
                                   <RefreshCw className="h-4 w-4" />
@@ -1189,7 +1189,7 @@ export const View: React.FC = () => {
                               <button
                                 type="button"
                                 onClick={() => void run(() => removePlaylist(pl.id))}
-                                className="p-1.5 text-rose-400 hover:text-rose-300 transition"
+                                className="p-1.5 text-rose-600 hover:text-rose-700 transition"
                                 title={t('delete')}
                               >
                                 <Trash2 className="h-4 w-4" />
@@ -1202,8 +1202,8 @@ export const View: React.FC = () => {
                   </div>
 
                   {/* Aggiunta nuova playlist via URL */}
-                  <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
-                    <h3 className="text-sm font-bold text-white mb-3">{t('add_playlist_url_title')}</h3>
+                  <div className="rounded-xl border border-slate-200 bg-white/60 p-4">
+                    <h3 className="text-sm font-bold text-slate-900 mb-3">{t('add_playlist_url_title')}</h3>
                     <form
                       onSubmit={async (e) => {
                         e.preventDefault();
@@ -1215,25 +1215,25 @@ export const View: React.FC = () => {
                       className="flex flex-col gap-3"
                     >
                       <div>
-                        <label className="block text-[11px] font-bold text-slate-400 mb-1">{t('playlist_name')}</label>
+                        <label className="block text-[11px] font-bold text-slate-500 mb-1">{t('playlist_name')}</label>
                         <input
                           type="text"
                           required
                           value={newPlaylistName}
                           onChange={(e) => setNewPlaylistName(e.target.value)}
                           placeholder="es. Canali Nazionali & Sport"
-                          className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-white focus:border-cyan-500 focus:outline-none"
+                          className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs text-slate-900 focus:border-cyan-500 focus:outline-none"
                         />
                       </div>
                       <div>
-                        <label className="block text-[11px] font-bold text-slate-400 mb-1">{t('playlist_url')}</label>
+                        <label className="block text-[11px] font-bold text-slate-500 mb-1">{t('playlist_url')}</label>
                         <input
                           type="url"
                           required
                           value={newPlaylistUrl}
                           onChange={(e) => setNewPlaylistUrl(e.target.value)}
                           placeholder="https://provider.example/live/playlist.m3u8"
-                          className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-white focus:border-cyan-500 focus:outline-none"
+                          className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs text-slate-900 focus:border-cyan-500 focus:outline-none"
                         />
                       </div>
                       <button
@@ -1252,37 +1252,37 @@ export const View: React.FC = () => {
               {activeTab === 'settings' && (
                 <div className="flex flex-col gap-4 max-w-3xl">
                   {/* Sezione VPN Obbligatoria */}
-                  <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-5 shadow-sm">
+                  <div className="rounded-xl border border-slate-200 bg-white/60 p-5 shadow-sm">
                     <div className="flex items-center gap-2 mb-2">
-                      <Shield className="h-5 w-5 text-cyan-400" />
-                      <h3 className="text-sm font-bold text-white">{t('vpn_security_title')}</h3>
+                      <Shield className="h-5 w-5 text-cyan-600" />
+                      <h3 className="text-sm font-bold text-slate-900">{t('vpn_security_title')}</h3>
                     </div>
-                    <p className="text-xs text-slate-400 mb-4">{t('vpn_required_desc')}</p>
+                    <p className="text-xs text-slate-500 mb-4">{t('vpn_required_desc')}</p>
 
                     <div className="flex flex-col gap-4 text-xs">
-                      <div className="flex items-center justify-between p-3 rounded-lg bg-slate-950 border border-slate-800">
+                      <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-200">
                         <div>
-                          <label className="font-semibold text-slate-200 block">{t('vpn_required_label')}</label>
+                          <label className="font-semibold text-slate-800 block">{t('vpn_required_label')}</label>
                           <span className="text-[11px] text-slate-500">Blocca i flussi IPTV se non protetti da VPN</span>
                         </div>
                         <input
                           type="checkbox"
                           checked={tvSettings.vpn_required}
                           onChange={(e) => handleToggleVpnRequired(e.target.checked)}
-                          className="h-4 w-4 rounded border-slate-700 text-cyan-600 focus:ring-cyan-500"
+                          className="h-4 w-4 rounded border-slate-300 text-cyan-600 focus:ring-cyan-500"
                         />
                       </div>
 
                       {tvSettings.vpn_required && (
                         <div>
-                          <label className="block font-semibold text-slate-200 mb-1">{t('vpn_profile_label')}</label>
+                          <label className="block font-semibold text-slate-800 mb-1">{t('vpn_profile_label')}</label>
                           <input
                             type="text"
                             value={tvSettings.vpn_profile}
                             onChange={(e) => setTvSettings({ ...tvSettings, vpn_profile: e.target.value })}
                             onBlur={(e) => handleUpdateVpnProfile(e.target.value.trim())}
                             placeholder={t('vpn_profile_placeholder')}
-                            className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-white focus:border-cyan-500 focus:outline-none"
+                            className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs text-slate-900 focus:border-cyan-500 focus:outline-none"
                           />
                         </div>
                       )}
@@ -1290,23 +1290,23 @@ export const View: React.FC = () => {
                   </div>
 
                   {/* Sezione Guida EPG XMLTV Reale */}
-                  <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-5 shadow-sm">
+                  <div className="rounded-xl border border-slate-200 bg-white/60 p-5 shadow-sm">
                     <div className="flex items-center gap-2 mb-2">
-                      <Calendar className="h-5 w-5 text-purple-400" />
-                      <h3 className="text-sm font-bold text-white">{t('epg_xmltv_title')}</h3>
+                      <Calendar className="h-5 w-5 text-purple-600" />
+                      <h3 className="text-sm font-bold text-slate-900">{t('epg_xmltv_title')}</h3>
                     </div>
-                    <p className="text-xs text-slate-400 mb-4">{t('epg_xmltv_desc')}</p>
+                    <p className="text-xs text-slate-500 mb-4">{t('epg_xmltv_desc')}</p>
 
                     <div className="flex flex-col gap-3 text-xs">
                       <div>
-                        <label className="block font-semibold text-slate-200 mb-1">{t('epg_xmltv_url')}</label>
+                        <label className="block font-semibold text-slate-800 mb-1">{t('epg_xmltv_url')}</label>
                         <input
                           type="url"
                           value={tvSettings.epg_url}
                           onChange={(e) => setTvSettings({ ...tvSettings, epg_url: e.target.value })}
                           onBlur={(e) => void updateSettings({ epg_url: e.target.value.trim() })}
                           placeholder="https://epg.example/it.xml.gz"
-                          className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-xs text-white focus:border-cyan-500 focus:outline-none"
+                          className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs text-slate-900 focus:border-cyan-500 focus:outline-none"
                         />
                       </div>
 
@@ -1321,19 +1321,19 @@ export const View: React.FC = () => {
                           <span>{t('refresh_epg_now')}</span>
                         </button>
                         {epgStatusMessage && (
-                          <span className="text-[11px] text-purple-300">{epgStatusMessage}</span>
+                          <span className="text-[11px] text-purple-700">{epgStatusMessage}</span>
                         )}
                       </div>
                     </div>
                   </div>
 
                   {/* Sezione Buffer e Relay */}
-                  <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-5 shadow-sm">
-                    <h3 className="text-sm font-bold text-white mb-3">{t('stream_settings_title')}</h3>
+                  <div className="rounded-xl border border-slate-200 bg-white/60 p-5 shadow-sm">
+                    <h3 className="text-sm font-bold text-slate-900 mb-3">{t('stream_settings_title')}</h3>
                     <div className="flex flex-col gap-4 text-xs">
                       <div>
-                        <label className="block font-semibold text-slate-200 mb-1">{t('buffer_size_label')}</label>
-                        <p className="text-[11px] text-slate-400 mb-2">{t('buffer_size_desc')}</p>
+                        <label className="block font-semibold text-slate-800 mb-1">{t('buffer_size_label')}</label>
+                        <p className="text-[11px] text-slate-500 mb-2">{t('buffer_size_desc')}</p>
                         <select
                           value={tvSettings.buffer_size}
                           onChange={(e) => {
@@ -1341,7 +1341,7 @@ export const View: React.FC = () => {
                             setTvSettings({ ...tvSettings, buffer_size: val });
                             void updateSettings({ buffer_size: val });
                           }}
-                          className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-white"
+                          className="w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-1.5 text-slate-900"
                         >
                           <option value="low">{t('buffer_low')}</option>
                           <option value="medium">{t('buffer_medium')}</option>
@@ -1349,10 +1349,10 @@ export const View: React.FC = () => {
                         </select>
                       </div>
 
-                      <div className="pt-3 border-t border-slate-800">
-                        <label className="block font-semibold text-slate-200 mb-1">{t('relay_signature_label')}</label>
-                        <p className="text-[11px] text-slate-400 mb-2">{t('relay_signature_desc')}</p>
-                        <span className="inline-flex items-center rounded-md bg-emerald-500/20 px-2.5 py-1 text-[11px] font-semibold text-emerald-400">
+                      <div className="pt-3 border-t border-slate-200">
+                        <label className="block font-semibold text-slate-800 mb-1">{t('relay_signature_label')}</label>
+                        <p className="text-[11px] text-slate-500 mb-2">{t('relay_signature_desc')}</p>
+                        <span className="inline-flex items-center rounded-md bg-emerald-500/20 px-2.5 py-1 text-[11px] font-semibold text-emerald-600">
                           {t('secure_relay_active')}
                         </span>
                       </div>
@@ -1372,51 +1372,51 @@ export const View: React.FC = () => {
             {selectedChannel ? (
               <div className="flex flex-col gap-4 text-xs">
                 {/* Logo grande canale */}
-                <div className="aspect-video w-full rounded-2xl overflow-hidden bg-slate-900/80 flex items-center justify-center border border-slate-800 p-4">
+                <div className="aspect-video w-full rounded-2xl overflow-hidden bg-white/80 flex items-center justify-center border border-slate-200 p-4">
                   <ChannelLogo url={selectedChannel.logo} name={selectedChannel.name} size="hero" />
                 </div>
 
                 <div>
-                  <h4 className="font-bold text-slate-100 text-sm">{selectedChannel.name}</h4>
-                  <p className="text-cyan-400 text-xs">{selectedChannel.group || t('generic_category')}</p>
+                  <h4 className="font-bold text-slate-900 text-sm">{selectedChannel.name}</h4>
+                  <p className="text-cyan-600 text-xs">{selectedChannel.group || t('generic_category')}</p>
                 </div>
 
                 {/* Dati EPG del canale */}
-                <div className="flex flex-col gap-2 rounded-lg border border-slate-800 bg-slate-900/60 p-3">
-                  <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                <div className="flex flex-col gap-2 rounded-lg border border-slate-200 bg-white/60 p-3">
+                  <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-500">
                     {t('on_air_now')}
                   </span>
                   {channelEpg?.now ? (
                     <>
-                      <div className="font-semibold text-white">{channelEpg.now.title}</div>
-                      <p className="text-[11px] text-slate-400 leading-relaxed">{channelEpg.now.description}</p>
+                      <div className="font-semibold text-slate-900">{channelEpg.now.title}</div>
+                      <p className="text-[11px] text-slate-500 leading-relaxed">{channelEpg.now.description}</p>
                       {channelEpg.now.progress !== undefined && (
                         <div className="mt-1">
-                          <div className="h-1.5 w-full rounded-full bg-slate-800 overflow-hidden">
+                          <div className="h-1.5 w-full rounded-full bg-slate-100 overflow-hidden">
                             <div
                               className="h-full bg-cyan-400"
                               style={{ width: `${channelEpg.now.progress}%` }}
                             />
                           </div>
-                          <span className="text-[10px] text-slate-400 mt-1 block">
+                          <span className="text-[10px] text-slate-500 mt-1 block">
                             {channelEpg.now.time_remaining_min} {t('minutes_remaining')}
                           </span>
                         </div>
                       )}
                     </>
                   ) : (
-                    <p className="text-[11px] text-slate-400">{t('epg_no_schedule')}</p>
+                    <p className="text-[11px] text-slate-500">{t('epg_no_schedule')}</p>
                   )}
                 </div>
 
                 {/* Prossimo Programma */}
                 {channelEpg?.next && (
-                  <div className="flex flex-col gap-1 rounded-lg border border-slate-800 bg-slate-900/40 p-3">
-                    <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  <div className="flex flex-col gap-1 rounded-lg border border-slate-200 bg-white/40 p-3">
+                    <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-500">
                       {t('next_program')}
                     </span>
-                    <span className="font-semibold text-slate-200">{channelEpg.next.title}</span>
-                    <span className="text-[10px] text-slate-400">{channelEpg.next.genre}</span>
+                    <span className="font-semibold text-slate-800">{channelEpg.next.title}</span>
+                    <span className="text-[10px] text-slate-500">{channelEpg.next.genre}</span>
                   </div>
                 )}
 
@@ -1434,18 +1434,18 @@ export const View: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setIsCastOpen(true)}
-                    className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-cyan-500/40 bg-cyan-500/10 px-3 py-2 text-xs font-semibold text-cyan-300 hover:bg-cyan-500/20 transition"
+                    className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-cyan-500/40 bg-cyan-500/10 px-3 py-2 text-xs font-semibold text-cyan-700 hover:bg-cyan-500/20 transition"
                   >
-                    <Cast className="h-3.5 w-3.5 text-cyan-400" />
+                    <Cast className="h-3.5 w-3.5 text-cyan-600" />
                     <span>{t('cast_to_selected')}</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => void handleToggleFavorite(selectedChannel)}
-                    className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900 px-3 py-1.5 text-xs text-slate-300 hover:text-white transition"
+                    className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-600 hover:text-slate-900 transition"
                   >
-                    <Star className={`h-3.5 w-3.5 ${selectedChannel.favorite ? 'fill-amber-400 text-amber-400' : ''}`} />
+                    <Star className={`h-3.5 w-3.5 ${selectedChannel.favorite ? 'fill-amber-400 text-amber-600' : ''}`} />
                     <span>{selectedChannel.favorite ? t('remove_favorite') : t('add_favorite')}</span>
                   </button>
                 </div>

@@ -4,8 +4,8 @@
   flex-direction: column;
   height: 100%;
   width: 100%;
-  background-color: #0b1120;
-  color: #f8fafc;
+  background-color: #f8fafc;
+  color: #0f172a;
   overflow: hidden;
   user-select: none;
 }
@@ -23,8 +23,8 @@
   opacity: 1;
   transform: scale(1.04);
   font-weight: 800;
-  color: #38bdf8;
-  text-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
+  color: #0369a1;
+  text-shadow: none;
   background: rgba(56, 189, 248, 0.12);
 }
 
@@ -46,7 +46,7 @@
 
 .nexus-dropzone {
   border: 2px dashed rgba(56, 189, 248, 0.4);
-  background: rgba(15, 23, 42, 0.6);
+  background: rgba(241, 245, 249, 0.8);
   transition: all 0.2s ease;
 }
 

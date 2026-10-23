@@ -86,7 +86,7 @@ export const View: React.FC = () => {
       defaultName: 'Calcio',
       icon: '⚽',
       color: 'emerald',
-      gradient: 'from-emerald-900/30 to-slate-900',
+      gradient: 'from-emerald-900/30 to-slate-50',
       category: 'team',
       activeCompetitions: 12,
       liveNow: true,
@@ -98,7 +98,7 @@ export const View: React.FC = () => {
       defaultName: 'Formula 1',
       icon: '🏎️',
       color: 'red',
-      gradient: 'from-red-900/30 to-slate-900',
+      gradient: 'from-red-900/30 to-slate-50',
       category: 'motors',
       activeCompetitions: 1,
       liveNow: true,
@@ -110,7 +110,7 @@ export const View: React.FC = () => {
       defaultName: 'MotoGP',
       icon: '🏍️',
       color: 'amber',
-      gradient: 'from-amber-900/30 to-slate-900',
+      gradient: 'from-amber-900/30 to-slate-50',
       category: 'motors',
       activeCompetitions: 3,
       liveNow: false,
@@ -122,7 +122,7 @@ export const View: React.FC = () => {
       defaultName: 'Pallacanestro',
       icon: '🏀',
       color: 'orange',
-      gradient: 'from-orange-900/30 to-slate-900',
+      gradient: 'from-orange-900/30 to-slate-50',
       category: 'team',
       activeCompetitions: 5,
       liveNow: false,
@@ -134,7 +134,7 @@ export const View: React.FC = () => {
       defaultName: 'Tennis',
       icon: '🎾',
       color: 'lime',
-      gradient: 'from-lime-900/30 to-slate-900',
+      gradient: 'from-lime-900/30 to-slate-50',
       category: 'racket',
       activeCompetitions: 4,
       liveNow: false,
@@ -146,7 +146,7 @@ export const View: React.FC = () => {
       defaultName: 'Pallavolo',
       icon: '🏐',
       color: 'cyan',
-      gradient: 'from-cyan-900/30 to-slate-900',
+      gradient: 'from-cyan-900/30 to-slate-50',
       category: 'team',
       activeCompetitions: 3,
       liveNow: false,
@@ -158,7 +158,7 @@ export const View: React.FC = () => {
       defaultName: 'Ciclismo',
       icon: '🚴',
       color: 'yellow',
-      gradient: 'from-yellow-900/30 to-slate-900',
+      gradient: 'from-yellow-900/30 to-slate-50',
       category: 'individual',
       activeCompetitions: 4,
       liveNow: false,
@@ -170,7 +170,7 @@ export const View: React.FC = () => {
       defaultName: 'Boxe & MMA',
       icon: '🥊',
       color: 'rose',
-      gradient: 'from-rose-900/30 to-slate-900',
+      gradient: 'from-rose-900/30 to-slate-50',
       category: 'combat',
       activeCompetitions: 3,
       liveNow: false,
@@ -182,7 +182,7 @@ export const View: React.FC = () => {
       defaultName: 'Rugby',
       icon: '🏉',
       color: 'teal',
-      gradient: 'from-teal-900/30 to-slate-900',
+      gradient: 'from-teal-900/30 to-slate-50',
       category: 'team',
       activeCompetitions: 3,
       liveNow: false,
@@ -194,7 +194,7 @@ export const View: React.FC = () => {
       defaultName: 'Football NFL',
       icon: '🏈',
       color: 'indigo',
-      gradient: 'from-indigo-900/30 to-slate-900',
+      gradient: 'from-indigo-900/30 to-slate-50',
       category: 'team',
       activeCompetitions: 2,
       liveNow: false,
@@ -206,7 +206,7 @@ export const View: React.FC = () => {
       defaultName: 'Baseball MLB',
       icon: '⚾',
       color: 'blue',
-      gradient: 'from-blue-900/30 to-slate-900',
+      gradient: 'from-blue-900/30 to-slate-50',
       category: 'team',
       activeCompetitions: 2,
       liveNow: false,
@@ -218,7 +218,7 @@ export const View: React.FC = () => {
       defaultName: 'Atletica & Nuoto',
       icon: '🏊',
       color: 'sky',
-      gradient: 'from-sky-900/30 to-slate-900',
+      gradient: 'from-sky-900/30 to-slate-50',
       category: 'individual',
       activeCompetitions: 4,
       liveNow: false,
@@ -230,7 +230,7 @@ export const View: React.FC = () => {
       defaultName: 'Hockey su Ghiaccio',
       icon: '🏒',
       color: 'blue',
-      gradient: 'from-blue-900/30 to-slate-900',
+      gradient: 'from-blue-900/30 to-slate-50',
       category: 'team',
       activeCompetitions: 4,
       liveNow: true,
@@ -307,7 +307,7 @@ export const View: React.FC = () => {
   ];
 
   return (
-    <div className="relative h-full w-full select-none overflow-hidden bg-slate-950 text-slate-100">
+    <div className="relative h-full w-full select-none overflow-hidden bg-slate-50 text-slate-900">
       <OSAppLayout
         sidebar={
           <OSSidebar
@@ -322,16 +322,16 @@ export const View: React.FC = () => {
               }
             }}
             footer={
-              <div className="flex flex-col gap-2 p-2 border-t border-slate-800">
+              <div className="flex flex-col gap-2 p-2 border-t border-slate-200">
                 <button
                   type="button"
                   onClick={() => setShowSettingsModal(true)}
-                  className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-slate-750 bg-slate-900/90 hover:bg-slate-850 px-3 py-2 text-xs font-semibold text-slate-200 transition"
+                  className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white/90 hover:bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-800 transition"
                 >
-                  <Sliders className="h-3.5 w-3.5 text-cyan-400" />
+                  <Sliders className="h-3.5 w-3.5 text-cyan-600" />
                   <span>Opzioni & Preferenze</span>
                 </button>
-                <div className="text-[10px] text-slate-400 text-center">
+                <div className="text-[10px] text-slate-500 text-center">
                   13 Discipline con Dirette TV
                 </div>
               </div>
@@ -341,13 +341,13 @@ export const View: React.FC = () => {
         content={
           <div className="flex h-full flex-col overflow-hidden">
             {/* Topbar */}
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 bg-slate-950/80 p-3.5 backdrop-blur-md">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-slate-50/80 p-3.5 backdrop-blur-md">
               <div className="flex items-center gap-3">
                 {selectedSport ? (
                   <button
                     type="button"
                     onClick={() => setSelectedSport(null)}
-                    className="flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-850 px-3.5 py-1.5 text-xs font-semibold text-slate-200 hover:bg-slate-750 transition"
+                    className="flex items-center gap-1.5 rounded-xl border border-slate-300 bg-slate-100 px-3.5 py-1.5 text-xs font-semibold text-slate-800 hover:bg-slate-200 transition"
                   >
                     <ArrowLeft className="h-3.5 w-3.5" />
                     <span>{t('back_to_sports')}</span>
@@ -355,11 +355,11 @@ export const View: React.FC = () => {
                 ) : (
                   <div className="flex items-center gap-2.5">
                     <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-500/10 border border-amber-500/20">
-                      <Trophy className="h-4 w-4 text-amber-400" />
+                      <Trophy className="h-4 w-4 text-amber-600" />
                     </div>
                     <div>
-                      <h2 className="text-sm font-bold text-white">{t('app_name')}</h2>
-                      <span className="text-[11px] text-slate-400">Hub Sportivo con Dati Ufficiali e Canali TV</span>
+                      <h2 className="text-sm font-bold text-slate-900">{t('app_name')}</h2>
+                      <span className="text-[11px] text-slate-500">Hub Sportivo con Dati Ufficiali e Canali TV</span>
                     </div>
                   </div>
                 )}
@@ -367,7 +367,7 @@ export const View: React.FC = () => {
                 {selectedSport && activeSportObj && (
                   <div className="flex items-center gap-2">
                     <span className="text-xl">{activeSportObj.icon}</span>
-                    <span className="text-sm font-bold text-white">{activeSportObj.defaultName}</span>
+                    <span className="text-sm font-bold text-slate-900">{activeSportObj.defaultName}</span>
                   </div>
                 )}
               </div>
@@ -375,13 +375,13 @@ export const View: React.FC = () => {
               <div className="flex items-center gap-2">
                 {!selectedSport && (
                   <div className="relative w-64">
-                    <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-slate-400" />
+                    <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-slate-500" />
                     <input
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder={t('search_sport')}
-                      className="w-full rounded-xl border border-slate-750 bg-slate-900/90 pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-400 focus:border-cyan-500 focus:outline-none"
+                      className="w-full rounded-xl border border-slate-200 bg-white/90 pl-8 pr-3 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:border-cyan-500 focus:outline-none"
                     />
                   </div>
                 )}
@@ -389,10 +389,10 @@ export const View: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowSettingsModal(true)}
-                  className="flex items-center gap-1.5 rounded-xl border border-slate-750 bg-slate-900/90 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-slate-800 hover:text-white transition"
+                  className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white/90 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition"
                   title="Preferenze e opzioni predefinite"
                 >
-                  <Sliders className="h-3.5 w-3.5 text-cyan-400" />
+                  <Sliders className="h-3.5 w-3.5 text-cyan-600" />
                   <span className="hidden sm:inline">Impostazioni</span>
                 </button>
               </div>
@@ -414,7 +414,7 @@ export const View: React.FC = () => {
                         className={`rounded-xl px-3.5 py-1.5 text-xs font-bold transition shadow-sm ${
                           selectedCategory === c.id
                             ? 'bg-gradient-to-r from-cyan-600 to-cyan-500 text-white shadow-cyan-500/20'
-                            : 'border border-slate-750 bg-slate-900/90 text-slate-300 hover:border-slate-600 hover:text-white'
+                            : 'border border-slate-200 bg-white/90 text-slate-600 hover:border-slate-300 hover:text-slate-900'
                         }`}
                       >
                         {c.label}
@@ -431,7 +431,7 @@ export const View: React.FC = () => {
                         <div
                           key={sp.id}
                           onClick={() => setSelectedSport(sp.id)}
-                          className={`group relative flex flex-col justify-between rounded-2xl border border-slate-750 bg-slate-900/95 p-5 shadow-lg hover:border-cyan-500/70 hover:shadow-cyan-500/10 hover:shadow-2xl transition-all duration-200 cursor-pointer overflow-hidden`}
+                          className={`group relative flex flex-col justify-between rounded-2xl border border-slate-200 bg-white/95 p-5 shadow-lg hover:border-cyan-500/70 hover:shadow-cyan-500/10 hover:shadow-2xl transition-all duration-200 cursor-pointer overflow-hidden`}
                         >
                           {/* Accent background soft glow */}
                           <div
@@ -444,17 +444,17 @@ export const View: React.FC = () => {
                                 {sp.icon}
                               </span>
 
-                              <span className="flex items-center gap-1.5 rounded-full bg-slate-800 border border-slate-700 px-3 py-1 text-[11px] font-bold text-cyan-300">
-                                <Tv className="h-3 w-3 text-cyan-400" />
+                              <span className="flex items-center gap-1.5 rounded-full bg-slate-100 border border-slate-300 px-3 py-1 text-[11px] font-bold text-cyan-700">
+                                <Tv className="h-3 w-3 text-cyan-600" />
                                 {sp.activeCompetitions} tornei
                               </span>
                             </div>
 
-                            <h3 className="mt-4 text-base font-bold text-white group-hover:text-cyan-300 transition">
+                            <h3 className="mt-4 text-base font-bold text-slate-900 group-hover:text-cyan-700 transition">
                               {sp.defaultName}
                             </h3>
 
-                            <p className="text-xs text-slate-300 mt-1">
+                            <p className="text-xs text-slate-600 mt-1">
                               Scheda a step con classifiche, risultati in tempo reale e canali TV.
                             </p>
 
@@ -462,7 +462,7 @@ export const View: React.FC = () => {
                               {sp.popularLeagues.slice(0, 3).map((lg) => (
                                 <span
                                   key={lg}
-                                  className="rounded-lg bg-slate-800/90 px-2.5 py-1 text-[11px] font-medium text-slate-200 border border-slate-700/60"
+                                  className="rounded-lg bg-slate-100/90 px-2.5 py-1 text-[11px] font-medium text-slate-800 border border-slate-300/60"
                                 >
                                   {lg}
                                 </span>
@@ -470,7 +470,7 @@ export const View: React.FC = () => {
                             </div>
                           </div>
 
-                          <div className="mt-5 pt-3.5 border-t border-slate-800 flex items-center justify-between text-xs font-bold text-cyan-400 group-hover:text-cyan-300 transition">
+                          <div className="mt-5 pt-3.5 border-t border-slate-200 flex items-center justify-between text-xs font-bold text-cyan-600 group-hover:text-cyan-700 transition">
                             <span>Apri Scheda Sport</span>
                             <ChevronRight className="h-4 w-4 transform group-hover:translate-x-1 transition" />
                           </div>
@@ -488,16 +488,16 @@ export const View: React.FC = () => {
       {/* MODALE IMPOSTAZIONI GLOBALI SPORT */}
       {showSettingsModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-          <div className="relative w-full max-w-lg rounded-2xl border border-slate-750 bg-slate-900 p-6 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div className="relative w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
               <div className="flex items-center gap-2">
-                <Sliders className="h-5 w-5 text-cyan-400" />
-                <h3 className="text-sm font-bold text-white">Preferenze e Opzioni Sport</h3>
+                <Sliders className="h-5 w-5 text-cyan-600" />
+                <h3 className="text-sm font-bold text-slate-900">Preferenze e Opzioni Sport</h3>
               </div>
               <button
                 type="button"
                 onClick={() => setShowSettingsModal(false)}
-                className="rounded-lg p-1 text-slate-400 hover:text-white"
+                className="rounded-lg p-1 text-slate-500 hover:text-slate-900"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -505,11 +505,11 @@ export const View: React.FC = () => {
 
             <div className="mt-4 flex flex-col gap-4 text-xs">
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">Sport Predefinito</label>
+                <label className="block text-slate-600 font-semibold mb-1">Sport Predefinito</label>
                 <select
                   value={globalPrefs.default_sport}
                   onChange={(e) => setGlobalPrefs({ ...globalPrefs, default_sport: e.target.value })}
-                  className="w-full rounded-xl border border-slate-750 bg-slate-950 px-3 py-2 text-xs text-white focus:border-cyan-500 focus:outline-none"
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-900 focus:border-cyan-500 focus:outline-none"
                 >
                   {sportsList.map((s) => (
                     <option key={s.id} value={s.id}>
@@ -520,23 +520,23 @@ export const View: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">Canale TV Predefinito per lo Sport</label>
+                <label className="block text-slate-600 font-semibold mb-1">Canale TV Predefinito per lo Sport</label>
                 <input
                   type="text"
                   value={globalPrefs.preferred_tv_channel || ''}
                   onChange={(e) => setGlobalPrefs({ ...globalPrefs, preferred_tv_channel: e.target.value })}
                   placeholder="Es. Sky Sport Calcio HD o DAZN 1 HD"
-                  className="w-full rounded-xl border border-slate-750 bg-slate-950 px-3 py-2 text-xs text-white focus:border-cyan-500 focus:outline-none"
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-900 focus:border-cyan-500 focus:outline-none"
                 />
               </div>
 
-              <div className="flex flex-col gap-2 pt-2 border-t border-slate-800">
-                <label className="flex items-center justify-between p-3 rounded-xl border border-slate-800 bg-slate-950/60 cursor-pointer">
+              <div className="flex flex-col gap-2 pt-2 border-t border-slate-200">
+                <label className="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-slate-50/60 cursor-pointer">
                   <div className="flex items-center gap-2.5">
-                    <Volume2 className="h-4 w-4 text-cyan-400" />
+                    <Volume2 className="h-4 w-4 text-cyan-600" />
                     <div>
-                      <span className="font-semibold text-white block">Annunci Vocali dell'Assistente</span>
-                      <span className="text-[10px] text-slate-400">Avvisa vocalmente in casa per inizio gare e gol</span>
+                      <span className="font-semibold text-slate-900 block">Annunci Vocali dell'Assistente</span>
+                      <span className="text-[10px] text-slate-500">Avvisa vocalmente in casa per inizio gare e gol</span>
                     </div>
                   </div>
                   <input
@@ -547,12 +547,12 @@ export const View: React.FC = () => {
                   />
                 </label>
 
-                <label className="flex items-center justify-between p-3 rounded-xl border border-slate-800 bg-slate-950/60 cursor-pointer">
+                <label className="flex items-center justify-between p-3 rounded-xl border border-slate-200 bg-slate-50/60 cursor-pointer">
                   <div className="flex items-center gap-2.5">
-                    <Bell className="h-4 w-4 text-amber-400" />
+                    <Bell className="h-4 w-4 text-amber-600" />
                     <div>
-                      <span className="font-semibold text-white block">Notifiche Popup Gol in Diretta</span>
-                      <span className="text-[10px] text-slate-400">Mostra un banner in tempo reale quando c'è un gol</span>
+                      <span className="font-semibold text-slate-900 block">Notifiche Popup Gol in Diretta</span>
+                      <span className="text-[10px] text-slate-500">Mostra un banner in tempo reale quando c'è un gol</span>
                     </div>
                   </div>
                   <input
@@ -565,17 +565,17 @@ export const View: React.FC = () => {
               </div>
 
               {saveStatus && (
-                <div className="rounded-xl bg-cyan-950/50 border border-cyan-500/30 p-2 text-center text-xs text-cyan-300">
+                <div className="rounded-xl bg-cyan-950/50 border border-cyan-500/30 p-2 text-center text-xs text-cyan-700">
                   {saveStatus}
                 </div>
               )}
             </div>
 
-            <div className="mt-5 flex items-center justify-end gap-2 border-t border-slate-800 pt-3">
+            <div className="mt-5 flex items-center justify-end gap-2 border-t border-slate-200 pt-3">
               <button
                 type="button"
                 onClick={() => setShowSettingsModal(false)}
-                className="rounded-xl border border-slate-750 px-4 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-800"
+                className="rounded-xl border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100"
               >
                 Annulla
               </button>

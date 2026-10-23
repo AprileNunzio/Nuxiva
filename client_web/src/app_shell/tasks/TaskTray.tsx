@@ -98,8 +98,8 @@ export const TaskTray: React.FC = () => {
                       {task.state === 'done' ? task.summary : task.state === 'error' ? t(`error_${task.error}`) : task.stage ? t(`stage_${task.stage}`) : task.steps.find((s) => s.state === 'running')?.text ?? t(`state_${task.state}`)}
                     </div>
                   </div>
-                  {(task.state === 'running' || task.state === 'queued') && task.feature !== 'projects' && (
-                    <button type="button" aria-label={t('cancel')} onClick={() => void cancelTask(task.id).then(refresh)} className="rounded-md p-1 text-slate-400 hover:bg-rose-50 hover:text-rose-500">
+                  {(task.state === 'running' || task.state === 'queued' || task.state === 'paused') && (
+                    <button type="button" aria-label={t('cancel')} onClick={() => void cancelTask(task).then(refresh).catch(() => undefined)} className="rounded-md p-1 text-slate-400 hover:bg-rose-50 hover:text-rose-500">
                       <X size={13} />
                     </button>
                   )}

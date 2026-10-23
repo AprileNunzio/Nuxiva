@@ -279,7 +279,7 @@ export function View() {
             onClick={() => openApp?.({ appId: 'places' })}
             title={t('open_places_app')}
           >
-            <Layers className="h-3.5 w-3.5 text-cyan-300" aria-hidden="true" />
+            <Layers className="h-3.5 w-3.5 text-cyan-700" aria-hidden="true" />
             <span className="hidden md:inline">{t('open_places_app')}</span>
           </Btn>
         </div>
@@ -287,7 +287,7 @@ export function View() {
     >
       {/* Action feedback message */}
       {actionMsg ? (
-        <div className="mb-4 rounded-xl border border-cyan-500/40 bg-cyan-950/60 px-4 py-2 text-xs font-semibold text-cyan-200">
+        <div className="mb-4 rounded-xl border border-cyan-500/40 bg-cyan-950/60 px-4 py-2 text-xs font-semibold text-cyan-800">
           {actionMsg}
         </div>
       ) : null}
@@ -327,7 +327,7 @@ export function View() {
       </StatRow>
 
       {/* Navigation tabs */}
-      <div className="my-4 flex flex-wrap gap-1.5 border-b border-slate-800 pb-2">
+      <div className="my-4 flex flex-wrap gap-1.5 border-b border-slate-200 pb-2">
         {(
           [
             ['devices', t('tab_devices'), Sliders],
@@ -345,8 +345,8 @@ export function View() {
             onClick={() => setTab(tabKey)}
             className={`inline-flex items-center gap-2 rounded-xl px-3 py-1.5 text-xs font-semibold transition ${
               tab === tabKey
-                ? 'bg-cyan-500/20 text-cyan-300 ring-1 ring-cyan-500/40'
-                : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200'
+                ? 'bg-cyan-500/20 text-cyan-700 ring-1 ring-cyan-500/40'
+                : 'text-slate-500 hover:bg-slate-100/60 hover:text-slate-800'
             }`}
           >
             <IconComponent className="h-4 w-4" aria-hidden="true" />
@@ -359,7 +359,7 @@ export function View() {
       {tab === 'devices' ? (
         <div className="space-y-4">
           {/* Controls & Filter Bar */}
-          <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-slate-800 bg-slate-950/60 p-3">
+          <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50/60 p-3">
             <div className="relative min-w-[200px] flex-1">
               <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" aria-hidden="true" />
               <input
@@ -373,7 +373,7 @@ export function View() {
             <select
               value={domainFilter}
               onChange={(e) => setDomainFilter(e.target.value)}
-              className="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-xs text-slate-200"
+              className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs text-slate-800"
             >
               <option value="all">{t('filter_domain_all')}</option>
               <option value="light">{t('filter_domain_light')}</option>
@@ -386,7 +386,7 @@ export function View() {
             <select
               value={roomFilter}
               onChange={(e) => setRoomFilter(e.target.value)}
-              className="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-xs text-slate-200"
+              className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs text-slate-800"
             >
               <option value="all">{t('filter_room_all')}</option>
               {areas.map((a) => (
@@ -410,12 +410,12 @@ export function View() {
                 return (
                   <div
                     key={entity.entity_id}
-                    className="flex flex-col justify-between rounded-2xl border border-slate-800 bg-gradient-to-br from-slate-900/80 to-slate-950 p-4 shadow-sm"
+                    className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-gradient-to-br from-white/80 to-slate-50 p-4 shadow-sm"
                   >
                     <div>
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0 flex-1">
-                          <h3 className="truncate text-sm font-bold text-slate-100" title={entity.name}>
+                          <h3 className="truncate text-sm font-bold text-slate-900" title={entity.name}>
                             {entity.name}
                           </h3>
                           <p className="truncate font-mono text-[11px] text-slate-500" title={entity.entity_id}>
@@ -436,17 +436,17 @@ export function View() {
                       </div>
 
                       {areaName ? (
-                        <div className="mt-2 inline-flex items-center gap-1 rounded-md border border-slate-800 bg-slate-950/80 px-2 py-0.5 text-[10px] font-medium text-slate-400">
-                          <Home className="h-3 w-3 text-cyan-400" aria-hidden="true" />
+                        <div className="mt-2 inline-flex items-center gap-1 rounded-md border border-slate-200 bg-slate-50/80 px-2 py-0.5 text-[10px] font-medium text-slate-500">
+                          <Home className="h-3 w-3 text-cyan-600" aria-hidden="true" />
                           {areaName}
                         </div>
                       ) : null}
 
                       {/* Attributes preview */}
-                      <div className="mt-2 space-y-1 text-[11px] text-slate-400">
+                      <div className="mt-2 space-y-1 text-[11px] text-slate-500">
                         {entity.attrs.temperature !== undefined ? (
                           <div className="flex items-center gap-1">
-                            <Thermometer className="h-3.5 w-3.5 text-amber-400" aria-hidden="true" />
+                            <Thermometer className="h-3.5 w-3.5 text-amber-600" aria-hidden="true" />
                             <span>{String(entity.attrs.temperature)} °C</span>
                           </div>
                         ) : null}
@@ -460,7 +460,7 @@ export function View() {
 
                     {/* Action buttons */}
                     {isControllable ? (
-                      <div className="mt-3 flex items-center gap-2 border-t border-slate-800/80 pt-2.5">
+                      <div className="mt-3 flex items-center gap-2 border-t border-slate-200/80 pt-2.5">
                         {entity.domain === 'light' || entity.domain === 'switch' ? (
                           <button
                             type="button"
@@ -470,8 +470,8 @@ export function View() {
                             }
                             className={`flex flex-1 items-center justify-center gap-1.5 rounded-xl border py-1.5 text-xs font-semibold transition ${
                               isOn
-                                ? 'border-emerald-500/50 bg-emerald-500/20 text-emerald-200 hover:brightness-125'
-                                : 'border-slate-700 bg-slate-900 text-slate-300 hover:border-cyan-500 hover:text-cyan-200'
+                                ? 'border-emerald-500/50 bg-emerald-500/20 text-emerald-800 hover:brightness-125'
+                                : 'border-slate-300 bg-white text-slate-600 hover:border-cyan-500 hover:text-cyan-800'
                             }`}
                           >
                             <Power className="h-3.5 w-3.5" aria-hidden="true" />
@@ -537,10 +537,10 @@ export function View() {
       {/* TAB 2: ROOMS & FLOORS */}
       {tab === 'rooms' ? (
         <div className="space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-800 bg-slate-950/60 p-3">
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50/60 p-3">
             <div>
-              <h3 className="text-sm font-bold text-slate-200">{t('tab_rooms')}</h3>
-              <p className="text-xs text-slate-400">
+              <h3 className="text-sm font-bold text-slate-800">{t('tab_rooms')}</h3>
+              <p className="text-xs text-slate-500">
                 Integrazione bidirezionale con l'applicazione Gestione Piani e Stanze (Places)
               </p>
             </div>
@@ -561,7 +561,7 @@ export function View() {
               <Panel
                 key={room.area_id}
                 title={room.name}
-                icon={<Home className="h-4 w-4 text-cyan-400" aria-hidden="true" />}
+                icon={<Home className="h-4 w-4 text-cyan-600" aria-hidden="true" />}
                 actions={
                   <Pill tone={room.occupied ? 'emerald' : 'slate'}>
                     {room.occupied ? t('occupied') : t('free')}
@@ -570,41 +570,41 @@ export function View() {
               >
                 <div className="space-y-3">
                   {room.floor_name ? (
-                    <div className="text-xs font-semibold text-slate-400">
-                      Piano: <span className="text-slate-200">{room.floor_name}</span>
+                    <div className="text-xs font-semibold text-slate-500">
+                      Piano: <span className="text-slate-800">{room.floor_name}</span>
                     </div>
                   ) : null}
 
                   <div className="grid grid-cols-2 gap-2">
-                    <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-2 text-center">
+                    <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-2 text-center">
                       <div className="text-[10px] font-semibold text-slate-500 uppercase">{t('temperature')}</div>
-                      <div className="font-mono text-sm font-bold text-amber-300">
+                      <div className="font-mono text-sm font-bold text-amber-700">
                         {room.temperature !== undefined ? `${room.temperature} °C` : '—'}
                       </div>
                     </div>
-                    <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-2 text-center">
+                    <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-2 text-center">
                       <div className="text-[10px] font-semibold text-slate-500 uppercase">{t('humidity')}</div>
-                      <div className="font-mono text-sm font-bold text-cyan-300">
+                      <div className="font-mono text-sm font-bold text-cyan-700">
                         {room.humidity !== undefined ? `${room.humidity} %` : '—'}
                       </div>
                     </div>
                   </div>
 
                   {/* Devices in room */}
-                  <div className="rounded-xl border border-slate-800/80 bg-slate-950/40 p-2.5">
-                    <div className="mb-1.5 flex items-center justify-between text-xs font-semibold text-slate-400">
+                  <div className="rounded-xl border border-slate-200/80 bg-slate-50/40 p-2.5">
+                    <div className="mb-1.5 flex items-center justify-between text-xs font-semibold text-slate-500">
                       <span>Dispositivi ({room.entities_count})</span>
                     </div>
                     <div className="max-h-36 overflow-y-auto space-y-1">
                       {room.entities.map((e) => (
                         <div
                           key={e.entity_id}
-                          className="flex items-center justify-between text-[11px] text-slate-300"
+                          className="flex items-center justify-between text-[11px] text-slate-600"
                         >
                           <span className="truncate">{e.name}</span>
                           <span
                             className={`font-mono text-[10px] ${
-                              e.state === 'on' ? 'text-emerald-400' : 'text-slate-500'
+                              e.state === 'on' ? 'text-emerald-600' : 'text-slate-500'
                             }`}
                           >
                             {e.state}
@@ -624,7 +624,7 @@ export function View() {
       {tab === 'automations' ? (
         <Panel
           title={t('tab_automations')}
-          icon={<Play className="h-4 w-4 text-cyan-400" aria-hidden="true" />}
+          icon={<Play className="h-4 w-4 text-cyan-600" aria-hidden="true" />}
         >
           {automations.length === 0 ? (
             <Empty>Nessuna automazione trovata in Home Assistant</Empty>
@@ -659,9 +659,9 @@ export function View() {
                     }
                   >
                     <div>
-                      <div className="font-bold text-slate-100">{auto.alias}</div>
+                      <div className="font-bold text-slate-900">{auto.alias}</div>
                       {auto.description ? (
-                        <div className="text-xs text-slate-400">{auto.description}</div>
+                        <div className="text-xs text-slate-500">{auto.description}</div>
                       ) : null}
                       <div className="font-mono text-[10px] text-slate-500">
                         {auto.entity_id} {auto.last_triggered ? `· Ultima: ${auto.last_triggered}` : ''}
@@ -679,7 +679,7 @@ export function View() {
       {tab === 'scenes' ? (
         <Panel
           title={t('tab_scenes')}
-          icon={<Layers className="h-4 w-4 text-cyan-400" aria-hidden="true" />}
+          icon={<Layers className="h-4 w-4 text-cyan-600" aria-hidden="true" />}
         >
           {sceneEntities.length === 0 ? (
             <Empty>Nessuna scena configurata in Home Assistant</Empty>
@@ -688,10 +688,10 @@ export function View() {
               {sceneEntities.map((scene) => (
                 <div
                   key={scene.entity_id}
-                  className="flex items-center justify-between rounded-2xl border border-slate-800 bg-slate-900/80 p-3.5"
+                  className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white/80 p-3.5"
                 >
                   <div className="min-w-0 flex-1">
-                    <h4 className="truncate text-sm font-bold text-slate-200">{scene.name}</h4>
+                    <h4 className="truncate text-sm font-bold text-slate-800">{scene.name}</h4>
                     <p className="font-mono text-[10px] text-slate-500">{scene.entity_id}</p>
                   </div>
                   <Btn
@@ -713,7 +713,7 @@ export function View() {
         <div className="space-y-4">
           <Panel
             title={t('energy_overview')}
-            icon={<Zap className="h-4 w-4 text-amber-400" aria-hidden="true" />}
+            icon={<Zap className="h-4 w-4 text-amber-600" aria-hidden="true" />}
             actions={
               <Btn
                 tone="cyan"
@@ -726,34 +726,34 @@ export function View() {
             }
           >
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-              <div className="rounded-2xl border border-amber-500/40 bg-gradient-to-br from-amber-950/40 to-slate-950 p-4 text-center">
-                <div className="text-xs font-semibold uppercase tracking-wider text-amber-300">
+              <div className="rounded-2xl border border-amber-500/40 bg-gradient-to-br from-amber-950/40 to-slate-50 p-4 text-center">
+                <div className="text-xs font-semibold uppercase tracking-wider text-amber-700">
                   {t('instant_power')}
                 </div>
-                <div className="mt-2 font-mono text-3xl font-black text-amber-400">
+                <div className="mt-2 font-mono text-3xl font-black text-amber-600">
                   {energy?.summary.total_power_w ?? 0} <span className="text-lg">W</span>
                 </div>
-                <div className="mt-1 text-[11px] text-slate-400">Potenza istantanea assorbita</div>
+                <div className="mt-1 text-[11px] text-slate-500">Potenza istantanea assorbita</div>
               </div>
 
-              <div className="rounded-2xl border border-emerald-500/40 bg-gradient-to-br from-emerald-950/40 to-slate-950 p-4 text-center">
-                <div className="text-xs font-semibold uppercase tracking-wider text-emerald-300">
+              <div className="rounded-2xl border border-emerald-500/40 bg-gradient-to-br from-emerald-950/40 to-slate-50 p-4 text-center">
+                <div className="text-xs font-semibold uppercase tracking-wider text-emerald-700">
                   {t('solar_power')}
                 </div>
-                <div className="mt-2 font-mono text-3xl font-black text-emerald-400">
+                <div className="mt-2 font-mono text-3xl font-black text-emerald-600">
                   {energy?.summary.total_solar_w ?? 0} <span className="text-lg">W</span>
                 </div>
-                <div className="mt-1 text-[11px] text-slate-400">Impianto fotovoltaico / solare</div>
+                <div className="mt-1 text-[11px] text-slate-500">Impianto fotovoltaico / solare</div>
               </div>
 
-              <div className="rounded-2xl border border-cyan-500/40 bg-gradient-to-br from-cyan-950/40 to-slate-950 p-4 text-center">
-                <div className="text-xs font-semibold uppercase tracking-wider text-cyan-300">
+              <div className="rounded-2xl border border-cyan-500/40 bg-gradient-to-br from-cyan-950/40 to-slate-50 p-4 text-center">
+                <div className="text-xs font-semibold uppercase tracking-wider text-cyan-700">
                   {t('net_power')}
                 </div>
-                <div className="mt-2 font-mono text-3xl font-black text-cyan-400">
+                <div className="mt-2 font-mono text-3xl font-black text-cyan-600">
                   {energy?.summary.net_power_w ?? 0} <span className="text-lg">W</span>
                 </div>
-                <div className="mt-1 text-[11px] text-slate-400">
+                <div className="mt-1 text-[11px] text-slate-500">
                   {((energy?.summary.net_power_w ?? 0) >= 0) ? 'Prelievo da rete' : 'Immissione in rete'}
                 </div>
               </div>
@@ -762,10 +762,10 @@ export function View() {
             {/* Live speech feedback if tested */}
             {assistResult ? (
               <div className="mt-4 rounded-xl border border-amber-500/50 bg-amber-950/40 p-3.5">
-                <div className="text-xs font-bold text-amber-300">Risposta Assist / Sensore Reale:</div>
-                <div className="mt-1 text-sm font-semibold text-slate-100">{assistResult.speech}</div>
+                <div className="text-xs font-bold text-amber-700">Risposta Assist / Sensore Reale:</div>
+                <div className="mt-1 text-sm font-semibold text-slate-900">{assistResult.speech}</div>
                 {assistResult.source ? (
-                  <div className="mt-1 font-mono text-[10px] text-slate-400">
+                  <div className="mt-1 font-mono text-[10px] text-slate-500">
                     Sorgente: {assistResult.source}
                   </div>
                 ) : null}
@@ -776,7 +776,7 @@ export function View() {
           {/* Breakdown per sensor */}
           <Panel
             title={t('consumption_breakdown')}
-            icon={<Sliders className="h-4 w-4 text-slate-400" aria-hidden="true" />}
+            icon={<Sliders className="h-4 w-4 text-slate-500" aria-hidden="true" />}
           >
             {(!energy || energy.power_sensors.length === 0) ? (
               <Empty>Nessun sensore di potenza rilevato</Empty>
@@ -786,13 +786,13 @@ export function View() {
                   <Row
                     key={s.entity_id}
                     actions={
-                      <div className="font-mono text-sm font-bold text-amber-400">
+                      <div className="font-mono text-sm font-bold text-amber-600">
                         {s.power_w !== undefined ? `${s.power_w} W` : `${s.raw_state || ''} ${s.unit}`}
                       </div>
                     }
                   >
                     <div>
-                      <div className="font-semibold text-slate-200">{s.name}</div>
+                      <div className="font-semibold text-slate-800">{s.name}</div>
                       <div className="font-mono text-[10px] text-slate-500">{s.entity_id}</div>
                     </div>
                   </Row>
@@ -808,9 +808,9 @@ export function View() {
         <div className="space-y-4">
           <Panel
             title={t('assist_title')}
-            icon={<MessageSquare className="h-4 w-4 text-cyan-400" aria-hidden="true" />}
+            icon={<MessageSquare className="h-4 w-4 text-cyan-600" aria-hidden="true" />}
           >
-            <p className="mb-3 text-xs text-slate-400">{t('assist_subtitle')}</p>
+            <p className="mb-3 text-xs text-slate-500">{t('assist_subtitle')}</p>
 
             {/* Quick chips */}
             <div className="mb-3 flex flex-wrap gap-2">
@@ -828,7 +828,7 @@ export function View() {
                     setAssistQuery(chip);
                     void handleAskAssist(chip);
                   }}
-                  className="rounded-lg border border-slate-700 bg-slate-900/80 px-2.5 py-1 text-xs text-slate-300 hover:border-cyan-500 hover:text-cyan-200"
+                  className="rounded-lg border border-slate-300 bg-white/80 px-2.5 py-1 text-xs text-slate-600 hover:border-cyan-500 hover:text-cyan-800"
                 >
                   {chip}
                 </button>
@@ -859,18 +859,18 @@ export function View() {
                     : 'border-rose-500/40 bg-rose-950/30'
                 }`}
               >
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-300">
+                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-600">
                   {assistResult.ok ? (
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400" aria-hidden="true" />
+                    <CheckCircle2 className="h-4 w-4 text-emerald-600" aria-hidden="true" />
                   ) : (
-                    <AlertTriangle className="h-4 w-4 text-rose-400" aria-hidden="true" />
+                    <AlertTriangle className="h-4 w-4 text-rose-600" aria-hidden="true" />
                   )}
                   {t('assist_response')}
                 </div>
-                <div className="mt-2 text-base font-medium text-slate-100">{assistResult.speech}</div>
+                <div className="mt-2 text-base font-medium text-slate-900">{assistResult.speech}</div>
                 {assistResult.source ? (
-                  <div className="mt-2 font-mono text-[11px] text-slate-400">
-                    {t('assist_source')} <span className="text-cyan-300">{assistResult.source}</span>
+                  <div className="mt-2 font-mono text-[11px] text-slate-500">
+                    {t('assist_source')} <span className="text-cyan-700">{assistResult.source}</span>
                   </div>
                 ) : null}
               </div>
@@ -883,7 +883,7 @@ export function View() {
       {tab === 'settings' ? (
         <Panel
           title={t('connection_info')}
-          icon={<Settings className="h-4 w-4 text-slate-400" aria-hidden="true" />}
+          icon={<Settings className="h-4 w-4 text-slate-500" aria-hidden="true" />}
           actions={
             <Btn
               tone="cyan"
@@ -896,30 +896,30 @@ export function View() {
         >
           <div className="space-y-3">
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3">
+              <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-3">
                 <div className="text-[10px] font-semibold uppercase text-slate-500">{t('ha_url')}</div>
-                <div className="mt-1 font-mono text-xs font-bold text-slate-200">
+                <div className="mt-1 font-mono text-xs font-bold text-slate-800">
                   {overview?.url || 'http://homeassistant.local:8123'}
                 </div>
               </div>
 
-              <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3">
+              <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-3">
                 <div className="text-[10px] font-semibold uppercase text-slate-500">{t('ha_version')}</div>
-                <div className="mt-1 font-mono text-xs font-bold text-slate-200">
+                <div className="mt-1 font-mono text-xs font-bold text-slate-800">
                   {overview?.ha_version || '2026.x'}
                 </div>
               </div>
 
-              <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3">
+              <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-3">
                 <div className="text-[10px] font-semibold uppercase text-slate-500">{t('total_entities')}</div>
-                <div className="mt-1 font-mono text-xs font-bold text-slate-200">
+                <div className="mt-1 font-mono text-xs font-bold text-slate-800">
                   {overview?.entities_count ?? entities.length}
                 </div>
               </div>
 
-              <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3">
+              <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-3">
                 <div className="text-[10px] font-semibold uppercase text-slate-500">{t('total_devices')}</div>
-                <div className="mt-1 font-mono text-xs font-bold text-slate-200">
+                <div className="mt-1 font-mono text-xs font-bold text-slate-800">
                   {overview?.devices_count ?? 0}
                 </div>
               </div>
@@ -932,7 +932,7 @@ export function View() {
       {tab === 'settings' ? <ConnectionPanel t={t} onSaved={loadData} /> : null}
       {tab !== 'settings' && (overview?.status === 'not_configured' || overview?.status === 'auth_failed') ? (
         <Panel title={t('conn_title')}>
-          <p className="mb-3 text-xs text-slate-400">{t(overview.status === 'auth_failed' ? 'conn_banner_auth' : 'conn_banner_missing')}</p>
+          <p className="mb-3 text-xs text-slate-500">{t(overview.status === 'auth_failed' ? 'conn_banner_auth' : 'conn_banner_missing')}</p>
           <Btn tone="cyan" onClick={() => setTab('settings')}>
             {t('conn_open')}
           </Btn>

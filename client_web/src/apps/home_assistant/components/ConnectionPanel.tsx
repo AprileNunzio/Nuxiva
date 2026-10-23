@@ -74,11 +74,11 @@ export const ConnectionPanel: React.FC<Props> = ({ t, onSaved }) => {
   return (
     <Panel title={t('conn_title')} actions={current ? <Pill tone={tone}>{t(`conn_status_${current.status}`)}</Pill> : null}>
       <div className="space-y-4">
-        <p className="text-xs text-slate-400">{t('conn_intro')}</p>
+        <p className="text-xs text-slate-500">{t('conn_intro')}</p>
         {current?.status === 'online' ? (
-          <p className="text-xs text-emerald-300">{t('conn_active', { url: current.activeUrl, version: current.version })}</p>
+          <p className="text-xs text-emerald-700">{t('conn_active', { url: current.activeUrl, version: current.version })}</p>
         ) : current?.error ? (
-          <p className="text-xs text-rose-300">{current.error}</p>
+          <p className="text-xs text-rose-700">{current.error}</p>
         ) : null}
 
         <div className="space-y-2">
@@ -108,7 +108,7 @@ export const ConnectionPanel: React.FC<Props> = ({ t, onSaved }) => {
               {t('conn_add')}
             </Btn>
             {suggestions.map((item) => (
-              <button key={item} type="button" className="rounded-lg border border-cyan-700/50 px-2 py-1 font-mono text-[11px] text-cyan-300 hover:bg-cyan-950/40" onClick={() => suggest(item)}>
+              <button key={item} type="button" className="rounded-lg border border-cyan-700/50 px-2 py-1 font-mono text-[11px] text-cyan-700 hover:bg-cyan-950/40" onClick={() => suggest(item)}>
                 + {item}
               </button>
             ))}
@@ -130,13 +130,13 @@ export const ConnectionPanel: React.FC<Props> = ({ t, onSaved }) => {
             onChange={(event) => setToken(event.target.value)}
           />
           {current?.tokenSet ? (
-            <label className="flex items-center gap-2 text-xs text-slate-400">
+            <label className="flex items-center gap-2 text-xs text-slate-500">
               <input type="checkbox" checked={clearToken} onChange={(event) => setClearToken(event.target.checked)} />
               {t('conn_token_clear')}
             </label>
           ) : null}
-          <details className="text-xs text-slate-400">
-            <summary className="cursor-pointer text-cyan-300">{t('conn_token_how')}</summary>
+          <details className="text-xs text-slate-500">
+            <summary className="cursor-pointer text-cyan-700">{t('conn_token_how')}</summary>
             <ol className="mt-2 list-decimal space-y-1 pl-5">
               <li>{t('conn_step_1')}</li>
               <li>{t('conn_step_2')}</li>
@@ -146,7 +146,7 @@ export const ConnectionPanel: React.FC<Props> = ({ t, onSaved }) => {
           </details>
         </div>
 
-        <label className="flex items-start gap-2 text-xs text-slate-300">
+        <label className="flex items-start gap-2 text-xs text-slate-600">
           <input className="mt-0.5" type="checkbox" checked={verifySsl} onChange={(event) => setVerifySsl(event.target.checked)} />
           <span>
             {t('conn_verify')}
@@ -164,7 +164,7 @@ export const ConnectionPanel: React.FC<Props> = ({ t, onSaved }) => {
         </div>
 
         {message ? (
-          <p className={`text-xs ${message.tone === 'ok' ? 'text-emerald-300' : 'text-rose-300'}`} role="status">
+          <p className={`text-xs ${message.tone === 'ok' ? 'text-emerald-700' : 'text-rose-700'}`} role="status">
             {message.text}
           </p>
         ) : null}
@@ -172,11 +172,11 @@ export const ConnectionPanel: React.FC<Props> = ({ t, onSaved }) => {
         {results.length > 0 ? (
           <ul className="space-y-1.5">
             {results.map((item) => (
-              <li key={item.url} className="flex items-start gap-2 rounded-xl border border-slate-800 bg-slate-950/60 p-2.5 text-xs">
-                {item.ok ? <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" aria-hidden="true" /> : <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-rose-400" aria-hidden="true" />}
+              <li key={item.url} className="flex items-start gap-2 rounded-xl border border-slate-200 bg-slate-50/60 p-2.5 text-xs">
+                {item.ok ? <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" aria-hidden="true" /> : <XCircle className="mt-0.5 h-4 w-4 shrink-0 text-rose-600" aria-hidden="true" />}
                 <div className="min-w-0">
-                  <div className="truncate font-mono text-slate-200">{item.url}</div>
-                  <div className={item.ok ? 'text-emerald-300' : 'text-rose-300'}>
+                  <div className="truncate font-mono text-slate-800">{item.url}</div>
+                  <div className={item.ok ? 'text-emerald-700' : 'text-rose-700'}>
                     {item.ok ? t('conn_result_ok', { version: item.version, name: item.name || '—', ms: item.ms }) : item.message || t(`conn_state_${item.state}`)}
                   </div>
                 </div>

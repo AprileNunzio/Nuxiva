@@ -38,4 +38,7 @@ export const loadTasks = (signal?: AbortSignal) => requestJson<TaskSnapshot>('/a
 export const answerTask = (id: string, action: string) =>
   requestJson(`/api/tasks/${encodeURIComponent(id)}/answer`, { method: 'POST', body: JSON.stringify({ action }) });
 
-export const cancelTask = (id: string) => requestJson(`/api/tasks/${encodeURIComponent(id)}/cancel`, { method: 'POST' });
+export const cancelTask = (task: Pick<TaskRow, 'id' | 'feature'>) =>
+  task.feature === 'projects'
+    ? requestJson(`/api/projects/${encodeURIComponent(task.id.replace(/^project:/, ''))}/cancel`, { method: 'POST' })
+    : requestJson(`/api/tasks/${encodeURIComponent(task.id)}/cancel`, { method: 'POST' });

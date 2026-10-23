@@ -34,10 +34,10 @@ export const ChannelLogo: React.FC<ChannelLogoProps> = ({
   if (!url || error) {
     return (
       <div
-        className={`flex shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-slate-800 via-slate-850 to-slate-900 border border-slate-700/60 font-bold text-cyan-300 shadow-md select-none transition-all ${dimensions} ${className}`}
+        className={`flex shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-slate-50 via-slate-850 to-slate-50 border border-slate-300/60 font-bold text-cyan-700 shadow-md select-none transition-all ${dimensions} ${className}`}
       >
         <div className="flex flex-col items-center justify-center gap-0.5">
-          <Tv className="h-4 w-4 text-cyan-400/80" />
+          <Tv className="h-4 w-4 text-cyan-600/80" />
           <span className="font-mono tracking-wider text-[11px] font-extrabold">{initials}</span>
         </div>
       </div>
@@ -48,7 +48,7 @@ export const ChannelLogo: React.FC<ChannelLogoProps> = ({
 
   return (
     <div
-      className={`flex shrink-0 items-center justify-center rounded-2xl bg-slate-900/90 border border-slate-700/60 p-1.5 overflow-hidden shadow-md backdrop-blur-sm transition-all group-hover:border-cyan-500/50 ${dimensions} ${className}`}
+      className={`flex shrink-0 items-center justify-center rounded-2xl bg-white/90 border border-slate-300/60 p-1.5 overflow-hidden shadow-md backdrop-blur-sm transition-all group-hover:border-cyan-500/50 ${dimensions} ${className}`}
     >
       <img
         src={src}

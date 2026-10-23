@@ -178,8 +178,8 @@ export const FootballModule: React.FC<FootballModuleProps> = ({ onOpenTvChannel 
 
       {/* Banner Notifica Salvataggio */}
       {saveSuccess && (
-        <div className="flex items-center gap-2 rounded-xl border border-emerald-500/40 bg-emerald-950/40 px-4 py-2.5 text-xs font-semibold text-emerald-300">
-          <Check className="h-4 w-4 text-emerald-400" />
+        <div className="flex items-center gap-2 rounded-xl border border-emerald-500/40 bg-emerald-950/40 px-4 py-2.5 text-xs font-semibold text-emerald-700">
+          <Check className="h-4 w-4 text-emerald-600" />
           <span>Impostazioni e preferenze salvate con successo nel profilo di casa!</span>
         </div>
       )}
@@ -187,9 +187,9 @@ export const FootballModule: React.FC<FootballModuleProps> = ({ onOpenTvChannel 
       {/* STEP 1: COMPETIZIONI */}
       {currentStep === 'competition' && (
         <div className="flex flex-col gap-4">
-          <div className="rounded-2xl border border-slate-750 bg-slate-900/90 p-4 shadow-sm">
-            <h3 className="text-sm font-bold text-white mb-1">Campionati e Coppe Ufficiali</h3>
-            <p className="text-xs text-slate-300">
+          <div className="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900 mb-1">Campionati e Coppe Ufficiali</h3>
+            <p className="text-xs text-slate-600">
               Seleziona la competizione per consultare tutte le squadre, la classifica reale e il calendario delle partite.
             </p>
           </div>
@@ -204,20 +204,20 @@ export const FootballModule: React.FC<FootballModuleProps> = ({ onOpenTvChannel 
                 }}
                 className={`flex items-center justify-between p-4 rounded-2xl border transition-all cursor-pointer ${
                   selectedLeague === lg.code
-                    ? 'border-cyan-500/80 bg-gradient-to-r from-cyan-950/40 to-slate-900 shadow-md ring-1 ring-cyan-500/40'
-                    : 'border-slate-800 bg-slate-900/80 hover:border-slate-700 hover:bg-slate-850'
+                    ? 'border-cyan-500/80 bg-gradient-to-r from-cyan-950/40 to-slate-50 shadow-md ring-1 ring-cyan-500/40'
+                    : 'border-slate-200 bg-white/80 hover:border-slate-300 hover:bg-slate-100'
                 }`}
               >
                 <div className="flex items-center gap-3">
                   <span className="text-3xl filter drop-shadow">{lg.flag}</span>
                   <div>
-                    <h4 className="text-sm font-bold text-white">{lg.name}</h4>
-                    <span className="text-xs text-slate-400">{lg.count} squadre iscritte</span>
+                    <h4 className="text-sm font-bold text-slate-900">{lg.name}</h4>
+                    <span className="text-xs text-slate-500">{lg.count} squadre iscritte</span>
                   </div>
                 </div>
                 <button
                   type="button"
-                  className="rounded-xl bg-cyan-600/20 border border-cyan-500/30 px-3 py-1.5 text-xs font-bold text-cyan-300 hover:bg-cyan-600/30 transition"
+                  className="rounded-xl bg-cyan-600/20 border border-cyan-500/30 px-3 py-1.5 text-xs font-bold text-cyan-700 hover:bg-cyan-600/30 transition"
                 >
                   Esplora
                 </button>
@@ -230,35 +230,35 @@ export const FootballModule: React.FC<FootballModuleProps> = ({ onOpenTvChannel 
       {/* STEP 2: CALENDARIO & LIVE */}
       {currentStep === 'schedule' && (
         <div className="flex flex-col gap-4">
-          <div className="flex items-center justify-between rounded-2xl border border-slate-750 bg-slate-900/90 p-4 shadow-sm">
+          <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm">
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-xl">{activeLeagueObj.flag}</span>
-                <h3 className="text-sm font-bold text-white">{activeLeagueObj.name} - Partite & Calendario Reale</h3>
+                <h3 className="text-sm font-bold text-slate-900">{activeLeagueObj.name} - Partite & Calendario Reale</h3>
               </div>
-              <p className="text-xs text-slate-300 mt-0.5">Dati in diretta e risultati ufficiali</p>
+              <p className="text-xs text-slate-600 mt-0.5">Dati in diretta e risultati ufficiali</p>
             </div>
             <button
               type="button"
               onClick={() => void loadLeagueData(selectedLeague)}
               disabled={isLoading}
-              className="flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-200 hover:bg-slate-750 transition disabled:opacity-50"
+              className="flex items-center gap-1.5 rounded-xl border border-slate-300 bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-800 hover:bg-slate-200 transition disabled:opacity-50"
             >
-              <RefreshCw className={`h-3.5 w-3.5 ${isLoading ? 'animate-spin text-cyan-400' : ''}`} />
+              <RefreshCw className={`h-3.5 w-3.5 ${isLoading ? 'animate-spin text-cyan-600' : ''}`} />
               <span>Aggiorna</span>
             </button>
           </div>
 
           {isLoading ? (
-            <div className="flex flex-col items-center justify-center p-12 text-slate-400">
-              <RefreshCw className="h-8 w-8 animate-spin text-cyan-400 mb-2" />
+            <div className="flex flex-col items-center justify-center p-12 text-slate-500">
+              <RefreshCw className="h-8 w-8 animate-spin text-cyan-600 mb-2" />
               <span className="text-xs font-semibold">Caricamento partite ufficiali...</span>
             </div>
           ) : matches.length === 0 ? (
-            <div className="flex flex-col items-center justify-center p-8 rounded-2xl border border-slate-800 bg-slate-900/40 text-center">
+            <div className="flex flex-col items-center justify-center p-8 rounded-2xl border border-slate-200 bg-white/40 text-center">
               <Calendar className="h-10 w-10 text-slate-600 mb-2" />
-              <h4 className="text-sm font-bold text-white mb-1">Nessuna partita programmata oggi</h4>
-              <p className="text-xs text-slate-400 max-w-md">
+              <h4 className="text-sm font-bold text-slate-900 mb-1">Nessuna partita programmata oggi</h4>
+              <p className="text-xs text-slate-500 max-w-md">
                 Non ci sono incontri in corso per questa giornata. Consulta la classifica o seleziona un altro campionato.
               </p>
             </div>
@@ -267,51 +267,51 @@ export const FootballModule: React.FC<FootballModuleProps> = ({ onOpenTvChannel 
               {matches.map((m) => (
                 <div
                   key={m.id}
-                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl border border-slate-800 bg-slate-900/80 hover:border-slate-700 transition"
+                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl border border-slate-200 bg-white/80 hover:border-slate-300 transition"
                 >
                   <div className="flex items-center gap-4 flex-1">
                     <div className="flex flex-col items-center min-w-[70px]">
                       <span
                         className={`text-xs font-bold px-2.5 py-1 rounded-lg ${
                           m.state === 'in'
-                            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 animate-pulse'
+                            ? 'bg-emerald-500/20 text-emerald-700 border border-emerald-500/40 animate-pulse'
                             : m.state === 'post'
-                            ? 'bg-slate-800 text-slate-300'
-                            : 'bg-cyan-500/20 text-cyan-300'
+                            ? 'bg-slate-100 text-slate-600'
+                            : 'bg-cyan-500/20 text-cyan-700'
                         }`}
                       >
                         {m.clock || (m.state === 'post' ? 'Finale' : 'In attesa')}
                       </span>
-                      {m.venue && <span className="text-[10px] text-slate-400 mt-1 truncate">{m.venue}</span>}
+                      {m.venue && <span className="text-[10px] text-slate-500 mt-1 truncate">{m.venue}</span>}
                     </div>
 
                     <div className="flex-1">
                       <div className="flex items-center justify-between max-w-sm">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-bold text-white">{m.home.name}</span>
+                          <span className="text-sm font-bold text-slate-900">{m.home.name}</span>
                           {favoriteTeams.includes(m.home.name) && (
-                            <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                            <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-600" />
                           )}
                         </div>
-                        <span className="text-base font-black font-mono text-cyan-300">
+                        <span className="text-base font-black font-mono text-cyan-700">
                           {m.home.score !== null && m.home.score !== undefined ? m.home.score : '-'}
                         </span>
                       </div>
 
                       <div className="flex items-center justify-between max-w-sm mt-1">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-bold text-white">{m.away.name}</span>
+                          <span className="text-sm font-bold text-slate-900">{m.away.name}</span>
                           {favoriteTeams.includes(m.away.name) && (
-                            <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                            <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-600" />
                           )}
                         </div>
-                        <span className="text-base font-black font-mono text-cyan-300">
+                        <span className="text-base font-black font-mono text-cyan-700">
                           {m.away.score !== null && m.away.score !== undefined ? m.away.score : '-'}
                         </span>
                       </div>
 
                       {m.events && m.events.length > 0 && (
-                        <p className="text-[11px] text-slate-300 mt-2 truncate">
+                        <p className="text-[11px] text-slate-600 mt-2 truncate">
                           ⚽ {m.events.map((e) => `${e.player} (${e.minute})`).join(' · ')}
                         </p>
                       )}
@@ -340,28 +340,28 @@ export const FootballModule: React.FC<FootballModuleProps> = ({ onOpenTvChannel 
       {/* STEP 3: CLASSIFICA REALE A 20 SQUADRE */}
       {currentStep === 'standings' && (
         <div className="flex flex-col gap-4">
-          <div className="flex items-center justify-between rounded-2xl border border-slate-750 bg-slate-900/90 p-4 shadow-sm">
+          <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm">
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-xl">{activeLeagueObj.flag}</span>
-                <h3 className="text-sm font-bold text-white">{activeLeagueObj.name} - Classifica Ufficiale Completa</h3>
+                <h3 className="text-sm font-bold text-slate-900">{activeLeagueObj.name} - Classifica Ufficiale Completa</h3>
               </div>
-              <p className="text-xs text-slate-300 mt-0.5">Tutte le 20 squadre con statistiche ufficiali</p>
+              <p className="text-xs text-slate-600 mt-0.5">Tutte le 20 squadre con statistiche ufficiali</p>
             </div>
             <button
               type="button"
               onClick={() => void loadLeagueData(selectedLeague)}
               disabled={isLoading}
-              className="flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-200 hover:bg-slate-750 transition disabled:opacity-50"
+              className="flex items-center gap-1.5 rounded-xl border border-slate-300 bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-800 hover:bg-slate-200 transition disabled:opacity-50"
             >
-              <RefreshCw className={`h-3.5 w-3.5 ${isLoading ? 'animate-spin text-cyan-400' : ''}`} />
+              <RefreshCw className={`h-3.5 w-3.5 ${isLoading ? 'animate-spin text-cyan-600' : ''}`} />
               <span>Ricarica</span>
             </button>
           </div>
 
-          <div className="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-900/80 shadow-md">
+          <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white/80 shadow-md">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-950/90 text-[11px] font-bold uppercase text-slate-400 border-b border-slate-800">
+              <thead className="bg-slate-50/90 text-[11px] font-bold uppercase text-slate-500 border-b border-slate-200">
                 <tr>
                   <th className="py-3 px-3.5">#</th>
                   <th className="py-3 px-3.5">Squadra</th>
@@ -373,7 +373,7 @@ export const FootballModule: React.FC<FootballModuleProps> = ({ onOpenTvChannel 
                   <th className="py-3 px-3.5 text-right">Punti</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60 font-mono">
+              <tbody className="divide-y divide-slate-200/60 font-mono">
                 {standings.length > 0
                   ? standings.map((s, idx) => {
                       const rank = s.rank || idx + 1;
@@ -390,49 +390,49 @@ export const FootballModule: React.FC<FootballModuleProps> = ({ onOpenTvChannel 
                             <span
                               className={`inline-block w-5 text-center rounded text-[11px] ${
                                 isUcl
-                                  ? 'bg-cyan-500/20 text-cyan-300 font-extrabold'
+                                  ? 'bg-cyan-500/20 text-cyan-700 font-extrabold'
                                   : isRelegation
-                                  ? 'bg-rose-500/20 text-rose-300'
-                                  : 'text-slate-400'
+                                  ? 'bg-rose-500/20 text-rose-700'
+                                  : 'text-slate-500'
                               }`}
                             >
                               {rank}
                             </span>
                           </td>
-                          <td className="py-3 px-3.5 font-sans font-semibold text-white flex items-center gap-2">
+                          <td className="py-3 px-3.5 font-sans font-semibold text-slate-900 flex items-center gap-2">
                             <span>{s.name}</span>
                             {favoriteTeams.includes(s.name) && (
-                              <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                              <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-600" />
                             )}
                           </td>
-                          <td className="py-3 px-3 text-center text-slate-300">{s.played}</td>
-                          <td className="py-3 px-3 text-center text-slate-300">{s.won}</td>
-                          <td className="py-3 px-3 text-center text-slate-300">{s.drawn}</td>
-                          <td className="py-3 px-3 text-center text-slate-300">{s.lost}</td>
-                          <td className="py-3 px-3 text-center text-slate-400">
+                          <td className="py-3 px-3 text-center text-slate-600">{s.played}</td>
+                          <td className="py-3 px-3 text-center text-slate-600">{s.won}</td>
+                          <td className="py-3 px-3 text-center text-slate-600">{s.drawn}</td>
+                          <td className="py-3 px-3 text-center text-slate-600">{s.lost}</td>
+                          <td className="py-3 px-3 text-center text-slate-500">
                             {s.diff > 0 ? `+${s.diff}` : s.diff}
                           </td>
-                          <td className="py-3 px-3.5 text-right font-bold text-cyan-300 text-sm">
+                          <td className="py-3 px-3.5 text-right font-bold text-cyan-700 text-sm">
                             {s.points}
                           </td>
                         </tr>
                       );
                     })
                   : teams.map((team, idx) => (
-                      <tr key={team.id || team.name} className="hover:bg-slate-800/40 transition">
-                        <td className="py-2.5 px-3.5 font-bold text-slate-400">{idx + 1}</td>
-                        <td className="py-2.5 px-3.5 font-sans font-semibold text-white flex items-center gap-2">
+                      <tr key={team.id || team.name} className="hover:bg-slate-100/40 transition">
+                        <td className="py-2.5 px-3.5 font-bold text-slate-500">{idx + 1}</td>
+                        <td className="py-2.5 px-3.5 font-sans font-semibold text-slate-900 flex items-center gap-2">
                           <span>{team.name}</span>
                           {favoriteTeams.includes(team.name) && (
-                            <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                            <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-600" />
                           )}
                         </td>
-                        <td className="py-2.5 px-3 text-center text-slate-400">-</td>
-                        <td className="py-2.5 px-3 text-center text-slate-400">-</td>
-                        <td className="py-2.5 px-3 text-center text-slate-400">-</td>
-                        <td className="py-2.5 px-3 text-center text-slate-400">-</td>
-                        <td className="py-2.5 px-3 text-center text-slate-400">-</td>
-                        <td className="py-2.5 px-3.5 text-right font-bold text-cyan-300">-</td>
+                        <td className="py-2.5 px-3 text-center text-slate-500">-</td>
+                        <td className="py-2.5 px-3 text-center text-slate-500">-</td>
+                        <td className="py-2.5 px-3 text-center text-slate-500">-</td>
+                        <td className="py-2.5 px-3 text-center text-slate-500">-</td>
+                        <td className="py-2.5 px-3 text-center text-slate-500">-</td>
+                        <td className="py-2.5 px-3.5 text-right font-bold text-cyan-700">-</td>
                       </tr>
                     ))}
               </tbody>
@@ -444,9 +444,9 @@ export const FootballModule: React.FC<FootballModuleProps> = ({ onOpenTvChannel 
       {/* STEP 4: DETTAGLI & STATISTICHE */}
       {currentStep === 'details' && (
         <div className="flex flex-col gap-4">
-          <div className="rounded-2xl border border-slate-750 bg-slate-900/90 p-4 shadow-sm">
-            <h3 className="text-sm font-bold text-white mb-1">Dettagli & Approfondimenti Squadre</h3>
-            <p className="text-xs text-slate-300">
+          <div className="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900 mb-1">Dettagli & Approfondimenti Squadre</h3>
+            <p className="text-xs text-slate-600">
               Visualizza tutte le 20 squadre iscritte con abbreviazioni, colori ufficiali e preferenze salvate.
             </p>
           </div>
@@ -457,22 +457,22 @@ export const FootballModule: React.FC<FootballModuleProps> = ({ onOpenTvChannel 
               return (
                 <div
                   key={t.id || t.name}
-                  className="flex items-center justify-between p-3.5 rounded-2xl border border-slate-800 bg-slate-900/80 hover:border-slate-700 transition"
+                  className="flex items-center justify-between p-3.5 rounded-2xl border border-slate-200 bg-white/80 hover:border-slate-300 transition"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-800 border border-slate-700 font-mono font-bold text-cyan-300 text-xs">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 border border-slate-300 font-mono font-bold text-cyan-700 text-xs">
                       {t.abbr || t.name.slice(0, 3).toUpperCase()}
                     </div>
                     <div>
-                      <h4 className="text-xs font-bold text-white">{t.name}</h4>
-                      <span className="text-[11px] text-slate-400">{t.short || t.name}</span>
+                      <h4 className="text-xs font-bold text-slate-900">{t.name}</h4>
+                      <span className="text-[11px] text-slate-500">{t.short || t.name}</span>
                     </div>
                   </div>
                   <button
                     type="button"
                     onClick={() => toggleFavorite(t.name)}
                     className={`rounded-xl p-2 transition ${
-                      isFav ? 'text-amber-400 bg-amber-500/10' : 'text-slate-500 hover:text-white hover:bg-slate-800'
+                      isFav ? 'text-amber-600 bg-amber-500/10' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
                     }`}
                   >
                     <Star className={`h-4 w-4 ${isFav ? 'fill-amber-400' : ''}`} />
@@ -487,9 +487,9 @@ export const FootballModule: React.FC<FootballModuleProps> = ({ onOpenTvChannel 
       {/* STEP 5: CANALI TV / IPTV COLLEGATI */}
       {currentStep === 'tv_stream' && (
         <div className="flex flex-col gap-4">
-          <div className="rounded-2xl border border-slate-750 bg-slate-900/90 p-4 shadow-sm">
-            <h3 className="text-sm font-bold text-white mb-1">Integrazione Diretta Canali IPTV</h3>
-            <p className="text-xs text-slate-300">
+          <div className="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900 mb-1">Integrazione Diretta Canali IPTV</h3>
+            <p className="text-xs text-slate-600">
               Imposta il canale TV predefinito per il calcio e avvia la sintonizzazione istantanea.
             </p>
           </div>
@@ -506,15 +506,15 @@ export const FootballModule: React.FC<FootballModuleProps> = ({ onOpenTvChannel 
                 className={`flex flex-col justify-between p-4 rounded-2xl border transition ${
                   preferredTvChannel === ch.name
                     ? 'border-cyan-500/80 bg-cyan-950/20 ring-1 ring-cyan-500/40'
-                    : 'border-slate-800 bg-slate-900/80 hover:border-slate-700'
+                    : 'border-slate-200 bg-white/80 hover:border-slate-300'
                 }`}
               >
                 <div>
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-2xl">{ch.icon}</span>
-                    <h4 className="text-xs font-bold text-white">{ch.name}</h4>
+                    <h4 className="text-xs font-bold text-slate-900">{ch.name}</h4>
                   </div>
-                  <p className="text-[11px] text-slate-300">{ch.desc}</p>
+                  <p className="text-[11px] text-slate-600">{ch.desc}</p>
                 </div>
 
                 <div className="mt-4 flex items-center gap-2">
@@ -532,8 +532,8 @@ export const FootballModule: React.FC<FootballModuleProps> = ({ onOpenTvChannel 
                     }}
                     className={`flex-1 rounded-xl px-3 py-1.5 text-xs font-semibold border transition ${
                       preferredTvChannel === ch.name
-                        ? 'bg-cyan-500/20 border-cyan-500/40 text-cyan-300'
-                        : 'bg-slate-800 border-slate-700 text-slate-300 hover:text-white'
+                        ? 'bg-cyan-500/20 border-cyan-500/40 text-cyan-700'
+                        : 'bg-slate-100 border-slate-300 text-slate-600 hover:text-slate-900'
                     }`}
                   >
                     {preferredTvChannel === ch.name ? 'Canale Predefinito ✓' : 'Imposta Predefinito'}
@@ -558,22 +558,22 @@ export const FootballModule: React.FC<FootballModuleProps> = ({ onOpenTvChannel 
       {/* STEP 6: PREFERITI & OPZIONI DI DEFAULT */}
       {currentStep === 'favorites' && (
         <div className="flex flex-col gap-4 max-w-3xl">
-          <div className="rounded-2xl border border-slate-750 bg-slate-900/90 p-4 shadow-sm">
-            <h3 className="text-sm font-bold text-white mb-1">Opzioni, Preferenze e Notifiche</h3>
-            <p className="text-xs text-slate-300">
+          <div className="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm">
+            <h3 className="text-sm font-bold text-slate-900 mb-1">Opzioni, Preferenze e Notifiche</h3>
+            <p className="text-xs text-slate-600">
               Personalizza le squadre del cuore, gli annunci vocali e il canale preferito. Tutte le scelte sono salvate stabilmente su Nuxiva.
             </p>
           </div>
 
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/80 p-5 flex flex-col gap-4">
-            <h4 className="text-xs font-bold text-white">Opzioni di Sistema e Notifiche Vocali</h4>
+          <div className="rounded-2xl border border-slate-200 bg-white/80 p-5 flex flex-col gap-4">
+            <h4 className="text-xs font-bold text-slate-900">Opzioni di Sistema e Notifiche Vocali</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <label className="flex items-center justify-between p-3.5 rounded-xl border border-slate-800 bg-slate-950/60 cursor-pointer">
+              <label className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 bg-slate-50/60 cursor-pointer">
                 <div className="flex items-center gap-3">
-                  <Volume2 className="h-5 w-5 text-cyan-400" />
+                  <Volume2 className="h-5 w-5 text-cyan-600" />
                   <div>
-                    <span className="text-xs font-bold text-white block">Annunci Vocali Risultati</span>
-                    <span className="text-[10px] text-slate-400">Notifica vocale in casa all'inizio della gara</span>
+                    <span className="text-xs font-bold text-slate-900 block">Annunci Vocali Risultati</span>
+                    <span className="text-[10px] text-slate-500">Notifica vocale in casa all'inizio della gara</span>
                   </div>
                 </div>
                 <input
@@ -593,12 +593,12 @@ export const FootballModule: React.FC<FootballModuleProps> = ({ onOpenTvChannel 
                 />
               </label>
 
-              <label className="flex items-center justify-between p-3.5 rounded-xl border border-slate-800 bg-slate-950/60 cursor-pointer">
+              <label className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 bg-slate-50/60 cursor-pointer">
                 <div className="flex items-center gap-3">
-                  <Bell className="h-5 w-5 text-amber-400" />
+                  <Bell className="h-5 w-5 text-amber-600" />
                   <div>
-                    <span className="text-xs font-bold text-white block">Notifiche Gol in Tempo Reale</span>
-                    <span className="text-[10px] text-slate-400">Avviso a comparsa quando segna la tua squadra</span>
+                    <span className="text-xs font-bold text-slate-900 block">Notifiche Gol in Tempo Reale</span>
+                    <span className="text-[10px] text-slate-500">Avviso a comparsa quando segna la tua squadra</span>
                   </div>
                 </div>
                 <input
@@ -620,8 +620,8 @@ export const FootballModule: React.FC<FootballModuleProps> = ({ onOpenTvChannel 
             </div>
           </div>
 
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/80 p-5">
-            <h4 className="text-xs font-bold text-white mb-3">Tutte le 20 Squadre della Serie A</h4>
+          <div className="rounded-2xl border border-slate-200 bg-white/80 p-5">
+            <h4 className="text-xs font-bold text-slate-900 mb-3">Tutte le 20 Squadre della Serie A</h4>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
               {teams.map((team) => {
                 const isFav = favoriteTeams.includes(team.name);
@@ -632,12 +632,12 @@ export const FootballModule: React.FC<FootballModuleProps> = ({ onOpenTvChannel 
                     onClick={() => toggleFavorite(team.name)}
                     className={`flex items-center justify-between p-3 rounded-xl border text-xs font-semibold transition ${
                       isFav
-                        ? 'border-amber-500/60 bg-gradient-to-r from-amber-500/20 to-slate-900 text-amber-200 shadow-sm'
-                        : 'border-slate-800 bg-slate-950/70 text-slate-300 hover:border-slate-700 hover:text-white'
+                        ? 'border-amber-500/60 bg-gradient-to-r from-amber-500/20 to-slate-50 text-amber-800 shadow-sm'
+                        : 'border-slate-200 bg-slate-50/70 text-slate-600 hover:border-slate-300 hover:text-slate-900'
                     }`}
                   >
                     <span>{team.name}</span>
-                    <Star className={`h-4 w-4 ${isFav ? 'fill-amber-400 text-amber-400' : 'text-slate-600'}`} />
+                    <Star className={`h-4 w-4 ${isFav ? 'fill-amber-400 text-amber-600' : 'text-slate-600'}`} />
                   </button>
                 );
               })}

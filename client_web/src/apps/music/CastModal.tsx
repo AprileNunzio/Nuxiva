@@ -137,16 +137,16 @@ export const CastModal: React.FC<CastModalProps> = ({
   const getDeviceIcon = (kind: string) => {
     switch (kind) {
       case 'cast':
-        return <Cast className="h-5 w-5 text-sky-400" />;
+        return <Cast className="h-5 w-5 text-sky-600" />;
       case 'sonos':
       case 'bose':
-        return <Speaker className="h-5 w-5 text-amber-400" />;
+        return <Speaker className="h-5 w-5 text-amber-600" />;
       case 'tv':
       case 'dlna':
-        return <Tv className="h-5 w-5 text-cyan-400" />;
+        return <Tv className="h-5 w-5 text-cyan-600" />;
       case 'display':
       default:
-        return <Monitor className="h-5 w-5 text-slate-400" />;
+        return <Monitor className="h-5 w-5 text-slate-500" />;
     }
   };
 
@@ -169,16 +169,16 @@ export const CastModal: React.FC<CastModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-      <div className="flex flex-col w-full max-w-lg rounded-2xl border border-slate-700 bg-slate-900 shadow-2xl overflow-hidden animate-in fade-in duration-200">
+      <div className="flex flex-col w-full max-w-lg rounded-2xl border border-slate-300 bg-white shadow-2xl overflow-hidden animate-in fade-in duration-200">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-800 bg-slate-950/60 px-5 py-4">
+        <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50/60 px-5 py-4">
           <div className="flex items-center gap-2.5">
-            <div className="rounded-lg bg-sky-500/10 border border-sky-500/30 p-2 text-sky-400">
+            <div className="rounded-lg bg-sky-500/10 border border-sky-500/30 p-2 text-sky-600">
               <Cast className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-white">Trasmetti Musica su Dispositivi Audio</h3>
-              <p className="text-xs text-slate-400">
+              <h3 className="text-sm font-bold text-slate-900">Trasmetti Musica su Dispositivi Audio</h3>
+              <p className="text-xs text-slate-500">
                 Google Home, Nest Hub, Gruppi Audio, Sonos, Bose, Smart TV
               </p>
             </div>
@@ -186,23 +186,23 @@ export const CastModal: React.FC<CastModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-white transition"
+            className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {/* Brano corrente */}
-        <div className="flex items-center justify-between border-b border-slate-800 bg-slate-900/40 px-5 py-3 text-xs">
+        <div className="flex items-center justify-between border-b border-slate-200 bg-white/40 px-5 py-3 text-xs">
           <div>
-            <span className="block font-bold text-white text-sm">{trackTitle || 'Nessun brano attivo'}</span>
-            <span className="text-[11px] text-sky-400">{trackArtist || 'Seleziona un brano o playlist'}</span>
+            <span className="block font-bold text-slate-900 text-sm">{trackTitle || 'Nessun brano attivo'}</span>
+            <span className="text-[11px] text-sky-600">{trackArtist || 'Seleziona un brano o playlist'}</span>
           </div>
           <button
             type="button"
             onClick={() => void fetchDevices(true)}
             disabled={loading}
-            className="flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800/80 px-2.5 py-1.5 text-xs text-slate-300 hover:text-white hover:bg-slate-700 transition"
+            className="flex items-center gap-1.5 rounded-lg border border-slate-300 bg-slate-100/80 px-2.5 py-1.5 text-xs text-slate-600 hover:text-slate-900 hover:bg-slate-200 transition"
           >
             <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
             <span>Scansiona LAN</span>
@@ -211,12 +211,12 @@ export const CastModal: React.FC<CastModalProps> = ({
 
         {/* Messaggi */}
         {statusMsg && (
-          <div className="mx-5 mt-3 rounded-lg bg-emerald-950/40 border border-emerald-500/30 px-3 py-2 text-xs text-emerald-300">
+          <div className="mx-5 mt-3 rounded-lg bg-emerald-950/40 border border-emerald-500/30 px-3 py-2 text-xs text-emerald-700">
             {statusMsg}
           </div>
         )}
         {errorMsg && (
-          <div className="mx-5 mt-3 rounded-lg bg-rose-950/40 border border-rose-500/30 px-3 py-2 text-xs text-rose-300">
+          <div className="mx-5 mt-3 rounded-lg bg-rose-950/40 border border-rose-500/30 px-3 py-2 text-xs text-rose-700">
             {errorMsg}
           </div>
         )}
@@ -230,7 +230,7 @@ export const CastModal: React.FC<CastModalProps> = ({
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-sky-500"></span>
                 </span>
-                <span className="text-xs font-bold text-white">
+                <span className="text-xs font-bold text-slate-900">
                   Riproduzione su: {activeDevice.name}
                 </span>
               </div>
@@ -245,7 +245,7 @@ export const CastModal: React.FC<CastModalProps> = ({
             </div>
 
             {/* Slider volume per il target */}
-            <div className="flex items-center gap-2 text-xs text-slate-300">
+            <div className="flex items-center gap-2 text-xs text-slate-600">
               <button
                 type="button"
                 onClick={() => {
@@ -253,9 +253,9 @@ export const CastModal: React.FC<CastModalProps> = ({
                   setIsMuted(nextMute);
                   void handleVolumeChange(activeDevice.id, nextMute ? 0 : volume);
                 }}
-                className="text-slate-400 hover:text-white"
+                className="text-slate-500 hover:text-slate-900"
               >
-                {isMuted ? <VolumeX className="h-4 w-4 text-rose-400" /> : <Volume2 className="h-4 w-4" />}
+                {isMuted ? <VolumeX className="h-4 w-4 text-rose-600" /> : <Volume2 className="h-4 w-4" />}
               </button>
               <input
                 type="range"
@@ -264,9 +264,9 @@ export const CastModal: React.FC<CastModalProps> = ({
                 step={0.05}
                 value={isMuted ? 0 : volume}
                 onChange={(e) => void handleVolumeChange(activeDevice.id, Number(e.target.value))}
-                className="h-1 flex-1 cursor-pointer accent-sky-400 rounded-lg bg-slate-800"
+                className="h-1 flex-1 cursor-pointer accent-sky-400 rounded-lg bg-slate-100"
               />
-              <span className="text-[11px] font-mono text-slate-400">
+              <span className="text-[11px] font-mono text-slate-500">
                 {Math.round((isMuted ? 0 : volume) * 100)}%
               </span>
             </div>
@@ -290,24 +290,24 @@ export const CastModal: React.FC<CastModalProps> = ({
                   className={`flex items-center justify-between rounded-xl border p-3 transition cursor-pointer ${
                     isCurrent
                       ? 'border-sky-500/50 bg-sky-950/30'
-                      : 'border-slate-800 bg-slate-900/60 hover:border-slate-700 hover:bg-slate-800/50'
+                      : 'border-slate-200 bg-white/60 hover:border-slate-300 hover:bg-slate-100/50'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="rounded-lg bg-slate-800 p-2 border border-slate-700">
+                    <div className="rounded-lg bg-slate-100 p-2 border border-slate-300">
                       {getDeviceIcon(dev.kind)}
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-bold text-white">{dev.name}</span>
+                        <span className="text-xs font-bold text-slate-900">{dev.name}</span>
                         {isCurrent && (
-                          <span className="flex items-center gap-1 rounded-full bg-sky-500/20 px-2 py-0.5 text-[9px] font-bold text-sky-300 border border-sky-500/30">
+                          <span className="flex items-center gap-1 rounded-full bg-sky-500/20 px-2 py-0.5 text-[9px] font-bold text-sky-700 border border-sky-500/30">
                             In riproduzione
                           </span>
                         )}
                       </div>
-                      <div className="flex items-center gap-2 text-[10px] text-slate-400">
-                        <span className="text-sky-400">{getDeviceBadge(dev.kind)}</span>
+                      <div className="flex items-center gap-2 text-[10px] text-slate-500">
+                        <span className="text-sky-600">{getDeviceBadge(dev.kind)}</span>
                         {dev.model && <span>• {dev.model}</span>}
                       </div>
                     </div>
@@ -320,7 +320,7 @@ export const CastModal: React.FC<CastModalProps> = ({
                         e.stopPropagation();
                         void handleStopCast(dev.id);
                       }}
-                      className="rounded-lg bg-rose-600/20 hover:bg-rose-600/40 border border-rose-500/30 p-1.5 text-rose-400 transition"
+                      className="rounded-lg bg-rose-600/20 hover:bg-rose-600/40 border border-rose-500/30 p-1.5 text-rose-600 transition"
                       title="Interrompi"
                     >
                       <Square className="h-4 w-4" />
@@ -332,7 +332,7 @@ export const CastModal: React.FC<CastModalProps> = ({
                         e.stopPropagation();
                         void handleCastPlay(dev);
                       }}
-                      className="flex items-center gap-1 rounded-lg border border-sky-500/30 bg-sky-500/10 px-2.5 py-1 text-xs font-semibold text-sky-300 hover:bg-sky-500/20 transition"
+                      className="flex items-center gap-1 rounded-lg border border-sky-500/30 bg-sky-500/10 px-2.5 py-1 text-xs font-semibold text-sky-700 hover:bg-sky-500/20 transition"
                     >
                       <Play className="h-3 w-3 fill-sky-300" />
                       <span>Ascolta qui</span>
@@ -345,11 +345,11 @@ export const CastModal: React.FC<CastModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="border-t border-slate-800 bg-slate-950/60 px-5 py-3 text-right">
+        <div className="border-t border-slate-200 bg-slate-50/60 px-5 py-3 text-right">
           <button
             type="button"
             onClick={onClose}
-            className="rounded-xl bg-slate-800 hover:bg-slate-700 px-4 py-1.5 text-xs font-semibold text-white transition"
+            className="rounded-xl bg-slate-100 hover:bg-slate-200 px-4 py-1.5 text-xs font-semibold text-slate-900 transition"
           >
             Chiudi
           </button>

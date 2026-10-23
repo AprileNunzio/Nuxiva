@@ -48,9 +48,9 @@ export const Formula1Module: React.FC<Formula1ModuleProps> = ({ onOpenTvChannel 
       {/* STEP 1: COMPETIZIONE & GP */}
       {currentStep === 'competition' && (
         <div className="flex flex-col gap-4">
-          <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
-            <h3 className="text-sm font-bold text-white mb-1">Campionato Mondiale FIA Formula 1</h3>
-            <p className="text-xs text-slate-400">Calendario ufficiale dei 24 Gran Premi, circuiti storici e format Sprint</p>
+          <div className="rounded-xl border border-slate-200 bg-white/60 p-4">
+            <h3 className="text-sm font-bold text-slate-900 mb-1">Campionato Mondiale FIA Formula 1</h3>
+            <p className="text-xs text-slate-500">Calendario ufficiale dei 24 Gran Premi, circuiti storici e format Sprint</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -58,20 +58,20 @@ export const Formula1Module: React.FC<Formula1ModuleProps> = ({ onOpenTvChannel 
               <div
                 key={gp.name}
                 onClick={() => setCurrentStep('schedule')}
-                className="flex items-center justify-between p-4 rounded-xl border border-slate-800 bg-slate-900/70 hover:border-red-500/50 transition cursor-pointer"
+                className="flex items-center justify-between p-4 rounded-xl border border-slate-200 bg-white/70 hover:border-red-500/50 transition cursor-pointer"
               >
                 <div className="flex items-center gap-3">
                   <span className="text-3xl">{gp.country}</span>
                   <div>
-                    <h4 className="text-xs font-bold text-white">{gp.name}</h4>
-                    <span className="text-[10px] text-slate-400">Round {gp.round} · {gp.date}</span>
+                    <h4 className="text-xs font-bold text-slate-900">{gp.name}</h4>
+                    <span className="text-[10px] text-slate-500">Round {gp.round} · {gp.date}</span>
                   </div>
                 </div>
                 <span
                   className={`rounded-full px-2.5 py-1 text-[10px] font-bold ${
                     gp.status === 'in'
-                      ? 'bg-red-500/20 text-red-400 animate-pulse'
-                      : 'bg-slate-800 text-slate-400'
+                      ? 'bg-red-500/20 text-red-600 animate-pulse'
+                      : 'bg-slate-100 text-slate-500'
                   }`}
                 >
                   {gp.status === 'in' ? 'IN CORSO' : gp.status.toUpperCase()}
@@ -85,12 +85,12 @@ export const Formula1Module: React.FC<Formula1ModuleProps> = ({ onOpenTvChannel 
       {/* STEP 2: SESSIONI E LIVE */}
       {currentStep === 'schedule' && (
         <div className="flex flex-col gap-4">
-          <div className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+          <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white/60 p-4">
             <div>
-              <h3 className="text-sm font-bold text-white mb-0.5">Programma Sessioni GP USA - Austin</h3>
-              <p className="text-xs text-slate-400">Circuit of the Americas (COTA) · Lunghezza 5.513 km</p>
+              <h3 className="text-sm font-bold text-slate-900 mb-0.5">Programma Sessioni GP USA - Austin</h3>
+              <p className="text-xs text-slate-500">Circuit of the Americas (COTA) · Lunghezza 5.513 km</p>
             </div>
-            <span className="flex items-center gap-1.5 rounded-full bg-red-500/20 px-3 py-1 text-xs font-bold text-red-400">
+            <span className="flex items-center gap-1.5 rounded-full bg-red-500/20 px-3 py-1 text-xs font-bold text-red-600">
               <span className="h-2 w-2 rounded-full bg-red-400 animate-ping" />
               GARA IN CORSO
             </span>
@@ -100,18 +100,18 @@ export const Formula1Module: React.FC<Formula1ModuleProps> = ({ onOpenTvChannel 
             {sessions.map((s) => (
               <div
                 key={s.name}
-                className="flex items-center justify-between p-3.5 rounded-xl border border-slate-800 bg-slate-900/50"
+                className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 bg-white/50"
               >
                 <div className="flex items-center gap-3">
-                  <Timer className="h-4 w-4 text-red-400" />
+                  <Timer className="h-4 w-4 text-red-600" />
                   <div>
-                    <h4 className="text-xs font-bold text-white">{s.name}</h4>
-                    <span className="text-[10px] text-slate-400">{s.day} ore {s.time}</span>
+                    <h4 className="text-xs font-bold text-slate-900">{s.name}</h4>
+                    <span className="text-[10px] text-slate-500">{s.day} ore {s.time}</span>
                   </div>
                 </div>
 
                 <div className="text-right">
-                  <span className="text-xs font-bold text-cyan-300 font-mono">
+                  <span className="text-xs font-bold text-cyan-700 font-mono">
                     {s.leader || s.winner || s.pole || s.fastest}
                   </span>
                   <p className="text-[10px] text-slate-500">{s.status}</p>
@@ -125,14 +125,14 @@ export const Formula1Module: React.FC<Formula1ModuleProps> = ({ onOpenTvChannel 
       {/* STEP 3: CLASSIFICHE PILOTI E COSTRUTTORI */}
       {currentStep === 'standings' && (
         <div className="flex flex-col gap-4">
-          <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
-            <h3 className="text-sm font-bold text-white mb-1">Classifica Mondiale Piloti</h3>
-            <p className="text-xs text-slate-400">Punti iridati, vittorie e podi aggiornati in tempo reale</p>
+          <div className="rounded-xl border border-slate-200 bg-white/60 p-4">
+            <h3 className="text-sm font-bold text-slate-900 mb-1">Classifica Mondiale Piloti</h3>
+            <p className="text-xs text-slate-500">Punti iridati, vittorie e podi aggiornati in tempo reale</p>
           </div>
 
-          <div className="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/60">
+          <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white/60">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-950/80 text-[11px] font-bold uppercase text-slate-400 border-b border-slate-800">
+              <thead className="bg-slate-50/80 text-[11px] font-bold uppercase text-slate-500 border-b border-slate-200">
                 <tr>
                   <th className="py-2.5 px-3">Pos</th>
                   <th className="py-2.5 px-3">Pilota</th>
@@ -141,17 +141,17 @@ export const Formula1Module: React.FC<Formula1ModuleProps> = ({ onOpenTvChannel 
                   <th className="py-2.5 px-3 text-right">Punti</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/60 font-mono">
+              <tbody className="divide-y divide-slate-200/60 font-mono">
                 {driversStandings.map((d) => (
-                  <tr key={d.rank} className="hover:bg-slate-800/40 transition">
-                    <td className="py-2.5 px-3 font-bold text-slate-400">{d.rank}</td>
-                    <td className="py-2.5 px-3 font-sans font-semibold text-white flex items-center gap-2">
+                  <tr key={d.rank} className="hover:bg-slate-100/40 transition">
+                    <td className="py-2.5 px-3 font-bold text-slate-500">{d.rank}</td>
+                    <td className="py-2.5 px-3 font-sans font-semibold text-slate-900 flex items-center gap-2">
                       <span>{d.name}</span>
-                      {favoriteDrivers.includes(d.name) && <Star className="h-3 w-3 fill-amber-400 text-amber-400" />}
+                      {favoriteDrivers.includes(d.name) && <Star className="h-3 w-3 fill-amber-400 text-amber-600" />}
                     </td>
-                    <td className="py-2.5 px-3 font-sans text-slate-300">{d.team}</td>
-                    <td className="py-2.5 px-3 text-center text-slate-400">{d.wins}</td>
-                    <td className="py-2.5 px-3 text-right font-bold text-red-400">{d.pts}</td>
+                    <td className="py-2.5 px-3 font-sans text-slate-600">{d.team}</td>
+                    <td className="py-2.5 px-3 text-center text-slate-500">{d.wins}</td>
+                    <td className="py-2.5 px-3 text-right font-bold text-red-600">{d.pts}</td>
                   </tr>
                 ))}
               </tbody>
@@ -163,48 +163,48 @@ export const Formula1Module: React.FC<Formula1ModuleProps> = ({ onOpenTvChannel 
       {/* STEP 4: TELEMETRIA & GAP */}
       {currentStep === 'details' && (
         <div className="flex flex-col gap-4">
-          <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
-            <h3 className="text-sm font-bold text-white mb-1">Live Timing & Telemetria GP Austin</h3>
-            <p className="text-xs text-slate-400">Distacchi sui settori, velocità di punta (Speed Trap) e usura gomme</p>
+          <div className="rounded-xl border border-slate-200 bg-white/60 p-4">
+            <h3 className="text-sm font-bold text-slate-900 mb-1">Live Timing & Telemetria GP Austin</h3>
+            <p className="text-xs text-slate-500">Distacchi sui settori, velocità di punta (Speed Trap) e usura gomme</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-4">
-              <h4 className="text-xs font-bold text-white mb-3">Leaderboard & Distacchi</h4>
+            <div className="rounded-xl border border-slate-200 bg-white/40 p-4">
+              <h4 className="text-xs font-bold text-slate-900 mb-3">Leaderboard & Distacchi</h4>
               <div className="flex flex-col gap-2 font-mono text-xs">
-                <div className="flex justify-between p-2 rounded-lg bg-red-950/30 border border-red-500/30 text-white font-bold">
+                <div className="flex justify-between p-2 rounded-lg bg-red-950/30 border border-red-500/30 text-slate-900 font-bold">
                   <span>1. C. Leclerc (Ferrari)</span>
-                  <span className="text-red-400">Leader (Giro 38)</span>
+                  <span className="text-red-600">Leader (Giro 38)</span>
                 </div>
-                <div className="flex justify-between p-2 rounded-lg bg-slate-950 text-slate-200">
+                <div className="flex justify-between p-2 rounded-lg bg-slate-50 text-slate-800">
                   <span>2. C. Sainz (Ferrari)</span>
-                  <span className="text-slate-400">+5.421s</span>
+                  <span className="text-slate-500">+5.421s</span>
                 </div>
-                <div className="flex justify-between p-2 rounded-lg bg-slate-950 text-slate-200">
+                <div className="flex justify-between p-2 rounded-lg bg-slate-50 text-slate-800">
                   <span>3. M. Verstappen (Red Bull)</span>
-                  <span className="text-slate-400">+9.840s</span>
+                  <span className="text-slate-500">+9.840s</span>
                 </div>
-                <div className="flex justify-between p-2 rounded-lg bg-slate-950 text-slate-200">
+                <div className="flex justify-between p-2 rounded-lg bg-slate-50 text-slate-800">
                   <span>4. L. Norris (McLaren)</span>
-                  <span className="text-slate-400">+12.115s</span>
+                  <span className="text-slate-500">+12.115s</span>
                 </div>
               </div>
             </div>
 
-            <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-4">
-              <h4 className="text-xs font-bold text-white mb-3">Condizioni Pista & Gomme</h4>
+            <div className="rounded-xl border border-slate-200 bg-white/40 p-4">
+              <h4 className="text-xs font-bold text-slate-900 mb-3">Condizioni Pista & Gomme</h4>
               <div className="flex flex-col gap-3 text-xs">
-                <div className="flex justify-between py-1 border-b border-slate-800">
-                  <span className="text-slate-400">Temperatura Asfalto</span>
-                  <span className="font-bold text-white">41.2 °C</span>
+                <div className="flex justify-between py-1 border-b border-slate-200">
+                  <span className="text-slate-500">Temperatura Asfalto</span>
+                  <span className="font-bold text-slate-900">41.2 °C</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-slate-800">
-                  <span className="text-slate-400">Velocità Massima (Speed Trap)</span>
-                  <span className="font-bold text-cyan-300">338.4 km/h (Ferrari #16)</span>
+                <div className="flex justify-between py-1 border-b border-slate-200">
+                  <span className="text-slate-500">Velocità Massima (Speed Trap)</span>
+                  <span className="font-bold text-cyan-700">338.4 km/h (Ferrari #16)</span>
                 </div>
                 <div className="flex justify-between py-1">
-                  <span className="text-slate-400">Strategia Gomme Leader</span>
-                  <span className="font-bold text-amber-400">Hard (Giro 18) - 1 Sosta</span>
+                  <span className="text-slate-500">Strategia Gomme Leader</span>
+                  <span className="font-bold text-amber-600">Hard (Giro 18) - 1 Sosta</span>
                 </div>
               </div>
             </div>
@@ -215,9 +215,9 @@ export const Formula1Module: React.FC<Formula1ModuleProps> = ({ onOpenTvChannel 
       {/* STEP 5: CANALE TV IPTV */}
       {currentStep === 'tv_stream' && (
         <div className="flex flex-col gap-4">
-          <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
-            <h3 className="text-sm font-bold text-white mb-1">Canali TV & Telecamere Onboard</h3>
-            <p className="text-xs text-slate-400">Diretta ufficiale, commento tecnico e feed onboard piloti</p>
+          <div className="rounded-xl border border-slate-200 bg-white/60 p-4">
+            <h3 className="text-sm font-bold text-slate-900 mb-1">Canali TV & Telecamere Onboard</h3>
+            <p className="text-xs text-slate-500">Diretta ufficiale, commento tecnico e feed onboard piloti</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
@@ -228,11 +228,11 @@ export const Formula1Module: React.FC<Formula1ModuleProps> = ({ onOpenTvChannel 
             ].map((feed) => (
               <div
                 key={feed.name}
-                className="flex flex-col justify-between p-4 rounded-xl border border-slate-800 bg-slate-900/70"
+                className="flex flex-col justify-between p-4 rounded-xl border border-slate-200 bg-white/70"
               >
                 <div>
-                  <h4 className="text-xs font-bold text-white mb-1">{feed.name}</h4>
-                  <p className="text-[11px] text-slate-400">{feed.desc}</p>
+                  <h4 className="text-xs font-bold text-slate-900 mb-1">{feed.name}</h4>
+                  <p className="text-[11px] text-slate-500">{feed.desc}</p>
                 </div>
                 <button
                   type="button"
@@ -253,9 +253,9 @@ export const Formula1Module: React.FC<Formula1ModuleProps> = ({ onOpenTvChannel 
       {/* STEP 6: PREFERITI E NOTIFICHE */}
       {currentStep === 'favorites' && (
         <div className="flex flex-col gap-4 max-w-2xl">
-          <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
-            <h3 className="text-sm font-bold text-white mb-1">Piloti e Scuderie del Cuore</h3>
-            <p className="text-xs text-slate-400">Ricevi notifiche quando il tuo pilota fa la pole o sale sul podio</p>
+          <div className="rounded-xl border border-slate-200 bg-white/60 p-4">
+            <h3 className="text-sm font-bold text-slate-900 mb-1">Piloti e Scuderie del Cuore</h3>
+            <p className="text-xs text-slate-500">Ricevi notifiche quando il tuo pilota fa la pole o sale sul podio</p>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -269,12 +269,12 @@ export const Formula1Module: React.FC<Formula1ModuleProps> = ({ onOpenTvChannel 
                     onClick={() => toggleFavorite(driver)}
                     className={`flex items-center justify-between p-3 rounded-lg border text-xs font-semibold transition ${
                       isFav
-                        ? 'border-amber-500/50 bg-amber-500/10 text-amber-300'
-                        : 'border-slate-800 bg-slate-950 text-slate-400 hover:border-slate-700'
+                        ? 'border-amber-500/50 bg-amber-500/10 text-amber-700'
+                        : 'border-slate-200 bg-slate-50 text-slate-500 hover:border-slate-300'
                     }`}
                   >
                     <span>{driver}</span>
-                    <Star className={`h-3.5 w-3.5 ${isFav ? 'fill-amber-400 text-amber-400' : ''}`} />
+                    <Star className={`h-3.5 w-3.5 ${isFav ? 'fill-amber-400 text-amber-600' : ''}`} />
                   </button>
                 );
               }

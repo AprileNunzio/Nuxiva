@@ -27,7 +27,7 @@ export const PlaylistPanel: React.FC<PlaylistPanelProps> = ({ playlists, busy, t
   };
 
   return (
-    <Panel title={t('playlists_title')} icon={<ListVideo className="h-4 w-4 text-emerald-300" aria-hidden="true" />}>
+    <Panel title={t('playlists_title')} icon={<ListVideo className="h-4 w-4 text-emerald-700" aria-hidden="true" />}>
       {playlists.length === 0 ? (
         <Empty>{t('playlists_empty')}</Empty>
       ) : (
@@ -54,7 +54,7 @@ export const PlaylistPanel: React.FC<PlaylistPanelProps> = ({ playlists, busy, t
           ))}
         </List>
       )}
-      <form onSubmit={submit} className="mt-4 flex flex-col gap-3 border-t border-slate-800 pt-4">
+      <form onSubmit={submit} className="mt-4 flex flex-col gap-3 border-t border-slate-200 pt-4">
         <Field label={t('field_name')}>
           <input className={inputClass} value={name} maxLength={60} onChange={(event) => setName(event.target.value)} required />
         </Field>

@@ -270,52 +270,52 @@ export const Studio3DView: React.FC = () => {
     <>
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-sm 8k:text-xl font-bold text-slate-100 flex items-center gap-2 8k:gap-3 mb-1">
-            <Sliders className="w-4 h-4 8k:w-7 8k:h-7 text-cyan-400" />
+          <h2 className="text-sm 8k:text-xl font-bold text-slate-900 flex items-center gap-2 8k:gap-3 mb-1">
+            <Sliders className="w-4 h-4 8k:w-7 8k:h-7 text-cyan-600" />
             {t('studio_inspector_title')}
           </h2>
-          <p className="text-xs 8k:text-base text-slate-400">{t('studio_subtitle')}</p>
+          <p className="text-xs 8k:text-base text-slate-500">{t('studio_subtitle')}</p>
         </div>
         <button 
           onClick={() => setMobileInspectorOpen(false)}
-          className="lg:hidden text-slate-400 hover:text-white p-1 rounded-lg"
+          className="lg:hidden text-slate-500 hover:text-slate-900 p-1 rounded-lg"
         >
           <X className="w-5 h-5" />
         </button>
       </div>
 
       {/* Mesh stats */}
-      <div className="space-y-3 8k:space-y-5 bg-slate-900/60 border border-slate-800/80 rounded-2xl 8k:rounded-3xl p-4 8k:p-6">
+      <div className="space-y-3 8k:space-y-5 bg-white/60 border border-slate-200/80 rounded-2xl 8k:rounded-3xl p-4 8k:p-6">
         <div className="flex justify-between items-center text-xs 8k:text-base">
-          <span className="text-slate-400">{t('studio_vertices')}</span>
-          <span className="font-mono font-bold text-cyan-300">{stats.vertices.toLocaleString()}</span>
+          <span className="text-slate-500">{t('studio_vertices')}</span>
+          <span className="font-mono font-bold text-cyan-700">{stats.vertices.toLocaleString()}</span>
         </div>
         <div className="flex justify-between items-center text-xs 8k:text-base">
-          <span className="text-slate-400">{t('studio_triangles')}</span>
-          <span className="font-mono font-bold text-cyan-300">{stats.triangles.toLocaleString()}</span>
+          <span className="text-slate-500">{t('studio_triangles')}</span>
+          <span className="font-mono font-bold text-cyan-700">{stats.triangles.toLocaleString()}</span>
         </div>
-        <div className="pt-2 border-t border-slate-800">
-          <span className="text-slate-400 text-xs 8k:text-sm block mb-1.5">{t('studio_dimensions')} (mm)</span>
+        <div className="pt-2 border-t border-slate-200">
+          <span className="text-slate-500 text-xs 8k:text-sm block mb-1.5">{t('studio_dimensions')} (mm)</span>
           <div className="grid grid-cols-3 gap-2 8k:gap-4 text-center">
-            <div className="bg-slate-800/60 p-1.5 8k:p-3 rounded-lg 8k:rounded-xl">
+            <div className="bg-slate-100/60 p-1.5 8k:p-3 rounded-lg 8k:rounded-xl">
               <span className="text-[10px] 8k:text-sm text-slate-500 block">X</span>
-              <span className="text-xs 8k:text-base font-mono font-bold text-slate-200">{stats.dimensions.x}</span>
+              <span className="text-xs 8k:text-base font-mono font-bold text-slate-800">{stats.dimensions.x}</span>
             </div>
-            <div className="bg-slate-800/60 p-1.5 8k:p-3 rounded-lg 8k:rounded-xl">
+            <div className="bg-slate-100/60 p-1.5 8k:p-3 rounded-lg 8k:rounded-xl">
               <span className="text-[10px] 8k:text-sm text-slate-500 block">Y</span>
-              <span className="text-xs 8k:text-base font-mono font-bold text-slate-200">{stats.dimensions.y}</span>
+              <span className="text-xs 8k:text-base font-mono font-bold text-slate-800">{stats.dimensions.y}</span>
             </div>
-            <div className="bg-slate-800/60 p-1.5 8k:p-3 rounded-lg 8k:rounded-xl">
+            <div className="bg-slate-100/60 p-1.5 8k:p-3 rounded-lg 8k:rounded-xl">
               <span className="text-[10px] 8k:text-sm text-slate-500 block">Z</span>
-              <span className="text-xs 8k:text-base font-mono font-bold text-slate-200">{stats.dimensions.z}</span>
+              <span className="text-xs 8k:text-base font-mono font-bold text-slate-800">{stats.dimensions.z}</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Materials */}
-      <div className="space-y-4 8k:space-y-6 bg-slate-900/60 border border-slate-800/80 rounded-2xl 8k:rounded-3xl p-4 8k:p-6">
-        <h3 className="text-xs 8k:text-base font-bold text-slate-200 uppercase tracking-wider">{t('studio_material_color')}</h3>
+      <div className="space-y-4 8k:space-y-6 bg-white/60 border border-slate-200/80 rounded-2xl 8k:rounded-3xl p-4 8k:p-6">
+        <h3 className="text-xs 8k:text-base font-bold text-slate-800 uppercase tracking-wider">{t('studio_material_color')}</h3>
         
         <div className="flex items-center space-x-3 8k:space-x-5">
           <input 
@@ -324,13 +324,13 @@ export const Studio3DView: React.FC = () => {
             onChange={(e) => setMeshColor(e.target.value)}
             className="w-8 h-8 8k:w-14 8k:h-14 rounded-lg 8k:rounded-xl cursor-pointer bg-transparent border-0" 
           />
-          <span className="font-mono text-xs 8k:text-base text-slate-300 uppercase">{meshColor}</span>
+          <span className="font-mono text-xs 8k:text-base text-slate-600 uppercase">{meshColor}</span>
         </div>
 
         <div>
           <div className="flex justify-between text-xs 8k:text-base mb-1">
-            <span className="text-slate-400">{t('studio_roughness')}</span>
-            <span className="font-mono text-slate-300">{roughness.toFixed(2)}</span>
+            <span className="text-slate-500">{t('studio_roughness')}</span>
+            <span className="font-mono text-slate-600">{roughness.toFixed(2)}</span>
           </div>
           <input 
             type="range" 
@@ -345,8 +345,8 @@ export const Studio3DView: React.FC = () => {
 
         <div>
           <div className="flex justify-between text-xs 8k:text-base mb-1">
-            <span className="text-slate-400">{t('studio_metalness')}</span>
-            <span className="font-mono text-slate-300">{metalness.toFixed(2)}</span>
+            <span className="text-slate-500">{t('studio_metalness')}</span>
+            <span className="font-mono text-slate-600">{metalness.toFixed(2)}</span>
           </div>
           <input 
             type="range" 
@@ -363,7 +363,7 @@ export const Studio3DView: React.FC = () => {
       {/* Upload button */}
       <button 
         onClick={() => alert(t('studio_upload_alert'))}
-        className="w-full p-3 8k:p-5 rounded-2xl 8k:rounded-3xl border border-dashed border-slate-700 hover:border-cyan-500/60 text-slate-400 hover:text-cyan-300 transition-all flex items-center justify-center space-x-2 8k:space-x-3 text-xs 8k:text-base font-semibold"
+        className="w-full p-3 8k:p-5 rounded-2xl 8k:rounded-3xl border border-dashed border-slate-300 hover:border-cyan-500/60 text-slate-500 hover:text-cyan-700 transition-all flex items-center justify-center space-x-2 8k:space-x-3 text-xs 8k:text-base font-semibold"
       >
         <UploadCloud className="w-4 h-4 8k:w-7 8k:h-7" />
         <span>{t('studio_upload_btn')}</span>
@@ -378,31 +378,31 @@ export const Studio3DView: React.FC = () => {
         <div ref={mountRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
 
         {/* Viewport Control Bar */}
-        <div className="absolute top-3 sm:top-4 8k:top-8 left-3 sm:left-4 8k:left-8 flex flex-wrap items-center gap-1.5 sm:gap-2 8k:gap-4 backdrop-blur-md bg-slate-900/85 border border-slate-800 p-1.5 8k:p-3 rounded-2xl 8k:rounded-3xl shadow-2xl z-20">
+        <div className="absolute top-3 sm:top-4 8k:top-8 left-3 sm:left-4 8k:left-8 flex flex-wrap items-center gap-1.5 sm:gap-2 8k:gap-4 backdrop-blur-md bg-white/85 border border-slate-200 p-1.5 8k:p-3 rounded-2xl 8k:rounded-3xl shadow-2xl z-20">
           <button
             onClick={() => setRenderMode('solid')}
-            className={`px-2.5 sm:px-3 8k:px-5 py-1.5 8k:py-3 rounded-xl 8k:rounded-2xl text-xs 8k:text-base font-semibold flex items-center gap-1.5 8k:gap-2.5 transition-all ${renderMode === 'solid' ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-md' : 'text-slate-400 hover:text-slate-200'}`}
+            className={`px-2.5 sm:px-3 8k:px-5 py-1.5 8k:py-3 rounded-xl 8k:rounded-2xl text-xs 8k:text-base font-semibold flex items-center gap-1.5 8k:gap-2.5 transition-all ${renderMode === 'solid' ? 'bg-cyan-500/20 text-cyan-700 border border-cyan-500/40 shadow-md' : 'text-slate-500 hover:text-slate-800'}`}
           >
             <Box className="w-3.5 h-3.5 8k:w-6 8k:h-6" />
             <span className="hidden xs:inline">{t('studio_btn_solid')}</span>
           </button>
           <button
             onClick={() => setRenderMode('wireframe')}
-            className={`px-2.5 sm:px-3 8k:px-5 py-1.5 8k:py-3 rounded-xl 8k:rounded-2xl text-xs 8k:text-base font-semibold flex items-center gap-1.5 8k:gap-2.5 transition-all ${renderMode === 'wireframe' ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-md' : 'text-slate-400 hover:text-slate-200'}`}
+            className={`px-2.5 sm:px-3 8k:px-5 py-1.5 8k:py-3 rounded-xl 8k:rounded-2xl text-xs 8k:text-base font-semibold flex items-center gap-1.5 8k:gap-2.5 transition-all ${renderMode === 'wireframe' ? 'bg-cyan-500/20 text-cyan-700 border border-cyan-500/40 shadow-md' : 'text-slate-500 hover:text-slate-800'}`}
           >
             <Layers className="w-3.5 h-3.5 8k:w-6 8k:h-6" />
             <span className="hidden xs:inline">{t('studio_btn_wireframe')}</span>
           </button>
           <button
             onClick={() => setShowGrid(!showGrid)}
-            className={`px-2.5 sm:px-3 8k:px-5 py-1.5 8k:py-3 rounded-xl 8k:rounded-2xl text-xs 8k:text-base font-semibold flex items-center gap-1.5 8k:gap-2.5 transition-all ${showGrid ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-md' : 'text-slate-400 hover:text-slate-200'}`}
+            className={`px-2.5 sm:px-3 8k:px-5 py-1.5 8k:py-3 rounded-xl 8k:rounded-2xl text-xs 8k:text-base font-semibold flex items-center gap-1.5 8k:gap-2.5 transition-all ${showGrid ? 'bg-cyan-500/20 text-cyan-700 border border-cyan-500/40 shadow-md' : 'text-slate-500 hover:text-slate-800'}`}
           >
             <Grid className="w-3.5 h-3.5 8k:w-6 8k:h-6" />
             <span className="hidden xs:inline">{t('studio_btn_grid')}</span>
           </button>
           <button
             onClick={handleResetCamera}
-            className="p-1.5 sm:p-2 8k:p-3 rounded-xl 8k:rounded-2xl text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-all"
+            className="p-1.5 sm:p-2 8k:p-3 rounded-xl 8k:rounded-2xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-all"
             title={t('studio_btn_reset_cam')}
             aria-label={t('studio_btn_reset_cam')}
           >
@@ -410,7 +410,7 @@ export const Studio3DView: React.FC = () => {
           </button>
           <button
             onClick={handleCaptureSnapshot}
-            className="p-1.5 sm:p-2 8k:p-3 rounded-xl 8k:rounded-2xl text-cyan-400 hover:text-cyan-300 hover:bg-cyan-950/40 transition-all"
+            className="p-1.5 sm:p-2 8k:p-3 rounded-xl 8k:rounded-2xl text-cyan-600 hover:text-cyan-700 hover:bg-cyan-950/40 transition-all"
             title={t('studio_export_png')}
             aria-label={t('studio_export_png')}
           >
@@ -420,7 +420,7 @@ export const Studio3DView: React.FC = () => {
           {/* Mobile Inspector Toggle */}
           <button
             onClick={() => setMobileInspectorOpen(true)}
-            className="lg:hidden p-1.5 sm:p-2 rounded-xl text-cyan-400 hover:bg-slate-800 transition-all"
+            className="lg:hidden p-1.5 sm:p-2 rounded-xl text-cyan-600 hover:bg-slate-100 transition-all"
             title={t('studio_toggle_inspector')}
             aria-label={t('studio_toggle_inspector')}
           >
@@ -432,14 +432,14 @@ export const Studio3DView: React.FC = () => {
         <div className="absolute bottom-4 sm:bottom-6 8k:bottom-12 left-3 sm:left-6 8k:left-12 right-3 sm:right-6 8k:right-12 max-w-xl 4xl:max-w-2xl 8k:max-w-4xl z-20">
           <form 
             onSubmit={handleAiGenerate}
-            className="backdrop-blur-xl bg-slate-900/90 border border-slate-800 rounded-2xl 8k:rounded-3xl p-1.5 sm:p-2 8k:p-4 flex items-center space-x-2 8k:space-x-4 shadow-2xl focus-within:border-cyan-500/40 transition-all"
+            className="backdrop-blur-xl bg-white/90 border border-slate-200 rounded-2xl 8k:rounded-3xl p-1.5 sm:p-2 8k:p-4 flex items-center space-x-2 8k:space-x-4 shadow-2xl focus-within:border-cyan-500/40 transition-all"
           >
             <input
               type="text"
               value={promptText}
               onChange={(e) => setPromptText(e.target.value)}
               placeholder={t('studio_generate_prompt')}
-              className="flex-1 bg-transparent px-3 sm:px-4 8k:px-6 py-1.5 sm:py-2 8k:py-4 text-xs sm:text-sm 8k:text-xl text-slate-100 placeholder-slate-500 focus:outline-none"
+              className="flex-1 bg-transparent px-3 sm:px-4 8k:px-6 py-1.5 sm:py-2 8k:py-4 text-xs sm:text-sm 8k:text-xl text-slate-900 placeholder-slate-500 focus:outline-none"
             />
             <button
               type="submit"
@@ -454,14 +454,14 @@ export const Studio3DView: React.FC = () => {
       </div>
 
       {/* Desktop & 8K Docked Inspector Panel */}
-      <div className="hidden lg:flex w-80 3xl:w-96 8k:w-[540px] h-full backdrop-blur-2xl bg-slate-950/90 border-l border-slate-800/80 p-5 8k:p-8 flex-col space-y-6 8k:space-y-8 overflow-y-auto">
+      <div className="hidden lg:flex w-80 3xl:w-96 8k:w-[540px] h-full backdrop-blur-2xl bg-slate-50/90 border-l border-slate-200/80 p-5 8k:p-8 flex-col space-y-6 8k:space-y-8 overflow-y-auto">
         {renderInspectorContent()}
       </div>
 
       {/* Mobile Modal/Drawer Inspector */}
       {mobileInspectorOpen && (
         <div className="lg:hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex justify-end animate-fadeIn">
-          <div className="w-[85vw] max-w-[360px] h-full bg-slate-950 border-l border-slate-800 p-5 flex flex-col space-y-5 overflow-y-auto shadow-2xl">
+          <div className="w-[85vw] max-w-[360px] h-full bg-slate-50 border-l border-slate-200 p-5 flex flex-col space-y-5 overflow-y-auto shadow-2xl">
             {renderInspectorContent()}
           </div>
         </div>
