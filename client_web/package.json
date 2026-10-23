@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "prebuild": "npm test",
-    "test": "node tests/window-store.test.cjs && node tests/app-manifests.test.cjs && node tests/localized-ordering.test.cjs && node tests/updater-state.test.cjs && node tests/updater-history.test.cjs && node tests/latest-request.test.cjs && node tests/taskbar-groups.test.cjs && node tests/declarative-contract.test.cjs && node tests/spatial-arbiter.test.cjs && node tests/audio-device-manager.test.cjs && node tests/live-copilot.test.cjs && node tests/repair-workbench.test.cjs && node tests/display-look.test.cjs",
+    "test": "node tests/window-store.test.cjs && node tests/app-manifests.test.cjs && node tests/localized-ordering.test.cjs && node tests/updater-state.test.cjs && node tests/updater-history.test.cjs && node tests/latest-request.test.cjs && node tests/taskbar-groups.test.cjs && node tests/declarative-contract.test.cjs && node tests/spatial-arbiter.test.cjs && node tests/audio-device-manager.test.cjs && node tests/live-copilot.test.cjs && node tests/repair-workbench.test.cjs && node tests/display-look.test.cjs && node tests/page-version.test.cjs",
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview"

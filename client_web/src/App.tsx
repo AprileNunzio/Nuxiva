@@ -4,6 +4,7 @@ import { AuthGate } from './features/auth_gate';
 import { ErrorToastHost } from './shared/errors/ErrorToastHost';
 import { GlobalErrorBoundary } from './shared/errors/GlobalErrorBoundary';
 import { I18nProvider } from './shared/i18n/I18nContext';
+import { UpdateBanner } from './shared/updates/UpdateBanner';
 import { IdentityProvider } from './shared/identity/IdentityContext';
 const Workbench = lazy(() => import('./apps/repair_workbench/View'));
 
@@ -26,6 +27,7 @@ export const App: React.FC = () => (
         <ApplicationSurface />
       </GlobalErrorBoundary>
       <ErrorToastHost />
+      <UpdateBanner />
     </IdentityProvider>
   </I18nProvider>
 );
