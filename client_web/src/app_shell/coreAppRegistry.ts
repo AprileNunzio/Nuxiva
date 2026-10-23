@@ -14,6 +14,7 @@ import { View as HippocampusRouterView } from '../core_apps/hippocampus_router/V
 import { View as HomeAssistantView } from '../apps/home_assistant/View';
 import { View as IptvView } from '../apps/iptv/View';
 import { View as EarLogView } from '../core_apps/ear_log/View';
+import { View as FactoryResetView } from '../core_apps/factory_reset/View';
 import { View as LawsView } from '../core_apps/laws/View';
 import { View as MusicView } from '../apps/music/View';
 import { View as NodesView } from '../core_apps/nodes/View';
@@ -35,6 +36,7 @@ const CORE_APP_COMPONENTS: Readonly<Record<string, React.FC>> = {
   cameras: CamerasView,
   emergency: EmergencyView,
   ear_log: EarLogView,
+  factory_reset: FactoryResetView,
   features_hub: FeaturesHubView,
   firewall: FirewallView,
   flows: FlowsView,

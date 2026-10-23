@@ -1,0 +1,14 @@
+{
+  "name": "Factory reset",
+  "description": "Erases all Nuxiva data, fingerprints and credentials and returns the system to its initial setup, as if freshly installed, with multiple confirmations and a final proof that everything was deleted.",
+  "capabilities": [
+    "Inventory of everything that will be erased before you proceed",
+    "Administrator password re-entry and a random confirmation phrase",
+    "Mandatory wait and an expiring one-time code, against accidental clicks",
+    "Sensitive files overwritten before removal",
+    "Final verification: no leftovers, sample files gone, no process still holding data open",
+    "Session keys and secrets regenerated, first-run setup wizard reopened"
+  ],
+  "settings": {},
+  "help": {}
+}
