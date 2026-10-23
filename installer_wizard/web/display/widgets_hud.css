@@ -3,16 +3,10 @@
   padding: 14px 16px 16px;
   border-radius: 20px;
   overflow: hidden;
-  background:
-    radial-gradient(110% 80% at 0% 0%, rgba(var(--tone), 0.12), transparent 60%),
-    linear-gradient(165deg, rgba(12, 26, 44, 0.72), rgba(4, 10, 20, 0.64));
-  -webkit-backdrop-filter: blur(22px) saturate(1.4);
-  backdrop-filter: blur(22px) saturate(1.4);
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.07) inset,
-    0 1px 0 rgba(255, 255, 255, 0.1) inset,
-    0 3px 0 -2px rgba(var(--tone), 0.9) inset,
-    0 16px 40px -24px rgba(0, 0, 0, 0.7);
+  background: radial-gradient(120% 90% at 0% 0%, rgba(var(--tone), 0.07), transparent 62%), rgba(6, 14, 26, 0.34);
+  -webkit-backdrop-filter: blur(16px) saturate(1.25);
+  backdrop-filter: blur(16px) saturate(1.25);
+  box-shadow: 0 18px 44px -30px rgba(0, 0, 0, 0.8);
   text-shadow: none;
 }
 
@@ -43,17 +37,17 @@
 }
 .widget > .w-cycle.run::after { animation: wh-cycle var(--cycle, 60s) linear forwards; }
 
-.widget .wk-head { padding-bottom: 7px; margin-bottom: 9px; border-bottom: 1px solid rgba(255, 255, 255, 0.07); letter-spacing: 0.04em; }
-.widget .wk-head > .wk-svg { display: block; font-size: 15px; color: rgb(var(--tone)); filter: drop-shadow(0 0 5px rgba(var(--tone), 0.7)); }
+.widget .wk-head { padding-bottom: 2px; margin-bottom: 10px; letter-spacing: 0.04em; }
+.widget .wk-head > .wk-svg { display: block; font-size: 15px; color: rgba(var(--tone), 0.9); }
 .widget .wk-head { align-items: center; }
-.widget .wk-k { color: rgb(var(--tone)); text-shadow: 0 0 12px rgba(var(--tone), 0.55); }
-.widget .wk-chip { padding: 3px 8px; border-radius: 999px; box-shadow: 0 0 0 1px currentColor inset; background: rgba(var(--tone), 0.08); }
+.widget .wk-k { color: rgba(var(--tone), 0.9); }
+.widget .wk-chip { padding: 0; background: none; }
 .widget .wk-num { background: linear-gradient(180deg, #fff 10%, rgba(var(--tone), 0.95)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .widget .wk-num small, .widget .wk-num sup { -webkit-text-fill-color: var(--text-dim); }
 .widget .wk-bar { height: 3px; background: rgba(var(--tone), 0.12); }
 .widget .wk-bar > i { box-shadow: 0 0 10px rgba(var(--tone), 0.75); border-radius: 3px; }
 .widget .wk-ring .value { filter: drop-shadow(0 0 5px rgba(var(--tone), 0.8)); }
-.widget .wk-row + .wk-row { box-shadow: 0 -1px 0 rgba(var(--tone), 0.1); }
+.widget .wk-row + .wk-row { box-shadow: none; }
 .widget .wk-kv dt { color: rgba(var(--tone), 0.62); }
 .widget .wk-btn:hover, .widget .wk-btn:focus-visible { box-shadow: 0 0 0 1px rgba(var(--tone), 0.8) inset, 0 0 14px rgba(var(--tone), 0.4); }
 
