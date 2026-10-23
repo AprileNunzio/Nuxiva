@@ -1,0 +1,41 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Météo",
+    "description": "Lieux enregistrés, lieu par défaut et tous les réglages météo, avec aperçu en direct",
+    "loading": "Chargement…",
+    "unreachable": "Serveur injoignable",
+    "on": "Activé",
+    "off": "Désactivé",
+    "save": "Enregistrer",
+    "no_settings": "Aucun réglage disponible",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "places_title": "Lieux",
+    "places_empty": "Aucun lieu enregistré : cherchez une ville pour l'ajouter",
+    "search": "Chercher",
+    "search_placeholder": "Ville ou adresse",
+    "search_empty": "Aucun lieu trouvé",
+    "add": "Ajouter",
+    "preview": "Aperçu",
+    "make_default": "Définir par défaut",
+    "rename": "Renommer",
+    "remove": "Retirer",
+    "remove_confirm": "Confirmer",
+    "default": "Par défaut",
+    "preview_title": "Aperçu en direct",
+    "preview_no_location": "Ajoutez un lieu pour voir les prévisions",
+    "preview_unavailable": "Service météo injoignable pour le moment",
+    "stale": "Données non à jour",
+    "forecast": "Prochains jours",
+    "stat_feels": "Ressenti",
+    "stat_humidity": "Humidité",
+    "stat_wind": "Vent",
+    "stat_pressure": "Pression",
+    "stat_uv": "Indice UV",
+    "stat_air": "Qualité de l'air (EAQI)",
+    "settings_title": "Réglages météo"
+  }
+}

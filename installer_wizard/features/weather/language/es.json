@@ -1,0 +1,24 @@
+{
+  "name": "Tiempo",
+  "description": "Previsiones completas con varias ubicaciones: hoy o toda la semana, hora a hora, viento, calidad del aire, humedad, presión, UV, polen, amanecer y atardecer, fases lunares. Se abre desde una pregunta sobre el tiempo.",
+  "capabilities": [
+    "Vista detallada del día y vista semanal, elegidas según la pregunta",
+    "Hora a hora: temperatura, lluvia, viento, rachas, UV, nubes y visibilidad",
+    "Calidad del aire europea y estadounidense, partículas finas, gases y polen",
+    "Presión con tendencia, punto de rocío, humedad y sensación térmica",
+    "Amanecer, atardecer, duración del día, horas de sol y fase lunar",
+    "Varias ubicaciones guardadas con una predeterminada y unidades a elegir"
+  ],
+  "settings": {
+    "NUXIVA_WEATHER_UNITS": "Sistema de medida",
+    "NUXIVA_WEATHER_WIND": "Unidad del viento",
+    "NUXIVA_WEATHER_VIEW": "Vista para una pregunta general",
+    "NUXIVA_WEATHER_DAYS": "Días de previsión",
+    "NUXIVA_WEATHER_HOURS": "Horas mostradas en detalle",
+    "NUXIVA_WEATHER_REFRESH": "Actualización de datos (minutos)",
+    "NUXIVA_WEATHER_AIR": "Calidad del aire",
+    "NUXIVA_WEATHER_POLLEN": "Polen",
+    "NUXIVA_WEATHER_ASTRO": "Luna, amanecer y atardecer"
+  },
+  "help": {}
+}

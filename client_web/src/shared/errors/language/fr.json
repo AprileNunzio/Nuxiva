@@ -133,6 +133,8 @@
     "nodes_copy_failed": "Impossible de copier la commande : sélectionnez-la et copiez-la manuellement.",
     "error_access_unavailable": "Verification des permissions impossible.",
     "error_people_wellbeing_failed": "Parcours de bien-être impossible.",
-    "error_ear_log_failed": "Opération sur le journal d'écoute impossible."
+    "error_ear_log_failed": "Opération sur le journal d'écoute impossible.",
+    "error_weather_failed": "Opération météo impossible.",
+    "error_weather_search_failed": "Recherche du lieu impossible."
   }
 }

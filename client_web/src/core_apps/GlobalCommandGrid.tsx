@@ -7,7 +7,7 @@ import {
   Clock, Users, Binary, Hand, Workflow, Grid, Home, Music, Mail, Tv,
   Scale, Server, Video, ShieldCheck, Zap, Lock, UserCheck, FileText,
   Box, BookOpen, AlertTriangle, Archive, Radio, RefreshCw, ArrowRight,
-  Search, X, Brain, Shield, Layers, LayoutGrid, ListFilter, Cpu, Activity, Mic, RotateCcw
+  Search, X, Brain, Shield, Layers, LayoutGrid, ListFilter, Cpu, Activity, Mic, RotateCcw, CloudSun
 } from 'lucide-react';
 
 export type CoreAppCategory = 'all' | 'ai' | 'infra' | 'automation' | 'security' | 'media';
@@ -97,6 +97,7 @@ const CORE_APPS_LIST: CoreAppDef[] = [
   { id: 'updater', iconName: 'RefreshCw', category: 'infra', accent: 'cyan' },
   { id: 'backup', iconName: 'Archive', category: 'infra', accent: 'cyan' },
   { id: 'factory_reset', iconName: 'RotateCcw', category: 'security', accent: 'rose' },
+  { id: 'weather', iconName: 'CloudSun', category: 'media', accent: 'emerald' },
   { id: 'automations', iconName: 'Zap', category: 'automation', accent: 'amber' },
   { id: 'flows', iconName: 'Workflow', category: 'automation', accent: 'amber' },
   { id: 'hands', iconName: 'Hand', category: 'automation', accent: 'amber' },
@@ -113,6 +114,7 @@ const CORE_APPS_LIST: CoreAppDef[] = [
 const ICON_MAP: Record<string, React.ReactNode> = {
   Brain: <Brain className="w-5 h-5 text-purple-400" />,
   RotateCcw: <RotateCcw className="w-5 h-5 text-rose-400" />,
+  CloudSun: <CloudSun className="w-5 h-5 text-emerald-400" />,
   Clock: <Clock className="w-5 h-5 text-amber-400" />,
   Users: <Users className="w-5 h-5 text-purple-400" />,
   Binary: <Binary className="w-5 h-5 text-purple-400" />,

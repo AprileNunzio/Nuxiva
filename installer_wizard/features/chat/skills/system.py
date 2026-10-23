@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from features.chat.skills.weather import DAYS_IT, MONTHS_IT
+from features.weather.codes import DAYS_IT, MONTHS_IT
 from state import store
 
 

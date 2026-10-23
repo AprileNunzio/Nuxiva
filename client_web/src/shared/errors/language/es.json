@@ -133,6 +133,8 @@
     "nodes_copy_failed": "No se puede copiar el comando: selecciónalo y cópialo manualmente.",
     "error_access_unavailable": "No se pueden verificar los permisos.",
     "error_people_wellbeing_failed": "No se pudo completar el recorrido de bienestar.",
-    "error_ear_log_failed": "No se pudo completar la operación del registro de escucha."
+    "error_ear_log_failed": "No se pudo completar la operación del registro de escucha.",
+    "error_weather_failed": "No se pudo completar la operación del tiempo.",
+    "error_weather_search_failed": "No se pudo buscar el lugar."
   }
 }

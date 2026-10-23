@@ -6,6 +6,7 @@ import time
 from config import STATE_DIR
 from sealed import SealedFile, write_private
 
+from features.experts import templates
 from features.experts.model import Expert, ExpertError, build
 
 log = logging.getLogger("nuxiva.experts")
@@ -36,6 +37,7 @@ class ExpertStore:
         known = set(registry.TOOLS)
         for row in rows if isinstance(rows, list) else []:
             try:
+                row = templates.upgrade(row) if isinstance(row, dict) else row
                 expert = build({**row, "tools": [t for t in row.get("tools") or [] if t in known]}, known)
             except (ExpertError, AttributeError) as exc:
                 log.warning("Esperto scartato: %s", exc)

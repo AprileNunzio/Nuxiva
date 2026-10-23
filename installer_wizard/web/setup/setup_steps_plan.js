@@ -52,6 +52,8 @@
     const given = answers(ctx);
     list.replaceChildren(...asked(ctx).map((id) => {
       const card = ctx.el("div", "live-card consent-item");
+      card.setAttribute("data-consent", id);
+      if (typeof given[id] !== "boolean") card.classList.add("unanswered");
       card.append(ctx.el("b", "", ctx.t(`consent-${id}`)), ctx.el("small", "", ctx.t(`consent-${id}-sub`)));
       const row = ctx.el("div", "brain-mode-row");
       [[true, "consent-yes"], [false, "consent-no"]].forEach(([value, key]) => {
@@ -96,7 +98,12 @@
     },
     collect(ctx) {
       const given = answers(ctx);
-      if (asked(ctx).some((id) => typeof given[id] !== "boolean")) throw new Error("err-consents");
+      const missing = asked(ctx).find((id) => typeof given[id] !== "boolean");
+      if (missing) {
+        const card = document.querySelector(`[data-consent="${missing}"]`);
+        if (card && card.scrollIntoView) card.scrollIntoView({ block: "center", behavior: "smooth" });
+        throw new Error("err-consents");
+      }
       return { consents: Object.fromEntries(asked(ctx).map((id) => [id, given[id]])), skip: skipped(ctx).filter((key) => included(ctx).includes(key)) };
     },
     checks(ctx) {

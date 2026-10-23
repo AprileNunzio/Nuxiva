@@ -5,7 +5,7 @@ from datetime import date
 
 from features.actions.common import sh
 from features.agent.registry import tool
-from features.experts import live
+from features.experts import admin, live
 
 OWNER = "experts"
 UNIT_RE = re.compile(r"^[A-Za-z0-9@._:-]{1,80}$")
@@ -144,3 +144,91 @@ async def expert_create(template: str = "", role: str = "", specialty: str = "")
     body = {"template": template} if template else {"role": role, "specialty": specialty}
     expert = service.create(body, "it", "nuxiva")
     return f"esperto creato: {expert.role} ({expert.id})"
+
+
+@tool("apt_install", "installa uno o più pacchetti Debian con apt (non interattivo, mantiene i file di configurazione esistenti)",
+      {"packages": "nomi dei pacchetti separati da spazio"}, agent=OWNER, confirm=True, precheck=admin.check_apt)
+async def apt_install(packages: str) -> str:
+    return await admin.apt_install(packages)
+
+
+@tool("apt_remove", "rimuove pacchetti Debian, con purge opzionale per eliminare anche la configurazione",
+      {"packages": "nomi dei pacchetti separati da spazio", "purge": "true per eliminare anche la configurazione"},
+      agent=OWNER, confirm=True, precheck=admin.check_apt)
+async def apt_remove(packages: str, purge: bool = False) -> str:
+    return await admin.apt_install(packages, remove=True, purge=bool(purge))
+
+
+@tool("apt_maintain", "manutenzione di apt: update, upgrade, full-upgrade, autoremove, clean oppure fix (ripara dipendenze rotte)",
+      {"action": "update, upgrade, full-upgrade, autoremove, clean o fix"}, agent=OWNER, confirm=True, precheck=admin.check_apt)
+async def apt_maintain(action: str) -> str:
+    return await admin.apt_maintain(action)
+
+
+@tool("apt_search", "cerca pacchetti Debian per nome o descrizione", {"query": "testo da cercare"}, agent=OWNER)
+async def apt_search(query: str) -> str:
+    return await admin.apt_find(query)
+
+
+@tool("service_control", "controlla un servizio systemd: start, stop, restart, reload, enable, disable, mask, unmask, reset-failed",
+      {"unit": "nome del servizio", "action": "start, stop, restart, reload, try-restart, enable, disable, enable --now, disable --now, mask, unmask o reset-failed"},
+      agent=OWNER, confirm=True, precheck=admin.check_service)
+async def service_control(unit: str, action: str) -> str:
+    return await admin.service(unit, action)
+
+
+@tool("power_control", "riavvia, spegne, ferma o sospende il server (con ritardo in minuti) oppure annulla uno spegnimento programmato",
+      {"action": "reboot, poweroff, halt, suspend o cancel", "minutes": "minuti di attesa, da 1 a 1440 (1 se omesso)"},
+      agent=OWNER, confirm=True, precheck=admin.check_power)
+async def power_control(action: str, minutes: int = 1) -> str:
+    return await admin.power(action, minutes)
+
+
+@tool("ssh_exec", "esegue un comando su un altro computer via SSH con la chiave di Nuxiva (senza password, host nuovi accettati alla prima connessione)",
+      {"host": "nome o indirizzo del computer", "command": "comando da eseguire", "user": "utente (root se omesso)",
+       "port": "porta (22 se omessa)", "timeout": "secondi massimi (120 se omesso)"},
+      agent=OWNER, confirm=admin.risky, precheck=admin.check_ssh)
+async def ssh_exec(host: str, command: str, user: str = "root", port: int = 22, timeout: int = 120) -> str:
+    return await admin.ssh(host, command, user, port, timeout)
+
+
+@tool("ssh_public_key", "mostra la chiave pubblica SSH di Nuxiva da autorizzare sui computer da raggiungere (la crea se manca)",
+      {}, agent=OWNER)
+async def ssh_public_key() -> str:
+    return await admin.ssh_public_key()
+
+
+@tool("debian_shell", "esegue qualsiasi comando bash come amministratore sul server, senza limiti di tipo (fino a 1 ora); i comandi di sola lettura partono subito, gli altri chiedono conferma",
+      {"command": "comando bash", "timeout": "secondi massimi (300 se omesso)", "workdir": "cartella di lavoro (facoltativa)"},
+      agent=OWNER, confirm=admin.risky)
+async def debian_shell(command: str, timeout: int = 300, workdir: str = "") -> str:
+    return await admin.shell(command, timeout, workdir)
+
+
+@tool("system_file_read", "legge un file di testo del sistema (percorso assoluto)", {"path": "percorso assoluto", "limit": "byte massimi"},
+      agent=OWNER, precheck=admin.check_path)
+async def system_file_read(path: str, limit: int = 20000) -> str:
+    return admin.read_file(path, limit)
+
+
+@tool("system_file_write", "scrive un file di testo del sistema (percorso assoluto), conservando una copia .bak dell'originale e i suoi permessi",
+      {"path": "percorso assoluto", "content": "contenuto completo del file", "mode": "permessi ottali facoltativi, per esempio 644"},
+      agent=OWNER, confirm=True, precheck=admin.check_path)
+async def system_file_write(path: str, content: str, mode: str = "") -> str:
+    return admin.write_file(path, content, mode)
+
+
+@tool("debian_processes", "processi in esecuzione ordinati per uso di CPU o memoria", {"sort": "cpu o mem", "limit": "quanti (1-60)"}, agent=OWNER)
+async def debian_processes(sort: str = "cpu", limit: int = 15) -> str:
+    return await admin.processes(sort, limit)
+
+
+@tool("process_kill", "invia un segnale a un processo (TERM, KILL, HUP, INT, STOP, CONT, USR1, USR2, QUIT)",
+      {"pid": "numero del processo", "signal": "segnale (TERM se omesso)"}, agent=OWNER, confirm=True)
+async def process_kill(pid: int, signal: str = "TERM") -> str:
+    return await admin.kill(pid, signal)
+
+
+@tool("debian_network", "interfacce, rotte e porte in ascolto del server", {}, agent=OWNER)
+async def debian_network() -> str:
+    return await admin.network()

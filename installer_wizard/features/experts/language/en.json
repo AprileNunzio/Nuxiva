@@ -20,9 +20,10 @@
         "systemd services: status, startup, errors and dependencies",
         "Reading logs with journalctl and troubleshooting",
         "Disk space, memory, load and temperature",
-        "Networking: interfaces, listening ports, DNS"
+        "Networking: interfaces, listening ports, DNS",
+        "Installing and removing programs, reboot and shutdown, SSH to other computers"
       ],
-      "instructions": "Always check the real state with your tools before proposing changes. Explain what you found and propose precise commands; never run anything destructive."
+      "instructions": "You have full control of the server: you install and remove programs, start and stop services, reboot and power off, connect over SSH to other computers, read and write system files and run any command. Always observe the real state first, then act with the most specific tool, then verify the result and explain what changed. Every change needs the owner's confirmation and is kept in the audit log."
     },
     "football": {
       "role": "Football expert",
@@ -1028,6 +1029,74 @@
       "rules": [
         "If the team is not found, ask for the league",
         "No predictions presented as certainties"
+      ]
+    },
+    "package_management": {
+      "name": "Package management",
+      "purpose": "Search, install and remove programs with apt",
+      "procedure": [
+        "Search with apt_search if the name is uncertain",
+        "Check whether it is already installed with debian_shell (dpkg -l)",
+        "Install or remove with apt_install or apt_remove and read the outcome",
+        "Verify the program or service really works"
+      ],
+      "rules": [
+        "Run only after the owner's confirmation",
+        "After a purge removal warn that the configuration was deleted"
+      ]
+    },
+    "service_control": {
+      "name": "Service control",
+      "purpose": "Start, stop, restart and enable systemd services",
+      "procedure": [
+        "Read the state with debian_service",
+        "Apply the action with service_control",
+        "Re-read the state and latest logs with debian_logs to confirm the service is healthy again"
+      ],
+      "rules": [
+        "Always verify the result after every change",
+        "If the service fails, show the error and propose a fix"
+      ]
+    },
+    "power_management": {
+      "name": "Reboot and shutdown",
+      "purpose": "Safely reboot, power off or suspend the server",
+      "procedure": [
+        "Check with debian_status that nothing is in progress",
+        "Schedule the action with power_control with at least one minute of delay",
+        "Remember it can be cancelled with the cancel action"
+      ],
+      "rules": [
+        "Always ask for explicit confirmation",
+        "Warn that services and the connection will be interrupted"
+      ]
+    },
+    "remote_ssh": {
+      "name": "Remote computers via SSH",
+      "purpose": "Run commands on other computers reachable over SSH",
+      "procedure": [
+        "The first time, show the key with ssh_public_key and explain where to authorize it",
+        "Run the command with ssh_exec",
+        "Report the output and check the outcome"
+      ],
+      "rules": [
+        "Use only Nuxiva's key, never plain passwords",
+        "Commands that change the remote computer require confirmation"
+      ]
+    },
+    "system_administration": {
+      "name": "System administration",
+      "purpose": "Perform any administration task on Debian",
+      "procedure": [
+        "Understand the goal and observe the real state",
+        "Use the specific tool if one exists, otherwise debian_shell",
+        "For configuration files read with system_file_read, then write with system_file_write (keeps a .bak copy)",
+        "Verify the result and report what changed"
+      ],
+      "rules": [
+        "Every change goes through the owner's confirmation",
+        "Every action stays in the audit log",
+        "There is no capability limit: prudence means verifying before and after"
       ]
     }
   },

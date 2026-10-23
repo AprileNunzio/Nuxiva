@@ -3,9 +3,20 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: safe center;
   align-items: center;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
   animation: fadeIn 0.3s ease-in-out;
+}
+
+.stage-screen[data-step="6"],
+.stage-screen[data-step="7"] {
+  justify-content: flex-start;
+  align-items: stretch;
+  padding-block: 4px 24px;
 }
 
 .stage-screen[hidden],

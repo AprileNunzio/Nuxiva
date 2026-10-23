@@ -27,6 +27,7 @@ import { View as SharesView } from '../core_apps/shares/View';
 import { View as UpdaterView } from '../core_apps/updater/View';
 import { View as VaultView } from '../core_apps/vault/View';
 import { View as VpnView } from '../core_apps/vpn/View';
+import { View as WeatherView } from '../core_apps/weather/View';
 
 const CORE_APP_COMPONENTS: Readonly<Record<string, React.FC>> = {
   agents: AgentsView,
@@ -37,6 +38,7 @@ const CORE_APP_COMPONENTS: Readonly<Record<string, React.FC>> = {
   emergency: EmergencyView,
   ear_log: EarLogView,
   factory_reset: FactoryResetView,
+  weather: WeatherView,
   features_hub: FeaturesHubView,
   firewall: FirewallView,
   flows: FlowsView,

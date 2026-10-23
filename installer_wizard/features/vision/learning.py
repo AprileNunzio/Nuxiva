@@ -1,6 +1,7 @@
 import logging
 import os
 import time
+from pathlib import Path
 
 import numpy as np
 
@@ -19,6 +20,11 @@ VIEW_EVERY = 4.0
 VIEW_MIN_SCORE = 0.55
 MERGE_CENTROID = float(os.environ.get("NUXIVA_FACE_MERGE_CENTROID", "0.45"))
 REFINE = os.environ.get("NUXIVA_FACE_AUTOIMPROVE", "1") != "0"
+SETUP_SESSION = Path(os.environ.get("NUXIVA_SETUP_SESSION", "/var/lib/nuxiva/setup_session.json"))
+
+
+def setup_running() -> bool:
+    return SETUP_SESSION.exists()
 
 
 def collect_view(vision, track, frame, slug, score, now) -> None:
@@ -48,7 +54,7 @@ def learn(vision, track, frame, feature) -> None:
             track.last_learn = now
             vision.gallery.add_samples(slug, [feature], ir)
         return
-    if ratio < AUTO_MIN_RATIO or any(t.identity()[0] for t in vision.tracks):
+    if setup_running() or ratio < AUTO_MIN_RATIO or any(t.identity()[0] for t in vision.tracks):
         return
     track.samples.append(feature)
     if track.ir_feature is not None:

@@ -20,9 +20,10 @@
         "Servizi systemd: stato, avvio, errori e dipendenze",
         "Lettura dei log con journalctl e diagnosi dei guasti",
         "Spazio disco, memoria, carico e temperatura",
-        "Rete: interfacce, porte in ascolto, DNS"
+        "Rete: interfacce, porte in ascolto, DNS",
+        "Installazione e rimozione di programmi, riavvio e spegnimento, SSH verso altri computer"
       ],
-      "instructions": "Prima di proporre modifiche controlla sempre lo stato reale con i tuoi strumenti. Spiega cosa hai trovato e proponi comandi precisi; non eseguire nulla di distruttivo."
+      "instructions": "Hai il pieno controllo del server: installi e rimuovi programmi, avvii e fermi servizi, riavvii e spegni, ti colleghi in SSH ad altri computer, leggi e scrivi file di sistema ed esegui qualsiasi comando. Prima di agire osserva sempre lo stato reale, poi agisci con lo strumento più specifico, quindi verifica il risultato e spiega cosa è cambiato. Ogni modifica richiede la conferma del proprietario e resta nel registro di audit."
     },
     "football": {
       "role": "Esperto di calcio",
@@ -1028,6 +1029,74 @@
       "rules": [
         "Se la squadra non si trova, chiedi il campionato",
         "Niente pronostici presentati come certezze"
+      ]
+    },
+    "package_management": {
+      "name": "Gestione pacchetti",
+      "purpose": "Cercare, installare e rimuovere programmi con apt",
+      "procedure": [
+        "Cerca il pacchetto con apt_search se il nome non è certo",
+        "Controlla se è già installato con debian_shell (dpkg -l)",
+        "Installa o rimuovi con apt_install o apt_remove e leggi l'esito",
+        "Verifica che il programma o il servizio funzioni davvero"
+      ],
+      "rules": [
+        "Esegui solo dopo la conferma del proprietario",
+        "Dopo una rimozione con purge avvisa che la configurazione è stata eliminata"
+      ]
+    },
+    "service_control": {
+      "name": "Controllo dei servizi",
+      "purpose": "Avviare, fermare, riavviare e abilitare servizi systemd",
+      "procedure": [
+        "Leggi lo stato con debian_service",
+        "Applica l'azione con service_control",
+        "Rileggi lo stato e gli ultimi log con debian_logs per confermare che il servizio è tornato sano"
+      ],
+      "rules": [
+        "Dopo ogni modifica verifica sempre il risultato",
+        "Se il servizio fallisce, mostra l'errore e proponi una correzione"
+      ]
+    },
+    "power_management": {
+      "name": "Riavvio e spegnimento",
+      "purpose": "Riavviare, spegnere o sospendere il server in sicurezza",
+      "procedure": [
+        "Controlla con debian_status che non ci siano operazioni in corso",
+        "Programma l'azione con power_control con almeno un minuto di attesa",
+        "Ricorda che si può annullare con l'azione cancel"
+      ],
+      "rules": [
+        "Chiedi sempre conferma esplicita",
+        "Avvisa che i servizi e la connessione si interromperanno"
+      ]
+    },
+    "remote_ssh": {
+      "name": "Computer remoti via SSH",
+      "purpose": "Eseguire comandi su altri computer raggiungibili in SSH",
+      "procedure": [
+        "Se è la prima volta mostra la chiave con ssh_public_key e spiega dove autorizzarla",
+        "Esegui il comando con ssh_exec",
+        "Riporta l'output e verifica l'esito"
+      ],
+      "rules": [
+        "Usa solo la chiave di Nuxiva, mai password in chiaro",
+        "I comandi che modificano il computer remoto richiedono conferma"
+      ]
+    },
+    "system_administration": {
+      "name": "Amministrazione di sistema",
+      "purpose": "Fare qualsiasi operazione di amministrazione su Debian",
+      "procedure": [
+        "Capisci l'obiettivo e osserva lo stato reale",
+        "Usa lo strumento specifico se esiste, altrimenti debian_shell",
+        "Per i file di configurazione leggi con system_file_read, poi scrivi con system_file_write (conserva una copia .bak)",
+        "Verifica il risultato e riferisci cosa è cambiato"
+      ],
+      "rules": [
+        "Ogni modifica passa dalla conferma del proprietario",
+        "Ogni azione resta nel registro di audit",
+        "Non c'è alcun limite di capacità: la prudenza sta nel verificare prima e dopo"
       ]
     }
   },

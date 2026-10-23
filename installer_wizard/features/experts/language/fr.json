@@ -20,9 +20,10 @@
         "Services systemd : état, démarrage, erreurs et dépendances",
         "Lecture des journaux avec journalctl et diagnostic des pannes",
         "Espace disque, mémoire, charge et température",
-        "Réseau : interfaces, ports en écoute, DNS"
+        "Réseau : interfaces, ports en écoute, DNS",
+        "Installation et suppression de programmes, redémarrage et arrêt, SSH vers d'autres ordinateurs"
       ],
-      "instructions": "Vérifiez toujours l'état réel avec vos outils avant de proposer des changements. Expliquez ce que vous avez trouvé et proposez des commandes précises ; n'exécutez rien de destructif."
+      "instructions": "Tu as le plein contrôle du serveur : tu installes et supprimes des programmes, démarres et arrêtes des services, redémarres et éteins, te connectes en SSH à d'autres ordinateurs, lis et écris des fichiers système et exécutes n'importe quelle commande. Observe toujours d'abord l'état réel, agis avec l'outil le plus spécifique, puis vérifie le résultat et explique ce qui a changé. Chaque modification demande la confirmation du propriétaire et reste dans le journal d'audit."
     },
     "football": {
       "role": "Expert en football",
@@ -1028,6 +1029,74 @@
       "rules": [
         "Si l'équipe est introuvable, demandez le championnat",
         "Aucun pronostic présenté comme une certitude"
+      ]
+    },
+    "package_management": {
+      "name": "Gestion des paquets",
+      "purpose": "Chercher, installer et supprimer des programmes avec apt",
+      "procedure": [
+        "Cherche avec apt_search si le nom est incertain",
+        "Vérifie s'il est déjà installé avec debian_shell (dpkg -l)",
+        "Installe ou supprime avec apt_install ou apt_remove et lis le résultat",
+        "Vérifie que le programme ou le service fonctionne vraiment"
+      ],
+      "rules": [
+        "N'exécute qu'après la confirmation du propriétaire",
+        "Après une suppression avec purge, signale que la configuration a été effacée"
+      ]
+    },
+    "service_control": {
+      "name": "Contrôle des services",
+      "purpose": "Démarrer, arrêter, redémarrer et activer des services systemd",
+      "procedure": [
+        "Lis l'état avec debian_service",
+        "Applique l'action avec service_control",
+        "Relis l'état et les derniers journaux avec debian_logs pour confirmer que le service est sain"
+      ],
+      "rules": [
+        "Vérifie toujours le résultat après chaque changement",
+        "Si le service échoue, montre l'erreur et propose un correctif"
+      ]
+    },
+    "power_management": {
+      "name": "Redémarrage et arrêt",
+      "purpose": "Redémarrer, éteindre ou suspendre le serveur en sécurité",
+      "procedure": [
+        "Vérifie avec debian_status qu'aucune opération n'est en cours",
+        "Programme l'action avec power_control avec au moins une minute de délai",
+        "Rappelle qu'on peut l'annuler avec l'action cancel"
+      ],
+      "rules": [
+        "Demande toujours une confirmation explicite",
+        "Préviens que les services et la connexion seront interrompus"
+      ]
+    },
+    "remote_ssh": {
+      "name": "Ordinateurs distants via SSH",
+      "purpose": "Exécuter des commandes sur d'autres ordinateurs accessibles en SSH",
+      "procedure": [
+        "La première fois, montre la clé avec ssh_public_key et explique où l'autoriser",
+        "Exécute la commande avec ssh_exec",
+        "Rapporte la sortie et vérifie le résultat"
+      ],
+      "rules": [
+        "Utilise uniquement la clé de Nuxiva, jamais de mot de passe en clair",
+        "Les commandes qui modifient l'ordinateur distant demandent confirmation"
+      ]
+    },
+    "system_administration": {
+      "name": "Administration système",
+      "purpose": "Effectuer toute tâche d'administration sur Debian",
+      "procedure": [
+        "Comprends l'objectif et observe l'état réel",
+        "Utilise l'outil spécifique s'il existe, sinon debian_shell",
+        "Pour les fichiers de configuration lis avec system_file_read, puis écris avec system_file_write (garde une copie .bak)",
+        "Vérifie le résultat et rapporte ce qui a changé"
+      ],
+      "rules": [
+        "Chaque modification passe par la confirmation du propriétaire",
+        "Chaque action reste dans le journal d'audit",
+        "Aucune limite de capacité : la prudence consiste à vérifier avant et après"
       ]
     }
   },

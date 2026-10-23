@@ -1,31 +1,22 @@
 import re
 from datetime import date
 
-import httpx
+from features.weather import places, provider
+from features.weather.codes import DAYS_IT
 
-WMO = {
-    0: ("Sereno", "clear"), 1: ("Prevalentemente sereno", "clear"), 2: ("Parzialmente nuvoloso", "partly"),
-    3: ("Coperto", "cloudy"), 45: ("Nebbia", "fog"), 48: ("Nebbia con brina", "fog"),
-    51: ("Pioviggine leggera", "drizzle"), 53: ("Pioviggine", "drizzle"), 55: ("Pioviggine intensa", "drizzle"),
-    56: ("Pioviggine gelata", "drizzle"), 57: ("Pioviggine gelata", "drizzle"),
-    61: ("Pioggia debole", "rain"), 63: ("Pioggia", "rain"), 65: ("Pioggia forte", "rain"),
-    66: ("Pioggia gelata", "rain"), 67: ("Pioggia gelata forte", "rain"),
-    71: ("Neve debole", "snow"), 73: ("Neve", "snow"), 75: ("Neve forte", "snow"), 77: ("Granelli di neve", "snow"),
-    80: ("Rovesci", "rain"), 81: ("Rovesci", "rain"), 82: ("Rovesci violenti", "storm"),
-    85: ("Rovesci di neve", "snow"), 86: ("Rovesci di neve forti", "snow"),
-    95: ("Temporale", "storm"), 96: ("Temporale con grandine", "storm"), 99: ("Temporale con grandine", "storm"),
-}
-DAYS_IT = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"]
-MONTHS_IT = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre",
-             "ottobre", "novembre", "dicembre"]
+WEEK_WORDS = re.compile(r"\b(settimana|settimanale|sette giorni|7 giorni|prossimi giorni|prossimi \d+ giorni|weekend|fine settimana|"
+                        r"prossima settimana|tutta la settimana|per i prossimi)\b", re.I)
 
 
-async def _locate(client: httpx.AsyncClient) -> dict:
+async def _locate() -> dict:
+    chosen = places.default()
+    if chosen:
+        return chosen
     from features.location.locator import locator
     loc = await locator.current()
     if loc.get("lat") is None:
         raise ValueError("posizione sconosciuta")
-    return loc
+    return {"name": loc["name"], "lat": float(loc["lat"]), "lon": float(loc["lon"]), "detail": ""}
 
 
 _PREPS = {"a", "ad", "di", "del", "per", "su", "sul", "in", "da", "nel", "verso"}
@@ -66,63 +57,64 @@ def _day_index(text: str) -> int | None:
     return None
 
 
+AIR_WORDS = {"good": "buona", "fair": "discreta", "moderate": "moderata", "poor": "scadente", "very_poor": "molto scadente",
+             "extreme": "pessima"}
+
+
+def _day_speech(place: str, current: dict, day: dict, index: int, air: dict | None) -> str:
+    when = "Oggi" if index == 0 else ("Domani" if index == 1 else f"{day['label']} {day['date']}")
+    parts = [f"{when} a {place}: {day['desc'].lower()}, massima {day['tmax']} e minima {day['tmin']} gradi"]
+    if (day["rain"] or 0) >= 30:
+        parts.append(f"pioggia al {day['rain']} per cento" + (f", circa {day['rain_sum']} millimetri" if (day["rain_sum"] or 0) >= 1 else ""))
+    wind = day["gust"] or day["wind"] or 0
+    if wind >= 40:
+        parts.append(f"vento forte da {day['dir_name']} con raffiche fino a {day['gust']} chilometri orari")
+    elif wind >= 20:
+        parts.append(f"vento da {day['dir_name']} fino a {day['wind']} chilometri orari")
+    if (day["uv"] or 0) >= 6:
+        parts.append(f"indice UV alto, {day['uv']}")
+    text = ", ".join(parts) + "."
+    if index == 0:
+        text += (f" Ora ci sono {current['temp']} gradi, percepiti {current['feels']}, umidità {current['humidity']} per cento"
+                 f", pressione {current['pressure']} ettopascal.")
+        if air and air.get("level"):
+            text += f" Qualità dell'aria {AIR_WORDS.get(air['level'], air['level'])}."
+    return text
+
+
+def _week_speech(place: str, current: dict, days: list[dict]) -> str:
+    hottest = max(days, key=lambda d: d["tmax"])
+    rainy = [d["label"] for d in days[1:] if (d["rain"] or 0) >= 60]
+    text = (f"A {place} ora ci sono {current['temp']} gradi, {current['desc'].lower()}. Nei prossimi {len(days)} giorni le massime vanno da "
+            f"{min(d['tmax'] for d in days)} a {hottest['tmax']} gradi, con il picco {hottest['label'].lower()}. ")
+    return text + (f"Pioggia probabile {', '.join(x.lower() for x in rainy[:3])}." if rainy else "Non sono previste piogge significative.")
+
+
 async def weather_skill(text: str = "") -> tuple[str, dict]:
     asked = _weather_place(text)
-    async with httpx.AsyncClient(timeout=10) as client:
-        if asked:
-            from features.location.locator import search
-            found = await search(asked, 1)
-            if not found:
-                return (f"Non ho trovato nessun luogo chiamato {asked}. Puoi ripetere il nome della città?",
-                        {"mode": "face"})
-            loc = {"name": found[0]["name"], "lat": found[0]["lat"], "lon": found[0]["lon"]}
-        else:
-            loc = await _locate(client)
-        r = await client.get("https://api.open-meteo.com/v1/forecast", params={
-            "latitude": loc["lat"], "longitude": loc["lon"], "timezone": "auto", "forecast_days": 7,
-            "current": "temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m",
-            "daily": "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,"
-                     "wind_speed_10m_max,sunrise,sunset",
-        })
-        data = r.json()
-
-    cur, daily = data["current"], data["daily"]
-    days = []
-    for i, day in enumerate(daily["time"]):
-        d = date.fromisoformat(day)
-        desc, icon = WMO.get(daily["weather_code"][i], ("—", "cloudy"))
-        days.append({
-            "label": "Oggi" if i == 0 else ("Domani" if i == 1 else DAYS_IT[d.weekday()]),
-            "date": f"{d.day} {MONTHS_IT[d.month - 1]}",
-            "desc": desc, "icon": icon,
-            "tmax": round(daily["temperature_2m_max"][i]), "tmin": round(daily["temperature_2m_min"][i]),
-            "rain": daily["precipitation_probability_max"][i], "wind": round(daily["wind_speed_10m_max"][i]),
-            "sunrise": daily["sunrise"][i][-5:], "sunset": daily["sunset"][i][-5:],
-        })
-    cur_desc, cur_icon = WMO.get(cur["weather_code"], ("—", "cloudy"))
-    current = {"temp": round(cur["temperature_2m"]), "feels": round(cur["apparent_temperature"]),
-               "humidity": cur["relative_humidity_2m"], "wind": round(cur["wind_speed_10m"]),
-               "desc": cur_desc, "icon": cur_icon}
-
-    rainy = [d["label"] for d in days[1:] if (d["rain"] or 0) >= 60]
-    hottest = max(days, key=lambda d: d["tmax"])
-    speech = (f"A {loc['name']} ora ci sono {current['temp']} gradi, {cur_desc.lower()}. "
-              f"Nei prossimi sette giorni le massime vanno da {min(d['tmax'] for d in days)} a "
-              f"{hottest['tmax']} gradi, con il picco {hottest['label'].lower()}. ")
-    speech += (f"Pioggia probabile {', '.join(x.lower() for x in rainy[:3])}." if rainy
-               else "Non sono previste piogge significative.")
-    day = _day_index(text)
-    if day:
-        d = days[day]
-        when = d["label"].lower() if day <= 1 else f"{d['label'].lower()} {d['date']}"
-        speech = (f"{when.capitalize()} a {loc['name']}: {d['desc'].lower()}, massima {d['tmax']} e minima "
-                  f"{d['tmin']} gradi" + (f", pioggia al {d['rain']} per cento." if (d["rain"] or 0) >= 30 else ".")
-                  + f" Ora ci sono {current['temp']} gradi.")
-    ui = {
-        "mode": "focus",
-        "title": f"Meteo — {loc['name']}",
-        "subtitle": "Previsioni per i prossimi 7 giorni",
-        "panels": [{"type": "forecast", "title": "Settimana", "data": {"current": current, "days": days,
-                                                                        "location": loc["name"]}}],
-    }
+    if asked:
+        from features.location.locator import search
+        found = await search(asked, 1)
+        if not found:
+            return (f"Non ho trovato nessun luogo chiamato {asked}. Puoi ripetere il nome della città?", {"mode": "face"})
+        place = {"name": found[0]["name"], "lat": found[0]["lat"], "lon": found[0]["lon"], "detail": found[0].get("detail", "")}
+    else:
+        place = await _locate()
+    try:
+        report = await provider.report(place)
+    except provider.WeatherUnavailable:
+        return "Non riesco a raggiungere il servizio meteo in questo momento. Riprovo tra poco?", {"mode": "face"}
+    days, current = report["days"], report["current"]
+    index = _day_index(text)
+    week = bool(WEEK_WORDS.search(text)) or (index is None and report["view"] == "week" and "oggi" not in text.lower())
+    if index is not None and index >= len(days):
+        index, week = None, True
+    focus = 0 if index is None else index
+    speech = _week_speech(report["location"], current, days) if week else _day_speech(report["location"], current, days[focus], focus, report["air"])
+    view = "week" if week else "day"
+    title = f"Meteo — {report['location']}"
+    ui = {"mode": "focus", "title": title,
+          "subtitle": f"Previsioni per i prossimi {len(days)} giorni" if week else f"Previsioni di {days[focus]['label'].lower()}",
+          "panels": [{"type": "forecast", "title": "Settimana" if week else days[focus]["label"],
+                      "data": {**report, "view": view, "focus": focus}}]}
     return speech, ui

@@ -13,8 +13,12 @@ DEFAULT_LIVE = "activity"
 BUILTIN = {
     "debian": {
         "icon": "🐧", "color": "#d70a53", "live": "debian",
-        "skills": ["system_health", "service_diagnosis", "log_analysis", "security_updates"],
-        "tools": ["debian_status", "debian_logs", "debian_service", "apt_upgradable", "run_command"],
+        "skills": ["system_health", "service_diagnosis", "log_analysis", "security_updates", "package_management",
+                   "service_control", "power_management", "remote_ssh", "system_administration"],
+        "tools": ["debian_status", "debian_logs", "debian_service", "apt_upgradable", "run_command", "debian_shell",
+                  "debian_processes", "debian_network", "apt_install", "apt_remove", "apt_search", "apt_maintain",
+                  "service_control", "power_control", "ssh_exec", "ssh_public_key", "system_file_read", "system_file_write",
+                  "process_kill"],
         "keywords": ["debian", "linux", "server", "apt", "pacchett", "systemd", "servizi", "servizio", "log", "journal",
                      "disco", "memoria", "ram", "cpu", "carico", "kernel", "aggiorn", "porta", "rete", "dns"],
     },
@@ -86,3 +90,23 @@ def blueprint(template: str, lang: str, expert_id: str) -> dict:
 
 def keywords(template: str) -> list[str]:
     return list(SPECS.get(template, {}).get("keywords") or [])
+
+
+LEGACY_INSTRUCTIONS = frozenset({
+    "Prima di proporre modifiche controlla sempre lo stato reale con i tuoi strumenti. Spiega cosa hai trovato e proponi comandi precisi; non eseguire nulla di distruttivo.",
+    "Always check the real state with your tools before proposing changes. Explain what you found and propose precise commands; never run anything destructive.",
+    "Vérifiez toujours l'état réel avec vos outils avant de proposer des changements. Expliquez ce que vous avez trouvé et proposez des commandes précises ; n'exécutez rien de destructif.",
+    "Comprueba siempre el estado real con tus herramientas antes de proponer cambios. Explica lo que encontraste y propón comandos precisos; no ejecutes nada destructivo.",
+})
+
+
+def upgrade(row: dict) -> dict:
+    spec = SPECS.get(str(row.get("template") or ""))
+    if not spec:
+        return row
+    skills = list(dict.fromkeys([*(row.get("skills") or []), *spec["skills"]]))[:12]
+    tools = list(dict.fromkeys([*(row.get("tools") or []), *spec["tools"]]))[:24]
+    fresh = {**row, "skills": skills, "tools": tools}
+    if row.get("instructions") in LEGACY_INSTRUCTIONS:
+        fresh["instructions"] = text(row["template"], lang_of(row.get("lang") or FALLBACK)).get("instructions") or row["instructions"]
+    return fresh

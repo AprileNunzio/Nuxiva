@@ -51,6 +51,10 @@ TOOLS: dict[str, Risk] = {
     "sport_query": Risk.HOME, "web_research": Risk.HOME, "fleet_find": Risk.INFO, "dev_new": Risk.FILES, "dev_write": Risk.FILES, "camsense_list": Risk.PERSONAL, "camsense_state": Risk.PERSONAL, "camsense_create": Risk.FILES, "camsense_learn": Risk.PERSONAL, "dev_plan": Risk.FILES, "dev_build": Risk.FILES, "dev_status": Risk.INFO, "dev_publish": Risk.FILES, "dev_tree": Risk.INFO, "dev_read": Risk.INFO, "dev_run": Risk.CRITICAL, "fleet_create": Risk.FILES, "fleet_attach": Risk.FILES, "fleet_retire": Risk.FILES,
     "expert_list": Risk.INFO, "expert_ask": Risk.HOME, "expert_create": Risk.FILES,
     "debian_status": Risk.PERSONAL, "debian_logs": Risk.PERSONAL, "debian_service": Risk.PERSONAL,
+    "debian_processes": Risk.PERSONAL, "debian_network": Risk.PERSONAL, "apt_search": Risk.INFO, "ssh_public_key": Risk.PERSONAL,
+    "system_file_read": Risk.PERSONAL, "system_file_write": Risk.CRITICAL, "apt_install": Risk.CRITICAL, "apt_remove": Risk.CRITICAL,
+    "apt_maintain": Risk.CRITICAL, "service_control": Risk.CRITICAL, "power_control": Risk.CRITICAL, "ssh_exec": Risk.CRITICAL,
+    "debian_shell": Risk.CRITICAL, "process_kill": Risk.CRITICAL,
 }
 
 CONNECTORS: dict[str, Risk] = {

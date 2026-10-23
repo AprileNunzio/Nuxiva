@@ -16,6 +16,10 @@
   const RENDER = {
     forecast(p) {
       const d = p.data, c = d.current;
+      if (window.NuxivaWeather && Array.isArray(d.hourly)) {
+        const desk = window.NuxivaDesk && window.NuxivaDesk.ctx;
+        return window.NuxivaWeather.render(d, { t: (key, params) => PageText.t("web/display", key, params), locale: desk ? desk.locale() : navigator.language });
+      }
       return `<div class="fc-now">${icon(c.icon).replace("<svg", '<svg style="width:84px;height:84px"')}
         <div class="t">${c.temp}°</div><div class="d">${fmt.esc(c.desc)}<br>Percepita ${c.feels}° · Umidità ${c.humidity}%<br>Vento ${c.wind} km/h</div></div>
         <div class="fc-days">${d.days.map((x, i) => `<div class="fc-day ${i === 0 ? "today" : ""}" style="animation-delay:${i * 70}ms">

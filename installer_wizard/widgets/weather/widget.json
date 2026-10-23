@@ -3,7 +3,7 @@
   "name": "Meteo",
   "icon": "⛅",
   "priority": 50,
-  "size": "m",
+  "size": "l",
   "agent": "chat",
   "intents": [
     "weather",
@@ -11,7 +11,8 @@
   ],
   "panel_type": "forecast",
   "ttl": 900,
-  "description": "Condizioni attuali e prossimi giorni, dopo una domanda sul tempo (resta 15 minuti).",
+  "description": "Meteo completo dopo una domanda sul tempo: ora, ora per ora, vento, umidità, aria, UV e prossimi giorni (resta 15 minuti).",
   "tone": "cyan",
-  "refresh": 900
+  "refresh": 900,
+  "chrome": false
 }

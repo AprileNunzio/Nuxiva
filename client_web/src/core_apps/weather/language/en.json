@@ -1,0 +1,41 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Weather",
+    "description": "Saved locations, default place and every weather setting, with a live preview",
+    "loading": "Loading…",
+    "unreachable": "Server unreachable",
+    "on": "On",
+    "off": "Off",
+    "save": "Save",
+    "no_settings": "No settings available",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "places_title": "Locations",
+    "places_empty": "No saved location yet: search a city to add it",
+    "search": "Search",
+    "search_placeholder": "City or address",
+    "search_empty": "No place found",
+    "add": "Add",
+    "preview": "Preview",
+    "make_default": "Set as default",
+    "rename": "Rename",
+    "remove": "Remove",
+    "remove_confirm": "Confirm",
+    "default": "Default",
+    "preview_title": "Live preview",
+    "preview_no_location": "Add a location to see the forecast",
+    "preview_unavailable": "Weather service unreachable right now",
+    "stale": "Data not up to date",
+    "forecast": "Next days",
+    "stat_feels": "Feels like",
+    "stat_humidity": "Humidity",
+    "stat_wind": "Wind",
+    "stat_pressure": "Pressure",
+    "stat_uv": "UV index",
+    "stat_air": "Air quality (EAQI)",
+    "settings_title": "Weather settings"
+  }
+}

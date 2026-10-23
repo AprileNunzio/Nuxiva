@@ -417,3 +417,11 @@
     margin: 0 16px;
   }
 }
+
+.consent-item.unanswered {
+  border-color: var(--warn, #f5b942);
+}
+
+.consent-list {
+  width: 100%;
+}
