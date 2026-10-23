@@ -1,4 +1,6 @@
+import importlib.util
 import sys
+import types
 import tempfile
 import unittest
 from pathlib import Path
@@ -8,10 +10,17 @@ from unittest import mock
 import numpy as np
 
 VISION = Path(__file__).resolve().parents[1] / "features" / "vision"
-if str(VISION) not in sys.path:
-    sys.path.insert(0, str(VISION))
 
-import learning  # noqa: E402
+
+def load_learning():
+    spec = importlib.util.spec_from_file_location("learning_under_test", VISION / "learning.py")
+    module = importlib.util.module_from_spec(spec)
+    with mock.patch.dict(sys.modules, {"selection": types.SimpleNamespace(liveness_mode=lambda: "off")}):
+        spec.loader.exec_module(module)
+    return module
+
+
+learning = load_learning()
 
 
 class SetupGuardTest(unittest.TestCase):
