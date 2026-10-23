@@ -26,7 +26,7 @@ interface StepApiKeyConfigProps {
   readonly onSaveCredentials: (providerId: string, draft: CredentialsDraft) => Promise<boolean>;
   readonly selectedModelId: string;
   readonly onSelectModel: (modelId: string, modelName: string) => void;
-  readonly t: (key: string) => string;
+  readonly t: (key: string, params?: Record<string, string | number>) => string;
 }
 
 export const StepApiKeyConfig: React.FC<StepApiKeyConfigProps> = ({
@@ -70,7 +70,7 @@ export const StepApiKeyConfig: React.FC<StepApiKeyConfigProps> = ({
       {/* 1. Selezione Provider Cloud (Grid reattiva 16 provider reali) */}
       <div className="space-y-2.5 w-full">
         <label className="text-xs uppercase font-extrabold tracking-wider text-slate-700 block">
-          1. {t('select_provider_label')} ({providers.length} Servizi Cloud Supportati)
+          1. {t('select_provider_label')} ({t('supported_cloud_services', { count: providers.length })})
         </label>
         <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2.5 w-full">
           {providers.map((p) => {
@@ -115,7 +115,7 @@ export const StepApiKeyConfig: React.FC<StepApiKeyConfigProps> = ({
         {/* Input personalizzabile per impostare qualsiasi modello liberamente */}
         <div className="p-4 rounded-2xl border-2 border-amber-300/80 bg-white shadow-xs space-y-2">
           <label className="text-xs font-black text-slate-900 flex items-center justify-between">
-            <span>Modello Assegnato (imposta liberamente o clicca una scheda sotto):</span>
+            <span>{t('assigned_model_hint')}</span>
             <span className="text-[11px] font-mono font-bold text-amber-900 bg-amber-50 px-2.5 py-0.5 rounded-md border border-amber-200">
               Attivo: {selectedModelId || 'Nessuno'}
             </span>
@@ -125,7 +125,7 @@ export const StepApiKeyConfig: React.FC<StepApiKeyConfigProps> = ({
               type="text"
               value={selectedModelId}
               onChange={(e) => onSelectModel(e.target.value, e.target.value)}
-              placeholder={`Digita qualsiasi modello per ${currentProvider.name} (es. gemini-4-argon, gemini-live, gemini-3.8-flash, claude-3-7-sonnet...)`}
+              placeholder={t('assigned_model_placeholder', { provider: currentProvider.name })}
               className="flex-1 w-full px-3.5 py-2.5 text-xs sm:text-sm font-mono font-bold rounded-xl bg-slate-50 border border-slate-300 text-slate-950 focus:outline-none focus:border-amber-500 focus:bg-white focus:ring-2 focus:ring-amber-100"
             />
             {selectedModelId && (

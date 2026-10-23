@@ -252,6 +252,9 @@
     "credentials_test_ok": "Conexión correcta: el proveedor responde.",
     "credentials_test_failed": "La prueba no tuvo éxito.",
     "credentials_configured": "Configurado",
-    "credentials_missing": "Sin configurar"
+    "credentials_missing": "Sin configurar",
+    "supported_cloud_services": "{count} servicios en la nube compatibles",
+    "assigned_model_hint": "Modelo asignado (escríbelo libremente o elige una tarjeta abajo):",
+    "assigned_model_placeholder": "Escribe cualquier modelo para {provider}"
   }
 }

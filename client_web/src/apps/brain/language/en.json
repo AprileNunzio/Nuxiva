@@ -252,6 +252,9 @@
     "credentials_test_ok": "Connection successful: the provider answers.",
     "credentials_test_failed": "The test did not succeed.",
     "credentials_configured": "Configured",
-    "credentials_missing": "Not configured"
+    "credentials_missing": "Not configured",
+    "supported_cloud_services": "{count} supported cloud services",
+    "assigned_model_hint": "Assigned model (set it freely or pick a card below):",
+    "assigned_model_placeholder": "Type any model for {provider}"
   }
 }

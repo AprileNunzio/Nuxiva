@@ -252,6 +252,9 @@
     "credentials_test_ok": "Connessione riuscita: il fornitore risponde.",
     "credentials_test_failed": "La prova non è riuscita.",
     "credentials_configured": "Configurato",
-    "credentials_missing": "Da configurare"
+    "credentials_missing": "Da configurare",
+    "supported_cloud_services": "{count} servizi cloud supportati",
+    "assigned_model_hint": "Modello assegnato (impostalo liberamente o scegli una scheda qui sotto):",
+    "assigned_model_placeholder": "Scrivi un modello qualsiasi per {provider}"
   }
 }
