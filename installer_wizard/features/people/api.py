@@ -1,6 +1,8 @@
+import logging
 import os
 import re
 import secrets
+import sqlite3
 import time
 from pathlib import Path
 
@@ -16,6 +18,7 @@ from features.voices.catalog import VOICES
 from state import store
 from tasks import background
 
+log = logging.getLogger("nuxiva.people")
 admin_routes = APIRouter()
 public_routes = APIRouter()
 TRAINING_BODY_LIMIT = 65536
@@ -163,6 +166,11 @@ async def admin_person_voiceprint_delete(slug: str, user: str = Depends(require_
 @admin_routes.delete("/api/people/{slug}")
 async def admin_person_delete(slug: str, user: str = Depends(require_admin)):
     people.delete(slug)
+    from features.habits.service import habits
+    try:
+        habits.journal.forget(slug)
+    except sqlite3.Error as exc:
+        log.warning("Abitudini di %s non cancellate: %s", slug, exc)
     if not DEMO:
         await vision_proxy(f"/people/{slug}", "DELETE")
     store.event("INFO", f"Persona eliminata con tutti i dati: {slug} (da {user})", "people")

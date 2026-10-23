@@ -68,6 +68,7 @@ class Habits:
             return
         name, data = ev["name"], ev["data"]
         people = len(bus.present)
+        who = next(iter(bus.present)) if people == 1 else ""
         if name == "state_changed":
             eid = str(data.get("entity_id", ""))
             new, old = data.get("to"), data.get("from")
@@ -75,15 +76,15 @@ class Habits:
             if new in (None, "unavailable", "unknown") or old in (None, "unavailable", "unknown") or new == old:
                 return
             if domain in ACTIONABLE and not self._own(eid):
-                self.journal.add(ev["at"], eid, new, people, sun.up(), "action")
+                self.journal.add(ev["at"], eid, new, people, sun.up(), "action", who)
             elif domain == "binary_sensor" and new == "on":
                 cls = bus.states.attr(eid, "device_class", "")
                 if cls in ODD_CLASSES:
-                    self.journal.add(ev["at"], eid, new, people, sun.up(), "sensor")
+                    self.journal.add(ev["at"], eid, new, people, sun.up(), "sensor", who)
                     self._check_odd(eid, cls, people)
         elif name in ("person_arrived", "somebody_home") and ev["at"] - self.last_arrival > 600:
             self.last_arrival = ev["at"]
-            self.journal.add(ev["at"], "presence", "arrived", people, sun.up(), "arrival")
+            self.journal.add(ev["at"], "presence", "arrived", people, sun.up(), "arrival", who)
             self.foresee(arrival=True)
 
     def foresee(self, arrival: bool = False) -> list[dict]:
@@ -145,6 +146,15 @@ class Habits:
         self.journal.prune()
         self._save()
         return found
+
+    def person_habits(self, slug: str) -> dict:
+        since = time.time() - WINDOW_DAYS * 86400
+        rows = self.journal.rows_for(slug, since)
+        names = {e["id"]: e["name"] for e in bus.states.catalog()}
+        found = mine(rows, names, threshold())
+        items = [{"id": s["id"], "text": s["text"], "confidence": s["confidence"], "support": s["support"],
+                  "observed": s["observed"], "entity": s["entity"], "state": s["state"], "kind": s["kind"]} for s in found]
+        return {"events": sum(1 for r in rows if r[7] == "action"), "days": WINDOW_DAYS, "habits": items}
 
     def pending(self) -> list[dict]:
         now = time.time()

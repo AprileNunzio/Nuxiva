@@ -9,7 +9,6 @@ import { View as FeaturesHubView } from '../core_apps/features_hub/View';
 import { View as FirewallView } from '../core_apps/firewall/View';
 import { View as FlowsView } from '../core_apps/flows/View';
 import { View as GoogleView } from '../core_apps/google/View';
-import { View as HabitsView } from '../core_apps/habits/View';
 import { View as HandsView } from '../core_apps/hands/View';
 import { View as HippocampusRouterView } from '../core_apps/hippocampus_router/View';
 import { View as HomeAssistantView } from '../apps/home_assistant/View';
@@ -38,7 +37,6 @@ const CORE_APP_COMPONENTS: Readonly<Record<string, React.FC>> = {
   firewall: FirewallView,
   flows: FlowsView,
   google: GoogleView,
-  habits: HabitsView,
   hands: HandsView,
   hippocampus_router: HippocampusRouterView,
   home_assistant: HomeAssistantView,

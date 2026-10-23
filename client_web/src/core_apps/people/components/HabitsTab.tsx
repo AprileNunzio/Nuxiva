@@ -1,6 +1,9 @@
-import React from 'react';
-import { Profile, habitsOf } from '../data/peopleApi';
-import { relative, usePeopleI18n } from '../scope';
+import React, { useEffect, useState } from 'react';
+import { Eye } from 'lucide-react';
+import { reportError } from '../../../shared/errors/errorBus';
+import { ObservedHabits, PersonSummary, Profile, SchemaSection, fetchObservedHabits, habitsOf } from '../data/peopleApi';
+import { localLabel, panelClass, relative, usePeopleI18n } from '../scope';
+import { SectionForm } from './SectionForm';
 
 const Bars: React.FC<{ readonly values: readonly number[]; readonly labels: readonly string[]; readonly title: string }> = ({ values, labels, title }) => {
   const max = Math.max(1, ...values);
@@ -21,8 +24,18 @@ const Bars: React.FC<{ readonly values: readonly number[]; readonly labels: read
   );
 };
 
-export const HabitsTab: React.FC<{ readonly profile: Profile }> = ({ profile }) => {
+interface HabitsTabProps {
+  readonly summary: PersonSummary;
+  readonly profile: Profile;
+  readonly section: SchemaSection | undefined;
+  readonly people: readonly PersonSummary[];
+  readonly busy: string | null;
+  readonly run: (key: string, task: () => Promise<unknown>, code: string) => Promise<boolean>;
+}
+
+export const HabitsTab: React.FC<HabitsTabProps> = ({ summary, profile, section, people, busy, run }) => {
   const { t, lang } = usePeopleI18n();
+  const [observed, setObserved] = useState<ObservedHabits | null>(null);
   const habits = habitsOf(profile);
   const stats = (typeof profile.stats === 'object' && profile.stats !== null ? profile.stats : {}) as Record<string, unknown>;
   const days = Array.from({ length: 7 }, (_, i) => new Intl.DateTimeFormat(lang, { weekday: 'short' }).format(new Date(2024, 0, 1 + i)));
@@ -33,8 +46,50 @@ export const HabitsTab: React.FC<{ readonly profile: Profile }> = ({ profile }) 
     [t('first_seen'), relative(Number(stats.first_seen ?? 0), lang) || '—'],
     [t('last_seen'), relative(Number(stats.last_seen ?? 0), lang) || '—'],
   ];
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetchObservedHabits(summary.slug, controller.signal)
+      .then(setObserved)
+      .catch((cause: unknown) => !controller.signal.aborted && reportError('people_habits_failed', cause));
+    return () => controller.abort();
+  }, [summary.slug]);
+
   return (
     <div className="flex flex-col gap-4">
+      {section ? (
+        <div className={panelClass}>
+          <SectionForm
+            slug={summary.slug}
+            title={localLabel(t, lang, `section_${section.id}`, section.title)}
+            isPrivate={section.private}
+            fields={section.fields}
+            profile={profile}
+            people={people}
+            busy={busy}
+            run={run}
+          />
+        </div>
+      ) : null}
+      <section className={panelClass} aria-label={t('observed_title')}>
+        <h3 className="mb-1 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+          <Eye className="h-4 w-4 text-purple-300" aria-hidden="true" />
+          {t('observed_title')}
+        </h3>
+        <p className="mb-3 text-xs text-slate-500">{t('observed_hint', { days: observed?.days ?? 21 })}</p>
+        {!observed || observed.habits.length === 0 ? (
+          <p className="text-sm text-slate-400">{observed ? t('observed_none', { events: observed.events }) : t('loading')}</p>
+        ) : (
+          <ul className="flex flex-col gap-2">
+            {observed.habits.map((habit) => (
+              <li key={habit.id} className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-800/80 bg-slate-950/40 px-3 py-2">
+                <span className="text-sm text-slate-200">{habit.text}</span>
+                <span className="font-mono text-[11px] text-slate-500">{t('observed_evidence', { support: habit.support, observed: habit.observed, confidence: Math.round(habit.confidence * 100) })}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
       <p className="rounded-xl border border-cyan-400/20 bg-cyan-400/5 px-3 py-2 text-sm text-cyan-100">{habits.summary || t('habits_none')}</p>
       <dl className="grid grid-cols-2 gap-2 lg:grid-cols-4">
         {facts.map(([label, value]) => (

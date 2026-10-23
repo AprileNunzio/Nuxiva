@@ -5,6 +5,8 @@ import { useAction, usePolled } from '../../node_apps/shared/hooks/useAction';
 import { createPerson, fetchPeople, fetchPresence, fetchSchema } from './data/peopleApi';
 import { PeopleList } from './components/PeopleList';
 import { PersonView } from './components/PersonView';
+import { RemindersTab } from './components/RemindersTab';
+import { HouseHabits } from './house/HouseHabits';
 import { panelClass, usePeopleI18n } from './scope';
 
 export const View: React.FC = () => {
@@ -14,6 +16,7 @@ export const View: React.FC = () => {
   const schema = usePolled(fetchSchema, 'people_schema_failed', true, 0);
   const action = useAction(list.refresh);
   const [selected, setSelected] = useState<string | null>(null);
+  const [tab, setTab] = useState<'people' | 'reminders' | 'house'>('people');
   const present = useMemo(() => new Set(presence.data?.present ?? []), [presence.data]);
   const run = useCallback(
     async (key: string, task: () => Promise<unknown>, code: string) => (await action.run(key, task, code)) !== undefined,
@@ -59,7 +62,34 @@ export const View: React.FC = () => {
           ))}
         </dl>
       </section>
-      <div className="grid gap-4 lg:grid-cols-[20rem_minmax(0,1fr)] 4xl:grid-cols-[24rem_minmax(0,1fr)]">
+      <div role="tablist" aria-label={t('title')} className="flex gap-1 self-start rounded-xl border border-slate-800/80 bg-slate-950/60 p-1">
+        {(['people', 'reminders', 'house'] as const).map((id) => (
+          <button
+            key={id}
+            type="button"
+            role="tab"
+            aria-selected={tab === id}
+            onClick={() => setTab(id)}
+            className={`rounded-lg px-4 py-1.5 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${tab === id ? 'bg-cyan-400/15 text-cyan-100' : 'text-slate-400 hover:text-white'}`}
+          >
+            {t(`main_tab_${id}`)}
+          </button>
+        ))}
+      </div>
+      {tab === 'reminders' && (
+        <RemindersTab
+          onOpen={(slug) => {
+            setSelected(slug);
+            setTab('people');
+          }}
+        />
+      )}
+      {tab === 'house' && (
+        <section className={panelClass}>
+          <HouseHabits />
+        </section>
+      )}
+      <div className={`grid gap-4 lg:grid-cols-[20rem_minmax(0,1fr)] 4xl:grid-cols-[24rem_minmax(0,1fr)] ${tab === 'people' ? '' : 'hidden'}`}>
         <aside className={panelClass} aria-label={t('people_list')}>
           <PeopleList
             people={people}

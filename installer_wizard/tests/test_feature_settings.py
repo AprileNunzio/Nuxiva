@@ -34,7 +34,7 @@ class SurfaceTest(unittest.TestCase):
         self.assertEqual(self.manifest("agent")["surface"], "settings")
         self.assertEqual(self.manifest("redalert")["surface"], "settings")
         self.assertEqual(self.manifest("auto_update")["surface"], "hidden")
-        for feature in ("skills", "devices", "autonomy", "actions", "bluetooth", "capabilities", "brain"):
+        for feature in ("skills", "devices", "autonomy", "actions", "bluetooth", "capabilities", "brain", "people", "habits"):
             self.assertEqual(self.manifest(feature)["surface"], "hidden", feature)
 
     def test_redalert_languages_cover_every_setting(self):

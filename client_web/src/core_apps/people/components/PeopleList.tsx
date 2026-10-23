@@ -13,7 +13,7 @@ interface PeopleListProps {
   readonly onCreate: (name: string) => void;
 }
 
-const FILTERS = ['all', 'home', 'business', 'present', 'scanned'] as const;
+const FILTERS = ['all', 'home', 'business', 'present', 'incomplete', 'scanned'] as const;
 type Filter = (typeof FILTERS)[number];
 
 export const PeopleList: React.FC<PeopleListProps> = ({ people, roles, present, selected, busy, onSelect, onCreate }) => {
@@ -30,6 +30,7 @@ export const PeopleList: React.FC<PeopleListProps> = ({ people, roles, present, 
         if (filter === 'home') return p.membership === 'home' || p.membership === 'both' || ['owner', 'family'].includes(p.role);
         if (filter === 'business') return p.membership === 'business' || p.membership === 'both';
         if (filter === 'present') return present.has(p.slug);
+        if (filter === 'incomplete') return !p.scanned && p.quality <= 0;
         if (filter === 'scanned') return p.scanned;
         return true;
       })

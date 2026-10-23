@@ -270,3 +270,50 @@ export async function fetchPresence(signal?: AbortSignal): Promise<{ status: str
       .filter((s): s is string => s !== null),
   };
 }
+
+export interface Reminder {
+  readonly date: string;
+  readonly days: number;
+  readonly type: string;
+  readonly slug: string;
+  readonly person: string;
+  readonly title: string;
+}
+
+export interface ObservedHabit {
+  readonly id: string;
+  readonly text: string;
+  readonly confidence: number;
+  readonly support: number;
+  readonly observed: number;
+}
+
+export interface ObservedHabits {
+  readonly events: number;
+  readonly days: number;
+  readonly habits: readonly ObservedHabit[];
+}
+
+export async function fetchReminders(days: number, signal?: AbortSignal): Promise<Reminder[]> {
+  const raw = asRecord(await requestJson<unknown>(`/api/people/reminders?days=${Math.max(1, Math.min(366, Math.floor(days)))}`, { signal }));
+  return list(raw.reminders).map(asRecord).flatMap((r) => {
+    const slug = asString(r.slug, 40);
+    const date = asString(r.date, 10);
+    return slug && date && SLUG.test(slug)
+      ? [{ date, days: num(r.days), type: asString(r.type, 20) ?? '', slug, person: asString(r.person, 120) ?? slug, title: asString(r.title, 200) ?? '' }]
+      : [];
+  });
+}
+
+export async function fetchObservedHabits(slug: string, signal?: AbortSignal): Promise<ObservedHabits> {
+  const raw = asRecord(await requestJson<unknown>(`/api/habits/person/${slugOf(slug)}`, { signal }));
+  return {
+    events: num(raw.events),
+    days: num(raw.days),
+    habits: list(raw.habits).map(asRecord).flatMap((h) => {
+      const id = asString(h.id, 40);
+      const text = asString(h.text, 300);
+      return id && text ? [{ id, text, confidence: num(h.confidence), support: num(h.support), observed: num(h.observed) }] : [];
+    }),
+  };
+}

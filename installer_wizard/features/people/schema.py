@@ -139,11 +139,22 @@ SECTIONS = [
         {"key": "hobbies", "label": "Hobby e passioni", "type": "tags"},
         {"key": "colors", "label": "Colori preferiti", "type": "tags"},
         {"key": "temperature", "label": "Temperatura di comfort (°C)", "type": "number"},
-        {"key": "wake_time", "label": "Orario di sveglia abituale", "type": "text"},
-        {"key": "sleep_time", "label": "Orario in cui va a dormire", "type": "text"},
         {"key": "gift_ideas", "label": "Idee regalo", "type": "tags"},
         {"key": "custom", "label": "Altre preferenze", "type": "list", "fields": [
             {"key": "key", "label": "Argomento", "type": "text"}, {"key": "value", "label": "Preferenza", "type": "text"}]},
+    ]},
+    {"id": "routine", "title": "Abitudini", "icon": "⏰", "fields": [
+        {"key": "wake_time", "label": "Orario di sveglia abituale", "type": "text"},
+        {"key": "sleep_time", "label": "Orario in cui va a dormire", "type": "text"},
+        {"key": "quiet_hours", "label": "Quando non va disturbato", "type": "text", "placeholder": "es. 22:00-07:00"},
+        {"key": "routines", "label": "Routine", "type": "list", "fields": [
+            {"key": "moment", "label": "Momento", "type": "select", "options": ["Mattina", "Pranzo", "Pomeriggio", "Sera", "Notte", "Fine settimana"]},
+            {"key": "time", "label": "Orario", "type": "text", "placeholder": "es. 07:30"},
+            {"key": "habit", "label": "Abitudine", "type": "text"}]},
+        {"key": "daily_habits", "label": "Abitudini ricorrenti", "type": "tags"},
+        {"key": "home_habits", "label": "Come usa la casa", "type": "tags"},
+        {"key": "exercise", "label": "Attività fisica", "type": "text"},
+        {"key": "habit_notes", "label": "Note sulle abitudini", "type": "textarea"},
     ]},
     {"id": "assets", "title": "Documenti e beni", "icon": "🗂", "private": True, "fields": [
         {"key": "documents", "label": "Documenti (con promemoria di scadenza)", "type": "list", "fields": [

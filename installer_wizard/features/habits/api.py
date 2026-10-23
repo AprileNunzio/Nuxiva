@@ -16,6 +16,15 @@ async def overview(_: str = Depends(require_admin)):
             "foresight": foresight.listing(), "foresight_hits": foresight.hits}
 
 
+@admin_routes.get("/api/habits/person/{slug}")
+async def person_habits(slug: str, _: str = Depends(require_admin)):
+    import asyncio
+    import re
+    if not re.fullmatch(r"[a-z0-9_-]{1,64}", slug):
+        raise HTTPException(400, "Persona non valida")
+    return await asyncio.to_thread(habits.person_habits, slug)
+
+
 @admin_routes.post("/api/habits/analyse")
 async def analyse(_: str = Depends(require_admin)):
     import asyncio

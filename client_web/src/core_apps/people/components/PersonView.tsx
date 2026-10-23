@@ -57,8 +57,13 @@ export const PersonView: React.FC<PersonViewProps> = ({ summary, sections, voice
     () => sections.flatMap((s) => s.fields).filter((f) => (PERMISSION_KEYS as readonly string[]).includes(f.key)),
     [sections],
   );
+  const routineSection = useMemo(() => sections.find((s) => s.id === 'routine'), [sections]);
   const profileSections = useMemo(
-    () => sections.map((s) => ({ ...s, fields: s.fields.filter((f) => !(PERMISSION_KEYS as readonly string[]).includes(f.key)) })).filter((s) => s.fields.length),
+    () =>
+      sections
+        .filter((s) => s.id !== 'routine')
+        .map((s) => ({ ...s, fields: s.fields.filter((f) => !(PERMISSION_KEYS as readonly string[]).includes(f.key)) }))
+        .filter((s) => s.fields.length),
     [sections],
   );
   const current = profileSections.find((s) => s.id === section) ?? profileSections[0];
@@ -177,7 +182,7 @@ export const PersonView: React.FC<PersonViewProps> = ({ summary, sections, voice
         )}
         {tab === 'face' && <FaceTab slug={summary.slug} quality={summary.quality} busy={busy} run={act} />}
         {tab === 'voice' && <VoiceTab slug={summary.slug} profile={profile} voices={voices} busy={busy} run={act} />}
-        {tab === 'habits' && <HabitsTab profile={profile} />}
+        {tab === 'habits' && <HabitsTab summary={summary} profile={profile} section={routineSection} people={people} busy={busy} run={act} />}
         {tab === 'memories' && <MemoriesTab slug={summary.slug} busy={busy} run={act} />}
         {tab === 'mood' && <MoodTab slug={summary.slug} busy={busy} run={act} />}
       </div>

@@ -1,4 +1,4 @@
-import { sendJson } from '../shared/http';
+import { sendJson } from '../../shared/http';
 
 export type Verdict = 'accept' | 'reject' | 'snooze';
 
