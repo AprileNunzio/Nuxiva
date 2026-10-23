@@ -6,6 +6,7 @@ from features.diorama.catalog import BY_ID, LENS_DEFAULT, LENSES, LIGHT_DEFAULT,
 HEX = re.compile(r"^#[0-9a-fA-F]{6}$")
 ID_RE = re.compile(r"^[0-9a-f]{8}$")
 TEXT_STRIP = re.compile(r"[^A-Za-z0-9 .,:!?\-+/&()À-ſ]")
+LAYERS = ("terrain", "structures", "vegetation", "props", "life", "details", "user")
 MAX_ITEMS = 500
 MOVERS = frozenset({"train", "person", "car"})
 BASE_LIMITS = {"w": (4.0, 40.0, 22.0), "d": (4.0, 40.0, 15.0), "depth": (0.2, 3.0, 1.2)}
@@ -84,6 +85,7 @@ def clean_item(raw, existing_id: str = "") -> dict:
     return {
         "id": existing_id or (raw.get("id") if ID_RE.fullmatch(str(raw.get("id", ""))) else new_id()),
         "kind": kind,
+        "layer": raw.get("layer") if raw.get("layer") in LAYERS else "user",
         "x": _number(raw.get("x"), -COORD, COORD, 0.0),
         "y": _number(raw.get("y"), -5.0, 20.0, 0.0),
         "z": _number(raw.get("z"), -COORD, COORD, 0.0),

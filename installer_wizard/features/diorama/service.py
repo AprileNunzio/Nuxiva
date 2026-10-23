@@ -43,7 +43,8 @@ def create(prompt: str, ambient: bool = False) -> dict:
     return record
 
 
-async def _reveal(did: str, rows: list[dict]) -> None:
+async def _reveal(did: str, rows: list[dict], layer: str = "user") -> None:
+    rows = [{**row, "layer": layer} for row in rows]
     for start in range(0, len(rows), CHUNK):
         record = store.load(did)
         record["items"] = S.clean_items(record["items"] + rows[start:start + CHUNK])
@@ -69,7 +70,7 @@ async def _from_template(did: str, prompt: str) -> None:
     await _apply_outline(did, plan)
     for stage in templates.STAGES:
         _set(did, stage=stage)
-        await _reveal(did, plan["stages"].get(stage, []))
+        await _reveal(did, plan["stages"].get(stage, []), stage)
 
 
 async def _build(did: str) -> None:
@@ -93,7 +94,7 @@ async def _build(did: str) -> None:
             current = store.load(did)
             if stage == "details":
                 rows = [*rows, *layout.dress([*current["items"], *rows], record["base"], record["brief"]["palette"], random.Random(int(did, 16)))]
-            await _reveal(did, layout.settle(rows, current["items"], record["base"]))
+            await _reveal(did, layout.settle(rows, current["items"], record["base"]), stage)
         _set(did, state="done", stage="", mode="brain")
         export.save(did)
     except KeyError:

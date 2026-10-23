@@ -358,8 +358,8 @@ class ExportTests(unittest.TestCase):
                       "look": spec.clean_look({}), "items": [spec.clean_item({"kind": "house", "x": 0, "z": 0})], "revision": 1, "ambient": False}
             store.save(record)
             export.save(record["id"])
-            files = list((Path(tmp) / archive.FOLDERS["diorami"]).glob("*.json"))
-            self.assertEqual(len(files), 1)
+            files = list((Path(tmp) / archive.FOLDERS["diorami"]).glob("*/*.json"))
+            self.assertEqual(sorted(f.name for f in files), ["aggiunte.json", "scena.json"])
 
 
 class ReferenceTests(unittest.TestCase):
@@ -407,3 +407,19 @@ class LayoutTests(unittest.TestCase):
         out = layout.settle([hill, a, b], [], base)
         self.assertGreater(out[1]["y"], 1.5)
         self.assertGreater(abs(out[2]["x"] - out[1]["x"]) + abs(out[2]["z"] - out[1]["z"]), 2)
+
+
+class SplitStorageTests(unittest.TestCase):
+    def test_layers_are_separate_files_and_legacy_loads(self):
+        with tempfile.TemporaryDirectory() as tmp, mock.patch.object(store, "DIRECTORY", Path(tmp)):
+            items = [spec.clean_item({"kind": "house", "layer": "structures", "x": 1, "z": 1}), spec.clean_item({"kind": "bush", "layer": "vegetation", "x": 3, "z": 3})]
+            record = {"id": "0a1b2c3d", "title": "T", "story": "", "prompt": "p", "created": 1, "base": spec.clean_base({}), "look": spec.clean_look({}),
+                      "items": items, "revision": 1, "ambient": False, "brief": spec.clean_brief({})}
+            store.save(record)
+            names = sorted(p.name for p in (Path(tmp) / "0a1b2c3d").iterdir())
+            self.assertEqual(names, ["meta.json", "structures.json", "vegetation.json"])
+            self.assertEqual([i["kind"] for i in store.load("0a1b2c3d")["items"]], ["house", "bush"])
+            store.remove("0a1b2c3d")
+            self.assertEqual(store.count(), 0)
+            (Path(tmp) / "1a1b2c3d.json").write_text('{"title":"Old","items":[]}', encoding="utf-8")
+            self.assertEqual(store.load("1a1b2c3d")["title"], "Old")
