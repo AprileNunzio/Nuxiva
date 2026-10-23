@@ -115,6 +115,7 @@
     "error_people_voice_failed": "Operación de voz fallida.",
     "error_people_memories_failed": "Recuerdos no disponibles.",
     "error_people_memory_failed": "Recuerdo no guardado.",
+    "error_people_connectors_failed": "Vinculación fallida.",
     "error_people_mood_failed": "Estado de ánimo no guardado.",
     "error_people_associate_failed": "Asociación fallida.",
     "error_experts_unavailable": "Equipo de expertos no disponible.",

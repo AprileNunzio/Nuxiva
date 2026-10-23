@@ -115,6 +115,7 @@
     "error_people_voice_failed": "Voice operation failed.",
     "error_people_memories_failed": "Memories unavailable.",
     "error_people_memory_failed": "Memory not saved.",
+    "error_people_connectors_failed": "Connection failed.",
     "error_people_mood_failed": "Mood not saved.",
     "error_people_associate_failed": "Linking failed.",
     "error_experts_unavailable": "Expert team unavailable.",

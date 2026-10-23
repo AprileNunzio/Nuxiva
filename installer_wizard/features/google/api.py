@@ -5,7 +5,7 @@ from state import store
 
 from features.google.flows import flows
 from features.google.gservices import google
-from features.people import people
+from features.people import connectors, people
 
 admin_routes = APIRouter()
 
@@ -15,6 +15,9 @@ def _person(slug: str) -> dict:
     if not profile:
         raise HTTPException(404, "Persona non trovata")
     return profile
+
+
+connectors.register("google", "Google", "mail", google.person_state)
 
 
 @admin_routes.get("/api/google")

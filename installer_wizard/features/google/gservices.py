@@ -8,6 +8,7 @@ from state import store
 
 from features.google.accounts import accounts
 from features.google.app import oauth
+from features.google.flows import flows
 from features.google.constants import DEFAULT_SERVICES, REDIRECT_URI, SERVICES, log
 from features.google.notify import notifier
 from features.google.session import Session
@@ -65,17 +66,24 @@ class Google:
             except httpx.HTTPError as exc:
                 log.warning("Revoca del token Google non confermata: %s", exc)
 
+    def person_row(self, slug: str, name: str | None, role: str) -> dict:
+        entry = accounts.get(slug) or {}
+        session = self.sessions.get(slug)
+        return {"slug": slug, "name": name, "role": role,
+                "linked": bool(entry.get("refresh")), "email": entry.get("email", ""),
+                "granted": accounts.granted(entry) if entry else [],
+                "status": session.status if session else ("collegato" if entry else "non collegato"),
+                "unread": session.unread if session else None}
+
+    def person_state(self, slug: str) -> dict:
+        profile = people.load(slug) or {}
+        row = self.person_row(slug, profile.get("name"), profile.get("role", ""))
+        cid, secret = oauth.credentials()
+        return {**row, "available": bool(cid and secret) and self.enabled(), "pending": slug in {f["slug"] for f in flows.pending()}}
+
     def summary(self) -> dict:
         cid, secret = oauth.credentials()
-        rows = []
-        for p in people.all_profiles(light=True):
-            entry = accounts.get(p["slug"]) or {}
-            session = self.sessions.get(p["slug"])
-            rows.append({"slug": p["slug"], "name": p.get("name"), "role": p.get("role", ""),
-                         "linked": bool(entry.get("refresh")), "email": entry.get("email", ""),
-                         "granted": accounts.granted(entry) if entry else [],
-                         "status": session.status if session else ("collegato" if entry else "non collegato"),
-                         "unread": session.unread if session else None})
+        rows = [self.person_row(p["slug"], p.get("name"), p.get("role", "")) for p in people.all_profiles(light=True)]
         return {"enabled": self.enabled(), "has_credentials": bool(cid and secret), "client_id": cid,
                 "redirect_uri": REDIRECT_URI, "remind_min": env_get("NUXIVA_GOOGLE_REMIND_MIN", "10"),
                 "default_services": DEFAULT_SERVICES.split(","),

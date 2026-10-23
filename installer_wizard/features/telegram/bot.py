@@ -38,6 +38,7 @@ class TelegramBot:
         self.data = self._load()
         self.pair_code = None
         self.pair_expires = 0.0
+        self.pair_person = ""
         self.me: dict = {}
         self.status = "non configurato"
         self.offset = 0
@@ -63,8 +64,9 @@ class TelegramBot:
             return ""
         return env_get("NUXIVA_TELEGRAM_TOKEN", "").strip()
 
-    def new_pair_code(self) -> dict:
+    def new_pair_code(self, person: str = "") -> dict:
         self.pair_code = f"{secrets.randbelow(1_000_000):06d}"
+        self.pair_person = person
         self.pair_expires = time.time() + PAIR_TTL
         return {"code": self.pair_code, "expires_in": PAIR_TTL}
 
@@ -73,6 +75,31 @@ class TelegramBot:
                 "chats": [{"id": k, **v} for k, v in self.data["chats"].items()],
                 "pair_code": self.pair_code if time.time() < self.pair_expires else None,
                 "pair_expires_in": max(0, int(self.pair_expires - time.time()))}
+
+    def chats_of(self, slug: str) -> list[dict]:
+        return [{"id": k, **v} for k, v in self.data["chats"].items() if slug and v.get("person") == slug]
+
+    def person_status(self, slug: str) -> dict:
+        waiting = self.pair_code is not None and time.time() < self.pair_expires and self.pair_person == slug
+        return {"available": bool(self.token), "linked": bool(self.chats_of(slug)), "bot": self.me.get("username"),
+                "chats": self.chats_of(slug), "pair_code": self.pair_code if waiting else None,
+                "pair_expires_in": max(0, int(self.pair_expires - time.time())) if waiting else 0}
+
+    def unlink_person(self, slug: str) -> int:
+        gone = [k for k, v in self.data["chats"].items() if slug and v.get("person") == slug]
+        for chat_id in gone:
+            del self.data["chats"][chat_id]
+        if gone:
+            self._save()
+        return len(gone)
+
+    async def notify_person(self, slug: str, text: str) -> int:
+        sent = 0
+        for chat in self.chats_of(slug):
+            if chat.get("notify", True):
+                await self.send(chat["id"], text)
+                sent += 1
+        return sent
 
     def update_chat(self, chat_id: str, changes: dict) -> None:
         chat = self.data["chats"].get(str(chat_id))
@@ -86,6 +113,11 @@ class TelegramBot:
     def remove_chat(self, chat_id: str) -> None:
         self.data["chats"].pop(str(chat_id), None)
         self._save()
+
+    def _bound(self, slug: str, chat_id: str) -> None:
+        hook = self.handlers.get("bound")
+        if hook:
+            hook(slug, chat_id)
 
     async def call(self, method: str, timeout: float = 30, **params):
         async with httpx.AsyncClient(timeout=timeout) as client:
@@ -201,8 +233,12 @@ class TelegramBot:
                 role = "owner" if not self.data["chats"] else "member"
                 self.data["chats"][chat_id] = {"name": name, "username": user.get("username"), "role": role,
                                                "notify": True, "voice": True, "added": time.time()}
+                if self.pair_person:
+                    self.data["chats"][chat_id]["person"] = self.pair_person
+                    self._bound(self.pair_person, chat_id)
                 self._save()
                 self.pair_code = None
+                self.pair_person = ""
                 store.event("INFO", f"Telegram: abbinato {name} ({role})", "telegram")
                 await self.send(chat_id, f"✅ Abbinamento completato, {esc(name)}. Sono <b>Nuxiva</b>.\n"
                                          "Scrivimi o mandami un messaggio vocale. /aiuto per i comandi.")

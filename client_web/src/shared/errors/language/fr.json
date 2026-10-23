@@ -115,6 +115,7 @@
     "error_people_voice_failed": "Opération vocale échouée.",
     "error_people_memories_failed": "Souvenirs indisponibles.",
     "error_people_memory_failed": "Souvenir non enregistré.",
+    "error_people_connectors_failed": "Liaison impossible.",
     "error_people_mood_failed": "Humeur non enregistrée.",
     "error_people_associate_failed": "Association échouée.",
     "error_experts_unavailable": "Équipe d'experts indisponible.",

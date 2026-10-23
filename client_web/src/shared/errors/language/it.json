@@ -115,6 +115,7 @@
     "error_people_voice_failed": "Operazione sulla voce non riuscita.",
     "error_people_memories_failed": "Ricordi non disponibili.",
     "error_people_memory_failed": "Ricordo non salvato.",
+    "error_people_connectors_failed": "Collegamento non riuscito.",
     "error_people_mood_failed": "Stato d'animo non salvato.",
     "error_people_associate_failed": "Associazione non riuscita.",
     "error_experts_unavailable": "Squadra di esperti non disponibile.",

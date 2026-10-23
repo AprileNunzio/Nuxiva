@@ -6,7 +6,7 @@ import updater
 from access import require_admin
 from features.chat.api import assistant_reply
 from features.network.explorer import explorer
-from features.people import people
+from features.people import connectors, people
 from features.telegram.bot import bot
 from features.vision.proxy import snapshot
 from features.voices.synthesis import synthesize
@@ -46,10 +46,53 @@ async def _repair() -> str:
 
 bot.handlers.update(
     chat=assistant_reply, tts=synthesize, stt=_stt, snapshot=snapshot,
-    reminders=lambda days: people.reminders(days), update=_update, repair=_repair,
+    reminders=lambda days: people.reminders(days), update=_update,
+    bound=lambda slug, chat_id: people.update(slug, {"telegram_id": chat_id}), repair=_repair,
     reboot=lambda: delayed("systemctl", "reboot"),
     network=lambda: explorer.listing(),
 )
+
+
+def _person(slug: str) -> None:
+    if not people.load(slug):
+        raise HTTPException(404, "Persona non trovata")
+
+
+connectors.register("telegram", "Telegram", "send", bot.person_status)
+
+
+@admin_routes.get("/api/people/{slug}/telegram")
+async def person_telegram(slug: str, _: str = Depends(require_admin)):
+    _person(slug)
+    return bot.person_status(slug)
+
+
+@admin_routes.post("/api/people/{slug}/telegram/pair-code")
+async def person_telegram_code(slug: str, user: str = Depends(require_admin)):
+    _person(slug)
+    if not bot.token:
+        raise HTTPException(400, "Imposta prima il token del bot in Configurazione")
+    store.event("INFO", f"Codice di abbinamento Telegram per {slug} generato da {user}", "telegram")
+    return bot.new_pair_code(slug)
+
+
+@admin_routes.put("/api/people/{slug}/telegram/{chat_id}")
+async def person_telegram_chat(slug: str, chat_id: str, request: Request, _: str = Depends(require_admin)):
+    _person(slug)
+    if not any(chat["id"] == chat_id for chat in bot.chats_of(slug)):
+        raise HTTPException(404, "Chat non abbinata a questa persona")
+    body = await request.json()
+    bot.update_chat(chat_id, {k: v for k, v in body.items() if k in ("notify", "voice")})
+    return bot.person_status(slug)
+
+
+@admin_routes.delete("/api/people/{slug}/telegram")
+async def person_telegram_unlink(slug: str, user: str = Depends(require_admin)):
+    _person(slug)
+    removed = bot.unlink_person(slug)
+    people.update(slug, {"telegram_id": ""})
+    store.event("INFO", f"Telegram di {slug} scollegato da {user} ({removed} chat)", "telegram")
+    return bot.person_status(slug)
 
 
 @admin_routes.get("/api/telegram")

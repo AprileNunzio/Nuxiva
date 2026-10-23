@@ -5,6 +5,7 @@ import { reportError } from '../../../shared/errors/errorBus';
 import { ConfirmDialog } from '../../../shared/ui/ConfirmDialog';
 import { PersonSummary, Profile, SchemaSection, associatePerson, deletePerson, fetchPerson, updatePerson, voiceprintOf } from '../data/peopleApi';
 import { PERMISSION_KEYS, chipClass, fieldClass, initials, localLabel, panelClass, relative, usePeopleI18n } from '../scope';
+import { ConnectorsTab } from './ConnectorsTab';
 import { FaceTab } from './FaceTab';
 import { HabitsTab } from './HabitsTab';
 import { MemoriesTab } from './MemoriesTab';
@@ -12,7 +13,7 @@ import { MoodTab } from './MoodTab';
 import { SectionForm } from './SectionForm';
 import { VoiceTab } from './VoiceTab';
 
-const TABS = ['profile', 'permissions', 'face', 'voice', 'habits', 'memories', 'mood'] as const;
+const TABS = ['profile', 'permissions', 'face', 'voice', 'habits', 'connectors', 'memories', 'mood'] as const;
 type Tab = (typeof TABS)[number];
 
 interface PersonViewProps {
@@ -183,6 +184,7 @@ export const PersonView: React.FC<PersonViewProps> = ({ summary, sections, voice
         {tab === 'face' && <FaceTab slug={summary.slug} quality={summary.quality} busy={busy} run={act} />}
         {tab === 'voice' && <VoiceTab slug={summary.slug} profile={profile} voices={voices} busy={busy} run={act} />}
         {tab === 'habits' && <HabitsTab summary={summary} profile={profile} section={routineSection} people={people} busy={busy} run={act} />}
+        {tab === 'connectors' && <ConnectorsTab slug={summary.slug} busy={busy} run={act} />}
         {tab === 'memories' && <MemoriesTab slug={summary.slug} busy={busy} run={act} />}
         {tab === 'mood' && <MoodTab slug={summary.slug} busy={busy} run={act} />}
       </div>
