@@ -100,6 +100,10 @@ class Client:
         res = self.request("/api/nodes/pair", {"code": code, "id": self.node_id, "name": name, "type": "desktop"}, auth=False)
         return res["token"]
 
+    def enroll(self, enrollment_token: str, node_id: str, name: str) -> str:
+        body = {"token": enrollment_token, "id": node_id, "name": name}
+        return self.request("/api/nodes/enroll", body, auth=False)["token"]
+
     def heartbeat(self, report: dict) -> dict:
         return self.request("/api/nodes/heartbeat", report, timeout=10)
 

@@ -7,8 +7,10 @@ import sys
 importlib.import_module("customtkinter")
 
 from app.errors import configure_logging, errors  # noqa: E402
+from connection import enroll  # noqa: E402
 from connection.client import Client, first_contact  # noqa: E402
-from settings import autostart, store  # noqa: E402
+from i18n.strings import t  # noqa: E402
+from settings import autostart, paths, store  # noqa: E402
 
 MUTEX_NAME = "NUXIVA_Assistente_Windows"
 ERROR_ALREADY_EXISTS = 183
@@ -40,6 +42,21 @@ def pair(cfg: dict, address: str, code: str, name: str, start_with_windows: bool
     autostart.set_enabled(start_with_windows)
 
 
+def auto_enroll(cfg: dict) -> bool:
+    path = paths.APP_DIR / enroll.ENROLL_FILE
+    try:
+        data = enroll.load(path)
+        if data is None:
+            return False
+        enroll.redeem(cfg, data, first_contact)
+    except enroll.EnrollError as exc:
+        ctypes.windll.user32.MessageBoxW(None, t("enroll.failed", reason=t(exc.key)), "NUXIVA", 0x30)
+        return False
+    enroll.wipe(path)
+    autostart.set_enabled(True)
+    return True
+
+
 def main() -> None:
     configure_logging()
     errors.install()
@@ -48,7 +65,7 @@ def main() -> None:
                                          "NUXIVA", 0x40)
         return
     cfg = store.load()
-    if not cfg["token"] or not cfg["ca"]:
+    if (not cfg["token"] or not cfg["ca"]) and not auto_enroll(cfg):
         from ui.pairing_view import PairingWindow
         window = PairingWindow(cfg, verify, lambda *values: pair(cfg, *values))
         if not window.run():

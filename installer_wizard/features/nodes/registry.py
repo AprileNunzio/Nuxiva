@@ -9,7 +9,7 @@ import time
 from config import STATE_DIR, node_keys, read_global_env
 from state import store
 
-from features.nodes import adapt
+from features.nodes import adapt, compute
 
 NODES_FILE = STATE_DIR / "nodes.json"
 PAIR_TTL = 600
@@ -89,6 +89,7 @@ class Registry:
         node.update(last_seen=time.time(), ip=ip, version=clean_text(report.get("version"), 40),
                     hostname=clean_text(report.get("hostname"), 60),
                     capabilities=[clean_text(c, 30) for c in (report.get("capabilities") or [])[:12]],
+                    compute=compute.clean(report.get("compute"), clean_text),
                     metrics={k: round(float(v), 1) for k, v in metrics.items()
                              if k in ("cpu", "ram", "disk", "temp", "uptime") and isinstance(v, (int, float))})
         self._adapt(node, report)

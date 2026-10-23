@@ -14,6 +14,8 @@ from app import tvwindow
 from app.voice import Voice
 from backup.scheduler import BackupScheduler
 from backup.snapshots import Snapshots
+from compute.probe import OllamaProbe
+from compute.relay import ComputeRelay
 from connection import tls
 from connection.client import Client, ServerError
 from connection.heartbeat import Heartbeat
@@ -50,6 +52,8 @@ class Assistant:
         self.voice.on_transcript = lambda text, lang: self.conversation.ask(text, lang, spoken=True)
         self.heartbeat = Heartbeat(self.client, self._report, self._on_reply,
                                    lambda: self.ui.dispatch.post(self.unpair, True), self._security)
+        self.ollama = OllamaProbe()
+        self.compute = ComputeRelay(self.client, self.gate, self.policy, lambda: self.ollama.read()["available"])
         self.inbox = Inbox(self.client, lambda actions: self.ui.dispatch.post(self._actions, actions))
         self.backup = BackupScheduler(cfg, self.snapshots, lambda text: self.ui.dispatch.post(self.ui.note, text))
         self.updater = Updater(lambda text: self.ui.dispatch.post(self.ui.note, text), self.quit)
@@ -75,7 +79,8 @@ class Assistant:
 
     def _report(self) -> dict:
         return {"version": paths.VERSION, "hostname": socket.gethostname(), "hardware": {"os": "windows"},
-                "capabilities": [k for k, v in self.policy.summary().items() if v != "deny"][:12]}
+                "capabilities": [k for k, v in self.policy.summary().items() if v != "deny"][:12],
+                "compute": {"ollama": {**self.ollama.read(), "shared": self.compute.sharing()}}}
 
     def _on_reply(self, reply: dict) -> None:
         for command in reply.get("commands") or []:
@@ -145,6 +150,7 @@ class Assistant:
         self.voice.start()
         self.heartbeat.start()
         self.inbox.start()
+        self.compute.start()
         self.backup.start()
         self.updater.start()
         self._bind_hotkeys()
@@ -168,6 +174,7 @@ class Assistant:
         self.voice.stop()
         self.heartbeat.stop()
         self.inbox.stop()
+        self.compute.stop()
         self.backup.stop()
         self.updater.stop()
         self.ui.quit()

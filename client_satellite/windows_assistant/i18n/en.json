@@ -1,0 +1,14 @@
+{
+  "enroll.failed": "Could not connect this PC to NUXIVA ({reason}). You can use the 6-digit code instead.",
+  "enroll.pin_mismatch": "the server certificate does not match the one in the package",
+  "enroll.file_invalid": "the enrollment file is not valid",
+  "enroll.file_expired": "the enrollment file has expired",
+  "enroll.token_invalid": "the token was already used or has expired",
+  "enroll.node_exists": "a node with this name already exists: remove it from the NUXIVA panel",
+  "enroll.rate_limited": "too many attempts, try again in a few minutes",
+  "enroll.unreachable": "NUXIVA is not reachable",
+  "compute.ollama.title": "Share Ollama with NUXIVA",
+  "compute.ollama.hint": "Lets NUXIVA use the Ollama models installed on this PC, for generation requests only.",
+  "compute.ollama.request": "Run a NUXIVA request on Ollama ({path})",
+  "compute.group": "Compute resources"
+}

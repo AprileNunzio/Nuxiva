@@ -15,3 +15,9 @@ def ca_fingerprint() -> str:
     if not CA_FILE.is_file():
         return ""
     return short(hashlib.sha256(ssl.PEM_cert_to_DER_cert(CA_FILE.read_text(encoding="ascii"))).hexdigest())
+
+
+def ca_pin() -> str:
+    if not CA_FILE.is_file():
+        return ""
+    return hashlib.sha256(ssl.PEM_cert_to_DER_cert(CA_FILE.read_text(encoding="ascii"))).hexdigest()

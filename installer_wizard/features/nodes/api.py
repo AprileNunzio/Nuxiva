@@ -8,7 +8,7 @@ from fastapi.responses import FileResponse
 from state import store
 from config import PUBLIC_PORT
 
-from features.nodes import server
+from features.nodes import compute_routes, enroll_routes, server
 from features.nodes.beacon import beacon
 from features.nodes.requests import requests
 from features.nodes.inbox import inbox
@@ -19,6 +19,9 @@ INBOX_WAIT = 25.0
 public_routes = APIRouter()
 admin_routes = APIRouter()
 _failures: dict[str, list[float]] = {}
+public_routes.include_router(enroll_routes.public_routes)
+public_routes.include_router(compute_routes.public_routes)
+admin_routes.include_router(compute_routes.admin_routes)
 
 
 def _ip(request: Request) -> str:

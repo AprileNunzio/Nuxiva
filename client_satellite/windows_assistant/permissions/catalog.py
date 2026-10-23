@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from enum import Enum
 
+from i18n.strings import t
+
 
 class Level(str, Enum):
     ALLOW = "allow"
@@ -41,6 +43,7 @@ CAPABILITIES = (
                "Comandi scritti da NUXIVA: vedrai sempre il comando esatto prima di confermare.", Level.ASK, True),
     Capability("remote.ssh", "Esecuzione", "Comandi SSH su altri computer",
                "Solo con chiavi SSH già configurate e server già conosciuti.", Level.ASK, True),
+    Capability("compute.ollama", t("compute.group"), t("compute.ollama.title"), t("compute.ollama.hint"), Level.ASK),
     Capability("senses.screen", "Sensi", "Guardare lo schermo", "Testo o immagine della finestra su cui lavori, solo quando serve.", Level.ALLOW),
     Capability("senses.webcam", "Sensi", "Usare la webcam", "Una sola foto, solo quando lo chiedi.", Level.ASK),
     Capability("senses.microphone", "Sensi", "Ascolto continuo «Nuxiva»",
