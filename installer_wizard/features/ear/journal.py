@@ -10,9 +10,6 @@ from contextlib import closing
 from pathlib import Path
 
 import numpy as np
-from cryptography.fernet import Fernet
-
-from sealed import write_private
 
 RATE = 16000
 KINDS = ("command", "heard", "wake")
@@ -31,6 +28,18 @@ CREATE TABLE IF NOT EXISTS entries (
     correction BLOB, fix_speaker TEXT NOT NULL DEFAULT '', note BLOB, reviewed_at REAL NOT NULL DEFAULT 0,
     applied INTEGER NOT NULL DEFAULT 0)
 """
+
+
+class JournalUnavailable(RuntimeError):
+    pass
+
+
+def write_private(path: Path, data: bytes) -> None:
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, "wb") as handle:
+        handle.write(data)
+    os.replace(tmp, path)
 
 
 def default_root() -> Path:
@@ -60,7 +69,7 @@ class Journal:
         self.root = root or default_root()
         self.lock = threading.Lock()
         self.ready = False
-        self.fernet: Fernet | None = None
+        self.fernet = None
 
     @property
     def db_path(self) -> Path:
@@ -68,6 +77,10 @@ class Journal:
 
     def _ensure(self) -> None:
         if not self.ready:
+            try:
+                from cryptography.fernet import Fernet
+            except ImportError as exc:
+                raise JournalUnavailable("libreria di cifratura mancante") from exc
             self.root.mkdir(parents=True, exist_ok=True)
             os.chmod(self.root, 0o700)
             key = self.root / "journal.key"

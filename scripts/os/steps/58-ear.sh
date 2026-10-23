@@ -7,7 +7,8 @@ UNIT=/etc/systemd/system/nuxiva-ear.service
 EDIR="$NUXIVA_DIR/installer_wizard/features/ear"
 CODE=("$EDIR/service.py" "$EDIR/stt.py" "$EDIR/learner.py" "$EDIR/enhance.py" "$EDIR/music.py"
       "$EDIR/wakeword.py" "$EDIR/voiceprint.py" "$EDIR/earconf.py" "$EDIR/tuning.py" "$EDIR/wakegain.py"
-      "$EDIR/recorder.py" "$EDIR/reviewer.py" "$EDIR/review_metrics.py" "$NUXIVA_DIR/installer_wizard/features/biometrics/embeddings.py")
+      "$EDIR/recorder.py" "$EDIR/reviewer.py" "$EDIR/review_metrics.py" "$EDIR/journal.py" "$EDIR/capture.py"
+      "$EDIR/feedback.py" "$EDIR/livecap.py" "$EDIR/livegov.py" "$NUXIVA_DIR/installer_wizard/features/biometrics/embeddings.py")
 OWW_URL=https://github.com/dscripka/openWakeWord/releases/download/v0.5.1
 OWW_FILES=(melspectrogram.onnx embedding_model.onnx)
 WAKE_NAME="${NUXIVA_WAKEWORD_MODEL:-ehi_nuxiva}"
@@ -127,7 +128,7 @@ step_check() {
         ! systemctl is-active --quiet nuxiva-ear
         return
     fi
-    py -c "import faster_whisper, websockets" 2>/dev/null || return 1
+    py -c "import faster_whisper, websockets, cryptography" 2>/dev/null || return 1
     model_cached && instant_ready && voiceprint_ready || return 1
     same_content "$UNIT" < "$UNIT_SRC" && systemctl is-enabled --quiet nuxiva-ear && ear_ok \
         && code_current ear "${CODE[@]}"
@@ -142,9 +143,9 @@ step_apply() {
     mkdir -p "$EAR/models"
     progress 10 "Ambiente di riconoscimento vocale"
     [ -x "$EAR/venv/bin/python" ] || python3 -m venv "$EAR/venv"
-    if ! py -c "import faster_whisper, websockets" 2>/dev/null; then
+    if ! py -c "import faster_whisper, websockets, cryptography" 2>/dev/null; then
         retry 3 5 "$EAR/venv/bin/pip" install -q --upgrade pip
-        retry 3 5 "$EAR/venv/bin/pip" install -q faster-whisper websockets
+        retry 3 5 "$EAR/venv/bin/pip" install -q faster-whisper websockets cryptography
     fi
 
     local model

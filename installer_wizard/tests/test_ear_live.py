@@ -220,6 +220,23 @@ class JournalTest(unittest.TestCase):
         self.assertEqual(list((Path(self.tmp.name) / "j").glob("*.clip")), [])
 
 
+class MissingCryptographyTest(unittest.TestCase):
+    def test_the_listener_survives_without_the_cipher_library(self):
+        import capture
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        log = journal_module.Journal(Path(tmp.name) / "j")
+        with mock.patch.dict(sys.modules, {"cryptography": None, "cryptography.fernet": None}):
+            with self.assertRaises(journal_module.JournalUnavailable):
+                log.record("heard", "ciao")
+        capture.BROKEN["reason"] = ""
+        with mock.patch.object(capture.journal, "record", side_effect=journal_module.JournalUnavailable("mancante")):
+            asyncio.run(capture.store(print, "heard", "ciao", "it", None, 0.0, False, 0, {"live": False}, None))
+        self.assertEqual(capture.BROKEN["reason"], "mancante")
+        self.assertFalse(capture.journal_on())
+        capture.BROKEN["reason"] = ""
+
+
 class FeedbackTest(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()

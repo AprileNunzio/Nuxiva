@@ -3,15 +3,24 @@ import logging
 import sqlite3
 
 import earconf
-from journal import journal
+from journal import JournalUnavailable, journal
 
 log = logging.getLogger("nuxiva.ear")
 
 PRUNE_EVERY = 3600.0
 
 
+BROKEN = {"reason": ""}
+
+
+def disable(exc: Exception) -> None:
+    if not BROKEN["reason"]:
+        log.warning("Registro dell'ascolto disattivato: %s", exc)
+    BROKEN["reason"] = str(exc)
+
+
 def journal_on() -> bool:
-    return earconf.flag("NUXIVA_EAR_JOURNAL", True)
+    return earconf.flag("NUXIVA_EAR_JOURNAL", True) and not BROKEN["reason"]
 
 
 def audio_on() -> bool:
@@ -29,6 +38,8 @@ async def store(report, kind: str, text: str, lang: str, speaker: str | None, sc
     try:
         await asyncio.to_thread(journal.record, kind, text, lang, speaker, score, woke, ms, caption["live"],
                                 audio if audio_on() else None)
+    except JournalUnavailable as exc:
+        disable(exc)
     except (OSError, sqlite3.Error) as exc:
         report("registro dell'ascolto", exc)
 
@@ -43,6 +54,8 @@ async def maintenance() -> None:
     while True:
         try:
             await asyncio.to_thread(prune)
+        except JournalUnavailable as exc:
+            disable(exc)
         except (OSError, sqlite3.Error) as exc:
             log.warning("Pulizia del registro dell'ascolto non riuscita: %s", exc)
         await asyncio.sleep(PRUNE_EVERY)

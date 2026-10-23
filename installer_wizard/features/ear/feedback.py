@@ -51,5 +51,7 @@ async def run(voiceprints: Voiceprints) -> None:
         await asyncio.sleep(POLL)
         try:
             await asyncio.to_thread(apply_pending, voiceprints)
+        except journal_module.JournalUnavailable:
+            return
         except (OSError, sqlite3.Error, ValueError) as exc:
             log.warning("Feedback dell'ascolto non applicato: %s", exc)
