@@ -100,7 +100,7 @@ async def update_status() -> Dict[str, Any]:
 
 @admin_routes.post("/check")
 async def update_check() -> Dict[str, Any]:
-    await updater.check(allow_bad=True)
+    await updater.check(allow_bad=True, fresh=True)
     return _status_payload()
 
 

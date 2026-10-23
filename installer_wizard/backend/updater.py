@@ -17,6 +17,9 @@ BAD_REVS_COOLDOWN = 1800.0
 PRIORITY_FETCH_TIMEOUT = 45
 _ci: dict[str, tuple[str, float]] = {}
 _unreachable_since = 0.0
+_limited_until = 0.0
+_etags: dict[str, tuple[str, str]] = {}
+LIMIT_RETRY = 600.0
 
 
 async def git(*args: str, timeout: float = 120) -> tuple[int, str]:
@@ -95,22 +98,48 @@ async def _slug() -> str:
     return m.group(1) if m else ""
 
 
+def reset_transient() -> None:
+    global _unreachable_since, _limited_until
+    for sha in [key for key, value in _ci.items() if value[0] != "success"]:
+        del _ci[sha]
+    _unreachable_since = 0.0
+    _limited_until = 0.0
+
+
+def _reset_time(response) -> float:
+    try:
+        return max(time.time() + 30, float(response.headers.get("x-ratelimit-reset")))
+    except (TypeError, ValueError):
+        return time.time() + LIMIT_RETRY
+
+
 async def ci_status(sha: str) -> str:
-    global _unreachable_since
+    global _unreachable_since, _limited_until
     cached = _ci.get(sha)
     if cached and (cached[0] == "success" or time.time() - cached[1] < 60):
         return cached[0]
+    if time.time() < _limited_until:
+        return "limited"
     slug = await _slug()
     if not slug:
         return "unknown"
     try:
         async with httpx.AsyncClient(timeout=15) as client:
+            headers = {"Accept": "application/vnd.github+json"}
+            known = _etags.get(sha)
+            if known:
+                headers["If-None-Match"] = known[0]
             r = await client.get(
                 f"https://api.github.com/repos/{slug}/commits/{sha}/check-runs",
-                headers={"Accept": "application/vnd.github+json"},
+                headers=headers,
                 params={"per_page": 100},
             )
+            if known and r.status_code == 304:
+                _unreachable_since = 0.0
+                _ci[sha] = (known[1], time.time())
+                return known[1]
             r.raise_for_status()
+            etag = r.headers.get("etag")
             check_runs = r.json().get("check_runs", [])
             _unreachable_since = 0.0
 
@@ -149,11 +178,20 @@ async def ci_status(sha: str) -> str:
                         status = "untested"
                     else:
                         status = "pending"
+    except httpx.HTTPStatusError as exc:
+        response = exc.response
+        if response.status_code in (403, 429) and response.headers.get("x-ratelimit-remaining") == "0":
+            _limited_until = _reset_time(response)
+            return "limited"
+        _unreachable_since = _unreachable_since or time.time()
+        return "unknown"
     except (httpx.HTTPError, ValueError):
         _unreachable_since = _unreachable_since or time.time()
         return "unknown"
 
     _ci[sha] = (status, time.time())
+    if isinstance(etag, str) and etag and check_runs:
+        _etags[sha] = (etag, status)
     return status
 
 
@@ -164,6 +202,7 @@ async def pick_target(remote: str, allow_bad: bool = False) -> tuple[str, str]:
     waiting = ""
     bad_set = set() if allow_bad else _bad_revs()
     skipped_bad = ""
+    unreachable = ""
     for sha in revs.split():
         if sha in bad_set:
             if not skipped_bad:
@@ -178,8 +217,12 @@ async def pick_target(remote: str, allow_bad: bool = False) -> tuple[str, str]:
             waiting = f"{sha[:7]} non ha superato i test su GitHub: la salto"
         if status == "untested" and not waiting:
             waiting = f"{sha[:7]} non ha test automatici su GitHub"
-        if status == "unknown":
-            return "", "GitHub non raggiungibile: attendo la conferma dei test"
+        if status in ("unknown", "limited"):
+            unreachable = "limited" if "limited" in (status, unreachable) else status
+    if not waiting and unreachable == "limited":
+        waiting = f"Limite di richieste GitHub raggiunto: riprovo dopo le {time.strftime('%H:%M', time.localtime(_limited_until))}"
+    elif not waiting and unreachable:
+        waiting = "GitHub non raggiungibile: attendo la conferma dei test"
     if skipped_bad:
         waiting = f"{skipped_bad[:7]} ripristinata in precedenza (riprova con Aggiorna ora)"
     return "", waiting
@@ -197,8 +240,12 @@ def auto_update_enabled() -> bool:
     return not DEMO and env_get("NUXIVA_AUTO_UPDATE", "1") != "0"
 
 
-async def check(fetch_timeout: float = 180, allow_bad: bool = False) -> dict:
+async def check(fetch_timeout: float = 180, allow_bad: bool = False, fresh: bool = False) -> dict:
     info = store.update
+    if fresh:
+        reset_transient()
+        if info.get("last_result") and info.get("last_result") == info.get("ci_note"):
+            info["last_result"] = None
     info["last_check"] = now_iso()
     if DEMO:
         info.update(local_rev="demo", remote_rev="demo", available=False, last_result="Modalità demo")

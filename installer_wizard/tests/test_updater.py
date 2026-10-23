@@ -17,6 +17,8 @@ class UpdaterTest(unittest.IsolatedAsyncioTestCase):
         self.last_good = self.root / "last_good_rev"
         updater._ci.clear()
         updater._unreachable_since = 0.0
+        updater._limited_until = 0.0
+        updater._etags.clear()
 
     def tearDown(self):
         self.tmp.cleanup()
@@ -136,6 +138,58 @@ class UpdaterTest(unittest.IsolatedAsyncioTestCase):
             sha, note = await updater.pick_target("remote")
         self.assertEqual(sha, "")
         self.assertIn("attendo", note)
+
+    async def test_rate_limit_is_reported_as_limit_not_as_outage(self):
+        import httpx
+        request = httpx.Request("GET", "https://api.github.com/x")
+        response = httpx.Response(403, headers={"x-ratelimit-remaining": "0", "x-ratelimit-reset": str(int(time.time()) + 900)}, request=request)
+        res_mock = mock.MagicMock()
+        res_mock.status_code = 403
+        res_mock.headers = response.headers
+        res_mock.raise_for_status.side_effect = httpx.HTTPStatusError("limit", request=request, response=response)
+        client_mock = mock.AsyncMock()
+        client_mock.get.return_value = res_mock
+        client_mock.__aenter__.return_value = client_mock
+        with mock.patch("updater._slug", new_callable=mock.AsyncMock, return_value="a/b"), \
+                mock.patch("httpx.AsyncClient", return_value=client_mock):
+            self.assertEqual(await updater.ci_status("c0ffee"), "limited")
+            self.assertEqual(await updater.ci_status("c0ffee"), "limited")
+        self.assertEqual(client_mock.get.await_count, 1)
+        self.assertEqual(updater._unreachable_since, 0.0)
+        with mock.patch("updater.require_ci", return_value=True), \
+                mock.patch("updater.git", return_value=(0, "c0ffee")):
+            sha, note = await updater.pick_target("remote")
+        self.assertEqual(sha, "")
+        self.assertIn("Limite", note)
+
+    async def test_older_verified_commit_is_chosen_when_newest_is_unknown(self):
+        with mock.patch("updater.require_ci", return_value=True), \
+                mock.patch("updater.git", return_value=(0, "new old")), \
+                mock.patch("updater.ci_status", new_callable=mock.AsyncMock, side_effect=["limited", "success"]):
+            sha, _ = await updater.pick_target("remote")
+        self.assertEqual(sha, "old")
+
+    async def test_not_modified_reuses_the_known_result(self):
+        updater._etags["abc"] = ('"t"', "success")
+        res_mock = mock.MagicMock()
+        res_mock.status_code = 304
+        client_mock = mock.AsyncMock()
+        client_mock.get.return_value = res_mock
+        client_mock.__aenter__.return_value = client_mock
+        with mock.patch("updater._slug", new_callable=mock.AsyncMock, return_value="a/b"), \
+                mock.patch("httpx.AsyncClient", return_value=client_mock):
+            self.assertEqual(await updater.ci_status("abc"), "success")
+        self.assertEqual(client_mock.get.await_args.kwargs["headers"]["If-None-Match"], '"t"')
+
+    async def test_reset_transient_keeps_successes_only(self):
+        updater._ci["ok"] = ("success", time.time())
+        updater._ci["wait"] = ("pending", time.time())
+        updater._limited_until = time.time() + 500
+        updater._unreachable_since = time.time()
+        updater.reset_transient()
+        self.assertEqual(set(updater._ci), {"ok"})
+        self.assertEqual(updater._limited_until, 0.0)
+        self.assertEqual(updater._unreachable_since, 0.0)
 
     async def test_ci_status_old_commit_with_no_runs_is_untested_not_pending(self):
         cr_mock = mock.MagicMock()
