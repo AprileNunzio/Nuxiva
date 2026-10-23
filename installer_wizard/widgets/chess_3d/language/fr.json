@@ -14,6 +14,19 @@
     "turn_black": "Tour des Noirs (Nuxiva)",
     "action_hint": "Conseil",
     "action_restart": "Nouvelle partie",
-    "hint_question": "Quel coup me conseilles-tu aux échecs ?"
+    "hint_question": "Quel coup me conseilles-tu aux échecs ?",
+    "action_saved": "Parties sauvegardées",
+    "autosaved": "Partie sauvegardée",
+    "save_failed": "Échec de la sauvegarde",
+    "not_saved": "Aucune personne reconnue : la partie n'est pas sauvegardée",
+    "no_person": "Une personne reconnue par la caméra est nécessaire pour sauvegarder et reprendre les parties.",
+    "no_saves": "Aucune partie sauvegardée.",
+    "moves": "{{n}} coups",
+    "finished": "terminée",
+    "turn_black_short": "aux Noirs",
+    "resume": "Reprendre",
+    "delete": "Supprimer",
+    "resume_offer": "Vous avez une partie en cours ({{n}} coups, {{when}}). La reprendre ?",
+    "new_one": "Nouvelle partie"
   }
 }

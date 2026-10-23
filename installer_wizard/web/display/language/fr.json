@@ -65,7 +65,7 @@
     "enroll_kind_command": "Dites la commande",
     "enroll_kind_reading": "Lisez la phrase",
     "enroll_heard": "J'ai compris : « {{text}} »",
-    "enroll_hint": "Parlez calmement, avec votre ton habituel, à votre distance habituelle.",
+    "enroll_hint": "Parlez calmement, comme l'écran le demande.",
     "enroll_get_ready": "Préparez-vous : je commence à écouter dans un instant.",
     "enroll_ok": "✓ Parfait, je passe à la suivante.",
     "enroll_ok_next": "✓ Très bien. Maintenant celle-ci :",
@@ -242,10 +242,9 @@
     "src_phone": "téléphone",
     "src_cloud": "cloud",
     "rl_ago_s": "il y a {{n}} s",
-    "rl_present_one": "{{n}} présent"
-  },
-  "enroll_tone_soft": "Parlez doucement, presque en chuchotant",
-  "enroll_tone_raised": "Parlez fort",
-  "enroll_dist_far": "Éloignez-vous de 2 à 3 mètres du micro",
-  "enroll_hint": "Parlez calmement, comme l'écran le demande."
+    "rl_present_one": "{{n}} présent",
+    "enroll_tone_soft": "Parlez doucement, presque en chuchotant",
+    "enroll_tone_raised": "Parlez fort",
+    "enroll_dist_far": "Éloignez-vous de 2 à 3 mètres du micro"
+  }
 }

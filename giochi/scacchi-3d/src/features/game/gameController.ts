@@ -178,7 +178,7 @@ export class GameController {
     }
   }
 
-  public resetGame(): void {
+  private clearMeshes(): void {
     const board = gameState.getBoard();
     for (let r = 0; r < 8; r++) {
       for (let c = 0; c < 8; c++) {
@@ -188,12 +188,33 @@ export class GameController {
         }
       }
     }
+  }
+
+  private hideCheckmate(): void {
+    const overlay = document.getElementById('checkmate-overlay');
+    if (overlay) overlay.classList.remove('visible');
+  }
+
+  public resetGame(): void {
+    this.clearMeshes();
     gameState.resetGame();
     this.initBoardPieces();
     this.clearSelection();
+    this.hideCheckmate();
+  }
 
-    const overlay = document.getElementById('checkmate-overlay');
-    if (overlay) overlay.classList.remove('visible');
+  public restoreGame(save: unknown): boolean {
+    if (this.animator.isBusy()) return false;
+    this.clearMeshes();
+    this.clearSelection();
+    const ok = gameState.importSave(save);
+    this.initBoardPieces();
+    this.hideCheckmate();
+    if (ok) {
+      this.checkEndGame();
+      this.triggerAiIfNeeded();
+    }
+    return ok;
   }
 
   private subscribeState(): void {

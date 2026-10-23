@@ -125,6 +125,7 @@ from features.network import api as network_api
 from features.network.explorer import explorer
 from features.people import api as people_api
 from features.people import presence
+from features.people.vitals.local_ble import local_ble as vitals_local_ble
 from features.skills import api as skills_api
 from features.soup import api as soup_api
 from features.study import api as study_api
@@ -390,6 +391,7 @@ BACKGROUND = (
     ("bluetooth", bluetooth_service.run, 0.0),
     ("oggetti", object_tips.run, 0.0),
     ("nodi", node_beacon.run, 0.0),
+    ("vitali-bluetooth", vitals_local_ble.run, 0.0),
     ("registrazioni-camere", cameras_recorder.run, 0.0),
     ("movimento-camere", cameras_motion.run, 0.0),
     ("controlli-webcam", cameras_controls.run, 0.0),

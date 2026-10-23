@@ -9,6 +9,7 @@ from features.people.vitals.book import book
 from features.people.vitals.lease import arbiter
 from features.people.vitals.journal import journal
 from features.people.vitals.live import live
+from features.people.vitals.local_ble import NODE_NAME, local_ble
 from features.people.vitals.model import METRICS, clean_sample
 from features.people.vitals.nearby import nearby
 
@@ -159,7 +160,8 @@ def devices_view(slug: str, values: dict, now: float) -> list[dict]:
 
 def capable_nodes(now: float | None = None) -> list[str]:
     now = now or time.time()
-    return [n["name"] for n in registry.listing() if n.get("online") and "vitals_ble" in (n.get("capabilities") or [])]
+    names = [n["name"] for n in registry.listing() if n.get("online") and "vitals_ble" in (n.get("capabilities") or [])]
+    return ([NODE_NAME] if local_ble.available() else []) + names
 
 
 def snapshot(slug: str, now: float | None = None) -> dict:

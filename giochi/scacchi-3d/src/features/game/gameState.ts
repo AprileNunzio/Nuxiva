@@ -1,10 +1,12 @@
-import { BoardMatrix, ChessMove, ChessPiece, GameSnapshot, PieceColor, PieceType } from './types';
+import { BoardMatrix, ChessMove, ChessPiece, GameSave, GameSnapshot, PieceColor, PieceType } from './types';
+import { InputValidator } from '../security/inputValidator';
 import { ChessRules } from './chessRules';
 import { audioSynthesizer } from '../audio/audioSynthesizer';
 
 type StateListener = (snapshot: GameSnapshot) => void;
 
 export class GameStateStore {
+  private static readonly MAX_MOVES = 600;
   private static instance: GameStateStore;
   private board: BoardMatrix;
   private turn: PieceColor = 'white';
@@ -51,6 +53,62 @@ export class GameStateStore {
     this.notify();
   }
 
+  public exportSave(): GameSave {
+    return {
+      v: 1,
+      moves: this.moveHistory.map((m) => [m.fromRow, m.fromCol, m.toRow, m.toCol, m.promotionType ?? '']),
+      player: this.playerColor
+    };
+  }
+
+  public importSave(save: unknown): boolean {
+    const data = save as Partial<GameSave> | null;
+    if (!data || data.v !== 1 || !Array.isArray(data.moves) || data.moves.length > GameStateStore.MAX_MOVES) return false;
+    if (!InputValidator.isValidColor(data.player)) return false;
+    this.board = ChessRules.createInitialBoard();
+    this.turn = 'white';
+    this.moveHistory = [];
+    this.capturedWhite = [];
+    this.capturedBlack = [];
+    for (const raw of data.moves) {
+      if (!Array.isArray(raw) || raw.length !== 5 || !raw.slice(0, 4).every((n) => Number.isInteger(n))) return this.failImport();
+      const [fr, fc, tr, tc, promo] = raw;
+      if (!InputValidator.isValidBoardCoordinate(fr, fc) || !InputValidator.isValidBoardCoordinate(tr, tc)) return this.failImport();
+      const legal = ChessRules.getLegalMoves(this.board, this.turn, this.getLastMove());
+      const move = legal.find(
+        (m) => m.fromRow === fr && m.fromCol === fc && m.toRow === tr && m.toCol === tc && (!promo || m.promotionType === promo)
+      );
+      if (!move) return this.failImport();
+      this.commit(move);
+    }
+    this.playerColor = data.player;
+    this.notify();
+    return true;
+  }
+
+  private failImport(): boolean {
+    this.board = ChessRules.createInitialBoard();
+    this.turn = 'white';
+    this.moveHistory = [];
+    this.capturedWhite = [];
+    this.capturedBlack = [];
+    this.notify();
+    return false;
+  }
+
+  private commit(move: ChessMove): void {
+    if (move.captured) {
+      if (move.captured.color === 'white') {
+        this.capturedWhite.push(move.captured.type);
+      } else {
+        this.capturedBlack.push(move.captured.type);
+      }
+    }
+    this.board = ChessRules.applyMove(this.board, move);
+    this.moveHistory.push(move);
+    this.turn = this.turn === 'white' ? 'black' : 'white';
+  }
+
   public executeMove(move: ChessMove): boolean {
     const isCheck = ChessRules.isKingInCheck(this.board, this.turn);
     const legalMoves = ChessRules.getLegalMoves(this.board, this.turn, this.getLastMove());
@@ -65,20 +123,13 @@ export class GameStateStore {
     if (!isLegal) return false;
 
     if (move.captured) {
-      if (move.captured.color === 'white') {
-        this.capturedWhite.push(move.captured.type);
-      } else {
-        this.capturedBlack.push(move.captured.type);
-      }
       audioSynthesizer.playCapture();
       audioSynthesizer.playShatter();
     } else {
       audioSynthesizer.playMove();
     }
 
-    this.board = ChessRules.applyMove(this.board, move);
-    this.moveHistory.push(move);
-    this.turn = this.turn === 'white' ? 'black' : 'white';
+    this.commit(move);
 
     const oppCheckmate = this.isGameOver();
     if (oppCheckmate) {

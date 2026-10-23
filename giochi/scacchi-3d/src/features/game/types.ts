@@ -35,3 +35,11 @@ export interface GameSnapshot {
   capturedBlack: PieceType[];
   moveHistory: ChessMove[];
 }
+
+export type SavedMove = [number, number, number, number, PieceType | ''];
+
+export interface GameSave {
+  v: 1;
+  moves: SavedMove[];
+  player: PieceColor;
+}

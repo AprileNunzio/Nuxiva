@@ -16,3 +16,4 @@ sympy>=1.13.0
 reportlab>=4.0.0
 
 aiomqtt>=2.3
+bleak>=0.22

@@ -346,3 +346,33 @@ class SwitchTest(NodeTest):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class LocalBleTest(unittest.TestCase):
+    def test_server_counts_as_a_node_only_when_ready(self):
+        from features.people.vitals import local_ble as module
+        with mock.patch.object(module.local_ble, "ready", False):
+            self.assertNotIn(module.NODE_NAME, service.capable_nodes())
+        with mock.patch.object(module.local_ble, "ready", True):
+            self.assertEqual(service.capable_nodes()[0], module.NODE_NAME)
+
+    def test_codec_decodes_a_standard_heart_rate_broadcast(self):
+        from features.people.vitals import ble_codec
+        self.assertEqual(ble_codec.parse_heart_rate(bytes([0x00, 72])), [("heart_rate", 72)])
+        self.assertEqual(ble_codec.parse_heart_rate(bytes([0x01, 0x2C, 0x01])), [("heart_rate", 300)])
+        self.assertEqual(ble_codec.parse_heart_rate(b"\x00"), [])
+
+    def test_idle_server_does_not_scan(self):
+        import asyncio
+        from features.people.vitals import local_ble as module
+        engine = module.LocalBle()
+        with mock.patch.object(module.book, "addresses", return_value=[]), mock.patch.object(module.nearby, "active", return_value=False):
+            self.assertFalse(engine.wanted(0.0))
+        with mock.patch.object(module.book, "addresses", return_value=["AA:BB:CC:DD:EE:FF"]):
+            self.assertTrue(engine.wanted(0.0))
+        scan = mock.AsyncMock(return_value={})
+        with mock.patch.object(engine, "_scan", scan), mock.patch.object(module.nearby, "active", return_value=True), \
+                mock.patch.object(service, "node_report", return_value={"watch": [], "connect": [], "drop": [], "discover": True}):
+            asyncio.run(engine.cycle())
+        scan.assert_awaited_once()
+        self.assertTrue(engine.discover)

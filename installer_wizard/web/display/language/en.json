@@ -65,7 +65,7 @@
     "enroll_kind_command": "Say the command",
     "enroll_kind_reading": "Read the sentence",
     "enroll_heard": "I heard: “{{text}}”",
-    "enroll_hint": "Speak calmly, in your normal tone, at your usual distance.",
+    "enroll_hint": "Speak calmly, as the screen asks.",
     "enroll_get_ready": "Get ready: I'll start listening in a moment.",
     "enroll_ok": "✓ Perfect, moving to the next one.",
     "enroll_ok_next": "✓ Great. Now this one:",
@@ -242,10 +242,9 @@
     "src_phone": "phone",
     "src_cloud": "cloud",
     "rl_ago_s": "{{n}} s ago",
-    "rl_present_one": "{{n}} present"
-  },
-  "enroll_tone_soft": "Speak softly, almost whispering",
-  "enroll_tone_raised": "Speak loudly",
-  "enroll_dist_far": "Step 2-3 metres away from the microphone",
-  "enroll_hint": "Speak calmly, as the screen asks."
+    "rl_present_one": "{{n}} present",
+    "enroll_tone_soft": "Speak softly, almost whispering",
+    "enroll_tone_raised": "Speak loudly",
+    "enroll_dist_far": "Step 2-3 metres away from the microphone"
+  }
 }

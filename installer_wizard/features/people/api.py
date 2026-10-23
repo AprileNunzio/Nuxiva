@@ -12,6 +12,7 @@ from access import require_admin, require_display
 from config import DEMO, STATE_DIR
 from core_client import core
 from features.chat import voice_id
+from features.games import saves as games_saves
 from features.people import connectors, faces, insight_api, panel, people, views, voice_training
 from features.people.vitals import api as vitals_api
 from features.people.vitals.book import book as vitals_book
@@ -172,6 +173,7 @@ async def admin_person_delete(slug: str, user: str = Depends(require_admin)):
     people.delete(slug)
     vitals_book.forget_person(slug)
     vitals_live.forget(slug)
+    games_saves.forget(slug)
     vitals_journal.forget(slug)
     from features.habits.service import habits
     try:

@@ -14,6 +14,7 @@ import { GameController } from './features/game/gameController';
 import { ChessRules } from './features/game/chessRules';
 import { gameState } from './features/game/gameState';
 import { i18n } from './features/i18n/i18nService';
+import { initHostBridge } from './features/bridge/hostBridge';
 
 export async function initWizardChess() {
   const container = document.getElementById('canvas-container');
@@ -224,6 +225,8 @@ export async function initWizardChess() {
     reset: () => gameController.resetGame(),
     aiMove: () => gameController.triggerAiMove()
   };
+
+  initHostBridge(gameController);
 
   const clock = new THREE.Clock();
 
