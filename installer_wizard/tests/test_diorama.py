@@ -360,3 +360,27 @@ class ExportTests(unittest.TestCase):
             export.save(record["id"])
             files = list((Path(tmp) / archive.FOLDERS["diorami"]).glob("*.json"))
             self.assertEqual(len(files), 1)
+
+
+class ReferenceTests(unittest.TestCase):
+    def test_every_kind_is_fully_declared(self):
+        from features.diorama import reference
+        rows = {r["id"]: r for r in reference.catalog()}
+        for kind in catalog.KINDS:
+            with self.subTest(kind=kind.id):
+                row = rows[kind.id]
+                self.assertTrue(row["code"] and row["english"] and row["tags"] and row["material"])
+                self.assertTrue(all(v > 0 for k, v in row["size"].items() if k != "unit"))
+                self.assertEqual(set(row["params"]), set(kind.params))
+                self.assertTrue(all(rel in rows for rel in row["related"]))
+        self.assertEqual(len({r["code"] for r in rows.values()}), len(rows))
+
+    def test_search_and_compact_prompt(self):
+        from features.diorama import reference
+        self.assertEqual(reference.search("un treno sui binari")[0]["id"] in ("train", "rails"), True)
+        self.assertEqual(reference.describe("train")["motion"]["capable"], True)
+        self.assertIsNone(reference.describe("nope"))
+        focused = reference.prompt_catalog("treno in stazione con panchina")
+        self.assertIn("- train [", focused)
+        self.assertIn("Also valid with default params", focused)
+        self.assertLess(len(focused), len(reference.prompt_catalog()))

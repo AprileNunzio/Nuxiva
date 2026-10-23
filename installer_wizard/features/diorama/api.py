@@ -1,11 +1,11 @@
 from pathlib import Path
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 
 from access import NO_CACHE, require_admin, require_display
-from features.diorama import catalog, export, learned, learning, service, spec as S, store
+from features.diorama import catalog, export, learned, learning, reference, service, spec as S, store
 
 admin_routes = APIRouter(prefix="/api/diorama", tags=["Diorama"])
 public_routes = APIRouter(tags=["Diorama"])
@@ -63,6 +63,19 @@ def _save(record: dict) -> dict:
     store.save(record)
     export.save(record["id"])
     return record
+
+
+@admin_routes.get("/catalog/search")
+async def search_catalog(q: str = Query("", max_length=120), _: str = Depends(require_admin)):
+    return JSONResponse({"results": reference.search(q)}, headers=NO_CACHE)
+
+
+@admin_routes.get("/catalog/kind/{kind}")
+async def get_kind(kind: str, _: str = Depends(require_admin)):
+    row = reference.describe(kind) if learned.ID_RE.fullmatch(kind) or kind in catalog.BY_ID else None
+    if not row:
+        raise HTTPException(404, "kind_unknown")
+    return JSONResponse(row, headers=NO_CACHE)
 
 
 @admin_routes.get("/catalog")
