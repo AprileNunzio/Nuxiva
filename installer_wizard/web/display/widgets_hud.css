@@ -1,13 +1,14 @@
 .widget:not(.frameless):not(.fullscreen):not(.takeover) {
   --edge: rgba(var(--tone), 0.9);
-  padding: 14px 16px 16px;
-  border-radius: 20px;
-  overflow: hidden;
-  background: radial-gradient(120% 90% at 0% 0%, rgba(var(--tone), 0.07), transparent 62%), rgba(6, 14, 26, 0.34);
-  -webkit-backdrop-filter: blur(16px) saturate(1.25);
-  backdrop-filter: blur(16px) saturate(1.25);
-  box-shadow: 0 18px 44px -30px rgba(0, 0, 0, 0.8);
-  text-shadow: none;
+  padding: 8px 6px 10px;
+  border: 0;
+  border-radius: 0;
+  overflow: visible;
+  background: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+  text-shadow: 0 0 14px rgba(2, 6, 14, 0.95), 0 1px 2px rgba(2, 6, 14, 0.9);
 }
 
 .widget > .w-body { position: relative; z-index: 2; }
@@ -16,8 +17,8 @@
   display: none;
   position: absolute;
   z-index: 3;
-  left: 17px;
-  right: 17px;
+  left: 6px;
+  right: 6px;
   bottom: 8px;
   height: 2px;
   border-radius: 2px;
@@ -57,12 +58,12 @@
 @keyframes wh-cycle { to { transform: scaleX(1); } }
 
 @media (max-width: 700px) {
-  .widget:not(.frameless):not(.fullscreen):not(.takeover) { padding: 12px 14px 16px; border-radius: 16px; }
-  .widget > .w-cycle { left: 14px; right: 14px; }
+  .widget:not(.frameless):not(.fullscreen):not(.takeover) { padding: 8px 6px 12px; }
+  .widget > .w-cycle { left: 6px; right: 6px; }
 }
 @media (min-width: 2200px) {
-  .widget:not(.frameless):not(.fullscreen):not(.takeover) { padding: 22px 26px 26px; border-radius: 26px; }
-  .widget > .w-cycle { left: 26px; right: 26px; height: 3px; }
+  .widget:not(.frameless):not(.fullscreen):not(.takeover) { padding: 14px 10px 16px; }
+  .widget > .w-cycle { left: 10px; right: 10px; height: 3px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .widget.enter { animation: w-in 0.2s ease both; }

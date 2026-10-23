@@ -348,13 +348,15 @@
     ordered.forEach((c) => c.el.classList.remove("pinned"));
 
     const blocked = [];
+    const radius = Math.min(W, H) * 0.34;
+    const keepOut = portrait || takeover ? [] : [{ x: W / 2 - radius, y: H * 0.46 - radius, w: 2 * radius, h: 2 * radius }];
     for (const c of pinned) {
       if (takeover) { c.el.classList.add("hidden"); continue; }
       const w = Math.max(240, Math.min(400, W * 0.26));
       const h = measure(c, w);
       const x = Math.max(M, Math.min(W - M - w, c.inst.pos.x * W - w / 2));
       const y = Math.max(TOP, Math.min(BOTTOM - h, c.inst.pos.y * H - h / 2));
-      const spot = clearSpot({ x, y, w, h }, blocked, { x0: M, y0: TOP, x1: W - M, y1: BOTTOM });
+      const spot = clearSpot({ x, y, w, h }, blocked.concat(keepOut), { x0: M, y0: TOP, x1: W - M, y1: BOTTOM });
       if (!spot) { c.el.classList.add("hidden"); continue; }
       place(c, spot.x, spot.y, w);
       blocked.push({ x: spot.x, y: spot.y, w, h });
@@ -392,22 +394,17 @@
       const used = blocked.length ? Math.min(...blocked.map((b) => b.y)) : BOTTOM;
       zone = { x: M, y: TOP - 20, w: W - 2 * M, h: Math.max(160, used - TOP - 50) };
     } else if (normal.length) {
-      const colW = Math.max(280, Math.min(400, W * 0.26));
+      const colW = Math.max(240, Math.min(380, W * 0.22));
+      const sides = [{ x0: M, x1: M + colW }, { x0: W - M - colW, x1: W - M }];
       for (const c of normal) {
-        const wide = c.inst.size === "l";
-        const w = wide ? Math.min(W - 2 * M, Math.max(colW, Math.min(680, colW * 1.8))) : c.inst.size === "s" ? Math.max(220, Math.min(colW, 280)) : colW;
+        const w = c.inst.size === "s" ? Math.max(220, Math.min(colW, 280)) : colW;
         const h = measure(c, w);
-        const rightWant = { x: W - M - w, y: TOP, w, h };
-        const leftWant = { x: M, y: TOP, w, h };
-        const rightSpot = clearSpot(rightWant, blocked, { x0: M, y0: TOP, x1: W - M, y1: BOTTOM });
-        const leftSpot = clearSpot(leftWant, blocked, { x0: M, y0: TOP, x1: W - M, y1: BOTTOM });
-        let chosen = null;
-        if (rightSpot && leftSpot) {
-          chosen = rightSpot.y <= leftSpot.y ? rightSpot : leftSpot;
-        } else {
-          chosen = rightSpot || leftSpot;
-        }
-        if (!chosen) { c.el.classList.add("hidden"); continue; }
+        const options = sides.map((side, index) => {
+          const x = index === 0 ? side.x0 : side.x1 - w;
+          return clearSpot({ x, y: TOP, w, h }, blocked.concat(keepOut), { x0: side.x0, y0: TOP, x1: side.x1, y1: BOTTOM });
+        }).filter(Boolean);
+        if (!options.length) { c.el.classList.add("hidden"); continue; }
+        const chosen = options.reduce((best, o) => (o.y < best.y ? o : best));
         place(c, chosen.x, chosen.y, w);
         blocked.push({ x: chosen.x, y: chosen.y, w, h });
       }
@@ -415,10 +412,11 @@
       const rightBlocked = blocked.filter((b) => b.x >= W / 2);
       const x0 = leftBlocked.length ? Math.max(...leftBlocked.map((b) => b.x + b.w)) + GAP : M;
       const x1 = rightBlocked.length ? Math.min(...rightBlocked.map((b) => b.x)) - GAP : W - M;
-      zone = { x: x0, y: TOP - 30, w: Math.max(120, x1 - x0), h: BOTTOM - TOP - 70 };
+      const free = { x: x0, y: TOP - 30, w: Math.max(120, x1 - x0), h: BOTTOM - TOP - 70 };
+      zone = { x: free.x + free.w * 0.05, y: free.y + free.h * 0.09, w: free.w * 0.9, h: free.h * 0.82 };
     }
 
-    if (!takeover && zone && !covers(normal, W, H)) zone = null;
+    if (!takeover && zone && !blocked.length && !covers(normal, W, H)) zone = null;
     document.body.classList.toggle("desk-has", normal.length > 0 || !!takeover);
     document.body.classList.toggle("desk-alert", !!takeover);
     const stage = zone ? { ...zone, cx: zone.x + zone.w / 2, cy: zone.y + zone.h / 2 } : null;
