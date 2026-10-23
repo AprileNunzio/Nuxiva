@@ -91,3 +91,77 @@ export const googleFinish = (slug: string, url: string) =>
   requestJson<unknown>('/api/google/finish', { method: 'POST', body: JSON.stringify({ slug, url: url.slice(0, 4000) }) });
 export const googleCancel = (slug: string) => requestJson<unknown>(`/api/google/${slugOf(slug)}/pending`, { method: 'DELETE' });
 export const googleUnlink = (slug: string) => requestJson<unknown>(`/api/google/${slugOf(slug)}`, { method: 'DELETE' });
+
+export type VitalKind = 'ble' | 'push' | 'phone';
+
+export interface VitalDevice {
+  readonly id: string;
+  readonly kind: VitalKind;
+  readonly label: string;
+  readonly address: string;
+  readonly last: number;
+}
+
+export interface VitalValue {
+  readonly metric: string;
+  readonly value: number;
+  readonly unit: string;
+  readonly age: number;
+  readonly kind: string;
+}
+
+export interface VitalsState {
+  readonly devices: readonly VitalDevice[];
+  readonly values: readonly VitalValue[];
+  readonly leaseNode: string;
+  readonly cloudReady: boolean;
+}
+
+export interface NewVitalDevice {
+  readonly kind: VitalKind;
+  readonly label: string;
+  readonly address: string;
+  readonly token: string;
+}
+
+const VITAL_KINDS: readonly string[] = ['ble', 'push', 'phone'];
+
+export async function fetchVitals(slug: string, signal?: AbortSignal): Promise<VitalsState> {
+  const raw = asRecord(await requestJson<unknown>(`/api/people/${slugOf(slug)}/vitals`, { signal }));
+  const values = asRecord(raw.values);
+  const lease = asRecord(raw.lease);
+  const cloud = asRecord(raw.cloud);
+  return {
+    devices: list(raw.devices).map(asRecord).flatMap((d) => {
+      const id = asString(d.id, 24) ?? '';
+      const kind = String(d.kind ?? '');
+      return /^[a-f0-9]{4,24}$/.test(id) && VITAL_KINDS.includes(kind)
+        ? [{ id, kind: kind as VitalKind, label: asString(d.label, 40) ?? kind, address: asString(d.address, 17) ?? '', last: typeof d.last === 'number' ? d.last : 0 }]
+        : [];
+    }),
+    values: Object.entries(values).flatMap(([metric, entry]) => {
+      const v = asRecord(entry);
+      return typeof v.value === 'number' ? [{ metric, value: v.value, unit: asString(v.unit, 8) ?? '', age: typeof v.age === 'number' ? v.age : 0, kind: asString(v.kind, 12) ?? '' }] : [];
+    }),
+    leaseNode: asString(lease.node, 60) ?? '',
+    cloudReady: cloud.ready === true,
+  };
+}
+
+export async function addVitalDevice(slug: string, body: { kind: VitalKind; label: string; address: string }): Promise<NewVitalDevice> {
+  const raw = asRecord(await requestJson<unknown>(`/api/people/${slugOf(slug)}/vitals/devices`, { method: 'POST', body: JSON.stringify(body) }));
+  const device = asRecord(raw.device);
+  return { kind: body.kind, label: asString(device.label, 40) ?? body.label, address: asString(device.address, 17) ?? '', token: asString(raw.token, 120) ?? '' };
+}
+
+const deviceBase = (slug: string, id: string): string => {
+  if (!/^[a-f0-9]{4,24}$/.test(id)) {
+    throw new NodeModuleError('invalid_device', 400);
+  }
+  return `/api/people/${slugOf(slug)}/vitals/devices/${id}`;
+};
+export const removeVitalDevice = (slug: string, id: string) => requestJson<unknown>(deviceBase(slug, id), { method: 'DELETE' });
+export const rotateVitalDevice = async (slug: string, id: string): Promise<string> => {
+  const raw = asRecord(await requestJson<unknown>(`${deviceBase(slug, id)}/token`, { method: 'POST' }));
+  return asString(raw.token, 120) ?? '';
+};

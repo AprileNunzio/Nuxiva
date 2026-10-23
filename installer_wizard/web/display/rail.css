@@ -43,7 +43,10 @@ body.rail-compact .rail.right .rl-block.scan .rl-spark { display: none; }
 .rl-person.home .rl-dot { background: var(--green); box-shadow: 0 0 8px var(--green); }
 
 .rl-mood { display: flex; align-items: flex-end; gap: 14px; }
-.rl-mood b { font-size: clamp(32px, 4.2vh, 44px); font-weight: 200; line-height: 0.95; letter-spacing: -0.03em; color: var(--text); text-transform: capitalize; }
+.rl-mood b { font-size: clamp(32px, 4.2vh, 44px); font-weight: 200; line-height: 0.95; letter-spacing: -0.03em; color: var(--text); }
+.rl-mood.empty b { font-size: 15px; font-weight: 400; letter-spacing: 0; line-height: 1.3; color: var(--text-dim); }
+.rl-mood.empty ~ .rl-level, .rl-mood.empty ~ .rl-acts { display: none; }
+.rl-mood.empty span { display: none; }
 .rl-mood span { padding-bottom: 4px; font-size: 12px; color: var(--text-dim); }
 .rl-level { height: 2px; border-radius: 2px; background: rgba(255, 255, 255, 0.07); overflow: hidden; }
 .rl-level i { display: block; height: 100%; background: var(--amber); transition: width 0.8s; }
@@ -61,3 +64,15 @@ body.rail-compact .rail.right .rl-block.scan .rl-spark { display: none; }
 .rl-learn small { font-size: 12px; color: var(--text-dim); }
 @media (prefers-reduced-motion: reduce) { .rl-bars i, .rl-level i, .rail { transition: none; } }
 .rl-act[hidden], .rl-say[hidden] { display: none; }
+.rl-block.vitals .rl-k { color: rgba(255, 77, 106, 0.9); }
+.rl-block.vitals .rl-chip { color: var(--text-dim); }
+.rl-vitals { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px 12px; }
+.rl-vital span { display: block; font: 600 9px/1 var(--mono); letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 6px; }
+.rl-vital b { display: block; font-size: clamp(22px, 2.8vh, 30px); font-weight: 200; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: var(--text); }
+.rl-vital b small { margin-left: 3px; font-size: 11px; font-weight: 400; letter-spacing: 0; color: var(--text-dim); }
+.rl-vital.v-heart_rate b { color: var(--red); animation: rl-beat 1.2s ease-in-out infinite; }
+@keyframes rl-beat { 50% { opacity: 0.72; } }
+@media (prefers-reduced-motion: reduce) { .rl-vital.v-heart_rate b { animation: none; } }
+body.rail-compact .rail .rl-vitals { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.rail > section { transition: opacity 0.4s; }
+.rail > section.yield { opacity: 0; pointer-events: none; }

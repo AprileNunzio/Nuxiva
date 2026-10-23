@@ -46,6 +46,7 @@ def ingest(slug: str, samples, source: str, kind: str, now: float | None = None)
             continue
         if live.put(slug, sample, source, kind, now):
             accepted += 1
+    live.prune(now)
     return {"accepted": accepted, "rejected": rejected}
 
 

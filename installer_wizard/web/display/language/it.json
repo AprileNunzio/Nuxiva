@@ -229,6 +229,19 @@
     "learn_food_likes": "cibo",
     "learn_music": "musica",
     "learn_sports": "sport",
-    "learn_other": "profilo"
+    "learn_other": "profilo",
+    "rl_vitals": "Vitali",
+    "vt_heart_rate": "Battiti",
+    "vt_spo2": "Ossigeno",
+    "vt_body_temp": "Temperatura",
+    "vt_skin_temp": "Pelle",
+    "vt_resp_rate": "Respiro",
+    "vt_hrv": "HRV",
+    "src_ble": "bluetooth",
+    "src_push": "app",
+    "src_phone": "telefono",
+    "src_cloud": "cloud",
+    "rl_ago_s": "{{n}} s fa",
+    "rl_present_one": "{{n}} presente"
   }
 }

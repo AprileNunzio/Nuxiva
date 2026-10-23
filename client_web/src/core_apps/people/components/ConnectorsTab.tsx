@@ -4,6 +4,7 @@ import { Connectors, fetchConnectors } from '../data/connectorsApi';
 import { usePeopleI18n } from '../scope';
 import { GoogleCard } from './GoogleCard';
 import { TelegramCard } from './TelegramCard';
+import { VitalsCard } from './VitalsCard';
 
 interface Props {
   readonly slug: string;
@@ -48,6 +49,7 @@ export const ConnectorsTab: React.FC<Props> = ({ slug, busy, run }) => {
       <div className="grid gap-3 xl:grid-cols-2">
         {state.telegram && <TelegramCard slug={slug} state={state.telegram} busy={busy} run={act} />}
         {state.google && <GoogleCard slug={slug} state={state.google} busy={busy} run={act} />}
+        <VitalsCard slug={slug} busy={busy} run={act} />
       </div>
     </div>
   );

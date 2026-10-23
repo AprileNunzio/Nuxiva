@@ -4,6 +4,7 @@
   const SVG = "http://www.w3.org/2000/svg";
   const BARS = 44, POLL_MS = 8000, VOICE_HOLD = 1800;
   const MOODS = new Set(["felice", "sereno", "entusiasta", "innamorato", "grato", "neutro", "stanco", "annoiato", "stressato", "preoccupato", "triste", "arrabbiato", "malato"]);
+  const VITAL_ORDER = ["heart_rate", "spo2", "body_temp", "skin_temp", "resp_rate", "hrv"];
   const FIELDS = new Set(["nickname", "coffee", "wake_time", "sleep_time", "food_dislikes", "food_likes", "music", "sports"]);
   const state = { panel: null, level: 0, heardAt: 0, frame: 0, bars: [], levels: new Array(BARS).fill(0), timer: 0, moodId: "" };
   const refs = {};
@@ -84,7 +85,16 @@
     block.classList.add("rl-more-host");
     spark.classList.add("rl-more");
     block.append(h.node, mood, bar, say, acts, spark);
-    Object.assign(refs, { scan: block, scanHead: h, word, level, bar: bar.firstChild, say, acts, ok, bad, spark });
+    Object.assign(refs, { scan: block, scanHead: h, mood, word, level, bar: bar.firstChild, say, acts, ok, bad, spark });
+    return block;
+  }
+
+  function buildVitals() {
+    const block = el("section", "rl-block vitals");
+    const h = head("rl_vitals");
+    const grid = el("div", "rl-vitals");
+    block.append(h.node, grid);
+    Object.assign(refs, { vitals: block, vitalsChip: h.chip, vitalsGrid: grid });
     return block;
   }
 
@@ -101,7 +111,7 @@
     const left = el("aside", "rail left");
     const right = el("aside", "rail right");
     left.append(buildVoice(), buildHome());
-    right.append(buildScan(), buildLearn());
+    right.append(buildScan(), buildVitals(), buildLearn());
     const hud = document.querySelector(".hud");
     hud.prepend(right);
     hud.prepend(left);
@@ -121,7 +131,7 @@
   function renderHome(roster) {
     const rows = roster || [];
     const home = rows.filter((r) => r.home).length;
-    refs.homeCount.textContent = T("rl_present_n", { n: home });
+    refs.homeCount.textContent = T(home === 1 ? "rl_present_one" : "rl_present_n", { n: home });
     refs.home.hidden = rows.length === 0;
     refs.homeList.replaceChildren(...rows.map((r, i) => {
       const row = el("div", `rl-person ${r.home ? "home" : "away"}`);
@@ -151,6 +161,7 @@
     refs.scanHead.chip.textContent = T("rl_face");
     const m = focus.mood && MOODS.has(focus.mood.mood) ? focus.mood : null;
     state.moodId = m ? m.id : "";
+    refs.mood.classList.toggle("empty", !m);
     refs.word.textContent = m ? T(`mood_${m.mood}`) : T("rl_no_mood");
     refs.level.textContent = m ? T("rl_level", { n: m.intensity }) : "";
     refs.bar.style.width = m ? `${m.intensity * 20}%` : "0%";
@@ -159,6 +170,23 @@
     const askable = !!(m && m.source === "assistente" && !m.feedback);
     refs.ok.hidden = refs.bad.hidden = !askable;
     spark(focus.series);
+  }
+
+  function renderVitals(focus) {
+    const values = focus && !(D.state && D.state.privacy && D.state.privacy.away) ? focus.vitals || {} : {};
+    const keys = VITAL_ORDER.filter((k) => values[k]);
+    refs.vitals.hidden = !keys.length;
+    if (!keys.length) return;
+    const newest = keys.map((k) => values[k]).sort((a, b) => a.age - b.age)[0];
+    refs.vitalsChip.textContent = `${T(`src_${newest.kind}`)} · ${T("rl_ago_s", { n: Math.round(newest.age) })}`;
+    refs.vitalsGrid.replaceChildren(...keys.map((k) => {
+      const v = values[k];
+      const cell = el("div", `rl-vital v-${k}`);
+      const num = el("b", "", String(v.value));
+      num.append(el("small", "", v.unit));
+      cell.append(el("span", "", T(`vt_${k}`)), num);
+      return cell;
+    }));
   }
 
   function renderLearn(focus) {
@@ -179,7 +207,9 @@
     if (!p) return;
     renderHome(p.roster);
     renderScan(p.focus);
+    renderVitals(p.focus);
     renderLearn(p.focus);
+    avoid();
   }
 
   async function refresh() {
@@ -213,12 +243,25 @@
     refs.voiceWho.replaceChildren(...(live && names.length === 1 ? [`${T("rl_speaking")} `, Object.assign(el("b"), { textContent: names[0] })] : [""]));
   }
 
+  function avoid() {
+    const desk = document.getElementById("desk");
+    const boxes = desk ? [...desk.querySelectorAll(".widget:not(.hidden):not(.fullscreen)")].map((w) => w.getBoundingClientRect()).filter((r) => r.width > 0) : [];
+    document.body.classList.toggle("rail-compact", boxes.length > 0);
+    document.querySelectorAll(".rail > section").forEach((block) => {
+      if (block.hidden) return;
+      const r = block.getBoundingClientRect();
+      const hit = boxes.some((b) => r.left < b.right + 12 && r.right > b.left - 12 && r.top < b.bottom + 12 && r.bottom > b.top - 12);
+      block.classList.toggle("yield", hit);
+    });
+  }
+
   function watchDesk() {
     const desk = document.getElementById("desk");
     if (!desk) return;
-    const sync = () => document.body.classList.toggle("rail-compact", !!desk.querySelector(".widget:not(.hidden):not(.fullscreen)"));
-    new MutationObserver(sync).observe(desk, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
-    sync();
+    new MutationObserver(avoid).observe(desk, { childList: true, subtree: true, attributes: true, attributeFilter: ["class", "style"] });
+    window.addEventListener("resize", avoid);
+    setInterval(avoid, 1500);
+    avoid();
   }
 
   function start() {
