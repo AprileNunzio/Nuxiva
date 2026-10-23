@@ -29,6 +29,7 @@ class LocalBle:
         self.profiles: dict[str, list[str]] = {}
         self.dropped: set[str] = set()
         self.discover = False
+        self.last_error = ""
 
     @staticmethod
     def enabled() -> bool:
@@ -36,6 +37,17 @@ class LocalBle:
 
     def available(self) -> bool:
         return self.ready
+
+    @staticmethod
+    def blockers() -> list[str]:
+        found = []
+        if env_get("NUXIVA_VITALS_LOCAL_BLE", "1") == "0":
+            found.append("local_disabled")
+        elif importlib.util.find_spec("bleak") is None:
+            found.append("bleak_missing")
+        elif not adapter.has_adapter():
+            found.append("no_adapter")
+        return found
 
     def wanted(self, now: float) -> bool:
         return bool(book.addresses()) or nearby.active(now)
@@ -122,6 +134,7 @@ class LocalBle:
             except asyncio.CancelledError:
                 raise
             except Exception as exc:
+                self.last_error = f"{type(exc).__name__}: {exc}"[:160]
                 log.warning("Ciclo Bluetooth dei parametri vitali: %s", exc)
                 await asyncio.sleep(IDLE_SECONDS)
 

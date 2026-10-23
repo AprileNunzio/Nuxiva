@@ -3,6 +3,7 @@ import { Copy, HeartPulse, KeyRound, Link2Off, Plug, Trash2 } from 'lucide-react
 import { reportError } from '../../../shared/errors/errorBus';
 import { NewVitalDevice, VitalKind, VitalState, VitalsState, addVitalDevice, fetchVitals, removeVitalDevice, rotateVitalDevice, switchVitalDevice } from '../data/connectorsApi';
 import { chipClass, fieldClass, usePeopleI18n } from '../scope';
+import { VitalsHelp } from './VitalsHelp';
 import { VitalsLog } from './VitalsLog';
 import { VitalsSearch } from './VitalsSearch';
 
@@ -148,6 +149,7 @@ export const VitalsCard: React.FC<Props> = ({ slug, busy, run }) => {
           <p className="text-xs text-slate-600">{t(`vitals_state_hint_${device.state}`)}</p>
         </div>
       ))}
+      <VitalsHelp state={state} />
       <VitalsSearch slug={slug} nodes={state.nodes} busy={busy} act={act} onAdded={(device) => setSecret(device.token ? device : null)} />
       {secret && (
         <div className="flex flex-col gap-2 rounded-lg border border-blue-300 bg-blue-50 p-3 text-sm text-blue-900" role="status">

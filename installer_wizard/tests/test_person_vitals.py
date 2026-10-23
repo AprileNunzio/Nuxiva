@@ -376,3 +376,24 @@ class LocalBleTest(unittest.TestCase):
             asyncio.run(engine.cycle())
         scan.assert_awaited_once()
         self.assertTrue(engine.discover)
+
+
+class DiagnosisTest(unittest.TestCase):
+    def test_missing_bleak_is_reported_and_nodes_are_counted(self):
+        with mock.patch.object(service.local_ble.__class__, "blockers", staticmethod(lambda: ["bleak_missing"])), \
+                mock.patch.object(service.registry, "listing", return_value=[{"name": "n1", "online": True, "capabilities": ["vitals_ble"]}]):
+            out = service.diagnosis()
+        self.assertFalse(out["ok"])
+        self.assertEqual(out["reasons"], ["server_bleak_missing"])
+        self.assertEqual(out["nodes"], 1)
+
+    def test_no_adapter_and_no_nodes(self):
+        with mock.patch.object(service.local_ble.__class__, "blockers", staticmethod(lambda: ["no_adapter"])), \
+                mock.patch.object(service.registry, "listing", return_value=[]):
+            out = service.diagnosis()
+        self.assertEqual(out["reasons"], ["server_no_adapter", "no_nodes"])
+
+    def test_healthy_server(self):
+        with mock.patch.object(service.local_ble.__class__, "blockers", staticmethod(lambda: [])), \
+                mock.patch.object(service.registry, "listing", return_value=[]), mock.patch.object(service.local_ble, "last_error", ""):
+            self.assertTrue(service.diagnosis()["ok"])

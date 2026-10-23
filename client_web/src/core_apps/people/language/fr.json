@@ -536,6 +536,27 @@
     "wb_report_full": "Inclure la transcription",
     "wb_erase": "Supprimer toutes les données",
     "wb_erase_confirm": "Supprimer définitivement les séances, rapports et mesures de cette personne ?",
-    "wb_disclaimer": "Ce n'est ni un diagnostic ni un traitement. Si le malaise persiste, consultez un professionnel ; en urgence appelez le 112."
+    "wb_disclaimer": "Ce n'est ni un diagnostic ni un traitement. Si le malaise persiste, consultez un professionnel ; en urgence appelez le 112.",
+    "tg_change_title": "Changer de bot ou guide de création",
+    "tg_current_bot": "Bot actuel : {{bot}}",
+    "tg_step_1": "Ouvrez BotFather sur Telegram et envoyez /newbot (ou utilisez un bot existant).",
+    "tg_step_2": "Copiez le jeton envoyé par BotFather.",
+    "tg_step_3": "Ouvrez le panneau de contrôle, collez le jeton dans « Jeton du bot Telegram » et enregistrez.",
+    "tg_step_4": "Ouvrez le nouveau bot dans Telegram, appuyez sur Démarrer puis générez ici un nouveau code de jumelage.",
+    "tg_open_botfather": "Ouvrir BotFather",
+    "tg_change_hint": "Le jeton du bot se change depuis le panneau de contrôle de Telegram, qui contient aussi le guide complet.",
+    "vh_title": "L'appareil ne se connecte pas ? Vérifiez ici",
+    "vh_checklist": "Liste de contrôle pour Fitbit et appareils similaires :",
+    "vh_reason_server_local_disabled": "Le Bluetooth du serveur est désactivé (NUXIVA_VITALS_LOCAL_BLE=0).",
+    "vh_reason_server_bleak_missing": "Le composant Bluetooth (bleak) manque sur le serveur : mettez Nuxiva à jour depuis le Centre de mise à jour ou installez-le avec pip install bleak.",
+    "vh_reason_server_no_adapter": "Le serveur n'a pas d'adaptateur Bluetooth : branchez-en un en USB ou utilisez un nœud ou un satellite avec Bluetooth.",
+    "vh_reason_no_nodes": "Aucun nœud ou satellite Bluetooth n'est en ligne : sans eux et sans Bluetooth sur le serveur, personne ne peut lire l'appareil.",
+    "vh_reason_server_error": "Erreur Bluetooth du serveur : {{error}}",
+    "vh_step_1": "Dans l'app Fitbit ouvrez l'appareil et activez « Partager la fréquence cardiaque » : l'appareil doit rester dans ce mode.",
+    "vh_step_2": "Gardez l'écran de l'appareil allumé et à moins de 5 mètres du serveur, du nœud ou du satellite.",
+    "vh_step_3": "Si l'appareil est déjà connecté à un téléphone, fermez l'app Fitbit ou coupez le Bluetooth du téléphone : beaucoup d'appareils n'acceptent qu'une connexion à la fois.",
+    "vh_step_4": "Appuyez sur « Rechercher les appareils proches », choisissez l'appareil dans la liste et associez-le à cette personne au lieu de saisir l'adresse à la main.",
+    "vh_step_5": "S'il n'apparaît toujours pas, coupez puis réactivez le Bluetooth de l'appareil et réessayez : la liste se met à jour toutes les quelques secondes.",
+    "vh_link": "Aide officielle Fitbit"
   }
 }

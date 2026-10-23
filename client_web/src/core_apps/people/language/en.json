@@ -536,6 +536,27 @@
     "wb_report_full": "Include the transcript",
     "wb_erase": "Delete all data",
     "wb_erase_confirm": "Permanently delete this person's sessions, reports and measurements?",
-    "wb_disclaimer": "This is not a diagnosis or a treatment. If distress persists see a professional; in an emergency call 112 (EU), 911 (US) or your local number."
+    "wb_disclaimer": "This is not a diagnosis or a treatment. If distress persists see a professional; in an emergency call 112 (EU), 911 (US) or your local number.",
+    "tg_change_title": "Change bot or creation guide",
+    "tg_current_bot": "Current bot: {{bot}}",
+    "tg_step_1": "Open BotFather on Telegram and send /newbot (or use a bot you already have).",
+    "tg_step_2": "Copy the token BotFather sends you.",
+    "tg_step_3": "Open the control panel, paste the token in the “Telegram bot token” field and save.",
+    "tg_step_4": "Open the new bot in Telegram, press Start and then generate a new pairing code here.",
+    "tg_open_botfather": "Open BotFather",
+    "tg_change_hint": "The bot token is changed from Telegram's control panel, which also has the full guide.",
+    "vh_title": "Device not connecting? Check here",
+    "vh_checklist": "Checklist for Fitbit and similar devices:",
+    "vh_reason_server_local_disabled": "The server's Bluetooth is turned off (NUXIVA_VITALS_LOCAL_BLE=0).",
+    "vh_reason_server_bleak_missing": "The server is missing its Bluetooth component (bleak): update Nuxiva from the Update Center or install it with pip install bleak.",
+    "vh_reason_server_no_adapter": "The server has no Bluetooth adapter: plug in a USB one or use a node or satellite with Bluetooth.",
+    "vh_reason_no_nodes": "No Bluetooth node or satellite is online: without them and without server Bluetooth nobody can read the device.",
+    "vh_reason_server_error": "Server Bluetooth error: {{error}}",
+    "vh_step_1": "In the Fitbit app open the device and turn on “Share heart rate” (or heart-rate broadcast): the device must stay in this mode.",
+    "vh_step_2": "Keep the device screen on and within 5 metres of the server, node or satellite.",
+    "vh_step_3": "If the device is already connected to a phone, close the Fitbit app or turn off the phone's Bluetooth: many devices accept only one connection at a time.",
+    "vh_step_4": "Press “Search nearby devices”, pick the device from the list and associate it with this person instead of typing the address by hand.",
+    "vh_step_5": "If it still does not appear, turn the device's Bluetooth off and on and retry: the list refreshes every few seconds.",
+    "vh_link": "Official Fitbit help"
   }
 }

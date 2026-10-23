@@ -14,5 +14,40 @@
     "NUXIVA_GOOGLE_CLIENT_ID": "ID client OAuth",
     "NUXIVA_GOOGLE_CLIENT_SECRET": "Secret client OAuth",
     "NUXIVA_GOOGLE_REMIND_MIN": "Prévenez-moi avant un rendez-vous (minutes, 0 = jamais)"
+  },
+  "guide": {
+    "title": "Comment obtenir votre ID client et secret client Google",
+    "steps": [
+      "Ouvrez Google Cloud Console et connectez-vous avec votre compte Google.",
+      "En haut, cliquez sur le sélecteur de projets, puis « Nouveau projet », nommez-le par exemple « Nuxiva » et créez-le.",
+      "Ouvrez la bibliothèque d'API et activez : Google Calendar API, Gmail API, Google Tasks API, People API (contacts) et Google Drive API.",
+      "Ouvrez l'écran de consentement OAuth : choisissez « Externe », saisissez le nom de l'app et votre e-mail, puis dans « Utilisateurs test » ajoutez les adresses Google de ceux qui utiliseront Nuxiva.",
+      "Ouvrez Identifiants, « Créer des identifiants », « ID client OAuth » et choisissez « Application de bureau ».",
+      "Copiez l'ID client et le secret client, collez-les ci-dessous et appuyez sur Enregistrer.",
+      "Chaque personne relie son compte depuis Personnes, onglet Connecteurs, Google : elle choisit les services et autorise sur la page de Google."
+    ],
+    "links": [
+      {
+        "label": "Google Cloud Console",
+        "url": "https://console.cloud.google.com/"
+      },
+      {
+        "label": "Bibliothèque d'API",
+        "url": "https://console.cloud.google.com/apis/library"
+      },
+      {
+        "label": "Écran de consentement OAuth",
+        "url": "https://console.cloud.google.com/apis/credentials/consent"
+      },
+      {
+        "label": "Identifiants",
+        "url": "https://console.cloud.google.com/apis/credentials"
+      }
+    ],
+    "note": "Tant que l'app reste en mode « Test » l'autorisation expire tous les 7 jours : publiez l'app depuis l'écran de consentement. Gardez le secret client confidentiel."
+  },
+  "help": {
+    "NUXIVA_GOOGLE_CLIENT_ID": "Se termine par .apps.googleusercontent.com. Dans Identifiants, ID client OAuth.",
+    "NUXIVA_GOOGLE_CLIENT_SECRET": "Chaîne confidentielle commençant par GOCSPX-, affichée à côté de l'ID client."
   }
 }

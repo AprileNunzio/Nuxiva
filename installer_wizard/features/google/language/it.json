@@ -14,5 +14,40 @@
     "NUXIVA_GOOGLE_CLIENT_ID": "Client ID OAuth",
     "NUXIVA_GOOGLE_CLIENT_SECRET": "Client Secret OAuth",
     "NUXIVA_GOOGLE_REMIND_MIN": "Avvisami prima di un appuntamento (minuti, 0 = mai)"
+  },
+  "guide": {
+    "title": "Come ottenere Client ID e Client Secret di Google",
+    "steps": [
+      "Apri Google Cloud Console e accedi con il tuo account Google.",
+      "In alto clicca il selettore dei progetti, poi «Nuovo progetto», chiamalo per esempio «Nuxiva» e crealo.",
+      "Apri la Libreria API e abilita: Google Calendar API, Gmail API, Google Tasks API, People API (contatti) e Google Drive API.",
+      "Apri la schermata di consenso OAuth: scegli «Esterno», inserisci nome app e la tua email, poi in «Utenti di prova» aggiungi gli indirizzi Google di chi userà Nuxiva.",
+      "Apri Credenziali, «Crea credenziali», «ID client OAuth» e come tipo di applicazione scegli «App desktop».",
+      "Copia il Client ID e il Client Secret e incollali qui sotto, poi premi Salva.",
+      "Ogni persona collega il proprio account da Persone, scheda Connettori, Google: sceglie i servizi e autorizza dalla pagina di Google."
+    ],
+    "links": [
+      {
+        "label": "Google Cloud Console",
+        "url": "https://console.cloud.google.com/"
+      },
+      {
+        "label": "Libreria delle API",
+        "url": "https://console.cloud.google.com/apis/library"
+      },
+      {
+        "label": "Schermata di consenso OAuth",
+        "url": "https://console.cloud.google.com/apis/credentials/consent"
+      },
+      {
+        "label": "Credenziali",
+        "url": "https://console.cloud.google.com/apis/credentials"
+      }
+    ],
+    "note": "Se l'app resta in modalità «Test» l'autorizzazione scade ogni 7 giorni: per evitarlo pubblica l'app dalla schermata di consenso. Il Client Secret è riservato: non condividerlo."
+  },
+  "help": {
+    "NUXIVA_GOOGLE_CLIENT_ID": "Finisce con .apps.googleusercontent.com. Lo trovi in Credenziali, ID client OAuth.",
+    "NUXIVA_GOOGLE_CLIENT_SECRET": "Stringa riservata che inizia con GOCSPX-, mostrata accanto al Client ID."
   }
 }

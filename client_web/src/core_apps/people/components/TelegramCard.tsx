@@ -57,6 +57,21 @@ export const TelegramCard: React.FC<Props> = ({ slug, state, busy, run }) => {
           </button>
         )}
       </div>
+      <details className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800" open={!state.available}>
+        <summary className="cursor-pointer font-semibold">{t('tg_change_title')}</summary>
+        <div className="mt-2 flex flex-col gap-2">
+          {state.bot && <p className="text-xs text-slate-600">{t('tg_current_bot', { bot: `@${state.bot}` })}</p>}
+          <ol className="list-decimal space-y-1 pl-5 text-xs text-slate-700">
+            {[1, 2, 3, 4].map((n) => (
+              <li key={n}>{t(`tg_step_${n}`)}</li>
+            ))}
+          </ol>
+          <a href="https://t.me/BotFather" target="_blank" rel="noopener noreferrer" className={`${chipClass} self-start border-sky-300 bg-sky-50 px-3 py-2 text-sky-900`}>
+            {t('tg_open_botfather')}
+          </a>
+          <SetupLink feature="telegram" hint={t('tg_change_hint')} />
+        </div>
+      </details>
     </section>
   );
 };

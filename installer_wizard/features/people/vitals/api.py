@@ -103,7 +103,7 @@ async def person_vitals(slug: str, _: str = Depends(require_admin)):
     _person(slug)
     now = time.time()
     snap = service.snapshot(slug, now)
-    return {"devices": service.devices_view(slug, snap["values"], now), "units": service.units(), "nodes": service.capable_nodes(now), **snap}
+    return {"devices": service.devices_view(slug, snap["values"], now), "units": service.units(), "nodes": service.capable_nodes(now), "diagnosis": service.diagnosis(now), **snap}
 
 
 @admin_routes.post("/api/people/{slug}/vitals/search")

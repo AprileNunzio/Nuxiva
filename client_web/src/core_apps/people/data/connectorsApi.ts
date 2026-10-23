@@ -152,6 +152,8 @@ export interface VitalsState {
   readonly leaseNode: string;
   readonly cloudReady: boolean;
   readonly nodes: readonly string[];
+  readonly reasons: readonly string[];
+  readonly reasonError: string;
 }
 
 export interface NewVitalDevice {
@@ -183,6 +185,8 @@ export async function fetchVitals(slug: string, signal?: AbortSignal): Promise<V
     leaseNode: asString(lease.node, 60) ?? '',
     cloudReady: cloud.ready === true,
     nodes: list(raw.nodes).flatMap((n) => (typeof n === 'string' ? [n.slice(0, 60)] : [])),
+    reasons: list(asRecord(raw.diagnosis).reasons).flatMap((r) => (typeof r === 'string' && /^[a-z_]{3,32}$/.test(r) ? [r] : [])),
+    reasonError: asString(asRecord(raw.diagnosis).error, 160) ?? '',
   };
 }
 

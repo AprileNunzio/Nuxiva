@@ -414,6 +414,27 @@
     "wb_report_full": "Includi la trascrizione",
     "wb_erase": "Cancella tutti i dati",
     "wb_erase_confirm": "Cancellare definitivamente sedute, relazioni e misure di questa persona?",
-    "wb_disclaimer": "Non è una diagnosi né una cura. In caso di disagio persistente rivolgiti a un professionista; in emergenza chiama il 112."
+    "wb_disclaimer": "Non è una diagnosi né una cura. In caso di disagio persistente rivolgiti a un professionista; in emergenza chiama il 112.",
+    "tg_change_title": "Cambia bot o guida alla creazione",
+    "tg_current_bot": "Bot attuale: {{bot}}",
+    "tg_step_1": "Apri BotFather su Telegram e scrivi /newbot (oppure usa un bot che hai già).",
+    "tg_step_2": "Copia il token che BotFather ti invia.",
+    "tg_step_3": "Apri il pannello di controllo, incolla il token nel campo «Token del bot Telegram» e salva.",
+    "tg_step_4": "Apri il nuovo bot in Telegram, premi Avvia e poi genera qui un nuovo codice di abbinamento.",
+    "tg_open_botfather": "Apri BotFather",
+    "tg_change_hint": "Il token del bot si cambia dal pannello di controllo di Telegram, dove trovi anche la guida completa.",
+    "vh_title": "Il dispositivo non si collega? Controlla qui",
+    "vh_checklist": "Lista di controllo per Fitbit e simili:",
+    "vh_reason_server_local_disabled": "Il Bluetooth del server è disattivato (NUXIVA_VITALS_LOCAL_BLE=0).",
+    "vh_reason_server_bleak_missing": "Sul server manca il componente Bluetooth (bleak): aggiorna Nuxiva dal Centro aggiornamenti oppure installalo con pip install bleak.",
+    "vh_reason_server_no_adapter": "Il server non ha un adattatore Bluetooth: collegane uno USB oppure usa un nodo o un satellite con Bluetooth.",
+    "vh_reason_no_nodes": "Nessun nodo o satellite con Bluetooth è online: senza di loro e senza Bluetooth sul server nessuno può leggere il dispositivo.",
+    "vh_reason_server_error": "Errore Bluetooth del server: {{error}}",
+    "vh_step_1": "Nell'app Fitbit apri il dispositivo e attiva «Condividi battito cardiaco» (oppure la trasmissione del battito): il dispositivo deve restare in questa modalità.",
+    "vh_step_2": "Tieni lo schermo del dispositivo acceso e a meno di 5 metri dal server, dal nodo o dal satellite.",
+    "vh_step_3": "Se il dispositivo è già collegato a un telefono, chiudi l'app Fitbit o disattiva il Bluetooth del telefono: molti dispositivi accettano un solo collegamento alla volta.",
+    "vh_step_4": "Premi «Cerca dispositivi vicini», scegli il dispositivo dall'elenco e associalo a questa persona invece di inserire l'indirizzo a mano.",
+    "vh_step_5": "Se continua a non comparire, spegni e riaccendi il Bluetooth del dispositivo e riprova: la lista si aggiorna ogni pochi secondi.",
+    "vh_link": "Aiuto ufficiale Fitbit"
   }
 }

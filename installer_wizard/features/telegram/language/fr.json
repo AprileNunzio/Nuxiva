@@ -9,5 +9,30 @@
   ],
   "settings": {
     "NUXIVA_TELEGRAM_TOKEN": "Jeton du bot Telegram"
+  },
+  "guide": {
+    "title": "Comment créer et connecter votre bot Telegram",
+    "steps": [
+      "Ouvrez Telegram sur votre téléphone et cherchez @BotFather (le bot officiel, avec la coche bleue), ou ouvrez le lien ci-dessous.",
+      "Envoyez /newbot. Choisissez un nom (par exemple « Maison de Nunzio »), puis un nom d'utilisateur se terminant par « bot » (par exemple nunzio_maison_bot).",
+      "BotFather répond avec le jeton : une longue ligne comme 123456789:AAH... Copiez-la sans espaces.",
+      "Collez le jeton dans le champ « Jeton du bot Telegram » ci-dessous et appuyez sur Enregistrer. En quelques secondes le bot apparaît actif.",
+      "Pour changer de bot, collez le jeton du nouveau bot et enregistrez : l'ancien ne répond plus. Chaque personne doit ouvrir le nouveau bot dans Telegram et appuyer sur Démarrer.",
+      "Pour lier une personne : Personnes, onglet Connecteurs, Telegram, « Générer le code de jumelage », puis envoyez ce code au bot."
+    ],
+    "links": [
+      {
+        "label": "Ouvrir BotFather sur Telegram",
+        "url": "https://t.me/BotFather"
+      },
+      {
+        "label": "Guide officiel des bots Telegram",
+        "url": "https://core.telegram.org/bots#how-do-i-create-a-bot"
+      }
+    ],
+    "note": "Le jeton est comme un mot de passe : ne le partagez pas. En cas de fuite, envoyez /revoke à BotFather pour en obtenir un nouveau."
+  },
+  "help": {
+    "NUXIVA_TELEGRAM_TOKEN": "Le jeton fourni par BotFather. Collez-en un nouveau pour changer de bot."
   }
 }

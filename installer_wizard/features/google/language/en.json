@@ -10,5 +10,40 @@
     "NUXIVA_GOOGLE_CLIENT_ID": "OAuth Client ID",
     "NUXIVA_GOOGLE_CLIENT_SECRET": "OAuth Client Secret",
     "NUXIVA_GOOGLE_REMIND_MIN": "Remind me before an appointment (minutes, 0 = never)"
+  },
+  "guide": {
+    "title": "How to get your Google Client ID and Client Secret",
+    "steps": [
+      "Open Google Cloud Console and sign in with your Google account.",
+      "Click the project selector at the top, then “New project”, name it for example “Nuxiva” and create it.",
+      "Open the API Library and enable: Google Calendar API, Gmail API, Google Tasks API, People API (contacts) and Google Drive API.",
+      "Open the OAuth consent screen: choose “External”, enter the app name and your email, then under “Test users” add the Google addresses of everyone who will use Nuxiva.",
+      "Open Credentials, “Create credentials”, “OAuth client ID” and choose “Desktop app” as the application type.",
+      "Copy the Client ID and Client Secret, paste them below and press Save.",
+      "Each person links their own account from People, Connectors tab, Google: pick the services and authorise on Google's page."
+    ],
+    "links": [
+      {
+        "label": "Google Cloud Console",
+        "url": "https://console.cloud.google.com/"
+      },
+      {
+        "label": "API Library",
+        "url": "https://console.cloud.google.com/apis/library"
+      },
+      {
+        "label": "OAuth consent screen",
+        "url": "https://console.cloud.google.com/apis/credentials/consent"
+      },
+      {
+        "label": "Credentials",
+        "url": "https://console.cloud.google.com/apis/credentials"
+      }
+    ],
+    "note": "While the app stays in “Testing” mode authorisation expires every 7 days: publish the app from the consent screen to avoid it. Keep the Client Secret private."
+  },
+  "help": {
+    "NUXIVA_GOOGLE_CLIENT_ID": "Ends with .apps.googleusercontent.com. Find it under Credentials, OAuth client ID.",
+    "NUXIVA_GOOGLE_CLIENT_SECRET": "Private string starting with GOCSPX-, shown next to the Client ID."
   }
 }

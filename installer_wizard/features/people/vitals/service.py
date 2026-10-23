@@ -164,6 +164,18 @@ def capable_nodes(now: float | None = None) -> list[str]:
     return ([NODE_NAME] if local_ble.available() else []) + names
 
 
+def diagnosis(now: float | None = None) -> dict:
+    blockers = local_ble.blockers()
+    nodes = [n["name"] for n in registry.listing() if n.get("online") and "vitals_ble" in (n.get("capabilities") or [])]
+    reasons = [f"server_{b}" for b in blockers]
+    if blockers and not nodes:
+        reasons.append("no_nodes")
+    if local_ble.last_error and not blockers:
+        reasons.append("server_error")
+    return {"ok": not reasons, "reasons": reasons, "error": local_ble.last_error if "server_error" in reasons else "", "nodes": len(nodes),
+            "server": not blockers}
+
+
 def snapshot(slug: str, now: float | None = None) -> dict:
     now = now or time.time()
     return {"values": live.latest(slug, now), "lease": arbiter.view(slug, now),

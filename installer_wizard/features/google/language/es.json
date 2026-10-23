@@ -1,0 +1,44 @@
+{
+  "name": "Google",
+  "description": "Cada persona vincula su propia cuenta de Google: agenda, correo, tareas, contactos, Drive y notas.",
+  "settings": {
+    "NUXIVA_GOOGLE_CLIENT_ID": "ID de cliente de OAuth",
+    "NUXIVA_GOOGLE_CLIENT_SECRET": "Secreto de cliente de OAuth",
+    "NUXIVA_GOOGLE_REMIND_MIN": "Avisarme antes de una cita (minutos, 0 = nunca)"
+  },
+  "guide": {
+    "title": "Cómo obtener tu ID de cliente y secreto de Google",
+    "steps": [
+      "Abre Google Cloud Console e inicia sesión con tu cuenta de Google.",
+      "Arriba pulsa el selector de proyectos, luego «Proyecto nuevo», llámalo por ejemplo «Nuxiva» y créalo.",
+      "Abre la biblioteca de API y activa: Google Calendar API, Gmail API, Google Tasks API, People API (contactos) y Google Drive API.",
+      "Abre la pantalla de consentimiento OAuth: elige «Externo», escribe el nombre de la app y tu correo, y en «Usuarios de prueba» añade las direcciones de Google de quienes usarán Nuxiva.",
+      "Abre Credenciales, «Crear credenciales», «ID de cliente de OAuth» y elige «Aplicación de escritorio».",
+      "Copia el ID de cliente y el secreto, pégalos abajo y pulsa Guardar.",
+      "Cada persona vincula su cuenta desde Personas, pestaña Conectores, Google: elige los servicios y autoriza en la página de Google."
+    ],
+    "links": [
+      {
+        "label": "Google Cloud Console",
+        "url": "https://console.cloud.google.com/"
+      },
+      {
+        "label": "Biblioteca de API",
+        "url": "https://console.cloud.google.com/apis/library"
+      },
+      {
+        "label": "Pantalla de consentimiento OAuth",
+        "url": "https://console.cloud.google.com/apis/credentials/consent"
+      },
+      {
+        "label": "Credenciales",
+        "url": "https://console.cloud.google.com/apis/credentials"
+      }
+    ],
+    "note": "Mientras la app esté en modo «Prueba» la autorización caduca cada 7 días: publica la app desde la pantalla de consentimiento. Mantén privado el secreto."
+  },
+  "help": {
+    "NUXIVA_GOOGLE_CLIENT_ID": "Termina en .apps.googleusercontent.com. En Credenciales, ID de cliente de OAuth.",
+    "NUXIVA_GOOGLE_CLIENT_SECRET": "Cadena privada que empieza por GOCSPX-, junto al ID de cliente."
+  }
+}

@@ -8,5 +8,30 @@
   ],
   "settings": {
     "NUXIVA_TELEGRAM_TOKEN": "Telegram bot token"
+  },
+  "guide": {
+    "title": "How to create and connect your Telegram bot",
+    "steps": [
+      "Open Telegram on your phone and search for @BotFather (the official bot, with the blue tick), or open the link below.",
+      "Send /newbot. Pick a name (for example “Nunzio's Home”) and then a username ending in “bot” (for example nunzio_home_bot).",
+      "BotFather replies with the token: a long line like 123456789:AAH... Copy it without spaces.",
+      "Paste the token in the “Telegram bot token” field below and press Save. Within a few seconds the bot shows as active.",
+      "To change bot, paste the new bot's token and save: the old one stops answering. Each person must open the new bot in Telegram and press Start.",
+      "To link a person: People, Connectors tab, Telegram, “Generate pairing code”, then send that code to the bot."
+    ],
+    "links": [
+      {
+        "label": "Open BotFather on Telegram",
+        "url": "https://t.me/BotFather"
+      },
+      {
+        "label": "Official Telegram bots guide",
+        "url": "https://core.telegram.org/bots#how-do-i-create-a-bot"
+      }
+    ],
+    "note": "The token works like a password: never share it. If it leaks, send /revoke to BotFather to get a new one."
+  },
+  "help": {
+    "NUXIVA_TELEGRAM_TOKEN": "The token BotFather gave you. Paste a new one to switch bot."
   }
 }

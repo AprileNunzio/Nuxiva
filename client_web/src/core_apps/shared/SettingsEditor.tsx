@@ -59,6 +59,7 @@ export const SettingsEditor: React.FC<SettingsEditorProps> = ({ feature, busy, t
               onChange={(event) => change(setting.key, event.target.value)}
             />
           )}
+          {setting.help && <span className="text-[11px] font-normal text-slate-500">{setting.help}</span>}
         </Field>
       ))}
       <div style={{gridColumn:'1 / -1'}}>

@@ -203,6 +203,7 @@ class TelegramBot:
                             asyncio.create_task(self._handle(upd))
                 finally:
                     watcher.cancel()
+                    self.offset = 0
             except (httpx.HTTPError, RuntimeError, ValueError) as exc:
                 self.status = f"errore: {exc}"
                 log.warning("Telegram: %s", exc)
