@@ -12,7 +12,7 @@ from access import require_admin, require_display
 from config import DEMO, STATE_DIR
 from core_client import core
 from features.chat import voice_id
-from features.people import connectors, faces, insight_api, people, views, voice_training
+from features.people import connectors, faces, insight_api, panel, people, views, voice_training
 from features.vision.proxy import vision_proxy
 from features.voices.catalog import VOICES
 from state import store
@@ -288,6 +288,7 @@ async def admin_people_optimize_all(user: str = Depends(require_admin)):
 
 admin_routes.include_router(views.admin_routes)
 admin_routes.include_router(insight_api.admin_routes)
+public_routes.include_router(panel.public_routes)
 
 
 @admin_routes.get("/api/people/{slug}/connectors")
