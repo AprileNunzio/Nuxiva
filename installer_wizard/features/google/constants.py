@@ -20,6 +20,8 @@ SERVICES = {
                  "scopes": ["https://www.googleapis.com/auth/contacts.readonly"]},
     "drive": {"name": "Google Drive", "icon": "📁", "api": "drive.googleapis.com",
               "scopes": ["https://www.googleapis.com/auth/drive.metadata.readonly"]},
+    "health": {"name": "Google Health", "icon": "❤️", "api": "health.googleapis.com",
+               "scopes": ["https://www.googleapis.com/auth/googlehealth.health_metrics_and_measurements.readonly"]},
     "keep": {"name": "Google Keep", "icon": "📝", "api": "keep.googleapis.com", "workspace": True,
              "scopes": ["https://www.googleapis.com/auth/keep"]},
 }

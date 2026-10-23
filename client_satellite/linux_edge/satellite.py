@@ -241,7 +241,117 @@ WantedBy=multi-user.target
     log.info("Servizio nuxiva-node installato e avviato")
 
 
+HR_CHAR = "00002a37-0000-1000-8000-00805f9b34fb"
+TEMP_CHAR = "00002a1c-0000-1000-8000-00805f9b34fb"
+PLX_CHARS = ("00002a5e-0000-1000-8000-00805f9b34fb", "00002a5f-0000-1000-8000-00805f9b34fb")
+VITALS_SCAN = 5.0
+VITALS_PAUSE = 3.0
+
+
+def sfloat(raw: int) -> float | None:
+    if raw in (0x07FF, 0x0800, 0x0801, 0x07FE, 0x0802):
+        return None
+    mantissa, exponent = raw & 0x0FFF, raw >> 12
+    mantissa -= 0x1000 if mantissa >= 0x800 else 0
+    exponent -= 0x10 if exponent >= 0x8 else 0
+    return mantissa * 10 ** exponent
+
+
+def ieee_float(raw: int) -> float | None:
+    if raw in (0x007FFFFF, 0x00800000, 0x00800001, 0x007FFFFE, 0x00800002):
+        return None
+    mantissa, exponent = raw & 0xFFFFFF, raw >> 24
+    mantissa -= 0x1000000 if mantissa >= 0x800000 else 0
+    exponent -= 0x100 if exponent >= 0x80 else 0
+    return mantissa * 10 ** exponent
+
+
+def parse_heart_rate(data: bytes) -> list[tuple[str, float]]:
+    if len(data) < (3 if data and data[0] & 1 else 2):
+        return []
+    return [("heart_rate", int.from_bytes(data[1:3], "little") if data[0] & 1 else data[1])]
+
+
+def parse_temperature(data: bytes) -> list[tuple[str, float]]:
+    if len(data) < 5:
+        return []
+    value = ieee_float(int.from_bytes(data[1:5], "little"))
+    if value is None:
+        return []
+    return [("body_temp", round((value - 32) * 5 / 9 if data[0] & 1 else value, 1))]
+
+
+def parse_oximeter(data: bytes) -> list[tuple[str, float]]:
+    if len(data) < 5:
+        return []
+    spo2, pulse = sfloat(int.from_bytes(data[1:3], "little")), sfloat(int.from_bytes(data[3:5], "little"))
+    rows = [("spo2", round(spo2))] if spo2 is not None else []
+    return rows + ([("heart_rate", round(pulse))] if pulse is not None else [])
+
+
+PARSERS = {HR_CHAR: parse_heart_rate, TEMP_CHAR: parse_temperature, PLX_CHARS[0]: parse_oximeter, PLX_CHARS[1]: parse_oximeter}
+
+
+async def vitals_cycle(cfg: dict, headers: dict, state: dict) -> None:
+    import asyncio
+    from bleak import BleakClient, BleakScanner
+    found = await BleakScanner.discover(timeout=VITALS_SCAN, return_adv=True)
+    watch = set(state["watch"])
+    seen = [{"address": a.upper(), "rssi": adv.rssi} for a, (_, adv) in found.items() if a.upper() in watch][:40]
+    samples, state["samples"] = state["samples"][:200], state["samples"][200:]
+    res = await asyncio.to_thread(post, cfg["server"], "/api/vitals/node", {"seen": seen, "samples": samples}, headers)
+    state["watch"] = [str(a).upper() for a in res.get("watch") or []]
+    wanted = {str(a).upper() for a in res.get("connect") or []}
+    for address in list(state["clients"]):
+        if address not in wanted or not state["clients"][address].is_connected:
+            client = state["clients"].pop(address)
+            try:
+                await client.disconnect()
+            except Exception as exc:
+                log.info("Disconnessione BLE %s: %s", address, exc)
+    for address in wanted - set(state["clients"]):
+        client = BleakClient(address)
+        try:
+            await client.connect(timeout=10.0)
+            for char, parser in PARSERS.items():
+                if client.services.get_characteristic(char):
+                    def notify(_, data, address=address, parser=parser):
+                        now = time.time()
+                        state["samples"].extend({"address": address, "metric": m, "value": v, "ts": now} for m, v in parser(bytes(data)))
+                    await client.start_notify(char, notify)
+            state["clients"][address] = client
+        except Exception as exc:
+            log.info("Connessione BLE a %s non riuscita: %s", address, exc)
+
+
+def vitals_loop(cfg: dict) -> None:
+    import asyncio
+    headers = {"Authorization": f"Bearer {cfg['token']}", "X-Nuxiva-Node": cfg["id"]}
+    state = {"watch": [], "clients": {}, "samples": []}
+
+    async def run() -> None:
+        while True:
+            try:
+                await vitals_cycle(cfg, headers, state)
+            except Exception as exc:
+                log.info("Ciclo parametri vitali: %s", exc)
+            await asyncio.sleep(VITALS_PAUSE)
+    asyncio.run(run())
+
+
+def start_vitals(cfg: dict) -> None:
+    try:
+        import bleak
+    except ImportError:
+        return
+    del bleak
+    import threading
+    threading.Thread(target=vitals_loop, args=(cfg,), daemon=True, name="vitals").start()
+    log.info("Lettura dei parametri vitali via Bluetooth attiva")
+
+
 def loop(cfg: dict) -> None:
+    start_vitals(cfg)
     headers = {"Authorization": f"Bearer {cfg['token']}", "X-Nuxiva-Node": cfg["id"]}
     wait, failures = 30, 0
     while True:

@@ -5,6 +5,8 @@ from fastapi import APIRouter, HTTPException, Request
 
 from access import require_display
 from features.people import learning, mood, people
+from features.people.vitals import cloud, service
+from tasks import background
 from state import store
 
 public_routes = APIRouter()
@@ -78,7 +80,8 @@ def focus_block(slug: str, now: float) -> dict | None:
         entry = {"id": latest["id"], "mood": latest["mood"], "intensity": latest["intensity"], "evidence": latest.get("evidence", ""),
                  "source": latest["source"], "feedback": latest.get("feedback", ""), "at": latest["at"]}
     return {"slug": slug, "name": people.display_name(profile), "initials": initials(people.display_name(profile)),
-            "mood": entry, "series": series(slug, now), "learned": learned_today(slug, now), "learning": learning.enabled()}
+            "mood": entry, "series": series(slug, now), "learned": learned_today(slug, now), "learning": learning.enabled(),
+            "vitals": service.snapshot(slug, now)["values"]}
 
 
 @public_routes.get("/api/display/people-panel")
@@ -87,6 +90,8 @@ async def people_panel(request: Request, focus: str = ""):
     now = time.time()
     visible = visible_people()
     slug = focus_of(focus[:64], visible)
+    if slug and cloud.ready(slug):
+        background(cloud.poll(slug, now))
     return {"roster": roster(now, {p["slug"] for p in visible if p.get("known") and p.get("slug")}),
             "focus": focus_block(slug, now), "at": now}
 

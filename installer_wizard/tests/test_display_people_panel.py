@@ -15,7 +15,7 @@ class PanelTest(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         root = Path(self.tmp.name)
         for p in (mock.patch.object(people, "PEOPLE_DIR", root), mock.patch.object(private_store, "KEY_FILE", root / "people.key"),
-                  mock.patch.object(learning.store, "event"), mock.patch.object(panel.store, "event")):
+                  mock.patch.object(learning.store, "event"), mock.patch.object(panel.store, "event"), mock.patch.object(panel.cloud, "ready", return_value=False)):
             p.start()
             self.addCleanup(p.stop)
         people.ensure("anna", "Anna Rossi")
