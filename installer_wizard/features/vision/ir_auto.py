@@ -63,6 +63,7 @@ async def lit() -> bool:
     deadline = time.time() + VERIFY_SECONDS
     while time.time() < deadline:
         await asyncio.sleep(3)
+        cams.IR_STATUS_FILE.with_name("ir_wake").touch()
         if cams.read_json(cams.IR_STATUS_FILE).get("state") == "ok":
             return True
     return False

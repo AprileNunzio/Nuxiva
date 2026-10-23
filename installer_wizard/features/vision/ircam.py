@@ -14,6 +14,8 @@ DARK_MEAN = 6.0
 FPS = 10
 STATUS_EVERY = 5.0
 STALE_AFTER = 3.0
+HOLD_SECONDS = 8.0
+WAKE_FILE = STATUS_FILE.with_name("ir_wake")
 FOURCC = {"GREY": "GREY", "Y8": "Y800", "Y16": "Y16 ", "Y10": "Y10 ", "Y12": "Y12 "}
 
 
@@ -37,7 +39,13 @@ def enhance(gray: np.ndarray) -> np.ndarray:
     return cv2.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8)).apply(gray)
 
 
-def status_of(mean: float | None, frames: int, running: bool) -> str:
+def gate_enabled() -> bool:
+    return os.environ.get("NUXIVA_IR_GATE", "on").strip().lower() != "off"
+
+
+def status_of(mean: float | None, frames: int, running: bool, asleep: bool = False) -> str:
+    if asleep:
+        return "idle"
     if not running or not frames:
         return "no_frames"
     if mean is not None and mean < DARK_MEAN:
@@ -58,6 +66,7 @@ class IrCamera:
         self.running = False
         self.written = 0.0
         self.last_state = ""
+        self.awake_until = 0.0
         threading.Thread(target=self._loop, daemon=True).start()
 
     def retarget(self, path: str | None, mode: dict | None) -> None:
@@ -66,6 +75,18 @@ class IrCamera:
                 self.gray, self.mean, self.frames = None, None, 0
             self.path, self.mode = path, mode
 
+    def wake(self, hold: float = HOLD_SECONDS) -> None:
+        with self.lock:
+            self.awake_until = max(self.awake_until, time.time() + hold)
+
+    def asleep(self) -> bool:
+        if not gate_enabled() or time.time() < self.awake_until:
+            return False
+        try:
+            return time.time() - WAKE_FILE.stat().st_mtime > HOLD_SECONDS
+        except OSError:
+            return True
+
     def latest(self) -> np.ndarray | None:
         with self.lock:
             if self.gray is None or time.time() - self.stamp > STALE_AFTER:
@@ -73,8 +94,9 @@ class IrCamera:
             return self.gray
 
     def view(self) -> dict:
+        asleep = self.asleep()
         with self.lock:
-            return {"path": self.path, "state": status_of(self.mean, self.frames, self.running) if self.path else "absent",
+            return {"path": self.path, "state": status_of(self.mean, self.frames, self.running, asleep) if self.path else "absent",
                     "mean": None if self.mean is None else round(self.mean, 1), "at": time.time()}
 
     def _open(self, path: str, mode: dict | None):
@@ -108,10 +130,10 @@ class IrCamera:
         while True:
             with self.lock:
                 path, mode = self.path, self.mode
-            if not path:
+            if not path or self.asleep():
                 self.running = False
                 self._publish()
-                time.sleep(2)
+                time.sleep(0.25 if path else 2)
                 continue
             cap = self._open(path, mode)
             if not cap.isOpened():
@@ -126,6 +148,8 @@ class IrCamera:
                 with self.lock:
                     if self.path != path:
                         break
+                if self.asleep():
+                    break
                 ok, frame = cap.read()
                 gray = to_gray8(frame) if ok else None
                 if gray is None:

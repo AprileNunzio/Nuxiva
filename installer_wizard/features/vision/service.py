@@ -146,6 +146,8 @@ class Vision:
         faces = faces if faces is not None else []
         if scale < 1.0:
             faces = [np.concatenate([f[:14] / scale, f[14:]]) for f in faces]
+        if len(faces):
+            self.ir.wake()
         self.fusion.refresh(self.ir.latest() if selection.ir_enabled() else None)
         now = time.time()
         minimum = selection.liveness_minimum()
