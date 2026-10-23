@@ -5,7 +5,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 
 from access import NO_CACHE, require_admin
-from features.musicstudio import agent, catalog, imports, lyrics as lyr, schema as S, service, store, voicebank
+from features.musicstudio import agent, broadcast, catalog, imports, lyrics as lyr, schema as S, service, store, voicebank
 
 admin_routes = APIRouter(prefix="/api/musicstudio", tags=["Studio musicale"])
 MAX_EXPORT = 160 * 1024 * 1024
@@ -70,6 +70,13 @@ class ChatIn(BaseModel):
 
     message: str = Field(min_length=1, max_length=500)
     history: list[ChatTurn] = Field(default_factory=list, max_length=12)
+
+
+class CastIn(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    devices: list[str] = Field(default_factory=list, max_length=24)
+    everyone: bool = False
 
 
 class WriteIn(BaseModel):
@@ -220,6 +227,39 @@ async def chat(pid: str, body: ChatIn, _: str = Depends(require_admin)):
     except (ValueError, RuntimeError, KeyError):
         raise HTTPException(503, "brain_unavailable")
     return JSONResponse({**result, "project": {**result["project"], "job": service.status(pid)}}, headers=NO_CACHE)
+
+
+@admin_routes.get("/cast/devices")
+async def cast_devices(refresh: bool = False, _: str = Depends(require_admin)):
+    return JSONResponse({"devices": await broadcast.listing(refresh)}, headers=NO_CACHE)
+
+
+@admin_routes.post("/projects/{pid}/cast")
+async def cast_project(pid: str, body: CastIn, request: Request, user: str = Depends(require_admin)):
+    from features.music.api_play import base_of
+    _project(pid)
+    try:
+        rows = await broadcast.cast(pid, body.devices, body.everyone, user, base_of(request))
+    except LookupError:
+        raise HTTPException(409, "not_rendered")
+    except KeyError:
+        raise HTTPException(404, "device_unknown")
+    except ValueError:
+        raise HTTPException(400, "no_devices")
+    except RuntimeError:
+        raise HTTPException(502, "device_error")
+    return JSONResponse({"results": rows}, headers=NO_CACHE)
+
+
+@admin_routes.post("/cast/stop")
+async def cast_stop(body: CastIn, request: Request, _: str = Depends(require_admin)):
+    from features.music.api_play import base_of
+    try:
+        return {"stopped": await broadcast.stop(body.devices, body.everyone, base_of(request))}
+    except KeyError:
+        raise HTTPException(404, "device_unknown")
+    except ValueError:
+        raise HTTPException(400, "no_devices")
 
 
 @admin_routes.post("/lyrics")

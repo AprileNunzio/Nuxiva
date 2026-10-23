@@ -1,7 +1,37 @@
 import random
 
 SCALES = {"major": (0, 2, 4, 5, 7, 9, 11), "minor": (0, 2, 3, 5, 7, 8, 10), "dorian": (0, 2, 3, 5, 7, 9, 10), "mixolydian": (0, 2, 4, 5, 7, 9, 10),
-          "pentatonic": (0, 3, 5, 7, 10), "blues": (0, 3, 5, 6, 7, 10)}
+          "pentatonic": (0, 3, 5, 7, 10), "blues": (0, 3, 5, 6, 7, 10),
+          "phrygian": (0, 1, 3, 5, 7, 8, 10), "lydian": (0, 2, 4, 6, 7, 9, 11), "harmonic_minor": (0, 2, 3, 5, 7, 8, 11), "hijaz": (0, 1, 4, 5, 7, 8, 10),
+          "hirajoshi": (0, 2, 3, 7, 8), "insen": (0, 1, 5, 7, 10), "major_pentatonic": (0, 2, 4, 7, 9), "bhairav": (0, 1, 4, 5, 7, 8, 11)}
+BASE_MODE = {"pentatonic": "major", "blues": "mixolydian", "major_pentatonic": "major", "hirajoshi": "minor", "insen": "phrygian"}
+NAMED = {
+    "blues12": tuple((s, "dom7") for s in (0, 0, 0, 0, 5, 5, 0, 0, 7, 5, 0, 7)),
+    "jazz251": ((2, "min7"), (7, "dom7"), (0, "maj7"), (0, "maj7")),
+    "jazz_turn": ((0, "maj7"), (9, "min7"), (2, "min7"), (7, "dom7")),
+    "bossa": ((0, "maj7"), (2, "min7"), (7, "dom7"), (0, "maj7")),
+    "andalusian": ((0, "min"), (10, "maj"), (8, "maj"), (7, "maj")),
+    "doowop": ((0, "maj"), (9, "min"), (5, "maj"), (7, "maj")),
+    "reggae": ((0, "maj"), (5, "maj"), (0, "maj"), (5, "maj")),
+    "salsa": ((0, "min"), (5, "min"), (7, "dom7"), (0, "min")),
+    "tango": ((0, "min"), (5, "min"), (7, "dom7"), (0, "min")),
+    "gospel": ((0, "maj"), (5, "maj"), (0, "maj"), (7, "dom7")),
+    "canon": ((0, "maj"), (7, "maj"), (9, "min"), (4, "min"), (5, "maj"), (0, "maj"), (5, "maj"), (7, "maj")),
+    "trance": ((0, "min"), (8, "maj"), (3, "maj"), (10, "maj")),
+    "epic": ((0, "min"), (8, "maj"), (10, "maj"), (7, "maj")),
+    "rock_power": ((0, "maj"), (10, "maj"), (5, "maj"), (0, "maj")),
+    "punk": ((0, "maj"), (5, "maj"), (7, "maj"), (5, "maj")),
+    "metal": ((0, "min"), (1, "maj"), (0, "min"), (3, "maj")),
+    "hijaz": ((0, "maj"), (1, "maj"), (0, "maj"), (0, "maj")),
+    "waltz": ((0, "maj"), (7, "maj"), (0, "maj"), (5, "maj")),
+    "polka": ((0, "maj"), (0, "maj"), (7, "dom7"), (0, "maj")),
+    "klezmer": ((0, "min"), (7, "maj"), (0, "min"), (5, "min")),
+    "country": ((0, "maj"), (5, "maj"), (0, "maj"), (7, "dom7")),
+    "funk_vamp": ((0, "dom7"), (0, "dom7"), (5, "dom7"), (0, "dom7")),
+    "minor_vamp": ((0, "min7"), (0, "min7"), (8, "maj7"), (7, "dom7")),
+    "tarantella": ((0, "min"), (7, "dom7"), (0, "min"), (7, "dom7")),
+    "drone": ((0, "sus4"),),
+}
 INTERVALS = {"maj": (0, 4, 7), "min": (0, 3, 7), "dim": (0, 3, 6), "dom7": (0, 4, 7, 10), "min7": (0, 3, 7, 10), "maj7": (0, 4, 7, 11), "sus4": (0, 5, 7)}
 PROGRESSIONS = {
     "major": ((0, 4, 5, 3), (0, 5, 3, 4), (0, 3, 4, 3), (0, 2, 3, 4), (3, 4, 2, 5), (0, 4, 3, 4)),
@@ -13,7 +43,7 @@ PROGRESSIONS = {
 
 
 def degrees(mode: str) -> tuple[int, ...]:
-    return SCALES["major" if mode == "pentatonic" else "mixolydian" if mode == "blues" else mode]
+    return SCALES[BASE_MODE.get(mode, mode)]
 
 
 def triad(root: int, mode: str, degree: int, seventh: bool = False) -> tuple[int, str]:
@@ -29,7 +59,7 @@ def triad(root: int, mode: str, degree: int, seventh: bool = False) -> tuple[int
 
 
 def harmony(root: int, mode: str, bars: int, rng: random.Random, seventh: bool, per_chord: int = 1) -> list[dict]:
-    pool = PROGRESSIONS[mode]
+    pool = PROGRESSIONS.get(mode) or PROGRESSIONS["minor" if degrees(mode)[2] == 3 else "major"]
     cycle = rng.choice(pool)
     out = []
     bar = 0
@@ -42,12 +72,10 @@ def harmony(root: int, mode: str, bars: int, rng: random.Random, seventh: bool, 
     return out
 
 
-BLUES_BARS = ((0, 0, 0, 0), (5, 5, 0, 0), (7, 5, 0, 7))
-
-
-def blues(root: int, bars: int) -> list[dict]:
-    steps = [degree for row in BLUES_BARS for degree in row]
-    return [{"bar": bar, "root": (root + steps[bar % 12]) % 12, "quality": "dom7"} for bar in range(bars)]
+def named(root: int, bars: int, name: str, per_chord: int = 1) -> list[dict]:
+    cycle = NAMED[name]
+    return [{"bar": bar, "root": (root + cycle[(bar // per_chord) % len(cycle)][0]) % 12, "quality": cycle[(bar // per_chord) % len(cycle)][1]}
+            for bar in range(0, bars, per_chord)]
 
 
 def chord_at(chords: list[dict], bar: int) -> dict:

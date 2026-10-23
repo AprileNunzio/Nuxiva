@@ -1,32 +1,13 @@
-from dataclasses import dataclass, field
+from features.musicstudio.instruments_world import MORE
+from features.musicstudio.model import Effect, Instrument, Knob, kit, osc, synth
 
 ROLES = ("drums", "bass", "chords", "pad", "lead", "arp", "vocal", "fx")
-MODES = ("major", "minor", "dorian", "mixolydian", "pentatonic", "blues")
+MODES = ("major", "minor", "dorian", "mixolydian", "pentatonic", "blues", "phrygian", "lydian", "harmonic_minor", "hijaz", "hirajoshi", "insen", "major_pentatonic", "bhairav")
 NOTE_NAMES = ("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
-LANES = {"kick": 36, "rim": 37, "snare": 38, "clap": 39, "hat": 42, "tom": 45, "open_hat": 46, "crash": 49, "ride": 51, "perc": 56}
-GENRES = ("pop", "rock", "house", "techno", "hiphop", "trap", "lofi", "reggaeton", "disco", "ballad", "dnb", "ambient", "funk", "latin", "blues")
+LANES = {"kick": 36, "rim": 37, "snare": 38, "clap": 39, "hat": 42, "tom": 45, "open_hat": 46, "crash": 49, "ride": 51, "perc": 56, "cowbell": 57, "shaker": 70, "conga": 63, "bongo": 60, "clave": 75, "tamb": 54}
+from features.musicstudio import genres
 
-
-@dataclass(frozen=True)
-class Instrument:
-    id: str
-    name: str
-    role: str
-    color: str
-    voice: dict = field(default_factory=dict)
-    tags: tuple[str, ...] = ()
-
-
-def osc(kind: str, gain: float = 1.0, detune: float = 0.0, octave: int = 0) -> dict:
-    return {"type": kind, "gain": gain, "detune": detune, "octave": octave}
-
-
-def synth(oscs: list[dict], a: float, d: float, s: float, r: float, cutoff: float = 12000, q: float = 0.7, env: float = 0.0, mono: bool = False, glide: float = 0.0) -> dict:
-    return {"engine": "synth", "oscs": oscs, "env": {"a": a, "d": d, "s": s, "r": r}, "filter": {"type": "lowpass", "cutoff": cutoff, "q": q, "env": env}, "mono": mono, "glide": glide}
-
-
-def kit(kick: float, snare: float, hat: float, punch: float, snap: float, tone: float, grit: float) -> dict:
-    return {"engine": "drums", "kick": kick, "snare": snare, "hat": hat, "punch": punch, "snap": snap, "tone": tone, "grit": grit}
+GENRES = genres.IDS
 
 
 INSTRUMENTS: tuple[Instrument, ...] = (
@@ -54,24 +35,9 @@ INSTRUMENTS: tuple[Instrument, ...] = (
     Instrument("voice_tts", "Voce", "vocal", "#22c55e", {"engine": "voice"}, ("voce", "vocal", "cantato", "rap", "parlato")),
 )
 
+INSTRUMENTS = INSTRUMENTS + MORE
 BY_ID = {i.id: i for i in INSTRUMENTS}
 DEFAULT_INSTRUMENT = {"drums": "kit_acoustic", "bass": "bass_pluck", "chords": "keys_electric", "pad": "pad_warm", "lead": "lead_saw", "arp": "arp_pluck", "vocal": "voice_tts", "fx": "fx_sweep"}
-
-
-@dataclass(frozen=True)
-class Knob:
-    low: float
-    high: float
-    default: float
-    unit: str = ""
-
-
-@dataclass(frozen=True)
-class Effect:
-    id: str
-    name: str
-    knobs: dict[str, Knob]
-    tags: tuple[str, ...] = ()
 
 
 EFFECTS: tuple[Effect, ...] = (
@@ -82,6 +48,11 @@ EFFECTS: tuple[Effect, ...] = (
     Effect("chorus", "Chorus", {"rate": Knob(0.1, 8, 0.8, "Hz"), "depth": Knob(0, 1, 0.5), "mix": Knob(0, 1, 0.4)}, ("chorus", "ensemble", "larghezza")),
     Effect("distortion", "Distorsione", {"drive": Knob(0, 1, 0.4), "tone": Knob(0, 1, 0.6), "mix": Knob(0, 1, 0.5)}, ("distorsione", "saturazione", "overdrive", "grinta")),
     Effect("compressor", "Compressore", {"threshold": Knob(-60, 0, -18, "dB"), "ratio": Knob(1, 20, 4), "attack": Knob(0.001, 0.2, 0.01, "s"), "release": Knob(0.02, 1, 0.2, "s")}, ("compressore", "dinamica", "volume")),
+    Effect("tremolo", "Tremolo", {"rate": Knob(0.5, 14, 5, "Hz"), "depth": Knob(0, 1, 0.5)}, ("tremolo", "vibrato", "pulsazione")),
+    Effect("flanger", "Flanger", {"rate": Knob(0.05, 5, 0.3, "Hz"), "depth": Knob(0, 1, 0.6), "feedback": Knob(0, 0.9, 0.4), "mix": Knob(0, 1, 0.5)}, ("flanger", "jet", "movimento")),
+    Effect("bitcrusher", "Bitcrusher", {"bits": Knob(2, 16, 8), "rate": Knob(0.05, 1, 0.5), "mix": Knob(0, 1, 0.6)}, ("bitcrusher", "lofi", "digitale", "8bit")),
+    Effect("autopan", "Auto-pan", {"rate": Knob(0.1, 10, 1, "Hz"), "depth": Knob(0, 1, 0.7)}, ("pan", "stereo", "movimento")),
+    Effect("limiter", "Limiter", {"ceiling": Knob(-12, 0, -1, "dB"), "release": Knob(0.01, 0.5, 0.1, "s")}, ("limiter", "volume", "master")),
     Effect("phaser", "Phaser", {"rate": Knob(0.05, 6, 0.5, "Hz"), "depth": Knob(0, 1, 0.6), "mix": Knob(0, 1, 0.5)}, ("phaser", "sweep", "movimento")),
 )
 EFFECT_BY_ID = {e.id: e for e in EFFECTS}

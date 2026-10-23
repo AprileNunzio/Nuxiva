@@ -205,7 +205,7 @@ async def describe(ip: str, headers: dict) -> dict | None:
     uuid = (headers.get("usn", "").split("::")[0] or location).replace("uuid:", "")
     clean_id = re.sub(r'[^A-Za-z0-9-]', '', uuid)[:48]
     dev_kind = services.pop("kind", "dlna")
-    return {"id": f"dlna:{clean_id}", "kind": dev_kind, "host": ip, **services}
+    return {"id": f"dlna:{clean_id}", "kind": dev_kind, "host": ip, "uuid": re.sub(r"[^A-Za-z0-9_-]", "", uuid)[:60], **services}
 
 
 async def discover() -> list[dict]:

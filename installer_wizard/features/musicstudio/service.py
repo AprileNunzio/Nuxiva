@@ -7,7 +7,8 @@ import time
 from features.brain.llm import BrainUnavailable
 from tasks import background
 
-from features.musicstudio import composer, generator, lyrics as lyr, schema as S, store
+from features.voices import languages
+from features.musicstudio import composer, songtext, generator, lyrics as lyr, schema as S, store
 
 log = logging.getLogger("nuxiva.musicstudio")
 FAILURES = (BrainUnavailable, ValueError, KeyError, TypeError, AttributeError, asyncio.TimeoutError)
@@ -41,8 +42,6 @@ async def _enrich(pid: str, prompt: str) -> None:
     try:
         try:
             spec = await composer.plan(prompt)
-            if spec.get("reference"):
-                _set(pid, notice="original_lyrics")
             project = generator.arrange({**spec, "seed": random.SystemRandom().randrange(1 << 30)})
             project = S.clean_project({**project, "id": pid, "created": store.load(pid)["created"]}, pid)
         except FAILURES as exc:
@@ -52,6 +51,25 @@ async def _enrich(pid: str, prompt: str) -> None:
         store.save(project)
         _set(pid, stage="lyrics")
         text = spec.get("lyrics") or ""
+        borrowed = None
+        if spec.get("vocals") and spec.get("reference"):
+            borrowed = await _library_song(prompt)
+            if borrowed:
+                text = ""
+                _set(pid, notice="lyrics_from_library")
+            else:
+                _set(pid, notice="original_lyrics")
+        if borrowed:
+            project["lyrics"] = S.clean_lyrics({"lang": languages.detect(borrowed["text"], "it"), "text": borrowed["text"]})
+            project["revision"] += 1
+            store.save(project)
+            _set(pid, stage="translate")
+            try:
+                await translate(pid, spec.get("lang", "it"), True)
+            except (S.SpecError, *FAILURES):
+                _set(pid, notice="translation_failed")
+            _set(pid, state="done", stage="")
+            return
         if spec.get("vocals") and not text:
             try:
                 text = await lyr.write(prompt, project["genre"], spec.get("lang", "it"), spec.get("mood", ""))
@@ -69,6 +87,13 @@ async def _enrich(pid: str, prompt: str) -> None:
         _set(pid, state="error", stage="", error="missing")
     except OSError:
         _set(pid, state="error", stage="", error="storage")
+
+
+async def _library_song(prompt: str) -> dict | None:
+    try:
+        return await songtext.find(prompt)
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
 
 
 async def voice_assets(pid: str) -> int:

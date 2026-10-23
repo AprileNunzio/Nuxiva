@@ -1,5 +1,6 @@
 import asyncio
 import tempfile
+import types
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -8,7 +9,7 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from features.brain.llm import BrainUnavailable
-from features.musicstudio import api, catalog, commands, composer, exporter, generator, agent, edits, imports, library, schema, service, store, theory, voicebank
+from features.musicstudio import api, catalog, commands, composer, exporter, expert, generator, agent, broadcast, edits, genres, imports, library, songtext, schema, service, store, theory, voicebank
 from features.shares import archive
 
 
@@ -48,7 +49,7 @@ class GeneratorTest(unittest.TestCase):
             with self.subTest(genre=genre):
                 project = generator.arrange({"genre": genre, "bars": 32, "seed": 5})
                 self.assertEqual(project["genre"], genre)
-                self.assertGreaterEqual(len(project["tracks"]), 5)
+                self.assertGreaterEqual(len(project["tracks"]), 3)
                 self.assertEqual(sum(s["bars"] for s in project["structure"]), 32)
                 for track in project["tracks"]:
                     self.assertTrue(track["clips"])
@@ -68,6 +69,30 @@ class GeneratorTest(unittest.TestCase):
             generator.add_layer(project, "vocal")
         vocal = generator.vocal_track(project, "ciao uno\n\nciao due", "it")
         self.assertEqual(len(vocal["clips"]), 2)
+
+
+class GenreDataTest(unittest.TestCase):
+    def test_registry_is_consistent(self):
+        self.assertGreaterEqual(len(genres.ALL), 100)
+        self.assertEqual(len(genres.IDS), len(set(genres.IDS)))
+        for item in genres.ALL:
+            with self.subTest(genre=item.id):
+                size = item.beats * 4
+                for lane, pattern in item.drums.items():
+                    self.assertIn(lane, catalog.LANES)
+                    self.assertEqual(size % len(pattern), 0)
+                self.assertEqual(size % len(item.bass), 0)
+                self.assertEqual(size % len(item.comp), 0)
+                for ref in (item.kit, item.bass_i, item.chords_i, item.lead_i, item.pad_i, item.arp_i):
+                    self.assertIn(ref, catalog.BY_ID)
+                self.assertIn(item.mode, catalog.MODES)
+                self.assertTrue(not item.prog or item.prog in theory.NAMED)
+                self.assertTrue(item.tags and item.feel)
+
+    def test_search_and_families(self):
+        self.assertEqual(genres.search("una tarantella veloce")[0].id, "tarantella")
+        self.assertEqual(genres.search("canzone napoletana")[0].id, "napoletana")
+        self.assertIn("blues", genres.families()["blues"])
 
 
 class ComposerTest(unittest.TestCase):
@@ -330,9 +355,71 @@ class EditsTest(unittest.TestCase):
 
     def test_regenerate_and_remove(self):
         count = len(self.project["tracks"])
-        edits.apply(self.project, [{"op": "regenerate", "track": "lead", "instrument": "lead_harmonica"}, {"op": "remove_track", "track": "arp"}])
+        edits.apply(self.project, [{"op": "regenerate", "track": "lead", "instrument": "lead_harmonica"}, {"op": "remove_track", "track": "pad"}])
         self.assertEqual(edits.find(self.project, "lead")["instrument"], "lead_harmonica")
         self.assertEqual(len(self.project["tracks"]), count - 1)
+
+
+class SongTextTest(Sandbox):
+    def test_reference_extraction(self):
+        self.assertEqual(songtext.reference("crea una canzone blues di Napule è in versione inglese"), "Napule è")
+        self.assertEqual(songtext.reference("una base rock di Vasco con la batteria"), "Vasco")
+        self.assertEqual(songtext.reference("una canzone triste"), "")
+
+    def test_match_requires_all_words(self):
+        rows = {"tracks": [{"id": 1, "title": "Altro", "artist": "X", "album": ""}, {"id": 2, "title": "Napule è", "artist": "Y", "album": "Z"}]}
+        with mock.patch.object(songtext.library, "search", return_value=rows):
+            self.assertEqual(songtext.match("Napule è")["id"], 2)
+            self.assertIsNone(songtext.match("Roma capoccia"))
+
+    def run_enrich(self, found, spec):
+        with mock.patch.object(service, "background", lambda coro: coro.close()):
+            project = service.create("crea una canzone blues di Brano in versione inglese")
+        translated = mock.AsyncMock(return_value="one two\n\nthree four")
+        with mock.patch.object(service.composer, "plan", mock.AsyncMock(return_value=spec)), \
+                mock.patch.object(service.songtext, "find", mock.AsyncMock(return_value=found)), \
+                mock.patch.object(service.lyr, "translate", translated), \
+                mock.patch("features.voices.synthesis.synthesize", mock.AsyncMock(return_value=b"RIFF" + b"\x00" * 40)):
+            asyncio.run(service._enrich(project["id"], "crea una canzone blues di Brano in versione inglese"))
+        return project["id"]
+
+    def test_enrich_translates_library_lyrics(self):
+        found = {"id": 5, "title": "Brano", "artist": "Artista", "text": "uno due\n\ntre quattro"}
+        pid = self.run_enrich(found, {"genre": "blues", "lang": "en", "vocals": True, "reference": True, "mood": "", "title": "Blues", "bars": 16})
+        saved = store.load(pid)
+        self.assertEqual(service.status(pid)["notice"], "lyrics_from_library")
+        self.assertEqual(saved["lyrics"]["translations"]["en"], "one two\n\nthree four")
+        self.assertTrue(any(t["role"] == "vocal" for t in saved["tracks"]))
+
+    def test_enrich_falls_back_to_original_lyrics(self):
+        pid = self.run_enrich(None, {"genre": "blues", "lang": "en", "vocals": True, "reference": True, "mood": "", "title": "Blues", "bars": 16, "lyrics": "own words\n\nmore words"})
+        self.assertEqual(service.status(pid)["notice"], "original_lyrics")
+        self.assertEqual(store.load(pid)["lyrics"]["text"], "own words\n\nmore words")
+
+
+class ExpertTest(unittest.TestCase):
+    def test_restyle_keeps_vocals_when_meter_matches(self):
+        project = generator.arrange({"genre": "pop", "seed": 2})
+        project["tracks"].append(generator.vocal_track(project, "uno\n\ndue", "it"))
+        done = edits.apply(project, [{"op": "restyle", "genre": "house"}])
+        self.assertEqual(done, [{"op": "restyle", "target": "house"}])
+        self.assertEqual((project["genre"], project["beats"]), ("house", 4))
+        self.assertTrue(any(t["role"] == "vocal" for t in project["tracks"]))
+        edits.apply(project, [{"op": "restyle", "genre": "waltz"}])
+        self.assertEqual(project["beats"], 3)
+        self.assertFalse(any(t["role"] == "vocal" for t in project["tracks"]))
+        self.assertEqual(edits.apply(project, [{"op": "restyle", "genre": "nope"}]), [])
+
+    def test_brief_and_blend(self):
+        self.assertIn("napoletana", expert.brief("serenata napoletana con mandolino"))
+        self.assertEqual(expert.blend("blues", "flamenco")["lead"], "lead_oud")
+        self.assertEqual(expert.blend("blues", "blues"), {})
+
+    def test_plan_fusion(self):
+        data = {"title": "Fusione", "genre": "blues", "second_genre": "flamenco", "tempo": 90, "roles": ["drums", "bass", "lead"]}
+        with mock.patch.object(composer, "generate", mock.AsyncMock(return_value=data)):
+            spec = asyncio.run(composer.plan("blues flamenco"))
+        self.assertEqual(spec["instruments"]["lead"], "lead_oud")
 
 
 class AgentTest(Sandbox):
@@ -356,6 +443,59 @@ class AgentTest(Sandbox):
         with mock.patch.object(agent, "generate", mock.AsyncMock(side_effect=BrainUnavailable("off"))):
             code = TestClient(app).post(f"/api/musicstudio/projects/{project['id']}/chat", json={"message": "ciao"}).status_code
         self.assertEqual(code, 503)
+
+
+class BroadcastTest(Sandbox):
+    def setUp(self):
+        super().setUp()
+        self.project = generator.arrange({"genre": "pop", "seed": 6})
+        store.save(self.project)
+        self.devices = {"cast:a": {"id": "cast:a", "kind": "cast", "name": "Salotto"}, "dlna:b": {"id": "dlna:b", "kind": "dlna", "name": "Cucina"},
+                        "dlna:s1": {"id": "dlna:s1", "kind": "sonos", "name": "Sonos 1", "uuid": "RINCON_AAAAAA01400"},
+                        "dlna:s2": {"id": "dlna:s2", "kind": "sonos", "name": "Sonos 2", "uuid": "RINCON_BBBBBB01400"}}
+
+    def run_cast(self, requested, everyone=False):
+        calls = []
+
+        async def start(device_id, user, ids, index, start, base, repeat="off"):
+            calls.append(("start", device_id))
+            return {"state": "playing"}
+
+        async def call(device, kind, action, arguments=None):
+            calls.append((action, device["id"], (arguments or {}).get("CurrentURI")))
+            return {}
+
+        fake = types.SimpleNamespace(devices=self.devices, start=start, device=lambda d: self.devices[d])
+
+        store.set_published(self.project["id"], "x.wav")
+        with mock.patch.object(broadcast, "outputs", fake), mock.patch.object(broadcast.dlna, "call", call), mock.patch.object(broadcast.library, "ensure_indexed", return_value=7):
+            rows = asyncio.run(broadcast.cast(self.project["id"], requested, everyone, "admin", "http://x"))
+        return rows, calls
+
+    def test_sonos_are_grouped_natively(self):
+        rows, calls = self.run_cast(["dlna:s1", "dlna:s2"])
+        self.assertEqual([r["role"] for r in rows], ["leader", "follower"])
+        self.assertIn(("SetAVTransportURI", "dlna:s2", "x-rincon:RINCON_AAAAAA01400"), calls)
+
+    def test_everyone_mixes_kinds(self):
+        rows, calls = self.run_cast([], True)
+        self.assertEqual(sorted(r["device"] for r in rows if r["role"] == "sync"), ["cast:a", "dlna:b"])
+        self.assertEqual(len(rows), 4)
+
+    def test_requires_render_and_devices(self):
+        with mock.patch.object(broadcast.library, "ensure_indexed", return_value=None):
+            with self.assertRaises(LookupError):
+                asyncio.run(broadcast.cast(self.project["id"], ["cast:a"], False, "admin", "http://x"))
+        with self.assertRaises(ValueError):
+            with mock.patch.object(broadcast, "outputs", mock.Mock(devices={})), mock.patch.object(broadcast.library, "ensure_indexed", return_value=3):
+                asyncio.run(broadcast.cast(self.project["id"], [], False, "admin", "http://x"))
+
+    def test_latency_learning(self):
+        device = {"id": "cast:a", "kind": "cast"}
+        broadcast.latency.clear()
+        broadcast.learn(device, 2.0)
+        broadcast.learn(device, 1.0)
+        self.assertAlmostEqual(broadcast.estimate(device), 1.6, places=2)
 
 
 if __name__ == "__main__":

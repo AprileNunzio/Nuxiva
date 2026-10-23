@@ -176,5 +176,18 @@
       ]
     }
   ],
-  "icon3d": "./icon.png"
+  "icon3d": "./icon.png",
+  "routing": {
+    "nouns": [
+      "meteo",
+      "previsioni",
+      "temperatura",
+      "pioggia"
+    ],
+    "phrases": [
+      "\\bche\\s+tempo\\s+(?:fa|farà|c'è)\\b",
+      "\\b(?:meteo|previsioni)\\b",
+      "\\b(?:pioverà|piove|nevica)\\b"
+    ]
+  }
 }

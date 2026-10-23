@@ -5,19 +5,19 @@
   "category": "creativita",
   "order": 36,
   "pinned": false,
-  "panel": "",
+  "panel": "musicstudio",
   "api": "api.py",
   "connector": "commands.py",
   "connector_risk": "home",
-  "description": "Uno studio di produzione completo a voce o a schermo: Nuxiva compone canzoni intere, scrive e traduce i testi, aggiunge batterie, bassi, accordi, melodie, effetti e voci, e tu rifinisci tutto con timeline, piano roll, step sequencer, mixer ed effetti.",
+  "description": "Studio di produzione completo, a voce o a schermo: compone canzoni, scrive e traduce i testi, aggiunge strumenti, effetti e voci, e ti lascia rifinire tutto con timeline, piano roll, mixer ed effetti, insieme a un agente esperto di ogni genere.",
   "capabilities": [
     "Crea una canzone da una frase: genere, tonalità, progressione, struttura, strumenti e testo",
-    "Funziona anche senza cervello disponibile con un motore di arrangiamento a regole",
-    "Aggiunge a richiesta batteria, basso, accordi, pad, arpeggi, melodia, effetti e voci",
-    "Traduce i testi e li fa cantare nella nuova lingua con le voci di Nuxiva",
-    "Timeline a tracce, piano roll, step sequencer, mixer con pan, mute, solo ed effetti per traccia",
-    "20 strumenti sintetizzati e 8 effetti (equalizzatore, filtro, eco, riverbero, chorus, distorsione, compressore, phaser)",
-    "Esporta il mix in WAV e il progetto riapribile nella cartella condivisa «08 Produzioni»"
+    "110 generi di tutto il mondo con scale, giri armonici, ritmi e strumenti tipici, e un agente esperto che li conosce",
+    "86 strumenti sintetizzati e 13 effetti, regolabili traccia per traccia",
+    "Chat dal vivo con l'agente: strumenti, volumi, effetti, tempo, testo, voce e traduzione",
+    "Voci nitide con le voci di Nuxiva e dello Studio delle Voci, anche in altre lingue",
+    "Esporta in WAV e pubblica nel Nexus Media Player e nelle cartelle condivise",
+    "Trasmette a Chromecast, Sonos e ai nodi in modo sincronizzato"
   ],
   "settings": [],
   "icon3d": "./icon.png",
@@ -26,5 +26,25 @@
     "technique": "3d",
     "id": "qUrjwzmP7ZFz",
     "url": "https://img.icons8.com/?size=240&id=qUrjwzmP7ZFz&format=png"
+  },
+  "kind": "app",
+  "routing": {
+    "nouns": [
+      "canzone",
+      "brano",
+      "blues",
+      "strumentale",
+      "beat",
+      "bpm",
+      "base musicale",
+      "mixer",
+      "arrangiamento",
+      "jingle"
+    ],
+    "phrases": [
+      "\\b(?:crea\\w*|compon\\w*|fa(?:mmi|i)|scriv\\w*|produc\\w*)\\b.*\\b(?:canzone|brano|base\\s+musicale|beat|strumentale|jingle)\\b",
+      "\\b(?:aggiung\\w*|metti)\\b.*\\b(?:batteria|basso|riverbero|voce\\s+cantata|arpeggio)\\b.*\\b(?:canzone|brano|base|traccia)\\b",
+      "\\btradu\\w+\\b.*\\b(?:canzone|brano)\\b"
+    ]
   }
 }

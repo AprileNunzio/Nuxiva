@@ -26,6 +26,7 @@ class DiscoveredAgent:
     tools: list[dict] = field(default_factory=list)
     widgets: list[dict] = field(default_factory=list)
     keywords: set[str] = field(default_factory=set)
+    routing: dict = field(default_factory=dict)
     mtime: float = 0.0
 
     def brief(self) -> str:
@@ -145,6 +146,7 @@ class AgentScanner:
                 category=cat,
                 source=source,
                 dir_path=str(folder),
+                routing=self._routing(data.get("routing")),
                 mtime=mtime
             )
             discovered_agents[agent_id] = agent
@@ -181,6 +183,14 @@ class AgentScanner:
             self._build_semantic_index(agent)
 
         return self.agents
+
+    @staticmethod
+    def _routing(raw) -> dict:
+        if not isinstance(raw, dict):
+            return {}
+        nouns = [str(n)[:40] for n in (raw.get("nouns") if isinstance(raw.get("nouns"), list) else [])[:40]]
+        phrases = [str(p)[:200] for p in (raw.get("phrases") if isinstance(raw.get("phrases"), list) else [])[:12]]
+        return {"nouns": nouns, "phrases": phrases}
 
     def _scan_widgets(self, paths: list[str]) -> dict[str, dict]:
         widgets = {}

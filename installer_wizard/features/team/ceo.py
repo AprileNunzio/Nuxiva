@@ -1,15 +1,17 @@
+import re
 import time
 from dataclasses import dataclass, field
 from typing import Any
 from config import env_get
 
+from features.team import learning, relevance
 from features.team.board import board
 from features.team.outcomes import describe, execution_outcome
 from features.team.scanner import DiscoveredAgent, scanner
 from features.team.stopwords import clean_tokens, is_conversational_query, normalize_text
 from state import store
 
-MIN_SCORE_THRESHOLD = 3.5
+MIN_SCORE_THRESHOLD = 5.0
 
 
 @dataclass
@@ -18,6 +20,7 @@ class CEODecision:
     secondary_agents: list[DiscoveredAgent]
     delegation_plan: str
     confidence: float
+    query: str = ""
     timestamp: float = field(default_factory=time.time)
 
 
@@ -66,83 +69,30 @@ class CEOExecutive:
                 primary_agent=conv_agent,
                 secondary_agents=[],
                 delegation_plan=plan,
-                confidence=1.0
+                confidence=1.0,
+                query=text
             )
 
-        # 2. Punteggio semantico e deterministico per ciascun agente
-        scores: dict[str, float] = {}
-
-        for aid, agent in agents.items():
-            score = 0.0
-            agent_name_lower = agent.name.lower()
-            aid_lower = aid.lower()
-
-            # A. Corrispondenza esatta o esplicita su ID o Nome Agente
-            if aid_lower in query_norm.split() or agent_name_lower in query_norm:
-                score += 10.0
-
-            # B. Corrispondenza con intent dei widget registrati
-            for w in agent.widgets:
-                wname_lower = w.get("name", "").lower()
-                if wname_lower and wname_lower in query_norm:
-                    score += 4.0
-                for intent in w.get("intents", []):
-                    intent_lower = intent.lower()
-                    if intent_lower in query_norm.split() or intent_lower in query_norm:
-                        score += 6.0
-
-            # C. Corrispondenza con strumenti (tools) dichiarati dall'agente
-            for t in agent.tools:
-                tname = t["name"].lower()
-                if tname in query_norm or any(part in query_tokens for part in tname.split("_") if len(part) >= 3):
-                    score += 5.0
-                tdesc_tokens = clean_tokens(t.get("description", ""))
-                common_tool_tokens = query_tokens.intersection(tdesc_tokens)
-                if common_tool_tokens:
-                    score += 1.5 * len(common_tool_tokens)
-
-            # D. Corrispondenza con capacità dichiarate (solo token significativi senza stopwords)
-            for cap in agent.capabilities:
-                cap_tokens = clean_tokens(cap)
-                common_caps = query_tokens.intersection(cap_tokens)
-                if common_caps:
-                    score += 1.0 * len(common_caps)
-
-            # E. Corrispondenza con la descrizione dell'agente (solo token significativi)
-            desc_tokens = clean_tokens(agent.description)
-            common_desc = query_tokens.intersection(desc_tokens)
-            if common_desc:
-                score += 0.5 * len(common_desc)
-
-            # F. Corrispondenza generica con l'indice delle parole chiave (peso minore)
-            common_kw = query_tokens.intersection(agent.keywords)
-            score += 0.3 * len(common_kw)
-
-            scores[aid] = score
-
-        # 3. Ordinamento e applicazione della soglia minima di confidenza
-        sorted_agents = sorted(scores.items(), key=lambda x: x[1], reverse=True)
-
+        ranked = relevance.rank(agents, text, learning.table())
+        top_id, top_score, reasons = ranked[0] if ranked else ("", 0.0, [])
+        runner_score = ranked[1][1] if len(ranked) > 1 else 0.0
         primary: DiscoveredAgent
         secondaries: list[DiscoveredAgent] = []
 
-        if sorted_agents and sorted_agents[0][1] >= MIN_SCORE_THRESHOLD:
-            top_id, top_score = sorted_agents[0]
+        if top_id and top_score >= MIN_SCORE_THRESHOLD:
             primary = agents[top_id]
-            for aid, sc in sorted_agents[1:4]:
-                if sc >= (MIN_SCORE_THRESHOLD * 0.7):
+            for aid, sc, _ in ranked[1:4]:
+                if sc >= top_score * 0.55 and sc >= MIN_SCORE_THRESHOLD:
                     secondaries.append(agents[aid])
-            confidence = min(1.0, 0.6 + ((top_score - MIN_SCORE_THRESHOLD) * 0.05))
-            tool_count = len(primary.tools)
-            widget_count = len(primary.widgets)
+            margin = (top_score - runner_score) / max(top_score, 1.0)
+            confidence = round(min(1.0, 0.55 + min(top_score, 30.0) / 30.0 * 0.25 + margin * 0.2), 3)
             plan = (
                 f"Il CEO assegna l'incarico specialistico a «{primary.name}» [{primary.id}] "
-                f"({tool_count} strumenti, {widget_count} widget)."
+                f"({len(primary.tools)} strumenti, {len(primary.widgets)} widget; indizi: {', '.join(reasons[:4])})."
             )
             if secondaries:
                 plan += f" Supporto assegnato a: {', '.join(s.name for s in secondaries)}."
         else:
-            # Sotto la soglia di confidenza: indirizza all'Assistente Generale
             primary = self._get_conversation_agent(agents)
             confidence = 0.5
             plan = (
@@ -154,8 +104,17 @@ class CEOExecutive:
             primary_agent=primary,
             secondary_agents=secondaries,
             delegation_plan=plan,
-            confidence=confidence
+            confidence=confidence,
+            query=text
         )
+
+    @staticmethod
+    def _executed_specialist(agents: dict[str, DiscoveredAgent], current: str, intent: str) -> str:
+        skip = {"core", "chat", "agent", "conversation", "assistente", "understanding", "brain"}
+        for word in re.findall(r"[a-z0-9_]+", f"{current} {intent}"):
+            if word in agents and word not in skip:
+                return word
+        return ""
 
     def pick_expert(self, text: str):
         from features.experts import routing
@@ -194,8 +153,19 @@ class CEOExecutive:
         current_agent = result.get("agent") or "core"
         current_agent_lower = current_agent.lower()
 
+        plan = decision.delegation_plan
+        real = self._executed_specialist(agents, current_agent_lower, executed_intent)
+        if real and real != decision.primary_agent.id:
+            active_agent = agents[real]
+            plan = (f"Il CEO aveva previsto «{decision.primary_agent.name}» [{decision.primary_agent.id}]; la richiesta è stata eseguita da "
+                    f"«{active_agent.name}» [{real}]: incarico riallineato e appreso per le prossime volte.")
+        if real and decision.query:
+            learning.record(decision.query, real)
+
         # Allineamento con lo specialista reale
-        if current_agent_lower in agents and current_agent_lower not in ("core", "chat", "agent"):
+        if real:
+            pass
+        elif current_agent_lower in agents and current_agent_lower not in ("core", "chat", "agent"):
             active_agent = agents[current_agent_lower]
         elif executed_intent in agents and executed_intent not in ("conversation", "chat", "assistente"):
             active_agent = agents[executed_intent]
@@ -228,7 +198,7 @@ class CEOExecutive:
             "category": active_agent.category,
             "tools_count": len(active_agent.tools),
             "widgets_count": len(active_agent.widgets),
-            "plan": decision.delegation_plan,
+            "plan": plan,
             "confidence": decision.confidence,
             "outcome": outcome,
         }

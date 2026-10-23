@@ -2,15 +2,8 @@ import re
 
 from features.brain.llm import generate
 
-from features.musicstudio import catalog as C, schema as S
+from features.musicstudio import catalog as C, expert, genres, schema as S
 
-GENRE_WORDS = {
-    "trap": ("trap", "drill"), "hiphop": ("hip hop", "hiphop", "rap", "boom bap"), "lofi": ("lofi", "lo-fi", "chill", "relax", "studio"),
-    "house": ("house", "club", "deep house"), "techno": ("techno", "rave", "industrial"), "rock": ("rock", "punk", "metal", "grunge"),
-    "disco": ("disco", "anni 70", "anni 80"), "reggaeton": ("reggaeton", "reggaetón", "urban latino"), "ballad": ("ballad", "ballata", "lenta", "romantic", "romantica", "pianoforte"),
-    "dnb": ("drum and bass", "drum n bass", "dnb", "jungle"), "ambient": ("ambient", "ambiente", "meditaz", "cinematic", "colonna sonora", "atmosfer"),
-    "funk": ("funk", "groove", "soul"), "latin": ("latin", "salsa", "bossa", "samba", "cumbia"), "pop": ("pop", "radio", "hit", "estate"), "blues": ("blues", "shuffle", "slow blues", "armonica"),
-}
 NO_VOICE = re.compile(r"\b(?:strumental\w*|instrumental|senza\s+(?:voce|testo|cantato)|without\s+(?:vocals|lyrics))\b", re.I)
 BPM = re.compile(r"\b(\d{2,3})\s*(?:bpm|battiti)\b", re.I)
 MODES = (("minor", ("minore", "minor", "triste", "oscur", "dark", "malinc")), ("major", ("maggiore", "major", "allegr", "felice", "solare", "happy")))
@@ -22,7 +15,8 @@ SYSTEM = ("You are an expert music producer and songwriter. Plan a complete song
 
 def heuristic(prompt: str) -> dict:
     low = prompt.lower()
-    genre = next((g for g, words in GENRE_WORDS.items() if any(w in low for w in words)), "pop")
+    found = genres.search(low, 1)
+    genre = found[0].id if found else "pop"
     tempo = BPM.search(low)
     mode = next((m for m, words in MODES if any(w in low for w in words)), "")
     bars = 16 if any(w in low for w in ("breve", "short", "loop", "jingle")) else 48 if any(w in low for w in ("lunga", "long", "epica", "epic")) else 32
@@ -39,8 +33,8 @@ def _catalog_hint() -> str:
 
 async def plan(prompt: str) -> dict:
     base = heuristic(prompt)
-    text = (f"<request>\n{S.text(prompt, 500)}\n</request>\nGenres: {', '.join(C.GENRES)}. Modes: {', '.join(C.MODES)}. Instruments by role: {_catalog_hint()}.\n"
-            "Return {\"title\":str,\"genre\":str,\"tempo\":number 50-200,\"root\":0-11 (C=0),\"mode\":str,\"bars\":16-64,\"mood\":str,"
+    text = (f"<request>\n{S.text(prompt, 500)}\n</request>\nGenre index: {expert.index()}.\nLikely genres:\n{expert.brief(prompt) or 'none'}\nModes: {', '.join(C.MODES)}. Instruments by role: {_catalog_hint()}.\n"
+            "Return {\"title\":str,\"genre\":str,\"second_genre\":str|null (for a fusion),\"tempo\":number 50-200,\"root\":0-11 (C=0),\"mode\":str,\"bars\":16-64,\"mood\":str,"
             "\"roles\":[drums,bass,chords,pad,lead,arp subset],\"instruments\":{role:id},\"vocals\":boolean (false if instrumental requested),"
             "\"lang\":\"it|en|fr|es\",\"lyrics\":str (2 to 4 stanzas separated by a blank line, 4 short lines each, rhyming, in the requested language; empty if no vocals)}")
     data = await generate(text, as_json=True, max_tokens=900, temperature=0.8, kind="deep", system=SYSTEM, component="musicstudio", timeout=120)
@@ -59,6 +53,9 @@ async def plan(prompt: str) -> dict:
     if roles:
         spec["roles"] = list(dict.fromkeys(roles))
     spec["instruments"] = {r: i for r, i in (data.get("instruments") if isinstance(data.get("instruments"), dict) else {}).items() if i in C.BY_ID and C.BY_ID[i].role == r}
+    second = data.get("second_genre")
+    if second in genres.BY_ID and second != spec["genre"]:
+        spec["instruments"] = {**expert.blend(spec["genre"], second), **spec["instruments"]}
     spec["vocals"] = base["vocals"] and data.get("vocals") is not False
     spec["lang"] = base["lang"] if base["lang"] != "it" else (data.get("lang") if isinstance(data.get("lang"), str) and S.LANG_RE.fullmatch(data.get("lang")) else "it")
     spec["lyrics"] = S.text(data.get("lyrics"), 2400, True) if spec["vocals"] else ""

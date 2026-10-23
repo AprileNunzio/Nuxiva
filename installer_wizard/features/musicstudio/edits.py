@@ -1,6 +1,6 @@
 import random
 
-from features.musicstudio import catalog as C, generator, schema as S
+from features.musicstudio import catalog as C, generator, genres, schema as S
 
 MAX_OPS = 8
 
@@ -111,7 +111,17 @@ def master(project: dict, op: dict) -> str:
     return "master"
 
 
-HANDLERS = {"set_track": set_track, "add_effect": add_effect, "set_effect": set_effect, "remove_effect": remove_effect, "add_layer": add_layer,
+def restyle(project: dict, op: dict) -> str:
+    if op.get("genre") not in genres.BY_ID:
+        raise S.SpecError("genre_invalid")
+    fresh = generator.arrange({"genre": op["genre"], "root": project["key"]["root"], "bars": project["bars"], "title": project["title"], "prompt": project["prompt"], "tempo": op.get("tempo")})
+    keep = [t for t in project["tracks"] if t["role"] == "vocal"] if fresh["beats"] == project["beats"] else []
+    project.update(genre=fresh["genre"], tempo=fresh["tempo"], beats=fresh["beats"], swing=fresh["swing"], key=fresh["key"], harmony=fresh["harmony"], structure=fresh["structure"],
+                   tracks=(fresh["tracks"] + keep)[:S.MAX_TRACKS])
+    return fresh["genre"]
+
+
+HANDLERS = {"restyle": restyle, "set_track": set_track, "add_effect": add_effect, "set_effect": set_effect, "remove_effect": remove_effect, "add_layer": add_layer,
             "remove_track": remove_track, "regenerate": regenerate, "set_tempo": set_tempo, "set_swing": set_swing, "master": master}
 
 

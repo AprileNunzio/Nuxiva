@@ -100,3 +100,14 @@ def audio_dir(pid: str):
     folder = _dir(pid) / "audio"
     folder.mkdir(parents=True, exist_ok=True)
     return folder
+
+
+def set_published(pid: str, relative: str) -> None:
+    write_private(_dir(pid) / "published.json", _compact({"path": S.text(relative, 400)}))
+
+
+def published(pid: str) -> str:
+    try:
+        return S.text(_read(_dir(pid) / "published.json").get("path"), 400)
+    except KeyError:
+        return ""

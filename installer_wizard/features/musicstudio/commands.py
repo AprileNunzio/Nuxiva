@@ -1,7 +1,8 @@
 import re
 
 from features.desktop.desk import desk
-from features.musicstudio import composer, lyrics as lyr, schema as S, service, store, voicebank
+from features.music.commands import lan_base
+from features.musicstudio import broadcast, composer, lyrics as lyr, schema as S, service, store, voicebank
 
 CREATE = re.compile(r"\b(?:cre\w+|compon\w+|fa(?:mmi|i)|scriv\w+|produc\w+|produ\w+|invent\w+|gener\w+|realizz\w+)\b(?:\s+(?:mi|ci|per\s+me))*\s+(?:(?:una|un|uno|il|la|dei|delle)\s+)?"
                     r"(?:nuov[ao]\s+)?(?:canzone|brano|pezzo\s+musicale|base\s+musicale|base|beat|strumentale|jingle|colonna\s+sonora)\b(?P<what>.*)$", re.I)
@@ -18,6 +19,8 @@ FX_WORDS = {"riverbero": "reverb", "eco": "delay", "delay": "delay", "distorsion
             "phaser": "phaser", "equalizzatore": "eq3", "filtro": "filter"}
 LANG_WORDS = {"inglese": "en", "francese": "fr", "spagnolo": "es", "tedesco": "de", "portoghese": "pt", "giapponese": "ja", "olandese": "nl", "polacco": "pl", "russo": "ru", "italiano": "it"}
 REVOICE = re.compile(r"\b(?:usa|metti|cambia|canta)\w*\b.*\bvoce\s+(?:di\s+|della\s+|del\s+)?(?P<who>[a-zà-ù]+)\b", re.I)
+CAST = re.compile(r"\b(?:trasmett\w+|riproduc\w+|fai\s+sentire|manda|invia|suona)\b.*\b(?:(?:questa|mia|nostra)\s+(?:canzone|base|produzione)|appena\s+creat\w+|progetto|studio\s+musicale)\b.*\b(?:su|sul|sulla|sui|sulle|in|a)\b\s+(?P<where>.+)$", re.I)
+ALL_WORDS = ("tutti", "tutto", "ovunque", "tutta la casa", "ogni")
 state = {"active": ""}
 
 
@@ -47,7 +50,7 @@ async def answer(text: str) -> tuple[str, dict]:
             return ("Descrivimi meglio la canzone." if str(exc) == "prompt_short" else "Ho raggiunto il numero massimo di progetti musicali."), face
         state["active"] = project["id"]
         _announce(project, f"Sto componendo: {what}. Lo trovi in Applicazioni › Studio Musicale.")
-        note = " Non riproduco il testo di canzoni esistenti: ne scrivo uno originale sullo stesso tema; se mi dai il tuo testo lo traduco." if composer.REFERENCE.search(text) else ""
+        note = " Cerco il testo nella libreria del Media Player e lo faccio tradurre dall'agente traduttore; se il brano non c'è, scrivo un testo originale sullo stesso tema." if composer.REFERENCE.search(text) else ""
         return "Mi metto al lavoro: scelgo genere, tonalità e strumenti, poi scrivo il testo. Lo trovi nello Studio Musicale." + note, face
     if LIST.search(text):
         rows = store.listing()
@@ -86,6 +89,21 @@ async def answer(text: str) -> tuple[str, dict]:
         except S.SpecError:
             return "Quell'effetto non lo conosco.", face
         return f"Ho aggiunto il {e.group('fx').lower()}.", face
+    k = CAST.search(text)
+    if k:
+        where = k.group("where").lower()
+        everyone = any(w in where for w in ALL_WORDS)
+        await broadcast.listing(True)
+        names = [] if everyone else [d["id"] for d in await broadcast.listing() if d["name"].lower() in where or (d["kind"] == "sonos" and "sonos" in where) or (d["kind"] == "cast" and "chromecast" in where)]
+        if not everyone and not names:
+            return "Non trovo quel dispositivo: dimmi il nome oppure «su tutti i dispositivi».", face
+        try:
+            rows = await broadcast.cast(pid, names, everyone, "voce", lan_base())
+        except LookupError:
+            return "Apri lo Studio Musicale e premi Trasmetti una volta: devo prima generare il mix audio.", face
+        except (KeyError, ValueError, RuntimeError):
+            return "Non riesco a raggiungere i dispositivi adesso.", face
+        return f"Trasmetto la canzone su {len([r for r in rows if r['state'] != 'error'])} dispositivi in modo sincronizzato.", face
     r = REVOICE.search(text)
     if r:
         project = store.load(pid)

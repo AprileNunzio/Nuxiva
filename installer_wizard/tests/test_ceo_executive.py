@@ -154,3 +154,48 @@ class CEOExecutiveEnterpriseRoutingTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class CEORelevanceTest(unittest.TestCase):
+    def setUp(self):
+        import tempfile
+        from pathlib import Path
+        from unittest import mock
+        from features.team import learning
+        self.ceo = CEOExecutive()
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        patch = mock.patch.object(learning, "FILE", Path(tmp.name) / "learned.json")
+        patch.start()
+        self.addCleanup(patch.stop)
+        learning.reset()
+        self.addCleanup(learning.reset)
+
+    def test_real_requests_reach_the_right_specialist(self):
+        cases = {
+            "crea una canzone blues di Napule è in versione inglese": "musicstudio",
+            "creami un brano lo-fi rilassante": "musicstudio",
+            "aggiungi una batteria alla canzone": "musicstudio",
+            "metti un po' di musica": "music",
+            "che tempo fa domani": "weather",
+            "costruiscimi un castello in diorama": "diorama",
+            "apri la lavagna": "whiteboard",
+            "chi ha vinto la partita di ieri": "sports",
+        }
+        for query, expected in cases.items():
+            with self.subTest(query=query):
+                self.assertEqual(self.ceo.analyze_request(query).primary_agent.id, expected)
+
+    def test_generic_verbs_do_not_decide(self):
+        from features.team import relevance
+        self.assertEqual(relevance.query_stems("crea fai apri mostrami"), {})
+        self.assertEqual(set(relevance.query_stems("canzoni")), set(relevance.query_stems("canzone")))
+
+    def test_synthesize_realigns_plan_and_learns(self):
+        from features.team import learning
+        decision = self.ceo.analyze_request("apri la lavagna")
+        raw = {"reply": "ok", "intent": "conversation", "agent": "Connettore · musicstudio"}
+        result = self.ceo.synthesize(decision, raw)
+        self.assertEqual(result["ceo"]["delegated_to"], "musicstudio")
+        self.assertIn("riallineato", result["ceo"]["plan"])
+        self.assertIn("musicstudio", learning.table().get("lavag", {}))

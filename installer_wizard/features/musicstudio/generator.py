@@ -1,7 +1,7 @@
 import random
 import time
 
-from features.musicstudio import catalog as C, patterns as P, schema as S, theory as T
+from features.musicstudio import catalog as C, genres, patterns as P, schema as S, theory as T
 
 FORM = (("intro", 1), ("verse", 2), ("chorus", 2), ("verse", 2), ("chorus", 2), ("bridge", 1), ("chorus", 2), ("outro", 1))
 SHORT = (("verse", 1), ("chorus", 1))
@@ -18,7 +18,10 @@ TRACK_FX = {
     "vocal": (("compressor", {"threshold": -22, "ratio": 3}), ("reverb", {"size": 1.4, "mix": 0.16})), "fx": (),
 }
 LEVELS = {"drums": 0.9, "bass": 0.85, "chords": 0.62, "pad": 0.5, "lead": 0.62, "arp": 0.45, "vocal": 1.0, "fx": 0.4}
-SWING = {"lofi": 0.18, "funk": 0.18, "hiphop": 0.18, "blues": 0.33}
+def _step(pattern: str, i: int) -> str:
+    return pattern[i % len(pattern)]
+
+
 MINOR_HINT = ("triste", "dark", "oscur", "malinc", "sad", "notte", "night", "minor", "epic", "cinemat", "dramm")
 
 
@@ -61,7 +64,7 @@ def drum_clip(project: dict, section: dict, rng: random.Random, level: int) -> d
         base = b * per
         for lane, pattern in lanes.items():
             for i in range(per):
-                ch = pattern[i % 16]
+                ch = _step(pattern, i)
                 if ch == ".":
                     continue
                 vel = {"X": 0.95, "x": 0.72, "o": 0.42}[ch] * (0.7 if level == 1 else 1) * rng.uniform(0.9, 1.05)
@@ -81,12 +84,12 @@ def bass_clip(project: dict, section: dict, rng: random.Random, level: int) -> d
     for b in range(section["bars"]):
         chord = T.chord_at(project["harmony"], section["start"] + b)
         root = 36 + chord["root"]
-        marks = [i for i in range(per) if pattern[i % 16] not in ".-"]
+        marks = [i for i in range(per) if _step(pattern, i) not in ".-"]
         if level == 1:
             marks = marks[::2] or marks[:1]
         for n, i in enumerate(marks):
             end = marks[n + 1] if n + 1 < len(marks) else per
-            kind = pattern[i % 16]
+            kind = _step(pattern, i)
             pitch = root + {"r": 0, "f": 7, "o": 12}.get(kind, 0)
             notes.append(_hit(b * per + i, pitch, rng.uniform(0.78, 0.95), max(0.25, (end - i) * 0.25 * 0.92)))
     return _clip(project, section, "bass", notes)
@@ -109,7 +112,7 @@ def chord_clip(project: dict, section: dict, rng: random.Random, level: int, rol
     pattern = P.COMP[project["genre"]]
     for b in range(section["bars"]):
         chord = T.chord_at(project["harmony"], section["start"] + b)
-        marks = [i for i in range(per) if pattern[i % 16] == "c"]
+        marks = [i for i in range(per) if _step(pattern, i) == "c"]
         if level == 1:
             marks = marks[:1]
         for n, i in enumerate(marks):
@@ -143,7 +146,7 @@ def lead_clip(project: dict, section: dict, rng: random.Random, level: int) -> d
     for b in range(section["bars"]):
         chord = T.chord_at(project["harmony"], section["start"] + b)
         tones = {(chord["root"] + i) % 12 for i in T.INTERVALS[chord["quality"]]}
-        marks = [i for i in range(per) if rhythm[i % 16] == "x"]
+        marks = [i for i in range(per) if _step(rhythm, i) == "x"]
         if level == 1:
             marks = marks[::2] or marks[:1]
         for n, i in enumerate(marks):
@@ -165,8 +168,9 @@ BUILDERS = {"drums": drum_clip, "bass": bass_clip, "lead": lead_clip, "arp": arp
 
 def default_instrument(project: dict, role: str) -> str:
     genre = project["genre"]
-    pick = {"drums": P.DEFAULT_KIT, "bass": P.DEFAULT_BASS, "chords": P.DEFAULT_CHORDS, "lead": P.DEFAULT_LEAD}.get(role)
-    return pick[genre] if pick else C.DEFAULT_INSTRUMENT[role]
+    style = genres.get(genre)
+    pick = {"drums": style.kit, "bass": style.bass_i, "chords": style.chords_i, "lead": style.lead_i, "pad": style.pad_i, "arp": style.arp_i}.get(role)
+    return pick or C.DEFAULT_INSTRUMENT[role]
 
 
 def build_track(project: dict, role: str, rng: random.Random, instrument: str = "") -> dict:
@@ -205,17 +209,25 @@ def vocal_track(project: dict, lyrics: str, lang: str, voice: str = "") -> dict:
 
 def arrange(spec: dict) -> dict:
     rng = random.Random(spec.get("seed") or secrets_seed())
-    genre = spec.get("genre") if spec.get("genre") in C.GENRES else "pop"
-    low, high = P.TEMPO[genre]
+    style = genres.get(spec.get("genre"))
+    genre = style.id
+    low, high = style.tempo
     mood = str(spec.get("mood") or spec.get("title") or "").lower()
-    mode = spec.get("mode") if spec.get("mode") in C.MODES else ("minor" if any(h in mood for h in MINOR_HINT) or genre in ("trap", "dnb", "techno") else "blues" if genre == "blues" else "major")
+    if spec.get("mode") in C.MODES:
+        mode = spec["mode"]
+    elif style.mode not in ("major", "minor"):
+        mode = style.mode
+    else:
+        mode = "minor" if style.mode == "minor" or any(h in mood for h in MINOR_HINT) else "major"
     project = S.clean_project({"title": spec.get("title") or "", "prompt": spec.get("prompt") or "", "created": int(time.time()), "genre": genre,
-                               "tempo": spec.get("tempo") or rng.randint(low, high), "beats": spec.get("beats") or 4,
+                               "tempo": spec.get("tempo") or rng.randint(low, high), "beats": spec.get("beats") or style.beats,
                                "key": {"root": spec.get("root") if isinstance(spec.get("root"), int) else rng.randrange(12), "mode": mode},
-                               "bars": spec.get("bars") or 32, "swing": SWING.get(genre, 0.0)})
+                               "bars": spec.get("bars") or 32, "swing": style.swing})
     project["structure"] = sections(project["bars"])
-    project["harmony"] = T.blues(project["key"]["root"], project["bars"]) if genre == "blues" else T.harmony(project["key"]["root"], mode, project["bars"], rng, genre in ("lofi", "funk", "disco", "ballad", "hiphop"), 2 if genre in ("ballad", "ambient") else 1)
-    wanted = [r for r in (spec.get("roles") or ("drums", "bass", "chords", "pad", "lead", "arp")) if r in PRESENCE and r != "vocal"]
+    slow = 2 if style.family in ("cinematic",) or genre in ("ballad", "ambient", "newage", "sacred_choir") else 1
+    project["harmony"] = (T.named(project["key"]["root"], project["bars"], style.prog, slow) if style.prog
+                          else T.harmony(project["key"]["root"], mode, project["bars"], rng, style.seventh, slow))
+    wanted = [r for r in (spec.get("roles") or style.roles) if r in PRESENCE and r != "vocal"]
     instruments = spec.get("instruments") if isinstance(spec.get("instruments"), dict) else {}
     project["tracks"] = [build_track(project, role, rng, instruments.get(role, "")) for role in wanted]
     return S.clean_project(project, project["id"])
