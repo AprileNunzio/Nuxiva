@@ -38,6 +38,7 @@ class ServerSettings(BaseSettings):
     NUXIVA_LLM_3D_ORDER: str = ""
     NUXIVA_EMBED_MODEL: str = "nomic-embed-text"
     NUXIVA_ASSISTANT_NAME: str = ""
+    NUXIVA_ASSISTANT_GENDER: str = ""
     NUXIVA_USER_NAME: str = ""
     NUXIVA_DEFAULT_LANGUAGE: str = "it"
     HOME_ASSISTANT_URL: str = "http://127.0.0.1:8123"

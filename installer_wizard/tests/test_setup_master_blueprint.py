@@ -110,7 +110,8 @@ class MasterBlueprintTest(unittest.TestCase):
     def test_speaker_prompt_strictly_enforces_unique_name(self):
         with mock.patch.dict(os.environ, {"NUXIVA_ASSISTANT_NAME": "Atlas"}):
             prompt = speaker.instruction()
-            self.assertIn("Tu sei Atlas. Il tuo unico nome è Atlas. Non chiamarti mai Nuxiva.", prompt)
+            self.assertIn("Tu sei Atlas. Il tuo unico nome è Atlas.", prompt)
+        self.assertIn("Non chiamarti mai Nuxiva.", prompt)
 
         with mock.patch.dict(os.environ, {"NUXIVA_ASSISTANT_NAME": "Nuxiva"}):
             prompt = speaker.instruction()

@@ -51,3 +51,18 @@ def assistant_identity(reader: Callable[[str, str], str] = _env) -> AssistantIde
 
 def assistant_name() -> str:
     return assistant_identity().name
+
+
+_GENDER_LINE = {
+    "male": "Sei un assistente di genere maschile: parla di te al maschile (pronto, sicuro, felice).",
+    "female": "Sei un'assistente di genere femminile: parla di te al femminile (pronta, sicura, felice).",
+}
+
+
+def gender_line(identity: AssistantIdentity | None = None) -> str:
+    return _GENDER_LINE.get((identity or assistant_identity()).gender, "")
+
+
+def self_line(identity: AssistantIdentity | None = None) -> str:
+    who = identity or assistant_identity()
+    return f"Il tuo unico nome è {who.name}. {gender_line(who)}".strip()

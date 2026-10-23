@@ -216,5 +216,133 @@ class CloudTest(unittest.TestCase):
         self.assertEqual(cloud.points({}, "heartRate", "beatsPerMinute", "heart_rate", now), [])
 
 
+
+class GuidedFlowTest(NodeTest):
+    def nodes_online(self):
+        return mock.patch.object(service, "capable_nodes", return_value=["Salotto"])
+
+    def beacon(self, rows, node="salotto"):
+        return self.report(node, {"nearby": rows}).json()
+
+    def test_search_lists_health_devices_without_exposing_addresses(self):
+        with self.nodes_online():
+            self.client.delete(f"/api/people/anna/vitals/devices/{self.client.get('/api/people/anna/vitals').json()['devices'][0]['id']}")
+            self.assertEqual(self.client.post("/api/people/anna/vitals/search").json()["nodes"], ["Salotto"])
+            first = self.beacon([{"address": "11:22:33:44:55:66", "name": "Fitbit Air", "rssi": -50, "services": []},
+                                 {"address": "11:22:33:44:55:77", "name": "TV Samsung", "rssi": -40, "services": []},
+                                 {"address": "11:22:33:44:55:88", "name": "", "rssi": -70, "services": ["0000180d-0000-1000-8000-00805f9b34fb"]},
+                                 {"address": "zz", "name": "Polar", "rssi": -50}])
+            self.assertTrue(first["discover"])
+            data = self.client.get("/api/people/anna/vitals/nearby").json()
+            self.assertEqual([d["name"] for d in data["found"]], ["Fitbit Air", ""])
+            self.assertEqual(data["found"][0]["level"], 4)
+            self.assertTrue(data["found"][1]["standard"])
+            self.assertNotIn("11:22", str(data))
+
+    def test_nothing_is_collected_when_nobody_searches(self):
+        self.assertFalse(self.beacon([{"address": "11:22:33:44:55:66", "name": "Fitbit Air", "rssi": -50}])["discover"])
+        self.assertEqual(self.client.get("/api/people/anna/vitals/nearby").json()["found"], [])
+
+    def test_pick_from_the_list_creates_the_device_and_ends_the_search(self):
+        with self.nodes_online():
+            self.client.post("/api/people/anna/vitals/search")
+            self.beacon([{"address": "11:22:33:44:55:66", "name": "Fitbit Air", "rssi": -50}])
+            ref = self.client.get("/api/people/anna/vitals/nearby").json()["found"][0]["ref"]
+            r = self.client.post("/api/people/anna/vitals/devices", json={"kind": "ble", "label": "Fitbit Air", "ref": ref})
+            self.assertEqual(r.status_code, 200)
+            self.assertEqual(r.json()["device"]["address"], "11:22:33:44:55:66")
+            self.assertEqual(self.client.get("/api/people/anna/vitals/nearby").json()["found"], [])
+            bad = self.client.post("/api/people/anna/vitals/devices", json={"kind": "ble", "label": "x", "ref": "nonesiste"})
+            self.assertEqual(bad.status_code, 400)
+
+    def test_search_without_capable_nodes_is_logged_with_a_warning(self):
+        with mock.patch.object(service, "capable_nodes", return_value=[]):
+            self.assertEqual(self.client.post("/api/people/anna/vitals/search").json()["nodes"], [])
+        entries = self.client.get("/api/people/anna/vitals/log").json()["entries"]
+        self.assertEqual((entries[0]["code"], entries[0]["level"]), ("search_no_nodes", "warn"))
+
+    def test_errors_and_profiles_reported_by_nodes_reach_the_log_and_state(self):
+        now = time.time()
+        self.report("salotto", {"seen": [{"address": MAC, "rssi": -60}], "errors": [{"address": MAC, "code": "connect_failed"}, {"address": MAC, "code": "boh"}]})
+        self.report("salotto", {"profiles": {MAC: []}})
+        codes = [e["code"] for e in self.client.get("/api/people/anna/vitals/log").json()["entries"]]
+        self.assertIn("connect_failed", codes)
+        self.assertIn("no_profiles", codes)
+        self.assertNotIn("boh", codes)
+        self.assertEqual(self.client.get("/api/people/anna/vitals").json()["devices"][0]["state"], "unsupported")
+        self.report("salotto", {"profiles": {MAC: ["heart_rate"]}})
+        self.assertEqual(self.client.get("/api/people/anna/vitals").json()["devices"][0]["state"], "connected")
+        self.report("salotto", {"samples": [{"address": MAC, "metric": "heart_rate", "value": 70, "ts": now}]})
+        self.assertEqual(self.client.get("/api/people/anna/vitals").json()["devices"][0]["state"], "streaming")
+
+    def test_device_states_progress_from_waiting_to_seen(self):
+        self.assertEqual(self.client.get("/api/people/anna/vitals").json()["devices"][0]["state"], "waiting")
+        self.report("cucina", {"seen": [{"address": MAC, "rssi": -70}]})
+        service.arbiter._claims.clear()
+        self.assertEqual(self.client.get("/api/people/anna/vitals").json()["devices"][0]["state"], "seen")
+
+    def test_repeated_errors_do_not_flood_the_log(self):
+        for _ in range(5):
+            self.report("salotto", {"errors": [{"address": MAC, "code": "connect_failed"}]})
+        entries = [e for e in self.client.get("/api/people/anna/vitals/log").json()["entries"] if e["code"] == "connect_failed"]
+        self.assertEqual(len(entries), 1)
+
+
+class PhoneCodeTest(Base):
+    def test_code_pairs_a_phone_once(self):
+        code = self.client.post("/api/people/anna/vitals/phone-code").json()["code"]
+        self.assertRegex(code, r"^\d{6}$")
+        ok = self.client.post("/api/vitals/pair", json={"code": code, "label": "Pixel"})
+        self.assertEqual(ok.status_code, 200)
+        headers = {"Authorization": f"Bearer {ok.json()['token']}"}
+        self.assertEqual(self.client.post("/api/vitals/push", json={"samples": []}, headers=headers).status_code, 200)
+        self.assertEqual(self.client.post("/api/vitals/pair", json={"code": code}).status_code, 403)
+
+    def test_wrong_codes_are_refused_and_throttled(self):
+        service.pair_limit._hits.clear()
+        codes = [self.client.post("/api/vitals/pair", json={"code": "000000"}).status_code for _ in range(12)]
+        self.assertEqual(codes[0], 403)
+        self.assertIn(429, codes)
+
+
+
+class SwitchTest(NodeTest):
+    def device(self):
+        return self.client.get("/api/people/anna/vitals").json()["devices"][0]
+
+    def test_disconnect_stops_everything_and_reconnect_restarts(self):
+        did = self.device()["id"]
+        now = time.time()
+        self.report("salotto", {"seen": [{"address": MAC, "rssi": -60}], "samples": [{"address": MAC, "metric": "heart_rate", "value": 70, "ts": now}]})
+        self.assertEqual(self.client.post(f"/api/people/anna/vitals/devices/{did}/disconnect").status_code, 200)
+        self.assertEqual(self.device()["state"], "off")
+        out = self.report("salotto", {"seen": [{"address": MAC, "rssi": -60}], "samples": [{"address": MAC, "metric": "heart_rate", "value": 71, "ts": now + 1}]}).json()
+        self.assertEqual((out["watch"], out["connect"], out["accepted"]), ([], [], 0))
+        self.assertEqual(service.live.latest("anna"), {})
+        self.assertEqual(self.client.post(f"/api/people/anna/vitals/devices/{did}/reconnect").status_code, 200)
+        back = self.report("salotto", {"seen": [{"address": MAC, "rssi": -60}]}).json()
+        self.assertEqual(back["connect"], [MAC])
+
+    def test_reconnect_tells_the_node_to_drop_the_old_link_once(self):
+        did = self.device()["id"]
+        self.client.post(f"/api/people/anna/vitals/devices/{did}/reconnect")
+        out = self.report("salotto", {"seen": [{"address": MAC, "rssi": -60}]}).json()
+        self.assertEqual([d["address"] for d in out["drop"]], [MAC])
+        self.assertTrue(out["drop"][0]["nonce"])
+
+    def test_disabled_push_device_cannot_send(self):
+        data = self.client.post("/api/people/anna/vitals/devices", json={"kind": "phone", "label": "Tel"}).json()
+        headers = {"Authorization": f"Bearer {data['token']}"}
+        self.assertEqual(self.client.post("/api/vitals/push", json={"samples": []}, headers=headers).status_code, 200)
+        self.client.post(f"/api/people/anna/vitals/devices/{data['device']['id']}/disconnect")
+        self.assertEqual(self.client.post("/api/vitals/push", json={"samples": []}, headers=headers).status_code, 401)
+        self.client.post(f"/api/people/anna/vitals/devices/{data['device']['id']}/reconnect")
+        self.assertEqual(self.client.post("/api/vitals/push", json={"samples": []}, headers=headers).status_code, 200)
+
+    def test_unknown_action_or_device(self):
+        self.assertEqual(self.client.post("/api/people/anna/vitals/devices/aaaa/boh").status_code, 404)
+        self.assertEqual(self.client.post("/api/people/anna/vitals/devices/aaaa/disconnect").status_code, 404)
+
+
 if __name__ == "__main__":
     unittest.main()

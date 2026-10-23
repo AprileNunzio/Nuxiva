@@ -101,18 +101,34 @@ class Book:
     def by_token(self, token: str) -> dict | None:
         digest = _hash(str(token))
         for device in self._all().values():
-            if device.get("token") and hmac.compare_digest(device["token"], digest):
+            if device.get("enabled", True) and device.get("token") and hmac.compare_digest(device["token"], digest):
                 return device
         return None
 
+    def all_devices(self) -> list[dict]:
+        return list(self._all().values())
+
+    def raw(self, device_id: str) -> dict | None:
+        return self._all().get(device_id)
+
     def by_address(self, address: str) -> dict | None:
-        return next((d for d in self._all().values() if d.get("address") == address), None)
+        return next((d for d in self._all().values() if d.get("address") == address and d.get("enabled", True)), None)
 
     def of(self, slug: str) -> list[dict]:
         return [self.public(d) for d in self._all().values() if d["slug"] == slug]
 
     def addresses(self) -> list[str]:
-        return [d["address"] for d in self._all().values() if d.get("address")]
+        return [d["address"] for d in self._all().values() if d.get("address") and d.get("enabled", True)]
+
+    def set_enabled(self, slug: str, device_id: str, enabled: bool) -> dict:
+        with self._lock:
+            device = self._all().get(device_id)
+            if not device or device["slug"] != slug:
+                raise KeyError(device_id)
+            device["enabled"] = enabled
+            device.pop("profiles", None)
+            self._save()
+            return self.public(device)
 
     def touch(self, device: dict, now: float | None = None) -> None:
         device["last"] = now or time.time()

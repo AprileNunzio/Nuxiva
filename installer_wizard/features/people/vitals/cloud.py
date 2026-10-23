@@ -5,6 +5,7 @@ from datetime import datetime, timedelta, timezone
 
 import httpx
 
+from features.people.vitals.journal import journal
 from features.people.vitals.live import live
 from features.people.vitals.model import clean_sample
 
@@ -79,5 +80,10 @@ async def poll(slug: str, now: float | None = None) -> int:
                 continue
             for sample in points(body, key, field, metric, now):
                 added += live.put(slug, sample, "google_health", "cloud", now)
-        _state[slug] = {"state": "error" if error and not added else "ok", "at": now, "error": error}
+        failed = bool(error and not added)
+        _state[slug] = {"state": "error" if failed else "ok", "at": now, "error": error}
+        if failed:
+            journal.add(slug, "error", "cloud_error", {"reason": error}, now, quiet=600.0)
+        elif added:
+            journal.add(slug, "info", "cloud_ok", {}, now, quiet=1800.0)
     return added

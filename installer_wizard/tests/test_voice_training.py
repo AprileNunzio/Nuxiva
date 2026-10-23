@@ -117,3 +117,33 @@ class RecordTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ConditionsTest(unittest.TestCase):
+    def test_plan_covers_tones_and_distances_with_the_chosen_name(self):
+        plan = voice_training.plan("it", custom_name="Astra")
+        tones = {item["tone"] for item in plan}
+        distances = {item["distance"] for item in plan}
+        self.assertEqual(tones, set(voice_training.TONES))
+        self.assertEqual(distances, set(voice_training.DISTANCES))
+        self.assertFalse(any("nuxiva" in item["text"].lower() for item in plan))
+        self.assertLessEqual(len(plan), voice_training.MAX_ITEMS)
+
+    def test_summary_flags_weak_far_speech_and_clipping(self):
+        def res(tone, distance, ok):
+            return {"tone": tone, "distance": distance, "ok": ok}
+
+        results = [res("normal", "near", True), res("normal", "far", False), res("normal", "far", False), res("soft", "near", True)]
+        levels = [{"rms": 0.05, "clipping": 0.0}, {"rms": 0.01, "clipping": 0.0}, {"rms": 0.01, "clipping": 0.0},
+                  {"rms": 0.03, "clipping": 0.05}]
+        groups, tips = voice_training.summarize(results, levels)
+        self.assertEqual(groups["normal_far"], {"ok": 0, "total": 2, "rms": 0.01})
+        self.assertIn("far_weak", tips)
+        self.assertIn("clipping", tips)
+        self.assertNotIn("soft_weak", tips)
+
+    def test_training_made_under_another_name_is_stale(self):
+        with mock.patch.object(voice_training, "get_assistant_name", return_value="Astra"):
+            self.assertTrue(voice_training.stale({"assistant": "Nuxiva"}))
+            self.assertFalse(voice_training.stale({"assistant": "astra"}))
+            self.assertFalse(voice_training.stale({}))

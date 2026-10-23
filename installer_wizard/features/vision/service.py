@@ -46,6 +46,7 @@ class Vision:
         self.size = (640, 480)
         self.lock = threading.Lock()
         self.enroll_request = None
+        self.views = None
         self.frame_id = 0
         self.last_process = 0.0
         self.fast_until = 0.0
@@ -159,6 +160,7 @@ class Vision:
                 unmatched.remove(track)
             track.box, track.last_seen = box, now
             track.facing = facing(face)
+            track.face = face
             track.frames += 1
             need = (len(track.votes) < 3 or track.frames % FEATURE_EVERY == 0
                     or self.enroll_request is not None)
@@ -325,6 +327,7 @@ gallery = Gallery()
 vision = Vision(gallery)
 app = FastAPI(title="Nuxiva Vision", docs_url=None, redoc_url=None, openapi_url=None)
 views = Views(vision, gallery, MODELS)
+vision.views = views
 app.include_router(views_router(views))
 
 

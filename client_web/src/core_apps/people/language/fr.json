@@ -386,5 +386,16 @@
     "vitals_secret_push": "Clé pour « {{name}} », à utiliser comme Bearer sur /api/vitals/push. Elle n'apparaît qu'une fois.",
     "vitals_copy": "Copier",
     "vitals_hide": "Masquer"
-  }
+  },
+  "training_stale": "L'entraînement a été fait quand l'assistant s'appelait «{name}» : refaites-le pour apprendre le nom actuel.",
+  "condition_normal_near": "Voix normale, près",
+  "condition_soft_near": "Chuchoté, près",
+  "condition_raised_near": "Voix forte, près",
+  "condition_normal_far": "Voix normale, loin",
+  "condition_soft_far": "Chuchoté, loin",
+  "condition_raised_far": "Voix forte, loin",
+  "training_tip_far_weak": "De loin je vous entends mal : rapprochez le micro ou refaites l'entraînement plus près.",
+  "training_tip_soft_weak": "Les chuchotements sont difficiles : parlez un peu plus fort ou approchez-vous.",
+  "training_tip_mic_low": "Le niveau du micro est bas : augmentez le gain.",
+  "training_tip_clipping": "Le micro sature quand vous parlez fort : baissez le gain."
 }

@@ -25,6 +25,9 @@ export const VoiceTab: React.FC<VoiceTabProps> = ({ slug, profile, voices, busy,
     setSpeed(Number(voice.speed ?? 1));
   }, [voice.tts_voice, voice.speed]);
   const dirty = tts !== String(voice.tts_voice ?? '') || speed !== Number(voice.speed ?? 1);
+  const stale = training.stale === true;
+  const conditions = record(training.conditions);
+  const tips = Array.isArray(training.tips) ? (training.tips as string[]) : [];
   const dictionary = Array.isArray(training.dictionary) ? (training.dictionary as Record<string, unknown>[]) : [];
 
   return (
@@ -59,12 +62,29 @@ export const VoiceTab: React.FC<VoiceTabProps> = ({ slug, profile, voices, busy,
         <p className={`text-sm ${print.enrolled ? 'text-emerald-700' : 'text-slate-600'}`}>
           {print.enrolled ? t('voiceprint_ready', { samples: print.samples }) : t('voiceprint_missing', { samples: print.samples })}
         </p>
-        {typeof training.score === 'number' && (
+        {stale && <p className="rounded-lg border border-amber-300 bg-amber-50 p-2 text-xs text-amber-900">{t('training_stale', { name: String(training.assistant ?? '') })}</p>}
+        {!stale && typeof training.score === 'number' && (
           <p className="text-xs text-slate-600">
             {t('training_result', { score: training.score, when: relative(Number(training.trained_at ?? 0), lang) })}
           </p>
         )}
-        {dictionary.length > 0 && (
+        {!stale && Object.keys(conditions).length > 0 && (
+          <ul className="grid gap-1 text-xs text-slate-700 sm:grid-cols-2">
+            {Object.entries(conditions).map(([key, value]) => {
+              const group = record(value);
+              return (
+                <li key={key} className="flex justify-between rounded-lg border border-slate-200 px-2 py-1">
+                  <span>{t(`condition_${key}`)}</span>
+                  <span className="font-mono">{String(group.ok ?? 0)}/{String(group.total ?? 0)}</span>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+        {!stale && tips.map((tip) => (
+          <p key={tip} className="text-xs text-amber-800">{t(`training_tip_${tip}`)}</p>
+        ))}
+        {!stale && dictionary.length > 0 && (
           <ul className="max-h-40 overflow-y-auto rounded-lg border border-slate-200 p-2 text-xs text-slate-700">
             {dictionary.slice(0, 30).map((row, i) => (
               <li key={i}>

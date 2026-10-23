@@ -257,6 +257,10 @@ def get(slug: str) -> dict | None:
     if p:
         p["habits"] = habits(p)
         p["computed"] = computed(p)
+        training = p.get("voice_training")
+        if isinstance(training, dict) and training:
+            from features.people import voice_training
+            training["stale"] = voice_training.stale(training)
     return p
 
 

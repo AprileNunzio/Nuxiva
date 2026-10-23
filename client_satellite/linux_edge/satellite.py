@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib.util
 import json
 import logging
 import os
@@ -133,6 +134,8 @@ def capabilities() -> list[str]:
         caps.append("ir_camera")
     if Path("/sys/class/bluetooth").exists():
         caps.append("bluetooth")
+        if importlib.util.find_spec("bleak"):
+            caps.append("vitals_ble")
     return caps
 
 
@@ -295,13 +298,34 @@ PARSERS = {HR_CHAR: parse_heart_rate, TEMP_CHAR: parse_temperature, PLX_CHARS[0]
 async def vitals_cycle(cfg: dict, headers: dict, state: dict) -> None:
     import asyncio
     from bleak import BleakClient, BleakScanner
-    found = await BleakScanner.discover(timeout=VITALS_SCAN, return_adv=True)
+    try:
+        found = await BleakScanner.discover(timeout=VITALS_SCAN, return_adv=True)
+    except Exception as exc:
+        state["errors"].append({"address": "", "code": "scan_failed"})
+        log.info("Scansione BLE non riuscita: %s", exc)
+        found = {}
     watch = set(state["watch"])
     seen = [{"address": a.upper(), "rssi": adv.rssi} for a, (_, adv) in found.items() if a.upper() in watch][:40]
+    nearby = nearby_devices(found) if state["discover"] else []
     samples, state["samples"] = state["samples"][:200], state["samples"][200:]
-    res = await asyncio.to_thread(post, cfg["server"], "/api/vitals/node", {"seen": seen, "samples": samples}, headers)
+    errors, state["errors"] = state["errors"][:20], state["errors"][20:]
+    profiles, state["profiles"] = dict(state["profiles"]), {}
+    res = await asyncio.to_thread(post, cfg["server"], "/api/vitals/node",
+                                  {"seen": seen, "samples": samples, "nearby": nearby, "errors": errors, "profiles": profiles}, headers)
+    state["discover"] = bool(res.get("discover"))
     state["watch"] = [str(a).upper() for a in res.get("watch") or []]
     wanted = {str(a).upper() for a in res.get("connect") or []}
+    for row in res.get("drop") or []:
+        address, nonce = str(row.get("address", "")).upper(), str(row.get("nonce", ""))
+        if nonce and nonce not in state["dropped"]:
+            state["dropped"].add(nonce)
+            wanted.discard(address)
+            client = state["clients"].pop(address, None)
+            if client:
+                try:
+                    await client.disconnect()
+                except Exception as exc:
+                    log.info("Disconnessione BLE %s: %s", address, exc)
     for address in list(state["clients"]):
         if address not in wanted or not state["clients"][address].is_connected:
             client = state["clients"].pop(address)
@@ -313,21 +337,42 @@ async def vitals_cycle(cfg: dict, headers: dict, state: dict) -> None:
         client = BleakClient(address)
         try:
             await client.connect(timeout=10.0)
+            usable = []
             for char, parser in PARSERS.items():
                 if client.services.get_characteristic(char):
+                    usable += METRICS_OF[char]
                     def notify(_, data, address=address, parser=parser):
                         now = time.time()
                         state["samples"].extend({"address": address, "metric": m, "value": v, "ts": now} for m, v in parser(bytes(data)))
                     await client.start_notify(char, notify)
-            state["clients"][address] = client
+            state["profiles"][address] = sorted(set(usable))
+            if usable:
+                state["clients"][address] = client
+            else:
+                await client.disconnect()
         except Exception as exc:
+            state["errors"].append({"address": address, "code": "connect_failed"})
             log.info("Connessione BLE a %s non riuscita: %s", address, exc)
+
+
+METRICS_OF = {HR_CHAR: ["heart_rate"], TEMP_CHAR: ["body_temp"], PLX_CHARS[0]: ["spo2", "heart_rate"], PLX_CHARS[1]: ["spo2", "heart_rate"]}
+HEALTH_SERVICES = ("180d", "1809", "1822")
+
+
+def nearby_devices(found: dict) -> list[dict]:
+    rows = []
+    for address, (device, adv) in found.items():
+        name = (adv.local_name or getattr(device, "name", "") or "")[:40]
+        services = [u for u in adv.service_uuids or [] if str(u).lower()[4:8] in HEALTH_SERVICES]
+        if name or services:
+            rows.append({"address": address.upper(), "name": name, "rssi": adv.rssi, "services": services[:8]})
+    return sorted(rows, key=lambda r: -(r["rssi"] or -127))[:40]
 
 
 def vitals_loop(cfg: dict) -> None:
     import asyncio
     headers = {"Authorization": f"Bearer {cfg['token']}", "X-Nuxiva-Node": cfg["id"]}
-    state = {"watch": [], "clients": {}, "samples": []}
+    state = {"watch": [], "clients": {}, "samples": [], "discover": False, "errors": [], "profiles": {}, "dropped": set()}
 
     async def run() -> None:
         while True:

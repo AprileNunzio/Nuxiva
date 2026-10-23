@@ -386,5 +386,16 @@
     "vitals_secret_push": "Key for «{{name}}», to use as Bearer on /api/vitals/push. It is shown only once.",
     "vitals_copy": "Copy",
     "vitals_hide": "Hide"
-  }
+  },
+  "training_stale": "Training was done when the assistant was called «{name}»: run it again to teach the current name.",
+  "condition_normal_near": "Normal voice, close",
+  "condition_soft_near": "Whisper, close",
+  "condition_raised_near": "Raised voice, close",
+  "condition_normal_far": "Normal voice, far",
+  "condition_soft_far": "Whisper, far",
+  "condition_raised_far": "Raised voice, far",
+  "training_tip_far_weak": "From a distance I hear you poorly: move the microphone closer or repeat the training nearer.",
+  "training_tip_soft_weak": "Whispers are hard for me: speak a bit louder or come closer.",
+  "training_tip_mic_low": "The microphone level is low: raise the microphone gain.",
+  "training_tip_clipping": "The microphone clips when you speak loudly: lower the gain."
 }

@@ -53,9 +53,21 @@ class Accounts:
         return entry
 
     @staticmethod
-    def granted(entry: dict) -> list[str]:
+    def covered(entry: dict) -> list[str]:
         scopes = set(entry.get("scopes", []))
         return [s for s, d in SERVICES.items() if all(x in scopes for x in d["scopes"])]
+
+    @staticmethod
+    def granted(entry: dict) -> list[str]:
+        off = set(entry.get("off", []))
+        return [s for s in Accounts.covered(entry) if s not in off]
+
+    def set_off(self, slug: str, service: str, off: bool) -> None:
+        entry = self.get(slug)
+        if not entry or service not in SERVICES:
+            raise ValueError("Servizio non valido")
+        current = set(entry.get("off", []))
+        self.put(slug, {"off": sorted(current | {service} if off else current - {service})})
 
 
 accounts = Accounts()

@@ -386,5 +386,16 @@
     "vitals_secret_push": "Clave para «{{name}}», para usar como Bearer en /api/vitals/push. Solo se muestra una vez.",
     "vitals_copy": "Copiar",
     "vitals_hide": "Ocultar"
-  }
+  },
+  "training_stale": "El entrenamiento se hizo cuando el asistente se llamaba «{name}»: repítelo para enseñarle el nombre actual.",
+  "condition_normal_near": "Voz normal, cerca",
+  "condition_soft_near": "Susurro, cerca",
+  "condition_raised_near": "Voz alta, cerca",
+  "condition_normal_far": "Voz normal, lejos",
+  "condition_soft_far": "Susurro, lejos",
+  "condition_raised_far": "Voz alta, lejos",
+  "training_tip_far_weak": "Desde lejos te oigo mal: acerca el micrófono o repite el entrenamiento más cerca.",
+  "training_tip_soft_weak": "Los susurros me cuestan: habla un poco más fuerte o acércate.",
+  "training_tip_mic_low": "El nivel del micrófono es bajo: sube la ganancia.",
+  "training_tip_clipping": "El micrófono satura cuando hablas fuerte: baja la ganancia."
 }

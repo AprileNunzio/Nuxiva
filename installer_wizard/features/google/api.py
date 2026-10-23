@@ -60,6 +60,29 @@ async def admin_google_cancel(slug: str, _: str = Depends(require_admin)):
     return {"pending": flows.pending()}
 
 
+@admin_routes.post("/api/google/{slug}/services/{service}")
+async def admin_google_service_enable(slug: str, service: str, user: str = Depends(require_admin)):
+    _person(slug)
+    try:
+        url = google.enable_service(slug, service)
+    except ValueError as exc:
+        raise HTTPException(400, str(exc))
+    if url is None:
+        store.event("INFO", f"Servizio Google {service} riattivato per {slug} da {user}", "google")
+    return {"url": url}
+
+
+@admin_routes.delete("/api/google/{slug}/services/{service}")
+async def admin_google_service_disable(slug: str, service: str, user: str = Depends(require_admin)):
+    _person(slug)
+    try:
+        unlinked = await google.disable_service(slug, service)
+    except ValueError as exc:
+        raise HTTPException(400, str(exc))
+    store.event("INFO", f"Servizio Google {service} disattivato per {slug} da {user}", "google")
+    return {"unlinked": unlinked}
+
+
 @admin_routes.delete("/api/google/{slug}")
 async def admin_google_disconnect(slug: str, user: str = Depends(require_admin)):
     _person(slug)

@@ -38,6 +38,7 @@
       <div class="en-head">${PageText.html("enroll_title", { name: s.name })}</div>
       <div class="en-bar"><i style="width:${pct}%"></i></div>
       <div class="en-step">${PageText.html("enroll_step", { n: Math.min(s.index + 1, total), total })} · ${PageText.html(KIND_KEYS[item.kind] || KIND_KEYS.reading, { name: s.assistant })}</div>
+      ${condition(item) ? `<div class="en-cond">${fmt.esc(condition(item))}</div>` : ""}
       <div class="en-text">${fmt.esc(item.text)}</div>
       <div class="en-meter" aria-hidden="true"><i id="en-level"></i></div>
       ${s.heard ? `<div class="en-note">${PageText.html("enroll_heard", { text: s.heard })}</div>` : ""}
@@ -47,6 +48,14 @@
         <button class="pill-btn" data-stop>${PageText.html("enroll_stop")}</button>
       </div></div>`;
     box().classList.add("show");
+  }
+
+  function condition(item) {
+    const parts = [];
+    if (item.tone === "soft") parts.push(t("enroll_tone_soft"));
+    if (item.tone === "raised") parts.push(t("enroll_tone_raised"));
+    if (item.distance === "far") parts.push(t("enroll_dist_far"));
+    return parts.join(" · ");
   }
 
   function expect() {
@@ -147,7 +156,8 @@
         return;
       }
       if (session.train) session.answers.push({ index: session.index, heard: ev.heard || "", level: ev.level || {} });
-      const advice = levelNote(ev.level);
+      const plain = item.tone === "normal" && item.distance === "near";
+      const advice = plain ? levelNote(ev.level) : null;
       session.note = { key: advice || "enroll_ok", params: {}, tone: advice ? "warn" : "ok" };
       session.pausing = true;
       draw();

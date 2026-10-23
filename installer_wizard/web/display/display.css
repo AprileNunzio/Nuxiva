@@ -187,6 +187,7 @@ body.desk-full .caption:not(:empty) { opacity: 1; }
 .en-bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--cyan), var(--green)); transition: width 0.6s ease; box-shadow: 0 0 12px var(--cyan); }
 .en-step { font-size: 12px; color: var(--text-faint); font-family: var(--mono); }
 .en-text { font-size: clamp(20px, 3.2vh, 30px); font-weight: 300; line-height: 1.45; margin: 22px 0; }
+.en-cond { margin-top: 14px; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: #b36bff; }
 .en-note { font-size: 13px; color: var(--text-dim); margin-bottom: 18px; }
 body.conversing .ear { border-color: var(--green); box-shadow: 0 0 18px rgba(61, 255, 168, 0.25); }
 .en-meter { height: 4px; border-radius: 4px; background: rgba(255, 255, 255, 0.06); margin: 0 auto 14px; max-width: 320px; overflow: hidden; }

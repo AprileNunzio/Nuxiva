@@ -1,6 +1,7 @@
 import json
 import time
 
+from identity import assistant_identity, self_line
 from state import store
 
 from features.agent import registry, tool_scanner
@@ -18,7 +19,7 @@ MAX_STEPS = 8
 PENDING_TTL = 180
 
 RULES = (
-    "Sei Nuxiva, l'assistente che agisce davvero sul server di casa usando gli strumenti qui sotto.\n"
+    "Sei {name}, l'assistente che agisce davvero sul server di casa usando gli strumenti qui sotto. {self_line}\n"
     "Strumenti disponibili (ogni strumento appartiene a un agente della squadra; per cosa sa fare un agente usa agent_info, "
     "per passare un compito a un altro agente usa agent_ask o agent_tell):\n{tools}\n\n{team}\n\n"
     "Cartella di lavoro: {files} (i percorsi relativi partono da qui).\n"
@@ -79,7 +80,8 @@ class Agent:
         prompt = f"Richiesta: {request}\n\n" + (f"Passi già eseguiti:\n{history}\n\nProssima mossa?" if steps else "Prima mossa?")
         reply = await generate(prompt, as_json=True, max_tokens=900, temperature=0.1, kind="deep",
                                system=RULES.format(tools=await self.tools(request), files=FILES, share=archive.ROOT,
-                                                  layout=layout(), team=board.digest()), timeout=240)
+                                                  layout=layout(), team=board.digest(), name=assistant_identity().name,
+                                                  self_line=self_line()), timeout=240)
         return reply if isinstance(reply, dict) else {}
 
     async def _execute(self, name: str, args: dict, steps: list[dict]) -> None:

@@ -63,7 +63,7 @@ def command(text: str) -> tuple[str, dict] | None:
         forget(slug)
         return f"Fatto, {name}: ho cancellato la sua impronta vocale.", {"mode": "face"}
     return (f"Perfetto, {name}. Ripeta ad alta voce le frasi che compaiono sullo schermo, una alla volta, "
-            "con il suo tono normale: imparo la sua voce e come pronuncia il mio nome.", session(profile))
+            "anche piano, a voce alta e da lontano, quando glielo indico: imparo la sua voce e come pronuncia il mio nome.", session(profile))
 
 
 def session(profile: dict) -> dict:

@@ -1,4 +1,5 @@
 import logging
+import os
 import re
 import time
 from collections import defaultdict, deque
@@ -13,15 +14,25 @@ logger = logging.getLogger("nuxiva.conversation")
 
 
 def get_assistant_name() -> str:
-    raw = (settings.NUXIVA_ASSISTANT_NAME or "").strip()
+    raw = (os.environ.get("NUXIVA_ASSISTANT_NAME") or settings.NUXIVA_ASSISTANT_NAME or "").strip()
     clean = re.sub(r"^(?:hey|hei|ehi|hi|ok|okay)\s+", "", raw, flags=re.I).strip()
     return clean or "NUXIVA"
+
+
+def get_assistant_gender_line() -> str:
+    gender = (os.environ.get("NUXIVA_ASSISTANT_GENDER") or settings.NUXIVA_ASSISTANT_GENDER or "").strip().lower()
+    if gender == "male":
+        return "Sei di genere maschile: parla di te al maschile. "
+    if gender == "female":
+        return "Sei di genere femminile: parla di te al femminile. "
+    return ""
 
 
 def build_persona(assistant_name: str | None = None) -> str:
     name = assistant_name or get_assistant_name()
     return (
-        f"Sei {name}, l'assistente digitale personale che vive in questo sistema. "
+        f"Sei {name}, l'assistente digitale personale che vive in questo sistema. Il tuo unico nome è {name}. "
+        f"{get_assistant_gender_line()}"
         "Parli in italiano (se l'utente ti scrive in un'altra lingua, rispondi nella sua lingua), con tono "
         "preciso, come un maggiordomo tecnologico di altissimo livello. "
         "Stile di risposta (sempre, salvo richiesta diversa): dai del Lei e chiama l'utente «signore» (o per nome). "
@@ -69,8 +80,8 @@ class ConversationEngine:
             persona += ("\nUltimi scambi di questa conversazione (mantieni il filo del discorso e risolvi i "
                         "riferimenti come «e domani?» o «e lui?»):\n" + dialogue[:2500])
         elif settings.NUXIVA_USER_NAME:
-            persona += (f" L'utente si chiama {settings.NUXIVA_USER_NAME}: tu sei Nuxiva, non chiamarlo mai "
-                        "Nuxiva o NUXIVA")
+            persona += (f" L'utente si chiama {settings.NUXIVA_USER_NAME}: tu sei {get_assistant_name()}, non chiamarlo mai "
+                        f"{get_assistant_name()}")
         if people_context:
             persona += ("\nPersone riconosciute ora davanti a te dalla webcam (personalizza la risposta, "
                         "rivolgiti a loro per nome e rispetta le loro preferenze):\n" + people_context)

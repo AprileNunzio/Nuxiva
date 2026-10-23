@@ -15,6 +15,7 @@ from features.chat import voice_id
 from features.people import connectors, faces, insight_api, panel, people, views, voice_training
 from features.people.vitals import api as vitals_api
 from features.people.vitals.book import book as vitals_book
+from features.people.vitals.journal import journal as vitals_journal
 from features.people.vitals.live import live as vitals_live
 from features.vision.proxy import vision_proxy
 from features.voices.catalog import VOICES
@@ -171,6 +172,7 @@ async def admin_person_delete(slug: str, user: str = Depends(require_admin)):
     people.delete(slug)
     vitals_book.forget_person(slug)
     vitals_live.forget(slug)
+    vitals_journal.forget(slug)
     from features.habits.service import habits
     try:
         habits.journal.forget(slug)

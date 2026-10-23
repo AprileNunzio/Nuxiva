@@ -50,18 +50,39 @@ def get_assistant_name() -> str:
     return assistant_name()
 
 
+def stale(training: dict | None) -> bool:
+    if not isinstance(training, dict) or not training:
+        return False
+    return str(training.get("assistant", "")).strip().lower() != get_assistant_name().strip().lower()
+
+
 def language(lang: str | None) -> str:
     return lang if lang in PLANS else "it"
+
+
+CONDITIONS = (
+    ("wake", 0, "soft", "near"),
+    ("wake", 3, "raised", "near"),
+    ("wake", 0, "normal", "far"),
+    ("command", 0, "normal", "far"),
+    ("command", 1, "raised", "far"),
+    ("command", 2, "soft", "near"),
+)
+TONES = ("normal", "soft", "raised")
+DISTANCES = ("near", "far")
 
 
 def plan(lang: str | None, custom_name: str | None = None) -> list[dict]:
     name = custom_name or get_assistant_name()
     chosen = PLANS[language(lang)]
-    out = []
-    for kind in KINDS:
-        for template in chosen[kind]:
-            text = template.replace("Nuxiva", name).replace("nuxiva", name.lower())
-            out.append({"kind": kind, "text": text})
+
+    def fill(template: str) -> str:
+        return template.replace("Nuxiva", name).replace("nuxiva", name.lower())
+
+    out = [{"kind": kind, "text": fill(template), "tone": "normal", "distance": "near"}
+           for kind in KINDS for template in chosen[kind]]
+    for kind, index, tone, distance in CONDITIONS:
+        out.append({"kind": kind, "text": fill(chosen[kind][index]), "tone": tone, "distance": distance})
     return out
 
 
@@ -89,7 +110,36 @@ def evaluate(item: dict, heard: str) -> dict:
         ok = variant is not None and similarity(said, heard) >= 0.5
     else:
         ok = bool(heard)
-    return {"kind": kind, "said": said, "heard": heard, "ok": ok, "variant": variant}
+    return {"kind": kind, "said": said, "heard": heard, "ok": ok, "variant": variant,
+            "tone": item.get("tone", "normal"), "distance": item.get("distance", "near")}
+
+
+def condition_key(result: dict) -> str:
+    return f"{result.get('tone', 'normal')}_{result.get('distance', 'near')}"
+
+
+def summarize(results: list, levels: list) -> tuple[dict, list]:
+    groups: dict[str, dict] = {}
+    for result, level in zip(results, levels):
+        group = groups.setdefault(condition_key(result), {"ok": 0, "total": 0, "rms": 0.0})
+        group["total"] += 1
+        group["ok"] += int(result["ok"])
+        group["rms"] += level["rms"]
+    for group in groups.values():
+        group["rms"] = round(group["rms"] / group["total"], 4)
+    tips = []
+    far = [g for k, g in groups.items() if k.endswith("_far")]
+    soft = [g for k, g in groups.items() if k.startswith("soft_")]
+    if far and sum(g["ok"] for g in far) < 0.6 * sum(g["total"] for g in far):
+        tips.append("far_weak")
+    if soft and sum(g["ok"] for g in soft) < 0.6 * sum(g["total"] for g in soft):
+        tips.append("soft_weak")
+    base = groups.get("normal_near")
+    if base and base["rms"] < 0.015:
+        tips.append("mic_low")
+    if any(lv["clipping"] > 0.02 for lv in levels):
+        tips.append("clipping")
+    return groups, tips
 
 
 def _clean_level(level) -> dict:
@@ -121,6 +171,7 @@ def record(slug: str, lang: str | None, answers: list) -> dict:
     variants = sorted({r["variant"] for r in results if r["variant"]})
     spoken = [r for r in results if r["kind"] in ("wake", "command")]
     dictionary = [{"said": r["said"], "heard": r["heard"]} for r in spoken if r["heard"] and plain(r["heard"]) != plain(r["said"])]
+    conditions, tips = summarize(results, levels)
     profile["voice_training"] = {
         "trained_at": time.time(),
         "language": language(lang),
@@ -130,6 +181,9 @@ def record(slug: str, lang: str | None, answers: list) -> dict:
         "level": {"rms": round(max(lv["rms"] for lv in levels), 4), "peak": round(max(lv["peak"] for lv in levels), 4),
                   "clipping": round(max(lv["clipping"] for lv in levels), 4),
                   "advice": next((lv["advice"] for lv in reversed(levels) if lv["advice"] != "ok"), "ok")},
+        "assistant": get_assistant_name(),
+        "conditions": conditions,
+        "tips": tips,
         "results": results,
     }
     people.save(profile)

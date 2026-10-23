@@ -15,8 +15,18 @@ MERGE_THRESHOLD = 0.30
 LEARN_UNTIL = 25
 LEARN_EVERY = 1.5
 REFINE_EVERY = 60.0
+VIEW_EVERY = 4.0
+VIEW_MIN_SCORE = 0.55
 MERGE_CENTROID = float(os.environ.get("NUXIVA_FACE_MERGE_CENTROID", "0.45"))
 REFINE = os.environ.get("NUXIVA_FACE_AUTOIMPROVE", "1") != "0"
+
+
+def collect_view(vision, track, frame, slug, score, now) -> None:
+    views = getattr(vision, "views", None)
+    if views is None or track.face is None or score < VIEW_MIN_SCORE or now - track.last_view < VIEW_EVERY:
+        return
+    track.last_view = now
+    views.auto(slug, frame, track.face)
 
 
 def learn(vision, track, frame, feature) -> None:
@@ -29,6 +39,7 @@ def learn(vision, track, frame, feature) -> None:
     ratio = track.box[2] / (vision.size[0] or 640)
     ir = [track.ir_feature] if track.ir_feature is not None else None
     if slug:
+        collect_view(vision, track, frame, slug, score, now)
         person = vision.gallery.people.get(slug, {})
         young = person.get("samples", 40) < LEARN_UNTIL
         wait = LEARN_EVERY if young else REFINE_EVERY

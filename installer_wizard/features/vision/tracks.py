@@ -20,6 +20,8 @@ class Track:
         self.samples: list = []
         self.last_learn = 0.0
         self.facing = False
+        self.face = None
+        self.last_view = 0.0
         self.echo_of: str | None = None
         self.ir_feature = None
         self.ir_samples: list = []

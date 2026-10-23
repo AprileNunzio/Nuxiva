@@ -44,8 +44,11 @@ class Google:
 
     async def link(self, pasted: str, slug_hint: str = "") -> tuple[str, str]:
         slug, body = await oauth.exchange(pasted, slug_hint)
+        before = set(accounts.covered(accounts.get(slug) or {}))
         accounts.put(slug, {"refresh": body["refresh_token"], "scopes": body.get("scope", "").split(),
                             "linked_at": time.time()})
+        for service in set(accounts.covered(accounts.get(slug) or {})) - before:
+            accounts.set_off(slug, service, False)
         session = Session(slug)
         session.access_token = body["access_token"]
         session.expires_at = time.time() + body.get("expires_in", 3600) - 60
@@ -66,6 +69,31 @@ class Google:
             except httpx.HTTPError as exc:
                 log.warning("Revoca del token Google non confermata: %s", exc)
 
+    def services_of(self, slug: str) -> list[dict]:
+        entry = accounts.get(slug) or {}
+        granted = set(accounts.granted(entry)) if entry else set()
+        return [{"id": s, "name": d["name"], "icon": d["icon"], "granted": s in granted, "workspace": bool(d.get("workspace"))}
+                for s, d in SERVICES.items()]
+
+    def enable_service(self, slug: str, service: str) -> str | None:
+        if service not in SERVICES:
+            raise ValueError("Servizio non valido")
+        entry = accounts.get(slug) or {}
+        if entry.get("refresh") and service in accounts.covered(entry):
+            accounts.set_off(slug, service, False)
+            return None
+        return self.auth_url(slug, [service])
+
+    async def disable_service(self, slug: str, service: str) -> bool:
+        entry = accounts.get(slug)
+        if not entry or service not in accounts.granted(entry):
+            raise ValueError("Servizio non collegato")
+        accounts.set_off(slug, service, True)
+        if not accounts.granted(accounts.get(slug) or {}):
+            await self.unlink(slug)
+            return True
+        return False
+
     def person_row(self, slug: str, name: str | None, role: str) -> dict:
         entry = accounts.get(slug) or {}
         session = self.sessions.get(slug)
@@ -79,7 +107,8 @@ class Google:
         profile = people.load(slug) or {}
         row = self.person_row(slug, profile.get("name"), profile.get("role", ""))
         cid, secret = oauth.credentials()
-        return {**row, "available": bool(cid and secret) and self.enabled(), "pending": slug in {f["slug"] for f in flows.pending()}}
+        return {**row, "available": bool(cid and secret) and self.enabled(), "pending": slug in {f["slug"] for f in flows.pending()},
+                "services": self.services_of(slug)}
 
     def summary(self) -> dict:
         cid, secret = oauth.credentials()

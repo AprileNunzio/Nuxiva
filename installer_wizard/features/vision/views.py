@@ -24,6 +24,9 @@ MAX_SIDE = 1600
 BODY_SIDE = 1280
 OTHER_PERSON_MARGIN = 0.08
 CAPTURE_SECONDS = 3.0
+AUTO_VIEW_CAP = 4
+AUTO_VIEW_MIN_FACE = 70
+AUTO_VIEW_MIN_SHARPNESS = 40.0
 
 
 def decode(data: bytes) -> np.ndarray:
@@ -129,6 +132,27 @@ class Views:
         log.info("Vista %s aggiunta a %s (%d campioni)", kind, slug, meta.get("samples", 0))
         return {"slug": slug, "kind": kind, "label": KINDS[kind], "face": face is not None, "photo": fname,
                 "samples": meta.get("samples", 0), "views": meta.get("views", {})}
+
+    def auto(self, slug: str, frame: np.ndarray, face: np.ndarray) -> str | None:
+        slug = slugify(slug)
+        kind = pose_of(face)
+        d = FACES / slug
+        try:
+            meta = json.loads((d / "meta.json").read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            return None
+        views = meta.get("views") if isinstance(meta.get("views"), dict) else {}
+        if int(views.get(kind, 0)) >= AUTO_VIEW_CAP or float(face[2]) < AUTO_VIEW_MIN_FACE:
+            return None
+        crop = self.vision._crop(frame, tuple(int(v) for v in face[:4]))
+        if crop.size == 0:
+            return None
+        gray = cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
+        if cv2.Laplacian(gray, cv2.CV_64F).var() < AUTO_VIEW_MIN_SHARPNESS:
+            return None
+        self._record(d, kind, crop)
+        log.info("Vista %s acquisita in automatico per %s", kind, slug)
+        return kind
 
     def capture(self, slug: str, name: str, kind: str) -> dict:
         if kind not in KINDS:

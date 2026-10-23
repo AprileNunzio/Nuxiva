@@ -88,3 +88,27 @@ class SupervisorViewsTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class AutoViewTest(unittest.TestCase):
+    def setUp(self):
+        self.gallery, self.views = service.gallery, service.views
+        for slug in list(self.gallery.people):
+            self.gallery.delete(slug)
+        self.gallery.save("Ciro", list(vectors(5)[:6]), np.zeros((20, 20, 3), np.uint8), slug="ciro")
+        rng = np.random.default_rng(3)
+        self.frame = rng.integers(0, 255, (300, 300, 3), dtype=np.uint8)
+
+    def test_pose_is_filed_automatically_up_to_the_cap(self):
+        face = np.array(face_row(80, 80, 120, 120), dtype=np.float32)
+        for _ in range(vviews.AUTO_VIEW_CAP + 2):
+            self.views.auto("ciro", self.frame, face)
+        meta = json.loads((vviews.FACES / "ciro" / "meta.json").read_text(encoding="utf-8"))
+        self.assertEqual(meta["views"]["front"], vviews.AUTO_VIEW_CAP)
+
+    def test_small_or_blurry_faces_are_skipped(self):
+        small = np.array(face_row(80, 80, 30, 30), dtype=np.float32)
+        self.assertIsNone(self.views.auto("ciro", self.frame, small))
+        flat = np.full((300, 300, 3), 90, dtype=np.uint8)
+        big = np.array(face_row(80, 80, 120, 120), dtype=np.float32)
+        self.assertIsNone(self.views.auto("ciro", flat, big))

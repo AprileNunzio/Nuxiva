@@ -184,6 +184,35 @@ class AgentLoopTest(IsolatedStore):
         self.assertEqual([t["role"] for t in self.store.history(expert.id)], ["user", "expert"])
         self.assertTrue(any(m["from"] == service.board_key(expert.id) and m["kind"] == "competenza" for m in board.messages))
 
+    def test_out_of_scope_request_is_handed_to_the_ceo_instead_of_refused(self):
+        expert = service.create({"template": "football"}, "it", "t")
+        replies = [{"escalate": "crea un'automazione che mi avvisa via email prima della partita del Napoli"},
+                   {"answer": "Fatto: l'automazione è attiva."}]
+        run = mock.AsyncMock(return_value="Automazione creata")
+        with mock.patch("features.agent.agent.agent.run", run):
+            out, brain = self._ask(expert.id, "aggiungi un'automazione che mi avvisa prima della partita", replies)
+        run.assert_awaited_once()
+        self.assertIn("automazione", run.await_args.args[0])
+        self.assertEqual(out["steps"][0]["tool"], "ceo")
+        self.assertEqual(out["steps"][0]["result"], "Automazione creata")
+        self.assertEqual(out["text"], "Fatto: l'automazione è attiva.")
+        self.assertIn("escalate", brain.call_args_list[0].kwargs["system"])
+        self.assertIn("non rispondere MAI", brain.call_args_list[0].kwargs["system"])
+        self.assertTrue(any(m["kind"] == "escalation" for m in board.messages))
+
+    def test_escalation_cannot_loop_back(self):
+        expert = service.create({"template": "football"}, "it", "t")
+
+        async def nested(task):
+            steps = []
+            await service._escalate(expert, "ancora", steps)
+            self.assertIn("già stata affidata", steps[0]["result"])
+            return "ok"
+
+        with mock.patch("features.agent.agent.agent.run", nested):
+            out, _ = self._ask(expert.id, "fai qualcosa", [{"escalate": "fai"}, {"answer": "ok"}])
+        self.assertEqual(out["text"], "ok")
+
     def test_tool_requires_its_skill(self):
         expert = service.create({"template": "debian"}, "it", "t")
         out, _ = self._ask(expert.id, "stato", [{"tool": "debian_status", "args": {}}, {"answer": "Serve la competenza."}])

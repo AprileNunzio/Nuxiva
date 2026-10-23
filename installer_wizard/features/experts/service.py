@@ -1,3 +1,4 @@
+import contextvars
 import json
 import time
 
@@ -27,6 +28,8 @@ LANG_NAMES = {"it": "italiano", "en": "English", "es": "español", "fr": "franç
 FAILED = ("ERRORE", "NEGATO")
 SKILL_STEP = "skill:"
 _pending: dict[str, dict] = {}
+_escalating: contextvars.ContextVar[bool] = contextvars.ContextVar("expert_escalating", default=False)
+ESCALATE_STEP = "ceo"
 
 
 class ExpertBusy(RuntimeError):
@@ -158,6 +161,7 @@ def _system(expert: Expert, lang: str) -> str:
     knowledge = "\n".join(f"- {k}" for k in expert.knowledge)
     owner_rules = f"\nIstruzioni del proprietario: {expert.instructions}" if expert.instructions else ""
     catalog = "\n".join(f"- {c['id']}: {c['name']} — {c['purpose']}" for c in (skills.card(s, lang) for s in expert.skills))
+    handoff = '{"escalate": "richiesta completa e autosufficiente, con le parole dell\x27utente"} per affidare al CEO tutto ciò che non puoi fare tu: il CEO la passa all\'agente giusto della squadra ed esegue davvero (automazioni, promemoria, email, file, casa…) e ti restituisce l\'esito;\n'
     moves = ('{"skill": "id_competenza"} per attivare una competenza: carica la sua procedura e i suoi strumenti;\n' if expert.skills else "")
     build = BUILD_GUIDE + RULES if "dev_build" in expert.tools else ""
     return (
@@ -167,10 +171,12 @@ def _system(expert: Expert, lang: str) -> str:
         + "Lavori a ciclo: osserva, ragiona, agisci, verifica l'esito e ripeti finché l'obiettivo è raggiunto.\n"
         "Rispondi SEMPRE e SOLO con un oggetto JSON, uno di questi:\n" + moves
         + '{"tool": "nome_strumento", "args": {...}} per usare UNO strumento della competenza attiva e vederne l\'esito;\n'
+        + handoff +
         '{"answer": "risposta finale"} quando hai finito.\n'
         f"Regole: la risposta finale va scritta in {LANG_NAMES.get(lang, 'italiano')}, da esperto, chiara e concreta; "
         "usa gli strumenti per ogni dato che può cambiare nel tempo; non inventare esiti né numeri; se uno strumento fallisce "
-        "prova un'alternativa o spiega il problema; se la domanda è fuori dalla tua specialità dillo." + build
+        "prova un'alternativa o spiega il problema; non rispondere MAI «non posso» o «non è di mia competenza»: se la richiesta (o una parte) esce dalla tua specialità, usa escalate "
+        "con la richiesta completa e poi riferisci l\'esito reale all\'utente, usando i dati della tua specialità per arricchirla (per esempio orari, date, squadre)." + build
     )
 
 
@@ -237,6 +243,25 @@ def _activate(expert: Expert, skill_id: str, steps: list[dict], lang: str) -> No
     steps.append({"tool": f"{SKILL_STEP}{skill_id}", "args": {}, "result": f"attivata: {card['name']}"})
 
 
+async def _escalate(expert: Expert, task: str, steps: list[dict]) -> None:
+    task = clean(task, QUESTION_LIMIT)
+    if _escalating.get():
+        steps.append({"tool": ESCALATE_STEP, "args": {}, "result": "ERRORE: la richiesta è già stata affidata al CEO, rispondi con ciò che hai"})
+        return
+    from features.agent.agent import agent
+    board.post(board_key(expert.id), "ceo", f"{expert.role} affida al CEO: {task[:160]}", "escalation")
+    token = _escalating.set(True)
+    try:
+        result = await agent.run(task)
+    except Exception as exc:
+        steps.append({"tool": ESCALATE_STEP, "args": {"task": task[:200]}, "result": f"ERRORE: il CEO non è riuscito: {str(exc)[:200]}"})
+        store.event("WARN", f"Escalation al CEO non riuscita ({expert.role}): {exc}", "experts")
+        return
+    finally:
+        _escalating.reset(token)
+    steps.append({"tool": ESCALATE_STEP, "args": {"task": task[:200]}, "result": str(result)[:1500]})
+
+
 async def _loop(expert: Expert, question: str, lang: str, steps: list[dict]) -> dict:
     from features.brain.llm import BrainUnavailable, generate
     system = _system(expert, lang)
@@ -252,6 +277,9 @@ async def _loop(expert: Expert, question: str, lang: str, steps: list[dict]) -> 
         move = move if isinstance(move, dict) else {}
         if move.get("skill") and not move.get("tool"):
             _activate(expert, str(move["skill"]), steps, lang)
+            continue
+        if move.get("escalate") and not move.get("tool"):
+            await _escalate(expert, str(move["escalate"]), steps)
             continue
         if move.get("answer") or not move.get("tool"):
             return {"text": str(move.get("answer") or "").strip()[:4000], "steps": steps}
