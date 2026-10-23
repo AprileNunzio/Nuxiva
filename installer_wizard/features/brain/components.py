@@ -30,6 +30,7 @@ COMPONENTS: tuple[Component, ...] = (
     Component("skills", "Abilità", "Servizi", "studio", "Generazione di nuove abilità."),
     Component("study", "Studio autonomo", "Servizi", "studio", "Lettura di fonti, esercizi ed esami a riposo."),
     Component("diorama", "Creatore di diorami", "Servizi", "deep", "Compone diorami fotorealistici dal vivo, a strati."),
+    Component("musicstudio", "Studio musicale", "Servizi", "deep", "Pianifica canzoni, scrive testi e li traduce nello studio musicale."),
     Component("models3d", "Editor modelli 3D", "Servizi", "modello3d", "Disegno di oggetti nell'editor."),
     Component("research", "Ricercatore", "Agenti del Core", "ricercatore", "Ricerche sul web e sintesi di fonti.", "core"),
     Component("domotics", "Domotico", "Agenti del Core", "domotico", "Esecuzione di scene e comandi per la casa.", "core"),

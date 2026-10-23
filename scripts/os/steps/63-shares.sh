@@ -4,7 +4,7 @@
 SMB_USER=nuxiva-share
 OLD_ROOT=/srv/nuxiva/condivisioni
 ARCHIVE=/srv/nuxiva/condivisa
-FOLDERS=("01 Documenti" "02 Siti web" "03 Modelli 3D" "04 Codice" "05 Scambio" "06 Musica" "07 Diorami")
+FOLDERS=("01 Documenti" "02 Siti web" "03 Modelli 3D" "04 Codice" "05 Scambio" "06 Musica" "07 Diorami" "08 Produzioni")
 MUSIC_SUBFOLDERS=("Libreria" "Da smistare" "Playlist" "Copertine" "Cestino")
 MEMORY=/var/lib/nuxiva/memoria
 CONF=/etc/samba/smb.conf

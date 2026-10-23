@@ -1,0 +1,30 @@
+{
+  "id": "musicstudio",
+  "name": "Studio Musicale",
+  "icon": "🎛️",
+  "category": "creativita",
+  "order": 36,
+  "pinned": false,
+  "panel": "",
+  "api": "api.py",
+  "connector": "commands.py",
+  "connector_risk": "home",
+  "description": "Uno studio di produzione completo a voce o a schermo: Nuxiva compone canzoni intere, scrive e traduce i testi, aggiunge batterie, bassi, accordi, melodie, effetti e voci, e tu rifinisci tutto con timeline, piano roll, step sequencer, mixer ed effetti.",
+  "capabilities": [
+    "Crea una canzone da una frase: genere, tonalità, progressione, struttura, strumenti e testo",
+    "Funziona anche senza cervello disponibile con un motore di arrangiamento a regole",
+    "Aggiunge a richiesta batteria, basso, accordi, pad, arpeggi, melodia, effetti e voci",
+    "Traduce i testi e li fa cantare nella nuova lingua con le voci di Nuxiva",
+    "Timeline a tracce, piano roll, step sequencer, mixer con pan, mute, solo ed effetti per traccia",
+    "20 strumenti sintetizzati e 8 effetti (equalizzatore, filtro, eco, riverbero, chorus, distorsione, compressore, phaser)",
+    "Esporta il mix in WAV e il progetto riapribile nella cartella condivisa «08 Produzioni»"
+  ],
+  "settings": [],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "qUrjwzmP7ZFz",
+    "url": "https://img.icons8.com/?size=240&id=qUrjwzmP7ZFz&format=png"
+  }
+}

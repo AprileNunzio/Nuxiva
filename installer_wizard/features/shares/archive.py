@@ -15,6 +15,7 @@ FOLDERS = {
     "scambio": "05 Scambio",
     "musica": "06 Musica",
     "diorami": "07 Diorami",
+    "produzioni": "08 Produzioni",
 }
 DESCRIPTIONS = {
     "documenti": "testi, note, elenchi e documenti scritti da Nuxiva",
@@ -22,6 +23,7 @@ DESCRIPTIONS = {
     "modelli3d": "oggetti 3D progettati da Nuxiva (GLB, STL per la stampa, OBJ)",
     "codice": "il codice mostrato da Nuxiva sullo schermo, pronto da riusare",
     "scambio": "cartella libera per scambiare file con Nuxiva e sottocartelle create a richiesta",
+    "produzioni": "le canzoni create nello Studio Musicale: mix in WAV e progetto riapribile",
     "diorami": "i diorami 3D costruiti da Nuxiva (scena completa in JSON, riapribile e modificabile)",
     "musica": "libreria musicale di Nuxiva: brani organizzati per artista e album, playlist e nuova musica da smistare",
 }
