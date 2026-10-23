@@ -41,6 +41,7 @@ review_model() {
 ear_enabled() { [ "${NUXIVA_EAR:-1}" != "0" ]; }
 ear_ok() { timeout 3 bash -c 'exec 3<>/dev/tcp/127.0.0.1/8093' 2>/dev/null; }
 py() { "$EAR/venv/bin/python" "$@"; }
+cipher_ready() { [ -e "$EAR/.cipher-unsupported" ] || py -c "import cryptography" 2>/dev/null; }
 
 model_cached() {
     local m
@@ -128,7 +129,8 @@ step_check() {
         ! systemctl is-active --quiet nuxiva-ear
         return
     fi
-    py -c "import faster_whisper, websockets, cryptography" 2>/dev/null || return 1
+    py -c "import faster_whisper, websockets" 2>/dev/null || return 1
+    cipher_ready || return 1
     model_cached && instant_ready && voiceprint_ready || return 1
     same_content "$UNIT" < "$UNIT_SRC" && systemctl is-enabled --quiet nuxiva-ear && ear_ok \
         && code_current ear "${CODE[@]}"
@@ -143,9 +145,15 @@ step_apply() {
     mkdir -p "$EAR/models"
     progress 10 "Ambiente di riconoscimento vocale"
     [ -x "$EAR/venv/bin/python" ] || python3 -m venv "$EAR/venv"
-    if ! py -c "import faster_whisper, websockets, cryptography" 2>/dev/null; then
+    if ! py -c "import faster_whisper, websockets" 2>/dev/null; then
         retry 3 5 "$EAR/venv/bin/pip" install -q --upgrade pip
-        retry 3 5 "$EAR/venv/bin/pip" install -q faster-whisper websockets cryptography
+        retry 3 5 "$EAR/venv/bin/pip" install -q faster-whisper websockets
+    fi
+    if ! cipher_ready; then
+        if retry 2 5 "$EAR/venv/bin/pip" install -q cryptography; then rm -f "$EAR/.cipher-unsupported"
+        else warn "Libreria di cifratura non installata: il registro dell'ascolto resta spento, l'ascolto funziona"
+            touch "$EAR/.cipher-unsupported"
+        fi
     fi
 
     local model
@@ -188,7 +196,10 @@ print('modelli pronti')"
     if write_if_changed "$UNIT" < "$UNIT_SRC"; then systemctl daemon-reload; fi
     systemctl enable nuxiva-ear >/dev/null 2>&1
     systemctl restart nuxiva-ear
-    wait_for 180 ear_ok || fail "Il servizio di ascolto non risponde"
+    if ! wait_for 180 ear_ok; then
+        journalctl -u nuxiva-ear -n 25 --no-pager -o cat 2>/dev/null | sed 's/^/[ear] /' || true
+        fail "Il servizio di ascolto non risponde (vedi le righe [ear] qui sopra)"
+    fi
     code_mark ear "${CODE[@]}"
     info "Ascolto vocale attivo (modello $model): dì \"Nuxiva\" o \"Ehi, Nuxiva\" seguito dalla richiesta"
     progress 100 "Ascolto vocale attivo"
