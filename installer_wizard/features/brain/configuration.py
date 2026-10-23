@@ -50,6 +50,19 @@ def legacy_ref(model: str, env: dict) -> str:
     return ref
 
 
+def bound_selection(body: dict) -> tuple[str, str]:
+    from features.cloud.vault import vault
+    model, root = selection(body)
+    if not root:
+        return model, root
+    base = f"{root}/v1"
+    for pid, entry in vault.servers().items():
+        if entry.get("flavor") == "ollama" and entry.get("base_url") == base and vault.configured(pid):
+            return make_ref(pid, model), root
+    pid = vault.add_server(root.split("//", 1)[-1], "ollama", root, base, "")
+    return make_ref(pid, model), root
+
+
 def migrate_legacy() -> None:
     from config import read_env, write_env
     from features.brain.roles import ROLES

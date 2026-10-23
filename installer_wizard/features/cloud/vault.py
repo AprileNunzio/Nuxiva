@@ -45,7 +45,7 @@ class Vault:
         return {pid: dict(e) for pid, e in self._load().items() if pid.startswith(SERVER)}
 
     def add_server(self, name: str, flavor: str, root: str, base_url: str, key: str) -> str:
-        data = self._load()
+        data = dict(self._load())
         slug = re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")[:24] or "server"
         pid, n = f"{SERVER}{slug}", 2
         while pid in data:

@@ -155,6 +155,12 @@ Nuxiva is not a simple script or monolithic chatbot wrapper, but a **Distributed
 > - The installation and package bootstrapping use `apt-get`: **only Debian, Ubuntu, and direct derivatives** are supported natively.
 > - On systems without a dedicated GPU, Nuxiva automatically selects optimized lightweight quantized models (e.g. Q4_K_M, 1.5B–3B parameters).
 > - Modest hardware can offload neural computation entirely by setting `NUXIVA_OLLAMA_URL` to a remote GPU node or relying on cloud providers.
+
+In Cervello, saving an individual LLM role binds its Ollama model to the selected server, so fast
+conversation can use local Ollama while reasoning uses a remote machine. The binding is stored in the
+existing server vault and survives changes to `NUXIVA_OLLAMA_URL`; older unqualified model settings
+continue to use that global endpoint. **Sync all modules** explicitly replaces every role with the
+global default. Per-role remote assignments keep local models loaded for other roles.
 > - Hardware-dependent features (webcam perception, audio beamforming, CUDA acceleration) gracefully self-disable when physical devices are absent.
 
 ---
