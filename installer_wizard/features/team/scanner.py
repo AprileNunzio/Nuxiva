@@ -54,7 +54,6 @@ WIDGET_AGENT_DEFAULTS: dict[str, tuple[str, list[str]]] = {
     "notice": ("agent", ["notice", "avvisi"]),
     "sport_match": ("sports", ["sport_match", "partita"]),
     "sport_table": ("sports", ["sport_table", "classifica"]),
-    "spotify": ("spotify", ["spotify"]),
     "study": ("study", ["study", "studio"]),
     "subsystem_alert": ("governor", ["subsystem_alert"]),
     "sun_cycle": ("location", ["sun_cycle", "astronomy"]),

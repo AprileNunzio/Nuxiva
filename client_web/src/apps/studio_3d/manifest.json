@@ -21,5 +21,9 @@
     "technique": "3d",
     "id": "gvQUkpW15e1x",
     "url": "https://img.icons8.com/?size=240&id=gvQUkpW15e1x&format=png"
-  }
+  },
+  "featureIds": [
+    "models3d",
+    "avatars"
+  ]
 }

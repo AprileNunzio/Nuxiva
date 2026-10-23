@@ -21,5 +21,10 @@
     "provider": "local",
     "technique": "3d",
     "id": "nuxiva-repair-board"
-  }
+  },
+  "featureIds": [
+    "devstudio",
+    "forge",
+    "projects"
+  ]
 }

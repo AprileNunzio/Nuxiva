@@ -33,5 +33,12 @@
     "technique": "3d",
     "id": "6xRZJrVWQLNn",
     "url": "https://img.icons8.com/?size=240&id=6xRZJrVWQLNn&format=png"
-  }
+  },
+  "featureIds": [
+    "voices",
+    "voicestudio",
+    "sounds",
+    "ducking",
+    "ear"
+  ]
 }

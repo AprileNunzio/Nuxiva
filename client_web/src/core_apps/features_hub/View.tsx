@@ -97,7 +97,7 @@ export function View() {
               ])
             )}
             items={data.features
-              .filter((f) => !isExcludedFromHub(f.id) && (f.surface ?? 'hub') === 'hub')
+              .filter((f) => !isExcludedFromHub(f.id) && !findApp(f.id) && (f.surface ?? 'hub') === 'hub')
               .map((feature) => ({
                 id: feature.id,
                 label: feature.name,

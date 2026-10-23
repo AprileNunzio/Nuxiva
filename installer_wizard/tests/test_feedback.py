@@ -95,7 +95,7 @@ class ForesightRecalibrationTest(unittest.TestCase):
         armed = Foresight(clock=lambda: now, judge=Judge()).arm(evenings(), NAMES, arrival=True)
         entities = {a["entity"]: a["confidence"] for a in armed}
         self.assertNotIn("light.salotto", entities)
-        self.assertLessEqual(entities["media_player.spotify"], 0.5)
+        self.assertLessEqual(entities["media_player.salotto_musica"], 0.5)
 
 
 if __name__ == "__main__":

@@ -127,8 +127,6 @@ from features.people import api as people_api
 from features.people import presence
 from features.skills import api as skills_api
 from features.soup import api as soup_api
-from features.spotify import api as spotify_api
-from features.spotify.spotify import spotify
 from features.study import api as study_api
 from features.study import study
 from features.team import api as team_api
@@ -190,7 +188,6 @@ FEATURE_APIS = (
     home_api,
     brain_api,
     desktop_api,
-    spotify_api,
     google_api,
     maps_api,
     skills_api,
@@ -387,7 +384,6 @@ BACKGROUND = (
     ("scrivania", desk.run, 0.0),
     ("segretario", secretary.run, 0.0),
     ("volume-conversazione", ducker.run, 0.0),
-    ("spotify", spotify.run, 0.0),
     ("google", google.run, 0.0),
     ("mappe", maps.run, 0.0),
     ("casa", home.brain.run, 0.0),

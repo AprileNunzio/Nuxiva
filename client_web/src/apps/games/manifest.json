@@ -42,5 +42,8 @@
   },
   "desktop": {
     "order": 2
-  }
+  },
+  "featureIds": [
+    "games"
+  ]
 }

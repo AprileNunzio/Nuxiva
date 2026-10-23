@@ -39,7 +39,6 @@ class Ducker:
 
     async def collect(self) -> list[targets.Target]:
         found = targets.music()
-        found += await targets.spotify_target()
         if include_home():
             found += await targets.tv({t.ident for t in found})
             found += targets.home()

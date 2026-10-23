@@ -528,7 +528,6 @@ Nuxiva intègre 72 fonctionnalités modulaires regroupées dans `installer_wizar
 
 ### Médias et Connaissances
 - `music` : Bibliothèque musicale locale, empreinte sonore, récupération de pochettes, streaming DLNA et Chromecast.
-- `spotify` : Pilotage à distance des flux Spotify Connect.
 - `sounds` : Bibliothèque de bruitages sonores et retours auditifs du système.
 - `documents` : Analyse sémantique de fichiers (PDF, DOCX, TXT) et génération de synthèses documentaires.
 - `models3d` : Conception 3D paramétrique, génération de fichiers STL/OBJ et visionneuse WebGL intégrée.

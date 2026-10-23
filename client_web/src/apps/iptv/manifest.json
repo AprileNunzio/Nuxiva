@@ -34,5 +34,8 @@
     "id": "NNiLa5wndFCN",
     "url": "https://img.icons8.com/?size=240&id=NNiLa5wndFCN&format=png"
   },
-  "category": "media"
+  "category": "media",
+  "featureIds": [
+    "tv"
+  ]
 }

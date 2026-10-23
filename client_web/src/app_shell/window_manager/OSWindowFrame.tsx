@@ -12,7 +12,7 @@ import { OSIcon3D } from '../OSIcon3D';
 import { useAccess } from '../access/AccessProvider';
 import { useAssistantIdentity } from '../../shared/identity/IdentityContext';
 import { reportError } from '../../shared/errors/errorBus';
-import { Minus, Maximize2, Minimize2, X, Pin, MoreHorizontal, Copy, PanelLeft, PanelRight, RefreshCw, Info } from 'lucide-react';
+import { Minus, Maximize2, Minimize2, X, Pin, MoreHorizontal, Copy, PanelLeft, PanelRight, RefreshCw, Info, Settings } from 'lucide-react';
 
 function NodeApp({ app, entry, revision }: { app: NonNullable<ReturnType<typeof resolveApp>>; entry: OSWindow; revision: number }) {
   const control = useNodeControl(entry.targetNodeId!);
@@ -158,6 +158,7 @@ function Frame({ entry, app }: { entry: OSWindow; app: NonNullable<ReturnType<ty
       <button role="menuitem" onClick={() => { windowStore.update(entry.id,{windowMode:'snapped-right'});setMenu(false); }}><PanelRight />{t('os_snap_right')}</button>
       <button role="menuitem" aria-pressed={entry.pinned} onClick={() => { windowStore.update(entry.id,{pinned:!entry.pinned});setMenu(false); }}><Pin />{t('os_pin')}</button>
       <button role="menuitem" onClick={() => { action('refresh');setMenu(false); }}><RefreshCw />{t('os_refresh')}</button>
+      {entry.appId!=='feature_settings'&&app.featureIds?.map(id=><button key={id} role="menuitem" onClick={() => { windowStore.openWindow({appId:'feature_settings',instanceKey:id});setMenu(false); }}><Settings />{app.featureIds!.length>1?`${t('os_app_settings')} · ${id}`:t('os_app_settings')}</button>)}
       <button role="menuitem" onClick={() => { setInfo(v=>!v);setMenu(false); }}><Info />{t('os_about_app')}</button>
     </div>}
     {info && <div className="os-app-info"><OSIcon3D name={app.name} source={app.iconUrl} /><strong>{title}</strong><span>{app.version || '1.0'} · {t(`os_category_${app.category || 'system'}`)}</span><button onClick={()=>setInfo(false)}>{t('os_close')}</button><a href="https://icons8.it/icons/set/person--technique-3d" target="_blank" rel="noreferrer">Icons8</a></div>}

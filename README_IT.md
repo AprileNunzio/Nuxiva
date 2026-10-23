@@ -536,7 +536,6 @@ Nuxiva include 72 funzionalità modulari in `installer_wizard/features/`. Ciascu
 
 ### Multimedialità e Conoscenza
 - `music`: Gestione della libreria musicale, riconoscimento audio, recupero copertine, DLNA e Chromecast.
-- `spotify`: Integrazione con Spotify Connect e gestione remota della riproduzione.
 - `sounds`: Libreria di effetti sonori e riscontri acustici di sistema.
 - `documents`: Analisi semantica di documenti (PDF, DOCX, TXT) e generazione di riassunti.
 - `models3d`: Disegno di modelli 3D parametrici, generazione STL/OBJ e visualizzatore WebGL.

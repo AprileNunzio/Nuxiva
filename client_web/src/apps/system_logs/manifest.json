@@ -24,7 +24,9 @@
     "url": "https://img.icons8.com/?size=240&id=9QHudN9uBhDv&format=png"
   },
   "featureIds": [
-    "system_logs"
+    "system_logs",
+    "scheduler",
+    "selftest"
   ],
   "i18nScope": "system_logs",
   "capabilities": [

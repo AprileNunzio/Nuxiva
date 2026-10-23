@@ -99,10 +99,6 @@ EDITABLE_KEYS = {
     "NUXIVA_TELEGRAM_TOKEN": "Token del bot Telegram (da @BotFather)",
     "NUXIVA_TELEGRAM": "Bot Telegram attivo (1/0)",
     "NUXIVA_NETWORK": "Esploratore della rete locale (1/0)",
-    "NUXIVA_SPOTIFY": "Spotify attivo (1/0)",
-    "NUXIVA_SPOTIFY_CLIENT_ID": "Spotify: Client ID dell'app (developer.spotify.com)",
-    "NUXIVA_SPOTIFY_CLIENT_SECRET": "Spotify: Client Secret dell'app",
-    "NUXIVA_SPOTIFY_WHEN": "Spotify: quando mostrare il brano (present = se ti vede, always = sempre)",
     "NUXIVA_GOOGLE": "Google: connettori Calendar, Gmail, Tasks, Contatti, Drive, Keep attivi (1/0)",
     "NUXIVA_GOOGLE_CLIENT_ID": "Google: Client ID OAuth (App desktop, console.cloud.google.com)",
     "NUXIVA_GOOGLE_CLIENT_SECRET": "Google: Client Secret OAuth",
@@ -169,7 +165,6 @@ EDITABLE_KEYS = {
     "NUXIVA_3D_CONVERT": "Conversione 3D sul server: Blender per BLEND/USD/USDZ e LibreDWG per DWG (auto = se c'è spazio, 1 = sì, 0 = no)",
 }
 SECRET_KEYS = {"NUXIVA_SECRET_KEY", "NUXIVA_SMB_PASSWORD", "GEMINI_API_KEY", "ANTHROPIC_API_KEY", "HOME_ASSISTANT_TOKEN", "NUXIVA_TELEGRAM_TOKEN", "NUXIVA_SMTP_PASSWORD",
-               "NUXIVA_SPOTIFY_CLIENT_SECRET", "NUXIVA_SPOTIFY_REFRESH_TOKEN",
                "NUXIVA_GOOGLE_CLIENT_SECRET", "NUXIVA_GOOGLE_REFRESH_TOKEN", "NUXIVA_MAPS_API_KEY",
                "NUXIVA_ONLINE_STT_KEY", "NUXIVA_MUSIC_APP_PASSWORD", "NUXIVA_CLOUD_KEY"}
 SECRET_RE = re.compile(r"(KEY|TOKEN|PASSWORD|PASSWD|SECRET|PASSPHRASE|CREDENTIALS?|COOKIE)(_|$)")
@@ -182,7 +177,7 @@ _KEY_RE = re.compile(r"^[A-Z][A-Z0-9_]*$")
 
 NODE = ContextVar("nuxiva_node", default="")
 NODE_FIXED = {"NUXIVA_AUTO_UPDATE", "NUXIVA_UPDATE_INTERVAL_MIN", "NUXIVA_UPDATE_BRANCH", "NUXIVA_GOOGLE_CLIENT_ID",
-              "NUXIVA_SPOTIFY_CLIENT_ID", "HOME_ASSISTANT_URL", "NUXIVA_TELEGRAM", "NUXIVA_AGENT_ACCESS"}
+              "HOME_ASSISTANT_URL", "NUXIVA_TELEGRAM", "NUXIVA_AGENT_ACCESS"}
 _nodes_cache = {"mtime": -1.0, "data": {}}
 
 

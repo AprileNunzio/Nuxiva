@@ -15,7 +15,7 @@ COMPOSE = Path(__file__).resolve().parents[2] / "docker" / "docker-compose.yml"
 class SecretKeysTest(unittest.TestCase):
     def test_secret_names_are_recognised(self):
         for key in ("NUXIVA_SECRET_KEY", "NUXIVA_GOOGLE_REFRESH_TOKEN", "NUXIVA_MUSIC_APP_PASSWORD", "NUXIVA_ONLINE_STT_KEY",
-                    "OPENAI_API_KEY", "NUXIVA_SPOTIFY_CLIENT_SECRET", "NUXIVA_CLOUD_KEY"):
+                    "OPENAI_API_KEY", "NUXIVA_CLOUD_KEY"):
             self.assertTrue(is_secret(key), key)
         for key in ("NUXIVA_KIOSK", "NUXIVA_EMBED_MODEL", "NUXIVA_UI_LANG", "NUXIVA_WAKEWORD_SHA256", "NUXIVA_MACHINE"):
             self.assertFalse(is_secret(key), key)

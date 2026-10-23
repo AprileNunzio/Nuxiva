@@ -1,6 +1,6 @@
 {
   "name": "Gestione Musica",
-  "description": "Il tuo Spotify locale: libreria, playlist, mix, ricerca, testi, Chromecast e DLNA, link condivisi, app per telefono e riconoscimento ambientale.",
+  "description": "La tua libreria musicale locale: libreria, playlist, mix, ricerca, testi, Chromecast e DLNA, link condivisi, app per telefono e riconoscimento ambientale.",
   "capabilities": [
     "Libreria con smistamento automatico",
     "Playlist normali e intelligenti",

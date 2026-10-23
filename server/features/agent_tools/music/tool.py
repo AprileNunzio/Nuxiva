@@ -16,7 +16,7 @@ class MusicTool(BaseAgentTool):
                 "type": "object",
                 "properties": {
                     "brano": {"type": "string", "description": "Titolo o artista del brano"},
-                    "sorgente": {"type": "string", "enum": ["locale", "spotify"], "default": "locale"},
+                    "sorgente": {"type": "string", "enum": ["locale"], "default": "locale"},
                 },
             },
             metadata={"alias": "music"},
@@ -38,9 +38,6 @@ class MusicTool(BaseAgentTool):
             brano_effettivo = brano if brano else "Musica Casuale"
             enthusiasm = ""
 
-        if sorgente.lower() == "spotify":
-            return f"SUCCESSO. Riproduzione di '{brano_effettivo}' avviata su Spotify. {enthusiasm}"
-
         if not os.path.exists(music_library_dir):
             return "Errore: Libreria locale non trovata."
 
@@ -59,7 +56,7 @@ class MusicTool(BaseAgentTool):
 
         if trovato:
             return f"SUCCESSO. Riproduzione locale di '{brano_effettivo}' avviata. {enthusiasm}"
-        return f"ERRORE. Brano '{brano}' non trovato nella libreria locale. Prova a scaricarlo o usa sorgente='spotify'."
+        return f"ERRORE. Brano '{brano}' non trovato nella libreria locale. Prova a scaricarlo prima."
 
 async def play_music(brano: str = "", sorgente: str = "locale") -> str:
     tool = MusicTool()

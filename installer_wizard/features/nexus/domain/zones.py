@@ -20,7 +20,7 @@ _PLACES = {
     "habits": ("tools", "home"), "twin": ("tools", "home"), "nvr": ("tools", "home"), "redalert": ("tools", "home"),
     "printers": ("tools", "home"),
     "chat": ("tools", "communication"), "telegram": ("tools", "communication"), "google": ("tools", "communication"),
-    "spotify": ("tools", "communication"), "mcpclient": ("tools", "communication"),
+    "mcpclient": ("tools", "communication"),
     "music": ("tools", "leisure"), "tv": ("tools", "leisure"), "sports": ("tools", "leisure"),
     "models3d": ("tools", "leisure"), "avatars": ("tools", "leisure"), "voices": ("tools", "leisure"),
     "voicestudio": ("tools", "leisure"), "sounds": ("tools", "leisure"), "appearance": ("tools", "leisure"),
@@ -40,7 +40,7 @@ _BY_CATEGORY = {
     "intrattenimento": ("tools", "leisure"),
     "sistema": ("system", ""),
 }
-_EXPLORER = frozenset({"chat", "vision", "ear", "home_assistant", "music", "voices", "spotify", "people", "auto_update",
+_EXPLORER = frozenset({"chat", "vision", "ear", "home_assistant", "music", "voices", "people", "auto_update",
                        "laws", "brain", "telegram", "tv", "appearance", "avatars"})
 _ARCHITECT = frozenset({"mcpclient", "rpa", "proxmox", "nodes", "soup", "forge", "capabilities", "authz", "governor",
                         "scheduler", "vault", "secure", "kiosk"})

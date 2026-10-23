@@ -32,5 +32,9 @@
     "id": "MSyqQ3LgGhFt",
     "url": "https://img.icons8.com/?size=240&id=MSyqQ3LgGhFt&format=png"
   },
-  "category": "security"
+  "category": "security",
+  "featureIds": [
+    "camsense",
+    "nvr"
+  ]
 }

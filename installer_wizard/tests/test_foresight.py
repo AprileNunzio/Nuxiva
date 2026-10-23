@@ -20,13 +20,13 @@ def evenings(days=10, arrivals=True):
         if arrivals:
             rows.append(row(home, "presence", "arrived", "arrival"))
         rows.append(row(home + timedelta(seconds=50), "light.salotto", "on"))
-        rows.append(row(home + timedelta(seconds=70), "media_player.spotify", "playing"))
+        rows.append(row(home + timedelta(seconds=70), "media_player.salotto_musica", "playing"))
         rows.append(row(home + timedelta(seconds=90), "lock.ingresso", "unlocked"))
         rows.append(row(day.replace(hour=7), "light.bagno", "on"))
     return rows
 
 
-NAMES = {"light.salotto": "Luce salotto", "media_player.spotify": "Spotify", "light.bagno": "Luce bagno"}
+NAMES = {"light.salotto": "Luce salotto", "media_player.salotto_musica": "Musica salotto", "light.bagno": "Luce bagno"}
 
 
 class PredictTest(unittest.TestCase):
@@ -34,7 +34,7 @@ class PredictTest(unittest.TestCase):
         now = (DAY0 + timedelta(days=11)).replace(hour=18, minute=5).timestamp()
         found = {(e, s): reason for e, s, _, reason in predict(evenings(), now, arrival=True)}
         self.assertIn(("light.salotto", "on"), found)
-        self.assertIn(("media_player.spotify", "playing"), found)
+        self.assertIn(("media_player.salotto_musica", "playing"), found)
         self.assertNotIn(("light.bagno", "on"), found)
 
     def test_unlocking_is_never_prepared(self):
@@ -59,7 +59,7 @@ class ForesightTest(unittest.TestCase):
         self.assertEqual(plan["calls"][0]["service"], "turn_on")
         self.assertEqual(plan["entities"], ["light.salotto"])
         self.assertEqual(self.foresight.hits, 1)
-        self.assertEqual(self.foresight.match("metti Spotify")["calls"][0]["service"], "media_play")
+        self.assertEqual(self.foresight.match("metti Musica salotto")["calls"][0]["service"], "media_play")
 
     def test_wrong_verb_or_entity_does_not_fire(self):
         self.assertIsNone(self.foresight.match("spegni la luce del salotto"))

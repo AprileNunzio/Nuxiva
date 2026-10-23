@@ -1,6 +1,6 @@
 (() => {
   const D = window.NuxivaDisplay;
-  const MUSIC = new Set(["music", "spotify", "karaoke"]);
+  const MUSIC = new Set(["music", "karaoke"]);
   let floor = 0.02, peak = 0.1;
 
   const idle = () => !D.busy && !D.isSpeaking() && D.mode === "face" && !(D.Enroll && D.Enroll.active);

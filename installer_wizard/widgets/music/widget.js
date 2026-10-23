@@ -6,8 +6,7 @@
   function paint(el, d, ctx) {
     const bio = String((d.bio && d.bio.text) || "").slice(0, 1000);
     const cover = safeUrl(d.cover);
-    const spot = d.source === "spotify";
-    el.innerHTML = `${ctx.head({ icon: "music", label: spot ? "Spotify" : ctx.t("listening"), chip: spot ? ctx.t("playing") : "", live: spot })}
+    el.innerHTML = `${ctx.head({ icon: "music", label: ctx.t("listening") })}
       <div class="mu-row">
         <div class="mu-cover">${cover ? `<img src="${ctx.esc(cover)}" alt="">` : ctx.icon("music")}</div>
         <div class="mu-txt"><div class="wk-title mu-title">${ctx.esc(String(d.title ?? "").slice(0, 120))}</div><div class="wk-accent mu-artist">${ctx.esc(String(d.artist || "").slice(0, 120))}</div>

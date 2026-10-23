@@ -1,9 +1,8 @@
 {
   "name": "Volume pendant la conversation",
-  "description": "Pendant que vous parlez à Nuxiva, elle baisse toute seule la musique, Spotify, la TV sur les Chromecast et les enceintes Home Assistant, puis remet le volume précédent à la fin de la conversation (sauf si vous l'avez changé entre-temps).",
+  "description": "Pendant que vous parlez à Nuxiva, elle baisse toute seule la musique, la TV sur les Chromecast et les enceintes Home Assistant, puis remet le volume précédent à la fin de la conversation (sauf si vous l'avez changé entre-temps).",
   "capabilities": [
     "Musique sur les sorties d'Nuxiva (Chromecast, DLNA, PC)",
-    "Spotify (après avoir reconnecté le compte)",
     "TV diffusée sur les Chromecast",
     "Enceintes et lecteurs Home Assistant",
     "Vidéo et audio des widgets sur l'écran",

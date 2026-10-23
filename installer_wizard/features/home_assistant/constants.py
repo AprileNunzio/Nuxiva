@@ -171,7 +171,6 @@ CLOUD_INT = {
     "sun",
     "google",
     "alexa",
-    "spotify",
     "openweathermap",
     "accuweather",
     "ring",

@@ -34,5 +34,8 @@
     "id": "nQuaNO36nu68",
     "url": "https://img.icons8.com/?size=240&id=nQuaNO36nu68&format=png"
   },
-  "category": "intelligence"
+  "category": "intelligence",
+  "featureIds": [
+    "brain"
+  ]
 }

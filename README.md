@@ -528,7 +528,6 @@ Nuxiva includes 72 modular features located in `installer_wizard/features/`. Eac
 
 ### Media & Knowledge
 - `music`: Complete music library management, audio fingerprinting, metadata scraping, DLNA/Chromecast streaming.
-- `spotify`: Spotify Connect integration and remote playback control.
 - `sounds`: Sound effect soundboard and ambient auditory feedback.
 - `documents`: Document analysis (PDF, DOCX, TXT), semantic indexing, and automated report generation.
 - `models3d`: Parametric 3D CAD modeling, STL/OBJ generation, and interactive WebGL viewer.

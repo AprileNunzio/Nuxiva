@@ -36,6 +36,8 @@
   "kind": "app",
   "featureIds": [
     "people",
-    "habits"
+    "habits",
+    "vision",
+    "scene"
   ]
 }

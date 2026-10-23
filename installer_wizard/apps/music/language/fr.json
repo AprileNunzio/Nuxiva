@@ -1,6 +1,6 @@
 {
   "name": "Gestion de la musique",
-  "description": "Votre Spotify local : bibliothèque, playlists, mix, recherche, paroles, Chromecast et DLNA, liens partagés, application téléphonique et reconnaissance ambiante.",
+  "description": "Votre bibliothèque musicale locale : bibliothèque, playlists, mix, recherche, paroles, Chromecast et DLNA, liens partagés, application téléphonique et reconnaissance ambiante.",
   "capabilities": [
     "Bibliothèque avec tri automatique",
     "Listes de lecture normales et intelligentes",

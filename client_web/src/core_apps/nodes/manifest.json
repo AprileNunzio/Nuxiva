@@ -32,5 +32,9 @@
     "id": "76XpK7qojvu8",
     "url": "https://img.icons8.com/?size=240&id=76XpK7qojvu8&format=png"
   },
-  "category": "system"
+  "category": "system",
+  "featureIds": [
+    "proxmox",
+    "governor"
+  ]
 }

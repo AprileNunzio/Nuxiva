@@ -46,19 +46,6 @@ class CastTarget(Target):
         await (cast_chrome.control(device, "volume", value) if device["kind"] == "cast" else dlna.control(device, "volume", value))
 
 
-class SpotifyTarget(Target):
-    kind = "spotify"
-
-    async def set(self, value: float) -> None:
-        from features.spotify.spotify import spotify
-        await spotify.set_volume(round(value * 100))
-
-    async def current(self) -> float | None:
-        from features.spotify.spotify import spotify
-        pct = await spotify.playing_volume()
-        return None if pct is None else pct / 100
-
-
 class HomeTarget(Target):
     kind = "home"
 
@@ -116,14 +103,6 @@ async def tv(skip: set[str]) -> list[Target]:
         if info and info.get("state") == "playing" and isinstance(info.get("volume"), (int, float)) and info["volume"] > 0:
             out.append(CastTarget(target_id, device.get("name", target_id), float(info["volume"])))
     return out
-
-
-async def spotify_target() -> list[Target]:
-    from features.spotify.spotify import spotify
-    if not spotify.configured() or not spotify.current():
-        return []
-    pct = await probe(spotify.playing_volume(), "Spotify")
-    return [SpotifyTarget("spotify", "Spotify", pct / 100)] if pct else []
 
 
 def home() -> list[Target]:

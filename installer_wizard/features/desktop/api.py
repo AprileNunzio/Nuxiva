@@ -7,14 +7,12 @@ from access import is_local, require_admin, require_display, require_internal
 from features.desktop.desk import FILES, desk
 from features.desktop.sources import PROVIDERS, SOURCES
 from features.music import music
-from features.spotify.spotify import spotify
 from state import store
 
 public_routes = APIRouter()
 admin_routes = APIRouter()
 
 desk.register_source("now_playing", music.watcher.current)
-desk.register_source("spotify", spotify.current)
 for _name, _fn in SOURCES.items():
     desk.register_source(_name, _fn)
 for _name, _fn in PROVIDERS.items():
