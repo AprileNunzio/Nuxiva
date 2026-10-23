@@ -25,6 +25,7 @@ export interface GoogleState {
   readonly email: string;
   readonly granted: readonly string[];
   readonly services: readonly GoogleService[];
+  readonly remindMin: number;
 }
 
 export interface GoogleService {
@@ -77,6 +78,7 @@ function parseGoogle(value: unknown): GoogleState {
     pending: raw.pending === true,
     email: asString(raw.email, 120) ?? '',
     granted: asStringList(raw.granted, 16),
+    remindMin: typeof raw.remind_min === 'number' ? Math.max(0, Math.min(240, Math.round(raw.remind_min))) : 10,
     services: list(raw.services).map(asRecord).flatMap((x) => {
       const id = asString(x.id, 24) ?? '';
       return /^[a-z_]{2,24}$/.test(id) ? [{ id, icon: asString(x.icon, 8) ?? '', granted: x.granted === true }] : [];
@@ -122,6 +124,8 @@ export const googleEnableService = async (slug: string, service: string): Promis
 };
 export const googleDisableService = (slug: string, service: string) =>
   requestJson<unknown>(`/api/google/${slugOf(slug)}/services/${serviceOf(service)}`, { method: 'DELETE' });
+export const googleSetReminder = (slug: string, minutes: number) =>
+  requestJson<unknown>(`/api/google/${slugOf(slug)}/reminder`, { method: 'PUT', body: JSON.stringify({ minutes }) });
 export const googleCancel = (slug: string) => requestJson<unknown>(`/api/google/${slugOf(slug)}/pending`, { method: 'DELETE' });
 export const googleUnlink = (slug: string) => requestJson<unknown>(`/api/google/${slugOf(slug)}`, { method: 'DELETE' });
 

@@ -557,6 +557,9 @@
     "vh_step_3": "Si el dispositivo ya está conectado a un teléfono, cierra la app Fitbit o apaga el Bluetooth del teléfono: muchos dispositivos aceptan una sola conexión a la vez.",
     "vh_step_4": "Pulsa «Buscar dispositivos cercanos», elige el dispositivo de la lista y asócialo a esta persona en vez de escribir la dirección a mano.",
     "vh_step_5": "Si sigue sin aparecer, apaga y enciende el Bluetooth del dispositivo y reintenta: la lista se actualiza cada pocos segundos.",
-    "vh_link": "Ayuda oficial de Fitbit"
+    "vh_link": "Ayuda oficial de Fitbit",
+    "gg_remind": "Avisarme antes de una cita (minutos)",
+    "gg_remind_hint": "Solo para esta persona. 0 = sin aviso. Máximo 240.",
+    "gg_remind_save": "Guardar aviso"
   }
 }

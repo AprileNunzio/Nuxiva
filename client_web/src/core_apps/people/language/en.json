@@ -557,6 +557,9 @@
     "vh_step_3": "If the device is already connected to a phone, close the Fitbit app or turn off the phone's Bluetooth: many devices accept only one connection at a time.",
     "vh_step_4": "Press “Search nearby devices”, pick the device from the list and associate it with this person instead of typing the address by hand.",
     "vh_step_5": "If it still does not appear, turn the device's Bluetooth off and on and retry: the list refreshes every few seconds.",
-    "vh_link": "Official Fitbit help"
+    "vh_link": "Official Fitbit help",
+    "gg_remind": "Remind me before an appointment (minutes)",
+    "gg_remind_hint": "For this person only. 0 = no reminder. Maximum 240.",
+    "gg_remind_save": "Save reminder"
   }
 }

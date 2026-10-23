@@ -8,8 +8,7 @@
   ],
   "settings": {
     "NUXIVA_GOOGLE_CLIENT_ID": "OAuth Client ID",
-    "NUXIVA_GOOGLE_CLIENT_SECRET": "OAuth Client Secret",
-    "NUXIVA_GOOGLE_REMIND_MIN": "Remind me before an appointment (minutes, 0 = never)"
+    "NUXIVA_GOOGLE_CLIENT_SECRET": "OAuth Client Secret"
   },
   "guide": {
     "title": "How to get your Google Client ID and Client Secret",

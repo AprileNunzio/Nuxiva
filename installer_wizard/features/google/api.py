@@ -89,3 +89,20 @@ async def admin_google_disconnect(slug: str, user: str = Depends(require_admin))
     await google.unlink(slug)
     store.event("INFO", f"Account Google di {slug} scollegato da {user}", "google")
     return google.summary()
+
+
+@admin_routes.put("/api/google/{slug}/reminder")
+async def admin_google_reminder(slug: str, request: Request, user: str = Depends(require_admin)):
+    _person(slug)
+    try:
+        body = await request.json()
+    except ValueError:
+        raise HTTPException(400, "Richiesta non valida")
+    try:
+        minutes = google.set_reminder(slug, body.get("minutes") if isinstance(body, dict) else None)
+    except ValueError as exc:
+        raise HTTPException(400, str(exc))
+    except LookupError as exc:
+        raise HTTPException(409, str(exc))
+    store.event("INFO", f"Google: avviso prima degli appuntamenti di {slug} impostato a {minutes} minuti da {user}", "google")
+    return {"minutes": minutes}

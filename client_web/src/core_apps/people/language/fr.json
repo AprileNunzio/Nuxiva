@@ -557,6 +557,9 @@
     "vh_step_3": "Si l'appareil est déjà connecté à un téléphone, fermez l'app Fitbit ou coupez le Bluetooth du téléphone : beaucoup d'appareils n'acceptent qu'une connexion à la fois.",
     "vh_step_4": "Appuyez sur « Rechercher les appareils proches », choisissez l'appareil dans la liste et associez-le à cette personne au lieu de saisir l'adresse à la main.",
     "vh_step_5": "S'il n'apparaît toujours pas, coupez puis réactivez le Bluetooth de l'appareil et réessayez : la liste se met à jour toutes les quelques secondes.",
-    "vh_link": "Aide officielle Fitbit"
+    "vh_link": "Aide officielle Fitbit",
+    "gg_remind": "Me prévenir avant un rendez-vous (minutes)",
+    "gg_remind_hint": "Uniquement pour cette personne. 0 = aucun rappel. Maximum 240.",
+    "gg_remind_save": "Enregistrer le rappel"
   }
 }

@@ -9,6 +9,7 @@ from fastapi.testclient import TestClient
 from access import require_admin
 from features.google import accounts as accounts_module
 from features.google import api as google_api
+from features.google.app import oauth
 from features.google.constants import SERVICES
 from features.google.gservices import google
 from features.people import people, private_store
@@ -66,6 +67,17 @@ class ServiceTest(Base):
             self.assertEqual(self.client.post("/api/google/anna/services/drive").json(), {"url": "https://accounts.google.com/x"})
         url.assert_called_once_with("anna", ["drive"])
 
+    def test_link_without_services_uses_the_defaults(self):
+        with mock.patch.object(oauth, "credentials", return_value=("cid", "secret")):
+            url = self.client.post("/api/google/anna/auth-url", content="{}").json()["url"]
+        self.assertTrue(url.startswith("https://accounts.google.com/"))
+        self.assertIn("calendar", url)
+
+    def test_link_without_credentials_explains_why(self):
+        with mock.patch.object(oauth, "credentials", return_value=("", "")):
+            response = self.client.post("/api/google/anna/auth-url", content="{}")
+        self.assertEqual(response.status_code, 400)
+
     def test_last_service_off_unlinks_the_account(self):
         self.link(SERVICES["calendar"]["scopes"])
         with mock.patch.object(google_api.google, "unlink", new=mock.AsyncMock()) as unlink:
@@ -87,3 +99,30 @@ class ServiceTest(Base):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ReminderTest(Base):
+    def test_each_person_has_their_own_value_with_a_default(self):
+        self.assertEqual(google.reminder_minutes("anna"), 10)
+        self.link(PARTIAL)
+        self.assertEqual(self.client.put("/api/google/anna/reminder", json={"minutes": 25}).json(), {"minutes": 25})
+        self.assertEqual(google.reminder_minutes("anna"), 25)
+        people.ensure("luca", "Luca Bianchi")
+        self.assertEqual(google.reminder_minutes("luca"), 10)
+        self.assertEqual(google.person_state("anna")["remind_min"], 25)
+
+    def test_zero_means_never_and_invalid_values_are_rejected(self):
+        self.link(PARTIAL)
+        self.assertEqual(self.client.put("/api/google/anna/reminder", json={"minutes": 0}).json(), {"minutes": 0})
+        self.assertEqual(google.reminder_minutes("anna"), 0)
+        for bad in (-1, 241, "10", None, True, 1.5):
+            self.assertEqual(self.client.put("/api/google/anna/reminder", json={"minutes": bad}).status_code, 400, bad)
+
+    def test_unlinked_person_cannot_set_it(self):
+        self.assertEqual(self.client.put("/api/google/anna/reminder", json={"minutes": 5}).status_code, 409)
+        self.assertEqual(self.client.put("/api/google/nessuno/reminder", json={"minutes": 5}).status_code, 404)
+
+    def test_global_setting_is_gone_from_the_feature(self):
+        import json
+        manifest = json.loads((Path(__file__).resolve().parents[1] / "features" / "google" / "feature.json").read_text(encoding="utf-8"))
+        self.assertNotIn("NUXIVA_GOOGLE_REMIND_MIN", [s["key"] for s in manifest["settings"]])

@@ -36,12 +36,6 @@
       "label": "Client Secret OAuth",
       "type": "secret",
       "default": ""
-    },
-    {
-      "key": "NUXIVA_GOOGLE_REMIND_MIN",
-      "label": "Avvisami prima di un appuntamento (minuti, 0 = mai)",
-      "type": "number",
-      "default": "10"
     }
   ],
   "icon3d": "./icon.png",

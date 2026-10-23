@@ -15,6 +15,9 @@ from features.google.session import Session
 from features.google.timeparse import event_json
 from features.people import identity, people
 
+MAX_REMIND_MIN = 240
+DEFAULT_REMIND_MIN = 10
+
 
 class Google:
     def __init__(self) -> None:
@@ -40,7 +43,7 @@ class Google:
     def auth_url(self, slug: str, services: list[str]) -> str:
         if not people.load(slug):
             raise ValueError("Persona sconosciuta")
-        return oauth.auth_url(slug, services)
+        return oauth.auth_url(slug, services or DEFAULT_SERVICES.split(","))
 
     async def link(self, pasted: str, slug_hint: str = "") -> tuple[str, str]:
         slug, body = await oauth.exchange(pasted, slug_hint)
@@ -103,18 +106,37 @@ class Google:
                 "status": session.status if session else ("collegato" if entry else "non collegato"),
                 "unread": session.unread if session else None}
 
+    @staticmethod
+    def reminder_minutes(slug: str) -> int:
+        entry = accounts.get(slug) or {}
+        value = entry.get("remind_min")
+        if isinstance(value, int) and not isinstance(value, bool) and 0 <= value <= MAX_REMIND_MIN:
+            return value
+        try:
+            return max(0, min(MAX_REMIND_MIN, int(env_get("NUXIVA_GOOGLE_REMIND_MIN", "10") or 10)))
+        except ValueError:
+            return DEFAULT_REMIND_MIN
+
+    def set_reminder(self, slug: str, minutes: int) -> int:
+        if isinstance(minutes, bool) or not isinstance(minutes, int) or not 0 <= minutes <= MAX_REMIND_MIN:
+            raise ValueError("Minuti non validi")
+        if not accounts.get(slug):
+            raise LookupError("Account Google non collegato")
+        accounts.put(slug, {"remind_min": minutes})
+        return minutes
+
     def person_state(self, slug: str) -> dict:
         profile = people.load(slug) or {}
         row = self.person_row(slug, profile.get("name"), profile.get("role", ""))
         cid, secret = oauth.credentials()
-        return {**row, "available": bool(cid and secret) and self.enabled(), "pending": slug in {f["slug"] for f in flows.pending()},
+        return {**row, "remind_min": self.reminder_minutes(slug), "available": bool(cid and secret) and self.enabled(), "pending": slug in {f["slug"] for f in flows.pending()},
                 "services": self.services_of(slug)}
 
     def summary(self) -> dict:
         cid, secret = oauth.credentials()
         rows = [self.person_row(p["slug"], p.get("name"), p.get("role", "")) for p in people.all_profiles(light=True)]
         return {"enabled": self.enabled(), "has_credentials": bool(cid and secret), "client_id": cid,
-                "redirect_uri": REDIRECT_URI, "remind_min": env_get("NUXIVA_GOOGLE_REMIND_MIN", "10"),
+                "redirect_uri": REDIRECT_URI,
                 "default_services": DEFAULT_SERVICES.split(","),
                 "services": [{"id": s, "name": d["name"], "icon": d["icon"], "api": d["api"],
                               "workspace": bool(d.get("workspace"))} for s, d in SERVICES.items()],
@@ -171,12 +193,11 @@ class Google:
         while True:
             if self.enabled() and oauth.ready():
                 accounts.slugs()
-                minutes = int(env_get("NUXIVA_GOOGLE_REMIND_MIN", "10") or 10)
                 here = identity.present()
                 full = time.time() - last_full >= 60
                 for profile in here:
                     if full or profile["slug"] not in seen:
-                        await self._refresh(profile, minutes)
+                        await self._refresh(profile, self.reminder_minutes(profile["slug"]))
                 seen = {p["slug"] for p in here}
                 if full:
                     last_full = time.time()

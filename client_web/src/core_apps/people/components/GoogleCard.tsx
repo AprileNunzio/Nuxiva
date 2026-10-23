@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ExternalLink, Mail, Unlink } from 'lucide-react';
 import { GoogleState, googleAuthUrl, googleCancel, googleFinish, googleUnlink } from '../data/connectorsApi';
 import { chipClass, fieldClass, usePeopleI18n } from '../scope';
+import { GoogleReminder } from './GoogleReminder';
 import { GoogleServices } from './GoogleServices';
 import { SetupLink } from './SetupLink';
 
@@ -50,6 +51,7 @@ export const GoogleCard: React.FC<Props> = ({ slug, state, busy, run }) => {
         </p>
       )}
       {state.services.length > 0 && <GoogleServices slug={slug} services={state.services} linked={state.linked} available={state.available} busy={busy} run={run} />}
+      {state.linked && <GoogleReminder slug={slug} minutes={state.remindMin} busy={busy} run={run} />}
       {state.pending && (
         <div className="flex flex-col gap-2">
           <p className="text-xs text-slate-600">{t('gg_paste_hint')}</p>

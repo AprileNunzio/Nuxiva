@@ -3,8 +3,7 @@
   "description": "Cada persona vincula su propia cuenta de Google: agenda, correo, tareas, contactos, Drive y notas.",
   "settings": {
     "NUXIVA_GOOGLE_CLIENT_ID": "ID de cliente de OAuth",
-    "NUXIVA_GOOGLE_CLIENT_SECRET": "Secreto de cliente de OAuth",
-    "NUXIVA_GOOGLE_REMIND_MIN": "Avisarme antes de una cita (minutos, 0 = nunca)"
+    "NUXIVA_GOOGLE_CLIENT_SECRET": "Secreto de cliente de OAuth"
   },
   "guide": {
     "title": "Cómo obtener tu ID de cliente y secreto de Google",
