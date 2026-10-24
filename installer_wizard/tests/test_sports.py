@@ -185,3 +185,46 @@ class AnswerRefreshTest(unittest.IsolatedAsyncioTestCase):
         with unittest.mock.patch.object(commands, "answer", answer):
             with self.assertRaises(ValueError):
                 await tools.sport_query("gioca qualcuno?")
+
+
+class HockeyTest(unittest.IsolatedAsyncioTestCase):
+    TEAMS = {"sports": [{"leagues": [{"teams": [
+        {"team": {"id": "1", "displayName": "Boston Bruins", "shortDisplayName": "Bruins", "abbreviation": "BOS"}},
+        {"team": {"id": "2", "displayName": "Florida Panthers", "shortDisplayName": "Panthers", "abbreviation": "FLA"}}]}]}]}
+    STANDINGS = {"children": [{"name": "Eastern Conference", "standings": {"entries": [
+        {"team": {"id": "2", "displayName": "Florida Panthers", "shortDisplayName": "Panthers"},
+         "stats": [{"name": "points", "value": 10}, {"name": "wins", "value": 5}, {"name": "gamesPlayed", "value": 8}]},
+        {"team": {"id": "1", "displayName": "Boston Bruins", "shortDisplayName": "Bruins"},
+         "stats": [{"name": "points", "value": 17}, {"name": "wins", "value": 8}, {"name": "losses", "value": 2},
+                   {"name": "otLosses", "value": 1}, {"name": "gamesPlayed", "value": 11}]}]}}]}
+
+    def board(self):
+        return {"events": [{"id": "9", "date": "2026-10-11T01:00Z", "competitions": [{
+            "status": {"displayClock": "0:00", "type": {"state": "post", "shortDetail": "Final"}},
+            "competitors": [
+                {"homeAway": "home", "score": "6", "team": {"id": "1", "displayName": "Boston Bruins", "shortDisplayName": "Bruins"}},
+                {"homeAway": "away", "score": "0", "team": {"id": "5", "displayName": "Nashville Predators", "shortDisplayName": "Predators"}}]}]}]}
+
+    async def fake(self, url, ttl):
+        if url.endswith("/teams"):
+            return self.TEAMS
+        if "standings" in url:
+            return self.STANDINGS
+        return self.board()
+
+    async def ask(self, text):
+        with unittest.mock.patch("features.sports.hockey.get_json", self.fake), \
+                unittest.mock.patch.object(commands, "_desk", return_value=unittest.mock.Mock()):
+            return (await commands.answer(text))[0]
+
+    async def test_standings_for_team_and_league(self):
+        self.assertIn("Bruins è 1° nella Eastern Conference NHL con 17 punti", await self.ask("hockey classifica dei Bruins"))
+        self.assertIn("Eastern Conference: Bruins 17, Panthers 10", await self.ask("classifica NHL"))
+
+    async def test_team_result_and_day_summary(self):
+        self.assertIn("Bruins ha vinto 6 a 0 contro Predators", await self.ask("com'è finita l'hockey dei Bruins"))
+        self.assertIn("Bruins 6, Predators 0", await self.ask("risultati hockey di ieri"))
+
+    async def test_history_questions_are_left_to_research(self):
+        with self.assertRaises(LookupError):
+            await self.ask("chi ha vinto lo stanley cup")

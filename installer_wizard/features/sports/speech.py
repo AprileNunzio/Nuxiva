@@ -63,3 +63,32 @@ def f1_speech(card: dict) -> str:
     session = card["session"]
     now = datetime.now().astimezone()
     return f"Prossimo appuntamento: {session['name'].lower()} del {race['name']}, {when(session['start'], now)} ({race['place']})."
+
+
+def hockey_day_speech(games: list[dict], now: datetime) -> str:
+    done = [g for g in games if g["state"] == "post"][-6:]
+    live = [g for g in games if g["state"] == "in"]
+    coming = [g for g in games if g["state"] == "pre"][:3]
+    parts = []
+    if live:
+        parts.append("In corso: " + "; ".join(f"{_score(g)} ({g['detail'] or g['clock']})" for g in live[:4]) + ".")
+    if done:
+        parts.append("Ultimi risultati NHL: " + "; ".join(_score(g) for g in done) + ".")
+    if coming and not live:
+        parts.append("Prossime partite: " + "; ".join(f"{g['home']['short']}-{g['away']['short']} {when(g['start'], now)}" for g in coming) + ".")
+    return " ".join(parts) or "Non ci sono partite NHL in questi giorni."
+
+
+def hockey_table_speech(rows: list[dict], team: dict | None) -> str:
+    if not rows:
+        return "La classifica NHL non è ancora disponibile."
+    if team:
+        row = next((r for r in rows if r["id"] == team["id"]), None)
+        if row:
+            return (f"{row['short']} è {row['rank']}° nella {row['conference']} NHL con {row['points']} punti in {row['played']} partite "
+                    f"({row['won']} vittorie, {row['lost']} sconfitte, {row['overtime']} ai supplementari).")
+    parts = []
+    for conference in dict.fromkeys(r["conference"] for r in rows):
+        top = [r for r in rows if r["conference"] == conference][:3]
+        parts.append(f"{conference}: " + ", ".join(f"{r['short']} {r['points']}" for r in top))
+    return "In testa alla NHL, " + "; ".join(parts) + "."
