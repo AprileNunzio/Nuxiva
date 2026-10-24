@@ -164,6 +164,29 @@ class ApiTest(unittest.TestCase):
         self.assertEqual(self.client.post(url, json={"verdict": "wrong", "mood": "triste", "intensity": 2}).json()["feedback"], "corrected")
         self.assertEqual(self.client.post("/api/people/nessuno/mood/x/feedback", json={"verdict": "ok"}).status_code, 404)
 
+    def test_face_reading_is_journaled(self):
+        live = {"arousal": 72.0, "valence": -0.4, "area": "tension", "samples": 12, "calibrating": False}
+        entry = learning.learn_face("anna", live, now=1000.0)
+        self.assertEqual((entry["mood"], entry["source"], entry["intensity"]), ("stressato", "camera", 4))
+        self.assertEqual(entry["feedback"], "")
+        self.assertIsNone(learning.learn_face("anna", live, now=1010.0))
+        calm = {"arousal": 40.0, "valence": 0.6, "area": "relief", "samples": 12, "calibrating": False}
+        self.assertEqual(learning.learn_face("anna", calm, now=1200.0)["mood"], "felice")
+        self.assertIsNone(learning.learn_face("anna", calm, now=1500.0))
+        self.assertEqual(learning.learn_face("anna", live, now=2500.0)["mood"], "stressato")
+        self.assertEqual(len(mood.journal("anna")), 3)
+
+    def test_face_reading_guards(self):
+        base = {"arousal": 20.0, "valence": 0.0, "area": "exhaustion", "samples": 12, "calibrating": False}
+        self.assertIsNone(learning.learn_face("anna", None))
+        self.assertIsNone(learning.learn_face("anna", {**base, "calibrating": True}))
+        self.assertIsNone(learning.learn_face("anna", {**base, "samples": 3}))
+        self.assertIsNone(learning.learn_face("nessuno", base))
+        profile = people.load("anna")
+        profile["consent"] = False
+        people.save(profile)
+        self.assertIsNone(learning.learn_face("anna", base))
+
     def test_learned_listing_and_feedback(self):
         learning.observe("chiamami Annina", "anna")
         data = self.client.get("/api/people/anna/learned").json()

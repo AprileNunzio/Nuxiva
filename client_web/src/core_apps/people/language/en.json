@@ -170,6 +170,7 @@
     "source_manuale": "logged by you",
     "source_assistente": "logged by {assistant}",
     "source_persona": "said by the person",
+    "source_camera": "detected from the face",
     "section_identity": "Personal details",
     "section_contacts": "Contacts",
     "section_family": "Family and relationships",

@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import time
 
 import httpx
@@ -7,6 +8,7 @@ from features.people import people
 from config import DEMO, env_get
 from state import store
 
+log = logging.getLogger("nuxiva.people.presence")
 VISION_URL = "http://127.0.0.1:8091"
 GREET_AGAIN_AFTER = 20 * 60
 UNKNOWN_GREET_AFTER = 5 * 60
@@ -92,7 +94,17 @@ class PresenceMonitor:
         for p in visible:
             if p.get("known") and p.get("slug") and isinstance(p.get("affect"), dict) and p["affect"].get("at") != self.affect_at.get(p["slug"]):
                 self.affect_at[p["slug"]] = p["affect"].get("at")
-                wellbeing.ingest(p["slug"], p["affect"])
+                reading = wellbeing.ingest(p["slug"], p["affect"])
+                if reading and not reading.get("calibrating"):
+                    self._journal(p["slug"], wellbeing.live(p["slug"]))
+
+    @staticmethod
+    def _journal(slug: str, live: dict | None) -> None:
+        from features.people import learning
+        try:
+            learning.learn_face(slug, live)
+        except (KeyError, ValueError, OSError) as exc:
+            log.warning("Stato d'animo dal volto di %s non salvato: %s", slug, exc)
 
     def _greet(self, text: str, names: list, slug: str = "") -> None:
         from features.locale import service

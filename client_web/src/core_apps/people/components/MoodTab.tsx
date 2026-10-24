@@ -95,7 +95,7 @@ export const MoodTab: React.FC<Props> = ({ slug, busy, run }) => {
               {e.note && <p className="text-xs text-slate-700">{e.note}</p>}
               {e.evidence && <p className="text-xs italic text-slate-600">«{e.evidence}»</p>}
               <p className="text-[10px] text-slate-500">{[format.format(new Date(e.at * 1000)), t(`source_${e.source}`), e.feedback && t(`feedback_${e.feedback}`)].filter(Boolean).join(' · ')}</p>
-              {e.source === 'assistente' && e.feedback === '' && (
+              {(e.source === 'assistente' || e.source === 'camera') && e.feedback === '' && (
                 <div className="mt-2 flex flex-wrap items-center gap-1.5" role="group" aria-label={t('mood_feedback')}>
                   <Sparkles className="h-3.5 w-3.5 text-blue-700" aria-hidden="true" />
                   <button type="button" disabled={busy !== null} onClick={() => void act(`mood-ok:${e.id}`, () => moodFeedback(slug, e.id, 'ok'))} className={`${chipClass} border-emerald-300 px-2 text-emerald-800`}>

@@ -170,6 +170,7 @@
     "source_manuale": "annotato da te",
     "source_assistente": "annotato da {assistant}",
     "source_persona": "detto dalla persona",
+    "source_camera": "rilevato dal volto",
     "section_identity": "Anagrafica",
     "section_contacts": "Contatti",
     "section_family": "Famiglia e relazioni",

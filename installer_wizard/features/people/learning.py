@@ -12,6 +12,9 @@ log = logging.getLogger("nuxiva.people.learning")
 MAX_LEARNED = 200
 MAX_TAGS = 40
 DEDUP_SECONDS = 1800
+FACE_SAMPLES = 8
+FACE_SAME_MOOD_SECONDS = 900
+FACE_MIN_GAP_SECONDS = 120
 
 _COPULA = r"(?:sono|mi sento|mi sembra di essere|sto)\s+(?:(?:davvero|molto|troppo|super|veramente|proprio|assolutamente|un po'?|abbastanza|piuttosto|leggermente|così)\s+)*"
 _MOOD_STEMS = {
@@ -154,6 +157,41 @@ def learn_mood(slug: str, text: str) -> dict | None:
         if entry.get("source") == "assistente" and entry.get("mood") == mood and now - float(entry.get("at", 0)) < DEDUP_SECONDS:
             return None
     return mood_journal.record(slug, mood, level, "", "assistente", evidence)
+
+
+def _face_mood(live: dict) -> tuple[str, int, str]:
+    arousal, valence, area = float(live["arousal"]), float(live["valence"]), live["area"]
+    clamp = lambda value: max(1, min(5, int(round(value))))
+    if area == "tension":
+        mood, level = "stressato", clamp(arousal / 20)
+    elif area == "exhaustion":
+        mood, level = "stanco", clamp(5 - arousal / 8)
+    elif area == "relief":
+        mood, level = ("felice" if valence >= 0.5 else "sereno"), clamp(valence * 5)
+    else:
+        mood, level = "neutro", 3
+    return mood, level, f"volto: {area}, attivazione {round(arousal)}/100, tono {valence:+.2f}"
+
+
+def learn_face(slug: str, live: dict | None, now: float | None = None) -> dict | None:
+    if not enabled() or not slug or not isinstance(live, dict) or live.get("calibrating"):
+        return None
+    if int(live.get("samples", 0)) < FACE_SAMPLES or live.get("area") not in ("tension", "exhaustion", "receptive", "relief"):
+        return None
+    profile = people.load(slug)
+    if profile is None or not profile.get("consent", True):
+        return None
+    now = now or time.time()
+    mood, level, evidence = _face_mood(live)
+    recent = [e for e in profile.get("mood_journal") or [] if isinstance(e, dict) and e.get("source") == "camera"]
+    last = max(recent, key=lambda e: float(e.get("at", 0)), default=None)
+    if last and now - float(last.get("at", 0)) < FACE_MIN_GAP_SECONDS:
+        return None
+    if any(e.get("mood") == mood and now - float(e.get("at", 0)) < FACE_SAME_MOOD_SECONDS for e in recent):
+        return None
+    entry = mood_journal.record(slug, mood, level, "", "camera", evidence, now)
+    store.event("INFO", f"Stato d'animo di {slug} rilevato dal volto: {mood}", "people")
+    return entry
 
 
 def observe(said: str, slug: str) -> dict:

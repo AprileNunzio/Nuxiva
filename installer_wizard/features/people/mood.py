@@ -5,14 +5,14 @@ from features.people import people
 
 MOODS = ("felice", "sereno", "entusiasta", "innamorato", "grato", "neutro", "stanco", "annoiato", "stressato",
          "preoccupato", "triste", "arrabbiato", "malato")
-SOURCES = ("manuale", "assistente", "persona")
+SOURCES = ("manuale", "assistente", "persona", "camera")
 MAX_ENTRIES = 730
 MAX_NOTE = 300
 MAX_EVIDENCE = 160
 VERDICTS = ("ok", "wrong")
 
 
-def _clean(mood: str, intensity, note: str, source: str, evidence: str = "") -> dict:
+def _clean(mood: str, intensity, note: str, source: str, evidence: str = "", at: float | None = None) -> dict:
     mood = str(mood or "").strip().lower()
     if mood not in MOODS:
         raise ValueError("stato d'animo non valido")
@@ -24,7 +24,7 @@ def _clean(mood: str, intensity, note: str, source: str, evidence: str = "") -> 
         raise ValueError("intensità non valida")
     if source not in SOURCES:
         raise ValueError("origine non valida")
-    entry = {"id": uuid.uuid4().hex[:10], "at": time.time(), "mood": mood, "intensity": level,
+    entry = {"id": uuid.uuid4().hex[:10], "at": at or time.time(), "mood": mood, "intensity": level,
              "note": " ".join(str(note or "").split())[:MAX_NOTE], "source": source}
     if evidence:
         entry["evidence"] = " ".join(str(evidence).split())[:MAX_EVIDENCE]
@@ -32,8 +32,8 @@ def _clean(mood: str, intensity, note: str, source: str, evidence: str = "") -> 
     return entry
 
 
-def record(slug: str, mood: str, intensity=3, note: str = "", source: str = "manuale", evidence: str = "") -> dict:
-    entry = _clean(mood, intensity, note, source, evidence)
+def record(slug: str, mood: str, intensity=3, note: str = "", source: str = "manuale", evidence: str = "", at: float | None = None) -> dict:
+    entry = _clean(mood, intensity, note, source, evidence, at)
     with people._lock:
         profile = people.load(slug)
         if profile is None:

@@ -170,6 +170,7 @@
     "source_manuale": "noté par vous",
     "source_assistente": "noté par {assistant}",
     "source_persona": "dit par la personne",
+    "source_camera": "détecté par le visage",
     "section_identity": "État civil",
     "section_contacts": "Contacts",
     "section_family": "Famille et relations",
