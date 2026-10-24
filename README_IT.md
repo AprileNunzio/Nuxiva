@@ -2,7 +2,7 @@
 
 # NUXIVA
 
-**Un sistema operativo privato e self-hosted per l'assistente di casa e la mesh di intelligenza artificiale.**
+**Un sistema operativo privato e self-hosted per la tua casa: ascolta, vede, parla, ragiona e agisce, sul tuo hardware e con le tue regole.**
 
 [🇬🇧 English](README.md) | [🇮🇹 Italiano](README_IT.md) | [🇫🇷 Français](README_FR.md)
 
@@ -10,33 +10,148 @@ Versione 5.3.0 · Licenza MIT · Debian / Ubuntu
 
 </div>
 
-Questo documento descrive ciò che il repository contiene **oggi**. Ogni numero, soglia e formula riportati qui è stato letto dal codice sorgente; dove si tratta di una scelta progettuale e non di una garanzia, lo si dice.
+<p align="center">
+  <img src="https://img.shields.io/badge/version-5.3.0-1f6feb?style=flat-square" alt="version">
+  <img src="https://img.shields.io/badge/license-MIT-2ea043?style=flat-square" alt="MIT">
+  <img src="https://img.shields.io/badge/Debian%20%7C%20Ubuntu-supported-a371f7?style=flat-square" alt="platform">
+  <img src="https://img.shields.io/badge/Python-3.11%2B-3776ab?style=flat-square&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/Rust-1.89-dea584?style=flat-square&logo=rust&logoColor=black" alt="Rust">
+  <img src="https://img.shields.io/badge/React-Vite-61dafb?style=flat-square&logo=react&logoColor=black" alt="React">
+  <a href="https://github.com/AprileNunzio/Nuxiva/actions"><img src="https://img.shields.io/github/actions/workflow/status/AprileNunzio/Nuxiva/ci.yml?branch=main&style=flat-square&label=CI" alt="CI"></a>
+</p>
+
+- **Un solo comando per installare.** Il supervisore costruisce tutto il resto da solo, con avanzamento in tempo reale.
+- **Prima di tutto locale.** Voce, visione, ragionamento e automazioni girano sulla tua macchina; i modelli cloud sono opzionali.
+- **Si ripara da solo.** 52 cicli sorvegliati, aggiornamenti vincolati alla CI, rollback automatico e modalità sicura.
+- **Ingegneria onesta.** Percorsi critici in Rust, soglie misurabili, 313 file di test Python e una CI rigorosa.
 
 ---
 
 ## Indice
 
-1. [Cos'è Nuxiva](#1-cosè-nuxiva)
-2. [Il repository in sintesi](#2-il-repository-in-sintesi)
-3. [Architettura](#3-architettura)
-4. [Come viene risposta una richiesta](#4-come-viene-risposta-una-richiesta)
-5. [Il Core: instradamento, memoria e ragionamento](#5-il-core-instradamento-memoria-e-ragionamento)
-6. [Agenti, strumenti e risposte ancorate ai fatti](#6-agenti-strumenti-e-risposte-ancorate-ai-fatti)
-7. [Sport: preferiti, riepilogo notturno, ricerca online](#7-sport-preferiti-riepilogo-notturno-ricerca-online)
-8. [Persone, benessere e fotocamera](#8-persone-benessere-e-fotocamera)
-9. [Crate Rust nativi](#9-crate-rust-nativi)
-10. [Supervisore e auto-riparazione](#10-supervisore-e-auto-riparazione)
-11. [Modello di sicurezza](#11-modello-di-sicurezza)
-12. [Installazione](#12-installazione)
-13. [Porte, servizi e percorsi](#13-porte-servizi-e-percorsi)
-14. [Client](#14-client)
-15. [Controlli di qualità](#15-controlli-di-qualità)
-16. [Limiti onesti](#16-limiti-onesti)
-17. [Contribuire, licenza, supporto](#17-contribuire-licenza-supporto)
+1. [Installazione](#1-installazione)
+2. [Perché vorrai provarlo](#2-perché-vorrai-provarlo)
+3. [Cos'è Nuxiva](#3-cosè-nuxiva)
+4. [Il repository in sintesi](#4-il-repository-in-sintesi)
+5. [Architettura](#5-architettura)
+6. [Come viene risposta una richiesta](#6-come-viene-risposta-una-richiesta)
+7. [Il Core: instradamento, memoria e ragionamento](#7-il-core-instradamento-memoria-e-ragionamento)
+8. [Agenti, strumenti e risposte ancorate ai fatti](#8-agenti-strumenti-e-risposte-ancorate-ai-fatti)
+9. [Sport: preferiti, riepilogo notturno, ricerca online](#9-sport-preferiti-riepilogo-notturno-ricerca-online)
+10. [Persone, benessere e fotocamera](#10-persone-benessere-e-fotocamera)
+11. [Crate Rust nativi](#11-crate-rust-nativi)
+12. [Supervisore e auto-riparazione](#12-supervisore-e-auto-riparazione)
+13. [Modello di sicurezza](#13-modello-di-sicurezza)
+14. [Porte, servizi e percorsi](#14-porte-servizi-e-percorsi)
+15. [Client](#15-client)
+16. [Controlli di qualità](#16-controlli-di-qualità)
+17. [Limiti onesti](#17-limiti-onesti)
+18. [Contribuire, licenza, supporto](#18-contribuire-licenza-supporto)
 
 ---
 
-## 1. Cos'è Nuxiva
+## 1. Installazione
+
+Host supportati: **Debian 12** o **Ubuntu 22.04+** (x86_64 / arm64) con `apt-get`. Windows funziona tramite WSL2 o con lo sperimentale `install.ps1`.
+
+### Avvio rapido
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/AprileNunzio/Nuxiva/main/install.sh | sudo bash
+```
+
+Da un clone:
+
+```bash
+sudo git clone https://github.com/AprileNunzio/Nuxiva.git /opt/Nuxiva
+cd /opt/Nuxiva
+sudo bash install.sh
+```
+
+`install.sh` avvia soltanto il **supervisore** (un servizio systemd). Da lì in poi è il supervisore a guidare l'installazione, mostra l'avanzamento in tempo reale sulla porta 80 e mantiene l'assistente utilizzabile mentre i download pesanti proseguono in background, dal più piccolo.
+
+### Cosa succede dopo
+
+```mermaid
+flowchart LR
+    A[install.sh] --> B[nuxiva-supervisor.service]
+    B --> C[Analisi<br/>hardware, rete, scelta modelli]
+    C --> D[Sistema<br/>pacchetti, kiosk, Docker, swap]
+    D --> E[Isolamento<br/>sandbox, gVisor, Firecracker]
+    E --> F[Core nativo<br/>crate Rust, netguard, VPN]
+    F --> G[Sensi<br/>Ollama, voce, visione, ascolto, musica]
+    G --> H[Modelli<br/>linguistici veloce + profondo]
+    H --> I[Build del Core<br/>servizi, manutenzione, riscaldamento]
+    I --> J[(Assistente online)]
+```
+
+Il supervisore esegue **31 passi ordinati** (`installer_wizard/backend/steps.py`, script in `scripts/os/steps/`). Quelli non critici (runtime GPU, voce, visione, ascolto, Bluetooth…) possono fallire senza bloccare il resto, e ogni passo viene ritentato o riparato dal supervisore.
+
+| Fase | Passi |
+| :--- | :--- |
+| Analisi | verifica del sistema, swap compressa per le schede piccole |
+| Sistema | pacchetti, sessione kiosk, motore Docker |
+| Isolamento | sandbox, kernel in spazio utente gVisor, micro-VM Firecracker (solo dove c'è KVM) |
+| Nativo | core Rust, driver video, runtime GPU, hardening di sicurezza, analisi del traffico netguard, VPN (WireGuard / OpenVPN / IPsec) |
+| Sensi | Ollama, voce neurale, Bluetooth, riconoscimento facciale, riconoscimento del parlato e parola di attivazione, riconoscimento musicale |
+| Servizi | condivisioni di rete, suite d'ufficio, studio delle voci, conversione 3D |
+| Intelligenza | modelli linguistici essenziale e profondo, consolidamento dello studio, build del Core, servizi cognitivi |
+| Chiusura | manutenzione autonoma, riscaldamento neurale |
+
+### Requisiti
+
+| | Minimo | Consigliato |
+| :--- | :--- | :--- |
+| CPU | 4 core | 8+ core (AVX2) |
+| RAM | 8 GB | 16–32 GB |
+| Disco | 30 GB | 100+ GB NVMe |
+| GPU | nessuna (modelli quantizzati su CPU) | NVIDIA, 8 GB+ di VRAM |
+| Periferiche | nessuna (senza monitor) | microfono, casse, webcam, display |
+
+Le funzioni che dipendono dall'hardware (fotocamera, array di microfoni, GPU) si disattivano pulitamente se l'hardware manca. Una macchina debole può puntare `NUXIVA_OLLAMA_URL` a un nodo GPU remoto o usare provider cloud.
+
+### Primo avvio
+
+1. Apri `http://<ip-del-server>/` per display e chat, `http://<ip-del-server>:8080/` per il pannello admin (account Linux, PAM).
+2. La procedura guidata iniziale (`/setup`) è facoltativa: nome dell'assistente, rete, calibrazione del microfono, voce. Puoi saltarla e configurare dopo.
+3. Segui l'installazione dal vivo, o da terminale:
+
+```bash
+nuxivactl status        # fase, avanzamento, componenti e ogni passo
+nuxivactl background    # download in coda con dimensione e avanzamento
+nuxivactl logs          # log di installazione (anche: supervisor, core, ollama, voice, vision, ear)
+nuxivactl setup-code    # codice di abbinamento per la procedura guidata
+nuxivactl version       # revisione installata
+```
+
+### Tienilo in salute
+
+```bash
+sudo nuxivactl update           # scarica e applica una revisione verificata dalla CI
+sudo nuxivactl update --force   # aggiornamento forzato a un ramo
+sudo nuxivactl repair           # ripara un'installazione guasta
+```
+
+Gli aggiornamenti si applicano solo a revisioni i cui job di CI sono riusciti; una revisione che non parte viene marcata cattiva e l'ultima buona viene ripristinata in automatico (§Supervisore).
+
+---
+
+## 2. Perché vorrai provarlo
+
+| | |
+| :--- | :--- |
+| 🗣️ **Parla con la tua casa** | Parola di attivazione, riconoscimento vocale offline, voci neurali, voci clonate o inventate, trascrizione in oltre 600 lingue. |
+| 👁️ **Vede e capisce** | Riconoscimento facciale locale, lettura delle emozioni registrata per persona, telecamere NVR, presenza spaziale. |
+| 🧠 **Un vero cervello di instradamento** | Un percorso veloce appreso (memoria coseno in Rust), un punteggio di complessità ψ che sceglie tra i motori di ragionamento, decisioni calibrate in modo conformale. |
+| 🛠️ **Fa le cose** | Strumenti per file, posta, media, sistema, RPA e controllo della casa; agenti che pianificano, chiedono conferma e cercano sul web quando servono fatti freschi. |
+| ⚽ **Sport in diretta, subito** | Preferiti per persona, riepilogo notturno per risposte istantanee, ricerca online appena una partita comincia. |
+| 🛡️ **Difeso per progetto** | Analisi del traffico in Rust (scansioni, flood, tunnel DNS, ARP spoofing), proxy di uscita con politiche, codice generato in sandbox, nessun cloud nascosto. |
+| 🔄 **Si prende cura di sé** | Riavvii del guardiano, aggiornamenti vincolati alla CI, rollback, modalità sicura, consolidamento notturno. |
+| 🧩 **Estendibile all'infinito** | Aggiungi una cartella con un `feature.json`: viene scoperta, tradotta e instradata automaticamente. |
+
+---
+
+## 3. Cos'è Nuxiva
 
 Nuxiva trasforma una macchina (o una piccola flotta) in un assistente domestico che ascolta, vede, parla, controlla la casa ed esegue strumenti, mantenendo i dati in locale per impostazione predefinita. Combina:
 
@@ -47,7 +162,9 @@ Nuxiva trasforma una macchina (o una piccola flotta) in un assistente domestico 
 
 Nuxiva è software libero. Funziona completamente offline una volta installati i modelli; i modelli cloud sono opzionali e si mescolano tramite liste di priorità.
 
-## 2. Il repository in sintesi
+---
+
+## 4. Il repository in sintesi
 
 | Area | Percorso | Contenuto verificato |
 | :--- | :--- | :--- |
@@ -64,7 +181,9 @@ Nuxiva è software libero. Funziona completamente offline una volta installati i
 
 Provider cloud nel catalogo (`features/cloud/catalog.py`): OpenAI, Anthropic, Google Gemini, xAI, Mistral, DeepSeek, Groq, Cerebras, OpenRouter, Together, Fireworks, Perplexity, Cohere, Alibaba Qwen, Moonshot, Zhipu, NVIDIA NIM, Hugging Face, SambaNova, DeepInfra, Azure OpenAI e qualunque endpoint compatibile OpenAI.
 
-## 3. Architettura
+---
+
+## 5. Architettura
 
 ```mermaid
 flowchart LR
@@ -116,7 +235,9 @@ flowchart LR
 
 Le funzioni sono cartelle plug-in in `installer_wizard/features/<id>/`. Ognuna si dichiara in `feature.json` e può esporre `api.py` (rotte HTTP), `commands.py` (connettore voce e chat), `tools.py` (strumenti dell'agente), `language/` e un'icona. Il supervisore le scansiona all'avvio; nulla viene registrato a mano.
 
-## 4. Come viene risposta una richiesta
+---
+
+## 6. Come viene risposta una richiesta
 
 Il router della chat (`features/chat/assistant.py`) è una cascata ordinata. Vince il primo stadio che sa rispondere; uno stadio che non riconosce la richiesta solleva `LookupError` e passa il turno al successivo.
 
@@ -146,7 +267,9 @@ Due regole progettuali valgono per questa cascata:
 - **Nessun elenco di argomenti scritto nel codice.** Se una domanda richiede informazioni aggiornate lo decide il modello (`features/agent/grounding.py`: verdetto JSON `{"lookup": bool}`, timeout 8 s, cache 600 s, al massimo 200 voci, `False` in caso di qualunque errore). A quale sport, campionato o squadra si riferisce una frase lo decidono un catalogo di dati e un piano costruito dal modello (`features/sports/understand.py`). Aggiungere uno sport significa aggiungere una riga al catalogo, non codice.
 - **Degradare con grazia.** Ogni stadio che parla con la rete o con un modello intercetta i propri errori e passa oltre, oppure risponde onestamente che la fonte non è raggiungibile.
 
-## 5. Il Core: instradamento, memoria e ragionamento
+---
+
+## 7. Il Core: instradamento, memoria e ragionamento
 
 ### 5.1 Router di Sistema 1 e punteggio di complessità ψ
 
@@ -232,16 +355,20 @@ L'intelligenza mescola benchmark aperti e sigillati al 50/50. I preset `A_BALANC
 
 `server/core/skill_forge/` raccoglie le richieste fallite, fa scrivere un'abilità a un modello, ne analizza l'AST e la esegue solo dentro il livello di isolamento e la sandbox. `server/core/event_sourcing/` conserva un registro append-only dei cambiamenti di stato.
 
-## 6. Agenti, strumenti e risposte ancorate ai fatti
+---
+
+## 8. Agenti, strumenti e risposte ancorate ai fatti
 
 - **Registro degli strumenti**: le funzioni decorate con `@tool` in `features/agent/` (file, posta, media, sistema, pacchetti, telecamere, schermo, RPA) e nel `tools.py` di ogni funzione vengono scoperte a runtime.
 - **Ciclo dell'agente** (`agent/agent.py`): il modello pianifica, chiama strumenti, legge i risultati e chiede conferma prima delle azioni rischiose. La data di oggi è inserita nelle sue regole.
 - **Orchestratore CEO** (`features/team/ceo.py`): scansiona agenti, strumenti e widget e li ordina con `relevance.py`: i token sono filtrati dalle parole vuote, ridotti a 5 caratteri e valutati con pesi per campo `identity 3,0, noun 4,0, capability 1,3, tool 1,6, tool_text 0,6, description 0,9, keyword 0,3`, un bonus di frase di 14, bonus appresi (+2 per conferma, tetto 4) e un punteggio minimo di 5,0 prima di assegnare uno specialista.
 - **Ricerca** (`features/research/`): ricerca web multi-provider, scaricamento sicuro, estrazione e ordinamento, con generatore di rapporti.
-- **Ancoraggio ai fatti**: vedi §4: il modello decide se rispondere dalla memoria o cercare; se uno strumento fallisce, all'agente viene detto di ripiegare sulla ricerca web invece di scusarsi.
+- **Ancoraggio ai fatti**: vedi §6: il modello decide se rispondere dalla memoria o cercare; se uno strumento fallisce, all'agente viene detto di ripiegare sulla ricerca web invece di scusarsi.
 - **Livello Cervello / LLM** (`features/brain/llm.py`): `generate(kind, as_json, component, timeout)` percorre una catena di priorità di modelli Ollama locali e cloud, saltando quelli inutilizzabili, così un modello guasto non ferma la risposta.
 
-## 7. Sport: preferiti, riepilogo notturno, ricerca online
+---
+
+## 9. Sport: preferiti, riepilogo notturno, ricerca online
 
 Lo sport è interamente **guidato dai dati**.
 
@@ -264,14 +391,18 @@ flowchart LR
 
 Ogni voce del riepilogo porta una scadenza pari al primo calcio d'inizio tra le partite non concluse di quel campionato (al massimo 30 ore; scade subito se una partita è in corso). Prima del calcio d'inizio la risposta salvata è esatta; appena la partita comincia, la stessa domanda va automaticamente online. Salvare i preferiti di una persona invalida il riepilogo, così le nuove squadre vengono scaricate al ciclo successivo; `POST /api/sports/digest/build` forza un aggiornamento.
 
-## 8. Persone, benessere e fotocamera
+---
+
+## 10. Persone, benessere e fotocamera
 
 - **Persone**: profili, ruoli, voci, account collegati (ad es. Google) e promemoria per persona.
 - **Misuratore di benessere**: medie mobili esponenziali per persona e segnale; gli scostamenti diventano z-score, compressi con una sigmoide e raggruppati in quattro aree: *tensione, esaurimento, ricettività, sollievo*.
 - **Fotocamera**: il misuratore di affetto della pipeline di visione legge il volto di una persona riconosciuta. Dopo un periodo di calibrazione ogni lettura viene registrata nel **diario degli stati d'animo** della persona con fonte `camera` (al massimo una voce ogni 120 s, una nuova se l'area cambia o passano 900 s), con evidenze come «volto: tensione, attivazione 62/100, tono −0,3». Il diario è modificabile e l'utente può dare un riscontro sulle voci di fotocamera e assistente.
 - Tutto resta in file di stato locali; nulla viene inviato a un servizio cloud se l'utente non ne configura uno.
 
-## 9. Crate Rust nativi
+---
+
+## 11. Crate Rust nativi
 
 | Crate | Ruolo | Dettaglio verificato |
 | :--- | :--- | :--- |
@@ -285,7 +416,9 @@ Ogni voce del riepilogo porta una scadenza pari al primo calcio d'inizio tra le 
 | `langid` | Identificazione della lingua | usato dalla pipeline vocale |
 | `nuxiva-native` | Ponte PyO3 che espone i crate a Python | arbitraggio, audio, bus, cortex, mesh, scanner, workbench |
 
-## 10. Supervisore e auto-riparazione
+---
+
+## 12. Supervisore e auto-riparazione
 
 - **Due app web**: pubblica (porta 80) e admin (porta 8080), più un ascoltatore HTTPS opzionale (porta 443) quando è presente un certificato. In modalità demo si spostano su 8000 / 8001 / 8002.
 - **Guardiano dei cicli** (`backend/loops.py`): ciascuno dei 52 cicli in background è avvolto; un arresto lo riavvia con backoff esponenziale (da 1 s fino a un massimo configurabile, 60 s di default) e un battito rileva i blocchi (fattore di default 5× il periodo del ciclo). Un ciclo stabile per 120 s azzera il backoff.
@@ -293,7 +426,9 @@ Ogni voce del riepilogo porta una scadenza pari al primo calcio d'inizio tra le 
 - **Modalità sicura** (`backend/safe_mode.py`): una pagina minima e uno script di riparazione automatica quando il sistema completo non riesce ad avviarsi.
 - **Dist del frontend**: un workflow GitHub ricompila `client_web/dist` dal sorgente, quindi il server non ha mai bisogno di Node a runtime.
 
-## 11. Modello di sicurezza
+---
+
+## 13. Modello di sicurezza
 
 - L'accesso admin usa **PAM** di Linux (servizio `nuxiva-admin`) e richiede `root` o l'appartenenza al gruppo amministrativo.
 - Le funzioni si attivano o disattivano con variabili d'ambiente; le azioni sensibili passano da un cancello di approvazione (funzione authz) e dalla biometria vocale dove configurata.
@@ -303,36 +438,9 @@ Ogni voce del riepilogo porta una scadenza pari al primo calcio d'inizio tra le 
 - Il contenuto web scaricato dagli agenti passa dal filtro `safeweb`; gli host esterni per i dati sportivi sono limitati a una lista consentita (`ESPN`, `Jolpica`).
 - Divulgazione responsabile: vedi [SECURITY.md](SECURITY.md).
 
-## 12. Installazione
+---
 
-Supportati: Debian 12 o Ubuntu 22.04+ (x86_64 / arm64). È richiesto `apt-get`.
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/AprileNunzio/Nuxiva/main/install.sh | sudo bash
-```
-
-oppure da un clone:
-
-```bash
-sudo git clone https://github.com/AprileNunzio/Nuxiva.git /opt/Nuxiva
-cd /opt/Nuxiva
-sudo bash install.sh
-```
-
-`install.sh` avvia il servizio del supervisore; il supervisore esegue poi **31 passi ordinati** (`installer_wizard/backend/steps.py`, script in `scripts/os/steps/`): analisi del sistema, memoria compressa, pacchetti di sistema, kiosk, Docker, sandbox, gVisor, Firecracker, core nativo, driver video e GPU, hardening di sicurezza, netguard, VPN, Ollama, voce neurale, Bluetooth, visione, ascolto, riconoscimento musicale, condivisioni di rete, suite d'ufficio, studio delle voci, conversione 3D, modelli linguistici essenziali e profondi, consolidamento dello studio, compilazione del Core, servizi, manutenzione e riscaldamento. I download pesanti avvengono in background, dal più piccolo, così l'assistente è utilizzabile subito. I passi non critici (GPU, voce, visione, ascolto…) possono fallire senza bloccare il resto.
-
-Windows è supportato tramite WSL2 (Ubuntu 22.04 / Debian 12) o lo sperimentale `install.ps1`.
-
-| | Minimo | Consigliato |
-| :--- | :--- | :--- |
-| CPU | 4 core | 8+ core |
-| RAM | 8 GB | 16–32 GB |
-| Disco | 30 GB | 100+ GB NVMe |
-| GPU | nessuna (modelli su CPU) | NVIDIA con 8 GB+ di VRAM |
-
-Comandi utili: `nuxivactl background`, `nuxivactl repair`, `nuxivactl update --force`.
-
-## 13. Porte, servizi e percorsi
+## 14. Porte, servizi e percorsi
 
 | Porta | Uso |
 | :---: | :--- |
@@ -350,14 +458,18 @@ Unità systemd in `scripts/os/systemd/`: `nuxiva-supervisor`, `nuxiva-core`, `nu
 | `/etc/nuxiva/nuxiva.env` | Configurazione (le variabili d'ambiente si leggono con `env_get`; esistono circa 130 nomi `NUXIVA_*` distinti) |
 | `/var/lib/nuxiva/` | Stato: persone, sport (`sports.json`, `sports_digest.json`), diari degli stati d'animo, cache |
 
-## 14. Client
+---
+
+## 15. Client
 
 - **Client web** (`client_web`, React + Vite + Tailwind): display kiosk con desk di widget dinamici, volto 3D e pannello admin con 34 app core (persone, impostazioni del Cervello, firewall, telecamere, studio delle voci, aggiornatore, cassaforte, VPN, meteo, …). L'interfaccia admin usa il tema chiaro. Traduzioni: italiano, inglese, francese, spagnolo.
 - **Android** (`client_apk`): client Kotlin.
 - **Satelliti** (`client_satellite`): nodo Linux edge, microcontrollori, assistente Windows (con proprio workflow CI), context bridge.
 - **MCP**: Nuxiva espone i suoi strumenti come server MCP sulla porta admin e può usare server MCP esterni (`installer_wizard/MCP.md`).
 
-## 15. Controlli di qualità
+---
+
+## 16. Controlli di qualità
 
 Il workflow GitHub **Nuxiva CI Pipeline** gira a ogni push:
 
@@ -370,7 +482,9 @@ Il workflow GitHub **Nuxiva CI Pipeline** gira a ogni push:
 
 Altri due workflow ricompilano il bundle del frontend e l'assistente Windows.
 
-## 16. Limiti onesti
+---
+
+## 17. Limiti onesti
 
 - Il vocabolario «neurale» (neuroni, sinapsi, REM) dà il nome a meccanismi reali e semplici: similarità tra vettori con soglie, pesi limitati con decadimento, un lavoro notturno. Non è una simulazione biologica e il buffer di impulsi in Rust è un tipo di coda, non un simulatore di reti a impulsi.
 - La qualità dipende dai modelli installati; i modelli piccoli su sola CPU rispondono lentamente e ragionano meno bene.
@@ -378,7 +492,9 @@ Altri due workflow ricompilano il bundle del frontend e l'assistente Windows.
 - Le funzioni che dipendono dall'hardware (fotocamera, array di microfoni, GPU) si disattivano da sole se l'hardware manca.
 - Debian e Ubuntu sono gli unici host ufficialmente supportati.
 
-## 17. Contribuire, licenza, supporto
+---
+
+## 18. Contribuire, licenza, supporto
 
 Nuxiva è scritto e mantenuto da **Nunzio Aprile (NunzioTech)** e rilasciato con licenza **MIT**. I contributi sono benvenuti: leggi [CONTRIBUTING.md](CONTRIBUTING.md) e il [Codice di condotta](CODE_OF_CONDUCT.md). Grazie a tutti coloro che segnalano errori, provano l'hardware e inviano patch.
 

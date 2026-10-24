@@ -2,7 +2,7 @@
 
 # NUXIVA
 
-**A private, self-hosted home assistant and AI mesh operating system.**
+**A private, self-hosted operating system for your home: it listens, sees, speaks, reasons and acts — on your hardware, under your rules.**
 
 [🇬🇧 English](README.md) | [🇮🇹 Italiano](README_IT.md) | [🇫🇷 Français](README_FR.md)
 
@@ -10,33 +10,148 @@ Version 5.3.0 · MIT License · Debian / Ubuntu
 
 </div>
 
-This document describes what the repository contains **today**. Every number, threshold and formula below was read from the source code; where something is a design choice rather than a guarantee, it says so.
+<p align="center">
+  <img src="https://img.shields.io/badge/version-5.3.0-1f6feb?style=flat-square" alt="version">
+  <img src="https://img.shields.io/badge/license-MIT-2ea043?style=flat-square" alt="MIT">
+  <img src="https://img.shields.io/badge/Debian%20%7C%20Ubuntu-supported-a371f7?style=flat-square" alt="platform">
+  <img src="https://img.shields.io/badge/Python-3.11%2B-3776ab?style=flat-square&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/Rust-1.89-dea584?style=flat-square&logo=rust&logoColor=black" alt="Rust">
+  <img src="https://img.shields.io/badge/React-Vite-61dafb?style=flat-square&logo=react&logoColor=black" alt="React">
+  <a href="https://github.com/AprileNunzio/Nuxiva/actions"><img src="https://img.shields.io/github/actions/workflow/status/AprileNunzio/Nuxiva/ci.yml?branch=main&style=flat-square&label=CI" alt="CI"></a>
+</p>
+
+- **One command to install.** The supervisor builds everything else by itself, with a live progress view.
+- **Local first.** Voice, vision, reasoning and automation run on your machine; cloud models are optional.
+- **Self-healing.** 52 supervised loops, CI-gated updates, automatic rollback and a safe mode.
+- **Honest engineering.** Rust hot paths, measurable thresholds, 313 Python test files and a strict CI.
 
 ---
 
 ## Contents
 
-1. [What Nuxiva is](#1-what-nuxiva-is)
-2. [Repository at a glance](#2-repository-at-a-glance)
-3. [Architecture](#3-architecture)
-4. [How a request is answered](#4-how-a-request-is-answered)
-5. [The Core: routing, memory and reasoning](#5-the-core-routing-memory-and-reasoning)
-6. [Agents, tools and grounded answers](#6-agents-tools-and-grounded-answers)
-7. [Sports: favourites, nightly digest, online fallback](#7-sports-favourites-nightly-digest-online-fallback)
-8. [People, wellbeing and the camera](#8-people-wellbeing-and-the-camera)
-9. [Native Rust crates](#9-native-rust-crates)
-10. [Supervisor and self-healing](#10-supervisor-and-self-healing)
-11. [Security model](#11-security-model)
-12. [Installation](#12-installation)
-13. [Ports, services and paths](#13-ports-services-and-paths)
-14. [Clients](#14-clients)
-15. [Quality gates](#15-quality-gates)
-16. [Honest limits](#16-honest-limits)
-17. [Contributing, license, support](#17-contributing-license-support)
+1. [Installation](#1-installation)
+2. [Why you will want to try it](#2-why-you-will-want-to-try-it)
+3. [What Nuxiva is](#3-what-nuxiva-is)
+4. [Repository at a glance](#4-repository-at-a-glance)
+5. [Architecture](#5-architecture)
+6. [How a request is answered](#6-how-a-request-is-answered)
+7. [The Core: routing, memory and reasoning](#7-the-core-routing-memory-and-reasoning)
+8. [Agents, tools and grounded answers](#8-agents-tools-and-grounded-answers)
+9. [Sports: favourites, nightly digest, online fallback](#9-sports-favourites-nightly-digest-online-fallback)
+10. [People, wellbeing and the camera](#10-people-wellbeing-and-the-camera)
+11. [Native Rust crates](#11-native-rust-crates)
+12. [Supervisor and self-healing](#12-supervisor-and-self-healing)
+13. [Security model](#13-security-model)
+14. [Ports, services and paths](#14-ports-services-and-paths)
+15. [Clients](#15-clients)
+16. [Quality gates](#16-quality-gates)
+17. [Honest limits](#17-honest-limits)
+18. [Contributing, license, support](#18-contributing-license-support)
 
 ---
 
-## 1. What Nuxiva is
+## 1. Installation
+
+Supported hosts: **Debian 12** or **Ubuntu 22.04+** (x86_64 / arm64) with `apt-get`. Windows works through WSL2 or the experimental `install.ps1`.
+
+### Quick start
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/AprileNunzio/Nuxiva/main/install.sh | sudo bash
+```
+
+From a clone:
+
+```bash
+sudo git clone https://github.com/AprileNunzio/Nuxiva.git /opt/Nuxiva
+cd /opt/Nuxiva
+sudo bash install.sh
+```
+
+`install.sh` only bootstraps the **supervisor** (a systemd service). From then on the supervisor drives the installation itself, shows live progress on port 80 and keeps the assistant usable while heavy downloads continue in the background, smallest first.
+
+### What happens next
+
+```mermaid
+flowchart LR
+    A[install.sh] --> B[nuxiva-supervisor.service]
+    B --> C[Analysis<br/>hardware, network, model choice]
+    C --> D[System<br/>packages, kiosk, Docker, swap]
+    D --> E[Isolation<br/>sandbox, gVisor, Firecracker]
+    E --> F[Native core<br/>Rust crates, netguard, VPN]
+    F --> G[Senses<br/>Ollama, voice, vision, ear, music]
+    G --> H[Models<br/>fast + deep language models]
+    H --> I[Core build<br/>services, maintenance, warm-up]
+    I --> J[(Assistant online)]
+```
+
+The supervisor runs **31 ordered steps** (`installer_wizard/backend/steps.py`, scripts in `scripts/os/steps/`). Non-critical ones (GPU runtime, voice, vision, ear, Bluetooth…) may fail without blocking the rest, and every step is retried or repaired by the supervisor.
+
+| Phase | Steps |
+| :--- | :--- |
+| Analysis | system probe, compressed swap for small boards |
+| System | packages, kiosk session, Docker engine |
+| Isolation | sandbox, gVisor user-space kernel, Firecracker micro-VMs (only where KVM exists) |
+| Native | Rust core, display driver, GPU runtime, security hardening, netguard traffic analysis, VPN (WireGuard / OpenVPN / IPsec) |
+| Senses | Ollama, neural voice, Bluetooth, face recognition, speech recognition and wake word, music recognition |
+| Services | network shares, office suite, voice studio, 3D conversion |
+| Intelligence | essential and deep language models, study consolidation, Core build, cognitive services |
+| Finish | autonomous maintenance, neural warm-up |
+
+### Requirements
+
+| | Minimum | Recommended |
+| :--- | :--- | :--- |
+| CPU | 4 cores | 8+ cores (AVX2) |
+| RAM | 8 GB | 16–32 GB |
+| Disk | 30 GB | 100+ GB NVMe |
+| GPU | none (quantised CPU models) | NVIDIA, 8 GB+ VRAM |
+| Peripherals | none (headless) | microphone, speakers, webcam, display |
+
+Hardware-dependent features (camera, microphone array, GPU) disable themselves cleanly when the hardware is absent. A weak machine can point `NUXIVA_OLLAMA_URL` to a remote GPU node or use cloud providers.
+
+### First boot
+
+1. Open `http://<server-ip>/` for the display and chat, `http://<server-ip>:8080/` for the admin cockpit (Linux account, PAM).
+2. The first-run wizard (`/setup`) is optional: assistant name, network, microphone calibration, voice. Skip it and configure later.
+3. Follow the installation live, or from a terminal:
+
+```bash
+nuxivactl status        # phase, progress, components and every step
+nuxivactl background    # queued downloads with size and progress
+nuxivactl logs          # install log (also: supervisor, core, ollama, voice, vision, ear)
+nuxivactl setup-code    # pairing code for the first-run wizard
+nuxivactl version       # installed revision
+```
+
+### Keep it healthy
+
+```bash
+sudo nuxivactl update           # fetch and apply a CI-verified revision
+sudo nuxivactl update --force   # force-upgrade to a branch
+sudo nuxivactl repair           # repair a broken installation
+```
+
+Updates are only applied to revisions whose CI jobs succeeded; a revision that fails to boot is marked bad and the last good one is restored automatically (§Supervisor).
+
+---
+
+## 2. Why you will want to try it
+
+| | |
+| :--- | :--- |
+| 🗣️ **Talk to your house** | Wake word, offline speech recognition, neural voices, cloned or invented voices, 600+ transcription languages. |
+| 👁️ **It sees and understands** | Local face recognition, emotion reading journaled per person, NVR cameras, spatial presence. |
+| 🧠 **A real routing brain** | A learned fast path (cosine memory in Rust), a complexity score ψ choosing among reasoning engines, conformal-calibrated decisions. |
+| 🛠️ **It does things** | File, mail, media, system, RPA and home-control tools; agents that plan, ask confirmation and search the web when facts are fresh. |
+| ⚽ **Live sport, instantly** | Favourites per person, a nightly digest for instant answers, online fallback the moment a match starts. |
+| 🛡️ **Defended by design** | Rust traffic analysis (scans, floods, DNS tunnelling, ARP spoofing), policy egress proxy, sandboxed generated code, zero hidden cloud. |
+| 🔄 **It looks after itself** | Watchdog restarts, CI-gated updates, rollback, safe mode, nightly consolidation. |
+| 🧩 **Endlessly extensible** | Drop a feature folder with a `feature.json`: it is discovered, localised and routed automatically. |
+
+---
+
+## 3. What Nuxiva is
 
 Nuxiva turns one machine (or a small fleet) into a household assistant that listens, sees, speaks, controls the home and runs tools, while keeping data local by default. It combines:
 
@@ -47,7 +162,9 @@ Nuxiva turns one machine (or a small fleet) into a household assistant that list
 
 Nuxiva is free software. It runs fully offline once models are installed; cloud models are optional and mixed in by priority list.
 
-## 2. Repository at a glance
+---
+
+## 4. Repository at a glance
 
 | Area | Path | Verified content |
 | :--- | :--- | :--- |
@@ -64,7 +181,9 @@ Nuxiva is free software. It runs fully offline once models are installed; cloud 
 
 Cloud providers available in the catalog (`features/cloud/catalog.py`): OpenAI, Anthropic, Google Gemini, xAI, Mistral, DeepSeek, Groq, Cerebras, OpenRouter, Together, Fireworks, Perplexity, Cohere, Alibaba Qwen, Moonshot, Zhipu, NVIDIA NIM, Hugging Face, SambaNova, DeepInfra, Azure OpenAI and any OpenAI-compatible endpoint.
 
-## 3. Architecture
+---
+
+## 5. Architecture
 
 ```mermaid
 flowchart LR
@@ -116,7 +235,9 @@ flowchart LR
 
 Features are plug-in directories under `installer_wizard/features/<id>/`. Each one declares itself in `feature.json` and may expose `api.py` (HTTP routes), `commands.py` (voice and chat connector), `tools.py` (agent tools), `language/` and an icon. The supervisor scans them at start-up; nothing is registered by hand.
 
-## 4. How a request is answered
+---
+
+## 6. How a request is answered
 
 The chat router (`features/chat/assistant.py`) is an ordered cascade. The first stage that can answer wins, and a stage that does not recognise the request raises `LookupError` so the next one runs.
 
@@ -146,7 +267,9 @@ Two design rules apply to this cascade:
 - **No hard-coded topic lists.** Whether a question needs live information is decided by the model (`features/agent/grounding.py`: JSON verdict `{"lookup": bool}`, 8 s timeout, 600 s cache, at most 200 entries, `False` on any failure). Which sport, league or team a sentence is about is decided from a data catalog plus a model-built plan (`features/sports/understand.py`). Adding a sport means adding a catalog row, not code.
 - **Fail soft.** Every stage that talks to the network or a model catches its own errors and either falls through or answers honestly that the source is unreachable.
 
-## 5. The Core: routing, memory and reasoning
+---
+
+## 7. The Core: routing, memory and reasoning
 
 ### 5.1 System 1 router and the complexity score ψ
 
@@ -232,16 +355,20 @@ Intelligence mixes open and sealed benchmarks 50/50. Presets `A_BALANCED`, `B_QU
 
 `server/core/skill_forge/` mines missed requests, lets a model author a skill, scans its AST, and executes it only inside the isolation layer and sandbox. `server/core/event_sourcing/` keeps an append-only ledger of state changes.
 
-## 6. Agents, tools and grounded answers
+---
+
+## 8. Agents, tools and grounded answers
 
 - **Tool registry** — functions decorated with `@tool` in `features/agent/` (files, mail, media, system, packages, cameras, display, RPA) and in each feature's `tools.py` are discovered at run time.
 - **Agent loop** (`agent/agent.py`) — the model plans, calls tools, reads results, and asks for confirmation before risky actions. Today's date is injected into its rules.
 - **CEO orchestrator** (`features/team/ceo.py`) — scans agents, tools and widgets and ranks them with `relevance.py`: tokens are stop-word filtered, stemmed to 5 characters, and scored with field weights `identity 3.0, noun 4.0, capability 1.3, tool 1.6, tool_text 0.6, description 0.9, keyword 0.3`, a phrase bonus of 14, learned bonuses (+2 per confirmation, cap 4) and a minimum score of 5.0 before a specialist is assigned.
 - **Research** (`features/research/`) — multi-provider web search, safe fetching, extraction and ranking, with a report generator.
-- **Grounding** — see §4: the model decides whether to answer from memory or to search; if a tool fails, the agent is told to fall back to web research instead of apologising.
+- **Grounding** — see §6: the model decides whether to answer from memory or to search; if a tool fails, the agent is told to fall back to web research instead of apologising.
 - **Brain / LLM layer** (`features/brain/llm.py`) — `generate(kind, as_json, component, timeout)` walks a priority chain of local Ollama and cloud models, skipping unusable ones, so one failing model does not stop the answer.
 
-## 7. Sports: favourites, nightly digest, online fallback
+---
+
+## 9. Sports: favourites, nightly digest, online fallback
 
 Sports are fully **data-driven**.
 
@@ -264,14 +391,18 @@ flowchart LR
 
 Each digest entry carries an expiry equal to the earliest kickoff among the unfinished matches of that league (capped at 30 hours; immediately expired if a match is live). Before the kickoff the stored answer is exact; once a match starts, the same question automatically goes online. Saving a person's favourites invalidates the digest so the new teams are fetched on the next tick; `POST /api/sports/digest/build` forces an update.
 
-## 8. People, wellbeing and the camera
+---
+
+## 10. People, wellbeing and the camera
 
 - **People** keep profiles, roles, voices, linked accounts (e.g. Google) and per-person reminders.
 - **Wellbeing meter**: exponential moving baselines per person and signal; deviations are turned into z-scores, squashed with a sigmoid and grouped into four areas — *tension, exhaustion, receptive, relief*.
 - **Camera**: the vision pipeline's affect meter reads the face of a recognised person. After a calibration period each reading is journaled in the person's **mood journal** with source `camera` (at most one entry per 120 s, a new one if the area changes or 900 s pass), with evidence such as «face: tension, activation 62/100, tone −0.3». The journal is editable and the user can give feedback on entries from the camera and the assistant.
 - All of this stays in local state files; nothing is sent to a cloud service unless the user configures one.
 
-## 9. Native Rust crates
+---
+
+## 11. Native Rust crates
 
 | Crate | Role | Verified detail |
 | :--- | :--- | :--- |
@@ -285,7 +416,9 @@ Each digest entry carries an expiry equal to the earliest kickoff among the unfi
 | `langid` | Language identification | used by the speech pipeline |
 | `nuxiva-native` | PyO3 bridge exposing the crates to Python | arbitration, audio, bus, cortex, mesh, scanner, workbench |
 
-## 10. Supervisor and self-healing
+---
+
+## 12. Supervisor and self-healing
 
 - **Two web apps**: public (port 80) and admin (port 8080), plus an optional HTTPS listener (port 443) when a certificate is present. In demo mode they move to 8000 / 8001 / 8002.
 - **Loop watchdog** (`backend/loops.py`): each of the 52 background loops is wrapped; crashes restart it with exponential backoff (1 s up to a configurable maximum, default 60 s) and a heartbeat detects stalls (default factor 5× the loop's period). A loop stable for 120 s resets its backoff.
@@ -293,7 +426,9 @@ Each digest entry carries an expiry equal to the earliest kickoff among the unfi
 - **Safe mode** (`backend/safe_mode.py`): a minimal page and an automatic repair script when the full system cannot start.
 - **Frontend dist**: a GitHub workflow rebuilds `client_web/dist` from source, so the server never needs Node at run time.
 
-## 11. Security model
+---
+
+## 13. Security model
 
 - Admin login uses Linux **PAM** (service `nuxiva-admin`) and requires `root` or membership of the admin group.
 - Features can be toggled per environment variable; sensitive actions pass an approval gate (authz feature) and voice biometrics where configured.
@@ -303,36 +438,9 @@ Each digest entry carries an expiry equal to the earliest kickoff among the unfi
 - Web content fetched by agents goes through `safeweb` filtering; external hosts for sports data are restricted to an allow-list (`ESPN`, `Jolpica`).
 - Responsible disclosure: see [SECURITY.md](SECURITY.md).
 
-## 12. Installation
+---
 
-Supported: Debian 12 or Ubuntu 22.04+ (x86_64 / arm64). `apt-get` is required.
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/AprileNunzio/Nuxiva/main/install.sh | sudo bash
-```
-
-or from a clone:
-
-```bash
-sudo git clone https://github.com/AprileNunzio/Nuxiva.git /opt/Nuxiva
-cd /opt/Nuxiva
-sudo bash install.sh
-```
-
-`install.sh` bootstraps the supervisor service; the supervisor then runs **31 ordered steps** (`installer_wizard/backend/steps.py`, scripts in `scripts/os/steps/`): system analysis, compressed swap, system packages, kiosk, Docker, sandbox, gVisor, Firecracker, native core, display and GPU drivers, security hardening, netguard, VPN, Ollama, neural voice, Bluetooth, vision, ear, music recognition, network shares, office suite, voice studio, 3D conversion, essential and deep language models, study consolidation, Core build, services, maintenance and warm-up. Heavy downloads run in the background, smallest first, so the assistant is usable early. Non-critical steps (GPU, voice, vision, ear…) can fail without blocking the rest.
-
-Windows is supported through WSL2 (Ubuntu 22.04 / Debian 12) or the experimental `install.ps1`.
-
-| | Minimum | Recommended |
-| :--- | :--- | :--- |
-| CPU | 4 cores | 8+ cores |
-| RAM | 8 GB | 16–32 GB |
-| Disk | 30 GB | 100+ GB NVMe |
-| GPU | none (CPU models) | NVIDIA with 8 GB+ VRAM |
-
-Useful commands: `nuxivactl background`, `nuxivactl repair`, `nuxivactl update --force`.
-
-## 13. Ports, services and paths
+## 14. Ports, services and paths
 
 | Port | Use |
 | :---: | :--- |
@@ -350,14 +458,18 @@ Systemd units in `scripts/os/systemd/`: `nuxiva-supervisor`, `nuxiva-core`, `nux
 | `/etc/nuxiva/nuxiva.env` | Configuration (environment variables are read through `env_get`; about 130 distinct `NUXIVA_*` names exist) |
 | `/var/lib/nuxiva/` | State: people, sports (`sports.json`, `sports_digest.json`), mood journals, caches |
 
-## 14. Clients
+---
+
+## 15. Clients
 
 - **Web client** (`client_web`, React + Vite + Tailwind): kiosk display with dynamic widget desk, 3D face, and the admin cockpit with 34 core apps (people, Cervello brain settings, firewall, cameras, voice studio, updater, vault, VPN, weather, …). Admin UI uses a light theme. Translations: Italian, English, French, Spanish.
 - **Android** (`client_apk`): Kotlin client.
 - **Satellites** (`client_satellite`): Linux edge node, microcontrollers, Windows assistant (own CI workflow), context bridge.
 - **MCP**: Nuxiva exposes its tools as an MCP server on the admin port and can consume external MCP servers (`installer_wizard/MCP.md`).
 
-## 15. Quality gates
+---
+
+## 16. Quality gates
 
 The GitHub workflow **Nuxiva CI Pipeline** runs on every push:
 
@@ -370,7 +482,9 @@ The GitHub workflow **Nuxiva CI Pipeline** runs on every push:
 
 Two more workflows rebuild the front-end bundle and the Windows assistant.
 
-## 16. Honest limits
+---
+
+## 17. Honest limits
 
 - The "neural" vocabulary (neurons, synapses, REM) names real, simple mechanisms — vector similarity with thresholds, bounded weights with decay, a nightly job. It is not a biological simulation and the Rust spike buffer is a queue type, not a spiking-network simulator.
 - Quality depends on the models you install; small CPU-only models answer slowly and reason less well.
@@ -378,7 +492,9 @@ Two more workflows rebuild the front-end bundle and the Windows assistant.
 - Hardware-dependent features (camera, microphone array, GPU) disable themselves when the hardware is missing.
 - Debian and Ubuntu are the only officially supported hosts.
 
-## 17. Contributing, license, support
+---
+
+## 18. Contributing, license, support
 
 Nuxiva is written and maintained by **Nunzio Aprile (NunzioTech)** and released under the **MIT License**. Contributions are welcome: read [CONTRIBUTING.md](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md). Thank you to everyone who reports bugs, tests hardware and sends patches.
 
