@@ -17,6 +17,7 @@
     "Catalogo di sport e campionati basato su dati: aggiungerne uno non richiede nuovo codice, la squadra o la competizione si riconosce dai nomi reali e il modello capisce cosa si vuole sapere",
     "Domande a voce: «com'è finito il Napoli?», «classifica Serie A», «quando corre la F1?», «quando giocano i Bruins?»",
     "Widget richiamati quando ti avvicini allo schermo se non ci sono avvisi più importanti",
+    "Nessuno sport è seguito di default: i preferiti si scelgono per persona; ogni notte (dopo le 3) un aggiornamento automatico salva su disco partite, calendari, classifiche e Formula 1 dei preferiti, così le risposte sono immediate; se il dato non è più valido (una partita è iniziata) si cerca online",
     "Nessuna chiave richiesta: fonti pubbliche, dati in cache e nessun dato personale inviato"
   ],
   "icon3d": "./icon.png",

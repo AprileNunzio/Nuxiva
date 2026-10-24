@@ -6,7 +6,7 @@ from datetime import datetime, timedelta, timezone
 from config import env_get
 from state import store
 
-from features.sports import commands, events, football, spotlight
+from features.sports import commands, digest, events, football, spotlight
 from features.sports.catalog import LIVE, POST
 from features.sports.fetch import SportsUnavailable
 from features.sports.prefs import prefs
@@ -131,6 +131,7 @@ class SportsWatcher:
                     if time.time() >= self.next_refresh:
                         self.next_refresh = time.time() + await self.refresh()
                         await commands.refresh_index()
+                    await digest.maybe_build()
                     await self.proximity()
                 except SportsUnavailable as exc:
                     self.last_error = str(exc)

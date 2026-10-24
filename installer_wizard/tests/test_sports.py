@@ -247,3 +247,60 @@ class UniversalSportsTest(unittest.IsolatedAsyncioTestCase):
         from features.sports.catalog import BY_CODE
         self.assertEqual({BY_CODE[c].sport for c in ("nhl", "nba", "nfl", "mlb")}, {"hockey", "basketball", "football", "baseball"})
         self.assertEqual(football.check_league("nba"), "nba")
+
+
+class NightlyDigestTest(unittest.IsolatedAsyncioTestCase):
+    def setUp(self):
+        from features.sports import fetch
+        self.fetch = fetch
+        self.dir = tempfile.TemporaryDirectory()
+        self.addCleanup(self.dir.cleanup)
+        patcher = unittest.mock.patch.object(fetch, "DIGEST_PATH", Path(self.dir.name) / "digest.json")
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        fetch._state = None
+        fetch._cache.clear()
+        self.addCleanup(setattr, fetch, "_state", None)
+        self.url = "https://site.api.espn.com/apis/v2/sports/soccer/ita.1/standings"
+
+    async def test_digest_answers_without_network_until_it_expires(self):
+        fetch = self.fetch
+        fetch._remember(self.url, {"children": []}, __import__("time").time() + 3600)
+        fetch.commit("2026-10-24")
+        fetch._cache.clear()
+        with unittest.mock.patch.object(fetch.httpx, "AsyncClient", side_effect=AssertionError("rete usata")):
+            self.assertEqual(await fetch.get_json(self.url, 60), {"children": []})
+
+    async def test_expired_digest_goes_online_and_survives_failure(self):
+        fetch = self.fetch
+        fetch._remember(self.url, {"old": 1}, __import__("time").time() - 5)
+        fetch._cache.clear()
+        fresh = unittest.mock.MagicMock()
+        fresh.json.return_value = {"new": 1}
+        client = unittest.mock.AsyncMock()
+        client.__aenter__.return_value.get = unittest.mock.AsyncMock(return_value=fresh)
+        with unittest.mock.patch.object(fetch.httpx, "AsyncClient", return_value=client):
+            self.assertEqual(await fetch.get_json(self.url, 60), {"new": 1})
+        fetch._cache.clear()
+        broken = unittest.mock.AsyncMock()
+        broken.__aenter__.return_value.get = unittest.mock.AsyncMock(side_effect=fetch.httpx.ConnectError("x"))
+        with unittest.mock.patch.object(fetch.httpx, "AsyncClient", return_value=broken):
+            self.assertEqual(await fetch.get_json(self.url, 60), {"old": 1})
+
+    async def test_capture_stores_and_expiry_follows_first_kickoff(self):
+        from features.sports import digest
+        now = 1_000_000.0
+        pre = {"state": "pre", "start": datetime.fromtimestamp(now + 7200, timezone.utc).isoformat()}
+        post = {"state": "post", "start": datetime.fromtimestamp(now - 7200, timezone.utc).isoformat()}
+        self.assertEqual(digest._expiry([post, pre], now), now + 7200)
+        self.assertEqual(digest._expiry([post], now), now + digest.HORIZON)
+        self.assertEqual(digest._expiry([{**pre, "state": "in"}], now), now)
+
+    async def test_nothing_followed_means_nothing_cached(self):
+        from features.sports import digest
+        self.fetch._remember(self.url, {"a": 1}, 9e12)
+        with unittest.mock.patch.object(digest.prefs, "followed_teams", return_value={}), \
+                unittest.mock.patch.object(digest.prefs, "f1_fans", return_value=[]):
+            self.assertFalse(digest.due())
+            status = await digest.build()
+        self.assertEqual(status["entries"], 0)

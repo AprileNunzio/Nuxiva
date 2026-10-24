@@ -2,7 +2,7 @@ from access import require_admin
 from fastapi import APIRouter, Depends, HTTPException, Request
 from state import store
 
-from features.sports import football, formula1, spotlight
+from features.sports import digest, fetch, football, formula1, spotlight
 from features.sports.catalog import LEAGUES
 from features.sports.fetch import SportsUnavailable
 from features.sports.prefs import HOUSEHOLD, prefs
@@ -30,7 +30,7 @@ async def sports_overview(_: str = Depends(require_admin)):
     people = _people()
     return {"leagues": [{"code": lg.code, "name": lg.name, "flag": lg.flag, "cup": lg.cup} for lg in LEAGUES],
             "people": people, "prefs": {p["slug"]: prefs.get(p["slug"]) for p in people},
-            "live": list(watcher.snapshot.values()), "error": watcher.last_error}
+            "live": list(watcher.snapshot.values()), "error": watcher.last_error, "digest": fetch.status()}
 
 
 @admin_routes.get("/api/sports/teams/{league}")
@@ -87,6 +87,7 @@ async def sports_save(slug: str, request: Request, user: str = Depends(require_a
     except ValueError as exc:
         raise HTTPException(400, str(exc))
     watcher.next_refresh = 0
+    fetch.commit("")
     store.event("INFO", f"Preferenze sportive di {slug} aggiornate da {user}", "sports")
     return saved
 
@@ -105,3 +106,13 @@ async def sports_show(slug: str, _: str = Depends(require_admin)):
     wid, data = match_widget(cards[0])
     desk.show(wid, data, key=f"sport-test:{slug}", ttl=60, priority=70)
     return {"ok": True, "widget": wid}
+
+
+@admin_routes.post("/api/sports/digest/build")
+async def sports_digest_build(user: str = Depends(require_admin)):
+    try:
+        status = await digest.build()
+    except SportsUnavailable as exc:
+        raise HTTPException(502, str(exc))
+    store.event("INFO", f"Aggiornamento dati sportivi eseguito da {user}", "sports")
+    return status
