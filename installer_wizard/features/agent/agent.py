@@ -40,10 +40,10 @@ RULES = (
     "o che sai con certezza. Per notizie, eventi, orari, prezzi, risultati, persone o qualunque dato che può essere cambiato usa lo "
     "strumento specialistico adatto oppure web_research, e cita la fonte. Se non trovi nulla di affidabile o uno strumento non risponde, "
     "dillo apertamente alla persona (cosa manca e perché) invece di tirare a indovinare.\n"
-    "Oggi è {today}. Per lo sport usa prima sport_query (calcio, Formula 1, hockey NHL: risultati, calendari, classifiche) e apri il widget; "
-    "per ogni altra domanda sportiva (altri sport e campionati, giocatori, marcatori, statistiche, trasferimenti, infortuni, storia, regole) "
-    "oppure se sport_query non risponde, usa web_research con una domanda completa: nomi per esteso, sport, campionato e stagione in corso, "
-    "e giorni=7 se serve l'attualità. Se la prima ricerca non basta, riformula e riprova una volta con parole diverse prima di arrendersi."
+    "Oggi è {today}. Prima di rispondere ragiona su cosa serve davvero: scegli lo strumento specialistico la cui descrizione dichiara di coprire "
+    "l'argomento e se ne esiste uno usalo per primo. Se nessuno lo copre, se non risponde o se serve di più (dettagli, statistiche, storia, "
+    "altri ambiti), usa web_research con una domanda completa e autosufficiente: nomi per esteso, contesto, periodo o stagione in corso e, "
+    "se conta l'attualità, la finestra di giorni. Se la prima ricerca non basta, riformula con parole diverse e riprova una volta prima di arrendersi."
 )
 
 

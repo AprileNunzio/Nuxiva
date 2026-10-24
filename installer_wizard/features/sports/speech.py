@@ -37,6 +37,12 @@ def match_speech(card: dict, team: dict, now: datetime) -> str:
     return f"{mine['short']} {verdict} {a} a {b} contro {other['short']} ({m['league_name']}, {when(m['start'], now)}).{tail}"
 
 
+def _standing(row: dict) -> str:
+    if row["points"]:
+        return f"{row['points']} punti in {row['played']} partite"
+    return f"{row['won']} vittorie e {row['lost']} sconfitte"
+
+
 def table_speech(card: dict, team: dict | None) -> str:
     rows = card["rows"]
     if not rows:
@@ -44,8 +50,15 @@ def table_speech(card: dict, team: dict | None) -> str:
     if team:
         row = next((r for r in rows if r["id"] == team["id"]), None)
         if row:
-            return f"{row['short']} è {row['rank']}° in {card['league_name']} con {row['points']} punti in {row['played']} partite."
-    top = ", ".join(f"{r['short']} {r['points']}" for r in rows[:3])
+            where = f"{row['rank']}° in {card['league_name']}"
+            if row.get("group"):
+                where = f"{row['rank']}° nel gruppo {row['group']} ({card['league_name']})"
+            return f"{row['short']} è {where} con {_standing(row)}."
+    groups = list(dict.fromkeys(r.get("group", "") for r in rows))
+    if len(groups) > 1:
+        return f"In testa alla {card['league_name']}: " + "; ".join(
+            f"{g}: " + ", ".join(f"{r['short']} {r['points'] or r['won']}" for r in [x for x in rows if x.get("group") == g][:3]) for g in groups) + "."
+    top = ", ".join(f"{r['short']} {r['points'] or r['won']}" for r in rows[:3])
     return f"In testa alla {card['league_name']}: {top}."
 
 
@@ -65,7 +78,7 @@ def f1_speech(card: dict) -> str:
     return f"Prossimo appuntamento: {session['name'].lower()} del {race['name']}, {when(session['start'], now)} ({race['place']})."
 
 
-def hockey_day_speech(games: list[dict], now: datetime) -> str:
+def day_speech(league_name: str, games: list[dict], now: datetime) -> str:
     done = [g for g in games if g["state"] == "post"][-6:]
     live = [g for g in games if g["state"] == "in"]
     coming = [g for g in games if g["state"] == "pre"][:3]
@@ -73,22 +86,7 @@ def hockey_day_speech(games: list[dict], now: datetime) -> str:
     if live:
         parts.append("In corso: " + "; ".join(f"{_score(g)} ({g['detail'] or g['clock']})" for g in live[:4]) + ".")
     if done:
-        parts.append("Ultimi risultati NHL: " + "; ".join(_score(g) for g in done) + ".")
+        parts.append(f"Ultimi risultati {league_name}: " + "; ".join(_score(g) for g in done) + ".")
     if coming and not live:
         parts.append("Prossime partite: " + "; ".join(f"{g['home']['short']}-{g['away']['short']} {when(g['start'], now)}" for g in coming) + ".")
-    return " ".join(parts) or "Non ci sono partite NHL in questi giorni."
-
-
-def hockey_table_speech(rows: list[dict], team: dict | None) -> str:
-    if not rows:
-        return "La classifica NHL non è ancora disponibile."
-    if team:
-        row = next((r for r in rows if r["id"] == team["id"]), None)
-        if row:
-            return (f"{row['short']} è {row['rank']}° nella {row['conference']} NHL con {row['points']} punti in {row['played']} partite "
-                    f"({row['won']} vittorie, {row['lost']} sconfitte, {row['overtime']} ai supplementari).")
-    parts = []
-    for conference in dict.fromkeys(r["conference"] for r in rows):
-        top = [r for r in rows if r["conference"] == conference][:3]
-        parts.append(f"{conference}: " + ", ".join(f"{r['short']} {r['points']}" for r in top))
-    return "In testa alla NHL, " + "; ".join(parts) + "."
+    return " ".join(parts) or f"Non ci sono partite di {league_name} in questi giorni."

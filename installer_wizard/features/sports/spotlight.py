@@ -60,7 +60,7 @@ async def f1_card(now: datetime | None = None) -> dict | None:
 
 async def standings_card(league: str, highlight: set[str] | None = None) -> dict:
     rows = await football.standings(league)
-    return {"league": league, "league_name": BY_CODE[league].name, "rows": rows[:20], "highlight": sorted(highlight or [])}
+    return {"league": league, "league_name": BY_CODE[league].name, "rows": rows[:40], "highlight": sorted(highlight or [])}
 
 
 async def f1_standings_card() -> dict:

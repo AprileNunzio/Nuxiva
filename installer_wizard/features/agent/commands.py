@@ -21,16 +21,6 @@ STRONG = re.compile(
     r"|\b(programmami|pianifica\w*|automatizza\w*)\b|\bprogramma\s+(un|una|ogni|di|che|per)\b"
     r"|\b(compiti|routine|attivit[àa]) programmat\w*"
     r"|\b(cancella|elimina|togli|ferma)\b.*\b(compito|routine|programmazione)\b", re.I)
-FRESH = re.compile(
-    r"\b(oggi|ieri|domani|stasera|stanotte|adesso|attualmente|in questo momento|ultime? notizie|notizie (su|di|sul|sulla)|ultim[oaie]|"
-    r"prossim[oaie]|quando (gioca|esce|inizia|finisce|parte|arriva|apre|chiude|esce)|a che ora (gioca|inizia|apre|chiude|parte)|"
-    r"quanto costa|prezzo|quotazione|cambio (euro|dollaro)|risultat[oi]|chi ha vinto|com'?[èe] andat\w+|cosa [èe] successo|"
-    r"aggiornament\w+|chi [èe] (il|la) (presidente|premier|primo ministro|ceo|capo)|che tempo|meteo)\b", re.I)
-SPORT = re.compile(
-    r"\b(hockey|nhl|nba|wnba|nfl|mlb|basket\w*|pallacanestro|tennis|atp|wta|rugby|pallavolo|volley|baseball|golf|boxe|ufc|mma|motogp|moto\s?gp|"
-    r"superbike|ciclismo|giro d'?italia|tour de france|olimpiadi|paralimpiadi|nuoto|atletica|sci alpino|calciomercato|capocannoniere|"
-    r"marcator\w*|infortunat\w*|squalific\w*|convocati|formazione|scudetto|campionato|classifica|playoff|stagione|trasferimento|"
-    r"transfer|ranking|medagliere|champions|europa league|serie [abc]|premier league|liga|bundesliga)\b", re.I)
 APPROVE = re.compile(r"^\s*((?:ehi[, ]+)?(?:nuxiva|nuxiva)[, ]+)?(approva|approvo|autorizz\w+|via libera)\b", re.I)
 ALWAYS = re.compile(r"\b(sempre|d'ora in poi|ogni volta)\b", re.I)
 REJECT = re.compile(r"^\s*((?:ehi[, ]+)?(?:nuxiva|nuxiva)[, ]+)?(rifiuta|rifiuto|non approv\w+|nega)\b", re.I)
@@ -55,10 +45,6 @@ def strong(text: str) -> bool:
     if (APPROVE.search(text) or REJECT.search(text)) and _approvals():
         return True
     return agent.has_pending() or bool(STRONG.search(text))
-
-
-def fresh(text: str) -> bool:
-    return enabled() and bool(FRESH.search(text) or SPORT.search(text))
 
 
 def weak(text: str) -> bool:

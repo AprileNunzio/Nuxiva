@@ -4,9 +4,9 @@ from datetime import date, datetime, timedelta, timezone
 from features.sports.catalog import BY_CODE, LIVE, POST, PRE
 from features.sports.fetch import get_json
 
-SITE = "https://site.api.espn.com/apis/site/v2/sports/soccer"
-CORE = "https://site.api.espn.com/apis/v2/sports/soccer"
-_CODE = re.compile(r"^[a-z]{3,4}(\.[a-z0-9_]{1,16}){1,2}$")
+SITE = "https://site.api.espn.com/apis/site/v2/sports"
+CORE = "https://site.api.espn.com/apis/v2/sports"
+_CODE = re.compile(r"^[a-z0-9_]{2,16}(\.[a-z0-9_]{1,16}){0,2}$")
 _ID = re.compile(r"^\d{1,8}$")
 _COLOR = re.compile(r"^[0-9a-fA-F]{6}$")
 
@@ -21,6 +21,14 @@ def check_team(team_id: str) -> str:
     if not _ID.match(str(team_id or "")):
         raise ValueError("Squadra non valida")
     return str(team_id)
+
+
+def site(league: str) -> str:
+    return f"{SITE}/{BY_CODE[check_league(league)].path}"
+
+
+def core(league: str) -> str:
+    return f"{CORE}/{BY_CODE[check_league(league)].path}"
 
 
 def _score(raw) -> int | None:
@@ -72,42 +80,58 @@ async def scoreboard(league: str, day: date | None = None) -> list[dict]:
     check_league(league)
     stamp = (day or datetime.now(timezone.utc).date()).strftime("%Y%m%d")
     today = day is None or day == datetime.now(timezone.utc).date()
-    data = await get_json(f"{SITE}/{league}/scoreboard?dates={stamp}", 30 if today else 900)
+    data = await get_json(f"{site(league)}/scoreboard?dates={stamp}", 30 if today else 900)
     return [m for m in (parse_event(e, league) for e in data.get("events") or []) if m]
 
 
 async def team_fixtures(league: str, team_id: str) -> list[dict]:
-    data = await get_json(f"{SITE}/{check_league(league)}/teams/{check_team(team_id)}/schedule?fixture=true", 1800)
+    data = await get_json(f"{site(league)}/teams/{check_team(team_id)}/schedule?fixture=true", 1800)
     return [m for m in (parse_event(e, league) for e in data.get("events") or []) if m]
 
 
 async def team_results(league: str, team_id: str) -> list[dict]:
-    data = await get_json(f"{SITE}/{check_league(league)}/teams/{check_team(team_id)}/schedule", 600)
+    data = await get_json(f"{site(league)}/teams/{check_team(team_id)}/schedule", 600)
     rows = [m for m in (parse_event(e, league) for e in data.get("events") or []) if m]
     return [m for m in rows if m["state"] == POST]
 
 
 async def teams(league: str) -> list[dict]:
-    data = await get_json(f"{SITE}/{check_league(league)}/teams", 86400)
+    data = await get_json(f"{site(league)}/teams", 86400)
     raw = ((data.get("sports") or [{}])[0].get("leagues") or [{}])[0].get("teams") or []
     return sorted((_team(t.get("team") or {}) for t in raw), key=lambda t: t["name"])
+
+
+def _stat(stats: dict, *names: str) -> float:
+    for name in names:
+        value = stats.get(name)
+        if isinstance(value, (int, float)):
+            return float(value)
+    return 0.0
 
 
 def parse_standings(data: dict) -> list[dict]:
     rows = []
     for child in data.get("children") or [{"standings": data.get("standings") or {}}]:
+        group = str(child.get("name") or "")[:40]
+        part = []
         for entry in (child.get("standings") or {}).get("entries") or []:
             stats = {s.get("name"): s.get("value") for s in entry.get("stats") or []}
-            rows.append({**_team(entry.get("team") or {}), "rank": int(stats.get("rank") or 0),
-                         "played": int(stats.get("gamesPlayed") or 0), "points": int(stats.get("points") or 0),
-                         "won": int(stats.get("wins") or 0), "drawn": int(stats.get("ties") or 0),
-                         "lost": int(stats.get("losses") or 0), "diff": int(stats.get("pointDifferential") or 0)})
-    rows.sort(key=lambda r: (r["rank"] or 999, -r["points"]))
+            part.append({**_team(entry.get("team") or {}), "rank": int(_stat(stats, "rank")), "group": group,
+                         "played": int(_stat(stats, "gamesPlayed")), "points": int(_stat(stats, "points")),
+                         "won": int(_stat(stats, "wins")), "drawn": int(_stat(stats, "ties")),
+                         "lost": int(_stat(stats, "losses")), "overtime": int(_stat(stats, "otLosses")),
+                         "diff": int(_stat(stats, "pointDifferential", "differential")),
+                         "_pct": _stat(stats, "winPercent")})
+        part.sort(key=lambda r: (r["rank"] or 999, -r["points"], -r["_pct"], -r["won"]))
+        for position, row in enumerate(part, 1):
+            row["rank"] = row["rank"] or position
+            row.pop("_pct")
+        rows += part
     return rows
 
 
 async def standings(league: str) -> list[dict]:
-    return parse_standings(await get_json(f"{CORE}/{check_league(league)}/standings", 900))
+    return parse_standings(await get_json(f"{core(league)}/standings", 900))
 
 
 def upcoming(matches: list[dict], horizon_days: int = 21) -> list[dict]:

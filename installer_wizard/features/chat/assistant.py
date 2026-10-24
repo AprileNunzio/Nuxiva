@@ -18,6 +18,7 @@ from features.chat.skill_dispatch import run_skill
 from features.chat.skills.people import person_info_skill
 from features.locale.pivot import pivot
 from features.chat.templates import remember_template
+from features.agent import grounding
 from features.understanding import router as understanding
 
 CONNECTORS = {"places": "features.places.commands", "vault": "features.vault.commands", "selftest": "features.selftest.commands", "sounds": "features.sounds.commands", "whiteboard": "features.whiteboard.commands", "games": "features.games.commands", "screens": "features.desktop.commands", "models3d": "features.models3d.commands", "documents": "features.documents.commands", "music": "features.music.commands", "livecam": "features.cameras.commands", "vision": "features.vision.sight", "gservices": "features.google.commands", "maps": "features.maps.maps", "sports": "features.sports.commands", "tv": "features.tv.commands", "experts": "features.experts.commands", "projects": "features.projects.commands"}
@@ -296,7 +297,7 @@ async def _converse(text: str, core_call) -> tuple[str, str, dict]:
     delegated = await _delegate(text)
     if delegated:
         return delegated
-    if (agent_cmd.weak(text) or agent_cmd.fresh(text)) and not code.wanted(text):
+    if agent_cmd.enabled() and not code.wanted(text) and (agent_cmd.weak(text) or await grounding.needs_lookup(text)):
         async with stages.stage("agent", "Agente con strumenti"):
             speech, ui = await agent_cmd.answer(text)
         return "agente · strumenti", speech, ui

@@ -116,12 +116,13 @@ class VoiceTest(unittest.TestCase):
         self.assertIsNone(commands.find_team("che tempo fa domani", self.TEAMS))
 
     def test_league_words_need_whole_words(self):
-        self.assertEqual(commands.find_league("classifica della serie a"), "ita.1")
+        self.assertEqual(commands.find_league("classifica della serie a").code, "ita.1")
+        self.assertEqual(commands.find_league("risultati di hockey").code, "nhl")
         self.assertIsNone(commands.find_league("è obbligatorio"))
 
     def test_f1_trigger(self):
-        self.assertTrue(commands.F1.search(commands.norm("Quando corre la Formula 1?")))
-        self.assertFalse(commands.F1.search(commands.norm("accendi la luce")))
+        self.assertTrue(commands.find_f1("Quando corre la Formula 1?"))
+        self.assertFalse(commands.find_f1("accendi la luce"))
 
 
 class SpeechTest(unittest.TestCase):
@@ -168,13 +169,13 @@ class AnswerRefreshTest(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(shown, ["sport_match"])
         self.assertIn("ita.1", calls)
 
-    async def test_offline_index_is_reported_not_guessed(self):
+    async def test_offline_index_leaves_the_question_to_research(self):
         async def teams(code):
             raise commands.SportsUnavailable("offline")
 
         with unittest.mock.patch.object(football, "teams", teams):
-            text, _ = await commands.answer("quando gioca il napoli?")
-        self.assertIn("Non riesco a raggiungere", text)
+            with self.assertRaises(LookupError):
+                await commands.answer("quando gioca il napoli?")
 
     async def test_tool_answers_or_asks_for_clarification(self):
         from features.sports import tools
@@ -187,7 +188,7 @@ class AnswerRefreshTest(unittest.IsolatedAsyncioTestCase):
                 await tools.sport_query("gioca qualcuno?")
 
 
-class HockeyTest(unittest.IsolatedAsyncioTestCase):
+class UniversalSportsTest(unittest.IsolatedAsyncioTestCase):
     TEAMS = {"sports": [{"leagues": [{"teams": [
         {"team": {"id": "1", "displayName": "Boston Bruins", "shortDisplayName": "Bruins", "abbreviation": "BOS"}},
         {"team": {"id": "2", "displayName": "Florida Panthers", "shortDisplayName": "Panthers", "abbreviation": "FLA"}}]}]}]}
@@ -195,8 +196,9 @@ class HockeyTest(unittest.IsolatedAsyncioTestCase):
         {"team": {"id": "2", "displayName": "Florida Panthers", "shortDisplayName": "Panthers"},
          "stats": [{"name": "points", "value": 10}, {"name": "wins", "value": 5}, {"name": "gamesPlayed", "value": 8}]},
         {"team": {"id": "1", "displayName": "Boston Bruins", "shortDisplayName": "Bruins"},
-         "stats": [{"name": "points", "value": 17}, {"name": "wins", "value": 8}, {"name": "losses", "value": 2},
-                   {"name": "otLosses", "value": 1}, {"name": "gamesPlayed", "value": 11}]}]}}]}
+         "stats": [{"name": "points", "value": 17}, {"name": "wins", "value": 8}, {"name": "losses", "value": 2}, {"name": "gamesPlayed", "value": 11}]}]}},
+        {"name": "Western Conference", "standings": {"entries": [
+        {"team": {"id": "7", "displayName": "Edmonton Oilers", "shortDisplayName": "Oilers"}, "stats": [{"name": "points", "value": 15}]}]}}]}
 
     def board(self):
         return {"events": [{"id": "9", "date": "2026-10-11T01:00Z", "competitions": [{
@@ -206,25 +208,42 @@ class HockeyTest(unittest.IsolatedAsyncioTestCase):
                 {"homeAway": "away", "score": "0", "team": {"id": "5", "displayName": "Nashville Predators", "shortDisplayName": "Predators"}}]}]}]}
 
     async def fake(self, url, ttl):
-        if url.endswith("/teams"):
+        if "/hockey/nhl/teams" in url and "schedule" not in url:
             return self.TEAMS
         if "standings" in url:
             return self.STANDINGS
-        return self.board()
+        if "/hockey/nhl/" in url:
+            return self.board()
+        return {}
 
-    async def ask(self, text):
-        with unittest.mock.patch("features.sports.hockey.get_json", self.fake), \
+    async def ask(self, text, plan):
+        async def decide(*_a, **_k):
+            return plan
+        commands._INDEX.update(at=0.0, teams=[])
+        with unittest.mock.patch("features.sports.fetch.get_json", self.fake), \
+                unittest.mock.patch("features.sports.football.get_json", self.fake), \
+                unittest.mock.patch("features.sports.understand.generate", decide), \
                 unittest.mock.patch.object(commands, "_desk", return_value=unittest.mock.Mock()):
             return (await commands.answer(text))[0]
 
     async def test_standings_for_team_and_league(self):
-        self.assertIn("Bruins è 1° nella Eastern Conference NHL con 17 punti", await self.ask("hockey classifica dei Bruins"))
-        self.assertIn("Eastern Conference: Bruins 17, Panthers 10", await self.ask("classifica NHL"))
+        plan = {"sport": True, "want": "standings", "focus": "auto"}
+        self.assertIn("Bruins è 1° nel gruppo Eastern Conference (NHL) con 17 punti", await self.ask("hockey classifica dei Bruins", plan))
+        self.assertIn("Eastern Conference: Bruins 17, Panthers 10", await self.ask("classifica hockey", plan))
 
     async def test_team_result_and_day_summary(self):
-        self.assertIn("Bruins ha vinto 6 a 0 contro Predators", await self.ask("com'è finita l'hockey dei Bruins"))
-        self.assertIn("Bruins 6, Predators 0", await self.ask("risultati hockey di ieri"))
+        self.assertIn("Bruins ha vinto 6 a 0 contro Predators", await self.ask("com'è finita l'hockey dei Bruins", {"sport": True, "want": "team", "focus": "result"}))
+        self.assertIn("Bruins 6, Predators 0", await self.ask("risultati hockey di ieri", {"sport": True, "want": "day", "focus": "auto"}))
 
-    async def test_history_questions_are_left_to_research(self):
+    async def test_model_can_reject_a_false_match(self):
         with self.assertRaises(LookupError):
-            await self.ask("chi ha vinto lo stanley cup")
+            await self.ask("vado a vedere i Bruins in giardino", {"sport": False, "want": "auto", "focus": "auto"})
+
+    async def test_unknown_names_are_left_to_research(self):
+        with self.assertRaises(LookupError):
+            await self.ask("chi ha vinto il premio nobel", {"sport": True, "want": "auto", "focus": "auto"})
+
+    async def test_new_sport_needs_only_a_catalog_entry(self):
+        from features.sports.catalog import BY_CODE
+        self.assertEqual({BY_CODE[c].sport for c in ("nhl", "nba", "nfl", "mlb")}, {"hockey", "basketball", "football", "baseball"})
+        self.assertEqual(football.check_league("nba"), "nba")
