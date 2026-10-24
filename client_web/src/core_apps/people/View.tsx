@@ -19,7 +19,18 @@ export const View: React.FC = () => {
   const [tab, setTab] = useState<'people' | 'reminders' | 'house'>('people');
   const present = useMemo(() => new Set(presence.data?.present ?? []), [presence.data]);
   const run = useCallback(
-    async (key: string, task: () => Promise<unknown>, code: string) => (await action.run(key, task, code)) !== undefined,
+    async (key: string, task: () => Promise<unknown>, code: string) => {
+      let succeeded = false;
+      await action.run(
+        key,
+        async () => {
+          await task();
+          succeeded = true;
+        },
+        code,
+      );
+      return succeeded;
+    },
     [action],
   );
 
