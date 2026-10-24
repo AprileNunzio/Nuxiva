@@ -28,7 +28,8 @@ class FreshnessRoutingTest(unittest.TestCase):
     def test_time_sensitive_questions_go_to_tools_not_to_memory(self):
         from features.agent import commands
         for text in ("quando gioca il Napoli?", "ultime notizie sul terremoto", "quanto costa il bitcoin oggi", "chi è il presidente della Francia",
-                     "che tempo farà domani", "com'è andata la partita"):
+                     "che tempo farà domani", "com'è andata la partita", "chi è il miglior marcatore della NHL", "come sta andando Sinner nel ranking ATP",
+                     "classifica del campionato di basket", "il Napoli ha infortunati"):
             with self.subTest(text=text):
                 self.assertTrue(commands.fresh(text))
         for text in ("raccontami una barzelletta", "come si fa il tiramisù", "spiegami la fotosintesi"):
