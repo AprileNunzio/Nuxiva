@@ -1,0 +1,10 @@
+{
+  "name": "mission_tracker",
+  "title": "Mission Tracker",
+  "category": "team",
+  "version": "1.0.0",
+  "resizable": true,
+  "fullscreen": true,
+  "default_size": { "w": 440, "h": 580 },
+  "min_size": { "w": 320, "h": 400 }
+}

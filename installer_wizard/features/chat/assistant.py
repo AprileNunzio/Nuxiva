@@ -21,12 +21,12 @@ from features.chat.templates import remember_template
 from features.agent import grounding
 from features.understanding import router as understanding
 
-CONNECTORS = {"places": "features.places.commands", "vault": "features.vault.commands", "selftest": "features.selftest.commands", "sounds": "features.sounds.commands", "whiteboard": "features.whiteboard.commands", "games": "features.games.commands", "screens": "features.desktop.commands", "models3d": "features.models3d.commands", "documents": "features.documents.commands", "music": "features.music.commands", "livecam": "features.cameras.commands", "vision": "features.vision.sight", "gservices": "features.google.commands", "maps": "features.maps.maps", "sports": "features.sports.commands", "tv": "features.tv.commands", "experts": "features.experts.commands", "projects": "features.projects.commands"}
+CONNECTORS = {"places": "features.places.commands", "vault": "features.vault.commands", "selftest": "features.selftest.commands", "sounds": "features.sounds.commands", "whiteboard": "features.whiteboard.commands", "games": "features.games.commands", "screens": "features.desktop.commands", "models3d": "features.models3d.commands", "documents": "features.documents.commands", "music": "features.music.commands", "livecam": "features.cameras.commands", "vision": "features.vision.sight", "gservices": "features.google.commands", "maps": "features.maps.maps", "sports": "features.sports.commands", "tv": "features.tv.commands", "experts": "features.experts.commands", "autonomous_worker": "features.autonomous_worker.commands", "projects": "features.projects.commands"}
 
 EARLY = ("whiteboard", "livecam", "games")
 _DISCOVERED_CONNECTORS = discover_feature_connectors()
 CONNECTORS = {**_DISCOVERED_CONNECTORS, **CONNECTORS}
-PROJECT_FIRST = (*_DISCOVERED_CONNECTORS, "projects")
+PROJECT_FIRST = (*_DISCOVERED_CONNECTORS, "autonomous_worker", "projects")
 CLAIMS = ConnectorClaims(CONNECTORS)
 PERSONAL = {"gservices", "vault", "documents", "maps", "vision", "livecam"}
 
