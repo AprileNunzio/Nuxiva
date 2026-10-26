@@ -5,6 +5,8 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
+from features.autonomous_worker.application.agentic_runner import agentic_runner
+from features.autonomous_worker.application.tool_catalog import tool_catalog
 from features.autonomous_worker.application.collab_bus import collab_bus
 from features.autonomous_worker.application.deliberator import deliberator
 from features.autonomous_worker.application.execution_loop import execution_loop
@@ -384,6 +386,52 @@ class AutonomousWorkerTest(unittest.TestCase):
             self.assertIn("Non usare eval()", captured_prompt["prompt"])
             self.assertIn("Zero-Trust obbligatorio", captured_prompt["prompt"])
             self.assertEqual(task.status, TaskStatus.REVIEW)
+
+    def test_tool_catalog_scan_and_categorize(self):
+        catalog = tool_catalog.scan_all_tools(force_refresh=True)
+        self.assertGreater(catalog["total_tools"], 50)
+        self.assertIn("system_os", catalog["categories"])
+        self.assertIn("home_automation", catalog["categories"])
+        self.assertIn("media_tv", catalog["categories"])
+
+    def test_tool_catalog_task_ranking(self):
+        task_ha = Task(
+            id="t_ha",
+            phase_id="p1",
+            title="Accendi luci salotto",
+            description="Controllo entità home assistant luce",
+            specialist_id="iot_dev",
+            specialist_role="IoT Specialist",
+        )
+        ranked = tool_catalog.get_relevant_tools_for_task(task_ha, limit=10)
+        names = [t["name"] for t in ranked]
+        self.assertTrue(any("ha_" in n for n in names) or "read_file" in names)
+
+    def test_tool_catalog_study_and_forge(self):
+        spec = {
+            "name": "audit_system_health",
+            "description": "Controlla lo stato del sistema e scrive il report",
+            "params": {"target_dir": "cartella di destinazione"},
+            "steps": [{"tool": "list_dir", "args": {"path": "{{target_dir}}"}}]
+        }
+        res = asyncio.run(tool_catalog.study_and_forge_tool(spec))
+        self.assertTrue(res["success"])
+        self.assertEqual(res["name"], "audit_system_health")
+
+    def test_agentic_runner_multi_step_tool_call(self):
+        mission = Mission(id="m_ag", title="Ag Mission", goal="Test tool", domain="dev")
+        task = Task(id="t_ag", phase_id="p1", title="Test Task", description="Testing", specialist_id="sp", specialist_role="Dev")
+        calls = [
+            {"tool": "list_dir", "args": {"path": "."}},
+            {"result": "Directory letta con successo", "artifacts": []}
+        ]
+
+        async def mock_gen(*args, **kwargs):
+            return calls.pop(0)
+
+        with mock.patch("features.autonomous_worker.infrastructure.llm_runtime.runtime_manager.generate", side_effect=mock_gen):
+            res = asyncio.run(agentic_runner.execute_task_with_tools(mission, task, "Esegui"))
+            self.assertEqual(res.get("result"), "Directory letta con successo")
 
 
 if __name__ == "__main__":

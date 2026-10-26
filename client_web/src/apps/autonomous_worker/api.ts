@@ -7,6 +7,7 @@ import {
   MissionAutomation,
   RuntimeConfig,
   RuntimeHealth,
+  ToolCatalogResponse,
   WatchdogPayload,
 } from './types';
 
@@ -159,3 +160,31 @@ export async function fetchMissionDAG(missionId: string): Promise<DAGGraphData> 
   if (!res.ok) throw new Error('fetch_mission_dag_failed');
   return res.json();
 }
+
+export async function fetchToolCatalog(): Promise<ToolCatalogResponse> {
+  const res = await fetch('/api/autonomous/tools');
+  if (!res.ok) throw new Error('fetch_tool_catalog_failed');
+  return res.json();
+}
+
+export async function scanToolsNow(): Promise<ToolCatalogResponse> {
+  const res = await fetch('/api/autonomous/tools/scan', { method: 'POST' });
+  if (!res.ok) throw new Error('scan_tools_failed');
+  return res.json();
+}
+
+export async function studyAndForgeTool(payload: {
+  name: string;
+  description: string;
+  params: Record<string, string>;
+  steps: Array<{ tool: string; args: Record<string, any> }>;
+}): Promise<{ success: boolean; name: string; description: string; steps_count: number }> {
+  const res = await fetch('/api/autonomous/tools/study', {
+    method: 'POST',
+    headers: jsonHeaders,
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error('study_and_forge_failed');
+  return res.json();
+}
+

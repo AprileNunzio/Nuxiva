@@ -86,6 +86,15 @@
     "dag_visualizer_title": "Visualiseur DAG des Dépendances de Tâches",
     "dag_refresh_btn": "Actualiser le Graphe",
     "dag_loading": "Chargement du graphe des tâches...",
-    "dag_empty": "Aucune tâche structurée dans le DAG pour cette mission."
+    "dag_empty": "Aucune tâche structurée dans le DAG pour cette mission.",
+    "tab_tools": "Catalogue d'Outils Réels et Forge",
+    "tools_title": "Catalogue Unifié des Outils et Scanner Actif",
+    "tools_desc": "Surveillance en temps réel de centaines d'outils réels et capacités système pour les agents autonomes, avec scanner dynamique et synthèse par étude.",
+    "tools_scan_btn": "Scanner les Outils",
+    "tools_forge_btn": "Forger un Nouvel Outil",
+    "tools_search_placeholder": "Rechercher un outil par nom, description ou catégorie...",
+    "tools_total": "Outils Totaux",
+    "tools_enabled": "Outils Actifs",
+    "tools_custom": "Synthétisés par Étude"
   }
 }

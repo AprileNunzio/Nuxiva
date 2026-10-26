@@ -86,6 +86,15 @@
     "dag_visualizer_title": "Visualizzatore DAG Dipendenze Task",
     "dag_refresh_btn": "Aggiorna Grafo",
     "dag_loading": "Caricamento grafo dei task in corso...",
-    "dag_empty": "Nessun task strutturato nel DAG per questa missione."
+    "dag_empty": "Nessun task strutturato nel DAG per questa missione.",
+    "tab_tools": "Catalogo Strumenti Reali & Forge",
+    "tools_title": "Catalogo Unificato Strumenti & Scanner Attivo",
+    "tools_desc": "Monitoraggio in tempo reale di centinaia di strumenti reali e capacità di sistema per agenti autonomi, con scanner dinamico e sintesi autonoma da studio.",
+    "tools_scan_btn": "Scansiona Strumenti",
+    "tools_forge_btn": "Forgia Nuovo Strumento",
+    "tools_search_placeholder": "Cerca strumento per nome, descrizione o categoria...",
+    "tools_total": "Strumenti Totali",
+    "tools_enabled": "Strumenti Attivi",
+    "tools_custom": "Sintetizzati da Studio"
   }
 }

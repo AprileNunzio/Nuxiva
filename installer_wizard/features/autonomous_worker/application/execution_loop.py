@@ -4,6 +4,7 @@ import time
 
 from features.automations.bus import bus
 from features.automations.library import library as auto_library
+from features.autonomous_worker.application.agentic_runner import agentic_runner
 from features.autonomous_worker.application.collab_bus import collab_bus
 from features.autonomous_worker.application.deliberator import deliberator
 from features.autonomous_worker.application.memory_compressor import memory_compressor
@@ -135,16 +136,7 @@ class AutonomousExecutionLoop:
         )
 
         try:
-            raw = await runtime_manager.generate(
-                prompt,
-                as_json=True,
-                max_tokens=3500,
-                temperature=0.2,
-                system=EXECUTION_SYSTEM_PROMPT,
-                component="autonomous_worker",
-                agent_id=task.specialist_id,
-                agent_role=task.specialist_role,
-            )
+            raw = await agentic_runner.execute_task_with_tools(mission, task, prompt)
             if not isinstance(raw, dict):
                 raw = {"result": str(raw)}
 

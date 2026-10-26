@@ -195,3 +195,23 @@ export interface DAGGraphData {
   edges: DAGEdge[];
   count: number;
 }
+
+export interface ToolMetadata {
+  name: string;
+  category: string;
+  description: string;
+  args: Record<string, string>;
+  confirm: boolean;
+  full_only: boolean;
+  enabled: boolean;
+  source: string;
+  agent: string;
+}
+
+export interface ToolCatalogResponse {
+  total_tools: number;
+  enabled_tools: number;
+  categories: Record<string, number>;
+  tools: ToolMetadata[];
+}
+

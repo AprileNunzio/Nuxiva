@@ -86,6 +86,15 @@
     "dag_visualizer_title": "Task Dependencies DAG Visualizer",
     "dag_refresh_btn": "Refresh Graph",
     "dag_loading": "Loading task graph...",
-    "dag_empty": "No tasks structured in the DAG for this mission."
+    "dag_empty": "No tasks structured in the DAG for this mission.",
+    "tab_tools": "Real Tool Catalog & Forge",
+    "tools_title": "Unified Tool Catalog & Active Scanner",
+    "tools_desc": "Real-time monitoring of hundreds of real system tools and capabilities for autonomous agents, with dynamic scanning and autonomous synthesis through study.",
+    "tools_scan_btn": "Scan Tools Now",
+    "tools_forge_btn": "Forge New Tool",
+    "tools_search_placeholder": "Search tool by name, description or category...",
+    "tools_total": "Total Tools",
+    "tools_enabled": "Active Tools",
+    "tools_custom": "Synthesized from Study"
   }
 }

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Activity, Cpu, Database, Layers, ListFilter, Plus, RefreshCw } from 'lucide-react';
+import { Activity, Cpu, Database, Layers, ListFilter, Plus, RefreshCw, Wrench } from 'lucide-react';
 import { createMission, fetchMissions } from './api';
 import { KnowledgeGraphViewer } from './components/KnowledgeGraphViewer';
 import { MissionDetail } from './components/MissionDetail';
 import { RuntimeConfigPanel } from './components/RuntimeConfigPanel';
+import { ToolCatalogViewer } from './components/ToolCatalogViewer';
 import { inputFieldClass, primaryBtnClass, secondaryBtnClass, useAutonomousI18n } from './scope';
 import { Mission } from './types';
 
@@ -11,7 +12,7 @@ export const View: React.FC = () => {
   const { t } = useAutonomousI18n();
   const [missions, setMissions] = useState<Mission[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'missions' | 'runtime' | 'knowledge' | 'new'>('missions');
+  const [activeTab, setActiveTab] = useState<'missions' | 'runtime' | 'knowledge' | 'tools' | 'new'>('missions');
   const [newGoal, setNewGoal] = useState('');
   const [loading, setLoading] = useState(false);
   const [creating, setCreating] = useState(false);
@@ -96,6 +97,18 @@ export const View: React.FC = () => {
           </button>
           <button
             type="button"
+            onClick={() => setActiveTab('tools')}
+            className={`rounded-xl px-4 py-2 text-xs font-semibold transition ${
+              activeTab === 'tools'
+                ? 'bg-cyan-600 text-white shadow-lg shadow-cyan-600/30'
+                : 'border border-slate-700 bg-slate-900/60 text-slate-300 hover:bg-slate-800'
+            }`}
+          >
+            <Wrench className="mr-1.5 inline h-4 w-4" />
+            {t('tab_tools')}
+          </button>
+          <button
+            type="button"
             onClick={() => setActiveTab('new')}
             className={`rounded-xl px-4 py-2 text-xs font-semibold transition ${
               activeTab === 'new'
@@ -112,6 +125,8 @@ export const View: React.FC = () => {
       {activeTab === 'runtime' && <RuntimeConfigPanel />}
 
       {activeTab === 'knowledge' && <KnowledgeGraphViewer t={t} />}
+
+      {activeTab === 'tools' && <ToolCatalogViewer />}
 
       {activeTab === 'new' && (
         <form onSubmit={(e) => void handleCreate(e)} className="flex max-w-2xl flex-col gap-4 rounded-2xl border border-slate-800 bg-slate-900/40 p-6">

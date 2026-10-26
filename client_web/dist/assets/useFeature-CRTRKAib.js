@@ -1,0 +1,1 @@
+import{u as n}from"./useResource-Dr8EIx60.js";function i(r,u=1e4){const{data:e,error:o,loading:s,reload:t}=n("/api/features",u);return{feature:(e==null?void 0:e.features.find(a=>a.id===r))??null,error:o,loading:s,reload:t}}export{i as u};

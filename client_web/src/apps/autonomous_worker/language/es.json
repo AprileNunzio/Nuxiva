@@ -86,6 +86,15 @@
     "dag_visualizer_title": "Visualizador DAG de Dependencias de Tareas",
     "dag_refresh_btn": "Actualizar Grafo",
     "dag_loading": "Cargando grafo de tareas...",
-    "dag_empty": "No hay tareas estructuradas en el DAG para esta misión."
+    "dag_empty": "No hay tareas estructuradas en el DAG para esta misión.",
+    "tab_tools": "Catálogo de Herramientas Reales y Forja",
+    "tools_title": "Catálogo Unificado de Herramientas y Escáner Activo",
+    "tools_desc": "Monitoreo en tiempo real de cientos de herramientas reales y capacidades del sistema para agentes autónomos, con escáner dinámico y síntesis mediante estudio.",
+    "tools_scan_btn": "Escanear Herramientas",
+    "tools_forge_btn": "Forjar Nueva Herramienta",
+    "tools_search_placeholder": "Buscar herramienta por nombre, descripción o categoría...",
+    "tools_total": "Herramientas Totales",
+    "tools_enabled": "Herramientas Activas",
+    "tools_custom": "Sintetizadas por Estudio"
   }
 }

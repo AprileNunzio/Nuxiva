@@ -3,6 +3,7 @@ from fastapi.responses import PlainTextResponse
 
 from access import require_admin
 from features.automations.library import library as auto_library
+from features.autonomous_worker.application.tool_catalog import tool_catalog
 from features.autonomous_worker.domain.dag_engine import dag_resolver
 from features.autonomous_worker.domain.knowledge_graph import knowledge_graph
 from features.autonomous_worker.application.collab_bus import collab_bus
@@ -321,3 +322,26 @@ async def get_mission_dag(mission_id: str, _: str = Depends(require_admin)):
     except MissionNotFoundError:
         raise HTTPException(404, "Missione non trovata")
     return dag_resolver.export_graph_data(mission.phases)
+
+
+@router.get("/tools")
+async def get_tool_catalog(_: str = Depends(require_admin)):
+    return tool_catalog.scan_all_tools()
+
+
+@router.post("/tools/scan")
+async def scan_tools_now(_: str = Depends(require_admin)):
+    return tool_catalog.scan_all_tools(force_refresh=True)
+
+
+@router.post("/tools/study")
+async def study_and_forge(request: Request, _: str = Depends(require_admin)):
+    body = await request.json()
+    if not isinstance(body, dict):
+        raise HTTPException(400, "Dati non validi")
+    try:
+        res = await tool_catalog.study_and_forge_tool(body)
+        return res
+    except ValueError as exc:
+        raise HTTPException(400, str(exc))
+
