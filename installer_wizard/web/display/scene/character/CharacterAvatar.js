@@ -4,7 +4,19 @@
   const H = J.Holo, C = J.Char;
   const MODEL = "/vendor/Michelle.glb", MOTIONS = "/vendor/Xbot.glb";
 
-  function load(url) {
+  async function load(url) {
+    if (String(url).toLowerCase().endsWith(".fbx")) {
+      if (!THREE.FBXLoader && J.loadScript) {
+        for (const s of ["/vendor/fflate.min.js", "/vendor/NURBSUtils.js", "/vendor/NURBSCurve.js", "/vendor/FBXLoader.js"]) {
+          await J.loadScript(s);
+        }
+      }
+      if (THREE.FBXLoader) {
+        return new Promise((ok, ko) => {
+          new THREE.FBXLoader().load(url, (group) => ok({ scene: group, animations: group.animations || [] }), undefined, () => ko(new Error(`${url} non caricato`)));
+        });
+      }
+    }
     return new Promise((ok, ko) => new THREE.GLTFLoader().load(url, ok, undefined, () => ko(new Error(`${url} non caricato`))));
   }
 
@@ -84,6 +96,14 @@
     }
 
     async _load(options) {
+      if (this.root) {
+        this.facing.remove(this.root);
+        this.root = null;
+      }
+      this.materials = [];
+      this.morphs = [];
+      this.parts = [];
+      this.accessories = {};
       const target = options.character || options.model || MODEL;
       let gltf;
       try {

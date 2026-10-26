@@ -4,7 +4,7 @@
   function thinking(on) {
     const { avatar } = D;
     if (!avatar) return;
-    avatar.setTint(on ? "#b36bff" : D.tint || "#29e0ff");
+    avatar.setTint(on ? "#b36bff" : (D.currentTint ? D.currentTint() : (D.tint || "#29e0ff")));
     if (avatar.face) avatar.face.thinking = on;
   }
 

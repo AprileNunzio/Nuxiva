@@ -85,6 +85,7 @@ def set_active(name: str) -> None:
 
 
 def save(name: str, filename: str, source) -> dict:
+    ROOT.mkdir(parents=True, exist_ok=True)
     folder = _dir(name)
     target = folder / valid_file(filename)
     if not folder.exists() and sum(1 for p in ROOT.iterdir() if p.is_dir()) >= MAX_AVATARS:

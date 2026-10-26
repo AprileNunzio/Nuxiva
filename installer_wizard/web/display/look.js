@@ -6,6 +6,8 @@
     el.src = src + V; el.onload = ok; el.onerror = () => ko(new Error(`${src} non caricato`));
     document.head.appendChild(el);
   });
+  window.Nuxiva3D = window.Nuxiva3D || {};
+  window.Nuxiva3D.loadScript = D.loadScript = loadScript;
   let lib3d = null;
   const LIB_3D = [
     "/vendor/three.min.js", "/vendor/OrbitControls.js", "/vendor/GLTFLoader.js", "/vendor/RoomEnvironment.js",
@@ -26,7 +28,7 @@
   function startLight() {
     $("scene").style.display = "none"; $("core").style.display = "block";
     if (window.nuxivaPerf) window.nuxivaPerf.lite(D.look.reason ? D.look.reason[0] : "light");
-    D.avatar = window.nuxivaAvatar = new NuxivaAvatar.ThoughtCore($("core"));
+    D.avatar = window.nuxivaAvatar = new NuxivaAvatar.ThoughtCore($("core"), { color: D.currentTint ? D.currentTint() : (D.FACE && D.FACE.color) || "#29e0ff" });
     D.avatar.setMode(D.mode);
   }
 

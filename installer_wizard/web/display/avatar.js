@@ -124,11 +124,11 @@
   }
 
   class ThoughtCore {
-    constructor(canvas) {
+    constructor(canvas, options = {}) {
       this.c = canvas;
       this.ctx = canvas.getContext("2d");
       this.face = { listening: false, realAudio: false, thinking: false };
-      this.color = rgb("#29e0ff"); this.target = this.color.slice();
+      this.color = rgb(options.color || "#29e0ff"); this.target = this.color.slice();
       this.level = 0; this.levelTarget = 0; this.input = 0; this.speaking = false;
       this.mode = "face"; this.alpha = 0; this.layout = null;
       this.sphere = geodesic(2);

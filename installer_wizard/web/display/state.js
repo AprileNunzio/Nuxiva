@@ -19,6 +19,7 @@
     presentNames: [],
     lastVoice: false,
     stageZone: null,
+    currentTint: () => D.tint || (D.FACE && D.FACE.color) || "#29e0ff",
     regions: () => (window.Nuxiva3D ? Nuxiva3D.REGIONS : {}),
   };
 

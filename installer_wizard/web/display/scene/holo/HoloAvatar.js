@@ -3,6 +3,22 @@
   const { THREE, damp } = J;
   const H = J.Holo;
 
+  async function loadModel(url) {
+    if (String(url).toLowerCase().endsWith(".fbx")) {
+      if (!THREE.FBXLoader && J.loadScript) {
+        for (const s of ["/vendor/fflate.min.js", "/vendor/NURBSUtils.js", "/vendor/NURBSCurve.js", "/vendor/FBXLoader.js"]) {
+          await J.loadScript(s);
+        }
+      }
+      if (THREE.FBXLoader) {
+        return new Promise((ok, ko) => {
+          new THREE.FBXLoader().load(url, (group) => ok({ scene: group, animations: group.animations || [] }), undefined, () => ko(new Error(`${url} non caricato`)));
+        });
+      }
+    }
+    return new Promise((ok, ko) => new THREE.GLTFLoader().load(url, ok, undefined, () => ko(new Error(`${url} non caricato`))));
+  }
+
   class HoloAvatar {
     constructor(parent, onReady, options = {}) {
       this.group = new THREE.Group();
@@ -30,12 +46,38 @@
     }
 
     _load(options, onReady) {
+      const DEFAULT_HEAD = "/static/shared/models/head.glb";
+      const target = options.model || DEFAULT_HEAD;
       const done = (gltf) => {
-        try { this._build(gltf, options); } catch (err) { console.warn("Ologramma: modello non valido", err); this._build(null, options); }
-        onReady && onReady();
+        try {
+          this._build(gltf, options);
+          onReady && onReady();
+        } catch (err) {
+          console.warn("Ologramma: modello non valido", err);
+          if (target !== DEFAULT_HEAD) {
+            console.warn(`Ripristino ologramma default ${DEFAULT_HEAD}`);
+            loadModel(DEFAULT_HEAD).then((defGltf) => {
+              try { this._build(defGltf, options); } catch (e) { this._build(null, options); }
+              onReady && onReady();
+            }).catch(() => {
+              this._build(null, options);
+              onReady && onReady();
+            });
+            return;
+          }
+          this._build(null, options);
+          onReady && onReady();
+        }
       };
-      if (!THREE.GLTFLoader) { done(null); return; }
-      new THREE.GLTFLoader().load(options.model || "/static/shared/models/head.glb", done, undefined, () => done(null));
+      if (!THREE.GLTFLoader && !THREE.FBXLoader) { done(null); return; }
+      loadModel(target).then(done).catch((err) => {
+        if (target !== DEFAULT_HEAD) {
+          console.warn(`Ologramma "${target}" non caricabile, ripristino default ${DEFAULT_HEAD}`, err);
+          loadModel(DEFAULT_HEAD).then(done).catch(() => done(null));
+        } else {
+          done(null);
+        }
+      });
     }
 
     _staticGeometry(gltf) {
@@ -56,6 +98,11 @@
     }
 
     _build(gltf, options) {
+      while (this.body.children.length > 1) {
+        this.body.remove(this.body.children[this.body.children.length - 1]);
+      }
+      this.parts = [];
+      this.accessories = {};
       let skinned = false;
       if (gltf) gltf.scene.traverse((o) => { if (o.isSkinnedMesh || (o.isMesh && o.morphTargetInfluences)) skinned = true; });
       const yaw = ((+options.yaw || 0) * Math.PI) / 180;

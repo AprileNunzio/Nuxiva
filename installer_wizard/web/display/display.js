@@ -149,7 +149,7 @@
     D.userName = s.user_name || "";
     $("banner").textContent = s.message;
     $("banner").classList.toggle("show", s.phase === "DEGRADED");
-    if (D.avatar) D.avatar.setTint(s.phase === "DEGRADED" ? "#ffb547" : D.busy ? "#b36bff" : D.tint || "#29e0ff");
+    if (D.avatar) D.avatar.setTint(s.phase === "DEGRADED" ? "#ffb547" : D.busy ? "#b36bff" : (D.currentTint ? D.currentTint() : (D.tint || "#29e0ff")));
     $("chips").innerHTML = Object.values(s.components || {}).filter((c) => c.status && c.status !== "ok")
       .map((c) => `<span><i class="dot ${c.status}"></i>${fmt.esc(c.label)}</span>`).join("");
 
@@ -165,7 +165,15 @@
     if (a.dance !== undefined) call("dance", a.dance);
     if (a.sing !== undefined) call("sing", a.sing);
     if (a.accessory) call("toggleAccessory", a.accessory.name, a.accessory.state);
-    if (a.tint && /^#[0-9a-f]{6}$/i.test(a.tint)) { D.tint = a.tint; call("setTint", a.tint); }
+    if (a.tint) {
+      if (a.tint === "default" || a.tint === "reset") {
+        D.tint = null;
+        call("setTint", D.currentTint ? D.currentTint() : "#29e0ff");
+      } else if (/^#[0-9a-f]{6}$/i.test(a.tint)) {
+        D.tint = a.tint;
+        call("setTint", a.tint);
+      }
+    }
   }
 
   D.startLook();

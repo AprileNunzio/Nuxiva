@@ -59,4 +59,11 @@ async def serve_avatar_file(name: str, filename: str):
         raise HTTPException(400)
     except FileNotFoundError:
         raise HTTPException(404)
-    return FileResponse(path, headers={"Cache-Control": "private, max-age=300", "X-Content-Type-Options": "nosniff"})
+    ext = path.suffix.lower()
+    media = ("model/gltf-binary" if ext == ".glb"
+             else "application/octet-stream" if ext == ".fbx"
+             else "image/png" if ext == ".png"
+             else "image/jpeg" if ext in (".jpg", ".jpeg")
+             else "image/webp" if ext == ".webp"
+             else None)
+    return FileResponse(path, media_type=media, headers={"Cache-Control": "private, max-age=300", "X-Content-Type-Options": "nosniff"})

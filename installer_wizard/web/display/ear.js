@@ -43,7 +43,10 @@
     $("btn-mic").className = `ibtn mic ${s === "listening" ? "listening" : s === "off" ? "off" : ""}`;
     document.body.classList.toggle("listening", s === "listening");
     document.body.classList.toggle("transcribing", s === "transcribing");
-    if (avatar && avatar.face) { avatar.face.listening = s === "listening"; if (!D.busy) avatar.setTint(s === "listening" ? "#3dffa8" : s === "transcribing" ? "#b36bff" : D.tint || "#29e0ff"); }
+    if (avatar && avatar.face) {
+      avatar.face.listening = s === "listening";
+      if (!D.busy) avatar.setTint(s === "listening" ? "#3dffa8" : s === "transcribing" ? "#b36bff" : (D.currentTint ? D.currentTint() : (D.tint || "#29e0ff")));
+    }
   }
 
   function level(v) {

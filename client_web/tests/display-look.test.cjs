@@ -71,6 +71,18 @@ context.NuxivaAvatar.watchFps = () => {};
   assert.equal(lastFaceOptions.model, '/api/avatars/serve/Holo/head.glb');
   assert.equal(lastFaceOptions.customModel, '/api/avatars/serve/Holo/head.glb');
 
+  assert.equal(typeof context.window.Nuxiva3D.loadScript, 'function', 'loadScript exposed on Nuxiva3D');
+
+  // Verify currentTint logic on D
+  D.tint = null;
+  D.FACE = { color: '#abcdef' };
+  D.currentTint = () => D.tint || (D.FACE && D.FACE.color) || '#29e0ff';
+  assert.equal(D.currentTint(), '#abcdef');
+  D.tint = '#123456';
+  assert.equal(D.currentTint(), '#123456');
+  D.tint = null;
+  assert.equal(D.currentTint(), '#abcdef');
+
   console.log('Display look: initialized 3D scene, lightweight fallback and brain visibility passed.');
 })().catch(err => {
   console.error(err);

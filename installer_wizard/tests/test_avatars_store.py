@@ -1,10 +1,11 @@
+import asyncio
 import io
 import tempfile
 import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.avatars import store
+from features.avatars import api, store
 
 
 class AvatarStoreTest(unittest.TestCase):
@@ -49,6 +50,33 @@ class AvatarStoreTest(unittest.TestCase):
         store.remove("robot")
         self.assertEqual(store.active(), "")
         self.assertEqual(store.listing()["avatars"], [])
+
+    def test_save_creates_missing_root_directory(self):
+        nonexistent = self.root / "subfolder" / "nested_avatars"
+        with mock.patch.object(store, "ROOT", nonexistent), mock.patch.object(store, "ACTIVE_FILE", nonexistent / "active.txt"):
+            saved = store.save("fresh_bot", "model.glb", io.BytesIO(b"glTFbinary"))
+            self.assertEqual(saved["avatar"], "fresh_bot")
+            self.assertTrue((nonexistent / "fresh_bot" / "model.glb").is_file())
+
+    def test_fbx_model_support_and_activation(self):
+        saved = store.save("alien", "alien_mesh.fbx", io.BytesIO(b"Kaydara FBX Binary"))
+        self.assertEqual(saved["file"], "alien_mesh.fbx")
+        store.set_active("alien")
+        self.assertEqual(store.active_model_url(), "/api/avatars/serve/alien/alien_mesh.fbx")
+
+    def test_serve_avatar_mime_types(self):
+        store.save("bot", "model.glb", io.BytesIO(b"glTF"))
+        store.save("bot", "model.fbx", io.BytesIO(b"FBX"))
+        store.save("bot", "preview.png", io.BytesIO(b"PNG"))
+
+        glb_resp = asyncio.run(api.serve_avatar_file("bot", "model.glb"))
+        self.assertEqual(glb_resp.media_type, "model/gltf-binary")
+
+        fbx_resp = asyncio.run(api.serve_avatar_file("bot", "model.fbx"))
+        self.assertEqual(fbx_resp.media_type, "application/octet-stream")
+
+        png_resp = asyncio.run(api.serve_avatar_file("bot", "preview.png"))
+        self.assertEqual(png_resp.media_type, "image/png")
 
 
 if __name__ == "__main__":
