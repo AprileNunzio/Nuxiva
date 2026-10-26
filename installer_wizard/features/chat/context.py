@@ -2,6 +2,7 @@ from contextvars import ContextVar
 
 device: ContextVar[str] = ContextVar("nuxiva_device", default="kiosk")
 voice: ContextVar[str] = ContextVar("nuxiva_voice", default="")
+client: ContextVar[str] = ContextVar("nuxiva_client", default="")
 TRUSTED = ("admin", "remote")
 
 

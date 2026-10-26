@@ -221,6 +221,7 @@ async def public_chat(request: Request):
     internal = bool(body.get("internal") or request.headers.get("x-nuxiva-internal") == "1")
     device = "selftest" if internal else ("kiosk" if is_local(request) else "remote")
     cid = str(body.get("client_id") or request.headers.get("x-nuxiva-client") or ("kiosk" if is_local(request) else "remote"))[:80]
+    request_context.client.set(cid)
     return await assistant_chat(body.get("text", ""), device, lang_of(body),
                                 _heard(body), internal=internal, client_id=cid)
 
@@ -230,10 +231,12 @@ def _sse(event: dict) -> str:
 
 
 async def _stream_chat(text: str, device: str, lang: str | None, heard: dict | None, client_id: str = ""):
+    if client_id:
+        request_context.client.set(client_id)
     queue: asyncio.Queue = asyncio.Queue()
     marker = streaming.sink.set(queue)
     try:
-        task = asyncio.create_task(assistant_chat(text, device, lang, heard, client_id=client_id))
+        task = asyncio.create_task(assistant_chat(text, device, lang, heard))
     finally:
         streaming.sink.reset(marker)
     while True:
@@ -309,6 +312,7 @@ async def public_wake(request: Request):
 async def admin_chat(request: Request, _: str = Depends(require_admin)):
     body = await request.json()
     cid = str(body.get("client_id") or request.headers.get("x-nuxiva-client") or "admin")[:80]
+    request_context.client.set(cid)
     return await assistant_chat(body.get("text", ""), "admin", lang_of(body), client_id=cid)
 
 
