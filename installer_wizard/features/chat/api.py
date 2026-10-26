@@ -117,7 +117,7 @@ def _heard(body: dict) -> dict:
             "voice_known": known if isinstance(known, bool) else None}
 
 
-async def assistant_chat(text: str, device: str, heard_lang: str | None = None, heard: dict | None = None, internal: bool = False) -> JSONResponse:
+async def assistant_chat(text: str, device: str, heard_lang: str | None = None, heard: dict | None = None, internal: bool = False, client_id: str = "") -> JSONResponse:
     heard = heard or {}
     if not internal:
         install_queue.note_activity()
@@ -186,7 +186,19 @@ async def assistant_chat(text: str, device: str, heard_lang: str | None = None, 
     result["room"] = {"id": room.id, "name": room.name} if room else None
     if not internal:
         study.engine.note_query(text, result.get("intent", ""))
-        desk.on_intent(result.get("intent", ""), result.get("ui") or {})
+        cid = client_id or device
+        desk.on_intent(result.get("intent", ""), result.get("ui") or {}, client_id=cid)
+        store.live_dialogue = {
+            "id": f"dlg_{int(time.time() * 1000)}",
+            "user_text": said,
+            "reply": result.get("reply", ""),
+            "intent": result.get("intent", ""),
+            "device": device,
+            "client_id": cid,
+            "mode": (result.get("ui") or {}).get("mode", "face"),
+            "ts": time.time(),
+        }
+        store.touch()
         if not str(result.get("agent", "")).startswith("algoritmo") and skill_library.needs_algorithm(text):
             background(skill_library.learn(text, brains.config()["deep"]))
         background(mind.evaluate(said, result.get("reply", ""), result.get("intent", ""), device, directed, confidence,
@@ -208,19 +220,20 @@ async def public_chat(request: Request):
     body = await request.json()
     internal = bool(body.get("internal") or request.headers.get("x-nuxiva-internal") == "1")
     device = "selftest" if internal else ("kiosk" if is_local(request) else "remote")
+    cid = str(body.get("client_id") or request.headers.get("x-nuxiva-client") or ("kiosk" if is_local(request) else "remote"))[:80]
     return await assistant_chat(body.get("text", ""), device, lang_of(body),
-                                _heard(body), internal=internal)
+                                _heard(body), internal=internal, client_id=cid)
 
 
 def _sse(event: dict) -> str:
     return "data: " + json.dumps(event, ensure_ascii=False) + NL + NL
 
 
-async def _stream_chat(text: str, device: str, lang: str | None, heard: dict | None):
+async def _stream_chat(text: str, device: str, lang: str | None, heard: dict | None, client_id: str = ""):
     queue: asyncio.Queue = asyncio.Queue()
     marker = streaming.sink.set(queue)
     try:
-        task = asyncio.create_task(assistant_chat(text, device, lang, heard))
+        task = asyncio.create_task(assistant_chat(text, device, lang, heard, client_id=client_id))
     finally:
         streaming.sink.reset(marker)
     while True:
@@ -249,13 +262,15 @@ def _streaming_response(generator) -> StreamingResponse:
 async def public_chat_stream(request: Request):
     require_display(request, f"Per parlare con {assistant_name()} da remoto accedi al pannello :8080")
     body = await request.json()
-    return _streaming_response(_stream_chat(body.get("text", ""), "kiosk" if is_local(request) else "remote", lang_of(body), _heard(body)))
+    cid = str(body.get("client_id") or request.headers.get("x-nuxiva-client") or ("kiosk" if is_local(request) else "remote"))[:80]
+    return _streaming_response(_stream_chat(body.get("text", ""), "kiosk" if is_local(request) else "remote", lang_of(body), _heard(body), client_id=cid))
 
 
 @admin_routes.post("/api/assistant/chat/stream")
 async def admin_chat_stream(request: Request, _: str = Depends(require_admin)):
     body = await request.json()
-    return _streaming_response(_stream_chat(body.get("text", ""), "admin", lang_of(body), None))
+    cid = str(body.get("client_id") or request.headers.get("x-nuxiva-client") or "admin")[:80]
+    return _streaming_response(_stream_chat(body.get("text", ""), "admin", lang_of(body), None, client_id=cid))
 
 
 @public_routes.get("/api/ambient")
@@ -266,21 +281,35 @@ async def public_ambient():
 @public_routes.post("/api/assistant/wake")
 async def public_wake(request: Request):
     require_display(request)
-    request_context.device.set("kiosk" if is_local(request) else "remote")
+    dev = "kiosk" if is_local(request) else "remote"
+    request_context.device.set(dev)
     install_queue.note_activity()
     from features.automations.bus import emit
-    emit("wake", {"device": request_context.device.get()})
+    emit("wake", {"device": dev})
     desk.wake()
     result = await wake.greeting(wake.wake_language())
-    desk.show("g_notify", result["card"], key="wake", ttl=25)
-    dialogue.remember(request_context.device.get(), assistant_name(), result["reply"], "wake")
+    cid = "kiosk" if is_local(request) else "remote"
+    desk.show("g_notify", result["card"], key="wake", ttl=25, client_id=cid)
+    dialogue.remember(dev, assistant_name(), result["reply"], "wake")
+    store.live_dialogue = {
+        "id": f"dlg_{int(time.time() * 1000)}",
+        "user_text": "",
+        "reply": result["reply"],
+        "intent": "wake",
+        "device": dev,
+        "client_id": cid,
+        "mode": "face",
+        "ts": time.time(),
+    }
+    store.touch()
     return result
 
 
 @admin_routes.post("/api/assistant/chat")
 async def admin_chat(request: Request, _: str = Depends(require_admin)):
     body = await request.json()
-    return await assistant_chat(body.get("text", ""), "admin", lang_of(body))
+    cid = str(body.get("client_id") or request.headers.get("x-nuxiva-client") or "admin")[:80]
+    return await assistant_chat(body.get("text", ""), "admin", lang_of(body), client_id=cid)
 
 
 @admin_routes.delete("/api/assistant/history")

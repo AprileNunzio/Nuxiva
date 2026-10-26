@@ -87,6 +87,29 @@ export const SystemSettingsView: React.FC<SystemSettingsViewProps> = ({ t, onBac
     }
   };
 
+  const handleSessionModeChange = async (mode: 'shared' | 'isolated') => {
+    if (!display) return;
+    const updated: DisplaySettings = { ...display, session_mode: mode };
+    setDisplay(updated);
+
+    try {
+      const bc = new BroadcastChannel('nuxiva_display_settings');
+      bc.postMessage({ type: 'settings_updated', settings: updated });
+      bc.close();
+    } catch (_) {}
+
+    try {
+      localStorage.setItem('nuxiva_display_settings', JSON.stringify(updated));
+    } catch (_) {}
+
+    try {
+      await saveDisplaySettings(updated);
+      showToast(t('display_live_synced'));
+    } catch (_) {
+      showToast(t('sync_error'));
+    }
+  };
+
   const handleBackendFieldChange = <K extends keyof BackendSettings>(key: K, val: BackendSettings[K]) => {
     if (!backend) return;
     setBackend({ ...backend, [key]: val });
@@ -267,6 +290,50 @@ export const SystemSettingsView: React.FC<SystemSettingsViewProps> = ({ t, onBac
                     active={display.sound_effects}
                     onToggle={() => void handleToggleDisplay('sound_effects')}
                   />
+                </div>
+              </div>
+
+              <div className="py-2.5">
+                <span className="mb-2 block font-mono text-[10px] uppercase tracking-wider text-slate-500">
+                  {t('section_display_session')}
+                </span>
+                <div className="flex flex-col gap-2 rounded-xl border border-slate-200 bg-white p-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <Globe className="h-4 w-4 text-cyan-600" />
+                      <span className="font-semibold text-slate-950">{t('opt_session_mode')}</span>
+                    </div>
+                    <span className="font-mono text-[10px] font-bold uppercase text-cyan-700">
+                      {display.session_mode === 'isolated' ? t('mode_isolated_badge') : t('mode_shared_badge')}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-600">{t('opt_session_mode_desc')}</p>
+                  <div className="mt-1 grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => void handleSessionModeChange('shared')}
+                      className={`flex flex-col rounded-lg border p-2 text-left transition ${
+                        (display.session_mode || 'shared') === 'shared'
+                          ? 'border-cyan-500 bg-cyan-50/70 text-cyan-950 shadow-sm'
+                          : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
+                      }`}
+                    >
+                      <span className="text-xs font-bold">{t('opt_session_shared')}</span>
+                      <span className="text-[10px] text-slate-500">{t('opt_session_shared_desc')}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => void handleSessionModeChange('isolated')}
+                      className={`flex flex-col rounded-lg border p-2 text-left transition ${
+                        display.session_mode === 'isolated'
+                          ? 'border-cyan-500 bg-cyan-50/70 text-cyan-950 shadow-sm'
+                          : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
+                      }`}
+                    >
+                      <span className="text-xs font-bold">{t('opt_session_isolated')}</span>
+                      <span className="text-[10px] text-slate-500">{t('opt_session_isolated_desc')}</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

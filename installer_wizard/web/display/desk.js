@@ -1,7 +1,7 @@
 (() => {
   const impls = {}, loading = {}, cards = new Map();
   let host = null, resizeObs = null, lastList = [], allList = [], layoutRaf = 0, lastZone = "", screens = [];
-  const hooks = { speak: () => {}, onStage: () => {}, screen: 0, satellite: false, quiet: false };
+  const hooks = { speak: () => {}, onStage: () => {}, screen: 0, satellite: false, quiet: false, clientId: "", sessionMode: "shared" };
   const EDGE = 28;
   const gov = (id, fn, el, mount) => (window.nuxivaGovernor ? window.nuxivaGovernor.measure(id, fn, el, mount) : fn());
 
@@ -425,7 +425,11 @@
   }
   const scheduleLayout = () => { cancelAnimationFrame(layoutRaf); layoutRaf = requestAnimationFrame(layout); };
 
-  const mine = (i) => i.screen === -1 || (i.screen == null ? hooks.screen === 0 : i.screen === hooks.screen);
+  const mine = (i) => {
+    const mode = (window.NuxivaDisplay && window.NuxivaDisplay.state && window.NuxivaDisplay.state.display_settings && window.NuxivaDisplay.state.display_settings.session_mode) || hooks.sessionMode || "shared";
+    if (mode === "isolated" && i.client_id) return i.client_id === hooks.clientId;
+    return i.screen === -1 || (i.screen == null ? hooks.screen === 0 : i.screen === hooks.screen);
+  };
 
   async function render(list) {
     allList = list || [];
@@ -440,10 +444,10 @@
   }
 
   function hello() {
-    fetch("/api/desk/hello", { method: "POST", headers: { "Content-Type": "application/json" },
+    fetch("/api/desk/hello", { method: "POST", headers: { "Content-Type": "application/json", "X-Nuxiva-Client": hooks.clientId || "" },
       body: JSON.stringify({ screen: hooks.screen, x: hooks.x || 0, w: window.innerWidth, h: window.innerHeight,
         local: ["127.0.0.1", "localhost"].includes(location.hostname), ear: window.nuxivaEar ? `${window.nuxivaEar.state} ${window.nuxivaEar.link}` : "",
-        perf: window.nuxivaPerf ? window.nuxivaPerf.text : "" }) }).catch(() => {});
+        perf: window.nuxivaPerf ? window.nuxivaPerf.text : "", client: hooks.clientId || "" }) }).catch(() => {});
   }
 
   function mount(container, options = {}) {

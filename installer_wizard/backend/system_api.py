@@ -311,6 +311,7 @@ DEFAULT_DISPLAY_SETTINGS = {
     "show_holo_avatar": True,
     "show_desk_widgets": True,
     "sound_effects": True,
+    "session_mode": "shared",
 }
 
 DEFAULT_BACKEND_SETTINGS = {
@@ -342,7 +343,11 @@ def save_display_settings(data: dict) -> dict:
     current = get_display_settings()
     for k in DEFAULT_DISPLAY_SETTINGS:
         if k in data:
-            current[k] = bool(data[k])
+            if k == "session_mode":
+                val = str(data[k]).strip().lower()
+                current[k] = val if val in ("shared", "isolated") else "shared"
+            else:
+                current[k] = bool(data[k])
     path = NUXIVA_DIR / "display_settings.json"
     try:
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -351,6 +356,11 @@ def save_display_settings(data: dict) -> dict:
     except OSError as exc:
         log.error("Impostazioni del display non salvate: %s", exc)
     store.display_settings = current
+    try:
+        from features.desktop.desk import desk
+        desk.publish()
+    except Exception:
+        pass
     return current
 
 
@@ -438,3 +448,5 @@ async def post_system_backend_settings(request: Request):
         raise HTTPException(400, "Corpo richiesta non valido")
     saved = save_backend_settings(body)
     return {"ok": True, "settings": saved}
+
+store.display_settings = get_display_settings()

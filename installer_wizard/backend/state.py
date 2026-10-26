@@ -59,6 +59,8 @@ class Store:
         self.desk: list = []
         self.screens: list = []
         self.displays: list = []
+        self.live_dialogue: dict | None = None
+        self.display_settings: dict = {}
         self.logs: deque = deque(maxlen=800)
         self.events: deque = deque(maxlen=200)
         self._load()
@@ -142,6 +144,7 @@ class Store:
             "desk": self.desk,
             "screens": self.screens,
             "displays": self.displays,
+            "live_dialogue": self.live_dialogue,
             "logs": list(self.logs)[-log_lines:],
         }
         if admin:

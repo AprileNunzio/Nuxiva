@@ -1,5 +1,17 @@
 (() => {
   const D = window.NuxivaDisplay, { $, fmt } = D;
+  let clientId = "";
+  try {
+    clientId = sessionStorage.getItem("nuxiva_client_id") || "";
+    if (!clientId) {
+      clientId = D.local ? "kiosk" : "client_" + Math.random().toString(36).slice(2, 10);
+      sessionStorage.setItem("nuxiva_client_id", clientId);
+    }
+  } catch (_) {
+    clientId = D.local ? "kiosk" : "client_fallback";
+  }
+  D.clientId = clientId;
+  D.lastDialogueId = "";
   let homeSent = 0;
 
   function goHome() {
@@ -154,6 +166,23 @@
       .map((c) => `<span><i class="dot ${c.status}"></i>${fmt.esc(c.label)}</span>`).join("");
 
     if (s.holo_action && D.avatar) holoAction(s.holo_action);
+    if (s.live_dialogue && s.live_dialogue.id && s.live_dialogue.id !== D.lastDialogueId) {
+      D.lastDialogueId = s.live_dialogue.id;
+      const mode = (s.display_settings && s.display_settings.session_mode) || "shared";
+      const forMe = mode === "shared" || s.live_dialogue.client_id === D.clientId;
+      const fromMe = s.live_dialogue.client_id === D.clientId;
+      if (forMe && !fromMe) {
+        D.lastInteraction = Date.now();
+        if (s.live_dialogue.user_text && $("you")) {
+          $("you").textContent = `« ${s.live_dialogue.user_text} »`;
+        }
+        if (s.live_dialogue.reply && $("say")) {
+          if (D.mode !== "brain") D.setMode("face");
+          D.typeInto($("say"), s.live_dialogue.reply);
+          if (D.avatar && D.avatar.express) D.avatar.express("talk", 2.4);
+        }
+      }
+    }
   }
 
   function holoAction(a) {
@@ -192,6 +221,8 @@
     speak: (text) => { if (!D.busy) { D.typeInto($("say"), text); D.speak(text); } },
     onStage: (zone) => { if (D.cam && D.cam.on) { D.cam.prevZone = zone; return; } D.stageZone = zone; D.applyStage(); },
     screen: 0, x: +(new URLSearchParams(location.search).get("x") || 0),
+    clientId: D.clientId,
+    sessionMode: (D.state && D.state.display_settings && D.state.display_settings.session_mode) || "shared",
   });
   let linkLostAt = 0;
   const onLink = (ok) => {

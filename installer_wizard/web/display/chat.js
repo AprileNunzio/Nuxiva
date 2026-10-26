@@ -17,7 +17,7 @@
     if (D.busy) return;
     D.busy = true; D.lastInteraction = Date.now();
     try {
-      const d = await fetch("/api/assistant/wake", { method: "POST" }).then((r) => r.json());
+      const d = await fetch("/api/assistant/wake", { method: "POST", headers: { "Content-Type": "application/json", "X-Nuxiva-Client": D.clientId || "" }, body: JSON.stringify({ client_id: D.clientId }) }).then((r) => r.json());
       parseActions(d);
       if (D.mode !== "face") D.setMode("face");
       D.Mood.joy();
@@ -60,8 +60,8 @@
   }
 
   async function askStream(text, lang, heard) {
-    const r = await fetch("/api/assistant/chat/stream", { method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text, lang, ...heard }) });
+    const r = await fetch("/api/assistant/chat/stream", { method: "POST", headers: { "Content-Type": "application/json", "X-Nuxiva-Client": D.clientId || "" },
+      body: JSON.stringify({ text, lang, client_id: D.clientId, ...heard }) });
     if (!r.ok || !r.body) return null;
     const reader = r.body.getReader(), decoder = new TextDecoder();
     let buffer = "", said = "", cut = 0, code = false, voice = null, final = null;
@@ -159,8 +159,8 @@
         show(text, streamed.data, streamed.spoken);
         return;
       }
-      const r = await fetch("/api/assistant/chat", { method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, lang, ...payload }) });
+      const r = await fetch("/api/assistant/chat", { method: "POST", headers: { "Content-Type": "application/json", "X-Nuxiva-Client": D.clientId || "" },
+        body: JSON.stringify({ text, lang, client_id: D.clientId, ...payload }) });
       const d = await r.json();
       if (!r.ok) throw new Error(d.detail || "Errore");
       if (d.ignored) { D.lastVoice = false; D.Ear.followup(12); return; }

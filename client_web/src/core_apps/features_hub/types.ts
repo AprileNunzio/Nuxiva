@@ -12,6 +12,7 @@ export interface DisplaySettings {
   show_holo_avatar: boolean;
   show_desk_widgets: boolean;
   sound_effects: boolean;
+  session_mode?: 'shared' | 'isolated';
 }
 
 export interface BackendSettings {

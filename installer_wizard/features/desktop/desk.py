@@ -155,7 +155,8 @@ class Desk:
         return self.prefs.get(wid, {}).get("pos") or self.widgets.get(wid, {}).get("pos")
 
     def show(self, wid: str, data: dict | None = None, key: str | None = None, ttl: float | None = None,
-             priority: int | None = None, intent: bool = False, fullscreen: bool | None = None) -> None:
+             priority: int | None = None, intent: bool = False, fullscreen: bool | None = None,
+             client_id: str | None = None) -> None:
         m = self.widgets.get(wid)
         if not m:
             return
@@ -173,6 +174,7 @@ class Desk:
             "fullscreen": bool(old and old.get("fullscreen")) if fullscreen is None else fullscreen,
             "sticky": bool(m.get("sticky")),
             "expires_at": time.time() + float(ttl) if ttl else None,
+            "client_id": client_id or (old.get("client_id") if old else None),
         }
         self.publish()
 
@@ -242,15 +244,14 @@ class Desk:
             self.publish()
         return len(keys)
 
-    def on_intent(self, intent: str, ui: dict) -> None:
+    def on_intent(self, intent: str, ui: dict, client_id: str | None = None) -> None:
         self.request_started()
-        wanted = {m["id"] for m in self.widgets.values()
-                  if intent in m["intents"] and not m.get("standalone")}
+        wanted = {m["id"] for m in self.widgets.values() if intent in m["intents"] and not m.get("standalone")}
         self.dismiss_intents(keep=wanted)
         for m in self.widgets.values():
             if m["id"] in wanted:
                 panel = next((p for p in ui.get("panels", []) if p.get("type") == m.get("panel_type")), None)
-                self.show(m["id"], (panel or {}).get("data") or {"title": ui.get("title", "")}, intent=True)
+                self.show(m["id"], (panel or {}).get("data") or {"title": ui.get("title", "")}, intent=True, client_id=client_id)
 
     def dismiss_intents(self, keep: set | None = None) -> None:
         keys = [k for k, i in self.instances.items() if i.get("intent") and not i.get("sticky") and i["id"] not in (keep or set())]
@@ -289,10 +290,13 @@ class Desk:
                         "pos": self.position(i["id"]), "overlay": m.get("overlay", False),
                         "takeover": prio >= 90 and m["size"] == "full", "fullscreen": bool(i.get("fullscreen")),
                         "sticky": bool(m.get("sticky")), "immersive": bool(m.get("immersive")),
-                        "personal": m.get("personal", False), "refresh": self.refresh_of(i["id"])})
+                        "personal": m.get("personal", False), "refresh": self.refresh_of(i["id"]),
+                        "client_id": i.get("client_id")})
         out = self._rotate(out)
         wanted = {wid: p["screen"] for wid, p in self.prefs.items() if p.get("screen") is not None}
-        return screens.assign(out, wanted)
+        disp = getattr(store, "display_settings", None)
+        mode = disp.get("session_mode", "shared") if isinstance(disp, dict) else "shared"
+        return screens.assign(out, wanted, session_mode=mode)
 
     @staticmethod
     def _forced(item: dict) -> bool:
@@ -476,12 +480,8 @@ class Desk:
                                    if isinstance(i, dict) and i.get("id")], 1.0)
                 self._bindings()
                 await self._providers()
-                if screens.changed():
-                    self.publish()
-                expired = [k for k, i in self.instances.items() if i["expires_at"] and i["expires_at"] <= time.time()]
-                for k in expired:
-                    self.instances.pop(k, None)
-                if expired:
+                if screens.changed() or any(self.instances.pop(k, None) for k, i in list(self.instances.items())
+                                           if i.get("expires_at") and i["expires_at"] <= time.time()):
                     self.publish()
             except Exception:
                 log.exception("Desktop dei widget")

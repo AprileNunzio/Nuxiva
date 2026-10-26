@@ -131,6 +131,15 @@
     "redalert_cast": "Message vocal sur les Chromecast",
     "redalert_excluded_title": "Lumières exclues",
     "redalert_excluded_hint": "Touchez une lumière pour l'exclure de l'alarme (par exemple les chambres) : elle reste telle quelle.",
-    "redalert_no_lights": "Aucune lumière trouvée : Home Assistant n'est pas connecté."
+    "redalert_no_lights": "Aucune lumière trouvée : Home Assistant n'est pas connecté.",
+    "section_display_session": "Gestion des Sessions d'Affichage",
+    "opt_session_mode": "Mode d'affichage des écrans",
+    "opt_session_mode_desc": "Configurez si les affichages distants partagent la même session ou disposent d'écrans indépendants.",
+    "mode_shared_badge": "Partagée",
+    "mode_isolated_badge": "Isolée",
+    "opt_session_shared": "Unique partagée",
+    "opt_session_shared_desc": "Tout s'ouvre et se synchronise sur tous les écrans en temps réel.",
+    "opt_session_isolated": "Séparées par accès",
+    "opt_session_isolated_desc": "Les widgets et réponses ne s'ouvrent que sur le navigateur ou l'écran qui en fait la demande."
   }
 }

@@ -40,7 +40,7 @@ class Screens:
     def changed(self) -> bool:
         return self.numbers() != self.last
 
-    def assign(self, items: list[dict], wanted: dict) -> list[dict]:
+    def assign(self, items: list[dict], wanted: dict, session_mode: str = "shared") -> list[dict]:
         screens = self.last = self.numbers()
         main = 0 if 0 in screens else screens[0]
         others = [n for n in screens if n != main]
@@ -51,7 +51,7 @@ class Screens:
             return min(others, key=lambda n: (load[n], others.index(n)))
 
         for it in items:
-            if it.get("takeover"):
+            if session_mode == "shared" or it.get("takeover"):
                 it["screen"] = -1
                 continue
             if it.get("overlay"):
