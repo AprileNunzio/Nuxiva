@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/kanban_board",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Tablero",
+    "todo": "Por hacer",
+    "doing": "En curso",
+    "doing_chip_one": "{{n}} en curso",
+    "doing_chip_other": "{{n}} en curso"
+  }
+}

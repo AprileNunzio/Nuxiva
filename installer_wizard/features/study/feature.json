@@ -1,0 +1,49 @@
+{
+  "id": "study",
+  "name": "Studio autonomo",
+  "icon": "🎓",
+  "category": "conoscenza",
+  "order": 120,
+  "panel": "study",
+  "description": "A riposo Nuxiva studia le materie che scegli o che scopre dalle conversazioni, da base a esperto, e usa ciò che impara nelle risposte.",
+  "toggle": {
+    "hook": "study"
+  },
+  "requires": {
+    "ram_gb": 4
+  },
+  "capabilities": [
+    "Lezioni da fonti reali",
+    "Ripasso ed esami di livello",
+    "Memoria binaria → ternaria → coseno"
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "hlnLMra14Qpa",
+    "url": "https://img.icons8.com/?size=240&id=hlnLMra14Qpa&format=png"
+  },
+  "settings": [
+    {
+      "key": "NUXIVA_STUDY_FINETUNE",
+      "label": "Affinamento del modello durante lo studio",
+      "type": "select",
+      "options": [
+        "auto",
+        "1",
+        "0"
+      ],
+      "default": "auto",
+      "apply": [
+        "soup"
+      ]
+    },
+    {
+      "key": "NUXIVA_STUDY_BASE_MODEL",
+      "label": "Modello base per l'affinamento",
+      "type": "text",
+      "default": ""
+    }
+  ]
+}

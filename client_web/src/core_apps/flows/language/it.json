@@ -1,0 +1,40 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Flussi",
+    "description": "Editor nodale DAG del ragionamento di {assistant}",
+    "status": "Attivo",
+    "open_app": "Apri",
+    "loading": "Caricamento…",
+    "unreachable": "Server non raggiungibile",
+    "on": "Attivo",
+    "off": "Spento",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "edit": "Modifica",
+    "delete": "Elimina",
+    "add": "Aggiungi",
+    "stat_pending": "Modifiche in bozza",
+    "stat_estimate": "Tempo stimato",
+    "stat_speed": "Velocità",
+    "stat_quality": "Qualità",
+    "stat_privacy": "Privacy",
+    "stat_saving": "Risparmio",
+    "templates": "Modelli di flusso",
+    "nodes": "Passaggi del ragionamento",
+    "locked": "Bloccato",
+    "changed": "Modificato",
+    "publish_title": "Pubblica e ripristina",
+    "publish_hint": "Per cambiare il modo di ragionare serve la tua password.",
+    "password": "Password",
+    "publish": "Pubblica",
+    "discard": "Scarta la bozza",
+    "versions": "Versioni",
+    "no_versions": "Nessuna versione pubblicata.",
+    "active": "Attiva",
+    "restore": "Ripristina",
+    "auto": "Automatico"
+  }
+}

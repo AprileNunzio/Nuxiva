@@ -1,0 +1,105 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "server/core/core_platform"
+  },
+  "errors": {
+    "cortex": {
+      "input": {
+        "empty": "Le texte est vide après assainissement.",
+        "too_long": "Le texte dépasse la longueur autorisée.",
+        "forbidden_characters": "Le texte contient des caractères de contrôle interdits.",
+        "invalid_identifier": "L'identifiant contient des caractères interdits."
+      },
+      "crypto": {
+        "invalid_key_length": "La clé cryptographique a une longueur invalide.",
+        "encryption_failed": "Échec du chiffrement.",
+        "decryption_failed": "Échec du déchiffrement : données altérées ou clé incorrecte.",
+        "malformed_ciphertext": "Les données chiffrées sont incomplètes.",
+        "malformed_signature": "La signature numérique est mal formée.",
+        "key_derivation_failed": "Échec de la dérivation de la clé.",
+        "random_unavailable": "Le générateur aléatoire du système est indisponible."
+      },
+      "vector": {
+        "empty": "Le vecteur est vide ou nul.",
+        "non_finite": "Le vecteur contient des valeurs non finies.",
+        "dimension_mismatch": "La dimension du vecteur ne correspond pas à l'index.",
+        "invalid_dimension": "La dimension de l'index est invalide."
+      },
+      "neuron": {
+        "invalid_weight": "Le poids synaptique doit être compris entre 0 et 1.",
+        "duplicate_vector": "Le vecteur est déjà présent dans le neurone.",
+        "capacity_exceeded": "Limite de capacité atteinte.",
+        "unknown": "Neurone introuvable."
+      },
+      "router": {
+        "invalid_thresholds": "Les seuils de l'arbitre sont invalides."
+      },
+      "snapshot": {
+        "invalid": "L'instantané de la mémoire est invalide."
+      },
+      "slots": {
+        "schema_invalid": "Le schéma des paramètres est invalide.",
+        "unknown": "Un paramètre hors du schéma a été extrait.",
+        "required_missing": "Un paramètre obligatoire est manquant.",
+        "type_mismatch": "Le type du paramètre ne correspond pas au schéma.",
+        "value_not_allowed": "La valeur du paramètre ne fait pas partie de celles autorisées."
+      },
+      "forge": {
+        "manifest_invalid": "Le manifeste de la compétence n'est pas valide.",
+        "source_too_large": "Le code de la compétence est trop volumineux.",
+        "syntax": "Le code de la compétence contient des erreurs de syntaxe.",
+        "forbidden_import": "Le code utilise un module non autorisé.",
+        "forbidden_call": "Le code utilise une fonction non autorisée.",
+        "forbidden_syntax": "Le code utilise une construction non autorisée.",
+        "missing_entry": "La fonction run(slots) est absente.",
+        "unknown_skill": "Compétence inconnue.",
+        "untrusted": "La signature de la compétence n'est pas valide : elle n'est pas exécutée.",
+        "timeout": "La compétence a dépassé le temps maximal.",
+        "runtime_failed": "L'exécution de la compétence a échoué.",
+        "output_invalid": "La compétence a renvoyé un résultat non valide.",
+        "violation": "La compétence a tenté une opération système interdite et a été arrêtée.",
+        "author_invalid": "La compétence rédigée par le modèle n'est pas valide."
+      },
+      "plasticity": {
+        "invalid": "Le retour n'est pas valide."
+      }
+    },
+    "platform": {
+      "native": {
+        "unavailable": "Le module natif Rust n'est pas installé.",
+        "outdated": "Le module natif Rust est obsolète : réinstallez-le."
+      },
+      "vault": {
+        "weak_secret": "Le secret principal est trop court pour chiffrer en toute sécurité."
+      },
+      "storage": {
+        "io_failed": "Échec de lecture ou d'écriture sur le disque."
+      }
+    },
+    "hippocampus": {
+      "embedding": {
+        "unavailable": "Le modèle d'embedding local n'est pas installé.",
+        "failed": "Échec du calcul de l'embedding."
+      },
+      "storage": {
+        "undecryptable": "La mémoire des neurones ne peut pas être déchiffrée avec la clé actuelle.",
+        "corrupted": "La mémoire des neurones est endommagée."
+      },
+      "skills": {
+        "unavailable": "Aucune compétence exécutable n'est disponible pour ce neurone."
+      },
+      "service": {
+        "degraded": "Le service hippocampe fonctionne en mode dégradé."
+      },
+      "distillation": {
+        "unavailable": "La distillation exige des dépendances et un GPU absents de cette machine.",
+        "no_data": "Il n'y a pas encore assez d'exemples vérifiés pour distiller."
+      }
+    },
+    "gliner": {
+      "unavailable": "Le modèle GLiNER n'est pas installé.",
+      "inference_failed": "Échec de l'extraction des paramètres."
+    }
+  }
+}

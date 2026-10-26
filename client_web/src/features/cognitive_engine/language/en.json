@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "client_web/src/features/cognitive_engine",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Cognitive Engine",
+    "status_loaded": "Loaded",
+    "action_interact": "Interact",
+    "render_fps": "FPS: {{fps}}"
+  }
+}

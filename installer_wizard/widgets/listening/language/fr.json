@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/listening",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "state_idle": "Dites « {{name}} » pour me parler",
+    "state_listening": "Je vous écoute…",
+    "state_transcribing": "Je comprends…",
+    "state_off": "Microphone éteint"
+  }
+}

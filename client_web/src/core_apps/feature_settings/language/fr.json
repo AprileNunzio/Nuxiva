@@ -1,0 +1,41 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Parametres des fonctions",
+    "description": "Centre des fonctionnalités",
+    "status": "Actif",
+    "open_app": "Ouvrir",
+    "loading": "Chargement…",
+    "unreachable": "Serveur injoignable",
+    "on": "Actif",
+    "off": "Éteint",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "add": "Ajouter",
+    "rescan": "Rechercher de nouvelles fonctions",
+    "stat_total": "Fonctions",
+    "stat_running": "En marche",
+    "stat_stopped": "Arrêtées",
+    "stat_errors": "Erreurs",
+    "search": "Rechercher une fonction",
+    "category": "Catégorie",
+    "all_categories": "Toutes les catégories",
+    "empty": "Aucune fonction ne correspond.",
+    "mode": "Mode",
+    "mode_auto": "Automatique",
+    "mode_on": "Toujours active",
+    "mode_off": "Toujours désactivée",
+    "pin": "Épingler",
+    "details": "Détails",
+    "running": "En marche",
+    "stopped": "Arrêtée",
+    "new": "Nouvelle",
+    "no_settings": "Cette fonction n'a pas de réglages.",
+    "studio_open": "Studio des voix",
+    "settings_title": "Parametres"
+  }
+}

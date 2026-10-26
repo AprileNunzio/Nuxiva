@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/listening",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "state_idle": "Dì «{{name}}» per parlarmi",
+    "state_listening": "Ti ascolto…",
+    "state_transcribing": "Sto capendo…",
+    "state_off": "Microfono spento"
+  }
+}

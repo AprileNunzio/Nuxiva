@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/sport_table",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Standings",
+    "col_played": "P",
+    "col_diff": "GD",
+    "col_points": "Pts"
+  }
+}

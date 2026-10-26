@@ -1,0 +1,21 @@
+{
+  "meta": {"locale": "es"},
+  "dictionary": {
+    "module.title": "Matriz LLM gratuita y conmutación",
+    "module.subtitle": "Enrutamiento entre modelos con precio oficial igual a cero",
+    "mode.free_matrix": "Matriz cloud sin coste",
+    "pool.chat": "Conversación",
+    "pool.voice_fast": "Voz rápida medida",
+    "pool.agent_tools": "Agentes y herramientas",
+    "pool.vision": "Visión e imágenes",
+    "pool.deep_code": "Razonamiento y código",
+    "status.available": "Listo",
+    "status.cooldown_429": "En pausa por límite de solicitudes",
+    "status.degraded": "Proveedor lento",
+    "status.key_invalid": "Clave no válida",
+    "failover.reason.rate_limit_429": "Límite de solicitudes alcanzado",
+    "failover.reason.provider_error": "Proveedor no disponible temporalmente",
+    "failover.reason.timeout": "Tiempo de respuesta agotado",
+    "catalog.unavailable": "Catálogo no disponible"
+  }
+}

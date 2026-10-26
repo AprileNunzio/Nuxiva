@@ -1,0 +1,40 @@
+{
+  "id": "shares",
+  "name": "Cartella condivisa",
+  "icon": "🗂",
+  "category": "sistema",
+  "order": 40,
+  "panel": "shares",
+  "toggle": {
+    "env": "NUXIVA_SHARES",
+    "apply": [
+      "shares"
+    ]
+  },
+  "description": "Cartella di rete protetta per documenti, siti, modelli 3D, codice e musica. La memoria di Nuxiva non è in rete.",
+  "capabilities": [
+    "\\\\IP-del-server\\condivisa da Esplora file di Windows, smb://IP/condivisa da Mac e Linux",
+    "Sottocartelle: 01 Documenti, 02 Siti web, 03 Modelli 3D, 04 Codice, 05 Scambio, 06 Musica",
+    "Nomi con data inversa: 20261002_nome.estensione",
+    "Accesso solo con l'utente nuxiva-share e password, compatibile con Windows 11 (SMB2/3)",
+    "La memoria personale resta solo sul server, mai in rete"
+  ],
+  "settings": [
+    {
+      "key": "NUXIVA_SMB_PASSWORD",
+      "label": "Password dell'utente nuxiva-share (vuota = generata)",
+      "type": "secret",
+      "default": "",
+      "apply": [
+        "shares"
+      ]
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "7q3OyYPrttmB",
+    "url": "https://img.icons8.com/?size=240&id=7q3OyYPrttmB&format=png"
+  }
+}

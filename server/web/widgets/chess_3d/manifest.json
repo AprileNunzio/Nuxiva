@@ -1,0 +1,10 @@
+{
+  "id": "chess_3d",
+  "name": "Scacchi 3D Deck",
+  "version": "1.0.0",
+  "category": "widget",
+  "description": "Mini-viewport e controller dinamico per partite a scacchi 3D con Nuxiva",
+  "icon": "♟️",
+  "render_type": "chess_deck",
+  "grid_span": {"col": 2, "row": 2}
+}

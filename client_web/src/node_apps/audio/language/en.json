@@ -1,0 +1,43 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "scope_local": "local server",
+    "scope_paired": "paired node",
+    "scope_mesh": "not paired",
+    "channel_title": "Active device",
+    "channel_device": "Device",
+    "channel_none": "No device detected",
+    "channel_mute": "Mute",
+    "channel_unmute": "Unmute",
+    "channel_volume": "Volume",
+    "channel_boost_warning": "Above 100% the signal is amplified: it may distort.",
+    "channel_unavailable": "Audio system unavailable on the server: {error}",
+    "inventory_empty": "The node reported no devices.",
+    "title": "Audio",
+    "description": "Audio output, volume and {assistant}'s voice on this node",
+    "notice_unpaired": "This node is only discovered on the mesh: pair it from Nodes & Servers to manage its audio.",
+    "notice_paired": "The node applies voice settings on next contact. The audio output is chosen on the device.",
+    "inventory_title": "Audio outputs reported by the node",
+    "voice_title": "Voice and sounds",
+    "test_title": "Speaker test",
+    "test_hint": "Plays a system sound on the server speakers.",
+    "test_sound": "Sound to play",
+    "test_play": "Play",
+    "test_ok": "Sound sent to the speakers.",
+    "test_failed": "Playback failed.",
+    "setting_NUXIVA_VOICE_VOLUME": "Voice volume",
+    "setting_NUXIVA_VOICE_VOLUME_hint": "Multiplier applied to speech synthesis (0.4 - 2).",
+    "setting_NUXIVA_VOICE_SPEED": "Voice speed",
+    "setting_NUXIVA_VOICE_SPEED_hint": "1 is the natural speed.",
+    "setting_NUXIVA_VOICE_PITCH": "Voice pitch",
+    "setting_NUXIVA_VOICE_PITCH_hint": "Semitones: negative lower, positive higher.",
+    "setting_NUXIVA_QUIET_VOICE": "Quiet mode voice",
+    "setting_NUXIVA_QUIET_VOICE_hint": "Volume used when the house is quiet.",
+    "setting_NUXIVA_SOUNDS_VOLUME": "Sound effects",
+    "setting_NUXIVA_SOUNDS_VOLUME_hint": "Volume of alerts and confirmations.",
+    "setting_NUXIVA_SOUNDS_AMBIENT_VOLUME": "Background",
+    "setting_NUXIVA_SOUNDS_AMBIENT_VOLUME_hint": "Ambient background volume."
+  }
+}

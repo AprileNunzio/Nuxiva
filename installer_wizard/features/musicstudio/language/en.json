@@ -1,0 +1,14 @@
+{
+  "name": "Music Studio",
+  "description": "A complete production studio by voice or on screen: Nuxiva composes whole songs, writes and translates lyrics, adds drums, bass, chords, melodies, effects and vocals, and you refine everything with timeline, piano roll, step sequencer, mixer and effects.",
+  "capabilities": [
+    "Creates a song from one sentence: genre, key, progression, structure, instruments and lyrics",
+    "Works even without the brain thanks to a rule-based arrangement engine",
+    "Adds drums, bass, chords, pads, arpeggios, melody, effects and vocals on request",
+    "Translates lyrics and sings them in the new language with Nuxiva's voices",
+    "Track timeline, piano roll, step sequencer, mixer with pan, mute, solo and per-track effects",
+    "20 synthesized instruments and 8 effects (equalizer, filter, delay, reverb, chorus, distortion, compressor, phaser)",
+    "Exports the mix as WAV and the reopenable project to the shared folder «08 Produzioni»"
+  ],
+  "settings": {}
+}

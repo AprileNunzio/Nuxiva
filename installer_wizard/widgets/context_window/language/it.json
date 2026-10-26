@@ -1,0 +1,10 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/context_window",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Finestra di contesto"
+  }
+}

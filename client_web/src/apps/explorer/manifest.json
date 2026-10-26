@@ -1,0 +1,49 @@
+{
+  "id": "explorer",
+  "name": "Condivisioni di rete",
+  "scope": "apps/explorer",
+  "kind": "app",
+  "category": "system",
+  "target": "global",
+  "icon3d": "./icon.png",
+  "window": {
+    "defaultWidth": 68,
+    "defaultHeight": 75,
+    "minWidth": 30,
+    "resizable": true
+  },
+  "toolbars": [
+    {
+      "id": "main",
+      "items": [
+        {
+          "id": "search",
+          "type": "search",
+          "placeholderKey": "search"
+        },
+        {
+          "id": "new_folder",
+          "type": "button",
+          "labelKey": "new_folder",
+          "icon": "plus"
+        },
+        {
+          "id": "refresh",
+          "type": "button",
+          "labelKey": "refresh",
+          "icon": "refresh-cw"
+        }
+      ]
+    }
+  ],
+  "category": "system",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "7q3OyYPrttmB",
+    "url": "https://img.icons8.com/?size=240&id=7q3OyYPrttmB&format=png"
+  },
+  "desktop": {
+    "order": 0
+  }
+}

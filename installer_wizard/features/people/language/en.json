@@ -1,0 +1,13 @@
+{
+  "name": "People & Profiles",
+  "description": "Household member profiles: biometric signatures, preferences, permissions, and location tracking.",
+  "capabilities": [
+    "Facial and voice biometric profiles",
+    "Personalized preferences and access rights",
+    "In-house room presence tracking",
+    "Updates the speaker's profile by itself and logs their mood, with your feedback"
+  ],
+  "settings": {
+    "NUXIVA_PEOPLE_LEARN": "Learn from conversations"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Gestes de la Main",
+    "description": "Studio de suivi des mains à 21 points",
+    "status": "Actif",
+    "open_app": "Ouvrir",
+    "loading": "Chargement…",
+    "unreachable": "Serveur injoignable",
+    "on": "Actif",
+    "off": "Éteint",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "add": "Ajouter",
+    "feature_title": "Réglages de la fonction",
+    "mode": "Mode",
+    "mode_auto": "Automatique",
+    "mode_on": "Toujours active",
+    "mode_off": "Toujours désactivée",
+    "running": "En marche",
+    "stopped": "Arrêtée",
+    "no_settings": "Cette fonction n'a pas de réglages.",
+    "missing": "Fonction introuvable",
+    "stat_state": "État",
+    "stat_fps": "Analyses par seconde",
+    "stat_hands": "Mains reconnues",
+    "stat_budget": "Temps maximal",
+    "gestures": "Gestes disponibles"
+  }
+}

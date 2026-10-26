@@ -1,0 +1,21 @@
+{
+  "id": "factory_reset",
+  "name": "Ripristino di fabbrica",
+  "icon": "♻",
+  "category": "sistema",
+  "order": 99,
+  "pinned": false,
+  "panel": "",
+  "api": "api.py",
+  "description": "Cancella tutti i dati, le impronte e le credenziali di Nuxiva e riporta il sistema alla configurazione iniziale, come appena installato, con conferme multiple e prova finale dell'avvenuta cancellazione.",
+  "capabilities": [
+    "Inventario di tutto ciò che verrà cancellato prima di procedere",
+    "Riconferma della password dell'amministratore e frase di conferma casuale",
+    "Attesa obbligatoria e codice monouso che scade, contro i clic involontari",
+    "Sovrascrittura dei file riservati prima della rimozione",
+    "Verifica finale: nessun residuo, file campione scomparsi, nessun processo con dati ancora aperti",
+    "Chiavi di sessione e segreti rigenerati, procedura guidata di prima configurazione riaperta"
+  ],
+  "settings": [],
+  "icon3d": "./icon.png"
+}

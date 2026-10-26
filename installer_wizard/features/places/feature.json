@@ -1,0 +1,19 @@
+{
+  "id": "places",
+  "name": "Piani e stanze",
+  "title": "Piani e stanze",
+  "description": "Mappa di piani e stanze: dove si trovano server, satelliti, PC, telecamere e microfoni, e in che stanza sei per capire comandi come «accendi la luce»",
+  "icon": "🏠",
+  "version": "1.0",
+  "widgets": [],
+  "has_admin": true,
+  "panel": "places",
+  "category": "casa",
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "gvQUkpW15e1x",
+    "url": "https://img.icons8.com/?size=240&id=gvQUkpW15e1x&format=png"
+  }
+}

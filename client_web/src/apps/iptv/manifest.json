@@ -1,0 +1,41 @@
+{
+  "id": "iptv",
+  "name": "TV & IPTV",
+  "icon": "Tv",
+  "version": "5.1.0",
+  "description": "Gestione canali TV, streaming IPTV, guida EPG e tuner DVB-T2/SAT>IP",
+  "scope": "apps/iptv",
+  "kind": "app",
+  "target": "global",
+  "window": {
+    "defaultWidth": 78,
+    "defaultHeight": 84,
+    "minWidth": 32,
+    "minHeight": 25,
+    "resizable": true
+  },
+  "toolbars": [
+    {
+      "id": "system",
+      "items": [
+        {
+          "type": "action",
+          "id": "refresh",
+          "labelKey": "os_refresh",
+          "shortcut": "F5"
+        }
+      ]
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "NNiLa5wndFCN",
+    "url": "https://img.icons8.com/?size=240&id=NNiLa5wndFCN&format=png"
+  },
+  "category": "media",
+  "featureIds": [
+    "tv"
+  ]
+}

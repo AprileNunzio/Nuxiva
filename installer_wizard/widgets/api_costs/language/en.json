@@ -1,0 +1,10 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/api_costs",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "API costs"
+  }
+}

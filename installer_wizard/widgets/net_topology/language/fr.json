@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/net_topology",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Réseau",
+    "title": "Topologie",
+    "loading": "Analyse du réseau…"
+  }
+}

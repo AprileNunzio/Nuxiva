@@ -1,0 +1,19 @@
+{
+  "name": "Allarme rosso",
+  "description": "Quando scatta un allarme (fumo, acqua, intrusione…) Nuxiva fa lampeggiare lentamente di rosso tutte le luci di Home Assistant e ripete il messaggio urgente su tutti i Chromecast; finito l'allarme le luci tornano come prima.",
+  "capabilities": [
+    "Luci di casa rosse lampeggianti (lente, sicure per chi è sensibile alla luce)",
+    "Luci escluse a scelta (camere da letto, luci di cortesia)",
+    "Messaggio vocale urgente su tutti i Chromecast, con intervallo di ripetizione regolabile",
+    "Ripristino automatico delle luci com'erano",
+    "Si ferma chiudendo il widget dell'allarme o quando l'allarme rientra",
+    "Prova e stop con un pulsante, stato in tempo reale"
+  ],
+  "settings": {
+    "NUXIVA_REDALERT_LIGHTS": "Fai lampeggiare le luci di rosso",
+    "NUXIVA_REDALERT_CAST": "Avvisa a voce su tutti i Chromecast",
+    "NUXIVA_REDALERT_SECONDS": "Per quanto tempo",
+    "NUXIVA_REDALERT_REPEAT": "Ripeti il messaggio vocale ogni",
+    "NUXIVA_REDALERT_EXCLUDE": "Luci da non far lampeggiare"
+  }
+}

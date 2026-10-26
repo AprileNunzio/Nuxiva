@@ -1,0 +1,14 @@
+{
+  "id": "contact_card",
+  "personal": true,
+  "name": "Directory Contatti",
+  "icon": "📱",
+  "priority": 100,
+  "size": "m",
+  "intents": [
+    "contact_card"
+  ],
+  "description": "Visualizza numeri di telefono e dettagli VCard.",
+  "ttl": 120,
+  "tone": "cyan"
+}

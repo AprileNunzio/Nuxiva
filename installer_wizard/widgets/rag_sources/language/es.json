@@ -1,0 +1,10 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/rag_sources",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Fuentes"
+  }
+}

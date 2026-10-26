@@ -1,0 +1,46 @@
+{
+  "id": "avatars",
+  "name": "Ologrammi e Avatar",
+  "icon": "🧍‍♀️",
+  "category": "assistente",
+  "order": 38,
+  "pinned": false,
+  "panel": "avatars",
+  "description": "",
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "x0qTmzjcFRhW",
+    "url": "https://img.icons8.com/?size=240&id=x0qTmzjcFRhW&format=png"
+  },
+  "settings": [
+    {
+      "key": "NUXIVA_AVATAR",
+      "label": "Aspetto dell'assistente",
+      "type": "select",
+      "options": [
+        "auto",
+        "full",
+        "light"
+      ],
+      "default": "auto"
+    },
+    {
+      "key": "NUXIVA_AVATAR_STYLE",
+      "label": "Stile dell'aspetto",
+      "type": "select",
+      "options": [
+        "character",
+        "hologram"
+      ],
+      "default": "character"
+    },
+    {
+      "key": "NUXIVA_FACE_COLOR",
+      "label": "Colore dell'ologramma",
+      "type": "color",
+      "default": "#29e0ff"
+    }
+  ]
+}

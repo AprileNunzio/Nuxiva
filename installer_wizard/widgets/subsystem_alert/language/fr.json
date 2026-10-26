@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/subsystem_alert",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Système",
+    "title": "Réparation en cours",
+    "faults_one": "{{n}} panne",
+    "faults_other": "{{n}} pannes"
+  }
+}

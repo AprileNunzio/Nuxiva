@@ -1,0 +1,17 @@
+{
+  "id": "diorama",
+  "name": "Diorama 3D",
+  "icon": "🏞️",
+  "priority": 88,
+  "size": "l",
+  "ttl": 0,
+  "agent": "diorama",
+  "intents": [
+    "diorama"
+  ],
+  "description": "Diorama fotorealistico costruito dal vivo: si vede nascere pezzo per pezzo e si modifica solo a voce.",
+  "tone": "amber",
+  "essential": true,
+  "immersive": true,
+  "chrome": false
+}

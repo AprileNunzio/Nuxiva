@@ -1,0 +1,31 @@
+{
+  "name": "Gestion de la musique",
+  "description": "Votre bibliothèque musicale locale : bibliothèque, playlists, mix, recherche, paroles, Chromecast et DLNA, liens partagés, application téléphonique et reconnaissance ambiante.",
+  "capabilities": [
+    "Bibliothèque avec tri automatique",
+    "Listes de lecture normales et intelligentes",
+    "Mix et radio infinie",
+    "Écran Chromecast, DLNA et Nuxiva",
+    "Liens partagés à l'expiration",
+    "Serveur compatible avec les applications musicales",
+    "Reconnaissance environnementale"
+  ],
+  "settings": {
+    "NUXIVA_MUSIC_ORGANIZE": "Triez vous-même les fichiers placés dans « À trier »",
+    "NUXIVA_MUSIC_SCAN_MIN": "Contrôle de la bibliothèque",
+    "NUXIVA_MUSIC_COVERS": "Rechercher en ligne des pochettes et des données manquantes (album, année, genre)",
+    "NUXIVA_MUSIC_LYRICS": "Téléchargez les paroles et enregistrez-les à côté des chansons (.lrc)",
+    "NUXIVA_MUSIC_CAST": "Rechercher des Chromecast, des téléviseurs et des enceintes DLNA",
+    "NUXIVA_MUSIC_RADIO": "Radio infinie quand la file d'attente se termine",
+    "NUXIVA_MUSIC_CROSSFADE": "Fondu entre les chansons",
+    "NUXIVA_MUSIC_TRANSCODE": "Conversion de formats non pris en charge",
+    "NUXIVA_MUSIC_TRANSCODE_KBPS": "Qualité des conversions",
+    "NUXIVA_MUSIC_SHARE_LINKS": "Autoriser les liens partagés",
+    "NUXIVA_MUSIC_SHARE_HOURS": "Durée des liens partagés",
+    "NUXIVA_MUSIC_HISTORY_DAYS": "Historique d'écoute préservé",
+    "NUXIVA_MUSIC_VOICE": "Commandes vocales pour la musique",
+    "NUXIVA_MUSIC_IDENTIFY": "Reconnaître les chansons sans données par le son (envoyer 12 secondes d'audio au service de reconnaissance)",
+    "NUXIVA_MUSIC_TAGS": "Écrivez les données manquantes dans les fichiers (titre, artiste, album, année, genre)",
+    "NUXIVA_MUSIC_RENAME": "Donnez les noms complets des fichiers : numéro - artiste - titre (année)"
+  }
+}

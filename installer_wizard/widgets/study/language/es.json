@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/study",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Estudio",
+    "chip": "En curso",
+    "autonomous": "Estudio autónomo"
+  }
+}

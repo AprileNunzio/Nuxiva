@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/reminder",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Reminder",
+    "pending": "Pending",
+    "new": "New reminder"
+  }
+}

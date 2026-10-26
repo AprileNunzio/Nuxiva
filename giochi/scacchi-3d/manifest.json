@@ -1,0 +1,234 @@
+{
+  "id": "scacchi-3d",
+  "name": "Wizard Chess 3D",
+  "version": "1.0.0",
+  "category": "games",
+  "description": "Scacchi 3D immersivi in cattedrale gotica con comandi vocali, animazioni cinematiche e agente cognitivo Nuxiva",
+  "icon": "♟️",
+  "entrypoint": "src/App.tsx",
+  "tech_stack": ["react", "threejs", "webgl_3d", "vite", "gemini_genai"],
+  "commands": [
+    {
+      "command_id": "move",
+      "name_key": "cmd_move_name",
+      "description_key": "cmd_move_desc",
+      "input_types": ["ui_action", "api_call"],
+      "voice_triggers": [],
+      "parameters": {
+        "fromRow": "integer",
+        "fromCol": "integer",
+        "toRow": "integer",
+        "toCol": "integer",
+        "promotion": "string"
+      },
+      "requires_confirmation": false,
+      "is_async": false
+    },
+    {
+      "command_id": "voice_move",
+      "name_key": "cmd_voice_move_name",
+      "description_key": "cmd_voice_move_desc",
+      "input_types": ["voice", "api_call"],
+      "voice_triggers": [
+        "muovi",
+        "sposta",
+        "cavallo",
+        "pedone",
+        "alfiere",
+        "torre",
+        "donna",
+        "regina",
+        "re",
+        "arrocco",
+        "pawn",
+        "knight",
+        "bishop",
+        "rook",
+        "queen",
+        "king",
+        "castle"
+      ],
+      "parameters": {
+        "transcript": "string",
+        "locale": "string"
+      },
+      "requires_confirmation": false,
+      "is_async": false
+    },
+    {
+      "command_id": "pause",
+      "name_key": "cmd_pause_name",
+      "description_key": "cmd_pause_desc",
+      "input_types": ["voice", "ui_action", "shortcut", "api_call"],
+      "voice_triggers": [
+        "pausa",
+        "metti in pausa",
+        "ferma partita",
+        "pause",
+        "pause game",
+        "hold game"
+      ],
+      "parameters": {},
+      "requires_confirmation": false,
+      "is_async": false
+    },
+    {
+      "command_id": "resume",
+      "name_key": "cmd_resume_name",
+      "description_key": "cmd_resume_desc",
+      "input_types": ["voice", "ui_action", "shortcut", "api_call"],
+      "voice_triggers": [
+        "riprendi",
+        "continua",
+        "riprendi partita",
+        "resume",
+        "continue",
+        "resume game"
+      ],
+      "parameters": {},
+      "requires_confirmation": false,
+      "is_async": false
+    },
+    {
+      "command_id": "reset",
+      "name_key": "cmd_reset_name",
+      "description_key": "cmd_reset_desc",
+      "input_types": ["voice", "ui_action", "api_call"],
+      "voice_triggers": [
+        "nuova partita",
+        "ricomincia",
+        "azzera scacchiera",
+        "new game",
+        "restart"
+      ],
+      "parameters": {},
+      "requires_confirmation": true,
+      "is_async": false
+    },
+    {
+      "command_id": "get_hint",
+      "name_key": "cmd_hint_name",
+      "description_key": "cmd_hint_desc",
+      "input_types": ["voice", "ui_action", "api_call"],
+      "voice_triggers": [
+        "consigliami",
+        "cosa faresti",
+        "dammi un indizio",
+        "aiuto",
+        "hint",
+        "advice",
+        "suggest"
+      ],
+      "parameters": {
+        "depth": "string"
+      },
+      "requires_confirmation": false,
+      "is_async": true
+    },
+    {
+      "command_id": "ai_turn",
+      "name_key": "cmd_ai_turn_name",
+      "description_key": "cmd_ai_turn_desc",
+      "input_types": ["api_call", "ui_action"],
+      "voice_triggers": ["fai la tua mossa", "tocca a te", "your turn", "make your move"],
+      "parameters": {
+        "elo": "integer"
+      },
+      "requires_confirmation": false,
+      "is_async": true
+    },
+    {
+      "command_id": "set_camera_preset",
+      "name_key": "cmd_camera_name",
+      "description_key": "cmd_camera_desc",
+      "input_types": ["voice", "ui_action", "shortcut"],
+      "voice_triggers": [
+        "vista dall'alto",
+        "visuale isometrica",
+        "cambia telecamera",
+        "top view",
+        "isometric view"
+      ],
+      "parameters": {
+        "preset": "string"
+      },
+      "requires_confirmation": false,
+      "is_async": false
+    }
+  ],
+  "capabilities": [
+    {
+      "capability_id": "3d_rendering",
+      "category": "rendering",
+      "name_key": "cap_3d_rendering_name",
+      "description_key": "cap_3d_rendering_desc",
+      "enabled": true,
+      "metadata": {
+        "engine": "threejs",
+        "environment": "cathedral",
+        "shading": "custom_brazier_glsl"
+      }
+    },
+    {
+      "capability_id": "voice_recognition",
+      "category": "input",
+      "name_key": "cap_voice_name",
+      "description_key": "cap_voice_desc",
+      "enabled": true,
+      "metadata": {
+        "locales": ["it", "en"]
+      }
+    },
+    {
+      "capability_id": "ai_engine",
+      "category": "ai",
+      "name_key": "cap_ai_engine_name",
+      "description_key": "cap_ai_engine_desc",
+      "enabled": true,
+      "metadata": {
+        "minimax_depth": 3,
+        "pst_tables": true
+      }
+    },
+    {
+      "capability_id": "session_vault",
+      "category": "storage",
+      "name_key": "cap_vault_name",
+      "description_key": "cap_vault_desc",
+      "enabled": true,
+      "metadata": {
+        "encryption": "AES-GCM-256",
+        "format": "FEN+PGN"
+      }
+    },
+    {
+      "capability_id": "audio_synthesizer",
+      "category": "audio",
+      "name_key": "cap_audio_name",
+      "description_key": "cap_audio_desc",
+      "enabled": true,
+      "metadata": {
+        "synthesizer": "web_audio_api"
+      }
+    },
+    {
+      "capability_id": "cinematics",
+      "category": "rendering",
+      "name_key": "cap_cinematics_name",
+      "description_key": "cap_cinematics_desc",
+      "enabled": true,
+      "metadata": {
+        "tweening": true,
+        "shatter_physics": true
+      }
+    }
+  ],
+  "metadata": {
+    "recommended_window": {
+      "width": 80,
+      "height": 85,
+      "minWidth": 32,
+      "minHeight": 28
+    }
+  }
+}

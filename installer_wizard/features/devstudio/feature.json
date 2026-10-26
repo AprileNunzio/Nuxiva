@@ -1,0 +1,22 @@
+{
+  "id": "devstudio",
+  "name": "Sviluppo software",
+  "icon": "💻",
+  "category": "conoscenza",
+  "order": 24,
+  "pinned": false,
+  "panel": "",
+  "description": "Nuxiva programma davvero: crea progetti (siti, app Python, servizi API, app Node e React), scrive e rilegge i file in una cartella confinata, esegue test e controlli in isolamento e pubblica i siti sulla rete di casa.",
+  "capabilities": [
+    "Progetti di partenza funzionanti: sito statico, Python, FastAPI, Node, React con Vite",
+    "File confinati nel progetto, senza percorsi esterni né collegamenti simbolici",
+    "Test e controlli senza rete, con limiti di tempo, memoria e processi, solo dopo conferma",
+    "Esito reale dei test restituito, mai dichiarato senza averli eseguiti",
+    "Pubblicazione dei siti statici sulla rete di casa"
+  ],
+  "toggle": {
+    "env": "NUXIVA_DEVSTUDIO",
+    "apply": []
+  },
+  "icon3d": "./icon.png"
+}

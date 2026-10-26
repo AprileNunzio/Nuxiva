@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/sun_cycle",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Sole",
+    "sunrise": "Alba",
+    "sunset": "Tramonto",
+    "daylight": "Luce",
+    "hours_minutes": "{{h}} h {{m}} min"
+  }
+}

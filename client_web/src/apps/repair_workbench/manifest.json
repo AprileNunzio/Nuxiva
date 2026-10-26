@@ -1,0 +1,30 @@
+{
+  "id": "repair_workbench",
+  "name": "Repair Workbench",
+  "icon": "Cpu",
+  "kind": "app",
+  "category": "engineering",
+  "version": "5.3.0",
+  "description": "Live vision electronics repair workbench with AR popups, background schematic synthesis and multi-agent co-pilot",
+  "scope": "apps/repair_workbench",
+  "target": "global",
+  "window": {
+    "defaultWidth": 100,
+    "defaultHeight": 100,
+    "minWidth": 35,
+    "minHeight": 30,
+    "resizable": true,
+    "singleton": true
+  },
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "local",
+    "technique": "3d",
+    "id": "nuxiva-repair-board"
+  },
+  "featureIds": [
+    "devstudio",
+    "forge",
+    "projects"
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Documents et Bureau",
+    "description": "OCR et gestion de documents",
+    "status": "Actif",
+    "open_app": "Ouvrir",
+    "loading": "Chargement…",
+    "unreachable": "Serveur injoignable",
+    "on": "Actif",
+    "off": "Éteint",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "add": "Ajouter",
+    "stat_documents": "Documents",
+    "stat_engine": "Moteur bureautique",
+    "engine_ready": "Prêt",
+    "engine_missing": "Non installé",
+    "stat_recipes": "Conversions apprises",
+    "create_title": "Créer un document",
+    "create_placeholder": "Décrivez le document à préparer (8 caractères minimum)",
+    "create": "Créer",
+    "documents_title": "Documents créés",
+    "documents_empty": "Aucun document créé.",
+    "preview": "Aperçu",
+    "download": "Télécharger",
+    "recipes_title": "Conversions de format",
+    "recipes_empty": "Aucune conversion.",
+    "recipe_uses": "{count} utilisations"
+  }
+}

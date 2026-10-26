@@ -1,0 +1,18 @@
+{
+  "id": "weather",
+  "name": "Meteo",
+  "icon": "⛅",
+  "priority": 50,
+  "size": "l",
+  "agent": "chat",
+  "intents": [
+    "weather",
+    "meteo"
+  ],
+  "panel_type": "forecast",
+  "ttl": 900,
+  "description": "Meteo completo dopo una domanda sul tempo: ora, ora per ora, vento, umidità, aria, UV e prossimi giorni (resta 15 minuti).",
+  "tone": "cyan",
+  "refresh": 900,
+  "chrome": false
+}

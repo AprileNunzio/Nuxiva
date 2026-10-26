@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/alert_info",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Informazione",
+    "fallback_title": "Informazione"
+  }
+}

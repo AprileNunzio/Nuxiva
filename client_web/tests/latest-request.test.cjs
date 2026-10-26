@@ -1,0 +1,22 @@
+const {readFileSync}=require('node:fs');
+const {resolve}=require('node:path');
+const vm=require('node:vm');
+const assert=require('node:assert/strict');
+const ts=require('typescript');
+const moduleContext={exports:{}};
+vm.runInNewContext(ts.transpileModule(readFileSync(resolve(__dirname,'../src/shared/http/latestRequest.ts'),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText,{exports:moduleContext.exports,module:moduleContext,AbortController});
+(async()=>{
+ const pending=[],values=[],errors=[];
+ const request=moduleContext.exports.latestRequest(signal=>new Promise((resolve,reject)=>pending.push({signal,resolve,reject})),value=>values.push(value),error=>errors.push(error));
+ const flush=()=>new Promise(resolve=>setImmediate(resolve));
+ request.run();request.run();
+ assert.equal(pending[0].signal.aborted,true);
+ pending[0].reject(new Error('replaced request'));pending[1].resolve('current identity');await flush();
+ assert.deepEqual(values,['current identity']);assert.deepEqual(errors,[]);
+ request.run();request.run();pending[2].resolve('obsolete identity');pending[3].reject(new Error('actual network error'));await flush();
+ assert.deepEqual(values,['current identity']);assert.equal(errors.length,1);
+ request.run();request.dispose();pending[4].reject(new Error('unmounted'));await flush();
+ assert.equal(errors.length,1);assert.equal(pending[4].signal.aborted,true);
+ request.run();assert.equal(pending.length,5);
+ console.log('Identity request races: replacement, stale success, genuine error and disposal passed.');
+})().catch(error=>{console.error(error);process.exitCode=1;});

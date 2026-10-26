@@ -1,0 +1,17 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "features/flows",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Flussi Operativi",
+    "desc": "Composizione visiva di trigger e azioni",
+    "error.invalid_json": "JSON non valido",
+    "error.request_too_large": "Richiesta troppo grande",
+    "error.unknown_template": "Modello di flusso sconosciuto",
+    "error.invalid_node": "Posizione nodo non valida",
+    "status.running": "Flusso in esecuzione",
+    "status.idle": "Flusso in attesa"
+  }
+}

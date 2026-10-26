@@ -1,0 +1,8 @@
+[Unit]
+Description=Nuxiva OS — ripristino dell'ultima versione funzionante
+After=network-online.target
+
+[Service]
+Type=oneshot
+TimeoutStartSec=3600
+ExecStart=/bin/bash /opt/Nuxiva/scripts/os/rollback.sh

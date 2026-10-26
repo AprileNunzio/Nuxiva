@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/chess_3d",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "3D Chess",
+    "status_ready": "Ready",
+    "status_playing": "Match in progress",
+    "action_fullscreen": "Fullscreen",
+    "action_close": "Close",
+    "turn_white": "White's turn",
+    "turn_black": "Black's turn (Nuxiva)",
+    "action_hint": "Hint",
+    "action_restart": "New game",
+    "hint_question": "What move do you suggest in chess?",
+    "action_saved": "Saved games",
+    "autosaved": "Game saved",
+    "save_failed": "Saving failed",
+    "not_saved": "No person recognised: the game is not saved",
+    "no_person": "A person recognised by the camera is needed to save and resume games.",
+    "no_saves": "No saved games.",
+    "moves": "{{n}} moves",
+    "finished": "finished",
+    "turn_black_short": "Black to move",
+    "resume": "Resume",
+    "delete": "Delete",
+    "resume_offer": "You have a game in progress ({{n}} moves, {{when}}). Resume it?",
+    "new_one": "New game"
+  }
+}

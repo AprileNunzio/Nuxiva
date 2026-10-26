@@ -1,0 +1,13 @@
+{
+  "id": "pomodoro",
+  "name": "Pomodoro Timer",
+  "icon": "🍅",
+  "priority": 80,
+  "size": "s",
+  "intents": [
+    "pomodoro"
+  ],
+  "description": "Sessioni di concentrazione a tempo.",
+  "ttl": 1500,
+  "tone": "amber"
+}

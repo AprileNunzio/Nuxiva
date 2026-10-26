@@ -1,0 +1,19 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "applications": "Applications",
+    "close": "Fermer",
+    "search": "Rechercher une application",
+    "clear": "Effacer la recherche",
+    "categories": "Catégories",
+    "all": "Toutes les applications",
+    "running": "En cours",
+    "restricted": "Application non autorisée pour votre profil",
+    "no_results": "Aucune application trouvée",
+    "search_hint": "Essayez un autre nom ou choisissez une autre catégorie.",
+    "settings": "Panneau de configuration",
+    "notifications": "Notifications"
+  }
+}

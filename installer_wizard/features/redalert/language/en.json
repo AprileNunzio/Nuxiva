@@ -1,0 +1,18 @@
+{
+  "name": "Red alert",
+  "description": "When an alarm goes off (smoke, water, intrusion…) Nuxiva slowly flashes all Home Assistant lights red and repeats the urgent message on every Chromecast; when the alarm ends the lights go back as they were.",
+  "capabilities": [
+    "Red flashing house lights (slow, safe for light-sensitive people)",
+    "Urgent voice message on every Chromecast, repeated every 25 seconds",
+    "Lights automatically restored as they were",
+    "Stops by closing the alarm widget or when the alarm clears",
+    "Test with one button"
+  ],
+  "settings": {
+    "NUXIVA_REDALERT_LIGHTS": "Flash the lights red",
+    "NUXIVA_REDALERT_CAST": "Announce on every Chromecast",
+    "NUXIVA_REDALERT_SECONDS": "For how long",
+    "NUXIVA_REDALERT_REPEAT": "Repeat the voice message every",
+    "NUXIVA_REDALERT_EXCLUDE": "Lights that must not flash"
+  }
+}

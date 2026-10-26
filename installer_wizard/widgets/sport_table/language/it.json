@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/sport_table",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Classifica",
+    "col_played": "G",
+    "col_diff": "DR",
+    "col_points": "Pt"
+  }
+}

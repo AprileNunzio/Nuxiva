@@ -1,0 +1,13 @@
+{
+  "id": "audio_spectrum",
+  "name": "Spettro Audio",
+  "icon": "🎵",
+  "priority": 50,
+  "size": "l",
+  "intents": [
+    "audio_spectrum"
+  ],
+  "description": "Spettro animato dell'audio in riproduzione.",
+  "ttl": 120,
+  "tone": "violet"
+}

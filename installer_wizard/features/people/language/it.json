@@ -1,0 +1,14 @@
+{
+  "name": "Persone",
+  "description": "Anagrafe completa: volti, relazioni, ricorrenze, preferenze e abitudini di ogni persona.",
+  "capabilities": [
+    "Registrazione automatica dei volti",
+    "Compleanni e onomastici",
+    "Relazioni",
+    "Abitudini",
+    "Aggiorna da sola le informazioni della persona che parla e annota lo stato d'animo, con il tuo giudizio"
+  ],
+  "settings": {
+    "NUXIVA_PEOPLE_LEARN": "Impara dalle conversazioni"
+  }
+}

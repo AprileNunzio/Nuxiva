@@ -1,0 +1,13 @@
+{
+  "id": "context_window",
+  "name": "Contesto del Modello",
+  "icon": "📊",
+  "priority": 30,
+  "size": "m",
+  "intents": [
+    "context_window"
+  ],
+  "description": "Quanta finestra di contesto sta usando la conversazione.",
+  "ttl": 60,
+  "tone": "violet"
+}

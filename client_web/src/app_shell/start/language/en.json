@@ -1,0 +1,19 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "applications": "Applications",
+    "close": "Close",
+    "search": "Search applications",
+    "clear": "Clear search",
+    "categories": "Categories",
+    "all": "All applications",
+    "running": "Running",
+    "restricted": "Application not permitted by your profile",
+    "no_results": "No applications found",
+    "search_hint": "Try another name or choose a different category.",
+    "settings": "Control panel",
+    "notifications": "Notifications"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "id": "printers",
+  "name": "stampanti",
+  "title": "Stampanti",
+  "description": "Gestione stampanti, USB, di rete e dispositivi CNC",
+  "icon": "🖨",
+  "version": "1.0",
+  "widgets": [],
+  "has_admin": true,
+  "panel": "printers",
+  "category": "casa",
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "hlnLMra14Qpa",
+    "url": "https://img.icons8.com/?size=240&id=hlnLMra14Qpa&format=png"
+  }
+}

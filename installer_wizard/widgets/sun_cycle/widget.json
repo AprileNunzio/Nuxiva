@@ -1,0 +1,17 @@
+{
+  "id": "sun_cycle",
+  "name": "Alba e tramonto",
+  "icon": "☀",
+  "priority": 5,
+  "size": "s",
+  "tone": "amber",
+  "agent": "location",
+  "intents": [
+    "sun_cycle",
+    "astronomy",
+    "alba",
+    "tramonto"
+  ],
+  "description": "Arco del sole di oggi con alba, tramonto e ore di luce, calcolati dalla posizione della casa.",
+  "refresh": 60
+}

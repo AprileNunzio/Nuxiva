@@ -1,0 +1,253 @@
+:root {
+  --bg-dark: #040810;
+  --bg-card: rgba(8, 16, 28, 0.75);
+  --cyan: #00f0ff;
+  --cyan-dim: rgba(0, 240, 255, 0.18);
+  --purple: #b464ff;
+  --purple-dim: rgba(180, 100, 255, 0.2);
+  --green: #00ffaa;
+  --red: #ff3366;
+  --yellow: #ffcc00;
+  --text-main: #e2f4ff;
+  --text-muted: #7fa4bf;
+  --border-neon: 1px solid rgba(0, 240, 255, 0.28);
+  --border-active: 1px solid #00f0ff;
+  --font-mono: "Fira Code", monospace;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+
+html, body {
+  width: 100dvw;
+  height: 100dvh;
+  overflow: hidden;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  user-select: none;
+}
+
+.hud-stars-bg {
+  position: fixed;
+  inset: 0;
+  background-image: 
+    radial-gradient(1px 1px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+    radial-gradient(1.5px 1.5px at 140px 180px, var(--cyan), rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 280px 80px, #ffffff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 450px 320px, var(--purple), rgba(0,0,0,0));
+  background-repeat: repeat;
+  background-size: 600px 600px;
+  opacity: 0.35;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hud-app {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100dvw;
+  height: 100dvh;
+}
+
+.hud-top-bar {
+  height: 76px;
+  min-height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background: rgba(4, 10, 20, 0.88);
+  backdrop-filter: blur(14px);
+  border-bottom: var(--border-neon);
+}
+
+.hud-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hud-pulse-ring {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 12px var(--cyan);
+  animation: pulse-ring 2s infinite;
+}
+
+@keyframes pulse-ring {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.6; }
+}
+
+.hud-logo-text {
+  font-size: 1.25rem;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
+}
+
+.hud-sub-badge {
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--purple-dim);
+  border: 1px solid var(--purple);
+  color: var(--purple);
+}
+
+.hud-stepper {
+  flex: 1;
+  max-width: 720px;
+  margin: 0 32px;
+}
+
+.stepper-nodes {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  list-style: none;
+}
+
+.stepper-nodes::before {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: 50%;
+  height: 2px;
+  background: rgba(0, 240, 255, 0.2);
+  z-index: 0;
+}
+
+.step-node {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.step-node-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #08121f;
+  border: 2px solid #335577;
+  color: #7fa4bf;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  transition: all 0.3s;
+}
+
+.step-node.active .step-node-circle {
+  background: var(--cyan);
+  border-color: #ffffff;
+  color: #040810;
+  box-shadow: 0 0 14px var(--cyan);
+}
+
+.step-node.completed .step-node-circle {
+  background: #08121f;
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.step-node.dirty .step-node-circle {
+  border-color: var(--yellow);
+  color: var(--yellow);
+}
+
+.step-node-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.hud-top-telemetry {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.hud-tele-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(0, 240, 255, 0.08);
+  border: var(--border-neon);
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+}
+
+.tele-dot.online {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+}
+
+.hud-lang-picker {
+  display: flex;
+  gap: 4px;
+}
+
+.lang-pill {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: var(--text-muted);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.lang-pill.active {
+  background: var(--cyan-dim);
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+@media (min-width: 2560px) {
+  :root {
+    font-size: 18px;
+  }
+}
+
+@media (min-width: 3840px) {
+  :root {
+    font-size: 24px;
+  }
+}
+
+@media (min-width: 7680px) {
+  :root {
+    font-size: 44px;
+  }
+}

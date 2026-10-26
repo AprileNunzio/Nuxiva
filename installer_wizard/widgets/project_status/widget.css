@@ -1,0 +1,2 @@
+.w-project_status .wk-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.w-project_status .wk-actions .wk-btn { min-height: 40px; padding: 0 14px; font-size: 12px; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12) inset; }

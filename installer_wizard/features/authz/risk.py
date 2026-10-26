@@ -1,0 +1,93 @@
+from enum import IntEnum
+
+
+class Risk(IntEnum):
+    INFO = 0
+    HOME = 1
+    PERSONAL = 2
+    FILES = 3
+    CRITICAL = 4
+
+
+NAMES = {r.name.lower(): r for r in Risk}
+
+TOOLS: dict[str, Risk] = {
+    "now": Risk.INFO, "list_widgets": Risk.INFO, "avatar_catalog": Risk.INFO, "list_models": Risk.INFO,
+    "team_roster": Risk.INFO, "agent_info": Risk.INFO, "agent_inbox": Risk.INFO, "ceo_overview": Risk.INFO, "list_automations": Risk.INFO,
+    "list_tasks": Risk.INFO, "list_custom_tools": Risk.INFO, "music_now": Risk.INFO, "music_search": Risk.INFO,
+    "music_outputs": Risk.INFO,
+    "show_widget": Risk.HOME, "hide_widget": Risk.HOME, "move_widget": Risk.HOME, "avatar": Risk.HOME,
+    "show_model": Risk.HOME, "run_automation": Risk.HOME, "toggle_automation": Risk.HOME, "emit_event": Risk.HOME,
+    "agent_tell": Risk.HOME, "agent_ask": Risk.HOME, "ceo_delegate": Risk.HOME, "close_camera": Risk.HOME, "music_control": Risk.HOME,
+    "music_play": Risk.HOME,
+    "ha_get_state": Risk.HOME, "ha_call_service": Risk.HOME, "ha_list_entities": Risk.HOME,
+    "ha_ask_assist": Risk.HOME, "ha_energy_consumption": Risk.HOME, "ha_devices_by_room": Risk.HOME,
+    "tv_list_channels": Risk.INFO, "tv_get_epg": Risk.INFO, "tv_list_tuners": Risk.INFO,
+    "tv_play_channel": Risk.HOME, "tv_scan_tuner": Risk.HOME,
+    "tv_add_tuner": Risk.CRITICAL, "tv_set_vpn_policy": Risk.CRITICAL,
+    "sport_list_events": Risk.INFO, "sport_get_live_scores": Risk.INFO,
+    "sport_get_standings": Risk.INFO, "sport_get_tv_channels": Risk.INFO,
+    "brain_list_models": Risk.INFO, "brain_test_prompt": Risk.HOME,
+    "brain_assign_agent_model": Risk.CRITICAL, "brain_assign_device_model": Risk.CRITICAL,
+    **{f"board_{n}": Risk.HOME for n in ("callout", "chart", "chemistry", "clear", "close", "draw", "formula", "image",
+                                         "language", "lesson", "look", "mark", "new_page", "open", "physics", "plot",
+                                         "solve", "table", "write")},
+    "find_contact": Risk.PERSONAL, "list_dir": Risk.PERSONAL, "read_file": Risk.PERSONAL, "find_files": Risk.PERSONAL,
+    "file_info": Risk.PERSONAL, "camera_events": Risk.PERSONAL, "camera_overview": Risk.PERSONAL,
+    "list_cameras": Risk.PERSONAL, "open_camera": Risk.PERSONAL, "firewall_status": Risk.PERSONAL, "vpn_status": Risk.PERSONAL, "proxmox_status": Risk.PERSONAL,
+    "who_is": Risk.PERSONAL, "person_profile": Risk.PERSONAL, "person_learn": Risk.PERSONAL, "person_mood": Risk.PERSONAL,
+    "stop_red_alert": Risk.HOME, "red_alert": Risk.CRITICAL, "studio_voices": Risk.INFO, "transcribe_audio": Risk.PERSONAL, "studio_design_voice": Risk.HOME, "speak_to_file": Risk.FILES,
+    "write_file": Risk.FILES, "make_dir": Risk.FILES, "copy": Risk.FILES, "move": Risk.FILES, "zip": Risk.FILES,
+    "create_site": Risk.FILES, "create_3d": Risk.FILES, "create_document": Risk.FILES, "copy_to_share": Risk.FILES,
+    "camera_photo": Risk.FILES, "create_widget": Risk.FILES, "delete_widget": Risk.FILES,
+    "send_email": Risk.CRITICAL, "share_folder": Risk.CRITICAL, "delete": Risk.CRITICAL, "packages": Risk.CRITICAL,
+    "rpa_run": Risk.CRITICAL, "run_command": Risk.CRITICAL, "http_get": Risk.CRITICAL,
+    "create_automation": Risk.CRITICAL, "schedule_task": Risk.CRITICAL, "cancel_task": Risk.CRITICAL,
+    "run_task_now": Risk.CRITICAL, "agent_set": Risk.CRITICAL,
+    "camera_motion": Risk.CRITICAL, "create_feature": Risk.CRITICAL, "delete_feature": Risk.CRITICAL,
+    "create_tool": Risk.CRITICAL, "delete_tool": Risk.CRITICAL, "firewall_block": Risk.CRITICAL,
+    "firewall_unblock": Risk.CRITICAL, "vpn_connect": Risk.CRITICAL, "vpn_disconnect": Risk.CRITICAL, "proxmox_power": Risk.CRITICAL,
+    "football_scores": Risk.INFO, "football_table": Risk.INFO, "football_team": Risk.INFO, "apt_upgradable": Risk.INFO,
+    "sport_query": Risk.HOME, "web_research": Risk.HOME, "fleet_find": Risk.INFO, "dev_new": Risk.FILES, "dev_write": Risk.FILES, "camsense_list": Risk.PERSONAL, "camsense_state": Risk.PERSONAL, "camsense_create": Risk.FILES, "camsense_learn": Risk.PERSONAL, "dev_plan": Risk.FILES, "dev_build": Risk.FILES, "dev_status": Risk.INFO, "dev_publish": Risk.FILES, "dev_tree": Risk.INFO, "dev_read": Risk.INFO, "dev_run": Risk.CRITICAL, "fleet_create": Risk.FILES, "fleet_attach": Risk.FILES, "fleet_retire": Risk.FILES,
+    "expert_list": Risk.INFO, "expert_ask": Risk.HOME, "expert_create": Risk.FILES,
+    "debian_status": Risk.PERSONAL, "debian_logs": Risk.PERSONAL, "debian_service": Risk.PERSONAL,
+    "debian_processes": Risk.PERSONAL, "debian_network": Risk.PERSONAL, "apt_search": Risk.INFO, "ssh_public_key": Risk.PERSONAL,
+    "system_file_read": Risk.PERSONAL, "system_file_write": Risk.CRITICAL, "apt_install": Risk.CRITICAL, "apt_remove": Risk.CRITICAL,
+    "apt_maintain": Risk.CRITICAL, "service_control": Risk.CRITICAL, "power_control": Risk.CRITICAL, "ssh_exec": Risk.CRITICAL,
+    "debian_shell": Risk.CRITICAL, "process_kill": Risk.CRITICAL,
+}
+
+CONNECTORS: dict[str, Risk] = {
+    "vault": Risk.PERSONAL, "documents": Risk.PERSONAL, "gservices": Risk.PERSONAL, "maps": Risk.PERSONAL,
+    "vision": Risk.PERSONAL, "livecam": Risk.PERSONAL, "people": Risk.PERSONAL, "person_info": Risk.PERSONAL,
+    "selftest": Risk.HOME, "sounds": Risk.HOME, "whiteboard": Risk.HOME, "screens": Risk.HOME, "models3d": Risk.HOME,
+    "music": Risk.HOME, "home": Risk.HOME, "camera": Risk.PERSONAL, "experts": Risk.HOME,
+}
+
+
+COMPOSED: dict[str, tuple[str, ...]] = {}
+
+
+def of_tool(name: str, seen: frozenset[str] = frozenset()) -> Risk:
+    if name in TOOLS:
+        return TOOLS[name]
+    steps = COMPOSED.get(name)
+    if not steps or name in seen:
+        return Risk.CRITICAL
+    return max(of_tool(step, seen | {name}) for step in steps)
+
+
+def compose(name: str, steps: list[str]) -> None:
+    COMPOSED[name] = tuple(steps)
+
+
+def forget(name: str) -> None:
+    COMPOSED.pop(name, None)
+
+
+def of_connector(name: str) -> Risk:
+    return CONNECTORS.get(name, Risk.INFO)
+
+
+def parse(name: str) -> Risk | None:
+    return NAMES.get(str(name or "").strip().lower())

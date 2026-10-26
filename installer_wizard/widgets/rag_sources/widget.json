@@ -1,0 +1,14 @@
+{
+  "id": "rag_sources",
+  "personal": true,
+  "name": "Fonti Documentali",
+  "icon": "📚",
+  "priority": 60,
+  "size": "l",
+  "intents": [
+    "rag_sources"
+  ],
+  "description": "Fonti citate",
+  "ttl": 180,
+  "tone": "violet"
+}

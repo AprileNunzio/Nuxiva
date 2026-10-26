@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/pomodoro",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Pomodoro",
+    "title": "Concentration",
+    "preparing": "Préparation en cours…"
+  }
+}

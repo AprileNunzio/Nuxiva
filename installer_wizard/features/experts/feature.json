@@ -1,0 +1,40 @@
+{
+  "id": "experts",
+  "name": "Esperti",
+  "icon": "🧑‍🔧",
+  "category": "assistente",
+  "order": 19,
+  "pinned": false,
+  "panel": "",
+  "toggle": {
+    "env": "NUXIVA_EXPERTS",
+    "apply": []
+  },
+  "description": "Agenti esperti identificati dal ruolo, senza nomi di persona: ognuno è un agente che ragiona per obiettivi, attiva le competenze (skill) del suo campo e usa solo gli strumenti di quelle competenze. Puoi parlarci direttamente e Nuxiva passa loro le domande del loro campo.",
+  "capabilities": [
+    "Tre livelli: strumenti atomici, competenze procedurali, agente esperto che decide",
+    "Ogni competenza carica solo la sua procedura, i suoi vincoli e i suoi strumenti",
+    "Pannello dal vivo con i dati reali dell'esperto, la competenza attiva e cosa sta facendo",
+    "Chat «chiedi all'esperto» con cronologia cifrata e conferma delle azioni rischiose",
+    "Nuxiva instrada le domande all'esperto giusto e può crearne di nuovi"
+  ],
+  "settings": [
+    {
+      "key": "NUXIVA_EXPERTS_AUTO",
+      "label": "Crea esperti da solo per domande nuove",
+      "type": "select",
+      "options": [
+        "1",
+        "0"
+      ],
+      "default": "1"
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "nQuaNO36nu68",
+    "url": "https://img.icons8.com/?size=240&id=nQuaNO36nu68&format=png"
+  }
+}

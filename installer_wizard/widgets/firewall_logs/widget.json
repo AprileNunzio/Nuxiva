@@ -1,0 +1,14 @@
+{
+  "id": "firewall_logs",
+  "name": "Firewall",
+  "icon": "🛡️",
+  "priority": 95,
+  "size": "l",
+  "intents": [
+    "firewall_logs"
+  ],
+  "description": "Ultimi pacchetti bloccati dal firewall.",
+  "ttl": 120,
+  "tone": "red",
+  "essential": true
+}

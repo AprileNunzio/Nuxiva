@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/route",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "trip": "Itinéraire",
+    "leave_by": "Partir avant",
+    "appointment": "Rendez-vous",
+    "arrival": "Arrivée",
+    "delay": "Retard de {{n}} min",
+    "clear": "Circulation fluide"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "applications": "Applicazioni",
+    "close": "Chiudi",
+    "search": "Cerca un’applicazione",
+    "clear": "Cancella ricerca",
+    "categories": "Categorie",
+    "all": "Tutte le applicazioni",
+    "running": "In esecuzione",
+    "restricted": "Applicazione non consentita dal profilo",
+    "no_results": "Nessuna applicazione trovata",
+    "search_hint": "Prova un altro nome o scegli una categoria diversa.",
+    "settings": "Pannello di controllo",
+    "notifications": "Notifiche"
+  }
+}

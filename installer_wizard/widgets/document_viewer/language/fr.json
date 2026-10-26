@@ -1,0 +1,16 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/document_viewer",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "viewer": "Aperçu",
+    "document": "Document",
+    "project": "Projet",
+    "documents": "Documents",
+    "shared_folder": "Dossier partagé",
+    "failed": "Échec :",
+    "no_preview": "Aperçu indisponible"
+  }
+}

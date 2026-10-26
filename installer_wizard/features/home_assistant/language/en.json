@@ -1,0 +1,28 @@
+{
+  "name": "Home Assistant Bridge",
+  "description": "Full bidirectional synchronization with Home Assistant: entities, states, automations, and event bus.",
+  "capabilities": [
+    "Home Assistant REST & WebSocket API bridge",
+    "Entity state synchronization and control",
+    "Area, floor, and device topology mapping"
+  ],
+  "settings": {
+    "HASS_URL": "Home Assistant URL",
+    "HASS_TOKEN": "Long-lived Access Token"
+  },
+  "readings": {
+    "missing_reading": "No sensor matches the requested measurement, device or period.",
+    "unavailable": "reading unavailable",
+    "multiple": "I found several sensors; these are their individual readings, without adding them together.",
+    "power": "Electrical power",
+    "energy": "Electrical energy",
+    "sensor_values": "Home Assistant sensor values",
+    "sensors": "Sensors",
+    "temperature": "Temperature",
+    "humidity": "Humidity",
+    "missing_temperature": "temperature unavailable",
+    "missing_humidity": "humidity unavailable",
+    "climate": "Home climate",
+    "rooms": "Rooms"
+  }
+}

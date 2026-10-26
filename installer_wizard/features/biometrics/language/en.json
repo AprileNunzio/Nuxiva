@@ -1,0 +1,16 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "features/biometrics",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Biometrics",
+    "desc": "Biometric verification and recognition models",
+    "status.ready": "Biometric engine ready",
+    "status.indexing": "Processing biometric embeddings",
+    "status.liveness_failed": "Liveness check failed",
+    "error.no_face": "No face detected",
+    "error.no_voice": "No valid voice sample"
+  }
+}

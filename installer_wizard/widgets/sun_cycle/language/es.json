@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/sun_cycle",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Sol",
+    "sunrise": "Amanecer",
+    "sunset": "Atardecer",
+    "daylight": "Luz",
+    "hours_minutes": "{{h}} h {{m}} min"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "id": "people",
+  "name": "People",
+  "icon": "UserCheck",
+  "version": "5.0.0",
+  "description": "Registry of every person: profile, permissions, face, voice, habits, memories, occasions and household habits",
+  "scope": "core_apps/people",
+  "target": "global",
+  "window": {
+    "defaultWidth": 80,
+    "defaultHeight": 85,
+    "minWidth": 25,
+    "resizable": true
+  },
+  "toolbars": [
+    {
+      "id": "system",
+      "items": [
+        {
+          "type": "action",
+          "id": "refresh",
+          "labelKey": "os_refresh",
+          "shortcut": "F5"
+        }
+      ]
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "x0qTmzjcFRhW",
+    "url": "https://img.icons8.com/?size=240&id=x0qTmzjcFRhW&format=png"
+  },
+  "category": "spaces",
+  "kind": "app",
+  "featureIds": [
+    "people",
+    "habits",
+    "vision",
+    "scene",
+    "telegram"
+  ]
+}

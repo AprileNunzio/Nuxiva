@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Comandi con le Mani",
+    "description": "Studio tracking 21-point live skeleton",
+    "status": "Attivo",
+    "open_app": "Apri",
+    "loading": "Caricamento…",
+    "unreachable": "Server non raggiungibile",
+    "on": "Attivo",
+    "off": "Spento",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "edit": "Modifica",
+    "delete": "Elimina",
+    "add": "Aggiungi",
+    "feature_title": "Impostazioni della funzione",
+    "mode": "Modalità",
+    "mode_auto": "Automatica",
+    "mode_on": "Sempre accesa",
+    "mode_off": "Sempre spenta",
+    "running": "In funzione",
+    "stopped": "Ferma",
+    "no_settings": "Questa funzione non ha impostazioni.",
+    "missing": "Funzione non trovata",
+    "stat_state": "Stato",
+    "stat_fps": "Analisi al secondo",
+    "stat_hands": "Mani riconosciute",
+    "stat_budget": "Tempo massimo",
+    "gestures": "Gesti disponibili"
+  }
+}

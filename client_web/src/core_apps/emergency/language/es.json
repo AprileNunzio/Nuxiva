@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Alerta Roja",
+    "description": "Protocolo de emergencia y bloqueo",
+    "status": "Activo",
+    "open_app": "Abrir",
+    "loading": "Cargando…",
+    "unreachable": "Servidor no accesible",
+    "on": "Activo",
+    "off": "Apagado",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "add": "Añadir",
+    "feature_title": "Ajustes de la función",
+    "mode": "Modo",
+    "mode_auto": "Automático",
+    "mode_on": "Siempre activa",
+    "mode_off": "Siempre apagada",
+    "running": "En marcha",
+    "stopped": "Detenida",
+    "no_settings": "Esta función no tiene ajustes.",
+    "stat_state": "Estado",
+    "stat_enabled": "Función activa",
+    "stat_duration": "Duración",
+    "state_active": "ALARMA ACTIVA",
+    "state_idle": "Todo tranquilo",
+    "yes": "Sí",
+    "no": "No",
+    "control": "Control de alarma",
+    "idle_hint": "Sin alarma activa. Puedes probar luces y mensaje de voz sin peligro.",
+    "test": "Probar la alarma",
+    "stop": "Detener la alarma"
+  }
+}

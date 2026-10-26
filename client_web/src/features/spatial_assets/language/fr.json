@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "client_web/src/features/spatial_assets",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Spatial Assets",
+    "status_loaded": "Chargé",
+    "action_interact": "Interagir",
+    "render_fps": "FPS: {{fps}}"
+  }
+}

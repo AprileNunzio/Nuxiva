@@ -1,0 +1,14 @@
+{
+  "name": "Camera sensors",
+  "description": "Turns an area of a camera into a sensor: you teach the states (door open or closed, light on or off) and Nuxiva recognises them by itself, with no external services and no images leaving your home.",
+  "capabilities": [
+    "Any area of the image, with states taught from real examples",
+    "Continuous reading confirmed over several readings to avoid false changes",
+    "Rejects scenes it has never seen instead of guessing",
+    "Quality index: accuracy and similarity between states",
+    "Events in the camera log and on the bus, for automations and alerts"
+  ],
+  "settings": {
+    "NUXIVA_CAMSENSE_SECONDS": "Seconds between readings"
+  }
+}

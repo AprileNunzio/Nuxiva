@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/usb_monitor",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Nouvel appareil USB",
+    "chip": "Branché",
+    "mounted": "Monté sur",
+    "product": "Produit",
+    "serial": "Série"
+  }
+}

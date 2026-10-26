@@ -1,0 +1,23 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/viewer_3d",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Modelo 3D",
+    "loading": "Cargando el modelo…",
+    "spin": "Rotación automática",
+    "wire": "Malla",
+    "fit": "Encuadrar",
+    "triangles_one": "{{n}} triángulo",
+    "triangles_other": "{{n}} triángulos",
+    "animations_one": "{{n}} animación",
+    "animations_other": "{{n}} animaciones",
+    "error_library": "Biblioteca 3D no disponible",
+    "error_dxf": "Ninguna entidad DXF reconocida",
+    "error_cad": "Archivo CAD ilegible",
+    "error_format": "Formato no visualizable",
+    "studio": "Editar en el estudio 3D"
+  }
+}

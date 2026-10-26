@@ -1,0 +1,32 @@
+{
+  "name": "Telegram",
+  "description": "Habla con Nuxiva desde cualquier lugar: texto, voz y fotos; avisos de llegadas, averías y efemérides.",
+  "settings": {
+    "NUXIVA_TELEGRAM_TOKEN": "Token del bot de Telegram"
+  },
+  "guide": {
+    "title": "Cómo crear y conectar tu bot de Telegram",
+    "steps": [
+      "Abre Telegram en el móvil y busca @BotFather (el bot oficial, con la marca azul), o abre el enlace de abajo.",
+      "Envía /newbot. Elige un nombre (por ejemplo «Casa de Nunzio») y después un usuario que termine en «bot» (por ejemplo nunzio_casa_bot).",
+      "BotFather responde con el token: una línea larga como 123456789:AAH... Cópiala sin espacios.",
+      "Pega el token en el campo «Token del bot de Telegram» de abajo y pulsa Guardar. En unos segundos el bot aparece activo.",
+      "Para cambiar de bot, pega el token del nuevo bot y guarda: el anterior deja de responder. Cada persona debe abrir el nuevo bot en Telegram y pulsar Iniciar.",
+      "Para vincular a una persona: Personas, pestaña Conectores, Telegram, «Generar código de vinculación» y envía ese código al bot."
+    ],
+    "links": [
+      {
+        "label": "Abrir BotFather en Telegram",
+        "url": "https://t.me/BotFather"
+      },
+      {
+        "label": "Guía oficial de bots de Telegram",
+        "url": "https://core.telegram.org/bots#how-do-i-create-a-bot"
+      }
+    ],
+    "note": "El token es como una contraseña: no lo compartas. Si se filtra, envía /revoke a BotFather para obtener uno nuevo."
+  },
+  "help": {
+    "NUXIVA_TELEGRAM_TOKEN": "El token que te dio BotFather. Pega uno nuevo para cambiar de bot."
+  }
+}

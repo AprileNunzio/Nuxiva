@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "installer_wizard",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Installateur Nuxiva Orchestrator - NunzioTech",
+    "banner_sub": "ORCHESTRATEUR COGNITIF AUTONOME",
+    "step_prefix": "[Étape Nuxiva] ",
+    "success_prefix": "[SUCCÈS] ",
+    "error_prefix": "[ERREUR] ",
+    "step_1": "1/5 - Vérification des environnements d'exécution Python et Node.js...",
+    "step_2": "2/5 - Création et vérification de l'environnement virtuel isolé...",
+    "step_3": "3/5 - Configuration du stockage sécurisé et des répertoires isolés...",
+    "step_4": "4/5 - Installation des dépendances du serveur avec autoréparation...",
+    "step_5": "5/5 - Configuration de l'interface web et lancement de l'orchestrateur...",
+    "py_missing": "Python introuvable sur PATH. Veuillez installer Python 3.11 ou supérieur.",
+    "py_old": "Version Python non prise en charge ({0}). Python 3.11+ requis.",
+    "py_detected": "Environnement Python détecté : {0}",
+    "node_detected": "Environnement Node.js détecté : {0}",
+    "node_missing": "Node.js non détecté. L'interface client_web nécessitera une installation manuelle.",
+    "venv_ready": "Environnement virtuel isolé prêt : {0}",
+    "dirs_ready": "Répertoires de stockage isolés et sécurisés créés.",
+    "deps_installing": "Installation des dépendances serveur en cours...",
+    "deps_retry": "Anomalie détectée dans les dépendances. Exécution de l'autoréparation...",
+    "deps_success": "Toutes les dépendances serveur ont été vérifiées et installées.",
+    "client_ready": "Console web compilée et prête.",
+    "ready_banner": "NUXIVA PRÊT POUR L'EXÉCUTION SUR LA MACHINE LOCALE",
+    "powered_by": "NunzioTech Autonomous System 2026",
+    "download_err": "Impossible de télécharger ou exécuter le bootstrap Nuxiva (curl et wget absents ou en échec)."
+  }
+}

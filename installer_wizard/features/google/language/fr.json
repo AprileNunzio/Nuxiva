@@ -1,0 +1,52 @@
+{
+  "name": "Google",
+  "description": "Chaque personne connecte son compte Google : agenda, courrier, choses à faire, carnet d'adresses, Drive et notes, affichés uniquement à ceux qu'Nuxiva reconnaît.",
+  "capabilities": [
+    "Un compte Google pour chaque personne, des tokens cryptés",
+    "Confidentialité : donnée uniquement aux personnes reconnues, les e-mails ne sont pas lus à haute voix devant les autres",
+    "Calendrier : engagements, nouveaux rendez-vous avec avertissements superposés, annulation, « quand je suis libre »",
+    "Gmail : non lu, recherche par expéditeur ou par sujet, \"lisez-moi le dernier e-mail\"",
+    "Tâches : «rappelle-moi de…», liste avec les retards, «j'ai fait…»",
+    "Contacts, Drive et Keep (espace de travail)",
+    "Rappels personnels avant chaque rendez-vous"
+  ],
+  "settings": {
+    "NUXIVA_GOOGLE_CLIENT_ID": "ID client OAuth",
+    "NUXIVA_GOOGLE_CLIENT_SECRET": "Secret client OAuth"
+  },
+  "guide": {
+    "title": "Comment obtenir votre ID client et secret client Google",
+    "steps": [
+      "Ouvrez Google Cloud Console et connectez-vous avec votre compte Google.",
+      "En haut, cliquez sur le sélecteur de projets, puis « Nouveau projet », nommez-le par exemple « Nuxiva » et créez-le.",
+      "Ouvrez la bibliothèque d'API et activez : Google Calendar API, Gmail API, Google Tasks API, People API (contacts) et Google Drive API.",
+      "Ouvrez l'écran de consentement OAuth : choisissez « Externe », saisissez le nom de l'app et votre e-mail, puis dans « Utilisateurs test » ajoutez les adresses Google de ceux qui utiliseront Nuxiva.",
+      "Ouvrez Identifiants, « Créer des identifiants », « ID client OAuth » et choisissez « Application de bureau ».",
+      "Copiez l'ID client et le secret client, collez-les ci-dessous et appuyez sur Enregistrer.",
+      "Chaque personne relie son compte depuis Personnes, onglet Connecteurs, Google : elle choisit les services et autorise sur la page de Google."
+    ],
+    "links": [
+      {
+        "label": "Google Cloud Console",
+        "url": "https://console.cloud.google.com/"
+      },
+      {
+        "label": "Bibliothèque d'API",
+        "url": "https://console.cloud.google.com/apis/library"
+      },
+      {
+        "label": "Écran de consentement OAuth",
+        "url": "https://console.cloud.google.com/apis/credentials/consent"
+      },
+      {
+        "label": "Identifiants",
+        "url": "https://console.cloud.google.com/apis/credentials"
+      }
+    ],
+    "note": "Tant que l'app reste en mode « Test » l'autorisation expire tous les 7 jours : publiez l'app depuis l'écran de consentement. Gardez le secret client confidentiel."
+  },
+  "help": {
+    "NUXIVA_GOOGLE_CLIENT_ID": "Se termine par .apps.googleusercontent.com. Dans Identifiants, ID client OAuth.",
+    "NUXIVA_GOOGLE_CLIENT_SECRET": "Chaîne confidentielle commençant par GOCSPX-, affichée à côté de l'ID client."
+  }
+}

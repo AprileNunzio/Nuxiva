@@ -1,0 +1,13 @@
+.w-viewer_3d .w-body { display: flex; flex-direction: column; gap: 10px; }
+.w-viewer_3d .wk-head { margin-bottom: 0; }
+.v3-stage { position: relative; height: min(56vh, 520px); min-height: 260px; border-radius: 12px; overflow: hidden; touch-action: none;
+  background: radial-gradient(ellipse at 50% 60%, rgba(var(--tone), 0.06), transparent 70%); }
+.v3-stage canvas { display: block; width: 100%; height: 100%; cursor: grab; }
+.v3-msg { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 20px; text-align: center; font-size: 12px; color: var(--text-faint); }
+.v3-msg.err { color: var(--amber); }
+.v3-tools { position: absolute; right: 8px; top: 8px; display: flex; gap: 2px; }
+.v3-tools .wk-svg { pointer-events: none; }
+.v3-info { display: flex; flex-wrap: wrap; gap: 10px; font: 11px var(--mono); color: var(--text-faint); }
+.v3-note { color: var(--amber); }
+.v3-files { display: flex; flex-wrap: wrap; gap: 4px; }
+.v3-files a { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }

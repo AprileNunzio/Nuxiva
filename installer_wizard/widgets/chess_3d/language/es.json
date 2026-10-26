@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/chess_3d",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Ajedrez 3D",
+    "status_ready": "Listo",
+    "status_playing": "Partida en curso",
+    "action_fullscreen": "Pantalla completa",
+    "action_close": "Cerrar",
+    "turn_white": "Turno de las Blancas",
+    "turn_black": "Turno de las Negras (Nuxiva)",
+    "action_hint": "Pista",
+    "action_restart": "Nueva partida",
+    "hint_question": "¿Qué jugada me aconsejas en ajedrez?",
+    "action_saved": "Partidas guardadas",
+    "autosaved": "Partida guardada",
+    "save_failed": "Error al guardar",
+    "not_saved": "Ninguna persona reconocida: la partida no se guarda",
+    "no_person": "Hace falta una persona reconocida por la cámara para guardar y reanudar partidas.",
+    "no_saves": "No hay partidas guardadas.",
+    "moves": "{{n}} jugadas",
+    "finished": "terminada",
+    "turn_black_short": "juegan las Negras",
+    "resume": "Reanudar",
+    "delete": "Eliminar",
+    "resume_offer": "Tienes una partida en curso ({{n}} jugadas, {{when}}). ¿Reanudarla?",
+    "new_one": "Nueva partida"
+  }
+}

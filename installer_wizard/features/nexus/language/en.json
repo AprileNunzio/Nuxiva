@@ -1,0 +1,18 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "features/nexus",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Nexus Shell",
+    "desc": "Main dashboard and system workspace",
+    "error.tool_not_found": "Tool not found",
+    "error.invalid_preference": "Invalid preference",
+    "error.invalid_awakening_step": "Unknown Awakening step",
+    "status.ready": "Nexus operational",
+    "nav.home": "Home",
+    "nav.flows": "Flows",
+    "nav.settings": "Settings"
+  }
+}

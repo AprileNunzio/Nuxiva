@@ -1,0 +1,35 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Sport",
+    "app_name": "Nuxiva Sport Live",
+    "description": "Centro sportivo multi-disciplina: seleziona uno sport per consultare competizioni, classifiche, live score e canali TV",
+    "status": "Attivo",
+    "all_sports": "Tutti gli Sport",
+    "categories_all": "Tutti",
+    "categories_team": "Di Squadra",
+    "categories_motors": "Motori",
+    "categories_racket": "Racchetta",
+    "categories_combat": "Combattimento",
+    "categories_individual": "Individuali",
+    "back_to_sports": "Tutti gli Sport",
+    "active_competitions": "competizioni attive",
+    "live_badge": "LIVE ORA",
+    "search_sport": "Cerca sport, campionato o atleta…",
+    "football": "Calcio",
+    "formula1": "Formula 1",
+    "motogp": "MotoGP",
+    "basketball": "Pallacanestro",
+    "tennis": "Tennis",
+    "volleyball": "Pallavolo",
+    "cycling": "Ciclismo",
+    "combat": "Boxe & MMA",
+    "rugby": "Rugby",
+    "nfl": "Football NFL",
+    "baseball": "Baseball MLB",
+    "athletics": "Atletica & Nuoto",
+    "hockey": "Hockey su Ghiaccio"
+  }
+}

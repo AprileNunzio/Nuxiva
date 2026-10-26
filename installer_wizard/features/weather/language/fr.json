@@ -1,0 +1,24 @@
+{
+  "name": "Météo",
+  "description": "Prévisions complètes avec plusieurs lieux : aujourd'hui ou toute la semaine, heure par heure, vent, qualité de l'air, humidité, pression, UV, pollens, lever et coucher du soleil, phases de la lune. S'ouvre à partir d'une question sur le temps.",
+  "capabilities": [
+    "Vue détaillée de la journée et vue de la semaine, choisies d'après la question",
+    "Heure par heure : température, pluie, vent, rafales, UV, nuages et visibilité",
+    "Qualité de l'air européenne et américaine, particules fines, gaz et pollens",
+    "Pression avec tendance, point de rosée, humidité et température ressentie",
+    "Lever, coucher, durée du jour, heures de soleil et phase de la lune",
+    "Plusieurs lieux enregistrés avec un lieu par défaut, et unités au choix"
+  ],
+  "settings": {
+    "NUXIVA_WEATHER_UNITS": "Système de mesure",
+    "NUXIVA_WEATHER_WIND": "Unité du vent",
+    "NUXIVA_WEATHER_VIEW": "Vue pour une question générale",
+    "NUXIVA_WEATHER_DAYS": "Jours de prévision",
+    "NUXIVA_WEATHER_HOURS": "Heures affichées en détail",
+    "NUXIVA_WEATHER_REFRESH": "Actualisation des données (minutes)",
+    "NUXIVA_WEATHER_AIR": "Qualité de l'air",
+    "NUXIVA_WEATHER_POLLEN": "Pollens",
+    "NUXIVA_WEATHER_ASTRO": "Lune, lever et coucher"
+  },
+  "help": {}
+}

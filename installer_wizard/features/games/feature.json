@@ -1,0 +1,22 @@
+{
+  "id": "games",
+  "name": "Giochi e Scacchi 3D",
+  "icon": "♟",
+  "category": "intrattenimento",
+  "order": 20,
+  "pinned": false,
+  "panel": "",
+  "toggle": {
+    "env": "NUXIVA_GAMES",
+    "apply": []
+  },
+  "description": "Ecosistema di giochi interattivi con scacchi 3D a tutto schermo, sfide contro il Gran Maestro Nuxiva, analisi tattiche e comandi vocali.",
+  "capabilities": [
+    "Scacchi 3D a tutto schermo con rendering tridimensionale e controlli interattivi",
+    "Avvio vocale rapido della scacchiera e delle partite con Nuxiva",
+    "Agente Gran Maestro Scacchistico con commenti, consigli tattici e mosse ragionate",
+    "Catalogo ed esecuzione giochi da tavolo e intrattenimento"
+  ],
+  "settings": [],
+  "icon3d": "./icon.png"
+}

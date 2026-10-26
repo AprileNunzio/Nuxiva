@@ -1,0 +1,37 @@
+{
+  "id": "weather",
+  "name": "Weather",
+  "icon": "CloudSun",
+  "version": "1.0.0",
+  "description": "Saved locations, default place and every weather setting, with a live preview",
+  "scope": "core_apps/weather",
+  "target": "global",
+  "window": {
+    "defaultWidth": 70,
+    "defaultHeight": 85,
+    "minWidth": 30,
+    "resizable": true
+  },
+  "toolbars": [
+    {
+      "id": "system",
+      "items": [
+        {
+          "type": "action",
+          "id": "refresh",
+          "labelKey": "os_refresh",
+          "shortcut": "F5"
+        }
+      ]
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "DBPvuRGXy2ZM",
+    "url": "https://img.icons8.com/?size=240&id=DBPvuRGXy2ZM&format=png"
+  },
+  "category": "system",
+  "kind": "feature"
+}

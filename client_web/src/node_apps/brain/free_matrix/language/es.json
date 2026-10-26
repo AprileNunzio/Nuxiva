@@ -1,0 +1,27 @@
+{
+  "meta": {"locale": "es"},
+  "dictionary": {
+    "free_matrix_title": "Matriz LLM sin coste",
+    "free_matrix_hint": "El catálogo oficial de OpenRouter solo muestra modelos con precio cero para entradas y salidas. Se necesita una clave de OpenRouter. Los límites gratuitos pueden variar.",
+    "free_matrix_enable": "Usar automáticamente modelos verificados sin coste para las tareas seleccionadas. Si no hay ninguno disponible, usar solo modelos locales.",
+    "free_matrix_pools": "Tareas permitidas",
+    "pool_chat": "Conversación",
+    "pool_voice_fast": "Voz rápida medida",
+    "pool_agent_tools": "Agentes y herramientas",
+    "pool_vision": "Visión e imágenes",
+    "pool_deep_code": "Razonamiento y código",
+    "free_matrix_save": "Guardar modo",
+    "free_matrix_refresh": "Actualizar catálogo",
+    "free_matrix_updated": "Catálogo actualizado: {date}",
+    "free_matrix_models": "Modelos gratuitos verificados ({count})",
+    "free_matrix_empty": "El catálogo está vacío o todavía no se ha sincronizado. Actualízalo para ver los modelos.",
+    "free_matrix_no_pool": "No se verifica compatibilidad con ninguna tarea",
+    "free_matrix_context": "Contexto máximo: {count} tokens",
+    "free_matrix_cooldown": "En pausa: {seconds}s",
+    "free_matrix_live_title": "Ruta actual",
+    "free_matrix_live_route": "{provider} · {model}",
+    "free_matrix_live_pool": "Tarea: {pool}",
+    "free_matrix_live_failover": "Cambio desde el modelo {model}",
+    "free_matrix_live_idle": "En esta sesión aún no se ha completado ninguna solicitud con un modelo gratuito."
+  }
+}

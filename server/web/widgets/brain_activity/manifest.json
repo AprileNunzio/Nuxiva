@@ -1,0 +1,10 @@
+{
+  "id": "brain_activity",
+  "name": "Brain Activity Latency",
+  "version": "1.0.0",
+  "category": "widget",
+  "description": "Dynamic cortical engine latency and active reasoning model",
+  "icon": "🧠",
+  "render_type": "graph",
+  "grid_span": {"col": 2, "row": 1}
+}

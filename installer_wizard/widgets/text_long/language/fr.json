@@ -1,0 +1,10 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/text_long",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "loading": "Chargement du texte long…"
+  }
+}

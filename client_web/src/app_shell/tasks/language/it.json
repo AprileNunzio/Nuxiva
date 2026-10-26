@@ -1,0 +1,30 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "client_web/src/app_shell/tasks",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Attività",
+    "running": "{n} in corso",
+    "ready": "{n} pronte",
+    "state_running": "In lavorazione…",
+    "state_queued": "In coda",
+    "state_paused": "In pausa",
+    "stage_plan": "Pianifico l'arrangiamento…",
+    "stage_lyrics": "Preparo il testo…",
+    "stage_translate": "Traduco il testo…",
+    "stage_voices": "Registro le voci…",
+    "stage_render": "Registro il file audio…",
+    "error_interrupted": "Interrotta dal riavvio del sistema",
+    "error_cancelled": "Annullata",
+    "failed": "Non è riuscita",
+    "question": "«{title}» è pronta. Vuoi ascoltarla, aprirla o parlarne con me?",
+    "action_listen": "Ascolta",
+    "action_open": "Apri",
+    "action_talk": "Parlane",
+    "later": "Più tardi",
+    "cancel": "Annulla attività",
+    "dismiss": "Nascondi"
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "id": "updater",
+  "name": "Nuxiva Update",
+  "icon": "RefreshCw",
+  "version": "5.0.0",
+  "description": "Synchronous 03:00 AM update and selftest",
+  "scope": "core_apps/updater",
+  "target": "global",
+  "window": {
+    "defaultWidth": 1100,
+    "defaultHeight": 760,
+    "minWidth": 480,
+    "resizable": true,
+    "minHeight": 360,
+    "maximizable": true,
+    "singleton": false,
+    "mobileMode": "fullscreen"
+  },
+  "toolbars": [
+    {
+      "id": "system",
+      "items": [
+        {
+          "type": "action",
+          "id": "refresh",
+          "labelKey": "os_refresh",
+          "shortcut": "F5"
+        }
+      ]
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "xsg8DrPwYfql",
+    "url": "https://img.icons8.com/?size=240&id=xsg8DrPwYfql&format=png"
+  },
+  "category": "system",
+  "i18nScope": "updater",
+  "capabilities": [
+    "system_settings"
+  ],
+  "ui": {
+    "searchable": false,
+    "searchPlaceholderKey": "os_search",
+    "tabs": [
+      {
+        "id": "overview",
+        "labelKey": "nav_overview",
+        "icon": "overview"
+      },
+      {
+        "id": "releases",
+        "labelKey": "changelog_title",
+        "icon": "changes"
+      },
+      {
+        "id": "nodes",
+        "labelKey": "rollout_title",
+        "icon": "network"
+      },
+      {
+        "id": "diagnostics",
+        "labelKey": "collaudo_title",
+        "icon": "diagnostics"
+      },
+      {
+        "id": "policy",
+        "labelKey": "policy_title",
+        "icon": "schedule"
+      },
+      {
+        "id": "history",
+        "labelKey": "history_title",
+        "icon": "history"
+      }
+    ],
+    "actions": [
+      {
+        "id": "refresh",
+        "labelKey": "os_refresh",
+        "icon": "refresh-cw"
+      }
+    ],
+    "statusBar": {
+      "showConnectionState": true,
+      "showItemCount": false
+    }
+  }
+}

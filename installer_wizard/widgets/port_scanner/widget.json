@@ -1,0 +1,14 @@
+{
+  "id": "port_scanner",
+  "name": "Scansione Porte",
+  "icon": "🔍",
+  "priority": 85,
+  "size": "m",
+  "intents": [
+    "port_scanner"
+  ],
+  "description": "Porte aperte trovate dall'ultima scansione di rete.",
+  "ttl": 180,
+  "tone": "red",
+  "essential": true
+}

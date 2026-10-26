@@ -1,0 +1,11 @@
+{
+  "name": "Background tasks",
+  "description": "Every long creation becomes a task: progress, steps, cancellation and, when finished, a question to listen, open or talk about it.",
+  "capabilities": [
+    "Single registry of tasks: songs, projects and long creations",
+    "Live progress and steps in the Tasks widget",
+    "When done it offers: listen, open, talk about it",
+    "Answers «how far along are you?»"
+  ],
+  "settings": []
+}

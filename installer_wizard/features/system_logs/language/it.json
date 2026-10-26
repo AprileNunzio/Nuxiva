@@ -1,0 +1,9 @@
+{
+  "name": "Log di sistema",
+  "description": "Conteggi e analisi riguardano solo dispositivo, fonte e filtri selezionati. Non certificano lo stato di tutto il sistema.",
+  "capabilities": [
+    "Le fonti sono scoperte su questa macchina. Inventario aggiornato ogni 15 secondi: seleziona una riga per leggerla.",
+    "I segreti riconoscibili vengono oscurati nella vista e nei file esportati. Controlla i file prima di condividerli.",
+    "Sono disponibili solo gli eventi registrati dal server e collegati esplicitamente a questo dispositivo. Il dispositivo non espone i propri log remoti."
+  ]
+}

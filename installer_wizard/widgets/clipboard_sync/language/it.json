@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/clipboard_sync",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Appunti",
+    "empty": "Appunti vuoti",
+    "chars_one": "{{n}} carattere",
+    "chars_other": "{{n}} caratteri"
+  }
+}

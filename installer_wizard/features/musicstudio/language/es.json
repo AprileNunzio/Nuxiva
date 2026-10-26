@@ -1,0 +1,14 @@
+{
+  "name": "Estudio musical",
+  "description": "Un estudio de producción completo por voz o en pantalla: Nuxiva compone canciones enteras, escribe y traduce letras, añade baterías, bajos, acordes, melodías, efectos y voces, y tú lo refinas todo con línea de tiempo, piano roll, secuenciador, mezclador y efectos.",
+  "capabilities": [
+    "Crea una canción a partir de una frase: género, tonalidad, progresión, estructura, instrumentos y letra",
+    "Funciona incluso sin cerebro gracias a un motor de arreglos por reglas",
+    "Añade a petición batería, bajo, acordes, pads, arpegios, melodía, efectos y voces",
+    "Traduce las letras y las hace cantar en el nuevo idioma con las voces de Nuxiva",
+    "Línea de tiempo por pistas, piano roll, secuenciador, mezclador con pan, mute, solo y efectos por pista",
+    "20 instrumentos sintetizados y 8 efectos (ecualizador, filtro, eco, reverberación, chorus, distorsión, compresor, phaser)",
+    "Exporta la mezcla en WAV y el proyecto reabrible a la carpeta compartida «08 Produzioni»"
+  ],
+  "settings": {}
+}

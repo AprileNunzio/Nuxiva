@@ -1,0 +1,14 @@
+{
+  "name": "Flotta di agenti",
+  "description": "Catalogo scalabile di agenti specializzati: Nuxiva li crea quando servono, collega loro strumenti e widget, e tu li vedi e gestisci tutti, anche se diventano milioni o miliardi.",
+  "capabilities": [
+    "Archivio a 256 partizioni con paginazione a cursore e contatori incrementali: il costo non cresce con il numero di agenti",
+    "Nuxiva crea un agente quando serve, evitando duplicati, e sceglie strumenti e widget adatti allo scopo",
+    "Collegamento di strumenti e widget esistenti, o di un widget nuovo creato al volo",
+    "Istruzioni degli agenti cifrate a riposo; stato attivo, in pausa o archiviato anche in blocco"
+  ],
+  "settings": {
+    "NUXIVA_FLEET_AUTO_CREATE": "Nuxiva può creare agenti da solo (1 = sì, 0 = solo a mano)",
+    "NUXIVA_FLEET_PAGE": "Agenti mostrati per pagina"
+  }
+}

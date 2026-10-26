@@ -1,0 +1,105 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "server/core/core_platform"
+  },
+  "errors": {
+    "cortex": {
+      "input": {
+        "empty": "El texto está vacío tras la sanitización.",
+        "too_long": "El texto supera la longitud permitida.",
+        "forbidden_characters": "El texto contiene caracteres de control no permitidos.",
+        "invalid_identifier": "El identificador contiene caracteres no permitidos."
+      },
+      "crypto": {
+        "invalid_key_length": "La clave criptográfica tiene una longitud no válida.",
+        "encryption_failed": "Error al cifrar.",
+        "decryption_failed": "Error al descifrar: datos alterados o clave incorrecta.",
+        "malformed_ciphertext": "Los datos cifrados están incompletos.",
+        "malformed_signature": "La firma digital está mal formada.",
+        "key_derivation_failed": "Error al derivar la clave.",
+        "random_unavailable": "El generador aleatorio del sistema no está disponible."
+      },
+      "vector": {
+        "empty": "El vector está vacío o es nulo.",
+        "non_finite": "El vector contiene valores no finitos.",
+        "dimension_mismatch": "La dimensión del vector no coincide con el índice.",
+        "invalid_dimension": "La dimensión del índice no es válida."
+      },
+      "neuron": {
+        "invalid_weight": "El peso sináptico debe estar entre 0 y 1.",
+        "duplicate_vector": "El vector ya está presente en la neurona.",
+        "capacity_exceeded": "Se alcanzó el límite de capacidad.",
+        "unknown": "Neurona no encontrada."
+      },
+      "router": {
+        "invalid_thresholds": "Los umbrales del árbitro no son válidos."
+      },
+      "snapshot": {
+        "invalid": "La instantánea de memoria no es válida."
+      },
+      "slots": {
+        "schema_invalid": "El esquema de parámetros no es válido.",
+        "unknown": "Se extrajo un parámetro no previsto en el esquema.",
+        "required_missing": "Falta un parámetro obligatorio.",
+        "type_mismatch": "El tipo del parámetro no coincide con el esquema.",
+        "value_not_allowed": "El valor del parámetro no está entre los permitidos."
+      },
+      "forge": {
+        "manifest_invalid": "El manifiesto de la habilidad no es válido.",
+        "source_too_large": "El código de la habilidad es demasiado grande.",
+        "syntax": "El código de la habilidad tiene errores de sintaxis.",
+        "forbidden_import": "El código usa un módulo no permitido.",
+        "forbidden_call": "El código usa una función no permitida.",
+        "forbidden_syntax": "El código usa una construcción no permitida.",
+        "missing_entry": "Falta la función run(slots).",
+        "unknown_skill": "Habilidad desconocida.",
+        "untrusted": "La firma de la habilidad no es válida: no se ejecuta.",
+        "timeout": "La habilidad superó el tiempo máximo.",
+        "runtime_failed": "La ejecución de la habilidad falló.",
+        "output_invalid": "La habilidad devolvió un resultado no válido.",
+        "violation": "La habilidad intentó una operación de sistema prohibida y fue detenida.",
+        "author_invalid": "La habilidad redactada por el modelo no es válida."
+      },
+      "plasticity": {
+        "invalid": "La valoración no es válida."
+      }
+    },
+    "platform": {
+      "native": {
+        "unavailable": "El módulo nativo de Rust no está instalado.",
+        "outdated": "El módulo nativo de Rust está desactualizado: reinstálalo."
+      },
+      "vault": {
+        "weak_secret": "El secreto principal es demasiado corto para cifrar con seguridad."
+      },
+      "storage": {
+        "io_failed": "Error de lectura o escritura en disco."
+      }
+    },
+    "hippocampus": {
+      "embedding": {
+        "unavailable": "El modelo de embedding local no está instalado.",
+        "failed": "Error al calcular el embedding."
+      },
+      "storage": {
+        "undecryptable": "La memoria de neuronas no se puede descifrar con la clave actual.",
+        "corrupted": "La memoria de neuronas está dañada."
+      },
+      "skills": {
+        "unavailable": "No hay ninguna habilidad ejecutable para esta neurona."
+      },
+      "service": {
+        "degraded": "El servicio del hipocampo funciona en modo reducido."
+      },
+      "distillation": {
+        "unavailable": "La destilación requiere dependencias y una GPU que esta máquina no tiene.",
+        "no_data": "Aún no hay suficientes ejemplos verificados para destilar."
+      }
+    },
+    "gliner": {
+      "unavailable": "El modelo GLiNER no está instalado.",
+      "inference_failed": "Error al extraer los parámetros."
+    }
+  }
+}

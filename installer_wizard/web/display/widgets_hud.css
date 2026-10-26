@@ -1,0 +1,71 @@
+.widget:not(.frameless):not(.fullscreen):not(.takeover) {
+  --edge: rgba(var(--tone), 0.9);
+  padding: 8px 6px 10px;
+  border: 0;
+  border-radius: 0;
+  overflow: visible;
+  background: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  box-shadow: none;
+  text-shadow: 0 0 14px rgba(2, 6, 14, 0.95), 0 1px 2px rgba(2, 6, 14, 0.9);
+}
+
+.widget > .w-body { position: relative; z-index: 2; }
+
+.widget > .w-cycle {
+  display: none;
+  position: absolute;
+  z-index: 3;
+  left: 6px;
+  right: 6px;
+  bottom: 8px;
+  height: 2px;
+  border-radius: 2px;
+  background: rgba(var(--tone), 0.14);
+  overflow: hidden;
+}
+.widget.has-cycle > .w-cycle { display: block; }
+.widget > .w-cycle::after {
+  content: "";
+  display: block;
+  height: 100%;
+  width: 100%;
+  transform: scaleX(0);
+  transform-origin: left center;
+  background: linear-gradient(90deg, rgba(var(--tone), 0.35), rgb(var(--tone)));
+  box-shadow: 0 0 8px rgb(var(--tone));
+}
+.widget > .w-cycle.run::after { animation: wh-cycle var(--cycle, 60s) linear forwards; }
+
+.widget .wk-head { padding-bottom: 2px; margin-bottom: 10px; letter-spacing: 0.04em; }
+.widget .wk-head > .wk-svg { display: block; font-size: 15px; color: rgba(var(--tone), 0.9); }
+.widget .wk-head { align-items: center; }
+.widget .wk-k { color: rgba(var(--tone), 0.9); }
+.widget .wk-chip { padding: 0; background: none; }
+.widget .wk-num { background: linear-gradient(180deg, #fff 10%, rgba(var(--tone), 0.95)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.widget .wk-num small, .widget .wk-num sup { -webkit-text-fill-color: var(--text-dim); }
+.widget .wk-bar { height: 3px; background: rgba(var(--tone), 0.12); }
+.widget .wk-bar > i { box-shadow: 0 0 10px rgba(var(--tone), 0.75); border-radius: 3px; }
+.widget .wk-ring .value { filter: drop-shadow(0 0 5px rgba(var(--tone), 0.8)); }
+.widget .wk-row + .wk-row { box-shadow: none; }
+.widget .wk-kv dt { color: rgba(var(--tone), 0.62); }
+.widget .wk-btn:hover, .widget .wk-btn:focus-visible { box-shadow: 0 0 0 1px rgba(var(--tone), 0.8) inset, 0 0 14px rgba(var(--tone), 0.4); }
+
+.widget.enter { animation: wh-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+
+@keyframes wh-in { from { opacity: 0; transform: translateY(14px) scale(0.97); filter: blur(8px); } to { opacity: 1; transform: none; filter: none; } }
+@keyframes wh-cycle { to { transform: scaleX(1); } }
+
+@media (max-width: 700px) {
+  .widget:not(.frameless):not(.fullscreen):not(.takeover) { padding: 8px 6px 12px; }
+  .widget > .w-cycle { left: 6px; right: 6px; }
+}
+@media (min-width: 2200px) {
+  .widget:not(.frameless):not(.fullscreen):not(.takeover) { padding: 14px 10px 16px; }
+  .widget > .w-cycle { left: 10px; right: 10px; height: 3px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .widget.enter { animation: w-in 0.2s ease both; }
+  .widget > .w-cycle.run::after { animation: none; transform: scaleX(1); }
+}

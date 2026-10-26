@@ -1,0 +1,43 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Hippocampe",
+    "description": "Routage rapide des neurones : décisions sans générer de tokens",
+    "loading": "Chargement…",
+    "unreachable": "Serveur injoignable",
+    "on": "Actif",
+    "off": "Absent",
+    "ready": "Prêt",
+    "unavailable": "Indisponible",
+    "persistent": "Chiffré",
+    "volatile": "Mémoire seule",
+    "stat_native": "Noyau Rust",
+    "stat_embedding": "Embeddings",
+    "stat_storage": "Stockage",
+    "stat_neurons": "Neurones",
+    "stat_decisions": "Décisions",
+    "stat_latency": "Latence moyenne",
+    "issues_title": "Composants dégradés",
+    "verdicts_title": "Verdicts",
+    "verdict_fast": "Rapide",
+    "verdict_grey": "Zone grise",
+    "verdict_slow": "Lent",
+    "executed": "Exécutées sans tokens : {n}",
+    "latency_max": "Latence maximale : {ms} ms",
+    "reason_no_neurons": "Aucun neurone",
+    "reason_low_similarity": "Similarité faible",
+    "reason_inhibited": "Inhibé",
+    "reason_low_weight": "Poids faible",
+    "thresholds_title": "Seuils de l'arbitre",
+    "threshold_fast_similarity": "Rapide : similarité minimale",
+    "threshold_grey_similarity": "Zone grise : similarité minimale",
+    "threshold_inhibition_limit": "Limite d'inhibition",
+    "threshold_fast_weight": "Rapide : poids synaptique minimal",
+    "threshold_grey_weight": "Zone grise : poids synaptique minimal",
+    "recent_title": "Décisions récentes",
+    "recent_empty": "Aucune décision pour l'instant. Rien de ce que vous dites n'est conservé.",
+    "recent_metrics": "Correspondance {positive} · inhibition {negative} · poids {weight} · {ms} ms"
+  }
+}

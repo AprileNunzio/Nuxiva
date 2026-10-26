@@ -1,0 +1,18 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/alarm",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Alarme",
+    "status_test": "Test",
+    "status_active": "En cours",
+    "kind_smoke": "Fumée détectée",
+    "kind_gas": "Fuite de gaz",
+    "kind_flood": "Inondation",
+    "kind_intrusion": "Intrusion",
+    "kind_co": "Monoxyde de carbone",
+    "kind_generic": "Alarme"
+  }
+}

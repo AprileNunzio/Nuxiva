@@ -1,0 +1,35 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Documents & Office",
+    "description": "OCR, document management and file server",
+    "status": "Active",
+    "open_app": "Open",
+    "loading": "Loading…",
+    "unreachable": "Server unreachable",
+    "on": "On",
+    "off": "Off",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "stat_documents": "Documents",
+    "stat_engine": "Office engine",
+    "engine_ready": "Ready",
+    "engine_missing": "Not installed",
+    "stat_recipes": "Learned conversions",
+    "create_title": "Create a document",
+    "create_placeholder": "Describe the document to prepare (at least 8 characters)",
+    "create": "Create",
+    "documents_title": "Created documents",
+    "documents_empty": "No documents created yet.",
+    "preview": "Preview",
+    "download": "Download",
+    "recipes_title": "Format conversions",
+    "recipes_empty": "No conversions yet.",
+    "recipe_uses": "{count} uses"
+  }
+}

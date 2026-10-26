@@ -1,0 +1,15 @@
+{
+  "id": "system_health",
+  "name": "Salute del sistema",
+  "icon": "⚙",
+  "priority": 55,
+  "size": "m",
+  "tone": "cyan",
+  "ttl": 60,
+  "intents": [
+    "system"
+  ],
+  "panel_type": "stats",
+  "description": "Processore, memoria, disco e temperatura quando chiedi lo stato del sistema.",
+  "refresh": 30
+}

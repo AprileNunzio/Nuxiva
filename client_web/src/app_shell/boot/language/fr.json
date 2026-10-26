@@ -1,0 +1,11 @@
+{
+  "dictionary": {
+    "starting": "Démarrage",
+    "connecting": "Connexion aux services système…",
+    "assets": "Préparation de l’interface…",
+    "ready": "Environnement prêt",
+    "unavailable": "Serveur inaccessible",
+    "retry": "Réessayer",
+    "workspace": "VOTRE ESPACE DE TRAVAIL"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "id": "client_link",
+  "name": "Client Link",
+  "icon": "Smartphone",
+  "version": "5.0.0",
+  "category": "devices",
+  "requires_reboot": false,
+  "description": "Pairing of Android APK companions, Windows Assistant, and WireGuard encryption",
+  "scope": "node_apps/client_link",
+  "target": "node",
+  "window": {
+    "defaultWidth": 65,
+    "defaultHeight": 75,
+    "minWidth": 25,
+    "resizable": true
+  },
+  "toolbars": [
+    {
+      "id": "system",
+      "items": [
+        {
+          "type": "action",
+          "id": "refresh",
+          "labelKey": "os_refresh",
+          "shortcut": "F5"
+        }
+      ]
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "gvQUkpW15e1x",
+    "url": "https://img.icons8.com/?size=240&id=gvQUkpW15e1x&format=png"
+  }
+}

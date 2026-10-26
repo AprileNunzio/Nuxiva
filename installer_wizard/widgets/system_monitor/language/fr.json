@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/system_monitor",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Télémétrie du nœud",
+    "cpu": "CPU",
+    "ram": "RAM",
+    "loaded": "Sous charge",
+    "nominal": "Nominal"
+  }
+}

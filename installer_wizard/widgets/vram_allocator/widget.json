@@ -1,0 +1,13 @@
+{
+  "id": "vram_allocator",
+  "name": "Memoria GPU",
+  "icon": "💾",
+  "priority": 40,
+  "size": "m",
+  "intents": [
+    "vram_allocator"
+  ],
+  "description": "Memoria video occupata dai modelli caricati.",
+  "ttl": 60,
+  "tone": "violet"
+}

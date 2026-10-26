@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "web/screen",
+    "version": "2.0.0"
+  },
+  "dictionary": {
+    "page_title": "{{assistant}} · Screen",
+    "screen_label": "SCREEN",
+    "screen_n": "SCREEN {{n}}",
+    "mirror_label": "{{assistant}} WIDGETS",
+    "idle_hint": "Drag a widget here from the edge of the other screen, or ask {{assistant}} to move it.",
+    "link_lost": "Reconnecting to the supervisor"
+  }
+}
