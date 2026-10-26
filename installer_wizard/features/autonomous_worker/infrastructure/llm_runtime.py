@@ -9,6 +9,7 @@ from config import STATE_DIR
 from backend.sealed import write_private
 import httpx
 from features.brain import llm
+from features.autonomous_worker.domain.agent_route import AgentInferenceProfile
 
 log = logging.getLogger("nuxiva.autonomous_worker.runtime")
 RUNTIME_CONFIG_FILE = STATE_DIR / "autonomous_missions" / "runtime_config.json"
@@ -34,13 +35,17 @@ class LLMRuntimeManager:
                 "max_concurrent_requests": 3,
                 "request_timeout_seconds": 45,
                 "offline_cache_enabled": True,
+                "agent_profiles": {},
             }
             write_private(self.config_path, json.dumps(default_config, indent=2).encode("utf-8"))
             return default_config
         try:
-            return json.loads(self.config_path.read_text(encoding="utf-8"))
+            data = json.loads(self.config_path.read_text(encoding="utf-8"))
+            if not isinstance(data.get("agent_profiles"), dict):
+                data["agent_profiles"] = {}
+            return data
         except (OSError, ValueError):
-            return {"mode": "auto_fallback", "ollama_endpoint": "http://127.0.0.1:11434"}
+            return {"mode": "auto_fallback", "ollama_endpoint": "http://127.0.0.1:11434", "agent_profiles": {}}
 
     def get_config(self) -> dict[str, Any]:
         return dict(self._config)
@@ -59,6 +64,45 @@ class LLMRuntimeManager:
         self._semaphore = asyncio.Semaphore(concurrency)
         write_private(self.config_path, json.dumps(self._config, indent=2).encode("utf-8"))
         return dict(self._config)
+
+    def list_agent_profiles(self) -> list[dict[str, Any]]:
+        profiles = self._config.get("agent_profiles", {})
+        return [p for p in profiles.values() if isinstance(p, dict)]
+
+    def get_agent_profile(self, agent_id: str) -> dict[str, Any] | None:
+        profiles = self._config.get("agent_profiles", {})
+        return profiles.get(agent_id)
+
+    def set_agent_profile(self, profile_data: dict[str, Any]) -> dict[str, Any]:
+        profile = AgentInferenceProfile.from_dict(profile_data)
+        if not profile.agent_id:
+            raise ValueError("agent_id obbligatorio")
+        if "agent_profiles" not in self._config:
+            self._config["agent_profiles"] = {}
+        self._config["agent_profiles"][profile.agent_id] = profile.to_dict()
+        write_private(self.config_path, json.dumps(self._config, indent=2).encode("utf-8"))
+        return profile.to_dict()
+
+    def delete_agent_profile(self, agent_id: str) -> bool:
+        profiles = self._config.get("agent_profiles", {})
+        if agent_id in profiles:
+            del profiles[agent_id]
+            write_private(self.config_path, json.dumps(self._config, indent=2).encode("utf-8"))
+            return True
+        return False
+
+    def _resolve_profile(self, agent_id: str | None, agent_role: str | None) -> AgentInferenceProfile | None:
+        profiles = self._config.get("agent_profiles", {})
+        if not profiles:
+            return None
+        if agent_id and agent_id in profiles:
+            return AgentInferenceProfile.from_dict(profiles[agent_id])
+        if agent_role:
+            role_key = agent_role.lower().strip()
+            for key, val in profiles.items():
+                if key.lower().strip() == role_key or val.get("label", "").lower().strip() == role_key:
+                    return AgentInferenceProfile.from_dict(val)
+        return None
 
     async def check_health(self) -> dict[str, Any]:
         start = time.time()
@@ -106,6 +150,8 @@ class LLMRuntimeManager:
         temperature: float = 0.2,
         system: str = "",
         component: str = "autonomous_worker",
+        agent_id: str | None = None,
+        agent_role: str | None = None,
     ) -> Any:
         async with self._semaphore:
             now = time.time()
@@ -113,6 +159,17 @@ class LLMRuntimeManager:
             if elapsed < self._min_interval:
                 await asyncio.sleep(self._min_interval - elapsed)
             self._last_request_time = time.time()
+
+            profile = self._resolve_profile(agent_id, agent_role)
+            if profile:
+                return await self._generate_with_profile(
+                    profile=profile,
+                    prompt=prompt,
+                    as_json=as_json,
+                    max_tokens=max_tokens,
+                    system=system,
+                    component=component,
+                )
 
             mode = self._config.get("mode", "auto_fallback")
             ollama_url = self._config.get("ollama_endpoint", "http://127.0.0.1:11434")
@@ -142,6 +199,55 @@ class LLMRuntimeManager:
                 component=component,
             )
 
+    async def _generate_with_profile(
+        self,
+        profile: AgentInferenceProfile,
+        prompt: str,
+        as_json: bool,
+        max_tokens: int,
+        system: str,
+        component: str,
+    ) -> Any:
+        eff_temp = profile.temperature
+        if profile.provider == "ollama":
+            return await self._call_ollama(
+                endpoint=profile.endpoint,
+                model=profile.model,
+                prompt=prompt,
+                system=system,
+                as_json=as_json,
+                temperature=eff_temp,
+                timeout_override=float(profile.timeout_seconds),
+            )
+        if profile.provider == "cloud":
+            return await llm.generate(
+                prompt,
+                as_json=as_json,
+                max_tokens=max_tokens,
+                temperature=eff_temp,
+                system=system,
+                component=f"{component}_{profile.agent_id}",
+            )
+        try:
+            return await self._call_ollama(
+                endpoint=profile.endpoint,
+                model=profile.model,
+                prompt=prompt,
+                system=system,
+                as_json=as_json,
+                temperature=eff_temp,
+                timeout_override=float(profile.timeout_seconds),
+            )
+        except Exception:
+            return await llm.generate(
+                prompt,
+                as_json=as_json,
+                max_tokens=max_tokens,
+                temperature=eff_temp,
+                system=system,
+                component=f"{component}_{profile.agent_id}",
+            )
+
     async def _call_ollama(
         self,
         endpoint: str,
@@ -150,8 +256,9 @@ class LLMRuntimeManager:
         system: str,
         as_json: bool,
         temperature: float,
+        timeout_override: float | None = None,
     ) -> Any:
-        timeout = float(self._config.get("request_timeout_seconds", 45))
+        timeout = timeout_override or float(self._config.get("request_timeout_seconds", 45))
         payload = {
             "model": model,
             "prompt": prompt,

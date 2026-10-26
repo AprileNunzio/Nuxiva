@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 import time
 from typing import Any
+from features.autonomous_worker.domain.memory import EpisodicMemory
 
 
 class MissionStatus(str, Enum):
@@ -304,6 +305,7 @@ class Mission:
     questions: list[MissionQuestion] = field(default_factory=list)
     collab_messages: list[CollabMessage] = field(default_factory=list)
     artifacts: list[MissionArtifact] = field(default_factory=list)
+    memory: EpisodicMemory = field(default_factory=EpisodicMemory)
     status: MissionStatus = MissionStatus.PLANNING
     progress: int = 0
     error: str = ""
@@ -338,6 +340,7 @@ class Mission:
             "questions": [q.to_dict() for q in self.questions],
             "collab_messages": [m.to_dict() for m in self.collab_messages],
             "artifacts": [a.to_dict() for a in self.artifacts],
+            "memory": self.memory.to_dict(),
             "status": self.status.value if isinstance(self.status, MissionStatus) else str(self.status),
             "progress": self.progress,
             "error": self.error,
@@ -367,6 +370,7 @@ class Mission:
             questions=[MissionQuestion.from_dict(q) for q in data.get("questions", []) if isinstance(q, dict)],
             collab_messages=[CollabMessage.from_dict(m) for m in data.get("collab_messages", []) if isinstance(m, dict)],
             artifacts=[MissionArtifact.from_dict(a) for a in data.get("artifacts", []) if isinstance(a, dict)],
+            memory=EpisodicMemory.from_dict(data.get("memory", {})) if isinstance(data.get("memory"), dict) else EpisodicMemory(),
             status=status,
             progress=int(data.get("progress", 0)),
             error=str(data.get("error", "")),

@@ -8,11 +8,13 @@ from unittest import mock
 from features.autonomous_worker.application.collab_bus import collab_bus
 from features.autonomous_worker.application.deliberator import deliberator
 from features.autonomous_worker.application.execution_loop import execution_loop
+from features.autonomous_worker.application.memory_compressor import memory_compressor
 from features.autonomous_worker.application.specialist_forge import forge
 from features.autonomous_worker.commands import answer as commands_answer
 from features.autonomous_worker.domain.exceptions import MissionNotFoundError, MissionValidationError
 from features.autonomous_worker.domain.models import (
     AcceptanceCriteria,
+    CollabMessage,
     Mission,
     MissionStatus,
     Phase,
@@ -266,6 +268,122 @@ class AutonomousWorkerTest(unittest.TestCase):
         health = asyncio.run(runtime_manager.check_health())
         self.assertTrue(health["healthy"])
         self.assertEqual(health["mode"], "cloud")
+
+    def test_episodic_memory_and_automatic_compression(self):
+        mission = Mission(
+            id="msn-mem-01",
+            title="Sito E-Commerce",
+            goal="Costruisci il portale",
+            domain="software",
+            status=MissionStatus.RUNNING,
+        )
+        self.assertFalse(memory_compressor.should_compress(mission))
+
+        for i in range(20):
+            mission.collab_messages.append(
+                CollabMessage(
+                    id=f"msg_{i}",
+                    sender_id=f"agent_{i % 3}",
+                    sender_role="Developer",
+                    target_id="all",
+                    channel="collab",
+                    content=f"Dettaglio sviluppo elemento #{i}",
+                    kind="chat",
+                )
+            )
+
+        self.assertTrue(memory_compressor.should_compress(mission))
+
+        mock_payload = {
+            "summary": "Implementato nucleo architettura con autenticazione",
+            "lessons_learned": ["Evitare dipendenze circolari tra moduli", "Usare timeout espliciti su HTTP"],
+            "key_decisions": ["Adottata Clean Architecture", "Separazione Net e DB"],
+        }
+        with mock.patch("features.autonomous_worker.infrastructure.llm_runtime.runtime_manager.generate", return_value=mock_payload):
+            compressed = asyncio.run(memory_compressor.compress(mission))
+            self.assertTrue(compressed)
+            self.assertEqual(mission.memory.compression_count, 1)
+            self.assertEqual(mission.memory.summary, "Implementato nucleo architettura con autenticazione")
+            self.assertIn("Evitare dipendenze circolari tra moduli", mission.memory.lessons_learned)
+            self.assertIn("Adottata Clean Architecture", mission.memory.key_decisions)
+            self.assertEqual(len(mission.collab_messages), 7)
+            self.assertEqual(mission.collab_messages[-1].sender_id, "memory_synthesizer")
+
+    def test_agent_inference_profiles_and_routing(self):
+        profile = {
+            "agent_id": "qa_checker",
+            "label": "Controllo Qualità",
+            "provider": "ollama",
+            "endpoint": "http://127.0.0.1:11434",
+            "model": "gemma4",
+            "temperature": 0.1,
+            "timeout_seconds": 30,
+        }
+        saved = runtime_manager.set_agent_profile(profile)
+        self.assertEqual(saved["agent_id"], "qa_checker")
+        self.assertEqual(saved["model"], "gemma4")
+
+        found = runtime_manager.get_agent_profile("qa_checker")
+        self.assertIsNotNone(found)
+        self.assertEqual(found["provider"], "ollama")
+
+        all_profiles = runtime_manager.list_agent_profiles()
+        self.assertTrue(any(p["agent_id"] == "qa_checker" for p in all_profiles))
+
+        resolved = runtime_manager._resolve_profile("qa_checker", "Ispettore")
+        self.assertIsNotNone(resolved)
+        self.assertEqual(resolved.model, "gemma4")
+
+        resolved_by_role = runtime_manager._resolve_profile(None, "Controllo Qualità")
+        self.assertIsNotNone(resolved_by_role)
+        self.assertEqual(resolved_by_role.agent_id, "qa_checker")
+
+        with mock.patch.object(runtime_manager, "_call_ollama", return_value={"result": "OK"}) as mock_call:
+            res = asyncio.run(
+                runtime_manager.generate(
+                    "Test prompt",
+                    agent_id="qa_checker",
+                )
+            )
+            self.assertEqual(res, {"result": "OK"})
+            mock_call.assert_called_once()
+
+        deleted = runtime_manager.delete_agent_profile("qa_checker")
+        self.assertTrue(deleted)
+        self.assertIsNone(runtime_manager.get_agent_profile("qa_checker"))
+
+    def test_lessons_learned_injected_in_task_prompt(self):
+        mission = Mission(
+            id="msn-prompt-01",
+            title="Missione Sicurezza",
+            goal="Verificare conformità OWASP",
+            domain="security",
+            status=MissionStatus.RUNNING,
+        )
+        mission.memory.lessons_learned = ["Non usare eval()", "Validare sempre gli identifier"]
+        mission.memory.key_decisions = ["Zero-Trust obbligatorio"]
+
+        task = Task(
+            id="t_sec",
+            phase_id="p1",
+            title="Analisi Input",
+            description="Controllo sanitizzazione",
+            specialist_id="sec_auditor",
+            specialist_role="Security Auditor",
+        )
+        mission.phases.append(Phase(id="p1", title="Audit", description="Audit", tasks=[task]))
+
+        captured_prompt = {}
+
+        async def fake_generate(prompt, **kwargs):
+            captured_prompt["prompt"] = prompt
+            return {"result": "Sanitizzazione verificata", "artifacts": []}
+
+        with mock.patch("features.autonomous_worker.infrastructure.llm_runtime.runtime_manager.generate", side_effect=fake_generate):
+            asyncio.run(execution_loop._run_task(mission, task))
+            self.assertIn("Non usare eval()", captured_prompt["prompt"])
+            self.assertIn("Zero-Trust obbligatorio", captured_prompt["prompt"])
+            self.assertEqual(task.status, TaskStatus.REVIEW)
 
 
 if __name__ == "__main__":

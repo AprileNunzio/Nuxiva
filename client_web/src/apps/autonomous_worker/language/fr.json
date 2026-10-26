@@ -41,6 +41,27 @@
     "phases_title": "Phases d'Exécution & Critères d'Acceptation",
     "specialists_title": "Équipe d'Experts Déployée",
     "collab_title": "Chat Commun Inter-Agents",
-    "artifacts_title": "Livrables et Preuves Produites"
+    "artifacts_title": "Livrables et Preuves Produites",
+    "episodic_memory_title": "Mémoire Épisodique & Apprentissage",
+    "memory_cycles_count": "Cycles de synthèse réalisés: {count}",
+    "compress_memory_now": "Compresser la Mémoire Maintenant",
+    "memory_summary_label": "Synthèse Consolidée",
+    "lessons_learned_title": "Leçons Apprises & Erreurs à Ne Pas Répéter",
+    "key_decisions_title": "Décisions Clés Convenues",
+    "no_lessons_yet": "Aucune contrainte négative ou erreur relevée à ce stade.",
+    "no_decisions_yet": "Aucune décision structurelle enregistrée pour l'instant.",
+    "agent_inference_routing_title": "Routage d'Inférence par Agent",
+    "agent_inference_routing_desc": "Configurez chaque agent ou expert pour fonctionner en local (Ollama), à distance ou via des clés API Cloud, en personnalisant modèles et paramètres.",
+    "agent_profiles_count": "{count} profils personnalisés",
+    "agent_id": "ID de l'Agent / Rôle",
+    "agent_label": "Libellé Descriptif",
+    "agent_provider": "Fournisseur d'Inférence",
+    "agent_endpoint": "Point d'Accès API",
+    "agent_model": "Modèle LLM",
+    "add_agent_profile": "Ajouter un Routage Agent",
+    "save_agent_profile": "Enregistrer le Routage Agent",
+    "edit_agent_profile": "Modifier le Routage Agent",
+    "action_edit": "Modifier",
+    "no_agent_overrides": "Aucune dérogation configurée. Tous les agents héritent de la configuration globale."
   }
 }

@@ -41,6 +41,27 @@
     "phases_title": "Fases de Ejecución y Criterios de Aceptación",
     "specialists_title": "Equipo de Especialistas Creado",
     "collab_title": "Chat Común Entre Agentes",
-    "artifacts_title": "Entregables y Pruebas Generadas"
+    "artifacts_title": "Entregables y Pruebas Generadas",
+    "episodic_memory_title": "Memoria Episódica y Aprendizaje",
+    "memory_cycles_count": "Ciclos de síntesis completados: {count}",
+    "compress_memory_now": "Comprimir Memoria Ahora",
+    "memory_summary_label": "Resumen Consolidado",
+    "lessons_learned_title": "Lecciones Aprendidas y Errores a No Repetir",
+    "key_decisions_title": "Decisiones Clave Acordadas",
+    "no_lessons_yet": "No se han detectado restricciones negativas ni errores.",
+    "no_decisions_yet": "No se han registrado decisiones estructurales aún.",
+    "agent_inference_routing_title": "Enrutamiento de Inferencia por Agente",
+    "agent_inference_routing_desc": "Configura cada agente o especialista para operar en local (Ollama), remoto o con API key Cloud, personalizando modelos y parámetros.",
+    "agent_profiles_count": "{count} perfiles personalizados",
+    "agent_id": "ID del Agente / Rol",
+    "agent_label": "Etiqueta Descriptiva",
+    "agent_provider": "Proveedor de Inferencia",
+    "agent_endpoint": "Punto de Acceso API",
+    "agent_model": "Modelo LLM",
+    "add_agent_profile": "Añadir Enrutamiento de Agente",
+    "save_agent_profile": "Guardar Enrutamiento de Agente",
+    "edit_agent_profile": "Editar Enrutamiento de Agente",
+    "action_edit": "Editar",
+    "no_agent_overrides": "No hay anulaciones por agente configuradas. Todos heredan la configuración global."
   }
 }

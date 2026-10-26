@@ -3,6 +3,7 @@ import { Activity, CheckCircle2, Cpu, RefreshCw, Save, XCircle } from 'lucide-re
 import { checkRuntimeHealth, fetchRuntimeConfig, updateRuntimeConfig } from '../api';
 import { inputFieldClass, primaryBtnClass, secondaryBtnClass, useAutonomousI18n } from '../scope';
 import { RuntimeConfig, RuntimeHealth } from '../types';
+import { AgentInferenceGrid } from './AgentInferenceGrid';
 
 export const RuntimeConfigPanel: React.FC = () => {
   const { t } = useAutonomousI18n();
@@ -163,6 +164,8 @@ export const RuntimeConfigPanel: React.FC = () => {
           </button>
         </div>
       </form>
+
+      <AgentInferenceGrid />
     </div>
   );
 };

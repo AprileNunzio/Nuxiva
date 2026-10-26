@@ -4,6 +4,7 @@ from fastapi.responses import PlainTextResponse
 from access import require_admin
 from features.autonomous_worker.application.collab_bus import collab_bus
 from features.autonomous_worker.application.deliberator import deliberator
+from features.autonomous_worker.application.memory_compressor import memory_compressor
 from features.autonomous_worker.application.specialist_forge import forge
 from features.autonomous_worker.domain.exceptions import MissionNotFoundError, MissionValidationError
 from features.autonomous_worker.domain.models import MissionStatus, TaskStatus
@@ -197,3 +198,60 @@ async def update_runtime_config(request: Request, _: str = Depends(require_admin
 @router.post("/runtime/health")
 async def test_runtime_health(_: str = Depends(require_admin)):
     return await runtime_manager.check_health()
+
+
+@router.get("/runtime/agents")
+async def list_agent_profiles(_: str = Depends(require_admin)):
+    return runtime_manager.list_agent_profiles()
+
+
+@router.post("/runtime/agents")
+async def save_agent_profile(request: Request, _: str = Depends(require_admin)):
+    body = await request.json()
+    if not isinstance(body, dict):
+        raise HTTPException(400, "Dati non validi")
+    agent_id = sanitize_text(body.get("agent_id"), 80)
+    if not agent_id:
+        raise HTTPException(400, "Identificativo agente obbligatorio")
+    clean_data = {
+        "agent_id": agent_id,
+        "label": sanitize_text(body.get("label", ""), 100),
+        "provider": sanitize_text(body.get("provider", "auto_fallback"), 30),
+        "endpoint": sanitize_text(body.get("endpoint", "http://127.0.0.1:11434"), 250),
+        "model": sanitize_text(body.get("model", "default"), 100),
+        "temperature": float(body.get("temperature", 0.2)),
+        "timeout_seconds": int(body.get("timeout_seconds", 45)),
+    }
+    return runtime_manager.set_agent_profile(clean_data)
+
+
+@router.delete("/runtime/agents/{agent_id}")
+async def delete_agent_profile(agent_id: str, _: str = Depends(require_admin)):
+    sanitized_id = sanitize_text(agent_id, 80)
+    deleted = runtime_manager.delete_agent_profile(sanitized_id)
+    if not deleted:
+        raise HTTPException(404, "Profilo agente non trovato")
+    return {"status": "ok", "agent_id": sanitized_id}
+
+
+@router.get("/missions/{mission_id}/memory")
+async def get_mission_memory(mission_id: str, _: str = Depends(require_admin)):
+    try:
+        mission = mission_store.get(mission_id)
+        return mission.memory.to_dict()
+    except MissionNotFoundError:
+        raise HTTPException(404, "Missione non trovata")
+
+
+@router.post("/missions/{mission_id}/compress")
+async def trigger_mission_compression(mission_id: str, _: str = Depends(require_admin)):
+    try:
+        mission = mission_store.get(mission_id)
+    except MissionNotFoundError:
+        raise HTTPException(404, "Missione non trovata")
+
+    compressed = await memory_compressor.compress(mission)
+    if compressed:
+        mission_store.save(mission)
+        notifier.push_mission(mission)
+    return {"compressed": compressed, "memory": mission.memory.to_dict()}

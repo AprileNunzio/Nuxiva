@@ -4,6 +4,7 @@ import time
 
 from features.autonomous_worker.application.collab_bus import collab_bus
 from features.autonomous_worker.application.deliberator import deliberator
+from features.autonomous_worker.application.memory_compressor import memory_compressor
 from features.autonomous_worker.application.specialist_forge import forge
 from features.autonomous_worker.domain.models import (
     Mission,
@@ -69,6 +70,9 @@ class AutonomousExecutionLoop:
         )
 
     async def _step_running(self, mission: Mission) -> None:
+        if memory_compressor.should_compress(mission):
+            await memory_compressor.compress(mission)
+
         all_tasks = mission.all_tasks()
         done_ids = {t.id for t in all_tasks if t.status == TaskStatus.DONE}
 
@@ -107,11 +111,18 @@ class AutonomousExecutionLoop:
 
     async def _run_task(self, mission: Mission, task: Task) -> None:
         criteria_text = "\n".join(f"- {c.description} (Target: {c.target})" for c in task.criteria)
+        lessons_text = "\n".join(f"- {l}" for l in mission.memory.lessons_learned) or "Nessuna"
+        decisions_text = "\n".join(f"- {d}" for d in mission.memory.key_decisions) or "Nessuna"
+        summary_text = mission.memory.summary or "Inizio lavori"
+
         prompt = (
             f"MISSIONE: {mission.title}\n"
             f"DOMINIO: {mission.domain}\n"
             f"OBIETTIVO GLOBALE: {mission.goal}\n"
+            f"CONTESTO E STATO ATTUALE:\n{summary_text}\n"
             f"DIRETTIVE PROPRIETARIO: {', '.join(mission.directives) or 'Standard massimi'}\n"
+            f"VINCOLI E ERRORI DA NON RIPETERE (LEZIONI APPRESE):\n{lessons_text}\n"
+            f"DECISIONI ARCHITETTURALI CONDIVISE:\n{decisions_text}\n"
             f"TASK ASSEGNATO: {task.title}\n"
             f"DESCRIZIONE: {task.description}\n"
             f"CRITERI DI ACCETTAZIONE:\n{criteria_text}\n"
@@ -127,6 +138,8 @@ class AutonomousExecutionLoop:
                 temperature=0.2,
                 system=EXECUTION_SYSTEM_PROMPT,
                 component="autonomous_worker",
+                agent_id=task.specialist_id,
+                agent_role=task.specialist_role,
             )
             if not isinstance(raw, dict):
                 raw = {"result": str(raw)}
@@ -177,6 +190,8 @@ class AutonomousExecutionLoop:
                 temperature=0.1,
                 system=REVIEW_SYSTEM_PROMPT,
                 component="autonomous_worker",
+                agent_id="ceo_reviewer",
+                agent_role="CEO",
             )
             approved = bool(verdict.get("approved", True)) if isinstance(verdict, dict) else True
             feedback = str(verdict.get("feedback", "")) if isinstance(verdict, dict) else ""

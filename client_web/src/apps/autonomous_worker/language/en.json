@@ -41,6 +41,27 @@
     "phases_title": "Execution Phases & Acceptance Criteria",
     "specialists_title": "Forged Specialist Team",
     "collab_title": "Inter-Agent Common Room Chat",
-    "artifacts_title": "Deliverables & Verified Evidence"
+    "artifacts_title": "Deliverables & Verified Evidence",
+    "episodic_memory_title": "Episodic Memory & Learning",
+    "memory_cycles_count": "Synthesis cycles completed: {count}",
+    "compress_memory_now": "Compress Memory Now",
+    "memory_summary_label": "Consolidated Summary",
+    "lessons_learned_title": "Lessons Learned & Constraints to Not Repeat",
+    "key_decisions_title": "Key Agreed Decisions",
+    "no_lessons_yet": "No negative constraints or errors encountered yet.",
+    "no_decisions_yet": "No structural decisions recorded yet.",
+    "agent_inference_routing_title": "Per-Agent Inference Routing",
+    "agent_inference_routing_desc": "Configure each agent or specialist to run locally (Ollama), remotely, or with Cloud API keys, customizing models and parameters.",
+    "agent_profiles_count": "{count} customized profiles",
+    "agent_id": "Agent ID / Role",
+    "agent_label": "Descriptive Label",
+    "agent_provider": "Inference Provider",
+    "agent_endpoint": "API Endpoint",
+    "agent_model": "LLM Model",
+    "add_agent_profile": "Add Agent Route",
+    "save_agent_profile": "Save Agent Route",
+    "edit_agent_profile": "Edit Agent Route",
+    "action_edit": "Edit",
+    "no_agent_overrides": "No per-agent overrides configured. All specialists inherit the global runtime configuration."
   }
 }

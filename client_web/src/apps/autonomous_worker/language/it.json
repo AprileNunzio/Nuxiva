@@ -41,6 +41,27 @@
     "phases_title": "Fasi di Esecuzione & Criteri di Accettazione",
     "specialists_title": "Squadra di Specialisti Forgiata",
     "collab_title": "Chat Comune Inter-Agente",
-    "artifacts_title": "Deliverable & Prove Prodotte"
+    "artifacts_title": "Deliverable & Prove Prodotte",
+    "episodic_memory_title": "Memoria Episodica & Apprendimento",
+    "memory_cycles_count": "Cicli di sintesi eseguiti: {count}",
+    "compress_memory_now": "Comprimi Memoria Ora",
+    "memory_summary_label": "Sintesi Consolidata",
+    "lessons_learned_title": "Lezioni Apprese & Errori da Non Ripetere",
+    "key_decisions_title": "Decisioni Chiave Concordate",
+    "no_lessons_yet": "Nessun vincolo negativo o errore riscontrato finora.",
+    "no_decisions_yet": "Nessuna decisione strutturale registrata finora.",
+    "agent_inference_routing_title": "Routing Inferenza per Singolo Agente",
+    "agent_inference_routing_desc": "Configura per ciascun agente o specialista se operare in locale (Ollama), remoto o con API key Cloud, personalizzando modello e parametri.",
+    "agent_profiles_count": "{count} profili personalizzati",
+    "agent_id": "ID Agente / Ruolo",
+    "agent_label": "Etichetta Descrittiva",
+    "agent_provider": "Provider Inferenza",
+    "agent_endpoint": "Endpoint API",
+    "agent_model": "Modello LLM",
+    "add_agent_profile": "Aggiungi Instradamento Agente",
+    "save_agent_profile": "Salva Instradamento Agente",
+    "edit_agent_profile": "Modifica Instradamento Agente",
+    "action_edit": "Modifica",
+    "no_agent_overrides": "Nessun override per singolo agente configurato. Tutti gli agenti ereditano la configurazione globale."
   }
 }

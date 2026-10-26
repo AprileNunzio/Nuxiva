@@ -62,6 +62,24 @@ export interface CollabMessage {
   timestamp: number;
 }
 
+export interface EpisodicMemory {
+  summary: string;
+  lessons_learned: string[];
+  key_decisions: string[];
+  last_compressed_at: number;
+  compression_count: number;
+}
+
+export interface AgentInferenceProfile {
+  agent_id: string;
+  label: string;
+  provider: 'auto_fallback' | 'ollama' | 'cloud';
+  endpoint: string;
+  model: string;
+  temperature: number;
+  timeout_seconds: number;
+}
+
 export interface MissionArtifact {
   id: string;
   title: string;
@@ -86,6 +104,7 @@ export interface Mission {
   questions: MissionQuestion[];
   collab_messages: CollabMessage[];
   artifacts: MissionArtifact[];
+  memory?: EpisodicMemory;
   status: 'planning' | 'question' | 'running' | 'paused' | 'done' | 'failed' | 'cancelled';
   progress: number;
   error?: string;

@@ -1,4 +1,4 @@
-import { Mission, RuntimeConfig, RuntimeHealth } from './types';
+import { AgentInferenceProfile, EpisodicMemory, Mission, RuntimeConfig, RuntimeHealth } from './types';
 
 const jsonHeaders = { 'Content-Type': 'application/json' };
 
@@ -77,5 +77,40 @@ export async function checkRuntimeHealth(): Promise<RuntimeHealth> {
     body: '{}',
   });
   if (!res.ok) throw new Error('check_runtime_health_failed');
+  return res.json();
+}
+
+export async function fetchAgentProfiles(): Promise<AgentInferenceProfile[]> {
+  const res = await fetch('/api/autonomous/runtime/agents');
+  if (!res.ok) throw new Error('fetch_agent_profiles_failed');
+  return res.json();
+}
+
+export async function saveAgentProfile(profile: AgentInferenceProfile): Promise<AgentInferenceProfile> {
+  const res = await fetch('/api/autonomous/runtime/agents', {
+    method: 'POST',
+    headers: jsonHeaders,
+    body: JSON.stringify(profile),
+  });
+  if (!res.ok) throw new Error('save_agent_profile_failed');
+  return res.json();
+}
+
+export async function deleteAgentProfile(agentId: string): Promise<void> {
+  const res = await fetch(`/api/autonomous/runtime/agents/${encodeURIComponent(agentId)}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) throw new Error('delete_agent_profile_failed');
+}
+
+export async function triggerMissionCompression(
+  missionId: string
+): Promise<{ compressed: boolean; memory: EpisodicMemory }> {
+  const res = await fetch(`/api/autonomous/missions/${encodeURIComponent(missionId)}/compress`, {
+    method: 'POST',
+    headers: jsonHeaders,
+    body: '{}',
+  });
+  if (!res.ok) throw new Error('trigger_compression_failed');
   return res.json();
 }
