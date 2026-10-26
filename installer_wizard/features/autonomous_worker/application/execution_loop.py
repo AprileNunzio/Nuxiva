@@ -2,6 +2,8 @@ import asyncio
 import logging
 import time
 
+from features.automations.bus import bus
+from features.automations.library import library as auto_library
 from features.autonomous_worker.application.collab_bus import collab_bus
 from features.autonomous_worker.application.deliberator import deliberator
 from features.autonomous_worker.application.memory_compressor import memory_compressor
@@ -208,6 +210,7 @@ class AutonomousExecutionLoop:
                     f"CEO ha APPROVATO il task «{task.title}» ({task.specialist_role}).",
                     kind="approval",
                 )
+                bus.emit("task_completed", {"mission_id": mission.id, "task_id": task.id, "title": task.title, "role": task.specialist_role})
             else:
                 if task.round < MAX_ROUNDS_PER_TASK:
                     task.round += 1
@@ -232,6 +235,7 @@ class AutonomousExecutionLoop:
             mission.status = MissionStatus.FAILED
             mission.error = f"Falliti {len(failed_tasks)} task fondamentali."
             collab_bus.system_announce(mission, f"Missione interrotta per errori irreversibili: {mission.error}", "error")
+            auto_library.remove_by_mission(mission.id)
             return
 
         if mission.final_review_rounds < MAX_FINAL_REVIEWS:
@@ -284,6 +288,7 @@ class AutonomousExecutionLoop:
             f"MISSIONE COMPLETATA AL 100%. Rilasciati {len(mission.artifacts)} artefatti conformi agli standard.",
             kind="success",
         )
+        auto_library.remove_by_mission(mission.id)
 
     async def run(self) -> None:
         while True:

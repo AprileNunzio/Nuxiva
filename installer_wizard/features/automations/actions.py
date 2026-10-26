@@ -1,3 +1,4 @@
+import asyncio
 import json
 
 import httpx
@@ -198,5 +199,71 @@ async def log(a: dict, run) -> str:
     return text[:200]
 
 
+async def flash_light(a: dict, run) -> str:
+    entities = _list(a.get("entity"))
+    if not entities:
+        raise ActionError("nessuna entità luce specificata per il lampeggio")
+    from features.home_assistant.home import brain
+    if not brain.online:
+        raise ActionError("Home Assistant non è collegato")
+    count = max(1, min(10, int(a.get("count") or 3)))
+    data = {}
+    if a.get("color"):
+        data["rgb_color"] = [int(a["color"].lstrip("#")[i:i+2], 16) for i in (0, 2, 4)] if len(a["color"].lstrip("#")) == 6 else [255, 255, 255]
+    for _ in range(count):
+        plan_on = {"calls": [{"domain": "light", "service": "turn_on", "entity_ids": entities, "data": {**data, "brightness_pct": 100}}]}
+        await brain.execute(plan_on, f"lampeggio «{run.name}»", "automazione")
+        await asyncio.sleep(0.5)
+        plan_off = {"calls": [{"domain": "light", "service": "turn_off", "entity_ids": entities, "data": {}}]}
+        await brain.execute(plan_off, f"spegnimento lampeggio «{run.name}»", "automazione")
+        await asyncio.sleep(0.4)
+    return f"lampeggio eseguito {count} volte su {', '.join(entities)}"
+
+
+async def telegram(a: dict, run) -> str:
+    text = str(a.get("text") or "")
+    if not text:
+        raise ActionError("testo messaggio telegram mancante")
+    title = str(a.get("title") or run.name)
+    from features.telegram.bot import bot
+    msg = f"🔔 <b>{title}</b>\n{text}" if title else text
+    await bot.notify(msg)
+    return f"telegram inviato: {text[:80]}"
+
+
+async def mission_watchdog(a: dict, run) -> str:
+    mid = str(a.get("mission_id") or "")
+    if not mid:
+        raise ActionError("mission_id obbligatorio per mission_watchdog")
+    from features.autonomous_worker.infrastructure.store import mission_store
+    try:
+        m = mission_store.get(mid)
+    except Exception:
+        raise ActionError(f"missione «{mid}» non trovata")
+    all_t = m.all_tasks()
+    done_c = sum(1 for t in all_t if t.status.value == "done")
+    status_msg = (
+        f"Avanzamento Progetto «{m.title}»: {m.progress}% ({done_c}/{len(all_t)} task completati). "
+        f"Stato: {m.status.value.upper()}."
+    )
+    channels = a.get("channels") or ["telegram", "display"]
+    done = []
+    if "telegram" in channels:
+        try:
+            from features.telegram.bot import bot
+            await bot.notify(f"🕵️ <b>Watchdog Progetto</b>\n{status_msg}")
+            done.append("telegram")
+        except Exception as exc:
+            done.append(f"telegram err: {exc}")
+    if "display" in channels:
+        _desk().show("notice", {"icon": "🕵️", "title": f"Watchdog: {m.title}", "text": status_msg}, key=f"auto:{run.id}:watchdog", ttl=180)
+        done.append("display")
+    if "email" in channels and a.get("to"):
+        from features.agent.mailer import send
+        done.append(await send(_list(a.get("to")), f"Watchdog: {m.title}", status_msg, []))
+    return "; ".join(done) or status_msg
+
+
 LEAF = {"ha": ha, "speak": speak, "notify": notify, "widget": widget, "tv": tv, "holo": holo, "sound": sound, "agent": agent,
-        "email": email, "http": http, "event": event, "log": log}
+        "email": email, "http": http, "event": event, "log": log, "flash_light": flash_light, "telegram": telegram,
+        "mission_watchdog": mission_watchdog}

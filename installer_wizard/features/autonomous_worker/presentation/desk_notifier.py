@@ -1,5 +1,6 @@
 from typing import Any
 
+from features.automations.bus import bus
 from features.autonomous_worker.domain.models import Mission, MissionStatus, TaskStatus
 from features.desktop.desk import desk
 
@@ -42,8 +43,18 @@ class DeskNotifier:
 
         desk.show(WIDGET_NAME, payload, key=key, ttl=ttl)
 
+        bus.set_state(f"nuxiva.mission.{mission.id}", payload["status"], payload)
+        bus.emit("mission_progress", payload)
+        if mission.status == MissionStatus.DONE:
+            bus.emit("mission_completed", payload)
+        elif mission.status in (MissionStatus.FAILED, MissionStatus.CANCELLED):
+            bus.emit("mission_failed", payload)
+        if unanswered_questions:
+            bus.emit("mission_question", {"mission_id": mission.id, "questions": unanswered_questions})
+
     def remove_mission(self, mission_id: str) -> None:
         desk.hide(key=f"mission:{mission_id}")
+        bus.set_state(f"nuxiva.mission.{mission_id}", "removed", {})
 
 
 notifier = DeskNotifier()

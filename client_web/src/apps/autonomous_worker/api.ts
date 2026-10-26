@@ -1,4 +1,12 @@
-import { AgentInferenceProfile, EpisodicMemory, Mission, RuntimeConfig, RuntimeHealth } from './types';
+import {
+  AgentInferenceProfile,
+  EpisodicMemory,
+  Mission,
+  MissionAutomation,
+  RuntimeConfig,
+  RuntimeHealth,
+  WatchdogPayload,
+} from './types';
 
 const jsonHeaders = { 'Content-Type': 'application/json' };
 
@@ -112,5 +120,24 @@ export async function triggerMissionCompression(
     body: '{}',
   });
   if (!res.ok) throw new Error('trigger_compression_failed');
+  return res.json();
+}
+
+export async function fetchMissionAutomations(missionId: string): Promise<MissionAutomation[]> {
+  const res = await fetch(`/api/autonomous/missions/${encodeURIComponent(missionId)}/automations`);
+  if (!res.ok) throw new Error('fetch_mission_automations_failed');
+  return res.json();
+}
+
+export async function saveMissionWatchdog(
+  missionId: string,
+  payload: WatchdogPayload
+): Promise<MissionAutomation> {
+  const res = await fetch(`/api/autonomous/missions/${encodeURIComponent(missionId)}/watchdog`, {
+    method: 'POST',
+    headers: jsonHeaders,
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error('save_mission_watchdog_failed');
   return res.json();
 }

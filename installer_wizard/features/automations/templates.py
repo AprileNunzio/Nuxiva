@@ -90,6 +90,35 @@ TEMPLATES = [
         "triggers": [{"type": "webhook"}],
         "actions": [{"type": "notify", "title": "{{ data.title or 'Messaggio esterno' }}", "text": "{{ data.text or data }}", "channels": ["display", "voice"]}],
     },
+    {
+        "name": "Lampeggia luci dello studio all'arrivo email",
+        "description": "Quando arriva una nuova email, fa lampeggiare le luci dello studio per avvisare visivamente.",
+        "tags": ["email", "luci", "studio"],
+        "triggers": [{"type": "event", "name": "email_new"}],
+        "actions": [
+            {"type": "flash_light", "entity": "light.studio", "count": 3, "color": "#00aaff"},
+            {"type": "notify", "title": "Nuova email", "text": "Da: {{ data.from }} - {{ data.subject }}", "channels": ["display"]},
+        ],
+    },
+    {
+        "name": "Avviso Telegram all'arrivo email",
+        "description": "Invia un messaggio Telegram istantaneo ogni volta che arriva una nuova email.",
+        "tags": ["email", "telegram"],
+        "triggers": [{"type": "event", "name": "email_new"}],
+        "actions": [
+            {"type": "telegram", "title": "Nuova Email Ricevuta", "text": "Da: {{ data.from }}\nOggetto: {{ data.subject }}"},
+        ],
+    },
+    {
+        "name": "Avviso completamento progetto su Email e Telegram",
+        "description": "Quando un progetto o missione autonoma viene completato, invia notifica congiunta su Telegram ed Email.",
+        "tags": ["progetti", "telegram", "email"],
+        "triggers": [{"type": "event", "name": "mission_completed"}],
+        "actions": [
+            {"type": "telegram", "title": "Progetto Completato", "text": "La missione «{{ data.title }}» è stata completata con successo al 100%."},
+            {"type": "notify", "title": "Progetto Completato: {{ data.title }}", "text": "Obiettivo: {{ data.goal }}. Rilasciati tutti gli artefatti previsti.", "channels": ["display", "email"]},
+        ],
+    },
 ]
 
 

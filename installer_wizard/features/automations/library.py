@@ -80,6 +80,17 @@ class Library:
         self.items.pop(aid, None)
         self.save()
 
+    def by_mission(self, mission_id: str) -> list[dict]:
+        return [a for a in self.items.values() if a.get("mission_id") == str(mission_id)]
+
+    def remove_by_mission(self, mission_id: str) -> int:
+        targets = [aid for aid, a in self.items.items() if a.get("mission_id") == str(mission_id) and a.get("ephemeral")]
+        for aid in targets:
+            self.items.pop(aid, None)
+        if targets:
+            self.save()
+        return len(targets)
+
     def duplicate(self, aid: str) -> dict:
         src = dict(self.items[aid])
         src["name"] = f"{src['name']} (copia)"

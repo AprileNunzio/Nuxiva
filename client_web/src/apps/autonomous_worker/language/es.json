@@ -62,6 +62,20 @@
     "save_agent_profile": "Guardar Enrutamiento de Agente",
     "edit_agent_profile": "Editar Enrutamiento de Agente",
     "action_edit": "Editar",
-    "no_agent_overrides": "No hay anulaciones por agente configuradas. Todos heredan la configuración global."
+    "no_agent_overrides": "No hay anulaciones por agente configuradas. Todos heredan la configuración global.",
+    "watchdog_card_title": "Watchdog y Automatizaciones Vinculadas al Proyecto",
+    "watchdog_ephemeral_badge": "Efímero: auto-eliminación al finalizar el proyecto",
+    "watchdog_card_desc": "Supervisa el progreso a intervalos regulares y envía informes por Telegram, Pantalla o Correo. Se elimina automáticamente al concluir la tarea.",
+    "watchdog_status_label": "Estado del Control",
+    "watchdog_enabled": "Activo (En ejecución)",
+    "watchdog_disabled": "Desactivado (En pausa)",
+    "watchdog_interval_label": "Intervalo de control",
+    "watchdog_channels_label": "Canales de notificación",
+    "watchdog_channel_display": "Pantalla / Holograma",
+    "watchdog_active_rules": "Reglas activas para esta misión",
+    "watchdog_saving": "Guardando...",
+    "watchdog_save_btn": "Actualizar Watchdog",
+    "watchdog_saved_ok": "Watchdog actualizado con éxito.",
+    "watchdog_saved_err": "Error al guardar el watchdog."
   }
 }

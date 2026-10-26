@@ -13,6 +13,15 @@ LIST = re.compile(r"\b(quali|che|elenca|elencami|mostrami)\b.*\bautomazion[ei]\b
 LATER = re.compile(r"\b(più tardi|dopo|non ora|ne riparliamo|ci penso)\b", re.I)
 YES = re.compile(r"^\s*(s[iì]|certo|conferm\w*|procedi|vai|ok|okay|va bene|fallo|esatto)\b", re.I)
 STOP = re.compile(r"\b(ferma|interrompi|blocca)\b.*\bautomazion[ei]\b", re.I)
+AUTO_INTENT = re.compile(
+    r"\b("
+    r"(?:fai\s+)?lampeggia(?:re)?\s+.*(?:luci|studio).*email|"
+    r"invia(?:re)?\s+.*telegram.*email|"
+    r"avvisa(?:mi)?\s+.*(?:telegram|email).*progetto.*completat|"
+    r"controlla\s+.*(?:come\s+procede|avanzamento).*progetto"
+    r")\b",
+    re.I
+)
 
 
 def _summary(a: dict) -> str:
@@ -48,21 +57,22 @@ async def answer(text: str) -> tuple[str, dict]:
         verdict = "snooze" if LATER.search(text) else "accept" if YES.search(text) else "reject"
         return habits.decide(sid, verdict), FACE
     m = CREATE.search(text)
-    if m and m.group(4).strip():
+    auto_match = m.group(4).strip() if (m and m.group(4).strip()) else (text.strip() if AUTO_INTENT.search(text) else None)
+    if auto_match:
         from features.automations.builder import build
         try:
-            spec, errors = await build(m.group(4).strip())
+            spec, errors = await build(auto_match)
         except Exception as exc:
             return f"Signore, non riesco a progettare l'automazione adesso: {exc}", FACE
         if errors:
             return "Signore, non sono riuscito a costruirla correttamente: " + "; ".join(errors[:3]) + ".", FACE
-        spec["enabled"] = False
+        spec["enabled"] = True if AUTO_INTENT.search(text) else False
         try:
             a = library.add(spec, origin="voce")
         except InvalidAutomation as exc:
             return "Signore, l'automazione non è valida: " + "; ".join(exc.errors[:3]), FACE
-        return (f"Preparata «{a['name']}»: {_summary(a)}. È disattivata finché non la controlla nel pannello "
-                f"Automazioni, oppure mi dica «attiva l'automazione {a['name']}».", FACE)
+        state_label = "È attiva e pronta all'uso." if spec["enabled"] else "È disattivata finché non la controlla nel pannello Automazioni."
+        return f"Preparata «{a['name']}»: {_summary(a)}. {state_label}", FACE
     m = TOGGLE.search(text)
     if m:
         try:

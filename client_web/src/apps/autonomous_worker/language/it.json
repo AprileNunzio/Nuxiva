@@ -62,6 +62,20 @@
     "save_agent_profile": "Salva Instradamento Agente",
     "edit_agent_profile": "Modifica Instradamento Agente",
     "action_edit": "Modifica",
-    "no_agent_overrides": "Nessun override per singolo agente configurato. Tutti gli agenti ereditano la configurazione globale."
+    "no_agent_overrides": "Nessun override per singolo agente configurato. Tutti gli agenti ereditano la configurazione globale.",
+    "watchdog_card_title": "Watchdog & Automazioni Collegate al Progetto",
+    "watchdog_ephemeral_badge": "Effimero: auto-rimozione a fine progetto",
+    "watchdog_card_desc": "Supervisiona l'avanzamento a intervalli regolari e invia resoconti su Telegram, Display o Email. Viene rimosso automaticamente al termine del lavoro.",
+    "watchdog_status_label": "Stato Controllo",
+    "watchdog_enabled": "Attivo (In esecuzione)",
+    "watchdog_disabled": "Disattivato (In pausa)",
+    "watchdog_interval_label": "Intervallo di controllo",
+    "watchdog_channels_label": "Canali di notifica",
+    "watchdog_channel_display": "Schermo / Ologramma",
+    "watchdog_active_rules": "Regole attive per questa missione",
+    "watchdog_saving": "Salvataggio...",
+    "watchdog_save_btn": "Aggiorna Watchdog",
+    "watchdog_saved_ok": "Watchdog aggiornato con successo.",
+    "watchdog_saved_err": "Errore durante il salvataggio del watchdog."
   }
 }

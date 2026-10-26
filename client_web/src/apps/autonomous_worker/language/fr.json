@@ -62,6 +62,20 @@
     "save_agent_profile": "Enregistrer le Routage Agent",
     "edit_agent_profile": "Modifier le Routage Agent",
     "action_edit": "Modifier",
-    "no_agent_overrides": "Aucune dérogation configurée. Tous les agents héritent de la configuration globale."
+    "no_agent_overrides": "Aucune dérogation configurée. Tous les agents héritent de la configuration globale.",
+    "watchdog_card_title": "Watchdog & Automatisations Liées au Projet",
+    "watchdog_ephemeral_badge": "Éphémère : suppression auto à la fin du projet",
+    "watchdog_card_desc": "Supervise l'avancement à intervalles réguliers et envoie des rapports via Telegram, Écran ou Email. Supprimé automatiquement à la fin de la tâche.",
+    "watchdog_status_label": "Statut de Surveillance",
+    "watchdog_enabled": "Actif (En cours)",
+    "watchdog_disabled": "Désactivé (En pause)",
+    "watchdog_interval_label": "Intervalle de contrôle",
+    "watchdog_channels_label": "Canaux de notification",
+    "watchdog_channel_display": "Écran / Hologramme",
+    "watchdog_active_rules": "Règles actives pour cette mission",
+    "watchdog_saving": "Enregistrement...",
+    "watchdog_save_btn": "Mettre à jour le Watchdog",
+    "watchdog_saved_ok": "Watchdog mis à jour avec succès.",
+    "watchdog_saved_err": "Erreur lors de l'enregistrement du watchdog."
   }
 }

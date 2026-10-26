@@ -133,3 +133,22 @@ export interface RuntimeHealth {
   cloud_available: boolean;
   timestamp: number;
 }
+
+export interface MissionAutomation {
+  id: string;
+  name: string;
+  description: string;
+  enabled: boolean;
+  ephemeral?: boolean;
+  mission_id?: string;
+  triggers: Array<{ type: string; every?: number; unit?: string; name?: string }>;
+  actions: Array<{ type: string; channels?: string[]; count?: number; entity?: string }>;
+  runs?: number;
+  last_run?: number;
+}
+
+export interface WatchdogPayload {
+  interval_minutes: number;
+  channels: string[];
+  enabled: boolean;
+}

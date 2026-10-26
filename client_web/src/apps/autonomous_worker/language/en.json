@@ -62,6 +62,20 @@
     "save_agent_profile": "Save Agent Route",
     "edit_agent_profile": "Edit Agent Route",
     "action_edit": "Edit",
-    "no_agent_overrides": "No per-agent overrides configured. All specialists inherit the global runtime configuration."
+    "no_agent_overrides": "No per-agent overrides configured. All specialists inherit the global runtime configuration.",
+    "watchdog_card_title": "Project Watchdog & Linked Automations",
+    "watchdog_ephemeral_badge": "Ephemeral: auto-cleanup on project finish",
+    "watchdog_card_desc": "Supervises project progress at regular intervals and dispatches reports via Telegram, Display, or Email. Automatically cleaned up upon project conclusion.",
+    "watchdog_status_label": "Watchdog Status",
+    "watchdog_enabled": "Active (Running)",
+    "watchdog_disabled": "Disabled (Paused)",
+    "watchdog_interval_label": "Check interval",
+    "watchdog_channels_label": "Notification channels",
+    "watchdog_channel_display": "Screen / Hologram",
+    "watchdog_active_rules": "Active rules for this mission",
+    "watchdog_saving": "Saving...",
+    "watchdog_save_btn": "Update Watchdog",
+    "watchdog_saved_ok": "Watchdog updated successfully.",
+    "watchdog_saved_err": "Error while saving watchdog."
   }
 }

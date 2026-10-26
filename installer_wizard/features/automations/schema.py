@@ -21,6 +21,11 @@ EVENTS = [
     {"value": "component_ok", "label": "Un componente torna a funzionare"},
     {"value": "automation_finished", "label": "Un'altra automazione termina"},
     {"value": "startup", "label": "Avvio di Nuxiva"},
+    {"value": "mission_completed", "label": "Progetto o missione autonoma completata"},
+    {"value": "mission_failed", "label": "Progetto o missione autonoma fallita o bloccata"},
+    {"value": "mission_progress", "label": "Avanzamento del progetto o missione autonoma"},
+    {"value": "mission_question", "label": "Domanda o richiesta di scelta su un progetto"},
+    {"value": "task_completed", "label": "Singolo task di un progetto completato"},
     {"value": "custom", "label": "Evento personalizzato (nome sotto)"},
 ]
 SUN = [{"value": "sunrise", "label": "Alba"}, {"value": "sunset", "label": "Tramonto"}]
@@ -136,6 +141,16 @@ ACTIONS = {
         F("automation", "Automazione", "automation", required=True), F("enabled", "Attiva", "bool", default=True)]},
     "respond": {"label": "Risposta a voce alla frase", "icon": "💬", "fields": [F("text", "Testo", required=True)]},
     "log": {"label": "Scrivi nel registro", "icon": "📝", "fields": [F("text", "Testo", required=True)]},
+    "flash_light": {"label": "Lampeggia luci (Home Assistant)", "icon": "💡", "fields": [
+        F("entity", "Dispositivi luce", "entities", required=True),
+        F("count", "Numero di lampeggi", "number", default=3),
+        F("color", "Colore lampeggio (#rrggbb)")]},
+    "telegram": {"label": "Invia messaggio Telegram", "icon": "✈️", "fields": [
+        F("text", "Testo del messaggio", "textarea", required=True),
+        F("title", "Titolo o intestazione")]},
+    "mission_watchdog": {"label": "Controllo avanzamento missione/progetto", "icon": "🕵️", "fields": [
+        F("mission_id", "ID Missione", required=True),
+        F("channels", "Canali notifica", "multi", options=CHANNELS, default=["telegram", "display"])]},
     "stop": {"label": "Ferma l'automazione", "icon": "⏹", "fields": [F("reason", "Motivo"), F("error", "Come errore", "bool")]},
 }
 
@@ -215,4 +230,6 @@ def validate(a: dict) -> tuple[dict, list[str]]:
         errors.append("Serve almeno un'azione")
     a["tags"] = [str(t)[:30] for t in (a.get("tags") or [])][:10]
     a["description"] = str(a.get("description") or "")[:600]
+    a["ephemeral"] = bool(a.get("ephemeral", False))
+    a["mission_id"] = str(a.get("mission_id") or "").strip()[:64]
     return a, errors

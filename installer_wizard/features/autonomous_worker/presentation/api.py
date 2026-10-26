@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import PlainTextResponse
 
 from access import require_admin
+from features.automations.library import library as auto_library
 from features.autonomous_worker.application.collab_bus import collab_bus
 from features.autonomous_worker.application.deliberator import deliberator
 from features.autonomous_worker.application.memory_compressor import memory_compressor
@@ -255,3 +256,50 @@ async def trigger_mission_compression(mission_id: str, _: str = Depends(require_
         mission_store.save(mission)
         notifier.push_mission(mission)
     return {"compressed": compressed, "memory": mission.memory.to_dict()}
+
+
+@router.get("/missions/{mission_id}/automations")
+async def get_mission_automations(mission_id: str, _: str = Depends(require_admin)):
+    try:
+        mission = mission_store.get(mission_id)
+    except MissionNotFoundError:
+        raise HTTPException(404, "Missione non trovata")
+    return auto_library.by_mission(mission.id)
+
+
+@router.post("/missions/{mission_id}/watchdog")
+async def setup_mission_watchdog(mission_id: str, request: Request, _: str = Depends(require_admin)):
+    try:
+        mission = mission_store.get(mission_id)
+    except MissionNotFoundError:
+        raise HTTPException(404, "Missione non trovata")
+
+    body = await request.json()
+    if not isinstance(body, dict):
+        raise HTTPException(400, "Dati non validi")
+
+    minutes = max(1, min(1440, int(body.get("interval_minutes", 30))))
+    channels = body.get("channels") or ["telegram", "display"]
+    enabled = bool(body.get("enabled", True))
+
+    existing = auto_library.by_mission(mission.id)
+    watchdog = next((a for a in existing if any(act.get("type") == "mission_watchdog" for act in a.get("actions", []))), None)
+
+    spec = {
+        "name": f"Watchdog: {mission.title[:40]}",
+        "description": f"Controllo periodico automatico ogni {minutes} minuti per la missione {mission.id}",
+        "enabled": enabled,
+        "ephemeral": True,
+        "mission_id": mission.id,
+        "tags": ["watchdog", "progetto"],
+        "triggers": [{"type": "interval", "every": minutes, "unit": "minutes"}],
+        "conditions": [],
+        "actions": [{"type": "mission_watchdog", "mission_id": mission.id, "channels": channels}],
+    }
+
+    if watchdog:
+        saved = auto_library.update(watchdog["id"], spec)
+    else:
+        saved = auto_library.add(spec, origin="watchdog_progetto")
+
+    return saved
