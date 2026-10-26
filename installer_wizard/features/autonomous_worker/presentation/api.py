@@ -9,6 +9,7 @@ from features.autonomous_worker.domain.exceptions import MissionNotFoundError, M
 from features.autonomous_worker.domain.models import MissionStatus, TaskStatus
 from features.autonomous_worker.domain.sanitizer import sanitize_text, validate_identifier
 from features.autonomous_worker.infrastructure.artifact_vault import vault
+from features.autonomous_worker.infrastructure.llm_runtime import runtime_manager
 from features.autonomous_worker.infrastructure.store import mission_store
 from features.autonomous_worker.presentation.desk_notifier import notifier
 
@@ -178,3 +179,21 @@ async def get_artifact_content(mission_id: str, file_path: str, _: str = Depends
         return PlainTextResponse(content)
     except (MissionValidationError, FileNotFoundError):
         raise HTTPException(404, "Artefatto non trovato o percorso non valido")
+
+
+@router.get("/runtime/config")
+async def get_runtime_config(_: str = Depends(require_admin)):
+    return runtime_manager.get_config()
+
+
+@router.post("/runtime/config")
+async def update_runtime_config(request: Request, _: str = Depends(require_admin)):
+    body = await request.json()
+    if not isinstance(body, dict):
+        raise HTTPException(400, "Dati non validi")
+    return runtime_manager.update_config(body)
+
+
+@router.post("/runtime/health")
+async def test_runtime_health(_: str = Depends(require_admin)):
+    return await runtime_manager.check_health()

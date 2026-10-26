@@ -4,7 +4,7 @@ import re
 import time
 from typing import Any
 
-from features.brain import llm
+from features.autonomous_worker.infrastructure.llm_runtime import runtime_manager
 from features.team.scanner import scanner
 from features.autonomous_worker.domain.models import (
     AcceptanceCriteria,
@@ -95,7 +95,7 @@ class MissionDeliberator:
             "}"
         )
 
-        reply = await llm.generate(
+        reply = await runtime_manager.generate(
             prompt,
             as_json=True,
             max_tokens=3200,

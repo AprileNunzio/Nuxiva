@@ -21,6 +21,7 @@ from features.autonomous_worker.domain.models import (
 )
 from features.autonomous_worker.domain.sanitizer import resolve_safe_path, sanitize_text, validate_identifier
 from features.autonomous_worker.infrastructure.artifact_vault import vault
+from features.autonomous_worker.infrastructure.llm_runtime import runtime_manager
 from features.autonomous_worker.infrastructure.store import MissionStore
 from features.autonomous_worker.presentation.desk_notifier import notifier
 
@@ -254,6 +255,17 @@ class AutonomousWorkerTest(unittest.TestCase):
             self.assertIn("CEO ha avviato la missione autonoma", speech)
             self.assertEqual(ui["mode"], "focus")
             self.assertEqual(ui["widget"], "mission_tracker")
+
+    def test_runtime_manager_configuration_and_health(self):
+        cfg = runtime_manager.get_config()
+        self.assertIn("mode", cfg)
+        updated = runtime_manager.update_config({"mode": "cloud", "token_rate_limit_per_min": 80000})
+        self.assertEqual(updated["mode"], "cloud")
+        self.assertEqual(updated["token_rate_limit_per_min"], 80000)
+
+        health = asyncio.run(runtime_manager.check_health())
+        self.assertTrue(health["healthy"])
+        self.assertEqual(health["mode"], "cloud")
 
 
 if __name__ == "__main__":

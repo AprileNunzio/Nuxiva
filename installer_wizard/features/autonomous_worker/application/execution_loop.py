@@ -13,9 +13,9 @@ from features.autonomous_worker.domain.models import (
     TaskStatus,
 )
 from features.autonomous_worker.infrastructure.artifact_vault import vault
+from features.autonomous_worker.infrastructure.llm_runtime import runtime_manager
 from features.autonomous_worker.infrastructure.store import mission_store
 from features.autonomous_worker.presentation.desk_notifier import notifier
-from features.brain import llm
 
 log = logging.getLogger("nuxiva.autonomous_worker")
 MAX_ROUNDS_PER_TASK = 3
@@ -120,7 +120,7 @@ class AutonomousExecutionLoop:
         )
 
         try:
-            raw = await llm.generate(
+            raw = await runtime_manager.generate(
                 prompt,
                 as_json=True,
                 max_tokens=3500,
@@ -170,7 +170,7 @@ class AutonomousExecutionLoop:
             f"ARTEFATTI NELLA CARTELLA: {[a.relative_path for a in mission.artifacts]}\n"
         )
         try:
-            verdict = await llm.generate(
+            verdict = await runtime_manager.generate(
                 prompt,
                 as_json=True,
                 max_tokens=900,
@@ -228,7 +228,7 @@ class AutonomousExecutionLoop:
                 "La missione è completa al 100% rispetto agli standard massimi? Rispondi JSON: 'complete': true|false, 'extra_tasks': [{'title': '...', 'description': '...'}]"
             )
             try:
-                final_res = await llm.generate(
+                final_res = await runtime_manager.generate(
                     prompt,
                     as_json=True,
                     max_tokens=900,

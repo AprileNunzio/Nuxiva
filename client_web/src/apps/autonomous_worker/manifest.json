@@ -1,0 +1,42 @@
+{
+  "id": "autonomous_worker",
+  "name": "Missioni Autonome",
+  "icon": "Cpu",
+  "version": "1.0.0",
+  "description": "Centro di controllo enterprise per missioni autonome, deliberazione e gestione runtime LLM",
+  "scope": "apps/autonomous_worker",
+  "kind": "app",
+  "target": "global",
+  "window": {
+    "defaultWidth": 75,
+    "defaultHeight": 80,
+    "minWidth": 30,
+    "resizable": true
+  },
+  "toolbars": [
+    {
+      "id": "system",
+      "items": [
+        {
+          "type": "action",
+          "id": "refresh",
+          "labelKey": "os_refresh",
+          "shortcut": "F5"
+        }
+      ]
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "ebsq6nILBjBv",
+    "url": "https://img.icons8.com/?size=240&id=ebsq6nILBjBv&format=png"
+  },
+  "category": "intelligence",
+  "featureIds": [
+    "autonomous_worker",
+    "team",
+    "ceo"
+  ]
+}

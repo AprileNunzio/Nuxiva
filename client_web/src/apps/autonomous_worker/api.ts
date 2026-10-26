@@ -1,0 +1,81 @@
+import { Mission, RuntimeConfig, RuntimeHealth } from './types';
+
+const jsonHeaders = { 'Content-Type': 'application/json' };
+
+export async function fetchMissions(): Promise<Mission[]> {
+  const res = await fetch('/api/autonomous/missions');
+  if (!res.ok) throw new Error('fetch_missions_failed');
+  return res.json();
+}
+
+export async function fetchMission(id: string): Promise<Mission> {
+  const res = await fetch(`/api/autonomous/missions/${encodeURIComponent(id)}`);
+  if (!res.ok) throw new Error('fetch_mission_failed');
+  return res.json();
+}
+
+export async function createMission(goal: string, directives: string[] = []): Promise<Mission> {
+  const res = await fetch('/api/autonomous/missions', {
+    method: 'POST',
+    headers: jsonHeaders,
+    body: JSON.stringify({ goal, directives }),
+  });
+  if (!res.ok) throw new Error('create_mission_failed');
+  return res.json();
+}
+
+export async function controlMission(id: string, action: string): Promise<Mission> {
+  const res = await fetch(`/api/autonomous/missions/${encodeURIComponent(id)}/control/${encodeURIComponent(action)}`, {
+    method: 'POST',
+    headers: jsonHeaders,
+    body: '{}',
+  });
+  if (!res.ok) throw new Error('control_mission_failed');
+  return res.json();
+}
+
+export async function answerQuestion(id: string, qid: string, answer: string, selected: string[]): Promise<Mission> {
+  const res = await fetch(`/api/autonomous/missions/${encodeURIComponent(id)}/answer`, {
+    method: 'POST',
+    headers: jsonHeaders,
+    body: JSON.stringify({ question_id: qid, answer, selected_options: selected }),
+  });
+  if (!res.ok) throw new Error('answer_question_failed');
+  return res.json();
+}
+
+export async function addDirective(id: string, directive: string): Promise<Mission> {
+  const res = await fetch(`/api/autonomous/missions/${encodeURIComponent(id)}/directives`, {
+    method: 'POST',
+    headers: jsonHeaders,
+    body: JSON.stringify({ directive }),
+  });
+  if (!res.ok) throw new Error('add_directive_failed');
+  return res.json();
+}
+
+export async function fetchRuntimeConfig(): Promise<RuntimeConfig> {
+  const res = await fetch('/api/autonomous/runtime/config');
+  if (!res.ok) throw new Error('fetch_runtime_config_failed');
+  return res.json();
+}
+
+export async function updateRuntimeConfig(updates: Partial<RuntimeConfig>): Promise<RuntimeConfig> {
+  const res = await fetch('/api/autonomous/runtime/config', {
+    method: 'POST',
+    headers: jsonHeaders,
+    body: JSON.stringify(updates),
+  });
+  if (!res.ok) throw new Error('update_runtime_config_failed');
+  return res.json();
+}
+
+export async function checkRuntimeHealth(): Promise<RuntimeHealth> {
+  const res = await fetch('/api/autonomous/runtime/health', {
+    method: 'POST',
+    headers: jsonHeaders,
+    body: '{}',
+  });
+  if (!res.ok) throw new Error('check_runtime_health_failed');
+  return res.json();
+}
