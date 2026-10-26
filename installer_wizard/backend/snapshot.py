@@ -19,7 +19,7 @@ from state import store
 from steps import step_catalog
 
 
-FACE_KEYS = {"NUXIVA_AVATAR", "NUXIVA_FACE_COLOR"}
+FACE_KEYS = {"NUXIVA_AVATAR", "NUXIVA_AVATAR_STYLE", "NUXIVA_FACE_COLOR"}
 
 
 def _node_faces() -> dict:

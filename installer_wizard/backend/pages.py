@@ -68,13 +68,17 @@ def face_options() -> dict:
         return value if value in options else default
 
     hands = choice("NUXIVA_HANDS", ("auto", "1", "0"), "auto")
-    
+    style = choice("NUXIVA_AVATAR_STYLE", ("character", "hologram"), "character")
+
     from features.avatars.store import active_model_url
-    model_url = active_model_url() or "/static/shared/models/head.glb"
+    custom_model = active_model_url()
+    default_model = "/vendor/Michelle.glb" if style == "character" else "/static/shared/models/head.glb"
+    model_url = custom_model or default_model
 
     return {"avatar": choice("NUXIVA_AVATAR", ("auto", "full", "light"), "auto"),
-            "style": choice("NUXIVA_AVATAR_STYLE", ("character", "hologram"), "character"), "color": color("NUXIVA_FACE_COLOR", "#29e0ff"),
+            "style": style, "color": color("NUXIVA_FACE_COLOR", "#29e0ff"),
             "model": model_url,
+            "custom_model": custom_model,
             "hands": "0" if env.get("NUXIVA_VISION", "1") == "0" else hands,
             "hands_fps": int(choice("NUXIVA_HANDS_FPS", ("10", "20", "30"), "20")),
             "hands_count": int(choice("NUXIVA_HANDS_COUNT", ("1", "2"), "2")),

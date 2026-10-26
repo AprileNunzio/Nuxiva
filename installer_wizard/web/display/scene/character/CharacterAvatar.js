@@ -84,18 +84,41 @@
     }
 
     async _load(options) {
-      const gltf = await load(options.character || MODEL);
+      const target = options.character || options.model || MODEL;
+      let gltf;
+      try {
+        gltf = await load(target);
+      } catch (err) {
+        if (target !== MODEL) {
+          console.warn(`Modello "${target}" non caricabile, ripristino default ${MODEL}`, err);
+          return this._load({ ...options, character: MODEL, model: MODEL });
+        }
+        throw err;
+      }
       const root = gltf.scene;
       root.updateMatrixWorld(true);
       const box = new THREE.Box3(), v = new THREE.Vector3();
       root.traverse((o) => { if (o.isBone) box.expandByPoint(o.getWorldPosition(v)); });
-      if (box.isEmpty()) throw new Error("il modello non ha uno scheletro");
+      if (box.isEmpty()) {
+        if (target !== MODEL) {
+          console.warn(`Modello "${target}" senza scheletro, ripristino default ${MODEL}`);
+          return this._load({ ...options, character: MODEL, model: MODEL });
+        }
+        throw new Error("il modello non ha uno scheletro");
+      }
       const s = 2 / Math.max(1e-6, box.max.y - box.min.y), hips = new THREE.Vector3();
       root.scale.multiplyScalar(s);
+      const rig = new C.Rig(root, this.facing);
+      if (!rig.ok) {
+        if (target !== MODEL) {
+          console.warn(`Modello "${target}" senza scheletro umanoide riconosciuto, ripristino default ${MODEL}`);
+          return this._load({ ...options, character: MODEL, model: MODEL });
+        }
+        throw new Error("scheletro umanoide non riconosciuto");
+      }
       this.facing.add(root);
       this.root = root;
-      this.rig = new C.Rig(root, this.facing);
-      if (!this.rig.ok) throw new Error("scheletro umanoide non riconosciuto");
+      this.rig = rig;
       this.rig.bones.hips.getWorldPosition(hips);
       root.position.set(-hips.x * s, -1 - box.min.y * s, -hips.z * s);
       this._materials(root);

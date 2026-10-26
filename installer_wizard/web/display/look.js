@@ -35,7 +35,15 @@
     try {
       await load3D();
       const scene = D.scene = new Nuxiva3D.NuxivaScene($("scene"), { onSelect: D.showNode, onHover: D.hoverNode,
-        faceOptions: { color: FACE.color, style: FACE.style },
+        faceOptions: {
+          color: FACE.color,
+          style: FACE.style,
+          model: FACE.model || "/static/shared/models/head.glb",
+          character: (FACE.style || "character") === "character"
+            ? (FACE.character || FACE.custom_model || (FACE.model && !FACE.model.endsWith("/models/head.glb") ? FACE.model : "/vendor/Michelle.glb"))
+            : undefined,
+          customModel: FACE.custom_model || (FACE.model && FACE.model.startsWith("/api/avatars/") ? FACE.model : null),
+        },
         onFaceReady: () => look.auto && NuxivaAvatar.watchFps(() => scene.frames, look.info, (fps) => {
           console.warn(`3D a ${fps} fps: passo al nucleo leggero`);
           const swap = () => (D.busy || D.isSpeaking() ? setTimeout(swap, 3000) : location.reload());
