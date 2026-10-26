@@ -1,5 +1,6 @@
 import {
   AgentInferenceProfile,
+  EnterpriseKnowledgeGraphData,
   EpisodicMemory,
   Mission,
   MissionAutomation,
@@ -139,5 +140,15 @@ export async function saveMissionWatchdog(
     body: JSON.stringify(payload),
   });
   if (!res.ok) throw new Error('save_mission_watchdog_failed');
+  return res.json();
+}
+
+export async function fetchEnterpriseKnowledgeGraph(
+  domain: string = 'all'
+): Promise<EnterpriseKnowledgeGraphData> {
+  const res = await fetch(
+    `/api/autonomous/knowledge-graph?domain=${encodeURIComponent(domain)}`
+  );
+  if (!res.ok) throw new Error('fetch_knowledge_graph_failed');
   return res.json();
 }

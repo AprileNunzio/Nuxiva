@@ -76,6 +76,12 @@
     "watchdog_saving": "Saving...",
     "watchdog_save_btn": "Update Watchdog",
     "watchdog_saved_ok": "Watchdog updated successfully.",
-    "watchdog_saved_err": "Error while saving watchdog."
+    "watchdog_saved_err": "Error while saving watchdog.",
+    "tab_knowledge": "Knowledge Graph",
+    "knowledge_graph_title": "Cross-Project Enterprise Knowledge Graph",
+    "knowledge_graph_desc": "Persistent global long-term memory: preserves lessons learned, constraints, and architectural decisions across past and present projects to prevent recurring errors.",
+    "knowledge_graph_domain_all": "All domains",
+    "knowledge_graph_loading": "Loading Knowledge Graph...",
+    "knowledge_graph_empty": "No enterprise knowledge recorded in the graph yet."
   }
 }

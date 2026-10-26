@@ -8,6 +8,7 @@ from features.autonomous_worker.application.collab_bus import collab_bus
 from features.autonomous_worker.application.deliberator import deliberator
 from features.autonomous_worker.application.memory_compressor import memory_compressor
 from features.autonomous_worker.application.specialist_forge import forge
+from features.autonomous_worker.domain.knowledge_graph import knowledge_graph
 from features.autonomous_worker.domain.models import (
     Mission,
     MissionStatus,
@@ -283,6 +284,8 @@ class AutonomousExecutionLoop:
 
         mission.status = MissionStatus.DONE
         mission.recalculate_progress()
+        for lesson in mission.memory.lessons_learned:
+            knowledge_graph.record_learning(mission.id, mission.domain, lesson)
         collab_bus.system_announce(
             mission,
             f"MISSIONE COMPLETATA AL 100%. Rilasciati {len(mission.artifacts)} artefatti conformi agli standard.",

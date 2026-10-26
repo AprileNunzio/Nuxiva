@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Activity, Cpu, Layers, ListFilter, Plus, RefreshCw } from 'lucide-react';
+import { Activity, Cpu, Database, Layers, ListFilter, Plus, RefreshCw } from 'lucide-react';
 import { createMission, fetchMissions } from './api';
+import { KnowledgeGraphViewer } from './components/KnowledgeGraphViewer';
 import { MissionDetail } from './components/MissionDetail';
 import { RuntimeConfigPanel } from './components/RuntimeConfigPanel';
 import { inputFieldClass, primaryBtnClass, secondaryBtnClass, useAutonomousI18n } from './scope';
@@ -10,7 +11,7 @@ export const View: React.FC = () => {
   const { t } = useAutonomousI18n();
   const [missions, setMissions] = useState<Mission[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'missions' | 'runtime' | 'new'>('missions');
+  const [activeTab, setActiveTab] = useState<'missions' | 'runtime' | 'knowledge' | 'new'>('missions');
   const [newGoal, setNewGoal] = useState('');
   const [loading, setLoading] = useState(false);
   const [creating, setCreating] = useState(false);
@@ -83,6 +84,18 @@ export const View: React.FC = () => {
           </button>
           <button
             type="button"
+            onClick={() => setActiveTab('knowledge')}
+            className={`rounded-xl px-4 py-2 text-xs font-semibold transition ${
+              activeTab === 'knowledge'
+                ? 'bg-cyan-600 text-white shadow-lg shadow-cyan-600/30'
+                : 'border border-slate-700 bg-slate-900/60 text-slate-300 hover:bg-slate-800'
+            }`}
+          >
+            <Database className="mr-1.5 inline h-4 w-4" />
+            {t('tab_knowledge')}
+          </button>
+          <button
+            type="button"
             onClick={() => setActiveTab('new')}
             className={`rounded-xl px-4 py-2 text-xs font-semibold transition ${
               activeTab === 'new'
@@ -97,6 +110,8 @@ export const View: React.FC = () => {
       </div>
 
       {activeTab === 'runtime' && <RuntimeConfigPanel />}
+
+      {activeTab === 'knowledge' && <KnowledgeGraphViewer t={t} />}
 
       {activeTab === 'new' && (
         <form onSubmit={(e) => void handleCreate(e)} className="flex max-w-2xl flex-col gap-4 rounded-2xl border border-slate-800 bg-slate-900/40 p-6">

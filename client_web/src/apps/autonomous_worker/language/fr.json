@@ -76,6 +76,12 @@
     "watchdog_saving": "Enregistrement...",
     "watchdog_save_btn": "Mettre à jour le Watchdog",
     "watchdog_saved_ok": "Watchdog mis à jour avec succès.",
-    "watchdog_saved_err": "Erreur lors de l'enregistrement du watchdog."
+    "watchdog_saved_err": "Erreur lors de l'enregistrement du watchdog.",
+    "tab_knowledge": "Knowledge Graph",
+    "knowledge_graph_title": "Enterprise Knowledge Graph Trans-Projets",
+    "knowledge_graph_desc": "Mémoire globale persistante à long terme : conserve les leçons apprises, contraintes et décisions architecturales pour prévenir toute récurrence d'erreurs.",
+    "knowledge_graph_domain_all": "Tous les domaines",
+    "knowledge_graph_loading": "Chargement du Knowledge Graph en cours...",
+    "knowledge_graph_empty": "Aucune connaissance globale n'est encore enregistrée dans le système."
   }
 }

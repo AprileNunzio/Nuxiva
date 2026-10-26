@@ -76,6 +76,12 @@
     "watchdog_saving": "Salvataggio...",
     "watchdog_save_btn": "Aggiorna Watchdog",
     "watchdog_saved_ok": "Watchdog aggiornato con successo.",
-    "watchdog_saved_err": "Errore durante il salvataggio del watchdog."
+    "watchdog_saved_err": "Errore durante il salvataggio del watchdog.",
+    "tab_knowledge": "Knowledge Graph",
+    "knowledge_graph_title": "Enterprise Knowledge Graph Cross-Progetto",
+    "knowledge_graph_desc": "Memoria globale a lungo termine: conserva lezioni apprese, vincoli e decisioni architetturali tra tutti i progetti passati e presenti per prevenire errori ricorrenti.",
+    "knowledge_graph_domain_all": "Tutti i domini",
+    "knowledge_graph_loading": "Caricamento Knowledge Graph in corso...",
+    "knowledge_graph_empty": "Nessuna conoscenza globale ancora archiviata nel sistema."
   }
 }

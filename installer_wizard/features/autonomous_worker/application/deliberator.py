@@ -4,6 +4,8 @@ import re
 import time
 from typing import Any
 
+from features.autonomous_worker.application.debate_council import debate_council
+from features.autonomous_worker.domain.dag_engine import dag_resolver
 from features.autonomous_worker.infrastructure.llm_runtime import runtime_manager
 from features.team.scanner import scanner
 from features.autonomous_worker.domain.models import (
@@ -48,6 +50,12 @@ class MissionDeliberator:
     ) -> Mission:
         directives = directives or []
         options = options or {}
+        council_verdict = await debate_council.review_proposal(goal, "general", directives)
+        combined_directives = list(directives)
+        for g in council_verdict.get("mandatory_guidelines", []):
+            if g and g not in combined_directives:
+                combined_directives.append(str(g))
+
         available_agents = self.scanner.scan()
         capabilities_summary = [
             f"- {a.name} [{a.id}]: {len(a.tools)} tools, {len(a.widgets)} widgets, caps: {', '.join(a.capabilities[:3])}"
@@ -57,7 +65,7 @@ class MissionDeliberator:
         prompt = (
             f"OBIETTIVO MISSIONE: {goal}\n"
             f"LINGUA DI INTERAZIONE: {lang}\n"
-            f"DIRETTIVE PROPRIETARIO:\n" + ("\n".join(f"- {d}" for d in directives) if directives else "Nessuna") + "\n"
+            f"DIRETTIVE PROPRIETARIO:\n" + ("\n".join(f"- {d}" for d in combined_directives) if combined_directives else "Nessuna") + "\n"
             f"OPZIONI ATTUALI: {json.dumps(options, ensure_ascii=False)}\n"
             f"CAPACITA GIA DISPONIBILI NEL SISTEMA:\n" + "\n".join(capabilities_summary) + "\n\n"
             "ISTRUZIONI FORMATO RISPOSTA (JSON PURO):\n"
@@ -162,6 +170,12 @@ class MissionDeliberator:
                     tasks=tasks,
                 )
             )
+
+        dag_ok, ordered, dag_errors = dag_resolver.validate_and_order(phases)
+        if not dag_ok:
+            for p in phases:
+                for t in p.tasks:
+                    t.depends_on = []
 
         has_blocking_questions = any(not q.answered and q.options for q in questions)
         initial_status = MissionStatus.QUESTION if has_blocking_questions else MissionStatus.RUNNING

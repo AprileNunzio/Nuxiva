@@ -3,6 +3,7 @@ from fastapi.responses import PlainTextResponse
 
 from access import require_admin
 from features.automations.library import library as auto_library
+from features.autonomous_worker.domain.knowledge_graph import knowledge_graph
 from features.autonomous_worker.application.collab_bus import collab_bus
 from features.autonomous_worker.application.deliberator import deliberator
 from features.autonomous_worker.application.memory_compressor import memory_compressor
@@ -303,3 +304,10 @@ async def setup_mission_watchdog(mission_id: str, request: Request, _: str = Dep
         saved = auto_library.add(spec, origin="watchdog_progetto")
 
     return saved
+
+
+@router.get("/knowledge-graph")
+async def get_knowledge_graph(domain: str = "all", _: str = Depends(require_admin)):
+    nodes = [n.to_dict() for n in knowledge_graph.nodes.values() if domain in ("all", n.domain)]
+    edges = [e.to_dict() for e in knowledge_graph.edges]
+    return {"nodes": nodes, "edges": edges, "total_nodes": len(nodes), "total_edges": len(edges)}

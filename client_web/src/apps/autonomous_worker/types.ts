@@ -152,3 +152,26 @@ export interface WatchdogPayload {
   channels: string[];
   enabled: boolean;
 }
+
+export interface KnowledgeGraphNode {
+  id: string;
+  kind: string;
+  label: string;
+  description: string;
+  domain: string;
+  created_at: number;
+}
+
+export interface KnowledgeGraphEdge {
+  source_id: string;
+  target_id: string;
+  relation: string;
+  weight: number;
+}
+
+export interface EnterpriseKnowledgeGraphData {
+  nodes: KnowledgeGraphNode[];
+  edges: KnowledgeGraphEdge[];
+  total_nodes: number;
+  total_edges: number;
+}

@@ -76,6 +76,12 @@
     "watchdog_saving": "Guardando...",
     "watchdog_save_btn": "Actualizar Watchdog",
     "watchdog_saved_ok": "Watchdog actualizado con éxito.",
-    "watchdog_saved_err": "Error al guardar el watchdog."
+    "watchdog_saved_err": "Error al guardar el watchdog.",
+    "tab_knowledge": "Knowledge Graph",
+    "knowledge_graph_title": "Enterprise Knowledge Graph Multi-Proyecto",
+    "knowledge_graph_desc": "Memoria global persistente a largo plazo: conserva lecciones aprendidas, restricciones y decisiones arquitectónicas de proyectos para evitar errores recurrentes.",
+    "knowledge_graph_domain_all": "Todos los dominios",
+    "knowledge_graph_loading": "Cargando Knowledge Graph...",
+    "knowledge_graph_empty": "Aún no hay conocimientos globales archivados en el sistema."
   }
 }
