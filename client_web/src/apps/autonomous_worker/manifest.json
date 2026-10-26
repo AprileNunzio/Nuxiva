@@ -35,8 +35,6 @@
   },
   "category": "intelligence",
   "featureIds": [
-    "autonomous_worker",
-    "team",
-    "ceo"
+    "autonomous_worker"
   ]
 }
