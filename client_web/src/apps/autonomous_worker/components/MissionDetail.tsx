@@ -15,6 +15,7 @@ import {
 import { addDirective, answerQuestion, controlMission } from '../api';
 import { inputFieldClass, primaryBtnClass, secondaryBtnClass, useAutonomousI18n } from '../scope';
 import { Mission, Task } from '../types';
+import { MissionDAGVisualizer } from './MissionDAGVisualizer';
 import { MissionMemoryCard } from './MissionMemoryCard';
 import { MissionWatchdogCard } from './MissionWatchdogCard';
 
@@ -153,6 +154,8 @@ export const MissionDetail: React.FC<Props> = ({ mission, onUpdate }) => {
       <MissionMemoryCard mission={mission} onUpdate={onUpdate} />
 
       <MissionWatchdogCard missionId={mission.id} t={t} />
+
+      <MissionDAGVisualizer missionId={mission.id} t={t} />
 
       <div className="flex flex-col gap-3">
         <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-400">

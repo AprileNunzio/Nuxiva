@@ -1,5 +1,6 @@
 import {
   AgentInferenceProfile,
+  DAGGraphData,
   EnterpriseKnowledgeGraphData,
   EpisodicMemory,
   Mission,
@@ -150,5 +151,11 @@ export async function fetchEnterpriseKnowledgeGraph(
     `/api/autonomous/knowledge-graph?domain=${encodeURIComponent(domain)}`
   );
   if (!res.ok) throw new Error('fetch_knowledge_graph_failed');
+  return res.json();
+}
+
+export async function fetchMissionDAG(missionId: string): Promise<DAGGraphData> {
+  const res = await fetch(`/api/autonomous/missions/${encodeURIComponent(missionId)}/dag`);
+  if (!res.ok) throw new Error('fetch_mission_dag_failed');
   return res.json();
 }

@@ -7,6 +7,7 @@ from features.automations.library import library as auto_library
 from features.autonomous_worker.application.collab_bus import collab_bus
 from features.autonomous_worker.application.deliberator import deliberator
 from features.autonomous_worker.application.memory_compressor import memory_compressor
+from features.autonomous_worker.application.sandbox_validator import sandbox_validator
 from features.autonomous_worker.application.specialist_forge import forge
 from features.autonomous_worker.domain.knowledge_graph import knowledge_graph
 from features.autonomous_worker.domain.models import (
@@ -151,6 +152,13 @@ class AutonomousExecutionLoop:
 
             for art in raw.get("artifacts", []) if isinstance(raw.get("artifacts"), list) else []:
                 if isinstance(art, dict) and art.get("path") and art.get("content"):
+                    valid, err_msg = sandbox_validator.validate_code(art["path"], art["content"])
+                    if not valid:
+                        task.status = TaskStatus.PENDING
+                        task.round += 1
+                        task.feedback = f"Sandbox pre-check fallito per {art['path']}: {err_msg}. Correggi la sintassi."
+                        collab_bus.system_announce(mission, f"Self-correction: {task.feedback}", "rework")
+                        return
                     vault.store_file(
                         mission=mission,
                         relative_path=art["path"],

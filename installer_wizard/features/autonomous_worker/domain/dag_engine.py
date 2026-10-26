@@ -1,3 +1,5 @@
+from typing import Any
+
 from features.autonomous_worker.domain.models import Phase, Task
 
 
@@ -51,6 +53,24 @@ class DAGResolver:
                 if all(dep in done_task_ids for dep in task.depends_on):
                     ready.append(task)
         return ready
+
+    @staticmethod
+    def export_graph_data(phases: list[Phase]) -> dict[str, Any]:
+        nodes = []
+        edges = []
+        for phase in phases:
+            for task in phase.tasks:
+                nodes.append({
+                    "id": task.id,
+                    "phase_id": phase.id,
+                    "title": task.title,
+                    "role": task.specialist_role,
+                    "status": task.status.value if hasattr(task.status, "value") else str(task.status),
+                    "round": getattr(task, "round", 1),
+                })
+                for dep in task.depends_on:
+                    edges.append({"from": dep, "to": task.id})
+        return {"nodes": nodes, "edges": edges, "count": len(nodes)}
 
 
 dag_resolver = DAGResolver()

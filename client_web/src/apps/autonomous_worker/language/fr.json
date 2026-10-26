@@ -82,6 +82,10 @@
     "knowledge_graph_desc": "Mémoire globale persistante à long terme : conserve les leçons apprises, contraintes et décisions architecturales pour prévenir toute récurrence d'erreurs.",
     "knowledge_graph_domain_all": "Tous les domaines",
     "knowledge_graph_loading": "Chargement du Knowledge Graph en cours...",
-    "knowledge_graph_empty": "Aucune connaissance globale n'est encore enregistrée dans le système."
+    "knowledge_graph_empty": "Aucune connaissance globale n'est encore enregistrée dans le système.",
+    "dag_visualizer_title": "Visualiseur DAG des Dépendances de Tâches",
+    "dag_refresh_btn": "Actualiser le Graphe",
+    "dag_loading": "Chargement du graphe des tâches...",
+    "dag_empty": "Aucune tâche structurée dans le DAG pour cette mission."
   }
 }

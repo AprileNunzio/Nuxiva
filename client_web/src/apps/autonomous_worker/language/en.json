@@ -82,6 +82,10 @@
     "knowledge_graph_desc": "Persistent global long-term memory: preserves lessons learned, constraints, and architectural decisions across past and present projects to prevent recurring errors.",
     "knowledge_graph_domain_all": "All domains",
     "knowledge_graph_loading": "Loading Knowledge Graph...",
-    "knowledge_graph_empty": "No enterprise knowledge recorded in the graph yet."
+    "knowledge_graph_empty": "No enterprise knowledge recorded in the graph yet.",
+    "dag_visualizer_title": "Task Dependencies DAG Visualizer",
+    "dag_refresh_btn": "Refresh Graph",
+    "dag_loading": "Loading task graph...",
+    "dag_empty": "No tasks structured in the DAG for this mission."
   }
 }

@@ -3,6 +3,7 @@ from fastapi.responses import PlainTextResponse
 
 from access import require_admin
 from features.automations.library import library as auto_library
+from features.autonomous_worker.domain.dag_engine import dag_resolver
 from features.autonomous_worker.domain.knowledge_graph import knowledge_graph
 from features.autonomous_worker.application.collab_bus import collab_bus
 from features.autonomous_worker.application.deliberator import deliberator
@@ -311,3 +312,12 @@ async def get_knowledge_graph(domain: str = "all", _: str = Depends(require_admi
     nodes = [n.to_dict() for n in knowledge_graph.nodes.values() if domain in ("all", n.domain)]
     edges = [e.to_dict() for e in knowledge_graph.edges]
     return {"nodes": nodes, "edges": edges, "total_nodes": len(nodes), "total_edges": len(edges)}
+
+
+@router.get("/missions/{mission_id}/dag")
+async def get_mission_dag(mission_id: str, _: str = Depends(require_admin)):
+    try:
+        mission = mission_store.get(mission_id)
+    except MissionNotFoundError:
+        raise HTTPException(404, "Missione non trovata")
+    return dag_resolver.export_graph_data(mission.phases)

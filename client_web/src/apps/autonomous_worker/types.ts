@@ -175,3 +175,23 @@ export interface EnterpriseKnowledgeGraphData {
   total_nodes: number;
   total_edges: number;
 }
+
+export interface DAGNode {
+  id: string;
+  phase_id: string;
+  title: string;
+  role: string;
+  status: string;
+  round: number;
+}
+
+export interface DAGEdge {
+  from: string;
+  to: string;
+}
+
+export interface DAGGraphData {
+  nodes: DAGNode[];
+  edges: DAGEdge[];
+  count: number;
+}
