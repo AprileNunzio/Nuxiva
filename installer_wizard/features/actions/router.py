@@ -120,9 +120,10 @@ CALC = re.compile(
 
 
 REFUSAL = re.compile(
-    r"\b(non (ho|possiedo) (la )?(capacit[àa]|accesso|possibilit[àa])|non (posso|riesco a|sono in grado)"
+    r"\b(non (ho|possiedo) (la )?(capacit[àa]|accesso|possibilit[àa])|non (posso|riesco a|sono in grado|capisco|comprendo|ho capito|mi [èe] chiar[oa])"
     r"|come (assistente|intelligenza artificiale|ia|ai)\b|non ho (modo|strumenti)|non mi [èe] possibile"
-    r"|non dispongo\b|non ho (accesso|dati|informazioni|notizie)\b|non sono a conoscenza|dati in tempo reale|informazioni aggiornate)",
+    r"|non dispongo\b|non ho (accesso|dati|informazioni|notizie)\b|non sono a conoscenza|dati in tempo reale|informazioni aggiornate"
+    r"|richiesta (non chiara|ambigua|incomprensibile)|errore di trascrizione)",
     re.I,
 )
 PROMISE = re.compile(

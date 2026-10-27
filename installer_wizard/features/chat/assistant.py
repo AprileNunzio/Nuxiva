@@ -224,6 +224,7 @@ async def _route(text: str, core_call, speech_lang: dict | None = None, hint: st
         if out:
             return out
     if "home" not in tried:
+        tried.add("home")
         out = await _home(text, started)
         if out:
             return out
@@ -248,7 +249,9 @@ async def _route(text: str, core_call, speech_lang: dict | None = None, hint: st
         agent = "calcolo verificato"
         speech, ui = calc
     else:
-        agent, speech, ui = await _converse(text, core_call)
+        from features.agent import commands as agent_cmd
+        unrouted = bool(understanding.enabled() and not decision.domains and "home" in tried and not agent_cmd.weak(text) and not actions.ACTIONISH.search(text))
+        agent, speech, ui = await _converse(text, core_call, unrouted=unrouted)
 
     if ui.get("code"):
         intent = ui.pop("intent", "code_view")
@@ -292,12 +295,12 @@ async def _forged(text: str):
     return expert
 
 
-async def _converse(text: str, core_call) -> tuple[str, str, dict]:
+async def _converse(text: str, core_call, unrouted: bool = False) -> tuple[str, str, dict]:
     from features.agent import commands as agent_cmd
     delegated = await _delegate(text)
     if delegated:
         return delegated
-    if agent_cmd.enabled() and not code.wanted(text) and (agent_cmd.weak(text) or await grounding.needs_lookup(text)):
+    if not unrouted and agent_cmd.enabled() and not code.wanted(text) and (agent_cmd.weak(text) or await grounding.needs_lookup(text)):
         async with stages.stage("agent", "Agente con strumenti"):
             speech, ui = await agent_cmd.answer(text)
         return "agente · strumenti", speech, ui
@@ -309,17 +312,20 @@ async def _converse(text: str, core_call) -> tuple[str, str, dict]:
         data = await core_call(text)
         probe.note(f"Modello: {data.get('agent_id') or 'core'}")
     reply = data.get("speech_output") or "…"
-    refused = bool(actions.REFUSAL.search(reply)) or actions.promised(reply)
+    refused = not reply.strip(" .…") or bool(actions.REFUSAL.search(reply)) or actions.promised(reply)
     if refused and not actions.ACTIONISH.search(text):
         found = await _diagnose(text)
         if found:
             return "diagnostica · comando di sistema", *found
-    if refused and agent_cmd.enabled():
+    if refused and not unrouted and agent_cmd.enabled():
         async with stages.stage("agent", "Agente con strumenti", "Il modello ha rifiutato: provo con gli strumenti"):
             speech, ui = await agent_cmd.answer(text)
         return "agente · strumenti", speech, ui
     if refused:
         actions.note_gap(text, "il modello ha rifiutato e nessuno strumento è adatto")
+        if unrouted:
+            clarify = "Non ho capito la richiesta. Puoi ripetere?"
+            return data.get("agent_id") or "core", *(code.answer(clarify, text) or await _presented(clarify, text) or compose_generic(clarify, text))
     ambient_diorama(text, reply)
     return data.get("agent_id") or "core", *(code.answer(reply, text) or await _presented(reply, text) or compose_generic(reply, text))
 

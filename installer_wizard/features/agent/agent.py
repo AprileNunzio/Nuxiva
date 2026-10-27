@@ -1,3 +1,4 @@
+from config import env_get
 import json
 import time
 
@@ -85,7 +86,7 @@ class Agent:
         reply = await generate(prompt, as_json=True, max_tokens=900, temperature=0.1, kind="deep",
                                system=RULES.format(tools=await self.tools(request), files=FILES, share=archive.ROOT,
                                                   layout=layout(), team=board.digest(), name=assistant_identity().name,
-                                                  self_line=self_line(), today=time.strftime("%A %d %B %Y")), timeout=240)
+                                                  self_line=self_line(), today=time.strftime("%A %d %B %Y")), timeout=int(env_get("NUXIVA_AGENT_TIMEOUT", "60")))
         return reply if isinstance(reply, dict) else {}
 
     async def _execute(self, name: str, args: dict, steps: list[dict]) -> None:
