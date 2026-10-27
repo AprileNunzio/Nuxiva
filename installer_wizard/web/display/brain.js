@@ -57,7 +57,10 @@
       const entry = D.scene.brain.nodes.get(b.dataset.id); if (!entry) return;
       D.scene.brain.select(entry.node.id); D.scene.focusOn(entry.pos); D.showNode(entry.node);
     });
-    $("btn-brain").addEventListener("click", () => D.setMode(D.mode === "brain" ? "face" : "brain"));
+    $("btn-brain").addEventListener("click", () => {
+      if (D.isFamilyNear && !D.isFamilyNear()) return;
+      D.setMode(D.mode === "brain" ? "face" : "brain");
+    });
     $("back-face").addEventListener("click", () => D.setMode("face"));
     D.refreshBrain(false);
     setInterval(() => D.refreshBrain(true), 15000);

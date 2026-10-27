@@ -78,7 +78,11 @@
   }
 
   D.startMindStream = () => {
-    $("mind").addEventListener("click", () => { open = !open; render(); });
+    $("mind").addEventListener("click", () => {
+      if (!open && D.isFamilyNear && !D.isFamilyNear()) return;
+      open = !open;
+      render();
+    });
     document.addEventListener("visibilitychange", () => { if (!document.hidden) poll(); });
     fetchBrainConfig().then(render);
     poll().then(schedule);

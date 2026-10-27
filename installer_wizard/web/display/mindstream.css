@@ -1,9 +1,13 @@
-.mind { position: fixed; left: 22px; bottom: 22px; z-index: 5; width: 320px; max-width: calc(100vw - 44px); padding: 10px 14px; border-radius: 14px;
-  background: rgba(6, 14, 26, 0.5); border: 1px solid var(--line); backdrop-filter: blur(10px); font-size: 12px; color: var(--text-dim);
-  opacity: 0.42; transition: opacity 0.6s, border-color 0.6s, background 0.6s; cursor: pointer; }
-.mind:hover, .mind.live, .mind.open { opacity: 1; }
-.mind.live { border-color: var(--line-strong); background: rgba(8, 20, 36, 0.72); }
+.mind { position: fixed; left: 22px; bottom: 22px; z-index: 5; width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(6, 14, 26, 0.75); border: 1px solid var(--line-strong); backdrop-filter: blur(12px); font-size: 12px; color: var(--text-dim);
+  opacity: 0.65; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); cursor: pointer; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.4); }
+.mind:hover, .mind.live, .mind.open { opacity: 1; border-color: var(--cyan); }
+.mind.open { width: 320px; height: auto; border-radius: 14px; padding: 10px 14px; display: block; overflow: visible; background: rgba(8, 20, 36, 0.94); }
 .mind.empty { display: none; }
+.mind .mind-icon { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
+.mind.open .mind-icon { display: none; }
+.mind .mind-content { display: none; }
+.mind.open .mind-content { display: block; }
 .mind-head { display: flex; align-items: center; gap: 9px; min-width: 0; }
 .mind-dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--text-faint); }
 .mind.live .mind-dot { background: var(--cyan); box-shadow: 0 0 10px var(--cyan); animation: mind-pulse 1.3s ease-in-out infinite; }
@@ -25,4 +29,4 @@
 .mind-recent span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mind-recent .ms { flex: none; font-family: var(--mono); font-size: 10px; color: var(--text-faint); }
 body.brain .mind, body.desk-whiteboard .mind, body.desk-full .mind, body.desk-has .mind { display: none !important; }
-@media (max-width: 720px) { .mind { left: 12px; bottom: 12px; width: calc(100vw - 24px); } }
+@media (max-width: 720px) { .mind.open { left: 12px; bottom: 12px; width: calc(100vw - 24px); } }

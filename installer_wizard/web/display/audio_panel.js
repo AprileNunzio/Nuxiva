@@ -48,7 +48,12 @@
       navigator.mediaDevices.addEventListener("devicechange", () => setTimeout(loadAudio, 800));
     }
     loadAudio();
-    $("btn-vol").addEventListener("click", () => { const p = $("vol-panel"); p.classList.toggle("show"); if (p.classList.contains("show")) { loadAudio(); showLook(); } });
+    $("btn-vol").addEventListener("click", () => {
+      if (D.isFamilyNear && !D.isFamilyNear()) return;
+      const p = $("vol-panel");
+      p.classList.toggle("show");
+      if (p.classList.contains("show")) { loadAudio(); showLook(); }
+    });
     $("avatar-pref").addEventListener("change", (e) => { NuxivaAvatar.setDevicePref(e.target.value); location.reload(); });
     $("vol-out").addEventListener("input", (e) => { $("vol-out-v").textContent = `${e.target.value}%`; setAudio({ output: { volume: +e.target.value } }); });
     $("vol-in").addEventListener("input", (e) => { $("vol-in-v").textContent = `${e.target.value}%`; setAudio({ input: { volume: +e.target.value } }); });

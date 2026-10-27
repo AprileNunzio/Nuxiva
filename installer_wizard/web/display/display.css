@@ -11,6 +11,65 @@ header > * { pointer-events: auto; }
 .clock { text-align: right; }
 .clock b { display: block; font-size: 44px; font-weight: 200; letter-spacing: 0.05em; line-height: 1; }
 .clock span { color: var(--text-dim); font-size: 14px; text-transform: capitalize; }
+.clock-music {
+  display: none;
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: rgba(6, 14, 26, 0.75);
+  border: 1px solid var(--line-strong);
+  backdrop-filter: blur(14px);
+  border-radius: 12px;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  max-width: 260px;
+  animation: fadeUp 0.35s ease-out;
+}
+.clock-music.show { display: flex; }
+.clock-music-cover {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(41, 224, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  overflow: hidden;
+}
+.clock-music-cover img { width: 100%; height: 100%; object-fit: cover; }
+.clock-music-info { min-width: 0; flex: 1; }
+.clock-music-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.clock-music-artist {
+  font-size: 11px;
+  color: var(--cyan);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+body.guest-lock #in {
+  pointer-events: none;
+  opacity: 0.6;
+}
+body.guest-lock #btn-send,
+body.guest-lock #btn-mic,
+body.guest-lock #btn-tools,
+body.guest-lock #btn-brain,
+body.guest-lock #btn-flow,
+body.guest-lock #btn-vol,
+body.guest-lock #btn-voice {
+  opacity: 0.25;
+  pointer-events: none;
+  filter: grayscale(0.8);
+}
 
 .caption { position: absolute; left: 50%; bottom: 128px; transform: translateX(-50%); width: min(920px, 90vw); text-align: center; transition: opacity 0.5s; z-index: 25; }
 .caption .you { color: var(--text-dim); font-size: 14px; min-height: 20px; margin-bottom: 10px; }

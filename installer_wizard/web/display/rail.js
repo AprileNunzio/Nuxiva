@@ -128,11 +128,12 @@
       .catch((err) => console.warn("Giudizio non registrato", err));
   }
 
-  function renderHome(roster) {
+  function renderHome(roster, familyNear) {
     const rows = roster || [];
     const home = rows.filter((r) => r.home).length;
     refs.homeCount.textContent = T(home === 1 ? "rl_present_one" : "rl_present_n", { n: home });
-    refs.home.hidden = rows.length === 0;
+    const isFamilyNear = familyNear ?? (D.isFamilyNear ? D.isFamilyNear() : true);
+    refs.home.hidden = rows.length === 0 || !isFamilyNear;
     refs.homeList.replaceChildren(...rows.map((r, i) => {
       const row = el("div", `rl-person ${r.home ? "home" : "away"}`);
       const av = el("span", `rl-av t${i % 4}`, r.initials);
@@ -205,7 +206,7 @@
   function render() {
     const p = state.panel;
     if (!p) return;
-    renderHome(p.roster);
+    renderHome(p.roster, p.family_near);
     renderScan(p.focus);
     renderVitals(p.focus);
     renderLearn(p.focus);

@@ -53,9 +53,31 @@
     guardPersonal();
     if (quiet > 60000 && !rested) rest();
     else if (quiet && quiet < 60000) rested = false;
+    updateClockMusic(quiet > 60000);
   }
 
   let rested = false;
+  let currentNowPlaying = null;
+
+  function updateClockMusic(isResting) {
+    const box = $("clock-music");
+    if (!box) return;
+    const np = currentNowPlaying;
+    const hasSong = np && (np.title || np.artist);
+    if (isResting && hasSong) {
+      $("clock-music-title").textContent = np.title || "";
+      $("clock-music-artist").textContent = np.artist || "";
+      const cover = $("clock-music-cover");
+      if (np.cover) {
+        cover.innerHTML = `<img src="${fmt.esc(np.cover)}" alt="">`;
+      } else {
+        cover.textContent = "🎵";
+      }
+      box.classList.add("show");
+    } else {
+      box.classList.remove("show");
+    }
+  }
 
   function rest() {
     rested = true;
@@ -68,12 +90,17 @@
   }
 
   let presenceSig = "";
+  let familyNearState = false;
+
+  D.isFamilyNear = () => familyNearState;
 
   function renderPresence(pr) {
     const people = (pr && pr.status === "ok" && pr.people) || [];
     const names = [...new Set(people.filter((p) => p.known).map((p) => p.name))];
     const near = new Set(people.filter((p) => p.known && p.near).map((p) => p.name));
     const strangers = people.filter((p) => !p.known).length;
+    familyNearState = people.some((p) => p.known && p.near && ["owner", "family"].includes(p.role));
+    document.body.classList.toggle("guest-lock", !familyNearState);
     D.presentNames = names;
     D.Ear.presence(people.length === 1 && people[0].known ? people[0].slug : null);
     const look = people.find((p) => p.known && p.near) || people.find((p) => p.facing) || people[0];
@@ -165,6 +192,8 @@
     $("chips").innerHTML = Object.values(s.components || {}).filter((c) => c.status && c.status !== "ok")
       .map((c) => `<span><i class="dot ${c.status}"></i>${fmt.esc(c.label)}</span>`).join("");
 
+    currentNowPlaying = s.now_playing || null;
+    updateClockMusic(rested);
     if (s.holo_action && D.avatar) holoAction(s.holo_action);
     if (s.live_dialogue && s.live_dialogue.id && s.live_dialogue.id !== D.lastDialogueId) {
       D.lastDialogueId = s.live_dialogue.id;

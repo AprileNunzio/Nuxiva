@@ -192,6 +192,7 @@
   D.startVoiceToggle = () => {
     $("btn-voice").classList.toggle("on", D.voiceOn);
     $("btn-voice").addEventListener("click", () => {
+      if (D.isFamilyNear && !D.isFamilyNear()) return;
       D.voiceOn = !D.voiceOn; $("btn-voice").classList.toggle("on", D.voiceOn);
       if (!D.voiceOn) { Voice.stop(); if ("speechSynthesis" in window) speechSynthesis.cancel(); }
     });

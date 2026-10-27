@@ -176,7 +176,16 @@
   };
 
   D.startChat = () => {
+    const inputEl = $("in");
+    const dockEl = document.querySelector(".dock");
+    if (inputEl && dockEl) {
+      inputEl.addEventListener("focus", () => dockEl.classList.add("expanded"));
+      inputEl.addEventListener("blur", () => {
+        if (!inputEl.value.trim()) dockEl.classList.remove("expanded");
+      });
+    }
     const send = () => {
+      if (D.isFamilyNear && !D.isFamilyNear()) return;
       const text = $("in").value.trim();
       if (!text || D.busy) return;
       $("in").value = "";
@@ -185,12 +194,13 @@
     };
     $("in").addEventListener("input", () => {
       D.pingActivity(false);
-      $("btn-send").disabled = !$("in").value.trim();
+      $("btn-send").disabled = !$("in").value.trim() || (D.isFamilyNear && !D.isFamilyNear());
     });
     $("in").addEventListener("keydown", (e) => { if (e.key === "Enter") send(); });
     $("btn-send").addEventListener("click", send);
     const dock = document.querySelector(".dock");
     $("btn-tools").addEventListener("click", () => {
+      if (D.isFamilyNear && !D.isFamilyNear()) return;
       const open = !dock.classList.contains("tools-open");
       dock.classList.toggle("tools-open", open);
       $("btn-tools").setAttribute("aria-expanded", String(open));

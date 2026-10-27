@@ -211,6 +211,7 @@
     for (let i = 0; i < 12; i++) { const b = document.createElement("i"); $("ear-bars").appendChild(b); bars.push(b); }
     for (let i = 0; i < 28; i++) { const b = document.createElement("i"); $("listen-wave").appendChild(b); waveBars.push(b); }
     $("btn-mic").addEventListener("click", () => {
+      if (D.isFamilyNear && !D.isFamilyNear()) return;
       if (!micAllowed()) return enableRemote();
       Ear.listen();
     });

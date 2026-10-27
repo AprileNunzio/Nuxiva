@@ -19,6 +19,7 @@ class PanelTest(unittest.TestCase):
             p.start()
             self.addCleanup(p.stop)
         people.ensure("anna", "Anna Rossi")
+        people.update("anna", {"role": "family"})
         people.ensure("marco", "Marco Bianchi")
         app = FastAPI()
         app.include_router(panel.public_routes)
@@ -39,6 +40,7 @@ class PanelTest(unittest.TestCase):
         self.assertFalse(rows["marco"]["home"])
         self.assertEqual(rows["anna"]["initials"], "AR")
         self.assertEqual(data["focus"]["slug"], "anna")
+        self.assertTrue(data.get("family_near"))
 
     def test_focus_carries_mood_series_and_learned(self):
         learning.observe("sono molto stanco, tifo il Napoli", "anna")

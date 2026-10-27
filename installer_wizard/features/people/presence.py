@@ -202,9 +202,11 @@ class PresenceMonitor:
                 continue
             cached = self.languages.get(p["slug"])
             if not cached or now - cached[1] > LANGUAGE_TTL:
-                cached = (people.preferred_languages(p["slug"])[0], now)
+                prof = people.load(p["slug"]) or {}
+                cached = (people.preferred_languages(p["slug"])[0], now, prof.get("role", "guest"))
                 self.languages[p["slug"]] = cached
             p["ui_lang"] = cached[0]
+            p["role"] = cached[2] if len(cached) > 2 else "guest"
         return visible
 
     async def run(self) -> None:

@@ -293,6 +293,7 @@
   D.startFlow = () => {
     const btn = $("btn-flow");
     if (btn) btn.addEventListener("click", () => {
+      if (D.isFamilyNear && !D.isFamilyNear()) return;
       D.lastInteraction = Date.now();
       if (D.mode === "flow") D.exitFlow(); else D.setMode("flow");
     });

@@ -7,10 +7,17 @@
   left: 50%;
   bottom: clamp(14px, 2.4vh, 40px);
   transform: translateX(-50%);
-  width: min(1100px, calc(100vw - 32px));
+  width: clamp(340px, 32vw, 480px);
+  max-width: calc(100vw - 32px);
   display: flex;
   align-items: center;
   gap: 10px;
+  transition: width 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.dock:focus-within,
+.dock.expanded {
+  width: min(1100px, calc(100vw - 32px));
 }
 
 .dock-bar {
