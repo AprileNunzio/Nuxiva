@@ -25,6 +25,72 @@ class TaskStatus(str, Enum):
 
 
 @dataclass
+class CEOAdvisoryVerdict:
+    feasibility_score: float = 0.95
+    identified_risks: list[str] = field(default_factory=list)
+    mandatory_guidelines: list[str] = field(default_factory=list)
+    recommended_modularity: str = ""
+    architecture_pattern: str = "Clean Architecture & Feature Colocation"
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "feasibility_score": self.feasibility_score,
+            "identified_risks": list(self.identified_risks),
+            "mandatory_guidelines": list(self.mandatory_guidelines),
+            "recommended_modularity": self.recommended_modularity,
+            "architecture_pattern": self.architecture_pattern,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> "CEOAdvisoryVerdict":
+        if not isinstance(data, dict):
+            return cls()
+        return cls(
+            feasibility_score=float(data.get("feasibility_score", 0.95)),
+            identified_risks=[str(r) for r in data.get("identified_risks", []) if r],
+            mandatory_guidelines=[str(g) for g in data.get("mandatory_guidelines", []) if g],
+            recommended_modularity=str(data.get("recommended_modularity", "")),
+            architecture_pattern=str(
+                data.get("architecture_pattern", "Clean Architecture & Feature Colocation")
+            ),
+        )
+
+
+@dataclass
+class ReasoningStep:
+    step_index: int
+    thought: str
+    doubt: str = ""
+    tool_name: str = ""
+    tool_args: dict[str, Any] = field(default_factory=dict)
+    tool_output: str = ""
+    timestamp: float = field(default_factory=time.time)
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "step_index": self.step_index,
+            "thought": self.thought,
+            "doubt": self.doubt,
+            "tool_name": self.tool_name,
+            "tool_args": dict(self.tool_args),
+            "tool_output": self.tool_output,
+            "timestamp": self.timestamp,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> "ReasoningStep":
+        return cls(
+            step_index=int(data.get("step_index", 1)),
+            thought=str(data.get("thought", "")),
+            doubt=str(data.get("doubt", "")),
+            tool_name=str(data.get("tool_name", "")),
+            tool_args=dict(data.get("tool_args", {})) if isinstance(data.get("tool_args"), dict) else {},
+            tool_output=str(data.get("tool_output", "")),
+            timestamp=float(data.get("timestamp", time.time())),
+        )
+
+
+@dataclass
 class AcceptanceCriteria:
     description: str
     target: str = ""
@@ -99,6 +165,9 @@ class Task:
     round: int = 1
     feedback: str = ""
     criteria: list[AcceptanceCriteria] = field(default_factory=list)
+    reasoning_steps: list[ReasoningStep] = field(default_factory=list)
+    doubts: list[str] = field(default_factory=list)
+    ceo_review_notes: list[str] = field(default_factory=list)
     result: str = ""
     error: str = ""
     started_at: float = 0.0
@@ -117,6 +186,9 @@ class Task:
             "round": self.round,
             "feedback": self.feedback,
             "criteria": [c.to_dict() for c in self.criteria],
+            "reasoning_steps": [s.to_dict() for s in self.reasoning_steps],
+            "doubts": list(self.doubts),
+            "ceo_review_notes": list(self.ceo_review_notes),
             "result": self.result,
             "error": self.error,
             "started_at": self.started_at,
@@ -141,7 +213,18 @@ class Task:
             status=status,
             round=int(data.get("round", 1)),
             feedback=str(data.get("feedback", "")),
-            criteria=[AcceptanceCriteria.from_dict(c) for c in data.get("criteria", []) if isinstance(c, dict)],
+            criteria=[
+                AcceptanceCriteria.from_dict(c)
+                for c in data.get("criteria", [])
+                if isinstance(c, dict)
+            ],
+            reasoning_steps=[
+                ReasoningStep.from_dict(s)
+                for s in data.get("reasoning_steps", [])
+                if isinstance(s, dict)
+            ],
+            doubts=[str(d) for d in data.get("doubts", []) if d],
+            ceo_review_notes=[str(n) for n in data.get("ceo_review_notes", []) if n],
             result=str(data.get("result", "")),
             error=str(data.get("error", "")),
             started_at=float(data.get("started_at", 0.0)),
@@ -187,6 +270,9 @@ class MissionQuestion:
     answer: str = ""
     selected_options: list[str] = field(default_factory=list)
     rationale: str = ""
+    asked_by: str = "CEO Architect"
+    created_at: float = field(default_factory=time.time)
+    answered_at: float = 0.0
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -198,6 +284,9 @@ class MissionQuestion:
             "answer": self.answer,
             "selected_options": list(self.selected_options),
             "rationale": self.rationale,
+            "asked_by": self.asked_by,
+            "created_at": self.created_at,
+            "answered_at": self.answered_at,
         }
 
     @classmethod
@@ -211,6 +300,9 @@ class MissionQuestion:
             answer=str(data.get("answer", "")),
             selected_options=[str(o) for o in data.get("selected_options", [])],
             rationale=str(data.get("rationale", "")),
+            asked_by=str(data.get("asked_by", "CEO Architect")),
+            created_at=float(data.get("created_at", time.time())),
+            answered_at=float(data.get("answered_at", 0.0)),
         )
 
 
@@ -263,6 +355,9 @@ class MissionArtifact:
     checksum: str
     size_bytes: int
     generated_by: str
+    diff: str = ""
+    symbols: list[str] = field(default_factory=list)
+    line_count: int = 0
     timestamp: float = field(default_factory=time.time)
 
     def to_dict(self) -> dict[str, Any]:
@@ -274,6 +369,9 @@ class MissionArtifact:
             "checksum": self.checksum,
             "size_bytes": self.size_bytes,
             "generated_by": self.generated_by,
+            "diff": self.diff,
+            "symbols": list(self.symbols),
+            "line_count": self.line_count,
             "timestamp": self.timestamp,
         }
 
@@ -287,6 +385,9 @@ class MissionArtifact:
             checksum=str(data.get("checksum", "")),
             size_bytes=int(data.get("size_bytes", 0)),
             generated_by=str(data.get("generated_by", "")),
+            diff=str(data.get("diff", "")),
+            symbols=[str(s) for s in data.get("symbols", []) if s],
+            line_count=int(data.get("line_count", 0)),
             timestamp=float(data.get("timestamp", time.time())),
         )
 
@@ -306,6 +407,7 @@ class Mission:
     collab_messages: list[CollabMessage] = field(default_factory=list)
     artifacts: list[MissionArtifact] = field(default_factory=list)
     memory: EpisodicMemory = field(default_factory=EpisodicMemory)
+    council_verdict: CEOAdvisoryVerdict = field(default_factory=CEOAdvisoryVerdict)
     status: MissionStatus = MissionStatus.PLANNING
     progress: int = 0
     error: str = ""
@@ -341,6 +443,7 @@ class Mission:
             "collab_messages": [m.to_dict() for m in self.collab_messages],
             "artifacts": [a.to_dict() for a in self.artifacts],
             "memory": self.memory.to_dict(),
+            "council_verdict": self.council_verdict.to_dict(),
             "status": self.status.value if isinstance(self.status, MissionStatus) else str(self.status),
             "progress": self.progress,
             "error": self.error,
@@ -371,6 +474,7 @@ class Mission:
             collab_messages=[CollabMessage.from_dict(m) for m in data.get("collab_messages", []) if isinstance(m, dict)],
             artifacts=[MissionArtifact.from_dict(a) for a in data.get("artifacts", []) if isinstance(a, dict)],
             memory=EpisodicMemory.from_dict(data.get("memory", {})) if isinstance(data.get("memory"), dict) else EpisodicMemory(),
+            council_verdict=CEOAdvisoryVerdict.from_dict(data.get("council_verdict", {})) if isinstance(data.get("council_verdict"), dict) else CEOAdvisoryVerdict(),
             status=status,
             progress=int(data.get("progress", 0)),
             error=str(data.get("error", "")),

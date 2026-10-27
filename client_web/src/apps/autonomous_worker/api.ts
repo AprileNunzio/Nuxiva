@@ -4,6 +4,7 @@ import {
   EnterpriseKnowledgeGraphData,
   EpisodicMemory,
   Mission,
+  MissionArtifact,
   MissionAutomation,
   RuntimeConfig,
   RuntimeHealth,
@@ -62,6 +63,26 @@ export async function addDirective(id: string, directive: string): Promise<Missi
     body: JSON.stringify({ directive }),
   });
   if (!res.ok) throw new Error('add_directive_failed');
+  return res.json();
+}
+
+export async function fetchArtifactContent(missionId: string, filePath: string): Promise<string> {
+  const encodedPath = filePath.split('/').map(encodeURIComponent).join('/');
+  const res = await fetch(`/api/autonomous/missions/${encodeURIComponent(missionId)}/artifacts/${encodedPath}`);
+  if (!res.ok) throw new Error('fetch_artifact_content_failed');
+  return res.text();
+}
+
+export async function applyMissionPatch(
+  missionId: string,
+  payload: { file_path: string; target_block: string; replacement_block: string; expected_checksum?: string }
+): Promise<MissionArtifact> {
+  const res = await fetch(`/api/autonomous/missions/${encodeURIComponent(missionId)}/patch`, {
+    method: 'POST',
+    headers: jsonHeaders,
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error('apply_patch_failed');
   return res.json();
 }
 
@@ -177,7 +198,7 @@ export async function studyAndForgeTool(payload: {
   name: string;
   description: string;
   params: Record<string, string>;
-  steps: Array<{ tool: string; args: Record<string, any> }>;
+  steps: Array<{ tool: string; args: Record<string, unknown> }>;
 }): Promise<{ success: boolean; name: string; description: string; steps_count: number }> {
   const res = await fetch('/api/autonomous/tools/study', {
     method: 'POST',
@@ -187,4 +208,3 @@ export async function studyAndForgeTool(payload: {
   if (!res.ok) throw new Error('study_and_forge_failed');
   return res.json();
 }
-

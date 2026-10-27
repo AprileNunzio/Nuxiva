@@ -56,6 +56,13 @@ export const TaskTray: React.FC = () => {
     };
   }, [refresh]);
 
+  const openTaskApp = (task: TaskRow) => {
+    const target = task.result.app && resolveApp(task.result.app) ? task.result.app : '';
+    if (target) {
+      windowStore.openWindow({ appId: target, initialPayload: { ...task.result.payload } });
+    }
+  };
+
   const run = async (task: TaskRow, action: string) => {
     const target = task.result.app && resolveApp(task.result.app) ? task.result.app : '';
     try {
@@ -95,9 +102,14 @@ export const TaskTray: React.FC = () => {
                   <div className="min-w-0 flex-1">
                     <div className="truncate text-sm font-medium">{task.title}</div>
                     <div className="truncate text-[11px] text-slate-500">
-                      {task.state === 'done' ? task.summary : task.state === 'error' ? t(`error_${task.error}`) : task.stage ? t(`stage_${task.stage}`) : task.steps.find((s) => s.state === 'running')?.text ?? t(`state_${task.state}`)}
+                      {task.state === 'done' ? task.summary : task.state === 'error' ? t(`error_${task.error}`) : task.stage ? task.stage : task.steps.find((s) => s.state === 'running')?.text ?? t(`state_${task.state}`)}
                     </div>
                   </div>
+                  {task.result.app && (
+                    <button type="button" aria-label={t('action_open')} onClick={() => openTaskApp(task)} className="rounded-md p-1 text-violet-600 hover:bg-violet-50">
+                      <ExternalLink size={13} />
+                    </button>
+                  )}
                   {(task.state === 'running' || task.state === 'queued' || task.state === 'paused') && (
                     <button type="button" aria-label={t('cancel')} onClick={() => void cancelTask(task).then(refresh).catch(() => undefined)} className="rounded-md p-1 text-slate-400 hover:bg-rose-50 hover:text-rose-500">
                       <X size={13} />

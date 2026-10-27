@@ -4,12 +4,12 @@ import re
 import time
 from typing import Any
 
+from features.autonomous_worker.application.collab_bus import collab_bus
 from features.autonomous_worker.application.debate_council import debate_council
 from features.autonomous_worker.domain.dag_engine import dag_resolver
-from features.autonomous_worker.infrastructure.llm_runtime import runtime_manager
-from features.team.scanner import scanner
 from features.autonomous_worker.domain.models import (
     AcceptanceCriteria,
+    CEOAdvisoryVerdict,
     Mission,
     MissionQuestion,
     MissionStatus,
@@ -18,6 +18,8 @@ from features.autonomous_worker.domain.models import (
     TaskStatus,
 )
 from features.autonomous_worker.domain.sanitizer import sanitize_text
+from features.autonomous_worker.infrastructure.llm_runtime import runtime_manager
+from features.team.scanner import scanner
 
 SYSTEM_PROMPT = (
     "Sei il Chief Executive Architect di Nuxiva: operi al vertice degli standard mondiali, "
@@ -50,9 +52,11 @@ class MissionDeliberator:
     ) -> Mission:
         directives = directives or []
         options = options or {}
-        council_verdict = await debate_council.review_proposal(goal, "general", directives)
+        raw_council = await debate_council.review_proposal(goal, "general", directives)
+        council_verdict = CEOAdvisoryVerdict.from_dict(raw_council)
+
         combined_directives = list(directives)
-        for g in council_verdict.get("mandatory_guidelines", []):
+        for g in council_verdict.mandatory_guidelines:
             if g and g not in combined_directives:
                 combined_directives.append(str(g))
 
@@ -65,9 +69,13 @@ class MissionDeliberator:
         prompt = (
             f"OBIETTIVO MISSIONE: {goal}\n"
             f"LINGUA DI INTERAZIONE: {lang}\n"
-            f"DIRETTIVE PROPRIETARIO:\n" + ("\n".join(f"- {d}" for d in combined_directives) if combined_directives else "Nessuna") + "\n"
+            f"DIRETTIVE PROPRIETARIO:\n"
+            + ("\n".join(f"- {d}" for d in combined_directives) if combined_directives else "Nessuna")
+            + "\n"
             f"OPZIONI ATTUALI: {json.dumps(options, ensure_ascii=False)}\n"
-            f"CAPACITA GIA DISPONIBILI NEL SISTEMA:\n" + "\n".join(capabilities_summary) + "\n\n"
+            f"CAPACITA GIA DISPONIBILI NEL SISTEMA:\n"
+            + "\n".join(capabilities_summary)
+            + "\n\n"
             "ISTRUZIONI FORMATO RISPOSTA (JSON PURO):\n"
             "{\n"
             '  "title": "Titolo professionale sintetico",\n'
@@ -125,9 +133,14 @@ class MissionDeliberator:
                     MissionQuestion(
                         id=str(raw_q.get("id") or f"q{len(questions) + 1}"),
                         question=sanitize_text(raw_q.get("question"), 300),
-                        options=[sanitize_text(opt, 120) for opt in raw_q.get("options", []) if isinstance(opt, str)],
+                        options=[
+                            sanitize_text(opt, 120)
+                            for opt in raw_q.get("options", [])
+                            if isinstance(opt, str)
+                        ],
                         is_multi_select=bool(raw_q.get("is_multi_select", False)),
-                        rationale=sanitize_text(raw_q.get("rationale", ""), 200),
+                        rationale=sanitize_text(raw_q.get("rationale", ""), 240),
+                        asked_by=sanitize_text(raw_q.get("asked_by", "CEO Architect"), 60),
                     )
                 )
 
@@ -171,7 +184,7 @@ class MissionDeliberator:
                 )
             )
 
-        dag_ok, ordered, dag_errors = dag_resolver.validate_and_order(phases)
+        dag_ok, _, _ = dag_resolver.validate_and_order(phases)
         if not dag_ok:
             for p in phases:
                 for t in p.tasks:
@@ -186,13 +199,22 @@ class MissionDeliberator:
             goal=sanitize_text(goal, 1000),
             domain=domain,
             lang=lang,
-            directives=[sanitize_text(d, 500) for d in directives],
+            directives=[sanitize_text(d, 500) for d in combined_directives],
             options=dict(options),
             phases=phases,
             questions=questions,
+            council_verdict=council_verdict,
             status=initial_status,
             workspace=mid,
         )
+        if council_verdict.identified_risks:
+            collab_bus.post(
+                mission=mission,
+                sender_id="debate_council",
+                sender_role="Board Architetturale & Sicurezza",
+                content=f"Analisi rischi completata (Fattibilità: {int(council_verdict.feasibility_score * 100)}%): {'; '.join(council_verdict.identified_risks[:3])}",
+                kind="thought",
+            )
         mission.recalculate_progress()
         return mission
 

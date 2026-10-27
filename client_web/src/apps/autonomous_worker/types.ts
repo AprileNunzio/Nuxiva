@@ -5,6 +5,24 @@ export interface AcceptanceCriteria {
   evidence?: string;
 }
 
+export interface ReasoningStep {
+  step_index: number;
+  thought: string;
+  doubt?: string;
+  tool_name?: string;
+  tool_args?: Record<string, unknown>;
+  tool_output?: string;
+  timestamp: number;
+}
+
+export interface CEOAdvisoryVerdict {
+  feasibility_score: number;
+  identified_risks: string[];
+  mandatory_guidelines: string[];
+  recommended_modularity: string;
+  architecture_pattern: string;
+}
+
 export interface Task {
   id: string;
   phase_id: string;
@@ -17,8 +35,13 @@ export interface Task {
   round: number;
   feedback?: string;
   criteria: AcceptanceCriteria[];
+  reasoning_steps?: ReasoningStep[];
+  doubts?: string[];
+  ceo_review_notes?: string[];
   result?: string;
   error?: string;
+  started_at?: number;
+  completed_at?: number;
 }
 
 export interface Phase {
@@ -36,6 +59,7 @@ export interface Specialist {
   mission_role: string;
   capabilities: string[];
   tools: string[];
+  guidelines?: string;
   is_dynamic: boolean;
 }
 
@@ -48,6 +72,9 @@ export interface MissionQuestion {
   answer?: string;
   selected_options?: string[];
   rationale?: string;
+  asked_by?: string;
+  created_at?: number;
+  answered_at?: number;
 }
 
 export interface CollabMessage {
@@ -88,6 +115,9 @@ export interface MissionArtifact {
   checksum: string;
   size_bytes: number;
   generated_by: string;
+  diff?: string;
+  symbols?: string[];
+  line_count?: number;
   timestamp: number;
 }
 
@@ -105,10 +135,12 @@ export interface Mission {
   collab_messages: CollabMessage[];
   artifacts: MissionArtifact[];
   memory?: EpisodicMemory;
+  council_verdict?: CEOAdvisoryVerdict;
   status: 'planning' | 'question' | 'running' | 'paused' | 'done' | 'failed' | 'cancelled';
   progress: number;
   error?: string;
   workspace?: string;
+  final_review_rounds?: number;
   created_at: number;
   updated_at: number;
 }
@@ -214,4 +246,3 @@ export interface ToolCatalogResponse {
   categories: Record<string, number>;
   tools: ToolMetadata[];
 }
-

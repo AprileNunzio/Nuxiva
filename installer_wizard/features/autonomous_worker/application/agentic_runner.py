@@ -1,11 +1,16 @@
+import asyncio
 import json
 import logging
+import time
 from typing import Any
 
 from features.agent import registry
+from features.autonomous_worker.application.code_intel import code_intel
+from features.autonomous_worker.application.collab_bus import collab_bus
 from features.autonomous_worker.application.tool_catalog import tool_catalog
+from features.autonomous_worker.domain.models import Mission, MissionQuestion, ReasoningStep, Task
+from features.autonomous_worker.domain.sanitizer import sanitize_text
 from features.autonomous_worker.infrastructure.llm_runtime import runtime_manager
-from features.autonomous_worker.domain.models import Mission, Task
 
 log = logging.getLogger("nuxiva.autonomous_worker.agentic_runner")
 MAX_AGENTIC_STEPS = 12
@@ -28,16 +33,18 @@ class AgenticSpecialistRunner:
 
     async def execute_task_with_tools(self, mission: Mission, task: Task, base_prompt: str) -> dict[str, Any]:
         tools_desc = self.get_available_tools_description(task)
+        repo_map = code_intel.build_repo_map(mission)
         history = [
+            f"{repo_map}\n",
             f"STRUMENTI REALI DISPONIBILI SUL SERVER:\n{tools_desc}\n",
             "ISTRUZIONI: Se hai bisogno di strumenti per leggere, scrivere o testare, rispondi con:",
-            '{"tool": "nome_strumento", "args": {...}}',
+            '{"thought": "ragionamento tecnico", "doubt": "eventuale dubbio analizzato", "tool": "nome_strumento", "args": {...}}',
             "Quando hai completato tutto il lavoro e verificato i criteri, rispondi con:",
-            '{"result": "sintesi esecutiva", "artifacts": [{"path": "...", "content": "..."}], "collab_note": "..."}',
+            '{"thought": "sintesi del ragionamento", "doubts": ["dubbio 1 risolto o segnalato"], "result": "sintesi esecutiva", "artifacts": [{"path": "...", "content": "..."}], "patches": [{"path": "...", "target": "...", "replacement": "..."}], "collab_note": "..."}',
         ]
 
         steps = 0
-        final_result: dict[str, Any] = {"result": "", "artifacts": []}
+        final_result: dict[str, Any] = {"result": "", "artifacts": [], "patches": []}
 
         while steps < self.max_steps:
             steps += 1
@@ -49,8 +56,9 @@ class AgenticSpecialistRunner:
                     max_tokens=3500,
                     temperature=0.2,
                     system=(
-                        "Sei uno specialista d'élite con strumenti reali. Esegui azioni concrete per soddisfare i criteri. "
-                        "Non tirare a indovinare: usa read_file, write_file o i tool idonei."
+                        "Sei uno specialista d'élite con strumenti reali. Applica Clean Architecture, Zero-Trust, "
+                        "codice puro senza commenti, file sotto le 500 righe e struttura feature-based. "
+                        "Esponi sempre il tuo ragionamento ('thought') ed eventuali dubbi ('doubt')."
                     ),
                     component="autonomous_worker",
                     agent_id=task.specialist_id,
@@ -64,13 +72,24 @@ class AgenticSpecialistRunner:
                 final_result["result"] = str(res)
                 break
 
+            thought_text = sanitize_text(res.get("thought") or "", 600)
+            doubt_text = sanitize_text(res.get("doubt") or "", 400)
+            if doubt_text and doubt_text not in task.doubts:
+                task.doubts.append(doubt_text)
+                collab_bus.post(
+                    mission=mission,
+                    sender_id=task.specialist_id or "worker",
+                    sender_role=task.specialist_role or "Specialista",
+                    content=f"[DUBBIO TECNICO - {task.title}]: {doubt_text}",
+                    kind="doubt",
+                )
+
             if "tool" in res and res.get("tool") in registry.TOOLS:
                 tool_name = str(res["tool"])
                 tool_args = res.get("args", {}) if isinstance(res.get("args"), dict) else {}
                 tool_meta = registry.TOOLS[tool_name]
                 try:
                     fn = tool_meta["fn"]
-                    import asyncio
                     if asyncio.iscoroutinefunction(fn):
                         out = await fn(**tool_args)
                     else:
@@ -79,11 +98,69 @@ class AgenticSpecialistRunner:
                 except Exception as exc:
                     tool_out_str = f"ERRORE STRUMENTO {tool_name}: {exc}"
 
+                step_record = ReasoningStep(
+                    step_index=len(task.reasoning_steps) + 1,
+                    thought=thought_text or f"Esecuzione strumento {tool_name}",
+                    doubt=doubt_text,
+                    tool_name=tool_name,
+                    tool_args=tool_args,
+                    tool_output=tool_out_str[:600],
+                    timestamp=time.time(),
+                )
+                task.reasoning_steps.append(step_record)
+                if thought_text:
+                    collab_bus.post(
+                        mission=mission,
+                        sender_id=task.specialist_id or "worker",
+                        sender_role=task.specialist_role or "Specialista",
+                        content=f"[RAGIONAMENTO] {thought_text} -> Tool: {tool_name}",
+                        kind="thought",
+                    )
+
                 history.append(f"AZIONE: {tool_name}({json.dumps(tool_args)}) -> ESITO: {tool_out_str}")
-            elif "result" in res:
-                final_result = res
-                break
             else:
+                if thought_text:
+                    task.reasoning_steps.append(
+                        ReasoningStep(
+                            step_index=len(task.reasoning_steps) + 1,
+                            thought=thought_text,
+                            doubt=doubt_text,
+                            timestamp=time.time(),
+                        )
+                    )
+                    collab_bus.post(
+                        mission=mission,
+                        sender_id=task.specialist_id or "worker",
+                        sender_role=task.specialist_role or "Specialista",
+                        content=f"[RAGIONAMENTO FINALE - {task.title}]: {thought_text}",
+                        kind="thought",
+                    )
+                for raw_d in res.get("doubts", []) if isinstance(res.get("doubts"), list) else []:
+                    clean_d = sanitize_text(str(raw_d), 400)
+                    if clean_d and clean_d not in task.doubts:
+                        task.doubts.append(clean_d)
+                        collab_bus.post(
+                            mission=mission,
+                            sender_id=task.specialist_id or "worker",
+                            sender_role=task.specialist_role or "Specialista",
+                            content=f"[DUBBIO EMERSO - {task.title}]: {clean_d}",
+                            kind="doubt",
+                        )
+                raw_q = res.get("question")
+                if isinstance(raw_q, dict) and raw_q.get("question"):
+                    q_obj = MissionQuestion(
+                        id=f"q_{len(mission.questions) + 1}_{int(time.time()) % 1000}",
+                        question=sanitize_text(raw_q.get("question"), 300),
+                        options=[
+                            sanitize_text(o, 120)
+                            for o in raw_q.get("options", [])
+                            if isinstance(o, str)
+                        ],
+                        rationale=sanitize_text(raw_q.get("rationale", ""), 240),
+                        asked_by=task.specialist_role or "Specialista",
+                    )
+                    mission.questions.append(q_obj)
+
                 final_result = res
                 break
 

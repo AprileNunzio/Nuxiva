@@ -2,6 +2,8 @@ import ast
 import json
 import re
 
+MAX_ALLOWED_LINES = 500
+
 
 class SandboxPreValidator:
     DANGEROUS_PATTERNS = [
@@ -13,6 +15,13 @@ class SandboxPreValidator:
     @classmethod
     def validate_code(cls, file_path: str, content: str) -> tuple[bool, str]:
         ext = file_path.split(".")[-1].lower() if "." in file_path else ""
+
+        line_count = len(content.splitlines()) if content else 0
+        if line_count > MAX_ALLOWED_LINES:
+            return (
+                False,
+                f"Limite strutturale violato: {file_path} contiene {line_count} righe (massimo consentito: {MAX_ALLOWED_LINES}). Modularizza il file.",
+            )
 
         for pat in cls.DANGEROUS_PATTERNS:
             if pat.search(content):

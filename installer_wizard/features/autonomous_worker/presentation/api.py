@@ -1,16 +1,23 @@
+import time
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import PlainTextResponse
 
-from access import require_admin
+from access import require_admin, require_display
 from features.automations.library import library as auto_library
-from features.autonomous_worker.application.tool_catalog import tool_catalog
-from features.autonomous_worker.domain.dag_engine import dag_resolver
-from features.autonomous_worker.domain.knowledge_graph import knowledge_graph
+from features.autonomous_worker.application.code_intel import code_intel
 from features.autonomous_worker.application.collab_bus import collab_bus
 from features.autonomous_worker.application.deliberator import deliberator
 from features.autonomous_worker.application.memory_compressor import memory_compressor
+from features.autonomous_worker.application.project_bridge import (
+    forward_legacy_control,
+    forward_legacy_directive,
+    sync_legacy_projects,
+)
 from features.autonomous_worker.application.specialist_forge import forge
+from features.autonomous_worker.application.tool_catalog import tool_catalog
+from features.autonomous_worker.domain.dag_engine import dag_resolver
 from features.autonomous_worker.domain.exceptions import MissionNotFoundError, MissionValidationError
+from features.autonomous_worker.domain.knowledge_graph import knowledge_graph
 from features.autonomous_worker.domain.models import MissionStatus, TaskStatus
 from features.autonomous_worker.domain.sanitizer import sanitize_text, validate_identifier
 from features.autonomous_worker.infrastructure.artifact_vault import vault
@@ -18,56 +25,24 @@ from features.autonomous_worker.infrastructure.llm_runtime import runtime_manage
 from features.autonomous_worker.infrastructure.store import mission_store
 from features.autonomous_worker.presentation.desk_notifier import notifier
 
-router = APIRouter(prefix="/api/autonomous", tags=["autonomous"])
+admin_routes = APIRouter(prefix="/api/autonomous", tags=["autonomous"])
+public_routes = APIRouter(prefix="/api/autonomous", tags=["autonomous-display"])
+router = admin_routes
 
 
-@router.get("/missions")
-async def list_missions(_: str = Depends(require_admin)):
-    return [m.to_dict() for m in mission_store.all()]
-
-
-@router.post("/missions")
-async def create_mission(request: Request, _: str = Depends(require_admin)):
-    body = await request.json()
-    if not isinstance(body, dict):
-        raise HTTPException(400, "Richiesta non valida")
-
-    goal = sanitize_text(body.get("goal"), 1000)
-    if not goal or len(goal) < 3:
-        raise HTTPException(400, "Obiettivo mancante o troppo breve")
-
-    lang = sanitize_text(body.get("lang") or "it", 10)
-    raw_directives = body.get("directives")
-    directives = [sanitize_text(d, 500) for d in raw_directives if isinstance(d, str)] if isinstance(raw_directives, list) else []
-    raw_options = body.get("options")
-    options = dict(raw_options) if isinstance(raw_options, dict) else {}
-
-    mission = await deliberator.deliberate(goal=goal, lang=lang, directives=directives, options=options)
-    forge.assemble_team(mission)
-    mission_store.save(mission)
-    notifier.push_mission(mission)
-    collab_bus.system_announce(mission, f"Nuova missione registrata: {mission.title}")
-    return mission.to_dict()
-
-
-@router.get("/missions/{mission_id}")
-async def get_mission(mission_id: str, _: str = Depends(require_admin)):
-    try:
-        return mission_store.get(mission_id).to_dict()
-    except MissionNotFoundError:
-        raise HTTPException(404, "Missione non trovata")
-
-
-@router.post("/missions/{mission_id}/control/{action}")
-async def control_mission(mission_id: str, action: str, _: str = Depends(require_admin)):
+def _apply_mission_control(mission_id: str, action: str) -> dict:
+    sync_legacy_projects()
     try:
         mission = mission_store.get(mission_id)
     except MissionNotFoundError:
         raise HTTPException(404, "Missione non trovata")
 
     act = action.lower().strip()
+    forward_legacy_control(mission_id, act)
+    mission = mission_store.get(mission_id)
+
     if act == "pause":
-        if mission.status not in (MissionStatus.RUNNING, MissionStatus.QUESTION):
+        if mission.status not in (MissionStatus.RUNNING, MissionStatus.QUESTION, MissionStatus.PLANNING):
             raise HTTPException(400, "Stato non valido per la pausa")
         mission.status = MissionStatus.PAUSED
         collab_bus.system_announce(mission, "Missione messa in pausa dall'amministratore.", "control")
@@ -96,12 +71,7 @@ async def control_mission(mission_id: str, action: str, _: str = Depends(require
     return mission.to_dict()
 
 
-@router.post("/missions/{mission_id}/answer")
-async def answer_question(mission_id: str, request: Request, _: str = Depends(require_admin)):
-    body = await request.json()
-    if not isinstance(body, dict):
-        raise HTTPException(400, "Dati non validi")
-
+def _apply_mission_answer(mission_id: str, body: dict) -> dict:
     qid = validate_identifier(body.get("question_id", ""), "question_id")
     answer_text = sanitize_text(body.get("answer", ""), 500)
     selected = [sanitize_text(s, 120) for s in body.get("selected_options", []) if isinstance(s, str)]
@@ -118,10 +88,11 @@ async def answer_question(mission_id: str, request: Request, _: str = Depends(re
     question.answered = True
     question.answer = answer_text
     question.selected_options = selected
+    question.answered_at = time.time()
 
     collab_bus.system_announce(
         mission,
-        f"Risposta dell'utente su «{question.question[:40]}...»: {answer_text or ', '.join(selected)}",
+        f"Risposta dell'utente su «{question.question[:60]}»: {answer_text or ', '.join(selected)}",
         kind="user_input",
     )
 
@@ -134,24 +105,25 @@ async def answer_question(mission_id: str, request: Request, _: str = Depends(re
     return mission.to_dict()
 
 
-@router.post("/missions/{mission_id}/directives")
-async def add_directives(mission_id: str, request: Request, _: str = Depends(require_admin)):
-    body = await request.json()
-    if not isinstance(body, dict):
-        raise HTTPException(400, "Dati non validi")
-
+def _apply_mission_directive(mission_id: str, body: dict) -> dict:
     text = sanitize_text(body.get("directive", ""), 500)
     if not text:
         raise HTTPException(400, "Direttiva vuota")
 
+    sync_legacy_projects()
     try:
         mission = mission_store.get(mission_id)
     except MissionNotFoundError:
         raise HTTPException(404, "Missione non trovata")
 
-    mission.directives.append(text)
+    forward_legacy_directive(mission_id, text)
+    mission = mission_store.get(mission_id)
+    if text not in mission.directives:
+        mission.directives.append(text)
     if isinstance(body.get("options"), dict):
-        mission.options.update({sanitize_text(k, 50): sanitize_text(v, 200) for k, v in body["options"].items()})
+        mission.options.update(
+            {sanitize_text(k, 50): sanitize_text(v, 200) for k, v in body["options"].items()}
+        )
 
     collab_bus.system_announce(mission, f"Nuova direttiva del proprietario: {text}", kind="directive")
     mission_store.save(mission)
@@ -159,16 +131,104 @@ async def add_directives(mission_id: str, request: Request, _: str = Depends(req
     return mission.to_dict()
 
 
-@router.get("/missions/{mission_id}/collab")
-async def get_collab_messages(mission_id: str, limit: int = 50, _: str = Depends(require_admin)):
+@admin_routes.get("/missions")
+async def list_missions(_: str = Depends(require_admin)):
+    sync_legacy_projects()
+    return [m.to_dict() for m in mission_store.all()]
+
+
+@admin_routes.post("/missions")
+async def create_mission(request: Request, _: str = Depends(require_admin)):
+    body = await request.json()
+    if not isinstance(body, dict):
+        raise HTTPException(400, "Richiesta non valida")
+
+    goal = sanitize_text(body.get("goal"), 1000)
+    if not goal or len(goal) < 3:
+        raise HTTPException(400, "Obiettivo mancante o troppo breve")
+
+    lang = sanitize_text(body.get("lang") or "it", 10)
+    raw_directives = body.get("directives")
+    directives = (
+        [sanitize_text(d, 500) for d in raw_directives if isinstance(d, str)]
+        if isinstance(raw_directives, list)
+        else []
+    )
+    raw_options = body.get("options")
+    options = dict(raw_options) if isinstance(raw_options, dict) else {}
+
+    mission = await deliberator.deliberate(goal=goal, lang=lang, directives=directives, options=options)
+    forge.assemble_team(mission)
+    mission_store.save(mission)
+    notifier.push_mission(mission)
+    collab_bus.system_announce(mission, f"Nuova missione registrata: {mission.title}")
+    return mission.to_dict()
+
+
+@admin_routes.get("/missions/{mission_id}")
+async def get_mission(mission_id: str, _: str = Depends(require_admin)):
+    sync_legacy_projects()
     try:
-        mission = mission_store.get(mission_id)
-        return collab_bus.recent(mission, limit=min(limit, 200))
+        return mission_store.get(mission_id).to_dict()
     except MissionNotFoundError:
         raise HTTPException(404, "Missione non trovata")
 
 
-@router.get("/missions/{mission_id}/artifacts")
+@admin_routes.post("/missions/{mission_id}/control/{action}")
+async def control_mission(mission_id: str, action: str, _: str = Depends(require_admin)):
+    return _apply_mission_control(mission_id, action)
+
+
+@public_routes.post("/missions/{mission_id}/control/{action}")
+async def public_control_mission(mission_id: str, action: str, request: Request):
+    require_display(request, "Solo dal display")
+    return _apply_mission_control(mission_id, action)
+
+
+@admin_routes.post("/missions/{mission_id}/answer")
+async def answer_question(mission_id: str, request: Request, _: str = Depends(require_admin)):
+    body = await request.json()
+    if not isinstance(body, dict):
+        raise HTTPException(400, "Dati non validi")
+    return _apply_mission_answer(mission_id, body)
+
+
+@public_routes.post("/missions/{mission_id}/answer")
+async def public_answer_question(mission_id: str, request: Request):
+    require_display(request, "Solo dal display")
+    body = await request.json()
+    if not isinstance(body, dict):
+        raise HTTPException(400, "Dati non validi")
+    return _apply_mission_answer(mission_id, body)
+
+
+@admin_routes.post("/missions/{mission_id}/directives")
+async def add_directives(mission_id: str, request: Request, _: str = Depends(require_admin)):
+    body = await request.json()
+    if not isinstance(body, dict):
+        raise HTTPException(400, "Dati non validi")
+    return _apply_mission_directive(mission_id, body)
+
+
+@public_routes.post("/missions/{mission_id}/directives")
+async def public_add_directives(mission_id: str, request: Request):
+    require_display(request, "Solo dal display")
+    body = await request.json()
+    if not isinstance(body, dict):
+        raise HTTPException(400, "Dati non validi")
+    return _apply_mission_directive(mission_id, body)
+
+
+@admin_routes.get("/missions/{mission_id}/collab")
+async def get_collab_messages(mission_id: str, limit: int = 100, _: str = Depends(require_admin)):
+    try:
+        mission = mission_store.get(mission_id)
+        return collab_bus.recent(mission, limit=min(limit, 300))
+    except MissionNotFoundError:
+        raise HTTPException(404, "Missione non trovata")
+
+
+@admin_routes.get("/missions/{mission_id}/artifacts")
 async def list_mission_artifacts(mission_id: str, _: str = Depends(require_admin)):
     try:
         mission = mission_store.get(mission_id)
@@ -177,7 +237,7 @@ async def list_mission_artifacts(mission_id: str, _: str = Depends(require_admin
         raise HTTPException(404, "Missione non trovata")
 
 
-@router.get("/missions/{mission_id}/artifacts/{file_path:path}")
+@admin_routes.get("/missions/{mission_id}/artifacts/{file_path:path}")
 async def get_artifact_content(mission_id: str, file_path: str, _: str = Depends(require_admin)):
     try:
         content = vault.read_file(mission_id, file_path)
@@ -186,12 +246,66 @@ async def get_artifact_content(mission_id: str, file_path: str, _: str = Depends
         raise HTTPException(404, "Artefatto non trovato o percorso non valido")
 
 
-@router.get("/runtime/config")
+@admin_routes.get("/missions/{mission_id}/repo-map")
+async def get_mission_repo_map(mission_id: str, _: str = Depends(require_admin)):
+    try:
+        mission = mission_store.get(mission_id)
+    except MissionNotFoundError:
+        raise HTTPException(404, "Missione non trovata")
+    return code_intel.export_repo_map_data(mission)
+
+
+@admin_routes.post("/missions/{mission_id}/patch")
+async def apply_mission_patch(mission_id: str, request: Request, _: str = Depends(require_admin)):
+    body = await request.json()
+    if not isinstance(body, dict):
+        raise HTTPException(400, "Dati non validi")
+    try:
+        mission = mission_store.get(mission_id)
+    except MissionNotFoundError:
+        raise HTTPException(404, "Missione non trovata")
+
+    rel_path = str(body.get("file_path") or "")
+    target_block = str(body.get("target_block") or "")
+    replacement_block = str(body.get("replacement_block") or "")
+    expected_checksum = str(body.get("expected_checksum") or "")
+
+    if not rel_path or not target_block:
+        raise HTTPException(400, "file_path e target_block sono obbligatori")
+
+    try:
+        artifact = vault.apply_atomic_patch(
+            mission=mission,
+            relative_path=rel_path,
+            target_block=target_block,
+            replacement_block=replacement_block,
+            generated_by="Admin Operator",
+            expected_checksum=expected_checksum,
+        )
+    except FileNotFoundError as exc:
+        raise HTTPException(404, str(exc))
+    except MissionValidationError as exc:
+        raise HTTPException(400, str(exc))
+
+    collab_bus.post(
+        mission=mission,
+        sender_id="admin",
+        sender_role="Admin Operator",
+        content=f"Patch atomica applicata su «{artifact.relative_path}» ({artifact.line_count} righe).",
+        kind="artifact",
+        artifact_ref=artifact.relative_path,
+    )
+    mission_store.save(mission)
+    notifier.push_mission(mission)
+    return artifact.to_dict()
+
+
+@admin_routes.get("/runtime/config")
 async def get_runtime_config(_: str = Depends(require_admin)):
     return runtime_manager.get_config()
 
 
-@router.post("/runtime/config")
+@admin_routes.post("/runtime/config")
 async def update_runtime_config(request: Request, _: str = Depends(require_admin)):
     body = await request.json()
     if not isinstance(body, dict):
@@ -199,17 +313,17 @@ async def update_runtime_config(request: Request, _: str = Depends(require_admin
     return runtime_manager.update_config(body)
 
 
-@router.post("/runtime/health")
+@admin_routes.post("/runtime/health")
 async def test_runtime_health(_: str = Depends(require_admin)):
     return await runtime_manager.check_health()
 
 
-@router.get("/runtime/agents")
+@admin_routes.get("/runtime/agents")
 async def list_agent_profiles(_: str = Depends(require_admin)):
     return runtime_manager.list_agent_profiles()
 
 
-@router.post("/runtime/agents")
+@admin_routes.post("/runtime/agents")
 async def save_agent_profile(request: Request, _: str = Depends(require_admin)):
     body = await request.json()
     if not isinstance(body, dict):
@@ -229,7 +343,7 @@ async def save_agent_profile(request: Request, _: str = Depends(require_admin)):
     return runtime_manager.set_agent_profile(clean_data)
 
 
-@router.delete("/runtime/agents/{agent_id}")
+@admin_routes.delete("/runtime/agents/{agent_id}")
 async def delete_agent_profile(agent_id: str, _: str = Depends(require_admin)):
     sanitized_id = sanitize_text(agent_id, 80)
     deleted = runtime_manager.delete_agent_profile(sanitized_id)
@@ -238,7 +352,7 @@ async def delete_agent_profile(agent_id: str, _: str = Depends(require_admin)):
     return {"status": "ok", "agent_id": sanitized_id}
 
 
-@router.get("/missions/{mission_id}/memory")
+@admin_routes.get("/missions/{mission_id}/memory")
 async def get_mission_memory(mission_id: str, _: str = Depends(require_admin)):
     try:
         mission = mission_store.get(mission_id)
@@ -247,7 +361,7 @@ async def get_mission_memory(mission_id: str, _: str = Depends(require_admin)):
         raise HTTPException(404, "Missione non trovata")
 
 
-@router.post("/missions/{mission_id}/compress")
+@admin_routes.post("/missions/{mission_id}/compress")
 async def trigger_mission_compression(mission_id: str, _: str = Depends(require_admin)):
     try:
         mission = mission_store.get(mission_id)
@@ -261,7 +375,7 @@ async def trigger_mission_compression(mission_id: str, _: str = Depends(require_
     return {"compressed": compressed, "memory": mission.memory.to_dict()}
 
 
-@router.get("/missions/{mission_id}/automations")
+@admin_routes.get("/missions/{mission_id}/automations")
 async def get_mission_automations(mission_id: str, _: str = Depends(require_admin)):
     try:
         mission = mission_store.get(mission_id)
@@ -270,7 +384,7 @@ async def get_mission_automations(mission_id: str, _: str = Depends(require_admi
     return auto_library.by_mission(mission.id)
 
 
-@router.post("/missions/{mission_id}/watchdog")
+@admin_routes.post("/missions/{mission_id}/watchdog")
 async def setup_mission_watchdog(mission_id: str, request: Request, _: str = Depends(require_admin)):
     try:
         mission = mission_store.get(mission_id)
@@ -286,7 +400,10 @@ async def setup_mission_watchdog(mission_id: str, request: Request, _: str = Dep
     enabled = bool(body.get("enabled", True))
 
     existing = auto_library.by_mission(mission.id)
-    watchdog = next((a for a in existing if any(act.get("type") == "mission_watchdog" for act in a.get("actions", []))), None)
+    watchdog = next(
+        (a for a in existing if any(act.get("type") == "mission_watchdog" for act in a.get("actions", []))),
+        None,
+    )
 
     spec = {
         "name": f"Watchdog: {mission.title[:40]}",
@@ -308,14 +425,14 @@ async def setup_mission_watchdog(mission_id: str, request: Request, _: str = Dep
     return saved
 
 
-@router.get("/knowledge-graph")
+@admin_routes.get("/knowledge-graph")
 async def get_knowledge_graph(domain: str = "all", _: str = Depends(require_admin)):
     nodes = [n.to_dict() for n in knowledge_graph.nodes.values() if domain in ("all", n.domain)]
     edges = [e.to_dict() for e in knowledge_graph.edges]
     return {"nodes": nodes, "edges": edges, "total_nodes": len(nodes), "total_edges": len(edges)}
 
 
-@router.get("/missions/{mission_id}/dag")
+@admin_routes.get("/missions/{mission_id}/dag")
 async def get_mission_dag(mission_id: str, _: str = Depends(require_admin)):
     try:
         mission = mission_store.get(mission_id)
@@ -324,17 +441,17 @@ async def get_mission_dag(mission_id: str, _: str = Depends(require_admin)):
     return dag_resolver.export_graph_data(mission.phases)
 
 
-@router.get("/tools")
+@admin_routes.get("/tools")
 async def get_tool_catalog(_: str = Depends(require_admin)):
     return tool_catalog.scan_all_tools()
 
 
-@router.post("/tools/scan")
+@admin_routes.post("/tools/scan")
 async def scan_tools_now(_: str = Depends(require_admin)):
     return tool_catalog.scan_all_tools(force_refresh=True)
 
 
-@router.post("/tools/study")
+@admin_routes.post("/tools/study")
 async def study_and_forge(request: Request, _: str = Depends(require_admin)):
     body = await request.json()
     if not isinstance(body, dict):
@@ -344,4 +461,3 @@ async def study_and_forge(request: Request, _: str = Depends(require_admin)):
         return res
     except ValueError as exc:
         raise HTTPException(400, str(exc))
-

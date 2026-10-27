@@ -10,6 +10,7 @@ from features.autonomous_worker.application.deliberator import deliberator
 from features.autonomous_worker.application.memory_compressor import memory_compressor
 from features.autonomous_worker.application.sandbox_validator import sandbox_validator
 from features.autonomous_worker.application.specialist_forge import forge
+from features.autonomous_worker.domain.exceptions import MissionValidationError
 from features.autonomous_worker.domain.knowledge_graph import knowledge_graph
 from features.autonomous_worker.domain.models import (
     Mission,
@@ -18,6 +19,7 @@ from features.autonomous_worker.domain.models import (
     Task,
     TaskStatus,
 )
+from features.autonomous_worker.domain.sanitizer import sanitize_text
 from features.autonomous_worker.infrastructure.artifact_vault import vault
 from features.autonomous_worker.infrastructure.llm_runtime import runtime_manager
 from features.autonomous_worker.infrastructure.store import mission_store
@@ -29,18 +31,12 @@ MAX_FINAL_REVIEWS = 3
 TICK_INTERVAL_SECONDS = 4
 MAX_PARALLEL_TASKS = 2
 
-EXECUTION_SYSTEM_PROMPT = (
-    "Sei uno specialista d'élite che opera per conto del CEO di Nuxiva. Esegui il compito "
-    "assegnato con la massima accuratezza tecnica e concretezza. Se il compito richiede codice, "
-    "architettura o documenti, produci contenuti completi e pronti all'uso, rispettando "
-    "tutti i criteri di accettazione. Restituisci un JSON con: 'result' (sintesi esecutiva), "
-    "'artifacts' (lista di oggetti con 'path' e 'content'), 'collab_note' (messaggio per i colleghi)."
-)
-
 REVIEW_SYSTEM_PROMPT = (
     "Sei il CEO di Nuxiva: severo, intransigente, orientato a standard mondiali assoluti. "
-    "Valuta il lavoro svolto rispetto ai criteri di accettazione. Rispondi con JSON: "
-    "'approved': true|false, 'feedback': 'cosa correggere se respinto', 'criteria_results': [{'description': '...', 'verified': true|false}]."
+    "Valuta il lavoro svolto rispetto ai criteri di accettazione, Clean Architecture, Zero-Trust "
+    "e limite di 500 righe per file. Rispondi con JSON: "
+    "'approved': true|false, 'reasoning': 'analisi critica del CEO', 'feedback': 'cosa correggere se respinto', "
+    "'criteria_results': [{'description': '...', 'verified': true|false, 'evidence': '...'}]."
 )
 
 
@@ -50,6 +46,7 @@ class AutonomousExecutionLoop:
             await self._step_planning(mission)
         elif mission.status == MissionStatus.RUNNING:
             await self._step_running(mission)
+        mission.recalculate_progress()
         mission_store.save(mission)
         notifier.push_mission(mission)
 
@@ -66,6 +63,7 @@ class AutonomousExecutionLoop:
             mission.domain = deliberated.domain
             mission.phases = deliberated.phases
             mission.questions = deliberated.questions
+            mission.council_verdict = deliberated.council_verdict
             mission.status = deliberated.status
 
         forge.assemble_team(mission)
@@ -75,6 +73,10 @@ class AutonomousExecutionLoop:
         )
 
     async def _step_running(self, mission: Mission) -> None:
+        if any(not q.answered and q.options for q in mission.questions):
+            mission.status = MissionStatus.QUESTION
+            return
+
         if memory_compressor.should_compress(mission):
             await memory_compressor.compress(mission)
 
@@ -82,7 +84,8 @@ class AutonomousExecutionLoop:
         done_ids = {t.id for t in all_tasks if t.status == TaskStatus.DONE}
 
         ready_tasks = [
-            t for t in all_tasks
+            t
+            for t in all_tasks
             if t.status in (TaskStatus.PENDING, TaskStatus.REVIEW)
             and all(dep in done_ids for dep in t.depends_on)
         ]
@@ -102,11 +105,16 @@ class AutonomousExecutionLoop:
                     mission=mission,
                     sender_id=task.specialist_id or "worker",
                     sender_role=task.specialist_role or "Specialista",
-                    content=f"Inizio esecuzione task «{task.title}».",
+                    content=f"Inizio esecuzione task «{task.title}» (Round {task.round}).",
                     kind="action",
                 )
 
         await asyncio.gather(*(self._execute_and_review(mission, t) for t in batch))
+        for phase in mission.phases:
+            if all(t.status == TaskStatus.DONE for t in phase.tasks) and phase.tasks:
+                phase.status = "done"
+            elif any(t.status in (TaskStatus.RUNNING, TaskStatus.REVIEW) for t in phase.tasks):
+                phase.status = "running"
 
     async def _execute_and_review(self, mission: Mission, task: Task) -> None:
         if task.status == TaskStatus.RUNNING:
@@ -131,7 +139,7 @@ class AutonomousExecutionLoop:
             f"TASK ASSEGNATO: {task.title}\n"
             f"DESCRIZIONE: {task.description}\n"
             f"CRITERI DI ACCETTAZIONE:\n{criteria_text}\n"
-            f"FEEDBACK PRECEDENTE: {task.feedback or 'Nessuno'}\n"
+            f"FEEDBACK PRECEDENTE DEL CEO: {task.feedback or 'Nessuno'}\n"
             f"TENTATIVO NUMERO: {task.round}\n"
         )
 
@@ -142,21 +150,54 @@ class AutonomousExecutionLoop:
 
             task.result = str(raw.get("result") or "")
 
+            for patch_item in raw.get("patches", []) if isinstance(raw.get("patches"), list) else []:
+                if isinstance(patch_item, dict) and patch_item.get("path") and patch_item.get("target"):
+                    try:
+                        patched_art = vault.apply_atomic_patch(
+                            mission=mission,
+                            relative_path=str(patch_item["path"]),
+                            target_block=str(patch_item["target"]),
+                            replacement_block=str(patch_item.get("replacement", "")),
+                            generated_by=task.specialist_role or "Specialista",
+                        )
+                        collab_bus.post(
+                            mission=mission,
+                            sender_id=task.specialist_id or "worker",
+                            sender_role=task.specialist_role or "Specialista",
+                            content=f"Applicata patch atomica a «{patched_art.relative_path}» ({patched_art.line_count} righe).",
+                            kind="artifact",
+                            artifact_ref=patched_art.relative_path,
+                        )
+                    except (FileNotFoundError, MissionValidationError) as p_err:
+                        task.status = TaskStatus.PENDING
+                        task.round += 1
+                        task.feedback = f"Patch atomica fallita su {patch_item['path']}: {p_err}"
+                        collab_bus.system_announce(mission, f"Self-correction patch: {task.feedback}", "rework")
+                        return
+
             for art in raw.get("artifacts", []) if isinstance(raw.get("artifacts"), list) else []:
                 if isinstance(art, dict) and art.get("path") and art.get("content"):
                     valid, err_msg = sandbox_validator.validate_code(art["path"], art["content"])
                     if not valid:
                         task.status = TaskStatus.PENDING
                         task.round += 1
-                        task.feedback = f"Sandbox pre-check fallito per {art['path']}: {err_msg}. Correggi la sintassi."
+                        task.feedback = f"Sandbox pre-check fallito per {art['path']}: {err_msg}."
                         collab_bus.system_announce(mission, f"Self-correction: {task.feedback}", "rework")
                         return
-                    vault.store_file(
+                    saved_art = vault.store_file(
                         mission=mission,
                         relative_path=art["path"],
                         content=art["content"],
                         generated_by=task.specialist_role or "Specialista",
                         title=art.get("title", ""),
+                    )
+                    collab_bus.post(
+                        mission=mission,
+                        sender_id=task.specialist_id or "worker",
+                        sender_role=task.specialist_role or "Specialista",
+                        content=f"Modificato/Creato file «{saved_art.relative_path}» ({saved_art.line_count} righe, {len(saved_art.symbols)} simboli AST).",
+                        kind="artifact",
+                        artifact_ref=saved_art.relative_path,
                     )
 
             collab_note = raw.get("collab_note")
@@ -182,8 +223,11 @@ class AutonomousExecutionLoop:
         prompt = (
             f"TASK: {task.title}\n"
             f"RISULTATO CONSEGNATO:\n{task.result[:2000]}\n"
-            f"CRITERI RICHIESTI:\n" + "\n".join(f"- {c.description}" for c in task.criteria) + "\n"
-            f"ARTEFATTI NELLA CARTELLA: {[a.relative_path for a in mission.artifacts]}\n"
+            f"DUBBI SEGNALATI DALLO SPECIALISTA: {task.doubts}\n"
+            f"CRITERI RICHIESTI:\n"
+            + "\n".join(f"- {c.description}" for c in task.criteria)
+            + "\n"
+            f"ARTEFATTI NELLA CARTELLA: {[f'{a.relative_path} ({a.line_count}L)' for a in mission.artifacts]}\n"
         )
         try:
             verdict = await runtime_manager.generate(
@@ -198,6 +242,9 @@ class AutonomousExecutionLoop:
             )
             approved = bool(verdict.get("approved", True)) if isinstance(verdict, dict) else True
             feedback = str(verdict.get("feedback", "")) if isinstance(verdict, dict) else ""
+            ceo_reasoning = sanitize_text(verdict.get("reasoning", ""), 500) if isinstance(verdict, dict) else ""
+            if ceo_reasoning:
+                task.ceo_review_notes.append(f"[Round {task.round}] {ceo_reasoning}")
 
             if approved:
                 task.status = TaskStatus.DONE
@@ -206,17 +253,28 @@ class AutonomousExecutionLoop:
                 task.error = ""
                 for crit in task.criteria:
                     crit.verified = True
+                    if not crit.evidence:
+                        crit.evidence = f"Verificato dal CEO al Round {task.round}"
                 collab_bus.system_announce(
                     mission,
-                    f"CEO ha APPROVATO il task «{task.title}» ({task.specialist_role}).",
+                    f"CEO ha APPROVATO il task «{task.title}» ({task.specialist_role}). {ceo_reasoning}",
                     kind="approval",
                 )
-                bus.emit("task_completed", {"mission_id": mission.id, "task_id": task.id, "title": task.title, "role": task.specialist_role})
+                bus.emit(
+                    "task_completed",
+                    {
+                        "mission_id": mission.id,
+                        "task_id": task.id,
+                        "title": task.title,
+                        "role": task.specialist_role,
+                    },
+                )
             else:
                 if task.round < MAX_ROUNDS_PER_TASK:
                     task.round += 1
                     task.status = TaskStatus.PENDING
                     task.feedback = feedback or "Migliorare l'aderenza ai criteri."
+                    task.ceo_review_notes.append(f"[Rifacimento] {task.feedback}")
                     collab_bus.system_announce(
                         mission,
                         f"CEO ha RICHIESTO RIFACIMENTO per «{task.title}»: {task.feedback}",
@@ -235,7 +293,9 @@ class AutonomousExecutionLoop:
         if failed_tasks:
             mission.status = MissionStatus.FAILED
             mission.error = f"Falliti {len(failed_tasks)} task fondamentali."
-            collab_bus.system_announce(mission, f"Missione interrotta per errori irreversibili: {mission.error}", "error")
+            collab_bus.system_announce(
+                mission, f"Missione interrotta per errori irreversibili: {mission.error}", "error"
+            )
             auto_library.remove_by_mission(mission.id)
             return
 
@@ -277,7 +337,11 @@ class AutonomousExecutionLoop:
                                 )
                         mission.phases.append(new_phase)
                         forge.assemble_team(mission)
-                        collab_bus.system_announce(mission, f"Revisione finale ha aggiunto {len(new_phase.tasks)} task di rifinitura.", "refinement")
+                        collab_bus.system_announce(
+                            mission,
+                            f"Revisione finale ha aggiunto {len(new_phase.tasks)} task di rifinitura.",
+                            "refinement",
+                        )
                         return
             except Exception:
                 pass

@@ -6,6 +6,8 @@ from pathlib import Path
 from unittest import mock
 
 from features.autonomous_worker.application.agentic_runner import agentic_runner
+from features.autonomous_worker.application.code_intel import code_intel
+from features.autonomous_worker.application.sandbox_validator import sandbox_validator
 from features.autonomous_worker.application.tool_catalog import tool_catalog
 from features.autonomous_worker.application.collab_bus import collab_bus
 from features.autonomous_worker.application.deliberator import deliberator
@@ -432,6 +434,36 @@ class AutonomousWorkerTest(unittest.TestCase):
         with mock.patch("features.autonomous_worker.infrastructure.llm_runtime.runtime_manager.generate", side_effect=mock_gen):
             res = asyncio.run(agentic_runner.execute_task_with_tools(mission, task, "Esegui"))
             self.assertEqual(res.get("result"), "Directory letta con successo")
+
+    def test_code_intel_atomic_patch_and_reasoning(self):
+        mission = Mission(id="msn-patch-01", title="Patch Test", goal="Verifica AST e Patch", domain="software")
+        art1 = vault.store_file(
+            mission=mission,
+            relative_path="src/service.py",
+            content="class OrderService:\n    def total(self):\n        return 10\n",
+            generated_by="Backend Lead",
+        )
+        self.assertIn("class OrderService (total)", art1.symbols)
+        self.assertEqual(art1.line_count, 3)
+
+        art2 = vault.apply_atomic_patch(
+            mission=mission,
+            relative_path="src/service.py",
+            target_block="        return 10",
+            replacement_block="        return 42",
+            generated_by="Backend Lead",
+            expected_checksum=art1.checksum,
+        )
+        self.assertIn("-        return 10", art2.diff)
+        self.assertIn("+        return 42", art2.diff)
+
+        repo_map = code_intel.export_repo_map_data(mission)
+        self.assertEqual(repo_map["total_files"], 1)
+        self.assertEqual(repo_map["total_symbols"], 1)
+
+        valid, err = sandbox_validator.validate_code("big.py", "\n".join(["x = 1"] * 505))
+        self.assertFalse(valid)
+        self.assertIn("500", err)
 
 
 if __name__ == "__main__":

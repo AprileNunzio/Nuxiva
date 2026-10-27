@@ -38,7 +38,14 @@ export const loadTasks = (signal?: AbortSignal) => requestJson<TaskSnapshot>('/a
 export const answerTask = (id: string, action: string) =>
   requestJson(`/api/tasks/${encodeURIComponent(id)}/answer`, { method: 'POST', body: JSON.stringify({ action }) });
 
-export const cancelTask = (task: Pick<TaskRow, 'id' | 'feature'>) =>
-  task.feature === 'projects'
-    ? requestJson(`/api/projects/${encodeURIComponent(task.id.replace(/^project:/, ''))}/cancel`, { method: 'POST' })
-    : requestJson(`/api/tasks/${encodeURIComponent(task.id)}/cancel`, { method: 'POST' });
+export const cancelTask = (task: Pick<TaskRow, 'id' | 'feature'>) => {
+  if (task.feature === 'autonomous_worker') {
+    const mid = task.id.replace(/^mission:/, '');
+    return requestJson(`/api/autonomous/missions/${encodeURIComponent(mid)}/control/cancel`, { method: 'POST' });
+  }
+  if (task.feature === 'projects') {
+    const pid = task.id.replace(/^project:/, '');
+    return requestJson(`/api/projects/${encodeURIComponent(pid)}/cancel`, { method: 'POST' });
+  }
+  return requestJson(`/api/tasks/${encodeURIComponent(task.id)}/cancel`, { method: 'POST' });
+};

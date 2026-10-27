@@ -1,22 +1,28 @@
 import React, { useState } from 'react';
 import {
-  CheckCircle,
-  Clock,
-  FileCode,
+  Brain,
+  Compass,
+  FileCode2,
+  GitBranch,
   HelpCircle,
+  Layers,
   MessageSquare,
   Pause,
   Play,
   RotateCcw,
   Send,
-  Users,
   XOctagon,
 } from 'lucide-react';
-import { addDirective, answerQuestion, controlMission } from '../api';
+import { addDirective, controlMission } from '../api';
 import { inputFieldClass, primaryBtnClass, secondaryBtnClass, useAutonomousI18n } from '../scope';
-import { Mission, Task } from '../types';
+import { Mission } from '../types';
+import { ArtifactDiffExplorer } from './ArtifactDiffExplorer';
+import { CEOOrganizationCard } from './CEOOrganizationCard';
+import { CollabStreamPanel } from './CollabStreamPanel';
 import { MissionDAGVisualizer } from './MissionDAGVisualizer';
 import { MissionMemoryCard } from './MissionMemoryCard';
+import { MissionPhasesInspector } from './MissionPhasesInspector';
+import { MissionQuestionsPanel } from './MissionQuestionsPanel';
 import { MissionWatchdogCard } from './MissionWatchdogCard';
 
 interface Props {
@@ -24,31 +30,26 @@ interface Props {
   onUpdate: (updated: Mission) => void;
 }
 
+type DetailSection =
+  | 'all'
+  | 'ceo'
+  | 'reasoning'
+  | 'doubts'
+  | 'diffs'
+  | 'collab'
+  | 'memory';
+
 export const MissionDetail: React.FC<Props> = ({ mission, onUpdate }) => {
   const { t } = useAutonomousI18n();
-  const [ansText, setAnsText] = useState('');
-  const [selectedOpts, setSelectedOpts] = useState<string[]>([]);
   const [directiveText, setDirectiveText] = useState('');
   const [busy, setBusy] = useState(false);
+  const [section, setSection] = useState<DetailSection>('all');
 
   async function handleControl(action: string) {
     setBusy(true);
     try {
       const updated = await controlMission(mission.id, action);
       onUpdate(updated);
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function handleAnswer(qid: string) {
-    if (!ansText.trim() && selectedOpts.length === 0) return;
-    setBusy(true);
-    try {
-      const updated = await answerQuestion(mission.id, qid, ansText, selectedOpts);
-      onUpdate(updated);
-      setAnsText('');
-      setSelectedOpts([]);
     } finally {
       setBusy(false);
     }
@@ -67,144 +68,141 @@ export const MissionDetail: React.FC<Props> = ({ mission, onUpdate }) => {
     }
   }
 
-  const activeQuestion = mission.questions.find((q) => !q.answered);
+  const allTasks = mission.phases.flatMap((p) => p.tasks);
+  const doneTasks = allTasks.filter((tk) => tk.status === 'done').length;
+  const totalDoubts =
+    mission.questions.filter((q) => !q.answered).length +
+    allTasks.reduce((acc, tk) => acc + (tk.doubts?.length || 0), 0);
+  const totalReasoning = allTasks.reduce(
+    (acc, tk) => acc + (tk.reasoning_steps?.length || 0),
+    0
+  );
+
+  const navItems: Array<{ id: DetailSection; label: string; icon: React.ReactNode; badge?: number }> = [
+    { id: 'all', label: t('subtab_all'), icon: <Layers className="h-3.5 w-3.5" /> },
+    { id: 'ceo', label: t('subtab_ceo'), icon: <Compass className="h-3.5 w-3.5" />, badge: mission.specialists.length },
+    { id: 'reasoning', label: t('subtab_reasoning'), icon: <GitBranch className="h-3.5 w-3.5" />, badge: totalReasoning },
+    { id: 'doubts', label: t('subtab_doubts'), icon: <HelpCircle className="h-3.5 w-3.5" />, badge: totalDoubts },
+    { id: 'diffs', label: t('subtab_diffs'), icon: <FileCode2 className="h-3.5 w-3.5" />, badge: mission.artifacts.length },
+    { id: 'collab', label: t('subtab_collab'), icon: <MessageSquare className="h-3.5 w-3.5" />, badge: mission.collab_messages.length },
+    { id: 'memory', label: t('subtab_memory'), icon: <Brain className="h-3.5 w-3.5" /> },
+  ];
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-800 bg-slate-900/40 p-5">
-        <div>
-          <h2 className="text-xl font-bold text-slate-100">{mission.title}</h2>
-          <p className="mt-1 text-xs text-slate-400">{mission.goal}</p>
-        </div>
-        <div className="flex items-center gap-2">
-          {mission.status === 'running' && (
-            <button type="button" onClick={() => void handleControl('pause')} disabled={busy} className={secondaryBtnClass}>
-              <Pause className="h-4 w-4" />
-              {t('action_pause')}
-            </button>
-          )}
-          {mission.status === 'paused' && (
-            <button type="button" onClick={() => void handleControl('resume')} disabled={busy} className={secondaryBtnClass}>
-              <Play className="h-4 w-4" />
-              {t('action_resume')}
-            </button>
-          )}
-          {mission.status === 'failed' && (
-            <button type="button" onClick={() => void handleControl('retry')} disabled={busy} className={secondaryBtnClass}>
-              <RotateCcw className="h-4 w-4" />
-              {t('action_retry')}
-            </button>
-          )}
-          <button type="button" onClick={() => void handleControl('cancel')} disabled={busy} className={secondaryBtnClass}>
-            <XOctagon className="h-4 w-4 text-rose-400" />
-            {t('action_cancel')}
-          </button>
-        </div>
-      </div>
-
-      {activeQuestion && (
-        <div className="flex flex-col gap-3 rounded-2xl border border-amber-500/30 bg-amber-500/10 p-5">
-          <div className="flex items-center gap-2 font-semibold text-amber-300">
-            <HelpCircle className="h-5 w-5" />
-            {t('question_pending')}
-          </div>
-          <p className="text-sm text-slate-200">{activeQuestion.question}</p>
-          {activeQuestion.options.length > 0 && (
-            <div className="grid gap-2 sm:grid-cols-2">
-              {activeQuestion.options.map((opt) => (
-                <button
-                  key={opt}
-                  type="button"
-                  onClick={() =>
-                    setSelectedOpts((prev) =>
-                      prev.includes(opt) ? prev.filter((o) => o !== opt) : [...prev, opt]
-                    )
-                  }
-                  className={`rounded-xl border p-2 text-left text-xs transition ${
-                    selectedOpts.includes(opt)
-                      ? 'border-amber-400 bg-amber-400/20 text-white'
-                      : 'border-slate-700 bg-slate-900/60 text-slate-300 hover:border-slate-600'
-                  }`}
-                >
-                  {opt}
-                </button>
-              ))}
+    <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-4 rounded-2xl border border-slate-800 bg-slate-900/50 p-5">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="text-xl font-bold text-slate-100">{mission.title}</h2>
+              <span className="rounded-lg border border-cyan-700/50 bg-cyan-950/60 px-2.5 py-0.5 font-mono text-xs uppercase text-cyan-300">
+                {mission.status} · {mission.progress}%
+              </span>
             </div>
-          )}
-          <div className="flex gap-2">
-            <input
-              type="text"
-              placeholder="Inserisci dettagli opzionali..."
-              value={ansText}
-              onChange={(e) => setAnsText(e.target.value)}
-              className={inputFieldClass}
-            />
+            <p className="mt-1.5 text-xs leading-relaxed text-slate-300">{mission.goal}</p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            {(mission.status === 'running' || mission.status === 'question' || mission.status === 'planning') && (
+              <button
+                type="button"
+                onClick={() => void handleControl('pause')}
+                disabled={busy}
+                className={secondaryBtnClass}
+              >
+                <Pause className="h-4 w-4" />
+                {t('action_pause')}
+              </button>
+            )}
+            {mission.status === 'paused' && (
+              <button
+                type="button"
+                onClick={() => void handleControl('resume')}
+                disabled={busy}
+                className={secondaryBtnClass}
+              >
+                <Play className="h-4 w-4" />
+                {t('action_resume')}
+              </button>
+            )}
+            {mission.status === 'failed' && (
+              <button
+                type="button"
+                onClick={() => void handleControl('retry')}
+                disabled={busy}
+                className={secondaryBtnClass}
+              >
+                <RotateCcw className="h-4 w-4" />
+                {t('action_retry')}
+              </button>
+            )}
             <button
               type="button"
-              onClick={() => void handleAnswer(activeQuestion.id)}
+              onClick={() => void handleControl('cancel')}
               disabled={busy}
-              className={primaryBtnClass}
+              className={secondaryBtnClass}
             >
-              {t('answer_btn')}
+              <XOctagon className="h-4 w-4 text-rose-400" />
+              {t('action_cancel')}
             </button>
           </div>
         </div>
-      )}
 
-      <MissionMemoryCard mission={mission} onUpdate={onUpdate} />
+        <div className="h-2 w-full overflow-hidden rounded-full bg-slate-800">
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-emerald-400 transition-all duration-500"
+            style={{ width: `${mission.progress}%` }}
+          />
+        </div>
 
-      <MissionWatchdogCard missionId={mission.id} t={t} />
-
-      <MissionDAGVisualizer missionId={mission.id} t={t} />
-
-      <div className="flex flex-col gap-3">
-        <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-400">
-          {t('phases_title')}
-        </h3>
-        <div className="flex flex-col gap-3">
-          {mission.phases.map((phase) => (
-            <div key={phase.id} className="rounded-2xl border border-slate-800 bg-slate-900/30 p-4">
-              <h4 className="font-semibold text-slate-200">{phase.title}</h4>
-              <p className="mb-3 text-xs text-slate-400">{phase.description}</p>
-              <div className="flex flex-col gap-2">
-                {phase.tasks.map((task: Task) => (
-                  <div
-                    key={task.id}
-                    className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-850 bg-slate-950/40 p-3 text-xs"
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold text-slate-300">{task.title}</span>
-                      <span className="rounded bg-slate-800 px-2 py-0.5 text-[10px] text-cyan-400">
-                        {task.specialist_role}
-                      </span>
-                    </div>
-                    <span className="font-mono uppercase text-slate-400">{task.status}</span>
-                  </div>
-                ))}
-              </div>
+        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+          <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3">
+            <span className="text-[10px] uppercase tracking-wider text-slate-400">{t('stat_tasks')}</span>
+            <div className="mt-0.5 font-mono text-lg font-bold text-white">
+              {doneTasks}/{allTasks.length}
             </div>
+          </div>
+          <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3">
+            <span className="text-[10px] uppercase tracking-wider text-slate-400">{t('subtab_reasoning')}</span>
+            <div className="mt-0.5 font-mono text-lg font-bold text-indigo-300">{totalReasoning}</div>
+          </div>
+          <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3">
+            <span className="text-[10px] uppercase tracking-wider text-slate-400">{t('subtab_doubts')}</span>
+            <div className="mt-0.5 font-mono text-lg font-bold text-amber-300">{totalDoubts}</div>
+          </div>
+          <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3">
+            <span className="text-[10px] uppercase tracking-wider text-slate-400">{t('stat_artifacts')}</span>
+            <div className="mt-0.5 font-mono text-lg font-bold text-emerald-300">
+              {mission.artifacts.length}
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap gap-1.5 border-t border-slate-800 pt-3">
+          {navItems.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => setSection(item.id)}
+              className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold transition ${
+                section === item.id
+                  ? 'bg-cyan-600 text-white shadow-md shadow-cyan-600/25'
+                  : 'border border-slate-800 bg-slate-950/60 text-slate-300 hover:bg-slate-800'
+              }`}
+            >
+              {item.icon}
+              <span>{item.label}</span>
+              {item.badge !== undefined && item.badge > 0 && (
+                <span className="rounded-full bg-slate-950/50 px-1.5 py-0.2 font-mono text-[10px]">
+                  {item.badge}
+                </span>
+              )}
+            </button>
           ))}
         </div>
       </div>
 
-      <div className="flex flex-col gap-3">
-        <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-400">
-          {t('collab_title')}
-        </h3>
-        <div className="flex max-h-60 flex-col gap-2 overflow-y-auto rounded-2xl border border-slate-800 bg-slate-900/30 p-4">
-          {mission.collab_messages.slice(-15).map((msg) => (
-            <div key={msg.id} className="rounded-lg border border-slate-800 bg-slate-950/40 p-2 text-xs">
-              <div className="flex justify-between font-mono text-[10px] text-slate-500">
-                <span>{msg.sender_role || msg.sender_id}</span>
-                <span>{msg.kind}</span>
-              </div>
-              <p className="mt-1 text-slate-200">{msg.content}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <form onSubmit={(e) => void handleSendDirective(e)} className="flex gap-2">
+      <form onSubmit={(e) => void handleSendDirective(e)} className="flex flex-col gap-2 sm:flex-row">
         <input
           type="text"
           placeholder={t('add_directive')}
@@ -217,6 +215,30 @@ export const MissionDetail: React.FC<Props> = ({ mission, onUpdate }) => {
           {t('send_directive')}
         </button>
       </form>
+
+      {(section === 'all' || section === 'doubts') && (
+        <MissionQuestionsPanel mission={mission} onUpdate={onUpdate} />
+      )}
+
+      {(section === 'all' || section === 'ceo') && <CEOOrganizationCard mission={mission} />}
+
+      {(section === 'all' || section === 'reasoning') && (
+        <>
+          <MissionDAGVisualizer missionId={mission.id} t={t} />
+          <MissionPhasesInspector mission={mission} />
+        </>
+      )}
+
+      {(section === 'all' || section === 'diffs') && <ArtifactDiffExplorer mission={mission} />}
+
+      {(section === 'all' || section === 'collab') && <CollabStreamPanel mission={mission} />}
+
+      {(section === 'all' || section === 'memory') && (
+        <>
+          <MissionMemoryCard mission={mission} onUpdate={onUpdate} />
+          <MissionWatchdogCard missionId={mission.id} t={t} />
+        </>
+      )}
     </div>
   );
 };
