@@ -107,6 +107,16 @@ export interface AgentInferenceProfile {
   timeout_seconds: number;
 }
 
+export interface ArtifactRevision {
+  version: number;
+  checksum: string;
+  diff?: string;
+  line_count?: number;
+  size_bytes?: number;
+  generated_by?: string;
+  timestamp: number;
+}
+
 export interface MissionArtifact {
   id: string;
   title: string;
@@ -117,8 +127,19 @@ export interface MissionArtifact {
   generated_by: string;
   diff?: string;
   symbols?: string[];
+  imports?: string[];
   line_count?: number;
+  version?: number;
+  revisions?: ArtifactRevision[];
   timestamp: number;
+}
+
+export interface WorkspaceVerificationReport {
+  passed: boolean;
+  exit_code: number;
+  checks_run: string[];
+  contract_warnings: string[];
+  output: string;
 }
 
 export interface Mission {

@@ -218,5 +218,93 @@ class MissionDeliberator:
         mission.recalculate_progress()
         return mission
 
+    async def replan_for_directive(self, mission: Mission, directive: str) -> Phase | None:
+        clean_dir = sanitize_text(directive, 500)
+        if not clean_dir:
+            return None
+
+        existing_files = [f"{a.relative_path} (v{a.version}, {a.line_count}L)" for a in mission.artifacts]
+        prompt = (
+            f"MISSIONE ESISTENTE: {mission.title}\n"
+            f"OBIETTIVO: {mission.goal}\n"
+            f"FILE ATTUALI NEL WORKSPACE: {existing_files}\n"
+            f"NUOVA DIRETTIVA / RICHIESTA EVOLUTIVA: {clean_dir}\n"
+            "Genera una nuova fase operativa con i task necessari per soddisfare la direttiva "
+            "rispettando il limite di 500 righe per file e l'architettura esistente. "
+            'Rispondi in JSON: {"phase_title": "...", "phase_description": "...", "tasks": [{"title": "...", "description": "...", "specialist_role": "...", "criteria": [{"description": "...", "target": "100%"}]}]}'
+        )
+        try:
+            reply = await runtime_manager.generate(
+                prompt,
+                as_json=True,
+                max_tokens=1500,
+                temperature=0.2,
+                system=SYSTEM_PROMPT,
+                component="autonomous_worker",
+                agent_id="ceo_planner",
+                agent_role="CEO",
+            )
+        except Exception:
+            reply = {}
+
+        if not isinstance(reply, dict):
+            reply = {}
+
+        pid = f"p{len(mission.phases) + 1}"
+        raw_tasks = reply.get("tasks") if isinstance(reply.get("tasks"), list) else []
+        if not raw_tasks:
+            raw_tasks = [
+                {
+                    "title": f"Esecuzione Direttiva: {clean_dir[:60]}",
+                    "description": clean_dir,
+                    "specialist_role": "Lead Architect",
+                    "criteria": [{"description": "Direttiva applicata e verificata", "target": "100%"}],
+                }
+            ]
+
+        tasks: list[Task] = []
+        base_idx = len(mission.all_tasks())
+        for idx, raw_t in enumerate(raw_tasks, 1):
+            if not isinstance(raw_t, dict):
+                continue
+            tid = f"t{base_idx + idx}"
+            criteria = [
+                AcceptanceCriteria(
+                    description=sanitize_text(c.get("description", "Verifica completata"), 200),
+                    target=sanitize_text(c.get("target", "100%"), 100),
+                )
+                for c in (raw_t.get("criteria") if isinstance(raw_t.get("criteria"), list) else [])
+                if isinstance(c, dict) and c.get("description")
+            ] or [AcceptanceCriteria(description="Direttiva verificata", target="100%")]
+            tasks.append(
+                Task(
+                    id=tid,
+                    phase_id=pid,
+                    title=sanitize_text(raw_t.get("title") or tid, 150),
+                    description=sanitize_text(raw_t.get("description") or clean_dir, 500),
+                    specialist_role=sanitize_text(raw_t.get("specialist_role") or "Lead Architect", 80),
+                    status=TaskStatus.PENDING,
+                    criteria=criteria,
+                )
+            )
+
+        new_phase = Phase(
+            id=pid,
+            title=sanitize_text(reply.get("phase_title") or f"Fase Evolutiva #{len(mission.phases) + 1}", 100),
+            description=sanitize_text(reply.get("phase_description") or clean_dir, 300),
+            tasks=tasks,
+            status="pending",
+        )
+        mission.phases.append(new_phase)
+        mission.recalculate_progress()
+        collab_bus.post(
+            mission=mission,
+            sender_id="ceo",
+            sender_role="CEO Architect",
+            content=f"[DYNAMIC DAG RE-PLANNING] Aggiunta fase «{new_phase.title}» ({len(tasks)} task) per la direttiva: {clean_dir}",
+            kind="directive",
+        )
+        return new_phase
+
 
 deliberator = MissionDeliberator()

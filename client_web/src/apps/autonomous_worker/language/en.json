@@ -145,6 +145,12 @@
     "tools_search_placeholder": "Search tool by name, description or category...",
     "tools_total": "Total Tools",
     "tools_enabled": "Active Tools",
-    "tools_custom": "Synthesized from Study"
+    "tools_custom": "Synthesized from Study",
+    "verify_workspace_btn": "Verify Workspace (Sandbox & Contracts)",
+    "verify_passed_label": "Sandbox Verification Passed",
+    "verify_failed_label": "Sandbox Verification Failed",
+    "artifact_tab_revisions": "Revisions",
+    "artifact_imports_label": "Cross-File Imports & Dependencies",
+    "rollback_btn": "Rollback"
   }
 }

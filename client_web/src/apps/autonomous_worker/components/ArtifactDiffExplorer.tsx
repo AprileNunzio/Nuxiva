@@ -1,21 +1,40 @@
 import React, { useEffect, useState } from 'react';
-import { Code2, Cpu, FileCode2, GitCommitHorizontal, Layers } from 'lucide-react';
-import { fetchArtifactContent } from '../api';
+import {
+  CheckCircle2,
+  Code2,
+  Cpu,
+  FileCode2,
+  GitCommitHorizontal,
+  History,
+  Layers,
+  RotateCcw,
+  ShieldCheck,
+  XCircle,
+} from 'lucide-react';
+import {
+  fetchArtifactContent,
+  rollbackMissionArtifact,
+  verifyMissionWorkspace,
+} from '../api';
 import { useAutonomousI18n } from '../scope';
-import { Mission, MissionArtifact } from '../types';
+import { Mission, MissionArtifact, WorkspaceVerificationReport } from '../types';
 
 interface Props {
   mission: Mission;
+  onRefresh?: () => void;
 }
 
-export const ArtifactDiffExplorer: React.FC<Props> = ({ mission }) => {
+export const ArtifactDiffExplorer: React.FC<Props> = ({ mission, onRefresh }) => {
   const { t } = useAutonomousI18n();
   const [selectedPath, setSelectedPath] = useState<string | null>(
     mission.artifacts[0]?.relative_path || null
   );
-  const [viewMode, setViewMode] = useState<'diff' | 'source' | 'symbols'>('diff');
+  const [viewMode, setViewMode] = useState<'diff' | 'source' | 'symbols' | 'revisions'>('diff');
   const [sourceContent, setSourceContent] = useState<string>('');
   const [loadingSource, setLoadingSource] = useState<boolean>(false);
+  const [verifying, setVerifying] = useState<boolean>(false);
+  const [verifyReport, setVerifyReport] = useState<WorkspaceVerificationReport | null>(null);
+  const [rollingBackVer, setRollingBackVer] = useState<number | null>(null);
 
   const artifacts = mission.artifacts || [];
   const selectedArt: MissionArtifact | null =
@@ -35,6 +54,27 @@ export const ArtifactDiffExplorer: React.FC<Props> = ({ mission }) => {
     }
   }, [mission.id, selectedArt?.relative_path, selectedArt?.checksum, viewMode]);
 
+  const handleVerifyWorkspace = async () => {
+    setVerifying(true);
+    try {
+      const rep = await verifyMissionWorkspace(mission.id, 'auto');
+      setVerifyReport(rep);
+      onRefresh?.();
+    } finally {
+      setVerifying(false);
+    }
+  };
+
+  const handleRollback = async (relPath: string, version: number) => {
+    setRollingBackVer(version);
+    try {
+      await rollbackMissionArtifact(mission.id, relPath, version);
+      onRefresh?.();
+    } finally {
+      setRollingBackVer(null);
+    }
+  };
+
   const totalLines = artifacts.reduce((acc, a) => acc + (a.line_count || 0), 0);
   const totalSymbols = artifacts.reduce((acc, a) => acc + (a.symbols?.length || 0), 0);
 
@@ -50,7 +90,7 @@ export const ArtifactDiffExplorer: React.FC<Props> = ({ mission }) => {
             <p className="text-xs text-slate-400">{t('artifacts_subtitle')}</p>
           </div>
         </div>
-        <div className="flex flex-wrap gap-2 text-xs">
+        <div className="flex flex-wrap items-center gap-2 text-xs">
           <span className="rounded-lg border border-slate-700 bg-slate-950 px-2.5 py-1 font-mono text-cyan-300">
             {artifacts.length} File
           </span>
@@ -60,8 +100,56 @@ export const ArtifactDiffExplorer: React.FC<Props> = ({ mission }) => {
           <span className="rounded-lg border border-slate-700 bg-slate-950 px-2.5 py-1 font-mono text-indigo-300">
             {totalSymbols} AST Symbols
           </span>
+          {artifacts.length > 0 && (
+            <button
+              type="button"
+              disabled={verifying}
+              onClick={handleVerifyWorkspace}
+              className="flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1 font-semibold text-white transition hover:bg-emerald-500 disabled:opacity-50"
+            >
+              <ShieldCheck className="h-3.5 w-3.5" />
+              {verifying ? t('loading') : t('verify_workspace_btn')}
+            </button>
+          )}
         </div>
       </div>
+
+      {verifyReport && (
+        <div
+          className={`flex flex-col gap-2 rounded-xl border p-3.5 text-xs ${
+            verifyReport.passed
+              ? 'border-emerald-800/70 bg-emerald-950/20 text-emerald-200'
+              : 'border-rose-800/70 bg-rose-950/20 text-rose-200'
+          }`}
+        >
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2 font-bold">
+              {verifyReport.passed ? (
+                <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+              ) : (
+                <XCircle className="h-4 w-4 text-rose-400" />
+              )}
+              <span>
+                {verifyReport.passed ? t('verify_passed_label') : t('verify_failed_label')} (exit{' '}
+                {verifyReport.exit_code})
+              </span>
+            </div>
+            <span className="font-mono text-[11px] opacity-80">
+              {verifyReport.checks_run.join(' · ')}
+            </span>
+          </div>
+          {verifyReport.contract_warnings?.length > 0 && (
+            <div className="rounded-lg border border-amber-800/60 bg-amber-950/30 p-2 text-[11px] text-amber-200">
+              {verifyReport.contract_warnings.map((w, idx) => (
+                <div key={idx}>• {w}</div>
+              ))}
+            </div>
+          )}
+          <pre className="max-h-36 overflow-auto whitespace-pre-wrap rounded-lg bg-slate-950/80 p-2.5 font-mono text-[11px] text-slate-300">
+            {verifyReport.output}
+          </pre>
+        </div>
+      )}
 
       {artifacts.length === 0 ? (
         <div className="py-6 text-center text-xs text-slate-500">
@@ -83,9 +171,14 @@ export const ArtifactDiffExplorer: React.FC<Props> = ({ mission }) => {
                       : 'border-slate-800 bg-slate-950/50 text-slate-300 hover:border-slate-700'
                   }`}
                 >
-                  <span className="break-all font-mono text-xs font-semibold text-cyan-300">
-                    {art.relative_path}
-                  </span>
+                  <div className="flex items-center justify-between gap-1">
+                    <span className="break-all font-mono text-xs font-semibold text-cyan-300">
+                      {art.relative_path}
+                    </span>
+                    <span className="shrink-0 rounded bg-slate-800 px-1.5 py-0.5 font-mono text-[10px] text-amber-300">
+                      v{art.version || 1}
+                    </span>
+                  </div>
                   <div className="flex items-center justify-between text-[10px] text-slate-400">
                     <span>{art.generated_by}</span>
                     <span>
@@ -104,11 +197,14 @@ export const ArtifactDiffExplorer: React.FC<Props> = ({ mission }) => {
                   <span className="font-mono text-xs font-bold text-slate-100">
                     {selectedArt.relative_path}
                   </span>
+                  <span className="ml-2 rounded bg-cyan-950/60 px-1.5 py-0.5 font-mono text-[10px] text-cyan-300">
+                    v{selectedArt.version || 1}
+                  </span>
                   <span className="ml-2 font-mono text-[10px] text-slate-500">
                     SHA256: {selectedArt.checksum.slice(0, 12)}
                   </span>
                 </div>
-                <div className="flex gap-1.5">
+                <div className="flex flex-wrap gap-1.5">
                   <button
                     type="button"
                     onClick={() => setViewMode('diff')}
@@ -145,6 +241,18 @@ export const ArtifactDiffExplorer: React.FC<Props> = ({ mission }) => {
                     <Layers className="h-3.5 w-3.5" />
                     AST ({selectedArt.symbols?.length || 0})
                   </button>
+                  <button
+                    type="button"
+                    onClick={() => setViewMode('revisions')}
+                    className={`flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-semibold transition ${
+                      viewMode === 'revisions'
+                        ? 'bg-cyan-600 text-white'
+                        : 'border border-slate-800 bg-slate-900 text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    <History className="h-3.5 w-3.5" />
+                    {t('artifact_tab_revisions')} ({selectedArt.revisions?.length || 1})
+                  </button>
                 </div>
               </div>
 
@@ -180,7 +288,7 @@ export const ArtifactDiffExplorer: React.FC<Props> = ({ mission }) => {
               )}
 
               {viewMode === 'symbols' && (
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-3">
                   {selectedArt.symbols && selectedArt.symbols.length > 0 ? (
                     <div className="grid gap-2 sm:grid-cols-2">
                       {selectedArt.symbols.map((sym, idx) => (
@@ -194,10 +302,67 @@ export const ArtifactDiffExplorer: React.FC<Props> = ({ mission }) => {
                       ))}
                     </div>
                   ) : (
-                    <p className="py-4 text-center text-xs text-slate-500">
+                    <p className="py-2 text-center text-xs text-slate-500">
                       {t('artifact_no_symbols')}
                     </p>
                   )}
+
+                  {selectedArt.imports && selectedArt.imports.length > 0 && (
+                    <div className="flex flex-col gap-1.5 border-t border-slate-800 pt-2">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                        {t('artifact_imports_label')} ({selectedArt.imports.length})
+                      </span>
+                      <div className="flex flex-wrap gap-1.5">
+                        {selectedArt.imports.map((imp, idx) => (
+                          <span
+                            key={idx}
+                            className="rounded border border-slate-700 bg-slate-900 px-2 py-0.5 font-mono text-[11px] text-cyan-300"
+                          >
+                            {imp}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {viewMode === 'revisions' && (
+                <div className="flex max-h-96 flex-col gap-2 overflow-y-auto">
+                  {(selectedArt.revisions || []).slice().reverse().map((rev) => (
+                    <div
+                      key={rev.version}
+                      className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-800 bg-slate-900/60 p-3 text-xs"
+                    >
+                      <div className="flex flex-col gap-0.5">
+                        <div className="flex items-center gap-2">
+                          <span className="rounded bg-amber-950/60 px-1.5 py-0.5 font-mono font-bold text-amber-300">
+                            v{rev.version}
+                          </span>
+                          <span className="font-semibold text-slate-200">
+                            {rev.generated_by || selectedArt.generated_by}
+                          </span>
+                          <span className="font-mono text-[10px] text-slate-500">
+                            {rev.checksum.slice(0, 10)}
+                          </span>
+                        </div>
+                        <span className="text-[11px] text-slate-400">
+                          {rev.line_count || 0}L · {rev.size_bytes || 0}B
+                        </span>
+                      </div>
+                      {rev.version !== selectedArt.version && (
+                        <button
+                          type="button"
+                          disabled={rollingBackVer === rev.version}
+                          onClick={() => handleRollback(selectedArt.relative_path, rev.version)}
+                          className="flex items-center gap-1 rounded-lg border border-amber-700/60 bg-amber-950/40 px-2.5 py-1 text-xs font-semibold text-amber-200 transition hover:bg-amber-900/60 disabled:opacity-50"
+                        >
+                          <RotateCcw className="h-3.5 w-3.5" />
+                          {t('rollback_btn')} v{rev.version}
+                        </button>
+                      )}
+                    </div>
+                  ))}
                 </div>
               )}
             </div>

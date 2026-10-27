@@ -13,7 +13,7 @@ import {
   Send,
   XOctagon,
 } from 'lucide-react';
-import { addDirective, controlMission } from '../api';
+import { addDirective, controlMission, fetchMission } from '../api';
 import { inputFieldClass, primaryBtnClass, secondaryBtnClass, useAutonomousI18n } from '../scope';
 import { Mission } from '../types';
 import { ArtifactDiffExplorer } from './ArtifactDiffExplorer';
@@ -229,7 +229,12 @@ export const MissionDetail: React.FC<Props> = ({ mission, onUpdate }) => {
         </>
       )}
 
-      {(section === 'all' || section === 'diffs') && <ArtifactDiffExplorer mission={mission} />}
+      {(section === 'all' || section === 'diffs') && (
+        <ArtifactDiffExplorer
+          mission={mission}
+          onRefresh={() => void fetchMission(mission.id).then(onUpdate)}
+        />
+      )}
 
       {(section === 'all' || section === 'collab') && <CollabStreamPanel mission={mission} />}
 

@@ -8,6 +8,10 @@ from features.agent import registry
 from features.autonomous_worker.application.code_intel import code_intel
 from features.autonomous_worker.application.collab_bus import collab_bus
 from features.autonomous_worker.application.tool_catalog import tool_catalog
+from features.autonomous_worker.application.workspace_runtime import (
+    WORKSPACE_TOOLS_SPEC,
+    workspace_runtime,
+)
 from features.autonomous_worker.domain.models import Mission, MissionQuestion, ReasoningStep, Task
 from features.autonomous_worker.domain.sanitizer import sanitize_text
 from features.autonomous_worker.infrastructure.llm_runtime import runtime_manager
@@ -21,8 +25,8 @@ class AgenticSpecialistRunner:
         self.max_steps = MAX_AGENTIC_STEPS
 
     def get_available_tools_description(self, task: Task) -> str:
-        relevant_tools = tool_catalog.get_relevant_tools_for_task(task, limit=80)
-        tools_list = []
+        relevant_tools = tool_catalog.get_relevant_tools_for_task(task, limit=65)
+        tools_list = list(WORKSPACE_TOOLS_SPEC)
         for item in relevant_tools:
             name = item["name"]
             args_dict = item.get("args") or {}
@@ -33,11 +37,12 @@ class AgenticSpecialistRunner:
 
     async def execute_task_with_tools(self, mission: Mission, task: Task, base_prompt: str) -> dict[str, Any]:
         tools_desc = self.get_available_tools_description(task)
-        repo_map = code_intel.build_repo_map(mission)
+        focus_query = f"{task.title} {task.description}"
+        repo_map = code_intel.build_repo_map(mission, focus_text=focus_query)
         history = [
             f"{repo_map}\n",
-            f"STRUMENTI REALI DISPONIBILI SUL SERVER:\n{tools_desc}\n",
-            "ISTRUZIONI: Se hai bisogno di strumenti per leggere, scrivere o testare, rispondi con:",
+            f"STRUMENTI WORKSPACE & SERVER DISPONIBILI:\n{tools_desc}\n",
+            "ISTRUZIONI: Usa workspace_read_file, workspace_search, workspace_write_file, workspace_patch_file o workspace_verify per ispezionare, modificare e testare il codice prima di chiudere il task:",
             '{"thought": "ragionamento tecnico", "doubt": "eventuale dubbio analizzato", "tool": "nome_strumento", "args": {...}}',
             "Quando hai completato tutto il lavoro e verificato i criteri, rispondi con:",
             '{"thought": "sintesi del ragionamento", "doubts": ["dubbio 1 risolto o segnalato"], "result": "sintesi esecutiva", "artifacts": [{"path": "...", "content": "..."}], "patches": [{"path": "...", "target": "...", "replacement": "..."}], "collab_note": "..."}',
@@ -58,7 +63,7 @@ class AgenticSpecialistRunner:
                     system=(
                         "Sei uno specialista d'élite con strumenti reali. Applica Clean Architecture, Zero-Trust, "
                         "codice puro senza commenti, file sotto le 500 righe e struttura feature-based. "
-                        "Esponi sempre il tuo ragionamento ('thought') ed eventuali dubbi ('doubt')."
+                        "Rispetta i contratti cross-file della Repository Map ed esponi sempre 'thought' ed eventuali 'doubt'."
                     ),
                     component="autonomous_worker",
                     agent_id=task.specialist_id,
@@ -84,25 +89,33 @@ class AgenticSpecialistRunner:
                     kind="doubt",
                 )
 
-            if "tool" in res and res.get("tool") in registry.TOOLS:
-                tool_name = str(res["tool"])
+            req_tool = str(res.get("tool") or "").strip()
+            if req_tool and (workspace_runtime.is_workspace_tool(req_tool) or req_tool in registry.TOOLS):
                 tool_args = res.get("args", {}) if isinstance(res.get("args"), dict) else {}
-                tool_meta = registry.TOOLS[tool_name]
                 try:
-                    fn = tool_meta["fn"]
-                    if asyncio.iscoroutinefunction(fn):
-                        out = await fn(**tool_args)
+                    if workspace_runtime.is_workspace_tool(req_tool):
+                        tool_out_str = await workspace_runtime.execute_workspace_tool(
+                            mission=mission,
+                            task=task,
+                            tool_name=req_tool,
+                            tool_args=tool_args,
+                        )
                     else:
-                        out = fn(**tool_args)
-                    tool_out_str = str(out)[:1500]
+                        tool_meta = registry.TOOLS[req_tool]
+                        fn = tool_meta["fn"]
+                        if asyncio.iscoroutinefunction(fn):
+                            out = await fn(**tool_args)
+                        else:
+                            out = fn(**tool_args)
+                        tool_out_str = str(out)[:1500]
                 except Exception as exc:
-                    tool_out_str = f"ERRORE STRUMENTO {tool_name}: {exc}"
+                    tool_out_str = f"ERRORE STRUMENTO {req_tool}: {exc}"
 
                 step_record = ReasoningStep(
                     step_index=len(task.reasoning_steps) + 1,
-                    thought=thought_text or f"Esecuzione strumento {tool_name}",
+                    thought=thought_text or f"Esecuzione strumento {req_tool}",
                     doubt=doubt_text,
-                    tool_name=tool_name,
+                    tool_name=req_tool,
                     tool_args=tool_args,
                     tool_output=tool_out_str[:600],
                     timestamp=time.time(),
@@ -113,11 +126,11 @@ class AgenticSpecialistRunner:
                         mission=mission,
                         sender_id=task.specialist_id or "worker",
                         sender_role=task.specialist_role or "Specialista",
-                        content=f"[RAGIONAMENTO] {thought_text} -> Tool: {tool_name}",
+                        content=f"[RAGIONAMENTO] {thought_text} -> Tool: {req_tool}",
                         kind="thought",
                     )
 
-                history.append(f"AZIONE: {tool_name}({json.dumps(tool_args)}) -> ESITO: {tool_out_str}")
+                history.append(f"AZIONE: {req_tool}({json.dumps(tool_args)}) -> ESITO: {tool_out_str}")
             else:
                 if thought_text:
                     task.reasoning_steps.append(

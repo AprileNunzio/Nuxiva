@@ -145,6 +145,12 @@
     "tools_search_placeholder": "Cerca strumento per nome, descrizione o categoria...",
     "tools_total": "Strumenti Totali",
     "tools_enabled": "Strumenti Attivi",
-    "tools_custom": "Sintetizzati da Studio"
+    "tools_custom": "Sintetizzati da Studio",
+    "verify_workspace_btn": "Verifica Workspace (Sandbox & Contratti)",
+    "verify_passed_label": "Verifica Sandbox Superata",
+    "verify_failed_label": "Verifica Sandbox Fallita",
+    "artifact_tab_revisions": "Revisioni",
+    "artifact_imports_label": "Dipendenze & Import Cross-File",
+    "rollback_btn": "Ripristina"
   }
 }

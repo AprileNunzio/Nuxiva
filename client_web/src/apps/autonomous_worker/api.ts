@@ -10,6 +10,7 @@ import {
   RuntimeHealth,
   ToolCatalogResponse,
   WatchdogPayload,
+  WorkspaceVerificationReport,
 } from './types';
 
 const jsonHeaders = { 'Content-Type': 'application/json' };
@@ -83,6 +84,33 @@ export async function applyMissionPatch(
     body: JSON.stringify(payload),
   });
   if (!res.ok) throw new Error('apply_patch_failed');
+  return res.json();
+}
+
+export async function rollbackMissionArtifact(
+  missionId: string,
+  filePath: string,
+  targetVersion: number
+): Promise<MissionArtifact> {
+  const res = await fetch(`/api/autonomous/missions/${encodeURIComponent(missionId)}/rollback`, {
+    method: 'POST',
+    headers: jsonHeaders,
+    body: JSON.stringify({ file_path: filePath, target_version: targetVersion }),
+  });
+  if (!res.ok) throw new Error('rollback_artifact_failed');
+  return res.json();
+}
+
+export async function verifyMissionWorkspace(
+  missionId: string,
+  checkType: string = 'auto'
+): Promise<WorkspaceVerificationReport> {
+  const res = await fetch(`/api/autonomous/missions/${encodeURIComponent(missionId)}/verify`, {
+    method: 'POST',
+    headers: jsonHeaders,
+    body: JSON.stringify({ check_type: checkType }),
+  });
+  if (!res.ok) throw new Error('verify_workspace_failed');
   return res.json();
 }
 

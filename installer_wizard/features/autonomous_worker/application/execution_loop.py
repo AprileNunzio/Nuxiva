@@ -10,6 +10,7 @@ from features.autonomous_worker.application.deliberator import deliberator
 from features.autonomous_worker.application.memory_compressor import memory_compressor
 from features.autonomous_worker.application.sandbox_validator import sandbox_validator
 from features.autonomous_worker.application.specialist_forge import forge
+from features.autonomous_worker.application.workspace_runtime import workspace_runtime
 from features.autonomous_worker.domain.exceptions import MissionValidationError
 from features.autonomous_worker.domain.knowledge_graph import knowledge_graph
 from features.autonomous_worker.domain.models import (
@@ -76,6 +77,11 @@ class AutonomousExecutionLoop:
         if any(not q.answered and q.options for q in mission.questions):
             mission.status = MissionStatus.QUESTION
             return
+
+        pending_replan = mission.options.pop("pending_replan_directive", "")
+        if pending_replan:
+            await deliberator.replan_for_directive(mission, str(pending_replan))
+            forge.assemble_team(mission)
 
         if memory_compressor.should_compress(mission):
             await memory_compressor.compress(mission)
@@ -220,14 +226,28 @@ class AutonomousExecutionLoop:
                 task.status = TaskStatus.FAILED
 
     async def _review_task(self, mission: Mission, task: Task) -> None:
+        verify_report = await workspace_runtime.verify_workspace(mission)
+        if not verify_report["passed"] and task.round < MAX_ROUNDS_PER_TASK:
+            task.round += 1
+            task.status = TaskStatus.PENDING
+            task.feedback = f"Verifica runtime/contratti fallita:\n{verify_report['output'][:500]}"
+            task.ceo_review_notes.append(f"[Runtime Gate Round {task.round - 1}] {task.feedback}")
+            collab_bus.system_announce(
+                mission,
+                f"Runtime Verification Gate ha respinto «{task.title}»: {task.feedback}",
+                kind="rework",
+            )
+            return
+
         prompt = (
             f"TASK: {task.title}\n"
             f"RISULTATO CONSEGNATO:\n{task.result[:2000]}\n"
             f"DUBBI SEGNALATI DALLO SPECIALISTA: {task.doubts}\n"
+            f"ESITO VERIFICA RUNTIME SANDBOX ({', '.join(verify_report['checks_run'])}):\n{verify_report['output'][:600]}\n"
             f"CRITERI RICHIESTI:\n"
             + "\n".join(f"- {c.description}" for c in task.criteria)
             + "\n"
-            f"ARTEFATTI NELLA CARTELLA: {[f'{a.relative_path} ({a.line_count}L)' for a in mission.artifacts]}\n"
+            f"ARTEFATTI NELLA CARTELLA: {[f'{a.relative_path} (v{a.version}, {a.line_count}L)' for a in mission.artifacts]}\n"
         )
         try:
             verdict = await runtime_manager.generate(
