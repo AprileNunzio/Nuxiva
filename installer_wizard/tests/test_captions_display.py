@@ -127,6 +127,13 @@ class CaptionsSourceTest(unittest.TestCase):
     def test_ear_forwards_events_to_captions(self):
         self.assertIn("D.Captions.event(ev)", (WEB / "ear.js").read_text())
 
+    def test_captions_layer_above_3d_avatar(self):
+        captions_css = (WEB / "captions.css").read_text()
+        display_css = (WEB / "display.css").read_text()
+        self.assertIn("z-index: 25;", captions_css)
+        self.assertIn(".caption { position: absolute; left: 50%; bottom: 128px; transform: translateX(-50%); width: min(920px, 90vw); text-align: center; transition: opacity 0.5s; z-index: 25; }", display_css)
+        self.assertIn("#core { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 20;", display_css)
+
 
 if __name__ == "__main__":
     unittest.main()

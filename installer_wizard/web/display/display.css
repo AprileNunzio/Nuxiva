@@ -12,7 +12,7 @@ header > * { pointer-events: auto; }
 .clock b { display: block; font-size: 44px; font-weight: 200; letter-spacing: 0.05em; line-height: 1; }
 .clock span { color: var(--text-dim); font-size: 14px; text-transform: capitalize; }
 
-.caption { position: absolute; left: 50%; bottom: 128px; transform: translateX(-50%); width: min(920px, 90vw); text-align: center; transition: opacity 0.5s; }
+.caption { position: absolute; left: 50%; bottom: 128px; transform: translateX(-50%); width: min(920px, 90vw); text-align: center; transition: opacity 0.5s; z-index: 25; }
 .caption .you { color: var(--text-dim); font-size: 14px; min-height: 20px; margin-bottom: 10px; }
 .caption .say { font-size: clamp(17px, 2.3vh, 24px); line-height: 1.5; font-weight: 300; text-shadow: 0 0 18px rgba(0,0,0,0.9); min-height: 1.5em; }
 .caption .greet { font-size: clamp(22px, 3.2vh, 34px); font-weight: 200; letter-spacing: 0.08em; }
