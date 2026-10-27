@@ -63,6 +63,14 @@ class LocaleApiTests(LocaleBase):
             html = pages.page("x.html", "fr").body.decode()
         self.assertIn('window.NUXIVA_UI_LANG = "fr"', html)
 
+    def test_pages_preload_initial_bundle(self):
+        import pages
+        with mock.patch.object(pages, "WEB_DIR") as web:
+            web.__truediv__.return_value.read_text.return_value = '<html data-i18n-scope="web/display"><head></head><body></body></html>'
+            html = pages.page("display/display.html", "it").body.decode()
+        self.assertIn("window.NUXIVA_I18N_BUNDLE = {", html)
+        self.assertIn('"scope":"web/display"', html)
+
 
 if __name__ == "__main__":
     unittest.main()

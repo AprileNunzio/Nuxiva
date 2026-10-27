@@ -112,11 +112,23 @@ def render(html: str, lang: str = "") -> Response:
 
     name = assistant_name()
     assistant_json = json.dumps({"name": name}).replace("<", "\\u003c")
+    target_lang = lang or ui_language()
+    scope_match = re.search(r'data-i18n-scope="([^"]+)"', html)
+    bundle_json = "null"
+    if scope_match:
+        try:
+            from features.locale.colocated.api import resolver, ALLOWED_LANGUAGES
+            from features.locale.colocated.domain import Scope, Locale
+            res = resolver.resolve(Scope.parse(scope_match.group(1)), Locale.parse(target_lang, ALLOWED_LANGUAGES))
+            bundle_json = json.dumps(res.to_payload(), ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
+        except Exception:
+            bundle_json = "null"
     html = html.replace("{{assistant}}", escape(name))
     html = html.replace("</head>", f"<script>window.NUXIVA_ASSISTANT = {assistant_json}; "
                                    f"window.NUXIVA_FACE = {json.dumps(face_options())}; "
                                    f"window.NUXIVA_ASSET_V = {json.dumps(ASSET_VERSION)}; "
-                                   f"window.NUXIVA_UI_LANG = {json.dumps(lang or ui_language())};</script>\n"
+                                   f"window.NUXIVA_UI_LANG = {json.dumps(target_lang)}; "
+                                   f"window.NUXIVA_I18N_BUNDLE = {bundle_json};</script>\n"
                                    '<script src="/static/shared/translate.js"></script>\n'
                                    '<script src="/static/shared/page_text.js"></script>\n'
                                    '<script type="module" src="/static/shared/i18n/runtime.js"></script>\n</head>', 1)

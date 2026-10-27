@@ -21,7 +21,16 @@
   function t(scope, key, params) {
     scopes.add(scope);
     const rt = runtime();
-    if (!rt) return "";
+    if (!rt) {
+      if (global.NUXIVA_I18N_BUNDLE && global.NUXIVA_I18N_BUNDLE.meta && global.NUXIVA_I18N_BUNDLE.meta.scope === scope) {
+        const dict = global.NUXIVA_I18N_BUNDLE.dictionary || {};
+        const val = dict[key];
+        if (val != null) {
+          return String(val).replace(/\{\{\s*([a-zA-Z0-9_]+)\s*\}\}/g, (_, k) => params && params[k] != null ? String(params[k]) : "");
+        }
+      }
+      return "";
+    }
     try {
       return rt.t(scope, key, cleanParams(params));
     } catch (error) {

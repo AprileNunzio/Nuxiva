@@ -1,0 +1,21 @@
+{
+  "title": "Rete e Connessioni",
+  "refresh": "Aggiorna",
+  "close": "Chiudi",
+  "wifi": "Wi-Fi",
+  "interfaces": "Schede di Rete",
+  "wifi_enabled": "Wi-Fi Attivo",
+  "wifi_disabled": "Wi-Fi Disattivato",
+  "scanning": "Scansione in corso...",
+  "no_networks": "Nessuna rete Wi-Fi trovata",
+  "connected": "Connesso",
+  "disconnected": "Non connesso",
+  "connect": "Connetti",
+  "disconnect": "Disconnetti",
+  "cancel": "Annulla",
+  "enter_password": "Password di rete",
+  "ip_address": "Indirizzo IP",
+  "mac_address": "Indirizzo MAC",
+  "gateway": "Gateway predefinito",
+  "manage_network": "Gestisci Rete"
+}

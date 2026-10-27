@@ -29,6 +29,13 @@ export class BundleStore {
     this._ready = new Map();
     this._failed = new Map();
     this._inflight = new Map();
+    if (typeof window !== "undefined" && window.NUXIVA_I18N_BUNDLE && typeof window.NUXIVA_I18N_BUNDLE === "object") {
+      const b = window.NUXIVA_I18N_BUNDLE;
+      if (b.meta && b.meta.scope && b.meta.locale) {
+        const norm = normalize(b, b.meta.scope, b.meta.locale);
+        if (norm) this._ready.set(`${b.meta.scope}::${b.meta.locale}`, norm);
+      }
+    }
   }
 
   peek(scope, locale) {

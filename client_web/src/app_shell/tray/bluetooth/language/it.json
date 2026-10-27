@@ -1,0 +1,21 @@
+{
+  "title": "Bluetooth",
+  "turn_on": "Attiva Bluetooth",
+  "turn_off": "Disattiva Bluetooth",
+  "bluetooth_off": "Bluetooth disattivato",
+  "bluetooth_off_hint": "Attiva il Bluetooth per connettere cuffie, altoparlanti e dispositivi wireless.",
+  "no_adapter": "Nessun adattatore Bluetooth rilevato",
+  "scan": "Cerca dispositivi",
+  "scanning": "Scansione in corso...",
+  "connected": "Connesso",
+  "paired": "Associato",
+  "available": "Dispositivi disponibili",
+  "my_devices": "I miei dispositivi",
+  "connect": "Connetti",
+  "disconnect": "Disconnetti",
+  "pair": "Associa",
+  "forget": "Dimentica",
+  "no_devices": "Nessun dispositivo nelle vicinanze",
+  "settings": "Impostazioni Bluetooth avanzate",
+  "close": "Chiudi"
+}

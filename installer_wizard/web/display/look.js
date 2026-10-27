@@ -27,8 +27,7 @@
 
   function startLight() {
     $("scene").style.display = "none"; $("core").style.display = "block";
-    if (window.nuxivaPerf) window.nuxivaPerf.lite(D.look.reason ? D.look.reason[0] : "light");
-    D.avatar = window.nuxivaAvatar = new NuxivaAvatar.ThoughtCore($("core"), { color: D.currentTint ? D.currentTint() : (D.FACE && D.FACE.color) || "#29e0ff" });
+        D.avatar = window.nuxivaAvatar = new NuxivaAvatar.ThoughtCore($("core"), { color: D.currentTint ? D.currentTint() : (D.FACE && D.FACE.color) || "#29e0ff" });
     D.avatar.setMode(D.mode);
   }
 

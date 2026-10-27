@@ -1,0 +1,21 @@
+{
+  "title": "Bluetooth",
+  "turn_on": "Turn on Bluetooth",
+  "turn_off": "Turn off Bluetooth",
+  "bluetooth_off": "Bluetooth is turned off",
+  "bluetooth_off_hint": "Turn on Bluetooth to connect headphones, speakers and wireless accessories.",
+  "no_adapter": "No Bluetooth adapter detected",
+  "scan": "Scan for devices",
+  "scanning": "Scanning...",
+  "connected": "Connected",
+  "paired": "Paired",
+  "available": "Available devices",
+  "my_devices": "My devices",
+  "connect": "Connect",
+  "disconnect": "Disconnect",
+  "pair": "Pair",
+  "forget": "Forget",
+  "no_devices": "No nearby devices found",
+  "settings": "Advanced Bluetooth settings",
+  "close": "Close"
+}

@@ -1,0 +1,331 @@
+.network-flyout {
+  position: fixed;
+  bottom: 56px;
+  right: 12px;
+  width: 380px;
+  max-width: calc(100vw - 24px);
+  max-height: calc(100vh - 80px);
+  background: rgba(14, 20, 32, 0.94);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 10000;
+  color: #e2e8f0;
+  font-family: inherit;
+}
+
+.network-flyout-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.network-flyout-title {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: #f8fafc;
+}
+
+.network-flyout-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.network-icon-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.network-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.network-flyout-tabs {
+  display: flex;
+  padding: 4px;
+  background: rgba(0, 0, 0, 0.25);
+  margin: 10px 14px 0 14px;
+  border-radius: 8px;
+  gap: 4px;
+}
+
+.network-tab-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.network-tab-btn.active {
+  background: rgba(59, 130, 246, 0.25);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.4);
+}
+
+.network-flyout-body {
+  padding: 12px 14px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 220px;
+  max-height: 380px;
+}
+
+.network-radio-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.network-toggle-switch {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  cursor: pointer;
+}
+
+.network-toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.network-toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: #334155;
+  border-radius: 22px;
+  transition: 0.2s;
+}
+
+.network-toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.2s;
+}
+
+.network-toggle-switch input:checked + .network-toggle-slider {
+  background: #2563eb;
+}
+
+.network-toggle-switch input:checked + .network-toggle-slider:before {
+  transform: translateX(18px);
+}
+
+.network-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.network-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.network-item:hover {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.network-item.connected {
+  border-color: rgba(34, 197, 94, 0.4);
+  background: rgba(34, 197, 94, 0.08);
+}
+
+.network-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.network-item-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.network-item-ssid {
+  font-size: 13px;
+  font-weight: 500;
+  color: #f1f5f9;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.network-item-badge {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(34, 197, 94, 0.2);
+  color: #4ade80;
+  font-weight: 600;
+}
+
+.network-item-btn {
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.network-item-btn.primary {
+  background: #2563eb;
+  color: #fff;
+}
+
+.network-item-btn.primary:hover {
+  background: #1d4ed8;
+}
+
+.network-item-btn.danger {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.network-item-btn.danger:hover {
+  background: rgba(239, 68, 68, 0.3);
+}
+
+.network-connect-form {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.network-password-input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  padding: 6px 10px;
+  color: #fff;
+  font-size: 12px;
+  outline: none;
+}
+
+.network-password-input:focus {
+  border-color: #3b82f6;
+}
+
+.network-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  font-size: 12px;
+  gap: 8px;
+  padding: 32px 0;
+}
+
+.network-flyout-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.network-status-label {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.network-settings-link {
+  background: none;
+  border: none;
+  color: #60a5fa;
+  font-size: 11px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 4px;
+}
+
+.network-settings-link:hover {
+  background: rgba(96, 165, 250, 0.1);
+}
+
+.iface-card {
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+}
+
+.iface-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.iface-name {
+  font-weight: 600;
+  color: #f8fafc;
+}
+
+.iface-detail {
+  display: flex;
+  justify-content: space-between;
+  color: #94a3b8;
+}
+
+.iface-val {
+  color: #e2e8f0;
+  font-family: monospace;
+}
