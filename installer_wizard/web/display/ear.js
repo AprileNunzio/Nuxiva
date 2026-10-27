@@ -124,14 +124,15 @@
   }
 
   function reconcile() {
-    if (!micAllowed() || parked) return;
+    if (parked) return;
+    if (!ws || ws.readyState > 1) connect();
+    if (!micAllowed()) return;
     const confirmed = Date.now() - heardAt < 10000;
     if (confirmed && state === "off") setState("idle");
     else if (!confirmed && state !== "off" && !(ws && ws.readyState === 1 && micLive())) setState("off");
     if (!confirmed && !restarting && Date.now() - lastTry > 15000) {
       lastTry = Date.now();
       if (!micLive()) restartMic();
-      else if (!ws || ws.readyState > 1) connect();
     }
   }
 
@@ -152,7 +153,9 @@
       clearTimeout(stuck);
       if (ws !== sock) return;
       sock.send(JSON.stringify({ type: "client", page: PAGE, visible: document.visibilityState, href: location.pathname + location.search }));
-      setState(micLive() ? "idle" : "off"); lastAlone = null; if (wsFails) report(true); wsFails = 0;
+      if (micLive()) setState("idle");
+      else setState("off", offReason());
+      lastAlone = null; if (wsFails) report(true); wsFails = 0;
     };
     sock.onclose = (e) => {
       clearTimeout(stuck);
@@ -180,7 +183,12 @@
       }
       const ev = JSON.parse(e.data);
       if (D.Captions) D.Captions.event(ev);
-      if (ev.type === "level") { heardAt = Date.now(); level(ev.rms); if (D.Enroll && D.Enroll.active) D.Enroll.level(ev.rms); if (state === "off") setState("idle"); }
+      if (ev.type === "level") {
+        heardAt = Date.now();
+        level(ev.rms);
+        if (D.Enroll && D.Enroll.active) D.Enroll.level(ev.rms);
+        if (state === "off" && micAllowed()) setState("idle");
+      }
       else if (ev.type === "state") { setState(ev.state); document.body.classList.toggle("conversing", !!ev.conversation); }
       else if (ev.type === "wake") { D.lastInteraction = Date.now(); D.pingActivity(true); setState("listening"); if (D.mode === "brain") D.setMode("face"); if (D.wakeDesk) D.wakeDesk(); }
       else if (ev.type === "barge") { if (D.hush) D.hush(); }
@@ -192,7 +200,9 @@
       else if (ev.type === "transcript" && ev.text) {
         D.lastVoice = true;
         if (ev.speaker) D.currentSpeaker = ev.speaker;
-        D.ask(ev.text, ev.lang, { followup: !!ev.followup, speaker: ev.speaker || "", voice_known: ev.voice_known });
+        if (ev.origin !== false && micLive()) {
+          D.ask(ev.text, ev.lang, { followup: !!ev.followup, speaker: ev.speaker || "", voice_known: ev.voice_known });
+        }
       }
     };
   }
@@ -204,6 +214,8 @@
       if (!micAllowed()) return enableRemote();
       Ear.listen();
     });
+    setInterval(reconcile, 5000);
+    connect();
     if (!micAllowed()) { setState("off", offReason()); return; }
     await activate();
   }
@@ -217,7 +229,6 @@
   async function activate() {
     if (activated) return;
     activated = true;
-    setInterval(reconcile, 5000);
     connect();
     if (await openMic() && ws && ws.readyState === 1) setState("idle");
   }

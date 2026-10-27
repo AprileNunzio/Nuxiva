@@ -131,15 +131,17 @@ class ProxyTest(unittest.IsolatedAsyncioTestCase):
     async def test_closing_the_browser_ends_the_pump(self):
         await asyncio.wait_for(proxy.pump(FakeClient([]), FakeUpstream([])), 2)
 
-    def socket(self, host, cookie=None, headers=None):
+    def socket(self, host, cookie=None, headers=None, query=None):
         return SimpleNamespace(client=SimpleNamespace(host=host), cookies={auth.SESSION_COOKIE: cookie} if cookie else {},
-                               headers=headers or {})
+                               headers=headers or {}, query_params=query or {})
 
     def test_only_local_or_logged_in_sockets_are_accepted(self):
         self.assertTrue(proxy.allowed(self.socket("127.0.0.1")))
         self.assertFalse(proxy.allowed(self.socket("192.168.1.20")))
         self.assertFalse(proxy.allowed(self.socket("192.168.1.20", "forged")))
         self.assertTrue(proxy.allowed(self.socket("192.168.1.20", auth.issue("admin"))))
+        self.assertTrue(proxy.allowed(self.socket("192.168.1.20", auth.issue("display"))))
+        self.assertTrue(proxy.allowed(self.socket("192.168.1.20", query={"token": auth.issue("display")})))
 
     def test_paired_nodes_are_accepted_only_with_their_token(self):
         from features.nodes.registry import registry

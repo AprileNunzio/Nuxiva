@@ -29,8 +29,20 @@ def paired_display(request: Request) -> bool:
     return display_node(request) is not None
 
 
+def is_private(request: Request) -> bool:
+    if is_local(request):
+        return True
+    try:
+        import ipaddress
+        ip = ipaddress.ip_address(request.client.host if request.client else "")
+        return ip.is_private or ip.is_link_local
+    except (ValueError, TypeError, AttributeError):
+        return False
+
+
 def require_display(request: Request, message: str = "Accesso richiesto") -> None:
-    if not (is_local(request) or session_user(request) or paired_display(request)):
+    if not (is_local(request) or session_user(request) or paired_display(request)
+            or (request.method in ("GET", "HEAD") and is_private(request))):
         raise HTTPException(401, message)
 
 

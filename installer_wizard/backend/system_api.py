@@ -2,7 +2,7 @@ import asyncio
 import json
 import logging
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from fastapi.responses import JSONResponse, RedirectResponse
 
 import auth
@@ -55,6 +55,13 @@ COMPONENT_RESTART = {
 }
 
 
+def _display_response(request: Request, res: Response) -> Response:
+    if not auth.verify(request.cookies.get(auth.SESSION_COOKIE)):
+        res.set_cookie(auth.SESSION_COOKIE, auth.issue("display"), max_age=auth.SESSION_TTL,
+                       httponly=True, samesite="lax", secure=request.url.scheme == "https", path="/")
+    return res
+
+
 @public_routes.get("/")
 async def public_index(request: Request, node: str = ""):
     if store.phase in ("READY", "DEGRADED") and setup_api.setup_required(request):
@@ -63,14 +70,16 @@ async def public_index(request: Request, node: str = ""):
         from features.nodes.registry import registry
         if node in registry.data["nodes"]:
             NODE.set(node)
-    return page("display/display.html" if store.phase in ("READY", "DEGRADED") else "monitor/monitor.html",
-                page_language(request, admin=False))
+    res = page("display/display.html" if store.phase in ("READY", "DEGRADED") else "monitor/monitor.html",
+               page_language(request, admin=False))
+    return _display_response(request, res)
 
 
 @public_routes.get("/screen")
 async def public_screen(request: Request):
-    return page("screen/screen.html" if store.phase in ("READY", "DEGRADED") else "monitor/monitor.html",
-                page_language(request, admin=False))
+    res = page("screen/screen.html" if store.phase in ("READY", "DEGRADED") else "monitor/monitor.html",
+               page_language(request, admin=False))
+    return _display_response(request, res)
 
 
 @public_routes.get("/healthz")
