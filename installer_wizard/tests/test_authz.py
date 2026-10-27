@@ -221,5 +221,13 @@ class CatalogCoverageTests(unittest.TestCase):
         self.assertEqual(missing, [], "classify these tools in features/authz/risk.py")
 
 
+class VoiceStrongTests(unittest.TestCase):
+
+    def test_voice_strong_computes_threshold_from_voiceprint(self):
+        val = resolve.voice_strong()
+        self.assertIsInstance(val, float)
+        self.assertGreater(val, 0.5)
+
+
 if __name__ == "__main__":
     unittest.main()

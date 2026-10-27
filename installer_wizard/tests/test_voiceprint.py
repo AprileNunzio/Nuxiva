@@ -1,5 +1,6 @@
 import json
 import os
+import subprocess
 import sys
 import tempfile
 import threading
@@ -136,6 +137,18 @@ class VoiceprintTest(unittest.TestCase):
             self.vp._load()
             self.assertEqual(self.vp.limits["anna"], voiceprint.match_base())
         self.assertNotEqual(adaptive, voiceprint.match_base())
+
+    def test_voiceprint_module_thresholds(self):
+        self.assertGreater(voiceprint.match_base(), 0.0)
+        self.assertGreater(voiceprint.margin(), 0.0)
+        self.assertGreater(voiceprint.twin_margin(), 0.0)
+        self.assertGreater(voiceprint.twin_similarity(), 0.0)
+
+    def test_import_from_features_ear_in_clean_process(self):
+        root = str(Path(__file__).resolve().parents[1])
+        code = f"import sys; sys.path.insert(0, {root!r}); from features.ear.voiceprint import margin, match_base; assert match_base() > 0; assert margin() > 0"
+        res = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True)
+        self.assertEqual(res.returncode, 0, msg=res.stderr)
 
 
 if __name__ == "__main__":

@@ -9,9 +9,22 @@ from pathlib import Path
 
 import numpy as np
 
-sys.path.append(str(Path(__file__).resolve().parents[1] / "biometrics"))
-import embeddings as emb
-import earconf
+_dir = Path(__file__).resolve().parent
+_bio = _dir.parent / "biometrics"
+if str(_bio) not in sys.path:
+    sys.path.append(str(_bio))
+if str(_dir) not in sys.path:
+    sys.path.append(str(_dir))
+
+try:
+    import embeddings as emb
+except ImportError:
+    from features.biometrics import embeddings as emb
+
+try:
+    import earconf
+except ImportError:
+    from features.ear import earconf
 
 log = logging.getLogger("nuxiva.ear")
 
