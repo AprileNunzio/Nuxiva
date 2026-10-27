@@ -21,6 +21,13 @@ if BACKEND not in sys.path:
 
 import langpick
 from learner import learner
+try:
+    import vocabulary
+except ImportError:
+    try:
+        from features.ear import vocabulary
+    except ImportError:
+        vocabulary = None
 
 try:
     import online_stt
@@ -53,7 +60,11 @@ def _prompt(lang: str) -> str:
 def _hotwords(lang: str) -> str:
     from identity import assistant_name
 
-    return HOTWORDS["value"] if lang == HOME_LANG else assistant_name()
+    if lang != HOME_LANG:
+        return assistant_name()
+    if vocabulary is not None:
+        return vocabulary.hotwords_string(lang)
+    return HOTWORDS["value"]
 HALLUCINATIONS = {"", "grazie.", "grazie", "sottotitoli a cura di qtss", "sottotitoli creati dalla comunità amara.org",
                   "thank you.", "thanks for watching!", "you"}
 
@@ -94,7 +105,12 @@ ACTIVE = {"model": model, "name": MODEL_SIZE}
 
 def refresh_hotwords() -> None:
     if time.time() - HOTWORDS["at"] > 300:
-        HOTWORDS.update(value=learner.hotwords(), at=time.time())
+        if vocabulary is not None:
+            vocabulary.invalidate_cache()
+            val = vocabulary.hotwords_string(HOME_LANG)
+        else:
+            val = learner.hotwords()
+        HOTWORDS.update(value=val, at=time.time())
 
 
 def has_speech(audio: np.ndarray) -> bool:

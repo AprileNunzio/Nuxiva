@@ -5,9 +5,18 @@ import os
 import re
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 import wave
 import numpy as np
+
+try:
+    import vocabulary
+except ImportError:
+    try:
+        from features.ear import vocabulary
+    except ImportError:
+        vocabulary = None
 
 log = logging.getLogger("nuxiva.ear.online")
 
@@ -18,7 +27,6 @@ CUSTOM_TIMEOUT = 15.0
 
 
 def audio_to_wav_bytes(audio: np.ndarray, rate: int = RATE) -> bytes:
-    """Converte un array numpy float32 o int16 in un buffer WAV in memoria."""
     buf = io.BytesIO()
     if audio.dtype != np.int16:
         scaled = np.clip(audio, -1.0, 1.0) * 32767.0
@@ -59,10 +67,13 @@ def _get_api_key(provider: str) -> str:
     return ""
 
 
-def transcribe_deepgram(wav_bytes: bytes, lang: str = "it", api_key: str = "") -> str | None:
+def transcribe_deepgram(wav_bytes: bytes, lang: str = "it", api_key: str = "",
+                        keywords: list[str] | None = None) -> str | None:
     if not api_key:
         return None
-    url = f"https://api.deepgram.com/v1/listen?model=nova-2&language={lang}&smart_format=true&punctuate=true"
+    kws = keywords if keywords is not None else (vocabulary.deepgram_keywords() if vocabulary else [])
+    kw_param = "".join(f"&keywords={urllib.parse.quote(k)}" for k in kws[:25]) if kws else ""
+    url = f"https://api.deepgram.com/v1/listen?model=nova-2&language={lang}&smart_format=true&punctuate=true{kw_param}"
     headers = {
         "Authorization": f"Token {api_key}",
         "Content-Type": "audio/wav",
@@ -81,17 +92,14 @@ def transcribe_deepgram(wav_bytes: bytes, lang: str = "it", api_key: str = "") -
 
 
 def transcribe_openai_compatible(wav_bytes: bytes, endpoint: str, model: str, api_key: str, lang: str = "it",
-                                 timeout: float = TIMEOUT) -> str | None:
+                                 timeout: float = TIMEOUT, prompt: str = "") -> str | None:
     boundary = f"----WebKitFormBoundary{int(time.time() * 1000)}"
     body = bytearray()
+    prompt_text = prompt or (vocabulary.openai_prompt(lang) if vocabulary else "Ehi, Nuxiva.")
 
-    # Form field: model
     body.extend(f"--{boundary}\r\nContent-Disposition: form-data; name=\"model\"\r\n\r\n{model}\r\n".encode("utf-8"))
-    # Form field: language
     body.extend(f"--{boundary}\r\nContent-Disposition: form-data; name=\"language\"\r\n\r\n{lang}\r\n".encode("utf-8"))
-    # Form field: prompt
-    body.extend(f"--{boundary}\r\nContent-Disposition: form-data; name=\"prompt\"\r\n\r\nEhi, Nuxiva.\r\n".encode("utf-8"))
-    # File field: file
+    body.extend(f"--{boundary}\r\nContent-Disposition: form-data; name=\"prompt\"\r\n\r\n{prompt_text}\r\n".encode("utf-8"))
     body.extend(f"--{boundary}\r\nContent-Disposition: form-data; name=\"file\"; filename=\"audio.wav\"\r\nContent-Type: audio/wav\r\n\r\n".encode("utf-8"))
     body.extend(wav_bytes)
     body.extend(f"\r\n--{boundary}--\r\n".encode("utf-8"))
@@ -114,16 +122,19 @@ def transcribe_openai_compatible(wav_bytes: bytes, endpoint: str, model: str, ap
     return None
 
 
-def transcribe_gemini(wav_bytes: bytes, api_key: str) -> str | None:
+def transcribe_gemini(wav_bytes: bytes, api_key: str, lang: str = "it", prompt: str = "",
+                      model: str = "") -> str | None:
     if not api_key:
         return None
     import base64
+    target_model = model or os.environ.get("NUXIVA_ONLINE_STT_MODEL", "").strip() or "gemini-3.5-flash"
     b64_audio = base64.b64encode(wav_bytes).decode("ascii")
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{target_model}:generateContent?key={api_key}"
+    prompt_text = prompt or (vocabulary.gemini_prompt(lang) if vocabulary else "Trascrivi esattamente e parola per parola cosa viene detto in questo audio. Restituisci SOLO ed ESCLUSIVAMENTE la trascrizione letterale, senza commenti né virgolette.")
     payload = {
         "contents": [{
             "parts": [
-                {"text": "Trascrivi esattamente e parola per parola cosa viene detto in questo audio italiano. Restituisci SOLO ed ESCLUSIVAMENTE la trascrizione letterale, senza commenti né virgolette."},
+                {"text": prompt_text},
                 {"inline_data": {"mime_type": "audio/wav", "data": b64_audio}}
             ]
         }],
@@ -144,8 +155,7 @@ def transcribe_gemini(wav_bytes: bytes, api_key: str) -> str | None:
     return None
 
 
-def transcribe_online(audio: np.ndarray, lang: str = "it") -> str | None:
-    """Tenta la trascrizione online usando il provider configurato. Ritorna None se fallisce o disattivato."""
+def transcribe_online(audio: np.ndarray, lang: str = "it", prompt: str = "") -> str | None:
     provider = os.environ.get("NUXIVA_ONLINE_STT_PROVIDER", "deepgram").strip().lower()
     api_key = _get_api_key(provider)
     if provider == "custom":
@@ -153,7 +163,7 @@ def transcribe_online(audio: np.ndarray, lang: str = "it") -> str | None:
         if not endpoint:
             return None
         model = os.environ.get("NUXIVA_ONLINE_STT_MODEL", "").strip() or "whisper-1"
-        return transcribe_openai_compatible(audio_to_wav_bytes(audio, RATE), endpoint, model, api_key, lang, CUSTOM_TIMEOUT)
+        return transcribe_openai_compatible(audio_to_wav_bytes(audio, RATE), endpoint, model, api_key, lang, CUSTOM_TIMEOUT, prompt)
     if not api_key:
         return None
 
@@ -162,11 +172,11 @@ def transcribe_online(audio: np.ndarray, lang: str = "it") -> str | None:
         if provider == "deepgram":
             return transcribe_deepgram(wav, lang, api_key)
         elif provider == "groq":
-            return transcribe_openai_compatible(wav, "https://api.groq.com/openai/v1/audio/transcriptions", "whisper-large-v3-turbo", api_key, lang)
+            return transcribe_openai_compatible(wav, "https://api.groq.com/openai/v1/audio/transcriptions", "whisper-large-v3-turbo", api_key, lang, TIMEOUT, prompt)
         elif provider == "openai":
-            return transcribe_openai_compatible(wav, "https://api.openai.com/v1/audio/transcriptions", "whisper-1", api_key, lang)
+            return transcribe_openai_compatible(wav, "https://api.openai.com/v1/audio/transcriptions", "whisper-1", api_key, lang, TIMEOUT, prompt)
         elif provider == "gemini":
-            return transcribe_gemini(wav, api_key)
+            return transcribe_gemini(wav, api_key, lang, prompt)
     except Exception as exc:
         log.error("Eccezione durante la trascrizione online: %s", exc)
     return None
