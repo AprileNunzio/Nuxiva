@@ -18,7 +18,7 @@ import enhance
 import capture
 import feedback
 import stt
-from features.ear.broadcast import SESSIONS, broadcast_event, park_hidden, register, unregister
+from broadcast import SESSIONS, broadcast_event, park_hidden, register, unregister
 from learner import current_name, learner, name_variant
 from music import MusicTap
 from livecap import LiveCaptions
