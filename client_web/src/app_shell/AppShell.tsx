@@ -17,6 +17,7 @@ import { StartMenu } from './start/StartMenu';
 import { useAssistantIdentity } from '../shared/identity/IdentityContext';
 import { useDesktopShortcuts } from './desktopShortcuts';
 import { useWorkbenchAutoLaunch } from '../apps/repair_workbench/hooks/useWorkbenchAutoLaunch';
+import { LiveCaptionsOverlay } from '../features/live_captions';
 
 export const AppShell: React.FC = () => {
   const { user, signOut } = useAuthenticatedSession();
@@ -93,6 +94,7 @@ export function WebOSDesktop({ user, onSignOut }: { user: string; onSignOut: () 
     {calendar && <Calendar now={clock} onClose={()=>setCalendar(false)} />}
     <TaskTray />
     <NotificationCenter visible={notifications} onClose={()=>setNotifications(false)} onCountChange={setNotificationCount} />
+    <LiveCaptionsOverlay />
 
   </div>;
 }
