@@ -101,7 +101,7 @@ class WizardTest(unittest.TestCase):
         self.assertEqual(remote["NUXIVA_OLLAMA_URL"], "http://192.168.1.30:11434")
         self.assertNotIn("NUXIVA_LLM_MODEL", remote)
         cloud = setup_api._clean({"brain": "cloud", "cloud_provider": "anthropic", "cloud_key": "sk-ant-" + "a" * 40})
-        self.assertEqual(cloud["NUXIVA_LLM_CHAT_ORDER"], "cloud:anthropic/claude-haiku-4-5-20251001")
+        self.assertEqual(cloud["NUXIVA_LLM_CHAT_ORDER"], "cloud:anthropic/claude-haiku-5-5")
         self.assertNotIn("sk-ant", " ".join(cloud.values()))
         for bad in ({"brain": "quantum"}, {"brain": "remote"}, {"brain": "remote", "ollama_url": "http://a b"},
                     {"brain": "cloud", "cloud_provider": "evil", "cloud_key": "x" * 30},
