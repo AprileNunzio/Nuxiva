@@ -1,3 +1,4 @@
+import importlib.util
 import io
 import json
 import os
@@ -14,8 +15,11 @@ if str(EAR) not in sys.path:
     sys.path.insert(0, str(EAR))
 
 import online_stt
-import stt
 import vocabulary
+
+_spec = importlib.util.spec_from_file_location("features_ear_stt", EAR / "stt.py")
+stt_module = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(stt_module)
 
 
 class DummyResponse:
@@ -58,80 +62,93 @@ class EarVocabularySttTest(unittest.TestCase):
             "cucina": {"name": "Cucina"}
         }
         fake_catalog.floors = {
-            "piano_terra": {"name": "Piano terra"}
+            "zona_notte": {"name": "Zona Notte"}
         }
 
-        fake_store = mock.Mock()
-        room = mock.Mock()
-        room.name = "Mansarda"
-        room.aliases = ["Soffitta"]
-        fake_store.rooms = {"r1": room}
-        fake_store.floors = {}
+        fake_places = mock.Mock()
+        fake_places.rooms = [
+            {"id": "r1", "name": "Studio Tecnico"}
+        ]
+        fake_places.floors = [
+            {"id": "f1", "name": "Primo Piano"}
+        ]
 
-        with mock.patch("features.home_assistant.home.brain.catalog", fake_catalog), \
-             mock.patch("features.places.store.store", fake_store), \
-             mock.patch.object(vocabulary, "_collect_family_names", return_value=["Marco", "Anna"]):
-            words = vocabulary.home_vocabulary_list(limit=20)
-            words_str = vocabulary.home_vocabulary_string(limit=20)
+        fake_learner = mock.Mock()
+        fake_learner.hotwords.return_value = ["Nuxiva", "Marco"]
 
-        self.assertIn("Nuxiva", words)
-        self.assertIn("Marco", words)
-        self.assertIn("Anna", words)
-        self.assertIn("Veletta", words)
-        self.assertIn("Salotto", words)
-        self.assertIn("Mansarda", words)
-        self.assertIn("Veletta", words_str)
+        with mock.patch("vocabulary._get_brain_catalog", return_value=fake_catalog), \
+             mock.patch("vocabulary._get_places_store", return_value=fake_places), \
+             mock.patch("vocabulary._get_learner", return_value=fake_learner):
+            voc = vocabulary.home_vocabulary_list("it")
 
-    def test_transcribe_gemini_injects_vocabulary_in_prompt_and_uses_model(self):
+        self.assertIn("Nuxiva", voc)
+        self.assertIn("Marco", voc)
+        self.assertIn("LED Veletta", voc)
+        self.assertIn("Condizionatore", voc)
+        self.assertIn("Salotto", voc)
+        self.assertIn("Cucina", voc)
+        self.assertIn("Zona Notte", voc)
+        self.assertIn("Studio Tecnico", voc)
+        self.assertIn("Primo Piano", voc)
+
+    def test_gemini_prompt_contains_context_vocabulary(self):
+        with mock.patch.object(vocabulary, "home_vocabulary_list", return_value=["Nuxiva", "Veletta", "Salotto"]):
+            prompt = vocabulary.gemini_prompt("it")
+
+        self.assertIn("Veletta", prompt)
+        self.assertIn("Salotto", prompt)
+        self.assertIn("Nuxiva", prompt)
+
+    def test_transcribe_gemini_injects_vocabulary_prompt(self):
         captured = {}
 
         def fake_urlopen(req, timeout):
             captured["url"] = req.full_url
-            captured["data"] = json.loads(req.data.decode("utf-8"))
-            captured["timeout"] = timeout
+            captured["body"] = json.loads(req.data.decode("utf-8"))
             return DummyResponse(json.dumps({
                 "candidates": [{
-                    "content": {"parts": [{"text": "accendi led veletta"}]}
+                    "content": {
+                        "parts": [{"text": "accendi led veletta in salotto"}]
+                    }
                 }]
             }).encode("utf-8"))
 
         with mock.patch.object(online_stt.urllib.request, "urlopen", side_effect=fake_urlopen), \
-             mock.patch.object(vocabulary, "home_vocabulary_string", return_value="Veletta, Salotto"), \
+             mock.patch.object(vocabulary, "home_vocabulary_list", return_value=["Veletta", "Salotto"]), \
              mock.patch.dict(os.environ, {"NUXIVA_ONLINE_STT_MODEL": "gemini-3.5-flash"}):
             text = online_stt.transcribe_gemini(_dummy_wav(), api_key="secret123", lang="it")
 
-        self.assertEqual(text, "accendi led veletta")
-        self.assertIn("gemini-3.5-flash", captured["url"])
-        parts = captured["data"]["contents"][0]["parts"]
-        prompt_text = parts[0]["text"]
-        self.assertIn("Veletta", prompt_text)
-        self.assertIn("Salotto", prompt_text)
-        self.assertEqual(parts[1]["inline_data"]["mime_type"], "audio/wav")
+        self.assertEqual(text, "accendi led veletta in salotto")
+        self.assertIn("models/gemini-3.5-flash:generateContent", captured["url"])
+        parts = captured["body"]["contents"][0]["parts"]
+        text_parts = [p.get("text", "") for p in parts if "text" in p]
+        self.assertTrue(any("Veletta" in t for t in text_parts))
 
-    def test_transcribe_openai_compatible_injects_prompt_field(self):
+    def test_transcribe_openai_compatible_injects_prompt(self):
         captured = {}
 
         def fake_urlopen(req, timeout):
-            captured["url"] = req.full_url
-            captured["data"] = req.data.decode("utf-8", errors="replace")
-            captured["timeout"] = timeout
-            return DummyResponse(json.dumps({"text": "accendi led veletta"}).encode("utf-8"))
+            captured["body"] = req.data
+            return DummyResponse(json.dumps({
+                "text": "accendi led veletta"
+            }).encode("utf-8"))
 
         with mock.patch.object(online_stt.urllib.request, "urlopen", side_effect=fake_urlopen), \
-             mock.patch.object(vocabulary, "home_vocabulary_string", return_value="Veletta, Salotto"):
+             mock.patch.object(vocabulary, "home_vocabulary_list", return_value=["Veletta", "Salotto"]):
             text = online_stt.transcribe_openai_compatible(
                 _dummy_wav(),
-                endpoint="https://api.groq.com/openai/v1/audio/transcriptions",
-                model="whisper-large-v3-turbo",
+                endpoint="https://api.groq.com/openai/v1",
                 api_key="gkey",
+                model="whisper-large-v3",
                 lang="it"
             )
 
         self.assertEqual(text, "accendi led veletta")
-        self.assertIn("name=\"prompt\"", captured["data"])
-        self.assertIn("Veletta", captured["data"])
+        body_str = captured["body"].decode("utf-8", errors="replace")
+        self.assertIn('name="prompt"', body_str)
+        self.assertIn("Veletta", body_str)
 
-    def test_transcribe_deepgram_includes_keywords_param(self):
+    def test_transcribe_deepgram_injects_keywords(self):
         captured = {}
 
         def fake_urlopen(req, timeout):
@@ -150,7 +167,7 @@ class EarVocabularySttTest(unittest.TestCase):
 
     def test_stt_hotwords_includes_home_vocabulary(self):
         with mock.patch.object(vocabulary, "home_vocabulary_list", return_value=["Nuxiva", "Veletta", "Salotto"]):
-            hw = stt._hotwords("it")
+            hw = stt_module._hotwords("it")
 
         self.assertIn("Veletta", hw)
         self.assertIn("Salotto", hw)

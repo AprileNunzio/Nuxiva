@@ -14,6 +14,7 @@ if str(EAR) not in sys.path:
     sys.path.append(str(EAR))
 
 SCRIPT = {"text": "Nuxiva accendi la luce"}
+_orig_stt = sys.modules.get("stt")
 fake = types.ModuleType("stt")
 fake.lock = None
 fake.calls = 0
@@ -34,6 +35,13 @@ import tuning as tuning_module
 
 
 class ReviewerTest(unittest.TestCase):
+    @classmethod
+    def tearDownClass(cls):
+        if _orig_stt is not None:
+            sys.modules["stt"] = _orig_stt
+        else:
+            sys.modules.pop("stt", None)
+
     def setUp(self):
         self.dir = Path(tempfile.mkdtemp())
         recorder.ROOT = self.dir

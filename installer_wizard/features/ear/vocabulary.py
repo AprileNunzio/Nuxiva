@@ -39,6 +39,8 @@ def _extract_words(phrase: str) -> List[str]:
         return []
     out = []
     tokens = WORD_RE.findall(cleaned)
+    if len(tokens) > 1 and len(cleaned) <= 35:
+        out.append(cleaned)
     for tok in tokens:
         lower = tok.lower()
         if lower not in STOPWORDS and not lower.isdigit() and len(tok) >= 3:
@@ -46,20 +48,42 @@ def _extract_words(phrase: str) -> List[str]:
     return out
 
 
-def _collect_family_names() -> List[str]:
-    names: List[str] = []
+def _get_brain_catalog():
+    try:
+        from features.home_assistant.home import brain
+        return getattr(brain, "catalog", None)
+    except Exception:
+        return None
+
+
+def _get_places_store():
+    try:
+        from features.places.store import store
+        return store
+    except Exception:
+        return None
+
+
+def _get_learner():
     try:
         from learner import learner
-        base = learner.hotwords()
-        for token in base.split():
-            cleaned = _clean_term(token)
-            if cleaned and cleaned.lower() not in STOPWORDS:
-                names.append(cleaned.capitalize() if cleaned.islower() else cleaned)
+        return learner
     except Exception:
         try:
             from features.ear.learner import learner
-            base = learner.hotwords()
-            for token in base.split():
+            return learner
+        except Exception:
+            return None
+
+
+def _collect_family_names() -> List[str]:
+    names: List[str] = []
+    learner_obj = _get_learner()
+    if learner_obj is not None:
+        try:
+            base = learner_obj.hotwords()
+            items = base if isinstance(base, (list, tuple, set)) else str(base or "").split()
+            for token in items:
                 cleaned = _clean_term(token)
                 if cleaned and cleaned.lower() not in STOPWORDS:
                     names.append(cleaned.capitalize() if cleaned.islower() else cleaned)
@@ -70,10 +94,9 @@ def _collect_family_names() -> List[str]:
 
 def _collect_home_assistant_terms() -> List[str]:
     terms: List[str] = []
-    try:
-        from features.home_assistant.home import brain
-        catalog = getattr(brain, "catalog", None)
-        if catalog is not None:
+    catalog = _get_brain_catalog()
+    if catalog is not None:
+        try:
             for entity in getattr(catalog, "entities", {}).values():
                 name = entity.get("name") or entity.get("device_name") or ""
                 for word in _extract_words(name):
@@ -86,33 +109,44 @@ def _collect_home_assistant_terms() -> List[str]:
                 floor_name = floor.get("name") or ""
                 for word in _extract_words(floor_name):
                     terms.append(word)
-    except Exception:
-        pass
+        except Exception:
+            pass
     return terms
 
 
 def _collect_places_terms() -> List[str]:
     terms: List[str] = []
-    try:
-        from features.places.store import store
-        for room in getattr(store, "rooms", {}).values():
-            for word in _extract_words(getattr(room, "name", "")):
-                terms.append(word)
-            for alias in getattr(room, "aliases", []) or []:
-                for word in _extract_words(alias):
+    store_obj = _get_places_store()
+    if store_obj is not None:
+        try:
+            rooms = getattr(store_obj, "rooms", {})
+            room_list = rooms.values() if isinstance(rooms, dict) else rooms
+            for room in room_list:
+                name = room.get("name", "") if isinstance(room, dict) else getattr(room, "name", "")
+                for word in _extract_words(name):
                     terms.append(word)
-        for floor in getattr(store, "floors", {}).values():
-            for word in _extract_words(getattr(floor, "name", "")):
-                terms.append(word)
-    except Exception:
-        pass
+                aliases = room.get("aliases", []) if isinstance(room, dict) else getattr(room, "aliases", [])
+                for alias in aliases or []:
+                    for word in _extract_words(alias):
+                        terms.append(word)
+            floors = getattr(store_obj, "floors", {})
+            floor_list = floors.values() if isinstance(floors, dict) else floors
+            for floor in floor_list:
+                name = floor.get("name", "") if isinstance(floor, dict) else getattr(floor, "name", "")
+                for word in _extract_words(name):
+                    terms.append(word)
+        except Exception:
+            pass
     return terms
 
 
-def home_vocabulary_list(limit: int = 50) -> List[str]:
+def home_vocabulary_list(lang_or_limit=None, limit: int = 50) -> List[str]:
+    actual_limit = limit
+    if isinstance(lang_or_limit, int):
+        actual_limit = lang_or_limit
     now = time.time()
     if _CACHE["words"] and (now - _CACHE["at"] < CACHE_TTL):
-        return list(_CACHE["words"][:limit])
+        return list(_CACHE["words"][:actual_limit])
 
     seen: Set[str] = set()
     result: List[str] = []
@@ -124,13 +158,13 @@ def home_vocabulary_list(limit: int = 50) -> List[str]:
 
     for item in _collect_family_names() + _collect_home_assistant_terms() + _collect_places_terms():
         key = item.lower()
-        if key not in seen and len(result) < limit * 2:
+        if key not in seen and len(result) < actual_limit * 2:
             seen.add(key)
             result.append(item)
 
     _CACHE["at"] = now
     _CACHE["words"] = result
-    return result[:limit]
+    return result[:actual_limit]
 
 
 def home_vocabulary_string(limit: int = 40) -> str:
