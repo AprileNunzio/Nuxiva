@@ -3,7 +3,6 @@ from features.agent.registry import tool
 
 OWNER = "brain"
 
-# Database dinamico di stato dei modelli e delle assegnazioni
 BRAIN_STATE = {
     "local_models": [
         {"id": "qwen2.5:7b", "name": "Qwen 2.5 (7B)", "type": "local", "size_gb": 4.7, "status": "ready", "vram_mb": 4200},
@@ -13,19 +12,21 @@ BRAIN_STATE = {
         {"id": "qwen2.5-coder:7b", "name": "Qwen 2.5 Coder (7B)", "type": "local", "size_gb": 4.7, "status": "ready", "vram_mb": 4300},
     ],
     "cloud_models": [
-        {"id": "openai/gpt-4o", "name": "OpenAI GPT-4o", "provider": "OpenAI", "type": "cloud", "status": "connected", "latency_ms": 320},
-        {"id": "openai/o3-mini", "name": "OpenAI o3-mini", "provider": "OpenAI", "type": "cloud", "status": "connected", "latency_ms": 480},
-        {"id": "anthropic/claude-3-5-sonnet", "name": "Claude 3.5 Sonnet", "provider": "Anthropic", "type": "cloud", "status": "connected", "latency_ms": 290},
-        {"id": "google/gemini-2.5-pro", "name": "Google Gemini 2.5 Pro", "provider": "Google", "type": "cloud", "status": "connected", "latency_ms": 210},
-        {"id": "deepseek/deepseek-r1", "name": "DeepSeek R1 Cloud", "provider": "DeepSeek", "type": "cloud", "status": "connected", "latency_ms": 520},
-        {"id": "groq/llama-3.3-70b-versatile", "name": "Groq Llama 3.3 (70B Fast)", "provider": "Groq", "type": "cloud", "status": "connected", "latency_ms": 110},
+        {"id": "google/gemini-3.8-flash", "name": "Google Gemini 3.8 Flash", "provider": "Google", "type": "cloud", "status": "connected", "latency_ms": 45},
+        {"id": "google/gemini-3.1-pro", "name": "Google Gemini 3.1 Pro", "provider": "Google", "type": "cloud", "status": "connected", "latency_ms": 130},
+        {"id": "openai/gpt-6-astra", "name": "OpenAI GPT-6 Astra", "provider": "OpenAI", "type": "cloud", "status": "connected", "latency_ms": 280},
+        {"id": "openai/gpt-6.1-sol", "name": "OpenAI GPT-6.1 Sol", "provider": "OpenAI", "type": "cloud", "status": "connected", "latency_ms": 190},
+        {"id": "anthropic/claude-sonnet-5-5", "name": "Claude Sonnet 5.5", "provider": "Anthropic", "type": "cloud", "status": "connected", "latency_ms": 150},
+        {"id": "anthropic/claude-haiku-5-5", "name": "Claude Haiku 5.5", "provider": "Anthropic", "type": "cloud", "status": "connected", "latency_ms": 70},
+        {"id": "deepseek/deepseek-v3", "name": "DeepSeek V3", "provider": "DeepSeek", "type": "cloud", "status": "connected", "latency_ms": 220},
+        {"id": "groq/llama-3.3-70b-versatile", "name": "Groq Llama 3.3 (70B Fast)", "provider": "Groq", "type": "cloud", "status": "connected", "latency_ms": 95},
     ],
     "agent_assignments": {
-        "ceo": "anthropic/claude-3-5-sonnet",
+        "ceo": "anthropic/claude-sonnet-5-5",
         "developer": "qwen2.5-coder:7b",
         "home": "granite3.3:2b",
-        "researcher": "deepseek/deepseek-r1",
-        "media": "openai/gpt-4o",
+        "researcher": "google/gemini-3.8-flash",
+        "media": "openai/gpt-6.1-sol",
         "whiteboard": "qwen2.5:7b",
     },
     "device_assignments": {

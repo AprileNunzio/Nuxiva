@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { ArrowDown, ArrowUp, CircleDot, Loader2, Plus, RotateCcw, Save, X } from 'lucide-react';
+import { ArrowDown, ArrowUp, CircleDot, Loader2, Plus, RotateCcw, Save, Sparkles, SlidersHorizontal, X } from 'lucide-react';
 import { ActionHandle } from '../../shared/hooks/useAction';
 import { BrainOverview, RoleState, saveRole } from '../data/brainApi';
-import { BrainRef } from '../data/parse';
+import { BrainRef, REF } from '../data/parse';
 import { ORIGIN_TONE, chipButton, fieldClass, roleIcon, useBrainI18n } from '../scope';
 
 interface RoleCardProps {
@@ -17,6 +17,8 @@ export const RoleCard: React.FC<RoleCardProps> = ({ role, pool, action, onSaved 
   const Icon = roleIcon(role.id);
   const [draft, setDraft] = useState<string[]>(role.entries.map((e) => e.ref));
   const [pick, setPick] = useState('');
+  const [customMode, setCustomMode] = useState(false);
+  const [customInput, setCustomInput] = useState('');
   useEffect(() => setDraft(role.entries.map((e) => e.ref)), [role.entries]);
 
   const known = useMemo(() => new Map([...pool, ...role.entries].map((r) => [r.ref, r])), [pool, role.entries]);
@@ -29,6 +31,27 @@ export const RoleCard: React.FC<RoleCardProps> = ({ role, pool, action, onSaved 
     const [item] = next.splice(index, 1);
     next.splice(index + delta, 0, item);
     setDraft(next);
+  };
+
+  const addCustom = () => {
+    const raw = customInput.trim();
+    if (!raw) {
+      return;
+    }
+    const resolved = raw.startsWith('cloud:')
+      ? raw
+      : raw.startsWith('gemini')
+        ? `cloud:gemini/${raw}`
+        : raw.startsWith('claude')
+          ? `cloud:anthropic/${raw}`
+          : raw.startsWith('gpt-') || raw.startsWith('o3') || raw.startsWith('o4')
+            ? `cloud:openai/${raw}`
+            : raw;
+    if (REF.test(resolved) && !draft.includes(resolved) && draft.length < 12) {
+      setDraft([...draft, resolved]);
+      setCustomInput('');
+      setCustomMode(false);
+    }
   };
 
   const save = async (models: string[]) => {
@@ -79,28 +102,72 @@ export const RoleCard: React.FC<RoleCardProps> = ({ role, pool, action, onSaved 
           );
         })}
       </ol>
-      <div className="mt-2 flex flex-wrap items-center gap-2">
-        <select aria-label={t('add_model')} value={pick} onChange={(event) => setPick(event.target.value)} className={`${fieldClass} min-w-0 flex-1 py-1.5 text-xs`}>
-          <option value="">{t('add_model')}</option>
-          {choices.map((r) => (
-            <option key={r.ref} value={r.ref} disabled={!r.available}>
-              {r.model} · {t(`origin_${r.origin}`)}
-            </option>
-          ))}
-        </select>
-        <button
-          type="button"
-          disabled={!pick || draft.length >= 12}
-          onClick={() => {
-            setDraft([...draft, pick]);
-            setPick('');
-          }}
-          className={`${chipButton} border-slate-700 text-slate-200 hover:border-cyan-400/60`}
-        >
-          <Plus className="h-3.5 w-3.5" aria-hidden="true" />
-          {t('add')}
-        </button>
-      </div>
+      {!customMode ? (
+        <div className="mt-2 flex flex-wrap items-center gap-2">
+          <select aria-label={t('add_model')} value={pick} onChange={(event) => setPick(event.target.value)} className={`${fieldClass} min-w-0 flex-1 py-1.5 text-xs`}>
+            <option value="">{t('add_model')}</option>
+            {choices.map((r) => (
+              <option key={r.ref} value={r.ref} disabled={!r.available}>
+                {r.model} · {t(`origin_${r.origin}`)}
+              </option>
+            ))}
+          </select>
+          <button
+            type="button"
+            disabled={!pick || draft.length >= 12}
+            onClick={() => {
+              setDraft([...draft, pick]);
+              setPick('');
+            }}
+            className={`${chipButton} border-slate-700 text-slate-200 hover:border-cyan-400/60`}
+          >
+            <Plus className="h-3.5 w-3.5" aria-hidden="true" />
+            {t('add')}
+          </button>
+          <button
+            type="button"
+            title={t('custom_model_toggle')}
+            aria-label={t('custom_model_toggle')}
+            onClick={() => setCustomMode(true)}
+            className={`${chipButton} border-slate-800 text-slate-400 hover:border-cyan-400/40 hover:text-cyan-200`}
+          >
+            <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
+          </button>
+        </div>
+      ) : (
+        <div className="mt-2 flex flex-wrap items-center gap-2">
+          <input
+            type="text"
+            value={customInput}
+            onChange={(e) => setCustomInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addCustom())}
+            placeholder={t('custom_model_id_placeholder')}
+            aria-label={t('custom_model_id_placeholder')}
+            className={`${fieldClass} min-w-0 flex-1 py-1.5 text-xs font-mono`}
+          />
+          <button
+            type="button"
+            disabled={!customInput.trim() || draft.length >= 12}
+            onClick={addCustom}
+            className={`${chipButton} border-cyan-400/50 bg-cyan-400/10 text-cyan-200 hover:bg-cyan-400/20`}
+          >
+            <Plus className="h-3.5 w-3.5" aria-hidden="true" />
+            {t('custom_model_add')}
+          </button>
+          <button
+            type="button"
+            title={t('catalog_model_toggle')}
+            aria-label={t('catalog_model_toggle')}
+            onClick={() => {
+              setCustomMode(false);
+              setCustomInput('');
+            }}
+            className={`${chipButton} border-slate-800 text-slate-400 hover:border-slate-600 hover:text-white`}
+          >
+            <SlidersHorizontal className="h-3.5 w-3.5" aria-hidden="true" />
+          </button>
+        </div>
+      )}
       <div className="mt-2 flex flex-wrap gap-2">
         <button type="button" disabled={!dirty || busy} onClick={() => void save(draft)} className={`${chipButton} border-cyan-400/50 bg-cyan-400/10 text-cyan-100 hover:bg-cyan-400/20`}>
           {action.busy === `role:${role.id}` ? <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" /> : <Save className="h-3.5 w-3.5" aria-hidden="true" />}

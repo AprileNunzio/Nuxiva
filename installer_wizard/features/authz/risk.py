@@ -12,7 +12,7 @@ class Risk(IntEnum):
 NAMES = {r.name.lower(): r for r in Risk}
 
 TOOLS: dict[str, Risk] = {
-    "now": Risk.INFO, "list_widgets": Risk.INFO, "avatar_catalog": Risk.INFO, "list_models": Risk.INFO,
+    "now": Risk.INFO, "list_widgets": Risk.INFO, "avatar_catalog": Risk.INFO, "list_models": Risk.INFO, "cloud_catalog": Risk.INFO,
     "team_roster": Risk.INFO, "agent_info": Risk.INFO, "agent_inbox": Risk.INFO, "ceo_overview": Risk.INFO, "list_automations": Risk.INFO,
     "list_tasks": Risk.INFO, "list_custom_tools": Risk.INFO, "music_now": Risk.INFO, "music_search": Risk.INFO,
     "music_outputs": Risk.INFO,

@@ -50,9 +50,9 @@ ANSWER_KEYS = {"NUXIVA_USER_NAME", "NUXIVA_UI_LANG", "NUXIVA_VOICE", "NUXIVA_LLM
                "NUXIVA_BRAIN", "NUXIVA_OLLAMA_URL", "NUXIVA_CLOUD_PROVIDER", "NUXIVA_CLOUD_KEY", "NUXIVA_PACKAGES"}
 BRAINS = ("local", "remote", "cloud")
 CLOUD_PICK = {
-    "anthropic": ("Anthropic Claude", "claude-haiku-4-5-20251001", "claude-sonnet-5-5"),
-    "gemini": ("Google Gemini", "gemini-2.5-flash", "gemini-2.5-pro"),
-    "openai": ("OpenAI", "gpt-5-mini", "gpt-5"),
+    "anthropic": ("Anthropic Claude", "claude-haiku-5-5", "claude-sonnet-5-5"),
+    "gemini": ("Google Gemini", "gemini-3.8-flash", "gemini-3.1-pro"),
+    "openai": ("OpenAI", "gpt-6.1-sol", "gpt-6-astra"),
     "mistral": ("Mistral AI", "mistral-small-latest", "mistral-large-latest"),
 }
 CLOUD_KEY_RE = re.compile(r"[A-Za-z0-9_\-.]{20,256}")

@@ -26,7 +26,7 @@ def _provider(pid: str):
 def _describe(spec) -> dict:
     return {"id": spec.id, "name": spec.name, "kind": spec.kind, "base_url": spec.base_url, "key_url": spec.key_url,
             "needs_url": spec.needs_url, "key_optional": spec.key_optional, "reasoning": spec.reasoning,
-            "notes": spec.notes, "configured": vault.configured(spec.id), **vault.public(spec.id)}
+            "notes": spec.notes, "models": list(spec.models), "configured": vault.configured(spec.id), **vault.public(spec.id)}
 
 
 @admin_routes.get("/api/cloud")
@@ -34,6 +34,13 @@ async def cloud_overview(_: str = Depends(require_admin)):
     cfg = brains.config()
     return {"providers": [_describe(p) for p in PROVIDERS], "choices": OPTION_CHOICES,
             "chat": cfg["chat"], "deep": cfg["deep"]}
+
+
+@admin_routes.get("/api/cloud/catalog")
+async def cloud_catalog(_: str = Depends(require_admin)):
+    return {"providers": [{"id": p.id, "name": p.name, "kind": p.kind, "models": list(p.models),
+                           "configured": vault.configured(p.id), "reasoning": p.reasoning,
+                           "notes": p.notes} for p in PROVIDERS]}
 
 
 @admin_routes.put("/api/cloud/{pid}")
