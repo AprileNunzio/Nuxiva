@@ -91,6 +91,7 @@
 
   let presenceSig = "";
   let familyNearState = true;
+  let familyNearUntil = 0;
 
   D.isFamilyNear = () => familyNearState;
 
@@ -99,8 +100,9 @@
     const names = [...new Set(people.filter((p) => p.known).map((p) => p.name))];
     const near = new Set(people.filter((p) => p.known && p.near).map((p) => p.name));
     const strangers = people.filter((p) => !p.known).length;
-    const hasFamilyNear = people.some((p) => p.known && p.near && ["owner", "family"].includes(p.role));
-    familyNearState = hasFamilyNear || strangers === 0;
+    const hasFamilyNear = people.some((p) => p.known && ["owner", "family"].includes(p.role));
+    if (hasFamilyNear) familyNearUntil = Date.now() + 8000;
+    familyNearState = hasFamilyNear || Date.now() < familyNearUntil || strangers === 0;
     document.body.classList.toggle("guest-lock", !familyNearState);
     D.presentNames = names;
     D.Ear.presence(people.length === 1 && people[0].known ? people[0].slug : null);

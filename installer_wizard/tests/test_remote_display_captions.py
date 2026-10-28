@@ -133,7 +133,7 @@ class DisplayGuestLockAndEarScriptTest(unittest.TestCase):
     def test_display_js_starts_unlocked_unless_strangers_present(self) -> None:
         src = (WEB / "display.js").read_text(encoding="utf-8")
         self.assertIn("let familyNearState = true;", src)
-        self.assertIn("familyNearState = hasFamilyNear || strangers === 0;", src)
+        self.assertIn("familyNearState = hasFamilyNear || Date.now() < familyNearUntil || strangers === 0;", src)
 
     def test_58_ear_code_files_all_exist(self) -> None:
         root = WEB.parents[2]

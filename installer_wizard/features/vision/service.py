@@ -27,7 +27,7 @@ DETECT_WIDTH = 640
 PICK_CHECK = 5.0
 PORT = int(os.environ.get("NUXIVA_VISION_PORT", "8091"))
 OBJECT_MODEL = MODELS / "object_detection_nanodet_2022nov.onnx"
-NEAR_RATIO = 0.16
+NEAR_RATIO = selection.near_enter_ratio()
 DETECT_FPS = 4
 OBJECT_EVERY = 1.2
 FEATURE_EVERY = 3
@@ -186,7 +186,7 @@ class Vision:
                 if ir_face and slug_now and track.live_state == "live":
                     self.fusion.learn_offset(box, self.size, ir_face)
             current.append(track)
-        self.tracks = current + [t for t in unmatched if now - t.last_seen < 1.5]
+        self.tracks = current + [t for t in unmatched if now - t.last_seen < (3.0 if t.near else 1.5)]
         self._mark_echoes()
         for box, feature, _, _ in detections:
             track = next((t for t in current if t.box == box), None)
@@ -250,6 +250,9 @@ class Vision:
     def presence(self) -> dict:
         w = self.size[0] or 640
         now = time.time()
+        enter_r = selection.near_enter_ratio()
+        exit_r = selection.near_exit_ratio()
+        hold_s = selection.near_hold_seconds()
         people = []
         for t in self.tracks:
             if not self._visible(t, now):
@@ -257,6 +260,7 @@ class Vision:
             slug, name, score = t.identity()
             bx, by, bw, bh = t.box
             ratio = bw / w
+            prox, is_near = t.update_proximity(ratio, now, enter_r, exit_r, hold_s)
             h = self.size[1] or 480
             person = self.gallery.people.get(slug, {}) if slug else {}
             spoof = selection.liveness_mode() == "strict" and t.live_state == "spoof"
@@ -266,8 +270,8 @@ class Vision:
                            "liveness": {"state": t.live_state, "score": None if t.live_score is None else round(t.live_score, 3)},
                            "ambiguous": t.ambiguous, "possible": t.possible,
                            "auto": bool(person.get("auto")), "facing": t.facing,
-                           "confidence": round(score, 3), "proximity": round(ratio, 3),
-                           "near": ratio >= NEAR_RATIO, "since": t.first_seen, "affect": t.affect if slug else None,
+                           "confidence": round(score, 3), "proximity": prox, "raw_proximity": round(ratio, 3),
+                           "near": is_near, "since": t.first_seen, "affect": t.affect if slug else None,
                            "gaze": {"x": round((bx + bw / 2) / (w or 640), 3),
                                     "y": round((by + bh / 2) / h, 3)}})
         people.sort(key=lambda p: -p["proximity"])

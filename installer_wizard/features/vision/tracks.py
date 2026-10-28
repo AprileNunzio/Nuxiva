@@ -3,8 +3,17 @@ from collections import Counter, deque
 
 import numpy as np
 
-from affect import AffectMeter
-from gallery import UNKNOWN
+try:
+    from affect import AffectMeter
+except ImportError:
+    class AffectMeter:
+        def update(self, *args, **kwargs):
+            return None
+
+try:
+    from gallery import UNKNOWN
+except ImportError:
+    UNKNOWN = "Sconosciuto"
 
 
 class Track:
@@ -32,6 +41,9 @@ class Track:
         self.live_state = "unknown"
         self.ambiguous = False
         self.possible: list = []
+        self.ema_ratio: float = 0.0
+        self.near: bool = False
+        self.near_until: float = 0.0
 
     def identity(self) -> tuple[str | None, str, float]:
         if not self.votes:
@@ -39,6 +51,26 @@ class Track:
         (slug, name), count = Counter((v[0], v[1]) for v in self.votes).most_common(1)[0]
         scores = [v[2] for v in self.votes if v[0] == slug]
         return slug, name, float(np.mean(scores)) * count / len(self.votes)
+
+    def update_proximity(
+        self,
+        raw_ratio: float,
+        now: float,
+        enter_ratio: float = 0.08,
+        exit_ratio: float = 0.062,
+        hold_s: float = 6.0,
+    ) -> tuple[float, bool]:
+        self.ema_ratio = raw_ratio if self.ema_ratio <= 0.0 else (0.45 * raw_ratio + 0.55 * self.ema_ratio)
+        effective = max(raw_ratio, self.ema_ratio)
+        if effective >= enter_ratio:
+            self.near = True
+            self.near_until = now + hold_s
+        elif self.near:
+            if self.ema_ratio >= exit_ratio:
+                self.near_until = max(self.near_until, now + min(hold_s, 2.0))
+            elif now >= self.near_until:
+                self.near = False
+        return round(self.ema_ratio, 3), self.near
 
 
 def iou(a, b) -> float:

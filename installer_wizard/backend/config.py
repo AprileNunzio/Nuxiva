@@ -83,6 +83,8 @@ EDITABLE_KEYS = {
     "NUXIVA_VOICEPRINT_ENFORCE": "Filtro anti-TV ed estranei: rispondi solo alle voci registrate (1/0)",
     "NUXIVA_EAR_ENHANCE_ENGINE": "Motore di pulizia audio e dereverberazione (auto, deepfilternet, spectral)",
     "NUXIVA_VISION": "Webcam e riconoscimento facciale (1/0)",
+    "NUXIVA_VISION_NEAR_RATIO": "Visione: soglia di prossimità del volto per l'interazione ravvicinata (0.03 - 0.35, default 0.08)",
+    "NUXIVA_VISION_NEAR_HOLD_S": "Visione: secondi di mantenimento (isteresi) dello stato ravvicinato (0 - 60, default 6)",
     "NUXIVA_EAR": "Ascolto vocale con parola \"Nuxiva\" (1/0)",
     "NUXIVA_STT_MODEL": "Modello di ascolto offline (vuoto = automatico; base, small, medium, large-v3-turbo)",
     "NUXIVA_EAR_MAX_GAIN": "Amplificazione massima del microfono per il campo lontano (2 - 80)",

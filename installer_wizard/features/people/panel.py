@@ -94,7 +94,7 @@ async def people_panel(request: Request, focus: str = ""):
         background(cloud.poll(slug, now))
     strangers = sum(1 for p in visible if not p.get("known"))
     has_family_near = any(
-        p.get("near") and (people.load(p.get("slug")) or {}).get("role") in ("owner", "family")
+        (people.load(p.get("slug")) or {}).get("role") in ("owner", "family")
         for p in visible if p.get("known") and p.get("slug")
     ) or strangers == 0
     return {"roster": roster(now, {p["slug"] for p in visible if p.get("known") and p.get("slug")}),
