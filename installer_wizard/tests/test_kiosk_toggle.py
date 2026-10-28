@@ -4,7 +4,6 @@ from pathlib import Path
 from unittest.mock import AsyncMock, patch
 
 import feature_registry
-import packages
 from config import read_env, write_env
 from feature_registry import Registry
 from packages import PACKAGE_BY_STEP, step_wanted, wanted
@@ -46,7 +45,7 @@ class KioskToggleTest(unittest.IsolatedAsyncioTestCase):
 
             env = read_env()
             self.assertEqual(env.get("NUXIVA_KIOSK"), "0")
-            self.assertFalse(packages.wanted(packages.PACKAGE_BY_STEP["kiosk"], env))
+            self.assertFalse(wanted(PACKAGE_BY_STEP["kiosk"], env))
             self.assertTrue(step_wanted("kiosk", env))
 
     async def test_kiosk_pipeline_teardown_status(self):
