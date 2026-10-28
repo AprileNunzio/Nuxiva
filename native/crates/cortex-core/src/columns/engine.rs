@@ -1,5 +1,10 @@
 use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
 
+use crate::columns::causal::CausalGraph;
+use crate::columns::cdcl::{CdclSolver, Literal, SatResult};
+use crate::columns::egraph::{EGraph, ENode, RewriteRule};
+use crate::columns::invariant::{AntiUnificationEngine, SynthesizedMacroRule, TermPattern};
 use crate::columns::solver::{
     QuadraticProblem, solve_canonical, solve_invariant, solve_procedural,
 };
@@ -202,6 +207,66 @@ impl CorticalCortex {
         };
         self.shortcuts.push(shortcut.clone());
         Ok(shortcut)
+    }
+
+    pub fn solve_egraph(
+        &mut self,
+        root_node: &ENode,
+        _rules: &[RewriteRule],
+    ) -> CortexResult<ENode> {
+        let mut egraph = EGraph::new();
+        let root_id = egraph.add(root_node);
+        egraph.rebuild();
+        egraph
+            .extract_best_cost(root_id)
+            .ok_or(CortexError::InvalidExpression)
+    }
+
+    pub fn solve_cdcl(
+        &mut self,
+        num_vars: usize,
+        clauses: Vec<Vec<i32>>,
+    ) -> CortexResult<Option<BTreeMap<usize, bool>>> {
+        let mut solver = CdclSolver::new(num_vars);
+        for clause in clauses {
+            let lits = clause.into_iter().map(Literal).collect();
+            solver.add_clause(lits);
+        }
+        match solver.solve() {
+            SatResult::Satisfiable => Ok(Some(solver.model())),
+            SatResult::Unsatisfiable => Ok(None),
+        }
+    }
+
+    pub fn synthesize_macro_operator(
+        &mut self,
+        rule_id: &str,
+        lhs: TermPattern,
+        rhs: TermPattern,
+        proof_steps: usize,
+    ) -> CortexResult<SynthesizedMacroRule> {
+        Ok(AntiUnificationEngine::synthesize_rule(
+            rule_id,
+            lhs,
+            rhs,
+            proof_steps,
+        ))
+    }
+
+    #[must_use]
+    pub fn infer_causal(
+        &self,
+        graph: &CausalGraph,
+        target: &str,
+        var: &str,
+        val: bool,
+        is_do: bool,
+    ) -> f64 {
+        if is_do {
+            graph.do_intervention(target, var, val)
+        } else {
+            graph.observe(target, var, val)
+        }
     }
 
     pub fn snapshot_json(&self) -> CortexResult<String> {
