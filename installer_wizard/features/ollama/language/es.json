@@ -1,0 +1,16 @@
+{
+  "title": "Motor Ollama",
+  "subtitle": "Ajuste y optimización de hardware para inferencia local continua 24/7",
+  "status_online": "Operativo",
+  "status_offline": "Inactivo",
+  "hardware_profile": "Perfil de Hardware",
+  "parallel_slots": "Ranuras Paralelas",
+  "context_window": "Ventana de Contexto",
+  "max_predict": "Máx Tokens de Salida",
+  "flash_attention": "Flash Attention",
+  "keep_alive": "Retención en Memoria",
+  "save_applied": "Configuración guardada y aplicada",
+  "reset_success": "Perfil óptimo de hardware restaurado",
+  "restart_success": "Servicio Ollama reiniciado con éxito",
+  "bench_success": "Benchmark completado"
+}

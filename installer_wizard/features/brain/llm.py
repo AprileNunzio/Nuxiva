@@ -47,10 +47,30 @@ def decode(text: str, as_json: bool):
     return json.loads(body[start:end + 1] if start >= 0 and end > start else body)
 
 
+def _runtime_ollama_options(kind: str, component: str, max_tokens: int, temperature: float) -> dict:
+    try:
+        from features.ollama.service import get_runtime_options
+        opts = get_runtime_options(kind=kind, component=component)
+        num_ctx = opts.get("num_ctx", 8192)
+        num_predict = max_tokens if max_tokens != 500 else opts.get("num_predict", 4096)
+        num_thread = opts.get("num_thread", 4)
+    except Exception:
+        num_ctx = 8192 if kind == "deep" else 4096
+        num_predict = max_tokens if max_tokens != 500 else (4096 if kind == "deep" else 1024)
+        num_thread = 4
+    return {
+        "temperature": temperature,
+        "num_predict": num_predict,
+        "num_ctx": num_ctx,
+        "num_thread": num_thread,
+    }
+
+
 async def _ollama(model: str, prompt: str, system: str, as_json: bool, max_tokens: int, temperature: float,
-                  timeout: float) -> str:
+                  timeout: float, kind: str = "deep", component: str = "") -> str:
+    opts = _runtime_ollama_options(kind, component, max_tokens, temperature)
     body = {"model": model, "prompt": prompt, "stream": False, "keep_alive": keep_alive(model),
-            "options": {"temperature": temperature, "num_predict": max_tokens}}
+            "options": opts}
     if system:
         body["system"] = system
     if as_json:
@@ -105,7 +125,7 @@ async def generate(prompt: str, *, as_json: bool = False, max_tokens: int = 500,
                                        temperature=temperature, json_mode=as_json)
                 text = reply.text
             else:
-                text = await _ollama(model, prompt, system, as_json, max_tokens, temperature, timeout)
+                text = await _ollama(model, prompt, system, as_json, max_tokens, temperature, timeout, kind, component)
             result = decode(text, as_json)
         except (httpx.HTTPError, CloudError, ValueError) as exc:
             errors.append(f"{model}: {str(exc)[:120]}")

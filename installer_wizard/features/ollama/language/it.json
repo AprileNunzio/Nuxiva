@@ -1,0 +1,16 @@
+{
+  "title": "Motore Ollama",
+  "subtitle": "Gestione, tuning e ottimizzazione hardware per inferenza locale continua H24",
+  "status_online": "Operativo",
+  "status_offline": "Non Attivo",
+  "hardware_profile": "Profilo Hardware",
+  "parallel_slots": "Slot Paralleli",
+  "context_window": "Finestra di Contesto",
+  "max_predict": "Max Token Uscita",
+  "flash_attention": "Flash Attention",
+  "keep_alive": "Permanenza in Memoria",
+  "save_applied": "Configurazione salvata e applicata",
+  "reset_success": "Ripristino ottimale hardware completato",
+  "restart_success": "Servizio Ollama riavviato con successo",
+  "bench_success": "Benchmark completato"
+}

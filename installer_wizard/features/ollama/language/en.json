@@ -1,0 +1,16 @@
+{
+  "title": "Ollama Engine",
+  "subtitle": "Hardware tuning and optimization for continuous 24/7 local inference",
+  "status_online": "Online",
+  "status_offline": "Offline",
+  "hardware_profile": "Hardware Profile",
+  "parallel_slots": "Parallel Slots",
+  "context_window": "Context Window",
+  "max_predict": "Max Output Tokens",
+  "flash_attention": "Flash Attention",
+  "keep_alive": "Memory Retention",
+  "save_applied": "Configuration saved and applied",
+  "reset_success": "Optimal hardware profile restored",
+  "restart_success": "Ollama service restarted successfully",
+  "bench_success": "Benchmark completed"
+}

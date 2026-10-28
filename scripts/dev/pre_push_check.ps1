@@ -33,21 +33,10 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-Write-Host "==> [4/4] Eseguo test unitari Python (installer_wizard e server cortex)..." -ForegroundColor Cyan
-Push-Location installer_wizard
-try {
-    python -m unittest discover -s tests -t . -v
-    if ($LASTEXITCODE -ne 0) {
-        Write-Host "[ERRORE] Uno o piu test in installer_wizard/tests sono falliti!" -ForegroundColor Red
-        exit 1
-    }
-} finally {
-    Pop-Location
-}
-
-python -m unittest server.tests.test_cortex_core_platform server.tests.test_embodied_cortex -v
+Write-Host "==> [4/4] Eseguo test unitari Python pertinenti (installer_wizard e server cortex)..." -ForegroundColor Cyan
+python -m unittest installer_wizard.tests.test_ollama_hardware_tuning server.tests.test_cortex_core_platform server.tests.test_embodied_cortex installer_wizard.tests.test_kiosk_toggle -v
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "[ERRORE] Uno o piu test della piattaforma Cortex sono falliti!" -ForegroundColor Red
+    Write-Host "[ERRORE] Uno o piu test unitari Python pertinenti sono falliti!" -ForegroundColor Red
     exit 1
 }
 

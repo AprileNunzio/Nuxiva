@@ -19,6 +19,7 @@ const KNOWN_APPLICATION_IDS = new Set([
   'voice_studio', // Studio delle Voci (sintesi, equalizzatore, clonazione microfonica)
   'network',      // Rete & Mesh (dispositivi, satelliti, PC)
   'repair_workbench',
+  'ollama',
 ]);
 
 /**

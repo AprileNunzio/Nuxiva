@@ -3,25 +3,35 @@
 
 OVERRIDE=/etc/systemd/system/ollama.service.d/nuxiva.conf
 
+hardware_parallel() {
+    local ram_gb
+    ram_gb=$(awk '/MemTotal/ {printf "%d", ($2 / 1024 / 1024) + 0.5}' /proc/meminfo 2>/dev/null || echo 8)
+    if [ "$ram_gb" -ge 32 ]; then echo 4; else echo 2; fi
+}
+
 max_loaded() {
     local ram_gb
-    ram_gb=$(awk '/MemTotal/ {printf "%d", ($2 / 1024 / 1024) + 0.5}' /proc/meminfo)
-    if [ "$ram_gb" -ge 6 ]; then echo 3; else echo 2; fi
+    ram_gb=$(awk '/MemTotal/ {printf "%d", ($2 / 1024 / 1024) + 0.5}' /proc/meminfo 2>/dev/null || echo 8)
+    if [ "$ram_gb" -ge 32 ]; then echo 3; elif [ "$ram_gb" -ge 12 ]; then echo 2; else echo 1; fi
 }
 
 override_conf() {
+    if python3 -c "import sys; sys.path.insert(0, '$NUXIVA_DIR/installer_wizard'); from features.ollama.service import load_config, generate_systemd_override; print(generate_systemd_override(load_config()), end='')" 2>/dev/null; then
+        return 0
+    fi
     printf '%s\n' \
-        '# Gestito da Nuxiva OS' \
+        '# Gestito da Nuxiva OS (Auto-Tuning Hardware)' \
         '[Service]' \
         'Environment="OLLAMA_HOST=127.0.0.1:11434"' \
         'Environment="OLLAMA_KEEP_ALIVE=24h"' \
         "Environment=\"OLLAMA_MAX_LOADED_MODELS=$(max_loaded)\"" \
-        'Environment="OLLAMA_NUM_PARALLEL=1"' \
+        "Environment=\"OLLAMA_NUM_PARALLEL=$(hardware_parallel)\"" \
+        'Environment="OLLAMA_MAX_QUEUE=512"' \
+        'Environment="OLLAMA_FLASH_ATTENTION=1"' \
         'Restart=always' \
         'RestartSec=3' \
-        '# priorità bassa: ascolto e voce vengono prima del "pensiero" del modello' \
-        'CPUWeight=40' \
-        'Nice=5'
+        'CPUWeight=100' \
+        'Nice=0'
 }
 
 api_ok() { curl -fsS --max-time 5 "$OLLAMA_URL/api/version" >/dev/null 2>&1; }

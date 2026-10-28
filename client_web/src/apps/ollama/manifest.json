@@ -1,0 +1,29 @@
+{
+  "id": "ollama",
+  "name": "Ollama Engine",
+  "icon": "Cpu",
+  "version": "5.3.0",
+  "description": "Ottimizzazione e tuning hardware per inferenza locale continua H24, gestione multi-slot e contesti lunghi",
+  "scope": "apps/ollama",
+  "kind": "app",
+  "target": "global",
+  "window": {
+    "defaultWidth": 80,
+    "defaultHeight": 85,
+    "minWidth": 36,
+    "minHeight": 28,
+    "resizable": true
+  },
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "nQuaNO36nu68",
+    "url": "https://img.icons8.com/?size=240&id=nQuaNO36nu68&format=png"
+  },
+  "category": "intelligence",
+  "featureIds": [
+    "ollama",
+    "brain"
+  ]
+}
