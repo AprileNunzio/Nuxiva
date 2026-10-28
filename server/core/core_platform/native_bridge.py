@@ -6,6 +6,8 @@ from server.core.core_platform.result import Err, Ok, Result
 
 REQUIRED_SYMBOLS = (
     "RustNeuronIndex",
+    "RustCorticalCortex",
+    "RustEmbodiedCortex",
     "RustSigner",
     "CortexError",
     "cortex_sanitize_utterance",

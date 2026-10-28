@@ -5,9 +5,31 @@ from server.shared.errors.domain_errors import NuxivaBaseException
 from server.shared.i18n.provider import global_translator
 
 MODULE = "core/core_platform"
-CLIENT_PREFIXES = ("cortex.input.", "cortex.vector.", "cortex.slots.", "cortex.neuron.invalid", "cortex.router.", "cortex.forge.", "cortex.plasticity.")
-NOT_FOUND_CODES = frozenset({"cortex.neuron.unknown", "cortex.forge.unknown_skill"})
-UNAVAILABLE_PREFIXES = ("platform.", "hippocampus.embedding.", "hippocampus.skills.", "hippocampus.distillation.", "gliner.")
+CLIENT_PREFIXES = (
+    "cortex.input.",
+    "cortex.vector.",
+    "cortex.slots.",
+    "cortex.neuron.invalid",
+    "cortex.router.",
+    "cortex.forge.",
+    "cortex.plasticity.",
+    "cortex.columns.",
+    "cortex.embodied.",
+)
+NOT_FOUND_CODES = frozenset(
+    {
+        "cortex.neuron.unknown",
+        "cortex.forge.unknown_skill",
+        "cortex.embodied.unknown_joint",
+    }
+)
+UNAVAILABLE_PREFIXES = (
+    "platform.",
+    "hippocampus.embedding.",
+    "hippocampus.skills.",
+    "hippocampus.distillation.",
+    "gliner.",
+)
 
 
 class CortexFailure(NuxivaBaseException):

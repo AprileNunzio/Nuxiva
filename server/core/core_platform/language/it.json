@@ -63,6 +63,18 @@
       },
       "plasticity": {
         "invalid": "Il riscontro non è valido."
+      },
+      "columns": {
+        "equation_unsolvable": "L'equazione non ammette radici reali finite nel dominio richiesto.",
+        "invalid_expression": "I coefficienti o il livello di astrazione contengono valori non validi.",
+        "invariant_not_applicable": "Nessuna simmetria invariante diretta è applicabile: degrado al metodo canonico."
+      },
+      "embodied": {
+        "safety_violation": "Comando motorio bloccato: violazione dell'inviluppo di sicurezza coppia/tempo.",
+        "joint_limit_exceeded": "Comando motorio bloccato: angolo fuori dai limiti meccanici del giunto.",
+        "thermal_limit_exceeded": "Protezione termica attiva: la temperatura dell'attuatore supera la soglia di sicurezza.",
+        "balance_instability": "Riflesso di stabilità attivo: margine ZMP insufficiente o inclinazione critica.",
+        "unknown_joint": "Giunto cinematico umanoide non trovato."
       }
     },
     "platform": {

@@ -12,9 +12,11 @@ import { CredentialsDraft } from './ProviderCredentials';
 import { TargetCard } from './TargetCard';
 import { ComputeSourceTabs } from './ComputeSourceTabs';
 import { ProbabilisticArbiterPanel } from './ProbabilisticArbiterPanel';
+import { EmbodiedCortexPanel } from '../embodied_cortex/EmbodiedCortexPanel';
 import {
   Activity,
   Brain,
+  Cpu,
   HardDrive,
   Key,
   RefreshCw,
@@ -72,7 +74,7 @@ export const MainDashboard: React.FC<MainDashboardProps> = ({
   t,
 }) => {
   const [activeTab, setActiveTab] = useState<
-    'arbiter_lab' | 'remote_ollama' | 'local_ollama' | 'cloud_api'
+    'arbiter_lab' | 'embodied_cortex' | 'remote_ollama' | 'local_ollama' | 'cloud_api'
   >('arbiter_lab');
   const [filterQuery, setFilterQuery] = useState('');
   const [methodFilter] = useState<'all' | 'api_key' | 'ollama_local' | 'ollama_remote'>('all');
@@ -107,6 +109,14 @@ export const MainDashboard: React.FC<MainDashboardProps> = ({
               >
                 <Sparkles className="w-3.5 h-3.5 text-violet-700" />
                 {t('arbiter_tab_title')}
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('embodied_cortex')}
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-teal-100 hover:bg-teal-200 text-teal-950 border border-teal-300 shadow-2xs transition"
+              >
+                <Cpu className="w-3.5 h-3.5 text-teal-700" />
+                {t('embodied_cortex_tab_title')}
               </button>
               {localCount === 0 ? (
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-950 border border-emerald-300 shadow-2xs">
@@ -186,6 +196,19 @@ export const MainDashboard: React.FC<MainDashboardProps> = ({
 
           <button
             type="button"
+            onClick={() => setActiveTab('embodied_cortex')}
+            className={`px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-black transition flex items-center gap-2 whitespace-nowrap ${
+              activeTab === 'embodied_cortex'
+                ? 'bg-teal-600 text-white border border-teal-700 shadow-xs'
+                : 'text-slate-700 hover:bg-teal-50 border border-teal-200'
+            }`}
+          >
+            <Cpu className="w-4 h-4" />
+            {t('embodied_cortex_tab_title')}
+          </button>
+
+          <button
+            type="button"
             onClick={() => setActiveTab('remote_ollama')}
             className={`px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-black transition flex items-center gap-2 whitespace-nowrap ${
               activeTab === 'remote_ollama'
@@ -231,6 +254,8 @@ export const MainDashboard: React.FC<MainDashboardProps> = ({
             onSyncAllModules={onSyncAllModules}
             t={t}
           />
+        ) : activeTab === 'embodied_cortex' ? (
+          <EmbodiedCortexPanel t={t} />
         ) : (
           <ComputeSourceTabs
             activeTab={activeTab}

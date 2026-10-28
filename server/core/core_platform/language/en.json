@@ -63,6 +63,18 @@
       },
       "plasticity": {
         "invalid": "The feedback is not valid."
+      },
+      "columns": {
+        "equation_unsolvable": "The equation has no finite real roots in the requested domain.",
+        "invalid_expression": "The coefficients or abstraction tier contain invalid values.",
+        "invariant_not_applicable": "No direct invariant symmetry applies: degrading to canonical solver."
+      },
+      "embodied": {
+        "safety_violation": "Motor command blocked: torque/time safety envelope violation.",
+        "joint_limit_exceeded": "Motor command blocked: target angle exceeds mechanical joint limits.",
+        "thermal_limit_exceeded": "Thermal protection active: actuator temperature exceeds safety cutoff.",
+        "balance_instability": "Balance reflex active: insufficient ZMP margin or critical tilt.",
+        "unknown_joint": "Humanoid kinematic joint not found."
       }
     },
     "platform": {

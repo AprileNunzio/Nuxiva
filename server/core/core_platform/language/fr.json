@@ -63,6 +63,18 @@
       },
       "plasticity": {
         "invalid": "Le retour n'est pas valide."
+      },
+      "columns": {
+        "equation_unsolvable": "L'équation n'admet aucune racine réelle finie dans le domaine demandé.",
+        "invalid_expression": "Les coefficients ou le niveau d'abstraction contiennent des valeurs non valides.",
+        "invariant_not_applicable": "Aucune symétrie invariante directe n'est applicable : passage au solveur canonique."
+      },
+      "embodied": {
+        "safety_violation": "Commande motrice bloquée : violation de l'enveloppe de sécurité couple/temps.",
+        "joint_limit_exceeded": "Commande motrice bloquée : l'angle cible dépasse les limites mécaniques.",
+        "thermal_limit_exceeded": "Protection thermique active : la température de l'actionneur dépasse le seuil.",
+        "balance_instability": "Réflexe d'équilibre actif : marge ZMP insuffisante ou inclinaison critique.",
+        "unknown_joint": "Articulation cinématique humanoïde introuvable."
       }
     },
     "platform": {

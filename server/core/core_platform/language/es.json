@@ -63,6 +63,18 @@
       },
       "plasticity": {
         "invalid": "La valoración no es válida."
+      },
+      "columns": {
+        "equation_unsolvable": "La ecuación no admite raíces reales finitas en el dominio solicitado.",
+        "invalid_expression": "Los coeficientes o el nivel de abstracción contienen valores no válidos.",
+        "invariant_not_applicable": "Ninguna simetría invariante directa es aplicable: degradando al método canónico."
+      },
+      "embodied": {
+        "safety_violation": "Comando motor bloqueado: violación de la envolvente de seguridad par/tiempo.",
+        "joint_limit_exceeded": "Comando motor bloqueado: el ángulo supera los límites mecánicos de la articulación.",
+        "thermal_limit_exceeded": "Protección térmica activa: la temperatura del actuador supera el umbral.",
+        "balance_instability": "Reflejo de estabilidad activo: margen ZMP insuficiente o inclinación crítica.",
+        "unknown_joint": "Articulación cinemática humanoide no encontrada."
       }
     },
     "platform": {
@@ -83,7 +95,7 @@
         "failed": "Error al calcular el embedding."
       },
       "storage": {
-        "undecryptable": "La memoria de neuronas no se puede descifrar con la clave actual.",
+        "undecryptable": "La memoria de neuronas no se puede descifrar con la clave attuale.",
         "corrupted": "La memoria de neuronas está dañada."
       },
       "skills": {

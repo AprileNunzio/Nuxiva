@@ -28,6 +28,14 @@ pub enum CortexError {
     SlotRequiredMissing,
     SlotTypeMismatch,
     SlotValueNotAllowed,
+    EquationUnsolvable,
+    InvalidExpression,
+    InvariantNotApplicable,
+    SafetyEnvelopeViolation,
+    JointLimitExceeded,
+    ThermalLimitExceeded,
+    BalanceInstability,
+    UnknownJoint,
 }
 
 impl CortexError {
@@ -60,6 +68,14 @@ impl CortexError {
             Self::SlotRequiredMissing => "cortex.slots.required_missing",
             Self::SlotTypeMismatch => "cortex.slots.type_mismatch",
             Self::SlotValueNotAllowed => "cortex.slots.value_not_allowed",
+            Self::EquationUnsolvable => "cortex.columns.equation_unsolvable",
+            Self::InvalidExpression => "cortex.columns.invalid_expression",
+            Self::InvariantNotApplicable => "cortex.columns.invariant_not_applicable",
+            Self::SafetyEnvelopeViolation => "cortex.embodied.safety_violation",
+            Self::JointLimitExceeded => "cortex.embodied.joint_limit_exceeded",
+            Self::ThermalLimitExceeded => "cortex.embodied.thermal_limit_exceeded",
+            Self::BalanceInstability => "cortex.embodied.balance_instability",
+            Self::UnknownJoint => "cortex.embodied.unknown_joint",
         }
     }
 }
