@@ -15,7 +15,11 @@ export function isValidUsername(username: string): boolean {
 }
 
 export async function fetchSessionUser(): Promise<string | null> {
-  const response = await fetch('/api/auth/me', { headers: { Accept: 'application/json' }, cache: 'no-store' });
+  const response = await fetch('/api/auth/me', {
+    headers: { Accept: 'application/json' },
+    cache: 'no-store',
+    credentials: 'include',
+  });
   if (response.status === 401) {
     return null;
   }
@@ -36,6 +40,7 @@ export async function login(username: string, password: string): Promise<string>
     headers: JSON_HEADERS,
     body: JSON.stringify({ username, password }),
     cache: 'no-store',
+    credentials: 'include',
   });
   if (response.status === 401) {
     throw new LoginError('invalid_credentials');
@@ -50,7 +55,12 @@ export async function login(username: string, password: string): Promise<string>
 }
 
 export async function logout(): Promise<void> {
-  const response = await fetch('/api/auth/logout', { method: 'POST', headers: JSON_HEADERS, cache: 'no-store' });
+  const response = await fetch('/api/auth/logout', {
+    method: 'POST',
+    headers: JSON_HEADERS,
+    cache: 'no-store',
+    credentials: 'include',
+  });
   if (!response.ok) {
     throw new LoginError('rejected');
   }

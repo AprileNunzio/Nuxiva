@@ -10,7 +10,19 @@ def is_local(request: Request) -> bool:
 
 
 def session_user(request: Request) -> str | None:
-    return auth.verify(request.cookies.get(auth.SESSION_COOKIE))
+    user = auth.verify(request.cookies.get(auth.SESSION_COOKIE))
+    if not user or user == "display":
+        return None
+    return user
+
+
+def display_session(request: Request) -> bool:
+    if session_user(request):
+        return True
+    for cookie_name in (auth.DISPLAY_COOKIE, auth.SESSION_COOKIE):
+        if auth.verify(request.cookies.get(cookie_name)):
+            return True
+    return False
 
 
 def require_admin(request: Request) -> str:
@@ -41,7 +53,7 @@ def is_private(request: Request) -> bool:
 
 
 def require_display(request: Request, message: str = "Accesso richiesto") -> None:
-    if not (is_local(request) or session_user(request) or paired_display(request)
+    if not (is_local(request) or display_session(request) or paired_display(request)
             or (request.method in ("GET", "HEAD") and is_private(request))):
         raise HTTPException(401, message)
 

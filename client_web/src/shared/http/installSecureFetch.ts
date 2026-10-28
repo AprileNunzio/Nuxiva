@@ -31,7 +31,7 @@ export function installSecureFetch(): void {
     const request = target === url.pathname ? input : input instanceof Request
       ? new Request(`${url.origin}${target}${url.search}`, input)
       : `${url.origin}${target}${url.search}`;
-    const response = await nativeFetch(request, { ...init, headers, credentials: 'same-origin' });
+    const response = await nativeFetch(request, { ...init, headers, credentials: 'include' });
     if (response.status === 401 && !url.pathname.startsWith(AUTH_PREFIX) && !url.pathname.startsWith(MCP_PREFIX)) {
       emitSessionExpired();
     }

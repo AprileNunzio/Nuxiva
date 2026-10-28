@@ -14,8 +14,7 @@ export function NotificationCenter({ visible, onClose, onCountChange }: { visibl
   useEffect(() => {
     const append = (item: Notification) => setItems(current => current.some(n => n.id === item.id) ? current : [item, ...current].slice(0, 100));
     const unsubscribe = subscribeErrors(error => append({ id: `error:${error.id}`, key: error.code, scope: 'shared/errors', at: error.occurredAt }));
-    // The installed backend exposes nuxiva_bus over authenticated SSE, not a WebSocket.
-    const stream = new EventSource(`${adminPath('/api/bus/stream')}?topics=ui.notification.*,ui.window.open`);
+    const stream = new EventSource(`${adminPath('/api/bus/stream')}?topics=ui.notification.*,ui.window.open`, { withCredentials: true });
     stream.onmessage = event => {
       if (event.data.length > 65536) return;
       try {
@@ -30,7 +29,9 @@ export function NotificationCenter({ visible, onClose, onCountChange }: { visibl
           initialPayload: request.initialPayload && typeof request.initialPayload === 'object' && !Array.isArray(request.initialPayload) ? request.initialPayload : undefined,
         } : undefined;
         append({ id: envelope.id, key: typeof payload.labelKey === 'string' ? payload.labelKey : 'os_system_event', scope: action ? resolveApp(action.appId)!.scope : 'app_shell', at: Number.isFinite(envelope.ts) ? envelope.ts * 1000 : Date.now(), action });
-      } catch { /* Ignore malformed bus frames without creating an error loop. */ }
+      } catch {
+        return;
+      }
     };
     return () => { unsubscribe(); stream.close(); };
   }, []);

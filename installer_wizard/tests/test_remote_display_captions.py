@@ -67,7 +67,8 @@ class DisplaySessionCookieTest(unittest.TestCase):
         res = Response("ok")
         out = _display_response(req, res)
         cookies = [h[1].decode("latin-1") for h in out.raw_headers if h[0].lower() == b"set-cookie"]
-        self.assertTrue(any(auth.SESSION_COOKIE in c and auth.verify(c.split(";")[0].split("=", 1)[1].strip('"')) == "display" for c in cookies))
+        self.assertTrue(any(auth.DISPLAY_COOKIE in c and auth.verify(c.split(";")[0].split("=", 1)[1].strip('"')) == "display" for c in cookies))
+        self.assertFalse(any(auth.SESSION_COOKIE in c for c in cookies))
 
     def test_display_response_preserves_existing_valid_session(self) -> None:
         admin_token = auth.issue("admin")
@@ -76,6 +77,17 @@ class DisplaySessionCookieTest(unittest.TestCase):
         out = _display_response(req, res)
         cookies = [h[1].decode("latin-1") for h in out.raw_headers if h[0].lower() == b"set-cookie"]
         self.assertEqual(len(cookies), 0)
+
+    def test_display_cookie_never_grants_admin_session_user(self) -> None:
+        from access import session_user
+        display_token = auth.issue("display")
+        scope = {
+            "type": "http",
+            "method": "GET",
+            "client": ("192.168.1.50", 12345),
+            "headers": [(b"cookie", f"{auth.SESSION_COOKIE}={display_token}".encode())],
+        }
+        self.assertIsNone(session_user(Request(scope)))
 
 
 class RequireDisplaySecurityTest(unittest.TestCase):
@@ -108,6 +120,26 @@ class RequireDisplaySecurityTest(unittest.TestCase):
         token = auth.issue("display")
         require_display(self.fake_request("192.168.1.50", "GET", token))
         require_display(self.fake_request("192.168.1.50", "POST", token))
+        scope_display = {
+            "type": "http",
+            "method": "POST",
+            "client": ("192.168.1.50", 12345),
+            "headers": [(b"cookie", f"{auth.DISPLAY_COOKIE}={token}".encode())],
+        }
+        require_display(Request(scope_display))
+
+
+class DisplayGuestLockAndEarScriptTest(unittest.TestCase):
+    def test_display_js_starts_unlocked_unless_strangers_present(self) -> None:
+        src = (WEB / "display.js").read_text(encoding="utf-8")
+        self.assertIn("let familyNearState = true;", src)
+        self.assertIn("familyNearState = hasFamilyNear || strangers === 0;", src)
+
+    def test_58_ear_code_files_all_exist(self) -> None:
+        root = WEB.parents[2]
+        ear_sh = (root / "scripts" / "os" / "steps" / "58-ear.sh").read_text(encoding="utf-8")
+        self.assertNotIn("wakegain.py", ear_sh)
+        self.assertIn("autolevel.py", ear_sh)
 
 
 class EarJsScriptVerificationTest(unittest.TestCase):

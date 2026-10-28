@@ -28,10 +28,15 @@ def _node_allowed(socket: WebSocket) -> bool:
 
 def allowed(socket: WebSocket) -> bool:
     peer = socket.client.host if socket.client else ""
-    token = (getattr(socket, "cookies", {}).get(auth.SESSION_COOKIE)
-             or getattr(socket, "query_params", {}).get("token")
-             or getattr(socket, "query_params", {}).get("session"))
-    return (peer in ("127.0.0.1", "::1", "localhost") or bool(auth.verify(token))
+    cookies = getattr(socket, "cookies", {}) or {}
+    qparams = getattr(socket, "query_params", {}) or {}
+    tokens = (
+        cookies.get(auth.SESSION_COOKIE),
+        cookies.get(auth.DISPLAY_COOKIE),
+        qparams.get("token"),
+        qparams.get("session"),
+    )
+    return (peer in ("127.0.0.1", "::1", "localhost") or any(bool(auth.verify(t)) for t in tokens if t)
             or _node_allowed(socket))
 
 

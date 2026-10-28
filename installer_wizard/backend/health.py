@@ -33,7 +33,6 @@ def _local_llm_off() -> bool:
         return os.getenv("NUXIVA_LOCAL_OLLAMA_DISABLED") == "1"
 
 
-
 async def sh(*cmd: str, timeout: float = 60) -> tuple[int, str]:
     proc = await asyncio.create_subprocess_exec(
         *cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.STDOUT)
@@ -102,7 +101,7 @@ def mic_check(env: dict) -> dict | None:
                 f"({report.get('inputs', 0)} ingressi audio visti dal browser){service}"}
     if not link.get("clients") and now - link.get("since", now) > 90:
         return {"status": "warn", "mic": True, "detail": "Il display non è collegato all'ascolto" + kiosk_hint()}
-    if link.get("clients") and now - link.get("last_audio", 0) > 45:
+    if link.get("clients") and report.get("ok") and now - link.get("last_audio", 0) > 45:
         return {"status": "warn", "mic": True, "detail": "Nessun audio dal microfono del display" + service}
     audio = f"{int(now - link['last_audio'])} s fa" if link.get("last_audio") else "mai"
     pages = link.get("pages") or []
@@ -142,7 +141,7 @@ async def probe_all() -> dict:
 
         if local_disabled:
             results["ollama"] = {"status": "ok", "detail": "Disabilitato da Gestore Attività"}
-            results["llm"] = {"status": "ok", "detail": "Cervello LLM disabilitato"}
+            results["llm"] = {"status": "ok", "detail": "Cervello LLM disattivato"}
         else:
             try:
                 r = await client.get(f"{ollama_url()}/api/version")
@@ -274,6 +273,7 @@ def native() -> bool:
 
 BACKOFF = (0, 60, 180, 600, 1800)
 MIC_ATTEMPTS = 4
+MAX_HEAL_ATTEMPTS = 4
 
 
 class Watchdog:
@@ -299,9 +299,10 @@ class Watchdog:
             return
         count = self.heal_counts.get(key, 0) + 1
         comp = store.components.get(key, {})
-        if comp.get("mic") and count > MIC_ATTEMPTS:
+        max_attempts = MIC_ATTEMPTS if comp.get("mic") else MAX_HEAL_ATTEMPTS
+        if (comp.get("mic") or key not in CRITICAL) and count > max_attempts:
             self.gave_up.add(key)
-            store.event("ERROR", f"{COMPONENTS[key]}: dopo {MIC_ATTEMPTS} tentativi non si è ripristinato da solo "
+            store.event("ERROR", f"{COMPONENTS[key]}: dopo {max_attempts} tentativi non si è ripristinato da solo "
                                  f"({comp.get('detail', '')}). Non riprovo finché non cambia qualcosa.", key)
             return
         self.heal_counts[key] = count

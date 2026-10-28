@@ -92,10 +92,11 @@ async def people_panel(request: Request, focus: str = ""):
     slug = focus_of(focus[:64], visible)
     if slug and cloud.ready(slug):
         background(cloud.poll(slug, now))
+    strangers = sum(1 for p in visible if not p.get("known"))
     has_family_near = any(
         p.get("near") and (people.load(p.get("slug")) or {}).get("role") in ("owner", "family")
         for p in visible if p.get("known") and p.get("slug")
-    )
+    ) or strangers == 0
     return {"roster": roster(now, {p["slug"] for p in visible if p.get("known") and p.get("slug")}),
             "focus": focus_block(slug, now), "at": now, "family_near": has_family_near}
 

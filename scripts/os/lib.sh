@@ -28,7 +28,6 @@ if [ -n "${NUXIVA_OLLAMA_URL:-}" ]; then
     case "${OLLAMA_URL#*//}" in *:*) ;; *) OLLAMA_URL="$OLLAMA_URL:11434" ;; esac
 fi
 
-# Cervello LLM (Ollama) disattivato da Gestore Attivita': il core scrive questo marcatore, che sopravvive a riavvii e aggiornamenti.
 local_llm_disabled() { [ -f "$NUXIVA_STATE/local_llm_disabled" ]; }
 
 ollama_remote() {
@@ -198,7 +197,7 @@ same_content() {
     return $rc
 }
 
-_code_hash() { cat "$@" 2>/dev/null | sha1sum | cut -c1-16; }
+_code_hash() { { cat "$@" 2>/dev/null || true; } | sha1sum | cut -c1-16; }
 code_current() { local name=$1; shift; [ "$(cat "$NUXIVA_STATE/.code-$name" 2>/dev/null)" = "$(_code_hash "$@")" ]; }
 code_mark() { local name=$1; shift; mkdir -p "$NUXIVA_STATE"; _code_hash "$@" > "$NUXIVA_STATE/.code-$name"; }
 

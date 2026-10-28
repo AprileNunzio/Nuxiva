@@ -6,7 +6,8 @@ UNIT_SRC="$NUXIVA_DIR/scripts/os/systemd/nuxiva-ear.service"
 UNIT=/etc/systemd/system/nuxiva-ear.service
 EDIR="$NUXIVA_DIR/installer_wizard/features/ear"
 CODE=("$EDIR/service.py" "$EDIR/broadcast.py" "$EDIR/stt.py" "$EDIR/learner.py" "$EDIR/enhance.py" "$EDIR/music.py"
-      "$EDIR/wakeword.py" "$EDIR/voiceprint.py" "$EDIR/earconf.py" "$EDIR/tuning.py" "$EDIR/wakegain.py"
+      "$EDIR/wakeword.py" "$EDIR/voiceprint.py" "$EDIR/earconf.py" "$EDIR/tuning.py" "$EDIR/autolevel.py"
+      "$EDIR/vocabulary.py" "$EDIR/online_stt.py" "$EDIR/langpick.py"
       "$EDIR/recorder.py" "$EDIR/reviewer.py" "$EDIR/review_metrics.py" "$EDIR/journal.py" "$EDIR/capture.py"
       "$EDIR/feedback.py" "$EDIR/livecap.py" "$EDIR/livegov.py" "$NUXIVA_DIR/installer_wizard/features/biometrics/embeddings.py")
 OWW_URL=https://github.com/dscripka/openWakeWord/releases/download/v0.5.1
@@ -62,7 +63,7 @@ wake_wanted() {
 instant_ready() {
     local f
     wake_wanted || return 0
-    [ -n "$(find "$EAR/.instant-unsupported" -mtime -1 2>/dev/null)" ] && return 0
+    [ -e "$EAR/.instant-unsupported" ] && return 0
     [ -s "$WAKE_FILE" ] || [ -n "${NUXIVA_WAKEWORD_URL:-}" ] || return 0
     py -c "import openwakeword" 2>/dev/null || return 1
     [ -s "$WAKE_FILE" ] || return 1
@@ -87,7 +88,7 @@ fetch_wake_model() {
 
 voiceprint_ready() {
     [ "${NUXIVA_VOICEPRINT:-1}" = "0" ] && return 0
-    [ -n "$(find "$EAR/.voiceprint-unsupported" -mtime -1 2>/dev/null)" ] && return 0
+    [ -e "$EAR/.voiceprint-unsupported" ] && return 0
     py -c "import sherpa_onnx" 2>/dev/null && [ -s "$EAR/voiceprint/speaker.onnx" ]
 }
 
@@ -158,12 +159,16 @@ step_apply() {
 
     local model
     model=$(stt_model)
-    progress 35 "Download del modello di ascolto ($model)"
-    retry 3 10 py -c "
+    if ! model_cached; then
+        progress 35 "Download del modello di ascolto ($model)"
+        retry 3 10 py -c "
 from faster_whisper import WhisperModel
 for m in {x for x in ('$model', '$(wake_model)', '$(review_model)') if x}:
     WhisperModel(m, device='cpu', compute_type='int8', download_root='$EAR/models')
 print('modelli pronti')"
+    else
+        progress 35 "Modello di ascolto ($model) già presente"
+    fi
 
     progress 55 "Rilevatore istantaneo «Ehi, Nuxiva»"
     if commercial; then

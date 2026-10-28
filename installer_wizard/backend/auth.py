@@ -8,6 +8,7 @@ import time
 from config import ETC_DIR
 
 SESSION_COOKIE = "nuxiva_session"
+DISPLAY_COOKIE = "nuxiva_display"
 SESSION_TTL = 12 * 3600
 ADMIN_GROUPS = {"sudo", "wheel", "nuxiva-admin"}
 _SECRET_FILE = ETC_DIR / "session.key"

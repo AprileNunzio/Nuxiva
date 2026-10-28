@@ -43,13 +43,7 @@ class MissionWorkspaceRuntime:
         return env
 
     @classmethod
-    async def _run_isolated_cmd(cls, argv: list[str], cwd: Path) -> tuple[int, str]:
-        cmd = list(argv)
-        if sys.platform == "linux":
-            unshare_bin = shutil.which("unshare")
-            if unshare_bin:
-                cmd = [unshare_bin, "--net", "--", *cmd]
-
+    async def _exec_cmd(cls, cmd: list[str], cwd: Path) -> tuple[int, str]:
         try:
             proc = await asyncio.create_subprocess_exec(
                 *cmd,
@@ -71,6 +65,23 @@ class MissionWorkspaceRuntime:
 
         out_text = stdout_bytes.decode("utf-8", errors="replace") if stdout_bytes else ""
         return int(proc.returncode or 0), out_text[-OUTPUT_CAP:]
+
+    @classmethod
+    async def _run_isolated_cmd(cls, argv: list[str], cwd: Path) -> tuple[int, str]:
+        cmd = list(argv)
+        can_unshare = (
+            sys.platform == "linux"
+            and hasattr(os, "geteuid")
+            and os.geteuid() == 0
+            and bool(shutil.which("unshare"))
+        )
+        if can_unshare:
+            unshare_bin = shutil.which("unshare")
+            code, out = await cls._exec_cmd([unshare_bin, "--net", "--", *cmd], cwd)
+            if code != 0 and "unshare" in out.lower():
+                return await cls._exec_cmd(cmd, cwd)
+            return code, out
+        return await cls._exec_cmd(cmd, cwd)
 
     @classmethod
     async def verify_workspace(
@@ -111,7 +122,7 @@ class MissionWorkspaceRuntime:
 
         if check_type in ("auto", "python_compile") and py_files and sys.executable:
             code, out = await cls._run_isolated_cmd(
-                [sys.executable, "-B", "-m", "compileall", "-q", "."],
+                [sys.executable, "-B", "-m", "compileall", "-f", "-q", "."],
                 mdir,
             )
             checks_run.append("python_compile")

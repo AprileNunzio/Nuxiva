@@ -56,8 +56,12 @@ COMPONENT_RESTART = {
 
 
 def _display_response(request: Request, res: Response) -> Response:
-    if not auth.verify(request.cookies.get(auth.SESSION_COOKIE)):
-        res.set_cookie(auth.SESSION_COOKIE, auth.issue("display"), max_age=auth.SESSION_TTL,
+    has_display = bool(
+        auth.verify(request.cookies.get(auth.DISPLAY_COOKIE))
+        or auth.verify(request.cookies.get(auth.SESSION_COOKIE))
+    )
+    if not has_display:
+        res.set_cookie(auth.DISPLAY_COOKIE, auth.issue("display"), max_age=auth.SESSION_TTL,
                        httponly=True, samesite="lax", secure=request.url.scheme == "https", path="/")
     return res
 
@@ -157,14 +161,14 @@ async def login(request: Request):
     store.event("INFO", f"Accesso admin: {username} da {ip}", "auth")
     resp = JSONResponse({"user": username})
     resp.set_cookie(auth.SESSION_COOKIE, auth.issue(username), max_age=auth.SESSION_TTL,
-                    httponly=True, samesite="strict", secure=request.url.scheme == "https")
+                    httponly=True, samesite="lax", secure=request.url.scheme == "https", path="/")
     return resp
 
 
 @admin_routes.post("/api/auth/logout")
 async def logout():
     resp = JSONResponse({"ok": True})
-    resp.delete_cookie(auth.SESSION_COOKIE)
+    resp.delete_cookie(auth.SESSION_COOKIE, path="/", samesite="lax")
     return resp
 
 

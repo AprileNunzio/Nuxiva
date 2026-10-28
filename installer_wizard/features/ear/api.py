@@ -43,6 +43,7 @@ def speaker_names() -> dict:
 
 
 @public_routes.get("/api/ear/config")
+@admin_routes.get("/api/ear/config")
 async def ear_config(request: Request):
     require_display(request, "Solo dal display")
     agc = env_get("NUXIVA_MIC_AGC", "auto").strip().lower()
@@ -114,5 +115,6 @@ async def ear_client(request: Request):
 
 
 @public_routes.websocket("/ws/ear")
+@admin_routes.websocket("/ws/ear")
 async def ear_socket(socket: WebSocket):
     await proxy.proxy(socket)
