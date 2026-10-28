@@ -220,7 +220,6 @@
     });
     setInterval(reconcile, 5000);
     connect();
-    if (hostMicActive) { setState("idle"); return; }
     if (!micAllowed()) { setState("off", offReason()); return; }
     await activate();
   }
