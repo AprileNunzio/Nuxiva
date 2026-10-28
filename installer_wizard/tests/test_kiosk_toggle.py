@@ -4,9 +4,10 @@ from pathlib import Path
 from unittest.mock import AsyncMock, patch
 
 import feature_registry
+import packages
 from config import read_env, write_env
 from feature_registry import Registry
-from packages import step_wanted
+from packages import PACKAGE_BY_STEP, step_wanted, wanted
 from state import store
 from steps import run_pipeline
 
@@ -45,7 +46,8 @@ class KioskToggleTest(unittest.IsolatedAsyncioTestCase):
 
             env = read_env()
             self.assertEqual(env.get("NUXIVA_KIOSK"), "0")
-            self.assertFalse(step_wanted("kiosk", env))
+            self.assertFalse(packages.wanted(packages.PACKAGE_BY_STEP["kiosk"], env))
+            self.assertTrue(step_wanted("kiosk", env))
 
     async def test_kiosk_pipeline_teardown_status(self):
         with patch.dict("os.environ", {"NUXIVA_TEST_AUTH": "1"}):
@@ -55,4 +57,4 @@ class KioskToggleTest(unittest.IsolatedAsyncioTestCase):
             with patch("steps.run_step_action", mock_action):
                 ok = await run_pipeline(only=["kiosk"], force=True)
                 self.assertTrue(ok)
-                self.assertEqual(store.steps["kiosk"]["status"], "disabled")
+                self.assertEqual(store.steps["kiosk"]["status"], "done")

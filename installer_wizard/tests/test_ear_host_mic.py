@@ -1,17 +1,35 @@
 import asyncio
+import sys
 import unittest
 from unittest.mock import patch
 
-from features.ear.broadcast import SESSIONS
 from features.ear.host_mic import HeadlessSocket, HostMicCapture, pick_capture_binary
+
+
+def _get_sessions() -> set:
+    for mod_name in ("features.ear.broadcast", "broadcast", "installer_wizard.features.ear.broadcast"):
+        if mod_name in sys.modules:
+            mod = sys.modules[mod_name]
+            if hasattr(mod, "SESSIONS"):
+                return mod.SESSIONS
+    try:
+        from features.ear.broadcast import SESSIONS
+        return SESSIONS
+    except ImportError:
+        try:
+            from broadcast import SESSIONS
+            return SESSIONS
+        except ImportError:
+            from installer_wizard.features.ear.broadcast import SESSIONS
+            return SESSIONS
 
 
 class EarHostMicTest(unittest.IsolatedAsyncioTestCase):
     def setUp(self):
-        SESSIONS.clear()
+        _get_sessions().clear()
 
     def tearDown(self):
-        SESSIONS.clear()
+        _get_sessions().clear()
 
     def test_pick_capture_binary(self):
         with patch.dict("os.environ", {"NUXIVA_MIC_CMD": "test-rec -r 16000"}):
@@ -34,7 +52,7 @@ class EarHostMicTest(unittest.IsolatedAsyncioTestCase):
                     self.page = {"visible": visible}
 
             session = MockSession("visible")
-            SESSIONS.add(session)
+            _get_sessions().add(session)
             self.assertFalse(capture.should_capture())
 
             session.page["visible"] = "hidden"

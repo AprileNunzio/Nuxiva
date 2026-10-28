@@ -3,19 +3,37 @@ import json
 import logging
 import os
 import shutil
+import sys
 import urllib.error
 import urllib.request
 from typing import Any
 
 try:
-    import earconf
-except ImportError:
     from features.ear import earconf
-
-try:
-    from broadcast import SESSIONS
 except ImportError:
-    from features.ear.broadcast import SESSIONS
+    try:
+        import earconf
+    except ImportError:
+        from installer_wizard.features.ear import earconf
+
+
+def _get_sessions() -> set:
+    for mod_name in ("features.ear.broadcast", "broadcast", "installer_wizard.features.ear.broadcast"):
+        if mod_name in sys.modules:
+            mod = sys.modules[mod_name]
+            if hasattr(mod, "SESSIONS"):
+                return mod.SESSIONS
+    try:
+        from features.ear.broadcast import SESSIONS
+        return SESSIONS
+    except ImportError:
+        try:
+            from broadcast import SESSIONS
+            return SESSIONS
+        except ImportError:
+            from installer_wizard.features.ear.broadcast import SESSIONS
+            return SESSIONS
+
 
 log = logging.getLogger("nuxiva.ear.host_mic")
 SAMPLE_RATE = 16000
@@ -28,15 +46,15 @@ class HeadlessSocket:
 
     def __init__(self) -> None:
         self.closed = False
-        self.sent_events: list[dict] = []
 
     async def send(self, data: str) -> None:
+        if self.closed:
+            return
         try:
-            parsed = json.loads(data)
-            self.sent_events.append(parsed)
-            if parsed.get("type") == "transcript" and parsed.get("text"):
-                asyncio.create_task(dispatch_headless_command(parsed))
-        except (ValueError, TypeError):
+            event = json.loads(data)
+            if event.get("type") == "transcript" and event.get("text"):
+                asyncio.create_task(dispatch_headless_command(event))
+        except (json.JSONDecodeError, TypeError, ValueError):
             pass
 
     async def close(self, code: int = 1000, reason: str = "") -> None:
@@ -106,7 +124,7 @@ class HostMicCapture:
     def should_capture(self) -> bool:
         if not earconf.flag("NUXIVA_EAR_HOST_MIC", True):
             return False
-        for s in list(SESSIONS):
+        for s in list(_get_sessions()):
             if s is not self.session and getattr(s, "page", {}).get("visible") == "visible":
                 return False
         return True
@@ -137,26 +155,29 @@ class HostMicCapture:
                     if not chunk:
                         break
                     await self.session.feed(chunk)
-            except asyncio.CancelledError:
-                break
-            except Exception as exc:
-                log.warning("Acquisizione audio host interrotta: %s", exc)
+            except (asyncio.CancelledError, Exception) as exc:
+                log.debug("Errore o interruzione processo cattura host mic: %s", exc)
             finally:
                 await self._stop_process()
-            await asyncio.sleep(3)
+            await asyncio.sleep(1)
 
     async def _stop_process(self) -> None:
-        if self.process:
+        if self.process is not None:
             try:
                 self.process.terminate()
-                await asyncio.wait_for(self.process.wait(), 1.0)
-            except (ProcessLookupError, TimeoutError, Exception):
+                await asyncio.wait_for(self.process.wait(), timeout=1.0)
+            except Exception:
                 try:
                     self.process.kill()
                 except Exception:
                     pass
-            self.process = None
+            finally:
+                self.process = None
 
-    async def stop(self) -> None:
+    def stop(self) -> None:
         self.running = False
-        await self._stop_process()
+        if self.process is not None:
+            try:
+                self.process.terminate()
+            except Exception:
+                pass

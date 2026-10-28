@@ -281,10 +281,7 @@ async def converge_step(step: Step, force: bool = False, quiet: bool = False) ->
         store.touch()
         code, _ = await run_step_action(step, "check", stream=False, quiet=quiet)
         if code == 0:
-            env = read_env()
-            status_val = "done" if packages.step_wanted(step.id, env) else "disabled"
-            rec.update(status=status_val, progress=100 if status_val == "done" else 0,
-                       message="Operativo" if status_val == "done" else "Disattivato", error="", speed="")
+            rec.update(status="done", progress=100, message="Operativo", error="", speed="")
             if store.last_error.startswith(f"{step.title}:"):
                 store.last_error = ""
             _recompute_progress()
@@ -303,11 +300,8 @@ async def converge_step(step: Step, force: bool = False, quiet: bool = False) ->
         if code == 0:
             check_code, _ = await run_step_action(step, "check", stream=False, quiet=quiet)
             if check_code == 0:
-                env = read_env()
-                status_val = "done" if packages.step_wanted(step.id, env) else "disabled"
-                rec.update(status=status_val, progress=100 if status_val == "done" else 0,
-                       message="Completato" if status_val == "done" else "Disattivato", error="",
-                       speed="", duration=round(time.time() - started))
+                rec.update(status="done", progress=100, message="Completato", error="",
+                           speed="", duration=round(time.time() - started))
                 if store.last_error.startswith(f"{step.title}:"):
                     store.last_error = ""
                 store.event("INFO", f"'{step.title}' completato in {rec['duration']}s", step.id)
@@ -339,9 +333,9 @@ async def run_pipeline(only: list[str] | None = None, force: bool = False) -> bo
     for step in STEPS:
         if only and step.id not in only:
             continue
-        if not packages.step_wanted(step.id, env) and not (only and step.id in only):
+        if not packages.step_wanted(step.id, env):
             rec = store.steps[step.id]
-            if rec.get("status") not in ("done", "disabled"):
+            if rec.get("status") != "done":
                 rec.update(status="on_demand", progress=0, message="Su richiesta", error="")
             continue
         if step.background and not only:

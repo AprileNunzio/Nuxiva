@@ -190,7 +190,7 @@ impl FieldbusController {
         target_pulse: i32,
         controlword: u16,
     ) -> CanOpenPdoFrame {
-        let cob_id = 0x200 + u32::from(node_id);
+        let cob_id = 0x0200_u32 | u32::from(node_id);
         let mut data = [0_u8; 8];
         let cw_bytes = controlword.to_le_bytes();
         let pos_bytes = target_pulse.to_le_bytes();
