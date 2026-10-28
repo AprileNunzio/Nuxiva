@@ -4,6 +4,7 @@ from pathlib import Path
 from types import SimpleNamespace
 import unittest
 from unittest import mock
+import psutil
 
 from node_network_probe import (
     inspect_system_network_interfaces,

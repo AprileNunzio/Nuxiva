@@ -30,12 +30,14 @@ def _cfg(key: str, default: str) -> str:
 
 
 def current() -> dict:
+    state_file = Path(os.environ.get("NUXIVA_WEBCAMS_FILE", str(STATE)))
+    fallback = os.environ.get("NUXIVA_CAMERA", FALLBACK)
     try:
-        raw = json.loads(STATE.read_text(encoding="utf-8")).get("selected") or {}
-        stamp = STATE.stat().st_mtime
+        raw = json.loads(state_file.read_text(encoding="utf-8")).get("selected") or {}
+        stamp = state_file.stat().st_mtime
     except (OSError, ValueError, AttributeError):
         raw, stamp = {}, 0.0
-    return {"rgb": raw.get("rgb") or FALLBACK, "ir": raw.get("ir"), "rgb_mode": raw.get("rgb_mode"),
+    return {"rgb": raw.get("rgb") or fallback, "ir": raw.get("ir"), "rgb_mode": raw.get("rgb_mode"),
             "ir_mode": raw.get("ir_mode"), "stamp": stamp}
 
 

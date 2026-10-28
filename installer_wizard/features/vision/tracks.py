@@ -10,10 +10,7 @@ except ImportError:
         def update(self, *args, **kwargs):
             return None
 
-try:
-    from gallery import UNKNOWN
-except ImportError:
-    UNKNOWN = "Sconosciuto"
+UNKNOWN = "Sconosciuto"
 
 
 class Track:
