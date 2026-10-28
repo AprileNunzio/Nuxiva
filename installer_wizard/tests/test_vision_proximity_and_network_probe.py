@@ -132,9 +132,9 @@ class PosixNetworkProbeTest(unittest.TestCase):
             return SimpleNamespace(returncode=1, stdout="")
 
         with mock.patch("os.name", "posix"), \
-             mock.patch("psutil.net_if_addrs", return_value=fake_addrs), \
-             mock.patch("psutil.net_if_stats", return_value=fake_stats), \
-             mock.patch("psutil.net_io_counters", return_value=fake_cnt):
+             mock.patch.object(psutil, "net_if_addrs", return_value=fake_addrs), \
+             mock.patch.object(psutil, "net_if_stats", return_value=fake_stats), \
+             mock.patch.object(psutil, "net_io_counters", return_value=fake_cnt):
             ifaces = inspect_system_network_interfaces("192.168.1.50", run_cmd=fake_run)
 
         self.assertEqual(len(ifaces), 1)
