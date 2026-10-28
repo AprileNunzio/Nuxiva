@@ -47,6 +47,7 @@ BARGE_IN = float(os.environ.get("NUXIVA_BARGE_IN", "0.7"))
 voiceprints = Voiceprints()
 governor = LiveGovernor()
 LINK_FILE = os.environ.get("NUXIVA_EAR_LINK", "/var/lib/nuxiva/ear_link.json")
+HOST_MIC: HostMicCapture | None = None
 LINK = {"clients": 0, "last_audio": 0.0, "level": 0.0, "since": time.time(), "pages": []}
 
 
@@ -63,6 +64,7 @@ def save_link() -> None:
 async def link_writer() -> None:
     while True:
         LINK["live"] = governor.status()
+        LINK["host_mic"] = bool(HOST_MIC and HOST_MIC.is_capturing())
         save_link()
         await asyncio.sleep(5)
 
@@ -96,6 +98,7 @@ class Session:
         self.recorder = Recorder(secrets.token_hex(3))
         self.page: dict = {}
         self.opened = time.time()
+        self.last_pcm_time = 0.0
         self.lang = stt.HOME_LANG
         self.live = LiveCaptions(self.broadcast, governor, stt.live_transcribe, self._identify_live, stt.lock)
 
@@ -122,6 +125,7 @@ class Session:
         if self.raw is not None:
             self.raw.append(pcm)
             return
+        self.last_pcm_time = time.time()
         samples = np.frombuffer(pcm, dtype="<i2").astype(np.float32) / 32768.0
         LINK["last_audio"] = time.time()
         if len(samples):
@@ -440,7 +444,7 @@ async def handler(ws) -> None:
         note_error("avvio della sessione", exc)
         save_link()
         raise
-    await session.send(type="ready", model=stt.MODEL_SIZE, instant=session.wake.ready, voiceprint=voiceprints.ready)
+    await session.send(type="ready", model=stt.MODEL_SIZE, instant=session.wake.ready, voiceprint=voiceprints.ready, host_mic=bool(HOST_MIC and HOST_MIC.is_capturing()))
     log.info("Display collegato")
     register(session)
     LINK["clients"] += 1
@@ -474,8 +478,9 @@ async def handler(ws) -> None:
 
 
 async def main() -> None:
+    global HOST_MIC
     reviewer = Reviewer(lambda: any(s.mode != "idle" or s.in_speech or s.nuxiva_speaking for s in SESSIONS))
-    host_mic = HostMicCapture(Session)
+    HOST_MIC = host_mic = HostMicCapture(Session)
     async with websockets.serve(handler, "127.0.0.1", PORT, max_size=2 ** 20, ping_interval=20, ping_timeout=90):
         await asyncio.gather(link_writer(), reviewer.run(), capture.maintenance(), feedback.run(voiceprints), host_mic.run())
 

@@ -198,6 +198,13 @@ print('modelli pronti')"
     chmod 700 /var/lib/nuxiva/voiceprints
 
     progress 85 "Avvio del servizio di ascolto"
+    local k_user="${NUXIVA_KIOSK_USER:-nuxiva-kiosk}"
+    if id "$k_user" >/dev/null 2>&1 && command -v loginctl >/dev/null 2>&1; then
+        loginctl enable-linger "$k_user" >/dev/null 2>&1 || true
+        local k_uid
+        k_uid=$(id -u "$k_user" 2>/dev/null || echo 1001)
+        systemctl start "user@${k_uid}.service" >/dev/null 2>&1 || true
+    fi
     if write_if_changed "$UNIT" < "$UNIT_SRC"; then systemctl daemon-reload; fi
     systemctl enable nuxiva-ear >/dev/null 2>&1
     systemctl restart nuxiva-ear

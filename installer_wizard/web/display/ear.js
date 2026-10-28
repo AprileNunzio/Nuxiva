@@ -10,7 +10,8 @@
   const agcLearned = () => { try { return localStorage.getItem(AUTO_AGC) === "1"; } catch (e) { return false; } };
   const optedIn = () => { try { return localStorage.getItem(OPT_IN) === "1"; } catch (e) { return false; } };
   const secure = () => window.isSecureContext && !!navigator.mediaDevices;
-  const micAllowed = () => D.local || (secure() && optedIn());
+  let hostMicActive = false;
+  const micAllowed = () => (!hostMicActive && D.local) || (secure() && optedIn());
   const socketUrl = () => `${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/ws/ear`;
   let parked = false;
   document.addEventListener("visibilitychange", () => {
@@ -120,12 +121,13 @@
   }
 
   function micLive() {
-    return Date.now() - heardAt < 10000 || (!!stream && stream.getAudioTracks().some((t) => t.readyState === "live"));
+    return hostMicActive || Date.now() - heardAt < 10000 || (!!stream && stream.getAudioTracks().some((t) => t.readyState === "live"));
   }
 
   function reconcile() {
     if (parked) return;
     if (!ws || ws.readyState > 1) connect();
+    if (hostMicActive) { if (state === "off") setState("idle"); return; }
     if (!micAllowed()) return;
     const confirmed = Date.now() - heardAt < 10000;
     if (confirmed && state === "off") setState("idle");
@@ -183,6 +185,7 @@
       }
       const ev = JSON.parse(e.data);
       if (D.Captions) D.Captions.event(ev);
+      if (ev.type === "ready" && ev.host_mic) { hostMicActive = true; if (state === "off") setState("idle"); }
       if (ev.type === "level") {
         heardAt = Date.now();
         level(ev.rms);
@@ -217,11 +220,13 @@
     });
     setInterval(reconcile, 5000);
     connect();
+    if (hostMicActive) { setState("idle"); return; }
     if (!micAllowed()) { setState("off", offReason()); return; }
     await activate();
   }
 
   function offReason() {
+    if (hostMicActive) return ["ear_idle", {}];
     if (secure()) return ["ear_tap_local", {}];
     return ["ear_need_https", {}];
   }

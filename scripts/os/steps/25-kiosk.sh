@@ -138,6 +138,12 @@ step_teardown() {
         fi
         systemctl restart getty@tty1 >/dev/null 2>&1 || true
     fi
+    if [ -n "$USER_NAME" ] && id "$USER_NAME" >/dev/null 2>&1 && command -v loginctl >/dev/null 2>&1; then
+        loginctl enable-linger "$USER_NAME" >/dev/null 2>&1 || true
+        local uid
+        uid=$(id -u "$USER_NAME" 2>/dev/null || echo 1001)
+        systemctl start "user@${uid}.service" >/dev/null 2>&1 || true
+    fi
     progress 100 "Kiosk disabilitato da configurazione e sessione tty1 smontata"
 }
 
@@ -155,6 +161,9 @@ step_apply() {
     for group in tty video audio input render; do
         getent group "$group" >/dev/null && usermod -aG "$group" "$USER_NAME"
     done
+    if command -v loginctl >/dev/null 2>&1; then
+        loginctl enable-linger "$USER_NAME" >/dev/null 2>&1 || true
+    fi
 
     progress 40 "Configurazione sessione grafica"
     chmod +x "$SESSION" "$LAUNCH"

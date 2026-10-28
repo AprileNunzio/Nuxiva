@@ -4,6 +4,7 @@ import logging
 import os
 import shutil
 import sys
+import time
 import urllib.error
 import urllib.request
 from typing import Any
@@ -40,6 +41,37 @@ SAMPLE_RATE = 16000
 CHUNK_BYTES = 960
 ASSISTANT_URL = os.environ.get("NUXIVA_ASSISTANT_URL", "http://127.0.0.1:8080/api/assistant/chat")
 TTS_URL = os.environ.get("NUXIVA_TTS_URL", "http://127.0.0.1:8080/api/voice/speak")
+KIOSK_USER = os.environ.get("NUXIVA_KIOSK_USER", "nuxiva-kiosk")
+
+
+def _get_kiosk_uid() -> int | None:
+    try:
+        import pwd
+        return pwd.getpwnam(KIOSK_USER).pw_uid
+    except (KeyError, ImportError):
+        return None
+
+
+def get_capture_candidates() -> list[list[str]]:
+    custom = os.environ.get("NUXIVA_MIC_CMD")
+    if custom:
+        return [custom.split()]
+    cmds: list[list[str]] = []
+    uid = _get_kiosk_uid()
+    if shutil.which("parec"):
+        if os.name != "nt" and hasattr(os, "getuid") and os.getuid() == 0 and uid is not None and shutil.which("runuser"):
+            cmds.append(["runuser", "-u", KIOSK_USER, "--", "env", f"XDG_RUNTIME_DIR=/run/user/{uid}", "parec", "--rate=16000", "--channels=1", "--format=s16le"])
+        cmds.append(["parec", "--rate=16000", "--channels=1", "--format=s16le"])
+    if shutil.which("pw-record"):
+        cmds.append(["pw-record", "--rate=16000", "--channels=1", "--format=s16"])
+    if shutil.which("arecord"):
+        cmds.append(["arecord", "-q", "-r", "16000", "-c", "1", "-f", "S16_LE", "-t", "raw"])
+    return cmds
+
+
+def pick_capture_binary() -> list[str] | None:
+    candidates = get_capture_candidates()
+    return candidates[0] if candidates else None
 
 
 class HeadlessSocket:
@@ -88,29 +120,26 @@ async def dispatch_headless_command(event: dict) -> None:
 
 
 async def speak_reply(text: str, lang: str) -> None:
+    text = (text or "").strip()
+    if not text:
+        return
     payload = json.dumps({"text": text, "lang": lang}).encode("utf-8")
-    req = urllib.request.Request(TTS_URL, data=payload, headers={"Content-Type": "application/json"})
+    req = urllib.request.Request(
+        TTS_URL,
+        data=payload,
+        headers={"Content-Type": "application/json", "X-Nuxiva-Client": "headless_host_mic"}
+    )
     loop = asyncio.get_running_loop()
     try:
-        def _call_tts() -> None:
-            with urllib.request.urlopen(req, timeout=10) as resp:
-                resp.read()
+        def _call_tts() -> dict:
+            with urllib.request.urlopen(req, timeout=20) as resp:
+                raw = resp.read().decode("utf-8", "replace")
+                return json.loads(raw) if raw.startswith("{") else {"ok": True}
 
-        await loop.run_in_executor(None, _call_tts)
-    except (urllib.error.URLError, TimeoutError, OSError):
-        pass
-
-
-def pick_capture_binary() -> list[str] | None:
-    if os.environ.get("NUXIVA_MIC_CMD"):
-        return os.environ["NUXIVA_MIC_CMD"].split()
-    if shutil.which("parec"):
-        return ["parec", "--rate=16000", "--channels=1", "--format=s16le"]
-    if shutil.which("pw-record"):
-        return ["pw-record", "--rate=16000", "--channels=1", "--format=s16"]
-    if shutil.which("arecord"):
-        return ["arecord", "-q", "-r", "16000", "-c", "1", "-f", "S16_LE", "-t", "raw"]
-    return None
+        res = await loop.run_in_executor(None, _call_tts)
+        log.info("Sintesi vocale TTS riprodotta con successo: %s (ok=%s)", text[:60], res.get("ok"))
+    except (urllib.error.URLError, TimeoutError, OSError, ValueError) as exc:
+        log.warning("Invio sintesi vocale TTS headless a %s non riuscito: %s", TTS_URL, exc)
 
 
 class HostMicCapture:
@@ -124,41 +153,56 @@ class HostMicCapture:
     def should_capture(self) -> bool:
         if not earconf.flag("NUXIVA_EAR_HOST_MIC", True):
             return False
+        now = time.time()
         for s in list(_get_sessions()):
-            if s is not self.session and getattr(s, "page", {}).get("visible") == "visible":
+            if s is not self.session and getattr(s, "last_pcm_time", 0.0) > (now - 2.5):
                 return False
         return True
 
+    def is_capturing(self) -> bool:
+        return self.running and self.process is not None and self.should_capture()
+
     async def run(self) -> None:
         self.running = True
-        cmd = pick_capture_binary()
-        if not cmd:
+        candidates = get_capture_candidates()
+        if not candidates:
             log.info("Nessun comando di acquisizione nativo (parec/pw-record/arecord) rilevato per host mic")
             return
+        candidate_idx = 0
         while self.running:
             if not self.should_capture():
                 await self._stop_process()
-                await asyncio.sleep(2)
+                await asyncio.sleep(1)
                 continue
             if self.session is None:
                 self.session = self.session_factory(HeadlessSocket())
                 self.session.page = {"id": "host_mic", "visible": "headless"}
+            cmd = candidates[candidate_idx % len(candidates)]
+            read_any = False
+            start_time = time.time()
             try:
                 self.process = await asyncio.create_subprocess_exec(
                     *cmd,
                     stdout=asyncio.subprocess.PIPE,
-                    stderr=asyncio.subprocess.DEVNULL
+                    stderr=asyncio.subprocess.PIPE
                 )
                 assert self.process.stdout is not None
                 while self.running and self.should_capture():
                     chunk = await self.process.stdout.read(CHUNK_BYTES)
                     if not chunk:
                         break
+                    read_any = True
                     await self.session.feed(chunk)
             except (asyncio.CancelledError, Exception) as exc:
-                log.debug("Errore o interruzione processo cattura host mic: %s", exc)
+                log.debug("Errore o interruzione processo cattura host mic (%s): %s", cmd[0], exc)
             finally:
                 await self._stop_process()
+            elapsed = time.time() - start_time
+            if not read_any or elapsed < 1.5:
+                candidate_idx += 1
+                if len(candidates) > 1:
+                    next_cmd = candidates[candidate_idx % len(candidates)]
+                    log.info("Rotazione comando cattura microfono host: fallback da %s a %s", cmd[0], next_cmd[0])
             await asyncio.sleep(1)
 
     async def _stop_process(self) -> None:

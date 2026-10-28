@@ -1,9 +1,12 @@
 import asyncio
 import sys
+import time
 import unittest
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
-from features.ear.host_mic import HeadlessSocket, HostMicCapture, pick_capture_binary
+from features.ear.host_mic import (HeadlessSocket, HostMicCapture,
+                                   get_capture_candidates, pick_capture_binary,
+                                   speak_reply)
 
 
 def _get_sessions() -> set:
@@ -34,6 +37,7 @@ class EarHostMicTest(unittest.IsolatedAsyncioTestCase):
     def test_pick_capture_binary(self):
         with patch.dict("os.environ", {"NUXIVA_MIC_CMD": "test-rec -r 16000"}):
             self.assertEqual(pick_capture_binary(), ["test-rec", "-r", "16000"])
+            self.assertEqual(get_capture_candidates(), [["test-rec", "-r", "16000"]])
 
     def test_host_mic_should_capture_toggle(self):
         capture = HostMicCapture(lambda ws: ws)
@@ -43,19 +47,33 @@ class EarHostMicTest(unittest.IsolatedAsyncioTestCase):
         with patch.dict("os.environ", {"NUXIVA_EAR_HOST_MIC": "1"}):
             self.assertTrue(capture.should_capture())
 
-    def test_host_mic_yields_to_visible_session(self):
+    def test_host_mic_does_not_yield_to_mere_visible_page(self):
         with patch.dict("os.environ", {"NUXIVA_EAR_HOST_MIC": "1"}):
             capture = HostMicCapture(lambda ws: ws)
 
             class MockSession:
                 def __init__(self, visible):
                     self.page = {"visible": visible}
+                    self.last_pcm_time = 0.0
 
             session = MockSession("visible")
             _get_sessions().add(session)
+            self.assertTrue(capture.should_capture())
+
+    def test_host_mic_yields_only_to_active_pcm_stream(self):
+        with patch.dict("os.environ", {"NUXIVA_EAR_HOST_MIC": "1"}):
+            capture = HostMicCapture(lambda ws: ws)
+
+            class MockStreamingSession:
+                def __init__(self):
+                    self.page = {"visible": "visible"}
+                    self.last_pcm_time = time.time()
+
+            session = MockStreamingSession()
+            _get_sessions().add(session)
             self.assertFalse(capture.should_capture())
 
-            session.page["visible"] = "hidden"
+            session.last_pcm_time = time.time() - 5.0
             self.assertTrue(capture.should_capture())
 
     async def test_headless_socket_dispatch(self):
@@ -71,3 +89,19 @@ class EarHostMicTest(unittest.IsolatedAsyncioTestCase):
 
             self.assertEqual(len(dispatched), 1)
             self.assertEqual(dispatched[0]["text"], "ciao Nuxiva")
+
+    async def test_speak_reply_success_and_failure_logging(self):
+        with patch("urllib.request.urlopen") as mock_open:
+            mock_resp = MagicMock()
+            mock_resp.read.return_value = b'{"ok": true}'
+            mock_resp.__enter__.return_value = mock_resp
+            mock_open.return_value = mock_resp
+
+            with self.assertLogs("nuxiva.ear.host_mic", level="INFO") as cm:
+                await speak_reply("Risposta di prova", "it")
+                self.assertTrue(any("Sintesi vocale TTS riprodotta" in log for log in cm.output))
+
+        with patch("urllib.request.urlopen", side_effect=OSError("connection refused")):
+            with self.assertLogs("nuxiva.ear.host_mic", level="WARNING") as cm:
+                await speak_reply("Altra prova", "it")
+                self.assertTrue(any("non riuscito" in log for log in cm.output))

@@ -9,7 +9,7 @@ from access import NO_CACHE, lang_of, require_admin, require_display
 from config import write_env
 from features.people import people
 from features.study import study
-from features.voices import catalog, downloads, languages, overview, synthesis
+from features.voices import catalog, downloads, languages, overview, playback, synthesis
 from state import store
 
 public_routes = APIRouter()
@@ -50,6 +50,26 @@ async def public_tts(request: Request):
 async def admin_tts(request: Request, _: str = Depends(require_admin)):
     body = await request.json()
     return await tts_response(str(body.get("text", "")), lang_of(body))
+
+
+@public_routes.post("/api/voice/speak")
+async def public_voice_speak(request: Request):
+    body = await request.json()
+    text = str(body.get("text", "")).strip()
+    if not text:
+        raise HTTPException(400, "Testo vuoto")
+    lang = lang_of(body)
+    try:
+        wav = await synthesis.synthesize(text, lang=lang)
+    except (ValueError, RuntimeError, OSError) as exc:
+        raise HTTPException(503, f"Voce neurale non disponibile: {exc}")
+    ok = await playback.play_host_audio(wav)
+    return {"ok": ok, "text": text, "lang": lang}
+
+
+@admin_routes.post("/api/voice/speak")
+async def admin_voice_speak(request: Request, _: str = Depends(require_admin)):
+    return await public_voice_speak(request)
 
 
 @admin_routes.get("/api/voices")
