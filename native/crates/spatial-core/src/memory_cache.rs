@@ -155,7 +155,7 @@ impl FastSemanticMemory {
         }
 
         self.entries
-            .sort_by(|a, b| (b.hit_count, b.timestamp_ms).cmp(&(a.hit_count, a.timestamp_ms)));
+            .sort_by_key(|b| std::cmp::Reverse((b.hit_count, b.timestamp_ms)));
         self.entries.truncate(target_size);
     }
 

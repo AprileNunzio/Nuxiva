@@ -22,7 +22,10 @@ use cortex::{
     cortex_sanitize_identifier, cortex_sanitize_utterance, cortex_seal, cortex_validate_slots,
     cortex_verify,
 };
-use embodied::{RustCorticalCortex, RustEmbodiedCortex};
+use embodied::{
+    RustCorticalCortex, RustEmbodiedCortex, RustEpistemicDoubtEngine, RustFieldbusController,
+    RustHumanoidKinematics34, RustOntologicalCreativeEngine,
+};
 use governors::{RustMeshTaskGovernor, RustNetworkGovernor, RustResourceGovernor};
 use language::{detect_language, supported_languages};
 use memory::{RustFastMemory, RustLiveCoPilot};
@@ -56,6 +59,10 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<RustNeuronIndex>()?;
     m.add_class::<RustCorticalCortex>()?;
     m.add_class::<RustEmbodiedCortex>()?;
+    m.add_class::<RustEpistemicDoubtEngine>()?;
+    m.add_class::<RustOntologicalCreativeEngine>()?;
+    m.add_class::<RustHumanoidKinematics34>()?;
+    m.add_class::<RustFieldbusController>()?;
     m.add_class::<RustSigner>()?;
     m.add("CortexError", m.py().get_type::<CortexError>())?;
     m.add_function(wrap_pyfunction!(cortex_sanitize_utterance, m)?)?;

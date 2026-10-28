@@ -36,6 +36,11 @@ pub enum CortexError {
     ThermalLimitExceeded,
     BalanceInstability,
     UnknownJoint,
+    DoubtNotFound,
+    InvalidHypothesisChoice,
+    AnomalyInsufficientData,
+    FieldbusFault,
+    WorkingCounterMismatch,
 }
 
 impl CortexError {
@@ -76,6 +81,11 @@ impl CortexError {
             Self::ThermalLimitExceeded => "cortex.embodied.thermal_limit_exceeded",
             Self::BalanceInstability => "cortex.embodied.balance_instability",
             Self::UnknownJoint => "cortex.embodied.unknown_joint",
+            Self::DoubtNotFound => "cortex.confrontation.doubt_not_found",
+            Self::InvalidHypothesisChoice => "cortex.confrontation.invalid_choice",
+            Self::AnomalyInsufficientData => "cortex.ontology.insufficient_data",
+            Self::FieldbusFault => "cortex.fieldbus.fault",
+            Self::WorkingCounterMismatch => "cortex.fieldbus.wkc_mismatch",
         }
     }
 }

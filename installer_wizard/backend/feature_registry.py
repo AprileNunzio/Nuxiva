@@ -96,11 +96,20 @@ class Registry:
             found[manifest["id"]] = manifest
         new = [f for f in found if f not in self.features]
         self.features, self.errors = found, errors
+        env_now = read_env()
         for fid in found:
             rec = self._rec(fid)
             if "mode" not in rec:
                 rec["mode"] = self._initial_mode(found[fid])
                 rec["discovered"] = time.time()
+            else:
+                t = found[fid].get("toggle") or {}
+                if t.get("env") and not t.get("tri") and not found[fid].get("requires"):
+                    raw = str(env_now.get(t["env"], "")).strip().lower()
+                    if raw in ("0", "false", "off", "no"):
+                        rec["mode"] = "0"
+                    elif raw in ("1", "true", "on", "yes") and rec.get("mode") == "0":
+                        rec["mode"] = "1"
             rec.setdefault("pinned", bool(found[fid].get("pinned")))
         self._save_state()
         if not first:
@@ -285,11 +294,14 @@ class Registry:
         store.touch()
 
     def note_env_change(self, updates: dict) -> None:
+        if not self.features:
+            self.scan()
         for fid, m in self.features.items():
             t = m.get("toggle") or {}
             if t.get("env") in updates:
-                value = updates[t["env"]]
-                self._rec(fid)["mode"] = value if value in MODES and t.get("tri") else ("0" if value == "0" else "1")
+                value = str(updates[t["env"]]).strip()
+                low = value.lower()
+                self._rec(fid)["mode"] = value if value in MODES and t.get("tri") else ("0" if low in ("0", "false", "off", "no") else "1")
         self._save_state()
 
     def note_hook_change(self, fid: str, enabled: bool) -> None:

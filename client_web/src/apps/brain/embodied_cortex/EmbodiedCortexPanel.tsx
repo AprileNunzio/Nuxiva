@@ -7,12 +7,16 @@ import {
 } from './types';
 import {
   fetchEmbodiedCortexOverview,
+  resolveEpistemicConfrontation,
   solveCorticalQuadratic,
   stepHumanoidActiveInference,
+  synthesizeOntologicalFormalism,
 } from './embodiedCortexApi';
 import { CorticalColumnsSection } from './CorticalColumnsSection';
+import { EpistemicConfrontationSection } from './EpistemicConfrontationSection';
+import { OntologicalCreativitySection } from './OntologicalCreativitySection';
 import { HumanoidEmbodimentSection } from './HumanoidEmbodimentSection';
-import { AlertTriangle, BrainCircuit, RefreshCw } from 'lucide-react';
+import { AlertTriangle, BrainCircuit, Cpu, RefreshCw, ShieldCheck } from 'lucide-react';
 
 interface EmbodiedCortexPanelProps {
   readonly t: (key: string) => string;
@@ -84,6 +88,42 @@ export const EmbodiedCortexPanel: React.FC<EmbodiedCortexPanelProps> = ({ t }) =
     }
   };
 
+  const handleResolveConfrontation = async (
+    id: string,
+    choiceId: string,
+    justification: string
+  ) => {
+    setBusy(true);
+    setErrorMessage(null);
+    try {
+      await resolveEpistemicConfrontation({ id, choiceId, justification });
+      const updated = await fetchEmbodiedCortexOverview();
+      setOverview(updated);
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : t('persist_failed'));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleSynthesizeFormalism = async (
+    id: string,
+    paradigm: string,
+    observations: number[][]
+  ) => {
+    setBusy(true);
+    setErrorMessage(null);
+    try {
+      await synthesizeOntologicalFormalism({ id, paradigm, observations });
+      const updated = await fetchEmbodiedCortexOverview();
+      setOverview(updated);
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : t('persist_failed'));
+    } finally {
+      setBusy(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="rounded-3xl border border-indigo-200 bg-gradient-to-r from-indigo-50/80 via-white to-teal-50/70 p-5 sm:p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
@@ -106,15 +146,15 @@ export const EmbodiedCortexPanel: React.FC<EmbodiedCortexPanelProps> = ({ t }) =
                 {t('metric_cortical_maturity')}
               </span>
               <span className="text-sm font-black text-indigo-950">
-                {overview.metrics.cortical_maturity_pct}%
+                {overview.human_parity_metrics.current_level_percentage}%
               </span>
             </div>
             <div className="px-4 py-2 rounded-2xl bg-white border border-teal-200 shadow-2xs">
               <span className="text-[10px] font-bold uppercase text-slate-400 block">
-                {t('metric_embodied_grounding')}
+                {t('humanoid_34dof_badge')}
               </span>
               <span className="text-sm font-black text-teal-950">
-                {overview.metrics.embodied_grounding_pct}%
+                {overview.physical_embodiment.degrees_of_freedom} DOF
               </span>
             </div>
             <div className="px-4 py-2 rounded-2xl bg-indigo-600 text-white shadow-xs">
@@ -122,7 +162,7 @@ export const EmbodiedCortexPanel: React.FC<EmbodiedCortexPanelProps> = ({ t }) =
                 {t('metric_human_parity_index')}
               </span>
               <span className="text-sm font-black">
-                {overview.metrics.estimated_human_logic_pct}%
+                {overview.human_parity_metrics.current_level_percentage}%
               </span>
             </div>
             <button
@@ -136,6 +176,38 @@ export const EmbodiedCortexPanel: React.FC<EmbodiedCortexPanelProps> = ({ t }) =
           </div>
         )}
       </div>
+
+      {overview && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className="p-4 rounded-2xl bg-slate-900 text-white border border-slate-800 space-y-1">
+            <div className="flex items-center gap-2 text-xs font-bold text-slate-400">
+              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              {t('human_parity_stat_title')}
+            </div>
+            <p className="text-xs text-slate-300">
+              {t('human_parity_stat_desc')}
+            </p>
+          </div>
+          <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-1">
+            <div className="flex items-center gap-2 text-xs font-bold text-slate-800">
+              <Cpu className="w-4 h-4 text-teal-600" />
+              {t('fieldbus_ethercat_canopen')}
+            </div>
+            <p className="text-xs text-slate-600">
+              {overview.physical_embodiment.fieldbus_protocol} ({overview.physical_embodiment.supported_bus_modes.join(', ')})
+            </p>
+          </div>
+          <div className="p-4 rounded-2xl bg-white border border-slate-200 space-y-1">
+            <div className="flex items-center gap-2 text-xs font-bold text-slate-800">
+              <BrainCircuit className="w-4 h-4 text-purple-600" />
+              {t('confrontation_certainty_100')}
+            </div>
+            <p className="text-xs text-slate-600">
+              {t('confrontation_resolved_label')}: {overview.confrontation.resolved_count} | {t('confrontation_pending_label')}: {overview.confrontation.pending_count}
+            </p>
+          </div>
+        </div>
+      )}
 
       {errorMessage && (
         <div className="p-4 rounded-2xl border border-rose-300 bg-rose-50 text-rose-950 text-xs font-bold flex items-center gap-2.5">
@@ -152,6 +224,19 @@ export const EmbodiedCortexPanel: React.FC<EmbodiedCortexPanelProps> = ({ t }) =
             lastResolution={lastResolution}
             busy={busy}
             onSolve={handleSolve}
+            t={t}
+          />
+          <EpistemicConfrontationSection
+            pending={overview.confrontation.pending}
+            resolved={overview.confrontation.resolved}
+            onResolve={handleResolveConfrontation}
+            busy={busy}
+            t={t}
+          />
+          <OntologicalCreativitySection
+            formalisms={overview.ontological_creativity.formalisms}
+            onSynthesize={handleSynthesizeFormalism}
+            busy={busy}
             t={t}
           />
           <HumanoidEmbodimentSection

@@ -68,11 +68,56 @@ export interface ActiveInferenceStepResult {
   readonly latency_ms: number;
 }
 
-export interface EmbodiedCortexMetrics {
-  readonly cortical_maturity_pct: number;
-  readonly embodied_grounding_pct: number;
-  readonly estimated_human_logic_pct: number;
-  readonly rust_engine_version: string;
+export interface EpistemicHypothesis {
+  readonly id: string;
+  readonly label: string;
+  readonly prior_probability: number;
+  readonly predicted_outcome: string;
+  readonly action_plan: string;
+}
+
+export interface EpistemicConfrontationRecord {
+  readonly id: string;
+  readonly context_key: string;
+  readonly uncertainty_entropy: number;
+  readonly hypotheses: readonly EpistemicHypothesis[];
+  readonly chosen_hypothesis_id: string | null;
+  readonly user_justification: string | null;
+  readonly resolved_certainty: number;
+  readonly encrypted_digest: string;
+  readonly created_at_epoch_ms: number;
+  readonly resolved_at_epoch_ms: number | null;
+}
+
+export interface OntologicalAxiom {
+  readonly id: string;
+  readonly statement: string;
+  readonly conservation_law: string;
+  readonly is_consistent: boolean;
+}
+
+export interface AxiomaticFormalism {
+  readonly id: string;
+  readonly paradigm: 'calculus' | 'riemann_metric' | 'lie_algebra' | 'symplectic_geometry' | 'discrete_topology';
+  readonly name: string;
+  readonly differential_operator: string;
+  readonly invariance_group: string;
+  readonly axioms: readonly OntologicalAxiom[];
+  readonly empirical_residual_reduction: number;
+  readonly compiled_o1_shortcut: boolean;
+}
+
+export interface HumanParityMetrics {
+  readonly current_level_percentage: number;
+  readonly autonomous_self_learning: boolean;
+  readonly embodied_anchoring_moravec: boolean;
+  readonly doubt_certainty_alignment: number;
+}
+
+export interface PhysicalEmbodimentInfo {
+  readonly degrees_of_freedom: number;
+  readonly fieldbus_protocol: string;
+  readonly supported_bus_modes: readonly string[];
 }
 
 export interface EmbodiedCortexOverview {
@@ -81,5 +126,16 @@ export interface EmbodiedCortexOverview {
   readonly joints: readonly HumanoidJoint[];
   readonly imu: ImuBalanceState;
   readonly totalCycles: number;
-  readonly metrics: EmbodiedCortexMetrics;
+  readonly confrontation: {
+    readonly pending_count: number;
+    readonly resolved_count: number;
+    readonly pending: readonly EpistemicConfrontationRecord[];
+    readonly resolved: readonly EpistemicConfrontationRecord[];
+  };
+  readonly ontological_creativity: {
+    readonly invented_formalisms_count: number;
+    readonly formalisms: readonly AxiomaticFormalism[];
+  };
+  readonly physical_embodiment: PhysicalEmbodimentInfo;
+  readonly human_parity_metrics: HumanParityMetrics;
 }

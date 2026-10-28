@@ -7,7 +7,12 @@ from server.features.embodied_cortex.controller import router as embodied_router
 from server.features.embodied_cortex.schemas import (
     ActiveInferenceStepRequest,
     ConsolidateShortcutRequest,
+    EpistemicHypothesisSchema,
+    FieldbusTransitionRequest,
+    InitiateConfrontationRequest,
     QuadraticSolveRequest,
+    ResolveConfrontationRequest,
+    SynthesizeFormalismRequest,
 )
 from server.features.embodied_cortex.service import build_embodied_cortex_service
 from server.shared.errors.global_handler import register_global_error_handlers
@@ -104,7 +109,7 @@ class EmbodiedCortexTest(unittest.TestCase):
         )
         self.assertTrue(res.is_ok)
         self.assertEqual(res.value["id"], "inv_custom_harmonic_invariant")
-        self.assertIn("ed25519_signature_hex", res.value)
+        self.assertIn("cryptographic_signature", res.value)
 
     def test_humanoid_active_inference_and_safety_envelope(self) -> None:
         step = self.service.step_active_inference(
@@ -132,6 +137,82 @@ class EmbodiedCortexTest(unittest.TestCase):
         self.assertFalse(out_of_bounds.is_ok)
         self.assertEqual(out_of_bounds.error.code, "cortex.embodied.joint_limit_exceeded")
 
+    def test_epistemic_doubt_and_user_confrontation_memory(self) -> None:
+        h1 = EpistemicHypothesisSchema(
+            id="hyp_a",
+            label="Direct grasping",
+            prior_probability=0.51,
+            predicted_outcome="Speed optimal",
+            action_plan="Grasp immediately",
+        )
+        h2 = EpistemicHypothesisSchema(
+            id="hyp_b",
+            label="Tactile pre-scan",
+            prior_probability=0.49,
+            predicted_outcome="Safety optimal",
+            action_plan="Perform tactile exploration",
+        )
+
+        init_res = self.service.initiate_confrontation(
+            InitiateConfrontationRequest(
+                id="conf_001",
+                context_key="fragile_glass_grasping",
+                hypotheses=[h1, h2],
+            )
+        )
+        self.assertTrue(init_res.is_ok)
+        self.assertEqual(init_res.value["resolved_certainty"], 0.0)
+
+        pending = self.service.list_pending_confrontations()
+        self.assertTrue(pending.is_ok)
+        self.assertEqual(len(pending.value), 1)
+
+        resolve_res = self.service.resolve_confrontation(
+            ResolveConfrontationRequest(
+                id="conf_001",
+                choice_id="hyp_b",
+                justification="Glass is crystal and fragile; use tactile pre-scan.",
+            )
+        )
+        self.assertTrue(resolve_res.is_ok)
+        self.assertEqual(resolve_res.value["resolved_certainty"], 1.0)
+        self.assertEqual(resolve_res.value["chosen_hypothesis_id"], "hyp_b")
+
+        resolved = self.service.list_resolved_confrontations()
+        self.assertTrue(resolved.is_ok)
+        self.assertEqual(len(resolved.value), 1)
+
+    def test_ontological_creativity_synthesis(self) -> None:
+        obs = [[0.0, 0.0], [1.0, 1.0], [2.0, 4.0], [3.0, 9.0], [4.0, 16.0]]
+        synth_res = self.service.synthesize_formalism(
+            SynthesizeFormalismRequest(
+                id="synth_calculus_01",
+                paradigm="calculus",
+                observations=obs,
+            )
+        )
+        self.assertTrue(synth_res.is_ok)
+        self.assertEqual(synth_res.value["paradigm"], "calculus")
+        self.assertTrue(synth_res.value["compiled_o1_shortcut"])
+
+        formalisms = self.service.list_formalisms()
+        self.assertTrue(formalisms.is_ok)
+        self.assertEqual(len(formalisms.value), 1)
+
+    def test_humanoid_34dof_and_fieldbus(self) -> None:
+        joints = self.service.list_joints34()
+        self.assertTrue(joints.is_ok)
+        self.assertEqual(len(joints.value), 34)
+
+        fb_res = self.service.fieldbus_transition(
+            FieldbusTransitionRequest(
+                current_state="switch_on_disabled",
+                controlword=0x0006,
+            )
+        )
+        self.assertTrue(fb_res.is_ok)
+        self.assertEqual(fb_res.value["next_state"], "ready_to_switch_on")
+
     def test_encrypted_persistence_round_trip(self) -> None:
         self.service.solve_quadratic(
             QuadraticSolveRequest(
@@ -158,7 +239,10 @@ class EmbodiedCortexTest(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertIn("cortical", body)
         self.assertIn("embodied", body)
-        self.assertIn("metrics", body)
+        self.assertIn("human_parity_metrics", body)
+        self.assertIn("confrontation", body)
+        self.assertIn("ontological_creativity", body)
+        self.assertIn("physical_embodiment", body)
 
 
 if __name__ == "__main__":

@@ -2,18 +2,24 @@
 . "$(dirname "$0")/../lib.sh"
 
 USER_NAME="$NUXIVA_KIOSK_USER"
-GETTY_OVERRIDE=/etc/systemd/system/getty@tty1.service.d/override.conf
-POLICY=/etc/chromium/policies/managed/nuxiva.json
+GETTY_OVERRIDE="${NUXIVA_GETTY_OVERRIDE:-/etc/systemd/system/getty@tty1.service.d/override.conf}"
+POLICY="${NUXIVA_CHROMIUM_POLICY:-/etc/chromium/policies/managed/nuxiva.json}"
 SESSION="$NUXIVA_DIR/scripts/os/kiosk/session.sh"
 LAUNCH="$NUXIVA_DIR/scripts/os/kiosk/launch.sh"
-XWRAPPER=/etc/X11/Xwrapper.config
+XWRAPPER="${NUXIVA_XWRAPPER_CONF:-/etc/X11/Xwrapper.config}"
 
-kiosk_enabled() { [ "${NUXIVA_KIOSK:-1}" != "0" ]; }
-user_home() { getent passwd "$USER_NAME" | cut -d: -f6; }
+kiosk_enabled() { truthy "${NUXIVA_KIOSK:-1}"; }
+
+user_home() {
+    if [ -n "${NUXIVA_KIOSK_HOME:-}" ]; then
+        printf '%s\n' "$NUXIVA_KIOSK_HOME"
+    else
+        getent passwd "$USER_NAME" | cut -d: -f6
+    fi
+}
 
 getty_conf() {
     printf '%s\n' \
-        '# Gestito da Nuxiva OS' \
         '[Service]' \
         'ExecStart=' \
         "ExecStart=-/sbin/agetty --autologin $USER_NAME --noclear %I \$TERM" \
@@ -23,7 +29,6 @@ getty_conf() {
 
 bash_profile() {
     printf '%s\n' \
-        '# Gestito da Nuxiva OS: avvia la sessione grafica kiosk su tty1' \
         'if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then' \
         "    exec /bin/bash $LAUNCH" \
         'fi'
@@ -54,17 +59,35 @@ chromium_policy() {
 
 xwrapper_conf() {
     printf '%s\n' \
-        '# Gestito da Nuxiva OS' \
         'allowed_users=anybody' \
         'needs_root_rights=yes'
 }
 
 legacy_root_session() {
-    grep -qs 'startx' /root/.bash_profile
+    [ -f "${NUXIVA_ROOT_PROFILE:-/root/.bash_profile}" ] && grep -qs 'startx' "${NUXIVA_ROOT_PROFILE:-/root/.bash_profile}"
+}
+
+kiosk_session_active() {
+    [ -n "$USER_NAME" ] && id "$USER_NAME" >/dev/null 2>&1 \
+        && pgrep -u "$USER_NAME" -f 'kiosk/launch\.sh|kiosk/session\.sh|startx|xinit|Xorg|chromium' >/dev/null 2>&1
+}
+
+kiosk_artifacts_present() {
+    local home
+    home=$(user_home)
+    [ -f "$GETTY_OVERRIDE" ] && return 0
+    [ -n "$home" ] && [ -f "$home/.bash_profile" ] && grep -qs 'kiosk/launch\.sh' "$home/.bash_profile" && return 0
+    [ -f "$NUXIVA_STATE/.code-kiosk" ] && return 0
+    legacy_root_session && return 0
+    kiosk_session_active && return 0
+    return 1
 }
 
 step_check() {
-    kiosk_enabled || return 0
+    if ! kiosk_enabled; then
+        ! kiosk_artifacts_present
+        return $?
+    fi
     id "$USER_NAME" >/dev/null 2>&1 || return 1
     getty_conf | same_content "$GETTY_OVERRIDE" || return 1
     bash_profile | same_content "$(user_home)/.bash_profile" || return 1
@@ -75,9 +98,51 @@ step_check() {
     ! legacy_root_session
 }
 
+step_teardown() {
+    local home changed=0
+    home=$(user_home)
+    progress 25 "Rimozione autologin kiosk su tty1"
+    if [ -f "$GETTY_OVERRIDE" ]; then
+        rm -f "$GETTY_OVERRIDE"
+        rmdir --ignore-fail-on-non-empty "$(dirname "$GETTY_OVERRIDE")" 2>/dev/null || true
+        changed=1
+    fi
+    if [ -n "$home" ] && [ -f "$home/.bash_profile" ] && grep -qs 'kiosk/launch\.sh' "$home/.bash_profile"; then
+        : > "$home/.bash_profile"
+        chown "$USER_NAME:$USER_NAME" "$home/.bash_profile" 2>/dev/null || true
+        changed=1
+    fi
+    if legacy_root_session; then
+        sed -i '/startx/d' "${NUXIVA_ROOT_PROFILE:-/root/.bash_profile}"
+        [ -f /root/.xinitrc ] && mv -f /root/.xinitrc /root/.xinitrc.nuxiva-legacy
+        changed=1
+    fi
+    if [ -f "$NUXIVA_STATE/.code-kiosk" ]; then
+        rm -f "$NUXIVA_STATE/.code-kiosk"
+        changed=1
+    fi
+    if kiosk_session_active; then
+        changed=1
+    fi
+    systemctl daemon-reload >/dev/null 2>&1 || true
+    if [ "$changed" -eq 1 ]; then
+        progress 70 "Arresto sessione grafica Xorg/Chromium e ripristino prompt tty1"
+        if [ -n "$USER_NAME" ] && id "$USER_NAME" >/dev/null 2>&1; then
+            pkill -TERM -u "$USER_NAME" >/dev/null 2>&1 || true
+        fi
+        pkill -t tty1 >/dev/null 2>&1 || true
+        sleep 1
+        if [ -n "$USER_NAME" ] && id "$USER_NAME" >/dev/null 2>&1; then
+            pkill -KILL -u "$USER_NAME" >/dev/null 2>&1 || true
+        fi
+        systemctl restart getty@tty1 >/dev/null 2>&1 || true
+    fi
+    progress 100 "Kiosk disabilitato da configurazione e sessione tty1 smontata"
+}
+
 step_apply() {
     if ! kiosk_enabled; then
-        progress 100 "Kiosk disabilitato da configurazione"
+        step_teardown
         return 0
     fi
     progress 15 "Creazione utente kiosk dedicato"
@@ -92,8 +157,8 @@ step_apply() {
 
     progress 40 "Configurazione sessione grafica"
     chmod +x "$SESSION" "$LAUNCH"
-    xwrapper_conf | write_if_changed "$XWRAPPER" 0644 && changed=1
     local home changed=0
+    xwrapper_conf | write_if_changed "$XWRAPPER" 0644 && changed=1
     home=$(user_home)
     mkdir -p "$home/.cache"
     bash_profile | write_if_changed "$home/.bash_profile" 0644 && changed=1
@@ -101,7 +166,7 @@ step_apply() {
 
     progress 60 "Rimozione sessione legacy di root"
     if legacy_root_session; then
-        sed -i '/startx/d' /root/.bash_profile
+        sed -i '/startx/d' "${NUXIVA_ROOT_PROFILE:-/root/.bash_profile}"
         [ -f /root/.xinitrc ] && mv -f /root/.xinitrc /root/.xinitrc.nuxiva-legacy
         changed=1
     fi

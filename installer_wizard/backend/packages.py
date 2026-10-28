@@ -102,6 +102,8 @@ def step_wanted(step_id: str, env: dict | None = None) -> bool:
     pkg = PACKAGE_BY_STEP.get(step_id)
     if pkg is None:
         return True
+    if explicit(pkg, env) and not wanted(pkg, env):
+        return False
     return wanted(pkg, env) or _installed(step_id)
 
 

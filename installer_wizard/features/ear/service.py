@@ -28,6 +28,7 @@ from reviewer import Reviewer, activity
 from voiceprint import ENROLLED_AT, Voiceprints
 from wakeword import WakeWord
 from autolevel import AutoLevel
+from host_mic import HostMicCapture
 
 log = logging.getLogger("nuxiva.ear")
 
@@ -474,8 +475,9 @@ async def handler(ws) -> None:
 
 async def main() -> None:
     reviewer = Reviewer(lambda: any(s.mode != "idle" or s.in_speech or s.nuxiva_speaking for s in SESSIONS))
+    host_mic = HostMicCapture(Session)
     async with websockets.serve(handler, "127.0.0.1", PORT, max_size=2 ** 20, ping_interval=20, ping_timeout=90):
-        await asyncio.gather(link_writer(), reviewer.run(), capture.maintenance(), feedback.run(voiceprints))
+        await asyncio.gather(link_writer(), reviewer.run(), capture.maintenance(), feedback.run(voiceprints), host_mic.run())
 
 
 if __name__ == "__main__":
