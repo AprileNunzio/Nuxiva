@@ -7,6 +7,7 @@ POLICY="${NUXIVA_CHROMIUM_POLICY:-/etc/chromium/policies/managed/nuxiva.json}"
 SESSION="$NUXIVA_DIR/scripts/os/kiosk/session.sh"
 LAUNCH="$NUXIVA_DIR/scripts/os/kiosk/launch.sh"
 XWRAPPER="${NUXIVA_XWRAPPER_CONF:-/etc/X11/Xwrapper.config}"
+KIOSK_PROC_PATTERN='kiosk/launch\.sh|kiosk/session\.sh|startx|xinit|Xorg|chromium'
 
 kiosk_enabled() { truthy "${NUXIVA_KIOSK:-1}"; }
 
@@ -69,7 +70,7 @@ legacy_root_session() {
 
 kiosk_session_active() {
     [ -n "$USER_NAME" ] && id "$USER_NAME" >/dev/null 2>&1 \
-        && pgrep -u "$USER_NAME" -f 'kiosk/launch\.sh|kiosk/session\.sh|startx|xinit|Xorg|chromium' >/dev/null 2>&1
+        && pgrep -u "$USER_NAME" -f "$KIOSK_PROC_PATTERN" >/dev/null 2>&1
 }
 
 kiosk_artifacts_present() {
@@ -128,12 +129,12 @@ step_teardown() {
     if [ "$changed" -eq 1 ]; then
         progress 70 "Arresto sessione grafica Xorg/Chromium e ripristino prompt tty1"
         if [ -n "$USER_NAME" ] && id "$USER_NAME" >/dev/null 2>&1; then
-            pkill -TERM -u "$USER_NAME" >/dev/null 2>&1 || true
+            pkill -TERM -u "$USER_NAME" -f "$KIOSK_PROC_PATTERN" >/dev/null 2>&1 || true
         fi
         pkill -t tty1 >/dev/null 2>&1 || true
         sleep 1
         if [ -n "$USER_NAME" ] && id "$USER_NAME" >/dev/null 2>&1; then
-            pkill -KILL -u "$USER_NAME" >/dev/null 2>&1 || true
+            pkill -KILL -u "$USER_NAME" -f "$KIOSK_PROC_PATTERN" >/dev/null 2>&1 || true
         fi
         systemctl restart getty@tty1 >/dev/null 2>&1 || true
     fi

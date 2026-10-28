@@ -57,3 +57,13 @@ class KioskToggleTest(unittest.IsolatedAsyncioTestCase):
                 ok = await run_pipeline(only=["kiosk"], force=True)
                 self.assertTrue(ok)
                 self.assertEqual(store.steps["kiosk"]["status"], "done")
+
+    def test_kiosk_teardown_preserves_user_audio_session(self):
+        script = Path(__file__).resolve().parents[2] / "scripts" / "os" / "steps" / "25-kiosk.sh"
+        self.assertTrue(script.is_file())
+        content = script.read_text(encoding="utf-8")
+        self.assertIn("KIOSK_PROC_PATTERN=", content)
+        self.assertIn('pkill -TERM -u "$USER_NAME" -f "$KIOSK_PROC_PATTERN"', content)
+        self.assertIn('pkill -KILL -u "$USER_NAME" -f "$KIOSK_PROC_PATTERN"', content)
+        self.assertNotIn('pkill -TERM -u "$USER_NAME" >', content)
+        self.assertNotIn('pkill -KILL -u "$USER_NAME" >', content)
