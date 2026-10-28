@@ -75,6 +75,17 @@
         "thermal_limit_exceeded": "Thermal protection active: actuator temperature exceeds safety cutoff.",
         "balance_instability": "Balance reflex active: insufficient ZMP margin or critical tilt.",
         "unknown_joint": "Humanoid kinematic joint not found."
+      },
+      "confrontation": {
+        "doubt_not_found": "Epistemic confrontation record not found.",
+        "invalid_choice": "Selected hypothesis choice does not exist in the doubt record."
+      },
+      "ontology": {
+        "insufficient_data": "Insufficient empirical observations to synthesize new formal axioms."
+      },
+      "fieldbus": {
+        "fault": "Industrial fieldbus communication fault or drive error active.",
+        "wkc_mismatch": "EtherCAT LRW frame validation failed: Working Counter mismatch."
       }
     },
     "platform": {

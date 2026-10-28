@@ -75,6 +75,17 @@
         "thermal_limit_exceeded": "Protezione termica attiva: la temperatura dell'attuatore supera la soglia di sicurezza.",
         "balance_instability": "Riflesso di stabilità attivo: margine ZMP insufficiente o inclinazione critica.",
         "unknown_joint": "Giunto cinematico umanoide non trovato."
+      },
+      "confrontation": {
+        "doubt_not_found": "Record di confronto epistemico non trovato.",
+        "invalid_choice": "L'ipotesi selezionata non esiste nel record di dubbio."
+      },
+      "ontology": {
+        "insufficient_data": "Osservazioni empiriche insufficienti per sintetizzare nuovi assiomi formali."
+      },
+      "fieldbus": {
+        "fault": "Guasto di comunicazione bus industriale o errore drive attivo.",
+        "wkc_mismatch": "Convalida frame EtherCAT LRW fallita: Working Counter non corrispondente."
       }
     },
     "platform": {

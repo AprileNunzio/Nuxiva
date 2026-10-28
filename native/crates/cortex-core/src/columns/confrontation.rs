@@ -56,7 +56,10 @@ impl EpistemicDoubtEngine {
         if hypotheses.is_empty() {
             return 0.0;
         }
-        let total: f32 = hypotheses.iter().map(|h| h.prior_probability.max(0.0)).sum();
+        let total: f32 = hypotheses
+            .iter()
+            .map(|h| h.prior_probability.max(0.0))
+            .sum();
         if total <= 0.0 {
             return 0.0;
         }
@@ -167,7 +170,6 @@ impl EpistemicDoubtEngine {
         self.memory_store.values().cloned().collect()
     }
 }
-
 
 #[cfg(test)]
 #[allow(clippy::unwrap_used, clippy::float_cmp)]

@@ -1,4 +1,8 @@
-import pytest
+import tempfile
+import unittest
+from pathlib import Path
+from unittest.mock import AsyncMock, patch
+
 import feature_registry
 from config import read_env, write_env
 from feature_registry import Registry
@@ -7,48 +11,48 @@ from state import store
 from steps import run_pipeline
 
 
-@pytest.fixture(autouse=True)
-def reset_env(tmp_path, monkeypatch):
-    test_env = tmp_path / "nuxiva.env"
-    test_env.write_text("NUXIVA_KIOSK=1\n", encoding="utf-8")
-    monkeypatch.setattr("config.ENV_FILE", test_env)
-    store.steps.clear()
-    store.steps["kiosk"] = {"status": "done", "progress": 100}
-    yield
+class KioskToggleTest(unittest.IsolatedAsyncioTestCase):
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.tmp_path = Path(self._tmp.name)
+        self.test_env = self.tmp_path / "nuxiva.env"
+        self.test_env.write_text("NUXIVA_KIOSK=1\n", encoding="utf-8")
+        self.env_patch = patch("config.ENV_FILE", self.test_env)
+        self.env_patch.start()
+        store.steps.clear()
+        store.steps["kiosk"] = {"status": "done", "progress": 100}
 
+    def tearDown(self):
+        self.env_patch.stop()
+        self._tmp.cleanup()
 
-def test_kiosk_toggle_persistence_and_wanted(tmp_path, monkeypatch):
-    state_file = tmp_path / "features.json"
-    monkeypatch.setattr(feature_registry, "STATE_FILE", state_file)
-    registry = Registry()
-    registry.scan()
-    assert registry.features.get("kiosk") is not None
+    def test_kiosk_toggle_persistence_and_wanted(self):
+        state_file = self.tmp_path / "features.json"
+        with patch.object(feature_registry, "STATE_FILE", state_file):
+            registry = Registry()
+            registry.scan()
+            self.assertIsNotNone(registry.features.get("kiosk"))
 
-    write_env({"NUXIVA_KIOSK": "0"})
-    registry.note_env_change({"NUXIVA_KIOSK": "0"})
-    assert registry._rec("kiosk")["mode"] == "0"
-    assert registry.enabled("kiosk") is False
+            write_env({"NUXIVA_KIOSK": "0"})
+            registry.note_env_change({"NUXIVA_KIOSK": "0"})
+            self.assertEqual(registry._rec("kiosk")["mode"], "0")
+            self.assertFalse(registry.enabled("kiosk"))
 
-    registry2 = Registry()
-    registry2.scan()
-    assert registry2._rec("kiosk")["mode"] == "0"
-    assert registry2.enabled("kiosk") is False
+            registry2 = Registry()
+            registry2.scan()
+            self.assertEqual(registry2._rec("kiosk")["mode"], "0")
+            self.assertFalse(registry2.enabled("kiosk"))
 
-    env = read_env()
-    assert env.get("NUXIVA_KIOSK") == "0"
-    assert step_wanted("kiosk", env) is False
+            env = read_env()
+            self.assertEqual(env.get("NUXIVA_KIOSK"), "0")
+            self.assertFalse(step_wanted("kiosk", env))
 
-
-@pytest.mark.asyncio
-async def test_kiosk_pipeline_teardown_status(monkeypatch):
-    monkeypatch.setenv("NUXIVA_TEST_AUTH", "1")
-    write_env({"NUXIVA_KIOSK": "0"})
-    store.steps["kiosk"] = {"status": "done", "progress": 100}
-
-    async def mock_action(step, action, stream=False, quiet=False):
-        return 0, ""
-
-    monkeypatch.setattr("steps.run_step_action", mock_action)
-    ok = await run_pipeline(only=["kiosk"], force=True)
-    assert ok is True
-    assert store.steps["kiosk"]["status"] == "disabled"
+    async def test_kiosk_pipeline_teardown_status(self):
+        with patch.dict("os.environ", {"NUXIVA_TEST_AUTH": "1"}):
+            write_env({"NUXIVA_KIOSK": "0"})
+            store.steps["kiosk"] = {"status": "done", "progress": 100}
+            mock_action = AsyncMock(return_value=(0, ""))
+            with patch("steps.run_step_action", mock_action):
+                ok = await run_pipeline(only=["kiosk"], force=True)
+                self.assertTrue(ok)
+                self.assertEqual(store.steps["kiosk"]["status"], "disabled")

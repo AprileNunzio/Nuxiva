@@ -177,7 +177,6 @@ impl HumanoidKinematics34 {
     }
 }
 
-
 #[cfg(test)]
 #[allow(clippy::unwrap_used, clippy::float_cmp)]
 mod tests {
@@ -193,13 +192,17 @@ mod tests {
 
         assert!(k.enforce_limits("left_elbow_pitch", 1.0).is_err());
 
-        k.update_joint("left_shoulder_pitch", 0.3, 0.1, 10.0, 30.0).unwrap();
+        k.update_joint("left_shoulder_pitch", 0.3, 0.1, 10.0, 30.0)
+            .unwrap();
         let joint = k.get_joint("left_shoulder_pitch").unwrap();
         assert_eq!(joint.angle_rad, 0.3);
 
         let pose = k.forward_kinematics_hand(false);
         assert!(pose[2] < 0.6);
 
-        assert!(k.update_joint("left_shoulder_pitch", 0.3, 0.1, 10.0, 80.0).is_err());
+        assert!(
+            k.update_joint("left_shoulder_pitch", 0.3, 0.1, 10.0, 80.0)
+                .is_err()
+        );
     }
 }

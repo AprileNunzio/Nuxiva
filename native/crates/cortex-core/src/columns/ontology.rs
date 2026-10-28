@@ -86,11 +86,7 @@ impl OntologicalCreativeEngine {
             .sum();
 
         let mse = residual_sq / n;
-        if mse > threshold {
-            Ok(mse)
-        } else {
-            Ok(0.0)
-        }
+        if mse > threshold { Ok(mse) } else { Ok(0.0) }
     }
 
     pub fn synthesize_formalism(
@@ -193,7 +189,6 @@ impl OntologicalCreativeEngine {
     }
 }
 
-
 #[cfg(test)]
 #[allow(clippy::unwrap_used, clippy::float_cmp)]
 mod tests {
@@ -202,23 +197,13 @@ mod tests {
     #[test]
     fn test_ontological_creativity_and_synthesis() {
         let mut engine = OntologicalCreativeEngine::new();
-        let obs = vec![
-            (0.0, 0.0),
-            (1.0, 1.0),
-            (2.0, 4.0),
-            (3.0, 9.0),
-            (4.0, 16.0),
-        ];
+        let obs = vec![(0.0, 0.0), (1.0, 1.0), (2.0, 4.0), (3.0, 9.0), (4.0, 16.0)];
 
         let anomaly = OntologicalCreativeEngine::detect_anomaly(&obs, 0.01).unwrap();
         assert!(anomaly > 0.1);
 
         let calculus = engine
-            .synthesize_formalism(
-                "calc_001".to_string(),
-                FormalismParadigm::Calculus,
-                &obs,
-            )
+            .synthesize_formalism("calc_001".to_string(), FormalismParadigm::Calculus, &obs)
             .unwrap();
 
         assert_eq!(calculus.paradigm, FormalismParadigm::Calculus);

@@ -189,7 +189,12 @@ impl RustEpistemicDoubtEngine {
             .map_err(|_| failure(CoreError::InvalidExpression))?;
         let mut guard = self.inner.write().map_err(|_| poisoned())?;
         let record = guard
-            .initiate_confrontation(id.to_string(), context_key.to_string(), hypotheses, epoch_ms)
+            .initiate_confrontation(
+                id.to_string(),
+                context_key.to_string(),
+                hypotheses,
+                epoch_ms,
+            )
             .map_err(failure)?;
         serde_json::to_string(&record).map_err(|_| failure(CoreError::SnapshotInvalid))
     }
@@ -212,7 +217,8 @@ impl RustEpistemicDoubtEngine {
         let guard = self.inner.read().map_err(|_| poisoned())?;
         match guard.lookup_prior(context_key) {
             Some(rec) => {
-                let json = serde_json::to_string(rec).map_err(|_| failure(CoreError::SnapshotInvalid))?;
+                let json =
+                    serde_json::to_string(rec).map_err(|_| failure(CoreError::SnapshotInvalid))?;
                 Ok(Some(json))
             }
             None => Ok(None),
@@ -221,12 +227,14 @@ impl RustEpistemicDoubtEngine {
 
     fn list_pending_json(&self) -> PyResult<String> {
         let guard = self.inner.read().map_err(|_| poisoned())?;
-        serde_json::to_string(&guard.list_pending()).map_err(|_| failure(CoreError::SnapshotInvalid))
+        serde_json::to_string(&guard.list_pending())
+            .map_err(|_| failure(CoreError::SnapshotInvalid))
     }
 
     fn list_resolved_json(&self) -> PyResult<String> {
         let guard = self.inner.read().map_err(|_| poisoned())?;
-        serde_json::to_string(&guard.list_resolved()).map_err(|_| failure(CoreError::SnapshotInvalid))
+        serde_json::to_string(&guard.list_resolved())
+            .map_err(|_| failure(CoreError::SnapshotInvalid))
     }
 }
 
@@ -277,7 +285,8 @@ impl RustOntologicalCreativeEngine {
 
     fn list_synthesized_json(&self) -> PyResult<String> {
         let guard = self.inner.read().map_err(|_| poisoned())?;
-        serde_json::to_string(guard.list_synthesized()).map_err(|_| failure(CoreError::SnapshotInvalid))
+        serde_json::to_string(guard.list_synthesized())
+            .map_err(|_| failure(CoreError::SnapshotInvalid))
     }
 }
 
@@ -316,7 +325,13 @@ impl RustHumanoidKinematics34 {
     ) -> PyResult<()> {
         let mut guard = self.inner.write().map_err(|_| poisoned())?;
         guard
-            .update_joint(joint_id, angle_rad, velocity_rad_s, torque_nm, temperature_c)
+            .update_joint(
+                joint_id,
+                angle_rad,
+                velocity_rad_s,
+                torque_nm,
+                temperature_c,
+            )
             .map_err(failure)
     }
 
@@ -328,7 +343,8 @@ impl RustHumanoidKinematics34 {
 
     fn list_joints_json(&self) -> PyResult<String> {
         let guard = self.inner.read().map_err(|_| poisoned())?;
-        serde_json::to_string(&guard.list_all_joints()).map_err(|_| failure(CoreError::SnapshotInvalid))
+        serde_json::to_string(&guard.list_all_joints())
+            .map_err(|_| failure(CoreError::SnapshotInvalid))
     }
 }
 
@@ -382,15 +398,19 @@ impl RustFieldbusController {
     }
 
     #[staticmethod]
-    fn build_rpdo1_position_json(node_id: u8, target_pulse: i32, controlword: u16) -> PyResult<String> {
+    fn build_rpdo1_position_json(
+        node_id: u8,
+        target_pulse: i32,
+        controlword: u16,
+    ) -> PyResult<String> {
         let frame = FieldbusController::build_rpdo1_position(node_id, target_pulse, controlword);
         serde_json::to_string(&frame).map_err(|_| failure(CoreError::SnapshotInvalid))
     }
 
     #[staticmethod]
     fn parse_tpdo1_position_json(frame_json: &str) -> PyResult<(u16, i32)> {
-        let frame: CanOpenPdoFrame = serde_json::from_str(frame_json)
-            .map_err(|_| failure(CoreError::InvalidExpression))?;
+        let frame: CanOpenPdoFrame =
+            serde_json::from_str(frame_json).map_err(|_| failure(CoreError::InvalidExpression))?;
         FieldbusController::parse_tpdo1_position(&frame).map_err(failure)
     }
 

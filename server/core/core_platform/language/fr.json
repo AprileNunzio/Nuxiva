@@ -75,6 +75,17 @@
         "thermal_limit_exceeded": "Protection thermique active : la température de l'actionneur dépasse le seuil.",
         "balance_instability": "Réflexe d'équilibre actif : marge ZMP insuffisante ou inclinaison critique.",
         "unknown_joint": "Articulation cinématique humanoïde introuvable."
+      },
+      "confrontation": {
+        "doubt_not_found": "Enregistrement de confrontation épistémique introuvable.",
+        "invalid_choice": "L'hypothèse sélectionnée n'existe pas dans le dossier de doute."
+      },
+      "ontology": {
+        "insufficient_data": "Observations empiriques insuffisantes pour synthétiser de nouveaux axiomes formels."
+      },
+      "fieldbus": {
+        "fault": "Défaut de communication de bus industriel ou erreur variateur active.",
+        "wkc_mismatch": "Validation de trame EtherCAT LRW échouée : divergence du Working Counter."
       }
     },
     "platform": {

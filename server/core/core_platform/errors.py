@@ -15,12 +15,16 @@ CLIENT_PREFIXES = (
     "cortex.plasticity.",
     "cortex.columns.",
     "cortex.embodied.",
+    "cortex.confrontation.",
+    "cortex.ontology.",
+    "cortex.fieldbus.",
 )
 NOT_FOUND_CODES = frozenset(
     {
         "cortex.neuron.unknown",
         "cortex.forge.unknown_skill",
         "cortex.embodied.unknown_joint",
+        "cortex.confrontation.doubt_not_found",
     }
 )
 UNAVAILABLE_PREFIXES = (

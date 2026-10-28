@@ -185,7 +185,11 @@ impl FieldbusController {
     }
 
     #[must_use]
-    pub fn build_rpdo1_position(node_id: u8, target_pulse: i32, controlword: u16) -> CanOpenPdoFrame {
+    pub fn build_rpdo1_position(
+        node_id: u8,
+        target_pulse: i32,
+        controlword: u16,
+    ) -> CanOpenPdoFrame {
         let cob_id = 0x200 + u32::from(node_id);
         let mut data = [0_u8; 8];
         let cw_bytes = controlword.to_le_bytes();
@@ -210,12 +214,8 @@ impl FieldbusController {
             return Err(CortexError::FieldbusFault);
         }
         let statusword = u16::from_le_bytes([frame.data[0], frame.data[1]]);
-        let actual_pulse = i32::from_le_bytes([
-            frame.data[2],
-            frame.data[3],
-            frame.data[4],
-            frame.data[5],
-        ]);
+        let actual_pulse =
+            i32::from_le_bytes([frame.data[2], frame.data[3], frame.data[4], frame.data[5]]);
         Ok((statusword, actual_pulse))
     }
 
@@ -227,7 +227,6 @@ impl FieldbusController {
     }
 }
 
-
 #[cfg(test)]
 #[allow(clippy::unwrap_used, clippy::float_cmp)]
 mod tests {
@@ -236,7 +235,8 @@ mod tests {
     #[test]
     fn test_fieldbus_cia402_and_ethercat() {
         let cw_enable = FieldbusController::encode_controlword(true, true, true, true, false);
-        let state1 = FieldbusController::transition_cia402(Cia402State::SwitchOnDisabled, cw_enable);
+        let state1 =
+            FieldbusController::transition_cia402(Cia402State::SwitchOnDisabled, cw_enable);
         assert_eq!(state1, Cia402State::ReadyToSwitchOn);
 
         let state2 = FieldbusController::transition_cia402(state1, cw_enable);
