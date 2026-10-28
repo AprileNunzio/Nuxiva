@@ -17,8 +17,8 @@ logger = logging.getLogger("nuxiva.skill_forge.sandbox")
 RUNNER = Path(__file__).with_name("runner.py")
 WALL_SECONDS = 4.0
 MAX_OUTPUT_BYTES = 65_536
-KILLED_BY_LIMIT = frozenset({-9, -24, -signal.SIGXCPU})
-KILLED_BY_FILTER = -signal.SIGSYS
+KILLED_BY_LIMIT = frozenset({-9, -24, -getattr(signal, "SIGXCPU", 24)})
+KILLED_BY_FILTER = -getattr(signal, "SIGSYS", 31)
 LAYERS = ("namespaces", "no_new_privs", "seccomp")
 
 _observed: dict[str, bool] = {}

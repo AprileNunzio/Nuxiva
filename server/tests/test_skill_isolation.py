@@ -55,7 +55,7 @@ class LiveIsolationTest(unittest.TestCase):
         done = subprocess.run([sys.executable, "-I", "-S", "-c", PROBE, PATH], capture_output=True, timeout=10, check=False)
         if done.returncode == 77:
             self.skipTest("seccomp is not permitted on this host")
-        self.assertEqual(done.returncode, -signal.SIGSYS)
+        self.assertEqual(done.returncode, -getattr(signal, "SIGSYS", 31))
 
     def test_network_namespace_leaves_no_usable_interface(self):
         code = (
