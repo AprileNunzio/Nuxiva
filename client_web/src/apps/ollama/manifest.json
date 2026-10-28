@@ -23,7 +23,6 @@
   },
   "category": "intelligence",
   "featureIds": [
-    "ollama",
-    "brain"
+    "ollama"
   ]
 }

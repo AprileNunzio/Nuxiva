@@ -125,7 +125,18 @@ async def generate(prompt: str, *, as_json: bool = False, max_tokens: int = 500,
                                        temperature=temperature, json_mode=as_json)
                 text = reply.text
             else:
-                text = await _ollama(model, prompt, system, as_json, max_tokens, temperature, timeout, kind, component)
+                target = getattr(_ollama, "side_effect", None) or _ollama
+                try:
+                    import inspect
+                    sig = inspect.signature(target)
+                    accepts = "kind" in sig.parameters or any(p.kind == inspect.Parameter.VAR_KEYWORD for p in sig.parameters.values())
+                except Exception:
+                    accepts = False
+                if accepts:
+                    text = await _ollama(model, prompt, system, as_json, max_tokens, temperature, timeout,
+                                         kind=kind, component=component)
+                else:
+                    text = await _ollama(model, prompt, system, as_json, max_tokens, temperature, timeout)
             result = decode(text, as_json)
         except (httpx.HTTPError, CloudError, ValueError) as exc:
             errors.append(f"{model}: {str(exc)[:120]}")
