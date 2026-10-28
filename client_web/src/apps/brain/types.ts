@@ -130,3 +130,38 @@ export interface McpToolDefinition {
   readonly iconName: string;
   readonly category: 'smart_home' | 'filesystem' | 'search' | 'system' | 'memory' | 'science';
 }
+
+export interface HostHardwareInfo {
+  readonly cpu?: {
+    readonly cores_logical: number;
+    readonly cores_physical: number;
+    readonly architecture: string;
+    readonly has_avx2: boolean;
+    readonly has_avx512: boolean;
+  };
+  readonly memory?: {
+    readonly total_mb: number;
+    readonly available_mb: number;
+  };
+  readonly gpu?: {
+    readonly detected: boolean;
+    readonly brand: string;
+    readonly name: string;
+    readonly vram_mb: number;
+  };
+  readonly profile?: {
+    readonly tier: 'lightweight' | 'balanced' | 'enterprise';
+    readonly recommended_num_parallel: number;
+    readonly recommended_num_ctx: number;
+    readonly recommended_num_predict: number;
+    readonly recommended_models: readonly string[];
+  };
+}
+
+export interface LocalOllamaStatus {
+  readonly running: boolean;
+  readonly version: string;
+  readonly host: string;
+  readonly models: readonly string[];
+  readonly model_count: number;
+}

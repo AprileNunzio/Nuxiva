@@ -1,480 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useScopedI18n } from '../../shared/i18n/useScopedI18n';
-import {
-  BrainTargetConfig,
-  LlmProvider,
-  OllamaMachine,
-  DownloadableModel,
-  RemoteOllamaServer,
-  DiscoveredOllamaModel,
-  BrainGlobalDefault,
-} from './types';
-import {
-  DEFAULT_BRAIN_TARGETS,
-  DEFAULT_PROVIDERS,
-  DEFAULT_OLLAMA_MACHINES,
-  DOWNLOADABLE_MODELS_CATALOG,
-  MCP_TOOLS_CATALOG,
-  RECOMMENDED_LOCAL_MODELS,
-  DEFAULT_REMOTE_SERVERS,
-  DEFAULT_GLOBAL_BRAIN,
-  normalizeOllamaUrl,
-  fetchOllamaModels,
-  applyDefaultToAllTargets,
-} from './defaults';
-import { buildLiveArbiterTarget } from './arbiterApi';
+import { useBrainController } from './hooks/useBrainController';
 import { MainDashboard } from './components/MainDashboard';
 import { StepWizard } from './components/StepWizard';
-import { Brain, CheckCircle2 } from 'lucide-react';
-import { getJson, sendJson } from '../shared/http';
-
-const BRAIN_TARGET_IDS: readonly string[] = ['cognitive_arbiter', 'fast_conversation', 'reasoning', 'live_audio'];
-
-interface PersistedBrainState {
-  servers: RemoteOllamaServer[];
-  targets: BrainTargetConfig[];
-  globalDefault: BrainGlobalDefault | null;
-}
+import { SimpleOverview } from './components/SimpleOverview';
+import { AutopilotWizardModal } from './components/AutopilotWizardModal';
+import { Brain, CheckCircle2, Sparkles, SlidersHorizontal, Wand2 } from 'lucide-react';
+import { MCP_TOOLS_CATALOG, RECOMMENDED_LOCAL_MODELS } from './defaults';
 
 export const View: React.FC = () => {
   const { t } = useScopedI18n('apps/brain');
-
-  const [globalDefault, setGlobalDefault] = useState<BrainGlobalDefault>(DEFAULT_GLOBAL_BRAIN);
-  const [remoteServers, setRemoteServers] =
-    useState<readonly RemoteOllamaServer[]>(DEFAULT_REMOTE_SERVERS);
-  const [hydrated, setHydrated] = useState(false);
-  const [localModels, setLocalModels] = useState<readonly DiscoveredOllamaModel[]>([]);
-  const [targets, setTargets] = useState<readonly BrainTargetConfig[]>(() => [
-    buildLiveArbiterTarget(DEFAULT_GLOBAL_BRAIN),
-    ...DEFAULT_BRAIN_TARGETS.filter((item) => BRAIN_TARGET_IDS.includes(item.id)),
-  ]);
-  const [providers, setProviders] = useState<readonly LlmProvider[]>(DEFAULT_PROVIDERS);
-  const [machines, setMachines] = useState<readonly OllamaMachine[]>(DEFAULT_OLLAMA_MACHINES);
-  const [modelsCatalog] = useState<readonly DownloadableModel[]>(DOWNLOADABLE_MODELS_CATALOG);
-  const [activeTarget, setActiveTarget] = useState<BrainTargetConfig | null>(null);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    const hydrate = async () => {
-      let saved: PersistedBrainState = { servers: [], targets: [], globalDefault: null };
-      let loadedFromServer = false;
-      try {
-        const res = await getJson<PersistedBrainState>('/api/v2/brain/state');
-        saved = {
-          servers: Array.isArray(res?.servers) ? res.servers : [],
-          targets: Array.isArray(res?.targets) ? res.targets : [],
-          globalDefault: res?.globalDefault ?? null,
-        };
-        loadedFromServer = true;
-      } catch {}
-
-      let effectiveGlobal: BrainGlobalDefault | null = saved.globalDefault
-        ? { ...DEFAULT_GLOBAL_BRAIN, ...saved.globalDefault }
-        : null;
-      if (!effectiveGlobal) {
-        try {
-          const cfg = await getJson<{
-            ollama_url?: string;
-            active_model?: string;
-            active?: { origin?: string; ref?: string };
-          }>('/api/v2/brain/config');
-          if (cfg?.ollama_url || cfg?.active_model) {
-            const url = cfg.ollama_url || DEFAULT_GLOBAL_BRAIN.baseUrl;
-            const isLocal = /\/\/(127\.0\.0\.1|localhost|\[::1\])(:|\/|$)/i.test(url);
-            effectiveGlobal = {
-              ...DEFAULT_GLOBAL_BRAIN,
-              provider: cfg.active?.ref?.startsWith('cloud:')
-                ? 'api_key'
-                : isLocal
-                  ? 'ollama_local'
-                  : 'ollama_remote',
-              serverId: cfg.active?.ref?.startsWith('cloud:')
-                ? cfg.active.ref.slice(6).split('/')[0]
-                : isLocal
-                  ? 'local_workstation'
-                  : null,
-              baseUrl: url,
-              modelName: cfg.active_model || DEFAULT_GLOBAL_BRAIN.modelName,
-            };
-          }
-        } catch {}
-      }
-      if (cancelled) return;
-      const resolvedGlobal = effectiveGlobal || DEFAULT_GLOBAL_BRAIN;
-      setRemoteServers(saved.servers);
-      setGlobalDefault(resolvedGlobal);
-      setTargets((prev) => {
-        const merged = prev.map((dt) => {
-          const found = saved.targets.find((p) => p.id === dt.id);
-          return found ? { ...dt, ...found } : dt;
-        });
-        return merged.map((item) =>
-          item.id === 'cognitive_arbiter' ? buildLiveArbiterTarget(resolvedGlobal, item) : item
-        );
-      });
-      setHydrated(loadedFromServer);
-    };
-    void hydrate();
-    getJson<{ providers: Array<{ id: string; configured: boolean; base_url?: string }> }>('/api/cloud')
-      .then((res) =>
-        setProviders((prev) =>
-          prev.map((p) => {
-            const remote = res.providers.find((v) => v.id === (p.id === 'google' ? 'gemini' : p.id));
-            return {
-              ...p,
-              isConfigured: remote?.configured === true,
-              endpointUrl: typeof remote?.base_url === 'string' ? remote.base_url : '',
-            };
-          })
-        )
-      )
-      .catch(() => {});
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  useEffect(() => {
-    setTargets((prev) =>
-      prev.map((item) =>
-        item.id === 'cognitive_arbiter' ? buildLiveArbiterTarget(globalDefault, item) : item
-      )
-    );
-  }, [globalDefault]);
-
-  useEffect(() => {
-    getJson<{
-      nodes?: Array<{
-        id: string;
-        name?: string;
-        ip?: string;
-        hostname?: string;
-        online?: boolean;
-        hardware?: { gpu?: string; os?: string };
-      }>;
-    }>('/api/nodes')
-      .then((res) => {
-        if (res && Array.isArray(res.nodes)) {
-          const realMeshNodes: OllamaMachine[] = res.nodes
-            .filter(
-              (n) => n.online !== false && n.ip && n.ip !== '127.0.0.1' && n.ip !== 'localhost'
-            )
-            .map((n) => ({
-              id: n.id,
-              name: n.name || n.hostname || `Nodo Mesh (${n.ip})`,
-              ip: n.ip || 'LAN',
-              ramGb: 16,
-              cores: 8,
-              gpu: n.hardware?.gpu || 'GPU Dedicata',
-              vramGb: 8,
-              os: n.hardware?.os || 'Linux Node',
-              isLocal: false,
-              ollamaInstalled: true,
-              ollamaVersion: '0.5.8',
-              installedModels: [],
-            }));
-
-          if (realMeshNodes.length > 0) {
-            setMachines((prev) => [...prev.filter((m) => m.isLocal), ...realMeshNodes]);
-          }
-        }
-      })
-      .catch(() => {});
-
-    fetchOllamaModels('http://127.0.0.1:11434')
-      .then((res) => {
-        if (res.models.length > 0) setLocalModels(res.models);
-      })
-      .catch(() => {});
-  }, [globalDefault]);
-
-  useEffect(() => {
-    if (!hydrated) return;
-    const localCount = targets.filter((tItem) => tItem.method === 'ollama_local').length;
-    sendJson('/api/v2/brain/ollama/hibernate', 'POST', {
-      local_targets_count: localCount,
-      local_host: 'http://127.0.0.1:11434',
-    }).catch(() => {});
-  }, [targets, hydrated]);
-
-  const persistState = (patch: Partial<PersistedBrainState>) => {
-    if (!hydrated) return;
-    sendJson('/api/v2/brain/state', 'PUT', patch).catch(() => {
-      showToast(t('persist_failed'));
-    });
-  };
-
-  const saveTargets = (updated: readonly BrainTargetConfig[]) => {
-    setTargets(updated);
-    persistState({ targets: updated as BrainTargetConfig[] });
-  };
-
-  const saveRemoteServers = (servers: readonly RemoteOllamaServer[]) => {
-    setRemoteServers(servers);
-    persistState({ servers: servers as RemoteOllamaServer[] });
-  };
-
-  const handleMakeDefaultForAll = async (payload: {
-    provider: 'ollama_local' | 'ollama_remote' | 'api_key';
-    serverId: string | null;
-    baseUrl: string;
-    modelName: string;
-  }) => {
-    if (!hydrated) {
-      showToast(t('persist_failed'));
-      return;
-    }
-    if (
-      payload.provider === 'api_key' &&
-      payload.serverId &&
-      !(await handleSaveApiKey(payload.serverId))
-    ) {
-      return;
-    }
-    const newGlobal: BrainGlobalDefault = {
-      provider: payload.provider,
-      serverId: payload.serverId,
-      baseUrl:
-        payload.provider === 'api_key' ? payload.baseUrl : normalizeOllamaUrl(payload.baseUrl),
-      modelName: payload.modelName,
-      temperature: globalDefault.temperature,
-      contextWindow: globalDefault.contextWindow,
-      mcpToolsEnabled: globalDefault.mcpToolsEnabled,
-    };
-    const updatedTargets = applyDefaultToAllTargets(targets, payload);
-    try {
-      await sendJson('/api/v2/brain/assignments/batch', 'POST', {
-        ...newGlobal,
-        globalDefault: newGlobal,
-        targets: updatedTargets,
-      });
-      setGlobalDefault(newGlobal);
-      setTargets(updatedTargets);
-      showToast(t('default_applied_success'));
-    } catch {
-      showToast(t('persist_failed'));
-    }
-  };
-
-  const handleSyncAllModules = async () => {
-    await handleMakeDefaultForAll(globalDefault);
-  };
-
-  const handleRestoreTargetDefault = (targetId: string) => {
-    const updated = targets.map((target) =>
-      target.id === targetId
-        ? {
-            ...target,
-            inheritsGlobalDefault: true,
-            method: globalDefault.provider,
-            assignedModel: globalDefault.modelName,
-            baseUrl: globalDefault.baseUrl,
-            temperature: globalDefault.temperature,
-            contextWindow: globalDefault.contextWindow,
-            mcpToolsEnabled: globalDefault.mcpToolsEnabled,
-            status: 'connected' as const,
-          }
-        : target
-    );
-    saveTargets(updated);
-    showToast(`${t('saved_success_target')} "${targetId}"!`);
-  };
-
-  const handleAddRemoteServer = async (rawHost: string, label?: string) => {
-    const normalized = normalizeOllamaUrl(rawHost);
-    const newId = `remote_${Date.now()}`;
-    const newServer: RemoteOllamaServer = {
-      id: newId,
-      label: label || `Server (${rawHost})`,
-      rawInputHost: rawHost,
-      normalizedBaseUrl: normalized,
-      status: 'checking',
-      latencyMs: null,
-      lastCheckedAt: null,
-      availableModels: [],
-      selectedModel: '',
-      errorMessage: null,
-    };
-    const nextList = [...remoteServers, newServer];
-    saveRemoteServers(nextList);
-
-    try {
-      const probe = await fetchOllamaModels(normalized);
-      saveRemoteServers(
-        nextList.map((s) =>
-          s.id === newId
-            ? {
-                ...s,
-                status: 'online' as const,
-                latencyMs: probe.latencyMs,
-                availableModels: probe.models,
-                selectedModel: probe.models[0]?.name || '',
-                lastCheckedAt: new Date().toISOString(),
-              }
-            : s
-        )
-      );
-    } catch (e: any) {
-      saveRemoteServers(
-        nextList.map((s) =>
-          s.id === newId
-            ? { ...s, status: 'offline' as const, errorMessage: String(e?.message || 'Offline') }
-            : s
-        )
-      );
-    }
-  };
-
-  const handleRemoveRemoteServer = (serverId: string) => {
-    saveRemoteServers(remoteServers.filter((s) => s.id !== serverId));
-  };
-
-  const handleReloadRemoteModels = async (serverId: string) => {
-    const target = remoteServers.find((s) => s.id === serverId);
-    if (!target) return;
-    try {
-      const probe = await fetchOllamaModels(target.normalizedBaseUrl);
-      saveRemoteServers(
-        remoteServers.map((s) =>
-          s.id === serverId
-            ? {
-                ...s,
-                status: 'online' as const,
-                latencyMs: probe.latencyMs,
-                availableModels: probe.models,
-                selectedModel: s.selectedModel || probe.models[0]?.name || '',
-                lastCheckedAt: new Date().toISOString(),
-                errorMessage: null,
-              }
-            : s
-        )
-      );
-      showToast(
-        probe.models.length > 0
-          ? `${probe.models.length} ${t('models_loaded_count')}`
-          : t('server_online_running')
-      );
-    } catch (e: any) {
-      saveRemoteServers(
-        remoteServers.map((s) =>
-          s.id === serverId
-            ? { ...s, status: 'offline' as const, errorMessage: String(e?.message || 'Error') }
-            : s
-        )
-      );
-    }
-  };
-
-  const handleReloadLocalModels = async () => {
-    try {
-      const probe = await fetchOllamaModels('http://127.0.0.1:11434');
-      setLocalModels(probe.models);
-      showToast(`${probe.models.length} ${t('models_loaded_count')}`);
-    } catch {
-      setLocalModels([]);
-    }
-  };
-
-  const handleUpdateApiKey = (providerId: string, apiKey: string) => {
-    setProviders((prev) => prev.map((p) => (p.id === providerId ? { ...p, apiKey } : p)));
-  };
-
-  const handleSaveApiKey = async (providerId: string): Promise<boolean> => {
-    const draft = providers.find((p) => p.id === providerId)?.apiKey;
-    if (draft === undefined) return true;
-    try {
-      const saved = await sendJson<{ configured: boolean }>(
-        `/api/cloud/${providerId === 'google' ? 'gemini' : providerId}`,
-        'PUT',
-        { key: draft }
-      );
-      setProviders((prev) =>
-        prev.map((p) =>
-          p.id === providerId && p.apiKey === draft
-            ? { ...p, apiKey: undefined, isConfigured: saved.configured }
-            : p
-        )
-      );
-      return true;
-    } catch {
-      showToast(t('persist_failed'));
-      return false;
-    }
-  };
-
-  const handleSaveCredentials = async (
-    providerId: string,
-    draft: { key?: string; baseUrl?: string }
-  ): Promise<boolean> => {
-    const body: Record<string, string> = {};
-    if (draft.key !== undefined) body.key = draft.key;
-    if (draft.baseUrl !== undefined) body.base_url = draft.baseUrl;
-    if (Object.keys(body).length === 0) return true;
-    try {
-      const saved = await sendJson<{ configured: boolean; base_url?: string }>(
-        `/api/cloud/${providerId === 'google' ? 'gemini' : providerId}`,
-        'PUT',
-        body
-      );
-      setProviders((prev) =>
-        prev.map((p) =>
-          p.id === providerId
-            ? {
-                ...p,
-                apiKey: undefined,
-                isConfigured: saved.configured,
-                endpointUrl: typeof saved.base_url === 'string' ? saved.base_url : p.endpointUrl,
-              }
-            : p
-        )
-      );
-      showToast(t('credentials_saved'));
-      return true;
-    } catch {
-      showToast(t('credentials_save_failed'));
-      return false;
-    }
-  };
-
-  const handleSaveTarget = async (updatedTarget: BrainTargetConfig) => {
-    if (
-      updatedTarget.method === 'api_key' &&
-      updatedTarget.providerId &&
-      !(await handleSaveApiKey(updatedTarget.providerId))
-    ) {
-      return;
-    }
-    const updatedList = targets.map((tItem) =>
-      tItem.id === updatedTarget.id ? { ...updatedTarget, inheritsGlobalDefault: false } : tItem
-    );
-    try {
-      await sendJson('/api/v2/brain/assignments', 'POST', {
-        targetId: updatedTarget.id,
-        method: updatedTarget.method,
-        assignedModel: updatedTarget.assignedModel,
-        providerId: updatedTarget.providerId,
-        baseUrl: updatedTarget.baseUrl || updatedTarget.remoteHost,
-        mcpTools: updatedTarget.mcpToolsEnabled,
-      });
-      saveTargets(updatedList);
-      setActiveTarget(null);
-      showToast(`${t('saved_success_target')} "${updatedTarget.name}"!`);
-    } catch {
-      showToast(t('persist_failed'));
-    }
-  };
-
-  const showToast = (msg: string) => {
-    setToastMessage(msg);
-    setTimeout(() => {
-      setToastMessage((cur) => (cur === msg ? null : cur));
-    }, 4000);
-  };
+  const controller = useBrainController(t);
 
   return (
     <div className="h-full flex flex-col bg-slate-50 text-slate-900 overflow-hidden select-none font-sans">
-      <header className="shrink-0 flex items-center justify-between border-b border-slate-200/90 bg-white/95 backdrop-blur-md px-4 sm:px-6 lg:px-8 py-3.5 shadow-xs z-20">
+      <header className="shrink-0 flex flex-wrap items-center justify-between border-b border-slate-200/90 bg-white/95 backdrop-blur-md px-4 sm:px-6 lg:px-8 py-3.5 shadow-xs z-20 gap-3">
         <div className="flex items-center gap-3.5">
           <div className="p-2.5 rounded-2xl bg-gradient-to-br from-indigo-600 to-fuchsia-500 text-white shadow-lg shadow-indigo-500/30 flex items-center justify-center">
             <Brain className="w-5 h-5 stroke-[2.5]" />
@@ -493,59 +33,123 @@ export const View: React.FC = () => {
             </p>
           </div>
         </div>
+
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex p-1 rounded-xl bg-slate-100 border border-slate-200/80">
+            <button
+              type="button"
+              onClick={() => controller.setViewMode('simple')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+                controller.viewMode === 'simple'
+                  ? 'bg-white text-indigo-900 shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+              {t('mode_simple')}
+            </button>
+            <button
+              type="button"
+              onClick={() => controller.setViewMode('advanced')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+                controller.viewMode === 'advanced'
+                  ? 'bg-white text-indigo-900 shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <SlidersHorizontal className="w-3.5 h-3.5 text-slate-500" />
+              {t('mode_advanced')}
+            </button>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => controller.setWizardOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs active:scale-98 transition"
+          >
+            <Wand2 className="w-4 h-4" />
+            <span className="hidden sm:inline">{t('wizard_header_btn')}</span>
+          </button>
+        </div>
       </header>
 
       <main className="flex-1 min-h-0 overflow-y-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-5 pb-32 w-full">
-        {toastMessage && (
+        {controller.toastMessage && (
           <div className="mb-5 p-4 rounded-2xl bg-emerald-50 border border-emerald-300 text-emerald-950 text-xs sm:text-sm font-bold flex items-center gap-3 shadow-md">
             <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
-            <span className="flex-1">{toastMessage}</span>
+            <span className="flex-1">{controller.toastMessage}</span>
           </div>
         )}
 
-        {activeTarget ? (
+        {controller.activeTarget ? (
           <StepWizard
-            target={activeTarget}
-            providers={providers}
-            machines={machines}
-            modelsCatalog={modelsCatalog}
+            target={controller.activeTarget}
+            providers={controller.providers}
+            machines={controller.machines}
+            modelsCatalog={controller.modelsCatalog}
             mcpCatalog={MCP_TOOLS_CATALOG}
-            defaultRemoteHost={remoteServers[0]?.rawInputHost || ''}
+            defaultRemoteHost={controller.remoteServers[0]?.rawInputHost || ''}
             defaultRemotePort={11434}
             onUpdateRemoteHost={() => {}}
             onUpdateRemotePort={() => {}}
-            onSaveTarget={handleSaveTarget}
-            onUpdateApiKey={handleUpdateApiKey}
-            onSaveApiKey={handleSaveApiKey}
-            onSaveCredentials={handleSaveCredentials}
+            onSaveTarget={controller.handleSaveTarget}
+            onUpdateApiKey={controller.handleUpdateApiKey}
+            onSaveApiKey={controller.handleSaveApiKey}
+            onSaveCredentials={controller.handleSaveCredentials}
             onModelInstalledOnMachine={() => {}}
-            onCancel={() => setActiveTarget(null)}
+            onCancel={() => controller.setActiveTarget(null)}
+            t={t}
+          />
+        ) : controller.viewMode === 'simple' ? (
+          <SimpleOverview
+            globalDefault={controller.globalDefault}
+            hardwareInfo={controller.hardwareInfo}
+            ollamaStatus={controller.ollamaStatus}
+            targets={controller.targets}
+            testRunning={controller.testRunning}
+            testResult={controller.testResult}
+            onOpenWizard={() => controller.setWizardOpen(true)}
+            onRunTest={controller.handleRunDiagnosticTest}
+            onSwitchToAdvanced={() => controller.setViewMode('advanced')}
             t={t}
           />
         ) : (
           <MainDashboard
-            globalDefault={globalDefault}
-            targets={targets}
-            remoteServers={remoteServers}
-            localModels={localModels}
+            globalDefault={controller.globalDefault}
+            targets={controller.targets}
+            remoteServers={controller.remoteServers}
+            localModels={controller.localModels}
             recommendedModels={RECOMMENDED_LOCAL_MODELS}
-            providers={providers}
+            providers={controller.providers}
             mcpCatalog={MCP_TOOLS_CATALOG}
-            onMakeDefaultForAll={handleMakeDefaultForAll}
-            onSyncAllModules={handleSyncAllModules}
-            onSelectTarget={(target) => setActiveTarget(target)}
-            onRestoreTargetDefault={handleRestoreTargetDefault}
-            onAddRemoteServer={handleAddRemoteServer}
-            onRemoveRemoteServer={handleRemoveRemoteServer}
-            onReloadRemoteModels={handleReloadRemoteModels}
-            onReloadLocalModels={handleReloadLocalModels}
-            onUpdateApiKey={handleUpdateApiKey}
-            onSaveApiKey={handleSaveApiKey}
-            onSaveCredentials={handleSaveCredentials}
+            onMakeDefaultForAll={controller.handleMakeDefaultForAll}
+            onSyncAllModules={controller.handleSyncAllModules}
+            onSelectTarget={(target) => controller.setActiveTarget(target)}
+            onRestoreTargetDefault={controller.handleRestoreTargetDefault}
+            onAddRemoteServer={controller.handleAddRemoteServer}
+            onRemoveRemoteServer={controller.handleRemoveRemoteServer}
+            onReloadRemoteModels={(serverId) => controller.handleReloadRemoteModels(serverId)}
+            onReloadLocalModels={controller.handleReloadLocalModels}
+            onUpdateApiKey={controller.handleUpdateApiKey}
+            onSaveApiKey={controller.handleSaveApiKey}
+            onSaveCredentials={controller.handleSaveCredentials}
             t={t}
           />
         )}
       </main>
+
+      <AutopilotWizardModal
+        isOpen={controller.wizardOpen}
+        globalDefault={controller.globalDefault}
+        localModels={controller.localModels}
+        providers={controller.providers}
+        remoteServers={controller.remoteServers}
+        hardwareInfo={controller.hardwareInfo}
+        onClose={() => controller.setWizardOpen(false)}
+        onApply={controller.handleMakeDefaultForAll}
+        onSaveApiKey={controller.handleSaveApiKey}
+        t={t}
+      />
     </div>
   );
 };
