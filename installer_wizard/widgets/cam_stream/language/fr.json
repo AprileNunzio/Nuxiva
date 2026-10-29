@@ -2,7 +2,7 @@
   "meta": {
     "locale": "fr",
     "scope": "widgets/cam_stream",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Caméra",
@@ -12,6 +12,8 @@
     "chip_motion": "Mouvement",
     "chip_listening": "En surveillance",
     "motion": "Mouvement détecté",
-    "no_motion": "Aucun mouvement"
+    "no_motion": "Aucun mouvement",
+    "connecting": "Connexion en cours…",
+    "reconnecting": "Reconnexion en cours…"
   }
 }

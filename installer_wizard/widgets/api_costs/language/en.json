@@ -2,9 +2,19 @@
   "meta": {
     "locale": "en",
     "scope": "widgets/api_costs",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
-    "label": "API costs"
+    "label": "API costs",
+    "this_month": "spent this month",
+    "today": "Today",
+    "forecast": "Month-end forecast",
+    "budget": "Budget",
+    "left": "Left",
+    "of_budget": "budget",
+    "tokens": "{{n}} tokens",
+    "risk_ok": "on track",
+    "risk_warn": "watch out",
+    "risk_bad": "over budget"
   }
 }

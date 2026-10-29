@@ -1,2 +1,15 @@
 .w-api_costs .wk-hero + .wk-kv, .w-api_costs .wk-bar + .wk-kv { margin-top: 12px; }
 .w-api_costs .wk-hero + .wk-bar { margin-top: 10px; }
+.w-api_costs .ac-top { display: flex; align-items: center; gap: 16px; }
+.w-api_costs .ac-top .wk-ring { width: 72px; height: 72px; }
+.w-api_costs .ac-hero { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.w-api_costs .ac-kv { margin-top: 12px; }
+.w-api_costs .ac-kv dd.ac-warn { color: var(--amber); }
+.w-api_costs .ac-kv dd.ac-bad { color: var(--red); }
+.w-api_costs .ac-models { display: flex; flex-direction: column; gap: 8px; margin: 14px 0 0; padding: 0; list-style: none; }
+.w-api_costs .ac-mrow { display: flex; justify-content: space-between; gap: 10px; font-size: 12px; color: var(--text); }
+.w-api_costs .ac-mrow span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.w-api_costs .ac-mrow b { flex: none; font: 500 11.5px var(--mono); color: var(--hud-text); font-variant-numeric: tabular-nums; }
+.w-api_costs .ac-models .wk-bar { margin-top: 4px; }
+.w-api_costs .ac-models small { display: block; margin-top: 3px; font: 10px var(--mono); color: var(--text-faint); }
+.w-api_costs .ac-rest { margin-top: 10px; }

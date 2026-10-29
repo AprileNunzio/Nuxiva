@@ -1,6 +1,16 @@
+.w-brief .br-subtitle { margin: -4px 0 8px; }
 .w-brief .br-lines { margin: 0; padding: 0; list-style: none; display: grid; gap: 5px; font-size: 13.5px; line-height: 1.5; color: var(--text); }
-.w-brief .br-lines li { position: relative; padding-left: 14px; }
-.w-brief .br-lines li::before { content: ""; position: absolute; left: 0; top: 0.68em; width: 4px; height: 4px; border-radius: 50%; background: rgb(var(--tone)); }
-.w-brief .br-fig { margin: 2px 0 10px; display: grid; gap: 4px; justify-items: start; }
-.w-brief .br-fig img { max-width: 100%; max-height: 150px; object-fit: contain; border-radius: 10px; }
+.w-brief .br-lines li { position: relative; padding-left: 14px; overflow-wrap: anywhere; }
+.w-brief .br-lines li::before { content: ""; position: absolute; left: 0; top: 0.68em; width: 4px; height: 4px; border-radius: 50%; background: rgb(var(--tone)); box-shadow: 0 0 6px rgba(var(--tone), 0.8); }
+.w-brief .br-kv { display: grid; gap: 2px; margin: 0; }
+.w-brief .br-kv > div { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 12px; align-items: baseline; padding-block: 4px; box-shadow: 0 1px 0 rgba(var(--tone), 0.08); }
+.w-brief .br-kv > div:last-child { box-shadow: none; }
+.w-brief .br-kv dt { font: 500 10px/1.5 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: rgba(var(--tone), 0.7); overflow-wrap: anywhere; }
+.w-brief .br-kv dd { margin: 0; font-size: 13px; color: var(--hud-text); text-align: right; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.w-brief .br-kv + .br-lines, .w-brief .br-lines + .br-kv { margin-top: 10px; }
+.w-brief .br-fig { margin: 2px 0 10px; display: grid; gap: 4px; justify-items: start; opacity: 0; transform: translateY(4px); transition: opacity 0.5s, transform 0.5s; }
+.w-brief .br-fig.on { opacity: 1; transform: none; }
+.w-brief .br-fig img { max-width: 100%; max-height: 160px; object-fit: contain; border-radius: 10px; }
 .w-brief .br-fig figcaption { font-size: 10px; color: var(--text-faint); }
+.w-brief .br-meta { margin-top: 8px; font: 10px var(--mono); letter-spacing: 0.08em; color: var(--text-faint); }
+@media (prefers-reduced-motion: reduce) { .w-brief .br-fig { transition: none; transform: none; } }
