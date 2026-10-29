@@ -328,3 +328,13 @@ body[data-surfaces-off~="brain_badge"] [data-surface="brain_badge"] { display: n
 .sw small { font-size: 11px; color: var(--text-faint); line-height: 1.4; }
 .sw-error { min-height: 14px; margin-top: 8px; font-size: 11px; color: var(--amber); }
 body:has(#vol-panel.show) :is(.bgq, .setup-cta, .brain-route-host) { opacity: 0; visibility: hidden; pointer-events: none; }
+[data-surface][data-stage="min"] { filter: opacity(0.45) saturate(0.7); transition: filter 0.35s; }
+[data-surface][data-stage="min"]:is(:hover, :focus-within) { filter: none; }
+[data-surface][data-stage="hidden"] { opacity: 0 !important; visibility: hidden; pointer-events: none !important; transition: opacity 0.35s, visibility 0s 0.35s; }
+.rail > [data-surface][data-stage="hidden"] { display: none; }
+@media (prefers-reduced-motion: reduce) { [data-surface][data-stage] { transition: none; } }
+#particles { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 21; pointer-events: none; opacity: 0; transition: opacity 0.6s; }
+body.particles-on #particles { opacity: 1; }
+body.particles-on:not(.brain, .flow) #core { opacity: 0.22; transition: opacity 0.8s; }
+body:is(.brain, .flow, .focus, .desk-full, .desk-whiteboard) #particles { visibility: hidden; }
+body.satellite.particles-on .idle { opacity: 0; }

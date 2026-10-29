@@ -439,15 +439,19 @@
   }
   const scheduleLayout = () => { cancelAnimationFrame(layoutRaf); layoutRaf = requestAnimationFrame(layout); };
 
+  const LOCAL = ["127.0.0.1", "localhost", "::1", "[::1]"].includes(location.hostname);
   const mine = (i) => {
     const mode = (window.NuxivaDisplay && window.NuxivaDisplay.state && window.NuxivaDisplay.state.display_settings && window.NuxivaDisplay.state.display_settings.session_mode) || hooks.sessionMode || "shared";
     if (mode === "isolated" && i.client_id) return i.client_id === hooks.clientId;
+    if (mode === "shared" && !hooks.satellite && !LOCAL && hooks.screen === 0) return true;
     return i.screen === -1 || (i.screen == null ? hooks.screen === 0 : i.screen === hooks.screen);
   };
+  let veto = () => false;
+  const setVeto = (fn) => { veto = typeof fn === "function" ? fn : () => false; render(allList); };
 
   async function render(list) {
     allList = list || [];
-    const mineNow = allList.filter(mine);
+    const mineNow = allList.filter((i) => mine(i) && !veto(i));
     lastList = window.nuxivaGovernor ? window.nuxivaGovernor.limit(mineNow) : mineNow;
     document.body.classList.toggle("desk-whiteboard", lastList.some((i) => i.id === "lavagna"));
     if (!host) return;
@@ -479,7 +483,7 @@
     register(id, impl) { impls[id] = impl; },
     ctx,
     implOf: (id) => impls[id] || null,
-    mount, render, relayout: scheduleLayout, moveTo, neighbor,
+    mount, render, relayout: scheduleLayout, moveTo, neighbor, setVeto,
     setScreens(list) { screens = list || []; document.body.classList.toggle("multi-screen", screens.length > 1); },
     cardAt(x, y) {
       const el = document.elementFromPoint(x, y), sec = el && el.closest(".desk > .widget");
@@ -488,5 +492,6 @@
     get screen() { return hooks.screen; },
     get active() { return lastList; },
     get all() { return allList; },
+    get candidates() { return allList.filter(mine); },
   };
 })();

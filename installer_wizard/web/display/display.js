@@ -179,6 +179,8 @@
     D.Ear.resetFrom(s.mic_reset);
     NuxivaDesk.setScreens(s.screens);
     NuxivaDesk.render(s.desk || []);
+    if (window.NuxivaParticles) window.NuxivaParticles.update(s.particles, 0);
+    if (D.Director) D.Director.poke();
     if (D.Sounds) { D.Sounds.update(s.sounds); D.Sounds.desk(s.desk); }
     if (!["READY", "DEGRADED"].includes(s.phase)) { location.reload(); return; }
     if (s.asset_version && window.NUXIVA_ASSET_V && s.asset_version !== window.NUXIVA_ASSET_V) {
@@ -320,6 +322,7 @@
   D.startMindStream();
   if (D.startFlow) D.startFlow();
   D.startCamera();
+  if (D.Director) D.Director.start();
 })();
 
 

@@ -133,6 +133,13 @@ def full_snapshot(admin: bool) -> dict:
         snap["display_settings"] = get_display_settings()
     except Exception:
         pass
+    try:
+        from features.stage import show as stage_show
+        from features.desktop.screens import screens as screen_roles
+        snap["particles"] = stage_show.current()
+        snap["screen_roles"] = screen_roles.roles()
+    except Exception:
+        snap["particles"] = None
     if hasattr(store, "holo_action"):
         snap["holo_action"] = store.holo_action
         delattr(store, "holo_action")

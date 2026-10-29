@@ -327,7 +327,11 @@ DEFAULT_DISPLAY_SETTINGS = {
     "mic_autocalibrate": True,
     "session_mode": "shared",
     "surfaces": {},
+    "screen_roles": {},
 }
+
+SCREEN_ROLES = ("agent", "work", "visual")
+SCREEN_KEYS = frozenset(str(n) for n in range(17))
 
 SURFACE_DEFAULTS = {
     "rail_voice": False,
@@ -346,6 +350,16 @@ def _surfaces(value: object, base: dict | None = None) -> dict:
     if isinstance(value, dict):
         merged.update({k: v for k, v in value.items() if k in SURFACE_DEFAULTS and isinstance(v, bool)})
     return merged
+
+
+def _screen_roles(value: object) -> dict:
+    if not isinstance(value, dict):
+        return {}
+    out = {}
+    for key, role in value.items():
+        if isinstance(key, str) and key in SCREEN_KEYS and role in SCREEN_ROLES:
+            out[key] = role
+    return out
 
 DEFAULT_BACKEND_SETTINGS = {
     "ollama_url": "",
@@ -366,7 +380,8 @@ def get_display_settings() -> dict:
             with open(path, "r", encoding="utf-8") as f:
                 data = json.load(f)
                 if isinstance(data, dict):
-                    return {**DEFAULT_DISPLAY_SETTINGS, **data, "surfaces": _surfaces(data.get("surfaces"))}
+                    return {**DEFAULT_DISPLAY_SETTINGS, **data, "surfaces": _surfaces(data.get("surfaces")),
+                            "screen_roles": _screen_roles(data.get("screen_roles"))}
         except (OSError, ValueError) as exc:
             log.warning("Impostazioni del display non lette: %s", exc)
     return {**DEFAULT_DISPLAY_SETTINGS, "surfaces": _surfaces(None)}
@@ -381,6 +396,8 @@ def save_display_settings(data: dict) -> dict:
                 current[k] = val if val in ("shared", "isolated") else "shared"
             elif k == "surfaces":
                 current[k] = _surfaces(data[k], current.get("surfaces"))
+            elif k == "screen_roles":
+                current[k] = _screen_roles(data[k])
             else:
                 current[k] = bool(data[k])
     path = NUXIVA_DIR / "display_settings.json"

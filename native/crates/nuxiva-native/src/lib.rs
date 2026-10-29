@@ -11,6 +11,7 @@ mod language;
 mod memory;
 mod mesh;
 mod scanner;
+mod stage;
 mod topics;
 mod workbench;
 
@@ -32,6 +33,7 @@ use memory::{RustFastMemory, RustLiveCoPilot};
 use mesh::{RustCrdtMesh, RustP2PStreamManager};
 use pyo3::prelude::*;
 use scanner::FastScanner;
+use stage::{RustParticleCache, particles_count, particles_sample, stage_plan};
 use topics::{TopicRouter, matches, valid_origin, valid_pattern, valid_topic};
 
 #[pymodule(gil_used = false)]
@@ -64,6 +66,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<RustHumanoidKinematics34>()?;
     m.add_class::<RustFieldbusController>()?;
     m.add_class::<RustSigner>()?;
+    m.add_class::<RustParticleCache>()?;
     m.add("CortexError", m.py().get_type::<CortexError>())?;
     m.add_function(wrap_pyfunction!(cortex_sanitize_utterance, m)?)?;
     m.add_function(wrap_pyfunction!(cortex_sanitize_identifier, m)?)?;
@@ -80,5 +83,8 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(valid_origin, m)?)?;
     m.add_function(wrap_pyfunction!(detect_language, m)?)?;
     m.add_function(wrap_pyfunction!(supported_languages, m)?)?;
+    m.add_function(wrap_pyfunction!(stage_plan, m)?)?;
+    m.add_function(wrap_pyfunction!(particles_sample, m)?)?;
+    m.add_function(wrap_pyfunction!(particles_count, m)?)?;
     Ok(())
 }

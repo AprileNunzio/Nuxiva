@@ -190,11 +190,11 @@
   transition: box-shadow 0.08s linear;
 }
 
-body:is(.listening, .transcribing, .conversing) .dock:not(.expanded) {
+body:is(.listening, .transcribing, .conversing, [data-stage-chat="min"], [data-stage-chat="hidden"]) .dock:not(.expanded) {
   width: auto;
 }
 
-body:is(.listening, .transcribing, .conversing) .dock:not(.expanded) .dock-bar input {
+body:is(.listening, .transcribing, .conversing, [data-stage-chat="min"], [data-stage-chat="hidden"]) .dock:not(.expanded) .dock-bar input {
   flex: 0 0 0;
   width: 0;
   padding: 0;

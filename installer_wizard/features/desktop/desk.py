@@ -291,7 +291,7 @@ class Desk:
                         "takeover": prio >= 90 and m["size"] == "full", "fullscreen": bool(i.get("fullscreen")),
                         "sticky": bool(m.get("sticky")), "immersive": bool(m.get("immersive")),
                         "personal": m.get("personal", False), "refresh": self.refresh_of(i["id"]),
-                        "client_id": i.get("client_id")})
+                        "client_id": i.get("client_id"), "screen_role": m.get("screen_role")})
         out = self._rotate(out)
         wanted = {wid: p["screen"] for wid, p in self.prefs.items() if p.get("screen") is not None}
         disp = getattr(store, "display_settings", None)

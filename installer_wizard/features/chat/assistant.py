@@ -333,6 +333,8 @@ async def _converse(text: str, core_call, unrouted: bool = False) -> tuple[str, 
 def ambient_diorama(text: str, reply: str) -> None:
     from features.diorama import ambient
     ambient.watch(text, reply)
+    from features.stage import show
+    show.watch(text, reply)
 
 
 async def _presented(reply: str, text: str):

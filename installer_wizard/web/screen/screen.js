@@ -18,6 +18,7 @@
     if (s.asset_version && window.NUXIVA_ASSET_V && s.asset_version !== window.NUXIVA_ASSET_V) { location.reload(); return; }
     NuxivaDesk.setScreens(s.screens);
     NuxivaDesk.render(s.desk || []);
+    if (window.NuxivaParticles && !mirror) window.NuxivaParticles.update(s.particles, n);
   }
 
   NuxivaDesk.mount($("desk"), { screen: n, x, satellite: true, quiet: mirror, speak: () => {} });

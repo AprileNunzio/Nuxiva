@@ -1,0 +1,15 @@
+{
+  "name": "Director de la pantalla",
+  "description": "Decide por sí solo qué mostrar, reducir u ocultar en la pantalla principal según lo que estés haciendo, evita duplicados y aprende de tus correcciones. Mientras habláis puede hacer aparecer esculturas de partículas de los objetos mencionados, guardadas en un archivo rápido para reutilizarlas al instante.",
+  "capabilities": [
+    "Si hablas por voz el chat se reduce y vuelve en cuanto escribes",
+    "Nunca dos indicadores que digan lo mismo",
+    "Aprende: si vuelves a abrir algo que ocultó, la próxima vez lo deja",
+    "Esculturas de partículas que estallan y se recomponen mientras habláis",
+    "Archivo de partículas firmado y reutilizado sin regenerar",
+    "Motor en Rust cuando está disponible, con respaldo equivalente en Python"
+  ],
+  "settings": {
+    "NUXIVA_PARTICLES_AMBIENT": "Partículas espontáneas durante la conversación"
+  }
+}

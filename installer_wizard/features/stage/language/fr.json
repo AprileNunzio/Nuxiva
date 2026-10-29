@@ -1,0 +1,15 @@
+{
+  "name": "Régisseur de l'écran",
+  "description": "Décide tout seul quoi afficher, réduire ou masquer sur l'écran principal selon ce que vous faites, évite les doublons et apprend de vos corrections. Pendant la conversation il peut faire apparaître des sculptures de particules des objets évoqués, rangées dans une bibliothèque rapide pour être réutilisées aussitôt.",
+  "capabilities": [
+    "Quand vous parlez à voix haute le chat se réduit et revient dès que vous écrivez",
+    "Jamais deux indicateurs qui disent la même chose",
+    "Apprend : si vous rouvrez ce qu'il a masqué, il le laisse la fois suivante",
+    "Sculptures de particules qui éclatent et se recomposent pendant la conversation",
+    "Bibliothèque de particules signée et réutilisée sans régénérer",
+    "Moteur en Rust quand il est disponible, avec un repli équivalent en Python"
+  ],
+  "settings": {
+    "NUXIVA_PARTICLES_AMBIENT": "Particules spontanées pendant la conversation"
+  }
+}

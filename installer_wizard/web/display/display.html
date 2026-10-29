@@ -26,6 +26,7 @@
 </head>
 <body class="holo-grid face">
 <canvas id="core"></canvas>
+<canvas id="particles" aria-hidden="true"></canvas>
 <canvas id="scene"></canvas>
 
 <div class="hud">
@@ -47,7 +48,7 @@
     </div>
   </header>
 
-  <div class="presence" id="presence"></div>
+  <div class="presence" id="presence" data-surface="presence"></div>
   <div class="ear off" id="ear"><span class="bars" id="ear-bars"></span><span id="ear-text" data-i18n="ear_off"></span></div>
   <div class="desk" id="desk"></div>
   <div class="caption">
@@ -93,7 +94,7 @@
     <div class="dock-bar">
       <input id="in" data-i18n-attr="placeholder:input_placeholder,aria-label:input_placeholder" data-i18n-params='{"assistant":"{{assistant}}"}' autocomplete="off">
       <button class="dock-send" id="btn-send" type="button" disabled data-i18n-attr="title:btn_send,aria-label:btn_send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12l16-8-6 16-2.5-6.5L4 12z"/></svg></button>
-      <button class="ibtn mic off" id="btn-mic" data-i18n-attr="title:btn_mic,aria-label:btn_mic" data-i18n-params='{"assistant":"{{assistant}}"}'><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+      <button class="ibtn mic off" id="btn-mic" data-surface="mic" data-i18n-attr="title:btn_mic,aria-label:btn_mic" data-i18n-params='{"assistant":"{{assistant}}"}'><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
     </div>
     <button class="ibtn dock-more" id="btn-tools" type="button" aria-expanded="false" aria-controls="dock-tools" data-i18n-attr="title:btn_tools,aria-label:btn_tools"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>
     <div class="dock-tools" id="dock-tools">
@@ -126,7 +127,7 @@
 
 <div class="tooltip" id="tip"></div>
 <div class="toast-mem" id="toast-mem"></div>
-<div class="mind empty" id="mind" data-i18n-attr="title:mind_hint" data-i18n-params='{"assistant":"{{assistant}}"}'>
+<div class="mind empty" id="mind" data-surface="thinking" data-i18n-attr="title:mind_hint" data-i18n-params='{"assistant":"{{assistant}}"}'>
   <div class="mind-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
   <div class="mind-content">
     <div class="mind-head"><span class="mind-dot"></span><span class="mind-who" id="mind-who"></span><span class="mind-time" id="mind-time"></span></div>
@@ -149,6 +150,8 @@
 <script src="/static/display/desk_touch.js"></script>
 <script src="/static/display/state.js"></script>
 <script src="/static/display/surfaces.js"></script>
+<script src="/static/display/director.js"></script>
+<script src="/static/display/particles.js"></script>
 <script src="/static/display/weather_icons.js"></script>
 <script src="/static/display/weather_charts.js"></script>
 <script src="/static/display/weather.js"></script>
