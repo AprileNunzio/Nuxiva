@@ -73,6 +73,7 @@ class HardwareAgentTest(unittest.TestCase):
 
         with mock.patch.object(hardware_agent, "update_packages", fake_update), \
              mock.patch.object(hardware_agent, "install_packages", fake_install), \
+             mock.patch.object(hardware_agent, "_run_cmd", new=mock.AsyncMock(return_value=(0, ""))), \
              mock.patch.object(hardware_agent, "activate_device", fake_activate):
             res = asyncio.run(hardware_agent.provision(dev))
 

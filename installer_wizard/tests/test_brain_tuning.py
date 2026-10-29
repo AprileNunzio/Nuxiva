@@ -61,7 +61,8 @@ class GenerateTuningTest(unittest.TestCase):
                 mock.patch.object(llm, "chain", new=mock.AsyncMock(return_value=[])), \
                 mock.patch.object(llm, "is_cloud", return_value=False), \
                 mock.patch.object(llm, "_ollama", side_effect=fake_ollama), \
-                mock.patch.object(llm, "background"), mock.patch.object(llm, "touch"):
+                mock.patch.object(llm, "background", side_effect=lambda coro: coro.close()), \
+                mock.patch.object(llm, "touch"):
             asyncio.run(llm.generate("ciao", component="research", govern=False, system="Base"))
         self.assertEqual(calls[0]["max_tokens"], 777)
         self.assertEqual(calls[0]["temperature"], 0.9)
