@@ -2,10 +2,16 @@
   "meta": {
     "locale": "en",
     "scope": "widgets/people_seen",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "People seen",
-    "none": "Nobody in sight"
+    "none": "Nobody in sight",
+    "people_one": "{{n}} person",
+    "people_other": "{{n}} people",
+    "unknown": "Unknown",
+    "near": "Near",
+    "far": "Far",
+    "confidence": "Recognition confidence"
   }
 }

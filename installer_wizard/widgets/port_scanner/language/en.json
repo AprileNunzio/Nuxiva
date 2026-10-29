@@ -2,11 +2,21 @@
   "meta": {
     "locale": "en",
     "scope": "widgets/port_scanner",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Open ports",
     "open_one": "{{n}} open",
-    "open_other": "{{n}} open"
+    "open_other": "{{n}} open",
+    "s_open": "open",
+    "s_filtered": "filtered",
+    "s_closed": "closed",
+    "s_open_one": "open",
+    "s_filtered_one": "filtered",
+    "risky_one": "{{n}} risky port exposed: consider closing or protecting it",
+    "risky_other": "{{n}} risky ports exposed: consider closing or protecting them",
+    "r_bad": "Sensitive service, a frequent attack target",
+    "r_warn": "Should only be exposed on the local network",
+    "all_closed": "No open ports found"
   }
 }

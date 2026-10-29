@@ -32,7 +32,7 @@
     const opts = q ? ctx.arr(q.options, 8).map((o) => ctx.str(o, 120)).filter(Boolean) : [];
     return `<div class="mt-hero">${ctx.ring(pct, `${pct}%`)}<div class="mt-hero-txt"><span class="wk-sub">${ctx.esc(ctx.t("tasks_completed", { done, total }))}</span>
         ${ctx.str(m.goal, 300) ? `<span class="mt-goal">${ctx.esc(ctx.str(m.goal, 300))}</span>` : ""}</div></div>
-      ${error ? `<div class="wk-alert bad mt-error">${ctx.icon("error")}<span>${ctx.esc(error)}</span></div>` : ""}
+      ${error ? `<div class="wk-alert-hint mt-error">${ctx.icon("error")}<span>${ctx.esc(error)}</span></div>` : ""}
       ${expert || task ? `<div class="mt-expert"><span class="mt-avatar" aria-hidden="true">${ctx.esc(initials(expert || "AI"))}</span><span><b>${ctx.esc(expert || ctx.t("active_specialist"))}</b><small>${ctx.esc(task)}</small></span><i class="mt-dots" aria-hidden="true"><i></i><i></i><i></i></i></div>` : ""}
       ${q ? `<div class="mt-question"><h5>${ctx.icon("chat")}${ctx.esc(ctx.t("questions_pending_title"))}</h5><p>${ctx.esc(ctx.str(q.question, 600))}</p>
         ${opts.length ? `<div class="mt-opts" role="${q.is_multi_select ? "group" : "radiogroup"}">${opts.map((o) => `<button type="button" class="mt-opt${st.picked.has(o) ? " on" : ""}" data-opt="${ctx.esc(o)}" aria-pressed="${st.picked.has(o)}">${ctx.esc(o)}</button>`).join("")}</div>` : ""}

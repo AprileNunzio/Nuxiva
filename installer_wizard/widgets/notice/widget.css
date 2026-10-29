@@ -1,3 +1,10 @@
 .w-notice .no-row { display: flex; gap: 12px; align-items: flex-start; }
-.w-notice .no-ic { flex: none; font-size: 22px; line-height: 1; margin-top: 1px; color: rgb(var(--tone)); }
-.w-notice .wk-sub { margin-top: 2px; }
+.w-notice .no-ic { position: relative; flex: none; width: 36px; height: 36px; display: grid; place-items: center; border-radius: 10px; color: rgb(var(--tone)); background: rgba(var(--tone), 0.12); box-shadow: 0 0 0 1px rgba(var(--tone), 0.25) inset; }
+.w-notice .no-ic svg { width: 18px; height: 18px; }
+.w-notice .no-row.warn .no-ic, .w-notice .no-row.bad .no-ic { animation: no-pulse 1.8s ease-in-out infinite; }
+.w-notice .no-row.ok .no-ic { color: var(--green); background: rgba(60, 200, 120, 0.12); box-shadow: 0 0 0 1px rgba(60, 200, 120, 0.3) inset; }
+.w-notice .no-txt { min-width: 0; flex: 1; }
+.w-notice .no-txt .wk-title { overflow-wrap: anywhere; }
+.w-notice .no-text { margin-top: 3px; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
+@keyframes no-pulse { 50% { box-shadow: 0 0 0 1px rgba(var(--tone), 0.25) inset, 0 0 14px rgba(var(--tone), 0.45); } }
+@media (prefers-reduced-motion: reduce) { .w-notice .no-row .no-ic { animation: none; } }

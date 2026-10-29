@@ -2,11 +2,21 @@
   "meta": {
     "locale": "fr",
     "scope": "widgets/port_scanner",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Ports ouverts",
     "open_one": "{{n}} ouvert",
-    "open_other": "{{n}} ouverts"
+    "open_other": "{{n}} ouverts",
+    "s_open": "ouverts",
+    "s_filtered": "filtrés",
+    "s_closed": "fermés",
+    "s_open_one": "ouvert",
+    "s_filtered_one": "filtré",
+    "risky_one": "{{n}} port à risque exposé : pensez à le fermer ou le protéger",
+    "risky_other": "{{n}} ports à risque exposés : pensez à les fermer ou les protéger",
+    "r_bad": "Service sensible, cible fréquente d’attaques",
+    "r_warn": "À n’exposer que sur le réseau local",
+    "all_closed": "Aucun port ouvert trouvé"
   }
 }

@@ -1,0 +1,26 @@
+.w-pomodoro .po { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.w-pomodoro .po-dial { position: relative; width: min(170px, 70%); aspect-ratio: 1; }
+.w-pomodoro .po-dial svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.w-pomodoro .po-dial circle { fill: none; stroke-width: 5; }
+.w-pomodoro .po-track { stroke: rgba(255, 255, 255, 0.07); }
+.w-pomodoro .po-arc { stroke: rgb(var(--tone)); stroke-linecap: round; transition: stroke-dashoffset 0.3s linear; filter: drop-shadow(0 0 6px rgba(var(--tone), 0.55)); }
+.w-pomodoro .po-short .po-arc, .w-pomodoro .po-long .po-arc { stroke: var(--green); filter: drop-shadow(0 0 6px rgba(60, 200, 120, 0.5)); }
+.w-pomodoro .po-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+.w-pomodoro .po-time { font-size: clamp(26px, 4vw, 38px); font-weight: 200; color: var(--hud-text, var(--text)); font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+.w-pomodoro .po-center small { font: 600 9px/1 var(--mono); letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-faint); }
+.w-pomodoro .po.run .po-center small { color: rgb(var(--tone)); }
+.w-pomodoro .po:not(.run) .po-time { animation: po-blink 1.6s ease-in-out infinite; }
+.w-pomodoro .po-dots { display: flex; gap: 6px; }
+.w-pomodoro .po-dots i { width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 255, 255, 0.1); box-shadow: 0 0 0 1px rgba(var(--tone), 0.3) inset; }
+.w-pomodoro .po-dots i.on { background: rgb(var(--tone)); }
+.w-pomodoro .po-dots i.now { background: rgba(var(--tone), 0.4); animation: po-blink 1.2s ease-in-out infinite; }
+.w-pomodoro .po-task { display: flex; align-items: center; gap: 6px; max-width: 100%; font-size: 12px; color: var(--text-dim); }
+.w-pomodoro .po-task svg { width: 12px; height: 12px; flex: none; color: rgb(var(--tone)); }
+.w-pomodoro .po-task span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.w-pomodoro .po-ctl { display: flex; gap: 6px; }
+.w-pomodoro .po-ctl .wk-btn { display: inline-flex; align-items: center; gap: 6px; }
+.w-pomodoro .po-ctl svg { width: 13px; height: 13px; }
+.w-pomodoro .po-done { font-size: 11px; }
+@keyframes po-blink { 50% { opacity: 0.45; } }
+@media (prefers-reduced-motion: reduce) { .w-pomodoro .po-arc { transition: none; } .w-pomodoro .po-time, .w-pomodoro .po-dots i.now { animation: none !important; } }
+.w-pomodoro .po-skip { font: 600 15px/1 var(--font); }

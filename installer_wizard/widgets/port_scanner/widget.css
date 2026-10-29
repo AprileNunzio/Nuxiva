@@ -1,0 +1,20 @@
+.w-port_scanner .pz-sum { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 2px 0 8px; }
+.w-port_scanner .pz-n { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 4px; border-radius: 8px; background: rgba(255, 255, 255, 0.04); font: 600 9px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-faint); }
+.w-port_scanner .pz-n b { font: 300 20px/1 var(--font); letter-spacing: 0; color: var(--text); }
+.w-port_scanner .pz-n.open b { color: rgb(var(--tone)); }
+.w-port_scanner .pz-alert { margin: 0 0 8px; color: var(--text); background: rgba(255, 80, 80, 0.1); box-shadow: 0 0 0 1px rgba(255, 80, 80, 0.3) inset; }
+.w-port_scanner .pz-alert .wk-svg { color: var(--red); }
+.w-port_scanner .pz-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; max-height: 42vh; overflow: auto; scrollbar-width: thin; overscroll-behavior: contain; }
+.w-port_scanner .pz-row { display: grid; grid-template-columns: 70px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 6px 4px 6px 8px; border-left: 2px solid rgba(var(--tone), 0.3); }
+.w-port_scanner .pz-row + .pz-row { margin-top: 3px; }
+.w-port_scanner .pz-row.warn { border-left-color: var(--amber); }
+.w-port_scanner .pz-row.bad { border-left-color: var(--red); background: rgba(255, 80, 80, 0.06); }
+.w-port_scanner .pz-row.filt { opacity: 0.6; border-left-color: rgba(255, 255, 255, 0.15); }
+.w-port_scanner .pz-port { font-size: 14px; color: var(--text); }
+.w-port_scanner .pz-port small { font-size: 10px; color: var(--text-faint); }
+.w-port_scanner .pz-txt { display: flex; flex-direction: column; min-width: 0; }
+.w-port_scanner .pz-txt b { font-size: 12.5px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.w-port_scanner .pz-txt small { font-size: 10.5px; color: var(--text-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.w-port_scanner .pz-clean { display: flex; align-items: center; gap: 8px; padding: 10px; border-radius: 10px; font-size: 12.5px; color: var(--green); background: rgba(60, 200, 120, 0.08); }
+.w-port_scanner .pz-clean svg { width: 16px; height: 16px; }
+.w-port_scanner .pz-raw { max-height: 20vh; overflow: auto; font-size: 11px; }

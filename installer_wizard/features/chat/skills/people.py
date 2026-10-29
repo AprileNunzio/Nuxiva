@@ -14,7 +14,8 @@ def vision_skill() -> tuple[str, dict]:
     speech = describe(people)
     items = [{"label": p["name"], "value": ("vicino" if p["near"] else "lontano")
               + (f" · {p['confidence'] * 100:.0f}%" if p["known"] else ""),
-              "status": "ok" if p["known"] else "warn"} for p in people]
+              "status": "ok" if p["known"] else "warn", "known": bool(p["known"]), "near": bool(p["near"]),
+              "confidence": round(float(p.get("confidence") or 0), 3) if p["known"] else None} for p in people]
     return speech, {"mode": "focus", "title": "Cosa vedo", "subtitle": "Riconoscimento facciale locale",
                     "panels": [{"type": "image", "title": "Webcam", "src": "/api/vision/snapshot.jpg"},
                                {"type": "list", "title": f"Persone ({len(people)})",

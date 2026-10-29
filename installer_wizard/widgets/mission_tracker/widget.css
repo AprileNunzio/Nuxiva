@@ -71,7 +71,8 @@
 .w-mission_tracker .mt-flash.bad { color: var(--red); background: rgba(255, 80, 80, 0.1); }
 .w-mission_tracker .mt-actions { margin-top: 10px; }
 .w-mission_tracker .wk-btn.armed { color: var(--red); box-shadow: 0 0 0 1px var(--red) inset; }
-.w-mission_tracker .mt-error { margin: 0; }
+.w-mission_tracker .mt-error { margin: 0; color: var(--text); background: rgba(255, 80, 80, 0.1); box-shadow: 0 0 0 1px rgba(255, 80, 80, 0.3) inset; }
+.w-mission_tracker .mt-error .wk-svg { color: var(--red); }
 @keyframes mt-dot { 50% { opacity: 0.25; } }
 @keyframes mt-spin { to { transform: rotate(360deg); } }
 @keyframes mt-in { from { opacity: 0; transform: translateY(-3px); } }

@@ -2,13 +2,21 @@
   "meta": {
     "locale": "it",
     "scope": "widgets/os_networks",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
-    "label": "Reti Wi‑Fi",
+    "label": "Reti Wi‑Fi e Bluetooth",
     "connected": "Connesso",
     "none": "Nessuna rete trovata",
     "nearby_one": "{{n}} vicina",
-    "nearby_other": "{{n}} vicine"
+    "nearby_other": "{{n}} vicine",
+    "wifi": "Wi‑Fi",
+    "bluetooth": "Bluetooth",
+    "hidden": "Rete nascosta",
+    "paired": "Associato",
+    "available": "Disponibile",
+    "open": "Aperta",
+    "open_hint": "Rete senza password: il traffico può essere letto da chiunque sia vicino",
+    "battery": "Batteria"
   }
 }

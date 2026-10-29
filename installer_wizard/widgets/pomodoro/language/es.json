@@ -2,11 +2,25 @@
   "meta": {
     "locale": "es",
     "scope": "widgets/pomodoro",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Pomodoro",
     "title": "Concentración",
-    "preparing": "Preparando…"
+    "ph_focus": "Concentración",
+    "ph_short": "Pausa corta",
+    "ph_long": "Pausa larga",
+    "round_of": "Ronda {{n}} de {{m}}",
+    "paused": "En pausa",
+    "start": "Empezar",
+    "pause": "Pausa",
+    "resume": "Reanudar",
+    "skip": "Saltar a la siguiente fase",
+    "reset": "Reiniciar",
+    "done_one": "{{n}} pomodoro completado",
+    "done_other": "{{n}} pomodoros completados",
+    "say_focus": "Se acabó la pausa, volvemos a concentrarnos.",
+    "say_short": "Buen trabajo, descansa unos minutos.",
+    "say_long": "Ciclo completado, tómate una pausa larga."
   }
 }
