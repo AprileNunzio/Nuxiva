@@ -1,10 +1,10 @@
-.os-taskbar { position:absolute; bottom:0; inset-inline:0; z-index:200002; height:3.9rem; display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:.5rem; padding:.35rem .75rem; background:#f3f6fbd9; backdrop-filter:blur(24px); border:0; box-shadow:none; }
+.os-taskbar { position:absolute; bottom:0; inset-inline:0; z-index:200002; height:3.9rem; display:grid; grid-template-columns:minmax(0,1fr) minmax(0,2fr) minmax(0,1fr); align-items:center; gap:.5rem; padding:.35rem .75rem; background:#f3f6fbd9; backdrop-filter:blur(24px); border:0; box-shadow:none; }
 .webos .os-taskbar button { border:0; box-shadow:none; background:transparent; padding:.4rem; border-radius:.5rem; color:#334155; }
 .os-taskbar svg { width:1.2rem; height:1.2rem; flex-shrink:0; }.os-taskbar .os-icon { width:2rem; height:2rem; }
 .webos .os-taskbar button:hover { background:#e0e8f199; }.webos .os-taskbar button:focus-visible { outline:2px solid #2563eb; outline-offset:-2px; }
 .os-task-user { display:flex; align-items:center; gap:.5rem; justify-self:start; max-width:100%; min-width:0; }.os-task-user span { overflow:hidden; text-overflow:ellipsis; font-size:.85rem; }
 .os-task-apps,.os-task-tray nav { display:flex; align-items:center; gap:.25rem; overflow-x:auto; scrollbar-width:none; min-width:0; }.os-task-apps::-webkit-scrollbar,.os-task-tray nav::-webkit-scrollbar { display:none; }
-.os-task-apps { justify-self:start; max-width:100%; padding:.1rem; }.os-task-button { position:relative; width:2.7rem; height:2.9rem; display:grid; place-items:center; flex-shrink:0; }
+.os-task-apps { justify-self:center; max-width:100%; padding:.1rem; }.os-task-button { position:relative; width:2.7rem; height:2.9rem; display:grid; place-items:center; flex-shrink:0; }
 .os-task-button[data-running=true]::after { content:''; position:absolute; bottom:.1rem; width:.7rem; height:2px; background:#4679bd; border-radius:2px; }.os-task-count { position:absolute; right:0; top:0; font-size:.65rem; background:#dce8f8; color:#164eaa; border-radius:.4rem; min-width:1rem; }
 .os-task-tray { display:flex; justify-content:flex-end; align-items:center; gap:.4rem; min-width:0; }.os-task-tray nav { max-width:100%; }
 .os-task-tray-group { display:flex; align-items:center; gap:.2rem; flex-shrink:0; }
@@ -13,7 +13,7 @@
 .os-task-tray-button[aria-expanded="true"] { background:#dbeafe; color:#0284c7; }
 .os-task-clock { display:flex; flex-direction:column; align-items:flex-end; flex-shrink:0; font-variant-numeric:tabular-nums; }.os-task-clock time { font-size:.9rem; font-weight:500; }.os-task-clock span { font-size:.72rem; color:#64748b; }
 .os-task-switcher { position:absolute; bottom:4.3rem; left:50%; transform:translateX(-50%); max-height:60dvh; overflow:auto; width:min(25rem,calc(100vw - 2rem)); padding:.75rem; background:#fffffff5; border-radius:.7rem; box-shadow:0 .5rem 2rem #33415520; }.os-task-switcher strong { display:block; padding:.3rem; font-size:.85rem; }.os-task-switcher>div { display:flex; align-items:center; gap:.3rem; }.os-task-switcher>div>button:first-child { flex:1; text-align:left; overflow:hidden; text-overflow:ellipsis; }
-@media(max-width:40rem) { .os-taskbar { grid-template-columns:minmax(0,1fr) auto; padding:.3rem; gap:.25rem; }.os-task-user span { display:none; }.os-taskbar .os-task-button { width:2.35rem; }.os-task-tray { gap:.2rem; }.os-task-clock span { font-size:.65rem; } }
+@media(max-width:40rem) { .os-taskbar { grid-template-columns:2.5rem minmax(0,1fr) auto; padding:.3rem; gap:.25rem; }.os-task-user span { display:none; }.os-taskbar .os-task-button { width:2.35rem; }.os-task-tray { gap:.2rem; }.os-task-clock span { font-size:.65rem; } }
 
 .os-task-nodes { gap:.25rem; font-variant-numeric:tabular-nums; }
 .os-task-context { position:absolute; bottom:4.3rem; width:15rem; padding:.5rem; border-radius:.7rem; background:#fffffff5; box-shadow:0 .5rem 2rem #33415520; }

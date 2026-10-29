@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Grid2X2, Activity, X, Wifi, WifiOff, Network, Bluetooth, Waypoints } from 'lucide-react';
+import { Grid2X2, UserRound, Activity, X, Wifi, WifiOff, Network, Bluetooth, Waypoints } from 'lucide-react';
 import { appRegistry } from './window_manager/registry';
 import { windowStore } from './window_manager/WindowStore';
 import type { OSWindow } from './window_manager/types';
@@ -15,6 +15,9 @@ import type { MeshNodeItem } from '../core_apps/nodes/types';
 import './taskbar.css';
 
 export function Taskbar({
+  user,
+  userMenu,
+  onUserMenu,
   windows,
   launcher,
   onStart,
@@ -27,6 +30,9 @@ export function Taskbar({
   bluetooth = false,
   onBluetooth,
 }: {
+  user: string;
+  userMenu: boolean;
+  onUserMenu: () => void;
   windows: OSWindow[];
   launcher: boolean;
   onStart: () => void;
@@ -142,6 +148,11 @@ export function Taskbar({
     }} onClick={event => {
       if (!(event.target as Element).closest('.os-task-context')) setContext(null);
     }}>
+      <button className="os-task-user" title={user} aria-label={t('signed_in_as', { user })}
+        aria-expanded={userMenu} aria-haspopup="dialog"
+        onClick={() => { setGroup(null); onUserMenu(); }}>
+        <UserRound aria-hidden="true" /><span>{user}</span>
+      </button>
       <nav className="os-task-apps" aria-label={t('os_windows')}>
         <button
           className="os-task-button"
