@@ -1,0 +1,11 @@
+{
+  "name": "Hardware y Periféricos",
+  "description": "Detección de hardware en tiempo real, agente experto autónomo para búsqueda e instalación de controladores y habilitación dinámica de aplicaciones.",
+  "capabilities": [
+    "Monitoreo continuo de periféricos USB, tarjetas de red y Bluetooth",
+    "Agente autónomo experto para aprovisionamiento e instalación de controladores",
+    "Actualización automática de paquetes de sistema (apt/yum) y firmware",
+    "Notificaciones de escritorio y activación dinámica en WebOS"
+  ],
+  "settings": {}
+}

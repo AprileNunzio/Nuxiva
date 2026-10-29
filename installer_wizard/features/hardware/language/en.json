@@ -1,0 +1,11 @@
+{
+  "name": "Hardware & Devices",
+  "description": "Real-time hardware detection, autonomous expert agent for driver and firmware installation (Wi-Fi, Bluetooth, Audio, USB peripherals), and dynamic enablement of WebOS apps.",
+  "capabilities": [
+    "Continuous monitoring of USB peripherals, network cards, and Bluetooth",
+    "Autonomous expert agent for automated driver provisioning and installation",
+    "Automatic system package updates (apt/yum) and kernel firmware loading",
+    "Desktop notifications and dynamic control activation on WebOS"
+  ],
+  "settings": {}
+}

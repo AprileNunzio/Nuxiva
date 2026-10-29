@@ -161,24 +161,37 @@ export function Taskbar({
 
         <div className="os-task-tray-group">
           {onNetwork && (
-            <button
-              className="os-task-tray-button os-task-tray-network"
-              aria-label={t('os_network') || 'Rete'}
-              title={networkState.isConnected ? (networkState.isWifiActive ? (networkState.wifi?.current_ssid || 'Wi-Fi') : 'Ethernet') : 'Offline'}
-              aria-expanded={network}
-              onClick={() => {
-                setGroup(null);
-                onNetwork();
-              }}
-            >
-              {!networkState.isConnected ? (
-                <WifiOff size={16} />
-              ) : networkState.isWifiActive ? (
-                <Wifi size={16} />
-              ) : (
-                <Network size={16} />
+            <>
+              {(!networkState.isWifiAvailable || networkState.hasEthernet) && (
+                <button
+                  className="os-task-tray-button os-task-tray-network"
+                  aria-label={t('os_network') || 'Rete'}
+                  title={networkState.isConnected ? 'Ethernet' : 'Offline'}
+                  aria-expanded={network}
+                  onClick={() => {
+                    setGroup(null);
+                    onNetwork();
+                  }}
+                >
+                  {!networkState.isConnected ? <WifiOff size={16} /> : <Network size={16} />}
+                </button>
               )}
-            </button>
+
+              {networkState.isWifiAvailable && (
+                <button
+                  className="os-task-tray-button os-task-tray-wifi"
+                  aria-label="Wi-Fi"
+                  title={networkState.isWifiActive ? (networkState.wifi?.current_ssid || 'Wi-Fi') : 'Wi-Fi'}
+                  aria-expanded={network}
+                  onClick={() => {
+                    setGroup(null);
+                    onNetwork();
+                  }}
+                >
+                  <Wifi size={16} />
+                </button>
+              )}
+            </>
           )}
 
           {onBluetooth && bluetoothState.isAvailable && (

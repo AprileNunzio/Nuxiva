@@ -158,6 +158,8 @@ from features.scene.service import scene as scene_service
 from features.twin import api as twin_api
 from features.vision.webcams import webcams
 from features.voices import api as voices_api
+from features.hardware import api as hardware_api
+from features.hardware.service import hardware_service
 from orchestrator import orch, telemetry_loop
 
 logging.basicConfig(
@@ -243,6 +245,7 @@ FEATURE_APIS = (
     scene_api,
     nexus_api,
     flows_api,
+    hardware_api,
 )
 
 
@@ -426,6 +429,7 @@ BACKGROUND = (
     ("tv", tv_service.run, 0.0),
     ("lingue-casa", locale_household.run, 0.0),
     ("flussi-sicurezza", flows_watchdog.run, 0.0),
+    ("hardware", hardware_service.run, 0.0),
 )
 
 

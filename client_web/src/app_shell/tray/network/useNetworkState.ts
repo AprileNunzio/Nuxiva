@@ -114,6 +114,16 @@ export function useNetworkState() {
     profile?.interfaces?.some((i) => i.kind === "wifi" && i.is_up)
   );
 
+  const isWifiAvailable = !!(
+    wifi?.interface ||
+    (wifi?.networks && wifi.networks.length > 0) ||
+    profile?.interfaces?.some((i) => i.kind === "wifi")
+  );
+
+  const hasEthernet = !!(
+    profile?.interfaces?.some((i) => i.kind === "ethernet" && i.is_up)
+  );
+
   return {
     profile,
     wifi,
@@ -126,5 +136,7 @@ export function useNetworkState() {
     disconnectWifi,
     isConnected,
     isWifiActive,
+    isWifiAvailable,
+    hasEthernet,
   };
 }

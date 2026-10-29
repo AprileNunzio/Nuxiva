@@ -1,0 +1,18 @@
+{
+  "id": "hardware",
+  "name": "Hardware e Periferiche",
+  "icon": "🔌",
+  "category": "sistema",
+  "order": 88,
+  "panel": "hardware",
+  "description": "Rilevamento hardware in tempo reale, agente autonomo esperto per ricerca e installazione dei driver (Wi-Fi, Bluetooth, Audio, Periferiche USB) e abilitazione dinamica delle applicazioni.",
+  "capabilities": [
+    "Monitoraggio continuo periferiche USB, schede di rete e Bluetooth",
+    "Agente autonomo esperto per il provisioning e installazione automatica dei driver",
+    "Aggiornamento automatico pacchetti di sistema (apt/yum) e firmware kernel",
+    "Notifiche desktop e attivazione dinamica dei controlli su WebOS"
+  ],
+  "settings": [],
+  "icon3d": "./icon.png",
+  "surface": "hidden"
+}

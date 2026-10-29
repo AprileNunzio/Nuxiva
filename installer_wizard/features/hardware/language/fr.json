@@ -1,0 +1,11 @@
+{
+  "name": "Matériel et Périphériques",
+  "description": "Détection matérielle en temps réel, agent expert autonome pour l'installation des pilotes et l'activation dynamique des applications.",
+  "capabilities": [
+    "Surveillance continue des périphériques USB, cartes réseau et Bluetooth",
+    "Agent expert autonome pour l'installation des pilotes et firmwares",
+    "Mise à jour automatique des paquets système (apt/yum) et firmware kernel",
+    "Notifications bureau et activation dynamique sur WebOS"
+  ],
+  "settings": {}
+}
