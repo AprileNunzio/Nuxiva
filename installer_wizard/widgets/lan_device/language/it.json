@@ -2,11 +2,26 @@
   "meta": {
     "locale": "it",
     "scope": "widgets/lan_device",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Dispositivo di rete",
     "chip": "Nuovo",
-    "vendor": "Produttore"
+    "vendor": "Produttore",
+    "chip_known": "Conosciuto",
+    "random_mac": "MAC privato",
+    "random_mac_hint": "Indirizzo casuale: il dispositivo nasconde il suo MAC reale (tipico di telefoni e PC moderni)",
+    "vendor_hidden": "Nascosto",
+    "ports": "Porte aperte",
+    "hint": "Se non lo riconosci, chiedimi di bloccarlo",
+    "k_phone": "Telefono",
+    "k_printer": "Stampante",
+    "k_camera": "Telecamera",
+    "k_media": "Multimedia",
+    "k_server": "Server",
+    "k_network": "Apparato di rete",
+    "k_iot": "Dispositivo smart",
+    "k_computer": "Computer",
+    "k_unknown": "Dispositivo sconosciuto"
   }
 }

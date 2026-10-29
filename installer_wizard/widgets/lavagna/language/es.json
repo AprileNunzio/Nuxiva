@@ -2,7 +2,7 @@
   "meta": {
     "locale": "es",
     "scope": "widgets/lavagna",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "pen": "Lápiz",
@@ -43,11 +43,8 @@
     "error": "Error",
     "no_mic": "El navegador no admite el micrófono en este modo.",
     "thinking": "Estoy pensando: ",
-    "board_name": "Nombre de la pizarra:",
     "saved": "Pizarra guardada.",
-    "available": "Pizarras disponibles:",
     "none": "Ninguna",
-    "load_name": "Nombre de la pizarra a cargar:",
     "loaded": "Pizarra cargada.",
     "ai_enabled": "Evaluación automática activada",
     "ai_disabled": "Evaluación automática desactivada",
@@ -57,6 +54,10 @@
     "type_3d": "Impresora 3D",
     "type_engraver": "Grabador láser",
     "type_virtual_pdf": "PDF",
-    "speech": "es-ES"
+    "speech": "es-ES",
+    "boards_head": "Pizarras guardadas",
+    "name_placeholder": "Nombre de la nueva pizarra",
+    "delete_btn": "Eliminar",
+    "no_boards": "No hay pizarras guardadas"
   }
 }

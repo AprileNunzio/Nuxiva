@@ -10,10 +10,12 @@
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const post = (path, body) => fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body || {}) }).then((r) => r.json()).catch(() => ({}));
   const images = new Map();
+  const IMAGE_SRC = /^data:image\/(?:png|jpeg|webp);base64,[a-z0-9+/]+=*$/i;
 
   function image(it, onload) {
     let img = images.get(it.id);
     if (!img) {
+      if (typeof it.src !== "string" || it.src.length > 12e6 || !IMAGE_SRC.test(it.src)) return null;
       img = new Image();
       img.onload = onload;
       img.src = it.src;
@@ -166,9 +168,15 @@
       g.strokeStyle = g.fillStyle = it.color || "#f4f4f0";
       g.lineWidth = it.width || 4;
       if (it.type === "stroke" || it.type === "erase") {
+        const pts = it.points;
         g.beginPath();
-        it.points.forEach((p, i) => (i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1])));
-        if (it.points.length === 1) g.lineTo(it.points[0][0] + 0.1, it.points[0][1]);
+        g.moveTo(pts[0][0], pts[0][1]);
+        if (pts.length === 1) g.lineTo(pts[0][0] + 0.1, pts[0][1]);
+        else if (pts.length === 2) g.lineTo(pts[1][0], pts[1][1]);
+        else {
+          for (let i = 1; i < pts.length - 1; i++) g.quadraticCurveTo(pts[i][0], pts[i][1], (pts[i][0] + pts[i + 1][0]) / 2, (pts[i][1] + pts[i + 1][1]) / 2);
+          g.lineTo(pts[pts.length - 1][0], pts[pts.length - 1][1]);
+        }
         g.stroke();
       } else if (it.type === "text") {
         g.font = `${it.size}px ${FONT}`;
@@ -279,6 +287,13 @@
           </div>
         </div>
       </div>
+      <div class="lv-modal-mask lv-boards" style="display:none">
+        <div class="lv-modal">
+          <div class="lv-modal-head"><h3>${icon("list")}${esc(t.boardsHead)}</h3><button data-b="close" class="lv-modal-x">${icon("close")}</button></div>
+          <form class="lv-save-row"><input class="lv-name" maxlength="60" autocomplete="off" spellcheck="false" placeholder="${esc(t.namePlaceholder)}"><button type="submit" class="lv-btn-action">${esc(t.save)}</button></form>
+          <div class="lv-modal-body lv-board-list"><div class="lv-modal-note">${esc(t.searching)}</div></div>
+        </div>
+      </div>
       <div class="lv-toast" style="display:none" id="lv-toast"></div>
     </div>`;
 
@@ -288,12 +303,13 @@
     const aiBtn = el.querySelector('[data-a="ai-toggle"]');
     const modalMask = el.querySelector(".lv-modal-mask"), printerList = el.querySelector("#lv-printer-list");
     const toast = el.querySelector("#lv-toast");
+    const boards = el.querySelector(".lv-boards"), boardList = el.querySelector(".lv-board-list"), boardName = el.querySelector(".lv-name");
 
     const st = {
       items: [], rev: 0, tool: "pen", ink: COLORS[0], width: WIDTHS.m,
       seen: new Map(), first: true, view: { k: 1, ox: 0, oy: 0 }, drawing: null, said: "",
       timers: [], raf: 0, page: 0, pages: 1, ai_enabled: true,
-      evalTimer: 0, snapTimer: 0, armed: 0, selectedPrinter: "pdf_export"
+      evalTimer: 0, snapTimer: 0, toastTimer: 0, armed: 0, selectedPrinter: "pdf_export", polling: false, pointer: null, delArmed: ""
     };
     const key = "lavagna";
     const ANIMATED = new Set(["text", "callout", "image"]);
@@ -301,7 +317,8 @@
     const showToast = (msg) => {
       toast.textContent = msg;
       toast.style.display = "block";
-      setTimeout(() => { toast.style.display = "none"; }, 4000);
+      clearTimeout(st.toastTimer);
+      st.toastTimer = setTimeout(() => { toast.style.display = "none"; }, 4000);
     };
 
     const reveal = (it) => {
@@ -407,12 +424,61 @@
       scheduleSnapshot();
     };
 
-    const poll = () => fetch(`/api/board?rev=${st.rev}`).then((r) => r.json()).then(apply).catch(() => {});
+    const poll = () => {
+      if (st.polling) return Promise.resolve();
+      st.polling = true;
+      return fetch(`/api/board?rev=${st.rev}`).then((r) => r.json()).then((data) => { if (data && Array.isArray(data.items)) apply(data); else if (data && data.same) apply(data); }).catch(() => {}).finally(() => { st.polling = false; });
+    };
     poll();
-    st.timers.push(setInterval(poll, 900));
+    st.timers.push(setInterval(() => { if (!document.hidden) poll(); }, 900));
+
+    const renderBoards = (names) => {
+      const list = Array.isArray(names) ? names.filter((n) => typeof n === "string").slice(0, 100) : [];
+      boardList.innerHTML = list.length ? list.map((n) => `<div class="lv-board-row" data-name="${esc(n)}"><span>${esc(n)}</span>
+        <button type="button" data-bl="load" class="lv-btn-plain">${esc(t.load)}</button><button type="button" data-bl="delete" class="lv-btn-plain lv-del" title="${esc(t.deleteBtn)}">${icon("close")}</button></div>`).join("")
+        : `<div class="lv-modal-note">${esc(t.noBoards)}</div>`;
+    };
+    const openBoards = () => {
+      boards.style.display = "flex";
+      boardName.value = "";
+      st.delArmed = "";
+      boardList.innerHTML = `<div class="lv-modal-note">${esc(t.searching)}</div>`;
+      fetch("/api/board/list").then((r) => r.json()).then((res) => renderBoards(res && res.boards)).catch(() => { boardList.innerHTML = `<div class="lv-modal-note lv-err">${esc(t.error)}</div>`; });
+      setTimeout(() => boardName.focus(), 0);
+    };
+    const closeBoards = () => { boards.style.display = "none"; };
+    boards.querySelector(".lv-save-row").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = boardName.value.trim();
+      if (!name) return;
+      post("/api/board/save", { name }).then((res) => { showToast(res && res.name ? t.saved : `${t.error}: ${(res && res.detail) || ""}`); if (res && res.name) closeBoards(); poll(); });
+    });
+    boards.addEventListener("click", (e) => {
+      if (e.target === boards || e.target.closest('[data-b="close"]')) { closeBoards(); return; }
+      const b = e.target.closest("[data-bl]");
+      if (!b) return;
+      const name = b.closest(".lv-board-row").dataset.name;
+      if (b.dataset.bl === "load") {
+        post("/api/board/load", { name }).then((res) => { showToast(res && res.detail ? `${t.error}: ${res.detail}` : t.loaded); closeBoards(); poll(); });
+      } else if (st.delArmed !== name) {
+        st.delArmed = name;
+        b.textContent = t.sure;
+        b.classList.add("armed");
+      } else {
+        st.delArmed = "";
+        post("/api/board/delete_save", { name }).then((res) => renderBoards(res && res.boards));
+      }
+    });
+
+    const onKey = (e) => {
+      if (!el.isConnected || e.target.closest && e.target.closest("input, textarea")) return;
+      if (e.key === "Escape") { closeBoards(); modalMask.style.display = "none"; input.hidden = true; return; }
+      if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === "z") { e.preventDefault(); post("/api/board/undo").then(poll); }
+    };
+    document.addEventListener("keydown", onKey);
 
     canvas.addEventListener("pointerdown", (e) => {
-      if (e.button > 0) return;
+      if (e.button > 0 || (st.pointer !== null && st.pointer !== e.pointerId)) return;
       const p = point(e);
       if (st.tool === "text") {
         input.hidden = false;
@@ -424,19 +490,27 @@
         return;
       }
       canvas.setPointerCapture(e.pointerId);
+      st.pointer = e.pointerId;
       st.drawing = { type: st.tool === "eraser" ? "erase" : "stroke", points: [p], color: st.ink, width: st.tool === "eraser" ? st.width * 3 : st.width };
       redraw();
     });
 
     canvas.addEventListener("pointermove", (e) => {
-      if (!st.drawing) return;
-      const p = point(e), last = st.drawing.points[st.drawing.points.length - 1];
-      if (Math.hypot(p[0] - last[0], p[1] - last[1]) < 1.5) return;
-      st.drawing.points.push(p);
-      redraw();
+      if (!st.drawing || e.pointerId !== st.pointer) return;
+      const events = typeof e.getCoalescedEvents === "function" ? e.getCoalescedEvents() : [];
+      let moved = false;
+      for (const ev of events.length ? events : [e]) {
+        const p = point(ev), last = st.drawing.points[st.drawing.points.length - 1];
+        if (Math.hypot(p[0] - last[0], p[1] - last[1]) < 1.5 || st.drawing.points.length >= 4000) continue;
+        st.drawing.points.push(p);
+        moved = true;
+      }
+      if (moved) redraw();
     });
 
-    const finish = () => {
+    const finish = (e) => {
+      if (e && st.pointer !== null && e.pointerId !== st.pointer) return;
+      st.pointer = null;
       const d = st.drawing;
       st.drawing = null;
       if (!d) return;
@@ -558,15 +632,8 @@
         st.armed = 0;
         b.textContent = "⌧";
         post("/api/board/clear").then(poll);
-      } else if (b.dataset.a === "save") {
-        const name = prompt(t.boardName);
-        if (name) post("/api/board/save", { name }).then(() => { showToast(t.saved); poll(); });
-      } else if (b.dataset.a === "load") {
-        fetch("/api/board/list").then((r) => r.json()).then((res) => {
-          const names = res.boards || [];
-          const name = prompt(`${t.available}\n${names.length ? names.join("\n") : t.none}\n\n${t.loadName}`);
-          if (name) post("/api/board/load", { name }).then(() => { showToast(t.loaded); poll(); });
-        });
+      } else if (b.dataset.a === "save" || b.dataset.a === "load") {
+        openBoards();
       } else if (b.dataset.a === "ai-toggle") {
         post("/api/board/ai/toggle").then((res) => {
           if (res && res.ai_enabled !== undefined) st.ai_enabled = res.ai_enabled;
@@ -604,6 +671,8 @@
     el._lv = {
       stop() {
         document.body.classList.remove("desk-whiteboard");
+        document.removeEventListener("keydown", onKey);
+        clearTimeout(st.toastTimer);
         watch.disconnect();
         st.timers.forEach((tm) => { clearInterval(tm); clearTimeout(tm); });
         clearTimeout(st.snapTimer);

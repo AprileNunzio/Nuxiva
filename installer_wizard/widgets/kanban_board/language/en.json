@@ -2,13 +2,17 @@
   "meta": {
     "locale": "en",
     "scope": "widgets/kanban_board",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Board",
     "todo": "To do",
     "doing": "In progress",
     "doing_chip_one": "{{n}} in progress",
-    "doing_chip_other": "{{n}} in progress"
+    "doing_chip_other": "{{n}} in progress",
+    "done": "Done",
+    "all_done": "All done",
+    "none": "No tasks",
+    "more": "and {{n}} more"
   }
 }

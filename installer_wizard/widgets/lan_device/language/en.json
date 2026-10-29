@@ -2,11 +2,26 @@
   "meta": {
     "locale": "en",
     "scope": "widgets/lan_device",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Network device",
     "chip": "New",
-    "vendor": "Vendor"
+    "vendor": "Vendor",
+    "chip_known": "Known",
+    "random_mac": "Private MAC",
+    "random_mac_hint": "Random address: the device hides its real MAC (typical of modern phones and PCs)",
+    "vendor_hidden": "Hidden",
+    "ports": "Open ports",
+    "hint": "If you don't recognise it, ask me to block it",
+    "k_phone": "Phone",
+    "k_printer": "Printer",
+    "k_camera": "Camera",
+    "k_media": "Media",
+    "k_server": "Server",
+    "k_network": "Network device",
+    "k_iot": "Smart device",
+    "k_computer": "Computer",
+    "k_unknown": "Unknown device"
   }
 }

@@ -2,7 +2,7 @@
   "meta": {
     "locale": "en",
     "scope": "widgets/lavagna",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "pen": "Pen",
@@ -43,11 +43,8 @@
     "error": "Error",
     "no_mic": "This browser does not support the microphone here.",
     "thinking": "Thinking: ",
-    "board_name": "Board name:",
     "saved": "Board saved.",
-    "available": "Available boards:",
     "none": "None",
-    "load_name": "Name of the board to load:",
     "loaded": "Board loaded.",
     "ai_enabled": "Autonomous checking on",
     "ai_disabled": "Autonomous checking off",
@@ -57,6 +54,10 @@
     "type_3d": "3D printer",
     "type_engraver": "Laser engraver",
     "type_virtual_pdf": "PDF",
-    "speech": "en-GB"
+    "speech": "en-GB",
+    "boards_head": "Saved boards",
+    "name_placeholder": "Name for the new board",
+    "delete_btn": "Delete",
+    "no_boards": "No saved boards"
   }
 }

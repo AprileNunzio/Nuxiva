@@ -56,3 +56,13 @@
 .lv-toast { position: absolute; top: 58px; right: 18px; z-index: 60; padding: 8px 14px; border-radius: 10px; background: rgba(4, 12, 18, 0.92); box-shadow: 0 0 0 1px rgba(var(--tone), 0.35) inset; color: var(--text); font-size: 12.5px; animation: lv-fade-in 0.25s ease; }
 @keyframes lv-fade-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes lv-pulse { from { transform: scale(1); } to { transform: scale(1.18); } }
+.lv-save-row { display: flex; gap: 8px; padding: 4px 16px 10px; }
+.lv-save-row .lv-name { flex: 1; min-width: 0; padding: 8px 10px; border: 0; border-radius: 8px; font: 14px var(--font); color: var(--text); background: rgba(255, 255, 255, 0.06); box-shadow: 0 0 0 1px rgba(var(--tone), 0.25) inset; outline: none; }
+.lv-save-row .lv-name:focus { box-shadow: 0 0 0 1px rgb(var(--tone)) inset; }
+.lv-board-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 10px; }
+.lv-board-row + .lv-board-row { margin-top: 2px; }
+.lv-board-row:hover { background: rgba(255, 255, 255, 0.04); }
+.lv-board-row span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
+.lv-board-row .lv-del { display: inline-grid; place-items: center; min-width: 32px; }
+.lv-board-row .lv-del .wk-svg, .lv-board-row .lv-del svg { width: 12px; height: 12px; }
+.lv-board-row .lv-del.armed { color: var(--red); }

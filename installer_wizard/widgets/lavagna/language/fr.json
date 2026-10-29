@@ -2,7 +2,7 @@
   "meta": {
     "locale": "fr",
     "scope": "widgets/lavagna",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "pen": "Stylo",
@@ -43,11 +43,8 @@
     "error": "Erreur",
     "no_mic": "Le navigateur ne prend pas en charge le microphone dans ce mode.",
     "thinking": "Je réfléchis :",
-    "board_name": "Nom du tableau :",
     "saved": "Tableau enregistré.",
-    "available": "Tableaux disponibles :",
     "none": "Aucun",
-    "load_name": "Nom du tableau à charger :",
     "loaded": "Tableau chargé.",
     "ai_enabled": "Évaluation automatique activée",
     "ai_disabled": "Évaluation automatique désactivée",
@@ -57,6 +54,10 @@
     "type_3d": "Imprimante 3D",
     "type_engraver": "Graveur laser",
     "type_virtual_pdf": "PDF",
-    "speech": "fr-FR"
+    "speech": "fr-FR",
+    "boards_head": "Tableaux enregistrés",
+    "name_placeholder": "Nom du nouveau tableau",
+    "delete_btn": "Supprimer",
+    "no_boards": "Aucun tableau enregistré"
   }
 }
