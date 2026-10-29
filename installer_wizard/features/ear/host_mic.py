@@ -18,22 +18,43 @@ except ImportError:
         from installer_wizard.features.ear import earconf
 
 
-def _get_sessions() -> set:
+def _get_broadcast_module():
     for mod_name in ("features.ear.broadcast", "broadcast", "installer_wizard.features.ear.broadcast"):
         if mod_name in sys.modules:
             mod = sys.modules[mod_name]
             if hasattr(mod, "SESSIONS"):
-                return mod.SESSIONS
+                return mod
     try:
-        from features.ear.broadcast import SESSIONS
-        return SESSIONS
+        from features.ear import broadcast
+        return broadcast
     except ImportError:
         try:
-            from broadcast import SESSIONS
-            return SESSIONS
+            import broadcast
+            return broadcast
         except ImportError:
-            from installer_wizard.features.ear.broadcast import SESSIONS
-            return SESSIONS
+            from installer_wizard.features.ear import broadcast
+            return broadcast
+
+
+def _get_sessions() -> set:
+    mod = _get_broadcast_module()
+    return getattr(mod, "SESSIONS", set())
+
+
+def _register_session(session: Any) -> None:
+    mod = _get_broadcast_module()
+    if hasattr(mod, "register"):
+        mod.register(session)
+    elif hasattr(mod, "SESSIONS"):
+        mod.SESSIONS.add(session)
+
+
+def _unregister_session(session: Any) -> None:
+    mod = _get_broadcast_module()
+    if hasattr(mod, "unregister"):
+        mod.unregister(session)
+    elif hasattr(mod, "SESSIONS"):
+        mod.SESSIONS.discard(session)
 
 
 log = logging.getLogger("nuxiva.ear.host_mic")
@@ -74,6 +95,16 @@ def pick_capture_binary() -> list[str] | None:
     return candidates[0] if candidates else None
 
 
+_ACTIVE_TASKS: set[asyncio.Task] = set()
+
+
+def _spawn_background_task(coro) -> asyncio.Task:
+    task = asyncio.create_task(coro)
+    _ACTIVE_TASKS.add(task)
+    task.add_done_callback(_ACTIVE_TASKS.discard)
+    return task
+
+
 class HeadlessSocket:
 
     def __init__(self) -> None:
@@ -84,8 +115,8 @@ class HeadlessSocket:
             return
         try:
             event = json.loads(data)
-            if event.get("type") == "transcript" and event.get("text"):
-                asyncio.create_task(dispatch_headless_command(event))
+            if event.get("type") == "transcript" and event.get("text") and event.get("origin") is not False:
+                _spawn_background_task(dispatch_headless_command(event))
         except (json.JSONDecodeError, TypeError, ValueError):
             pass
 
@@ -99,6 +130,7 @@ async def dispatch_headless_command(event: dict) -> None:
         return
     lang = str(event.get("lang") or "it")
     speaker = str(event.get("speaker") or "")
+    log.info("Inoltro comando vocale headless all'assistente: '%s' (lang=%s, speaker=%s)", text, lang, speaker or "sconosciuto")
     payload = json.dumps({"text": text, "lang": lang, "speaker": speaker, "client_id": "headless_host_mic"}).encode("utf-8")
     req = urllib.request.Request(
         ASSISTANT_URL,
@@ -114,7 +146,10 @@ async def dispatch_headless_command(event: dict) -> None:
         data = await loop.run_in_executor(None, _call_assistant)
         reply = str(data.get("reply") or "").strip()
         if reply:
+            log.info("Risposta assistente headless ricevuta: '%s' (%d caratteri)", reply[:60], len(reply))
             await speak_reply(reply, lang)
+        else:
+            log.info("Nessuna risposta testuale da sintetizzare per il comando headless")
     except (urllib.error.URLError, TimeoutError, OSError, ValueError) as exc:
         log.warning("Invio comando assistente headless non riuscito: %s", exc)
 
@@ -162,6 +197,17 @@ class HostMicCapture:
     def is_capturing(self) -> bool:
         return self.running and self.process is not None and self.should_capture()
 
+    def _teardown_session(self) -> None:
+        if self.session is not None:
+            _unregister_session(self.session)
+            if hasattr(self.session, "ws"):
+                try:
+                    self.session.ws.closed = True
+                except Exception:
+                    pass
+            self.session = None
+            log.debug("Sessione host mic headless deregistrata da SESSIONS")
+
     async def run(self) -> None:
         self.running = True
         candidates = get_capture_candidates()
@@ -169,41 +215,49 @@ class HostMicCapture:
             log.info("Nessun comando di acquisizione nativo (parec/pw-record/arecord) rilevato per host mic")
             return
         candidate_idx = 0
-        while self.running:
-            if not self.should_capture():
-                await self._stop_process()
+        try:
+            while self.running:
+                if not self.should_capture():
+                    await self._stop_process()
+                    if not earconf.flag("NUXIVA_EAR_HOST_MIC", True):
+                        self._teardown_session()
+                    await asyncio.sleep(1)
+                    continue
+                if self.session is None:
+                    self.session = self.session_factory(HeadlessSocket())
+                    self.session.page = {"id": "host_mic", "page": "host_mic", "visible": "headless"}
+                    _register_session(self.session)
+                    log.info("Sessione host mic headless inizializzata e registrata in SESSIONS")
+                cmd = candidates[candidate_idx % len(candidates)]
+                read_any = False
+                start_time = time.time()
+                try:
+                    self.process = await asyncio.create_subprocess_exec(
+                        *cmd,
+                        stdout=asyncio.subprocess.PIPE,
+                        stderr=asyncio.subprocess.PIPE
+                    )
+                    assert self.process.stdout is not None
+                    while self.running and self.should_capture():
+                        chunk = await self.process.stdout.read(CHUNK_BYTES)
+                        if not chunk:
+                            break
+                        read_any = True
+                        await self.session.feed(chunk)
+                except (asyncio.CancelledError, Exception) as exc:
+                    log.debug("Errore o interruzione processo cattura host mic (%s): %s", cmd[0], exc)
+                finally:
+                    await self._stop_process()
+                elapsed = time.time() - start_time
+                if not read_any or elapsed < 1.5:
+                    candidate_idx += 1
+                    if len(candidates) > 1:
+                        next_cmd = candidates[candidate_idx % len(candidates)]
+                        log.info("Rotazione comando cattura microfono host: fallback da %s a %s", cmd[0], next_cmd[0])
                 await asyncio.sleep(1)
-                continue
-            if self.session is None:
-                self.session = self.session_factory(HeadlessSocket())
-                self.session.page = {"id": "host_mic", "visible": "headless"}
-            cmd = candidates[candidate_idx % len(candidates)]
-            read_any = False
-            start_time = time.time()
-            try:
-                self.process = await asyncio.create_subprocess_exec(
-                    *cmd,
-                    stdout=asyncio.subprocess.PIPE,
-                    stderr=asyncio.subprocess.PIPE
-                )
-                assert self.process.stdout is not None
-                while self.running and self.should_capture():
-                    chunk = await self.process.stdout.read(CHUNK_BYTES)
-                    if not chunk:
-                        break
-                    read_any = True
-                    await self.session.feed(chunk)
-            except (asyncio.CancelledError, Exception) as exc:
-                log.debug("Errore o interruzione processo cattura host mic (%s): %s", cmd[0], exc)
-            finally:
-                await self._stop_process()
-            elapsed = time.time() - start_time
-            if not read_any or elapsed < 1.5:
-                candidate_idx += 1
-                if len(candidates) > 1:
-                    next_cmd = candidates[candidate_idx % len(candidates)]
-                    log.info("Rotazione comando cattura microfono host: fallback da %s a %s", cmd[0], next_cmd[0])
-            await asyncio.sleep(1)
+        finally:
+            await self._stop_process()
+            self._teardown_session()
 
     async def _stop_process(self) -> None:
         if self.process is not None:
@@ -225,3 +279,4 @@ class HostMicCapture:
                 self.process.terminate()
             except Exception:
                 pass
+        self._teardown_session()
