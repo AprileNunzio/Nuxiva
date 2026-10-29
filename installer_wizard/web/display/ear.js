@@ -187,6 +187,7 @@
       if (D.Captions) D.Captions.event(ev);
       if (ev.type === "ready" && ev.host_mic) { hostMicActive = true; if (state === "off") setState("idle"); }
       if (ev.type === "level") {
+        if (ev.origin === false && stream && stream.getAudioTracks().some((track) => track.readyState === "live")) return;
         heardAt = Date.now();
         level(ev.rms);
         if (D.Enroll && D.Enroll.active) D.Enroll.level(ev.rms);

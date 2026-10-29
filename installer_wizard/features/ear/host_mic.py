@@ -129,8 +129,8 @@ class HeadlessSocket:
                 self._wake_announced = False
             if event.get("type") == "transcript" and event.get("text") and event.get("origin") is not False:
                 _spawn_background_task(dispatch_headless_command(event))
-        except (json.JSONDecodeError, TypeError, ValueError):
-            pass
+        except (json.JSONDecodeError, TypeError, ValueError) as exc:
+            log.debug("Evento headless non valido: %s", exc)
 
     async def close(self, code: int = 1000, reason: str = "") -> None:
         self.closed = True
@@ -211,6 +211,8 @@ class HostMicCapture:
         self.session: Any = None
         self.running = False
         self.process: asyncio.subprocess.Process | None = None
+        self._stderr_task: asyncio.Task | None = None
+        self._stderr_tail = b""
 
     def should_capture(self) -> bool:
         if not earconf.flag("NUXIVA_EAR_HOST_MIC", True):
@@ -228,10 +230,7 @@ class HostMicCapture:
         if self.session is not None:
             _unregister_session(self.session)
             if hasattr(self.session, "ws"):
-                try:
-                    self.session.ws.closed = True
-                except Exception:
-                    pass
+                self.session.ws.closed = True
             self.session = None
             log.debug("Sessione host mic headless deregistrata da SESSIONS")
 
@@ -264,15 +263,26 @@ class HostMicCapture:
                         stdout=asyncio.subprocess.PIPE,
                         stderr=asyncio.subprocess.PIPE
                     )
+                    self._stderr_tail = b""
+                    if self.process.stderr is not None:
+                        self._stderr_task = asyncio.create_task(self._drain_stderr(self.process.stderr))
                     assert self.process.stdout is not None
+                    pending = b""
                     while self.running and self.should_capture():
                         chunk = await self.process.stdout.read(CHUNK_BYTES)
                         if not chunk:
                             break
                         read_any = True
-                        await self.session.feed(chunk)
-                except (asyncio.CancelledError, Exception) as exc:
-                    log.debug("Errore o interruzione processo cattura host mic (%s): %s", cmd[0], exc)
+                        chunk = pending + chunk
+                        boundary = len(chunk) - len(chunk) % 2
+                        pending = chunk[boundary:]
+                        if boundary:
+                            await self.session.feed(chunk[:boundary])
+                        await asyncio.sleep(0)
+                except asyncio.CancelledError:
+                    raise
+                except (OSError, RuntimeError, ValueError) as exc:
+                    log.warning("Errore cattura host mic (%s): %s", cmd[0], exc)
                 finally:
                     await self._stop_process()
                 elapsed = time.time() - start_time
@@ -286,24 +296,43 @@ class HostMicCapture:
             await self._stop_process()
             self._teardown_session()
 
+    async def _drain_stderr(self, stream) -> None:
+        try:
+            while chunk := await stream.read(1024):
+                self._stderr_tail = (self._stderr_tail + chunk)[-2048:]
+        except OSError as exc:
+            log.warning("Lettura diagnostica cattura host non riuscita: %s", exc)
+
     async def _stop_process(self) -> None:
         if self.process is not None:
+            process, self.process = self.process, None
             try:
-                self.process.terminate()
-                await asyncio.wait_for(self.process.wait(), timeout=1.0)
-            except Exception:
+                process.terminate()
+            except ProcessLookupError:
+                log.debug("Processo cattura già terminato")
+            try:
+                await asyncio.wait_for(process.wait(), timeout=1.0)
+            except asyncio.TimeoutError:
                 try:
-                    self.process.kill()
-                except Exception:
-                    pass
-            finally:
-                self.process = None
+                    process.kill()
+                except ProcessLookupError:
+                    log.debug("Processo cattura già terminato prima del kill")
+                await process.wait()
+        if self._stderr_task is not None:
+            self._stderr_task.cancel()
+            results = await asyncio.gather(self._stderr_task, return_exceptions=True)
+            for result in results:
+                if isinstance(result, Exception):
+                    log.error("Errore task diagnostica cattura host: %s", result)
+            self._stderr_task = None
+        if self._stderr_tail:
+            log.debug("Diagnostica cattura host: %s", self._stderr_tail.decode("utf-8", "replace").strip())
 
     def stop(self) -> None:
         self.running = False
         if self.process is not None:
             try:
                 self.process.terminate()
-            except Exception:
-                pass
+            except ProcessLookupError:
+                log.debug("Processo cattura già terminato durante stop")
         self._teardown_session()

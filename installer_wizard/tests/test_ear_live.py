@@ -3,6 +3,7 @@ import sys
 import tempfile
 import time
 import unittest
+from contextlib import closing
 from pathlib import Path
 from unittest import mock
 
@@ -201,8 +202,9 @@ class JournalTest(unittest.TestCase):
         fresh = self.log.record("heard", "recente", audio=self.audio)
         self.log.feedback(kept, "wrong", "da rivedere bene")
         import sqlite3
-        with sqlite3.connect(self.log.db_path) as conn:
+        with closing(sqlite3.connect(self.log.db_path)) as conn:
             conn.execute("UPDATE entries SET ts = ? WHERE id IN (?, ?)", (time.time() - 40 * 86400, old, kept))
+            conn.commit()
         self.assertEqual(self.log.prune(14, 3, 300), 1)
         self.assertIsNone(self.log.get(old))
         self.assertIsNotNone(self.log.get(kept))

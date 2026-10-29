@@ -18,7 +18,8 @@ import enhance
 import capture
 import feedback
 import stt
-from broadcast import SESSIONS, broadcast_event, park_hidden, register, unregister
+from broadcast import SESSIONS, broadcast_event, park_hidden, register, unregister, send_event
+from ingress import RealtimeInput
 from learner import current_name, learner, name_variant
 from music import MusicTap
 from livecap import LiveCaptions
@@ -99,14 +100,12 @@ class Session:
         self.page: dict = {}
         self.opened = time.time()
         self.last_pcm_time = 0.0
+        self.input = RealtimeInput(self._process_pcm, self._meter, self._reset_input)
         self.lang = stt.HOME_LANG
         self.live = LiveCaptions(self.broadcast, governor, stt.live_transcribe, self._identify_live, stt.lock)
 
     async def send(self, **event) -> None:
-        try:
-            await self.ws.send(json.dumps(event))
-        except websockets.ConnectionClosed:
-            pass
+        await send_event(self, **event)
 
     async def broadcast(self, **event) -> None:
         await broadcast_event(self, **event)
@@ -122,18 +121,33 @@ class Session:
             log.info("Connessione senza identità chiusa: c'è una pagina visibile del display")
             await self.ws.close(4001, "pagina non identificata")
             return
+        self.last_pcm_time = time.time()
+        await self.input.feed(pcm, analyze=self.raw is None)
         if self.raw is not None:
             self.raw.append(pcm)
-            return
-        self.last_pcm_time = time.time()
+
+    async def _meter(self, rms):
+        now = time.time()
+        LINK["last_audio"], LINK["level"] = now, round(rms, 4)
+        if now - self.last_level >= 0.1:
+            self.last_level = now
+            await self.broadcast(type="level", rms=round(min(1.0, rms * 12), 3), speech=self.in_speech,
+                                 wake=round(self.wake.score, 2), analysis_dropped=self.input.dropped)
+
+    async def _reset_input(self):
+        self.wake.request_reset()
+        self.buffer = np.zeros(0, dtype=np.float32)
+        self.ring = np.zeros(0, dtype=np.float32)
+        self.in_speech, self.speech = False, []
+        await self._drop_caption()
+
+    async def _process_pcm(self, pcm):
         samples = np.frombuffer(pcm, dtype="<i2").astype(np.float32) / 32768.0
-        LINK["last_audio"] = time.time()
-        if len(samples):
-            LINK["level"] = round(float(np.sqrt(np.mean(samples * samples))), 4)
         self.buffer = np.concatenate([self.buffer, samples])
         while len(self.buffer) >= FRAME:
             frame, self.buffer = self.buffer[:FRAME], self.buffer[FRAME:]
             await self._frame(frame)
+            await asyncio.sleep(0)
 
     async def _frame(self, frame: np.ndarray) -> None:
         now = time.time()
@@ -153,20 +167,15 @@ class Session:
                                    self.profile.magnitude)
         if chunk is not None:
             asyncio.create_task(self._save(chunk))
-        if now - self.last_level > 0.1:
-            self.last_level = now
-            await self.broadcast(type="level", rms=round(min(1.0, rms * 12), 3), speech=self.in_speech,
-                                 wake=round(self.wake.score, 2))
-
         if self.nuxiva_speaking:
             self.in_speech, self.speech = False, []
             await self._drop_caption()
-            if self.enroll is None and self.wake.feed(frame) and self.wake.score >= BARGE_IN:
+            if self.enroll is None and await self.wake.detect(frame) and self.wake.score >= BARGE_IN:
                 self.nuxiva_speaking = False
                 await self.broadcast(type="barge")
                 await self._instant_wake()
             return
-        if self.mode == "idle" and self.enroll is None and self.wake.feed(leveled):
+        if self.mode == "idle" and self.enroll is None and await self.wake.detect(leveled):
             await self._instant_wake()
         if self.mode == "listening" and now > self.listen_until and (not self.in_speech or now > self.listen_until + 6):
             await self._listen_timeout()
@@ -394,7 +403,7 @@ class Session:
         elif kind == "speaking":
             self.nuxiva_speaking = bool(msg.get("on"))
             if self.nuxiva_speaking:
-                self.wake.reset()
+                self.wake.request_reset()
         elif kind == "presence":
             alone = str(msg.get("alone") or "")
             self.alone = alone if SLUG_RE.match(alone) else None
@@ -414,6 +423,7 @@ class Session:
             done, self.enroll = self.enroll, None
             await self.send(type="enroll_done", count=(done or {}).get("count", 0))
         elif kind == "transcribe_start":
+            self.input.clear()
             self.raw = []
         elif kind == "transcribe_end":
             await self._transcribe_raw()
@@ -470,6 +480,7 @@ async def handler(ws) -> None:
     except websockets.ConnectionClosed:
         log.debug("Connessione chiusa dal display")
     finally:
+        await session.input.close()
         unregister(session)
         LINK["pages"] = [s.page for s in SESSIONS if s.page]
         LINK["clients"] = max(0, LINK["clients"] - 1)

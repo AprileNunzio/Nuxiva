@@ -28,6 +28,40 @@ def _get_sessions() -> set:
 
 
 class EarHostMicTest(unittest.IsolatedAsyncioTestCase):
+    async def test_capture_cancellation_reaps_process_and_unregisters_session(self):
+        from types import SimpleNamespace
+        started = asyncio.Event()
+
+        async def read(_):
+            started.set()
+            await asyncio.Event().wait()
+
+        process = SimpleNamespace(stdout=SimpleNamespace(read=read), stderr=None,
+                                  terminate=MagicMock(), kill=MagicMock(), wait=AsyncMock(return_value=0))
+        class CaptureSession:
+            def __init__(self, socket):
+                self.ws = socket
+
+        capture = HostMicCapture(CaptureSession)
+        with patch("features.ear.host_mic.get_capture_candidates", return_value=[["capture"]]), \
+             patch("asyncio.create_subprocess_exec", new=AsyncMock(return_value=process)):
+            task = asyncio.create_task(capture.run())
+            await asyncio.wait_for(started.wait(), 1)
+            task.cancel()
+            with self.assertRaises(asyncio.CancelledError):
+                await asyncio.wait_for(task, 1)
+        self.assertIsNone(capture.process)
+        self.assertIsNone(capture.session)
+        process.wait.assert_awaited()
+        self.assertEqual(len(_get_sessions()), 0)
+
+    async def test_capture_diagnostics_are_drained_with_bounded_memory(self):
+        capture = HostMicCapture(lambda socket: socket)
+        stream = MagicMock()
+        stream.read = AsyncMock(side_effect=[b"x" * 4096, b"y" * 4096, b""])
+        await capture._drain_stderr(stream)
+        self.assertEqual(capture._stderr_tail, b"y" * 2048)
+
     def test_public_port_default_and_explicit_url_overrides(self):
         import runpy
         from features.ear import host_mic
@@ -190,9 +224,10 @@ class EarHostMicTest(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(len(_get_sessions()), 0)
 
         mock_proc = MagicMock()
-        mock_proc.stdout.read = MagicMock(side_effect=[b"pcmchunk", b""])
+        mock_proc.stderr = None
+        mock_proc.stdout.read = AsyncMock(side_effect=[b"pcmchunk", b""])
         mock_proc.terminate = MagicMock()
-        mock_proc.wait = MagicMock(return_value=asyncio.sleep(0))
+        mock_proc.wait = AsyncMock(return_value=0)
 
         with patch("features.ear.host_mic.get_capture_candidates", return_value=[["fake-rec"]]), \
              patch("asyncio.create_subprocess_exec", return_value=mock_proc):

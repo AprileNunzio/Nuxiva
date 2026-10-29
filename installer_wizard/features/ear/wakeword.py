@@ -1,4 +1,6 @@
+import asyncio
 import logging
+import threading
 import os
 import re
 import time
@@ -38,6 +40,10 @@ class WakeWord:
 
     def __init__(self) -> None:
         self.model = None
+        self._async_lock = asyncio.Lock()
+        self._model_lock = threading.Lock()
+        self._needs_reset = False
+        self._generation = 0
         self.pending = np.zeros(0, dtype=np.int16)
         self.last_hit = 0.0
         self.score = 0.0
@@ -83,6 +89,13 @@ class WakeWord:
         return self.model is not None
 
     def feed(self, frame: np.ndarray) -> bool:
+        with self._model_lock:
+            if self._needs_reset:
+                self._needs_reset = False
+                self._reset()
+            return self._feed(frame)
+
+    def _feed(self, frame: np.ndarray) -> bool:
         if self.model is None:
             return False
         pcm = (np.clip(frame, -1, 1) * 32767).astype(np.int16)
@@ -102,7 +115,27 @@ class WakeWord:
                 hit = True
         return hit
 
+    async def detect(self, frame: np.ndarray) -> bool:
+        if self.model is None:
+            return False
+        async with self._async_lock:
+            generation = self._generation
+            hit = await asyncio.to_thread(self.feed, frame.copy())
+            return hit and generation == self._generation
+
+    def request_reset(self) -> None:
+        self._generation += 1
+        self._needs_reset = True
+
+    async def reset_async(self) -> None:
+        async with self._async_lock:
+            await asyncio.to_thread(self.reset)
+
     def reset(self) -> None:
+        with self._model_lock:
+            self._reset()
+
+    def _reset(self) -> None:
         if self.model is not None:
             self.model.reset()
         self.pending = np.zeros(0, dtype=np.int16)
