@@ -7,6 +7,7 @@
     [/🧪|🔬|🧬/u, "sparkle"], [/🗒|📝|📄/u, "doc"], [/🤖/u, "brain"], [/📷|📸/u, "camera"], [/🖨/u, "printer"], [/⬇|📥/u, "download"],
   ];
   const LEVEL = { warn: "warn", warning: "warn", error: "bad", critical: "bad", ok: "ok", success: "ok" };
+  const LABEL = { warn: "warning", bad: "error", ok: "done" };
   const pick = (v) => {
     const s = typeof v === "string" ? v.slice(0, 32) : "";
     if (window.NuxivaIcons && window.NuxivaIcons.names.includes(s)) return s;
@@ -20,7 +21,7 @@
       const level = LEVEL[ctx.str(data.level, 12).toLowerCase()] || "";
       const title = ctx.str(data.title, 120), text = ctx.str(data.text, 400);
       const at = ctx.stamp(data.at ?? data.time);
-      const label = ctx.t(level === "warn" ? "warning" : level === "bad" ? "error" : level === "ok" ? "done" : "notice");
+      const label = ctx.t(LABEL[level] || "notice");
       el.innerHTML = `${ctx.head({ label, chip: at ? ctx.ago(at) : "", state: level })}
         <div class="no-row${level ? ` ${level}` : ""}"><span class="no-ic">${ctx.icon(pick(data.icon))}</span><div class="no-txt">
           ${title ? `<div class="wk-title">${ctx.esc(title)}</div>` : ""}
