@@ -34,7 +34,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Write-Host "==> [4/4] Eseguo test unitari Python pertinenti (installer_wizard e server cortex)..." -ForegroundColor Cyan
-python -m unittest installer_wizard.tests.test_ollama_hardware_tuning installer_wizard.tests.test_brain_tuning installer_wizard.tests.test_control_panel_layout server.tests.test_cortex_core_platform server.tests.test_embodied_cortex installer_wizard.tests.test_kiosk_toggle installer_wizard.tests.test_hardware_agent installer_wizard.tests.test_hardware_universal installer_wizard.tests.test_ear_realtime installer_wizard.tests.test_ear_host_mic installer_wizard.tests.test_voice_playback -v
+python -m unittest installer_wizard.tests.test_ollama_hardware_tuning installer_wizard.tests.test_brain_tuning installer_wizard.tests.test_control_panel_layout server.tests.test_cortex_core_platform server.tests.test_embodied_cortex installer_wizard.tests.test_kiosk_toggle installer_wizard.tests.test_hardware_agent installer_wizard.tests.test_hardware_universal installer_wizard.tests.test_ear_realtime installer_wizard.tests.test_ear_host_mic installer_wizard.tests.test_voice_playback installer_wizard.tests.test_remote_display_captions -v
 if ($LASTEXITCODE -ne 0) {
     Write-Host "[ERRORE] Uno o piu test unitari Python pertinenti sono falliti!" -ForegroundColor Red
     exit 1

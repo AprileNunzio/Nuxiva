@@ -1,3 +1,4 @@
+import asyncio
 import json
 import unittest
 from pathlib import Path
@@ -19,11 +20,13 @@ class FakeSession:
     def __init__(self, name: str) -> None:
         self.name = name
         self.sent: list[dict] = []
+        self.delivered = asyncio.Event()
         self.ws = SimpleNamespace(send=self._send)
         self.page = {"visible": "visible"}
 
     async def _send(self, data: str) -> None:
         self.sent.append(json.loads(data))
+        self.delivered.set()
 
 
 class RemoteDisplayBroadcastTest(unittest.IsolatedAsyncioTestCase):
@@ -31,13 +34,16 @@ class RemoteDisplayBroadcastTest(unittest.IsolatedAsyncioTestCase):
         broadcast.SESSIONS.clear()
 
     async def asyncTearDown(self) -> None:
-        broadcast.SESSIONS.clear()
+        for session in list(broadcast.SESSIONS):
+            unregister(session)
+        await asyncio.sleep(0)
 
     async def test_broadcast_event_reaches_all_active_sessions(self) -> None:
         s1, s2 = FakeSession("kiosk"), FakeSession("remote_tablet")
         register(s1)
         register(s2)
         await broadcast_event(s1, type="partial", utt="u1", text="accendi la", stable=1)
+        await asyncio.wait_for(asyncio.gather(s1.delivered.wait(), s2.delivered.wait()), 1)
         self.assertEqual(len(s1.sent), 1)
         self.assertEqual(len(s2.sent), 1)
         self.assertEqual(s1.sent[0]["text"], "accendi la")
@@ -48,6 +54,7 @@ class RemoteDisplayBroadcastTest(unittest.IsolatedAsyncioTestCase):
         register(kiosk)
         register(remote)
         await broadcast_event(kiosk, type="transcript", text="spegni le luci", utt="u2", speaker="anna")
+        await asyncio.wait_for(asyncio.gather(kiosk.delivered.wait(), remote.delivered.wait()), 1)
         self.assertNotIn("origin", kiosk.sent[0])
         self.assertFalse(remote.sent[0]["origin"])
         self.assertEqual(remote.sent[0]["text"], "spegni le luci")

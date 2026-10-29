@@ -20,7 +20,7 @@ echo "==> [3/4] Eseguo test unitari Rust del workspace..."
 cargo test --manifest-path native/Cargo.toml --workspace --locked
 
 echo "==> [4/4] Eseguo test unitari Python pertinenti..."
-python -m unittest installer_wizard.tests.test_ollama_hardware_tuning installer_wizard.tests.test_brain_tuning installer_wizard.tests.test_control_panel_layout server.tests.test_cortex_core_platform server.tests.test_embodied_cortex installer_wizard.tests.test_kiosk_toggle installer_wizard.tests.test_hardware_agent installer_wizard.tests.test_hardware_universal installer_wizard.tests.test_ear_realtime installer_wizard.tests.test_ear_host_mic installer_wizard.tests.test_voice_playback -v
+python -m unittest installer_wizard.tests.test_ollama_hardware_tuning installer_wizard.tests.test_brain_tuning installer_wizard.tests.test_control_panel_layout server.tests.test_cortex_core_platform server.tests.test_embodied_cortex installer_wizard.tests.test_kiosk_toggle installer_wizard.tests.test_hardware_agent installer_wizard.tests.test_hardware_universal installer_wizard.tests.test_ear_realtime installer_wizard.tests.test_ear_host_mic installer_wizard.tests.test_voice_playback installer_wizard.tests.test_remote_display_captions -v
 
 echo "==> TUTTI I CONTROLLI PRE-PUSH SUPERATI CON SUCCESSO! Invio in corso a GitHub..."
 exit 0
