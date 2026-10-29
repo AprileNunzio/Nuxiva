@@ -2,12 +2,19 @@
   "meta": {
     "locale": "fr",
     "scope": "widgets/subsystem_alert",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Système",
     "title": "Réparation en cours",
     "faults_one": "{{n}} panne",
-    "faults_other": "{{n}} pannes"
+    "faults_other": "{{n}} pannes",
+    "all_ok": "Tout va bien",
+    "healthy": "Tous les composants fonctionnent",
+    "repair": "Le superviseur tente de les réparer tout seul",
+    "repair_critical": "Un composant essentiel est arrêté : le superviseur le redémarre, certaines fonctions sont suspendues",
+    "critical": "essentiel",
+    "tries_one": "{{n}} contrôle échoué",
+    "tries_other": "{{n}} contrôles échoués"
   }
 }

@@ -2,12 +2,26 @@
   "meta": {
     "locale": "fr",
     "scope": "widgets/system_update",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Mise à jour",
     "available": "Disponible",
     "installed": "Installée",
-    "new": "Nouvelle"
+    "new": "Nouvelle",
+    "changes_one": "{{n}} nouveauté",
+    "changes_other": "{{n}} nouveautés",
+    "tested": "Tests réussis",
+    "k_feat": "fonctions",
+    "k_fix": "corrections",
+    "k_perf": "performances",
+    "k_sec": "sécurité",
+    "k_other": "autre",
+    "breaking": "change le comportement",
+    "more": "+{{n}} autres modifications",
+    "auto_at": "S’installera tout seul à {{t}}",
+    "auto_soon": "S’installera tout seul sous peu",
+    "manual": "Mises à jour automatiques désactivées : installez-la depuis les réglages",
+    "checked": "vérifié {{t}}"
   }
 }

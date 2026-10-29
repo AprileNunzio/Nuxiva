@@ -2,12 +2,19 @@
   "meta": {
     "locale": "es",
     "scope": "widgets/subsystem_alert",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Sistema",
     "title": "Reparación en curso",
     "faults_one": "{{n}} fallo",
-    "faults_other": "{{n}} fallos"
+    "faults_other": "{{n}} fallos",
+    "all_ok": "Todo bien",
+    "healthy": "Todos los componentes funcionan",
+    "repair": "El supervisor está intentando repararlos por sí solo",
+    "repair_critical": "Un componente esencial está caído: el supervisor lo está reiniciando, algunas funciones están en pausa",
+    "critical": "esencial",
+    "tries_one": "{{n}} comprobación fallida",
+    "tries_other": "{{n}} comprobaciones fallidas"
   }
 }

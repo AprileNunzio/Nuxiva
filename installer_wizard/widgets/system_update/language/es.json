@@ -2,12 +2,26 @@
   "meta": {
     "locale": "es",
     "scope": "widgets/system_update",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Actualización",
     "available": "Disponible",
     "installed": "Instalada",
-    "new": "Nueva"
+    "new": "Nueva",
+    "changes_one": "{{n}} novedad",
+    "changes_other": "{{n}} novedades",
+    "tested": "Pruebas superadas",
+    "k_feat": "funciones",
+    "k_fix": "correcciones",
+    "k_perf": "rendimiento",
+    "k_sec": "seguridad",
+    "k_other": "otros",
+    "breaking": "cambia el comportamiento",
+    "more": "+{{n}} cambios más",
+    "auto_at": "Se instalará solo a las {{t}}",
+    "auto_soon": "Se instalará solo en breve",
+    "manual": "Actualización automática desactivada: instálala desde los ajustes",
+    "checked": "comprobado {{t}}"
   }
 }

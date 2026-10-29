@@ -2,12 +2,26 @@
   "meta": {
     "locale": "en",
     "scope": "widgets/system_update",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Update",
     "available": "Available",
     "installed": "Installed",
-    "new": "New"
+    "new": "New",
+    "changes_one": "{{n}} change",
+    "changes_other": "{{n}} changes",
+    "tested": "Tests passed",
+    "k_feat": "features",
+    "k_fix": "fixes",
+    "k_perf": "performance",
+    "k_sec": "security",
+    "k_other": "other",
+    "breaking": "changes behaviour",
+    "more": "+{{n}} more changes",
+    "auto_at": "Will install itself at {{t}}",
+    "auto_soon": "Will install itself shortly",
+    "manual": "Automatic updates are off: install it from settings",
+    "checked": "checked {{t}}"
   }
 }

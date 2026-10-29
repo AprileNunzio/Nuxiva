@@ -2,13 +2,19 @@
   "meta": {
     "locale": "it",
     "scope": "widgets/sun_cycle",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Sole",
     "sunrise": "Alba",
     "sunset": "Tramonto",
     "daylight": "Luce",
-    "hours_minutes": "{{h}} h {{m}} min"
+    "hours_minutes": "{{h}} h {{m}} min",
+    "noon": "Mezzodì",
+    "minutes": "{{m}} min",
+    "sunset_in": "Tramonto tra {{t}}",
+    "sunrise_in": "Alba tra {{t}}",
+    "day_pct": "Giornata al {{n}}%",
+    "night": "Notte"
   }
 }

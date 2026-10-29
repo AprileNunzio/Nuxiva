@@ -1,4 +1,6 @@
-from datetime import datetime
+from datetime import datetime, timedelta
+
+import psutil
 
 from state import store
 
@@ -14,8 +16,11 @@ def sun_cycle() -> dict | None:
     now = datetime.now().astimezone()
     span = (set_ - rise).total_seconds()
     progress = max(0.0, min(100.0, (now - rise).total_seconds() * 100 / span)) if span > 0 else 0.0
+    prev = sun.times(rise.date() - timedelta(days=1))
+    delta = round((span - (prev["sunset"] - prev["sunrise"]).total_seconds()) / 60, 1) if prev.get("sunrise") and prev.get("sunset") else None
     return {"sunrise": rise.strftime("%H:%M"), "sunset": set_.strftime("%H:%M"), "up": rise <= now < set_,
-            "progress": round(progress, 1), "daylight_min": int(span // 60), "place": str(sun.PLACE.get("name", ""))[:60]}
+            "progress": round(progress, 1), "daylight_min": int(span // 60), "place": str(sun.PLACE.get("name", ""))[:60],
+            "rise_ts": int(rise.timestamp()), "set_ts": int(set_.timestamp()), "delta_min": delta}
 
 
 def home_rooms() -> dict | None:
@@ -29,14 +34,24 @@ def update_ready() -> dict | None:
     up = store.update or {}
     if not up.get("available") or store.phase not in READY_PHASES:
         return None
+    log = [str(c)[:160] for c in (up.get("changelog") or [])]
+    try:
+        from features.update_center.policy import load_policy
+        from config import env_get
+        policy = load_policy(env_get)
+        auto, window = policy.auto_update, policy.window
+    except Exception:
+        auto, window = None, ""
     return {"local": str(up.get("local_rev", ""))[:10], "remote": str(up.get("target_rev") or up.get("remote_rev", ""))[:10],
-            "changes": [str(c)[:120] for c in (up.get("changelog") or [])][:6]}
+            "changes": log[:6], "count": len(log), "auto": auto, "window": window, "checked": str(up.get("last_check") or "")[:40]}
 
 
 def components_down() -> dict | None:
     if store.phase not in READY_PHASES:
         return None
-    down = [{"label": str(c.get("label", k))[:60], "detail": str(c.get("detail", ""))[:120], "status": c.get("status")}
+    from health import CRITICAL
+    down = [{"key": str(k)[:40], "label": str(c.get("label", k))[:60], "detail": str(c.get("detail", ""))[:120], "status": c.get("status"),
+             "since": c.get("since"), "failures": int(c.get("failures") or 0), "critical": k in CRITICAL}
             for k, c in (store.components or {}).items() if c.get("status") == "down"]
     return {"items": down[:8]} if down else None
 
@@ -46,7 +61,8 @@ def system_monitor() -> dict | None:
     last = governor.last or {}
     if "cpu" not in last or "mem" not in last:
         return None
-    return {"cpu": last["cpu"], "ram": last["mem"]}
+    return {"cpu": last["cpu"], "ram": last["mem"], "swap": last.get("swap"), "load": last.get("load"), "temp": last.get("temp"),
+            "pressure": last.get("pressure"), "high": bool(last.get("high")), "cores": psutil.cpu_count() or 0}
 
 
 def system_health() -> dict | None:

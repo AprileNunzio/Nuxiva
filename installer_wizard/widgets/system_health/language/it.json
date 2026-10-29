@@ -2,7 +2,7 @@
   "meta": {
     "locale": "it",
     "scope": "widgets/system_health",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Sistema",
@@ -11,6 +11,9 @@
     "res_cpu": "Processore",
     "res_memory": "Memoria",
     "res_disk": "Disco",
-    "res_temperature": "Temperatura"
+    "res_temperature": "Temperatura",
+    "v_ok": "Regolare",
+    "v_warn": "Sotto sforzo",
+    "v_bad": "Critico"
   }
 }

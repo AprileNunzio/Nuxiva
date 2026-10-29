@@ -2,13 +2,19 @@
   "meta": {
     "locale": "es",
     "scope": "widgets/sun_cycle",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Sol",
     "sunrise": "Amanecer",
     "sunset": "Atardecer",
     "daylight": "Luz",
-    "hours_minutes": "{{h}} h {{m}} min"
+    "hours_minutes": "{{h}} h {{m}} min",
+    "noon": "Mediodía",
+    "minutes": "{{m}} min",
+    "sunset_in": "Atardecer en {{t}}",
+    "sunrise_in": "Amanecer en {{t}}",
+    "day_pct": "Día al {{n}}%",
+    "night": "Noche"
   }
 }

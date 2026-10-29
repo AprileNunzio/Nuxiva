@@ -2,13 +2,20 @@
   "meta": {
     "locale": "it",
     "scope": "widgets/system_monitor",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Telemetria nodo",
     "cpu": "CPU",
     "ram": "RAM",
     "loaded": "Sotto carico",
-    "nominal": "Nominale"
+    "nominal": "Nominale",
+    "critical": "Critico",
+    "avg_peak": "Ø {{a}}% · max {{p}}%",
+    "temp": "Temperatura",
+    "load": "Carico per core",
+    "cores": "core",
+    "swap": "Swap",
+    "pressure": "Pressione"
   }
 }

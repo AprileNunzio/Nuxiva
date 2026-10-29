@@ -2,12 +2,19 @@
   "meta": {
     "locale": "it",
     "scope": "widgets/subsystem_alert",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Sistema",
     "title": "Riparazione in corso",
     "faults_one": "{{n}} guasto",
-    "faults_other": "{{n}} guasti"
+    "faults_other": "{{n}} guasti",
+    "all_ok": "Tutto ok",
+    "healthy": "Tutti i componenti funzionano",
+    "repair": "Il supervisore sta provando a ripararli da solo",
+    "repair_critical": "Componente essenziale fermo: il supervisore lo sta riavviando, alcune funzioni sono sospese",
+    "critical": "essenziale",
+    "tries_one": "{{n}} controllo fallito",
+    "tries_other": "{{n}} controlli falliti"
   }
 }
