@@ -75,53 +75,6 @@
     PageText.bind($("surf-error"), "settings_error");
   }
 
-  function switchRow(label, checked, onChange, opts = {}) {
-    const row = document.createElement("label");
-    row.className = "sw";
-    const input = document.createElement("input");
-    input.type = "checkbox";
-    input.setAttribute("role", "switch");
-    input.checked = checked;
-    input.disabled = !!opts.locked;
-    const text = document.createElement("span");
-    const name = document.createElement("b");
-    if (opts.plain) name.textContent = label; else PageText.bind(name, label, opts.params || {});
-    text.append(name);
-    if (opts.hint) { const hint = document.createElement("small"); PageText.bind(hint, opts.hint); text.append(hint); }
-    row.append(input, text);
-    input.addEventListener("change", async () => {
-      input.disabled = true;
-      PageText.plain($("surf-error"), "");
-      try { await onChange(input.checked); } catch (err) { input.checked = !input.checked; failed(err); } finally { input.disabled = !!opts.locked; }
-    });
-    return row;
-  }
-
-  function renderSurfaces() {
-    const S = D.Surfaces;
-    if (!S) return;
-    $("surf-list").replaceChildren(...S.list.map((item) => switchRow(item.key, S.enabled(item.id), (on) => S.set(item.id, on), { params: { assistant: D.assistantName() } })));
-  }
-
-  async function loadWidgets() {
-    const list = $("widget-list");
-    const note = (key) => list.replaceChildren(PageText.bind(Object.assign(document.createElement("div"), { className: "faint" }), key));
-    note("widgets_loading");
-    try {
-      const r = await fetch("/api/display/widgets", { credentials: "same-origin" });
-      if (!r.ok) throw new Error(`HTTP ${r.status}`);
-      const { widgets = [] } = await r.json();
-      list.replaceChildren(...widgets.map((w) => switchRow(`${w.icon ? `${w.icon} ` : ""}${w.name}`, !!w.enabled, async (on) => {
-        const res = await fetch(`/api/display/widgets/${encodeURIComponent(w.id)}`, { method: "PUT", credentials: "same-origin",
-          headers: { "Content-Type": "application/json", "X-Nuxiva-Request": "1" }, body: JSON.stringify({ enabled: on }) });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      }, { plain: true, locked: w.locked, hint: w.locked ? "widgets_locked" : "" })));
-    } catch (err) {
-      console.warn("Elenco dei widget non disponibile", err);
-      note("widgets_error");
-    }
-  }
-
   D.onAudioRev = (rev) => {
     if (audioRev !== null && rev && rev !== audioRev) loadAudio();
     audioRev = rev || audioRev;
@@ -138,7 +91,7 @@
       panel.classList.toggle("show", open);
       button.classList.toggle("on", open);
       button.setAttribute("aria-expanded", String(open));
-      if (open) { loadAudio(); showLook(); showCalibration(); renderSurfaces(); $("voice-replies").checked = D.voiceOn; PageText.plain($("surf-error"), ""); }
+      if (open) { loadAudio(); showLook(); showCalibration(); $("voice-replies").checked = D.voiceOn; PageText.plain($("surf-error"), ""); }
     };
     D.closeAudioPanel = () => { if (isOpen()) setOpen(false); };
     button.addEventListener("click", () => {
@@ -161,13 +114,12 @@
     }).observe(document.body, { attributes: true, attributeFilter: ["class"] });
     $("mic-autocal").addEventListener("change", async (e) => {
       const want = e.target.checked;
+      PageText.plain($("surf-error"), "");
       try { await D.Surfaces.save({ mic_autocalibrate: want }); } catch (err) { e.target.checked = !want; failed(err); }
       showCalibration();
     });
     $("voice-replies").addEventListener("change", (e) => D.setVoiceOn(e.target.checked));
-    $("widget-more").addEventListener("toggle", (e) => { if (e.target.open) loadWidgets(); });
     window.addEventListener("nuxiva-mic-advice", () => { if (isOpen()) showCalibration(); });
-    window.addEventListener("nuxiva-surfaces", () => { if (isOpen() && !panel.contains(document.activeElement)) renderSurfaces(); });
     $("avatar-pref").addEventListener("change", (e) => { NuxivaAvatar.setDevicePref(e.target.value); location.reload(); });
     $("vol-out").addEventListener("input", (e) => { $("vol-out-v").textContent = `${e.target.value}%`; setAudio({ output: { volume: +e.target.value } }); });
     $("vol-in").addEventListener("input", (e) => { $("vol-in-v").textContent = `${e.target.value}%`; setAudio({ input: { volume: +e.target.value } }); });

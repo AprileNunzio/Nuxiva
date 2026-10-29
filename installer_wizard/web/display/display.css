@@ -323,14 +323,8 @@ body[data-surfaces-off~="brain_badge"] [data-surface="brain_badge"] { display: n
 .sw input:checked { background: rgba(41, 224, 255, 0.28); border-color: var(--cyan); }
 .sw input:checked::after { transform: translateX(14px); background: var(--cyan); }
 .sw input:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
-.sw input:disabled { opacity: 0.45; cursor: not-allowed; }
 .sw span { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .sw b { font-weight: 500; }
 .sw small { font-size: 11px; color: var(--text-faint); line-height: 1.4; }
-.sw-list { display: flex; flex-direction: column; }
-.sw-list .sw { margin-top: 8px; }
-.sw-more { margin-top: 14px; }
-.sw-more summary { cursor: pointer; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); }
-.sw-more .sw-list { max-height: 260px; overflow: auto; padding-right: 4px; }
 .sw-error { min-height: 14px; margin-top: 8px; font-size: 11px; color: var(--amber); }
 body:has(#vol-panel.show) :is(.bgq, .setup-cta, .brain-route-host) { opacity: 0; visibility: hidden; pointer-events: none; }
