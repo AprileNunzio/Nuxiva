@@ -2,12 +2,27 @@
   "meta": {
     "locale": "es",
     "scope": "widgets/firewall_logs",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Cortafuegos",
     "none": "Ningún bloqueo registrado",
     "blocked_one": "{{n}} bloqueado",
-    "blocked_other": "{{n}} bloqueados"
+    "blocked_other": "{{n}} bloqueados",
+    "top_sources": "Orígenes principales",
+    "top_ports": "Puertos objetivo",
+    "lan": "Red local",
+    "wan": "Internet",
+    "external_one": "{{n}} origen externo entre los principales",
+    "external_other": "{{n}} orígenes externos entre los principales",
+    "more": "y {{n}} más",
+    "k_port_scan": "Escaneo de puertos",
+    "k_host_sweep": "Barrido de hosts",
+    "k_syn_flood": "SYN flood",
+    "k_brute_force": "Fuerza bruta",
+    "k_arp_spoof": "ARP spoofing",
+    "k_dns_tunnel": "Túnel DNS",
+    "k_icmp_flood": "ICMP flood",
+    "k_exfiltration": "Exfiltración"
   }
 }

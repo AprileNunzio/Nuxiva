@@ -2,7 +2,7 @@
   "meta": {
     "locale": "fr",
     "scope": "widgets/hockey_match",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "hockey": "Hockey",
@@ -16,6 +16,12 @@
     "chip_today": "Aujourd'hui",
     "chip_next": "Prochain",
     "today_cap": "Aujourd'hui",
-    "tomorrow": "Demain"
+    "tomorrow": "Demain",
+    "period_n": "Période {{n}}",
+    "periods": "Périodes",
+    "shots": "Tirs au but",
+    "tag_pp": "En supériorité numérique",
+    "tag_sh": "En infériorité numérique",
+    "tag_en": "Cage vide"
   }
 }

@@ -2,7 +2,7 @@
   "meta": {
     "locale": "it",
     "scope": "widgets/hockey_match",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "hockey": "Hockey",
@@ -16,6 +16,12 @@
     "chip_today": "Oggi",
     "chip_next": "Prossima",
     "today_cap": "Oggi",
-    "tomorrow": "Domani"
+    "tomorrow": "Domani",
+    "period_n": "{{n}}° periodo",
+    "periods": "Periodi",
+    "shots": "Tiri in porta",
+    "tag_pp": "In superiorità numerica",
+    "tag_sh": "In inferiorità numerica",
+    "tag_en": "A porta vuota"
   }
 }

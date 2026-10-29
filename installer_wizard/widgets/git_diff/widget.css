@@ -1,4 +1,35 @@
-.w-git_diff .wk-pre { max-height: 48vh; overflow: auto; white-space: pre; }
-.w-git_diff .gd-add { color: var(--green); }
-.w-git_diff .gd-del { color: var(--red); }
-.w-git_diff .gd-meta { color: var(--text-faint); }
+.w-git_diff .gd-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 2px 0 8px; }
+.w-git_diff .gd-sum { display: flex; align-items: center; gap: 10px; font-size: 12px; min-width: 0; }
+.w-git_diff i.a { color: var(--green); font-style: normal; }
+.w-git_diff i.d { color: var(--red); font-style: normal; }
+.w-git_diff .gd-blocks { display: inline-flex; gap: 2px; flex: none; }
+.w-git_diff .gd-blocks i { width: 8px; height: 8px; border-radius: 2px; background: rgba(255, 255, 255, 0.12); }
+.w-git_diff .gd-blocks i.a { background: var(--green); }
+.w-git_diff .gd-blocks i.d { background: var(--red); }
+.w-git_diff .gd-copy { display: inline-flex; align-items: center; gap: 6px; }
+.w-git_diff .gd-copy svg { width: 13px; height: 13px; }
+.w-git_diff .gd-scroll { max-height: 52vh; overflow: auto; overscroll-behavior: contain; scrollbar-width: thin; border-radius: 10px; background: rgba(2, 8, 18, 0.55); box-shadow: 0 0 0 1px rgba(var(--tone), 0.14) inset; outline: none; }
+.w-git_diff .gd-file + .gd-file { border-top: 1px solid rgba(var(--tone), 0.14); }
+.w-git_diff .gd-fhead { position: sticky; top: 0; z-index: 1; display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 8px; padding: 7px 10px; cursor: pointer; background: rgba(8, 16, 30, 0.96); font-size: 12px; user-select: none; }
+.w-git_diff .gd-fhead b { font: 500 12px/1.3 var(--mono); color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; direction: rtl; text-align: left; }
+.w-git_diff .gd-fhead:focus-visible { outline: 1px solid rgb(var(--tone)); outline-offset: -1px; }
+.w-git_diff .gd-fnum { font-size: 11px; }
+.w-git_diff .gd-st { font: 600 9px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; padding: 3px 6px; border-radius: 4px; background: rgba(var(--tone), 0.14); color: rgb(var(--tone)); }
+.w-git_diff .gd-st.added { background: rgba(60, 200, 120, 0.16); color: var(--green); }
+.w-git_diff .gd-st.deleted { background: rgba(255, 80, 80, 0.16); color: var(--red); }
+.w-git_diff .gd-st.renamed { background: rgba(255, 190, 60, 0.16); color: var(--amber); }
+.w-git_diff .gd-file.shut .gd-table, .w-git_diff .gd-file.shut .gd-bin { display: none; }
+.w-git_diff .gd-table { width: 100%; border-collapse: collapse; font: 12px/1.55 var(--mono); }
+.w-git_diff .gd-table td { padding: 0; vertical-align: top; }
+.w-git_diff .gd-n { width: 1%; min-width: 3ch; padding: 0 6px !important; text-align: right; color: rgba(var(--tone), 0.35); user-select: none; white-space: nowrap; }
+.w-git_diff .gd-c { padding-right: 12px !important; white-space: pre; color: var(--text); tab-size: 2; }
+.w-git_diff .gd-sign { display: inline-block; width: 2ch; padding-left: 4px; color: var(--text-faint); user-select: none; }
+.w-git_diff .gd-add { background: rgba(60, 200, 120, 0.1); }
+.w-git_diff .gd-add .gd-sign { color: var(--green); }
+.w-git_diff .gd-del { background: rgba(255, 80, 80, 0.1); }
+.w-git_diff .gd-del .gd-sign { color: var(--red); }
+.w-git_diff .gd-nl .gd-c { color: var(--text-faint); font-style: italic; }
+.w-git_diff .gd-hunk td { padding: 4px 10px !important; background: rgba(var(--tone), 0.08); color: rgba(var(--tone), 0.85); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 0; }
+.w-git_diff .gd-hunk em { color: var(--text-dim); font-style: normal; }
+.w-git_diff .gd-bin { padding: 8px 12px; font-size: 12px; }
+.w-git_diff .gd-more { margin-top: 6px; font-size: 11px; }

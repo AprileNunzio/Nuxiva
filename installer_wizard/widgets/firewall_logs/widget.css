@@ -1,0 +1,24 @@
+.w-firewall_logs .fw-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 10px; margin-bottom: 8px; }
+.w-firewall_logs .fw-box h5 { margin: 0 0 6px; }
+.w-firewall_logs .fw-top, .w-firewall_logs .fw-ports, .w-firewall_logs .fw-log { list-style: none; margin: 0; padding: 0; }
+.w-firewall_logs .fw-top li { display: grid; grid-template-columns: minmax(0, 8.5em) minmax(0, 1fr) auto; align-items: center; gap: 8px; font-size: 12px; padding: 2px 0; }
+.w-firewall_logs .fw-top b, .w-firewall_logs .fw-ports b { color: var(--text-dim); font-size: 11px; font-weight: 500; }
+.w-firewall_logs .fw-ports li { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; padding: 2px 0; border-bottom: 1px solid rgba(var(--tone), 0.08); }
+.w-firewall_logs .fw-ip { font-family: var(--mono); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.w-firewall_logs .fw-ip.wan { color: var(--red); }
+.w-firewall_logs .fw-ip.lan { color: var(--amber); }
+.w-firewall_logs .fw-note { display: flex; align-items: center; gap: 6px; margin: 2px 0 8px; padding: 6px 8px; border-radius: 8px; font-size: 12px; background: rgba(var(--tone), 0.1); color: var(--text); }
+.w-firewall_logs .fw-note svg { width: 14px; height: 14px; color: rgb(var(--tone)); flex: none; }
+.w-firewall_logs .fw-log { display: grid; gap: 3px; max-height: 34vh; overflow: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+.w-firewall_logs .fw-log li { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 6px; padding: 4px 8px; border-left: 2px solid rgba(var(--tone), 0.25); background: rgba(255, 255, 255, 0.02); border-radius: 0 6px 6px 0; font-size: 12px; animation: fw-in 0.35s ease-out both; }
+.w-firewall_logs .fw-log li.warn { border-left-color: var(--amber); }
+.w-firewall_logs .fw-log li.bad { border-left-color: var(--red); background: rgba(255, 70, 70, 0.05); }
+.w-firewall_logs .fw-log li i { font-style: normal; color: var(--text-faint); }
+.w-firewall_logs .fw-dst { font-family: var(--mono); color: var(--text-dim); }
+.w-firewall_logs .fw-dst b { color: var(--text); font-weight: 600; }
+.w-firewall_logs .fw-raw { font-family: var(--mono); font-size: 11px; color: var(--text-dim); word-break: break-all; }
+.w-firewall_logs .fw-log small { flex-basis: 100%; color: var(--text-faint); font-size: 10.5px; font-family: var(--mono); }
+.w-firewall_logs .fw-more { margin-top: 6px; font-size: 11px; }
+@keyframes fw-in { from { opacity: 0; transform: translateX(-4px); } }
+@container (max-width: 360px) { .w-firewall_logs .fw-grid { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { .w-firewall_logs .fw-log li { animation: none; } }

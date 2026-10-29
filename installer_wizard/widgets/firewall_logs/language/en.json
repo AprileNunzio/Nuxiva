@@ -2,12 +2,27 @@
   "meta": {
     "locale": "en",
     "scope": "widgets/firewall_logs",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Firewall",
     "none": "No blocked traffic logged",
     "blocked_one": "{{n}} blocked",
-    "blocked_other": "{{n}} blocked"
+    "blocked_other": "{{n}} blocked",
+    "top_sources": "Top sources",
+    "top_ports": "Target ports",
+    "lan": "Local network",
+    "wan": "Internet",
+    "external_one": "{{n}} external source among the top",
+    "external_other": "{{n}} external sources among the top",
+    "more": "and {{n}} more",
+    "k_port_scan": "Port scan",
+    "k_host_sweep": "Host sweep",
+    "k_syn_flood": "SYN flood",
+    "k_brute_force": "Brute force",
+    "k_arp_spoof": "ARP spoofing",
+    "k_dns_tunnel": "DNS tunnel",
+    "k_icmp_flood": "ICMP flood",
+    "k_exfiltration": "Exfiltration"
   }
 }

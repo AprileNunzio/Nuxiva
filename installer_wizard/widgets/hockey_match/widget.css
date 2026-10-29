@@ -13,4 +13,21 @@
 .w-hockey_match .hm-goals li.r { text-align: right; }
 .w-hockey_match .hm-goals span { color: var(--text-faint); font-family: var(--mono); }
 .w-hockey_match .hm-puck { display: inline-block; width: 8px; height: 4px; border-radius: 2px; background: rgb(var(--tone)); box-shadow: 0 0 6px rgb(var(--tone)); margin: 0 6px 2px 0; }
-.w-hockey_match .hm-sog { margin-top: 6px; font: 500 11px/1 var(--mono); color: var(--text-faint); display: flex; justify-content: space-between; }
+.w-hockey_match .hm-team small { color: var(--text-faint); font: 500 10px/1 var(--mono); }
+.w-hockey_match .hm-team.lost { opacity: 0.55; }
+.w-hockey_match .hm-score b.win { color: rgb(var(--tone)); font-weight: 300; text-shadow: 0 0 18px rgba(var(--tone), 0.5); }
+.w-hockey_match .hm-score .hm-until { color: var(--text-faint); font-weight: 400; }
+.w-hockey_match .hm-periods { display: flex; justify-content: center; gap: 4px; margin-top: 8px; }
+.w-hockey_match .hm-periods i { min-width: 26px; padding: 3px 0; border-radius: 4px; text-align: center; font: 600 10px/1 var(--mono); font-style: normal; color: var(--text-faint); background: rgba(255, 255, 255, 0.05); }
+.w-hockey_match .hm-periods i.done { color: var(--text-dim); background: rgba(var(--tone), 0.16); }
+.w-hockey_match .hm-periods i.now { color: var(--hud-text, var(--text)); background: rgba(var(--tone), 0.4); box-shadow: 0 0 10px rgba(var(--tone), 0.45); animation: hm-now 1.6s ease-in-out infinite; }
+.w-hockey_match .hm-sog { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; margin-top: 10px; font-size: 12px; }
+.w-hockey_match .hm-sog small { grid-column: 1 / -1; text-align: center; margin-top: -4px; color: var(--text-faint); font: 500 9px/1 var(--mono); letter-spacing: 0.18em; text-transform: uppercase; }
+.w-hockey_match .hm-sogbar { height: 4px; border-radius: 2px; background: rgba(255, 255, 255, 0.12); overflow: hidden; }
+.w-hockey_match .hm-sogbar i { display: block; height: 100%; background: rgb(var(--tone)); }
+.w-hockey_match .hm-goals b { font-weight: 500; }
+.w-hockey_match .hm-goals em { margin-left: 5px; padding: 1px 4px; border-radius: 3px; font: 600 9px/1.4 var(--mono); font-style: normal; color: var(--amber); background: rgba(255, 190, 60, 0.12); }
+.w-hockey_match .hm-venue { display: flex; align-items: center; justify-content: center; gap: 5px; margin-top: 10px; }
+.w-hockey_match .hm-venue svg { width: 12px; height: 12px; }
+@keyframes hm-now { 50% { box-shadow: 0 0 2px rgba(var(--tone), 0.2); } }
+@media (prefers-reduced-motion: reduce) { .w-hockey_match .hm-flash, .w-hockey_match .hm-periods i.now { animation: none; } }

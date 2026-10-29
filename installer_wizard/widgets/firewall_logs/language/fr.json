@@ -2,12 +2,27 @@
   "meta": {
     "locale": "fr",
     "scope": "widgets/firewall_logs",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Pare-feu",
     "none": "Aucun blocage enregistré",
     "blocked_one": "{{n}} bloqué",
-    "blocked_other": "{{n}} bloqués"
+    "blocked_other": "{{n}} bloqués",
+    "top_sources": "Sources principales",
+    "top_ports": "Ports visés",
+    "lan": "Réseau local",
+    "wan": "Internet",
+    "external_one": "{{n}} source externe parmi les principales",
+    "external_other": "{{n}} sources externes parmi les principales",
+    "more": "et {{n}} de plus",
+    "k_port_scan": "Scan de ports",
+    "k_host_sweep": "Balayage d’hôtes",
+    "k_syn_flood": "SYN flood",
+    "k_brute_force": "Force brute",
+    "k_arp_spoof": "Usurpation ARP",
+    "k_dns_tunnel": "Tunnel DNS",
+    "k_icmp_flood": "ICMP flood",
+    "k_exfiltration": "Exfiltration"
   }
 }

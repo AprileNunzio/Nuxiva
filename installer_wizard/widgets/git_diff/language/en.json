@@ -2,10 +2,21 @@
   "meta": {
     "locale": "en",
     "scope": "widgets/git_diff",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Git changes",
-    "none": "No changes"
+    "none": "No changes",
+    "files_one": "{{n}} file",
+    "files_other": "{{n}} files",
+    "st_modified": "Modified",
+    "st_added": "Added",
+    "st_deleted": "Deleted",
+    "st_renamed": "Renamed",
+    "binary": "Binary file: differences not shown",
+    "copy": "Copy",
+    "copied": "Copied",
+    "copy_failed": "Copy failed",
+    "truncated": "{{n}} more lines not shown"
   }
 }

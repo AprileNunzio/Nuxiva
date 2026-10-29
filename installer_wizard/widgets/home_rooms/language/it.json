@@ -2,11 +2,12 @@
   "meta": {
     "locale": "it",
     "scope": "widgets/home_rooms",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Stanze",
     "occupied_one": "{{n}} occupata",
-    "occupied_other": "{{n}} occupate"
+    "occupied_other": "{{n}} occupate",
+    "none": "Nessuno rilevato in casa"
   }
 }

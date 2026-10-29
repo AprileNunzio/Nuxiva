@@ -2,11 +2,12 @@
   "meta": {
     "locale": "en",
     "scope": "widgets/home_rooms",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Rooms",
     "occupied_one": "{{n}} occupied",
-    "occupied_other": "{{n}} occupied"
+    "occupied_other": "{{n}} occupied",
+    "none": "Nobody detected at home"
   }
 }
