@@ -1,0 +1,22 @@
+.w-cicd_tracker .ci-list { display: flex; flex-direction: column; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.w-cicd_tracker .ci-run { display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 6px 0; }
+.w-cicd_tracker .ci-ic { display: grid; place-items: center; font-size: 14px; color: var(--text-faint); }
+.w-cicd_tracker .ci-main { min-width: 0; }
+.w-cicd_tracker .ci-main b { display: block; font-size: 13px; font-weight: 400; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.w-cicd_tracker .ci-main small { display: flex; align-items: center; gap: 8px; margin-top: 3px; font: 10.5px var(--mono); color: var(--text-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.w-cicd_tracker .ci-main .wk-bar { margin-top: 5px; }
+.w-cicd_tracker .ci-stages { display: inline-flex; gap: 3px; flex: none; }
+.w-cicd_tracker .ci-dot { width: 7px; height: 7px; border-radius: 2px; background: rgba(255, 255, 255, 0.15); }
+.w-cicd_tracker .ci-dot.ok { background: var(--green); }
+.w-cicd_tracker .ci-dot.bad { background: var(--red); box-shadow: 0 0 6px var(--red); }
+.w-cicd_tracker .ci-dot.live { background: rgb(var(--tone)); animation: wk-blink 1.4s ease-in-out infinite; }
+.w-cicd_tracker .ci-dot.wait { background: transparent; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35) inset; }
+.w-cicd_tracker .ci-bad .ci-ic, .w-cicd_tracker .ci-bad .ci-main b { color: var(--red); }
+.w-cicd_tracker .ci-ok .ci-ic { color: var(--green); }
+.w-cicd_tracker .ci-live .ci-ic { color: rgb(var(--tone)); }
+.w-cicd_tracker .ci-live .ci-ic .wk-svg { animation: ci-spin 2.2s linear infinite; }
+.w-cicd_tracker .ci-live .ci-main b { color: var(--hud-text); }
+.w-cicd_tracker .ci-wait .ci-ic { color: var(--amber); }
+.w-cicd_tracker .ci-skip { opacity: 0.55; }
+@keyframes ci-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .w-cicd_tracker .ci-live .ci-ic .wk-svg, .w-cicd_tracker .ci-dot.live { animation: none; } }

@@ -2,13 +2,16 @@
   "meta": {
     "locale": "es",
     "scope": "widgets/code_view",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "copy": "Copiar",
     "copied": "Copiado",
     "plain_text": "Texto",
     "lines_one": "{{n}} línea",
-    "lines_other": "{{n}} líneas"
+    "lines_other": "{{n}} líneas",
+    "wrap": "Ajustar",
+    "download": "Descargar",
+    "copy_failed": "No copiado"
   }
 }

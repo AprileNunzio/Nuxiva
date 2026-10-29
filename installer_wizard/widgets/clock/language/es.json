@@ -2,10 +2,12 @@
   "meta": {
     "locale": "es",
     "scope": "widgets/clock",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Reloj",
-    "week": "Semana"
+    "week": "Semana",
+    "day_of_year": "Día",
+    "day_progress": "Avance del día"
   }
 }

@@ -2,7 +2,7 @@
   "meta": {
     "locale": "it",
     "scope": "widgets/chess_3d",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Scacchi 3D",
@@ -27,6 +27,15 @@
     "resume": "Riprendi",
     "delete": "Elimina",
     "resume_offer": "Hai una partita in corso ({{n}} mosse, {{when}}). Vuoi riprenderla?",
-    "new_one": "Nuova partita"
+    "new_one": "Nuova partita",
+    "loading": "Carico le partite…",
+    "confirm_delete": "Elimina?",
+    "won_white": "Vince il Bianco",
+    "won_black": "Vince il Nero",
+    "draw": "Patta",
+    "side_white": "Bianco",
+    "side_black": "Nero",
+    "hint_question_moves": "Sto giocando a scacchi. Mosse finora, da casa a casa: {{moves}}. Ora tocca al {{turn}}. Che mossa mi consigli e perché, in breve?",
+    "hint_failed": "Suggerimento non disponibile, riprova tra poco"
   }
 }

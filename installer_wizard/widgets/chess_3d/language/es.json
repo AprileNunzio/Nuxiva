@@ -2,7 +2,7 @@
   "meta": {
     "locale": "es",
     "scope": "widgets/chess_3d",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Ajedrez 3D",
@@ -27,6 +27,15 @@
     "resume": "Reanudar",
     "delete": "Eliminar",
     "resume_offer": "Tienes una partida en curso ({{n}} jugadas, {{when}}). ¿Reanudarla?",
-    "new_one": "Nueva partida"
+    "new_one": "Nueva partida",
+    "loading": "Cargando partidas…",
+    "confirm_delete": "¿Eliminar?",
+    "won_white": "Ganan las blancas",
+    "won_black": "Ganan las negras",
+    "draw": "Tablas",
+    "side_white": "Blanco",
+    "side_black": "Negro",
+    "hint_question_moves": "Estoy jugando al ajedrez. Jugadas hasta ahora, de casilla a casilla: {{moves}}. Ahora mueve el {{turn}}. ¿Qué jugada me aconsejas y por qué, en breve?",
+    "hint_failed": "Sugerencia no disponible, inténtalo en un momento"
   }
 }

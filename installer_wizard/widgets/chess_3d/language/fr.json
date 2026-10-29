@@ -2,7 +2,7 @@
   "meta": {
     "locale": "fr",
     "scope": "widgets/chess_3d",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Échecs 3D",
@@ -27,6 +27,15 @@
     "resume": "Reprendre",
     "delete": "Supprimer",
     "resume_offer": "Vous avez une partie en cours ({{n}} coups, {{when}}). La reprendre ?",
-    "new_one": "Nouvelle partie"
+    "new_one": "Nouvelle partie",
+    "loading": "Chargement des parties…",
+    "confirm_delete": "Supprimer ?",
+    "won_white": "Les Blancs gagnent",
+    "won_black": "Les Noirs gagnent",
+    "draw": "Nulle",
+    "side_white": "Blancs",
+    "side_black": "Noirs",
+    "hint_question_moves": "Je joue aux échecs. Coups joués jusqu'ici, de case à case : {{moves}}. C'est aux {{turn}} de jouer. Quel coup me conseilles-tu et pourquoi, en bref ?",
+    "hint_failed": "Conseil indisponible, réessaie dans un instant"
   }
 }

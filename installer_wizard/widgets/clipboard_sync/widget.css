@@ -1,1 +1,13 @@
 .w-clipboard_sync .wk-pre { max-height: 36vh; overflow: auto; color: var(--text); }
+.w-clipboard_sync .cb-text { padding: 10px 12px; border-radius: 10px; background: rgba(var(--tone), 0.06); box-shadow: 0 0 0 1px rgba(var(--tone), 0.12) inset; font-family: var(--font); font-size: 13px; }
+.w-clipboard_sync .cb-text.code { font-family: var(--mono); font-size: 12px; white-space: pre; overflow: auto; }
+.w-clipboard_sync .cb-link { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 10px 12px; border-radius: 10px; background: rgba(var(--tone), 0.06); }
+.w-clipboard_sync .cb-link > .wk-svg { flex: none; font-size: 18px; color: rgb(var(--tone)); }
+.w-clipboard_sync .cb-link span { min-width: 0; }
+.w-clipboard_sync .cb-link b { display: block; font-weight: 500; font-size: 14px; color: var(--hud-text); }
+.w-clipboard_sync .cb-link small { display: block; margin-top: 2px; font-size: 10.5px; color: var(--text-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.w-clipboard_sync .cb-secret { padding: 12px; border-radius: 10px; background: repeating-linear-gradient(-45deg, rgba(255, 181, 71, 0.06) 0 8px, transparent 8px 16px); box-shadow: 0 0 0 1px rgba(255, 181, 71, 0.25) inset; font-size: 18px; letter-spacing: 0.18em; color: var(--hud-text); text-align: center; overflow-wrap: anywhere; }
+.w-clipboard_sync .cb-real { letter-spacing: 0.04em; font-size: 15px; user-select: all; }
+.w-clipboard_sync .cb-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 10px; }
+.w-clipboard_sync .cb-foot .wk-actions { margin-top: 0; flex: none; }
+.w-clipboard_sync .cb-meta { min-width: 0; font: 10.5px var(--mono); color: var(--text-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

@@ -1,0 +1,20 @@
+.w-clock .ck-main { display: flex; align-items: center; gap: 16px; }
+.w-clock .ck-face { flex: none; width: 92px; height: 92px; }
+.w-clock .ck-rim { fill: rgba(var(--tone), 0.04); stroke: rgba(var(--tone), 0.25); stroke-width: 1; }
+.w-clock .ck-ticks line { stroke: rgba(255, 255, 255, 0.18); stroke-width: 0.8; stroke-linecap: round; }
+.w-clock .ck-ticks line.big { stroke: rgba(var(--tone), 0.8); stroke-width: 1.6; }
+.w-clock .ck-h, .w-clock .ck-m, .w-clock .ck-sec { transform-origin: 50px 50px; stroke-linecap: round; }
+.w-clock .ck-h { stroke: var(--hud-text); stroke-width: 3; }
+.w-clock .ck-m { stroke: var(--hud-text); stroke-width: 2; }
+.w-clock .ck-sec { stroke: rgb(var(--tone)); stroke-width: 1; filter: drop-shadow(0 0 2px rgba(var(--tone), 0.9)); transition: transform 0.25s cubic-bezier(0.4, 2.2, 0.6, 1); }
+.w-clock .ck-pin { fill: rgb(var(--tone)); }
+.w-clock .ck-digital { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.w-clock .ck-day::first-letter { text-transform: uppercase; }
+.w-clock .ck-meta { display: flex; gap: 14px; flex-wrap: wrap; }
+.w-clock .ck-meta b { font-weight: 500; color: var(--text); }
+.w-clock .ck-bar { margin-top: 12px; }
+.w-clock .ck-zones { display: grid; gap: 4px; margin: 12px 0 0; padding: 0; list-style: none; }
+.w-clock .ck-zones li { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; align-items: baseline; font-size: 12.5px; color: var(--text); }
+.w-clock .ck-zones b { font-weight: 500; color: var(--hud-text); font-variant-numeric: tabular-nums; }
+.w-clock .ck-zones small { min-width: 42px; text-align: right; font-size: 10px; color: var(--text-faint); }
+@media (prefers-reduced-motion: reduce) { .w-clock .ck-sec { transition: none; } }

@@ -2,12 +2,22 @@
   "meta": {
     "locale": "it",
     "scope": "widgets/clipboard_sync",
-    "version": "1.0.0"
+    "version": "1.2.0"
   },
   "dictionary": {
     "label": "Appunti",
     "empty": "Appunti vuoti",
     "chars_one": "{{n}} carattere",
-    "chars_other": "{{n}} caratteri"
+    "chars_other": "{{n}} caratteri",
+    "copy": "Copia",
+    "copied": "Copiato",
+    "copy_failed": "Non copiato",
+    "reveal": "Mostra",
+    "hide": "Nascondi",
+    "hidden": "Contenuto nascosto",
+    "kind_secret": "riservato",
+    "from": "da {{source}}",
+    "stats": "{{w}} parole · {{l}} righe",
+    "words": "{{w}} parole"
   }
 }

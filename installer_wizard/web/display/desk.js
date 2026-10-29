@@ -121,7 +121,23 @@
     const [n, unit] = a < 10 ? [0, "second"] : a < 50 ? [d, "second"] : a < 3000 ? [d / 60, "minute"] : a < 72000 ? [d / 3600, "hour"] : [d / 86400, "day"];
     return cached("r", { numeric: "auto", style: "short" }).format(Math.round(n), unit);
   };
-  const ctx = { esc, mmss, icon, head, bar, ring, pct, detail, plain, lines, pair, empty, str, num, arr, pick, stamp, fmt, when, ago, locale, lang, speak: (t) => hooks.speak(t), now: () => Date.now() / 1000 };
+  const copy = async (text) => {
+    const value = String(text ?? "");
+    try {
+      if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(value); return true; }
+    } catch (_) {}
+    const area = document.createElement("textarea");
+    area.value = value;
+    area.setAttribute("readonly", "");
+    area.style.cssText = "position:fixed;left:-9999px;top:0;opacity:0";
+    document.body.appendChild(area);
+    area.select();
+    let ok = false;
+    try { ok = document.execCommand("copy"); } catch (_) { ok = false; }
+    area.remove();
+    return ok;
+  };
+  const ctx = { esc, mmss, icon, head, bar, ring, pct, detail, plain, lines, pair, empty, str, num, arr, pick, stamp, fmt, when, ago, copy, locale, lang, speak: (t) => hooks.speak(t), now: () => Date.now() / 1000 };
   const i18n = () => window.NuxivaScopedI18n;
   const scopeOf = (id) => `widgets/${id}`;
   const COMMON = scopeOf("common");

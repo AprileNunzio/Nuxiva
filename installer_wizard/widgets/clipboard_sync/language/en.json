@@ -2,12 +2,22 @@
   "meta": {
     "locale": "en",
     "scope": "widgets/clipboard_sync",
-    "version": "1.0.0"
+    "version": "1.2.0"
   },
   "dictionary": {
     "label": "Clipboard",
     "empty": "Clipboard is empty",
     "chars_one": "{{n}} character",
-    "chars_other": "{{n}} characters"
+    "chars_other": "{{n}} characters",
+    "copy": "Copy",
+    "copied": "Copied",
+    "copy_failed": "Not copied",
+    "reveal": "Show",
+    "hide": "Hide",
+    "hidden": "Hidden content",
+    "kind_secret": "private",
+    "from": "from {{source}}",
+    "stats": "{{w}} words · {{l}} lines",
+    "words": "{{w}} words"
   }
 }
