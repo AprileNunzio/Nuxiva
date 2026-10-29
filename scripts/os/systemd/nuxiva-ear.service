@@ -7,7 +7,7 @@ PartOf=nuxiva-supervisor.service
 Type=simple
 Environment=PYTHONUNBUFFERED=1
 Environment=HF_HUB_OFFLINE=1
-Environment=PYTHONPATH=/opt/Nuxiva/installer_wizard/backend
+Environment=PYTHONPATH=/opt/Nuxiva/installer_wizard:/opt/Nuxiva/installer_wizard/backend
 EnvironmentFile=-/etc/nuxiva/nuxiva.env
 ExecStart=/opt/nuxiva-ear/venv/bin/python /opt/Nuxiva/installer_wizard/features/ear/service.py
 Restart=always

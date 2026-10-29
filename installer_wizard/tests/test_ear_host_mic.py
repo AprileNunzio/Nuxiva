@@ -2,7 +2,7 @@ import asyncio
 import sys
 import time
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 from features.ear.host_mic import (HeadlessSocket, HostMicCapture,
                                    get_capture_candidates, pick_capture_binary,
@@ -28,6 +28,77 @@ def _get_sessions() -> set:
 
 
 class EarHostMicTest(unittest.IsolatedAsyncioTestCase):
+    def test_public_port_default_and_explicit_url_overrides(self):
+        import runpy
+        from features.ear import host_mic
+        with patch.dict("os.environ", {}, clear=True):
+            defaults = runpy.run_path(host_mic.__file__)
+        self.assertEqual(defaults["ASSISTANT_URL"], "http://127.0.0.1:80/api/assistant/chat")
+        self.assertEqual(defaults["TTS_URL"], "http://127.0.0.1:80/api/voice/speak")
+        with patch.dict("os.environ", {"NUXIVA_PUBLIC_PORT": "8888"}, clear=True):
+            configured = runpy.run_path(host_mic.__file__)
+        self.assertEqual(configured["TTS_URL"], "http://127.0.0.1:8888/api/voice/speak")
+        with patch.dict("os.environ", {"NUXIVA_ASSISTANT_URL": "http://localhost:9000/chat",
+                                       "NUXIVA_TTS_URL": "http://localhost:9000/speak"}):
+            overrides = runpy.run_path(host_mic.__file__)
+        self.assertEqual(overrides["ASSISTANT_URL"], "http://localhost:9000/chat")
+        self.assertEqual(overrides["TTS_URL"], "http://localhost:9000/speak")
+
+    async def test_wake_feedback_origin_deduplication_and_rearm(self):
+        with patch("features.ear.host_mic.play_wake_feedback", new_callable=AsyncMock) as sound:
+            sock = HeadlessSocket()
+            await sock.send('{"type":"wake", "origin":false}')
+            await asyncio.sleep(0)
+            sound.assert_not_awaited()
+            await sock.send('{"type":"wake"}')
+            await sock.send('{"type":"wake_only"}')
+            await sock.send('{"type":"state", "state":"listening", "conversation":true}')
+            await asyncio.sleep(0)
+            sound.assert_awaited_once()
+            await sock.send('{"type":"state", "state":"idle"}')
+            await sock.send('{"type":"wake_only"}')
+            await asyncio.sleep(0)
+            self.assertEqual(sound.await_count, 2)
+            await sock.close()
+            await sock.send('{"type":"wake"}')
+            await asyncio.sleep(0)
+            self.assertEqual(sound.await_count, 2)
+
+    async def test_wake_playback_failure_and_opt_out(self):
+        from features.ear.host_mic import play_wake_feedback
+        with patch("features.voices.playback.play_host_audio", new_callable=AsyncMock) as play:
+            with patch.dict("os.environ", {"NUXIVA_EAR_HOST_WAKE_SOUND": "0"}):
+                await play_wake_feedback()
+                play.assert_not_awaited()
+            with patch.dict("os.environ", {"NUXIVA_EAR_HOST_WAKE_SOUND": "1"}):
+                play.side_effect = OSError("no audio device")
+                with self.assertLogs("nuxiva.ear.host_mic", level="WARNING"):
+                    await play_wake_feedback()
+
+    async def test_headless_requests_use_public_urls_and_preserve_payload(self):
+        import json
+        from features.ear.host_mic import dispatch_headless_command, PUBLIC_URL
+        with patch("urllib.request.urlopen") as opened:
+            response = MagicMock()
+            response.__enter__.return_value = response
+            response.read.side_effect = [b'{"reply":"Ciao"}', b'{"ok":true}']
+            opened.return_value = response
+            await dispatch_headless_command({"text": "saluta", "lang": "it", "speaker": "nunzio"})
+            requests = [call.args[0] for call in opened.call_args_list]
+            self.assertEqual([r.full_url for r in requests], [
+                PUBLIC_URL + "/api/assistant/chat", PUBLIC_URL + "/api/voice/speak"])
+            self.assertEqual(json.loads(requests[0].data)["speaker"], "nunzio")
+            self.assertEqual(json.loads(requests[1].data), {"text": "Ciao", "lang": "it"})
+
+    async def test_tts_negative_playback_result_is_logged_as_failure(self):
+        with patch("urllib.request.urlopen") as opened:
+            response = MagicMock()
+            response.__enter__.return_value = response
+            response.read.return_value = b'{"ok":false}'
+            opened.return_value = response
+            with self.assertLogs("nuxiva.ear.host_mic", level="WARNING"):
+                await speak_reply("Ciao", "it")
+
     def setUp(self):
         _get_sessions().clear()
 

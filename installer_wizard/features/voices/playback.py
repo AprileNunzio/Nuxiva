@@ -23,8 +23,8 @@ def get_playback_commands() -> list[list[str]]:
     uid = _get_kiosk_uid()
     if shutil.which("paplay"):
         if os.name != "nt" and hasattr(os, "getuid") and os.getuid() == 0 and uid is not None and shutil.which("runuser"):
-            cmds.append(["runuser", "-u", KIOSK_USER, "--", "env", f"XDG_RUNTIME_DIR=/run/user/{uid}", "paplay", "-"])
-        cmds.append(["paplay", "-"])
+            cmds.append(["runuser", "-u", KIOSK_USER, "--", "env", f"XDG_RUNTIME_DIR=/run/user/{uid}", "paplay"])
+        cmds.append(["paplay"])
     if shutil.which("pw-play"):
         cmds.append(["pw-play", "-"])
     if shutil.which("aplay"):

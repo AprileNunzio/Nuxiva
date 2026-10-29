@@ -29,7 +29,7 @@ async def trigger_rescan() -> List[GameManifest]:
     return games_scanner.list_games(include_disabled=True)
 
 @router.get("/{game_id}", response_model=GameManifest)
-async def get_game_details(game_id: str = Path(..., regex="^[a-zA-Z0-9_\\-]+$")) -> GameManifest:
+async def get_game_details(game_id: str = Path(..., pattern="^[a-zA-Z0-9_\\-]+$")) -> GameManifest:
     game = games_scanner.get_game(game_id)
     if not game:
         raise HTTPException(status_code=404, detail=f"Game '{game_id}' not found")
@@ -38,7 +38,7 @@ async def get_game_details(game_id: str = Path(..., regex="^[a-zA-Z0-9_\\-]+$"))
 @router.post("/{game_id}/status", response_model=ToggleStatusResponse)
 async def toggle_game_status(
     payload: ToggleStatusRequest,
-    game_id: str = Path(..., regex="^[a-zA-Z0-9_\\-]+$"),
+    game_id: str = Path(..., pattern="^[a-zA-Z0-9_\\-]+$"),
 ) -> ToggleStatusResponse:
     try:
         new_state = games_scanner.toggle_game_status(game_id, payload.enabled)
@@ -47,14 +47,14 @@ async def toggle_game_status(
         raise HTTPException(status_code=404, detail=f"Game '{game_id}' not found")
 
 @router.get("/{game_id}/commands", response_model=List[GameCommand])
-async def get_game_commands(game_id: str = Path(..., regex="^[a-zA-Z0-9_\\-]+$")) -> List[GameCommand]:
+async def get_game_commands(game_id: str = Path(..., pattern="^[a-zA-Z0-9_\\-]+$")) -> List[GameCommand]:
     game = games_scanner.get_game(game_id)
     if not game:
         raise HTTPException(status_code=404, detail=f"Game '{game_id}' not found")
     return game.commands
 
 @router.get("/{game_id}/capabilities", response_model=List[GameCapability])
-async def get_game_capabilities(game_id: str = Path(..., regex="^[a-zA-Z0-9_\\-]+$")) -> List[GameCapability]:
+async def get_game_capabilities(game_id: str = Path(..., pattern="^[a-zA-Z0-9_\\-]+$")) -> List[GameCapability]:
     game = games_scanner.get_game(game_id)
     if not game:
         raise HTTPException(status_code=404, detail=f"Game '{game_id}' not found")
@@ -63,7 +63,7 @@ async def get_game_capabilities(game_id: str = Path(..., regex="^[a-zA-Z0-9_\\-]
 @router.post("/{game_id}/execute", response_model=CommandExecutionResult)
 async def execute_game_command(
     request: CommandExecutionRequest,
-    game_id: str = Path(..., regex="^[a-zA-Z0-9_\\-]+$"),
+    game_id: str = Path(..., pattern="^[a-zA-Z0-9_\\-]+$"),
 ) -> CommandExecutionResult:
     game = games_scanner.get_game(game_id)
     if not game:

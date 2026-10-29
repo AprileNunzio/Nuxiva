@@ -1,11 +1,15 @@
 import asyncio
 import os
-import resource
 import shutil
 import sys
 from pathlib import Path
 
 from features.devstudio.workspace import DevError, safe_path
+
+try:
+    import resource
+except ImportError:
+    resource = None
 
 TIMEOUT = 60
 OUTPUT_LIMIT = 20000
@@ -16,7 +20,7 @@ CHECKS = {
 }
 ENTRY = {"python_run": ("python3", "-I"), "node_run": ("node",)}
 EXTENSIONS = {"python_run": ".py", "node_run": ".js"}
-LIMITS = ((resource.RLIMIT_CPU, 60), (resource.RLIMIT_FSIZE, 20 * 1024 * 1024), (resource.RLIMIT_NOFILE, 256), (resource.RLIMIT_NPROC, 128))
+LIMITS = ((resource.RLIMIT_CPU, 60), (resource.RLIMIT_FSIZE, 20 * 1024 * 1024), (resource.RLIMIT_NOFILE, 256), (resource.RLIMIT_NPROC, 128)) if resource else ()
 ISOLATION_MISSING = "isolamento di rete non disponibile (manca unshare): non eseguo codice scritto da un agente"
 
 
@@ -25,6 +29,8 @@ def names() -> list[str]:
 
 
 def _limit() -> None:
+    if resource is None:
+        raise DevError(ISOLATION_MISSING)
     os.setsid()
     for kind, value in LIMITS:
         resource.setrlimit(kind, (value, value))
@@ -53,7 +59,7 @@ def environment(folder: Path) -> dict:
 
 async def run(check: str, folder: Path, entry: str = "") -> tuple[int, str]:
     argv = command(check, folder, entry)
-    if sys.platform != "linux" or not shutil.which("unshare"):
+    if resource is None or sys.platform != "linux" or not shutil.which("unshare"):
         raise DevError(ISOLATION_MISSING)
     process = await asyncio.create_subprocess_exec(
         shutil.which("unshare"), "--net", "--", *argv, cwd=folder, env=environment(folder), stdin=asyncio.subprocess.DEVNULL,

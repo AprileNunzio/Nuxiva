@@ -206,7 +206,8 @@ class UpdateHistoryTest(unittest.IsolatedAsyncioTestCase):
 
     def test_empty_or_corrupt_history_file(self):
         self.history_file.write_text("corrupted json content")
-        loaded = history.load_history()
+        with self.assertLogs(history.log, level="WARNING"):
+            loaded = history.load_history()
         self.assertEqual(loaded, [])
 
     def test_api_history_route(self):

@@ -58,7 +58,12 @@ class WorkspaceTest(DevCase):
         folder = self.project()
         outside = Path(self.tmp.name) / "outside"
         outside.mkdir()
-        (folder / "link").symlink_to(outside)
+        try:
+            (folder / "link").symlink_to(outside, target_is_directory=True)
+        except OSError as exc:
+            if getattr(exc, "winerror", None) == 1314:
+                self.skipTest("Windows non concede il privilegio di creazione symlink")
+            raise
         with self.assertRaises(DevError):
             workspace.write(folder, "link/evil.py", "x")
         self.assertFalse((outside / "evil.py").exists())

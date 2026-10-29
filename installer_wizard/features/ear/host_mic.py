@@ -60,8 +60,9 @@ def _unregister_session(session: Any) -> None:
 log = logging.getLogger("nuxiva.ear.host_mic")
 SAMPLE_RATE = 16000
 CHUNK_BYTES = 960
-ASSISTANT_URL = os.environ.get("NUXIVA_ASSISTANT_URL", "http://127.0.0.1:8080/api/assistant/chat")
-TTS_URL = os.environ.get("NUXIVA_TTS_URL", "http://127.0.0.1:8080/api/voice/speak")
+PUBLIC_URL = "http://127.0.0.1:" + os.environ.get("NUXIVA_PUBLIC_PORT", "80")
+ASSISTANT_URL = os.environ.get("NUXIVA_ASSISTANT_URL", PUBLIC_URL + "/api/assistant/chat")
+TTS_URL = os.environ.get("NUXIVA_TTS_URL", PUBLIC_URL + "/api/voice/speak")
 KIOSK_USER = os.environ.get("NUXIVA_KIOSK_USER", "nuxiva-kiosk")
 
 
@@ -109,12 +110,23 @@ class HeadlessSocket:
 
     def __init__(self) -> None:
         self.closed = False
+        self._wake_announced = False
 
     async def send(self, data: str) -> None:
         if self.closed:
             return
         try:
             event = json.loads(data)
+            if event.get("origin") is False:
+                return
+            if event.get("type") in ("wake", "wake_only"):
+                if not self._wake_announced:
+                    self._wake_announced = True
+                    _spawn_background_task(play_wake_feedback())
+            elif event.get("type") == "transcript" or (
+                event.get("type") == "state" and event.get("state") == "idle"
+            ):
+                self._wake_announced = False
             if event.get("type") == "transcript" and event.get("text") and event.get("origin") is not False:
                 _spawn_background_task(dispatch_headless_command(event))
         except (json.JSONDecodeError, TypeError, ValueError):
@@ -122,6 +134,18 @@ class HeadlessSocket:
 
     async def close(self, code: int = 1000, reason: str = "") -> None:
         self.closed = True
+
+
+async def play_wake_feedback() -> None:
+    if not earconf.flag("NUXIVA_EAR_HOST_WAKE_SOUND", True):
+        return
+    try:
+        from features.voices.feedback import wake_wav
+        from features.voices.playback import play_host_audio
+
+        await play_host_audio(wake_wav())
+    except Exception:
+        log.warning("Feedback sonoro di attivazione host non disponibile", exc_info=True)
 
 
 async def dispatch_headless_command(event: dict) -> None:
@@ -172,7 +196,10 @@ async def speak_reply(text: str, lang: str) -> None:
                 return json.loads(raw) if raw.startswith("{") else {"ok": True}
 
         res = await loop.run_in_executor(None, _call_tts)
-        log.info("Sintesi vocale TTS riprodotta con successo: %s (ok=%s)", text[:60], res.get("ok"))
+        if res.get("ok"):
+            log.info("Sintesi vocale TTS riprodotta con successo: %s (ok=%s)", text[:60], res.get("ok"))
+        else:
+            log.warning("Riproduzione sintesi vocale TTS headless non riuscita: %s", text[:60])
     except (urllib.error.URLError, TimeoutError, OSError, ValueError) as exc:
         log.warning("Invio sintesi vocale TTS headless a %s non riuscito: %s", TTS_URL, exc)
 

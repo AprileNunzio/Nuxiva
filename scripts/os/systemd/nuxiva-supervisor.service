@@ -12,6 +12,7 @@ Type=simple
 Environment=PYTHONUNBUFFERED=1
 Environment=NUXIVA_DIR=/opt/Nuxiva
 Environment=PYTHONPATH=/opt/Nuxiva:/opt/Nuxiva/installer_wizard:/opt/Nuxiva/installer_wizard/backend
+EnvironmentFile=-/etc/nuxiva/nuxiva.env
 ExecStartPre=/bin/bash /opt/Nuxiva/scripts/os/prestart.sh
 ExecStart=/opt/Nuxiva/installer_wizard/venv/bin/python /opt/Nuxiva/installer_wizard/backend/nuxiva_launch.py
 Restart=always
