@@ -1,4 +1,16 @@
+.rw-host { position: relative; height: 100%; }
 .repair-workbench-frame { display: block; width: 100%; height: 100%; min-height: 560px; border: 0; background: #020617; }
+.w-repair_workbench .rw-veil { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: #020617; color: var(--text-dim); font-size: 13px; }
+.w-repair_workbench .rw-veil[hidden] { display: none; }
+.w-repair_workbench .rw-spin { width: 38px; height: 38px; border-radius: 50%; border: 3px solid rgba(var(--tone), 0.18); border-top-color: rgb(var(--tone)); animation: rw-spin 0.9s linear infinite; }
+.w-repair_workbench .rw-retry { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 16px; }
+.w-repair_workbench .rw-retry[hidden] { display: none; }
+.w-repair_workbench .rw-retry .wk-svg { width: 14px; height: 14px; }
+.w-repair_workbench .rw-state { min-height: 240px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; color: var(--text-dim); font-size: 13px; }
+.w-repair_workbench .rw-state .wk-svg { width: 36px; height: 36px; color: rgb(var(--tone)); opacity: 0.8; }
+.w-repair_workbench .rw-state b { color: var(--text); font-size: 15px; font-weight: 500; }
+@keyframes rw-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .w-repair_workbench .rw-spin { animation-duration: 3s; } }
 body[data-desk-fullscreen="repair_workbench"] .dock,
 body[data-desk-fullscreen="repair_workbench"] .caption,
 body[data-desk-fullscreen="repair_workbench"] .welcome,

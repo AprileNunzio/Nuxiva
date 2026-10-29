@@ -2,7 +2,7 @@
   "meta": {
     "locale": "es",
     "scope": "widgets/route",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "trip": "Ruta",
@@ -10,6 +10,17 @@
     "appointment": "Cita",
     "arrival": "Llegada",
     "delay": "Retraso de {{n}} min",
-    "clear": "Tráfico fluido"
+    "clear": "Tráfico fluido",
+    "via": "por {{v}}",
+    "tolls": "Peajes",
+    "traffic_share": "{{n}} min perdidos en el tráfico",
+    "leave_now": "Sal ya",
+    "margin": "Margen",
+    "margin_v": "{{n}} min",
+    "b_history": "según tus últimos {{n}} viajes",
+    "b_caution": "prudente, pocos datos",
+    "b_fixed": "fijo",
+    "show_steps": "Indicaciones ({{n}})",
+    "hide_steps": "Ocultar indicaciones"
   }
 }

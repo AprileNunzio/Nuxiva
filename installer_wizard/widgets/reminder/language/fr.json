@@ -2,11 +2,18 @@
   "meta": {
     "locale": "fr",
     "scope": "widgets/reminder",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Rappel",
     "pending": "En attente",
-    "new": "Nouveau rappel"
+    "new": "Nouveau rappel",
+    "overdue": "En retard",
+    "soon": "Bientôt",
+    "min": "min",
+    "rep_daily": "Chaque jour",
+    "rep_weekly": "Chaque semaine",
+    "rep_monthly": "Chaque mois",
+    "rep_yearly": "Chaque année"
   }
 }

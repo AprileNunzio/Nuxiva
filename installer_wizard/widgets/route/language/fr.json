@@ -2,7 +2,7 @@
   "meta": {
     "locale": "fr",
     "scope": "widgets/route",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "trip": "Itinéraire",
@@ -10,6 +10,17 @@
     "appointment": "Rendez-vous",
     "arrival": "Arrivée",
     "delay": "Retard de {{n}} min",
-    "clear": "Circulation fluide"
+    "clear": "Circulation fluide",
+    "via": "par {{v}}",
+    "tolls": "Péages",
+    "traffic_share": "{{n}} min perdues dans les bouchons",
+    "leave_now": "Partez maintenant",
+    "margin": "Marge",
+    "margin_v": "{{n}} min",
+    "b_history": "d’après vos {{n}} derniers trajets",
+    "b_caution": "prudente, peu de données",
+    "b_fixed": "fixe",
+    "show_steps": "Itinéraire ({{n}})",
+    "hide_steps": "Masquer l’itinéraire"
   }
 }

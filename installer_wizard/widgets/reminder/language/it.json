@@ -2,11 +2,18 @@
   "meta": {
     "locale": "it",
     "scope": "widgets/reminder",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Promemoria",
     "pending": "In attesa",
-    "new": "Nuovo promemoria"
+    "new": "Nuovo promemoria",
+    "overdue": "Scaduto",
+    "soon": "A breve",
+    "min": "min",
+    "rep_daily": "Ogni giorno",
+    "rep_weekly": "Ogni settimana",
+    "rep_monthly": "Ogni mese",
+    "rep_yearly": "Ogni anno"
   }
 }

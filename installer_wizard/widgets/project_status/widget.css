@@ -1,2 +1,32 @@
-.w-project_status .wk-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-.w-project_status .wk-actions .wk-btn { min-height: 40px; padding: 0 14px; font-size: 12px; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12) inset; }
+.w-project_status .ps-hero { display: flex; align-items: center; gap: 14px; margin: 4px 0 10px; }
+.w-project_status .ps-hero .wk-ring { width: 84px; height: 84px; flex: none; }
+.w-project_status .ps-meta { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.w-project_status .ps-now, .w-project_status .ps-exp { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-dim); min-width: 0; }
+.w-project_status .ps-now span { overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.w-project_status .ps-now .wk-svg, .w-project_status .ps-exp .wk-svg { width: 14px; height: 14px; flex: none; color: rgb(var(--tone)); }
+.w-project_status .ps-err { margin-top: 10px; display: flex; gap: 8px; align-items: flex-start; border-color: rgba(255, 90, 90, 0.4); background: rgba(255, 90, 90, 0.08); color: #ffb4b4; }
+.w-project_status .ps-err .wk-svg { width: 16px; height: 16px; flex: none; }
+.w-project_status .ps-steps { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 2px; position: relative; }
+.w-project_status .ps-step { display: flex; gap: 10px; align-items: flex-start; padding: 5px 0; position: relative; }
+.w-project_status .ps-step:not(:last-child)::after { content: ""; position: absolute; left: 11px; top: 30px; bottom: -4px; width: 2px; background: rgba(255, 255, 255, 0.08); }
+.w-project_status .ps-step.done:not(:last-child)::after { background: rgba(var(--tone), 0.45); }
+.w-project_status .ps-dot { width: 24px; height: 24px; border-radius: 50%; flex: none; display: grid; place-items: center; border: 1.5px solid rgba(255, 255, 255, 0.18); color: var(--text-faint); font: 600 10px var(--mono); }
+.w-project_status .ps-dot .wk-svg { width: 13px; height: 13px; }
+.w-project_status .ps-step.done .ps-dot { background: rgba(var(--tone), 0.2); border-color: rgba(var(--tone), 0.6); color: rgb(var(--tone)); }
+.w-project_status .ps-step.running .ps-dot { border-color: rgb(var(--tone)); color: rgb(var(--tone)); box-shadow: 0 0 0 4px rgba(var(--tone), 0.15); animation: ps-pulse 1.6s ease-in-out infinite; }
+.w-project_status .ps-step.waiting .ps-dot { border-color: var(--amber); color: var(--amber); }
+.w-project_status .ps-step.failed .ps-dot { border-color: var(--red); color: var(--red); background: rgba(255, 90, 90, 0.12); }
+.w-project_status .ps-txt { display: flex; flex-direction: column; gap: 2px; min-width: 0; padding-top: 3px; }
+.w-project_status .ps-txt b { font-weight: 500; font-size: 13px; line-height: 1.3; color: var(--text); }
+.w-project_status .ps-step.done .ps-txt b { color: var(--text-dim); }
+.w-project_status .ps-step.pending .ps-txt b { color: var(--text-faint); }
+.w-project_status .ps-txt small { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-faint); }
+.w-project_status .ps-txt small .wk-svg { width: 11px; height: 11px; }
+.w-project_status .ps-more { margin-top: 6px; min-height: 32px; font-size: 11px; }
+.w-project_status .wk-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.w-project_status .wk-actions .wk-btn { min-height: 40px; padding: 0 14px; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12) inset; }
+.w-project_status .wk-actions .wk-btn .wk-svg { width: 14px; height: 14px; }
+.w-project_status .wk-actions .wk-btn.armed { background: rgba(255, 90, 90, 0.18); color: #ffb4b4; box-shadow: 0 0 0 1px rgba(255, 90, 90, 0.6) inset; }
+.w-project_status .wk-actions .wk-btn:disabled { opacity: 0.5; cursor: progress; }
+@keyframes ps-pulse { 50% { box-shadow: 0 0 0 7px rgba(var(--tone), 0.05); } }
+@media (prefers-reduced-motion: reduce) { .w-project_status .ps-step.running .ps-dot { animation: none; } }

@@ -2,7 +2,7 @@
   "meta": {
     "locale": "fr",
     "scope": "widgets/project_status",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Projet",
@@ -18,6 +18,11 @@
     "action_resume": "Reprendre",
     "action_cancel": "Annuler le projet",
     "action_retry": "Réessayer",
-    "open_studio": "Ouvrir le studio 3D"
+    "open_studio": "Ouvrir le studio 3D",
+    "sending": "Envoi…",
+    "confirm_cancel": "Touchez encore pour annuler",
+    "failed_send": "Commande non envoyée : réessayez",
+    "less": "Afficher moins",
+    "all_steps": "Les {{n}} étapes"
   }
 }

@@ -2,9 +2,16 @@
   "meta": {
     "locale": "fr",
     "scope": "widgets/rag_sources",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
-    "label": "Sources"
+    "label": "Sources",
+    "n_one": "{{n}} source",
+    "n_other": "{{n}} sources",
+    "strong": "Réponse bien étayée par les documents",
+    "fair": "Appui partiel : vérifiez les passages clés",
+    "weak": "Sources peu pertinentes : la réponse peut être imprécise",
+    "page": "p. {{p}}",
+    "more": "+{{n}} autres sources"
   }
 }

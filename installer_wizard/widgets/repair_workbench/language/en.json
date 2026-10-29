@@ -1,1 +1,14 @@
-{"meta":{"locale":"en"},"dictionary":{"title":"Live Repair Workbench"}}
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/repair_workbench",
+    "version": "1.1.0"
+  },
+  "dictionary": {
+    "title": "Live Repair Workbench",
+    "loading": "Starting the repair workbench…",
+    "slow": "The workbench is taking longer than expected to respond.",
+    "retry": "Retry",
+    "missing": "Workbench session invalid or expired: ask me to open it again."
+  }
+}
