@@ -2,7 +2,7 @@
   "meta": {
     "locale": "it",
     "scope": "widgets/tv_player",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "TV",
@@ -12,6 +12,9 @@
     "state_blocked": "Audio disattivato",
     "state_error": "Non disponibile",
     "open_failed": "Il canale non si apre: {{reason}}",
-    "player_missing": "lettore non disponibile"
+    "player_missing": "lettore non disponibile",
+    "unmute": "Attiva l'audio",
+    "retry": "Riprova",
+    "retrying": "Nuovo tentativo {{n}} di {{max}}…"
   }
 }

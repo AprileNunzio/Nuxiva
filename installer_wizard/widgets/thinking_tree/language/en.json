@@ -2,11 +2,16 @@
   "meta": {
     "locale": "en",
     "scope": "widgets/thinking_tree",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Reasoning",
     "steps_one": "{{n}} step",
-    "steps_other": "{{n}} steps"
+    "steps_other": "{{n}} steps",
+    "verified_one": "{{n}} verified",
+    "verified_other": "{{n}} verified",
+    "discarded_one": "{{n}} discarded",
+    "discarded_other": "{{n}} discarded",
+    "conclusion": "Conclusion"
   }
 }

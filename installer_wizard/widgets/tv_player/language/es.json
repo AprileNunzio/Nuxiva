@@ -2,7 +2,7 @@
   "meta": {
     "locale": "es",
     "scope": "widgets/tv_player",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "TV",
@@ -12,6 +12,9 @@
     "state_blocked": "Audio silenciado",
     "state_error": "No disponible",
     "open_failed": "El canal no se abre: {{reason}}",
-    "player_missing": "reproductor no disponible"
+    "player_missing": "reproductor no disponible",
+    "unmute": "Activar el sonido",
+    "retry": "Reintentar",
+    "retrying": "Nuevo intento {{n}} de {{max}}…"
   }
 }

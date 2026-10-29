@@ -2,3 +2,14 @@
 .w-tv_player video { width: 100%; height: 100%; object-fit: contain; display: block; background: #000; }
 .w-tv_player .tv-msg { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 16px; font-size: 13px; color: var(--text-dim); pointer-events: none; }
 .w-tv_player .tv-msg:empty { display: none; }
+.w-tv_player .tv-frame.loading::after, .w-tv_player .tv-frame.buffering::after { content: ""; position: absolute; left: 50%; top: 50%; width: 34px; height: 34px; margin: -17px 0 0 -17px; border-radius: 50%; border: 3px solid rgba(255, 255, 255, 0.15); border-top-color: rgb(var(--tone)); animation: tv-spin 0.9s linear infinite; }
+.w-tv_player .tv-frame.loading .tv-msg { padding-top: 90px; }
+.w-tv_player .tv-unmute { position: absolute; right: 12px; bottom: 12px; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 0; border-radius: 999px; background: rgba(5, 11, 22, 0.8); color: #fff; font: 500 13px var(--font); cursor: pointer; backdrop-filter: blur(8px); box-shadow: 0 0 0 1px rgba(var(--tone), 0.6) inset; animation: tv-pulse 1.8s ease-in-out infinite; }
+.w-tv_player .tv-unmute .wk-svg, .w-tv_player .tv-retry .wk-svg { width: 16px; height: 16px; }
+.w-tv_player .tv-retry { position: absolute; left: 50%; bottom: 18%; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 16px; }
+.w-tv_player .tv-unmute[hidden], .w-tv_player .tv-retry[hidden] { display: none; }
+.w-tv_player .tv-group { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
+.w-tv_player .tv-group .wk-svg { width: 13px; height: 13px; }
+@keyframes tv-spin { to { transform: rotate(360deg); } }
+@keyframes tv-pulse { 50% { box-shadow: 0 0 0 1px rgba(var(--tone), 0.6) inset, 0 0 0 6px rgba(var(--tone), 0.12); } }
+@media (prefers-reduced-motion: reduce) { .w-tv_player .tv-unmute { animation: none; } .w-tv_player .tv-frame.loading::after, .w-tv_player .tv-frame.buffering::after { animation-duration: 3s; } }

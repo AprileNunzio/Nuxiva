@@ -2,9 +2,14 @@
   "meta": {
     "locale": "it",
     "scope": "widgets/text_long",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
-    "loading": "Caricamento testo esteso…"
+    "loading": "Caricamento testo esteso…",
+    "label": "Testo",
+    "copy": "Copia",
+    "copied": "Copiato",
+    "copy_failed": "Copia non riuscita",
+    "meta": "{{w}} parole · {{m}} min di lettura"
   }
 }

@@ -2,13 +2,26 @@
   "meta": {
     "locale": "fr",
     "scope": "widgets/thermostat",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Climat",
     "standby": "En veille",
     "now": "maintenant",
     "target": "Cible",
-    "humidity": "Humidité"
+    "humidity": "Humidité",
+    "m_heat": "Chauffage",
+    "m_cool": "Climatisation",
+    "m_off": "Éteint",
+    "m_dry": "Déshumidification",
+    "m_fan": "Ventilation",
+    "m_auto": "Automatique",
+    "m_idle": "En veille",
+    "to_heat": "{{n}}° sous la consigne",
+    "to_cool": "{{n}}° au-dessus de la consigne",
+    "reached": "Consigne atteinte",
+    "h_dry": "air sec",
+    "h_humid": "air humide",
+    "outside": "Dehors"
   }
 }

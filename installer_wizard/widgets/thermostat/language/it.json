@@ -2,13 +2,26 @@
   "meta": {
     "locale": "it",
     "scope": "widgets/thermostat",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Clima",
     "standby": "In standby",
     "now": "ora",
     "target": "Obiettivo",
-    "humidity": "Umidità"
+    "humidity": "Umidità",
+    "m_heat": "Riscaldamento",
+    "m_cool": "Raffrescamento",
+    "m_off": "Spento",
+    "m_dry": "Deumidifica",
+    "m_fan": "Ventilazione",
+    "m_auto": "Automatico",
+    "m_idle": "In attesa",
+    "to_heat": "Mancano {{n}}° all'obiettivo",
+    "to_cool": "{{n}}° sopra l'obiettivo",
+    "reached": "Temperatura raggiunta",
+    "h_dry": "aria secca",
+    "h_humid": "aria umida",
+    "outside": "Fuori"
   }
 }

@@ -5,3 +5,13 @@
 .w-text_short .tx-short b, .w-text_short .tx-short strong { font-weight: 500; }
 .w-text_short .tx-short em, .w-text_short .tx-short mark { font-style: normal; background: none; color: rgb(var(--tone)); }
 .w-text_short .tx-short code { font-family: var(--mono); font-size: 0.85em; color: var(--text-dim); }
+.w-text_short .tx-short { overflow-wrap: anywhere; max-height: 260px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(var(--tone), 0.3) transparent; }
+.w-text_short .tx-short.tx-hero { font-size: 24px; line-height: 1.3; letter-spacing: -0.01em; }
+.w-text_short .tx-short.tx-empty { font-size: 13px; color: var(--text-faint); }
+.w-text_short .tx-short > :last-child { margin-bottom: 0; }
+.w-text_short .tx-short li::marker { color: rgb(var(--tone)); }
+.w-text_short .tx-short blockquote { margin: 0 0 8px; padding-left: 12px; box-shadow: 2px 0 0 rgba(var(--tone), 0.4) inset; color: var(--text-dim); }
+.w-text_short .tx-short pre { margin: 0 0 8px; padding: 8px 10px; border-radius: 8px; background: rgba(0, 0, 0, 0.3); font: 0.75em/1.5 var(--mono); color: var(--text-dim); white-space: pre-wrap; }
+.w-text_short .tx-short hr { border: 0; height: 1px; margin: 10px 0; background: rgba(255, 255, 255, 0.1); }
+.w-text_short .tx-short table { border-collapse: collapse; font-size: 13px; }
+.w-text_short .tx-short th, .w-text_short .tx-short td { padding: 4px 8px; text-align: left; border-bottom: 1px solid rgba(255, 255, 255, 0.07); }
