@@ -1,6 +1,9 @@
 import asyncio
+import ipaddress
 import json
 import logging
+import re
+from urllib.parse import urlsplit
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from fastapi.responses import JSONResponse, RedirectResponse
@@ -11,11 +14,11 @@ import machine
 import updater
 from access import NO_CACHE, require_admin, require_display, require_internal, session_user
 import setup_api
-from config import EDITABLE_KEYS, NUXIVA_DIR, NODE, is_secret, kiosk_log, read_env, write_env, _ollama_cache
+from config import EDITABLE_KEYS, NUXIVA_DIR, NODE, env_get, is_secret, kiosk_log, read_env, write_env, _ollama_cache
 from orchestrator import orch
 from pages import page
 from features.locale.api import page_language
-from settings import apply_config
+from settings import apply_config, normalize_ollama
 from snapshot import full_snapshot, sse
 from state import INSTALL_LOG, store
 from steps import STEP_BY_ID
@@ -437,20 +440,63 @@ def get_backend_settings() -> dict:
     }
 
 
+MODEL_NAME = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:/@+-]{0,127}$")
+LAN_SUFFIXES = (".local", ".lan", ".home", ".home.arpa", ".internal")
+
+
+def _lan_host(host: str) -> bool:
+    try:
+        ip = ipaddress.ip_address(host)
+    except ValueError:
+        name = host.lower().rstrip(".")
+        if not re.fullmatch(r"[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?)*", name):
+            return False
+        return name == "localhost" or "." not in name or name.endswith(LAN_SUFFIXES)
+    if isinstance(ip, ipaddress.IPv6Address) and ip.ipv4_mapped:
+        ip = ip.ipv4_mapped
+    return (ip.is_loopback or ip.is_private or ip.is_link_local) and not (ip.is_multicast or ip.is_unspecified or ip.is_reserved)
+
+
+def safe_ollama_url(value: str) -> str:
+    url = normalize_ollama(value)
+    if not url:
+        return ""
+    if len(url) > 200 or any(ord(c) < 33 or ord(c) > 126 for c in url):
+        raise HTTPException(400, "Indirizzo del server Ollama non valido")
+    parts = urlsplit(url)
+    try:
+        port = parts.port
+    except ValueError:
+        raise HTTPException(400, "Porta del server Ollama non valida")
+    if (parts.scheme not in ("http", "https") or parts.username is not None or parts.password is not None
+            or parts.query or parts.fragment or parts.path not in ("", "/") or not parts.hostname or not port):
+        raise HTTPException(400, "Indirizzo del server Ollama non valido")
+    if not _lan_host(parts.hostname) and env_get("NUXIVA_ALLOW_REMOTE_OLLAMA", "off") != "on":
+        raise HTTPException(400, "Il server Ollama deve essere su questo computer o sulla rete di casa")
+    return url
+
+
+def safe_model(value: str) -> str:
+    model = value.strip()
+    if model and not MODEL_NAME.match(model):
+        raise HTTPException(400, "Nome del modello non valido")
+    return model
+
+
 def save_backend_settings(data: dict) -> dict:
     current = get_backend_settings()
     env_updates = {}
     if "ollama_url" in data and isinstance(data["ollama_url"], str):
-        url = data["ollama_url"].strip().rstrip("/")
+        url = safe_ollama_url(data["ollama_url"])
         current["ollama_url"] = url
         env_updates["NUXIVA_OLLAMA_URL"] = url
     if "active_llm_model" in data and isinstance(data["active_llm_model"], str):
-        model = data["active_llm_model"].strip()
+        model = safe_model(data["active_llm_model"])
         current["active_llm_model"] = model
         env_updates["NUXIVA_LLM_MODEL"] = model
         env_updates["NUXIVA_LLM_CHAT_ORDER"] = model
     if "fast_llm_model" in data and isinstance(data["fast_llm_model"], str):
-        fmodel = data["fast_llm_model"].strip()
+        fmodel = safe_model(data["fast_llm_model"])
         current["fast_llm_model"] = fmodel
         env_updates["NUXIVA_LLM_FAST_MODEL"] = fmodel
     for bool_key in ("auto_shutdown_local_ollama", "mesh_broadcast", "mesh_state_sync", "process_watchdog", "verbose_telemetry"):
@@ -476,34 +522,43 @@ async def get_system_display_settings():
     return {"ok": True, "settings": get_display_settings()}
 
 
-@admin_routes.post("/api/system/display-settings")
-async def post_system_display_settings(request: Request):
-    body = await request.json()
+async def _json_object(request: Request) -> dict:
+    raw = await request.body()
+    if len(raw) > 64 * 1024:
+        raise HTTPException(413, "Richiesta troppo grande")
+    try:
+        body = json.loads(raw or b"{}")
+    except ValueError:
+        raise HTTPException(400, "JSON non valido")
     if not isinstance(body, dict):
         raise HTTPException(400, "Corpo richiesta non valido")
-    saved = save_display_settings(body)
-    return {"ok": True, "settings": saved}
+    return body
+
+
+@admin_routes.post("/api/system/display-settings")
+async def post_system_display_settings(request: Request, _: str = Depends(require_admin)):
+    return {"ok": True, "settings": save_display_settings(await _json_object(request))}
 
 
 @public_routes.post("/api/system/display-settings")
 async def post_display_settings_from_display(request: Request):
     require_display(request, "Solo dal display")
-    return await post_system_display_settings(request)
+    return {"ok": True, "settings": save_display_settings(await _json_object(request))}
 
 
 @public_routes.get("/api/system/backend-settings")
+async def get_backend_settings_from_display(request: Request):
+    require_display(request, "Solo dal display")
+    return JSONResponse({"ok": True, "settings": get_backend_settings()}, headers=NO_CACHE)
+
+
 @admin_routes.get("/api/system/backend-settings")
-async def get_system_backend_settings():
-    return {"ok": True, "settings": get_backend_settings()}
+async def get_system_backend_settings(_: str = Depends(require_admin)):
+    return JSONResponse({"ok": True, "settings": get_backend_settings()}, headers=NO_CACHE)
 
 
-@public_routes.post("/api/system/backend-settings")
 @admin_routes.post("/api/system/backend-settings")
-async def post_system_backend_settings(request: Request):
-    body = await request.json()
-    if not isinstance(body, dict):
-        raise HTTPException(400, "Corpo richiesta non valido")
-    saved = save_backend_settings(body)
-    return {"ok": True, "settings": saved}
+async def post_system_backend_settings(request: Request, _: str = Depends(require_admin)):
+    return {"ok": True, "settings": save_backend_settings(await _json_object(request))}
 
 store.display_settings = get_display_settings()

@@ -3,7 +3,7 @@ import { DisplaySettings, BackendSettings, ScannedModel } from './types';
 export const overviewUrl = (language: string) => `/api/features?lang=${encodeURIComponent(language)}`;
 
 export async function fetchDisplaySettings(): Promise<DisplaySettings> {
-  const res = await fetch('/api/system/display-settings');
+  const res = await fetch('/api/system/display-settings', { credentials: 'same-origin' });
   if (!res.ok) throw new Error('Failed to fetch display settings');
   const data = await res.json();
   return data.settings;
@@ -12,7 +12,8 @@ export async function fetchDisplaySettings(): Promise<DisplaySettings> {
 export async function saveDisplaySettings(settings: Partial<DisplaySettings>): Promise<DisplaySettings> {
   const res = await fetch('/api/system/display-settings', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    credentials: 'same-origin',
+    headers: { 'Content-Type': 'application/json', 'X-Nuxiva-Request': '1' },
     body: JSON.stringify(settings)
   });
   if (!res.ok) throw new Error('Failed to save display settings');
@@ -21,7 +22,7 @@ export async function saveDisplaySettings(settings: Partial<DisplaySettings>): P
 }
 
 export async function fetchBackendSettings(): Promise<BackendSettings> {
-  const res = await fetch('/api/system/backend-settings');
+  const res = await fetch('/api/system/backend-settings', { credentials: 'same-origin', cache: 'no-store' });
   if (!res.ok) throw new Error('Failed to fetch backend settings');
   const data = await res.json();
   return data.settings;
@@ -30,7 +31,8 @@ export async function fetchBackendSettings(): Promise<BackendSettings> {
 export async function saveBackendSettings(settings: Partial<BackendSettings>): Promise<BackendSettings> {
   const res = await fetch('/api/system/backend-settings', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    credentials: 'same-origin',
+    headers: { 'Content-Type': 'application/json', 'X-Nuxiva-Request': '1' },
     body: JSON.stringify(settings)
   });
   if (!res.ok) throw new Error('Failed to save backend settings');
@@ -41,7 +43,8 @@ export async function saveBackendSettings(settings: Partial<BackendSettings>): P
 export async function scanOllamaModels(host: string): Promise<{ online: boolean; latency_ms: number; models: ScannedModel[]; error?: string }> {
   const res = await fetch('/api/v2/brain/config/test', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    credentials: 'same-origin',
+    headers: { 'Content-Type': 'application/json', 'X-Nuxiva-Request': '1' },
     body: JSON.stringify({ host })
   });
   if (!res.ok) {
