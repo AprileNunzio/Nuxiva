@@ -199,12 +199,19 @@
     $("in").addEventListener("keydown", (e) => { if (e.key === "Enter") send(); });
     $("btn-send").addEventListener("click", send);
     const dock = document.querySelector(".dock");
-    $("btn-tools").addEventListener("click", () => {
-      if (D.isFamilyNear && !D.isFamilyNear()) return;
-      const open = !dock.classList.contains("tools-open");
+    const setTools = (open) => {
       dock.classList.toggle("tools-open", open);
       $("btn-tools").setAttribute("aria-expanded", String(open));
+    };
+    $("btn-tools").addEventListener("click", () => {
+      if (D.isFamilyNear && !D.isFamilyNear()) return;
+      setTools(!dock.classList.contains("tools-open"));
     });
+    document.addEventListener("pointerdown", (e) => {
+      if (dock.classList.contains("tools-open") && !dock.contains(e.target)) setTools(false);
+    }, { capture: true, passive: true });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") setTools(false); });
+    $("dock-tools").addEventListener("click", (e) => { if (e.target.closest("button")) setTools(false); });
     if (!D.local) {
       fetch("/api/auth/me", { credentials: "include" }).then((r) => {
         if (!r.ok) PageText.bind($("note"), "chat_view_only", { assistant: D.assistantName() });

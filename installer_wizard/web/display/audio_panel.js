@@ -48,12 +48,33 @@
       navigator.mediaDevices.addEventListener("devicechange", () => setTimeout(loadAudio, 800));
     }
     loadAudio();
-    $("btn-vol").addEventListener("click", () => {
+    const panel = $("vol-panel"), button = $("btn-vol");
+    const isOpen = () => panel.classList.contains("show");
+    const setOpen = (open) => {
+      panel.classList.toggle("show", open);
+      button.classList.toggle("on", open);
+      button.setAttribute("aria-expanded", String(open));
+      if (open) { loadAudio(); showLook(); }
+    };
+    D.closeAudioPanel = () => { if (isOpen()) setOpen(false); };
+    button.addEventListener("click", () => {
       if (D.isFamilyNear && !D.isFamilyNear()) return;
-      const p = $("vol-panel");
-      p.classList.toggle("show");
-      if (p.classList.contains("show")) { loadAudio(); showLook(); }
+      setOpen(!isOpen());
     });
+    document.addEventListener("pointerdown", (e) => {
+      if (isOpen() && !panel.contains(e.target) && !button.contains(e.target)) setOpen(false);
+    }, { capture: true, passive: true });
+    document.addEventListener("keydown", (e) => {
+      if (e.key !== "Escape" || !isOpen()) return;
+      setOpen(false);
+      button.focus({ preventScroll: true });
+    });
+    let shownMode = D.mode;
+    new MutationObserver(() => {
+      if (D.mode === shownMode) return;
+      shownMode = D.mode;
+      D.closeAudioPanel();
+    }).observe(document.body, { attributes: true, attributeFilter: ["class"] });
     $("avatar-pref").addEventListener("change", (e) => { NuxivaAvatar.setDevicePref(e.target.value); location.reload(); });
     $("vol-out").addEventListener("input", (e) => { $("vol-out-v").textContent = `${e.target.value}%`; setAudio({ output: { volume: +e.target.value } }); });
     $("vol-in").addEventListener("input", (e) => { $("vol-in-v").textContent = `${e.target.value}%`; setAudio({ input: { volume: +e.target.value } }); });

@@ -328,12 +328,14 @@ const projectWidget = {
     const data = await res.json();
     const widget = document.getElementById("project-widget");
     if (!widget) return undefined;
-    if (!(data.projects && data.projects.length)) { widget.style.display = "none"; return undefined; }
+    const show = !!(data.projects && data.projects.length);
+    if (widget.hidden === show) { widget.hidden = !show; if (window.NuxivaDesk) window.NuxivaDesk.relayout(); }
+    if (!show) return undefined;
     const p = data.projects[0];
-    widget.style.display = "block";
     const pct = document.getElementById("proj-pct"), bar = document.getElementById("proj-bar"), name = document.getElementById("proj-name");
-    if (pct) pct.textContent = p.progress + "%";
-    if (bar) bar.style.width = p.progress + "%";
+    const progress = Math.max(0, Math.min(100, Math.round(Number(p.progress) || 0)));
+    if (pct) pct.textContent = `${progress}%`;
+    if (bar) bar.style.width = `${progress}%`;
     if (name) {
       const id = String(p.name || "").replace(/^tsk_/, "");
       if (/^tsk_/.test(String(p.name || ""))) PageText.bind(name, "project_n", { id });

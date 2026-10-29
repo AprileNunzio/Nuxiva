@@ -3,11 +3,11 @@
 .rail.left { left: clamp(20px, 3vw, 56px); }
 .rail.right { right: clamp(20px, 3vw, 56px); }
 .rail > * { pointer-events: auto; }
-body.focus .rail, body.brain .rail, body.desk-full .rail, body.desk-whiteboard .rail, body.desk-alert .rail { opacity: 0; transform: translateY(8px); pointer-events: none; }
-body.focus .rail > *, body.brain .rail > *, body.desk-full .rail > *, body.desk-whiteboard .rail > * { pointer-events: none; }
 body.rail-compact .rail { opacity: 0.6; }
 body.rail-compact .rail .rl-more { display: none; }
 body.rail-compact .rail.right .rl-block.scan .rl-spark { display: none; }
+body:is(.focus, .brain, .flow, .desk-full, .desk-whiteboard, .desk-alert) .rail { opacity: 0; transform: translateY(8px); pointer-events: none; visibility: hidden; transition: opacity 0.5s, transform 0.5s, visibility 0s 0.5s; }
+body:is(.focus, .brain, .flow, .desk-full, .desk-whiteboard, .desk-alert) .rail > * { pointer-events: none; }
 @media (max-width: 1100px) { .rail.right { display: none; } }
 @media (max-width: 760px), (max-height: 620px) { .rail { display: none; } }
 @media (max-height: 800px) { .rail .rl-more { display: none; } }

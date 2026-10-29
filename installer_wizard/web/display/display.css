@@ -301,3 +301,11 @@ body.tier-minimal .edge-glow, body.tier-minimal .hand-cursor { display: none !im
 .rm-n { width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; font-size: 10px; background: var(--cyan-soft, rgba(41,224,255,0.15)); color: var(--cyan); }
 @media (max-width: 900px), (orientation: portrait) { .rm-wrap { grid-template-columns: 1fr; height: auto; } .rm-map { height: 46vh; } .rm-steps { max-height: 30vh; } }
 .rm-tiles { filter: invert(1) hue-rotate(185deg) brightness(0.82) contrast(0.92) saturate(0.6); }
+
+.project-widget { position: absolute; right: 20px; top: 80px; z-index: 4; width: 220px; padding: 12px; border: 1px solid var(--cyan); border-radius: 12px; background: rgba(0, 10, 20, 0.8); backdrop-filter: blur(8px); cursor: pointer; transition: opacity 0.3s; }
+.project-widget[hidden] { display: none; }
+.project-widget .pw-head { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 12px; font-weight: 700; color: var(--cyan); }
+.project-widget .pw-name { margin-bottom: 8px; font-size: 11px; color: #aaa; }
+.project-widget .pw-track { width: 100%; height: 4px; border-radius: 2px; background: #111; overflow: hidden; }
+.project-widget .pw-bar { width: 0; height: 100%; background: var(--cyan); transition: width 0.5s; }
+body:is(.focus, .brain, .flow, .desk-full, .desk-whiteboard) .project-widget { opacity: 0; pointer-events: none; }

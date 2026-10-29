@@ -61,15 +61,10 @@
     <div class="stage-body" id="stage-body"></div>
   </section>
 
-  <div class="project-widget" id="project-widget" style="display:none; position:absolute; right:20px; top:80px; background:rgba(0,10,20,0.8); border:1px solid var(--cyan); border-radius:12px; padding:12px; width:220px; z-index:100; cursor:pointer; backdrop-filter:blur(8px); transition:all 0.3s;">
-    <div style="font-size:12px; color:var(--cyan); margin-bottom:6px; font-weight:bold; display:flex; justify-content:space-between;">
-       <span data-i18n="project_working"></span>
-       <span id="proj-pct">0%</span>
-    </div>
-    <div style="font-size:11px; color:#aaa; margin-bottom:8px;" id="proj-name"></div>
-    <div style="width:100%; height:4px; background:#111; border-radius:2px; overflow:hidden;">
-       <div id="proj-bar" style="width:0%; height:100%; background:var(--cyan); transition:width 0.5s;"></div>
-    </div>
+  <div class="project-widget" id="project-widget" data-surface="project" data-desk-reserve hidden>
+    <div class="pw-head"><span data-i18n="project_working"></span><span id="proj-pct">0%</span></div>
+    <div class="pw-name" id="proj-name"></div>
+    <div class="pw-track"><div class="pw-bar" id="proj-bar"></div></div>
   </div>
 
   <div class="brain-ui">
@@ -104,7 +99,7 @@
     <div class="dock-tools" id="dock-tools">
       <button class="ibtn" id="btn-brain" data-i18n-attr="title:btn_brain,aria-label:btn_brain"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 5 2V4.5A2.5 2.5 0 0 0 9 4zm6 0a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-5 2V4.5A2.5 2.5 0 0 1 15 4z"/></svg></button>
       <button class="ibtn" id="btn-flow" data-i18n-attr="title:btn_flow,aria-label:btn_flow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="4" cy="12" r="2.5"/><circle cx="12" cy="5" r="2.5"/><circle cx="12" cy="19" r="2.5"/><circle cx="20" cy="12" r="2.5"/><path d="M6.5 12h3M12 7.5v9M14.5 12h3M6 10.5l4-4M6 13.5l4 4M14 6.5l4 4M14 17.5l4-4"/></svg></button>
-      <button class="ibtn" id="btn-vol" data-i18n-attr="title:btn_audio,aria-label:btn_audio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg></button>
+      <button class="ibtn" id="btn-vol" type="button" aria-expanded="false" aria-controls="vol-panel" data-i18n-attr="title:btn_audio,aria-label:btn_audio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg></button>
       <button class="ibtn" id="btn-voice" data-i18n-attr="title:btn_voice,aria-label:btn_voice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path id="wave" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12"/></svg></button>
     </div>
   </div>

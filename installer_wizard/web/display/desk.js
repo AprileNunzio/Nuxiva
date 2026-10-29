@@ -266,11 +266,23 @@
     }
     return null;
   }
-  const measure = (card, w) => { card.el.style.width = `${Math.round(w)}px`; card.el.style.height = ""; return card.el.offsetHeight; };
+  const measure = (card, w) => {
+    const s = card.el.style, prior = s.transition;
+    s.transition = "none";
+    s.width = `${Math.round(w)}px`; s.height = "";
+    const h = card.el.offsetHeight;
+    s.transition = prior;
+    return h;
+  };
+  const reserved = () => (document.body.matches(".desk-full, .desk-whiteboard") ? [] : [...document.querySelectorAll("[data-desk-reserve]:not([hidden])")])
+    .filter((el) => getComputedStyle(el).display !== "none")
+    .map((el) => el.getBoundingClientRect())
+    .filter((r) => r.width > 0 && r.height > 0)
+    .map((r) => ({ x: r.left, y: r.top, w: r.width, h: r.height }));
 
   function layoutFullscreen(ordered) {
     const full = ordered.find((c) => c.inst.fullscreen);
-    ordered.forEach((c) => c.el.classList.toggle("fullscreen", c === full));
+    ordered.forEach((c) => { c.el.classList.toggle("fullscreen", c === full); c.el.classList.remove("priority-overlay"); });
     document.body.classList.toggle("desk-full", !!full);
     document.body.classList.toggle("desk-immersive", !!(full && full.inst.immersive));
     document.body.dataset.deskFullscreen = full ? full.inst.id : "";
@@ -281,7 +293,8 @@
     place(full, 0, 0, window.innerWidth, window.innerHeight);
     const W = window.innerWidth, H = window.innerHeight;
     const pw = Math.max(220, Math.min(320, W * 0.22));
-    let py = 110;
+    const column = { x: W - pw - 24, y: 0, w: pw, h: H };
+    let py = reserved().filter((r) => hits(r, column)).reduce((y, r) => Math.max(y, r.y + r.h + PIN_GAP), 110);
     for (const c of ordered) {
       if (c === full) continue;
       if (!isPriority(c)) {
@@ -347,6 +360,7 @@
     let zone = null;
     ordered.forEach((c) => c.el.classList.remove("pinned"));
 
+    const fixed = reserved();
     const blocked = [];
     const radius = Math.min(W, H) * 0.34;
     const keepOut = portrait || takeover ? [] : [{ x: W / 2 - radius, y: H * 0.46 - radius, w: 2 * radius, h: 2 * radius }];
@@ -356,7 +370,7 @@
       const h = measure(c, w);
       const x = Math.max(M, Math.min(W - M - w, c.inst.pos.x * W - w / 2));
       const y = Math.max(TOP, Math.min(BOTTOM - h, c.inst.pos.y * H - h / 2));
-      const spot = clearSpot({ x, y, w, h }, blocked.concat(keepOut), { x0: M, y0: TOP, x1: W - M, y1: BOTTOM });
+      const spot = clearSpot({ x, y, w, h }, blocked.concat(keepOut, fixed), { x0: M, y0: TOP, x1: W - M, y1: BOTTOM });
       if (!spot) { c.el.classList.add("hidden"); continue; }
       place(c, spot.x, spot.y, w);
       blocked.push({ x: spot.x, y: spot.y, w, h });
@@ -382,7 +396,7 @@
         let bestSpot = null;
         for (let col = 0; col < cols; col++) {
           const x = M + col * (colW + GAP);
-          const spot = clearSpot({ x, y: BOTTOM - h, w, h }, blocked, { x0: M, y0: limit, x1: W - M, y1: BOTTOM });
+          const spot = clearSpot({ x, y: BOTTOM - h, w, h }, blocked.concat(fixed), { x0: M, y0: limit, x1: W - M, y1: BOTTOM });
           if (spot && (!bestSpot || spot.y > bestSpot.y)) {
             bestSpot = spot;
           }
@@ -401,7 +415,7 @@
         const h = measure(c, w);
         const options = sides.map((side, index) => {
           const x = index === 0 ? side.x0 : side.x1 - w;
-          return clearSpot({ x, y: TOP, w, h }, blocked.concat(keepOut), { x0: side.x0, y0: TOP, x1: side.x1, y1: BOTTOM });
+          return clearSpot({ x, y: TOP, w, h }, blocked.concat(keepOut, fixed), { x0: side.x0, y0: TOP, x1: side.x1, y1: BOTTOM });
         }).filter(Boolean);
         if (!options.length) { c.el.classList.add("hidden"); continue; }
         const chosen = options.reduce((best, o) => (o.y < best.y ? o : best));

@@ -15,7 +15,6 @@
   transition: width 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.dock:focus-within,
 .dock.expanded {
   width: min(1100px, calc(100vw - 32px));
 }
