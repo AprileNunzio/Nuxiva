@@ -2,7 +2,7 @@
   "meta": {
     "locale": "es",
     "scope": "widgets/studio_3d",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Estudio 3D",
@@ -40,6 +40,8 @@
     "shape_capsule": "Cápsula",
     "shape_wedge": "Cuña",
     "error_library": "Biblioteca 3D no disponible",
-    "hint_hands": "Con dos manos: pellizca y separa para ampliar, gira las manos para rotar, muévelas para desplazar la pieza seleccionada."
+    "hint_hands": "Con dos manos: pellizca y separa para ampliar, gira las manos para rotar, muévelas para desplazar la pieza seleccionada.",
+    "no_model": "Ningún modelo abierto: pídeme que abra un objeto en el estudio.",
+    "hint_keys": "Teclado: flechas y RePág/AvPág mueven la pieza (Mayús ×10), Supr la elimina, Esc deselecciona, F encuadra, Ctrl+Z deshace, Ctrl+Y rehace."
   }
 }

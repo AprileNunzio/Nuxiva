@@ -43,3 +43,6 @@
 .s3-hints span { padding: 4px 10px; border-radius: 999px; font: 12px var(--font); color: var(--text-dim); background: rgba(255, 255, 255, 0.05); }
 .s3-files { display: flex; flex-wrap: wrap; gap: 6px; }
 .s3-files a { text-decoration: none; }
+.s3-stage.busy::after { content: ""; position: absolute; right: 12px; top: 12px; width: 16px; height: 16px; border-radius: 50%; border: 2px solid rgba(var(--tone), 0.25); border-top-color: rgb(var(--tone)); animation: s3-spin 0.8s linear infinite; z-index: 4; }
+@keyframes s3-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .s3-stage.busy::after { animation-duration: 3s; } }

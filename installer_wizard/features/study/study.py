@@ -52,6 +52,8 @@ class StudyEngine(StudySources, StudyTopics, StudyScheduler, StudyLessons, Study
     def publish(self, state: str, detail: str = "", topic: dict | None = None) -> None:
         store.study = {"state": state, "detail": detail, "topic": topic["name"] if topic else "",
                        "level": LEVELS.get(topic["level"], "") if topic else "",
+                       "level_n": topic["level"] if topic else None, "target": topic.get("target_level") if topic else None,
+                       "progress": self.level_progress(topic, topic["level"]) if topic else None,
                        "cells": len(self.memory.ids), "today_minutes": round(self.data["stats"]["seconds_today"] / 60)}
         store.touch()
 

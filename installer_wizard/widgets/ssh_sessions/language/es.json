@@ -2,12 +2,22 @@
   "meta": {
     "locale": "es",
     "scope": "widgets/ssh_sessions",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Sesiones SSH",
     "none": "Ninguna sesión activa",
     "active_one": "{{n}} activa",
-    "active_other": "{{n}} activas"
+    "active_other": "{{n}} activas",
+    "none_chip": "Ninguna",
+    "wan_one": "{{n}} acceso desde Internet: comprueba que sea tuyo",
+    "wan_other": "{{n}} accesos desde Internet: comprueba que sean tuyos",
+    "root_on": "Hay una sesión como root: recuerda cerrarla",
+    "idle": "inactivo {{t}}",
+    "unknown": "Desconocido",
+    "wan_tag": "INTERNET",
+    "lan_tag": "LAN",
+    "more": "+{{n}} sesiones más",
+    "users": "{{n}} usuarios distintos conectados"
   }
 }

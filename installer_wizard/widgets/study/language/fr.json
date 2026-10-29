@@ -2,11 +2,18 @@
   "meta": {
     "locale": "fr",
     "scope": "widgets/study",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Étude",
     "chip": "En cours",
-    "autonomous": "Étude autonome"
+    "autonomous": "Étude autonome",
+    "paused": "En pause",
+    "waiting": "En attente",
+    "idle": "À jour",
+    "level_of": "Niveau {{n}} sur {{total}}",
+    "level_progress": "Progression du niveau",
+    "today": "{{n}} min aujourd’hui",
+    "cells": "{{n}} notions"
   }
 }

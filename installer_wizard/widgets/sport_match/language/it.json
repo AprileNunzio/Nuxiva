@@ -2,7 +2,7 @@
   "meta": {
     "locale": "it",
     "scope": "widgets/sport_match",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "football": "Calcio",
@@ -18,6 +18,10 @@
     "today_cap": "Oggi",
     "tomorrow": "Domani",
     "penalty": "rig.",
-    "own_goal": "aut."
+    "own_goal": "aut.",
+    "out_won": "Vittoria",
+    "out_lost": "Sconfitta",
+    "out_drew": "Pareggio",
+    "last": "Ultima"
   }
 }

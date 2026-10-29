@@ -2,12 +2,23 @@
   "meta": {
     "locale": "en",
     "scope": "widgets/sport_table",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Standings",
     "col_played": "P",
     "col_diff": "GD",
-    "col_points": "Pts"
+    "col_points": "Pts",
+    "col_won": "W",
+    "col_drawn": "D",
+    "col_lost": "L",
+    "pos": "Position {{n}}",
+    "leader": "Top of the table",
+    "level": "Level on points with the leaders",
+    "gap": "{{n}} points off the top",
+    "less": "Show less",
+    "all": "Full table ({{n}})",
+    "zone_up": "European places",
+    "zone_down": "Relegation"
   }
 }

@@ -2,7 +2,7 @@
   "meta": {
     "locale": "en",
     "scope": "widgets/sport_match",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "football": "Football",
@@ -18,6 +18,10 @@
     "today_cap": "Today",
     "tomorrow": "Tomorrow",
     "penalty": "pen.",
-    "own_goal": "o.g."
+    "own_goal": "o.g.",
+    "out_won": "Win",
+    "out_lost": "Loss",
+    "out_drew": "Draw",
+    "last": "Last"
   }
 }

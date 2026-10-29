@@ -2,7 +2,7 @@
   "meta": {
     "locale": "es",
     "scope": "widgets/sport_match",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "football": "Fútbol",
@@ -18,6 +18,10 @@
     "today_cap": "Hoy",
     "tomorrow": "Mañana",
     "penalty": "pen.",
-    "own_goal": "p.p."
+    "own_goal": "p.p.",
+    "out_won": "Victoria",
+    "out_lost": "Derrota",
+    "out_drew": "Empate",
+    "last": "Último"
   }
 }

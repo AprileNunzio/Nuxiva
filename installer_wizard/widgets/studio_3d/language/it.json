@@ -2,7 +2,7 @@
   "meta": {
     "locale": "it",
     "scope": "widgets/studio_3d",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Studio 3D",
@@ -40,6 +40,8 @@
     "shape_capsule": "Capsula",
     "shape_wedge": "Cuneo",
     "error_library": "Libreria 3D non disponibile",
-    "hint_hands": "Con due mani: pizzica e allontana per ingrandire, ruota le mani per girare, spostale per muovere la parte selezionata."
+    "hint_hands": "Con due mani: pizzica e allontana per ingrandire, ruota le mani per girare, spostale per muovere la parte selezionata.",
+    "no_model": "Nessun modello aperto: chiedimi di aprire un oggetto nello studio.",
+    "hint_keys": "Tastiera: frecce e PagSu/PagGiù spostano la parte (Maiusc ×10), Canc la elimina, Esc deseleziona, F inquadra, Ctrl+Z annulla, Ctrl+Y ripete."
   }
 }

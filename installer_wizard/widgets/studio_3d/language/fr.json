@@ -2,7 +2,7 @@
   "meta": {
     "locale": "fr",
     "scope": "widgets/studio_3d",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Studio 3D",
@@ -40,6 +40,8 @@
     "shape_capsule": "Capsule",
     "shape_wedge": "Biseau",
     "error_library": "Bibliothèque 3D indisponible",
-    "hint_hands": "À deux mains : pincez et écartez pour agrandir, tournez les mains pour pivoter, déplacez-les pour bouger la pièce sélectionnée."
+    "hint_hands": "À deux mains : pincez et écartez pour agrandir, tournez les mains pour pivoter, déplacez-les pour bouger la pièce sélectionnée.",
+    "no_model": "Aucun modèle ouvert : demandez-moi d’ouvrir un objet dans le studio.",
+    "hint_keys": "Clavier : flèches et PgPréc/PgSuiv déplacent la pièce (Maj ×10), Suppr la supprime, Échap désélectionne, F cadre, Ctrl+Z annule, Ctrl+Y rétablit."
   }
 }

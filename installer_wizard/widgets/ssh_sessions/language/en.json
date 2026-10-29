@@ -2,12 +2,22 @@
   "meta": {
     "locale": "en",
     "scope": "widgets/ssh_sessions",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "SSH sessions",
     "none": "No active sessions",
     "active_one": "{{n}} active",
-    "active_other": "{{n}} active"
+    "active_other": "{{n}} active",
+    "none_chip": "None",
+    "wan_one": "{{n}} login from the Internet: check it is yours",
+    "wan_other": "{{n}} logins from the Internet: check they are yours",
+    "root_on": "A root session is open: remember to close it",
+    "idle": "idle {{t}}",
+    "unknown": "Unknown",
+    "wan_tag": "INTERNET",
+    "lan_tag": "LAN",
+    "more": "+{{n}} more sessions",
+    "users": "{{n}} different users connected"
   }
 }

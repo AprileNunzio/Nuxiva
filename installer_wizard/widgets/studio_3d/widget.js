@@ -20,8 +20,21 @@
     if (!THREE.OrbitControls) await script("OrbitControls.js");
   }
 
+  const ID = /^[A-Za-z0-9_.-]{1,80}$/;
+  const ZERO = { min: [0, 0, 0], max: [0, 0, 0], size: [0, 0, 0] };
+  const vec = (v) => (Array.isArray(v) && v.length === 3 && v.every((n) => Number.isFinite(Number(n))) ? v.map(Number) : [0, 0, 0]);
+  const normalize = (d) => {
+    const o = d && typeof d === "object" ? d : {};
+    const m = o.measures && typeof o.measures === "object" ? o.measures : {};
+    const ov = m.overall && typeof m.overall === "object" ? m.overall : ZERO;
+    const parts = Array.isArray(o.parts) ? o.parts.filter((p) => p && typeof p === "object").slice(0, 200) : [];
+    const sel = Number.isInteger(o.selected) && o.selected >= 0 && o.selected < parts.length ? o.selected : null;
+    return { ...o, parts, selected: sel, colors: o.colors && typeof o.colors === "object" ? o.colors : {}, files: Array.isArray(o.files) ? o.files : [],
+      measures: { overall: { min: vec(ov.min), max: vec(ov.max), size: vec(ov.size) }, parts: Array.isArray(m.parts) ? m.parts : [] } };
+  };
+
   const call = (mid, path, body) => fetch(`/api/models3d/${encodeURIComponent(mid)}/studio${path}`, {
-    method: body === undefined ? "GET" : "POST", headers: { "Content-Type": "application/json" }, body: body === undefined ? undefined : JSON.stringify(body),
+    method: body === undefined ? "GET" : "POST", credentials: "same-origin", headers: { "Content-Type": "application/json", "X-Nuxiva-Request": "1" }, body: body === undefined ? undefined : JSON.stringify(body),
   }).then(async (r) => {
     const data = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error(typeof data.detail === "string" ? data.detail : "server");
@@ -72,7 +85,7 @@
     return m;
   }
 
-  const extent = (st, i) => (st.state.measures.parts[i] ? st.state.measures.parts[i].size : [0, 0, 0]);
+  const extent = (st, i) => vec(st.state.measures.parts[i] && st.state.measures.parts[i].size);
 
   function partsHtml(st, ctx) {
     const { parts, selected } = st.state;
@@ -107,7 +120,7 @@
   }
 
   function shell(st, ctx) {
-    const s = st.state, hints = ["hint_move", "hint_color", "hint_add", "hint_size", "hint_undo"].map((k) => `<span>«${ctx.esc(ctx.t(k))}»</span>`).join("");
+    const s = st.state, keys = `<p class="s3-info">${ctx.esc(ctx.t("hint_keys"))}</p>`, hints = ["hint_move", "hint_color", "hint_add", "hint_size", "hint_undo"].map((k) => `<span>«${ctx.esc(ctx.t(k))}»</span>`).join("");
     const base = /^\/api\/models3d\//.test(String(s.url || "")) ? s.url : "";
     const files = base ? (s.files || []).slice(0, 8).map((f) => `<a class="s3-btn" href="${ctx.esc(base + encodeURIComponent(f))}" download>${ctx.icon("download")} ${ctx.esc(f)}</a>`).join("") : "";
     st.el.innerHTML = `${ctx.head({ icon: "cube", label: ctx.t("label"), title: s.title || "", chip: ctx.count("parts", s.parts.length) })}
@@ -122,7 +135,7 @@
         <div class="s3-side"><section class="s3-sec"><h4>${ctx.esc(ctx.t("parts"))}</h4><div class="s3-parts"></div></section>
           <section class="s3-sec"><h4>${ctx.esc(ctx.t("add"))}</h4><div class="s3-row">${addHtml(ctx)}</div></section>
           <section class="s3-sec"><h4>${ctx.esc(ctx.t("inspector"))}</h4><div class="s3-ins"></div></section>
-          <section class="s3-sec"><h4>${ctx.esc(ctx.t("hints_title"))}</h4><div class="s3-hints">${hints}</div><p class="s3-info">${ctx.esc(ctx.t("hint_hands"))}</p></section>
+          <section class="s3-sec"><h4>${ctx.esc(ctx.t("hints_title"))}</h4><div class="s3-hints">${hints}</div><p class="s3-info">${ctx.esc(ctx.t("hint_hands"))}</p>${keys}</section>
           ${files ? `<section class="s3-sec"><h4>${ctx.esc(ctx.t("export"))}</h4><div class="s3-files">${files}</div></section>` : ""}</div></div></div>
       <div class="s3-info"><span class="s3-stats"></span></div>`;
   }
@@ -135,6 +148,8 @@
     root.querySelector('[data-a="redo"]').disabled = !s.can_redo;
     const size = s.measures.overall.size.map((v) => round(v));
     root.querySelector(".s3-stats").textContent = `${ctx.count("parts", s.parts.length)} · ${size.join(" × ")} cm`;
+    const chip = root.querySelector(".wk-head .wk-chip");
+    if (chip) chip.textContent = ctx.count("parts", s.parts.length);
     if (st.group) {
       st.scene.remove(st.group);
       st.group.traverse((o) => { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose(); });
@@ -235,9 +250,33 @@
   }
 
   function send(st, body) {
-    if (st.busy) return Promise.resolve();
+    if (st.queue.length >= 20) return Promise.resolve();
+    return new Promise((done) => { st.queue.push({ body, done }); pump(st); });
+  }
+
+  function pump(st) {
+    if (st.busy || !st.queue.length || !st.alive) return;
+    const { body, done } = st.queue.shift();
     st.busy = true;
-    return call(st.id, "/op", body).then((s) => { st.state = s; refresh(st, st.ctx); }).catch((e) => notify(st, e.message)).finally(() => { st.busy = false; });
+    st.stage && st.stage.classList.add("busy");
+    call(st.id, "/op", body).then((s) => { if (st.alive) { st.state = normalize(s); refresh(st, st.ctx); } })
+      .catch((e) => { st.queue.length = 0; notify(st, e.message); })
+      .finally(() => { st.busy = false; st.stage && st.stage.classList.remove("busy"); done(); pump(st); });
+  }
+
+  function onKey(st, e) {
+    if (e.target.closest("input, textarea") || e.altKey) return;
+    const k = e.key, mod = e.ctrlKey || e.metaKey, sel = st.state.selected;
+    const go = (body) => { e.preventDefault(); send(st, body); };
+    if (mod && k.toLowerCase() === "z") return go({ op: e.shiftKey ? "redo" : "undo" });
+    if (mod && k.toLowerCase() === "y") return go({ op: "redo" });
+    if (mod) return;
+    if (k === "f" || k === "F") { e.preventDefault(); return fit(st); }
+    if (sel === null) return;
+    if (k === "Escape") return go({ op: "select", index: null });
+    if (k === "Delete" || k === "Backspace") return go({ op: "remove", index: sel });
+    const NUDGE = { ArrowLeft: ["x", -1], ArrowRight: ["x", 1], ArrowUp: ["z", -1], ArrowDown: ["z", 1], PageUp: ["y", 1], PageDown: ["y", -1] };
+    if (NUDGE[k]) return go({ op: "move", index: sel, axis: NUDGE[k][0], delta: NUDGE[k][1] * st.step * (e.shiftKey ? 10 : 1) });
   }
 
   function onClick(st, e) {
@@ -312,14 +351,36 @@
     if (!st.flushTimer) st.flushTimer = setTimeout(() => flush(st), 300);
   }
 
-  function mount(el, d, ctx) {
-    const st = { el, id: d.id, ctx, alive: true, state: d, step: 1, wire: false, busy: false };
+  function stop(el) {
+    const st = el._s3;
+    if (!st) return;
+    st.alive = false;
+    st.queue.length = 0;
+    cancelAnimationFrame(st.raf);
+    clearTimeout(st.timer);
+    clearTimeout(st.flushTimer);
+    if (st.renderer) st.renderer.dispose();
+    if (st.onGesture) el.removeEventListener("nuxiva-gesture", st.onGesture);
+    el.onclick = el.onchange = el.onkeydown = null;
+    el._s3 = null;
+  }
+
+  function mount(el, raw, ctx) {
+    stop(el);
+    const d = normalize(raw);
+    if (!ID.test(String(d.id || ""))) {
+      el.innerHTML = `${ctx.head({ icon: "cube", label: ctx.t("label") })}${ctx.empty(ctx.t("no_model"))}`;
+      return;
+    }
+    const st = { el, id: d.id, ctx, alive: true, state: d, step: 1, wire: false, busy: false, queue: [] };
     el._s3 = st;
     shell(st, ctx);
     refresh(st, ctx);
-    el.addEventListener("click", (e) => onClick(st, e));
-    el.addEventListener("change", (e) => onChange(st, e));
-    el.addEventListener("nuxiva-gesture", (e) => gesture(st, e));
+    el.onclick = (e) => onClick(st, e);
+    el.onchange = (e) => onChange(st, e);
+    el.onkeydown = (e) => onKey(st, e);
+    st.onGesture = (e) => gesture(st, e);
+    el.addEventListener("nuxiva-gesture", st.onGesture);
     boot(st, ctx).catch((err) => {
       const m = el.querySelector(".s3-msg");
       if (m) { m.textContent = err.message === "library" ? ctx.t("error_library") : err.message; m.classList.add("err"); }
@@ -327,14 +388,15 @@
   }
 
   NuxivaDesk.register("studio_3d", {
-    render(el, d, ctx) { if (el._s3) el._s3.alive = false; mount(el, d, ctx); },
-    update(el, d, ctx) {
+    render(el, d, ctx) { mount(el, d, ctx); },
+    update(el, raw, ctx) {
       const st = el._s3;
-      if (!st || st.id !== d.id) { if (st) st.alive = false; return mount(el, d, ctx); }
-      if (st.state.rev === d.rev && st.state.selected === d.selected && st.state.can_undo === d.can_undo) return;
+      const d = normalize(raw);
+      if (!st || st.id !== d.id || st.ctx !== ctx) return mount(el, raw, ctx);
+      if (st.busy || (st.state.rev === d.rev && st.state.selected === d.selected && st.state.can_undo === d.can_undo)) return;
       st.state = d;
       refresh(st, ctx);
     },
-    destroy(el) { const st = el._s3; if (st) { st.alive = false; cancelAnimationFrame(st.raf); clearTimeout(st.timer); clearTimeout(st.flushTimer); if (st.renderer) st.renderer.dispose(); } },
+    destroy(el) { stop(el); },
   });
 })();

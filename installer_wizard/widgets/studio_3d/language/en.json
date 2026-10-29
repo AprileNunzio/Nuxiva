@@ -2,7 +2,7 @@
   "meta": {
     "locale": "en",
     "scope": "widgets/studio_3d",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "3D Studio",
@@ -40,6 +40,8 @@
     "shape_capsule": "Capsule",
     "shape_wedge": "Wedge",
     "error_library": "3D library unavailable",
-    "hint_hands": "With two hands: pinch and spread to zoom, rotate your hands to turn, move them to shift the selected part."
+    "hint_hands": "With two hands: pinch and spread to zoom, rotate your hands to turn, move them to shift the selected part.",
+    "no_model": "No model open: ask me to open an object in the studio.",
+    "hint_keys": "Keyboard: arrows and PgUp/PgDn move the part (Shift ×10), Delete removes it, Esc deselects, F frames, Ctrl+Z undoes, Ctrl+Y redoes."
   }
 }
