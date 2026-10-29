@@ -2,7 +2,7 @@
   "meta": {
     "locale": "en",
     "scope": "widgets/cyber_alert",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Cyber alert",
@@ -10,6 +10,14 @@
     "threat_default": "high",
     "attack": "Attack",
     "origin": "Origin",
-    "action": "Action"
+    "action": "Action",
+    "severity": "Severity",
+    "ip_local": "local network",
+    "ip_public": "internet",
+    "blocked": "blocked",
+    "not_blocked": "not blocked",
+    "target": "Target",
+    "attempts": "Attempts",
+    "window": "Time span"
   }
 }

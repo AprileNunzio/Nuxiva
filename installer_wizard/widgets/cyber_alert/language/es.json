@@ -2,7 +2,7 @@
   "meta": {
     "locale": "es",
     "scope": "widgets/cyber_alert",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Alerta cibernética",
@@ -10,6 +10,14 @@
     "threat_default": "alta",
     "attack": "Ataque",
     "origin": "Origen",
-    "action": "Acción"
+    "action": "Acción",
+    "severity": "Gravedad",
+    "ip_local": "red local",
+    "ip_public": "internet",
+    "blocked": "bloqueado",
+    "not_blocked": "no bloqueado",
+    "target": "Objetivo",
+    "attempts": "Intentos",
+    "window": "Periodo"
   }
 }

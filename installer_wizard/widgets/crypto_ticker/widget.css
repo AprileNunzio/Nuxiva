@@ -1,2 +1,21 @@
 .w-crypto_ticker .wk-hero + .wk-kv, .w-crypto_ticker .wk-bar + .wk-kv { margin-top: 12px; }
 .w-crypto_ticker .wk-hero + .wk-bar { margin-top: 10px; }
+.w-crypto_ticker .ct-list { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+.w-crypto_ticker .ct-row { display: grid; grid-template-columns: minmax(64px, auto) minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 7px 0; }
+.w-crypto_ticker .ct-row + .ct-row { box-shadow: 0 -1px 0 rgba(var(--tone), 0.08); }
+.w-crypto_ticker .ct-sym b { display: block; font: 600 12px var(--mono); letter-spacing: 0.08em; color: rgb(var(--tone)); }
+.w-crypto_ticker .ct-sym small { display: block; font-size: 10.5px; color: var(--text-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px; }
+.w-crypto_ticker .ct-px { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; grid-column: 3; }
+.w-crypto_ticker .ct-px b { font: 400 15px var(--font); color: var(--hud-text); font-variant-numeric: tabular-nums; }
+.w-crypto_ticker .lead .ct-px b { font-size: 22px; font-weight: 200; }
+.w-crypto_ticker .ct-chg { font: 500 10.5px var(--mono); font-variant-numeric: tabular-nums; }
+.w-crypto_ticker .ct-chg.up { color: var(--green); }
+.w-crypto_ticker .ct-chg.down { color: var(--red); }
+.w-crypto_ticker .ct-spark { width: 100%; height: 28px; grid-column: 2; }
+.w-crypto_ticker .ct-spark .line { fill: none; stroke-width: 1.4; vector-effect: non-scaling-stroke; }
+.w-crypto_ticker .ct-spark.up .line { stroke: var(--green); }
+.w-crypto_ticker .ct-spark.down .line { stroke: var(--red); }
+.w-crypto_ticker .ct-spark .area { opacity: 0.12; }
+.w-crypto_ticker .ct-spark.up .area { fill: var(--green); }
+.w-crypto_ticker .ct-spark.down .area { fill: var(--red); }
+.w-crypto_ticker .ct-meta { margin-top: 8px; font: 10px var(--mono); color: var(--text-faint); }

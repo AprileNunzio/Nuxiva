@@ -2,13 +2,18 @@
   "meta": {
     "locale": "fr",
     "scope": "widgets/contact_card",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Contact",
     "phone": "Téléphone",
     "email": "E-mail",
     "no_number": "Aucun numéro",
-    "unknown": "Inconnu"
+    "unknown": "Inconnu",
+    "address": "Adresse",
+    "birthday": "Anniversaire",
+    "today": "aujourd'hui !",
+    "in_days": "dans {{n}} jours",
+    "copy": "Copier"
   }
 }

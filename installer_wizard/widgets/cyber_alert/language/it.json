@@ -2,7 +2,7 @@
   "meta": {
     "locale": "it",
     "scope": "widgets/cyber_alert",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Allerta cyber",
@@ -10,6 +10,14 @@
     "threat_default": "alta",
     "attack": "Attacco",
     "origin": "Origine",
-    "action": "Azione"
+    "action": "Azione",
+    "severity": "Gravità",
+    "ip_local": "rete locale",
+    "ip_public": "internet",
+    "blocked": "bloccato",
+    "not_blocked": "non bloccato",
+    "target": "Bersaglio",
+    "attempts": "Tentativi",
+    "window": "Periodo"
   }
 }

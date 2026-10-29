@@ -1,1 +1,14 @@
-{"meta": {"locale": "it"}, "dictionary": {"title": "Diorama 3D"}}
+{
+  "meta": {
+    "locale": "it",
+    "version": "1.1.0"
+  },
+  "dictionary": {
+    "title": "Diorama 3D",
+    "loading": "Preparo la scena…",
+    "slow": "Ci sta mettendo più del solito",
+    "offline": "Il diorama non risponde",
+    "missing": "Diorama non trovato",
+    "retry": "Riprova"
+  }
+}

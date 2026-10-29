@@ -2,9 +2,19 @@
   "meta": {
     "locale": "it",
     "scope": "widgets/context_window",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
-    "label": "Finestra di contesto"
+    "label": "Finestra di contesto",
+    "used": "usato",
+    "free": "{{n}} liberi",
+    "messages": "{{n}} messaggi",
+    "filling": "si riempie",
+    "nearly_full": "quasi pieno",
+    "part_system": "Istruzioni",
+    "part_history": "Conversazione",
+    "part_tools": "Strumenti",
+    "part_files": "File",
+    "part_memory": "Memoria"
   }
 }
