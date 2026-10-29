@@ -2,7 +2,7 @@
   "meta": {
     "locale": "fr",
     "scope": "widgets/alarm",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Alarme",
@@ -13,6 +13,14 @@
     "kind_flood": "Inondation",
     "kind_intrusion": "Intrusion",
     "kind_co": "Monoxyde de carbone",
-    "kind_generic": "Alarme"
+    "kind_generic": "Alarme",
+    "elapsed": "active depuis",
+    "test_note": "Test : aucun danger réel",
+    "advice_smoke": "Sors tout de suite, ferme les portes derrière toi et appelle le 112.",
+    "advice_gas": "N'allume ni lumière ni flamme, ouvre les fenêtres et sors. Appelle le 112 de l'extérieur.",
+    "advice_flood": "Coupe l'arrivée d'eau générale et ne touche pas aux prises ou appareils mouillés.",
+    "advice_intrusion": "Reste dans un endroit sûr, n'affronte personne et appelle le 112.",
+    "advice_co": "Ouvre les fenêtres, sors à l'air libre et appelle le 112.",
+    "advice_generic": "Vérifie ce qui se passe et, si besoin, appelle le 112."
   }
 }

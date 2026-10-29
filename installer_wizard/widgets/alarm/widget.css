@@ -1,14 +1,22 @@
-.w-alarm { background: radial-gradient(ellipse at 50% 46%, rgba(var(--tone), 0.16), rgba(4, 10, 20, 0.55) 68%); }
+.w-alarm { background: radial-gradient(ellipse at 50% 46%, rgba(var(--tone), 0.18), rgba(4, 10, 20, 0.55) 68%); }
 .w-alarm .w-body { container-type: size; display: flex; flex-direction: column; height: 100%; min-height: 300px; overflow: hidden; box-sizing: border-box; }
 .w-alarm .al-core { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(4px, 2cqh, 12px); text-align: center; padding: 0 20px clamp(8px, 4cqh, 28px); min-height: 0; }
-.w-alarm .al-mark { position: relative; display: grid; place-items: center; width: clamp(64px, 30cqh, 190px); aspect-ratio: 1; margin-bottom: clamp(2px, 2cqh, 12px); }
-.w-alarm .al-ring { position: absolute; inset: 0; border-radius: 50%; box-shadow: 0 0 0 1px rgba(var(--tone), 0.7) inset; animation: al-ring 2.8s cubic-bezier(0.2, 0.7, 0.3, 1) infinite; }
-.w-alarm .al-ring.r2 { animation-delay: 1.4s; }
-.w-alarm .al-icon { font-size: clamp(32px, 15cqh, 96px); line-height: 1; color: rgb(var(--tone)); filter: drop-shadow(0 0 18px rgba(var(--tone), 0.55)); }
+.w-alarm .al-mark { position: relative; display: grid; place-items: center; width: clamp(64px, 28cqh, 190px); aspect-ratio: 1; margin-bottom: clamp(2px, 2cqh, 12px); }
+.w-alarm .al-ring { position: absolute; inset: 0; border-radius: 50%; box-shadow: 0 0 0 1px rgba(var(--tone), 0.7) inset, 0 0 24px rgba(var(--tone), 0.25); animation: al-ring 2.8s cubic-bezier(0.2, 0.7, 0.3, 1) infinite; }
+.w-alarm .al-ring.r2 { animation-delay: 0.93s; }
+.w-alarm .al-ring.r3 { animation-delay: 1.86s; }
+.w-alarm .al-icon { position: relative; font-size: clamp(32px, 14cqh, 96px); line-height: 1; color: rgb(var(--tone)); filter: drop-shadow(0 0 18px rgba(var(--tone), 0.55)); animation: al-beat 1.4s ease-in-out infinite; }
 .w-alarm .al-icon .wk-svg { stroke-width: 1.1; }
-.w-alarm .al-title { font-size: clamp(26px, 10cqh, 62px); font-weight: 200; letter-spacing: -0.01em; line-height: 1.1; color: var(--hud-text); }
-.w-alarm .al-room { font: 600 12px/1 var(--mono); letter-spacing: 0.3em; text-transform: uppercase; color: rgb(var(--tone)); }
-.w-alarm .al-msg { max-width: 680px; margin-top: 6px; font-size: clamp(13px, 4.6cqh, 18px); font-weight: 300; line-height: 1.55; color: var(--text); }
-.w-alarm .al-time { margin-top: 4px; font: 400 12px var(--mono); letter-spacing: 0.12em; color: var(--text-faint); font-variant-numeric: tabular-nums; }
-@keyframes al-ring { from { transform: scale(0.72); opacity: 0.9; } to { transform: scale(1.55); opacity: 0; } }
-@media (prefers-reduced-motion: reduce) { .w-alarm .al-ring { animation: none; opacity: 0.5; } .w-alarm .al-ring.r2 { display: none; } }
+.w-alarm .al-title { font-size: clamp(26px, 10cqh, 62px); font-weight: 200; letter-spacing: -0.01em; line-height: 1.1; color: var(--hud-text); overflow-wrap: anywhere; }
+.w-alarm .al-room { display: inline-flex; align-items: center; gap: 8px; font: 600 12px/1 var(--mono); letter-spacing: 0.3em; text-transform: uppercase; color: rgb(var(--tone)); }
+.w-alarm .al-msg { max-width: 680px; margin-top: 6px; font-size: clamp(13px, 4.6cqh, 18px); font-weight: 300; line-height: 1.55; color: var(--text); overflow-wrap: anywhere; }
+.w-alarm .al-advice { display: inline-flex; align-items: flex-start; gap: 10px; max-width: 640px; margin-top: clamp(4px, 2cqh, 12px); padding: 10px 16px; border-radius: 12px; background: rgba(var(--tone), 0.1); box-shadow: 0 0 0 1px rgba(var(--tone), 0.35) inset; font-size: clamp(12px, 3.8cqh, 15px); line-height: 1.45; color: var(--hud-text); text-align: left; }
+.w-alarm .al-advice .wk-svg { flex: none; margin-top: 2px; color: rgb(var(--tone)); }
+.w-alarm .al-time { display: flex; gap: 10px; margin-top: 4px; font: 400 12px var(--mono); letter-spacing: 0.12em; color: var(--text-faint); font-variant-numeric: tabular-nums; }
+.w-alarm .al-time b { font-weight: 600; color: var(--text-dim); }
+.w-alarm .al-banner { margin-top: 6px; padding: 4px 12px; border-radius: 999px; font: 600 10px/1.4 var(--mono); letter-spacing: 0.24em; text-transform: uppercase; color: var(--amber); background: repeating-linear-gradient(-45deg, rgba(255, 181, 71, 0.14) 0 8px, transparent 8px 16px); }
+.w-alarm .al-test .al-ring, .w-alarm .al-test .al-icon { animation-duration: 5.6s; }
+.w-alarm .al-test .al-icon { color: var(--amber); }
+@keyframes al-ring { from { transform: scale(0.72); opacity: 0.9; } to { transform: scale(1.6); opacity: 0; } }
+@keyframes al-beat { 50% { transform: scale(1.08); filter: drop-shadow(0 0 28px rgba(var(--tone), 0.8)); } }
+@media (prefers-reduced-motion: reduce) { .w-alarm .al-ring, .w-alarm .al-icon { animation: none; } .w-alarm .al-ring { opacity: 0.5; } .w-alarm .al-ring.r2, .w-alarm .al-ring.r3 { display: none; } }

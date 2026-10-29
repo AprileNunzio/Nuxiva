@@ -1,0 +1,20 @@
+.w-active_tasks .at-list { display: flex; flex-direction: column; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.w-active_tasks .at-row { display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 6px 0 6px 10px; border-left: 1px solid rgba(255, 255, 255, 0.1); transition: border-color 0.4s, opacity 0.4s; }
+.w-active_tasks .at-ic { display: grid; place-items: center; font-size: 14px; color: var(--text-faint); }
+.w-active_tasks .at-main { min-width: 0; }
+.w-active_tasks .at-main b { display: block; font-size: 13px; font-weight: 400; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.w-active_tasks .at-main small { display: block; margin-top: 2px; font-size: 11px; color: var(--text-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.w-active_tasks .at-state { font: 500 9.5px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-faint); }
+.w-active_tasks .at-running { border-left-color: rgb(var(--tone)); }
+.w-active_tasks .at-running .at-main b { color: var(--hud-text); }
+.w-active_tasks .at-running .at-ic, .w-active_tasks .at-running .at-state { color: rgb(var(--tone)); }
+.w-active_tasks .at-running .at-ic .wk-svg { animation: at-spin 2.4s linear infinite; }
+.w-active_tasks .at-waiting .at-ic, .w-active_tasks .at-waiting .at-state { color: var(--amber); }
+.w-active_tasks .at-failed { border-left-color: var(--red); }
+.w-active_tasks .at-failed .at-ic, .w-active_tasks .at-failed .at-state, .w-active_tasks .at-failed .at-main b { color: var(--red); }
+.w-active_tasks .at-done { opacity: 0.55; }
+.w-active_tasks .at-done .at-ic { color: var(--green); }
+.w-active_tasks .at-done .at-main b { text-decoration: line-through; text-decoration-color: rgba(255, 255, 255, 0.25); }
+.w-active_tasks .at-more { margin-top: 6px; padding-left: 10px; }
+@keyframes at-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .w-active_tasks .at-running .at-ic .wk-svg { animation: none; } }

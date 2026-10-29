@@ -2,12 +2,20 @@
   "meta": {
     "locale": "en",
     "scope": "widgets/active_tasks",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Tasks",
     "idle": "No task in progress",
     "active_one": "{{n}} active",
-    "active_other": "{{n}} active"
+    "active_other": "{{n}} active",
+    "all_done": "all done",
+    "more_one": "+{{n}} more queued",
+    "more_other": "+{{n}} more queued",
+    "state_running": "Running",
+    "state_queued": "Queued",
+    "state_waiting": "Waiting",
+    "state_done": "Done",
+    "state_failed": "Failed"
   }
 }

@@ -89,7 +89,39 @@
   const lines = (v, max = 10, size = 6000) => plain(v, size).split("\n").map((l) => l.trim()).filter(Boolean).slice(0, max);
   const pair = (line, size = 48) => line.match(new RegExp(`^([^:]{1,${size}}):\\s+(.+)$`));
   const empty = (text) => `<div class="wk-empty">${esc(text)}</div>`;
-  const ctx = { esc, mmss, icon, head, bar, ring, pct, detail, plain, lines, pair, empty, locale, lang, speak: (t) => hooks.speak(t), now: () => Date.now() / 1000 };
+  const str = (v, max = 400) => (typeof v === "string" ? v : typeof v === "number" && Number.isFinite(v) ? String(v) : "").replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "").trim().slice(0, max);
+  const num = (v) => {
+    const n = typeof v === "string" && v.trim() ? Number(v.trim().replace(",", ".")) : v;
+    return typeof n === "number" && Number.isFinite(n) ? n : null;
+  };
+  const arr = (v, max = 50) => (Array.isArray(v) ? v.slice(0, max) : []);
+  const pick = (o, keys, max = 400) => {
+    if (!o || typeof o !== "object") return "";
+    for (const k of keys) { const s = Object.hasOwn(o, k) ? str(o[k], max) : ""; if (s) return s; }
+    return "";
+  };
+  const stamp = (v) => {
+    const n = num(v);
+    if (n !== null) return n > 0 ? (n > 1e12 ? n / 1000 : n) : null;
+    const t = typeof v === "string" ? Date.parse(v) : NaN;
+    return Number.isFinite(t) ? t / 1000 : null;
+  };
+  const intl = new Map();
+  const cached = (kind, opts) => {
+    const k = `${kind}|${locale()}|${JSON.stringify(opts || {})}`;
+    if (!intl.has(k)) intl.set(k, kind === "n" ? new Intl.NumberFormat(locale(), opts) : kind === "r" ? new Intl.RelativeTimeFormat(locale(), opts) : new Intl.DateTimeFormat(locale(), opts));
+    return intl.get(k);
+  };
+  const fmt = (v, opts) => { const n = num(v); return n === null ? "" : cached("n", opts).format(n); };
+  const when = (v, opts = { hour: "2-digit", minute: "2-digit" }) => { const s = stamp(v); return s === null ? "" : cached("d", opts).format(new Date(s * 1000)); };
+  const ago = (v) => {
+    const s = stamp(v);
+    if (s === null) return "";
+    const d = s - Date.now() / 1000, a = Math.abs(d);
+    const [n, unit] = a < 10 ? [0, "second"] : a < 50 ? [d, "second"] : a < 3000 ? [d / 60, "minute"] : a < 72000 ? [d / 3600, "hour"] : [d / 86400, "day"];
+    return cached("r", { numeric: "auto", style: "short" }).format(Math.round(n), unit);
+  };
+  const ctx = { esc, mmss, icon, head, bar, ring, pct, detail, plain, lines, pair, empty, str, num, arr, pick, stamp, fmt, when, ago, locale, lang, speak: (t) => hooks.speak(t), now: () => Date.now() / 1000 };
   const i18n = () => window.NuxivaScopedI18n;
   const scopeOf = (id) => `widgets/${id}`;
   const COMMON = scopeOf("common");

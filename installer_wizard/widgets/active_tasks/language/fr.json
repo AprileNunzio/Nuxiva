@@ -2,12 +2,20 @@
   "meta": {
     "locale": "fr",
     "scope": "widgets/active_tasks",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Tâches",
     "idle": "Aucune tâche en cours",
     "active_one": "{{n}} active",
-    "active_other": "{{n}} actives"
+    "active_other": "{{n}} actives",
+    "all_done": "tout est fait",
+    "more_one": "+{{n}} autre en file",
+    "more_other": "+{{n}} autres en file",
+    "state_running": "En cours",
+    "state_queued": "En file",
+    "state_waiting": "En attente",
+    "state_done": "Terminée",
+    "state_failed": "Échouée"
   }
 }

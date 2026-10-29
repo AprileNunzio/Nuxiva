@@ -69,3 +69,16 @@
   .widget.enter { animation: w-in 0.2s ease both; }
   .widget > .w-cycle.run::after { animation: none; transform: scaleX(1); }
 }
+
+.wk-alert { position: relative; display: flex; flex-direction: column; gap: 6px; padding-left: 12px; }
+.wk-alert::before { content: ""; position: absolute; left: 0; top: 2px; bottom: 2px; width: 2px; border-radius: 2px; background: rgb(var(--tone)); box-shadow: 0 0 10px rgba(var(--tone), 0.8); }
+.wk-alert .wk-title { overflow-wrap: anywhere; }
+.wk-alert-body { overflow-wrap: anywhere; }
+.wk-alert-items { margin: 2px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 3px; font-size: 12px; color: var(--text); }
+.wk-alert-items li { position: relative; padding-left: 12px; overflow-wrap: anywhere; }
+.wk-alert-items li::before { content: ""; position: absolute; left: 0; top: 0.6em; width: 5px; height: 1px; background: rgba(var(--tone), 0.8); }
+.wk-alert-hint { display: flex; gap: 8px; align-items: flex-start; margin-top: 2px; padding: 7px 10px; border-radius: 10px; background: rgba(var(--tone), 0.08); font-size: 12px; line-height: 1.45; color: var(--hud-text); }
+.wk-alert-hint .wk-svg { flex: none; margin-top: 2px; color: rgb(var(--tone)); }
+.wk-alert-meta { display: flex; gap: 6px; flex-wrap: wrap; font: 500 10px/1.4 var(--mono); letter-spacing: 0.08em; color: var(--text-faint); font-variant-numeric: tabular-nums; }
+.w-alert_error .wk-alert::before { animation: wk-blink 1.6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .w-alert_error .wk-alert::before { animation: none; } }

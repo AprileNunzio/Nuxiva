@@ -2,7 +2,7 @@
   "meta": {
     "locale": "it",
     "scope": "widgets/alarm",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Allarme",
@@ -13,6 +13,14 @@
     "kind_flood": "Allagamento",
     "kind_intrusion": "Intrusione",
     "kind_co": "Monossido di carbonio",
-    "kind_generic": "Allarme"
+    "kind_generic": "Allarme",
+    "elapsed": "attivo da",
+    "test_note": "Prova: nessun pericolo reale",
+    "advice_smoke": "Esci subito, chiudi le porte dietro di te e chiama il 112.",
+    "advice_gas": "Non accendere luci né fiamme, apri le finestre ed esci. Chiama il 112 da fuori.",
+    "advice_flood": "Chiudi il rubinetto generale e non toccare prese o apparecchi bagnati.",
+    "advice_intrusion": "Resta in un posto sicuro, non affrontare nessuno e chiama il 112.",
+    "advice_co": "Apri le finestre, esci all'aria aperta e chiama il 112.",
+    "advice_generic": "Controlla cosa succede e, se serve, chiama il 112."
   }
 }
