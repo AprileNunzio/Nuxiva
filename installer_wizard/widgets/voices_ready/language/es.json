@@ -2,11 +2,16 @@
   "meta": {
     "locale": "es",
     "scope": "widgets/voices_ready",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Voces listas",
     "languages_one": "{{n}} idioma",
-    "languages_other": "{{n}} idiomas"
+    "languages_other": "{{n}} idiomas",
+    "voices": "voces listas para usar",
+    "n_voices_one": "{{n}} voz",
+    "n_voices_other": "{{n}} voces",
+    "more": "+{{n}} idiomas más",
+    "hint": "Dime «háblame en {{lang}}» o pídeme un idioma nuevo: lo descargo yo solo."
   }
 }

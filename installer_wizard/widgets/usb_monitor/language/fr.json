@@ -2,13 +2,34 @@
   "meta": {
     "locale": "fr",
     "scope": "widgets/usb_monitor",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Nouvel appareil USB",
     "chip": "Branché",
     "mounted": "Monté sur",
     "product": "Produit",
-    "serial": "Série"
+    "serial": "Série",
+    "devices_one": "{{n}} appareil",
+    "devices_other": "{{n}} appareils",
+    "hid_warning": "Un clavier a été branché : si ce n’est pas vous, débranchez-le tout de suite. Les clés malveillantes se font passer pour des claviers.",
+    "unknown": "Appareil inconnu",
+    "k_keyboard": "Clavier",
+    "k_mouse": "Souris",
+    "k_camera": "Caméra",
+    "k_audio": "Audio",
+    "k_phone": "Téléphone",
+    "k_serial": "Port série",
+    "k_network": "Carte réseau",
+    "k_bluetooth": "Bluetooth",
+    "k_hub": "Hub",
+    "k_storage": "Stockage",
+    "used": "{{n}} % utilisé",
+    "free": "{{v}} libres",
+    "filesystem": "Système de fichiers",
+    "speed": "Vitesse",
+    "usb_id": "ID USB",
+    "show": "Afficher le numéro de série",
+    "hide": "Masquer le numéro de série"
   }
 }

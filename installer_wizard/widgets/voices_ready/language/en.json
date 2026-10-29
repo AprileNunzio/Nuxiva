@@ -2,11 +2,16 @@
   "meta": {
     "locale": "en",
     "scope": "widgets/voices_ready",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Voices ready",
     "languages_one": "{{n}} language",
-    "languages_other": "{{n}} languages"
+    "languages_other": "{{n}} languages",
+    "voices": "voices ready to use",
+    "n_voices_one": "{{n}} voice",
+    "n_voices_other": "{{n}} voices",
+    "more": "+{{n}} more languages",
+    "hint": "Say «speak {{lang}}» or ask me for a new language: I will download it myself."
   }
 }

@@ -2,9 +2,15 @@
   "meta": {
     "locale": "it",
     "scope": "widgets/vram_allocator",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
-    "label": "Memoria video"
+    "label": "Memoria video",
+    "models_one": "{{n}} modello",
+    "models_other": "{{n}} modelli",
+    "of": "di {{total}}",
+    "free": "{{v}} liberi",
+    "split": "Un modello non entra tutto nella GPU e usa anche la CPU: risponderà più lentamente.",
+    "cpu_only": "Un modello gira solo sulla CPU: le risposte saranno lente."
   }
 }

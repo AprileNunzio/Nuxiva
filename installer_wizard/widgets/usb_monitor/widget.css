@@ -1,0 +1,22 @@
+.w-usb_monitor .ub-alert { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 10px; border-color: rgba(255, 190, 70, 0.45); background: rgba(255, 190, 70, 0.08); color: var(--amber); }
+.w-usb_monitor .ub-alert .wk-svg { width: 16px; height: 16px; flex: none; }
+.w-usb_monitor .ub-hero { display: flex; align-items: center; gap: 12px; }
+.w-usb_monitor .ub-ic { width: 44px; height: 44px; flex: none; border-radius: 12px; display: grid; place-items: center; background: rgba(var(--tone), 0.14); color: rgb(var(--tone)); }
+.w-usb_monitor .ub-ic.in { animation: ub-in 0.6s ease-out; }
+.w-usb_monitor .ub-ic .wk-svg { width: 22px; height: 22px; }
+.w-usb_monitor .ub-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+.w-usb_monitor .ub-main b { font-weight: 500; font-size: 14px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.w-usb_monitor .ub-main small { font-size: 11.5px; color: var(--text-faint); }
+.w-usb_monitor .ub-main small:empty { display: none; }
+.w-usb_monitor .ub-size { flex: none; }
+.w-usb_monitor .ub-use { display: flex; flex-direction: column; gap: 5px; margin-top: 10px; font-size: 11.5px; color: var(--text-dim); }
+.w-usb_monitor .ub-kv { margin-top: 10px; }
+.w-usb_monitor .ub-reveal { display: inline-flex; align-items: center; gap: 6px; padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
+.w-usb_monitor .ub-reveal .wk-svg { width: 12px; height: 12px; opacity: 0.7; }
+.w-usb_monitor .ub-list { list-style: none; margin: 10px 0 0; padding: 8px 0 0; border-top: 1px solid rgba(255, 255, 255, 0.06); display: flex; flex-direction: column; gap: 5px; }
+.w-usb_monitor .ub-list li { display: grid; grid-template-columns: 16px 1fr auto; gap: 8px; align-items: center; font-size: 12px; color: var(--text-dim); }
+.w-usb_monitor .ub-list .wk-svg { width: 14px; height: 14px; color: rgb(var(--tone)); }
+.w-usb_monitor .ub-list span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.w-usb_monitor .ub-list small { color: var(--text-faint); font-size: 10.5px; }
+@keyframes ub-in { 0% { transform: translateY(-6px); opacity: 0; } 100% { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .w-usb_monitor .ub-ic.in { animation: none; } }

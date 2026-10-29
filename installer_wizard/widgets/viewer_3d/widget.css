@@ -11,3 +11,5 @@
 .v3-note { color: var(--amber); }
 .v3-files { display: flex; flex-wrap: wrap; gap: 4px; }
 .v3-files a { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
+.v3-tools .wk-btn.on { color: rgb(var(--tone)); box-shadow: 0 0 0 1px rgba(var(--tone), 0.6) inset; }
+.v3-tools .wk-btn:disabled { opacity: 0.5; cursor: progress; }

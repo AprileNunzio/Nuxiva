@@ -2,13 +2,34 @@
   "meta": {
     "locale": "es",
     "scope": "widgets/usb_monitor",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Nuevo dispositivo USB",
     "chip": "Conectado",
     "mounted": "Montado en",
     "product": "Producto",
-    "serial": "Serie"
+    "serial": "Serie",
+    "devices_one": "{{n}} dispositivo",
+    "devices_other": "{{n}} dispositivos",
+    "hid_warning": "Se ha conectado un teclado: si no has sido tú, desconéctalo ya. Las memorias maliciosas se hacen pasar por teclados.",
+    "unknown": "Dispositivo desconocido",
+    "k_keyboard": "Teclado",
+    "k_mouse": "Ratón",
+    "k_camera": "Cámara",
+    "k_audio": "Audio",
+    "k_phone": "Teléfono",
+    "k_serial": "Puerto serie",
+    "k_network": "Adaptador de red",
+    "k_bluetooth": "Bluetooth",
+    "k_hub": "Hub",
+    "k_storage": "Almacenamiento",
+    "used": "{{n}}% ocupado",
+    "free": "{{v}} libres",
+    "filesystem": "Sistema de archivos",
+    "speed": "Velocidad",
+    "usb_id": "ID USB",
+    "show": "Mostrar el número de serie",
+    "hide": "Ocultar el número de serie"
   }
 }

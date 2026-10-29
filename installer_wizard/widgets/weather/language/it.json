@@ -2,10 +2,15 @@
   "meta": {
     "locale": "it",
     "scope": "widgets/weather",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Meteo",
-    "feels": "percepita {{feels}}° · vento {{wind}} km/h"
+    "feels": "percepita {{feels}}° · vento {{wind}} km/h",
+    "empty": "Nessun dato meteo disponibile.",
+    "stale": "non aggiornato",
+    "stale_hint": "Il servizio meteo non risponde: mostro l'ultima previsione salvata.",
+    "rain_now": "Pioggia in corso o imminente.",
+    "rain_at": "Pioggia probabile verso le {{time}}."
   }
 }

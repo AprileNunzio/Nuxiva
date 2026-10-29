@@ -2,7 +2,7 @@
   "meta": {
     "locale": "es",
     "scope": "widgets/viewer_3d",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Modelo 3D",
@@ -18,6 +18,7 @@
     "error_dxf": "Ninguna entidad DXF reconocida",
     "error_cad": "Archivo CAD ilegible",
     "error_format": "Formato no visualizable",
-    "studio": "Editar en el estudio 3D"
+    "studio": "Editar en el estudio 3D",
+    "loading_pct": "Cargando el modelo… {{n}}%"
   }
 }

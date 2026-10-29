@@ -1,2 +1,17 @@
+.w-vram_allocator .va-hero { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.w-vram_allocator .va-free { margin-left: auto; font-size: 12px; color: var(--text-faint); }
+.w-vram_allocator .va-stack { display: flex; gap: 2px; height: 12px; margin: 10px 0 4px; border-radius: 6px; overflow: hidden; background: rgba(255, 255, 255, 0.06); }
+.w-vram_allocator .va-stack i { display: block; height: 100%; min-width: 3px; }
+.w-vram_allocator .va-alert { display: flex; gap: 8px; align-items: flex-start; margin-top: 10px; border-color: rgba(255, 190, 70, 0.4); background: rgba(255, 190, 70, 0.08); color: var(--amber); }
+.w-vram_allocator .va-alert .wk-svg { width: 16px; height: 16px; flex: none; }
+.w-vram_allocator .va-list { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.w-vram_allocator .va-list li { display: grid; grid-template-columns: 10px 1fr auto auto; gap: 8px; align-items: center; font-size: 12.5px; }
+.w-vram_allocator .va-list li > i { width: 10px; height: 10px; border-radius: 3px; }
+.w-vram_allocator .va-name { display: flex; flex-direction: column; min-width: 0; color: var(--text); }
+.w-vram_allocator .va-name small { font-size: 10.5px; color: var(--text-faint); }
+.w-vram_allocator .va-list em { font: 600 9.5px/1.5 var(--mono); font-style: normal; padding: 0 5px; border-radius: 3px; color: var(--text-dim); background: rgba(255, 255, 255, 0.06); white-space: nowrap; }
+.w-vram_allocator .va-list em:empty { display: none; }
+.w-vram_allocator .va-list em.cpu { color: var(--amber); background: rgba(255, 190, 70, 0.12); }
+.w-vram_allocator .va-list b { font-weight: 500; color: var(--text); white-space: nowrap; }
 .w-vram_allocator .wk-hero + .wk-kv, .w-vram_allocator .wk-bar + .wk-kv { margin-top: 12px; }
 .w-vram_allocator .wk-hero + .wk-bar { margin-top: 10px; }

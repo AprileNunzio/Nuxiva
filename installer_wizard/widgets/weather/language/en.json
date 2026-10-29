@@ -2,10 +2,15 @@
   "meta": {
     "locale": "en",
     "scope": "widgets/weather",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Weather",
-    "feels": "feels like {{feels}}° · wind {{wind}} km/h"
+    "feels": "feels like {{feels}}° · wind {{wind}} km/h",
+    "empty": "No weather data available.",
+    "stale": "outdated",
+    "stale_hint": "The weather service is not responding: showing the last saved forecast.",
+    "rain_now": "Rain now or imminent.",
+    "rain_at": "Rain likely around {{time}}."
   }
 }

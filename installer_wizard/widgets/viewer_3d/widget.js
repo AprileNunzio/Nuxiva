@@ -124,28 +124,28 @@
     return group;
   }
 
-  async function loadModel(d) {
+  async function loadModel(d, onProgress) {
     const fmt = d.format, base = d.url, url = base + encodeURIComponent(d.main);
     await ensure(fmt);
     const files = (d.files || []).map((f) => f.name);
-    if (fmt === "glb" || fmt === "gltf") { const g = await new THREE.GLTFLoader().loadAsync(url); return { obj: g.scene, clips: g.animations }; }
+    if (fmt === "glb" || fmt === "gltf") { const g = await new THREE.GLTFLoader().loadAsync(url, onProgress); return { obj: g.scene, clips: g.animations }; }
     if (fmt === "obj") {
       const loader = new THREE.OBJLoader(), mtl = files.find((n) => n.toLowerCase().endsWith(".mtl"));
       if (mtl) {
         const mats = await new THREE.MTLLoader().setPath(base).loadAsync(encodeURIComponent(mtl));
         mats.preload(); loader.setMaterials(mats);
       }
-      return { obj: await loader.loadAsync(url) };
+      return { obj: await loader.loadAsync(url, onProgress) };
     }
-    if (fmt === "stl") return { obj: fromGeometry(await new THREE.STLLoader().loadAsync(url)) };
-    if (fmt === "ply") return { obj: fromGeometry(await new THREE.PLYLoader().loadAsync(url)) };
-    if (fmt === "fbx") { const o = await new THREE.FBXLoader().loadAsync(url); return { obj: o, clips: o.animations }; }
+    if (fmt === "stl") return { obj: fromGeometry(await new THREE.STLLoader().loadAsync(url, onProgress)) };
+    if (fmt === "ply") return { obj: fromGeometry(await new THREE.PLYLoader().loadAsync(url, onProgress)) };
+    if (fmt === "fbx") { const o = await new THREE.FBXLoader().loadAsync(url, onProgress); return { obj: o, clips: o.animations }; }
     if (fmt === "dae") { const c = await new THREE.ColladaLoader().loadAsync(url); return { obj: c.scene, clips: c.animations || [] }; }
     if (fmt === "3mf") return { obj: await new THREE.ThreeMFLoader().loadAsync(url) };
     if (fmt === "amf") return { obj: await new THREE.AMFLoader().loadAsync(url) };
     if (fmt === "3ds") return { obj: await new THREE.TDSLoader().setResourcePath(base).loadAsync(url) };
     if (fmt === "wrl") return { obj: await new THREE.VRMLLoader().loadAsync(url) };
-    if (fmt === "dxf") return { obj: parseDXF(await (await fetch(url)).text()) };
+    if (fmt === "dxf") { const r = await fetch(url, { credentials: "same-origin" }); if (!r.ok) throw new Error("format"); return { obj: parseDXF((await r.text()).slice(0, 20000000)) }; }
     if (NEEDS[fmt]) return { obj: await loadCad(fmt, url) };
     throw new Error("format");
   }
@@ -163,13 +163,36 @@
   const ERRORS = new Set(["library", "dxf", "cad", "format"]);
   const fmtSize = (v) => (v >= 100 ? `${(v / 100).toFixed(2)} m` : v >= 1 ? `${v.toFixed(1)} cm` : `${(v * 10).toFixed(1)} mm`);
 
-  function mount(el, d, ctx) {
-    const files = d.files || [];
-    const href = /^(https?:\/\/|\/(?!\/))/i.test(String(d.url || "")) ? String(d.url) : "";
+  const ID = /^[A-Za-z0-9_.-]{1,80}$/;
+  const FILE = /^[^\/\\\0]{1,160}$/;
+
+  const normalize = (raw) => {
+    const d = raw && typeof raw === "object" ? raw : {};
+    const url = typeof d.url === "string" && /^\/api\/models3d\/[A-Za-z0-9_.-]{1,80}\/$/.test(d.url) ? d.url : "";
+    const files = (Array.isArray(d.files) ? d.files : []).slice(0, 40).map((f) => (typeof f === "string" ? { name: f } : f && typeof f === "object" ? f : null))
+      .filter((f) => f && typeof f.name === "string" && FILE.test(f.name) && f.name !== ".." && f.name !== ".");
+    const main = typeof d.main === "string" && FILE.test(d.main) ? d.main : "";
+    return { ...d, id: ID.test(String(d.id || "")) ? String(d.id) : "", url, files, main: url ? main : "", format: String(d.format || "").toLowerCase().slice(0, 8),
+      title: typeof d.title === "string" ? d.title.slice(0, 80) : "", note: typeof d.note === "string" ? d.note.slice(0, 200) : "", parts: Number(d.parts) || 0 };
+  };
+
+  const dispose = (st) => {
+    st.alive = false;
+    cancelAnimationFrame(st.raf);
+    if (st.scene) st.scene.traverse((o) => { if (o.geometry) o.geometry.dispose(); if (o.material) [].concat(o.material).forEach((m) => { if (m.map) m.map.dispose(); m.dispose(); }); });
+    if (st.controls) st.controls.dispose();
+    if (st.renderer) st.renderer.dispose();
+  };
+
+  function mount(el, raw, ctx) {
+    if (el._v3) dispose(el._v3);
+    const d = normalize(raw);
+    const files = d.files;
+    const href = d.url;
     el.innerHTML = `${ctx.head({ icon: "cube", label: ctx.t("label"), title: d.title || "", chip: LABEL[d.format] || String(d.format || "").toUpperCase() })}
       <div class="v3-stage"><canvas></canvas><div class="v3-msg">${ctx.esc(ctx.t("loading"))}</div>
-        <div class="v3-tools"><button class="wk-btn icon" type="button" data-a="spin" title="${ctx.esc(ctx.t("spin"))}">${ctx.icon("refresh")}</button><button class="wk-btn icon" type="button" data-a="wire" title="${ctx.esc(ctx.t("wire"))}">${ctx.icon("cube")}</button>
-          <button class="wk-btn icon" type="button" data-a="fit" title="${ctx.esc(ctx.t("fit"))}">${ctx.icon("expand")}</button>${d.parts > 0 ? `<button class="wk-btn icon" type="button" data-a="studio" title="${ctx.esc(ctx.t("studio"))}">${ctx.icon("pen")}</button>` : ""}</div></div>
+        <div class="v3-tools"><button class="wk-btn icon on" type="button" data-a="spin" aria-pressed="true" title="${ctx.esc(ctx.t("spin"))}">${ctx.icon("refresh")}</button><button class="wk-btn icon" type="button" data-a="wire" aria-pressed="false" title="${ctx.esc(ctx.t("wire"))}">${ctx.icon("cube")}</button>
+          <button class="wk-btn icon" type="button" data-a="fit" title="${ctx.esc(ctx.t("fit"))}">${ctx.icon("expand")}</button>${d.parts > 0 && d.id ? `<button class="wk-btn icon" type="button" data-a="studio" title="${ctx.esc(ctx.t("studio"))}">${ctx.icon("pen")}</button>` : ""}</div></div>
       <div class="v3-info"><span class="v3-stats"></span>${d.note ? `<span class="v3-note">${ctx.esc(d.note)}</span>` : ""}</div>
       <div class="v3-files">${href ? files.slice(0, 12).map((f) => `<a class="wk-btn" href="${ctx.esc(href + encodeURIComponent(f.name))}" download>${ctx.icon("download")} ${ctx.esc(f.name)}</a>`).join("") : ""}</div>`;
     const st = { el, id: d.id, alive: true, spin: true, wire: false };
@@ -179,7 +202,9 @@
 
   async function start(st, d, ctx) {
     if (!d.main || !NEEDS[d.format]) throw new Error(d.note || "format");
-    const { obj, clips } = await loadModel(d);
+    const msg = st.el.querySelector(".v3-msg");
+    const onProgress = (e) => { if (st.alive && msg && e && e.lengthComputable && e.total > 0) msg.textContent = ctx.t("loading_pct", { n: Math.round((e.loaded / e.total) * 100) }); };
+    const { obj, clips } = await loadModel(d, onProgress);
     if (!st.alive) return;
     const stage = st.el.querySelector(".v3-stage"), canvas = stage.querySelector("canvas");
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
@@ -211,19 +236,31 @@
     const unit = ["glb", "gltf"].includes(d.format) ? 100 : ["stl", "3mf", "amf", "step", "stp", "iges", "igs", "brep"].includes(d.format) ? 0.1 : 1;
     st.el.querySelector(".v3-stats").textContent = `${ctx.count("triangles", stats(obj))} · ${[size.x, size.y, size.z].map((v) => fmtSize(v * unit)).join(" × ")}${clips && clips.length ? ` · ${ctx.count("animations", clips.length)}` : ""}`;
     st.el.querySelector(".v3-msg").remove();
-    st.el.querySelector(".v3-tools").addEventListener("click", (e) => {
-      const a = e.target.dataset.a;
-      if (a === "spin") controls.autoRotate = st.spin = !st.spin;
+    const tools = st.el.querySelector(".v3-tools");
+    const mark = (a, on) => { const b = tools.querySelector(`[data-a="${a}"]`); if (b) { b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on)); } };
+    controls.addEventListener("start", () => mark("spin", false));
+    tools.onclick = (e) => {
+      const b = e.target.closest("[data-a]");
+      if (!b || b.disabled) return;
+      const a = b.dataset.a;
+      if (a === "spin") { controls.autoRotate = st.spin = !st.spin; mark("spin", st.spin); }
       if (a === "fit") fit();
-      if (a === "studio") fetch(`/api/models3d/${encodeURIComponent(d.id)}/studio/open`, { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" }).catch(() => {});
+      if (a === "studio" && d.id) {
+        b.disabled = true;
+        fetch(`/api/models3d/${encodeURIComponent(d.id)}/studio/open`, { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json", "X-Nuxiva-Request": "1" }, body: "{}" })
+          .catch(() => {}).finally(() => { b.disabled = false; });
+      }
       if (a === "wire") {
         st.wire = !st.wire;
+        mark("wire", st.wire);
         obj.traverse((o) => { if (o.material) [].concat(o.material).forEach((m) => { m.wireframe = st.wire; }); });
       }
-    });
+    };
     const clock = new THREE.Clock();
     const frame = () => {
-      if (!st.alive || !st.el.isConnected) { renderer.dispose(); return; }
+      if (!st.alive || !st.el.isConnected) { dispose(st); return; }
+      st.raf = requestAnimationFrame(frame);
+      if (document.hidden) return;
       const w = stage.clientWidth, h = stage.clientHeight;
       if (canvas.width !== Math.floor(w * renderer.getPixelRatio()) || canvas.height !== Math.floor(h * renderer.getPixelRatio())) {
         renderer.setSize(w, h, false); camera.aspect = w / Math.max(1, h); camera.updateProjectionMatrix();
@@ -232,15 +269,16 @@
       if (mixer) mixer.update(dt);
       controls.update();
       renderer.render(scene, camera);
-      st.raf = requestAnimationFrame(frame);
     };
     st.renderer = renderer;
+    st.scene = scene;
+    st.controls = controls;
     frame();
   }
 
   NuxivaDesk.register("viewer_3d", {
-    render(el, d, ctx) { if (el._v3) el._v3.alive = false; mount(el, d, ctx); },
-    update(el, d, ctx) { if (el._v3 && el._v3.id === d.id) return; if (el._v3) el._v3.alive = false; mount(el, d, ctx); },
-    destroy(el) { if (el._v3) { el._v3.alive = false; cancelAnimationFrame(el._v3.raf); if (el._v3.renderer) el._v3.renderer.dispose(); } },
+    render(el, d, ctx) { mount(el, d, ctx); },
+    update(el, d, ctx) { if (el._v3 && el._v3.alive && el._v3.id === normalize(d).id && el._v3.id) return; mount(el, d, ctx); },
+    destroy(el) { if (el._v3) { dispose(el._v3); el._v3 = null; } },
   });
 })();

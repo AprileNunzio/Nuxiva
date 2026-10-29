@@ -32,7 +32,7 @@ async def voices_skill(text: str) -> tuple[str, dict]:
     speech = (f"Posso parlarti subito in {len(labels)} lingue, tra cui {', '.join(labels[:8])}. "
               f"In tutto conosco {len(data['voices'])} voci in {len(data['langs'])} lingue: se me ne chiedi una "
               "nuova la scarico da solo. Prova a dirmi «parlami in inglese» o «insegnami lo spagnolo».")
-    items = [{"label": languages.label(c), "value": f"{ready[c]} voci pronte", "status": "ok"}
+    items = [{"label": languages.label(c), "value": f"{ready[c]} voci pronte", "status": "ok", "code": c, "count": ready[c]}
              for c in sorted(ready, key=lambda c: (c != "it", languages.label(c)))]
     return speech, {"mode": "focus", "title": "Le mie voci", "subtitle": f"{len(data['voices'])} voci nel catalogo",
                     "panels": [{"type": "list", "title": "Lingue pronte", "items": items}]}

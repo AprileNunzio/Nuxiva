@@ -2,10 +2,15 @@
   "meta": {
     "locale": "es",
     "scope": "widgets/weather",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Tiempo",
-    "feels": "sensación {{feels}}° · viento {{wind}} km/h"
+    "feels": "sensación {{feels}}° · viento {{wind}} km/h",
+    "empty": "No hay datos meteorológicos disponibles.",
+    "stale": "desactualizado",
+    "stale_hint": "El servicio meteorológico no responde: muestro la última previsión guardada.",
+    "rain_now": "Lluvia ahora o inminente.",
+    "rain_at": "Lluvia probable hacia las {{time}}."
   }
 }
