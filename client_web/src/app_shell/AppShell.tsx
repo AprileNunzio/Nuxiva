@@ -149,9 +149,7 @@ export function WebOSDesktop({ user, onSignOut }: { user: string; onSignOut: () 
       </main>
 
       <Taskbar
-        user={user}
         windows={windows}
-        shortcuts={shortcuts}
         launcher={launcher}
         onStart={() => {
           setLauncher(v => !v);
@@ -168,15 +166,6 @@ export function WebOSDesktop({ user, onSignOut }: { user: string; onSignOut: () 
           setLauncher(false);
           setNotifications(false);
           setUserMenu(false);
-          setNetworkOpen(false);
-          setBluetoothOpen(false);
-        }}
-        userMenu={userMenu}
-        onUserMenu={() => {
-          setUserMenu(v => !v);
-          setLauncher(false);
-          setCalendar(false);
-          setNotifications(false);
           setNetworkOpen(false);
           setBluetoothOpen(false);
         }}

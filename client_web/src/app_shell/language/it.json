@@ -25,6 +25,8 @@
     "os_notifications": "Notifiche",
     "os_windows": "Finestre aperte",
     "os_desktop": "Desktop",
+    "os_connected_nodes": "Nodi interconnessi online: {count}",
+    "os_nodes_unavailable": "Conteggio nodi non disponibile",
     "os_nodes": "Nodi",
     "os_clear": "Svuota",
     "os_no_notifications": "Nessuna notifica",

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Grid2X2, Monitor, UserRound, X, Wifi, WifiOff, Network, Bluetooth } from 'lucide-react';
+import { Grid2X2, Activity, X, Wifi, WifiOff, Network, Bluetooth, Waypoints } from 'lucide-react';
 import { appRegistry } from './window_manager/registry';
 import { windowStore } from './window_manager/WindowStore';
 import type { OSWindow } from './window_manager/types';
@@ -10,36 +10,30 @@ import { useAssistantIdentity } from '../shared/identity/IdentityContext';
 import { useNetworkState } from './tray/network/useNetworkState';
 import { useBluetoothState } from './tray/bluetooth/useBluetoothState';
 import { useHardwareCapabilities } from './hardware/useHardwareCapabilities';
+import { fetchNodes } from '../core_apps/nodes/api';
+import type { MeshNodeItem } from '../core_apps/nodes/types';
 import './taskbar.css';
 
 export function Taskbar({
-  user,
   windows,
-  shortcuts,
   launcher,
   onStart,
   onOpen,
   clock,
   calendar,
   onCalendar,
-  userMenu,
-  onUserMenu,
   network = false,
   onNetwork,
   bluetooth = false,
   onBluetooth,
 }: {
-  user: string;
   windows: OSWindow[];
-  shortcuts: typeof appRegistry;
   launcher: boolean;
   onStart: () => void;
   onOpen: (id: string, newInstance?: boolean) => void;
   clock: Date;
   calendar: boolean;
   onCalendar: () => void;
-  userMenu: boolean;
-  onUserMenu: () => void;
   network?: boolean;
   onNetwork?: () => void;
   bluetooth?: boolean;
@@ -48,7 +42,26 @@ export function Taskbar({
   const { t, lang } = useScopedI18n('app_shell');
   const assistant = useAssistantIdentity();
   const [group, setGroup] = useState<string | null>(null);
-  const groups = taskbarGroups(windows, shortcuts.map(app => app.id));
+  const groups = taskbarGroups(windows, []);
+  const [nodes, setNodes] = useState<MeshNodeItem[] | null>(null);
+  const [context, setContext] = useState<{ x: number; nodeId?: string } | null>(null);
+  const localNode = nodes?.find(node => node.source === 'local');
+  const connectedCount = nodes ? new Set(nodes.filter(node => node.online === true).map(node => node.id)).size : null;
+
+  useEffect(() => {
+    let disposed = false;
+    const refresh = async () => {
+      try {
+        const result = await fetchNodes();
+        if (!disposed) setNodes(result);
+      } catch {
+        if (!disposed) setNodes(null);
+      }
+    };
+    void refresh();
+    const timer = window.setInterval(() => { void refresh(); }, 10000);
+    return () => { disposed = true; window.clearInterval(timer); };
+  }, []);
   const selected = groups.find(item => item.appId === group);
   const networkState = useNetworkState();
   const bluetoothState = useBluetoothState();
@@ -64,10 +77,10 @@ export function Taskbar({
 
   useEffect(() => {
     const close = (event: PointerEvent) => {
-      if (!(event.target as Element).closest('.os-taskbar')) setGroup(null);
+      if (!(event.target as Element).closest('.os-taskbar')) { setGroup(null); setContext(null); }
     };
     const escape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setGroup(null);
+      if (event.key === 'Escape') { setGroup(null); setContext(null); }
     };
     window.addEventListener('pointerdown', close);
     window.addEventListener('keydown', escape);
@@ -90,7 +103,10 @@ export function Taskbar({
         data-running={item.entries.length > 0}
         onContextMenu={event => {
           event.preventDefault();
-          setGroup(app.id);
+          event.stopPropagation();
+          setGroup(null);
+          const active = item.entries.find(entry => !entry.minimized) || item.entries[0];
+          setContext({ x: event.clientX, nodeId: active?.targetNodeId || localNode?.id });
         }}
         onClick={event => {
           if (event.shiftKey) {
@@ -119,22 +135,13 @@ export function Taskbar({
   };
 
   return (
-    <footer className="os-taskbar">
-      <button
-        className="os-task-user"
-        title={user}
-        aria-label={t('signed_in_as', { user })}
-        onClick={() => {
-          setGroup(null);
-          onUserMenu();
-        }}
-        aria-expanded={userMenu}
-        aria-haspopup="dialog"
-      >
-        <UserRound />
-        <span>{user}</span>
-      </button>
-
+    <footer className="os-taskbar" onContextMenu={event => {
+      event.preventDefault();
+      setGroup(null);
+      setContext({ x: event.clientX, nodeId: localNode?.id });
+    }} onClick={event => {
+      if (!(event.target as Element).closest('.os-task-context')) setContext(null);
+    }}>
       <nav className="os-task-apps" aria-label={t('os_windows')}>
         <button
           className="os-task-button"
@@ -149,19 +156,10 @@ export function Taskbar({
         >
           <Grid2X2 />
         </button>
-        <button
-          className="os-task-button"
-          aria-label={t('os_desktop')}
-          title={t('os_desktop')}
-          onClick={() => windows.forEach(w => windowStore.update(w.id, { minimized: true }))}
-        >
-          <Monitor />
-        </button>
-        {groups.filter(item => !item.background).map(icon)}
+        {groups.map(icon)}
       </nav>
 
       <div className="os-task-tray">
-        <nav aria-label={t('os_minimize')}>{groups.filter(item => item.background).map(icon)}</nav>
 
         <div className="os-task-tray-group">
           {onNetwork && (
@@ -214,6 +212,12 @@ export function Taskbar({
           )}
         </div>
 
+        <button className="os-task-tray-button os-task-nodes"
+          title={t(nodes ? 'os_connected_nodes' : 'os_nodes_unavailable', { count: connectedCount ?? '—' })}
+          aria-label={t(nodes ? 'os_connected_nodes' : 'os_nodes_unavailable', { count: connectedCount ?? '—' })}
+          onClick={() => { setGroup(null); onOpen('nodes'); }}>
+          <Waypoints aria-hidden="true" /><span>{connectedCount ?? '—'}</span>
+        </button>
         <button
           className="os-task-clock"
           aria-label={t('os_calendar')}
@@ -228,11 +232,24 @@ export function Taskbar({
         </button>
       </div>
 
+      {context && (
+        <div className="os-task-context" role="menu" style={{ left: Math.max(8, Math.min(context.x, window.innerWidth - 250)) }}>
+          <button role="menuitem" onClick={() => {
+            windowStore.openWindow({ appId: 'task_manager', targetNodeId: context.nodeId || 'virtual_core' });
+            setContext(null);
+          }}><Activity aria-hidden="true" />{title('task_manager')}</button>
+        </div>
+      )}
       {selected && (
         <div className="os-task-switcher" role="dialog" aria-label={title(selected.appId)}>
           <strong>{title(selected.appId)}</strong>
           {selected.entries.map(entry => (
-            <div key={entry.id}>
+            <div key={entry.id} onContextMenu={event => {
+              event.preventDefault();
+              event.stopPropagation();
+              setGroup(null);
+              setContext({ x: event.clientX, nodeId: entry.targetNodeId || localNode?.id });
+            }}>
               <button
                 onClick={() => {
                   windowStore.focus(entry.id);

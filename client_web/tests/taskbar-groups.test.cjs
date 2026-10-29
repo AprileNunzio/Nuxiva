@@ -9,3 +9,8 @@ assert.equal(groups.find(group=>group.appId==='terminal').background,true);asser
 assert.equal(windows[0].id,'one');
 console.log('Taskbar grouping: pinned deduplication, multiple windows, minimized groups and stable source passed.');
 
+
+const runningOnly=moduleContext.exports.taskbarGroups(windows,[]);
+assert.equal(runningOnly.length,2);
+assert.ok(runningOnly.every(group=>group.entries.length>0));
+assert.ok(runningOnly.some(group=>group.appId==='terminal' && group.background));

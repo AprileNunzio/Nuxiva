@@ -25,6 +25,8 @@
     "os_notifications": "Notifications",
     "os_windows": "Open windows",
     "os_desktop": "Desktop",
+    "os_connected_nodes": "Interconnected nodes online: {count}",
+    "os_nodes_unavailable": "Node count unavailable",
     "os_nodes": "Nodes",
     "os_clear": "Clear",
     "os_no_notifications": "No notifications",

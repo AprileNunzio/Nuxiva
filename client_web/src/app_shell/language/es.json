@@ -25,6 +25,8 @@
     "os_notifications": "Notificaciones",
     "os_windows": "Ventanas abiertas",
     "os_desktop": "Escritorio",
+    "os_connected_nodes": "Nodos interconectados en línea: {count}",
+    "os_nodes_unavailable": "Recuento de nodos no disponible",
     "os_nodes": "Nodos",
     "os_clear": "Vaciar",
     "os_no_notifications": "Sin notificaciones",

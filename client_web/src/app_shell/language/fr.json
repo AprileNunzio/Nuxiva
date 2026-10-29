@@ -25,6 +25,8 @@
     "os_notifications": "Notifications",
     "os_windows": "Fenêtres ouvertes",
     "os_desktop": "Bureau",
+    "os_connected_nodes": "Nœuds interconnectés en ligne : {count}",
+    "os_nodes_unavailable": "Nombre de nœuds indisponible",
     "os_nodes": "Nœuds",
     "os_clear": "Effacer",
     "os_no_notifications": "Aucune notification",
