@@ -311,6 +311,15 @@ async def _relay(cid: str, url: str, token: str, wanted_range: str | None = None
     except relay.RelayError as exc:
         raise HTTPException(502, str(exc))
     kind = res.headers.get("content-type", "application/octet-stream")
+    if relay.is_dash(str(res.url), kind):
+        try:
+            body = relay.rewrite_dash(await relay.read_playlist(res), str(res.url), cid, token, channel["url"])
+        except relay.RelayError as exc:
+            raise HTTPException(502, str(exc))
+        finally:
+            await res.aclose()
+            await client.aclose()
+        return Response(body, media_type=relay.DASH_TYPE, headers=relay.CORS)
     if relay.is_playlist(str(res.url), kind):
         try:
             text = await relay.read_playlist(res)
@@ -379,6 +388,16 @@ async def tv_live(cid: str, request: Request, t: str = ""):
     if not channel:
         raise HTTPException(404, "Canale sconosciuto")
     return await _relay(cid, channel["url"], t, request.headers.get("range"), request=request)
+
+
+@admin_routes.get("/api/tv/dash/{cid}/{token}/{base}/{rest:path}")
+@public_routes.get("/api/tv/dash/{cid}/{token}/{base}/{rest:path}")
+async def tv_dash(cid: str, token: str, base: str, rest: str, request: Request):
+    try:
+        url = relay.dash_target(cid, base, rest, request.url.query)
+    except relay.RelayError as exc:
+        raise HTTPException(403, str(exc))
+    return await _relay(cid, url, token, request.headers.get("range"), request=request)
 
 
 @admin_routes.get("/api/tv/seg/{cid}")

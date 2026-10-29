@@ -56,6 +56,59 @@ class RelayTest(unittest.TestCase):
         self.assertTrue(lines[2].startswith("/api/tv/seg/abcd?"))
         self.assertEqual(lines[3], "#rimosso")
 
+    def test_dash_manifest_is_routed_through_signed_relay(self):
+        text = ('<?xml version="1.0"?>\n<MPD xmlns="urn:mpeg:dash:schema:mpd:2011" xmlns:cenc="urn:mpeg:cenc:2013" type="dynamic">'
+                '<Location>https://cdn.example/live/Manifest.mpd</Location><PatchLocation>patch.mpp</PatchLocation>'
+                '<UTCTiming schemeIdUri="urn:mpeg:dash:utc:http-xsdate:2014" value="https://time.example/now"/>'
+                '<Period><AdaptationSet><ContentProtection cenc:default_KID="00"/>'
+                '<SegmentTemplate media="$RepresentationID$/seg-$Number$.m4s" initialization="/abs/$RepresentationID$/init.mp4"/>'
+                '<Representation id="v1"><BaseURL>http://192.168.1.1/admin/</BaseURL></Representation>'
+                '<Representation id="v2"><BaseURL>https://edge.example/v2/</BaseURL>'
+                '<SegmentList><SegmentURL media="https://edge.example/v2/s1.m4s"/></SegmentList></Representation>'
+                '</AdaptationSet></Period></MPD>')
+        out = relay.rewrite_dash(text, "https://cdn.example/live/Manifest.mpd?x=1", "abcd", "1.tok", "https://cdn.example/live/Manifest.mpd")
+        self.assertIn('xmlns="urn:mpeg:dash:schema:mpd:2011"', out)
+        self.assertIn("cenc:default_KID", out)
+        self.assertNotIn("PatchLocation", out)
+        self.assertNotIn("192.168.1.1", out)
+        root = relay.ET.fromstring(out)
+        ns = "{urn:mpeg:dash:schema:mpd:2011}"
+        base = root.find(f"{ns}BaseURL").text
+        self.assertTrue(base.startswith("/api/tv/dash/abcd/1.tok/"))
+        self.assertTrue(base.endswith("/live/"))
+        self.assertTrue(root.find(f"{ns}Location").text.startswith("/api/tv/seg/abcd?"))
+        self.assertTrue(root.find(f"{ns}UTCTiming").get("value").startswith("/api/tv/seg/abcd?"))
+        template = root.find(f"{ns}Period/{ns}AdaptationSet/{ns}SegmentTemplate")
+        self.assertEqual(template.get("media"), "$RepresentationID$/seg-$Number$.m4s")
+        self.assertTrue(template.get("initialization").startswith("/api/tv/dash/abcd/1.tok/"))
+        self.assertTrue(template.get("initialization").endswith("/abs/$RepresentationID$/init.mp4"))
+        reps = root.findall(f"{ns}Period/{ns}AdaptationSet/{ns}Representation")
+        self.assertIsNone(reps[0].find(f"{ns}BaseURL"))
+        edge = reps[1].find(f"{ns}BaseURL").text
+        self.assertTrue(edge.endswith("/v2/"))
+        self.assertNotEqual(edge.split("/")[6], base.split("/")[6])
+        segment = reps[1].find(f"{ns}SegmentList/{ns}SegmentURL").get("media")
+        self.assertTrue(segment.startswith(edge.rsplit("/v2/", 1)[0]))
+
+    def test_dash_target_requires_signature_and_same_origin(self):
+        prefix = relay.dash_prefix("abcd", "https://cdn.example", "1.tok")
+        base = prefix.split("/")[6]
+        self.assertEqual(relay.dash_target("abcd", base, "live/v1/seg-7.m4s", "k=1"), "https://cdn.example/live/v1/seg-7.m4s?k=1")
+        self.assertEqual(relay.dash_target("abcd", base, "live/a b.m4s"), "https://cdn.example/live/a%20b.m4s")
+        self.assertEqual(relay.dash_target("abcd", base, "/evil.example/x"), "https://cdn.example/evil.example/x")
+        for cid, bad, rest in (("other", base, "x"), ("abcd", base[:-1] + "0", "x"), ("abcd", "nope", "x"), ("abcd", base, "a\\b"), ("abcd", base, "a\r\nb")):
+            with self.assertRaises(relay.RelayError):
+                relay.dash_target(cid, bad, rest)
+
+    def test_dash_rejects_entities_and_foreign_documents(self):
+        for text in ('<!DOCTYPE MPD [<!ENTITY a "x">]><MPD xmlns="urn:mpeg:dash:schema:mpd:2011">&a;</MPD>',
+                     '<html><body/></html>', '<MPD><unclosed></MPD>'):
+            with self.assertRaises(relay.RelayError):
+                relay.rewrite_dash(text, "https://cdn.example/a.mpd", "abcd", "1.tok", "https://cdn.example/a.mpd")
+        self.assertTrue(relay.is_dash("https://cdn.example/x/Manifest.mpd", "text/plain"))
+        self.assertTrue(relay.is_dash("https://cdn.example/x", "application/dash+xml; charset=utf-8"))
+        self.assertFalse(relay.is_dash("https://cdn.example/x.m3u8", "application/vnd.apple.mpegurl"))
+
     def test_private_origin_may_use_private_segments(self):
         self.assertTrue(relay.allowed("http://192.168.1.5/live.m3u8", "http://192.168.1.5/seg.ts"))
         self.assertFalse(relay.allowed("http://cdn.example/a.m3u8", "http://127.0.0.1/x"))
