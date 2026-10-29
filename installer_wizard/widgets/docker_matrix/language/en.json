@@ -2,9 +2,15 @@
   "meta": {
     "locale": "en",
     "scope": "widgets/docker_matrix",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
-    "label": "Docker containers"
+    "label": "Docker containers",
+    "cpu": "CPU",
+    "ram": "RAM",
+    "restarts": "Restarts",
+    "sum_ok": "{{n}} running",
+    "sum_warn": "{{n}} transitioning",
+    "sum_bad": "{{n}} stopped or failing"
   }
 }

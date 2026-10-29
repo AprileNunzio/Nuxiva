@@ -1,2 +1,27 @@
 .w-energy_chart .wk-hero + .wk-kv, .w-energy_chart .wk-bar + .wk-kv { margin-top: 12px; }
 .w-energy_chart .wk-hero + .wk-bar { margin-top: 10px; }
+.w-energy_chart .ec-flow { display: flex; align-items: center; gap: 6px; margin: 4px 0 12px; }
+.w-energy_chart .ec-node { flex: none; display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 76px; text-align: center; }
+.w-energy_chart .ec-ic { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; font-size: 18px; color: var(--text-dim); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12) inset; transition: box-shadow 0.4s, color 0.4s; }
+.w-energy_chart .ec-node.flow .ec-ic { color: rgb(var(--tone)); box-shadow: 0 0 0 1px rgba(var(--tone), 0.6) inset, 0 0 16px rgba(var(--tone), 0.25); }
+.w-energy_chart .ec-solar.flow .ec-ic { color: var(--amber); box-shadow: 0 0 0 1px rgba(255, 181, 71, 0.6) inset, 0 0 16px rgba(255, 181, 71, 0.25); }
+.w-energy_chart .ec-grid.export .ec-ic { color: var(--green); }
+.w-energy_chart .ec-home .ec-ic { width: 52px; height: 52px; font-size: 22px; }
+.w-energy_chart .ec-node b { font: 400 14px var(--font); color: var(--hud-text); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.w-energy_chart .ec-home b { font-size: 20px; font-weight: 300; }
+.w-energy_chart .ec-node small { font: 500 9px var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-faint); }
+.w-energy_chart .ec-link { flex: 1; position: relative; height: 2px; margin-bottom: 30px; border-radius: 2px; background: rgba(255, 255, 255, 0.08); overflow: hidden; }
+.w-energy_chart .ec-link.on { background: rgba(var(--tone), 0.18); }
+.w-energy_chart .ec-link.on i { position: absolute; inset: 0; background: repeating-linear-gradient(90deg, rgb(var(--tone)) 0 6px, transparent 6px 16px); animation: ec-run 1.1s linear infinite; }
+.w-energy_chart .ec-link.on.rev i { animation-direction: reverse; }
+.w-energy_chart .ec-self { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px; font-size: 11px; color: var(--text-dim); }
+.w-energy_chart .ec-self .wk-bar { margin-top: 0; }
+.w-energy_chart .ec-self b { font: 500 11px var(--mono); color: var(--text); }
+.w-energy_chart .ec-chart { margin: 12px 0 0; }
+.w-energy_chart .ec-chart svg { display: block; width: 100%; height: 64px; }
+.w-energy_chart .ec-line { fill: none; stroke: rgb(var(--tone)); stroke-width: 1.4; vector-effect: non-scaling-stroke; }
+.w-energy_chart .ec-zero { stroke: rgba(255, 255, 255, 0.2); stroke-dasharray: 2 2; vector-effect: non-scaling-stroke; }
+.w-energy_chart .ec-chart figcaption { display: flex; justify-content: space-between; margin-top: 4px; font: 10px var(--mono); color: var(--text-faint); }
+.w-energy_chart .ec-kv { margin-top: 12px; }
+@keyframes ec-run { from { transform: translateX(-16px); } to { transform: translateX(0); } }
+@media (prefers-reduced-motion: reduce) { .w-energy_chart .ec-link.on i { animation: none; } }

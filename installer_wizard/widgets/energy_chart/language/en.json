@@ -2,9 +2,22 @@
   "meta": {
     "locale": "en",
     "scope": "widgets/energy_chart",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
-    "label": "Energy"
+    "label": "Energy",
+    "solar": "Solar",
+    "home": "Home",
+    "grid_in": "From grid",
+    "grid_out": "To grid",
+    "battery": "Battery",
+    "today": "Used today",
+    "solar_today": "Produced today",
+    "cost": "Cost today",
+    "self_share": "Self-sufficiency",
+    "exporting": "exporting",
+    "self_powered": "self-powered",
+    "peak": "peak",
+    "history": "last 24 h"
   }
 }

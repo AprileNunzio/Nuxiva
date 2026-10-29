@@ -2,7 +2,7 @@
   "meta": {
     "locale": "es",
     "scope": "widgets/expert_work",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Experto trabajando",
@@ -12,6 +12,7 @@
     "status_thinking": "Razonando",
     "status_working": "Trabajando",
     "status_waiting": "Esperando",
-    "status_done": "Completado"
+    "status_done": "Completado",
+    "elapsed": "Tiempo transcurrido"
   }
 }

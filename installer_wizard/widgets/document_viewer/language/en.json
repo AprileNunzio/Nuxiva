@@ -2,7 +2,7 @@
   "meta": {
     "locale": "en",
     "scope": "widgets/document_viewer",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "viewer": "Preview",
@@ -11,6 +11,14 @@
     "documents": "Documents",
     "shared_folder": "Shared folder",
     "failed": "Failed:",
-    "no_preview": "Preview not available"
+    "no_preview": "Preview not available",
+    "loading": "Loading preview…",
+    "files_one": "{{n}} file",
+    "files_other": "{{n}} files",
+    "kind_word": "Text document",
+    "kind_sheet": "Spreadsheet",
+    "kind_slides": "Presentation",
+    "kind_pdf": "PDF",
+    "kind_file": "File"
   }
 }

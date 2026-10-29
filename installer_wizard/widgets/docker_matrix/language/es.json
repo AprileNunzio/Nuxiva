@@ -2,9 +2,15 @@
   "meta": {
     "locale": "es",
     "scope": "widgets/docker_matrix",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
-    "label": "Contenedores Docker"
+    "label": "Contenedores Docker",
+    "cpu": "CPU",
+    "ram": "RAM",
+    "restarts": "Reinicios",
+    "sum_ok": "{{n}} activos",
+    "sum_warn": "{{n}} en transición",
+    "sum_bad": "{{n}} parados o con fallos"
   }
 }

@@ -2,9 +2,22 @@
   "meta": {
     "locale": "fr",
     "scope": "widgets/energy_chart",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
-    "label": "Énergie"
+    "label": "Énergie",
+    "solar": "Soleil",
+    "home": "Maison",
+    "grid_in": "Du réseau",
+    "grid_out": "Vers le réseau",
+    "battery": "Batterie",
+    "today": "Consommé aujourd'hui",
+    "solar_today": "Produit aujourd'hui",
+    "cost": "Coût aujourd'hui",
+    "self_share": "Autonomie",
+    "exporting": "injection réseau",
+    "self_powered": "autonome",
+    "peak": "pic",
+    "history": "dernières 24 h"
   }
 }

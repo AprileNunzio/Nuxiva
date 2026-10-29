@@ -2,7 +2,7 @@
   "meta": {
     "locale": "es",
     "scope": "widgets/f1_race",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Fórmula 1",
@@ -16,6 +16,14 @@
     "unit_d": "d",
     "unit_h": "h",
     "unit_m": "m",
-    "unit_min": "min"
+    "unit_min": "min",
+    "s_fp1": "Libres 1",
+    "s_fp2": "Libres 2",
+    "s_fp3": "Libres 3",
+    "s_sq": "Clasificación sprint",
+    "s_sprint": "Sprint",
+    "s_quali": "Clasificación",
+    "s_race": "Carrera",
+    "teams_title": "Constructores"
   }
 }
