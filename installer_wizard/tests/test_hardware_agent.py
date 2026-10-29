@@ -10,6 +10,7 @@ from fastapi.testclient import TestClient
 import nuxiva_supervisor
 from features.hardware.expert import agent as hardware_agent
 from features.hardware.model import HardwareDevice
+from features.hardware.repos import OsInfo, RepoManager
 from features.hardware.service import hardware_service
 
 HEADERS = {"X-Nuxiva-Request": "1"}
@@ -17,8 +18,31 @@ HEADERS = {"X-Nuxiva-Request": "1"}
 
 class HardwareAgentTest(unittest.TestCase):
     def setUp(self):
+        patcher = mock.patch.object(hardware_agent, "_pkg_manager", "apt")
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        repositories = mock.patch.object(hardware_agent, "_repos", RepoManager(hardware_agent._run_cmd, OsInfo("debian", [], "13"), "/nonexistent"))
+        repositories.start()
+        self.addCleanup(repositories.stop)
         self.client = TestClient(nuxiva_supervisor.admin)
         self.client.post("/api/auth/login", json={"username": "admin", "password": "nuxiva"}, headers=HEADERS)
+
+    def test_hardware_mutations_require_admin_and_request_header(self):
+        anonymous = TestClient(nuxiva_supervisor.admin)
+        for action in ("install-driver", "update-driver"):
+            path = f"/api/hardware/devices/usb:missing/{action}"
+            self.assertEqual(anonymous.post(path, headers=HEADERS).status_code, 401)
+            self.assertEqual(self.client.post(path).status_code, 403)
+            self.assertEqual(self.client.post(path, headers=HEADERS).status_code, 404)
+
+    def test_device_status_uses_requested_interface_language(self):
+        from features.hardware import api
+        device = HardwareDevice("test", "Test", "", "", "", "wifi", status="ready")
+        with mock.patch.object(hardware_service, "_devices", {device.id: device}), \
+             mock.patch.object(api, "page_language", return_value="en"):
+            response = self.client.get("/api/hardware/devices")
+        self.assertEqual(response.json()["devices"][0]["status_label"], "Ready")
+        self.assertEqual(response.json()["devices"][0]["status_label_key"], "hardware_ready")
 
     def test_diagnose_tplink_wifi_adapter(self):
         dev = HardwareDevice(
@@ -74,12 +98,15 @@ class HardwareAgentTest(unittest.TestCase):
         with mock.patch.object(hardware_agent, "update_packages", fake_update), \
              mock.patch.object(hardware_agent, "install_packages", fake_install), \
              mock.patch.object(hardware_agent, "_run_cmd", new=mock.AsyncMock(return_value=(0, ""))), \
+             mock.patch.object(hardware_agent, "filter_available", new=mock.AsyncMock(side_effect=lambda packages: (packages, []))), \
+             mock.patch.object(hardware_agent, "_firmware_exists", side_effect=[False, True]), \
+             mock.patch.object(hardware_agent.repos, "ensure", new=mock.AsyncMock(return_value=mock.Mock(ok=True, changed=False, enabled=[], already=[], notes=[]))), \
              mock.patch.object(hardware_agent, "activate_device", fake_activate):
             res = asyncio.run(hardware_agent.provision(dev))
 
         self.assertTrue(res)
         self.assertEqual(dev.status, "ready")
-        self.assertEqual(dev.status_label, "Pronto all'uso")
+        self.assertEqual(dev.to_dict()["status_label_key"], "hardware_ready")
 
     def test_hardware_devices_api(self):
         fake_dev = HardwareDevice(

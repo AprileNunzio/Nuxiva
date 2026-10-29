@@ -1,11 +1,30 @@
 {
-  "name": "Hardware & Devices",
-  "description": "Real-time hardware detection, autonomous expert agent for driver and firmware installation (Wi-Fi, Bluetooth, Audio, USB peripherals), and dynamic enablement of WebOS apps.",
+  "name": "Hardware and drivers",
+  "description": "Linux USB, PCIe, ACPI and auxiliary bus discovery, verified provisioning and targeted updates for managed drivers.",
   "capabilities": [
-    "Continuous monitoring of USB peripherals, network cards, and Bluetooth",
-    "Autonomous expert agent for automated driver provisioning and installation",
-    "Automatic system package updates (apt/yum) and kernel firmware loading",
-    "Desktop notifications and dynamic control activation on WebOS"
+    "Kernel modalias resolution",
+    "Debian/Ubuntu and RPM repositories with signature checks and APT backups",
+    "Catalog DKMS drivers pinned to immutable Git revisions with Secure Boot protection",
+    "NVIDIA, AMD and Intel GPU plans with capability verification",
+    "Persistent targeted updates for managed packages",
+    "Verified hardware capabilities for WebOS controls"
   ],
-  "settings": {}
+  "settings": {},
+  "messages": {
+    "hardware_ready": "Ready",
+    "hardware_needs_driver": "Driver setup required",
+    "hardware_configuring": "Configuring",
+    "hardware_error": "Configuration failed",
+    "hardware_awaiting_approval": "Administrator approval required",
+    "hardware_reboot_required": "Reboot required",
+    "hardware_unsupported": "No compatible driver available",
+    "hardware_connected": "Device connected",
+    "hardware_disconnected": "Device disconnected",
+    "hardware_setup": "Hardware setup",
+    "hardware_notice": "{device}: {status}",
+    "hardware_unknown": "Unknown",
+    "hardware_device": "{bus} device {id}",
+    "hardware_network_interface": "Network interface {id}",
+    "hardware_bluetooth_controller": "Bluetooth controller {id}"
+  }
 }

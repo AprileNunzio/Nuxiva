@@ -9,6 +9,7 @@ import { taskbarGroups } from './taskbarGroups';
 import { useAssistantIdentity } from '../shared/identity/IdentityContext';
 import { useNetworkState } from './tray/network/useNetworkState';
 import { useBluetoothState } from './tray/bluetooth/useBluetoothState';
+import { useHardwareCapabilities } from './hardware/useHardwareCapabilities';
 import './taskbar.css';
 
 export function Taskbar({
@@ -51,6 +52,9 @@ export function Taskbar({
   const selected = groups.find(item => item.appId === group);
   const networkState = useNetworkState();
   const bluetoothState = useBluetoothState();
+  const hardwareAvailable = useHardwareCapabilities();
+  const wifiAvailable = hardwareAvailable('network.wifi') ?? networkState.isWifiAvailable;
+  const bluetoothAvailable = hardwareAvailable('bluetooth.controller') ?? bluetoothState.isAvailable;
 
   const title = (id: string) => {
     if (id === 'explorer') return assistant.name;
@@ -162,7 +166,7 @@ export function Taskbar({
         <div className="os-task-tray-group">
           {onNetwork && (
             <>
-              {(!networkState.isWifiAvailable || networkState.hasEthernet) && (
+              {(!wifiAvailable || networkState.hasEthernet) && (
                 <button
                   className="os-task-tray-button os-task-tray-network"
                   aria-label={t('os_network') || 'Rete'}
@@ -177,7 +181,7 @@ export function Taskbar({
                 </button>
               )}
 
-              {networkState.isWifiAvailable && (
+              {wifiAvailable && (
                 <button
                   className="os-task-tray-button os-task-tray-wifi"
                   aria-label="Wi-Fi"
@@ -194,7 +198,7 @@ export function Taskbar({
             </>
           )}
 
-          {onBluetooth && bluetoothState.isAvailable && (
+          {onBluetooth && bluetoothAvailable && (
             <button
               className="os-task-tray-button os-task-tray-bluetooth"
               aria-label={t('os_bluetooth') || 'Bluetooth'}

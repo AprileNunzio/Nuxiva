@@ -1,6 +1,7 @@
 import { createMaster, createTrack, disposeTrack, level, syncMaster, syncTrack, type MasterNode, type TrackNode } from './graph';
 import { makeLibrary, resumeAudio, scheduleRange, totalBeats, type Library } from './schedule';
 import type { Catalog, Project } from '../types';
+import { playSynth, playDrum } from './voices';
 
 const LOOKAHEAD = 0.25;
 const TICK_MS = 30;
@@ -174,7 +175,6 @@ export class Player {
     const track = this.project.tracks.find((t) => t.id === trackId);
     const instrument = track && this.library.instruments.get(track.instrument);
     if (!node || !instrument) return;
-    const { playSynth, playDrum } = await import('./voices');
     if (instrument.voice.engine === 'drums') {
       const lane = this.library.lanes.get(midi);
       if (lane) playDrum(ctx, node.input, instrument.voice, lane, ctx.currentTime, 0.9);

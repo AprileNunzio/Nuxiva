@@ -1,0 +1,334 @@
+{
+  "recipes": [
+    {
+      "id": "ralink-rt73",
+      "name": "TP-Link TL-WN321G (Ralink RT2573 Wireless Adapter)",
+      "category": "wifi",
+      "match": {
+        "usb": ["148f:2573"]
+      },
+      "modules": ["rt73usb"],
+      "firmware": ["rt73.bin"],
+      "packages": {
+        "apt": ["firmware-misc-nonfree", "firmware-mediatek", "network-manager", "wpasupplicant", "wireless-tools", "iw"],
+        "dnf": ["linux-firmware", "NetworkManager-wifi", "wpa_supplicant", "wireless-tools", "iw"],
+        "pacman": ["linux-firmware", "networkmanager", "wpa_supplicant", "wireless_tools", "iw"],
+        "zypper": ["kernel-firmware", "NetworkManager", "wpa_supplicant", "wireless-tools", "iw"]
+      },
+      "repos": ["non-free-firmware"]
+    },
+    {
+      "id": "ralink-rt2800usb",
+      "name": "Ralink RT2870/RT3070/RT5370 802.11n Wireless Adapter",
+      "category": "wifi",
+      "match": {
+        "usb": ["148f:3070", "148f:5370", "148f:2870", "148f:3072", "148f:5372"]
+      },
+      "modules": ["rt2800usb"],
+      "firmware": ["rt2870.bin"],
+      "packages": {
+        "apt": ["firmware-misc-nonfree", "firmware-mediatek", "network-manager", "wpasupplicant", "wireless-tools", "iw"],
+        "dnf": ["linux-firmware", "NetworkManager-wifi", "wpa_supplicant"],
+        "pacman": ["linux-firmware", "networkmanager", "wpa_supplicant"],
+        "zypper": ["kernel-firmware", "NetworkManager", "wpa_supplicant"]
+      },
+      "repos": ["non-free-firmware"]
+    },
+    {
+      "id": "atheros-ar9271",
+      "name": "Atheros AR9271 802.11n Wireless Adapter",
+      "category": "wifi",
+      "match": {
+        "usb": ["0cf3:9271"]
+      },
+      "modules": ["ath9k_htc"],
+      "firmware": ["ath9k_htc/htc_9271-1.4.0.fw"],
+      "packages": {
+        "apt": ["firmware-ath9k-htc", "network-manager", "wpasupplicant", "wireless-tools", "iw"],
+        "dnf": ["linux-firmware", "NetworkManager-wifi", "wpa_supplicant"],
+        "pacman": ["linux-firmware", "networkmanager", "wpa_supplicant"],
+        "zypper": ["kernel-firmware", "NetworkManager", "wpa_supplicant"]
+      },
+      "repos": ["non-free-firmware"]
+    },
+    {
+      "id": "csr-bluetooth",
+      "name": "Cambridge Silicon Radio (CSR) Bluetooth Dongle",
+      "category": "bluetooth",
+      "match": {
+        "usb": ["0a12:0001"]
+      },
+      "modules": ["btusb"],
+      "firmware": [],
+      "packages": {
+        "apt": ["bluez", "bluez-tools", "pulseaudio-module-bluetooth"],
+        "dnf": ["bluez", "pulseaudio-module-bluetooth"],
+        "pacman": ["bluez", "bluez-utils"],
+        "zypper": ["bluez"]
+      },
+      "repos": []
+    },
+    {
+      "id": "realtek-8812au",
+      "name": "Realtek RTL8812AU/RTL8821AU Wi-Fi (driver fuori kernel)",
+      "category": "wifi",
+      "match": {
+        "usb": ["0bda:8812", "0bda:881a", "0bda:8811", "0bda:0811", "0bda:0821", "0bda:a811", "2357:0101", "2357:0103", "2357:010d"]
+      },
+      "modules": [],
+      "firmware": [],
+      "packages": {
+        "apt": ["network-manager", "wpasupplicant", "iw"],
+        "dnf": ["NetworkManager-wifi", "wpa_supplicant", "iw"],
+        "pacman": ["networkmanager", "wpa_supplicant", "iw"],
+        "zypper": ["NetworkManager", "wpa_supplicant", "iw"]
+      },
+      "repos": [],
+      "dkms": {
+        "git": "https://github.com/aircrack-ng/rtl8812au.git",
+        "module": "88XXau",
+        "revision": "734485506a30d6237c2deaad666a19f8ca5379f2"
+      }
+    },
+    {
+      "id": "realtek-8821cu",
+      "name": "Realtek RTL8811CU/RTL8821CU Wi-Fi (driver fuori kernel)",
+      "category": "wifi",
+      "match": {
+        "usb": ["0bda:c811", "0bda:c820", "0bda:c821"]
+      },
+      "modules": [],
+      "firmware": [],
+      "packages": {
+        "apt": ["network-manager", "wpasupplicant", "iw"],
+        "dnf": ["NetworkManager-wifi", "wpa_supplicant", "iw"],
+        "pacman": ["networkmanager", "wpa_supplicant", "iw"],
+        "zypper": ["NetworkManager", "wpa_supplicant", "iw"]
+      },
+      "repos": [],
+      "dkms": {
+        "git": "https://github.com/morrownr/8821cu-20210916.git",
+        "module": "8821cu",
+        "revision": "bda65aac150d2cde0df9603206eec23a6f3b77c4"
+      }
+    },
+    {
+      "id": "realtek-88x2bu",
+      "name": "Realtek RTL8812BU/RTL8822BU Wi-Fi (driver fuori kernel)",
+      "category": "wifi",
+      "match": {
+        "usb": ["0bda:b812", "0bda:b82c"]
+      },
+      "modules": [],
+      "firmware": [],
+      "packages": {
+        "apt": ["network-manager", "wpasupplicant", "iw"],
+        "dnf": ["NetworkManager-wifi", "wpa_supplicant", "iw"],
+        "pacman": ["networkmanager", "wpa_supplicant", "iw"],
+        "zypper": ["NetworkManager", "wpa_supplicant", "iw"]
+      },
+      "repos": [],
+      "dkms": {
+        "git": "https://github.com/morrownr/88x2bu-20210702.git",
+        "module": "88x2bu",
+        "revision": "418d71cc00cd18b4a671f8c49ecce9b19cbfd3c9"
+      }
+    },
+    {
+      "id": "broadcom-wl",
+      "name": "Broadcom BCM43xx Wi-Fi (driver proprietario wl)",
+      "category": "wifi",
+      "match": {
+        "pci": ["14e4:4311", "14e4:4312", "14e4:4313", "14e4:4315", "14e4:4727", "14e4:432b", "14e4:432c", "14e4:4353", "14e4:4357", "14e4:4358", "14e4:4359", "14e4:43a0", "14e4:43b1"]
+      },
+      "modules": ["wl"],
+      "firmware": [],
+      "packages": {
+        "apt": ["broadcom-sta-dkms", "network-manager", "wpasupplicant"],
+        "dnf": ["akmod-wl", "NetworkManager-wifi", "wpa_supplicant"],
+        "pacman": ["broadcom-wl-dkms", "networkmanager", "wpa_supplicant"],
+        "zypper": ["broadcom-wl", "NetworkManager", "wpa_supplicant"]
+      },
+      "repos": ["contrib", "non-free"]
+    }
+  ],
+  "categories": {
+    "wifi": {
+      "packages": {
+        "apt": ["firmware-linux-nonfree", "network-manager", "wpasupplicant", "wireless-tools", "iw"],
+        "dnf": ["linux-firmware", "NetworkManager-wifi", "wpa_supplicant", "wireless-tools", "iw"],
+        "pacman": ["linux-firmware", "networkmanager", "wpa_supplicant", "wireless_tools", "iw"],
+        "zypper": ["kernel-firmware", "NetworkManager", "wpa_supplicant", "wireless-tools", "iw"]
+      },
+      "repos": ["non-free-firmware"],
+      "tools": ["nmcli"]
+    },
+    "bluetooth": {
+      "packages": {
+        "apt": ["bluez", "bluez-tools", "pulseaudio-module-bluetooth", "firmware-linux-nonfree"],
+        "dnf": ["bluez", "pulseaudio-module-bluetooth", "linux-firmware"],
+        "pacman": ["bluez", "bluez-utils", "linux-firmware"],
+        "zypper": ["bluez", "kernel-firmware"]
+      },
+      "repos": ["non-free-firmware"],
+      "tools": ["bluetoothctl"]
+    },
+    "printer": {
+      "packages": {
+        "apt": ["cups", "cups-filters", "printer-driver-all"],
+        "dnf": ["cups", "cups-filters", "gutenprint-cups"],
+        "pacman": ["cups", "cups-filters", "gutenprint"],
+        "zypper": ["cups", "cups-filters", "gutenprint"]
+      },
+      "repos": [],
+      "tools": ["lpstat"]
+    },
+    "serial": {
+      "packages": {
+        "apt": [],
+        "dnf": [],
+        "pacman": [],
+        "zypper": []
+      },
+      "repos": [],
+      "tools": []
+    }
+  },
+  "firmware_map": [
+    [
+      "rtl_nic/*",
+      {
+        "apt": ["firmware-realtek"]
+      }
+    ],
+    [
+      "rtlwifi/*",
+      {
+        "apt": ["firmware-realtek"]
+      }
+    ],
+    [
+      "rtl_bt/*",
+      {
+        "apt": ["firmware-realtek"]
+      }
+    ],
+    [
+      "rtw88/*",
+      {
+        "apt": ["firmware-realtek"]
+      }
+    ],
+    [
+      "rtw89/*",
+      {
+        "apt": ["firmware-realtek"]
+      }
+    ],
+    [
+      "rt73.bin",
+      {
+        "apt": ["firmware-misc-nonfree", "firmware-mediatek"]
+      }
+    ],
+    [
+      "rt2*.bin",
+      {
+        "apt": ["firmware-misc-nonfree", "firmware-mediatek"]
+      }
+    ],
+    [
+      "rt3*.bin",
+      {
+        "apt": ["firmware-misc-nonfree", "firmware-mediatek"]
+      }
+    ],
+    [
+      "mediatek/*",
+      {
+        "apt": ["firmware-mediatek"]
+      }
+    ],
+    [
+      "mt76*",
+      {
+        "apt": ["firmware-mediatek"]
+      }
+    ],
+    [
+      "iwlwifi-*",
+      {
+        "apt": ["firmware-iwlwifi"]
+      }
+    ],
+    [
+      "intel/ibt-*",
+      {
+        "apt": ["firmware-intel-misc"]
+      }
+    ],
+    [
+      "ath9k_htc/*",
+      {
+        "apt": ["firmware-ath9k-htc"]
+      }
+    ],
+    [
+      "ath1*k/*",
+      {
+        "apt": ["firmware-atheros"]
+      }
+    ],
+    [
+      "ath3k-*",
+      {
+        "apt": ["firmware-atheros"]
+      }
+    ],
+    [
+      "qca/*",
+      {
+        "apt": ["firmware-atheros"]
+      }
+    ],
+    [
+      "brcm/*",
+      {
+        "apt": ["firmware-brcm80211"]
+      }
+    ],
+    [
+      "amdgpu/*",
+      {
+        "apt": ["firmware-amd-graphics"]
+      }
+    ],
+    [
+      "radeon/*",
+      {
+        "apt": ["firmware-amd-graphics"]
+      }
+    ],
+    [
+      "i915/*",
+      {
+        "apt": ["firmware-misc-nonfree"]
+      }
+    ],
+    [
+      "nvidia/*",
+      {
+        "apt": ["firmware-nvidia-graphics"]
+      }
+    ],
+    [
+      "*",
+      {
+        "apt": ["firmware-linux-nonfree"],
+        "dnf": ["linux-firmware"],
+        "pacman": ["linux-firmware"],
+        "zypper": ["kernel-firmware"]
+      }
+    ]
+  ]
+}

@@ -1,11 +1,30 @@
 {
-  "name": "Hardware y Periféricos",
-  "description": "Detección de hardware en tiempo real, agente experto autónomo para búsqueda e instalación de controladores y habilitación dinámica de aplicaciones.",
+  "name": "Hardware y controladores",
+  "description": "Detección Linux USB, PCIe, ACPI y buses auxiliares, configuración verificada y actualizaciones dirigidas de controladores gestionados.",
   "capabilities": [
-    "Monitoreo continuo de periféricos USB, tarjetas de red y Bluetooth",
-    "Agente autónomo experto para aprovisionamiento e instalación de controladores",
-    "Actualización automática de paquetes de sistema (apt/yum) y firmware",
-    "Notificaciones de escritorio y activación dinámica en WebOS"
+    "Resolución modalias mediante el núcleo activo",
+    "Repositorios Debian/Ubuntu y RPM con verificación de firmas y copias APT",
+    "Controladores DKMS del catálogo con revisiones Git inmutables y protección Secure Boot",
+    "Planes GPU NVIDIA, AMD e Intel y verificación de capacidades",
+    "Actualizaciones dirigidas y persistentes de paquetes gestionados",
+    "Capacidades verificadas para controles WebOS"
   ],
-  "settings": {}
+  "settings": {},
+  "messages": {
+    "hardware_ready": "Listo",
+    "hardware_needs_driver": "Configuración del controlador necesaria",
+    "hardware_configuring": "Configurando",
+    "hardware_error": "Error de configuración",
+    "hardware_awaiting_approval": "Confirmación del administrador necesaria",
+    "hardware_reboot_required": "Reinicio necesario",
+    "hardware_unsupported": "No hay un controlador compatible disponible",
+    "hardware_connected": "Dispositivo conectado",
+    "hardware_disconnected": "Dispositivo desconectado",
+    "hardware_setup": "Configuración de hardware",
+    "hardware_notice": "{device}: {status}",
+    "hardware_unknown": "Desconocido",
+    "hardware_device": "Dispositivo {bus} {id}",
+    "hardware_network_interface": "Interfaz de red {id}",
+    "hardware_bluetooth_controller": "Controlador Bluetooth {id}"
+  }
 }

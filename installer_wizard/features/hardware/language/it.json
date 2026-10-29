@@ -1,11 +1,30 @@
 {
-  "name": "Hardware e Periferiche",
-  "description": "Rilevamento hardware in tempo reale, agente autonomo esperto per ricerca e installazione dei driver (Wi-Fi, Bluetooth, Audio, Periferiche USB) e abilitazione dinamica delle applicazioni.",
+  "name": "Hardware e driver",
+  "description": "Rilevamento Linux USB, PCIe, ACPI e bus ausiliari, provisioning verificato e aggiornamenti mirati dei driver gestiti.",
   "capabilities": [
-    "Monitoraggio continuo periferiche USB, schede di rete e Bluetooth",
-    "Agente autonomo esperto per il provisioning e installazione automatica dei driver",
-    "Aggiornamento automatico pacchetti di sistema (apt/yum) e firmware kernel",
-    "Notifiche desktop e attivazione dinamica dei controlli su WebOS"
+    "Risoluzione modalias tramite il kernel in uso",
+    "Repository Debian/Ubuntu e RPM con verifiche di firma e backup APT",
+    "Driver DKMS da catalogo con revisioni Git immutabili e protezione Secure Boot",
+    "Piani GPU NVIDIA, AMD e Intel con verifica delle capacità disponibili",
+    "Aggiornamenti mirati e persistenti dei pacchetti gestiti",
+    "Capacità hardware verificate per i controlli WebOS"
   ],
-  "settings": {}
+  "settings": {},
+  "messages": {
+    "hardware_ready": "Pronto all’uso",
+    "hardware_needs_driver": "Driver da completare",
+    "hardware_configuring": "Configurazione in corso",
+    "hardware_error": "Configurazione non riuscita",
+    "hardware_awaiting_approval": "In attesa di conferma amministratore",
+    "hardware_reboot_required": "Riavvio necessario",
+    "hardware_unsupported": "Nessun driver compatibile disponibile",
+    "hardware_connected": "Dispositivo connesso",
+    "hardware_disconnected": "Dispositivo scollegato",
+    "hardware_setup": "Configurazione hardware",
+    "hardware_notice": "{device}: {status}",
+    "hardware_unknown": "Sconosciuto",
+    "hardware_device": "Dispositivo {bus} {id}",
+    "hardware_network_interface": "Interfaccia di rete {id}",
+    "hardware_bluetooth_controller": "Controller Bluetooth {id}"
+  }
 }

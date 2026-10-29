@@ -1,11 +1,30 @@
 {
-  "name": "Matériel et Périphériques",
-  "description": "Détection matérielle en temps réel, agent expert autonome pour l'installation des pilotes et l'activation dynamique des applications.",
+  "name": "Matériel et pilotes",
+  "description": "Détection Linux USB, PCIe, ACPI et bus auxiliaires, configuration vérifiée et mises à jour ciblées des pilotes gérés.",
   "capabilities": [
-    "Surveillance continue des périphériques USB, cartes réseau et Bluetooth",
-    "Agent expert autonome pour l'installation des pilotes et firmwares",
-    "Mise à jour automatique des paquets système (apt/yum) et firmware kernel",
-    "Notifications bureau et activation dynamique sur WebOS"
+    "Résolution modalias par le noyau actif",
+    "Dépôts Debian/Ubuntu et RPM avec vérification des signatures et sauvegardes APT",
+    "Pilotes DKMS du catalogue avec révisions Git immuables et protection Secure Boot",
+    "Plans GPU NVIDIA, AMD et Intel et vérification des capacités",
+    "Mises à jour ciblées et persistantes des paquets gérés",
+    "Capacités matérielles vérifiées pour les contrôles WebOS"
   ],
-  "settings": {}
+  "settings": {},
+  "messages": {
+    "hardware_ready": "Prêt",
+    "hardware_needs_driver": "Pilote à configurer",
+    "hardware_configuring": "Configuration en cours",
+    "hardware_error": "Échec de la configuration",
+    "hardware_awaiting_approval": "Confirmation administrateur requise",
+    "hardware_reboot_required": "Redémarrage requis",
+    "hardware_unsupported": "Aucun pilote compatible disponible",
+    "hardware_connected": "Périphérique connecté",
+    "hardware_disconnected": "Périphérique déconnecté",
+    "hardware_setup": "Configuration matérielle",
+    "hardware_notice": "{device} : {status}",
+    "hardware_unknown": "Inconnu",
+    "hardware_device": "Périphérique {bus} {id}",
+    "hardware_network_interface": "Interface réseau {id}",
+    "hardware_bluetooth_controller": "Contrôleur Bluetooth {id}"
+  }
 }

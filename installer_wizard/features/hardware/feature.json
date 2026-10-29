@@ -1,16 +1,18 @@
 {
   "id": "hardware",
-  "name": "Hardware e Periferiche",
-  "icon": "🔌",
+  "name": "Hardware e driver",
+  "icon": "ðŸ”Œ",
   "category": "sistema",
   "order": 88,
   "panel": "hardware",
-  "description": "Rilevamento hardware in tempo reale, agente autonomo esperto per ricerca e installazione dei driver (Wi-Fi, Bluetooth, Audio, Periferiche USB) e abilitazione dinamica delle applicazioni.",
+  "description": "Rilevamento Linux USB, PCIe, ACPI e bus ausiliari, provisioning verificato e aggiornamenti mirati dei driver gestiti.",
   "capabilities": [
-    "Monitoraggio continuo periferiche USB, schede di rete e Bluetooth",
-    "Agente autonomo esperto per il provisioning e installazione automatica dei driver",
-    "Aggiornamento automatico pacchetti di sistema (apt/yum) e firmware kernel",
-    "Notifiche desktop e attivazione dinamica dei controlli su WebOS"
+    "Risoluzione modalias tramite il kernel in uso",
+    "Repository Debian/Ubuntu e RPM con verifiche di firma e backup APT",
+    "Driver DKMS da catalogo con revisioni Git immutabili e protezione Secure Boot",
+    "Piani GPU NVIDIA, AMD e Intel con verifica delle capacità disponibili",
+    "Aggiornamenti mirati e persistenti dei pacchetti gestiti",
+    "Capacità hardware verificate per i controlli WebOS"
   ],
   "settings": [],
   "icon3d": "./icon.png",
