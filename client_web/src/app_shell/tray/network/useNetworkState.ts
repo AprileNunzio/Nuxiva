@@ -10,7 +10,7 @@ export function useNetworkState() {
 
   const fetchNetwork = useCallback(async () => {
     try {
-      const res = await fetch("/api/v5/nodes/local/network");
+      const res = await fetch("/api/v5/nodes/local/network", { credentials: "same-origin" });
       if (!res.ok) throw new Error(String(res.status));
       const data = await res.json();
       setProfile(data);
@@ -21,7 +21,7 @@ export function useNetworkState() {
 
   const fetchWifi = useCallback(async () => {
     try {
-      const res = await fetch("/api/v5/nodes/local/wifi/scan");
+      const res = await fetch("/api/v5/nodes/local/wifi/scan", { credentials: "same-origin" });
       if (!res.ok) throw new Error(String(res.status));
       const data = await res.json();
       setWifi(data);
@@ -49,7 +49,8 @@ export function useNetworkState() {
     try {
       const res = await fetch("/api/v5/nodes/local/wifi/radio", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-Nuxiva-Request": "1" },
+        credentials: "same-origin",
         body: JSON.stringify({ action: enabled ? "on" : "off" }),
       });
       if (!res.ok) throw new Error("radio_failed");
@@ -67,7 +68,8 @@ export function useNetworkState() {
     try {
       const res = await fetch("/api/v5/nodes/local/wifi/connect", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "X-Nuxiva-Request": "1" },
+        credentials: "same-origin",
         body: JSON.stringify({ wifi_ssid: ssid, wifi_key: psk }),
       });
       const data = await res.json().catch(() => ({}));
@@ -90,6 +92,8 @@ export function useNetworkState() {
     try {
       const res = await fetch("/api/v5/nodes/local/wifi/disconnect", {
         method: "POST",
+        headers: { "X-Nuxiva-Request": "1" },
+        credentials: "same-origin",
       });
       if (!res.ok) throw new Error("disconnect_failed");
       await refresh();

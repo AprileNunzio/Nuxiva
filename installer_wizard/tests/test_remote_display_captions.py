@@ -144,12 +144,12 @@ class DisplayGuestLockAndEarScriptTest(unittest.TestCase):
 
 class EarJsScriptVerificationTest(unittest.TestCase):
     def test_ear_js_connects_before_mic_check(self) -> None:
-        src = (WEB / "ear.js").read_text(encoding="utf-8")
+        src = (WEB / "ear.js").read_text(encoding="utf-8").replace("\r\n", "\n")
         conn_idx = src.index("connect();\n    if (!micAllowed())")
         self.assertGreater(conn_idx, 0)
 
     def test_transcript_guard_checks_origin_and_mic_live_before_ask(self) -> None:
-        src = (WEB / "ear.js").read_text(encoding="utf-8")
+        src = (WEB / "ear.js").read_text(encoding="utf-8").replace("\r\n", "\n")
         self.assertIn("if (ev.origin !== false && micLive())", src)
         self.assertIn("if (D.Captions) D.Captions.event(ev);", src)
 

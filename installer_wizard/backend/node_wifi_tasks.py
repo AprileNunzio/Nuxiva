@@ -1,36 +1,52 @@
 from __future__ import annotations
 
 import os
+import re
 import subprocess
 import time
-from typing import Any, Callable, Dict
+from typing import Any, Callable, Dict, List, Optional
+
+
+def _safe_run_text(cmd: List[str], run_cmd: Callable[..., Any] = subprocess.run, timeout: int = 8) -> str:
+    try:
+        p = run_cmd(cmd, capture_output=True, timeout=timeout)
+        raw = p.stdout or b""
+        if isinstance(raw, str):
+            return raw
+        for enc in ("utf-8", "cp1252", "cp850", "latin-1"):
+            try:
+                return raw.decode(enc)
+            except UnicodeDecodeError:
+                continue
+        return raw.decode("utf-8", errors="replace")
+    except Exception:
+        return ""
 
 
 def scan_system_wifi(run_cmd: Callable[..., Any] = subprocess.run) -> Dict[str, Any]:
-    networks = []
+    raw_networks: List[Dict[str, Any]] = []
     radio_enabled = True
-    current_ssid = None
+    current_ssid: Optional[str] = None
     iface_name = "Wi-Fi"
 
     if os.name == "nt":
         try:
-            p_if = run_cmd(["netsh", "wlan", "show", "interfaces"], capture_output=True, text=True, timeout=5)
-            out_if = p_if.stdout or ""
+            out_if = _safe_run_text(["netsh", "wlan", "show", "interfaces"], run_cmd=run_cmd, timeout=5)
             if "Software Disabilitato" in out_if or "Disabilitato" in out_if:
                 radio_enabled = False
             for line in out_if.splitlines():
                 if "Nome" in line or "Name" in line:
                     parts = line.split(":", 1)
-                    if len(parts) > 1:
+                    if len(parts) > 1 and not iface_name:
                         iface_name = parts[1].strip()
                 elif "SSID" in line and "BSSID" not in line:
                     parts = line.split(":", 1)
                     if len(parts) > 1:
                         current_ssid = parts[1].strip()
 
-            p_net = run_cmd(["netsh", "wlan", "show", "networks", "mode=bssid"], capture_output=True, text=True, timeout=8)
+            out_net = _safe_run_text(["netsh", "wlan", "show", "networks", "mode=bssid"], run_cmd=run_cmd, timeout=8)
             cur = None
-            for raw_line in (p_net.stdout or "").splitlines():
+            for raw_line in out_net.splitlines():
                 line = raw_line.strip()
                 if line.startswith("SSID "):
                     parts = line.split(":", 1)
@@ -44,7 +60,7 @@ def scan_system_wifi(run_cmd: Callable[..., Any] = subprocess.run) -> Dict[str, 
                             "frequency": "2.4 GHz",
                             "is_connected": s_name == current_ssid,
                         }
-                        networks.append(cur)
+                        raw_networks.append(cur)
                     else:
                         cur = None
                 elif cur:
@@ -64,32 +80,76 @@ def scan_system_wifi(run_cmd: Callable[..., Any] = subprocess.run) -> Dict[str, 
             pass
     else:
         try:
-            p_lin = run_cmd(
+            p_radio = _safe_run_text(["nmcli", "radio", "wifi"], run_cmd=run_cmd, timeout=3).strip().lower()
+            if p_radio == "disabled" or p_radio == "off":
+                radio_enabled = False
+
+            dev_out = _safe_run_text(["nmcli", "-t", "-f", "DEVICE,TYPE", "dev"], run_cmd=run_cmd, timeout=4)
+            for d_line in dev_out.splitlines():
+                d_parts = d_line.split(":")
+                if len(d_parts) >= 2 and d_parts[1].strip() == "wifi":
+                    iface_name = d_parts[0].strip()
+                    break
+
+            scan_out = _safe_run_text(
                 ["nmcli", "-t", "-f", "SSID,BSSID,SIGNAL,SECURITY,CHAN,FREQ,IN-USE", "dev", "wifi", "list", "--rescan", "yes"],
-                capture_output=True,
-                text=True,
+                run_cmd=run_cmd,
                 timeout=8,
             )
-            for line in (p_lin.stdout or "").splitlines():
-                parts = line.split(":")
-                if len(parts) >= 6 and parts[0].strip():
-                    s_name = parts[0].strip()
-                    is_in_use = len(parts) > 6 and "*" in parts[6]
+            if not scan_out.strip():
+                scan_out = _safe_run_text(
+                    ["nmcli", "-t", "-f", "SSID,BSSID,SIGNAL,SECURITY,CHAN,FREQ,IN-USE", "dev", "wifi", "list"],
+                    run_cmd=run_cmd,
+                    timeout=6,
+                )
+
+            for line in scan_out.splitlines():
+                if not line.strip():
+                    continue
+                tokens = [p.replace(r"\:", ":").replace(r"\\", "\\") for p in re.split(r"(?<!\\):", line)]
+                if len(tokens) >= 4 and tokens[0].strip() and tokens[0].strip() != "--":
+                    s_name = tokens[0].strip()
+                    bssid_val = tokens[1].strip() if len(tokens) > 1 else ""
+                    sig_val = 70
+                    if len(tokens) > 2 and tokens[2].strip().isdigit():
+                        sig_val = int(tokens[2].strip())
+                    sec_val = tokens[3].strip() if len(tokens) > 3 else "WPA2"
+                    freq_val = tokens[5].strip() if len(tokens) > 5 else "2.4 GHz"
+                    is_in_use = len(tokens) > 6 and "*" in tokens[6]
                     if is_in_use:
                         current_ssid = s_name
-                    networks.append({
+                    raw_networks.append({
                         "ssid": s_name,
-                        "bssid": parts[1].strip(),
-                        "signal": int(parts[2].strip()) if parts[2].strip().isdigit() else 70,
-                        "security": parts[3].strip() or "WPA2",
-                        "frequency": parts[5].strip() or "5 GHz",
+                        "bssid": bssid_val,
+                        "signal": sig_val,
+                        "security": sec_val or "Open",
+                        "frequency": freq_val,
                         "is_connected": is_in_use,
                     })
         except Exception:
             pass
 
+    deduped: Dict[str, Dict[str, Any]] = {}
+    for net in raw_networks:
+        ssid = net["ssid"]
+        if not ssid or ssid == "--":
+            continue
+        if ssid not in deduped:
+            deduped[ssid] = net
+        else:
+            if net["is_connected"]:
+                deduped[ssid]["is_connected"] = True
+            if net["signal"] > deduped[ssid]["signal"]:
+                deduped[ssid]["signal"] = net["signal"]
+                deduped[ssid]["bssid"] = net["bssid"]
+                deduped[ssid]["frequency"] = net["frequency"]
+                deduped[ssid]["security"] = net["security"]
+
+    final_networks = list(deduped.values())
+    final_networks.sort(key=lambda n: (not n["is_connected"], -n["signal"]))
+
     return {
-        "networks": sorted(networks, key=lambda n: n["signal"], reverse=True),
+        "networks": final_networks,
         "radio_enabled": radio_enabled,
         "current_ssid": current_ssid,
         "interface": iface_name,

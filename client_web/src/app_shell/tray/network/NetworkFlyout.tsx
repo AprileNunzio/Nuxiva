@@ -20,7 +20,7 @@ const dicts: Record<string, Record<string, string>> = { it, en, es, fr };
 
 interface NetworkFlyoutProps {
   onClose: () => void;
-  onOpenApp?: (appId: string) => void;
+  onOpenApp?: (appId: any) => void;
   lang?: string;
 }
 
@@ -135,7 +135,7 @@ export function NetworkFlyout({ onClose, onOpenApp, lang = "it" }: NetworkFlyout
                     >
                       <div className="network-item-row">
                         <div className="network-item-left">
-                          <Wifi size={14} color={isCur ? "#4ade80" : "#94a3b8"} />
+                          <Wifi size={14} color={isCur ? "#16a34a" : "#64748b"} />
                           <span className="network-item-ssid">{net.ssid}</span>
                           {net.security && !isCur && <Lock size={11} color="#64748b" />}
                           {isCur && (
@@ -212,7 +212,8 @@ export function NetworkFlyout({ onClose, onOpenApp, lang = "it" }: NetworkFlyout
                     <span
                       style={{
                         fontSize: "10px",
-                        color: iface.is_up ? "#4ade80" : "#94a3b8",
+                        fontWeight: 600,
+                        color: iface.is_up ? "#16a34a" : "#94a3b8",
                       }}
                     >
                       {iface.is_up ? "UP" : "DOWN"}
@@ -256,7 +257,12 @@ export function NetworkFlyout({ onClose, onOpenApp, lang = "it" }: NetworkFlyout
           <button
             className="network-settings-link"
             onClick={() => {
-              onOpenApp("features_hub");
+              const targetNode = profile?.node_id || "virtual_core";
+              onOpenApp({
+                appId: "node_apps/console",
+                targetNodeId: targetNode,
+                initialPayload: { name: targetNode, module: "connections" },
+              });
               onClose();
             }}
           >

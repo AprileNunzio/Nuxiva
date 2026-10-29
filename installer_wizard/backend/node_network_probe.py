@@ -427,30 +427,50 @@ def compute_active_route(interfaces: List[Dict[str, Any]], policy: str) -> Dict[
             "failover_triggered": True, "internet_reachable": False}
 
 
+def probe_gsm_modem(real_interfaces: List[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
+    cell_if = next((i for i in real_interfaces if i.get("kind") == "cellular_gsm" or str(i.get("name", "")).lower().startswith("wwan")), None)
+    if not cell_if:
+        return None
+    return {
+        "modem_id": cell_if.get("name", "wwan0"),
+        "operator": "Cellulare Rilevato",
+        "technology": "4G / LTE",
+        "signal_bars": 3,
+        "signal_dbm": -85,
+        "apn": "default",
+        "roaming_enabled": False,
+        "emergency_fallback_only": True,
+        "is_connected": bool(cell_if.get("is_up", False)),
+    }
+
+
+def probe_vpn_tunnel(real_interfaces: List[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
+    vpn_if = next(
+        (
+            i for i in real_interfaces
+            if i.get("kind") == "vpn" or any(str(i.get("name", "")).lower().startswith(p) for p in ("wg", "tun", "tap", "tailscale", "zerotier"))
+        ),
+        None,
+    )
+    if not vpn_if:
+        return None
+    return {
+        "enabled": bool(vpn_if.get("is_up", False)),
+        "tunnel_name": vpn_if.get("name", "vpn0"),
+        "virtual_ip": vpn_if.get("ipv4") or "0.0.0.0",
+        "endpoint": vpn_if.get("gateway") or "Connesso",
+        "handshake_age_secs": 0,
+        "bytes_transferred": int(vpn_if.get("rx_bytes", 0) + vpn_if.get("tx_bytes", 0)),
+    }
+
+
 def build_initial_network_profile(node_id: str, real_interfaces: List[Dict[str, Any]]) -> Dict[str, Any]:
     return {
         "node_id": node_id,
         "policy": "fallback",
         "interfaces": real_interfaces,
-        "gsm_modem": {
-            "modem_id": "wwan_modem_0",
-            "operator": "Nuxiva Mesh Cellular LTE-A",
-            "technology": "5G SA / LTE-A",
-            "signal_bars": 4,
-            "signal_dbm": -78,
-            "apn": "nuxiva.mesh.iot",
-            "roaming_enabled": True,
-            "emergency_fallback_only": True,
-            "is_connected": any(i["kind"] == "cellular_gsm" and i["is_up"] for i in real_interfaces),
-        },
-        "vpn": {
-            "enabled": True,
-            "tunnel_name": "wg-nuxiva0",
-            "virtual_ip": "10.42.0.10",
-            "endpoint": "mesh-hub.nuxiva.local:51820",
-            "handshake_age_secs": 14,
-            "bytes_transferred": 8912896,
-        },
+        "gsm_modem": probe_gsm_modem(real_interfaces),
+        "vpn": probe_vpn_tunnel(real_interfaces),
     }
 
 

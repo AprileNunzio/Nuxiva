@@ -75,34 +75,34 @@ export const IpConfigModal: React.FC<IpConfigModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xs p-4">
-      <div className="w-full max-w-md rounded-2xl border border-slate-700 bg-slate-900 p-6 shadow-2xl">
-        <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4">
+      <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
           <div>
-            <h3 className="font-['Rajdhani'] text-lg font-bold text-white">
-              {t('ip_modal_title')} — <span className="font-mono text-cyan-300">{iface.name}</span>
+            <h3 className="text-lg font-bold text-slate-900">
+              {t('ip_modal_title')} — <span className="font-mono text-blue-600">{iface.name}</span>
             </h3>
-            <p className="text-xs text-slate-400">{iface.mac_address}</p>
+            <p className="text-xs text-slate-500">{iface.mac_address}</p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-white transition"
+            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {error && (
-          <div className="mb-4 flex items-center gap-2 rounded-xl border border-rose-500/40 bg-rose-500/10 p-3 text-xs text-rose-300">
-            <AlertCircle className="h-4 w-4 shrink-0 text-rose-400" />
+          <div className="mb-4 flex items-center gap-2 rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700">
+            <AlertCircle className="h-4 w-4 shrink-0 text-rose-500" />
             <span>{error}</span>
           </div>
         )}
 
         <div className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
               {t('ip_assignment_mode')}
             </label>
             <div className="grid grid-cols-2 gap-3">
@@ -111,12 +111,12 @@ export const IpConfigModal: React.FC<IpConfigModalProps> = ({
                 onClick={() => setMode('dhcp')}
                 className={`rounded-xl border p-3 text-left transition ${
                   mode === 'dhcp'
-                    ? 'border-cyan-400/60 bg-cyan-950/40 text-cyan-200 ring-1 ring-cyan-400/40'
-                    : 'border-slate-800 bg-slate-800/40 text-slate-400 hover:border-slate-700'
+                    ? 'border-blue-500 bg-blue-50/70 text-slate-900 ring-2 ring-blue-500/20 shadow-xs'
+                    : 'border-slate-200 bg-slate-50/60 text-slate-600 hover:border-slate-300'
                 }`}
               >
-                <strong className="block text-sm font-semibold text-white">DHCP</strong>
-                <span className="text-[11px] text-slate-400">{t('dhcp_desc')}</span>
+                <strong className="block text-sm font-semibold text-slate-900">DHCP</strong>
+                <span className="text-[11px] text-slate-500">{t('dhcp_desc')}</span>
               </button>
 
               <button
@@ -124,71 +124,71 @@ export const IpConfigModal: React.FC<IpConfigModalProps> = ({
                 onClick={() => setMode('static')}
                 className={`rounded-xl border p-3 text-left transition ${
                   mode === 'static'
-                    ? 'border-cyan-400/60 bg-cyan-950/40 text-cyan-200 ring-1 ring-cyan-400/40'
-                    : 'border-slate-800 bg-slate-800/40 text-slate-400 hover:border-slate-700'
+                    ? 'border-blue-500 bg-blue-50/70 text-slate-900 ring-2 ring-blue-500/20 shadow-xs'
+                    : 'border-slate-200 bg-slate-50/60 text-slate-600 hover:border-slate-300'
                 }`}
               >
-                <strong className="block text-sm font-semibold text-white">{t('static_ip')}</strong>
-                <span className="text-[11px] text-slate-400">{t('static_ip_desc')}</span>
+                <strong className="block text-sm font-semibold text-slate-900">{t('static_ip')}</strong>
+                <span className="text-[11px] text-slate-500">{t('static_ip_desc')}</span>
               </button>
             </div>
           </div>
 
           {mode === 'static' && (
-            <div className="space-y-3 pt-2 border-t border-slate-800/60">
+            <div className="space-y-3 pt-2 border-t border-slate-100">
               <div>
-                <label className="block text-xs text-slate-300 mb-1">{t('ip_address')} *</label>
+                <label className="block text-xs text-slate-600 font-medium mb-1">{t('ip_address')} *</label>
                 <input
                   type="text"
                   value={ipv4}
                   onChange={(e) => setIpv4(e.target.value)}
                   placeholder="192.168.1.150"
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 font-mono text-sm text-cyan-200 focus:border-cyan-400 focus:outline-none"
+                  className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-500 focus:outline-none"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs text-slate-300 mb-1">{t('netmask')} *</label>
+                  <label className="block text-xs text-slate-600 font-medium mb-1">{t('netmask')} *</label>
                   <input
                     type="text"
                     value={netmask}
                     onChange={(e) => setNetmask(e.target.value)}
                     placeholder="255.255.255.0"
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 font-mono text-sm text-slate-200 focus:border-cyan-400 focus:outline-none"
+                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-500 focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-slate-300 mb-1">{t('gateway')}</label>
+                  <label className="block text-xs text-slate-600 font-medium mb-1">{t('gateway')}</label>
                   <input
                     type="text"
                     value={gateway}
                     onChange={(e) => setGateway(e.target.value)}
                     placeholder="192.168.1.1"
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 font-mono text-sm text-slate-200 focus:border-cyan-400 focus:outline-none"
+                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-500 focus:outline-none"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs text-slate-300 mb-1">{t('dns_primary')}</label>
+                  <label className="block text-xs text-slate-600 font-medium mb-1">{t('dns_primary')}</label>
                   <input
                     type="text"
                     value={dnsPrimary}
                     onChange={(e) => setDnsPrimary(e.target.value)}
                     placeholder="1.1.1.1"
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 font-mono text-sm text-slate-200 focus:border-cyan-400 focus:outline-none"
+                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-500 focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-slate-300 mb-1">{t('dns_secondary')}</label>
+                  <label className="block text-xs text-slate-600 font-medium mb-1">{t('dns_secondary')}</label>
                   <input
                     type="text"
                     value={dnsSecondary}
                     onChange={(e) => setDnsSecondary(e.target.value)}
                     placeholder="8.8.8.8"
-                    className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 font-mono text-sm text-slate-200 focus:border-cyan-400 focus:outline-none"
+                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-500 focus:outline-none"
                   />
                 </div>
               </div>
@@ -196,12 +196,12 @@ export const IpConfigModal: React.FC<IpConfigModalProps> = ({
           )}
         </div>
 
-        <div className="mt-6 flex justify-end gap-3 border-t border-slate-800 pt-4">
+        <div className="mt-6 flex justify-end gap-3 border-t border-slate-100 pt-4">
           <button
             type="button"
             onClick={onClose}
             disabled={saving}
-            className="rounded-xl border border-slate-700 px-4 py-2 text-xs font-semibold text-slate-300 hover:bg-slate-800 transition"
+            className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 transition"
           >
             {t('cancel')}
           </button>
@@ -209,7 +209,7 @@ export const IpConfigModal: React.FC<IpConfigModalProps> = ({
             type="button"
             onClick={handleSave}
             disabled={saving}
-            className="flex items-center gap-1.5 rounded-xl border border-cyan-400 bg-cyan-500/20 px-5 py-2 text-xs font-semibold text-cyan-200 hover:bg-cyan-500/30 transition shadow-[0_0_15px_rgba(34,211,238,0.2)] disabled:opacity-50"
+            className="flex items-center gap-1.5 rounded-xl border border-blue-600 bg-blue-600 px-5 py-2 text-xs font-semibold text-white hover:bg-blue-700 transition shadow-sm disabled:opacity-50"
           >
             <Check className="h-4 w-4" />
             {saving ? `${t('saving')}...` : t('save')}

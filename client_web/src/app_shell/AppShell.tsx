@@ -71,11 +71,15 @@ export function WebOSDesktop({ user, onSignOut }: { user: string; onSignOut: () 
 
   const title = (app: typeof appRegistry[number]) => (app.id === 'explorer' ? assistant.name : getScopedString(app.scope, lang, 'title', app.name));
 
-  const open = (appId: string, newInstance = false) => {
-    windowStore.openWindow({
-      appId,
-      instanceKey: newInstance ? `instance-${Date.now()}` : undefined
-    });
+  const open = (appId: string | any, newInstance = false) => {
+    if (typeof appId === 'object' && appId !== null) {
+      windowStore.openWindow(appId);
+    } else {
+      windowStore.openWindow({
+        appId,
+        instanceKey: newInstance ? `instance-${Date.now()}` : undefined
+      });
+    }
     setLauncher(false);
     setContext(null);
   };

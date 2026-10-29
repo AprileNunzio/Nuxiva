@@ -56,7 +56,7 @@ export interface NodeNetworkProfile {
   readonly policy: ConnectionRoutingPolicy;
   readonly interfaces: readonly NetworkInterface[];
   readonly gsm_modem: GsmModem | null;
-  readonly vpn: VpnTunnel;
+  readonly vpn: VpnTunnel | null;
   readonly active_route: ActiveRouteResult;
 }
 

@@ -244,82 +244,102 @@ def _get_node_network_profile(node_id: str, node_ip: Optional[str] = None, refre
     return {**prof, "active_route": compute_active_route(prof["interfaces"], prof["policy"])}
 
 
+def _resolve_node_id(node_id: str) -> str:
+    if node_id in {"local", "self", "virtual_core", ""}:
+        try:
+            from server.features.mesh_coordinator.p2p_mesh import p2p_mesh
+            if p2p_mesh.node_id:
+                return p2p_mesh.node_id
+        except Exception:
+            pass
+        import socket
+        return socket.gethostname() or "local"
+    return node_id
+
+
 @router.get("/{node_id}/network")
 def get_node_network(node_id: str) -> Dict[str, Any]:
+    target_id = _resolve_node_id(node_id)
     from server.features.mesh_coordinator.p2p_mesh import p2p_mesh
-    telem = p2p_mesh.get_node_telemetry(node_id)
-    return _get_node_network_profile(node_id, telem.get("ip") if telem else None, refresh=True)
+    telem = p2p_mesh.get_node_telemetry(target_id)
+    return _get_node_network_profile(target_id, telem.get("ip") if telem else None, refresh=True)
 
 
 @router.post("/{node_id}/network/policy")
 def set_node_network_policy(node_id: str, req: UpdatePolicyRequest) -> Dict[str, Any]:
+    target_id = _resolve_node_id(node_id)
     if req.policy not in {"ethernet_only", "wifi_only", "dual_aggregation", "fallback"}:
         raise HTTPException(status_code=400, detail=f"Invalid policy '{req.policy}'")
     gov = _get_native_network_governor()
     if gov is not None:
         try:
-            gov.set_policy(node_id, req.policy)
-            route_json = gov.determine_active_route_json(node_id)
+            gov.set_policy(target_id, req.policy)
+            route_json = gov.determine_active_route_json(target_id)
             return {"status": "ok", "policy": req.policy, "route": json.loads(route_json) if route_json else {}}
         except Exception:
             pass
-    _get_node_network_profile(node_id)
-    _network_profiles_memory[node_id]["policy"] = req.policy
-    return {"status": "ok", "policy": req.policy, "route": _get_node_network_profile(node_id).get("active_route", {})}
+    _get_node_network_profile(target_id)
+    _network_profiles_memory[target_id]["policy"] = req.policy
+    return {"status": "ok", "policy": req.policy, "route": _get_node_network_profile(target_id).get("active_route", {})}
 
 
 @router.post("/{node_id}/network/interface/toggle")
 def toggle_node_interface(node_id: str, req: ToggleInterfaceRequest) -> Dict[str, Any]:
+    target_id = _resolve_node_id(node_id)
     gov = _get_native_network_governor()
     if gov is not None:
         try:
-            gov.toggle_interface(node_id, req.interface, req.is_up)
-            route_json = gov.determine_active_route_json(node_id)
+            gov.toggle_interface(target_id, req.interface, req.is_up)
+            route_json = gov.determine_active_route_json(target_id)
             return {"success": True, "route": json.loads(route_json) if route_json else {}}
         except Exception:
             pass
-    _get_node_network_profile(node_id)
-    for iface in _network_profiles_memory.get(node_id, {}).get("interfaces", []):
+    _get_node_network_profile(target_id)
+    for iface in _network_profiles_memory.get(target_id, {}).get("interfaces", []):
         if iface["name"] == req.interface:
             iface["is_up"] = req.is_up
-    return {"success": True, "route": _get_node_network_profile(node_id).get("active_route", {})}
+    return {"success": True, "route": _get_node_network_profile(target_id).get("active_route", {})}
 
 
 @router.post("/{node_id}/network/interface/ip")
 def update_node_interface_ip(node_id: str, req: UpdateInterfaceIpRequest) -> Dict[str, Any]:
+    target_id = _resolve_node_id(node_id)
     gov = _get_native_network_governor()
     if gov is not None:
         try:
             gov.update_interface_ip_config(
-                node_id, req.interface, req.mode, req.ipv4, req.netmask, req.gateway, req.dns_primary, req.dns_secondary
+                target_id, req.interface, req.mode, req.ipv4, req.netmask, req.gateway, req.dns_primary, req.dns_secondary
             )
-            route_json = gov.determine_active_route_json(node_id)
+            route_json = gov.determine_active_route_json(target_id)
             return {"success": True, "route": json.loads(route_json) if route_json else {}}
         except Exception as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
-    _get_node_network_profile(node_id)
-    for iface in _network_profiles_memory.get(node_id, {}).get("interfaces", []):
+    _get_node_network_profile(target_id)
+    for iface in _network_profiles_memory.get(target_id, {}).get("interfaces", []):
         if iface["name"] == req.interface:
             iface["ip_mode"] = req.mode
             if req.mode == "static":
                 for k in ("ipv4", "netmask", "gateway", "dns_primary", "dns_secondary"):
                     if getattr(req, k):
                         iface[k] = getattr(req, k)
-    return {"success": True, "route": _get_node_network_profile(node_id).get("active_route", {})}
+    return {"success": True, "route": _get_node_network_profile(target_id).get("active_route", {})}
 
 
 @router.post("/{node_id}/network/vpn/toggle")
 def toggle_node_vpn(node_id: str, req: ToggleVpnRequest) -> Dict[str, Any]:
+    target_id = _resolve_node_id(node_id)
     gov = _get_native_network_governor()
     if gov is not None:
         try:
-            gov.toggle_vpn(node_id, req.enabled)
+            gov.toggle_vpn(target_id, req.enabled)
             return {"success": True, "vpn_enabled": req.enabled}
         except Exception:
             pass
-    _get_node_network_profile(node_id)
-    if node_id in _network_profiles_memory:
-        _network_profiles_memory[node_id]["vpn"]["enabled"] = req.enabled
+    _get_node_network_profile(target_id)
+    if target_id in _network_profiles_memory:
+        vpn_obj = _network_profiles_memory[target_id].get("vpn")
+        if isinstance(vpn_obj, dict):
+            vpn_obj["enabled"] = req.enabled
     return {"success": True, "vpn_enabled": req.enabled}
 
 

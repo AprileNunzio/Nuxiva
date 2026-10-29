@@ -14,19 +14,6 @@
     "minWidth": 30,
     "resizable": true
   },
-  "toolbars": [
-    {
-      "id": "system",
-      "items": [
-        {
-          "type": "action",
-          "id": "refresh",
-          "labelKey": "os_refresh",
-          "shortcut": "F5"
-        }
-      ]
-    }
-  ],
   "icon3d": "./icon.png",
   "icon3dSource": {
     "provider": "Icons8",

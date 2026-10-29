@@ -64,6 +64,7 @@
   "cellular_primary_allowed": "Trafic Principal Autorisé",
   "emergency_mode_notice": "La connexion cellulaire s'active automatiquement uniquement lorsque Ethernet et Wi-Fi sont hors ligne.",
   "vpn_tunnel_title": "Tunnel Mesh VPN Zero-Trust",
+  "no_vpn_tunnel_configured": "Aucun tunnel VPN configuré ou actif sur ce nœud.",
   "wireguard_mesh_desc": "Tunnel chiffré WireGuard pair-à-pair pour le maillage distribué Nuxiva",
   "vpn_active": "Actif",
   "vpn_disabled": "Désactivé",

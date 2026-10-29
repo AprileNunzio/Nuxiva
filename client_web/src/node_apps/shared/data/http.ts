@@ -8,10 +8,10 @@ export class NodeModuleError extends Error {
   }
 }
 
-const JSON_HEADERS = { Accept: 'application/json', 'Content-Type': 'application/json' };
+const JSON_HEADERS = { Accept: 'application/json', 'Content-Type': 'application/json', 'X-Nuxiva-Request': '1' };
 
 export async function requestJson<T>(url: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(url, { cache: 'no-store', ...init, headers: { ...JSON_HEADERS, ...init?.headers } });
+  const response = await fetch(url, { cache: 'no-store', credentials: 'same-origin', ...init, headers: { ...JSON_HEADERS, ...init?.headers } });
   if (!response.ok) {
     const payload: unknown = await response.json().catch(() => null);
     const detail = typeof payload === 'object' && payload !== null ? (payload as { detail?: unknown }).detail : null;
