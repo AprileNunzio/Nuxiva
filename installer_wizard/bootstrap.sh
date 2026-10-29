@@ -705,6 +705,9 @@ do_config() {
     rm -f /etc/systemd/system/nuxiva-updater.service
     install -m 0644 "$NUXIVA_DIR/scripts/os/systemd/nuxiva-supervisor.service" /etc/systemd/system/ || return 1
     install -m 0644 "$NUXIVA_DIR/scripts/os/systemd/nuxiva-rollback.service" /etc/systemd/system/ || return 1
+    systemctl daemon-reload >>"$LOG" 2>&1 || return 1
+    systemctl is-enabled -q nuxiva-supervisor.service 2>/dev/null \
+        || systemctl enable nuxiva-supervisor.service >>"$LOG" 2>&1 || return 1
     PCT=60
     draw 1
     bash "$NUXIVA_DIR/scripts/os/prestart.sh" >>"$LOG" 2>&1 || return 1

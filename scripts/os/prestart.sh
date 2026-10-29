@@ -50,6 +50,8 @@ for unit in nuxiva-supervisor.service nuxiva-rollback.service; do
     fi
 done
 if [ "$units_changed" = 1 ]; then systemctl daemon-reload >/dev/null 2>&1 || true; fi
+systemctl is-enabled -q nuxiva-supervisor.service 2>/dev/null \
+    || systemctl enable -q nuxiva-supervisor.service >/dev/null 2>&1 || true
 
 if [ ! -f /etc/pam.d/nuxiva-admin ]; then
     printf '%s\n' '# Nuxiva OS admin panel' '@include common-auth' '@include common-account' > /etc/pam.d/nuxiva-admin

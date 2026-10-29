@@ -6,10 +6,38 @@ GETTY_OVERRIDE="${NUXIVA_GETTY_OVERRIDE:-/etc/systemd/system/getty@tty1.service.
 POLICY="${NUXIVA_CHROMIUM_POLICY:-/etc/chromium/policies/managed/nuxiva.json}"
 SESSION="$NUXIVA_DIR/scripts/os/kiosk/session.sh"
 LAUNCH="$NUXIVA_DIR/scripts/os/kiosk/launch.sh"
+PERMISSIONS="$NUXIVA_DIR/scripts/os/kiosk/permissions.sh"
 XWRAPPER="${NUXIVA_XWRAPPER_CONF:-/etc/X11/Xwrapper.config}"
 KIOSK_PROC_PATTERN='kiosk/launch\.sh|kiosk/session\.sh|startx|xinit|Xorg|chromium'
 
 kiosk_enabled() { truthy "${NUXIVA_KIOSK:-1}"; }
+
+caller_on_tty1() {
+    local pid=$$ stat ppid tty_nr
+    while [ "$pid" -gt 1 ] 2>/dev/null; do
+        stat=$(<"/proc/$pid/stat") || return 1
+        stat=${stat##*) }
+        read -r _ ppid _ _ tty_nr _ <<<"$stat"
+        [ "$tty_nr" = 1025 ] && return 0
+        pid=$ppid
+    done
+    return 1
+}
+
+restart_tty1() {
+    if caller_on_tty1; then
+        info "Installazione avviata da tty1: la console kiosk si attiverà al prossimo riavvio"
+        return 0
+    fi
+    pkill -t tty1 >/dev/null 2>&1 || true
+    sleep 1
+    systemctl restart getty@tty1 >/dev/null 2>&1 || true
+}
+
+kiosk_readable() {
+    [ "$(id -u)" -eq 0 ] && command -v runuser >/dev/null 2>&1 || return 0
+    runuser -u "$USER_NAME" -- test -r "$LAUNCH" && runuser -u "$USER_NAME" -- test -r "$SESSION"
+}
 
 user_home() {
     if [ -n "${NUXIVA_KIOSK_HOME:-}" ]; then
@@ -93,6 +121,7 @@ step_check() {
     getty_conf | same_content "$GETTY_OVERRIDE" || return 1
     bash_profile | same_content "$(user_home)/.bash_profile" || return 1
     [ -x "$SESSION" ] && [ -x "$LAUNCH" ] || return 1
+    kiosk_readable || return 1
     xwrapper_conf | same_content "$XWRAPPER" || return 1
     chromium_policy | same_content "$POLICY" || return 1
     code_current kiosk "$SESSION" "$LAUNCH" || return 1
@@ -130,13 +159,10 @@ step_teardown() {
         progress 70 "Arresto sessione grafica Xorg/Chromium e ripristino prompt tty1"
         if [ -n "$USER_NAME" ] && id "$USER_NAME" >/dev/null 2>&1; then
             pkill -TERM -u "$USER_NAME" -f "$KIOSK_PROC_PATTERN" >/dev/null 2>&1 || true
-        fi
-        pkill -t tty1 >/dev/null 2>&1 || true
-        sleep 1
-        if [ -n "$USER_NAME" ] && id "$USER_NAME" >/dev/null 2>&1; then
+            sleep 1
             pkill -KILL -u "$USER_NAME" -f "$KIOSK_PROC_PATTERN" >/dev/null 2>&1 || true
         fi
-        systemctl restart getty@tty1 >/dev/null 2>&1 || true
+        restart_tty1
     fi
     if [ -n "$USER_NAME" ] && id "$USER_NAME" >/dev/null 2>&1 && command -v loginctl >/dev/null 2>&1; then
         loginctl enable-linger "$USER_NAME" >/dev/null 2>&1 || true
@@ -166,7 +192,7 @@ step_apply() {
     fi
 
     progress 40 "Configurazione sessione grafica"
-    chmod +x "$SESSION" "$LAUNCH"
+    NUXIVA_DIR="$NUXIVA_DIR" NUXIVA_KIOSK_USER="$USER_NAME" bash "$PERMISSIONS"
     local home changed=0
     xwrapper_conf | write_if_changed "$XWRAPPER" 0644 && changed=1
     home=$(user_home)
@@ -192,9 +218,7 @@ step_apply() {
 
     if [ "$changed" -eq 1 ]; then
         info "Riavvio della console tty1 per attivare il kiosk"
-        pkill -t tty1 >/dev/null 2>&1 || true
-        sleep 1
-        systemctl restart getty@tty1 || true
+        restart_tty1
     fi
     code_mark kiosk "$SESSION" "$LAUNCH"
     progress 100 "Display kiosk configurato (una finestra per ogni monitor collegato)"
