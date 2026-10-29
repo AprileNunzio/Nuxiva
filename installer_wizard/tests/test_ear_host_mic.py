@@ -133,6 +133,101 @@ class EarHostMicTest(unittest.IsolatedAsyncioTestCase):
             with self.assertLogs("nuxiva.ear.host_mic", level="WARNING"):
                 await speak_reply("Ciao", "it")
 
+    def test_native_capture_requests_low_latency(self):
+        from features.ear import host_mic
+        with patch.dict("os.environ", {}, clear=True), \
+             patch("features.ear.host_mic.shutil.which", return_value="/usr/bin/tool"), \
+             patch("features.ear.host_mic._get_kiosk_uid", return_value=None):
+            commands = host_mic.get_capture_candidates()
+        parec = [c for c in commands if c[0] == "parec"]
+        self.assertEqual(len(parec), 1)
+        self.assertIn("--latency-msec=30", parec[0])
+        self.assertIn("--latency=30ms", next(c for c in commands if c[0] == "pw-record"))
+        arecord = next(c for c in commands if c[0] == "arecord")
+        self.assertIn("--period-time=30000", arecord)
+        self.assertIn("--buffer-time=240000", arecord)
+        with patch.dict("os.environ", {"NUXIVA_MIC_LATENCY_MS": "5000"}):
+            self.assertEqual(host_mic.capture_latency_ms(), 200)
+        with patch.dict("os.environ", {"NUXIVA_MIC_LATENCY_MS": "abc"}):
+            self.assertEqual(host_mic.capture_latency_ms(), 30)
+
+    def test_kiosk_capture_keeps_latency_hint(self):
+        from features.ear import host_mic
+        with patch.dict("os.environ", {}, clear=True), \
+             patch("features.ear.host_mic.shutil.which", side_effect=lambda name: name in ("parec", "runuser") and name), \
+             patch("features.ear.host_mic._get_kiosk_uid", return_value=1001), \
+             patch("features.ear.host_mic.os.getuid", return_value=0, create=True), \
+             patch("features.ear.host_mic.os.name", "posix"):
+            commands = host_mic.get_capture_candidates()
+        self.assertEqual(commands[0][:3], ["runuser", "-u", host_mic.KIOSK_USER])
+        self.assertIn("--latency-msec=30", commands[0])
+
+    async def test_wake_feedback_loads_voice_modules_without_features_package(self):
+        import importlib
+        from features.ear import host_mic
+        real_import = importlib.import_module
+
+        def isolated(name, *args, **kwargs):
+            if name.startswith(("features.voices", "installer_wizard.features.voices")):
+                raise ModuleNotFoundError(name)
+            return real_import(name, *args, **kwargs)
+
+        for name in ("feedback", "playback"):
+            sys.modules.pop(f"_nuxiva_host_voices_{name}", None)
+        try:
+            with patch("features.ear.host_mic.importlib.import_module", side_effect=isolated):
+                feedback = host_mic._voice_module("feedback")
+                playback = host_mic._voice_module("playback")
+                self.assertTrue(feedback.wake_wav().startswith(b"RIFF"))
+                self.assertTrue(callable(playback.play_host_audio))
+                self.assertIs(host_mic._voice_module("feedback"), feedback)
+                with patch.object(playback, "play_host_audio", new_callable=AsyncMock) as play, \
+                     patch.dict("os.environ", {"NUXIVA_EAR_HOST_WAKE_SOUND": "1"}):
+                    await host_mic.play_wake_feedback()
+                play.assert_awaited_once_with(feedback.wake_wav())
+        finally:
+            for name in ("feedback", "playback"):
+                sys.modules.pop(f"_nuxiva_host_voices_{name}", None)
+
+    def test_voice_module_loader_rejects_unknown_names(self):
+        from features.ear import host_mic
+        for name in ("../ear/service", "os", "synthesis"):
+            with self.assertRaises(ValueError):
+                host_mic._voice_module(name)
+
+    async def test_native_pcm_is_conditioned_before_session_feed(self):
+        fed = []
+
+        class MockSession:
+            def __init__(self, ws):
+                self.ws = ws
+                self.page = {}
+                self.last_pcm_time = 0.0
+
+            async def feed(self, pcm):
+                fed.append(pcm)
+
+        capture = HostMicCapture(MockSession)
+        capture.conditioner = MagicMock()
+        capture.conditioner.process.side_effect = [b"", b"\x02\x00\x03\x00"]
+        mock_proc = MagicMock()
+        mock_proc.stderr = None
+        mock_proc.stdout.read = AsyncMock(side_effect=[b"\x01\x00" * 4, b"\x01\x00" * 4, b""])
+        mock_proc.terminate = MagicMock()
+        mock_proc.wait = AsyncMock(return_value=0)
+        with patch("features.ear.host_mic.get_capture_candidates", return_value=[["fake-rec"]]), \
+             patch("asyncio.create_subprocess_exec", return_value=mock_proc):
+            run_task = asyncio.create_task(capture.run())
+            await asyncio.sleep(0.05)
+            capture.stop()
+            run_task.cancel()
+            try:
+                await run_task
+            except asyncio.CancelledError:
+                pass
+        capture.conditioner.restart.assert_called()
+        self.assertEqual(fed, [b"\x02\x00\x03\x00"])
+
     def setUp(self):
         _get_sessions().clear()
 

@@ -1,4 +1,6 @@
 import asyncio
+import importlib
+import importlib.util
 import json
 import logging
 import os
@@ -7,15 +9,50 @@ import sys
 import time
 import urllib.error
 import urllib.request
+from pathlib import Path
+from types import ModuleType
 from typing import Any
 
 try:
     from features.ear import earconf
+    from features.ear.conditioner import NativeConditioner
 except ImportError:
     try:
         import earconf
+        from conditioner import NativeConditioner
     except ImportError:
         from installer_wizard.features.ear import earconf
+        from installer_wizard.features.ear.conditioner import NativeConditioner
+
+VOICES_DIR = Path(__file__).resolve().parent.parent / "voices"
+VOICE_MODULES = frozenset({"feedback", "playback"})
+
+
+def _voice_module(name: str) -> ModuleType:
+    if name not in VOICE_MODULES:
+        raise ValueError(f"Modulo voce non consentito: {name}")
+    for qualified in (f"features.voices.{name}", f"installer_wizard.features.voices.{name}"):
+        try:
+            return importlib.import_module(qualified)
+        except ImportError:
+            continue
+    private = f"_nuxiva_host_voices_{name}"
+    if private in sys.modules:
+        return sys.modules[private]
+    source = VOICES_DIR / f"{name}.py"
+    if not source.is_file():
+        raise ModuleNotFoundError(f"Modulo voce non trovato: {source}")
+    spec = importlib.util.spec_from_file_location(private, source)
+    if spec is None or spec.loader is None:
+        raise ModuleNotFoundError(f"Modulo voce non caricabile: {source}")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[private] = module
+    try:
+        spec.loader.exec_module(module)
+    except BaseException:
+        sys.modules.pop(private, None)
+        raise
+    return module
 
 
 def _get_broadcast_module():
@@ -64,6 +101,11 @@ PUBLIC_URL = "http://127.0.0.1:" + os.environ.get("NUXIVA_PUBLIC_PORT", "80")
 ASSISTANT_URL = os.environ.get("NUXIVA_ASSISTANT_URL", PUBLIC_URL + "/api/assistant/chat")
 TTS_URL = os.environ.get("NUXIVA_TTS_URL", PUBLIC_URL + "/api/voice/speak")
 KIOSK_USER = os.environ.get("NUXIVA_KIOSK_USER", "nuxiva-kiosk")
+DEFAULT_LATENCY_MS = 30
+
+
+def capture_latency_ms() -> int:
+    return int(earconf.number("NUXIVA_MIC_LATENCY_MS", DEFAULT_LATENCY_MS, 10, 200))
 
 
 def _get_kiosk_uid() -> int | None:
@@ -80,14 +122,17 @@ def get_capture_candidates() -> list[list[str]]:
         return [custom.split()]
     cmds: list[list[str]] = []
     uid = _get_kiosk_uid()
+    latency = capture_latency_ms()
+    parec = ["parec", "--rate=16000", "--channels=1", "--format=s16le", f"--latency-msec={latency}"]
     if shutil.which("parec"):
         if os.name != "nt" and hasattr(os, "getuid") and os.getuid() == 0 and uid is not None and shutil.which("runuser"):
-            cmds.append(["runuser", "-u", KIOSK_USER, "--", "env", f"XDG_RUNTIME_DIR=/run/user/{uid}", "parec", "--rate=16000", "--channels=1", "--format=s16le"])
-        cmds.append(["parec", "--rate=16000", "--channels=1", "--format=s16le"])
+            cmds.append(["runuser", "-u", KIOSK_USER, "--", "env", f"XDG_RUNTIME_DIR=/run/user/{uid}", *parec])
+        cmds.append(parec)
     if shutil.which("pw-record"):
-        cmds.append(["pw-record", "--rate=16000", "--channels=1", "--format=s16"])
+        cmds.append(["pw-record", "--rate=16000", "--channels=1", "--format=s16", f"--latency={latency}ms"])
     if shutil.which("arecord"):
-        cmds.append(["arecord", "-q", "-r", "16000", "-c", "1", "-f", "S16_LE", "-t", "raw"])
+        cmds.append(["arecord", "-q", "-r", "16000", "-c", "1", "-f", "S16_LE", "-t", "raw",
+                     f"--period-time={latency * 1000}", f"--buffer-time={latency * 8000}"])
     return cmds
 
 
@@ -140,9 +185,8 @@ async def play_wake_feedback() -> None:
     if not earconf.flag("NUXIVA_EAR_HOST_WAKE_SOUND", True):
         return
     try:
-        from features.voices.feedback import wake_wav
-        from features.voices.playback import play_host_audio
-
+        wake_wav = _voice_module("feedback").wake_wav
+        play_host_audio = _voice_module("playback").play_host_audio
         await play_host_audio(wake_wav())
     except Exception:
         log.warning("Feedback sonoro di attivazione host non disponibile", exc_info=True)
@@ -213,6 +257,7 @@ class HostMicCapture:
         self.process: asyncio.subprocess.Process | None = None
         self._stderr_task: asyncio.Task | None = None
         self._stderr_tail = b""
+        self.conditioner = NativeConditioner.from_env()
 
     def should_capture(self) -> bool:
         if not earconf.flag("NUXIVA_EAR_HOST_MIC", True):
@@ -267,6 +312,7 @@ class HostMicCapture:
                     if self.process.stderr is not None:
                         self._stderr_task = asyncio.create_task(self._drain_stderr(self.process.stderr))
                     assert self.process.stdout is not None
+                    self.conditioner.restart()
                     pending = b""
                     while self.running and self.should_capture():
                         chunk = await self.process.stdout.read(CHUNK_BYTES)
@@ -277,7 +323,9 @@ class HostMicCapture:
                         boundary = len(chunk) - len(chunk) % 2
                         pending = chunk[boundary:]
                         if boundary:
-                            await self.session.feed(chunk[:boundary])
+                            cleaned = self.conditioner.process(chunk[:boundary])
+                            if cleaned:
+                                await self.session.feed(cleaned)
                         await asyncio.sleep(0)
                 except asyncio.CancelledError:
                     raise
