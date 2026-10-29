@@ -151,6 +151,7 @@
   body:has(.dock.tools-open) .bgq,
   body:has(.dock.tools-open) .setup-cta {
     opacity: 0;
+    visibility: hidden;
     pointer-events: none;
   }
 
@@ -172,4 +173,42 @@
     width: min(2400px, calc(100vw - 96px));
     gap: 16px;
   }
+}
+
+.dock-tools #btn-voice.on {
+  display: none;
+}
+
+.dock-tools #btn-voice:not(.on) {
+  border-color: rgba(255, 77, 106, 0.55);
+  color: var(--red);
+}
+
+.dock-bar .ibtn.mic {
+  --lvl: 0;
+  box-shadow: 0 0 18px rgba(41, 224, 255, 0.3), 0 0 0 calc(var(--lvl) * 10px) rgba(61, 255, 168, 0.22);
+  transition: box-shadow 0.08s linear;
+}
+
+body:is(.listening, .transcribing, .conversing) .dock:not(.expanded) {
+  width: auto;
+}
+
+body:is(.listening, .transcribing, .conversing) .dock:not(.expanded) .dock-bar input {
+  flex: 0 0 0;
+  width: 0;
+  padding: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dock,
+  .dock-bar .ibtn.mic {
+    transition: none;
+  }
+}
+
+.dock-bar .ibtn.mic.listening {
+  box-shadow: 0 0 20px rgba(61, 255, 168, 0.5), 0 0 0 calc(var(--lvl) * 10px) rgba(61, 255, 168, 0.22);
 }

@@ -189,12 +189,25 @@
 
   D.isSpeaking = () => Voice.isSpeaking() || ("speechSynthesis" in window && speechSynthesis.speaking);
 
-  D.startVoiceToggle = () => {
+  const VOICE_KEY = "nuxiva-voice-replies";
+
+  D.setVoiceOn = (on) => {
+    D.voiceOn = !!on;
     $("btn-voice").classList.toggle("on", D.voiceOn);
+    $("btn-voice").setAttribute("aria-pressed", String(D.voiceOn));
+    document.body.classList.toggle("voice-muted", !D.voiceOn);
+    if ($("voice-replies")) $("voice-replies").checked = D.voiceOn;
+    try { localStorage.setItem(VOICE_KEY, D.voiceOn ? "1" : "0"); } catch (_) {}
+    if (!D.voiceOn) { Voice.stop(); if ("speechSynthesis" in window) speechSynthesis.cancel(); }
+  };
+
+  D.startVoiceToggle = () => {
+    let stored = null;
+    try { stored = localStorage.getItem(VOICE_KEY); } catch (_) {}
+    D.setVoiceOn(stored !== "0");
     $("btn-voice").addEventListener("click", () => {
       if (D.isFamilyNear && !D.isFamilyNear()) return;
-      D.voiceOn = !D.voiceOn; $("btn-voice").classList.toggle("on", D.voiceOn);
-      if (!D.voiceOn) { Voice.stop(); if ("speechSynthesis" in window) speechSynthesis.cancel(); }
+      D.setVoiceOn(!D.voiceOn);
     });
   };
 })();

@@ -404,6 +404,8 @@ class Session:
             self.nuxiva_speaking = bool(msg.get("on"))
             if self.nuxiva_speaking:
                 self.wake.request_reset()
+        elif kind == "mic_adjusted":
+            self.autolevel.rejudge()
         elif kind == "presence":
             alone = str(msg.get("alone") or "")
             self.alone = alone if SLUG_RE.match(alone) else None

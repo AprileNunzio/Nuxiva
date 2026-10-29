@@ -197,6 +197,20 @@
       $("btn-send").disabled = !$("in").value.trim() || (D.isFamilyNear && !D.isFamilyNear());
     });
     $("in").addEventListener("keydown", (e) => { if (e.key === "Enter") send(); });
+    const editable = (el) => !!el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName));
+    addEventListener("keydown", (e) => {
+      if (e.defaultPrevented || e.ctrlKey || e.metaKey || e.altKey || e.key.length !== 1 || editable(document.activeElement)) return;
+      if (D.isFamilyNear && !D.isFamilyNear()) return;
+      if (D.mode !== "face" || document.body.matches(".desk-full, .desk-whiteboard, .desk-immersive")) return;
+      if (dockEl.offsetParent === null || inputEl.disabled) return;
+      dockEl.classList.add("expanded");
+      inputEl.focus({ preventScroll: true });
+    });
+    dockEl.querySelector(".dock-bar").addEventListener("pointerdown", (e) => {
+      if (e.target.closest("button") || document.activeElement === inputEl) return;
+      dockEl.classList.add("expanded");
+      requestAnimationFrame(() => inputEl.focus({ preventScroll: true }));
+    });
     $("btn-send").addEventListener("click", send);
     const dock = document.querySelector(".dock");
     const setTools = (open) => {

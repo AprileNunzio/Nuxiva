@@ -58,6 +58,10 @@ class AutoLevel:
             self.pending = verdict
         self.speech, self.clipped, self.peak_rms = 0, 0, 0.0
 
+    def rejudge(self) -> None:
+        self.advice, self.pending = "", ""
+        self.speech, self.clipped, self.peak_rms = 0, 0, 0.0
+
     def take_advice(self) -> str:
         advice, self.pending = self.pending, ""
         return advice

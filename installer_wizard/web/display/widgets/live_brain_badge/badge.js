@@ -17,6 +17,7 @@
   let opened = false;
 
   root.className = "brain-route-host";
+  root.dataset.surface = "brain_badge";
   root.hidden = true;
   button.className = "brain-route-button";
   button.type = "button";

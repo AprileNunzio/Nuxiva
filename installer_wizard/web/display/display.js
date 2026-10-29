@@ -288,7 +288,10 @@
     toggle($("presence"), cfg.show_presence !== false);
     if (D.applyLookVisibility) D.applyLookVisibility(cfg.show_holo_avatar !== false);
     toggle($("desk"), cfg.show_desk_widgets !== false);
+    if (D.Surfaces) D.Surfaces.apply(cfg);
+    if (D.Ear && D.Ear.setAutoCalibrate) D.Ear.setAutoCalibrate(cfg.mic_autocalibrate !== false);
   }
+  D.applyDisplaySettings = applyDisplaySettings;
   try {
     const cached = localStorage.getItem("nuxiva_display_settings");
     if (cached) applyDisplaySettings(JSON.parse(cached));

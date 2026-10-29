@@ -6,7 +6,7 @@
   const PAGE = Math.random().toString(36).slice(2, 8);
   const OPT_IN = "nuxiva-remote-mic";
   const AUTO_AGC = "nuxiva-mic-agc";
-  let autoLevel = false, agcOn = false;
+  let autoLevel = false, agcOn = false, autoCal = true;
   const agcLearned = () => { try { return localStorage.getItem(AUTO_AGC) === "1"; } catch (e) { return false; } };
   const optedIn = () => { try { return localStorage.getItem(OPT_IN) === "1"; } catch (e) { return false; } };
   const secure = () => window.isSecureContext && !!navigator.mediaDevices;
@@ -56,6 +56,7 @@
     window.dispatchEvent(new CustomEvent("nuxiva-ear-level", { detail: v }));
     if (state === "listening") waveBars.forEach((b, i) => { b.style.height = `${6 + history[i] * 64 * (0.6 + 0.4 * Math.sin(i * 0.9))}px`; });
     const m = $("vol-in-meter"); if (m) m.style.width = `${Math.min(100, v * 100)}%`;
+    $("btn-mic").style.setProperty("--lvl", state === "off" ? "0" : Math.min(1, v * 1.6).toFixed(2));
     D.Mood.level(v);
     if (state === "listening" && D.avatar && D.avatar.setInputLevel) D.avatar.setInputLevel(v);
   }
@@ -73,7 +74,7 @@
       if (r.ok) tune = await r.json();
     } catch (e) { console.warn("Configurazione del microfono non letta, uso i valori predefiniti", e); }
     autoLevel = !!tune.autoLevel;
-    agcOn = !!tune.autoGainControl || (autoLevel && agcLearned());
+    agcOn = !!tune.autoGainControl || (autoLevel && autoCal && agcLearned());
     return { deviceId: "default", channelCount: 1, echoCancellation: !!tune.echoCancellation,
       noiseSuppression: !!tune.noiseSuppression, autoGainControl: agcOn };
   }
@@ -245,10 +246,28 @@
     await activate();
   }
 
-  function micLevelAdvice(advice) {
-    if (advice !== "lower" || !autoLevel || agcOn) return;
+  async function micLevelAdvice(advice) {
+    if (!["ok", "lower", "raise"].includes(advice)) return;
+    const announce = (value) => {
+      D.micAdvice = value;
+      window.dispatchEvent(new CustomEvent("nuxiva-mic-advice", { detail: value }));
+    };
+    announce(advice);
+    if (!autoCal || advice === "ok") return;
+    if ((hostMicActive || D.local) && D.nudgeMicInput && await D.nudgeMicInput(advice)) { send({ type: "mic_adjusted" }); return; }
+    if (!autoLevel || agcOn || !stream) return;
     try { localStorage.setItem(AUTO_AGC, "1"); } catch (e) { console.warn("Preferenza del livello del microfono non salvata", e); }
+    announce("browser");
     restartMic();
+  }
+
+  function setAutoCalibrate(on) {
+    const next = !!on;
+    if (next === autoCal) return;
+    autoCal = next;
+    if (next) return;
+    try { localStorage.removeItem(AUTO_AGC); } catch (e) {}
+    if (stream && agcOn) restartMic();
   }
 
   async function restartMic() {
@@ -272,7 +291,7 @@
   const Ear = D.Ear = window.nuxivaEar = {
     resetFrom(t) { if (!t || t === resetSeen) return; if (resetSeen) restartMic(); resetSeen = t; },
     setAssistantName(name) { if (!name || name === assistant) return; assistant = name; setState(state); },
-    start, send, restartMic, debugState: setState, debugLevel: level,
+    start, send, restartMic, setAutoCalibrate, debugState: setState, debugLevel: level,
     listen() { if (ctx && ctx.state === "suspended") ctx.resume(); D.pingActivity(true); send({ type: "listen" }); setState("listening"); },
     speaking(on) { send({ type: "speaking", on }); },
     followup(seconds = 20) { send({ type: "followup", seconds, conversation: true }); },

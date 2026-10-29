@@ -9,7 +9,7 @@ import auth
 import health
 import machine
 import updater
-from access import NO_CACHE, require_admin, require_internal, session_user
+from access import NO_CACHE, require_admin, require_display, require_internal, session_user
 import setup_api
 from config import EDITABLE_KEYS, NUXIVA_DIR, NODE, is_secret, kiosk_log, read_env, write_env, _ollama_cache
 from orchestrator import orch
@@ -324,8 +324,28 @@ DEFAULT_DISPLAY_SETTINGS = {
     "show_holo_avatar": True,
     "show_desk_widgets": True,
     "sound_effects": True,
+    "mic_autocalibrate": True,
     "session_mode": "shared",
+    "surfaces": {},
 }
+
+SURFACE_DEFAULTS = {
+    "rail_voice": False,
+    "rail_home": True,
+    "rail_scan": True,
+    "rail_vitals": True,
+    "rail_learned": True,
+    "project": True,
+    "music_clock": True,
+    "brain_badge": True,
+}
+
+
+def _surfaces(value: object, base: dict | None = None) -> dict:
+    merged = dict(SURFACE_DEFAULTS if base is None else base)
+    if isinstance(value, dict):
+        merged.update({k: v for k, v in value.items() if k in SURFACE_DEFAULTS and isinstance(v, bool)})
+    return merged
 
 DEFAULT_BACKEND_SETTINGS = {
     "ollama_url": "",
@@ -346,10 +366,10 @@ def get_display_settings() -> dict:
             with open(path, "r", encoding="utf-8") as f:
                 data = json.load(f)
                 if isinstance(data, dict):
-                    return {**DEFAULT_DISPLAY_SETTINGS, **data}
+                    return {**DEFAULT_DISPLAY_SETTINGS, **data, "surfaces": _surfaces(data.get("surfaces"))}
         except (OSError, ValueError) as exc:
             log.warning("Impostazioni del display non lette: %s", exc)
-    return dict(DEFAULT_DISPLAY_SETTINGS)
+    return {**DEFAULT_DISPLAY_SETTINGS, "surfaces": _surfaces(None)}
 
 
 def save_display_settings(data: dict) -> dict:
@@ -359,6 +379,8 @@ def save_display_settings(data: dict) -> dict:
             if k == "session_mode":
                 val = str(data[k]).strip().lower()
                 current[k] = val if val in ("shared", "isolated") else "shared"
+            elif k == "surfaces":
+                current[k] = _surfaces(data[k], current.get("surfaces"))
             else:
                 current[k] = bool(data[k])
     path = NUXIVA_DIR / "display_settings.json"
@@ -437,7 +459,6 @@ async def get_system_display_settings():
     return {"ok": True, "settings": get_display_settings()}
 
 
-@public_routes.post("/api/system/display-settings")
 @admin_routes.post("/api/system/display-settings")
 async def post_system_display_settings(request: Request):
     body = await request.json()
@@ -445,6 +466,12 @@ async def post_system_display_settings(request: Request):
         raise HTTPException(400, "Corpo richiesta non valido")
     saved = save_display_settings(body)
     return {"ok": True, "settings": saved}
+
+
+@public_routes.post("/api/system/display-settings")
+async def post_display_settings_from_display(request: Request):
+    require_display(request, "Solo dal display")
+    return await post_system_display_settings(request)
 
 
 @public_routes.get("/api/system/backend-settings")

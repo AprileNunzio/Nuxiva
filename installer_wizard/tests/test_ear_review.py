@@ -217,6 +217,17 @@ class AutoLevelTest(unittest.TestCase):
         self.assertEqual([a for a in advice if a], ["lower"])
         self.assertEqual(level.status()["advice"], "lower")
 
+    def test_rejudge_after_a_correction_asks_again_if_still_too_loud(self):
+        level = AutoLevel()
+        clipped = np.clip(self.tone(1.6), -1.0, 1.0)
+        advice = []
+        for step in range(400):
+            if step == 200:
+                level.rejudge()
+            level.apply(clipped, self.rms(clipped), 0.001)
+            advice.append(level.take_advice())
+        self.assertEqual([a for a in advice if a], ["lower", "lower"])
+
     def test_a_good_level_gives_no_advice_to_act_on(self):
         level = AutoLevel()
         voice = self.tone(0.08)

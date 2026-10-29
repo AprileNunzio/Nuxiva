@@ -75,6 +75,35 @@ async def desk_position(request: Request):
     return {"ok": True}
 
 
+LOCKED_WIDGETS = frozenset({"alarm", "alert_error", "alert_info", "alert_warning", "cyber_alert"})
+
+
+@public_routes.get("/api/display/widgets")
+async def display_widgets(request: Request):
+    require_display(request, "Solo dal display")
+    if not desk.widgets:
+        desk.scan()
+    return {"widgets": [{"id": m["id"], "name": str(m.get("name") or m["id"])[:80], "icon": str(m.get("icon") or "")[:8],
+                         "enabled": desk.enabled(m["id"]), "locked": m["id"] in LOCKED_WIDGETS}
+                        for m in sorted(desk.widgets.values(), key=lambda x: str(x.get("name") or x["id"]).casefold())]}
+
+
+@public_routes.put("/api/display/widgets/{wid}")
+async def display_widget_toggle(wid: str, request: Request):
+    require_display(request, "Solo dal display")
+    body = await request.json()
+    if not isinstance(body, dict) or not isinstance(body.get("enabled"), bool):
+        raise HTTPException(400, "Valore non valido")
+    if wid in LOCKED_WIDGETS:
+        raise HTTPException(403, "Widget di sicurezza sempre attivo")
+    try:
+        desk.set_prefs(wid, {"enabled": body["enabled"]})
+    except KeyError:
+        raise HTTPException(404, "Widget sconosciuto")
+    store.event("INFO", f"Widget {wid} {'attivato' if body['enabled'] else 'disattivato'} dal display", "desk")
+    return {"ok": True, "id": wid, "enabled": desk.enabled(wid)}
+
+
 @public_routes.post("/api/desk/fullscreen")
 async def desk_fullscreen(request: Request):
     require_display(request, "Solo dal display")

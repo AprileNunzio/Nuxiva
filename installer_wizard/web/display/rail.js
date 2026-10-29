@@ -38,6 +38,7 @@
 
   function buildVoice() {
     const block = el("section", "rl-block voice");
+    block.dataset.surface = "rail_voice";
     block.setAttribute("aria-label", T("rl_voice"));
     const h = head("rl_voice");
     const bars = el("div", "rl-bars");
@@ -54,6 +55,7 @@
 
   function buildHome() {
     const block = el("section", "rl-block home");
+    block.dataset.surface = "rail_home";
     const h = head("rl_home");
     const list = el("div", "rl-block");
     block.append(h.node, list);
@@ -63,6 +65,7 @@
 
   function buildScan() {
     const block = el("section", "rl-block scan");
+    block.dataset.surface = "rail_scan";
     const h = head("rl_scanner");
     const mood = el("div", "rl-mood");
     const word = el("b");
@@ -91,6 +94,7 @@
 
   function buildVitals() {
     const block = el("section", "rl-block vitals");
+    block.dataset.surface = "rail_vitals";
     const h = head("rl_vitals");
     const grid = el("div", "rl-vitals");
     block.append(h.node, grid);
@@ -100,6 +104,7 @@
 
   function buildLearn() {
     const block = el("section", "rl-block learn rl-more");
+    block.dataset.surface = "rail_learned";
     const h = head("rl_learned");
     const list = el("div", "rl-block");
     block.append(h.node, list);
@@ -224,7 +229,10 @@
     }
   }
 
+  const voiceShown = () => !D.Surfaces || D.Surfaces.enabled("rail_voice");
+
   function paintVoice() {
+    if (!voiceShown()) { state.frame = 0; return; }
     state.frame = requestAnimationFrame(paintVoice);
     const live = Date.now() - state.heardAt < VOICE_HOLD;
     const v = live ? Math.min(1, state.level * 3.2) : 0;
@@ -271,7 +279,9 @@
     if (window.PageText) PageText.onChange(() => { render(); });
     refresh();
     state.timer = setInterval(() => { if (!document.hidden) refresh(); }, POLL_MS);
-    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) paintVoice();
+    const motion = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (motion) paintVoice();
+    window.addEventListener("nuxiva-surfaces", () => { if (motion && !state.frame && voiceShown()) paintVoice(); avoid(); });
     watchDesk();
   }
 

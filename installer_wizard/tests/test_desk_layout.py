@@ -16,7 +16,7 @@ class LayoutSourceTest(unittest.TestCase):
     def test_normal_widgets_stay_in_side_columns_and_sphere_is_kept_clear(self):
         source = DESK.read_text()
         self.assertIn("const sides = [{ x0: M, x1: M + colW }, { x0: W - M - colW, x1: W - M }]", source)
-        self.assertIn("blocked.concat(keepOut)", source)
+        self.assertIn("blocked.concat(keepOut, fixed)", source)
         self.assertNotIn("o.x - want.w - PIN_GAP", source.split("const sides")[1])
 
     @unittest.skipUnless(shutil.which("node"), "node assente")
