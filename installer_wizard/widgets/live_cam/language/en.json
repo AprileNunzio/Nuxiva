@@ -2,13 +2,16 @@
   "meta": {
     "locale": "en",
     "scope": "widgets/live_cam",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Live camera",
     "connecting": "Connecting…",
     "unavailable": "Stream unavailable",
     "fullscreen": "Full screen",
-    "close": "Close"
+    "close": "Close",
+    "snapshot": "Save a frame",
+    "reconnecting": "Reconnecting in {{n}} s…",
+    "unavailable_retry": "Camera unreachable, retrying in {{n}} s"
   }
 }

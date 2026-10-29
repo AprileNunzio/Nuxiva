@@ -2,12 +2,33 @@
   "meta": {
     "locale": "it",
     "scope": "widgets/network_devices",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Dispositivi in rete",
     "more": "e altri {{n}}",
     "connected_one": "{{n}} connesso",
-    "connected_other": "{{n}} connessi"
+    "connected_other": "{{n}} connessi",
+    "t_router": "Router",
+    "t_ap": "Access point",
+    "t_phone": "Telefono o tablet",
+    "t_computer": "Computer",
+    "t_server": "Server",
+    "t_printer": "Stampante",
+    "t_tv": "TV e multimedia",
+    "t_camera": "Telecamera",
+    "t_nas": "NAS",
+    "t_iot": "Dispositivo smart",
+    "t_esp": "Microcontrollore ESP",
+    "t_raspberry": "Raspberry Pi",
+    "t_speaker": "Altoparlante",
+    "t_homeassistant": "Home Assistant",
+    "t_console": "Console di gioco",
+    "t_nuxiva": "Questa Nuxiva",
+    "t_unknown": "Sconosciuto",
+    "none": "Nessun dispositivo rilevato",
+    "new": "Nuovo",
+    "untrusted": "Non verificato",
+    "untrusted_hint": "Dispositivo non segnato come fidato"
   }
 }

@@ -2,7 +2,7 @@
   "meta": {
     "locale": "es",
     "scope": "widgets/mission_tracker",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Misión Autónoma",
@@ -22,7 +22,6 @@
     "action_retry": "Reintentar",
     "action_cancel": "Cancelar",
     "active_specialist": "Especialista Activo",
-    "progress_label": "Progreso Global",
     "tasks_completed": "{{done}} de {{total}} completados",
     "questions_pending_title": "Decisión o Preferencia Requerida",
     "submit_answer": "Confirmar Elección",
@@ -30,6 +29,19 @@
     "send_directive": "Enviar al CEO",
     "no_messages": "Sin deliberaciones recientes registradas.",
     "no_artifacts": "Aún no hay archivos entregados.",
-    "empty_tasks": "Inicialización del plan en curso..."
+    "empty_tasks": "Inicialización del plan en curso...",
+    "phase": "Fase",
+    "answer_placeholder": "Escribe una respuesta (opcional)",
+    "confirm_cancel": "¿Confirmas la cancelación?",
+    "sent": "Enviado",
+    "send_failed": "No se pudo enviar, inténtalo de nuevo",
+    "artifacts_one": "archivo generado",
+    "artifacts_other": "archivos generados",
+    "task_done": "Completada",
+    "task_running": "En ejecución",
+    "task_review": "En revisión",
+    "task_waiting": "En espera",
+    "task_failed": "Fallida",
+    "task_pending": "Sin empezar"
   }
 }

@@ -2,10 +2,12 @@
   "meta": {
     "locale": "en",
     "scope": "widgets/music",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "listening": "Music",
-    "playing": "Playing"
+    "playing": "Playing",
+    "silence": "No song recognised",
+    "lyrics": "Lyrics available"
   }
 }

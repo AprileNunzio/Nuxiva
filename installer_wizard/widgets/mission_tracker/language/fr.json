@@ -2,7 +2,7 @@
   "meta": {
     "locale": "fr",
     "scope": "widgets/mission_tracker",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Mission Autonome",
@@ -22,7 +22,6 @@
     "action_retry": "Réessayer",
     "action_cancel": "Annuler",
     "active_specialist": "Spécialiste Actif",
-    "progress_label": "Avancement Global",
     "tasks_completed": "{{done}} sur {{total}} terminés",
     "questions_pending_title": "Décision ou Préférence Requise",
     "submit_answer": "Confirmer le Choix",
@@ -30,6 +29,19 @@
     "send_directive": "Envoyer au CEO",
     "no_messages": "Aucune délibération récente enregistrée.",
     "no_artifacts": "Aucun fichier publié pour le moment.",
-    "empty_tasks": "Initialisation du plan en cours..."
+    "empty_tasks": "Initialisation du plan en cours...",
+    "phase": "Phase",
+    "answer_placeholder": "Écrivez une réponse (facultatif)",
+    "confirm_cancel": "Confirmer l’annulation ?",
+    "sent": "Envoyé",
+    "send_failed": "Échec de l’envoi, réessayez",
+    "artifacts_one": "fichier produit",
+    "artifacts_other": "fichiers produits",
+    "task_done": "Terminée",
+    "task_running": "En cours",
+    "task_review": "En revue",
+    "task_waiting": "En attente",
+    "task_failed": "Échouée",
+    "task_pending": "Non commencée"
   }
 }

@@ -2,13 +2,16 @@
   "meta": {
     "locale": "it",
     "scope": "widgets/live_cam",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Telecamera in diretta",
     "connecting": "Connessione in corso…",
     "unavailable": "Flusso non disponibile",
     "fullscreen": "Schermo intero",
-    "close": "Chiudi"
+    "close": "Chiudi",
+    "snapshot": "Salva un fotogramma",
+    "reconnecting": "Riconnessione tra {{n}} s…",
+    "unavailable_retry": "Telecamera non raggiungibile, nuovo tentativo tra {{n}} s"
   }
 }

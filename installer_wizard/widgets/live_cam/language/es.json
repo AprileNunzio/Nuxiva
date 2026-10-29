@@ -2,13 +2,16 @@
   "meta": {
     "locale": "es",
     "scope": "widgets/live_cam",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Cámara en directo",
     "connecting": "Conectando…",
     "unavailable": "Transmisión no disponible",
     "fullscreen": "Pantalla completa",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "snapshot": "Guardar un fotograma",
+    "reconnecting": "Reconectando en {{n}} s…",
+    "unavailable_retry": "Cámara no disponible, nuevo intento en {{n}} s"
   }
 }

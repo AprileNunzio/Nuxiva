@@ -1,10 +1,15 @@
 {
-  "name": "mission_tracker",
-  "title": "Mission Tracker",
-  "category": "team",
-  "version": "1.0.0",
-  "resizable": true,
-  "fullscreen": true,
-  "default_size": { "w": 440, "h": 580 },
-  "min_size": { "w": 320, "h": 400 }
+  "id": "mission_tracker",
+  "name": "Missione autonoma",
+  "icon": "🚀",
+  "priority": 70,
+  "size": "l",
+  "tone": "cyan",
+  "agent": "autonomous_worker",
+  "intents": [
+    "mission_tracker",
+    "missione",
+    "mission"
+  ],
+  "description": "Avanzamento di una missione autonoma: fasi, esperti al lavoro, domande in attesa, direttive e controlli pausa/riprendi/annulla."
 }

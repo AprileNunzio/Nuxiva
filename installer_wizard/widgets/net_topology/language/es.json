@@ -2,11 +2,35 @@
   "meta": {
     "locale": "es",
     "scope": "widgets/net_topology",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "dictionary": {
     "label": "Red",
     "title": "Topología",
-    "loading": "Escaneando la red…"
+    "loading": "Escaneando la red…",
+    "t_router": "Router",
+    "t_ap": "Punto de acceso",
+    "t_phone": "Teléfono o tableta",
+    "t_computer": "Ordenador",
+    "t_server": "Servidor",
+    "t_printer": "Impresora",
+    "t_tv": "TV y multimedia",
+    "t_camera": "Cámara",
+    "t_nas": "NAS",
+    "t_iot": "Dispositivo inteligente",
+    "t_esp": "Microcontrolador ESP",
+    "t_raspberry": "Raspberry Pi",
+    "t_speaker": "Altavoz",
+    "t_homeassistant": "Home Assistant",
+    "t_console": "Videoconsola",
+    "t_nuxiva": "Esta Nuxiva",
+    "t_unknown": "Desconocido",
+    "none": "No hay dispositivos que mostrar",
+    "gateway": "Puerta de enlace",
+    "online_one": "{{n}} en línea",
+    "online_other": "{{n}} en línea",
+    "more": "y {{n}} más",
+    "online_word": "en línea",
+    "offline_word": "desconectado"
   }
 }

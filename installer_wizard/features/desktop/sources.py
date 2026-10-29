@@ -59,7 +59,9 @@ def network_devices() -> dict | None:
     online = [d for d in explorer.devices.values() if d.get("online")]
     if not online:
         return None
-    return {"items": [{"label": str(explorer.label(d))[:60], "value": str(d.get("ip") or "")[:45]} for d in online[:20]]}
+    return {"items": [{"label": str(explorer.label(d))[:60], "value": str(d.get("ip") or "")[:45], "type": str(d.get("type") or "unknown")[:20],
+                       "trusted": bool(d.get("trusted")), "room": str(d.get("room") or "")[:40], "since": d.get("first_seen")}
+                      for d in online[:20]], "total": len(explorer.devices)}
 
 
 async def weather() -> dict | None:
