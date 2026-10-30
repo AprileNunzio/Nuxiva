@@ -6,7 +6,7 @@ UNIT_SRC="$NUXIVA_DIR/scripts/os/systemd/nuxiva-ear.service"
 UNIT=/etc/systemd/system/nuxiva-ear.service
 EDIR="$NUXIVA_DIR/installer_wizard/features/ear"
 CODE=("$EDIR/service.py" "$EDIR/broadcast.py" "$EDIR/stt.py" "$EDIR/learner.py" "$EDIR/enhance.py" "$EDIR/music.py"
-      "$EDIR/wakeword.py" "$EDIR/voiceprint.py" "$EDIR/earconf.py" "$EDIR/tuning.py" "$EDIR/autolevel.py"
+      "$EDIR/wakeword.py" "$EDIR/voiceprint.py" "$EDIR/earconf.py" "$EDIR/tuning.py" "$EDIR/autolevel.py" "$EDIR/levels.py" "$EDIR/equalizer.py"
       "$EDIR/vocabulary.py" "$EDIR/online_stt.py" "$EDIR/langpick.py"
       "$EDIR/recorder.py" "$EDIR/reviewer.py" "$EDIR/review_metrics.py" "$EDIR/journal.py" "$EDIR/capture.py"
       "$EDIR/feedback.py" "$EDIR/livecap.py" "$EDIR/livegov.py" "$NUXIVA_DIR/installer_wizard/features/biometrics/embeddings.py")

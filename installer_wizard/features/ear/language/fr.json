@@ -16,7 +16,8 @@
     "Entrées très similaires (jumeaux) se distinguant par une marge plus sévère",
     "Transcription en direct élégante sur l'écran, adaptée aux performances du PC",
     "Reconnaît qui a prononcé chaque phrase",
-    "Journal chiffré de ce qu'il entend, avec réécoute et retour pour s'améliorer"
+    "Journal chiffré de ce qu'il entend, avec réécoute et retour pour s'améliorer",
+    "Test du microphone depuis le panneau : niveau en temps réel, enregistrement de 5 secondes à réécouter et égalisation facultative"
   ],
   "settings": {
     "NUXIVA_EAR_MODE": "Méthodes d'écoute et de reconnaissance",
@@ -67,7 +68,12 @@
     "NUXIVA_EAR_JOURNAL_FULL": "Transcrire entièrement les phrases non adressées à l'assistant",
     "NUXIVA_EAR_JOURNAL_DAYS": "Jours de conservation du journal (1 - 365)",
     "NUXIVA_EAR_JOURNAL_AUDIO_DAYS": "Jours de conservation de l'audio (0 - 60)",
-    "NUXIVA_EAR_JOURNAL_MAX_MB": "Espace maximal pour l'audio du journal (Mo, 20 - 5000)"
+    "NUXIVA_EAR_JOURNAL_MAX_MB": "Espace maximal pour l'audio du journal (Mo, 20 - 5000)",
+    "NUXIVA_EAR_EQ": "Égalisation du microphone (pour les microphones difficiles)",
+    "NUXIVA_EAR_EQ_HIGHPASS": "Coupe-bas contre le grondement et le ronflement, en Hz (0 = désactivé, jusqu'à 300)",
+    "NUXIVA_EAR_EQ_LOW": "Graves, en dB (-12 - 12)",
+    "NUXIVA_EAR_EQ_MID": "Médiums, en dB (-12 - 12)",
+    "NUXIVA_EAR_EQ_HIGH": "Aigus, en dB (-12 - 12)"
   },
   "help": {
     "NUXIVA_MIC_AGC": "Automatique : NUXIVA mesure votre voix et, si le microphone est trop fort ou sature, elle active d'elle-même le contrôle du volume du navigateur, qui baisse le microphone dans le système. Oui : toujours actif. Non : jamais.",

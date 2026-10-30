@@ -4,7 +4,10 @@ import os
 import time
 from pathlib import Path
 
-import earconf
+try:
+    import earconf
+except ImportError:
+    from features.ear import earconf
 
 log = logging.getLogger("nuxiva.ear")
 

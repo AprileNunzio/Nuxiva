@@ -16,7 +16,8 @@
     "Voci molto simili (gemelli) distinte con un margine più severo",
     "Trascrizione live elegante sul display, che si adatta alle prestazioni del PC",
     "Riconosce chi ha pronunciato ogni frase",
-    "Registro cifrato di ciò che sente, con riascolto e feedback per migliorare"
+    "Registro cifrato di ciò che sente, con riascolto e feedback per migliorare",
+    "Test del microfono dal pannello: livello in tempo reale, registrazione di 5 secondi da riascoltare ed equalizzazione facoltativa"
   ],
   "settings": {
     "NUXIVA_EAR_MODE": "Modalità di ascolto e riconoscimento",
@@ -67,7 +68,12 @@
     "NUXIVA_EAR_JOURNAL_FULL": "Trascrivi per intero anche le frasi non rivolte all'assistente",
     "NUXIVA_EAR_JOURNAL_DAYS": "Giorni di conservazione del registro (1 - 365)",
     "NUXIVA_EAR_JOURNAL_AUDIO_DAYS": "Giorni di conservazione dell'audio (0 - 60)",
-    "NUXIVA_EAR_JOURNAL_MAX_MB": "Spazio massimo per l'audio del registro (MB, 20 - 5000)"
+    "NUXIVA_EAR_JOURNAL_MAX_MB": "Spazio massimo per l'audio del registro (MB, 20 - 5000)",
+    "NUXIVA_EAR_EQ": "Equalizzazione del microfono (per microfoni difficili)",
+    "NUXIVA_EAR_EQ_HIGHPASS": "Taglio dei bassi per rimbombo e ronzio, in Hz (0 = spento, fino a 300)",
+    "NUXIVA_EAR_EQ_LOW": "Bassi, in dB (-12 - 12)",
+    "NUXIVA_EAR_EQ_MID": "Medi, in dB (-12 - 12)",
+    "NUXIVA_EAR_EQ_HIGH": "Alti, in dB (-12 - 12)"
   },
   "help": {
     "NUXIVA_MIC_AGC": "Automatico: NUXIVA misura la tua voce e, se il microfono è troppo alto o distorce, attiva da sola il controllo del volume del browser che abbassa il microfono nel sistema. Sì: sempre attivo. No: mai.",

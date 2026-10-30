@@ -2,6 +2,8 @@ import os
 
 import numpy as np
 
+import equalizer
+from levels import utterance_gain
 from tuning import tuning
 
 try:
@@ -125,24 +127,14 @@ def deepfilter_clean(x: np.ndarray) -> np.ndarray | None:
 
 
 def normalize(x: np.ndarray) -> np.ndarray:
-    frames = x[:len(x) // 320 * 320].reshape(-1, 320) if len(x) >= 320 else x.reshape(1, -1)
-    energy = np.sqrt((frames ** 2).mean(axis=1))
-    voiced = energy[energy > np.percentile(energy, 60)] if len(energy) > 4 else energy
-    rms = float(voiced.mean()) if len(voiced) else 0.0
-    if rms <= 1e-5:
-        return x
     target = _env_f("NUXIVA_EAR_TARGET_RMS", TARGET_RMS, 0.03, 0.2)
-    max_gain = tuning.max_gain()
-    gain = min(max_gain, target / rms)
-    # Protezione rumore da lontano: se il segnale e' molto basso, evita di gonfiare solo il fruscio
-    gate = min(1.0, max(0.2, (rms / 0.005) ** 2))
-    y = x * (gain * gate)
-    # Limiter morbido: amplifica la voce lontana senza tagliare i picchi
+    y = x * utterance_gain(x, target, tuning.max_gain())
     return (PEAK * np.tanh(y / PEAK)).astype(np.float32)
 
 
 def clean(x: np.ndarray, profile: NoiseProfile) -> np.ndarray:
-    df_out = deepfilter_clean(x.astype(np.float32))
+    x = equalizer.apply(x.astype(np.float32), equalizer.EqSettings.from_env())
+    df_out = deepfilter_clean(x)
     if df_out is not None:
         return normalize(df_out)
     return normalize(denoise(highpass(x.astype(np.float32)), profile.magnitude))

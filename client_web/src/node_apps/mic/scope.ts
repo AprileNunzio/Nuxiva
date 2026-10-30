@@ -15,3 +15,11 @@ export const EAR_SPECS: readonly SettingSpec[] = [
   { key: 'NUXIVA_EAR_MAX_GAIN', kind: 'range', min: 2, max: 80, step: 1, fallback: 30, unit: '×' },
   { key: 'NUXIVA_EAR_TARGET_RMS', kind: 'range', min: 0.03, max: 0.2, step: 0.005, fallback: 0.075 },
 ];
+
+export const EQ_SPECS: readonly SettingSpec[] = [
+  { key: 'NUXIVA_EAR_EQ', kind: 'toggle', fallback: false },
+  { key: 'NUXIVA_EAR_EQ_HIGHPASS', kind: 'range', min: 0, max: 300, step: 10, fallback: 0, unit: ' Hz' },
+  { key: 'NUXIVA_EAR_EQ_LOW', kind: 'range', min: -12, max: 12, step: 0.5, fallback: 0, unit: ' dB' },
+  { key: 'NUXIVA_EAR_EQ_MID', kind: 'range', min: -12, max: 12, step: 0.5, fallback: 0, unit: ' dB' },
+  { key: 'NUXIVA_EAR_EQ_HIGH', kind: 'range', min: -12, max: 12, step: 0.5, fallback: 0, unit: ' dB' },
+];

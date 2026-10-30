@@ -7,7 +7,8 @@
     "Acoustic event identification",
     "Elegant live transcript on the display, adapting to the PC's performance",
     "Recognises who said each sentence",
-    "Encrypted log of what it hears, with playback and feedback to improve"
+    "Encrypted log of what it hears, with playback and feedback to improve",
+    "Microphone test from the panel: live level, 5-second recording to play back and optional equalization"
   ],
   "settings": {
     "NUXIVA_WAKE_WORD": "Wake word",
@@ -28,7 +29,12 @@
     "NUXIVA_EAR_JOURNAL_FULL": "Fully transcribe sentences not addressed to the assistant",
     "NUXIVA_EAR_JOURNAL_DAYS": "Days to keep the log (1 - 365)",
     "NUXIVA_EAR_JOURNAL_AUDIO_DAYS": "Days to keep the audio (0 - 60)",
-    "NUXIVA_EAR_JOURNAL_MAX_MB": "Maximum space for the log audio (MB, 20 - 5000)"
+    "NUXIVA_EAR_JOURNAL_MAX_MB": "Maximum space for the log audio (MB, 20 - 5000)",
+    "NUXIVA_EAR_EQ": "Microphone equalization (for difficult microphones)",
+    "NUXIVA_EAR_EQ_HIGHPASS": "Low cut for rumble and hum, in Hz (0 = off, up to 300)",
+    "NUXIVA_EAR_EQ_LOW": "Bass, in dB (-12 - 12)",
+    "NUXIVA_EAR_EQ_MID": "Mids, in dB (-12 - 12)",
+    "NUXIVA_EAR_EQ_HIGH": "Treble, in dB (-12 - 12)"
   },
   "help": {
     "NUXIVA_MIC_AGC": "Automatic: NUXIVA measures your voice and, if the microphone is too loud or distorts, it turns on the browser volume control by itself, which lowers the microphone in the system. Yes: always on. No: never.",

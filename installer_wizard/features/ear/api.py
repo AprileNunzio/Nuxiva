@@ -11,11 +11,13 @@ from features.desktop.desk import desk
 from features.people import people
 from features.ear import keycheck, proxy
 from features.ear.journal_api import routes as journal_routes
+from features.ear.mictest_api import routes as mictest_routes
 from state import store
 
 public_routes = APIRouter()
 admin_routes = APIRouter()
 admin_routes.include_router(journal_routes)
+admin_routes.include_router(mictest_routes)
 REVIEW_DIR = Path(os.environ.get("NUXIVA_EAR_REVIEW_DIR", "/var/lib/nuxiva/ear_review"))
 TUNING_FILE = Path(os.environ.get("NUXIVA_EAR_TUNING", "/var/lib/nuxiva/ear_tuning.json"))
 

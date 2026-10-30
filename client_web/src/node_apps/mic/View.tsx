@@ -8,8 +8,9 @@ import { SettingsPanel } from '../shared/components/SettingsPanel';
 import { useLocalAudio } from '../shared/hooks/useLocalAudio';
 import { useNodeSettings } from '../shared/hooks/useNodeSettings';
 import { usePairedNode } from '../shared/hooks/usePairedNode';
+import { MicTestPanel } from './components/MicTestPanel';
 import { WakeWordPanel } from './components/WakeWordPanel';
-import { EAR_SPECS, useMicI18n } from './scope';
+import { EAR_SPECS, EQ_SPECS, useMicI18n } from './scope';
 
 interface Props {
   readonly nodeId?: string;
@@ -21,6 +22,7 @@ export const View: React.FC<Props> = ({ nodeId = '', scope = 'mesh' }) => {
   const local = scope === 'local';
   const audio = useLocalAudio(local);
   const settings = useNodeSettings(nodeId, scope, EAR_SPECS);
+  const equalizer = useNodeSettings(nodeId, scope, EQ_SPECS);
   const { node } = usePairedNode(nodeId, scope);
 
   return (
@@ -31,6 +33,7 @@ export const View: React.FC<Props> = ({ nodeId = '', scope = 'mesh' }) => {
           <div className="flex min-w-0 flex-col gap-4">
             <WakeWordPanel />
             {local && <AudioChannelPanel side="input" audio={audio} t={t} />}
+            {local && <MicTestPanel ear={settings.values} eq={equalizer.values} />}
             {scope === 'paired' && (
               <>
                 <Notice tone="info">{t('notice_paired')}</Notice>
@@ -38,7 +41,10 @@ export const View: React.FC<Props> = ({ nodeId = '', scope = 'mesh' }) => {
               </>
             )}
           </div>
-          <SettingsPanel title={t('ear_title')} specs={EAR_SPECS} state={settings} t={t} />
+          <div className="flex min-w-0 flex-col gap-4">
+            <SettingsPanel title={t('ear_title')} specs={EAR_SPECS} state={settings} t={t} />
+            <SettingsPanel title={t('eq_title')} specs={EQ_SPECS} state={equalizer} t={t} />
+          </div>
         </div>
       )}
     </ModuleFrame>

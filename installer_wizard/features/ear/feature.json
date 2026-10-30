@@ -30,7 +30,8 @@
     "Voci molto simili (gemelli) distinte con un margine più severo",
     "Trascrizione live elegante sul display, che si adatta alle prestazioni del PC",
     "Riconosce chi ha pronunciato ogni frase",
-    "Registro cifrato di ciò che sente, con riascolto e feedback per migliorare"
+    "Registro cifrato di ciò che sente, con riascolto e feedback per migliorare",
+    "Test del microfono dal pannello: livello in tempo reale, registrazione di 5 secondi da riascoltare ed equalizzazione facoltativa"
   ],
   "settings": [
     {
@@ -230,6 +231,62 @@
       "label": "Livello vocale obiettivo (0.03 - 0.2)",
       "type": "number",
       "default": "0.08",
+      "apply": [
+        "ear"
+      ]
+    },
+    {
+      "key": "NUXIVA_EAR_EQ",
+      "label": "Equalizzazione del microfono (per microfoni difficili)",
+      "type": "select",
+      "default": "0",
+      "apply": [
+        "ear"
+      ],
+      "options": [
+        {
+          "value": "0",
+          "label": "No (consigliato: basta la pulizia automatica)"
+        },
+        {
+          "value": "1",
+          "label": "Sì, applica i controlli qui sotto"
+        }
+      ],
+      "help": "Si applica alle frasi prima della pulizia automatica del rumore. Provala con il test di 5 secondi nell'app Microfono."
+    },
+    {
+      "key": "NUXIVA_EAR_EQ_HIGHPASS",
+      "label": "Taglio dei bassi per rimbombo e ronzio, in Hz (0 = spento, fino a 300)",
+      "type": "number",
+      "default": "0",
+      "apply": [
+        "ear"
+      ]
+    },
+    {
+      "key": "NUXIVA_EAR_EQ_LOW",
+      "label": "Bassi, in dB (-12 - 12)",
+      "type": "number",
+      "default": "0",
+      "apply": [
+        "ear"
+      ]
+    },
+    {
+      "key": "NUXIVA_EAR_EQ_MID",
+      "label": "Medi, in dB (-12 - 12)",
+      "type": "number",
+      "default": "0",
+      "apply": [
+        "ear"
+      ]
+    },
+    {
+      "key": "NUXIVA_EAR_EQ_HIGH",
+      "label": "Alti, in dB (-12 - 12)",
+      "type": "number",
+      "default": "0",
       "apply": [
         "ear"
       ]

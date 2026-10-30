@@ -1,41 +1,30 @@
 import numpy as np
 
+from levels import CLIP, GainFollower, judge
 from tuning import tuning
 
-TARGET = 0.06
-LOUD = 0.25
-QUIET = 0.012
-CLIP = 0.985
-CLIP_RATIO = 0.02
-ATTACK_SMOOTH = 0.25
-DECAY = 0.995
-MIN_GAIN = 0.25
 WINDOW = 160
 
 
 class AutoLevel:
 
     def __init__(self) -> None:
-        self.env = 0.0
-        self.gain = 1.0
+        self.follower = GainFollower()
         self.speech = 0
         self.clipped = 0
         self.peak_rms = 0.0
         self.advice = ""
         self.pending = ""
 
+    @property
+    def gain(self) -> float:
+        return self.follower.gain
+
     def apply(self, frame: np.ndarray, rms: float, noise: float) -> np.ndarray:
-        floor = max(noise * 2.2, 0.006)
-        if rms > floor:
-            self.env = max(rms, self.env * DECAY)
+        leveled, voiced = self.follower.follow(frame, rms, noise, tuning.wake_gain_limit())
+        if voiced:
             self._observe(frame, rms)
-        else:
-            self.env *= DECAY
-        want = float(np.clip(TARGET / self.env, MIN_GAIN, tuning.wake_gain_limit())) if self.env > floor else 1.0
-        self.gain += (want - self.gain) * ATTACK_SMOOTH
-        if abs(self.gain - 1.0) <= 0.02:
-            return frame
-        return np.clip(frame * self.gain, -1.0, 1.0)
+        return leveled
 
     def _observe(self, frame: np.ndarray, rms: float) -> None:
         self.speech += 1
@@ -46,13 +35,7 @@ class AutoLevel:
             self._judge()
 
     def _judge(self) -> None:
-        clipping = self.clipped / max(1, self.speech)
-        if clipping >= CLIP_RATIO or self.peak_rms >= LOUD:
-            verdict = "lower"
-        elif self.peak_rms < QUIET:
-            verdict = "raise"
-        else:
-            verdict = "ok"
+        verdict = judge(self.peak_rms, self.clipped / max(1, self.speech))
         if verdict != self.advice:
             self.advice = verdict
             self.pending = verdict
