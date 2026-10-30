@@ -90,6 +90,7 @@ class Registry:
                     hostname=clean_text(report.get("hostname"), 60),
                     capabilities=[clean_text(c, 30) for c in (report.get("capabilities") or [])[:12]],
                     compute=compute.clean(report.get("compute"), clean_text),
+                    agent=adapt.token(report.get("agent"), 16), offload=adapt.clean_offload(report.get("offload")),
                     metrics={k: round(float(v), 1) for k, v in metrics.items()
                              if k in ("cpu", "ram", "disk", "temp", "uptime") and isinstance(v, (int, float))})
         self._adapt(node, report)

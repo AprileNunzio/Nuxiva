@@ -58,6 +58,21 @@
     "type_esp32": "Microcontrollore",
     "type_android": "Android",
     "type_sensor": "Sensore",
-    "type_other": "Altro"
+    "type_other": "Altro",
+    "edge_title": "Intelligenza sul dispositivo",
+    "edge_no_accelerator": "Nessun acceleratore: lavora solo la CPU.",
+    "edge_ready": "pronto",
+    "edge_missing_runtime": "runtime mancante",
+    "edge_task_wake_word": "Parola di attivazione",
+    "edge_task_vad": "Rilevamento voce",
+    "edge_task_stt": "Trascrizione",
+    "edge_task_tts": "Sintesi vocale",
+    "edge_task_vision": "Visione",
+    "edge_task_llm": "Modello linguistico",
+    "edge_target_edge": "sul dispositivo ({backend})",
+    "edge_target_server": "sul server",
+    "edge_target_unavailable": "non disponibile",
+    "satellite_enroll_hint": "Per un satellite con l'agente nativo scarica un file di iscrizione monouso, valido 24 ore.",
+    "satellite_enroll": "Scarica iscrizione satellite"
   }
 }

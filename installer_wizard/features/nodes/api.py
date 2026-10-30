@@ -22,6 +22,7 @@ _failures: dict[str, list[float]] = {}
 public_routes.include_router(enroll_routes.public_routes)
 public_routes.include_router(compute_routes.public_routes)
 admin_routes.include_router(compute_routes.admin_routes)
+admin_routes.include_router(enroll_routes.admin_routes)
 
 
 def _ip(request: Request) -> str:

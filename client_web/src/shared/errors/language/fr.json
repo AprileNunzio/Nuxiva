@@ -160,6 +160,7 @@
     "error_brain_function_failed": "Fonction non enregistrée.",
     "error_brain_presets_unavailable": "Profils rapides indisponibles.",
     "error_brain_preset_failed": "Profil non appliqué.",
-    "error_brain_free_matrix_failed": "Modèles gratuits injoignables."
+    "error_brain_free_matrix_failed": "Modèles gratuits injoignables.",
+    "error_node_satellite_enrollment_failed": "Inscription du satellite non générée."
   }
 }

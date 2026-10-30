@@ -17,11 +17,10 @@ ENROLL_FILE = "enroll.json"
 
 
 def _https_origin(request: Request) -> str:
-    host = request.url.hostname or ""
-    port = secure._active["port"]
-    if not host or host in ("localhost", "127.0.0.1", "::1") or not port:
+    origin = trust.https_origin(request.url.hostname, secure._active["port"])
+    if not origin:
         raise HTTPException(409, "enroll_https_unavailable")
-    return f"https://{host}" if port == 443 else f"https://{host}:{port}"
+    return origin
 
 
 @admin_routes.post("/api/rpa/enrolled-client")

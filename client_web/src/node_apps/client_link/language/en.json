@@ -58,6 +58,21 @@
     "type_esp32": "Microcontroller",
     "type_android": "Android",
     "type_sensor": "Sensor",
-    "type_other": "Other"
+    "type_other": "Other",
+    "edge_title": "On-device intelligence",
+    "edge_no_accelerator": "No accelerator: CPU only.",
+    "edge_ready": "ready",
+    "edge_missing_runtime": "runtime missing",
+    "edge_task_wake_word": "Wake word",
+    "edge_task_vad": "Voice detection",
+    "edge_task_stt": "Transcription",
+    "edge_task_tts": "Speech synthesis",
+    "edge_task_vision": "Vision",
+    "edge_task_llm": "Language model",
+    "edge_target_edge": "on device ({backend})",
+    "edge_target_server": "on server",
+    "edge_target_unavailable": "unavailable",
+    "satellite_enroll_hint": "For a satellite running the native agent, download a single-use enrollment file valid for 24 hours.",
+    "satellite_enroll": "Download satellite enrollment"
   }
 }

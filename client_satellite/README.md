@@ -17,6 +17,51 @@ Designed for slightly more powerful setups where you might already have a Raspbe
 - Runs a lightweight Python client (`satellite.py`).
 - Nuxiva Server can provision this automatically over SSH.
 
+### 3. `nuxiva-satellite` (Rust, any Linux board)
+A single native binary (`native/crates/satellite-core`) for ARM64, ARMv7, x86-64 and RISC-V boards. It is the
+recommended agent for new satellites and replaces `linux_edge/satellite.py` wherever it can be installed.
+
+- **Board discovery:** reads the device tree or DMI to identify the SoC (Rockchip, Broadcom/Raspberry Pi, NVIDIA Jetson,
+  Amlogic, Allwinner, Qualcomm, MediaTek, NXP, Sophgo, StarFive, Intel, AMD...), the CPU features (NEON, dot product,
+  i8mm, SVE, AVX2, AVX-VNNI, RVV) and the peripherals (microphones, speakers, webcams with infrared detection,
+  Bluetooth, GPIO, I2C, USB).
+- **Accelerator backends:** RKNN (vendor `rknpu` and mainline `rocket`), CUDA/TensorRT (Jetson and desktop GPUs),
+  ROCm, Hailo, Coral Edge TPU (USB and PCIe), Intel NPU (OpenVINO), AMD XDNA, Qualcomm Hexagon (QNN), MediaTek APU,
+  VeriSilicon NPU (i.MX 8M Plus, A311D), Sophgo TPU, Arm Ethos and any GPU with Vulkan/OpenCL. A backend counts as
+  *ready* only when both the device and its runtime library are present.
+- **Offload plan:** for each task (wake word, VAD, speech-to-text, text-to-speech, vision, small LLM) it picks the best
+  ready accelerator, falls back to the CPU when the board is strong enough, and otherwise leaves the task to the
+  central server. The plan and the missing runtimes are reported in every heartbeat and shown in the Nodes panel.
+- **Any other chip:** drop a JSON descriptor in `/etc/nuxiva/accelerators.d/`. Descriptors are strictly validated
+  (device paths only under `/dev`, plain library names, no unknown fields) and can override a built-in backend:
+
+```json
+{
+  "id": "kendryte-kpu",
+  "vendor": "Canaan",
+  "kind": "npu",
+  "devices": ["/dev/kpu0"],
+  "runtimes": ["libnncase.so"],
+  "tasks": ["wake_word", "vad", "vision"],
+  "priority": 90
+}
+```
+
+- **Zero-Trust link:** HTTPS only. The enrollment file (Nodes panel, *satellite enrollment*) carries a single-use
+  token and the SHA-256 pin of the Nuxiva CA; the agent refuses a CA with a different pin and a server certificate not
+  signed by that CA. The node token is stored encrypted with AES-256-GCM, with a key bound to `/etc/machine-id`, in
+  `0600` files.
+- **Hardened service:** `sudo nuxiva-satellite install-service --file nuxiva-satellite-enroll.json --name Salotto`
+  installs a systemd unit with `DynamicUser`, `ProtectSystem=strict`, no capabilities and a system call filter. The
+  enrollment is redeemed on first start through a systemd credential.
+
+```bash
+nuxiva-satellite probe                    # print the hardware profile and the offload plan
+sudo nuxiva-satellite install-service --file nuxiva-satellite-enroll.json --name "Salotto" --room "Salotto"
+```
+
+Extra runtime folders can be listed in `NUXIVA_RUNTIME_PATH` (colon separated, absolute paths).
+
 ## Auto-Provisioning
 You do not need to manually edit code to set Wi-Fi credentials or the Server IP. The `satellite_manager` in the Nuxiva Core handles dynamic compilation and flashing automatically.
 

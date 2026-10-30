@@ -18,6 +18,11 @@ LISTS = {"cameras": "Webcam", "audio_in": "Microfono", "audio_out": "Uscita audi
 NUMBERS = (("cores", 1, 512), ("ram_gb", 0, 4096), ("disk_gb", 0, 1_000_000))
 TEXT_RE = re.compile(r"[^\w\s.,:;@()/+\-'’àèéìòù]", re.U)
 HISTORY = 12
+TOKEN_RE = re.compile(r"[^a-z0-9_\-]")
+ACCEL_KINDS = {"npu", "gpu", "tpu", "dsp"}
+TASKS = ("wake_word", "vad", "stt", "tts", "vision", "llm")
+TARGETS = {"edge", "server", "unavailable"}
+MAX_ACCELERATORS = 8
 
 
 def text(value, limit: int = 60) -> str:
@@ -38,6 +43,46 @@ def clean_hardware(raw) -> dict | None:
     for key in LISTS:
         items = raw.get(key) if isinstance(raw.get(key), list) else []
         out[key] = [text(i) for i in items[:12] if text(i)]
+    soc = raw.get("soc") if isinstance(raw.get("soc"), dict) else {}
+    out["soc"] = {k: text(soc.get(k), 80 if k == "model" else 40) for k in ("vendor", "family", "model")}
+    features = raw.get("cpu_features") if isinstance(raw.get("cpu_features"), list) else []
+    out["cpu_features"] = sorted({token(f, 16) for f in features[:16] if token(f, 16)})
+    out["accelerators"] = clean_accelerators(raw.get("accelerators"))
+    return out
+
+
+def token(value, limit: int = 32) -> str:
+    return TOKEN_RE.sub("", str(value or "").lower())[:limit]
+
+
+def clean_accelerators(raw) -> list[dict]:
+    if not isinstance(raw, list):
+        return []
+    out = []
+    for item in raw[:MAX_ACCELERATORS]:
+        if not isinstance(item, dict) or not token(item.get("id")):
+            continue
+        tasks = item.get("tasks") if isinstance(item.get("tasks"), list) else []
+        out.append({"id": token(item.get("id")), "vendor": text(item.get("vendor"), 40),
+                    "kind": item.get("kind") if item.get("kind") in ACCEL_KINDS else "npu", "ready": bool(item.get("ready")),
+                    "runtime": text(item.get("runtime"), 60), "tasks": [t for t in TASKS if t in tasks]})
+    return out
+
+
+def clean_offload(raw) -> dict:
+    if not isinstance(raw, dict):
+        return {}
+    out = {}
+    for task in TASKS:
+        step = raw.get(task)
+        if not isinstance(step, dict) or step.get("target") not in TARGETS:
+            continue
+        clean = {"target": step["target"]}
+        if step["target"] == "edge":
+            clean["backend"] = token(step.get("backend")) or "cpu"
+        elif step["target"] == "unavailable":
+            clean["reason"] = token(step.get("reason"))
+        out[task] = clean
     return out
 
 
@@ -57,6 +102,12 @@ def diff(old: dict | None, new: dict) -> list[str]:
         changes.append(f"Memoria: da {old.get('ram_gb')} a {new.get('ram_gb')} GB")
     if old.get("cores") != new.get("cores"):
         changes.append(f"Processore: da {old.get('cores')} a {new.get('cores')} core")
+    before = {a["id"]: a for a in old.get("accelerators", [])}
+    after = {a["id"]: a for a in new.get("accelerators", [])}
+    changes += [f"Acceleratore collegato: {after[i]['vendor'] or i} ({i})" for i in sorted(after.keys() - before.keys())]
+    changes += [f"Acceleratore scollegato: {before[i]['vendor'] or i} ({i})" for i in sorted(before.keys() - after.keys())]
+    changes += [f"Acceleratore {i} " + ("pronto: runtime installato" if after[i]["ready"] else "senza runtime")
+                for i in sorted(after.keys() & before.keys()) if after[i]["ready"] != before[i]["ready"]]
     return changes
 
 
@@ -79,6 +130,10 @@ def advice(hw: dict) -> list[str]:
         tips.append("Nessun microfono rilevato: questo dispositivo non può ascoltare.")
     if 0 < float(hw.get("ram_gb") or 0) < 2:
         tips.append("Poca memoria (meno di 2 GB): evita le funzioni pesanti su questo dispositivo.")
+    for acc in hw.get("accelerators", []):
+        if not acc.get("ready"):
+            tips.append(f"Acceleratore {acc.get('vendor') or acc['id']} ({acc['id']}) rilevato ma senza runtime: installalo per "
+                        "spostare ascolto e visione sul dispositivo.")
     return tips
 
 

@@ -119,6 +119,49 @@ class RouteTest(unittest.TestCase):
         self.assertEqual(big.status_code, 413)
         self.assertEqual(self.client.post("/api/nodes/enroll", json=[1]).status_code, 400)
 
+    def test_satellites_keep_their_type_but_cannot_claim_to_be_a_server(self):
+        for kind, expected in (("satellite", "satellite"), ("display", "display"), ("server", "desktop"), ("<x>", "desktop")):
+            token, _ = self.tokens.issue()
+            node_id = f"nodo-{expected}-{len(kind)}"
+            response = self.client.post("/api/nodes/enroll", json={"token": token, "id": node_id, "name": "Nodo", "type": kind})
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(self.registry.authenticate(node_id, response.json()["token"])["type"], expected)
+
+
+class SatelliteEnrollmentTest(unittest.TestCase):
+    def setUp(self):
+        directory = Path(tempfile.mkdtemp())
+        self.tokens = enrollment_module.EnrollmentTokens.__new__(enrollment_module.EnrollmentTokens)
+        patches = [mock.patch.object(enrollment_module, "TOKENS_FILE", directory / "tokens.json"),
+                   mock.patch.object(enroll_routes.trust, "ca_pin", return_value="a" * 64),
+                   mock.patch.dict(enroll_routes.secure._active, {"port": 8443})]
+        for patcher in patches:
+            patcher.start()
+            self.addCleanup(patcher.stop)
+        self.tokens.items = {}
+        patcher = mock.patch.object(enroll_routes, "tokens", self.tokens)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        app = FastAPI()
+        app.include_router(enroll_routes.admin_routes)
+        app.dependency_overrides[enroll_routes.require_admin] = lambda: "admin"
+        self.client = TestClient(app, base_url="https://192.168.1.10")
+
+    def test_admin_downloads_a_single_use_pinned_enrollment(self):
+        response = self.client.post("/api/nodes/satellite-enrollment")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers["cache-control"], "no-store")
+        data = response.json()
+        self.assertEqual(data["server"], "https://192.168.1.10:8443")
+        self.assertEqual(data["pin"], "a" * 64)
+        self.assertTrue(self.tokens.verify(data["token"]))
+
+    def test_refused_without_https_or_from_localhost(self):
+        with mock.patch.dict(enroll_routes.secure._active, {"port": 0}):
+            self.assertEqual(self.client.post("/api/nodes/satellite-enrollment").json()["detail"], "enroll_https_unavailable")
+        local = TestClient(self.client.app, base_url="https://127.0.0.1")
+        self.assertEqual(local.post("/api/nodes/satellite-enrollment").status_code, 409)
+
 
 if __name__ == "__main__":
     unittest.main()

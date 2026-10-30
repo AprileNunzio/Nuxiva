@@ -160,6 +160,7 @@
     "error_brain_function_failed": "Function not saved.",
     "error_brain_presets_unavailable": "Quick profiles unavailable.",
     "error_brain_preset_failed": "Profile not applied.",
-    "error_brain_free_matrix_failed": "Free models unreachable."
+    "error_brain_free_matrix_failed": "Free models unreachable.",
+    "error_node_satellite_enrollment_failed": "Satellite enrollment not generated."
   }
 }

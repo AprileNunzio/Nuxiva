@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { KeyRound, Loader2, RefreshCw, ShieldCheck } from 'lucide-react';
+import { Download, KeyRound, Loader2, RefreshCw, ShieldCheck } from 'lucide-react';
 import { reportError } from '../../../shared/errors/errorBus';
 import { Panel } from '../../shared/components/ModuleFrame';
-import { PairingCode, createPairingCode } from '../data/linkApi';
+import { PairingCode, createPairingCode, downloadSatelliteEnrollment } from '../data/linkApi';
 import { useNow } from '../hooks/useLinks';
 import { useLinkI18n } from '../scope';
 
@@ -10,6 +10,7 @@ export const PairingPanel: React.FC = () => {
   const { t } = useLinkI18n();
   const [code, setCode] = useState<PairingCode | null>(null);
   const [loading, setLoading] = useState(false);
+  const [enrolling, setEnrolling] = useState(false);
   const now = useNow();
   const left = code ? Math.max(0, Math.round((code.expiresAt - now) / 1000)) : 0;
   const live = code !== null && left > 0;
@@ -22,6 +23,17 @@ export const PairingPanel: React.FC = () => {
       reportError('node_pairing_code_failed', cause);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const enroll = async () => {
+    setEnrolling(true);
+    try {
+      await downloadSatelliteEnrollment();
+    } catch (cause) {
+      reportError('node_satellite_enrollment_failed', cause);
+    } finally {
+      setEnrolling(false);
     }
   };
 
@@ -61,6 +73,16 @@ export const PairingPanel: React.FC = () => {
           <KeyRound className="h-4 w-4" aria-hidden="true" />
         )}
         {t(live ? 'pairing_regenerate' : 'pairing_generate')}
+      </button>
+      <p className="mt-4 text-xs text-slate-500">{t('satellite_enroll_hint')}</p>
+      <button
+        type="button"
+        onClick={() => void enroll()}
+        disabled={enrolling}
+        className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-cyan-400/50 bg-cyan-400/5 px-4 py-2.5 text-sm font-semibold text-cyan-100 transition hover:bg-cyan-400/15 disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200"
+      >
+        {enrolling ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <Download className="h-4 w-4" aria-hidden="true" />}
+        {t('satellite_enroll')}
       </button>
     </Panel>
   );
