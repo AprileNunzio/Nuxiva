@@ -3,7 +3,7 @@ import { Download } from 'lucide-react';
 import { useBrainText, useSectionText } from '../../core/i18n';
 import { useBrain } from '../../core/useBrainStore';
 import { CatalogModel } from '../../core/types';
-import { Badge, Button, Card, Empty } from '../../ui/primitives';
+import { Badge, Button, Card, Empty, FLUID } from '../../ui/primitives';
 
 const FIT_TONE = { ok: 'success', slow: 'warning', no: 'danger' } as const;
 
@@ -35,7 +35,7 @@ export const CatalogCard: React.FC<{ readonly pulling: string | null; readonly o
       {visible.length === 0 ? (
         <div className="p-4"><Empty>{base.t('none_available')}</Empty></div>
       ) : (
-        <ul className="grid gap-px bg-slate-100 sm:grid-cols-2">
+        <ul className={`grid gap-px bg-slate-100 ${FLUID.md}`}>
           {visible.map((model) => (
             <li key={model.name} className="flex flex-col gap-2 bg-white px-4 py-3 sm:px-5">
               <div className="flex items-start gap-2">

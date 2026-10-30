@@ -1,6 +1,14 @@
 import React from 'react';
 import { Loader2, LucideIcon } from 'lucide-react';
 
+export const FLUID = {
+  xs: 'grid-cols-[repeat(auto-fill,minmax(min(100%,13rem),1fr))]',
+  sm: 'grid-cols-[repeat(auto-fill,minmax(min(100%,18rem),1fr))]',
+  md: 'grid-cols-[repeat(auto-fill,minmax(min(100%,22rem),1fr))]',
+  lg: 'grid-cols-[repeat(auto-fill,minmax(min(100%,30rem),1fr))]',
+  xl: 'grid-cols-[repeat(auto-fill,minmax(min(100%,38rem),1fr))]',
+} as const;
+
 export const fieldClass =
   'w-full min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 shadow-2xs outline-none transition focus:border-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500/30 disabled:bg-slate-100 disabled:text-slate-500';
 

@@ -5,7 +5,7 @@ import { matches } from '../../core/format';
 import { useBrainText, useSectionText } from '../../core/i18n';
 import { fetchProviders } from '../../core/providersApi';
 import { useBrain } from '../../core/useBrainStore';
-import { Card, Empty, Loading, SectionHeader, fieldClass } from '../../ui/primitives';
+import { Card, Empty, FLUID, Loading, SectionHeader, fieldClass } from '../../ui/primitives';
 import { ProviderItem } from './ProviderItem';
 import { ServersCard } from './ServersCard';
 
@@ -63,7 +63,7 @@ export const ProvidersSection: React.FC = () => {
         ) : visible.length === 0 ? (
           <div className="p-4"><Empty>{t('empty')}</Empty></div>
         ) : (
-          <ul>
+          <ul className={`grid items-start ${FLUID.md}`}>
             {visible.map((provider) => (
               <ProviderItem key={provider.id} provider={provider} />
             ))}

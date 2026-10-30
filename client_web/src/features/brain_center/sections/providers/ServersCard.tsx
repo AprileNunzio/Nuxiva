@@ -7,7 +7,7 @@ import { SERVICE_URL } from '../../core/parse';
 import { addServer, fetchServers, removeServer, testServer } from '../../core/providersApi';
 import { useBrain } from '../../core/useBrainStore';
 import { NewServer, ServerFlavor } from '../../core/types';
-import { Badge, Button, Card, IconButton, Row, fieldClass } from '../../ui/primitives';
+import { Badge, Button, Card, FLUID, IconButton, Row, fieldClass } from '../../ui/primitives';
 
 const EMPTY: NewServer = { name: '', flavor: 'openai', url: '', key: '' };
 const FLAVORS: readonly ServerFlavor[] = ['openai', 'ollama'];
@@ -60,6 +60,7 @@ export const ServersCard: React.FC = () => {
 
   return (
     <Card title={t('servers_title')} description={t('servers_hint')} flush>
+      <div className={`grid ${FLUID.md}`}>
       {(servers.data ?? []).map((server) => (
         <Row
           key={server.id}
@@ -69,10 +70,11 @@ export const ServersCard: React.FC = () => {
           trailing={<IconButton icon={Trash2} tone="danger" label={t('server_remove')} disabled={busy} onClick={() => setRemoving(server.id)} />}
         />
       ))}
+      </div>
       <form onSubmit={(e) => void submit(e)} className="flex flex-col gap-3 bg-slate-50 px-4 py-4 sm:px-5">
         <p className="text-sm font-medium text-slate-900">{t('add_title')}</p>
         <p className="-mt-2 text-xs text-slate-500">{t('add_hint')}</p>
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className={`grid gap-3 ${FLUID.xs}`}>
           <label className="flex flex-col gap-1 text-xs font-medium text-slate-700">
             {t('server_name')}
             <input value={draft.name} maxLength={40} onChange={(e) => update({ name: e.target.value })} className={fieldClass} />

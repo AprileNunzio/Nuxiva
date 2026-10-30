@@ -5,7 +5,7 @@ import { useBrainText, useSectionText } from '../../core/i18n';
 import { fetchUsage } from '../../core/usageApi';
 import { useBrain } from '../../core/useBrainStore';
 import { UsageSummary } from '../../core/types';
-import { Card, Empty, Loading, Meter, SectionHeader } from '../../ui/primitives';
+import { Card, Empty, FLUID, Loading, Meter, SectionHeader } from '../../ui/primitives';
 import { BudgetsCard } from './BudgetsCard';
 import { DailyChart } from './DailyChart';
 import { WidgetCard } from './WidgetCard';
@@ -37,7 +37,7 @@ export const UsageSection: React.FC = () => {
   return (
     <>
       <SectionHeader title={t('title')} description={t('description', { month: data.month })} />
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className={`grid gap-3 ${FLUID.sm}`}>
         <Stat label={t('today')} value={n(data.today)} />
         <Stat label={t('month_total')} value={n(data.total)} />
         <Stat label={t('month_cloud')} value={n(data.cloud)}>
@@ -51,10 +51,14 @@ export const UsageSection: React.FC = () => {
           )}
         </Stat>
       </div>
-      <DailyChart days={data.days} />
-      <ProviderTable data={data} />
-      <BudgetsCard data={data} onSaved={setData} />
-      <WidgetCard />
+      <div className={`grid items-start gap-4 ${FLUID.xl}`}>
+        <DailyChart days={data.days} />
+        <ProviderTable data={data} />
+      </div>
+      <div className={`grid items-start gap-4 ${FLUID.xl}`}>
+        <BudgetsCard data={data} onSaved={setData} />
+        <WidgetCard />
+      </div>
     </>
   );
 };

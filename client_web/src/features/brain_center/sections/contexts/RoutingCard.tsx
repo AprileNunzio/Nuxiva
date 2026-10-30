@@ -3,14 +3,14 @@ import { saveRouting } from '../../core/brainApi';
 import { useSectionText } from '../../core/i18n';
 import { useBrain } from '../../core/useBrainStore';
 import { ROUTING, Routing } from '../../core/types';
-import { Card } from '../../ui/primitives';
+import { Card, FLUID } from '../../ui/primitives';
 
 export const RoutingCard: React.FC<{ readonly routing: Routing }> = ({ routing }) => {
   const { t } = useSectionText('contexts');
   const { commit, action } = useBrain();
   return (
     <Card title={t('routing_title')} description={t('routing_hint')}>
-      <div role="radiogroup" aria-label={t('routing_title')} className="grid gap-2 sm:grid-cols-3">
+      <div role="radiogroup" aria-label={t('routing_title')} className={`grid gap-2 ${FLUID.xs}`}>
         {ROUTING.map((value) => {
           const selected = value === routing;
           return (

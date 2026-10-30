@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { useBrainText, useSectionText } from '../../core/i18n';
 import { useBrain } from '../../core/useBrainStore';
 import { BrainRef } from '../../core/types';
-import { Loading, SectionHeader } from '../../ui/primitives';
+import { FLUID, Loading, SectionHeader } from '../../ui/primitives';
 import { PRIMARY_ROLES } from '../../ui/roleIcons';
 import { ContextCard } from './ContextCard';
 import { RouteTester } from './RouteTester';
@@ -26,13 +26,15 @@ export const ContextsSection: React.FC = () => {
   return (
     <>
       <SectionHeader title={t('title')} description={t('description')} />
-      <RoutingCard routing={overview.routing} />
-      <div className="flex flex-col gap-4">
+      <div className={`grid items-start gap-4 ${FLUID.xl}`}>
+        <RoutingCard routing={overview.routing} />
+        <RouteTester />
+      </div>
+      <div className={`grid items-start gap-4 ${FLUID.lg}`}>
         {ordered.map((role) => (
           <ContextCard key={role.id} role={role} known={known} />
         ))}
       </div>
-      <RouteTester />
     </>
   );
 };

@@ -7,7 +7,7 @@ import { useBrainText, useSectionText } from '../../core/i18n';
 import { deleteModel, fetchLocalModels, fetchPullProgress, pullModel } from '../../core/localModelsApi';
 import { MODEL_NAME } from '../../core/parse';
 import { useBrain } from '../../core/useBrainStore';
-import { Badge, Button, Card, Empty, IconButton, Loading, Meter, Row, SectionHeader, fieldClass } from '../../ui/primitives';
+import { Badge, Button, Card, Empty, FLUID, IconButton, Loading, Meter, Row, SectionHeader, fieldClass } from '../../ui/primitives';
 import { CatalogCard } from './CatalogCard';
 
 export const LocalModelsSection: React.FC = () => {
@@ -60,7 +60,8 @@ export const LocalModelsSection: React.FC = () => {
         ) : installed.data.length === 0 ? (
           <div className="p-4"><Empty>{t('installed_empty')}</Empty></div>
         ) : (
-          installed.data.map((model) => (
+          <div className={`grid ${FLUID.md}`}>
+          {installed.data.map((model) => (
             <Row
               key={model.name}
               icon={HardDrive}
@@ -68,7 +69,8 @@ export const LocalModelsSection: React.FC = () => {
               description={bytes(model.size)}
               trailing={<IconButton icon={Trash2} tone="danger" label={t('delete')} disabled={action.busy !== null} onClick={() => setDeleting(model.name)} />}
             />
-          ))
+          ))}
+          </div>
         )}
         <form onSubmit={(e) => void submit(e)} className="flex flex-col gap-2 border-t border-slate-100 bg-slate-50 px-4 py-3 sm:flex-row sm:px-5">
           <label className="min-w-0 flex-1">

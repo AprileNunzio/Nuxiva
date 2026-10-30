@@ -6,7 +6,7 @@ import { fetchFunctions } from '../../core/functionsApi';
 import { useBrainText, useSectionText } from '../../core/i18n';
 import { useBrain } from '../../core/useBrainStore';
 import { BrainRef, FunctionRow } from '../../core/types';
-import { Card, Empty, Loading, SectionHeader, fieldClass } from '../../ui/primitives';
+import { Card, Empty, FLUID, Loading, SectionHeader, fieldClass } from '../../ui/primitives';
 import { FunctionItem } from './FunctionItem';
 
 const SIDES = ['supervisor', 'core'] as const;
@@ -52,6 +52,7 @@ export const FunctionsSection: React.FC = () => {
         </label>
         <p className="shrink-0 text-xs text-slate-500">{t('custom_count', { n: custom })}</p>
       </div>
+      <div className={`grid items-start gap-4 ${FLUID.lg}`}>
       {SIDES.map((side) => {
         const rows = visible.filter((row) => row.side === side);
         return (
@@ -68,6 +69,7 @@ export const FunctionsSection: React.FC = () => {
           </Card>
         );
       })}
+      </div>
     </>
   );
 };

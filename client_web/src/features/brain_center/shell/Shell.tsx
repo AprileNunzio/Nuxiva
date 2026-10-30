@@ -47,7 +47,7 @@ export const Shell: React.FC<ShellProps> = ({ active, onSelect, children }) => {
         </ul>
       </nav>
       <main className="min-h-0 flex-1 overflow-y-auto">
-        <div className="mx-auto flex w-full max-w-5xl flex-col gap-5 px-4 py-5 sm:px-6 lg:px-8 lg:py-7">{children}</div>
+        <div className="mx-auto flex w-full max-w-[200rem] flex-col gap-5 px-4 py-5 sm:px-6 lg:px-8 lg:py-7 2xl:px-10">{children}</div>
       </main>
     </div>
   );

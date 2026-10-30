@@ -4,7 +4,7 @@ import { ConfirmDialog } from '../../../../shared/ui/ConfirmDialog';
 import { applyPreset, fetchPresets } from '../../core/presetsApi';
 import { useBrainText, useSectionText } from '../../core/i18n';
 import { useBrain } from '../../core/useBrainStore';
-import { Card } from '../../ui/primitives';
+import { Card, FLUID } from '../../ui/primitives';
 
 export const PresetsCard: React.FC = () => {
   const { t } = useSectionText('overview');
@@ -26,7 +26,7 @@ export const PresetsCard: React.FC = () => {
   };
   return (
     <Card title={t('presets_title')} description={t('presets_hint')}>
-      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+      <div className={`grid gap-2 ${FLUID.xs}`}>
         {presets.data.map((id) => (
           <button
             key={id}

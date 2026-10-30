@@ -7,7 +7,7 @@ import { fetchProviders } from '../../core/providersApi';
 import { saveBudgets } from '../../core/usageApi';
 import { useBrain } from '../../core/useBrainStore';
 import { UsageSummary } from '../../core/types';
-import { Button, Card, Empty, fieldClass } from '../../ui/primitives';
+import { Button, Card, Empty, FLUID, fieldClass } from '../../ui/primitives';
 
 const text = (value: number | null | undefined) => (value ? String(value) : '');
 
@@ -63,7 +63,7 @@ export const BudgetsCard: React.FC<{ readonly data: UsageSummary; readonly onSav
         </Button>
       }
     >
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className={`grid gap-3 ${FLUID.xs}`}>
         {input('global', global, setGlobal, t('budget_global'))}
         {configured.map((p) => input(p.id, caps[p.id] ?? '', (v) => setCaps({ ...caps, [p.id]: v }), p.name))}
       </div>

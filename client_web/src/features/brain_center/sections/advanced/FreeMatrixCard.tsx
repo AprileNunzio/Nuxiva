@@ -4,7 +4,7 @@ import { usePolled } from '../../../../node_apps/shared/hooks/useAction';
 import { FREE_POOLS, FreePool, fetchFreeMatrix, refreshFreeCatalog, saveFreeMatrix } from '../../core/freeMatrixApi';
 import { useBrainText, useSectionText } from '../../core/i18n';
 import { useBrain } from '../../core/useBrainStore';
-import { Badge, Button, Card, Empty, Loading, Switch } from '../../ui/primitives';
+import { Badge, Button, Card, Empty, FLUID, Loading, Switch } from '../../ui/primitives';
 
 export const FreeMatrixCard: React.FC = () => {
   const { t } = useSectionText('advanced');
@@ -68,7 +68,7 @@ export const FreeMatrixCard: React.FC = () => {
             <Switch checked={enabled} label={t('free_enable')} onChange={(v) => { setEnabled(v); setDirty(true); }} />
             <span className="text-sm text-slate-800">{t('free_enable')}</span>
           </div>
-          <fieldset className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          <fieldset className={`grid gap-2 ${FLUID.xs}`}>
             <legend className="mb-2 text-xs font-medium text-slate-700">{t('free_pools')}</legend>
             {FREE_POOLS.map((pool) => (
               <label key={pool} className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800">
@@ -92,7 +92,7 @@ export const FreeMatrixCard: React.FC = () => {
             {data.models.length === 0 ? (
               <Empty>{t('free_empty')}</Empty>
             ) : (
-              <ul className="grid max-h-80 gap-2 overflow-y-auto sm:grid-cols-2">
+              <ul className={`grid max-h-[32rem] gap-2 overflow-y-auto ${FLUID.sm}`}>
                 {data.models.map((model) => (
                   <li key={model.id} className="rounded-lg border border-slate-200 px-3 py-2">
                     <p className="truncate text-sm font-medium text-slate-900">{model.name}</p>
