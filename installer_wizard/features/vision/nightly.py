@@ -35,7 +35,6 @@ def optimize_person(slug: str) -> dict:
 
     if emb_file.is_file():
         try:
-            import numpy as np
             sys_path = Path(__file__).resolve().parents[1] / "biometrics"
             import sys
             if str(sys_path) not in sys.path:
