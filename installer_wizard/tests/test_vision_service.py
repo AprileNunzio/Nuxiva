@@ -241,6 +241,23 @@ class VisionServiceTest(unittest.TestCase):
         self.vision.ir.gray, self.vision.ir.stamp = ir_image(), time.time()
         self.assertEqual(client.get("/ir.jpg").headers["content-type"], "image/jpeg")
 
+    def test_many_viewers_share_one_encode_per_frame(self):
+        frame = np.random.default_rng(3).integers(0, 255, (480, 640, 3), dtype=np.uint8)
+        with self.vision.lock:
+            self.vision.raw, self.vision.frame_id = frame, self.vision.frame_id + 1
+        before = self.vision.encoder.encodes
+        results = [self.vision.live_jpeg() for _ in range(8)]
+        self.assertEqual(self.vision.encoder.encodes - before, 1)
+        self.assertEqual(len({data for _, data in results}), 1)
+        fid, small = self.vision.hands_jpeg()
+        self.assertEqual(fid, self.vision.frame_id)
+        self.assertEqual(cv2.imdecode(np.frombuffer(small, np.uint8), cv2.IMREAD_COLOR).shape[1], 320)
+        self.assertEqual(self.vision.encoder.encodes - before, 2)
+        with self.vision.lock:
+            self.vision.frame_id += 1
+        self.assertNotEqual(self.vision.live_jpeg()[0], results[0][0])
+        self.assertEqual(self.vision.encoder.encodes - before, 3)
+
     def test_enrolment_collects_infrared_samples_too(self):
         self.recognizer.vec = vectors(60, 1)[0]
         self.detector.faces = [face_row(200, 120, 140, 160)]

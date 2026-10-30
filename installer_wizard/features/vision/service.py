@@ -16,6 +16,7 @@ from fusion import Fusion
 from gallery import FACES, Gallery, slugify
 from ircam import IrCamera, enhance
 from objects import ObjectDetector
+from shared_frames import SharedEncoder
 from tracks import Track, facing, iou, reliable_unknown
 from views import Views, router as views_router
 
@@ -48,6 +49,7 @@ class Vision:
         self.enroll_request = None
         self.views = None
         self.frame_id = 0
+        self.encoder = SharedEncoder()
         self.last_process = 0.0
         self.fast_until = 0.0
         self.detector = cv2.FaceDetectorYN.create(str(MODELS / "face_detection_yunet_2023mar.onnx"), "",
@@ -284,33 +286,33 @@ class Vision:
             return []
         return [o for o in self.objects.objects if not o["scenery"]]
 
-    def hands_jpeg(self, width: int = 320) -> tuple[int, bytes]:
-        self.fast_until = time.time() + 3
+    def _snapshot(self) -> tuple:
         with self.lock:
-            frame, fid = (None, 0) if self.raw is None else (self.raw.copy(), self.frame_id)
+            return (None, 0) if self.raw is None else (self.raw.copy(), self.frame_id)
+
+    def _encode(self, quality: int, width: int = 0) -> tuple[int, bytes]:
+        frame, fid = self._snapshot()
         if frame is None:
             return 0, b""
-        h, w = frame.shape[:2]
-        small = cv2.resize(frame, (width, int(h * width / w)), interpolation=cv2.INTER_AREA)
-        ok, jpg = cv2.imencode(".jpg", small, [cv2.IMWRITE_JPEG_QUALITY, 70])
+        if width:
+            h, w = frame.shape[:2]
+            frame = cv2.resize(frame, (width, int(h * width / w)), interpolation=cv2.INTER_AREA)
+        ok, jpg = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, quality])
         return fid, jpg.tobytes() if ok else b""
+
+    def _shared(self, quality: int, width: int = 0) -> tuple[int, bytes]:
+        return self.encoder.get((quality, width), self.frame_id, lambda: self._encode(quality, width))
+
+    def hands_jpeg(self, width: int = 320) -> tuple[int, bytes]:
+        self.fast_until = time.time() + 3
+        return self._shared(70, width)
 
     def live_jpeg(self, quality: int = 80) -> tuple[int, bytes]:
         self.fast_until = time.time() + 3
-        with self.lock:
-            frame, fid = (None, 0) if self.raw is None else (self.raw.copy(), self.frame_id)
-        if frame is None:
-            return 0, b""
-        ok, jpg = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, quality])
-        return fid, jpg.tobytes() if ok else b""
+        return self._shared(quality)
 
     def raw_jpeg(self, quality: int = 88) -> bytes:
-        with self.lock:
-            frame = None if self.raw is None else self.raw.copy()
-        if frame is None:
-            return b""
-        ok, jpg = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, quality])
-        return jpg.tobytes() if ok else b""
+        return self._shared(quality)[1]
 
     def ir_jpeg(self) -> bytes:
         gray = self.ir.latest()
