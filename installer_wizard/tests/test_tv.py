@@ -96,7 +96,8 @@ class RelayTest(unittest.TestCase):
         self.assertEqual(relay.dash_target("abcd", base, "live/v1/seg-7.m4s", "k=1"), "https://cdn.example/live/v1/seg-7.m4s?k=1")
         self.assertEqual(relay.dash_target("abcd", base, "live/a b.m4s"), "https://cdn.example/live/a%20b.m4s")
         self.assertEqual(relay.dash_target("abcd", base, "/evil.example/x"), "https://cdn.example/evil.example/x")
-        for cid, bad, rest in (("other", base, "x"), ("abcd", base[:-1] + "0", "x"), ("abcd", "nope", "x"), ("abcd", base, "a\\b"), ("abcd", base, "a\r\nb")):
+        forged = base[:-1] + ("1" if base.endswith("0") else "0")
+        for cid, bad, rest in (("other", base, "x"), ("abcd", forged, "x"), ("abcd", "nope", "x"), ("abcd", base, "a\\b"), ("abcd", base, "a\r\nb")):
             with self.assertRaises(relay.RelayError):
                 relay.dash_target(cid, bad, rest)
 
