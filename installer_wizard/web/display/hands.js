@@ -4,7 +4,8 @@
   const PINCH_ON = 0.32, PINCH_OFF = 0.5, IDLE_FPS = 4, BUDGET = 0.25, WARMUP = 3, PROBE = 12, MEMORY = 86400000, BOX = { x0: 0.12, x1: 0.88, y0: 0.08, y1: 0.78 };
   const FLICK = 2.2, POINTER = 77;
   const st = { model: null, img: null, cursor: null, last: 0, ts: 0, x: 0, y: 0, seen: 0, pinch: false, target: null,
-               trail: [], duo: null, ignore: false, failures: 0, cost: 0, delegate: "", samples: 0, probe: 0, status: "spente", stopped: false };
+               trail: [], duo: null, ignore: false, failures: 0, cost: 0, delegate: "", samples: 0, probe: 0, status: "spente", stopped: false,
+               bridge: null, rust: false };
   const opt = () => D.FACE || {};
   const VERDICT = "nuxiva.hands.verdict";
 
@@ -200,6 +201,10 @@
     judge(spent);
     if (st.stopped) return;
     const hands = res.landmarks || [];
+    if (st.bridge && st.bridge.ready) {
+      if (hands.length) st.seen = performance.now();
+      if (st.bridge.send(now, res)) return;
+    }
     if (hands.length) {
       track(hands[0]);
       if (hands.length === 2 && hands.every((h) => dist(h[4], h[8]) / (dist(h[0], h[9]) || 0.1) < PINCH_ON)) duo(hands);
@@ -241,9 +246,28 @@
     st.img.src = "/api/vision/hands.mjpg";
     st.x = window.innerWidth / 2; st.y = window.innerHeight / 2;
     if (!auto) st.status = `attive per tua scelta (${st.delegate})`;
+    connectEngine();
     requestAnimationFrame(loop);
   }
 
-  window.nuxivaHands = { get status() { return st.status; } };
+  function connectEngine() {
+    if (!window.NuxivaHandsBridge || !window.NuxivaHandsEvents) return;
+    const handle = window.NuxivaHandsEvents.create({
+      state: st, press, drag, release, pointAt, emit, spread,
+      showCursor() {
+        st.cursor.style.transform = `translate(${st.x}px, ${st.y}px)`;
+        st.cursor.classList.toggle("pinch", st.pinch);
+        st.cursor.classList.add("on");
+      },
+      hideCursor() { st.cursor.classList.remove("on", "pinch"); },
+    });
+    st.bridge = window.NuxivaHandsBridge.create({ event: handle, status(on) { st.rust = on; } });
+  }
+
+  window.nuxivaHands = {
+    get status() { return st.status; },
+    get engine() { return st.rust ? "rust" : "js"; },
+    context(name) { if (st.bridge) st.bridge.setContext(name); },
+  };
   D.startHands = () => setTimeout(start, 4000);
 })();

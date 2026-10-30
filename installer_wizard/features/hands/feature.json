@@ -4,6 +4,7 @@
   "icon": "✋",
   "category": "percezione",
   "order": 62,
+  "api": "api.py",
   "description": "Controlla i widget con le mani davanti alla webcam: pizzica per afferrare, trascina, lancia di lato per cambiare schermo, due mani per lo zoom. In automatico si attiva solo se la GPU del display regge il riconoscimento senza rallentare la pagina.",
   "toggle": {
     "env": "NUXIVA_HANDS",
