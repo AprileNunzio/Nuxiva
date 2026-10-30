@@ -111,11 +111,14 @@ class NodeRegistry:
 
     def _load(self) -> Dict[str, Dict[str, Any]]:
         path = self.path
-        if not path.exists():
-            return {}
         try:
-            payload = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError) as exc:
+            payload = json.loads(path.read_bytes())
+        except FileNotFoundError:
+            return {}
+        except PermissionError as exc:
+            log.error("Registro nodi non accessibile (%s): %s", exc, path)
+            return {}
+        except (OSError, ValueError) as exc:
             quarantine = path.with_suffix(f".corrupt-{int(time.time())}")
             log.error("Registro nodi illeggibile (%s), isolato in %s", exc, quarantine)
             path.replace(quarantine)

@@ -9,13 +9,13 @@ UNIT_SRC="$NUXIVA_DIR/scripts/os/systemd/nuxiva-core.service"
 UNIT=/etc/systemd/system/nuxiva-core.service
 NATIVE_ENV="$NUXIVA_ETC/core-native.env"
 RUN_MARK="$NUXIVA_STATE/.core-native-running"
-DATA_DIRS=(db certs models projects)
+DATA_DIRS=(db certs models projects state)
 
 native_env() {
     printf '%s\n' PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1 "PYTHONPATH=$NUXIVA_DIR" \
         NUXIVA_ENV=production NUXIVA_HOST=0.0.0.0 NUXIVA_PORT=8443 QDRANT_HOST=127.0.0.1 \
         "NUXIVA_TTS_MODELS_DIR=$NUXIVA_DIR/data/models/tts" "BRAIN_ROUTES_PATH=$NUXIVA_STATE/brain/routes.json" \
-        "OLLAMA_BASE_URL=$OLLAMA_URL"
+        "OLLAMA_BASE_URL=$OLLAMA_URL" "NUXIVA_STATE_DIR=$NUXIVA_DIR/data/state"
 }
 native_active() { systemctl is-active --quiet nuxiva-core 2>/dev/null; }
 
@@ -43,15 +43,18 @@ prepare_native_data() {
         || useradd --system --user-group --home-dir /nonexistent --no-create-home --shell /usr/sbin/nologin "$CORE_USER"
     local d
     install -d -m 0750 -o "$CORE_USER" -g "$CORE_USER" "$NUXIVA_DIR/data"
+    [ -L "$NUXIVA_DIR/data" ] && fail "Percorso dati non sicuro (link simbolico): $NUXIVA_DIR/data"
     for d in "${DATA_DIRS[@]}"; do
         install -d -m 0750 -o "$CORE_USER" -g "$CORE_USER" "$NUXIVA_DIR/data/$d"
-        chown -R "$CORE_USER:$CORE_USER" "$NUXIVA_DIR/data/$d"
     done
-    find "$NUXIVA_DIR/data" -maxdepth 1 -type f -exec chown "$CORE_USER:$CORE_USER" {} +
+    chown -R --no-dereference "$CORE_USER:$CORE_USER" "$NUXIVA_DIR/data"
     install -d -m 0750 -g "$CORE_USER" "$NUXIVA_STATE/brain"
     chgrp "$CORE_USER" "$NUXIVA_STATE/brain"
     chmod 0750 "$NUXIVA_STATE/brain"
-    command -v setfacl >/dev/null 2>&1 && setfacl -m "u:$CORE_USER:x" "$NUXIVA_STATE" 2>/dev/null || true
+    if ! { command -v setfacl >/dev/null 2>&1 && setfacl -m "u:$CORE_USER:x" "$NUXIVA_STATE" 2>/dev/null; }; then
+        chgrp "$CORE_USER" "$NUXIVA_STATE"
+        chmod g+x,g-w "$NUXIVA_STATE"
+    fi
     core_grant_code_access "$CORE_USER"
 }
 

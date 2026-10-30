@@ -2,6 +2,7 @@ import os
 import sys
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
 
 _ROOT = Path(__file__).resolve().parents[2]
@@ -51,6 +52,11 @@ class NodeRegistryPersistenceTests(unittest.TestCase):
         restarted.peers.update(self.mesh.peers)
         parent = next(n["parent_id"] for n in restarted.get_mesh_canvas_state()["nodes"] if n["id"] == "rpi-1")
         self.assertEqual(parent, "pc-2")
+
+    def test_unreadable_state_does_not_stop_startup(self):
+        with mock.patch.object(Path, "read_bytes", side_effect=PermissionError(13, "Permission denied")):
+            restarted = NuxivaMeshCoordinator(node_id="pc-host")
+        self.assertEqual(restarted.registry.bindings(), {})
 
     def test_rejects_invalid_names_and_ids(self):
         for bad in ("", "   ", "x" * 65, "‮​"):
