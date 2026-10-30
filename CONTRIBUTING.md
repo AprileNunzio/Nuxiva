@@ -13,7 +13,7 @@ privately as described in [SECURITY.md](SECURITY.md), never through public issue
 ## Ways to contribute
 
 - **Report a bug** or **propose a feature** with the issue templates. Search existing issues first.
-- **Improve documentation**: the [README](README.md) (in Italian) and [installer_wizard/MCP.md](installer_wizard/MCP.md).
+- **Improve documentation**: the README ([English](README.md), [Italiano](README_IT.md), [Français](README_FR.md)), [installer_wizard/features/README.md](installer_wizard/features/README.md) and [installer_wizard/MCP.md](installer_wizard/MCP.md).
 - **Add or fix a feature, tool, widget, algorithm or installation step**: see
   [how to add things](#adding-things-to-nuxiva).
 - **Review pull requests** and reproduce reported problems.
@@ -26,8 +26,8 @@ the impact on privacy and security. It avoids wasted work.
 Requirements: Python 3.11+, Node.js 20 (for the JavaScript syntax checks and `client_web`), `bash`, `git`.
 
 ```bash
-git clone https://github.com/AprileNunzio/NUXIVA.git
-cd NUXIVA/installer_wizard
+git clone https://github.com/AprileNunzio/Nuxiva.git
+cd Nuxiva/installer_wizard
 python3 -m venv venv
 venv/bin/pip install -r backend/requirements.txt -r features/documents/requirements.txt pyflakes
 cd backend
@@ -52,7 +52,7 @@ OS installation scripts (`scripts/os/steps/*.sh`) must be validated on disposabl
 | `installer_wizard/tests/` | Unit and API tests (`unittest`) |
 | `scripts/os/` | Installation steps, systemd units, `nuxivactl` |
 | `server/` · `sandbox_broker/` | Nuxiva Core and the isolated sandbox broker |
-| `native/` | Rust core for latency-critical paths (event bus router), exposed to Python via PyO3 |
+| `native/crates/` | Rust crates for latency-critical paths (embedding index, event bus, netguard, egress proxy, CRDT sync, audio DSP), exposed to Python via PyO3 |
 | `client_satellite/` · `client_web/` · `client_apk/` | Nodes, web dashboard, Android client |
 
 ## Engineering standards
@@ -81,7 +81,7 @@ to refuse.
 - **Tools** (`@tool` in `features/agent/registry.py`): declare `confirm` for sensitive actions (a boolean or a
   function of the arguments), the owning `agent`, and a `verify` function when success can be checked. Confirmation
   is inherited by delegation, forged tools and MCP calls; do not bypass it. See
-  [README section 23 bis](README.md#23-bis-come-aggiungere-uno-strumento-agli-agenti-e-allmcp).
+  [installer_wizard/MCP.md](installer_wizard/MCP.md).
 - **MCP exposure**: a tool is visible to *standard* tokens only if its owner is in `SAFE_AGENTS`
   (`features/capabilities/mcp.py`) and it needs no confirmation. Add an agent there only if it has no sensitive effects.
 - **Untrusted content** (web pages, e-mail, documents, replies of external MCP servers, model output) is data,
@@ -115,9 +115,9 @@ The last command must print nothing. If you touch `client_web`, also run `npm ci
 these jobs on every push and pull request: Python validation, supervisor tests, Core and sandbox tests, script
 syntax and the web client build.
 
-`.pre-commit-config.yaml` covers whitespace and YAML checks. The `black` and `flake8` hooks are **not** part of
-CI and the code base does not follow their defaults, so do not reformat existing files with them: unrelated
-formatting changes make reviews harder.
+`.pre-commit-config.yaml` covers whitespace, YAML, large files, private keys, secret detection and the colocated
+i18n check. Do not reformat existing files with external formatters: unrelated formatting changes make reviews
+harder.
 
 ## Commits and branches
 
@@ -150,14 +150,15 @@ on existing installations (migrations, defaults, upgrade path) and documentation
 
 | To add | Read |
 | :--- | :--- |
-| A feature (agent) with panel tab and settings | [README section 23](README.md#23-come-aggiungere-una-funzionalità) |
-| A tool for agents and MCP | [README section 23 bis](README.md#23-bis-come-aggiungere-uno-strumento-agli-agenti-e-allmcp) |
-| A command the understanding layer can route | [README section 23 ter](README.md#23-ter-come-insegnare-un-comando-alla-comprensione) |
-| A display widget | [README section 24](README.md#24-come-aggiungere-un-widget) |
-| An algorithm (skill) | [README section 25](README.md#25-come-aggiungere-un-algoritmo) |
-| An installation step | [README section 26](README.md#26-come-aggiungere-un-passo-dinstallazione) |
+| A feature (agent) with panel tab and settings | [installer_wizard/features/README.md](installer_wizard/features/README.md) |
+| A tool for agents and MCP | [installer_wizard/MCP.md](installer_wizard/MCP.md) and `installer_wizard/features/agent/registry.py` |
+| A command the understanding layer can route | `installer_wizard/features/understanding/` |
+| A display widget | an existing folder in `installer_wizard/widgets/` as a template |
+| An algorithm (skill) | `installer_wizard/skills/` |
+| An installation step | `installer_wizard/backend/steps.py` and `scripts/os/steps/` |
+| An admin console app | [docs/WEBOS.md](docs/WEBOS.md) |
 
-Update the README (and `installer_wizard/MCP.md` for agents and MCP) in the same pull request that changes
+Update the three READMEs (and `installer_wizard/MCP.md` for agents and MCP) in the same pull request that changes
 behavior, configuration variables, API routes or security properties.
 
 ## Licensing of contributions
@@ -206,7 +207,7 @@ parte del contributo.
    (Developer Certificate of Origin); inglese o italiano.
 7. **Pull request**: da un fork verso `main`, con il modello compilato (problema, progettazione, impatto su
    sicurezza e privacy, come hai verificato); si fonde con CI verde, approvazione e checklist completa.
-8. **Documentazione**: aggiorna README (e `installer_wizard/MCP.md`) nella stessa pull request quando cambiano
+8. **Documentazione**: aggiorna i tre README (e `installer_wizard/MCP.md`) nella stessa pull request quando cambiano
    comportamento, variabili, API o sicurezza.
 9. **Licenza**: i contributi sono regolati dalla [Nuxiva Personal and Commercial License](LICENSE)
    (uso domestico gratuito, uso commerciale a pagamento). I diritti MIT pregressi sono preservati in [LICENSE-MIT-LEGACY](LICENSE-MIT-LEGACY).

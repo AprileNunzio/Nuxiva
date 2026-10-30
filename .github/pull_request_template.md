@@ -27,7 +27,7 @@
 - [ ] Tests added or updated; they run offline without real devices or services
 - [ ] CI commands from [CONTRIBUTING.md](../CONTRIBUTING.md#testing-and-checks) pass locally
 - [ ] README and `installer_wizard/MCP.md` updated if behavior, variables, API routes or security properties change
-- [ ] Commits are signed off (`git commit -s`) and I have the right to submit this code under the MIT License
+- [ ] Commits are signed off (`git commit -s`) and I have the right to submit this code under the [Nuxiva Personal and Commercial License](../LICENSE)
 
 ## Upgrade impact
 <!-- Effect on existing installations: defaults, migrations, new steps or variables, rollback considerations. -->

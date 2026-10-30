@@ -17,7 +17,7 @@ class CoreRuntimeRequirementsTest(unittest.TestCase):
                 imports.add(node.module.split('.')[0])
         external = imports - sys.stdlib_module_names - {'server'}
         self.assertTrue(external, 'The encrypted storage has external runtime dependencies')
-        for requirements in ('server/requirements.txt', 'requirements.txt'):
+        for requirements in ('server/requirements.txt',):
             declared = {re.split(r'[<>=!~\[;\s]', line.strip())[0].lower().replace('_', '-')
                         for line in (root / requirements).read_text(encoding='utf-8').splitlines()
                         if line.strip() and not line.lstrip().startswith('#')}

@@ -6,7 +6,7 @@ Nuxiva OS runs on a home server with access to microphones, cameras, files, smar
 it can be driven by external assistants over MCP. Security is therefore a design requirement, not an
 afterthought: the project follows a **zero-trust** model in which every endpoint, tool call and input is
 authenticated, validated and, when it can change the real world, confirmed **in code** (never only in a prompt).
-The full model is described in the [README, section 20](README.md#20-sicurezza-e-privacy).
+A summary is in the [README, section 1.10](README.md#110-security).
 
 ## Supported versions
 
@@ -15,8 +15,8 @@ to commits whose CI run is green, so a fix normally reaches every installation w
 
 | Version | Supported |
 | :--- | :---: |
-| 3.x (`main`) | :white_check_mark: |
-| 2.x and earlier | :x: |
+| 5.x (`main`) | :white_check_mark: |
+| 4.x and earlier | :x: |
 
 ## Reporting a vulnerability
 
@@ -88,8 +88,6 @@ Out of scope (unless you can show a concrete security impact):
 - volumetric denial of service, and findings against third-party services Nuxiva can be connected to;
 - vulnerabilities in dependencies without a demonstrated way to exploit them in Nuxiva;
 - missing best-practice headers or settings with no practical impact;
-- the `docker-compose.yml` and `Dockerfile` in the repository root, which are for local development only and use
-  placeholder credentials;
 - behavior that only appears after an administrator deliberately lowers a protection (for example
   `NUXIVA_UPDATE_REQUIRE_CI=0`, or marking an external MCP server as trusted).
 
@@ -128,9 +126,9 @@ privately at once so that it can be rotated.
 Nuxiva OS gira su un server di casa con accesso a microfoni, telecamere, file, domotica e shell, e può essere
 guidato da assistenti esterni via MCP: la sicurezza è un requisito di progetto. Modello **zero-trust**: ogni
 endpoint, strumento e input è autenticato e validato, e ciò che può cambiare il mondo reale è confermato **dal
-codice**, non solo dal prompt (dettagli nel [README, §20](README.md#20-sicurezza-e-privacy)).
+codice**, non solo dal prompt (sintesi nel [README, §1.10](README_IT.md#110-sicurezza)).
 
-- **Versioni supportate**: 3.x (`main`); le installazioni si aggiornano da sole solo con CI verde.
+- **Versioni supportate**: 5.x (`main`); le installazioni si aggiornano da sole solo con CI verde.
 - **Come segnalare**: in privato, mai con una issue pubblica. Con la segnalazione privata di GitHub
   (*Security → Report a vulnerability*, se attiva) oppure via e-mail a `security@nunziotech.com` (in alternativa
   `aprilenunzio88@gmail.com`), oggetto «Nuxiva security report». Indicare componente e versione, impatto, passi
@@ -143,8 +141,7 @@ codice**, non solo dal prompt (dettagli nel [README, §20](README.md#20-sicurezz
   senza danneggiare il servizio né accedere a più dati del necessario.
 - **Ambito**: supervisore, pannello, server e client MCP, strumenti e fucina, nodi, Core e sandbox, musica,
   lavagna e telecamere, installatore e aggiornamenti, gestione dei segreti. **Fuori ambito**: ingegneria sociale,
-  accesso fisico, DoS volumetrico, dipendenze senza exploit dimostrato, `Dockerfile` e `docker-compose.yml` della
-  radice (solo sviluppo locale), comportamenti dovuti a protezioni abbassate di proposito dall'amministratore.
+  accesso fisico, DoS volumetrico, dipendenze senza exploit dimostrato, comportamenti dovuti a protezioni abbassate di proposito dall'amministratore.
 - **Consigli a chi installa**: porte 80 e 8080 solo in rete locale (VPN o proxy HTTPS per l'accesso esterno),
   password robuste, token MCP standard per default e accesso completo solo a client fidati con revoca e controllo
   del registro, aggiornamenti automatici e collaudo attivi, telecamere solo con il consenso delle persone.
