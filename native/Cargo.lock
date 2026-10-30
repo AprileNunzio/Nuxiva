@@ -38,6 +38,38 @@ dependencies = [
 ]
 
 [[package]]
+name = "agency-domain"
+version = "5.3.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "thiserror",
+]
+
+[[package]]
+name = "agency-ledger"
+version = "5.3.0"
+dependencies = [
+ "getrandom 0.3.4",
+ "hmac",
+ "rustix",
+ "serde",
+ "serde_json",
+ "sha2",
+ "thiserror",
+ "zeroize",
+]
+
+[[package]]
+name = "agency-planner"
+version = "5.3.0"
+dependencies = [
+ "agency-domain",
+ "serde",
+ "thiserror",
+]
+
+[[package]]
 name = "ahash"
 version = "0.8.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
