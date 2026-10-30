@@ -42,6 +42,12 @@ class DisplaySurfacesTest(unittest.TestCase):
         self.assertIs(again["surfaces"]["rail_voice"], True)
         self.assertIs(again["surfaces"]["project"], False)
 
+    def test_token_usage_widget_is_off_until_requested(self):
+        self.assertIs(system_api.get_display_settings()["surfaces"]["token_usage"], False)
+        self.client_is_local = True
+        saved = self.client.post("/api/system/display-settings", headers=HEADERS, json={"surfaces": {"token_usage": True}}).json()["settings"]
+        self.assertIs(saved["surfaces"]["token_usage"], True)
+
     def test_defaults_hide_the_duplicate_voice_meter(self):
         self.assertIs(system_api.get_display_settings()["surfaces"]["rail_voice"], False)
 

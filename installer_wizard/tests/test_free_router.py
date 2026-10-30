@@ -32,8 +32,9 @@ class FreeRouterCatalogTests(unittest.TestCase):
     def test_isolated_i18n_keys_match_in_all_languages(self):
         directories = [
             INSTALLER_DIR / "features/brain/free_router/language",
-            INSTALLER_DIR.parent / "client_web/src/node_apps/brain/free_matrix/language",
             INSTALLER_DIR / "web/display/widgets/live_brain_badge/language",
+            INSTALLER_DIR / "web/display/widgets/token_usage/language",
+            *sorted((INSTALLER_DIR.parent / "client_web/src/features/brain_center").rglob("language")),
         ]
         expected_locales = {"it.json", "en.json", "fr.json", "es.json"}
         for directory in directories:

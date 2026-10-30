@@ -1,5 +1,7 @@
 {
-  "meta": {"locale": "fr"},
+  "meta": {
+    "locale": "fr"
+  },
   "dictionary": {
     "free": "Gratuit",
     "active_model": "Modèle actif : {model}",
@@ -11,6 +13,10 @@
     "pool_vision": "Vision",
     "pool_deep_code": "Raisonnement et code",
     "pool_voice_fast": "Voix rapide",
-    "switched": "Basculement automatique de {previous} vers {next}"
+    "switched": "Basculement automatique de {previous} vers {next}",
+    "now_title": "Utilisé maintenant",
+    "talking": "Quand vous parlez : {model}",
+    "working": "Quand il travaille : {model}",
+    "updated": "Réglage modifié à l'instant"
   }
 }

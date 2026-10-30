@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Consumo y límites",
+    "description": "Tokens usados en {month}. Define un límite: cuando un servicio en línea lo alcanza, {assistant} pasa solo a la siguiente reserva.",
+    "today": "Hoy",
+    "month_total": "Este mes",
+    "month_cloud": "Servicios en línea este mes",
+    "budget_global": "Límite mensual total (tokens en línea)",
+    "of_budget": "de {cap}",
+    "no_budget": "Sin límite",
+    "by_provider": "Por proveedor",
+    "empty": "Aún no hay consumo registrado.",
+    "col_provider": "Proveedor",
+    "col_in": "Enviados",
+    "col_out": "Recibidos",
+    "col_calls": "Peticiones",
+    "col_budget": "Límite",
+    "daily_title": "Últimos 30 días",
+    "budgets_title": "Límites de gasto",
+    "budgets_hint": "Número máximo de tokens al mes. Déjalo vacío para no tener límite. Al alcanzarlo se usa la siguiente reserva.",
+    "no_limit": "Sin límite",
+    "budgets_no_providers": "Configura un proveedor para darle su propio límite.",
+    "widget_title": "Mostrar el consumo en la pantalla principal",
+    "widget_hint": "Añade a la página principal un recuadro con los tokens de hoy y del mes."
+  }
+}

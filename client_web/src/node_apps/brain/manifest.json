@@ -2,10 +2,10 @@
   "id": "brain",
   "name": "Brain",
   "icon": "Cpu",
-  "version": "5.0.0",
+  "version": "6.0.0",
   "category": "intelligence",
   "requires_reboot": false,
-  "description": "LLM provider selection and configuration (local Ollama, remote server or cloud API)",
+  "description": "Choose which AI models the assistant uses to talk and work, connect providers and track usage and limits",
   "scope": "node_apps/brain",
   "target": "node",
   "window": {

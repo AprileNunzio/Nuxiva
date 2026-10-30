@@ -12,6 +12,7 @@ from features.brain import scope
 from features.brain.assignments import load_synaptic_weights, save_synaptic_weights
 from features.brain.brains import brains
 from features.brain.trace import trace
+from features.brain.usage.ledger import usage_ledger
 from features.brain.residency import keep_alive, touch
 from features.cloud.catalog import is_cloud
 from features.cloud.client import CloudError, complete
@@ -78,7 +79,9 @@ async def _ollama(model: str, prompt: str, system: str, as_json: bool, max_token
     async with httpx.AsyncClient(timeout=httpx.Timeout(timeout, connect=10)) as client:
         r = await client.post(f"{ollama_url()}/api/generate", json=body)
         r.raise_for_status()
-    return r.json().get("response", "")
+    data = r.json()
+    usage_ledger.record(model, data.get("prompt_eval_count"), data.get("eval_count"))
+    return data.get("response", "")
 
 
 def _govern(system: str) -> str:

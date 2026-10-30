@@ -1,3 +1,4 @@
+import hashlib
 import json
 import os
 import logging
@@ -14,6 +15,7 @@ from feature_registry import registry
 from features.brain import assignments_api, bridge, cervello_state, chains_api
 from features.brain.free_router.api import admin_routes as free_matrix_routes
 from features.brain.decision_lab.api import admin_routes as decision_lab_routes, public_routes as decision_lab_public_routes
+from features.brain.usage import api as usage_api
 from features.brain.brains import brains
 from features.brain.configuration import bound_selection
 from features.brain.residency import rebalance
@@ -28,8 +30,10 @@ admin_routes.include_router(bridge.admin_routes)
 admin_routes.include_router(chains_api.admin_routes)
 admin_routes.include_router(free_matrix_routes)
 admin_routes.include_router(decision_lab_routes)
+admin_routes.include_router(usage_api.admin_routes)
 public_routes = assignments_api.public_routes
 public_routes.include_router(decision_lab_public_routes)
+public_routes.include_router(usage_api.public_routes)
 log = logging.getLogger("nuxiva.brain")
 _MODEL_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:/-]{0,119}$")
 
@@ -317,8 +321,12 @@ async def get_v2_brain_config():
     env = read_env()
     cfg = brains.config()
     current_url = ollama_url()
+    signature = json.dumps({r.id: cfg[r.id] for r in ROLES} | {"routing": cfg["routing"], "main": cfg["main"]}, sort_keys=True)
     return {
-        "active": brains.describe(cfg["main"]),
+        "active": brains.active_now("chat") or brains.describe(cfg["main"]),
+        "working": brains.active_now("deep") or brains.describe(cfg["main"]),
+        "routing": cfg["routing"],
+        "revision": hashlib.sha256(signature.encode()).hexdigest()[:16],
         "active_model": env.get("NUXIVA_LLM_MODEL") or cfg.get("main", "granite3.3:2b"),
         "ollama_url": current_url,
         "fast_model": env.get("NUXIVA_LLM_FAST_MODEL") or cfg.get("fast", ""),

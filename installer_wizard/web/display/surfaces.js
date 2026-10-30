@@ -15,6 +15,7 @@
     { id: "project", key: "surf_project", def: true },
     { id: "music_clock", key: "surf_music_clock", def: true },
     { id: "brain_badge", key: "surf_brain_badge", def: true },
+    { id: "token_usage", key: "surf_token_usage", def: false },
   ]);
   const OWN = LIST.filter((s) => !s.flag);
   let settings = {};

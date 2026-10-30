@@ -5,6 +5,7 @@ import httpx
 
 from features.cloud.catalog import BY_ID, REASONING_BUDGET, Provider, parse_ref
 from features.cloud.vault import vault
+from features.brain.usage.ledger import usage_ledger
 
 
 class CloudError(RuntimeError):
@@ -102,6 +103,11 @@ def _text(spec: Provider, data: dict) -> tuple[str, int]:
     return (choice.get("message") or {}).get("content") or "", (data.get("usage") or {}).get("completion_tokens", 0)
 
 
+def _input_tokens(spec: Provider, data: dict) -> int:
+    usage = data.get("usage") or {}
+    return int(usage.get("input_tokens" if spec.kind == "anthropic" else "prompt_tokens") or 0)
+
+
 def _cut(spec: Provider, data: dict) -> bool:
     if spec.kind == "anthropic":
         return data.get("stop_reason") in CUT
@@ -119,6 +125,8 @@ async def complete(ref: str, messages: list[dict], system: str = "", max_tokens:
     spec, entry = BY_ID[pid], vault.get(pid)
     if not vault.configured(pid):
         raise CloudError(f"{spec.name}: servizio non configurato")
+    if not usage_ledger.allows(ref):
+        raise CloudError(f"{spec.name}: limite di consumo mensile raggiunto", 429)
     opts = entry.get("options", {})
     head, timeout = headers(spec, entry), float(opts.get("timeout") or 120)
     if spec.kind == "anthropic":
@@ -157,6 +165,7 @@ async def complete(ref: str, messages: list[dict], system: str = "", max_tokens:
             raise CloudError(f"{spec.name}: risposta troncata dal limite di lunghezza")
         return await complete(ref, messages, system, min(RETRY_TOKENS, max(max_tokens * 3, 1500)), temperature, json_mode, True)
     text, tokens = _text(spec, data)
+    usage_ledger.record(ref, _input_tokens(spec, data), tokens)
     if not text.strip():
         raise CloudError(f"{spec.name}: risposta vuota")
     return Reply(text=text.strip(), model=ref, ms=(time.perf_counter() - started) * 1000, tokens=tokens)

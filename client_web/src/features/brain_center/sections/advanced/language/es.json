@@ -1,0 +1,27 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Avanzado",
+    "description": "Opciones para quien quiere un control más fino.",
+    "agents_title": "Modelo por agente",
+    "agents_hint": "Se elige en la aplicación Agentes, en la ficha de cada agente.",
+    "free_title": "Modelos gratuitos en línea",
+    "free_hint": "Usa los modelos sin coste del catálogo de OpenRouter (se necesita una clave de OpenRouter). Los límites gratuitos pueden cambiar.",
+    "free_refresh": "Actualizar catálogo",
+    "free_enable": "Usar modelos gratuitos para las tareas elegidas",
+    "free_pools": "Tareas",
+    "pool_chat": "Conversación",
+    "pool_voice_fast": "Voz rápida",
+    "pool_agent_tools": "Agentes y herramientas",
+    "pool_vision": "Imágenes",
+    "pool_deep_code": "Razonamiento y código",
+    "free_live": "En uso: {provider} · {model}",
+    "free_failover": "(cambiado desde {model})",
+    "free_idle": "Aún no hay peticiones gratuitas en esta sesión.",
+    "free_models": "Modelos gratuitos verificados ({count})",
+    "free_empty": "Catálogo vacío: pulsa Actualizar catálogo.",
+    "free_cooldown": "en pausa {seconds} s"
+  }
+}

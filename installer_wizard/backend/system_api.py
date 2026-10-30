@@ -345,6 +345,7 @@ SURFACE_DEFAULTS = {
     "project": True,
     "music_clock": True,
     "brain_badge": True,
+    "token_usage": False,
 }
 
 

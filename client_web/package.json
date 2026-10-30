@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "prebuild": "npm test",
-    "test": "node tests/window-store.test.cjs && node tests/app-manifests.test.cjs && node tests/localized-ordering.test.cjs && node tests/updater-state.test.cjs && node tests/updater-history.test.cjs && node tests/latest-request.test.cjs && node tests/taskbar-groups.test.cjs && node tests/declarative-contract.test.cjs && node tests/spatial-arbiter.test.cjs && node tests/audio-device-manager.test.cjs && node tests/live-copilot.test.cjs && node tests/repair-workbench.test.cjs && node tests/display-look.test.cjs && node tests/page-version.test.cjs && node tests/live-captions.test.cjs && node tests/tray-controls.test.cjs && node tests/hardware-capabilities.test.cjs",
+    "test": "node tests/window-store.test.cjs && node tests/app-manifests.test.cjs && node tests/localized-ordering.test.cjs && node tests/updater-state.test.cjs && node tests/updater-history.test.cjs && node tests/latest-request.test.cjs && node tests/taskbar-groups.test.cjs && node tests/declarative-contract.test.cjs && node tests/spatial-arbiter.test.cjs && node tests/audio-device-manager.test.cjs && node tests/live-copilot.test.cjs && node tests/repair-workbench.test.cjs && node tests/display-look.test.cjs && node tests/page-version.test.cjs && node tests/live-captions.test.cjs && node tests/tray-controls.test.cjs && node tests/hardware-capabilities.test.cjs && vitest run",
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:unit": "vitest run"
   },
   "dependencies": {
     "@fontsource/inter": "^5.3.0",
@@ -30,6 +31,7 @@
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.2.2",
-    "vite": "^5.1.6"
+    "vite": "^5.1.6",
+    "vitest": "^2.1.9"
   }
 }
