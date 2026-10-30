@@ -29,6 +29,7 @@ const KNOWN_CODES = new Set([
   'brain_function_failed',
   'brain_presets_unavailable',
   'brain_preset_failed',
+  'brain_everywhere_failed',
   'brain_free_matrix_failed',
   'engine_status_failed',
   'engine_switch_failed',

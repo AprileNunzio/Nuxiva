@@ -1,0 +1,19 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Un modelo para todo",
+    "hint": "Elige un modelo y aplícalo de una vez a todas las tareas y funciones, agentes incluidos.",
+    "pick": "Elegir el modelo",
+    "change": "Cambiar modelo",
+    "only": "Solo este modelo",
+    "only_hint": "En todas partes se usará solo el modelo elegido, sin reservas.",
+    "keep": "Este primero, los actuales como reserva",
+    "keep_hint": "El modelo elegido va arriba; los modelos ya configurados quedan como reserva si no responde.",
+    "apply": "Aplicar a todo",
+    "confirm_title": "¿Usar {model} para todo?",
+    "confirm_only": "Todas las tareas y funciones usarán solo este modelo. La configuración actual se reemplazará.",
+    "confirm_keep": "Este modelo se pondrá primero en todas las tareas y funciones. Los modelos actuales quedan como reserva."
+  }
+}

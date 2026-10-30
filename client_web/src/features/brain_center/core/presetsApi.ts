@@ -1,6 +1,6 @@
 import { asRecord, asString, requestJson } from './http';
 import { parseOverview } from './brainApi';
-import { list } from './parse';
+import { REF, list } from './parse';
 import { BrainOverview } from './types';
 
 const PRESET_ID = /^[a-z_]{1,40}$/;
@@ -16,4 +16,13 @@ export async function applyPreset(preset: string): Promise<BrainOverview> {
     throw new RangeError('invalid_preset');
   }
   return parseOverview(await requestJson<unknown>('/api/brains/preset', { method: 'POST', body: JSON.stringify({ preset }) }));
+}
+
+export async function applyEverywhere(model: string, keepBackups: boolean): Promise<BrainOverview> {
+  if (!REF.test(model)) {
+    throw new RangeError('invalid_model');
+  }
+  return parseOverview(
+    await requestJson<unknown>('/api/brains/everywhere', { method: 'POST', body: JSON.stringify({ model, keep_backups: keepBackups }) }),
+  );
 }

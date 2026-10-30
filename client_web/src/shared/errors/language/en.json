@@ -164,6 +164,7 @@
     "error_node_satellite_enrollment_failed": "Satellite enrollment not generated.",
     "error_node_bluetooth_trust_failed": "The device was not trusted.",
     "error_node_bluetooth_untrust_failed": "Device trust was not revoked.",
-    "error_bluetooth_paired_not_connected": "Device paired but not connected yet: turn it on and press Connect."
+    "error_bluetooth_paired_not_connected": "Device paired but not connected yet: turn it on and press Connect.",
+    "error_brain_everywhere_failed": "Couldn't apply the model to everything."
   }
 }

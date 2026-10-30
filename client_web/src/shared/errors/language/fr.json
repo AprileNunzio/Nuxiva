@@ -164,6 +164,7 @@
     "error_node_satellite_enrollment_failed": "Inscription du satellite non générée.",
     "error_node_bluetooth_trust_failed": "L'appareil n'a pas été approuvé.",
     "error_node_bluetooth_untrust_failed": "La confiance de l'appareil n'a pas été révoquée.",
-    "error_bluetooth_paired_not_connected": "Appareil appairé mais pas encore connecté : allumez-le et appuyez sur Connecter."
+    "error_bluetooth_paired_not_connected": "Appareil appairé mais pas encore connecté : allumez-le et appuyez sur Connecter.",
+    "error_brain_everywhere_failed": "Impossible d'appliquer le modèle à tout."
   }
 }

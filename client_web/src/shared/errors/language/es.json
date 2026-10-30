@@ -164,6 +164,7 @@
     "error_node_satellite_enrollment_failed": "Inscripción del satélite no generada.",
     "error_node_bluetooth_trust_failed": "El dispositivo no se marcó como de confianza.",
     "error_node_bluetooth_untrust_failed": "No se revocó la confianza del dispositivo.",
-    "error_bluetooth_paired_not_connected": "Dispositivo emparejado pero aún no conectado: enciéndelo y pulsa Conectar."
+    "error_bluetooth_paired_not_connected": "Dispositivo emparejado pero aún no conectado: enciéndelo y pulsa Conectar.",
+    "error_brain_everywhere_failed": "No se pudo aplicar el modelo a todo."
   }
 }

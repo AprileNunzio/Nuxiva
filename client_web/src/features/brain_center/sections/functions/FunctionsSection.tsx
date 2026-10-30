@@ -7,6 +7,7 @@ import { useBrainText, useSectionText } from '../../core/i18n';
 import { useBrain } from '../../core/useBrainStore';
 import { BrainRef, FunctionRow } from '../../core/types';
 import { Card, Empty, FLUID, Loading, SectionHeader, fieldClass } from '../../ui/primitives';
+import { EverywhereCard } from '../everywhere/EverywhereCard';
 import { FunctionItem } from './FunctionItem';
 
 const SIDES = ['supervisor', 'core'] as const;
@@ -44,6 +45,7 @@ export const FunctionsSection: React.FC = () => {
   return (
     <>
       <SectionHeader title={t('title')} description={t('description')} />
+      <EverywhereCard />
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
         <label className="relative min-w-0 flex-1">
           <span className="sr-only">{t('search')}</span>

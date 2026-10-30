@@ -5,6 +5,7 @@ import { useBrain } from '../../core/useBrainStore';
 import { SectionId } from '../../shell/sections';
 import { Badge, Button, Card, FLUID, Loading, Row, SectionHeader } from '../../ui/primitives';
 import { PRIMARY_ROLES, roleIcon } from '../../ui/roleIcons';
+import { EverywhereCard } from '../everywhere/EverywhereCard';
 import { NowCard } from './NowCard';
 import { PresetsCard } from './PresetsCard';
 import { UsageGlance } from './UsageGlance';
@@ -28,6 +29,7 @@ export const OverviewSection: React.FC<{ readonly onNavigate: (id: SectionId) =>
           <NowCard key={id} kind={id} role={byId.get(id) ?? null} onChange={() => onNavigate('contexts')} />
         ))}
       </div>
+      <EverywhereCard />
       <Card title={t('other_contexts')} flush actions={<Button compact variant="ghost" icon={ArrowRight} onClick={() => onNavigate('contexts')}>{t('manage')}</Button>}>
         <div className={`grid ${FLUID.sm}`}>
         {overview.roles

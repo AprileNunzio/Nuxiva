@@ -5,11 +5,12 @@ from feature_registry import registry
 from state import store
 from tasks import background
 
-from features.brain import presets, scope, sources
+from features.brain import everywhere, presets, scope, sources
 from features.brain.brains import brains
 from features.brain.residency import rebalance
 from features.brain.roles import BY_ID as ROLE_BY_ID
 from features.brain.roles import ROLES
+from features.brain.routing import assignment_service
 
 admin_routes = APIRouter()
 
@@ -73,4 +74,19 @@ async def brain_role_settings(role_id: str, request: Request, user: str = Depend
     if updates:
         updates[role.profile_key] = "custom"
     _commit(updates, user, f"impostazioni di {role.label}")
+    return await brains.overview(registry.hw)
+
+
+@admin_routes.post("/api/brains/everywhere")
+async def brain_everywhere(request: Request, user: str = Depends(require_admin)):
+    body = await request.json()
+    try:
+        model = everywhere.clean_model(body.get("model"))
+    except everywhere.EverywhereError as exc:
+        raise HTTPException(400, str(exc))
+    keep = body.get("keep_backups") is True
+    cfg = brains.config()
+    chains = {r.id: list(cfg[r.id]) for r in ROLES}
+    assignment_service.save(everywhere.assignment_updates(model, assignment_service.assignments(), keep))
+    _commit(everywhere.role_updates(model, chains, keep), user, f"{model} per tutti i compiti")
     return await brains.overview(registry.hw)

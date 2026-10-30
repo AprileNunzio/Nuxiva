@@ -1,0 +1,19 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "One model for everything",
+    "hint": "Pick a model and apply it in one go to every task and every function, agents included.",
+    "pick": "Choose the model",
+    "change": "Change model",
+    "only": "Only this model",
+    "only_hint": "Everything will use only the chosen model, with no backups.",
+    "keep": "This one first, current ones as backup",
+    "keep_hint": "The chosen model goes on top; the models already set stay as backups if it doesn't respond.",
+    "apply": "Apply to everything",
+    "confirm_title": "Use {model} for everything?",
+    "confirm_only": "Every task and every function will use only this model. Current settings will be replaced.",
+    "confirm_keep": "This model will be placed first in every task and every function. Current models stay as backups."
+  }
+}

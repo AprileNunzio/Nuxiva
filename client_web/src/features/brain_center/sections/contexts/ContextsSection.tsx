@@ -4,6 +4,7 @@ import { useBrain } from '../../core/useBrainStore';
 import { BrainRef } from '../../core/types';
 import { FLUID, Loading, SectionHeader } from '../../ui/primitives';
 import { PRIMARY_ROLES } from '../../ui/roleIcons';
+import { EverywhereCard } from '../everywhere/EverywhereCard';
 import { ContextCard } from './ContextCard';
 import { RouteTester } from './RouteTester';
 import { RoutingCard } from './RoutingCard';
@@ -26,6 +27,7 @@ export const ContextsSection: React.FC = () => {
   return (
     <>
       <SectionHeader title={t('title')} description={t('description')} />
+      <EverywhereCard />
       <div className={`grid items-start gap-4 ${FLUID.xl}`}>
         <RoutingCard routing={overview.routing} />
         <RouteTester />
