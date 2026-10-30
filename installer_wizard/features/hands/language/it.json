@@ -1,12 +1,12 @@
 {
   "name": "Comandi con le mani",
-  "description": "Controlla i widget con le mani davanti alla webcam: pizzica per afferrare, trascina, lancia di lato per cambiare schermo, due mani per lo zoom. In automatico si attiva solo se la GPU del display regge il riconoscimento senza rallentare la pagina.",
+  "description": "Controlla Nuxiva con una o due mani davanti alla webcam. Il motore Rust riconosce pose, pose tenute, swipe, cerchi, tocchi e gesti a due mani; ogni gesto può fare l'azione che scegli dalla scheda Comandi con le mani.",
   "capabilities": [
-    "Pizzica per afferrare e trascinare i widget",
-    "Lancio laterale per spostarli su un altro monitor",
-    "Zoom con due mani",
-    "Prova della GPU del display: in automatico si spegne da solo se è troppo lento",
-    "Si ferma da solo se rallenta la pagina"
+    "Pizzica per afferrare e trascinare i widget, lancio laterale per cambiare schermo",
+    "12 pose, swipe, cerchi, tocco e doppio tocco",
+    "Gesti a due mani: allarga, stringi, ruota, oppure una mano tiene e l'altra agisce",
+    "Ogni gesto collegabile a qualsiasi azione, per contesto e per mano",
+    "Profilo cifrato, sensibilità regolabile, riserva JavaScript se il motore manca"
   ],
   "settings": {
     "NUXIVA_HANDS_FPS": "Analisi al secondo con una mano in vista",

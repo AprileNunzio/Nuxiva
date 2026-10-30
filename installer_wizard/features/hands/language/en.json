@@ -1,10 +1,12 @@
 {
   "name": "Hand Gesture Controls",
-  "description": "Optical hand gesture recognition via camera feed: optical pinch, swipe, point, and volume adjustments.",
+  "description": "Control Nuxiva with one or two hands in front of the webcam. The Rust engine recognises poses, held poses, swipes, circles, taps and two-hand gestures; each gesture can run the action you choose from the Hand Gestures app.",
   "capabilities": [
-    "MediaPipe hand landmark detection",
-    "Air gestures for display and media controls",
-    "Zero-touch UI interaction"
+    "Pinch to grab and drag widgets, side flick to change screen",
+    "12 poses, swipes, circles, tap and double tap",
+    "Two-hand gestures: spread, squeeze, rotate, or one hand holds while the other acts",
+    "Any gesture can be linked to any action, per context and per hand",
+    "Encrypted profile, adjustable sensitivity, JavaScript fallback when the engine is missing"
   ],
   "settings": {
     "NUXIVA_HANDS_FPS": "Sampling rate (fps)",

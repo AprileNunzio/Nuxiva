@@ -1,12 +1,12 @@
 {
   "name": "Contrôles avec vos mains",
-  "description": "Contrôlez les widgets avec vos mains devant la webcam : pincez pour saisir, faites glisser, jetez sur le côté pour changer d'écran, deux mains pour zoomer. Il n'est automatiquement activé que si le GPU d'affichage peut gérer la reconnaissance sans ralentir la page.",
+  "description": "Contrôlez Nuxiva avec une ou deux mains devant la webcam. Le moteur Rust reconnaît poses, poses tenues, balayages, cercles, taps et gestes à deux mains ; chaque geste peut lancer l'action choisie dans l'app Gestes de la main.",
   "capabilities": [
-    "Pincez pour saisir et faire glisser les widgets",
-    "Lancer latéral pour les déplacer vers un autre moniteur",
-    "Zoomer à deux mains",
-    "Test du GPU d'affichage : s'éteint automatiquement s'il est trop lent",
-    "Il s'arrête s'il ralentit la page"
+    "Pincez pour saisir et déplacer les widgets, lancer latéral pour changer d'écran",
+    "12 poses, balayages, cercles, tap et double tap",
+    "Gestes à deux mains : écarter, resserrer, tourner, ou une main tient pendant que l'autre agit",
+    "Chaque geste peut être relié à n'importe quelle action, par contexte et par main",
+    "Profil chiffré, sensibilité réglable, secours JavaScript si le moteur manque"
   ],
   "settings": {
     "NUXIVA_HANDS_FPS": "Analyse par seconde avec une main en vue",
