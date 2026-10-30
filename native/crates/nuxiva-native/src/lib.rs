@@ -14,6 +14,7 @@ mod mesh;
 mod scanner;
 mod signal;
 mod stage;
+mod token;
 mod topics;
 mod vitals;
 mod workbench;
@@ -39,6 +40,7 @@ use pyo3::prelude::*;
 use scanner::FastScanner;
 use signal::{RustSignalEnhancer, RustVoiceBiomarkers};
 use stage::{RustParticleCache, particles_count, particles_sample, stage_plan};
+use token::{RustTokenCodec, TokenRejected};
 use topics::{TopicRouter, matches, valid_origin, valid_pattern, valid_topic};
 use vitals::vitals_parse_ble_heart_rate;
 
@@ -47,6 +49,8 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add("__version__", env!("CARGO_PKG_VERSION"))?;
     m.add("MAX_SUBSCRIPTIONS", nuxiva_bus_core::MAX_SUBSCRIPTIONS)?;
     m.add_class::<TopicRouter>()?;
+    m.add_class::<RustTokenCodec>()?;
+    m.add("TokenRejected", m.py().get_type::<TokenRejected>())?;
     m.add_class::<RustSynapticBus>()?;
     m.add_class::<SynapticWeightMatrix>()?;
     m.add_class::<PySynapticSpike>()?;
