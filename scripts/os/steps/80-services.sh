@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 . "$(dirname "$0")/../lib.sh"
+. "$(dirname "$0")/../core_diagnosis.sh"
 
 core_healthy() { curl -fsS --max-time 5 "$CORE_URL/health" >/dev/null 2>&1; }
 
@@ -22,6 +23,7 @@ native_check() {
     same_content "$UNIT" < "$UNIT_SRC" || return 1
     same_content "$NATIVE_ENV" < <(native_env) || return 1
     [ "$(cat "$RUN_MARK" 2>/dev/null)" = "$(core_src_hash)" ] || return 1
+    ! core_code_unreadable "$CORE_USER" || return 1
     native_active && core_healthy
 }
 
@@ -50,10 +52,13 @@ prepare_native_data() {
     chgrp "$CORE_USER" "$NUXIVA_STATE/brain"
     chmod 0750 "$NUXIVA_STATE/brain"
     command -v setfacl >/dev/null 2>&1 && setfacl -m "u:$CORE_USER:x" "$NUXIVA_STATE" 2>/dev/null || true
+    core_grant_code_access "$CORE_USER"
 }
 
 rollback_to_docker() {
-    warn "Il core senza Docker non risponde: ultimi log"
+    local reason
+    reason=$(core_native_reason "$CORE_USER")
+    warn "Il core senza Docker non risponde: $reason"
     journalctl -u nuxiva-core -n 40 --no-pager 2>&1 || true
     stop_native
     if command -v docker >/dev/null 2>&1 && docker image inspect nuxiva-core:local >/dev/null 2>&1; then
@@ -62,7 +67,7 @@ rollback_to_docker() {
         apply_docker
         return 0
     fi
-    fail "Nuxiva Core non risponde su $CORE_URL/health"
+    core_fail "$reason"
 }
 
 apply_native() {
@@ -161,9 +166,11 @@ apply_docker() {
 
     progress 60 "Attesa risposta di Nuxiva Core"
     if ! wait_for 180 core_healthy; then
-        warn "Nuxiva Core non risponde: ultimi log"
+        local reason
+        reason=$(core_docker_reason)
+        warn "Nuxiva Core non risponde: $reason"
         docker logs --tail 40 nuxiva-core 2>&1 || true
-        fail "Nuxiva Core non risponde su $CORE_URL/health"
+        core_fail "$reason"
     fi
     info "$(curl -fsS "$CORE_URL/health" | jq -c '{status, version, active_agents}' 2>/dev/null)"
     progress 100 "Servizi operativi"

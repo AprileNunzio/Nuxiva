@@ -7,6 +7,8 @@ elif [ -f "../lib.sh" ]; then
     . "../lib.sh"
 fi
 
+[ -f "$(dirname "$0")/../core_diagnosis.sh" ] && . "$(dirname "$0")/../core_diagnosis.sh"
+
 free_disk_mb() { df -Pm / | awk 'NR==2 {print $4}'; }
 
 step_check() {
@@ -62,6 +64,10 @@ step_apply() {
     [ "$disk_mb" -lt 3072 ] && fail "Spazio su disco insufficiente: servono almeno 3 GB liberi"
     [ "$disk_mb" -lt 20480 ] && warn "Spazio su disco ridotto: consigliati almeno 20 GB"
     [ "$ram_gb" -lt 4 ] && warn "RAM ridotta (${ram_gb} GB): prestazioni neurali limitate"
+    if declare -F core_cpu_hint >/dev/null; then
+        cpu_hint=$(core_cpu_hint)
+        if [ -n "$cpu_hint" ]; then warn "$cpu_hint"; fi
+    fi
 
     if has_usable_gpu; then
         profile=gpu
