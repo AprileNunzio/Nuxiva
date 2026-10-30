@@ -10,6 +10,9 @@ VENV="$NUXIVA_DIR/installer_wizard/venv"
 STAMP="$NATIVE_HOME/.installed"
 EGRESS_BIN="$NATIVE_HOME/bin/nuxiva-egress"
 NETGUARD_BIN="$NATIVE_HOME/bin/nuxiva-netguard"
+AGENCY_BIN="$NATIVE_HOME/bin/nuxiva-agency"
+AGENCY_UNIT_SRC="$NUXIVA_DIR/scripts/os/systemd/nuxiva-agency.service"
+AGENCY_UNIT_DST=/etc/systemd/system/nuxiva-agency.service
 
 export RUSTUP_HOME="$NATIVE_HOME/rustup"
 export CARGO_HOME="$NATIVE_HOME/cargo"
@@ -33,7 +36,19 @@ step_check() {
         return
     fi
     [ -x "$VENV/bin/python" ] || return 0
-    native_loaded && [ -x "$EGRESS_BIN" ] && [ -x "$NETGUARD_BIN" ] && [ -n "$(src_hash)" ] && [ "$(cat "$STAMP" 2>/dev/null)" = "$(src_hash)" ]
+    native_loaded && [ -x "$EGRESS_BIN" ] && [ -x "$NETGUARD_BIN" ] && [ -x "$AGENCY_BIN" ] \
+        && cmp -s "$AGENCY_UNIT_SRC" "$AGENCY_UNIT_DST" && [ -n "$(src_hash)" ] && [ "$(cat "$STAMP" 2>/dev/null)" = "$(src_hash)" ]
+}
+
+agency_env() {
+    local vram=0
+    if command -v nvidia-smi >/dev/null 2>&1; then
+        vram=$(nvidia-smi --query-gpu=memory.total --format=csv,noheader,nounits 2>/dev/null | sort -n | tail -n 1 | tr -dc '0-9')
+    fi
+    install -d -m 0755 /etc/nuxiva
+    printf '%s\n' '# Gestito da Nuxiva OS: memoria della scheda video rilevata in MB' "NUXIVA_AGENCY_VRAM_MB=${vram:-0}" \
+        > /etc/nuxiva/agency.env
+    chmod 0644 /etc/nuxiva/agency.env
 }
 
 install_rust() {
@@ -54,7 +69,8 @@ step_apply() {
     if ! wanted; then
         progress 50 "Core nativo disattivato: ritorno al motore Python"
         "$VENV/bin/pip" uninstall -y -q nuxiva-native >/dev/null 2>&1 || true
-        rm -f "$STAMP" "$EGRESS_BIN" "$NETGUARD_BIN"
+        systemctl disable --now nuxiva-agency >/dev/null 2>&1 || true
+        rm -f "$STAMP" "$EGRESS_BIN" "$NETGUARD_BIN" "$AGENCY_BIN" "$AGENCY_UNIT_DST"
         progress 100 "Core nativo disattivato"
         return 0
     fi
@@ -98,6 +114,20 @@ step_apply() {
     ) || fail "Compilazione del motore di analisi del traffico non riuscita"
     install -m 0755 -o root -g root "$CARGO_TARGET_DIR/release/nuxiva-netguard" "$NETGUARD_BIN.new"
     mv -f "$NETGUARD_BIN.new" "$NETGUARD_BIN"
+
+    progress 82 "Compilazione del motore multi-agente dei progetti"
+    (
+        cd "$NATIVE_SRC"
+        cargo build --release --locked -p nuxiva-agency 2>&1 | tail -n 20
+        exit "${PIPESTATUS[0]}"
+    ) || fail "Compilazione del motore multi-agente non riuscita"
+    install -m 0755 -o root -g root "$CARGO_TARGET_DIR/release/nuxiva-agency" "$AGENCY_BIN.new"
+    mv -f "$AGENCY_BIN.new" "$AGENCY_BIN"
+    install -m 0644 -o root -g root "$AGENCY_UNIT_SRC" "$AGENCY_UNIT_DST"
+    agency_env
+    systemctl daemon-reload
+    systemctl enable nuxiva-agency >/dev/null 2>&1 || true
+    systemctl restart nuxiva-agency || fail "Avvio del motore multi-agente non riuscito"
 
     progress 85 "Installazione nel supervisore"
     "$VENV/bin/pip" install -q --force-reinstall --no-deps "$NATIVE_HOME"/wheels/nuxiva_native-*.whl \

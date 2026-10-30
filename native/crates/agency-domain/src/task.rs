@@ -74,6 +74,7 @@ impl Criterion {
 }
 
 #[derive(Debug, Clone, Default, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct TaskSpec {
     pub id: String,
     pub title: String,

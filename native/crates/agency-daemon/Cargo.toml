@@ -1,0 +1,30 @@
+[package]
+name = "nuxiva-agency"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lib]
+name = "nuxiva_agency"
+path = "src/lib.rs"
+
+[[bin]]
+name = "nuxiva-agency"
+path = "src/main.rs"
+
+[lints]
+workspace = true
+
+[dependencies]
+agency-domain = { path = "../agency-domain" }
+agency-planner = { path = "../agency-planner" }
+agency-ledger = { path = "../agency-ledger" }
+agency-scheduler = { path = "../agency-scheduler" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+getrandom = "0.3"
+rustix = { version = "1", features = ["fs", "process"] }
+tokio = { version = "1", features = ["rt-multi-thread", "net", "io-util", "time", "macros", "sync", "signal"] }

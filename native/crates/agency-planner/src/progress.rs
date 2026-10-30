@@ -17,7 +17,7 @@ impl Progress {
     pub(crate) fn finish(mut self) -> Self {
         let relevant = self.total.saturating_sub(self.cancelled);
         self.percent = if relevant == 0 {
-            100
+            0
         } else {
             let scaled = self
                 .done
