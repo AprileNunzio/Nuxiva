@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["crates/bus-core", "crates/nuxiva-native", "crates/egress", "crates/netguard", "crates/langid", "crates/crdt-core", "crates/spatial-core", "crates/audio-dsp", "crates/cortex-core", "crates/stage-core"]
+members = ["crates/bus-core", "crates/nuxiva-native", "crates/egress", "crates/netguard", "crates/langid", "crates/crdt-core", "crates/spatial-core", "crates/audio-dsp", "crates/cortex-core", "crates/stage-core", "crates/vitals-core"]
 
 [workspace.package]
 version = "5.3.0"

@@ -2,19 +2,25 @@
 
 pub mod cleaner;
 pub mod device_router;
+pub mod enhancer;
 pub mod filter;
 pub mod media_awareness;
 pub mod parallel_runtime;
+pub mod pcm;
 pub mod vad;
+pub mod voice_biomarkers;
 
 pub use cleaner::{AudioCleaner, CleanedFrame};
 pub use device_router::{
     AudioDevice, DeviceSelectionMode, FailoverDeviceRouter, MultiMicTriage, SatelliteAudioReport,
 };
+pub use enhancer::{AcousticFeatures, EnhancedSignal, SignalEnhancer};
 pub use filter::BandpassFilter300_3400;
 pub use media_awareness::{AcousticEchoSuppressor, MediaPlaybackState, MediaStreamType};
 pub use parallel_runtime::{ConcurrentAudioPipeline, PipelineTask, PipelineTaskStatus};
+pub use pcm::{MAX_FRAME_BYTES, PcmError};
 pub use vad::{SpectralEntropyVad, VadDecision, VadResult};
+pub use voice_biomarkers::{VoiceBiomarkerAnalyzer, VoiceBiomarkers};
 
 #[cfg(test)]
 mod tests {

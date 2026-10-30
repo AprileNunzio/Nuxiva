@@ -1,14 +1,30 @@
-from typing import Tuple
+from typing import Any, Tuple
 import numpy as np
 from server.features.human_affective_engine.interfaces import VoiceAcousticBiomarkers
+
+try:
+    import nuxiva_native
+except ImportError:
+    nuxiva_native = None
+
+
+def _native_analyzer(sample_rate: int) -> Any:
+    if nuxiva_native is None or not hasattr(nuxiva_native, "RustVoiceBiomarkers"):
+        return None
+    return nuxiva_native.RustVoiceBiomarkers(sample_rate)
+
 
 class VocalBiomarkerAnalyzer:
     def __init__(self, sample_rate: int = 16000):
         self._sample_rate = sample_rate
+        self._native = _native_analyzer(sample_rate)
 
     def extract_biomarkers(self, pcm_signal: np.ndarray) -> VoiceAcousticBiomarkers:
         if len(pcm_signal) == 0:
             return self._default_metrics()
+        if self._native is not None:
+            samples = np.ascontiguousarray(pcm_signal, dtype="<f4").tobytes()
+            return VoiceAcousticBiomarkers(**self._native.extract_f32(samples))
 
         energy = float(np.sqrt(np.mean(pcm_signal ** 2))) + 1e-9
         pitch_est, pitch_std = self._estimate_pitch_autocorr(pcm_signal)

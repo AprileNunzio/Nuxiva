@@ -11,8 +11,10 @@ mod language;
 mod memory;
 mod mesh;
 mod scanner;
+mod signal;
 mod stage;
 mod topics;
+mod vitals;
 mod workbench;
 
 use arbitration::{RustIntentRouter, RustSpatialArbiter};
@@ -33,8 +35,10 @@ use memory::{RustFastMemory, RustLiveCoPilot};
 use mesh::{RustCrdtMesh, RustP2PStreamManager};
 use pyo3::prelude::*;
 use scanner::FastScanner;
+use signal::{RustSignalEnhancer, RustVoiceBiomarkers};
 use stage::{RustParticleCache, particles_count, particles_sample, stage_plan};
 use topics::{TopicRouter, matches, valid_origin, valid_pattern, valid_topic};
+use vitals::vitals_parse_ble_heart_rate;
 
 #[pymodule(gil_used = false)]
 fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
@@ -52,6 +56,8 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<RustAudioCleaner>()?;
     m.add_class::<RustDeviceRouter>()?;
     m.add_class::<RustMultiMicTriage>()?;
+    m.add_class::<RustSignalEnhancer>()?;
+    m.add_class::<RustVoiceBiomarkers>()?;
     m.add_class::<RustFastMemory>()?;
     m.add_class::<RustLiveCoPilot>()?;
     m.add_class::<RustResourceGovernor>()?;
@@ -86,5 +92,6 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(stage_plan, m)?)?;
     m.add_function(wrap_pyfunction!(particles_sample, m)?)?;
     m.add_function(wrap_pyfunction!(particles_count, m)?)?;
+    m.add_function(wrap_pyfunction!(vitals_parse_ble_heart_rate, m)?)?;
     Ok(())
 }

@@ -1,7 +1,30 @@
 use crate::errors::poisoned;
 use pyo3::exceptions::{PyRuntimeError, PyValueError};
 use pyo3::prelude::*;
+use pyo3::types::{PyBytes, PyDict};
 use std::sync::{Arc, RwLock};
+
+fn parse_media_state(raw: &str) -> PyResult<nuxiva_audio_dsp::MediaPlaybackState> {
+    if raw.trim().is_empty() {
+        return Ok(nuxiva_audio_dsp::MediaPlaybackState::default());
+    }
+    if raw.len() > 4096 {
+        return Err(PyValueError::new_err("audio.media_state.too_large"));
+    }
+    serde_json::from_str(raw).map_err(|e| PyValueError::new_err(e.to_string()))
+}
+
+fn decode_pcm(bytes: &[u8]) -> PyResult<Vec<i16>> {
+    nuxiva_audio_dsp::pcm::decode_le(bytes).map_err(|e| PyValueError::new_err(e.to_string()))
+}
+
+const fn decision_code(decision: nuxiva_audio_dsp::VadDecision) -> &'static str {
+    match decision {
+        nuxiva_audio_dsp::VadDecision::Silence => "SILENCE",
+        nuxiva_audio_dsp::VadDecision::Speech => "SPEECH",
+        nuxiva_audio_dsp::VadDecision::MusicOrBackground => "MUSIC_OR_BACKGROUND",
+    }
+}
 
 #[pyclass(module = "nuxiva_native")]
 #[derive(Debug)]
@@ -19,36 +42,47 @@ impl RustAudioCleaner {
     }
 
     fn process_pcm_json(&self, pcm_bytes: &[u8], media_state_json: &str) -> PyResult<String> {
-        let media_state: nuxiva_audio_dsp::MediaPlaybackState =
-            if media_state_json.trim().is_empty() {
-                nuxiva_audio_dsp::MediaPlaybackState::default()
-            } else {
-                serde_json::from_str(media_state_json)
-                    .map_err(|e| PyValueError::new_err(e.to_string()))?
-            };
-
-        let num_samples = pcm_bytes.len().saturating_div(2);
-        let mut raw_pcm = Vec::with_capacity(num_samples);
-        for chunk in pcm_bytes.chunks_exact(2) {
-            let b0 = chunk.first().copied().unwrap_or(0);
-            let b1 = chunk.get(1).copied().unwrap_or(0);
-            raw_pcm.push(i16::from_le_bytes([b0, b1]));
-        }
-
+        let media_state = parse_media_state(media_state_json)?;
+        let raw_pcm = decode_pcm(pcm_bytes)?;
         let mut guard = self.inner.write().map_err(|_| poisoned())?;
         let result = guard.process_frame(&raw_pcm, &media_state);
         serde_json::to_string(&result).map_err(|e| PyRuntimeError::new_err(e.to_string()))
     }
 
+    fn process_pcm<'py>(
+        &self,
+        py: Python<'py>,
+        pcm_bytes: &[u8],
+        media_state_json: &str,
+    ) -> PyResult<Bound<'py, PyDict>> {
+        let media_state = parse_media_state(media_state_json)?;
+        let raw_pcm = decode_pcm(pcm_bytes)?;
+        let frame = {
+            let mut guard = self.inner.write().map_err(|_| poisoned())?;
+            guard.process_frame(&raw_pcm, &media_state)
+        };
+        let vad = PyDict::new(py);
+        vad.set_item("decision", decision_code(frame.vad.decision))?;
+        vad.set_item("speech_confidence", frame.vad.speech_confidence)?;
+        vad.set_item("energy_rms", frame.vad.energy_rms)?;
+        vad.set_item("is_speech", frame.vad.is_speech)?;
+        vad.set_item("reason_code", frame.vad.reason_code.as_str())?;
+        let out = PyDict::new(py);
+        out.set_item(
+            "pcm_clean",
+            PyBytes::new(py, &nuxiva_audio_dsp::pcm::encode_le(&frame.pcm_clean)),
+        )?;
+        out.set_item("vad", vad)?;
+        out.set_item("is_gated", frame.is_gated)?;
+        out.set_item("attenuation_applied", frame.attenuation_applied)?;
+        out.set_item("frame_samples", frame.frame_samples)?;
+        Ok(out)
+    }
+
     #[allow(clippy::unused_self)]
-    fn compute_rms(&self, pcm_bytes: &[u8]) -> f32 {
-        let mut raw_pcm = Vec::with_capacity(pcm_bytes.len().saturating_div(2));
-        for chunk in pcm_bytes.chunks_exact(2) {
-            let b0 = chunk.first().copied().unwrap_or(0);
-            let b1 = chunk.get(1).copied().unwrap_or(0);
-            raw_pcm.push(i16::from_le_bytes([b0, b1]));
-        }
-        nuxiva_audio_dsp::SpectralEntropyVad::compute_rms(&raw_pcm)
+    fn compute_rms(&self, pcm_bytes: &[u8]) -> PyResult<f32> {
+        let raw_pcm = decode_pcm(pcm_bytes)?;
+        Ok(nuxiva_audio_dsp::SpectralEntropyVad::compute_rms(&raw_pcm))
     }
 
     fn reset(&self) -> PyResult<()> {

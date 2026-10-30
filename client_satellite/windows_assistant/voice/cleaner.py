@@ -29,7 +29,7 @@ class AudioCleaner:
         self._native = None
         try:
             import nuxiva_native
-            if hasattr(nuxiva_native, "RustAudioCleaner"):
+            if hasattr(getattr(nuxiva_native, "RustAudioCleaner", None), "process_pcm"):
                 self._native = nuxiva_native.RustAudioCleaner()
         except ImportError:
             self._native = None
@@ -52,18 +52,11 @@ class AudioCleaner:
 
     def clean_frame(self, pcm_bytes: bytes, media_state: MediaState) -> tuple[bytes, bool, float]:
         if self._native is not None:
-            raw_res = self._native.process_pcm_json(pcm_bytes, json.dumps(media_state.to_dict()))
-            res = json.loads(raw_res)
-            is_gated = bool(res.get("is_gated", False))
-            level = float(res.get("vad", {}).get("energy_rms", 0.0))
-            if is_gated:
+            res = self._native.process_pcm(pcm_bytes, json.dumps(media_state.to_dict()))
+            level = float(res["vad"]["energy_rms"])
+            if res["is_gated"]:
                 return bytes(len(pcm_bytes)), True, level
-            clean_ints = res.get("pcm_clean", [])
-            out_bytes = b"".join(
-                int(s).to_bytes(2, byteorder="little", signed=True)
-                for s in clean_ints
-            )
-            return out_bytes, False, level
+            return bytes(res["pcm_clean"]), False, level
 
         rms = self.compute_rms(pcm_bytes)
         thresh = 0.018 + (media_state.volume_normalized * 0.045 if media_state.is_active else 0.0)

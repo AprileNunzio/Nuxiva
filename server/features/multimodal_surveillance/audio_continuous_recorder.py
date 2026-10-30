@@ -17,11 +17,8 @@ class ContinuousAudioRecorder:
 
     def ingest_audio_chunk(self, chunk: AudioChunkPayload) -> AudioEnhancedResult:
         self._total_processed_chunks += 1
-        raw_float = audio_enhancer.decode_pcm16_base64(chunk.audio_base64)
-        duration = float(len(raw_float) / float(chunk.sample_rate)) if chunk.sample_rate > 0 else 0.0
-
-        enhanced_float, orig_rms, new_rms, snr_gain, features = audio_enhancer.enhance(raw_float)
-        cleaned_b64 = audio_enhancer.encode_pcm16_base64(enhanced_float)
+        enhanced = audio_enhancer.process_pcm16_base64(chunk.audio_base64)
+        duration = float(enhanced.sample_count / float(chunk.sample_rate)) if chunk.sample_rate > 0 else 0.0
 
         segment_id = f"aud_{chunk.node_id}_{int(chunk.timestamp)}_{uuid.uuid4().hex[:6]}"
         result = AudioEnhancedResult(
@@ -29,11 +26,11 @@ class ContinuousAudioRecorder:
             node_id=chunk.node_id,
             timestamp=chunk.timestamp,
             duration_sec=duration,
-            original_rms=orig_rms,
-            enhanced_rms=new_rms,
-            snr_improvement_db=snr_gain,
-            cleaned_audio_base64=cleaned_b64,
-            acoustic_signature=features,
+            original_rms=enhanced.original_rms,
+            enhanced_rms=enhanced.enhanced_rms,
+            snr_improvement_db=enhanced.snr_gain_db,
+            cleaned_audio_base64=enhanced.cleaned_base64,
+            acoustic_signature=enhanced.features,
             transcription_candidate=None
         )
 

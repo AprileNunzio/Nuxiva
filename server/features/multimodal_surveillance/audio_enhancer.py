@@ -2,6 +2,7 @@ from __future__ import annotations
 import math
 import base64
 import struct
+from dataclasses import dataclass
 from typing import Dict, Tuple, Any
 
 try:
@@ -9,13 +10,47 @@ try:
 except ImportError:
     np = None
 
+try:
+    import nuxiva_native
+except ImportError:
+    nuxiva_native = None
+
+
+@dataclass(frozen=True, slots=True)
+class PcmEnhancement:
+    cleaned_base64: str
+    sample_count: int
+    original_rms: float
+    enhanced_rms: float
+    snr_gain_db: float
+    features: Dict[str, float]
+
+
+def _native_enhancer(target_peak: float, noise_floor_ratio: float) -> Any:
+    if nuxiva_native is None or not hasattr(nuxiva_native, "RustSignalEnhancer"):
+        return None
+    return nuxiva_native.RustSignalEnhancer(target_peak, noise_floor_ratio)
+
+
 class AudioSignalEnhancer:
     def __init__(self, target_peak_amplitude: float = 0.85, noise_floor_ratio: float = 0.08):
         self._target_peak = target_peak_amplitude
         self._noise_floor_ratio = noise_floor_ratio
+        self._native = _native_enhancer(target_peak_amplitude, noise_floor_ratio)
+
+    def process_pcm16_base64(self, b64_str: str) -> PcmEnhancement:
+        if self._native is None:
+            raw_float = self.decode_pcm16_base64(b64_str)
+            enhanced, orig_rms, new_rms, snr_gain, features = self.enhance(raw_float)
+            return PcmEnhancement(self.encode_pcm16_base64(enhanced), len(raw_float),
+                                  float(orig_rms), float(new_rms), float(snr_gain), features)
+        raw_bytes = base64.b64decode(b64_str.encode("ascii"), validate=True)
+        cleaned, orig_rms, new_rms, snr_gain, features = self._native.enhance_pcm16(raw_bytes)
+        return PcmEnhancement(base64.b64encode(cleaned).decode("ascii"), len(raw_bytes) // 2,
+                              orig_rms, new_rms, snr_gain, dict(features))
 
     def decode_pcm16_base64(self, b64_str: str) -> Any:
-        raw_bytes = base64.b64decode(b64_str.encode("ascii"))
+        raw_bytes = base64.b64decode(b64_str.encode("ascii"), validate=True)
         if len(raw_bytes) % 2 != 0:
             raw_bytes = raw_bytes[:len(raw_bytes) - (len(raw_bytes) % 2)]
         if np is not None:

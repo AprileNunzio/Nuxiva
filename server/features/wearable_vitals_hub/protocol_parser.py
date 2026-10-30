@@ -6,6 +6,14 @@ from server.features.wearable_vitals_hub.interfaces import (
     BodyCompositionData, RealtimeVitalTelemetry, WearableProtocol,
 )
 
+try:
+    import nuxiva_native
+except ImportError:
+    nuxiva_native = None
+
+MAX_BLE_FRAME_BYTES = 512
+NATIVE_BLE = getattr(nuxiva_native, "vitals_parse_ble_heart_rate", None)
+
 
 def number(data: Dict[str, Any], *keys: str):
     for key in keys:
@@ -25,7 +33,10 @@ class UniversalProtocolParser:
     def parse_ble_heart_rate_frame(self, device_id: str, raw_payload: bytes) -> RealtimeVitalTelemetry:
         result = RealtimeVitalTelemetry(device_id=device_id, device_name="BLE Heart Rate Monitor",
                                        protocol=WearableProtocol.BLE_STANDARD, timestamp=time.time())
-        if len(raw_payload) < 2:
+        if not 2 <= len(raw_payload) <= MAX_BLE_FRAME_BYTES:
+            return result
+        if NATIVE_BLE is not None:
+            result.heart_rate_bpm, result.hrv_rmssd_ms = NATIVE_BLE(bytes(raw_payload))
             return result
         flags = raw_payload[0]
         width = 2 if flags & 1 else 1

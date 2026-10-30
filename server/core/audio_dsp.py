@@ -102,7 +102,7 @@ class AudioCleanerBridge:
         self._native = None
         try:
             import nuxiva_native
-            if hasattr(nuxiva_native, "RustAudioCleaner"):
+            if hasattr(getattr(nuxiva_native, "RustAudioCleaner", None), "process_pcm"):
                 self._native = nuxiva_native.RustAudioCleaner()
         except ImportError:
             self._native = None
@@ -125,8 +125,7 @@ class AudioCleanerBridge:
 
     def process_pcm(self, pcm_bytes: bytes, media_state: MediaPlaybackState) -> Dict[str, Any]:
         if self._native is not None:
-            raw_res = self._native.process_pcm_json(pcm_bytes, json.dumps(media_state.to_dict()))
-            return json.loads(raw_res)
+            return self._native.process_pcm(pcm_bytes, json.dumps(media_state.to_dict()))
 
         rms = self.compute_rms(pcm_bytes)
         base_thresh = 0.018 + (media_state.volume_normalized * 0.045 if media_state.is_active else 0.0)
@@ -135,15 +134,12 @@ class AudioCleanerBridge:
         decision = "SPEECH" if is_speech else ("MUSIC_OR_BACKGROUND" if media_state.is_active and rms > 0.01 else "SILENCE")
         factor = max(0.15, 1.0 - (media_state.volume_normalized * 0.75)) if media_state.is_active else 1.0
 
-        clean_bytes = pcm_bytes if is_speech else bytes(len(pcm_bytes))
-        num_samples = len(clean_bytes) // 2
-        pcm_ints = [
-            int.from_bytes(clean_bytes[i:i + 2], byteorder="little", signed=True)
-            for i in range(0, len(clean_bytes) - 1, 2)
-        ]
+        usable = len(pcm_bytes) - (len(pcm_bytes) % 2)
+        clean_bytes = pcm_bytes[:usable] if is_speech else bytes(usable)
+        num_samples = usable // 2
 
         return {
-            "pcm_clean": pcm_ints,
+            "pcm_clean": clean_bytes,
             "vad": {
                 "decision": decision,
                 "speech_confidence": 0.85 if is_speech else 0.1,

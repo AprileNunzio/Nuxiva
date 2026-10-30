@@ -438,6 +438,7 @@ dependencies = [
  "nuxiva-langid",
  "nuxiva-spatial-core",
  "nuxiva-stage-core",
+ "nuxiva-vitals-core",
  "pyo3",
  "serde",
  "serde_json",
@@ -467,6 +468,10 @@ dependencies = [
  "serde",
  "serde_json",
 ]
+
+[[package]]
+name = "nuxiva-vitals-core"
+version = "5.3.0"
 
 [[package]]
 name = "once_cell"
