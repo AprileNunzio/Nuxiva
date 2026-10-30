@@ -6,7 +6,8 @@
     "Questions et réponses du Critique enregistrées et consultables",
     "Chaque tâche revue uniquement sur les preuves livrées",
     "Agents en parallèle selon le matériel et le modèle choisi dans Cerveau",
-    "Fichiers du projet dans le dossier partagé « 09 Progetti »"
+    "Fichiers du projet dans le dossier partagé « 09 Progetti »",
+    "Nouveaux outils créés par les agents, testés dans un bac à sable hors ligne avant usage"
   ],
   "language_name": "français",
   "files": {
@@ -33,6 +34,11 @@
     "not_found": "Projet inconnu",
     "brain": "Aucun modèle disponible pour planifier",
     "empty_plan": "Le Directeur n'a pas produit de plan utilisable",
-    "goal": "Décrivez le projet en au moins 8 caractères"
+    "goal": "Décrivez le projet en au moins 8 caractères",
+    "tool_not_found": "Outil inconnu",
+    "tool_limit": "Trop d'outils actifs : retirez-en d'abord"
+  },
+  "settings": {
+    "NUXIVA_AGENCY_FORGE": "Les agents créent de nouveaux outils quand il le faut"
   }
 }

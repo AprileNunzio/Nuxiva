@@ -6,7 +6,8 @@
     "Preguntas y respuestas del Crítico guardadas y consultables",
     "Cada tarea se revisa solo con las pruebas entregadas",
     "Agentes en paralelo según el hardware y el modelo elegido en Cerebro",
-    "Archivos del proyecto en la carpeta compartida «09 Progetti»"
+    "Archivos del proyecto en la carpeta compartida «09 Progetti»",
+    "Nuevas herramientas creadas por los agentes, probadas en un sandbox sin red antes de usarlas"
   ],
   "language_name": "español",
   "files": {
@@ -33,6 +34,11 @@
     "not_found": "Proyecto desconocido",
     "brain": "Ningún modelo disponible para planificar",
     "empty_plan": "El Director no produjo un plan utilizable",
-    "goal": "Describe el proyecto en al menos 8 caracteres"
+    "goal": "Describe el proyecto en al menos 8 caracteres",
+    "tool_not_found": "Herramienta desconocida",
+    "tool_limit": "Demasiadas herramientas activas: retira alguna primero"
+  },
+  "settings": {
+    "NUXIVA_AGENCY_FORGE": "Los agentes crean nuevas herramientas cuando hacen falta"
   }
 }

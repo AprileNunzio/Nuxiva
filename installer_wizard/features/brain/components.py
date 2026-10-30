@@ -29,6 +29,7 @@ COMPONENTS: tuple[Component, ...] = (
     Component("agency_director", "Direttore dei progetti", "Agenzia di progetti", "deep", "Pensa la soluzione, l'architettura e la squadra di ogni progetto."),
     Component("agency_critic", "Critico dei progetti", "Agenzia di progetti", "deep", "Si fa domande sul piano e rivede ogni compito consegnato."),
     Component("agency_worker", "Agenti esecutori", "Agenzia di progetti", "deep", "Svolgono i compiti dei progetti in parallelo."),
+    Component("agency_forge", "Fabbro degli strumenti", "Agenzia di progetti", "deep", "Crea e collauda i nuovi strumenti richiesti dagli agenti."),
     Component("firewall", "Analista di sicurezza di rete", "Servizi", "deep", "Valuta gli allarmi del firewall e propone contromisure."),
     Component("skills", "Abilità", "Servizi", "studio", "Generazione di nuove abilità."),
     Component("study", "Studio autonomo", "Servizi", "studio", "Lettura di fonti, esercizi ed esami a riposo."),

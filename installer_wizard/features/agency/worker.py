@@ -29,6 +29,7 @@ def inputs(context: dict, task: dict) -> str:
 def report(outcome: agent.Outcome, ctx: tools.Context) -> str:
     lines = [outcome.summary or "(no summary)", ""]
     lines += [f"- `{path}`" for path in ctx.written]
+    lines += [f"- tool `x_{name}`" for name in ctx.forged]
     for check in ctx.checks:
         lines += ["", f"`{check['check']} {check['entry']}`".strip() + f" → exit {check['exit_code']}",
                   "```", check["output"][-800:], "```"]
@@ -48,9 +49,9 @@ async def execute(context: dict, project_id: str, task: dict) -> tuple[str, str,
     brief = {"goal": context["goal"], "architecture": context["blueprint"].get("architecture", ""),
              "mission": clean(role.get("mission"), 400), "inputs": inputs(context, task),
              "language_name": context["language_name"]}
-    ctx = tools.Context(project_id, context["folder"])
+    ctx = tools.Context(project_id, context["folder"], task=task.get("title", ""))
     outcome = await agent.act(brief, task, ctx)
     body = report(outcome, ctx) if (outcome.summary or ctx.written) else ""
     if body:
         workspace.write(context["folder"], deliverable_path(context, task["id"]), body)
-    return body, evidence(context, body, ctx) if body else "", outcome.tokens
+    return body, evidence(context, body, ctx) if body else "", outcome.tokens + ctx.tokens

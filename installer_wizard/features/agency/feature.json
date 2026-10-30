@@ -17,9 +17,17 @@
     "Domande e risposte del Critico salvate e consultabili",
     "Revisione di ogni compito solo sulle prove consegnate",
     "Agenti in parallelo secondo l'hardware e il modello scelto in Cervello",
-    "File del progetto nella cartella condivisa «09 Progetti»"
+    "File del progetto nella cartella condivisa «09 Progetti»",
+    "Nuovi strumenti creati dagli agenti, provati in una sandbox senza rete prima dell'uso"
   ],
-  "settings": [],
+  "settings": [
+    {
+      "key": "NUXIVA_AGENCY_FORGE",
+      "label": "Gli agenti creano nuovi strumenti quando servono",
+      "type": "bool",
+      "default": "1"
+    }
+  ],
   "icon3d": "./icon.png",
   "icon3dSource": {
     "provider": "Icons8",

@@ -6,7 +6,8 @@
     "Critic questions and answers saved and browsable",
     "Every task reviewed only on the evidence delivered",
     "Parallel agents sized to the hardware and the model chosen in Brain",
-    "Project files in the «09 Progetti» shared folder"
+    "Project files in the «09 Progetti» shared folder",
+    "New tools created by agents, tested in an offline sandbox before use"
   ],
   "language_name": "English",
   "files": {
@@ -33,6 +34,11 @@
     "not_found": "Unknown project",
     "brain": "No model available for planning",
     "empty_plan": "The Director did not produce a usable plan",
-    "goal": "Describe the project in at least 8 characters"
+    "goal": "Describe the project in at least 8 characters",
+    "tool_not_found": "Unknown tool",
+    "tool_limit": "Too many active tools: retire some first"
+  },
+  "settings": {
+    "NUXIVA_AGENCY_FORGE": "Agents create new tools when needed"
   }
 }

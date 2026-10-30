@@ -11,6 +11,7 @@ import nuxiva_supervisor
 from features.agency import blueprint as bp
 from features.agency import client as client_module
 from features.agency import agent, critic, runner, service, tools, workspace
+from features.agency.forge import registry as forge_registry
 from features.agency.memory import ProjectMemory
 from features.shares import archive
 
@@ -120,6 +121,7 @@ class AgencyCase(unittest.TestCase):
             mock.patch.object(service, "memory", ProjectMemory(self.tmp / "state")),
             mock.patch.object(runner, "memory", ProjectMemory(self.tmp / "state")),
             mock.patch.object(service.store, "event"),
+            mock.patch.object(forge_registry.registry, "directory", self.tmp / "state"),
         ]
         for patcher in patches:
             patcher.start()

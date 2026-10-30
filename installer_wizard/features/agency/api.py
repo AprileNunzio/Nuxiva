@@ -7,10 +7,13 @@ from tasks import background
 
 from features.agency import service
 from features.agency.client import AgencyRejected, AgencyUnavailable
+from features.agency.forge.guard import NAME, ForgeRejected
+from features.agency.forge.registry import ACTIVE, RETIRED, registry
 from features.agency.words import lang_of, word
 
 admin_routes = APIRouter()
 PROJECT_ID = re.compile(r"[a-z0-9][a-z0-9_-]{0,63}")
+TOOL_ACTIONS = {"retire": RETIRED, "restore": ACTIVE}
 STATUS = {"not_found": 404, "invalid": 400, "bad_request": 400, "plan": 400, "exists": 409, "too_many": 429}
 
 
@@ -20,7 +23,7 @@ def _lang(request: Request) -> str:
 
 
 def _fail(request: Request, code: str, status: int):
-    key = code if code in ("unavailable", "invalid", "not_found", "brain", "empty_plan", "goal") else "invalid"
+    key = code if code in ("unavailable", "invalid", "not_found", "brain", "empty_plan", "goal", "tool_not_found", "tool_limit") else "invalid"
     raise HTTPException(status, {"code": key, "message": word(_lang(request), "errors", key)})
 
 
@@ -69,3 +72,38 @@ async def control(project_id: str, action: str, request: Request, _: str = Depen
     if action not in service.CONTROLS:
         _fail(request, "invalid", 400)
     return await _guard(request, service.control(_project(request, project_id), action))
+
+
+def _tool(request: Request, tool_name: str):
+    tool = registry.get(tool_name) if NAME.fullmatch(tool_name) else None
+    if tool is None:
+        _fail(request, "tool_not_found", 404)
+    return tool
+
+
+@admin_routes.get("/api/agency/tools")
+async def tools_list(_: str = Depends(require_admin)):
+    return {"tools": [tool.public() for tool in registry.all()]}
+
+
+@admin_routes.get("/api/agency/tools/{tool_name}")
+async def tools_detail(tool_name: str, request: Request, _: str = Depends(require_admin)):
+    return _tool(request, tool_name).public(with_code=True)
+
+
+@admin_routes.post("/api/agency/tools/{tool_name}/{action}")
+async def tools_control(tool_name: str, action: str, request: Request, _: str = Depends(require_admin)):
+    if action not in TOOL_ACTIONS:
+        _fail(request, "invalid", 400)
+    _tool(request, tool_name)
+    try:
+        return registry.set_status(tool_name, TOOL_ACTIONS[action], "admin").public()
+    except ForgeRejected:
+        _fail(request, "tool_limit", 409)
+
+
+@admin_routes.delete("/api/agency/tools/{tool_name}")
+async def tools_delete(tool_name: str, request: Request, _: str = Depends(require_admin)):
+    _tool(request, tool_name)
+    registry.delete(tool_name)
+    return {"deleted": tool_name}

@@ -1,8 +1,12 @@
+import json
 from dataclasses import dataclass, field
 from typing import Awaitable, Callable
 
-from features.agency import workspace
+from features.agency import feature, workspace
 from features.agency.client import AgencyRejected, client
+from features.agency.forge import sandbox, smith
+from features.agency.forge.guard import ForgeRejected
+from features.agency.forge.registry import registry
 from features.devstudio import runner as checks
 from features.devstudio.workspace import DevError
 
@@ -10,6 +14,7 @@ OBSERVATION = 4000
 CONTENT_LIMIT = workspace.FILE_LIMIT
 PATH_LIMIT = 240
 QUERY_LIMIT = 200
+FORGES_PER_TASK = 2
 
 
 class ToolError(ValueError):
@@ -20,6 +25,10 @@ class ToolError(ValueError):
 class Context:
     project_id: str
     folder: str
+    task: str = ""
+    tokens: int = 0
+    forged: list[str] = field(default_factory=list)
+    forge_attempts: int = 0
     written: list[str] = field(default_factory=list)
     checks: list[dict] = field(default_factory=list)
 
@@ -77,6 +86,32 @@ async def _check(ctx: Context, args: dict) -> str:
     return f"exit code {code}\n{output[-OBSERVATION:]}"
 
 
+async def _forge(ctx: Context, args: dict) -> str:
+    if not feature.forge_enabled():
+        return "error: creating tools is disabled in the settings"
+    if ctx.forge_attempts >= FORGES_PER_TASK:
+        return f"error: at most {FORGES_PER_TASK} new tools per task"
+    ctx.forge_attempts += 1
+    try:
+        tool, tokens = await smith.forge(args, {"project": ctx.project_id, "task": ctx.task})
+    except ForgeRejected as exc:
+        return f"error: tool not created ({exc})"
+    ctx.forged.append(tool.name)
+    ctx.tokens += tokens
+    return f"created {tool.call_name}: {tool.description} args={json.dumps(tool.args, ensure_ascii=False)}"
+
+
+async def _forged(ctx: Context, call_name: str, args: dict) -> str:
+    tool = registry.by_call_name(call_name)
+    if tool is None:
+        return f"error: unknown tool, use one of {', '.join(names())}"
+    outcome = await sandbox.execute(tool.code, args)
+    registry.record(tool.name, bool(outcome.get("ok")), str(outcome.get("error", "")))
+    if not outcome.get("ok"):
+        return f"error: {outcome.get('error')}"
+    return json.dumps(outcome.get("result"), ensure_ascii=False, default=str)
+
+
 TOOLS: dict[str, Tool] = {tool.name: tool for tool in (
     Tool("list_files", "List every file of the project with size and language.", {}, "read", _list_files),
     Tool("search_code", "Search the project code for words; returns file:line matches.", {"query": "words to find"}, "read", _search),
@@ -84,20 +119,30 @@ TOOLS: dict[str, Tool] = {tool.name: tool for tool in (
     Tool("write_file", "Create or replace a project file with the full content.", {"path": "relative/path.ext", "content": "full file content"}, "write", _write),
     Tool("run_check", "Run a check in an offline sandbox: " + ", ".join(checks.names()) + ". 'entry' is the file for *_run checks.",
          {"check": "python_tests", "entry": "optional file"}, "execute", _check),
+    Tool("forge_tool", "Create a new reusable pure-Python tool when none of the existing ones fits; it is tested in a "
+         "sandbox and then callable as x_<name> by every agent.",
+         {"name": "lowercase_identifier", "purpose": "what it must compute", "example": "an example input and output"},
+         "forge", _forge),
 )}
 
 
+def names() -> list[str]:
+    return [*TOOLS, *(t.call_name for t in registry.active())]
+
+
 def manifest() -> list[dict]:
-    return [{"name": t.name, "description": t.description, "args": t.args} for t in TOOLS.values()]
+    builtin = [{"name": t.name, "description": t.description, "args": t.args} for t in TOOLS.values()
+               if t.capability != "forge" or feature.forge_enabled()]
+    return builtin + [{"name": t.call_name, "description": t.description, "args": t.args} for t in registry.active()]
 
 
 async def call(ctx: Context, name, args) -> str:
-    tool = TOOLS.get(name) if isinstance(name, str) else None
-    if tool is None:
-        return f"error: unknown tool, use one of {', '.join(TOOLS)}"
     if not isinstance(args, dict):
         return "error: args must be an object"
+    tool = TOOLS.get(name) if isinstance(name, str) else None
     try:
+        if tool is None:
+            return (await _forged(ctx, name, args))[:OBSERVATION]
         return (await tool.run(ctx, args))[:OBSERVATION]
     except ToolError as exc:
         return f"error: {exc}"
@@ -105,3 +150,5 @@ async def call(ctx: Context, name, args) -> str:
         return f"error: {exc}"
     except AgencyRejected as exc:
         return f"error: engine refused ({exc.code})"
+    except sandbox.SandboxUnavailable as exc:
+        return f"error: {exc}"

@@ -28,6 +28,21 @@ AGENT = (
     "you ran it."
 )
 
+FORGE = (
+    "You are the Toolsmith of the agency. You write one small, pure, deterministic Python tool that other agents will "
+    "reuse. It receives a JSON object and returns JSON-serialisable data. No files, network, processes, printing, "
+    "introspection or dunder names; standard library only from the allowed modules. Every tool ships with tests that "
+    "prove it works. Answer only with JSON."
+)
+
+FORGE_SHAPE = {
+    "name": "lowercase_identifier",
+    "description": "one sentence on what the tool does",
+    "args": {"argument": "meaning and type"},
+    "code": "import math\n\ndef run(args):\n    ...\n    return result",
+    "tests": [{"args": {"argument": "value"}, "expect": "exact expected result"}],
+}
+
 PLAN_SHAPE = {
     "title": "short project name",
     "summary": "what will be built and why this solution",
@@ -81,3 +96,11 @@ def act(brief: dict, task: dict, manifest: list[dict], history: str, step: int, 
             + f"\nTools:\n{json.dumps(manifest, ensure_ascii=False)}\n"
             + (f"\nWhat you did so far:\n{history}\n" if history else "")
             + f"\nStep {step} of {max_steps}. {language_rule(brief['language_name'])}")
+
+
+def forge(need: dict, allowed: list[str], failure: str) -> str:
+    return (f"An agent needs a new tool.\nSuggested name: {need['name']}\nPurpose: {need['purpose']}\n"
+            f"Example use: {need['example']}\n\nAllowed modules: {', '.join(allowed)}.\n"
+            "Write def run(args) at top level. Give 2 to 6 tests with exact expected results, edge cases included.\n"
+            + (f"Your previous attempt failed: {failure}\nFix it.\n" if failure else "")
+            + f"Return JSON shaped like: {json.dumps(FORGE_SHAPE, ensure_ascii=False)}")
