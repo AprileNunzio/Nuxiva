@@ -13,6 +13,7 @@ import numpy as np
 
 sys.path.append(str(Path(__file__).resolve().parents[1] / "biometrics"))
 import embeddings as emb
+import sealed_rows
 
 log = logging.getLogger("nuxiva.vision")
 
@@ -33,9 +34,13 @@ def slugify(name: str) -> str:
 
 def _load_rows(path: Path) -> np.ndarray | None:
     try:
-        return emb.unit_rows(np.load(path))
-    except (OSError, ValueError):
+        rows = sealed_rows.load(path)
+    except sealed_rows.SealedRowsError as exc:
+        log.warning("Campioni volto illeggibili in %s: %s", path.parent.name, exc)
         return None
+    except OSError:
+        return None
+    return None if rows is None else emb.unit_rows(rows)
 
 
 class Gallery:
@@ -128,11 +133,11 @@ class Gallery:
         except (OSError, ValueError):
             return
         merged = emb.merge(_load_rows(d / "embeddings.npy"), np.array(rgb), MAX_SAMPLES)
-        np.save(d / "embeddings.npy", merged.astype(np.float32))
+        sealed_rows.save(d / "embeddings.npy", merged)
         meta.update(samples=len(merged), updated=time.time())
         if ir:
             merged_ir = emb.merge(_load_rows(d / "embeddings_ir.npy"), np.array(ir), MAX_SAMPLES)
-            np.save(d / "embeddings_ir.npy", merged_ir.astype(np.float32))
+            sealed_rows.save(d / "embeddings_ir.npy", merged_ir)
             meta["samples_ir"] = len(merged_ir)
         (d / "meta.json").write_text(json.dumps(meta, ensure_ascii=False), encoding="utf-8")
         self.reload()
@@ -153,7 +158,7 @@ class Gallery:
             if incoming is None:
                 continue
             merged = emb.merge(_load_rows(dst / file), incoming, MAX_SAMPLES)
-            np.save(dst / file, merged.astype(np.float32))
+            sealed_rows.save(dst / file, merged)
             meta[counter] = len(merged)
         photos = dst / "photos"
         photos.mkdir(parents=True, exist_ok=True)
@@ -187,11 +192,11 @@ class Gallery:
         d = FACES / slug
         d.mkdir(parents=True, exist_ok=True)
         merged = emb.merge(_load_rows(d / "embeddings.npy"), np.array(embeddings), MAX_SAMPLES)
-        np.save(d / "embeddings.npy", merged.astype(np.float32))
+        sealed_rows.save(d / "embeddings.npy", merged)
         meta = {"name": name, "enrolled_at": time.time(), "samples": len(merged), "auto": auto}
         if ir:
             merged_ir = emb.merge(_load_rows(d / "embeddings_ir.npy"), np.array(ir), MAX_SAMPLES)
-            np.save(d / "embeddings_ir.npy", merged_ir.astype(np.float32))
+            sealed_rows.save(d / "embeddings_ir.npy", merged_ir)
             meta["samples_ir"] = len(merged_ir)
         photos_dir = d / "photos"
         photos_dir.mkdir(parents=True, exist_ok=True)
@@ -280,7 +285,7 @@ class Gallery:
         kept = cleaned[sims >= 0.25]
         if len(kept) < 2:
             kept = cleaned
-        np.save(emb_path, kept.astype(np.float32))
+        sealed_rows.save(emb_path, kept)
         try:
             meta = json.loads((d / "meta.json").read_text(encoding="utf-8"))
         except (OSError, ValueError):
@@ -300,7 +305,7 @@ class Gallery:
         src_rows = _load_rows(src / "embeddings.npy")
         dst_rows = _load_rows(dst / "embeddings.npy")
         merged = emb.merge(dst_rows, src_rows if src_rows is not None else np.empty((0, 128), dtype=np.float32), MAX_SAMPLES)
-        np.save(dst / "embeddings.npy", merged.astype(np.float32))
+        sealed_rows.save(dst / "embeddings.npy", merged)
         # Copy photos
         dst_photos = dst / "photos"
         dst_photos.mkdir(parents=True, exist_ok=True)

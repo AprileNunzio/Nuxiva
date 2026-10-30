@@ -18,8 +18,10 @@ if str(_dir) not in sys.path:
 
 try:
     import embeddings as emb
+    import sealed_rows
 except ImportError:
     from features.biometrics import embeddings as emb
+    from features.biometrics import sealed_rows
 
 try:
     import earconf
@@ -96,9 +98,15 @@ class Voiceprints:
         adaptive = earconf.flag("NUXIVA_VOICE_ADAPTIVE", True)
         for f in STORE.glob("*.npy"):
             try:
-                rows = emb.unit_rows(np.load(f))
-            except (OSError, ValueError):
+                loaded = sealed_rows.load(f)
+            except sealed_rows.SealedRowsError as exc:
+                log.warning("Impronta vocale illeggibile %s: %s", f.stem, exc)
                 continue
+            except OSError:
+                continue
+            if loaded is None:
+                continue
+            rows = emb.unit_rows(loaded)
             samples[f.stem], centres[f.stem] = rows, emb.centroid(rows)
             limits[f.stem] = emb.person_threshold(rows, match_base()) if adaptive else match_base()
         twins = emb.twin_pairs(centres, twin_similarity())
@@ -183,13 +191,13 @@ class Voiceprints:
             return 0
         path = STORE / f"{slug}.npy"
         try:
-            old = np.load(path) if path.exists() else None
-        except (OSError, ValueError):
+            old = sealed_rows.load(path)
+        except (OSError, sealed_rows.SealedRowsError):
             old = None
         if not self.may_learn(slug, probe, source):
             return 0 if old is None else len(old)
         merged = emb.merge(old, probe, MAX_SAMPLES)
-        np.save(path, merged.astype(np.float32))
+        sealed_rows.save(path, merged)
         meta = {"samples": len(merged), "updated": time.time(), "source": source, "enrolled": len(merged) >= ENROLLED_AT}
         (STORE / f"{slug}.json").write_text(json.dumps(meta), encoding="utf-8")
         self._load()

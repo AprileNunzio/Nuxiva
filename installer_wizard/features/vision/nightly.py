@@ -41,9 +41,10 @@ def optimize_person(slug: str) -> dict:
             if str(sys_path) not in sys.path:
                 sys.path.append(str(sys_path))
             import embeddings as emb
+            import sealed_rows
 
-            rows = np.load(emb_file)
-            if len(rows) > 0:
+            rows = sealed_rows.load(emb_file)
+            if rows is not None and len(rows) > 0:
                 cleaned = emb.unit_rows(rows)
                 c = emb.centroid(cleaned)
                 sims = cleaned @ c
@@ -53,7 +54,7 @@ def optimize_person(slug: str) -> dict:
                     kept = cleaned
                 # Compact and limit to best 40 samples
                 kept = emb.prune(kept, 40)
-                np.save(emb_file, kept.astype(np.float32))
+                sealed_rows.save(emb_file, kept)
                 samples_count = len(kept)
                 stats = emb.intra_stats(kept)
         except Exception as exc:

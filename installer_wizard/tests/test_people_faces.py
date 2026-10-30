@@ -76,7 +76,7 @@ class FacesTest(unittest.TestCase):
         gallery = gallery_module.Gallery()
         merged = gallery.merge("ospite-1", "nunzio", "Nunzio")
         self.assertEqual((merged["samples"], merged["samples_ir"]), (8, 3))
-        self.assertEqual(len(np.load(self.faces / "nunzio" / "embeddings.npy")), 8)
+        self.assertEqual(len(gallery_module.sealed_rows.load(self.faces / "nunzio" / "embeddings.npy")), 8)
         self.assertFalse((self.faces / "ospite-1").exists())
         self.assertTrue(any((self.faces / "nunzio" / "photos").glob("merged_ospite-1_*.jpg")))
         self.assertIn("nunzio", gallery.people)
