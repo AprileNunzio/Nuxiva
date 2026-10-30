@@ -6,6 +6,7 @@ mod bus;
 mod cortex;
 mod embodied;
 mod errors;
+mod gesture;
 mod governors;
 mod language;
 mod memory;
@@ -29,6 +30,7 @@ use embodied::{
     RustCorticalCortex, RustEmbodiedCortex, RustEpistemicDoubtEngine, RustFieldbusController,
     RustHumanoidKinematics34, RustOntologicalCreativeEngine,
 };
+use gesture::{RustGestureEngine, gesture_catalog, gesture_validate_profile};
 use governors::{RustMeshTaskGovernor, RustNetworkGovernor, RustResourceGovernor};
 use language::{detect_language, supported_languages};
 use memory::{RustFastMemory, RustLiveCoPilot};
@@ -58,6 +60,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<RustMultiMicTriage>()?;
     m.add_class::<RustSignalEnhancer>()?;
     m.add_class::<RustVoiceBiomarkers>()?;
+    m.add_class::<RustGestureEngine>()?;
     m.add_class::<RustFastMemory>()?;
     m.add_class::<RustLiveCoPilot>()?;
     m.add_class::<RustResourceGovernor>()?;
@@ -93,5 +96,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(particles_sample, m)?)?;
     m.add_function(wrap_pyfunction!(particles_count, m)?)?;
     m.add_function(wrap_pyfunction!(vitals_parse_ble_heart_rate, m)?)?;
+    m.add_function(wrap_pyfunction!(gesture_validate_profile, m)?)?;
+    m.add_function(wrap_pyfunction!(gesture_catalog, m)?)?;
     Ok(())
 }
