@@ -16,6 +16,7 @@ FOLDERS = {
     "musica": "06 Musica",
     "diorami": "07 Diorami",
     "produzioni": "08 Produzioni",
+    "progetti": "09 Progetti",
 }
 DESCRIPTIONS = {
     "documenti": "testi, note, elenchi e documenti scritti da Nuxiva",
@@ -26,6 +27,7 @@ DESCRIPTIONS = {
     "produzioni": "le canzoni create nello Studio Musicale: mix in WAV e progetto riapribile",
     "diorami": "i diorami 3D costruiti da Nuxiva (scena completa in JSON, riapribile e modificabile)",
     "musica": "libreria musicale di Nuxiva: brani organizzati per artista e album, playlist e nuova musica da smistare",
+    "progetti": "i progetti costruiti in background dalla squadra di agenti di Nuxiva, uno per cartella",
 }
 SUBFOLDERS = {"musica": ("Libreria", "Da smistare", "Playlist", "Copertine", "Cestino")}
 SUBFOLDER_NOTES = {
