@@ -3,7 +3,6 @@ import json
 import os
 import logging
 import re
-from pathlib import Path
 
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, Request
@@ -419,19 +418,3 @@ async def admin_ollama_test(request: Request, _: str = Depends(require_admin)):
     except (httpx.HTTPError, ValueError) as exc:
         return {"ok": False, "url": url, "error": f"non raggiungibile ({type(exc).__name__}): sul server remoto avvia Ollama con OLLAMA_HOST=0.0.0.0"}
     return {"ok": True, "url": url, "version": version, "models": [m.get("name", "") for m in tags]}
-
-
-@admin_routes.get("/api/projects/status")
-@public_routes.get("/api/projects/status")
-async def get_projects_status():
-    folder = Path("data/projects")
-    running = []
-    for path in sorted(folder.glob("*.json")) if folder.is_dir() else []:
-        try:
-            data = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, ValueError) as exc:
-            log.warning("Progetto %s illeggibile: %s", path.name, exc)
-            continue
-        if isinstance(data, dict) and data.get("status") in ("running", "paused"):
-            running.append(data)
-    return {"projects": running}

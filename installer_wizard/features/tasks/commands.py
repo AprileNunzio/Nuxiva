@@ -10,7 +10,7 @@ STRICT = re.compile(r"\b(?:attivit[aà]\s+in\s+corso|cosa\s+stai\s+facendo|a\s+c
 async def answer(text: str) -> tuple[str, dict]:
     if not STRICT.search(text):
         raise LookupError("tasks")
-    data = snapshot()
+    data = await snapshot()
     active = [t for t in data["tasks"] if t["state"] in ("queued", "running")]
     waiting = [t for t in data["tasks"] if t["state"] == "done" and t.get("offer") and not t.get("answered")]
     parts = []

@@ -183,6 +183,7 @@
     if (window.NuxivaParticles) window.NuxivaParticles.update(s.particles, 0);
     if (D.Director) D.Director.poke();
     if (D.Sounds) { D.Sounds.update(s.sounds); D.Sounds.desk(s.desk); }
+    if (D.agency) D.agency.sync(s.agency);
     if (!["READY", "DEGRADED"].includes(s.phase)) { location.reload(); return; }
     if (s.asset_version && window.NUXIVA_ASSET_V && s.asset_version !== window.NUXIVA_ASSET_V) {
       D.staleSince = D.staleSince || Date.now();
@@ -329,26 +330,24 @@
 
 const projectWidget = {
   async tick() {
-    const res = await fetch("/api/projects/status", { credentials: "same-origin" });
+    const res = await fetch("/api/agency/board", { credentials: "same-origin", cache: "no-store" });
     if (res.status === 404 || res.status === 401 || res.status === 403) return window.nuxivaGovernor ? window.nuxivaGovernor.STOP : undefined;
-    if (!res.ok) throw new Error(`stato progetti ${res.status}`);
-    const data = await res.json();
     const widget = document.getElementById("project-widget");
     if (!widget) return undefined;
-    const show = !!(data.projects && data.projects.length);
+    const data = res.ok ? await res.json() : { projects: [] };
+    const active = (data.projects || []).filter((p) => p.status === "running" || p.status === "planning");
+    const show = active.length > 0;
     if (widget.hidden === show) { widget.hidden = !show; if (window.NuxivaDesk) window.NuxivaDesk.relayout(); }
     if (!show) return undefined;
-    const p = data.projects[0];
+    const p = active[0];
     const pct = document.getElementById("proj-pct"), bar = document.getElementById("proj-bar"), name = document.getElementById("proj-name");
-    const progress = Math.max(0, Math.min(100, Math.round(Number(p.progress) || 0)));
+    const progress = Math.max(0, Math.min(100, Math.round(Number(p.percent) || 0)));
     if (pct) pct.textContent = `${progress}%`;
     if (bar) bar.style.width = `${progress}%`;
-    if (name) {
-      const id = String(p.name || "").replace(/^tsk_/, "");
-      if (/^tsk_/.test(String(p.name || ""))) PageText.bind(name, "project_n", { id });
-      else { name.removeAttribute("data-i18n"); name.textContent = p.name || ""; }
-    }
+    if (name) PageText.plain(name, p.title);
     return undefined;
   },
 };
+const projectButton = document.getElementById("project-widget");
+if (projectButton) projectButton.addEventListener("click", () => { if (window.NuxivaDisplay.agency) window.NuxivaDisplay.agency.open(); });
 if (window.nuxivaGovernor) window.nuxivaGovernor.poll("progetti", () => projectWidget.tick(), 3000, 60000);

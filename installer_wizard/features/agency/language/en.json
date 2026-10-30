@@ -39,6 +39,33 @@
     "tool_limit": "Too many active tools: retire some first"
   },
   "settings": {
-    "NUXIVA_AGENCY_FORGE": "Agents create new tools when needed"
+    "NUXIVA_AGENCY_FORGE": "Agents create new tools when needed",
+    "NUXIVA_AGENCY_PARALLEL": "Parallel agents",
+    "NUXIVA_AGENCY_MAX_PARALLEL": "Maximum agents in automatic mode",
+    "NUXIVA_AGENCY_RESERVE_MB": "Memory to keep free (MB)",
+    "NUXIVA_AGENCY_CLOUD_RPM": "Requests per minute with cloud models"
+  },
+  "commands": {
+    "start": "\\b(?:start|create|make|build|open|launch)\\s+(?:me\\s+)?(?:a\\s+|an\\s+|the\\s+|new\\s+)*(?:new\\s+)?project\\b",
+    "build": "\\b(?:create|build|develop|make|program|code)\\s+(?:me\\s+|us\\s+)?(?:a\\s+|an\\s+|the\\s+)?(?:new\\s+)?(?:website|site|application|app|platform|portal|e-?commerce|software)\\b",
+    "status": "\\b(?:status|progress|how (?:is|are))\\b.*\\bprojects?\\b|\\bprojects\\s+in\\s+progress\\b",
+    "show": "\\b(?:show(?: me)?|open|display)\\s+(?:all\\s+)?(?:my\\s+|the\\s+)?projects\\b",
+    "open": "\\b(?:open|show(?: me)?)\\s+(?:the\\s+)?project\\s+(?:for\\s+|about\\s+|called\\s+)?(?P<name>.{2,120})$",
+    "close": "\\b(?:close|hide)\\s+(?:the\\s+)?projects?\\b"
+  },
+  "replies": {
+    "started": "Got it: the Director designs the solution and the team, the Critic checks the plan and then the agents get to work. Files go to the «09 Progetti» shared folder and progress shows in the Projects view.",
+    "none": "There are no projects in progress.",
+    "list": "Projects: {items}.",
+    "item": "«{title}» {percent}% ({done}/{total} tasks)",
+    "offline": "The project engine is not reachable right now.",
+    "short": "Describe the project with a few more words.",
+    "shown": "Here are your projects on the display.",
+    "opened": "Here is the project «{title}» on the display.",
+    "closed": "I closed the projects view.",
+    "not_found": "I can't find a project with that name."
+  },
+  "help": {
+    "NUXIVA_AGENCY_PARALLEL": "“auto” works out how many agents run together from the processor, memory, graphics card and the model chosen in Brain."
   }
 }

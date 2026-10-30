@@ -2,7 +2,7 @@
   const D = window.NuxivaDisplay;
   const T = (key, params) => window.PageText.t("web/display", key, params);
   const POLL_MS = 3000, IDLE_POLL_MS = 15000;
-  const st = { open: false, focus: null, timer: 0, data: null, offline: false };
+  const st = { open: false, focus: null, timer: 0, data: null, offline: false, seq: 0 };
   const root = document.getElementById("agency-board");
   if (!D || !root) return;
 
@@ -206,5 +206,16 @@
   if (button) button.addEventListener("click", () => { D.lastInteraction = Date.now(); if (st.open) shut(); else open(); });
   document.addEventListener("visibilitychange", () => { if (st.open && !document.hidden) refresh(); });
 
-  D.agency = { open, close: shut, openProject };
+  const ID = /^[a-z0-9][a-z0-9_-]{0,63}$/;
+
+  function sync(intent) {
+    if (!intent || typeof intent !== "object" || !Number.isInteger(intent.seq) || intent.seq <= st.seq) return;
+    st.seq = intent.seq;
+    D.lastInteraction = Date.now();
+    if (intent.view === "close") shut();
+    else if (intent.view === "project" && ID.test(intent.id || "")) openProject(intent.id);
+    else if (intent.view === "galaxy") { open(); if (st.focus) backToGalaxy(); }
+  }
+
+  D.agency = { open, close: shut, openProject, sync };
 })();

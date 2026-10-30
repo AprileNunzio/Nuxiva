@@ -39,6 +39,33 @@
     "tool_limit": "Troppi strumenti attivi: ritirane qualcuno prima"
   },
   "settings": {
-    "NUXIVA_AGENCY_FORGE": "Gli agenti creano nuovi strumenti quando servono"
+    "NUXIVA_AGENCY_FORGE": "Gli agenti creano nuovi strumenti quando servono",
+    "NUXIVA_AGENCY_PARALLEL": "Agenti in parallelo",
+    "NUXIVA_AGENCY_MAX_PARALLEL": "Massimo agenti in automatico",
+    "NUXIVA_AGENCY_RESERVE_MB": "Memoria da lasciare libera (MB)",
+    "NUXIVA_AGENCY_CLOUD_RPM": "Richieste al minuto con modelli cloud"
+  },
+  "commands": {
+    "start": "\\b(?:avvia|crea(?:mi)?|apri|inizia|comincia|lancia|fammi|realizza(?:mi)?)\\s+(?:un\\s+|uno\\s+|una\\s+|il\\s+|nuovo\\s+)*(?:nuovo\\s+)?progetto\\b",
+    "build": "\\b(?:crea\\w*|costruisc\\w*|sviluppa\\w*|realizza\\w*|programma\\w*)\\s+(?:mi\\s+|ci\\s+)?(?:un\\s+|uno\\s+|una\\s+|il\\s+|la\\s+)?(?:nuov[oa]\\s+)?(?:sito|applicazione|app|gestionale|piattaforma|portale|e-?commerce|software)\\b",
+    "status": "\\b(?:stato|a che punto|avanzamento|come va(?:nno)?)\\b.*\\bprogett[oi]\\b|\\bprogetti\\s+in\\s+corso\\b",
+    "show": "\\b(?:mostra(?:mi)?|apri|fammi vedere|fai vedere|visualizza)\\s+(?:tutti\\s+)?(?:i\\s+)?(?:miei\\s+)?progetti\\b",
+    "open": "\\b(?:apri|mostra(?:mi)?|fammi vedere)\\s+(?:il\\s+)?progetto\\s+(?:del\\s+|della\\s+|dello\\s+|di\\s+|chiamato\\s+)?(?P<name>.{2,120})$",
+    "close": "\\b(?:chiudi|nascondi)\\s+(?:i\\s+)?progett[oi]\\b"
+  },
+  "replies": {
+    "started": "Ricevuto: il Direttore pensa la soluzione e la squadra, il Critico verifica il piano e poi gli agenti si mettono al lavoro. Trovi i file nella cartella condivisa «09 Progetti» e l'avanzamento nella vista Progetti.",
+    "none": "Non ci sono progetti in corso.",
+    "list": "Progetti: {items}.",
+    "item": "«{title}» {percent}% ({done}/{total} compiti)",
+    "offline": "Il motore dei progetti non è raggiungibile in questo momento.",
+    "short": "Descrivimi il progetto con qualche parola in più.",
+    "shown": "Ecco i tuoi progetti sul display.",
+    "opened": "Ecco il progetto «{title}» sul display.",
+    "closed": "Ho chiuso la vista dei progetti.",
+    "not_found": "Non trovo un progetto con quel nome."
+  },
+  "help": {
+    "NUXIVA_AGENCY_PARALLEL": "«auto» calcola quanti agenti far lavorare insieme in base a processore, memoria, scheda video e al modello scelto nel Cervello."
   }
 }

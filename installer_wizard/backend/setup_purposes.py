@@ -7,7 +7,7 @@ PURPOSES = {
              "consents": ("listening", "voiceprint", "cameras", "location")},
     "security": {"enable": ("NUXIVA_REDALERT", "NUXIVA_AUTOMATIONS"), "packages": (),
                  "consents": ("cameras", "faces", "network_guard", "listening", "voiceprint")},
-    "work": {"enable": ("NUXIVA_PROJECTS", "NUXIVA_SKILLS", "NUXIVA_FLEET", "NUXIVA_EXPERTS"), "packages": ("documents",),
+    "work": {"enable": ("NUXIVA_AGENCY", "NUXIVA_SKILLS", "NUXIVA_FLEET", "NUXIVA_EXPERTS"), "packages": ("documents",),
              "consents": ("code_run", "web_research", "auto_experts")},
     "family": {"enable": ("NUXIVA_MUSIC_ID", "NUXIVA_GAMES", "NUXIVA_SPORTS"), "packages": ("voice",),
                "consents": ("listening", "voiceprint", "location", "faces")},

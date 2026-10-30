@@ -232,19 +232,20 @@ async def telegram(a: dict, run) -> str:
 
 
 async def mission_watchdog(a: dict, run) -> str:
-    mid = str(a.get("mission_id") or "")
-    if not mid:
+    pid = str(a.get("mission_id") or a.get("project_id") or "")
+    if not pid:
         raise ActionError("mission_id obbligatorio per mission_watchdog")
-    from features.autonomous_worker.infrastructure.store import mission_store
+    from features.agency import board
+    from features.agency.client import AgencyRejected, AgencyUnavailable
     try:
-        m = mission_store.get(mid)
-    except Exception:
-        raise ActionError(f"missione «{mid}» non trovata")
-    all_t = m.all_tasks()
-    done_c = sum(1 for t in all_t if t.status.value == "done")
+        m = await board.focus(pid)
+    except AgencyRejected as exc:
+        raise ActionError(f"progetto «{pid}» non trovato") from exc
+    except AgencyUnavailable as exc:
+        raise ActionError("motore dei progetti non raggiungibile") from exc
     status_msg = (
-        f"Avanzamento Progetto «{m.title}»: {m.progress}% ({done_c}/{len(all_t)} task completati). "
-        f"Stato: {m.status.value.upper()}."
+        f"Avanzamento Progetto «{m['title']}»: {m['percent']}% ({m['counts']['done']}/{m['counts']['total']} task completati). "
+        f"Stato: {m['status'].upper()}."
     )
     channels = a.get("channels") or ["telegram", "display"]
     done = []
@@ -256,11 +257,11 @@ async def mission_watchdog(a: dict, run) -> str:
         except Exception as exc:
             done.append(f"telegram err: {exc}")
     if "display" in channels:
-        _desk().show("notice", {"icon": "🕵️", "title": f"Watchdog: {m.title}", "text": status_msg}, key=f"auto:{run.id}:watchdog", ttl=180)
+        _desk().show("notice", {"icon": "🕵️", "title": f"Watchdog: {m['title']}", "text": status_msg}, key=f"auto:{run.id}:watchdog", ttl=180)
         done.append("display")
     if "email" in channels and a.get("to"):
         from features.agent.mailer import send
-        done.append(await send(_list(a.get("to")), f"Watchdog: {m.title}", status_msg, []))
+        done.append(await send(_list(a.get("to")), f"Watchdog: {m['title']}", status_msg, []))
     return "; ".join(done) or status_msg
 
 

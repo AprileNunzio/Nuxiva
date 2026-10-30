@@ -132,6 +132,7 @@
     D.setPresence(ui.presence || "normal");
     D.setMode(ui.mode);
     if (ui.camera && D.setCamera) D.setCamera(ui.camera === "on");
+    if (ui.agency && D.agency) D.agency.sync(ui.agency);
     if (spoken) $("say").textContent = d.reply;
     else { D.typeInto($("say"), d.reply); D.speak(d.reply, d.lang); }
     if (ui.mode === "face" || ui.mode === "focus") setTimeout(() => D.refreshBrain(true), 1500);

@@ -122,6 +122,7 @@ class AgencyCase(unittest.TestCase):
             mock.patch.object(runner, "memory", ProjectMemory(self.tmp / "state")),
             mock.patch.object(service.store, "event"),
             mock.patch.object(forge_registry.registry, "directory", self.tmp / "state"),
+            mock.patch.object(runner.tuner, "sync", mock.AsyncMock(return_value=False)),
         ]
         for patcher in patches:
             patcher.start()

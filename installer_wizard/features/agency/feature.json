@@ -26,6 +26,39 @@
       "label": "Gli agenti creano nuovi strumenti quando servono",
       "type": "bool",
       "default": "1"
+    },
+    {
+      "key": "NUXIVA_AGENCY_PARALLEL",
+      "label": "Agenti in parallelo",
+      "type": "select",
+      "default": "auto",
+      "options": [
+        "auto",
+        "1",
+        "2",
+        "4",
+        "8",
+        "16",
+        "32"
+      ]
+    },
+    {
+      "key": "NUXIVA_AGENCY_MAX_PARALLEL",
+      "label": "Massimo agenti in automatico",
+      "type": "number",
+      "default": "16"
+    },
+    {
+      "key": "NUXIVA_AGENCY_RESERVE_MB",
+      "label": "Memoria da lasciare libera (MB)",
+      "type": "number",
+      "default": "2048"
+    },
+    {
+      "key": "NUXIVA_AGENCY_CLOUD_RPM",
+      "label": "Richieste al minuto con modelli cloud",
+      "type": "number",
+      "default": "30"
     }
   ],
   "icon3d": "./icon.png",
@@ -34,5 +67,7 @@
     "technique": "3d",
     "id": "hlnLMra14Qpa",
     "url": "https://img.icons8.com/?size=240&id=hlnLMra14Qpa&format=png"
-  }
+  },
+  "connector": "commands.py",
+  "connector_risk": "home"
 }

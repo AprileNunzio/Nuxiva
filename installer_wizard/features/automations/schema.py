@@ -148,8 +148,8 @@ ACTIONS = {
     "telegram": {"label": "Invia messaggio Telegram", "icon": "✈️", "fields": [
         F("text", "Testo del messaggio", "textarea", required=True),
         F("title", "Titolo o intestazione")]},
-    "mission_watchdog": {"label": "Controllo avanzamento missione/progetto", "icon": "🕵️", "fields": [
-        F("mission_id", "ID Missione", required=True),
+    "mission_watchdog": {"label": "Controllo avanzamento progetto", "icon": "🕵️", "fields": [
+        F("mission_id", "ID progetto", required=True),
         F("channels", "Canali notifica", "multi", options=CHANNELS, default=["telegram", "display"])]},
     "stop": {"label": "Ferma l'automazione", "icon": "⏹", "fields": [F("reason", "Motivo"), F("error", "Come errore", "bool")]},
 }

@@ -267,6 +267,7 @@ I preset `A_BALANCED`, `B_QUALITY` e `C_PRODUCTION` usano quattro assi.
 | `audio-dsp` | Rilevamento dell'attività vocale (RMS, zero-crossing rate, entropia spettrale), soglia adattiva mentre suona un contenuto, filtri biquad |
 | `spatial-core` | Arbitraggio di finestre e widget sul display: ordine z, priorità, gestori di risorse / compiti / rete |
 | `stage-core` | Pianificatore del display (quali superfici mostrare, ridurre o nascondere) e codificatore compatto per nuvole di particelle 3D |
+| `agency-domain`, `agency-planner`, `agency-scheduler`, `agency-ledger`, `agency-codeindex`, `agency-daemon` | Motore dell'agenzia di progetti: progetti e compiti validati, grafo delle dipendenze e percorso critico, parallelismo da CPU / RAM / VRAM e modello, registro concatenato con HMAC, indice e ricerca nel codice, demone `nuxiva-agency` su socket Unix (permessi 0600, verifica dell'uid) |
 | `langid` | Identificazione della lingua per la pipeline vocale (basata su `whatlang`) |
 | `nuxiva-native` | Ponte PyO3 che espone i crate a Python |
 
@@ -342,8 +343,7 @@ Il workflow `.github/workflows/ci.yml` gira a ogni push: sintassi Python e `pyfl
 - **Squadra** (`team`): ogni funzionalità agisce come un agente con i propri strumenti e la propria priorità; un coordinatore assegna le richieste con l'ordinamento del §1.6.
 - **Esperti** (`experts`): agenti esperti identificati dal ruolo, che usano solo le abilità e gli strumenti del loro campo; puoi parlarci direttamente.
 - **Flotta** (`fleet`): catalogo di agenti specializzati, creati quando servono e collegati a strumenti e widget.
-- **Progetti** (`projects`): progetti lunghi divisi in passi, assegnati agli esperti e portati avanti in background anche dopo un riavvio.
-- **Missioni autonome** (`autonomous_worker`): missioni di lunga durata con una squadra dinamica di esperti e una chat comune.
+- **Agenzia di progetti** (`agency`): una richiesta come "creami un sito e-commerce" diventa un progetto. Il Direttore pianifica la soluzione, i ruoli e un grafo di compiti con criteri di accettazione; il Critico si fa domande sul piano e rivede ogni compito consegnato sulle prove; gli agenti lavorano in parallelo nella cartella del progetto con strumenti (elencare, cercare, leggere e scrivere file, eseguire controlli in una sandbox senza rete) e possono far scrivere e collaudare nuovi strumenti dal Fabbro. I file vanno nella cartella condivisa `09 Progetti`. Il demone Rust `nuxiva-agency` tiene il grafo dei compiti, decide quanti agenti avviare in base all'hardware e al modello scelto nel Cervello e registra ogni modifica in un registro concatenato con HMAC. La pagina 80 mostra i progetti come una galassia con vista di dettaglio, comandabile con tocco, mani e voce.
 - **Attività in background** (`tasks`): avanzamento, passi e annullamento per i lavori lunghi; sopravvivono ai riavvii.
 - **Autonomia** (`autonomy`): esegue i compiti programmati, diagnostica i guasti e manda un riepilogo serale; le azioni delicate aspettano la tua approvazione.
 - **Fucina** (`forge`): crea nuovi strumenti (combinando quelli esistenti), widget e funzionalità, disponibili agli agenti e ai client MCP.

@@ -9,7 +9,7 @@ ROLES = ("agent", "work", "visual")
 WORK = frozenset({"repair_workbench", "code_view", "git_diff", "kanban_board", "document_viewer", "lavagna", "cicd_tracker",
                   "docker_matrix", "studio_3d", "viewer_3d", "thinking_tree", "text_long", "rag_sources", "system_monitor",
                   "net_topology", "firewall_logs", "os_networks", "ssh_sessions", "port_scanner", "usb_monitor", "active_tasks",
-                  "project_status", "mission_tracker", "expert_work", "vram_allocator", "context_window", "api_costs"})
+                  "expert_work", "vram_allocator", "context_window", "api_costs"})
 VISUAL = frozenset({"diorama", "chess_3d", "cam_stream", "live_cam", "tv_player", "karaoke", "audio_spectrum", "energy_chart",
                     "f1_race", "hockey_match", "sport_match", "sport_table"})
 

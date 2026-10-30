@@ -80,7 +80,7 @@
     }
 
     function drawPlanet(entry, at) {
-      const p = entry.project, hue = STATUS_HUE[p.status] ?? 200;
+      const p = entry.project, hue = p.status in STATUS_HUE ? STATUS_HUE[p.status] : 200;
       const scale = Math.min(1, Math.max(0.55, st.w / 1100));
       const size = (16 + Math.min(26, Math.sqrt(p.counts.total || 1) * 4)) * (0.75 + at.depth * 0.5) * scale;
       const glow = ctx.createRadialGradient(at.x, at.y, size * 0.2, at.x, at.y, size * 2.4);

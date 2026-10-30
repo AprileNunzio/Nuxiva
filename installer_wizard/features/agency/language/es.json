@@ -39,6 +39,33 @@
     "tool_limit": "Demasiadas herramientas activas: retira alguna primero"
   },
   "settings": {
-    "NUXIVA_AGENCY_FORGE": "Los agentes crean nuevas herramientas cuando hacen falta"
+    "NUXIVA_AGENCY_FORGE": "Los agentes crean nuevas herramientas cuando hacen falta",
+    "NUXIVA_AGENCY_PARALLEL": "Agentes en paralelo",
+    "NUXIVA_AGENCY_MAX_PARALLEL": "Máximo de agentes en automático",
+    "NUXIVA_AGENCY_RESERVE_MB": "Memoria que dejar libre (MB)",
+    "NUXIVA_AGENCY_CLOUD_RPM": "Peticiones por minuto con modelos en la nube"
+  },
+  "commands": {
+    "start": "\\b(?:inicia|crea(?:me)?|créame|abre|empieza|lanza|hazme)\\s+(?:un\\s+|el\\s+|nuevo\\s+)*(?:nuevo\\s+)?proyecto\\b",
+    "build": "\\b(?:crea\\w*|créame|construy\\w*|desarroll\\w*|program\\w*)\\s+(?:un\\s+|una\\s+|el\\s+|la\\s+)?(?:nuev[oa]\\s+)?(?:sitio|web|aplicación|app|plataforma|portal|e-?commerce|software)\\b",
+    "status": "\\b(?:estado|avance|cómo van?)\\b.*\\bproyectos?\\b|\\bproyectos\\s+en\\s+curso\\b",
+    "show": "\\b(?:muestra(?:me)?|muéstrame|abre|enséñame)\\s+(?:todos\\s+)?(?:mis\\s+|los\\s+)?proyectos\\b",
+    "open": "\\b(?:abre|muéstrame|muestra)\\s+(?:el\\s+)?proyecto\\s+(?:de\\s+|del\\s+|llamado\\s+)?(?P<name>.{2,120})$",
+    "close": "\\b(?:cierra|oculta)\\s+(?:los\\s+)?proyectos?\\b"
+  },
+  "replies": {
+    "started": "Recibido: el Director piensa la solución y el equipo, el Crítico revisa el plan y luego los agentes se ponen a trabajar. Los archivos van a la carpeta compartida «09 Progetti» y el avance aparece en la vista Proyectos.",
+    "none": "No hay proyectos en curso.",
+    "list": "Proyectos: {items}.",
+    "item": "«{title}» {percent}% ({done}/{total} tareas)",
+    "offline": "El motor de proyectos no está disponible ahora.",
+    "short": "Descríbeme el proyecto con algunas palabras más.",
+    "shown": "Aquí tienes tus proyectos en la pantalla.",
+    "opened": "Aquí está el proyecto «{title}» en la pantalla.",
+    "closed": "He cerrado la vista de proyectos.",
+    "not_found": "No encuentro un proyecto con ese nombre."
+  },
+  "help": {
+    "NUXIVA_AGENCY_PARALLEL": "«auto» calcula cuántos agentes trabajan a la vez según el procesador, la memoria, la tarjeta gráfica y el modelo elegido en Cerebro."
   }
 }

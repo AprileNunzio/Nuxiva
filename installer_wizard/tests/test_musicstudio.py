@@ -656,9 +656,3 @@ class TaskVoiceTest(TaskRegistryTest):
         self.assertIn("Vuoi ascoltarlo", speech)
         with self.assertRaises(LookupError):
             asyncio.run(task_commands.answer("che tempo fa"))
-
-    def test_big_builds_open_a_project(self):
-        from features.projects import commands as project_commands
-        self.assertTrue(project_commands.BUILD.search("creami un sito con 100 pagine"))
-        self.assertTrue(project_commands.BUILD.search("sviluppa una piattaforma gestionale"))
-        self.assertFalse(project_commands.BUILD.search("crea una canzone blues"))

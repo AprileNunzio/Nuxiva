@@ -10,6 +10,7 @@ from fastapi.responses import StreamingResponse
 
 from access import NO_CACHE
 from config import ADMIN_PORT, NODE, OLLAMA_URL, PUBLIC_PORT, STATE_DIR, VERSION, read_env
+from features.agency.presence import intent as agency_intent
 from features.brain.brains import brains
 from features.home_assistant import home
 from features.music import music
@@ -101,6 +102,7 @@ def full_snapshot(admin: bool) -> dict:
     snap["catalog"] = step_catalog()
     snap["supervisor_version"] = VERSION
     snap["asset_version"] = ASSET_VERSION
+    snap["agency"] = agency_intent.current()
     env = read_env()
     snap["llm_model"] = env.get("NUXIVA_LLM_MODEL", "")
     cfg = brains.config()

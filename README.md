@@ -267,6 +267,7 @@ Presets `A_BALANCED`, `B_QUALITY` and `C_PRODUCTION` use four axes.
 | `audio-dsp` | Voice activity detection (RMS, zero-crossing rate, spectral entropy), adaptive threshold while media is playing, biquad filters |
 | `spatial-core` | Window and widget arbitration on the display: z-order, priorities, resource / task / network governors |
 | `stage-core` | Display planner (which surfaces to show, shrink or hide) and a compact encoder for 3D particle clouds |
+| `agency-domain`, `agency-planner`, `agency-scheduler`, `agency-ledger`, `agency-codeindex`, `agency-daemon` | Project agency engine: validated projects and tasks, dependency graph and critical path, parallelism from CPU / RAM / VRAM and model, HMAC-chained ledger, code index and search, `nuxiva-agency` daemon on a Unix socket (mode 0600, peer uid check) |
 | `langid` | Language identification for the speech pipeline (based on `whatlang`) |
 | `nuxiva-native` | PyO3 bridge that exposes the crates to Python |
 
@@ -342,8 +343,7 @@ The workflow `.github/workflows/ci.yml` runs on every push: Python syntax and `p
 - **Team** (`team`): every feature acts as an agent with its own tools and priority; a coordinator assigns requests with the ranking in §1.6.
 - **Experts** (`experts`): role-based expert agents that use only the skills and tools of their field; you can talk to them directly.
 - **Fleet** (`fleet`): catalogue of specialised agents, created on demand and linked to tools and widgets.
-- **Projects** (`projects`): long-running projects split into steps, assigned to experts and carried on in the background across restarts.
-- **Autonomous missions** (`autonomous_worker`): long-running missions with a dynamic team of experts and a shared chat.
+- **Project agency** (`agency`): a request such as "make me an e-commerce site" becomes a project. The Director plans the solution, roles and a task graph with acceptance criteria; the Critic asks itself questions about the plan and reviews each delivered task on its evidence; agents work in parallel inside the project folder with tools (list, search, read and write files, run checks in an offline sandbox) and can have new tools written and tested by the Toolsmith. Files go to the `09 Progetti` shared folder. The `nuxiva-agency` Rust daemon keeps the task graph, schedules agents from the host hardware and the model chosen in Brain, and records every change in an HMAC-chained ledger. Page 80 shows the projects as a galaxy with a detail view, controllable by touch, hands and voice.
 - **Background tasks** (`tasks`): progress, steps and cancel for long jobs; they survive restarts.
 - **Autonomy** (`autonomy`): runs scheduled tasks, diagnoses faults, and sends an evening summary; sensitive actions wait for your approval.
 - **Forge** (`forge`): builds new tools (by combining existing ones), widgets and features, available to agents and MCP clients.
