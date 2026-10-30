@@ -176,6 +176,7 @@
     handleGreeting(s.greeting);
     if (D.Enroll) D.Enroll.fromState(s.voice_training, s);
     D.onAudioRev(s.audio_rev);
+    if (window.NuxivaGamepad) window.NuxivaGamepad.sync(s.bt_input_rev || "");
     D.Ear.resetFrom(s.mic_reset);
     NuxivaDesk.setScreens(s.screens);
     NuxivaDesk.render(s.desk || []);

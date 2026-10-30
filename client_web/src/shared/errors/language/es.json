@@ -161,6 +161,9 @@
     "error_brain_presets_unavailable": "Perfiles rápidos no disponibles.",
     "error_brain_preset_failed": "Perfil no aplicado.",
     "error_brain_free_matrix_failed": "Modelos gratuitos no accesibles.",
-    "error_node_satellite_enrollment_failed": "Inscripción del satélite no generada."
+    "error_node_satellite_enrollment_failed": "Inscripción del satélite no generada.",
+    "error_node_bluetooth_trust_failed": "El dispositivo no se marcó como de confianza.",
+    "error_node_bluetooth_untrust_failed": "No se revocó la confianza del dispositivo.",
+    "error_bluetooth_paired_not_connected": "Dispositivo emparejado pero aún no conectado: enciéndelo y pulsa Conectar."
   }
 }

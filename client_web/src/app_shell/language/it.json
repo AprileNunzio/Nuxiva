@@ -65,6 +65,9 @@
     "os_access_unavailable": "Impossibile verificare i permessi.",
     "os_permission_denied": "Il tuo profilo non autorizza questa applicazione.",
     "os_app_failed": "La applicazione ha riscontrato un errore.",
-    "os_cancel": "Annulla"
+    "os_cancel": "Annulla",
+    "os_bluetooth": "Bluetooth",
+    "os_bluetooth_on": "Bluetooth acceso",
+    "os_bluetooth_off": "Bluetooth spento"
   }
 }

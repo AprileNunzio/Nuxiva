@@ -2,10 +2,10 @@
   "id": "bluetooth",
   "name": "Bluetooth",
   "icon": "Bluetooth",
-  "version": "5.0.0",
+  "version": "6.0.0",
   "category": "devices",
   "requires_reboot": false,
-  "description": "Bluetooth radio scanning, peripheral pairing, and automatic reconnection",
+  "description": "Universal Bluetooth: any device (audio, microphone, mouse, keyboard, controller, joystick) with per-type settings applied live",
   "scope": "node_apps/bluetooth",
   "target": "node",
   "window": {

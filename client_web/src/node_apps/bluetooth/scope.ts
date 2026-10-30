@@ -1,24 +1,18 @@
-import { Gamepad2, Headphones, Keyboard, Laptop, LucideIcon, Mic, Mouse, Smartphone, Speaker, Bluetooth } from 'lucide-react';
 import { useScopedI18n } from '../../shared/i18n/useScopedI18n';
 
 export function useBluetoothI18n() {
   return useScopedI18n('node_apps/bluetooth');
 }
 
-const ICONS: Readonly<Record<string, LucideIcon>> = {
-  'audio-headset': Headphones,
-  'audio-headphones': Headphones,
-  'audio-card': Speaker,
-  'input-microphone': Mic,
-  phone: Smartphone,
-  computer: Laptop,
-  'input-keyboard': Keyboard,
-  'input-mouse': Mouse,
-  'input-gaming': Gamepad2,
-};
-
-export const iconFor = (icon: string): LucideIcon => ICONS[icon] ?? Bluetooth;
-export const kindKey = (icon: string): string => (icon in ICONS ? `kind_${icon.replace('-', '_')}` : 'kind_device');
-
 export const fieldClass =
-  'rounded-xl border border-slate-700 bg-slate-950/70 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-cyan-400/70 focus-visible:ring-2 focus-visible:ring-cyan-400/40';
+  'w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-2xs outline-none transition focus:border-blue-500 focus-visible:ring-2 focus-visible:ring-blue-500/30 disabled:opacity-60';
+
+export const buttonClass =
+  'inline-flex items-center justify-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500';
+
+export const tones = {
+  primary: 'border-blue-600 bg-blue-600 text-white hover:bg-blue-700',
+  positive: 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100',
+  neutral: 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50',
+  danger: 'border-transparent bg-transparent text-slate-400 hover:bg-rose-50 hover:text-rose-600',
+} as const;

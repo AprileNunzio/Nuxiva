@@ -1,12 +1,24 @@
 {
-  "name": "Bluetooth Mesh & Devices",
-  "description": "Discovers and communicates with Bluetooth Low Energy (BLE) sensors, beacons, and smart home peripherals.",
+  "name": "Bluetooth",
+  "description": "Any Bluetooth device: speakers, headphones, microphones, mice, keyboards, joysticks and controllers. Guided pairing, dedicated settings for every device type applied instantly, a preferred microphone to talk with Nuxiva and controllers to play live.",
   "capabilities": [
-    "BLE peripheral discovery and scanning",
-    "RSSI-based proximity triangulation",
-    "Sensor telemetry acquisition"
+    "Scan, pair, trust and reconnect any device",
+    "Automatic type detection: audio, microphone, mouse, keyboard, controller",
+    "Preferred Bluetooth microphone for talking with the assistant, applied instantly to the main screen",
+    "Preferred audio output with its own volume and profile",
+    "Pointer speed, natural scrolling, left-handed mode and keyboard layout",
+    "Controllers and joysticks for games: player, dead zone, sensitivity, inverted axis and vibration"
   ],
-  "settings": {
-    "NUXIVA_BT_ADAPTER": "Bluetooth Adapter"
+  "settings": {},
+  "messages": {
+    "event_preparing": "Bluetooth adapter detected: preparing the system",
+    "event_new_adapter": "New Bluetooth adapter",
+    "event_connected": "Bluetooth connected: {name}",
+    "event_disconnected": "Bluetooth disconnected: {name}",
+    "notice_connected": "Bluetooth connected",
+    "event_power_on": "Bluetooth turned on by {user}",
+    "event_power_off": "Bluetooth turned off by {user}",
+    "event_action": "Bluetooth {action} {name} by {user}",
+    "event_settings": "Bluetooth settings for {name} updated by {user}"
   }
 }

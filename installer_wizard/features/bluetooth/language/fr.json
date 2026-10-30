@@ -1,13 +1,24 @@
 {
   "name": "Bluetooth",
-  "description": "Enceintes, casques, microphones et écouteurs Bluetooth : appairage, ordre de préférence sortie et microphone, profil audio et reconnexion automatique. Avec des écouteurs, vous pouvez parler à Athéna depuis une autre pièce.",
+  "description": "Tout appareil Bluetooth : enceintes, casques, microphones, souris, claviers, joysticks et manettes. Appairage guidé, réglages dédiés à chaque type d'appareil appliqués immédiatement, un microphone préféré pour parler avec Nuxiva et des manettes pour jouer en direct.",
   "capabilities": [
-    "Rechercher et associer des appareils",
-    "Ordre de préférence pour la sortie audio et le microphone",
-    "Profil de haute qualité ou casque avec microphone",
-    "Basculez automatiquement vers votre appareil préféré",
-    "Reconnexion des appareils connus",
-    "Installation automatique lorsque vous connectez un lecteur flash"
+    "Rechercher, appairer, approuver et reconnecter n'importe quel appareil",
+    "Détection automatique du type : audio, microphone, souris, clavier, manette",
+    "Microphone Bluetooth préféré pour parler à l'assistant, appliqué immédiatement à l'écran principal",
+    "Sortie audio préférée avec son propre volume et profil",
+    "Vitesse du pointeur, défilement naturel, mode gaucher et disposition du clavier",
+    "Manettes et joysticks pour les jeux : joueur, zone morte, sensibilité, axe inversé et vibration"
   ],
-  "settings": {}
+  "settings": {},
+  "messages": {
+    "event_preparing": "Adaptateur Bluetooth détecté : préparation du système",
+    "event_new_adapter": "Nouvel adaptateur Bluetooth",
+    "event_connected": "Bluetooth connecté : {name}",
+    "event_disconnected": "Bluetooth déconnecté : {name}",
+    "notice_connected": "Bluetooth connecté",
+    "event_power_on": "Bluetooth allumé par {user}",
+    "event_power_off": "Bluetooth éteint par {user}",
+    "event_action": "Bluetooth {action} {name} par {user}",
+    "event_settings": "Réglages Bluetooth de {name} mis à jour par {user}"
+  }
 }

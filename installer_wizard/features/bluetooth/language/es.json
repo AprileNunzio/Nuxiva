@@ -1,0 +1,24 @@
+{
+  "name": "Bluetooth",
+  "description": "Cualquier dispositivo Bluetooth: altavoces, auriculares, micrófonos, ratones, teclados, joysticks y mandos. Emparejamiento guiado, ajustes dedicados para cada tipo de dispositivo aplicados al instante, un micrófono preferido para hablar con Nuxiva y mandos para jugar en directo.",
+  "capabilities": [
+    "Buscar, emparejar, confiar y reconectar cualquier dispositivo",
+    "Detección automática del tipo: audio, micrófono, ratón, teclado, mando",
+    "Micrófono Bluetooth preferido para hablar con el asistente, aplicado al instante en la pantalla principal",
+    "Salida de audio preferida con volumen y perfil propios",
+    "Velocidad del puntero, desplazamiento natural, modo zurdo y distribución del teclado",
+    "Mandos y joysticks para juegos: jugador, zona muerta, sensibilidad, eje invertido y vibración"
+  ],
+  "settings": {},
+  "messages": {
+    "event_preparing": "Adaptador Bluetooth detectado: preparando el sistema",
+    "event_new_adapter": "Nuevo adaptador Bluetooth",
+    "event_connected": "Bluetooth conectado: {name}",
+    "event_disconnected": "Bluetooth desconectado: {name}",
+    "notice_connected": "Bluetooth conectado",
+    "event_power_on": "Bluetooth encendido por {user}",
+    "event_power_off": "Bluetooth apagado por {user}",
+    "event_action": "Bluetooth {action} {name} por {user}",
+    "event_settings": "Ajustes Bluetooth de {name} actualizados por {user}"
+  }
+}

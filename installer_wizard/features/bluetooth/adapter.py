@@ -5,12 +5,8 @@ from pathlib import Path
 
 MAC_RE = re.compile(r"^[0-9A-F]{2}(:[0-9A-F]{2}){5}$")
 SYS_BT = Path("/sys/class/bluetooth")
-AUDIO_SINK = {"0000110b", "0000110d"}
-AUDIO_SOURCE = {"0000110a"}
-HEADSET = {"00001108", "00001112", "0000111e", "0000111f", "00001131"}
-KINDS = {"audio-headset": "Auricolari", "audio-headphones": "Cuffie", "audio-card": "Cassa",
-         "input-microphone": "Microfono", "phone": "Telefono", "computer": "Computer", "input-keyboard": "Tastiera",
-         "input-mouse": "Mouse", "input-gaming": "Controller"}
+ANSI = re.compile(r"\x1b\[[0-9;]*[A-Za-z]|\x01|\x02")
+SCAN_MIN, SCAN_MAX = 5, 60
 
 
 class BluetoothError(RuntimeError):
@@ -20,7 +16,7 @@ class BluetoothError(RuntimeError):
 def valid_mac(mac: str) -> str:
     mac = str(mac or "").strip().upper()
     if not MAC_RE.match(mac):
-        raise ValueError("Indirizzo del dispositivo non valido")
+        raise ValueError("bluetooth_invalid_mac")
     return mac
 
 
@@ -33,91 +29,115 @@ def installed() -> bool:
 
 
 async def ctl(*args: str, timeout: float = 15) -> tuple[int, str]:
-    proc = await asyncio.create_subprocess_exec("bluetoothctl", *args, stdout=asyncio.subprocess.PIPE,
-                                                stderr=asyncio.subprocess.STDOUT)
+    try:
+        proc = await asyncio.create_subprocess_exec("bluetoothctl", *args, stdin=asyncio.subprocess.DEVNULL,
+                                                    stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.STDOUT)
+    except OSError as exc:
+        raise BluetoothError(f"bluetoothctl: {exc}") from exc
     try:
         out, _ = await asyncio.wait_for(proc.communicate(), timeout)
     except asyncio.TimeoutError:
         proc.kill()
-        return 124, "tempo scaduto"
-    return proc.returncode or 0, re.sub(r"\x1b\[[0-9;]*m", "", out.decode("utf-8", "replace"))
+        await proc.wait()
+        return 124, "timeout"
+    return proc.returncode or 0, ANSI.sub("", out.decode("utf-8", "replace"))
 
 
-def _parse_info(mac: str, text: str) -> dict:
-    field = lambda name: (re.search(rf"^\s*{name}:\s*(.+)$", text, re.M) or [None, ""])[1].strip()
+def _field(text: str, name: str) -> str:
+    match = re.search(rf"^\s*{re.escape(name)}:\s*(.+)$", text, re.M)
+    return match.group(1).strip() if match else ""
+
+
+def _int(text: str, base: int = 10) -> int | None:
+    try:
+        return int(text.split()[0], base) if text else None
+    except (ValueError, IndexError):
+        return None
+
+
+def parse_info(mac: str, text: str) -> dict:
     battery = re.search(r"Battery Percentage:.*\((\d+)\)", text)
+    rssi = re.search(r"RSSI:\s*(?:0x[0-9a-fA-F]+\s*\()?(-?\d+)", text)
+    name = _field(text, "Alias") or _field(text, "Name") or mac
     return {
         "mac": mac,
-        "name": field("Alias") or field("Name") or mac,
-        "icon": field("Icon"),
-        "paired": field("Paired") == "yes",
-        "trusted": field("Trusted") == "yes",
-        "connected": field("Connected") == "yes",
-        "battery": int(battery.group(1)) if battery else None,
+        "name": "".join(ch for ch in name if ch.isprintable())[:80] or mac,
+        "icon": _field(text, "Icon")[:40],
+        "cod": _int(_field(text, "Class"), 16),
+        "appearance": _int(_field(text, "Appearance"), 16),
+        "paired": _field(text, "Paired") == "yes",
+        "bonded": _field(text, "Bonded") == "yes",
+        "trusted": _field(text, "Trusted") == "yes",
+        "blocked": _field(text, "Blocked") == "yes",
+        "connected": _field(text, "Connected") == "yes",
+        "battery": min(100, int(battery.group(1))) if battery else None,
+        "rssi": int(rssi.group(1)) if rssi else None,
         "uuids": sorted({u[:8].lower() for u in re.findall(r"UUID:.*\(([0-9a-fA-F-]{36})\)", text)}),
     }
 
 
-def describe(dev: dict) -> dict:
-    uuids = set(dev.get("uuids") or [])
-    icon = dev.get("icon") or ""
-    output = bool(uuids & AUDIO_SINK) or icon in ("audio-headset", "audio-headphones", "audio-card")
-    mic = bool(uuids & HEADSET) or icon in ("audio-headset", "input-microphone")
-    return {**dev, "kind": KINDS.get(icon, "Dispositivo"), "audio_out": output, "audio_in": mic or bool(uuids & AUDIO_SOURCE)}
-
-
 async def controller() -> dict:
-    if not has_adapter():
-        return {"present": False, "installed": installed(), "powered": False, "discovering": False}
-    if not installed():
-        return {"present": True, "installed": False, "powered": False, "discovering": False}
+    base = {"present": has_adapter(), "installed": installed(), "powered": False, "discovering": False,
+            "pairable": False, "name": "", "address": ""}
+    if not base["present"] or not base["installed"]:
+        return base
     _, out = await ctl("show")
-    field = lambda name: (re.search(rf"^\s*{name}:\s*(.+)$", out, re.M) or [None, ""])[1].strip()
     address = re.search(r"Controller ([0-9A-F:]{17})", out)
-    return {"present": True, "installed": True, "powered": field("Powered") == "yes",
-            "discovering": field("Discovering") == "yes", "name": field("Alias") or field("Name"),
+    return {**base, "powered": _field(out, "Powered") == "yes", "discovering": _field(out, "Discovering") == "yes",
+            "pairable": _field(out, "Pairable") == "yes", "name": (_field(out, "Alias") or _field(out, "Name"))[:80],
             "address": address.group(1) if address else ""}
 
 
 async def devices() -> list[dict]:
     _, out = await ctl("devices")
-    macs = [m for m in re.findall(r"^Device ([0-9A-F:]{17})", out, re.M)]
+    macs = list(dict.fromkeys(re.findall(r"^Device ([0-9A-F:]{17})", out, re.M)))[:64]
     infos = await asyncio.gather(*(ctl("info", mac) for mac in macs))
-    return [describe(_parse_info(mac, text)) for mac, (_, text) in zip(macs, infos)]
+    return [parse_info(mac, text) for mac, (_, text) in zip(macs, infos)]
 
 
-async def _run(*args: str, timeout: float = 30, ok: str = "") -> str:
+async def _run(*args: str, timeout: float = 30, ok: tuple[str, ...] = ()) -> str:
     code, out = await ctl(*args, timeout=timeout)
-    if code != 0 or (ok and ok not in out):
-        tail = out.strip().splitlines()[-1] if out.strip() else f"codice {code}"
+    if code != 0 or (ok and not any(token in out for token in ok)):
+        tail = out.strip().splitlines()[-1] if out.strip() else f"code {code}"
         raise BluetoothError(tail[:200])
     return out
 
 
 async def power(on: bool) -> None:
-    await _run("power", "on" if on else "off")
+    await _run("power", "on" if on else "off", ok=("succeeded",))
 
 
 async def scan(seconds: int) -> None:
-    await ctl("--timeout", str(max(5, min(60, seconds))), "scan", "on", timeout=seconds + 10)
+    seconds = max(SCAN_MIN, min(SCAN_MAX, int(seconds)))
+    await ctl("--timeout", str(seconds), "scan", "on", timeout=seconds + 10)
 
 
 async def pair(mac: str) -> None:
     mac = valid_mac(mac)
-    await _run("--agent=NoInputNoOutput", "pair", mac, timeout=45)
-    await _run("trust", mac)
+    await ctl("pairable", "on")
+    code, out = await ctl("--agent=NoInputNoOutput", "pair", mac, timeout=45)
+    failed = code != 0 or "Failed to pair" in out
+    if failed and "AlreadyExists" not in out:
+        tail = out.strip().splitlines()[-1] if out.strip() else f"code {code}"
+        raise BluetoothError(tail[:200])
+    await trust(mac)
+
+
+async def trust(mac: str) -> None:
+    await _run("trust", valid_mac(mac), ok=("succeeded",))
+
+
+async def untrust(mac: str) -> None:
+    await _run("untrust", valid_mac(mac), ok=("succeeded",))
 
 
 async def connect(mac: str) -> None:
-    mac = valid_mac(mac)
-    await _run("connect", mac, timeout=30, ok="Connection successful")
+    await _run("connect", valid_mac(mac), timeout=30, ok=("Connection successful", "AlreadyConnected"))
 
 
 async def disconnect(mac: str) -> None:
-    mac = valid_mac(mac)
-    await _run("disconnect", mac)
+    await _run("disconnect", valid_mac(mac), ok=("Successful", "succeeded", "Not Connected"))
 
 
 async def forget(mac: str) -> None:
-    mac = valid_mac(mac)
-    await _run("remove", mac)
+    await _run("remove", valid_mac(mac))

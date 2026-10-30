@@ -1,13 +1,24 @@
 {
   "name": "Bluetooth",
-  "description": "Casse, cuffie, microfoni e auricolari Bluetooth: abbinamento, ordine di preferenza per uscita e microfono, profilo audio e riconnessione automatica. Con gli auricolari puoi parlare con Nuxiva da un'altra stanza.",
+  "description": "Qualsiasi dispositivo Bluetooth: casse, cuffie, microfoni, mouse, tastiere, joystick e controller. Abbinamento guidato, impostazioni dedicate per ogni tipo di dispositivo applicate subito, microfono preferito per parlare con Nuxiva e controller per giocare dal vivo.",
   "capabilities": [
-    "Ricerca e abbinamento dei dispositivi",
-    "Ordine di preferenza per uscita audio e microfono",
-    "Profilo alta qualità o auricolare con microfono",
-    "Passaggio automatico al dispositivo preferito",
-    "Riconnessione dei dispositivi noti",
-    "Installazione automatica quando colleghi una chiavetta"
+    "Ricerca, abbinamento, fiducia e riconnessione di qualsiasi dispositivo",
+    "Riconoscimento automatico del tipo: audio, microfono, mouse, tastiera, controller",
+    "Microfono Bluetooth preferito per parlare con l'assistente, applicato subito alla pagina principale",
+    "Uscita audio preferita con volume e profilo dedicati",
+    "Velocità del puntatore, scorrimento naturale, mano sinistra e layout della tastiera",
+    "Controller e joystick per i giochi: giocatore, zona morta, sensibilità, asse invertito e vibrazione"
   ],
-  "settings": {}
+  "settings": {},
+  "messages": {
+    "event_preparing": "Adattatore Bluetooth rilevato: preparo il sistema",
+    "event_new_adapter": "Nuovo adattatore Bluetooth",
+    "event_connected": "Bluetooth collegato: {name}",
+    "event_disconnected": "Bluetooth scollegato: {name}",
+    "notice_connected": "Bluetooth collegato",
+    "event_power_on": "Bluetooth acceso da {user}",
+    "event_power_off": "Bluetooth spento da {user}",
+    "event_action": "Bluetooth {action} {name} da {user}",
+    "event_settings": "Impostazioni Bluetooth di {name} aggiornate da {user}"
+  }
 }

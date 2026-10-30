@@ -52,6 +52,7 @@ class Store:
         self.voice_training: dict = {}
         self.now_playing: dict = {}
         self.audio_rev = ""
+        self.bt_input_rev = ""
         self.study: dict = {}
         self.mind: dict = {}
         self.laws: dict = {}
@@ -139,6 +140,7 @@ class Store:
             "assistant_gender": read_env().get("NUXIVA_ASSISTANT_GENDER", "female"),
             "now_playing": self.now_playing,
             "audio_rev": self.audio_rev,
+            "bt_input_rev": self.bt_input_rev,
             "study": self.study,
             "features_rev": self.features_rev,
             "desk": self.desk,

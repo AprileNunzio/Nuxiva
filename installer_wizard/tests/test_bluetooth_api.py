@@ -56,6 +56,34 @@ class BluetoothApiTest(unittest.TestCase):
         for body in ([1, 2], {"devices": {"AA:BB:CC:DD:EE:FF": "x"}}, {"output_order": ["nope"]}):
             self.assertEqual(self.client.put("/api/bluetooth/prefs", json=body, headers=HEADERS).status_code, 400)
 
+    def test_device_settings_validate_and_apply(self):
+        url = "/api/bluetooth/devices/AA:BB:CC:DD:EE:FF/settings"
+        with mock.patch.object(service, "refresh", self._refresh()):
+            self.assertEqual(self.client.put(url, json={"deadzone": "x"}, headers=HEADERS).status_code, 400)
+            self.assertEqual(self.client.put(url, json={"unknown": 1}, headers=HEADERS).status_code, 400)
+            self.assertEqual(self.client.put("/api/bluetooth/devices/nope/settings", json={}, headers=HEADERS).status_code, 400)
+            r = self.client.put(url, json={"voice_input": "preferred"}, headers=HEADERS)
+        self.assertEqual(r.status_code, 200)
+        self.assertTrue(any(s["key"] == "voice_input" for s in r.json()["schema"]))
+
+    def test_device_settings_require_csrf(self):
+        r = self.client.put("/api/bluetooth/devices/AA:BB:CC:DD:EE:FF/settings", json={"vibration": False})
+        self.assertEqual(r.status_code, 403)
+
+    def test_unknown_action_and_oversized_body(self):
+        self.assertEqual(self.client.post("/api/bluetooth/devices/AA:BB:CC:DD:EE:FF/explode", headers=HEADERS).status_code, 404)
+        big = b'{"on": true, "x": "' + b"a" * 9000 + b'"}'
+        r = self.client.post("/api/bluetooth/power", content=big, headers={**HEADERS, "Content-Type": "application/json"})
+        self.assertEqual(r.status_code, 413)
+
+    def test_gamepads_endpoint_requires_display_access(self):
+        public = TestClient(nuxiva_supervisor.public)
+        self.assertEqual(public.get("/api/bluetooth/gamepads").status_code, 401)
+        with mock.patch("access.is_local", return_value=True):
+            r = public.get("/api/bluetooth/gamepads")
+        self.assertEqual(r.status_code, 200)
+        self.assertIn("gamepads", r.json())
+
 
 if __name__ == "__main__":
     unittest.main()

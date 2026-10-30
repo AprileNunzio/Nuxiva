@@ -1,26 +1,7 @@
-export interface BluetoothController {
-  present: boolean;
-  installed: boolean;
-  powered: boolean;
-  pairable?: boolean;
-  discoverable?: boolean;
-  discovering?: boolean;
-  address?: string;
-  name?: string;
-}
+export type { BluetoothDevice, BluetoothState, Controller as BluetoothController, DeviceKind } from '../../../shared/bluetooth/model';
 
-export interface BluetoothDevice {
-  mac: string;
-  name: string;
-  connected: boolean;
-  paired: boolean;
-  trusted?: boolean;
-  icon?: string;
-  rssi?: number;
-}
-
-export interface BluetoothPayload {
-  controller: BluetoothController;
-  devices: BluetoothDevice[];
-  scanning?: boolean;
+export interface OpenAppRequest {
+  readonly appId: string;
+  readonly targetNodeId?: string;
+  readonly initialPayload?: Readonly<Record<string, string>>;
 }

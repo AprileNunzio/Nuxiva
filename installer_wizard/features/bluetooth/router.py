@@ -1,5 +1,4 @@
-
-from features.bluetooth import prefs
+from features.bluetooth import store
 from features.devices import audio
 
 
@@ -7,21 +6,27 @@ def _key(mac: str) -> str:
     return mac.replace(":", "_")
 
 
-def _role(dev: dict, settings: dict) -> str:
-    if settings["role"] != "auto":
-        return settings["role"]
-    if dev["audio_out"] and dev["audio_in"]:
-        return "both"
-    return "output" if dev["audio_out"] else "input" if dev["audio_in"] else "off"
+def _ranked(live: dict, data: dict, cap: str, use_key: str, order: list[str], auto: bool) -> list[str]:
+    ranked = []
+    for mac, dev in live.items():
+        settings = store.settings(data, mac)
+        use = settings[use_key]
+        if cap not in dev["capabilities"] or use == "never" or (use == "auto" and not auto):
+            continue
+        if cap == "audio_in" and settings["profile"] == "quality" and "audio_out" in dev["capabilities"]:
+            continue
+        position = order.index(mac) if mac in order else len(order)
+        ranked.append((0 if use == "preferred" else 1, position, mac))
+    return [mac for *_, mac in sorted(ranked)]
 
 
 def choose(devs: list[dict], data: dict) -> dict:
     live = {d["mac"]: d for d in devs if d["connected"]}
-    roles = {mac: _role(d, prefs.device(data, mac)) for mac, d in live.items()}
-    output = next((m for m in data["output_order"] if m in live and roles[m] in ("output", "both")), None)
-    inputs = [m for m in data["input_order"] if m in live and roles[m] in ("input", "both")]
-    microphone = next((m for m in inputs if prefs.device(data, m)["profile"] != "quality"), None)
-    return {"output": output, "input": microphone, "roles": roles}
+    auto = data["auto_switch"]
+    outputs = _ranked(live, data, "audio_out", "output_use", data["output_order"], auto)
+    inputs = _ranked(live, data, "audio_in", "voice_input", data["input_order"], auto)
+    return {"output": outputs[0] if outputs else None, "input": inputs[0] if inputs else None,
+            "audio": [m for m, d in live.items() if {"audio_out", "audio_in"} & set(d["capabilities"])]}
 
 
 def _pick(profiles: dict, wanted: str) -> str | None:
@@ -34,24 +39,21 @@ def _pick(profiles: dict, wanted: str) -> str | None:
 
 async def _profiles(choice: dict, data: dict) -> None:
     cards = {c["name"]: c for c in await audio.pactl_json("cards") if c.get("name", "").startswith("bluez_card.")}
-    for mac, role in choice["roles"].items():
+    for mac in choice["audio"]:
         card = cards.get(f"bluez_card.{_key(mac)}")
-        if not card or role == "off":
+        settings = store.settings(data, mac)
+        if not card or (settings["output_use"] == "never" and settings["voice_input"] == "never"):
             continue
-        profile = prefs.device(data, mac)["profile"]
+        profile = settings["profile"]
         wants_mic = profile == "headset" or (profile == "auto" and mac == choice["input"])
         target = _pick(card.get("profiles") or {}, "headset" if wants_mic else "quality")
         if target and target != card.get("active_profile"):
             await audio.pactl("set-card-profile", card["name"], target)
 
 
-async def _node(kind: str, mac: str) -> str | None:
+async def _nodes(kind: str) -> list[str]:
     items = await audio.pactl_json("sinks" if kind == "sink" else "sources")
-    for item in items:
-        name = item.get("name", "")
-        if _key(mac) in name and not name.endswith(".monitor"):
-            return name
-    return None
+    return [i.get("name", "") for i in items if i.get("name") and not i.get("name", "").endswith(".monitor")]
 
 
 class Router:
@@ -63,31 +65,41 @@ class Router:
         _, out = await audio.pactl(f"get-default-{kind}")
         return out.strip()
 
-    async def _switch(self, kind: str, mac: str | None) -> bool:
+    async def _level(self, kind: str, node: str, settings: dict) -> None:
+        value = settings["volume"] if kind == "sink" else settings["mic_gain"]
+        await audio.pactl(f"set-{kind}-volume", node, f"{int(value)}%")
+
+    async def _switch(self, kind: str, mac: str | None, data: dict) -> bool:
         current = await self._default(kind)
+        nodes = await _nodes(kind)
         if mac:
-            node = await _node(kind, mac)
+            node = next((n for n in nodes if _key(mac) in n), None)
             if not node or node == current:
                 return False
-            if not current.startswith("bluez_"):
+            if current and not current.startswith("bluez_"):
                 self.fallback[kind] = current
             await audio.pactl(f"set-default-{kind}", node)
+            await self._level(kind, node, store.settings(data, mac))
             self.active[kind] = node
             return True
-        if current.startswith("bluez_") and self.fallback[kind]:
-            await audio.pactl(f"set-default-{kind}", self.fallback[kind])
+        if not current.startswith("bluez_") or current != self.active[kind]:
             self.active[kind] = ""
-            return True
-        return False
+            return False
+        target = self.fallback[kind] if self.fallback[kind] in nodes else next(
+            (n for n in nodes if not n.startswith("bluez_")), "")
+        if not target:
+            return False
+        await audio.pactl(f"set-default-{kind}", target)
+        self.active[kind] = ""
+        return True
 
     async def apply(self, devs: list[dict]) -> dict:
-        data = prefs.load()
+        data = store.load()
         choice = choose(devs, data)
         await _profiles(choice, data)
-        changed = False
-        if data["auto_switch"]:
-            changed = await self._switch("sink", choice["output"]) | await self._switch("source", choice["input"])
-        return {**choice, "changed": changed}
+        output = await self._switch("sink", choice["output"], data)
+        source = await self._switch("source", choice["input"], data)
+        return {"output": choice["output"], "input": choice["input"], "changed": output or source}
 
 
 router = Router()

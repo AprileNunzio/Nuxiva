@@ -210,8 +210,8 @@ export function Taskbar({
           {onBluetooth && bluetoothAvailable && (
             <button
               className="os-task-tray-button os-task-tray-bluetooth"
-              aria-label={t('os_bluetooth') || 'Bluetooth'}
-              title={bluetoothState.isPowered ? 'Bluetooth' : 'Bluetooth off'}
+              aria-label={t('os_bluetooth')}
+              title={t(bluetoothState.isPowered ? 'os_bluetooth_on' : 'os_bluetooth_off')}
               aria-expanded={bluetooth}
               onClick={() => {
                 setGroup(null);

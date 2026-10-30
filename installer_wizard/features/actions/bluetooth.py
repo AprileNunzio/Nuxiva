@@ -1,10 +1,12 @@
 import re
 
-from features.bluetooth import adapter, prefs
+from features.bluetooth import adapter, store
 from features.bluetooth.service import service
 
-KIND_WORDS = {"cuffie": ("Cuffie", "Auricolari"), "auricolari": ("Auricolari", "Cuffie"), "cassa": ("Cassa",),
-              "casse": ("Cassa",), "speaker": ("Cassa",), "microfono": ("Microfono", "Auricolari")}
+KIND_WORDS = {"cuffie": ("headphones", "headset"), "auricolari": ("headset", "headphones"), "cassa": ("speaker",),
+              "casse": ("speaker",), "speaker": ("speaker",), "microfono": ("microphone", "headset"),
+              "mouse": ("mouse",), "tastiera": ("keyboard",), "joystick": ("joystick", "gamepad"),
+              "controller": ("gamepad", "joystick"), "gamepad": ("gamepad", "joystick")}
 _OFF = re.compile(r"\b(scollega|disconnetti|stacca|spegni)\w*\b", re.I)
 
 
@@ -14,10 +16,11 @@ def _pick(devs: list[dict], text: str) -> dict | None:
     if named:
         return named[0]
     kinds = next((k for word, k in KIND_WORDS.items() if word in low), None)
-    audio = [d for d in devs if d["paired"] and (d["audio_out"] or d["audio_in"])]
+    paired = [d for d in devs if d["paired"]]
+    audio = [d for d in paired if d["audio_out"] or d["audio_in"]]
     if kinds:
-        audio = [d for d in audio if d["kind"] in kinds] or audio
-    order = prefs.load()["output_order"]
+        audio = [d for d in paired if d["kind"] in kinds] or audio
+    order = store.load()["output_order"]
     audio.sort(key=lambda d: order.index(d["mac"]) if d["mac"] in order else 99)
     return audio[0] if audio else None
 

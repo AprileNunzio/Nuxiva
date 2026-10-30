@@ -201,7 +201,7 @@ export function WebOSDesktop({ user, onSignOut }: { user: string; onSignOut: () 
       {launcher && <StartMenu user={user} windows={windows} onOpen={open} onClose={closeLauncher} onAccount={() => { setLauncher(false); setUserMenu(true); }} onSettings={() => open('features_hub')} onNotifications={() => { setNotifications(true); setLauncher(false); }} notificationCount={notificationCount} />}
       {calendar && <Calendar now={clock} onClose={() => setCalendar(false)} />}
       {networkOpen && <NetworkFlyout onClose={() => setNetworkOpen(false)} onOpenApp={open} lang={lang} />}
-      {bluetoothOpen && <BluetoothFlyout onClose={() => setBluetoothOpen(false)} onOpenApp={open} lang={lang} />}
+      {bluetoothOpen && <BluetoothFlyout onClose={() => setBluetoothOpen(false)} onOpenApp={open} />}
       <TaskTray />
       <NotificationCenter visible={notifications} onClose={() => setNotifications(false)} onCountChange={setNotificationCount} />
       <LiveCaptionsOverlay />
