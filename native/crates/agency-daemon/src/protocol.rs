@@ -85,6 +85,15 @@ pub enum Request {
         seconds: u64,
     },
     Dispatch {},
+    CodeFiles {
+        project: String,
+    },
+    CodeSearch {
+        project: String,
+        query: String,
+        #[serde(default)]
+        limit: Option<usize>,
+    },
 }
 
 #[derive(Debug, Serialize)]

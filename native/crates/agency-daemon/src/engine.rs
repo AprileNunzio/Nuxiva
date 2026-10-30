@@ -16,6 +16,8 @@ use crate::workspace;
 
 const MAX_PROJECTS: usize = 256;
 const SETTINGS_FILE: &str = "settings.json";
+const MAX_QUERY: usize = 200;
+const MAX_HITS: usize = 200;
 
 #[derive(Debug)]
 pub struct Engine {
@@ -103,6 +105,11 @@ impl Engine {
 
     fn state_mut(&mut self, id: &ProjectId) -> Result<&mut ProjectState, AgencyError> {
         self.projects.get_mut(id).ok_or(AgencyError::NotFound)
+    }
+
+    fn project_root(&self, id: &ProjectId) -> Result<std::path::PathBuf, AgencyError> {
+        let state = self.projects.get(id).ok_or(AgencyError::NotFound)?;
+        workspace::locate(&self.config.workspace_root, state.project.workspace())
     }
 
     fn capacity_value(&self) -> Value {
@@ -198,6 +205,26 @@ impl Engine {
                 self.update_task(&id, &task, action, feedback.as_deref(), tokens, seconds)
             }
             Request::Dispatch {} => self.dispatch(),
+            Request::CodeFiles { project } => {
+                let root = self.project_root(&project_id(&project)?)?;
+                let files = agency_codeindex::scan(&root, agency_codeindex::Limits::default())
+                    .map_err(|e| AgencyError::BadRequest(e.to_string()))?;
+                Ok(json!({ "files": files }))
+            }
+            Request::CodeSearch {
+                project,
+                query,
+                limit,
+            } => {
+                if query.chars().count() > MAX_QUERY {
+                    return Err(AgencyError::BadRequest("query too long".to_owned()));
+                }
+                let root = self.project_root(&project_id(&project)?)?;
+                let limit = limit.unwrap_or(40).clamp(1, MAX_HITS);
+                let hits = agency_codeindex::search(&root, &query, limit)
+                    .map_err(|e| AgencyError::BadRequest(e.to_string()))?;
+                Ok(json!({ "hits": hits }))
+            }
         }
     }
 

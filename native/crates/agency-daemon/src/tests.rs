@@ -222,6 +222,37 @@ fn tampered_ledger_refuses_to_start() -> Result<(), AgencyError> {
     Ok(())
 }
 
+#[test]
+fn code_search_stays_inside_the_project() -> Result<(), AgencyError> {
+    let sandbox = Sandbox::new("code")?;
+    let mut engine = Engine::open(sandbox.config(), HOST)?;
+    create(&mut engine)?;
+    fs::write(
+        sandbox.root.join("share/negozio/catalog.py"),
+        "def products():\n    pass\n",
+    )?;
+    fs::write(sandbox.root.join("share/secret.txt"), "products")?;
+    let files = call(&mut engine, json!({"op": "code_files", "project": "shop"}))?;
+    assert_eq!(at(&files, "/files/0/path"), "catalog.py");
+    assert_eq!(at(&files, "/files").as_array().map(Vec::len), Some(1));
+    let hits = call(
+        &mut engine,
+        json!({"op": "code_search", "project": "shop", "query": "products"}),
+    )?;
+    assert_eq!(at(&hits, "/hits/0/line"), 1);
+    assert_eq!(at(&hits, "/hits").as_array().map(Vec::len), Some(1));
+    let long = "x".repeat(300);
+    assert!(
+        call(
+            &mut engine,
+            json!({"op": "code_search", "project": "shop", "query": long})
+        )
+        .is_err()
+    );
+    assert!(call(&mut engine, json!({"op": "code_files", "project": "ghost"})).is_err());
+    Ok(())
+}
+
 #[tokio::test]
 async fn socket_round_trip() -> Result<(), AgencyError> {
     let sandbox = Sandbox::new("sock")?;

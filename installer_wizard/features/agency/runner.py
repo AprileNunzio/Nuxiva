@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import time
 
 from features.agency import critic, worker, workspace
 from features.agency.client import AgencyRejected, AgencyUnavailable, client
@@ -68,9 +69,11 @@ class Runner:
         data = await client.call("project_get", id=project_id)
         raw = next(t for t in data["tasks"] if t["id"] == task_id)
         task = worker.task_view(raw)
-        body, tokens, seconds = await worker.execute(context, task)
+        started = time.monotonic()
+        _, proof, tokens = await worker.execute(context, project_id, task)
+        seconds = max(1, int(time.monotonic() - started))
         await client.call("task_update", project=project_id, task=task_id, action="submit", tokens=tokens, seconds=seconds)
-        verdict = await critic.review(task, body, context["language_name"])
+        verdict = await critic.review(task, proof, context["language_name"])
         if verdict.approved:
             await client.call("task_update", project=project_id, task=task_id, action="approve", tokens=verdict.tokens)
             return

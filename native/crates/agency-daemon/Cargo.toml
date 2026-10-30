@@ -22,6 +22,7 @@ agency-domain = { path = "../agency-domain" }
 agency-planner = { path = "../agency-planner" }
 agency-ledger = { path = "../agency-ledger" }
 agency-scheduler = { path = "../agency-scheduler" }
+agency-codeindex = { path = "../agency-codeindex" }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 thiserror = "2"

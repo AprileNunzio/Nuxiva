@@ -10,7 +10,7 @@ from fastapi.testclient import TestClient
 import nuxiva_supervisor
 from features.agency import blueprint as bp
 from features.agency import client as client_module
-from features.agency import critic, runner, service, workspace
+from features.agency import agent, critic, runner, service, tools, workspace
 from features.agency.memory import ProjectMemory
 from features.shares import archive
 
@@ -48,7 +48,7 @@ class FakeAgency:
         return getattr(self, op)(**fields)
 
     def project_create(self, id, title, goal, workspace, budget):
-        self.projects[id] = {"project": {"id": id, "title": title, "status": "planning"}, "tasks": []}
+        self.projects[id] = {"project": {"id": id, "title": title, "status": "planning"}, "tasks": [], "folder": workspace}
         return self.projects[id]
 
     def project_plan(self, id, tasks):
@@ -75,6 +75,19 @@ class FakeAgency:
                     task["status"] = "running"
                     started.append({"project": project_id, "task": task["id"]})
         return {"started": started, "capacity": 4}
+
+    def code_files(self, project):
+        root = workspace.folder(self.projects[project]["folder"])
+        return {"files": [{"path": str(p.relative_to(root)), "bytes": p.stat().st_size, "language": "python"}
+                          for p in sorted(root.rglob("*.py"))]}
+
+    def code_search(self, project, query, limit):
+        if project not in self.projects:
+            raise client_module.AgencyRejected("not_found", "unknown project")
+        root = workspace.folder(self.projects[project]["folder"])
+        return {"hits": [{"path": str(p.relative_to(root)), "line": n, "text": line, "score": 1}
+                         for p in sorted(root.rglob("*.py"))
+                         for n, line in enumerate(p.read_text().splitlines(), 1) if query in line][:limit]}
 
     def task_update(self, project, task, action, feedback=None, tokens=0, seconds=0):
         target = next(t for t in self.projects[project]["tasks"] if t["id"] == task)
@@ -103,6 +116,7 @@ class AgencyCase(unittest.TestCase):
             mock.patch.object(archive, "ROOT", self.tmp / "condivisa"),
             mock.patch.object(service, "client", self.fake),
             mock.patch.object(runner, "client", self.fake),
+            mock.patch.object(tools, "client", self.fake),
             mock.patch.object(service, "memory", ProjectMemory(self.tmp / "state")),
             mock.patch.object(runner, "memory", ProjectMemory(self.tmp / "state")),
             mock.patch.object(service.store, "event"),
@@ -222,7 +236,7 @@ class RunnerTest(AgencyCase):
 
         def work(prompt, kwargs):
             order.append(prompt.split("Task: ")[1].split("\n")[0])
-            return "## Consegna\nlavoro completo"
+            return {"final": "## Consegna\nlavoro completo"}
         approve = {"verdict": "approve"}
         self.drive([work, approve] * 5)
         self.assertEqual([t["status"] for t in project["tasks"]], ["done"] * 5)
@@ -234,7 +248,7 @@ class RunnerTest(AgencyCase):
     def test_rework_uses_fallback_feedback_when_review_is_unclear(self):
         self.start_project()
         project = next(iter(self.fake.projects.values()))
-        self.drive(["bozza", {}], rounds=1)
+        self.drive([{"final": "bozza"}, {}], rounds=1)
         design = project["tasks"][0]
         self.assertEqual(design["status"], "pending")
         self.assertIn("criteri", design["feedback"])
@@ -254,6 +268,92 @@ class RunnerTest(AgencyCase):
         project["tasks"][0]["status"] = "running"
         asyncio.run(runner.Runner().reconcile())
         self.assertEqual(project["tasks"][0]["status"], "pending")
+
+
+class ToolsTest(AgencyCase):
+    def setUp(self):
+        super().setUp()
+        self.fake.projects["shop"] = {"project": {"id": "shop"}, "tasks": [], "folder": "shop"}
+        self.ctx = tools.Context("shop", "shop")
+
+    def use(self, name, args):
+        return asyncio.run(tools.call(self.ctx, name, args))
+
+    def test_write_read_list_and_search(self):
+        self.assertIn("written app/main.py", self.use("write_file", {"path": "app/main.py", "content": "def carrello():\n    pass\n"}))
+        self.assertEqual(self.ctx.written, ["app/main.py"])
+        self.assertIn("def carrello", self.use("read_file", {"path": "app/main.py"}))
+        self.assertIn("app/main.py", self.use("list_files", {}))
+        self.assertIn("app/main.py:1:", self.use("search_code", {"query": "carrello"}))
+        self.assertEqual(self.use("search_code", {"query": "assente"}), "(no match)")
+
+    def test_bad_calls_return_errors_instead_of_raising(self):
+        self.assertTrue(self.use("rm_rf", {}).startswith("error: unknown tool"))
+        self.assertTrue(self.use(None, {}).startswith("error: unknown tool"))
+        self.assertEqual(self.use("read_file", "x"), "error: args must be an object")
+        self.assertTrue(self.use("read_file", {"path": 5}).startswith("error: argument 'path'"))
+        self.assertTrue(self.use("write_file", {"path": "../fuori.py", "content": "x"}).startswith("error:"))
+        self.assertTrue(self.use("write_file", {"path": ".git/config", "content": "x"}).startswith("error:"))
+        self.assertTrue(self.use("search_code", {"query": "x" * 500}).startswith("error:"))
+        self.assertEqual(self.ctx.written, [])
+
+    def test_engine_refusal_becomes_an_observation(self):
+        self.ctx = tools.Context("other", "shop")
+        self.assertEqual(self.use("search_code", {"query": "x"}), "error: engine refused (not_found)")
+
+    def test_checks_are_recorded_and_sandbox_errors_reported(self):
+        async def ok(name, folder, entry=""):
+            return 0, "2 passed"
+
+        async def refused(name, folder, entry=""):
+            raise tools.DevError("unknown check")
+        with mock.patch.object(tools.checks, "run", ok):
+            self.assertIn("exit code 0", self.use("run_check", {"check": "python_tests"}))
+        with mock.patch.object(tools.checks, "run", refused):
+            self.assertEqual(self.use("run_check", {"check": "nope"}), "check not run: unknown check")
+        self.assertEqual([c["exit_code"] for c in self.ctx.checks], [0])
+
+    def test_manifest_lists_every_tool(self):
+        self.assertEqual({t["name"] for t in tools.manifest()}, set(tools.TOOLS))
+
+
+class AgentTest(AgencyCase):
+    BRIEF = {"goal": "negozio", "architecture": "FastAPI", "mission": "API", "inputs": "", "language_name": "italiano"}
+    TASK = {"title": "API", "role": "backend", "acceptance": ["file creato"]}
+
+    def setUp(self):
+        super().setUp()
+        self.fake.projects["shop"] = {"project": {"id": "shop"}, "tasks": [], "folder": "shop"}
+
+    def run_agent(self, *replies):
+        ctx = tools.Context("shop", "shop")
+        with mock.patch("features.brain.llm.generate", scripted(*replies)):
+            return asyncio.run(agent.act(self.BRIEF, self.TASK, ctx)), ctx
+
+    def test_uses_tools_then_finishes_with_history_in_prompt(self):
+        prompts_seen = []
+
+        def final(prompt, kwargs):
+            prompts_seen.append(prompt)
+            return {"final": "fatto"}
+        outcome, ctx = self.run_agent(
+            {"thought": "creo", "tool": "write_file", "args": {"path": "api.py", "content": "x = 1\n"}}, final)
+        self.assertEqual((outcome.summary, outcome.steps), ("fatto", 2))
+        self.assertEqual(ctx.written, ["api.py"])
+        self.assertIn("written api.py", prompts_seen[0])
+        self.assertGreater(outcome.tokens, 0)
+
+    def test_garbage_replies_are_observed_and_steps_are_bounded(self):
+        outcome, ctx = self.run_agent(*(["testo libero"] * agent.MAX_STEPS))
+        self.assertEqual((outcome.summary, outcome.steps), ("", agent.MAX_STEPS))
+        self.assertEqual(ctx.written, [])
+
+    def test_history_keeps_the_latest_entries_within_budget(self):
+        entries = [{"step": i, "observation": "y" * 1000} for i in range(40)]
+        text = agent._history(entries)
+        self.assertLessEqual(len(text), agent.HISTORY_CHARS)
+        self.assertIn('"step": 39', text)
+        self.assertNotIn('"step": 0,', text)
 
 
 class ClientTest(unittest.TestCase):

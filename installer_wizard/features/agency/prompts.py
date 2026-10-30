@@ -19,10 +19,13 @@ REVIEWER = (
     "when every acceptance criterion is met; otherwise ask for precise rework. Answer only with JSON."
 )
 
-WORKER = (
-    "You are a senior specialist of the agency executing one task of a larger project. Deliver the complete work "
-    "product, not a description of it: real content, real code or real specifications, ready to use. Respect the "
-    "architecture and the acceptance criteria. Follow modern security practices."
+AGENT = (
+    "You are a senior specialist agent of the agency working inside the project folder with tools. Work like a "
+    "careful engineer: look at what exists, write complete files (never placeholders), run the available checks when "
+    "they apply, fix what fails, and stop when the acceptance criteria are met. Each reply is exactly one JSON object: "
+    "either {\"thought\": ..., \"tool\": name, \"args\": {...}} to use a tool, or {\"thought\": ..., \"final\": "
+    "\"Markdown summary of what you delivered, files and check results\"} when done. Never claim a check passed unless "
+    "you ran it."
 )
 
 PLAN_SHAPE = {
@@ -60,18 +63,21 @@ def critique(goal: str, blueprint: dict, language_name: str) -> str:
             f"Return JSON shaped like: {json.dumps(CRITIQUE_SHAPE, ensure_ascii=False)}")
 
 
-def work(goal: str, architecture: str, mission: str, task: dict, inputs: str, language_name: str) -> str:
-    criteria = "\n".join(f"- {c}" for c in task.get("acceptance", []))
-    feedback = task.get("feedback") or ""
-    return (f"Project goal:\n{goal}\n\nArchitecture:\n{architecture[:3000]}\n\nYour role: {task.get('role')} - {mission}\n"
-            f"Task: {task.get('title')}\nAcceptance criteria:\n{criteria or '- complete and correct'}\n"
-            + (f"Rework requested by the Critic:\n{feedback}\n" if feedback else "")
-            + (f"Results of the tasks you depend on:\n{inputs[:6000]}\n" if inputs else "")
-            + f"\n{language_rule(language_name)} Deliver the work product in Markdown.")
-
-
 def review(task: dict, delivered: str, language_name: str) -> str:
     criteria = "\n".join(f"- {c}" for c in task.get("acceptance", []))
     return (f"Task: {task.get('title')}\nAcceptance criteria:\n{criteria or '- complete and correct'}\n\n"
             f"Delivered evidence:\n{delivered[:9000]}\n\n{language_rule(language_name)}\n"
             f"Return JSON shaped like: {json.dumps(REVIEW_SHAPE, ensure_ascii=False)}")
+
+
+def act(brief: dict, task: dict, manifest: list[dict], history: str, step: int, max_steps: int) -> str:
+    criteria = "\n".join(f"- {c}" for c in task.get("acceptance", []))
+    feedback = task.get("feedback") or ""
+    return (f"Project goal:\n{brief['goal']}\n\nArchitecture:\n{brief['architecture'][:3000]}\n\n"
+            f"Your role: {task.get('role')} - {brief['mission']}\nTask: {task.get('title')}\n"
+            f"Acceptance criteria:\n{criteria or '- complete and correct'}\n"
+            + (f"Rework requested by the Critic:\n{feedback}\n" if feedback else "")
+            + (f"Results of the tasks you depend on:\n{brief['inputs'][:5000]}\n" if brief.get("inputs") else "")
+            + f"\nTools:\n{json.dumps(manifest, ensure_ascii=False)}\n"
+            + (f"\nWhat you did so far:\n{history}\n" if history else "")
+            + f"\nStep {step} of {max_steps}. {language_rule(brief['language_name'])}")

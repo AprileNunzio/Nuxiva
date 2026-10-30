@@ -1,11 +1,9 @@
-import time
+from features.agency import agent, tools, workspace
+from features.agency.text import clean
 
-from features.agency import prompts, workspace
-from features.agency.text import estimate_tokens
-from features.brain import llm
-
-WORK_TOKENS = 3500
 INPUT_CHARS = 2500
+EVIDENCE_FILES = 4
+EVIDENCE_CHARS = 1500
 
 
 def task_view(raw: dict) -> dict:
@@ -28,14 +26,31 @@ def inputs(context: dict, task: dict) -> str:
     return "\n\n".join(parts)
 
 
-async def execute(context: dict, task: dict) -> tuple[str, int, int]:
-    started = time.monotonic()
+def report(outcome: agent.Outcome, ctx: tools.Context) -> str:
+    lines = [outcome.summary or "(no summary)", ""]
+    lines += [f"- `{path}`" for path in ctx.written]
+    for check in ctx.checks:
+        lines += ["", f"`{check['check']} {check['entry']}`".strip() + f" → exit {check['exit_code']}",
+                  "```", check["output"][-800:], "```"]
+    return "\n".join(lines).strip() + "\n"
+
+
+def evidence(context: dict, body: str, ctx: tools.Context) -> str:
+    parts = [body]
+    for path in ctx.written[:EVIDENCE_FILES]:
+        excerpt = workspace.read(context["folder"], path, EVIDENCE_CHARS)
+        parts.append(f"--- {path} ---\n{excerpt}")
+    return "\n".join(parts)
+
+
+async def execute(context: dict, project_id: str, task: dict) -> tuple[str, str, int]:
     role = next((r for r in context["blueprint"]["roles"] if r["id"] == task["role"]), {})
-    prompt = prompts.work(context["goal"], context["blueprint"].get("architecture", ""), role.get("mission", ""),
-                          task, inputs(context, task), context["language_name"])
-    text = await llm.generate(prompt, max_tokens=WORK_TOKENS, temperature=0.2, kind="deep",
-                              system=prompts.WORKER, component="agency_worker")
-    body = str(text or "").strip()
+    brief = {"goal": context["goal"], "architecture": context["blueprint"].get("architecture", ""),
+             "mission": clean(role.get("mission"), 400), "inputs": inputs(context, task),
+             "language_name": context["language_name"]}
+    ctx = tools.Context(project_id, context["folder"])
+    outcome = await agent.act(brief, task, ctx)
+    body = report(outcome, ctx) if (outcome.summary or ctx.written) else ""
     if body:
-        workspace.write(context["folder"], deliverable_path(context, task["id"]), body + "\n")
-    return body, estimate_tokens(prompt, body), max(1, int(time.monotonic() - started))
+        workspace.write(context["folder"], deliverable_path(context, task["id"]), body)
+    return body, evidence(context, body, ctx) if body else "", outcome.tokens
