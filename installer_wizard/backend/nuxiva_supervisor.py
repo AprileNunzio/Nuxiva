@@ -137,6 +137,7 @@ from features.backup import api as backup_api
 from features.backup import service as backup_service
 from features.projects import api as projects_api
 from features.projects import service as projects_service
+from features.agency import runner as agency_runner
 from features.autonomous_worker.presentation import api as autonomous_api
 from features.autonomous_worker.application.execution_loop import execution_loop as autonomous_execution_loop
 from features.camsense import service as camsense_service
@@ -423,6 +424,7 @@ BACKGROUND = (
     ("stanze", places_service.run, 0.0),
     ("sport", sports_watcher.run, 0.0),
     ("progetti", projects_service.run, 0.0),
+    ("agenzia", agency_runner.run, 0.0),
     ("missioni-autonome", autonomous_execution_loop.run, 0.0),
     ("sensori-telecamera", camsense_service.run, 0.0),
     ("backup", backup_service.run, 0.0),

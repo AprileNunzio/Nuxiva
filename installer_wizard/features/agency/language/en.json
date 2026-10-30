@@ -1,0 +1,38 @@
+{
+  "name": "Project agency",
+  "description": "Nuxiva works on projects like an agency: the Director designs the solution and the team, the Critic questions itself and checks every result, agents run in parallel on the nuxiva-agency Rust engine.",
+  "capabilities": [
+    "Task graph plan with roles, dependencies and acceptance criteria",
+    "Critic questions and answers saved and browsable",
+    "Every task reviewed only on the evidence delivered",
+    "Parallel agents sized to the hardware and the model chosen in Brain",
+    "Project files in the «09 Progetti» shared folder"
+  ],
+  "language_name": "English",
+  "files": {
+    "plan": "Project plan",
+    "goal": "Goal",
+    "architecture": "Architecture",
+    "roles": "Team",
+    "tasks": "Tasks",
+    "depends": "depends on",
+    "acceptance": "Acceptance criteria",
+    "reasoning": "Critic reasoning",
+    "question": "Question",
+    "answer": "Answer",
+    "issues": "Issues found",
+    "deliverable": "Deliverable",
+    "plan_file": "PLAN.md",
+    "reasoning_file": "REASONING.md",
+    "work_dir": "Work",
+    "review_unclear": "The review was inconclusive: redo the task meeting every acceptance criterion."
+  },
+  "errors": {
+    "unavailable": "The project engine is not reachable",
+    "invalid": "Invalid request",
+    "not_found": "Unknown project",
+    "brain": "No model available for planning",
+    "empty_plan": "The Director did not produce a usable plan",
+    "goal": "Describe the project in at least 8 characters"
+  }
+}

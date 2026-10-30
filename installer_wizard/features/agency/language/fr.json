@@ -1,0 +1,38 @@
+{
+  "name": "Agence de projets",
+  "description": "Nuxiva travaille sur les projets comme une agence : le Directeur conçoit la solution et l'équipe, le Critique s'interroge et vérifie chaque résultat, les agents travaillent en parallèle sur le moteur Rust nuxiva-agency.",
+  "capabilities": [
+    "Plan en graphe de tâches avec rôles, dépendances et critères d'acceptation",
+    "Questions et réponses du Critique enregistrées et consultables",
+    "Chaque tâche revue uniquement sur les preuves livrées",
+    "Agents en parallèle selon le matériel et le modèle choisi dans Cerveau",
+    "Fichiers du projet dans le dossier partagé « 09 Progetti »"
+  ],
+  "language_name": "français",
+  "files": {
+    "plan": "Plan du projet",
+    "goal": "Objectif",
+    "architecture": "Architecture",
+    "roles": "Équipe",
+    "tasks": "Tâches",
+    "depends": "dépend de",
+    "acceptance": "Critères d'acceptation",
+    "reasoning": "Raisonnement du Critique",
+    "question": "Question",
+    "answer": "Réponse",
+    "issues": "Problèmes trouvés",
+    "deliverable": "Livrable",
+    "plan_file": "PLAN.md",
+    "reasoning_file": "RAISONNEMENT.md",
+    "work_dir": "Travaux",
+    "review_unclear": "La revue n'a pas été concluante : refais la tâche en respectant tous les critères d'acceptation."
+  },
+  "errors": {
+    "unavailable": "Le moteur de projets n'est pas joignable",
+    "invalid": "Requête non valide",
+    "not_found": "Projet inconnu",
+    "brain": "Aucun modèle disponible pour planifier",
+    "empty_plan": "Le Directeur n'a pas produit de plan utilisable",
+    "goal": "Décrivez le projet en au moins 8 caractères"
+  }
+}

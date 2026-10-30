@@ -1,0 +1,30 @@
+{
+  "id": "agency",
+  "name": "Agenzia di progetti",
+  "icon": "🛰",
+  "category": "assistente",
+  "order": 17,
+  "pinned": false,
+  "panel": "",
+  "api": "api.py",
+  "toggle": {
+    "env": "NUXIVA_AGENCY",
+    "apply": []
+  },
+  "description": "Nuxiva lavora ai progetti come un'agenzia: il Direttore pensa la soluzione e la squadra, il Critico si fa domande e verifica ogni risultato, gli agenti eseguono in parallelo sul motore Rust nuxiva-agency.",
+  "capabilities": [
+    "Piano a grafo di compiti con ruoli, dipendenze e criteri di accettazione",
+    "Domande e risposte del Critico salvate e consultabili",
+    "Revisione di ogni compito solo sulle prove consegnate",
+    "Agenti in parallelo secondo l'hardware e il modello scelto in Cervello",
+    "File del progetto nella cartella condivisa «09 Progetti»"
+  ],
+  "settings": [],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "hlnLMra14Qpa",
+    "url": "https://img.icons8.com/?size=240&id=hlnLMra14Qpa&format=png"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "name": "Agenzia di progetti",
+  "description": "Nuxiva lavora ai progetti come un'agenzia: il Direttore pensa la soluzione e la squadra, il Critico si fa domande e verifica ogni risultato, gli agenti eseguono in parallelo sul motore Rust nuxiva-agency.",
+  "capabilities": [
+    "Piano a grafo di compiti con ruoli, dipendenze e criteri di accettazione",
+    "Domande e risposte del Critico salvate e consultabili",
+    "Revisione di ogni compito solo sulle prove consegnate",
+    "Agenti in parallelo secondo l'hardware e il modello scelto in Cervello",
+    "File del progetto nella cartella condivisa «09 Progetti»"
+  ],
+  "language_name": "italiano",
+  "files": {
+    "plan": "Piano del progetto",
+    "goal": "Obiettivo",
+    "architecture": "Architettura",
+    "roles": "Squadra",
+    "tasks": "Compiti",
+    "depends": "dipende da",
+    "acceptance": "Criteri di accettazione",
+    "reasoning": "Ragionamento del Critico",
+    "question": "Domanda",
+    "answer": "Risposta",
+    "issues": "Problemi trovati",
+    "deliverable": "Consegna",
+    "plan_file": "PIANO.md",
+    "reasoning_file": "RAGIONAMENTO.md",
+    "work_dir": "Lavori",
+    "review_unclear": "La revisione non è stata conclusiva: rifai il compito rispettando tutti i criteri di accettazione."
+  },
+  "errors": {
+    "unavailable": "Il motore dei progetti non è raggiungibile",
+    "invalid": "Richiesta non valida",
+    "not_found": "Progetto sconosciuto",
+    "brain": "Nessun modello disponibile per pianificare",
+    "empty_plan": "Il Direttore non ha prodotto un piano utilizzabile",
+    "goal": "Descrivi il progetto in almeno 8 caratteri"
+  }
+}
