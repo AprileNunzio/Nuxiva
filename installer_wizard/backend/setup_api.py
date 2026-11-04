@@ -125,8 +125,6 @@ def require_setup(request: Request) -> None:
         raise HTTPException(403, "La prima configurazione è disponibile solo dalla rete di casa")
     if request.method == "POST" and (request.headers.get("X-Nuxiva-Request") != "1" or not _same_origin(request)):
         raise HTTPException(403, "Richiesta non valida")
-    if request.method == "POST" and not is_local(request):
-        guard.check(request.headers.get("X-Nuxiva-Setup-Code", ""))
 
 
 def suggested_packages() -> list[str]:

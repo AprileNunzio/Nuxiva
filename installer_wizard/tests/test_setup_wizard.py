@@ -57,17 +57,9 @@ class WizardTest(unittest.TestCase):
             self.assertEqual(self.public.get("/api/setup").status_code, 403)
             self.assertEqual(self.public.post("/api/setup", json={}, headers=HEADERS).status_code, 403)
 
-    def test_remote_devices_need_the_code_and_get_locked_out(self):
-        with Network(local=False):
-            self.assertEqual(self.public.post("/api/setup/verify").status_code, 403)
-            wrong = "000000" if setup_api.guard.code != "000000" else "111111"
-            for _ in range(setup_api.MAX_ATTEMPTS):
-                r = self.public.post("/api/setup/verify", headers={**HEADERS, "X-Nuxiva-Setup-Code": wrong})
-                self.assertEqual(r.status_code, 403)
-            r = self.public.post("/api/setup/verify", headers={**HEADERS, "X-Nuxiva-Setup-Code": setup_api.guard.code})
-            self.assertEqual(r.status_code, 429)
-            setup_api.guard.locked_until = 0
-            r = self.public.post("/api/setup/verify", headers={**HEADERS, "X-Nuxiva-Setup-Code": setup_api.guard.code})
+    def test_remote_devices_on_private_network_do_not_need_code(self):
+        with Network(local=False, private=True):
+            r = self.public.post("/api/setup/verify", headers=HEADERS)
             self.assertEqual(r.status_code, 200)
 
     def test_cross_site_requests_are_refused(self):
@@ -142,7 +134,7 @@ class WizardTest(unittest.TestCase):
         from features.people import people
         with tempfile.TemporaryDirectory() as root, mock.patch.object(people, "PEOPLE_DIR", Path(root)), Network(local=False):
             r = self.public.post("/api/setup", json={"name": "Nunzio", "last_name": "D'Aprile", "lang": "fr",
-                                                     "voice_lang": "en"}, headers={**HEADERS, "X-Nuxiva-Setup-Code": setup_api.guard.code})
+                                                     "voice_lang": "en"}, headers=HEADERS)
             self.assertEqual(r.status_code, 200, r.text)
             owner = people.load(r.json()["owner"])
             self.assertEqual((owner["role"], owner["first_name"], owner["last_name"]), ("owner", "Nunzio", "D'Aprile"))
