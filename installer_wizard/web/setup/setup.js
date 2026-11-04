@@ -7,7 +7,8 @@
     "screen-lang",
     "screen-mode",
     "screen-storage",
-    "screen-components",
+    "screen-components-core",
+    "screen-components-opt",
     "screen-assistant",
     "screen-owner",
     "screen-final"
@@ -55,15 +56,20 @@
     } else if (step === 3 && window.SetupStepComponentsI18n) {
       const lang = storage.get("lang") || "it";
       const dict = window.SetupStepComponentsI18n.dict[lang] || window.SetupStepComponentsI18n.dict.it;
-      titleEl.textContent = dict.title;
-      subEl.textContent = dict.sub;
-    } else if (step === 4 && window.SetupStepAssistant) {
+      titleEl.textContent = dict.core_title || "Componenti di Sistema";
+      subEl.textContent = dict.core_sub || "Moduli essenziali preconfigurati per garantire sicurezza e integrità del sistema.";
+    } else if (step === 4 && window.SetupStepComponentsI18n) {
+      const lang = storage.get("lang") || "it";
+      const dict = window.SetupStepComponentsI18n.dict[lang] || window.SetupStepComponentsI18n.dict.it;
+      titleEl.textContent = dict.opt_title || "Componenti Aggiuntivi";
+      subEl.textContent = dict.opt_sub || "Seleziona i moduli facoltativi da installare ed eseguire sul dispositivo.";
+    } else if (step === 5 && window.SetupStepAssistant) {
       titleEl.textContent = window.SetupStepAssistant.t("title");
       subEl.textContent = window.SetupStepAssistant.t("sub");
-    } else if (step === 5 && window.SetupStepOwner) {
+    } else if (step === 6 && window.SetupStepOwner) {
       titleEl.textContent = window.SetupStepOwner.t("title");
       subEl.textContent = window.SetupStepOwner.t("sub");
-    } else if (step === 6 && window.SetupStepFinal) {
+    } else if (step === 7 && window.SetupStepFinal) {
       titleEl.textContent = window.SetupStepFinal.t("title");
       subEl.textContent = window.SetupStepFinal.t("sub");
     }
@@ -113,9 +119,10 @@
     if (step === 1 && window.SetupStepMode) window.SetupStepMode.init();
     if (step === 2 && window.SetupStepStorage) window.SetupStepStorage.init();
     if (step === 3 && window.SetupStepComponents) window.SetupStepComponents.init();
-    if (step === 4 && window.SetupStepAssistant) window.SetupStepAssistant.init();
-    if (step === 5 && window.SetupStepOwner) window.SetupStepOwner.init();
-    if (step === 6 && window.SetupStepFinal) window.SetupStepFinal.init();
+    if (step === 4 && window.SetupStepComponents) window.SetupStepComponents.init();
+    if (step === 5 && window.SetupStepAssistant) window.SetupStepAssistant.init();
+    if (step === 6 && window.SetupStepOwner) window.SetupStepOwner.init();
+    if (step === 7 && window.SetupStepFinal) window.SetupStepFinal.init();
 
     updateHero(step);
     updateButtons(step);
@@ -125,7 +132,7 @@
   async function handleNext() {
     let currentStep = storage.get("step") || 0;
 
-    if (currentStep === 5) {
+    if (currentStep === 6) {
       const first = (storage.get("ownerFirst") || "").trim();
       if (!first) {
         const lang = storage.get("lang") || "it";
@@ -184,6 +191,7 @@
       updateButtons(step);
       if (window.SetupStepMode) window.SetupStepMode.applyTranslations();
       if (window.SetupStepStorage) window.SetupStepStorage.applyTranslations();
+      if (window.SetupStepComponents) window.SetupStepComponents.render();
       if (window.SetupStepAssistant) window.SetupStepAssistant.applyTranslations();
       if (window.SetupStepOwner) window.SetupStepOwner.applyTranslations();
       if (window.SetupStepFinal) window.SetupStepFinal.applyTranslations();
