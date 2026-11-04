@@ -40,6 +40,7 @@
         const item = document.createElement("div");
         item.className = `os-lang-item ${isSelected ? "is-selected" : ""}`;
         item.setAttribute("role", "option");
+        item.setAttribute("tabindex", "0");
         item.setAttribute("aria-selected", isSelected ? "true" : "false");
         item.setAttribute("data-lang", l.code);
 
@@ -77,12 +78,20 @@
         item.appendChild(info);
         item.appendChild(check);
 
-        item.addEventListener("click", () => {
+        const select = () => {
           window.SetupStorage.set("lang", l.code);
           document.documentElement.setAttribute("lang", l.code);
           this.render();
           if (window.SetupApp && typeof window.SetupApp.onLangChanged === "function") {
             window.SetupApp.onLangChanged(l.code);
+          }
+        };
+
+        item.addEventListener("click", select);
+        item.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            select();
           }
         });
 

@@ -2,14 +2,10 @@
   "use strict";
 
   const languages = [
-    { code: "it", name: "Italiano", sub: "Italian", badge: "IT" },
-    { code: "en", name: "English", sub: "English (US)", badge: "EN" },
-    { code: "es", name: "Español", sub: "Spanish", badge: "ES" },
-    { code: "fr", name: "Français", sub: "French", badge: "FR" },
-    { code: "de", name: "Deutsch", sub: "German", badge: "DE" },
-    { code: "pt", name: "Português", sub: "Portuguese", badge: "PT" },
-    { code: "zh", name: "简体中文", sub: "Chinese", badge: "ZH" },
-    { code: "ja", name: "日本語", sub: "Japanese", badge: "JA" }
+    { code: "it", name: "Italiano", sub: "Italiano", badge: "IT" },
+    { code: "en", name: "English", sub: "English", badge: "EN" },
+    { code: "es", name: "Español", sub: "Español", badge: "ES" },
+    { code: "fr", name: "Français", sub: "Français", badge: "FR" }
   ];
 
   const dict = {

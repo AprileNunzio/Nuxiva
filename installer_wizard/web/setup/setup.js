@@ -27,6 +27,7 @@
 
   function updateStepper(step) {
     const dots = document.querySelectorAll(".os-step-dot");
+    if (!dots || dots.length === 0) return;
     dots.forEach((dot, idx) => {
       dot.className = "os-step-dot";
       if (idx === step) {
