@@ -183,6 +183,11 @@
           <div class="os-face-main-row" id="face-live-box">
             <div class="os-face-viewport-card">
               <video id="face-video-feed" class="os-face-video" autoplay playsinline muted></video>
+              <div class="os-face-perm-overlay" id="face-perm-overlay">
+                <div style="font-size: 26px;">📷</div>
+                <div style="font-size: 11px; font-weight: 600; opacity: 0.85;">Autorizzazione webcam richiesta</div>
+                <button type="button" class="os-btn-req-perm" id="btn-req-face-perm">Attiva Webcam (Richiedi Permesso)</button>
+              </div>
               <div class="os-face-mesh-overlay">
                 <div class="os-face-reticle">
                   <div class="os-face-point" style="top:35%;left:30%;"></div>
@@ -253,6 +258,10 @@
             <select id="voice-mic-select" class="os-voice-select"></select>
           </div>
           <div class="os-voice-card">
+            <div class="os-voice-perm-bar" id="voice-perm-bar">
+              <span>Autorizzazione microfono richiesta dal browser:</span>
+              <button type="button" class="os-btn-req-perm" id="btn-req-voice-perm" style="padding: 4px 10px; font-size: 10px;">Attiva Microfono</button>
+            </div>
             <div class="os-voice-vu-card">
               <div class="os-voice-vu-header"><span>Livello Ingresso Microfono (VU-Meter Live)</span><span class="os-voice-vu-val" id="voice-vu-val">-60 dBFS</span></div>
               <div class="os-voice-vu-track"><div class="os-voice-vu-fill" id="voice-vu-fill"></div></div>
