@@ -7,7 +7,7 @@
       if (!container) return;
       container.innerHTML = "";
 
-      const selected = window.SetupStorage.get("selectedComponents") || ["voice", "ear", "vision", "sandbox", "brain_local"];
+      const selected = window.SetupStorage.get("selectedComponents") || ["voice", "sandbox", "ear", "vision"];
       const lang = window.SetupStorage.get("lang") || "it";
       const dict = (window.SetupStepComponentsI18n && window.SetupStepComponentsI18n.dict[lang]) || {};
 

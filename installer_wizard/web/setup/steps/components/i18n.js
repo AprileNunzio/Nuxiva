@@ -9,7 +9,7 @@
   const packagesOpt = [
     { id: "ear", title: "Ascolto & Wake-Word", desc: "Riconoscimento vocale per attivazione a voce e comandi diretti.", size: "1.5 GB", core: false },
     { id: "vision", title: "Visione Artificiale", desc: "Riconoscimento volti e ambiente locale tramite webcam e telecamere.", size: "1.0 GB", core: false },
-    { id: "brain_local", title: "Cervello LLM Locale", desc: "Motore di inferenza Ollama integrato per privacy totale.", size: "8.0 GB", core: false }
+    { id: "homeassistant", title: "Hub Domotico", desc: "Connessione integrata per sensori e dispositivi di domotica locale.", size: "0.3 GB", core: false }
   ];
 
   const packages = [...packagesCore, ...packagesOpt];

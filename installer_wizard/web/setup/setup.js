@@ -5,12 +5,15 @@
 
   const screens = [
     "screen-lang",
-    "screen-mode",
-    "screen-storage",
     "screen-components-core",
     "screen-components-opt",
-    "screen-assistant",
+    "screen-install",
+    "screen-llm",
     "screen-owner",
+    "screen-face",
+    "screen-fingerprint",
+    "screen-voice",
+    "screen-assistant",
     "screen-final"
   ];
 
@@ -27,8 +30,17 @@
   }
 
   function updateStepper(step) {
-    const dots = document.querySelectorAll(".os-step-dot");
-    if (!dots || dots.length === 0) return;
+    const stepperContainer = document.querySelector(".os-dialog-stepper");
+    if (!stepperContainer) return;
+    if (stepperContainer.children.length !== screens.length) {
+      stepperContainer.innerHTML = "";
+      for (let i = 0; i < screens.length; i++) {
+        const dot = document.createElement("span");
+        dot.className = "os-step-dot";
+        stepperContainer.appendChild(dot);
+      }
+    }
+    const dots = stepperContainer.querySelectorAll(".os-step-dot");
     dots.forEach((dot, idx) => {
       dot.className = "os-step-dot";
       if (idx === step) {
@@ -44,32 +56,42 @@
     const subEl = document.getElementById("setup-screen-subtitle");
     if (!titleEl || !subEl) return;
 
+    const lang = storage.get("lang") || "it";
+
     if (step === 0 && window.SetupStepLang) {
       titleEl.textContent = window.SetupStepLang.t("title");
       subEl.textContent = window.SetupStepLang.t("sub");
-    } else if (step === 1 && window.SetupStepMode) {
-      titleEl.textContent = window.SetupStepMode.t("title");
-      subEl.textContent = window.SetupStepMode.t("sub");
-    } else if (step === 2 && window.SetupStepStorage) {
-      titleEl.textContent = window.SetupStepStorage.t("title");
-      subEl.textContent = window.SetupStepStorage.t("sub");
-    } else if (step === 3 && window.SetupStepComponentsI18n) {
-      const lang = storage.get("lang") || "it";
+    } else if ((step === 1 || step === 2) && window.SetupStepComponentsI18n) {
       const dict = window.SetupStepComponentsI18n.dict[lang] || window.SetupStepComponentsI18n.dict.it;
-      titleEl.textContent = dict.core_title || "Componenti di Sistema";
-      subEl.textContent = dict.core_sub || "Moduli essenziali preconfigurati per garantire sicurezza e integrità del sistema.";
-    } else if (step === 4 && window.SetupStepComponentsI18n) {
-      const lang = storage.get("lang") || "it";
-      const dict = window.SetupStepComponentsI18n.dict[lang] || window.SetupStepComponentsI18n.dict.it;
-      titleEl.textContent = dict.opt_title || "Componenti Aggiuntivi";
-      subEl.textContent = dict.opt_sub || "Seleziona i moduli facoltativi da installare ed eseguire sul dispositivo.";
-    } else if (step === 5 && window.SetupStepAssistant) {
-      titleEl.textContent = window.SetupStepAssistant.t("title");
-      subEl.textContent = window.SetupStepAssistant.t("sub");
-    } else if (step === 6 && window.SetupStepOwner) {
+      if (step === 1) {
+        titleEl.textContent = dict.core_title;
+        subEl.textContent = dict.core_sub;
+      } else {
+        titleEl.textContent = dict.opt_title;
+        subEl.textContent = dict.opt_sub;
+      }
+    } else if (step === 3 && window.SetupStepInstall) {
+      titleEl.textContent = window.SetupStepInstall.t("title");
+      subEl.textContent = window.SetupStepInstall.t("sub");
+    } else if (step === 4 && window.SetupStepLlm) {
+      titleEl.textContent = window.SetupStepLlm.t("title");
+      subEl.textContent = window.SetupStepLlm.t("sub");
+    } else if (step === 5 && window.SetupStepOwner) {
       titleEl.textContent = window.SetupStepOwner.t("title");
       subEl.textContent = window.SetupStepOwner.t("sub");
-    } else if (step === 7 && window.SetupStepFinal) {
+    } else if (step === 6 && window.SetupStepFace) {
+      titleEl.textContent = window.SetupStepFace.t("title");
+      subEl.textContent = window.SetupStepFace.t("sub");
+    } else if (step === 7 && window.SetupStepFingerprint) {
+      titleEl.textContent = window.SetupStepFingerprint.t("title");
+      subEl.textContent = window.SetupStepFingerprint.t("sub");
+    } else if (step === 8 && window.SetupStepVoice) {
+      titleEl.textContent = window.SetupStepVoice.t("title");
+      subEl.textContent = window.SetupStepVoice.t("sub");
+    } else if (step === 9 && window.SetupStepAssistant) {
+      titleEl.textContent = window.SetupStepAssistant.t("title");
+      subEl.textContent = window.SetupStepAssistant.t("sub");
+    } else if (step === 10 && window.SetupStepFinal) {
       titleEl.textContent = window.SetupStepFinal.t("title");
       subEl.textContent = window.SetupStepFinal.t("sub");
     }
@@ -81,20 +103,17 @@
     const btnNext = document.getElementById("btn-next-label");
     const btnNextIcon = document.getElementById("btn-next-icon");
 
-    const lang = storage.get("lang") || "it";
-    const dict = (window.SetupStepFinalI18n && window.SetupStepFinalI18n.dict[lang]) || {};
-
     if (btnBack) {
       btnBack.style.visibility = step === 0 ? "hidden" : "visible";
     }
 
     if (btnBackLabel) {
-      btnBackLabel.textContent = dict.btn_back || "Indietro";
+      btnBackLabel.textContent = "Indietro";
     }
 
     const isLast = step === screens.length - 1;
     if (btnNext) {
-      btnNext.textContent = isLast ? (dict.btn_complete || "Entra in Nuxiva OS") : (dict.btn_next || "Avanti");
+      btnNext.textContent = isLast ? "Entra in Nuxiva OS" : "Avanti";
     }
 
     if (btnNextIcon) {
@@ -116,13 +135,16 @@
     });
 
     if (step === 0 && window.SetupStepLang) window.SetupStepLang.init();
-    if (step === 1 && window.SetupStepMode) window.SetupStepMode.init();
-    if (step === 2 && window.SetupStepStorage) window.SetupStepStorage.init();
-    if (step === 3 && window.SetupStepComponents) window.SetupStepComponents.init();
-    if (step === 4 && window.SetupStepComponents) window.SetupStepComponents.init();
-    if (step === 5 && window.SetupStepAssistant) window.SetupStepAssistant.init();
-    if (step === 6 && window.SetupStepOwner) window.SetupStepOwner.init();
-    if (step === 7 && window.SetupStepFinal) window.SetupStepFinal.init();
+    if (step === 1 && window.SetupStepComponents) window.SetupStepComponents.init();
+    if (step === 2 && window.SetupStepComponents) window.SetupStepComponents.init();
+    if (step === 3 && window.SetupStepInstall) window.SetupStepInstall.init();
+    if (step === 4 && window.SetupStepLlm) window.SetupStepLlm.init();
+    if (step === 5 && window.SetupStepOwner) window.SetupStepOwner.init();
+    if (step === 6 && window.SetupStepFace) window.SetupStepFace.init();
+    if (step === 7 && window.SetupStepFingerprint) window.SetupStepFingerprint.init();
+    if (step === 8 && window.SetupStepVoice) window.SetupStepVoice.init();
+    if (step === 9 && window.SetupStepAssistant) window.SetupStepAssistant.init();
+    if (step === 10 && window.SetupStepFinal) window.SetupStepFinal.init();
 
     updateHero(step);
     updateButtons(step);
@@ -132,13 +154,10 @@
   async function handleNext() {
     let currentStep = storage.get("step") || 0;
 
-    if (currentStep === 6) {
+    if (currentStep === 5) {
       const first = (storage.get("ownerFirst") || "").trim();
       if (!first) {
-        const lang = storage.get("lang") || "it";
-        const errText = (window.SetupStepOwnerI18n && window.SetupStepOwnerI18n.dict[lang] && window.SetupStepOwnerI18n.dict[lang].err_required)
-          || "Inserisci il tuo nome per procedere.";
-        showAlert(errText);
+        showAlert("Inserisci il tuo nome per procedere.");
         return;
       }
     }
@@ -255,12 +274,10 @@
   }
 
   window.SetupApp = {
-    onLangChanged(newLang) {
+    onLangChanged() {
       const step = storage.get("step") || 0;
       updateHero(step);
       updateButtons(step);
-      if (window.SetupStepMode) window.SetupStepMode.applyTranslations();
-      if (window.SetupStepStorage) window.SetupStepStorage.applyTranslations();
       if (window.SetupStepComponents) window.SetupStepComponents.render();
       if (window.SetupStepAssistant) window.SetupStepAssistant.applyTranslations();
       if (window.SetupStepOwner) window.SetupStepOwner.applyTranslations();
@@ -287,8 +304,7 @@
           return;
         }
       }
-    } catch (e) {
-    }
+    } catch (e) {}
 
     const currentStep = storage.get("step") || 0;
     showScreen(currentStep);

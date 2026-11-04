@@ -1,0 +1,174 @@
+.os-install-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.os-install-progress-card {
+  padding: 16px 20px;
+  border-radius: var(--os-radius-md);
+  background-color: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.os-install-progress-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.os-install-progress-title {
+  font-size: var(--os-font-size-sm);
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+}
+
+.os-install-progress-val {
+  font-size: var(--os-font-size-sm);
+  font-weight: 700;
+  color: var(--md-sys-color-primary);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.os-install-bar-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 9999px;
+  background-color: var(--md-sys-color-surface-container-highest);
+  overflow: hidden;
+  position: relative;
+}
+
+.os-install-bar-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #3b82f6, #6366f1, #8b5cf6);
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.os-install-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.os-install-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: var(--os-radius-sm);
+  background-color: var(--os-glass-bg);
+  border: 1px solid var(--os-glass-border);
+  transition: all var(--os-transition-fast);
+}
+
+.os-install-item-row.is-active {
+  border-color: var(--md-sys-color-primary);
+  background-color: var(--md-sys-color-surface-container-high);
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.2);
+}
+
+.os-install-item-row.is-done {
+  border-color: rgba(16, 185, 129, 0.35);
+  background-color: rgba(16, 185, 129, 0.05);
+}
+
+.os-install-item-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.os-install-item-icon {
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: var(--md-sys-color-surface-container-highest);
+  color: var(--md-sys-color-on-surface-variant);
+  flex-shrink: 0;
+}
+
+.os-install-item-row.is-active .os-install-item-icon {
+  background-color: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-primary);
+  animation: os-spin 1s linear infinite;
+}
+
+.os-install-item-row.is-done .os-install-item-icon {
+  background-color: #10b981;
+  color: #ffffff;
+  animation: none;
+}
+
+.os-install-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.os-install-item-name {
+  font-size: var(--os-font-size-xs);
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+}
+
+.os-install-item-status {
+  font-size: 11px;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.os-install-item-size {
+  font-size: 11px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.os-install-console {
+  padding: 10px 14px;
+  border-radius: var(--os-radius-sm);
+  background-color: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  color: #a5b4fc;
+  height: 64px;
+  overflow-y: hidden;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+[data-theme="light"] .os-install-console {
+  background-color: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #334155;
+}
+
+.os-install-banner-done {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--os-radius-sm);
+  background-color: rgba(16, 185, 129, 0.15);
+  border: 1px solid #10b981;
+  color: #10b981;
+  font-size: var(--os-font-size-xs);
+  font-weight: 600;
+  animation: os-fade-scale 0.3s ease forwards;
+}
+
+.os-install-banner-done.show {
+  display: flex;
+}

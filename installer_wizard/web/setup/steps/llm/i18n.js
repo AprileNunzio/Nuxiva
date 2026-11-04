@@ -1,0 +1,84 @@
+(() => {
+  "use strict";
+
+  const dict = {
+    it: {
+      title: "Motore di Intelligenza Artificiale",
+      sub: "Scegli come alimentare il cervello cognitivo di Nuxiva OS.",
+      opt_local_title: "LLM Locale Integrato",
+      opt_local_desc: "Esecuzione locale su questo dispositivo. Nessun dato lascia mai la tua macchina, massima privacy.",
+      opt_local_badge: "100% Locale",
+      opt_remote_title: "LLM Remoto su Rete",
+      opt_remote_desc: "Collegati a un server Ollama, vLLM o endpoint OpenAI dedicato sulla tua rete locale o server casalingo.",
+      opt_remote_badge: "Self-Hosted",
+      opt_cloud_title: "Provider Cloud con API Key",
+      opt_cloud_desc: "Utilizza i modelli commerciali più avanzati inserendo la tua chiave API personale.",
+      opt_cloud_badge: "Cloud API",
+      lbl_server_url: "URL Endpoint Server:",
+      lbl_api_key: "Chiave API Personale:",
+      lbl_provider: "Seleziona Provider:",
+      btn_test: "Verifica Connessione",
+      test_ok: "Connessione verificata con successo!",
+      test_err: "Impossibile contattare l'endpoint specificato."
+    },
+    en: {
+      title: "Artificial Intelligence Engine",
+      sub: "Choose how to power the cognitive brain of Nuxiva OS.",
+      opt_local_title: "Embedded Local LLM",
+      opt_local_desc: "Runs directly on this device. Zero data leaves your machine, maximum privacy guaranteed.",
+      opt_local_badge: "100% Local",
+      opt_remote_title: "Remote LLM via Network",
+      opt_remote_desc: "Connect to an external Ollama, vLLM or dedicated OpenAI-compatible server on your LAN.",
+      opt_remote_badge: "Self-Hosted",
+      opt_cloud_title: "Cloud Provider with API Key",
+      opt_cloud_desc: "Use the most advanced cloud models by providing your own API key.",
+      opt_cloud_badge: "Cloud API",
+      lbl_server_url: "Server Endpoint URL:",
+      lbl_api_key: "Personal API Key:",
+      lbl_provider: "Select Provider:",
+      btn_test: "Test Connection",
+      test_ok: "Connection verified successfully!",
+      test_err: "Could not reach the specified endpoint."
+    },
+    es: {
+      title: "Motor de Inteligencia Artificial",
+      sub: "Elija cómo alimentar el cerebro cognitivo de Nuxiva OS.",
+      opt_local_title: "LLM Local Integrado",
+      opt_local_desc: "Ejecución local en este dispositivo. Máxima privacidad, ningún dato sale de la máquina.",
+      opt_local_badge: "100% Local",
+      opt_remote_title: "LLM Remoto en Red",
+      opt_remote_desc: "Conéctese a un servidor Ollama, vLLM o endpoint OpenAI dedicado en su red local.",
+      opt_remote_badge: "Self-Hosted",
+      opt_cloud_title: "Proveedor Cloud con Clave API",
+      opt_cloud_desc: "Utilice modelos comerciales avanzados introduciendo su clave API personal.",
+      opt_cloud_badge: "Cloud API",
+      lbl_server_url: "URL del Endpoint Servidor:",
+      lbl_api_key: "Clave API Personal:",
+      lbl_provider: "Seleccionar Proveedor:",
+      btn_test: "Probar Conexión",
+      test_ok: "¡Conexión verificada con éxito!",
+      test_err: "No se pudo contactar el endpoint especificado."
+    },
+    fr: {
+      title: "Moteur d'Intelligence Artificielle",
+      sub: "Choisissez comment alimenter le cerveau cognitif de Nuxiva OS.",
+      opt_local_title: "LLM Local Embarqué",
+      opt_local_desc: "Exécution locale sur cet appareil. Confidentialité totale, aucune donnée ne quitte votre machine.",
+      opt_local_badge: "100% Local",
+      opt_remote_title: "LLM Réseau Distant",
+      opt_remote_desc: "Connectez-vous à un serveur Ollama, vLLM ou compatible OpenAI sur votre réseau local.",
+      opt_remote_badge: "Self-Hosted",
+      opt_cloud_title: "Fournisseur Cloud avec Clé API",
+      opt_cloud_desc: "Exploitez les modèles cloud les plus puissants avec votre clé API personnelle.",
+      opt_cloud_badge: "Cloud API",
+      lbl_server_url: "URL du Serveur Endpoint:",
+      lbl_api_key: "Clé API Personnelle:",
+      lbl_provider: "Sélectionner Fournisseur:",
+      btn_test: "Tester la Connexion",
+      test_ok: "Connexion vérifiée avec succès !",
+      test_err: "Impossible de joindre le point de terminaison."
+    }
+  };
+
+  window.SetupStepLlmI18n = { dict };
+})();

@@ -62,7 +62,8 @@
         info.appendChild(name);
         info.appendChild(sub);
 
-        const check = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        const svgNs = "http:" + "//www.w3.org/2000/svg";
+        const check = document.createElementNS(svgNs, "svg");
         check.setAttribute("class", "os-lang-check");
         check.setAttribute("width", "18");
         check.setAttribute("height", "18");

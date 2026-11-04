@@ -1,15 +1,97 @@
 (() => {
   "use strict";
 
-  const modal = document.getElementById("os-network-modal");
-  const fab = document.getElementById("btn-network-fab");
-  const btnClose = document.getElementById("btn-network-close");
-  const btnRefresh = document.getElementById("btn-network-refresh");
+  let modal = null;
+  const btnClose = () => document.getElementById("btn-network-close");
+  const btnRefresh = () => document.getElementById("btn-network-refresh");
+
+  function ensureModal() {
+    if (modal) return modal;
+    modal = document.getElementById("os-network-modal");
+    if (modal) return modal;
+
+    modal = document.createElement("div");
+    modal.className = "os-network-modal-backdrop";
+    modal.id = "os-network-modal";
+    modal.setAttribute("role", "dialog");
+    modal.setAttribute("aria-modal", "true");
+    modal.innerHTML = `
+      <div class="os-network-window">
+        <header class="os-network-header">
+          <div class="os-network-titlebar">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            <span class="os-network-title">Diagnostica di Rete</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <button type="button" class="os-network-btn-refresh" id="btn-network-refresh" title="Aggiorna">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+              <span>Aggiorna</span>
+            </button>
+            <button type="button" class="os-network-btn-close" id="btn-network-close" title="Chiudi">✕</button>
+          </div>
+        </header>
+        <div class="os-network-body">
+          <div class="os-net-metric-grid">
+            <div class="os-net-card">
+              <div class="os-net-card-label"><span>IP Locale</span><button type="button" class="os-net-copy-btn" data-copy-target="net-local-ip">Copia</button></div>
+              <div class="os-net-card-val" id="net-local-ip">...</div>
+            </div>
+            <div class="os-net-card">
+              <div class="os-net-card-label"><span>IP Pubblico WAN</span><button type="button" class="os-net-copy-btn" data-copy-target="net-public-ip">Copia</button></div>
+              <div class="os-net-card-val" id="net-public-ip">...</div>
+            </div>
+            <div class="os-net-card">
+              <div class="os-net-card-label"><span>Latenza Ping</span></div>
+              <div class="os-net-card-val" id="net-ping" style="color:#34d399;">...</div>
+            </div>
+            <div class="os-net-card">
+              <div class="os-net-card-label"><span>Hostname</span></div>
+              <div class="os-net-card-val" id="net-hostname">...</div>
+            </div>
+            <div class="os-net-card">
+              <div class="os-net-card-label"><span>Server DNS</span></div>
+              <div class="os-net-card-val" id="net-dns" style="font-size:13px;">...</div>
+            </div>
+            <div class="os-net-card">
+              <div class="os-net-card-label"><span>Traffico I/O</span></div>
+              <div class="os-net-card-val" style="font-size:13px;">↓ <span id="net-traffic-rx">...</span> &nbsp;|&nbsp; ↑ <span id="net-traffic-tx">...</span></div>
+              <div style="font-size:11px;opacity:0.7;margin-top:2px;" id="net-traffic-packets">...</div>
+            </div>
+          </div>
+          <div class="os-net-section-title">Interfacce Fisiche &amp; Virtuali</div>
+          <div style="overflow-x:auto;border-radius:var(--os-radius-md);border:1px solid var(--md-sys-color-outline-variant);">
+            <table class="os-net-iface-table">
+              <thead><tr><th>Interfaccia</th><th>Indirizzo IPv4</th><th>MAC</th><th>Velocità / MTU</th><th>Stato</th></tr></thead>
+              <tbody id="net-interfaces-tbody"><tr><td colspan="5" style="text-align:center;opacity:0.6;">Caricamento...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    const closeBtn = document.getElementById("btn-network-close");
+    const refBtn = document.getElementById("btn-network-refresh");
+    if (closeBtn) closeBtn.addEventListener("click", closeModal);
+    if (refBtn) refBtn.addEventListener("click", fetchDiagnostics);
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    modal.querySelectorAll(".os-net-copy-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const targetId = btn.getAttribute("data-copy-target");
+        const targetEl = document.getElementById(targetId);
+        if (targetEl) copyText(targetEl.textContent.trim(), btn);
+      });
+    });
+
+    return modal;
+  }
 
   async function fetchDiagnostics() {
-    if (btnRefresh) {
-      btnRefresh.classList.add("is-spinning");
-    }
+    const refBtn = btnRefresh();
+    if (refBtn) refBtn.classList.add("is-spinning");
     try {
       const res = await fetch(`/api/setup/network?t=${Date.now()}`);
       if (!res.ok) return;
@@ -17,9 +99,7 @@
       renderDiagnostics(data);
     } catch (e) {
     } finally {
-      if (btnRefresh) {
-        setTimeout(() => btnRefresh.classList.remove("is-spinning"), 300);
-      }
+      if (refBtn) setTimeout(() => refBtn.classList.remove("is-spinning"), 300);
     }
   }
 
@@ -28,9 +108,7 @@
     navigator.clipboard.writeText(val).then(() => {
       const orig = btn.textContent;
       btn.textContent = "✓";
-      setTimeout(() => {
-        btn.textContent = orig;
-      }, 1200);
+      setTimeout(() => { btn.textContent = orig; }, 1200);
     }).catch(() => {});
   }
 
@@ -93,8 +171,8 @@
   }
 
   function openModal() {
-    if (!modal) return;
-    modal.classList.add("is-open");
+    const m = ensureModal();
+    m.classList.add("is-open");
     fetchDiagnostics();
   }
 
@@ -105,34 +183,12 @@
 
   function init() {
     const fabBtn = document.getElementById("btn-network-fab");
-    const closeBtn = document.getElementById("btn-network-close");
-    const refreshBtn = document.getElementById("btn-network-refresh");
-    const netModal = document.getElementById("os-network-modal");
-
     if (fabBtn) fabBtn.addEventListener("click", openModal);
-    if (closeBtn) closeBtn.addEventListener("click", closeModal);
-    if (refreshBtn) refreshBtn.addEventListener("click", fetchDiagnostics);
-
-    if (netModal) {
-      netModal.addEventListener("click", (e) => {
-        if (e.target === netModal) closeModal();
-      });
-    }
 
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && netModal && netModal.classList.contains("is-open")) {
+      if (e.key === "Escape" && modal && modal.classList.contains("is-open")) {
         closeModal();
       }
-    });
-
-    document.querySelectorAll(".os-net-copy-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const targetId = btn.getAttribute("data-copy-target");
-        const targetEl = document.getElementById(targetId);
-        if (targetEl) {
-          copyText(targetEl.textContent.trim(), btn);
-        }
-      });
     });
   }
 
