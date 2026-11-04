@@ -22,6 +22,7 @@
       const micDev = storage.get("micDevice") || "Predefinito";
 
       const sumLang = document.getElementById("sum-lang");
+      const sumNet = document.getElementById("sum-network");
       const sumComponents = document.getElementById("sum-components");
       const sumLlm = document.getElementById("sum-llm");
       const sumOwner = document.getElementById("sum-owner");
@@ -35,6 +36,17 @@
         : null;
 
       if (sumLang) sumLang.textContent = langObj ? langObj.name : langCode;
+      if (sumNet) {
+        const ssid = storage.get("wifiSsid");
+        const cableIp = storage.get("cableIp");
+        if (ssid) {
+          sumNet.textContent = `Wi-Fi (${ssid})`;
+        } else if (cableIp) {
+          sumNet.textContent = `Cablata (Ethernet: ${cableIp})`;
+        } else {
+          sumNet.textContent = "Connessione di Rete Attiva";
+        }
+      }
       if (sumComponents) sumComponents.textContent = `${components.length} moduli attivi`;
 
       if (sumLlm) {

@@ -5,6 +5,7 @@
 
   const screens = [
     "screen-lang",
+    "screen-wifi",
     "screen-components-core",
     "screen-components-opt",
     "screen-install",
@@ -16,6 +17,9 @@
     "screen-assistant",
     "screen-final"
   ];
+
+  let activeRev = null;
+  let isRestarting = false;
 
   function showAlert(msg) {
     const alertBox = document.getElementById("status-alert");
@@ -61,37 +65,40 @@
     if (step === 0 && window.SetupStepLang) {
       titleEl.textContent = window.SetupStepLang.t("title");
       subEl.textContent = window.SetupStepLang.t("sub");
-    } else if ((step === 1 || step === 2) && window.SetupStepComponentsI18n) {
+    } else if (step === 1 && window.SetupStepWifi) {
+      titleEl.textContent = window.SetupStepWifi.t("title");
+      subEl.textContent = window.SetupStepWifi.t("sub");
+    } else if ((step === 2 || step === 3) && window.SetupStepComponentsI18n) {
       const dict = window.SetupStepComponentsI18n.dict[lang] || window.SetupStepComponentsI18n.dict.it;
-      if (step === 1) {
+      if (step === 2) {
         titleEl.textContent = dict.core_title;
         subEl.textContent = dict.core_sub;
       } else {
         titleEl.textContent = dict.opt_title;
         subEl.textContent = dict.opt_sub;
       }
-    } else if (step === 3 && window.SetupStepInstall) {
+    } else if (step === 4 && window.SetupStepInstall) {
       titleEl.textContent = window.SetupStepInstall.t("title");
       subEl.textContent = window.SetupStepInstall.t("sub");
-    } else if (step === 4 && window.SetupStepLlm) {
+    } else if (step === 5 && window.SetupStepLlm) {
       titleEl.textContent = window.SetupStepLlm.t("title");
       subEl.textContent = window.SetupStepLlm.t("sub");
-    } else if (step === 5 && window.SetupStepOwner) {
+    } else if (step === 6 && window.SetupStepOwner) {
       titleEl.textContent = window.SetupStepOwner.t("title");
       subEl.textContent = window.SetupStepOwner.t("sub");
-    } else if (step === 6 && window.SetupStepFace) {
+    } else if (step === 7 && window.SetupStepFace) {
       titleEl.textContent = window.SetupStepFace.t("title");
       subEl.textContent = window.SetupStepFace.t("sub");
-    } else if (step === 7 && window.SetupStepFingerprint) {
+    } else if (step === 8 && window.SetupStepFingerprint) {
       titleEl.textContent = window.SetupStepFingerprint.t("title");
       subEl.textContent = window.SetupStepFingerprint.t("sub");
-    } else if (step === 8 && window.SetupStepVoice) {
+    } else if (step === 9 && window.SetupStepVoice) {
       titleEl.textContent = window.SetupStepVoice.t("title");
       subEl.textContent = window.SetupStepVoice.t("sub");
-    } else if (step === 9 && window.SetupStepAssistant) {
+    } else if (step === 10 && window.SetupStepAssistant) {
       titleEl.textContent = window.SetupStepAssistant.t("title");
       subEl.textContent = window.SetupStepAssistant.t("sub");
-    } else if (step === 10 && window.SetupStepFinal) {
+    } else if (step === 11 && window.SetupStepFinal) {
       titleEl.textContent = window.SetupStepFinal.t("title");
       subEl.textContent = window.SetupStepFinal.t("sub");
     }
@@ -135,16 +142,17 @@
     });
 
     if (step === 0 && window.SetupStepLang) window.SetupStepLang.init();
-    if (step === 1 && window.SetupStepComponents) window.SetupStepComponents.init();
+    if (step === 1 && window.SetupStepWifi) window.SetupStepWifi.init();
     if (step === 2 && window.SetupStepComponents) window.SetupStepComponents.init();
-    if (step === 3 && window.SetupStepInstall) window.SetupStepInstall.init();
-    if (step === 4 && window.SetupStepLlm) window.SetupStepLlm.init();
-    if (step === 5 && window.SetupStepOwner) window.SetupStepOwner.init();
-    if (step === 6 && window.SetupStepFace) window.SetupStepFace.init();
-    if (step === 7 && window.SetupStepFingerprint) window.SetupStepFingerprint.init();
-    if (step === 8 && window.SetupStepVoice) window.SetupStepVoice.init();
-    if (step === 9 && window.SetupStepAssistant) window.SetupStepAssistant.init();
-    if (step === 10 && window.SetupStepFinal) window.SetupStepFinal.init();
+    if (step === 3 && window.SetupStepComponents) window.SetupStepComponents.init();
+    if (step === 4 && window.SetupStepInstall) window.SetupStepInstall.init();
+    if (step === 5 && window.SetupStepLlm) window.SetupStepLlm.init();
+    if (step === 6 && window.SetupStepOwner) window.SetupStepOwner.init();
+    if (step === 7 && window.SetupStepFace) window.SetupStepFace.init();
+    if (step === 8 && window.SetupStepFingerprint) window.SetupStepFingerprint.init();
+    if (step === 9 && window.SetupStepVoice) window.SetupStepVoice.init();
+    if (step === 10 && window.SetupStepAssistant) window.SetupStepAssistant.init();
+    if (step === 11 && window.SetupStepFinal) window.SetupStepFinal.init();
 
     updateHero(step);
     updateButtons(step);
@@ -154,7 +162,14 @@
   async function handleNext() {
     let currentStep = storage.get("step") || 0;
 
-    if (currentStep === 5) {
+    if (currentStep === 1 && window.SetupStepWifi) {
+      if (!window.SetupStepWifi.canProceed()) {
+        showAlert(window.SetupStepWifi.t("err_must_connect"));
+        return;
+      }
+    }
+
+    if (currentStep === 6) {
       const first = (storage.get("ownerFirst") || "").trim();
       if (!first) {
         showAlert("Inserisci il tuo nome per procedere.");
@@ -216,19 +231,53 @@
     }
   }
 
+  function triggerUniversalReload(msg) {
+    if (isRestarting) return;
+    isRestarting = true;
+    showToast(msg || "Aggiornamento applicato! Ricaricamento in corso...", 0);
+
+    const checkInterval = setInterval(async () => {
+      try {
+        const res = await fetch(`/api/setup?t=${Date.now()}`);
+        if (res.ok) {
+          clearInterval(checkInterval);
+          window.location.reload(true);
+        }
+      } catch (e) {
+      }
+    }, 1000);
+  }
+
+  function initLiveUpdateReloader() {
+    async function pollLiveUpdate() {
+      if (isRestarting) return;
+      try {
+        const res = await fetch(`/api/setup/update?t=${Date.now()}`);
+        if (!res.ok) return;
+        const data = await res.json();
+        const serverRev = data.local_rev || data.rev;
+        if (!serverRev) return;
+
+        if (activeRev === null) {
+          activeRev = serverRev;
+          const label = document.getElementById("version-text");
+          if (label) label.textContent = `v5.3 • ${serverRev.slice(0, 7)}`;
+          return;
+        }
+
+        if (serverRev !== activeRev) {
+          triggerUniversalReload("Nuovo aggiornamento applicato sul server! Ricaricamento di tutti i browser in corso...");
+        }
+      } catch (err) {
+      }
+    }
+
+    setInterval(pollLiveUpdate, 3500);
+  }
+
   function initVersionCheck() {
     const btn = document.getElementById("btn-version-check");
-    const label = document.getElementById("version-text");
     if (!btn) return;
-
-    fetch(`/api/setup/update?t=${Date.now()}`)
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (data && data.rev && label) {
-          label.textContent = `v5.3 • ${data.rev.slice(0, 7)}`;
-        }
-      })
-      .catch(() => {});
 
     btn.addEventListener("click", async () => {
       if (btn.classList.contains("is-checking")) return;
@@ -252,10 +301,7 @@
 
         const data = await res.json();
         if (data.applied) {
-          showToast("Nuovo aggiornamento applicato! Ricaricamento...", 0);
-          setTimeout(() => {
-            window.location.reload();
-          }, 1500);
+          triggerUniversalReload("Nuovo aggiornamento applicato! Riavvio server e ricaricamento browser...");
         } else if (data.uptodate) {
           showToast("Nuxiva OS è già aggiornato all'ultimo commit.");
           btn.classList.remove("is-checking");
@@ -278,6 +324,7 @@
       const step = storage.get("step") || 0;
       updateHero(step);
       updateButtons(step);
+      if (window.SetupStepWifi) window.SetupStepWifi.applyTranslations();
       if (window.SetupStepComponents) window.SetupStepComponents.render();
       if (window.SetupStepAssistant) window.SetupStepAssistant.applyTranslations();
       if (window.SetupStepOwner) window.SetupStepOwner.applyTranslations();
@@ -288,6 +335,7 @@
   async function boot() {
     initTheme();
     initVersionCheck();
+    initLiveUpdateReloader();
 
     const btnNext = document.getElementById("btn-next");
     const btnBack = document.getElementById("btn-back");

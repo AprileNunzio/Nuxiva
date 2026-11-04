@@ -200,6 +200,18 @@ async def setup_update_status(_: None = Depends(require_update_open)):
     }, headers=NO_CACHE)
 
 
+async def _restart_kiosk_browser() -> None:
+    try:
+        import os
+        from health import sh
+        if os.name != "nt":
+            await sh("pkill", "-f", "chromium", timeout=5)
+            await sh("pkill", "-f", "chrome", timeout=5)
+            await sh("systemctl", "restart", "--no-block", "getty@tty1", timeout=10)
+    except Exception:
+        pass
+
+
 @router.post("/api/setup/update/sync")
 async def setup_update_sync(_: None = Depends(require_update_open)):
     check_info = await updater.check(fetch_timeout=60, fresh=True)
@@ -212,6 +224,9 @@ async def setup_update_sync(_: None = Depends(require_update_open)):
         }, headers=NO_CACHE)
     if check_info.get("available") and check_info.get("target_rev"):
         applied = await updater.apply(reason="setup_initial", fetch_timeout=60, force=True)
+        if applied:
+            import asyncio
+            asyncio.create_task(_restart_kiosk_browser())
         return JSONResponse({
             "success": True,
             "applied": applied,
@@ -231,5 +246,30 @@ async def setup_update_sync(_: None = Depends(require_update_open)):
 async def setup_network(_: None = Depends(require_open)):
     import setup_network
     return JSONResponse(await setup_network.get_network_diagnostics(), headers=NO_CACHE)
+
+
+@router.get("/api/setup/wifi/status")
+async def setup_wifi_status(_: None = Depends(require_open)):
+    import setup_wifi
+    return JSONResponse(await setup_wifi.get_wifi_status(), headers=NO_CACHE)
+
+
+@router.post("/api/setup/wifi/scan")
+async def setup_wifi_scan(_: None = Depends(require_open)):
+    import setup_wifi
+    return JSONResponse(await setup_wifi.scan_wifi(), headers=NO_CACHE)
+
+
+@router.post("/api/setup/wifi/connect")
+async def setup_wifi_connect(request: Request, _: None = Depends(require_open)):
+    import setup_wifi
+    body = await _json(request)
+    ssid = str(body.get("ssid") or "").strip()
+    password = str(body.get("password") or "")
+    interface = body.get("interface")
+    if not ssid:
+        raise HTTPException(400, "SSID obbligatorio")
+    result = await setup_wifi.connect_wifi(ssid, password, interface)
+    return JSONResponse(result, headers=NO_CACHE)
 
 

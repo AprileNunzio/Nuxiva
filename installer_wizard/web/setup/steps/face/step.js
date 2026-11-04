@@ -8,6 +8,7 @@
       this.stream = null;
       this.activeSource = "client";
       this.hasRequestedPermission = false;
+      this.initialized = false;
     }
 
     t(key) {
@@ -16,20 +17,53 @@
       return dict[key] || "";
     }
 
+    showPermError(msg) {
+      const errEl = document.getElementById("face-perm-error");
+      const fallbackBtn = document.getElementById("btn-face-perm-fallback");
+      if (errEl) {
+        errEl.textContent = msg;
+        errEl.style.display = msg ? "block" : "none";
+      }
+      if (fallbackBtn) {
+        fallbackBtn.style.display = msg ? "inline-block" : "none";
+      }
+    }
+
+    async acquireStream(deviceId) {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        const legacy = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+        if (legacy) {
+          return new Promise((resolve, reject) => {
+            legacy.call(navigator, { video: true }, resolve, reject);
+          });
+        }
+        throw new Error("SECURE_CONTEXT_REQUIRED");
+      }
+
+      const videoConstraint = deviceId && deviceId !== "default"
+        ? { deviceId: { exact: deviceId } }
+        : { width: { ideal: 640 }, height: { ideal: 480 } };
+
+      try {
+        return await navigator.mediaDevices.getUserMedia({ video: videoConstraint });
+      } catch (err) {
+        return await navigator.mediaDevices.getUserMedia({ video: true });
+      }
+    }
+
     async requestWebcamPermission(deviceId) {
       const videoEl = document.getElementById("face-video-feed");
       const permOverlay = document.getElementById("face-perm-overlay");
       const emptyBox = document.getElementById("face-empty-box");
       const liveBox = document.getElementById("face-live-box");
+      const btn = document.getElementById("btn-req-face-perm");
 
+      if (btn) btn.textContent = "Accesso in corso...";
+      this.showPermError("");
       this.stopClientCamera();
 
-      const constraints = {
-        video: deviceId && deviceId !== "default" ? { deviceId: { exact: deviceId } } : { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: "user" }
-      };
-
       try {
-        this.stream = await navigator.mediaDevices.getUserMedia(constraints);
+        this.stream = await this.acquireStream(deviceId);
         if (videoEl) {
           videoEl.srcObject = this.stream;
           videoEl.play().catch(() => {});
@@ -41,11 +75,18 @@
         this.hasRequestedPermission = true;
         await this.populateClientDevices();
       } catch (err) {
-        if (permOverlay) {
-          permOverlay.classList.remove("is-hidden");
-          const btn = document.getElementById("btn-req-face-perm");
-          if (btn) btn.textContent = this.t("btn_req_perm");
+        if (permOverlay) permOverlay.classList.remove("is-hidden");
+        if (btn) btn.textContent = this.t("btn_req_again");
+
+        let errKey = "err_denied";
+        if (err.name === "NotFoundError" || err.name === "DevicesNotFoundError") {
+          errKey = "err_missing";
+        } else if (err.name === "NotReadableError" || err.name === "TrackStartError") {
+          errKey = "err_busy";
+        } else if (err.message === "SECURE_CONTEXT_REQUIRED" || !window.isSecureContext) {
+          errKey = "err_insecure";
         }
+        this.showPermError(this.t(errKey));
       }
     }
 
@@ -132,11 +173,17 @@
 
       const tabClient = document.getElementById("face-tab-client");
       const tabServer = document.getElementById("face-tab-server");
+      const permOverlay = document.getElementById("face-perm-overlay");
+
       if (tabClient) tabClient.classList.toggle("is-active", source === "client");
       if (tabServer) tabServer.classList.toggle("is-active", source === "server");
 
       if (source === "client") {
-        this.requestWebcamPermission();
+        if (this.hasRequestedPermission) {
+          this.requestWebcamPermission();
+        } else {
+          if (permOverlay) permOverlay.classList.remove("is-hidden");
+        }
       } else {
         this.populateServerDevices();
       }
@@ -206,21 +253,31 @@
     }
 
     init() {
-      const tabClient = document.getElementById("face-tab-client");
-      const tabServer = document.getElementById("face-tab-server");
-      const select = document.getElementById("face-camera-select");
-      const btnReqPerm = document.getElementById("btn-req-face-perm");
+      if (!this.initialized) {
+        this.initialized = true;
+        const tabClient = document.getElementById("face-tab-client");
+        const tabServer = document.getElementById("face-tab-server");
+        const select = document.getElementById("face-camera-select");
+        const btnReqPerm = document.getElementById("btn-req-face-perm");
+        const fallbackBtn = document.getElementById("btn-face-perm-fallback");
 
-      if (tabClient) tabClient.addEventListener("click", () => this.setSource("client"));
-      if (tabServer) tabServer.addEventListener("click", () => this.setSource("server"));
-      if (btnReqPerm) btnReqPerm.addEventListener("click", () => this.requestWebcamPermission());
+        if (tabClient) tabClient.addEventListener("click", () => this.setSource("client"));
+        if (tabServer) tabServer.addEventListener("click", () => this.setSource("server"));
+        if (btnReqPerm) btnReqPerm.addEventListener("click", () => this.requestWebcamPermission());
+        if (fallbackBtn) fallbackBtn.addEventListener("click", () => this.setSource("server"));
 
-      if (select) {
-        select.addEventListener("change", (e) => {
-          if (this.activeSource === "client") {
-            this.requestWebcamPermission(e.target.value);
-          }
-        });
+        if (select) {
+          select.addEventListener("change", (e) => {
+            if (this.activeSource === "client") {
+              this.requestWebcamPermission(e.target.value);
+            }
+          });
+        }
+
+        const btn = document.getElementById("btn-face-capture");
+        if (btn) {
+          btn.addEventListener("click", () => this.captureShot());
+        }
       }
 
       const emptyBox = document.getElementById("face-empty-box");
@@ -231,11 +288,6 @@
 
       this.currentShot = 0;
       this.updateTelemetry();
-
-      const btn = document.getElementById("btn-face-capture");
-      if (btn) {
-        btn.addEventListener("click", () => this.captureShot());
-      }
     }
   }
 

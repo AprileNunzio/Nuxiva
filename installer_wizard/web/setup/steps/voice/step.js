@@ -9,6 +9,7 @@
       this.animId = null;
       this.activeSource = "client";
       this.hasRequestedPermission = false;
+      this.initialized = false;
     }
 
     t(key) {
@@ -17,29 +18,49 @@
       return dict[key] || "";
     }
 
-    async requestMicPermission(deviceId) {
-      const permBar = document.getElementById("voice-perm-bar");
-
-      this.stopMonitoring();
-
-      if (!navigator.mediaDevices?.getUserMedia) {
-        this.startSimulatedMonitoring();
-        return;
+    async acquireAudioStream(deviceId) {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        const legacy = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+        if (legacy) {
+          return new Promise((resolve, reject) => {
+            legacy.call(navigator, { audio: true }, resolve, reject);
+          });
+        }
+        throw new Error("SECURE_CONTEXT_REQUIRED");
       }
 
       const constraints = {
         audio: deviceId && deviceId !== "default" ? { deviceId: { exact: deviceId } } : true
       };
+      return await navigator.mediaDevices.getUserMedia(constraints);
+    }
+
+    async requestMicPermission(deviceId) {
+      const permBar = document.getElementById("voice-perm-bar");
+      const btn = document.getElementById("btn-req-voice-perm");
+
+      this.stopMonitoring();
+      if (btn) btn.textContent = "Accesso microfono...";
 
       try {
-        this.micStream = await navigator.mediaDevices.getUserMedia(constraints);
+        this.micStream = await this.acquireAudioStream(deviceId);
         if (permBar) permBar.classList.add("is-hidden");
         this.hasRequestedPermission = true;
 
         this.startAudioContext();
         await this.populateClientDevices();
       } catch (err) {
-        if (permBar) permBar.classList.remove("is-hidden");
+        if (permBar) {
+          permBar.classList.remove("is-hidden");
+          if (btn) {
+            if (err.message === "SECURE_CONTEXT_REQUIRED" || !window.isSecureContext) {
+              btn.textContent = "Passa a Microfoni Server";
+              btn.onclick = () => this.setSource("server");
+            } else {
+              btn.textContent = this.t("btn_req_perm");
+            }
+          }
+        }
         this.startSimulatedMonitoring();
       }
     }
@@ -101,7 +122,7 @@
         if (mics.length === 0) {
           const opt = document.createElement("option");
           opt.value = "default";
-          opt.textContent = "Microfono PC Client (Auto-Detect)";
+          opt.textContent = "Microfono Predefinito";
           select.appendChild(opt);
         } else {
           mics.forEach((dev, idx) => {
@@ -114,23 +135,38 @@
       } catch (e) {}
     }
 
-    populateServerDevices() {
+    async populateServerDevices() {
       const select = document.getElementById("voice-mic-select");
       const permBar = document.getElementById("voice-perm-bar");
       if (permBar) permBar.classList.add("is-hidden");
       if (!select) return;
       select.innerHTML = "";
 
-      const opt = document.createElement("option");
-      opt.value = "server_default";
-      opt.textContent = "Microfono Server Fisico (ALSA / Pulse)";
-      select.appendChild(opt);
-
-      const optUsb = document.createElement("option");
-      optUsb.value = "server_usb";
-      optUsb.textContent = "Microfono USB Server (Array / Far-Field)";
-      select.appendChild(optUsb);
-
+      try {
+        const res = await fetch("/api/setup/hardware");
+        if (res.ok) {
+          const data = await res.json();
+          const mics = data.audio_devices || [];
+          if (mics.length === 0) {
+            const opt = document.createElement("option");
+            opt.value = "default";
+            opt.textContent = "Microfono Server (Alsa/Pulse)";
+            select.appendChild(opt);
+          } else {
+            mics.forEach((d) => {
+              const opt = document.createElement("option");
+              opt.value = d.id || d.name;
+              opt.textContent = `${d.name || d.id}`;
+              select.appendChild(opt);
+            });
+          }
+        }
+      } catch (e) {
+        const opt = document.createElement("option");
+        opt.value = "default";
+        opt.textContent = "Microfono Server";
+        select.appendChild(opt);
+      }
       this.startSimulatedMonitoring();
     }
 
@@ -140,11 +176,18 @@
 
       const tabClient = document.getElementById("voice-tab-client");
       const tabServer = document.getElementById("voice-tab-server");
+      const permBar = document.getElementById("voice-perm-bar");
+
       if (tabClient) tabClient.classList.toggle("is-active", source === "client");
       if (tabServer) tabServer.classList.toggle("is-active", source === "server");
 
       if (source === "client") {
-        this.requestMicPermission();
+        if (this.hasRequestedPermission) {
+          this.requestMicPermission();
+        } else {
+          if (permBar) permBar.classList.remove("is-hidden");
+          this.startSimulatedMonitoring();
+        }
       } else {
         this.populateServerDevices();
       }
@@ -167,31 +210,34 @@
     }
 
     init() {
-      const tabClient = document.getElementById("voice-tab-client");
-      const tabServer = document.getElementById("voice-tab-server");
-      const micSelect = document.getElementById("voice-mic-select");
-      const btnReqPerm = document.getElementById("btn-req-voice-perm");
+      if (!this.initialized) {
+        this.initialized = true;
+        const tabClient = document.getElementById("voice-tab-client");
+        const tabServer = document.getElementById("voice-tab-server");
+        const micSelect = document.getElementById("voice-mic-select");
+        const btnReqPerm = document.getElementById("btn-req-voice-perm");
 
-      if (tabClient) tabClient.addEventListener("click", () => this.setSource("client"));
-      if (tabServer) tabServer.addEventListener("click", () => this.setSource("server"));
-      if (btnReqPerm) btnReqPerm.addEventListener("click", () => this.requestMicPermission());
+        if (tabClient) tabClient.addEventListener("click", () => this.setSource("client"));
+        if (tabServer) tabServer.addEventListener("click", () => this.setSource("server"));
+        if (btnReqPerm) btnReqPerm.addEventListener("click", () => this.requestMicPermission());
 
-      if (micSelect) {
-        micSelect.addEventListener("change", (e) => {
-          window.SetupStorage.set("micDevice", e.target.value);
-          if (this.activeSource === "client") {
-            this.requestMicPermission(e.target.value);
-          }
-        });
-      }
+        if (micSelect) {
+          micSelect.addEventListener("change", (e) => {
+            window.SetupStorage.set("micDevice", e.target.value);
+            if (this.activeSource === "client") {
+              this.requestMicPermission(e.target.value);
+            }
+          });
+        }
 
-      const gainSlider = document.getElementById("voice-gain-slider");
-      const gainVal = document.getElementById("voice-gain-val");
-      if (gainSlider && gainVal) {
-        gainSlider.addEventListener("input", (e) => {
-          gainVal.textContent = `${e.target.value} dB`;
-          window.SetupStorage.set("micGain", e.target.value);
-        });
+        const gainSlider = document.getElementById("voice-gain-slider");
+        const gainVal = document.getElementById("voice-gain-val");
+        if (gainSlider && gainVal) {
+          gainSlider.addEventListener("input", (e) => {
+            gainVal.textContent = `${e.target.value} dB`;
+            window.SetupStorage.set("micGain", e.target.value);
+          });
+        }
       }
 
       this.setSource(window.SetupStorage.get("voiceSource") || "client");

@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="/static/shared/theme/os_components.css">
   <link rel="stylesheet" href="/static/setup/setup_base.css">
   <link rel="stylesheet" href="/static/setup/steps/lang/step.css">
+  <link rel="stylesheet" href="/static/setup/steps/wifi/step.css">
   <link rel="stylesheet" href="/static/setup/steps/components/step.css">
   <link rel="stylesheet" href="/static/setup/steps/install/step.css">
   <link rel="stylesheet" href="/static/setup/steps/llm/step.css">
@@ -71,6 +72,33 @@
 
       <section class="setup-screen active" id="screen-lang">
         <div class="os-lang-container"><div class="os-lang-list" id="lang-list" role="listbox"></div></div>
+      </section>
+
+      <section class="setup-screen" id="screen-wifi">
+        <div class="os-wifi-container">
+          <div class="os-wifi-banner-cable" id="wifi-cable-banner" style="display: none;">
+            <div class="os-wifi-banner-left">
+              <span class="os-wifi-dot-live"></span>
+              <span>Connessione Cablata Attiva: Ethernet (<strong id="wifi-cable-ip">127.0.0.1</strong>)</span>
+            </div>
+            <span class="os-wifi-chip-optional">Facoltativo</span>
+          </div>
+          <div class="os-wifi-banner-warn" id="wifi-warn-banner" style="display: none;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            <span>Nessun cavo collegato. Connettiti a una rete Wi-Fi per continuare.</span>
+          </div>
+          <div class="os-wifi-toolbar">
+            <span class="os-wifi-toolbar-title">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>
+              <span>Reti Wireless Disponibili</span>
+            </span>
+            <button type="button" class="os-btn-wifi-refresh" id="btn-wifi-refresh">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+              <span>Aggiorna</span>
+            </button>
+          </div>
+          <div class="os-wifi-list-box" id="wifi-networks-list"></div>
+        </div>
       </section>
 
       <section class="setup-screen" id="screen-components-core">
@@ -187,6 +215,8 @@
                 <div style="font-size: 26px;">📷</div>
                 <div style="font-size: 11px; font-weight: 600; opacity: 0.85;">Autorizzazione webcam richiesta</div>
                 <button type="button" class="os-btn-req-perm" id="btn-req-face-perm">Attiva Webcam (Richiedi Permesso)</button>
+                <div class="os-face-perm-error" id="face-perm-error" style="display: none;"></div>
+                <button type="button" class="os-btn-switch-server" id="btn-face-perm-fallback" style="display: none;">Usa Telecamere Server</button>
               </div>
               <div class="os-face-mesh-overlay">
                 <div class="os-face-reticle">
@@ -332,6 +362,7 @@
       <section class="setup-screen" id="screen-final">
         <div class="os-card os-summary-card">
           <div class="os-summary-row"><span class="os-summary-label">Lingua Principale:</span><span class="os-summary-val" id="sum-lang">Italiano</span></div>
+          <div class="os-summary-row"><span class="os-summary-label">Rete &amp; Connessione:</span><span class="os-summary-val" id="sum-network">Cablata (Ethernet)</span></div>
           <div class="os-summary-row"><span class="os-summary-label">Componenti:</span><span class="os-summary-val" id="sum-components">4 moduli attivi</span></div>
           <div class="os-summary-row"><span class="os-summary-label">Cervello AI:</span><span class="os-summary-val" id="sum-llm">Locale (Ollama)</span></div>
           <div class="os-summary-row"><span class="os-summary-label">Proprietario:</span><span class="os-summary-val" id="sum-owner">—</span></div>
@@ -364,6 +395,8 @@
   <script src="/static/setup/shared/setup_network.js"></script>
   <script src="/static/setup/steps/lang/i18n.js"></script>
   <script src="/static/setup/steps/lang/step.js"></script>
+  <script src="/static/setup/steps/wifi/i18n.js"></script>
+  <script src="/static/setup/steps/wifi/step.js"></script>
   <script src="/static/setup/steps/components/i18n.js"></script>
   <script src="/static/setup/steps/components/step.js"></script>
   <script src="/static/setup/steps/install/i18n.js"></script>
