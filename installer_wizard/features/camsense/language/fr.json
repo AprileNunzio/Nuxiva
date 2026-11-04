@@ -1,0 +1,14 @@
+{
+  "name": "Capteurs par caméra",
+  "description": "Transforme une zone d'une caméra en capteur : vous apprenez les états (porte ouverte ou fermée, lumière allumée ou éteinte) et Nuxiva les reconnaît seul, sans service externe et sans envoyer d'images hors de chez vous.",
+  "capabilities": [
+    "Zone de l'image au choix et états appris avec des exemples réels",
+    "Lecture continue confirmée sur plusieurs lectures contre les faux changements",
+    "Refuse les scènes jamais vues au lieu de deviner",
+    "Indice de qualité : précision et ressemblance entre états",
+    "Événements dans le journal des caméras et sur le bus, pour automatisations et alertes"
+  ],
+  "settings": {
+    "NUXIVA_CAMSENSE_SECONDS": "Secondes entre deux lectures"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "loading": "Caricamento…",
+    "unreachable": "Server non raggiungibile",
+    "on": "Attivo",
+    "off": "Spento",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "edit": "Modifica",
+    "delete": "Elimina",
+    "add": "Aggiungi",
+    "heading": "NUCLEO CENTRALE — GLOBAL COMMAND GRID",
+    "subtitle": "Control plane neurale e cockpit applicativo della mesh distribuita",
+    "active_services": "{count} funzioni attive",
+    "zero_trust": "ZERO-TRUST MESH",
+    "search_placeholder": "Cerca applicativo…",
+    "view_grouped": "Vista raggruppata per categoria",
+    "view_dense": "Griglia compatta",
+    "spatial_graph": "Grafo spaziale",
+    "no_results": "Nessun applicativo corrisponde a «{query}»",
+    "reset_filters": "Ripristina i filtri",
+    "see_all": "Vedi tutti",
+    "clear": "Cancella la ricerca"
+  }
+}

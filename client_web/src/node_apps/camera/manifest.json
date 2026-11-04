@@ -1,0 +1,37 @@
+{
+  "id": "camera",
+  "name": "Camera",
+  "icon": "Camera",
+  "version": "5.0.0",
+  "category": "media",
+  "requires_reboot": false,
+  "description": "RTSP/USB feed, resolution, framerate, and direct P2P streaming to parent node",
+  "scope": "node_apps/camera",
+  "target": "node",
+  "window": {
+    "defaultWidth": 65,
+    "defaultHeight": 75,
+    "minWidth": 25,
+    "resizable": true
+  },
+  "toolbars": [
+    {
+      "id": "system",
+      "items": [
+        {
+          "type": "action",
+          "id": "refresh",
+          "labelKey": "os_refresh",
+          "shortcut": "F5"
+        }
+      ]
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "MSyqQ3LgGhFt",
+    "url": "https://img.icons8.com/?size=240&id=MSyqQ3LgGhFt&format=png"
+  }
+}

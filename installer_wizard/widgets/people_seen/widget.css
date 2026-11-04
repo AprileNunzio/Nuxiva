@@ -1,0 +1,14 @@
+.w-people_seen .ps-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.w-people_seen .ps-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 5px 2px; animation: ps-in 0.35s ease-out both; animation-delay: calc(var(--i) * 40ms); }
+.w-people_seen .ps-av { position: relative; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font: 600 11px/1 var(--font); color: var(--hud-text, var(--text)); background: linear-gradient(135deg, rgba(var(--tone), 0.6), rgba(var(--tone), 0.2)); }
+.w-people_seen .ps-av svg { width: 15px; height: 15px; }
+.w-people_seen .ps-row.unk .ps-av { color: var(--amber); background: rgba(255, 190, 60, 0.14); box-shadow: 0 0 0 1px rgba(255, 190, 60, 0.4) inset; }
+.w-people_seen .ps-near { position: absolute; right: -1px; bottom: -1px; width: 9px; height: 9px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 2px rgba(5, 11, 22, 0.9); }
+.w-people_seen .ps-txt { display: flex; flex-direction: column; min-width: 0; }
+.w-people_seen .ps-txt b { font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.w-people_seen .ps-row.unk .ps-txt b { color: var(--amber); }
+.w-people_seen .ps-txt small { font-size: 10.5px; color: var(--text-faint); }
+.w-people_seen .ps-conf { display: grid; gap: 3px; width: 46px; text-align: right; font-size: 10px; color: var(--text-dim); }
+.w-people_seen .ps-conf .wk-bar { height: 3px; margin: 0; }
+@keyframes ps-in { from { opacity: 0; transform: scale(0.97); } }
+@media (prefers-reduced-motion: reduce) { .w-people_seen .ps-row { animation: none; } }

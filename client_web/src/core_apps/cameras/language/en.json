@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Cameras & NVR",
+    "description": "Continuous recording, RTSP motion and AI",
+    "status": "Active",
+    "open_app": "Open",
+    "loading": "Loading…",
+    "unreachable": "Server unreachable",
+    "on": "On",
+    "off": "Off",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "stat_total": "Cameras",
+    "stat_active": "Active",
+    "stat_recording": "Recording",
+    "live_title": "Live view",
+    "offline": "Image not available",
+    "list_title": "Configured cameras",
+    "list_empty": "No cameras yet: add one on the right.",
+    "recording": "Recording",
+    "enabled": "Enabled",
+    "record": "Record",
+    "consent": "Consent given",
+    "add_title": "Add camera",
+    "field_name": "Name",
+    "field_kind": "Type",
+    "field_url": "Stream address",
+    "field_device": "Device (e.g. 0 or /dev/video0)",
+    "field_retention": "Retention",
+    "minutes": "{n} minutes",
+    "consent_note": "Recording only starts with the explicit consent of the people filmed."
+  }
+}

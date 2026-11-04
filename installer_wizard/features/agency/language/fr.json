@@ -1,0 +1,71 @@
+{
+  "name": "Agence de projets",
+  "description": "Nuxiva travaille sur les projets comme une agence : le Directeur conçoit la solution et l'équipe, le Critique s'interroge et vérifie chaque résultat, les agents travaillent en parallèle sur le moteur Rust nuxiva-agency.",
+  "capabilities": [
+    "Plan en graphe de tâches avec rôles, dépendances et critères d'acceptation",
+    "Questions et réponses du Critique enregistrées et consultables",
+    "Chaque tâche revue uniquement sur les preuves livrées",
+    "Agents en parallèle selon le matériel et le modèle choisi dans Cerveau",
+    "Fichiers du projet dans le dossier partagé « 09 Progetti »",
+    "Nouveaux outils créés par les agents, testés dans un bac à sable hors ligne avant usage"
+  ],
+  "language_name": "français",
+  "files": {
+    "plan": "Plan du projet",
+    "goal": "Objectif",
+    "architecture": "Architecture",
+    "roles": "Équipe",
+    "tasks": "Tâches",
+    "depends": "dépend de",
+    "acceptance": "Critères d'acceptation",
+    "reasoning": "Raisonnement du Critique",
+    "question": "Question",
+    "answer": "Réponse",
+    "issues": "Problèmes trouvés",
+    "deliverable": "Livrable",
+    "plan_file": "PLAN.md",
+    "reasoning_file": "RAISONNEMENT.md",
+    "work_dir": "Travaux",
+    "review_unclear": "La revue n'a pas été concluante : refais la tâche en respectant tous les critères d'acceptation."
+  },
+  "errors": {
+    "unavailable": "Le moteur de projets n'est pas joignable",
+    "invalid": "Requête non valide",
+    "not_found": "Projet inconnu",
+    "brain": "Aucun modèle disponible pour planifier",
+    "empty_plan": "Le Directeur n'a pas produit de plan utilisable",
+    "goal": "Décrivez le projet en au moins 8 caractères",
+    "tool_not_found": "Outil inconnu",
+    "tool_limit": "Trop d'outils actifs : retirez-en d'abord"
+  },
+  "settings": {
+    "NUXIVA_AGENCY_FORGE": "Les agents créent de nouveaux outils quand il le faut",
+    "NUXIVA_AGENCY_PARALLEL": "Agents en parallèle",
+    "NUXIVA_AGENCY_MAX_PARALLEL": "Agents maximum en automatique",
+    "NUXIVA_AGENCY_RESERVE_MB": "Mémoire à laisser libre (Mo)",
+    "NUXIVA_AGENCY_CLOUD_RPM": "Requêtes par minute avec des modèles cloud"
+  },
+  "commands": {
+    "start": "\\b(?:lance|crée(?:-moi)?|cree(?:-moi)?|ouvre|commence|démarre|fais(?:-moi)?)\\s+(?:un\\s+|le\\s+|nouveau\\s+)*(?:nouveau\\s+)?projet\\b",
+    "build": "\\b(?:crée|cree|construi[st]|développe|developpe|programme)(?:z)?(?:-moi|-nous)?\\s+(?:un\\s+|une\\s+|le\\s+|la\\s+)?(?:nouvel(?:le)?\\s+|nouveau\\s+)?(?:site|application|app|plateforme|portail|e-?commerce|logiciel)\\b",
+    "status": "\\b(?:état|avancement|où en est|où en sont)\\b.*\\bprojets?\\b|\\bprojets\\s+en\\s+cours\\b",
+    "show": "\\b(?:montre(?:-moi)?|ouvre|affiche)\\s+(?:tous\\s+)?(?:mes\\s+|les\\s+)?projets\\b",
+    "open": "\\b(?:ouvre|montre(?:-moi)?|affiche)\\s+(?:le\\s+)?projet\\s+(?:de\\s+|du\\s+|appelé\\s+)?(?P<name>.{2,120})$",
+    "close": "\\b(?:ferme|cache)\\s+(?:les\\s+)?projets?\\b"
+  },
+  "replies": {
+    "started": "Reçu : le Directeur conçoit la solution et l'équipe, le Critique vérifie le plan puis les agents se mettent au travail. Les fichiers vont dans le dossier partagé «09 Progetti» et l'avancement s'affiche dans la vue Projets.",
+    "none": "Aucun projet en cours.",
+    "list": "Projets : {items}.",
+    "item": "«{title}» {percent} % ({done}/{total} tâches)",
+    "offline": "Le moteur des projets est injoignable pour le moment.",
+    "short": "Décrivez le projet avec quelques mots de plus.",
+    "shown": "Voici vos projets sur l'écran.",
+    "opened": "Voici le projet «{title}» sur l'écran.",
+    "closed": "J'ai fermé la vue des projets.",
+    "not_found": "Je ne trouve pas de projet avec ce nom."
+  },
+  "help": {
+    "NUXIVA_AGENCY_PARALLEL": "« auto » calcule combien d'agents travaillent ensemble selon le processeur, la mémoire, la carte graphique et le modèle choisi dans Cerveau."
+  }
+}

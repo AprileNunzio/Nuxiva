@@ -1,0 +1,19 @@
+{
+  "id": "mood_aura",
+  "name": "Emozioni",
+  "icon": "✨",
+  "priority": 55,
+  "size": "s",
+  "tone": "violet",
+  "personal": true,
+  "bind": "person_mood",
+  "screen_role": "person",
+  "intents": [
+    "mood",
+    "umore",
+    "emozioni"
+  ],
+  "description": "Stato d'animo della persona davanti allo schermo, segnale del volto quando consentito e andamento della settimana.",
+  "refresh": 10,
+  "cost": {"gpu": 2, "cpu": 1}
+}

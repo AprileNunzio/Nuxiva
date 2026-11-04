@@ -1,0 +1,14 @@
+{
+  "name": "Réinitialisation d'usine",
+  "description": "Efface toutes les données, empreintes et identifiants de Nuxiva et ramène le système à la configuration initiale, comme à l'installation, avec confirmations multiples et preuve finale de la suppression.",
+  "capabilities": [
+    "Inventaire de tout ce qui sera effacé avant de continuer",
+    "Nouvelle saisie du mot de passe administrateur et phrase de confirmation aléatoire",
+    "Attente obligatoire et code à usage unique qui expire, contre les clics involontaires",
+    "Fichiers sensibles écrasés avant suppression",
+    "Vérification finale : aucun reste, fichiers témoins disparus, aucun processus gardant des données ouvertes",
+    "Clés de session et secrets régénérés, assistant de première configuration rouvert"
+  ],
+  "settings": {},
+  "help": {}
+}

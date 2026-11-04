@@ -1,0 +1,13 @@
+{
+  "id": "git_diff",
+  "name": "Modifiche Git",
+  "icon": "🐙",
+  "priority": 75,
+  "size": "l",
+  "intents": [
+    "git_diff"
+  ],
+  "description": "Differenze del codice, righe aggiunte e rimosse.",
+  "ttl": 300,
+  "tone": "cyan"
+}

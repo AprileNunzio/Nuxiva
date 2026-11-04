@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "installer_wizard",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Nuxiva Orchestrator Installer - NunzioTech",
+    "banner_sub": "AUTONOMOUS COGNITIVE ORCHESTRATOR",
+    "step_prefix": "[Nuxiva Step] ",
+    "success_prefix": "[SUCCESS] ",
+    "error_prefix": "[ERROR] ",
+    "step_1": "1/5 - Verifying Python and Node.js runtime environments...",
+    "step_2": "2/5 - Creating and verifying isolated virtual environment...",
+    "step_3": "3/5 - Setting up secure storage and isolated directories...",
+    "step_4": "4/5 - Installing server dependencies with self-healing...",
+    "step_5": "5/5 - Configuring web interface and launching orchestrator...",
+    "py_missing": "Python not found on PATH. Install Python 3.11 or higher.",
+    "py_old": "Unsupported Python version ({0}). Python 3.11+ required.",
+    "py_detected": "Detected Python runtime: {0}",
+    "node_detected": "Detected Node.js runtime: {0}",
+    "node_missing": "Node.js not detected. The client_web interface will require manual setup.",
+    "venv_ready": "Isolated virtual environment ready: {0}",
+    "dirs_ready": "Secure isolated storage directories created.",
+    "deps_installing": "Installing server packages...",
+    "deps_retry": "Dependency fault detected. Executing self-healing clean reinstallation...",
+    "deps_success": "All server dependencies verified and installed.",
+    "client_ready": "Web console compiled and ready.",
+    "ready_banner": "NUXIVA READY FOR EXECUTION ON LOCAL SYSTEM",
+    "powered_by": "NunzioTech Autonomous System 2026",
+    "download_err": "Unable to download or execute Nuxiva bootstrap (curl and wget missing or failed)."
+  }
+}

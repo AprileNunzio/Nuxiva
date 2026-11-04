@@ -1,0 +1,10 @@
+{
+  "id": "smart_switch",
+  "name": "Smart Switch",
+  "version": "1.0.0",
+  "category": "widget",
+  "description": "Smart Home IoT and automation actuator switch",
+  "icon": "💡",
+  "render_type": "toggle",
+  "grid_span": {"col": 1, "row": 1}
+}

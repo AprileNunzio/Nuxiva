@@ -1,0 +1,30 @@
+{
+  "id": "autonomy",
+  "name": "Autonomia",
+  "icon": "🧭",
+  "category": "assistente",
+  "order": 14,
+  "pinned": true,
+  "panel": "autonomy",
+  "toggle": {
+    "env": "NUXIVA_AUTONOMY",
+    "apply": []
+  },
+  "description": "Nuxiva lavora da sola: esegue i compiti programmati, controlla e diagnostica i guasti, impara ciò che non sapeva fare e ogni sera ti manda il riepilogo. Le azioni delicate aspettano la tua approvazione, una sola volta se scegli «Approva sempre».",
+  "capabilities": [
+    "Compiti programmati a voce: «ogni mattina alle 8 mandami il meteo per email», «ogni venerdì copia i progetti nella cartella SMB»",
+    "Orari: ogni giorno, giorni della settimana, feriali, weekend, ogni N minuti/ore, una volta, quando ti vede arrivare, all'avvio",
+    "Autopilota ogni 30 minuti: diagnosi dei componenti guasti, studio delle richieste non soddisfatte, riepilogo serale",
+    "Approvazioni: email, cancellazioni e comandi di sistema restano in coda finché non dici «approva» o approvi dal pannello",
+    "Diario di tutto ciò che fa da solo, notifiche su display e Telegram",
+    "Diagnosi solo in lettura senza approvazioni, nessuna richiesta doppia, rifiuti ricordati per 24 ore e azioni approvate per sempre revocabili"
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "ebsq6nILBjBv",
+    "url": "https://img.icons8.com/?size=240&id=ebsq6nILBjBv&format=png"
+  },
+  "surface": "hidden"
+}

@@ -1,0 +1,18 @@
+const {readFileSync}=require('node:fs');
+const {resolve}=require('node:path');
+const vm=require('node:vm');
+const assert=require('node:assert/strict');
+const ts=require('typescript');
+const moduleContext={exports:{}};
+const code=ts.transpileModule(readFileSync(resolve(__dirname,'../src/core_apps/updater/updateState.ts'),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText;
+vm.runInNewContext(code,{exports:moduleContext.exports,module:moduleContext});
+const {updateSettled}=moduleContext.exports;
+const baseline={phase:'READY',pending:null,local_rev:'old',last_result:'previous'};
+assert.equal(updateSettled(baseline,'old','previous'),false,'stale status before background job starts');
+assert.equal(updateSettled({...baseline,phase:'ERROR'},'old','previous'),true,'failed update releases UI');
+assert.equal(updateSettled({...baseline,last_result:'Rollback: failed'},'old','previous'),true,'rollback may return to original revision');
+assert.equal(updateSettled({...baseline,local_rev:'new'},'old','previous'),true,'verified new revision');
+assert.equal(updateSettled({...baseline,local_rev:'new',pending:{from:'old',to:'new'}},'old','previous'),false,'unverified revision remains busy');
+assert.equal(updateSettled({...baseline,phase:'UPDATING',last_result:'changed'},'old','previous'),false);
+assert.equal(updateSettled({...baseline,phase:'BOOTING',local_rev:'new'},'old','previous'),false,'boot must complete');
+console.log('Updater recovery: errors, rollback, pending verification, stale status and boot transitions passed.');

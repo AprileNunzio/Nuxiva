@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "skills/finanza/percentuali",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Percentages",
+    "desc": "Percentage variation, discounts, and markups",
+    "error_number": "Invalid number",
+    "result_pct": "Result: {{pct}}%"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "id": "api_costs",
+  "name": "Costi API",
+  "icon": "💸",
+  "priority": 25,
+  "size": "m",
+  "intents": [
+    "api_costs"
+  ],
+  "description": "Spesa per i modelli linguistici: oggi, mese e budget.",
+  "ttl": 300,
+  "tone": "amber"
+}

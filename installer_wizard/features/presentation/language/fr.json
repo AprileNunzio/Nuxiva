@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "features/presentation",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Présentation",
+    "desc": "Gestion scénique et contenus multimédias",
+    "error.not_found": "Image ou ressource introuvable",
+    "error.invalid_plan": "Plan de présentation non valide",
+    "status.playing": "Présentation en lecture",
+    "status.paused": "Présentation en pause"
+  }
+}

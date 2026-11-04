@@ -1,0 +1,20 @@
+.w-docker_matrix .dm-sum { display: flex; gap: 12px; margin-bottom: 10px; font: 500 10.5px var(--mono); letter-spacing: 0.06em; }
+.w-docker_matrix .dm-sum .ok { color: var(--green); }
+.w-docker_matrix .dm-sum .warn { color: var(--amber); }
+.w-docker_matrix .dm-sum .bad { color: var(--red); }
+.w-docker_matrix .dm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; }
+.w-docker_matrix .dm-tile { min-width: 0; padding: 8px 10px; border-radius: 10px; background: rgba(var(--tone), 0.05); box-shadow: 0 0 0 1px rgba(var(--tone), 0.12) inset; }
+.w-docker_matrix .dm-top { display: flex; align-items: center; gap: 7px; min-width: 0; }
+.w-docker_matrix .dm-top b { min-width: 0; flex: 1; font-size: 12.5px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.w-docker_matrix .dm-led { flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--text-faint); }
+.w-docker_matrix .dm-ok .dm-led { background: var(--green); box-shadow: 0 0 6px var(--green); }
+.w-docker_matrix .dm-warn .dm-led { background: var(--amber); box-shadow: 0 0 6px var(--amber); animation: wk-blink 1.4s ease-in-out infinite; }
+.w-docker_matrix .dm-bad .dm-led { background: var(--red); box-shadow: 0 0 8px var(--red); }
+.w-docker_matrix .dm-bad { background: rgba(255, 77, 106, 0.08); box-shadow: 0 0 0 1px rgba(255, 77, 106, 0.4) inset; }
+.w-docker_matrix .dm-bad .dm-top b { color: var(--red); }
+.w-docker_matrix .dm-tile > small { display: block; margin-top: 3px; font: 10px var(--mono); color: var(--text-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.w-docker_matrix .dm-rs { flex: none; font: 600 9.5px var(--mono); color: var(--amber); }
+.w-docker_matrix .dm-m { display: grid; grid-template-columns: 26px 1fr; align-items: center; gap: 6px; margin-top: 4px; }
+.w-docker_matrix .dm-m em { font: normal 500 8.5px var(--mono); letter-spacing: 0.1em; color: var(--text-faint); }
+.w-docker_matrix .dm-m .wk-bar { margin-top: 0; }
+@media (prefers-reduced-motion: reduce) { .w-docker_matrix .dm-warn .dm-led { animation: none; } }

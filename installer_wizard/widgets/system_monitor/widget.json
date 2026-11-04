@@ -1,0 +1,14 @@
+{
+  "id": "system_monitor",
+  "name": "Monitor di Sistema",
+  "icon": "📊",
+  "priority": 20,
+  "size": "l",
+  "ttl": 60,
+  "intents": [
+    "system_monitor"
+  ],
+  "description": "Diagnostica CPU e memoria del nodo.",
+  "tone": "cyan",
+  "refresh": 5
+}

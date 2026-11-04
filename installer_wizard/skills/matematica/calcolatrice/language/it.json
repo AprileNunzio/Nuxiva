@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "skills/matematica/calcolatrice",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Calcolatrice",
+    "desc": "Operazioni matematiche e scientifiche",
+    "error_expr": "Espressione matematica non valida",
+    "result_val": "Risultato: {{val}}"
+  }
+}

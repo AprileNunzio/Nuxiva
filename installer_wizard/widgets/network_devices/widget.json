@@ -1,0 +1,15 @@
+{
+  "id": "network_devices",
+  "name": "Dispositivi in rete",
+  "icon": "🕸",
+  "priority": 55,
+  "size": "m",
+  "tone": "blue",
+  "ttl": 90,
+  "intents": [
+    "network"
+  ],
+  "panel_type": "list",
+  "description": "I dispositivi connessi alla rete di casa, quando chiedi chi è connesso.",
+  "refresh": 30
+}

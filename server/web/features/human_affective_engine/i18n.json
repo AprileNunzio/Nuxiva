@@ -1,0 +1,50 @@
+{
+  "it": {
+    "title": "Motore Affettivo & Inferenza Psicofisiologica",
+    "subtitle": "Rilevamento contactless battiti (rPPG), prosodia vocale e sguardo con risposta adattiva allo stato umorale",
+    "mood_label": "Stato Umorale Rilevato:",
+    "pulse_label": "Battiti Cardiaci (rPPG):",
+    "hrv_label": "Variabilità Cardiaca (HRV):",
+    "depression_risk_label": "Indice Rischio Depressione:",
+    "anxiety_risk_label": "Indice Ansia & Stress:",
+    "fatigue_risk_label": "Indice Affaticamento / Burnout:",
+    "intervention_title": "Strategia Risposta Adattiva Nuxiva:",
+    "evaluate_btn": "⚡ Esegui Valutazione Multimodale",
+    "optimal_balanced": "OTTIMALE & BILANCIATO",
+    "depressed_dysphoric": "UMORE DEFLESSO / DEPRESSO",
+    "anxious_stressed": "ANSIA & AGITAZIONE ACUTA",
+    "fatigue_burnout": "ESAURIMENTO / BURNOUT COGNITIVO"
+  },
+  "en": {
+    "title": "Affective Engine & Psychophysiological Inference",
+    "subtitle": "Contactless heart rate detection (rPPG), vocal prosody, and gaze with adaptive mood intervention",
+    "mood_label": "Inferred Mood State:",
+    "pulse_label": "Heart Rate (rPPG):",
+    "hrv_label": "Heart Rate Variability (HRV):",
+    "depression_risk_label": "Depression Risk Index:",
+    "anxiety_risk_label": "Anxiety & Stress Index:",
+    "fatigue_risk_label": "Fatigue / Burnout Index:",
+    "intervention_title": "Nuxiva Adaptive Strategy:",
+    "evaluate_btn": "⚡ Run Multimodal Assessment",
+    "optimal_balanced": "OPTIMAL & BALANCED",
+    "depressed_dysphoric": "DYSPHORIC / DEPRESSED",
+    "anxious_stressed": "ANXIOUS & HIGH STRESS",
+    "fatigue_burnout": "COGNITIVE BURNOUT"
+  },
+  "fr": {
+    "title": "Moteur Affectif & Inférence Psychophysiologique",
+    "subtitle": "Détection sans contact du rythme cardiaque (rPPG), prosodie vocale et regard avec réponse adaptée à l'humeur",
+    "mood_label": "État d'Humeur Détecté :",
+    "pulse_label": "Fréquence Cardiaque (rPPG) :",
+    "hrv_label": "Variabilité Cardiaque (HRV) :",
+    "depression_risk_label": "Indice Risque Dépression :",
+    "anxiety_risk_label": "Indice Anxiété & Stress :",
+    "fatigue_risk_label": "Indice Épuisement / Burnout :",
+    "intervention_title": "Stratégie Adaptative Nuxiva :",
+    "evaluate_btn": "⚡ Lancer l'Évaluation Multimodale",
+    "optimal_balanced": "OPTIMAL & ÉQUILIBRÉ",
+    "depressed_dysphoric": "HUMEUR DÉPRESSIVE",
+    "anxious_stressed": "ANXIÉTÉ & STRESS AIGU",
+    "fatigue_burnout": "ÉPUISEMENT COGNITIF"
+  }
+}

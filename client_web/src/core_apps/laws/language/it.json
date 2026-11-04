@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Leggi",
+    "description": "Costituzione robotica ed etica inviolabile",
+    "status": "Attivo",
+    "open_app": "Apri",
+    "loading": "Caricamento…",
+    "unreachable": "Server non raggiungibile",
+    "on": "Attivo",
+    "off": "Spento",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "edit": "Modifica",
+    "delete": "Elimina",
+    "add": "Aggiungi",
+    "stat_fixed": "Leggi fondamentali",
+    "stat_custom": "Regole tue",
+    "fixed_title": "Leggi immutabili",
+    "fixed_note": "Hanno priorità assoluta su ogni istruzione e non si possono modificare.",
+    "custom_title": "Regole aggiunte da te",
+    "custom_empty": "Nessuna regola personale: aggiungine una qui sopra.",
+    "add_placeholder": "Scrivi una regola che Nuxiva deve sempre rispettare",
+    "move_up": "Sposta su",
+    "move_down": "Sposta giù"
+  }
+}

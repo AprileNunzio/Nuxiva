@@ -1,0 +1,28 @@
+{
+  "manifest_version": 1,
+  "id": "neural_engine",
+  "kind": "optional",
+  "order": 100,
+  "steps": ["ollama", "models", "brain", "warmup"],
+  "icon": "icon.png",
+  "choices": [
+    {
+      "id": "local",
+      "installs": true,
+      "icon": "choice_local.png",
+      "recommended": true,
+      "env": {
+        "NUXIVA_BRAIN": "local"
+      }
+    },
+    {
+      "id": "later",
+      "installs": false,
+      "icon": "choice_later.png",
+      "recommended": false,
+      "env": {
+        "NUXIVA_BRAIN": "pending"
+      }
+    }
+  ]
+}

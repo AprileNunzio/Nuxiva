@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/common",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "waiting": "Waiting for data",
+    "refresh_every": "Refreshes every {{n}} s",
+    "live": "Live",
+    "empty_widget": "No data available"
+  }
+}

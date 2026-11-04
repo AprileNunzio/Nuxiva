@@ -1,0 +1,10 @@
+.webos .os-fullscreen-toggle { position:absolute; top:.6rem; right:.7rem; z-index:0; display:flex; align-items:center; flex-direction:row-reverse; gap:0; height:2.1rem; min-width:2.1rem; padding:0 .5rem; border:1px solid #ffffffc8; border-radius:999px; background:#ffffff9e; color:#334155; backdrop-filter:blur(18px) saturate(1.4); -webkit-backdrop-filter:blur(18px) saturate(1.4); box-shadow:0 .35rem 1.2rem #1e3a5f1f,inset 0 1px 0 #fff; overflow:hidden; transition:gap .25s ease,background .2s ease,box-shadow .2s ease,color .2s ease; }
+.webos .os-fullscreen-toggle:hover,.webos .os-fullscreen-toggle:focus-visible { gap:.45rem; background:#fffffff0; border-color:#fff; color:#1d4ed8; box-shadow:0 .5rem 1.6rem #1e3a5f2e,inset 0 1px 0 #fff; }
+.webos .os-fullscreen-toggle[data-active=true] { color:#1d4ed8; }
+.os-fullscreen-glyph { display:grid; place-items:center; width:1.05rem; height:1.05rem; flex-shrink:0; transition:transform .25s ease; }
+.os-fullscreen-glyph svg { width:1.05rem; height:1.05rem; stroke-width:2.1; }
+.os-fullscreen-toggle:hover .os-fullscreen-glyph { transform:scale(1.08); }
+.os-fullscreen-hint { max-width:0; opacity:0; white-space:nowrap; font-size:.72rem; font-weight:550; letter-spacing:.01em; transition:max-width .3s ease,opacity .2s ease; }
+.os-fullscreen-toggle:hover .os-fullscreen-hint,.os-fullscreen-toggle:focus-visible .os-fullscreen-hint { max-width:12rem; opacity:1; }
+@media(max-width:45rem) { .webos .os-fullscreen-toggle { top:.5rem; right:.5rem; } .os-fullscreen-hint { display:none; } }
+@media(prefers-reduced-motion:reduce) { .webos .os-fullscreen-toggle,.os-fullscreen-glyph,.os-fullscreen-hint { transition:none; } }

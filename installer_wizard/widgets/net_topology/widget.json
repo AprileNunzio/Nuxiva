@@ -1,0 +1,13 @@
+{
+  "id": "net_topology",
+  "name": "Network Mesh",
+  "icon": "🕸️",
+  "priority": 20,
+  "size": "l",
+  "intents": [
+    "net_topology"
+  ],
+  "description": "Mappa dei dispositivi della rete locale.",
+  "ttl": 300,
+  "tone": "green"
+}

@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "client_web/src/features/spatial_assets",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Spatial Assets",
+    "status_loaded": "Caricato",
+    "action_interact": "Interagisci",
+    "render_fps": "FPS: {{fps}}"
+  }
+}

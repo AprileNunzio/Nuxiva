@@ -1,0 +1,15 @@
+{
+  "name": "Screen director",
+  "description": "Decides by itself what to show, shrink or hide on the main screen based on what you are doing, avoids duplicates and learns from your corrections. While you talk it can float particle sculptures of the objects you mention, stored in a fast library for instant reuse.",
+  "capabilities": [
+    "When you talk by voice the chat shrinks and comes back as soon as you type",
+    "Never two indicators saying the same thing",
+    "Learns: if you reopen something it hid, it leaves it next time",
+    "Particle sculptures that burst and reform while you talk",
+    "Signed particle library reused without regenerating",
+    "Rust engine when available, with an equivalent Python fallback"
+  ],
+  "settings": {
+    "NUXIVA_PARTICLES_AMBIENT": "Spontaneous particles during conversation"
+  }
+}

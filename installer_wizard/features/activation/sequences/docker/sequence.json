@@ -1,0 +1,9 @@
+{
+  "manifest_version": 1,
+  "id": "docker",
+  "kind": "mandatory",
+  "order": 50,
+  "steps": ["docker"],
+  "icon": "icon.png",
+  "critical": false
+}

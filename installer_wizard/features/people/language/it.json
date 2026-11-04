@@ -1,0 +1,16 @@
+{
+  "name": "Persone",
+  "description": "Anagrafe completa: volti, relazioni, ricorrenze, preferenze e abitudini di ogni persona.",
+  "capabilities": [
+    "Registrazione automatica dei volti",
+    "Compleanni e onomastici",
+    "Relazioni",
+    "Abitudini",
+    "Aggiorna da sola le informazioni della persona che parla e annota lo stato d'animo, con il tuo giudizio",
+    "Battito e respiro stimati dalla webcam per chi non ha un bracciale collegato, disattivabili per risparmiare risorse"
+  ],
+  "settings": {
+    "NUXIVA_PEOPLE_LEARN": "Impara dalle conversazioni",
+    "NUXIVA_RPPG": "Battito e respiro dalla webcam per chi non ha un bracciale collegato"
+  }
+}

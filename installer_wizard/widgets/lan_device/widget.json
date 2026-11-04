@@ -1,0 +1,13 @@
+{
+  "id": "lan_device",
+  "name": "Rilevatore di Rete",
+  "icon": "🖥️",
+  "priority": 100,
+  "size": "m",
+  "intents": [
+    "lan_device"
+  ],
+  "description": "Allerta su nuovi dispositivi rilevati in rete locale.",
+  "ttl": 60,
+  "tone": "green"
+}

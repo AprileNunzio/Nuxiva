@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "features/locale",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Langue et Localisation",
+    "desc": "Préférences linguistiques et dictionnaires du système",
+    "error.unsupported_lang": "Langue d'écran non prise en charge",
+    "error.invalid_request": "Requête non valide",
+    "status.saved": "Préférence de langue enregistrée",
+    "action.switch": "Changer de langue"
+  }
+}

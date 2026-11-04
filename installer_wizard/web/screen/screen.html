@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="it" translate="no" data-i18n-scope="web/screen">
+<head>
+<meta charset="UTF-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title data-i18n="page_title" data-i18n-params='{"assistant":"{{assistant}}"}'>{{assistant}}</title>
+<link rel="stylesheet" href="/static/shared/nuxiva.css">
+<link rel="stylesheet" href="/static/display/display.css">
+<link rel="stylesheet" href="/static/display/hud.css">
+<link rel="stylesheet" href="/static/display/widgets_hud.css">
+<link rel="stylesheet" href="/static/display/desk_touch.css">
+<link rel="stylesheet" href="/static/screen/screen.css">
+</head>
+<body class="holo-grid satellite">
+<canvas id="particles" aria-hidden="true"></canvas>
+<div class="hud">
+  <header class="sc-head" data-screen-head>
+    <div class="brand">{{assistant}}<small class="sc-id"><span id="screen-name" data-i18n="screen_label"></span><span class="sc-role" id="screen-role"></span></small></div>
+    <ol class="sc-map" id="screen-map" data-i18n-attr="aria-label:screens_map" hidden></ol>
+    <div class="clock"><b id="clock">--:--</b><span id="date"></span></div>
+  </header>
+  <div class="desk" id="desk"></div>
+  <div class="rest" id="rest" aria-hidden="true">
+    <i class="rest-halo"></i>
+    <b class="rest-time" id="rest-time">--:--</b>
+    <span class="rest-date" id="rest-date"></span>
+    <span class="rest-tag"><i></i><span id="rest-role"></span></span>
+  </div>
+  <nav class="sc-pager off" id="pager" data-screen-foot data-i18n-attr="aria-label:pages_nav">
+    <button type="button" class="sp-arrow" data-pager-prev data-i18n-attr="aria-label:page_prev,title:page_prev">&#8249;</button>
+    <div class="sp-dots" data-pager-dots></div>
+    <span class="sp-label" data-pager-label></span>
+    <button type="button" class="sp-arrow" data-pager-next data-i18n-attr="aria-label:page_next,title:page_next">&#8250;</button>
+    <i class="sp-progress" aria-hidden="true"></i>
+  </nav>
+</div>
+<div class="link-lost" id="link"><div class="spinner"></div><span data-i18n="link_lost"></span></div>
+<script src="/static/shared/core.js"></script>
+<script src="/static/display/governor.js"></script>
+<script src="/static/display/hud_icons.js"></script>
+<script src="/static/display/desk_kit.js"></script>
+<script src="/static/display/desk.js"></script>
+<script src="/static/display/desk_touch.js"></script>
+<script src="/static/display/particles.js"></script>
+<script src="/static/screen/grid.js"></script>
+<script src="/static/screen/pager.js"></script>
+<script src="/static/screen/map.js"></script>
+<script src="/static/screen/screen.js"></script>
+</body>
+</html>

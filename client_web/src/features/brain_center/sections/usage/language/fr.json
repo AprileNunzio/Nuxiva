@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Consommation et limites",
+    "description": "Jetons utilisés en {month}. Fixez une limite : quand un service en ligne l'atteint, {assistant} passe tout seul au secours suivant.",
+    "today": "Aujourd'hui",
+    "month_total": "Ce mois-ci",
+    "month_cloud": "Services en ligne ce mois-ci",
+    "budget_global": "Limite mensuelle totale (jetons en ligne)",
+    "of_budget": "sur {cap}",
+    "no_budget": "Aucune limite",
+    "by_provider": "Par fournisseur",
+    "empty": "Aucune consommation enregistrée.",
+    "col_provider": "Fournisseur",
+    "col_in": "Envoyés",
+    "col_out": "Reçus",
+    "col_calls": "Requêtes",
+    "col_budget": "Limite",
+    "daily_title": "30 derniers jours",
+    "budgets_title": "Limites de dépense",
+    "budgets_hint": "Nombre maximum de jetons par mois. Laissez vide pour aucune limite. Une fois atteinte, le secours suivant est utilisé.",
+    "no_limit": "Aucune limite",
+    "budgets_no_providers": "Configurez un fournisseur pour lui fixer une limite.",
+    "widget_title": "Afficher la consommation sur l'écran principal",
+    "widget_hint": "Ajoute à la page principale un encadré avec les jetons du jour et du mois."
+  }
+}

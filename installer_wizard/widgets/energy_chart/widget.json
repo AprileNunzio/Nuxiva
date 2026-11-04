@@ -1,0 +1,13 @@
+{
+  "id": "energy_chart",
+  "name": "Consumi Energia",
+  "icon": "⚡",
+  "priority": 30,
+  "size": "l",
+  "intents": [
+    "energy_chart"
+  ],
+  "description": "Potenza assorbita e produzione della casa.",
+  "ttl": 300,
+  "tone": "green"
+}

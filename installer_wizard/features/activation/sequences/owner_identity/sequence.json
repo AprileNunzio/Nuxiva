@@ -1,0 +1,10 @@
+{
+  "manifest_version": 1,
+  "id": "owner_identity",
+  "kind": "configure",
+  "order": 220,
+  "icon": "icon.png",
+  "skippable": false,
+  "view": "view.js",
+  "handler": "handler.py"
+}

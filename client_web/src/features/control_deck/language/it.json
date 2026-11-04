@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "client_web/src/features/control_deck",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Control Deck",
+    "status_loaded": "Caricato",
+    "action_interact": "Interagisci",
+    "render_fps": "FPS: {{fps}}"
+  }
+}

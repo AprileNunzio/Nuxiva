@@ -1,0 +1,11 @@
+{
+  "manifest_version": 1,
+  "id": "wakeword_ear",
+  "kind": "configure",
+  "order": 240,
+  "icon": "icon.png",
+  "when": ["hardware:microphone"],
+  "skippable": true,
+  "view": "view.js",
+  "handler": "handler.py"
+}

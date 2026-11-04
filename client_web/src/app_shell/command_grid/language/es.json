@@ -1,0 +1,28 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "loading": "Cargando…",
+    "unreachable": "Servidor no accesible",
+    "on": "Activo",
+    "off": "Apagado",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "add": "Añadir",
+    "heading": "NÚCLEO CENTRAL — GLOBAL COMMAND GRID",
+    "subtitle": "Plano de control neuronal y cabina de aplicaciones de la malla distribuida",
+    "active_services": "{count} funciones activas",
+    "zero_trust": "ZERO-TRUST MESH",
+    "search_placeholder": "Buscar aplicación…",
+    "view_grouped": "Agrupada por categoría",
+    "view_dense": "Cuadrícula compacta",
+    "spatial_graph": "Grafo espacial",
+    "no_results": "Ninguna aplicación coincide con «{query}»",
+    "reset_filters": "Restablecer filtros",
+    "see_all": "Ver todo",
+    "clear": "Borrar búsqueda"
+  }
+}

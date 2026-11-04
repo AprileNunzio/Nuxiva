@@ -1,0 +1,13 @@
+{
+  "id": "thinking_tree",
+  "name": "Albero Decisionale",
+  "icon": "🧠",
+  "priority": 80,
+  "size": "l",
+  "intents": [
+    "thinking_tree"
+  ],
+  "description": "Passi di ragionamento dell'agente.",
+  "ttl": 120,
+  "tone": "violet"
+}

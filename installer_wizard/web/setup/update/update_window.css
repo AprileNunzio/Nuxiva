@@ -1,0 +1,135 @@
+.update-stage-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(3, 7, 18, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.update-stage-overlay[hidden] {
+  display: none !important;
+}
+
+.update-modal-card {
+  width: 100%;
+  max-width: 640px;
+  background-color: var(--os-glass-bg, rgba(10, 18, 38, 0.88));
+  backdrop-filter: blur(32px) saturate(180%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  border: 1px solid var(--os-glass-border, rgba(255, 255, 255, 0.1));
+  border-radius: var(--os-radius-lg, 16px);
+  box-shadow: var(--os-shadow-window, 0 24px 64px rgba(0, 0, 0, 0.55));
+  padding: clamp(20px, 4vw, 32px);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-sizing: border-box;
+  color: var(--md-sys-color-on-surface, #f8fafc);
+}
+
+.update-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.update-icon-pulse {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: var(--os-radius-md, 12px);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(14, 165, 233, 0.15));
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: var(--md-sys-color-primary, #3b82f6);
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.25);
+  animation: update-spin-glow 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes update-spin-glow {
+  0% { transform: scale(0.96); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2); }
+  100% { transform: scale(1.04); box-shadow: 0 12px 32px rgba(59, 130, 246, 0.45); }
+}
+
+.update-modal-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.update-main-title {
+  font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+  font-weight: 700;
+  color: var(--md-sys-color-on-surface, #f8fafc);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.update-sub-desc {
+  font-size: var(--os-font-size-xs, 0.8rem);
+  color: var(--md-sys-color-on-surface-variant, #94a3b8);
+  margin: 0;
+}
+
+.update-rev-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: var(--os-radius-full, 9999px);
+  background-color: var(--md-sys-color-surface-container, #0f1a36);
+  border: 1px solid var(--md-sys-color-outline-variant, rgba(255, 255, 255, 0.08));
+  font-family: var(--os-font-mono, monospace);
+  font-size: 0.8rem;
+  color: var(--md-sys-color-primary, #3b82f6);
+  width: fit-content;
+}
+
+.update-changelog-card {
+  background-color: var(--md-sys-color-surface-container, #0f1a36);
+  border: 1px solid var(--md-sys-color-outline-variant, rgba(255, 255, 255, 0.08));
+  border-radius: var(--os-radius-md, 12px);
+  padding: 14px 16px;
+  max-height: 180px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.update-commit-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: var(--os-font-size-xs, 0.8rem);
+}
+
+.update-commit-hash {
+  font-family: var(--os-font-mono, monospace);
+  color: var(--md-sys-color-primary, #3b82f6);
+  font-weight: 600;
+}
+
+.update-commit-msg {
+  color: var(--md-sys-color-on-surface-variant, #94a3b8);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.update-actions-deck {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 6px;
+}

@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "skills/finanza/percentuali",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Percentuali",
+    "desc": "Variazione percentuale, sconti e ricarichi",
+    "error_number": "Numero non valido",
+    "result_pct": "Risultato: {{pct}}%"
+  }
+}

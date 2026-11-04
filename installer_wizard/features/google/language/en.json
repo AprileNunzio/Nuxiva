@@ -1,0 +1,104 @@
+{
+  "name": "Google Services",
+  "description": "Each person links their own Google account: calendar, mail, tasks, contacts, Drive and health, shown only to the person Nuxiva recognises.",
+  "capabilities": [
+    "Calendar event synchronization and query",
+    "Gmail message reading and sending",
+    "Drive file retrieval and cloud backup"
+  ],
+  "settings": {
+    "NUXIVA_GOOGLE_CLIENT_ID": "OAuth Client ID",
+    "NUXIVA_GOOGLE_CLIENT_SECRET": "OAuth Client Secret"
+  },
+  "guide": {
+    "title": "How to get the Google Client ID and Client Secret",
+    "steps": [
+      "Open Google Cloud Console and sign in with the Google account that will administer Nuxiva.",
+      "Open the project picker at the top, choose “New project”, name it “Nuxiva”, press Create and make sure it stays selected.",
+      "Enable the APIs below: open each link, check that the Nuxiva project is selected at the top and press “Enable”. Without an enabled API that service answers “API not enabled”.",
+      "Open Google Auth Platform › Branding: app name “Nuxiva”, your support email and the developer email, then Save.",
+      "Open Audience: user type “External”. Under “Test users” add the Google address of everyone who will link their account (up to 100).",
+      "Open Data access › “Add or remove scopes”, paste the scope list below into “Manually add scopes”, press Add and then Save.",
+      "Open Clients › “Create client”, application type “Desktop app”, name “Nuxiva”, then Create. No redirect URI is needed: Nuxiva uses http://127.0.0.1:8889/, which Google accepts automatically for desktop apps.",
+      "Copy the Client ID and Client Secret from the dialog, paste them below and press Save.",
+      "Each person links their own account from the Identity Manager: open their record, Connectors, Google, pick the services and authorise. If Google shows “Google hasn't verified this app”, press “Advanced” and then “Go to Nuxiva”: this is normal for a personal app. Keep every box ticked.",
+      "At the end the browser opens a page that does not load (127.0.0.1): copy the full address from the bar and paste it into Nuxiva within 30 minutes.",
+      "Google Health is authorized separately: Google does not accept health permissions together with Gmail, Calendar and the other services. After linking Google, switch on «Google Health» (and «activity and sleep»): a second authorization opens with only the health permissions.",
+      "For health data the person must use the Google Health app on their phone with the same Google account and have created a profile (or migrated their Fitbit account), otherwise Google returns no data."
+    ],
+    "items_title": "APIs to enable",
+    "items": [
+      {
+        "label": "Google Calendar API",
+        "detail": "calendar, appointments and reminders",
+        "url": "https://console.cloud.google.com/apis/library/calendar-json.googleapis.com"
+      },
+      {
+        "label": "Gmail API",
+        "detail": "read and send email",
+        "url": "https://console.cloud.google.com/apis/library/gmail.googleapis.com"
+      },
+      {
+        "label": "Google Tasks API",
+        "detail": "to-do lists",
+        "url": "https://console.cloud.google.com/apis/library/tasks.googleapis.com"
+      },
+      {
+        "label": "People API",
+        "detail": "contact book",
+        "url": "https://console.cloud.google.com/apis/library/people.googleapis.com"
+      },
+      {
+        "label": "Google Drive API",
+        "detail": "file listing",
+        "url": "https://console.cloud.google.com/apis/library/drive.googleapis.com"
+      },
+      {
+        "label": "Google Health API",
+        "detail": "heart rate, HRV, oxygen, blood pressure, glucose, weight, steps and sleep",
+        "url": "https://console.cloud.google.com/apis/library/health.googleapis.com"
+      }
+    ],
+    "copy": [
+      {
+        "label": "OAuth scopes to add under “Data access”",
+        "text": "openid\nemail\nprofile\nhttps://www.googleapis.com/auth/calendar.events\nhttps://www.googleapis.com/auth/calendar.readonly\nhttps://www.googleapis.com/auth/contacts.readonly\nhttps://www.googleapis.com/auth/drive.metadata.readonly\nhttps://www.googleapis.com/auth/gmail.readonly\nhttps://www.googleapis.com/auth/gmail.send\nhttps://www.googleapis.com/auth/googlehealth.activity_and_fitness.readonly\nhttps://www.googleapis.com/auth/googlehealth.health_metrics_and_measurements.readonly\nhttps://www.googleapis.com/auth/googlehealth.sleep.readonly\nhttps://www.googleapis.com/auth/tasks"
+      }
+    ],
+    "links": [
+      {
+        "label": "Google Cloud Console",
+        "url": "https://console.cloud.google.com/"
+      },
+      {
+        "label": "API Library",
+        "url": "https://console.cloud.google.com/apis/library"
+      },
+      {
+        "label": "Branding",
+        "url": "https://console.cloud.google.com/auth/branding"
+      },
+      {
+        "label": "Audience and test users",
+        "url": "https://console.cloud.google.com/auth/audience"
+      },
+      {
+        "label": "Data access (scopes)",
+        "url": "https://console.cloud.google.com/auth/scopes"
+      },
+      {
+        "label": "OAuth clients",
+        "url": "https://console.cloud.google.com/auth/clients"
+      },
+      {
+        "label": "Your Google account permissions",
+        "url": "https://myaccount.google.com/permissions"
+      }
+    ],
+    "note": "In “Testing” mode Google expires the authorisation every 7 days: to avoid it, press “Publish app” in Audience. An unverified personal app works for up to 100 users and shows the unverified app warning. The Client Secret is private: never share it. Google Keep cannot be linked this way: Google only grants it to Google Workspace Enterprise organisations through a service account with domain-wide delegation, so do not add the …/auth/keep scope (Google rejects it)."
+  },
+  "help": {
+    "NUXIVA_GOOGLE_CLIENT_ID": "Ends with .apps.googleusercontent.com. Find it under Credentials, OAuth client ID.",
+    "NUXIVA_GOOGLE_CLIENT_SECRET": "Private string starting with GOCSPX-, shown next to the Client ID."
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "loading": "Chargement…",
+    "unreachable": "Serveur injoignable",
+    "on": "Actif",
+    "off": "Éteint",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "add": "Ajouter",
+    "heading": "NOYAU CENTRAL — GLOBAL COMMAND GRID",
+    "subtitle": "Plan de contrôle neuronal et cockpit applicatif du maillage distribué",
+    "active_services": "{count} fonctions actives",
+    "zero_trust": "ZERO-TRUST MESH",
+    "search_placeholder": "Rechercher une application…",
+    "view_grouped": "Groupée par catégorie",
+    "view_dense": "Grille compacte",
+    "spatial_graph": "Graphe spatial",
+    "no_results": "Aucune application ne correspond à «{query}»",
+    "reset_filters": "Réinitialiser les filtres",
+    "see_all": "Tout voir",
+    "clear": "Effacer la recherche"
+  }
+}

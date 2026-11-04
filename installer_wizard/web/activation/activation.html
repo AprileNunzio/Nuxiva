@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Nuxiva OS Cockpit</title>
+  <link rel="stylesheet" href="/static/activation/css/base.css">
+  <link rel="stylesheet" href="/static/activation/css/os-window.css">
+  <link rel="stylesheet" href="/static/activation/css/step-content.css">
+  <link rel="stylesheet" href="/static/activation/css/telemetry-dock.css">
+  <link rel="stylesheet" href="/static/activation/css/terminal-drawer.css">
+</head>
+<body>
+  <div class="ambient-backdrop" aria-hidden="true"></div>
+
+  <main class="os-desktop">
+    <section class="os-window" id="os-window">
+      <div class="window-orb-container">
+        <div class="orb-ring"></div>
+        <div class="orb-core">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M12 3a9 9 0 0 1 9 9M12 21a9 9 0 0 1-9-9"/>
+          </svg>
+        </div>
+      </div>
+
+      <h1 class="window-title" id="window-title" data-i18n="install_window_title">Nuxiva OS</h1>
+      <p class="window-subtitle" id="window-subtitle" data-i18n="install_window_subtitle">Installazione del sistema operativo su questo dispositivo.</p>
+
+      <div class="window-body" id="window-body"></div>
+      <div class="window-actions" id="window-actions"></div>
+    </section>
+
+    <section class="telemetry-dock" id="telemetry-dock">
+      <div class="dock-pill">
+        <span class="dock-status-dot"></span>
+        <span class="dock-lbl">IP:</span>
+        <span class="dock-val" id="dock-ip">---.---.---.---</span>
+      </div>
+      <div class="dock-pill">
+        <span class="dock-lbl">HOST:</span>
+        <span class="dock-val" id="dock-host">---</span>
+      </div>
+      <div class="dock-pill">
+        <span class="dock-lbl">PING:</span>
+        <span class="dock-val" id="dock-ping">-- ms</span>
+      </div>
+      <div class="dock-pill">
+        <span class="dock-lbl">CPU:</span>
+        <span class="dock-val" id="dock-cpu">--%</span>
+      </div>
+      <div class="dock-pill">
+        <span class="dock-lbl">RAM:</span>
+        <span class="dock-val" id="dock-ram">--%</span>
+      </div>
+      <div class="dock-pill">
+        <span class="dock-lbl">DISK:</span>
+        <span class="dock-val" id="dock-disk">-- GB</span>
+      </div>
+      <div class="dock-pill dock-speedtest" id="dock-speedtest" title="Speedtest">
+        <span class="dock-lbl">NET:</span>
+        <span class="dock-val" id="dock-speed">Test...</span>
+      </div>
+    </section>
+
+    <button type="button" class="terminal-drawer-btn" id="terminal-drawer-btn" style="display: none;">
+      <span style="color: var(--cyan-primary); font-weight: 700;">LIVE FEED:</span>
+      <span id="drawer-latest-msg">Inizializzazione dei sistemi di bordo...</span>
+    </button>
+  </main>
+
+  <div class="terminal-modal" id="terminal-modal">
+    <div class="terminal-modal-card">
+      <div class="modal-header">
+        <span>LIVE EXECUTION KERNEL FEED (TTY0)</span>
+        <button type="button" class="modal-close-btn" id="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-logs-body" id="terminal-logs"></div>
+    </div>
+  </div>
+
+  <script type="module" src="/static/activation/js/main.js"></script>
+</body>
+</html>

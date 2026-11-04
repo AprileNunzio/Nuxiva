@@ -1,0 +1,148 @@
+import re
+
+from fastapi import APIRouter, Depends, HTTPException, Request
+
+from access import require_admin, require_display
+from tasks import background
+
+from features.agency import board, service
+from features.agency.client import AgencyRejected, AgencyUnavailable
+from features.agency.forge.guard import NAME, ForgeRejected
+from features.agency.forge.registry import ACTIVE, RETIRED, registry
+from features.agency.words import lang_of, word
+
+admin_routes = APIRouter()
+public_routes = APIRouter()
+PROJECT_ID = re.compile(r"[a-z0-9][a-z0-9_-]{0,63}")
+BOARD_CONTROLS = ("pause", "resume")
+TOOL_ACTIONS = {"retire": RETIRED, "restore": ACTIVE}
+STATUS = {"not_found": 404, "invalid": 400, "bad_request": 400, "plan": 400, "exists": 409, "too_many": 429}
+
+
+def _lang(request: Request) -> str:
+    from features.locale.api import page_language
+    return lang_of(page_language(request, True))
+
+
+def _fail(request: Request, code: str, status: int):
+    key = code if code in ("unavailable", "invalid", "not_found", "brain", "empty_plan", "goal", "tool_not_found", "tool_limit") else "invalid"
+    raise HTTPException(status, {"code": key, "message": word(_lang(request), "errors", key)})
+
+
+def _project(request: Request, project_id: str) -> str:
+    if not PROJECT_ID.fullmatch(project_id):
+        _fail(request, "not_found", 404)
+    return project_id
+
+
+async def _guard(request: Request, call):
+    try:
+        return await call
+    except AgencyUnavailable:
+        _fail(request, "unavailable", 503)
+    except AgencyRejected as exc:
+        _fail(request, exc.code, STATUS.get(exc.code, 400))
+    except service.AgencyFailure as exc:
+        _fail(request, exc.code, 400)
+
+
+@admin_routes.get("/api/agency")
+async def overview(request: Request, _: str = Depends(require_admin)):
+    return await _guard(request, service.overview())
+
+
+@admin_routes.get("/api/agency/projects/{project_id}")
+async def detail(project_id: str, request: Request, _: str = Depends(require_admin)):
+    return await _guard(request, service.detail(_project(request, project_id)))
+
+
+async def _accept(request: Request) -> dict:
+    try:
+        body = await request.json()
+    except ValueError:
+        _fail(request, "invalid", 400)
+    goal = body.get("goal") if isinstance(body, dict) else None
+    if not isinstance(goal, str) or len(goal.strip()) < service.GOAL_MIN or len(goal) > service.GOAL_MAX:
+        _fail(request, "goal", 400)
+    background(service.launch(goal, _lang(request)))
+    return {"accepted": True}
+
+
+@admin_routes.post("/api/agency/projects", status_code=202)
+async def create(request: Request, _: str = Depends(require_admin)):
+    return await _accept(request)
+
+
+@admin_routes.post("/api/agency/projects/{project_id}/{action}")
+async def control(project_id: str, action: str, request: Request, _: str = Depends(require_admin)):
+    if action not in service.CONTROLS:
+        _fail(request, "invalid", 400)
+    return await _guard(request, service.control(_project(request, project_id), action))
+
+
+def _tool(request: Request, tool_name: str):
+    tool = registry.get(tool_name) if NAME.fullmatch(tool_name) else None
+    if tool is None:
+        _fail(request, "tool_not_found", 404)
+    return tool
+
+
+@admin_routes.get("/api/agency/tools")
+async def tools_list(_: str = Depends(require_admin)):
+    return {"tools": [tool.public() for tool in registry.all()]}
+
+
+@admin_routes.get("/api/agency/tools/{tool_name}")
+async def tools_detail(tool_name: str, request: Request, _: str = Depends(require_admin)):
+    return _tool(request, tool_name).public(with_code=True)
+
+
+@admin_routes.post("/api/agency/tools/{tool_name}/{action}")
+async def tools_control(tool_name: str, action: str, request: Request, _: str = Depends(require_admin)):
+    if action not in TOOL_ACTIONS:
+        _fail(request, "invalid", 400)
+    _tool(request, tool_name)
+    try:
+        return registry.set_status(tool_name, TOOL_ACTIONS[action], "admin").public()
+    except ForgeRejected:
+        _fail(request, "tool_limit", 409)
+
+
+@admin_routes.delete("/api/agency/tools/{tool_name}")
+async def tools_delete(tool_name: str, request: Request, _: str = Depends(require_admin)):
+    _tool(request, tool_name)
+    registry.delete(tool_name)
+    return {"deleted": tool_name}
+
+
+def _display_write(request: Request) -> None:
+    require_display(request)
+    if request.headers.get("X-Nuxiva-Request") != "1":
+        _fail(request, "invalid", 403)
+
+
+@public_routes.get("/api/agency/board")
+async def board_overview(request: Request):
+    require_display(request)
+    return await _guard(request, board.overview())
+
+
+@public_routes.get("/api/agency/board/{project_id}")
+async def board_focus(project_id: str, request: Request):
+    require_display(request)
+    return await _guard(request, board.focus(_project(request, project_id)))
+
+
+@public_routes.post("/api/agency/board/projects", status_code=202)
+async def board_create(request: Request):
+    _display_write(request)
+    return await _accept(request)
+
+
+@public_routes.post("/api/agency/board/{project_id}/{action}")
+async def board_control(project_id: str, action: str, request: Request):
+    _display_write(request)
+    if action not in BOARD_CONTROLS:
+        _fail(request, "invalid", 400)
+    await _guard(request, service.control(_project(request, project_id), action))
+    return await _guard(request, board.focus(project_id))

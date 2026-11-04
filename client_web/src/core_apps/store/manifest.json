@@ -1,0 +1,26 @@
+{
+  "id": "store",
+  "name": "Nuxiva Store",
+  "icon": "ShoppingBag",
+  "version": "5.0.0",
+  "description": "App store for modular capabilities, models and extensions",
+  "scope": "core_apps/store",
+  "target": "global",
+  "window": {
+    "defaultWidth": 68,
+    "defaultHeight": 76,
+    "minWidth": 30,
+    "resizable": true
+  },
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "6xRZJrVWQLNn",
+    "url": "https://img.icons8.com/?size=240&id=6xRZJrVWQLNn&format=png"
+  },
+  "category": "system",
+  "desktop": {
+    "order": 3
+  }
+}

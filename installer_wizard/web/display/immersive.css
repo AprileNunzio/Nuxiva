@@ -1,0 +1,35 @@
+body.desk-immersive header,
+body.desk-immersive .brand,
+body.desk-immersive .clock,
+body.desk-immersive .chips,
+body.desk-immersive .caption,
+body.desk-immersive .dock,
+body.desk-immersive .dock-note,
+body.desk-immersive .ear,
+body.desk-immersive .presence,
+body.desk-immersive .mind,
+body.desk-immersive .focus-say,
+body.desk-immersive .project-widget,
+body.desk-immersive #core,
+body.desk-immersive #scene {
+  display: none !important;
+}
+
+body.desk-immersive .desk > .widget.fullscreen.immersive {
+  background: radial-gradient(circle at 50% 30%, #121a2c 0%, #04060c 100%);
+}
+
+body.desk-immersive .wt-exit {
+  top: 14px;
+  left: auto;
+  right: 14px;
+  transform: none;
+  min-height: 40px;
+  opacity: 0.55;
+  transition: opacity 0.25s ease;
+}
+
+body.desk-immersive .wt-exit:hover,
+body.desk-immersive .wt-exit:focus-visible {
+  opacity: 1;
+}

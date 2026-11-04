@@ -1,0 +1,9 @@
+{
+  "manifest_version": 1,
+  "id": "security",
+  "kind": "mandatory",
+  "order": 90,
+  "steps": ["security"],
+  "icon": "icon.png",
+  "critical": true
+}

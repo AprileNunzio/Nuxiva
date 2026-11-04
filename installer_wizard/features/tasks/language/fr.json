@@ -1,0 +1,11 @@
+{
+  "name": "Tâches en arrière-plan",
+  "description": "Chaque création longue devient une tâche : progression, étapes, annulation et, à la fin, la question d'écouter, ouvrir ou en parler.",
+  "capabilities": [
+    "Registre unique des tâches : chansons, projets et créations longues",
+    "Progression et étapes en direct dans le widget Tâches",
+    "À la fin il propose : écouter, ouvrir, en parler",
+    "Répond à «où en es-tu ?»"
+  ],
+  "settings": []
+}

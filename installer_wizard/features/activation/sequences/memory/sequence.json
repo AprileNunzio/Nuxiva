@@ -1,0 +1,8 @@
+{
+  "manifest_version": 1,
+  "id": "memory",
+  "kind": "auto",
+  "order": 20,
+  "steps": ["memory"],
+  "icon": "icon.png"
+}

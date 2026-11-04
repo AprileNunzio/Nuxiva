@@ -1,0 +1,79 @@
+<section id="deck-emergency-vitals" class="plancia-section">
+  <div class="emergency-vitals-container">
+    <div class="emergency-header-bar">
+      <div>
+        <h2 class="emergency-title" data-i18n="title">Sistema Emergenze Biometriche &amp; Rilevamento Prossimità</h2>
+        <p class="emergency-subtitle" data-i18n="subtitle">Connessione automatica ai braccialetti all'avvicinamento del server, monitoraggio arresti cardiaci e avviso corale ai dispositivi</p>
+      </div>
+      <div class="emergency-action-btns">
+        <button id="btn-simulate-cardiac-arrest" class="tactical-btn danger" data-i18n="test_emergency_btn">🚨 Simula Allarme Arresto Cardiaco</button>
+        <button id="btn-restore-normal-vitals" class="tactical-btn secondary" data-i18n="test_normal_btn">✅ Ripristina Valori Normali</button>
+      </div>
+    </div>
+
+    <div id="banner-critical-alarm" class="alarm-critical-banner" style="display:none;">
+      <div class="alarm-banner-content">
+        <div class="alarm-icon-flash">🚨</div>
+        <div>
+          <h3 class="alarm-banner-title">EMERGENZA MEDICA CRITICA IN CORSO</h3>
+          <p id="txt-alarm-banner-reason" class="alarm-banner-desc">Rilevato arresto cardiaco o bradicardia estrema. Notifica corale in diffusione.</p>
+        </div>
+      </div>
+      <div id="badge-alarm-broadcast-status" class="alarm-broadcast-pill">AVVISO CORALE DISPOSITIVI INVIATO</div>
+    </div>
+
+    <div class="emergency-grid">
+      <div class="tactical-card emergency-card">
+        <div class="card-header">
+          <span class="card-title" data-i18n="profile_title">Profilo Sanitario Utente Riconosciuto:</span>
+          <span class="badge-tag auto-connect-badge" data-i18n="auto_connect_badge">AUTOCONNESSIONE ALL'AVVICINAMENTO: ATTIVA</span>
+        </div>
+        <div class="card-body">
+          <div class="profile-hero-card">
+            <div class="user-avatar-circle">👤</div>
+            <div class="user-meta-details">
+              <h3 id="txt-emergency-user-name" class="user-full-name">Nunzio (Amministratore Primario)</h3>
+              <p class="user-id-code">ID Profilo: <span id="txt-emergency-user-id">owner</span> | Dispositivo: <b>Google Fitbit Edge</b></p>
+              <div class="user-vitals-status-pill">
+                <span>Stato Fisiologico Attuale:</span>
+                <strong id="txt-current-physiological-status" style="color:#34d399;">NORMALE &amp; MONITORATO IN TEMPO REALE</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="thresholds-panel">
+            <span class="thresholds-header" data-i18n="thresholds_title">Soglie Allarme Medico Critico:</span>
+            <div class="thresholds-row">
+              <div class="threshold-pill">
+                <span data-i18n="cardiac_arrest_threshold">Soglia Arresto Cardiaco:</span>
+                <strong>&le; 28 BPM</strong>
+              </div>
+              <div class="threshold-pill">
+                <span data-i18n="hypoxia_threshold">Soglia Ipossia Critica (SpO2):</span>
+                <strong>&le; 85%</strong>
+              </div>
+              <div class="threshold-pill">
+                <span data-i18n="tachycardia_threshold">Tachicardia Ventricolare:</span>
+                <strong>&ge; 190 BPM</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tactical-card emergency-card">
+        <div class="card-header">
+          <span class="card-title" data-i18n="emergency_contacts_title">Contatti di Emergenza Vincolati:</span>
+          <span class="badge-tag broadcast-badge" data-i18n="home_broadcast_badge">BROADCAST CASA: ATTIVO</span>
+        </div>
+        <div class="card-body">
+          <div id="list-emergency-contacts" class="emergency-contacts-list"></div>
+          <div class="home-broadcast-integration-box">
+            <span class="broadcast-box-title">DISPOSITIVI DOMESTICI INTEGRATI PER ALLERTA CORALE:</span>
+            <p class="broadcast-box-desc">In caso di arresto o anomalia critica, Nuxiva attiva sirene interne, diffonde messaggi vocali su tutti gli smart speaker, fa lampeggiare le luci rosse e sblocca le serrature domotiche per agevolare i soccorsi.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

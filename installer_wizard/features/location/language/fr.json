@@ -1,0 +1,16 @@
+{
+  "name": "Position",
+  "description": "Où se trouve Nuxiva, pour la météo et les services locaux : GPS du téléphone, afficheur, réseaux Wi-Fi et points d'accès du domicile, position indiquée par vos soins ; Adresse IP uniquement en dernier recours.",
+  "capabilities": [
+    "Localisation depuis votre téléphone via Telegram",
+    "Point d'accès à la maison → BeaconDB",
+    "Consensus entre plusieurs services IP",
+    "«J'habite à Naples» dit verbalement"
+  ],
+  "settings": {
+    "NUXIVA_LOCATION_MODE": "Mode de position (auto ou fixe)",
+    "NUXIVA_LOCATION": "Nom de la position par défaut",
+    "NUXIVA_LOCATION_LAT": "Latitude par défaut",
+    "NUXIVA_LOCATION_LON": "Longitude par défaut"
+  }
+}

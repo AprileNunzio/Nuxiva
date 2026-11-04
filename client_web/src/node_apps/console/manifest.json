@@ -1,0 +1,32 @@
+{
+  "id": "console",
+  "name": "Node OS Inspector",
+  "scope": "node_apps/console",
+  "target": "node",
+  "window": {
+    "defaultWidth": 75,
+    "defaultHeight": 85,
+    "minWidth": 25,
+    "resizable": true
+  },
+  "toolbars": [
+    {
+      "id": "system",
+      "items": [
+        {
+          "type": "action",
+          "id": "refresh",
+          "labelKey": "os_refresh"
+        }
+      ]
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "gvQUkpW15e1x",
+    "url": "https://img.icons8.com/?size=240&id=gvQUkpW15e1x&format=png"
+  },
+  "category": "devices"
+}

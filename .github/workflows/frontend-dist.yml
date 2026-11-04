@@ -1,0 +1,79 @@
+name: Frontend Dist Auto-Build
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "client_web/**"
+      - "!client_web/dist/**"
+
+concurrency:
+  group: frontend-dist
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Skip When Main Moved On
+        id: head
+        run: |
+          if [ "$(git rev-parse HEAD)" != "${{ github.sha }}" ]; then
+            echo "stale=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up Node
+        if: steps.head.outputs.stale != 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: client_web/package-lock.json
+
+      - name: Install Dependencies
+        if: steps.head.outputs.stale != 'true'
+        working-directory: client_web
+        run: npm ci
+
+      - name: Build
+        if: steps.head.outputs.stale != 'true'
+        working-directory: client_web
+        run: npm run build
+
+      - name: Commit Dist When Changed
+        if: steps.head.outputs.stale != 'true'
+        id: commit
+        run: |
+          git add -A client_web/dist
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore(build): ricompila client_web/dist dal sorgente / rebuild client_web/dist from source" \
+            -m "IT: la cartella compilata serve dal dispositivo e non corrispondeva al sorgente di ${GITHUB_SHA::7}. Ricompilata in automatico dalla pipeline, cosi' l'aggiornamento mostra sempre l'interfaccia piu' recente." \
+            -m "EN: the compiled folder is served by the device and did not match the source of ${GITHUB_SHA::7}. Rebuilt automatically by the pipeline so an update always shows the latest interface."
+          for attempt in 1 2 3; do
+            if git push origin HEAD:main; then
+              echo "pushed=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            git pull --rebase origin main
+          done
+          exit 1
+
+      - name: Run CI On The New Commit
+        if: steps.commit.outputs.pushed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run ci.yml --ref main

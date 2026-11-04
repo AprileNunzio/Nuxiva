@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "skills/unita/conversione",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Unit Conversion",
+    "desc": "Metric, temperature, and dimensional conversions",
+    "error_unit": "Unsupported measurement unit",
+    "result_conv": "Converted to: {{val}} {{unit}}"
+  }
+}

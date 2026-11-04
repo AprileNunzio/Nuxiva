@@ -1,0 +1,8 @@
+{
+  "manifest_version": 1,
+  "id": "maintenance",
+  "kind": "auto",
+  "order": 199,
+  "steps": ["maintenance"],
+  "icon": "icon.png"
+}

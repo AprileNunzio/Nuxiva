@@ -1,0 +1,28 @@
+{
+  "manifest_version": 1,
+  "id": "ear",
+  "kind": "optional",
+  "order": 120,
+  "steps": ["ear"],
+  "icon": "icon.png",
+  "when": ["hardware:microphone"],
+  "choices": [
+    {
+      "id": "yes",
+      "installs": true,
+      "icon": "choice_yes.png",
+      "recommended": true,
+      "env": {
+        "NUXIVA_EAR": "1"
+      }
+    },
+    {
+      "id": "no",
+      "installs": false,
+      "icon": "choice_no.png",
+      "env": {
+        "NUXIVA_EAR": "0"
+      }
+    }
+  ]
+}

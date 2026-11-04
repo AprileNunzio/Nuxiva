@@ -1,0 +1,28 @@
+{
+  "id": "forge",
+  "name": "Fucina di Nuxiva",
+  "icon": "🛠",
+  "category": "assistente",
+  "order": 19,
+  "pinned": false,
+  "panel": "",
+  "toggle": {
+    "env": "NUXIVA_FORGE",
+    "apply": []
+  },
+  "description": "Nuxiva crea da sola nuovi strumenti (combinando quelli esistenti), widget e funzionalità: appena creati sono disponibili a lei, agli altri agenti e a ogni client MCP collegato.",
+  "capabilities": [
+    "Strumenti nuovi come sequenze di strumenti esistenti, con parametri e conferme ereditate dai passi",
+    "Widget per il display con titolo, valore, testo ed elenchi",
+    "Funzionalità nuove che diventano subito agenti della squadra",
+    "Eliminazione solo di ciò che ha creato lui, sempre con conferma"
+  ],
+  "settings": [],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "9QHudN9uBhDv",
+    "url": "https://img.icons8.com/?size=240&id=9QHudN9uBhDv&format=png"
+  }
+}

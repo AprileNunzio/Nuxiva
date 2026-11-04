@@ -1,0 +1,15 @@
+{
+  "id": "karaoke",
+  "name": "Karaoke",
+  "icon": "🎤",
+  "priority": 30,
+  "size": "l",
+  "bind": "now_playing",
+  "chrome": false,
+  "agent": "music",
+  "intents": [
+    "karaoke"
+  ],
+  "description": "Il testo della canzone in ascolto, sincronizzato riga per riga: canta insieme ad Nuxiva.",
+  "tone": "violet"
+}

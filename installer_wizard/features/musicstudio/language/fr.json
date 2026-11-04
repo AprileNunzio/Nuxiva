@@ -1,0 +1,14 @@
+{
+  "name": "Studio de musique",
+  "description": "Un studio de production complet à la voix ou à l'écran : Nuxiva compose des chansons entières, écrit et traduit les paroles, ajoute batteries, basses, accords, mélodies, effets et voix, et vous affinez tout avec timeline, piano roll, step sequencer, mixeur et effets.",
+  "capabilities": [
+    "Crée une chanson à partir d'une phrase : genre, tonalité, progression, structure, instruments et paroles",
+    "Fonctionne même sans cerveau grâce à un moteur d'arrangement à règles",
+    "Ajoute sur demande batterie, basse, accords, pads, arpèges, mélodie, effets et voix",
+    "Traduit les paroles et les fait chanter dans la nouvelle langue avec les voix de Nuxiva",
+    "Timeline à pistes, piano roll, step sequencer, mixeur avec pan, mute, solo et effets par piste",
+    "20 instruments synthétisés et 8 effets (égaliseur, filtre, écho, réverbération, chorus, distorsion, compresseur, phaser)",
+    "Exporte le mix en WAV et le projet réouvrable dans le dossier partagé « 08 Produzioni »"
+  ],
+  "settings": {}
+}

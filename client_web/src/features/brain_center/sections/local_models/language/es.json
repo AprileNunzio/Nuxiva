@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Modelos locales",
+    "description": "Modelos que se ejecutan en este servidor: privados, sin coste y funcionan incluso sin internet.",
+    "downloading": "Descargando: {name}",
+    "percent": "{n}% completado",
+    "installed_title": "Instalados ({count})",
+    "installed_empty": "Ningún modelo instalado.",
+    "loaded": "en memoria",
+    "delete": "Eliminar",
+    "pull_placeholder": "Nombre del modelo a descargar (p. ej. qwen2.5:3b)",
+    "pull": "Descargar",
+    "delete_title": "¿Eliminar el modelo?",
+    "delete_body": "{name} se eliminará del disco. Las tareas que lo usen pasarán a su siguiente reserva.",
+    "catalog_title": "Catálogo recomendado",
+    "catalog_hint": "Cada modelo indica si es adecuado para el hardware de este servidor.",
+    "category_all": "Todos",
+    "category_chat": "Conversación",
+    "category_deep": "Uso general",
+    "category_reasoning": "Razonamiento",
+    "category_code": "Código",
+    "category_vision": "Imágenes",
+    "category_embed": "Búsqueda en documentos",
+    "category_other": "Otros",
+    "installed": "Instalado",
+    "fit_ok": "Adecuado · unas {tps} palabras/s",
+    "fit_slow": "Lento · unas {tps} palabras/s",
+    "fit_no": "Demasiado grande para este servidor",
+    "license_restricted": "Licencia con límites"
+  }
+}

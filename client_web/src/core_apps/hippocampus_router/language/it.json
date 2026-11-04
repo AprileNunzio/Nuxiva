@@ -1,0 +1,43 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Ippocampo",
+    "description": "Instradamento rapido dei neuroni: decisioni senza generare token",
+    "loading": "Caricamento…",
+    "unreachable": "Server non raggiungibile",
+    "on": "Attivo",
+    "off": "Assente",
+    "ready": "Pronto",
+    "unavailable": "Non disponibile",
+    "persistent": "Cifrata",
+    "volatile": "Solo memoria",
+    "stat_native": "Nucleo Rust",
+    "stat_embedding": "Embedding",
+    "stat_storage": "Archivio",
+    "stat_neurons": "Neuroni",
+    "stat_decisions": "Decisioni",
+    "stat_latency": "Latenza media",
+    "issues_title": "Componenti degradati",
+    "verdicts_title": "Verdetti",
+    "verdict_fast": "Rapido",
+    "verdict_grey": "Zona grigia",
+    "verdict_slow": "Lento",
+    "executed": "Eseguite senza token: {n}",
+    "latency_max": "Latenza massima: {ms} ms",
+    "reason_no_neurons": "Nessun neurone",
+    "reason_low_similarity": "Somiglianza bassa",
+    "reason_inhibited": "Inibito",
+    "reason_low_weight": "Peso basso",
+    "thresholds_title": "Soglie dell'arbitro",
+    "threshold_fast_similarity": "Rapido: somiglianza minima",
+    "threshold_grey_similarity": "Zona grigia: somiglianza minima",
+    "threshold_inhibition_limit": "Limite di inibizione",
+    "threshold_fast_weight": "Rapido: peso sinaptico minimo",
+    "threshold_grey_weight": "Zona grigia: peso sinaptico minimo",
+    "recent_title": "Decisioni recenti",
+    "recent_empty": "Ancora nessuna decisione. Di ciò che dici non viene salvato nulla.",
+    "recent_metrics": "Corrispondenza {positive} · inibizione {negative} · peso {weight} · {ms} ms"
+  }
+}

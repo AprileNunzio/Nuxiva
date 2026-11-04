@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "installer_wizard",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Nuxiva Orchestrator Installer - NunzioTech",
+    "banner_sub": "ORCHESTRATORE COGNITIVO AUTONOMO",
+    "step_prefix": "[Passo Nuxiva] ",
+    "success_prefix": "[SUCCESSO] ",
+    "error_prefix": "[ERRORE] ",
+    "step_1": "1/5 - Verifica ambiente runtime Python e Node.js...",
+    "step_2": "2/5 - Creazione e verifica ambiente virtuale isolato...",
+    "step_3": "3/5 - Configurazione storage sicuro e directory isolate...",
+    "step_4": "4/5 - Installazione dipendenze server con autoriparazione...",
+    "step_5": "5/5 - Configurazione interfaccia web e avvio orchestratore...",
+    "py_missing": "Python non trovato su PATH. Installare Python 3.11 o superiore.",
+    "py_old": "Versione Python non supportata ({0}). Richiesto Python 3.11+.",
+    "py_detected": "Ambiente Python rilevato: {0}",
+    "node_detected": "Ambiente Node.js rilevato: {0}",
+    "node_missing": "Node.js non rilevato. L'interfaccia client_web richiederà l'installazione manuale.",
+    "venv_ready": "Ambiente virtuale isolato pronto: {0}",
+    "dirs_ready": "Directory di memorizzazione isolate e sicure create.",
+    "deps_installing": "Installazione pacchetti server in corso...",
+    "deps_retry": "Anomalia rilevata nelle dipendenze. Esecuzione autoriparazione e reinstallazione pulita...",
+    "deps_success": "Tutte le dipendenze server sono state verificate e installate.",
+    "client_ready": "Console web compilata e pronta.",
+    "ready_banner": "NUXIVA PRONTO ALL'USO SULLA MACCHINA LOCALE",
+    "powered_by": "NunzioTech Autonomous System 2026",
+    "download_err": "Impossibile scaricare o eseguire il bootstrap Nuxiva (curl e wget assenti o falliti)."
+  }
+}

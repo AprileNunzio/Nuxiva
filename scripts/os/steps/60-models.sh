@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+. "$(dirname "$0")/../lib.sh"
+
+licensed() {
+    if [[ "$1" =~ ^qwen2\.5(-coder)?:3b ]]; then
+        warn "$1 ha la Qwen Research License (solo uso non commerciale)$(commercial && echo ': non adatta all'"'"'uso commerciale configurato')" >&2
+    elif [[ "$1" =~ ^llama3\.2-vision ]]; then
+        warn "$1: la licenza Llama 3.2 non concede i modelli multimodali a chi risiede nell'UE" >&2
+    fi
+    echo "$1"
+}
+
+MODELS_SCOPE="${MODELS_SCOPE:-essential}"
+
+models() {
+    local m list
+    if [ "$MODELS_SCOPE" = full ]; then
+        list=("${NUXIVA_LLM_MODEL:-granite3.3:2b}")
+    else
+        list=("${NUXIVA_LLM_FAST_MODEL:-${NUXIVA_LLM_MODEL:-granite3.3:2b}}" "${NUXIVA_EMBED_MODEL:-embeddinggemma-2}")
+    fi
+    for m in "${list[@]}"; do
+        licensed "$m"
+    done | awk '!seen[$0]++'
+}
+
+normalize() { case "$1" in *:*) echo "$1" ;; *) echo "$1:latest" ;; esac; }
+
+model_present() {
+    curl -fsS --max-time 10 "$OLLAMA_URL/api/tags" 2>/dev/null \
+        | jq -e --arg m "$(normalize "$1")" '.models[] | select(.name == $m)' >/dev/null
+}
+
+step_check() {
+    local m
+    ollama_remote && return 0
+    [ "${NUXIVA_BRAIN:-}" = "local" ] || return 0
+    curl -fsS --max-time 3 "$OLLAMA_URL/api/version" >/dev/null 2>&1 || return 0
+    for m in $(models); do model_present "$m" || return 1; done
+}
+
+pull_model() {
+    local model=$1 base=$2 span=$3
+    python3 - "$OLLAMA_URL" "$model" "$base" "$span" <<'PY'
+import json, sys, time, urllib.request
+
+url, model, base, span = sys.argv[1], sys.argv[2], int(sys.argv[3]), int(sys.argv[4])
+req = urllib.request.Request(
+    f"{url}/api/pull",
+    data=json.dumps({"model": model, "stream": True}).encode(),
+    headers={"Content-Type": "application/json"},
+)
+last_emit, last_bytes, last_t = 0.0, 0, time.time()
+with urllib.request.urlopen(req, timeout=3600) as resp:
+    for raw in resp:
+        msg = json.loads(raw.decode() or "{}")
+        if "error" in msg:
+            print(f"[FAIL] {msg['error']}", flush=True)
+            sys.exit(1)
+        status = msg.get("status", "")
+        total, done = msg.get("total") or 0, msg.get("completed") or 0
+        now = time.time()
+        if total and now - last_emit >= 1.0:
+            speed = max(0, (done - last_bytes) / max(now - last_t, 0.001))
+            eta = int((total - done) / speed) if speed > 0 else 0
+            pct = done * 100 // total
+            print(f"@@PROGRESS {base + pct * span // 100} Download {model}: {pct}%", flush=True)
+            print(f"@@DETAIL {model} — {done / 1e9:.2f}/{total / 1e9:.2f} GB — "
+                  f"{speed / 1e6:.1f} MB/s — ETA {eta // 60}m{eta % 60:02d}s", flush=True)
+            print(f"@@SPEED {speed / 1e6:.1f} MB/s", flush=True)
+            last_emit, last_bytes, last_t = now, done, now
+        elif not total and status:
+            print(f"[INFO] {model}: {status}", flush=True)
+PY
+}
+
+step_apply() {
+    if [ "${NUXIVA_BRAIN:-}" != "local" ] && ! ollama_remote; then
+        info "Cervello locale non selezionato: download modelli Ollama ignorato"
+        progress 100 "In attesa di scelta tra Ollama locale o LLM esterno"
+        return 0
+    fi
+    if ! curl -fsS --max-time 5 "$OLLAMA_URL/api/version" >/dev/null 2>&1; then
+        warn "Ollama non è in esecuzione: bypass automatico (puoi configurare Ollama o un LLM esterno tramite API key)"
+        progress 100 "Bypassato: in attesa di Ollama o LLM esterno"
+        return 0
+    fi
+    local all=($(models)) i=0 n span
+    n=${#all[@]}
+    span=$((100 / n))
+    for m in "${all[@]}"; do
+        if model_present "$m"; then
+            info "Rete neurale già presente: $m"
+        else
+            info "Download rete neurale: $m"
+            retry 3 10 pull_model "$m" $((i * span)) "$span" || fail "Download del modello $m non riuscito"
+            model_present "$m" || fail "Modello $m non disponibile dopo il download"
+        fi
+        i=$((i + 1))
+        progress $((i * span)) "Rete neurale pronta: $m"
+    done
+    progress 100 "Reti neurali installate"
+}
+
+step_main "$@"

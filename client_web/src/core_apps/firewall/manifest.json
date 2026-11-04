@@ -1,0 +1,36 @@
+{
+  "id": "firewall",
+  "name": "Security & Firewall",
+  "icon": "ShieldCheck",
+  "version": "5.0.0",
+  "description": "NetGuard, ARP inspection and firewall rules",
+  "scope": "core_apps/firewall",
+  "target": "global",
+  "window": {
+    "defaultWidth": 65,
+    "defaultHeight": 75,
+    "minWidth": 25,
+    "resizable": true
+  },
+  "toolbars": [
+    {
+      "id": "system",
+      "items": [
+        {
+          "type": "action",
+          "id": "refresh",
+          "labelKey": "os_refresh",
+          "shortcut": "F5"
+        }
+      ]
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "Qv15MoNYxkA7",
+    "url": "https://img.icons8.com/?size=240&id=Qv15MoNYxkA7&format=png"
+  },
+  "category": "security"
+}

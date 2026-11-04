@@ -1,0 +1,14 @@
+{
+  "id": "expert_work",
+  "name": "Esperto al lavoro",
+  "icon": "🧑‍🔧",
+  "priority": 62,
+  "size": "m",
+  "agent": "experts",
+  "intents": [
+    "expert"
+  ],
+  "ttl": 600,
+  "description": "Mostra in tempo reale l'esperto che sta rispondendo: domanda, strumenti usati e risposta.",
+  "tone": "violet"
+}

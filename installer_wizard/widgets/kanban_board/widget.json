@@ -1,0 +1,13 @@
+{
+  "id": "kanban_board",
+  "name": "Kanban Agente",
+  "icon": "📋",
+  "priority": 65,
+  "size": "l",
+  "intents": [
+    "kanban_board"
+  ],
+  "description": "Tasks",
+  "ttl": 300,
+  "tone": "amber"
+}

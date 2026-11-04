@@ -1,0 +1,15 @@
+{
+  "id": "code_view",
+  "name": "Visualizzatore Codice",
+  "icon": "💻",
+  "priority": 80,
+  "size": "l",
+  "intents": [
+    "code_view"
+  ],
+  "description": "Mostra il codice chiesto ad Nuxiva con il linguaggio e un pulsante per copiarlo (resta 15 minuti).",
+  "ttl": 900,
+  "panel_type": "code",
+  "tone": "cyan",
+  "essential": true
+}

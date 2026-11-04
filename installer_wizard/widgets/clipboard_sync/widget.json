@@ -1,0 +1,14 @@
+{
+  "id": "clipboard_sync",
+  "personal": true,
+  "name": "Appunti Condivisi",
+  "icon": "📋",
+  "priority": 55,
+  "size": "m",
+  "intents": [
+    "clipboard_sync"
+  ],
+  "description": "Ultimo testo copiato, condiviso tra i dispositivi.",
+  "ttl": 60,
+  "tone": "blue"
+}

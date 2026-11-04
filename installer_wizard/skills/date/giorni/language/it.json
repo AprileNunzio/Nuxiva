@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "skills/date/giorni",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Calcolo Giorni",
+    "desc": "Differenza tra date e giorni lavorativi",
+    "error_date": "Data non valida",
+    "result_days": "Giorni trascorsi: {{days}}"
+  }
+}

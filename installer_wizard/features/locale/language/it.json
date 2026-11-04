@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "features/locale",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Lingua e Localizzazione",
+    "desc": "Preferenze della lingua e dizionari del sistema",
+    "error.unsupported_lang": "Lingua dello schermo non supportata",
+    "error.invalid_request": "Richiesta non valida",
+    "status.saved": "Preferenza lingua salvata",
+    "action.switch": "Cambia lingua"
+  }
+}

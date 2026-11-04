@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Brain",
+    "description": "Which models {assistant} uses to talk, reason and work",
+    "scope_local": "local server",
+    "scope_paired": "paired node",
+    "scope_mesh": "not paired",
+    "notice_unpaired": "This node is visible on the network but not paired.",
+    "notice_paired": "Paired nodes use the server's models: manage them from the local server. To use this node's power, add it as a service in the Providers section."
+  }
+}

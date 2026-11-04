@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+set -euo pipefail
+API=http://127.0.0.1:8080/api/internal
+C='\033[0;36m'; G='\033[0;32m'; R='\033[0;31m'; N='\033[0m'
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/i18n.sh"
+load_os_language
+
+call() {
+    curl -fsS --max-time "${2:-30}" -X POST -H "X-Nuxiva-Request: 1" "$API/$1" \
+        || { echo -e "${R}${L[sup_unresponsive]}${N}" >&2; exit 1; }
+}
+
+case "${1:-status}" in
+    status)
+        curl -fsS --max-time 10 http://127.0.0.1/api/state | jq -r \
+          --arg phase "${L[status_phase]}" \
+          --arg msg "${L[status_message]}" \
+          --arg err "${L[status_error]}" \
+          --arg model "${L[status_model]}" \
+          --arg comps "${L[status_components]}" \
+          --arg steps "${L[status_steps]}" '
+          "\($phase):      \(.phase_label) (\(.phase)) — \(.progress)%",
+          "\($msg): \(.message)",
+          (if .last_error != "" then "\($err):    \(.last_error)" else empty end),
+          "\($model):   \(.llm_model)",
+          "",
+          "\($comps):", (.components | to_entries[] | "  \(.value.status | if . == "ok" then "●" else "○" end) \(.value.label): \(.value.detail)"),
+          "",
+          "\($steps):", (.catalog[] as $c | "  \($c.title): \(.steps[$c.id].status // "in attesa")")'
+        ;;
+    update|upgrade)
+        if [[ "${2:-}" == "--force" || "${2:-}" == "-f" ]]; then
+            [ "$EUID" -eq 0 ] || exec sudo -- "$0" "$@"
+            bash /opt/Nuxiva/scripts/os/force-upgrade.sh "${3:-main}"
+            exit 0
+        fi
+        echo -e "${C}${L[checking_updates]}${N}"
+        call update 60 | jq -r '.message'
+        ;;
+    force-upgrade|force-update)
+        [ "$EUID" -eq 0 ] || exec sudo -- "$0" "$@"
+        bash /opt/Nuxiva/scripts/os/force-upgrade.sh "${2:-main}"
+        ;;
+    ripara|fix|repair)
+        [ "$EUID" -eq 0 ] || exec sudo -- "$0" "$@"
+        bash /opt/Nuxiva/scripts/os/repair.sh "${@:2}"
+        ;;
+    logs)
+        src=${2:-install}
+        case "$src" in
+            install) tail -n 200 -f /var/log/nuxiva/install.log ;;
+            supervisor|ollama) journalctl -fu "${src/supervisor/nuxiva-supervisor}" ;;
+            voice|vision|ear) journalctl -fu "nuxiva-$src" ;;
+            core) if systemctl is-active --quiet nuxiva-core; then journalctl -u nuxiva-core -f -n 200; else docker logs -f --tail 200 nuxiva-core; fi ;;
+            *) echo "${L[sources_err]}" >&2; exit 2 ;;
+        esac
+        ;;
+    setup-code)
+        curl -fsS --max-time 10 http://127.0.0.1/api/setup | jq -r \
+          --arg pfx "${L[setup_code_prefix]}" \
+          --arg done "${L[setup_code_done]}" '
+          if .needed then "\($pfx) \(.code)" else "\($done)" end'
+        ;;
+    background)
+        curl -fsS --max-time 10 http://127.0.0.1/api/state | jq -r \
+          --arg title "${L[background_status]}" '
+          "\($title): \(.background.done)/\(.background.total) — \(.background.progress)%\(if .background.paused then " (in pausa)" else "" end)",
+          (.background.items[] | "  \(if .status == "done" then "●" elif .status == "running" then "◐" else "○" end) \(.title) (\(.size_gb) GB): \(.status)")'
+        ;;
+    version)
+        git -c safe.directory='*' -C /opt/Nuxiva log -1 --format='%h %ci %s'
+        ;;
+    *)
+        echo "${L[usage]}" >&2
+        exit 2
+        ;;
+esac

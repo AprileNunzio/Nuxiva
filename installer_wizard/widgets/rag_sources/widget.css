@@ -1,0 +1,20 @@
+.w-rag_sources .rg-sum { font-size: 12px; color: var(--text-dim); margin: 2px 0 8px; }
+.w-rag_sources .rg-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.w-rag_sources .rg-row { display: grid; grid-template-columns: 18px 30px 1fr auto; gap: 10px; align-items: start; padding: 8px 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.025); border: 1px solid transparent; }
+.w-rag_sources .rg-row.has { cursor: pointer; }
+.w-rag_sources .rg-row.has:hover, .w-rag_sources .rg-row:focus-visible { border-color: rgba(var(--tone), 0.35); outline: none; }
+.w-rag_sources .rg-row:first-child.hi { background: rgba(var(--tone), 0.08); border-color: rgba(var(--tone), 0.3); }
+.w-rag_sources .rg-rank { font-size: 11px; color: var(--text-faint); padding-top: 8px; text-align: right; }
+.w-rag_sources .rg-ic { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; background: rgba(var(--tone), 0.12); color: rgb(var(--tone)); }
+.w-rag_sources .rg-ic .wk-svg { width: 16px; height: 16px; }
+.w-rag_sources .rg-body { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.w-rag_sources .rg-body b { font-weight: 500; font-size: 13px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.w-rag_sources .rg-body small { font-size: 11px; color: var(--text-faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--mono); }
+.w-rag_sources .rg-body small:empty { display: none; }
+.w-rag_sources .rg-body .wk-bar { margin-top: 3px; }
+.w-rag_sources .rg-snip { display: none; margin-top: 6px; padding: 8px 10px; border-left: 2px solid rgba(var(--tone), 0.6); background: rgba(0, 0, 0, 0.2); border-radius: 0 8px 8px 0; font-size: 12px; line-height: 1.45; color: var(--text-dim); quotes: "\201C" "\201D"; white-space: pre-line; overflow-wrap: anywhere; }
+.w-rag_sources .rg-row.open .rg-snip { display: block; }
+.w-rag_sources .rg-val { font-size: 15px; color: var(--text); padding-top: 6px; }
+.w-rag_sources .rg-val small { font-size: 10px; color: var(--text-faint); }
+.w-rag_sources .rg-row.lo .rg-val { color: var(--text-faint); }
+.w-rag_sources .rg-more { margin-top: 6px; font-size: 11px; }

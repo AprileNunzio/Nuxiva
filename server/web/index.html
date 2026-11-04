@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NUXIVA — Tactical Autonomous Cockpit</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/features/onboarding/wizard.css">
+  <link rel="stylesheet" href="/static/features/multimodal_surveillance/style.css">
+  <link rel="stylesheet" href="/static/features/human_affective_engine/style.css">
+  <link rel="stylesheet" href="/static/features/wearable_vitals_hub/style.css">
+  <link rel="stylesheet" href="/static/features/user_presence_vitals/style.css">
+  <link rel="stylesheet" href="/static/features/cognitive_triage_agents/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+
+  <!-- HEADER TATTICO SUPERIORE -->
+  <header class="tactical-header">
+    <div class="brand-section">
+      <div class="brand-core-reactor">
+        <div class="brand-core-inner"></div>
+      </div>
+      <div class="brand-text">
+        <h1>NUXIVA <span>TACTICAL OS</span></h1>
+      </div>
+    </div>
+
+    <!-- Telemetria in tempo reale -->
+    <div class="tactical-telemetry-pills">
+      <div class="telemetry-pill accent">
+        <span class="pulse-dot"></span>
+        <span id="header-rust-bus" data-i18n="header_rust_bus">RUST BUS: 0.12ms</span>
+      </div>
+      <div class="telemetry-pill">
+        <span data-i18n="header_ternary_bypass">78% Bypass Token</span>
+      </div>
+      <div class="telemetry-pill warning" id="hud-presence-status">
+        <span class="pulse-dot"></span>
+        <span id="hud-presence-text" data-i18n="header_presence">WEBCAM: In attesa utente</span>
+      </div>
+      <div class="telemetry-pill">
+        <span data-i18n="header_lang">LINGUA:</span>
+        <select id="lang-selector" style="background:transparent; color:var(--cyan-glow); border:none; font-family:var(--font-mono); font-weight:700; cursor:pointer; outline:none;">
+          <option value="it" style="background:#0b0f19; color:#fff;">🇮🇹 IT</option>
+          <option value="en" style="background:#0b0f19; color:#fff;">🇬🇧 EN</option>
+          <option value="fr" style="background:#0b0f19; color:#fff;">🇫🇷 FR</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <nav class="plance-navbar">
+    <button class="plancia-tab-btn active" data-deck="deck-projects" id="tab-nav-projects">
+      <span>🚀</span> <span class="tab-label">Plancia War Room &amp; Progetti 24/7</span>
+    </button>
+    <button class="plancia-tab-btn" data-deck="deck-cognitive-flow" id="tab-nav-flow">
+      <span>⚡</span> <span class="tab-label">Plancia Flusso Cognitivo</span>
+    </button>
+    <button class="plancia-tab-btn" data-deck="deck-agent-vault" id="tab-nav-vault">
+      <span>🛠️</span> <span class="tab-label">Plancia Agent Vault &amp; Windows</span>
+    </button>
+    <button class="plancia-tab-btn" data-deck="deck-rbac" id="tab-nav-rbac">
+      <span>🛡️</span> <span class="tab-label">Plancia RBAC &amp; Personale</span>
+    </button>
+    <button class="plancia-tab-btn" data-deck="deck-proximity-hud" id="tab-nav-hud">
+      <span>👁️</span> <span class="tab-label">Plancia Proximity HUD</span>
+    </button>
+    <button class="plancia-tab-btn" data-deck="deck-cad-media" id="tab-nav-cad">
+      <span>📐</span> <span class="tab-label">Plancia CAD &amp; Media Studio</span>
+    </button>
+    <button class="plancia-tab-btn" data-deck="deck-telemetry" id="tab-nav-telemetry">
+      <span>📊</span> <span class="tab-label">Plancia Telemetria &amp; Kernel</span>
+    </button>
+    <button class="plancia-tab-btn" data-deck="deck-chatbot-mesh" id="tab-nav-chatbot">
+      <span>💬</span> <span class="tab-label">Plancia Assistenti &amp; Bot</span>
+    </button>
+    <button class="plancia-tab-btn" data-deck="deck-multimodal-surveillance" id="tab-nav-multimodal-surveillance">
+      <span>📡</span> <span class="tab-label">Plancia Sorveglianza &amp; Satelliti</span>
+    </button>
+    <button class="plancia-tab-btn" data-deck="deck-affective-engine" id="tab-nav-affective-engine">
+      <span>💓</span> <span class="tab-label">Plancia Motore Affettivo &amp; Umore</span>
+    </button>
+    <button class="plancia-tab-btn" data-deck="deck-wearables-vitals" id="tab-nav-wearables">
+      <span>⌚</span> <span class="tab-label">Plancia Indossabili &amp; Vitals</span>
+    </button>
+    <button class="plancia-tab-btn" data-deck="deck-emergency-vitals" id="tab-nav-emergency">
+      <span>🚨</span> <span class="tab-label">Plancia Emergenze &amp; Prossimità</span>
+    </button>
+    <button class="plancia-tab-btn" data-deck="deck-cognitive-triage" id="tab-nav-cognitive-triage">
+      <span>🧠</span> <span class="tab-label" data-i18n="tab_cognitive_triage">Plancia Triage Cognitivo &amp; Salute</span>
+    </button>
+    <button class="tactical-btn" id="btn-open-admin-wizard" style="margin-left:auto; background:linear-gradient(90deg, #10b981, #00f0ff); color:#050811; font-weight:700; border:none; box-shadow:0 0 15px rgba(0,240,255,0.4); animation:floatBob 3s ease-in-out infinite;">
+      <span data-i18n="btn_guided_setup">✨ Setup Guidato</span>
+    </button>
+  </nav>
+
+  <!-- VIEWPORT CENTRALE MULTI-PLANCIA -->
+  <main class="tactical-viewport">
+
+    <!-- ================================================================= -->
+    <!-- PLANCIA 1: WAR ROOM & MULTI-PROGETTI 24/7                         -->
+    <!-- ================================================================= -->
+    <section id="deck-projects" class="plancia-section active">
+      <div class="grid-3col">
+        <!-- Colonna 1: Selettore Progetti Aperti -->
+        <div class="tactical-card">
+          <div class="card-header">
+            <span class="card-title" data-i18n="projects_title">📁 Progetti Attivi</span>
+            <button id="btn-modal-new-project" class="tactical-btn" style="padding:0.3rem 0.6rem; font-size:0.8rem;" data-i18n="btn_new_project">+ Nuovo</button>
+          </div>
+          <div class="card-body" style="padding:0.75rem;">
+            <div id="projects-list-container" style="display:flex; flex-direction:column; gap:0.6rem;">
+            </div>
+          </div>
+        </div>
+
+        <div class="tactical-card" style="grid-column: 2;">
+          <div class="card-header">
+            <div>
+              <span class="card-title"><span data-i18n="war_room_title">🛰️ War Room:</span> <span id="current-project-title" style="color:var(--cyan-glow);">-</span></span>
+              <p id="current-project-goal" style="font-size:0.78rem; color:var(--text-muted); margin-top:2px; font-family:var(--font-mono);"></p>
+            </div>
+            <div style="text-align:right;">
+              <span id="current-project-pct" style="font-family:var(--font-mono); font-size:1.2rem; font-weight:700; color:var(--cyan-glow);">0%</span>
+              <div id="current-project-auto-badge" class="badge-tag" style="display:none; background:rgba(16,185,129,0.2); color:#34d399; margin-top:2px;" data-i18n="war_room_autonomous_badge">24/7 Autonomo</div>
+            </div>
+          </div>
+
+          <div style="padding:0.75rem 1.25rem; border-bottom:1px solid rgba(255,255,255,0.06); background:rgba(0,0,0,0.3);">
+            <div class="progress-container">
+              <div id="current-project-progress-bar" class="progress-bar-fill" style="width:0%;"></div>
+            </div>
+          </div>
+
+          <div class="card-body" style="display:flex; flex-direction:column; gap:0.75rem;">
+            <div id="war-room-feed" class="war-room-timeline">
+            </div>
+            <div style="display:flex; gap:0.5rem; margin-top:auto;">
+              <input type="text" id="war-room-input" class="tactical-input" data-i18n-placeholder="war_room_input_placeholder" placeholder="Intervieni direttamente nella War Room con il team...">
+              <button id="btn-war-room-send" class="tactical-btn" data-i18n="war_room_send_btn">Invia</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:1.5rem;">
+          <div class="tactical-card">
+            <div class="card-header">
+              <span class="card-title" data-i18n="milestones_title">🎯 Milestone di Avanzamento</span>
+            </div>
+            <div class="card-body" style="padding:0.75rem;">
+              <div id="project-milestones-list" style="display:flex; flex-direction:column; gap:0.6rem;">
+              </div>
+            </div>
+          </div>
+
+          <div class="tactical-card">
+            <div class="card-header">
+              <span class="card-title" data-i18n="team_title">🤖 Team Agenti Operativo</span>
+            </div>
+            <div class="card-body" style="padding:0.75rem;">
+              <div id="project-team-roster" style="display:flex; flex-direction:column; gap:0.5rem;">
+              </div>
+              <div style="margin-top:0.75rem; display:flex; gap:0.5rem;">
+                <select id="select-recruit-agent" class="tactical-input" style="font-size:0.8rem;"></select>
+                <button id="btn-recruit-agent" class="tactical-btn" style="padding:0.4rem 0.8rem; font-size:0.8rem;" data-i18n="btn_recruit_confirm">Conferma</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- PLANCIA 2: FLUSSO COGNITIVO NEURALE                               -->
+    <!-- ================================================================= -->
+    <section id="deck-cognitive-flow" class="plancia-section">
+      <div class="grid-2col">
+        <!-- Grafo e Nodi Dettagliati -->
+        <div class="tactical-card">
+          <div class="card-header">
+            <span class="card-title" data-i18n="flow_title">⚡ Grafo Decisionale Cognitivo Live</span>
+            <span class="badge-tag" style="background:rgba(0,240,255,0.2); color:var(--cyan-glow);" data-i18n="flow_badge">System 1 &amp; System 2</span>
+          </div>
+          <div class="card-body">
+            <div style="margin-bottom:1rem; padding:0.75rem; background:rgba(0,240,255,0.05); border:1px solid var(--border-neon); border-radius:8px; font-size:0.8rem;" data-i18n="flow_explainer">
+              Ogni passaggio analizza la richiesta: <strong>Agente chiamato</strong>, <strong>Tool richiesto</strong>, <strong>Widget proiettato</strong> e <strong>Decisione ternaria</strong> (+1, 0, -1).
+            </div>
+            <div id="cognitive-flow-nodes-list">
+            </div>
+          </div>
+        </div>
+
+        <div class="tactical-card">
+          <div class="card-header">
+            <span class="card-title" data-i18n="diagram_title">📊 Diagramma di Flusso Strutturato</span>
+          </div>
+          <div class="card-body">
+            <div id="mermaid-graph-container" style="background:rgba(5,8,17,0.7); border-radius:8px; padding:1rem; min-height:350px; overflow-x:auto;">
+              <div class="mermaid" id="mermaid-render-target">
+                graph TD
+                  Query([Richiesta Utente]) --> Laws{Leggi Fondamentali}
+                  Laws --> FastPath{Logica Ternaria: +1 Fast-Pass?}
+                  FastPath -- "+1" --> DirectTool[Esecuzione Senza LLM]
+                  FastPath -- "0" --> Sys2[System 2 Deliberazione]
+                  Sys2 --> AgentExec[Esecuzione Agente & Tool]
+                  AgentExec --> WidgetOut[Proiezione Widget Reattivo]
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="deck-agent-vault" class="plancia-section">
+      <div class="grid-3col">
+        <div class="tactical-card">
+          <div class="card-header">
+            <span class="card-title" data-i18n="vault_catalog_title">🤖 Catalogo Agenti</span>
+          </div>
+          <div class="card-body" style="padding:0.75rem;">
+            <div id="agent-vault-selector-list" style="display:flex; flex-direction:column; gap:0.5rem;">
+            </div>
+          </div>
+        </div>
+
+        <div class="tactical-card" style="grid-column: 2;">
+          <div class="card-header">
+            <div>
+              <span class="card-title" id="vault-selected-agent-name">Windows Power &amp; System Specialist</span>
+              <span style="font-size:0.75rem; font-family:var(--font-mono); color:var(--text-muted);" id="vault-selected-agent-path">Directory protetta: data/agents/windows_system_agent/</span>
+            </div>
+            <button id="btn-save-agent-instructions" class="tactical-btn" data-i18n="btn_save_instructions">Salva Modifiche</button>
+          </div>
+          <div class="card-body" style="display:flex; flex-direction:column; gap:1rem;">
+            <div>
+              <label style="font-size:0.8rem; font-weight:600; color:var(--cyan-glow); display:block; margin-bottom:0.4rem;" data-i18n="vault_instructions_label">
+                Istruzioni Operative &amp; System Prompt (instructions.md):
+              </label>
+              <textarea id="vault-agent-instructions" class="tactical-input" rows="8" style="font-family:var(--font-mono); font-size:0.82rem; line-height:1.5;"></textarea>
+            </div>
+
+            <div style="border-top:1px solid rgba(255,255,255,0.08); padding-top:1rem;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                <span style="font-size:0.85rem; font-weight:600; color:#34d399;" data-i18n="vault_knowledge_title">📚 File di Conoscenza &amp; Regole (knowledge/):</span>
+                <button id="btn-add-knowledge-modal" class="tactical-btn secondary" style="padding:0.25rem 0.5rem; font-size:0.75rem;" data-i18n="vault_add_rule_btn">+ Aggiungi Regola</button>
+              </div>
+              <div id="vault-knowledge-docs-list" style="display:flex; flex-direction:column; gap:0.4rem;">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tactical-card">
+          <div class="card-header">
+            <span class="card-title" data-i18n="vault_params_title">⚙️ Parametri &amp; Tool Custom</span>
+          </div>
+          <div class="card-body" style="display:flex; flex-direction:column; gap:1rem;">
+            <div>
+              <label style="font-size:0.78rem; color:var(--text-muted);" data-i18n="vault_model_label">Modello LLM Preferito:</label>
+              <input type="text" id="vault-agent-model" class="tactical-input" value="default">
+            </div>
+            <div>
+              <label style="font-size:0.78rem; color:var(--text-muted);" data-i18n="vault_temp_label">Temperatura:</label>
+              <input type="number" id="vault-agent-temp" class="tactical-input" min="0" max="1" step="0.05" value="0.7">
+            </div>
+            <div>
+              <label style="font-size:0.78rem; color:var(--text-muted);" data-i18n="vault_widget_label">Widget Primario:</label>
+              <input type="text" id="vault-agent-widget" class="tactical-input" value="windows_desktop_control_widget">
+            </div>
+
+            <div style="border-top:1px solid rgba(255,255,255,0.08); padding-top:0.75rem;">
+              <span style="font-size:0.8rem; font-weight:600; color:var(--purple-glow);" data-i18n="vault_tools_title">🔧 Script Tool Custom (tools/):</span>
+              <div id="vault-custom-tools-list" style="margin-top:0.4rem; display:flex; flex-direction:column; gap:0.4rem;">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- PLANCIA 4: RBAC & GESTIONE PERSONALE (CASA & AZIENDA)             -->
+    <!-- ================================================================= -->
+    <section id="deck-rbac" class="plancia-section">
+      <div class="grid-2col">
+        <!-- Selettore Profili Casa vs Azienda -->
+        <div class="tactical-card">
+          <div class="card-header">
+            <span class="card-title" data-i18n="rbac_users_title">👥 Utenti &amp; Personale Registrato</span>
+            <div style="display:flex; gap:0.5rem;">
+              <button class="tactical-btn secondary rbac-filter-btn active" data-filter="all" data-i18n="rbac_filter_all">Tutti</button>
+              <button class="tactical-btn secondary rbac-filter-btn" data-filter="home" data-i18n="rbac_filter_home">Casa / Staff</button>
+              <button class="tactical-btn secondary rbac-filter-btn" data-filter="enterprise" data-i18n="rbac_filter_enterprise">Azienda</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div id="rbac-users-list" style="display:flex; flex-direction:column; gap:0.75rem;">
+            </div>
+          </div>
+        </div>
+
+        <div class="tactical-card">
+          <div class="card-header">
+            <span class="card-title" data-i18n="rbac_matrix_title">🛡️ Matrice dei Permessi Granulare</span>
+          </div>
+          <div class="card-body">
+            <div style="margin-bottom:1rem; font-size:0.82rem; color:var(--text-muted);" data-i18n="rbac_matrix_explainer">
+              Ogni sezione, telecamera, comando o strumento è vincolato all'autorizzazione del profilo:
+            </div>
+            <div id="rbac-matrix-display" style="display:flex; flex-direction:column; gap:0.5rem; max-height:480px; overflow-y:auto;">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="deck-proximity-hud" class="plancia-section">
+      <div class="grid-2col" style="margin-bottom:1.5rem;">
+        <div class="tactical-card" style="grid-column: 1 / -1;">
+          <div class="card-header">
+            <div style="display:flex; align-items:center; gap:0.75rem;">
+              <span class="card-title" data-i18n="vision_control_title">🎯 Controllo Visione: Mani &amp; Occhi (Live Gesture &amp; Gaze Hub)</span>
+              <span id="vision-camera-status-badge" class="badge-tag" style="background:rgba(0,240,255,0.15); color:var(--cyan-glow);" data-i18n="vision_badge_inactive">Disattivo</span>
+            </div>
+            <button id="btn-toggle-vision-camera" class="tactical-btn" style="background:linear-gradient(90deg, #10b981, #00f0ff); color:#050811; font-weight:700;" data-i18n="btn_toggle_vision">
+              📹 Avvia Telecamera Visione (Mani &amp; Occhi)
+            </button>
+          </div>
+          <div class="card-body" style="display:flex; flex-wrap:wrap; gap:1.5rem; align-items:flex-start;">
+            <div style="flex:1 1 500px; max-width:640px; position:relative; background:#070c18; border-radius:12px; overflow:hidden; border:1px solid rgba(0,240,255,0.3); box-shadow:0 0 25px rgba(0,240,255,0.15);">
+              <video id="vision-webcam-video" playsinline muted autoplay style="display:none;"></video>
+              <canvas id="vision-webcam-canvas" width="640" height="360" style="width:100%; height:auto; display:block; aspect-ratio:16/9;"></canvas>
+              <div style="position:absolute; top:10px; right:12px; pointer-events:none; font-family:var(--font-mono); font-size:0.75rem; color:#34d399; background:rgba(0,0,0,0.6); padding:2px 8px; border-radius:4px;">
+                ● LIVE STREAM SENSORY BUS
+              </div>
+            </div>
+
+            <div style="flex:1 1 340px; display:flex; flex-direction:column; gap:1.2rem;">
+              <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:1rem; display:flex; flex-direction:column; gap:0.8rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:0.85rem; color:var(--text-muted);" data-i18n="gesture_label">🖐️ Gesto Mani Rilevato:</span>
+                  <strong id="hud-gesture-current-label" style="font-size:1.1rem; color:#00f0ff; font-family:var(--font-mono);">NESSUNO</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-size:0.85rem; color:var(--text-muted);" data-i18n="gaze_label">👁️ Sguardo &amp; Attenzione:</span>
+                  <strong id="hud-gaze-state-label" style="font-size:1.0rem; color:#34d399; font-family:var(--font-mono);">🎯 Schermo (Focalizzato)</strong>
+                </div>
+                <div>
+                  <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:4px;">
+                    <span style="color:var(--text-muted);" data-i18n="attention_index_label">Indice Attenzione Visiva:</span>
+                    <span id="hud-attention-percentage-val" style="color:var(--cyan-glow); font-family:var(--font-mono);">100%</span>
+                  </div>
+                  <div class="progress-container" style="height:8px;">
+                    <div id="hud-attention-bar-fill" class="progress-bar-fill" style="width:100%; background:linear-gradient(90deg, #10b981, #00f0ff);"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="display:flex; flex-direction:column; gap:0.6rem; font-size:0.85rem;">
+                <label style="display:flex; align-items:center; gap:0.6rem; cursor:pointer;">
+                  <input type="checkbox" id="chk-enable-hands-gesture" checked style="accent-color:var(--cyan-glow);">
+                  <span data-i18n="chk_hands_gesture">Abilita Controllo Navigazione con le Mani (Swipe, Pugno, Palmo)</span>
+                </label>
+                <label style="display:flex; align-items:center; gap:0.6rem; cursor:pointer;">
+                  <input type="checkbox" id="chk-enable-eye-gaze" checked style="accent-color:var(--cyan-glow);">
+                  <span data-i18n="chk_eye_gaze">Abilita Sguardo Attivo (Wake-on-Gaze) &amp; Auto-Lock per Distrazione (8s)</span>
+                </label>
+                <label style="display:flex; align-items:center; gap:0.6rem; cursor:pointer;">
+                  <input type="checkbox" id="chk-audio-feedback" checked style="accent-color:var(--cyan-glow);">
+                  <span data-i18n="chk_audio_feedback">Feedback Audio Cibernetico al Riconoscimento Gesti</span>
+                </label>
+                <div style="margin-top:0.4rem;">
+                  <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                    <span style="color:var(--text-muted);" data-i18n="sensitivity_label">Sensibilità Riconoscimento:</span>
+                  </div>
+                  <input type="range" id="range-gesture-sensitivity" min="0.3" max="0.95" step="0.05" value="0.75" style="width:100%; accent-color:var(--cyan-glow);">
+                </div>
+              </div>
+
+              <div style="background:rgba(0,240,255,0.03); border:1px solid rgba(0,240,255,0.15); border-radius:8px; padding:0.8rem;">
+                <span style="font-size:0.8rem; font-family:var(--font-mono); color:var(--cyan-glow); display:block; margin-bottom:0.5rem;" data-i18n="test_bench_title">⚡ BANCO TEST RAPIDO GESTI:</span>
+                <div style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+                  <button id="btn-test-gesture-swipe-l" class="tactical-btn" style="padding:0.35rem 0.65rem; font-size:0.8rem;" title="Cambia alla plancia successiva">👉 Swipe Destra</button>
+                  <button id="btn-test-gesture-swipe-r" class="tactical-btn" style="padding:0.35rem 0.65rem; font-size:0.8rem;" title="Cambia alla plancia precedente">👈 Swipe Sinistra</button>
+                  <button id="btn-test-gesture-fist" class="tactical-btn danger" style="padding:0.35rem 0.65rem; font-size:0.8rem;" title="Blocca immediatamente lo schermo">✊ Pugno (Lock)</button>
+                  <button id="btn-test-gesture-palm" class="tactical-btn secondary" style="padding:0.35rem 0.65rem; font-size:0.8rem;" title="Stop vocale o pausa">🖐️ Palmo (Pausa)</button>
+                  <button id="btn-test-gesture-thumb" class="tactical-btn" style="padding:0.35rem 0.65rem; font-size:0.8rem; background:rgba(16,185,129,0.2); border-color:#10b981;" title="Conferma AI">👍 Pollice Su</button>
+                  <button id="btn-test-gesture-peace" class="tactical-btn" style="padding:0.35rem 0.65rem; font-size:0.8rem;" title="Attiva Assistente Bot">✌️ Segno V (Chat)</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2col">
+        <div class="tactical-card">
+          <div class="card-header">
+            <span class="card-title" data-i18n="radar_title">👁️ Radar di Prossimità &amp; Presenza Biometrica</span>
+            <span id="hud-biometric-badge" class="badge-tag" style="background:rgba(0,240,255,0.2); color:var(--cyan-glow);" data-i18n="radar_badge_active">Attivo</span>
+          </div>
+          <div class="card-body" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1.5rem; min-height:340px;">
+            <div style="width:180px; height:180px; border-radius:50%; border:2px dashed var(--cyan-glow); display:flex; align-items:center; justify-content:center; position:relative; box-shadow:0 0 30px rgba(0,240,255,0.2);">
+              <div style="width:130px; height:130px; border-radius:50%; background:rgba(0,240,255,0.08); display:flex; align-items:center; justify-content:center;">
+                <span style="font-size:2.5rem;" id="hud-radar-icon">👤</span>
+              </div>
+            </div>
+            <div style="text-align:center;">
+              <h3 id="hud-detected-user-name" style="font-family:var(--font-display); font-size:1.3rem; color:#fff;" data-i18n="hud_user_default">Amministratore Primario (Owner)</h3>
+              <p id="hud-detection-details" style="font-family:var(--font-mono); font-size:0.8rem; color:#34d399; margin-top:4px;">Distanza: 0.8m | Confidenza Biometrica: 98%</p>
+            </div>
+            <div style="display:flex; gap:1rem;">
+              <button id="btn-toggle-presence-near" class="tactical-btn" data-i18n="btn_sim_near">Simula Avvicinamento (Sblocca)</button>
+              <button id="btn-toggle-presence-away" class="tactical-btn secondary" data-i18n="btn_sim_away">Simula Allontanamento (Proteggi)</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tactical-card">
+          <div class="card-header">
+            <span class="card-title" data-i18n="unlocked_projects_title">📋 Progetti Sbloccati con Visione &amp; Presenza</span>
+          </div>
+          <div class="card-body">
+            <div id="hud-projects-projected-list" style="display:flex; flex-direction:column; gap:0.75rem;">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- PLANCIA 6: CAD & MEDIA STUDIO                                     -->
+    <!-- ================================================================= -->
+    <section id="deck-cad-media" class="plancia-section">
+      <div class="grid-2col">
+        <!-- CAD Viewport & BOM -->
+        <div class="tactical-card">
+          <div class="card-header">
+            <span class="card-title" data-i18n="cad_title">📐 Disegni AutoCAD &amp; File DXF Generati</span>
+            <button id="btn-test-gen-dxf" class="tactical-btn" style="padding:0.3rem 0.6rem; font-size:0.8rem;" data-i18n="btn_test_dxf">+ Genera DXF Test</button>
+          </div>
+          <div class="card-body">
+            <div id="cad-files-list" style="display:flex; flex-direction:column; gap:0.6rem;">
+            </div>
+          </div>
+        </div>
+
+        <div class="tactical-card">
+          <div class="card-header">
+            <span class="card-title" data-i18n="social_title">📱 Instagram &amp; Media Studio (Sovranità Linguistica)</span>
+          </div>
+          <div class="card-body" style="display:flex; flex-direction:column; gap:1rem;">
+            <div>
+              <label style="font-size:0.8rem; color:var(--text-muted);" data-i18n="social_topic_label">Argomento / Tema Post o Immagine:</label>
+              <input type="text" id="social-topic-input" class="tactical-input" value="Lancio Nuovo Pezzo Meccanico in Ergal">
+            </div>
+            <div style="display:flex; gap:0.5rem;">
+              <button id="btn-gen-instagram-copy" class="tactical-btn" data-i18n="btn_gen_instagram">Genera Copy Instagram</button>
+              <button id="btn-gen-image-with-text" class="tactical-btn secondary" data-i18n="btn_gen_image">Genera Immagine con Scritta</button>
+            </div>
+            <div id="social-output-preview" style="background:rgba(5,8,17,0.8); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:1rem; font-family:var(--font-mono); font-size:0.82rem; white-space:pre-wrap; min-height:160px;" data-i18n="social_preview_placeholder">
+              Anteprima dei deliverable generati in lingua di default...
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="deck-telemetry" class="plancia-section">
+      <div class="grid-3col">
+        <div class="tactical-card">
+          <div class="card-header"><span class="card-title" data-i18n="telem_rust_title">⚡ Rust Bus &amp; LangID</span></div>
+          <div class="card-body" style="display:flex; flex-direction:column; gap:0.75rem;">
+            <div style="padding:0.75rem; background:rgba(0,240,255,0.05); border-radius:8px;">
+              <span style="font-size:0.75rem; color:var(--text-muted);" data-i18n="telem_router_latency">Latenza Topic Router (bus-core):</span>
+              <h2 style="color:var(--cyan-glow); font-family:var(--font-mono);">0.08 ms</h2>
+            </div>
+            <div style="padding:0.75rem; background:rgba(16,185,129,0.05); border-radius:8px;">
+              <span style="font-size:0.75rem; color:var(--text-muted);" data-i18n="telem_lang_detection">Rilevamento Lingua (langid):</span>
+              <h2 style="color:#34d399; font-family:var(--font-mono);">0.04 ms (0 Token LLM)</h2>
+            </div>
+          </div>
+        </div>
+
+        <div class="tactical-card">
+          <div class="card-header"><span class="card-title" data-i18n="telem_ternary_title">🧠 Decisioni a Logica Ternaria</span></div>
+          <div class="card-body" style="display:flex; flex-direction:column; gap:0.75rem;">
+            <div style="padding:0.75rem; background:rgba(139,92,246,0.05); border-radius:8px;">
+              <span style="font-size:0.75rem; color:var(--text-muted);" data-i18n="telem_fast_pass">Fast-Pass (+1) Senza Chiamate:</span>
+              <h2 style="color:var(--purple-glow); font-family:var(--font-mono);">78% delle query</h2>
+            </div>
+            <div style="padding:0.75rem; background:rgba(245,158,11,0.05); border-radius:8px;">
+              <span style="font-size:0.75rem; color:var(--text-muted);" data-i18n="telem_anti_loop">Stalli Anti-Loop Neutralizzati (-1):</span>
+              <h2 id="metric-anti-loop-interventions" style="color:var(--amber-glow); font-family:var(--font-mono);">12 Interventi</h2>
+            </div>
+          </div>
+        </div>
+
+        <div class="tactical-card">
+          <div class="card-header"><span class="card-title" data-i18n="telem_host_title">🖥️ Risorse Sistema Host</span></div>
+          <div class="card-body" style="display:flex; flex-direction:column; gap:0.75rem;">
+            <div>
+              <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:4px;">
+                <span data-i18n="telem_cpu_label">CPU Load:</span> <span id="telem-cpu-val" style="color:var(--cyan-glow);">14%</span>
+              </div>
+              <div class="progress-container"><div id="telem-cpu-bar" class="progress-bar-fill" style="width:14%;"></div></div>
+            </div>
+            <div>
+              <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:4px;">
+                <span data-i18n="telem_ram_label">RAM Usage:</span> <span id="telem-ram-val" style="color:#34d399;">38%</span>
+              </div>
+              <div class="progress-container"><div id="telem-ram-bar" class="progress-bar-fill" style="width:38%; background:linear-gradient(90deg, #10b981, #00f0ff);"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- PLANCIA 8: ASSISTENTI & BOT MULTI-PERSONA (PERSONALIZZAZIONI)     -->
+    <!-- ================================================================= -->
+    <section id="deck-chatbot-mesh" class="plancia-section">
+      <div class="grid-3col">
+        <!-- Colonna 1: Selettore Persona Casa & Chatbot Esperto -->
+        <div class="tactical-card">
+          <div class="card-header">
+            <span class="card-title" data-i18n="persona_title">👥 Persona &amp; Chatbot</span>
+          </div>
+          <div class="card-body" style="display:flex; flex-direction:column; gap:1rem;">
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px;" data-i18n="persona_label">PERSONA DELLA CASA:</label>
+              <select id="chatbot-user-selector" style="width:100%; background:rgba(0,0,0,0.5); border:1px solid var(--border-glow); color:var(--cyan-glow); padding:0.5rem; border-radius:6px; font-family:var(--font-mono);">
+                <option value="user_primary" data-i18n="user_role_admin">👑 Utente Primario (Admin / Owner)</option>
+                <option value="user_family" data-i18n="user_role_family">🏡 Membro Famiglia (Family)</option>
+                <option value="user_guest" data-i18n="user_role_guest">🌟 Ospite / Visitatore (Guest)</option>
+                <option value="user_staff" data-i18n="user_role_staff">💼 Personale di Servizio (Staff)</option>
+              </select>
+            </div>
+
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:6px;" data-i18n="select_bot_label">SELEZIONA AGENTE CHATBOT:</label>
+              <div id="chatbot-agents-list" style="display:flex; flex-direction:column; gap:0.5rem; max-height:420px; overflow-y:auto;">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tactical-card">
+          <div class="card-header">
+            <div>
+              <span class="card-title"><span data-i18n="customization_title">⚙️ Personalizzazione per</span> <span id="chatbot-active-user-title" style="color:var(--cyan-glow);">Utente Primario</span></span>
+              <p style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;" data-i18n="customization_subtitle">Isolato in /data/user_agent_configs/ — mai sovrascritto</p>
+            </div>
+            <button id="btn-save-chatbot-persona" class="tactical-btn" style="padding:0.35rem 0.75rem; font-size:0.8rem;" data-i18n="btn_save_persona">💾 Salva</button>
+          </div>
+          <div class="card-body" style="display:flex; flex-direction:column; gap:0.9rem; max-height:560px; overflow-y:auto;">
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted);" data-i18n="nickname_label">SOPRANNOME DELL'AGENTE PER QUESTO UTENTE:</label>
+              <input type="text" id="chatbot-input-nickname" data-i18n-placeholder="nickname_placeholder" placeholder="Es. Astra, Alfred, MyCoder..." style="width:100%; background:rgba(0,0,0,0.4); border:1px solid var(--border-glow); color:#fff; padding:0.4rem; border-radius:6px; margin-top:4px;">
+            </div>
+
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted);" data-i18n="tone_label">TONO E STILE DI CONVERSAZIONE:</label>
+              <select id="chatbot-select-tone" style="width:100%; background:rgba(0,0,0,0.4); border:1px solid var(--border-glow); color:var(--cyan-glow); padding:0.4rem; border-radius:6px; margin-top:4px; font-family:var(--font-mono);">
+                <option value="friendly" data-i18n="tone_friendly">😊 Amichevole e Collaborativo</option>
+                <option value="formal" data-i18n="tone_formal">👔 Formale ed Istituzionale</option>
+                <option value="concise" data-i18n="tone_concise">⚡ Ultra-Sintetico e Diretto</option>
+                <option value="technical" data-i18n="tone_technical">🛠️ Rigoroso e Tecnico</option>
+                <option value="kid_safe" data-i18n="tone_kids">🧸 A Misura di Bambino (Educativo)</option>
+                <option value="poetic" data-i18n="tone_poetic">🎭 Poetico ed Espressivo</option>
+              </select>
+            </div>
+
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted);" data-i18n="prompt_label">ISTRUZIONI &amp; PREFERENZE PRIVATE DI QUESTA PERSONA:</label>
+              <textarea id="chatbot-user-prompt" rows="3" data-i18n-placeholder="prompt_placeholder" placeholder="Es. Rispondimi solo in elenchi puntati; non fissare appuntamenti prima delle 10:00..." style="width:100%; background:rgba(0,0,0,0.4); border:1px solid var(--border-glow); color:#fff; padding:0.4rem; border-radius:6px; margin-top:4px; font-family:var(--font-mono); font-size:0.8rem;"></textarea>
+            </div>
+
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted);" data-i18n="notes_label">NOTE PERSONALI / MEMORIA CONDIVISA:</label>
+              <textarea id="chatbot-user-knowledge" rows="2" data-i18n-placeholder="notes_placeholder" placeholder="Es. Le mie passioni, progetti personali, allergeni o abitudini di casa..." style="width:100%; background:rgba(0,0,0,0.4); border:1px solid var(--border-glow); color:#fff; padding:0.4rem; border-radius:6px; margin-top:4px; font-family:var(--font-mono); font-size:0.8rem;"></textarea>
+            </div>
+
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px;" data-i18n="active_widgets_label">WIDGET INTERATTIVI ATTIVI PER QUESTA PERSONA:</label>
+              <div id="chatbot-widgets-checkboxes" style="display:grid; grid-template-columns:1fr 1fr; gap:0.4rem;">
+              </div>
+            </div>
+
+            <div>
+              <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:4px;" data-i18n="enabled_tools_label">TOOL ABILITATI PER QUESTA PERSONA:</label>
+              <div id="chatbot-tools-checkboxes" style="display:flex; flex-direction:column; gap:0.3rem;">
+              </div>
+            </div>
+
+            <div style="padding:0.75rem; background:rgba(0,240,255,0.03); border:1px dashed var(--border-glow); border-radius:8px;">
+              <span style="font-size:0.7rem; color:var(--cyan-glow); font-family:var(--font-mono); display:block; margin-bottom:4px;" data-i18n="preview_tone_label">🔮 ANTEPRIMA TONO DI RISPOSTA:</span>
+              <p id="chatbot-tone-live-preview" style="font-size:0.78rem; color:#fff; font-style:italic;">
+                "Ciao! Sono il tuo assistente. Come posso aiutarti oggi?"
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="tactical-card" style="display:flex; flex-direction:column;">
+          <div class="card-header">
+            <div>
+              <span class="card-title"><span data-i18n="chat_channel_title">💬 Canale Chat:</span> <span id="chatbot-active-agent-name" style="color:var(--cyan-glow);">-</span></span>
+              <span id="chatbot-channel-badge" class="badge-tag" style="background:rgba(0,240,255,0.15); color:var(--cyan-glow); margin-left:6px;" data-i18n="chat_channel_badge">Multi-Channel Bot Hub</span>
+            </div>
+            <button id="btn-clear-chat-history" class="tactical-btn secondary" style="padding:0.25rem 0.5rem; font-size:0.75rem;" data-i18n="btn_clear_chat">Pulisci</button>
+          </div>
+          <div class="card-body" style="flex:1; display:flex; flex-direction:column; justify-content:space-between; padding:0.75rem; min-height:480px;">
+            <div id="chatbot-messages-stream" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:0.6rem; padding-right:4px; margin-bottom:0.75rem; max-height:360px;">
+            </div>
+
+            <div id="chatbot-rendered-widgets" style="display:flex; flex-direction:column; gap:0.5rem; margin-bottom:0.75rem;">
+            </div>
+
+            <div style="display:flex; gap:0.5rem; align-items:center;">
+              <input type="text" id="chatbot-message-input" data-i18n-placeholder="chat_input_placeholder" placeholder="Parla con il chatbot o richiedi un'azione..." style="flex:1; background:rgba(0,0,0,0.5); border:1px solid var(--border-glow); color:#fff; padding:0.6rem 0.8rem; border-radius:6px; font-family:var(--font-sans); font-size:0.85rem;">
+              <button id="btn-chatbot-send" class="tactical-btn" style="padding:0.6rem 1.2rem;" data-i18n="btn_chat_send">Invia</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="deck-multimodal-surveillance" class="plancia-section">
+      <div class="surveillance-container">
+        <div class="surveillance-header-bar">
+          <div>
+            <h2 class="surveillance-title" data-i18n="title">Sorveglianza Multimodale Continua &amp; Auto-Potenziamento</h2>
+            <p class="surveillance-subtitle" data-i18n="subtitle">Registrazione continua audio/video, amplificazione adattiva, identificazione dettagliata corrieri e autoconfigurazione satelliti</p>
+          </div>
+          <div class="surveillance-node-control">
+            <label for="select-surveillance-node" data-i18n="node_selector">Nodo / Satellite Attivo:</label>
+            <select id="select-surveillance-node" class="tactical-select"></select>
+            <button id="btn-auto-configure-node" class="tactical-btn primary" data-i18n="auto_config_btn">⚡ Autoconfigura Dispositivi Default</button>
+          </div>
+        </div>
+
+        <div class="surveillance-grid">
+          <div class="tactical-card surveillance-card">
+            <div class="card-header">
+              <span class="card-title" data-i18n="audio_section_title">🎙️ Registrazione Continua Audio &amp; Amplificazione</span>
+              <span class="badge-tag live-badge" data-i18n="audio_status_recording">REGISTRAZIONE CONTINUA ATTIVA</span>
+            </div>
+            <div class="card-body">
+              <div class="audio-metrics-panel">
+                <div class="metric-pill">
+                  <span class="metric-label" data-i18n="audio_clean_gain">Guadagno SNR:</span>
+                  <strong id="val-audio-snr-gain" class="metric-val">+18.4 dB</strong>
+                </div>
+                <div class="metric-pill">
+                  <span class="metric-label">Punteggio Chiarezza:</span>
+                  <strong id="val-audio-clarity" class="metric-val">96.2%</strong>
+                </div>
+                <div class="metric-pill">
+                  <span class="metric-label">Microfono Vincolato:</span>
+                  <strong id="val-default-mic-name" class="metric-val">mic_desk_array</strong>
+                </div>
+              </div>
+              <div class="waveform-container">
+                <canvas id="canvas-continuous-audio-waveform" width="600" height="120"></canvas>
+              </div>
+              <div class="transcription-stream-box">
+                <span class="box-tag">ANALISI VOCALE &amp; STUDIO AUTONOMO DEI COMANDI:</span>
+                <p id="txt-latest-audio-transcription">Segnale acustico amplificato, ripulito dal rumore di fondo e pronto per correlazione cognitiva.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="tactical-card surveillance-card">
+            <div class="card-header">
+              <span class="card-title" data-i18n="video_section_title">📹 Monitoraggio Video Continuo &amp; Riconoscimento Dettagli</span>
+              <span class="badge-tag camera-badge">4K ZERO-LATENCY</span>
+            </div>
+            <div class="card-body">
+              <div class="semantic-search-box">
+                <input type="text" id="input-semantic-visual-query" class="tactical-input" data-i18n-placeholder="search_placeholder" placeholder="Chiedi: A che ora è venuto il corriere? Chi c'era vestito di giallo?" />
+                <button id="btn-submit-semantic-query" class="tactical-btn" data-i18n="search_btn">🔍 Cerca nel Registro Visivo</button>
+              </div>
+              <div id="box-semantic-direct-answer" class="direct-answer-panel" style="display:none;">
+                <div class="answer-header">RISPOSTA ISTANTANEA SENSORY BUS:</div>
+                <p id="txt-semantic-direct-answer" class="answer-body"></p>
+              </div>
+              <div class="event-timeline-header">
+                <span data-i18n="timeline_title">📋 Registro Eventi Semantici &amp; Dettagli Persona/Veicoli/Corriere</span>
+                <button id="btn-refresh-surveillance-timeline" class="tactical-btn secondary small">Aggiorna</button>
+              </div>
+              <div id="list-surveillance-events" class="surveillance-events-feed"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="deck-affective-engine" class="plancia-section">
+      <div class="affective-container">
+        <div class="affective-header-bar">
+          <div>
+            <h2 class="affective-title" data-i18n="title">Motore Affettivo &amp; Inferenza Psicofisiologica</h2>
+            <p class="affective-subtitle" data-i18n="subtitle">Rilevamento contactless battiti (rPPG), prosodia vocale e sguardo con risposta adattiva allo stato umorale</p>
+          </div>
+          <div class="affective-actions">
+            <button id="btn-run-affective-assessment" class="tactical-btn primary" data-i18n="evaluate_btn">⚡ Esegui Valutazione Multimodale</button>
+          </div>
+        </div>
+
+        <div class="affective-grid">
+          <div class="tactical-card affective-card">
+            <div class="card-header">
+              <span class="card-title">💓 Telemetria Emodinamica Contactless (rPPG)</span>
+              <span id="badge-hemodynamic-live" class="badge-tag pulse-badge">MONITORAGGIO ATTIVO</span>
+            </div>
+            <div class="card-body">
+              <div class="biometric-metrics-row">
+                <div class="metric-pill">
+                  <span class="metric-label" data-i18n="pulse_label">Battiti Cardiaci (rPPG):</span>
+                  <strong id="val-affective-bpm" class="metric-val pulse-val">72 BPM</strong>
+                </div>
+                <div class="metric-pill">
+                  <span class="metric-label" data-i18n="hrv_label">Variabilità Cardiaca (HRV):</span>
+                  <strong id="val-affective-hrv" class="metric-val">42.5 ms</strong>
+                </div>
+                <div class="metric-pill">
+                  <span class="metric-label">Confidenza Segnale:</span>
+                  <strong id="val-affective-confidence" class="metric-val">94.8%</strong>
+                </div>
+              </div>
+              <div class="photoplethysmogram-box">
+                <canvas id="canvas-rppg-pulse-wave" width="600" height="110"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="tactical-card affective-card">
+            <div class="card-header">
+              <span class="card-title" data-i18n="mood_label">Stato Umorale Rilevato:</span>
+              <span id="badge-current-mood-state" class="badge-tag mood-badge optimal">OTTIMALE &amp; BILANCIATO</span>
+            </div>
+            <div class="card-body">
+              <div class="risk-meters-container">
+                <div class="risk-meter-item">
+                  <div class="meter-header">
+                    <span data-i18n="depression_risk_label">Indice Rischio Depressione:</span>
+                    <strong id="val-depression-risk-pct">12%</strong>
+                  </div>
+                  <div class="progress-container">
+                    <div id="bar-depression-risk" class="progress-bar-fill" style="width: 12%; background: #10b981;"></div>
+                  </div>
+                </div>
+
+                <div class="risk-meter-item">
+                  <div class="meter-header">
+                    <span data-i18n="anxiety_risk_label">Indice Ansia &amp; Stress:</span>
+                    <strong id="val-anxiety-risk-pct">18%</strong>
+                  </div>
+                  <div class="progress-container">
+                    <div id="bar-anxiety-risk" class="progress-bar-fill" style="width: 18%; background: #00f0ff;"></div>
+                  </div>
+                </div>
+
+                <div class="risk-meter-item">
+                  <div class="meter-header">
+                    <span data-i18n="fatigue_risk_label">Indice Affaticamento / Burnout:</span>
+                    <strong id="val-fatigue-risk-pct">14%</strong>
+                  </div>
+                  <div class="progress-container">
+                    <div id="bar-fatigue-risk" class="progress-bar-fill" style="width: 14%; background: #3b82f6;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="intervention-strategy-box">
+                <span class="strategy-badge" data-i18n="intervention_title">Strategia Risposta Adattiva Nuxiva:</span>
+                <strong id="val-intervention-strategy-name" class="strategy-name">INTERVENTION_STANDARD_HIGH_PRODUCTIVITY</strong>
+                <p id="txt-adaptive-system-prompt-body" class="strategy-desc">L'utente è in stato emotivo bilanciato ed energico. Massima proattività operativa ed efficienza esecutiva.</p>
+                <div class="adaptive-tone-meta">
+                  <span class="meta-tag">TTS Tono: <b id="val-tone-warmth">Standard</b></span>
+                  <span class="meta-tag">Velocità Vocale: <b id="val-tone-speed">1.0x</b></span>
+                  <span class="meta-tag">Ambiente: <b id="val-tone-ambient">Neutro / Focus</b></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="deck-wearables-vitals" class="plancia-section">
+      <div class="wearables-container">
+        <div class="wearables-header-bar">
+          <div>
+            <h2 class="wearables-title" data-i18n="title">Hub Funzioni Vitali &amp; Dispositivi Indossabili</h2>
+            <p class="wearables-subtitle" data-i18n="subtitle">Connessione continua per Google Fitbit Edge, BLE standard, Google Fit e bilance Renpho in tempo reale</p>
+          </div>
+          <div class="wearables-actions">
+            <button id="btn-sync-wearables" class="tactical-btn primary" data-i18n="sync_btn">⚡ Sincronizza Dispositivi Indossabili</button>
+          </div>
+        </div>
+
+        <div class="wearables-grid">
+          <div class="tactical-card wearable-card">
+            <div class="card-header">
+              <span class="card-title">⌚ Google Fitbit Edge (Telemetria Real-Time)</span>
+              <span id="badge-fitbit-status" class="badge-tag wearable-live-badge">IN ATTESA</span>
+            </div>
+            <div class="card-body">
+              <div class="vitals-dashboard-row">
+                <div class="vital-tile vital-heart">
+                  <span class="tile-icon">💓</span>
+                  <div class="tile-content">
+                    <span class="tile-label" data-i18n="bpm_label">Frequenza Cardiaca:</span>
+                    <strong id="val-wearable-bpm" class="tile-val">— BPM</strong>
+                  </div>
+                </div>
+
+                <div class="vital-tile vital-oxygen">
+                  <span class="tile-icon">🫁</span>
+                  <div class="tile-content">
+                    <span class="tile-label" data-i18n="spo2_label">Ossigeno SpO2:</span>
+                    <strong id="val-wearable-spo2" class="tile-val">—%</strong>
+                  </div>
+                </div>
+
+                <div class="vital-tile vital-hrv">
+                  <span class="tile-icon">📈</span>
+                  <div class="tile-content">
+                    <span class="tile-label" data-i18n="hrv_label">Variabilità HRV:</span>
+                    <strong id="val-wearable-hrv" class="tile-val">— ms</strong>
+                  </div>
+                </div>
+
+                <div class="vital-tile vital-temp">
+                  <span class="tile-icon">🌡️</span>
+                  <div class="tile-content">
+                    <span class="tile-label" data-i18n="temp_label">Temp. Cutanea:</span>
+                    <strong id="val-wearable-temp" class="tile-val">—°C</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div class="vitals-submetrics-panel">
+                <div class="submetric-item">
+                  <span class="submetric-name" data-i18n="steps_label">Passi Odierni:</span>
+                  <strong id="val-wearable-steps">—</strong>
+                </div>
+                <div class="submetric-item">
+                  <span class="submetric-name" data-i18n="cals_label">Calorie Bruciate:</span>
+                  <strong id="val-wearable-calories">— kcal</strong>
+                </div>
+                <div class="submetric-item">
+                  <span class="submetric-name">Frequenza Respiratoria:</span>
+                  <strong id="val-wearable-resp">— rpm</strong>
+                </div>
+                <div class="submetric-item">
+                  <span class="submetric-name">Batteria Dispositivo:</span>
+                  <strong id="val-wearable-battery">—%</strong>
+                </div>
+              </div>
+
+              <div class="wearable-ecg-canvas-box">
+                <canvas id="canvas-wearable-ecg" width="600" height="90"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="tactical-card wearable-card">
+            <div class="card-header">
+              <span class="card-title">⚖️ Bilancia Intelligente Renpho &amp; Composizione Corporea</span>
+              <span id="badge-scale-status" class="badge-tag scale-live-badge">SINCRONIZZATO</span>
+            </div>
+            <div class="card-body">
+              <div class="scale-hero-weight">
+                <div class="hero-weight-content">
+                  <span class="hero-weight-label" data-i18n="weight_label">Peso Corporeo Attuale:</span>
+                  <div class="hero-weight-display">
+                    <strong id="val-scale-weight">74.6</strong>
+                    <span class="hero-weight-unit">KG</span>
+                  </div>
+                </div>
+                <div class="hero-bmi-badge">
+                  <span class="bmi-title" data-i18n="bmi_label">Indice BMI:</span>
+                  <strong id="val-scale-bmi">23.4</strong>
+                  <span class="bmi-category">Normopeso Ottimale</span>
+                </div>
+              </div>
+
+              <div class="body-composition-grid">
+                <div class="composition-tile">
+                  <span class="comp-label" data-i18n="fat_label">Grasso Corporeo:</span>
+                  <strong id="val-scale-fat">15.8%</strong>
+                  <div class="comp-bar"><div id="bar-scale-fat" class="comp-bar-fill" style="width: 15.8%; background: #10b981;"></div></div>
+                </div>
+
+                <div class="composition-tile">
+                  <span class="comp-label" data-i18n="muscle_label">Massa Muscolare:</span>
+                  <strong id="val-scale-muscle">35.2 kg</strong>
+                  <div class="comp-bar"><div id="bar-scale-muscle" class="comp-bar-fill" style="width: 47%; background: #00f0ff;"></div></div>
+                </div>
+
+                <div class="composition-tile">
+                  <span class="comp-label" data-i18n="water_label">Idratazione:</span>
+                  <strong id="val-scale-water">59.4%</strong>
+                  <div class="comp-bar"><div id="bar-scale-water" class="comp-bar-fill" style="width: 59.4%; background: #3b82f6;"></div></div>
+                </div>
+
+                <div class="composition-tile">
+                  <span class="comp-label">Età Metabolica:</span>
+                  <strong id="val-scale-meta-age">27 Anni</strong>
+                  <div class="comp-bar"><div class="comp-bar-fill" style="width: 27%; background: #c084fc;"></div></div>
+                </div>
+              </div>
+
+              <div class="connected-hardware-registry">
+                <span class="registry-title" data-i18n="connected_devices">Dispositivi Connessi:</span>
+                <div id="list-wearable-devices" class="hardware-pill-list"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="deck-emergency-vitals" class="plancia-section">
+      <div class="emergency-vitals-container">
+        <div class="emergency-header-bar">
+          <div>
+            <h2 class="emergency-title" data-i18n="title">Sistema Emergenze Biometriche &amp; Rilevamento Prossimità</h2>
+            <p class="emergency-subtitle" data-i18n="subtitle">Connessione automatica ai braccialetti all'avvicinamento del server, monitoraggio arresti cardiaci e avviso corale ai dispositivi</p>
+          </div>
+          <div class="emergency-action-btns">
+            <button id="btn-simulate-cardiac-arrest" class="tactical-btn danger" data-i18n="test_emergency_btn">🚨 Simula Allarme Arresto Cardiaco</button>
+            <button id="btn-restore-normal-vitals" class="tactical-btn secondary" data-i18n="test_normal_btn">✅ Ripristina Valori Normali</button>
+          </div>
+        </div>
+
+        <div id="banner-critical-alarm" class="alarm-critical-banner" style="display:none;">
+          <div class="alarm-banner-content">
+            <div class="alarm-icon-flash">🚨</div>
+            <div>
+              <h3 class="alarm-banner-title">EMERGENZA MEDICA CRITICA IN CORSO</h3>
+              <p id="txt-alarm-banner-reason" class="alarm-banner-desc">Rilevato arresto cardiaco o bradicardia estrema. Notifica corale in diffusione.</p>
+            </div>
+          </div>
+          <div id="badge-alarm-broadcast-status" class="alarm-broadcast-pill">AVVISO CORALE DISPOSITIVI INVIATO</div>
+        </div>
+
+        <div class="emergency-grid">
+          <div class="tactical-card emergency-card">
+            <div class="card-header">
+              <span class="card-title" data-i18n="profile_title">Profilo Sanitario Utente Riconosciuto:</span>
+              <span class="badge-tag auto-connect-badge" data-i18n="auto_connect_badge">AUTOCONNESSIONE ALL'AVVICINAMENTO: ATTIVA</span>
+            </div>
+            <div class="card-body">
+              <div class="profile-hero-card">
+                <div class="user-avatar-circle">👤</div>
+                <div class="user-meta-details">
+                  <h3 id="txt-emergency-user-name" class="user-full-name">Nunzio (Amministratore Primario)</h3>
+                  <p class="user-id-code">ID Profilo: <span id="txt-emergency-user-id">owner</span> | Dispositivo: <b>Google Fitbit Edge</b></p>
+                  <div class="user-vitals-status-pill">
+                    <span>Stato Fisiologico Attuale:</span>
+                    <strong id="txt-current-physiological-status" style="color:#34d399;">NORMALE &amp; MONITORATO IN TEMPO REALE</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div class="thresholds-panel">
+                <span class="thresholds-header" data-i18n="thresholds_title">Soglie Allarme Medico Critico:</span>
+                <div class="thresholds-row">
+                  <div class="threshold-pill">
+                    <span data-i18n="cardiac_arrest_threshold">Soglia Arresto Cardiaco:</span>
+                    <strong>&le; 28 BPM</strong>
+                  </div>
+                  <div class="threshold-pill">
+                    <span data-i18n="hypoxia_threshold">Soglia Ipossia Critica (SpO2):</span>
+                    <strong>&le; 85%</strong>
+                  </div>
+                  <div class="threshold-pill">
+                    <span data-i18n="tachycardia_threshold">Tachicardia Ventricolare:</span>
+                    <strong>&ge; 190 BPM</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tactical-card emergency-card">
+            <div class="card-header">
+              <span class="card-title" data-i18n="emergency_contacts_title">Contatti di Emergenza Vincolati:</span>
+              <span class="badge-tag broadcast-badge" data-i18n="home_broadcast_badge">BROADCAST CASA: ATTIVO</span>
+            </div>
+            <div class="card-body">
+              <div id="list-emergency-contacts" class="emergency-contacts-list"></div>
+              <div class="home-broadcast-integration-box">
+                <span class="broadcast-box-title">DISPOSITIVI DOMESTICI INTEGRATI PER ALLERTA CORALE:</span>
+                <p class="broadcast-box-desc">In caso di arresto o anomalia critica, Nuxiva attiva sirene interne, diffonde messaggi vocali su tutti gli smart speaker, fa lampeggiare le luci rosse e sblocca le serrature domotiche per agevolare i soccorsi.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="deck-cognitive-triage" class="plancia-section">
+      <div class="cognitive-triage-container" id="cognitiveTriageContainer">
+        <header class="triage-header">
+          <div class="header-titles">
+            <div class="header-icon-badge">
+              <svg viewBox="0 0 24 24" class="triage-icon" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14h-2v-2h2zm0-4h-2V7h2z"/>
+              </svg>
+            </div>
+            <div>
+              <h2 data-i18n="title">Clinical Cognitive Triage</h2>
+              <p class="subtitle" data-i18n="subtitle">Valutazione Tri-Agente per Risposte Adattive e Protezione dell'Utente</p>
+            </div>
+          </div>
+          <div class="header-controls">
+            <div class="status-indicator-badge active" id="triageStatusBadge">
+              <span class="status-dot"></span>
+              <span id="triageStatusText" data-i18n="status_active">Attivo (Coprocessore Asincrono)</span>
+            </div>
+          </div>
+        </header>
+
+        <div class="triage-grid">
+          <div class="agent-card psych-agent">
+            <div class="agent-card-header">
+              <div class="agent-pill psych-pill">CBT</div>
+              <h3 data-i18n="agent_psych">Agente Psicologico</h3>
+            </div>
+            <p class="agent-desc" data-i18n="agent_psych_desc">Analisi vulnerabilità affettiva, distorsioni cognitive e reframing empatico</p>
+            <div class="agent-stat-box">
+              <div class="stat-row">
+                <span>Stato Emotivo:</span>
+                <strong id="psychStateVal">CALM</strong>
+              </div>
+              <div class="stat-row">
+                <span>Profondità Empatica:</span>
+                <strong id="psychEmpathyVal">0.10</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="agent-card meth-agent">
+            <div class="agent-card-header">
+              <div class="agent-pill meth-pill">SOCRATIC</div>
+              <h3 data-i18n="agent_meth">Agente Metodologico</h3>
+            </div>
+            <p class="agent-desc" data-i18n="agent_meth_desc">Decomposizione socratica dei task e strutturazione pragmatica a micro-passi</p>
+            <div class="agent-stat-box">
+              <div class="stat-row">
+                <span>Complessità:</span>
+                <strong id="methComplexityVal">0.15</strong>
+              </div>
+              <div class="stat-row">
+                <span>Indice Sovraccarico:</span>
+                <strong id="methOverloadVal">0.10</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="agent-card psychiatry-agent">
+            <div class="agent-card-header">
+              <div class="agent-pill psychiatry-pill">GATEKEEPER</div>
+              <h3 data-i18n="agent_psychiatry">Agente Psichiatrico</h3>
+            </div>
+            <p class="agent-desc" data-i18n="agent_psychiatry_desc">Clinical Risk Gatekeeper, rilevamento red flags e protocolli salvavita</p>
+            <div class="agent-stat-box">
+              <div class="stat-row">
+                <span>Livello Rischio:</span>
+                <span class="risk-badge safe" id="psychiatryRiskBadge" data-i18n="risk_safe">Rischio: Minimo / Sicuro</span>
+              </div>
+              <div class="stat-row">
+                <span>Interlock Clinico:</span>
+                <strong id="psychiatryInterlockVal">INATTIVO</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <section class="triage-interaction-section">
+          <div class="input-form-box">
+            <textarea id="triageTextInput" class="triage-textarea" rows="3" placeholder="Inserisci frase o pensiero per la valutazione clinica e metodologica..." data-i18n-attr="placeholder:input_placeholder"></textarea>
+            <div class="form-actions">
+              <button id="triageEvaluateBtn" class="primary-action-btn">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                <span data-i18n="simulate_btn">Valuta Input Cognitivo</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="consensus-result-card" id="consensusResultCard">
+            <div class="consensus-header">
+              <h4 data-i18n="results_title">Consenso Tri-Agente</h4>
+              <span class="mode-tag" id="consensusModeTag" data-i18n="mode_transparent">Trasparente (Latenza Zero)</span>
+            </div>
+            <div class="consensus-body">
+              <div class="directive-box">
+                <label data-i18n="meta_directive">Direttiva Meta-Prompt</label>
+                <div class="directive-code" id="metaDirectiveOutput">STANDARD_FLOW: Normal interaction, zero latency path.</div>
+              </div>
+              <div class="meta-metrics">
+                <div class="metric-pill">
+                  <span data-i18n="speech_rate">Fattore Velocità TTS</span>:
+                  <strong id="speechRateOutput">1.00x</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="emergency-safety-card hidden" id="emergencySafetyCard">
+            <div class="emergency-icon-banner">
+              <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#ef4444" stroke-width="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+            </div>
+            <div class="emergency-details">
+              <h3 data-i18n="emergency_card_title">Protocollo Salvavita di Supporto Immediato</h3>
+              <p id="emergencyProtocolMessage">Ti ascolto e la tua incolumità ha la priorità assoluta. Nuxiva consiglia un supporto protetto immediato.</p>
+              <div class="emergency-buttons">
+                <a href="tel:112" class="emergency-call-btn" data-i18n="emergency_call_btn">Chiama 112 Emergenza</a>
+                <span class="crisis-label" data-i18n="crisis_line_label">Telefono Amico Italia: 02 2327 2327</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="bottom-command-bar">
+    <div style="display:flex; align-items:center; gap:0.5rem;">
+      <span style="color:var(--cyan-glow); font-size:1.2rem;">⚡</span>
+      <span style="font-family:var(--font-mono); font-size:0.78rem; color:var(--text-muted);">NUXIVA CORE:</span>
+    </div>
+    <div class="command-input-wrapper">
+      <input type="text" id="global-command-input" data-i18n-placeholder="input_command_placeholder" placeholder="Impartisci un comando, descrivi un nuovo progetto o interroga gli agenti...">
+    </div>
+    <button id="btn-global-dispatch" class="tactical-btn" data-i18n="btn_execute">Esegui</button>
+  </footer>
+
+  <!-- ================================================================= -->
+  <!-- MODAL WIZARD ANIMATO A STEP PER CONFIGURAZIONE RAPIDA / PRINCIPIANTI -->
+  <!-- ================================================================= -->
+  <div id="admin-wizard-overlay" class="wizard-overlay">
+    <div class="wizard-modal-box">
+      <!-- Header Wizard -->
+      <div class="wizard-header-bar">
+        <div style="display:flex; align-items:center; gap:0.6rem;">
+          <span style="font-size:1.5rem; animation:floatBob 2.5s infinite;">🪄</span>
+          <div>
+            <h3 style="font-family:var(--font-display); font-size:1.25rem; color:#fff;" id="wizard-title-label" data-i18n="admin_wizard_title">Auto-Configurazione NUXIVA Guidata</h3>
+            <p style="font-size:0.75rem; color:var(--text-muted);" data-i18n="admin_wizard_subtitle">Semplicità estrema a step per tutta la casa &amp; impresa</p>
+          </div>
+        </div>
+        <button id="btn-close-wizard" style="background:transparent; border:none; color:var(--text-muted); font-size:1.5rem; cursor:pointer;">&times;</button>
+      </div>
+
+      <div class="wizard-stepper-progress">
+        <div class="step-node active" id="step-node-1">
+          <div class="step-circle">1</div>
+          <span class="step-title-text" data-i18n="step1_title">Profilo</span>
+        </div>
+        <div style="flex:1; height:2px; background:var(--border-glow); margin:0 0.5rem;"></div>
+        <div class="step-node" id="step-node-2">
+          <div class="step-circle">2</div>
+          <span class="step-title-text" data-i18n="step2_title">Agenti &amp; Bot</span>
+        </div>
+        <div style="flex:1; height:2px; background:var(--border-glow); margin:0 0.5rem;"></div>
+        <div class="step-node" id="step-node-3">
+          <div class="step-circle">3</div>
+          <span class="step-title-text" data-i18n="step3_title">Tool &amp; Widget</span>
+        </div>
+        <div style="flex:1; height:2px; background:var(--border-glow); margin:0 0.5rem;"></div>
+        <div class="step-node" id="step-node-4">
+          <div class="step-circle">4</div>
+          <span class="step-title-text" data-i18n="step4_title">Attiva</span>
+        </div>
+      </div>
+
+      <div class="wizard-body-viewport">
+        <div class="wizard-step-pane active" id="wizard-step-1">
+          <div class="quick-autoconfig-hero">
+            <div>
+              <div style="display:flex; align-items:center; gap:0.5rem;">
+                <span style="font-size:1.4rem;">⚡</span>
+                <strong style="color:var(--emerald-glow); font-size:1rem;" data-i18n="hero_autoconfig_badge">Modalità Smart Zero-Fatigue (Consigliata)</strong>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;" data-i18n="hero_autoconfig_desc">
+                Nuxiva analizza automaticamente l'hardware del PC, scansiona i sensori e configura per te tutti gli agenti e widget ottimali.
+              </p>
+            </div>
+            <button id="btn-wizard-instant-autoconfig" class="tactical-btn" style="background:linear-gradient(90deg, #10b981, #00f0ff); color:#050811; font-weight:700; white-space:nowrap; padding:0.6rem 1.2rem;" data-i18n="admin_wizard_auto_btn">
+              🚀 1-Clic Auto Setup
+            </button>
+          </div>
+
+          <h4 style="font-size:0.85rem; color:var(--cyan-glow); margin-bottom:0.75rem; text-transform:uppercase; letter-spacing:0.5px;" data-i18n="select_env_title">Oppure seleziona il tuo ambiente principale:</h4>
+          
+          <div class="card-selection-grid">
+            <div class="selectable-wizard-card selected" data-env="smart_home">
+              <span style="font-size:2rem;">🏡</span>
+              <strong style="color:#fff; font-size:0.95rem;" data-i18n="env_home_title">Casa &amp; Famiglia</strong>
+              <p style="font-size:0.75rem; color:var(--text-muted);" data-i18n="env_home_desc">Attiva Maggiordomo, Segretaria, Autista, Smart Home, privacy dei bimbi e widget meteo/musica.</p>
+            </div>
+            <div class="selectable-wizard-card" data-env="enterprise">
+              <span style="font-size:2rem;">🏢</span>
+              <strong style="color:#fff; font-size:0.95rem;" data-i18n="env_enterprise_title">Studio &amp; Azienda</strong>
+              <p style="font-size:0.75rem; color:var(--text-muted);" data-i18n="env_enterprise_desc">Attiva Capo Agente, Project Director, Coder Fullstack, DevOps e drafting CAD R12.</p>
+            </div>
+            <div class="selectable-wizard-card" data-env="creator">
+              <span style="font-size:2rem;">📱</span>
+              <strong style="color:#fff; font-size:0.95rem;" data-i18n="env_creator_title">Content Creator &amp; Social</strong>
+              <p style="font-size:0.75rem; color:var(--text-muted);" data-i18n="env_creator_desc">Pianificazione Instagram, Telegram broadcast, copy virale e studio multimediale.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="wizard-step-pane" id="wizard-step-2">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+            <div>
+              <h4 style="font-size:0.95rem; color:#fff;" data-i18n="step2_heading">Assistenti Consigliati per il tuo Profilo</h4>
+              <p style="font-size:0.75rem; color:var(--text-muted);" data-i18n="step2_desc">Scansionati dinamicamente. Puoi attivarli o disattivarli con un solo tocco.</p>
+            </div>
+            <button id="btn-wizard-select-all-agents" class="tactical-btn secondary" style="padding:0.25rem 0.6rem; font-size:0.72rem;" data-i18n="btn_select_all">Seleziona Tutti</button>
+          </div>
+          <div id="wizard-agents-scanned-container" class="card-selection-grid">
+          </div>
+        </div>
+
+        <div class="wizard-step-pane" id="wizard-step-3">
+          <div style="margin-bottom:1rem;">
+            <h4 style="font-size:0.95rem; color:#fff;" data-i18n="step3_heading">Strumenti &amp; Widget Rilevati a Runtime</h4>
+            <p style="font-size:0.75rem; color:var(--text-muted);" data-i18n="step3_desc">Nessun catalogo fisso: Nuxiva ha trovato questi moduli installati nel sistema.</p>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.25rem;">
+            <div>
+              <strong style="font-size:0.8rem; color:var(--cyan-glow); display:block; margin-bottom:0.5rem;" data-i18n="tools_active_label">🛠️ STRUMENTI ATTIVI:</strong>
+              <div id="wizard-tools-scanned-list" style="display:flex; flex-direction:column; gap:0.4rem; max-height:220px; overflow-y:auto;">
+              </div>
+            </div>
+            <div>
+              <strong style="font-size:0.8rem; color:var(--purple-glow); display:block; margin-bottom:0.5rem;" data-i18n="widgets_active_label">📊 WIDGET INTERATTIVI:</strong>
+              <div id="wizard-widgets-scanned-list" style="display:flex; flex-direction:column; gap:0.4rem; max-height:220px; overflow-y:auto;">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="wizard-step-pane" id="wizard-step-4">
+          <div style="text-align:center; padding:1rem 0;">
+            <div style="font-size:3rem; animation:glowPulse 2s infinite; display:inline-block; border-radius:50%; padding:0.5rem;">✨</div>
+            <h3 style="color:#fff; font-size:1.3rem; margin-top:0.75rem;" data-i18n="step4_heading">Tutto Pronto! Il tuo Nuxiva OS è Ottimizzato</h3>
+            <p style="font-size:0.85rem; color:var(--text-muted); max-width:500px; margin:0.5rem auto 1.5rem auto;" data-i18n="step4_desc">
+              Abbiamo impostato il modello Ternario Bonsai a zero-costi, configurato le tue plance e abilitato i chatbot dedicati ad ogni membro della casa.
+            </p>
+
+            <div id="wizard-summary-pills" style="display:flex; justify-content:center; gap:0.75rem; flex-wrap:wrap; margin-bottom:1.5rem;">
+              <span class="telemetry-pill accent">Profilo: Casa &amp; Famiglia</span>
+              <span class="telemetry-pill">Modello: Bonsai 27B (1.58b)</span>
+              <span class="telemetry-pill">Agenti Attivi: 10</span>
+              <span class="telemetry-pill">Lingua: Italiano (Setup)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="wizard-footer-bar">
+        <button id="btn-wizard-prev" class="tactical-btn secondary" style="display:none;" data-i18n="btn_prev">&larr; Indietro</button>
+        <div style="margin-left:auto; display:flex; gap:0.75rem;">
+          <button id="btn-wizard-skip" class="tactical-btn secondary" data-i18n="btn_skip">Chiudi</button>
+          <button id="btn-wizard-next" class="tactical-btn" data-i18n="btn_next">Avanti &rarr;</button>
+          <button id="btn-wizard-finish" class="tactical-btn" style="display:none; background:linear-gradient(90deg, #10b981, #00f0ff); color:#050811; font-weight:700;" data-i18n="btn_finish">
+            🚀 Entra nella Plancia
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/static/app.js"></script>
+</body>
+</html>

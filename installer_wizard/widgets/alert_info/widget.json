@@ -1,0 +1,13 @@
+{
+  "id": "alert_info",
+  "name": "Avviso Info",
+  "icon": "ℹ️",
+  "priority": 85,
+  "size": "m",
+  "ttl": 15,
+  "intents": [
+    "alert_info"
+  ],
+  "description": "Notifica di sistema informativa.",
+  "tone": "cyan"
+}

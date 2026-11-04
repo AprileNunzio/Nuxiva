@@ -1,0 +1,45 @@
+{
+  "name": "Cameras & Feeds",
+  "description": "Direct RTSP/MJPEG camera stream ingestion, video analytics, and perimeter inspection.",
+  "capabilities": [
+    "RTSP, USB webcam, and ONVIF stream playback",
+    "Real-time object and person detection",
+    "Snapshot capture and motion trigger generation"
+  ],
+  "settings": {
+    "NUXIVA_CAM_REFRESH": "Stream refresh rate (fps)"
+  },
+  "meta": {
+    "locale": "en",
+    "scope": "features/cameras",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "tab.title": "Cameras",
+    "a11y.tabs": "Camera sections",
+    "privacy.title": "Privacy — read before recording",
+    "privacy.body": "Recording is off by default. Turn it on only with the consent of anyone who may be filmed, and people present must be able to tell that the camera is recording (indicator on). Videos stay on the device for the chosen loop length and are then deleted. Motion detection only compares the difference between two small images and keeps nothing.",
+    "privacy.analysis": "Automatic video analysis (lip reading, speaker recognition) is not active.",
+    "tabs.live": "Live",
+    "tabs.add": "Add",
+    "tabs.archive": "Photos and clips",
+    "tabs.events": "Events",
+    "tabs.devices": "Webcams and infrared",
+    "kind.local": "Webcam",
+    "kind.ip": "Network",
+    "kind.infrared": "Infrared",
+    "status.summary": "{{live}} video sources · {{recording}} recording · {{motion}} with motion alerts",
+    "status.ffmpeg_missing": "ffmpeg not installed: required for network cameras",
+    "status.v4l_missing": "v4l-utils not installed: required for webcam controls",
+    "card.no_image": "No image",
+    "card.recording": "REC",
+    "badge.main": "used by vision",
+    "badge.motion": "motion",
+    "badge.hidden": "hidden",
+    "actions.view": "Enlarge",
+    "actions.photo": "Photo",
+    "actions.options": "Options",
+    "live.empty": "No sources. Plug in a webcam (it is detected automatically) or use “Add” for a network camera.",
+    "toast.photo_saved": "Photo saved ({{size}})"
+  }
+}

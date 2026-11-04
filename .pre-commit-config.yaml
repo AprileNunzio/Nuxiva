@@ -1,0 +1,22 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+    -   id: trailing-whitespace
+    -   id: end-of-file-fixer
+    -   id: check-yaml
+    -   id: check-added-large-files
+    -   id: detect-private-key
+-   repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+    -   id: detect-secrets
+        args: ['--exclude-files', '.*\.lock$', '--exclude-files', '.*\.json$']
+-   repo: local
+    hooks:
+    -   id: colocated-i18n-ast
+        name: Colocated i18n AST and Parity Linter
+        entry: python installer_wizard/tests/test_colocated_i18n.py
+        language: system
+        pass_filenames: false
+        always_run: true

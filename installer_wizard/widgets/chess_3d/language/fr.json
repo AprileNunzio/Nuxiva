@@ -1,0 +1,41 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/chess_3d",
+    "version": "1.1.0"
+  },
+  "dictionary": {
+    "label": "Échecs 3D",
+    "status_ready": "Prêt",
+    "status_playing": "Partie en cours",
+    "action_fullscreen": "Plein écran",
+    "action_close": "Fermer",
+    "turn_white": "Tour des Blancs",
+    "turn_black": "Tour des Noirs (Nuxiva)",
+    "action_hint": "Conseil",
+    "action_restart": "Nouvelle partie",
+    "hint_question": "Quel coup me conseilles-tu aux échecs ?",
+    "action_saved": "Parties sauvegardées",
+    "autosaved": "Partie sauvegardée",
+    "save_failed": "Échec de la sauvegarde",
+    "not_saved": "Aucune personne reconnue : la partie n'est pas sauvegardée",
+    "no_person": "Une personne reconnue par la caméra est nécessaire pour sauvegarder et reprendre les parties.",
+    "no_saves": "Aucune partie sauvegardée.",
+    "moves": "{{n}} coups",
+    "finished": "terminée",
+    "turn_black_short": "aux Noirs",
+    "resume": "Reprendre",
+    "delete": "Supprimer",
+    "resume_offer": "Vous avez une partie en cours ({{n}} coups, {{when}}). La reprendre ?",
+    "new_one": "Nouvelle partie",
+    "loading": "Chargement des parties…",
+    "confirm_delete": "Supprimer ?",
+    "won_white": "Les Blancs gagnent",
+    "won_black": "Les Noirs gagnent",
+    "draw": "Nulle",
+    "side_white": "Blancs",
+    "side_black": "Noirs",
+    "hint_question_moves": "Je joue aux échecs. Coups joués jusqu'ici, de case à case : {{moves}}. C'est aux {{turn}} de jouer. Quel coup me conseilles-tu et pourquoi, en bref ?",
+    "hint_failed": "Conseil indisponible, réessaie dans un instant"
+  }
+}

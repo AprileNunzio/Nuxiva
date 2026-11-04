@@ -1,0 +1,193 @@
+{
+  "id": "weather",
+  "name": "Meteo",
+  "icon": "⛅",
+  "category": "casa",
+  "order": 40,
+  "pinned": false,
+  "panel": "",
+  "api": "api.py",
+  "description": "Previsioni complete con più località: oggi o tutta la settimana, ora per ora, vento, qualità dell'aria, umidità, pressione, UV, pollini, alba e tramonto, fasi lunari. Si apre da una domanda sul tempo.",
+  "capabilities": [
+    "Vista giornaliera dettagliata e vista settimanale, scelte in base alla domanda",
+    "Ora per ora: temperatura, pioggia, vento, raffiche, UV, nuvole e visibilità",
+    "Qualità dell'aria europea e americana, polveri sottili, gas e pollini",
+    "Pressione con tendenza, punto di rugiada, umidità e temperatura percepita",
+    "Alba, tramonto, durata del giorno, ore di sole e fase della luna",
+    "Più località salvate, con una predefinita, e unità di misura a scelta"
+  ],
+  "settings": [
+    {
+      "key": "NUXIVA_WEATHER_UNITS",
+      "label": "Sistema di misura",
+      "type": "select",
+      "default": "metric",
+      "options": [
+        {
+          "value": "metric",
+          "label": "Metrico (°C, mm, hPa)"
+        },
+        {
+          "value": "imperial",
+          "label": "Imperiale (°F, in, inHg)"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_WEATHER_WIND",
+      "label": "Unità del vento",
+      "type": "select",
+      "default": "auto",
+      "options": [
+        {
+          "value": "auto",
+          "label": "Automatica"
+        },
+        {
+          "value": "kmh",
+          "label": "km/h"
+        },
+        {
+          "value": "ms",
+          "label": "m/s"
+        },
+        {
+          "value": "mph",
+          "label": "mph"
+        },
+        {
+          "value": "kn",
+          "label": "Nodi"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_WEATHER_VIEW",
+      "label": "Vista alla domanda generica",
+      "type": "select",
+      "default": "day",
+      "options": [
+        {
+          "value": "day",
+          "label": "Giornata"
+        },
+        {
+          "value": "week",
+          "label": "Settimana"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_WEATHER_DAYS",
+      "label": "Giorni di previsione",
+      "type": "select",
+      "default": "7",
+      "options": [
+        {
+          "value": "5",
+          "label": "5"
+        },
+        {
+          "value": "7",
+          "label": "7"
+        },
+        {
+          "value": "10",
+          "label": "10"
+        },
+        {
+          "value": "14",
+          "label": "14"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_WEATHER_HOURS",
+      "label": "Ore mostrate nel dettaglio",
+      "type": "select",
+      "default": "24",
+      "options": [
+        {
+          "value": "12",
+          "label": "12"
+        },
+        {
+          "value": "24",
+          "label": "24"
+        },
+        {
+          "value": "48",
+          "label": "48"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_WEATHER_REFRESH",
+      "label": "Aggiornamento dei dati (minuti)",
+      "type": "number",
+      "default": "10"
+    },
+    {
+      "key": "NUXIVA_WEATHER_AIR",
+      "label": "Qualità dell'aria",
+      "type": "select",
+      "default": "1",
+      "options": [
+        {
+          "value": "1",
+          "label": "Mostra"
+        },
+        {
+          "value": "0",
+          "label": "Nascondi"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_WEATHER_POLLEN",
+      "label": "Pollini",
+      "type": "select",
+      "default": "1",
+      "options": [
+        {
+          "value": "1",
+          "label": "Mostra"
+        },
+        {
+          "value": "0",
+          "label": "Nascondi"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_WEATHER_ASTRO",
+      "label": "Luna, alba e tramonto",
+      "type": "select",
+      "default": "1",
+      "options": [
+        {
+          "value": "1",
+          "label": "Mostra"
+        },
+        {
+          "value": "0",
+          "label": "Nascondi"
+        }
+      ]
+    }
+  ],
+  "icon3d": "./icon.png",
+  "routing": {
+    "nouns": [
+      "meteo",
+      "previsioni",
+      "temperatura",
+      "pioggia"
+    ],
+    "phrases": [
+      "\\bche\\s+tempo\\s+(?:fa|farà|c'è)\\b",
+      "\\b(?:meteo|previsioni)\\b",
+      "\\b(?:pioverà|piove|nevica)\\b"
+    ]
+  }
+}

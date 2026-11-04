@@ -1,0 +1,26 @@
+from features.musicstudio.genre_model import g
+
+GENRES = (
+    g("classical", "Classica (pianoforte)", "classical", (60, 120), "major", {"kick": "X..............."}, "r.......f.......", "c.c.c.c.c.c.c.c.",
+      "kit_jazz", "bass_upright", "keys_piano", "lead_violin", prog="canon", seventh=False, roles=("bass", "chords", "lead", "arp", "pad"), arp_i="arp_harp", pad_i="strings", tags=("classica", "pianoforte", "romantico", "sonata"), feel="pianoforte e archi"),
+    g("baroque", "Barocco", "classical", (70, 130), "major", {"kick": "X..............."}, "r.f.r.f.r.f.r.f.", "c.c.c.c.c.c.c.c.",
+      "kit_jazz", "bass_upright", "keys_harpsichord", "lead_violin", prog="canon", roles=("bass", "chords", "lead", "arp", "pad"), arp_i="arp_harp", pad_i="strings", tags=("barocco", "bach", "clavicembalo", "vivaldi"), feel="clavicembalo e contrappunto"),
+    g("orchestral", "Orchestrale", "cinematic", (60, 110), "minor", {"kick": "X.......", "tom": "....x..."}, "r.......", "c.......",
+      "kit_taiko", "bass_upright", "strings_pizz", "lead_cello", prog="epic", roles=("drums", "bass", "chords", "pad", "lead", "arp"), pad_i="strings", arp_i="arp_harp", tags=("orchestrale", "colonna sonora", "film"), feel="archi, ottoni e timpani"),
+    g("cinematic", "Cinematografico", "cinematic", (70, 120), "minor", {"kick": "X...............", "tom": "........x......."}, "r...............", "c...............",
+      "kit_taiko", "bass_sub", "pad_dark", "lead_cello", prog="epic", seventh=False, pad_i="strings", arp_i="arp_marimba", tags=("cinematografico", "trailer", "epico", "tensione"), feel="tensione e crescendo"),
+    g("epic_trailer", "Epico da trailer", "cinematic", (80, 140), "minor", {"kick": "X...X...X...X...", "tom": "..x...x...x...x.", "crash": "X..............."}, "r.r.r.r.r.r.r.r.", "c...c...c...c...",
+      "kit_taiko", "bass_sub", "brass_section", "lead_trumpet", prog="epic", pad_i="pad_choir", arp_i="arp_synthwave", tags=("epico", "trailer", "battaglia", "eroico"), feel="coro, ottoni e percussioni giganti"),
+    g("sacred_choir", "Sacra (coro)", "classical", (50, 80), "major", {"kick": "X..............."}, "r...............", "c...............",
+      "kit_jazz", "bass_sub", "organ", "lead_flute", prog="gospel", roles=("bass", "chords", "pad", "lead"), pad_i="pad_choir", tags=("sacra", "coro", "chiesa", "gregoriano"), feel="organo e coro"),
+    g("march", "Marcia", "classical", (100, 124), "major", {"kick": "X...X...X...X...", "snare": "x.x.X.x.x.x.X.x.", "crash": "X..............."}, "r.f.r.f.r.f.r.f.", "c.c.c.c.c.c.c.c.",
+      "kit_marching", "bass_tuba", "brass_section", "lead_trumpet", prog="punk", roles=("drums", "bass", "chords", "pad", "lead"), tags=("marcia", "banda", "militare", "sfilata"), feel="banda con rullante e ottoni"),
+    g("minimalist", "Minimalista", "classical", (80, 130), "major", {"kick": "X..............."}, "r...............", "c.c.c.c.c.c.c.c.",
+      "kit_lofi", "bass_sub", "keys_piano", "lead_marimba", prog="canon", roles=("bass", "chords", "arp", "lead"), arp_i="arp_marimba", tags=("minimalista", "reich", "glass", "pattern"), feel="pattern ripetuti che cambiano piano piano"),
+    g("newage", "New age", "cinematic", (55, 85), "lydian", {"kick": "X..............."}, "r...............", "c...............",
+      "kit_lofi", "bass_sub", "pad_glass", "lead_flute", prog="drone", roles=("bass", "pad", "lead", "arp", "chords"), arp_i="arp_harp", pad_i="pad_glass", tags=("new age", "spa", "benessere", "natura"), feel="spaziale e rilassante"),
+    g("lullaby", "Ninna nanna", "classical", (60, 84), "major", {"kick": "X..........."}, "r...........", "c...........",
+      "kit_lofi", "bass_sub", "keys_celesta", "lead_bell", prog="waltz", beats=3, roles=("bass", "chords", "lead", "pad"), pad_i="pad_glass", tags=("ninna nanna", "bambini", "dolce"), feel="carillon in tre quarti"),
+    g("chiptune", "Chiptune", "electronic", (120, 170), "major", {"kick": "X...X...X...X...", "snare": "....X.......X...", "hat": "x.x.x.x.x.x.x.x."}, "r.r.r.r.r.r.r.r.", "c.c.c.c.c.c.c.c.",
+      "kit_electro", "bass_synthwave", "lead_square", "lead_square", prog="canon", roles=("drums", "bass", "chords", "lead", "arp"), tags=("chiptune", "8bit", "videogioco", "retro"), feel="suoni da console anni 80"),
+)

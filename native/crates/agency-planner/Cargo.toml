@@ -1,0 +1,15 @@
+[package]
+name = "agency-planner"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+agency-domain = { path = "../agency-domain" }
+serde = { version = "1", features = ["derive"] }
+thiserror = "2"

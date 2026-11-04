@@ -1,0 +1,4 @@
+.os-content .update-workbench :is(section,form) { border:0; background:transparent; box-shadow:none; padding:.25rem; border-radius:0; }
+.os-content .update-workbench .text-xs { font-size:.85rem; line-height:1.45; }
+.os-content .update-workbench button:disabled { opacity:.6; color:#64748b; background:#f1f5f9; box-shadow:none; }
+.os-content .update-workbench label.rounded-xl { border:0; border-bottom:1px solid #e5eaf0; border-radius:0; background:transparent; }

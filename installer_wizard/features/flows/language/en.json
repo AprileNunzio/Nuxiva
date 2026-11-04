@@ -1,0 +1,17 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "features/flows",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Operational Flows",
+    "desc": "Visual composition of triggers and actions",
+    "error.invalid_json": "Invalid JSON",
+    "error.request_too_large": "Request too large",
+    "error.unknown_template": "Unknown flow template",
+    "error.invalid_node": "Invalid node position",
+    "status.running": "Flow running",
+    "status.idle": "Flow idle"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "home_assistant",
+  "name": "Home Assistant",
+  "icon": "Home",
+  "version": "6.0.0",
+  "description": "Centro domotico completo: gestione dispositivi, stanze e piani, automazioni, scene, monitoraggio consumi energetici e Assist vocale.",
+  "scope": "apps/home_assistant",
+  "kind": "app",
+  "target": "global",
+  "category": "spaces",
+  "window": {
+    "defaultWidth": 82,
+    "defaultHeight": 85,
+    "minWidth": 36,
+    "resizable": true
+  },
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "gvQUkpW15e1x",
+    "url": "https://img.icons8.com/?size=240&id=gvQUkpW15e1x&format=png"
+  }
+}

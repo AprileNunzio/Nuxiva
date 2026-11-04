@@ -1,0 +1,16 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "features/cloud",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Cloud Services",
+    "desc": "Cloud connectors and providers for advanced models",
+    "error.unknown_provider": "Unknown provider",
+    "error.invalid_key": "Invalid API key",
+    "error.missing_address": "Service address missing",
+    "status.connected": "Cloud connection established",
+    "status.unconfigured": "Service unconfigured"
+  }
+}

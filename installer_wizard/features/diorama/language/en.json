@@ -1,0 +1,18 @@
+{
+  "name": "3D Dioramas",
+  "description": "A creative agent builds photorealistic dioramas live from a sentence: ground, buildings, trees, trains and people take shape one after another, with tilt-shift, macro or 50 mm optics and natural light.",
+  "capabilities": [
+    "Fully by voice: \"create a diorama of a Japanese station with cherry trees\" and it opens full screen by itself",
+    "Spontaneous: when you talk about a train, a building or a place, Nuxiva can show a small animated diorama by itself (can be turned off)",
+    "Live building: elements appear layer by layer while the agent works",
+    "Catalog of 27 elements: railway, architecture, vegetation, furniture, people and free volumes",
+    "Photographic look: tilt-shift, macro and 50 mm, golden hour, overcast, blue hour, noon, night",
+    "Edits in plain words: \"add a cherry tree on the left\", \"make it sunset\", \"remove the bench\"",
+    "Also works without an available brain through fallback compositions",
+    "While idle it studies conversations about visual topics, designs new elements by itself and adds them to the catalog (removable)"
+  ],
+  "settings": {
+    "NUXIVA_DIORAMA_AMBIENT": "Spontaneous dioramas during conversation",
+    "NUXIVA_DIORAMA_LEARN": "New catalog elements learned while idle"
+  }
+}

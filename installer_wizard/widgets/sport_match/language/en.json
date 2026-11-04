@@ -1,0 +1,27 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/sport_match",
+    "version": "1.1.0"
+  },
+  "dictionary": {
+    "football": "Football",
+    "versus": "vs",
+    "in_progress": "In progress",
+    "chip_final": "Full time",
+    "chip_goal": "Goal!",
+    "chip_red": "Red card",
+    "chip_kickoff": "Kick-off",
+    "chip_soon": "Soon",
+    "chip_today": "Today",
+    "chip_next": "Next",
+    "today_cap": "Today",
+    "tomorrow": "Tomorrow",
+    "penalty": "pen.",
+    "own_goal": "o.g.",
+    "out_won": "Win",
+    "out_lost": "Loss",
+    "out_drew": "Draw",
+    "last": "Last"
+  }
+}

@@ -1,0 +1,21 @@
+.w-reminder .rm-hero { display: flex; gap: 14px; align-items: center; margin-top: 6px; }
+.w-reminder .rm-hero .wk-ring { width: 84px; height: 84px; flex: none; }
+.w-reminder .rm-ic { width: 56px; height: 56px; flex: none; border-radius: 16px; display: grid; place-items: center; background: rgba(var(--tone), 0.14); color: rgb(var(--tone)); }
+.w-reminder .rm-ic .wk-svg { width: 28px; height: 28px; }
+.w-reminder .rm-hero.late .rm-ic { background: rgba(255, 90, 90, 0.16); color: var(--red); animation: rm-ring 1.2s ease-in-out infinite; }
+.w-reminder .rm-hero.soon .wk-ring .value { stroke: var(--amber); }
+.w-reminder .rm-main { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.w-reminder .rm-text { overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.w-reminder .rm-when { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-dim); }
+.w-reminder .rm-when .wk-svg { width: 14px; height: 14px; color: rgb(var(--tone)); }
+.w-reminder .rm-when b { color: var(--text); font-weight: 500; }
+.w-reminder .rm-hero.late .rm-when span { color: var(--red); }
+.w-reminder .rm-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.w-reminder .rm-tags .wk-chip { display: inline-flex; align-items: center; gap: 4px; }
+.w-reminder .rm-tags .wk-svg { width: 11px; height: 11px; }
+.w-reminder .rm-next { list-style: none; margin: 12px 0 0; padding: 10px 0 0; border-top: 1px solid rgba(255, 255, 255, 0.06); display: flex; flex-direction: column; gap: 6px; }
+.w-reminder .rm-next li { display: grid; grid-template-columns: 48px 1fr; gap: 8px; font-size: 12px; color: var(--text-dim); }
+.w-reminder .rm-next li span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.w-reminder .rm-next .mono { color: rgb(var(--tone)); }
+@keyframes rm-ring { 0%, 100% { transform: rotate(0); } 20% { transform: rotate(-8deg); } 40% { transform: rotate(8deg); } 60% { transform: rotate(-4deg); } }
+@media (prefers-reduced-motion: reduce) { .w-reminder .rm-hero.late .rm-ic { animation: none; } }

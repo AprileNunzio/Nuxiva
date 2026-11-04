@@ -1,0 +1,13 @@
+{
+  "id": "docker_matrix",
+  "name": "Container Docker",
+  "icon": "🐳",
+  "priority": 35,
+  "size": "l",
+  "intents": [
+    "docker_matrix"
+  ],
+  "description": "Stato dei container in esecuzione sul server.",
+  "ttl": 60,
+  "tone": "cyan"
+}

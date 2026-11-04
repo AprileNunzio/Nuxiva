@@ -1,0 +1,27 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Avanzate",
+    "description": "Opzioni per chi vuole un controllo più fine.",
+    "agents_title": "Modello per singolo agente",
+    "agents_hint": "Si sceglie nell'applicazione Agenti, nella scheda di ogni agente.",
+    "free_title": "Modelli gratuiti online",
+    "free_hint": "Usa i modelli a costo zero del catalogo OpenRouter (serve una chiave OpenRouter). I limiti gratuiti possono cambiare.",
+    "free_refresh": "Aggiorna catalogo",
+    "free_enable": "Usa i modelli gratuiti per i compiti scelti",
+    "free_pools": "Compiti",
+    "pool_chat": "Conversazione",
+    "pool_voice_fast": "Voce rapida",
+    "pool_agent_tools": "Agenti e strumenti",
+    "pool_vision": "Immagini",
+    "pool_deep_code": "Ragionamento e codice",
+    "free_live": "In uso: {provider} · {model}",
+    "free_failover": "(cambiato da {model})",
+    "free_idle": "Nessuna richiesta gratuita ancora in questa sessione.",
+    "free_models": "Modelli gratuiti verificati ({count})",
+    "free_empty": "Catalogo vuoto: premi Aggiorna catalogo.",
+    "free_cooldown": "in pausa {seconds} s"
+  }
+}

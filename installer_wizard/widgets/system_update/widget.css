@@ -1,0 +1,27 @@
+.w-system_update .su-ver { display: flex; align-items: center; gap: 8px; margin: 2px 0 10px; }
+.w-system_update .su-old { color: var(--text-faint); font-size: 13px; text-decoration: line-through; text-decoration-color: rgba(255, 255, 255, 0.25); }
+.w-system_update .su-arrow .wk-svg { width: 12px; height: 12px; color: rgb(var(--tone)); }
+.w-system_update .su-new { color: rgb(var(--tone)); font-size: 15px; font-weight: 600; }
+.w-system_update .su-ok { margin-left: auto; display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--green); }
+.w-system_update .su-ok .wk-svg { width: 13px; height: 13px; }
+.w-system_update .su-mix { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.w-system_update .su-mix span { display: inline-flex; align-items: baseline; gap: 4px; padding: 2px 8px; border-radius: 999px; font-size: 11px; color: var(--text-dim); background: rgba(255, 255, 255, 0.05); }
+.w-system_update .su-mix b { font-weight: 600; color: var(--text); }
+.w-system_update .su-mix .k_feat b { color: rgb(var(--tone)); }
+.w-system_update .su-mix .k_fix b { color: var(--green); }
+.w-system_update .su-mix .k_sec b { color: var(--amber); }
+.w-system_update .su-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.w-system_update .su-row { display: grid; grid-template-columns: 24px 1fr; gap: 8px; align-items: start; }
+.w-system_update .su-ic { width: 24px; height: 24px; border-radius: 7px; display: grid; place-items: center; background: rgba(255, 255, 255, 0.05); color: var(--text-dim); }
+.w-system_update .su-ic .wk-svg { width: 13px; height: 13px; }
+.w-system_update .su-row.k_feat .su-ic { background: rgba(var(--tone), 0.14); color: rgb(var(--tone)); }
+.w-system_update .su-row.k_fix .su-ic { background: rgba(80, 220, 140, 0.12); color: var(--green); }
+.w-system_update .su-row.k_sec .su-ic, .w-system_update .su-row.k_perf .su-ic { background: rgba(255, 190, 70, 0.12); color: var(--amber); }
+.w-system_update .su-txt { display: flex; flex-direction: column; gap: 1px; min-width: 0; padding-top: 2px; }
+.w-system_update .su-txt b { font-weight: 500; font-size: 12.5px; line-height: 1.35; color: var(--text); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.w-system_update .su-txt small { font: 10.5px var(--mono); color: var(--text-faint); }
+.w-system_update .su-txt small:empty { display: none; }
+.w-system_update .su-txt em { font-style: normal; color: var(--red); font-weight: 600; }
+.w-system_update .su-more { margin-top: 6px; font-size: 11px; }
+.w-system_update .su-plan { display: flex; align-items: center; gap: 6px; margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255, 255, 255, 0.06); font-size: 11.5px; color: var(--text-dim); }
+.w-system_update .su-plan .wk-svg { width: 13px; height: 13px; color: rgb(var(--tone)); flex: none; }

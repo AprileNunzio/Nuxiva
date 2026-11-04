@@ -1,0 +1,19 @@
+{
+  "id": "health_hub",
+  "name": "Salute",
+  "icon": "❤️",
+  "priority": 60,
+  "size": "m",
+  "tone": "red",
+  "personal": true,
+  "bind": "person_health",
+  "screen_role": "person",
+  "intents": [
+    "health",
+    "salute",
+    "vitals"
+  ],
+  "description": "Parametri della salute della persona davanti allo schermo: battito dal vivo, recupero, ossigeno, sonno, attività e segnali da tenere d'occhio.",
+  "refresh": 5,
+  "cost": {"gpu": 2, "cpu": 2}
+}

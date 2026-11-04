@@ -1,0 +1,10 @@
+{
+  "manifest_version": 1,
+  "id": "assistant_voice",
+  "kind": "configure",
+  "order": 210,
+  "icon": "icon.png",
+  "skippable": false,
+  "view": "view.js",
+  "handler": "handler.py"
+}

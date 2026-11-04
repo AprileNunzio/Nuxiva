@@ -1,0 +1,17 @@
+{
+  "id": "system_update",
+  "name": "Aggiornamento disponibile",
+  "icon": "⬇",
+  "priority": 30,
+  "size": "m",
+  "tone": "cyan",
+  "essential": true,
+  "bind": "update_ready",
+  "agent": "auto_update",
+  "intents": [
+    "system_update",
+    "aggiornamento"
+  ],
+  "description": "Avvisa quando su GitHub c'è una nuova versione di Nuxiva con i test superati, con le novità.",
+  "refresh": 300
+}

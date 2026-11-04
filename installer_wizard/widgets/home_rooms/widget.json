@@ -1,0 +1,17 @@
+{
+  "id": "home_rooms",
+  "name": "Stanze occupate",
+  "icon": "🏠",
+  "priority": 15,
+  "size": "s",
+  "tone": "green",
+  "personal": true,
+  "bind": "home_rooms",
+  "agent": "home_assistant",
+  "intents": [
+    "home_rooms",
+    "stanze"
+  ],
+  "description": "Le stanze in cui i sensori di Home Assistant rilevano qualcuno in questo momento.",
+  "refresh": 10
+}

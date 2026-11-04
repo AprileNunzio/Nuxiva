@@ -1,0 +1,15 @@
+{
+  "id": "sport_table",
+  "name": "Classifica",
+  "icon": "🏆",
+  "priority": 45,
+  "size": "m",
+  "agent": "sports",
+  "intents": [
+    "sport_table",
+    "classifica"
+  ],
+  "ttl": 120,
+  "description": "Classifica di un campionato con la squadra preferita evidenziata.",
+  "tone": "cyan"
+}

@@ -1,0 +1,44 @@
+{
+  "it": {
+    "title": "Sistema Emergenze Biometriche & Rilevamento Prossimità",
+    "subtitle": "Connessione automatica ai braccialetti all'avvicinamento del server, monitoraggio arresti cardiaci e avviso corale ai dispositivi",
+    "profile_title": "Profilo Sanitario Utente Riconosciuto:",
+    "emergency_contacts_title": "Contatti di Emergenza Vincolati:",
+    "thresholds_title": "Soglie Allarme Medico Critico:",
+    "cardiac_arrest_threshold": "Soglia Arresto Cardiaco:",
+    "hypoxia_threshold": "Soglia Ipossia Critica (SpO2):",
+    "tachycardia_threshold": "Tachicardia Ventricolare:",
+    "test_emergency_btn": "🚨 Simula Allarme Arresto Cardiaco",
+    "test_normal_btn": "✅ Ripristina Valori Normali",
+    "auto_connect_badge": "AUTOCONNESSIONE ALL'AVVICINAMENTO: ATTIVA",
+    "home_broadcast_badge": "BROADCAST CASA: ATTIVO"
+  },
+  "en": {
+    "title": "Biometric Emergency System & Proximity Monitoring",
+    "subtitle": "Auto-connect to wearables on server approach, cardiac arrest monitoring, and whole-home alert broadcast",
+    "profile_title": "Recognized User Health Profile:",
+    "emergency_contacts_title": "Bound Emergency Contacts:",
+    "thresholds_title": "Critical Medical Alarm Thresholds:",
+    "cardiac_arrest_threshold": "Cardiac Arrest Threshold:",
+    "hypoxia_threshold": "Critical Hypoxia (SpO2):",
+    "tachycardia_threshold": "Ventricular Tachycardia:",
+    "test_emergency_btn": "🚨 Simulate Cardiac Arrest Alarm",
+    "test_normal_btn": "✅ Restore Normal Vitals",
+    "auto_connect_badge": "AUTO-CONNECT ON APPROACH: ACTIVE",
+    "home_broadcast_badge": "HOME BROADCAST: ACTIVE"
+  },
+  "fr": {
+    "title": "Système d'Urgence Biométrique & Détection de Proximité",
+    "subtitle": "Connexion automatique aux bracelets lors de l'approche du serveur, détection d'arrêt cardiaque et diffusion domestique",
+    "profile_title": "Profil Santé Utilisateur Reconnu :",
+    "emergency_contacts_title": "Contacts d'Urgence Reliés :",
+    "thresholds_title": "Seuils d'Alerte Médicale Critique :",
+    "cardiac_arrest_threshold": "Seuil Arrêt Cardiaque :",
+    "hypoxia_threshold": "Seuil Hypoxie Critique (SpO2) :",
+    "tachycardia_threshold": "Tachycardie Ventriculaire :",
+    "test_emergency_btn": "🚨 Simuler Arrêt Cardiaque",
+    "test_normal_btn": "✅ Rétablir Valeurs Normales",
+    "auto_connect_badge": "CONNEXION AUTOMATIQUE À L'APPROCHE : ACTIVE",
+    "home_broadcast_badge": "DIFFUSION DOMESTIQUE : ACTIVE"
+  }
+}

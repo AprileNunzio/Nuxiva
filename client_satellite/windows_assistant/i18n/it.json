@@ -1,0 +1,14 @@
+{
+  "enroll.failed": "Non sono riuscito a collegare questo PC a NUXIVA ({reason}). Puoi usare il codice di 6 cifre.",
+  "enroll.pin_mismatch": "il certificato del server non corrisponde a quello del pacchetto",
+  "enroll.file_invalid": "il file di iscrizione non è valido",
+  "enroll.file_expired": "il file di iscrizione è scaduto",
+  "enroll.token_invalid": "il token è già stato usato o è scaduto",
+  "enroll.node_exists": "esiste già un nodo con questo nome: rimuovilo dal pannello di NUXIVA",
+  "enroll.rate_limited": "troppi tentativi, riprova tra qualche minuto",
+  "enroll.unreachable": "NUXIVA non è raggiungibile",
+  "compute.ollama.title": "Condividere Ollama con NUXIVA",
+  "compute.ollama.hint": "Permette a NUXIVA di usare i modelli di Ollama installati su questo PC, solo per richieste di generazione.",
+  "compute.ollama.request": "Eseguire una richiesta di NUXIVA su Ollama ({path})",
+  "compute.group": "Risorse di calcolo"
+}

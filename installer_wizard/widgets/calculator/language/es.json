@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/calculator",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Calculadora",
+    "scientific": "Cient",
+    "error": "Error"
+  }
+}

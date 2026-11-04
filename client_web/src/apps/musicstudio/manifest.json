@@ -1,0 +1,28 @@
+{
+  "id": "musicstudio",
+  "name": "Studio Musicale",
+  "icon": "Music",
+  "kind": "app",
+  "category": "media",
+  "version": "1.0.0",
+  "description": "Componi, arrangia e produci canzoni con l'AI: strumenti, effetti, voci, traduzioni e trasmissione ai dispositivi.",
+  "scope": "apps/musicstudio",
+  "target": "global",
+  "window": {
+    "defaultWidth": 88,
+    "defaultHeight": 88,
+    "minWidth": 52,
+    "minHeight": 40,
+    "resizable": true
+  },
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "qUrjwzmP7ZFz",
+    "url": "https://img.icons8.com/?size=240&id=qUrjwzmP7ZFz&format=png"
+  },
+  "featureIds": [
+    "musicstudio"
+  ]
+}

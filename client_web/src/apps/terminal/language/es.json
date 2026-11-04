@@ -1,0 +1,19 @@
+{
+  "dictionary": {
+    "title": "Terminal Nuxiva",
+    "description": "Diálogo y diagnóstico",
+    "welcome": "Escribe a Nuxiva o usa /help para los comandos de diagnóstico.",
+    "input": "Mensaje o comando…",
+    "send": "Enviar",
+    "working": "Nuxiva está procesando…",
+    "cancelled": "Solicitud interrumpida.",
+    "failed": "Error en la solicitud.",
+    "empty": "No hay respuesta disponible.",
+    "unknown": "Comando desconocido. Usa /help.",
+    "help": "/help — ayuda\n/health — estado del servidor\n/nodes — topología y telemetría\n/features — funciones instaladas\n/bus — módulos del bus\n/clear — limpiar terminal\n/stop — detener solicitud\nEscribe un mensaje sin / para hablar con Nuxiva.",
+    "health": "Estado del sistema",
+    "nodes": "Nodos",
+    "clear": "Limpiar",
+    "stop": "Detener"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "manifest_version": 1,
+  "id": "kiosk",
+  "kind": "auto",
+  "order": 40,
+  "steps": ["kiosk"],
+  "icon": "icon.png",
+  "when": ["hardware:monitor"]
+}

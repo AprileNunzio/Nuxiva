@@ -1,0 +1,10 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/text_short",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Réponse"
+  }
+}

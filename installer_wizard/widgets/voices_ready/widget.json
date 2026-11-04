@@ -1,0 +1,14 @@
+{
+  "id": "voices_ready",
+  "name": "Lingue e voci",
+  "icon": "🗣",
+  "priority": 45,
+  "size": "s",
+  "tone": "violet",
+  "ttl": 45,
+  "intents": [
+    "voices"
+  ],
+  "panel_type": "list",
+  "description": "Le lingue in cui Nuxiva sa già parlare, quando chiedi quali voci ha."
+}

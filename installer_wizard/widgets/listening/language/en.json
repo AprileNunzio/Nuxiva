@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/listening",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "state_idle": "Say “{{name}}” to talk to me",
+    "state_listening": "Listening…",
+    "state_transcribing": "Understanding…",
+    "state_off": "Microphone off"
+  }
+}

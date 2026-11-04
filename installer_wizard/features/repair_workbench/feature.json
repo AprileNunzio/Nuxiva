@@ -1,0 +1,15 @@
+{
+  "id": "repair_workbench",
+  "api": "api.py",
+  "connector": "commands.py",
+  "connector_risk": "personal",
+  "name": "Banco Riparazioni Live",
+  "category": "assistente",
+  "description": "Collega il banco riparazioni al motore di analisi e agli specialisti del progetto.",
+  "capabilities": [
+    "Sessioni del banco riparazioni",
+    "Analisi dei fotogrammi e conversazione con gli specialisti"
+  ],
+  "settings": [],
+  "icon3d": "./icon.png"
+}

@@ -1,0 +1,38 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "web/safe",
+    "version": "2.0.0"
+  },
+  "dictionary": {
+    "page_title": "Nuxiva · Safe mode",
+    "brand": "NUXIVA",
+    "title": "Nuxiva is in safe mode",
+    "title_ok": "Nuxiva is working again",
+    "reason_missing_library": "Some libraries Nuxiva needs to start are missing.",
+    "reason_broken_code": "Some Nuxiva files are damaged or incomplete.",
+    "reason_system": "A system problem is preventing Nuxiva from starting.",
+    "reason_unknown": "Nuxiva could not start normally.",
+    "calm": "Your data is safe. Nuxiva can repair itself with a single tap.",
+    "repair": "Repair now",
+    "repairing": "Repairing…",
+    "retry": "Try repairing again",
+    "started": "Repair started, follow the steps above.",
+    "busy": "A repair is already running.",
+    "wait": "Wait a few seconds before trying again.",
+    "unavailable": "Automatic repair is not available: use the command below.",
+    "offline": "Nuxiva is not responding, retrying…",
+    "done": "Repair complete, restarting Nuxiva…",
+    "failed": "Some problems need a manual fix: read the steps in red.",
+    "tech": "Technical details",
+    "cli": "sudo nuxivactl repair",
+    "step_disk": "Disk space",
+    "step_apt": "Package manager",
+    "step_network": "Internet connection",
+    "step_code": "Nuxiva files",
+    "step_python": "Python libraries",
+    "step_system": "System files",
+    "step_ports": "Network ports",
+    "step_service": "Starting Nuxiva"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "vendors": {
+    "10de": {
+      "name": "NVIDIA",
+      "driver_ok": ["nvidia"],
+      "needs_proprietary": true,
+      "packages": {
+        "apt": ["nvidia-driver", "nvidia-smi", "firmware-misc-nonfree"],
+        "dnf": ["akmod-nvidia", "xorg-x11-drv-nvidia-cuda"],
+        "pacman": ["nvidia-dkms", "nvidia-utils"],
+        "zypper": []
+      },
+      "repos": ["contrib", "non-free", "non-free-firmware"],
+      "extra_repos": {
+        "dnf": ["rpmfusion-free", "rpmfusion-nonfree"]
+      },
+      "verify": ["nvidia-smi", "-L"],
+      "capability": "compute.accelerator",
+      "reboot": true
+    },
+    "1002": {
+      "name": "AMD",
+      "driver_ok": ["amdgpu", "radeon"],
+      "needs_proprietary": false,
+      "packages": {
+        "apt": ["firmware-amd-graphics", "mesa-vulkan-drivers", "libgl1-mesa-dri", "mesa-opencl-icd"],
+        "dnf": ["linux-firmware", "mesa-dri-drivers", "mesa-vulkan-drivers"],
+        "pacman": ["linux-firmware", "mesa", "vulkan-radeon"],
+        "zypper": ["kernel-firmware", "Mesa-dri", "libvulkan_radeon"]
+      },
+      "repos": ["non-free-firmware"],
+      "capability": "graphics.render",
+      "reboot": false
+    },
+    "8086": {
+      "name": "Intel",
+      "driver_ok": ["i915", "xe"],
+      "needs_proprietary": false,
+      "packages": {
+        "apt": ["firmware-misc-nonfree", "mesa-vulkan-drivers", "libgl1-mesa-dri", "intel-media-va-driver-non-free"],
+        "dnf": ["mesa-dri-drivers", "mesa-vulkan-drivers", "linux-firmware"],
+        "pacman": ["mesa", "vulkan-intel", "intel-media-driver", "linux-firmware"],
+        "zypper": ["kernel-firmware", "Mesa-dri", "libvulkan_intel"]
+      },
+      "repos": ["contrib", "non-free", "non-free-firmware"],
+      "capability": "graphics.render",
+      "reboot": false
+    }
+  }
+}

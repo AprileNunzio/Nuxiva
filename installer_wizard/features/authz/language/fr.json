@@ -1,0 +1,17 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "features/authz",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Contrôle d'Accès",
+    "desc": "Politiques de sécurité et autorisations",
+    "error.invalid_policy": "Politique non valide",
+    "error.forbidden": "Opération non autorisée",
+    "audit.updated": "Politique d'autorisation mise à jour",
+    "refusal.role": "Profil non autorisé pour cette opération",
+    "refusal.schedule": "Opération autorisée uniquement pendant les heures de service",
+    "refusal.zone": "Appareil ou pièce non autorisés"
+  }
+}

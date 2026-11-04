@@ -1,0 +1,18 @@
+{
+  "id": "activation",
+  "name": "Sequenza di Attivazione",
+  "icon": "⚡",
+  "category": "sistema",
+  "order": 1,
+  "pinned": false,
+  "panel": "",
+  "api": "api.py",
+  "description": "Motore a stati per la sequenza di attivazione grafica a step.",
+  "capabilities": [
+    "Orchestrazione atomica e persistente dell'attivazione",
+    "Supporto per scelte facoltative dell'utente con schede visive",
+    "Telemetria in tempo reale"
+  ],
+  "settings": [],
+  "icon3d": "./icon.png"
+}

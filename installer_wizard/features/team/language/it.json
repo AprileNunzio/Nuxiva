@@ -1,0 +1,12 @@
+{
+  "outcomes": {
+    "verified": "Incarico completato e verificato da {agent}.",
+    "completed_unverified": "{agent} ha terminato, ma l’esito non è stato verificato.",
+    "failed": "{agent} non ha completato l’incarico.",
+    "blocked": "L’incarico di {agent} è stato bloccato.",
+    "cancelled": "L’incarico di {agent} è stato annullato.",
+    "pending": "L’incarico di {agent} è in attesa di approvazione.",
+    "running": "L’incarico di {agent} è ancora in esecuzione.",
+    "unverified": "L’esito dell’incarico di {agent} non è verificato."
+  }
+}

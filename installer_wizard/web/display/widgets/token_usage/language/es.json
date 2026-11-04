@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Tokens",
+    "today": "Hoy {n}",
+    "month": "Mes {n}",
+    "budget": "En línea: {used} de {cap}",
+    "no_budget": "Sin límite en línea"
+  }
+}

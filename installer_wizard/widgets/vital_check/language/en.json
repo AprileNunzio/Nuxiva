@@ -1,0 +1,38 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/vital_check",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title_greet": "Health check",
+    "title_device": "Connecting your device",
+    "title_camera": "Webcam measurement",
+    "title_done": "Check complete",
+    "title_failed": "Measurement failed",
+    "greet": "Hi {{name}}, let me take a look: one moment.",
+    "device": "Looking for your device and trying to connect.",
+    "device_named": "Trying to connect to {{name}}.",
+    "camera_hold": "No band linked: keep still and look at the webcam for {{n}} seconds.",
+    "camera_wait": "Just a moment: reading your heart rate.",
+    "camera_breath": "Heart rate found. Now breathe normally: measuring your breathing.",
+    "moved": "You moved: starting again. Keep still, facing the webcam.",
+    "done_device": "Done: values read from your device.",
+    "done_camera": "Done: values estimated from the webcam.",
+    "failed": "I can't read your vitals. Try more light on your face and keep still.",
+    "d_search": "Looking for the device",
+    "d_connect": "Connecting",
+    "d_read": "Reading the values",
+    "c_still": "Keep still",
+    "c_look": "Look at the webcam",
+    "c_breathe": "Breathe normally",
+    "m_heart": "Heart rate",
+    "m_breath": "Breathing",
+    "per_min": "/min",
+    "seconds": "seconds",
+    "measuring": "measuring",
+    "src_device": "From your device",
+    "src_camera": "From the webcam",
+    "not_medical": "Informational estimate, not medical"
+  }
+}

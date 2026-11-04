@@ -1,0 +1,41 @@
+{
+  "id": "brain",
+  "name": "Cervello",
+  "icon": "Cpu",
+  "version": "6.0.0",
+  "description": "Scegli quali modelli di intelligenza artificiale usa l'assistente quando parla e quando lavora, collega i fornitori e controlla consumi e limiti",
+  "scope": "apps/brain",
+  "kind": "app",
+  "target": "global",
+  "window": {
+    "defaultWidth": 82,
+    "defaultHeight": 86,
+    "minWidth": 35,
+    "minHeight": 26,
+    "resizable": true
+  },
+  "toolbars": [
+    {
+      "id": "system",
+      "items": [
+        {
+          "type": "action",
+          "id": "refresh",
+          "labelKey": "os_refresh",
+          "shortcut": "F5"
+        }
+      ]
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "nQuaNO36nu68",
+    "url": "https://img.icons8.com/?size=240&id=nQuaNO36nu68&format=png"
+  },
+  "category": "intelligence",
+  "featureIds": [
+    "brain"
+  ]
+}

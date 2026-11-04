@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Jetons",
+    "today": "Aujourd'hui {n}",
+    "month": "Mois {n}",
+    "budget": "En ligne : {used} sur {cap}",
+    "no_budget": "Aucune limite en ligne"
+  }
+}

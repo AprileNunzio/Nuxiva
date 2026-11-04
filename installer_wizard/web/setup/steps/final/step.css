@@ -1,0 +1,27 @@
+.os-summary-card {
+  max-width: 440px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.os-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  font-size: var(--os-font-size-xs);
+}
+
+.os-summary-row:last-child {
+  border-bottom: none;
+}
+
+.os-summary-label {
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.os-summary-val {
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+}

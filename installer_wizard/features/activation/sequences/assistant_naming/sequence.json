@@ -1,0 +1,10 @@
+{
+  "manifest_version": 1,
+  "id": "assistant_naming",
+  "kind": "configure",
+  "order": 200,
+  "icon": "icon.png",
+  "skippable": false,
+  "view": "view.js",
+  "handler": "handler.py"
+}

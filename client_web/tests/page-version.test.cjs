@@ -1,0 +1,18 @@
+const {readFileSync}=require('node:fs');
+const {resolve}=require('node:path');
+const vm=require('node:vm');
+const assert=require('node:assert/strict');
+const ts=require('typescript');
+const moduleContext={exports:{}};
+const code=ts.transpileModule(readFileSync(resolve(__dirname,'../src/shared/updates/pageVersion.ts'),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText;
+vm.runInNewContext(code,{exports:moduleContext.exports,module:moduleContext,URL});
+const {entryOf,isNewer}=moduleContext.exports;
+const page=(name)=>`<!doctype html><html><head><script type="module" crossorigin src="/assets/${name}.js"></script><link rel="stylesheet" href="/assets/x.css"></head><body></body></html>`;
+assert.equal(entryOf(page('index-abc')),'/assets/index-abc.js');
+assert.equal(entryOf('<script src="/assets/i-1.js" type="module"></script>'),'/assets/i-1.js');
+assert.equal(entryOf('<html>login</html>'),null);
+assert.equal(isNewer('/assets/index-abc.js','/assets/index-abc.js'),false,'same build');
+assert.equal(isNewer('/assets/index-abc.js','/assets/index-def.js'),true,'new build');
+assert.equal(isNewer(null,'/assets/index-def.js'),false,'unknown loaded entry never reloads');
+assert.equal(isNewer('/assets/index-abc.js',null),false,'unparseable response never reloads');
+console.log('Page version: entry detection and reload decisions passed.');

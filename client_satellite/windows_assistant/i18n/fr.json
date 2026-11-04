@@ -1,0 +1,14 @@
+{
+  "enroll.failed": "Impossible de connecter ce PC à NUXIVA ({reason}). Vous pouvez utiliser le code à 6 chiffres.",
+  "enroll.pin_mismatch": "le certificat du serveur ne correspond pas à celui du paquet",
+  "enroll.file_invalid": "le fichier d'inscription n'est pas valide",
+  "enroll.file_expired": "le fichier d'inscription a expiré",
+  "enroll.token_invalid": "le jeton a déjà été utilisé ou a expiré",
+  "enroll.node_exists": "un nœud portant ce nom existe déjà : supprimez-le du panneau NUXIVA",
+  "enroll.rate_limited": "trop de tentatives, réessayez dans quelques minutes",
+  "enroll.unreachable": "NUXIVA est injoignable",
+  "compute.ollama.title": "Partager Ollama avec NUXIVA",
+  "compute.ollama.hint": "Permet à NUXIVA d'utiliser les modèles Ollama installés sur ce PC, uniquement pour des requêtes de génération.",
+  "compute.ollama.request": "Exécuter une requête NUXIVA sur Ollama ({path})",
+  "compute.group": "Ressources de calcul"
+}

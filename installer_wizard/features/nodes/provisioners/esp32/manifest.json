@@ -1,0 +1,8 @@
+{
+  "id": "esp32",
+  "name": "ESP32-S3 IoT Node",
+  "target": "xtensa_esp32",
+  "tier": "tier3_embedded",
+  "version": "5.0.0",
+  "description": "Ultra low-power embedded satellite for sensor telemetry and I2S wake-word"
+}

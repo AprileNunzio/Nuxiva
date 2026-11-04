@@ -1,0 +1,10 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "new_version": "A new version is available: the page reloads in {{seconds}} seconds.",
+    "reload_now": "Reload now",
+    "later": "Later"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "document_viewer",
+  "personal": true,
+  "name": "Documenti e anteprime",
+  "icon": "📄",
+  "priority": 90,
+  "size": "l",
+  "intents": [
+    "document_viewer",
+    "pdf",
+    "web",
+    "documents"
+  ],
+  "description": "Documenti e progetti creati da Nuxiva (Word, Excel, PowerPoint, LibreOffice, PDF) con anteprima, oppure pagine web e PDF.",
+  "ttl": 1800,
+  "tone": "cyan"
+}

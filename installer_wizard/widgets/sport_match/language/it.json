@@ -1,0 +1,27 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/sport_match",
+    "version": "1.1.0"
+  },
+  "dictionary": {
+    "football": "Calcio",
+    "versus": "vs",
+    "in_progress": "In corso",
+    "chip_final": "Finale",
+    "chip_goal": "Gol!",
+    "chip_red": "Rosso",
+    "chip_kickoff": "Calcio d'inizio",
+    "chip_soon": "A breve",
+    "chip_today": "Oggi",
+    "chip_next": "Prossima",
+    "today_cap": "Oggi",
+    "tomorrow": "Domani",
+    "penalty": "rig.",
+    "own_goal": "aut.",
+    "out_won": "Vittoria",
+    "out_lost": "Sconfitta",
+    "out_drew": "Pareggio",
+    "last": "Ultima"
+  }
+}

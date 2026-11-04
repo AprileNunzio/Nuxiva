@@ -1,0 +1,39 @@
+{
+  "id": "applications",
+  "name": "Applicazioni",
+  "icon": "Grid",
+  "version": "1.0.0",
+  "description": "Catalogo universale delle applicazioni e media center di Nuxiva.",
+  "scope": "apps/applications",
+  "kind": "app",
+  "target": "global",
+  "category": "system",
+  "window": {
+    "defaultWidth": 72,
+    "defaultHeight": 78,
+    "minWidth": 30,
+    "resizable": true
+  },
+  "toolbars": [
+    {
+      "id": "system",
+      "items": [
+        {
+          "type": "search",
+          "id": "search",
+          "placeholderKey": "search_placeholder"
+        }
+      ]
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "applications-container",
+    "url": "https://img.icons8.com/?size=240&id=folder&format=png"
+  },
+  "desktop": {
+    "order": 1
+  }
+}

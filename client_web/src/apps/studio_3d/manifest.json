@@ -1,0 +1,29 @@
+{
+  "id": "studio_3d",
+  "name": "Studio 3D & Modelli",
+  "icon": "Box",
+  "kind": "app",
+  "category": "creativity",
+  "version": "5.0.0",
+  "description": "Visualizzazione, rotazione e generazione di modelli 3D",
+  "scope": "apps/studio_3d",
+  "target": "global",
+  "window": {
+    "defaultWidth": 75,
+    "defaultHeight": 80,
+    "minWidth": 30,
+    "minHeight": 25,
+    "resizable": true
+  },
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "gvQUkpW15e1x",
+    "url": "https://img.icons8.com/?size=240&id=gvQUkpW15e1x&format=png"
+  },
+  "featureIds": [
+    "models3d",
+    "avatars"
+  ]
+}

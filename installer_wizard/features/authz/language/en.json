@@ -1,0 +1,17 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "features/authz",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Access Control",
+    "desc": "Security policies and permissions",
+    "error.invalid_policy": "Invalid policy",
+    "error.forbidden": "Forbidden operation",
+    "audit.updated": "Authorization policy updated",
+    "refusal.role": "Profile unauthorized for this operation",
+    "refusal.schedule": "Operation allowed only during service hours",
+    "refusal.zone": "Device or room unauthorized"
+  }
+}

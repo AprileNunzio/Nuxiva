@@ -1,0 +1,30 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "client_web/src/app_shell/tasks",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Tasks",
+    "running": "{n} running",
+    "ready": "{n} ready",
+    "state_running": "Working…",
+    "state_queued": "Queued",
+    "state_paused": "Paused",
+    "stage_plan": "Planning the arrangement…",
+    "stage_lyrics": "Preparing the lyrics…",
+    "stage_translate": "Translating the lyrics…",
+    "stage_voices": "Recording the vocals…",
+    "stage_render": "Rendering the audio file…",
+    "error_interrupted": "Interrupted by a system restart",
+    "error_cancelled": "Cancelled",
+    "failed": "It did not succeed",
+    "question": "«{title}» is ready. Do you want to listen, open it or talk about it?",
+    "action_listen": "Listen",
+    "action_open": "Open",
+    "action_talk": "Talk about it",
+    "later": "Later",
+    "cancel": "Cancel task",
+    "dismiss": "Hide"
+  }
+}

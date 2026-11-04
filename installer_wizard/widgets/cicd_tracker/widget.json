@@ -1,0 +1,13 @@
+{
+  "id": "cicd_tracker",
+  "name": "Pipeline CI/CD",
+  "icon": "⚙️",
+  "priority": 50,
+  "size": "l",
+  "intents": [
+    "cicd_tracker"
+  ],
+  "description": "Stato delle pipeline di build e rilascio.",
+  "ttl": 120,
+  "tone": "amber"
+}

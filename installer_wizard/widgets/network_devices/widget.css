@@ -1,0 +1,23 @@
+.w-network_devices .nd-types { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 8px; }
+.w-network_devices .nd-types span { display: inline-flex; align-items: center; gap: 4px; padding: 3px 7px; border-radius: 6px; font-size: 11px; color: var(--text-dim); background: rgba(var(--tone), 0.1); }
+.w-network_devices .nd-types svg { width: 12px; height: 12px; color: rgb(var(--tone)); }
+.w-network_devices .nd-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; max-height: 46vh; overflow: auto; scrollbar-width: thin; overscroll-behavior: contain; }
+.w-network_devices .nd-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 6px 2px; animation: nd-in 0.3s ease-out both; animation-delay: calc(var(--i) * 25ms); }
+.w-network_devices .nd-row + .nd-row { box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.05); }
+.w-network_devices .nd-ic { position: relative; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 8px; color: rgb(var(--tone)); background: rgba(var(--tone), 0.12); }
+.w-network_devices .nd-ic svg { width: 15px; height: 15px; }
+.w-network_devices .nd-dot { position: absolute; right: -2px; bottom: -2px; width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 2px rgba(5, 11, 22, 0.9); }
+.w-network_devices .nd-row.off { opacity: 0.45; }
+.w-network_devices .nd-row.off .nd-dot { background: var(--text-faint); }
+.w-network_devices .nd-row.warn .nd-ic { color: var(--amber); background: rgba(255, 190, 60, 0.12); }
+.w-network_devices .nd-txt { display: flex; flex-direction: column; min-width: 0; }
+.w-network_devices .nd-txt b { font-size: 13px; font-weight: 400; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.w-network_devices .nd-txt small { font-size: 10.5px; color: var(--text-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.w-network_devices .nd-end { display: flex; align-items: center; gap: 6px; }
+.w-network_devices .nd-ip { font-size: 11px; color: var(--text-dim); }
+.w-network_devices .nd-end em { padding: 1px 5px; border-radius: 4px; font: 600 9px/1.4 var(--font); font-style: normal; letter-spacing: 0.04em; }
+.w-network_devices .nd-new { color: rgb(var(--tone)); background: rgba(var(--tone), 0.15); }
+.w-network_devices .nd-unk { color: var(--amber); background: rgba(255, 190, 60, 0.14); }
+.w-network_devices .nd-more { margin-top: 6px; font-size: 11px; }
+@keyframes nd-in { from { opacity: 0; transform: translateX(-3px); } }
+@media (prefers-reduced-motion: reduce) { .w-network_devices .nd-row { animation: none; } }

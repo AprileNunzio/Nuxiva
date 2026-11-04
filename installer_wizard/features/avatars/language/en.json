@@ -1,0 +1,14 @@
+{
+  "name": "Holograms & Avatars",
+  "description": "Management and customization of 3D avatars, holographic meshes, and visual skins for Nuxiva.",
+  "capabilities": [
+    "Import GLTF, GLB, and FBX 3D avatars",
+    "Facial blendshapes and real-time lip sync",
+    "Skins, accessories, and atmospheric shaders"
+  ],
+  "settings": {
+    "NUXIVA_AVATAR": "Assistant appearance",
+    "NUXIVA_AVATAR_STYLE": "Appearance style",
+    "NUXIVA_FACE_COLOR": "Hologram colour"
+  }
+}

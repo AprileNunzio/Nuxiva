@@ -1,0 +1,23 @@
+.w-net_topology .nt-wrap { position: relative; width: 100%; color: rgb(var(--tone)); }
+.w-net_topology .nt-map { display: block; width: 100%; height: auto; overflow: visible; }
+.w-net_topology .nt-link { stroke: rgba(var(--tone), 0.45); stroke-width: 1.2; stroke-dasharray: 3 5; animation: nt-flow var(--d) linear infinite; }
+.w-net_topology .nt-link.off { stroke: rgba(255, 255, 255, 0.12); stroke-dasharray: 2 6; animation: none; }
+.w-net_topology .nt-node { cursor: pointer; outline: none; }
+.w-net_topology .nt-node circle { fill: rgba(5, 14, 26, 0.95); stroke: rgba(var(--tone), 0.7); stroke-width: 1.4; transition: stroke 0.2s, r 0.2s; }
+.w-net_topology .nt-node .wk-svg { color: rgb(var(--tone)); fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.w-net_topology .nt-node text, .w-net_topology .nt-hub text { font: 500 9.5px var(--font); fill: var(--text-dim); text-anchor: middle; }
+.w-net_topology .nt-node.off circle { stroke: rgba(255, 255, 255, 0.2); }
+.w-net_topology .nt-node.off .wk-svg { color: var(--text-faint); }
+.w-net_topology .nt-node.off text { fill: var(--text-faint); }
+.w-net_topology .nt-node.me circle { stroke: var(--hud-text, var(--text)); stroke-width: 2; }
+.w-net_topology .nt-node.warn circle { stroke: var(--amber); }
+.w-net_topology .nt-node:hover circle, .w-net_topology .nt-node:focus-visible circle, .w-net_topology .nt-node.sel circle { stroke: var(--hud-text, var(--text)); stroke-width: 2.2; }
+.w-net_topology .nt-node.sel text { fill: var(--text); }
+.w-net_topology .nt-hub circle { fill: rgba(var(--tone), 0.18); stroke: rgb(var(--tone)); stroke-width: 1.8; }
+.w-net_topology .nt-hub .wk-svg { color: rgb(var(--tone)); fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.w-net_topology .nt-hub text { fill: var(--text); font-weight: 600; }
+.w-net_topology .nt-halo { animation: nt-pulse 3s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+.w-net_topology .nt-info { min-height: 16px; margin-top: 4px; font: 11px var(--mono); color: var(--text-dim); text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@keyframes nt-flow { to { stroke-dashoffset: -16; } }
+@keyframes nt-pulse { 50% { transform: scale(1.18); opacity: 0.6; } }
+@media (prefers-reduced-motion: reduce) { .w-net_topology .nt-link, .w-net_topology .nt-halo { animation: none; } }

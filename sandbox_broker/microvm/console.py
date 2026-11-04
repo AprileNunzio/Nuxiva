@@ -1,0 +1,101 @@
+import base64
+import binascii
+import re
+import os
+import pty
+import subprocess
+import fcntl
+from dataclasses import dataclass
+from typing import Dict, Optional
+
+class PersistentPTY:
+    def __init__(self) -> None:
+        self.master_fd, self.slave_fd = pty.openpty()
+        self.process = subprocess.Popen(
+            ["/bin/bash"],
+            stdin=self.slave_fd,
+            stdout=self.slave_fd,
+            stderr=self.slave_fd,
+            preexec_fn=os.setsid,
+            close_fds=True
+        )
+        flags = fcntl.fcntl(self.master_fd, fcntl.F_GETFL)
+        fcntl.fcntl(self.master_fd, fcntl.F_SETFL, flags | os.O_NONBLOCK)
+        
+        # Disabilita l'echo del terminale per leggere solo l'output effettivo
+        try:
+            os.write(self.master_fd, b"stty -echo\n")
+        except OSError:
+            pass
+
+    def write_command(self, cmd: str) -> None:
+        try:
+            os.write(self.master_fd, (cmd + "\n").encode("utf-8"))
+        except OSError as exc:
+            raise RuntimeError(f"PTY write failed: {exc}")
+
+    def read_output(self, buffer_size: int = 4096) -> str:
+        try:
+            return os.read(self.master_fd, buffer_size).decode("utf-8", "replace")
+        except BlockingIOError:
+            return ""
+        except OSError as exc:
+            raise RuntimeError(f"PTY read failed: {exc}")
+
+MARK = b"@@NUXIVA@@"
+_OOM_SIGNS = (b"Out of memory", b"oom-kill", b"Killed process")
+
+
+@dataclass(frozen=True)
+class GuestReport:
+    stdout: bytes = b""
+    stderr: bytes = b""
+    exit_code: Optional[int] = None
+    timed_out: bool = False
+    oom_killed: bool = False
+
+    @property
+    def complete(self) -> bool:
+        return self.exit_code is not None
+
+
+def parse(console: bytes, cap: int) -> GuestReport:
+    fields: Dict[str, bytes] = {}
+    oom = False
+    for line in console.splitlines():
+        line = line.strip()
+        if line.startswith(MARK):
+            parts = line.split(b" ", 2)
+            if len(parts) == 3:
+                try:
+                    fields[parts[1].decode("ascii", "ignore")] = base64.b64decode(parts[2], validate=True)[:cap]
+                except (binascii.Error, ValueError):
+                    continue
+        elif any(sign in line for sign in _OOM_SIGNS):
+            oom = True
+    code: Optional[int] = None
+    if "exit" in fields:
+        try:
+            code = int(fields["exit"].decode("ascii"))
+        except ValueError:
+            code = None
+    return GuestReport(
+        stdout=fields.get("stdout", b""),
+        stderr=fields.get("stderr", b""),
+        exit_code=code,
+        timed_out=fields.get("timeout") == b"1",
+        oom_killed=oom or (code is not None and code in (137, -9) and fields.get("timeout") != b"1"),
+    )
+
+
+_KERNEL_LINE = re.compile(r"^\[\s*\d+\.\d+\]")
+
+
+def tail(console_bytes: bytes, process_stderr: bytes, lines: int = 8, limit: int = 560) -> str:
+    rows = [ln.strip() for ln in console_bytes.decode("utf-8", "replace").splitlines() if ln.strip()]
+    rows = [ln for ln in rows if MARK.decode() not in ln and "[anonymous-instance" not in ln]
+    guest = [ln for ln in rows if not _KERNEL_LINE.match(ln)]
+    panic = next((ln for ln in rows if "Kernel panic" in ln), "")
+    err = " ".join(process_stderr.decode("utf-8", "replace").split())[-160:]
+    text = " / ".join(guest[-lines:] + ([panic] if panic else []) or rows[-lines:])
+    return f"console: {text[-limit:]}" + (f" | vmm: {err}" if err else "")

@@ -1,0 +1,28 @@
+{
+  "manifest_version": 1,
+  "id": "bluetooth",
+  "kind": "optional",
+  "order": 140,
+  "steps": ["bluetooth"],
+  "icon": "icon.png",
+  "when": ["hardware:bluetooth"],
+  "choices": [
+    {
+      "id": "yes",
+      "installs": true,
+      "icon": "choice_yes.png",
+      "recommended": true,
+      "env": {
+        "NUXIVA_BLUETOOTH": "1"
+      }
+    },
+    {
+      "id": "no",
+      "installs": false,
+      "icon": "choice_no.png",
+      "env": {
+        "NUXIVA_BLUETOOTH": "0"
+      }
+    }
+  ]
+}

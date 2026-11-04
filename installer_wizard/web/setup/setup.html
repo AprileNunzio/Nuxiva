@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Nuxiva OS Setup</title>
+  <link rel="stylesheet" href="/static/shared/theme/os_theme.css">
+  <link rel="stylesheet" href="/static/shared/theme/os_background.css">
+  <link rel="stylesheet" href="/static/shared/theme/os_window.css">
+  <link rel="stylesheet" href="/static/shared/theme/os_cards.css">
+  <link rel="stylesheet" href="/static/shared/theme/os_components.css">
+  <link rel="stylesheet" href="/static/setup/setup_base.css">
+  <link rel="stylesheet" href="/static/setup/steps/lang/step.css">
+  <link rel="stylesheet" href="/static/setup/steps/mode/step.css">
+  <link rel="stylesheet" href="/static/setup/steps/storage/step.css">
+  <link rel="stylesheet" href="/static/setup/steps/components/step.css">
+  <link rel="stylesheet" href="/static/setup/steps/assistant/step.css">
+  <link rel="stylesheet" href="/static/setup/steps/owner/step.css">
+  <link rel="stylesheet" href="/static/setup/steps/final/step.css">
+</head>
+<body>
+  <div class="os-ambient-root" aria-hidden="true">
+    <div class="os-aurora-mesh">
+      <div class="os-aurora-blob os-aurora-blob-1"></div>
+      <div class="os-aurora-blob os-aurora-blob-2"></div>
+      <div class="os-aurora-blob os-aurora-blob-3"></div>
+    </div>
+    <div class="os-grid-overlay"></div>
+    <div class="os-vignette-overlay"></div>
+  </div>
+
+  <main class="os-dialog-container" id="setup-shell">
+    <header class="os-window-header">
+      <div class="os-window-controls">
+        <span class="os-window-btn os-window-btn-close"></span>
+        <span class="os-window-btn os-window-btn-minimize"></span>
+        <span class="os-window-btn os-window-btn-maximize"></span>
+      </div>
+      <div class="os-window-titlebar">
+        <span class="os-window-title">Nuxiva OS</span>
+        <span class="os-window-badge">v5.3</span>
+      </div>
+      <div class="os-window-actions">
+        <button type="button" class="os-theme-toggle" id="btn-theme-toggle" aria-label="Cambia tema">
+          <svg class="os-theme-icon os-theme-icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="os-theme-icon os-theme-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="os-dialog-hero" id="setup-hero">
+      <div class="os-dialog-icon-wrapper" id="hero-icon-container">
+        <svg class="os-globe-icon" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="2" y1="12" x2="22" y2="12"></line>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"></path>
+        </svg>
+      </div>
+      <h1 class="os-dialog-heading" id="setup-screen-title">Lingua</h1>
+      <p class="os-dialog-subheading" id="setup-screen-subtitle">Scegli la lingua principale per l'interfaccia e i modelli vocali.</p>
+      
+      <div class="os-stepper" id="setup-stepper">
+        <div class="os-step-dot is-active" data-step="0"></div>
+        <div class="os-step-dot" data-step="1"></div>
+        <div class="os-step-dot" data-step="2"></div>
+        <div class="os-step-dot" data-step="3"></div>
+        <div class="os-step-dot" data-step="4"></div>
+        <div class="os-step-dot" data-step="5"></div>
+        <div class="os-step-dot" data-step="6"></div>
+      </div>
+    </div>
+
+    <div class="os-window-body p-6">
+      <div class="status-alert" id="status-alert" role="alert"></div>
+
+      <section class="setup-screen active" id="screen-lang">
+        <div class="os-lang-container">
+          <div class="os-search-bar">
+            <svg class="os-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="lang-search-input" class="os-search-input" placeholder="Cerca lingua..." autocomplete="off" spellcheck="false" />
+          </div>
+
+          <div class="os-lang-list" id="lang-list" role="listbox" aria-label="Seleziona lingua"></div>
+        </div>
+      </section>
+
+      <section class="setup-screen" id="screen-mode">
+        <div class="os-mode-grid">
+          <div class="os-card os-card-interactive os-card-selected mode-card" data-mode="standard">
+            <div class="os-card-header">
+              <div class="os-card-icon">⚡</div>
+              <div class="os-card-title-group">
+                <h3 class="os-card-title" data-i18n="setup.mode.standard_title">Installazione Standard</h3>
+                <span class="os-card-subtitle" data-i18n="setup.mode.standard_sub">Consigliata per la maggior parte dei sistemi</span>
+              </div>
+            </div>
+            <p class="os-card-body" data-i18n="setup.mode.standard_desc">Configurazione automatica delle partizioni e del filesystem con parametri ottimali per le prestazioni.</p>
+          </div>
+          <div class="os-card os-card-interactive mode-card" data-mode="advanced">
+            <div class="os-card-header">
+              <div class="os-card-icon">🛠️</div>
+              <div class="os-card-title-group">
+                <h3 class="os-card-title" data-i18n="setup.mode.advanced_title">Installazione Avanzata</h3>
+                <span class="os-card-subtitle" data-i18n="setup.mode.advanced_sub">Per esperti e server dedicati</span>
+              </div>
+            </div>
+            <p class="os-card-body" data-i18n="setup.mode.advanced_desc">Personalizzazione delle partizioni di sistema, selezione mirata dei componenti e isolamento hardware.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="setup-screen" id="screen-storage">
+        <div class="os-storage-grid">
+          <div class="os-card os-card-interactive os-card-selected storage-card" data-storage="clean">
+            <div class="os-card-header">
+              <div class="os-card-icon">💾</div>
+              <div class="os-card-title-group">
+                <h3 class="os-card-title" data-i18n="setup.storage.clean_title">Cancella disco e installa</h3>
+                <span class="os-card-subtitle" data-i18n="setup.storage.clean_sub">Installazione pulita del sistema</span>
+              </div>
+            </div>
+            <p class="os-card-body" data-i18n="setup.storage.clean_desc">Il disco principale viene formattato e predisposto con la struttura di partizioni nativa di Nuxiva OS.</p>
+          </div>
+          <div class="os-card os-card-interactive storage-card" data-storage="custom">
+            <div class="os-card-header">
+              <div class="os-card-icon">🗂️</div>
+              <div class="os-card-title-group">
+                <h3 class="os-card-title" data-i18n="setup.storage.custom_title">Partizionamento avanzato</h3>
+                <span class="os-card-subtitle" data-i18n="setup.storage.custom_sub">Configurazione manuale o dual-boot</span>
+              </div>
+            </div>
+            <p class="os-card-body" data-i18n="setup.storage.custom_desc">Scegli volumi LVM, tabelle GPT/MS-DOS personalizzate o punti di montaggio separati.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="setup-screen" id="screen-components">
+        <div class="os-components-list" id="components-list"></div>
+      </section>
+
+      <section class="setup-screen" id="screen-assistant">
+        <div class="os-assistant-form">
+          <div>
+            <label class="block text-xs font-semibold mb-1.5" for="cfg-assist-name" data-i18n="setup.assistant.name">Nome Assistente</label>
+            <input type="text" id="cfg-assist-name" class="os-input" value="Nuxiva" maxlength="32" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold mb-1.5" data-i18n="setup.assistant.voice">Voce Assistente</label>
+            <div class="os-decision-grid">
+              <div class="os-card os-card-interactive os-card-selected voice-card" data-gender="female" id="voice-female">
+                <span class="font-semibold text-xs" data-i18n="setup.voice.female">Voce Femminile</span>
+              </div>
+              <div class="os-card os-card-interactive voice-card" data-gender="male" id="voice-male">
+                <span class="font-semibold text-xs" data-i18n="setup.voice.male">Voce Maschile</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="setup-screen" id="screen-owner">
+        <div class="os-owner-form">
+          <div>
+            <label class="block text-xs font-semibold mb-1.5" for="cfg-owner-name" data-i18n="setup.owner.first">Nome del Proprietario</label>
+            <input type="text" id="cfg-owner-name" class="os-input" placeholder="es. Marco" maxlength="48" required />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold mb-1.5" for="cfg-owner-last" data-i18n="setup.owner.last">Cognome (opzionale)</label>
+            <input type="text" id="cfg-owner-last" class="os-input" maxlength="48" />
+          </div>
+        </div>
+      </section>
+
+      <section class="setup-screen" id="screen-final">
+        <div class="os-card os-summary-card">
+          <div class="os-summary-row">
+            <span class="os-summary-label" data-i18n="setup.summary.lang">Lingua:</span>
+            <span class="os-summary-val" id="sum-lang">Italiano</span>
+          </div>
+          <div class="os-summary-row">
+            <span class="os-summary-label" data-i18n="setup.summary.mode">Modalità:</span>
+            <span class="os-summary-val" id="sum-mode">Standard</span>
+          </div>
+          <div class="os-summary-row">
+            <span class="os-summary-label" data-i18n="setup.summary.storage">Archiviazione:</span>
+            <span class="os-summary-val" id="sum-storage">Cancella disco</span>
+          </div>
+          <div class="os-summary-row">
+            <span class="os-summary-label" data-i18n="setup.summary.addons">Componenti:</span>
+            <span class="os-summary-val" id="sum-components">5 moduli</span>
+          </div>
+          <div class="os-summary-row">
+            <span class="os-summary-label" data-i18n="setup.summary.assistant">Assistente:</span>
+            <span class="os-summary-val" id="sum-assistant">Nuxiva</span>
+          </div>
+          <div class="os-summary-row">
+            <span class="os-summary-label" data-i18n="setup.summary.owner">Proprietario:</span>
+            <span class="os-summary-val" id="sum-owner">—</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer class="os-dialog-footer">
+      <button type="button" class="os-btn os-btn-secondary" id="btn-back" style="visibility: hidden;">
+        <svg class="os-btn-arrow-back" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+        <span id="btn-back-label">Indietro</span>
+      </button>
+      <button type="button" class="os-btn os-btn-primary" id="btn-next">
+        <span id="btn-next-label">Avanti</span>
+        <svg class="os-btn-arrow" id="btn-next-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+    </footer>
+  </main>
+
+  <script src="/static/setup/shared/setup_storage.js"></script>
+  <script src="/static/setup/steps/lang/i18n.js"></script>
+  <script src="/static/setup/steps/lang/step.js"></script>
+  <script src="/static/setup/steps/mode/i18n.js"></script>
+  <script src="/static/setup/steps/mode/step.js"></script>
+  <script src="/static/setup/steps/storage/i18n.js"></script>
+  <script src="/static/setup/steps/storage/step.js"></script>
+  <script src="/static/setup/steps/components/i18n.js"></script>
+  <script src="/static/setup/steps/components/step.js"></script>
+  <script src="/static/setup/steps/assistant/i18n.js"></script>
+  <script src="/static/setup/steps/assistant/step.js"></script>
+  <script src="/static/setup/steps/owner/i18n.js"></script>
+  <script src="/static/setup/steps/owner/step.js"></script>
+  <script src="/static/setup/steps/final/i18n.js"></script>
+  <script src="/static/setup/steps/final/step.js"></script>
+  <script src="/static/setup/setup.js"></script>
+</body>
+</html>

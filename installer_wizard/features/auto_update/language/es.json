@@ -1,0 +1,12 @@
+{
+  "name": "Actualizaciones automáticas",
+  "description": "Nuxiva se actualiza sola desde GitHub, verifica la nueva versión y revierte si algo falla.",
+  "capabilities": [
+    "Comprobación periódica",
+    "Verificación y reversión automática"
+  ],
+  "settings": {
+    "NUXIVA_UPDATE_INTERVAL_MIN": "Comprobar cada (minutos)",
+    "NUXIVA_UPDATE_BRANCH": "Rama de GitHub"
+  }
+}

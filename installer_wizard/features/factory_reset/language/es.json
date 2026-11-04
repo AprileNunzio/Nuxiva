@@ -1,0 +1,14 @@
+{
+  "name": "Restablecimiento de fábrica",
+  "description": "Borra todos los datos, huellas y credenciales de Nuxiva y devuelve el sistema a la configuración inicial, como recién instalado, con confirmaciones múltiples y prueba final del borrado.",
+  "capabilities": [
+    "Inventario de todo lo que se borrará antes de continuar",
+    "Reintroducción de la contraseña de administrador y frase de confirmación aleatoria",
+    "Espera obligatoria y código de un solo uso que caduca, contra clics accidentales",
+    "Archivos sensibles sobrescritos antes de eliminarlos",
+    "Verificación final: sin restos, archivos testigo desaparecidos, ningún proceso con datos abiertos",
+    "Claves de sesión y secretos regenerados, asistente de primera configuración reabierto"
+  ],
+  "settings": {},
+  "help": {}
+}

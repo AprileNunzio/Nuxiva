@@ -1,0 +1,10 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "cap_unknown": "Desconocido",
+    "captions_title": "Transcripción en tiempo real",
+    "listening": "Escuchando"
+  }
+}

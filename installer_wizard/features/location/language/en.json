@@ -1,0 +1,15 @@
+{
+  "name": "Geographic Location",
+  "description": "GPS and IP geolocation manager for solar azimuth, local weather, and distance calculation.",
+  "capabilities": [
+    "IP and GPS geolocation resolution",
+    "Sunrise, sunset, and solar azimuth computation",
+    "Proximity to points of interest"
+  ],
+  "settings": {
+    "NUXIVA_LOCATION_MODE": "Location mode (auto or fixed)",
+    "NUXIVA_LOCATION": "Default location name",
+    "NUXIVA_LOCATION_LAT": "Default latitude",
+    "NUXIVA_LOCATION_LON": "Default longitude"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Sauvegarde et Instantané",
+    "description": "Instantanés système et restauration",
+    "status": "Actif",
+    "open_app": "Ouvrir",
+    "loading": "Chargement…",
+    "unreachable": "Serveur injoignable",
+    "on": "Actif",
+    "off": "Éteint",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "add": "Ajouter",
+    "feature_title": "Réglages de la fonction",
+    "mode": "Mode",
+    "mode_auto": "Automatique",
+    "mode_on": "Toujours active",
+    "mode_off": "Toujours désactivée",
+    "running": "En marche",
+    "stopped": "Arrêtée",
+    "no_settings": "Cette fonction n'a pas de réglages.",
+    "create": "Créer une sauvegarde",
+    "stat_count": "Sauvegardes conservées",
+    "stat_size": "Espace utilisé",
+    "stat_schedule": "Planification",
+    "stat_next": "Prochaine sauvegarde",
+    "every_hours": "toutes les {count} h",
+    "manual": "Manuel seulement",
+    "list_title": "Sauvegardes disponibles",
+    "empty": "Aucune sauvegarde.",
+    "verify": "Vérifier l'intégrité",
+    "download": "Télécharger",
+    "kind_auto": "Automatique",
+    "kind_manual": "Manuel",
+    "verified_ok": "Intègre",
+    "verified_bad": "ALTÉRÉ"
+  }
+}

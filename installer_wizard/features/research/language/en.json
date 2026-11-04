@@ -1,0 +1,16 @@
+{
+  "name": "Online research",
+  "description": "The agent specialised in online research: when Nuxiva, the CEO or another agent does not know something or it depends on current events, it checks reliable, recent sources, cites them and, if it finds nothing, says so instead of making things up.",
+  "capabilities": [
+    "Searches recent news and the web in parallel, discards social media, forums and low-quality sites",
+    "Ranks sources by reliability (institutions, agencies, newspapers) and publication date",
+    "Extracts only the relevant sentences and returns them with source, date and reliability level",
+    "If no sources are found or the network is down it says so, never invented answers",
+    "Protected networking: no internal addresses, checked redirects, limited sizes and types; personal data removed from the query"
+  ],
+  "settings": {
+    "NUXIVA_RESEARCH_DAYS": "Freshness window in days (0 = no limit)",
+    "NUXIVA_RESEARCH_MAX_SOURCES": "Maximum sources per answer",
+    "NUXIVA_SEARXNG_URL": "Private SearXNG address (optional)"
+  }
+}

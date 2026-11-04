@@ -1,0 +1,31 @@
+{
+  "id": "bluetooth",
+  "name": "Bluetooth",
+  "icon": "ᛒ",
+  "category": "percezione",
+  "order": 95,
+  "panel": "bluetooth",
+  "description": "Qualsiasi dispositivo Bluetooth: casse, cuffie, microfoni, mouse, tastiere, joystick e controller. Abbinamento guidato, impostazioni dedicate per ogni tipo di dispositivo applicate subito, microfono preferito per parlare con Nuxiva e controller per giocare dal vivo.",
+  "toggle": {
+    "env": "NUXIVA_BLUETOOTH",
+    "apply": [
+      "bluetooth"
+    ]
+  },
+  "capabilities": [
+    "Ricerca, abbinamento, fiducia e riconnessione di qualsiasi dispositivo",
+    "Riconoscimento automatico del tipo: audio, microfono, mouse, tastiera, controller",
+    "Microfono Bluetooth preferito per parlare con l'assistente, applicato subito alla pagina principale",
+    "Uscita audio preferita con volume e profilo dedicati",
+    "Velocità del puntatore, scorrimento naturale, mano sinistra e layout della tastiera",
+    "Controller e joystick per i giochi: giocatore, zona morta, sensibilità, asse invertito e vibrazione"
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "J2fYkPtfcYwj",
+    "url": "https://img.icons8.com/?size=240&id=J2fYkPtfcYwj&format=png"
+  },
+  "surface": "hidden"
+}

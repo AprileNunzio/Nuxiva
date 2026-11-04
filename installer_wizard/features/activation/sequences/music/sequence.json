@@ -1,0 +1,27 @@
+{
+  "manifest_version": 1,
+  "id": "music",
+  "kind": "optional",
+  "order": 150,
+  "steps": ["music"],
+  "icon": "icon.png",
+  "choices": [
+    {
+      "id": "yes",
+      "installs": true,
+      "icon": "choice_yes.png",
+      "recommended": true,
+      "env": {
+        "NUXIVA_MUSIC_ID": "1"
+      }
+    },
+    {
+      "id": "no",
+      "installs": false,
+      "icon": "choice_no.png",
+      "env": {
+        "NUXIVA_MUSIC_ID": "0"
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "name": "Bureau des widgets",
+  "description": "L'écran est un bureau : chaque information est un widget indépendant qui apparaît en cas de besoin (musique, météo, alertes, alarmes), par ordre de priorité.",
+  "capabilities": [
+    "Widgets découverts dans les dossiers",
+    "Priorités modifiables",
+    "Alarmes en plein écran",
+    "Testez chaque widget du panneau",
+    "Fermeture automatique des données personnelles",
+    "Widgets du propriétaire sur l'écran : ressources, systèmes, pare-feu, mises à jour et actualités quand vous vous approchez"
+  ],
+  "settings": {
+    "NUXIVA_PRIVACY_AUTOCLOSE": "Fermez les widgets contenant des données personnelles lorsque vous êtes absent",
+    "NUXIVA_PRIVACY_AWAY_S": "Après combien de temps tu es parti",
+    "NUXIVA_PRIVACY_VOICE_S": "Fermez les données personnelles ouvertes par la voix après",
+    "NUXIVA_SECRETARY": "Sur l'écran, afficher les widgets du propriétaire quand il s'approche"
+  }
+}
