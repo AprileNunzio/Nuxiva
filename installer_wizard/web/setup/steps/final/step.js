@@ -80,7 +80,7 @@
         ollama_url: storage.get("ollama_url") || "",
         cloud_provider: storage.get("cloud_provider") || "",
         cloud_key: storage.get("cloud_key") || "",
-        packages: storage.get("selectedComponents") || []
+        packages: [...new Set(storage.get("selectedComponents") || [])]
       };
 
       const res = await fetch("/api/setup", {

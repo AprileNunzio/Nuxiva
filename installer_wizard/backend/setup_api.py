@@ -138,7 +138,7 @@ def suggested_packages() -> list[str]:
 def _wizard_packages() -> dict:
     import packages
     return {pid: {"title": packages.PACKAGE_BY_ID[pid].title, "description": packages.PACKAGE_BY_ID[pid].description,
-                  "size_gb": packages.PACKAGE_BY_ID[pid].size_gb, "heavy": machine.heavy(pid)} for pid in WIZARD_PACKAGES}
+                  "size_gb": packages.PACKAGE_BY_ID[pid].size_gb, "heavy": machine.heavy(pid)} for pid in WIZARD_PACKAGES if pid in packages.PACKAGE_BY_ID}
 
 
 def hardware() -> dict:
@@ -174,7 +174,7 @@ def _clean(raw: dict) -> dict:
     picked = raw.get("packages") or []
     if not isinstance(picked, list) or any(p not in WIZARD_PACKAGES for p in picked):
         raise HTTPException(400, "Pacchetto non valido")
-    out.update({WIZARD_PACKAGES[p]: "1" for p in picked})
+    out.update({WIZARD_PACKAGES[p]: "1" for p in picked if WIZARD_PACKAGES[p] and WIZARD_PACKAGES[p] != "NUXIVA_BRAIN"})
     chosen_gender = str(raw.get("assistant_gender") or "").strip().lower()
     by_gender = VOICES_BY_LANG_GENDER.get(lang, {}).get(chosen_gender, "")
     voice = str(raw.get("voice") or by_gender or "if_sara")

@@ -110,6 +110,19 @@ class WizardTest(unittest.TestCase):
         self.assertNotIn("NUXIVA_EAR", out)
         self.assertNotIn("NUXIVA_VISION", out)
 
+    def test_extended_wizard_packages_are_accepted_and_applied(self):
+        out = setup_api._clean({
+            "brain": "local",
+            "profile": "bilanciato",
+            "packages": ["voice", "ear", "vision", "sandbox", "homeassistant", "brain_local", "ollama"]
+        })
+        self.assertEqual(out["NUXIVA_VOICE_PACKAGE"], "1")
+        self.assertEqual(out["NUXIVA_EAR"], "1")
+        self.assertEqual(out["NUXIVA_VISION"], "1")
+        self.assertEqual(out["NUXIVA_SANDBOX"], "1")
+        self.assertEqual(out["NUXIVA_HOME_ASSISTANT"], "1")
+        self.assertEqual(out["NUXIVA_BRAIN"], "local")
+
     def test_cloud_key_goes_to_the_vault_not_the_env_file(self):
         key = "AIza" + "b" * 35
         self.addCleanup(write_env, {"NUXIVA_BRAIN": "", "NUXIVA_LLM_CHAT_ORDER": "", "NUXIVA_LLM_DEEP_ORDER": ""})

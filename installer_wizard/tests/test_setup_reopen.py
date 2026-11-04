@@ -22,7 +22,8 @@ class SetupReopenTest(unittest.TestCase):
                         break
                 self.assertFalse(setup_api.done())
                 self.assertEqual(json.loads(target.read_text())["by"], "nunzio")
-                self.assertEqual(os.stat(target).st_mode & 0o777, 0o600)
+                if os.name != "nt":
+                    self.assertEqual(os.stat(target).st_mode & 0o777, 0o600)
             self.assertNotEqual(setup_api.guard.code, old_code)
 
 

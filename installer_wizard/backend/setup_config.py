@@ -56,5 +56,22 @@ CLOUD_PICK = {
     "mistral": ("Mistral AI", "mistral-small-latest", "mistral-large-latest"),
 }
 CLOUD_KEY_RE = re.compile(r"[A-Za-z0-9_\-.]{20,256}")
-WIZARD_PACKAGES = {"voice": "NUXIVA_VOICE_PACKAGE", "ear": "NUXIVA_EAR", "vision": "NUXIVA_VISION", "documents": "NUXIVA_DOCUMENTS"}
+WIZARD_PACKAGES = {
+    "voice": "NUXIVA_VOICE_PACKAGE",
+    "ear": "NUXIVA_EAR",
+    "vision": "NUXIVA_VISION",
+    "documents": "NUXIVA_DOCUMENTS",
+    "sandbox": "NUXIVA_SANDBOX",
+    "music": "NUXIVA_MUSIC_ID",
+    "bluetooth": "NUXIVA_BLUETOOTH",
+    "convert3d": "NUXIVA_3D_CONVERT",
+    "shares": "NUXIVA_SHARES",
+    "display": "NUXIVA_KIOSK",
+    "voicestudio": "NUXIVA_VOICESTUDIO",
+    "native": "NUXIVA_NATIVE",
+    "homeassistant": "NUXIVA_HOME_ASSISTANT",
+    "brain_local": "NUXIVA_BRAIN",
+    "brain_models": "NUXIVA_BRAIN",
+    "ollama": "NUXIVA_BRAIN",
+}
 SMB_RE = re.compile(r"[A-Za-z0-9_.@%+=:,-]{12,128}")
