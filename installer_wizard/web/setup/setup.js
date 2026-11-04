@@ -184,6 +184,76 @@
     }
   }
 
+  function showToast(text, duration = 3000) {
+    const toast = document.getElementById("version-toast");
+    if (!toast) return;
+    toast.textContent = text;
+    toast.classList.add("show");
+    if (toast._timer) clearTimeout(toast._timer);
+    if (duration > 0) {
+      toast._timer = setTimeout(() => {
+        toast.classList.remove("show");
+      }, duration);
+    }
+  }
+
+  function initVersionCheck() {
+    const btn = document.getElementById("btn-version-check");
+    const label = document.getElementById("version-text");
+    if (!btn) return;
+
+    fetch(`/api/setup/update?t=${Date.now()}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && data.rev && label) {
+          label.textContent = `v5.3 • ${data.rev.slice(0, 7)}`;
+        }
+      })
+      .catch(() => {});
+
+    btn.addEventListener("click", async () => {
+      if (btn.classList.contains("is-checking")) return;
+      btn.classList.add("is-checking");
+      showToast("Verifica nuovi commit online in corso...", 0);
+
+      try {
+        const res = await fetch("/api/setup/update/sync", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Nuxiva-Request": "1"
+          }
+        });
+
+        if (!res.ok) {
+          showToast("Errore durante la verifica con il server.");
+          btn.classList.remove("is-checking");
+          return;
+        }
+
+        const data = await res.json();
+        if (data.applied) {
+          showToast("Nuovo aggiornamento applicato! Ricaricamento...", 0);
+          setTimeout(() => {
+            window.location.reload();
+          }, 1500);
+        } else if (data.uptodate) {
+          showToast("Nuxiva OS è già aggiornato all'ultimo commit.");
+          btn.classList.remove("is-checking");
+        } else if (data.error) {
+          showToast(data.error);
+          btn.classList.remove("is-checking");
+        } else {
+          showToast("Nessun nuovo commit disponibile.");
+          btn.classList.remove("is-checking");
+        }
+      } catch (err) {
+        showToast("Impossibile verificare gli aggiornamenti.");
+        btn.classList.remove("is-checking");
+      }
+    });
+  }
+
   window.SetupApp = {
     onLangChanged(newLang) {
       const step = storage.get("step") || 0;
@@ -200,6 +270,7 @@
 
   async function boot() {
     initTheme();
+    initVersionCheck();
 
     const btnNext = document.getElementById("btn-next");
     const btnBack = document.getElementById("btn-back");

@@ -226,3 +226,10 @@ async def setup_update_sync(_: None = Depends(require_update_open)):
         "uptodate": True,
     }, headers=NO_CACHE)
 
+
+@router.get("/api/setup/network")
+async def setup_network(_: None = Depends(require_open)):
+    import setup_network
+    return JSONResponse(await setup_network.get_network_diagnostics(), headers=NO_CACHE)
+
+

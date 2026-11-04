@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="/static/setup/steps/assistant/step.css">
   <link rel="stylesheet" href="/static/setup/steps/owner/step.css">
   <link rel="stylesheet" href="/static/setup/steps/final/step.css">
+  <link rel="stylesheet" href="/static/setup/shared/setup_network.css">
 </head>
 <body>
   <div class="os-ambient-root" aria-hidden="true">
@@ -29,6 +30,8 @@
     <div class="os-vignette-overlay"></div>
   </div>
 
+  <div class="os-version-toast" id="version-toast" role="status" aria-live="polite"></div>
+
   <main class="os-dialog-container" id="setup-shell">
     <header class="os-window-header">
       <div class="os-window-controls">
@@ -38,7 +41,14 @@
       </div>
       <div class="os-window-titlebar">
         <span class="os-window-title">Nuxiva OS</span>
-        <span class="os-window-badge">v5.3</span>
+        <button type="button" class="os-window-badge os-version-badge" id="btn-version-check" title="Verifica aggiornamenti Git" aria-label="Verifica aggiornamenti Git">
+          <span id="version-text">v5.3</span>
+          <svg class="os-version-sync-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <polyline points="1 20 1 14 7 14"></polyline>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+          </svg>
+        </button>
       </div>
       <div class="os-window-actions">
         <button type="button" class="os-theme-toggle" id="btn-theme-toggle" aria-label="Cambia tema">
@@ -218,7 +228,119 @@
     </footer>
   </main>
 
+  <button type="button" class="os-network-fab" id="btn-network-fab" title="Diagnostica di Rete" aria-label="Diagnostica di Rete">
+    <span class="os-network-pulse" aria-hidden="true"></span>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="2" y1="12" x2="22" y2="12"></line>
+      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+    </svg>
+  </button>
+
+  <div class="os-network-modal-backdrop" id="os-network-modal" role="dialog" aria-modal="true" aria-labelledby="os-net-title">
+    <div class="os-network-window">
+      <header class="os-network-header">
+        <div class="os-network-titlebar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span class="os-network-title" id="os-net-title">Diagnostica di Rete</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button type="button" class="os-network-btn-refresh" id="btn-network-refresh" title="Aggiorna metriche">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <polyline points="1 20 1 14 7 14"></polyline>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+            <span>Aggiorna</span>
+          </button>
+          <button type="button" class="os-network-btn-close" id="btn-network-close" title="Chiudi" aria-label="Chiudi">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="os-network-body">
+        <div class="os-net-metric-grid">
+          <div class="os-net-card">
+            <div class="os-net-card-label">
+              <span>IP Locale</span>
+              <button type="button" class="os-net-copy-btn" data-copy-target="net-local-ip">Copia</button>
+            </div>
+            <div class="os-net-card-val" id="net-local-ip">...</div>
+          </div>
+
+          <div class="os-net-card">
+            <div class="os-net-card-label">
+              <span>IP Pubblico WAN</span>
+              <button type="button" class="os-net-copy-btn" data-copy-target="net-public-ip">Copia</button>
+            </div>
+            <div class="os-net-card-val" id="net-public-ip">...</div>
+          </div>
+
+          <div class="os-net-card">
+            <div class="os-net-card-label">
+              <span>Latenza Ping (RTT)</span>
+            </div>
+            <div class="os-net-card-val" id="net-ping" style="color: #34d399;">...</div>
+          </div>
+
+          <div class="os-net-card">
+            <div class="os-net-card-label">
+              <span>Hostname Node</span>
+            </div>
+            <div class="os-net-card-val" id="net-hostname">...</div>
+          </div>
+
+          <div class="os-net-card">
+            <div class="os-net-card-label">
+              <span>Server DNS</span>
+            </div>
+            <div class="os-net-card-val" id="net-dns" style="font-size: 13px;">...</div>
+          </div>
+
+          <div class="os-net-card">
+            <div class="os-net-card-label">
+              <span>Traffico I/O Sessione</span>
+            </div>
+            <div class="os-net-card-val" style="font-size: 13px;">
+              ↓ <span id="net-traffic-rx">...</span> &nbsp;|&nbsp; ↑ <span id="net-traffic-tx">...</span>
+            </div>
+            <div style="font-size: 11px; opacity: 0.7; margin-top: 2px;" id="net-traffic-packets">...</div>
+          </div>
+        </div>
+
+        <div class="os-net-section-title">Interfacce Fisiche &amp; Virtuali</div>
+        <div style="overflow-x: auto; border-radius: var(--os-radius-md); border: 1px solid var(--md-sys-color-outline-variant);">
+          <table class="os-net-iface-table">
+            <thead>
+              <tr>
+                <th>Interfaccia</th>
+                <th>Indirizzo IPv4</th>
+                <th>MAC Address</th>
+                <th>Velocità / MTU</th>
+                <th>Stato</th>
+              </tr>
+            </thead>
+            <tbody id="net-interfaces-tbody">
+              <tr>
+                <td colspan="5" style="text-align: center; opacity: 0.6;">Caricamento interfacce...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="/static/setup/shared/setup_storage.js"></script>
+  <script src="/static/setup/shared/setup_network.js"></script>
   <script src="/static/setup/steps/lang/i18n.js"></script>
   <script src="/static/setup/steps/lang/step.js"></script>
   <script src="/static/setup/steps/mode/i18n.js"></script>
