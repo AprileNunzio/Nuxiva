@@ -10,6 +10,7 @@ from fastapi import Request
 from fastapi.responses import StreamingResponse
 
 import display_events
+import stream_delta
 from access import NO_CACHE
 from config import ADMIN_PORT, NODE, OLLAMA_URL, PUBLIC_PORT, STATE_DIR, VERSION, read_env
 from features.agency.presence import intent as agency_intent
@@ -26,7 +27,9 @@ FACE_KEYS = {"NUXIVA_AVATAR", "NUXIVA_AVATAR_STYLE", "NUXIVA_FACE_COLOR"}
 SHARED_MAX_AGE = 1.0
 log = logging.getLogger("nuxiva.snapshot")
 _reported: dict[str, str] = {}
-_shared: dict[bool, tuple[int, float, dict, str]] = {}
+_shared: dict[bool, tuple[int, float, dict, str, int]] = {}
+_builds = {"count": 0}
+_deltas = {False: stream_delta.DeltaCache(), True: stream_delta.DeltaCache()}
 
 
 def _report(section: str, exc: BaseException) -> None:
@@ -160,16 +163,39 @@ def full_snapshot(admin: bool) -> dict:
     return snap
 
 
-def shared_snapshot(admin: bool) -> tuple[dict, str]:
+def _shared_entry(admin: bool) -> tuple[int, float, dict, str, int]:
     now = time.time()
     version = store.version
     cached = _shared.get(admin)
     if cached and cached[0] == version and now - cached[1] < SHARED_MAX_AGE:
-        return cached[2], cached[3]
+        return cached
     snap = full_snapshot(admin)
     text = json.dumps(snap, ensure_ascii=False, default=str)
-    _shared[admin] = (version, now, snap, text)
-    return snap, text
+    if cached and cached[3] == text:
+        entry = (version, now, cached[2], cached[3], cached[4])
+    else:
+        _builds["count"] += 1
+        entry = (version, now, snap, text, _builds["count"])
+    _shared[admin] = entry
+    return entry
+
+
+def shared_snapshot(admin: bool) -> tuple[dict, str]:
+    entry = _shared_entry(admin)
+    return entry[2], entry[3]
+
+
+def shared_build(admin: bool) -> stream_delta.Build:
+    entry = _shared_entry(admin)
+    return stream_delta.Build(entry[4], entry[3])
+
+
+def delta_frame(admin: bool, before: stream_delta.Build | None, cursor: int) -> tuple[str | None, stream_delta.Build, int]:
+    after = shared_build(admin)
+    pending = display_events.events.since(cursor)
+    events = [{"k": e.kind, "p": e.payload} for e in pending]
+    text = stream_delta.frame(_deltas[admin], before, after, events)
+    return text, after, pending[-1].seq if pending else cursor
 
 
 def frame(admin: bool, cursor: int) -> tuple[str, int]:
@@ -193,6 +219,33 @@ def sse(admin: bool):
                 text, cursor = frame(admin, cursor)
                 yield f"data: {text}\n\n"
             await asyncio.sleep(0.5)
+
+    async def endpoint(request: Request):
+        return StreamingResponse(generator(request), media_type="text/event-stream",
+                                 headers={**NO_CACHE, "X-Accel-Buffering": "no"})
+    return endpoint
+
+
+KEEPALIVE = 10.0
+
+
+def sse_delta(admin: bool):
+    async def generator(request: Request):
+        last_version, last_sent, last_built = -1, time.time(), 0.0
+        before: stream_delta.Build | None = None
+        cursor = display_events.events.cursor()
+        while not await request.is_disconnected():
+            now = time.time()
+            if store.version != last_version or before is None or now - last_built > KEEPALIVE:
+                last_version, last_built = store.version, now
+                text, before, cursor = delta_frame(admin, before, cursor)
+                if text is not None:
+                    last_sent = now
+                    yield f"data: {text}\n\n"
+            if now - last_sent > KEEPALIVE:
+                last_sent = now
+                yield 'data: {"t":"ping"}\n\n'
+            await asyncio.sleep(0.25)
 
     async def endpoint(request: Request):
         return StreamingResponse(generator(request), media_type="text/event-stream",

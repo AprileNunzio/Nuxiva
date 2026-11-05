@@ -315,7 +315,7 @@
     }
     linkLostAt = 0;
   };
-  Nuxiva.connectState("/api/stream", (s) => (window.nuxivaPerf ? window.nuxivaPerf.measure("stato", () => onState(s)) : onState(s)), onLink);
+  NuxivaDelta.connectDelta("/api/stream/delta", (s) => (window.nuxivaPerf ? window.nuxivaPerf.measure("stato", () => onState(s)) : onState(s)), onLink);
   function applyDisplaySettings(cfg) {
     if (!cfg) return;
     const toggle = (el, show) => {

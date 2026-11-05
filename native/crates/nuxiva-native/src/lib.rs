@@ -5,6 +5,7 @@ mod arbitration;
 mod audio;
 mod bus;
 mod cortex;
+mod display;
 mod embodied;
 mod errors;
 mod gesture;
@@ -31,6 +32,7 @@ use cortex::{
     cortex_generate_key, cortex_open, cortex_sanitize_identifier, cortex_sanitize_utterance,
     cortex_seal, cortex_validate_slots, cortex_verify,
 };
+use display::{display_apply, display_diff};
 use embodied::{
     RustCorticalCortex, RustEmbodiedCortex, RustEpistemicDoubtEngine, RustFieldbusController,
     RustHumanoidKinematics34, RustOntologicalCreativeEngine,
@@ -53,6 +55,8 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add("__version__", env!("CARGO_PKG_VERSION"))?;
     m.add("MAX_SUBSCRIPTIONS", nuxiva_bus_core::MAX_SUBSCRIPTIONS)?;
     m.add_class::<TopicRouter>()?;
+    m.add_function(wrap_pyfunction!(display_diff, m)?)?;
+    m.add_function(wrap_pyfunction!(display_apply, m)?)?;
     m.add_class::<RustTokenCodec>()?;
     m.add("TokenRejected", m.py().get_type::<TokenRejected>())?;
     m.add_class::<RustSynapticBus>()?;

@@ -34,5 +34,5 @@
   NuxivaDesk.mount($("desk"), { screen: n, x, satellite: true, quiet: mirror, speak: () => {}, layout: grid.layout });
   grid.bind(NuxivaDesk.relayout);
   setInterval(tick, 1000); tick();
-  Nuxiva.connectState("/api/stream", onState, (ok) => $("link").classList.toggle("show", !ok));
+  NuxivaDelta.connectDelta("/api/stream/delta", onState, (ok) => $("link").classList.toggle("show", !ok));
 })();

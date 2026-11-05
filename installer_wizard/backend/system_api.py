@@ -16,7 +16,7 @@ from pages import page
 from features.locale.api import page_language
 from settings import apply_config
 import display_events
-from snapshot import full_snapshot, sse
+from snapshot import full_snapshot, sse, sse_delta
 from state import INSTALL_LOG, store
 from steps import STEP_BY_ID
 from tasks import background, delayed
@@ -147,6 +147,7 @@ async def system_identity():
 
 
 public_routes.add_api_route("/api/stream", sse(admin=False), methods=["GET"])
+public_routes.add_api_route("/api/stream/delta", sse_delta(admin=False), methods=["GET"])
 
 from pydantic import BaseModel
 class HoloActionReq(BaseModel):
