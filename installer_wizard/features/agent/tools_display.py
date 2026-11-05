@@ -1,6 +1,6 @@
 import time
 
-from state import store
+import display_events
 
 from features.agent.registry import tool
 from features.desktop.desk import desk
@@ -21,9 +21,7 @@ AVATAR = {
 
 
 def _holo(**action) -> None:
-    store.holo_action = {k: v for k, v in action.items() if v not in (None, "")}
-    store.version += 1
-    store.touch()
+    display_events.holo(action)
 
 
 @tool("list_widgets", "elenca i widget disponibili e quelli aperti con lo schermo su cui stanno", {})

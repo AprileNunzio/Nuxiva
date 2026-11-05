@@ -1,5 +1,6 @@
 from state import store
 
+from features.authz import capability
 from features.authz import risk as risks
 from features.authz.policy import Decision, policy
 from features.authz.principal import Strength, acting
@@ -49,16 +50,19 @@ def check(kind: str, name: str, level: Risk) -> Decision:
     return decision
 
 
-def tool(name: str) -> Decision:
-    return check("strumento", name, risks.of_tool(name))
+def tool(name: str, args: dict | None = None) -> Decision:
+    level = risks.of_tool(name)
+    if args is not None:
+        level = capability.of_call(name, args, level, capability.ha_lookup)
+    return check("strumento", name, level)
 
 
 def connector(name: str) -> Decision:
     return check("funzione", name, risks.of_connector(name))
 
 
-def require_tool(name: str) -> None:
-    decision = tool(name)
+def require_tool(name: str, args: dict | None = None) -> None:
+    decision = tool(name, args)
     if not decision.allowed:
         raise Forbidden(decision)
 

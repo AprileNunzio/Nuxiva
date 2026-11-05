@@ -28,6 +28,9 @@ jobs:
       - name: Static Analysis
         run: python -m pyflakes server sandbox_broker installer_wizard client_satellite
 
+      - name: File Size Limit
+        run: python scripts/ci/line_limit.py
+
   tests:
     runs-on: ubuntu-latest
     steps:

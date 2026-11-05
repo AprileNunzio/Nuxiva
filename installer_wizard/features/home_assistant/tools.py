@@ -1,5 +1,6 @@
 from features.agent.registry import tool
 from features.home_assistant.home import brain
+from features.home_assistant.nlu.calls import is_sensitive
 
 OWNER = "home_assistant"
 
@@ -22,19 +23,28 @@ def ha_get_state(entity_id: str) -> dict:
     }
 
 
+def sensitive_call(args: dict) -> bool:
+    from features.authz.capability import domain_of, entity_ids, ha_lookup
+    service = str(args.get("service") or "").strip().lower()
+    declared = str(args.get("domain") or "").strip().lower()
+    ids = entity_ids(args.get("entity_id"))
+    targets = [(domain_of(eid) or declared, ha_lookup(eid) or {}) for eid in ids] or [(declared, {})]
+    return any(is_sensitive(domain, service, entity) for domain, entity in targets)
+
+
 @tool("ha_call_service", "esegue un servizio o comando su Home Assistant (es. accendi luce, imposta temperatura clima, attiva scena)",
       {"domain": "dominio (es. light, switch, climate, scene)",
        "service": "servizio (es. turn_on, turn_off, set_temperature)",
        "entity_id": "id dell'entità o lista separata da virgole (facoltativo)",
        "service_data": "dizionario con parametri del comando (es. {'brightness_pct': 50}) (facoltativo)"},
-      confirm=False, agent=OWNER)
+      confirm=lambda args: sensitive_call(args), agent=OWNER)
 async def ha_call_service(domain: str, service: str, entity_id: str = "", service_data: dict | None = None) -> dict:
     eids = [x.strip() for x in entity_id.split(",") if x.strip()] if entity_id else []
     plan = {
         "kind": "command",
         "action": "tool",
         "how": "agente",
-        "sensitive": False,
+        "sensitive": sensitive_call({"domain": domain, "service": service, "entity_id": entity_id}),
         "calls": [{"domain": domain, "service": service, "entity_ids": eids, "data": service_data or {}}],
         "entities": eids,
     }

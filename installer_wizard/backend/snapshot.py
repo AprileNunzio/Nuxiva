@@ -1,5 +1,6 @@
 import asyncio
 import json
+import logging
 import socket
 import threading
 import time
@@ -8,6 +9,7 @@ from urllib.parse import urlparse
 from fastapi import Request
 from fastapi.responses import StreamingResponse
 
+import display_events
 from access import NO_CACHE
 from config import ADMIN_PORT, NODE, OLLAMA_URL, PUBLIC_PORT, STATE_DIR, VERSION, read_env
 from features.agency.presence import intent as agency_intent
@@ -21,6 +23,17 @@ from steps import step_catalog
 
 
 FACE_KEYS = {"NUXIVA_AVATAR", "NUXIVA_AVATAR_STYLE", "NUXIVA_FACE_COLOR"}
+SHARED_MAX_AGE = 1.0
+log = logging.getLogger("nuxiva.snapshot")
+_reported: dict[str, str] = {}
+_shared: dict[bool, tuple[int, float, dict, str]] = {}
+
+
+def _report(section: str, exc: BaseException) -> None:
+    text = f"{type(exc).__name__}: {exc}"
+    if _reported.get(section) != text:
+        _reported[section] = text
+        log.warning("Sezione «%s» dello stato non disponibile: %s", section, text, exc_info=exc)
 
 
 def _node_faces() -> dict:
@@ -122,7 +135,8 @@ def full_snapshot(admin: bool) -> dict:
     try:
         from features.sounds.policy import policy as sound_policy
         snap["sounds"] = sound_policy.state()
-    except Exception:
+    except Exception as exc:
+        _report("sounds", exc)
         snap["sounds"] = None
     if admin:
         snap["model_pull"] = getattr(store, "model_pull", None)
@@ -133,28 +147,51 @@ def full_snapshot(admin: bool) -> dict:
     try:
         from system_api import get_display_settings
         snap["display_settings"] = get_display_settings()
-    except Exception:
-        pass
+    except Exception as exc:
+        _report("display_settings", exc)
     try:
         from features.stage import show as stage_show
         from features.desktop.screens import screens as screen_roles
         snap["particles"] = stage_show.current()
         snap["screen_roles"] = screen_roles.roles()
-    except Exception:
+    except Exception as exc:
+        _report("particles", exc)
         snap["particles"] = None
-    if hasattr(store, "holo_action"):
-        snap["holo_action"] = store.holo_action
-        delattr(store, "holo_action")
     return snap
+
+
+def shared_snapshot(admin: bool) -> tuple[dict, str]:
+    now = time.time()
+    version = store.version
+    cached = _shared.get(admin)
+    if cached and cached[0] == version and now - cached[1] < SHARED_MAX_AGE:
+        return cached[2], cached[3]
+    snap = full_snapshot(admin)
+    text = json.dumps(snap, ensure_ascii=False, default=str)
+    _shared[admin] = (version, now, snap, text)
+    return snap, text
+
+
+def frame(admin: bool, cursor: int) -> tuple[str, int]:
+    snap, text = shared_snapshot(admin)
+    pending = display_events.events.since(cursor)
+    if not pending:
+        return text, cursor
+    holo = [e for e in pending if e.kind == "holo_action"]
+    if holo:
+        text = json.dumps({**snap, "holo_action": holo[-1].payload}, ensure_ascii=False, default=str)
+    return text, pending[-1].seq
 
 
 def sse(admin: bool):
     async def generator(request: Request):
         last_version, last_sent = -1, 0.0
+        cursor = display_events.events.cursor()
         while not await request.is_disconnected():
             if store.version != last_version or time.time() - last_sent > 10:
                 last_version, last_sent = store.version, time.time()
-                yield f"data: {json.dumps(full_snapshot(admin), ensure_ascii=False, default=str)}\n\n"
+                text, cursor = frame(admin, cursor)
+                yield f"data: {text}\n\n"
             await asyncio.sleep(0.5)
 
     async def endpoint(request: Request):

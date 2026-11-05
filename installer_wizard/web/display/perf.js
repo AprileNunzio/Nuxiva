@@ -2,15 +2,7 @@
   const WINDOW = 10000, JANK = 50, SLOW_P95 = 40, SLOW_ROUNDS = 2;
   const st = { stats: { fps: 0, p95: 0, longMs: 0, janks: 0 }, frames: [], longs: 0, longMs: 0, last: 0, start: performance.now(), slow: 0, summary: "misura in corso", lite: "", costs: {} };
 
-  function gpu() {
-    try {
-      const gl = document.createElement("canvas").getContext("webgl");
-      const ext = gl && gl.getExtension("WEBGL_debug_renderer_info");
-      const name = ext ? gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) : gl ? "webgl" : "nessuna";
-      return String(name).replace(/^ANGLE \(|\)$/g, "").replace(/\s*\(0x[0-9a-f]+\)|Direct3D11.*|vs_\d.*$/gi, "").slice(0, 60).trim();
-    } catch (err) { return "?"; }
-  }
-  const GPU = gpu();
+  const GPU = window.nuxivaGpu ? window.nuxivaGpu.name : "?";
 
   function lite(reason) {
     if (document.body.classList.contains("lite")) return;

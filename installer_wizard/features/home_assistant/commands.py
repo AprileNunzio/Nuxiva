@@ -2,6 +2,9 @@ import asyncio
 import json
 import time
 
+from features.authz.capability import lookup_in, plan_risk
+from features.authz.principal import acting
+from features.authz.risk import Risk
 from features.home_assistant.connection import HAError
 from features.home_assistant.constants import (CANCEL_RE, CONFIRM_RE, CONFIRM_WINDOW, DOMAIN_PLURAL, INFINITIVE,
                                                LLM_DATA_KEYS, PAST, STATE_IT, log)
@@ -152,6 +155,9 @@ class HomeCommands:
         if not self.entities or not (s["enabled"] and s["url"] and s["token"]):
             return None
         if self.pending and time.time() < self.pending["until"]:
+            if CONFIRM_RE.match(text) and not self._same_speaker():
+                self.pending = None
+                return self._denied(), {"mode": "face"}, "casa · conferma negata"
             if CONFIRM_RE.match(text):
                 plan, self.pending = self.pending["plan"], None
                 return await self._run(plan, text, "conferma")
@@ -173,7 +179,7 @@ class HomeCommands:
                 self.stats["llm"] += 1
                 await self._learn(text, plan)
         if plan is None:
-            if self.online:
+            if self.online and self._allowed_level(Risk.PERSONAL, text):
                 assist_res = await self.ask_assist(text)
                 if assist_res.get("ok") and assist_res.get("speech"):
                     speech = assist_res["speech"]
@@ -181,6 +187,9 @@ class HomeCommands:
                           "panels": [{"type": "card", "text": speech}]}
                     return speech, ui, f"casa · assist ({int((time.time() - started) * 1000)} ms)"
             return None
+        refusal = self._refusal(plan, text)
+        if refusal:
+            return refusal, {"mode": "face"}, "casa · non autorizzato"
         if plan["kind"] == "query":
             speech, ui = self.answer(plan)
             # Se la lettura del sensore è mancante (es. consumo casa gestito da Assist/custom_sentences)
@@ -202,13 +211,32 @@ class HomeCommands:
             return ("Home Assistant non è raggiungibile in questo momento: riprovo a collegarmi da solo.",
                     {"mode": "face"}, "casa")
         if plan.get("sensitive") and self.settings()["confirm"]:
-            self.pending = {"plan": plan, "until": time.time() + CONFIRM_WINDOW}
+            self.pending = {"plan": plan, "until": time.time() + CONFIRM_WINDOW, "who": acting().slug}
             what = join_words([f"{INFINITIVE.get(c['service'], 'comandare')} "
                           f"{join_words([self.entities.get(x, {}).get('name', x) for x in c['entity_ids']])}"
                           for c in plan["calls"]])
             return (f"Signore, per sicurezza chiedo conferma: devo davvero {what}? Risponda «conferma» oppure «annulla».",
                     {"mode": "face"}, "casa · conferma")
         return await self._run(plan, text, source, started)
+
+    def _same_speaker(self) -> bool:
+        who = acting().slug
+        return bool(who) and who == (self.pending or {}).get("who")
+
+    @staticmethod
+    def _denied() -> str:
+        from features.authz import gate
+        return gate.REFUSALS["role"]
+
+    def _allowed_level(self, level: Risk, text: str) -> bool:
+        from features.authz import gate
+        return gate.check("casa", text[:80], level).allowed
+
+    def _refusal(self, plan: dict, text: str) -> str:
+        from features.authz import gate
+        level = plan_risk(plan, lookup_in(self.entities, self.states))
+        decision = gate.check("casa", text[:80], level)
+        return "" if decision.allowed else gate.refusal(decision)
 
     def _foreseen(self, text: str) -> dict | None:
         try:

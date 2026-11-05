@@ -132,7 +132,7 @@ class Agent:
             if name not in allowed:
                 steps.append({"tool": name, "args": {}, "result": "ERRORE: strumento inesistente o non consentito"})
                 continue
-            decision = gate.tool(name)
+            decision = gate.tool(name, args if isinstance(args, dict) else {})
             if not decision.allowed:
                 return gate.refusal(decision)
             unasked = "" if auto else registry.unrequested(name)
@@ -149,7 +149,8 @@ class Agent:
                     if verdict is None:
                         continue
                     return verdict
-                self.pending[session_key()] = {"request": request, "steps": steps, "tool": name, "args": args, "at": time.time()}
+                self.pending[session_key()] = {"request": request, "steps": steps, "tool": name, "args": args, "at": time.time(),
+                                               "who": current.get().slug}
                 return f"Prima di procedere: {_summary(name, args)}. Confermi?"
             await self._execute(name, args, steps)
         done = [s for s in steps if not s["result"].startswith(("ERRORE", "NEGATO"))]
@@ -205,6 +206,11 @@ class Agent:
             return "Non avevo nulla in sospeso."
         if not yes:
             return "Annullato, signore."
+        if current.get().slug != p.get("who", ""):
+            return gate.REFUSALS["role"]
+        decision = gate.tool(p["tool"], p["args"] if isinstance(p["args"], dict) else {})
+        if not decision.allowed:
+            return gate.refusal(decision)
         await self._execute(p["tool"], p["args"], p["steps"])
         return await self.run(p["request"], p["steps"])
 

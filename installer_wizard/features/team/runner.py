@@ -37,7 +37,7 @@ async def execute(name: str, args: dict, agent_id: str) -> str:
 
 
 async def run_as(name: str, args: dict) -> str:
-    gate.require_tool(name)
+    gate.require_tool(name, args if isinstance(args, dict) else {})
     agent_id = roster.owner(name)
     shown = json.dumps(registry.clean_args(name, args), ensure_ascii=False)[:120]
     token = ACTING.set(agent_id)

@@ -2,6 +2,7 @@ import asyncio
 import json
 
 import httpx
+import display_events
 from state import store
 
 from features.automations.bus import bus
@@ -135,8 +136,7 @@ async def holo(a: dict, run) -> str:
         action["accessory"] = {"name": a["accessory"], "state": True}
     if not action:
         return "niente da fare"
-    store.holo_action = action
-    store.version += 1
+    display_events.holo(action)
     return "ologramma: " + ", ".join(action)
 
 

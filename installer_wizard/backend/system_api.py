@@ -15,6 +15,7 @@ from orchestrator import orch
 from pages import page
 from features.locale.api import page_language
 from settings import apply_config
+import display_events
 from snapshot import full_snapshot, sse
 from state import INSTALL_LOG, store
 from steps import STEP_BY_ID
@@ -160,8 +161,7 @@ class HoloActionReq(BaseModel):
 
 @public_routes.post("/api/holo_action")
 async def trigger_holo_action(req: HoloActionReq):
-    store.holo_action = req.dict(exclude_none=True)
-    store.version += 1
+    display_events.holo(req.dict(exclude_none=True))
     return {"ok": True}
 
 

@@ -44,23 +44,7 @@
     } catch (err) { console.warn("Politica delle risorse non letta", err); }
   }
 
-  function probeGpu() {
-    const out = { renderer: "", device_memory: navigator.deviceMemory || 0, cores: navigator.hardwareConcurrency || 0,
-      max_texture: 0, pixels: Math.round(screen.width * screen.height * (window.devicePixelRatio || 1) ** 2), webgpu: "gpu" in navigator };
-    try {
-      const canvas = document.createElement("canvas");
-      const gl = canvas.getContext("webgl2") || canvas.getContext("webgl");
-      if (gl) {
-        const info = gl.getExtension("WEBGL_debug_renderer_info");
-        out.renderer = String(gl.getParameter(info ? info.UNMASKED_RENDERER_WEBGL : gl.RENDERER) || "").replace(/[^\w\s().,/+:;@#-]/g, "").slice(0, 160);
-        out.max_texture = gl.getParameter(gl.MAX_TEXTURE_SIZE) || 0;
-        const lose = gl.getExtension("WEBGL_lose_context");
-        if (lose) lose.loseContext();
-      } else out.renderer = "software";
-    } catch (err) { console.warn("GPU non analizzata", err); }
-    return out;
-  }
-  const GPU = probeGpu();
+  const GPU = window.nuxivaGpu ? window.nuxivaGpu.info : { renderer: "", device_memory: 0, cores: 0, max_texture: 0, pixels: 0, webgpu: false };
 
   function weightOf(i) {
     const declared = Number(i.weight) || 2;

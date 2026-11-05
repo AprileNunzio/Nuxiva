@@ -223,7 +223,7 @@ async def _execute(expert: Expert, name: str, args: dict, steps: list[dict]) -> 
     token = ACTING.set(key)
     board.begin(key, f"{name} {shown}")
     try:
-        gate.require_tool(name)
+        gate.require_tool(name, args if isinstance(args, dict) else {})
         result = await runner.execute(name, args, key)
     except Exception as exc:
         result = f"ERRORE: {str(exc)[:300]}"
