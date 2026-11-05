@@ -53,6 +53,7 @@
   }
 
   function limit(list) {
+    if (list.length && list.every((i) => i.planned)) return list;
     const p = st.policy;
     if (!p || !p.enabled) return list;
     const forced = (i) => i.takeover || i.intent || i.pos || i.urgent;

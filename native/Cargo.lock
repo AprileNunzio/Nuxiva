@@ -788,6 +788,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-display-planner"
+version = "5.3.0"
+dependencies = [
+ "nuxiva-display-domain",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "nuxiva-display-scheduler"
 version = "5.3.0"
 dependencies = [
@@ -838,6 +847,7 @@ dependencies = [
  "nuxiva-bus-core",
  "nuxiva-cortex-core",
  "nuxiva-crdt-core",
+ "nuxiva-display-planner",
  "nuxiva-display-stream",
  "nuxiva-gesture-core",
  "nuxiva-langid",

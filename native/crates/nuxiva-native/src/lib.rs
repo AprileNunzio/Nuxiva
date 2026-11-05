@@ -14,6 +14,7 @@ mod governors;
 mod language;
 mod memory;
 mod mesh;
+mod planner;
 mod presence;
 mod scanner;
 mod signal;
@@ -46,6 +47,7 @@ use governors::{RustMeshTaskGovernor, RustNetworkGovernor, RustResourceGovernor}
 use language::{detect_language, supported_languages};
 use memory::{RustFastMemory, RustLiveCoPilot};
 use mesh::{RustCrdtMesh, RustGossipMesh, RustP2PStreamManager};
+use planner::display_plan;
 use presence::RustPresenceTracker;
 use pyo3::prelude::*;
 use scanner::FastScanner;
@@ -66,6 +68,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<TopicRouter>()?;
     m.add_function(wrap_pyfunction!(display_diff, m)?)?;
     m.add_function(wrap_pyfunction!(display_apply, m)?)?;
+    m.add_function(wrap_pyfunction!(display_plan, m)?)?;
     m.add_class::<RustPresenceTracker>()?;
     m.add_class::<RustAccessMatrix>()?;
     m.add_class::<RustTokenCodec>()?;

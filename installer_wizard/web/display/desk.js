@@ -190,7 +190,7 @@
     if (!card) return;
     cards.delete(key);
     try { card.impl.destroy && card.impl.destroy(card.el.firstChild); } catch (err) { console.warn(`widget ${card.inst.id} destroy:`, err); }
-    if (window.NuxivaDisplay && window.NuxivaDisplay.presence === "mini") {
+    if (window.NuxivaDisplay && window.NuxivaDisplay.presence === "mini" && document.body.dataset.nucleus !== "ambient_stream") {
       const hasFull = [...cards.values()].some((c) => c.inst && c.inst.fullscreen);
       if (!hasFull) window.NuxivaDisplay.setPresence("normal");
     }
@@ -284,7 +284,7 @@
     document.body.dataset.deskFullscreen = full ? full.inst.id : "";
     document.body.classList.toggle("desk-whiteboard", ordered.some((c) => c.inst.id === "lavagna"));
     if (!full) {
-      if (window.NuxivaDisplay && window.NuxivaDisplay.presence === "mini") {
+      if (window.NuxivaDisplay && window.NuxivaDisplay.presence === "mini" && document.body.dataset.nucleus !== "ambient_stream") {
         window.NuxivaDisplay.setPresence("normal");
       }
       return false;

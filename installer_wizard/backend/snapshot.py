@@ -164,8 +164,9 @@ def full_snapshot(admin: bool) -> dict:
         snap["particles"] = None
     if admin:
         return snap
-    from features.desktop import audience_view, presence_bridge
-    return audience_view.redact(snap, store.audience, presence_bridge.show_options())
+    from features.desktop import audience_view, planner_bridge, presence_bridge
+    planned = planner_bridge.bridge.apply(snap, store.audience)
+    return audience_view.redact(planned, store.audience, presence_bridge.show_options())
 
 
 def _shared_entry(admin: bool) -> tuple[int, float, dict, str, int]:
