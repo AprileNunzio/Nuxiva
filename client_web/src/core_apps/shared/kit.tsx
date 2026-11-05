@@ -1,21 +1,23 @@
 import React from 'react';
 import { Loader2, RefreshCw, WifiOff, X, UploadCloud } from 'lucide-react';
 import { PAGE_CLASS } from '../../shared/ui/layout';
+import { MD3Switch } from '../../shared/components/MD3Switch';
 
 export type Tone = 'cyan' | 'emerald' | 'amber' | 'rose' | 'purple' | 'slate';
 
 const TONES: Record<Tone, string> = {
-  cyan: 'border-cyan-300 bg-cyan-50 text-cyan-800',
-  emerald: 'border-emerald-300 bg-emerald-50 text-emerald-800',
-  amber: 'border-amber-300 bg-amber-50 text-amber-800',
-  rose: 'border-rose-300 bg-rose-50 text-rose-800',
-  purple: 'border-purple-300 bg-purple-50 text-purple-800',
-  slate: 'border-slate-300 bg-slate-100 text-slate-700',
+  cyan: 'border-cyan-300 bg-cyan-50 text-cyan-800 dark:border-cyan-800 dark:bg-cyan-950/40 dark:text-cyan-300',
+  emerald: 'border-emerald-300 bg-emerald-50 text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300',
+  amber: 'border-amber-300 bg-amber-50 text-amber-800 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-300',
+  rose: 'border-rose-300 bg-rose-50 text-rose-800 dark:border-rose-800 dark:bg-rose-950/40 dark:text-rose-300',
+  purple: 'border-purple-300 bg-purple-50 text-purple-800 dark:border-purple-800 dark:bg-purple-950/40 dark:text-purple-300',
+  slate: 'border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300',
 };
 
-export const panelClass = 'rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-white p-4 sm:p-5';
+export const panelClass =
+  'rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/90 p-4 sm:p-5 backdrop-blur-md shadow-xs transition-colors';
 export const inputClass =
-  'w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500';
+  'w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500 transition-colors';
 export const gridClass = 'grid gap-4 lg:grid-cols-2 3xl:grid-cols-3';
 
 interface FrameProps {
@@ -73,8 +75,8 @@ export const Panel: React.FC<PanelProps> = ({ title, icon, actions, className = 
 );
 
 export const Stat: React.FC<{ readonly label: string; readonly value: React.ReactNode; readonly tone?: Tone }> = ({ label, value, tone = 'cyan' }) => (
-  <div className="rounded-xl border border-slate-200 bg-white px-3 py-2.5">
-    <div className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">{label}</div>
+  <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/70 px-3 py-2.5">
+    <div className="text-[10px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">{label}</div>
     <div className={`mt-0.5 truncate font-mono text-lg font-bold ${TONES[tone].split(' ').pop()}`}>{value}</div>
   </div>
 );
@@ -111,8 +113,8 @@ export const Btn: React.FC<BtnProps> = ({ onClick, busy = false, disabled = fals
 );
 
 export const Row: React.FC<{ readonly children: React.ReactNode; readonly actions?: React.ReactNode }> = ({ children, actions }) => (
-  <li className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
-    <div className="min-w-0 flex-1 text-sm text-slate-800">{children}</div>
+  <li className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 px-3 py-2">
+    <div className="min-w-0 flex-1 text-sm text-slate-800 dark:text-slate-200">{children}</div>
     {actions ? <div className="flex shrink-0 flex-wrap items-center gap-2">{actions}</div> : null}
   </li>
 );
@@ -120,25 +122,25 @@ export const Row: React.FC<{ readonly children: React.ReactNode; readonly action
 export const List: React.FC<{ readonly children: React.ReactNode }> = ({ children }) => <ul className="flex flex-col gap-2">{children}</ul>;
 
 export const Empty: React.FC<{ readonly children: React.ReactNode }> = ({ children }) => (
-  <p className="rounded-xl border border-dashed border-slate-300 px-3 py-6 text-center text-sm text-slate-500">{children}</p>
+  <p className="rounded-xl border border-dashed border-slate-300 dark:border-slate-700 px-3 py-6 text-center text-sm text-slate-500 dark:text-slate-400">{children}</p>
 );
 
 export const Loading: React.FC<{ readonly label: string }> = ({ label }) => (
-  <div className="flex min-h-[40vh] flex-col items-center justify-center gap-3 text-sm text-slate-600" role="status">
-    <Loader2 className="h-6 w-6 animate-spin text-cyan-700" aria-hidden="true" />
+  <div className="flex min-h-[40vh] flex-col items-center justify-center gap-3 text-sm text-slate-600 dark:text-slate-300" role="status">
+    <Loader2 className="h-6 w-6 animate-spin text-cyan-700 dark:text-cyan-400" aria-hidden="true" />
     {label}
   </div>
 );
 
 export const Unreachable: React.FC<{ readonly label: string }> = ({ label }) => (
-  <div className="flex min-h-[40vh] flex-col items-center justify-center gap-3 text-sm text-slate-600" role="alert">
-    <WifiOff className="h-6 w-6 text-rose-700" aria-hidden="true" />
+  <div className="flex min-h-[40vh] flex-col items-center justify-center gap-3 text-sm text-slate-600 dark:text-slate-300" role="alert">
+    <WifiOff className="h-6 w-6 text-rose-700 dark:text-rose-400" aria-hidden="true" />
     {label}
   </div>
 );
 
 export const Field: React.FC<{ readonly label: string; readonly children: React.ReactNode }> = ({ label, children }) => (
-  <label className="flex flex-col gap-1 text-xs font-semibold text-slate-600">
+  <label className="flex flex-col gap-1 text-xs font-semibold text-slate-600 dark:text-slate-400">
     {label}
     {children}
   </label>
@@ -150,17 +152,7 @@ export const Toggle: React.FC<{ readonly checked: boolean; readonly onChange: (v
   label,
   disabled = false,
 }) => (
-  <button
-    type="button"
-    role="switch"
-    aria-checked={checked}
-    aria-label={label}
-    disabled={disabled}
-    onClick={() => onChange(!checked)}
-    className={`relative h-6 w-11 shrink-0 rounded-full border transition disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${checked ? 'border-cyan-500 bg-cyan-100' : 'border-slate-300 bg-slate-100'}`}
-  >
-    <span className={`absolute top-0.5 h-4 w-4 rounded-full bg-white transition-all ${checked ? 'left-6' : 'left-0.5'}`} />
-  </button>
+  <MD3Switch checked={checked} onChange={onChange} ariaLabel={label} disabled={disabled} />
 );
 
 export function formatTime(seconds: unknown, locale: string): string {
@@ -418,7 +410,6 @@ export const OSAppLayout: React.FC<OSAppLayoutProps> = ({
       <main className="os-app-workspace relative">
         {content}
 
-        {/* Universal Drop Overlay for single or multiple files */}
         {isDragging && onFilesDrop && (
           <div className="absolute inset-0 z-50 flex flex-col items-center justify-center gap-3 bg-blue-900/85 p-8 text-center text-slate-950 backdrop-blur-xs animate-fadeIn">
             <div className="rounded-full bg-slate-100 p-5 ring-4 ring-white/20">
@@ -429,7 +420,6 @@ export const OSAppLayout: React.FC<OSAppLayoutProps> = ({
           </div>
         )}
 
-        {/* Universal Upload Progress Floating Badge */}
         {(isUploading || uploadStatus) && (
           <div className="absolute bottom-4 right-4 z-40 flex items-center gap-2.5 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs text-slate-950 shadow-2xl backdrop-blur-md animate-fadeIn">
             <Loader2 className="h-4 w-4 animate-spin text-blue-600 shrink-0" />
