@@ -117,6 +117,20 @@ class BackgroundQueue:
                 "size_gb": step.size_gb,
             })
         done = sum(1 for i in items if i["status"] == "done")
+        waiting_reason = ""
+        if self.paused:
+            waiting_reason = "Installazioni in pausa"
+        elif self.in_conversation():
+            waiting_reason = "In attesa: conversazione vocale attiva"
+        elif self.current and self.current in STEP_BY_ID:
+            waiting_reason = f"Installazione: {STEP_BY_ID[self.current].title}"
+        elif any(i["status"] == "waiting_disk" for i in items):
+            waiting_reason = "Spazio su disco insufficiente"
+        elif any(i["status"] == "failed" for i in items):
+            waiting_reason = "Tentativo non riuscito: riprovo a breve"
+        elif done < len(items):
+            waiting_reason = "Preparazione del prossimo componente"
+
         return {
             "paused": self.paused,
             "conversation": self.in_conversation(),
@@ -127,6 +141,7 @@ class BackgroundQueue:
             "total": len(items),
             "progress": round(done_weight * 100 / weight, 1) if weight else 100.0,
             "items": items,
+            "waiting_reason": waiting_reason,
         }
 
     def note_activity(self) -> None:
@@ -201,6 +216,13 @@ class BackgroundQueue:
                 was_done = store.steps.get(step.id, {}).get("status") == "done"
                 async with lock:
                     self.current = step.id
+                    store.steps.setdefault(step.id, {}).update(
+                        status="running",
+                        progress=0,
+                        message="Avvio…",
+                        detail=f"Preparazione di {step.title}...",
+                        last_update=time.time(),
+                    )
                     store.touch()
                     try:
                         ok = await converge_step(step, quiet=True)

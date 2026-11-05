@@ -171,10 +171,13 @@ def _clean(raw: dict) -> dict:
         raise HTTPException(400, "Lingua non supportata")
     out["NUXIVA_UI_LANG"] = lang
     out.update(_brain(raw))
-    picked = raw.get("packages") or []
-    if not isinstance(picked, list) or any(p not in WIZARD_PACKAGES for p in picked):
+    raw_picked = raw.get("packages") or []
+    if not isinstance(raw_picked, list) or any(p not in WIZARD_PACKAGES for p in raw_picked):
         raise HTTPException(400, "Pacchetto non valido")
-    out.update({WIZARD_PACKAGES[p]: "1" for p in picked if WIZARD_PACKAGES[p] and WIZARD_PACKAGES[p] != "NUXIVA_BRAIN"})
+    picked_set = set(raw_picked)
+    for p, env_key in WIZARD_PACKAGES.items():
+        if env_key and env_key != "NUXIVA_BRAIN":
+            out[env_key] = "1" if p in picked_set else "0"
     chosen_gender = str(raw.get("assistant_gender") or "").strip().lower()
     by_gender = VOICES_BY_LANG_GENDER.get(lang, {}).get(chosen_gender, "")
     voice = str(raw.get("voice") or by_gender or "if_sara")
@@ -208,11 +211,10 @@ def _brain(raw: dict) -> dict:
         raise HTTPException(400, "Scelta del cervello non valida")
     out = {"NUXIVA_BRAIN": brain}
     if brain == "local":
-        profile = str(raw.get("profile") or "auto")
+        profile = str(raw.get("profile") or "leggero")
         if profile not in PROFILES:
             raise HTTPException(400, "Profilo non valido")
-        if PROFILES[profile]["model"]:
-            out["NUXIVA_LLM_MODEL"] = PROFILES[profile]["model"]
+        out["NUXIVA_LLM_MODEL"] = PROFILES[profile]["model"] or "granite3.3:2b"
     elif brain == "remote":
         from settings import normalize_ollama
         url = normalize_ollama(str(raw.get("ollama_url") or ""))

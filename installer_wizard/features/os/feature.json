@@ -1,0 +1,5 @@
+{
+  "id": "os",
+  "name": "Nuxiva OS Subsystem",
+  "api": "api.py"
+}

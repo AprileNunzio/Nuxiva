@@ -69,8 +69,8 @@ STEPS = [
          critical=False, background=True, priority=70, size_gb=1.0),
     Step("models", "60-models.sh", "Reti neurali essenziali", "Modello linguistico veloce e memoria semantica", 12,
          critical=False),
-    Step("brain", "61-brain.sh", "Cervello potente", "Modello linguistico per il ragionamento profondo", 18,
-         critical=False, background=True, priority=30, size_gb=8.0),
+    Step("brain", "61-brain.sh", "Cervello locale", "Modello linguistico essenziale", 18,
+         critical=False, background=True, priority=30, size_gb=1.9),
     Step("soup", "67-soup.sh", "Consolidamento dello studio", "Addestramento con Soup (solo con GPU adatta)", 1,
          critical=False, background=True, priority=90, size_gb=2.0),
     Step("core", "70-core.sh", "Nuxiva Core", "Compilazione dell'orchestratore cognitivo", 20),
@@ -209,7 +209,16 @@ async def _run_script(step: Step, action: str, stream: bool, quiet: bool = False
             store.touch()
         else:
             store.log(line[:500], step.id)
-    code = await proc.wait()
+    timeout_s = 60.0 if action == "check" else 1800.0
+    try:
+        code = await asyncio.wait_for(proc.wait(), timeout=timeout_s)
+    except asyncio.TimeoutError:
+        try:
+            proc.kill()
+        except OSError:
+            pass
+        code = -1
+        last_error = f"Tempo massimo superato ({timeout_s}s)"
     return code, last_error
 
 
@@ -274,7 +283,7 @@ async def converge_step(step: Step, force: bool = False, quiet: bool = False) ->
     started = time.time()
 
     if not force:
-        rec.update(status="checking", message="Verifica…", detail="", speed="")
+        rec.update(status="checking", message="Verifica…", detail=f"Controllo di {step.title}...", speed="")
         if not quiet:
             store.message = f"Verifica: {step.title}"
             store.detail = ""
@@ -289,7 +298,7 @@ async def converge_step(step: Step, force: bool = False, quiet: bool = False) ->
 
     for attempt in range(1, MAX_ATTEMPTS + 1):
         rec.update(status="running", progress=0, attempts=rec.get("attempts", 0) + 1,
-                   message="Avvio…", detail="", speed="", last_update=time.time())
+                   message="Avvio…", detail=f"Installazione di {step.title}...", speed="", last_update=time.time())
         if not quiet:
             store.message = step.title
             store.detail = ""

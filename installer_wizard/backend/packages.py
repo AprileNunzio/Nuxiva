@@ -42,8 +42,9 @@ PACKAGES = (
             removable=False),
     Package("native", ("native",), "NUXIVA_NATIVE", "Core nativo", "Componenti in Rust più veloci, con ritorno automatico a Python", 0.3,
             auto=True),
-    Package("brain_local", ("ollama", "brain", "soup"), "NUXIVA_BRAIN", "Cervello locale", "Modelli linguistici su questo computer con Ollama", 8.0,
+    Package("brain_local", ("ollama", "brain"), "NUXIVA_BRAIN", "Cervello locale", "Modelli linguistici su questo computer con Ollama", 1.9,
             removable=False),
+    Package("soup", ("soup",), "NUXIVA_STUDY_FINETUNE", "Consolidamento dello studio", "Addestramento con Soup (solo con GPU adatta)", 2.0),
     Package("brain_models", ("models", "warmup"), "NUXIVA_BRAIN", "Modelli del cervello", "Scarica e prepara i modelli scelti", 2.0),
     Package("voicestudio", ("voicestudio",), "NUXIVA_VOICESTUDIO", "Studio delle voci", "Voci personalizzate con VoiceStudio", 6.0),
 )

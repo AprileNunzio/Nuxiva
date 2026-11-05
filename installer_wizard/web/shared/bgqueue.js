@@ -228,7 +228,8 @@
           raw(line1, `${current.title} · ${current.progress}%`);
           line(line2, [curSpeed ? `↓ ${curSpeed}` : ["bgq_running", {}], ready, left]);
         } else {
-          put(line1, "bgq_next");
+          if (bg.waiting_reason) raw(line1, bg.waiting_reason);
+          else put(line1, "bgq_next");
           line(line2, [ready, left]);
         }
         const total = ["bgq_total_gb", { gb: totalGb.toFixed(1) }];
