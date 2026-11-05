@@ -1,4 +1,75 @@
-.os-metric { display:flex; align-items:center; gap:1rem; min-width:0; padding:1.15rem; border-radius:.85rem; background:linear-gradient(125deg,#f0f6ff,#fbfdff); color:#245ec0; box-shadow:0 2px 8px #24456b05; }
-.os-metric[data-tone=red] { background:linear-gradient(125deg,#fff0f3,#fffafb);color:#bc3656; }.os-metric[data-tone=amber] { background:linear-gradient(125deg,#fff6e5,#fffcf6);color:#a76a0b; }.os-metric[data-tone=violet] { background:linear-gradient(125deg,#f3efff,#fcfaff);color:#7450b9; }
-.os-metric-icon { flex-shrink:0;display:grid;place-items:center; }.os-metric-icon svg { height:1.65rem;width:1.65rem;stroke-width:1.6; }.os-metric>div { display:flex;flex-direction:column;gap:.3rem;min-width:0; }.os-metric-label { font-size:.8rem;font-weight:500; }.os-metric strong { font-size:1.8rem;line-height:1.1;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.045em; }
-@media(prefers-reduced-motion:no-preference) { .os-metric { transition:transform .2s,box-shadow .2s; }.os-metric:hover { transform:translateY(-2px);box-shadow:0 5px 16px #24456b0b; } }
+.os-metric {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
+  padding: 1.25rem;
+  border-radius: var(--os-radius-lg, 16px);
+  background: var(--md-sys-color-surface-container-low);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  color: var(--md-sys-color-primary);
+  box-shadow: var(--os-shadow-sm);
+  transition: transform var(--os-transition-fast, 150ms ease), box-shadow var(--os-transition-fast, 150ms ease);
+}
+
+.os-metric:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--os-shadow-md);
+}
+
+.os-metric[data-tone="blue"] {
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+  border-color: var(--md-sys-color-outline-variant);
+}
+
+.os-metric[data-tone="red"] {
+  background: var(--md-sys-color-error-container);
+  color: var(--md-sys-color-on-error-container);
+  border-color: var(--md-sys-color-outline-variant);
+}
+
+.os-metric[data-tone="amber"] {
+  background: var(--md-sys-color-tertiary-container);
+  color: var(--md-sys-color-on-tertiary-container);
+  border-color: var(--md-sys-color-outline-variant);
+}
+
+.os-metric[data-tone="violet"] {
+  background: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+  border-color: var(--md-sys-color-outline-variant);
+}
+
+.os-metric-icon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+}
+
+.os-metric-icon svg {
+  height: 1.8rem;
+  width: 1.8rem;
+  stroke-width: 1.8;
+}
+
+.os-metric > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.os-metric-label {
+  font-size: 0.82rem;
+  font-weight: 550;
+  opacity: 0.9;
+}
+
+.os-metric strong {
+  font-size: 1.85rem;
+  line-height: 1.1;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.04em;
+}
