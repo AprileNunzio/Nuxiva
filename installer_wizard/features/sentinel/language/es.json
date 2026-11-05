@@ -1,0 +1,52 @@
+{
+  "name": "Centinela",
+  "description": "Diario detallado y cifrado de lo que Nuxiva ve, oye y hace en casa. Solo el propietario puede leerlo y cada lectura queda registrada.",
+  "capabilities": [
+    "Llegadas y salidas de las personas de casa y de los invitados del día",
+    "Peticiones rechazadas, obturador de privacidad de la pantalla y automatizaciones iniciadas",
+    "Color de la prenda que se lleva, solo si se reconoce con seguridad y sin guardar imágenes",
+    "Cifrado por día con borrado criptográfico al caducar, cadena de hash y firma horaria"
+  ],
+  "settings": {
+    "NUXIVA_SENTINEL_APPEARANCE": "Anotar el color de la prenda (solo códigos, ninguna imagen)",
+    "NUXIVA_SENTINEL_GUESTS": "Anotar llegadas y salidas de invitados (detalle conservado 24 horas)"
+  },
+  "narrative": {
+    "sentinel.presence.arrived": "Vi llegar a {person}",
+    "sentinel.presence.left": "Vi a {person} irse",
+    "sentinel.presence.arrived_wearing": "Vi llegar a {person} con una prenda de color {color}",
+    "sentinel.presence.left_wearing": "Vi a {person} irse con una prenda de color {color}",
+    "sentinel.presence.near_screen": "{person} se acercó a la pantalla",
+    "sentinel.appearance.noted": "Vi a {person} con una prenda de color {color}",
+    "sentinel.guest.arrived": "Llegó el invitado {guest}",
+    "sentinel.guest.left": "El invitado {guest} se fue",
+    "sentinel.guest.appearance": "Vi al invitado {guest} con una prenda de color {color}",
+    "sentinel.voice.unknown": "Oí una voz que no conozco",
+    "sentinel.access.denied": "{who} pidió {action}: no lo hice",
+    "sentinel.automation.started": "Inicié la automatización {automation}",
+    "sentinel.automation.finished": "La automatización {automation} terminó",
+    "sentinel.automation.failed": "La automatización {automation} falló",
+    "sentinel.display.privacy_shutter": "Oculté los datos personales de la pantalla: {reason}",
+    "sentinel.display.privacy_open": "Volví a abrir la pantalla para {person}",
+    "sentinel.sentinel.read": "El diario fue consultado desde la página de administración",
+    "sentinel.word.guest_only": "solo hay invitados",
+    "sentinel.word.mixed": "llegó un invitado",
+    "sentinel.word.empty": "no hay nadie",
+    "sentinel.word.uncertain": "no reconozco quién está",
+    "sentinel.word.someone": "alguien",
+    "sentinel.word.guest": "un invitado",
+    "sentinel.word.unknown_voice": "una voz desconocida",
+    "sentinel.color.black": "negro",
+    "sentinel.color.white": "blanco",
+    "sentinel.color.grey": "gris",
+    "sentinel.color.red": "rojo",
+    "sentinel.color.orange": "naranja",
+    "sentinel.color.yellow": "amarillo",
+    "sentinel.color.green": "verde",
+    "sentinel.color.cyan": "celeste",
+    "sentinel.color.blue": "azul",
+    "sentinel.color.purple": "morado",
+    "sentinel.color.pink": "rosa",
+    "sentinel.color.brown": "marrón"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "name": "Sentinel",
+  "description": "Detailed, encrypted diary of what Nuxiva sees, hears and does at home. Only the owner can read it and every read is recorded.",
+  "capabilities": [
+    "Arrivals and departures of household members and of the day's guests",
+    "Refused requests, display privacy shutter and automations started",
+    "Colour of the clothing worn, only when recognised with confidence and without storing images",
+    "Per-day encryption with cryptographic erasure on expiry, hash chain and hourly signature"
+  ],
+  "settings": {
+    "NUXIVA_SENTINEL_APPEARANCE": "Note the colour of the clothing worn (codes only, no images)",
+    "NUXIVA_SENTINEL_GUESTS": "Note guest arrivals and departures (details kept for 24 hours)"
+  },
+  "narrative": {
+    "sentinel.presence.arrived": "I saw {person} arrive",
+    "sentinel.presence.left": "I saw {person} leave",
+    "sentinel.presence.arrived_wearing": "I saw {person} arrive wearing something {color}",
+    "sentinel.presence.left_wearing": "I saw {person} leave wearing something {color}",
+    "sentinel.presence.near_screen": "{person} came close to the screen",
+    "sentinel.appearance.noted": "I saw {person} wearing something {color}",
+    "sentinel.guest.arrived": "Guest {guest} arrived",
+    "sentinel.guest.left": "Guest {guest} left",
+    "sentinel.guest.appearance": "I saw guest {guest} wearing something {color}",
+    "sentinel.voice.unknown": "I heard a voice I don't know",
+    "sentinel.access.denied": "{who} asked for {action}: I did not do it",
+    "sentinel.automation.started": "I started the automation {automation}",
+    "sentinel.automation.finished": "The automation {automation} finished",
+    "sentinel.automation.failed": "The automation {automation} failed",
+    "sentinel.display.privacy_shutter": "I hid personal data from the display: {reason}",
+    "sentinel.display.privacy_open": "I opened the display again for {person}",
+    "sentinel.sentinel.read": "The diary was read from the admin page",
+    "sentinel.word.guest_only": "only guests are here",
+    "sentinel.word.mixed": "a guest arrived",
+    "sentinel.word.empty": "nobody is here",
+    "sentinel.word.uncertain": "I can't recognise who is here",
+    "sentinel.word.someone": "someone",
+    "sentinel.word.guest": "a guest",
+    "sentinel.word.unknown_voice": "an unknown voice",
+    "sentinel.color.black": "black",
+    "sentinel.color.white": "white",
+    "sentinel.color.grey": "grey",
+    "sentinel.color.red": "red",
+    "sentinel.color.orange": "orange",
+    "sentinel.color.yellow": "yellow",
+    "sentinel.color.green": "green",
+    "sentinel.color.cyan": "light blue",
+    "sentinel.color.blue": "blue",
+    "sentinel.color.purple": "purple",
+    "sentinel.color.pink": "pink",
+    "sentinel.color.brown": "brown"
+  }
+}

@@ -42,6 +42,8 @@ def _audit(kind: str, name: str, decision: Decision) -> None:
     store.event("WARN", f"Autorizzazione negata · {kind} «{name}» ({decision.risk.name.lower()}) a "
                         f"{who.slug or 'sconosciuto'} [{who.role}, {who.strength.name.lower()}, {'+'.join(who.factors) or '-'}]: "
                         f"{decision.code}", "authz")
+    from features.sentinel.collectors.access import collector
+    collector.denied(who.slug, who.role, kind, name, str(decision.code or decision.needed))
 
 
 def check(kind: str, name: str, level: Risk) -> Decision:

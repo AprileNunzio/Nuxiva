@@ -100,6 +100,7 @@ class Engine:
     async def _run(self, a: dict, run: Run) -> None:
         run.status = "in corso"
         self.touch()
+        bus.emit("automation_started", {"automation": a["name"], "id": a["id"]})
         try:
             if run.trigger.get("type") in SCHEDULED:
                 run.status = "in attesa delle risorse"

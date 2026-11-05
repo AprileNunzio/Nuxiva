@@ -1,0 +1,61 @@
+{
+  "id": "sentinel",
+  "name": "Sentinella",
+  "icon": "🛡️",
+  "category": "sicurezza",
+  "order": 64,
+  "api": "api.py",
+  "description": "Diario dettagliato e cifrato di ciò che Nuxiva vede, sente e fa in casa. Solo il proprietario può leggerlo e ogni lettura resta registrata.",
+  "toggle": {
+    "env": "NUXIVA_SENTINEL",
+    "tri": false,
+    "apply": []
+  },
+  "capabilities": [
+    "Arrivi e uscite delle persone di casa e degli ospiti del giorno",
+    "Richieste rifiutate, otturatore privacy del display e automazioni avviate",
+    "Colore del capo indossato, solo se riconosciuto con sicurezza e senza salvare immagini",
+    "Cifratura per giorno con cancellazione crittografica alla scadenza, catena di hash e firma oraria"
+  ],
+  "settings": [
+    {
+      "key": "NUXIVA_SENTINEL_APPEARANCE",
+      "label": "Annota il colore del capo indossato (solo codici, nessuna immagine)",
+      "type": "select",
+      "default": "1",
+      "options": [
+        {
+          "value": "1",
+          "label": "Sì"
+        },
+        {
+          "value": "0",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_SENTINEL_GUESTS",
+      "label": "Annota arrivi e uscite degli ospiti (conservati 24 ore nel dettaglio)",
+      "type": "select",
+      "default": "1",
+      "options": [
+        {
+          "value": "1",
+          "label": "Sì"
+        },
+        {
+          "value": "0",
+          "label": "No"
+        }
+      ]
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Nuxiva",
+    "technique": "3d",
+    "id": "sentinel-shield",
+    "url": "./icon.png"
+  }
+}

@@ -116,6 +116,8 @@ class PresenceBridge:
         else:
             self.last = self._engine(policy(), now_ms).step(self.signals(now), now_ms)
         self.publish()
+        from features.sentinel.collectors.presence import collector
+        collector.update(self.last, (store.presence or {}).get("people") or [], now)
         return self.last
 
     def view(self) -> dict:

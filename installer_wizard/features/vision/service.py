@@ -10,6 +10,7 @@ import numpy as np
 import uvicorn
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse, Response, StreamingResponse
+import appearance
 import learning
 import selection
 from fusion import Fusion
@@ -185,6 +186,7 @@ class Vision:
                 detections.append((box, feature, face, track.ir_feature))
             slug_now = track.identity()[0]
             track.affect = track.meter.update(frame, face, now) if slug_now and track.facing and selection.affect_enabled() else None
+            appearance.observe(track, frame)
             person = self.gallery.people.get(slug_now) if slug_now else None
             if selection.liveness_mode() != "off":
                 self.fusion.assess(track, ir_face, self.size, person, minimum)
@@ -278,7 +280,7 @@ class Vision:
                            "ambiguous": t.ambiguous, "possible": t.possible,
                            "auto": bool(person.get("auto")), "facing": t.facing,
                            "confidence": round(score, 3), "proximity": prox, "raw_proximity": round(ratio, 3),
-                           "near": is_near, "since": t.first_seen, "affect": t.affect if slug else None,
+                           "near": is_near, "since": t.first_seen, "affect": t.affect if slug else None, "attire": appearance.view(t),
                            "vitals": self.vitals.reading(t, now) if slug else None,
                            "gaze": {"x": round((bx + bw / 2) / (w or 640), 3),
                                     "y": round((by + bh / 2) / h, 3)}})
