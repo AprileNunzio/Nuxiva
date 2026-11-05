@@ -7,7 +7,8 @@
     "Cada tarea se revisa solo con las pruebas entregadas",
     "Agentes en paralelo según el hardware y el modelo elegido en Cerebro",
     "Archivos del proyecto en la carpeta compartida «09 Progetti»",
-    "Nuevas herramientas creadas por los agentes, probadas en un sandbox sin red antes de usarlas"
+    "Nuevas herramientas creadas por los agentes, probadas en un sandbox sin red antes de usarlas",
+    "Previsión: tus documentos se convierten en una población de agentes simulados que debaten en un muro y un foro; inyecta eventos, repite el escenario muchas veces, lee el informe y habla con cualquier agente"
   ],
   "language_name": "español",
   "files": {
@@ -67,5 +68,42 @@
   },
   "help": {
     "NUXIVA_AGENCY_PARALLEL": "«auto» calcula cuántos agentes trabajan a la vez según el procesador, la memoria, la tarjeta gráfica y el modelo elegido en Cerebro."
+  },
+  "foresight_errors": {
+    "unavailable": "El motor de simulaciones no está disponible",
+    "invalid": "Solicitud no válida",
+    "not_found": "Simulación o agente desconocido",
+    "brain": "No hay ningún modelo disponible en el Cerebro",
+    "material": "Pega al menos 20 caracteres de material de partida",
+    "question": "Escribe una pregunta de al menos 8 caracteres",
+    "empty_world": "No se pudo obtener una población del material",
+    "event": "Evento no válido: necesita un título y una ronda futura",
+    "message": "Escribe un mensaje",
+    "busy": "Ya hay otra serie de simulaciones en curso, inténtalo en breve",
+    "exists": "La simulación ya existe",
+    "too_many": "Demasiadas simulaciones guardadas: elimina alguna",
+    "sealed": "Los datos de la simulación no se pueden abrir"
+  },
+  "foresight": {
+    "title": "Previsión",
+    "support": "A favor",
+    "oppose": "En contra",
+    "divided": "Dividido",
+    "undecided": "Indeciso",
+    "feed": "Muro",
+    "forum": "Foro",
+    "read": "leyó",
+    "liked": "dio me gusta",
+    "replied": "respondió",
+    "reposted": "compartió",
+    "posted": "publicó",
+    "event": "se enteró del evento",
+    "followed": "empezó a seguir",
+    "unfollowed": "dejó de seguir",
+    "round": "Ronda",
+    "agents": "Agentes",
+    "ensemble": "Simulaciones repetidas",
+    "narrative": "Informe del Analista",
+    "chat": "Habla con el agente"
   }
 }

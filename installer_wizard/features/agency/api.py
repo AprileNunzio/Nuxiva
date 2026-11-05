@@ -7,12 +7,14 @@ from tasks import background
 
 from features.agency import board, service
 from features.agency.client import AgencyRejected, AgencyUnavailable
+from features.agency.foresight.api import routes as foresight_routes
 from features.agency.forge.guard import NAME, ForgeRejected
 from features.agency.forge.registry import ACTIVE, RETIRED, registry
 from features.agency.words import lang_of, word
 
 admin_routes = APIRouter()
 public_routes = APIRouter()
+admin_routes.include_router(foresight_routes)
 PROJECT_ID = re.compile(r"[a-z0-9][a-z0-9_-]{0,63}")
 BOARD_CONTROLS = ("pause", "resume")
 TOOL_ACTIONS = {"retire": RETIRED, "restore": ACTIVE}

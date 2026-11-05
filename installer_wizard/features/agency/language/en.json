@@ -7,7 +7,8 @@
     "Every task reviewed only on the evidence delivered",
     "Parallel agents sized to the hardware and the model chosen in Brain",
     "Project files in the «09 Progetti» shared folder",
-    "New tools created by agents, tested in an offline sandbox before use"
+    "New tools created by agents, tested in an offline sandbox before use",
+    "Foresight: your documents become a population of simulated agents debating on a feed and a forum; inject events, replay the scenario many times, read the report and talk to any agent"
   ],
   "language_name": "English",
   "files": {
@@ -67,5 +68,42 @@
   },
   "help": {
     "NUXIVA_AGENCY_PARALLEL": "“auto” works out how many agents run together from the processor, memory, graphics card and the model chosen in Brain."
+  },
+  "foresight_errors": {
+    "unavailable": "The simulation engine is not reachable",
+    "invalid": "Invalid request",
+    "not_found": "Unknown simulation or agent",
+    "brain": "No model available in the Brain",
+    "material": "Paste at least 20 characters of source material",
+    "question": "Write a question of at least 8 characters",
+    "empty_world": "No population could be derived from the material",
+    "event": "Invalid event: it needs a title and a future round",
+    "message": "Write a message",
+    "busy": "Another simulation batch is running, try again shortly",
+    "exists": "The simulation already exists",
+    "too_many": "Too many saved simulations: delete some",
+    "sealed": "The simulation data cannot be opened"
+  },
+  "foresight": {
+    "title": "Foresight",
+    "support": "In favour",
+    "oppose": "Against",
+    "divided": "Divided",
+    "undecided": "Undecided",
+    "feed": "Feed",
+    "forum": "Forum",
+    "read": "read",
+    "liked": "liked",
+    "replied": "replied",
+    "reposted": "reposted",
+    "posted": "posted",
+    "event": "heard about the event",
+    "followed": "started following",
+    "unfollowed": "stopped following",
+    "round": "Round",
+    "agents": "Agents",
+    "ensemble": "Repeated simulations",
+    "narrative": "Analyst report",
+    "chat": "Talk to the agent"
   }
 }

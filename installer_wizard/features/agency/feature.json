@@ -18,7 +18,8 @@
     "Revisione di ogni compito solo sulle prove consegnate",
     "Agenti in parallelo secondo l'hardware e il modello scelto in Cervello",
     "File del progetto nella cartella condivisa «09 Progetti»",
-    "Nuovi strumenti creati dagli agenti, provati in una sandbox senza rete prima dell'uso"
+    "Nuovi strumenti creati dagli agenti, provati in una sandbox senza rete prima dell'uso",
+    "Previsione: dai documenti nasce una popolazione di agenti simulati che discute su bacheca e forum; puoi iniettare eventi, ripetere lo scenario molte volte, leggere il rapporto e parlare con ogni agente"
   ],
   "settings": [
     {

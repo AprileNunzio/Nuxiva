@@ -7,7 +7,8 @@
     "Revisione di ogni compito solo sulle prove consegnate",
     "Agenti in parallelo secondo l'hardware e il modello scelto in Cervello",
     "File del progetto nella cartella condivisa «09 Progetti»",
-    "Nuovi strumenti creati dagli agenti, provati in una sandbox senza rete prima dell'uso"
+    "Nuovi strumenti creati dagli agenti, provati in una sandbox senza rete prima dell'uso",
+    "Previsione: dai documenti nasce una popolazione di agenti simulati che discute su bacheca e forum; puoi iniettare eventi, ripetere lo scenario molte volte, leggere il rapporto e parlare con ogni agente"
   ],
   "language_name": "italiano",
   "files": {
@@ -67,5 +68,42 @@
   },
   "help": {
     "NUXIVA_AGENCY_PARALLEL": "«auto» calcola quanti agenti far lavorare insieme in base a processore, memoria, scheda video e al modello scelto nel Cervello."
+  },
+  "foresight_errors": {
+    "unavailable": "Il motore delle simulazioni non è raggiungibile",
+    "invalid": "Richiesta non valida",
+    "not_found": "Simulazione o agente sconosciuto",
+    "brain": "Nessun modello disponibile nel Cervello",
+    "material": "Incolla almeno 20 caratteri di materiale di partenza",
+    "question": "Scrivi una domanda di almeno 8 caratteri",
+    "empty_world": "Dal materiale non è stato possibile ricavare una popolazione",
+    "event": "Evento non valido: deve avere un titolo e cadere in un round futuro",
+    "message": "Scrivi un messaggio",
+    "busy": "È già in corso un'altra serie di simulazioni, riprova tra poco",
+    "exists": "La simulazione esiste già",
+    "too_many": "Troppe simulazioni salvate: eliminane qualcuna",
+    "sealed": "I dati della simulazione non si possono aprire"
+  },
+  "foresight": {
+    "title": "Previsione",
+    "support": "Favorevole",
+    "oppose": "Contrario",
+    "divided": "Diviso",
+    "undecided": "Incerto",
+    "feed": "Bacheca",
+    "forum": "Forum",
+    "read": "ha letto",
+    "liked": "ha messo mi piace",
+    "replied": "ha risposto",
+    "reposted": "ha condiviso",
+    "posted": "ha scritto",
+    "event": "ha saputo dell'evento",
+    "followed": "ha iniziato a seguire",
+    "unfollowed": "ha smesso di seguire",
+    "round": "Round",
+    "agents": "Agenti",
+    "ensemble": "Simulazioni ripetute",
+    "narrative": "Rapporto dell'Analista",
+    "chat": "Parla con l'agente"
   }
 }

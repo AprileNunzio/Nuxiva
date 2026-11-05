@@ -7,7 +7,8 @@
     "Chaque tâche revue uniquement sur les preuves livrées",
     "Agents en parallèle selon le matériel et le modèle choisi dans Cerveau",
     "Fichiers du projet dans le dossier partagé « 09 Progetti »",
-    "Nouveaux outils créés par les agents, testés dans un bac à sable hors ligne avant usage"
+    "Nouveaux outils créés par les agents, testés dans un bac à sable hors ligne avant usage",
+    "Prévision : vos documents deviennent une population d'agents simulés qui débattent sur un fil et un forum ; injectez des événements, rejouez le scénario de nombreuses fois, lisez le rapport et parlez à chaque agent"
   ],
   "language_name": "français",
   "files": {
@@ -67,5 +68,42 @@
   },
   "help": {
     "NUXIVA_AGENCY_PARALLEL": "« auto » calcule combien d'agents travaillent ensemble selon le processeur, la mémoire, la carte graphique et le modèle choisi dans Cerveau."
+  },
+  "foresight_errors": {
+    "unavailable": "Le moteur de simulation est injoignable",
+    "invalid": "Requête invalide",
+    "not_found": "Simulation ou agent inconnu",
+    "brain": "Aucun modèle disponible dans le Cerveau",
+    "material": "Collez au moins 20 caractères de matériel de départ",
+    "question": "Écrivez une question d'au moins 8 caractères",
+    "empty_world": "Impossible de tirer une population du matériel",
+    "event": "Événement invalide : il faut un titre et un tour futur",
+    "message": "Écrivez un message",
+    "busy": "Une autre série de simulations est en cours, réessayez bientôt",
+    "exists": "La simulation existe déjà",
+    "too_many": "Trop de simulations enregistrées : supprimez-en",
+    "sealed": "Les données de la simulation ne peuvent pas être ouvertes"
+  },
+  "foresight": {
+    "title": "Prévision",
+    "support": "Favorable",
+    "oppose": "Opposé",
+    "divided": "Divisé",
+    "undecided": "Indécis",
+    "feed": "Fil",
+    "forum": "Forum",
+    "read": "a lu",
+    "liked": "a aimé",
+    "replied": "a répondu",
+    "reposted": "a partagé",
+    "posted": "a publié",
+    "event": "a appris l'événement",
+    "followed": "a commencé à suivre",
+    "unfollowed": "a cessé de suivre",
+    "round": "Tour",
+    "agents": "Agents",
+    "ensemble": "Simulations répétées",
+    "narrative": "Rapport de l'Analyste",
+    "chat": "Parler à l'agent"
   }
 }

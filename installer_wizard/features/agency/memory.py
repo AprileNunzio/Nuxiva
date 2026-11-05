@@ -26,6 +26,9 @@ class ProjectMemory:
     def save(self, project_id: str, data: dict) -> None:
         self._file(project_id).save(json.loads(json.dumps(data, ensure_ascii=False)))
 
+    def forget(self, project_id: str) -> None:
+        self._file(project_id).data_path.unlink(missing_ok=True)
+
     def update(self, project_id: str, **changes) -> dict:
         data = self.load(project_id)
         data.update(changes)
