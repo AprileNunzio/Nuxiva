@@ -27,8 +27,8 @@ export const AuthGate: React.FC<{ readonly children: React.ReactNode }> = ({ chi
 
   if (session.status === 'checking') {
     return (
-      <div className="flex min-h-[100dvh] items-center justify-center bg-slate-50" role="status" aria-busy="true">
-        <Loader2 className="h-8 w-8 animate-spin text-cyan-300" aria-hidden="true" />
+      <div style={{ display: 'flex', minHeight: '100dvh', alignItems: 'center', justifyContent: 'center', background: 'var(--md-sys-color-surface)' }} role="status" aria-busy="true">
+        <Loader2 size={32} className="network-spinning" style={{ color: 'var(--md-sys-color-primary)' }} aria-hidden="true" />
       </div>
     );
   }
