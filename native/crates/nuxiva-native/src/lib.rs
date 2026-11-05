@@ -1,5 +1,6 @@
 #![forbid(unsafe_code)]
 
+mod access;
 mod admin_os;
 mod arbitration;
 mod audio;
@@ -23,6 +24,7 @@ mod update;
 mod vitals;
 mod workbench;
 
+use access::RustAccessMatrix;
 use admin_os::{
     RustAdminOsAiEngine, RustAdminOsFirewall, RustAdminOsMemory, RustAdminOsNotification,
 };
@@ -65,6 +67,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(display_diff, m)?)?;
     m.add_function(wrap_pyfunction!(display_apply, m)?)?;
     m.add_class::<RustPresenceTracker>()?;
+    m.add_class::<RustAccessMatrix>()?;
     m.add_class::<RustTokenCodec>()?;
     m.add("TokenRejected", m.py().get_type::<TokenRejected>())?;
     m.add_class::<RustSynapticBus>()?;

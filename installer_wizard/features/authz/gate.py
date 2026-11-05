@@ -1,6 +1,6 @@
 from state import store
 
-from features.authz import capability
+from features.authz import capability, capmap, guard, texts
 from features.authz import risk as risks
 from features.authz.policy import Decision, policy
 from features.authz.principal import Strength, acting
@@ -24,7 +24,14 @@ class Forbidden(PermissionError):
         self.decision = decision
 
 
+NEUTRAL = frozenset({"guest", "room", "owner_data", "rate"})
+
+
 def refusal(decision: Decision) -> str:
+    if decision.code == "role" and guard.speaker_role(acting()) in guard.OUTSIDERS:
+        return texts.say("refusal.guest")
+    if decision.code in NEUTRAL:
+        return texts.say(f"refusal.{decision.code}")
     if decision.code in REFUSALS:
         return REFUSALS[decision.code]
     return REFUSALS.get(decision.needed, REFUSALS[Strength.STRONG])
@@ -50,11 +57,35 @@ def check(kind: str, name: str, level: Risk) -> Decision:
     return decision
 
 
+def access(kind: str, name: str, capabilities: list[str], level: Risk, args: dict | None = None,
+           count: bool = True) -> Decision:
+    decision = guard.decide(acting(), capabilities, level, args, count)
+    if not decision.allowed:
+        _audit(kind, name, decision)
+    return decision
+
+
 def tool(name: str, args: dict | None = None) -> Decision:
     level = risks.of_tool(name)
     if args is not None:
         level = capability.of_call(name, args, level, capability.ha_lookup)
-    return check("strumento", name, level)
+    decision = check("strumento", name, level)
+    if not decision.allowed:
+        return decision
+    return access("strumento", name, capmap.of_call(name, args), level, args)
+
+
+def plan(plan_data: dict, text: str, lookup) -> Decision:
+    level = capability.plan_risk(plan_data, lookup)
+    decision = check("casa", text[:80], level)
+    if not decision.allowed:
+        return decision
+    return access("casa", text[:80], capmap.of_plan(plan_data, lookup), level)
+
+
+def confirm_required(name: str, args: dict | None) -> bool:
+    decision = guard.decide(acting(), capmap.of_call(name, args), risks.of_tool(name), args, count=False)
+    return decision.allowed and decision.code == "confirm"
 
 
 def connector(name: str) -> Decision:

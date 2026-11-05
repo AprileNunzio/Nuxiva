@@ -71,6 +71,9 @@ def clean_args(name: str, args) -> dict:
 def needs_confirm(name: str, args: dict) -> bool:
     if _control().tool_forced_confirm(name):
         return True
+    from features.authz import gate
+    if gate.confirm_required(name, args):
+        return True
     rule = TOOLS[name]["confirm"]
     if callable(rule):
         try:

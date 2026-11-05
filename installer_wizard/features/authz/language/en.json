@@ -12,6 +12,19 @@
     "audit.updated": "Authorization policy updated",
     "refusal.role": "Profile unauthorized for this operation",
     "refusal.schedule": "Operation allowed only during service hours",
-    "refusal.zone": "Device or room unauthorized"
+    "refusal.zone": "Device or room unauthorized",
+    "refusal.guest": "Sorry, I can't do that. I can help with music, lights or general information.",
+    "refusal.room": "Sorry, from here I can only control this room.",
+    "refusal.owner_data": "Sorry, I can only show you your own data.",
+    "refusal.rate": "Let's take a short break: try again in a minute.",
+    "access.guest.not_available": "Sorry, that information isn't available.",
+    "matrix.saved": "Permission matrix updated",
+    "matrix.reset": "Permission matrix reset to defaults",
+    "access.error.schema": "Invalid matrix structure",
+    "access.error.capability": "Invalid capability",
+    "access.error.cell": "Invalid cell value",
+    "access.error.version": "Unsupported matrix version",
+    "access.error.too_large": "Matrix too large",
+    "access.error.too_many": "Too many capabilities in one request"
   }
 }

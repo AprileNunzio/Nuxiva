@@ -12,6 +12,19 @@
     "audit.updated": "Policy delle autorizzazioni aggiornata",
     "refusal.role": "Profilo non autorizzato per questa operazione",
     "refusal.schedule": "Operazione consentita solo nella fascia oraria di servizio",
-    "refusal.zone": "Dispositivo o stanza non autorizzati"
+    "refusal.zone": "Dispositivo o stanza non autorizzati",
+    "refusal.guest": "Mi dispiace, questo non posso farlo. Posso aiutarti con musica, luci o informazioni generali.",
+    "refusal.room": "Mi dispiace, da qui posso comandare solo questa stanza.",
+    "refusal.owner_data": "Mi dispiace, posso mostrarti solo i tuoi dati.",
+    "refusal.rate": "Facciamo una piccola pausa: riprova tra un minuto.",
+    "access.guest.not_available": "Mi dispiace, questa informazione non è disponibile.",
+    "matrix.saved": "Matrice dei permessi aggiornata",
+    "matrix.reset": "Matrice dei permessi riportata ai valori predefiniti",
+    "access.error.schema": "Struttura della matrice non valida",
+    "access.error.capability": "Capacità non valida",
+    "access.error.cell": "Valore di cella non valido",
+    "access.error.version": "Versione della matrice non supportata",
+    "access.error.too_large": "Matrice troppo grande",
+    "access.error.too_many": "Troppe capacità in una sola richiesta"
   }
 }

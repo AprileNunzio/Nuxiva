@@ -2,7 +2,7 @@ import asyncio
 import json
 import time
 
-from features.authz.capability import lookup_in, plan_risk
+from features.authz.capability import lookup_in
 from features.authz.principal import acting
 from features.authz.risk import Risk
 from features.home_assistant.connection import HAError
@@ -234,8 +234,7 @@ class HomeCommands:
 
     def _refusal(self, plan: dict, text: str) -> str:
         from features.authz import gate
-        level = plan_risk(plan, lookup_in(self.entities, self.states))
-        decision = gate.check("casa", text[:80], level)
+        decision = gate.plan(plan, text, lookup_in(self.entities, self.states))
         return "" if decision.allowed else gate.refusal(decision)
 
     def _foreseen(self, text: str) -> dict | None:

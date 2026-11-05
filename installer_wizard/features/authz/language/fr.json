@@ -12,6 +12,19 @@
     "audit.updated": "Politique d'autorisation mise à jour",
     "refusal.role": "Profil non autorisé pour cette opération",
     "refusal.schedule": "Opération autorisée uniquement pendant les heures de service",
-    "refusal.zone": "Appareil ou pièce non autorisés"
+    "refusal.zone": "Appareil ou pièce non autorisés",
+    "refusal.guest": "Désolée, je ne peux pas faire cela. Je peux vous aider avec la musique, les lumières ou des informations générales.",
+    "refusal.room": "Désolée, d'ici je ne peux commander que cette pièce.",
+    "refusal.owner_data": "Désolée, je ne peux vous montrer que vos propres données.",
+    "refusal.rate": "Faisons une petite pause : réessayez dans une minute.",
+    "access.guest.not_available": "Désolée, cette information n'est pas disponible.",
+    "matrix.saved": "Matrice des autorisations mise à jour",
+    "matrix.reset": "Matrice des autorisations réinitialisée",
+    "access.error.schema": "Structure de matrice invalide",
+    "access.error.capability": "Capacité invalide",
+    "access.error.cell": "Valeur de cellule invalide",
+    "access.error.version": "Version de matrice non prise en charge",
+    "access.error.too_large": "Matrice trop grande",
+    "access.error.too_many": "Trop de capacités dans une seule demande"
   }
 }
