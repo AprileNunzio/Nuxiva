@@ -2,10 +2,10 @@
   const D = window.NuxivaDisplay;
   const V = window.NUXIVA_ASSET_V ? `?v=${window.NUXIVA_ASSET_V}` : "";
   const PINCH_ON = 0.32, PINCH_OFF = 0.5, IDLE_FPS = 4, BUDGET = 0.25, WARMUP = 3, PROBE = 12, MEMORY = 86400000, BOX = { x0: 0.12, x1: 0.88, y0: 0.08, y1: 0.78 };
-  const FLICK = 2.2, POINTER = 77;
+  const FLICK = 2.2, POINTER = 77, QUIET = new Set(["empty", "guest_only"]);
   const st = { model: null, img: null, cursor: null, last: 0, ts: 0, x: 0, y: 0, seen: 0, pinch: false, target: null,
                trail: [], duo: null, ignore: false, failures: 0, cost: 0, delegate: "", samples: 0, probe: 0, status: "spente", stopped: false,
-               bridge: null, rust: false };
+               bridge: null, rust: false, engine: "" };
   const opt = () => D.FACE || {};
   const VERDICT = "nuxiva.hands.verdict";
 
@@ -186,7 +186,7 @@
   function loop(now) {
     if (st.stopped) return;
     requestAnimationFrame(loop);
-    const idle = !st.seen || now - st.seen > 5000;
+    const idle = !st.seen || now - st.seen > 5000 || QUIET.has(document.body.dataset.audience || "");
     const gap = Math.max(1000 / (idle ? IDLE_FPS : opt().hands_fps || 20), st.cost / BUDGET);
     if (now - st.last < gap || !st.img.naturalWidth) return;
     st.last = now;
@@ -261,12 +261,16 @@
       },
       hideCursor() { st.cursor.classList.remove("on", "pinch"); },
     });
-    st.bridge = window.NuxivaHandsBridge.create({ event: handle, status(on) { st.rust = on; } });
+    const server = () => { st.engine = "rust"; st.bridge = window.NuxivaHandsBridge.create({ event: handle, status(on) { st.rust = on; } }); };
+    const local = window.NuxivaHandsLocal;
+    if (!local || !local.available()) { server(); return; }
+    st.engine = "wasm";
+    st.bridge = local.create({ event: handle, status(on) { st.rust = on; }, fallback: server });
   }
 
   window.nuxivaHands = {
     get status() { return st.status; },
-    get engine() { return st.rust ? "rust" : "js"; },
+    get engine() { return st.rust ? st.engine : "js"; },
     context(name) { if (st.bridge) st.bridge.setContext(name); },
   };
   D.startHands = () => setTimeout(start, 4000);

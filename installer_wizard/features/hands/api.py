@@ -9,12 +9,14 @@ from access import NO_CACHE, require_admin
 from fastapi import APIRouter, Depends, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import JSONResponse
 
+from features.hands import display_api
 from features.hands import events as hand_events
 from features.hands import native, store
 
 log = logging.getLogger("nuxiva.hands")
 admin_routes = APIRouter()
 public_routes = APIRouter()
+public_routes.include_router(display_api.public_routes)
 BODY_LIMIT = 65_536
 FRAME_LIMIT = 32_768
 MAX_FPS = 60

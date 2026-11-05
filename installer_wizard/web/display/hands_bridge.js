@@ -19,10 +19,10 @@
       socket = new WebSocket(`${scheme}://${location.host}/api/hands/ws?context=${encodeURIComponent(context)}`);
       socket.onopen = () => { open = true; handlers.status(true); };
       socket.onclose = () => { open = false; handlers.status(false); if (!closed) setTimeout(connect, RETRY_MS); };
-      socket.onerror = () => { };
+      socket.onerror = () => console.warn("Mani: errore sul canale dei gesti, nuovo tentativo tra", RETRY_MS / 1000, "s");
       socket.onmessage = (message) => {
         let events;
-        try { events = JSON.parse(message.data); } catch (err) { return; }
+        try { events = JSON.parse(message.data); } catch (err) { console.warn("Mani: messaggio dei gesti non valido:", err.message); return; }
         if (Array.isArray(events)) events.forEach((event) => { if (event && typeof event.type === "string") handlers.event(event); });
       };
     }
