@@ -39,7 +39,7 @@ use gesture::{RustGestureEngine, gesture_catalog, gesture_validate_profile};
 use governors::{RustMeshTaskGovernor, RustNetworkGovernor, RustResourceGovernor};
 use language::{detect_language, supported_languages};
 use memory::{RustFastMemory, RustLiveCoPilot};
-use mesh::{RustCrdtMesh, RustP2PStreamManager};
+use mesh::{RustCrdtMesh, RustGossipMesh, RustP2PStreamManager};
 use pyo3::prelude::*;
 use scanner::FastScanner;
 use signal::{RustSignalEnhancer, RustVoiceBiomarkers};
@@ -61,6 +61,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<FastScanner>()?;
     m.add_class::<RustCrdtMesh>()?;
     m.add_class::<RustP2PStreamManager>()?;
+    m.add_class::<RustGossipMesh>()?;
     m.add_class::<RustSpatialArbiter>()?;
     m.add_class::<RustIntentRouter>()?;
     m.add_class::<RustAudioCleaner>()?;

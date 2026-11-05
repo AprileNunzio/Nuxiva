@@ -1,6 +1,7 @@
 use crate::errors::poisoned;
 use pyo3::exceptions::{PyRuntimeError, PyValueError};
 use pyo3::prelude::*;
+use std::str::FromStr;
 use std::sync::RwLock;
 
 #[pyclass(module = "nuxiva_native")]
@@ -96,5 +97,83 @@ impl RustP2PStreamManager {
     fn record_transfer(&self, satellite_id: &str, bytes: u64) -> PyResult<bool> {
         let mut guard = self.inner.write().map_err(|_| poisoned())?;
         Ok(guard.record_transfer(satellite_id, bytes))
+    }
+}
+
+#[pyclass(module = "nuxiva_native")]
+#[derive(Debug)]
+pub struct RustGossipMesh {
+    inner: RwLock<nuxiva_crdt_core::GossipMesh>,
+}
+
+#[pymethods]
+impl RustGossipMesh {
+    #[new]
+    fn new(local_id: &str, local_endpoint: &str) -> Self {
+        Self {
+            inner: RwLock::new(nuxiva_crdt_core::GossipMesh::new(local_id, local_endpoint)),
+        }
+    }
+
+    fn heartbeat(&self, now_ms: u64) -> PyResult<()> {
+        let mut guard = self.inner.write().map_err(|_| poisoned())?;
+        guard.heartbeat(now_ms);
+        Ok(())
+    }
+
+    #[pyo3(signature = (id, endpoint, metadata_json = "{}", now_ms = 0))]
+    fn register_peer(
+        &self,
+        id: &str,
+        endpoint: &str,
+        metadata_json: &str,
+        now_ms: u64,
+    ) -> PyResult<bool> {
+        let mut guard = self.inner.write().map_err(|_| poisoned())?;
+        Ok(guard.register_peer(id, endpoint, metadata_json, now_ms))
+    }
+
+    fn process_digest(
+        &self,
+        peer_id: &str,
+        heartbeat: u64,
+        incarnation: u64,
+        status: &str,
+        now_ms: u64,
+    ) -> PyResult<bool> {
+        let st = nuxiva_crdt_core::NodeStatus::from_str(status)
+            .unwrap_or(nuxiva_crdt_core::NodeStatus::Alive);
+        let mut guard = self.inner.write().map_err(|_| poisoned())?;
+        Ok(guard.process_digest(peer_id, heartbeat, incarnation, st, now_ms))
+    }
+
+    fn reap_stale_peers(
+        &self,
+        suspect_timeout_ms: u64,
+        dead_timeout_ms: u64,
+        now_ms: u64,
+    ) -> PyResult<usize> {
+        let mut guard = self.inner.write().map_err(|_| poisoned())?;
+        Ok(guard.reap_stale_peers(suspect_timeout_ms, dead_timeout_ms, now_ms))
+    }
+
+    fn select_gossip_targets(&self, count: usize) -> PyResult<Vec<String>> {
+        let mut guard = self.inner.write().map_err(|_| poisoned())?;
+        Ok(guard.select_gossip_targets(count))
+    }
+
+    fn alive_peers_count(&self) -> PyResult<usize> {
+        let guard = self.inner.read().map_err(|_| poisoned())?;
+        Ok(guard.alive_peers_count())
+    }
+
+    fn total_peers_count(&self) -> PyResult<usize> {
+        let guard = self.inner.read().map_err(|_| poisoned())?;
+        Ok(guard.total_peers_count())
+    }
+
+    fn export_membership_digest(&self) -> PyResult<Vec<(String, u64, u64, String)>> {
+        let guard = self.inner.read().map_err(|_| poisoned())?;
+        Ok(guard.export_membership_digest())
     }
 }

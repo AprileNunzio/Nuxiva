@@ -17,9 +17,10 @@ log = logging.getLogger("nuxiva.mesh")
 VIRTUAL_CORE_ID = "virtual-core"
 
 try:
-    from nuxiva_native import RustCrdtMesh, RustP2PStreamManager
+    from nuxiva_native import RustCrdtMesh, RustGossipMesh, RustP2PStreamManager
 except ImportError:
     RustCrdtMesh = None
+    RustGossipMesh = None
     RustP2PStreamManager = None
 
 
@@ -144,6 +145,7 @@ class NuxivaMeshCoordinator:
         # Direct P2P Stream Manager
         self._stream_mgr = RustP2PStreamManager() if RustP2PStreamManager is not None else None
         self._bindings: Dict[str, Dict[str, Any]] = {}
+        self._gossip = RustGossipMesh(self.node_id, f"{self.ip}:{self.port}") if RustGossipMesh is not None else None
 
         # Telemetry State for all known nodes
         self.telemetry_store: Dict[str, Dict[str, Any]] = {}
@@ -172,6 +174,10 @@ class NuxivaMeshCoordinator:
     def crdt(self):
         """Accesso diretto all'istanza RustCrdtMesh."""
         return self._crdt
+
+    @property
+    def gossip(self):
+        return self._gossip
 
     def start_discovery(self):
         try:
@@ -210,6 +216,8 @@ class NuxivaMeshCoordinator:
                             "load": msg.get("load", 0.0),
                             "last_seen": time.time()
                         }
+                        if self._gossip is not None:
+                            self._gossip.register_peer(sender_id, f"{addr[0]}:{self.port}", json.dumps(msg.get("capabilities", {})), int(time.time() * 1000))
                     elif action == "CRDT_SYNC":
                         remote_crdt = msg.get("crdt_payload", "{}")
                         self.merge_crdt_state(remote_crdt)
