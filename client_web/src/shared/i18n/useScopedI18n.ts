@@ -69,6 +69,7 @@ function findScopeData(scope: string): Record<string, Record<string, string>> | 
     if (dictionaryCache[`apps/${base}`]) return dictionaryCache[`apps/${base}`];
     if (dictionaryCache[`core_apps/${base}`]) return dictionaryCache[`core_apps/${base}`];
     if (dictionaryCache[`features/${base}`]) return dictionaryCache[`features/${base}`];
+    if (dictionaryCache[`node_apps/${base}`]) return dictionaryCache[`node_apps/${base}`];
   }
   return undefined;
 }

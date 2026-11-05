@@ -41,6 +41,8 @@
     "os_refresh": "Refresh",
     "os_system_event": "System event",
     "os_applications": "Applications",
+    "task_manager": "Task Manager",
+    "os_task_manager": "Task Manager",
     "os_connecting": "Connecting…",
     "os_category_all": "All",
     "os_category_global": "System",

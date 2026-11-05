@@ -41,6 +41,8 @@
     "os_refresh": "Actualiser",
     "os_system_event": "Événement système",
     "os_applications": "Applications",
+    "task_manager": "Gestionnaire des Tâches",
+    "os_task_manager": "Gestionnaire des Tâches",
     "os_connecting": "Connexion…",
     "os_category_all": "Toutes",
     "os_category_global": "Système",

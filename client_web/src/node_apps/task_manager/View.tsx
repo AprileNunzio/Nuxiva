@@ -4,9 +4,7 @@ import {
   AlertCircle,
   Brain,
   Camera,
-  CheckCircle2,
   Cpu,
-  Flame,
   HardDrive,
   Layers,
   Loader2,
@@ -15,7 +13,6 @@ import {
   RefreshCw,
   Search,
   Sparkles,
-  StopCircle,
   Thermometer,
   Zap,
 } from 'lucide-react';
@@ -31,9 +28,41 @@ interface TaskManagerViewProps {
   readonly initialPayload?: Record<string, unknown>;
 }
 
+const CAPABILITIES = [
+  {
+    key: 'voice_studio' as const,
+    titleKey: 'cap_voice_studio',
+    descKey: 'cap_voice_studio_desc',
+    icon: Mic,
+    accent: 'from-amber-500/20 to-orange-500/20 text-amber-300 border-amber-500/30',
+  },
+  {
+    key: 'brain_llm' as const,
+    titleKey: 'cap_brain_llm',
+    descKey: 'cap_brain_llm_desc',
+    icon: Brain,
+    accent: 'from-cyan-500/20 to-blue-500/20 text-cyan-300 border-cyan-500/30',
+  },
+  {
+    key: 'vision_camera' as const,
+    titleKey: 'cap_vision_camera',
+    descKey: 'cap_vision_camera_desc',
+    icon: Camera,
+    accent: 'from-purple-500/20 to-pink-500/20 text-purple-300 border-purple-500/30',
+  },
+  {
+    key: 'mesh_hub' as const,
+    titleKey: 'cap_mesh_hub',
+    descKey: 'cap_mesh_hub_desc',
+    icon: Network,
+    accent: 'from-emerald-500/20 to-teal-500/20 text-emerald-300 border-emerald-500/30',
+  },
+] as const;
+
 export const View: React.FC<TaskManagerViewProps> = ({ nodeId = '', scope = 'mesh', initialPayload }) => {
   const { t } = useTaskManagerI18n();
   const targetId = nodeId || (typeof initialPayload?.nodeId === 'string' ? initialPayload.nodeId : 'virtual_core');
+  const safeScope = scope || 'mesh';
 
   const [summary, setSummary] = useState<NodeTasksSummary | null>(null);
   const [loading, setLoading] = useState(true);
@@ -50,11 +79,11 @@ export const View: React.FC<TaskManagerViewProps> = ({ nodeId = '', scope = 'mes
       setSummary(data);
       setError(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'error_loading_tasks');
+      setError(err instanceof Error ? err.message : t('error_loading_tasks'));
     } finally {
       setLoading(false);
     }
-  }, [targetId]);
+  }, [targetId, t]);
 
   useEffect(() => {
     void loadData();
@@ -72,7 +101,7 @@ export const View: React.FC<TaskManagerViewProps> = ({ nodeId = '', scope = 'mes
       await terminateTask(targetId, pid);
       await loadData();
     } catch (err) {
-      setError(err instanceof Error ? err.message : `error_terminating_process ${name}`);
+      setError(err instanceof Error ? err.message : `${t('error_terminating_process')} (${name})`);
     } finally {
       setTerminatingPid(null);
     }
@@ -80,27 +109,27 @@ export const View: React.FC<TaskManagerViewProps> = ({ nodeId = '', scope = 'mes
 
   const handleToggleCapability = async (capability: keyof NodeCapabilities) => {
     if (!summary || togglingCap) return;
-    const currentVal = summary.capabilities[capability];
+    const currentVal = Boolean(summary.capabilities?.[capability]);
     try {
       setTogglingCap(capability);
       const res = await toggleNodeCapability(targetId, capability, !currentVal);
       setSummary((prev) => (prev ? { ...prev, capabilities: res.capabilities } : null));
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'error_toggling_capability');
+      setError(err instanceof Error ? err.message : t('error_toggling_capability'));
     } finally {
       setTogglingCap(null);
     }
   };
 
   const filteredProcesses = useMemo(() => {
-    if (!summary) return [];
+    if (!summary?.processes) return [];
     return summary.processes.filter((p) => {
       const matchesCategory = categoryFilter === 'all' || p.category === categoryFilter;
       const matchesSearch =
         search.trim() === '' ||
-        p.name.toLowerCase().includes(search.toLowerCase()) ||
+        (p.name || '').toLowerCase().includes(search.toLowerCase()) ||
         String(p.pid).includes(search) ||
-        p.user.toLowerCase().includes(search.toLowerCase());
+        (p.user || '').toLowerCase().includes(search.toLowerCase());
       return matchesCategory && matchesSearch;
     });
   }, [summary, categoryFilter, search]);
@@ -111,12 +140,18 @@ export const View: React.FC<TaskManagerViewProps> = ({ nodeId = '', scope = 'mes
     return 'from-emerald-400 to-cyan-400 text-emerald-300';
   };
 
+  const formatCategory = (cat: string) => {
+    const key = `cat_${cat}`;
+    const localized = t(key);
+    return localized === key ? cat : localized;
+  };
+
   return (
     <ModuleFrame
       icon={Activity}
       title={t('title')}
       subtitle={t('description')}
-      badge={targetId ? `${targetId} (${t(`scope_${scope}`)})` : t(`scope_${scope}`)}
+      badge={targetId ? `${targetId} (${t(`scope_${safeScope}`)})` : t(`scope_${safeScope}`)}
     >
       <div className="flex flex-col gap-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -188,24 +223,22 @@ export const View: React.FC<TaskManagerViewProps> = ({ nodeId = '', scope = 'mes
                     <div>
                       <strong className="text-xs font-bold uppercase tracking-wider text-slate-300">CPU</strong>
                       <span className="block text-[11px] font-mono text-slate-400">
-                        {summary.cpu.cores} {t('cores_logical')} • {summary.cpu.freq_mhz} MHz
+                        {summary.cpu?.cores ?? 1} {t('cores_logical')} • {summary.cpu?.freq_mhz ?? 0} MHz
                       </span>
                     </div>
                   </div>
-                  <strong className={`font-mono text-2xl font-black ${getMetricColor(summary.cpu.percent)}`}>
-                    {summary.cpu.percent}%
+                  <strong className={`font-mono text-2xl font-black ${getMetricColor(summary.cpu?.percent ?? 0)}`}>
+                    {summary.cpu?.percent ?? 0}%
                   </strong>
                 </div>
 
-                <div>
-                  <div className="h-2 w-full overflow-hidden rounded-full bg-slate-800">
-                    <div
-                      style={{ width: `${Math.min(100, summary.cpu.percent)}%` }}
-                      className={`h-full rounded-full bg-gradient-to-r transition-all duration-300 ${getMetricColor(
-                        summary.cpu.percent,
-                      )}`}
-                    />
-                  </div>
+                <div className="h-2 w-full overflow-hidden rounded-full bg-slate-800">
+                  <div
+                    style={{ width: `${Math.min(100, summary.cpu?.percent ?? 0)}%` }}
+                    className={`h-full rounded-full bg-gradient-to-r transition-all duration-300 ${getMetricColor(
+                      summary.cpu?.percent ?? 0,
+                    )}`}
+                  />
                 </div>
               </div>
 
@@ -218,24 +251,22 @@ export const View: React.FC<TaskManagerViewProps> = ({ nodeId = '', scope = 'mes
                     <div>
                       <strong className="text-xs font-bold uppercase tracking-wider text-slate-300">RAM</strong>
                       <span className="block text-[11px] font-mono text-slate-400">
-                        {summary.ram.used_gb} GB / {summary.ram.total_gb} GB
+                        {summary.ram?.used_gb ?? 0} GB / {summary.ram?.total_gb ?? 0} GB
                       </span>
                     </div>
                   </div>
-                  <strong className={`font-mono text-2xl font-black ${getMetricColor(summary.ram.percent)}`}>
-                    {summary.ram.percent}%
+                  <strong className={`font-mono text-2xl font-black ${getMetricColor(summary.ram?.percent ?? 0)}`}>
+                    {summary.ram?.percent ?? 0}%
                   </strong>
                 </div>
 
-                <div>
-                  <div className="h-2 w-full overflow-hidden rounded-full bg-slate-800">
-                    <div
-                      style={{ width: `${Math.min(100, summary.ram.percent)}%` }}
-                      className={`h-full rounded-full bg-gradient-to-r transition-all duration-300 ${getMetricColor(
-                        summary.ram.percent,
-                      )}`}
-                    />
-                  </div>
+                <div className="h-2 w-full overflow-hidden rounded-full bg-slate-800">
+                  <div
+                    style={{ width: `${Math.min(100, summary.ram?.percent ?? 0)}%` }}
+                    className={`h-full rounded-full bg-gradient-to-r transition-all duration-300 ${getMetricColor(
+                      summary.ram?.percent ?? 0,
+                    )}`}
+                  />
                 </div>
               </div>
 
@@ -268,24 +299,22 @@ export const View: React.FC<TaskManagerViewProps> = ({ nodeId = '', scope = 'mes
                     </div>
                   ) : (
                     <span className="rounded-full border border-slate-700 bg-slate-800 px-2 py-0.5 text-[10px] font-mono text-slate-400">
-                      CPU Render
+                      {t('gpu_software_render')}
                     </span>
                   )}
                 </div>
 
-                <div>
-                  <div className="h-2 w-full overflow-hidden rounded-full bg-slate-800">
-                    <div
-                      style={{
-                        width: `${
-                          summary.gpu
-                            ? Math.min(100, Math.round((summary.gpu.memory_used_mb / summary.gpu.memory_total_mb) * 100))
-                            : 0
-                        }%`,
-                      }}
-                      className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 transition-all duration-300"
-                    />
-                  </div>
+                <div className="h-2 w-full overflow-hidden rounded-full bg-slate-800">
+                  <div
+                    style={{
+                      width: `${
+                        summary.gpu && summary.gpu.memory_total_mb > 0
+                          ? Math.min(100, Math.round((summary.gpu.memory_used_mb / summary.gpu.memory_total_mb) * 100))
+                          : 0
+                      }%`,
+                    }}
+                    className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 transition-all duration-300"
+                  />
                 </div>
               </div>
             </div>
@@ -301,38 +330,9 @@ export const View: React.FC<TaskManagerViewProps> = ({ nodeId = '', scope = 'mes
               </div>
 
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                {[
-                  {
-                    key: 'voice_studio' as const,
-                    titleKey: 'cap_voice_studio',
-                    descKey: 'cap_voice_studio_desc',
-                    icon: Mic,
-                    accent: 'from-amber-500/20 to-orange-500/20 text-amber-300 border-amber-500/30',
-                  },
-                  {
-                    key: 'brain_llm' as const,
-                    titleKey: 'cap_brain_llm',
-                    descKey: 'cap_brain_llm_desc',
-                    icon: Brain,
-                    accent: 'from-cyan-500/20 to-blue-500/20 text-cyan-300 border-cyan-500/30',
-                  },
-                  {
-                    key: 'vision_camera' as const,
-                    titleKey: 'cap_vision_camera',
-                    descKey: 'cap_vision_camera_desc',
-                    icon: Camera,
-                    accent: 'from-purple-500/20 to-pink-500/20 text-purple-300 border-purple-500/30',
-                  },
-                  {
-                    key: 'mesh_hub' as const,
-                    titleKey: 'cap_mesh_hub',
-                    descKey: 'cap_mesh_hub_desc',
-                    icon: Network,
-                    accent: 'from-emerald-500/20 to-teal-500/20 text-emerald-300 border-emerald-500/30',
-                  },
-                ].map((cap) => {
+                {CAPABILITIES.map((cap) => {
                   const Icon = cap.icon;
-                  const isEnabled = summary.capabilities[cap.key];
+                  const isEnabled = Boolean(summary.capabilities?.[cap.key]);
                   const isPending = togglingCap === cap.key;
 
                   return (
@@ -432,11 +432,11 @@ export const View: React.FC<TaskManagerViewProps> = ({ nodeId = '', scope = 'mes
                   <thead>
                     <tr className="border-b border-slate-800 bg-slate-900/90 font-mono text-[11px] uppercase tracking-wider text-slate-400">
                       <th className="py-2.5 px-4 font-semibold">{t('col_process')}</th>
-                      <th className="py-2.5 px-3 font-semibold">PID</th>
+                      <th className="py-2.5 px-3 font-semibold">{t('col_pid')}</th>
                       <th className="py-2.5 px-3 font-semibold">{t('col_category')}</th>
-                      <th className="py-2.5 px-3 font-semibold text-right">CPU %</th>
-                      <th className="py-2.5 px-3 font-semibold text-right">RAM (MB)</th>
-                      <th className="py-2.5 px-3 font-semibold text-right">GPU VRAM</th>
+                      <th className="py-2.5 px-3 font-semibold text-right">{t('col_cpu')}</th>
+                      <th className="py-2.5 px-3 font-semibold text-right">{t('col_ram')}</th>
+                      <th className="py-2.5 px-3 font-semibold text-right">{t('col_gpu')}</th>
                       <th className="py-2.5 px-3 font-semibold">{t('col_user')}</th>
                       <th className="py-2.5 px-4 font-semibold text-right">{t('col_actions')}</th>
                     </tr>
@@ -466,7 +466,7 @@ export const View: React.FC<TaskManagerViewProps> = ({ nodeId = '', scope = 'mes
                                   : 'border border-slate-700 bg-slate-800 text-slate-400'
                               }`}
                             >
-                              {t(`cat_${proc.category}`)}
+                              {formatCategory(proc.category)}
                             </span>
                           </td>
                           <td className="py-2 px-3 text-right">

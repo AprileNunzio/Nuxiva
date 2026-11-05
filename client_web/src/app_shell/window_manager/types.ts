@@ -48,6 +48,7 @@ export interface OSAppContextValue {
 }
 export interface AppManifest {
   id: string; name: string; scope: string; icon3d?: string;
+  manifestId?: string;
   category?: string; version?: string;
   kind?: 'app' | 'feature' | 'system';
   desktop?: { order?: number };

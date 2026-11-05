@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Grid2X2, UserRound, Activity, X, Wifi, WifiOff, Network, Bluetooth, Waypoints, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../shared/theme/ThemeContext';
-import { appRegistry } from './window_manager/registry';
+import { appRegistry, resolveApp } from './window_manager/registry';
 import { windowStore } from './window_manager/WindowStore';
 import type { OSWindow } from './window_manager/types';
 import { useScopedI18n, getScopedString } from '../shared/i18n/useScopedI18n';
@@ -79,7 +79,7 @@ export function Taskbar({
 
   const title = (id: string) => {
     if (id === 'explorer') return assistant.name;
-    const app = appRegistry.find(a => a.id === id);
+    const app = resolveApp(id);
     return app ? getScopedString(app.scope, lang, 'title', app.name) : id;
   };
 
