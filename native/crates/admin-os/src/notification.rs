@@ -163,7 +163,7 @@ mod tests {
 
         assert_eq!(mgr.count(), 2);
         let items = mgr.list();
-        assert_eq!(items.get(0).map(|n| n.title.as_str()), Some("B"));
+        assert_eq!(items.first().map(|n| n.title.as_str()), Some("B"));
         assert_eq!(items.get(1).map(|n| n.title.as_str()), Some("C"));
     }
 }

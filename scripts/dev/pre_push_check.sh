@@ -22,7 +22,7 @@ cargo fmt --manifest-path native/Cargo.toml --all --check
 
 if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "win32" || -n "$WINDIR" ]]; then
     echo "[INFO] Piattaforma Windows/MinGW rilevata: verifica clippy e test sui crate compatibili (vitals-core, bus-core)..."
-    cargo clippy --manifest-path native/Cargo.toml -p nuxiva-vitals-core -p nuxiva-bus-core -p nuxiva-admin-os --locked -- -D warnings
+    cargo clippy --manifest-path native/Cargo.toml -p nuxiva-vitals-core -p nuxiva-bus-core -p nuxiva-admin-os --all-targets --locked -- -D warnings
     echo "==> [4/5] Eseguo test unitari Rust dei crate compatibili Windows..."
     cargo test --manifest-path native/Cargo.toml -p nuxiva-vitals-core -p nuxiva-bus-core -p nuxiva-admin-os --locked
 else

@@ -130,7 +130,7 @@ mod tests {
         let sample = mgr.evaluate(16_000_000_000, 8_000_000_000);
         assert_eq!(sample.state, MemoryState::Normal);
         assert!(!sample.throttled);
-        assert_eq!(sample.percent, 50.0);
+        assert!((sample.percent - 50.0).abs() < f64::EPSILON);
     }
 
     #[test]
@@ -164,7 +164,7 @@ mod tests {
     fn zero_total_handled_safely() {
         let mut mgr = MemoryManager::default();
         let sample = mgr.evaluate(0, 0);
-        assert_eq!(sample.percent, 0.0);
+        assert!(sample.percent.abs() < f64::EPSILON);
         assert_eq!(sample.state, MemoryState::Critical);
     }
 }

@@ -37,7 +37,7 @@ if ($LASTEXITCODE -ne 0) {
 
 if ($env:OS -like "*Windows*" -or $IsWindows) {
     Write-Host "[INFO] Piattaforma Windows: verifica clippy e test sui crate compatibili (vitals-core, bus-core, admin-os)..." -ForegroundColor Yellow
-    cargo clippy --manifest-path native/Cargo.toml -p nuxiva-vitals-core -p nuxiva-bus-core -p nuxiva-admin-os --locked -- -D warnings
+    cargo clippy --manifest-path native/Cargo.toml -p nuxiva-vitals-core -p nuxiva-bus-core -p nuxiva-admin-os --all-targets --locked -- -D warnings
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[ERRORE] Cargo clippy ha rilevato warning o errori!" -ForegroundColor Red
         exit 1
