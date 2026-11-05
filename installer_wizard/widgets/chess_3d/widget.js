@@ -35,6 +35,7 @@
     set(".chess-btn-hint", "action_hint");
     set(".chess-btn-restart", "action_restart");
     set(".chess-btn-saved", "action_saved");
+    set(".chess-btn-close", "action_close");
   }
 
   NuxivaDesk.register("chess_3d", {
@@ -60,6 +61,7 @@
             <button type="button" class="chess-widget-btn chess-btn-saved" aria-expanded="false" aria-controls="chess-saved"></button>
             <span class="chess-widget-turn" aria-live="polite"></span>
             <span class="chess-widget-status" role="status"></span>
+            <button type="button" class="chess-widget-btn chess-btn-close"></button>
           </div>
           <div class="chess-widget-viewport">
             <iframe src="${ctx.esc(frameUrl(d && d.url))}" allow="autoplay; fullscreen" loading="lazy" referrerpolicy="same-origin" title="${ctx.esc(ctx.t("label"))}"></iframe>
@@ -74,6 +76,7 @@
       const turnEl = el.querySelector(".chess-widget-turn");
       const savedBtn = el.querySelector(".chess-btn-saved");
       const hintBtn = el.querySelector(".chess-btn-hint");
+      const closeBtn = el.querySelector(".chess-btn-close");
 
       const send = (payload) => frame.contentWindow && frame.contentWindow.postMessage({ channel: CHANNEL, ...payload }, origin);
       const note = (key) => {
@@ -191,6 +194,17 @@
         note("");
       }, { signal });
 
+      closeBtn.addEventListener("click", () => {
+        if (window.NuxivaDisplay && window.NuxivaDisplay.setPresence) {
+          window.NuxivaDisplay.setPresence("normal");
+        }
+        fetch("/api/desk/close", {
+          method: "POST",
+          headers: HEADERS,
+          body: JSON.stringify({ key: "chess_3d" }),
+        }).catch(() => {});
+      }, { signal });
+
       const showTurn = (m) => {
         if (!m) { turnEl.textContent = ""; return; }
         turnEl.textContent = m.over ? (m.winner ? t(m.winner === "white" ? "won_white" : "won_black") : t("draw")) : t(m.turn === "white" ? "turn_white" : "turn_black");
@@ -256,13 +270,31 @@
         hintBtn.disabled = true;
         hintBtn.classList.add("busy");
         const moves = inst.last ? notation(inst.last.save) : [];
-        const text = moves.length
-          ? t("hint_question_moves", { moves: moves.join(" "), turn: t(inst.last.turn === "white" ? "side_white" : "side_black") })
-          : t("hint_question");
+        const turn = inst.last && inst.last.turn ? inst.last.turn : "white";
         const timeout = new AbortController();
         const timer = later(() => timeout.abort(), HINT_TIMEOUT);
         const onAbort = () => timeout.abort();
         signal.addEventListener("abort", onAbort, { once: true });
+        try {
+          const res = await fetch("/api/games/chess/copilot/analyze", {
+            method: "POST",
+            credentials: "same-origin",
+            headers: HEADERS,
+            body: JSON.stringify({ moves, turn }),
+            signal: timeout.signal,
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.suggested_move) {
+              const pct = Math.round((data.confidence || 0.9) * 100);
+              toast(`Nuxiva consiglia: ${data.suggested_move} (${pct}%)`, 16000);
+              return;
+            }
+          }
+        } catch (_) {}
+        const text = moves.length
+          ? t("hint_question_moves", { moves: moves.join(" "), turn: t(turn === "white" ? "side_white" : "side_black") })
+          : t("hint_question");
         try {
           const res = await fetch("/api/assistant/chat", { method: "POST", credentials: "same-origin", headers: HEADERS, body: JSON.stringify({ text }), signal: timeout.signal });
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -286,6 +318,9 @@
       inst.timers.forEach(clearTimeout);
       inst.timers.clear();
       instances.delete(el);
+      if (window.NuxivaDisplay && window.NuxivaDisplay.presence === "mini") {
+        window.NuxivaDisplay.setPresence("normal");
+      }
     },
   });
 })();

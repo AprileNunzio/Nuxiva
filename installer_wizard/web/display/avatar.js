@@ -163,13 +163,15 @@
     destroy() { cancelAnimationFrame(this.raf); global.removeEventListener("resize", this._resize); }
 
     _target() {
-      const t = this._place(), k = this.presence || 1;
+      const isMini = document.body.classList.contains("presence-mini") || (this.presence && this.presence <= 0.35);
+      const t = this._place();
+      const k = isMini ? 1 : (this.presence || 1);
       return { ...t, s: t.s * k };
     }
     _place() {
       const { w, h } = this, narrow = w < h;
       if (document.body.classList.contains("desk-full") || document.body.classList.contains("presence-mini") || (this.presence && this.presence <= 0.35)) {
-        return narrow ? { x: w * 0.16, y: 56, s: 0.16 } : { x: w - 74, y: 70, s: 0.16 };
+        return narrow ? { x: w - 60, y: 56, s: 0.28 } : { x: w - 80, y: 72, s: 0.30 };
       }
       if (this.mode === "focus") return narrow ? { x: w / 2, y: h * 0.17, s: 0.34 } : { x: w * 0.13, y: h * 0.3, s: 0.42 };
       const z = this.stage;

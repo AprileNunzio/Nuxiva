@@ -7,6 +7,7 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from features.games import api, saves
+from server.core.orchestrator.co_pilot import live_copilot
 
 GAME = {"v": 1, "moves": [[6, 4, 4, 4, ""], [1, 4, 3, 4, ""]], "player": "white"}
 HEAD = {"X-Nuxiva-Request": "1"}
@@ -77,3 +78,23 @@ class ApiTest(unittest.TestCase):
         self.assertEqual(self.client.get("/api/games/chess/anna/..%2Fx").status_code, 404)
         self.assertEqual(self.client.put("/api/games/chess/anna/new", json={"save": {"v": 1}}, headers=HEAD).status_code, 400)
         self.assertEqual(self.client.put("/api/games/chess/anna/new", content=b"x" * 30000, headers=HEAD).status_code, 413)
+
+    def test_copilot_analyze_endpoint(self):
+        res = self.client.post("/api/games/chess/copilot/analyze", json={"moves": ["e2e4", "e7e5"], "turn": "white"})
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        self.assertEqual(data["suggested_move"], "g1f3")
+        self.assertIn(data["action_kind"], ("SUGGEST_MOVE", "SuggestMove"))
+        self.assertGreaterEqual(data["confidence"], 0.9)
+
+    def test_copilot_bridge_tactics(self):
+        act0 = live_copilot.analyze_moves([], "white")
+        self.assertEqual(act0.suggested_move, "e2e4")
+        act1 = live_copilot.analyze_moves(["e2e4"], "black")
+        self.assertEqual(act1.suggested_move, "e7e5")
+        act2 = live_copilot.analyze_moves(["e2e4", "e7e5"], "white")
+        self.assertEqual(act2.suggested_move, "g1f3")
+        session = live_copilot.start_session("chess_3d", "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")
+        self.assertIn(session.action_kind, ("SPEAK_INSIGHT", "SpeakInsight"))
+        ended = live_copilot.end_session()
+        self.assertIn(ended.action_kind, ("SPEAK_INSIGHT", "SpeakInsight"))

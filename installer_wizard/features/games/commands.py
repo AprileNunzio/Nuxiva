@@ -44,6 +44,11 @@ def is_open() -> bool:
 
 
 def open_chess(fullscreen: bool = True) -> None:
+    try:
+        from server.core.orchestrator.co_pilot import live_copilot
+        live_copilot.start_session("chess_3d", "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")
+    except Exception:
+        pass
     desk.scan()
     desk.show(
         WIDGET_ID,
@@ -58,6 +63,11 @@ def open_chess(fullscreen: bool = True) -> None:
 def close_chess() -> bool:
     was_open = is_open()
     desk.hide(key=CHESS_KEY)
+    try:
+        from server.core.orchestrator.co_pilot import live_copilot
+        live_copilot.end_session()
+    except Exception:
+        pass
     return was_open
 
 
@@ -91,8 +101,17 @@ async def answer(text: str) -> tuple[str, dict]:
         }
 
     if HINT_PATTERNS.search(cleaned) and (is_open() or "scacch" in cleaned or "chess" in cleaned):
+        try:
+            from server.core.orchestrator.co_pilot import live_copilot
+            action = live_copilot.analyze_moves([], "white")
+            if action.suggested_move:
+                hint_text = f"Le consiglio di giocare {action.suggested_move} per controllare il centro e sviluppare i pezzi."
+            else:
+                hint_text = "Le consiglio di controllare le quattro case centrali (e4, d4, e5, d5) e sviluppare i cavalli prima degli alfieri."
+        except Exception:
+            hint_text = "Le consiglio di controllare le quattro case centrali (e4, d4, e5, d5) e sviluppare i cavalli prima degli alfieri."
         return (
-            "Le consiglio di controllare le quattro case centrali (e4, d4, e5, d5) e sviluppare i cavalli prima degli alfieri.",
+            hint_text,
             {"mode": "face", "presence": "mini", "app": "chess_3d", "fullscreen": True}
         )
 

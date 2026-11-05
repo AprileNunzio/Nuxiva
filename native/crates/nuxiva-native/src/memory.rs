@@ -109,6 +109,12 @@ impl RustLiveCoPilot {
         serde_json::to_string(&action).map_err(|e| PyRuntimeError::new_err(e.to_string()))
     }
 
+    fn analyze_tactics_json(&self, moves_str: &str, turn: &str) -> PyResult<String> {
+        let guard = self.inner.read().map_err(|_| poisoned())?;
+        let action = guard.analyze_tactics(moves_str, turn);
+        serde_json::to_string(&action).map_err(|e| PyRuntimeError::new_err(e.to_string()))
+    }
+
     fn end_session_json(&self) -> PyResult<String> {
         let mut guard = self.inner.write().map_err(|_| poisoned())?;
         let action = guard.end_session();

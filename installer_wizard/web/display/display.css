@@ -346,6 +346,7 @@ body.voice-only #core, body.voice-only #scene { opacity: 0 !important; filter: b
                  box-shadow: 0 0 10px rgba(41,224,255,0.55); transform: scaleY(0.08); transform-origin: center; }
 body.voice-only .voice-strip { opacity: 1; transform: translateX(-50%) scale(1); }
 @media (prefers-reduced-motion: reduce) { #core, #scene, .voice-strip { transition: none; } }
+body.presence-mini #core, body.presence-mini #scene { z-index: 35; filter: drop-shadow(0 8px 32px rgba(41, 224, 255, 0.35)); }
 
 .update-overlay { position: fixed; inset: 0; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(7, 13, 22, 0.9); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); padding: 24px; color: #e0f2fe; transition: opacity 0.4s ease, visibility 0.4s ease; }
 .update-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }

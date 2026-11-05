@@ -94,6 +94,12 @@ async def desk_close(request: Request):
     if key.startswith("alarm:"):
         from features.redalert.service import redalert
         redalert.stop()
+    if key == "chess_3d" or key.startswith("chess"):
+        try:
+            from features.games.commands import close_chess
+            close_chess()
+        except Exception:
+            pass
     return {"ok": True}
 
 

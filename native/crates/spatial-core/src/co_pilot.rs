@@ -123,6 +123,108 @@ impl LiveCoPilotEngine {
         }
     }
 
+    #[must_use]
+    pub fn analyze_tactics(&self, moves_str: &str, turn: &str) -> CoPilotAction {
+        let moves: Vec<&str> = moves_str
+            .split(|c: char| c == ' ' || c == ',' || c == ';')
+            .map(str::trim)
+            .filter(|s| !s.is_empty())
+            .collect();
+
+        let count = moves.len();
+        let is_white = turn.eq_ignore_ascii_case("white");
+
+        let (action_kind, key, sug, conf) = match (count, is_white) {
+            (0, true) => (
+                CoPilotActionKind::SuggestMove,
+                "copilot.chess.open_center",
+                Some("e2e4".to_string()),
+                0.98,
+            ),
+            (0, false) => (
+                CoPilotActionKind::SilentObserve,
+                "copilot.chess.waiting_white",
+                None,
+                0.90,
+            ),
+            (1, false) => {
+                let first = moves.first().copied().unwrap_or("");
+                if first == "e2e4" {
+                    (
+                        CoPilotActionKind::SuggestMove,
+                        "copilot.chess.reply_center",
+                        Some("e7e5".to_string()),
+                        0.96,
+                    )
+                } else {
+                    (
+                        CoPilotActionKind::SuggestMove,
+                        "copilot.chess.reply_pawn",
+                        Some("d7d5".to_string()),
+                        0.94,
+                    )
+                }
+            }
+            (2, true) => (
+                CoPilotActionKind::SuggestMove,
+                "copilot.chess.develop_knight",
+                Some("g1f3".to_string()),
+                0.96,
+            ),
+            (3, false) => (
+                CoPilotActionKind::SuggestMove,
+                "copilot.chess.protect_pawn",
+                Some("b8c6".to_string()),
+                0.95,
+            ),
+            (4, true) => (
+                CoPilotActionKind::SuggestMove,
+                "copilot.chess.develop_bishop",
+                Some("f1c4".to_string()),
+                0.94,
+            ),
+            (5, false) => (
+                CoPilotActionKind::SuggestMove,
+                "copilot.chess.develop_kingside",
+                Some("g8f6".to_string()),
+                0.93,
+            ),
+            _ => {
+                let has_castled = if is_white {
+                    moves.iter().any(|m| *m == "e1g1" || *m == "e1c1")
+                } else {
+                    moves.iter().any(|m| *m == "e8g8" || *m == "e8c8")
+                };
+
+                if !has_castled && count >= 6 && count <= 14 {
+                    let castle_move = if is_white { "e1g1" } else { "e8g8" };
+                    (
+                        CoPilotActionKind::SuggestMove,
+                        "copilot.chess.castle_king",
+                        Some(castle_move.to_string()),
+                        0.91,
+                    )
+                } else {
+                    (
+                        CoPilotActionKind::SuggestMove,
+                        "copilot.chess.control_center",
+                        Some("d2d4".to_string()),
+                        0.88,
+                    )
+                }
+            }
+        };
+
+        CoPilotAction {
+            action_kind,
+            insight_key: key.to_string(),
+            suggested_move: sug,
+            confidence: conf,
+            target_morphology: AssistantMorphology::FloatingOrb,
+            target_layer: ZLayer::Z2ContextualHud,
+        }
+    }
+
     pub fn end_session(&mut self) -> CoPilotAction {
         self.is_active = false;
         CoPilotAction {

@@ -190,6 +190,10 @@
     if (!card) return;
     cards.delete(key);
     try { card.impl.destroy && card.impl.destroy(card.el.firstChild); } catch (e) {}
+    if (window.NuxivaDisplay && window.NuxivaDisplay.presence === "mini") {
+      const hasFull = [...cards.values()].some((c) => c.inst && c.inst.fullscreen);
+      if (!hasFull) window.NuxivaDisplay.setPresence("normal");
+    }
     if (now) { card.el.remove(); return; }
     card.el.classList.add("leave");
     setTimeout(() => card.el.remove(), 450);
@@ -279,7 +283,12 @@
     document.body.classList.toggle("desk-immersive", !!(full && full.inst.immersive));
     document.body.dataset.deskFullscreen = full ? full.inst.id : "";
     document.body.classList.toggle("desk-whiteboard", ordered.some((c) => c.inst.id === "lavagna"));
-    if (!full) return false;
+    if (!full) {
+      if (window.NuxivaDisplay && window.NuxivaDisplay.presence === "mini") {
+        window.NuxivaDisplay.setPresence("normal");
+      }
+      return false;
+    }
     const isPriority = (card) => card.inst.urgent || card.inst.essential || (card.inst.priority && card.inst.priority >= 80);
     full.el.classList.remove("pinned");
     place(full, 0, 0, window.innerWidth, window.innerHeight);

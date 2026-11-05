@@ -58,3 +58,17 @@ async def chess_delete(slug: str, save_id: str, request: Request):
     if not saves.remove(_guard(request, slug), _id(save_id)):
         raise HTTPException(404, "Partita non trovata")
     return {"ok": True}
+
+
+@public_routes.post("/api/games/chess/copilot/analyze")
+async def chess_copilot_analyze(request: Request):
+    require_display(request)
+    try:
+        body = await request.json()
+    except Exception:
+        body = {}
+    moves = body.get("moves") or []
+    turn = str(body.get("turn") or "white")
+    from server.core.orchestrator.co_pilot import live_copilot
+    action = live_copilot.analyze_moves(moves, turn)
+    return action.to_dict()

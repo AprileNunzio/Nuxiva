@@ -58,7 +58,10 @@
       this.mode = mode;
       const dist = 6.2, vh = 2 * Math.tan((this.camera.fov * Math.PI) / 360) * dist, vw = vh * this.camera.aspect;
       const narrow = this.camera.aspect < 1;
-      if (mode === "focus") {
+      const isMini = this.presence && this.presence <= 0.35;
+      if (isMini) {
+        this.faceTarget = narrow ? { x: vw * 0.32, y: vh * 0.38, s: 0.28 } : { x: vw * 0.38, y: vh * 0.36, s: 0.32 };
+      } else if (mode === "focus") {
         this.faceTarget = narrow ? { x: 0, y: vh * 0.34, s: 0.32 } : { x: -vw * 0.38, y: vh * 0.24, s: 0.42 };
       } else if (this.stage) {
         const z = this.stage, W = global.innerWidth, H = global.innerHeight;
@@ -67,7 +70,7 @@
       } else {
         this.faceTarget = { x: 0, y: 0.05, s: 1 };
       }
-      if (mode !== "brain") this.faceTarget.s *= this.presence || 1;
+      if (mode !== "brain" && !isMini) this.faceTarget.s *= this.presence || 1;
       if (this.face) { this.face.opacity = mode === "brain" ? 0 : 1; if (this.face.setContext) this.face.setContext(mode); }
       else if (mode === "brain" && this._sleeping) { this._sleeping = false; this.clock.getDelta(); this.renderer.setAnimationLoop(() => this._frame()); }
       this.brain.opacity = mode === "brain" ? 1 : 0;

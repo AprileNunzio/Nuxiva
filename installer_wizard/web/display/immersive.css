@@ -10,9 +10,17 @@ body.desk-immersive .presence,
 body.desk-immersive .mind,
 body.desk-immersive .focus-say,
 body.desk-immersive .project-widget,
-body.desk-immersive #core,
-body.desk-immersive #scene {
+body.desk-immersive:not(.presence-mini) #core,
+body.desk-immersive:not(.presence-mini) #scene {
   display: none !important;
+}
+
+body.desk-immersive.presence-mini #core,
+body.desk-immersive.presence-mini #scene {
+  display: block !important;
+  z-index: 35;
+  pointer-events: none;
+  filter: drop-shadow(0 8px 32px rgba(41, 224, 255, 0.35));
 }
 
 body.desk-immersive .desk > .widget.fullscreen.immersive {
