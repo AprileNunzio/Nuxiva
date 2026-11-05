@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "web/display/xr",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "page_title": "{{assistant}} · Casque",
+    "status_connecting": "Connexion en cours…",
+    "enter_vr": "Entrer en réalité virtuelle",
+    "enter_ar": "Entrer en réalité mixte",
+    "panels_label": "Widgets visibles dans le casque",
+    "status_code_refused": "Code d'appairage expiré ou déjà utilisé : créez-en un nouveau depuis le panneau",
+    "status_pair_failed": "Échec de l'appairage",
+    "status_unpaired": "Casque non appairé : scannez le code depuis le panneau d'administration",
+    "status_nucleus_only": "Aucune personne autorisée reconnue dans cette pièce : seul le noyau est affiché",
+    "status_ready": "Casque prêt",
+    "status_offline": "Connexion au superviseur perdue, nouvelle tentative",
+    "status_xr_failed": "Le casque n'a pas démarré la session immersive"
+  }
+}

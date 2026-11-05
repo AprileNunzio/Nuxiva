@@ -1,0 +1,23 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/molecule_viewer",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Molécula",
+    "loading": "Preparando la estructura…",
+    "spin": "Rotación automática",
+    "backbone": "Esqueleto",
+    "scheme_element": "Elementos",
+    "scheme_chain": "Cadenas",
+    "scheme_secondary": "Hélices y láminas",
+    "atoms_one": "{{n}} átomo",
+    "atoms_other": "{{n}} átomos",
+    "bonds_one": "{{n}} enlace",
+    "bonds_other": "{{n}} enlaces",
+    "error_engine": "Motor molecular no disponible en este sistema",
+    "error_library": "Biblioteca 3D no disponible",
+    "error_data": "Estructura no legible"
+  }
+}

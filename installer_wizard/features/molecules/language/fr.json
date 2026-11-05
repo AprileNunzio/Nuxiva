@@ -1,0 +1,11 @@
+{
+  "name": "Molécules",
+  "description": "Visionneuse de structures biomoléculaires sur l'écran : chargez un fichier PDB ou mmCIF et la molécule apparaît en 3D, à explorer avec les mains.",
+  "capabilities": [
+    "Ouvre les structures PDB et mmCIF de protéines, d'acides nucléiques et de ligands, lues de façon sûre par le moteur Rust",
+    "Atomes en sphères lumineuses sans fond, liaisons calculées à partir des distances, squelette pour les grandes structures",
+    "Couleurs par élément, par chaîne ou par structure secondaire (hélices et feuillets)",
+    "Rotation et zoom à la souris, aux doigts ou à deux mains, et envoi vers un autre écran"
+  ],
+  "settings": {}
+}

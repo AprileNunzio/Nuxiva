@@ -183,8 +183,10 @@ class Surfaces:
         return list(rooms)
 
     def audience_for(self, n: int, kind: str) -> str:
+        return self.audience_in(self.room_of(n), kind)
+
+    def audience_in(self, room: str | None, kind: str) -> str:
         kind = kind if kind in AUDIENCES else "uncertain"
-        room = self.room_of(n)
         if room is None:
             return kind
         sensed = self.sensed_rooms()

@@ -9,7 +9,7 @@ ALIVE = 30
 ROLES = ("agent", "work", "visual")
 PERSON = "person"
 WORK = frozenset({"repair_workbench", "code_view", "git_diff", "kanban_board", "document_viewer", "lavagna", "cicd_tracker",
-                  "docker_matrix", "studio_3d", "viewer_3d", "thinking_tree", "text_long", "rag_sources", "system_monitor",
+                  "docker_matrix", "studio_3d", "viewer_3d", "molecule_viewer", "thinking_tree", "text_long", "rag_sources", "system_monitor",
                   "net_topology", "firewall_logs", "os_networks", "ssh_sessions", "port_scanner", "usb_monitor", "active_tasks",
                   "expert_work", "vram_allocator", "context_window", "api_costs"})
 VISUAL = frozenset({"diorama", "chess_3d", "cam_stream", "live_cam", "tv_player", "karaoke", "audio_spectrum", "energy_chart",

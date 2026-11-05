@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="it" translate="no" data-i18n-scope="web/display/xr">
+<head>
+<meta charset="UTF-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title data-i18n="page_title" data-i18n-params='{"assistant":"{{assistant}}"}'>{{assistant}}</title>
+<link rel="stylesheet" href="/static/shared/nuxiva.css">
+<link rel="stylesheet" href="/static/display/xr/xr.css">
+</head>
+<body class="xr">
+<canvas id="xr-canvas" aria-hidden="true"></canvas>
+<main class="xr-ui">
+  <h1 class="xr-brand">{{assistant}}</h1>
+  <p class="xr-status" id="xr-status" role="status" aria-live="polite" data-i18n="status_connecting"></p>
+  <div class="xr-actions">
+    <button class="xr-btn" id="xr-vr" type="button" hidden data-i18n="enter_vr"></button>
+    <button class="xr-btn" id="xr-ar" type="button" hidden data-i18n="enter_ar"></button>
+  </div>
+  <ul class="xr-panels" id="xr-panels" data-i18n-attr="aria-label:panels_label"></ul>
+</main>
+<script src="/vendor/three.min.js"></script>
+<script src="/vendor/OrbitControls.js"></script>
+<script src="/static/display/kernel/molecule/impostor.js"></script>
+<script src="/static/display/kernel/holo/multiview.js"></script>
+<script src="/static/display/xr/panels.js"></script>
+<script src="/static/display/xr/hands.js"></script>
+<script src="/static/display/xr/xr.js"></script>
+</body>
+</html>

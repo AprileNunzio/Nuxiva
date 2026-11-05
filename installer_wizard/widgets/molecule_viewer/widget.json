@@ -1,0 +1,16 @@
+{
+  "id": "molecule_viewer",
+  "name": "Visore molecolare",
+  "icon": "🧬",
+  "priority": 85,
+  "size": "l",
+  "intents": [
+    "molecule_viewer",
+    "molecola"
+  ],
+  "description": "Strutture biomolecolari PDB e mmCIF in 3D: atomi come sfere luminose, legami, scheletro e colori per elemento, catena o struttura secondaria.",
+  "ttl": 1800,
+  "tone": "violet",
+  "essential": true,
+  "chrome": false
+}

@@ -1,5 +1,8 @@
 (() => {
   const media = (q) => typeof matchMedia === "function" && matchMedia(q).matches;
+  const KINDS = new Set(["monitor", "holo_quilt", "holo_pyramid", "holo_fan", "cast"]);
+  const asked = new URLSearchParams(location.search).get("kind");
+  const kind = KINDS.has(asked) ? asked : "monitor";
   let refresh = 60;
 
   function sample() {
@@ -29,7 +32,7 @@
   function describe() {
     const ratio = window.devicePixelRatio || 1;
     return {
-      kind: "monitor",
+      kind,
       width: Math.max(1, Math.min(16384, Math.round(window.innerWidth * ratio))),
       height: Math.max(1, Math.min(16384, Math.round(window.innerHeight * ratio))),
       refresh_hz: refresh,

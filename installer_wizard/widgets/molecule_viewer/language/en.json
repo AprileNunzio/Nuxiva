@@ -1,0 +1,23 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/molecule_viewer",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Molecule",
+    "loading": "Preparing the structure…",
+    "spin": "Auto rotate",
+    "backbone": "Backbone",
+    "scheme_element": "Elements",
+    "scheme_chain": "Chains",
+    "scheme_secondary": "Helices and sheets",
+    "atoms_one": "{{n}} atom",
+    "atoms_other": "{{n}} atoms",
+    "bonds_one": "{{n}} bond",
+    "bonds_other": "{{n}} bonds",
+    "error_engine": "Molecular engine not available on this system",
+    "error_library": "3D library not available",
+    "error_data": "Structure not readable"
+  }
+}

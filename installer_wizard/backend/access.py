@@ -37,8 +37,9 @@ def require_admin(request: Request) -> str:
 
 
 def paired_display(request: Request) -> bool:
+    from features.desktop.xr_api import xr_device
     from features.nodes.display_link import display_node
-    return display_node(request) is not None
+    return display_node(request) is not None or xr_device(request) is not None
 
 
 def is_private(request: Request) -> bool:

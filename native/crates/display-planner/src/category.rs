@@ -31,7 +31,7 @@ impl Category {
     }
 }
 
-const TABLE: [(&str, Category); 73] = [
+const TABLE: [(&str, Category); 74] = [
     ("active_tasks", Category::Work),
     ("alarm", Category::Safety),
     ("alert_error", Category::Safety),
@@ -102,6 +102,7 @@ const TABLE: [(&str, Category); 73] = [
     ("usb_monitor", Category::System),
     ("vital_check", Category::Personal),
     ("viewer_3d", Category::Work),
+    ("molecule_viewer", Category::Work),
     ("voices_ready", Category::System),
     ("vram_allocator", Category::System),
     ("weather", Category::Info),

@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "web/display/xr",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "page_title": "{{assistant}} · Visor",
+    "status_connecting": "Conectando…",
+    "enter_vr": "Entrar en realidad virtual",
+    "enter_ar": "Entrar en realidad mixta",
+    "panels_label": "Widgets visibles en el visor",
+    "status_code_refused": "Código de emparejamiento caducado o ya usado: crea uno nuevo desde el panel",
+    "status_pair_failed": "Emparejamiento fallido",
+    "status_unpaired": "Visor no emparejado: escanea el código desde el panel de administración",
+    "status_nucleus_only": "Ninguna persona autorizada reconocida en esta habitación: solo muestro el núcleo",
+    "status_ready": "Visor listo",
+    "status_offline": "Conexión con el supervisor perdida, reintentando",
+    "status_xr_failed": "El visor no inició la sesión inmersiva"
+  }
+}
