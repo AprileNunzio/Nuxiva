@@ -35,6 +35,7 @@
     {
       "key": "NUXIVA_DISPLAY_PRESENCE_GATE",
       "label": "Sul display mostra pulsanti, widget e chat solo quando vede o sente una persona autorizzata",
+      "see": "vision",
       "type": "select",
       "default": "1",
       "options": [

@@ -39,6 +39,23 @@ def localize_feature(manifest: dict, language: str | None) -> dict:
     return result
 
 
+
+def link_related(items: list[dict]) -> list[dict]:
+    names = {item["id"]: str(item.get("name") or item["id"])[:80] for item in items if isinstance(item.get("id"), str)}
+    for item in items:
+        settings = item.get("settings") or []
+        if any(isinstance(s, dict) and "see" in s for s in settings):
+            item["settings"] = [_related(s, names, item["id"]) if isinstance(s, dict) else s for s in settings]
+    return items
+
+
+def _related(setting: dict, names: dict[str, str], own: str) -> dict:
+    target = setting.get("see")
+    clean = {k: v for k, v in setting.items() if k not in ("see", "see_name")}
+    if not isinstance(target, str) or target == own or target not in names:
+        return clean
+    return {**clean, "see": target, "see_name": names[target]}
+
 def _text(value, limit: int) -> str:
     return value[:limit] if isinstance(value, str) else ""
 

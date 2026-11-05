@@ -1,8 +1,11 @@
-use crate::fusion::{Member, Reading, fuse};
+use crate::fusion::{Member, Reading, fuse_held, recognised, utterances};
 use crate::policy::Policy;
-use crate::signal::Signals;
+use crate::signal::{Liveness, MAX_FACES, Signals, Vision};
 use nuxiva_display_domain::AudienceKind;
 use serde::{Deserialize, Serialize};
+use std::collections::{BTreeMap, BTreeSet};
+
+const MAX_VOUCHED: usize = 32;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Audience {
@@ -23,6 +26,7 @@ pub struct Tracker {
     last_voice_ms: Option<u64>,
     members: Vec<Member>,
     guests: u16,
+    vouched: BTreeMap<String, (u64, u64)>,
 }
 
 const fn rank(kind: AudienceKind) -> u8 {
@@ -53,6 +57,7 @@ impl Tracker {
             last_voice_ms: None,
             members: Vec::new(),
             guests: 0,
+            vouched: BTreeMap::new(),
         }
     }
 
@@ -62,11 +67,60 @@ impl Tracker {
     }
 
     pub fn step(&mut self, signals: &Signals, now_ms: u64) -> Audience {
-        let reading = fuse(signals, &self.policy, now_ms);
+        let held = self.held(now_ms);
+        let reading = fuse_held(signals, &self.policy, now_ms, &held);
+        self.vouch(signals, now_ms);
         self.remember(&reading, now_ms);
         let target = self.target(&reading, now_ms);
         self.advance(target, &reading, now_ms);
         self.audience()
+    }
+
+    fn held(&mut self, now_ms: u64) -> BTreeSet<String> {
+        let (hold, gap) = (self.policy.voice_hold_ms, self.policy.continuity_ms);
+        self.vouched.retain(|_, (voice, face)| {
+            now_ms.saturating_sub(*voice) < hold && now_ms.saturating_sub(*face) < gap
+        });
+        self.vouched.keys().cloned().collect()
+    }
+
+    fn vouch(&mut self, signals: &Signals, now_ms: u64) {
+        if signals.vision != Vision::Ok {
+            self.vouched.clear();
+            return;
+        }
+        let voices = utterances(&signals.voices, &self.policy, now_ms);
+        let faces = || signals.faces.iter().take(MAX_FACES);
+        let spoofed: BTreeSet<&str> = faces()
+            .filter(|f| f.liveness == Liveness::Spoof)
+            .filter_map(|f| f.person.as_deref())
+            .collect();
+        for person in &spoofed {
+            self.vouched.remove(*person);
+        }
+        let seen: BTreeSet<&str> = faces()
+            .filter_map(|f| recognised(f, &self.policy))
+            .filter(|p| !spoofed.contains(p))
+            .collect();
+        for person in seen {
+            if let Some(&spoke) = voices.get(person) {
+                let voice = self.vouched.get(person).map_or(spoke, |v| v.0.max(spoke));
+                self.vouched.insert(person.to_owned(), (voice, now_ms));
+            } else if let Some(entry) = self.vouched.get_mut(person) {
+                entry.1 = now_ms;
+            }
+        }
+        while self.vouched.len() > MAX_VOUCHED {
+            let oldest = self
+                .vouched
+                .iter()
+                .min_by_key(|(_, v)| **v)
+                .map(|(k, _)| k.clone());
+            match oldest {
+                Some(key) => self.vouched.remove(&key),
+                None => break,
+            };
+        }
     }
 
     fn remember(&mut self, reading: &Reading, now_ms: u64) {

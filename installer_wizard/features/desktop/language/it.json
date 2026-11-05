@@ -19,5 +19,8 @@
     "NUXIVA_DISPLAY_TRUST_GUESTS": "Con ospiti presenti mostra anche i widget di casa",
     "NUXIVA_DISPLAY_LEARNING": "Il display impara dalle abitudini di ogni persona autorizzata (dati cifrati, mai con ospiti)",
     "NUXIVA_DISPLAY_ROOM_STRICT": "Negli schermi di stanze senza telecamera mostra solo ciò che va bene per chiunque"
+  },
+  "help": {
+    "NUXIVA_DISPLAY_PRESENCE_GATE": "Senza webcam a infrarossi il volto da solo non basta e serve anche la voce. Dopo che hai parlato, i widget restano aperti finché resti inquadrato, per il tempo di «Chiudi i dati personali aperti a voce dopo». Il controllo anti-foto si regola in Visione e volti."
   }
 }

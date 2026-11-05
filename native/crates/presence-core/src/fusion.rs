@@ -52,29 +52,52 @@ fn fresh(voice: &Voice, policy: &Policy, now_ms: u64) -> bool {
         && now_ms.saturating_sub(voice.at_ms) < policy.agree_ms
 }
 
-fn speakers(voices: &[Voice], policy: &Policy, now_ms: u64) -> BTreeSet<String> {
-    voices
-        .iter()
-        .take(MAX_VOICES)
-        .filter(|v| v.authorized && v.score >= policy.voice_min && fresh(v, policy, now_ms))
-        .filter_map(|v| v.person.clone())
-        .filter(|p| !p.is_empty())
-        .collect()
+#[must_use]
+pub fn utterances(voices: &[Voice], policy: &Policy, now_ms: u64) -> BTreeMap<String, u64> {
+    let mut out = BTreeMap::new();
+    for voice in voices.iter().take(MAX_VOICES) {
+        if !(voice.authorized && voice.score >= policy.voice_min && fresh(voice, policy, now_ms)) {
+            continue;
+        }
+        let Some(person) = voice.person.as_deref().filter(|p| !p.is_empty()) else {
+            continue;
+        };
+        let at = voice.at_ms.min(now_ms);
+        out.entry(person.to_owned())
+            .and_modify(|last: &mut u64| *last = (*last).max(at))
+            .or_insert(at);
+    }
+    out
 }
 
-fn judge(face: &Face, policy: &Policy, spoken: &BTreeSet<String>) -> Verdict {
-    let person = match face.person.as_deref() {
-        Some(p) if !p.is_empty() && face.authorized && face.liveness != Liveness::Spoof => p,
-        _ => return Verdict::Guest,
-    };
-    if face.confidence.is_nan() || face.confidence < policy.face_min {
-        return Verdict::Unverified;
+fn claimant(face: &Face) -> Option<&str> {
+    face.person
+        .as_deref()
+        .filter(|p| !p.is_empty() && face.authorized && face.liveness != Liveness::Spoof)
+}
+
+#[must_use]
+pub fn recognised<'a>(face: &'a Face, policy: &Policy) -> Option<&'a str> {
+    claimant(face).filter(|_| !face.confidence.is_nan() && face.confidence >= policy.face_min)
+}
+
+fn judge(
+    face: &Face,
+    policy: &Policy,
+    spoken: &BTreeSet<String>,
+    held: &BTreeSet<String>,
+) -> Verdict {
+    if claimant(face).is_none() {
+        return Verdict::Guest;
     }
+    let Some(person) = recognised(face, policy) else {
+        return Verdict::Unverified;
+    };
     let voiced = spoken.contains(person);
     let live = face.liveness == Liveness::Live;
     match (live, voiced) {
         (true, true) => Verdict::Member(person.to_owned(), Proof::Strong),
-        (false, false) if policy.require_liveness => Verdict::Unverified,
+        (false, false) if policy.require_liveness && !held.contains(person) => Verdict::Unverified,
         _ => Verdict::Member(person.to_owned(), Proof::Single),
     }
 }
@@ -91,18 +114,30 @@ const fn classify(members: bool, guests: u16, unverified: u16) -> AudienceKind {
 
 #[must_use]
 pub fn fuse(signals: &Signals, policy: &Policy, now_ms: u64) -> Reading {
+    fuse_held(signals, policy, now_ms, &BTreeSet::new())
+}
+
+#[must_use]
+pub fn fuse_held(
+    signals: &Signals,
+    policy: &Policy,
+    now_ms: u64,
+    held: &BTreeSet<String>,
+) -> Reading {
     match signals.vision {
         Vision::Offline => return Reading::bare(AudienceKind::Uncertain),
         Vision::Disabled => return Reading::bare(AudienceKind::Authorized),
         Vision::Ok => {}
     }
-    let spoken = speakers(&signals.voices, policy, now_ms);
+    let spoken: BTreeSet<String> = utterances(&signals.voices, policy, now_ms)
+        .into_keys()
+        .collect();
     let mut members: BTreeMap<String, Member> = BTreeMap::new();
     let (mut guests, mut unverified) = (0_u16, 0_u16);
     let faces = signals.faces.iter().take(MAX_FACES);
     let seen = !signals.faces.is_empty();
     for face in faces {
-        match judge(face, policy, &spoken) {
+        match judge(face, policy, &spoken, held) {
             Verdict::Guest => guests = guests.saturating_add(1),
             Verdict::Unverified => unverified = unverified.saturating_add(1),
             Verdict::Member(person, proof) => {

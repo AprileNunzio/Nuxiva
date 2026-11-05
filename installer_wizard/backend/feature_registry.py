@@ -348,7 +348,7 @@ class Registry:
         return env_updates, steps
 
     def listing(self, language: str | None = None) -> dict:
-        from feature_localization import localize_feature
+        from feature_localization import link_related, localize_feature
         from feature_assets import icon_file
         effective = self.evaluate()
         items = []
@@ -360,7 +360,7 @@ class Registry:
                 "state": effective[m["id"]], "pinned": rec.get("pinned", False),
                 "new": time.time() - rec.get("discovered", 0) < 3 * 86400 and m["source"] != "system",
                 "values": self.settings_of(m["id"])})
-        return {"features": items, "categories": CATEGORIES, "errors": self.errors, "hardware": self.hw,
+        return {"features": link_related(items), "categories": CATEGORIES, "errors": self.errors, "hardware": self.hw,
                 "user_dir": str(USER_DIR)}
 
     async def run(self) -> None:

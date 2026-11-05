@@ -6,6 +6,7 @@ NUCLEUS_ONLY = frozenset({"empty", "guest_only", "uncertain"})
 RANK = {"authorized": 3, "mixed": 2, "guest_only": 1, "empty": 0, "uncertain": 0}
 MAX_FACES = 32
 MAX_VOICES = 64
+MAX_VOUCHED = 32
 
 
 @dataclass(frozen=True)
@@ -14,6 +15,7 @@ class Policy:
     away_ms: int = 10000
     voice_hold_ms: int = 30000
     agree_ms: int = 10000
+    continuity_ms: int = 3000
     skew_ms: int = 2000
     face_min: float = 0.5
     voice_min: float = 0.5
@@ -41,29 +43,36 @@ def _number(value) -> float:
     return result
 
 
-def _speakers(voices: list, policy: Policy, now_ms: int) -> set[str]:
-    out = set()
+def utterances(voices: list, policy: Policy, now_ms: int) -> dict[str, int]:
+    out: dict[str, int] = {}
     for voice in voices[:MAX_VOICES]:
         at = int(voice.get("at_ms") or 0)
         fresh = at <= now_ms + policy.skew_ms and max(0, now_ms - at) < policy.agree_ms
         person = voice.get("person") or ""
         if voice.get("authorized") and person and fresh and _number(voice.get("score")) >= policy.voice_min:
-            out.add(person)
+            out[person] = max(out.get(person, 0), min(at, now_ms))
     return out
 
 
-def _judge(face: dict, policy: Policy, spoken: set[str]) -> tuple[str, str, str]:
+def recognised(face: dict, policy: Policy) -> str:
+    person = face.get("person") or ""
+    if not person or not face.get("authorized") or (face.get("liveness") or "unknown") == "spoof":
+        return ""
+    confidence = _number(face.get("confidence"))
+    return "" if math.isnan(confidence) or confidence < policy.face_min else person
+
+
+def _judge(face: dict, policy: Policy, spoken: set[str], held: frozenset[str]) -> tuple[str, str, str]:
     person = face.get("person") or ""
     liveness = face.get("liveness") or "unknown"
     if not person or not face.get("authorized") or liveness == "spoof":
         return "guest", "", ""
-    confidence = _number(face.get("confidence"))
-    if math.isnan(confidence) or confidence < policy.face_min:
+    if not recognised(face, policy):
         return "unverified", "", ""
     live, voiced = liveness == "live", person in spoken
     if live and voiced:
         return "member", person, "strong"
-    if not live and not voiced and policy.require_liveness:
+    if not live and not voiced and policy.require_liveness and person not in held:
         return "unverified", "", ""
     return "member", person, "single"
 
@@ -76,18 +85,18 @@ def _classify(members: bool, guests: int, unverified: int) -> str:
     return "mixed" if guests or unverified else "authorized"
 
 
-def fuse(signals: dict, policy: Policy, now_ms: int) -> Reading:
+def fuse(signals: dict, policy: Policy, now_ms: int, held: frozenset[str] = frozenset()) -> Reading:
     vision = signals.get("vision") or "offline"
     if vision == "disabled":
         return Reading("authorized")
     if vision != "ok":
         return Reading("uncertain")
     faces = list(signals.get("faces") or [])
-    spoken = _speakers(list(signals.get("voices") or []), policy, now_ms)
+    spoken = set(utterances(list(signals.get("voices") or []), policy, now_ms))
     members: dict[str, dict] = {}
     guests = unverified = 0
     for face in faces[:MAX_FACES]:
-        verdict, person, proof = _judge(face, policy, spoken)
+        verdict, person, proof = _judge(face, policy, spoken, held)
         if verdict == "guest":
             guests += 1
         elif verdict == "unverified":
@@ -114,13 +123,39 @@ class Tracker:
         self.last_voice_ms: int | None = None
         self.members: list[dict] = []
         self.guests = 0
+        self.vouched: dict[str, tuple[int, int]] = {}
 
     @staticmethod
     def _within(last: int | None, span: int, now_ms: int) -> bool:
         return last is not None and max(0, now_ms - last) < span
 
+    def held(self, now_ms: int) -> frozenset[str]:
+        hold, gap = self.policy.voice_hold_ms, self.policy.continuity_ms
+        self.vouched = {p: (v, f) for p, (v, f) in self.vouched.items()
+                        if max(0, now_ms - v) < hold and max(0, now_ms - f) < gap}
+        return frozenset(self.vouched)
+
+    def vouch(self, signals: dict, now_ms: int) -> None:
+        if (signals.get("vision") or "offline") != "ok":
+            self.vouched.clear()
+            return
+        voices = utterances(list(signals.get("voices") or []), self.policy, now_ms)
+        faces = [f for f in list(signals.get("faces") or [])[:MAX_FACES] if isinstance(f, dict)]
+        spoofed = {f.get("person") for f in faces if f.get("liveness") == "spoof"}
+        for person in spoofed:
+            self.vouched.pop(person, None)
+        for person in {recognised(f, self.policy) for f in faces} - spoofed - {""}:
+            if person in voices:
+                self.vouched[person] = (max(voices[person], self.vouched.get(person, (0, 0))[0]), now_ms)
+            elif person in self.vouched:
+                self.vouched[person] = (self.vouched[person][0], now_ms)
+        if len(self.vouched) > MAX_VOUCHED:
+            keep = sorted(self.vouched.items(), key=lambda kv: kv[1], reverse=True)[:MAX_VOUCHED]
+            self.vouched = dict(keep)
+
     def step(self, signals: dict, now_ms: int) -> dict:
-        reading = fuse(signals, self.policy, now_ms)
+        reading = fuse(signals, self.policy, now_ms, self.held(now_ms))
+        self.vouch(signals, now_ms)
         if reading.seen:
             self.last_seen_ms = now_ms
         if reading.voiced:

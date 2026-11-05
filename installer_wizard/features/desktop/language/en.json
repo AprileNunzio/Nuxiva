@@ -15,5 +15,8 @@
     "NUXIVA_DISPLAY_TRUST_GUESTS": "With guests present, also show household widgets",
     "NUXIVA_DISPLAY_LEARNING": "The display learns the habits of each authorized person (encrypted data, never with guests)",
     "NUXIVA_DISPLAY_ROOM_STRICT": "On screens in rooms without a camera, show only what is fine for anyone"
+  },
+  "help": {
+    "NUXIVA_DISPLAY_PRESENCE_GATE": "Without an infrared webcam a face alone is not enough, so your voice is needed too. After you speak, widgets stay open while you remain in view, for the voice auto-close time set here. The anti-photo check is configured in Vision and faces."
   }
 }

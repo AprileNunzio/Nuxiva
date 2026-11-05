@@ -11,6 +11,8 @@ export interface FeatureSetting {
   readonly options?: readonly (SettingOption | string)[];
   readonly button?: string;
   readonly help?: string;
+  readonly see?: string;
+  readonly see_name?: string;
 }
 
 export interface FeatureGuide {

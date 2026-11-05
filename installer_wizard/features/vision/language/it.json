@@ -28,5 +28,8 @@
     "NUXIVA_FACE_TWIN_SIM": "Due persone sono «somiglianti» oltre questa somiglianza (0,3 - 0,95)",
     "NUXIVA_FACE_TWIN_MARGIN": "Distacco richiesto tra persone somiglianti, per esempio gemelli (0 - 0,5)",
     "NUXIVA_FACE_IR_WEIGHT": "Peso dell'infrarosso nel riconoscimento (0 - 0,8)"
+  },
+  "help": {
+    "NUXIVA_LIVENESS": "Con una webcam senza infrarosso il volto non può essere verificato come vivo: in «Segnala soltanto» e «Rigido» il display chiede anche la voce prima di mostrare i dati personali. «Disattivato» accetta il solo volto riconosciuto, ma una foto potrebbe aprire i widget."
   }
 }

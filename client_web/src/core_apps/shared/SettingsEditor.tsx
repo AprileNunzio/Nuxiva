@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { ArrowUpRight, Settings } from 'lucide-react';
+import { windowStore } from '../../app_shell/window_manager/WindowStore';
 import { Btn, Field, inputClass } from './kit';
 import { saveSettings } from './featureApi';
 import { FeatureRow, FeatureSetting } from './featureTypes';
@@ -60,6 +62,17 @@ export const SettingsEditor: React.FC<SettingsEditorProps> = ({ feature, busy, t
             />
           )}
           {setting.help && <span className="text-[11px] font-normal text-slate-500">{setting.help}</span>}
+          {setting.see && setting.see_name && (
+            <button
+              type="button"
+              onClick={() => windowStore.openWindow({ appId: 'feature_settings', instanceKey: setting.see })}
+              className="inline-flex items-center gap-1.5 self-start text-[11px] font-medium text-sky-700 hover:underline focus-visible:underline focus-visible:outline-none"
+            >
+              <Settings className="h-3.5 w-3.5" aria-hidden="true" />
+              {setting.see_name}
+              <ArrowUpRight className="h-3 w-3" aria-hidden="true" />
+            </button>
+          )}
         </Field>
       ))}
       <div style={{gridColumn:'1 / -1'}}>

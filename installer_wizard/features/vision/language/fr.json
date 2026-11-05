@@ -28,5 +28,8 @@
     "NUXIVA_FACE_TWIN_SIM": "Deux personnes sont « similaires » au-delà de cette similitude (0,3 - 0,95)",
     "NUXIVA_FACE_TWIN_MARGIN": "Séparation requise entre personnes similaires, par exemple des jumeaux (0 - 0,5)",
     "NUXIVA_FACE_IR_WEIGHT": "Poids infrarouge en reconnaissance (0 - 0,8)"
+  },
+  "help": {
+    "NUXIVA_LIVENESS": "Avec une webcam sans infrarouge, le visage ne peut pas être confirmé comme vivant : dans les modes signalement et strict, l'écran demande aussi la voix avant d'afficher les données personnelles. Désactiver le contrôle accepte le seul visage reconnu, mais une photo pourrait alors ouvrir les widgets."
   }
 }
