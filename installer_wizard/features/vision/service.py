@@ -19,6 +19,7 @@ from ircam import IrCamera, enhance
 from objects import ObjectDetector
 from shared_frames import SharedEncoder
 from tracks import Track, facing, iou, reliable_unknown
+from observer import Observer, router as observer_router
 from views import Views, router as views_router
 from vitalcam import VitalCam
 
@@ -343,9 +344,9 @@ class Vision:
 gallery = Gallery()
 vision = Vision(gallery)
 app = FastAPI(title="Nuxiva Vision", docs_url=None, redoc_url=None, openapi_url=None)
-views = Views(vision, gallery, MODELS)
-vision.views = views
+vision.views = views = Views(vision, gallery, MODELS)
 app.include_router(views_router(views))
+app.include_router(observer_router(Observer(views, gallery)))
 
 
 @app.get("/health")

@@ -8,6 +8,7 @@ import { HouseHabits } from './house/HouseHabits';
 import { IdentityGallery } from './identity/IdentityGallery';
 import { PersonPage } from './identity/PersonPage';
 import { panelClass, usePeopleI18n } from './scope';
+import './people-theme.css';
 
 export const View: React.FC = () => {
   const { t } = usePeopleI18n();
@@ -54,7 +55,7 @@ export const View: React.FC = () => {
   ] as const;
 
   return (
-    <div className={PAGE_CLASS}>
+    <div className={`${PAGE_CLASS} people-app`}>
       <header className="flex flex-col gap-4 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-blue-950 p-5 text-white shadow-lg sm:p-6 lg:flex-row lg:items-center">
         <div className="flex min-w-0 flex-1 items-center gap-4">
           <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20">

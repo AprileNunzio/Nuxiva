@@ -15,6 +15,10 @@ def announce(port: int) -> None:
     _active["port"] = port
 
 
+def active_port() -> int:
+    return int(_active["port"])
+
+
 @public_routes.get("/nuxiva-ca.crt")
 async def ca_certificate():
     if not CA_FILE.exists():
@@ -25,4 +29,6 @@ async def ca_certificate():
 @public_routes.get("/api/secure/status")
 async def secure_status(request: Request):
     require_display(request)
-    return {"https_port": _active["port"], "ca": "/nuxiva-ca.crt", "host": socket.gethostname()}
+    from https_guard import enforced
+    return {"https_port": _active["port"], "ca": "/nuxiva-ca.crt", "host": socket.gethostname(),
+            "enforced": enforced() and _active["port"] > 0}

@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Loader2, Mic, Save, Trash2 } from 'lucide-react';
 import { Profile, forgetVoiceTraining, forgetVoiceprint, startVoiceTraining, updatePerson, voiceprintOf } from '../data/peopleApi';
 import { chipClass, fieldClass, primaryClass, relative, usePeopleI18n } from '../scope';
+import { PcVoice } from './PcVoice';
 
 interface VoiceTabProps {
   readonly slug: string;
+  readonly onChanged: () => void;
   readonly profile: Profile;
   readonly voices: Readonly<Record<string, string>>;
   readonly busy: string | null;
@@ -13,7 +15,7 @@ interface VoiceTabProps {
 
 const record = (value: unknown): Record<string, unknown> => (typeof value === 'object' && value !== null ? (value as Record<string, unknown>) : {});
 
-export const VoiceTab: React.FC<VoiceTabProps> = ({ slug, profile, voices, busy, run }) => {
+export const VoiceTab: React.FC<VoiceTabProps> = ({ slug, profile, voices, busy, run, onChanged }) => {
   const { t, lang } = usePeopleI18n();
   const voice = record(profile.voice);
   const training = record(profile.voice_training);
@@ -113,6 +115,7 @@ export const VoiceTab: React.FC<VoiceTabProps> = ({ slug, profile, voices, busy,
         </div>
         <p className="text-[11px] text-slate-500">{t('training_hint')}</p>
       </section>
+      <PcVoice slug={slug} samples={print.samples} onSaved={onChanged} />
     </div>
   );
 };

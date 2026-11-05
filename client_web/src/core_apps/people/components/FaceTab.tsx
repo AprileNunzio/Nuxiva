@@ -3,6 +3,7 @@ import { Camera, Loader2, RefreshCw, Trash2, Upload } from 'lucide-react';
 import { reportError } from '../../../shared/errors/errorBus';
 import { PHOTO_KINDS, Photo, PhotoKind, capturePhoto, deletePhoto, fetchCoverage, fetchPhotos, reproject, uploadPhoto } from '../data/peopleApi';
 import { chipClass, usePeopleI18n } from '../scope';
+import { PcCamera } from './PcCamera';
 
 interface FaceTabProps {
   readonly slug: string;
@@ -70,6 +71,7 @@ export const FaceTab: React.FC<FaceTabProps> = ({ slug, quality, busy, run }) =>
           }}
         />
       </div>
+      <PcCamera slug={slug} busy={busy} coverage={coverage} act={act} />
       <div>
         <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">{t('scan_title')}</p>
         <p className="mb-3 text-xs text-slate-500">{t('scan_hint')}</p>

@@ -104,7 +104,7 @@ export const PersonPage: React.FC<Props> = ({ summary, sections, voices, people,
       case 'face':
         return <FaceTab slug={summary.slug} quality={summary.quality} busy={busy} run={act} />;
       case 'voice':
-        return <VoiceTab slug={summary.slug} profile={profile} voices={voices} busy={busy} run={act} />;
+        return <VoiceTab slug={summary.slug} profile={profile} voices={voices} busy={busy} run={act} onChanged={() => setTick((v) => v + 1)} />;
       case 'habits':
         return <HabitsTab summary={summary} profile={profile} section={routineSection} people={people} busy={busy} run={act} />;
       case 'connectors':

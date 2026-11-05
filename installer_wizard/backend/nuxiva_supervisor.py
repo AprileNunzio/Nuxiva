@@ -35,6 +35,7 @@ import node_commands_api
 from features.update_center import api as update_center_api
 import updater
 from config import ADMIN_PORT, PUBLIC_PORT, VERSION, env_get
+from https_guard import HttpsGuard
 from origin_guard import OriginGuard
 from nuxiva_bus import nuxiva_bus
 from feature_registry import registry
@@ -69,6 +70,7 @@ from features.cameras import api as cameras_api
 from features.models3d import api as models3d_api
 from features.models3d import studio_api as models3d_studio_api
 from features.ear import api as ear_api
+from features.people import camera_watch
 from features.automations import api as automations_api
 from features.automations.engine import engine as automations_engine
 from features.autonomy import api as autonomy_api
@@ -336,6 +338,7 @@ def build(admin: bool) -> FastAPI:
                 return FileResponse(str(client_web_dist / "index.html"), headers={"Cache-Control": "no-cache"})
 
     allowed = f'{env_get("NUXIVA_ALLOWED_HOSTS")},{os.environ.get("NUXIVA_ALLOWED_HOSTS", "")}'
+    app.add_middleware(HttpsGuard, admin=admin)
     app.add_middleware(OriginGuard, extra_hosts=allowed.split(","))
     return app
 
@@ -389,6 +392,7 @@ BACKGROUND = (
     ("controllo-salute", lambda: health.Watchdog(orch).run(), 0.0),
     ("aggiornamenti", updater.scheduler, 0.0),
     ("presenze", presence.monitor.run, 0.0),
+    ("volti-telecamere", camera_watch.run, 0.0),
     ("telegram", bot.run, 0.0),
     ("rete", explorer.run, 0.0),
     ("audio", audio.watcher.run, 0.0),
@@ -474,13 +478,7 @@ async def main() -> None:
         ),
     ]
     https = secure_server()
-    log.info(
-        "Nuxiva OS Supervisor v%s — utente :%d — admin :%d%s",
-        VERSION,
-        PUBLIC_PORT,
-        ADMIN_PORT,
-        "",
-    )
+    log.info("Nuxiva OS Supervisor v%s — utente :%d — admin :%d", VERSION, PUBLIC_PORT, ADMIN_PORT)
     tasks = []
     if setup_api.done():
         for name, factory, period in BACKGROUND:

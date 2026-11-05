@@ -54,7 +54,7 @@ def learn(vision, track, frame, feature) -> None:
             track.last_learn = now
             vision.gallery.add_samples(slug, [feature], ir)
         return
-    if setup_running() or ratio < AUTO_MIN_RATIO or any(t.identity()[0] for t in vision.tracks):
+    if setup_running() or ratio < AUTO_MIN_RATIO:
         return
     track.samples.append(feature)
     if track.ir_feature is not None:

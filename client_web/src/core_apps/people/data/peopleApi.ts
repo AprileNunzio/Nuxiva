@@ -211,8 +211,8 @@ export async function fetchCoverage(slug: string, signal?: AbortSignal): Promise
 export const capturePhoto = (slug: string, kind: PhotoKind) =>
   requestJson<unknown>(`/api/people/${slugOf(slug)}/views/capture?kind=${kind}`, { method: 'POST' });
 
-export async function uploadPhoto(slug: string, file: File): Promise<void> {
-  const response = await fetch(`/api/people/${slugOf(slug)}/views?kind=auto`, {
+export async function uploadPhoto(slug: string, file: Blob, kind: PhotoKind | 'auto' = 'auto'): Promise<void> {
+  const response = await fetch(`/api/people/${slugOf(slug)}/views?kind=${kind}`, {
     method: 'POST',
     body: file,
     headers: { 'Content-Type': file.type },
