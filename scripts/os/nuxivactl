@@ -47,6 +47,15 @@ case "${1:-status}" in
         [ "$EUID" -eq 0 ] || exec sudo -- "$0" "$@"
         bash /opt/Nuxiva/scripts/os/repair.sh "${@:2}"
         ;;
+    uninstall|remove)
+        [ "$EUID" -eq 0 ] || exec sudo -- "$0" "$@"
+        tmp=$(mktemp -t nuxiva-uninstall-XXXXXX.sh)
+        install -m 0700 /opt/Nuxiva/scripts/os/uninstall.sh "$tmp"
+        rc=0
+        bash "$tmp" "${@:2}" || rc=$?
+        rm -f -- "$tmp"
+        exit "$rc"
+        ;;
     logs)
         src=${2:-install}
         case "$src" in

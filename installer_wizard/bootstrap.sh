@@ -3,6 +3,8 @@ set -Eeuo pipefail
 
 REPO_URL="${NUXIVA_REPO:-https://github.com/AprileNunzio/Nuxiva.git}"
 BRANCH="${NUXIVA_BRANCH:-main}"
+PIN_REF="${NUXIVA_REF:-}"
+[[ -z "$PIN_REF" || "$PIN_REF" =~ ^[0-9a-f]{40}$ ]] || { echo "NUXIVA_REF: invalid commit" >&2; exit 2; }
 NUXIVA_DIR=/opt/Nuxiva
 WIZ="$NUXIVA_DIR/installer_wizard"
 VENV="$WIZ/venv"
@@ -522,7 +524,7 @@ choose_language
 if [ "$EUID" -ne 0 ]; then
     if [ -f "$0" ] && command -v sudo >/dev/null 2>&1 && ( : </dev/tty ) 2>/dev/null; then
         echo "${T[sudo]}" >&2
-        exec sudo env "NUXIVA_BOOTSTRAP_LANG=$UI_LANG" "NUXIVA_LANG_CHOSEN=$UI_LANG_CHOSEN" "NUXIVA_REPO=$REPO_URL" "NUXIVA_BRANCH=$BRANCH" bash "$0" "$@" </dev/tty
+        exec sudo env "NUXIVA_BOOTSTRAP_LANG=$UI_LANG" "NUXIVA_LANG_CHOSEN=$UI_LANG_CHOSEN" "NUXIVA_REPO=$REPO_URL" "NUXIVA_BRANCH=$BRANCH" "NUXIVA_REF=$PIN_REF" bash "$0" "$@" </dev/tty
     fi
     echo "${T[error]}: ${T[root]}" >&2
     echo "  curl -fsSL https://raw.githubusercontent.com/AprileNunzio/Nuxiva/main/install.sh | sudo bash" >&2
@@ -711,6 +713,10 @@ do_download() {
     else
         rm -rf "$NUXIVA_DIR"
         stream h_git env LC_ALL=C git clone --progress --branch "$BRANCH" "$REPO_URL" "$NUXIVA_DIR" || return 1
+    fi
+    if [ -n "$PIN_REF" ]; then
+        git -C "$NUXIVA_DIR" cat-file -e "$PIN_REF^{commit}" >>"$LOG" 2>&1 || return 1
+        git -C "$NUXIVA_DIR" reset --hard --quiet "$PIN_REF" >>"$LOG" 2>&1 || return 1
     fi
     HEAD_SHORT=$(git -C "$NUXIVA_DIR" rev-parse --short HEAD) || return 1
     STEP_RESULT="$HEAD_SHORT${GIT_SIZE:+ $G_DOT ${GIT_SIZE//./$DEC}}"

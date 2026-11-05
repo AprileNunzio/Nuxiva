@@ -9,12 +9,13 @@ URL = re.compile(r"https://(?:raw\.githubusercontent\.com|github\.com)/([^/\s]+/
 
 class InstallEntryPointsTest(unittest.TestCase):
     def test_readmes_point_to_the_live_repository(self):
-        for name in ("README.md", "README_IT.md", "README_FR.md"):
+        for name in ("README.md", "README_IT.md", "README_FR.md", "README_ES.md"):
             text = (ROOT / name).read_text(encoding="utf-8")
-            install = [line for line in text.splitlines() if "install.sh" in line and "curl" in line]
+            install = [line for line in text.splitlines() if "install.sh" in line and ("curl" in line or "wget" in line)]
             self.assertTrue(install, name)
+            self.assertTrue(any(line.endswith("/main/install.sh | sudo bash") for line in install), name)
             for line in install:
-                self.assertIn(f"https://raw.githubusercontent.com/{REPO}/main/install.sh | sudo bash", line, name)
+                self.assertIn(f"https://raw.githubusercontent.com/{REPO}/main/install.sh", line, name)
             for found in URL.findall(text):
                 if found.lower().endswith("/nuxiva"):
                     self.assertEqual(found.lower(), REPO.lower(), name)
@@ -32,6 +33,23 @@ class InstallEntryPointsTest(unittest.TestCase):
         self.assertIn("exec sudo env", block)
         self.assertIn("</dev/tty", block)
         self.assertEqual(text.count("[sudo]="), 2)
+
+    def test_remote_install_is_pinned_and_verified_before_running(self):
+        text = (ROOT / "install.sh").read_text(encoding="utf-8")
+        self.assertIn("raw.githubusercontent.com/$SLUG/$REF/", text)
+        self.assertIn("api.github.com/repos/$SLUG/contents/$path?ref=$REF", text)
+        self.assertIn("blob_sha1", text)
+        fetch = text.index('fetch_verified installer_wizard/bootstrap.sh')
+        run = text.index('bash "$WORK/bootstrap.sh"')
+        self.assertLess(fetch, run)
+        self.assertNotIn("| bash", text)
+
+    def test_uninstall_is_available(self):
+        self.assertTrue((ROOT / "scripts" / "os" / "uninstall.sh").is_file())
+        ctl = (ROOT / "scripts" / "os" / "nuxivactl").read_text(encoding="utf-8")
+        self.assertIn("uninstall|remove)", ctl)
+        boot = (ROOT / "installer_wizard" / "bootstrap.sh").read_text(encoding="utf-8")
+        self.assertIn('reset --hard --quiet "$PIN_REF"', boot)
 
 
 if __name__ == "__main__":

@@ -217,11 +217,24 @@ Le macchine più piccole possono usare un nodo Ollama remoto o modelli cloud. Su
 curl -fsSL https://raw.githubusercontent.com/AprileNunzio/Nuxiva/main/install.sh | sudo bash
 ```
 
-Su sistemi minimi senza `curl`:
+Senza `curl` (sistemi minimi):
 
 ```bash
-sudo apt update && sudo apt install -y curl && curl -fsSL https://raw.githubusercontent.com/AprileNunzio/Nuxiva/main/install.sh | sudo bash
+wget -qO- https://raw.githubusercontent.com/AprileNunzio/Nuxiva/main/install.sh | sudo bash
 ```
+
+L'installatore controlla prima il sistema (versione, architettura, permessi di amministratore, spazio libero, connessione e sorgenti dei pacchetti) e si ferma con un messaggio chiaro e tradotto se manca qualcosa. Fissa il commit esatto da installare e verifica l'installatore scaricato con l'impronta pubblicata da GitHub prima di eseguirlo: se non corrispondono, non viene eseguito nulla. Rilanciarlo è sicuro e riprende o ripara l'installazione.
+
+### Ispezionare prima di eseguire
+
+```bash
+curl -fsSLo install.sh https://raw.githubusercontent.com/AprileNunzio/Nuxiva/main/install.sh
+less install.sh
+sudo bash install.sh --check   # solo controlli, non installa nulla
+sudo bash install.sh
+```
+
+Opzioni: `--check` esegue solo i controlli, `--branch <nome>` installa un altro branch, `--ref <commit>` installa un commit esatto, `--sha256 <hash>` richiede anche un'impronta ottenuta in modo indipendente.
 
 ### Installazione da un clone
 
@@ -230,6 +243,21 @@ sudo git clone https://github.com/AprileNunzio/Nuxiva.git /opt/Nuxiva
 cd /opt/Nuxiva
 sudo bash install.sh
 ```
+
+### Disinstallazione
+
+```bash
+sudo nuxivactl uninstall           # rimuove programma, servizi e file di sistema, conserva i dati
+sudo nuxivactl uninstall --purge   # elimina anche dati, chiavi e account di servizio
+```
+
+Se `nuxivactl` non è disponibile:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/AprileNunzio/Nuxiva/main/install.sh | sudo bash -s -- --uninstall
+```
+
+Ollama, Docker e i pacchetti di sistema restano installati, perché possono servire ad altri programmi.
 
 ### Primo avvio
 
@@ -252,6 +280,7 @@ nuxivactl version         # revisione installata
 sudo nuxivactl update     # installa l'ultima revisione che ha superato la CI
 sudo nuxivactl force-upgrade [branch]
 sudo nuxivactl repair     # ripara un'installazione danneggiata
+sudo nuxivactl uninstall  # rimuove Nuxiva (aggiungi --purge per eliminare i dati)
 ```
 
 ### Aggiornamenti e ripristino

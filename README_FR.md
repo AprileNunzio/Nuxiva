@@ -217,11 +217,24 @@ Les machines plus modestes peuvent utiliser un nœud Ollama distant ou des modè
 curl -fsSL https://raw.githubusercontent.com/AprileNunzio/Nuxiva/main/install.sh | sudo bash
 ```
 
-Sur les systèmes minimaux sans `curl` :
+Sans `curl` (systèmes minimaux) :
 
 ```bash
-sudo apt update && sudo apt install -y curl && curl -fsSL https://raw.githubusercontent.com/AprileNunzio/Nuxiva/main/install.sh | sudo bash
+wget -qO- https://raw.githubusercontent.com/AprileNunzio/Nuxiva/main/install.sh | sudo bash
 ```
+
+L'installateur vérifie d'abord le système (version, architecture, droits d'administrateur, espace libre, connexion et sources des paquets) et s'arrête avec un message clair et traduit s'il manque quelque chose. Il fixe le commit exact à installer et vérifie l'installateur téléchargé avec l'empreinte publiée par GitHub avant de l'exécuter : s'ils ne correspondent pas, rien n'est exécuté. Le relancer est sans risque et reprend ou répare l'installation.
+
+### Inspecter avant d'exécuter
+
+```bash
+curl -fsSLo install.sh https://raw.githubusercontent.com/AprileNunzio/Nuxiva/main/install.sh
+less install.sh
+sudo bash install.sh --check   # vérifications seulement, n'installe rien
+sudo bash install.sh
+```
+
+Options : `--check` lance seulement les vérifications, `--branch <nom>` installe une autre branche, `--ref <commit>` installe un commit précis, `--sha256 <hash>` exige en plus une empreinte obtenue de façon indépendante.
 
 ### Installation depuis un clone
 
@@ -230,6 +243,21 @@ sudo git clone https://github.com/AprileNunzio/Nuxiva.git /opt/Nuxiva
 cd /opt/Nuxiva
 sudo bash install.sh
 ```
+
+### Désinstallation
+
+```bash
+sudo nuxivactl uninstall           # supprime programme, services et fichiers système, conserve les données
+sudo nuxivactl uninstall --purge   # supprime aussi données, clés et comptes de service
+```
+
+Si `nuxivactl` n'est pas disponible :
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/AprileNunzio/Nuxiva/main/install.sh | sudo bash -s -- --uninstall
+```
+
+Ollama, Docker et les paquets système restent installés, car d'autres programmes peuvent les utiliser.
 
 ### Premier démarrage
 
@@ -252,6 +280,7 @@ nuxivactl version         # révision installée
 sudo nuxivactl update     # installe la dernière révision validée par la CI
 sudo nuxivactl force-upgrade [branche]
 sudo nuxivactl repair     # répare une installation endommagée
+sudo nuxivactl uninstall  # supprime Nuxiva (ajoutez --purge pour effacer les données)
 ```
 
 ### Mises à jour et récupération

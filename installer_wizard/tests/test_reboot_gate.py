@@ -125,7 +125,8 @@ class BootstrapRebootTest(unittest.TestCase):
             planted = Path(tmp) / "installer_wizard"
             planted.mkdir()
             (planted / "bootstrap.sh").write_text("echo PLANTED\n", encoding="utf-8")
-            env = dict(os.environ, NUXIVA_BOOTSTRAP_URL="https://127.0.0.1:9/bootstrap.sh")
+            env = dict(os.environ, HTTPS_PROXY="http://127.0.0.1:9", https_proxy="http://127.0.0.1:9",
+                       NO_PROXY="", no_proxy="", NUXIVA_LANG="en")
             result = subprocess.run(
                 ["bash"], input=INSTALL.read_text(encoding="utf-8"), cwd=tmp,
                 capture_output=True, text=True, env=env, timeout=60,

@@ -42,7 +42,7 @@
     "sup_unresponsive": "Il supervisore non risponde (systemctl status nuxiva-supervisor)",
     "checking_updates": "Controllo aggiornamenti su GitHub…",
     "sources_err": "Sorgenti valide: install supervisor core ollama voice vision ear",
-    "usage": "Uso: nuxivactl status | update [--force] | force-upgrade | ripara | logs [install|supervisor|core|ollama|voice|vision|ear] | setup-code | background | version",
+    "usage": "Uso: nuxivactl status | update [--force] | force-upgrade | ripara | logs [install|supervisor|core|ollama|voice|vision|ear] | setup-code | background | version | uninstall [--purge]",
     "status_phase": "Fase",
     "status_message": "Messaggio",
     "status_error": "Errore",
