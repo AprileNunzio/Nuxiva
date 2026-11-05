@@ -29,6 +29,7 @@
     "look_light": "Núcleo ligero",
     "mind_hint": "Qué está pensando {{assistant}}: toca para ver detalles",
     "link_lost": "Reconectando con el supervisor",
+    "privacy_veil": "Widgets ocultos por privacidad: aparecen cuando se reconoce a una persona autorizada",
     "greet_night": "Buenas noches.",
     "greet_morning": "Buenos días.",
     "greet_afternoon": "Buenas tardes.",

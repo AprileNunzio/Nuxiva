@@ -17,3 +17,31 @@ body[data-audience="uncertain"] .hud > .caption {
   pointer-events: none;
   transition: opacity 120ms linear, visibility 0s linear 120ms;
 }
+
+.privacy-veil {
+  position: fixed;
+  left: 50%;
+  bottom: max(18px, env(safe-area-inset-bottom));
+  z-index: 25;
+  max-width: min(92vw, 640px);
+  transform: translateX(-50%);
+  text-align: center;
+  font-size: clamp(11px, 1.4vh, 14px);
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 400ms ease, visibility 0s linear 400ms;
+}
+
+body.nucleus-only[data-gate="on"] .privacy-veil {
+  opacity: 0.72;
+  visibility: visible;
+  transition: opacity 400ms ease 1200ms, visibility 0s linear 1200ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .privacy-veil,
+  body.nucleus-only[data-gate="on"] .privacy-veil { transition: none; }
+}

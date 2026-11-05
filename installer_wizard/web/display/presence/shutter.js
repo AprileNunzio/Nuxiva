@@ -30,6 +30,14 @@
     window.dispatchEvent(new CustomEvent("nuxiva:audience", { detail: { kind: value } }));
   }
 
-  window.addEventListener("nuxiva:state", (ev) => apply(ev.detail && ev.detail.audience && ev.detail.audience.kind));
+  function gate(audience) {
+    document.body.dataset.gate = audience && audience.gate === true ? "on" : "off";
+  }
+
+  window.addEventListener("nuxiva:state", (ev) => {
+    const audience = ev.detail && ev.detail.audience;
+    gate(audience);
+    apply(audience && audience.kind);
+  });
   window.NuxivaShutter = Object.freeze({ get kind() { return kind; }, apply });
 })();

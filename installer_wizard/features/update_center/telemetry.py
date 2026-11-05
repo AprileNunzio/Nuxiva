@@ -11,17 +11,33 @@ from features.update_center.progress import UpdateProgress
 
 Shell = Callable[..., Awaitable[Tuple[int, str]]]
 
-UNITS = ("nuxiva-supervisor", "nuxiva-core", "nuxiva-agency", "nuxiva-voice", "nuxiva-vision", "nuxiva-ear",
-         "nuxiva-netguard", "nuxiva-sandbox")
+UNITS = ("nuxiva-supervisor", "nuxiva-core", "nuxiva-agency", "nuxiva-display", "nuxiva-voice", "nuxiva-vision",
+         "nuxiva-ear", "nuxiva-netguard", "nuxiva-sandbox")
+CORE_UNIT = "nuxiva-core"
+CORE_CONTAINER = "nuxiva-core"
 SERVICES_TTL = 10.0
 STATES = {"active", "inactive", "failed", "activating", "deactivating", "reloading", "unknown"}
+CONTAINER_STATES = {"running": "active", "restarting": "activating", "created": "activating", "removing": "deactivating",
+                    "paused": "inactive", "exited": "inactive", "dead": "failed"}
+HEALTH_STATES = {"healthy": "active", "starting": "activating", "unhealthy": "failed"}
+INSPECT_FORMAT = "{{.State.Status}} {{if .State.Health}}{{.State.Health.Status}}{{end}}"
 
-_services: Dict[str, Any] = {"at": 0.0, "items": []}
+_services: Dict[str, Any] = {"at": 0.0, "runtime": None, "items": []}
 _pending: Dict[str, Any] = {"key": None, "signature": None, "impact": None}
 
 
-async def services(sh: Shell) -> list:
-    if time.time() - _services["at"] < SERVICES_TTL:
+def container_state(code: int, out: str) -> str:
+    if code != 0:
+        return "inactive"
+    parts = out.split()
+    status = parts[0] if parts else ""
+    if status == "running" and len(parts) > 1:
+        return HEALTH_STATES.get(parts[1], "unknown")
+    return CONTAINER_STATES.get(status, "unknown")
+
+
+async def services(sh: Shell, runtime: str = "native") -> list:
+    if time.time() - _services["at"] < SERVICES_TTL and _services["runtime"] == runtime:
         return _services["items"]
     _, out = await sh("systemctl", "is-active", *UNITS, timeout=5)
     lines = out.splitlines()
@@ -29,7 +45,11 @@ async def services(sh: Shell) -> list:
     for index, unit in enumerate(UNITS):
         state = lines[index].strip() if index < len(lines) else "unknown"
         items.append({"unit": unit, "state": state if state in STATES else "unknown"})
-    _services.update(at=time.time(), items=items)
+    if runtime == "docker":
+        code, raw = await sh("docker", "inspect", "--format", INSPECT_FORMAT, CORE_CONTAINER, timeout=5)
+        state = container_state(code, raw)
+        items = [{"unit": CORE_UNIT, "state": state} if item["unit"] == CORE_UNIT else item for item in items]
+    _services.update(at=time.time(), runtime=runtime, items=items)
     return items
 
 
@@ -44,9 +64,9 @@ async def pending_analysis(git: guard.Git, local: Optional[str], target: Optiona
 
 
 async def build(git: guard.Git, sh: Shell, info: Dict[str, Any], tracker: UpdateProgress, root: Path,
-                branch: str) -> Dict[str, Any]:
+                branch: str, runtime: str = "native") -> Dict[str, Any]:
     target = info.get("target_rev") or (info.get("remote_rev") if info.get("available") else None)
-    analysis, units = await asyncio.gather(pending_analysis(git, info.get("local_rev"), target), services(sh))
+    analysis, units = await asyncio.gather(pending_analysis(git, info.get("local_rev"), target), services(sh, runtime))
     _, git_version = await git("--version", timeout=5)
     view = tracker.view()
     return {

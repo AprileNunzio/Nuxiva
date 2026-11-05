@@ -29,6 +29,7 @@
     "look_light": "Light core",
     "mind_hint": "What {{assistant}} is thinking: tap for details",
     "link_lost": "Reconnecting to the supervisor",
+    "privacy_veil": "Widgets hidden for privacy: they appear when an authorized person is recognized",
     "greet_night": "Good night.",
     "greet_morning": "Good morning.",
     "greet_afternoon": "Good afternoon.",

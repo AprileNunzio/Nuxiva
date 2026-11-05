@@ -29,6 +29,7 @@
     "look_light": "Noyau léger",
     "mind_hint": "Ce que pense {{assistant}} : touchez pour les détails",
     "link_lost": "Reconnexion au superviseur",
+    "privacy_veil": "Widgets masqués par confidentialité : ils apparaissent dès qu'une personne autorisée est reconnue",
     "greet_night": "Bonne nuit.",
     "greet_morning": "Bonjour.",
     "greet_afternoon": "Bon après-midi.",
