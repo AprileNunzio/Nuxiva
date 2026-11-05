@@ -1,0 +1,19 @@
+.widget.w-sealed {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms linear;
+}
+
+body.nucleus-only .hud > :not(.caption),
+body.nucleus-only #mind,
+body.nucleus-only #agency-board,
+body.nucleus-only #particles,
+body.nucleus-only .tooltip,
+body.nucleus-only .toast-mem,
+body[data-audience="empty"] .hud > .caption,
+body[data-audience="uncertain"] .hud > .caption {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 120ms linear, visibility 0s linear 120ms;
+}

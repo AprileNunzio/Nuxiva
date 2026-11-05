@@ -72,6 +72,7 @@ class PresenceMonitor:
         self.observed: dict = {}
         self.languages: dict = {}
         self.affect_at: dict = {}
+        self.updated_at = 0.0
 
     def smooth(self, visible: list) -> list:
         now = time.time()
@@ -220,6 +221,14 @@ class PresenceMonitor:
             p["role"] = cached[2] if len(cached) > 2 else "guest"
         return visible
 
+    @staticmethod
+    def _audience() -> None:
+        from features.desktop.presence_bridge import bridge
+        try:
+            bridge.update()
+        except (OSError, ValueError) as exc:
+            log.error("Pubblico del display non aggiornato: %s", exc, exc_info=exc)
+
     async def run(self) -> None:
         async with httpx.AsyncClient(timeout=3) as client:
             while True:
@@ -235,6 +244,8 @@ class PresenceMonitor:
                     store.presence = {"status": data.get("status"), "error": data.get("error", ""),
                                       "people": visible, "summary": describe(visible),
                                       "objects": data.get("objects", [])[:20]}
+                    self.updated_at = time.time()
+                    self._audience()
                     if [(p["name"], p["near"]) for p in visible] != [(p["name"], p["near"]) for p in previous]:
                         store.touch()
                     self._publish(data, visible)
@@ -248,6 +259,7 @@ class PresenceMonitor:
                     if store.presence.get("status") != "offline":
                         store.presence = {"status": "offline", "people": [], "summary": ""}
                         store.touch()
+                    self._audience()
                 await asyncio.sleep(0.7)
 
 

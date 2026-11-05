@@ -33,6 +33,54 @@
       ]
     },
     {
+      "key": "NUXIVA_DISPLAY_PRESENCE_GATE",
+      "label": "Sul display mostra pulsanti, widget e chat solo quando vede o sente una persona autorizzata",
+      "type": "select",
+      "default": "1",
+      "options": [
+        {
+          "value": "1",
+          "label": "Sì"
+        },
+        {
+          "value": "0",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_DISPLAY_GUEST_PUBLIC",
+      "label": "Con soli ospiti mostra anche i widget pubblici adatti agli ospiti",
+      "type": "select",
+      "default": "0",
+      "options": [
+        {
+          "value": "1",
+          "label": "Sì"
+        },
+        {
+          "value": "0",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_DISPLAY_TRUST_GUESTS",
+      "label": "Con ospiti presenti mostra anche i widget di casa",
+      "type": "select",
+      "default": "0",
+      "options": [
+        {
+          "value": "1",
+          "label": "Sì"
+        },
+        {
+          "value": "0",
+          "label": "No"
+        }
+      ]
+    },
+    {
       "key": "NUXIVA_PRIVACY_AUTOCLOSE",
       "label": "Chiudi i widget con dati personali quando non ci sei",
       "type": "select",

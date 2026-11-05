@@ -28,8 +28,8 @@ class PrivacyTest(unittest.TestCase):
             patcher = mock.patch.object(target, "time", self.clock.time)
             patcher.start()
             self.addCleanup(patcher.stop)
-        write_env({"NUXIVA_PRIVACY_AUTOCLOSE": "1", "NUXIVA_PRIVACY_AWAY_S": "10", "NUXIVA_PRIVACY_VOICE_S": "30"})
-        self.addCleanup(lambda: write_env({"NUXIVA_PRIVACY_AUTOCLOSE": "1", "NUXIVA_PRIVACY_AWAY_S": "10", "NUXIVA_PRIVACY_VOICE_S": "30"}))
+        write_env({"NUXIVA_PRIVACY_AUTOCLOSE": "1", "NUXIVA_PRIVACY_AWAY_S": "10", "NUXIVA_PRIVACY_VOICE_S": "30", "NUXIVA_DISPLAY_PRESENCE_GATE": "0"})
+        self.addCleanup(lambda: write_env({"NUXIVA_PRIVACY_AUTOCLOSE": "1", "NUXIVA_PRIVACY_AWAY_S": "10", "NUXIVA_PRIVACY_VOICE_S": "30", "NUXIVA_DISPLAY_PRESENCE_GATE": "0"}))
         privacy_module.privacy.gone_since = None
         self.addCleanup(lambda: setattr(store, "presence", {"status": "starting", "people": [], "summary": ""}))
         store.presence = OK

@@ -48,6 +48,11 @@ class HeardLog:
             self.record(str(event.get("speaker") or ""), float(event.get("speaker_score") or 0.0), str(event.get("text") or ""),
                         device=device)
 
+    def recent(self, window: float, now: float | None = None, device: str = "mic:local") -> list[VoiceProof]:
+        now = now or time.time()
+        with self._lock:
+            return [p for p in self._items if p.device == device and 0 <= now - p.at <= window]
+
     def verify(self, slug: str, text: str, now: float | None = None) -> VoiceProof | None:
         wanted = normalize(text)
         if not slug or not wanted:

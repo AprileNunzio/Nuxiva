@@ -47,6 +47,7 @@ class Store:
         self.system: dict = {}
         self.presence: dict = {"status": "starting", "people": [], "summary": ""}
         self.privacy: dict = {"enabled": True, "away": False, "voice_s": 30}
+        self.audience: dict = {"kind": "uncertain", "nucleus_only": True, "since": 0.0}
         self.pipeline_failed = False
         self.greeting: dict = {}
         self.voice_training: dict = {}
@@ -134,6 +135,7 @@ class Store:
             "system": self.system,
             "presence": self.presence,
             "privacy": self.privacy,
+            "audience": self.audience,
             "greeting": self.greeting,
             "voice_training": self.voice_training,
             "assistant_name": read_env().get("NUXIVA_ASSISTANT_NAME", "NUXIVA"),

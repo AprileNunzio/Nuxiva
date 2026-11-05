@@ -9,6 +9,9 @@
   ],
   "settings": {
     "NUXIVA_DESKTOP_THEME": "Desktop Theme",
-    "NUXIVA_SECRETARY": "On the display, show the owner's widgets when they come close"
+    "NUXIVA_SECRETARY": "On the display, show the owner's widgets when they come close",
+    "NUXIVA_DISPLAY_PRESENCE_GATE": "On the display, show buttons, widgets and chat only when an authorized person is seen or heard",
+    "NUXIVA_DISPLAY_GUEST_PUBLIC": "With guests only, also show public widgets suitable for guests",
+    "NUXIVA_DISPLAY_TRUST_GUESTS": "With guests present, also show household widgets"
   }
 }

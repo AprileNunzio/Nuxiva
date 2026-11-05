@@ -11,6 +11,7 @@ from config import STATE_DIR, WIDGETS_DIR
 from features.desktop import manifest
 from features.desktop.manifest import clamp_refresh
 from features.desktop.novelty import AUTO_CAP, Novelty
+from features.desktop import presence_bridge
 from features.desktop.privacy import privacy
 from features.desktop.screens import screens
 from features.governor import gpu
@@ -292,6 +293,7 @@ class Desk:
                         "takeover": prio >= 90 and m["size"] == "full", "fullscreen": bool(i.get("fullscreen")),
                         "sticky": bool(m.get("sticky")), "immersive": bool(m.get("immersive")),
                         "personal": m.get("personal", False), "refresh": self.refresh_of(i["id"]),
+                        "sensitivity": m.get("sensitivity"), "guest_safe": bool(m.get("guest_safe")),
                         "client_id": i.get("client_id"), "screen_role": m.get("screen_role"),
                         "weight": gpu.weight(m.get("cost"), m["size"], None)})
         out = self._rotate(out)
@@ -315,20 +317,23 @@ class Desk:
 
     def sweep_private(self) -> bool:
         privacy.watch()
-        store.privacy = privacy.view()
-        if not privacy.away:
+        audience = presence_bridge.bridge.update()
+        gated = presence_bridge.gate_enabled() and audience["kind"] != "authorized"
+        away = privacy.away or (presence_bridge.gate_enabled() and bool(audience["nucleus_only"]))
+        store.privacy = {**privacy.view(), "away": away}
+        if not away and not gated:
             self.suppressed.clear()
-        if not privacy.enabled():
+        if not privacy.enabled() and not gated:
             return False
-        now, limit, closed = time.time(), privacy.voice_seconds(), []
+        now, limit, closed = time.time(), privacy.voice_seconds() if privacy.enabled() else 0, []
         for key, inst in list(self.instances.items()):
             if not self.widgets.get(inst["id"], {}).get("personal"):
                 continue
             by_voice = bool(inst.get("intent")) and limit > 0 and now - inst.get("opened_at", now) >= limit
-            if privacy.away or by_voice:
+            if away or gated or by_voice:
                 self.instances.pop(key)
                 closed.append(key)
-                if key.startswith("bind:") and privacy.away:
+                if key.startswith("bind:") and (away or gated):
                     self.suppressed.add(key)
         if closed:
             store.event("INFO", f"Widget con dati personali chiusi: {', '.join(closed)}", "privacy")

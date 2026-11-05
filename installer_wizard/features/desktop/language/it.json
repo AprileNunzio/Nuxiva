@@ -13,6 +13,9 @@
     "NUXIVA_PRIVACY_AUTOCLOSE": "Chiudi i widget con dati personali quando non ci sei",
     "NUXIVA_PRIVACY_AWAY_S": "Dopo quanto tempo che ti sei allontanato",
     "NUXIVA_PRIVACY_VOICE_S": "Chiudi i dati personali aperti a voce dopo",
-    "NUXIVA_SECRETARY": "Sul display, mostra i widget del proprietario quando si avvicina"
+    "NUXIVA_SECRETARY": "Sul display, mostra i widget del proprietario quando si avvicina",
+    "NUXIVA_DISPLAY_PRESENCE_GATE": "Sul display mostra pulsanti, widget e chat solo quando vede o sente una persona autorizzata",
+    "NUXIVA_DISPLAY_GUEST_PUBLIC": "Con soli ospiti mostra anche i widget pubblici adatti agli ospiti",
+    "NUXIVA_DISPLAY_TRUST_GUESTS": "Con ospiti presenti mostra anche i widget di casa"
   }
 }

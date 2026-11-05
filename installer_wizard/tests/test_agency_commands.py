@@ -89,7 +89,8 @@ class DisplayViewTest(unittest.TestCase):
 
     def test_snapshot_carries_the_intent(self):
         import snapshot
-        with mock.patch.object(snapshot, "agency_intent", self.intent):
+        with mock.patch.object(snapshot, "agency_intent", self.intent), \
+                mock.patch.object(snapshot.store, "audience", {"kind": "authorized", "nucleus_only": False}):
             self.intent.push("project", "shop")
             self.assertEqual(snapshot.full_snapshot(False)["agency"]["id"], "shop")
 

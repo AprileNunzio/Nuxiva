@@ -160,7 +160,10 @@ def full_snapshot(admin: bool) -> dict:
     except Exception as exc:
         _report("particles", exc)
         snap["particles"] = None
-    return snap
+    if admin:
+        return snap
+    from features.desktop import audience_view, presence_bridge
+    return audience_view.redact(snap, store.audience, presence_bridge.show_options())
 
 
 def _shared_entry(admin: bool) -> tuple[int, float, dict, str, int]:
