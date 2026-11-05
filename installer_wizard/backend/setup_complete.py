@@ -58,6 +58,14 @@ async def complete(raw: dict, request: Request, source: str) -> dict:
     import setup_api
     first, last = setup_owner.clean_names(raw)
     updates = setup_api._clean(raw)
+    if "packages" in raw and isinstance(raw["packages"], list):
+        picked = set(raw["packages"])
+        if "vision" not in picked:
+            updates.setdefault("NUXIVA_VISION", "0")
+        if "ear" not in picked:
+            updates.setdefault("NUXIVA_EAR", "0")
+        if "bluetooth" not in picked:
+            updates.setdefault("NUXIVA_BLUETOOTH", "0")
     plan = merge_plan(raw, updates)
     voice_lang = setup_owner.clean_voice_language(raw, updates["NUXIVA_UI_LANG"])
     assistant = str(raw.get("assistant_name") or "").strip()

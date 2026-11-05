@@ -31,8 +31,11 @@ else
     cargo test --manifest-path native/Cargo.toml --workspace --locked
 fi
 
-echo "==> [5/5] Eseguo test unitari Python pertinenti..."
-python -m unittest installer_wizard.tests.test_os_architecture installer_wizard.tests.test_packages installer_wizard.tests.test_setup_selection installer_wizard.tests.test_services_architecture installer_wizard.tests.test_reboot_gate installer_wizard.tests.test_ollama_hardware_tuning installer_wizard.tests.test_brain_tuning installer_wizard.tests.test_control_panel_layout server.tests.test_cortex_core_platform server.tests.test_embodied_cortex installer_wizard.tests.test_kiosk_toggle installer_wizard.tests.test_kiosk_smart_display installer_wizard.tests.test_hardware_agent installer_wizard.tests.test_hardware_universal installer_wizard.tests.test_ear_realtime installer_wizard.tests.test_ear_host_mic installer_wizard.tests.test_voice_playback installer_wizard.tests.test_remote_display_captions installer_wizard.tests.test_auto_update_self_healing installer_wizard.tests.test_store_feature installer_wizard.tests.test_os_subsystems -v
+echo "==> [5/6] Verifico manifest delle app e test web client (Node.js)..."
+node -e "const { execSync } = require('child_process'); const fs = require('fs'); fs.readdirSync('client_web/tests').filter(f => f.endsWith('.test.cjs')).forEach(f => execSync('node client_web/tests/' + f, { stdio: 'inherit' }));"
+
+echo "==> [6/6] Eseguo test unitari Python pertinenti..."
+python -m unittest installer_wizard.tests.test_setup_wizard installer_wizard.tests.test_team installer_wizard.tests.test_os_architecture installer_wizard.tests.test_packages installer_wizard.tests.test_setup_selection installer_wizard.tests.test_services_architecture installer_wizard.tests.test_reboot_gate installer_wizard.tests.test_ollama_hardware_tuning installer_wizard.tests.test_brain_tuning installer_wizard.tests.test_control_panel_layout server.tests.test_cortex_core_platform server.tests.test_embodied_cortex installer_wizard.tests.test_kiosk_toggle installer_wizard.tests.test_kiosk_smart_display installer_wizard.tests.test_hardware_agent installer_wizard.tests.test_hardware_universal installer_wizard.tests.test_ear_realtime installer_wizard.tests.test_ear_host_mic installer_wizard.tests.test_voice_playback installer_wizard.tests.test_remote_display_captions installer_wizard.tests.test_auto_update_self_healing installer_wizard.tests.test_store_feature installer_wizard.tests.test_os_subsystems -v
 
 echo "==> TUTTI I CONTROLLI PRE-PUSH SUPERATI CON SUCCESSO! Invio in corso a GitHub..."
 exit 0

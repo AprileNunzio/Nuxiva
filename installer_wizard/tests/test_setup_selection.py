@@ -6,7 +6,19 @@ import setup_api
 
 
 class TestSetupSelection(unittest.TestCase):
-    def test_clean_sets_zero_for_unpicked_packages(self):
+    def setUp(self):
+        from state import store
+        self.saved_steps = {k: dict(v) for k, v in store.steps.items()}
+        for sid in packages.PACKAGE_BY_STEP:
+            store.steps.pop(sid, None)
+        self.addCleanup(self._restore)
+
+    def _restore(self):
+        from state import store
+        store.steps.clear()
+        store.steps.update(self.saved_steps)
+
+    def test_clean_returns_only_picked_packages(self):
         raw = {
             "name": "Nunzio",
             "lang": "it",
@@ -15,24 +27,21 @@ class TestSetupSelection(unittest.TestCase):
         }
         cleaned = setup_api._clean(raw)
         self.assertEqual(cleaned.get("NUXIVA_VOICE_PACKAGE"), "1")
-        self.assertEqual(cleaned.get("NUXIVA_VISION"), "0")
-        self.assertEqual(cleaned.get("NUXIVA_EAR"), "0")
-        self.assertEqual(cleaned.get("NUXIVA_DOCUMENTS"), "0")
+        self.assertNotIn("NUXIVA_VISION", cleaned)
+        self.assertNotIn("NUXIVA_EAR", cleaned)
         self.assertEqual(cleaned.get("NUXIVA_LLM_MODEL"), "granite3.3:2b")
 
-    def test_unpicked_packages_are_not_wanted(self):
-        raw = {
-            "name": "Nunzio",
-            "lang": "it",
-            "brain": "local",
-            "packages": ["display"],
+    def test_unpicked_packages_are_not_wanted_when_disabled(self):
+        env = {
+            "NUXIVA_VOICE_PACKAGE": "1",
+            "NUXIVA_VISION": "0",
+            "NUXIVA_EAR": "0",
         }
-        cleaned = setup_api._clean(raw)
         with mock.patch("packages._detect", return_value=True):
-            self.assertFalse(packages.wanted(packages.PACKAGE_BY_ID["vision"], cleaned))
-            self.assertFalse(packages.wanted(packages.PACKAGE_BY_ID["ear"], cleaned))
-            self.assertFalse(packages.step_wanted("vision", cleaned))
-            self.assertFalse(packages.step_wanted("ear", cleaned))
+            self.assertFalse(packages.wanted(packages.PACKAGE_BY_ID["vision"], env))
+            self.assertFalse(packages.wanted(packages.PACKAGE_BY_ID["ear"], env))
+            self.assertFalse(packages.step_wanted("vision", env))
+            self.assertFalse(packages.step_wanted("ear", env))
 
     def test_soup_not_wanted_by_default(self):
         env = {"NUXIVA_BRAIN": "local"}

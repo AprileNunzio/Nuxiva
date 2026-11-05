@@ -174,10 +174,7 @@ def _clean(raw: dict) -> dict:
     raw_picked = raw.get("packages") or []
     if not isinstance(raw_picked, list) or any(p not in WIZARD_PACKAGES for p in raw_picked):
         raise HTTPException(400, "Pacchetto non valido")
-    picked_set = set(raw_picked)
-    for p, env_key in WIZARD_PACKAGES.items():
-        if env_key and env_key != "NUXIVA_BRAIN":
-            out[env_key] = "1" if p in picked_set else "0"
+    out.update({WIZARD_PACKAGES[p]: "1" for p in raw_picked if WIZARD_PACKAGES[p] and WIZARD_PACKAGES[p] != "NUXIVA_BRAIN"})
     chosen_gender = str(raw.get("assistant_gender") or "").strip().lower()
     by_gender = VOICES_BY_LANG_GENDER.get(lang, {}).get(chosen_gender, "")
     voice = str(raw.get("voice") or by_gender or "if_sara")

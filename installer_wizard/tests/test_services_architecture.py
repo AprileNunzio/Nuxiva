@@ -6,6 +6,19 @@ from features.services.install_manager import InstallManager
 
 
 class TestServicesArchitecture(unittest.IsolatedAsyncioTestCase):
+    def setUp(self):
+        from state import store
+        import packages
+        self.saved_steps = {k: dict(v) for k, v in store.steps.items()}
+        for sid in packages.PACKAGE_BY_STEP:
+            store.steps.pop(sid, None)
+        self.addCleanup(self._restore)
+
+    def _restore(self):
+        from state import store
+        store.steps.clear()
+        store.steps.update(self.saved_steps)
+
     async def test_download_manager_rejects_unsafe_urls(self):
         dm = DownloadManager()
         with self.assertRaises(ValueError):
