@@ -36,14 +36,14 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 if ($env:OS -like "*Windows*" -or $IsWindows) {
-    Write-Host "[INFO] Piattaforma Windows: verifica clippy e test sui crate compatibili (vitals-core, bus-core)..." -ForegroundColor Yellow
-    cargo clippy --manifest-path native/Cargo.toml -p nuxiva-vitals-core -p nuxiva-bus-core --locked -- -D warnings
+    Write-Host "[INFO] Piattaforma Windows: verifica clippy e test sui crate compatibili (vitals-core, bus-core, admin-os)..." -ForegroundColor Yellow
+    cargo clippy --manifest-path native/Cargo.toml -p nuxiva-vitals-core -p nuxiva-bus-core -p nuxiva-admin-os --locked -- -D warnings
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[ERRORE] Cargo clippy ha rilevato warning o errori!" -ForegroundColor Red
         exit 1
     }
     Write-Host "==> [4/5] Eseguo test unitari Rust dei crate compatibili Windows..." -ForegroundColor Cyan
-    cargo test --manifest-path native/Cargo.toml -p nuxiva-vitals-core -p nuxiva-bus-core --locked
+    cargo test --manifest-path native/Cargo.toml -p nuxiva-vitals-core -p nuxiva-bus-core -p nuxiva-admin-os --locked
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[ERRORE] Uno o piu test Rust sono falliti!" -ForegroundColor Red
         exit 1
