@@ -14,7 +14,7 @@
     "day": "Día",
     "loading": "Cargando el diario…",
     "unreachable": "Diario no disponible",
-    "native_missing": "Centinela necesita el módulo nativo de Nuxiva, que no está instalado en este servidor.",
+    "native_missing": "El motor nativo de Nuxiva aún no está instalado en este servidor: sin él, la Centinela no puede cifrar el diario.",
     "disabled": "Centinela está desactivado en las funciones.",
     "empty": "No hay eventos para este día.",
     "more": "Cargar más eventos",
@@ -56,6 +56,20 @@
     "ret_nuxiva": "Actividad de Nuxiva",
     "ret_display": "Pantalla",
     "ret_system": "Sistema",
-    "ret_audit": "Consultas"
+    "ret_audit": "Consultas",
+    "native_building": "Compilando el motor nativo de Nuxiva.",
+    "native_failed": "La compilación del motor nativo no se completó.",
+    "native_disabled": "El motor nativo está desactivado en los ajustes del sistema (NUXIVA_NATIVE=0), así que la Centinela sigue apagada.",
+    "native_stage": "Fase actual: {stage}",
+    "native_auto_open": "La Centinela se abre sola en cuanto el motor esté listo, sin reiniciar.",
+    "native_rebuild": "Compilar ahora",
+    "native_requested": "Compilación iniciada: sigue el progreso en Actualización del sistema",
+    "native_rebuild_failed": "No se pudo iniciar la compilación: vuelve a intentarlo desde Actualización del sistema.",
+    "native_stage_wheel": "módulo principal",
+    "native_stage_egress": "proxy de salida",
+    "native_stage_netguard": "cortafuegos",
+    "native_stage_agency": "motor de proyectos",
+    "native_stage_display": "gestor de widgets",
+    "native_stage_done": "completada"
   }
 }

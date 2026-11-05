@@ -8,6 +8,7 @@ import time
 from collections import OrderedDict
 from pathlib import Path
 
+import native_module
 from config import STATE_DIR
 
 log = logging.getLogger("nuxiva.molecules")
@@ -28,13 +29,7 @@ class EngineUnavailable(RuntimeError):
 
 
 def _engine():
-    if os.environ.get("NUXIVA_NATIVE", "auto").strip() == "0":
-        return None
-    try:
-        import nuxiva_native
-    except ImportError:
-        return None
-    return getattr(nuxiva_native, "molecule_build", None)
+    return native_module.feature("molecule_build")
 
 
 def available() -> bool:

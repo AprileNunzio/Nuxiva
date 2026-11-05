@@ -35,8 +35,9 @@ async def molecule_scene(mid: str, request: Request, lod: str = "atoms", scheme:
 
 @admin_routes.get("/api/molecules", openapi_extra=READ)
 async def molecules_list(_: str = Depends(require_admin)):
+    import native_module
     from features.molecules.library import available
-    return {"molecules": library.listing(), "engine": available()}
+    return {"molecules": library.listing(), "engine": available(), "build": native_module.build_status()}
 
 
 @admin_routes.post("/api/molecules/upload", openapi_extra=MANAGE)

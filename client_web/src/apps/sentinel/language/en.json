@@ -14,7 +14,7 @@
     "day": "Day",
     "loading": "Loading the diary…",
     "unreachable": "Diary unreachable",
-    "native_missing": "Sentinel needs the Nuxiva native module, which is not installed on this server.",
+    "native_missing": "The Nuxiva native engine is not installed on this server yet: without it Sentinel cannot encrypt the diary.",
     "disabled": "Sentinel is turned off in the features.",
     "empty": "No events for this day.",
     "more": "Load more events",
@@ -56,6 +56,20 @@
     "ret_nuxiva": "Nuxiva activity",
     "ret_display": "Display",
     "ret_system": "System",
-    "ret_audit": "Reads"
+    "ret_audit": "Reads",
+    "native_building": "Building the Nuxiva native engine.",
+    "native_failed": "The native engine build failed.",
+    "native_disabled": "The native engine is turned off in the system settings (NUXIVA_NATIVE=0), so Sentinel stays off.",
+    "native_stage": "Current stage: {stage}",
+    "native_auto_open": "Sentinel opens by itself as soon as the engine is ready, no restart needed.",
+    "native_rebuild": "Build now",
+    "native_requested": "Build started: follow the progress in System update",
+    "native_rebuild_failed": "Could not start the build: try again from System update.",
+    "native_stage_wheel": "main module",
+    "native_stage_egress": "egress proxy",
+    "native_stage_netguard": "firewall",
+    "native_stage_agency": "project engine",
+    "native_stage_display": "widget manager",
+    "native_stage_done": "done"
   }
 }

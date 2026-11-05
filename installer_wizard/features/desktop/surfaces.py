@@ -1,12 +1,12 @@
 import json
 import logging
 import math
-import os
 import re
 import threading
 import time
 import unicodedata
 
+import native_module
 from config import STATE_DIR
 
 from features.desktop.privacy import flag
@@ -24,13 +24,7 @@ LIMIT_M = 100.0
 
 
 def _native(name: str):
-    if os.environ.get("NUXIVA_NATIVE", "auto").strip() == "0":
-        return None
-    try:
-        import nuxiva_native
-    except ImportError:
-        return None
-    return getattr(nuxiva_native, name, None)
+    return native_module.feature(name)
 
 
 def slug(text) -> str:

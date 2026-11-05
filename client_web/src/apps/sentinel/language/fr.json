@@ -14,7 +14,7 @@
     "day": "Jour",
     "loading": "Chargement du journal…",
     "unreachable": "Journal injoignable",
-    "native_missing": "La Sentinelle nécessite le module natif de Nuxiva, qui n'est pas installé sur ce serveur.",
+    "native_missing": "Le moteur natif de Nuxiva n'est pas encore installé sur ce serveur : sans lui, la Sentinelle ne peut pas chiffrer le journal.",
     "disabled": "La Sentinelle est désactivée dans les fonctionnalités.",
     "empty": "Aucun événement pour ce jour.",
     "more": "Charger plus d'événements",
@@ -56,6 +56,20 @@
     "ret_nuxiva": "Activité de Nuxiva",
     "ret_display": "Écran",
     "ret_system": "Système",
-    "ret_audit": "Consultations"
+    "ret_audit": "Consultations",
+    "native_building": "Compilation du moteur natif de Nuxiva en cours.",
+    "native_failed": "La compilation du moteur natif a échoué.",
+    "native_disabled": "Le moteur natif est désactivé dans les réglages système (NUXIVA_NATIVE=0), la Sentinelle reste donc éteinte.",
+    "native_stage": "Étape actuelle : {stage}",
+    "native_auto_open": "La Sentinelle s'ouvre toute seule dès que le moteur est prêt, sans redémarrage.",
+    "native_rebuild": "Compiler maintenant",
+    "native_requested": "Compilation lancée : suivez l'avancement dans Mise à jour du système",
+    "native_rebuild_failed": "Impossible de lancer la compilation : réessayez depuis Mise à jour du système.",
+    "native_stage_wheel": "module principal",
+    "native_stage_egress": "proxy de sortie",
+    "native_stage_netguard": "pare-feu",
+    "native_stage_agency": "moteur des projets",
+    "native_stage_display": "gestionnaire des widgets",
+    "native_stage_done": "terminée"
   }
 }

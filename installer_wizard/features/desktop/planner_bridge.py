@@ -1,6 +1,5 @@
 import json
 import logging
-import os
 import threading
 import time
 
@@ -9,6 +8,7 @@ from state import store
 from features.desktop import audience_view
 from features.desktop.privacy import flag
 from features.desktop.surfaces import surfaces
+import native_module
 
 log = logging.getLogger("nuxiva.desktop.planner")
 SIZES = frozenset({"s", "m", "l", "xl", "full"})
@@ -20,13 +20,7 @@ KINDS = frozenset({"empty", "guest_only", "authorized", "mixed", "uncertain"})
 
 
 def _native():
-    if os.environ.get("NUXIVA_NATIVE", "auto").strip() == "0":
-        return None
-    try:
-        import nuxiva_native
-    except ImportError:
-        return None
-    return getattr(nuxiva_native, "display_plan", None)
+    return native_module.feature("display_plan")
 
 
 def enabled() -> bool:

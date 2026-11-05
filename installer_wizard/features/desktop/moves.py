@@ -1,6 +1,7 @@
-import os
 import threading
 import time
+
+import native_module
 
 HOLD_MS = 30_000
 MAX_TRACKED = 1024
@@ -8,13 +9,7 @@ ORIGINS = frozenset({"user", "planner"})
 
 
 def _native_class():
-    if os.environ.get("NUXIVA_NATIVE", "auto").strip() == "0":
-        return None
-    try:
-        import nuxiva_native
-    except ImportError:
-        return None
-    return getattr(nuxiva_native, "RustMoveGuard", None)
+    return native_module.feature("RustMoveGuard")
 
 
 class _ClassicGuard:

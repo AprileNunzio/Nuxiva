@@ -4,11 +4,17 @@ import { useSentinel } from './useSentinel';
 import { Timeline } from './Timeline';
 import { Header } from './Header';
 import { Settings } from './Settings';
+import { NativeGate } from './NativeGate';
+import { useScopedI18n } from '../../shared/i18n/useScopedI18n';
 import './sentinel.css';
 
 export function View() {
+  const {t}=useScopedI18n('apps/sentinel');
+  return <NativeGate t={t}><Sentinel/></NativeGate>;
+}
+
+function Sentinel() {
   const model=useSentinel(), {t,status}=model;
-  if(status.data&&!status.data.native)return <p className="sentinel-empty" role="alert">{t('native_missing')}</p>;
   if(status.data&&!status.data.enabled)return <p className="sentinel-empty" role="alert">{t('disabled')}</p>;
   return <AppViewFrame header={<Header model={model}/>} sections={{
     diary:<Timeline model={model}/>,

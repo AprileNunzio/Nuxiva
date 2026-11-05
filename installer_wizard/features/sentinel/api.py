@@ -78,7 +78,9 @@ async def sentinel_status(_: str = Depends(require_admin)):
         native = True
     except SentinelUnavailable:
         native = False
-    return JSONResponse({"enabled": record.enabled(), "native": native, "days": vault.days() if native else [],
+    import native_module
+    return JSONResponse({"enabled": record.enabled(), "native": native, "build": native_module.build_status(),
+                         "days": vault.days() if native else [],
                          "retention": json.loads(journal.engine.retention()) if native else None}, headers=NO_CACHE)
 
 

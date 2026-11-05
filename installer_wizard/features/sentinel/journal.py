@@ -1,12 +1,12 @@
 import json
 import logging
-import os
 import secrets
 import threading
 import time
 from datetime import datetime, timedelta
 
 from features.sentinel import vault
+import native_module
 
 log = logging.getLogger("nuxiva.sentinel")
 DAY_MS = 86_400_000
@@ -19,13 +19,7 @@ class SentinelUnavailable(RuntimeError):
 
 
 def _engine_class():
-    if os.environ.get("NUXIVA_NATIVE", "auto").strip() == "0":
-        return None
-    try:
-        import nuxiva_native
-    except ImportError:
-        return None
-    return getattr(nuxiva_native, "RustSentinel", None)
+    return native_module.feature("RustSentinel")
 
 
 def day_of(at: float) -> str:

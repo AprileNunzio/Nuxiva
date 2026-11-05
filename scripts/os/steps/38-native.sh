@@ -17,6 +17,8 @@ AGENCY_UNIT_DST=/etc/systemd/system/nuxiva-agency.service
 DISPLAY_BIN="$NATIVE_HOME/bin/nuxiva-display"
 DISPLAY_UNIT_SRC="$NUXIVA_DIR/scripts/os/systemd/nuxiva-display.service"
 DISPLAY_UNIT_DST=/etc/systemd/system/nuxiva-display.service
+BUILD_STATE="$NUXIVA_STATE/native/build.json"
+BUILD_STAGE="wheel"
 
 export RUSTUP_HOME="$NATIVE_HOME/rustup"
 export CARGO_HOME="$NATIVE_HOME/cargo"
@@ -69,8 +71,38 @@ install_rust() {
     return "$rc"
 }
 
+build_state() {
+    local dir tmp
+    dir=$(dirname "$BUILD_STATE")
+    install -d -m 0755 "$dir" || return 0
+    tmp=$(mktemp "$dir/.build.XXXXXX") || return 0
+    printf '{"state":"%s","stage":"%s","at":%s,"rev":"%s"}\n' "$1" "$2" "$(date +%s)" "$(src_hash)" > "$tmp"
+    chmod 0644 "$tmp"
+    mv -f "$tmp" "$BUILD_STATE"
+}
+
+stage() {
+    BUILD_STAGE="$1"
+    build_state "${2:-building}" "$1"
+}
+
+on_exit() {
+    local rc=$?
+    [ "$rc" -eq 0 ] || build_state failed "$BUILD_STAGE"
+}
+
+install_wheel() {
+    progress 74 "Installazione del modulo nativo nel supervisore"
+    "$VENV/bin/pip" install -q --force-reinstall --no-deps "$NATIVE_HOME"/wheels/nuxiva_native-*.whl \
+        || fail "Installazione del modulo nativo non riuscita"
+    native_loaded || fail "Il modulo nativo non si carica"
+    build_state ready wheel
+    info "Modulo nativo installato: Sentinella, molecole e motori della pagina 80 lo caricano senza riavvio"
+}
+
 step_apply() {
     if ! wanted; then
+        build_state disabled done
         progress 50 "Core nativo disattivato: ritorno al motore Python"
         "$VENV/bin/pip" uninstall -y -q nuxiva-native >/dev/null 2>&1 || true
         systemctl disable --now nuxiva-agency >/dev/null 2>&1 || true
@@ -82,6 +114,8 @@ step_apply() {
     [ -x "$VENV/bin/python" ] || { progress 100 "Ambiente del supervisore non pronto: nuovo tentativo al prossimo avvio"; return 0; }
     [ -f "$NATIVE_SRC/Cargo.lock" ] || fail "Sorgenti del core nativo assenti"
     install -d -m 0755 "$NATIVE_HOME"
+    trap on_exit EXIT
+    stage wheel
 
     progress 5 "Installazione compilatore C (build-essential)"
     apt_install build-essential
@@ -99,7 +133,9 @@ step_apply() {
         cargo_stream "Compilazione del message broker in Rust" 50 74 nuxiva-native \
             "$NATIVE_HOME/build/bin/maturin" build --profile "$BUILD_PROFILE" --locked --out "$NATIVE_HOME/wheels"
     ) || fail "Compilazione del core nativo non riuscita"
+    install_wheel
 
+    BUILD_STAGE=egress
     (
         cd "$NATIVE_SRC"
         cargo_stream "Compilazione del proxy di uscita della sandbox" 75 79 nuxiva-egress cargo build --profile "$BUILD_PROFILE" --locked -p nuxiva-egress
@@ -108,6 +144,7 @@ step_apply() {
     install -m 0755 -o root -g root "$CARGO_TARGET_DIR/$BUILD_PROFILE/nuxiva-egress" "$EGRESS_BIN.new"
     mv -f "$EGRESS_BIN.new" "$EGRESS_BIN"
 
+    BUILD_STAGE=netguard
     (
         cd "$NATIVE_SRC"
         cargo_stream "Compilazione del motore di analisi del traffico (firewall)" 80 81 nuxiva-netguard cargo build --profile "$BUILD_PROFILE" --locked -p nuxiva-netguard
@@ -115,6 +152,7 @@ step_apply() {
     install -m 0755 -o root -g root "$CARGO_TARGET_DIR/$BUILD_PROFILE/nuxiva-netguard" "$NETGUARD_BIN.new"
     mv -f "$NETGUARD_BIN.new" "$NETGUARD_BIN"
 
+    BUILD_STAGE=agency
     (
         cd "$NATIVE_SRC"
         cargo_stream "Compilazione del motore multi-agente dei progetti" 82 82 nuxiva-agency cargo build --profile "$BUILD_PROFILE" --locked -p nuxiva-agency
@@ -127,6 +165,7 @@ step_apply() {
     systemctl enable nuxiva-agency >/dev/null 2>&1 || true
     systemctl restart nuxiva-agency || fail "Avvio del motore multi-agente non riuscito"
 
+    BUILD_STAGE=display
     (
         cd "$NATIVE_SRC"
         cargo_stream "Compilazione del gestore dei widget della pagina 80" 83 84 nuxiva-display cargo build --profile "$BUILD_PROFILE" --locked -p nuxiva-display
@@ -138,12 +177,8 @@ step_apply() {
     systemctl enable nuxiva-display >/dev/null 2>&1 || true
     systemctl restart nuxiva-display || fail "Avvio del gestore dei widget non riuscito"
 
-    progress 85 "Installazione nel supervisore"
-    "$VENV/bin/pip" install -q --force-reinstall --no-deps "$NATIVE_HOME"/wheels/nuxiva_native-*.whl \
-        || fail "Installazione del modulo nativo non riuscita"
-    native_loaded || fail "Il modulo nativo non si carica"
     src_hash > "$STAMP"
-    info "Core nativo attivo dal prossimo riavvio del supervisore"
+    build_state ready done
     progress 100 "Core nativo Rust pronto"
 }
 

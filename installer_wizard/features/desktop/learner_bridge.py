@@ -1,6 +1,5 @@
 import json
 import logging
-import os
 import re
 import threading
 import time
@@ -8,6 +7,7 @@ from datetime import datetime
 
 from features.desktop import learner_store
 from features.desktop.privacy import flag
+import native_module
 
 log = logging.getLogger("nuxiva.desktop.learner")
 WIDGET = re.compile(r"^[a-z0-9_-]{1,64}$")
@@ -21,13 +21,7 @@ BROWSER_KINDS = frozenset({"interact", "dwell"})
 
 
 def _native_class():
-    if os.environ.get("NUXIVA_NATIVE", "auto").strip() == "0":
-        return None
-    try:
-        import nuxiva_native
-    except ImportError:
-        return None
-    return getattr(nuxiva_native, "RustLearner", None)
+    return native_module.feature("RustLearner")
 
 
 def enabled() -> bool:

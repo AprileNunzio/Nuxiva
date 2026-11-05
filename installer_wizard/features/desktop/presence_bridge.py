@@ -1,11 +1,11 @@
 import json
 import logging
-import os
 import time
 
 from features.desktop.audience import Policy, Tracker
 from features.desktop.privacy import flag, privacy
 from state import store
+import native_module
 
 log = logging.getLogger("nuxiva.desktop.presence")
 DISPLAY_ROLES = frozenset({"owner", "family"})
@@ -24,13 +24,7 @@ class NativeTracker:
 
 
 def _native_class():
-    if os.environ.get("NUXIVA_NATIVE", "auto").strip() == "0":
-        return None
-    try:
-        import nuxiva_native
-    except ImportError:
-        return None
-    return getattr(nuxiva_native, "RustPresenceTracker", None)
+    return native_module.feature("RustPresenceTracker")
 
 
 def gate_enabled() -> bool:
