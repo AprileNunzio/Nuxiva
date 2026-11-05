@@ -1,4 +1,5 @@
 use agency_domain::TaskSpec;
+use agency_foresight::{EventSpec, ScenarioSpec};
 use agency_scheduler::{ModelProfile, Settings};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
@@ -93,6 +94,34 @@ pub enum Request {
         query: String,
         #[serde(default)]
         limit: Option<usize>,
+    },
+    ForesightCreate {
+        id: String,
+        scenario: ScenarioSpec,
+    },
+    ForesightList {},
+    ForesightRun {
+        id: String,
+        #[serde(default)]
+        rounds: Option<u16>,
+    },
+    ForesightInject {
+        id: String,
+        event: EventSpec,
+    },
+    ForesightReport {
+        id: String,
+    },
+    ForesightAgent {
+        id: String,
+        agent: String,
+    },
+    ForesightEnsemble {
+        id: String,
+        runs: u16,
+    },
+    ForesightDelete {
+        id: String,
     },
 }
 

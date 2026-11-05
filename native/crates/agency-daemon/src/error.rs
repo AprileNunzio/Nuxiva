@@ -1,4 +1,5 @@
 use agency_domain::DomainError;
+use agency_foresight::ForesightError;
 use agency_ledger::LedgerError;
 use agency_planner::PlanError;
 use agency_scheduler::SettingsError;
@@ -16,6 +17,12 @@ pub enum AgencyError {
     Ledger(#[from] LedgerError),
     #[error(transparent)]
     Settings(#[from] SettingsError),
+    #[error(transparent)]
+    Foresight(#[from] ForesightError),
+    #[error("sealed state cannot be opened")]
+    Sealed,
+    #[error("another simulation batch is running")]
+    Busy,
     #[error("project not found")]
     NotFound,
     #[error("project already exists")]
@@ -37,11 +44,13 @@ impl AgencyError {
     pub fn code(&self) -> &'static str {
         match self {
             Self::Config(_) => "config",
-            Self::Domain(_) => "invalid",
+            Self::NotFound | Self::Foresight(ForesightError::AgentNotFound) => "not_found",
+            Self::Domain(_) | Self::Foresight(_) => "invalid",
             Self::Plan(_) => "plan",
             Self::Ledger(_) => "ledger",
             Self::Settings(_) => "settings",
-            Self::NotFound => "not_found",
+            Self::Sealed => "sealed",
+            Self::Busy => "busy",
             Self::Exists => "exists",
             Self::TooMany => "too_many",
             Self::Escape => "escape",
@@ -53,7 +62,9 @@ impl AgencyError {
     #[must_use]
     pub fn public_message(&self) -> String {
         match self {
-            Self::Io(_) | Self::Json(_) | Self::Ledger(_) => "internal error".to_owned(),
+            Self::Io(_) | Self::Json(_) | Self::Ledger(_) | Self::Sealed => {
+                "internal error".to_owned()
+            }
             other => other.to_string(),
         }
     }

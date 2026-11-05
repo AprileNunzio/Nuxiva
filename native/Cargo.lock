@@ -795,15 +795,18 @@ version = "5.3.0"
 dependencies = [
  "agency-codeindex",
  "agency-domain",
+ "agency-foresight",
  "agency-ledger",
  "agency-planner",
  "agency-scheduler",
+ "chacha20poly1305",
  "getrandom 0.3.4",
  "rustix",
  "serde",
  "serde_json",
  "thiserror",
  "tokio",
+ "zeroize",
 ]
 
 [[package]]

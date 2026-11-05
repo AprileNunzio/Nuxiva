@@ -10,6 +10,7 @@ use serde_json::{Value, json};
 use crate::config::Config;
 use crate::error::AgencyError;
 use crate::files;
+use crate::foresight::{Foresight, Outcome};
 use crate::protocol::{BudgetInput, Control, Request, TaskAction};
 use crate::state::{EngineSettings, ProjectState};
 use crate::workspace;
@@ -26,6 +27,7 @@ pub struct Engine {
     settings: EngineSettings,
     projects: BTreeMap<ProjectId, ProjectState>,
     ledger: LedgerStore,
+    foresight: Foresight,
 }
 
 fn now_ms() -> u64 {
@@ -49,12 +51,14 @@ impl Engine {
             None => EngineSettings::default(),
         };
         settings.scheduler.validate()?;
+        let foresight = Foresight::open(config.path("foresight"))?;
         let mut engine = Self {
             config,
             host,
             settings,
             projects: BTreeMap::new(),
             ledger,
+            foresight,
         };
         engine.load_projects()?;
         Ok(engine)
@@ -225,7 +229,73 @@ impl Engine {
                     .map_err(|e| AgencyError::BadRequest(e.to_string()))?;
                 Ok(json!({ "hits": hits }))
             }
+            request @ (Request::ForesightList {}
+            | Request::ForesightReport { .. }
+            | Request::ForesightAgent { .. }
+            | Request::ForesightEnsemble { .. }) => self.foresight_read(request),
+            other => self.foresight_change(other),
         }
+    }
+
+    fn foresight_read(&mut self, request: Request) -> Result<Value, AgencyError> {
+        match request {
+            Request::ForesightList {} => Ok(self.foresight.list()),
+            Request::ForesightReport { id } => self.foresight.report(&project_id(&id)?),
+            Request::ForesightAgent { id, agent } => {
+                self.foresight.agent(&project_id(&id)?, &agent)
+            }
+            Request::ForesightEnsemble { id, runs } => {
+                let id = project_id(&id)?;
+                let scenario = self.foresight.scenario(&id)?;
+                let result = agency_foresight::ensemble(&scenario, runs)?;
+                self.foresight_record(&id, result)
+            }
+            _ => Err(AgencyError::BadRequest("unsupported operation".to_owned())),
+        }
+    }
+
+    fn settle_outcome(&mut self, outcome: Outcome) -> Result<Value, AgencyError> {
+        let (data, event) = outcome;
+        if let Some((kind, payload)) = event {
+            self.event(kind, payload)?;
+        }
+        Ok(data)
+    }
+
+    fn foresight_change(&mut self, request: Request) -> Result<Value, AgencyError> {
+        let now = now_ms();
+        let outcome = match request {
+            Request::ForesightCreate { id, scenario } => {
+                self.foresight.create(&project_id(&id)?, scenario, now)?
+            }
+            Request::ForesightRun { id, rounds } => {
+                self.foresight.run(&project_id(&id)?, rounds, now)?
+            }
+            Request::ForesightInject { id, event } => {
+                self.foresight.inject(&project_id(&id)?, event, now)?
+            }
+            Request::ForesightDelete { id } => self.foresight.delete(&project_id(&id)?)?,
+            _ => return Err(AgencyError::BadRequest("unsupported operation".to_owned())),
+        };
+        self.settle_outcome(outcome)
+    }
+
+    pub fn foresight_scenario(
+        &self,
+        id: &str,
+    ) -> Result<(ProjectId, agency_foresight::ScenarioSpec), AgencyError> {
+        let id = project_id(id)?;
+        let scenario = self.foresight.scenario(&id)?;
+        Ok((id, scenario))
+    }
+
+    pub fn foresight_record(
+        &mut self,
+        id: &ProjectId,
+        result: agency_foresight::Ensemble,
+    ) -> Result<Value, AgencyError> {
+        let outcome = self.foresight.record(id, result, now_ms())?;
+        self.settle_outcome(outcome)
     }
 
     fn create(

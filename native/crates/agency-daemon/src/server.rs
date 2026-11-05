@@ -103,6 +103,9 @@ async fn answer(raw: &str, engine: &Arc<Mutex<Engine>>) -> Response {
         Err(error) => return Response::failure("bad_request", error.to_string()),
     };
     let engine = Arc::clone(engine);
+    if let Request::ForesightEnsemble { id, runs } = request {
+        return respond(ensemble(engine, id, runs).await);
+    }
     let outcome = tokio::task::spawn_blocking(move || {
         let mut guard = engine
             .lock()
@@ -110,6 +113,37 @@ async fn answer(raw: &str, engine: &Arc<Mutex<Engine>>) -> Response {
         guard.handle(request)
     })
     .await;
+    respond(outcome.map_err(|_| ()))
+}
+
+static BATCH: Semaphore = Semaphore::const_new(1);
+
+async fn ensemble(
+    engine: Arc<Mutex<Engine>>,
+    id: String,
+    runs: u16,
+) -> Result<Result<serde_json::Value, AgencyError>, ()> {
+    let Ok(permit) = BATCH.try_acquire() else {
+        return Ok(Err(AgencyError::Busy));
+    };
+    let outcome = tokio::task::spawn_blocking(move || {
+        let (id, scenario) = engine
+            .lock()
+            .map_err(|_| AgencyError::BadRequest("engine unavailable".to_owned()))?
+            .foresight_scenario(&id)?;
+        let result = agency_foresight::ensemble(&scenario, runs)?;
+        engine
+            .lock()
+            .map_err(|_| AgencyError::BadRequest("engine unavailable".to_owned()))?
+            .foresight_record(&id, result)
+    })
+    .await
+    .map_err(|_| ());
+    drop(permit);
+    outcome
+}
+
+fn respond(outcome: Result<Result<serde_json::Value, AgencyError>, ()>) -> Response {
     match outcome {
         Ok(Ok(data)) => Response::success(data),
         Ok(Err(error)) => {
@@ -118,6 +152,6 @@ async fn answer(raw: &str, engine: &Arc<Mutex<Engine>>) -> Response {
             }
             Response::failure(error.code(), error.public_message())
         }
-        Err(_) => Response::failure("internal", "internal error".to_owned()),
+        Err(()) => Response::failure("internal", "internal error".to_owned()),
     }
 }
