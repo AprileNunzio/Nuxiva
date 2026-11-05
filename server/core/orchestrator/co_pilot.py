@@ -1,6 +1,19 @@
 import json
 from typing import Any, Dict, Optional
 
+KIND_MAP = {
+    "SUGGEST_MOVE": "SuggestMove",
+    "SPEAK_INSIGHT": "SpeakInsight",
+    "SILENT_OBSERVE": "SilentObserve",
+    "PREEMPT_ALERT": "PreemptAlert",
+}
+
+MORPH_MAP = {
+    "FLOATING_ORB": "FloatingOrb",
+    "CORE_HERO": "CoreHero",
+    "AMBIENT_STREAM": "AmbientStream",
+}
+
 
 class CoPilotAction:
     def __init__(
@@ -12,11 +25,11 @@ class CoPilotAction:
         target_morphology: str = "FloatingOrb",
         target_layer: str = "Z2ContextualHud",
     ) -> None:
-        self.action_kind = str(action_kind)
+        self.action_kind = KIND_MAP.get(str(action_kind), str(action_kind))
         self.insight_key = insight_key
         self.suggested_move = suggested_move
         self.confidence = float(confidence)
-        self.target_morphology = target_morphology
+        self.target_morphology = MORPH_MAP.get(str(target_morphology), str(target_morphology))
         self.target_layer = target_layer
 
     def to_dict(self) -> Dict[str, Any]:
@@ -31,12 +44,14 @@ class CoPilotAction:
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "CoPilotAction":
+        raw_kind = str(data.get("action_kind", "SilentObserve"))
+        raw_morph = str(data.get("target_morphology", "AmbientStream"))
         return cls(
-            action_kind=str(data.get("action_kind", "SILENT_OBSERVE")),
+            action_kind=KIND_MAP.get(raw_kind, raw_kind),
             insight_key=str(data.get("insight_key", "copilot.turn_observed")),
             suggested_move=data.get("suggested_move"),
             confidence=float(data.get("confidence", 0.0)),
-            target_morphology=str(data.get("target_morphology", "AmbientStream")),
+            target_morphology=MORPH_MAP.get(raw_morph, raw_morph),
             target_layer=str(data.get("target_layer", "Z2ContextualHud")),
         )
 
@@ -69,7 +84,7 @@ class LiveCoPilotBridge:
         self._board_state = initial_state
 
         return CoPilotAction(
-            action_kind="SPEAK_INSIGHT",
+            action_kind="SpeakInsight",
             insight_key="copilot.game_started",
             suggested_move=None,
             confidence=1.0,
@@ -84,7 +99,7 @@ class LiveCoPilotBridge:
 
         if not self._is_active:
             return CoPilotAction(
-                action_kind="SILENT_OBSERVE",
+                action_kind="SilentObserve",
                 insight_key="copilot.inactive",
                 suggested_move=None,
                 confidence=0.0,
@@ -98,7 +113,7 @@ class LiveCoPilotBridge:
 
         if self._turn_count <= 2:
             return CoPilotAction(
-                action_kind="SPEAK_INSIGHT",
+                action_kind="SpeakInsight",
                 insight_key="copilot.opening_acknowledged",
                 suggested_move=move_key,
                 confidence=0.95,
@@ -108,7 +123,7 @@ class LiveCoPilotBridge:
 
         if self._turn_count % 3 == 0:
             return CoPilotAction(
-                action_kind="SUGGEST_MOVE",
+                action_kind="SuggestMove",
                 insight_key="copilot.tactical_suggestion",
                 suggested_move="e2e4",
                 confidence=0.88,
@@ -117,7 +132,7 @@ class LiveCoPilotBridge:
             )
 
         return CoPilotAction(
-            action_kind="SILENT_OBSERVE",
+            action_kind="SilentObserve",
             insight_key="copilot.turn_observed",
             suggested_move=None,
             confidence=0.9,
@@ -132,7 +147,7 @@ class LiveCoPilotBridge:
 
         self._is_active = False
         return CoPilotAction(
-            action_kind="SPEAK_INSIGHT",
+            action_kind="SpeakInsight",
             insight_key="copilot.game_ended",
             suggested_move=None,
             confidence=1.0,
@@ -164,27 +179,27 @@ class LiveCoPilotBridge:
 
         if count == 0:
             if is_white:
-                return CoPilotAction("SUGGEST_MOVE", "copilot.chess.open_center", "e2e4", 0.98)
-            return CoPilotAction("SILENT_OBSERVE", "copilot.chess.waiting_white", None, 0.90)
+                return CoPilotAction("SuggestMove", "copilot.chess.open_center", "e2e4", 0.98)
+            return CoPilotAction("SilentObserve", "copilot.chess.waiting_white", None, 0.90)
         if count == 1 and not is_white:
             first = moves_list[0]
             sug = "e7e5" if first == "e2e4" else "d7d5"
-            return CoPilotAction("SUGGEST_MOVE", "copilot.chess.reply_center", sug, 0.96)
+            return CoPilotAction("SuggestMove", "copilot.chess.reply_center", sug, 0.96)
         if count == 2 and is_white:
-            return CoPilotAction("SUGGEST_MOVE", "copilot.chess.develop_knight", "g1f3", 0.96)
+            return CoPilotAction("SuggestMove", "copilot.chess.develop_knight", "g1f3", 0.96)
         if count == 3 and not is_white:
-            return CoPilotAction("SUGGEST_MOVE", "copilot.chess.protect_pawn", "b8c6", 0.95)
+            return CoPilotAction("SuggestMove", "copilot.chess.protect_pawn", "b8c6", 0.95)
         if count == 4 and is_white:
-            return CoPilotAction("SUGGEST_MOVE", "copilot.chess.develop_bishop", "f1c4", 0.94)
+            return CoPilotAction("SuggestMove", "copilot.chess.develop_bishop", "f1c4", 0.94)
         if count == 5 and not is_white:
-            return CoPilotAction("SUGGEST_MOVE", "copilot.chess.develop_kingside", "g8f6", 0.93)
+            return CoPilotAction("SuggestMove", "copilot.chess.develop_kingside", "g8f6", 0.93)
 
         has_castle = any(m in ("e1g1", "e1c1", "e8g8", "e8c8") for m in moves_list)
         if not has_castle and 6 <= count <= 14:
             castle_move = "e1g1" if is_white else "e8g8"
-            return CoPilotAction("SUGGEST_MOVE", "copilot.chess.castle_king", castle_move, 0.91)
+            return CoPilotAction("SuggestMove", "copilot.chess.castle_king", castle_move, 0.91)
 
-        return CoPilotAction("SUGGEST_MOVE", "copilot.chess.control_center", "d2d4", 0.88)
+        return CoPilotAction("SuggestMove", "copilot.chess.control_center", "d2d4", 0.88)
 
 
 live_copilot = LiveCoPilotBridge()

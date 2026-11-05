@@ -126,7 +126,7 @@ impl LiveCoPilotEngine {
     #[must_use]
     pub fn analyze_tactics(&self, moves_str: &str, turn: &str) -> CoPilotAction {
         let moves: Vec<&str> = moves_str
-            .split(|c: char| c == ' ' || c == ',' || c == ';')
+            .split([' ', ',', ';'])
             .map(str::trim)
             .filter(|s| !s.is_empty())
             .collect();
@@ -196,7 +196,7 @@ impl LiveCoPilotEngine {
                     moves.iter().any(|m| *m == "e8g8" || *m == "e8c8")
                 };
 
-                if !has_castled && count >= 6 && count <= 14 {
+                if !has_castled && (6..=14).contains(&count) {
                     let castle_move = if is_white { "e1g1" } else { "e8g8" };
                     (
                         CoPilotActionKind::SuggestMove,
