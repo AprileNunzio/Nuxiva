@@ -133,8 +133,3 @@ while true; do
     [ "$delay" -lt 2 ] && delay=2
     sleep "$delay"
 done
-    delay=$(( fails * 5 ))
-    [ "$delay" -gt "$MAX_BACKOFF" ] && delay=$MAX_BACKOFF
-    [ "$delay" -lt 2 ] && delay=2
-    sleep "$delay"
-done
