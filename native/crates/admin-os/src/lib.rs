@@ -1,6 +1,7 @@
 #![forbid(unsafe_code)]
 
 pub mod ai_engine;
+pub mod automations;
 pub mod firewall;
 pub mod memory;
 pub mod network;
@@ -12,6 +13,9 @@ pub mod status;
 pub use ai_engine::{
     AiEngineManager, AiEngineStatus, InferenceConfig, InferenceTelemetry, ModelKind, ModelProfile,
     ModelQuantization,
+};
+pub use automations::{
+    ActionKind, AutomationEngine, AutomationRule, AutomationsSummary, LawRule, LawTier, TriggerKind,
 };
 pub use firewall::{
     BlockedAddress, FirewallEngine, FirewallMode, FirewallRule, RuleAction, RuleDirection,

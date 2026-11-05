@@ -32,7 +32,7 @@ export const View: React.FC = () => {
         <Stat label={t('stat_running')} value={data.active.length} tone="amber" />
       </StatRow>
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
-        <Panel title={t('list_title')} icon={<Workflow className="h-4 w-4 text-amber-700" aria-hidden="true" />}>
+        <Panel title={t('list_title')} icon={<Workflow className="h-4 w-4 text-amber-500" aria-hidden="true" />}>
           {data.automations.length === 0 ? (
             <Empty>{t('list_empty')}</Empty>
           ) : (
@@ -55,9 +55,9 @@ export const View: React.FC = () => {
                     </>
                   }
                 >
-                  <b>{item.name}</b>
-                  {item.description ? <p className="text-xs text-slate-600">{item.description}</p> : null}
-                  <p className="mt-1 text-[11px] text-slate-500">
+                  <b className="text-foreground">{item.name}</b>
+                  {item.description ? <p className="text-xs text-muted-foreground">{item.description}</p> : null}
+                  <p className="mt-1 text-[11px] text-muted-foreground">
                     {t('runs', { n: item.runs ?? 0 })}
                     {item.last_run ? ` · ${formatTime(item.last_run, lang)} · ${item.last_status ?? ''}` : ''}
                     {item.last_error ? ` · ${item.last_error}` : ''}
@@ -74,8 +74,8 @@ export const View: React.FC = () => {
               <List>
                 {templates.map((template) => (
                   <Row key={template.index} actions={<Btn busy={busy} onClick={() => void run(() => fromTemplate(template.index), 'automations_template_failed')}>{t('use')}</Btn>}>
-                    <b>{template.name}</b>
-                    <p className="text-xs text-slate-600">{template.description}</p>
+                    <b className="text-foreground">{template.name}</b>
+                    <p className="text-xs text-muted-foreground">{template.description}</p>
                   </Row>
                 ))}
               </List>
@@ -83,7 +83,7 @@ export const View: React.FC = () => {
           ) : null}
         </div>
       </div>
-      <Panel title={t('runs_title')} icon={<History className="h-4 w-4 text-cyan-700" aria-hidden="true" />}>
+      <Panel title={t('runs_title')} icon={<History className="h-4 w-4 text-primary" aria-hidden="true" />}>
         {data.active.length + data.recent.length === 0 ? (
           <Empty>{t('runs_empty')}</Empty>
         ) : (
@@ -99,10 +99,10 @@ export const View: React.FC = () => {
                   ) : undefined
                 }
               >
-                <b>{item.name}</b>
+                <b className="text-foreground">{item.name}</b>
                 <Pill tone={item.error ? 'rose' : item.ended === null ? 'amber' : 'emerald'}>{item.status}</Pill>
-                <span className="ml-2 text-[11px] text-slate-500">{formatTime(item.started, lang)} · {t('steps', { n: item.steps })} · {item.ms} ms</span>
-                {item.error ? <p className="text-xs text-rose-700">{item.error}</p> : null}
+                <span className="ml-2 text-[11px] text-muted-foreground">{formatTime(item.started, lang)} · {t('steps', { n: item.steps })} · {item.ms} ms</span>
+                {item.error ? <p className="text-xs text-destructive">{item.error}</p> : null}
               </Row>
             ))}
           </List>

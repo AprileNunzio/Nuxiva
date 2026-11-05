@@ -54,21 +54,21 @@ export const View: React.FC = () => {
         <Stat label={t('stat_custom')} value={`${data.custom.length}/${data.max}`} tone="amber" />
       </StatRow>
       <div className="grid gap-4 lg:grid-cols-2">
-        <Panel title={t('fixed_title')} icon={<Scale className="h-4 w-4 text-rose-700" aria-hidden="true" />}>
+        <Panel title={t('fixed_title')} icon={<Scale className="h-4 w-4 text-rose-600 dark:text-rose-400" aria-hidden="true" />}>
           <List>
             {data.fixed.map((law) => (
               <Row key={law.id}>
                 <div className="flex items-center gap-2">
                   <Pill tone="rose">{law.n}</Pill>
-                  <b>{law.title}</b>
+                  <b className="text-foreground">{law.title}</b>
                 </div>
-                <p className="mt-1 text-xs text-slate-600">{law.text}</p>
+                <p className="mt-1 text-xs text-muted-foreground">{law.text}</p>
               </Row>
             ))}
           </List>
-          <p className="mt-3 text-xs text-slate-500">{t('fixed_note')}</p>
+          <p className="mt-3 text-xs text-muted-foreground">{t('fixed_note')}</p>
         </Panel>
-        <Panel title={t('custom_title')} icon={<Gavel className="h-4 w-4 text-amber-700" aria-hidden="true" />}>
+        <Panel title={t('custom_title')} icon={<Gavel className="h-4 w-4 text-amber-600 dark:text-amber-400" aria-hidden="true" />}>
           <form onSubmit={submit} className="mb-3 flex gap-2">
             <input className={inputClass} value={draft} maxLength={400} onChange={(event) => setDraft(event.target.value)} placeholder={t('add_placeholder')} aria-label={t('add_placeholder')} />
             <Btn type="submit" busy={busy} disabled={data.custom.length >= data.max}>
@@ -122,8 +122,8 @@ export const View: React.FC = () => {
                     <input className={inputClass} value={edit} maxLength={400} onChange={(event) => setEdit(event.target.value)} aria-label={t('edit')} />
                   ) : (
                     <>
-                      <span>{law.text}</span>
-                      <span className="mt-0.5 block text-[11px] text-slate-500">
+                      <span className="text-foreground">{law.text}</span>
+                      <span className="mt-0.5 block text-[11px] text-muted-foreground">
                         {formatTime(law.created, lang)}
                         {law.origin ? ` · ${law.origin}` : ''}
                       </span>
