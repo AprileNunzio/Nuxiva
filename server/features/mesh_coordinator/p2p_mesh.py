@@ -145,7 +145,7 @@ class NuxivaMeshCoordinator:
         # Direct P2P Stream Manager
         self._stream_mgr = RustP2PStreamManager() if RustP2PStreamManager is not None else None
         self._bindings: Dict[str, Dict[str, Any]] = {}
-        self._gossip = RustGossipMesh(self.node_id, f"{self.ip}:{self.port}") if RustGossipMesh is not None else None
+        self._gossip = RustGossipMesh(self.node_id, f"0.0.0.0:{self.port}") if RustGossipMesh is not None else None
 
         # Telemetry State for all known nodes
         self.telemetry_store: Dict[str, Dict[str, Any]] = {}
