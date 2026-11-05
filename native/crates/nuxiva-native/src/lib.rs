@@ -1,5 +1,6 @@
 #![forbid(unsafe_code)]
 
+mod admin_os;
 mod arbitration;
 mod audio;
 mod bus;
@@ -19,6 +20,9 @@ mod topics;
 mod vitals;
 mod workbench;
 
+use admin_os::{
+    RustAdminOsAiEngine, RustAdminOsFirewall, RustAdminOsMemory, RustAdminOsNotification,
+};
 use arbitration::{RustIntentRouter, RustSpatialArbiter};
 use audio::{RustAudioCleaner, RustDeviceRouter, RustMultiMicTriage};
 use bus::{PySynapticSpike, RustSynapticBus, SynapticWeightMatrix};
@@ -80,6 +84,10 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<RustFieldbusController>()?;
     m.add_class::<RustSigner>()?;
     m.add_class::<RustParticleCache>()?;
+    m.add_class::<RustAdminOsMemory>()?;
+    m.add_class::<RustAdminOsNotification>()?;
+    m.add_class::<RustAdminOsAiEngine>()?;
+    m.add_class::<RustAdminOsFirewall>()?;
     m.add("CortexError", m.py().get_type::<CortexError>())?;
     m.add_function(wrap_pyfunction!(cortex_sanitize_utterance, m)?)?;
     m.add_function(wrap_pyfunction!(cortex_sanitize_identifier, m)?)?;

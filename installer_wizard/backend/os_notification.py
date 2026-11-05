@@ -5,6 +5,11 @@ import uuid
 from dataclasses import asdict, dataclass, field
 from typing import Any, Dict, List, Optional
 
+try:
+    from nuxiva_native import RustAdminOsNotification  # type: ignore
+except ImportError:
+    RustAdminOsNotification = None  # type: ignore
+
 
 @dataclass
 class OSNotification:
@@ -27,6 +32,10 @@ class NotificationManager:
         self.cooldown_s = cooldown_s
         self._items: List[OSNotification] = []
         self._last_alert_time: Dict[str, float] = {}
+        if RustAdminOsNotification is not None:
+            self._rust_engine = RustAdminOsNotification(max_history, int(cooldown_s))
+        else:
+            self._rust_engine = None
 
     def notify(
         self,
@@ -39,11 +48,16 @@ class NotificationManager:
         force: bool = False,
     ) -> Optional[OSNotification]:
         now = time.time()
-        last = self._last_alert_time.get(code, 0.0)
-        if not force and (now - last < self.cooldown_s):
-            return None
+        if self._rust_engine is not None:
+            res = self._rust_engine.notify(level, code, message or label_key, int(now), force)
+            if res is None:
+                return None
+        else:
+            last = self._last_alert_time.get(code, 0.0)
+            if not force and (now - last < self.cooldown_s):
+                return None
+            self._last_alert_time[code] = now
 
-        self._last_alert_time[code] = now
         notification = OSNotification(
             id=f"notif_{uuid.uuid4().hex[:12]}",
             level=level.upper(),
@@ -83,8 +97,12 @@ class NotificationManager:
     def clear(self) -> None:
         self._items.clear()
         self._last_alert_time.clear()
+        if self._rust_engine is not None:
+            self._rust_engine.clear()
 
     def count(self) -> int:
+        if self._rust_engine is not None:
+            return self._rust_engine.count()
         return len(self._items)
 
 

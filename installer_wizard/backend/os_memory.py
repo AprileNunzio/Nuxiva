@@ -6,6 +6,11 @@ import psutil
 from typing import Any, Dict, List
 from os_notification import notification_manager
 
+try:
+    from nuxiva_native import RustAdminOsMemory  # type: ignore
+except ImportError:
+    RustAdminOsMemory = None  # type: ignore
+
 log = logging.getLogger("nuxiva.os.memory")
 
 
@@ -24,6 +29,15 @@ class MemoryManager:
         self._current_state = "normal"
         self._throttled = False
         self._last_sample: Dict[str, Any] = {}
+        if RustAdminOsMemory is not None:
+            self._rust_engine = RustAdminOsMemory(
+                warning_percent=warn_percent,
+                critical_percent=critical_percent,
+                critical_min_available_bytes=int(min_free_mb * 1024 * 1024),
+                warning_consecutive_threshold=3,
+            )
+        else:
+            self._rust_engine = None
 
     def sample(self) -> Dict[str, Any]:
         mem = psutil.virtual_memory()
@@ -33,13 +47,17 @@ class MemoryManager:
         used_mb = round((mem.total - mem.available) / (1024 * 1024), 1)
         percent = mem.percent
 
-        state = "normal"
-        if percent >= self.critical_percent or available_mb < (self.min_free_mb / 2):
-            state = "critical"
-        elif percent >= self.warn_percent or available_mb < self.min_free_mb:
-            state = "warning"
-        elif percent <= self.recovery_percent and self._current_state != "normal":
+        if self._rust_engine is not None:
+            state, throttled, _ = self._rust_engine.evaluate(mem.total, mem.available)
+            self._throttled = throttled
+        else:
             state = "normal"
+            if percent >= self.critical_percent or available_mb < (self.min_free_mb / 2):
+                state = "critical"
+            elif percent >= self.warn_percent or available_mb < self.min_free_mb:
+                state = "warning"
+            elif percent <= self.recovery_percent and self._current_state != "normal":
+                state = "normal"
 
         self._handle_state_transition(state, percent, available_mb)
         self._current_state = state
@@ -99,6 +117,8 @@ class MemoryManager:
         return procs[:limit]
 
     def is_throttled(self) -> bool:
+        if self._rust_engine is not None:
+            return self._rust_engine.is_throttled()
         return self._throttled
 
     async def run(self, interval_s: float = 10.0) -> None:
