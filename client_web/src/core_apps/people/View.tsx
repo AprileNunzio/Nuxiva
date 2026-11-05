@@ -36,8 +36,8 @@ export const View: React.FC = () => {
 
   if (!list.data || !schema.data) {
     return (
-      <div className="flex min-h-[40vh] items-center justify-center gap-2 text-sm text-slate-600" role="status">
-        <Loader2 className="h-5 w-5 animate-spin text-blue-700" aria-hidden="true" />
+      <div className="flex min-h-[40vh] items-center justify-center gap-2 text-sm text-muted-foreground" role="status">
+        <Loader2 className="h-5 w-5 animate-spin text-primary" aria-hidden="true" />
         {t('loading')}
       </div>
     );
@@ -75,7 +75,7 @@ export const View: React.FC = () => {
           ))}
         </dl>
       </header>
-      <div role="tablist" aria-label={t('title')} className="flex gap-1 self-start rounded-2xl bg-slate-100 p-1">
+      <div role="tablist" aria-label={t('title')} className="flex gap-1 self-start rounded-2xl bg-secondary/60 backdrop-blur-sm border border-border/40 p-1">
         {(['people', 'reminders', 'house'] as const).map((id) => (
           <button
             key={id}
@@ -83,7 +83,7 @@ export const View: React.FC = () => {
             role="tab"
             aria-selected={tab === id}
             onClick={() => setTab(id)}
-            className={`rounded-xl px-4 py-1.5 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${tab === id ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}
+            className={`rounded-xl px-4 py-1.5 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary ${tab === id ? 'bg-card text-foreground shadow-xs border border-border/50' : 'text-muted-foreground hover:text-foreground'}`}
           >
             {t(`main_tab_${id}`)}
           </button>

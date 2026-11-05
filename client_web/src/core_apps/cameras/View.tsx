@@ -52,7 +52,7 @@ export const View: React.FC = () => {
         <Stat label={t('stat_recording')} value={recording} tone="rose" />
       </StatRow>
       {live.length > 0 ? (
-        <Panel title={t('live_title')} icon={<Video className="h-4 w-4 text-rose-700" aria-hidden="true" />}>
+        <Panel title={t('live_title')} icon={<Video className="h-4 w-4 text-rose-600 dark:text-rose-400" aria-hidden="true" />}>
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3 3xl:grid-cols-4">
             {live.map((source) => (
               <Snapshot key={source.id} sourceId={source.id} name={source.name} offline={t('offline')} />
@@ -76,11 +76,11 @@ export const View: React.FC = () => {
                   }
                 >
                   <div className="flex flex-wrap items-center gap-2">
-                    <b>{camera.name}</b>
+                    <b className="text-foreground">{camera.name}</b>
                     <Pill>{camera.kind}</Pill>
                     {camera.recording ? <Pill tone="rose">{t('recording')}</Pill> : null}
                   </div>
-                  <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-slate-600">
+                  <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
                     <label className="flex items-center gap-2">
                       <Toggle checked={camera.enabled} disabled={busy} label={t('enabled')} onChange={(value) => void run(() => patchCamera(camera.id, { enabled: value }), 'cameras_patch_failed')} />
                       {t('enabled')}
@@ -99,7 +99,7 @@ export const View: React.FC = () => {
             </List>
           )}
         </Panel>
-        <Panel title={t('add_title')} icon={<Plus className="h-4 w-4 text-cyan-700" aria-hidden="true" />}>
+        <Panel title={t('add_title')} icon={<Plus className="h-4 w-4 text-primary" aria-hidden="true" />}>
           <form onSubmit={submit} className="flex flex-col gap-3">
             <Field label={t('field_name')}>
               <input className={inputClass} value={name} maxLength={60} onChange={(event) => setName(event.target.value)} required />
@@ -114,7 +114,7 @@ export const View: React.FC = () => {
               </select>
             </Field>
             <Field label={needsUrl ? t('field_url') : t('field_device')}>
-              <input className={inputClass} value={url} onChange={(event) => setUrl(event.target.value)} placeholder={needsUrl ? (kind === 'rtsps' ? 'rtsps://…' : 'rtsp://…') : '0'} required={needsUrl} />
+              <input className={inputClass} value={url} onChange={(event) => setUrl(event.target.value)} placeholder={needsUrl ? (kind === 'rtsps' ? 'rtsps://.' : 'rtsp://.') : '0'} required={needsUrl} />
             </Field>
             <Field label={t('field_retention')}>
               <select className={inputClass} value={retention} onChange={(event) => setRetention(Number(event.target.value))}>
@@ -128,7 +128,7 @@ export const View: React.FC = () => {
             <Btn type="submit" busy={busy}>
               {t('add')}
             </Btn>
-            <p className="text-xs text-slate-500">{t('consent_note')}</p>
+            <p className="text-xs text-muted-foreground">{t('consent_note')}</p>
           </form>
         </Panel>
       </div>
