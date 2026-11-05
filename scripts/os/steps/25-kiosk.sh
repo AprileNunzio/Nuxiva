@@ -7,6 +7,8 @@ POLICY="${NUXIVA_CHROMIUM_POLICY:-/etc/chromium/policies/managed/nuxiva.json}"
 SESSION="$NUXIVA_DIR/scripts/os/kiosk/session.sh"
 LAUNCH="$NUXIVA_DIR/scripts/os/kiosk/launch.sh"
 PERMISSIONS="$NUXIVA_DIR/scripts/os/kiosk/permissions.sh"
+WATCH_SRC="$NUXIVA_DIR/scripts/os/systemd/nuxiva-screen.service"
+WATCH_UNIT="${NUXIVA_SCREEN_UNIT:-/etc/systemd/system/nuxiva-screen.service}"
 XWRAPPER="${NUXIVA_XWRAPPER_CONF:-/etc/X11/Xwrapper.config}"
 KIOSK_PROC_PATTERN='kiosk/launch\.sh|kiosk/session\.sh|startx|xinit|Xorg|chromium'
 
@@ -106,10 +108,30 @@ kiosk_session_active() {
         && pgrep -u "$USER_NAME" -f "$KIOSK_PROC_PATTERN" >/dev/null 2>&1
 }
 
+watcher_ready() {
+    same_content "$WATCH_UNIT" < "$WATCH_SRC" && systemctl is-enabled -q nuxiva-screen.service 2>/dev/null
+}
+
+watcher_install() {
+    progress 90 "Servizio di rilevamento schermo (avvio e standby automatici)"
+    write_if_changed "$WATCH_UNIT" 0644 < "$WATCH_SRC" || true
+    systemctl daemon-reload
+    systemctl enable nuxiva-screen.service >/dev/null
+    systemctl restart nuxiva-screen.service
+}
+
+watcher_remove() {
+    [ -f "$WATCH_UNIT" ] || return 0
+    systemctl disable --now nuxiva-screen.service >/dev/null 2>&1 || warn "Arresto di nuxiva-screen.service non riuscito"
+    rm -f "$WATCH_UNIT"
+    return 1
+}
+
 kiosk_artifacts_present() {
     local home
     home=$(user_home)
     [ -f "$GETTY_OVERRIDE" ] && return 0
+    [ -f "$WATCH_UNIT" ] && return 0
     [ -n "$home" ] && [ -f "$home/.bash_profile" ] && grep -qs 'kiosk/launch\.sh' "$home/.bash_profile" && return 0
     [ -f "$NUXIVA_STATE/.code-kiosk" ] && return 0
     legacy_root_session && return 0
@@ -131,6 +153,7 @@ step_check() {
     xwrapper_conf | same_content "$XWRAPPER" || return 1
     chromium_policy | same_content "$POLICY" || return 1
     code_current kiosk "$SESSION" "$LAUNCH" || return 1
+    watcher_ready || return 1
     ! legacy_root_session
 }
 
@@ -138,6 +161,7 @@ step_teardown() {
     local home changed=0
     home=$(user_home)
     progress 25 "Rimozione autologin kiosk su tty1"
+    watcher_remove || changed=1
     if [ -f "$GETTY_OVERRIDE" ]; then
         rm -f "$GETTY_OVERRIDE"
         rmdir --ignore-fail-on-non-empty "$(dirname "$GETTY_OVERRIDE")" 2>/dev/null || true
@@ -234,6 +258,7 @@ step_apply() {
         info "Riavvio della console tty1 per attivare il kiosk"
         restart_tty1
     fi
+    watcher_install
     code_mark kiosk "$SESSION" "$LAUNCH"
     progress 100 "Display kiosk configurato (una finestra per ogni monitor collegato)"
 }

@@ -53,9 +53,14 @@ if [ "$1" = it ]; then
         [apt_busy]="Aggiornamento automatico di Linux in corso, potrebbe richiedere minuti."
         [apt_force]="Premi [Invio] se vuoi interromperlo forzatamente per installare Nuxiva (o usa --force-apt)"
         [reboot_wait]="Attendo la fine dell'installazione dei pacchetti prima del riavvio"
-        [reboot_now]="Installazione di base completata. Riavvio tra 5 secondi per avviare la configurazione grafica..."
+        [reboot_now]="Installazione di base completata. Riavvio per aprire Nuxiva sullo schermo..."
         [reboot_deferred]="«%s» sta ancora installando pacchetti: il sistema si riavvierà da solo appena finisce. Non spegnere il computer."
         [reboot_manual]="Riavvio automatico non riuscito: attendi la fine dell'installazione dei pacchetti, poi esegui: sudo systemctl reboot"
+        [reboot_count]="Riavvio tra %s s per aprire Nuxiva sullo schermo. Premi un tasto per annullare."
+        [reboot_cancel]="Riavvio annullato. Nuxiva è attivo; per vederlo sullo schermo esegui: sudo systemctl reboot"
+        [kiosk_setup]="Configurazione dello schermo collegato"
+        [no_screen]="Nessuno schermo collegato: Nuxiva è attivo e si aprirà da solo appena colleghi uno schermo. Puoi anche completare la configurazione da un altro dispositivo all'indirizzo qui sopra."
+        [verify_fail]="Verifica finale non superata: %s. Dettagli nel registro."
     )
 else
     DEC="."
@@ -88,9 +93,14 @@ else
         [apt_busy]="Linux is updating itself automatically, this may take a few minutes."
         [apt_force]="Press [Enter] to stop it and install Nuxiva right away (or use --force-apt)"
         [reboot_wait]="Waiting for package installation to finish before restarting"
-        [reboot_now]="Base installation complete. Restarting in 5 seconds to launch the graphical setup..."
+        [reboot_now]="Base installation complete. Restarting to open Nuxiva on the screen..."
         [reboot_deferred]="\"%s\" is still installing packages: the system will restart by itself as soon as it finishes. Do not turn off the computer."
         [reboot_manual]="Automatic restart failed: wait for package installation to finish, then run: sudo systemctl reboot"
+        [reboot_count]="Restarting in %s s to open Nuxiva on the screen. Press any key to cancel."
+        [reboot_cancel]="Restart cancelled. Nuxiva is running; to see it on the screen run: sudo systemctl reboot"
+        [kiosk_setup]="Setting up the connected screen"
+        [no_screen]="No screen connected: Nuxiva is running and will open by itself as soon as you connect a screen. You can also finish the setup from another device at the address above."
+        [verify_fail]="Final check failed: %s. Details in the log."
     )
 fi
 }
@@ -542,6 +552,7 @@ trap cleanup EXIT
 if [ "$TTY" = 1 ]; then printf '\033[?25l\033[?7l\n'; fi
 
 MAX_TRY=3
+KIOSK=0
 HEAL_NOTE=""
 
 pause() {
@@ -782,7 +793,9 @@ do_config() {
     chmod 600 /etc/nuxiva/nuxiva.env
     grep -q '^NUXIVA_UPDATE_BRANCH=' /etc/nuxiva/nuxiva.env || echo "NUXIVA_UPDATE_BRANCH=$BRANCH" >> /etc/nuxiva/nuxiva.env
     grep -q '^NUXIVA_AUTO_UPDATE=' /etc/nuxiva/nuxiva.env || echo "NUXIVA_AUTO_UPDATE=1" >> /etc/nuxiva/nuxiva.env
-    grep -q '^NUXIVA_KIOSK=' /etc/nuxiva/nuxiva.env || echo "NUXIVA_KIOSK=0" >> /etc/nuxiva/nuxiva.env
+    source "$WIZ/first_boot.sh" || return 1
+    KIOSK=$(first_boot_kiosk_choice)
+    first_boot_set_env NUXIVA_KIOSK "$KIOSK" "$WIZ/backend/env_format.py" >>"$LOG" 2>&1 || return 1
     if [ "$UI_LANG_CHOSEN" = 1 ] && [[ "$UI_LANG" =~ ^[a-z]{2,3}$ ]]; then
         sed -i '/^NUXIVA_UI_LANG=/d' /etc/nuxiva/nuxiva.env
         echo "NUXIVA_UI_LANG=$UI_LANG" >> /etc/nuxiva/nuxiva.env
@@ -847,6 +860,10 @@ do_system_base() {
     export NUXIVA_DIR="/opt/Nuxiva"
     phase "${T[s5]}"
     stream h_kiosk bash "$NUXIVA_DIR/scripts/os/steps/20-system.sh" apply || return 1
+    if [ "$KIOSK" = 1 ]; then
+        phase "${T[kiosk_setup]}"
+        stream h_kiosk bash "$NUXIVA_DIR/scripts/os/steps/25-kiosk.sh" apply || return 1
+    fi
     STEP_RESULT=""
 }
 
@@ -906,53 +923,6 @@ preflight() {
     phase "${T[net_check]}"
     wait_online 300 || die "${T[offline]}"
     wait_apt
-}
-
-reboot_progress() {
-    local shown
-    fmt_dur shown "$2"
-    if [ "$TTY" = 1 ]; then
-        printf '\r\033[K   %s%s %s %s %s %s%s' "$C_AMBER" "$G_RUN" "${T[reboot_wait]}" "$G_DOT" "$1" "$shown" "$C_OFF" >&2
-    elif (( REBOOT_NOTED == 0 )); then
-        printf '   %s %s %s\n' "${T[reboot_wait]}" "$G_DOT" "$1" >&2
-        REBOOT_NOTED=1
-    fi
-}
-
-restart_when_idle() {
-    if [ "${NUXIVA_NO_REBOOT:-0}" = "1" ] || [ "${NUXIVA_KIOSK:-0}" = "0" ]; then
-        return 0
-    fi
-    local gate="$WIZ/reboot_gate.sh" who
-    REBOOT_NOTED=0
-    if [ ! -r "$gate" ]; then
-        echo -e "   ${C_RED}${G_BAD}${C_OFF} ${T[reboot_manual]}"
-        return 1
-    fi
-    source "$gate"
-    if ! who=$(reboot_gate_wait "${NUXIVA_REBOOT_WAIT:-2700}" reboot_progress); then
-        [ "$TTY" = 1 ] && printf '\r\033[K' >&2
-        if reboot_gate_defer 21600 >>"$LOG" 2>&1; then
-            printf -v who "${T[reboot_deferred]}" "$who"
-            echo -e "   ${C_AMBER}!${C_OFF} $who"
-            return 0
-        fi
-        echo -e "   ${C_RED}${G_BAD}${C_OFF} ${T[reboot_manual]}"
-        return 1
-    fi
-    [ "$TTY" = 1 ] && printf '\r\033[K' >&2
-    echo -e "   ${C_CYAN}>>> ${T[reboot_now]}${C_OFF}"
-    echo
-    sleep 5
-    REBOOT_GATE_LOG=$LOG reboot_gate_run 600 reboot_progress >>"$LOG" && return 0
-    [ "$TTY" = 1 ] && printf '\r\033[K' >&2
-    if who=$(reboot_gate_blocker) && reboot_gate_defer 21600 >>"$LOG" 2>&1; then
-        printf -v who "${T[reboot_deferred]}" "$who"
-        echo -e "   ${C_AMBER}!${C_OFF} $who"
-        return 0
-    fi
-    echo -e "   ${C_RED}${G_BAD}${C_OFF} ${T[reboot_manual]}"
-    return 1
 }
 
 WAIT_MAX=120
