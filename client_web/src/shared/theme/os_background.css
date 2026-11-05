@@ -21,6 +21,11 @@
   will-change: transform;
 }
 
+[data-theme="light"] .os-aurora-mesh {
+  mix-blend-mode: normal;
+  opacity: 0.85;
+}
+
 .os-aurora-blob {
   position: absolute;
   border-radius: 50%;
@@ -41,6 +46,10 @@
   animation: os-aurora-drift-1 22s ease-in-out infinite alternate;
 }
 
+[data-theme="light"] .os-aurora-blob-1 {
+  background: radial-gradient(circle, rgba(186, 230, 253, 0.75) 0%, rgba(191, 219, 254, 0.4) 50%, transparent 70%);
+}
+
 .os-aurora-blob-2 {
   bottom: 10%;
   right: 15%;
@@ -50,6 +59,10 @@
   max-height: 950px;
   background: radial-gradient(circle, rgba(67, 56, 202, 0.4) 0%, rgba(99, 102, 241, 0.2) 50%, transparent 70%);
   animation: os-aurora-drift-2 28s ease-in-out infinite alternate;
+}
+
+[data-theme="light"] .os-aurora-blob-2 {
+  background: radial-gradient(circle, rgba(224, 231, 255, 0.7) 0%, rgba(237, 233, 254, 0.35) 50%, transparent 70%);
 }
 
 .os-aurora-blob-3 {
@@ -63,11 +76,19 @@
   animation: os-aurora-drift-3 18s ease-in-out infinite alternate;
 }
 
+[data-theme="light"] .os-aurora-blob-3 {
+  background: radial-gradient(circle, rgba(207, 250, 254, 0.65) 0%, rgba(219, 234, 254, 0.35) 60%, transparent 75%);
+}
+
 .os-vignette-overlay {
   position: absolute;
   inset: 0;
   background: radial-gradient(circle at 50% 50%, transparent 40%, rgba(3, 7, 18, 0.65) 100%);
   pointer-events: none;
+}
+
+[data-theme="light"] .os-vignette-overlay {
+  background: radial-gradient(circle at 50% 50%, transparent 45%, rgba(226, 232, 240, 0.5) 100%);
 }
 
 .os-grid-overlay {
@@ -80,6 +101,12 @@
   mask-image: radial-gradient(circle at 50% 50%, black 50%, transparent 90%);
   -webkit-mask-image: radial-gradient(circle at 50% 50%, black 50%, transparent 90%);
   pointer-events: none;
+}
+
+[data-theme="light"] .os-grid-overlay {
+  background-image: 
+    linear-gradient(to right, rgba(15, 23, 42, 0.025) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(15, 23, 42, 0.025) 1px, transparent 1px);
 }
 
 @keyframes os-aurora-drift-1 {
