@@ -22,7 +22,7 @@ export const OverviewPanel: React.FC<OverviewPanelProps> = ({ status, telemetry,
     {telemetry && (
       <div className="upd-overview grid gap-6">
         <div className="flex min-w-0 flex-col gap-6">
-          <PipelinePanel run={telemetry.run} stageIds={telemetry.stages} />
+          <PipelinePanel run={telemetry.run} stageIds={telemetry.stages} boot={telemetry.boot ?? null} />
           <ConsolePanel lines={telemetry.console} />
         </div>
         <div className="flex min-w-0 flex-col gap-6">

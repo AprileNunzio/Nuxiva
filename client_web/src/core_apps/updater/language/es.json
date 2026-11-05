@@ -184,6 +184,8 @@
     "kind_build": "build",
     "kind_security": "sec",
     "kind_chore": "chore",
-    "kind_other": "otro"
+    "kind_other": "otro",
+    "boot_line": "{title} · {progress}%",
+    "boot_silent": "Sin nuevas señales desde hace {seconds}s: la fase final de la compilación Rust puede tardar varios minutos"
   }
 }

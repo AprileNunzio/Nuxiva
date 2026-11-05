@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 . "$(dirname "$0")/../lib.sh"
+. "$(dirname "$0")/../lib_build.sh"
 
 NATIVE_SRC="$NUXIVA_DIR/native"
 NATIVE_HOME="${NUXIVA_NATIVE_HOME:-/opt/nuxiva-native}"
@@ -92,40 +93,33 @@ step_apply() {
     [ -x "$NATIVE_HOME/build/bin/maturin" ] || python3 -m venv "$NATIVE_HOME/build"
     retry 3 5 "$NATIVE_HOME/build/bin/pip" install -q "maturin==$MATURIN_VERSION" || fail "Installazione di maturin non riuscita"
 
-    progress 50 "Compilazione del message broker in Rust"
     rm -rf "$NATIVE_HOME/wheels"
     (
         cd "$NATIVE_SRC/crates/nuxiva-native"
-        "$NATIVE_HOME/build/bin/maturin" build --release --locked --out "$NATIVE_HOME/wheels" 2>&1 | tail -n 20
-        exit "${PIPESTATUS[0]}"
+        cargo_stream "Compilazione del message broker in Rust" 50 74 nuxiva-native \
+            "$NATIVE_HOME/build/bin/maturin" build --profile "$BUILD_PROFILE" --locked --out "$NATIVE_HOME/wheels"
     ) || fail "Compilazione del core nativo non riuscita"
 
-    progress 75 "Compilazione del proxy di uscita della sandbox"
     (
         cd "$NATIVE_SRC"
-        cargo build --release --locked -p nuxiva-egress 2>&1 | tail -n 20
-        exit "${PIPESTATUS[0]}"
+        cargo_stream "Compilazione del proxy di uscita della sandbox" 75 79 nuxiva-egress cargo build --profile "$BUILD_PROFILE" --locked -p nuxiva-egress
     ) || fail "Compilazione del proxy di uscita non riuscita"
     install -d -m 0755 -o root -g root "$NATIVE_HOME/bin"
-    install -m 0755 -o root -g root "$CARGO_TARGET_DIR/release/nuxiva-egress" "$EGRESS_BIN.new"
+    install -m 0755 -o root -g root "$CARGO_TARGET_DIR/$BUILD_PROFILE/nuxiva-egress" "$EGRESS_BIN.new"
     mv -f "$EGRESS_BIN.new" "$EGRESS_BIN"
 
-    progress 80 "Compilazione del motore di analisi del traffico (firewall)"
     (
         cd "$NATIVE_SRC"
-        cargo build --release --locked -p nuxiva-netguard 2>&1 | tail -n 20
-        exit "${PIPESTATUS[0]}"
+        cargo_stream "Compilazione del motore di analisi del traffico (firewall)" 80 81 nuxiva-netguard cargo build --profile "$BUILD_PROFILE" --locked -p nuxiva-netguard
     ) || fail "Compilazione del motore di analisi del traffico non riuscita"
-    install -m 0755 -o root -g root "$CARGO_TARGET_DIR/release/nuxiva-netguard" "$NETGUARD_BIN.new"
+    install -m 0755 -o root -g root "$CARGO_TARGET_DIR/$BUILD_PROFILE/nuxiva-netguard" "$NETGUARD_BIN.new"
     mv -f "$NETGUARD_BIN.new" "$NETGUARD_BIN"
 
-    progress 82 "Compilazione del motore multi-agente dei progetti"
     (
         cd "$NATIVE_SRC"
-        cargo build --release --locked -p nuxiva-agency 2>&1 | tail -n 20
-        exit "${PIPESTATUS[0]}"
+        cargo_stream "Compilazione del motore multi-agente dei progetti" 82 82 nuxiva-agency cargo build --profile "$BUILD_PROFILE" --locked -p nuxiva-agency
     ) || fail "Compilazione del motore multi-agente non riuscita"
-    install -m 0755 -o root -g root "$CARGO_TARGET_DIR/release/nuxiva-agency" "$AGENCY_BIN.new"
+    install -m 0755 -o root -g root "$CARGO_TARGET_DIR/$BUILD_PROFILE/nuxiva-agency" "$AGENCY_BIN.new"
     mv -f "$AGENCY_BIN.new" "$AGENCY_BIN"
     install -m 0644 -o root -g root "$AGENCY_UNIT_SRC" "$AGENCY_UNIT_DST"
     agency_env
@@ -133,13 +127,11 @@ step_apply() {
     systemctl enable nuxiva-agency >/dev/null 2>&1 || true
     systemctl restart nuxiva-agency || fail "Avvio del motore multi-agente non riuscito"
 
-    progress 83 "Compilazione del gestore dei widget della pagina 80"
     (
         cd "$NATIVE_SRC"
-        cargo build --release --locked -p nuxiva-display 2>&1 | tail -n 20
-        exit "${PIPESTATUS[0]}"
+        cargo_stream "Compilazione del gestore dei widget della pagina 80" 83 84 nuxiva-display cargo build --profile "$BUILD_PROFILE" --locked -p nuxiva-display
     ) || fail "Compilazione del gestore dei widget non riuscita"
-    install -m 0755 -o root -g root "$CARGO_TARGET_DIR/release/nuxiva-display" "$DISPLAY_BIN.new"
+    install -m 0755 -o root -g root "$CARGO_TARGET_DIR/$BUILD_PROFILE/nuxiva-display" "$DISPLAY_BIN.new"
     mv -f "$DISPLAY_BIN.new" "$DISPLAY_BIN"
     install -m 0644 -o root -g root "$DISPLAY_UNIT_SRC" "$DISPLAY_UNIT_DST"
     systemctl daemon-reload

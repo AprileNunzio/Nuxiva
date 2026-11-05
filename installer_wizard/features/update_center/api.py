@@ -14,7 +14,7 @@ from tasks import background
 
 import machine
 import updater
-from features.update_center import diagnostics, history, rollout, telemetry
+from features.update_center import boot, diagnostics, history, rollout, telemetry
 from features.update_center.progress import tracker
 from features.update_center.policy import PolicyError, UpdatePolicy, load_policy, next_window, policy_to_env
 
@@ -102,8 +102,10 @@ async def update_status() -> Dict[str, Any]:
 
 @admin_routes.get("/telemetry")
 async def update_telemetry() -> Dict[str, Any]:
-    return await telemetry.build(updater.git, sh, store.update, tracker, NUXIVA_DIR, updater.branch(),
-                                 machine.core_runtime())
+    payload = await telemetry.build(updater.git, sh, store.update, tracker, NUXIVA_DIR, updater.branch(),
+                                    machine.core_runtime())
+    payload["boot"] = boot.view(store)
+    return payload
 
 
 @admin_routes.post("/check")

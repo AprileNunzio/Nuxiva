@@ -184,6 +184,8 @@
     "kind_build": "build",
     "kind_security": "sec",
     "kind_chore": "chore",
-    "kind_other": "other"
+    "kind_other": "other",
+    "boot_line": "{title} · {progress}%",
+    "boot_silent": "No new output for {seconds}s: the final Rust build phase can take several minutes"
   }
 }

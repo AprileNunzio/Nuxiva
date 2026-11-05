@@ -34,6 +34,7 @@
     bar.setAttribute("aria-valuemax", "100");
     el("ol", "upd-stages", wrap).id = "upd-stages";
     el("p", "upd-message", wrap).id = "upd-message";
+    el("p", "upd-detail", wrap).id = "upd-detail";
   }
 
   function stageRows(stages) {
@@ -74,6 +75,8 @@
     if (run && run.active) PageText.bind(msg, `upd_active_${run.active}`);
     else if (s.message) PageText.plain(msg, s.message);
     else PageText.bind(msg, "upd_waiting");
+    const live = run && ["restart", "confirm"].includes(run.active || "") ? String(s.message || "").slice(0, 200) : "";
+    PageText.plain(document.getElementById("upd-detail"), live);
   }
 
   function clear() {

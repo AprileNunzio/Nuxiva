@@ -189,6 +189,15 @@ export interface ServiceState {
   readonly state: string;
 }
 
+export interface BootStep {
+  readonly step: string;
+  readonly title: string;
+  readonly progress: number;
+  readonly message: string;
+  readonly detail: string;
+  readonly silent_for: number | null;
+}
+
 export interface UpdaterTelemetry {
   readonly engine: { readonly name: 'rust' | 'python'; readonly version: string };
   readonly host: { readonly python: string; readonly git: string; readonly branch: string; readonly root: string };
@@ -198,4 +207,5 @@ export interface UpdaterTelemetry {
   readonly pending: { readonly signature: SignatureReport | null; readonly impact: ImpactReport | null };
   readonly services: readonly ServiceState[];
   readonly stages: readonly string[];
+  readonly boot?: BootStep | null;
 }

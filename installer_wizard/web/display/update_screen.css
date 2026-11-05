@@ -17,6 +17,7 @@
 .upd-stage[data-status="done"] { color: #cbd5e1; }
 .upd-stage[data-status="done"] .upd-glyph, .upd-stage[data-status="done"] .upd-state { color: #34d399; }
 .upd-stage[data-status="failed"], .upd-stage[data-status="failed"] .upd-state { color: #fb7185; }
+.upd-detail { margin: -14px 0 0; min-height: 1.3em; font-size: 0.72rem; color: #5b6878; }
 .upd-message { margin: 0; min-height: 2.6em; font-size: 0.78rem; line-height: 1.5; color: #8a99ab; }
 @keyframes upd-blink { 50% { opacity: 0.45; } }
 @media (prefers-reduced-motion: reduce) { .upd-stage[data-status="running"] .upd-glyph, .upd-stage[data-status="running"] .upd-state { animation: none; } .upd-fill { transition: none; } }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { stageDuration } from '../consoleFormat';
-import type { PipelineStage, StageStatus, UpdateRun } from '../types';
+import type { BootStep, PipelineStage, StageStatus, UpdateRun } from '../types';
 import { labelClass, mutedClass, panelClass, tone, useUpdaterI18n } from '../scope';
 
 const GLYPH: Readonly<Record<StageStatus, string>> = { pending: '·', running: '›', done: '✓', skipped: '–', failed: '✕' };
@@ -15,9 +15,25 @@ const BAR: Readonly<Record<StageStatus, string>> = {
 interface PipelinePanelProps {
   readonly run: UpdateRun | null;
   readonly stageIds: readonly string[];
+  readonly boot?: BootStep | null;
 }
 
-export const PipelinePanel: React.FC<PipelinePanelProps> = ({ run, stageIds }) => {
+const STALL_SECONDS = 120;
+
+const BootLine: React.FC<{ readonly boot: BootStep }> = ({ boot }) => {
+  const { t } = useUpdaterI18n();
+  const stalled = boot.silent_for !== null && boot.silent_for > STALL_SECONDS;
+  return (
+    <div className="ml-7 mt-2 flex flex-col gap-0.5 text-[11px]">
+      <p className="text-[var(--md-sys-color-on-surface)]">↳ {t('boot_line', { title: boot.title, progress: boot.progress })}</p>
+      {boot.message && <p className={mutedClass}>{boot.message}</p>}
+      {boot.detail && <p className={`truncate ${mutedClass}`}>{boot.detail}</p>}
+      {stalled && <p className={tone('warn')}>{t('boot_silent', { seconds: Math.round(boot.silent_for ?? 0) })}</p>}
+    </div>
+  );
+};
+
+export const PipelinePanel: React.FC<PipelinePanelProps> = ({ run, stageIds, boot }) => {
   const { t } = useUpdaterI18n();
   const pipeline = run?.pipeline ?? null;
   const now = Date.now() / 1000;
@@ -58,6 +74,7 @@ export const PipelinePanel: React.FC<PipelinePanelProps> = ({ run, stageIds }) =
               <div className="ml-7 mt-1 h-px bg-[var(--md-sys-color-outline-variant)]/50">
                 <div className={`h-full transition-all duration-500 ${BAR[stage.status]}`} />
               </div>
+              {boot && stage.status === 'running' && (stage.id === 'restart' || stage.id === 'confirm') && <BootLine boot={boot} />}
             </li>
           );
         })}
