@@ -251,3 +251,120 @@ pub fn cortex_validate_slots(schema_json: &str, extracted_json: &str) -> PyResul
         validator::validate_slots(&definitions, &extracted).map_err(failure)?;
     serde_json::to_string(&validated).map_err(|e| PyRuntimeError::new_err(e.to_string()))
 }
+
+type GraphNodeTuple = (String, String, String, String, f32);
+type GraphEdgeTuple = (String, String, String, f32, String);
+type SubgraphResult = (Vec<GraphNodeTuple>, Vec<GraphEdgeTuple>);
+
+#[pyclass(module = "nuxiva_native")]
+#[derive(Debug, Default)]
+pub struct RustContextGraph {
+    inner: RwLock<nuxiva_cortex_core::ContextGraph>,
+}
+
+#[pymethods]
+impl RustContextGraph {
+    #[new]
+    fn new() -> Self {
+        Self {
+            inner: RwLock::new(nuxiva_cortex_core::ContextGraph::new()),
+        }
+    }
+
+    #[pyo3(signature = (id, node_type, label, properties_json = "{}", weight = 1.0))]
+    fn upsert_node(
+        &self,
+        id: &str,
+        node_type: &str,
+        label: &str,
+        properties_json: &str,
+        weight: f32,
+    ) -> PyResult<bool> {
+        let mut guard = self.inner.write().map_err(|_| poisoned())?;
+        Ok(guard.upsert_node(id, node_type, label, properties_json, weight))
+    }
+
+    fn remove_node(&self, id: &str) -> PyResult<bool> {
+        let mut guard = self.inner.write().map_err(|_| poisoned())?;
+        Ok(guard.remove_node(id))
+    }
+
+    #[pyo3(signature = (source_id, target_id, relation_type, weight = 1.0, properties_json = "{}"))]
+    fn upsert_edge(
+        &self,
+        source_id: &str,
+        target_id: &str,
+        relation_type: &str,
+        weight: f32,
+        properties_json: &str,
+    ) -> PyResult<bool> {
+        let mut guard = self.inner.write().map_err(|_| poisoned())?;
+        Ok(guard.upsert_edge(source_id, target_id, relation_type, weight, properties_json))
+    }
+
+    fn remove_edge(&self, source_id: &str, target_id: &str, relation_type: &str) -> PyResult<bool> {
+        let mut guard = self.inner.write().map_err(|_| poisoned())?;
+        Ok(guard.remove_edge(source_id, target_id, relation_type))
+    }
+
+    #[pyo3(signature = (id, direction = "outgoing"))]
+    fn get_neighbors(&self, id: &str, direction: &str) -> PyResult<Vec<(String, String, f32)>> {
+        let guard = self.inner.read().map_err(|_| poisoned())?;
+        Ok(guard.get_neighbors(id, direction))
+    }
+
+    fn shortest_path(&self, from_id: &str, to_id: &str) -> PyResult<Option<Vec<String>>> {
+        let guard = self.inner.read().map_err(|_| poisoned())?;
+        Ok(guard.shortest_path(from_id, to_id))
+    }
+
+    #[pyo3(signature = (start_id, max_hops = 2, max_nodes = 50))]
+    fn k_hop_subgraph(
+        &self,
+        start_id: &str,
+        max_hops: usize,
+        max_nodes: usize,
+    ) -> PyResult<SubgraphResult> {
+        let guard = self.inner.read().map_err(|_| poisoned())?;
+        let (nodes, edges) = guard.k_hop_subgraph(start_id, max_hops, max_nodes);
+        let n_tuples = nodes
+            .into_iter()
+            .map(|n| (n.id, n.node_type, n.label, n.properties_json, n.weight))
+            .collect();
+        let e_tuples = edges
+            .into_iter()
+            .map(|e| {
+                (
+                    e.source_id,
+                    e.target_id,
+                    e.relation_type,
+                    e.weight,
+                    e.properties_json,
+                )
+            })
+            .collect();
+        Ok((n_tuples, e_tuples))
+    }
+
+    #[pyo3(signature = (damping = 0.85, iterations = 20))]
+    fn pagerank(&self, damping: f32, iterations: usize) -> PyResult<Vec<(String, f32)>> {
+        let guard = self.inner.read().map_err(|_| poisoned())?;
+        Ok(guard.pagerank(damping, iterations))
+    }
+
+    fn node_count(&self) -> PyResult<usize> {
+        let guard = self.inner.read().map_err(|_| poisoned())?;
+        Ok(guard.node_count())
+    }
+
+    fn edge_count(&self) -> PyResult<usize> {
+        let guard = self.inner.read().map_err(|_| poisoned())?;
+        Ok(guard.edge_count())
+    }
+
+    fn clear(&self) -> PyResult<()> {
+        let mut guard = self.inner.write().map_err(|_| poisoned())?;
+        guard.clear();
+        Ok(())
+    }
+}

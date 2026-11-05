@@ -4,7 +4,7 @@ import time
 import sqlite3
 import logging
 import threading
-from typing import Dict, Any, Optional
+from typing import Dict, Any, List, Optional, Tuple
 from server.config.env import settings
 from server.core.context_graph.node_schema import (
     KnowledgeNode,
@@ -14,6 +14,11 @@ from server.core.context_graph.node_schema import (
     GraphSnapshot,
 )
 from server.shared.errors.domain_errors import EntityNotFoundException
+
+try:
+    from nuxiva_native import RustContextGraph  # type: ignore
+except ImportError:
+    RustContextGraph = None  # type: ignore
 
 logger = logging.getLogger("nuxiva.graph_client")
 
@@ -30,7 +35,9 @@ class GraphClient:
         self._conn.execute("PRAGMA journal_mode=WAL")
         self._conn.execute("PRAGMA synchronous=NORMAL")
         self._create_tables()
+        self._native_graph = RustContextGraph() if RustContextGraph is not None else None
         self._bootstrap_default_topology()
+        self._hydrate_native_graph()
 
     def _create_tables(self) -> None:
         self._conn.executescript("""
@@ -72,6 +79,19 @@ class GraphClient:
             )
             self._conn.commit()
 
+    def _hydrate_native_graph(self) -> None:
+        if self._native_graph is None:
+            return
+        try:
+            nodes = self._conn.execute("SELECT id, node_type, label, properties FROM nodes").fetchall()
+            for nid, ntype, label, props in nodes:
+                self._native_graph.upsert_node(nid, ntype, label, props, 1.0)
+            edges = self._conn.execute("SELECT source_id, target_id, relation_type, weight, properties FROM edges").fetchall()
+            for sid, tid, rel, weight, props in edges:
+                self._native_graph.upsert_edge(sid, tid, rel, float(weight), props)
+        except Exception as exc:
+            logger.warning("Errore durante idratazione native context graph: %s", exc)
+
     def upsert_node(
         self,
         node_id: str,
@@ -107,6 +127,9 @@ class GraphClient:
                 final_props = properties
 
             self._conn.commit()
+
+        if self._native_graph is not None:
+            self._native_graph.upsert_node(node_id, type_str, label, json.dumps(final_props, default=str), 1.0)
 
         return KnowledgeNode(
             id=node_id,
@@ -154,6 +177,9 @@ class GraphClient:
             )
             self._conn.commit()
 
+        if self._native_graph is not None:
+            self._native_graph.upsert_edge(source_id, target_id, rel_str, float(weight), props_json)
+
         return KnowledgeEdge(
             source_id=source_id,
             target_id=target_id,
@@ -161,6 +187,47 @@ class GraphClient:
             weight=weight,
             properties=properties or {},
         )
+
+    def shortest_path(self, from_id: str, to_id: str) -> Optional[List[str]]:
+        if self._native_graph is not None:
+            return self._native_graph.shortest_path(from_id, to_id)
+        visited = set()
+        queue: List[Tuple[str, List[str]]] = [(from_id, [from_id])]
+        while queue:
+            curr, path = queue.pop(0)
+            if curr == to_id:
+                return path
+            if curr in visited:
+                continue
+            visited.add(curr)
+            rows = self._conn.execute("SELECT target_id FROM edges WHERE source_id = ?", (curr,)).fetchall()
+            for r in rows:
+                if r[0] not in visited:
+                    queue.append((r[0], path + [r[0]]))
+        return None
+
+    def k_hop_subgraph(
+        self,
+        start_id: str,
+        max_hops: int = 2,
+        max_nodes: int = 50,
+    ) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+        if self._native_graph is not None:
+            nodes_tup, edges_tup = self._native_graph.k_hop_subgraph(start_id, max_hops, max_nodes)
+            nodes = [{"id": n[0], "node_type": n[1], "label": n[2], "properties": json.loads(n[3]), "weight": n[4]} for n in nodes_tup]
+            edges = [{"source_id": e[0], "target_id": e[1], "relation_type": e[2], "weight": e[3], "properties": json.loads(e[4])} for e in edges_tup]
+            return nodes, edges
+        node = self._conn.execute("SELECT id, node_type, label, properties FROM nodes WHERE id = ?", (start_id,)).fetchone()
+        if not node:
+            return [], []
+        nodes = [{"id": node[0], "node_type": node[1], "label": node[2], "properties": json.loads(node[3]), "weight": 1.0}]
+        edges: List[Dict[str, Any]] = []
+        return nodes, edges
+
+    def pagerank(self, damping: float = 0.85, iterations: int = 20) -> List[Tuple[str, float]]:
+        if self._native_graph is not None:
+            return self._native_graph.pagerank(damping, iterations)
+        return []
 
     def export_snapshot(self) -> GraphSnapshot:
         node_rows = self._conn.execute(
@@ -175,10 +242,14 @@ class GraphClient:
         return GraphSnapshot(nodes=nodes, edges=edges)
 
     def node_count(self) -> int:
+        if self._native_graph is not None:
+            return self._native_graph.node_count()
         row = self._conn.execute("SELECT COUNT(*) FROM nodes").fetchone()
         return row[0] if row else 0
 
     def edge_count(self) -> int:
+        if self._native_graph is not None:
+            return self._native_graph.edge_count()
         row = self._conn.execute("SELECT COUNT(*) FROM edges").fetchone()
         return row[0] if row else 0
 

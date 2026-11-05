@@ -46,6 +46,7 @@ pub use hippocampus::tri_synaptic::{
     DentateGyrusPatternSeparator, EpisodicMemoryNode, ModernHopfieldCA3, TriSynapticHippocampus,
 };
 pub use hippocampus::types::{Decision, SlowReason, Thresholds, Verdict};
+pub use hippocampus::{ContextEdge, ContextGraph, ContextNode};
 pub use neurons::r_stdp::{RStdpConfig, RewardModulatedStdpSynapse};
 pub use neurons::sdr::{
     SDR_BIT_SIZE, SDR_DEFAULT_K, SDR_WORD_COUNT, SparseDistributedRepresentation,

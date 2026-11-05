@@ -27,9 +27,9 @@ use arbitration::{RustIntentRouter, RustSpatialArbiter};
 use audio::{RustAudioCleaner, RustDeviceRouter, RustMultiMicTriage};
 use bus::{PySynapticSpike, RustSynapticBus, SynapticWeightMatrix};
 use cortex::{
-    CortexError, RustNeuronIndex, RustSigner, cortex_derive_key, cortex_generate_key, cortex_open,
-    cortex_sanitize_identifier, cortex_sanitize_utterance, cortex_seal, cortex_validate_slots,
-    cortex_verify,
+    CortexError, RustContextGraph, RustNeuronIndex, RustSigner, cortex_derive_key,
+    cortex_generate_key, cortex_open, cortex_sanitize_identifier, cortex_sanitize_utterance,
+    cortex_seal, cortex_validate_slots, cortex_verify,
 };
 use embodied::{
     RustCorticalCortex, RustEmbodiedCortex, RustEpistemicDoubtEngine, RustFieldbusController,
@@ -76,6 +76,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<RustNetworkGovernor>()?;
     m.add_class::<workbench::RustWorkbenchTracker>()?;
     m.add_class::<RustNeuronIndex>()?;
+    m.add_class::<RustContextGraph>()?;
     m.add_class::<RustCorticalCortex>()?;
     m.add_class::<RustEmbodiedCortex>()?;
     m.add_class::<RustEpistemicDoubtEngine>()?;
