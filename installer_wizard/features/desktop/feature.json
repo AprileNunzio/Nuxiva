@@ -97,6 +97,22 @@
       ]
     },
     {
+      "key": "NUXIVA_DISPLAY_ROOM_STRICT",
+      "label": "Negli schermi di stanze senza telecamera mostra solo ciò che va bene per chiunque",
+      "type": "select",
+      "default": "0",
+      "options": [
+        {
+          "value": "1",
+          "label": "Sì"
+        },
+        {
+          "value": "0",
+          "label": "No"
+        }
+      ]
+    },
+    {
       "key": "NUXIVA_PRIVACY_AUTOCLOSE",
       "label": "Chiudi i widget con dati personali quando non ci sei",
       "type": "select",

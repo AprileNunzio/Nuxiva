@@ -120,7 +120,8 @@ async def desk_hello(request: Request):
         desk.screen_hello(max(0, min(16, int(body.get("screen", 0)))), int(body.get("x", 0)),
                           int(body.get("w", 0)), int(body.get("h", 0)),
                           bool(body.get("local")) and is_local(request), str(body.get("ear") or "")[:260],
-                          str(body.get("perf") or "")[:420], request.client.host if request.client else "")
+                          str(body.get("perf") or "")[:420], request.client.host if request.client else "",
+                          body.get("surface") if isinstance(body.get("surface"), dict) else None)
     except (TypeError, ValueError):
         raise HTTPException(400, "Schermo non valido")
     return {"ok": True}

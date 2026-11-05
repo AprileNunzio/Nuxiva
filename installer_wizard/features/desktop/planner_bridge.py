@@ -8,6 +8,7 @@ from state import store
 
 from features.desktop import audience_view
 from features.desktop.privacy import flag
+from features.desktop.surfaces import surfaces
 
 log = logging.getLogger("nuxiva.desktop.planner")
 SIZES = frozenset({"s", "m", "l", "xl", "full"})
@@ -98,7 +99,8 @@ class PlannerBridge:
                 c["preference"] = learned.get(c["widget"], 0.0)
                 c["interacted_ms"] = learner.interaction_ms(c["key"], now)
             previous = {"shown": {k: v for k, v in self.previous.get(screen, {}).items()}}
-            payload = {"screen": {"id": screen}, "context": ctx, "candidates": mine, "previous": previous,
+            here = {**ctx, "audience": surfaces.audience_for(screen, ctx["audience"])}
+            payload = {"screen": {"id": screen}, "context": here, "candidates": mine, "previous": previous,
                        "now_ms": int(now * 1000)}
             out[screen] = json.loads(engine(json.dumps(payload)))
         return out

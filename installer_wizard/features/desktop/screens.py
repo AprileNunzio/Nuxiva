@@ -2,6 +2,9 @@ import time
 
 from state import store
 
+from features.desktop.moves import MoveGuard
+from features.desktop.surfaces import clean_surface, surfaces
+
 ALIVE = 30
 ROLES = ("agent", "work", "visual")
 PERSON = "person"
@@ -64,6 +67,7 @@ class Screens:
         self.seen: dict[int, dict] = {}
         self.last: list[int] = []
         self.clients: dict[str, dict] = {}
+        self.guard = MoveGuard()
 
     def perf(self, client: str, n: int, local: bool, w: int, h: int, text: str) -> None:
         now = time.time()
@@ -72,19 +76,23 @@ class Screens:
         self.clients = {k: v for k, v in self.clients.items() if now - v["at"] < ALIVE * 4}
         store.displays = [{k: v for k, v in c.items() if k != "at"} for c in self.clients.values()]
 
-    def hello(self, n: int, x: int, w: int, h: int, local: bool = False, ear: str = "") -> bool:
+    def hello(self, n: int, x: int, w: int, h: int, local: bool = False, ear: str = "", surface: dict | None = None) -> bool:
         known = set(s["n"] for s in self.active())
         previous = self.seen.get(n, {})
         if previous.get("local") and not local and time.time() - previous.get("at", 0) < ALIVE:
             return False
-        self.seen[n] = {"n": n, "x": x, "w": w, "h": h, "local": local, "ear": ear, "at": time.time()}
-        store.screens = self.active()
+        described = clean_surface(surface) if isinstance(surface, dict) else previous.get("surface") or clean_surface({"width": w, "height": h})
+        self.seen[n] = {"n": n, "x": x, "w": w, "h": h, "local": local, "ear": ear, "surface": described, "at": time.time()}
+        self.publish()
         return n not in known
 
     def active(self) -> list[dict]:
         now = time.time()
         live = [{k: v for k, v in s.items() if k != "at"} for s in self.seen.values() if now - s["at"] < ALIVE]
         return sorted(live, key=lambda s: (s["x"], s["n"]))
+
+    def publish(self) -> None:
+        store.screens = surfaces.annotate(self.active())
 
     def numbers(self) -> list[int]:
         return [s["n"] for s in self.active()] or [0]
@@ -123,7 +131,7 @@ class Screens:
         main = 0 if 0 in screens else screens[0]
         others = [n for n in screens if n != main]
         load = {n: 0 for n in screens}
-        store.screens = self.active()
+        self.publish()
 
         def lightest() -> int:
             return min(others, key=lambda n: (load[n], others.index(n)))
@@ -145,7 +153,11 @@ class Screens:
                 it["screen"] = self.screen_for_role(role, screens)
             else:
                 it["screen"] = lightest()
+            key = str(it.get("key") or it.get("id") or "")[:256]
+            if key:
+                it["screen"] = self.guard.decide(key, it["screen"], "user" if pref in load else "planner", screens)
             load[it["screen"]] += 1
+        self.guard.forget([str(i.get("key") or i.get("id") or "")[:256] for i in items])
         return items
 
 screens = Screens()

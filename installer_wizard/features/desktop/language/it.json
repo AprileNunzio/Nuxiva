@@ -17,6 +17,7 @@
     "NUXIVA_DISPLAY_PRESENCE_GATE": "Sul display mostra pulsanti, widget e chat solo quando vede o sente una persona autorizzata",
     "NUXIVA_DISPLAY_GUEST_PUBLIC": "Con soli ospiti mostra anche i widget pubblici adatti agli ospiti",
     "NUXIVA_DISPLAY_TRUST_GUESTS": "Con ospiti presenti mostra anche i widget di casa",
-    "NUXIVA_DISPLAY_LEARNING": "Il display impara dalle abitudini di ogni persona autorizzata (dati cifrati, mai con ospiti)"
+    "NUXIVA_DISPLAY_LEARNING": "Il display impara dalle abitudini di ogni persona autorizzata (dati cifrati, mai con ospiti)",
+    "NUXIVA_DISPLAY_ROOM_STRICT": "Negli schermi di stanze senza telecamera mostra solo ciò che va bene per chiunque"
   }
 }

@@ -148,9 +148,9 @@ class Desk:
         self.publish()
 
     def screen_hello(self, n: int, x: int, w: int, h: int, local: bool = False, ear: str = "", perf: str = "",
-                     client: str = "") -> None:
+                     client: str = "", surface: dict | None = None) -> None:
         screens.perf(client or "?", n, local, w, h, perf)
-        if screens.hello(n, x, w, h, local, ear):
+        if screens.hello(n, x, w, h, local, ear, surface):
             self.publish()
 
     def position(self, wid: str):

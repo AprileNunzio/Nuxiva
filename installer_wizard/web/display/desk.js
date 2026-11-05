@@ -11,26 +11,38 @@
     fetch("/api/desk/position", { method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify(y === null ? { id, clear: true } : { id, x, y }) }).catch(() => {});
   }
+  const SIDES = { "-1": "left", 1: "right" }, FLY = { left: "fly-left", right: "fly-right", up: "fly-up", down: "fly-down" };
   function neighbor(dir) {
-    const i = screens.findIndex((s) => s.n === hooks.screen);
-    return i < 0 ? null : screens[i + dir] || null;
+    const side = SIDES[dir] || dir, me = screens.find((s) => s.n === hooks.screen);
+    if (!me || !FLY[side]) return null;
+    if (me.neighbors) {
+      const n = me.neighbors[side];
+      return Number.isInteger(n) ? screens.find((s) => s.n === n) || null : null;
+    }
+    const step = side === "left" ? -1 : side === "right" ? 1 : 0;
+    return step ? screens[screens.indexOf(me) + step] || null : null;
   }
-  function moveTo(id, n) {
+  function moveTo(id, n, side) {
     const card = [...cards.values()].find((c) => c.inst.id === id);
-    if (card) card.el.classList.add(n > hooks.screen ? "fly-right" : "fly-left");
+    if (card) card.el.classList.add(FLY[side] || (n > hooks.screen ? "fly-right" : "fly-left"));
     return fetch("/api/desk/screen", { method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id, screen: n }) }).catch(() => {});
+      body: JSON.stringify({ id, screen: n }) }).catch((err) => console.warn("Spostamento tra schermi non riuscito", err));
   }
-  function edgeDrop(card, x) {
-    const W = window.innerWidth, dir = x < EDGE ? -1 : x > W - EDGE ? 1 : 0, target = dir && neighbor(dir);
+  function sideAt(x, y, margin) {
+    const W = window.innerWidth, H = window.innerHeight;
+    if (x === null) return "";
+    return x < margin ? "left" : x > W - margin ? "right" : y < margin ? "up" : y > H - margin ? "down" : "";
+  }
+  function edgeDrop(card, x, y) {
+    const side = sideAt(x, y, EDGE), target = side && neighbor(side);
     if (!target) return false;
-    moveTo(card.inst.id, target.n);
+    moveTo(card.inst.id, target.n, side);
     return true;
   }
-  function edgeHint(x) {
-    const W = window.innerWidth, b = document.body;
-    b.classList.toggle("edge-l", x !== null && x < EDGE * 3 && !!neighbor(-1));
-    b.classList.toggle("edge-r", x !== null && x > W - EDGE * 3 && !!neighbor(1));
+  function edgeHint(x, y) {
+    const side = sideAt(x, y, EDGE * 3), b = document.body;
+    [["l", "left"], ["r", "right"], ["u", "up"], ["d", "down"]]
+      .forEach(([k, name]) => b.classList.toggle(`edge-${k}`, side === name && !!neighbor(name)));
   }
   function enableDrag(card) {
     const el = card.el;
@@ -44,14 +56,14 @@
         if (!moved && Math.hypot(dx, dy) < 6) return;
         moved = true; el.classList.add("dragging");
         el.style.left = `${ox + dx}px`; el.style.top = `${oy + dy}px`;
-        edgeHint(ev.clientX);
+        edgeHint(ev.clientX, ev.clientY);
       };
       const up = (ev) => {
         el.removeEventListener("pointermove", move); el.removeEventListener("pointerup", up);
         el.classList.remove("dragging");
-        edgeHint(null);
+        edgeHint(null, null);
         if (!moved) return;
-        if (edgeDrop(card, ev.clientX)) return;
+        if (edgeDrop(card, ev.clientX, ev.clientY)) return;
         const W = window.innerWidth, H = window.innerHeight;
         const cx = (el.offsetLeft + el.offsetWidth / 2) / W, cy = (el.offsetTop + el.offsetHeight / 2) / H;
         card.inst.pos = { x: cx, y: cy };
@@ -436,14 +448,15 @@
     fetch("/api/desk/hello", { method: "POST", headers: { "Content-Type": "application/json", "X-Nuxiva-Client": hooks.clientId || "" },
       body: JSON.stringify({ screen: hooks.screen, x: hooks.x || 0, w: window.innerWidth, h: window.innerHeight,
         local: ["127.0.0.1", "localhost"].includes(location.hostname), ear: window.nuxivaEar ? `${window.nuxivaEar.state} ${window.nuxivaEar.link}` : "",
-        perf: window.nuxivaPerf ? window.nuxivaPerf.text : "", client: hooks.clientId || "" }) }).catch(() => {});
+        perf: window.nuxivaPerf ? window.nuxivaPerf.text : "", client: hooks.clientId || "",
+        surface: window.NuxivaSurface ? window.NuxivaSurface.describe() : null }) }).catch(() => {});
   }
 
   function mount(container, options = {}) {
     host = container;
     Object.assign(hooks, options);
     if (!hooks.quiet) { hello(); setInterval(hello, 10000); }
-    ["l", "r"].forEach((side) => { const g = document.createElement("div"); g.className = `edge-glow ${side}`; document.body.appendChild(g); });
+    ["l", "r", "u", "d"].forEach((side) => { const g = document.createElement("div"); g.className = `edge-glow ${side}`; document.body.appendChild(g); });
     window.addEventListener("resize", scheduleLayout);
     window.addEventListener("nuxiva-policy", () => render(allList));
     if (window.ResizeObserver) resizeObs = new ResizeObserver(scheduleLayout);

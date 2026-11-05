@@ -21,6 +21,7 @@ mod scanner;
 mod sentinel;
 mod signal;
 mod stage;
+mod surface;
 mod token;
 mod topics;
 mod update;
@@ -57,6 +58,7 @@ use scanner::FastScanner;
 use sentinel::RustSentinel;
 use signal::{RustSignalEnhancer, RustVoiceBiomarkers};
 use stage::{RustParticleCache, particles_count, particles_sample, stage_plan};
+use surface::{RustMoveGuard, surface_audience, surface_layout};
 use token::{RustTokenCodec, TokenRejected};
 use topics::{TopicRouter, matches, valid_origin, valid_pattern, valid_topic};
 use update::{
@@ -76,6 +78,9 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<RustPresenceTracker>()?;
     m.add_class::<RustLearner>()?;
     m.add_class::<RustSentinel>()?;
+    m.add_class::<RustMoveGuard>()?;
+    m.add_function(wrap_pyfunction!(surface_layout, m)?)?;
+    m.add_function(wrap_pyfunction!(surface_audience, m)?)?;
     m.add_class::<RustAccessMatrix>()?;
     m.add_class::<RustTokenCodec>()?;
     m.add("TokenRejected", m.py().get_type::<TokenRejected>())?;
