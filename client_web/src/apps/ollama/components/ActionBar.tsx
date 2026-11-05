@@ -17,7 +17,7 @@ export const ActionBar: React.FC<ActionBarProps> = ({ saving, onSave, onResetAut
           type="button"
           onClick={onResetAuto}
           disabled={saving}
-          className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-secondary/80 hover:bg-secondary text-secondary-foreground border border-border transition-all active:scale-95 disabled:opacity-50"
+          className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold bg-secondary hover:bg-secondary/80 text-secondary-foreground border border-border/80 transition-all active:scale-95 disabled:opacity-50 shadow-xs cursor-pointer"
           title={t('btn_reset_auto_tooltip')}
         >
           <Wrench className="w-4 h-4 text-primary" />
@@ -28,7 +28,7 @@ export const ActionBar: React.FC<ActionBarProps> = ({ saving, onSave, onResetAut
           type="button"
           onClick={onRestart}
           disabled={saving}
-          className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-background hover:bg-muted text-muted-foreground hover:text-foreground border border-border transition-all active:scale-95 disabled:opacity-50"
+          className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold bg-background hover:bg-muted text-muted-foreground hover:text-foreground border border-border/80 transition-all active:scale-95 disabled:opacity-50 shadow-xs cursor-pointer"
         >
           <RotateCcw className="w-3.5 h-3.5" />
           <span>{t('btn_restart')}</span>
@@ -40,7 +40,7 @@ export const ActionBar: React.FC<ActionBarProps> = ({ saving, onSave, onResetAut
           type="button"
           onClick={onSave}
           disabled={saving}
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm transition-all active:scale-95 disabled:opacity-50"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm transition-all active:scale-95 disabled:opacity-50 cursor-pointer"
         >
           <Save className="w-4 h-4" />
           <span>{saving ? t('btn_saving') : t('btn_save_apply')}</span>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Sliders, Zap } from 'lucide-react';
+import { MD3Switch } from '../../../shared/components/MD3Switch';
 import type { OllamaConfig } from '../types';
 
 interface ConfigurationCardProps {
@@ -12,20 +13,20 @@ export const ConfigurationCard: React.FC<ConfigurationCardProps> = ({ config, up
   if (!config) return null;
 
   return (
-    <div className="flex flex-col gap-4 p-4 rounded-xl border border-border bg-card/60 backdrop-blur-sm">
+    <div className="flex flex-col gap-4 p-5 rounded-2xl border border-border/80 bg-card/70 backdrop-blur-md shadow-sm transition-all">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold tracking-wide uppercase text-muted-foreground flex items-center gap-1.5">
+        <h3 className="text-sm font-semibold tracking-wide uppercase text-muted-foreground flex items-center gap-2">
           <Sliders className="w-4 h-4 text-primary" />
           {t('tuning_title')}
         </h3>
-        <span className="text-xs text-muted-foreground flex items-center gap-1">
+        <span className="text-xs text-muted-foreground flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-medium">
           <Zap className="w-3.5 h-3.5 text-amber-500" />
           {t('dual_lane_active_badge')}
         </span>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-1.5 p-3 rounded-xl bg-background/50 border border-border/40">
           <label className="text-xs font-semibold text-foreground flex items-center justify-between">
             <span>{t('parallel_slots_label')}</span>
             <span className="text-[11px] font-mono text-primary font-bold">{config.num_parallel}</span>
@@ -33,7 +34,7 @@ export const ConfigurationCard: React.FC<ConfigurationCardProps> = ({ config, up
           <select
             value={config.num_parallel}
             onChange={(e) => updateField('num_parallel', parseInt(e.target.value, 10))}
-            className="w-full px-3 py-2 text-xs rounded-lg border border-border bg-background focus:ring-1 focus:ring-primary outline-none transition"
+            className="w-full px-3 py-2 text-xs rounded-lg border border-border bg-background focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition"
           >
             <option value="1">1 ({t('slot_single')})</option>
             <option value="2">2 ({t('slot_dual_recommended')})</option>
@@ -45,7 +46,7 @@ export const ConfigurationCard: React.FC<ConfigurationCardProps> = ({ config, up
           </span>
         </div>
 
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-1.5 p-3 rounded-xl bg-background/50 border border-border/40">
           <label className="text-xs font-semibold text-foreground flex items-center justify-between">
             <span>{t('context_window_label')}</span>
             <span className="text-[11px] font-mono text-primary font-bold">{config.num_ctx} tok</span>
@@ -53,7 +54,7 @@ export const ConfigurationCard: React.FC<ConfigurationCardProps> = ({ config, up
           <select
             value={config.num_ctx}
             onChange={(e) => updateField('num_ctx', parseInt(e.target.value, 10))}
-            className="w-full px-3 py-2 text-xs rounded-lg border border-border bg-background focus:ring-1 focus:ring-primary outline-none transition"
+            className="w-full px-3 py-2 text-xs rounded-lg border border-border bg-background focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition"
           >
             <option value="2048">2.048 tok (Minimal)</option>
             <option value="4096">4.096 tok (Standard)</option>
@@ -67,7 +68,7 @@ export const ConfigurationCard: React.FC<ConfigurationCardProps> = ({ config, up
           </span>
         </div>
 
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-1.5 p-3 rounded-xl bg-background/50 border border-border/40">
           <label className="text-xs font-semibold text-foreground flex items-center justify-between">
             <span>{t('max_predict_label')}</span>
             <span className="text-[11px] font-mono text-primary font-bold">{config.num_predict} tok</span>
@@ -75,7 +76,7 @@ export const ConfigurationCard: React.FC<ConfigurationCardProps> = ({ config, up
           <select
             value={config.num_predict}
             onChange={(e) => updateField('num_predict', parseInt(e.target.value, 10))}
-            className="w-full px-3 py-2 text-xs rounded-lg border border-border bg-background focus:ring-1 focus:ring-primary outline-none transition"
+            className="w-full px-3 py-2 text-xs rounded-lg border border-border bg-background focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition"
           >
             <option value="500">500 tok (Legacy Short)</option>
             <option value="1024">1.024 tok (Chat)</option>
@@ -88,7 +89,7 @@ export const ConfigurationCard: React.FC<ConfigurationCardProps> = ({ config, up
           </span>
         </div>
 
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-1.5 p-3 rounded-xl bg-background/50 border border-border/40">
           <label className="text-xs font-semibold text-foreground flex items-center justify-between">
             <span>{t('max_loaded_models_label')}</span>
             <span className="text-[11px] font-mono text-primary font-bold">{config.max_loaded_models}</span>
@@ -96,7 +97,7 @@ export const ConfigurationCard: React.FC<ConfigurationCardProps> = ({ config, up
           <select
             value={config.max_loaded_models}
             onChange={(e) => updateField('max_loaded_models', parseInt(e.target.value, 10))}
-            className="w-full px-3 py-2 text-xs rounded-lg border border-border bg-background focus:ring-1 focus:ring-primary outline-none transition"
+            className="w-full px-3 py-2 text-xs rounded-lg border border-border bg-background focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition"
           >
             <option value="1">1 (Risparmio RAM)</option>
             <option value="2">2 (Veloce + Profondo)</option>
@@ -108,7 +109,7 @@ export const ConfigurationCard: React.FC<ConfigurationCardProps> = ({ config, up
           </span>
         </div>
 
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-1.5 p-3 rounded-xl bg-background/50 border border-border/40">
           <label className="text-xs font-semibold text-foreground flex items-center justify-between">
             <span>{t('keep_alive_label')}</span>
             <span className="text-[11px] font-mono text-primary font-bold">{config.keep_alive}</span>
@@ -116,7 +117,7 @@ export const ConfigurationCard: React.FC<ConfigurationCardProps> = ({ config, up
           <select
             value={config.keep_alive}
             onChange={(e) => updateField('keep_alive', e.target.value)}
-            className="w-full px-3 py-2 text-xs rounded-lg border border-border bg-background focus:ring-1 focus:ring-primary outline-none transition"
+            className="w-full px-3 py-2 text-xs rounded-lg border border-border bg-background focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition"
           >
             <option value="24h">24h ({t('keep_alive_24h_h24')})</option>
             <option value="12h">12h</option>
@@ -129,7 +130,7 @@ export const ConfigurationCard: React.FC<ConfigurationCardProps> = ({ config, up
           </span>
         </div>
 
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-1.5 p-3 rounded-xl bg-background/50 border border-border/40">
           <label className="text-xs font-semibold text-foreground flex items-center justify-between">
             <span>{t('cpu_threads_label')}</span>
             <span className="text-[11px] font-mono text-primary font-bold">{config.num_thread}</span>
@@ -140,7 +141,7 @@ export const ConfigurationCard: React.FC<ConfigurationCardProps> = ({ config, up
             max={64}
             value={config.num_thread}
             onChange={(e) => updateField('num_thread', Math.max(1, parseInt(e.target.value, 10) || 1))}
-            className="w-full px-3 py-2 text-xs rounded-lg border border-border bg-background focus:ring-1 focus:ring-primary outline-none transition"
+            className="w-full px-3 py-2 text-xs rounded-lg border border-border bg-background focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition"
           />
           <span className="text-[11px] text-muted-foreground leading-tight">
             {t('cpu_threads_hint')}
@@ -148,17 +149,12 @@ export const ConfigurationCard: React.FC<ConfigurationCardProps> = ({ config, up
         </div>
       </div>
 
-      <div className="pt-2 border-t border-border/60 flex items-center justify-between">
+      <div className="pt-3 border-t border-border/60 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <label className="relative inline-flex items-center cursor-pointer">
-            <input
-              type="checkbox"
-              checked={config.flash_attention}
-              onChange={(e) => updateField('flash_attention', e.target.checked)}
-              className="sr-only peer"
-            />
-            <div className="w-9 h-5 bg-secondary peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
-          </label>
+          <MD3Switch
+            checked={config.flash_attention}
+            onChange={(checked) => updateField('flash_attention', checked)}
+          />
           <div>
             <span className="text-xs font-semibold text-foreground">{t('flash_attention_label')}</span>
             <p className="text-[11px] text-muted-foreground leading-tight">{t('flash_attention_hint')}</p>

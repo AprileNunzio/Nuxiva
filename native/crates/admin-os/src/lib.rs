@@ -1,5 +1,6 @@
 #![forbid(unsafe_code)]
 
+pub mod ai_engine;
 pub mod firewall;
 pub mod memory;
 pub mod network;
@@ -8,6 +9,10 @@ pub mod notification;
 pub mod process;
 pub mod status;
 
+pub use ai_engine::{
+    AiEngineManager, AiEngineStatus, InferenceConfig, InferenceTelemetry, ModelKind, ModelProfile,
+    ModelQuantization,
+};
 pub use firewall::{
     BlockedAddress, FirewallEngine, FirewallMode, FirewallRule, RuleAction, RuleDirection,
     RuleProtocol,
