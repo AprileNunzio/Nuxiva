@@ -53,6 +53,7 @@ from features.cloud import api as cloud_api
 from features.desktop import api as desktop_api
 from features.desktop import lifecycle_api as display_lifecycle_api
 from features.desktop import explain_api as display_explain_api
+from features.desktop import learning_api as display_learning_api
 from features.desktop.desk import desk
 from features.desktop.secretary import secretary
 from features.documents import api as documents_api
@@ -197,6 +198,7 @@ FEATURE_APIS = (
     desktop_api,
     display_lifecycle_api,
     display_explain_api,
+    display_learning_api,
     google_api,
     maps_api,
     skills_api,

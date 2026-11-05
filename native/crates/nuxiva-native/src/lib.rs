@@ -12,6 +12,7 @@ mod errors;
 mod gesture;
 mod governors;
 mod language;
+mod learner;
 mod memory;
 mod mesh;
 mod planner;
@@ -45,6 +46,7 @@ use embodied::{
 use gesture::{RustGestureEngine, gesture_catalog, gesture_validate_profile};
 use governors::{RustMeshTaskGovernor, RustNetworkGovernor, RustResourceGovernor};
 use language::{detect_language, supported_languages};
+use learner::RustLearner;
 use memory::{RustFastMemory, RustLiveCoPilot};
 use mesh::{RustCrdtMesh, RustGossipMesh, RustP2PStreamManager};
 use planner::display_plan;
@@ -70,6 +72,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(display_apply, m)?)?;
     m.add_function(wrap_pyfunction!(display_plan, m)?)?;
     m.add_class::<RustPresenceTracker>()?;
+    m.add_class::<RustLearner>()?;
     m.add_class::<RustAccessMatrix>()?;
     m.add_class::<RustTokenCodec>()?;
     m.add("TokenRejected", m.py().get_type::<TokenRejected>())?;

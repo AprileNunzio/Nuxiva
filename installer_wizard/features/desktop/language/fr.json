@@ -16,6 +16,7 @@
     "NUXIVA_SECRETARY": "Sur l'écran, afficher les widgets du propriétaire quand il s'approche",
     "NUXIVA_DISPLAY_PRESENCE_GATE": "Sur l'écran, afficher boutons, widgets et chat uniquement lorsqu'une personne autorisée est vue ou entendue",
     "NUXIVA_DISPLAY_GUEST_PUBLIC": "Avec seulement des invités, afficher aussi les widgets publics adaptés aux invités",
-    "NUXIVA_DISPLAY_TRUST_GUESTS": "En présence d'invités, afficher aussi les widgets de la maison"
+    "NUXIVA_DISPLAY_TRUST_GUESTS": "En présence d'invités, afficher aussi les widgets de la maison",
+    "NUXIVA_DISPLAY_LEARNING": "L'écran apprend les habitudes de chaque personne autorisée (données chiffrées, jamais avec des invités)"
   }
 }

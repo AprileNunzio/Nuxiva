@@ -81,6 +81,22 @@
       ]
     },
     {
+      "key": "NUXIVA_DISPLAY_LEARNING",
+      "label": "Il display impara dalle abitudini di ogni persona autorizzata (dati cifrati, mai con ospiti)",
+      "type": "select",
+      "default": "1",
+      "options": [
+        {
+          "value": "1",
+          "label": "Sì"
+        },
+        {
+          "value": "0",
+          "label": "No"
+        }
+      ]
+    },
+    {
       "key": "NUXIVA_PRIVACY_AUTOCLOSE",
       "label": "Chiudi i widget con dati personali quando non ci sei",
       "type": "select",

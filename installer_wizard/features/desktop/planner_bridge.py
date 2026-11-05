@@ -86,12 +86,17 @@ class PlannerBridge:
         engine = _native()
         if engine is None or not enabled():
             return None
+        from features.desktop.learner_bridge import bridge as learner
         from features.desktop.presence_bridge import bridge
         ctx = context(audience, bridge.present(), now)
         screens = sorted({int(i.get("screen", 0)) for i in items if isinstance(i.get("screen"), int) and i["screen"] >= 0}) or [0]
         out = {}
         for screen in screens:
             mine = [candidate(i, now) for i in items if i.get("screen", 0) in (screen, -1)]
+            learned = learner.preferences([c["widget"] for c in mine], screen, ctx["mode"], items, now)
+            for c in mine:
+                c["preference"] = learned.get(c["widget"], 0.0)
+                c["interacted_ms"] = learner.interaction_ms(c["key"], now)
             previous = {"shown": {k: v for k, v in self.previous.get(screen, {}).items()}}
             payload = {"screen": {"id": screen}, "context": ctx, "candidates": mine, "previous": previous,
                        "now_ms": int(now * 1000)}
@@ -101,6 +106,8 @@ class PlannerBridge:
     def apply(self, snap: dict, audience: dict) -> dict:
         items = [i for i in snap.get("desk") or [] if isinstance(i, dict)]
         now = time.time()
+        from features.desktop.learner_bridge import bridge as learner
+        learner.observe_desk(items, now)
         try:
             plans = self.plans(items, audience, now)
         except ValueError as exc:

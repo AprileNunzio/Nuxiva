@@ -788,6 +788,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-display-learner"
+version = "5.3.0"
+dependencies = [
+ "aes-gcm",
+ "getrandom 0.3.4",
+ "hkdf",
+ "nuxiva-display-planner",
+ "serde",
+ "serde_json",
+ "sha2",
+ "zeroize",
+]
+
+[[package]]
 name = "nuxiva-display-planner"
 version = "5.3.0"
 dependencies = [
@@ -847,6 +861,7 @@ dependencies = [
  "nuxiva-bus-core",
  "nuxiva-cortex-core",
  "nuxiva-crdt-core",
+ "nuxiva-display-learner",
  "nuxiva-display-planner",
  "nuxiva-display-stream",
  "nuxiva-gesture-core",

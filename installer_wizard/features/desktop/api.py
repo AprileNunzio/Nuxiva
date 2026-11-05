@@ -69,7 +69,10 @@ async def desk_position(request: Request):
         if body.get("clear"):
             desk.set_position(wid, None, None)
         else:
-            desk.set_position(wid, float(body.get("x")), float(body.get("y")))
+            x, y = float(body.get("x")), float(body.get("y"))
+            desk.set_position(wid, x, y)
+            from features.desktop.learner_bridge import bridge as learner
+            learner.moved(wid, x, y)
     except (KeyError, TypeError, ValueError):
         raise HTTPException(400, "Posizione non valida")
     return {"ok": True}
@@ -80,8 +83,12 @@ async def desk_fullscreen(request: Request):
     require_display(request, "Solo dal display")
     body = await request.json()
     key = str(body.get("key") or "")[:120]
-    if desk.fullscreen(key, bool(body.get("on", True))) is None:
+    on = bool(body.get("on", True))
+    if desk.fullscreen(key, on) is None:
         raise HTTPException(404, "Widget non trovato")
+    if on:
+        from features.desktop.learner_bridge import bridge as learner
+        learner.resized(key, "full")
     return {"ok": True}
 
 
@@ -89,6 +96,8 @@ async def desk_fullscreen(request: Request):
 async def desk_close(request: Request):
     require_display(request, "Solo dal display")
     key = str((await request.json()).get("key") or "")[:120]
+    from features.desktop.learner_bridge import bridge as learner
+    learner.closed(key)
     if not desk.dismiss(key):
         raise HTTPException(404, "Widget non trovato")
     if key.startswith("alarm:"):
