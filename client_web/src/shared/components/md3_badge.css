@@ -1,0 +1,54 @@
+.md3-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--os-radius-full);
+  font-family: var(--os-font-family);
+  font-size: var(--os-font-size-xs);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.md3-badge-primary {
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+}
+
+.md3-badge-secondary {
+  background: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+}
+
+.md3-badge-tertiary {
+  background: var(--md-sys-color-tertiary-container);
+  color: var(--md-sys-color-on-tertiary-container);
+}
+
+.md3-badge-error {
+  background: var(--md-sys-color-error-container);
+  color: var(--md-sys-color-on-error-container);
+}
+
+.md3-badge-success {
+  background: rgba(34, 197, 94, 0.16);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.28);
+}
+
+.md3-badge-neutral {
+  background: var(--md-sys-color-surface-container-highest);
+  color: var(--md-sys-color-on-surface-variant);
+  border: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.md3-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--os-radius-full);
+  background: currentColor;
+}

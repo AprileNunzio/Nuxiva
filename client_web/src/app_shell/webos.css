@@ -62,7 +62,7 @@
 .os-wallpaper>span { position:absolute; right:7%; bottom:12%; color:rgba(255,255,255,0.04); font-size:clamp(3rem,8vw,7rem); font-weight:800; letter-spacing:-.07em; text-shadow:0 0 40px rgba(59,130,246,0.15); }
 .os-wallpaper small { position:absolute; right:7.2%; bottom:10%; color:#6684a36b; font-size:.6rem; letter-spacing:.5em; }
 .os-desktop { display:flex; flex-direction:column; align-items:flex-start; gap:1.1rem; padding:1.8rem 1.3rem; }
-.webos .os-desktop button { width:6.3rem; flex-shrink:0; border-radius:.7rem; padding:.6rem .3rem; font-size:.7rem; line-height:1.3; color:var(--md-sys-color-on-surface); text-shadow:0 1px 3px rgba(0,0,0,0.85); gap:.5rem; }
+.webos .os-desktop button { width:6.3rem; flex-shrink:0; border-radius:.7rem; padding:.6rem .3rem; font-size:.7rem; line-height:1.3; color:var(--os-desktop-icon-text); text-shadow:var(--os-desktop-icon-shadow); gap:.5rem; }
 .webos .os-desktop button:hover { background:rgba(255,255,255,0.12); border-color:rgba(255,255,255,0.25); backdrop-filter:blur(12px); }
 .os-desktop .os-icon-lg { width:3rem; height:3rem; filter:drop-shadow(0 .3rem .3rem #33415512); transition:transform .18s; }
 .os-desktop button:hover .os-icon { transform:translateY(-.15rem); }
@@ -314,6 +314,7 @@
 
 .webos .os-desktop { --os-desk-cell-w:6.4rem; --os-desk-cell-h:6.6rem; display:grid; grid-auto-flow:column; grid-template-rows:repeat(auto-fill,var(--os-desk-cell-h)); grid-auto-columns:var(--os-desk-cell-w); grid-template-columns:none; align-content:start; justify-content:start; gap:.35rem .5rem; height:100%; box-sizing:border-box; padding:1rem 1rem 1.1rem; overflow-x:auto; overflow-y:hidden; overscroll-behavior:contain; scroll-snap-type:x proximity; }
 .webos .os-desktop button { width:100%; height:100%; box-sizing:border-box; justify-content:flex-start; padding:.55rem .3rem .4rem; scroll-snap-align:start; }
-.webos .os-desktop button>span { display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; line-clamp:2; overflow:hidden; max-width:100%; text-align:center; text-shadow:0 1px 2px #ffffffb0; }
+.webos .os-desktop button>span { display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; line-clamp:2; overflow:hidden; max-width:100%; text-align:center; text-shadow:var(--os-desktop-icon-shadow); color:var(--os-desktop-icon-text); font-weight:550; letter-spacing:-0.01em; padding:2px 6px; border-radius:var(--os-radius-xs); background:var(--os-desktop-icon-pill-bg); border:1px solid var(--os-desktop-icon-pill-border); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); transition:all var(--os-transition-fast); }
+.webos .os-desktop button:hover>span { background:var(--os-desktop-icon-hover-bg); color:var(--md-sys-color-on-surface); transform:translateY(-1px); border-color:var(--md-sys-color-primary); }
 @media(max-height:32rem) { .webos .os-desktop { --os-desk-cell-h:5.9rem; padding-block:.6rem; } .webos .os-desktop button { gap:.35rem; padding-block:.4rem .3rem; } .webos .os-desktop .os-icon-lg { width:2.3rem; height:2.3rem; } }
 @media(max-width:45rem) { .webos .os-desktop { --os-desk-cell-w:5.4rem; --os-desk-cell-h:6.5rem; padding:.8rem .5rem; } .webos .os-desktop button { font-size:.75rem; } }
