@@ -19,31 +19,30 @@ if pkill -u "$(id -u)" -f "user-data-dir=$PROFILE" 2>/dev/null; then
     sleep 2
 fi
 
-BOOT_WAIT_SECONDS="${NUXIVA_KIOSK_BOOT_WAIT:-600}"
+BOOT_WAIT_SECONDS="${NUXIVA_KIOSK_BOOT_WAIT:-30}"
 RECOVERY_DOWN_SECONDS=10
 
-healthy() {
-    local body
-    body=$(curl -fs --max-time 3 "$BASE/healthz" 2>/dev/null) || return 1
-    grep -q '"ok": *true' <<<"$body" && ! grep -q '"safe_mode": *true' <<<"$body"
+server_responding() {
+    curl -fs -o /dev/null --max-time 2 "$BASE/healthz" 2>/dev/null || \
+    curl -fs -o /dev/null --max-time 2 "$BASE/" 2>/dev/null
 }
 
-booted() {
-    local body
-    body=$(curl -fs --max-time 3 "$BASE/healthz" 2>/dev/null) || return 1
-    grep -q '"ok": *true' <<<"$body" && ! grep -q '"phase": *"BOOTING"' <<<"$body" && ! grep -q '"safe_mode": *true' <<<"$body"
+healthy() {
+    server_responding
 }
 
 waited=0
-until booted; do
+until server_responding; do
     if [ "$waited" -ge "$BOOT_WAIT_SECONDS" ]; then
-        echo "[$(date -Is)] Server non pronto dopo ${BOOT_WAIT_SECONDS}s: apro comunque, il watchdog ricaricherà"
+        echo "[$(date -Is)] Server non ancora pronto dopo ${BOOT_WAIT_SECONDS}s: apro comunque Chromium, il watchdog ricaricherà"
         break
     fi
     sleep 2
     waited=$((waited + 2))
 done
-echo "[$(date -Is)] Server pronto dopo ${waited}s"
+if [ "$waited" -lt "$BOOT_WAIT_SECONDS" ]; then
+    echo "[$(date -Is)] Server Nuxiva pronto dopo ${waited}s"
+fi
 
 outputs() { xrandr --query 2>/dev/null | awk '/ connected/{print $1}'; }
 
@@ -71,10 +70,13 @@ window() {
     if [ "$n" -eq 0 ]; then url="$BASE/?x=$x"; profile="$PROFILE"
     else url="$BASE/screen?n=$n&x=$x"; profile="$PROFILE-screen$n"; fi
     mkdir -p "$profile/Default"
-    rm -rf "$profile/Default/Sessions" "$profile/Default/Current Session" "$profile/Default/Current Tabs"         "$profile/Default/Last Session" "$profile/Default/Last Tabs" 2>/dev/null
+    rm -rf "$profile/Default/Sessions" "$profile/Default/Current Session" "$profile/Default/Current Tabs" \
+           "$profile/Default/Last Session" "$profile/Default/Last Tabs" 2>/dev/null
+    rm -f "$profile/SingletonLock" "$profile/SingletonSocket" "$profile/SingletonCookie" 2>/dev/null || true
     while true; do
         sed -i 's/"exited_cleanly":false/"exited_cleanly":true/; s/"exit_type":"[^"]*"/"exit_type":"Normal"/' \
             "$profile/Default/Preferences" 2>/dev/null || true
+        rm -f "$profile/SingletonLock" "$profile/SingletonSocket" "$profile/SingletonCookie" 2>/dev/null || true
         chromium \
             --kiosk "$url" \
             --user-data-dir="$profile" \
@@ -132,6 +134,11 @@ current=$(signature)
 down_since=0
 while true; do
     sleep 5
+    if [ "$(outputs | wc -w)" -eq 0 ]; then
+        echo "[$(date -Is)] Nessuno schermo collegato rilevato: arresto sessione grafica per liberare memoria"
+        stop_all
+        exit 0
+    fi
     next=$(signature)
     if [ "$next" != "$current" ]; then
         echo "[$(date -Is)] Monitor cambiati: riorganizzo le finestre"

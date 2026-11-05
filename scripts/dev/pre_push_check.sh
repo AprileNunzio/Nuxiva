@@ -27,7 +27,7 @@ else
 fi
 
 echo "==> [4/4] Eseguo test unitari Python pertinenti..."
-python -m unittest installer_wizard.tests.test_reboot_gate installer_wizard.tests.test_ollama_hardware_tuning installer_wizard.tests.test_brain_tuning installer_wizard.tests.test_control_panel_layout server.tests.test_cortex_core_platform server.tests.test_embodied_cortex installer_wizard.tests.test_kiosk_toggle installer_wizard.tests.test_hardware_agent installer_wizard.tests.test_hardware_universal installer_wizard.tests.test_ear_realtime installer_wizard.tests.test_ear_host_mic installer_wizard.tests.test_voice_playback installer_wizard.tests.test_remote_display_captions installer_wizard.tests.test_auto_update_self_healing installer_wizard.tests.test_store_feature installer_wizard.tests.test_os_subsystems -v
+python -m unittest installer_wizard.tests.test_reboot_gate installer_wizard.tests.test_ollama_hardware_tuning installer_wizard.tests.test_brain_tuning installer_wizard.tests.test_control_panel_layout server.tests.test_cortex_core_platform server.tests.test_embodied_cortex installer_wizard.tests.test_kiosk_toggle installer_wizard.tests.test_kiosk_smart_display installer_wizard.tests.test_hardware_agent installer_wizard.tests.test_hardware_universal installer_wizard.tests.test_ear_realtime installer_wizard.tests.test_ear_host_mic installer_wizard.tests.test_voice_playback installer_wizard.tests.test_remote_display_captions installer_wizard.tests.test_auto_update_self_healing installer_wizard.tests.test_store_feature installer_wizard.tests.test_os_subsystems -v
 
 echo "==> TUTTI I CONTROLLI PRE-PUSH SUPERATI CON SUCCESSO! Invio in corso a GitHub..."
 exit 0

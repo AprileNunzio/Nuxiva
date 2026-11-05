@@ -35,6 +35,30 @@ def configured_roles() -> dict[int, str]:
     return out
 
 
+def has_physical_screen() -> bool:
+    import glob
+    import os
+
+    if os.environ.get("NUXIVA_KIOSK_FORCE") == "1":
+        return True
+
+    connectors = glob.glob("/sys/class/drm/card*-*/status")
+    if connectors:
+        for c in connectors:
+            try:
+                with open(c, "r", encoding="utf-8", errors="ignore") as f:
+                    if f.read().strip().lower() == "connected":
+                        return True
+            except OSError:
+                pass
+        return False
+    if os.path.exists("/sys/class/graphics/fb0") or os.path.exists("/dev/fb0"):
+        return True
+    if os.name != "posix":
+        return True
+    return False
+
+
 class Screens:
     def __init__(self) -> None:
         self.seen: dict[int, dict] = {}

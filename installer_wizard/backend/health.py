@@ -63,6 +63,13 @@ async def ear_log() -> list[str]:
 
 
 async def kiosk_check() -> dict:
+    from features.desktop.screens import has_physical_screen
+    if not has_physical_screen():
+        return {
+            "status": "ok",
+            "detail": "Standby (nessuno schermo rilevato, memoria risparmiata)",
+            "headless": True,
+        }
     code, out = await sh("ps", "-u", "nuxiva-kiosk", "-o", "args=", timeout=5)
     windows = [ln for ln in out.splitlines() if "chromium" in ln and "--user-data-dir" in ln and "--type=" not in ln]
     if code != 0 or not windows:
@@ -94,6 +101,9 @@ def kiosk_hint() -> str:
 def mic_check(env: dict) -> dict | None:
     import json as _json
     if env.get("NUXIVA_KIOSK", "1") == "0":
+        return None
+    from features.desktop.screens import has_physical_screen
+    if not has_physical_screen():
         return None
     try:
         link = _json.loads((STATE_DIR / "ear_link.json").read_text(encoding="utf-8"))
