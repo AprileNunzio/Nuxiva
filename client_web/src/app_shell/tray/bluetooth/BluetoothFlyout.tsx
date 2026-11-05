@@ -4,6 +4,7 @@ import { BluetoothDevice } from "../../../shared/bluetooth/model";
 import { FlyoutDevice } from "./FlyoutDevice";
 import { useBluetoothState } from "./useBluetoothState";
 import { useLocalNodeId } from "./useLocalNodeId";
+import { MD3Switch } from "../../../shared/components/MD3Switch";
 import type { OpenAppRequest } from "./types";
 import "./bluetooth_flyout.css";
 
@@ -73,17 +74,12 @@ export function BluetoothFlyout({ onClose, onOpenApp }: BluetoothFlyoutProps) {
 
       <div className="bluetooth-power-bar">
         <span className="bluetooth-power-info">{t(isPowered ? "turn_off" : "turn_on")}</span>
-        <button
-          type="button"
-          role="switch"
-          aria-checked={isPowered}
-          aria-label={t(isPowered ? "turn_off" : "turn_on")}
+        <MD3Switch
+          checked={isPowered}
           disabled={!isAvailable || handle.busy !== null}
-          onClick={() => void handle.power(!isPowered)}
-          className={`bluetooth-switch${isPowered ? " on" : ""}`}
-        >
-          <span className="bluetooth-switch-knob" />
-        </button>
+          onChange={(checked) => void handle.power(checked)}
+          ariaLabel={t(isPowered ? "turn_off" : "turn_on")}
+        />
       </div>
 
       <div className="bluetooth-flyout-body" aria-live="polite">

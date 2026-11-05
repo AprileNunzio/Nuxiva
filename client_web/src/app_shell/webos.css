@@ -149,14 +149,25 @@
 .webos { font-family:Inter,ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif; font-feature-settings:'cv02','cv03','cv04','cv11'; -webkit-font-smoothing:antialiased; }
 .os-content [class*="font-['Rajdhani']"] { font-family:inherit; letter-spacing:-.02em; }
 .os-content { font-variant-numeric:tabular-nums; line-height:1.5; }
-.webos button:focus-visible { outline:2px solid #2563eb; outline-offset:2px; }
+.webos button:focus-visible { outline: 2px solid var(--md-sys-color-primary); outline-offset: 2px; }
 
-.webos .os-toolbar button { display:inline-flex;align-items:center;gap:.4rem; }.os-toolbar button svg { width:1rem;height:1rem;flex-shrink:0; }.webos .os-toolbar button[data-variant=primary] { color:#fff;background:#2563eb;border-color:#2563eb; }.webos .os-toolbar button[data-variant=danger] { color:#be123c; }
-.os-action-dialog { position:fixed;inset:0;margin:auto;width:min(28rem,calc(100vw - 2rem));padding:1.5rem;background:var(--md-sys-color-surface-container-low);color:var(--md-sys-color-on-surface);border:1px solid var(--md-sys-color-outline-variant);border-radius:1rem;box-shadow:var(--os-shadow-xl);font:inherit; }.os-action-dialog::backdrop { background:#17305630;backdrop-filter:blur(4px); }.os-action-dialog>strong { display:block;font-size:1rem;font-weight:600; }.os-action-dialog>p { margin:1rem 0;font-size:.9rem;line-height:1.6;color:var(--md-sys-color-on-surface-variant); }.os-action-dialog>div { display:flex;justify-content:flex-end;gap:.6rem; }.webos .os-action-dialog button[data-danger=true] { color:#fff;background:#be123c;border-color:#be123c; }
-.webos * { scrollbar-width:thin;scrollbar-color:#c6d1df transparent; }.webos ::-webkit-scrollbar { width:7px;height:7px; }.webos ::-webkit-scrollbar-thumb { background:#c6d1df;border-radius:8px;border:2px solid #fff; }.webos ::-webkit-scrollbar-track { background:transparent; }
+.webos .os-toolbar button { display: inline-flex; align-items: center; gap: 0.4rem; }
+.os-toolbar button svg { width: 1rem; height: 1rem; flex-shrink: 0; }
+.webos .os-toolbar button[data-variant="primary"] { color: var(--md-sys-color-on-primary); background: var(--md-sys-color-primary); border-color: var(--md-sys-color-primary); }
+.webos .os-toolbar button[data-variant="danger"] { color: var(--md-sys-color-error); }
+.os-action-dialog { position: fixed; inset: 0; margin: auto; width: min(28rem, calc(100vw - 2rem)); padding: 1.5rem; background: var(--md-sys-color-surface-container-low); color: var(--md-sys-color-on-surface); border: 1px solid var(--md-sys-color-outline-variant); border-radius: var(--os-radius-lg, 1rem); box-shadow: var(--os-shadow-xl); font: inherit; }
+.os-action-dialog::backdrop { background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px); }
+.os-action-dialog > strong { display: block; font-size: 1rem; font-weight: 600; }
+.os-action-dialog > p { margin: 1rem 0; font-size: 0.9rem; line-height: 1.6; color: var(--md-sys-color-on-surface-variant); }
+.os-action-dialog > div { display: flex; justify-content: flex-end; gap: 0.6rem; }
+.webos .os-action-dialog button[data-danger="true"] { color: var(--md-sys-color-on-error); background: var(--md-sys-color-error); border-color: var(--md-sys-color-error); }
+.webos * { scrollbar-width: thin; scrollbar-color: var(--md-sys-color-outline-variant) transparent; }
+.webos ::-webkit-scrollbar { width: 7px; height: 7px; }
+.webos ::-webkit-scrollbar-thumb { background: var(--md-sys-color-outline-variant); border-radius: 8px; border: 2px solid transparent; }
+.webos ::-webkit-scrollbar-track { background: transparent; }
 @media(max-width:45rem) { .webos .os-window { left:0!important;top:0!important;width:100%!important;height:100%!important;border:0;border-radius:0; }.os-titlebar { flex-wrap:nowrap;flex-shrink:0; }.os-titlebar .os-icon { width:1.1rem;height:1.1rem; }.os-resize { display:none; }.os-toolbar { flex-shrink:0; }.os-toolbar input { flex-basis:100%; } }
 
-/* Universal Window Enhancements: Sleek Titlebar, Breadcrumbs and Controls */
+
 .os-titlebar {
   height: 3.1rem;
   min-height: 3.1rem;

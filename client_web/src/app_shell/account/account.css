@@ -1,5 +1,182 @@
-.os-account-card { position:absolute;bottom:4.4rem;left:.7rem;z-index:200004;width:min(23rem,calc(100vw - 1.4rem));max-height:calc(100dvh - 5.3rem);overflow:auto;border:1px solid #e5ecf6;border-radius:1rem;background:#fffffff5;backdrop-filter:blur(28px);box-shadow:0 12px 60px #26446d26;color:#1e293b;outline:0; }
-.os-account-card header { display:flex;align-items:center;gap:.8rem;padding:1.25rem;background:linear-gradient(130deg,#edf4ff,#fafcff);border-bottom:1px solid #edf1f7; }.os-account-avatar { width:3rem;height:3rem;display:grid;place-items:center;border-radius:1rem;background:#dceaff;color:#3269b6; }.os-account-avatar svg { width:1.6rem;height:1.6rem; }.os-account-card header>div { flex:1;min-width:0; }.os-account-card h2 { margin:.25rem 0 0;font-size:1.15rem;font-weight:650;overflow-wrap:anywhere; }.os-account-card small { color:#64748b;font-size:.72rem; }.webos .os-account-card button { display:flex;align-items:center;gap:.7rem;border:0;background:transparent;font-size:.85rem; }.os-account-card button svg { width:1.1rem;height:1.1rem;flex-shrink:0; }.webos .os-account-card button:hover { background:#edf3fc; }
-.os-account-facts { display:grid;gap:.9rem;padding:1.15rem 1.3rem; }.os-account-facts>div { display:flex;gap:.8rem;align-items:center; }.os-account-facts svg { width:1.1rem;color:#7187a3; }.os-account-facts span { display:flex;flex-direction:column;gap:.15rem;color:#64748b;font-size:.72rem; }.os-account-facts strong { font-weight:500;font-size:.85rem;color:#334155; }
-.os-account-card details { margin:0 1.2rem 1rem;font-size:.8rem; }.os-account-card summary { cursor:pointer;display:flex;align-items:center;justify-content:space-between;color:#426799;list-style:none; }.os-account-card summary svg { width:1rem;height:1rem; }.os-account-card details[open] summary svg { transform:rotate(90deg); }.os-account-card ul { max-height:9rem;overflow:auto;margin-top:.7rem;padding:.7rem 1.3rem;background:#f7f9fc;border-radius:.5rem;overflow-wrap:anywhere; }.os-account-card li { padding:.2rem; }
-.os-account-actions { display:grid;padding:.5rem;border-top:1px solid #edf1f7;gap:.2rem; }.webos .os-account-actions button { padding:.8rem;border-radius:.6rem;text-align:left; }.os-account-actions button svg:last-child:not(:first-child) { margin-left:auto; }.webos .os-account-actions .os-account-signout { color:#b43e51; }.os-account-signout:disabled { opacity:.6;cursor:wait; }
+.os-account-card {
+  position: absolute;
+  bottom: 4.4rem;
+  left: 0.7rem;
+  z-index: 200004;
+  width: min(23rem, calc(100vw - 1.4rem));
+  max-height: calc(100dvh - 5.3rem);
+  overflow: auto;
+  border: 1px solid var(--os-glass-border);
+  border-radius: var(--os-radius-lg, 1rem);
+  background: var(--os-glass-bg);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  box-shadow: var(--os-shadow-lg);
+  color: var(--md-sys-color-on-surface);
+  outline: 0;
+}
+
+.os-account-card header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1.25rem;
+  background: var(--md-sys-color-surface-container-low);
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.os-account-avatar {
+  width: 3rem;
+  height: 3rem;
+  display: grid;
+  place-items: center;
+  border-radius: var(--os-radius-md, 0.75rem);
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+}
+
+.os-account-avatar svg {
+  width: 1.6rem;
+  height: 1.6rem;
+}
+
+.os-account-card header > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.os-account-card h2 {
+  margin: 0.25rem 0 0;
+  font-size: 1.15rem;
+  font-weight: 650;
+  color: var(--md-sys-color-on-surface);
+  overflow-wrap: anywhere;
+}
+
+.os-account-card small {
+  color: var(--md-sys-color-on-surface-variant);
+  font-size: 0.72rem;
+}
+
+.webos .os-account-card button {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  border: 0;
+  background: transparent;
+  font-size: 0.85rem;
+  color: var(--md-sys-color-on-surface);
+}
+
+.os-account-card button svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  flex-shrink: 0;
+}
+
+.webos .os-account-card button:hover {
+  background: var(--md-sys-color-surface-container-high);
+}
+
+.os-account-facts {
+  display: grid;
+  gap: 0.9rem;
+  padding: 1.15rem 1.3rem;
+}
+
+.os-account-facts > div {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+}
+
+.os-account-facts svg {
+  width: 1.1rem;
+  color: var(--md-sys-color-primary);
+}
+
+.os-account-facts span {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  color: var(--md-sys-color-on-surface-variant);
+  font-size: 0.72rem;
+}
+
+.os-account-facts strong {
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: var(--md-sys-color-on-surface);
+}
+
+.os-account-card details {
+  margin: 0 1.2rem 1rem;
+  font-size: 0.8rem;
+}
+
+.os-account-card summary {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--md-sys-color-primary);
+  list-style: none;
+}
+
+.os-account-card summary svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.os-account-card details[open] summary svg {
+  transform: rotate(90deg);
+}
+
+.os-account-card ul {
+  max-height: 9rem;
+  overflow: auto;
+  margin-top: 0.7rem;
+  padding: 0.7rem 1.3rem;
+  background: var(--md-sys-color-surface-container-lowest);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--os-radius-sm, 0.5rem);
+  overflow-wrap: anywhere;
+}
+
+.os-account-card li {
+  padding: 0.2rem;
+  color: var(--md-sys-color-on-surface);
+}
+
+.os-account-actions {
+  display: grid;
+  padding: 0.5rem;
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+  gap: 0.2rem;
+}
+
+.webos .os-account-actions button {
+  padding: 0.8rem;
+  border-radius: var(--os-radius-md, 0.6rem);
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--os-transition-fast);
+}
+
+.os-account-actions button svg:last-child:not(:first-child) {
+  margin-left: auto;
+}
+
+.webos .os-account-actions .os-account-signout {
+  color: var(--md-sys-color-error);
+}
+
+.webos .os-account-actions .os-account-signout:hover {
+  background: var(--md-sys-color-error-container);
+  color: var(--md-sys-color-on-error-container);
+}
+
+.os-account-signout:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}

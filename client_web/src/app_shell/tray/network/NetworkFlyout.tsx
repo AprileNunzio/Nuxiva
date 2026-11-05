@@ -10,6 +10,7 @@ import {
   Globe,
 } from "lucide-react";
 import { useNetworkState } from "./useNetworkState";
+import { MD3Switch } from "../../../shared/components/MD3Switch";
 import it from "./language/it.json";
 import en from "./language/en.json";
 import es from "./language/es.json";
@@ -47,32 +48,32 @@ export function NetworkFlyout({ onClose, onOpenApp, lang = "it" }: NetworkFlyout
   const [password, setPassword] = useState("");
 
   const handleConnect = async (ssid: string) => {
-    const success = await connectWifi(ssid, password);
-    if (success) {
-      setSelectedSsid(null);
-      setPassword("");
-    }
+    await connectWifi(ssid, password);
+    setSelectedSsid(null);
+    setPassword("");
   };
 
   return (
-    <div className="network-flyout" role="dialog" aria-modal="true">
+    <div className="network-flyout" role="dialog" aria-modal="false" aria-labelledby="network-flyout-title">
       <div className="network-flyout-header">
-        <span className="network-flyout-title">{t("title")}</span>
+        <span id="network-flyout-title" className="network-flyout-title">
+          {t("title")}
+        </span>
         <div className="network-flyout-actions">
           <button
             className="network-icon-btn"
-            onClick={() => refresh()}
-            disabled={loading}
             title={t("refresh")}
             aria-label={t("refresh")}
+            onClick={() => refresh()}
+            disabled={loading}
           >
-            <RotateCw size={15} className={loading ? "animate-spin" : ""} />
+            <RotateCw size={14} className={loading ? "network-spinning" : ""} />
           </button>
           <button
             className="network-icon-btn"
-            onClick={onClose}
             title={t("close")}
             aria-label={t("close")}
+            onClick={onClose}
           >
             <X size={15} />
           </button>
@@ -100,18 +101,15 @@ export function NetworkFlyout({ onClose, onOpenApp, lang = "it" }: NetworkFlyout
         {activeTab === "wifi" ? (
           <>
             <div className="network-radio-row">
-              <span style={{ fontSize: "12px", fontWeight: 500 }}>
+              <span className="network-radio-label">
                 {wifi?.radio_enabled ? t("wifi_enabled") : t("wifi_disabled")}
               </span>
-              <label className="network-toggle-switch">
-                <input
-                  type="checkbox"
-                  checked={wifi?.radio_enabled ?? true}
-                  disabled={actionLoading}
-                  onChange={(e) => toggleRadio(e.target.checked)}
-                />
-                <span className="network-toggle-slider" />
-              </label>
+              <MD3Switch
+                checked={wifi?.radio_enabled ?? true}
+                disabled={actionLoading}
+                onChange={toggleRadio}
+                ariaLabel={wifi?.radio_enabled ? t("wifi_enabled") : t("wifi_disabled")}
+              />
             </div>
 
             {wifi?.radio_enabled === false ? (
@@ -135,9 +133,9 @@ export function NetworkFlyout({ onClose, onOpenApp, lang = "it" }: NetworkFlyout
                     >
                       <div className="network-item-row">
                         <div className="network-item-left">
-                          <Wifi size={14} color={isCur ? "#16a34a" : "#64748b"} />
+                          <Wifi size={14} className={isCur ? "network-icon-online" : "network-icon-muted"} />
                           <span className="network-item-ssid">{net.ssid}</span>
-                          {net.security && !isCur && <Lock size={11} color="#64748b" />}
+                          {net.security && !isCur && <Lock size={11} className="network-icon-muted" />}
                           {isCur && (
                             <span className="network-item-badge">
                               {t("connected")}
@@ -209,13 +207,7 @@ export function NetworkFlyout({ onClose, onOpenApp, lang = "it" }: NetworkFlyout
                 <div key={iface.name} className="iface-card">
                   <div className="iface-card-header">
                     <span className="iface-name">{iface.name}</span>
-                    <span
-                      style={{
-                        fontSize: "10px",
-                        fontWeight: 600,
-                        color: iface.is_up ? "#16a34a" : "#94a3b8",
-                      }}
-                    >
+                    <span className={`iface-status ${iface.is_up ? "up" : "down"}`}>
                       {iface.is_up ? "UP" : "DOWN"}
                     </span>
                   </div>
