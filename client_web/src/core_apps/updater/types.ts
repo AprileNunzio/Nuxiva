@@ -99,3 +99,103 @@ export interface UpdateHistoryResponse {
   readonly offset: number;
   readonly events: readonly HistoryEvent[];
 }
+
+export type StageStatus = 'pending' | 'running' | 'done' | 'skipped' | 'failed';
+
+export interface PipelineStage {
+  readonly id: string;
+  readonly weight: number;
+  readonly status: StageStatus;
+  readonly started_at: number | null;
+  readonly finished_at: number | null;
+}
+
+export interface PipelineState {
+  readonly stages: readonly PipelineStage[];
+  readonly percent: number;
+  readonly active: string | null;
+  readonly outcome: 'success' | 'failed' | null;
+}
+
+export type SignatureVerdict = 'trusted' | 'valid' | 'unsigned' | 'unknown_key' | 'expired' | 'revoked' | 'bad';
+
+export interface SignatureReport {
+  readonly verdict: SignatureVerdict;
+  readonly blocking: boolean;
+  readonly format: string;
+  readonly fingerprint: string | null;
+  readonly signer: string | null;
+}
+
+export interface IntegrityReport {
+  readonly algorithm: string;
+  readonly checked: number;
+  readonly matched: number;
+  readonly skipped: number;
+  readonly mismatched: readonly string[];
+  readonly missing: readonly string[];
+  readonly rejected: readonly string[];
+  readonly fingerprint: string;
+  readonly intact: boolean;
+}
+
+export interface ComponentImpact {
+  readonly component: string;
+  readonly added: number;
+  readonly modified: number;
+  readonly deleted: number;
+  readonly renamed: number;
+}
+
+export interface ImpactReport {
+  readonly files: number;
+  readonly components: readonly ComponentImpact[];
+  readonly effects: readonly string[];
+  readonly error?: string;
+}
+
+export interface UpdateRun {
+  readonly id: string;
+  readonly from: string;
+  readonly to: string;
+  readonly reason: string;
+  readonly started_at: number;
+  readonly pipeline: PipelineState | null;
+  readonly signature: SignatureReport | null;
+  readonly integrity: IntegrityReport | null;
+  readonly impact: ImpactReport | null;
+}
+
+export type ConsoleLevel = 'info' | 'ok' | 'warn' | 'error';
+
+export interface ConsoleLine {
+  readonly t: number;
+  readonly level: ConsoleLevel;
+  readonly code: string;
+  readonly stage: string | null;
+  readonly args: Readonly<Record<string, string | number | boolean | null>>;
+}
+
+export interface ChangeEntry {
+  readonly sha: string;
+  readonly kind: string;
+  readonly scope: string | null;
+  readonly breaking: boolean;
+  readonly summary: string;
+}
+
+export interface ServiceState {
+  readonly unit: string;
+  readonly state: string;
+}
+
+export interface UpdaterTelemetry {
+  readonly engine: { readonly name: 'rust' | 'python'; readonly version: string };
+  readonly host: { readonly python: string; readonly git: string; readonly branch: string; readonly root: string };
+  readonly run: UpdateRun | null;
+  readonly console: readonly ConsoleLine[];
+  readonly changelog: readonly ChangeEntry[];
+  readonly pending: { readonly signature: SignatureReport | null; readonly impact: ImpactReport | null };
+  readonly services: readonly ServiceState[];
+  readonly stages: readonly string[];
+}

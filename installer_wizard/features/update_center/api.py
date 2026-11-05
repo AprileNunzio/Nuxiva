@@ -13,7 +13,8 @@ from state import store
 from tasks import background
 
 import updater
-from features.update_center import diagnostics, history, rollout
+from features.update_center import diagnostics, history, rollout, telemetry
+from features.update_center.progress import tracker
 from features.update_center.policy import PolicyError, UpdatePolicy, load_policy, next_window, policy_to_env
 
 admin_routes = APIRouter(prefix="/api/v5/updater", tags=["Update Center"], dependencies=[Depends(require_admin)])
@@ -96,6 +97,11 @@ async def _apply_and_rollout(sync_nodes: bool) -> None:
 @admin_routes.get("/status")
 async def update_status() -> Dict[str, Any]:
     return _status_payload()
+
+
+@admin_routes.get("/telemetry")
+async def update_telemetry() -> Dict[str, Any]:
+    return await telemetry.build(updater.git, sh, store.update, tracker, NUXIVA_DIR, updater.branch())
 
 
 @admin_routes.post("/check")

@@ -32,12 +32,12 @@ function heroState(status: UpdaterStatus, applying: boolean, unreachable: boolea
 }
 
 const STATE_STYLE: Readonly<Record<HeroState, { icon: typeof CheckCircle2; tone: string }>> = {
-  unverified: { icon: ShieldAlert, tone: 'text-amber-400 border-amber-500/30 bg-amber-500/10' },
-  current: { icon: CheckCircle2, tone: 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10' },
-  available: { icon: CloudDownload, tone: 'text-blue-400 border-blue-500/30 bg-blue-500/10' },
-  updating: { icon: Loader2, tone: 'text-amber-400 border-amber-500/30 bg-amber-500/10' },
-  restarting: { icon: Loader2, tone: 'text-amber-400 border-amber-500/30 bg-amber-500/10' },
-  error: { icon: ServerCrash, tone: 'text-rose-400 border-rose-500/30 bg-rose-500/10' },
+  unverified: { icon: ShieldAlert, tone: 'text-amber-500' },
+  current: { icon: CheckCircle2, tone: 'text-emerald-500' },
+  available: { icon: CloudDownload, tone: 'text-[var(--md-sys-color-primary)]' },
+  updating: { icon: Loader2, tone: 'text-amber-500' },
+  restarting: { icon: Loader2, tone: 'text-amber-500' },
+  error: { icon: ServerCrash, tone: 'text-rose-500' },
 };
 
 export const VersionHero: React.FC<VersionHeroProps> = ({ status, applying, unreachable, onStatus, onApplying }) => {
@@ -74,18 +74,17 @@ export const VersionHero: React.FC<VersionHeroProps> = ({ status, applying, unre
   };
 
   return (
-    <section className={`${panelClass} relative overflow-hidden`} aria-labelledby="upd-hero-title">
-      <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-blue-500/10 blur-3xl" aria-hidden="true" />
-      <div className="relative flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+    <section className={panelClass} aria-labelledby="upd-hero-title">
+      <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
         <div className="min-w-0">
-          <span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold ${tone}`} role="status">
+          <span className={`inline-flex items-center gap-2 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] ${tone}`} role="status">
             <StateIcon className={`h-3.5 w-3.5 ${busy ? 'animate-spin' : ''}`} aria-hidden="true" />
             {t(`state_${state}`)}
           </span>
-          <h1 id="upd-hero-title" className="mt-3 font-['Rajdhani'] text-3xl font-bold tracking-wide text-[var(--md-sys-color-on-surface)] sm:text-4xl">
+          <h1 id="upd-hero-title" className="mt-2 font-mono text-2xl font-semibold tracking-tight text-[var(--md-sys-color-on-surface)] sm:text-3xl">
             {t('version_label', { version: status.version ?? t('value_unavailable') })}
           </h1>
-          <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-xs">
+          <dl className="mt-3 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 font-mono text-xs">
             <dt className="text-[var(--md-sys-color-on-surface-variant)]">{t('installed_rev')}</dt>
             <dd className="font-mono text-[var(--md-sys-color-primary)]">{shortRev(status.local_rev) ?? t('value_unavailable')}</dd>
             {status.available && (

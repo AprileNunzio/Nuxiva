@@ -1,4 +1,4 @@
-import { CollaudoResult, UpdateHistoryResponse, UpdatePolicy, UpdaterStatus } from './types';
+import { CollaudoResult, UpdateHistoryResponse, UpdatePolicy, UpdaterStatus, UpdaterTelemetry } from './types';
 
 const BASE = '/api/v5/updater';
 const JSON_HEADERS = { Accept: 'application/json', 'Content-Type': 'application/json' };
@@ -36,3 +36,4 @@ export const updateNode = (nodeId: string) =>
   request<{ queued: string[] }>(`/nodes/${encodeURIComponent(nodeId)}/update`, { method: 'POST', body: confirmed });
 export const fetchHistory = (offset = 0, limit = 20, signal?: AbortSignal) =>
   request<UpdateHistoryResponse>(`/history?offset=${offset}&limit=${limit}`, { signal });
+export const fetchTelemetry = (signal?: AbortSignal) => request<UpdaterTelemetry>('/telemetry', { signal });

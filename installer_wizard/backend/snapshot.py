@@ -133,6 +133,8 @@ def full_snapshot(admin: bool) -> dict:
     snap["now_playing"] = music.watcher.current()
     snap["home"] = home.brain.brief()
     snap["selftest"] = getattr(store, "selftest", None)
+    from features.update_center.progress import tracker as update_tracker
+    snap["update_progress"] = update_tracker.public()
     from background import queue
     snap["background"] = queue.snapshot()
     try:

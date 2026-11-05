@@ -1,5 +1,6 @@
 import asyncio
 import json
+import logging
 import re
 import time
 
@@ -11,6 +12,7 @@ DEMO: bool = False
 from health import sh
 from state import now_iso, store
 
+log = logging.getLogger(__name__)
 PENDING_FILE = STATE_DIR / "update_pending.json"
 BAD_REVS_FILE = STATE_DIR / "bad_revs"
 LAST_GOOD_FILE = STATE_DIR / "last_good_rev"
@@ -252,6 +254,7 @@ async def check(fetch_timeout: float = 180, allow_bad: bool = False, fresh: bool
     code, out = await git("fetch", "--quiet", "origin", branch(), timeout=fetch_timeout)
     if code != 0:
         info.update(check_error=f"Fetch non riuscito: {out[:160]}", available=False, target_rev=None, remote_rev=None)
+        _tracker().log("check_failed", "error", "fetch", exit=code)
         store.touch()
         return info
     info["check_error"] = None
@@ -273,8 +276,23 @@ async def check(fetch_timeout: float = 180, allow_bad: bool = False, fresh: bool
                 changelog=log.splitlines() if log else [])
     if note:
         info["last_result"] = note
+    _tracker().log("check_done", "ok" if available else "info", "check", local=local[:7], remote=(remote or "")[:7],
+                   available=available, commits=len(info["changelog"]))
     store.touch()
     return info
+
+
+async def _record(**fields) -> None:
+    try:
+        from features.update_center import history
+        await history.record_update(git, **fields)
+    except Exception:
+        log.exception("Cronologia aggiornamenti non registrata")
+
+
+def _tracker():
+    from features.update_center.progress import tracker
+    return tracker
 
 
 async def apply(reason: str = "automatico", fetch_timeout: float = 180, force: bool = False) -> bool:
@@ -290,25 +308,47 @@ async def apply(reason: str = "automatico", fetch_timeout: float = 180, force: b
         return False
     if force:
         clear_bad_rev(target)
+    from features.update_center import guard
     previous = pending()
     rollback_to = previous["from"] if previous else info["local_rev"]
+    tracker = _tracker()
+    tracker.begin(info["local_rev"], target, reason)
     store.event("INFO", f"Aggiornamento {reason}: {info['local_rev'][:7]} → {target[:7]}", "updater")
     store.set_phase("UPDATING", "Download del nuovo firmware cognitivo…")
+    gated = require_ci() and target == info.get("target_rev")
+    if not await guard.preflight(git, tracker, info["local_rev"], target, gated):
+        mark_bad_rev(target)
+        info["last_result"] = f"Aggiornamento bloccato: firma non valida su {target[:7]}"
+        store.event("ERROR", info["last_result"], "updater")
+        await _record(to_rev=target, from_rev=rollback_to, status="failed", reason=reason, error="invalid_signature")
+        store.set_phase("READY", "Aggiornamento annullato")
+        return False
+    tracker.step("snapshot", "running")
     PENDING_FILE.write_text(json.dumps({"from": rollback_to, "to": target, "at": time.time(), "reason": reason}))
+    tracker.step("snapshot", "done", rollback=rollback_to[:7])
+    tracker.step("apply", "running", target=target[:7])
     code, out = await git("reset", "--hard", target)
     landed = await current_rev() if code == 0 else ""
     if code != 0 or landed != target:
         PENDING_FILE.unlink(missing_ok=True)
         detail = out[:200] if code != 0 else f"la revisione attiva è {landed[:7] or '?'} invece di {target[:7]}"
+        tracker.step("apply", "failed", target=target[:7])
         info["last_result"] = f"Aggiornamento non applicato: {detail}"
         store.event("ERROR", info["last_result"], "updater")
-        try:
-            from features.update_center import history
-            await history.record_update(git, to_rev=target, from_rev=rollback_to, status="failed", reason=reason, error=detail)
-        except Exception:
-            pass
+        await _record(to_rev=target, from_rev=rollback_to, status="failed", reason=reason, error=detail)
         store.set_phase("READY", "Aggiornamento annullato")
         return False
+    tracker.step("apply", "done", target=target[:7])
+    if not await guard.postflight(git, tracker, NUXIVA_DIR, target):
+        await git("reset", "--hard", rollback_to)
+        PENDING_FILE.unlink(missing_ok=True)
+        mark_bad_rev(target)
+        info["last_result"] = f"Rollback: integrità dei file non verificata su {target[:7]}"
+        store.event("ERROR", info["last_result"], "updater")
+        await _record(to_rev=target, from_rev=rollback_to, status="rollback", reason=reason, error="integrity_mismatch")
+        store.set_phase("READY", "Aggiornamento annullato")
+        return False
+    tracker.step("restart", "running")
     store.message = "Riavvio del supervisore sulla nuova versione…"
     store.touch()
     await asyncio.sleep(2)
@@ -350,6 +390,7 @@ async def finish_pending(success: bool) -> bool:
         store.update["last_result"] = (f"Aggiornamento a {data['to'][:7]} non attivo: "
                                        f"è in esecuzione {running[:7] or '?'}")
         store.event("ERROR", store.update["last_result"], "updater")
+        _tracker().step("confirm", "failed", running=running[:7])
         return False
     if success:
         from datetime import datetime
@@ -358,35 +399,17 @@ async def finish_pending(success: bool) -> bool:
         store.event("INFO", "Aggiornamento verificato e confermato", "updater")
         clear_bad_rev(data["to"])
         await mark_good()
-        try:
-            from features.update_center import history
-            await history.record_update(
-                git,
-                to_rev=data["to"],
-                from_rev=data.get("from"),
-                status="installed",
-                reason=data.get("reason", "automatico"),
-                installed_at=data.get("at"),
-            )
-        except Exception:
-            pass
+        _tracker().step("confirm", "done", target=data["to"][:7])
+        await _record(to_rev=data["to"], from_rev=data.get("from"), status="installed",
+                      reason=data.get("reason", "automatico"), installed_at=data.get("at"))
         return False
     store.update["last_result"] = f"Rollback: {data['to'][:7]} non ha superato la verifica"
     store.event("ERROR", f"Aggiornamento {data['to'][:7]} fallito: rollback a {data['from'][:7]}", "updater")
     mark_bad_rev(data["to"])
-    try:
-        from features.update_center import history
-        await history.record_update(
-            git,
-            to_rev=data["to"],
-            from_rev=data.get("from"),
-            status="rollback",
-            reason=data.get("reason", "automatico"),
-            error=f"Rollback a {data['from'][:7]}",
-            installed_at=data.get("at"),
-        )
-    except Exception:
-        pass
+    _tracker().step("confirm", "failed", rollback=data["from"][:7])
+    await _record(to_rev=data["to"], from_rev=data.get("from"), status="rollback",
+                  reason=data.get("reason", "automatico"), error=f"Rollback a {data['from'][:7]}",
+                  installed_at=data.get("at"))
     await git("reset", "--hard", data["from"])
     await sh("systemctl", "restart", "--no-block", "nuxiva-supervisor.service", timeout=10)
     return True

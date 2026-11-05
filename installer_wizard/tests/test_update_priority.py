@@ -11,6 +11,9 @@ from state import store
 from steps import STEPS
 
 
+INTACT = {"algorithm": "sha1", "checked": 1, "matched": 1, "skipped": 0, "mismatched": [], "missing": [], "rejected": [], "fingerprint": "f" * 64, "intact": True}
+
+
 class BootPriorityTest(unittest.IsolatedAsyncioTestCase):
     def setUp(self):
         for s in STEPS:
@@ -89,7 +92,8 @@ class UpdaterPriorityTest(unittest.IsolatedAsyncioTestCase):
                     mock.patch("updater.git", new_callable=mock.AsyncMock, return_value=(0, "")), \
                     mock.patch("updater.current_rev", new_callable=mock.AsyncMock, return_value="fixed"), \
                     mock.patch("updater.sh", new_callable=mock.AsyncMock, return_value=(0, "")), \
-                    mock.patch("updater.asyncio.sleep", new_callable=mock.AsyncMock):
+                    mock.patch("updater.asyncio.sleep", new_callable=mock.AsyncMock), \
+                    mock.patch("features.update_center.guard.integrity", new_callable=mock.AsyncMock, return_value=INTACT):
                 self.assertTrue(await updater.apply("correttivo dopo un errore"))
             written = json.loads(pending_file.read_text())
         self.assertEqual((written["from"], written["to"]), ("good", "fixed"))

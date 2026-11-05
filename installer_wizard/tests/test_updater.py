@@ -8,6 +8,9 @@ from unittest import mock
 import updater
 
 
+INTACT = {"algorithm": "sha1", "checked": 1, "matched": 1, "skipped": 0, "mismatched": [], "missing": [], "rejected": [], "fingerprint": "f" * 64, "intact": True}
+
+
 class UpdaterTest(unittest.IsolatedAsyncioTestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
@@ -285,7 +288,8 @@ class UpdaterTest(unittest.IsolatedAsyncioTestCase):
                 mock.patch("updater.git", new_callable=mock.AsyncMock, return_value=(0, "")), \
                 mock.patch("updater.current_rev", new_callable=mock.AsyncMock, return_value="target999"), \
                 mock.patch("updater.sh", new_callable=mock.AsyncMock, return_value=(0, "")), \
-                mock.patch("updater.asyncio.sleep", new_callable=mock.AsyncMock):
+                mock.patch("updater.asyncio.sleep", new_callable=mock.AsyncMock), \
+                mock.patch("features.update_center.guard.integrity", new_callable=mock.AsyncMock, return_value=INTACT):
             updater.mark_bad_rev("target999")
             check_mock.return_value = {
                 "available": True,

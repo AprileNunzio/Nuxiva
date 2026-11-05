@@ -19,6 +19,7 @@ mod signal;
 mod stage;
 mod token;
 mod topics;
+mod update;
 mod vitals;
 mod workbench;
 
@@ -50,6 +51,10 @@ use signal::{RustSignalEnhancer, RustVoiceBiomarkers};
 use stage::{RustParticleCache, particles_count, particles_sample, stage_plan};
 use token::{RustTokenCodec, TokenRejected};
 use topics::{TopicRouter, matches, valid_origin, valid_pattern, valid_topic};
+use update::{
+    update_changelog, update_impact, update_pipeline_advance, update_signature, update_valid_rev,
+    update_verify_tree,
+};
 use vitals::vitals_parse_ble_heart_rate;
 
 #[pymodule(gil_used = false)]
@@ -119,5 +124,11 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(vitals_parse_ble_heart_rate, m)?)?;
     m.add_function(wrap_pyfunction!(gesture_validate_profile, m)?)?;
     m.add_function(wrap_pyfunction!(gesture_catalog, m)?)?;
+    m.add_function(wrap_pyfunction!(update_valid_rev, m)?)?;
+    m.add_function(wrap_pyfunction!(update_signature, m)?)?;
+    m.add_function(wrap_pyfunction!(update_verify_tree, m)?)?;
+    m.add_function(wrap_pyfunction!(update_impact, m)?)?;
+    m.add_function(wrap_pyfunction!(update_changelog, m)?)?;
+    m.add_function(wrap_pyfunction!(update_pipeline_advance, m)?)?;
     Ok(())
 }

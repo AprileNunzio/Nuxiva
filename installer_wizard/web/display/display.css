@@ -348,13 +348,3 @@ body.voice-only .voice-strip { opacity: 1; transform: translateX(-50%) scale(1);
 @media (prefers-reduced-motion: reduce) { #core, #scene, .voice-strip { transition: none; } }
 body.presence-mini #core, body.presence-mini #scene { z-index: 35; filter: drop-shadow(0 8px 32px rgba(41, 224, 255, 0.35)); }
 
-.update-overlay { position: fixed; inset: 0; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(7, 13, 22, 0.9); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); padding: 24px; color: #e0f2fe; transition: opacity 0.4s ease, visibility 0.4s ease; }
-.update-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-.update-card { width: 100%; max-width: 440px; background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(56, 189, 248, 0.4); border-radius: 20px; padding: 32px 28px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 40px rgba(56, 189, 248, 0.15); text-align: center; display: flex; flex-direction: column; align-items: center; gap: 16px; }
-.update-spinner { width: 56px; height: 56px; border: 3px solid rgba(56, 189, 248, 0.2); border-top-color: #38bdf8; border-radius: 50%; animation: update-spin 1s linear infinite; }
-@keyframes update-spin { to { transform: rotate(360deg); } }
-.update-title { font-size: 1.25rem; font-weight: 700; color: #f8fafc; margin: 0; }
-.update-message { font-size: 0.95rem; color: #94a3b8; margin: 0; line-height: 1.4; min-height: 2.8em; }
-.update-progress-bar { width: 100%; height: 8px; background: rgba(255, 255, 255, 0.08); border-radius: 99px; overflow: hidden; position: relative; }
-.update-progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #0284c7, #38bdf8); border-radius: 99px; transition: width 0.3s ease; }
-.update-percentage { font-size: 0.85rem; font-weight: 600; color: #38bdf8; }

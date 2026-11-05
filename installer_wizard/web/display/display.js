@@ -184,29 +184,11 @@
     if (D.Director) D.Director.poke();
     if (D.Sounds) { D.Sounds.update(s.sounds); D.Sounds.desk(s.desk); }
   function renderUpdateProgress(s) {
-    let overlay = $("update-overlay");
-    if (!overlay) {
-      overlay = document.createElement("div");
-      overlay.id = "update-overlay";
-      overlay.className = "update-overlay";
-      overlay.innerHTML = '<div class="update-card"><div class="update-spinner"></div><h2 class="update-title">Aggiornamento di Sistema</h2><p class="update-message" id="update-msg"></p><div class="update-progress-bar"><div class="update-progress-fill" id="update-fill"></div></div><span class="update-percentage" id="update-pct">0%</span></div>';
-      document.body.appendChild(overlay);
-    }
-    overlay.classList.remove("hidden");
-    const msg = $("update-msg");
-    if (msg) msg.textContent = s.message || s.detail || "Installazione in corso…";
-    const pct = Math.min(100, Math.max(0, Math.round(s.progress || 0)));
-    const fill = $("update-fill");
-    if (fill) fill.style.width = pct > 0 ? (pct + "%") : "35%";
-    const pctEl = $("update-pct");
-    if (pctEl) pctEl.textContent = pct > 0 ? (pct + "%") : "…";
+    if (window.NuxivaUpdateScreen) window.NuxivaUpdateScreen.render(s);
   }
 
   function clearUpdateProgress() {
-    const overlay = $("update-overlay");
-    if (overlay && !overlay.classList.contains("hidden")) {
-      overlay.classList.add("hidden");
-    }
+    if (window.NuxivaUpdateScreen) window.NuxivaUpdateScreen.clear();
   }
 
     if (D.agency) D.agency.sync(s.agency);
@@ -214,7 +196,7 @@
       location.href = "/setup";
       return;
     }
-    if (s.phase === "UPDATING") {
+    if (window.NuxivaUpdateScreen ? window.NuxivaUpdateScreen.wanted(s) : s.phase === "UPDATING") {
       renderUpdateProgress(s);
       return;
     }
