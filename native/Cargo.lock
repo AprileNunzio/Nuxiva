@@ -760,7 +760,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-display"
+version = "5.3.0"
+dependencies = [
+ "nuxiva-display-scheduler",
+ "nuxiva-display-stream",
+ "rustix",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "tokio",
+]
+
+[[package]]
 name = "nuxiva-display-domain"
+version = "5.3.0"
+dependencies = [
+ "serde",
+]
+
+[[package]]
+name = "nuxiva-display-scheduler"
 version = "5.3.0"
 dependencies = [
  "serde",

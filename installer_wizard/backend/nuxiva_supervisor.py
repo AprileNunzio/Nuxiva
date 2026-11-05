@@ -51,6 +51,7 @@ from features.chat import api as chat_api
 from features.nodes import api as nodes_api
 from features.cloud import api as cloud_api
 from features.desktop import api as desktop_api
+from features.desktop import lifecycle_api as display_lifecycle_api
 from features.desktop.desk import desk
 from features.desktop.secretary import secretary
 from features.documents import api as documents_api
@@ -193,6 +194,7 @@ FEATURE_APIS = (
     home_api,
     brain_api,
     desktop_api,
+    display_lifecycle_api,
     google_api,
     maps_api,
     skills_api,

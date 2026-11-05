@@ -189,7 +189,7 @@
     const card = cards.get(key);
     if (!card) return;
     cards.delete(key);
-    try { card.impl.destroy && card.impl.destroy(card.el.firstChild); } catch (e) {}
+    try { card.impl.destroy && card.impl.destroy(card.el.firstChild); } catch (err) { console.warn(`widget ${card.inst.id} destroy:`, err); }
     if (window.NuxivaDisplay && window.NuxivaDisplay.presence === "mini") {
       const hasFull = [...cards.values()].some((c) => c.inst && c.inst.fullscreen);
       if (!hasFull) window.NuxivaDisplay.setPresence("normal");
@@ -464,5 +464,6 @@
     get active() { return lastList; },
     get all() { return allList; },
     get candidates() { return allList.filter(mine); },
+    cards: () => [...cards.values()].map((c) => ({ key: c.inst.key, id: c.inst.id, el: c.el, impl: c.impl, inst: c.inst })),
   };
 })();

@@ -13,6 +13,9 @@ NETGUARD_BIN="$NATIVE_HOME/bin/nuxiva-netguard"
 AGENCY_BIN="$NATIVE_HOME/bin/nuxiva-agency"
 AGENCY_UNIT_SRC="$NUXIVA_DIR/scripts/os/systemd/nuxiva-agency.service"
 AGENCY_UNIT_DST=/etc/systemd/system/nuxiva-agency.service
+DISPLAY_BIN="$NATIVE_HOME/bin/nuxiva-display"
+DISPLAY_UNIT_SRC="$NUXIVA_DIR/scripts/os/systemd/nuxiva-display.service"
+DISPLAY_UNIT_DST=/etc/systemd/system/nuxiva-display.service
 
 export RUSTUP_HOME="$NATIVE_HOME/rustup"
 export CARGO_HOME="$NATIVE_HOME/cargo"
@@ -36,8 +39,8 @@ step_check() {
         return
     fi
     [ -x "$VENV/bin/python" ] || return 0
-    native_loaded && [ -x "$EGRESS_BIN" ] && [ -x "$NETGUARD_BIN" ] && [ -x "$AGENCY_BIN" ] \
-        && cmp -s "$AGENCY_UNIT_SRC" "$AGENCY_UNIT_DST" && [ -n "$(src_hash)" ] && [ "$(cat "$STAMP" 2>/dev/null)" = "$(src_hash)" ]
+    native_loaded && [ -x "$EGRESS_BIN" ] && [ -x "$NETGUARD_BIN" ] && [ -x "$AGENCY_BIN" ] && [ -x "$DISPLAY_BIN" ] \
+        && cmp -s "$AGENCY_UNIT_SRC" "$AGENCY_UNIT_DST" && cmp -s "$DISPLAY_UNIT_SRC" "$DISPLAY_UNIT_DST" && [ -n "$(src_hash)" ] && [ "$(cat "$STAMP" 2>/dev/null)" = "$(src_hash)" ]
 }
 
 agency_env() {
@@ -70,7 +73,8 @@ step_apply() {
         progress 50 "Core nativo disattivato: ritorno al motore Python"
         "$VENV/bin/pip" uninstall -y -q nuxiva-native >/dev/null 2>&1 || true
         systemctl disable --now nuxiva-agency >/dev/null 2>&1 || true
-        rm -f "$STAMP" "$EGRESS_BIN" "$NETGUARD_BIN" "$AGENCY_BIN" "$AGENCY_UNIT_DST"
+        systemctl disable --now nuxiva-display >/dev/null 2>&1 || true
+        rm -f "$STAMP" "$EGRESS_BIN" "$NETGUARD_BIN" "$AGENCY_BIN" "$AGENCY_UNIT_DST" "$DISPLAY_BIN" "$DISPLAY_UNIT_DST"
         progress 100 "Core nativo disattivato"
         return 0
     fi
@@ -128,6 +132,19 @@ step_apply() {
     systemctl daemon-reload
     systemctl enable nuxiva-agency >/dev/null 2>&1 || true
     systemctl restart nuxiva-agency || fail "Avvio del motore multi-agente non riuscito"
+
+    progress 83 "Compilazione del gestore dei widget della pagina 80"
+    (
+        cd "$NATIVE_SRC"
+        cargo build --release --locked -p nuxiva-display 2>&1 | tail -n 20
+        exit "${PIPESTATUS[0]}"
+    ) || fail "Compilazione del gestore dei widget non riuscita"
+    install -m 0755 -o root -g root "$CARGO_TARGET_DIR/release/nuxiva-display" "$DISPLAY_BIN.new"
+    mv -f "$DISPLAY_BIN.new" "$DISPLAY_BIN"
+    install -m 0644 -o root -g root "$DISPLAY_UNIT_SRC" "$DISPLAY_UNIT_DST"
+    systemctl daemon-reload
+    systemctl enable nuxiva-display >/dev/null 2>&1 || true
+    systemctl restart nuxiva-display || fail "Avvio del gestore dei widget non riuscito"
 
     progress 85 "Installazione nel supervisore"
     "$VENV/bin/pip" install -q --force-reinstall --no-deps "$NATIVE_HOME"/wheels/nuxiva_native-*.whl \
