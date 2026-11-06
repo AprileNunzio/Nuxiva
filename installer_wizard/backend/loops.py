@@ -1,7 +1,9 @@
 import asyncio
+import json
 import logging
 import time
 
+import native_core
 from config import env_get
 from state import store
 
@@ -10,6 +12,8 @@ STABLE_AFTER = 120.0
 CHECK_EVERY = 10.0
 BACKOFF_MIN = 1.0
 REPORT_EVERY = 10
+STATES = {"starting": "in avvio", "running": "in esecuzione", "restarting": "in riavvio", "done": "concluso",
+          "halted": "fermo (riavvio automatico disattivato)"}
 
 
 def enabled() -> bool:
@@ -54,19 +58,34 @@ class Supervisor:
 
     def __init__(self) -> None:
         self.loops: dict[str, Loop] = {}
+        engine = native_core.symbol("RustLoopBook")
+        if engine is None:
+            native_core.python_fallback("loops")
+        self.book = engine() if engine is not None else None
 
     def add(self, name: str, factory, period: float = 0.0) -> None:
         self.loops[name] = Loop(name, factory, period)
+        if self.book is not None and not self.book.add(name, float(period or 0.0), time.time()):
+            raise ValueError(f"Servizio non registrabile: {name}")
 
     def beat(self, name: str) -> None:
         loop = self.loops.get(name)
         if loop:
             loop.beat = time.time()
+            if self.book is not None:
+                self.book.beat(name, loop.beat)
 
     def snapshot(self) -> list[dict]:
-        return [loop.view() for loop in self.loops.values()]
+        if self.book is None:
+            return [loop.view() for loop in self.loops.values()]
+        views = json.loads(self.book.snapshot(time.time()))
+        for view in views:
+            view["state"] = STATES.get(view["state"], view["state"])
+        return views
 
     def totals(self) -> dict:
+        if self.book is not None:
+            return json.loads(self.book.totals())
         views = self.snapshot()
         return {"loops": len(views), "running": sum(1 for v in views if v["state"] == "in esecuzione"),
                 "restarts": sum(v["restarts"] for v in views), "stalls": sum(v["stalls"] for v in views)}
@@ -81,6 +100,42 @@ class Supervisor:
                 job.cancel()
 
     async def _supervise(self, loop: Loop) -> None:
+        if self.book is None:
+            await self._py_supervise(loop)
+            return
+        while True:
+            loop.started = loop.beat = time.time()
+            loop.state = STATES["running"]
+            self.book.start(loop.name, loop.started)
+            loop.inner = asyncio.create_task(loop.factory())
+            try:
+                await asyncio.wait({loop.inner})
+            except asyncio.CancelledError:
+                loop.inner.cancel()
+                raise
+            reason = self._reason(loop)
+            outcome = "done" if reason is None else "cancelled" if loop.inner.cancelled() else "failed"
+            decision = self.book.exit(loop.name, outcome, reason or "", time.time(), enabled(), BACKOFF_MIN,
+                                      backoff_max(), STABLE_AFTER, REPORT_EVERY)
+            if decision is None:
+                raise RuntimeError(f"Servizio sconosciuto al supervisore: {loop.name}")
+            action, delay, report, loop.restarts = decision
+            if action == "finish":
+                loop.state = STATES["done"]
+                log.info("Servizio «%s» concluso", loop.name)
+                return
+            loop.last_error = reason
+            if action == "halt":
+                loop.state = STATES["halted"]
+                store.event("ERROR", f"Servizio «{loop.name}» fermo: {reason}", "servizi")
+                return
+            loop.state = STATES["restarting"]
+            if report:
+                store.event("WARN", f"Servizio «{loop.name}» riavviato ({reason}), tentativo {loop.restarts}", "servizi")
+            log.warning("Servizio «%s» riavviato tra %.0fs: %s", loop.name, delay, reason)
+            await asyncio.sleep(delay)
+
+    async def _py_supervise(self, loop: Loop) -> None:
         delay = BACKOFF_MIN
         while True:
             loop.started = loop.beat = time.time()
@@ -126,6 +181,14 @@ class Supervisor:
         while True:
             await asyncio.sleep(CHECK_EVERY)
             now = time.time()
+            if self.book is not None:
+                for name in self.book.stalled(now, stale_factor()):
+                    loop = self.loops.get(name)
+                    if loop and loop.inner and not loop.inner.done():
+                        loop.stalls += 1
+                        log.warning("Servizio «%s» senza segni di vita da %.0fs: lo riavvio", name, now - loop.beat)
+                        loop.inner.cancel()
+                continue
             for loop in self.loops.values():
                 limit = loop.period * stale_factor() if loop.period else 0.0
                 if limit and loop.inner and not loop.inner.done() and now - loop.beat > limit:

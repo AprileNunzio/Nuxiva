@@ -25,6 +25,7 @@ mod seal;
 mod sentinel;
 mod signal;
 mod stage;
+mod supervisor;
 mod surface;
 mod telemetry;
 mod token;
@@ -95,6 +96,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     seal::register(m)?;
     config::register(m)?;
     telemetry::register(m)?;
+    supervisor::register(m)?;
     m.add_class::<RustSynapticBus>()?;
     m.add_class::<SynapticWeightMatrix>()?;
     m.add_class::<PySynapticSpike>()?;
