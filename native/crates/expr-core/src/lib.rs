@@ -1,5 +1,6 @@
 #![forbid(unsafe_code)]
 
+mod ast;
 mod builtins;
 mod eval;
 mod lexer;
