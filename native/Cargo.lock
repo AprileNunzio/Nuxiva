@@ -841,6 +841,13 @@ name = "nuxiva-bus-core"
 version = "5.3.0"
 
 [[package]]
+name = "nuxiva-config-core"
+version = "5.3.0"
+dependencies = [
+ "nuxiva-guard-core",
+]
+
+[[package]]
 name = "nuxiva-cortex-core"
 version = "5.3.0"
 dependencies = [
@@ -984,6 +991,7 @@ dependencies = [
  "nuxiva-admin-os",
  "nuxiva-audio-dsp",
  "nuxiva-bus-core",
+ "nuxiva-config-core",
  "nuxiva-cortex-core",
  "nuxiva-crdt-core",
  "nuxiva-display-learner",

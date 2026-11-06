@@ -5,6 +5,7 @@ import re
 from contextvars import ContextVar
 from pathlib import Path
 
+import native_core
 from env_format import decode_value, format_line
 
 BACKEND_DIR = Path(__file__).resolve().parent
@@ -177,8 +178,17 @@ SECRET_KEYS = {"NUXIVA_SECRET_KEY", "NUXIVA_SMB_PASSWORD", "GEMINI_API_KEY", "AN
 SECRET_RE = re.compile(r"(KEY|TOKEN|PASSWORD|PASSWD|SECRET|PASSPHRASE|CREDENTIALS?|COOKIE)(_|$)")
 
 
+_secret_policy: dict = {"engine": None, "policy": None}
+
+
 def is_secret(key: str) -> bool:
-    return key in SECRET_KEYS or bool(SECRET_RE.search(key))
+    engine = native_core.symbol("RustSecretPolicy")
+    if engine is None:
+        native_core.python_fallback("config")
+        return key in SECRET_KEYS or bool(SECRET_RE.search(key))
+    if _secret_policy["engine"] is not engine:
+        _secret_policy.update(engine=engine, policy=engine(sorted(SECRET_KEYS)))
+    return _secret_policy["policy"].is_secret(key)
 _KEY_RE = re.compile(r"^[A-Z][A-Z0-9_]*$")
 
 
@@ -212,20 +222,36 @@ def read_env() -> dict:
     return env
 
 
+def _py_parse_env(text: str) -> list:
+    out = []
+    seen = set()
+    for line in text.splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        key = key.strip().strip('"\'')
+        if not _KEY_RE.match(key) or key in seen:
+            continue
+        seen.add(key)
+        out.append((key, decode_value(value)))
+    return out
+
+
+def parse_env(text: str) -> list:
+    native = native_core.symbol("config_parse_env")
+    if native is None:
+        native_core.python_fallback("config")
+        return _py_parse_env(text)
+    return native(text)
+
+
 def read_global_env() -> dict:
     env = {}
     for f in (ENV_FILE, Path(".env"), BACKEND_DIR.parents[1] / ".env"):
         if f.exists():
-            for line in f.read_text(encoding="utf-8", errors="ignore").splitlines():
-                line = line.strip()
-                if not line or line.startswith("#") or "=" not in line:
-                    continue
-                key, value = line.split("=", 1)
-                key = key.strip().strip('"\'')
-                if not _KEY_RE.match(key):
-                    continue
-                if key not in env:
-                    env[key] = decode_value(value)
+            for key, value in parse_env(f.read_text(encoding="utf-8", errors="ignore")):
+                env.setdefault(key, value)
     for k, v in os.environ.items():
         if k.startswith("NUXIVA_") and k not in env:
             env[k] = v
@@ -240,17 +266,32 @@ def ollama_url() -> str:
     node = NODE.get()
     at, url = _ollama_cache.get(node, (0.0, OLLAMA_URL))
     if time.time() - at > 5:
-        custom = read_env().get("NUXIVA_OLLAMA_URL", "").strip().rstrip("/")
-        if custom and not custom.startswith(("http://", "https://")):
-            custom = f"http://{custom}"
-        if custom and not re.search(r":\d+$", custom.split("//", 1)[1]):
-            custom += ":11434"
-        url = custom or OLLAMA_URL
+        url = _ollama_address(read_env().get("NUXIVA_OLLAMA_URL", ""))
         _ollama_cache[node] = (time.time(), url)
     return url
 
 
+def _ollama_address(raw: str) -> str:
+    native = native_core.symbol("config_ollama_url")
+    if native is not None:
+        return native(raw, OLLAMA_URL)
+    native_core.python_fallback("config")
+    return _py_ollama_address(raw)
+
+
+def _py_ollama_address(raw: str) -> str:
+    custom = raw.strip().rstrip("/")
+    if custom and not custom.startswith(("http://", "https://")):
+        custom = f"http://{custom}"
+    if custom and not re.search(r":\d+$", custom.split("//", 1)[1]):
+        custom += ":11434"
+    return custom or OLLAMA_URL
+
+
 def ollama_remote() -> bool:
+    native = native_core.symbol("config_ollama_remote")
+    if native is not None:
+        return native(ollama_url())
     host = ollama_url().split("//", 1)[-1].split(":", 1)[0]
     return host not in ("127.0.0.1", "localhost", "::1", "")
 
@@ -259,53 +300,14 @@ def _format_env_line(key: str, value: str) -> str:
     return format_line(key, decode_value(str(value)))
 
 
-def sanitize_env_file() -> None:
-    if not ENV_FILE.exists():
-        return
-    try:
-        lines = ENV_FILE.read_text(encoding="utf-8", errors="ignore").splitlines()
-        out = []
-        seen = set()
-        for line in lines:
-            stripped = line.strip()
-            if not stripped:
-                continue
-            if stripped.startswith("#"):
-                out.append(stripped)
-                continue
-            if "=" in stripped:
-                k, v = stripped.split("=", 1)
-                k = k.strip().strip('"\'')
-                if not _KEY_RE.match(k) or k in seen:
-                    continue
-                seen.add(k)
-                out.append(_format_env_line(k, v))
-        tmp = ENV_FILE.with_suffix(".tmp")
-        tmp.write_text("\n".join(out) + "\n", encoding="utf-8")
-        try:
-            os.chmod(tmp, 0o600)
-        except OSError:
-            logging.getLogger("nuxiva.config").exception("Unable to restrict configuration file permissions")
-            raise
-        os.replace(tmp, ENV_FILE)
-    except OSError:
-        logging.getLogger("nuxiva.config").exception("Unable to normalize configuration file")
-        raise
-
-
-def write_env(updates: dict) -> None:
+def _py_render_env(text: str, updates: dict) -> str:
     for key, value in updates.items():
         if not _KEY_RE.match(key) or "\n" in str(value):
             raise ValueError(f"Chiave o valore non valido: {key}")
-        if value != "":
-            os.environ[key] = str(value)
-        elif key in os.environ:
-            del os.environ[key]
-    lines = ENV_FILE.read_text(encoding="utf-8", errors="ignore").splitlines() if ENV_FILE.exists() else []
     pending = dict(updates)
     out = []
     seen = set()
-    for line in lines:
+    for line in text.splitlines():
         stripped = line.strip()
         if not stripped:
             continue
@@ -327,15 +329,50 @@ def write_env(updates: dict) -> None:
     for k, v in pending.items():
         if v != "":
             out.append(_format_env_line(k, v))
-    tmp = ENV_FILE.with_suffix(".tmp")
-    tmp.write_text("\n".join(out) + "\n", encoding="utf-8")
-    try:
-        os.chmod(tmp, 0o600)
-    except OSError:
-        logging.getLogger("nuxiva.config").exception("Unable to restrict configuration file permissions")
-        raise
-    os.replace(tmp, ENV_FILE)
+    return "\n".join(out) + "\n"
 
+
+def render_env(text: str, updates: dict) -> str:
+    native = native_core.symbol("config_rewrite_env")
+    if native is None:
+        native_core.python_fallback("config")
+        return _py_render_env(text, updates)
+    return native(text, [(str(k), str(v)) for k, v in updates.items()])
+
+
+def _replace_env_file(text: str) -> None:
+    tmp = ENV_FILE.with_suffix(".tmp")
+    try:
+        fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC | os.O_NOFOLLOW, 0o600)
+        with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as handle:
+            handle.write(text)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.chmod(tmp, 0o600)
+        os.replace(tmp, ENV_FILE)
+    except OSError:
+        logging.getLogger("nuxiva.config").exception("Unable to write configuration file")
+        raise
+
+
+def _env_text() -> str:
+    return ENV_FILE.read_text(encoding="utf-8", errors="ignore") if ENV_FILE.exists() else ""
+
+
+def sanitize_env_file() -> None:
+    if not ENV_FILE.exists():
+        return
+    _replace_env_file(render_env(_env_text(), {}))
+
+
+def write_env(updates: dict) -> None:
+    text = render_env(_env_text(), updates)
+    for key, value in updates.items():
+        if value != "":
+            os.environ[key] = str(value)
+        elif key in os.environ:
+            del os.environ[key]
+    _replace_env_file(text)
 
 
 def env_get(key: str, default: str = "") -> str:

@@ -59,3 +59,9 @@ impl RustFernet {
         Ok(PyBytes::new(py, &plain))
     }
 }
+
+pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    m.add_class::<RustFernet>()?;
+    m.add("SealRejected", m.py().get_type::<SealRejected>())?;
+    Ok(())
+}

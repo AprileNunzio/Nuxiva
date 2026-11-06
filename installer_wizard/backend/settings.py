@@ -2,6 +2,7 @@ import os
 from fastapi import HTTPException
 
 import health
+import native_core
 from config import _ollama_cache, write_env
 from feature_registry import registry
 from features.brain.brains import brains
@@ -37,6 +38,17 @@ STEP_TRIGGERS = (
 
 
 def normalize_ollama(value: str) -> str:
+    native = native_core.symbol("config_normalize_ollama")
+    if native is None:
+        native_core.python_fallback("settings")
+        return _py_normalize_ollama(value)
+    url = native(str(value or ""))
+    if url is None:
+        raise HTTPException(400, "Indirizzo del server Ollama non valido")
+    return url
+
+
+def _py_normalize_ollama(value: str) -> str:
     url = str(value or "").strip().rstrip("/")
     if not url:
         return ""
@@ -55,6 +67,10 @@ RELOAD_PREFIXES = {
 
 
 def services_to_reload(keys) -> list[str]:
+    native = native_core.symbol("config_reload_units")
+    if native is not None:
+        return native([str(k) for k in keys])
+    native_core.python_fallback("settings")
     return [unit for unit, prefixes in RELOAD_PREFIXES.items() if any(k.startswith(prefixes) for k in keys)]
 
 
@@ -67,6 +83,22 @@ async def reload_services(keys) -> None:
             restart, out = await health.sh("systemctl", "restart", "--no-block", f"{unit}.service", timeout=15)
             if restart != 0:
                 store.event("WARN", f"Riavvio di {unit} non riuscito: {out[:160]}", "admin")
+
+
+def _py_plan_steps(keys, extra_steps) -> list:
+    needs = list(extra_steps or [])
+    for trigger, steps in STEP_TRIGGERS:
+        if trigger & set(keys):
+            needs += steps
+    return [n for n in dict.fromkeys(needs) if n in STEP_BY_ID]
+
+
+def plan_steps(keys, extra_steps=None) -> list:
+    native = native_core.symbol("config_apply_plan")
+    if native is None:
+        native_core.python_fallback("settings")
+        return _py_plan_steps(keys, extra_steps)
+    return native([str(k) for k in keys], [str(s) for s in extra_steps or []], list(STEP_BY_ID))
 
 
 async def apply_config(updates: dict, user: str, extra_steps: list | None = None) -> list:
@@ -86,11 +118,7 @@ async def apply_config(updates: dict, user: str, extra_steps: list | None = None
     brains.invalidate()
     store.event("INFO", f"Configurazione aggiornata da {user}: {', '.join(updates)}", "admin")
     await reload_services(updates.keys())
-    needs = list(extra_steps or [])
-    for keys, steps in STEP_TRIGGERS:
-        if keys & updates.keys():
-            needs += steps
-    needs = [n for n in dict.fromkeys(needs) if n in STEP_BY_ID]
+    needs = plan_steps(updates.keys(), extra_steps)
     if needs and os.environ.get('NUXIVA_TEST_AUTH') != '1':
         if "services" in needs:
             import machine

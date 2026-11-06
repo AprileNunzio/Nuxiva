@@ -19,6 +19,7 @@ pub use origin::{
 };
 pub use ratelimit::{LoginLimiter, MAX_ATTEMPTS, MAX_TRACKED, WINDOW_SECONDS};
 pub use session::{MAX_TOKEN, MAX_USERNAME, MIN_SECRET, SESSION_TTL, SessionCodec};
+pub use text::{py_strip, split_lines};
 
 #[cfg(test)]
 mod tests;

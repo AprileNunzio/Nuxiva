@@ -112,14 +112,14 @@ impl RustOriginGuard {
 }
 
 #[pyfunction]
-pub fn guard_safe_host(authority: &str) -> String {
+fn guard_safe_host(authority: &str) -> String {
     safe_host(authority)
 }
 
 #[pyfunction]
 #[allow(clippy::too_many_arguments)]
 #[pyo3(signature = (scheme, client, path, method, fetch_mode, accept, host, query, admin, port))]
-pub fn guard_redirect_target(
+fn guard_redirect_target(
     scheme: &str,
     client: &str,
     path: &str,
@@ -145,26 +145,40 @@ pub fn guard_redirect_target(
 }
 
 #[pyfunction]
-pub fn env_decode_value(value: &str) -> PyResult<String> {
+fn env_decode_value(value: &str) -> PyResult<String> {
     Ok(decode_value(bounded(value)?))
 }
 
 #[pyfunction]
-pub fn env_format_line(key: &str, value: &str) -> PyResult<String> {
+fn env_format_line(key: &str, value: &str) -> PyResult<String> {
     format_line(key, bounded(value)?).map_err(guard_error)
 }
 
 #[pyfunction]
-pub fn env_entries(text: &str) -> PyResult<Vec<(Option<String>, String)>> {
+fn env_entries(text: &str) -> PyResult<Vec<(Option<String>, String)>> {
     Ok(entries(bounded(text)?))
 }
 
 #[pyfunction]
-pub fn env_normalize(text: &str) -> PyResult<String> {
+fn env_normalize(text: &str) -> PyResult<String> {
     normalize(bounded(text)?).map_err(guard_error)
 }
 
 #[pyfunction]
-pub fn identity_normalize_name(raw: &str) -> PyResult<String> {
+fn identity_normalize_name(raw: &str) -> PyResult<String> {
     Ok(normalize_name(bounded(raw)?))
+}
+
+pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    m.add_class::<RustSessionCodec>()?;
+    m.add_class::<RustLoginLimiter>()?;
+    m.add_class::<RustOriginGuard>()?;
+    m.add_function(wrap_pyfunction!(guard_safe_host, m)?)?;
+    m.add_function(wrap_pyfunction!(guard_redirect_target, m)?)?;
+    m.add_function(wrap_pyfunction!(env_decode_value, m)?)?;
+    m.add_function(wrap_pyfunction!(env_format_line, m)?)?;
+    m.add_function(wrap_pyfunction!(env_entries, m)?)?;
+    m.add_function(wrap_pyfunction!(env_normalize, m)?)?;
+    m.add_function(wrap_pyfunction!(identity_normalize_name, m)?)?;
+    Ok(())
 }

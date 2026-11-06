@@ -5,6 +5,7 @@ mod admin_os;
 mod arbitration;
 mod audio;
 mod bus;
+mod config;
 mod cortex;
 mod display;
 mod embodied;
@@ -50,11 +51,6 @@ use embodied::{
 };
 use gesture::{RustGestureEngine, gesture_catalog, gesture_validate_profile};
 use governors::{RustMeshTaskGovernor, RustNetworkGovernor, RustResourceGovernor};
-use guard::{
-    RustLoginLimiter, RustOriginGuard, RustSessionCodec, env_decode_value, env_entries,
-    env_format_line, env_normalize, guard_redirect_target, guard_safe_host,
-    identity_normalize_name,
-};
 use language::{detect_language, supported_languages};
 use learner::RustLearner;
 use memory::{RustFastMemory, RustLiveCoPilot};
@@ -64,7 +60,6 @@ use planner::display_plan;
 use presence::RustPresenceTracker;
 use pyo3::prelude::*;
 use scanner::FastScanner;
-use seal::{RustFernet, SealRejected};
 use sentinel::RustSentinel;
 use signal::{RustSignalEnhancer, RustVoiceBiomarkers};
 use stage::{RustParticleCache, particles_count, particles_sample, stage_plan};
@@ -94,19 +89,10 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(surface_audience, m)?)?;
     m.add_class::<RustAccessMatrix>()?;
     m.add_class::<RustTokenCodec>()?;
-    m.add_class::<RustSessionCodec>()?;
-    m.add_class::<RustLoginLimiter>()?;
-    m.add_class::<RustOriginGuard>()?;
-    m.add_class::<RustFernet>()?;
-    m.add("SealRejected", m.py().get_type::<SealRejected>())?;
-    m.add_function(wrap_pyfunction!(guard_safe_host, m)?)?;
-    m.add_function(wrap_pyfunction!(guard_redirect_target, m)?)?;
-    m.add_function(wrap_pyfunction!(env_decode_value, m)?)?;
-    m.add_function(wrap_pyfunction!(env_format_line, m)?)?;
-    m.add_function(wrap_pyfunction!(env_entries, m)?)?;
-    m.add_function(wrap_pyfunction!(env_normalize, m)?)?;
-    m.add_function(wrap_pyfunction!(identity_normalize_name, m)?)?;
     m.add("TokenRejected", m.py().get_type::<TokenRejected>())?;
+    guard::register(m)?;
+    seal::register(m)?;
+    config::register(m)?;
     m.add_class::<RustSynapticBus>()?;
     m.add_class::<SynapticWeightMatrix>()?;
     m.add_class::<PySynapticSpike>()?;
