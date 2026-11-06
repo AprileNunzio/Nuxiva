@@ -148,6 +148,8 @@ const KNOWN_CODES = new Set([
   'people_profile_failed',
   'people_photos_failed',
   'people_face_insight_failed',
+  'people_look_failed',
+  'people_look_feedback_failed',
   'people_upload_failed',
   'people_capture_failed',
   'people_photo_delete_failed',

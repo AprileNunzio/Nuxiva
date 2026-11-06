@@ -2,6 +2,7 @@ import sys
 from pathlib import Path
 
 import appearance
+import details
 import selection
 
 sys.path.append(str(Path(__file__).resolve().parents[1] / "biometrics"))
@@ -14,6 +15,7 @@ UNKNOWN = "Sconosciuto"
 def _identify(vision, track, frame, face, ir_face) -> tuple:
     aligned = vision.recognizer.alignCrop(frame, face)
     feature = vision.recognizer.feature(aligned).flatten()
+    track.aligned = aligned
     track.feature = feature
     track.marks = face_engine.marks_of(aligned)
     track.ir_feature = vision.fusion.feature(ir_face) if ir_face else None
@@ -47,4 +49,6 @@ def observe(vision, track, frame, face, now: float, minimum: float) -> tuple | N
     person = vision.gallery.people.get(slug_now) if slug_now else None
     if selection.liveness_mode() != "off":
         _liveness(vision, track, face, ir_face, person, minimum, now)
+    if detection and slug_now:
+        details.observe(track, frame, slug_now, now)
     return detection

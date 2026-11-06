@@ -171,6 +171,8 @@
     "error_clipboard_failed": "Copie dans le presse-papiers impossible : sélectionnez le texte et copiez-le à la main.",
     "error_brain_privacy_unavailable": "Paramètres de confidentialité indisponibles.",
     "error_brain_privacy_failed": "Règle de confidentialité non enregistrée : vérifiez vos choix.",
-    "error_people_face_insight_failed": "Empreinte du visage indisponible."
+    "error_people_face_insight_failed": "Empreinte du visage indisponible.",
+    "error_people_look_failed": "Apparence apprise indisponible.",
+    "error_people_look_feedback_failed": "Correction du détail non enregistrée."
   }
 }

@@ -122,3 +122,33 @@ async def face_insight(slug: str, _: str = Depends(require_admin)):
             "quality", "quality_pct")
     return Response(json.dumps({"face": {k: row.get(k) for k in keys} if row else None}), media_type="application/json",
                     headers=NO_CACHE)
+
+
+LOOK_ID = re.compile(r"^[0-9a-f]{10}$")
+
+
+@admin_routes.get("/api/people/{slug}/look")
+async def look_details(slug: str, _: str = Depends(require_admin)):
+    from features.people.details import learner
+    _person(slug)
+    return Response(json.dumps(learner.view(people.slugify(slug))), media_type="application/json", headers=NO_CACHE)
+
+
+@admin_routes.post("/api/people/{slug}/look/{entry_id}")
+async def look_feedback(slug: str, entry_id: str, request: Request, user: str = Depends(require_admin)):
+    from features.people.details import learner
+    _person(slug)
+    if not LOOK_ID.match(entry_id):
+        raise HTTPException(400, "Dettaglio non valido")
+    try:
+        body = await request.json()
+    except ValueError:
+        raise HTTPException(400, "Richiesta non valida")
+    verdict = body.get("verdict") if isinstance(body, dict) else None
+    if verdict not in ("ok", "wrong"):
+        raise HTTPException(400, "Giudizio non valido")
+    row = learner.feedback(people.slugify(slug), entry_id, verdict)
+    if row is None:
+        raise HTTPException(404, "Dettaglio non trovato")
+    store.event("INFO", f"Dettaglio dell'aspetto di {slug} {'confermato' if verdict == 'ok' else 'corretto'} da {user}", "people")
+    return Response(json.dumps({"entry": row}), media_type="application/json", headers=NO_CACHE)

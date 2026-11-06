@@ -231,6 +231,16 @@ def marks_of(aligned_bgr) -> np.ndarray | None:
     return np.frombuffer(native.face_marks(gray.tobytes(), w, h), dtype="<f4").copy()
 
 
+def traits_of(aligned_bgr) -> dict | None:
+    native = _native_module()
+    if native is None or aligned_bgr is None or getattr(aligned_bgr, "ndim", 0) != 3:
+        return None
+    gray = _gray(aligned_bgr)
+    if min(gray.shape) < 8:
+        return None
+    return dict(native.face_traits(gray.tobytes(), gray.shape[1], gray.shape[0]))
+
+
 def _gray(image) -> np.ndarray:
     arr = np.asarray(image)
     if arr.ndim == 3:

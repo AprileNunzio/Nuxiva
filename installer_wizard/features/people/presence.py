@@ -100,6 +100,16 @@ class PresenceMonitor:
                     self._journal(p["slug"], wellbeing.live(p["slug"]))
 
     @staticmethod
+    def _details(looks: list) -> None:
+        if not looks:
+            return
+        from features.people.details import learner
+        try:
+            learner.ingest(looks)
+        except (OSError, ValueError, KeyError) as exc:
+            log.warning("Dettagli dell'aspetto non salvati: %s", exc)
+
+    @staticmethod
     def _vitals_targets() -> list[str]:
         from features.people.vitals.camera import camera
         return camera.targets(store.presence.get("people") or [])
@@ -241,6 +251,9 @@ class PresenceMonitor:
                     wanted = self._vitals_targets()
                     data = (await client.get(f"{VISION_URL}/presence", params={"vitals": ",".join(wanted)} if wanted else None)).json()
                     visible = self.with_languages(self.smooth(data.get("people", [])))
+                    looks = [dict(p) for p in visible if p.get("details")]
+                    for p in visible:
+                        p.pop("details", None)
                     previous = store.presence.get("people", [])
                     store.presence = {"status": data.get("status"), "error": data.get("error", ""),
                                       "people": visible, "summary": describe(visible),
@@ -251,6 +264,7 @@ class PresenceMonitor:
                         store.touch()
                     self._publish(data, visible)
                     self._affect(visible)
+                    self._details(looks)
                     self._vitals(data, visible, wanted)
                     if store.phase in ("READY", "DEGRADED"):
                         self._evaluate(visible)

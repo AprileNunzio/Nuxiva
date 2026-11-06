@@ -4,6 +4,7 @@ import { reportError } from '../../../shared/errors/errorBus';
 import { PHOTO_KINDS, Photo, PhotoKind, capturePhoto, deletePhoto, fetchCoverage, fetchPhotos, reproject, uploadPhoto } from '../data/peopleApi';
 import { chipClass, usePeopleI18n } from '../scope';
 import { FaceInsightCard } from './FaceInsightCard';
+import { LookCard } from './LookCard';
 import { PcCamera } from './PcCamera';
 
 interface FaceTabProps {
@@ -73,6 +74,7 @@ export const FaceTab: React.FC<FaceTabProps> = ({ slug, quality, busy, run }) =>
         />
       </div>
       <FaceInsightCard slug={slug} tick={tick} />
+      <LookCard slug={slug} tick={tick} />
       <PcCamera slug={slug} busy={busy} coverage={coverage} act={act} />
       <div>
         <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">{t('scan_title')}</p>

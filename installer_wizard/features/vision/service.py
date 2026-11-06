@@ -11,6 +11,7 @@ import uvicorn
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse, Response, StreamingResponse
 import appearance
+import details
 import learning
 import perception
 import selection
@@ -264,6 +265,7 @@ class Vision:
                            "auto": bool(person.get("auto")), "facing": t.facing,
                            "confidence": round(score, 3), "proximity": prox, "raw_proximity": round(ratio, 3),
                            "near": is_near, "since": t.first_seen, "affect": t.affect if slug else None, "attire": appearance.view(t),
+                           "details": details.view(t) if slug else None,
                            "vitals": self.vitals.reading(t, now) if slug else None,
                            "gaze": {"x": round((bx + bw / 2) / (w or 640), 3),
                                     "y": round((by + bh / 2) / h, 3)}})

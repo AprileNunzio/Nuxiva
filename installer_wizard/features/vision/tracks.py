@@ -45,6 +45,10 @@ class Track:
         self.live_detail: dict | None = None
         self.rgb_live = face_engine.liveness()
         self.marks = None
+        self.aligned = None
+        self.details: deque = deque(maxlen=12)
+        self.detail_at = 0.0
+        self.detail_slug: str | None = None
         self.ambiguous = False
         self.possible: list = []
         self.ema_ratio: float = 0.0

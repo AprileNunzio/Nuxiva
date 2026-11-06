@@ -148,6 +148,20 @@ class NativeSensesTest(unittest.TestCase):
         self.assertEqual([(m["region"], m["side"]) for m in report["alba"]["marks"]], [("cheek", "right")])
         self.assertEqual(report["anna"]["marks"], [])
 
+    def test_look_traits_and_memory(self):
+        found = face_engine.traits_of(face_image(9, False))
+        self.assertEqual(set(found), {"glasses", "beard", "fringe", "cigarette"})
+        self.assertTrue(all(0.0 <= v <= 1.0 for v in found.values()))
+        self.assertIsNone(face_engine.traits_of(None))
+        memory = __import__("nuxiva_native").RustFaceLook()
+        events = []
+        for i in range(20):
+            events += memory.update({"samples": 8, "glasses": 0.9, "hair": "black"}, float(i))
+        self.assertIn(("glasses", "on"), [(e["kind"], e["value"]) for e in events])
+        self.assertTrue(memory.summary()["glasses"])
+        with self.assertRaises(ValueError):
+            __import__("nuxiva_native").RustFaceLook("{broken")
+
     def test_quality_and_light_reports(self):
         face = np.array([0, 0, 160, 160, *landmarks(0.0, -0.4)], dtype=np.float32)
         good = face_engine.quality(face_image(5, False), face, 640)

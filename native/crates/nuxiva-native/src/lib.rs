@@ -15,6 +15,7 @@ mod ear;
 mod embodied;
 mod errors;
 mod face;
+mod face_look;
 mod gesture;
 mod governors;
 mod guard;
@@ -108,6 +109,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     home_rules::register(m)?;
     ear::register(m)?;
     face::register(m)?;
+    face_look::register(m)?;
     dialog::register(m)?;
     dialogue::register(m)?;
     voice::register(m)?;
