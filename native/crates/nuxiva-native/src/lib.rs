@@ -14,6 +14,7 @@ mod display;
 mod ear;
 mod embodied;
 mod errors;
+mod expr;
 mod face;
 mod face_look;
 mod gesture;
@@ -115,6 +116,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     dialog::register(m)?;
     dialogue::register(m)?;
     transcript::register(m)?;
+    expr::register(m)?;
     voice::register(m)?;
     rescue::register(m)?;
     m.add_class::<RustSynapticBus>()?;

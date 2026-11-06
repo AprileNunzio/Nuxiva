@@ -5,6 +5,8 @@ import re
 import time
 from datetime import datetime
 
+import native_core
+
 TEMPLATE = re.compile(r"\{\{\s*((?:(?!\}\}).)+?)\s*\}\}")
 MAX_LEN = 400
 
@@ -161,6 +163,17 @@ class Evaluator:
 
 
 def evaluate(source: str, names: dict):
+    engine = native_core.symbol("expr_evaluate")
+    if engine is None:
+        native_core.python_fallback("automations.expr")
+        return _py_evaluate(source, names)
+    try:
+        return engine(str(source), names if isinstance(names, dict) else dict(names))
+    except native_core.symbol("ExprRejected") as exc:
+        raise ExprError(str(exc)) from None
+
+
+def _py_evaluate(source: str, names: dict):
     return Evaluator(names).run(str(source))
 
 
