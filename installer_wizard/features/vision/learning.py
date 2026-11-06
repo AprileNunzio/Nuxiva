@@ -13,6 +13,7 @@ AUTO_MIN_SECONDS = 2.5
 AUTO_MIN_RATIO = 0.09
 AUTO_SAMPLES = 8
 MERGE_THRESHOLD = 0.30
+GUEST_GUARD = 0.10
 LEARN_UNTIL = 25
 LEARN_EVERY = 1.5
 REFINE_EVERY = 60.0
@@ -63,10 +64,15 @@ def learn(vision, track, frame, feature) -> None:
         return
     mean = np.mean([s / np.linalg.norm(s) for s in track.samples], axis=0)
     near_slug, near_score = vision.gallery.closest(mean)
-    centroid_ok = near_slug is not None and float(vision.gallery.people[near_slug]["centroid"] @ (mean / np.linalg.norm(mean))) >= MERGE_CENTROID
+    centroid = vision.gallery.centroid_score(near_slug, mean) if near_slug else None
+    centroid_ok = centroid is not None and centroid >= MERGE_CENTROID
+    near_named = near_slug is not None and not vision.gallery.people.get(near_slug, {}).get("auto") \
+        and near_score >= vision.gallery.people.get(near_slug, {}).get("threshold", MERGE_THRESHOLD) - GUEST_GUARD
     if near_slug and near_score >= MERGE_THRESHOLD and centroid_ok:
         vision.gallery.add_samples(near_slug, track.samples, track.ir_samples or None)
         log.info("Campioni aggiunti a %s (somiglianza %.2f)", near_slug, near_score)
+    elif near_named or track.possible:
+        log.info("Volto vicino a %s (%.2f): nessun nuovo ospite per non creare un doppione", near_slug, near_score)
     else:
         guest = vision.gallery.next_guest_name()
         person = vision.gallery.save(guest, track.samples, vision._crop(frame, track.box), auto=True,

@@ -13,6 +13,7 @@ import numpy as np
 
 sys.path.append(str(Path(__file__).resolve().parents[1] / "biometrics"))
 import embeddings as emb
+import face_engine
 import sealed_rows
 
 log = logging.getLogger("nuxiva.vision")
@@ -24,8 +25,13 @@ TWIN_SIM = float(os.environ.get("NUXIVA_FACE_TWIN_SIM", "0.55"))
 TWIN_MARGIN = float(os.environ.get("NUXIVA_FACE_TWIN_MARGIN", "0.12"))
 IR_WEIGHT = float(os.environ.get("NUXIVA_FACE_IR_WEIGHT", "0.35"))
 ADAPTIVE = os.environ.get("NUXIVA_FACE_ADAPTIVE", "1") != "0"
+SHADOW_SIM = float(os.environ.get("NUXIVA_FACE_SHADOW_SIM", "0.62"))
 MAX_SAMPLES = 40
 UNKNOWN = "Sconosciuto"
+
+
+def merge_rows(old: np.ndarray | None, new: np.ndarray) -> np.ndarray:
+    return face_engine.merge(old, new, MAX_SAMPLES)
 
 
 def slugify(name: str) -> str:
@@ -48,6 +54,9 @@ class Gallery:
         self.lock = threading.Lock()
         self.people: dict = {}
         self.twins: set = set()
+        self.shadows: dict = {}
+        self.engine = face_engine.build(face_engine.Settings(MATCH_THRESHOLD, MARGIN, TWIN_MARGIN, TWIN_SIM, IR_WEIGHT,
+                                                             SHADOW_SIM, adaptive=ADAPTIVE))
         self.reload()
 
     def reload(self) -> None:
@@ -64,35 +73,33 @@ class Gallery:
             ir = _load_rows(d / "embeddings_ir.npy")
             people[d.name] = {**meta, "slug": d.name, "embeddings": rows, "ir": ir}
         self._finish(people)
-        log.info("Galleria: %d persone registrate, %d coppie somiglianti", len(people), len(self.twins))
+        log.info("Galleria: %d persone registrate, %d coppie somiglianti, %d doppioni", len(people), len(self.twins),
+                 len(self.shadows))
 
     def _finish(self, people: dict) -> None:
-        for p in people.values():
-            p["threshold"] = emb.person_threshold(p["embeddings"], MATCH_THRESHOLD) if ADAPTIVE else MATCH_THRESHOLD
-            p["threshold_ir"] = emb.person_threshold(p["ir"], MATCH_THRESHOLD) if ADAPTIVE and p["ir"] is not None else MATCH_THRESHOLD
-            p["centroid"] = emb.centroid(p["embeddings"])
-        twins = emb.twin_pairs({s: p["centroid"] for s, p in people.items()}, TWIN_SIM)
         with self.lock:
-            self.people, self.twins = people, twins
+            self.engine.replace([(s, p["embeddings"], p["ir"], bool(p.get("auto"))) for s, p in people.items()])
+            report = {r["slug"]: r for r in self.engine.report()}
+            for slug, p in people.items():
+                r = report.get(slug, {})
+                p["threshold"] = float(r.get("threshold", MATCH_THRESHOLD))
+                p["threshold_ir"] = float(r.get("threshold_ir", MATCH_THRESHOLD))
+                p["spread"] = r.get("spread")
+                p["centroid"] = emb.centroid(p["embeddings"])
+            self.people = people
+            self.twins = {frozenset((a, b)) for a, b, _ in self.engine.twins()}
+            self.shadows = {g: h for g, h, _ in self.engine.shadows()}
 
     def scores(self, feature: np.ndarray, ir_feature: np.ndarray | None = None) -> tuple[dict, dict | None]:
         with self.lock:
-            rgb = {s: emb.score_against(p["embeddings"], feature) for s, p in self.people.items()}
-            ir = {s: emb.score_against(p["ir"], ir_feature) for s, p in self.people.items() if p["ir"] is not None} \
-                if ir_feature is not None else None
-        return rgb, ir or None
+            return self.engine.scores(feature, ir_feature)
 
     def match_ex(self, feature: np.ndarray, ir_feature: np.ndarray | None = None) -> dict:
-        rgb, ir = self.scores(feature, ir_feature)
-        fused, conflict = emb.fuse(rgb, ir, IR_WEIGHT, MATCH_THRESHOLD)
         with self.lock:
-            limits = {s: p["threshold"] for s, p in self.people.items()}
-            twins = set(self.twins)
+            result = self.engine.verdict(feature, ir_feature)
             names = {s: p["name"] for s, p in self.people.items()}
-        result = emb.decide(fused, limits, MATCH_THRESHOLD, MARGIN, TWIN_MARGIN, twins, conflict)
         result["name"] = names.get(result["slug"], UNKNOWN)
         result["names"] = [names[s] for s in (result["best"], result["second"]) if s in names] if result["ambiguous"] else []
-        result["twin"] = bool(result["best"] and result["second"]) and frozenset((result["best"], result["second"])) in twins
         return result
 
     def match(self, feature: np.ndarray, ir_feature: np.ndarray | None = None) -> tuple:
@@ -102,21 +109,22 @@ class Gallery:
         return None, UNKNOWN, r["score"]
 
     def closest(self, feature: np.ndarray) -> tuple[str | None, float]:
-        best = (None, 0.0)
         with self.lock:
-            for slug, p in self.people.items():
-                score = emb.score_against(p["embeddings"], feature)
-                if score > best[1]:
-                    best = (slug, score)
-        return best
+            return self.engine.closest(feature)
+
+    def centroid_score(self, slug: str, feature: np.ndarray) -> float | None:
+        with self.lock:
+            return self.engine.centroid_score(slug, feature)
 
     def may_learn(self, slug: str, feature: np.ndarray, ir_feature: np.ndarray | None = None) -> bool:
-        r = self.match_ex(feature, ir_feature)
-        if r["slug"] != slug:
-            return False
-        if r["twin"]:
-            return r["score"] - r["second_score"] >= TWIN_MARGIN
-        return r["score"] >= self.people.get(slug, {}).get("threshold", MATCH_THRESHOLD) + 0.08
+        with self.lock:
+            return self.engine.may_learn(slug, feature, ir_feature)
+
+    def shadow_list(self) -> list[dict]:
+        with self.lock:
+            names = {s: p["name"] for s, p in self.people.items()}
+            return [{"guest": g, "host": h, "guest_name": names.get(g, g), "host_name": names.get(h, h),
+                     "similarity": round(float(sim), 3)} for g, h, sim in self.engine.shadows()]
 
     def next_guest_name(self) -> str:
         with self.lock:
@@ -132,11 +140,11 @@ class Gallery:
             meta = json.loads((d / "meta.json").read_text(encoding="utf-8"))
         except (OSError, ValueError):
             return
-        merged = emb.merge(_load_rows(d / "embeddings.npy"), np.array(rgb), MAX_SAMPLES)
+        merged = merge_rows(_load_rows(d / "embeddings.npy"), np.array(rgb))
         sealed_rows.save(d / "embeddings.npy", merged)
         meta.update(samples=len(merged), updated=time.time())
         if ir:
-            merged_ir = emb.merge(_load_rows(d / "embeddings_ir.npy"), np.array(ir), MAX_SAMPLES)
+            merged_ir = merge_rows(_load_rows(d / "embeddings_ir.npy"), np.array(ir))
             sealed_rows.save(d / "embeddings_ir.npy", merged_ir)
             meta["samples_ir"] = len(merged_ir)
         (d / "meta.json").write_text(json.dumps(meta, ensure_ascii=False), encoding="utf-8")
@@ -324,20 +332,21 @@ class Gallery:
 
     def health(self) -> list[dict]:
         with self.lock:
-            people, twins = dict(self.people), set(self.twins)
-        sims = emb.centroid_similarities({s: p["centroid"] for s, p in people.items()})
+            people = dict(self.people)
+            report = {r["slug"]: r for r in self.engine.report()}
         rows = []
         for slug, p in people.items():
             stats = emb.intra_stats(p["embeddings"])
-            similar = [{"slug": other, "name": people[other]["name"], "similarity": round(sims[frozenset((slug, other))], 3)}
-                       for other in people if other != slug and frozenset((slug, other)) in twins]
+            r = report.get(slug, {})
+            similar = [{"slug": other, "name": people[other]["name"], "similarity": round(float(sim), 3)}
+                       for other, sim in r.get("similar", []) if other in people]
             samples, ir = len(p["embeddings"]), 0 if p["ir"] is None else len(p["ir"])
             q_label = quality(samples, ir, stats, bool(similar))
             q_pct = quality_percent(samples, ir, stats, bool(similar))
             rows.append({"slug": slug, "name": p["name"], "samples": samples, "samples_ir": ir,
                          "threshold": round(p["threshold"], 3), "threshold_ir": round(p["threshold_ir"], 3),
                          "spread": round(stats[1], 3) if stats else None, "similar": similar,
-                         "quality": q_label, "quality_pct": q_pct})
+                         "shadow_of": r.get("shadow_of"), "quality": q_label, "quality_pct": q_pct})
         return sorted(rows, key=lambda r: r["name"].lower())
 
 

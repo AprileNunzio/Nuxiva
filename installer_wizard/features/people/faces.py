@@ -97,3 +97,38 @@ async def associate(from_slug: str, to_slug: str) -> dict:
         people.save(target)
         people.delete(from_slug)
     return people.get(to_slug)
+
+
+def user_named(profile: dict) -> bool:
+    return bool(profile.get("first_name")) and not str(profile.get("name") or "").lower().startswith("ospite")
+
+
+async def absorb_shadows() -> list[str]:
+    try:
+        async with httpx.AsyncClient(timeout=5) as client:
+            r = await client.get(f"{VISION_URL}/people/shadows")
+        r.raise_for_status()
+        rows = r.json().get("shadows", [])
+    except (httpx.HTTPError, ValueError, AttributeError) as exc:
+        log.info("Elenco dei doppioni dal servizio di visione non disponibile: %s", exc)
+        return []
+    absorbed = []
+    for row in rows if isinstance(rows, list) else []:
+        if not isinstance(row, dict):
+            continue
+        guest, host = people.slugify(str(row.get("guest") or "")), people.slugify(str(row.get("host") or ""))
+        guest_profile, host_profile = people.load(guest), people.load(host)
+        if host_profile is None or host_profile.get("auto") or guest == host:
+            continue
+        if guest_profile is not None and (not guest_profile.get("auto") or user_named(guest_profile)
+                                          or guest_profile.get("role") == "owner"):
+            continue
+        try:
+            await associate(guest, host)
+        except HTTPException as exc:
+            log.warning("Doppione %s non unito a %s: %s", guest, host, exc.detail)
+            continue
+        absorbed.append(f"{guest}>{host}")
+    if absorbed:
+        log.info("Doppioni automatici uniti alla persona giusta: %s", ", ".join(absorbed))
+    return absorbed

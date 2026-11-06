@@ -8,7 +8,7 @@ UNIT=/etc/systemd/system/nuxiva-vision.service
 VDIR="$NUXIVA_DIR/installer_wizard/features/vision"
 BDIR="$NUXIVA_DIR/installer_wizard/features/biometrics"
 CODE=("$VDIR/service.py" "$VDIR/gallery.py" "$VDIR/tracks.py" "$VDIR/objects.py" "$VDIR/devices.py"
-      "$VDIR/ircam.py" "$VDIR/fusion.py" "$VDIR/learning.py" "$VDIR/selection.py" "$VDIR/views.py" "$BDIR/embeddings.py" "$BDIR/liveness.py")
+      "$VDIR/ircam.py" "$VDIR/fusion.py" "$VDIR/learning.py" "$VDIR/selection.py" "$VDIR/views.py" "$BDIR/embeddings.py" "$BDIR/liveness.py" "$BDIR/face_engine.py")
 FILES=(
     "face_detection_yunet/face_detection_yunet_2023mar.onnx"
     "face_recognition_sface/face_recognition_sface_2021dec.onnx"

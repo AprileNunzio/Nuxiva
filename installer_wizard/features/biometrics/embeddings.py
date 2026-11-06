@@ -1,9 +1,10 @@
 import numpy as np
 
 THRESHOLD_FLOOR_DELTA = 0.08
-THRESHOLD_CEIL_DELTA = 0.12
+THRESHOLD_CEIL_DELTA = 0.0
+GENUINE_SLACK = 0.06
+GENUINE_PERCENTILE = 0.10
 MIN_FOR_STATS = 6
-SIGMA_FACTOR = 2.5
 
 
 def unit(v: np.ndarray) -> np.ndarray:
@@ -55,12 +56,27 @@ def intra_stats(emb: np.ndarray) -> tuple[float, float] | None:
     return float(best.mean()), float(best.std())
 
 
+def leave_one_out(emb: np.ndarray) -> np.ndarray:
+    rows = unit_rows(emb)
+    rest = rows.sum(axis=0)[None, :] - rows
+    rest = rest / np.maximum(np.linalg.norm(rest, axis=1, keepdims=True), 1e-9)
+    return np.sum(rows * rest, axis=1)
+
+
+def genuine_spread(emb: np.ndarray) -> float | None:
+    rows = unit_rows(emb)
+    if len(rows) < MIN_FOR_STATS:
+        return None
+    return float(np.std(leave_one_out(rows)))
+
+
 def person_threshold(emb: np.ndarray, base: float) -> float:
-    stats = intra_stats(emb)
-    if stats is None:
+    rows = unit_rows(emb)
+    if len(rows) < MIN_FOR_STATS:
         return base
-    mu, sigma = stats
-    return float(min(base + THRESHOLD_CEIL_DELTA, max(base - THRESHOLD_FLOOR_DELTA, mu - SIGMA_FACTOR * sigma)))
+    sims = np.sort(leave_one_out(rows))
+    low = float(sims[int(np.floor((len(sims) - 1) * GENUINE_PERCENTILE))])
+    return float(min(base, max(base - THRESHOLD_FLOOR_DELTA, low - GENUINE_SLACK)))
 
 
 def score_against(emb: np.ndarray, probe: np.ndarray) -> float:
@@ -94,24 +110,46 @@ def fuse(primary: dict, secondary: dict | None, weight: float, floor: float = 0.
     return fused, bool(top_a and top_b and top_a != top_b and secondary[top_b] >= floor)
 
 
+def shadow_pairs(people: dict, similarity: dict, limit: float) -> dict:
+    out = {}
+    for slug, p in people.items():
+        if not p.get("auto"):
+            continue
+        best = None
+        for other, q in people.items():
+            if other == slug or q.get("auto"):
+                continue
+            sim = similarity.get(frozenset((slug, other)), 0.0)
+            agree = sum(1 for r in p["embeddings"] if score_against(q["embeddings"], r) >= q["threshold"])
+            if sim >= limit and agree * 5 >= len(p["embeddings"]) * 4 and (best is None or sim > best[1]):
+                best = (other, sim)
+        if best:
+            out[slug] = best[0]
+    return out
+
+
 def decide(scores: dict, thresholds: dict, base: float, margin: float, twin_margin: float, twins: set,
-           conflict: bool = False) -> dict:
-    ranked = sorted(scores.items(), key=lambda kv: kv[1], reverse=True)
+           conflict: bool = False, shadows: dict | None = None) -> dict:
+    shadows = shadows or {}
+    ranked = sorted(scores.items(), key=lambda kv: (-kv[1], kv[0]))
     if not ranked:
         return {"slug": None, "best": None, "score": 0.0, "second": None, "second_score": 0.0, "ambiguous": False,
-                "reason": "nessuno"}
+                "twin": False, "reason": "nessuno"}
     (slug, best), (second, second_score) = ranked[0], ranked[1] if len(ranked) > 1 else (None, 0.0)
+    twin = second is not None and frozenset((slug, second)) in twins
     out = {"slug": None, "best": slug, "score": best, "second": second, "second_score": second_score, "ambiguous": False,
-           "reason": ""}
+           "twin": twin, "reason": ""}
     if best < thresholds.get(slug, base):
         out["reason"] = "sotto soglia"
         return out
-    needed = twin_margin if second is not None and frozenset((slug, second)) in twins else margin
-    if second is not None and second_score >= base * 0.8 and best - second_score < needed:
+    chosen = slug
+    if second is not None and (shadows.get(second) == slug or shadows.get(slug) == second):
+        chosen = second if shadows.get(slug) == second else slug
+    elif second is not None and second_score >= base * 0.8 and best - second_score < (twin_margin if twin else margin):
         out.update(ambiguous=True, reason="troppo simile a un'altra persona")
         return out
     if conflict:
         out.update(ambiguous=True, reason="volto visibile e infrarosso non concordano")
         return out
-    out.update(slug=slug, reason="ok")
+    out.update(slug=chosen, reason="ok")
     return out

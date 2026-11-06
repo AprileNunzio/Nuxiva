@@ -115,6 +115,41 @@ class AssociateTest(FacesTest):
         self.assertEqual(target["stats"]["visits"], 3)
         self.assertIsNone(people.load("ospite-1"))
 
+    def shadows(self, rows):
+        class Reply:
+            def raise_for_status(self):
+                return None
+
+            def json(self):
+                return {"shadows": rows}
+
+        client = mock.AsyncMock()
+        client.__aenter__.return_value.get = mock.AsyncMock(return_value=Reply())
+        return mock.patch("features.people.faces.httpx.AsyncClient", return_value=client)
+
+    def test_an_automatic_shadow_of_a_named_person_is_absorbed(self):
+        self.seed_profiles()
+        guest = people.load("ospite-1")
+        guest["auto"] = True
+        people.save(guest)
+        ok = Response(b"{}", status_code=200)
+        with self.shadows([{"guest": "ospite-1", "host": "nunzio"}]), \
+                mock.patch("features.people.faces.vision_proxy", new_callable=mock.AsyncMock, return_value=ok):
+            absorbed = asyncio.run(faces.absorb_shadows())
+        self.assertEqual(absorbed, ["ospite-1>nunzio"])
+        self.assertIsNone(people.load("ospite-1"))
+
+    def test_a_guest_named_by_the_user_or_an_automatic_host_is_never_absorbed(self):
+        self.seed_profiles()
+        guest = people.load("ospite-1")
+        guest.update(auto=True, name="Ciro Esposito", first_name="Ciro")
+        people.save(guest)
+        with self.shadows([{"guest": "ospite-1", "host": "nunzio"}, {"guest": "nunzio", "host": "ospite-1"}]), \
+                mock.patch("features.people.faces.vision_proxy", new_callable=mock.AsyncMock) as proxy:
+            self.assertEqual(asyncio.run(faces.absorb_shadows()), [])
+        proxy.assert_not_awaited()
+        self.assertIsNotNone(people.load("ospite-1"))
+
 
 if __name__ == "__main__":
     unittest.main()

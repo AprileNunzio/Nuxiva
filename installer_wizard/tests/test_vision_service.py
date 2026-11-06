@@ -273,6 +273,28 @@ class VisionServiceTest(unittest.TestCase):
         person = self.gallery.save("Nuovo", request["samples"], request["photo"], ir=request["ir"])
         self.assertEqual(person["samples_ir"], 6)
 
+    def test_owner_seen_slightly_off_is_not_cloned_into_a_new_guest(self):
+        owner = self.enrol("nunzio", 3, ir=False)
+        rng = np.random.default_rng(4)
+        off = emb.unit(emb.centroid(owner) * 0.36 + emb.unit(rng.standard_normal(DIM)) * 0.93)
+        with mock.patch.object(service.learning, "MERGE_CENTROID", 0.99):
+            self.frames(off, count=36, age=3.0)
+        self.assertEqual([s for s in self.gallery.people if s.startswith("ospite-")], [])
+
+    def test_an_existing_shadow_guest_never_hides_the_owner(self):
+        owner = self.enrol("nunzio", 5, ir=False)
+        shadow = emb.unit_rows(owner[:8] + np.random.default_rng(6).standard_normal((8, DIM)) * 0.004)
+        self.gallery.save("Ospite 1", list(shadow), self.photo, auto=True, slug="ospite-1")
+        self.assertEqual(self.gallery.shadows, {"ospite-1": "nunzio"})
+        self.assertEqual(self.gallery.shadow_list()[0]["host"], "nunzio")
+        self.frames(owner[2], count=8, age=3.0)
+        self.assertEqual(self.person()["slug"], "nunzio")
+
+    def test_near_duplicate_frames_do_not_make_the_owner_stricter(self):
+        frames = emb.unit_rows(np.repeat(vectors(7, 1), 30, axis=0) + 1e-4)
+        self.gallery.save("Nunzio", list(frames), self.photo, slug="nunzio")
+        self.assertLessEqual(self.gallery.people["nunzio"]["threshold"], service.Gallery.__init__.__globals__["MATCH_THRESHOLD"] + 1e-6)
+
     def test_camera_selection_defaults_and_overrides(self):
         self.assertEqual(selection.current()["rgb"], "/dev/null-camera")
         self.assertEqual(selection.capture_size(None, 8), (1280, 720))

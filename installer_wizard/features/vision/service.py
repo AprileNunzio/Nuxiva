@@ -353,7 +353,7 @@ app.include_router(observer_router(Observer(views, gallery)))
 async def health():
     return {"status": vision.status, "error": vision.error, "people_enrolled": len(gallery.people),
             "objects": vision.objects is not None, "camera": vision.pick["rgb"], "ir": vision.ir.view(),
-            "liveness": selection.liveness_mode(), "similar_pairs": len(gallery.twins)}
+            "liveness": selection.liveness_mode(), "similar_pairs": len(gallery.twins), "shadows": len(gallery.shadows)}
 
 
 @app.get("/presence")

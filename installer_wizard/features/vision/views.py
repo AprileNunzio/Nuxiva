@@ -86,7 +86,8 @@ class Views:
     def _check_owner(self, slug: str, feature: np.ndarray) -> None:
         r = self.gallery.match_ex(feature)
         own = self.gallery.scores(feature)[0].get(slug, 0.0)
-        if r["slug"] and r["slug"] != slug and r["score"] - own > OTHER_PERSON_MARGIN:
+        other = self.gallery.people.get(r["slug"] or "", {})
+        if r["slug"] and r["slug"] != slug and not other.get("auto") and r["score"] - own > OTHER_PERSON_MARGIN:
             raise ValueError(f"Il volto nella foto sembra di {r['name']}, non di questa persona")
 
     def _folder(self, slug: str, name: str, feature, photo) -> Path:
@@ -198,6 +199,10 @@ def router(views: Views) -> APIRouter:
             return await asyncio.to_thread(views.capture, slug, name, kind)
         except ValueError as exc:
             raise HTTPException(422, str(exc))
+
+    @r.get("/people/shadows")
+    async def shadows():
+        return {"shadows": views.gallery.shadow_list()}
 
     @r.get("/views/kinds")
     async def kinds():

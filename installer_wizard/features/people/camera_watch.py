@@ -60,6 +60,9 @@ async def adopt() -> list[str]:
     created = faces.sync_gallery(FACES) + await faces.sync_vision()
     for slug in created:
         store.event("INFO", f"Volto rilevato aggiunto a Persone: {slug}", "people")
+    for pair in await faces.absorb_shadows():
+        guest, host = pair.split(">", 1)
+        store.event("INFO", f"Doppione automatico {guest} unito a {host}", "people")
     return created
 
 
