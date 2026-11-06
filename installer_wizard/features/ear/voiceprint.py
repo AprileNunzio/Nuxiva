@@ -9,6 +9,8 @@ from pathlib import Path
 
 import numpy as np
 
+import native_core
+
 _dir = Path(__file__).resolve().parent
 _bio = _dir.parent / "biometrics"
 if str(_bio) not in sys.path:
@@ -64,6 +66,22 @@ def twin_similarity() -> float:
     return earconf.number("NUXIVA_VOICE_TWIN_SIM", 0.5, 0.2, 0.95)
 
 
+def policy() -> tuple[float, float, float, float, bool]:
+    return (match_base(), margin(), twin_margin(), twin_similarity(), earconf.flag("NUXIVA_VOICE_ADAPTIVE", True))
+
+
+def build_book(samples: dict):
+    engine = native_core.symbol("RustVoiceBook")
+    if engine is None:
+        native_core.python_fallback("ear.voiceprint")
+        return None
+    book = engine(*policy())
+    for slug, rows in samples.items():
+        if not book.set_person(slug, np.asarray(rows, dtype=np.float32).tolist()):
+            log.warning("Impronta vocale %s non caricata nel motore Rust", slug)
+    return book
+
+
 def person_score(samples: np.ndarray, centre: np.ndarray, probe: np.ndarray) -> float:
     sims = np.sort(samples @ probe)[::-1]
     return float(CENTROID_SHARE * (centre @ probe) + (1 - CENTROID_SHARE) * sims[:TOP_K].mean())
@@ -79,6 +97,8 @@ class Voiceprints:
         self.centres: dict[str, np.ndarray] = {}
         self.limits: dict[str, float] = {}
         self.twins: set = set()
+        self.book = None
+        self.book_policy = policy()
         self.stamp = 0.0
         if os.environ.get("NUXIVA_VOICEPRINT", "1") == "0" or not MODEL.exists():
             log.info("Impronta vocale non disponibile su questo sistema")
@@ -118,9 +138,15 @@ class Voiceprints:
             rows = emb.unit_rows(loaded)
             samples[f.stem], centres[f.stem] = rows, emb.centroid(rows)
             limits[f.stem] = emb.person_threshold(rows, match_base()) if adaptive else match_base()
-        twins = emb.twin_pairs(centres, twin_similarity())
+        book = build_book(samples)
+        if book is not None:
+            limits = {slug: round(float(book.limit(slug)), 6) if book.limit(slug) is not None else limits[slug] for slug in samples}
+            twins = {frozenset(pair) for pair in book.twins()}
+        else:
+            twins = emb.twin_pairs(centres, twin_similarity())
         with self.lock:
-            self.samples, self.centres, self.limits, self.twins = samples, centres, limits, twins
+            self.samples, self.centres, self.limits, self.twins, self.book = samples, centres, limits, twins, book
+            self.book_policy = policy()
         self._write_report()
 
     def _write_report(self) -> None:
@@ -160,14 +186,35 @@ class Voiceprints:
             self.stamp = stamp
             self._load()
 
+    def _book(self):
+        with self.lock:
+            book = self.book
+        wanted = policy()
+        if book is not None and wanted != self.book_policy:
+            book.set_policy(*wanted)
+            self.book_policy = wanted
+        return book
+
     def scores(self, probe: np.ndarray) -> dict:
+        book = self._book()
+        if book is not None:
+            return dict(book.scores(np.asarray(probe, dtype=np.float32).tolist()))
+        return self._py_scores(probe)
+
+    def _py_scores(self, probe: np.ndarray) -> dict:
         with self.lock:
             return {slug: person_score(rows, self.centres[slug], probe) for slug, rows in self.samples.items()}
 
     def verdict(self, probe: np.ndarray) -> dict:
+        book = self._book()
+        if book is not None:
+            return book.verdict(np.asarray(probe, dtype=np.float32).tolist())
+        return self._py_verdict(probe)
+
+    def _py_verdict(self, probe: np.ndarray) -> dict:
         with self.lock:
             limits, twins = dict(self.limits), set(self.twins)
-        return emb.decide(self.scores(probe), limits, match_base(), margin(), twin_margin(), twins)
+        return emb.decide(self._py_scores(probe), limits, match_base(), margin(), twin_margin(), twins)
 
     def identify(self, probe: np.ndarray | None) -> tuple[str | None, float]:
         if probe is None:

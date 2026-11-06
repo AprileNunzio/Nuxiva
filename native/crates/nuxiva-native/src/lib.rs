@@ -36,6 +36,7 @@ mod token;
 mod topics;
 mod update;
 mod vitals;
+mod voice;
 mod workbench;
 
 use access::RustAccessMatrix;
@@ -105,6 +106,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     home_rules::register(m)?;
     ear::register(m)?;
     face::register(m)?;
+    voice::register(m)?;
     m.add_class::<RustSynapticBus>()?;
     m.add_class::<SynapticWeightMatrix>()?;
     m.add_class::<PySynapticSpike>()?;

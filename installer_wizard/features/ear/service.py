@@ -23,6 +23,7 @@ from ingress import RealtimeInput
 from learner import current_name, learner, name_variant
 from music import MusicTap
 from scene import SoundScene
+from speakers import SpeakerContext
 from livecap import LiveCaptions
 from livegov import LiveGovernor
 from recorder import Recorder, write_chunk
@@ -49,6 +50,7 @@ SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]{0,40}$")
 BARGE_IN = float(os.environ.get("NUXIVA_BARGE_IN", "0.7"))
 
 voiceprints = Voiceprints()
+speakers = SpeakerContext(voiceprints)
 governor = LiveGovernor()
 HOST_MIC: HostMicCapture | None = None
 
@@ -318,7 +320,7 @@ class Session:
         self.awaiting_command = False
         learner.on_command()
         self.recorder.note("transcript", text=command, dur=round(len(clean) / RATE, 2), woke=woke, ms=ms)
-        speaker, score = await asyncio.to_thread(self._speaker, clean)
+        speaker, score, turn = await asyncio.to_thread(speakers.identify, clean, self.alone)
         asyncio.create_task(capture.store(note_error, "command", command, lang, speaker, score, woke, ms, caption, clean))
         enforce_speaker = earconf.flag("NUXIVA_VOICEPRINT_ENFORCE", False)
         if enforce_speaker and voiceprints.ready and len(voiceprints.samples) > 0:
@@ -330,19 +332,12 @@ class Session:
 
         await self.broadcast(type="transcript", text=command, ms=ms, lang=lang, followup=followup and not woke,
                              speaker=speaker, speaker_score=round(score, 3), voice_known=self._known(self.alone),
-                             utt=caption["utt"])
+                             utt=caption["utt"], **turn)
         auto_followup = earconf.number("NUXIVA_EAR_AUTO_FOLLOWUP", 8.0, 0.0, 30.0)
         if auto_followup > 0.0:
             await self.set_mode("listening", seconds=auto_followup, conversation=True)
         else:
             await self.set_mode("idle")
-
-    def _speaker(self, clean: np.ndarray) -> tuple[str | None, float]:
-        emb = voiceprints.embed(clean)
-        slug, score = voiceprints.identify(emb)
-        if emb is not None and self.alone and slug in (None, self.alone):
-            voiceprints.add(self.alone, emb, "ascolto")
-        return slug, score
 
     @staticmethod
     def _known(slug: str | None) -> bool | None:
