@@ -9,6 +9,11 @@ WINDOW_S = 1.5
 SPLIT_FROM_S = 3.0
 MAX_WINDOWS = 8
 CHANGE = 0.55
+RENAMED = {"voice_known": "voice_match"}
+
+
+def turn_fields(observed: dict | None) -> dict:
+    return {RENAMED.get(key, key): value for key, value in (observed or {}).items()}
 
 
 class SpeakerContext:
@@ -52,7 +57,7 @@ class SpeakerContext:
             self.voiceprints.add(alone, probe, "ascolto")
         info: dict = {"mixed_speakers": mixed}
         if self.tracker is not None and probe is not None:
-            info.update(self.tracker.observe(np.asarray(probe, dtype=np.float32).tolist(), time.time(), slug) or {})
+            info.update(turn_fields(self.tracker.observe(np.asarray(probe, dtype=np.float32).tolist(), time.time(), slug)))
         return slug, score, info
 
     def active(self) -> int:

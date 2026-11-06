@@ -330,9 +330,10 @@ class Session:
                 await self.set_mode("idle")
                 return
 
-        await self.broadcast(type="transcript", text=command, ms=ms, lang=lang, followup=followup and not woke,
-                             speaker=speaker, speaker_score=round(score, 3), voice_known=self._known(self.alone),
-                             utt=caption["utt"], **turn)
+        await self.broadcast(**(turn | {"type": "transcript", "text": command, "ms": ms, "lang": lang,
+                                        "followup": followup and not woke, "speaker": speaker,
+                                        "speaker_score": round(score, 3), "voice_known": self._known(self.alone),
+                                        "utt": caption["utt"]}))
         auto_followup = earconf.number("NUXIVA_EAR_AUTO_FOLLOWUP", 8.0, 0.0, 30.0)
         if auto_followup > 0.0:
             await self.set_mode("listening", seconds=auto_followup, conversation=True)

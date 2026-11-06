@@ -14,7 +14,7 @@ for p in (str(ROOT), str(ROOT / "backend"), str(ROOT / "features" / "ear"), str(
 import native_core
 import embeddings as emb
 import voiceprint
-from features.ear.speakers import SpeakerContext
+from features.ear.speakers import SpeakerContext, turn_fields
 
 NATIVE = native_core.load()
 READY = NATIVE is not None and all(hasattr(NATIVE, n) for n in ("RustVoiceBook", "RustVoiceTracker", "ear_split_turns"))
@@ -115,7 +115,8 @@ class SpeakerContextTest(unittest.TestCase):
         self.assertEqual(slug, "anna")
         self.assertTrue(info["mixed_speakers"])
         self.assertEqual(prints.added, [])
-        self.assertEqual(info["voice_known"], "anna")
+        self.assertEqual(info["voice_match"], "anna")
+        self.assertNotIn("voice_known", info)
 
     def test_turns_are_tracked_across_sentences(self):
         prints = FakePrints()
@@ -145,3 +146,29 @@ class FallbackTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class FakeTracker:
+
+    def observe(self, probe, now, known=None):
+        return {"voice_label": 1, "voice_known": known, "new_voice": False, "same_speaker": True,
+                "voices_active": 1, "voice_similarity": 0.9}
+
+
+class TurnFieldsTest(unittest.TestCase):
+
+    def test_tracker_match_never_collides_with_voice_known(self):
+        prints = FakePrints()
+        context = SpeakerContext(prints)
+        context.tracker, context.split = FakeTracker(), None
+        slug, _, turn = context.identify(np.full(16000 * 2, 0.1, dtype=np.float32), None)
+        self.assertEqual(slug, "anna")
+        self.assertNotIn("voice_known", turn)
+        self.assertEqual(turn["voice_match"], "anna")
+        event = turn | {"type": "transcript", "voice_known": True}
+        self.assertIs(event["voice_known"], True)
+        self.assertTrue(event["same_speaker"])
+
+    def test_missing_observation_is_empty(self):
+        self.assertEqual(turn_fields(None), {})
+        self.assertEqual(turn_fields({"voice_known": None, "new_voice": True}), {"voice_match": None, "new_voice": True})
