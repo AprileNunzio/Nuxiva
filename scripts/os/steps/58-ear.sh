@@ -10,7 +10,7 @@ CODE=("$EDIR/service.py" "$EDIR/broadcast.py" "$EDIR/stt.py" "$EDIR/learner.py" 
       "$EDIR/vocabulary.py" "$EDIR/online_stt.py" "$EDIR/langpick.py"
       "$EDIR/recorder.py" "$EDIR/reviewer.py" "$EDIR/review_metrics.py" "$EDIR/journal.py" "$EDIR/capture.py"
       "$EDIR/feedback.py" "$EDIR/livecap.py" "$EDIR/livegov.py" "$EDIR/keepalive.py" "$EDIR/link_state.py" "$EDIR/host_mic.py"
-      "$EDIR/ingress.py" "$EDIR/conditioner.py" "$NUXIVA_DIR/installer_wizard/features/biometrics/embeddings.py"
+      "$EDIR/ingress.py" "$EDIR/conditioner.py" "$EDIR/scene.py" "$NUXIVA_DIR/installer_wizard/features/biometrics/embeddings.py"
       "$NUXIVA_DIR/installer_wizard/features/biometrics/sealed_rows.py" "$NUXIVA_DIR/installer_wizard/backend/native_core.py")
 OWW_URL=https://github.com/dscripka/openWakeWord/releases/download/v0.5.1
 OWW_FILES=(melspectrogram.onnx embedding_model.onnx)

@@ -59,7 +59,8 @@ class MusicTap:
     def playing(self) -> bool:
         return len(self.loud) == self.loud.maxlen and self.loud_count >= LOUD_RATIO * len(self.loud)
 
-    def feed(self, frame: np.ndarray, rms: float, noise: float, idle: bool, now: float) -> None:
+    def feed(self, frame: np.ndarray, rms: float, noise: float, idle: bool, now: float,
+             music: bool | None = None) -> None:
         ring, n, pos = self.ring, len(frame), self.pos
         if pos + n <= len(ring):
             ring[pos:pos + n] = frame
@@ -68,7 +69,7 @@ class MusicTap:
             ring[pos:], ring[:n - k] = frame[:k], frame[k:]
         self.pos = (pos + n) % len(ring)
         self.filled = min(len(ring), self.filled + n)
-        loud = rms > max(noise * 2.0, 0.006) and idle
+        loud = (rms > max(noise * 2.0, 0.006) if music is None else music) and idle
         if len(self.loud) == self.loud.maxlen:
             self.loud_count -= self.loud[0]
         self.loud.append(loud)

@@ -22,6 +22,7 @@ from broadcast import SESSIONS, broadcast_event, park_hidden, register, unregist
 from ingress import RealtimeInput
 from learner import current_name, learner, name_variant
 from music import MusicTap
+from scene import SoundScene
 from livecap import LiveCaptions
 from livegov import LiveGovernor
 from recorder import Recorder, write_chunk
@@ -83,6 +84,7 @@ class Session:
         self.alone: str | None = None
         self.enroll: dict | None = None
         self.music = MusicTap()
+        self.scene = SoundScene()
         self.profile = enhance.NoiseProfile()
         self.wake = WakeWord()
         self.autolevel = AutoLevel()
@@ -126,6 +128,7 @@ class Session:
 
     async def _reset_input(self):
         self.wake.request_reset()
+        self.scene.reset()
         self.buffer = np.zeros(0, dtype=np.float32)
         self.ring = np.zeros(0, dtype=np.float32)
         self.in_speech, self.speech = False, []
@@ -147,13 +150,14 @@ class Session:
         if advice:
             LINK["mic_level"] = advice
             await self.send(type="mic_level", advice=advice)
-        self.music.feed(frame, rms, self.noise, self.mode == "idle" and not self.nuxiva_speaking, now)
-        threshold = max(self.noise * 3.2, 0.010)
-        voiced = rms > threshold
+        heard = self.scene.hear(frame, rms, self.noise, self.music.playing)
+        self.music.feed(frame, rms, self.noise, self.mode == "idle" and not self.nuxiva_speaking, now,
+                        heard.kind == "music" if self.scene.native else None)
+        voiced = heard.voiced
         if voiced:
             activity.voice()
         chunk = self.recorder.feed(frame, rms, voiced or self.in_speech, self.noise, now,
-                                   self.nuxiva_speaking or self.enroll is not None or self.music.playing,
+                                   self.nuxiva_speaking or self.enroll is not None or heard.music,
                                    self.profile.magnitude)
         if chunk is not None:
             asyncio.create_task(self._save(chunk))

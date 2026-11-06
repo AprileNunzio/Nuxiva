@@ -2,7 +2,7 @@ use std::sync::Mutex;
 
 use nuxiva_ear_core::{
     BINS, Denoiser, DenoiserConfig, MAX_STREAM_SAMPLES, MAX_UTTERANCE_SAMPLES, NoiseTracker,
-    clean_utterance, normalize, utterance_gain,
+    SceneClassifier, clean_utterance, normalize, utterance_gain,
 };
 use pyo3::exceptions::{PyRuntimeError, PyValueError};
 use pyo3::prelude::*;
@@ -193,6 +193,45 @@ impl RustNoiseTracker {
     }
 }
 
+type SceneTuple = (bool, &'static str, bool, f32, f32, f32, f32);
+
+const MAX_SCENE_FRAME: usize = 16_000;
+
+#[pyclass(module = "nuxiva_native", frozen)]
+#[derive(Debug, Default)]
+pub struct RustSoundScene {
+    inner: Mutex<SceneClassifier>,
+}
+
+#[pymethods]
+impl RustSoundScene {
+    #[new]
+    fn new() -> Self {
+        Self::default()
+    }
+
+    fn feed(&self, py: Python<'_>, frame: &[u8]) -> PyResult<SceneTuple> {
+        let input = floats(frame, MAX_SCENE_FRAME)?;
+        let verdict = py
+            .detach(|| self.inner.lock().ok().map(|mut s| s.feed(&input)))
+            .ok_or_else(lock_error)?;
+        Ok((
+            verdict.voiced,
+            verdict.kind.code(),
+            verdict.music_bed,
+            verdict.music_level,
+            verdict.floor,
+            verdict.harmonicity,
+            verdict.pitch_hz,
+        ))
+    }
+
+    fn reset_stream(&self) -> PyResult<()> {
+        self.inner.lock().map_err(|_| lock_error())?.reset_stream();
+        Ok(())
+    }
+}
+
 #[pyfunction]
 #[pyo3(signature = (audio, noise=None, highpass_hz=90.0, floor=0.15))]
 fn ear_clean_utterance<'py>(
@@ -242,6 +281,7 @@ fn ear_utterance_gain(audio: &[u8], target: f64, max_gain: f64) -> PyResult<f64>
 pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<RustDenoiser>()?;
     m.add_class::<RustNoiseTracker>()?;
+    m.add_class::<RustSoundScene>()?;
     m.add_function(wrap_pyfunction!(ear_clean_utterance, m)?)?;
     m.add_function(wrap_pyfunction!(ear_normalize, m)?)?;
     m.add_function(wrap_pyfunction!(ear_utterance_gain, m)?)?;
