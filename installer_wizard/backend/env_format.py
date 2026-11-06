@@ -5,10 +5,12 @@ import sys
 import tempfile
 from pathlib import Path
 
+import native_core
+
 KEY = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 
 
-def decode_value(value: str) -> str:
+def _py_decode_value(value: str) -> str:
     value = value.strip()
     while len(value) >= 2 and value[0] == value[-1] and value[0] in "\"'":
         if value[0] == '"':
@@ -21,14 +23,14 @@ def decode_value(value: str) -> str:
     return value
 
 
-def format_line(key: str, value: str) -> str:
+def _py_format_line(key: str, value: str) -> str:
     if not KEY.fullmatch(key) or any(c in value for c in "\n\r\0"):
         raise ValueError("Chiave o valore di ambiente non valido")
     encoded = json.dumps(value, ensure_ascii=False).replace("$", r"\$")
     return f"{key}={encoded}"
 
 
-def entries(text: str):
+def _py_entries(text: str):
     seen = set()
     for line in text.splitlines():
         line = line.strip()
@@ -39,11 +41,40 @@ def entries(text: str):
             key = key.strip().strip("\"'").strip()
             if KEY.fullmatch(key) and key not in seen:
                 seen.add(key)
-                yield key, decode_value(value)
+                yield key, _py_decode_value(value)
+
+
+def _py_normalize(text: str) -> str:
+    return "\n".join(value if key is None else _py_format_line(key, value) for key, value in _py_entries(text)) + "\n"
+
+
+def _engine(name: str, fallback):
+    native = native_core.symbol(name)
+    if native is not None:
+        return native
+    native_core.python_fallback("env")
+    return fallback
+
+
+def decode_value(value: str) -> str:
+    return _engine("env_decode_value", _py_decode_value)(value)
+
+
+def format_line(key: str, value: str) -> str:
+    return _engine("env_format_line", _py_format_line)(key, value)
+
+
+def entries(text: str):
+    native = native_core.symbol("env_entries")
+    if native is None:
+        native_core.python_fallback("env")
+        yield from _py_entries(text)
+        return
+    yield from native(text)
 
 
 def normalize(text: str) -> str:
-    return "\n".join(value if key is None else format_line(key, value) for key, value in entries(text)) + "\n"
+    return _engine("env_normalize", _py_normalize)(text)
 
 
 def main() -> None:

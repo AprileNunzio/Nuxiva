@@ -23,13 +23,23 @@ class AssistantIdentity:
         return (self.wake_word, f"ehi {self.wake_word}", f"ok {self.wake_word}", f"ciao {self.wake_word}")
 
 
-def normalize_name(raw: str) -> str:
+def _py_normalize_name(raw: str) -> str:
     text = unicodedata.normalize("NFKC", str(raw or ""))
     text = _DISALLOWED.sub("", _WAKE_PREFIX.sub("", text.strip())).strip()
     text = re.sub(r"\s+", " ", text)[:MAX_NAME_LENGTH].strip()
     if not text:
         return DEFAULT_NAME
     return text.capitalize() if text.isupper() and len(text) > 1 else text
+
+
+def normalize_name(raw: str) -> str:
+    import native_core
+
+    native = native_core.symbol("identity_normalize_name")
+    if native is None:
+        native_core.python_fallback("identity")
+        return _py_normalize_name(raw)
+    return native(str(raw or ""))
 
 
 def _env(key: str, default: str) -> str:

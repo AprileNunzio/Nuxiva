@@ -3,6 +3,7 @@ import re
 from collections.abc import Awaitable, Callable
 from urllib.parse import quote
 
+import native_core
 from config import env_get
 
 Scope = dict
@@ -38,6 +39,14 @@ def _header(scope: Scope, name: bytes) -> str:
 
 
 def _safe_host(authority: str) -> str:
+    native = native_core.symbol("guard_safe_host")
+    if native is not None:
+        return native(authority)
+    native_core.python_fallback("https")
+    return _py_safe_host(authority)
+
+
+def _py_safe_host(authority: str) -> str:
     match = AUTHORITY_RE.match(authority.strip().lower())
     if not match:
         return ""
@@ -59,6 +68,20 @@ def _navigation(scope: Scope) -> bool:
 
 
 def redirect_target(scope: Scope, admin: bool, port: int) -> str:
+    if scope.get("type") != "http":
+        return ""
+    native = native_core.symbol("guard_redirect_target")
+    if native is None:
+        native_core.python_fallback("https")
+        return _py_redirect_target(scope, admin, port)
+    client = scope.get("client") or ("", 0)
+    return native(str(scope.get("scheme") or ""), str(client[0] or ""), str(scope.get("path") or "/"),
+                  str(scope.get("method") or "GET"), _header(scope, b"sec-fetch-mode"),
+                  _header(scope, b"accept"), _header(scope, b"host"),
+                  bytes(scope.get("query_string") or b""), admin, int(port))
+
+
+def _py_redirect_target(scope: Scope, admin: bool, port: int) -> str:
     if scope.get("type") != "http" or scope.get("scheme") != "http" or port <= 0:
         return ""
     client = scope.get("client") or ("", 0)
@@ -67,7 +90,7 @@ def redirect_target(scope: Scope, admin: bool, port: int) -> str:
     path = scope.get("path") or "/"
     if path.startswith(EXEMPT) or not _navigation(scope):
         return ""
-    host = _safe_host(_header(scope, b"host"))
+    host = _py_safe_host(_header(scope, b"host"))
     if not host:
         return ""
     authority = host if port == 443 else f"{host}:{port}"

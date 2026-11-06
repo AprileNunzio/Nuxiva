@@ -1,11 +1,11 @@
 import importlib
 import json
 import logging
-import os
 import re
 import threading
 import time
 
+import native_core
 from config import STATE_DIR
 
 log = logging.getLogger("nuxiva.native")
@@ -20,7 +20,7 @@ REV = re.compile(r"^[0-9a-f]{7,64}$")
 
 
 def disabled() -> bool:
-    return os.environ.get("NUXIVA_NATIVE", "auto").strip() == "0"
+    return native_core.disabled()
 
 
 def _import():
@@ -71,6 +71,10 @@ def module():
         log.warning("Modulo nativo caricato in memoria più vecchio dei sorgenti installati: "
                     "uso il motore Python fino al riavvio del supervisore")
     return None
+
+
+def python_fallback(area: str) -> None:
+    native_core.python_fallback(area)
 
 
 def feature(name: str):

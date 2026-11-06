@@ -4,6 +4,8 @@ import socket
 from collections.abc import Awaitable, Callable, Iterable
 from urllib.parse import urlsplit
 
+import native_core
+
 UNSAFE = frozenset({"POST", "PUT", "PATCH", "DELETE"})
 LOOPBACK_NAMES = frozenset({"localhost", "nuxiva.local", "nuxiva"})
 
@@ -49,14 +51,37 @@ class OriginGuard:
     def __init__(self, app, extra_hosts: Iterable[str] = ()) -> None:
         self.app = app
         self.trusted = LOOPBACK_NAMES | _machine_names() | {h.lower() for h in extra_hosts if h}
+        self._engines: tuple = (None, None)
+
+    def _native(self):
+        cls = native_core.symbol("RustOriginGuard")
+        if cls is None:
+            native_core.python_fallback("origin")
+            return None
+        if self._engines[0] is not cls:
+            self._engines = (cls, cls(sorted(self.trusted)))
+        return self._engines[1]
 
     def host_allowed(self, host: str) -> bool:
+        native = self._native()
+        if native is not None:
+            return native.host_allowed(host)
         return bool(host) and (host in self.trusted or _is_ip(host) or host.endswith(".local"))
 
     def verdict(self, scope: Scope) -> str:
         if scope.get("type") != "http":
             return ""
-        host = _hostname(_header(scope, b"host"))
+        native = self._native()
+        if native is not None:
+            return native.verdict(_header(scope, b"host"), str(scope.get("method") or "GET"),
+                                  _header(scope, b"sec-fetch-site"), _header(scope, b"origin"))
+        return self._py_verdict(scope)
+
+    def _py_verdict(self, scope: Scope) -> str:
+        try:
+            host = _hostname(_header(scope, b"host"))
+        except ValueError:
+            return "untrusted_host"
         if host and not self.host_allowed(host):
             return "untrusted_host"
         if scope.get("method", "GET").upper() not in UNSAFE:
@@ -65,7 +90,11 @@ class OriginGuard:
         if fetch_site == "cross-site":
             return "cross_site"
         origin = _header(scope, b"origin")
-        if origin and _origin_hostname(origin) != host:
+        try:
+            foreign = bool(origin) and _origin_hostname(origin) != host
+        except ValueError:
+            foreign = True
+        if foreign:
             return "foreign_origin"
         return ""
 
