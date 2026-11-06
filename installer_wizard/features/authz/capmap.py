@@ -45,7 +45,7 @@ TOOL_CAPS: dict[str, str] = {
 def _temperature(data: dict) -> float | None:
     try:
         return float(data.get("temperature"))
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, OverflowError):
         return None
 
 
@@ -84,6 +84,17 @@ def ha_capability(domain: str, service: str, entity: dict, data: dict) -> str:
 
 
 def ha_service(args: dict, lookup: EntityLookup) -> list[str]:
+    from features.authz import capability
+    rules = capability.native_rules()
+    if rules is None:
+        return _py_ha_service(args, lookup)
+    data = args.get("data") if isinstance(args.get("data"), dict) else args
+    service, declared, targets = capability.call_targets(args, lookup)
+    pairs = [(domain, capability.device_class(entity)) for domain, entity in targets]
+    return list(rules.call_capabilities(declared, service, pairs, _temperature(data)))
+
+
+def _py_ha_service(args: dict, lookup: EntityLookup) -> list[str]:
     service = str(args.get("service") or "").strip().lower()
     declared = str(args.get("domain") or "").strip().lower()
     data = args.get("data") if isinstance(args.get("data"), dict) else args
@@ -96,6 +107,14 @@ def ha_service(args: dict, lookup: EntityLookup) -> list[str]:
 
 
 def ha_read(args: dict) -> list[str]:
+    from features.authz import capability
+    rules = capability.native_rules()
+    if rules is None:
+        return _py_ha_read(args)
+    return [rules.read_capability([domain_of(eid) for eid in entity_ids(args.get("entity_id"))])]
+
+
+def _py_ha_read(args: dict) -> list[str]:
     private = any(domain_of(eid) in HA_READ_PRIVATE for eid in entity_ids(args.get("entity_id")))
     return ["home.private.read" if private else "home.state.read"]
 

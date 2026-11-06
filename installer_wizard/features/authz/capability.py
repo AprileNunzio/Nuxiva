@@ -1,5 +1,7 @@
 from collections.abc import Callable, Iterable
 
+import native_core
+
 from features.authz.risk import Risk
 from features.home_assistant.nlu.calls import is_sensitive
 from features.home_assistant.nlu.vocabulary import SENSITIVE_COVERS
@@ -19,6 +21,34 @@ HA_READ_PRIVATE = frozenset({"person", "device_tracker", "lock", "alarm_control_
 HA_UNKNOWN = Risk.FILES
 HA_SERVICE_TOOLS = frozenset({"ha_call_service"})
 HA_READ_TOOLS = frozenset({"ha_get_state"})
+
+_rules: dict = {"engine": None, "rules": None}
+
+
+def native_rules():
+    engine = native_core.symbol("RustHomeRules")
+    if engine is None:
+        native_core.python_fallback("authz.home")
+        return None
+    if _rules["engine"] is not engine:
+        from features.authz import capmap
+        rules = engine({name: int(level) for name, level in HA_DOMAIN.items()}, int(HA_UNKNOWN),
+                       sorted(HA_READ_PRIVATE), sorted(SENSITIVE_COVERS), sorted(capmap.APPLIANCES),
+                       sorted(capmap.CLIMATE), sorted(capmap.GATE_OPEN), tuple(map(float, capmap.COMFORT_RANGE)))
+        _rules.update(engine=engine, rules=rules)
+    return _rules["rules"]
+
+
+def device_class(entity: dict) -> str:
+    value = entity.get("device_class")
+    return value if isinstance(value, str) else ""
+
+
+def call_targets(args: dict, lookup: EntityLookup) -> tuple[str, str, list[tuple[str, dict]]]:
+    service = str(args.get("service") or "").strip().lower()
+    declared = str(args.get("domain") or "").strip().lower()
+    ids = entity_ids(args.get("entity_id"))
+    return service, declared, [(domain_of(eid) or declared, lookup(eid) or {}) for eid in ids]
 
 
 def entity_ids(raw) -> list[str]:
@@ -45,10 +75,16 @@ def service_risk(domain: str, service: str, entity: dict) -> Risk:
 
 
 def ha_service(args: dict, lookup: EntityLookup) -> Risk:
-    service = str(args.get("service") or "").strip().lower()
-    declared = str(args.get("domain") or "").strip().lower()
-    ids = entity_ids(args.get("entity_id"))
-    targets = [(domain_of(eid) or declared, lookup(eid) or {}) for eid in ids] or [(declared, {})]
+    rules = native_rules()
+    if rules is None:
+        return _py_ha_service(args, lookup)
+    service, declared, targets = call_targets(args, lookup)
+    return Risk(rules.call_risk(declared, service, [(domain, device_class(entity)) for domain, entity in targets]))
+
+
+def _py_ha_service(args: dict, lookup: EntityLookup) -> Risk:
+    service, declared, targets = call_targets(args, lookup)
+    targets = targets or [(declared, {})]
     levels = [service_risk(domain, service, entity) for domain, entity in targets]
     if declared and declared not in {domain for domain, _ in targets}:
         levels.append(HA_DOMAIN.get(declared, HA_UNKNOWN))
@@ -56,6 +92,13 @@ def ha_service(args: dict, lookup: EntityLookup) -> Risk:
 
 
 def ha_read(args: dict) -> Risk:
+    rules = native_rules()
+    if rules is None:
+        return _py_ha_read(args)
+    return Risk(rules.read_risk([domain_of(eid) for eid in entity_ids(args.get("entity_id"))]))
+
+
+def _py_ha_read(args: dict) -> Risk:
     ids = entity_ids(args.get("entity_id"))
     return Risk.PERSONAL if any(domain_of(eid) in HA_READ_PRIVATE for eid in ids) else Risk.HOME
 

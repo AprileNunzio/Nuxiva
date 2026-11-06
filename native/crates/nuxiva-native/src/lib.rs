@@ -14,6 +14,7 @@ mod errors;
 mod gesture;
 mod governors;
 mod guard;
+mod home_rules;
 mod language;
 mod learner;
 mod memory;
@@ -99,6 +100,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     telemetry::register(m)?;
     supervisor::register(m)?;
     authz::register(m)?;
+    home_rules::register(m)?;
     m.add_class::<RustSynapticBus>()?;
     m.add_class::<SynapticWeightMatrix>()?;
     m.add_class::<PySynapticSpike>()?;
