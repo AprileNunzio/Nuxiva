@@ -1,3 +1,5 @@
+use nuxiva_memory_core::assemble::{Assembler, Observation};
+use nuxiva_memory_core::episode::detect;
 use nuxiva_memory_core::ops::{Rewritten, compact, erase, pin, relink};
 use nuxiva_memory_core::profile::build;
 use nuxiva_memory_core::store::{genesis, open_all, scan, seal};
@@ -226,6 +228,52 @@ impl RustMemory {
     }
 }
 
+#[pyclass(module = "nuxiva_native")]
+#[derive(Debug)]
+pub struct RustSightingAssembler {
+    inner: Assembler,
+}
+
+#[pymethods]
+impl RustSightingAssembler {
+    #[new]
+    #[pyo3(signature = (idle_ms = 15_000, max_span_ms = 600_000))]
+    fn new(idle_ms: u64, max_span_ms: u64) -> Self {
+        Self {
+            inner: Assembler::new(idle_ms, max_span_ms),
+        }
+    }
+
+    fn push(&mut self, observation_json: &str) -> PyResult<String> {
+        let o: Observation = parse(observation_json)?;
+        json(&self.inner.push(&o).map_err(bad)?)
+    }
+
+    fn flush(&mut self, now_ms: u64) -> PyResult<String> {
+        json(&self.inner.flush(now_ms))
+    }
+
+    fn drain(&mut self) -> PyResult<String> {
+        json(&self.inner.drain())
+    }
+
+    fn open_count(&self) -> usize {
+        self.inner.open_count()
+    }
+}
+
+#[pyfunction]
+fn memory_episodes(sightings_json: &str) -> PyResult<String> {
+    if sightings_json.len() > MAX_JSON.saturating_mul(256) {
+        return Err(PyValueError::new_err("memory input too large"));
+    }
+    let list: Vec<Sighting> = serde_json::from_str(sightings_json).map_err(bad)?;
+    json(&detect(&list))
+}
+
 pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
-    m.add_class::<RustMemory>()
+    m.add_class::<RustMemory>()?;
+    m.add_class::<RustSightingAssembler>()?;
+    m.add_function(wrap_pyfunction!(memory_episodes, m)?)?;
+    Ok(())
 }

@@ -5,11 +5,14 @@
     "Arrivées et départs des membres du foyer et des invités du jour",
     "Demandes refusées, volet de confidentialité de l'écran et automatisations lancées",
     "Couleur du vêtement porté, seulement si elle est reconnue avec certitude et sans enregistrer d'images",
-    "Chiffrement par jour avec effacement cryptographique à l'expiration, chaîne de hachage et signature horaire"
+    "Chiffrement par jour avec effacement cryptographique à l'expiration, chaîne de hachage et signature horaire",
+    "Mémoire chiffrée des passages devant les caméras : vêtements, objets portés, véhicules, livraisons, visages couverts"
   ],
   "settings": {
     "NUXIVA_SENTINEL_APPEARANCE": "Noter la couleur du vêtement porté (codes uniquement, aucune image)",
-    "NUXIVA_SENTINEL_GUESTS": "Noter les arrivées et départs des invités (détails conservés 24 heures)"
+    "NUXIVA_SENTINEL_GUESTS": "Noter les arrivées et départs des invités (détails conservés 24 heures)",
+    "NUXIVA_SENTINEL_MEMORY": "Mémoriser les passages vus par les caméras (apparence, véhicules, livraisons), chiffrés",
+    "NUXIVA_SENTINEL_WATCH_EVERY": "Toutes les combien de secondes Sentinelle regarde les caméras"
   },
   "narrative": {
     "sentinel.presence.arrived": "J'ai vu {person} arriver",

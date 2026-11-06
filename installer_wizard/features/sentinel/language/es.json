@@ -5,11 +5,14 @@
     "Llegadas y salidas de las personas de casa y de los invitados del día",
     "Peticiones rechazadas, obturador de privacidad de la pantalla y automatizaciones iniciadas",
     "Color de la prenda que se lleva, solo si se reconoce con seguridad y sin guardar imágenes",
-    "Cifrado por día con borrado criptográfico al caducar, cadena de hash y firma horaria"
+    "Cifrado por día con borrado criptográfico al caducar, cadena de hash y firma horaria",
+    "Memoria cifrada de los pasos ante las cámaras: ropa, objetos llevados, vehículos, entregas, rostros cubiertos"
   ],
   "settings": {
     "NUXIVA_SENTINEL_APPEARANCE": "Anotar el color de la prenda (solo códigos, ninguna imagen)",
-    "NUXIVA_SENTINEL_GUESTS": "Anotar llegadas y salidas de invitados (detalle conservado 24 horas)"
+    "NUXIVA_SENTINEL_GUESTS": "Anotar llegadas y salidas de invitados (detalle conservado 24 horas)",
+    "NUXIVA_SENTINEL_MEMORY": "Recordar los pasos vistos por las cámaras (aspecto, vehículos, entregas), cifrados",
+    "NUXIVA_SENTINEL_WATCH_EVERY": "Cada cuántos segundos Sentinela mira las cámaras"
   },
   "narrative": {
     "sentinel.presence.arrived": "Vi llegar a {person}",

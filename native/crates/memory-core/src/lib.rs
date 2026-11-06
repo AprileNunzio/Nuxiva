@@ -1,5 +1,7 @@
 #![forbid(unsafe_code)]
 
+pub mod assemble;
+pub mod episode;
 pub mod error;
 pub mod index;
 pub mod look;
@@ -20,5 +22,7 @@ pub use sighting::{Audience, Class, Evidence, EvidenceKind, Sighting, Who};
 
 #[cfg(test)]
 mod tests;
+#[cfg(test)]
+mod tests_assemble;
 #[cfg(test)]
 mod tests_store;

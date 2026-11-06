@@ -71,6 +71,7 @@ from features.models3d import api as models3d_api
 from features.models3d import studio_api as models3d_studio_api
 from features.ear import api as ear_api
 from features.people import camera_watch
+from features.sentinel import watch as sentinel_watch
 from features.automations import api as automations_api
 from features.automations.engine import engine as automations_engine
 from features.autonomy import api as autonomy_api
@@ -394,6 +395,7 @@ BACKGROUND = (
     ("aggiornamenti", updater.scheduler, 0.0),
     ("presenze", presence.monitor.run, 0.0),
     ("volti-telecamere", camera_watch.run, 0.0),
+    ("sentinella-memoria", sentinel_watch.run, 0.0),
     ("telegram", bot.run, 0.0),
     ("rete", explorer.run, 0.0),
     ("audio", audio.watcher.run, 0.0),
@@ -468,15 +470,8 @@ async def main() -> None:
                 timeout_graceful_shutdown=3,
             )
         ),
-        uvicorn.Server(
-            uvicorn.Config(
-                admin,
-                host="0.0.0.0",
-                port=ADMIN_PORT,
-                log_level="warning",
-                timeout_graceful_shutdown=3,
-            )
-        ),
+        uvicorn.Server(uvicorn.Config(admin, host="0.0.0.0", port=ADMIN_PORT, log_level="warning",
+                                      timeout_graceful_shutdown=3)),
     ]
     https = secure_server()
     log.info("Nuxiva OS Supervisor v%s — utente :%d — admin :%d", VERSION, PUBLIC_PORT, ADMIN_PORT)
