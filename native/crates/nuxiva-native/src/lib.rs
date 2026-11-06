@@ -9,6 +9,7 @@ mod bus;
 mod config;
 mod cortex;
 mod display;
+mod ear;
 mod embodied;
 mod errors;
 mod gesture;
@@ -101,6 +102,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     supervisor::register(m)?;
     authz::register(m)?;
     home_rules::register(m)?;
+    ear::register(m)?;
     m.add_class::<RustSynapticBus>()?;
     m.add_class::<SynapticWeightMatrix>()?;
     m.add_class::<PySynapticSpike>()?;

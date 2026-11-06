@@ -3,6 +3,7 @@ import os
 import numpy as np
 
 import equalizer
+import native_core
 from levels import utterance_gain
 from tuning import tuning
 
@@ -30,13 +31,30 @@ MAX_GAIN = 18.0
 PEAK = 0.97
 
 
+DENOISE_FLOOR = 0.15
+
+
+def _native(name: str):
+    found = native_core.symbol(name)
+    if found is None:
+        native_core.python_fallback("ear.enhance")
+    return found
+
+
 class NoiseProfile:
 
     def __init__(self) -> None:
         self.magnitude: np.ndarray | None = None
         self.pending = np.zeros(0, dtype=np.float32)
+        tracker = _native("RustNoiseTracker")
+        self.native = tracker() if tracker is not None else None
+
+    def psd(self) -> bytes | None:
+        return self.native.psd() if self.native is not None else None
 
     def learn(self, frame: np.ndarray) -> None:
+        if self.native is not None:
+            self.native.learn(np.asarray(frame, dtype="<f4").tobytes())
         self.pending = np.concatenate([self.pending, frame])
         if len(self.pending) < N_FFT * 8:
             return
@@ -126,10 +144,29 @@ def deepfilter_clean(x: np.ndarray) -> np.ndarray | None:
         return None
 
 
+def _floats(raw: bytes) -> np.ndarray:
+    return np.frombuffer(raw, dtype="<f4").astype(np.float32)
+
+
 def normalize(x: np.ndarray) -> np.ndarray:
     target = _env_f("NUXIVA_EAR_TARGET_RMS", TARGET_RMS, 0.03, 0.2)
+    engine = _native("ear_normalize")
+    if engine is None:
+        return _py_normalize(x, target)
+    return _floats(engine(np.asarray(x, dtype="<f4").tobytes(), target, float(tuning.max_gain())))
+
+
+def _py_normalize(x: np.ndarray, target: float) -> np.ndarray:
     y = x * utterance_gain(x, target, tuning.max_gain())
     return (PEAK * np.tanh(y / PEAK)).astype(np.float32)
+
+
+def suppress(x: np.ndarray, profile: NoiseProfile) -> np.ndarray:
+    engine = _native("ear_clean_utterance")
+    if engine is None:
+        return denoise(highpass(x.astype(np.float32)), profile.magnitude)
+    floor = _env_f("NUXIVA_EAR_DENOISE_FLOOR", DENOISE_FLOOR, 0.05, 1.0)
+    return _floats(engine(np.asarray(x, dtype="<f4").tobytes(), profile.psd(), float(HIGHPASS_HZ), floor))
 
 
 def clean(x: np.ndarray, profile: NoiseProfile) -> np.ndarray:
@@ -137,5 +174,5 @@ def clean(x: np.ndarray, profile: NoiseProfile) -> np.ndarray:
     df_out = deepfilter_clean(x)
     if df_out is not None:
         return normalize(df_out)
-    return normalize(denoise(highpass(x.astype(np.float32)), profile.magnitude))
+    return normalize(suppress(x, profile))
 

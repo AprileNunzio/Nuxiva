@@ -11,7 +11,7 @@ CODE=("$EDIR/service.py" "$EDIR/broadcast.py" "$EDIR/stt.py" "$EDIR/learner.py" 
       "$EDIR/recorder.py" "$EDIR/reviewer.py" "$EDIR/review_metrics.py" "$EDIR/journal.py" "$EDIR/capture.py"
       "$EDIR/feedback.py" "$EDIR/livecap.py" "$EDIR/livegov.py" "$EDIR/keepalive.py" "$EDIR/link_state.py" "$EDIR/host_mic.py"
       "$EDIR/ingress.py" "$EDIR/conditioner.py" "$NUXIVA_DIR/installer_wizard/features/biometrics/embeddings.py"
-      "$NUXIVA_DIR/installer_wizard/features/biometrics/sealed_rows.py")
+      "$NUXIVA_DIR/installer_wizard/features/biometrics/sealed_rows.py" "$NUXIVA_DIR/installer_wizard/backend/native_core.py")
 OWW_URL=https://github.com/dscripka/openWakeWord/releases/download/v0.5.1
 OWW_FILES=(melspectrogram.onnx embedding_model.onnx)
 WAKE_NAME="${NUXIVA_WAKEWORD_MODEL:-ehi_nuxiva}"
@@ -19,6 +19,7 @@ WAKE_NAME="${NUXIVA_WAKEWORD_MODEL:-ehi_nuxiva}"
 WAKE_FILE="$EAR/wakeword/$WAKE_NAME.onnx"
 SPEAKER_URL=https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/wespeaker_en_voxceleb_resnet34_LM.onnx
 SHERPA_VERSION=1.13.8
+NATIVE_WHEELS="${NUXIVA_NATIVE_HOME:-/opt/nuxiva-native}/wheels"
 
 stt_model() {
     if [ -n "${NUXIVA_STT_MODEL:-}" ]; then echo "$NUXIVA_STT_MODEL"
@@ -88,6 +89,20 @@ fetch_wake_model() {
     mv -f "$WAKE_FILE.part" "$WAKE_FILE"
 }
 
+native_wanted() {
+    [ "${NUXIVA_NATIVE:-auto}" != "0" ] && compgen -G "$NATIVE_WHEELS/nuxiva_native-*.whl" >/dev/null
+}
+
+native_ready() {
+    native_wanted || return 0
+    [ -e "$EAR/.native-unsupported" ] && return 0
+    py -I -c "import nuxiva_native; nuxiva_native.RustDenoiser" 2>/dev/null
+}
+
+install_native() {
+    "$EAR/venv/bin/pip" install -q --force-reinstall --no-deps "$NATIVE_WHEELS"/nuxiva_native-*.whl && native_ready
+}
+
 voiceprint_ready() {
     [ "${NUXIVA_VOICEPRINT:-1}" = "0" ] && return 0
     [ -e "$EAR/.voiceprint-unsupported" ] && return 0
@@ -134,7 +149,7 @@ step_check() {
     fi
     py -c "import faster_whisper, websockets" 2>/dev/null || return 1
     cipher_ready || return 1
-    model_cached && instant_ready && voiceprint_ready || return 1
+    model_cached && instant_ready && voiceprint_ready && native_ready || return 1
     same_content "$UNIT" < "$UNIT_SRC" && systemctl is-enabled --quiet nuxiva-ear && ear_ok \
         && code_current ear "${CODE[@]}"
 }
@@ -194,6 +209,12 @@ print('modelli pronti')"
         if install_voiceprint; then rm -f "$EAR/.voiceprint-unsupported"
         else warn "Impronta vocale non supportata da questo hardware: Nuxiva riconoscerà le persone solo dal volto"
             touch "$EAR/.voiceprint-unsupported"
+        fi
+    fi
+    if ! native_ready; then
+        if install_native; then rm -f "$EAR/.native-unsupported"
+        else warn "Pulizia del suono in Rust non disponibile: l'ascolto usa il motore Python"
+            touch "$EAR/.native-unsupported"
         fi
     fi
     mkdir -p /var/lib/nuxiva/voiceprints

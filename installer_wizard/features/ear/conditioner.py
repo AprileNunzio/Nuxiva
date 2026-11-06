@@ -1,5 +1,7 @@
 import numpy as np
 
+import native_core
+
 try:
     from features.ear import earconf
 except ImportError:
@@ -93,3 +95,38 @@ class NativeConditioner:
         gain = np.maximum(gain, self.previous_gain * GAIN_RELEASE)
         self.previous_gain = gain
         return self.highpass * gain
+
+
+class RustConditioner:
+
+    def __init__(self, engine) -> None:
+        self.engine = engine
+        self.suppress = bool(engine.suppress)
+        self.floor = float(engine.floor)
+        self.enabled = bool(engine.enabled)
+
+    def process(self, pcm: bytes) -> bytes:
+        if not isinstance(pcm, (bytes, bytearray, memoryview)) or len(pcm) % 2:
+            raise ValueError("Invalid PCM packet")
+        if not pcm:
+            return b""
+        return self.engine.process(bytes(pcm))
+
+    def restart(self) -> None:
+        self.engine.restart()
+
+
+def build(highpass_hz: float = 90.0, suppress: bool = True, floor: float = 0.15):
+    engine = native_core.symbol("RustDenoiser")
+    if engine is None:
+        native_core.python_fallback("ear.conditioner")
+        return NativeConditioner(highpass_hz, suppress, floor)
+    return RustConditioner(engine(float(highpass_hz), bool(suppress), float(floor)))
+
+
+def from_env():
+    return build(
+        highpass_hz=earconf.number("NUXIVA_EAR_HOST_HIGHPASS_HZ", 90.0, 0.0, 300.0),
+        suppress=earconf.flag("NUXIVA_EAR_HOST_NS", True),
+        floor=earconf.number("NUXIVA_EAR_HOST_NS_FLOOR", 0.15, 0.05, 1.0),
+    )

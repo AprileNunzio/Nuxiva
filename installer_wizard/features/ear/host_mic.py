@@ -15,14 +15,14 @@ from typing import Any
 
 try:
     from features.ear import earconf
-    from features.ear.conditioner import NativeConditioner
+    from features.ear.conditioner import from_env as conditioner_from_env
 except ImportError:
     try:
         import earconf
-        from conditioner import NativeConditioner
+        from conditioner import from_env as conditioner_from_env
     except ImportError:
         from installer_wizard.features.ear import earconf
-        from installer_wizard.features.ear.conditioner import NativeConditioner
+        from installer_wizard.features.ear.conditioner import from_env as conditioner_from_env
 
 VOICES_DIR = Path(__file__).resolve().parent.parent / "voices"
 VOICE_MODULES = frozenset({"feedback", "playback"})
@@ -257,7 +257,7 @@ class HostMicCapture:
         self.process: asyncio.subprocess.Process | None = None
         self._stderr_task: asyncio.Task | None = None
         self._stderr_tail = b""
-        self.conditioner = NativeConditioner.from_env()
+        self.conditioner = conditioner_from_env()
 
     def should_capture(self) -> bool:
         if not earconf.flag("NUXIVA_EAR_HOST_MIC", True):

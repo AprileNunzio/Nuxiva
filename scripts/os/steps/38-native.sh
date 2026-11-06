@@ -8,6 +8,7 @@ RUST_VERSION="1.89.0"
 MATURIN_VERSION="1.9.6"
 RUSTUP_URL="https://static.rust-lang.org/rustup/dist/$(uname -m)-unknown-linux-gnu/rustup-init"
 VENV="$NUXIVA_DIR/installer_wizard/venv"
+EAR_VENV="${NUXIVA_EAR_HOME:-/opt/nuxiva-ear}/venv"
 STAMP="$NATIVE_HOME/.installed"
 EGRESS_BIN="$NATIVE_HOME/bin/nuxiva-egress"
 NETGUARD_BIN="$NATIVE_HOME/bin/nuxiva-netguard"
@@ -97,6 +98,18 @@ wheel_state() {
     mv -f "$tmp" "$WHEEL_STATE"
 }
 
+install_ear_wheel() {
+    [ -x "$EAR_VENV/bin/pip" ] || return 0
+    if "$EAR_VENV/bin/pip" install -q --force-reinstall --no-deps "$NATIVE_HOME"/wheels/nuxiva_native-*.whl \
+        && "$EAR_VENV/bin/python" -I -c "import nuxiva_native" >/dev/null 2>&1; then
+        rm -f "${EAR_VENV%/venv}/.native-unsupported"
+        systemctl try-restart nuxiva-ear >/dev/null 2>&1 || true
+        info "Modulo nativo installato anche nell'ascolto vocale"
+    else
+        warn "Modulo nativo non installato nell'ascolto vocale: resta il motore Python"
+    fi
+}
+
 on_exit() {
     local rc=$?
     [ "$rc" -eq 0 ] || build_state failed "$BUILD_STAGE"
@@ -107,6 +120,7 @@ install_wheel() {
     "$VENV/bin/pip" install -q --force-reinstall --no-deps "$NATIVE_HOME"/wheels/nuxiva_native-*.whl \
         || fail "Installazione del modulo nativo non riuscita"
     native_loaded || fail "Il modulo nativo non si carica"
+    install_ear_wheel
     wheel_state
     build_state ready wheel
     info "Modulo nativo installato: il supervisore lo ricarica da solo appena finiscono i passi in corso"
@@ -117,6 +131,7 @@ step_apply() {
         build_state disabled done
         progress 50 "Core nativo disattivato: ritorno al motore Python"
         "$VENV/bin/pip" uninstall -y -q nuxiva-native >/dev/null 2>&1 || true
+        [ -x "$EAR_VENV/bin/pip" ] && "$EAR_VENV/bin/pip" uninstall -y -q nuxiva-native >/dev/null 2>&1 || true
         systemctl disable --now nuxiva-agency >/dev/null 2>&1 || true
         systemctl disable --now nuxiva-display >/dev/null 2>&1 || true
         rm -f "$STAMP" "$WHEEL_STATE" "$EGRESS_BIN" "$NETGUARD_BIN" "$AGENCY_BIN" "$AGENCY_UNIT_DST" "$DISPLAY_BIN" "$DISPLAY_UNIT_DST"
