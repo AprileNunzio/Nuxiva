@@ -117,8 +117,12 @@ async def _core_call(query: str, device: str, speech_lang: dict) -> dict:
 def _heard(body: dict) -> dict:
     slug = str(body.get("speaker") or "")
     known = body.get("voice_known")
+    voices = body.get("voices_active")
     return {"followup": bool(body.get("followup")), "speaker": slug if SLUG_RE.match(slug) else "",
-            "voice_known": known if isinstance(known, bool) else None}
+            "voice_known": known if isinstance(known, bool) else None,
+            "same_speaker": addressee.flag(body.get("same_speaker")),
+            "mixed_speakers": addressee.flag(body.get("mixed_speakers")),
+            "voices_active": addressee.voices(voices)}
 
 
 async def assistant_chat(text: str, device: str, heard_lang: str | None = None, heard: dict | None = None, internal: bool = False, client_id: str = "") -> JSONResponse:
@@ -148,7 +152,7 @@ async def assistant_chat(text: str, device: str, heard_lang: str | None = None, 
             log.warning("Evento del parlante non pubblicato: %s", exc)
     directed, confidence = True, 1.0
     if heard.get("followup"):
-        verdict = addressee.judge(text, device)
+        verdict = addressee.judge(text, device, heard)
         directed, confidence = verdict.directed, verdict.score
         if not verdict.directed:
             return JSONResponse({"ignored": True, "reason": verdict.reason, "score": verdict.score})

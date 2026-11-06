@@ -206,7 +206,7 @@
         D.lastVoice = true;
         if (ev.speaker) D.currentSpeaker = ev.speaker;
         if (ev.origin !== false && micLive()) {
-          D.ask(ev.text, ev.lang, { followup: !!ev.followup, speaker: ev.speaker || "", voice_known: ev.voice_known });
+          D.ask(ev.text, ev.lang, { followup: !!ev.followup, speaker: ev.speaker || "", voice_known: ev.voice_known, same_speaker: ev.same_speaker, voices_active: ev.voices_active, mixed_speakers: ev.mixed_speakers });
         }
       }
     };
