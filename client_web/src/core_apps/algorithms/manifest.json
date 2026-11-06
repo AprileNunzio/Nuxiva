@@ -1,5 +1,6 @@
 {
   "id": "algorithms",
+  "tone": "light",
   "name": "Algorithms",
   "icon": "Binary",
   "version": "5.0.0",

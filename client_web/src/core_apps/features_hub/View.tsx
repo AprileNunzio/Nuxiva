@@ -29,42 +29,36 @@ export function View() {
   }
 
   return (
-    <div className="flex h-full flex-col overflow-hidden bg-white">
-      <div className="flex shrink-0 items-center justify-between border-b border-slate-200 bg-white px-4 py-2 backdrop-blur-md">
-        <div className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white p-1">
-          <button
-            type="button"
-            onClick={() => setViewMode('catalog')}
-            className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
-              viewMode === 'catalog'
-                ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md shadow-cyan-500/20'
-                : 'text-slate-600 hover:text-slate-800'
-            }`}
-          >
-            <Grid className="h-3.5 w-3.5" />
-            <span>{t('tab_catalog')}</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setViewMode('settings')}
-            className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
-              viewMode === 'settings'
-                ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/20'
-                : 'text-slate-600 hover:text-slate-800'
-            }`}
-          >
-            <Sliders className="h-3.5 w-3.5" />
-            <span>{t('tab_settings')}</span>
-          </button>
+    <div className="flex h-full flex-col overflow-hidden bg-surface text-on-surface">
+      <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 px-4 py-3">
+        <div role="tablist" aria-label={t('tab_catalog')} className="flex items-center gap-1 rounded-full bg-surface-container-high p-1">
+          {([
+            ['catalog', Grid, t('tab_catalog')],
+            ['settings', Sliders, t('tab_settings')],
+          ] as const).map(([mode, Icon, label]) => (
+            <button
+              key={mode}
+              type="button"
+              role="tab"
+              aria-selected={viewMode === mode}
+              onClick={() => setViewMode(mode)}
+              className={`md-state flex items-center gap-2 rounded-full border-0 px-4 py-1.5 text-xs font-semibold ${
+                viewMode === mode ? 'bg-primary text-on-primary shadow-[var(--md-elevation-1)]' : 'bg-transparent text-on-surface-variant'
+              }`}
+            >
+              <Icon className={`h-3.5 w-3.5 ${viewMode === mode ? 'md-pop' : ''}`} aria-hidden="true" />
+              <span>{label}</span>
+            </button>
+          ))}
         </div>
 
         {viewMode === 'catalog' && (
           <button
             type="button"
             onClick={() => setViewMode('settings')}
-            className="flex items-center gap-1.5 rounded-xl border border-emerald-300 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-100"
+            className="md-state flex items-center gap-1.5 rounded-full border-0 bg-tertiary-container px-4 py-1.5 text-xs font-semibold text-on-tertiary-container"
           >
-            <Sliders className="h-3.5 w-3.5" />
+            <Sliders className="h-3.5 w-3.5" aria-hidden="true" />
             <span>{t('open_settings_shortcut')}</span>
           </button>
         )}
@@ -106,7 +100,7 @@ export function View() {
                 description: feature.description,
                 category: feature.category,
                 active: feature.state.enabled,
-                icon: feature.icon_url || findApp(feature.id)?.iconUrl,
+                icon: findApp(feature.id)?.iconUrl || feature.icon_url || undefined,
                 symbol: feature.icon
               }))}
             onOpen={(id) =>

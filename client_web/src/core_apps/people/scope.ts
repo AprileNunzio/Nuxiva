@@ -5,12 +5,12 @@ export function usePeopleI18n() {
 }
 
 export const fieldClass =
-  'w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus-visible:ring-2 focus-visible:ring-blue-300 disabled:opacity-50';
-export const panelClass = 'rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5';
+  'w-full rounded-xl border border-outline bg-surface-container-lowest px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant outline-none transition focus:border-primary focus-visible:ring-2 focus-visible:ring-primary/40 disabled:opacity-50';
+export const panelClass = 'md-enter rounded-3xl bg-surface-container-low p-4 sm:p-5';
 export const chipClass =
-  'flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-semibold transition disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500';
+  'md-state flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold disabled:opacity-50';
 export const primaryClass =
-  'flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-blue-700 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-300';
+  'md-state flex items-center justify-center gap-2 rounded-full border-0 bg-primary px-5 py-2 text-sm font-semibold text-on-primary shadow-[var(--md-elevation-1)] disabled:opacity-50';
 
 export const PERMISSION_KEYS = ['role', 'membership', 'business_role', 'subrole', 'authorization', 'allowed_zones', 'allowed_schedule', 'consent', 'share_health'] as const;
 

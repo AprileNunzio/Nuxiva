@@ -1,5 +1,6 @@
 {
   "id": "audio",
+  "tone": "dark",
   "name": "Audio",
   "icon": "Volume2",
   "version": "5.0.0",

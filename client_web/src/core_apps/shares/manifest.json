@@ -1,5 +1,6 @@
 {
   "id": "shares",
+  "tone": "light",
   "name": "Shared folder",
   "icon": "FolderOpen",
   "version": "5.0.0",

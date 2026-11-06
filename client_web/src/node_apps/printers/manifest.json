@@ -1,5 +1,6 @@
 {
   "id": "printers",
+  "tone": "dark",
   "name": "Printers",
   "icon": "Printer",
   "version": "5.0.0",

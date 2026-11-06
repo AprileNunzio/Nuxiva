@@ -1,5 +1,6 @@
 {
   "id": "flows",
+  "tone": "light",
   "name": "Flows",
   "icon": "Workflow",
   "version": "5.0.0",

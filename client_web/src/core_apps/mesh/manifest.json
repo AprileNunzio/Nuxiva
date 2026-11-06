@@ -1,5 +1,6 @@
 {
   "id": "mesh",
+  "tone": "dark",
   "name": "Neural Mesh",
   "scope": "core_apps/mesh",
   "target": "global",

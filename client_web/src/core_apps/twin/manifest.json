@@ -1,5 +1,6 @@
 {
   "id": "twin",
+  "tone": "light",
   "name": "Digital Twin 3D",
   "icon": "Box",
   "version": "5.0.0",

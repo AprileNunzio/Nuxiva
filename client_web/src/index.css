@@ -3,6 +3,7 @@
 @import './shared/theme/os_window.css';
 @import './shared/theme/os_cards.css';
 @import './shared/theme/os_components.css';
+@import './shared/theme/os_expressive.css';
 
 @tailwind base;
 @tailwind components;

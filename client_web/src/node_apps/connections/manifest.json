@@ -1,5 +1,6 @@
 {
   "id": "connections",
+  "tone": "light",
   "name": "Centro Connessioni",
   "icon": "Network",
   "version": "5.3.0",

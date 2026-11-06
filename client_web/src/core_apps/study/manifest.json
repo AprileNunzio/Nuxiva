@@ -1,5 +1,6 @@
 {
   "id": "study",
+  "tone": "light",
   "name": "Study & Learning",
   "icon": "BookOpen",
   "version": "5.0.0",

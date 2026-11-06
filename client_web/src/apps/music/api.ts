@@ -1,3 +1,4 @@
+import { adminPath } from '../../shared/http/basePath';
 import { Track, Playlist, LyricsResponse, LibraryOverview, HomeMixes, MusicSettings } from './types';
 
 const HEADERS = {
@@ -131,7 +132,7 @@ export function getStreamUrl(trackId: number): string {
 }
 
 export function getCoverUrl(albumKey: string): string {
-  return `/api/music/cover/${albumKey}`;
+  return adminPath(`/api/music/cover/${encodeURIComponent(albumKey)}`);
 }
 
 export async function askMusicMCP(query: string): Promise<string> {

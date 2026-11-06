@@ -1,5 +1,6 @@
 {
   "id": "musicstudio",
+  "tone": "light",
   "name": "Studio Musicale",
   "icon": "Music",
   "kind": "app",

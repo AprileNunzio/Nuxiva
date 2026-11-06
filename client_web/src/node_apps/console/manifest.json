@@ -1,5 +1,6 @@
 {
   "id": "console",
+  "tone": "dark",
   "name": "Node OS Inspector",
   "scope": "node_apps/console",
   "target": "node",

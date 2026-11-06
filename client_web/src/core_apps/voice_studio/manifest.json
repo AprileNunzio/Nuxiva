@@ -1,5 +1,6 @@
 {
   "id": "voice_studio",
+  "tone": "light",
   "name": "Voice Studio",
   "kind": "app",
   "description": "Studio professionale per sintesi vocale neurale, equalizzatore parametrico, clonazione e voice control.",

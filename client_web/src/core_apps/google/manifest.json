@@ -1,5 +1,6 @@
 {
   "id": "google",
+  "tone": "light",
   "name": "Google Suite",
   "icon": "Mail",
   "version": "5.0.0",

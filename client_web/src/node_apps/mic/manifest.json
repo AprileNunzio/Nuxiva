@@ -1,5 +1,6 @@
 {
   "id": "mic",
+  "tone": "dark",
   "name": "Mic",
   "icon": "Mic",
   "version": "5.0.0",

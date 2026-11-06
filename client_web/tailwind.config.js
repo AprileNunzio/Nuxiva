@@ -1,8 +1,13 @@
+import { DARK_VARIANT, tonalPlugin, tonalTheme } from './design/tonal/plugin.js';
+
+const tonal = tonalTheme();
+
 export default {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: ['variant', DARK_VARIANT],
   theme: {
     screens: {
       'xs': '480px',
@@ -13,10 +18,11 @@ export default {
       '2xl': '1536px',
       '3xl': '1920px',
       '4xl': '2560px',
-      '5xl': '3840px', // 4K UHD
-      '6xl': '5120px', // 5K
-      '8k': '7680px',  // 8K UHD
+      '5xl': '3840px',
+      '6xl': '5120px',
+      '8k': '7680px',
     },
+    ...tonal,
     extend: {
       colors: {
         nuxiva: {
@@ -35,5 +41,5 @@ export default {
       }
     },
   },
-  plugins: [],
+  plugins: [tonalPlugin],
 }

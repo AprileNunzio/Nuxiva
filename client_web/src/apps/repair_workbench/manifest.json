@@ -1,5 +1,6 @@
 {
   "id": "repair_workbench",
+  "tone": "dark",
   "name": "Repair Workbench",
   "icon": "Cpu",
   "kind": "app",

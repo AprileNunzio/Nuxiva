@@ -1,5 +1,6 @@
 {
   "id": "firewall",
+  "tone": "light",
   "name": "Security & Firewall",
   "icon": "ShieldCheck",
   "version": "5.0.0",

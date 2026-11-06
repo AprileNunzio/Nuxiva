@@ -1,5 +1,6 @@
 {
   "id": "vpn",
+  "tone": "light",
   "name": "WireGuard VPN Mesh",
   "icon": "Radio",
   "version": "5.0.0",

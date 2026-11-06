@@ -1,5 +1,6 @@
 {
   "id": "features_hub",
+  "tone": "light",
   "name": "Features Hub",
   "icon": "Grid",
   "version": "5.0.0",

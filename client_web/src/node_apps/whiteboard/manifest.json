@@ -1,5 +1,6 @@
 {
   "id": "whiteboard",
+  "tone": "dark",
   "name": "Whiteboard",
   "icon": "Edit3",
   "version": "5.0.0",

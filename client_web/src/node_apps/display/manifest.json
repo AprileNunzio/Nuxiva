@@ -1,5 +1,6 @@
 {
   "id": "display",
+  "tone": "dark",
   "name": "Display",
   "icon": "Monitor",
   "version": "5.0.0",

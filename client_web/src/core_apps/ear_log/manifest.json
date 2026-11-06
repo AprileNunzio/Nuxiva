@@ -1,5 +1,6 @@
 {
   "id": "ear_log",
+  "tone": "light",
   "name": "Listening Log",
   "icon": "Mic",
   "version": "1.0.0",

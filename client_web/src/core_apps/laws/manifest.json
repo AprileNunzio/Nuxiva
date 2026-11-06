@@ -1,5 +1,6 @@
 {
   "id": "laws",
+  "tone": "light",
   "name": "Robotic Laws",
   "icon": "Scale",
   "version": "5.0.0",

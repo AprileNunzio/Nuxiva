@@ -1,5 +1,6 @@
 {
   "id": "automations",
+  "tone": "light",
   "name": "Automations",
   "icon": "Zap",
   "version": "5.0.0",

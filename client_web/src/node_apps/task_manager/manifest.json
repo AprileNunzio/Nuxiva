@@ -1,5 +1,6 @@
 {
   "id": "task_manager",
+  "tone": "dark",
   "name": "Gestore Attività",
   "icon": "Activity",
   "version": "5.3.0",

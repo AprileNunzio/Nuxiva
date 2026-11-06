@@ -1,5 +1,6 @@
 {
   "id": "voice_manager",
+  "tone": "light",
   "name": "Gestione Voci",
   "icon": "Volume2",
   "version": "1.0.0",

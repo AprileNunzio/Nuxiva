@@ -1,5 +1,6 @@
 {
   "id": "explorer",
+  "tone": "light",
   "name": "Condivisioni di rete",
   "scope": "apps/explorer",
   "kind": "app",

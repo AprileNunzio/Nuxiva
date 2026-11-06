@@ -1,5 +1,6 @@
 {
   "id": "iptv",
+  "tone": "light",
   "name": "TV & IPTV",
   "icon": "Tv",
   "version": "5.1.0",

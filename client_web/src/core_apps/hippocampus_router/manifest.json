@@ -1,5 +1,6 @@
 {
   "id": "hippocampus_router",
+  "tone": "light",
   "name": "Hippocampus",
   "icon": "Brain",
   "version": "1.0.0",

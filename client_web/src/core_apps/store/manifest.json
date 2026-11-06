@@ -1,5 +1,6 @@
 {
   "id": "store",
+  "tone": "light",
   "name": "Nuxiva Store",
   "icon": "ShoppingBag",
   "version": "5.0.0",

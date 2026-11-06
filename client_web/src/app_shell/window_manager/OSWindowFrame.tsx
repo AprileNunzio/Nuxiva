@@ -177,7 +177,7 @@ function Frame({ entry, app }: { entry: OSWindow; app: NonNullable<ReturnType<ty
         : <button key={item.id} data-variant={item.variant} disabled={!allowed || item.permissions?.some(permission => !access.can(permission))} onClick={() => activate(item)}>{item.icon && <ManifestIcon name={item.icon} />}<span>{label}</span></button>;
     })}</div>)}
     {confirmation && <ActionConfirmation title={appText(confirmation.labelKey || confirmation.id)} body={appText(confirmation.confirmKey!)} cancelLabel={t('os_cancel')} confirmLabel={appText(confirmation.labelKey || confirmation.id)} danger={confirmation.variant === 'danger'} onCancel={() => setConfirmation(null)} onConfirm={() => { if (allowed && !confirmation.permissions?.some(permission => !access.can(permission))) action(confirmation.id); setConfirmation(null); }} />}
-    <div className="os-content"><WindowErrorBoundary retry={`${revision}:${activeNodeId}`} errorLabel={t('os_app_failed')} retryLabel={t('os_refresh')}><Suspense fallback={<p>{t('os_loading')}</p>}>
+    <div className="os-content" data-tone={app.tone}><WindowErrorBoundary retry={`${revision}:${activeNodeId}`} errorLabel={t('os_app_failed')} retryLabel={t('os_refresh')}><Suspense fallback={<p>{t('os_loading')}</p>}>
       {!access.ready ? <p role="status">{t('os_loading')}</p> : !allowed ? <p role="alert">{t(access.failed ? 'os_access_unavailable' : 'os_permission_denied')}</p> : app.target === 'node' ? <NodeApp app={app} entry={{ ...entry, targetNodeId: activeNodeId }} revision={revision} />
         : <app.Component key={revision} initialPayload={entry.initialPayload} />}
     </Suspense></WindowErrorBoundary></div>

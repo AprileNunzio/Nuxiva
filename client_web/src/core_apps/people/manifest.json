@@ -1,5 +1,6 @@
 {
   "id": "people",
+  "tone": "light",
   "name": "Identity Manager",
   "icon": "UserCheck",
   "version": "5.0.0",

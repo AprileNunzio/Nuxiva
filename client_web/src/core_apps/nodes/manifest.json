@@ -1,5 +1,6 @@
 {
   "id": "nodes",
+  "tone": "light",
   "name": "Nodes & Servers",
   "icon": "Server",
   "version": "5.0.0",

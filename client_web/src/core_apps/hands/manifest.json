@@ -1,5 +1,6 @@
 {
   "id": "hands",
+  "tone": "light",
   "name": "Hand Gestures",
   "icon": "Hand",
   "version": "5.0.0",

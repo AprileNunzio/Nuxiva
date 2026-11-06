@@ -1,5 +1,6 @@
 {
   "id": "sport",
+  "tone": "light",
   "name": "Sport",
   "icon": "Trophy",
   "version": "5.2.0",

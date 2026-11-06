@@ -177,7 +177,7 @@ export function ApplicationCatalog({
             </div>
           ) : (
             <section className="os-catalog-group">
-              <div>
+              <div className="md-stagger">
                 {visible.map((item) => (
                   <button
                     key={item.id}
@@ -185,13 +185,7 @@ export function ApplicationCatalog({
                     onClick={() => onOpen(item.id)}
                     onContextMenu={(e) => handleContextMenu(e, item.id)}
                   >
-                    {item.icon ? (
-                      <OSIcon3D name={item.label} source={item.icon} />
-                    ) : (
-                      <span className="os-catalog-symbol" aria-hidden="true">
-                        {item.symbol || item.label.slice(0, 1)}
-                      </span>
-                    )}
+                    <OSIcon3D name={item.label} source={item.icon} symbol={item.symbol} />
                     <span>{item.label}</span>
                     {item.active !== undefined && (
                       <i
@@ -208,28 +202,27 @@ export function ApplicationCatalog({
         </div>
       </div>
 
-      {/* Context Menu col tasto destro per Aggiungere / Rimuovere dal Desktop */}
       {contextMenu && (
         <div
-          className="os-context-menu fixed z-50 bg-slate-900 border border-slate-700/80 rounded-xl shadow-2xl py-1 px-1 text-xs text-slate-200"
+          className="md-pop fixed z-50 min-w-[12rem] rounded-2xl border border-outline-variant bg-surface-container-high p-1 text-xs text-on-surface shadow-[var(--md-elevation-3)]"
           style={{ left: contextMenu.x, top: contextMenu.y }}
           role="menu"
           onClick={(e) => e.stopPropagation()}
         >
           <button
             role="menuitem"
-            className="flex w-full items-center gap-2 rounded-lg px-3 py-1.5 hover:bg-cyan-500/20 hover:text-cyan-300 transition"
+            className="md-state flex w-full items-center gap-2 rounded-xl border-0 bg-transparent px-3 py-2 text-on-surface"
             onClick={() => {
               onOpen(contextMenu.itemId);
               setContextMenu(null);
             }}
           >
-            <Monitor className="h-3.5 w-3.5 text-cyan-400" />
+            <Monitor className="h-3.5 w-3.5 text-primary" />
             <span>{openLabel}</span>
           </button>
           <button
             role="menuitem"
-            className="flex w-full items-center gap-2 rounded-lg px-3 py-1.5 hover:bg-cyan-500/20 hover:text-cyan-300 transition"
+            className="md-state flex w-full items-center gap-2 rounded-xl border-0 bg-transparent px-3 py-2 text-on-surface"
             onClick={() => {
               togglePin(contextMenu.itemId);
               setContextMenu(null);
@@ -237,12 +230,12 @@ export function ApplicationCatalog({
           >
             {isPinned(contextMenu.itemId) ? (
               <>
-                <Trash2 className="h-3.5 w-3.5 text-rose-400" />
-                <span className="text-rose-300">{unpinLabel}</span>
+                <Trash2 className="h-3.5 w-3.5 text-error" />
+                <span className="text-error">{unpinLabel}</span>
               </>
             ) : (
               <>
-                <Monitor className="h-3.5 w-3.5 text-emerald-400" />
+                <Monitor className="h-3.5 w-3.5 text-success" />
                 <span>{pinLabel}</span>
               </>
             )}

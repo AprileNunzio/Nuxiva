@@ -1,5 +1,5 @@
 import React, { FormEvent, useMemo, useState } from 'react';
-import { Plus, Search, UserPlus, X } from 'lucide-react';
+import { Check, Plus, Search, UserPlus, X } from 'lucide-react';
 import { PersonSummary } from '../data/peopleApi';
 import { fieldClass, primaryClass, usePeopleI18n } from '../scope';
 import { IdentityCard } from './IdentityCard';
@@ -56,7 +56,7 @@ export const IdentityGallery: React.FC<Props> = ({ people, roles, present, busy,
     <div className="flex flex-col gap-5">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
         <label className="relative min-w-0 flex-1 lg:max-w-md">
-          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" aria-hidden="true" />
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-on-surface-variant" aria-hidden="true" />
           <input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t('search')} aria-label={t('search')} className={`${fieldClass} rounded-2xl py-2.5 pl-10`} />
         </label>
         <div className="flex gap-1.5 overflow-x-auto pb-1 lg:pb-0" role="group" aria-label={t('filters')}>
@@ -66,10 +66,11 @@ export const IdentityGallery: React.FC<Props> = ({ people, roles, present, busy,
               type="button"
               aria-pressed={filter === f}
               onClick={() => setFilter(f)}
-              className={`shrink-0 rounded-full px-3.5 py-1.5 text-xs font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
-                filter === f ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
+              className={`md-state flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-semibold ${
+                filter === f ? 'border-transparent bg-secondary-container text-on-secondary-container' : 'border-outline bg-transparent text-on-surface-variant'
               }`}
             >
+              {filter === f && <Check className="md-pop h-3.5 w-3.5" aria-hidden="true" />}
               {t(`filter_${f}`)}
             </button>
           ))}
@@ -78,15 +79,15 @@ export const IdentityGallery: React.FC<Props> = ({ people, roles, present, busy,
           {adding ? (
             <form onSubmit={submit} className="flex gap-2">
               <input autoFocus maxLength={40} value={name} onChange={(event) => setName(event.target.value)} placeholder={t('new_person')} aria-label={t('new_person')} className={`${fieldClass} min-w-0 flex-1 rounded-2xl lg:w-64`} />
-              <button type="submit" disabled={busy || !name.trim()} aria-label={t('add_person')} className={`${primaryClass} rounded-2xl px-3`}>
+              <button type="submit" disabled={busy || !name.trim()} aria-label={t('add_person')} className={`${primaryClass} px-3`}>
                 <Plus className="h-4 w-4" aria-hidden="true" />
               </button>
-              <button type="button" onClick={() => setAdding(false)} aria-label={t('cancel')} className="rounded-2xl px-2 text-slate-500 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
+              <button type="button" onClick={() => setAdding(false)} aria-label={t('cancel')} className="md-state rounded-full border-0 bg-transparent px-2 text-on-surface-variant">
                 <X className="h-4 w-4" aria-hidden="true" />
               </button>
             </form>
           ) : (
-            <button type="button" onClick={() => setAdding(true)} className={`${primaryClass} w-full rounded-2xl lg:w-auto`}>
+            <button type="button" onClick={() => setAdding(true)} className={`${primaryClass} w-full lg:w-auto`}>
               <UserPlus className="h-4 w-4" aria-hidden="true" />
               {t('id_new')}
             </button>
@@ -94,9 +95,9 @@ export const IdentityGallery: React.FC<Props> = ({ people, roles, present, busy,
         </div>
       </div>
       {known.length === 0 && scanned.length === 0 ? (
-        <p className="rounded-3xl border border-dashed border-slate-300 bg-slate-50 px-6 py-14 text-center text-sm text-slate-600">{people.length ? t('no_people') : t('empty')}</p>
+        <p className="md-enter rounded-3xl bg-surface-container-low px-6 py-14 text-center text-sm text-on-surface-variant">{people.length ? t('no_people') : t('empty')}</p>
       ) : (
-        <ul className={GRID} aria-label={t('people_list')}>
+        <ul className={`${GRID} md-stagger`} aria-label={t('people_list')}>
           {known.map((p) => (
             <li key={p.slug}>
               <IdentityCard person={p} role={roles[p.role] ?? p.role} present={present.has(p.slug)} onOpen={onOpen} />
@@ -106,8 +107,8 @@ export const IdentityGallery: React.FC<Props> = ({ people, roles, present, busy,
       )}
       {scanned.length > 0 && (
         <section aria-labelledby="id-scanned" className="flex flex-col gap-3">
-          <h2 id="id-scanned" className="text-sm font-bold uppercase tracking-[0.14em] text-amber-800">{t('id_to_identify', { n: scanned.length })}</h2>
-          <ul className={GRID}>
+          <h2 id="id-scanned" className="text-sm font-bold uppercase tracking-[0.12em] text-warning">{t('id_to_identify', { n: scanned.length })}</h2>
+          <ul className={`${GRID} md-stagger`}>
             {scanned.map((p) => (
               <li key={p.slug}>
                 <IdentityCard person={p} role="" present={present.has(p.slug)} onOpen={onOpen} />

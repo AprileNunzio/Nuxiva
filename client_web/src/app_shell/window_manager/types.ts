@@ -58,5 +58,6 @@ export interface AppManifest {
   navigation?: { id: string; labelKey: string; icon?: string }[];
   target?: 'global' | 'node' | 'universal';
   window?: WindowConfig;
+  tone?: 'light' | 'dark';
   toolbars?: { id: string; items: ToolbarItem[] }[];
 }

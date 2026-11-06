@@ -1,5 +1,6 @@
 {
   "id": "updater",
+  "tone": "light",
   "name": "Nuxiva Update",
   "icon": "RefreshCw",
   "version": "5.0.0",

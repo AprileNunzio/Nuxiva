@@ -1,5 +1,6 @@
 {
   "id": "feature_settings",
+  "tone": "light",
   "name": "Feature Settings",
   "icon": "Grid",
   "version": "5.0.0",

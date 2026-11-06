@@ -1,5 +1,6 @@
 {
   "id": "places",
+  "tone": "light",
   "name": "Places & Rooms",
   "icon": "Home",
   "version": "5.0.0",

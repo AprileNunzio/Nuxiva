@@ -1,3 +1,4 @@
+import { adminPath } from '../../shared/http/basePath';
 /**
  * SMB Shares & Universal File Explorer API Client
  */
@@ -68,7 +69,7 @@ export async function fetchShareFiles(subpath: string, signal?: AbortSignal): Pr
 }
 
 export function getFileUrl(path: string): string {
-  return `/api/shares/file?path=${encodeURIComponent(path)}`;
+  return adminPath(`/api/shares/file?path=${encodeURIComponent(path)}`);
 }
 
 export async function fetchFileText(path: string, signal?: AbortSignal): Promise<string> {

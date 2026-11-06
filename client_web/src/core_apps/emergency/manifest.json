@@ -1,5 +1,6 @@
 {
   "id": "emergency",
+  "tone": "light",
   "name": "Red Alert",
   "icon": "AlertTriangle",
   "version": "5.0.0",

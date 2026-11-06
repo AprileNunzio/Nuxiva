@@ -1,5 +1,6 @@
 {
   "id": "cameras",
+  "tone": "light",
   "name": "Cameras & NVR",
   "icon": "Video",
   "version": "5.0.0",

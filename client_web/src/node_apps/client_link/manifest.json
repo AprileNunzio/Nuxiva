@@ -1,5 +1,6 @@
 {
   "id": "client_link",
+  "tone": "dark",
   "name": "Client Link",
   "icon": "Smartphone",
   "version": "5.0.0",

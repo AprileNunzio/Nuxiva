@@ -1,5 +1,6 @@
 {
   "id": "office",
+  "tone": "light",
   "name": "Documents & Office",
   "icon": "FileText",
   "version": "5.0.0",

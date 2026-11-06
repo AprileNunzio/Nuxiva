@@ -1,5 +1,6 @@
 {
   "id": "brain",
+  "tone": "light",
   "name": "Cervello",
   "icon": "Cpu",
   "version": "6.0.0",

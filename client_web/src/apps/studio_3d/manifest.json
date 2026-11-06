@@ -1,5 +1,6 @@
 {
   "id": "studio_3d",
+  "tone": "light",
   "name": "Studio 3D & Modelli",
   "icon": "Box",
   "kind": "app",

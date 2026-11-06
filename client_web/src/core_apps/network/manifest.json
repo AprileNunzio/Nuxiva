@@ -1,5 +1,6 @@
 {
   "id": "network",
+  "tone": "light",
   "name": "Network",
   "scope": "core_apps/network",
   "category": "security",

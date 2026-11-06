@@ -1,5 +1,6 @@
 {
   "id": "backup",
+  "tone": "light",
   "name": "Backup & Snapshot",
   "icon": "Archive",
   "version": "5.0.0",

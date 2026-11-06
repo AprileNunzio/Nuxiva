@@ -1,5 +1,6 @@
 {
   "id": "bluetooth",
+  "tone": "light",
   "name": "Bluetooth",
   "icon": "Bluetooth",
   "version": "6.0.0",

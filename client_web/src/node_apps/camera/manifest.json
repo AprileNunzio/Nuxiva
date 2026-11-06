@@ -1,5 +1,6 @@
 {
   "id": "camera",
+  "tone": "dark",
   "name": "Camera",
   "icon": "Camera",
   "version": "5.0.0",

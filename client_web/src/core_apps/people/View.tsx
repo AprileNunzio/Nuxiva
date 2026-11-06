@@ -8,7 +8,6 @@ import { HouseHabits } from './house/HouseHabits';
 import { IdentityGallery } from './identity/IdentityGallery';
 import { PersonPage } from './identity/PersonPage';
 import { panelClass, usePeopleI18n } from './scope';
-import './people-theme.css';
 
 export const View: React.FC = () => {
   const { t } = usePeopleI18n();
@@ -56,27 +55,29 @@ export const View: React.FC = () => {
 
   return (
     <div className={`${PAGE_CLASS} people-app`}>
-      <header className="flex flex-col gap-4 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-blue-950 p-5 text-white shadow-lg sm:p-6 lg:flex-row lg:items-center">
+      <header className="md-hero md-enter flex flex-col gap-5 rounded-[1.75rem] p-5 shadow-[var(--md-elevation-1)] sm:p-6 lg:flex-row lg:items-center">
         <div className="flex min-w-0 flex-1 items-center gap-4">
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20">
-            <Fingerprint className="h-6 w-6 text-sky-300" aria-hidden="true" />
+          <span className="md-hero-tile md-pop flex h-14 w-14 shrink-0 items-center justify-center rounded-[1.25rem]">
+            <Fingerprint className="h-7 w-7 text-primary" aria-hidden="true" />
           </span>
           <div className="min-w-0">
-            <h1 className="font-['Rajdhani'] text-3xl font-bold tracking-wide">{t('title')}</h1>
-            <p className="mt-0.5 text-sm text-slate-300">{t('description')}</p>
-            {presence.data && presence.data.status !== 'ok' && <p className="mt-1 text-xs text-amber-300">{t('presence_off')}</p>}
+            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{t('title')}</h1>
+            <p className="md-hero-muted mt-1 text-sm">{t('description')}</p>
+            {presence.data && presence.data.status !== 'ok' && (
+              <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-warning-container px-2.5 py-0.5 text-xs font-medium text-on-warning-container">{t('presence_off')}</p>
+            )}
           </div>
         </div>
-        <dl className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+        <dl className="md-stagger flex flex-wrap gap-2 lg:flex-nowrap">
           {stats.map(([label, value]) => (
-            <div key={label} className="flex flex-col-reverse rounded-2xl bg-white/5 px-3 py-2 ring-1 ring-white/10">
-              <dt className="mt-1 truncate text-[10px] uppercase tracking-[0.12em] text-slate-400">{label}</dt>
-              <dd className="font-['Rajdhani'] text-2xl font-bold leading-none">{value}</dd>
+            <div key={label} className="md-hero-tile flex min-w-[6.5rem] flex-1 basis-[calc(50%-0.25rem)] flex-col-reverse rounded-2xl px-3.5 py-2.5 sm:basis-0">
+              <dt className="md-hero-muted mt-1 truncate text-[11px] font-medium uppercase tracking-[0.08em]">{label}</dt>
+              <dd className="text-2xl font-bold leading-none tabular-nums">{value}</dd>
             </div>
           ))}
         </dl>
       </header>
-      <div role="tablist" aria-label={t('title')} className="flex gap-1 self-start rounded-2xl bg-secondary/60 backdrop-blur-sm border border-border/40 p-1">
+      <div role="tablist" aria-label={t('title')} className="flex gap-1 self-start rounded-full bg-surface-container-high p-1">
         {(['people', 'reminders', 'house'] as const).map((id) => (
           <button
             key={id}
@@ -84,7 +85,7 @@ export const View: React.FC = () => {
             role="tab"
             aria-selected={tab === id}
             onClick={() => setTab(id)}
-            className={`rounded-xl px-4 py-1.5 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary ${tab === id ? 'bg-card text-foreground shadow-xs border border-border/50' : 'text-muted-foreground hover:text-foreground'}`}
+            className={`md-state rounded-full border-0 px-4 py-1.5 text-sm font-semibold ${tab === id ? 'bg-secondary-container text-on-secondary-container shadow-[var(--md-elevation-1)]' : 'bg-transparent text-on-surface-variant'}`}
           >
             {t(`main_tab_${id}`)}
           </button>

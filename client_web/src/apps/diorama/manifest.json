@@ -1,5 +1,6 @@
 {
   "id": "diorama",
+  "tone": "light",
   "name": "Diorami 3D",
   "icon": "Box",
   "kind": "app",

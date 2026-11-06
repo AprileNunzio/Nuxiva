@@ -1,5 +1,6 @@
 {
   "id": "weather",
+  "tone": "light",
   "name": "Weather",
   "icon": "CloudSun",
   "version": "1.0.0",
