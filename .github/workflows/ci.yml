@@ -127,6 +127,18 @@ jobs:
         working-directory: .
         run: python -m unittest server.tests.test_cortex_core_platform server.tests.test_embodied_cortex server.tests.test_hippocampus_router server.tests.test_gliner_slots server.tests.test_skill_forge server.tests.test_plasticity server.tests.test_skill_auto server.tests.test_skill_isolation server.tests.test_native_hot_paths server.tests.test_token_provider -v
 
+      - name: Set up Python 3.10
+        id: py310
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Native Module on Python 3.10
+        run: |
+          "${{ steps.py310.outputs.python-path }}" -m venv "$RUNNER_TEMP/py310"
+          "$RUNNER_TEMP/py310/bin/pip" install --no-deps dist/nuxiva_native-*.whl
+          "$RUNNER_TEMP/py310/bin/python" -I -c "import nuxiva_native"
+
   validate-scripts:
     runs-on: ubuntu-latest
     steps:

@@ -38,7 +38,7 @@ nuxiva-telemetry-core = { path = "../telemetry-core" }
 nuxiva-supervisor-core = { path = "../supervisor-core" }
 nuxiva-authz-core = { path = "../authz-core" }
 nuxiva-ear-core = { path = "../ear-core" }
-pyo3 = { version = "0.27.2", features = ["abi3-py311"] }
+pyo3 = { version = "0.27.2", features = ["abi3-py310"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 zeroize = "1"

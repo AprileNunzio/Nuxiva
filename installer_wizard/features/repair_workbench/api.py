@@ -32,11 +32,11 @@ async def internal_vision(request: Request):
         jpeg = decode_frame(data["frame_base64"])
         prompt = PROMPT_TEMPLATE.format(language=str(data.get("language", "it"))[:12],
                                         known=", ".join(data.get("known_refs", [])[:60]))
-        async with asyncio.timeout(125):
-            result, model = await sight.look(jpeg, prompt, as_json=True, max_tokens=6000,
-                                             validator=VisionObservation.model_validate, attempt_timeout=55)
+        result, model = await asyncio.wait_for(
+            sight.look(jpeg, prompt, as_json=True, max_tokens=6000,
+                       validator=VisionObservation.model_validate, attempt_timeout=55), timeout=125)
         observation = VisionObservation.model_validate(result)
-    except (BrainUnavailable, TimeoutError) as exc:
+    except (BrainUnavailable, TimeoutError, asyncio.TimeoutError) as exc:
         raise HTTPException(503, "vision_models_unavailable") from exc
     except (ValueError, KeyError, TypeError) as exc:
         raise HTTPException(422, "invalid_vision_request") from exc
