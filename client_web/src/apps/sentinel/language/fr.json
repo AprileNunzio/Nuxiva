@@ -58,6 +58,7 @@
     "ret_system": "Système",
     "ret_audit": "Consultations",
     "native_building": "Compilation du moteur natif de Nuxiva en cours.",
+    "native_restarting": "Le nouveau moteur natif est installé : redémarrage du superviseur pour le charger.",
     "native_failed": "La compilation du moteur natif a échoué.",
     "native_disabled": "Le moteur natif est désactivé dans les réglages système (NUXIVA_NATIVE=0), la Sentinelle reste donc éteinte.",
     "native_stage": "Étape actuelle : {stage}",

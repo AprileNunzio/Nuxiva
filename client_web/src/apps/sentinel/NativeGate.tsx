@@ -15,7 +15,7 @@ export function NativeGate({t,children}:{t:(key:string,params?:Record<string,str
   if(status.data.native)return <>{children}</>;
   const build=status.data.build||{state:'unknown',stage:null,at:null};
   const stage=build.stage&&STAGES.has(build.stage)?t(`native_stage_${build.stage}`):'';
-  const state=['building','failed','disabled'].includes(build.state)?build.state:'missing';
+  const state=['building','restarting','failed','disabled'].includes(build.state)?build.state:'missing';
   const rebuild=async()=>{
     setFailed(false);
     try{await sendJson('/api/actions/rerun-step','POST',{step:'native'});setAsked(true);status.reload();}
@@ -24,7 +24,7 @@ export function NativeGate({t,children}:{t:(key:string,params?:Record<string,str
   return <div className="sentinel-native" role="status" aria-live="polite">
     <p className="sentinel-native-title">{t(`native_${state}`)}</p>
     {state==='building'&&stage&&<p className="sentinel-native-detail">{t('native_stage',{stage})}</p>}
-    {state==='building'&&<p className="sentinel-native-detail">{t('native_auto_open')}</p>}
+    {(state==='building'||state==='restarting')&&<p className="sentinel-native-detail">{t('native_auto_open')}</p>}
     {(state==='failed'||state==='missing')&&<button type="button" className="sentinel-native-action" onClick={rebuild} disabled={asked}>
       <RefreshCw size={14} aria-hidden="true"/>{t(asked?'native_requested':'native_rebuild')}</button>}
     {failed&&<p className="sentinel-native-detail" role="alert">{t('native_rebuild_failed')}</p>}

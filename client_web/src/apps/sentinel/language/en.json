@@ -58,6 +58,7 @@
     "ret_system": "System",
     "ret_audit": "Reads",
     "native_building": "Building the Nuxiva native engine.",
+    "native_restarting": "The new native engine is installed: restarting the supervisor to load it.",
     "native_failed": "The native engine build failed.",
     "native_disabled": "The native engine is turned off in the system settings (NUXIVA_NATIVE=0), so Sentinel stays off.",
     "native_stage": "Current stage: {stage}",

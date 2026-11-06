@@ -58,6 +58,7 @@
     "ret_system": "Sistema",
     "ret_audit": "Consultas",
     "native_building": "Compilando el motor nativo de Nuxiva.",
+    "native_restarting": "El nuevo motor nativo está instalado: reiniciando el supervisor para cargarlo.",
     "native_failed": "La compilación del motor nativo no se completó.",
     "native_disabled": "El motor nativo está desactivado en los ajustes del sistema (NUXIVA_NATIVE=0), así que la Centinela sigue apagada.",
     "native_stage": "Fase actual: {stage}",

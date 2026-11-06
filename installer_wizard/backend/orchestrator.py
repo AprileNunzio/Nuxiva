@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import os
 import time
 
 import health
@@ -16,6 +17,8 @@ log = logging.getLogger("nuxiva.supervisor")
 
 ERROR_RETRY_SECONDS = 120
 ERROR_RETRY_MAX = 30 * 60
+NATIVE_RELOAD_SECONDS = 20.0
+NATIVE_RELOAD_PHASES = frozenset({"READY", "DEGRADED", "ERROR"})
 
 
 class Orchestrator:
@@ -166,3 +169,29 @@ async def telemetry_loop() -> None:
         except Exception as exc:
             log.warning("Telemetria non disponibile: %s", exc)
         await asyncio.sleep(2)
+
+
+async def native_reload_check() -> bool:
+    import native_module
+    if orch.lock.locked() or store.phase not in NATIVE_RELOAD_PHASES or not native_module.reload_needed():
+        return False
+    if not os.environ.get("INVOCATION_ID") or not native_module.claim_reload():
+        return False
+    store.event("INFO", "Nuovo motore nativo installato: riavvio il supervisore per caricarlo", "native")
+    code, out = await health.sh("systemctl", "restart", "--no-block", "nuxiva-supervisor.service", timeout=15)
+    if code != 0:
+        log.error("Riavvio del supervisore per il nuovo motore nativo non riuscito: %s", out[-300:])
+        store.event("ERROR", "Riavvio automatico per il nuovo motore nativo non riuscito", "native")
+        return False
+    return True
+
+
+async def native_reload_loop() -> None:
+    import native_module
+    await asyncio.to_thread(native_module.module)
+    while True:
+        await asyncio.sleep(NATIVE_RELOAD_SECONDS)
+        try:
+            await native_reload_check()
+        except OSError:
+            log.exception("Controllo del motore nativo in memoria non riuscito")

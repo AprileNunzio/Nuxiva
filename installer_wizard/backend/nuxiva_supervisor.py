@@ -165,7 +165,7 @@ from features.vision.webcams import webcams
 from features.voices import api as voices_api
 from features.hardware import api as hardware_api
 from features.hardware.service import hardware_service
-from orchestrator import orch, telemetry_loop
+from orchestrator import native_reload_loop, orch, telemetry_loop
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s [%(name)s] %(levelname)s: %(message)s"
@@ -385,6 +385,7 @@ async def serve_optional(server) -> None:
 
 BACKGROUND = (
     ("telemetria", telemetry_loop, 0.0),
+    ("motore-nativo", native_reload_loop, 0.0),
     ("risorse", governor.run, 0.0),
     ("memoria-os", memory_manager.run, 0.0),
     ("webcam", webcams.run, 0.0),

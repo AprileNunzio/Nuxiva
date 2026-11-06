@@ -18,6 +18,7 @@ DISPLAY_BIN="$NATIVE_HOME/bin/nuxiva-display"
 DISPLAY_UNIT_SRC="$NUXIVA_DIR/scripts/os/systemd/nuxiva-display.service"
 DISPLAY_UNIT_DST=/etc/systemd/system/nuxiva-display.service
 BUILD_STATE="$NUXIVA_STATE/native/build.json"
+WHEEL_STATE="$NUXIVA_STATE/native/wheel.json"
 BUILD_STAGE="wheel"
 
 export RUSTUP_HOME="$NATIVE_HOME/rustup"
@@ -86,6 +87,16 @@ stage() {
     build_state "${2:-building}" "$1"
 }
 
+wheel_state() {
+    local dir tmp
+    dir=$(dirname "$WHEEL_STATE")
+    install -d -m 0755 "$dir" || return 0
+    tmp=$(mktemp "$dir/.wheel.XXXXXX") || return 0
+    printf '{"rev":"%s","at":%s}\n' "$(src_hash)" "$(date +%s)" > "$tmp"
+    chmod 0644 "$tmp"
+    mv -f "$tmp" "$WHEEL_STATE"
+}
+
 on_exit() {
     local rc=$?
     [ "$rc" -eq 0 ] || build_state failed "$BUILD_STAGE"
@@ -96,8 +107,9 @@ install_wheel() {
     "$VENV/bin/pip" install -q --force-reinstall --no-deps "$NATIVE_HOME"/wheels/nuxiva_native-*.whl \
         || fail "Installazione del modulo nativo non riuscita"
     native_loaded || fail "Il modulo nativo non si carica"
+    wheel_state
     build_state ready wheel
-    info "Modulo nativo installato: Sentinella, molecole e motori della pagina 80 lo caricano senza riavvio"
+    info "Modulo nativo installato: il supervisore lo ricarica da solo appena finiscono i passi in corso"
 }
 
 step_apply() {
@@ -107,7 +119,7 @@ step_apply() {
         "$VENV/bin/pip" uninstall -y -q nuxiva-native >/dev/null 2>&1 || true
         systemctl disable --now nuxiva-agency >/dev/null 2>&1 || true
         systemctl disable --now nuxiva-display >/dev/null 2>&1 || true
-        rm -f "$STAMP" "$EGRESS_BIN" "$NETGUARD_BIN" "$AGENCY_BIN" "$AGENCY_UNIT_DST" "$DISPLAY_BIN" "$DISPLAY_UNIT_DST"
+        rm -f "$STAMP" "$WHEEL_STATE" "$EGRESS_BIN" "$NETGUARD_BIN" "$AGENCY_BIN" "$AGENCY_UNIT_DST" "$DISPLAY_BIN" "$DISPLAY_UNIT_DST"
         progress 100 "Core nativo disattivato"
         return 0
     fi
