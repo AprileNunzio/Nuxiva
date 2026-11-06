@@ -4,6 +4,7 @@ mod access;
 mod admin_os;
 mod arbitration;
 mod audio;
+mod authz;
 mod bus;
 mod config;
 mod cortex;
@@ -97,6 +98,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     config::register(m)?;
     telemetry::register(m)?;
     supervisor::register(m)?;
+    authz::register(m)?;
     m.add_class::<RustSynapticBus>()?;
     m.add_class::<SynapticWeightMatrix>()?;
     m.add_class::<PySynapticSpike>()?;

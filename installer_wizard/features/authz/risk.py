@@ -1,5 +1,7 @@
 from enum import IntEnum
 
+import native_core
+
 
 class Risk(IntEnum):
     INFO = 0
@@ -68,21 +70,49 @@ CONNECTORS: dict[str, Risk] = {
 COMPOSED: dict[str, tuple[str, ...]] = {}
 
 
+_table: dict = {"engine": None, "table": None}
+
+
+def _native_table():
+    engine = native_core.symbol("RustRiskTable")
+    if engine is None:
+        native_core.python_fallback("authz")
+        return None
+    if _table["engine"] is not engine:
+        table = engine({name: int(level) for name, level in TOOLS.items()})
+        for composed, steps in COMPOSED.items():
+            table.compose(composed, list(steps))
+        _table.update(engine=engine, table=table)
+    return _table["table"]
+
+
 def of_tool(name: str, seen: frozenset[str] = frozenset()) -> Risk:
+    table = _native_table() if not seen else None
+    if table is not None:
+        return Risk(table.of_tool(str(name)))
+    return _py_of_tool(name, seen)
+
+
+def _py_of_tool(name: str, seen: frozenset[str] = frozenset()) -> Risk:
     if name in TOOLS:
         return TOOLS[name]
     steps = COMPOSED.get(name)
     if not steps or name in seen:
         return Risk.CRITICAL
-    return max(of_tool(step, seen | {name}) for step in steps)
+    return max(_py_of_tool(step, seen | {name}) for step in steps)
 
 
 def compose(name: str, steps: list[str]) -> None:
     COMPOSED[name] = tuple(steps)
+    table = _table["table"]
+    if table is not None and not table.compose(name, [str(step) for step in steps]):
+        _table.update(engine=None, table=None)
 
 
 def forget(name: str) -> None:
     COMPOSED.pop(name, None)
+    if _table["table"] is not None:
+        _table["table"].forget(name)
 
 
 def of_connector(name: str) -> Risk:

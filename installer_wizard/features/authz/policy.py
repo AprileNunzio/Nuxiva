@@ -3,6 +3,7 @@ import logging
 import threading
 from dataclasses import dataclass
 
+import native_core
 from config import STATE_DIR
 
 from features.authz.principal import Principal, Strength
@@ -42,7 +43,18 @@ class Policy:
         self._lock = threading.Lock()
         self.ceiling = dict(DEFAULT_CEILING)
         self.proof = dict(DEFAULT_PROOF)
+        self.engine = self._engine()
         self.load()
+
+    @staticmethod
+    def _engine():
+        engine = native_core.symbol("RustAuthzPolicy")
+        if engine is None:
+            native_core.python_fallback("authz")
+            return None
+        return engine({role: int(risk) for role, risk in DEFAULT_CEILING.items()},
+                      {int(risk): int(level) for risk, level in DEFAULT_PROOF.items()},
+                      {role: int(risk) for role, risk in SUBROLE_CEILING.items()})
 
     def load(self) -> None:
         try:
@@ -55,6 +67,16 @@ class Policy:
         self.apply(data if isinstance(data, dict) else {})
 
     def apply(self, data: dict) -> None:
+        if self.engine is not None:
+            self.engine.apply(json.dumps(data if isinstance(data, dict) else {}))
+            exported_ceiling, exported_proof = self.engine.export()
+            with self._lock:
+                self.ceiling = {role: parse(name) for role, name in exported_ceiling}
+                self.proof = {parse(name): Strength[level.upper()] for name, level in exported_proof}
+            return
+        self._py_apply(data)
+
+    def _py_apply(self, data: dict) -> None:
         ceiling, proof = dict(DEFAULT_CEILING), dict(DEFAULT_PROOF)
         for role, name in (data.get("ceiling") or {}).items():
             risk = parse(name)
@@ -82,6 +104,11 @@ class Policy:
                     "proof": {risk.name.lower(): level.name.lower() for risk, level in self.proof.items()}}
 
     def limit(self, principal: Principal) -> Risk:
+        if self.engine is not None:
+            return Risk(self.engine.limit(principal.role, principal.subrole or "", str(principal.override or "")))
+        return self._py_limit(principal)
+
+    def _py_limit(self, principal: Principal) -> Risk:
         with self._lock:
             if principal.subrole and principal.subrole in SUBROLE_CEILING:
                 base = SUBROLE_CEILING[principal.subrole]
@@ -91,9 +118,17 @@ class Policy:
         return base if custom is None or principal.role == "system" else custom
 
     def check(self, principal: Principal, risk: Risk) -> Decision:
+        if self.engine is not None:
+            allowed, code, level, needed = self.engine.check(principal.role, principal.subrole or "",
+                                                             str(principal.override or ""), int(principal.strength),
+                                                             int(risk))
+            return Decision(allowed, code, Risk(level), Strength(needed))
+        return self._py_check(principal, risk)
+
+    def _py_check(self, principal: Principal, risk: Risk) -> Decision:
         with self._lock:
             needed = self.proof.get(risk, Strength.STRONG)
-        if risk > self.limit(principal):
+        if risk > self._py_limit(principal):
             return Decision(False, "role", risk, needed)
         if principal.strength < needed:
             return Decision(False, "proof", risk, needed)

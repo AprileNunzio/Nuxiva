@@ -837,6 +837,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-authz-core"
+version = "5.3.0"
+dependencies = [
+ "serde_json",
+]
+
+[[package]]
 name = "nuxiva-bus-core"
 version = "5.3.0"
 
@@ -990,6 +997,7 @@ dependencies = [
  "nuxiva-access-core",
  "nuxiva-admin-os",
  "nuxiva-audio-dsp",
+ "nuxiva-authz-core",
  "nuxiva-bus-core",
  "nuxiva-config-core",
  "nuxiva-cortex-core",
