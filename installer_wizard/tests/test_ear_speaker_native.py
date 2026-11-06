@@ -144,10 +144,6 @@ class FallbackTest(unittest.TestCase):
         self.assertEqual(context.active(), 0)
 
 
-if __name__ == "__main__":
-    unittest.main()
-
-
 class FakeTracker:
 
     def observe(self, probe, now, known=None):
@@ -172,3 +168,7 @@ class TurnFieldsTest(unittest.TestCase):
     def test_missing_observation_is_empty(self):
         self.assertEqual(turn_fields(None), {})
         self.assertEqual(turn_fields({"voice_known": None, "new_voice": True}), {"voice_match": None, "new_voice": True})
+
+
+if __name__ == "__main__":
+    unittest.main()
