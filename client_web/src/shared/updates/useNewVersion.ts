@@ -1,83 +1,139 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { entryOf, isNewer, loadedEntry } from './pageVersion';
+import { appRoot, bundleDir, entryOf, isNewer, loadedEntry } from './pageVersion';
+import { canAutoReload, nextRecord, pollDelay, readRecord, settled, writeRecord } from './reloadGuard';
 
-const POLL_MS = 20000;
 const COUNTDOWN_S = 8;
+const SNOOZE_MS = 30 * 60 * 1000;
+const PRELOAD_TARGET = '/__preload__';
 
 export interface NewVersion {
   readonly available: boolean;
+  readonly automatic: boolean;
   readonly seconds: number;
   readonly reload: () => void;
   readonly later: () => void;
 }
 
+function reloadFor(target: string): void {
+  writeRecord(nextRecord(readRecord(), target, Date.now()));
+  window.location.reload();
+}
+
+async function servedEntry(loaded: string): Promise<string | null> {
+  const response = await fetch(appRoot(window.location.pathname), {
+    cache: 'no-store',
+    credentials: 'same-origin',
+    redirect: 'error',
+    headers: { Accept: 'text/html' },
+  });
+  if (!response.ok || !(response.headers.get('content-type') ?? '').includes('text/html')) {
+    return null;
+  }
+  return entryOf(await response.text(), bundleDir(loaded));
+}
+
 export function useNewVersion(): NewVersion {
-  const [available, setAvailable] = useState(false);
+  const [target, setTarget] = useState<string | null>(null);
+  const [automatic, setAutomatic] = useState(false);
   const [seconds, setSeconds] = useState(COUNTDOWN_S);
   const loaded = useRef<string | null>(loadedEntry());
-  const postponed = useRef(false);
+  const snoozedUntil = useRef(0);
 
-  const reload = useCallback(() => window.location.reload(), []);
+  useEffect(() => {
+    if (settled(readRecord(), loaded.current)) {
+      writeRecord(null);
+    }
+  }, []);
+
+  const reload = useCallback(() => {
+    if (target) {
+      reloadFor(target);
+    }
+  }, [target]);
+
   const later = useCallback(() => {
-    postponed.current = true;
-    setAvailable(false);
+    snoozedUntil.current = Date.now() + SNOOZE_MS;
+    setTarget(null);
   }, []);
 
   useEffect(() => {
+    const current = loaded.current;
+    if (!current || target) {
+      return undefined;
+    }
     let alive = true;
+    let failures = 0;
+    let timer = 0;
+    const schedule = () => {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => void check(), pollDelay(failures));
+    };
     const check = async () => {
-      if (!alive || available) {
+      if (!alive || document.hidden || Date.now() < snoozedUntil.current) {
+        schedule();
         return;
       }
+      let served: string | null = null;
       try {
-        const response = await fetch('/', { cache: 'no-store', headers: { Accept: 'text/html' } });
-        if (!response.ok || !(response.headers.get('content-type') ?? '').includes('text/html')) {
-          return;
-        }
-        if (isNewer(loaded.current, entryOf(await response.text())) && alive) {
-          setAvailable(true);
-        }
+        served = await servedEntry(current);
+        failures = 0;
       } catch {
+        failures += 1;
+      }
+      if (!alive) {
         return;
       }
+      if (served && isNewer(current, served)) {
+        setAutomatic(canAutoReload(readRecord(), served, Date.now()));
+        setTarget(served);
+        return;
+      }
+      schedule();
     };
     const onVisible = () => {
       if (!document.hidden) {
         void check();
       }
     };
-    const onPreloadError = (event: Event) => {
-      event.preventDefault();
-      window.location.reload();
-    };
-    const timer = window.setInterval(() => void check(), POLL_MS);
+    schedule();
     document.addEventListener('visibilitychange', onVisible);
     window.addEventListener('online', onVisible);
-    window.addEventListener('vite:preloadError', onPreloadError);
     return () => {
       alive = false;
-      window.clearInterval(timer);
+      window.clearTimeout(timer);
       document.removeEventListener('visibilitychange', onVisible);
       window.removeEventListener('online', onVisible);
-      window.removeEventListener('vite:preloadError', onPreloadError);
     };
-  }, [available]);
+  }, [target]);
 
   useEffect(() => {
-    if (!available) {
-      setSeconds(COUNTDOWN_S);
+    const onPreloadError = (event: Event) => {
+      if (!canAutoReload(readRecord(), PRELOAD_TARGET, Date.now())) {
+        return;
+      }
+      event.preventDefault();
+      reloadFor(PRELOAD_TARGET);
+    };
+    window.addEventListener('vite:preloadError', onPreloadError);
+    return () => window.removeEventListener('vite:preloadError', onPreloadError);
+  }, []);
+
+  useEffect(() => {
+    setSeconds(COUNTDOWN_S);
+    if (!target || !automatic) {
       return undefined;
     }
     const timer = window.setInterval(() => {
-      setSeconds((value) => {
-        if (value <= 1) {
-          window.location.reload();
-        }
-        return Math.max(0, value - 1);
-      });
+      setSeconds((value) => Math.max(0, value - 1));
     }, 1000);
     return () => window.clearInterval(timer);
-  }, [available]);
+  }, [target, automatic]);
 
-  return { available, seconds, reload, later };
+  useEffect(() => {
+    if (target && automatic && seconds === 0) {
+      reloadFor(target);
+    }
+  }, [target, automatic, seconds]);
+
+  return { available: target !== null, automatic, seconds, reload, later };
 }
