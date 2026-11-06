@@ -4,8 +4,8 @@
   flex-direction: column;
   height: 100%;
   width: 100%;
-  background-color: #f8fafc;
-  color: #0f172a;
+  background-color: var(--md-sys-color-surface-container-low);
+  color: var(--md-sys-color-on-surface);
   overflow: hidden;
   user-select: none;
 }
@@ -23,9 +23,9 @@
   opacity: 1;
   transform: scale(1.04);
   font-weight: 800;
-  color: #0369a1;
+  color: var(--md-sys-color-primary);
   text-shadow: none;
-  background: rgba(56, 189, 248, 0.12);
+  background: color-mix(in oklab, var(--md-sys-color-primary) 12%, transparent);
 }
 
 @keyframes eqBar {
@@ -35,7 +35,7 @@
 
 .nexus-eq-bar {
   width: 3px;
-  background-color: #38bdf8;
+  background-color: var(--md-sys-color-primary);
   border-radius: 9999px;
   animation: eqBar 0.9s ease-in-out infinite;
 }
@@ -45,13 +45,13 @@
 .nexus-eq-bar:nth-child(4) { animation-delay: 0.1s; }
 
 .nexus-dropzone {
-  border: 2px dashed rgba(56, 189, 248, 0.4);
-  background: rgba(241, 245, 249, 0.8);
+  border: 2px dashed color-mix(in oklab, var(--md-sys-color-primary) 40%, transparent);
+  background: color-mix(in oklab, var(--md-sys-color-surface-container-high) 80%, transparent);
   transition: all 0.2s ease;
 }
 
 .nexus-dropzone.active {
-  border-color: #38bdf8;
-  background: rgba(56, 189, 248, 0.1);
+  border-color: var(--md-sys-color-primary);
+  background: color-mix(in oklab, var(--md-sys-color-primary) 10%, transparent);
   transform: scale(1.01);
 }

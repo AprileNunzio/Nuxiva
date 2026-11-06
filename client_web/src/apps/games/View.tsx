@@ -105,9 +105,9 @@ export function View() {
 
       <div className="games-grid-scroll">
         {filteredGames.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '4rem 1rem', color: '#94a3b8' }}>
+          <div style={{ textAlign: 'center', padding: '4rem 1rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
             <span style={{ fontSize: '3rem', display: 'block', marginBottom: '1rem' }}>🎮</span>
-            <h3 style={{ color: '#ffffff', marginBottom: '0.5rem' }}>{t('empty_title')}</h3>
+            <h3 style={{ color: 'var(--md-sys-color-on-surface)', marginBottom: '0.5rem' }}>{t('empty_title')}</h3>
             <p>{t('empty_desc')}</p>
           </div>
         ) : (

@@ -52,14 +52,14 @@ export function GameDetailModal({ game, t, onClose }: GameDetailModalProps) {
                 <div key={cmd.command_id} className="game-command-item">
                   <div className="game-command-name">
                     /{cmd.command_id}
-                    <span style={{ fontSize: '0.75rem', color: '#94a3b8', marginLeft: '0.5rem' }}>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--md-sys-color-on-surface-variant)', marginLeft: '0.5rem' }}>
                       [{cmd.input_types.join(', ')}]
                     </span>
                   </div>
 
                   {cmd.voice_triggers.length > 0 && (
                     <div style={{ marginTop: '0.375rem' }}>
-                      <span style={{ fontSize: '0.75rem', color: '#94a3b8', marginRight: '0.25rem' }}>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--md-sys-color-on-surface-variant)', marginRight: '0.25rem' }}>
                         {t('cmd_triggers')}
                       </span>
                       {cmd.voice_triggers.map((trigger) => (
@@ -70,8 +70,8 @@ export function GameDetailModal({ game, t, onClose }: GameDetailModalProps) {
                     </div>
                   )}
 
-                  <div style={{ marginTop: '0.375rem', fontSize: '0.75rem', color: '#cbd5e1' }}>
-                    <span style={{ color: '#94a3b8' }}>{t('cmd_params')} </span>
+                  <div style={{ marginTop: '0.375rem', fontSize: '0.75rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
+                    <span style={{ color: 'var(--md-sys-color-on-surface-variant)' }}>{t('cmd_params')} </span>
                     {Object.keys(cmd.parameters).length > 0
                       ? JSON.stringify(cmd.parameters)
                       : t('cmd_no_params')}
@@ -85,12 +85,12 @@ export function GameDetailModal({ game, t, onClose }: GameDetailModalProps) {
                 <div key={cap.capability_id} className="game-command-item">
                   <div className="game-command-name">
                     {cap.capability_id}
-                    <span style={{ fontSize: '0.75rem', color: '#10b981', marginLeft: '0.5rem' }}>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--md-sys-color-success)', marginLeft: '0.5rem' }}>
                       [{cap.category}]
                     </span>
                   </div>
                   {cap.metadata && Object.keys(cap.metadata).length > 0 && (
-                    <pre style={{ margin: '0.25rem 0 0 0', fontSize: '0.75rem', color: '#94a3b8' }}>
+                    <pre style={{ margin: '0.25rem 0 0 0', fontSize: '0.75rem', color: 'var(--md-sys-color-on-surface-variant)' }}>
                       {JSON.stringify(cap.metadata, null, 2)}
                     </pre>
                   )}

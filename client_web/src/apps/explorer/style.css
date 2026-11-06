@@ -1,6 +1,6 @@
 /* Universal SMB Shares Explorer & File Viewer */
 .os-app-workspace {
-  background-color: #f8fafc;
+  background-color: var(--md-sys-color-surface-container-low);
 }
 
 @keyframes fadeIn {

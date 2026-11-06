@@ -282,7 +282,7 @@
 .network-btn-primary {
   font-size: 0.6875rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--md-sys-color-on-primary);
   background: var(--md-sys-color-primary, #2563eb);
   border: 1px solid transparent;
   padding: 0.35rem 0.75rem;
