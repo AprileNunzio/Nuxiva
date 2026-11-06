@@ -56,11 +56,15 @@ fn a_spoken_owner_stays_authorized_while_the_face_stays_in_view() {
 fn the_hold_ends_with_the_configured_voice_time() {
     let mut tracker = Tracker::new(Policy::default(), 0);
     opened(&mut tracker);
-    for now in (2_000..=29_000).step_by(1_000) {
-        tracker.step(&webcam(Liveness::Unknown, None), now);
+    for now in (2_000..=35_000).step_by(1_000) {
+        assert_eq!(
+            tracker.step(&webcam(Liveness::Unknown, None), now).kind,
+            AudienceKind::Authorized,
+            "at {now}"
+        );
     }
     assert_eq!(
-        tracker.step(&webcam(Liveness::Unknown, None), 30_000).kind,
+        tracker.step(&webcam(Liveness::Unknown, None), 36_000).kind,
         AudienceKind::Uncertain
     );
 }
@@ -87,8 +91,9 @@ fn losing_the_face_breaks_the_hold() {
     empty.faces.clear();
     tracker.step(&empty, 2_000);
     tracker.step(&empty, 6_000);
+    tracker.step(&webcam(Liveness::Unknown, None), 12_000);
     assert_eq!(
-        tracker.step(&webcam(Liveness::Unknown, None), 12_000).kind,
+        tracker.step(&webcam(Liveness::Unknown, None), 18_000).kind,
         AudienceKind::Uncertain
     );
 }
@@ -136,8 +141,9 @@ fn a_zero_voice_time_disables_the_hold() {
     };
     let mut tracker = Tracker::new(policy, 0);
     opened(&mut tracker);
+    tracker.step(&webcam(Liveness::Unknown, None), 11_000);
     assert_eq!(
-        tracker.step(&webcam(Liveness::Unknown, None), 11_000).kind,
+        tracker.step(&webcam(Liveness::Unknown, None), 17_000).kind,
         AudienceKind::Uncertain
     );
 }

@@ -15,7 +15,8 @@ class Policy:
     away_ms: int = 10000
     voice_hold_ms: int = 30000
     agree_ms: int = 10000
-    continuity_ms: int = 3000
+    continuity_ms: int = 5000
+    doubt_ms: int = 6000
     skew_ms: int = 2000
     face_min: float = 0.5
     voice_min: float = 0.5
@@ -68,12 +69,12 @@ def _judge(face: dict, policy: Policy, spoken: set[str], held: frozenset[str]) -
     if not person or not face.get("authorized") or liveness == "spoof":
         return "guest", "", ""
     if not recognised(face, policy):
-        return "unverified", "", ""
+        return "unverified", person, ""
     live, voiced = liveness == "live", person in spoken
     if live and voiced:
         return "member", person, "strong"
     if not live and not voiced and policy.require_liveness and person not in held:
-        return "unverified", "", ""
+        return "unverified", person, ""
     return "member", person, "single"
 
 
@@ -94,13 +95,14 @@ def fuse(signals: dict, policy: Policy, now_ms: int, held: frozenset[str] = froz
     faces = list(signals.get("faces") or [])
     spoken = set(utterances(list(signals.get("voices") or []), policy, now_ms))
     members: dict[str, dict] = {}
-    guests = unverified = 0
+    doubtful: list[str] = []
+    guests = 0
     for face in faces[:MAX_FACES]:
         verdict, person, proof = _judge(face, policy, spoken, held)
         if verdict == "guest":
             guests += 1
         elif verdict == "unverified":
-            unverified += 1
+            doubtful.append(person)
         else:
             entry = members.setdefault(person, {"person": person, "proof": proof, "near": False})
             if proof == "strong":
@@ -108,6 +110,7 @@ def fuse(signals: dict, policy: Policy, now_ms: int, held: frozenset[str] = froz
             entry["near"] = entry["near"] or bool(face.get("near"))
     for person in spoken:
         members.setdefault(person, {"person": person, "proof": "single", "near": False})
+    unverified = sum(1 for person in doubtful if person not in members)
     ordered = [members[k] for k in sorted(members)]
     return Reading(_classify(bool(ordered), guests, unverified), ordered, guests, unverified, bool(faces), bool(spoken))
 
@@ -144,8 +147,11 @@ class Tracker:
         spoofed = {f.get("person") for f in faces if f.get("liveness") == "spoof"}
         for person in spoofed:
             self.vouched.pop(person, None)
+        live = {recognised(f, self.policy) for f in faces if f.get("liveness") == "live"}
         for person in {recognised(f, self.policy) for f in faces} - spoofed - {""}:
-            if person in voices:
+            if person in live:
+                self.vouched[person] = (now_ms, now_ms)
+            elif person in voices:
                 self.vouched[person] = (max(voices[person], self.vouched.get(person, (0, 0))[0]), now_ms)
             elif person in self.vouched:
                 self.vouched[person] = (self.vouched[person][0], now_ms)
@@ -160,7 +166,8 @@ class Tracker:
             self.last_seen_ms = now_ms
         if reading.voiced:
             self.last_voice_ms = now_ms
-        self._advance(self._target(reading, now_ms), reading, now_ms)
+        watching = (signals.get("vision") or "offline") == "ok"
+        self._advance(self._target(reading, now_ms), reading, watching, now_ms)
         return self.audience()
 
     def _target(self, reading: Reading, now_ms: int) -> str:
@@ -170,21 +177,27 @@ class Tracker:
         speaking = RANK[self.current] >= RANK["mixed"] and self._within(self.last_voice_ms, self.policy.voice_hold_ms, now_ms)
         return self.current if present or speaking else "empty"
 
-    def _advance(self, target: str, reading: Reading, now_ms: int) -> None:
+    def _advance(self, target: str, reading: Reading, watching: bool, now_ms: int) -> None:
         if target == self.current:
             self.candidate = None
             if reading.kind == target:
                 self._adopt(reading)
             return
-        closing = RANK[target] < RANK[self.current] or max(RANK[target], RANK[self.current]) <= 1
+        wait = self._wait(target, watching)
         if self.candidate and self.candidate[0] == target:
-            stable = max(0, now_ms - self.candidate[1]) >= self.policy.stable_ms
+            stable = max(0, now_ms - self.candidate[1]) >= wait
         else:
             self.candidate = (target, now_ms)
-            stable = False
-        if closing or stable:
+            stable = wait == 0
+        if stable:
             self.current, self.since_ms, self.candidate = target, now_ms, None
             self._adopt(reading)
+
+    def _wait(self, target: str, watching: bool) -> int:
+        if watching and target == "uncertain" and RANK[self.current] >= RANK["mixed"]:
+            return self.policy.doubt_ms
+        closing = RANK[target] < RANK[self.current] or max(RANK[target], RANK[self.current]) <= 1
+        return 0 if closing else self.policy.stable_ms
 
     def _adopt(self, reading: Reading) -> None:
         self.members = [dict(m) for m in reading.members]

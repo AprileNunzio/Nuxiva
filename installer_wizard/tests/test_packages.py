@@ -99,10 +99,17 @@ class MigrationTest(unittest.TestCase):
         for sid in ("office", "vision", "ollama", "models"):
             store.steps[sid] = {"status": "done"}
         self.env["NUXIVA_VISION"] = "0"
-        updates = packages.migrate()
+        with mock.patch("brain_intent.local_engine", return_value=True):
+            updates = packages.migrate()
         self.assertEqual(updates, {"NUXIVA_DOCUMENTS": "1", "NUXIVA_BRAIN": "local"})
         self.assertEqual(self.env["NUXIVA_VISION"], "0")
         self.assertEqual(packages.migrate(), {})
+
+    def test_a_passed_check_without_ollama_is_not_a_local_brain(self):
+        store.steps["ollama"] = {"status": "done"}
+        with mock.patch("brain_intent.local_engine", return_value=False):
+            self.assertEqual(packages.migrate(), {})
+        self.assertNotIn("NUXIVA_BRAIN", self.env)
 
     def test_fresh_installs_write_nothing(self):
         self.assertEqual(packages.migrate(), {})

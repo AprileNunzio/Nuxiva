@@ -54,6 +54,8 @@ CLOUD_PICK = {
     "gemini": ("Google Gemini", "gemini-3.8-flash", "gemini-3.1-pro"),
     "openai": ("OpenAI", "gpt-6.1-sol", "gpt-6-astra"),
     "mistral": ("Mistral AI", "mistral-small-latest", "mistral-large-latest"),
+    "groq": ("Groq", "llama-3.1-8b-instant", "llama-3.3-70b-versatile"),
+    "openrouter": ("OpenRouter", "openrouter/auto", "openrouter/auto"),
 }
 CLOUD_KEY_RE = re.compile(r"[A-Za-z0-9_\-.]{20,256}")
 WIZARD_PACKAGES = {

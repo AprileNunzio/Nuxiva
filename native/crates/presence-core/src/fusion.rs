@@ -43,7 +43,7 @@ impl Reading {
 
 enum Verdict {
     Guest,
-    Unverified,
+    Unverified(String),
     Member(String, Proof),
 }
 
@@ -87,17 +87,19 @@ fn judge(
     spoken: &BTreeSet<String>,
     held: &BTreeSet<String>,
 ) -> Verdict {
-    if claimant(face).is_none() {
+    let Some(claimed) = claimant(face) else {
         return Verdict::Guest;
-    }
+    };
     let Some(person) = recognised(face, policy) else {
-        return Verdict::Unverified;
+        return Verdict::Unverified(claimed.to_owned());
     };
     let voiced = spoken.contains(person);
     let live = face.liveness == Liveness::Live;
     match (live, voiced) {
         (true, true) => Verdict::Member(person.to_owned(), Proof::Strong),
-        (false, false) if policy.require_liveness && !held.contains(person) => Verdict::Unverified,
+        (false, false) if policy.require_liveness && !held.contains(person) => {
+            Verdict::Unverified(person.to_owned())
+        }
         _ => Verdict::Member(person.to_owned(), Proof::Single),
     }
 }
@@ -133,13 +135,14 @@ pub fn fuse_held(
         .into_keys()
         .collect();
     let mut members: BTreeMap<String, Member> = BTreeMap::new();
-    let (mut guests, mut unverified) = (0_u16, 0_u16);
+    let mut guests = 0_u16;
+    let mut doubtful: Vec<String> = Vec::new();
     let faces = signals.faces.iter().take(MAX_FACES);
     let seen = !signals.faces.is_empty();
     for face in faces {
         match judge(face, policy, &spoken, held) {
             Verdict::Guest => guests = guests.saturating_add(1),
-            Verdict::Unverified => unverified = unverified.saturating_add(1),
+            Verdict::Unverified(person) => doubtful.push(person),
             Verdict::Member(person, proof) => {
                 let entry = members.entry(person.clone()).or_insert(Member {
                     person,
@@ -158,6 +161,10 @@ pub fn fuse_held(
             near: false,
         });
     }
+    let unverified = doubtful
+        .iter()
+        .filter(|person| !members.contains_key(*person))
+        .fold(0_u16, |count, _| count.saturating_add(1));
     let kind = classify(!members.is_empty(), guests, unverified);
     Reading {
         kind,

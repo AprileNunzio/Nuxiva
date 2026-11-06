@@ -35,6 +35,7 @@ class Orchestrator:
             packages.migrate()
         except (OSError, ValueError):
             log.exception("Pacchetti installati non confermati")
+        await self._reconcile_brain()
         from features.auto_update.self_healing import self_healer
         self_healer.run_all()
         pending = updater.pending()
@@ -101,6 +102,18 @@ class Orchestrator:
         store.progress = 100
         store.set_phase("READY", "Tutti i sistemi operativi")
         self.installer = asyncio.create_task(self.install_background())
+
+    @staticmethod
+    async def _reconcile_brain() -> None:
+        import brain_intent
+        from fastapi import HTTPException
+        from settings import apply_config
+        try:
+            updates = brain_intent.reconcile()
+            if updates:
+                await apply_config(updates, "riconciliazione: chiave API del cervello cloud già configurata")
+        except (OSError, ValueError, HTTPException):
+            log.exception("Scelta del cervello non verificata")
 
     async def _quiet_step(self, step_id: str) -> bool:
         return await converge_step(STEP_BY_ID[step_id], quiet=True)

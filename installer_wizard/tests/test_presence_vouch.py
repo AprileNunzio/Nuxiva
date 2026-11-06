@@ -29,9 +29,9 @@ class VouchTests(unittest.TestCase):
 
     def test_the_hold_ends_with_the_configured_voice_time(self):
         tracker = opened()
-        for now in range(2_000, 30_000, 1_000):
-            tracker.step(webcam(), now)
-        self.assertEqual(tracker.step(webcam(), 30_000)["kind"], "uncertain")
+        for now in range(2_000, 36_000, 1_000):
+            self.assertEqual(tracker.step(webcam(), now)["kind"], "authorized", now)
+        self.assertEqual(tracker.step(webcam(), 36_000)["kind"], "uncertain")
 
     def test_speaking_again_renews_the_hold(self):
         tracker = opened()
@@ -43,7 +43,8 @@ class VouchTests(unittest.TestCase):
         tracker = opened()
         tracker.step(webcam(faces=[]), 2_000)
         tracker.step(webcam(faces=[]), 6_000)
-        self.assertEqual(tracker.step(webcam(), 12_000)["kind"], "uncertain")
+        tracker.step(webcam(), 12_000)
+        self.assertEqual(tracker.step(webcam(), 18_000)["kind"], "uncertain")
 
     def test_a_spoof_cancels_the_hold(self):
         tracker = opened()

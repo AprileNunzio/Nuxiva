@@ -27,10 +27,12 @@ from setup_config import (
     VOICES_BY_LANG_GENDER, VOICE_CHOICES, WIZARD_PACKAGES
 )
 
+from setup_cloud import router as setup_cloud_router
 from setup_routes import router as setup_routes_router
 
 public_routes = APIRouter()
 public_routes.include_router(setup_routes_router)
+public_routes.include_router(setup_cloud_router)
 admin_routes = APIRouter()
 PREVIEW_TEXT = "Ciao, sono Nuxiva. Questa è la mia voce: ti piace?"
 PREVIEW_GAP_S = 2.0

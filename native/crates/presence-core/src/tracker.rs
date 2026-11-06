@@ -72,7 +72,7 @@ impl Tracker {
         self.vouch(signals, now_ms);
         self.remember(&reading, now_ms);
         let target = self.target(&reading, now_ms);
-        self.advance(target, &reading, now_ms);
+        self.advance(target, &reading, signals.vision == Vision::Ok, now_ms);
         self.audience()
     }
 
@@ -98,12 +98,18 @@ impl Tracker {
         for person in &spoofed {
             self.vouched.remove(*person);
         }
+        let live: BTreeSet<&str> = faces()
+            .filter(|f| f.liveness == Liveness::Live)
+            .filter_map(|f| recognised(f, &self.policy))
+            .collect();
         let seen: BTreeSet<&str> = faces()
             .filter_map(|f| recognised(f, &self.policy))
             .filter(|p| !spoofed.contains(p))
             .collect();
         for person in seen {
-            if let Some(&spoke) = voices.get(person) {
+            if live.contains(person) {
+                self.vouched.insert(person.to_owned(), (now_ms, now_ms));
+            } else if let Some(&spoke) = voices.get(person) {
                 let voice = self.vouched.get(person).map_or(spoke, |v| v.0.max(spoke));
                 self.vouched.insert(person.to_owned(), (voice, now_ms));
             } else if let Some(entry) = self.vouched.get_mut(person) {
@@ -146,7 +152,7 @@ impl Tracker {
         }
     }
 
-    fn advance(&mut self, target: AudienceKind, reading: &Reading, now_ms: u64) {
+    fn advance(&mut self, target: AudienceKind, reading: &Reading, watching: bool, now_ms: u64) {
         if target == self.current {
             self.candidate = None;
             if reading.kind == target {
@@ -154,23 +160,32 @@ impl Tracker {
             }
             return;
         }
-        let closing =
-            rank(target) < rank(self.current) || rank(target).max(rank(self.current)) <= 1;
+        let wait = self.wait(target, watching);
         let stable = match self.candidate {
-            Some((kind, since)) if kind == target => {
-                now_ms.saturating_sub(since) >= self.policy.stable_ms
-            }
+            Some((kind, since)) if kind == target => now_ms.saturating_sub(since) >= wait,
             _ => {
                 self.candidate = Some((target, now_ms));
-                false
+                wait == 0
             }
         };
-        if closing || stable {
+        if stable {
             self.current = target;
             self.since_ms = now_ms;
             self.candidate = None;
             self.adopt(reading);
         }
+    }
+
+    fn wait(&self, target: AudienceKind, watching: bool) -> u64 {
+        if watching
+            && target == AudienceKind::Uncertain
+            && rank(self.current) >= rank(AudienceKind::Mixed)
+        {
+            return self.policy.doubt_ms;
+        }
+        let closing =
+            rank(target) < rank(self.current) || rank(target).max(rank(self.current)) <= 1;
+        if closing { 0 } else { self.policy.stable_ms }
     }
 
     fn adopt(&mut self, reading: &Reading) {

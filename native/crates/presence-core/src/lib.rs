@@ -16,6 +16,8 @@ pub use visibility::{Show, widget_visible};
 #[cfg(test)]
 mod tests;
 #[cfg(test)]
+mod tests_doubt;
+#[cfg(test)]
 mod tests_visibility;
 #[cfg(test)]
 mod tests_vouch;

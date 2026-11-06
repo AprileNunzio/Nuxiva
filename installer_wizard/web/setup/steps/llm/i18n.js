@@ -19,7 +19,11 @@
       lbl_provider: "Seleziona Provider:",
       btn_test: "Verifica Connessione",
       test_ok: "Connessione verificata con successo!",
-      test_err: "Impossibile contattare l'endpoint specificato."
+      test_err: "Impossibile contattare l'endpoint specificato.",
+      key_missing: "Inserisci la chiave API prima della verifica.",
+      key_checking: "Verifica della chiave in corso…",
+      key_ok: "Chiave valida: il cervello cloud risponde.",
+      key_err: "Chiave rifiutata o servizio non raggiungibile."
     },
     en: {
       title: "Artificial Intelligence Engine",
@@ -38,7 +42,11 @@
       lbl_provider: "Select Provider:",
       btn_test: "Test Connection",
       test_ok: "Connection verified successfully!",
-      test_err: "Could not reach the specified endpoint."
+      test_err: "Could not reach the specified endpoint.",
+      key_missing: "Enter the API key before testing.",
+      key_checking: "Checking the key…",
+      key_ok: "Key accepted: the cloud brain is answering.",
+      key_err: "Key rejected or service unreachable."
     },
     es: {
       title: "Motor de Inteligencia Artificial",
@@ -57,7 +65,11 @@
       lbl_provider: "Seleccionar Proveedor:",
       btn_test: "Probar Conexión",
       test_ok: "¡Conexión verificada con éxito!",
-      test_err: "No se pudo contactar el endpoint especificado."
+      test_err: "No se pudo contactar el endpoint especificado.",
+      key_missing: "Introduzca la clave API antes de la prueba.",
+      key_checking: "Comprobando la clave…",
+      key_ok: "Clave válida: el cerebro en la nube responde.",
+      key_err: "Clave rechazada o servicio no disponible."
     },
     fr: {
       title: "Moteur d'Intelligence Artificielle",
@@ -76,7 +88,11 @@
       lbl_provider: "Sélectionner Fournisseur:",
       btn_test: "Tester la Connexion",
       test_ok: "Connexion vérifiée avec succès !",
-      test_err: "Impossible de joindre le point de terminaison."
+      test_err: "Impossible de joindre le point de terminaison.",
+      key_missing: "Saisissez la clé API avant le test.",
+      key_checking: "Vérification de la clé…",
+      key_ok: "Clé valide : le cerveau cloud répond.",
+      key_err: "Clé refusée ou service injoignable."
     }
   };
 

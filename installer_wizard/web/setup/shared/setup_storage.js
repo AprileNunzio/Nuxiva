@@ -3,6 +3,7 @@
 
   const STORAGE_KEY = "nuxiva_setup_permanent_state";
   const COOKIE_PREFIX = "nuxiva_setup_";
+  const VOLATILE = Object.freeze(["cloud_key"]);
 
   const defaultState = {
     step: 0,
@@ -37,6 +38,7 @@
   class SetupStorage {
     constructor() {
       this.state = this.load();
+      this.save();
     }
 
     load() {
@@ -49,6 +51,7 @@
       } catch (e) {
       }
 
+      VOLATILE.forEach((key) => delete loaded[key]);
       const merged = { ...defaultState, ...loaded };
 
       const cookieLang = getCookie("lang");
@@ -67,7 +70,9 @@
 
     save() {
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(this.state));
+        const durable = { ...this.state };
+        VOLATILE.forEach((key) => delete durable[key]);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(durable));
       } catch (e) {
       }
 

@@ -4,6 +4,7 @@ import os
 import time
 from dataclasses import dataclass
 
+import brain_intent
 import machine
 from config import STATE_DIR, ollama_remote, read_env, write_env
 
@@ -72,13 +73,17 @@ def brain_mode(env: dict | None = None) -> str:
         return mode
     if ollama_remote():
         return "remote"
-    if DEMO or _installed("ollama"):
+    if DEMO or _local_installed():
         return "local"
-    return "pending"
+    return "cloud" if brain_intent.cloud_provider(env) else "pending"
 
 
 def _installed(step_id: str) -> bool:
     return (store.steps.get(step_id) or {}).get("status") == "done"
+
+
+def _local_installed() -> bool:
+    return _installed("ollama") and brain_intent.local_engine()
 
 
 def wanted(pkg: Package, env: dict | None = None) -> bool:
@@ -116,7 +121,7 @@ def migrate() -> dict:
             continue
         if any(_installed(s) for s in pkg.steps):
             updates[pkg.env] = "1"
-    if not env.get("NUXIVA_BRAIN") and (_installed("ollama") or _installed("models")):
+    if not env.get("NUXIVA_BRAIN") and (ollama_remote() or _local_installed()):
         updates["NUXIVA_BRAIN"] = "remote" if ollama_remote() else "local"
     if updates:
         write_env(updates)
