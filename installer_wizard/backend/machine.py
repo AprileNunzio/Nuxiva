@@ -3,6 +3,8 @@ from pathlib import Path
 
 import psutil
 
+import native_core
+
 from config import read_env
 
 DEMO: bool = os.environ.get("NUXIVA_TEST_AUTH") == "1"
@@ -29,6 +31,10 @@ def ram_gb() -> float:
 
 
 def detect(gpu: bool = False) -> str:
+    native = native_core.symbol("machine_detect")
+    if native is not None:
+        return native(board(), int(psutil.virtual_memory().total), bool(gpu))
+    native_core.python_fallback("machine")
     if board():
         return "pi"
     ram = ram_gb()
@@ -52,6 +58,9 @@ def heavy(pkg_id: str, env: dict | None = None) -> bool:
 def core_runtime(env: dict | None = None) -> str:
     env = read_env() if env is None else env
     value = env.get("NUXIVA_CORE_RUNTIME", "")
+    native = native_core.symbol("machine_core_runtime")
+    if native is not None:
+        return native(str(value), current(env))
     if value in ("native", "docker"):
         return value
     return "native" if current(env) in ("pi", "small") else "docker"
@@ -59,4 +68,7 @@ def core_runtime(env: dict | None = None) -> str:
 
 def docker_needed(env: dict | None = None) -> bool:
     env = read_env() if env is None else env
+    native = native_core.symbol("machine_docker_needed")
+    if native is not None:
+        return native(core_runtime(env), str(env.get("NUXIVA_SANDBOX", "")))
     return core_runtime(env) == "docker" or env.get("NUXIVA_SANDBOX", "").strip().lower() in ("1", "on", "yes", "true", "auto")

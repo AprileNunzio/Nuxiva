@@ -1,3 +1,4 @@
+import json
 import os
 import shutil
 import socket
@@ -6,8 +7,11 @@ import time
 
 import psutil
 
+import native_core
+
 _last_net = {"t": time.time(), "rx": 0, "tx": 0}
 _last_gpu = {"t": 0.0, "data": None}
+_engine: dict = {"cls": None, "sampler": None}
 
 
 def _primary_ip() -> str:
@@ -55,7 +59,12 @@ def _gpu() -> dict:
                 "--format=csv,noheader,nounits",
             ]
             raw = subprocess.check_output(cmd, timeout=1.2).decode("utf-8").strip()
-            if raw:
+            parser = native_core.symbol("telemetry_parse_nvidia_smi")
+            if raw and parser is not None:
+                parsed = parser(raw)
+                if parsed is not None:
+                    data = json.loads(parsed)
+            elif raw:
                 parts = [p.strip() for p in raw.split(",")]
                 if len(parts) >= 6:
                     used = float(parts[2])
@@ -105,7 +114,27 @@ def _top_processes(limit: int = 8) -> list[dict]:
     return procs[:limit]
 
 
+def _sampler():
+    cls = native_core.symbol("RustTelemetry")
+    if cls is None:
+        native_core.python_fallback("sysinfo")
+        return None
+    if _engine["cls"] is not cls:
+        _engine.update(cls=cls, sampler=cls())
+    return _engine["sampler"]
+
+
 def collect() -> dict:
+    sampler = _sampler()
+    if sampler is None:
+        return _py_collect()
+    now = time.time()
+    data = json.loads(sampler.sample(now, 8))
+    data["load"] = list(data["load"])
+    return {"hostname": socket.gethostname(), "ip": _primary_ip(), **data, "gpu": _gpu(), "time": now}
+
+
+def _py_collect() -> dict:
     net = psutil.net_io_counters()
     now = time.time()
     dt = max(now - _last_net["t"], 0.001)
