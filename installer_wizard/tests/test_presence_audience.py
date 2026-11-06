@@ -198,6 +198,32 @@ class BridgeTests(unittest.TestCase):
         self.assertTrue(store.audience["nucleus_only"])
         self.assertNotIn("members", store.audience)
 
+    def run_with_native(self, native):
+        bridge = presence_bridge.PresenceBridge(clock=lambda: 1000.0)
+        signals = {"vision": "ok", "faces": [STRANGER], "voices": []}
+        with mock.patch.object(presence_bridge, "gate_enabled", return_value=True), \
+                mock.patch.object(presence_bridge, "_native_class", return_value=native), \
+                mock.patch.object(presence_bridge, "_require_liveness", return_value=True), \
+                mock.patch.object(bridge, "signals", return_value=signals), \
+                self.assertLogs("nuxiva.desktop.presence", "WARNING"):
+            result = bridge.update()
+        self.assertIsInstance(bridge.tracker, Tracker)
+        return result
+
+    def test_outdated_native_schema_falls_back_to_python(self):
+        def outdated(policy_json, now_ms):
+            raise ValueError("unknown field `continuity_ms`")
+        self.assertEqual(self.run_with_native(outdated)["kind"], "guest_only")
+
+    def test_native_step_failure_falls_back_to_python(self):
+        class Broken:
+            def __init__(self, policy_json, now_ms):
+                pass
+
+            def step(self, signals_json, now_ms):
+                raise ValueError("unknown field `near`")
+        self.assertEqual(self.run_with_native(Broken)["kind"], "guest_only")
+
     def test_disabled_gate_is_authorized(self):
         bridge = presence_bridge.PresenceBridge(clock=lambda: 1000.0)
         with mock.patch.object(presence_bridge, "gate_enabled", return_value=False):

@@ -54,6 +54,50 @@ class LoaderTests(unittest.TestCase):
         self.assertEqual(invalidate.call_count, 1)
 
 
+class StaleModuleTests(unittest.TestCase):
+
+    def setUp(self):
+        self.file = Path(tempfile.mkdtemp()) / "build.json"
+        self.fake = types.ModuleType("nuxiva_native")
+        self.fake.RustPresenceTracker = object
+        for patcher in (mock.patch.object(native_module, "BUILD_FILE", self.file),
+                        mock.patch.dict(sys.modules, {"nuxiva_native": self.fake}),
+                        mock.patch.dict(native_module._loaded, {"module": None, "rev": "", "warned": False}),
+                        mock.patch.dict(os.environ, {"NUXIVA_NATIVE": "auto"})):
+            patcher.start()
+            self.addCleanup(patcher.stop)
+
+    def build(self, state, rev):
+        self.file.write_text(json.dumps({"state": state, "stage": "wheel", "at": 1, "rev": rev}), encoding="utf-8")
+
+    def test_module_rebuilt_after_load_is_not_used_until_restart(self):
+        self.build("ready", "a" * 16)
+        self.assertIs(native_module.feature("RustPresenceTracker"), object)
+        self.build("building", "b" * 16)
+        with self.assertLogs("nuxiva.native", "WARNING"):
+            self.assertIsNone(native_module.feature("RustPresenceTracker"))
+        self.build("ready", "b" * 16)
+        self.assertIsNone(native_module.feature("RustPresenceTracker"))
+        self.assertTrue(native_module.stale())
+
+    def test_module_loaded_during_build_stays_untrusted(self):
+        self.build("building", "c" * 16)
+        with self.assertLogs("nuxiva.native", "WARNING"):
+            self.assertIsNone(native_module.module())
+        self.build("ready", "c" * 16)
+        self.assertIsNone(native_module.module())
+
+    def test_without_build_record_module_is_trusted(self):
+        self.assertIs(native_module.feature("RustPresenceTracker"), object)
+        self.assertFalse(native_module.stale())
+
+    def test_invalid_rev_is_ignored(self):
+        self.build("ready", "a" * 16)
+        native_module.module()
+        self.build("ready", "../../etc")
+        self.assertFalse(native_module.stale())
+
+
 class SentinelStatusTests(unittest.TestCase):
 
     def test_status_reports_build_state(self):

@@ -94,13 +94,34 @@ class PresenceBridge:
                    "score": proof.score, "at_ms": int(proof.at * 1000)} for proof in heard.recent(VOICE_WINDOW, now)]
         return {"vision": _vision_state(presence, monitor.updated_at, now), "faces": faces, "voices": voices}
 
+    def _native(self, wanted: Policy, now_ms: int) -> NativeTracker | None:
+        native = _native_class()
+        if native is None:
+            return None
+        try:
+            return NativeTracker(native(json.dumps(wanted.as_dict()), now_ms))
+        except ValueError as exc:
+            log.warning("Motore nativo della presenza non compatibile, uso il motore Python: %s", exc)
+            return None
+
     def _engine(self, wanted: Policy, now_ms: int):
         if self.tracker is not None and self.policy == wanted:
             return self.tracker
-        native = _native_class()
-        self.tracker = NativeTracker(native(json.dumps(wanted.as_dict()), now_ms)) if native else Tracker(wanted, now_ms)
+        self.tracker = self._native(wanted, now_ms) or Tracker(wanted, now_ms)
         self.policy = wanted
         return self.tracker
+
+    def _step(self, wanted: Policy, now: float, now_ms: int) -> dict:
+        engine = self._engine(wanted, now_ms)
+        signals = self.signals(now)
+        if not isinstance(engine, NativeTracker):
+            return engine.step(signals, now_ms)
+        try:
+            return engine.step(signals, now_ms)
+        except ValueError as exc:
+            log.warning("Motore nativo della presenza non compatibile, uso il motore Python: %s", exc)
+            self.tracker = Tracker(wanted, now_ms)
+            return self.tracker.step(signals, now_ms)
 
     def update(self) -> dict:
         now = self.clock()
@@ -108,7 +129,7 @@ class PresenceBridge:
         if not gate_enabled():
             self.last = {"kind": "authorized", "members": [], "guests": 0, "since_ms": now_ms, "nucleus_only": False}
         else:
-            self.last = self._engine(policy(), now_ms).step(self.signals(now), now_ms)
+            self.last = self._step(policy(), now, now_ms)
         self.publish()
         from features.sentinel.collectors.presence import collector
         collector.update(self.last, (store.presence or {}).get("people") or [], now)
