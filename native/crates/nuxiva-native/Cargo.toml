@@ -40,6 +40,7 @@ nuxiva-authz-core = { path = "../authz-core" }
 nuxiva-ear-core = { path = "../ear-core" }
 nuxiva-face-core = { path = "../face-core" }
 nuxiva-dialog-core = { path = "../dialog-core" }
+nuxiva-rescue-core = { path = "../rescue-core" }
 pyo3 = { version = "0.27.2", features = ["abi3-py310"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"

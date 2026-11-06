@@ -1071,6 +1071,7 @@ dependencies = [
  "nuxiva-langid",
  "nuxiva-molecule-core",
  "nuxiva-presence-core",
+ "nuxiva-rescue-core",
  "nuxiva-seal-core",
  "nuxiva-sentinel-core",
  "nuxiva-spatial-core",
@@ -1101,6 +1102,14 @@ name = "nuxiva-presence-core"
 version = "5.3.0"
 dependencies = [
  "nuxiva-display-domain",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "nuxiva-rescue-core"
+version = "5.3.0"
+dependencies = [
  "serde",
  "serde_json",
 ]

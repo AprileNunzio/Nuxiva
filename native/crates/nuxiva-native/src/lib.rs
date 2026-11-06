@@ -27,6 +27,7 @@ mod mesh;
 mod molecule;
 mod planner;
 mod presence;
+mod rescue;
 mod scanner;
 mod seal;
 mod sentinel;
@@ -115,6 +116,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     dialogue::register(m)?;
     transcript::register(m)?;
     voice::register(m)?;
+    rescue::register(m)?;
     m.add_class::<RustSynapticBus>()?;
     m.add_class::<SynapticWeightMatrix>()?;
     m.add_class::<PySynapticSpike>()?;
