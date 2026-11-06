@@ -281,6 +281,30 @@ class VisionServiceTest(unittest.TestCase):
             self.frames(off, count=36, age=3.0)
         self.assertEqual([s for s in self.gallery.people if s.startswith("ospite-")], [])
 
+    def guests(self):
+        return [s for s in self.gallery.people if s.startswith("ospite-")]
+
+    def test_a_real_stranger_becomes_one_guest_even_after_a_finished_setup(self):
+        self.enrol("nunzio", 11, ir=False)
+        stranger = vectors(12)
+        folder = Path(tempfile.mkdtemp(prefix="nuxiva-setup-"))
+        (folder / "setup_session.json").write_text("{}", encoding="utf-8")
+        (folder / "setup.json").write_text('{"done": true}', encoding="utf-8")
+        with mock.patch.object(service.learning, "SETUP_SESSION", folder / "setup_session.json"):
+            self.frames(stranger[0], count=36, age=3.0)
+        self.assertEqual(len(self.guests()), 1)
+        self.vision.tracks = []
+        with mock.patch.object(service.learning, "SETUP_SESSION", folder / "setup_session.json"):
+            self.frames(stranger[1], count=36, age=3.0)
+        self.assertEqual(len(self.guests()), 1)
+
+    def test_no_guest_is_created_while_the_first_setup_is_running(self):
+        folder = Path(tempfile.mkdtemp(prefix="nuxiva-setup-"))
+        (folder / "setup_session.json").write_text("{}", encoding="utf-8")
+        with mock.patch.object(service.learning, "SETUP_SESSION", folder / "setup_session.json"):
+            self.frames(vectors(13)[0], count=36, age=3.0)
+        self.assertEqual(self.guests(), [])
+
     def test_an_existing_shadow_guest_never_hides_the_owner(self):
         owner = self.enrol("nunzio", 5, ir=False)
         shadow = emb.unit_rows(owner[:8] + np.random.default_rng(6).standard_normal((8, DIM)) * 0.004)

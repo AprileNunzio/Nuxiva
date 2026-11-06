@@ -12,7 +12,7 @@ from state import store
 
 log = logging.getLogger("nuxiva.people.cameras")
 MAX_SIGHTINGS = 20
-SYNC_EVERY = 30.0
+SYNC_EVERY = 10.0
 TIMEOUT = 20.0
 
 

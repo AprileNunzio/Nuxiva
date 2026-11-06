@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 import time
@@ -13,7 +14,7 @@ AUTO_MIN_SECONDS = 2.5
 AUTO_MIN_RATIO = 0.09
 AUTO_SAMPLES = 8
 MERGE_THRESHOLD = 0.30
-GUEST_GUARD = 0.10
+GUEST_GUARD = 0.06
 LEARN_UNTIL = 25
 LEARN_EVERY = 1.5
 REFINE_EVERY = 60.0
@@ -25,7 +26,13 @@ SETUP_SESSION = Path(os.environ.get("NUXIVA_SETUP_SESSION", "/var/lib/nuxiva/set
 
 
 def setup_running() -> bool:
-    return SETUP_SESSION.exists()
+    if not SETUP_SESSION.exists():
+        return False
+    try:
+        state = json.loads((SETUP_SESSION.parent / "setup.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return True
+    return not (isinstance(state, dict) and state.get("done"))
 
 
 def collect_view(vision, track, frame, slug, score, now) -> None:
