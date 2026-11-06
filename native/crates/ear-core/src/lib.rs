@@ -9,6 +9,7 @@ mod scene;
 mod speaker;
 mod stft;
 mod voices;
+pub mod words;
 
 pub use denoiser::{Denoiser, DenoiserConfig, clean_utterance};
 pub use features::FrameFeatures;
@@ -29,3 +30,5 @@ mod scene_tests;
 mod speaker_tests;
 #[cfg(test)]
 mod tests;
+#[cfg(test)]
+mod words_tests;

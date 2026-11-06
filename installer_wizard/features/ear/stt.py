@@ -21,6 +21,7 @@ if BACKEND not in sys.path:
 
 import langpick
 from learner import learner
+from words import WordFixer
 try:
     import vocabulary
 except ImportError:
@@ -80,6 +81,8 @@ AVX2 = _has_avx2()
 MODEL_SIZE = os.environ.get("NUXIVA_STT_MODEL") or ("small" if CPU >= 6 and AVX2 else "base")
 WAKE_MODEL = os.environ.get("NUXIVA_WAKE_MODEL") or ("base" if CPU >= 6 and AVX2 else "tiny")
 SLOW_RTF = 0.8
+BEAM = max(1, min(5, int(os.environ.get("NUXIVA_STT_BEAM") or (3 if CPU >= 8 and AVX2 else 1))))
+WORD_CHECK = os.environ.get("NUXIVA_STT_WORDS", "1").lower() not in ("0", "off", "no")
 FALLBACK = "base" if MODEL_SIZE not in ("base", "tiny") else "tiny"
 
 started = time.time()
@@ -101,6 +104,15 @@ lock = asyncio.Lock()
 HOTWORDS = {"value": learner.hotwords(), "at": time.time()}
 SPEED: deque = deque(maxlen=6)
 ACTIVE = {"model": model, "name": MODEL_SIZE}
+
+
+def _terms() -> list[str]:
+    if vocabulary is not None:
+        return vocabulary.home_vocabulary_list(limit=200)
+    return [w for w in str(HOTWORDS["value"] or "").split() if w]
+
+
+FIXER = WordFixer(_terms)
 
 
 def refresh_hotwords() -> None:
@@ -155,14 +167,24 @@ def transcribe(audio: np.ndarray, fast: bool = False, detect: bool = False) -> t
         except Exception as exc:
             log.warning("Errore durante la chiamata STT online: %s, fallback locale", exc)
 
-    m = wake_model if fast else ACTIVE["model"]
-    segments, _ = m.transcribe(audio, language=lang, beam_size=1, vad_filter=False,
-                               initial_prompt=_prompt(lang), condition_on_previous_text=False,
-                               hotwords=_hotwords(lang))
-    text = " ".join(s.text.strip() for s in segments).strip()
-    if not fast:
-        _adapt(time.time() - started, len(audio) / RATE)
-    return text, lang
+    if fast:
+        segments, _ = wake_model.transcribe(audio, language=lang, beam_size=1, vad_filter=False,
+                                            initial_prompt=_prompt(lang), condition_on_previous_text=False,
+                                            hotwords=_hotwords(lang))
+        return " ".join(s.text.strip() for s in segments).strip(), lang
+    prompt = " ".join(p for p in (_prompt(lang), FIXER.prompt_tail()) if p)
+    segments, _ = ACTIVE["model"].transcribe(audio, language=lang, beam_size=BEAM, vad_filter=False,
+                                             initial_prompt=prompt, condition_on_previous_text=False,
+                                             hotwords=_hotwords(lang), word_timestamps=WORD_CHECK)
+    heard = FIXER.hear(list(segments), prompt, HALLUCINATIONS)
+    if heard.fixes:
+        log.info("Parole corrette con il vocabolario di casa: %s",
+                 ", ".join(f"{a} -> {b}" for a, b, _ in heard.fixes))
+    if heard.dropped:
+        log.info("Segmenti scartati: %s", ", ".join(f"{why}" for _, why in heard.dropped))
+    FIXER.remember(heard.text)
+    _adapt(time.time() - started, len(audio) / RATE)
+    return heard.text, lang
 
 
 def live_transcribe(audio: np.ndarray, lang: str) -> str:

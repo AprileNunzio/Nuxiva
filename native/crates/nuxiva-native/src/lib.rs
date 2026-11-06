@@ -37,6 +37,7 @@ mod surface;
 mod telemetry;
 mod token;
 mod topics;
+mod transcript;
 mod update;
 mod vitals;
 mod voice;
@@ -112,6 +113,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     face_look::register(m)?;
     dialog::register(m)?;
     dialogue::register(m)?;
+    transcript::register(m)?;
     voice::register(m)?;
     m.add_class::<RustSynapticBus>()?;
     m.add_class::<SynapticWeightMatrix>()?;
