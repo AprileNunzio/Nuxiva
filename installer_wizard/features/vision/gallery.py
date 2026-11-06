@@ -27,6 +27,7 @@ IR_WEIGHT = float(os.environ.get("NUXIVA_FACE_IR_WEIGHT", "0.35"))
 ADAPTIVE = os.environ.get("NUXIVA_FACE_ADAPTIVE", "1") != "0"
 SHADOW_SIM = float(os.environ.get("NUXIVA_FACE_SHADOW_SIM", "0.62"))
 MAX_SAMPLES = 40
+MAX_MARKS = 24
 UNKNOWN = "Sconosciuto"
 
 
@@ -34,11 +35,22 @@ def merge_rows(old: np.ndarray | None, new: np.ndarray) -> np.ndarray:
     return face_engine.merge(old, new, MAX_SAMPLES)
 
 
+def save_marks(folder: Path, marks: list | None, meta: dict) -> None:
+    fresh = [m for m in marks or [] if m is not None and np.asarray(m).size == face_engine.MARKS_DIM]
+    if not fresh:
+        return
+    old = _load_rows(folder / "marks.npy", unit=False)
+    rows = np.vstack([*(([old] if old is not None and old.shape[-1] == face_engine.MARKS_DIM else [])),
+                      np.asarray(fresh, dtype=np.float32)])[-MAX_MARKS:]
+    sealed_rows.save(folder / "marks.npy", rows)
+    meta["marks_samples"] = len(rows)
+
+
 def slugify(name: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")[:40] or "persona"
 
 
-def _load_rows(path: Path) -> np.ndarray | None:
+def _load_rows(path: Path, unit: bool = True) -> np.ndarray | None:
     try:
         rows = sealed_rows.load(path)
     except sealed_rows.SealedRowsError as exc:
@@ -46,7 +58,9 @@ def _load_rows(path: Path) -> np.ndarray | None:
         return None
     except OSError:
         return None
-    return None if rows is None else emb.unit_rows(rows)
+    if rows is None:
+        return None
+    return emb.unit_rows(rows) if unit else np.asarray(rows, dtype=np.float32).reshape(len(rows), -1)
 
 
 class Gallery:
@@ -71,14 +85,16 @@ class Gallery:
             if rows is None:
                 continue
             ir = _load_rows(d / "embeddings_ir.npy")
-            people[d.name] = {**meta, "slug": d.name, "embeddings": rows, "ir": ir}
+            marks = _load_rows(d / "marks.npy", unit=False)
+            people[d.name] = {**meta, "slug": d.name, "embeddings": rows, "ir": ir, "marks": marks}
         self._finish(people)
         log.info("Galleria: %d persone registrate, %d coppie somiglianti, %d doppioni", len(people), len(self.twins),
                  len(self.shadows))
 
     def _finish(self, people: dict) -> None:
         with self.lock:
-            self.engine.replace([(s, p["embeddings"], p["ir"], bool(p.get("auto"))) for s, p in people.items()])
+            self.engine.replace([(s, p["embeddings"], p["ir"], bool(p.get("auto")), p.get("marks"))
+                                 for s, p in people.items()])
             report = {r["slug"]: r for r in self.engine.report()}
             for slug, p in people.items():
                 r = report.get(slug, {})
@@ -94,9 +110,9 @@ class Gallery:
         with self.lock:
             return self.engine.scores(feature, ir_feature)
 
-    def match_ex(self, feature: np.ndarray, ir_feature: np.ndarray | None = None) -> dict:
+    def match_ex(self, feature: np.ndarray, ir_feature: np.ndarray | None = None, marks: np.ndarray | None = None) -> dict:
         with self.lock:
-            result = self.engine.verdict(feature, ir_feature)
+            result = self.engine.verdict(feature, ir_feature, marks)
             names = {s: p["name"] for s, p in self.people.items()}
         result["name"] = names.get(result["slug"], UNKNOWN)
         result["names"] = [names[s] for s in (result["best"], result["second"]) if s in names] if result["ambiguous"] else []
@@ -134,19 +150,22 @@ class Gallery:
             n += 1
         return f"Ospite {n}"
 
-    def add_samples(self, slug: str, rgb: list, ir: list | None = None) -> None:
+    def add_samples(self, slug: str, rgb: list, ir: list | None = None, marks: list | None = None) -> None:
         d = FACES / slug
         try:
             meta = json.loads((d / "meta.json").read_text(encoding="utf-8"))
         except (OSError, ValueError):
             return
-        merged = merge_rows(_load_rows(d / "embeddings.npy"), np.array(rgb))
-        sealed_rows.save(d / "embeddings.npy", merged)
-        meta.update(samples=len(merged), updated=time.time())
+        if len(rgb):
+            merged = merge_rows(_load_rows(d / "embeddings.npy"), np.array(rgb))
+            sealed_rows.save(d / "embeddings.npy", merged)
+            meta["samples"] = len(merged)
+        meta["updated"] = time.time()
         if ir:
             merged_ir = merge_rows(_load_rows(d / "embeddings_ir.npy"), np.array(ir))
             sealed_rows.save(d / "embeddings_ir.npy", merged_ir)
             meta["samples_ir"] = len(merged_ir)
+        save_marks(d, marks, meta)
         (d / "meta.json").write_text(json.dumps(meta, ensure_ascii=False), encoding="utf-8")
         self.reload()
 
@@ -168,6 +187,9 @@ class Gallery:
             merged = emb.merge(_load_rows(dst / file), incoming, MAX_SAMPLES)
             sealed_rows.save(dst / file, merged)
             meta[counter] = len(merged)
+        incoming_marks = _load_rows(src / "marks.npy", unit=False)
+        if incoming_marks is not None:
+            save_marks(dst, list(incoming_marks), meta)
         photos = dst / "photos"
         photos.mkdir(parents=True, exist_ok=True)
         if (src / "photo.jpg").is_file():
@@ -195,7 +217,7 @@ class Gallery:
         return {**meta, "slug": slug}
 
     def save(self, name: str, embeddings: list, photo: np.ndarray, auto: bool = False, slug: str | None = None,
-             ir: list | None = None) -> dict:
+             ir: list | None = None, marks: list | None = None) -> dict:
         slug = slug or slugify(name)
         d = FACES / slug
         d.mkdir(parents=True, exist_ok=True)
@@ -206,6 +228,7 @@ class Gallery:
             merged_ir = emb.merge(_load_rows(d / "embeddings_ir.npy"), np.array(ir), MAX_SAMPLES)
             sealed_rows.save(d / "embeddings_ir.npy", merged_ir)
             meta["samples_ir"] = len(merged_ir)
+        save_marks(d, marks, meta)
         photos_dir = d / "photos"
         photos_dir.mkdir(parents=True, exist_ok=True)
         cv2.imwrite(str(d / "photo.jpg"), photo)
@@ -328,7 +351,7 @@ class Gallery:
 
     def listing(self) -> list:
         with self.lock:
-            return [{k: v for k, v in p.items() if k not in ("embeddings", "ir", "centroid")} for p in self.people.values()]
+            return [{k: v for k, v in p.items() if k not in ("embeddings", "ir", "centroid", "marks")} for p in self.people.values()]
 
     def health(self) -> list[dict]:
         with self.lock:
@@ -346,7 +369,8 @@ class Gallery:
             rows.append({"slug": slug, "name": p["name"], "samples": samples, "samples_ir": ir,
                          "threshold": round(p["threshold"], 3), "threshold_ir": round(p["threshold_ir"], 3),
                          "spread": round(stats[1], 3) if stats else None, "similar": similar,
-                         "shadow_of": r.get("shadow_of"), "quality": q_label, "quality_pct": q_pct})
+                         "shadow_of": r.get("shadow_of"), "marks": r.get("marks", []),
+                         "marks_samples": r.get("marks_samples", 0), "quality": q_label, "quality_pct": q_pct})
         return sorted(rows, key=lambda r: r["name"].lower())
 
 

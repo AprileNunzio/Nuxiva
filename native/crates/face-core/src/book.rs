@@ -1,8 +1,12 @@
 use std::collections::{BTreeMap, BTreeSet};
 
 use crate::decide::{Pair, Rules, Verdict, decide, fuse, pair};
+use crate::marks::{Mark, distinctive, mean_signature, pair_scores};
 use crate::threshold::{person_threshold, spread};
 use crate::vector::{centroid, dot, score_against, unit};
+
+pub const MARK_LIMIT: f32 = 0.025;
+pub const MAX_MARKS: usize = 4;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Settings {
@@ -13,6 +17,7 @@ pub struct Settings {
     pub ir_weight: f32,
     pub shadow_sim: f32,
     pub learn_margin: f32,
+    pub marks_margin: f32,
     pub adaptive: bool,
 }
 
@@ -26,6 +31,7 @@ impl Default for Settings {
             ir_weight: 0.35,
             shadow_sim: 0.62,
             learn_margin: 0.08,
+            marks_margin: 0.015,
             adaptive: true,
         }
     }
@@ -45,6 +51,7 @@ impl Settings {
             ir_weight: clamp(self.ir_weight, 0.0, 1.0, d.ir_weight),
             shadow_sim: clamp(self.shadow_sim, 0.5, 0.99, d.shadow_sim),
             learn_margin: clamp(self.learn_margin, 0.0, 0.3, d.learn_margin),
+            marks_margin: clamp(self.marks_margin, 0.001, 0.3, d.marks_margin),
             adaptive: self.adaptive,
         }
     }
@@ -63,6 +70,7 @@ pub struct Entry {
     pub slug: String,
     pub rows: Vec<Vec<f32>>,
     pub ir: Option<Vec<Vec<f32>>>,
+    pub marks: Option<Vec<Vec<f32>>>,
     pub auto: bool,
 }
 
@@ -75,6 +83,9 @@ struct Person {
     threshold: f32,
     threshold_ir: f32,
     spread: Option<f32>,
+    marks: Option<Vec<f32>>,
+    distinctive: Vec<Mark>,
+    marks_count: usize,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -85,6 +96,8 @@ pub struct Report {
     pub spread: Option<f32>,
     pub similar: Vec<(String, f32)>,
     pub shadow_of: Option<String>,
+    pub marks: Vec<Mark>,
+    pub marks_samples: usize,
 }
 
 #[derive(Debug, Clone)]
@@ -153,6 +166,13 @@ impl FaceBook {
                         .filter(|r| !r.is_empty())
                         .map_or(s.base, threshold),
                     spread: spread(&e.rows, dim),
+                    marks: e.marks.as_deref().and_then(mean_signature),
+                    distinctive: e
+                        .marks
+                        .as_deref()
+                        .map(|m| distinctive(m, MARK_LIMIT, MAX_MARKS))
+                        .unwrap_or_default(),
+                    marks_count: e.marks.as_ref().map_or(0, Vec::len),
                     rows: e.rows,
                     ir: e.ir.filter(|r| !r.is_empty()),
                     auto: e.auto,
@@ -252,6 +272,36 @@ impl FaceBook {
     }
 
     #[must_use]
+    pub fn verdict_with_marks(
+        &self,
+        feature: &[f32],
+        ir: Option<&[f32]>,
+        probe: Option<&[f32]>,
+    ) -> Verdict {
+        let mut v = self.verdict(feature, ir);
+        if !(v.ambiguous && v.twin) {
+            return v;
+        }
+        let (Some(probe), Some(best), Some(second)) = (probe, v.best.clone(), v.second.clone())
+        else {
+            return v;
+        };
+        let (Some(ma), Some(mb)) = (
+            self.people.get(&best).and_then(|p| p.marks.as_deref()),
+            self.people.get(&second).and_then(|p| p.marks.as_deref()),
+        ) else {
+            return v;
+        };
+        let (sa, sb) = pair_scores(probe, ma, mb);
+        if (sa - sb).abs() >= self.settings.marks_margin {
+            v.slug = Some(if sa > sb { best } else { second });
+            v.ambiguous = false;
+            v.reason = "segni particolari";
+        }
+        v
+    }
+
+    #[must_use]
     pub fn closest(&self, feature: &[f32]) -> (Option<String>, f32) {
         self.people
             .iter()
@@ -345,6 +395,8 @@ impl FaceBook {
                     })
                     .collect(),
                 shadow_of: self.shadows.get(slug).cloned(),
+                marks: p.distinctive.clone(),
+                marks_samples: p.marks_count,
             })
             .collect()
     }

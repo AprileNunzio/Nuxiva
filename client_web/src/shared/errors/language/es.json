@@ -170,6 +170,7 @@
     "error_fullscreen_toggle_failed": "No se pudo cambiar el modo de pantalla completa.",
     "error_clipboard_failed": "No se pudo copiar al portapapeles: selecciona el texto y cópialo a mano.",
     "error_brain_privacy_unavailable": "Ajustes de privacidad no disponibles.",
-    "error_brain_privacy_failed": "Regla de privacidad no guardada: revisa tus opciones."
+    "error_brain_privacy_failed": "Regla de privacidad no guardada: revisa tus opciones.",
+    "error_people_face_insight_failed": "Huella del rostro no disponible."
   }
 }

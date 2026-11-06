@@ -11,6 +11,13 @@ import views as vviews
 from features.people import views as pviews
 
 
+def textured(size=200) -> np.ndarray:
+    rng = np.random.default_rng(1)
+    y, x = np.mgrid[0:size, 0:size]
+    base = 120 + 50 * np.sin(x / 7.0) * np.cos(y / 11.0) + rng.normal(0, 18, (size, size))
+    return np.repeat(np.clip(base, 0, 255).astype(np.uint8)[:, :, None], 3, axis=2)
+
+
 def jpeg(h=120, w=100) -> bytes:
     ok, data = cv2.imencode(".jpg", np.full((h, w, 3), 128, dtype=np.uint8))
     return data.tobytes()
@@ -46,12 +53,30 @@ class ViewsServiceTest(unittest.TestCase):
         rgb = vectors(7)
         self.gallery.save("Anna", list(rgb[:6]), np.zeros((20, 20, 3), np.uint8), slug="anna")
         self.recognizer.vec = rgb[8].astype(np.float32)
-        self.detector.faces = [face_row(10, 10, 60, 60)]
-        r = self.views.add("anna", "Anna", "left", np.zeros((100, 100, 3), np.uint8))
-        self.assertEqual((r["kind"], r["face"]), ("left", True))
+        self.detector.faces = [face_row(20, 20, 160, 160)]
+        r = self.views.add("anna", "Anna", "left", textured())
+        self.assertEqual((r["kind"], r["face"], r["duplicate"]), ("left", True, False))
         self.assertGreater(r["samples"], 6)
+        self.assertGreater(r["quality"]["score"], 30)
         self.assertEqual(r["views"]["left"], 1)
         self.assertTrue((vviews.FACES / "anna" / "photos" / r["photo"]).is_file())
+
+    def test_the_same_photo_twice_adds_no_duplicate_sample(self):
+        rgb = vectors(8)
+        self.gallery.save("Anna", list(rgb[:6]), np.zeros((20, 20, 3), np.uint8), slug="anna")
+        self.recognizer.vec = rgb[2].astype(np.float32)
+        self.detector.faces = [face_row(20, 20, 160, 160)]
+        r = self.views.add("anna", "Anna", "front", textured())
+        self.assertTrue(r["duplicate"])
+        self.assertEqual(r["samples"], 6)
+
+    def test_a_dark_blurry_photo_is_refused_with_the_reasons(self):
+        self.gallery.save("Anna", list(vectors(9)[:6]), np.zeros((20, 20, 3), np.uint8), slug="anna")
+        self.recognizer.vec = vectors(9)[7].astype(np.float32)
+        self.detector.faces = [face_row(10, 10, 40, 40)]
+        with self.assertRaises(ValueError) as caught:
+            self.views.add("anna", "Anna", "front", np.full((100, 100, 3), 6, np.uint8))
+        self.assertIn("scura", str(caught.exception))
 
     def test_body_photo_without_face_is_kept(self):
         self.gallery.save("Bea", list(vectors(9)[:6]), np.zeros((20, 20, 3), np.uint8), slug="bea")

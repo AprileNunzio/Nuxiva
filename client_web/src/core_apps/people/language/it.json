@@ -618,6 +618,24 @@
     "pc_voice_sentence_3": "Ricordami di chiamare il medico domani mattina alle nove.",
     "pc_voice_sentence_4": "Il caffè della mattina è il mio momento preferito della giornata.",
     "pc_voice_sentence_5": "Che tempo farà questo fine settimana in città?",
-    "pc_voice_sentence_6": "Leggo queste frasi così puoi imparare a riconoscere la mia voce."
+    "pc_voice_sentence_6": "Leggo queste frasi così puoi imparare a riconoscere la mia voce.",
+    "face_insight_title": "Impronta del volto",
+    "face_samples": "{count} campioni",
+    "face_threshold": "soglia personale {value}",
+    "face_marks_samples": "{count} impronte dei dettagli",
+    "face_marks": "Segni particolari:",
+    "face_marks_none": "nessuno ancora: servono altre foto nitide",
+    "face_mark": "{region} {side}",
+    "face_similar": "Somiglia molto a: {names}. Per distinguervi uso i segni particolari.",
+    "face_shadow": "Questo volto è un doppione di {name} e verrà unito in automatico.",
+    "mark_region_forehead": "fronte",
+    "mark_region_brow": "sopracciglio",
+    "mark_region_eye": "occhio",
+    "mark_region_cheek": "guancia",
+    "mark_region_nose": "lato del naso",
+    "mark_region_mouth": "bocca",
+    "mark_region_chin": "mento",
+    "mark_side_left": "sinistra",
+    "mark_side_right": "destra"
   }
 }

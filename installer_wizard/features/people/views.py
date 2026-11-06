@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 import re
@@ -103,3 +104,21 @@ async def capture_view(slug: str, request: Request, user: str = Depends(require_
     if resp.status_code == 200:
         store.event("INFO", f"Vista {kind} acquisita dalla webcam per {p['name']} da {user}", "people")
     return resp
+
+
+@admin_routes.get("/api/people/{slug}/face")
+async def face_insight(slug: str, _: str = Depends(require_admin)):
+    _person(slug)
+    clean = people.slugify(slug)
+    try:
+        async with httpx.AsyncClient(timeout=5) as client:
+            r = await client.get(f"{VISION_URL}/people/health")
+        r.raise_for_status()
+        rows = r.json().get("people", [])
+    except (httpx.HTTPError, ValueError, AttributeError):
+        raise HTTPException(503, "Servizio di visione non disponibile")
+    row = next((p for p in rows if isinstance(p, dict) and p.get("slug") == clean), None)
+    keys = ("samples", "samples_ir", "threshold", "spread", "similar", "shadow_of", "marks", "marks_samples",
+            "quality", "quality_pct")
+    return Response(json.dumps({"face": {k: row.get(k) for k in keys} if row else None}), media_type="application/json",
+                    headers=NO_CACHE)

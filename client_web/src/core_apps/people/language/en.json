@@ -740,6 +740,24 @@
     "pc_voice_sentence_3": "Remind me to call the doctor tomorrow morning at nine.",
     "pc_voice_sentence_4": "Morning coffee is my favourite moment of the day.",
     "pc_voice_sentence_5": "What will the weather be like in town this weekend?",
-    "pc_voice_sentence_6": "I am reading these sentences so you can learn to recognise my voice."
+    "pc_voice_sentence_6": "I am reading these sentences so you can learn to recognise my voice.",
+    "face_insight_title": "Face print",
+    "face_samples": "{count} samples",
+    "face_threshold": "personal threshold {value}",
+    "face_marks_samples": "{count} detail prints",
+    "face_marks": "Distinctive marks:",
+    "face_marks_none": "none yet: more sharp photos needed",
+    "face_mark": "{side} {region}",
+    "face_similar": "Looks very much like: {names}. Distinctive marks are used to tell you apart.",
+    "face_shadow": "This face is a duplicate of {name} and will be merged automatically.",
+    "mark_region_forehead": "forehead",
+    "mark_region_brow": "eyebrow",
+    "mark_region_eye": "eye",
+    "mark_region_cheek": "cheek",
+    "mark_region_nose": "side of the nose",
+    "mark_region_mouth": "mouth",
+    "mark_region_chin": "chin",
+    "mark_side_left": "left",
+    "mark_side_right": "right"
   }
 }

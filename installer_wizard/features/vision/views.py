@@ -1,6 +1,7 @@
 import asyncio
 import json
 import logging
+import sys
 import threading
 import time
 from pathlib import Path
@@ -10,6 +11,9 @@ import numpy as np
 from fastapi import APIRouter, HTTPException, Request
 
 from gallery import FACES, slugify
+
+sys.path.append(str(Path(__file__).resolve().parents[1] / "biometrics"))
+import face_engine
 
 log = logging.getLogger("nuxiva.vision")
 
@@ -27,6 +31,11 @@ CAPTURE_SECONDS = 3.0
 AUTO_VIEW_CAP = 4
 AUTO_VIEW_MIN_FACE = 70
 AUTO_VIEW_MIN_SHARPNESS = 40.0
+MIN_PHOTO_SCORE = 30.0
+DUPLICATE_SIM = 0.995
+BACKFILL_PHOTOS = 24
+ISSUES = {"blurry": "sfocata", "dark": "troppo scura", "overexposed": "troppo chiara", "low_contrast": "poco contrasto",
+          "small": "volto troppo piccolo", "tilted": "testa troppo inclinata"}
 
 
 def decode(data: bytes) -> np.ndarray:
@@ -78,10 +87,11 @@ class Views:
             self.detector.setInputSize((w, h))
             _, faces = self.detector.detect(img)
             if faces is None or not len(faces):
-                return None, None
+                return None, None, None
             face = max(faces, key=lambda f: f[2] * f[3])
-            feature = self.recognizer.feature(self.recognizer.alignCrop(img, face)).flatten()
-        return face, feature
+            aligned = self.recognizer.alignCrop(img, face)
+            feature = self.recognizer.feature(aligned).flatten()
+        return face, feature, aligned
 
     def _check_owner(self, slug: str, feature: np.ndarray) -> None:
         r = self.gallery.match_ex(feature)
@@ -110,29 +120,68 @@ class Views:
         (d / "meta.json").write_text(json.dumps(meta, ensure_ascii=False), encoding="utf-8")
         return fname
 
+    def _inspect(self, img: np.ndarray, face, kind: str) -> dict | None:
+        if face is None or kind in BODY:
+            return None
+        crop = self.vision._crop(img, tuple(int(v) for v in face[:4]))
+        report = face_engine.quality(crop, face, img.shape[1])
+        if report["score"] < MIN_PHOTO_SCORE:
+            raise ValueError(f"Foto non adatta al riconoscimento ({', '.join(ISSUES.get(i, i) for i in report['issues']) or 'qualità bassa'})")
+        return report
+
+    def _duplicate(self, slug: str, feature) -> bool:
+        rows = self.gallery.people.get(slug, {}).get("embeddings")
+        return rows is not None and feature is not None and len(rows) > 0 and \
+            float(np.max(rows @ (feature / max(float(np.linalg.norm(feature)), 1e-9)))) >= DUPLICATE_SIM
+
     def add(self, slug: str, name: str, kind: str, img: np.ndarray, samples: list | None = None, ir: list | None = None) -> dict:
         slug = slugify(slug)
         if kind not in KINDS and kind != "auto":
             raise ValueError("Tipo di vista sconosciuto")
-        face, feature = self._largest_face(img)
+        face, feature, aligned = self._largest_face(img)
         if kind == "auto":
             kind = pose_of(face) if face is not None else "body"
         if face is None and kind not in BODY and not samples:
             raise ValueError("Nessun volto trovato nella foto: avvicinati o usa una foto più nitida")
-        feats = list(samples or []) + ([feature] if feature is not None else [])
+        report = self._inspect(img, face, kind) if not samples else None
+        duplicate = not samples and self._duplicate(slug, feature)
+        feats = list(samples or []) + ([feature] if feature is not None and not duplicate else [])
         for f in feats[:3]:
             self._check_owner(slug, f)
+        marks = face_engine.marks_of(aligned) if aligned is not None else None
         crop = img
         if face is not None and kind not in BODY:
             crop = self.vision._crop(img, tuple(int(v) for v in face[:4]))
         d = self._folder(slug, name, feats[0] if feats else None, crop)
-        if feats:
-            self.gallery.add_samples(slug, feats, ir)
+        if feats or marks is not None:
+            self.gallery.add_samples(slug, feats, ir, [marks] if marks is not None else None)
         fname = self._record(d, kind, shrink(img, BODY_SIDE) if kind in BODY else crop)
         meta = json.loads((d / "meta.json").read_text(encoding="utf-8"))
         log.info("Vista %s aggiunta a %s (%d campioni)", kind, slug, meta.get("samples", 0))
         return {"slug": slug, "kind": kind, "label": KINDS[kind], "face": face is not None, "photo": fname,
-                "samples": meta.get("samples", 0), "views": meta.get("views", {})}
+                "samples": meta.get("samples", 0), "views": meta.get("views", {}), "duplicate": duplicate,
+                "marks_samples": meta.get("marks_samples", 0), "quality": report}
+
+    def backfill(self) -> int:
+        added = 0
+        for d in sorted(p for p in FACES.iterdir() if p.is_dir()) if FACES.is_dir() else []:
+            if not (d / "meta.json").is_file() or (d / "marks.npy").is_file():
+                continue
+            marks = []
+            for photo in sorted((d / "photos").glob("*.jpg"))[-BACKFILL_PHOTOS:] if (d / "photos").is_dir() else []:
+                img = cv2.imread(str(photo))
+                face, feature, aligned = self._largest_face(img) if img is not None else (None, None, None)
+                limit = self.gallery.people.get(d.name, {}).get("threshold", 0.4)
+                if face is None or self.gallery.scores(feature)[0].get(d.name, 0.0) < limit:
+                    continue
+                mark = face_engine.marks_of(aligned)
+                if mark is not None:
+                    marks.append(mark)
+            if marks:
+                self.gallery.add_samples(d.name, [], None, marks)
+                added += len(marks)
+                log.info("Segni particolari ricavati da %d foto di %s", len(marks), d.name)
+        return added
 
     def auto(self, slug: str, frame: np.ndarray, face: np.ndarray) -> str | None:
         slug = slugify(slug)

@@ -103,5 +103,59 @@ class NativeParityTest(unittest.TestCase):
         self.assertEqual(self.rs.verdict(np.zeros(5))["slug"], None)
 
 
+def landmarks(yaw: float, depth: float) -> list:
+    pts = [(-0.5, -0.4, 0.0), (0.5, -0.4, 0.0), (0.0, 0.1, depth), (-0.4, 0.5, 0.0), (0.4, 0.5, 0.0)]
+    out = []
+    for x, y, z in pts:
+        xr, zr = x * np.cos(yaw) + z * np.sin(yaw), -x * np.sin(yaw) + z * np.cos(yaw)
+        out += [300 + 220 * xr / (5 + zr), 240 + 220 * y / (5 + zr)]
+    return out
+
+
+def face_image(seed: int, mole: bool) -> np.ndarray:
+    rng = np.random.default_rng(seed)
+    y, x = np.mgrid[0:112, 0:112]
+    img = 110 + 40 * np.cos((x - 55.5) / 9) * np.cos(y / 13) + rng.uniform(-25, 25, (112, 112))
+    if mole:
+        img[52:62, 24:34] = 25
+    return np.repeat(np.clip(img, 0, 255).astype(np.uint8)[:, :, None], 3, axis=2)
+
+
+@unittest.skipIf(NATIVE is None, "modulo Rust nuxiva_native non installato")
+class NativeSensesTest(unittest.TestCase):
+    def test_turning_face_is_live_and_turning_photo_is_spoof(self):
+        real, photo = face_engine.liveness(), face_engine.liveness()
+        for i in range(16):
+            yaw = float(np.sin(i * 0.5) * 0.4)
+            a = real.update(landmarks(yaw, -0.4), i * 0.25, 0.55)
+            b = photo.update(landmarks(yaw, 0.0), i * 0.25, 0.55)
+        self.assertEqual((a["state"], b["state"]), ("live", "spoof"))
+        self.assertGreater(a["depth"], b["depth"])
+
+    def test_marks_tell_identical_twins_apart(self):
+        rows = person(40, 16, 0.2)
+        anna = [face_engine.marks_of(face_image(100 + i, False)) for i in range(6)]
+        alba = [face_engine.marks_of(face_image(200 + i, True)) for i in range(6)]
+        self.assertEqual(anna[0].shape, (face_engine.MARKS_DIM,))
+        book = face_engine.NativeFaceBook(NATIVE, face_engine.Settings())
+        book.replace([("anna", rows, None, False, np.array(anna)), ("alba", rows, None, False, np.array(alba))])
+        probe = probes(rows, 7, 1, 0.05)[0]
+        self.assertTrue(book.verdict(probe)["ambiguous"])
+        verdict = book.verdict(probe, marks=face_engine.marks_of(face_image(300, True)))
+        self.assertEqual((verdict["slug"], verdict["reason"]), ("alba", "segni particolari"))
+        report = {r["slug"]: r for r in book.report()}
+        self.assertEqual(report["alba"]["marks_samples"], 6)
+        self.assertEqual([(m["region"], m["side"]) for m in report["alba"]["marks"]], [("cheek", "right")])
+        self.assertEqual(report["anna"]["marks"], [])
+
+    def test_quality_and_light_reports(self):
+        face = np.array([0, 0, 160, 160, *landmarks(0.0, -0.4)], dtype=np.float32)
+        good = face_engine.quality(face_image(5, False), face, 640)
+        self.assertGreater(good["score"], 60)
+        self.assertEqual(good["kind"], "front")
+        black = face_engine.light(np.zeros((48, 64, 3), np.uint8))
+        self.assertEqual(black["issues"], ["black"])
+
+
 if __name__ == "__main__":
     unittest.main()

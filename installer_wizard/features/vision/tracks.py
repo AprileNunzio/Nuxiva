@@ -1,5 +1,7 @@
+import sys
 import time
 from collections import Counter, deque
+from pathlib import Path
 
 import numpy as np
 
@@ -9,6 +11,9 @@ except ImportError:
     class AffectMeter:
         def update(self, *args, **kwargs):
             return None
+
+sys.path.append(str(Path(__file__).resolve().parents[1] / "biometrics"))
+import face_engine
 
 UNKNOWN = "Sconosciuto"
 
@@ -34,8 +39,12 @@ class Track:
         self.echo_of: str | None = None
         self.ir_feature = None
         self.ir_samples: list = []
+        self.mark_samples: list = []
         self.live_score: float | None = None
         self.live_state = "unknown"
+        self.live_detail: dict | None = None
+        self.rgb_live = face_engine.liveness()
+        self.marks = None
         self.ambiguous = False
         self.possible: list = []
         self.ema_ratio: float = 0.0

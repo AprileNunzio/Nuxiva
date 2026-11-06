@@ -740,6 +740,24 @@
     "pc_voice_sentence_3": "Rappelle-moi d'appeler le médecin demain matin à neuf heures.",
     "pc_voice_sentence_4": "Le café du matin est mon moment préféré de la journée.",
     "pc_voice_sentence_5": "Quel temps fera-t-il en ville ce week-end ?",
-    "pc_voice_sentence_6": "Je lis ces phrases pour que tu apprennes à reconnaître ma voix."
+    "pc_voice_sentence_6": "Je lis ces phrases pour que tu apprennes à reconnaître ma voix.",
+    "face_insight_title": "Empreinte du visage",
+    "face_samples": "{count} échantillons",
+    "face_threshold": "seuil personnel {value}",
+    "face_marks_samples": "{count} empreintes des détails",
+    "face_marks": "Signes particuliers :",
+    "face_marks_none": "aucun pour l'instant : il faut d'autres photos nettes",
+    "face_mark": "{region} {side}",
+    "face_similar": "Ressemble beaucoup à : {names}. Les signes particuliers servent à vous distinguer.",
+    "face_shadow": "Ce visage est un doublon de {name} et sera fusionné automatiquement.",
+    "mark_region_forehead": "front",
+    "mark_region_brow": "sourcil",
+    "mark_region_eye": "œil",
+    "mark_region_cheek": "joue",
+    "mark_region_nose": "côté du nez",
+    "mark_region_mouth": "bouche",
+    "mark_region_chin": "menton",
+    "mark_side_left": "gauche",
+    "mark_side_right": "droite"
   }
 }

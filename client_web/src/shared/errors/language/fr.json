@@ -170,6 +170,7 @@
     "error_fullscreen_toggle_failed": "Impossible de basculer en plein écran.",
     "error_clipboard_failed": "Copie dans le presse-papiers impossible : sélectionnez le texte et copiez-le à la main.",
     "error_brain_privacy_unavailable": "Paramètres de confidentialité indisponibles.",
-    "error_brain_privacy_failed": "Règle de confidentialité non enregistrée : vérifiez vos choix."
+    "error_brain_privacy_failed": "Règle de confidentialité non enregistrée : vérifiez vos choix.",
+    "error_people_face_insight_failed": "Empreinte du visage indisponible."
   }
 }

@@ -170,6 +170,7 @@
     "error_fullscreen_toggle_failed": "Could not switch full screen mode.",
     "error_clipboard_failed": "Copy to clipboard failed: select the text and copy it by hand.",
     "error_brain_privacy_unavailable": "Privacy settings unavailable.",
-    "error_brain_privacy_failed": "Privacy rule not saved: check your choices."
+    "error_brain_privacy_failed": "Privacy rule not saved: check your choices.",
+    "error_people_face_insight_failed": "Face print unavailable."
   }
 }

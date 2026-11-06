@@ -1,5 +1,5 @@
 pub const MIN_DIM: usize = 16;
-pub const MAX_DIM: usize = 1024;
+pub const MAX_DIM: usize = 4096;
 pub const MAX_ROWS: usize = 4096;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -37,6 +37,10 @@ pub fn unit(v: &[f32]) -> Vec<f32> {
 }
 
 pub fn decode_rows(bytes: &[u8], dim: usize) -> Result<Vec<Vec<f32>>, RowsError> {
+    decode_raw(bytes, dim).map(|rows| rows.iter().map(|r| unit(r)).collect())
+}
+
+pub fn decode_raw(bytes: &[u8], dim: usize) -> Result<Vec<Vec<f32>>, RowsError> {
     if !(MIN_DIM..=MAX_DIM).contains(&dim) {
         return Err(RowsError::Dimension);
     }
@@ -50,8 +54,7 @@ pub fn decode_rows(bytes: &[u8], dim: usize) -> Result<Vec<Vec<f32>>, RowsError>
     Ok(bytes
         .chunks_exact(width)
         .map(|row| {
-            let values: Vec<f32> = row
-                .chunks_exact(4)
+            row.chunks_exact(4)
                 .map(|c| {
                     let v = f32::from_le_bytes([
                         c.first().copied().unwrap_or(0),
@@ -61,8 +64,7 @@ pub fn decode_rows(bytes: &[u8], dim: usize) -> Result<Vec<Vec<f32>>, RowsError>
                     ]);
                     if v.is_finite() { v } else { 0.0 }
                 })
-                .collect();
-            unit(&values)
+                .collect()
         })
         .collect())
 }

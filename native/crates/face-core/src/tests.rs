@@ -1,4 +1,8 @@
-#![allow(clippy::indexing_slicing, clippy::manual_range_contains)]
+#![allow(
+    clippy::indexing_slicing,
+    clippy::manual_range_contains,
+    clippy::arithmetic_side_effects
+)]
 
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -59,6 +63,7 @@ fn entry(slug: &str, rows: Vec<Vec<f32>>, auto: bool) -> Entry {
         slug: slug.to_owned(),
         rows,
         ir: None,
+        marks: None,
         auto,
     }
 }
@@ -153,4 +158,147 @@ fn merge_keeps_the_limit_and_the_newest_sample() {
     let kept = merge(old, fresh, 6);
     assert_eq!(kept.len(), 6);
     assert!(kept.iter().any(|r| (dot(r, &newest) - 1.0).abs() < 1e-6));
+}
+
+fn project(yaw: f32, depth: f32) -> crate::Landmarks {
+    let pts = [
+        (-0.5, -0.4, 0.0),
+        (0.5, -0.4, 0.0),
+        (0.0, 0.1, depth),
+        (-0.4, 0.5, 0.0),
+        (0.4, 0.5, 0.0),
+    ];
+    let flat: Vec<f32> = pts
+        .iter()
+        .flat_map(|(x, y, z): &(f32, f32, f32)| {
+            let xr = x * yaw.cos() + z * yaw.sin();
+            let zr = -x * yaw.sin() + z * yaw.cos();
+            [
+                300.0 + 220.0 * xr / (5.0 + zr),
+                240.0 + 220.0 * y / (5.0 + zr),
+            ]
+        })
+        .collect();
+    crate::Landmarks::from_slice(&flat).unwrap_or_else(|| unreachable!())
+}
+
+#[test]
+fn a_flat_photo_fits_a_plane_and_a_real_face_does_not() {
+    let flat = crate::planar_residual(&project(0.0, 0.0), &project(0.35, 0.0)).unwrap_or(1.0);
+    let real = crate::planar_residual(&project(0.0, -0.4), &project(0.35, -0.4)).unwrap_or(0.0);
+    assert!(flat < 0.01, "flat {flat}");
+    assert!(real > 0.06, "real {real}");
+}
+
+#[test]
+fn the_tracker_calls_a_turning_real_face_live_and_a_turning_photo_spoof() {
+    let mut real = crate::LivenessTracker::new();
+    let mut photo = crate::LivenessTracker::new();
+    let (mut a, mut b) = (None, None);
+    for i in 0..16_u8 {
+        let yaw = (f32::from(i) * 0.5).sin() * 0.4;
+        let t = f64::from(i) * 0.25;
+        a = Some(real.update(project(yaw, -0.4), t, 0.55));
+        b = Some(photo.update(project(yaw, 0.0), t, 0.55));
+    }
+    assert_eq!(a.map(|r| r.state), Some("live"));
+    assert_eq!(b.map(|r| r.state), Some("spoof"));
+    let mut still = crate::LivenessTracker::new();
+    let r = still.update(project(0.0, -0.4), 0.0, 0.55);
+    assert_eq!((r.state, r.score), ("unknown", None));
+}
+
+fn texture(seed: u64, mole: bool) -> Vec<u8> {
+    let mut rng = Noise(seed);
+    let mut img = vec![0_u8; 112 * 112];
+    for y in 0..112_usize {
+        for x in 0..112_usize {
+            #[allow(clippy::cast_precision_loss)]
+            let base = 110.0
+                + 40.0 * ((x as f32 - 55.5) / 9.0).cos() * ((y as f32) / 13.0).cos()
+                + rng.next() * 25.0;
+            let spot = mole && (24..34).contains(&x) && (52..62).contains(&y);
+            #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
+            let v = if spot { 25.0 } else { base.clamp(0.0, 255.0) } as u8;
+            img[y * 112 + x] = v;
+        }
+    }
+    img
+}
+
+fn sig(img: &[u8]) -> Vec<f32> {
+    crate::signature(&crate::Gray::new(img, 112, 112).unwrap_or_else(|_| unreachable!()))
+}
+
+#[test]
+fn distinctive_marks_separate_identical_twins() {
+    let rows = person(30, 16, 0.08);
+    let anna: Vec<Vec<f32>> = (0..6).map(|i| sig(&texture(100 + i, false))).collect();
+    let alba: Vec<Vec<f32>> = (0..6).map(|i| sig(&texture(200 + i, true))).collect();
+    assert_eq!(anna[0].len(), crate::MARKS_DIM);
+    let mut book = FaceBook::new(DIM, Settings::default());
+    book.replace(vec![
+        Entry {
+            slug: "anna".to_owned(),
+            rows: rows.clone(),
+            ir: None,
+            marks: Some(anna),
+            auto: false,
+        },
+        Entry {
+            slug: "alba".to_owned(),
+            rows: rows.clone(),
+            ir: None,
+            marks: Some(alba.clone()),
+            auto: false,
+        },
+    ]);
+    let probe = probe_of(&rows, 3, 0.02);
+    let plain = book.verdict(&probe, None);
+    assert!(plain.ambiguous && plain.twin);
+    let with_mole = book.verdict_with_marks(&probe, None, Some(&sig(&texture(300, true))));
+    assert_eq!(with_mole.slug.as_deref(), Some("alba"));
+    assert_eq!(with_mole.reason, "segni particolari");
+    let without = book.verdict_with_marks(&probe, None, Some(&sig(&texture(301, false))));
+    assert_ne!(without.slug.as_deref(), Some("alba"));
+    let report = book.report();
+    let alba_marks = &report
+        .iter()
+        .find(|r| r.slug == "alba")
+        .unwrap_or_else(|| unreachable!())
+        .marks;
+    assert!(
+        alba_marks
+            .iter()
+            .any(|m| m.region == "cheek" && m.side == "right"),
+        "{alba_marks:?}"
+    );
+}
+
+#[test]
+fn quality_flags_dark_blurry_and_small_faces() {
+    let marks = project(0.0, -0.4);
+    let sharp = texture(5, false);
+    let good = crate::assess(
+        &crate::Gray::new(&sharp, 112, 112).unwrap_or_else(|_| unreachable!()),
+        &marks,
+        160.0,
+        640.0,
+    );
+    assert!(good.score > 70.0 && good.issues.is_empty(), "{good:?}");
+    assert_eq!(good.kind, "front");
+    let dark = vec![8_u8; 112 * 112];
+    let bad = crate::assess(
+        &crate::Gray::new(&dark, 112, 112).unwrap_or_else(|_| unreachable!()),
+        &marks,
+        30.0,
+        640.0,
+    );
+    assert!(bad.score < 30.0);
+    for issue in ["dark", "blurry", "small"] {
+        assert!(bad.issues.contains(&issue), "{issue} {:?}", bad.issues);
+    }
+    let light = crate::light(&crate::Gray::new(&dark, 112, 112).unwrap_or_else(|_| unreachable!()));
+    assert_eq!(crate::frame_issues(&light), vec!["black"]);
+    assert_eq!(project(-0.6, -0.4).pose().kind(), "three_left");
 }

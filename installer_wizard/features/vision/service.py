@@ -12,6 +12,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse, Response, StreamingResponse
 import appearance
 import learning
+import perception
 import selection
 from fusion import Fusion
 from gallery import FACES, Gallery, slugify
@@ -34,7 +35,6 @@ OBJECT_MODEL = MODELS / "object_detection_nanodet_2022nov.onnx"
 NEAR_RATIO = selection.near_enter_ratio()
 DETECT_FPS = 4
 OBJECT_EVERY = 1.2
-FEATURE_EVERY = 3
 ECHO_THRESHOLD = 0.20
 UNKNOWN_MIN_RATIO = 0.05
 
@@ -173,28 +173,9 @@ class Vision:
             track.facing = facing(face)
             track.face = face
             track.frames += 1
-            need = (len(track.votes) < 3 or track.frames % FEATURE_EVERY == 0
-                    or self.enroll_request is not None)
-            ir_face = self.fusion.pair(box, self.size) if self.fusion.active else None
-            if need:
-                feature = self.recognizer.feature(self.recognizer.alignCrop(frame, face)).flatten()
-                track.feature = feature
-                track.ir_feature = self.fusion.feature(ir_face) if ir_face else None
-                verdict = self.gallery.match_ex(feature, track.ir_feature)
-                track.votes.append((verdict["slug"], verdict["name"], verdict["score"]) if verdict["slug"]
-                                   else (None, "Sconosciuto", verdict["score"]))
-                track.ambiguous, track.possible = verdict["ambiguous"], verdict["names"]
-                detections.append((box, feature, face, track.ir_feature))
-            slug_now = track.identity()[0]
-            track.affect = track.meter.update(frame, face, now) if slug_now and track.facing and selection.affect_enabled() else None
-            appearance.observe(track, frame)
-            person = self.gallery.people.get(slug_now) if slug_now else None
-            if selection.liveness_mode() != "off":
-                self.fusion.assess(track, ir_face, self.size, person, minimum)
-                track.live_state = "unknown" if track.live_score is None or track.frames < 3 else (
-                    "live" if track.live_score >= minimum else "spoof")
-                if ir_face and slug_now and track.live_state == "live":
-                    self.fusion.learn_offset(box, self.size, ir_face)
+            detection = perception.observe(self, track, frame, face, now, minimum)
+            if detection is not None:
+                detections.append(detection)
             current.append(track)
         self.tracks = current + [t for t in unmatched if now - t.last_seen < (3.0 if t.near else 1.5)]
         self._mark_echoes()
@@ -277,7 +258,8 @@ class Vision:
             if spoof:
                 slug, name = None, "Foto o schermo"
             people.append({"track": t.id, "slug": slug, "name": name, "known": slug is not None,
-                           "liveness": {"state": t.live_state, "score": None if t.live_score is None else round(t.live_score, 3)},
+                           "liveness": {"state": t.live_state, "score": None if t.live_score is None else round(t.live_score, 3),
+                                        "depth": round(float((t.live_detail or {}).get("depth", 0.0)), 3)},
                            "ambiguous": t.ambiguous, "possible": t.possible,
                            "auto": bool(person.get("auto")), "facing": t.facing,
                            "confidence": round(score, 3), "proximity": prox, "raw_proximity": round(ratio, 3),
@@ -345,6 +327,7 @@ gallery = Gallery()
 vision = Vision(gallery)
 app = FastAPI(title="Nuxiva Vision", docs_url=None, redoc_url=None, openapi_url=None)
 vision.views = views = Views(vision, gallery, MODELS)
+threading.Thread(target=views.backfill, daemon=True, name="segni-particolari").start()
 app.include_router(views_router(views))
 app.include_router(observer_router(Observer(views, gallery)))
 

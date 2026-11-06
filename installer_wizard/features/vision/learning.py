@@ -39,7 +39,8 @@ def collect_view(vision, track, frame, slug, score, now) -> None:
 def learn(vision, track, frame, feature) -> None:
     if not AUTO_ENROLL or vision.enroll_request is not None or track.echo_of or track.ambiguous:
         return
-    if selection.liveness_mode() != "off" and vision.fusion.active and track.live_state != "live":
+    if selection.liveness_mode() != "off" and (track.live_state == "spoof"
+                                               or (vision.fusion.active and track.live_state != "live")):
         return
     now = time.time()
     slug, name, score = track.identity()
@@ -53,13 +54,15 @@ def learn(vision, track, frame, feature) -> None:
         if (young or REFINE) and score > 0.5 and track.facing and now - track.last_learn > wait \
                 and vision.gallery.may_learn(slug, feature, track.ir_feature):
             track.last_learn = now
-            vision.gallery.add_samples(slug, [feature], ir)
+            vision.gallery.add_samples(slug, [feature], ir, [track.marks] if track.marks is not None else None)
         return
     if setup_running() or ratio < AUTO_MIN_RATIO:
         return
     track.samples.append(feature)
     if track.ir_feature is not None:
         track.ir_samples.append(track.ir_feature)
+    if track.marks is not None:
+        track.mark_samples.append(track.marks)
     if now - track.first_seen < AUTO_MIN_SECONDS or len(track.samples) < AUTO_SAMPLES:
         return
     mean = np.mean([s / np.linalg.norm(s) for s in track.samples], axis=0)
@@ -69,15 +72,15 @@ def learn(vision, track, frame, feature) -> None:
     near_named = near_slug is not None and not vision.gallery.people.get(near_slug, {}).get("auto") \
         and near_score >= vision.gallery.people.get(near_slug, {}).get("threshold", MERGE_THRESHOLD) - GUEST_GUARD
     if near_slug and near_score >= MERGE_THRESHOLD and centroid_ok:
-        vision.gallery.add_samples(near_slug, track.samples, track.ir_samples or None)
+        vision.gallery.add_samples(near_slug, track.samples, track.ir_samples or None, track.mark_samples or None)
         log.info("Campioni aggiunti a %s (somiglianza %.2f)", near_slug, near_score)
     elif near_named or track.possible:
         log.info("Volto vicino a %s (%.2f): nessun nuovo ospite per non creare un doppione", near_slug, near_score)
     else:
         guest = vision.gallery.next_guest_name()
         person = vision.gallery.save(guest, track.samples, vision._crop(frame, track.box), auto=True,
-                                   slug=f"ospite-{int(now)}", ir=track.ir_samples or None)
+                                   slug=f"ospite-{int(now)}", ir=track.ir_samples or None, marks=track.mark_samples or None)
         log.info("Nuova persona registrata automaticamente: %s", person["name"])
-    track.samples, track.ir_samples = [], []
+    track.samples, track.ir_samples, track.mark_samples = [], [], []
     track.votes.clear()
 

@@ -138,7 +138,8 @@ class PresenceMonitor:
 
     def _evaluate(self, people_list: list) -> None:
         now = time.time()
-        stable = [p for p in people_list if now - p["since"] >= STABLE_SECONDS]
+        stable = [p for p in people_list if now - p["since"] >= STABLE_SECONDS
+                  and (p.get("liveness") or {}).get("state") != "spoof"]
         arrivals = []
         for p in stable:
             if not p["known"]:

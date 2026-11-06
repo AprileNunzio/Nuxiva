@@ -740,6 +740,24 @@
     "pc_voice_sentence_3": "Recuérdame llamar al médico mañana por la mañana a las nueve.",
     "pc_voice_sentence_4": "El café de la mañana es mi momento favorito del día.",
     "pc_voice_sentence_5": "¿Qué tiempo hará este fin de semana en la ciudad?",
-    "pc_voice_sentence_6": "Leo estas frases para que aprendas a reconocer mi voz."
+    "pc_voice_sentence_6": "Leo estas frases para que aprendas a reconocer mi voz.",
+    "face_insight_title": "Huella del rostro",
+    "face_samples": "{count} muestras",
+    "face_threshold": "umbral personal {value}",
+    "face_marks_samples": "{count} huellas de detalles",
+    "face_marks": "Señas particulares:",
+    "face_marks_none": "ninguna aún: hacen falta más fotos nítidas",
+    "face_mark": "{region} {side}",
+    "face_similar": "Se parece mucho a: {names}. Las señas particulares sirven para distinguiros.",
+    "face_shadow": "Este rostro es un duplicado de {name} y se unirá automáticamente.",
+    "mark_region_forehead": "frente",
+    "mark_region_brow": "ceja",
+    "mark_region_eye": "ojo",
+    "mark_region_cheek": "mejilla",
+    "mark_region_nose": "lado de la nariz",
+    "mark_region_mouth": "boca",
+    "mark_region_chin": "barbilla",
+    "mark_side_left": "izquierda",
+    "mark_side_right": "derecha"
   }
 }
