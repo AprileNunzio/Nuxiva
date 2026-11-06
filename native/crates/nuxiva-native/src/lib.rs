@@ -32,6 +32,7 @@ mod rescue;
 mod scanner;
 mod seal;
 mod sentinel;
+mod sentinel_memory;
 mod signal;
 mod stage;
 mod supervisor;
@@ -119,6 +120,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     expr::register(m)?;
     voice::register(m)?;
     rescue::register(m)?;
+    sentinel_memory::register(m)?;
     m.add_class::<RustSynapticBus>()?;
     m.add_class::<SynapticWeightMatrix>()?;
     m.add_class::<PySynapticSpike>()?;

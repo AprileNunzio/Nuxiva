@@ -1046,6 +1046,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-memory-core"
+version = "5.3.0"
+dependencies = [
+ "blake3",
+ "chacha20poly1305",
+ "hkdf",
+ "nuxiva-sentinel-core",
+ "serde",
+ "serde_json",
+ "sha2",
+ "zeroize",
+]
+
+[[package]]
 name = "nuxiva-molecule-core"
 version = "5.3.0"
 dependencies = [
@@ -1074,6 +1088,7 @@ dependencies = [
  "nuxiva-gesture-core",
  "nuxiva-guard-core",
  "nuxiva-langid",
+ "nuxiva-memory-core",
  "nuxiva-molecule-core",
  "nuxiva-presence-core",
  "nuxiva-rescue-core",

@@ -47,6 +47,9 @@
     "sentinel.color.blue": "bleu",
     "sentinel.color.purple": "violet",
     "sentinel.color.pink": "rose",
-    "sentinel.color.brown": "marron"
+    "sentinel.color.brown": "marron",
+    "sentinel.sentinel.memory_read": "La mémoire des passages a été consultée depuis la page d'administration",
+    "sentinel.sentinel.memory_forget": "Les souvenirs d'une personne ont été effacés sur demande ({count} passages)",
+    "sentinel.sentinel.memory_relink": "Les passages d'un invité ont été reliés à une personne ({count} passages)"
   }
 }

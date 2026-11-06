@@ -47,6 +47,9 @@
     "sentinel.color.blue": "blu",
     "sentinel.color.purple": "viola",
     "sentinel.color.pink": "rosa",
-    "sentinel.color.brown": "marrone"
+    "sentinel.color.brown": "marrone",
+    "sentinel.sentinel.memory_read": "La memoria dei passaggi è stata consultata dalla pagina di amministrazione",
+    "sentinel.sentinel.memory_forget": "I ricordi di una persona sono stati cancellati su richiesta ({count} passaggi)",
+    "sentinel.sentinel.memory_relink": "I passaggi di un ospite sono stati collegati a una persona ({count} passaggi)"
   }
 }

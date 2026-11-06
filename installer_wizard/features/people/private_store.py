@@ -7,7 +7,7 @@ from sealed import SealedFile, write_private
 from features.people.schema import SECTIONS
 
 KEY_FILE = ETC_DIR / "people.key"
-EXTRA_PRIVATE = ("mood_journal", "sightings", "face_traits")
+EXTRA_PRIVATE = ("mood_journal", "sightings", "face_traits", "sentinel_memory")
 PRIVATE_KEYS = frozenset({f["key"] for s in SECTIONS if s.get("private") for f in s["fields"]} | set(EXTRA_PRIVATE))
 
 

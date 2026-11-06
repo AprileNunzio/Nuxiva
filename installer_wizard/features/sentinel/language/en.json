@@ -47,6 +47,9 @@
     "sentinel.color.blue": "blue",
     "sentinel.color.purple": "purple",
     "sentinel.color.pink": "pink",
-    "sentinel.color.brown": "brown"
+    "sentinel.color.brown": "brown",
+    "sentinel.sentinel.memory_read": "The sightings memory was read from the admin page",
+    "sentinel.sentinel.memory_forget": "A person's memories were erased on request ({count} sightings)",
+    "sentinel.sentinel.memory_relink": "A guest's sightings were linked to a person ({count} sightings)"
   }
 }

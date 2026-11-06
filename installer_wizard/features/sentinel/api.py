@@ -11,8 +11,10 @@ from fastapi.responses import JSONResponse
 from features.sentinel import narrate, record, vault
 from features.sentinel.collectors import automations
 from features.sentinel.journal import SentinelUnavailable, day_bounds, journal
+from features.sentinel.memory_api import routes as memory_routes
 
 admin_routes = APIRouter()
+admin_routes.include_router(memory_routes)
 READ = {"x-nuxiva-capabilities": ["sentinel.read"]}
 MANAGE = {"x-nuxiva-capabilities": ["sentinel.manage"]}
 GROUPS = frozenset({"presence", "appearance", "guests", "guest_appearance", "voice", "access", "denied", "automations",

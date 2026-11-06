@@ -39,6 +39,9 @@ def _private_write(path: Path, data: bytes) -> None:
         tmp.unlink(missing_ok=True)
 
 
+private_write = _private_write
+
+
 def secret(name: str) -> bytes:
     path = root() / f"{name}.key"
     try:

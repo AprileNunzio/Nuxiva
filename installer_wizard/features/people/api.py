@@ -187,7 +187,13 @@ async def admin_person_voiceprint_delete(slug: str, user: str = Depends(require_
 
 @admin_routes.delete("/api/people/{slug}")
 async def admin_person_delete(slug: str, user: str = Depends(require_admin)):
+    from features.sentinel import memory_people
+    profile = people.load(slug)
     people.delete(slug)
+    try:
+        memory_people.forget(slug, profile)
+    except (OSError, ValueError) as exc:
+        log.error("Ricordi di Sentinella di %s non cancellati: %s", slug, exc)
     mentions.invalidate()
     vitals_book.forget_person(slug)
     vitals_live.forget(slug)
@@ -211,7 +217,13 @@ async def admin_person_associate(from_slug: str, request: Request, user: str = D
     to_slug = str((await request.json()).get("to_slug", "")).strip()
     if not to_slug:
         raise HTTPException(400, "Destinatario mancante")
+    from features.sentinel import memory_people
+    source = memory_people.who_for(from_slug)
     target = await faces.associate(from_slug, to_slug)
+    try:
+        memory_people.associate(source, people.slugify(to_slug))
+    except (OSError, ValueError) as exc:
+        log.error("Ricordi di Sentinella di %s non ricollegati: %s", from_slug, exc)
     from features.vision.nightly import optimize_person
     opt = optimize_person(people.slugify(to_slug))
     store.event("INFO", f"Volto scansionato {from_slug} associato a {target['name']} da {user}", "people")

@@ -47,6 +47,9 @@
     "sentinel.color.blue": "azul",
     "sentinel.color.purple": "morado",
     "sentinel.color.pink": "rosa",
-    "sentinel.color.brown": "marrón"
+    "sentinel.color.brown": "marrón",
+    "sentinel.sentinel.memory_read": "La memoria de pasos fue consultada desde la página de administración",
+    "sentinel.sentinel.memory_forget": "Los recuerdos de una persona se borraron a petición ({count} pasos)",
+    "sentinel.sentinel.memory_relink": "Los pasos de un invitado se vincularon a una persona ({count} pasos)"
   }
 }
