@@ -37,7 +37,8 @@ def _mic(value: object) -> dict:
         raise ValueError("Misura del microfono non valida")
     return {"noise_db": _number(value.get("noise_db"), -140, 0), "voice_db": _number(value.get("voice_db"), -140, 0),
             "snr_db": _number(value.get("snr_db"), -60, 140), "sample_rate": int(_number(value.get("sample_rate"), 8000, 192000)),
-            "device": _text(value.get("device"), 120)}
+            "device": _text(value.get("device"), 120), "gain_db": _number(value.get("gain_db", 0), -12, 24),
+            "echo": value.get("echo") is True, "noise": value.get("noise") is True}
 
 
 def _choice(options) -> callable:
@@ -196,6 +197,14 @@ class SetupSession:
             if key not in SERVER_KEYS:
                 raise ValueError("Campo non ammesso")
             self.config[key] = value
+            self.save()
+            return self.to_dict()
+
+    def put(self, key: str, value) -> dict:
+        with self._lock:
+            if key not in FIELDS or key in SECRET_KEYS:
+                raise ValueError("Campo non ammesso")
+            self.config[key] = FIELDS[key](value)
             self.save()
             return self.to_dict()
 

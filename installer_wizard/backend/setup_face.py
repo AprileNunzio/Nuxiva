@@ -120,3 +120,4 @@ async def setup_face(request: Request, _: None = Depends(require_open)):
         detail = {}
     return JSONResponse({"ok": True, "kind": kind, "views": done, "vision": detail, "source": "browser" if data else "server"},
                         headers=NO_CACHE)
+

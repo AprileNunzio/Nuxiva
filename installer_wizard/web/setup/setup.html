@@ -277,35 +277,34 @@
       <section class="setup-screen" id="screen-voice">
         <div class="os-voice-container">
           <div class="os-voice-source-bar">
-            <div class="os-voice-tabs">
-              <button type="button" class="os-voice-tab-btn is-active" id="voice-tab-client">💻 Questo PC (Browser)</button>
-              <button type="button" class="os-voice-tab-btn" id="voice-tab-server">🖧 Server Nuxiva (Host)</button>
-            </div>
-            <select id="voice-mic-select" class="os-voice-select"></select>
+            <span class="os-voice-mode" id="voice-mode"></span>
+            <select id="voice-mic-select" class="os-voice-select" aria-label="mic"></select>
           </div>
           <div class="os-voice-card">
-            <div class="os-voice-perm-bar" id="voice-perm-bar">
-              <span>Autorizzazione microfono richiesta dal browser:</span>
-              <button type="button" class="os-btn-req-perm" id="btn-req-voice-perm" style="padding: 4px 10px; font-size: 10px;">Attiva Microfono</button>
+            <div class="os-voice-perm-bar is-hidden" id="voice-perm-bar">
+              <span id="voice-perm-text" data-voice-i18n="perm_text"></span>
+              <button type="button" class="os-btn-req-perm" id="btn-req-voice-perm" style="padding: 4px 10px; font-size: 10px;" data-voice-i18n="btn_req_perm"></button>
             </div>
             <div class="os-voice-vu-card">
-              <div class="os-voice-vu-header"><span>Livello Ingresso Microfono (VU-Meter Live)</span><span class="os-voice-vu-val" id="voice-vu-val">-60 dBFS</span></div>
-              <div class="os-voice-vu-track"><div class="os-voice-vu-fill" id="voice-vu-fill"></div></div>
+              <div class="os-voice-vu-header"><span data-voice-i18n="test_live"></span><span class="os-voice-vu-val" id="voice-vu-val">—</span></div>
+              <div class="os-voice-vu-track"><div class="os-voice-vu-fill" id="voice-vu-fill"></div><div class="os-voice-vu-peak" id="voice-vu-peak"></div><div class="os-voice-vu-target"></div></div>
             </div>
             <div class="os-voice-params-grid">
-              <div class="os-voice-param-item"><span class="os-voice-param-label">Campionamento</span><span class="os-voice-param-val">48.0 kHz</span></div>
-              <div class="os-voice-param-item"><span class="os-voice-param-label">SNR Stimato</span><span class="os-voice-param-val" style="color:#34d399;">44.2 dB</span></div>
-              <div class="os-voice-param-item"><span class="os-voice-param-label">Rumore Fondo</span><span class="os-voice-param-val">-58.4 dB</span></div>
-              <div class="os-voice-param-item"><span class="os-voice-param-label">Clipping</span><span class="os-voice-param-val" style="color:#10b981;">0.00%</span></div>
+              <div class="os-voice-param-item"><span class="os-voice-param-label" data-voice-i18n="param_sample_rate"></span><span class="os-voice-param-val" id="voice-val-rate">—</span></div>
+              <div class="os-voice-param-item"><span class="os-voice-param-label" data-voice-i18n="param_snr"></span><span class="os-voice-param-val" id="voice-val-snr">—</span></div>
+              <div class="os-voice-param-item"><span class="os-voice-param-label" data-voice-i18n="param_noise_floor"></span><span class="os-voice-param-val" id="voice-val-noise">—</span></div>
+              <div class="os-voice-param-item"><span class="os-voice-param-label" data-voice-i18n="param_clipping"></span><span class="os-voice-param-val" id="voice-val-clip">—</span></div>
             </div>
             <div class="os-voice-row" style="padding:4px 0;">
-              <span style="font-size:11px;font-weight:600;">Sensibilità / Guadagno:</span>
-              <input type="range" id="voice-gain-slider" min="0" max="24" value="6" style="flex:1;" />
-              <span id="voice-gain-val" style="font-size:11px;font-family:monospace;width:44px;text-align:right;">6 dB</span>
+              <span style="font-size:11px;font-weight:600;" data-voice-i18n="slider_gain"></span>
+              <input type="range" id="voice-gain-slider" min="-12" max="24" step="1" value="0" style="flex:1;" />
+              <span id="voice-gain-val" style="font-size:11px;font-family:monospace;width:52px;text-align:right;">0 dB</span>
+              <button type="button" class="os-btn-voice-auto" id="btn-voice-auto" data-voice-i18n="btn_auto"></button>
             </div>
+            <div class="os-voice-hint" id="voice-hint" role="status" aria-live="polite"></div>
             <div class="os-voice-toggles-row">
-              <label class="os-voice-toggle-label"><input type="checkbox" checked /><span>Cancellazione Eco (AEC)</span></label>
-              <label class="os-voice-toggle-label"><input type="checkbox" checked /><span>Soppressione Rumore (NS)</span></label>
+              <label class="os-voice-toggle-label"><input type="checkbox" id="voice-opt-echo" /><span data-voice-i18n="opt_aec"></span></label>
+              <label class="os-voice-toggle-label"><input type="checkbox" id="voice-opt-noise" /><span data-voice-i18n="opt_noise"></span></label>
             </div>
           </div>
         </div>
@@ -347,9 +346,9 @@
               <span class="os-wake-title">Calibrazione Attivazione Vocale: pronuncia "<span id="wake-assistant-name" style="color:var(--md-sys-color-primary);">Nuxiva</span>"</span>
             </div>
             <div class="os-wake-shots-grid">
-              <div class="os-wake-shot-box" id="wake-shot-box-1"><span class="os-wake-shot-label">Campione 1 / 3</span><button type="button" class="os-btn-wake-rec" id="btn-wake-rec-1">Registra</button></div>
-              <div class="os-wake-shot-box" id="wake-shot-box-2"><span class="os-wake-shot-label">Campione 2 / 3</span><button type="button" class="os-btn-wake-rec" id="btn-wake-rec-2">Registra</button></div>
-              <div class="os-wake-shot-box" id="wake-shot-box-3"><span class="os-wake-shot-label">Campione 3 / 3</span><button type="button" class="os-btn-wake-rec" id="btn-wake-rec-3">Registra</button></div>
+              <div class="os-wake-shot-box" id="wake-shot-box-1"><span class="os-wake-shot-label" data-wake-label="1"></span><div class="os-wake-metrics" id="wake-metrics-1"></div><div class="os-wake-actions"><button type="button" class="os-btn-wake-rec" id="btn-wake-rec-1"></button><button type="button" class="os-btn-wake-play" id="btn-wake-play-1" hidden></button></div></div>
+              <div class="os-wake-shot-box" id="wake-shot-box-2"><span class="os-wake-shot-label" data-wake-label="2"></span><div class="os-wake-metrics" id="wake-metrics-2"></div><div class="os-wake-actions"><button type="button" class="os-btn-wake-rec" id="btn-wake-rec-2"></button><button type="button" class="os-btn-wake-play" id="btn-wake-play-2" hidden></button></div></div>
+              <div class="os-wake-shot-box" id="wake-shot-box-3"><span class="os-wake-shot-label" data-wake-label="3"></span><div class="os-wake-metrics" id="wake-metrics-3"></div><div class="os-wake-actions"><button type="button" class="os-btn-wake-rec" id="btn-wake-rec-3"></button><button type="button" class="os-btn-wake-play" id="btn-wake-play-3" hidden></button></div></div>
             </div>
           </div>
         </div>
@@ -389,6 +388,7 @@
 
   <script src="/static/setup/shared/setup_storage.js"></script>
   <script src="/static/setup/shared/setup_network.js"></script>
+  <script src="/static/setup/setup_audio.js"></script>
   <script src="/static/setup/steps/lang/i18n.js"></script>
   <script src="/static/setup/steps/lang/step.js"></script>
   <script src="/static/setup/steps/wifi/i18n.js"></script>

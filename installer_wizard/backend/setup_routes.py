@@ -8,6 +8,7 @@ import setup_probe
 import setup_purposes
 import updater
 from setup_face import router as face_router
+from setup_voice import router as voice_router
 from access import NO_CACHE
 from config import STATE_DIR
 from sealed import write_private
@@ -17,6 +18,7 @@ from state import store
 log = logging.getLogger("nuxiva.setup")
 router = APIRouter()
 router.include_router(face_router)
+router.include_router(voice_router)
 SAMPLES_DIR = STATE_DIR / "wakeword_samples"
 WAKE_SHOTS = 3
 

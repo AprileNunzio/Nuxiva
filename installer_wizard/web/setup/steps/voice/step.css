@@ -172,6 +172,59 @@
   user-select: none;
 }
 
+.os-voice-vu-fill.is-hot {
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
+}
+
+.os-voice-vu-peak,
+.os-voice-vu-target {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  pointer-events: none;
+}
+
+.os-voice-vu-peak {
+  left: 0;
+  background-color: #f8fafc;
+  transition: left 0.08s linear;
+}
+
+.os-voice-vu-target {
+  left: 71.4%;
+  background-color: rgba(59, 130, 246, 0.9);
+}
+
+.os-voice-mode {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--md-sys-color-primary);
+}
+
+.os-voice-hint {
+  min-height: 16px;
+  font-size: 11px;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.os-btn-voice-auto {
+  padding: 4px 10px;
+  border-radius: var(--os-radius-sm);
+  border: 1px solid var(--md-sys-color-primary);
+  background: transparent;
+  color: var(--md-sys-color-primary);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.os-btn-voice-auto:disabled {
+  opacity: 0.5;
+  cursor: progress;
+}
+
 @media (max-width: 640px) {
   .os-voice-params-grid {
     grid-template-columns: repeat(2, 1fr);

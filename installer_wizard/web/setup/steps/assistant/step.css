@@ -223,7 +223,84 @@
   background-color: #10b981;
   border-color: #10b981;
   color: #ffffff;
-  pointer-events: none;
+}
+
+.os-wake-shot-box.is-bad {
+  border-color: rgba(239, 68, 68, 0.45);
+  background-color: rgba(239, 68, 68, 0.06);
+}
+
+.os-btn-wake-rec:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.os-wake-actions {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+
+.os-btn-wake-play {
+  padding: 4px 10px;
+  border-radius: var(--os-radius-sm);
+  border: 1px solid var(--md-sys-color-outline);
+  background: transparent;
+  color: var(--md-sys-color-on-surface);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.os-wake-metrics {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 14px;
+}
+
+.os-wake-status {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.os-wake-status.is-ok {
+  color: #10b981;
+}
+
+.os-wake-status.is-error {
+  color: #ef4444;
+}
+
+.os-wake-status.is-live {
+  color: var(--md-sys-color-primary);
+}
+
+.os-wake-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1px 8px;
+  margin: 0;
+  font-size: 10px;
+  text-align: left;
+}
+
+.os-wake-grid dt {
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.os-wake-grid dd {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: var(--md-sys-color-on-surface);
+  text-align: right;
+}
+
+.os-btn-voice-preview.is-error {
+  border-color: #ef4444;
+  color: #ef4444;
 }
 
 @media (max-width: 640px) {

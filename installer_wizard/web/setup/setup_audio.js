@@ -2,28 +2,89 @@
   "use strict";
 
   const TARGET_RATE = 16000;
+  const TARGET_DB = -20;
+  const HEADROOM_DB = -3;
+  const MIN_GAIN_DB = -12;
+  const MAX_GAIN_DB = 24;
   let shared = null;
+
+  const clampGain = (db) => Math.max(MIN_GAIN_DB, Math.min(MAX_GAIN_DB, Number.isFinite(db) ? db : 0));
 
   function available() {
     return Boolean(window.isSecureContext && navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.AudioContext);
   }
 
-  async function open() {
-    if (shared) return shared;
+  async function open(options) {
+    const wanted = { deviceId: "", echo: false, noise: false, ...(options || {}) };
+    const key = JSON.stringify(wanted);
+    if (shared && shared.key === key) return shared;
+    const gainDb = shared ? shared.gainDb : 0;
+    close();
     if (!available()) throw new Error("mic-unavailable");
-    const stream = await navigator.mediaDevices.getUserMedia({
-      audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false, channelCount: 1 }
-    });
+    const audio = { echoCancellation: wanted.echo, noiseSuppression: wanted.noise, autoGainControl: false, channelCount: 1 };
+    if (wanted.deviceId && wanted.deviceId !== "default") audio.deviceId = { exact: wanted.deviceId };
+    const stream = await navigator.mediaDevices.getUserMedia({ audio });
     const context = new AudioContext();
     if (context.state === "suspended") await context.resume();
     const source = context.createMediaStreamSource(stream);
+    const gain = context.createGain();
     const analyser = context.createAnalyser();
     analyser.fftSize = 2048;
     analyser.smoothingTimeConstant = 0.2;
-    source.connect(analyser);
+    source.connect(gain);
+    gain.connect(analyser);
     const track = stream.getAudioTracks()[0];
-    shared = { stream, context, source, analyser, label: track ? track.label : "", rate: context.sampleRate };
+    shared = { key, stream, context, source, gain, analyser, gainDb: 0, label: track ? track.label : "", rate: context.sampleRate };
+    setGain(shared, gainDb);
     return shared;
+  }
+
+  function setGain(mic, db) {
+    mic.gainDb = clampGain(db);
+    mic.gain.gain.setTargetAtTime(10 ** (mic.gainDb / 20), mic.context.currentTime, 0.05);
+    return mic.gainDb;
+  }
+
+  function meter(mic, buffer) {
+    mic.analyser.getFloatTimeDomainData(buffer);
+    let sum = 0;
+    let peak = 0;
+    let clipped = 0;
+    for (let i = 0; i < buffer.length; i++) {
+      const v = Math.abs(buffer[i]);
+      sum += v * v;
+      if (v > peak) peak = v;
+      if (v >= 0.99) clipped++;
+    }
+    const rms = Math.sqrt(sum / buffer.length);
+    return { rms: rms > 0 ? 20 * Math.log10(rms) : -140, peak: peak > 0 ? 20 * Math.log10(peak) : -140, clipped: clipped / buffer.length };
+  }
+
+  async function calibrate(mic, onLevel, onPhase) {
+    const buffer = new Float32Array(mic.analyser.fftSize);
+    const collect = (ms) => new Promise((resolve) => {
+      const rows = [];
+      const end = performance.now() + ms;
+      const tick = () => {
+        const m = meter(mic, buffer);
+        rows.push(m);
+        if (onLevel) onLevel(m);
+        if (performance.now() < end) setTimeout(tick, 40);
+        else resolve(rows);
+      };
+      tick();
+    });
+    const before = mic.gainDb;
+    if (onPhase) onPhase("silence");
+    const quiet = await collect(1500);
+    if (onPhase) onPhase("speak");
+    const loud = await collect(3500);
+    const noise = percentile(quiet.map((m) => m.rms), 0.5) - before;
+    const voice = percentile(loud.map((m) => m.rms), 0.9) - before;
+    const peak = Math.max(...loud.map((m) => m.peak)) - before;
+    const gainDb = setGain(mic, Math.min(TARGET_DB - voice, HEADROOM_DB - peak));
+    if (onPhase) onPhase("done");
+    return { noise_db: noise, voice_db: voice, peak_db: peak, snr_db: voice - noise, gain_db: gainDb, sample_rate: mic.rate };
   }
 
   function close() {
@@ -106,12 +167,12 @@
     silent.gain.value = 0;
     const chunks = [];
     processor.onaudioprocess = (event) => chunks.push(new Float32Array(event.inputBuffer.getChannelData(0)));
-    mic.source.connect(processor);
+    mic.gain.connect(processor);
     processor.connect(silent);
     silent.connect(mic.context.destination);
     return new Promise((resolve) => {
       setTimeout(() => {
-        mic.source.disconnect(processor);
+        mic.gain.disconnect(processor);
         processor.disconnect();
         silent.disconnect();
         resolve(wav(downsample(chunks, mic.rate)));
@@ -119,5 +180,5 @@
     });
   }
 
-  window.SetupAudio = Object.freeze({ available, open, close, sampleLevels, record });
+  window.SetupAudio = Object.freeze({ available, open, close, sampleLevels, record, setGain, meter, calibrate, MIN_GAIN_DB, MAX_GAIN_DB });
 })();

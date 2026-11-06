@@ -10,6 +10,7 @@ mod quality;
 mod threshold;
 mod traits;
 mod vector;
+mod voicecheck;
 
 pub use book::{Entry, FaceBook, MARK_LIMIT, MAX_MARKS, Report, Settings};
 pub use decide::{Pair, Rules, Verdict, decide, fuse, pair};
@@ -24,8 +25,11 @@ pub use vector::{
     MAX_DIM, MAX_ROWS, MIN_DIM, RowsError, centroid, decode_raw, decode_rows, dot, encode_rows,
     leave_one_out, merge, norm, prune, redundancy, score_against, unit,
 };
+pub use voicecheck::{VoiceError, VoiceReport, check as voice_check};
 
 #[cfg(test)]
 mod tests;
 #[cfg(test)]
 mod tests_look;
+#[cfg(test)]
+mod tests_voice;

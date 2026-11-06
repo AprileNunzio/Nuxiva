@@ -1,5 +1,7 @@
 import io
 import math
+import os
+import sys
 import wave
 from array import array
 
@@ -9,8 +11,21 @@ MAX_BYTES = 2 * 1024 * 1024
 FLOOR_DB = -120.0
 
 
+BLOCKING = ("clipped", "weak", "noisy", "short")
+
+
 class AudioRejected(ValueError):
     pass
+
+
+def _native():
+    if os.environ.get("NUXIVA_NATIVE", "auto").strip() == "0":
+        return None
+    try:
+        import nuxiva_native
+    except ImportError:
+        return None
+    return getattr(nuxiva_native, "voice_take_check", None)
 
 
 def _db(value: float) -> float:
@@ -35,6 +50,9 @@ def analyze(data: bytes) -> dict:
     samples.frombytes(raw[: frames * 2])
     if not samples:
         raise AudioRejected("Registrazione vuota")
+    check = _native()
+    if check is not None:
+        return _from_native(check, samples, rate)
     window = max(1, rate // 50)
     levels = []
     for start in range(0, len(samples), window):
@@ -49,4 +67,22 @@ def analyze(data: bytes) -> dict:
     reason = "clipped" if clipped >= 0.01 else "weak" if _db(speech) <= -45 else "noisy" if snr < 10 else ""
     return {"seconds": round(seconds, 2), "sample_rate": rate, "speech_db": _db(speech), "noise_db": _db(noise),
             "peak_db": _db(peak), "snr_db": snr, "clipped_pct": round(clipped * 100, 2), "usable": not reason,
-            "reason": reason}
+            "reason": reason, "reasons": [reason] if reason else [], "engine": "python"}
+
+
+def _from_native(check, samples: array, rate: int) -> dict:
+    try:
+        report = dict(check(samples.tobytes() if sys.byteorder == "little" else _swapped(samples), rate))
+    except ValueError as exc:
+        raise AudioRejected("La registrazione deve durare tra 0,4 e 6 secondi") from exc
+    reasons = [str(r) for r in report.get("reasons") or []]
+    blocking = [r for r in reasons if r in BLOCKING]
+    rounded = {k: round(float(v), 2) for k, v in report.items() if isinstance(v, (int, float))}
+    return {**rounded, "sample_rate": rate, "usable": not blocking, "reason": blocking[0] if blocking else "",
+            "reasons": reasons, "engine": "rust"}
+
+
+def _swapped(samples: array) -> bytes:
+    copy = array("h", samples)
+    copy.byteswap()
+    return copy.tobytes()

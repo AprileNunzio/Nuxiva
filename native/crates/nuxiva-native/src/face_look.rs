@@ -1,6 +1,6 @@
 use std::sync::Mutex;
 
-use nuxiva_face_core::{Gray, LookError, LookEvent, LookMemory, LookSample, traits};
+use nuxiva_face_core::{Gray, LookError, LookEvent, LookMemory, LookSample, traits, voice_check};
 use pyo3::exceptions::{PyRuntimeError, PyValueError};
 use pyo3::prelude::*;
 use pyo3::types::PyDict;
@@ -129,7 +129,42 @@ fn face_traits<'py>(
     Ok(d)
 }
 
+#[pyfunction]
+fn voice_take_check<'py>(py: Python<'py>, pcm: &[u8], rate: u32) -> PyResult<Bound<'py, PyDict>> {
+    if pcm.len() % 2 != 0 {
+        return Err(PyValueError::new_err("voice.check.shape"));
+    }
+    let samples: Vec<i16> = pcm
+        .chunks_exact(2)
+        .map(|b| {
+            i16::from_le_bytes([
+                b.first().copied().unwrap_or(0),
+                b.get(1).copied().unwrap_or(0),
+            ])
+        })
+        .collect();
+    let r = py
+        .detach(|| voice_check(&samples, rate))
+        .map_err(|e| PyValueError::new_err(e.code()))?;
+    let d = PyDict::new(py);
+    d.set_item("seconds", r.seconds)?;
+    d.set_item("voiced_seconds", r.voiced_seconds)?;
+    d.set_item("speech_db", r.speech_db)?;
+    d.set_item("noise_db", r.noise_db)?;
+    d.set_item("peak_db", r.peak_db)?;
+    d.set_item("snr_db", r.snr_db)?;
+    d.set_item("clipped_pct", r.clipped_pct)?;
+    d.set_item("dc_offset", r.dc_offset)?;
+    d.set_item("lead_s", r.lead_s)?;
+    d.set_item("tail_s", r.tail_s)?;
+    d.set_item("gain_db", r.gain_db)?;
+    d.set_item("score", r.score)?;
+    d.set_item("reasons", r.reasons)?;
+    Ok(d)
+}
+
 pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    m.add_function(wrap_pyfunction!(voice_take_check, m)?)?;
     m.add("FACE_LOOK_KINDS", nuxiva_face_core::KINDS.to_vec())?;
     m.add("FACE_HAIR_COLORS", nuxiva_face_core::HAIR_COLORS.to_vec())?;
     m.add_class::<RustFaceLook>()?;
