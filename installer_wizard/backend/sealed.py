@@ -1,16 +1,67 @@
 import json
 import os
+import time
 from pathlib import Path
 
-from cryptography.fernet import Fernet
+from cryptography.fernet import Fernet, InvalidToken
+
+import native_core
 
 
 def write_private(path: Path, data: bytes) -> None:
     tmp = path.with_suffix(path.suffix + ".tmp")
-    fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC | os.O_NOFOLLOW, 0o600)
     with os.fdopen(fd, "wb") as handle:
         handle.write(data)
+        handle.flush()
+        os.fsync(handle.fileno())
     os.replace(tmp, path)
+
+
+def _as_bytes(value) -> bytes:
+    if isinstance(value, str):
+        return value.encode("utf-8")
+    if isinstance(value, (bytes, bytearray, memoryview)):
+        return bytes(value)
+    raise TypeError("Il dato da cifrare deve essere bytes")
+
+
+class SealedCipher:
+
+    def __init__(self, key: bytes) -> None:
+        engine = native_core.symbol("RustFernet")
+        self._rejected = native_core.symbol("SealRejected")
+        if engine is None or self._rejected is None:
+            native_core.python_fallback("sealed")
+            self._rust = None
+            self._python = Fernet(key)
+        else:
+            self._rust = engine(_as_bytes(key))
+            self._python = None
+
+    @staticmethod
+    def generate_key() -> bytes:
+        engine = native_core.symbol("RustFernet")
+        if engine is None:
+            native_core.python_fallback("sealed")
+            return Fernet.generate_key()
+        return bytes(engine.generate_key())
+
+    def encrypt(self, data: bytes) -> bytes:
+        if not isinstance(data, (bytes, bytearray, memoryview)):
+            raise TypeError("Il dato da cifrare deve essere bytes")
+        if self._rust is None:
+            return self._python.encrypt(bytes(data))
+        return bytes(self._rust.encrypt(bytes(data), int(time.time())))
+
+    def decrypt(self, token, ttl: int | None = None) -> bytes:
+        raw = _as_bytes(token)
+        if self._rust is None:
+            return self._python.decrypt(raw, ttl)
+        try:
+            return bytes(self._rust.decrypt(raw, int(time.time()), ttl))
+        except self._rejected as exc:
+            raise InvalidToken from exc
 
 
 class SealedFile:
@@ -18,13 +69,13 @@ class SealedFile:
         self.data_path = data_path
         self.key_path = key_path
 
-    def cipher(self) -> Fernet:
+    def cipher(self) -> SealedCipher:
         return self._cipher()
 
-    def _cipher(self) -> Fernet:
+    def _cipher(self) -> SealedCipher:
         if not self.key_path.exists():
-            write_private(self.key_path, Fernet.generate_key())
-        return Fernet(self.key_path.read_bytes())
+            write_private(self.key_path, SealedCipher.generate_key())
+        return SealedCipher(self.key_path.read_bytes())
 
     def load(self) -> dict:
         if not self.data_path.exists():

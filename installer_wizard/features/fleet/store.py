@@ -6,8 +6,8 @@ import time
 from dataclasses import dataclass
 from pathlib import Path
 
-from cryptography.fernet import Fernet, InvalidToken
-from sealed import write_private
+from cryptography.fernet import InvalidToken
+from sealed import SealedCipher, write_private
 
 from features.fleet.model import (
     BULK_MAX, CATEGORIES, DEFAULT_LIMIT, DESCRIPTION_MAX, INSTRUCTIONS_MAX, KINDS, LINK_KINDS, LINKS_MAX, MAX_LIMIT, NAME_MAX, STATES,
@@ -56,14 +56,14 @@ class FleetStore:
     def __init__(self, root: Path) -> None:
         self.shards = Shards(root)
         self.key_path = root / "fleet.key"
-        self._cipher: Fernet | None = None
+        self._cipher: SealedCipher | None = None
         self._summary: tuple[float, dict] | None = None
 
-    def _fernet(self) -> Fernet:
+    def _fernet(self) -> SealedCipher:
         if self._cipher is None:
             if not self.key_path.exists():
-                write_private(self.key_path, Fernet.generate_key())
-            self._cipher = Fernet(self.key_path.read_bytes())
+                write_private(self.key_path, SealedCipher.generate_key())
+            self._cipher = SealedCipher(self.key_path.read_bytes())
         return self._cipher
 
     def _seal(self, text: str) -> bytes:
