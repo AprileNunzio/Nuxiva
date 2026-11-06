@@ -1,4 +1,3 @@
-import json
 import logging
 
 from fastapi import APIRouter, Depends, HTTPException, Request
@@ -8,6 +7,7 @@ import setup_audio
 import setup_probe
 import setup_purposes
 import updater
+from setup_face import router as face_router
 from access import NO_CACHE
 from config import STATE_DIR
 from sealed import write_private
@@ -16,8 +16,8 @@ from state import store
 
 log = logging.getLogger("nuxiva.setup")
 router = APIRouter()
+router.include_router(face_router)
 SAMPLES_DIR = STATE_DIR / "wakeword_samples"
-FACE_KINDS = ("front", "three_left", "three_right")
 WAKE_SHOTS = 3
 
 
@@ -90,33 +90,6 @@ async def setup_cameras(_: None = Depends(require_open)):
     result = await setup_probe.scan_cameras()
     session_manager.record("cameras", result["devices"])
     return JSONResponse(result, headers=NO_CACHE)
-
-
-@router.post("/api/setup/face")
-async def setup_face(request: Request, _: None = Depends(require_open)):
-    from features.people import people, views
-    import setup_owner
-    kind = str(request.query_params.get("kind") or "")
-    if kind not in FACE_KINDS:
-        raise HTTPException(400, "Vista del volto non valida")
-    cfg = session_manager.config
-    first, last = setup_owner.clean_names({"name": cfg.get("owner_name"), "last_name": cfg.get("owner_last"),
-                                           "assistant_name": cfg.get("assistant_name")})
-    name = setup_owner.full_name(first, last)
-    slug = people.slugify(name)
-    people.ensure(slug, name)
-    resp = await views._forward(f"/people/{slug}/views/capture", {"kind": kind, "name": name}, None, 30)
-    if resp.status_code in (404, 502, 503):
-        raise HTTPException(503, "Servizio di visione o telecamera del server non disponibile: potrai registrare il volto più tardi dal Gestore Identità")
-    if resp.status_code != 200:
-        return resp
-    done = sorted(set(cfg.get("face_views") or []) | {kind})
-    session_manager.record("face_views", done)
-    try:
-        detail = json.loads(resp.body or b"{}")
-    except ValueError:
-        detail = {}
-    return JSONResponse({"ok": True, "kind": kind, "views": done, "vision": detail}, headers=NO_CACHE)
 
 
 async def _read_audio(request: Request) -> bytes:

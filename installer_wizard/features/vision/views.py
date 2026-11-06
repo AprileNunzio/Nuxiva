@@ -34,6 +34,8 @@ AUTO_VIEW_MIN_SHARPNESS = 40.0
 MIN_PHOTO_SCORE = 30.0
 DUPLICATE_SIM = 0.995
 BACKFILL_PHOTOS = 24
+EYE_SPAN_CM = 6.3
+FOCAL_RATIO = 0.87
 ISSUES = {"blurry": "sfocata", "dark": "troppo scura", "overexposed": "troppo chiara", "low_contrast": "poco contrasto",
           "small": "volto troppo piccolo", "tilted": "testa troppo inclinata"}
 
@@ -204,6 +206,30 @@ class Views:
         log.info("Vista %s acquisita in automatico per %s", kind, slug)
         return kind
 
+    def analyze(self, img: np.ndarray) -> dict:
+        h, w = img.shape[:2]
+        report = {"face": False, "frame": [int(w), int(h)], "light": face_engine.light(img)}
+        face, _, _ = self._largest_face(img)
+        if face is None:
+            return report
+        crop = self.vision._crop(img, tuple(int(v) for v in face[:4]))
+        quality = face_engine.quality(crop, face, w)
+        eye_px = max(1.0, float(quality.get("eye_px") or 0.0))
+        report.update(face=True, quality=quality, confidence=round(float(face[14]), 3),
+                      box=[round(float(face[i]) / (w if i % 2 == 0 else h), 4) for i in range(4)],
+                      points=[round(float(face[4 + i]) / (w if i % 2 == 0 else h), 4) for i in range(10)],
+                      distance_cm=round(FOCAL_RATIO * w * EYE_SPAN_CM / eye_px, 1))
+        return report
+
+    def analyze_live(self) -> dict:
+        if self.vision.status != "ok":
+            raise ValueError(self.vision.error or "Webcam non disponibile")
+        with self.vision.lock:
+            frame = None if self.vision.raw is None else self.vision.raw.copy()
+        if frame is None:
+            raise ValueError("Nessun fotogramma dalla webcam")
+        return self.analyze(frame)
+
     def capture(self, slug: str, name: str, kind: str) -> dict:
         if kind not in KINDS:
             raise ValueError("Tipo di vista sconosciuto")
@@ -246,6 +272,21 @@ def router(views: Views) -> APIRouter:
         kind, name = _params(request)
         try:
             return await asyncio.to_thread(views.capture, slug, name, kind)
+        except ValueError as exc:
+            raise HTTPException(422, str(exc))
+
+    @r.get("/setup/analyze")
+    async def analyze_live():
+        try:
+            return await asyncio.to_thread(views.analyze_live)
+        except ValueError as exc:
+            raise HTTPException(503, str(exc))
+
+    @r.post("/setup/analyze")
+    async def analyze_frame(request: Request):
+        data = await request.body()
+        try:
+            return await asyncio.to_thread(views.analyze, decode(data))
         except ValueError as exc:
             raise HTTPException(422, str(exc))
 

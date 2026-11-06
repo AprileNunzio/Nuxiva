@@ -199,29 +199,25 @@
         <div class="os-face-container">
           <div class="os-face-source-bar">
             <div class="os-face-tabs">
-              <button type="button" class="os-face-tab-btn is-active" id="face-tab-client">💻 Questo PC (Browser)</button>
-              <button type="button" class="os-face-tab-btn" id="face-tab-server">🖧 Server Nuxiva (USB/ONVIF)</button>
+              <button type="button" class="os-face-tab-btn is-active" id="face-tab-client" data-face-i18n="tab_client"></button>
+              <button type="button" class="os-face-tab-btn" id="face-tab-server" data-face-i18n="tab_server"></button>
             </div>
+            <span class="os-face-mode" id="face-mode"></span>
             <select id="face-camera-select" class="os-face-select"></select>
           </div>
           <div class="os-face-main-row" id="face-live-box">
             <div class="os-face-viewport-card">
               <video id="face-video-feed" class="os-face-video" autoplay playsinline muted></video>
+              <img id="face-server-feed" class="os-face-video" alt="" hidden>
+              <canvas id="face-overlay" class="os-face-overlay" aria-hidden="true"></canvas>
+              <div class="os-face-hint" id="face-hint" role="status" aria-live="polite"></div>
+              <div class="os-face-alert" id="face-alert" role="alert" hidden></div>
               <div class="os-face-perm-overlay" id="face-perm-overlay">
                 <div style="font-size: 26px;">📷</div>
-                <div style="font-size: 11px; font-weight: 600; opacity: 0.85;">Autorizzazione webcam richiesta</div>
-                <button type="button" class="os-btn-req-perm" id="btn-req-face-perm">Attiva Webcam (Richiedi Permesso)</button>
+                <div style="font-size: 11px; font-weight: 600; opacity: 0.85;" data-face-i18n="perm_title"></div>
+                <button type="button" class="os-btn-req-perm" id="btn-req-face-perm" data-face-i18n="btn_req_perm"></button>
                 <div class="os-face-perm-error" id="face-perm-error" style="display: none;"></div>
-                <button type="button" class="os-btn-switch-server" id="btn-face-perm-fallback" style="display: none;">Usa Telecamere Server</button>
-              </div>
-              <div class="os-face-mesh-overlay">
-                <div class="os-face-reticle">
-                  <div class="os-face-point" style="top:35%;left:30%;"></div>
-                  <div class="os-face-point" style="top:35%;right:30%;"></div>
-                  <div class="os-face-point" style="top:55%;left:48%;"></div>
-                  <div class="os-face-point" style="top:75%;left:35%;"></div>
-                  <div class="os-face-point" style="top:75%;right:35%;"></div>
-                </div>
+                <button type="button" class="os-btn-switch-server" id="btn-face-perm-fallback" style="display: none;" data-face-i18n="btn_fallback_server"></button>
               </div>
               <div class="os-face-corner os-face-corner-tl"></div>
               <div class="os-face-corner os-face-corner-tr"></div>
@@ -230,23 +226,27 @@
             </div>
             <div class="os-face-nerd-panel">
               <div class="os-face-telemetry">
-                <div>Posa: <span id="face-val-pose" style="color:#60a5fa;">Yaw: 0° | Pitch: 0°</span></div>
-                <div>Distanza Pupillare: <span id="face-val-dist" style="color:#34d399;">—</span></div>
-                <div>Confidenza: <span id="face-val-conf" style="color:#10b981;">—</span></div>
-                <div>Hash Vettore: <span id="face-val-hash" style="color:#a78bfa;">—</span></div>
+                <div><span data-face-i18n="tel_pose"></span> <span id="face-val-pose" class="os-face-val">—</span></div>
+                <div><span data-face-i18n="tel_distance"></span> <span id="face-val-dist" class="os-face-val">—</span></div>
+                <div><span data-face-i18n="tel_eyes"></span> <span id="face-val-eyes" class="os-face-val">—</span></div>
+                <div><span data-face-i18n="tel_conf"></span> <span id="face-val-conf" class="os-face-val">—</span></div>
+                <div><span data-face-i18n="tel_sharp"></span> <span id="face-val-sharp" class="os-face-val">—</span></div>
+                <div><span data-face-i18n="tel_light"></span> <span id="face-val-light" class="os-face-val">—</span></div>
+                <div><span data-face-i18n="tel_quality"></span> <span id="face-val-quality" class="os-face-val">—</span></div>
+                <div class="os-face-meter"><span id="face-quality-bar"></span></div>
               </div>
               <div class="os-face-shot-list">
-                <div class="os-face-shot-item is-active" id="face-shot-front"><span>1. Guarda dritto al centro</span><span class="os-face-shot-status">In attesa</span></div>
-                <div class="os-face-shot-item" id="face-shot-three_left"><span>2. Ruota il capo a sinistra</span><span class="os-face-shot-status">In attesa</span></div>
-                <div class="os-face-shot-item" id="face-shot-three_right"><span>3. Ruota il capo a destra</span><span class="os-face-shot-status">In attesa</span></div>
+                <div class="os-face-shot-item is-active" id="face-shot-front"><span data-face-i18n="shot_front"></span><span class="os-face-shot-status" data-face-i18n="shot_wait"></span></div>
+                <div class="os-face-shot-item" id="face-shot-three_left"><span data-face-i18n="shot_left"></span><span class="os-face-shot-status" data-face-i18n="shot_wait"></span></div>
+                <div class="os-face-shot-item" id="face-shot-three_right"><span data-face-i18n="shot_right"></span><span class="os-face-shot-status" data-face-i18n="shot_wait"></span></div>
               </div>
-              <button type="button" class="os-face-btn-capture" id="btn-face-capture">Cattura Punti Biometrici</button>
+              <button type="button" class="os-face-btn-capture" id="btn-face-capture" data-face-i18n="btn_capture"></button>
             </div>
           </div>
           <div class="os-face-empty-card" id="face-empty-box">
             <div style="font-size:28px;">📷</div>
-            <div style="font-weight:700;font-size:14px;">Nessuna telecamera rilevata</div>
-            <div style="font-size:12px;opacity:0.75;max-width:380px;">Puoi procedere regolarmente senza alcun blocco.</div>
+            <div style="font-weight:700;font-size:14px;" data-face-i18n="no_camera"></div>
+            <div style="font-size:12px;opacity:0.75;max-width:380px;" data-face-i18n="no_camera_hint"></div>
           </div>
         </div>
       </section>

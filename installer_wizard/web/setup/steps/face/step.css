@@ -64,7 +64,8 @@
 .os-face-viewport-card {
   flex: 1.2;
   position: relative;
-  height: 175px;
+  aspect-ratio: 4 / 3;
+  max-height: 260px;
   border-radius: var(--os-radius-md);
   background-color: #050811;
   border: 1px solid var(--md-sys-color-outline-variant);
@@ -122,37 +123,76 @@
   box-shadow: 0 6px 18px rgba(59, 130, 246, 0.5);
 }
 
-.os-face-mesh-overlay {
+.os-face-overlay {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-.os-face-reticle {
-  width: 115px;
-  height: 145px;
-  border: 1.5px dashed #3b82f6;
-  border-radius: 50% 50% 45% 45%;
-  box-shadow: 0 0 16px rgba(59, 130, 246, 0.4), inset 0 0 12px rgba(59, 130, 246, 0.2);
-  position: relative;
-  animation: os-face-pulse 2s infinite ease-in-out;
+.os-face-mirror {
+  transform: scaleX(-1);
 }
 
-@keyframes os-face-pulse {
-  0%, 100% { transform: scale(0.98); opacity: 0.8; }
-  50% { transform: scale(1.02); opacity: 1; }
-}
-
-.os-face-point {
+.os-face-hint {
   position: absolute;
-  width: 4px;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  padding: 4px 8px;
+  border-radius: var(--os-radius-sm);
+  background: rgba(5, 8, 17, 0.72);
+  color: #e2e8f0;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  pointer-events: none;
+}
+
+.os-face-hint:empty {
+  display: none;
+}
+
+.os-face-alert {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  padding: 4px 8px;
+  border-radius: var(--os-radius-sm);
+  background: rgba(127, 29, 29, 0.85);
+  color: #fee2e2;
+  font-size: 11px;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.os-face-mode {
+  font-size: 11px;
+  color: var(--md-sys-color-on-surface-variant);
+  flex: 1;
+  text-align: center;
+}
+
+.os-face-val {
+  color: var(--md-sys-color-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.os-face-meter {
   height: 4px;
-  background-color: #34d399;
-  border-radius: 50%;
-  box-shadow: 0 0 6px #34d399;
+  border-radius: 9999px;
+  background: var(--md-sys-color-surface-container-highest);
+  overflow: hidden;
+}
+
+.os-face-meter > span {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--md-sys-color-primary);
+  transition: width 0.25s ease;
 }
 
 .os-face-perm-error {

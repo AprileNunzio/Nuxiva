@@ -1,293 +1,427 @@
 (() => {
   "use strict";
 
+  const SHOTS = ["front", "three_left", "three_right"];
+  const GOOD = 70;
+  const STEADY = 3;
+  const TICK_MS = 450;
+  const MAX_SIDE = 640;
+  const HEADERS = { "X-Nuxiva-Request": "1" };
+  const LIGHT_ALERTS = ["black", "dark", "flat", "overexposed"];
+
+  const $ = (id) => document.getElementById(id);
+
+  async function detail(res) {
+    const body = await res.json().catch(() => null);
+    return body && typeof body.detail === "string" ? body.detail : "";
+  }
+
   class StepFace {
     constructor() {
-      this.currentShot = 0;
-      this.shots = ["front", "three_left", "three_right"];
+      this.source = "client";
+      this.mode = "server";
       this.stream = null;
-      this.activeSource = "client";
-      this.hasRequestedPermission = false;
+      this.done = new Map();
+      this.current = 0;
+      this.steady = 0;
+      this.busy = false;
+      this.running = false;
+      this.timer = 0;
+      this.lastBlob = null;
+      this.lastScore = 0;
+      this.previewUrl = "";
       this.initialized = false;
     }
 
-    t(key) {
+    t(key, vars) {
       const lang = window.SetupStorage.get("lang") || "it";
-      const dict = (window.SetupStepFaceI18n && window.SetupStepFaceI18n.dict[lang]) || {};
-      return dict[key] || "";
+      const all = (window.SetupStepFaceI18n && window.SetupStepFaceI18n.dict) || {};
+      const text = (all[lang] && all[lang][key]) || (all.it && all.it[key]) || "";
+      return vars ? text.replace(/\{(\w+)\}/g, (_, k) => (k in vars ? String(vars[k]) : "")) : text;
+    }
+
+    applyTexts() {
+      document.querySelectorAll("#screen-face [data-face-i18n]").forEach((el) => {
+        el.textContent = this.t(el.dataset.faceI18n);
+      });
+    }
+
+    get target() {
+      return SHOTS[this.current] || null;
+    }
+
+    active() {
+      const screen = $("screen-face");
+      return Boolean(screen && screen.classList.contains("active"));
+    }
+
+    setText(id, text) {
+      const el = $(id);
+      if (el) el.textContent = text;
+    }
+
+    alert(text) {
+      const el = $("face-alert");
+      if (!el) return;
+      el.textContent = text || "";
+      el.hidden = !text;
     }
 
     showPermError(msg) {
-      const errEl = document.getElementById("face-perm-error");
-      const fallbackBtn = document.getElementById("btn-face-perm-fallback");
-      if (errEl) {
-        errEl.textContent = msg;
-        errEl.style.display = msg ? "block" : "none";
+      const err = $("face-perm-error");
+      const fallback = $("btn-face-perm-fallback");
+      if (err) {
+        err.textContent = msg;
+        err.style.display = msg ? "block" : "none";
       }
-      if (fallbackBtn) {
-        fallbackBtn.style.display = msg ? "inline-block" : "none";
-      }
+      if (fallback) fallback.style.display = msg ? "inline-block" : "none";
     }
 
-    async acquireStream(deviceId) {
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        const legacy = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-        if (legacy) {
-          return new Promise((resolve, reject) => {
-            legacy.call(navigator, { video: true }, resolve, reject);
-          });
-        }
-        throw new Error("SECURE_CONTEXT_REQUIRED");
-      }
+    canUseBrowserCamera() {
+      return Boolean(window.isSecureContext && navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+    }
 
-      const videoConstraint = deviceId && deviceId !== "default"
-        ? { deviceId: { exact: deviceId } }
-        : { width: { ideal: 640 }, height: { ideal: 480 } };
-
+    async loadContext() {
       try {
-        return await navigator.mediaDevices.getUserMedia({ video: videoConstraint });
+        const res = await fetch("/api/setup/face/context", { headers: HEADERS, cache: "no-store" });
+        if (!res.ok) return { mode: "server", views: [] };
+        return await res.json();
       } catch (err) {
-        return await navigator.mediaDevices.getUserMedia({ video: true });
+        return { mode: "server", views: [] };
       }
     }
 
-    async requestWebcamPermission(deviceId) {
-      const videoEl = document.getElementById("face-video-feed");
-      const permOverlay = document.getElementById("face-perm-overlay");
-      const emptyBox = document.getElementById("face-empty-box");
-      const liveBox = document.getElementById("face-live-box");
-      const btn = document.getElementById("btn-req-face-perm");
-
-      if (btn) btn.textContent = "Accesso in corso...";
+    async requestWebcam(deviceId) {
+      const overlay = $("face-perm-overlay");
+      const video = $("face-video-feed");
       this.showPermError("");
       this.stopClientCamera();
-
+      if (!this.canUseBrowserCamera()) {
+        if (overlay) overlay.classList.remove("is-hidden");
+        this.showPermError(this.t("err_insecure"));
+        return;
+      }
       try {
-        this.stream = await this.acquireStream(deviceId);
-        if (videoEl) {
-          videoEl.srcObject = this.stream;
-          videoEl.play().catch(() => {});
+        const constraint = deviceId && deviceId !== "default"
+          ? { deviceId: { exact: deviceId }, width: { ideal: 1280 }, height: { ideal: 720 } }
+          : { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 720 } };
+        this.stream = await navigator.mediaDevices.getUserMedia({ video: constraint, audio: false });
+        if (video) {
+          video.srcObject = this.stream;
+          await video.play().catch(() => undefined);
         }
-        if (permOverlay) permOverlay.classList.add("is-hidden");
-        if (liveBox) liveBox.style.display = "flex";
-        if (emptyBox) emptyBox.classList.remove("show");
-
-        this.hasRequestedPermission = true;
-        await this.populateClientDevices();
+        if (overlay) overlay.classList.add("is-hidden");
+        await this.listClientCameras(deviceId);
       } catch (err) {
-        if (permOverlay) permOverlay.classList.remove("is-hidden");
-        if (btn) btn.textContent = this.t("btn_req_again");
-
-        let errKey = "err_denied";
-        if (err.name === "NotFoundError" || err.name === "DevicesNotFoundError") {
-          errKey = "err_missing";
-        } else if (err.name === "NotReadableError" || err.name === "TrackStartError") {
-          errKey = "err_busy";
-        } else if (err.message === "SECURE_CONTEXT_REQUIRED" || !window.isSecureContext) {
-          errKey = "err_insecure";
-        }
-        this.showPermError(this.t(errKey));
+        if (overlay) overlay.classList.remove("is-hidden");
+        this.setText("btn-req-face-perm", this.t("btn_req_again"));
+        const name = err && err.name;
+        const key = name === "NotFoundError" || name === "DevicesNotFoundError" ? "err_missing"
+          : name === "NotReadableError" || name === "TrackStartError" ? "err_busy" : "err_denied";
+        this.showPermError(this.t(key));
       }
     }
 
-    async populateClientDevices() {
-      const select = document.getElementById("face-camera-select");
-      if (!select || !navigator.mediaDevices?.enumerateDevices) return;
-      select.innerHTML = "";
-
-      try {
-        const devs = await navigator.mediaDevices.enumerateDevices();
-        const videoDevs = devs.filter((d) => d.kind === "videoinput");
-        if (videoDevs.length === 0) {
-          const opt = document.createElement("option");
-          opt.value = "default";
-          opt.textContent = "Webcam Client Predefinita";
-          select.appendChild(opt);
-        } else {
-          videoDevs.forEach((dev, idx) => {
-            const opt = document.createElement("option");
-            opt.value = dev.deviceId || `cam-${idx}`;
-            opt.textContent = dev.label || `Fotocamera ${idx + 1}`;
-            select.appendChild(opt);
-          });
-        }
-      } catch (e) {}
+    async listClientCameras(selected) {
+      const select = $("face-camera-select");
+      if (!select || !navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) return;
+      const devices = (await navigator.mediaDevices.enumerateDevices()).filter((d) => d.kind === "videoinput");
+      select.replaceChildren(...devices.map((d, i) => {
+        const opt = document.createElement("option");
+        opt.value = d.deviceId || "default";
+        opt.textContent = d.label || this.t("camera_n", { n: i + 1 });
+        opt.selected = Boolean(selected) && d.deviceId === selected;
+        return opt;
+      }));
     }
 
-    async populateServerDevices() {
-      const select = document.getElementById("face-camera-select");
-      const permOverlay = document.getElementById("face-perm-overlay");
-      const emptyBox = document.getElementById("face-empty-box");
-      const liveBox = document.getElementById("face-live-box");
-
-      if (permOverlay) permOverlay.classList.add("is-hidden");
+    async listServerCameras() {
+      const select = $("face-camera-select");
       if (!select) return;
-      select.innerHTML = "";
-
-      this.stopClientCamera();
-
       try {
-        const res = await fetch("/api/setup/cameras/scan", {
-          method: "POST",
-          headers: { "X-Nuxiva-Request": "1" }
-        });
-        if (res.ok) {
-          const data = await res.json();
-          const devs = data.devices || [];
-          if (devs.length === 0) {
-            if (liveBox) liveBox.style.display = "none";
-            if (emptyBox) emptyBox.classList.add("show");
-            const opt = document.createElement("option");
-            opt.value = "none";
-            opt.textContent = "Nessuna camera server";
-            select.appendChild(opt);
-          } else {
-            if (liveBox) liveBox.style.display = "flex";
-            if (emptyBox) emptyBox.classList.remove("show");
-            devs.forEach((d) => {
-              const opt = document.createElement("option");
-              opt.value = d.id;
-              opt.textContent = `${d.name || d.id} (${d.type.toUpperCase()})`;
-              select.appendChild(opt);
-            });
-          }
-        }
-      } catch (e) {
-        if (liveBox) liveBox.style.display = "none";
-        if (emptyBox) emptyBox.classList.add("show");
+        const res = await fetch("/api/setup/cameras/scan", { method: "POST", headers: HEADERS });
+        const devices = res.ok ? ((await res.json()).devices || []) : [];
+        const options = devices.length ? devices.map((d) => {
+          const opt = document.createElement("option");
+          opt.value = String(d.id);
+          opt.textContent = `${d.name || d.id}${d.type ? ` (${String(d.type).toUpperCase()})` : ""}`;
+          return opt;
+        }) : [Object.assign(document.createElement("option"), { value: "none", textContent: this.t("server_none") })];
+        select.replaceChildren(...options);
+      } catch (err) {
+        select.replaceChildren(Object.assign(document.createElement("option"), { value: "none", textContent: this.t("server_none") }));
       }
     }
 
     stopClientCamera() {
       if (this.stream) {
-        this.stream.getTracks().forEach((t) => t.stop());
+        this.stream.getTracks().forEach((track) => track.stop());
         this.stream = null;
       }
-      const videoEl = document.getElementById("face-video-feed");
-      if (videoEl) videoEl.srcObject = null;
+      const video = $("face-video-feed");
+      if (video) video.srcObject = null;
     }
 
     setSource(source) {
-      this.activeSource = source;
+      this.source = source;
+      this.steady = 0;
+      this.lastBlob = null;
       window.SetupStorage.set("faceSource", source);
-
-      const tabClient = document.getElementById("face-tab-client");
-      const tabServer = document.getElementById("face-tab-server");
-      const permOverlay = document.getElementById("face-perm-overlay");
-
-      if (tabClient) tabClient.classList.toggle("is-active", source === "client");
-      if (tabServer) tabServer.classList.toggle("is-active", source === "server");
-
-      if (source === "client") {
-        if (this.hasRequestedPermission) {
-          this.requestWebcamPermission();
-        } else {
-          if (permOverlay) permOverlay.classList.remove("is-hidden");
-        }
+      const client = source === "client";
+      $("face-tab-client")?.classList.toggle("is-active", client);
+      $("face-tab-server")?.classList.toggle("is-active", !client);
+      const video = $("face-video-feed");
+      const img = $("face-server-feed");
+      if (video) video.hidden = !client;
+      if (img) img.hidden = client;
+      [video, img].forEach((el) => el && el.classList.add("os-face-mirror"));
+      this.alert("");
+      if (client) {
+        this.requestWebcam();
       } else {
-        this.populateServerDevices();
+        this.stopClientCamera();
+        $("face-perm-overlay")?.classList.add("is-hidden");
+        this.listServerCameras();
       }
     }
 
-    updateTelemetry() {
-      const poseEl = document.getElementById("face-val-pose");
-      const distEl = document.getElementById("face-val-dist");
-      const confEl = document.getElementById("face-val-conf");
-      const hashEl = document.getElementById("face-val-hash");
+    async refreshPreview() {
+      const img = $("face-server-feed");
+      const res = await fetch(`/api/setup/face/preview.jpg?t=${Date.now()}`, { headers: HEADERS, cache: "no-store" });
+      if (!res.ok) throw new Error(await detail(res) || this.t("alert_preview"));
+      const url = URL.createObjectURL(await res.blob());
+      if (img) img.src = url;
+      if (this.previewUrl) URL.revokeObjectURL(this.previewUrl);
+      this.previewUrl = url;
+    }
 
-      if (this.currentShot === 0) {
-        if (poseEl) poseEl.textContent = "Yaw: -1.2° | Pitch: +0.8°";
-        if (distEl) distEl.textContent = "63.2 mm";
-        if (confEl) confEl.textContent = "98.9%";
-        if (hashEl) hashEl.textContent = "0x7F9A...C4B2";
-      } else if (this.currentShot === 1) {
-        if (poseEl) poseEl.textContent = "Yaw: -24.5° | Pitch: +1.1°";
-        if (distEl) distEl.textContent = "58.4 mm";
-        if (confEl) confEl.textContent = "97.4%";
-        if (hashEl) hashEl.textContent = "0x3D11...E89A";
-      } else if (this.currentShot === 2) {
-        if (poseEl) poseEl.textContent = "Yaw: +26.1° | Pitch: +0.5°";
-        if (distEl) distEl.textContent = "59.1 mm";
-        if (confEl) confEl.textContent = "98.1%";
-        if (hashEl) hashEl.textContent = "0x98FF...120C";
+    grabFrame() {
+      const video = $("face-video-feed");
+      if (!video || !video.videoWidth) return Promise.resolve(null);
+      const k = Math.min(1, MAX_SIDE / Math.max(video.videoWidth, video.videoHeight));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.round(video.videoWidth * k);
+      canvas.height = Math.round(video.videoHeight * k);
+      canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
+      return new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.88));
+    }
+
+    async analyze() {
+      if (this.source === "server") {
+        await this.refreshPreview();
+        const res = await fetch("/api/setup/face/analyze", { headers: HEADERS, cache: "no-store" });
+        if (!res.ok) throw new Error(await detail(res) || this.t("alert_vision"));
+        return res.json();
+      }
+      const blob = await this.grabFrame();
+      if (!blob) return null;
+      const res = await fetch("/api/setup/face/analyze", {
+        method: "POST", headers: { ...HEADERS, "Content-Type": "image/jpeg" }, body: blob,
+      });
+      if (!res.ok) throw new Error(await detail(res) || this.t("alert_vision"));
+      this.lastBlob = blob;
+      return res.json();
+    }
+
+    draw(report, good) {
+      const canvas = $("face-overlay");
+      if (!canvas) return;
+      const ratio = window.devicePixelRatio || 1;
+      const cw = canvas.clientWidth;
+      const ch = canvas.clientHeight;
+      canvas.width = Math.round(cw * ratio);
+      canvas.height = Math.round(ch * ratio);
+      const ctx = canvas.getContext("2d");
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      ctx.clearRect(0, 0, cw, ch);
+      if (!report || !report.face || !Array.isArray(report.frame)) return;
+      const [fw, fh] = report.frame;
+      const scale = Math.max(cw / fw, ch / fh);
+      const dx = (cw - fw * scale) / 2;
+      const dy = (ch - fh * scale) / 2;
+      const map = (nx, ny) => [cw - (nx * fw * scale + dx), ny * fh * scale + dy];
+      const color = good ? "#34d399" : "#fbbf24";
+      const [bx, by, bw, bh] = report.box;
+      const [x0, y0] = map(bx + bw, by);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x0, y0, bw * fw * scale, bh * fh * scale);
+      ctx.fillStyle = color;
+      for (let i = 0; i < 10; i += 2) {
+        const [px, py] = map(report.points[i], report.points[i + 1]);
+        ctx.beginPath();
+        ctx.arc(px, py, 3, 0, Math.PI * 2);
+        ctx.fill();
       }
     }
 
-    async captureShot() {
-      if (this.currentShot >= this.shots.length) return;
-      const kind = this.shots[this.currentShot];
-      const shotItem = document.getElementById(`face-shot-${kind}`);
+    telemetry(report) {
+      const q = report && report.face ? report.quality || {} : null;
+      const light = (report && report.light) || {};
+      const round = (v, d = 0) => (typeof v === "number" && Number.isFinite(v) ? v.toFixed(d) : "—");
+      this.setText("face-val-pose", q ? this.t("pose_value", { y: round(q.yaw), p: round(q.pitch), r: round(q.roll) }) : "—");
+      this.setText("face-val-dist", q ? this.t("distance_value", { cm: round(report.distance_cm) }) : "—");
+      this.setText("face-val-eyes", q ? this.t("eyes_value", { px: round(q.eye_px) }) : "—");
+      this.setText("face-val-conf", q ? `${round((report.confidence || 0) * 100, 1)}%` : "—");
+      this.setText("face-val-sharp", q ? this.t("sharp_value", { v: round(q.sharpness) }) : "—");
+      const issue = (light.issues || []).find((i) => LIGHT_ALERTS.includes(i));
+      this.setText("face-val-light", report ? `${this.t(issue ? `light_${issue}` : "light_ok")} · ${this.t("light_value", { b: round(light.mean), c: round(light.std) })}` : "—");
+      this.setText("face-val-quality", q ? this.t("quality_value", { q: round(q.score) }) : "—");
+      const bar = $("face-quality-bar");
+      if (bar) bar.style.width = `${q ? Math.max(0, Math.min(100, q.score || 0)) : 0}%`;
+      this.alert(issue ? this.t(`alert_${issue}`) : "");
+    }
 
-      const btn = document.getElementById("btn-face-capture");
-      if (btn) btn.disabled = true;
+    judge(report) {
+      if (!report || !report.face) {
+        this.setText("face-hint", this.t("hint_no_face"));
+        return false;
+      }
+      const q = report.quality || {};
+      const issues = Array.isArray(q.issues) ? q.issues : [];
+      if (q.kind !== this.target) {
+        this.setText("face-hint", this.t(`hint_${this.target}`));
+        return false;
+      }
+      if ((q.score || 0) < GOOD || issues.length) {
+        const why = issues.map((i) => this.t(`issue_${i}`) || i).join(", ");
+        this.setText("face-hint", this.t("hint_improve", { q: Math.round(q.score || 0), issues: why }));
+        return false;
+      }
+      this.setText("face-hint", this.t(this.source === "server" ? "hint_hold_server" : "hint_hold"));
+      return true;
+    }
 
+    markShots() {
+      SHOTS.forEach((kind, i) => {
+        const item = $(`face-shot-${kind}`);
+        if (!item) return;
+        const status = item.querySelector(".os-face-shot-status");
+        const done = this.done.get(kind);
+        item.classList.toggle("is-done", done !== undefined);
+        item.classList.toggle("is-active", i === this.current);
+        if (status) {
+          status.textContent = done !== undefined ? this.t("shot_done", { q: Math.round(done) })
+            : i === this.current ? this.t("shot_now") : this.t("shot_wait");
+        }
+      });
+      const btn = $("btn-face-capture");
+      if (btn) {
+        btn.disabled = this.busy || this.target === null;
+        btn.textContent = this.t(this.target === null ? "btn_done" : "btn_capture");
+      }
+    }
+
+    async capture() {
+      const kind = this.target;
+      if (!kind || this.busy) return;
+      this.busy = true;
+      this.markShots();
+      const status = $(`face-shot-${kind}`)?.querySelector(".os-face-shot-status");
+      if (status) status.textContent = this.t("shot_saving");
       try {
-        await fetch(`/api/setup/face?kind=${kind}`, {
+        if (this.source === "client" && !this.lastBlob) this.lastBlob = await this.grabFrame();
+        const browser = this.source === "client" && this.lastBlob;
+        const res = await fetch(`/api/setup/face?kind=${encodeURIComponent(kind)}`, {
           method: "POST",
-          headers: { "X-Nuxiva-Request": "1" }
+          headers: browser ? { ...HEADERS, "Content-Type": "image/jpeg" } : HEADERS,
+          body: browser ? this.lastBlob : undefined,
         });
-      } catch (e) {}
-
-      if (shotItem) {
-        shotItem.classList.remove("is-active");
-        shotItem.classList.add("is-done");
-        const statusSpan = shotItem.querySelector(".os-face-shot-status");
-        if (statusSpan) statusSpan.textContent = "✓ Mappato";
-      }
-
-      this.currentShot++;
-      this.updateTelemetry();
-
-      if (this.currentShot < this.shots.length) {
-        const nextKind = this.shots[this.currentShot];
-        const nextItem = document.getElementById(`face-shot-${nextKind}`);
-        if (nextItem) nextItem.classList.add("is-active");
-        if (btn) btn.disabled = false;
-      } else {
-        if (btn) {
-          btn.textContent = "✓ Punti Mappati";
-          btn.style.backgroundColor = "#10b981";
-        }
-        window.SetupStorage.set("faceEnrolled", true);
+        if (!res.ok) throw new Error(await detail(res) || this.t("alert_vision"));
+        const result = await res.json();
+        const score = result.vision && result.vision.quality ? result.vision.quality.score : this.lastScore;
+        this.done.set(kind, typeof score === "number" ? score : this.lastScore);
+        this.current = SHOTS.findIndex((s) => !this.done.has(s));
+        if (this.current < 0) this.current = SHOTS.length;
+        window.SetupStorage.set("faceEnrolled", this.done.size > 0);
+        if (this.target === null) this.finish();
+      } catch (err) {
+        this.alert(err.message);
+        if (status) status.textContent = this.t("shot_failed");
+      } finally {
+        this.steady = 0;
+        this.busy = false;
+        this.markShots();
       }
     }
 
-    init() {
+    finish() {
+      this.stop();
+      this.setText("face-hint", this.t("hint_done"));
+      window.SetupStorage.set("faceEnrolled", true);
+    }
+
+    async tick() {
+      if (!this.running) return;
+      if (!this.active()) {
+        this.stop();
+        return;
+      }
+      if (!this.busy && this.target !== null) {
+        try {
+          const report = await this.analyze();
+          if (report) {
+            this.telemetry(report);
+            const good = this.judge(report);
+            this.draw(report, good);
+            this.lastScore = report.face && report.quality ? report.quality.score || 0 : 0;
+            this.steady = good ? this.steady + 1 : 0;
+            if (this.steady >= STEADY) await this.capture();
+          }
+        } catch (err) {
+          this.alert(err.message);
+          this.draw(null, false);
+        }
+      }
+      if (this.running) this.timer = window.setTimeout(() => this.tick(), TICK_MS);
+    }
+
+    start() {
+      this.stop();
+      this.running = true;
+      this.timer = window.setTimeout(() => this.tick(), TICK_MS);
+    }
+
+    stop() {
+      this.running = false;
+      window.clearTimeout(this.timer);
+      if (!this.active()) this.stopClientCamera();
+    }
+
+    bind() {
+      $("face-tab-client")?.addEventListener("click", () => this.setSource("client"));
+      $("face-tab-server")?.addEventListener("click", () => this.setSource("server"));
+      $("btn-req-face-perm")?.addEventListener("click", () => this.requestWebcam($("face-camera-select")?.value));
+      $("btn-face-perm-fallback")?.addEventListener("click", () => this.setSource("server"));
+      $("btn-face-capture")?.addEventListener("click", () => this.capture());
+      $("face-camera-select")?.addEventListener("change", (e) => {
+        if (this.source === "client") this.requestWebcam(e.target.value);
+      });
+    }
+
+    async init() {
       if (!this.initialized) {
         this.initialized = true;
-        const tabClient = document.getElementById("face-tab-client");
-        const tabServer = document.getElementById("face-tab-server");
-        const select = document.getElementById("face-camera-select");
-        const btnReqPerm = document.getElementById("btn-req-face-perm");
-        const fallbackBtn = document.getElementById("btn-face-perm-fallback");
-
-        if (tabClient) tabClient.addEventListener("click", () => this.setSource("client"));
-        if (tabServer) tabServer.addEventListener("click", () => this.setSource("server"));
-        if (btnReqPerm) btnReqPerm.addEventListener("click", () => this.requestWebcamPermission());
-        if (fallbackBtn) fallbackBtn.addEventListener("click", () => this.setSource("server"));
-
-        if (select) {
-          select.addEventListener("change", (e) => {
-            if (this.activeSource === "client") {
-              this.requestWebcamPermission(e.target.value);
-            }
-          });
-        }
-
-        const btn = document.getElementById("btn-face-capture");
-        if (btn) {
-          btn.addEventListener("click", () => this.captureShot());
-        }
+        this.bind();
       }
-
-      const emptyBox = document.getElementById("face-empty-box");
-      if (emptyBox) emptyBox.classList.remove("show");
-
-      const savedSource = window.SetupStorage.get("faceSource") || "client";
-      this.setSource(savedSource);
-
-      this.currentShot = 0;
-      this.updateTelemetry();
+      this.applyTexts();
+      $("face-empty-box")?.classList.remove("show");
+      const ctx = await this.loadContext();
+      this.mode = ctx.mode === "remote" ? "remote" : "server";
+      this.done = new Map((Array.isArray(ctx.views) ? ctx.views : []).filter((k) => SHOTS.includes(k)).map((k) => [k, 0]));
+      this.current = SHOTS.findIndex((s) => !this.done.has(s));
+      if (this.current < 0) this.current = SHOTS.length;
+      const browserOk = this.canUseBrowserCamera();
+      const source = this.mode === "remote" && browserOk ? "client" : "server";
+      this.setText("face-mode", this.t(this.mode === "server" ? "mode_server" : browserOk ? "mode_remote" : "mode_remote_insecure"));
+      this.setSource(source);
+      this.markShots();
+      if (this.target === null) {
+        this.finish();
+        return;
+      }
+      this.setText("face-hint", this.t(`hint_${this.target}`));
+      this.start();
     }
   }
 

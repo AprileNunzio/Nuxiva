@@ -61,6 +61,22 @@ class ViewsServiceTest(unittest.TestCase):
         self.assertEqual(r["views"]["left"], 1)
         self.assertTrue((vviews.FACES / "anna" / "photos" / r["photo"]).is_file())
 
+    def test_setup_analysis_reports_real_pose_quality_and_light(self):
+        self.detector.faces = [face_row(20, 20, 160, 160)]
+        report = self.views.analyze(textured())
+        self.assertTrue(report["face"])
+        self.assertEqual(report["frame"], [200, 200])
+        self.assertEqual(report["quality"]["kind"], "front")
+        self.assertGreater(report["quality"]["score"], 30)
+        self.assertGreater(report["distance_cm"], 0)
+        self.assertEqual(len(report["points"]), 10)
+        self.assertTrue(all(0.0 <= v <= 1.0 for v in report["box"] + report["points"]))
+        json.dumps(report)
+        self.detector.faces = []
+        black = self.views.analyze(np.zeros((120, 160, 3), np.uint8))
+        self.assertFalse(black["face"])
+        self.assertIn("black", black["light"]["issues"])
+
     def test_the_same_photo_twice_adds_no_duplicate_sample(self):
         rgb = vectors(8)
         self.gallery.save("Anna", list(rgb[:6]), np.zeros((20, 20, 3), np.uint8), slug="anna")
