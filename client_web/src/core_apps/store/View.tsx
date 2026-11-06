@@ -204,15 +204,15 @@ export function View() {
       />
 
       {errorMsg && (
-        <div className="mx-6 mt-3.5 p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-300 text-xs flex items-center justify-between gap-3 shadow-xs">
+        <div className="md-enter mx-6 mt-3.5 flex items-center justify-between gap-3 rounded-2xl bg-error-container p-3 text-xs text-on-error-container">
           <div className="flex items-center gap-2.5">
-            <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+            <AlertCircle className="h-4 w-4 shrink-0 text-error" />
             <span className="leading-snug font-medium">{errorMsg}</span>
           </div>
           <button
             type="button"
             onClick={() => setErrorMsg(null)}
-            className="text-rose-400 hover:text-rose-200 p-1 rounded transition"
+            className="md-state rounded-full border-0 bg-transparent p-1 text-on-error-container"
           >
             <X className="w-3.5 h-3.5" />
           </button>

@@ -6,18 +6,26 @@ import { MD3Switch } from '../../shared/components/MD3Switch';
 export type Tone = 'cyan' | 'emerald' | 'amber' | 'rose' | 'purple' | 'slate';
 
 const TONES: Record<Tone, string> = {
-  cyan: 'border-cyan-300 bg-cyan-50 text-cyan-800 dark:border-cyan-800 dark:bg-cyan-950/40 dark:text-cyan-300',
-  emerald: 'border-emerald-300 bg-emerald-50 text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300',
-  amber: 'border-amber-300 bg-amber-50 text-amber-800 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-300',
-  rose: 'border-rose-300 bg-rose-50 text-rose-800 dark:border-rose-800 dark:bg-rose-950/40 dark:text-rose-300',
-  purple: 'border-purple-300 bg-purple-50 text-purple-800 dark:border-purple-800 dark:bg-purple-950/40 dark:text-purple-300',
-  slate: 'border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300',
+  cyan: 'border-transparent bg-primary-container text-on-primary-container',
+  emerald: 'border-transparent bg-success-container text-on-success-container',
+  amber: 'border-transparent bg-warning-container text-on-warning-container',
+  rose: 'border-transparent bg-error-container text-on-error-container',
+  purple: 'border-transparent bg-tertiary-container text-on-tertiary-container',
+  slate: 'border-transparent bg-surface-container-high text-on-surface',
 };
 
-export const panelClass =
-  'rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/90 p-4 sm:p-5 backdrop-blur-md shadow-xs transition-colors';
+const INK: Record<Tone, string> = {
+  cyan: 'text-primary',
+  emerald: 'text-success',
+  amber: 'text-warning',
+  rose: 'text-error',
+  purple: 'text-tertiary',
+  slate: 'text-on-surface',
+};
+
+export const panelClass = 'md-enter rounded-3xl bg-surface-container-low p-4 text-on-surface sm:p-5';
 export const inputClass =
-  'w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500 transition-colors';
+  'w-full rounded-xl border border-outline bg-surface-container-lowest px-3 py-2 text-sm text-on-surface placeholder:text-on-surface-variant transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30';
 export const gridClass = 'grid gap-4 lg:grid-cols-2 3xl:grid-cols-3';
 
 interface FrameProps {
@@ -32,8 +40,8 @@ export const AppFrame: React.FC<FrameProps> = ({ title, description, onReload, a
   <div className={PAGE_CLASS}>
     <header className="flex flex-wrap items-start justify-between gap-3">
       <div className="min-w-0">
-        <h1 className="text-xl font-black tracking-wide text-cyan-700">{title}</h1>
-        <p className="mt-1 max-w-3xl text-sm text-slate-600">{description}</p>
+        <h1 className="text-xl font-bold tracking-tight text-on-surface">{title}</h1>
+        <p className="mt-1 max-w-3xl text-sm text-on-surface-variant">{description}</p>
       </div>
       <div className="flex items-center gap-2">
         {actions}
@@ -42,7 +50,7 @@ export const AppFrame: React.FC<FrameProps> = ({ title, description, onReload, a
             type="button"
             onClick={onReload}
             aria-label="refresh"
-            className="rounded-xl border border-slate-300 bg-white p-2 text-slate-700 transition hover:border-cyan-500 hover:text-cyan-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+            className="md-state rounded-full border-0 bg-surface-container-high p-2 text-on-surface-variant"
           >
             <RefreshCw className="h-4 w-4" aria-hidden="true" />
           </button>
@@ -64,7 +72,7 @@ interface PanelProps {
 export const Panel: React.FC<PanelProps> = ({ title, icon, actions, className = '', children }) => (
   <section className={`${panelClass} ${className} min-w-0`}>
     <div className="mb-3 flex items-center justify-between gap-2">
-      <h2 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-600">
+      <h2 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-on-surface-variant">
         {icon}
         {title}
       </h2>
@@ -75,18 +83,18 @@ export const Panel: React.FC<PanelProps> = ({ title, icon, actions, className = 
 );
 
 export const Stat: React.FC<{ readonly label: string; readonly value: React.ReactNode; readonly tone?: Tone }> = ({ label, value, tone = 'cyan' }) => (
-  <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/70 px-3 py-2.5">
-    <div className="text-[10px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">{label}</div>
-    <div className={`mt-0.5 truncate font-mono text-lg font-bold ${TONES[tone].split(' ').pop()}`}>{value}</div>
+  <div className="md-lift rounded-2xl bg-surface-container px-3 py-2.5 transition-transform">
+    <div className="text-[10px] font-semibold uppercase tracking-widest text-on-surface-variant">{label}</div>
+    <div className={`mt-0.5 truncate font-mono text-lg font-bold ${INK[tone]}`}>{value}</div>
   </div>
 );
 
 export const StatRow: React.FC<{ readonly children: React.ReactNode }> = ({ children }) => (
-  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4 3xl:grid-cols-6">{children}</div>
+  <div className="md-stagger grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-4 3xl:grid-cols-6">{children}</div>
 );
 
 export const Pill: React.FC<{ readonly tone?: Tone; readonly children: React.ReactNode }> = ({ tone = 'slate', children }) => (
-  <span className={`inline-flex items-center rounded-md border px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider ${TONES[tone]}`}>{children}</span>
+  <span className={`inline-flex items-center rounded-full border px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider ${TONES[tone]}`}>{children}</span>
 );
 
 interface BtnProps {
@@ -105,7 +113,7 @@ export const Btn: React.FC<BtnProps> = ({ onClick, busy = false, disabled = fals
     title={title}
     onClick={onClick}
     disabled={busy || disabled}
-    className={`inline-flex items-center justify-center gap-2 rounded-xl border px-3 py-1.5 text-xs font-semibold transition hover:brightness-125 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 ${TONES[tone]}`}
+    className={`md-state inline-flex items-center justify-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-semibold disabled:opacity-50 ${TONES[tone]}`}
   >
     {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" /> : null}
     {children}
@@ -113,34 +121,36 @@ export const Btn: React.FC<BtnProps> = ({ onClick, busy = false, disabled = fals
 );
 
 export const Row: React.FC<{ readonly children: React.ReactNode; readonly actions?: React.ReactNode }> = ({ children, actions }) => (
-  <li className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 px-3 py-2">
-    <div className="min-w-0 flex-1 text-sm text-slate-800 dark:text-slate-200">{children}</div>
+  <li className="flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-surface-container px-3 py-2">
+    <div className="min-w-0 flex-1 text-sm text-on-surface">{children}</div>
     {actions ? <div className="flex shrink-0 flex-wrap items-center gap-2">{actions}</div> : null}
   </li>
 );
 
-export const List: React.FC<{ readonly children: React.ReactNode }> = ({ children }) => <ul className="flex flex-col gap-2">{children}</ul>;
+export const List: React.FC<{ readonly children: React.ReactNode }> = ({ children }) => <ul className="md-stagger flex flex-col gap-2">{children}</ul>;
 
 export const Empty: React.FC<{ readonly children: React.ReactNode }> = ({ children }) => (
-  <p className="rounded-xl border border-dashed border-slate-300 dark:border-slate-700 px-3 py-6 text-center text-sm text-slate-500 dark:text-slate-400">{children}</p>
+  <p className="rounded-2xl border border-dashed border-outline px-3 py-6 text-center text-sm text-on-surface-variant">{children}</p>
 );
 
 export const Loading: React.FC<{ readonly label: string }> = ({ label }) => (
-  <div className="flex min-h-[40vh] flex-col items-center justify-center gap-3 text-sm text-slate-600 dark:text-slate-300" role="status">
-    <Loader2 className="h-6 w-6 animate-spin text-cyan-700 dark:text-cyan-400" aria-hidden="true" />
+  <div className="md-fade flex min-h-[40vh] flex-col items-center justify-center gap-3 text-sm text-on-surface-variant" role="status">
+    <Loader2 className="h-6 w-6 animate-spin text-primary" aria-hidden="true" />
     {label}
   </div>
 );
 
 export const Unreachable: React.FC<{ readonly label: string }> = ({ label }) => (
-  <div className="flex min-h-[40vh] flex-col items-center justify-center gap-3 text-sm text-slate-600 dark:text-slate-300" role="alert">
-    <WifiOff className="h-6 w-6 text-rose-700 dark:text-rose-400" aria-hidden="true" />
+  <div className="md-fade flex min-h-[40vh] flex-col items-center justify-center gap-3 text-sm text-on-surface-variant" role="alert">
+    <span className="md-glyph md-pop h-12 w-12" style={{ '--md-glyph-ink': 'var(--md-sys-color-error)' } as React.CSSProperties}>
+      <WifiOff aria-hidden="true" />
+    </span>
     {label}
   </div>
 );
 
 export const Field: React.FC<{ readonly label: string; readonly children: React.ReactNode }> = ({ label, children }) => (
-  <label className="flex flex-col gap-1 text-xs font-semibold text-slate-600 dark:text-slate-400">
+  <label className="flex flex-col gap-1 text-xs font-semibold text-on-surface-variant">
     {label}
     {children}
   </label>
@@ -181,14 +191,14 @@ export const OSSectionHeader: React.FC<{
   readonly badge?: React.ReactNode;
   readonly actions?: React.ReactNode;
 }> = ({ title, eyebrow, description, badge, actions }) => (
-  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/80 pb-3 mb-4">
+  <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-outline-variant pb-3">
     <div>
-      {eyebrow && <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-600">{eyebrow}</span>}
+      {eyebrow && <span className="block text-[10px] font-bold uppercase tracking-wider text-primary">{eyebrow}</span>}
       <div className="flex items-center gap-2">
-        <h1 className="text-base font-bold text-slate-800">{title}</h1>
+        <h1 className="text-base font-bold text-on-surface">{title}</h1>
         {badge}
       </div>
-      {description && <p className="text-xs text-slate-500 mt-0.5">{description}</p>}
+      {description && <p className="mt-0.5 text-xs text-on-surface-variant">{description}</p>}
     </div>
     {actions && <div className="flex items-center gap-2">{actions}</div>}
   </div>
@@ -213,17 +223,17 @@ export const OSFilterTabs: React.FC<{
         type="button"
         aria-pressed={selected === option.id}
         onClick={() => onSelect(option.id)}
-        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium transition ${
+        className={`md-state inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1 text-xs font-medium ${
           selected === option.id
-            ? 'bg-blue-600 text-white font-semibold shadow-sm'
-            : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200/80'
+            ? 'border-transparent bg-secondary-container font-semibold text-on-secondary-container'
+            : 'border-outline bg-transparent text-on-surface-variant'
         }`}
       >
         <span>{option.label}</span>
         {option.count !== undefined && (
           <span
             className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono ${
-              selected === option.id ? 'bg-blue-700 text-blue-900' : 'bg-slate-100 text-slate-500'
+              selected === option.id ? 'bg-primary text-on-primary' : 'bg-surface-container-high text-on-surface-variant'
             }`}
           >
             {option.count}
@@ -282,10 +292,10 @@ export const OSSidebar: React.FC<{
           type="button"
           aria-pressed={activeId === item.id}
           onClick={() => onSelect(item.id)}
-          className={`flex items-center justify-between gap-2 rounded-lg px-2.5 py-1.5 text-xs font-medium transition ${
+          className={`md-state flex items-center justify-between gap-2 rounded-full border-0 px-3 py-1.5 text-xs font-medium ${
             activeId === item.id
-              ? 'bg-blue-600 text-white font-semibold shadow-xs'
-              : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900'
+              ? 'bg-secondary-container font-semibold text-on-secondary-container'
+              : 'bg-transparent text-on-surface-variant'
           }`}
         >
           <span className="flex items-center gap-2 truncate">
@@ -295,7 +305,7 @@ export const OSSidebar: React.FC<{
           {item.count !== undefined && (
             <span
               className={`rounded-full px-1.5 py-0.2 text-[10px] font-mono ${
-                activeId === item.id ? 'bg-blue-700 text-blue-900' : 'bg-slate-200/70 text-slate-600'
+                activeId === item.id ? 'bg-primary text-on-primary' : 'bg-surface-container-high text-on-surface-variant'
               }`}
             >
               {item.count}

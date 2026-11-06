@@ -132,7 +132,7 @@ export const PackageCard: React.FC<PackageCardProps> = ({
                 type="button"
                 onClick={() => onUninstall(pkg)}
                 disabled={isBusy}
-                className="os-btn os-btn-ghost text-rose-400 hover:text-rose-300 py-1 px-2.5 text-xs"
+                className="os-btn os-btn-ghost text-error py-1 px-2.5 text-xs"
               >
                 <Trash2 className="w-3.5 h-3.5" />
                 <span>{isBusy ? t('uninstalling') : t('uninstall')}</span>

@@ -123,8 +123,8 @@ export const AddonsStepInstallerModal: React.FC<AddonsStepInstallerModalProps> =
               </div>
 
               {!hasEnoughSpace && (
-                <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2">
-                  <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
+                <div className="flex items-center gap-2 rounded-xl bg-error-container p-3 text-xs text-on-error-container">
+                  <AlertTriangle className="h-4 w-4 shrink-0 text-error" />
                   <span>{t('insufficient_space') || 'Spazio su disco insufficiente per completare l\'installazione.'}</span>
                 </div>
               )}
