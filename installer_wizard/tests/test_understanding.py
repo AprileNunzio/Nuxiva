@@ -155,8 +155,8 @@ class FlowTest(unittest.TestCase):
         saved = dict(desk.instances)
         desk.instances.clear()
         self.addCleanup(lambda: (desk.instances.clear(), desk.instances.update(saved)))
-        dialogue.turns.pop(DEVICE, None)
-        self.addCleanup(lambda: dialogue.turns.pop(DEVICE, None))
+        dialogue.forget(DEVICE)
+        self.addCleanup(lambda: dialogue.forget(DEVICE))
         router.RING.clear()
 
     def handle(self, text: str) -> dict:

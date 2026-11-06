@@ -32,6 +32,7 @@ from features.mind.mind import mind
 from features.chat import context as request_context
 from features.desktop.desk import desk
 from features.people import learning, people
+from features.people.identity import first_name
 from features.skills.library import library as skill_library
 from features.study import study
 from features.voices import languages
@@ -54,7 +55,7 @@ async def _core_call(query: str, device: str, speech_lang: dict) -> dict:
     if capabilities.enabled():
         context["capabilities"] = capabilities.summary()
     context["speaker"] = speaker.instruction()
-    recent = dialogue.context(device)
+    recent = dialogue.context(device, query)
     if recent:
         context["dialogue"] = recent
     knowledge = await study.engine.recall(query)
@@ -112,6 +113,11 @@ async def _core_call(query: str, device: str, speech_lang: dict) -> dict:
             raise HTTPException(503, "privacy_blocked") from exc
         store.event("ERROR", f"Nessun cervello ha risposto: {exc}", "core")
         raise HTTPException(502, "Nessun cervello disponibile: controlla modelli locali e chiavi cloud")
+
+
+def _speaker_name(slug: str) -> str:
+    profile = people.load(slug) if slug and SLUG_RE.match(slug) else None
+    return first_name(profile) if profile else ""
 
 
 def _heard(body: dict) -> dict:
@@ -187,7 +193,7 @@ async def assistant_chat(text: str, device: str, heard_lang: str | None = None, 
     if isinstance(result.get("ui"), dict):
         result["ui"].setdefault("presence", presence(result["reply"], result["ui"]))
     if not internal:
-        dialogue.remember(device, said, result["reply"], result.get("intent", ""))
+        dialogue.remember(device, said, result["reply"], result.get("intent", ""), _speaker_name(heard.get("speaker") or ""))
     result["lang"] = languages.detect(result.get("reply") or "", speech_lang["lang"])
     result["language"] = {**speech_lang, "label": languages.label(speech_lang["lang"])}
     result["identity"] = principal.describe()
@@ -328,8 +334,7 @@ async def admin_chat(request: Request, _: str = Depends(require_admin)):
 async def admin_forget_history(user: str = Depends(require_admin)):
     from features.chat.history import history
     removed = history.forget()
-    dialogue.turns.clear()
-    dialogue.loaded.clear()
+    dialogue.forget()
     store.event("INFO", f"Storia delle conversazioni cancellata da {user} ({removed} scambi)", "chat")
     return {"removed": removed}
 

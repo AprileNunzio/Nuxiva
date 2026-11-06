@@ -9,6 +9,7 @@ mod bus;
 mod config;
 mod cortex;
 mod dialog;
+mod dialogue;
 mod display;
 mod ear;
 mod embodied;
@@ -108,6 +109,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     ear::register(m)?;
     face::register(m)?;
     dialog::register(m)?;
+    dialogue::register(m)?;
     voice::register(m)?;
     m.add_class::<RustSynapticBus>()?;
     m.add_class::<SynapticWeightMatrix>()?;
