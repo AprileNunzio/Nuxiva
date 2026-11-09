@@ -8,6 +8,7 @@
     "Owner's widgets on the display: resources, systems, firewall, updates and news when you come close"
   ],
   "settings": {
+    "NUXIVA_REMOTE_CAMERA_PROBE": "Allow administrators to test recognition using a remote webcam",
     "NUXIVA_REMOTE_CAMERA_PREVIEW": "Allow local webcam preview in authorized remote browsers",
     "NUXIVA_REMOTE_MIC_INPUT": "Allow audio input from authorized remote sessions and nodes",
     "NUXIVA_DESKTOP_THEME": "Desktop Theme",

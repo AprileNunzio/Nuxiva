@@ -5,6 +5,11 @@ from fastapi.responses import FileResponse, JSONResponse
 
 from access import NO_CACHE, is_local, require_admin, require_display, require_internal, session_user
 from config import env_get
+from features.authz.access_control import account, allows
+from features.desktop.camera_probe import probe_camera
+from features.desktop.camera_sessions import (
+    SESSION_HEADER, TTL_SECONDS, camera_owner, camera_sessions, require_camera_enabled,
+)
 from features.desktop.desk import FILES, desk
 from features.desktop.sources import PROVIDERS, SOURCES
 from features.music import music
@@ -13,15 +18,44 @@ from state import store
 
 public_routes = APIRouter()
 admin_routes = APIRouter()
+public_routes.add_api_route("/api/display/remote-media/camera/probe", probe_camera, methods=["POST"])
 
 
 @public_routes.get("/api/display/remote-media")
 async def remote_media(request: Request):
-    authorized = request.url.scheme == "https" and bool(session_user(request) or display_node(request))
+    user = session_user(request) if request.url.scheme == "https" else None
+    authorized = request.url.scheme == "https" and bool(user or display_node(request))
+    camera = authorized and env_get("NUXIVA_REMOTE_CAMERA_PREVIEW", "0") == "1"
     return JSONResponse({
-        "camera_preview": authorized and env_get("NUXIVA_REMOTE_CAMERA_PREVIEW", "0") == "1",
+        "camera_preview": camera,
+        "camera_probe": bool(camera and user and env_get("NUXIVA_REMOTE_CAMERA_PROBE", "0") == "1"
+                             and allows(account(user)["role"], "api.admin")),
         "microphone": authorized and env_get("NUXIVA_REMOTE_MIC_INPUT", "0") == "1",
     }, headers=NO_CACHE)
+
+
+@public_routes.post("/api/display/remote-media/camera")
+async def create_remote_camera(request: Request):
+    owner = camera_owner(request)
+    require_camera_enabled()
+    return JSONResponse({"token": camera_sessions.issue(owner), "expires_in": TTL_SECONDS},
+                        status_code=201, headers=NO_CACHE)
+
+
+@public_routes.put("/api/display/remote-media/camera")
+async def renew_remote_camera(request: Request):
+    owner = camera_owner(request)
+    require_camera_enabled()
+    if not camera_sessions.update(request.headers.get(SESSION_HEADER, ""), owner):
+        raise HTTPException(404, "camera.session.expired")
+    return JSONResponse({"expires_in": TTL_SECONDS}, headers=NO_CACHE)
+
+
+@public_routes.delete("/api/display/remote-media/camera")
+async def revoke_remote_camera(request: Request):
+    owner = camera_owner(request)
+    camera_sessions.update(request.headers.get(SESSION_HEADER, ""), owner, revoke=True)
+    return JSONResponse({"ok": True}, headers=NO_CACHE)
 
 desk.register_source("now_playing", music.watcher.current)
 for _name, _fn in SOURCES.items():

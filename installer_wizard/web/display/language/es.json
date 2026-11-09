@@ -5,6 +5,9 @@
     "version": "2.0.0"
   },
   "dictionary": {
+    "remote_media_probe": "Probar reconocimiento (enviar un fotograma)",
+    "remote_media_probe_match": "Coincidencia encontrada.",
+    "remote_media_probe_no_match": "Sin coincidencia inequívoca.",
     "remote_media_title": "Dispositivos de este navegador",
     "remote_media_camera": "Activar vista previa de la cámara",
     "remote_media_mic": "Activar micrófono",

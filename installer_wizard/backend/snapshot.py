@@ -14,6 +14,7 @@ import stream_delta
 from access import NO_CACHE
 from config import ADMIN_PORT, NODE, OLLAMA_URL, PUBLIC_PORT, STATE_DIR, VERSION, read_env
 from features.agency.presence import intent as agency_intent
+from features.desktop.display_scope import is_host_display, remote_state
 from features.brain.brains import brains
 from features.home_assistant import home
 from features.music import music
@@ -27,9 +28,9 @@ FACE_KEYS = {"NUXIVA_AVATAR", "NUXIVA_AVATAR_STYLE", "NUXIVA_FACE_COLOR"}
 SHARED_MAX_AGE = 1.0
 log = logging.getLogger("nuxiva.snapshot")
 _reported: dict[str, str] = {}
-_shared: dict[bool, tuple[int, float, dict, str, int]] = {}
+_shared: dict[bool | str, tuple[int, float, dict, str, int]] = {}
 _builds = {"count": 0}
-_deltas = {False: stream_delta.DeltaCache(), True: stream_delta.DeltaCache()}
+_deltas = {key: stream_delta.DeltaCache() for key in (False, True, "remote")}
 
 
 def _report(section: str, exc: BaseException) -> None:
@@ -169,43 +170,47 @@ def full_snapshot(admin: bool) -> dict:
     return audience_view.redact(planned, store.audience, presence_bridge.show_options())
 
 
-def _shared_entry(admin: bool) -> tuple[int, float, dict, str, int]:
+def _shared_entry(admin: bool, remote: bool = False) -> tuple[int, float, dict, str, int]:
     now = time.time()
     version = store.version
-    cached = _shared.get(admin)
+    key = "remote" if remote else admin
+    cached = _shared.get(key)
     if cached and cached[0] == version and now - cached[1] < SHARED_MAX_AGE:
         return cached
-    snap = full_snapshot(admin)
+    snap = remote_state({**store.snapshot(), "asset_version": ASSET_VERSION}) if remote else full_snapshot(admin)
     text = json.dumps(snap, ensure_ascii=False, default=str)
     if cached and cached[3] == text:
         entry = (version, now, cached[2], cached[3], cached[4])
     else:
         _builds["count"] += 1
         entry = (version, now, snap, text, _builds["count"])
-    _shared[admin] = entry
+    _shared[key] = entry
     return entry
 
 
-def shared_snapshot(admin: bool) -> tuple[dict, str]:
-    entry = _shared_entry(admin)
+def shared_snapshot(admin: bool, remote: bool = False) -> tuple[dict, str]:
+    entry = _shared_entry(admin, remote)
     return entry[2], entry[3]
 
 
-def shared_build(admin: bool) -> stream_delta.Build:
-    entry = _shared_entry(admin)
+def shared_build(admin: bool, remote: bool = False) -> stream_delta.Build:
+    entry = _shared_entry(admin, remote)
     return stream_delta.Build(entry[4], entry[3])
 
 
-def delta_frame(admin: bool, before: stream_delta.Build | None, cursor: int) -> tuple[str | None, stream_delta.Build, int]:
-    after = shared_build(admin)
-    pending = display_events.events.since(cursor)
+def delta_frame(admin: bool, before: stream_delta.Build | None, cursor: int,
+                remote: bool = False) -> tuple[str | None, stream_delta.Build, int]:
+    after = shared_build(admin, remote)
+    pending = [] if remote else display_events.events.since(cursor)
     events = [{"k": e.kind, "p": e.payload} for e in pending]
-    text = stream_delta.frame(_deltas[admin], before, after, events)
+    text = stream_delta.frame(_deltas["remote" if remote else admin], before, after, events)
     return text, after, pending[-1].seq if pending else cursor
 
 
-def frame(admin: bool, cursor: int) -> tuple[str, int]:
-    snap, text = shared_snapshot(admin)
+def frame(admin: bool, cursor: int, remote: bool = False) -> tuple[str, int]:
+    snap, text = shared_snapshot(admin, remote)
+    if remote:
+        return text, cursor
     pending = display_events.events.since(cursor)
     if not pending:
         return text, cursor
@@ -217,12 +222,13 @@ def frame(admin: bool, cursor: int) -> tuple[str, int]:
 
 def sse(admin: bool):
     async def generator(request: Request):
+        remote = not admin and not is_host_display(request)
         last_version, last_sent = -1, 0.0
         cursor = display_events.events.cursor()
         while not await request.is_disconnected():
             if store.version != last_version or time.time() - last_sent > 10:
                 last_version, last_sent = store.version, time.time()
-                text, cursor = frame(admin, cursor)
+                text, cursor = frame(admin, cursor, remote)
                 yield f"data: {text}\n\n"
             await asyncio.sleep(0.5)
 
@@ -237,6 +243,7 @@ KEEPALIVE = 10.0
 
 def sse_delta(admin: bool):
     async def generator(request: Request):
+        remote = not admin and not is_host_display(request)
         last_version, last_sent, last_built = -1, time.time(), 0.0
         before: stream_delta.Build | None = None
         cursor = display_events.events.cursor()
@@ -244,7 +251,7 @@ def sse_delta(admin: bool):
             now = time.time()
             if store.version != last_version or before is None or now - last_built > KEEPALIVE:
                 last_version, last_built = store.version, now
-                text, before, cursor = delta_frame(admin, before, cursor)
+                text, before, cursor = delta_frame(admin, before, cursor, remote)
                 if text is not None:
                     last_sent = now
                     yield f"data: {text}\n\n"

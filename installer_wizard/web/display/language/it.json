@@ -5,6 +5,9 @@
     "version": "2.0.0"
   },
   "dictionary": {
+    "remote_media_probe": "Verifica riconoscimento (invia un fotogramma)",
+    "remote_media_probe_match": "Corrispondenza trovata.",
+    "remote_media_probe_no_match": "Nessuna corrispondenza univoca.",
     "remote_media_title": "Dispositivi di questo browser",
     "remote_media_camera": "Attiva anteprima webcam",
     "remote_media_mic": "Attiva microfono",

@@ -2,8 +2,14 @@ import json
 import unittest
 from unittest import mock
 
+from starlette.requests import Request
+from fastapi import HTTPException
+
 import display_events
 import snapshot
+from features.desktop.camera_sessions import MAX_PER_LOGIN, TTL_SECONDS, CameraSessions, camera_owner
+from features.desktop.display_scope import is_host_display
+from features.vision.remote_frame import CONTENT_TYPE, FRAME_BYTES, read_frame
 from state import store
 
 
@@ -65,6 +71,128 @@ class SharedSnapshotTests(unittest.TestCase):
         self.assertEqual(json.loads(text_a)["holo_action"], {"express": "smile"})
         self.assertEqual(json.loads(text_b)["holo_action"], {"express": "smile"})
         self.assertNotIn("holo_action", json.loads(again))
+
+    def test_remote_snapshot_and_both_stream_formats_exclude_host_presence(self):
+        events = display_events.DisplayEvents()
+        private = {
+            "phase": "READY",
+            "presence": {"people": [{"name": "Owner"}]},
+            "audience": {"kind": "authorized"},
+            "greeting": {"names": ["Owner"]},
+            "desk": [{"data": "private payload"}],
+        }
+        with mock.patch.object(display_events, "events", events), \
+                mock.patch.object(snapshot, "full_snapshot", return_value=private), \
+                mock.patch.object(store, "snapshot", return_value=private):
+            cursor = events.cursor()
+            events.push("holo_action", {"play": "private event"})
+            host, _ = snapshot.frame(False, cursor)
+            remote, _ = snapshot.frame(False, cursor, remote=True)
+            delta, _, _ = snapshot.delta_frame(False, None, cursor, remote=True)
+            public, _ = snapshot.shared_snapshot(False, remote=True)
+
+        self.assertEqual(public["phase"], "READY")
+        self.assertEqual(public["audience"]["kind"], "uncertain")
+        self.assertEqual(public["presence"]["people"], [])
+        self.assertIsNone(public["greeting"])
+        self.assertEqual(public["desk"], [])
+        for payload in (remote, delta):
+            for secret in ("Owner", "private payload", "private event"):
+                self.assertNotIn(secret, payload)
+        self.assertIn("private event", host)
+
+    def test_only_direct_loopback_requests_share_the_host_display_scope(self):
+        def request(peer, host, forwarded=None):
+            headers = [(b"host", host)]
+            if forwarded:
+                headers.append((b"x-forwarded-for", forwarded))
+            return Request({"type": "http", "scheme": "http", "path": "/", "headers": headers,
+                            "client": (peer, 50000), "server": ("127.0.0.1", 8080)})
+
+        self.assertTrue(is_host_display(request("127.0.0.1", b"localhost:8080")))
+        self.assertFalse(is_host_display(request("192.168.1.20", b"localhost:8080")))
+        self.assertFalse(is_host_display(request("127.0.0.1", b"nuxiva.local")))
+        self.assertFalse(is_host_display(request("127.0.0.1", b"localhost:8080", b"192.168.1.20")))
+
+
+class CameraSessionTests(unittest.TestCase):
+    def test_lease_is_bound_to_its_owner_and_can_be_revoked(self):
+        sessions = CameraSessions()
+        first, second = sessions.issue("first"), sessions.issue("second")
+        self.assertFalse(sessions.update(first, "second"))
+        self.assertFalse(sessions.update(first, "second", revoke=True))
+        self.assertTrue(sessions.update(first, "first", revoke=True))
+        self.assertFalse(sessions.update(first, "first"))
+        self.assertTrue(sessions.update(second, "second"))
+
+    def test_expired_lease_cannot_be_reopened_and_releases_capacity(self):
+        clock = mock.Mock(return_value=0.0)
+        sessions = CameraSessions(clock)
+        tokens = [sessions.issue("owner") for _ in range(MAX_PER_LOGIN)]
+        with self.assertRaises(HTTPException) as error:
+            sessions.issue("owner")
+        self.assertEqual(error.exception.status_code, 429)
+        clock.return_value = TTL_SECONDS / 2
+        self.assertTrue(sessions.update(tokens[0], "owner"))
+        clock.return_value = TTL_SECONDS
+        self.assertTrue(sessions.update(tokens[0], "owner"))
+        self.assertFalse(sessions.update(tokens[1], "owner"))
+        self.assertTrue(sessions.issue("owner"))
+
+    def test_camera_request_requires_an_authorized_same_origin_https_session(self):
+        def request(origin, scheme="https"):
+            return Request({
+                "type": "http", "scheme": scheme, "path": "/", "server": ("nuxiva.test", 443),
+                "headers": [(b"host", b"nuxiva.test"), (b"origin", origin), (b"x-nuxiva-request", b"1")],
+            })
+
+        with mock.patch("features.desktop.camera_sessions.session_user", return_value=None), \
+                mock.patch("features.desktop.camera_sessions.display_node", return_value=None):
+            for origin, scheme, expected in (
+                (b"https://other.test", "https", 403),
+                (b"https://nuxiva.test", "http", 403),
+                (b"https://nuxiva.test", "https", 401),
+            ):
+                with self.assertRaises(HTTPException) as error:
+                    camera_owner(request(origin, scheme))
+                self.assertEqual(error.exception.status_code, expected)
+
+    def test_frame_admission_is_rate_limited_across_renewal(self):
+        clock = mock.Mock(return_value=0.0)
+        sessions = CameraSessions(clock)
+        token = sessions.issue("owner")
+        sessions.admit_frame(token, "owner")
+        self.assertTrue(sessions.update(token, "owner"))
+        with self.assertRaises(HTTPException) as limited:
+            sessions.admit_frame(token, "owner")
+        self.assertEqual(limited.exception.status_code, 429)
+        clock.return_value = 1.0
+        sessions.admit_frame(token, "owner")
+        with self.assertRaises(HTTPException) as denied:
+            sessions.admit_frame(token, "another-login")
+        self.assertEqual(denied.exception.status_code, 404)
+
+
+class RemoteFrameTests(unittest.IsolatedAsyncioTestCase):
+    async def test_accepts_only_complete_bounded_raw_frames(self):
+        def request(data, size=FRAME_BYTES, content_type=CONTENT_TYPE):
+            async def receive():
+                return {"type": "http.request", "body": data, "more_body": False}
+            return Request({"type": "http", "headers": [
+                (b"content-type", content_type.encode()), (b"content-length", str(size).encode()),
+            ]}, receive)
+
+        frame = bytes(FRAME_BYTES)
+        self.assertEqual(await read_frame(request(frame)), frame)
+        for invalid, code in (
+            (request(frame, content_type="image/jpeg"), 415),
+            (request(frame, size=0), 413),
+            (request(frame + b"0"), 413),
+            (request(frame[:-1]), 400),
+        ):
+            with self.assertRaises(HTTPException) as error:
+                await read_frame(invalid)
+            self.assertEqual(error.exception.status_code, code)
 
 
 if __name__ == "__main__":

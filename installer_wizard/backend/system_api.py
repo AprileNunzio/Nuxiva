@@ -16,7 +16,8 @@ from pages import page
 from features.locale.api import page_language
 from settings import apply_config
 import display_events
-from snapshot import full_snapshot, sse, sse_delta
+from snapshot import full_snapshot, shared_snapshot, sse, sse_delta
+from features.desktop.display_scope import is_host_display
 from state import INSTALL_LOG, store
 from steps import STEP_BY_ID
 from tasks import background, delayed
@@ -119,8 +120,9 @@ async def healthz():
 
 
 @public_routes.get("/api/state")
-async def public_state():
-    return JSONResponse(full_snapshot(admin=False), headers=NO_CACHE)
+async def public_state(request: Request):
+    snap, _ = shared_snapshot(admin=False, remote=not is_host_display(request))
+    return JSONResponse(snap, headers=NO_CACHE)
 
 
 @public_routes.get("/api/system/identity")

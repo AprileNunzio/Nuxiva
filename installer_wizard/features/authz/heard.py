@@ -53,7 +53,7 @@ class HeardLog:
         with self._lock:
             return [p for p in self._items if p.device == device and 0 <= now - p.at <= window]
 
-    def verify(self, slug: str, text: str, now: float | None = None) -> VoiceProof | None:
+    def verify(self, slug: str, text: str, now: float | None = None, *, device: str | None = None) -> VoiceProof | None:
         wanted = normalize(text)
         if not slug or not wanted:
             return None
@@ -62,7 +62,7 @@ class HeardLog:
             for proof in reversed(self._items):
                 if now - proof.at > KEEP_SECONDS:
                     break
-                if proof.slug == slug and proof.text == wanted:
+                if proof.slug == slug and proof.text == wanted and (device is None or proof.device == device):
                     return proof
         return None
 

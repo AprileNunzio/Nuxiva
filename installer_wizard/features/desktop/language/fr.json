@@ -10,6 +10,7 @@
     "Widgets du propriétaire sur l'écran : ressources, systèmes, pare-feu, mises à jour et actualités quand vous vous approchez"
   ],
   "settings": {
+    "NUXIVA_REMOTE_CAMERA_PROBE": "Autoriser les administrateurs à tester la reconnaissance par webcam distante",
     "NUXIVA_REMOTE_CAMERA_PREVIEW": "Autoriser l’aperçu local de la webcam dans les navigateurs distants autorisés",
     "NUXIVA_REMOTE_MIC_INPUT": "Autoriser l’audio des sessions et des nœuds distants autorisés",
     "NUXIVA_PRIVACY_AUTOCLOSE": "Fermez les widgets contenant des données personnelles lorsque vous êtes absent",

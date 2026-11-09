@@ -64,8 +64,10 @@ def for_session() -> Principal:
 def for_request(device: str, speaker: str, text: str) -> Principal:
     if device in SESSION_DEVICES:
         return for_session()
+    if device == "remote_display":
+        return ANONYMOUS
     seen = faces()
-    proof = heard.verify(speaker, text)
+    proof = heard.verify(speaker, text, device="mic:local")
     if proof:
         profile = _profile(proof.slug)
         if not profile:

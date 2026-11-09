@@ -22,6 +22,7 @@ from objects import ObjectDetector
 from shared_frames import SharedEncoder
 from tracks import Track, facing, iou, reliable_unknown
 from observer import Observer, router as observer_router
+from remote_probe import router as remote_probe_router
 from bodies import router as bodies_router
 from views import Views, router as views_router
 from vitalcam import VitalCam
@@ -339,6 +340,7 @@ threading.Thread(target=views.backfill, daemon=True, name="segni-particolari").s
 app.include_router(views_router(views))
 app.include_router(observer_router(Observer(views, gallery)))
 app.include_router(bodies_router(lambda: vision.objects))
+app.include_router(remote_probe_router(views, gallery))
 
 
 @app.get("/health")

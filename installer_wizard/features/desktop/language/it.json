@@ -10,6 +10,7 @@
     "Widget del proprietario sul display: risorse, sistemi, firewall, aggiornamenti e notizie quando ti avvicini"
   ],
   "settings": {
+    "NUXIVA_REMOTE_CAMERA_PROBE": "Consenti agli amministratori una prova di riconoscimento con la webcam remota",
     "NUXIVA_REMOTE_CAMERA_PREVIEW": "Consenti l'anteprima locale della webcam nei browser remoti autorizzati",
     "NUXIVA_REMOTE_MIC_INPUT": "Consenti l'invio audio da sessioni e nodi remoti autorizzati",
     "NUXIVA_PRIVACY_AUTOCLOSE": "Chiudi i widget con dati personali quando non ci sei",

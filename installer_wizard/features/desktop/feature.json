@@ -108,6 +108,16 @@
       ]
     },
     {
+      "key": "NUXIVA_REMOTE_CAMERA_PROBE",
+      "label": "Consenti agli amministratori una prova di riconoscimento con la webcam remota",
+      "type": "select",
+      "default": "0",
+      "options": [
+        {"value": "0", "label": "No"},
+        {"value": "1", "label": "Sì"}
+      ]
+    },
+    {
       "key": "NUXIVA_REMOTE_MIC_INPUT",
       "label": "Consenti l'invio audio da sessioni e nodi remoti autorizzati",
       "type": "select",

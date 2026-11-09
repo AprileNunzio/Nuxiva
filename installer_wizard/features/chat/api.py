@@ -5,7 +5,7 @@ import re
 import time
 
 import httpx
-from access import NO_CACHE, is_local, lang_of, require_admin, require_display
+from access import NO_CACHE, is_local, lang_of, require_admin, require_display, session_user
 from background import queue as install_queue
 from config import CORE_URL
 from core_client import core
@@ -15,6 +15,7 @@ from state import store
 from tasks import background
 
 from features.authz import resolve as authz_resolve
+from features.authz.access_control import account, allows
 from features.authz.principal import act_as, acting
 from features.places import context as place_context
 from features.brain.brains import brains
@@ -31,6 +32,7 @@ from features.laws.laws import laws
 from features.mind.mind import mind
 from features.chat import context as request_context
 from features.desktop.desk import desk
+from features.desktop.display_scope import is_host_display
 from features.people import learning, people
 from features.people.identity import first_name
 from features.skills.library import library as skill_library
@@ -228,16 +230,25 @@ async def assistant_reply(text: str, device: str, lang: str | None = None) -> di
     return json.loads((await assistant_chat(text, device, lang)).body)
 
 
+def _display_chat_device(request: Request) -> str:
+    if is_host_display(request):
+        return "kiosk"
+    user = session_user(request) if request.url.scheme == "https" else None
+    if user and allows(account(user)["role"], "api.admin"):
+        return "remote"
+    return "remote_display"
+
+
 @public_routes.post("/api/assistant/chat")
 async def public_chat(request: Request):
     require_display(request, f"Per parlare con {assistant_name()} da remoto accedi al pannello :8080")
     body = await request.json()
-    internal = bool(body.get("internal") or request.headers.get("x-nuxiva-internal") == "1")
-    device = "selftest" if internal else ("kiosk" if is_local(request) else "remote")
-    cid = str(body.get("client_id") or request.headers.get("x-nuxiva-client") or ("kiosk" if is_local(request) else "remote"))[:80]
+    device = _display_chat_device(request)
+    internal = device == "kiosk" and request.headers.get("x-nuxiva-internal") == "1"
+    cid = str(body.get("client_id") or request.headers.get("x-nuxiva-client") or device)[:80]
     request_context.client.set(cid)
-    return await assistant_chat(body.get("text", ""), device, lang_of(body),
-                                _heard(body), internal=internal, client_id=cid)
+    return await assistant_chat(body.get("text", ""), "selftest" if internal else device, lang_of(body),
+                                _heard(body) if device == "kiosk" else None, internal=internal, client_id=cid)
 
 
 def _sse(event: dict) -> str:
@@ -279,8 +290,10 @@ def _streaming_response(generator) -> StreamingResponse:
 async def public_chat_stream(request: Request):
     require_display(request, f"Per parlare con {assistant_name()} da remoto accedi al pannello :8080")
     body = await request.json()
-    cid = str(body.get("client_id") or request.headers.get("x-nuxiva-client") or ("kiosk" if is_local(request) else "remote"))[:80]
-    return _streaming_response(_stream_chat(body.get("text", ""), "kiosk" if is_local(request) else "remote", lang_of(body), _heard(body), client_id=cid))
+    device = _display_chat_device(request)
+    cid = str(body.get("client_id") or request.headers.get("x-nuxiva-client") or device)[:80]
+    heard = _heard(body) if device == "kiosk" else None
+    return _streaming_response(_stream_chat(body.get("text", ""), device, lang_of(body), heard, client_id=cid))
 
 
 @admin_routes.post("/api/assistant/chat/stream")

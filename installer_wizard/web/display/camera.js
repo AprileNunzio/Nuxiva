@@ -4,7 +4,7 @@
   const KEY = "nuxiva-cam-zone";
   const COLORS = ["#29e0ff", "#3dffa8", "#ffb547", "#ff4d6a", "#ffffff"];
   const cam = D.cam = { on: false, mirror: true, zoom: 1, draw: false, color: COLORS[0], zone: null, hidden: false, shots: [], source: "" };
-  let root, video, ink, mini, bar, strip, flash, pen, stream, poll, feedTimer, lastStroke;
+  let root, video, ink, mini, bar, strip, flash, pen, poll, feedTimer, lastStroke;
 
   const stored = () => { try { return JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { return null; } };
   const keep = () => { try { localStorage.setItem(KEY, JSON.stringify({ x: cam.zone.x, y: cam.zone.y })); } catch (e) {} };
@@ -204,30 +204,13 @@
     next();
   }
 
-  async function useBrowserCamera() {
-    if (!window.isSecureContext || !navigator.mediaDevices || D.remoteMedia?.camera_preview !== true) return false;
-    let next;
-    try {
-      next = await navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "user" }, audio: false });
-    } catch (err) { return false; }
-    if (!cam.on || D.remoteMedia?.camera_preview !== true) {
-      next.getTracks().forEach((track) => track.stop());
-      return false;
-    }
-    stream = next;
-    video.img.hidden = true; video.tag.hidden = false;
-    video.tag.srcObject = stream;
-    cam.source = "browser";
-    return true;
-  }
-
   function release() {
     clearTimeout(feedTimer); clearTimeout(poll); poll = null;
-    if (stream) { stream.getTracks().forEach((t) => t.stop()); stream = null; }
     if (video) { video.tag.srcObject = null; video.img.onload = video.img.onerror = null; video.img.removeAttribute("src"); }
   }
 
   async function setCamera(on) {
+    if (on && !D.local && D.remoteMedia?.camera_preview === true && D.openRemoteCamera) return D.openRemoteCamera();
     if (on === cam.on) return;
     if (on) {
       build();
@@ -237,10 +220,7 @@
       cam.prevZone = D.stageZone;
       document.body.classList.add("cam");
       cam.hidden = false;
-      if (D.local || !(await useBrowserCamera())) {
-        if (!cam.on) return;
-        useServerFeed();
-      }
+      useServerFeed();
       pen.clearRect(0, 0, ink.width, ink.height);
       paint();
       applyZone();
@@ -258,7 +238,6 @@
   }
 
   D.setCamera = setCamera;
-  D.stopBrowserCamera = () => { if (stream) setCamera(false); };
   D.startCamera = () => {
     setInterval(() => {
       if (!cam.on) return;

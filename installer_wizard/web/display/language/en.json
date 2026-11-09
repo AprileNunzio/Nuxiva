@@ -5,6 +5,9 @@
     "version": "2.0.0"
   },
   "dictionary": {
+    "remote_media_probe": "Test recognition (send one frame)",
+    "remote_media_probe_match": "Match found.",
+    "remote_media_probe_no_match": "No unambiguous match.",
     "remote_media_title": "Devices in this browser",
     "remote_media_camera": "Enable webcam preview",
     "remote_media_mic": "Enable microphone",

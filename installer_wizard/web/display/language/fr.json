@@ -5,6 +5,9 @@
     "version": "2.0.0"
   },
   "dictionary": {
+    "remote_media_probe": "Tester la reconnaissance (envoyer une image)",
+    "remote_media_probe_match": "Correspondance trouvée.",
+    "remote_media_probe_no_match": "Aucune correspondance unique.",
     "remote_media_title": "Appareils de ce navigateur",
     "remote_media_camera": "Activer l’aperçu webcam",
     "remote_media_mic": "Activer le microphone",

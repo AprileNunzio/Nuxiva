@@ -63,6 +63,17 @@ class ResolveTests(unittest.TestCase):
         who = resolve.for_request("kiosk", "nunzio", "esegui il backup")
         self.assertEqual((who.slug, who.role, who.strength), ("nunzio", "owner", Strength.STRONG))
 
+    def test_remote_display_cannot_inherit_host_biometrics(self):
+        store.presence = {"people": [_face("nunzio")]}
+        heard.record("nunzio", 0.8, "esegui il backup")
+        self.assertEqual(resolve.for_request("remote_display", "nunzio", "esegui il backup"), ANONYMOUS)
+
+    def test_remote_audio_cannot_be_combined_with_the_host_face(self):
+        store.presence = {"people": [_face("nunzio")]}
+        heard.record("nunzio", 0.8, "esegui il backup", device="mic:remote")
+        principal = resolve.for_request("kiosk", "nunzio", "esegui il backup")
+        self.assertEqual((principal.strength, principal.factors), (Strength.SINGLE, ("face",)))
+
     def test_confident_voice_alone_is_single(self):
         store.presence = {"people": []}
         heard.record("anna", 0.75, "leggi il file")
