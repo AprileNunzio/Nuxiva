@@ -3,6 +3,15 @@
     "locale": "fr"
   },
   "dictionary": {
+    "desktop_widgets_title": "Widgets et personnalisation",
+    "desktop_widgets_description": "Choisissez les contenus affichés et si l’écran peut s’adapter à vos habitudes.",
+    "desktop_privacy_title": "Présence et confidentialité",
+    "desktop_privacy_description": "Définissez ce que peuvent voir les personnes autorisées, les invités et les pièces sans caméra.",
+    "desktop_devices_title": "Appareils distants",
+    "desktop_devices_description": "Gérez séparément l’aperçu webcam, le test de reconnaissance et l’audio distant.",
+    "desktop_timing_title": "Fermeture des données privées",
+    "desktop_timing_description": "Choisissez quand masquer les widgets personnels après un départ ou un déverrouillage vocal.",
+    "desktop_other_title": "Autres paramètres",
     "title": "Parametres des fonctions",
     "description": "Centre des fonctionnalités",
     "status": "Actif",

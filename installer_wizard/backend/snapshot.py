@@ -177,7 +177,11 @@ def _shared_entry(admin: bool, remote: bool = False) -> tuple[int, float, dict, 
     cached = _shared.get(key)
     if cached and cached[0] == version and now - cached[1] < SHARED_MAX_AGE:
         return cached
-    snap = remote_state({**store.snapshot(), "asset_version": ASSET_VERSION}) if remote else full_snapshot(admin)
+    if remote:
+        from background import queue
+        snap = remote_state({**store.snapshot(), "asset_version": ASSET_VERSION}, queue.snapshot(), face_options())
+    else:
+        snap = full_snapshot(admin)
     text = json.dumps(snap, ensure_ascii=False, default=str)
     if cached and cached[3] == text:
         entry = (version, now, cached[2], cached[3], cached[4])

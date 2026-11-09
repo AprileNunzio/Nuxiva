@@ -8,7 +8,7 @@ from fastapi import HTTPException
 import display_events
 import snapshot
 from features.desktop.camera_sessions import MAX_PER_LOGIN, TTL_SECONDS, CameraSessions, camera_owner
-from features.desktop.display_scope import is_host_display
+from features.desktop.display_scope import is_host_display, remote_state
 from features.vision.remote_frame import CONTENT_TYPE, FRAME_BYTES, read_frame
 from state import store
 
@@ -113,6 +113,18 @@ class SharedSnapshotTests(unittest.TestCase):
         self.assertFalse(is_host_display(request("192.168.1.20", b"localhost:8080")))
         self.assertFalse(is_host_display(request("127.0.0.1", b"nuxiva.local")))
         self.assertFalse(is_host_display(request("127.0.0.1", b"localhost:8080", b"192.168.1.20")))
+
+    def test_remote_state_keeps_public_progress_without_host_details(self):
+        state = remote_state(
+            {"components": {"vision": {"label": "Vision", "status": "ok", "detail": "private"}}},
+            {"progress": 30, "items": [{"id": "vision", "progress": 30, "message": "private"}],
+             "waiting_reason": "private"},
+            {"style": "character", "custom_model": "/private"},
+        )
+        self.assertEqual(state["components"], {"vision": {"label": "Vision", "status": "ok"}})
+        self.assertEqual(state["background"], {"progress": 30, "items": [{"id": "vision", "progress": 30}]})
+        self.assertEqual(state["face"], {"style": "character"})
+        self.assertEqual(state["sounds"], {"enabled": False, "cues": []})
 
 
 class CameraSessionTests(unittest.TestCase):

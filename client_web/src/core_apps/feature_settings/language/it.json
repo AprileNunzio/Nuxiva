@@ -3,6 +3,15 @@
     "locale": "it"
   },
   "dictionary": {
+    "desktop_widgets_title": "Widget e personalizzazione",
+    "desktop_widgets_description": "Scegli quali contenuti mostrare e se il display può adattarsi alle tue abitudini.",
+    "desktop_privacy_title": "Presenza e privacy",
+    "desktop_privacy_description": "Decidi cosa mostrare a persone autorizzate, ospiti e stanze senza webcam.",
+    "desktop_devices_title": "Dispositivi remoti",
+    "desktop_devices_description": "Gestisci separatamente l’anteprima webcam, la prova di riconoscimento e l’audio remoto.",
+    "desktop_timing_title": "Chiusura dei dati privati",
+    "desktop_timing_description": "Imposta quando nascondere i widget personali dopo un allontanamento o uno sblocco vocale.",
+    "desktop_other_title": "Altre impostazioni",
     "title": "Impostazioni funzionalita",
     "description": "Hub a Card di tutte le capacità generali",
     "status": "Attivo",

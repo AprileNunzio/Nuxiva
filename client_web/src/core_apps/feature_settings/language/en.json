@@ -3,6 +3,15 @@
     "locale": "en"
   },
   "dictionary": {
+    "desktop_widgets_title": "Widgets and personalization",
+    "desktop_widgets_description": "Choose what to show and whether the display can adapt to your habits.",
+    "desktop_privacy_title": "Presence and privacy",
+    "desktop_privacy_description": "Choose what authorized people, guests, and rooms without cameras can see.",
+    "desktop_devices_title": "Remote devices",
+    "desktop_devices_description": "Manage webcam preview, the recognition test, and remote audio separately.",
+    "desktop_timing_title": "Private data timeouts",
+    "desktop_timing_description": "Choose when to hide personal widgets after you leave or unlock them by voice.",
+    "desktop_other_title": "Other settings",
     "title": "Feature settings",
     "description": "Central hub of general capabilities",
     "status": "Active",

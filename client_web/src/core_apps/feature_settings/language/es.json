@@ -3,6 +3,15 @@
     "locale": "es"
   },
   "dictionary": {
+    "desktop_widgets_title": "Widgets y personalización",
+    "desktop_widgets_description": "Elige qué mostrar y si la pantalla puede adaptarse a tus hábitos.",
+    "desktop_privacy_title": "Presencia y privacidad",
+    "desktop_privacy_description": "Elige qué pueden ver las personas autorizadas, los invitados y las salas sin cámara.",
+    "desktop_devices_title": "Dispositivos remotos",
+    "desktop_devices_description": "Gestiona por separado la vista previa, la prueba de reconocimiento y el audio remoto.",
+    "desktop_timing_title": "Cierre de datos privados",
+    "desktop_timing_description": "Elige cuándo ocultar los widgets personales tras alejarte o desbloquearlos por voz.",
+    "desktop_other_title": "Otros ajustes",
     "title": "Ajustes de funciones",
     "description": "Centro de capacidades generales",
     "status": "Activo",
