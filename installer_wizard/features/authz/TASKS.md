@@ -2,6 +2,9 @@
 
 ## Priorità alta
 
+- [x] [Issue #42](https://github.com/AprileNunzio/Nuxiva/issues/42) — Consentire la scrivania del display a un amministratore autenticato via HTTPS su LAN headless con protezione di presenza disattivata.
+- [ ] Issue #42 — Riprodurre il problema della trascrizione attraverso il tunnel SSH e collaudare il pannello touch in rete.
+
 - [x] [Issue #41](https://github.com/AprileNunzio/Nuxiva/issues/41) — Ripristinare i widget pubblici nella pagina LAN senza display kiosk e con protezione di presenza disattivata. Verificati HTTP, entrambi gli stream SSE e isolamento dei dati del display fisico.
 - [ ] Issue #41 — Collaudare il comportamento in un browser sulla rete dell’installazione segnalata.
 

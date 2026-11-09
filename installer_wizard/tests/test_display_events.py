@@ -169,6 +169,28 @@ class SharedSnapshotTests(unittest.TestCase):
         for payload in (legacy, delta):
             self.assertNotIn("host-private", payload)
 
+    def test_headless_lan_full_snapshot_requires_https_and_admin_session(self):
+        scope = {"type": "http", "scheme": "https", "path": "/api/state",
+                 "headers": [(b"host", b"192.168.1.197")],
+                 "client": ("192.168.1.20", 50000), "server": ("192.168.1.197", 443)}
+        private = {"desk": [{"id": "personal-widget"}], "presence": {"status": "active"}}
+        with (
+            mock.patch("features.desktop.display_scope.env_get", return_value="0"),
+            mock.patch("features.desktop.display_scope.gate_enabled", return_value=False),
+            mock.patch("features.desktop.display_scope.session_user", return_value="alice") as session,
+            mock.patch("features.desktop.display_scope.account", return_value={"role": "administrator"}) as account,
+            mock.patch.object(snapshot, "full_snapshot", return_value=private),
+        ):
+            request = Request(scope)
+            self.assertEqual(remote_display_scope(request), "signed_in")
+            self.assertEqual(snapshot.shared_snapshot(False, remote="signed_in")[0], private)
+            self.assertEqual(remote_display_scope(Request({**scope, "scheme": "http"})), "browser")
+            account.return_value = {"role": "viewer"}
+            self.assertEqual(remote_display_scope(request), "browser")
+            session.return_value = None
+            self.assertEqual(remote_display_scope(request), "browser")
+            self.assertNotEqual(snapshot.shared_snapshot(False, remote="browser")[0]["desk"], private["desk"])
+
 
 class CameraSessionTests(unittest.TestCase):
     def test_lease_is_bound_to_its_owner_and_can_be_revoked(self):

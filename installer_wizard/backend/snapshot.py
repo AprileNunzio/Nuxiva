@@ -30,7 +30,7 @@ log = logging.getLogger("nuxiva.snapshot")
 _reported: dict[str, str] = {}
 _shared: dict[bool | str, tuple[int, float, dict, str, int]] = {}
 _builds = {"count": 0}
-_deltas = {key: stream_delta.DeltaCache() for key in (False, True, "remote", "browser")}
+_deltas = {key: stream_delta.DeltaCache() for key in (False, True, "remote", "browser", "signed_in")}
 
 
 def _report(section: str, exc: BaseException) -> None:
@@ -171,7 +171,7 @@ def full_snapshot(admin: bool) -> dict:
 
 
 def _scope_key(admin: bool, remote: RemoteScope) -> bool | str:
-    return "browser" if remote == "browser" else "remote" if remote else admin
+    return remote if isinstance(remote, str) else "remote" if remote else admin
 
 
 def _shared_entry(admin: bool, remote: RemoteScope = False) -> tuple[int, float, dict, str, int]:
@@ -181,7 +181,7 @@ def _shared_entry(admin: bool, remote: RemoteScope = False) -> tuple[int, float,
     cached = _shared.get(key)
     if cached and cached[0] == version and now - cached[1] < SHARED_MAX_AGE:
         return cached
-    if remote:
+    if remote and remote != "signed_in":
         from background import queue
         snap = remote_state({**store.snapshot(), "asset_version": ASSET_VERSION}, queue.snapshot(),
                             face_options(), browser=remote == "browser")

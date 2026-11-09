@@ -1,7 +1,8 @@
 from typing import Literal
 
-from access import is_local, is_private
+from access import is_local, is_private, session_user
 from config import env_get
+from features.authz.access_control import account, allows
 from features.desktop.presence_bridge import gate_enabled
 
 
@@ -12,7 +13,7 @@ REMOTE_STATE_KEYS = (
 BACKGROUND_KEYS = ("paused", "finished", "done", "total", "progress", "current")
 BACKGROUND_ITEM_KEYS = ("id", "title", "status", "progress")
 PROXY_HEADERS = ("forwarded", "x-forwarded-for", "x-real-ip")
-RemoteScope = bool | Literal["browser"]
+RemoteScope = bool | Literal["browser", "signed_in"]
 
 
 def _select(source: dict, keys: tuple[str, ...]) -> dict:
@@ -32,6 +33,9 @@ def remote_display_scope(request) -> RemoteScope:
         return False
     if (env_get("NUXIVA_KIOSK", "1") == "0" and not gate_enabled() and is_private(request)
             and not any(name in request.headers for name in PROXY_HEADERS)):
+        user = session_user(request) if request.url.scheme == "https" else None
+        if user and allows(account(user)["role"], "api.admin"):
+            return "signed_in"
         return "browser"
     return True
 
