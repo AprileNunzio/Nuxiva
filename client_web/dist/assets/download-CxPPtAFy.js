@@ -1,0 +1,1 @@
+async function n(r,s,e){const a=new Headers(e==null?void 0:e.headers);a.set("Accept","application/octet-stream");const o=await fetch(r,{...e,headers:a});if(!o.ok)throw new Error(`download_http_${o.status}`);const c=URL.createObjectURL(await o.blob()),t=document.createElement("a");t.href=c,t.download=s,t.click(),window.setTimeout(()=>URL.revokeObjectURL(c),6e4)}export{n as d};
