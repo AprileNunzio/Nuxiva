@@ -15,6 +15,7 @@ from node_network_probe import (
     inspect_system_network_interfaces, merge_refreshed_interfaces,
 )
 from node_wifi_tasks import collect_node_tasks, connect_wifi, scan_system_wifi
+from node_ollama_processes import local_processes as _local_llm_processes, stop_local_ollama
 
 router = APIRouter(prefix="/api/v5/nodes", tags=["Node Plane"], dependencies=[Depends(require_admin)])
 admin_routes = router
@@ -79,7 +80,6 @@ class ToggleCapabilityRequest(BaseModel):
 _network_governor_native = None
 _network_profiles_memory: Dict[str, Dict[str, Any]] = {}
 _node_capabilities_memory: Dict[str, Dict[str, bool]] = {}
-_LOCAL_LLM_MARKERS = ("ollama", "llama-server", "llama_server")
 VALID_TARGETS = {"pc", "raspberry", "esp32", "android"}
 TIER_MAP = {
     "pc": "Tier-1 (Workstation / Compute)",
@@ -431,36 +431,6 @@ def local_ollama_disabled() -> bool:
 
     return (os.environ.get("NUXIVA_LOCAL_OLLAMA_DISABLED") == "1"
             or not is_capability_enabled("brain_llm") or local_ollama_optional())
-
-
-def _local_llm_processes() -> list:
-    import psutil
-    found = []
-    for proc in psutil.process_iter(["pid", "name", "cmdline"]):
-        try:
-            command = proc.info.get("cmdline") or []
-            names = [proc.info.get("name") or "", command[0] if command else ""]
-            executables = {name.replace("\\", "/").rsplit("/", 1)[-1].lower().removesuffix(".exe") for name in names}
-            if executables.intersection(_LOCAL_LLM_MARKERS) and proc.pid != os.getpid():
-                found.append(proc)
-        except (psutil.NoSuchProcess, psutil.AccessDenied):
-            pass
-    return found
-
-
-def stop_local_ollama() -> None:
-    import psutil
-    if os.name != "nt":
-        for action in ("stop", "disable"):
-            try:
-                subprocess.run(["systemctl", action, "ollama"], capture_output=True, timeout=30)
-            except Exception:
-                pass
-    for proc in _local_llm_processes():
-        try:
-            proc.kill()
-        except (psutil.NoSuchProcess, psutil.AccessDenied):
-            pass
 
 
 def enforce_local_ollama_off() -> bool:

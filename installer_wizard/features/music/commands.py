@@ -204,7 +204,7 @@ async def answer(text: str) -> tuple[str, dict]:
         raise LookupError
     t = plain(text)
     if LIST_OUTPUTS.match(t):
-        names = sorted({device["name"] for device in outputs.devices.values()}, key=str.casefold)
+        names = sorted({device["name"] for device in await outputs.refresh()}, key=str.casefold)
         return ("Dispositivi rilevati: " + ", ".join(names) if names else "Nessun dispositivo di riproduzione rilevato."), FACE
     music_noun = bool(NOUNS.search(t))
     if PLAY.match(t) and (music_noun or re.match(r"^(?:per favore |ti prego |ehi |nuxiva )*(?:suona|riproduci|fai partire|fammi sentire|fammi ascoltare|ascoltiamo|ascolta|voglio ascoltare)\b", t)):

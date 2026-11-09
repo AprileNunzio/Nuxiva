@@ -11,16 +11,25 @@ PAGE = "<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"utf-8\">\n  <title>Pr
 
 
 class ChatOnlyTest(unittest.IsolatedAsyncioTestCase):
+    async def test_calculation_is_in_the_reply_when_requested(self):
+        from features.actions import calc
+
+        with patch.object(calc, "llm", new_callable=AsyncMock, return_value={"expression": "120 * 0.85 / 3"}):
+            reply, _ = await calc.calc_action("Quanti pezzi restano? Mostra il calcolo.")
+        self.assertIn("Espressione: 120 * 0.85 / 3", reply)
+
     async def test_music_device_listing_uses_inventory_without_playback(self):
         from features.music import commands
 
         query = "Elenca i dispositivi disponibili per riprodurre musica. Non avviare la riproduzione."
-        devices = {"b": {"name": "Studio"}, "a": {"name": "Cucina"}}
-        with (patch.object(commands.outputs, "devices", devices), patch.object(commands.conf, "voice", return_value=True),
+        devices = [{"name": "Studio"}, {"name": "Cucina"}]
+        with (patch.object(commands.outputs, "refresh", new_callable=AsyncMock, return_value=devices) as refresh,
+              patch.object(commands.conf, "voice", return_value=True),
               patch.object(commands, "play", new_callable=AsyncMock) as play):
             self.assertTrue(commands.recognizes(query))
             reply, _ = await commands.answer(query)
             self.assertEqual(reply, "Dispositivi rilevati: Cucina, Studio")
+            refresh.assert_awaited_once_with()
             play.assert_not_awaited()
 
     async def test_plans_do_not_enter_operational_routing(self):
@@ -34,6 +43,8 @@ class ChatOnlyTest(unittest.IsolatedAsyncioTestCase):
                 self.assertEqual(result["execution_status"], "not_executed")
                 self.assertNotIn("files", result["ui"])
             self.assertEqual(model.await_count, 3)
+            self.assertIsNone(model.await_args.kwargs["max_tokens"])
+            self.assertIn("tolerances", model.await_args.kwargs["system"])
         core.assert_not_awaited()
 
     async def test_json_request_does_not_enter_operational_routing(self):

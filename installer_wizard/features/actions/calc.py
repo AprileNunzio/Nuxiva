@@ -94,6 +94,7 @@ def safe_eval(expr: str) -> float:
 
 
 _DECIMALS = re.compile(r"(\d+)\s*(?:cifre\s+)?decimal[ie]", re.I)
+_SHOW_CALC = re.compile(r"\b(?:mostra(?:mi)?\s+(?:il\s+)?calcolo|show\s+(?:the\s+)?calculation)\b", re.I)
 
 
 async def calc_action(text: str) -> tuple[str, dict]:
@@ -128,6 +129,8 @@ async def calc_action(text: str) -> tuple[str, dict]:
     decimals = int(m.group(1)) if m else (2 if unit.lower() in ("€", "euro", "eur", "$", "dollari") else None)
     shown = fmt_num(round(value, decimals) if decimals is not None else value, decimals)
     speech = f"Il risultato è {shown}{' ' + unit if unit else ''}."
+    if _SHOW_CALC.search(text):
+        speech = f"{speech} Espressione: {expr}."
     return speech, {
         "mode": "focus",
         "title": "Calcolo",

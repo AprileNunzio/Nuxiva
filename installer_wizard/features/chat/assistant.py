@@ -141,9 +141,13 @@ def _exact_reply(reply: str, agent: str, started: float) -> dict:
 
 async def _text_only(text: str, lang: str, started: float, *, json_only: bool) -> dict:
     format_rule = "Return exactly one JSON object or array." if json_only else "Reply with text only."
+    planning_rule = "" if json_only else (
+        " For technical plans, state material assumptions and verify that quantities, units, tolerances and timing agree."
+        " Distinguish targets from measured results and give concrete acceptance checks for the requested constraints."
+    )
     try:
-        reply = await generate(text, kind="chat", max_tokens=1800, person=acting().slug,
-                               system=f"Reply in {lang}. {format_rule} Do not claim any action was performed.")
+        reply = await generate(text, kind="chat", max_tokens=None, person=acting().slug,
+                               system=f"Reply in {lang}. {format_rule} Do not claim any action was performed.{planning_rule}")
     except BrainUnavailable as exc:
         store.event("WARN", f"Risposta solo in chat non disponibile: {exc}", "assistant")
         return {**_exact_reply("", "chat", started), "error": "brain_unavailable"}
