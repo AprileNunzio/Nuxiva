@@ -12,6 +12,7 @@ for(const folder of appFolders(root)) {
   const scope=folder.slice(root.length+1).replaceAll('\\','/');
   const directory={name:scope.split('/').pop()};
   const manifest=JSON.parse(readFileSync(path,'utf8'));
+  assert.ok(!manifest.featureIds?.includes('ducking'), `${path}: ducking must remain independently discoverable in the control panel`);
   assert.equal(manifest.id,directory.name,path);
   assert.equal(manifest.scope,scope,path);
   assert.ok(typeof manifest.category==='string' && manifest.category.length>0,path);
