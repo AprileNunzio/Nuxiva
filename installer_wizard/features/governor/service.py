@@ -98,14 +98,14 @@ class Governor:
         limit = conf.number("NUXIVA_GOV_DEFER_MAX_MIN", 30.0, 0.0, 1440.0) * 60
         if limit <= 0:
             return 0.0
-        started = time.time()
+        started = time.monotonic()
         self.waiting[kind] += 1
         try:
-            while self.busy(kind) and time.time() - started < limit:
+            while self.busy(kind) and time.monotonic() - started < limit:
                 await asyncio.sleep(DEFER_STEP)
         finally:
             self.waiting[kind] -= 1
-        waited = time.time() - started
+        waited = time.monotonic() - started
         self.deferred["count"] += 1
         self.deferred["seconds"] += waited
         log.info("«%s» (%s) rimandato di %.0fs per il carico del sistema", name or kind, kind, waited)

@@ -165,7 +165,10 @@ class GovernorTest(unittest.TestCase):
             async def relief():
                 await asyncio.sleep(0.05)
                 self.gov.pressure.high = False
-            with mock.patch("features.governor.service.DEFER_STEP", 0.01):
+            with (
+                mock.patch("features.governor.service.DEFER_STEP", 0.01),
+                mock.patch("features.governor.service.time.time", return_value=0.0),
+            ):
                 task = asyncio.create_task(relief())
                 waited = await self.gov.gate("background", "job")
                 await task

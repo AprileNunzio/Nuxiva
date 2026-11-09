@@ -82,9 +82,14 @@ class PickerTest(unittest.TestCase):
         master, slave = pty.openpty()
         fcntl.ioctl(slave, termios.TIOCSWINSZ, struct.pack("HHHH", 30, 100, 0, 0))
         env = dict(os.environ, TERM="xterm", LANG="it_IT.UTF-8", LP_IDLE_LIMIT="30")
-        script = f'source "{PICKER}"; pick_language "$(lp_detect)"; echo "PICKED=$PICKED_LANG"'
+        script = f'source "{PICKER}"; lp_mouse_on() {{ :; }}; pick_language "$(lp_detect)"; echo "PICKED=$PICKED_LANG"'
+
+        def attach_terminal():
+            os.setsid()
+            fcntl.ioctl(0, termios.TIOCSCTTY, 0)
+
         proc = subprocess.Popen(["bash", "-c", script], stdin=slave, stdout=slave, stderr=slave,
-                                env=env, close_fds=True, preexec_fn=os.setsid)
+                                env=env, close_fds=True, preexec_fn=attach_terminal)
         os.close(slave)
         out = b""
 
@@ -107,8 +112,15 @@ class PickerTest(unittest.TestCase):
             os.write(master, chunk)
             drain(0.5)
         drain(1.0)
-        proc.wait(timeout=15)
-        os.close(master)
+        try:
+            proc.wait(timeout=15)
+        except subprocess.TimeoutExpired:
+            self.fail(f"Picker did not exit. Terminal output: {out.decode(errors='replace')!r}")
+        finally:
+            if proc.poll() is None:
+                proc.kill()
+                proc.wait()
+            os.close(master)
         match = re.search(r"PICKED=(\w+)", out.decode(errors="replace"))
         return match.group(1) if match else None
 
