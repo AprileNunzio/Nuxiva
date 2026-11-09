@@ -22,6 +22,7 @@ import { reportError } from '../../shared/errors/errorBus';
 import { LinksHandle } from '../../node_apps/client_link/hooks/useLinks';
 
 interface Props {
+  readonly startAtEsp32?: boolean;
   readonly nodes: MeshNodeItem[];
   readonly usbPorts: UsbPort[];
   readonly links: LinksHandle;
@@ -29,12 +30,12 @@ interface Props {
   readonly onClose: () => void;
 }
 
-export const NodeWizard: React.FC<Props> = ({ nodes, usbPorts, links, onChanged, onClose }) => {
+export const NodeWizard: React.FC<Props> = ({ nodes, usbPorts, links, onChanged, onClose, startAtEsp32 = false }) => {
   const { t } = useScopedI18n('core_apps/nodes');
-  const [currentStep, setCurrentStep] = useState<number>(1);
+  const [currentStep, setCurrentStep] = useState<number>(startAtEsp32 ? 2 : 1);
 
   const [selectedTarget, setSelectedTarget] = useState<HardwareTarget>('esp32');
-  const [selectedPort, setSelectedPort] = useState<string>('');
+  const [selectedPort, setSelectedPort] = useState<string>(usbPorts.length === 1 ? usbPorts[0].device : '');
   const [nodeName, setNodeName] = useState<string>('');
   const [parentId, setParentId] = useState<string>('virtual_core');
   const [wifiSsid, setWifiSsid] = useState<string>('');
@@ -84,6 +85,7 @@ export const NodeWizard: React.FC<Props> = ({ nodes, usbPorts, links, onChanged,
           </div>
           <button
             onClick={resetWizard}
+            aria-label={t('cancel')}
             className="p-1.5 rounded-xl text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
           >
             <X className="w-5 h-5" />
@@ -201,6 +203,7 @@ export const NodeWizard: React.FC<Props> = ({ nodes, usbPorts, links, onChanged,
                     onChange={(e) => setSelectedPort(e.target.value)}
                     className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5 text-slate-900 dark:text-slate-100 font-mono text-xs focus:outline-none focus:border-cyan-400"
                   >
+                    <option value="" disabled>{t('select_port')}</option>
                     {usbPorts.map((p) => (
                       <option key={p.device} value={p.device}>
                         {p.device} - {p.description}
@@ -213,14 +216,14 @@ export const NodeWizard: React.FC<Props> = ({ nodes, usbPorts, links, onChanged,
 
             <div className="flex justify-between pt-4">
               <button
-                onClick={() => setCurrentStep(1)}
+                onClick={() => startAtEsp32 ? onClose() : setCurrentStep(1)}
                 className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold transition-all"
               >
                 <ArrowLeft className="w-4 h-4" />
                 <span>{t('back')}</span>
               </button>
               <button
-                disabled={selectedTarget === 'pc'}
+                disabled={selectedTarget === 'pc' || (selectedTarget === 'esp32' && !selectedPort)}
                 onClick={() => setCurrentStep(3)}
                 className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 active:scale-[0.99] text-white font-bold text-xs transition-all shadow-sm disabled:opacity-50"
               >

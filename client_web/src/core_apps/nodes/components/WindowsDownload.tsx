@@ -10,19 +10,15 @@ export const WindowsDownload: React.FC = () => {
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
 
-  const start = async (installer: boolean) => {
+  const start = async () => {
     setBusy(true);
     setFailed(false);
     try {
-      await download(
-        installer ? '/api/nodes/satellite-enrollment' : '/api/rpa/enrolled-client',
-        installer ? 'enroll.json' : 'NUXIVA_Assistente_Windows.zip',
-        {
-          method: 'POST',
-          cache: 'no-store',
-          headers: { 'X-Nuxiva-Request': '1' },
-        },
-      );
+      await download('/api/rpa/enrolled-client', 'NUXIVA_Assistente_Windows.zip', {
+        method: 'POST',
+        cache: 'no-store',
+        headers: { 'X-Nuxiva-Request': '1' },
+      });
     } catch (cause) {
       setFailed(true);
       reportError('nodes_windows_download_failed', cause);
@@ -33,19 +29,10 @@ export const WindowsDownload: React.FC = () => {
 
   return (
     <div className="space-y-2">
-      <div className="flex flex-wrap items-center gap-2">
-        <a className="text-sm font-semibold text-cyan-700 underline dark:text-cyan-300"
-          href="/api/rpa/download-client?format=installer" target="_blank" rel="noopener noreferrer">
-          {t('windows_installer')}
-        </a>
-        <Btn busy={busy} onClick={() => void start(true)}>{t('windows_enrollment_file')}</Btn>
-      </div>
-      <p className="text-xs text-slate-600 dark:text-slate-400">{t('windows_installer_hint')}</p>
-      <Btn busy={busy} onClick={() => void start(false)}>
+      <Btn busy={busy} onClick={() => void start()}>
         <Download className="h-4 w-4 shrink-0" aria-hidden="true" />
         {t('windows_download')}
       </Btn>
-      <p className="text-xs text-slate-600 dark:text-slate-400">{t('windows_download_hint')}</p>
       {failed && <p role="alert" className="text-xs text-rose-600 dark:text-rose-400">{t('windows_download_failed')}</p>}
     </div>
   );

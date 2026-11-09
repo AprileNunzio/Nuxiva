@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Plus, Server, Trash2 } from 'lucide-react';
+import { Server, Trash2 } from 'lucide-react';
 import { useScopedI18n } from '../../shared/i18n/useScopedI18n';
 import { reportError } from '../../shared/errors/errorBus';
 import { ConfirmDialog } from '../../shared/ui/ConfirmDialog';
@@ -8,7 +8,7 @@ import { AppFrame, Btn, Empty, Loading, Panel, Pill, Row } from '../shared/kit';
 import { fetchNodes, fetchUsbPorts, deleteNode } from './api';
 import { MeshNodeItem, UsbPort } from './types';
 import { NodeWizard } from './NodeWizard';
-import { PcLinkPanel } from './components/PcLinkPanel';
+import { InstallationCards } from './components/InstallationCards';
 
 export const View: React.FC = () => {
   const { t } = useScopedI18n('core_apps/nodes');
@@ -32,10 +32,18 @@ export const View: React.FC = () => {
 
   useEffect(() => {
     void load();
-    fetchUsbPorts().then(setUsbPorts).catch((cause) => reportError('nodes_usb_failed', cause));
     const timer = window.setInterval(() => !document.hidden && void load(), 10000);
     return () => window.clearInterval(timer);
   }, [load]);
+
+  const openEsp32 = async () => {
+    try {
+      setUsbPorts(await fetchUsbPorts());
+      setShowWizard(true);
+    } catch (cause) {
+      reportError('nodes_usb_failed', cause);
+    }
+  };
 
   const remove = async () => {
     if (!removing) return;
@@ -56,16 +64,10 @@ export const View: React.FC = () => {
       title={t('title')}
       description={t('description')}
       onReload={() => void load()}
-      actions={
-        <Btn onClick={() => setShowWizard(true)}>
-          <Plus className="h-4 w-4" aria-hidden="true" />
-          {t('add_node')}
-        </Btn>
-      }
     >
       <div className="grid gap-4 xl:grid-cols-2">
-        <Panel title={t('step2_pc_title')}>
-          <PcLinkPanel handle={links} />
+        <Panel title={t('install_platforms')}>
+          <InstallationCards links={links} openEsp32={() => void openEsp32()} />
         </Panel>
         <Panel title={t('total_nodes')}>
           {loading ? (
@@ -107,6 +109,7 @@ export const View: React.FC = () => {
       </div>
       {showWizard && (
         <NodeWizard
+          startAtEsp32
           nodes={nodes}
           usbPorts={usbPorts}
           links={links}
