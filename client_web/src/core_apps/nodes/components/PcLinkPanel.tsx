@@ -6,6 +6,7 @@ import { useScopedI18n } from '../../../shared/i18n/useScopedI18n';
 import { requestJson } from '../../../node_apps/shared/data/http';
 import { RequestsPanel } from '../../../node_apps/client_link/components/RequestsPanel';
 import { LinksHandle } from '../../../node_apps/client_link/hooks/useLinks';
+import { WindowsDownload } from './WindowsDownload';
 
 export const PcLinkPanel: React.FC<{ readonly handle: LinksHandle }> = ({ handle }) => {
   const { t } = useScopedI18n('core_apps/nodes');
@@ -37,6 +38,7 @@ export const PcLinkPanel: React.FC<{ readonly handle: LinksHandle }> = ({ handle
 
   return (
     <div className="min-w-0 space-y-3">
+      <WindowsDownload />
       <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">{t('step2_pc_title')}</h3>
       <p className="text-xs text-slate-600 dark:text-slate-400">{t('pc_link_hint')}</p>
       <code className="block overflow-x-auto rounded-xl border border-cyan-500/30 bg-cyan-950/10 dark:bg-cyan-950/30 p-3 font-mono text-xs text-cyan-700 dark:text-cyan-300 backdrop-blur-xs">

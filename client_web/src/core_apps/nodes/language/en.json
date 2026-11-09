@@ -1,4 +1,7 @@
 {
+  "windows_download": "Download for Windows",
+  "windows_download_hint": "Extract the ZIP and open Start_NUXIVA_Assistente.bat. Python 3.10 or later must be on your PATH. The package contains a one-time code to pair your PC automatically. Keep it private and use it before it expires.",
+  "windows_download_failed": "Download failed. Check that HTTPS is enabled and try again.",
   "meta": {
     "locale": "en"
   },

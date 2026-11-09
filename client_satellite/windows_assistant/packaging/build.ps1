@@ -7,7 +7,9 @@ if (-not $version) { throw "Versione non trovata in settings\paths.py" }
 Write-Host "NUXIVA Assistente $version"
 
 python packaging\make_icon.py build\nuxiva.ico
+if ($LASTEXITCODE -ne 0) { throw "Generazione dell'icona non riuscita ($LASTEXITCODE)" }
 python -m PyInstaller --noconfirm --clean --distpath build\dist --workpath build\work packaging\nuxiva_assistant.spec
+if ($LASTEXITCODE -ne 0) { throw "PyInstaller non riuscito ($LASTEXITCODE)" }
 
 $iscc = Get-Command iscc.exe -ErrorAction SilentlyContinue
 $compiler = if ($iscc) { $iscc.Source } else { "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" }
@@ -15,4 +17,5 @@ $compiler = if ($iscc) { $iscc.Source } else { "${env:ProgramFiles(x86)}\Inno Se
 if ($LASTEXITCODE -ne 0) { throw "Inno Setup non riuscito ($LASTEXITCODE)" }
 
 python packaging\sign_manifest.py build\installer\NUXIVA_Assistente_Setup.exe $version build\installer
+if ($LASTEXITCODE -ne 0) { throw "Firma del manifesto non riuscita ($LASTEXITCODE)" }
 "version=$version" | Out-File -FilePath build\version.txt -Encoding ascii

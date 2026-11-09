@@ -64,7 +64,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           $version = "${{ steps.version.outputs.value }}"
-          $files = @("build\installer\NUXIVA_Assistente_Setup.exe", "build\installer\manifest.json")
-          if (Test-Path "build\installer\manifest.sig") { $files += "build\installer\manifest.sig" }
+          $files = @("build\installer\NUXIVA_Assistente_Setup.exe", "build\installer\manifest.json", "build\installer\manifest.sig")
+          foreach ($file in $files) {
+            if (-not (Test-Path -LiteralPath $file -PathType Leaf)) { throw "Missing release artifact: $file" }
+          }
+          python -c "from pathlib import Path; from updates import manifest; root = Path('build/installer'); release = manifest.verify((root / 'manifest.json').read_bytes(), (root / 'manifest.sig').read_bytes()); manifest.check_file((root / 'NUXIVA_Assistente_Setup.exe').read_bytes(), release)"
+          if ($LASTEXITCODE -ne 0) { throw "Release signature or installer verification failed" }
           gh release create "assistant-v$version" @files --title "NUXIVA Assistente $version" `
             --notes "Installer dell'Assistente NUXIVA per Windows $version. Gli aggiornamenti automatici si installano solo se il manifesto è firmato."

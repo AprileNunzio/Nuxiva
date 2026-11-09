@@ -61,6 +61,7 @@ class ManifestTest(unittest.TestCase):
     def test_versions(self):
         self.assertTrue(manifest.newer("1.10.0", "1.9.3"))
         self.assertFalse(manifest.newer("1.1.0", "1.1.0"))
+        self.assertFalse(manifest.newer("1.1.0", "1.1"))
         with self.assertRaises(manifest.UpdateRejected):
             manifest.newer("1.x", "1.0")
 
@@ -78,6 +79,7 @@ class LatestTest(unittest.TestCase):
             {"tag_name": "assistant-v1.10.0", "assets": [asset("manifest.json"), asset("manifest.sig")]},
             {"tag_name": "assistant-v2.0.0", "assets": [asset("manifest.json")]},
             {"tag_name": "assistant-v3.0.0", "draft": True, "assets": [asset("manifest.json"), asset("manifest.sig")]},
+            {"tag_name": "assistant-v5.0.0", "prerelease": True, "assets": [asset("manifest.json"), asset("manifest.sig")]},
             {"tag_name": "v4.0.0", "assets": [asset("manifest.json"), asset("manifest.sig")]},
         ]
         with mock.patch.object(updater, "_get", return_value=json.dumps(releases).encode()):

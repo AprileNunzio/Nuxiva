@@ -341,15 +341,10 @@ def render_env(text: str, updates: dict) -> str:
 
 
 def _replace_env_file(text: str) -> None:
-    tmp = ENV_FILE.with_suffix(".tmp")
+    from sealed import write_private
+
     try:
-        fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC | os.O_NOFOLLOW, 0o600)
-        with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as handle:
-            handle.write(text)
-            handle.flush()
-            os.fsync(handle.fileno())
-        os.chmod(tmp, 0o600)
-        os.replace(tmp, ENV_FILE)
+        write_private(ENV_FILE, text.encode("utf-8"))
     except OSError:
         logging.getLogger("nuxiva.config").exception("Unable to write configuration file")
         raise

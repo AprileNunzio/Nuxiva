@@ -13,16 +13,23 @@ SEARCH_SECONDS = 5
 SEARCH_LIMIT = 50
 
 
-def _free_name(path: Path) -> Path:
+def _write_new(path: Path, content: str) -> Path:
+    candidate = path
     n = 2
-    while (candidate := path.with_name(f"{path.stem} ({n}){path.suffix}")).exists():
-        n += 1
-    return candidate
+    while True:
+        try:
+            with candidate.open("x", encoding="utf-8", newline="") as handle:
+                handle.write(content)
+            return candidate
+        except FileExistsError:
+            candidate = path.with_name(f"{path.stem} ({n}){path.suffix}")
+            n += 1
 
 
 def _docx_text(path: Path) -> str:
     with zipfile.ZipFile(path) as archive:
-        xml = archive.read("word/document.xml").decode("utf-8", "replace")
+        with archive.open("word/document.xml") as document:
+            xml = document.read(TEXT_LIMIT * 16).decode("utf-8", "replace")
     return re.sub(r"<[^>]+>", "", xml.replace("</w:p>", "\n"))
 
 
@@ -45,10 +52,8 @@ class Files:
             path.write_text(content, encoding="utf-8", newline="")
             return Outcome(f"📄 File sostituito: {path} (copia di sicurezza in {backup.parent})")
         self.gate.check(Request("files.create", f"Creare il file {path.name}", f"{path}\n\n{content[:1500]}"))
-        if path.exists():
-            path = _free_name(path)
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(content, encoding="utf-8", newline="")
+        path = _write_new(path, content)
         return Outcome(f"📄 File creato: {path}")
 
     def append_file(self, a: dict) -> Outcome:
@@ -70,7 +75,8 @@ class Files:
         if path.suffix.lower() == ".docx":
             text = _docx_text(path)
         else:
-            raw = path.read_bytes()[: TEXT_LIMIT * 4]
+            with path.open("rb") as handle:
+                raw = handle.read(TEXT_LIMIT * 4)
             if b"\x00" in raw[:4000]:
                 raise ActionError(f"{path.name} non è un file di testo")
             text = raw.decode("utf-8", "replace")

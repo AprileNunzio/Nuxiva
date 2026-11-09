@@ -1,4 +1,7 @@
 {
+  "windows_download": "Télécharger pour Windows",
+  "windows_download_hint": "Extrayez le ZIP et ouvrez Start_NUXIVA_Assistente.bat. Python 3.10 ou ultérieur doit être dans le PATH. Le paquet contient un code à usage unique pour associer votre PC automatiquement. Gardez-le confidentiel et utilisez-le avant son expiration.",
+  "windows_download_failed": "Échec du téléchargement. Vérifiez que HTTPS est activé et réessayez.",
   "meta": {
     "locale": "fr"
   },

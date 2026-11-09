@@ -31,7 +31,8 @@ class Release:
 def version_key(text: str) -> tuple[int, ...]:
     if not VERSION_RE.fullmatch(text or ""):
         raise UpdateRejected(f"versione non valida: {text!r}")
-    return tuple(int(part) for part in text.split("."))
+    parts = tuple(int(part) for part in text.split("."))
+    return parts + (0,) * (4 - len(parts))
 
 
 def newer(candidate: str, current: str) -> bool:
@@ -51,11 +52,12 @@ def verify(manifest: bytes, signature: bytes, public_key: str = PUBLIC_KEY) -> R
         raise UpdateRejected("manifesto dell'aggiornamento non valido")
     version, url, digest, size = (data.get(k) for k in ("version", "url", "sha256", "size"))
     version_key(str(version))
-    if not isinstance(url, str) or not DOWNLOAD_RE.fullmatch(url):
+    if (not isinstance(url, str) or not DOWNLOAD_RE.fullmatch(url)
+            or f"/assistant-v{version}/" not in url):
         raise UpdateRejected("indirizzo di download non autorizzato")
     if not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest):
         raise UpdateRejected("impronta SHA-256 non valida")
-    if not isinstance(size, int) or not 0 < size <= MAX_SIZE:
+    if type(size) is not int or not 0 < size <= MAX_SIZE:
         raise UpdateRejected("dimensione dell'aggiornamento non valida")
     return Release(str(version), url, digest, size)
 

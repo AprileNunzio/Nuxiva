@@ -35,14 +35,15 @@ def latest() -> tuple[str, dict[str, str]] | None:
     for release in releases if isinstance(releases, list) else []:
         tag = str(release.get("tag_name", ""))
         assets = _assets(release)
-        if tag.startswith("assistant-v") and not release.get("draft") and {"manifest.json", "manifest.sig"} <= set(assets):
+        if (tag.startswith("assistant-v") and not release.get("draft") and not release.get("prerelease")
+                and assets.get("manifest.json") and assets.get("manifest.sig")):
             try:
                 candidates.append((manifest.version_key(tag.removeprefix("assistant-v")), tag, assets))
             except manifest.UpdateRejected:
                 log.warning("Release con versione non valida ignorata: %s", tag)
     if not candidates:
         return None
-    _key, tag, assets = max(candidates)
+    _key, tag, assets = max(candidates, key=lambda candidate: candidate[0])
     return tag.removeprefix("assistant-v"), assets
 
 
@@ -82,6 +83,8 @@ class Updater(threading.Thread):
             raise manifest.UpdateRejected("la versione firmata non corrisponde alla release")
         installer = _get(release.url, release.size)
         manifest.check_file(installer, release)
+        if self.stop_flag.is_set():
+            return
         target = paths.DATA_DIR / "updates" / f"NUXIVA_Assistente_Setup_{release.version}.exe"
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(installer)
