@@ -35,6 +35,17 @@ class AccessControlTests(unittest.TestCase):
                 access.require_permission("alice", permission, node)
             self.assertEqual(denied.exception.status_code, 403)
 
+    def test_share_assignments_are_account_scoped_and_reject_paths_and_wildcards(self):
+        self.write({"alice": {"role": "operator", "shares": {"documenti": "read", "scambio": "write"}},
+                    "bob": {"role": "operator"}})
+        self.assertEqual(access.access_summary("alice")["share_grants"], {"documenti": "read", "scambio": "write"})
+        self.assertEqual(access.access_summary("bob")["share_grants"], {})
+        for grants in ({"*": "read"}, {"../documenti": "write"}, {"documenti": "admin"}):
+            self.write({"alice": {"role": "operator", "shares": grants}})
+            with self.assertRaises(HTTPException) as denied:
+                access.account("alice")
+            self.assertEqual(denied.exception.status_code, 503)
+
     def test_unclassified_api_defaults_to_administrator(self):
         self.write({"alice": {"role": "operator", "nodes": ["*"]}})
         request = Request({"type": "http", "route": SimpleNamespace(openapi_extra=None)})

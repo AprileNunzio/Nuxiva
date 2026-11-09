@@ -8,17 +8,20 @@ from config import STATE_DIR
 from features.authz.policy import policy
 from features.authz.principal import Principal, Strength
 from features.authz.risk import Risk
+from features.authz.share_grants import valid_share_grants
 
 ACCOUNTS_FILE = STATE_DIR / "authz" / "accounts.json"
 ROLE_GRANTS = {
     "administrator": {"*"},
-    "operator": {"system.status.read", "logs.read", "logs.export", "devices.read", "mcp.tools.execute", "mcp.resources.read"},
-    "auditor": {"system.status.read", "logs.read", "logs.export", "mcp.resources.read"},
+    "operator": {"system.status.read", "logs.read", "logs.export", "devices.read", "mcp.tools.execute",
+                 "mcp.resources.read", "files.share.read", "files.share.write"},
+    "auditor": {"system.status.read", "logs.read", "logs.export", "mcp.resources.read", "files.share.read"},
     "viewer": {"system.status.read"},
 }
 ROLE_PROFILES = {"administrator": "owner", "operator": "family", "auditor": "family", "viewer": "guest"}
 CAPABILITY_RISKS = {"system.status.read": Risk.INFO, "devices.read": Risk.INFO, "logs.read": Risk.FILES,
-                    "logs.export": Risk.FILES, "mcp.tools.execute": Risk.HOME, "mcp.resources.read": Risk.FILES}
+                    "logs.export": Risk.FILES, "mcp.tools.execute": Risk.HOME, "mcp.resources.read": Risk.FILES,
+                    "files.share.read": Risk.FILES, "files.share.write": Risk.FILES}
 
 
 def bindings() -> dict:
@@ -37,6 +40,7 @@ def valid_bindings(value) -> bool:
     return isinstance(value, dict) and len(value) <= 256 and all(
         isinstance(name, str) and re.fullmatch(r"[A-Za-z0-9_.@-]{1,64}", name) and isinstance(item, dict) and
         isinstance(item.get("role"), str) and item["role"] in ROLE_GRANTS and isinstance(item.get("nodes", []), list) and
+        valid_share_grants(item.get("shares", {})) and
         len(item.get("nodes", [])) <= 128 and all(isinstance(node, str) and (node == "*" or re.fullmatch(r"[A-Za-z0-9._:@-]{1,128}", node)) for node in item.get("nodes", []))
         for name, item in value.items())
 
@@ -100,7 +104,8 @@ def access_summary(user: str) -> dict:
     permissions = [permission for permission in ROLE_GRANTS[role] if permission != "*" and allows(role, permission)]
     if "*" in ROLE_GRANTS[role] and allows(role, "api.admin"):
         permissions = ["*"]
-    return {"user": user, "role": role, "capabilities": sorted(permissions), "nodes": record.get("nodes", [])}
+    return {"user": user, "role": role, "capabilities": sorted(permissions), "nodes": record.get("nodes", []),
+            "share_grants": record.get("shares", {})}
 
 
 def enrolled(user: str) -> bool:

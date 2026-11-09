@@ -1,3 +1,4 @@
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -5,7 +6,7 @@ from unittest import mock
 from fastapi.testclient import TestClient
 
 import nuxiva_supervisor
-from features.shares import archive
+from features.shares import archive, scoped
 
 HEADERS = {"X-Nuxiva-Request": "1"}
 
@@ -92,6 +93,101 @@ class SharesExplorerTest(unittest.TestCase):
 
         res3 = self.admin.put("/api/shares/upload?subpath=../../etc&name=hack.sh", content=b"evil", headers=HEADERS)
         self.assertEqual(res3.status_code, 400)
+
+    @unittest.skipUnless(os.open in os.supports_dir_fd, "Scoped share access requires directory descriptors")
+    def test_scoped_reader_can_download_only_from_assigned_share(self):
+        documenti = self.root / archive.FOLDERS["documenti"]
+        documenti.mkdir()
+        (documenti / "note.txt").write_text("allowed", encoding="utf-8")
+        scambio = self.root / archive.FOLDERS["scambio"]
+        scambio.mkdir()
+        private = scambio / "private.txt"
+        private.write_text("private", encoding="utf-8")
+        (documenti / "link.txt").symlink_to(private)
+        bindings = {"alice": {"role": "auditor", "shares": {"documenti": "read"}}}
+        with (
+            mock.patch("access.session_user", return_value="alice"),
+            mock.patch("features.authz.access_control.bindings", return_value=bindings),
+        ):
+            self.assertEqual(self.admin.get("/api/shares/scoped").json(),
+                             {"shares": [{"id": "documenti", "name": "01 Documenti", "can_create": False}]})
+            listed = self.admin.get("/api/shares/scoped/documenti")
+            self.assertEqual(listed.status_code, 200)
+            self.assertEqual(listed.json()["items"], [{"name": "note.txt", "is_dir": False}])
+            file = self.admin.get("/api/shares/scoped/documenti/file", params={"path": "note.txt"})
+            self.assertEqual(file.content, b"allowed")
+            self.assertEqual(self.admin.get("/api/shares/scoped/scambio").status_code, 403)
+            for path, status in (("link.txt", 404), ("../05 Scambio/private.txt", 400)):
+                blocked = self.admin.get("/api/shares/scoped/documenti/file", params={"path": path})
+                self.assertEqual(blocked.status_code, status)
+            self.assertEqual(self.admin.get("/api/shares").status_code, 403)
+
+    @unittest.skipUnless(os.open in os.supports_dir_fd, "Scoped share access requires directory descriptors")
+    def test_scoped_folder_creation_requires_role_and_write_grant(self):
+        directory = self.root / archive.FOLDERS["documenti"]
+        directory.mkdir()
+        account = {"role": "auditor", "shares": {"documenti": "write"}}
+        with (
+            mock.patch("access.session_user", return_value="alice"),
+            mock.patch("features.authz.access_control.bindings", return_value={"alice": account}),
+        ):
+            url = "/api/shares/scoped/documenti/folders"
+            params = {"name": "Cartella"}
+            self.assertEqual(self.admin.post(url, params=params, headers=HEADERS).status_code, 403)
+            account.update(role="operator", shares={"documenti": "read"})
+            self.assertEqual(self.admin.post(url, params=params, headers=HEADERS).status_code, 403)
+            account["shares"]["documenti"] = "write"
+            self.assertTrue(self.admin.get("/api/shares/scoped").json()["shares"][0]["can_create"])
+            self.assertEqual(self.admin.post(url, params=params, headers=HEADERS).status_code, 201)
+            self.assertTrue((directory / "Cartella").is_dir())
+            self.assertEqual(self.admin.post(url, params=params, headers=HEADERS).status_code, 409)
+            nested = {"name": "Sottocartella", "subpath": "Cartella"}
+            created = self.admin.post(url, params=nested, headers=HEADERS)
+            self.assertEqual(created.status_code, 201)
+            self.assertEqual(created.json()["path"], "Cartella/Sottocartella")
+            listed = self.admin.get("/api/shares/scoped/documenti", params={"subpath": "Cartella"})
+            self.assertEqual(listed.json()["items"], [{"name": "Sottocartella", "is_dir": True}])
+            with mock.patch("features.shares.policy.read", return_value={"readonly": True}):
+                self.assertFalse(self.admin.get("/api/shares/scoped").json()["shares"][0]["can_create"])
+                self.assertEqual(self.admin.post(url, params={"name": "Bloccata"}, headers=HEADERS).status_code, 403)
+            (directory / "Collegamento").symlink_to(self.root, target_is_directory=True)
+            self.assertEqual(self.admin.post(url, params={**nested, "subpath": "Collegamento"}, headers=HEADERS).status_code, 404)
+            account["shares"] = {}
+            self.assertEqual(self.admin.get("/api/shares/scoped/documenti", params={"subpath": "Cartella"}).status_code, 403)
+
+    @unittest.skipUnless(os.open in os.supports_dir_fd, "Scoped share access requires directory descriptors")
+    def test_scoped_upload_preserves_existing_file_and_discards_oversized_upload(self):
+        directory = self.root / archive.FOLDERS["documenti"]
+        directory.mkdir()
+        (directory / "nota.txt").write_bytes(b"original")
+        bindings = {"alice": {"role": "operator", "shares": {"documenti": "write"}}}
+        with (
+            mock.patch("access.session_user", return_value="alice"),
+            mock.patch("features.authz.access_control.bindings", return_value=bindings),
+        ):
+            url = "/api/shares/scoped/documenti/file"
+            duplicate = self.admin.put(url, params={"name": "nota.txt"}, content=b"replacement", headers=HEADERS)
+            self.assertEqual(duplicate.status_code, 409)
+            self.assertEqual((directory / "nota.txt").read_bytes(), b"original")
+            with mock.patch("features.shares.policy.upload_limit_mb", return_value=0):
+                oversized = self.admin.put(url, params={"name": "big.txt"}, content=b"x", headers=HEADERS)
+            self.assertEqual(oversized.status_code, 413)
+            self.assertFalse((directory / "big.txt").exists())
+            uploaded = self.admin.put(url, params={"name": "Nuova nota.txt"}, content=b"new", headers=HEADERS)
+            self.assertEqual(uploaded.status_code, 201)
+            self.assertEqual((directory / "Nuova nota.txt").read_bytes(), b"new")
+
+            open_directory = scoped._directory
+
+            def revoke_after_open(*args, **kwargs):
+                descriptor = open_directory(*args, **kwargs)
+                bindings["alice"]["shares"]["documenti"] = "read"
+                return descriptor
+
+            with mock.patch.object(scoped, "_directory", side_effect=revoke_after_open):
+                revoked = self.admin.put(url, params={"name": "revocato.txt"}, content=b"private", headers=HEADERS)
+            self.assertEqual(revoked.status_code, 403)
+            self.assertFalse((directory / "revocato.txt").exists())
 
 
 if __name__ == "__main__":

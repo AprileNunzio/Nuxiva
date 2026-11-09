@@ -6,6 +6,7 @@
   "version": "5.0.0",
   "description": "Network folder status, access, security options and connected sessions",
   "scope": "core_apps/shares",
+  "capabilities": ["files.share.read"],
   "target": "global",
   "window": {
     "defaultWidth": 70,

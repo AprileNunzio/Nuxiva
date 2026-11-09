@@ -37,6 +37,8 @@
     "files.document.read": ["allow", "own", "deny", "deny", "deny", "deny"],
     "files.document.write": ["allow", "own", "deny", "deny", "deny", "deny"],
     "files.document.delete": ["strong", "deny", "deny", "deny", "deny", "deny"],
+    "files.share.read": ["allow", "allow", "allow", "deny", "deny", "deny"],
+    "files.share.write": ["allow", "allow", "strong", "deny", "deny", "deny"],
     "sentinel.log.read": ["strong", "deny", "deny", "deny", "deny", "deny"],
     "agency.project.manage": ["allow", "confirm", "deny", "deny", "deny", "deny"],
     "comm.message.send": ["strong", "confirm", "deny", "deny", "deny", "deny"],

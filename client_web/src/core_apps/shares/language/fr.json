@@ -3,6 +3,18 @@
     "locale": "fr"
   },
   "dictionary": {
+    "scoped_upload_file": "Choisir un fichier",
+    "scoped_upload_submit": "Téléverser",
+    "scoped_upload_failed": "Échec du téléversement. Vérifiez le nom, la taille et les autorisations. Les fichiers existants sont conservés.",
+    "scoped_folder_name": "Nom du dossier",
+    "scoped_create_folder": "Créer le dossier",
+    "scoped_create_failed": "Impossible de créer le dossier. Vérifiez son nom et vos autorisations.",
+    "scoped_description": "Parcourez les dossiers attribués à votre compte.",
+    "scoped_back": "Retour",
+    "scoped_refresh": "Actualiser",
+    "scoped_unavailable": "Le partage est indisponible ou l’accès a été révoqué.",
+    "scoped_empty": "Ce dossier est vide.",
+    "scoped_no_shares": "Aucun partage ne vous est attribué.",
     "title": "Dossier partagé",
     "description": "État, accès, sécurité et sessions connectées du dossier réseau de Nuxiva.",
     "loading": "Chargement…",

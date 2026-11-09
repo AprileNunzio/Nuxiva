@@ -9,8 +9,10 @@ import { AccessPanel } from './components/AccessPanel';
 import { FoldersPanel } from './components/FoldersPanel';
 import { SessionsPanel } from './components/SessionsPanel';
 import { SharesOverview } from './types';
+import { useAccess } from '../../app_shell/access/AccessProvider';
+import { ScopedShares } from './components/ScopedShares';
 
-export const View: React.FC = () => {
+const AdminShares: React.FC = () => {
   const { t, lang } = useScopedI18n('core_apps/shares');
   const shares = useResource<SharesOverview>('/api/shares', 10000);
   const features = useResource<FeaturesOverview>(`/api/features?lang=${encodeURIComponent(lang)}`, 30000);
@@ -50,6 +52,11 @@ export const View: React.FC = () => {
       ) : null}
     </AppFrame>
   );
+};
+
+export const View: React.FC = () => {
+  const access = useAccess();
+  return access.can('api.admin') ? <AdminShares /> : <ScopedShares />;
 };
 
 export default View;

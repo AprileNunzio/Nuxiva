@@ -6,11 +6,12 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from access import require_admin
 from config import env_get
 from features.actions.common import SMB_CONF, my_ip
-from features.shares import policy, status
+from features.shares import policy, scoped, status
 from state import store
 
 public_routes = APIRouter()
 admin_routes = APIRouter()
+admin_routes.include_router(scoped.routes)
 USER = "nuxiva-share"
 
 

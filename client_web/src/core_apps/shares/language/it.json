@@ -3,6 +3,18 @@
     "locale": "it"
   },
   "dictionary": {
+    "scoped_upload_file": "Scegli file",
+    "scoped_upload_submit": "Carica",
+    "scoped_upload_failed": "Caricamento non riuscito. Verifica nome, dimensioni e permessi. I file esistenti non vengono sostituiti.",
+    "scoped_folder_name": "Nome cartella",
+    "scoped_create_folder": "Crea cartella",
+    "scoped_create_failed": "Creazione non riuscita. Verifica il nome e i permessi.",
+    "scoped_description": "Esplora le directory che ti sono state assegnate.",
+    "scoped_back": "Indietro",
+    "scoped_refresh": "Aggiorna",
+    "scoped_unavailable": "Condivisione non disponibile o accesso revocato.",
+    "scoped_empty": "Questa cartella è vuota.",
+    "scoped_no_shares": "Non hai condivisioni assegnate.",
     "title": "Cartella condivisa",
     "description": "Stato, accesso, sicurezza e sessioni collegate della cartella di rete di Nuxiva.",
     "loading": "Caricamento…",

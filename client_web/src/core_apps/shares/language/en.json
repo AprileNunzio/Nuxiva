@@ -3,6 +3,18 @@
     "locale": "en"
   },
   "dictionary": {
+    "scoped_upload_file": "Choose file",
+    "scoped_upload_submit": "Upload",
+    "scoped_upload_failed": "Upload failed. Check the name, size and permissions. Existing files are preserved.",
+    "scoped_folder_name": "Folder name",
+    "scoped_create_folder": "Create folder",
+    "scoped_create_failed": "Could not create the folder. Check its name and your permissions.",
+    "scoped_description": "Browse the directories assigned to your account.",
+    "scoped_back": "Back",
+    "scoped_refresh": "Refresh",
+    "scoped_unavailable": "The share is unavailable or access was revoked.",
+    "scoped_empty": "This folder is empty.",
+    "scoped_no_shares": "You have no assigned shares.",
     "title": "Shared folder",
     "description": "Status, access, security and connected sessions of Nuxiva's network folder.",
     "loading": "Loading…",

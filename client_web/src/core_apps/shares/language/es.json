@@ -3,6 +3,18 @@
     "locale": "es"
   },
   "dictionary": {
+    "scoped_upload_file": "Elegir archivo",
+    "scoped_upload_submit": "Subir",
+    "scoped_upload_failed": "Error al subir el archivo. Comprueba el nombre, el tamaño y los permisos. Se conservan los archivos existentes.",
+    "scoped_folder_name": "Nombre de la carpeta",
+    "scoped_create_folder": "Crear carpeta",
+    "scoped_create_failed": "No se pudo crear la carpeta. Comprueba el nombre y tus permisos.",
+    "scoped_description": "Explora los directorios asignados a tu cuenta.",
+    "scoped_back": "Atrás",
+    "scoped_refresh": "Actualizar",
+    "scoped_unavailable": "El recurso no está disponible o se ha revocado el acceso.",
+    "scoped_empty": "Esta carpeta está vacía.",
+    "scoped_no_shares": "No tienes recursos compartidos asignados.",
     "title": "Carpeta compartida",
     "description": "Estado, acceso, seguridad y sesiones conectadas de la carpeta de red de Nuxiva.",
     "loading": "Cargando…",
