@@ -1,3 +1,4 @@
+import errno
 import logging
 import os
 import stat
@@ -188,3 +189,25 @@ async def upload(share: str, request: Request, name: str = Query(max_length=180)
     except OSError as exc:
         raise HTTPException(503, "share_upload_unavailable") from exc
     return {"share": share, "name": name, "path": "/".join((*parts, name)), "size": written}
+
+
+@routes.delete("/api/shares/scoped/{share}/entry", openapi_extra=WRITE)
+def delete_entry(share: str, path: str = Query(max_length=4096), user: str = Depends(require_admin)):
+    parts = _path_parts(path)
+    name = parts[-1]
+    try:
+        with ExitStack() as stack:
+            directory = _directory(stack, user, share, parts[:-1], write=True)
+            metadata = os.stat(name, dir_fd=directory, follow_symlinks=False)
+            if stat.S_ISDIR(metadata.st_mode):
+                os.rmdir(name, dir_fd=directory)
+            elif stat.S_ISREG(metadata.st_mode) and metadata.st_nlink == 1:
+                os.unlink(name, dir_fd=directory)
+            else:
+                raise HTTPException(404, "share_unavailable")
+    except OSError as exc:
+        if exc.errno in (errno.ENOTEMPTY, errno.EEXIST):
+            raise HTTPException(409, "share_folder_not_empty") from exc
+        raise HTTPException(404, "share_unavailable") from exc
+    log.info("Scoped share entry deleted by %s on %s", user, share)
+    return {"share": share, "path": path}

@@ -45,6 +45,33 @@ class SharesExplorerTest(unittest.TestCase):
         with mock.patch.object(scoped, "account", return_value=record), mock.patch.object(scoped, "DOWNLOAD_RECHECK_BYTES", 1):
             asyncio.run(check())
 
+    @unittest.skipUnless(os.open in os.supports_dir_fd, "Scoped share access requires directory descriptors")
+    def test_scoped_delete_enforces_grants_and_never_recurses(self):
+        directory = self.root / archive.FOLDERS["documenti"]
+        directory.mkdir()
+        folder = directory / "folder"
+        folder.mkdir()
+        note = folder / "note.txt"
+        note.write_text("keep until authorized", encoding="utf-8")
+        (directory / "alias").symlink_to(folder, target_is_directory=True)
+        record = {"role": "operator", "shares": {"documenti": "read"}}
+
+        def delete(path, share="documenti"):
+            return self.admin.delete(f"/api/shares/scoped/{share}/entry", params={"path": path}, headers=HEADERS)
+
+        with mock.patch.object(scoped, "account", return_value=record):
+            self.assertEqual(delete("folder/note.txt").status_code, 403)
+            record["shares"]["documenti"] = "write"
+            self.assertEqual(delete("folder/note.txt", "scambio").status_code, 403)
+            self.assertEqual(delete("../folder/note.txt").status_code, 400)
+            self.assertEqual(delete("alias/note.txt").status_code, 404)
+            self.assertEqual(delete("alias").status_code, 404)
+            self.assertEqual(delete("folder").status_code, 409)
+            self.assertTrue(note.is_file())
+            self.assertEqual(delete("folder/note.txt").status_code, 200)
+            self.assertEqual(delete("folder").status_code, 200)
+            self.assertFalse(folder.exists())
+
     def test_list_files_and_folders(self):
         # Create test folder and file
         doc_dir = self.root / "01 Documenti"

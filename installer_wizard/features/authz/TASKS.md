@@ -29,7 +29,8 @@
 - [x] Download scoped con rivalutazione periodica di ruolo, matrice e assegnazione. La revoca del grant interrompe il trasferimento residuo.
 - [ ] Applicare ruolo, prova di identità, ambito e assegnazione alla stessa decisione per API, UI, agenti, voce e MCP.
 - [ ] Estendere i binding a tenant e risorse stabili, con delega autenticata tra Supervisor e Core e revoca delle sessioni.
-- [ ] Estendere le API con ambito di directory a rinomina e cancellazione con test per ogni rotta e operazione.
+- [x] Cancellazione scoped via API di file regolari senza hard link e cartelle vuote. Verificati permessi, isolamento, traversal, link simbolici e rifiuto della cancellazione ricorsiva.
+- [ ] Estendere le API con ambito di directory alla rinomina atomica senza sovrascrittura e integrare rinomina e cancellazione nella vista WebOS.
 - [ ] Proteggere il filesystem da traversal, link simbolici, reparse point e sostituzione della directory durante un’operazione.
 - [ ] Integrare amministrazione delle assegnazioni, audit e interfaccia responsive con chiavi i18n.
 
