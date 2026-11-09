@@ -1,5 +1,7 @@
 (() => {
   const D = window.NuxivaDisplay, { $ } = D;
+  D.faceOptionsChanged = (current, incoming) => Boolean(current && incoming &&
+    Object.entries(incoming).some(([key, value]) => JSON.stringify(current[key]) !== JSON.stringify(value)));
   const V = window.NUXIVA_ASSET_V ? `?v=${window.NUXIVA_ASSET_V}` : "";
   const loadScript = (src) => new Promise((ok, ko) => {
     const el = document.createElement("script");

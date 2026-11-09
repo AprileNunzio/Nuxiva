@@ -19,6 +19,12 @@ const context = {
 
 vm.runInNewContext(readFileSync(resolve(__dirname, '../../installer_wizard/web/display/look.js'), 'utf8'), context);
 
+const configured = { avatar: 'auto', style: 'character', color: '#29e0ff', model: '/vendor/Michelle.glb' };
+assert.equal(D.faceOptionsChanged(configured, { avatar: 'auto', style: 'character', color: '#29e0ff' }), false);
+assert.equal(D.faceOptionsChanged(configured, { color: '#ffaa00' }), true);
+assert.equal(D.faceOptionsChanged(configured, { ...configured, model: '/static/shared/models/head.glb' }), true);
+assert.equal(D.faceOptionsChanged(configured, null), false);
+
 D.applyLookVisibility(true);
 assert.equal(element('scene').style.display, 'block', 'display settings preserve the initialized 3D scene');
 assert.equal(element('core').style.display, 'none');

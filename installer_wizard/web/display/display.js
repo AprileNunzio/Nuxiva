@@ -226,7 +226,7 @@
     }
     const node = new URLSearchParams(location.search).get("node");
     const face = (node && s.node_faces && s.node_faces[node]) || s.face;
-    if (face && window.NUXIVA_FACE && JSON.stringify(face) !== JSON.stringify(window.NUXIVA_FACE)) { location.reload(); return; }
+    if (D.faceOptionsChanged(window.NUXIVA_FACE, face)) { location.reload(); return; }
     D.userName = s.user_name || "";
     $("banner").textContent = s.message;
     $("banner").classList.toggle("show", s.phase === "DEGRADED");

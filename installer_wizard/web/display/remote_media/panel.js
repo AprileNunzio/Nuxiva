@@ -158,7 +158,7 @@
   });
   D.openRemoteCamera = () => {
     panel.open = true;
-    return openCamera();
+    camera.focus();
   };
 
   microphone.addEventListener("click", async () => {
