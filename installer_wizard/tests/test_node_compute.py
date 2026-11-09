@@ -47,6 +47,20 @@ class RelayTest(unittest.IsolatedAsyncioTestCase):
     def setUp(self):
         self.relay = ComputeRelay()
 
+    async def test_native_lease_rejects_stale_results_before_enqueue(self):
+        lease = mock.Mock()
+        lease.assign.return_value = 7
+        lease.complete.side_effect = ValueError("expired")
+        with mock.patch.object(relay_module.native_core, "symbol", return_value=mock.Mock(return_value=lease)) as native:
+            job = self.relay.submit("pc-a", "GET", "/api/tags", b"", account="alice")
+        native.return_value.assert_called_once_with("local", "alice")
+        await self.relay.take("pc-a", 1)
+        with self.assertRaises(RelayError) as result:
+            self.relay.push("pc-a", {"id": job.id, "done": True})
+        self.assertEqual(result.exception.code, "compute_stale_lease")
+        lease.complete.assert_called_once_with("pc-a", 7)
+        self.assertTrue(job.queue.empty())
+
     async def test_capacity_preserves_jobs_for_the_next_poll(self):
         jobs = [self.relay.submit("pc-a", "GET", "/api/tags", b"") for _ in range(4)]
         self.assertEqual([j["id"] for j in await self.relay.take("pc-a", 1, 1)], [jobs[0].id])

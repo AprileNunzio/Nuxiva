@@ -6,6 +6,7 @@ mod arbitration;
 mod audio;
 mod authz;
 mod bus;
+mod compute_lease;
 mod config;
 mod cortex;
 mod dialog;
@@ -105,6 +106,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<RustTokenCodec>()?;
     m.add("TokenRejected", m.py().get_type::<TokenRejected>())?;
     guard::register(m)?;
+    compute_lease::register(m)?;
     seal::register(m)?;
     config::register(m)?;
     telemetry::register(m)?;

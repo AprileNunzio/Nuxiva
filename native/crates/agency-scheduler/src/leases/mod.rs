@@ -86,6 +86,18 @@ impl JobLease {
         generation: u64,
         now: u64,
     ) -> Result<(), LeaseError> {
+        self.validate(owner, worker, generation, now)?;
+        self.state = State::Completed;
+        Ok(())
+    }
+
+    pub fn validate(
+        &self,
+        owner: &Owner,
+        worker: &str,
+        generation: u64,
+        now: u64,
+    ) -> Result<(), LeaseError> {
         self.check_owner(owner)?;
         match &self.state {
             State::Assigned(lease)
@@ -93,7 +105,6 @@ impl JobLease {
                     && lease.generation == generation
                     && now < lease.expires_at =>
             {
-                self.state = State::Completed;
                 Ok(())
             }
             State::Completed => Err(LeaseError::Completed),

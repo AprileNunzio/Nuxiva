@@ -5,6 +5,8 @@ import secrets
 from dataclasses import dataclass, field
 from typing import AsyncIterator
 
+import native_core
+
 ALLOWED = {
     ("POST", "/api/chat"), ("POST", "/api/generate"), ("POST", "/api/embed"), ("POST", "/api/embeddings"),
     ("POST", "/api/show"), ("GET", "/api/tags"), ("GET", "/api/ps"), ("GET", "/api/version"),
@@ -16,6 +18,7 @@ MAX_QUEUED = 8
 PICKUP_TIMEOUT = 15.0
 FIRST_BYTE_TIMEOUT = 300.0
 IDLE_TIMEOUT = 120.0
+LEASE_SECONDS = 720
 
 
 class RelayError(Exception):
@@ -37,6 +40,8 @@ class Job:
     cancelled: bool = False
     received: int = 0
     finished: bool = False
+    lease: object | None = None
+    generation: int = 0
 
     def wire(self) -> dict:
         return {"id": self.id, "method": self.method, "path": self.path,
@@ -49,14 +54,15 @@ class ComputeRelay:
         self.events: dict[str, asyncio.Event] = {}
         self.jobs: dict[str, Job] = {}
 
-    def submit(self, node_id: str, method: str, path: str, body: bytes) -> Job:
+    def submit(self, node_id: str, method: str, path: str, body: bytes, account: str = "local") -> Job:
         if (method, path) not in ALLOWED:
             raise RelayError("compute_path_not_allowed", 403)
         if len(body) > MAX_BODY:
             raise RelayError("compute_body_too_large", 413)
         if len([j for j in self.waiting.get(node_id, []) if not j.cancelled]) >= MAX_QUEUED:
             raise RelayError("compute_queue_full", 429)
-        job = Job(node_id, method, path, body)
+        lease_type = native_core.symbol("RustComputeLease")
+        job = Job(node_id, method, path, body, lease=lease_type("local", account) if lease_type else None)
         self.jobs[job.id] = job
         self.waiting.setdefault(node_id, []).append(job)
         self.events.setdefault(node_id, asyncio.Event()).set()
@@ -75,6 +81,8 @@ class ComputeRelay:
         if pending:
             self.waiting[node_id] = pending
         for job in batch:
+            if job.lease is not None:
+                job.generation = job.lease.assign(node_id, LEASE_SECONDS)
             job.picked.set()
         return [job.wire() for job in batch]
 
@@ -90,6 +98,14 @@ class ComputeRelay:
             raise RelayError("compute_invalid_chunk", 400)
         if len(data) > MAX_CHUNK:
             raise RelayError("compute_chunk_too_large", 413)
+        if job.lease is not None:
+            try:
+                if report.get("done") or report.get("error"):
+                    job.lease.complete(node_id, job.generation)
+                else:
+                    job.lease.validate(node_id, job.generation)
+            except ValueError as exc:
+                raise RelayError("compute_stale_lease", 409) from exc
         job.received += len(data)
         if job.received > MAX_TOTAL:
             job.cancelled = True

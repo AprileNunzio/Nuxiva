@@ -11,6 +11,7 @@ name = "nuxiva_native"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
+agency-scheduler = { path = "../agency-scheduler" }
 nuxiva-admin-os = { path = "../admin-os" }
 nuxiva-audio-dsp = { path = "../audio-dsp" }
 nuxiva-bus-core = { path = "../bus-core" }

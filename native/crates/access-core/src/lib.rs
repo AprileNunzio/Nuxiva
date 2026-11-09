@@ -7,6 +7,7 @@ pub mod error;
 pub mod floor;
 pub mod matrix;
 pub mod role;
+pub mod smb_sync;
 
 pub use capability::Capability;
 pub use cell::Cell;

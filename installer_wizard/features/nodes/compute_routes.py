@@ -54,7 +54,7 @@ async def node_ollama(node_id: str, path: str, request: Request, user: str = Dep
         raise HTTPException(409, "compute_ollama_not_shared")
     body = await request.body()
     try:
-        job = relay.submit(node_id, request.method, "/" + path, body)
+        job = relay.submit(node_id, request.method, "/" + path, body, account=user)
         status, content_type, stream = await relay.open(job)
     except RelayError as exc:
         raise HTTPException(exc.status, exc.code)
