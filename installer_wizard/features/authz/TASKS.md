@@ -44,5 +44,5 @@
 - [ ] Configurare la firma della release Windows, allineare la versione e provare installazione, aggiornamento, ripristino e revoca su Windows pulito.
 - [ ] Preparare e collaudare un installer macOS con associazione guidata.
 - [ ] Collegare il flash ESP32 al firmware reale, verificare il dispositivo e attendere il primo heartbeat prima di mostrarlo online.
-- [ ] Verificare che Nuxiva Update mostri le novità di tutte le revisioni installate.
+- [x] Verificata la cronologia Nuxiva Update con 17 revisioni consecutive in un repository Git temporaneo. La cronologia conserva i dettagli bilingui di ogni revisione e la vista li presenta per commit.
 - [ ] Portare in Rust il worker Windows e il relay di produzione. Verificare il target Windows dei componenti nativi che usano ancora API Unix.

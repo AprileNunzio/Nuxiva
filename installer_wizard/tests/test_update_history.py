@@ -1,3 +1,5 @@
+import shutil
+import subprocess
 import tempfile
 import time
 import unittest
@@ -23,6 +25,32 @@ class UpdateHistoryTest(unittest.IsolatedAsyncioTestCase):
         self.patcher1.stop()
         self.patcher2.stop()
         self.tmp.cleanup()
+
+    @unittest.skipUnless(shutil.which("git"), "Git is required")
+    async def test_installed_history_retains_all_intermediate_commit_details(self):
+        def run_git(*args):
+            return subprocess.run(["git", "-C", str(self.root), *args],
+                                  capture_output=True, encoding="utf-8", check=True).stdout.strip()
+
+        async def read_git(*args):
+            return 0, run_git(*args)
+
+        run_git("init", "-q")
+        run_git("config", "user.name", "Nuxiva Test")
+        run_git("config", "user.email", "test@example.invalid")
+        run_git("config", "commit.gpgsign", "false")
+        run_git("config", "core.hooksPath", str(self.root / "no-hooks"))
+        run_git("commit", "-q", "--allow-empty", "-m", "Installed base")
+        base = run_git("rev-parse", "HEAD")
+        descriptions = [f"Italiano {index}\n\nEnglish {index}" for index in range(17)]
+        for index, description in enumerate(descriptions):
+            run_git("commit", "-q", "--allow-empty", "-m", f"Change {index}", "-m", description)
+        target = run_git("rev-parse", "HEAD")
+        await history.record_update(read_git, to_rev=target, from_rev=base)
+        [record] = history.get_history_page()["records"]
+        self.assertEqual(record["commit_count"], len(descriptions))
+        self.assertEqual([commit["body"].partition("\n\n")[2] for commit in record["commits"]],
+                         descriptions[::-1])
 
     def test_parse_commit_records_multiline_it_en(self):
         body_sample = (
