@@ -12,6 +12,7 @@ from features.music.outputs import outputs
 PLAY = re.compile(r"^(?:per favore |ti prego |ehi |nuxiva )*(?:metti(?:mi)?|riproduci|suona|fai partire|fammi sentire|fammi ascoltare|voglio ascoltare|"
                   r"ascoltiamo|ascolta|mandami|play)\b\s*(?P<rest>.*)$")
 NOUNS = re.compile(r"\b(musica|canzone|canzoni|brano|brani|album|disco|dischi|playlist|mix|radio|cantante|band|artista)\b")
+LIST_OUTPUTS = re.compile(r"^(?:elenca|mostrami|quali sono)\s+i\s+dispositivi\b[^.!?]*\b(?:musica|audio|riproduzione)\b")
 STOP = {"il", "lo", "la", "le", "i", "gli", "un", "una", "uno", "di", "del", "della", "dello", "dei", "degli", "delle", "da", "dal", "dalla", "po", "qualcosa",
         "canzone", "canzoni", "brano", "brani", "musica", "album", "disco", "dischi", "playlist", "mix", "radio", "cantante", "band", "artista", "per", "favore",
         "mia", "mio", "miei", "mie", "nuova", "nuovo", "ancora", "adesso", "ora", "subito", "tutta", "tutto", "intero", "completo", "che", "mi", "piace"}
@@ -32,6 +33,10 @@ FACE = {"mode": "face"}
 
 def plain(text: str) -> str:
     return re.sub(r"\s+", " ", unicodedata.normalize("NFKD", str(text or "").lower()).encode("ascii", "ignore").decode()).strip()
+
+
+def recognizes(text: str) -> bool:
+    return bool(LIST_OUTPUTS.match(plain(text)))
 
 
 def tokens(text: str) -> list[str]:
@@ -198,6 +203,9 @@ async def answer(text: str) -> tuple[str, dict]:
     if not conf.voice():
         raise LookupError
     t = plain(text)
+    if LIST_OUTPUTS.match(t):
+        names = sorted({device["name"] for device in outputs.devices.values()}, key=str.casefold)
+        return ("Dispositivi rilevati: " + ", ".join(names) if names else "Nessun dispositivo di riproduzione rilevato."), FACE
     music_noun = bool(NOUNS.search(t))
     if PLAY.match(t) and (music_noun or re.match(r"^(?:per favore |ti prego |ehi |nuxiva )*(?:suona|riproduci|fai partire|fammi sentire|fammi ascoltare|ascoltiamo|ascolta|voglio ascoltare)\b", t)):
         if not re.search(r"\b(?:web\s?cam|telecamera|videocamera|camera|widget|schermo|finestra)\b", t):

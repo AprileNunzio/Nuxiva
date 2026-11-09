@@ -49,7 +49,7 @@ def decode(text: str, as_json: bool):
     return json.loads(body[start:end + 1] if start >= 0 and end > start else body)
 
 
-def _runtime_ollama_options(kind: str, component: str, max_tokens: int, temperature: float) -> dict:
+def _runtime_ollama_options(kind: str, component: str, max_tokens: int | None, temperature: float) -> dict:
     try:
         from features.ollama.service import get_runtime_options
         opts = get_runtime_options(kind=kind, component=component)
@@ -60,6 +60,8 @@ def _runtime_ollama_options(kind: str, component: str, max_tokens: int, temperat
         num_ctx = 8192 if kind == "deep" else 4096
         num_predict = max_tokens if max_tokens != 500 else (4096 if kind == "deep" else 1024)
         num_thread = 4
+    if max_tokens is None:
+        return {"temperature": temperature, "num_predict": -1, "num_thread": num_thread}
     return {
         "temperature": temperature,
         "num_predict": num_predict,
@@ -68,7 +70,7 @@ def _runtime_ollama_options(kind: str, component: str, max_tokens: int, temperat
     }
 
 
-async def _ollama(model: str, prompt: str, system: str, as_json: bool, max_tokens: int, temperature: float,
+async def _ollama(model: str, prompt: str, system: str, as_json: bool, max_tokens: int | None, temperature: float,
                   timeout: float, kind: str = "deep", component: str = "") -> str:
     opts = _runtime_ollama_options(kind, component, max_tokens, temperature)
     body = {"model": model, "prompt": prompt, "stream": False, "keep_alive": keep_alive(model),
@@ -94,7 +96,7 @@ def _govern(system: str) -> str:
     return (preamble + "\n\n" + system) if preamble else system
 
 
-async def generate(prompt: str, *, as_json: bool = False, max_tokens: int = 500, temperature: float = 0.1,
+async def generate(prompt: str, *, as_json: bool = False, max_tokens: int | None = 500, temperature: float = 0.1,
                    kind: str = "deep", system: str = "", prefer: list[str] | None = None, timeout: float = 240,
                    govern: bool = True, component: str = "", privacy: str = "", person: str = ""):
     if component:

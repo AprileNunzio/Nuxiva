@@ -183,9 +183,7 @@ class CEOExecutive:
         if real and real != decision.primary_agent.id:
             active_agent = agents[real]
             plan = (f"Il CEO aveva previsto «{decision.primary_agent.name}» [{decision.primary_agent.id}]; la richiesta è stata eseguita da "
-                    f"«{active_agent.name}» [{real}]: incarico riallineato e appreso per le prossime volte.")
-        if real and decision.query:
-            learning.record(decision.query, real)
+                    f"«{active_agent.name}» [{real}]: incarico riallineato.")
 
         # Allineamento con lo specialista reale
         if real:
@@ -208,6 +206,8 @@ class CEOExecutive:
 
         agent_name = active_agent.name
         outcome = execution_outcome(result)
+        if real and decision.query and outcome["verified"]:
+            learning.record(decision.query, real)
         result["outcome"] = outcome
         result["execution_status"] = outcome["status"]
         result["verified"] = outcome["verified"]
@@ -218,6 +218,8 @@ class CEOExecutive:
 
         result["ceo"] = {
             "orchestrator": "CEO Executive",
+            "planned_agent": decision.primary_agent.id,
+            "reported_executor": current_agent,
             "delegated_to": active_agent.id,
             "specialist": agent_name,
             "category": active_agent.category,

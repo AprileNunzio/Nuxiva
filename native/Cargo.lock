@@ -1106,6 +1106,7 @@ dependencies = [
  "pyo3",
  "serde",
  "serde_json",
+ "ureq",
  "zeroize",
 ]
 

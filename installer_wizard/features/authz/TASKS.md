@@ -41,7 +41,8 @@
 - [ ] Collegare i lease Rust già pubblicati alla replica a quorum, al subentro tra server, all’isolamento dei tenant e al fencing dopo una partizione.
 - [ ] Applicare e misurare limiti CPU, RAM e GPU. Verificare liberazione delle risorse e riassegnazione dei job.
 - [ ] Estendere il catalogo Windows con azioni universali e conferme tipizzate. Collaudare voce durante l’esecuzione e isolamento tra sessioni.
-- [ ] Qualificare Jev o un equivalente misurando costo per attività riuscita, accuratezza e latenza.
+- [x] Integrato il classificatore Jev nativo nel planner delle richieste Windows. Attivazione per ID nodo con `NUXIVA_JEV_WINDOWS_NODES` e chiave `TYPESAFE_API_KEY` nel processo Supervisor. Il piano standard resta il fallback.
+- [ ] Collaudare Jev sul nodo Windows Hp con credenziali TypeSafe e misurare costo per attività riuscita, accuratezza e latenza rispetto al planner standard.
 - [ ] Configurare la firma della release Windows, allineare la versione e provare installazione, aggiornamento, ripristino e revoca su Windows pulito.
 - [ ] Preparare e collaudare un installer macOS con associazione guidata.
 - [ ] Collegare il flash ESP32 al firmware reale, verificare il dispositivo e attendere il primo heartbeat prima di mostrarlo online.

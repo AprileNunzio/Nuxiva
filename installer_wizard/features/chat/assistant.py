@@ -7,9 +7,10 @@ from state import store
 
 from features.actions import router as actions
 from features.authz import gate
+from features.authz.principal import acting
 from features.brain import stages
-from features.brain.llm import BrainUnavailable
-from features.chat import code
+from features.brain.llm import BrainUnavailable, generate
+from features.chat import code, strict_reply
 from features.chat import context as request_context
 from features.chat.claims import ConnectorClaims
 from features.chat.compose import compose_generic
@@ -105,6 +106,13 @@ async def _home(text: str, started: float) -> dict | None:
 
 async def handle(text: str, core_call, speech_lang: dict | None = None) -> dict:
     lang = (speech_lang or {}).get("lang", "it")
+    started = time.monotonic()
+    exact = strict_reply.deterministic(text)
+    if exact is not None:
+        return _exact_reply(exact, "algoritmo", started)
+    json_only = bool(strict_reply.JSON_ONLY.match(text.strip()))
+    if json_only or strict_reply.CHAT_ONLY.search(text):
+        return await _text_only(text, lang, started, json_only=json_only)
     switched = bool((speech_lang or {}).get("switched"))
     routing = text if switched else await pivot.to_pivot(text, lang)
 
@@ -124,6 +132,26 @@ async def handle(text: str, core_call, speech_lang: dict | None = None) -> dict:
     if lang != pivot.PIVOT and result.get("reply"):
         result["reply"] = await pivot.from_pivot(result["reply"], lang, force=not generated["by_model"])
     return result
+
+
+def _exact_reply(reply: str, agent: str, started: float) -> dict:
+    return {"reply": reply, "ui": {"mode": "face"}, "intent": "conversation", "agent": agent,
+            "elapsed_ms": int((time.monotonic() - started) * 1000), "exact_reply": True}
+
+
+async def _text_only(text: str, lang: str, started: float, *, json_only: bool) -> dict:
+    format_rule = "Return exactly one JSON object or array." if json_only else "Reply with text only."
+    try:
+        reply = await generate(text, kind="chat", max_tokens=1800, person=acting().slug,
+                               system=f"Reply in {lang}. {format_rule} Do not claim any action was performed.")
+    except BrainUnavailable as exc:
+        store.event("WARN", f"Risposta solo in chat non disponibile: {exc}", "assistant")
+        return {**_exact_reply("", "chat", started), "error": "brain_unavailable"}
+    if json_only:
+        reply = strict_reply.json_reply(reply)
+        if reply is None:
+            return {**_exact_reply("", "chat", started), "error": "invalid_json_reply"}
+    return {**_exact_reply(reply, "chat", started), "execution_status": "not_executed", "verified": False}
 
 
 def _hint(decision) -> str:

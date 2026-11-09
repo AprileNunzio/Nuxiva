@@ -1,6 +1,7 @@
 import unittest
+from unittest.mock import AsyncMock, patch
 
-from features.chat import code, layout
+from features.chat import code, layout, strict_reply
 
 EXPLAIN = ("Una pagina HTML ha una testa con le informazioni per il browser e un corpo con ciò che si vede. "
            "Il tag meta charset dichiara la codifica dei caratteri, title dà il nome alla scheda. "
@@ -9,11 +10,58 @@ EXPLAIN = ("Una pagina HTML ha una testa con le informazioni per il browser e un
 PAGE = "<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"utf-8\">\n  <title>Prova</title>\n</head>\n<body>\n  <h1>Ciao</h1>\n</body>\n</html>"
 
 
+class ChatOnlyTest(unittest.IsolatedAsyncioTestCase):
+    async def test_music_device_listing_uses_inventory_without_playback(self):
+        from features.music import commands
+
+        query = "Elenca i dispositivi disponibili per riprodurre musica. Non avviare la riproduzione."
+        devices = {"b": {"name": "Studio"}, "a": {"name": "Cucina"}}
+        with (patch.object(commands.outputs, "devices", devices), patch.object(commands.conf, "voice", return_value=True),
+              patch.object(commands, "play", new_callable=AsyncMock) as play):
+            self.assertTrue(commands.recognizes(query))
+            reply, _ = await commands.answer(query)
+            self.assertEqual(reply, "Dispositivi rilevati: Cucina, Studio")
+            play.assert_not_awaited()
+
+    async def test_plans_do_not_enter_operational_routing(self):
+        from features.chat import assistant
+
+        core = AsyncMock()
+        with patch.object(assistant, "generate", new_callable=AsyncMock, return_value="Piano") as model:
+            for subject in ("un robot 3D", "un diorama", "un sito multilingua"):
+                result = await assistant.handle(f"Progetta {subject} solo in chat. Non creare file.", core)
+                self.assertEqual(result["reply"], "Piano")
+                self.assertEqual(result["execution_status"], "not_executed")
+                self.assertNotIn("files", result["ui"])
+            self.assertEqual(model.await_count, 3)
+        core.assert_not_awaited()
+
+    async def test_json_request_does_not_enter_operational_routing(self):
+        from features.chat import assistant
+
+        core = AsyncMock()
+        with patch.object(assistant, "generate", new_callable=AsyncMock, side_effect=['{"ok": true}', "invalid"]):
+            result = await assistant.handle("Estrai solo JSON: esempio", core)
+            self.assertEqual(result["reply"], '{"ok": true}')
+            result = await assistant.handle("Estrai solo JSON: esempio", core)
+            self.assertEqual(result["error"], "invalid_json_reply")
+        core.assert_not_awaited()
+
+
 class LayoutTest(unittest.TestCase):
+    def test_explicit_reply_formats(self):
+        self.assertEqual(strict_reply.deterministic("Quanto fa 17 per 23? Rispondi solo con il numero."), "391")
+        self.assertEqual(strict_reply.deterministic("Ordina alfabeticamente pera, mela, banana."),
+                         "banana, mela, pera")
+        self.assertIsNone(strict_reply.deterministic("Ordina alfabeticamente i file della cartella"))
+        self.assertEqual(strict_reply.json_reply('```json\n{"importo": 125.50}\n```'), '{"importo": 125.5}')
+        self.assertIsNone(strict_reply.json_reply('{"importo": NaN}'))
+
     def test_short_code_stays_in_widget(self):
         speech, ui = code.answer("Ecco la pagina, signore.\n```html\n" + PAGE + "\n```", "dammi il codice html")
         self.assertEqual(ui.pop("intent"), "code_view")
         self.assertEqual(ui["mode"], "face")
+        self.assertNotIn("files", ui)
         self.assertEqual(layout.presence(speech, ui), "small")
 
     def test_explanation_and_code_side_by_side(self):

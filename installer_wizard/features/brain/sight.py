@@ -46,9 +46,9 @@ def _message(ref: str, prompt: str, jpeg: bytes) -> dict:
                                         {"type": "image_url", "image_url": {"url": f"data:{media};base64,{data}"}}]}
 
 
-async def _ollama(model: str, prompt: str, jpeg: bytes, as_json: bool, max_tokens: int) -> str:
+async def _ollama(model: str, prompt: str, jpeg: bytes, as_json: bool, max_tokens: int | None) -> str:
     body = {"model": model, "prompt": prompt, "images": [base64.b64encode(jpeg).decode()], "stream": False,
-            "options": {"temperature": 0.2, "num_predict": max_tokens}}
+            "options": {"temperature": 0.2, "num_predict": -1 if max_tokens is None else max_tokens}}
     if as_json:
         body["format"] = "json"
     async with httpx.AsyncClient(timeout=300) as client:
@@ -57,7 +57,7 @@ async def _ollama(model: str, prompt: str, jpeg: bytes, as_json: bool, max_token
     return r.json().get("response", "")
 
 
-async def look(jpeg: bytes, prompt: str, *, system: str = "", as_json: bool = False, max_tokens: int = 900,
+async def look(jpeg: bytes, prompt: str, *, system: str = "", as_json: bool = False, max_tokens: int | None = 900,
                history: list | None = None, validator=None, attempt_timeout: float = 300) -> tuple[object, str]:
     errors = []
     for ref in await models():

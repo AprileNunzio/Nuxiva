@@ -191,7 +191,8 @@ async def assistant_chat(text: str, device: str, heard_lang: str | None = None, 
             flow.failed(exc)
             raise
         flow.answered(result)
-    result["reply"] = speaker.fix_address(result.get("reply") or "") + voice_id.offer(heard.get("voice_known"))
+    if not result.pop("exact_reply", False):
+        result["reply"] = speaker.fix_address(result.get("reply") or "") + voice_id.offer(heard.get("voice_known"))
     if isinstance(result.get("ui"), dict):
         result["ui"].setdefault("presence", presence(result["reply"], result["ui"]))
     if not internal:

@@ -21,6 +21,15 @@ class Vault:
 
 
 class BodyTest(unittest.TestCase):
+    def test_anthropic_uses_reported_model_limit_including_thinking(self):
+        body = client._anthropic_body("claude", [], "", None, 0.1, {"reasoning": "high"}, True, 64000)
+        self.assertEqual(body["max_tokens"], 64000)
+
+    def test_uncapped_request_lets_compatible_provider_select_its_limit(self):
+        spec = BY_ID["gemini"]
+        body = client._openai_body(spec, "gemini-2.5-flash", [], "", None, 0.1, {}, True)
+        self.assertNotIn(spec.token_param, body)
+
     def test_gemini_gets_thinking_headroom_and_low_effort(self):
         spec = BY_ID["gemini"]
         body = client._openai_body(spec, "gemini-2.5-flash", [], "", 300, 0.1, {}, True)

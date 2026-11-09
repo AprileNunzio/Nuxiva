@@ -17,6 +17,7 @@ EXTENSIONS = {"html": "html", "css": "css", "javascript": "js", "js": "js", "typ
               "c#": "cs", "go": "go", "rust": "rs", "xml": "xml", "markdown": "md", "powershell": "ps1", "ruby": "rb"}
 KEEP = re.compile(r"\b(salva\w*|file|cartell\w*|condivi\w*|pubblic\w*|sito|invia\w*|manda\w*|mail|e-?mail|allega\w*|"
                   r"esegui\w*|lancia\w*|installa\w*|apri\w*\s+(il|la)\s+(file|sito|pagina\s+web))\b", re.I)
+SAVE = re.compile(r"^\s*(?:mi\s+)?(?:salva(?:mi|lo|la)?\b|save\b|(?:crea(?:mi)?|genera(?:mi)?|create|generate)\s+(?:un\s+|a\s+)?file\b)", re.I)
 
 
 def _language(given: str, code: str) -> str:
@@ -44,7 +45,7 @@ def answer(reply: str, question: str) -> tuple[str, dict] | None:
         return None
     speech, ui, intent = layout.plan_code(question, prose.splitlines(), blocks, MAX_CODE)
     ui["intent"] = intent
-    saved = save(question, blocks)
+    saved = save(question, blocks) if SAVE.match(question) else []
     if saved:
         ui["files"] = saved
     return speech, ui

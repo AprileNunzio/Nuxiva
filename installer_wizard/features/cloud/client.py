@@ -49,15 +49,19 @@ RETRY_TOKENS = 8192
 CUT = ("length", "max_tokens", "MAX_TOKENS")
 
 
-def _limit(opts: dict, asked: int) -> int:
+def _limit(opts: dict, asked: int | None) -> int | None:
     cap = int(opts.get("max_tokens") or 0)
+    if asked is None:
+        return cap or None
     return min(asked, cap) if cap else asked
 
 
-def _openai_body(spec: Provider, model: str, messages: list, system: str, max_tokens: int, temperature, opts: dict,
+def _openai_body(spec: Provider, model: str, messages: list, system: str, max_tokens: int | None, temperature, opts: dict,
                  json_mode: bool) -> dict:
-    body = {"model": model, "messages": ([{"role": "system", "content": system}] if system else []) + messages,
-            spec.token_param: _limit(opts, max_tokens)}
+    body = {"model": model, "messages": ([{"role": "system", "content": system}] if system else []) + messages}
+    limit = _limit(opts, max_tokens)
+    if limit is not None:
+        body[spec.token_param] = limit
     temp = opts.get("temperature") or (None if temperature is None else str(temperature))
     if temp not in (None, ""):
         body["temperature"] = float(temp)
@@ -67,25 +71,25 @@ def _openai_body(spec: Provider, model: str, messages: list, system: str, max_to
         body["reasoning_effort"] = opts["reasoning"]
     elif spec.id in THINKING_HEADROOM:
         body["reasoning_effort"] = "low"
-    if spec.id in THINKING_HEADROOM:
+    if spec.id in THINKING_HEADROOM and limit is not None:
         body[spec.token_param] += THINKING_HEADROOM[spec.id]
     if json_mode and spec.json_mode:
         body["response_format"] = {"type": "json_object"}
     return body
 
 
-def _anthropic_body(model: str, messages: list, system: str, max_tokens: int, temperature, opts: dict,
-                    json_mode: bool) -> dict:
-    limit = _limit(opts, max_tokens)
+def _anthropic_body(model: str, messages: list, system: str, max_tokens: int | None, temperature, opts: dict,
+                    json_mode: bool, model_limit: int | None = None) -> dict:
+    limit = _limit(opts, max_tokens) or model_limit or RETRY_TOKENS
     if json_mode:
         system = (system + "\n" if system else "") + "Rispondi esclusivamente con un oggetto JSON valido."
     body = {"model": model, "messages": messages, "max_tokens": limit}
     if system:
         body["system"] = system
     budget = REASONING_BUDGET.get(opts.get("reasoning", ""))
-    if budget:
+    if budget and (model_limit is None or budget < model_limit):
         body["thinking"] = {"type": "enabled", "budget_tokens": budget}
-        body["max_tokens"] = limit + budget
+        body["max_tokens"] = min(limit + budget, model_limit) if model_limit else limit + budget
         return body
     temp = opts.get("temperature") or (None if temperature is None else str(temperature))
     if temp not in (None, ""):
@@ -119,7 +123,21 @@ async def _post(url: str, body: dict, head: dict, timeout: float) -> httpx.Respo
         return await client.post(url, json=body, headers=head)
 
 
-async def complete(ref: str, messages: list[dict], system: str = "", max_tokens: int = 800, temperature=None,
+async def _anthropic_model_limit(root: str, model: str, head: dict) -> int | None:
+    from urllib.parse import quote
+
+    try:
+        async with httpx.AsyncClient(timeout=5) as client:
+            response = await client.get(f"{root}/models/{quote(model, safe='')}", headers=head)
+            response.raise_for_status()
+            data = response.json()
+    except (httpx.HTTPError, ValueError):
+        return None
+    limit = data.get("max_tokens") if isinstance(data, dict) else None
+    return limit if type(limit) is int and limit > 0 else None
+
+
+async def complete(ref: str, messages: list[dict], system: str = "", max_tokens: int | None = 800, temperature=None,
                    json_mode: bool = False, _retried: bool = False) -> Reply:
     pid, model = parse_ref(ref)
     spec, entry = BY_ID[pid], vault.get(pid)
@@ -130,8 +148,10 @@ async def complete(ref: str, messages: list[dict], system: str = "", max_tokens:
     opts = entry.get("options", {})
     head, timeout = headers(spec, entry), float(opts.get("timeout") or 120)
     if spec.kind == "anthropic":
-        url = f"{endpoint(spec, entry)}/messages"
-        body = _anthropic_body(model, messages, system, max_tokens, temperature, opts, json_mode)
+        root = endpoint(spec, entry)
+        url = f"{root}/messages"
+        model_limit = await _anthropic_model_limit(root, model, head) if max_tokens is None and not opts.get("max_tokens") else None
+        body = _anthropic_body(model, messages, system, max_tokens, temperature, opts, json_mode, model_limit)
     else:
         url = f"{endpoint(spec, entry)}/chat/completions"
         body = _openai_body(spec, model, messages, system, max_tokens, temperature, opts, json_mode)
@@ -161,7 +181,7 @@ async def complete(ref: str, messages: list[dict], system: str = "", max_tokens:
     except (ValueError, KeyError) as exc:
         raise CloudError(f"{spec.name}: risposta non valida dal server ({exc})", res.status_code) from exc
     if _cut(spec, data) and json_mode:
-        if _retried:
+        if _retried or max_tokens is None:
             raise CloudError(f"{spec.name}: risposta troncata dal limite di lunghezza")
         return await complete(ref, messages, system, min(RETRY_TOKENS, max(max_tokens * 3, 1500)), temperature, json_mode, True)
     text, tokens = _text(spec, data)

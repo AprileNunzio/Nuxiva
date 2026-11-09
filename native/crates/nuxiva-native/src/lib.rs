@@ -22,6 +22,7 @@ mod gesture;
 mod governors;
 mod guard;
 mod home_rules;
+mod jev;
 mod language;
 mod learner;
 mod memory;
@@ -107,6 +108,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add("TokenRejected", m.py().get_type::<TokenRejected>())?;
     guard::register(m)?;
     compute_lease::register(m)?;
+    jev::register(m)?;
     seal::register(m)?;
     config::register(m)?;
     telemetry::register(m)?;

@@ -196,8 +196,12 @@ class CEORelevanceTest(unittest.TestCase):
         decision = self.ceo.analyze_request("apri la lavagna")
         raw = {"reply": "ok", "intent": "conversation", "agent": "Connettore · musicstudio"}
         result = self.ceo.synthesize(decision, raw)
+        self.assertEqual(result["ceo"]["planned_agent"], decision.primary_agent.id)
+        self.assertEqual(result["ceo"]["reported_executor"], raw["agent"])
         self.assertEqual(result["ceo"]["delegated_to"], "musicstudio")
         self.assertIn("riallineato", result["ceo"]["plan"])
+        self.assertNotIn("musicstudio", learning.table().get("lavag", {}))
+        self.ceo.synthesize(decision, {**raw, "execution_status": "completed", "verified": True})
         self.assertIn("musicstudio", learning.table().get("lavag", {}))
 
 

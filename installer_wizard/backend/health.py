@@ -170,15 +170,17 @@ async def probe_all() -> dict:
             from features.brain.residency import primary
             main = primary()
             llm = norm_model(main) if main else ""
-            try:
-                loaded = [m.get("name") for m in (await client.get(f"{ollama_url()}/api/ps")).json().get("models", [])]
-                if not llm:
-                    results["llm"] = {"status": "ok", "detail": "solo cervelli cloud: nessun modello locale in memoria"}
-                else:
+            if not llm:
+                results["llm"] = {"status": "ok", "detail": "Nessun modello di conversazione locale da verificare"}
+            else:
+                try:
+                    response = await client.get(f"{ollama_url()}/api/ps")
+                    response.raise_for_status()
+                    loaded = [m.get("name") for m in response.json().get("models", [])]
                     results["llm"] = {"status": "ok" if llm in loaded else "warn",
                                       "detail": f"{llm} {'attivo in memoria' if llm in loaded else 'non caricato'}"}
-            except (httpx.HTTPError, ValueError):
-                results["llm"] = {"status": "down", "detail": llm or "cloud"}
+                except (httpx.HTTPError, ValueError):
+                    results["llm"] = {"status": "down", "detail": llm}
 
         try:
             r = await client.get(f"{CORE_URL}/health")

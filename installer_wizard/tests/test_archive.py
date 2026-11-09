@@ -37,7 +37,7 @@ class ArchiveTest(unittest.TestCase):
         target.rmdir()
 
     def test_code_is_saved(self):
-        _, ui = code.answer("Ecco.\n```html\n<p>ciao</p>\n```", "scrivimi un paragrafo html")
+        _, ui = code.answer("Ecco.\n```html\n<p>ciao</p>\n```", "crea un file con un paragrafo html")
         self.assertTrue(ui["files"][0].endswith(".html"))
         saved = archive.path("codice") / ui["files"][0]
         self.assertTrue(saved.exists())
