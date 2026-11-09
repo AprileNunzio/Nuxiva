@@ -1,3 +1,4 @@
+import logging
 import os
 import stat
 import tempfile
@@ -16,6 +17,8 @@ from features.shares import archive, policy
 routes = APIRouter()
 READ = {"x-nuxiva-capabilities": ["files.share.read"]}
 WRITE = {"x-nuxiva-capabilities": ["files.share.write"]}
+log = logging.getLogger("nuxiva.shares.scoped")
+DOWNLOAD_RECHECK_BYTES = 1024 * 1024
 WINDOWS_DEVICES = {"CON", "PRN", "AUX", "NUL", *(f"COM{index}" for index in range(1, 10)),
                    *(f"LPT{index}" for index in range(1, 10))}
 
@@ -31,7 +34,8 @@ def _matrix_allows(record: dict, *, write: bool) -> bool:
 
 def _authorize(user: str, *, write: bool) -> dict:
     record = account(user)
-    if not _matrix_allows(record, write=write):
+    capability = "files.share.write" if write else "files.share.read"
+    if not allows(record["role"], capability) or not _matrix_allows(record, write=write):
         raise HTTPException(403, "share_access_denied")
     return record
 
@@ -113,11 +117,29 @@ def download(share: str, path: str = Query(max_length=4096), user: str = Depends
 
     def chunks():
         with stream:
-            while data := stream.read(64 * 1024):
+            remaining = metadata.st_size
+            until_check = 0
+            while remaining:
+                if until_check == 0:
+                    try:
+                        grant = _authorize(user, write=False).get("shares", {}).get(share)
+                    except HTTPException as exc:
+                        log.warning("Download scoped interrotto per %s: %s", user, exc.detail)
+                        return
+                    if grant not in {"read", "write"}:
+                        log.info("Download scoped interrotto per revoca a %s su %s", user, share)
+                        return
+                    until_check = DOWNLOAD_RECHECK_BYTES
+                data = stream.read(min(64 * 1024, remaining, until_check))
+                if not data:
+                    return
+                remaining -= len(data)
+                until_check -= len(data)
                 yield data
     return StreamingResponse(chunks(), media_type="application/octet-stream",
                              background=BackgroundTask(stream.close),
-                             headers={"Cache-Control": "no-store", "Content-Disposition": "attachment"})
+                             headers={"Cache-Control": "no-store", "Content-Disposition": "attachment",
+                                      "Content-Length": str(metadata.st_size)})
 
 
 @routes.post("/api/shares/scoped/{share}/folders", openapi_extra=WRITE, status_code=201)

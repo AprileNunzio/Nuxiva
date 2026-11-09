@@ -1,3 +1,4 @@
+import asyncio
 import os
 import tempfile
 import unittest
@@ -25,6 +26,24 @@ class SharesExplorerTest(unittest.TestCase):
         patcher.start()
         self.addCleanup(patcher.stop)
         self.addCleanup(self.temp_dir.cleanup)
+
+    @unittest.skipUnless(os.open in os.supports_dir_fd, "Scoped share access requires directory descriptors")
+    def test_scoped_download_stops_after_revocation(self):
+        directory = self.root / archive.FOLDERS["documenti"]
+        directory.mkdir()
+        (directory / "nota.txt").write_bytes(b"ab")
+        record = {"role": "auditor", "shares": {"documenti": "read"}}
+
+        async def check():
+            response = scoped.download("documenti", path="nota.txt", user="alice")
+            self.assertEqual(response.headers["content-length"], "2")
+            self.assertEqual(await anext(response.body_iterator), b"a")
+            record["shares"].clear()
+            with self.assertRaises(StopAsyncIteration):
+                await anext(response.body_iterator)
+
+        with mock.patch.object(scoped, "account", return_value=record), mock.patch.object(scoped, "DOWNLOAD_RECHECK_BYTES", 1):
+            asyncio.run(check())
 
     def test_list_files_and_folders(self):
         # Create test folder and file
