@@ -26,9 +26,11 @@ def _server_address(request: Request) -> str:
 @public_routes.get("/api/rpa/download-client")
 async def download_client(request: Request, format: str = "exe"):
     if format != "zip":
-        url = await releases.installer_url()
+        url = await releases.installer_url(enrolled=format == "installer")
         if url:
             return RedirectResponse(url, status_code=302)
+        if format == "installer":
+            raise HTTPException(status_code=503, detail="windows_installer_unavailable")
     if not os.path.isfile(os.path.join(package.ASSISTANT_DIR, "nuxiva_assistant.py")):
         raise HTTPException(
             status_code=404,

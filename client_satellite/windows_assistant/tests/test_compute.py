@@ -108,7 +108,7 @@ def collected(client: FakeClient) -> tuple[bytes, list[dict]]:
 
 
 class RelayTest(OllamaCase):
-    def build(self, client=None, gate=None, level=Level.ASK):
+    def build(self, client=None, gate=None, level=Level.ALLOW):
         client = client or FakeClient()
         return ComputeRelay(client, gate or FakeGate(), FakePolicy(level), lambda: True), client
 
@@ -125,6 +125,16 @@ class RelayTest(OllamaCase):
         worker, client = self.build(FakeClient(cancel_after=1))
         worker._execute("j1", job())
         self.assertEqual(len(client.sent), 1)
+
+    def test_returning_user_interrupts_upstream_connection(self):
+        worker, _ = self.build()
+        worker.session_idle = lambda: False
+        connection = mock.Mock()
+        done, interrupted = threading.Event(), threading.Event()
+        with mock.patch.object(relay, "ACTIVITY_CHECK_SECONDS", 0):
+            worker._watch_activity(connection, done, interrupted)
+        self.assertTrue(interrupted.is_set())
+        connection.shutdown.assert_called_once_with(relay.socket.SHUT_RDWR)
 
     def test_denied_permission_answers_with_an_error_and_never_calls_ollama(self):
         gate = FakeGate(deny=True)
@@ -158,7 +168,8 @@ class RelayTest(OllamaCase):
         self.assertEqual(client.sent[0][1]["error"], "compute_ollama_unreachable")
 
     def test_sharing_follows_the_permission_and_the_availability(self):
-        self.assertTrue(self.build(level=Level.ASK)[0].sharing())
+        self.assertTrue(self.build(level=Level.ALLOW)[0].sharing())
+        self.assertFalse(self.build(level=Level.ASK)[0].sharing())
         self.assertFalse(self.build(level=Level.DENY)[0].sharing())
         worker = ComputeRelay(FakeClient(), FakeGate(), FakePolicy(Level.ALLOW), lambda: False)
         self.assertFalse(worker.sharing())

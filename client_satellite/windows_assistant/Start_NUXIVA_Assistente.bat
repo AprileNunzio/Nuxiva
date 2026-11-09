@@ -17,13 +17,11 @@ if not exist ".venv\Scripts\pythonw.exe" (
   echo  Prima installazione di NUXIVA: preparo i componenti, ci vogliono 1-3 minuti...
   python -m venv .venv || goto error
 )
-fc /b requirements.txt ".venv
-equirements.installed" >nul 2>nul
+fc /b requirements.txt ".venv\requirements.installed" >nul 2>nul
 if errorlevel 1 (
   echo  Installo o aggiorno i componenti di NUXIVA...
   ".venv\Scripts\python.exe" -m pip install --disable-pip-version-check --quiet -r requirements.txt || goto error
-  copy /y requirements.txt ".venv
-equirements.installed" >nul
+  copy /y requirements.txt ".venv\requirements.installed" >nul
 )
 start "" ".venv\Scripts\pythonw.exe" nuxiva_assistant.py
 exit /b 0

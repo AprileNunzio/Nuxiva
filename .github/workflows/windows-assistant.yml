@@ -47,11 +47,9 @@ jobs:
           exit 0
 
       - name: Install Inno Setup
-        if: steps.version.outputs.exists == 'false'
         run: choco install innosetup -y --no-progress
 
       - name: Build Installer
-        if: steps.version.outputs.exists == 'false'
         shell: pwsh
         env:
           NUXIVA_ASSISTANT_SIGNING_KEY: ${{ secrets.NUXIVA_ASSISTANT_SIGNING_KEY }}

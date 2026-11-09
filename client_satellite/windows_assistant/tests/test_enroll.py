@@ -67,9 +67,13 @@ class RedeemTest(unittest.TestCase):
     def test_matching_pin_enrolls_and_stores_the_credentials(self):
         with mock.patch.object(Client, "enroll", return_value="node-token") as call:
             enroll.redeem(self.cfg, payload(), self.contact())
-        call.assert_called_once_with(TOKEN, "pc-ufficio-pc", "Ufficio PC")
+        self.assertRegex(self.cfg["node_id"], r"^pc-ufficio-pc-[0-9a-f]{24}$")
+        call.assert_called_once_with(TOKEN, self.cfg["node_id"], "Ufficio PC")
         self.assertEqual((self.cfg["token"], self.cfg["pin"], self.cfg["ca"]), ("node-token", PIN, "PEM"))
         self.saved.assert_called_once()
+
+    def test_equal_display_names_do_not_reuse_node_identity(self):
+        self.assertNotEqual(store.node_id_for("Ufficio PC"), store.node_id_for("Ufficio PC"))
 
     def test_certificate_that_differs_from_the_package_is_refused_before_sending_the_token(self):
         with mock.patch.object(Client, "enroll") as call:

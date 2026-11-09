@@ -62,7 +62,7 @@ class ComputeRelay:
         self.events.setdefault(node_id, asyncio.Event()).set()
         return job
 
-    async def take(self, node_id: str, timeout: float) -> list[dict]:
+    async def take(self, node_id: str, timeout: float, capacity: int = 2) -> list[dict]:
         if not self.waiting.get(node_id):
             event = self.events.setdefault(node_id, asyncio.Event())
             event.clear()
@@ -70,7 +70,10 @@ class ComputeRelay:
                 await asyncio.wait_for(event.wait(), timeout)
             except asyncio.TimeoutError:
                 return []
-        batch = [j for j in self.waiting.pop(node_id, []) if not j.cancelled][:4]
+        waiting = [job for job in self.waiting.pop(node_id, []) if not job.cancelled]
+        batch, pending = waiting[:capacity], waiting[capacity:]
+        if pending:
+            self.waiting[node_id] = pending
         for job in batch:
             job.picked.set()
         return [job.wire() for job in batch]
@@ -103,6 +106,11 @@ class ComputeRelay:
     def release(self, job: Job) -> None:
         job.cancelled = not job.finished
         self.jobs.pop(job.id, None)
+        pending = [item for item in self.waiting.get(job.node_id, []) if item.id != job.id]
+        if pending:
+            self.waiting[job.node_id] = pending
+        else:
+            self.waiting.pop(job.node_id, None)
 
     async def open(self, job: Job) -> tuple[int, str, AsyncIterator[bytes]]:
         try:

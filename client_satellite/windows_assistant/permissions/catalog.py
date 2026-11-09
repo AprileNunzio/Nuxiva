@@ -34,6 +34,7 @@ CAPABILITIES = (
     Capability("open.files", "Aprire", "Aprire documenti e cartelle", "Con il programma predefinito di Windows.", Level.ALLOW),
     Capability("open.apps", "Aprire", "Avviare applicazioni", "Solo programmi presenti nel menu Start.", Level.ALLOW),
     Capability("open.web", "Aprire", "Aprire siti web", "Solo indirizzi http e https nel browser.", Level.ALLOW),
+    Capability("research.web", t("research.group"), t("research.confirm"), t("research.hint"), Level.ASK),
     Capability("input.type", "Scrivere e desktop", "Scrivere nel programma aperto", "Incolla il testo dove si trova il cursore.", Level.ALLOW),
     Capability("input.clipboard", "Scrivere e desktop", "Usare gli appunti", "Copiare testo negli appunti.", Level.ALLOW),
     Capability("desktop.control", "Scrivere e desktop", "Gestire finestre e tasti",

@@ -24,7 +24,10 @@ def _node(request: Request) -> dict:
 @public_routes.post("/api/nodes/compute/next")
 async def compute_next(request: Request):
     node = _node(request)
-    return {"jobs": await relay.take(node["id"], POLL_SECONDS)}
+    raw = request.query_params.get("capacity", "2")
+    if raw not in {"1", "2"}:
+        raise HTTPException(400, "compute_invalid_capacity")
+    return {"jobs": await relay.take(node["id"], POLL_SECONDS, int(raw))}
 
 
 @public_routes.post("/api/nodes/compute/chunk")

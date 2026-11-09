@@ -1,4 +1,7 @@
 {
+  "windows_installer": "Download Windows installer",
+  "windows_enrollment_file": "Download enrollment file",
+  "windows_installer_hint": "Save enroll.json beside the installer, then run the installer and launch Nuxiva when it finishes.",
   "windows_download": "Download for Windows",
   "windows_download_hint": "Extract the ZIP and open Start_NUXIVA_Assistente.bat. Python 3.10 or later must be on your PATH. The package contains a one-time code to pair your PC automatically. Keep it private and use it before it expires.",
   "windows_download_failed": "Download failed. Check that HTTPS is enabled and try again.",

@@ -3,6 +3,7 @@ import hmac
 import importlib
 import re
 import sys
+from pathlib import Path
 
 importlib.import_module("customtkinter")
 
@@ -42,8 +43,8 @@ def pair(cfg: dict, address: str, code: str, name: str, start_with_windows: bool
     autostart.set_enabled(start_with_windows)
 
 
-def auto_enroll(cfg: dict) -> bool:
-    path = paths.APP_DIR / enroll.ENROLL_FILE
+def auto_enroll(cfg: dict, enrollment_file: Path | None = None) -> bool:
+    path = enrollment_file or paths.APP_DIR / enroll.ENROLL_FILE
     try:
         data = enroll.load(path)
         if data is None:
@@ -65,7 +66,8 @@ def main() -> None:
                                          "NUXIVA", 0x40)
         return
     cfg = store.load()
-    if (not cfg["token"] or not cfg["ca"]) and not auto_enroll(cfg):
+    enrollment_file = (Path(sys.argv[2]) if len(sys.argv) == 3 and sys.argv[1] == "--enrollment-file" else None)
+    if (not cfg["token"] or not cfg["ca"]) and not auto_enroll(cfg, enrollment_file):
         from ui.pairing_view import PairingWindow
         window = PairingWindow(cfg, verify, lambda *values: pair(cfg, *values))
         if not window.run():

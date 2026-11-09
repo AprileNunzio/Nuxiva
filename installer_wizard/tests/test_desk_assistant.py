@@ -44,5 +44,26 @@ class TrustTest(unittest.TestCase):
         self.assertRegex(value, r"^[0-9A-F]{4}(-[0-9A-F]{4}){3}$")
 
 
+class ResearchTest(unittest.IsolatedAsyncioTestCase):
+    async def test_explicit_url_open_returns_a_typed_action_without_a_model(self):
+        with mock.patch.object(desk_assistant, "generate", new_callable=mock.AsyncMock) as model:
+            result = await desk_assistant.assist({"id": "pc"}, {"text": "Apri https://example.com/guida"})
+        model.assert_not_awaited()
+        self.assertEqual(result["actions"], [{"type": "open_url", "url": "https://example.com/guida"}])
+
+    async def test_explicit_research_uses_only_the_question_and_returns_no_actions(self):
+        with (
+            mock.patch("features.research.service.research", new_callable=mock.AsyncMock) as search,
+            mock.patch("features.research.report.render", return_value="Sources"),
+        ):
+            result = await desk_assistant.assist({"id": "pc"}, {
+                "text": "Cerca online: come si usa Excel?",
+                "context": {"content": "private document"},
+            })
+        search.assert_awaited_once_with("come si usa Excel?")
+        self.assertEqual(result["show"], "Sources")
+        self.assertEqual(result["actions"], [])
+
+
 if __name__ == "__main__":
     unittest.main()

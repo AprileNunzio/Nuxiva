@@ -3,6 +3,7 @@ import json
 import logging
 import os
 import re
+import secrets
 import socket
 
 from settings import paths, protect
@@ -69,7 +70,7 @@ def save(cfg: dict) -> None:
 
 def node_id_for(name: str) -> str:
     slug = re.sub(r"[^a-z0-9-]+", "-", name.lower()).strip("-") or "pc"
-    return ("pc-" + slug)[:40]
+    return f"pc-{slug[:12].rstrip('-')}-{secrets.token_hex(12)}"
 
 
 def normalize_server(value: str) -> str:

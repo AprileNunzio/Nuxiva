@@ -47,6 +47,13 @@ class RelayTest(unittest.IsolatedAsyncioTestCase):
     def setUp(self):
         self.relay = ComputeRelay()
 
+    async def test_capacity_preserves_jobs_for_the_next_poll(self):
+        jobs = [self.relay.submit("pc-a", "GET", "/api/tags", b"") for _ in range(4)]
+        self.assertEqual([j["id"] for j in await self.relay.take("pc-a", 1, 1)], [jobs[0].id])
+        self.assertFalse(jobs[1].picked.is_set())
+        self.relay.release(jobs[2])
+        self.assertEqual([j["id"] for j in await self.relay.take("pc-a", 1, 2)], [jobs[1].id, jobs[3].id])
+
     async def test_streams_chunks_in_order_and_cleans_up(self):
         job = self.relay.submit("pc-a", "POST", "/api/chat", b"{}")
         jobs = await self.relay.take("pc-a", 1)

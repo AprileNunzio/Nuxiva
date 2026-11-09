@@ -43,8 +43,19 @@ Name: "{userprograms}\NUXIVA Assistente"; Filename: "{app}\NUXIVA.exe"
 Name: "{userdesktop}\NUXIVA Assistente"; Filename: "{app}\NUXIVA.exe"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\NUXIVA.exe"; Description: "{cm:LaunchProgram,NUXIVA Assistente}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\NUXIVA.exe"; Parameters: "{code:EnrollmentParameters}"; Description: "{cm:LaunchProgram,NUXIVA Assistente}"; Flags: nowait postinstall skipifsilent
 Filename: "{app}\NUXIVA.exe"; Flags: nowait; Check: WizardSilent
 
 [UninstallRun]
 Filename: "{cmd}"; Parameters: "/C reg delete HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v ""NUXIVA Assistente"" /f"; Flags: runhidden; RunOnceId: "RemoveAutostart"
+
+[Code]
+function EnrollmentParameters(Value: String): String;
+var
+  EnrollmentFile: String;
+begin
+  Result := '';
+  EnrollmentFile := ExpandConstant('{src}\enroll.json');
+  if FileExists(EnrollmentFile) then
+    Result := '--enrollment-file "' + EnrollmentFile + '"';
+end;

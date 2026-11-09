@@ -6,6 +6,7 @@ from pathlib import Path
 
 from actions.common import TEXT_LIMIT, ActionError, Outcome, PathGuard, Request
 from backup.snapshots import Snapshots
+from i18n.strings import t
 from permissions.gate import Gate
 
 SKIP_DIRS = {"appdata", "node_modules", ".git", "$recycle.bin", "__pycache__", ".venv", "venv"}
@@ -13,12 +14,12 @@ SEARCH_SECONDS = 5
 SEARCH_LIMIT = 50
 
 
-def _write_new(path: Path, content: str) -> Path:
+def write_new(path: Path, content: bytes) -> Path:
     candidate = path
     n = 2
     while True:
         try:
-            with candidate.open("x", encoding="utf-8", newline="") as handle:
+            with candidate.open("xb") as handle:
                 handle.write(content)
             return candidate
         except FileExistsError:
@@ -45,6 +46,8 @@ class Files:
 
     def create_file(self, a: dict) -> Outcome:
         path = self.guard.resolve(a.get("path", ""), "Crea file")
+        if path.suffix.lower() == ".docx":
+            raise ActionError(t("documents.use_docx"))
         content = a.get("content", "")
         if path.exists() and a.get("overwrite"):
             self.gate.check(Request("files.modify", f"Sostituire {path.name}", f"{path}\n\nNuovo contenuto:\n{content[:1500]}"))
@@ -53,11 +56,13 @@ class Files:
             return Outcome(f"📄 File sostituito: {path} (copia di sicurezza in {backup.parent})")
         self.gate.check(Request("files.create", f"Creare il file {path.name}", f"{path}\n\n{content[:1500]}"))
         path.parent.mkdir(parents=True, exist_ok=True)
-        path = _write_new(path, content)
+        path = write_new(path, content.encode("utf-8"))
         return Outcome(f"📄 File creato: {path}")
 
     def append_file(self, a: dict) -> Outcome:
         path = self.guard.resolve(a.get("path", ""), "Modifica file")
+        if path.suffix.lower() == ".docx":
+            raise ActionError(t("documents.use_docx"))
         if not path.is_file():
             raise ActionError(f"il file {path} non esiste")
         content = a.get("content", "")
@@ -66,6 +71,19 @@ class Files:
         with path.open("a", encoding="utf-8", newline="") as handle:
             handle.write(content)
         return Outcome(f"✏ Testo aggiunto a {path.name}")
+
+    def move_path(self, a: dict) -> Outcome:
+        if os.name != "nt":
+            raise ActionError("move_path_requires_windows")
+        source = self.guard.resolve(a.get("path", ""), "Sposta")
+        target = self.guard.resolve(a.get("destination", ""), "Destinazione")
+        if source in self.guard.roots or target == source or source in target.parents:
+            raise ActionError(t("files.move.invalid"))
+        if not target.parent.is_dir():
+            raise ActionError(t("files.move.parent_missing"))
+        self.gate.check(Request("files.modify", t("files.move.confirm", name=source.name), f"{source}\n→ {target}"), always_ask=True)
+        source.rename(target)
+        return Outcome(f"📁 {source.name} → {target}", {"path": str(target)})
 
     def read_file(self, a: dict) -> Outcome:
         path = self.guard.resolve(a.get("path", ""), "Leggi file")

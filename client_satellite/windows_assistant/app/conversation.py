@@ -8,6 +8,7 @@ import threading
 from actions.executor import Executor
 from connection import tls
 from connection.client import Client, ServerError, Unauthorized
+from i18n.strings import t
 from permissions.gate import Denied, Gate, Request
 from permissions.policy import Policy
 from senses import capture, reading
@@ -65,10 +66,19 @@ class Conversation:
 
     def _rounds(self, body: dict) -> dict:
         result: dict = {}
+        research_requested = False
         for _ in range(MAX_ROUNDS):
             result = self.client.assist(body)
+            body.pop("research_approved", None)
             if result.get("ignored"):
                 return result
+            if result.get("need") == "research":
+                if research_requested:
+                    return result
+                self.gate.check(Request("research.web", t("research.confirm"), body["text"]), always_ask=True)
+                body["research_approved"] = True
+                research_requested = True
+                continue
             if result.get("need") and not body.get("image") and not body["context"].get("content"):
                 self._capture(result["need"], body)
                 continue

@@ -15,6 +15,7 @@ from app.voice import Voice
 from backup.scheduler import BackupScheduler
 from backup.snapshots import Snapshots
 from compute.probe import OllamaProbe
+from compute.idle import session_is_idle
 from compute.relay import ComputeRelay
 from connection import tls
 from connection.client import Client, ServerError
@@ -53,7 +54,9 @@ class Assistant:
         self.heartbeat = Heartbeat(self.client, self._report, self._on_reply,
                                    lambda: self.ui.dispatch.post(self.unpair, True), self._security)
         self.ollama = OllamaProbe()
-        self.compute = ComputeRelay(self.client, self.gate, self.policy, lambda: self.ollama.read()["available"])
+        self.compute = ComputeRelay(
+            self.client, self.gate, self.policy, lambda: self.ollama.read()["available"], session_is_idle,
+        )
         self.inbox = Inbox(self.client, lambda actions: self.ui.dispatch.post(self._actions, actions))
         self.backup = BackupScheduler(cfg, self.snapshots, lambda text: self.ui.dispatch.post(self.ui.note, text))
         self.updater = Updater(lambda text: self.ui.dispatch.post(self.ui.note, text), self.quit)
@@ -75,7 +78,8 @@ class Assistant:
         }
 
     def _environment(self) -> dict:
-        return {"folders": self.folders, "apps": sorted(self.apps)[:150], "extra_folders": self.policy.folders}
+        return {"folders": self.folders, "apps": sorted(self.apps)[:150], "extra_folders": self.policy.folders,
+                "actions": sorted(self.executor.handlers), "research": True}
 
     def _report(self) -> dict:
         return {"version": paths.VERSION, "hostname": socket.gethostname(), "hardware": {"os": "windows"},

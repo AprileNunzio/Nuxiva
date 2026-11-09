@@ -44,7 +44,7 @@ def _add_tree(zf: zipfile.ZipFile, folder: str, prefix: str) -> None:
     for root, dirs, files in os.walk(folder):
         dirs[:] = [d for d in dirs if d not in _SKIP_DIRS and not d.endswith(".egg-info")]
         for file in files:
-            if file.endswith(_KEEP) and "setup_msi" not in file:
+            if file.endswith(_KEEP) and file.lower() != "enroll.json" and "setup_msi" not in file:
                 path = os.path.join(root, file)
                 zf.write(path, prefix + os.path.relpath(path, folder).replace(os.sep, "/"))
 

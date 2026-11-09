@@ -1,4 +1,7 @@
 {
+  "windows_installer": "Scarica installer Windows",
+  "windows_enrollment_file": "Scarica file di associazione",
+  "windows_installer_hint": "Salva enroll.json accanto all’installer, quindi esegui l’installer e avvia Nuxiva al termine.",
   "windows_download": "Scarica per Windows",
   "windows_download_hint": "Estrai lo ZIP e apri Start_NUXIVA_Assistente.bat. Serve Python 3.10 o successivo nel PATH. Il pacchetto contiene un codice monouso per associare automaticamente il PC. Conservalo al sicuro e usalo prima della scadenza.",
   "windows_download_failed": "Download non riuscito. Verifica che HTTPS sia attivo e riprova.",

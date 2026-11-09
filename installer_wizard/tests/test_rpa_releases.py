@@ -16,6 +16,17 @@ class ReleasesTest(unittest.TestCase):
     def test_no_installer_means_no_redirect(self):
         self.assertEqual(releases.pick([release("v1.0.0")]), "")
 
+    def test_enrollment_only_selects_a_compatible_official_release_with_signature(self):
+        tag = "assistant-v5.3.1"
+        assets = (releases.INSTALLER, "manifest.json", "manifest.sig")
+        candidate = release(tag, assets=assets)
+        self.assertEqual(releases.pick([candidate], enrolled=True), "")
+        for asset in candidate["assets"]:
+            asset["browser_download_url"] = (
+                f"https://github.com/{releases.REPOSITORY}/releases/download/{tag}/{asset['name']}"
+            )
+        self.assertEqual(releases.pick([candidate], enrolled=True), candidate["assets"][0]["browser_download_url"])
+
 
 if __name__ == "__main__":
     unittest.main()

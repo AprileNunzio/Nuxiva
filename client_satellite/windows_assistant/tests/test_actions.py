@@ -1,11 +1,15 @@
+import os
 import tempfile
 import time
 import unittest
 from pathlib import Path
 from unittest import mock
 
+from docx import Document
+
 from actions import desktop, remote
 from actions.common import ActionError, PathGuard
+from actions.documents import Documents
 from actions.executor import Executor
 from actions.files import Files
 from actions.shell import Shell
@@ -39,6 +43,37 @@ class Base(unittest.TestCase):
 class FilesTest(Base):
     def files(self, gate):
         return Files(gate, PathGuard(gate, [str(self.home)]), Snapshots(self.root / "backup"))
+
+    @unittest.skipUnless(os.name == "nt", "Windows rename semantics")
+    def test_move_respects_permission_and_never_overwrites(self):
+        source, target = self.home / "source.txt", self.home / "target.txt"
+        source.write_text("source", encoding="utf-8")
+        target.write_text("target", encoding="utf-8")
+        action = {"path": str(source), "destination": str(target)}
+        with self.assertRaises(Denied):
+            self.files(FakeGate(denied={"files.modify"})).move_path(action)
+        with self.assertRaises(FileExistsError):
+            self.files(FakeGate()).move_path(action)
+        self.assertEqual(target.read_text(encoding="utf-8"), "target")
+        target.unlink()
+        self.files(FakeGate()).move_path(action)
+        self.assertFalse(source.exists())
+        self.assertEqual(target.read_text(encoding="utf-8"), "source")
+
+    def test_create_docx_preserves_existing_document_and_writes_paragraphs(self):
+        gate = FakeGate()
+        documents = Documents(gate, PathGuard(gate, [str(self.home)]))
+        target = self.home / "report.docx"
+        target.write_bytes(b"existing")
+        result = documents.create_docx({"path": str(target), "content": "Uno\nDue"})
+        self.assertEqual(target.read_bytes(), b"existing")
+        document = Document(result.data["path"])
+        self.assertEqual([paragraph.text for paragraph in document.paragraphs], ["Uno", "Due"])
+        self.assertEqual(gate.seen[-1].capability, "files.create")
+        copy = documents.append_docx({"path": result.data["path"], "destination": str(target), "content": "Tre"})
+        self.assertEqual([p.text for p in Document(copy.data["path"]).paragraphs], ["Uno", "Due", "Tre"])
+        self.assertEqual([p.text for p in Document(result.data["path"]).paragraphs], ["Uno", "Due"])
+        self.assertTrue(gate.forced)
 
     def test_outside_the_allowed_folders_needs_its_own_permission(self):
         gate = FakeGate(denied={"files.outside"})

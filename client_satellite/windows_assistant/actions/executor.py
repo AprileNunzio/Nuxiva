@@ -2,6 +2,7 @@ import logging
 
 from actions.common import ActionError, Outcome, PathGuard
 from actions.desktop import Desktop
+from actions.documents import Documents
 from actions.files import Files
 from actions.launch import Launcher
 from actions.remote import Remote
@@ -18,10 +19,14 @@ class Executor:
     def __init__(self, gate: Gate, roots: list[str], focus: Focus, apps: dict[str, str], snapshots: Snapshots) -> None:
         guard = PathGuard(gate, roots)
         files, launcher = Files(gate, guard, snapshots), Launcher(gate, guard, apps)
+        documents = Documents(gate, guard)
         writer, shell, remote, desktop = Writer(gate, focus), Shell(gate, guard), Remote(gate), Desktop(gate)
         self.handlers = {
             "create_folder": files.create_folder, "create_file": files.create_file, "append_file": files.append_file,
             "read_file": files.read_file, "list_folder": files.list_folder, "search_files": files.search_files,
+            "move_path": files.move_path,
+            "create_docx": documents.create_docx,
+            "append_docx": documents.append_docx,
             "open": launcher.open, "open_app": launcher.open_app, "open_url": launcher.open_url,
             "type_text": writer.type_text, "copy_text": writer.copy_text,
             "run_powershell": shell.run_powershell, "run_script": shell.run_script, "ssh": remote.ssh,
