@@ -64,6 +64,10 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           $version = "${{ steps.version.outputs.value }}"
+          if (-not (Test-Path -LiteralPath "build\installer\manifest.sig" -PathType Leaf)) {
+            Write-Warning "Windows release skipped because the signing key is unavailable."
+            exit 0
+          }
           $files = @("build\installer\NUXIVA_Assistente_Setup.exe", "build\installer\manifest.json", "build\installer\manifest.sig")
           foreach ($file in $files) {
             if (-not (Test-Path -LiteralPath $file -PathType Leaf)) { throw "Missing release artifact: $file" }

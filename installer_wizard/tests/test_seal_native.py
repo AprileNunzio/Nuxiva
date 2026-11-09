@@ -84,15 +84,21 @@ class SealFallbackTest(unittest.TestCase):
             vault = sealed.SealedFile(Path(tmp) / "v.vault", Path(tmp) / "v.key")
             vault.save({"a": 1})
             self.assertEqual(vault.load(), {"a": 1})
-            for name in ("v.vault", "v.key"):
-                self.assertEqual((Path(tmp) / name).stat().st_mode & 0o777, 0o600)
+            if os.name == "posix":
+                for name in ("v.vault", "v.key"):
+                    self.assertEqual((Path(tmp) / name).stat().st_mode & 0o777, 0o600)
             self.assertNotIn(b'"a"', (Path(tmp) / "v.vault").read_bytes())
 
     def test_write_private_refuses_symlinked_temp_file(self):
         with tempfile.TemporaryDirectory() as tmp:
             target = Path(tmp) / "elsewhere"
             target.write_bytes(b"keep")
-            (Path(tmp) / "f.key.tmp").symlink_to(target)
+            try:
+                (Path(tmp) / "f.key.tmp").symlink_to(target)
+            except OSError as exc:
+                if getattr(exc, "winerror", None) != 1314:
+                    raise
+                self.skipTest("Windows account cannot create symbolic links")
             with self.assertRaises(OSError):
                 sealed.write_private(Path(tmp) / "f.key", b"data")
             self.assertEqual(target.read_bytes(), b"keep")

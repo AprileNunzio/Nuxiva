@@ -10,6 +10,8 @@ import native_core
 
 
 def write_private(path: Path, data: bytes) -> None:
+    if path.with_suffix(path.suffix + ".tmp").is_symlink():
+        raise OSError("Refusing a symbolic link at the legacy temporary path")
     fd, temporary = tempfile.mkstemp(prefix=f".{path.name}-", dir=path.parent)
     tmp = Path(temporary)
     try:
