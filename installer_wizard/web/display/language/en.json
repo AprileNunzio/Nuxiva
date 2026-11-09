@@ -5,6 +5,12 @@
     "version": "2.0.0"
   },
   "dictionary": {
+    "remote_media_title": "Devices in this browser",
+    "remote_media_camera": "Enable webcam preview",
+    "remote_media_mic": "Enable microphone",
+    "remote_media_stop": "Stop capture",
+    "remote_media_unavailable": "Device unavailable or permission denied.",
+    "remote_media_mic_active": "Microphone active",
     "brand_sub": "DIGITAL ASSISTANT",
     "ear_off": "Microphone off",
     "project_working": "⚙ Working…",

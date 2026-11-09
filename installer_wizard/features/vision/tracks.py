@@ -27,6 +27,7 @@ class Track:
         self.box = box
         self.votes: deque = deque(maxlen=7)
         self.first_seen = self.last_seen = time.time()
+        self.identity_at: float | None = None
         self.feature = None
         self.frames = 0
         self.samples: list = []

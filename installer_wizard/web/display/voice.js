@@ -40,7 +40,7 @@
       return ctx.decodeAudioData(await r.arrayBuffer());
     }
 
-    function play(buffer, gen) {
+    function play(buffer, gen, onStart) {
       return new Promise((resolve) => {
         if (gen !== generation) return resolve();
         source = ctx.createBufferSource();
@@ -48,6 +48,7 @@
         source.connect(analyser);
         source.onended = resolve;
         source.start();
+        if (onStart) onStart("neural_scheduled");
       });
     }
 
@@ -80,7 +81,7 @@
       if (D.avatar) { D.avatar.setSpeaking(false); if (D.avatar.face) D.avatar.face.realAudio = false; }
     }
 
-    async function speak(text, lang) {
+    async function speak(text, lang, onStart) {
       const gen = ++generation;
       ensure();
       const parts = sentences(text);
@@ -93,7 +94,7 @@
           const buffer = await next;
           if (gen !== generation) return;
           if (i + 1 < parts.length) next = synth(parts[i + 1], lang);
-          await play(buffer, gen);
+          await play(buffer, gen, i === 0 ? onStart : undefined);
         }
       } finally {
         if (gen === generation) quiet();
@@ -134,13 +135,16 @@
     return { speak, stream, stop, setVolume, isSpeaking: () => active };
   })();
 
-  function systemSpeak(text, lang) {
+  function systemSpeak(text, lang, onStart) {
     if (!("speechSynthesis" in window)) return false;
     const it = speechSynthesis.getVoices().find((v) => v.lang && v.lang.toLowerCase().startsWith(lang || "it"));
     if (!it) return false;
     const u = new SpeechSynthesisUtterance(text.replace(/[*#_`]/g, ""));
     u.voice = it; u.lang = it.lang; u.rate = 1.0;
-    u.onstart = () => D.avatar && D.avatar.setSpeaking(true, 1);
+    u.onstart = () => {
+      if (onStart) onStart("system_started");
+      if (D.avatar) D.avatar.setSpeaking(true, 1);
+    };
     u.onend = u.onerror = () => D.avatar && D.avatar.setSpeaking(false);
     speechSynthesis.cancel(); speechSynthesis.speak(u);
     return true;
@@ -152,15 +156,15 @@
     setTimeout(() => D.avatar.setSpeaking(false), Math.min(12000, 60 * text.length));
   }
 
-  D.speak = async (text, lang) => {
+  D.speak = async (text, lang, onStart) => {
     D.Ear.speaking(true);
     if (D.avatar && D.avatar.direct) D.avatar.direct(text || "");
     try {
       if (!D.voiceOn || !text) { mouthOnly(text || ""); return; }
-      try { await Voice.speak(text, lang); }
+      try { await Voice.speak(text, lang, onStart); }
       catch (err) {
         console.warn("Voce neurale non disponibile:", err);
-        if (!systemSpeak(text, lang)) mouthOnly(text);
+        if (!systemSpeak(text, lang, onStart)) mouthOnly(text);
       }
     } finally {
       setTimeout(() => { D.Ear.speaking(false); if (D.lastVoice) { D.lastVoice = false; D.Ear.followup(); } }, 350);

@@ -5,6 +5,12 @@
     "version": "2.0.0"
   },
   "dictionary": {
+    "remote_media_title": "Appareils de ce navigateur",
+    "remote_media_camera": "Activer l’aperçu webcam",
+    "remote_media_mic": "Activer le microphone",
+    "remote_media_stop": "Arrêter la capture",
+    "remote_media_unavailable": "Appareil indisponible ou permission refusée.",
+    "remote_media_mic_active": "Microphone actif",
     "brand_sub": "ASSISTANT NUMÉRIQUE",
     "ear_off": "Microphone inactif",
     "project_working": "⚙ En cours…",

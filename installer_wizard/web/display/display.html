@@ -28,6 +28,7 @@
 <link rel="stylesheet" href="/static/display/rail.css">
 <link rel="stylesheet" href="/static/display/immersive.css">
 <link rel="stylesheet" href="/static/display/agency/board.css">
+<link rel="stylesheet" href="/static/display/remote_media/panel.css">
 </head>
 <body class="holo-grid face">
 <canvas id="core"></canvas>
@@ -149,6 +150,16 @@
 <div class="welcome" id="welcome"><b id="welcome-name"></b><span id="welcome-sub"></span></div>
 <div class="link-lost" id="link"><div class="spinner"></div><span data-i18n="link_lost"></span></div>
 <div class="privacy-veil" id="privacy-veil" role="status" aria-live="polite"><span data-i18n="privacy_veil"></span></div>
+<details id="remote-media" class="remote-media" hidden>
+  <summary data-i18n="remote_media_title"></summary>
+  <div class="remote-media-controls">
+    <button id="remote-media-camera" type="button" hidden data-i18n="remote_media_camera"></button>
+    <button id="remote-media-mic" type="button" hidden data-i18n="remote_media_mic"></button>
+    <button id="remote-media-stop" type="button" data-i18n="remote_media_stop"></button>
+  </div>
+  <video id="remote-media-preview" autoplay muted playsinline hidden></video>
+  <p id="remote-media-status" role="status"></p>
+</details>
 
 <script src="/static/shared/core.js"></script>
 <script src="/static/shared/delta.js"></script>
@@ -210,6 +221,7 @@
 <script src="/static/display/agency/board.js"></script>
 <script src="/static/display/update_screen.js"></script>
 <script src="/static/display/display.js"></script>
+<script src="/static/display/remote_media/panel.js"></script>
 <script src="/static/shared/bgqueue.js"></script>
 <script src="/static/shared/setup_prompt.js"></script>
 </body>

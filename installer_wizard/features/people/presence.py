@@ -128,22 +128,36 @@ class PresenceMonitor:
         except (KeyError, ValueError, OSError) as exc:
             log.warning("Stato d'animo dal volto di %s non salvato: %s", slug, exc)
 
-    def _greet(self, text: str, names: list, slug: str = "") -> None:
+    def _greet(self, text: str, names: list, slug: str = "", timing: tuple[float, float] | None = None) -> None:
         from features.locale import service
         lang = service.preferred(slug)
         if lang == "it":
-            self._announce(text, names)
+            self._announce(text, names, timing)
             return
         from tasks import background
-        background(self._translated(text, names, lang))
+        background(self._translated(text, names, lang, timing))
 
-    async def _translated(self, text: str, names: list, lang: str) -> None:
+    async def _translated(self, text: str, names: list, lang: str, timing: tuple[float, float] | None) -> None:
         from features.locale.pivot import pivot
-        self._announce(await pivot.from_pivot(text, lang, force=True), names)
+        self._announce(await pivot.from_pivot(text, lang, force=True), names, timing)
 
-    def _announce(self, text: str, names: list) -> None:
+    def _announce(self, text: str, names: list, timing: tuple[float, float] | None = None) -> None:
         self.greeting_id += 1
-        store.greeting = {"id": self.greeting_id, "text": text, "names": names, "at": time.time()}
+        now = time.time()
+        greeting = {"id": self.greeting_id, "text": text, "names": names, "at": now}
+        if timing and timing[0] <= timing[1] <= now:
+            detected_at, identity_at = timing
+            durations = {
+                "face_to_identity_ms": round((identity_at - detected_at) * 1000),
+                "identity_to_greeting_ms": round((now - identity_at) * 1000),
+            }
+            greeting["timing"] = durations
+            log.info(
+                "greeting_timing face_to_identity_ms=%d identity_to_greeting_ms=%d",
+                durations["face_to_identity_ms"],
+                durations["identity_to_greeting_ms"],
+            )
+        store.greeting = greeting
         store.event("INFO", f"Saluto: {text}", "vision")
 
     def _evaluate(self, people_list: list) -> None:
@@ -187,7 +201,10 @@ class PresenceMonitor:
                     text += f" Le ricordo: {r['title']}."
             if len(stable) > len(arrivals):
                 text += " " + describe(stable)
-            self._greet(text, names, arrivals[0]["slug"])
+            arrival = arrivals[0]
+            identity_at = arrival.get("identity_at")
+            timing = (arrival["since"], identity_at) if len(arrivals) == 1 and isinstance(identity_at, (int, float)) else None
+            self._greet(text, names, arrival["slug"], timing)
             from features.people.welcome import welcome
             from tasks import background
             background(welcome([p["slug"] for p in arrivals]))

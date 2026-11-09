@@ -1,0 +1,18 @@
+.remote-media {
+  position: fixed;
+  inset: max(.75rem, env(safe-area-inset-top)) max(.75rem, env(safe-area-inset-right)) auto auto;
+  z-index: 100;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: min(26rem, calc(100vw - 1.5rem));
+  padding: .75rem;
+  color: white;
+  background: #172033;
+  border-radius: .75rem;
+}
+
+.remote-media summary { cursor: pointer; }
+.remote-media-controls { display: flex; flex-wrap: wrap; gap: .5rem; margin-block-start: .5rem; }
+.remote-media button { min-height: 2.75rem; }
+.remote-media video { width: 100%; max-height: 32vh; object-fit: contain; }
+.remote-media p:empty { display: none; }

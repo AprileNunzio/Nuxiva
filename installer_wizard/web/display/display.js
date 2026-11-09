@@ -90,6 +90,7 @@
   }
 
   let presenceSig = "";
+  const measureGreeting = new URLSearchParams(location.search).get("greetingTiming") === "1";
   let familyNearState = true;
   let familyNearUntil = 0;
 
@@ -128,17 +129,27 @@
     if (D.lastGreeting === null) { D.lastGreeting = g.id; return; }
     if (g.id === D.lastGreeting) return;
     D.lastGreeting = g.id;
+    const receivedAt = measureGreeting && g.timing ? performance.now() : null;
     D.lastInteraction = Date.now();
     D.Mood.joy();
     if (g.names && g.names.length) {
       $("welcome-name").textContent = [...new Set(g.names)].join(" · ");
       PageText.bind($("welcome-sub"), "identity_recognized");
       $("welcome").classList.add("show");
+      if (receivedAt !== null) console.info("Nuxiva greeting timing", {
+        ...g.timing,
+        display_update_ms: Math.round(performance.now() - receivedAt),
+      });
       setTimeout(() => $("welcome").classList.remove("show"), 5000);
     }
     if (D.mode !== "brain") D.setMode("face");
     D.typeInto($("say"), g.text);
-    if (!D.busy) D.speak(g.text);
+    if (!D.busy) D.speak(g.text, undefined, receivedAt === null ? undefined : (engine) => {
+      console.info("Nuxiva greeting audio timing", {
+        engine,
+        display_to_audio_start_ms: Math.round(performance.now() - receivedAt),
+      });
+    });
   }
 
   function sendPosition() {

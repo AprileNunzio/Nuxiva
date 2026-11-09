@@ -5,6 +5,12 @@
     "version": "2.0.0"
   },
   "dictionary": {
+    "remote_media_title": "Dispositivi di questo browser",
+    "remote_media_camera": "Attiva anteprima webcam",
+    "remote_media_mic": "Attiva microfono",
+    "remote_media_stop": "Interrompi acquisizione",
+    "remote_media_unavailable": "Dispositivo non disponibile o permesso negato.",
+    "remote_media_mic_active": "Microfono attivo",
     "brand_sub": "ASSISTENTE DIGITALE",
     "ear_off": "Microfono non attivo",
     "project_working": "⚙ In lavorazione…",

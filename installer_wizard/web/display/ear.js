@@ -4,14 +4,13 @@
   let lastAlone = null, wsFails = 0, restarting = false, lastTry = Date.now(), heardAt = 0;
   const stats = { opens: 0, msgs: 0, sends: 0, mic: 0, made: 0 };
   const PAGE = Math.random().toString(36).slice(2, 8);
-  const OPT_IN = "nuxiva-remote-mic";
   const AUTO_AGC = "nuxiva-mic-agc";
   let autoLevel = false, agcOn = false, autoCal = true;
   const agcLearned = () => { try { return localStorage.getItem(AUTO_AGC) === "1"; } catch (e) { return false; } };
-  const optedIn = () => { try { return localStorage.getItem(OPT_IN) === "1"; } catch (e) { return false; } };
+  let remoteEnabled = false, remoteGeneration = 0;
   const secure = () => window.isSecureContext && !!navigator.mediaDevices;
   let hostMicActive = false;
-  const micAllowed = () => (!hostMicActive && D.local) || (secure() && optedIn());
+  const micAllowed = () => D.local ? !hostMicActive : secure() && remoteEnabled && D.remoteMedia?.microphone === true;
   const socketUrl = () => `${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/ws/ear`;
   let parked = false;
   document.addEventListener("visibilitychange", () => {
@@ -80,14 +79,22 @@
   }
 
   async function openMic() {
+    const generation = remoteGeneration;
     try {
       const asked = micConstraints().then((audio) => navigator.mediaDevices.getUserMedia({ audio }));
-      try { stream = await withTimeout(asked, 12000, "il browser non risponde alla richiesta del microfono"); }
+      let next;
+      try { next = await withTimeout(asked, 12000, "il browser non risponde alla richiesta del microfono"); }
       catch (err) { asked.then((s) => s.getTracks().forEach((t) => t.stop())).catch(() => {}); throw err; }
+      if (!D.local && (generation !== remoteGeneration || !micAllowed())) {
+        next.getTracks().forEach((track) => track.stop());
+        return false;
+      }
+      stream = next;
       ctx = new AudioContext();
       if (ctx.state === "suspended") ctx.resume().catch(() => {});
       await withTimeout(ctx.audioWorklet.addModule(URL.createObjectURL(new Blob([WORKLET], { type: "application/javascript" }))),
         8000, "il motore audio del browser non si avvia");
+      if (!D.local && generation !== remoteGeneration) return false;
       const src = ctx.createMediaStreamSource(stream), tap = new AudioWorkletNode(ctx, "nuxiva-tap");
       src.connect(tap);
       const ratio = ctx.sampleRate / 16000;
@@ -100,7 +107,9 @@
           const pcm = new Int16Array(acc.length);
           for (let i = 0; i < acc.length; i++) pcm[i] = Math.max(-32768, Math.min(32767, acc[i] * 32767));
           acc = [];
-          if (ws && ws.readyState === 1) { ws.send(pcm.buffer); stats.sends++; }
+          if ((D.local || (generation === remoteGeneration && micAllowed())) && ws && ws.readyState === 1) {
+            ws.send(pcm.buffer); stats.sends++;
+          }
         }
       };
       stream.getAudioTracks().forEach((t) => { t.onended = () => { report(false, "il microfono si è scollegato"); setTimeout(restartMic, 2000); }; });
@@ -108,6 +117,7 @@
       report(true);
       return true;
     } catch (err) {
+      if (!D.local && generation !== remoteGeneration) return false;
       console.warn("Microfono non disponibile", err);
       try { stream && stream.getTracks().forEach((t) => t.stop()); } catch (e) {}
       try { ctx && ctx.close(); } catch (e) {}
@@ -234,16 +244,36 @@
 
   let activated = false;
   async function activate() {
-    if (activated) return;
+    if (activated) return false;
     activated = true;
+    const generation = remoteGeneration;
     connect();
-    if (await openMic() && ws && ws.readyState === 1) setState("idle");
+    const opened = await openMic();
+    if (!D.local && generation !== remoteGeneration) return false;
+    if (opened && ws && ws.readyState === 1) setState("idle");
+    if (!opened) activated = false;
+    return opened;
   }
 
   async function enableRemote() {
-    if (!secure()) { setState("off", offReason()); return; }
-    try { localStorage.setItem(OPT_IN, "1"); } catch (e) {}
-    await activate();
+    if (!secure() || remoteEnabled || D.remoteMedia?.microphone !== true) return false;
+    remoteEnabled = true;
+    const generation = remoteGeneration;
+    const opened = await activate();
+    if (!opened && generation === remoteGeneration) remoteEnabled = false;
+    return opened;
+  }
+
+  function disableRemote() {
+    if (D.local) return;
+    remoteEnabled = false;
+    remoteGeneration++;
+    activated = false;
+    if (stream) stream.getTracks().forEach((track) => track.stop());
+    if (ctx) ctx.close().catch((err) => console.warn(err));
+    stream = null;
+    ctx = null;
+    setState("off", offReason());
   }
 
   async function micLevelAdvice(advice) {
@@ -291,7 +321,7 @@
   const Ear = D.Ear = window.nuxivaEar = {
     resetFrom(t) { if (!t || t === resetSeen) return; if (resetSeen) restartMic(); resetSeen = t; },
     setAssistantName(name) { if (!name || name === assistant) return; assistant = name; setState(state); },
-    start, send, restartMic, setAutoCalibrate, debugState: setState, debugLevel: level,
+    start, send, restartMic, setAutoCalibrate, enableRemote, disableRemote, debugState: setState, debugLevel: level,
     listen() { if (ctx && ctx.state === "suspended") ctx.resume(); D.pingActivity(true); send({ type: "listen" }); setState("listening"); },
     speaking(on) { send({ type: "speaking", on }); },
     followup(seconds = 20) { send({ type: "followup", seconds, conversation: true }); },

@@ -205,10 +205,16 @@
   }
 
   async function useBrowserCamera() {
-    if (!window.isSecureContext || !navigator.mediaDevices) return false;
+    if (!window.isSecureContext || !navigator.mediaDevices || D.remoteMedia?.camera_preview !== true) return false;
+    let next;
     try {
-      stream = await navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "user" }, audio: false });
+      next = await navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "user" }, audio: false });
     } catch (err) { return false; }
+    if (!cam.on || D.remoteMedia?.camera_preview !== true) {
+      next.getTracks().forEach((track) => track.stop());
+      return false;
+    }
+    stream = next;
     video.img.hidden = true; video.tag.hidden = false;
     video.tag.srcObject = stream;
     cam.source = "browser";
@@ -231,7 +237,10 @@
       cam.prevZone = D.stageZone;
       document.body.classList.add("cam");
       cam.hidden = false;
-      if (D.local || !(await useBrowserCamera())) useServerFeed();
+      if (D.local || !(await useBrowserCamera())) {
+        if (!cam.on) return;
+        useServerFeed();
+      }
       pen.clearRect(0, 0, ink.width, ink.height);
       paint();
       applyZone();
@@ -249,6 +258,7 @@
   }
 
   D.setCamera = setCamera;
+  D.stopBrowserCamera = () => { if (stream) setCamera(false); };
   D.startCamera = () => {
     setInterval(() => {
       if (!cam.on) return;

@@ -175,8 +175,12 @@ class Vision:
             track.facing = facing(face)
             track.face = face
             track.frames += 1
+            previous_slug = track.identity()[0]
             detection = perception.observe(self, track, frame, face, now, minimum)
             if detection is not None:
+                slug = track.identity()[0]
+                if slug != previous_slug:
+                    track.identity_at = time.time() if slug else None
                 detections.append(detection)
             current.append(track)
         self.tracks = current + [t for t in unmatched if now - t.last_seen < (3.0 if t.near else 1.5)]
@@ -265,7 +269,8 @@ class Vision:
                            "ambiguous": t.ambiguous, "possible": t.possible,
                            "auto": bool(person.get("auto")), "facing": t.facing,
                            "confidence": round(score, 3), "proximity": prox, "raw_proximity": round(ratio, 3),
-                           "near": is_near, "since": t.first_seen, "affect": t.affect if slug else None, "attire": appearance.view(t),
+                           "near": is_near, "since": t.first_seen, "identity_at": t.identity_at if slug else None,
+                           "affect": t.affect if slug else None, "attire": appearance.view(t),
                            "details": details.view(t) if slug else None,
                            "vitals": self.vitals.reading(t, now) if slug else None,
                            "gaze": {"x": round((bx + bw / 2) / (w or 640), 3),

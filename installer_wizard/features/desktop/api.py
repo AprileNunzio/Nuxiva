@@ -1,16 +1,27 @@
 import time
 
 from fastapi import APIRouter, Depends, HTTPException, Request
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 
-from access import is_local, require_admin, require_display, require_internal
+from access import NO_CACHE, is_local, require_admin, require_display, require_internal, session_user
+from config import env_get
 from features.desktop.desk import FILES, desk
 from features.desktop.sources import PROVIDERS, SOURCES
 from features.music import music
+from features.nodes.display_link import display_node
 from state import store
 
 public_routes = APIRouter()
 admin_routes = APIRouter()
+
+
+@public_routes.get("/api/display/remote-media")
+async def remote_media(request: Request):
+    authorized = request.url.scheme == "https" and bool(session_user(request) or display_node(request))
+    return JSONResponse({
+        "camera_preview": authorized and env_get("NUXIVA_REMOTE_CAMERA_PREVIEW", "0") == "1",
+        "microphone": authorized and env_get("NUXIVA_REMOTE_MIC_INPUT", "0") == "1",
+    }, headers=NO_CACHE)
 
 desk.register_source("now_playing", music.watcher.current)
 for _name, _fn in SOURCES.items():

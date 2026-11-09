@@ -98,6 +98,26 @@
       ]
     },
     {
+      "key": "NUXIVA_REMOTE_CAMERA_PREVIEW",
+      "label": "Consenti l'anteprima locale della webcam nei browser remoti autorizzati",
+      "type": "select",
+      "default": "0",
+      "options": [
+        {"value": "0", "label": "No"},
+        {"value": "1", "label": "Sì"}
+      ]
+    },
+    {
+      "key": "NUXIVA_REMOTE_MIC_INPUT",
+      "label": "Consenti l'invio audio da sessioni e nodi remoti autorizzati",
+      "type": "select",
+      "default": "0",
+      "options": [
+        {"value": "0", "label": "No"},
+        {"value": "1", "label": "Sì"}
+      ]
+    },
+    {
       "key": "NUXIVA_DISPLAY_ROOM_STRICT",
       "label": "Negli schermi di stanze senza telecamera mostra solo ciò che va bene per chiunque",
       "type": "select",

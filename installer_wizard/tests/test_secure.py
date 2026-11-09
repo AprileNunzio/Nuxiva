@@ -143,6 +143,26 @@ class ProxyTest(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(proxy.allowed(self.socket("192.168.1.20", auth.issue("display"))))
         self.assertTrue(proxy.allowed(self.socket("192.168.1.20", query={"token": auth.issue("display")})))
 
+    def test_remote_audio_requires_policy_identity_and_matching_secure_origin(self):
+        socket = self.socket("192.168.1.20", auth.issue("admin"),
+                             headers={"host": "nuxiva.test", "origin": "https://nuxiva.test"})
+        socket.url = SimpleNamespace(scheme="wss")
+        with mock.patch("features.ear.remote_input.env_get", return_value="0"):
+            self.assertFalse(proxy.input_allowed(socket, False))
+        with mock.patch("features.ear.remote_input.env_get", return_value="1"):
+            self.assertTrue(proxy.input_allowed(socket, False))
+            self.assertFalse(proxy._remote_control_allowed(socket, '{"type":"presence","alone":"admin"}'))
+            self.assertFalse(proxy._remote_control_allowed(socket, '{"type":"enroll_start"}'))
+            socket.cookies[auth.SESSION_COOKIE] = auth.issue("display")
+            self.assertFalse(proxy.input_allowed(socket, False))
+            socket.cookies[auth.SESSION_COOKIE] = auth.issue("admin")
+            socket.headers["origin"] = "https://other.test"
+            self.assertFalse(proxy.input_allowed(socket, False))
+            socket.headers.pop("origin")
+            self.assertTrue(proxy.input_allowed(socket, True))
+            socket.url.scheme = "ws"
+            self.assertFalse(proxy.input_allowed(socket, True))
+
     def test_paired_nodes_are_accepted_only_with_their_token(self):
         from features.nodes.registry import registry
 

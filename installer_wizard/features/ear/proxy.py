@@ -1,4 +1,5 @@
 import asyncio
+import json
 import logging
 from typing import Any
 
@@ -7,11 +8,15 @@ from fastapi import WebSocket, WebSocketDisconnect
 
 import auth
 from features.authz.heard import heard
+from features.ear.remote_input import input_allowed, local_input, origin_matches
 
 logger = logging.getLogger("nuxiva.ear.proxy")
 UPSTREAM = "ws://127.0.0.1:8093"
 MAX_MESSAGE = 2 ** 22
+MAX_REMOTE_AUDIO = 64 * 1024
 DENIED = 4401
+REMOTE_CONTROLS = frozenset({"listen", "followup", "speaking", "mic_adjusted",
+                             "transcribe_start", "transcribe_end", "cancel"})
 
 
 def _node_allowed(socket: WebSocket) -> bool:
@@ -27,6 +32,8 @@ def _node_allowed(socket: WebSocket) -> bool:
 
 
 def allowed(socket: WebSocket) -> bool:
+    if socket.headers.get("origin") and not (local_input(socket) or origin_matches(socket, "https")):
+        return False
     peer = socket.client.host if socket.client else ""
     cookies = getattr(socket, "cookies", {}) or {}
     qparams = getattr(socket, "query_params", {}) or {}
@@ -46,9 +53,31 @@ async def _up(client: Any, upstream: Any) -> None:
         if message["type"] == "websocket.disconnect":
             return
         if message.get("bytes") is not None:
+            if isinstance(client, WebSocket) and not input_allowed(client, _node_allowed(client)):
+                await client.close(code=4403)
+                return
+            if (isinstance(client, WebSocket) and not local_input(client)
+                    and (len(message["bytes"]) > MAX_REMOTE_AUDIO or len(message["bytes"]) % 2)):
+                await client.close(code=1009)
+                return
             await upstream.send(message["bytes"])
         elif message.get("text") is not None:
+            if isinstance(client, WebSocket) and not local_input(client):
+                if not _remote_control_allowed(client, message["text"]):
+                    continue
             await upstream.send(message["text"])
+
+
+def _remote_control_allowed(client: WebSocket, text: str) -> bool:
+    if len(text) > 4096:
+        return False
+    try:
+        message = json.loads(text)
+    except (ValueError, RecursionError):
+        return False
+    kind = message.get("type") if isinstance(message, dict) else None
+    return kind == "client" or (isinstance(kind, str) and kind in REMOTE_CONTROLS
+                                and input_allowed(client, _node_allowed(client)))
 
 
 async def _down(client: Any, upstream: Any, device: str) -> None:
@@ -62,7 +91,9 @@ async def _down(client: Any, upstream: Any, device: str) -> None:
 
 def device_of(socket: Any) -> str:
     node_id = socket.headers.get("x-nuxiva-node", "") if hasattr(socket, "headers") else ""
-    return f"node:{node_id}" if node_id and _node_allowed(socket) else "mic:local"
+    if node_id and _node_allowed(socket):
+        return f"node:{node_id}"
+    return "mic:local" if local_input(socket) else "mic:remote"
 
 
 async def pump(client: Any, upstream: Any, device: str = "mic:local") -> None:
