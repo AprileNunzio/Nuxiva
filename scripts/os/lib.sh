@@ -28,7 +28,10 @@ if [ -n "${NUXIVA_OLLAMA_URL:-}" ]; then
     case "${OLLAMA_URL#*//}" in *:*) ;; *) OLLAMA_URL="$OLLAMA_URL:11434" ;; esac
 fi
 
-local_llm_disabled() { [ -f "$NUXIVA_STATE/local_llm_disabled" ]; }
+local_llm_disabled() {
+    [ -f "$NUXIVA_STATE/local_llm_disabled" ] || [ "${NUXIVA_LOCAL_OLLAMA_DISABLED:-}" = "1" ] ||
+        [ "${NUXIVA_BRAIN:-}" = "cloud" ]
+}
 
 ollama_remote() {
     local host="${OLLAMA_URL#*//}"

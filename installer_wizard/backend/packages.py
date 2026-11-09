@@ -73,9 +73,11 @@ def brain_mode(env: dict | None = None) -> str:
         return mode
     if ollama_remote():
         return "remote"
-    if DEMO or _local_installed():
+    if DEMO:
         return "local"
-    return "cloud" if brain_intent.cloud_provider(env) else "pending"
+    if brain_intent.cloud_provider(env):
+        return "cloud"
+    return "local" if _local_installed() else "pending"
 
 
 def _installed(step_id: str) -> bool:
@@ -121,8 +123,11 @@ def migrate() -> dict:
             continue
         if any(_installed(s) for s in pkg.steps):
             updates[pkg.env] = "1"
-    if not env.get("NUXIVA_BRAIN") and (ollama_remote() or _local_installed()):
-        updates["NUXIVA_BRAIN"] = "remote" if ollama_remote() else "local"
+    if not env.get("NUXIVA_BRAIN"):
+        if ollama_remote():
+            updates["NUXIVA_BRAIN"] = "remote"
+        elif _local_installed() and not brain_intent.cloud_provider(env):
+            updates["NUXIVA_BRAIN"] = "local"
     if updates:
         write_env(updates)
         store.event("INFO", f"Pacchetti già installati confermati: {', '.join(sorted(updates))}", "packages")

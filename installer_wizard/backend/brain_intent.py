@@ -7,7 +7,7 @@ from config import ollama_remote, read_env
 
 log = logging.getLogger("nuxiva.brain.intent")
 
-UNDECIDED = ("", "local", "pending")
+UNDECIDED = ("", "pending")
 
 
 def local_engine() -> bool:
@@ -44,6 +44,16 @@ def cloud_ordered(env: dict) -> bool:
     return bool(refs) and all(r.startswith("cloud:") for r in refs)
 
 
+def local_ollama_optional(env: dict | None = None) -> bool:
+    env = read_env() if env is None else env
+    mode = env.get("NUXIVA_BRAIN", "").strip().lower()
+    if mode == "cloud":
+        return True
+    if mode == "local" or mode == "remote" or ollama_remote():
+        return False
+    return bool(cloud_provider(env))
+
+
 def _models(pid: str) -> tuple[str, str]:
     from features.cloud.catalog import BY_ID
     from setup_config import CLOUD_PICK
@@ -60,8 +70,6 @@ def reconcile(env: dict | None = None) -> dict:
         return {}
     provider = cloud_provider(env)
     if not provider:
-        return {}
-    if local_engine() and not cloud_ordered(env):
         return {}
     updates = {"NUXIVA_BRAIN": "cloud"}
     if not cloud_ordered(env):

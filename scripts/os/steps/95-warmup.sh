@@ -39,6 +39,7 @@ unload_others() {
 }
 
 step_check() {
+    local_llm_disabled && return 0
     local main
     if [ "${NUXIVA_BRAIN:-}" != "local" ] && ! ollama_remote; then
         return 0
@@ -49,6 +50,7 @@ step_check() {
 }
 
 step_apply() {
+    local_llm_disabled && return 0
     local main embed reply
     if [ "${NUXIVA_BRAIN:-}" != "local" ] && ! ollama_remote; then
         info "Cervello locale non selezionato: precaricamento Ollama ignorato"

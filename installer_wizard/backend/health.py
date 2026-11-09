@@ -147,18 +147,9 @@ async def probe_all() -> dict:
         code, out = await sh("docker", "info", "--format", "{{.ServerVersion}}", timeout=15)
         results["docker"] = {"status": "ok" if code == 0 else "down", "detail": f"v{out}" if code == 0 else out[:120]}
 
-        local_disabled = os.getenv("NUXIVA_LOCAL_OLLAMA_DISABLED") == "1"
-        try:
-            from node_api import enforce_local_ollama_off, local_ollama_disabled
-            local_disabled = local_disabled or local_ollama_disabled()
-            if local_disabled and await asyncio.to_thread(enforce_local_ollama_off):
-                store.event("WARN", "Ollama locale era di nuovo attivo ma e' disabilitato da Gestore Attivita': fermato", "ollama")
-        except Exception:
-            pass
-
-        if local_disabled:
-            results["ollama"] = {"status": "ok", "detail": "Disabilitato da Gestore Attività"}
-            results["llm"] = {"status": "ok", "detail": "Cervello LLM disattivato"}
+        if _local_llm_off():
+            results["ollama"] = {"status": "ok", "detail": "Ollama non richiesto dalla configurazione"}
+            results["llm"] = {"status": "ok", "detail": "Verifica del modello locale non richiesta"}
         else:
             try:
                 r = await client.get(f"{ollama_url()}/api/version")

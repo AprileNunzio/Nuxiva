@@ -427,7 +427,10 @@ def _sync_local_llm_marker(disabled: bool) -> None:
         pass
 
 def local_ollama_disabled() -> bool:
-    return os.environ.get("NUXIVA_LOCAL_OLLAMA_DISABLED") == "1" or not is_capability_enabled("brain_llm")
+    from brain_intent import local_ollama_optional
+
+    return (os.environ.get("NUXIVA_LOCAL_OLLAMA_DISABLED") == "1"
+            or not is_capability_enabled("brain_llm") or local_ollama_optional())
 
 
 def _local_llm_processes() -> list:
@@ -461,10 +464,10 @@ def stop_local_ollama() -> None:
 
 
 def enforce_local_ollama_off() -> bool:
-    if not local_ollama_disabled():
+    disabled = local_ollama_disabled()
+    _sync_local_llm_marker(disabled)
+    if not disabled:
         return False
-    os.environ["NUXIVA_LOCAL_OLLAMA_DISABLED"] = "1"
-    _sync_local_llm_marker(True)
     if not _local_llm_processes():
         return False
     stop_local_ollama()
@@ -504,7 +507,7 @@ def toggle_node_capability(node_id: str, req: ToggleCapabilityRequest) -> Dict[s
             stop_local_ollama()
         else:
             os.environ.pop("NUXIVA_LOCAL_OLLAMA_DISABLED", None)
-            if os.name != "nt":
+            if os.name != "nt" and not local_ollama_disabled():
                 for action in ("enable", "start"):
                     try:
                         subprocess.run(["systemctl", action, "ollama"], capture_output=True, timeout=5)

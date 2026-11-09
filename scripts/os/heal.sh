@@ -39,6 +39,10 @@ case "$step" in
         fi
         ;;
     ollama|models|warmup)
+        if local_llm_disabled; then
+            info "Ollama locale non richiesto"
+            exit 0
+        fi
         if systemctl list-unit-files ollama.service >/dev/null 2>&1; then
             warn "Diagnosi e ripristino del motore neurale Ollama"
             if [ ! -x /usr/local/lib/ollama/llama-server ] && [ ! -x /usr/lib/ollama/llama-server ]; then

@@ -54,6 +54,7 @@ class Orchestrator:
             store.event("INFO", "Configurazione applicata dal file di risposte", "setup")
         elif not setup_api.done():
             log.warning("Codice per la prima configurazione da un altro dispositivo: %s", setup_api.guard.code)
+        await asyncio.to_thread(enforce_local_ollama_off)
 
         from features.auto_update.boot_updater import boot_updater
         boot_res = await boot_updater.execute_boot_check()
@@ -143,6 +144,9 @@ class Orchestrator:
             if previous in ("READY", "DEGRADED"):
                 store.set_phase("DEGRADED", reason or "Manutenzione in corso")
             try:
+                if only is None or {"ollama", "models", "warmup"}.intersection(only):
+                    from node_api import enforce_local_ollama_off
+                    await asyncio.to_thread(enforce_local_ollama_off)
                 ok = await run_pipeline(only=only, force=force)
             finally:
                 self.busy = False

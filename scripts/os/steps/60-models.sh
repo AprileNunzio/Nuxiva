@@ -32,6 +32,7 @@ model_present() {
 }
 
 step_check() {
+    local_llm_disabled && return 0
     local m
     ollama_remote && return 0
     [ "${NUXIVA_BRAIN:-}" = "local" ] || return 0
@@ -75,6 +76,7 @@ PY
 }
 
 step_apply() {
+    local_llm_disabled && return 0
     if [ "${NUXIVA_BRAIN:-}" != "local" ] && ! ollama_remote; then
         info "Cervello locale non selezionato: download modelli Ollama ignorato"
         progress 100 "In attesa di scelta tra Ollama locale o LLM esterno"

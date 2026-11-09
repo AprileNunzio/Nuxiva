@@ -20,9 +20,18 @@ class BrainIntentTest(unittest.TestCase):
     def keyed(self, *pids):
         return mock.patch.object(brain_intent, "_keyed", side_effect=lambda pid: pid in pids)
 
+    def test_cloud_disables_ollama_without_overriding_explicit_engine_choice(self):
+        with self.keyed("anthropic"):
+            self.assertTrue(brain_intent.local_ollama_optional({}))
+            self.assertTrue(brain_intent.local_ollama_optional({"NUXIVA_BRAIN": "cloud"}))
+            self.assertFalse(brain_intent.local_ollama_optional({"NUXIVA_BRAIN": "local"}))
+            self.assertFalse(brain_intent.local_ollama_optional({"NUXIVA_BRAIN": "remote"}))
+        with self.keyed():
+            self.assertFalse(brain_intent.local_ollama_optional({}))
+
     def test_a_cloud_key_without_ollama_moves_the_brain_to_the_cloud(self):
         with self.keyed("anthropic"), mock.patch.object(brain_intent, "local_engine", return_value=False):
-            updates = brain_intent.reconcile({"NUXIVA_BRAIN": "local", "NUXIVA_LLM_CHAT_ORDER": "granite3.3:2b"})
+            updates = brain_intent.reconcile({"NUXIVA_LLM_CHAT_ORDER": "granite3.3:2b"})
         self.assertEqual(updates["NUXIVA_BRAIN"], "cloud")
         self.assertTrue(updates["NUXIVA_LLM_CHAT_ORDER"].startswith("cloud:anthropic/"))
         self.assertTrue(updates["NUXIVA_LLM_DEEP_ORDER"].startswith("cloud:anthropic/"))
@@ -34,7 +43,7 @@ class BrainIntentTest(unittest.TestCase):
 
     def test_a_working_local_brain_is_left_alone(self):
         env = {"NUXIVA_BRAIN": "local", "NUXIVA_LLM_CHAT_ORDER": "granite3.3:8b"}
-        with self.keyed("openai"), mock.patch.object(brain_intent, "local_engine", return_value=True):
+        with self.keyed("openai"), mock.patch.object(brain_intent, "local_engine", return_value=False):
             self.assertEqual(brain_intent.reconcile(env), {})
 
     def test_explicit_cloud_or_remote_choices_are_never_rewritten(self):
@@ -57,7 +66,7 @@ class BrainIntentTest(unittest.TestCase):
         with self.keyed(), mock.patch.object(brain_intent, "local_engine", return_value=False):
             self.assertEqual(packages.brain_mode({}), "pending")
         with self.keyed("openai"), mock.patch.object(brain_intent, "local_engine", return_value=True):
-            self.assertEqual(packages.brain_mode({}), "local")
+            self.assertEqual(packages.brain_mode({}), "cloud")
 
 
 if __name__ == "__main__":
