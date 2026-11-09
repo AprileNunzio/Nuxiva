@@ -3,6 +3,15 @@
     "locale": "es"
   },
   "dictionary": {
+    "journey_open": "Abrir recorrido",
+    "journey_question": "Pregunta",
+    "journey_answer": "Respuesta",
+    "journey_steps": "Fases observadas",
+    "journey_unavailable": "Recorrido no disponible",
+    "journey_state_ok": "Completada",
+    "journey_state_fail": "Error",
+    "journey_state_running": "En curso",
+    "journey_state_skip": "Omitida",
     "title": "Centinela",
     "diary": "Diario",
     "people": "Personas",

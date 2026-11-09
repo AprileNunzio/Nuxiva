@@ -8,6 +8,7 @@ from features.authz.access_control import allows, principal_for_role
 from features.authz import risk
 from features.authz.policy import policy
 from features.capabilities import audit, catalog, schema
+from features.sentinel.collectors import operations
 from features.team import roster, runner
 
 SUPPORTED = ("2025-06-18", "2025-03-26", "2024-11-05")
@@ -130,10 +131,20 @@ async def handle(message, token: dict) -> dict | None:
     if ident is None:
         return None
     params = message.get("params")
+    method = message["method"]
+    tool = ""
     if not audit.allow(token["id"]):
+        operations.mcp(method, tool, "rate_limited", 0)
         return {"jsonrpc": "2.0", "id": ident, "error": {"code": -32000, "message": "troppe richieste: riprova tra un minuto"}}
+    started = time.monotonic()
+    status = "failed"
     try:
-        result = await dispatch(message["method"], params if isinstance(params, dict) else {}, token)
+        result = await dispatch(method, params if isinstance(params, dict) else {}, token)
+        status = "failed" if result.get("isError") else "completed"
+        if method == "tools/call" and isinstance(params, dict):
+            tool = params.get("name", "")
     except RpcError as exc:
         return {"jsonrpc": "2.0", "id": ident, "error": {"code": exc.code, "message": exc.message}}
+    finally:
+        operations.mcp(method, tool, status, round((time.monotonic() - started) * 1000))
     return {"jsonrpc": "2.0", "id": ident, "result": result}

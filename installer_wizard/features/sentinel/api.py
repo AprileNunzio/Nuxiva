@@ -11,10 +11,12 @@ from fastapi.responses import JSONResponse
 from features.sentinel import narrate, record, vault
 from features.sentinel.collectors import automations
 from features.sentinel.journal import SentinelUnavailable, day_bounds, journal
+from features.sentinel.journey_detail import routes as journey_routes
 from features.sentinel.memory_api import routes as memory_routes
 
 admin_routes = APIRouter()
 admin_routes.include_router(memory_routes)
+admin_routes.include_router(journey_routes)
 READ = {"x-nuxiva-capabilities": ["sentinel.read"]}
 MANAGE = {"x-nuxiva-capabilities": ["sentinel.manage"]}
 GROUPS = frozenset({"presence", "appearance", "guests", "guest_appearance", "voice", "access", "denied", "automations",
@@ -96,6 +98,8 @@ async def sentinel_events(from_ms: int, to_ms: int, groups: str = "", person: st
     for event in page["events"]:
         event["text"] = narrate.text(event, language)
         event["group"] = event["kind"].split(".", 1)[0]
+        if event["kind"] == "self.chat_request":
+            event["journey_id"] = event["narrative"]["params"].get("journey") or None
     _audited(user)
     return JSONResponse(page, headers=NO_CACHE)
 

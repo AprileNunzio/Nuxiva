@@ -38,6 +38,10 @@ pub enum Kind {
     SelfLearned,
     #[serde(rename = "self.maintenance")]
     SelfMaintenance,
+    #[serde(rename = "self.chat_request")]
+    ChatRequest,
+    #[serde(rename = "self.mcp_request")]
+    McpRequest,
     #[serde(rename = "display.scene_changed")]
     DisplaySceneChanged,
     #[serde(rename = "display.privacy_shutter")]
@@ -67,7 +71,7 @@ pub enum Group {
     Audit,
 }
 
-pub const ALL: [Kind; 23] = [
+pub const ALL: [Kind; 25] = [
     Kind::PresenceArrived,
     Kind::PresenceLeft,
     Kind::PresenceNearScreen,
@@ -86,6 +90,8 @@ pub const ALL: [Kind; 23] = [
     Kind::SelfIdleStudy,
     Kind::SelfLearned,
     Kind::SelfMaintenance,
+    Kind::ChatRequest,
+    Kind::McpRequest,
     Kind::DisplaySceneChanged,
     Kind::DisplayPrivacyShutter,
     Kind::SystemAlert,
@@ -109,7 +115,11 @@ impl Kind {
             Self::AutomationStarted | Self::AutomationFinished | Self::AutomationFailed => {
                 Group::Automations
             }
-            Self::SelfIdleStudy | Self::SelfLearned | Self::SelfMaintenance => Group::Nuxiva,
+            Self::SelfIdleStudy
+            | Self::SelfLearned
+            | Self::SelfMaintenance
+            | Self::ChatRequest
+            | Self::McpRequest => Group::Nuxiva,
             Self::DisplaySceneChanged | Self::DisplayPrivacyShutter => Group::Display,
             Self::SystemAlert | Self::SystemRecovered => Group::System,
             Self::SentinelRead => Group::Audit,

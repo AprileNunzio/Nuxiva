@@ -3,6 +3,15 @@
     "locale": "it"
   },
   "dictionary": {
+    "journey_open": "Apri percorso",
+    "journey_question": "Domanda",
+    "journey_answer": "Risposta",
+    "journey_steps": "Fasi osservate",
+    "journey_unavailable": "Percorso non disponibile",
+    "journey_state_ok": "Completata",
+    "journey_state_fail": "Errore",
+    "journey_state_running": "In corso",
+    "journey_state_skip": "Saltata",
     "title": "Sentinella",
     "diary": "Diario",
     "people": "Persone",

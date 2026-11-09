@@ -25,6 +25,7 @@ from features.capabilities import manifest as capabilities
 from features.chat import addressee, assistant, brain_chain, intents, speaker, streaming, voice_id, wake
 from features.chat.dialogue import dialogue
 from features.chat.journey_flow import ChatJourney
+from features.sentinel.collectors import operations
 from features.chat.layout import presence
 from features.chat.skills import ambient
 from features.laws import guard
@@ -189,10 +190,12 @@ async def assistant_chat(text: str, device: str, heard_lang: str | None = None, 
             result = await assistant.handle(text, core_call, speech_lang)
         except BaseException as exc:
             flow.failed(exc)
+            operations.chat(device, flow.tracker.id if flow.tracker else "", {"error": type(exc).__name__})
             raise
         flow.answered(result)
     if not result.pop("exact_reply", False):
         result["reply"] = speaker.fix_address(result.get("reply") or "") + voice_id.offer(heard.get("voice_known"))
+    operations.chat(device, flow.tracker.id if flow.tracker else "", result)
     if isinstance(result.get("ui"), dict):
         result["ui"].setdefault("presence", presence(result["reply"], result["ui"]))
     if not internal:

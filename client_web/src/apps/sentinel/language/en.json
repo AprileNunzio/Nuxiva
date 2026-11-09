@@ -3,6 +3,15 @@
     "locale": "en"
   },
   "dictionary": {
+    "journey_open": "Open journey",
+    "journey_question": "Question",
+    "journey_answer": "Answer",
+    "journey_steps": "Observed steps",
+    "journey_unavailable": "Journey unavailable",
+    "journey_state_ok": "Completed",
+    "journey_state_fail": "Failed",
+    "journey_state_running": "Running",
+    "journey_state_skip": "Skipped",
     "title": "Sentinel",
     "diary": "Diary",
     "people": "People",

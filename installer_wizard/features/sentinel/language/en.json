@@ -15,6 +15,8 @@
     "NUXIVA_SENTINEL_WATCH_EVERY": "How often, in seconds, Sentinel looks at the cameras"
   },
   "narrative": {
+    "sentinel.self.chat_request": "Chat {channel} · journey {journey} · intent {intent} · planned {planned} · executor {executor} · status {status}",
+    "sentinel.self.mcp_request": "MCP {method} {tool} · status {status} · {ms} ms",
     "sentinel.presence.arrived": "I saw {person} arrive",
     "sentinel.presence.left": "I saw {person} leave",
     "sentinel.presence.arrived_wearing": "I saw {person} arrive wearing something {color}",

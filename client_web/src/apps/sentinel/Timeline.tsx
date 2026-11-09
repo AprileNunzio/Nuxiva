@@ -2,6 +2,7 @@ import React from 'react';
 import { Eye, UserRound, Users, ShieldAlert, Bot, Monitor, Activity, BookOpen, Mic, KeyRound, type LucideIcon } from 'lucide-react';
 import type { SentinelEvent } from './types';
 import type { SentinelModel } from './useSentinel';
+import { JourneyDetail } from './JourneyDetail';
 
 const ICONS:Record<string,LucideIcon>={presence:UserRound,appearance:Eye,guest:Users,voice:Mic,access:KeyRound,automation:Bot,self:Activity,display:Monitor,system:ShieldAlert,sentinel:BookOpen};
 
@@ -17,7 +18,9 @@ export function Timeline({model:m,groups}:{model:SentinelModel;groups?:string[]}
     {[...hours].map(([hour,list])=><section key={hour} className="sentinel-hour"><h3>{hour}</h3><ol>
       {list.map(event=>{const Icon=ICONS[event.group]||Activity;return <li key={event.id} className="sentinel-event" data-group={event.group} data-kind={event.kind}>
         <span className="sentinel-icon"><Icon aria-hidden="true"/></span>
-        <div><p>{event.text}</p><small><time dateTime={new Date(event.at_ms).toISOString()}>{time(event.at_ms)}</time> · {t(`group_${event.group}`)}</small></div>
+        <div><p>{event.text}</p><small><time dateTime={new Date(event.at_ms).toISOString()}>{time(event.at_ms)}</time> · {t(`group_${event.group}`)}</small>
+          {event.journey_id && <JourneyDetail id={event.journey_id} t={t}/>}
+        </div>
       </li>;})}
     </ol></section>)}
     {m.hasMore&&<button className="sentinel-more" disabled={m.busy} onClick={()=>void m.more()}>{t('more')}</button>}
