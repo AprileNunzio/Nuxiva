@@ -7,15 +7,14 @@ import { useLinks } from '../../node_apps/client_link/hooks/useLinks';
 import { AppFrame, Btn, Empty, Loading, Panel, Pill, Row } from '../shared/kit';
 import { fetchNodes, fetchUsbPorts, deleteNode } from './api';
 import { MeshNodeItem, UsbPort } from './types';
-import { NodeWizard } from './NodeWizard';
 import { InstallationCards } from './components/InstallationCards';
 
 export const View: React.FC = () => {
   const { t } = useScopedI18n('core_apps/nodes');
   const [nodes, setNodes] = useState<MeshNodeItem[]>([]);
-  const [usbPorts, setUsbPorts] = useState<UsbPort[]>([]);
+  const [usbPorts, setUsbPorts] = useState<UsbPort[] | null>(null);
+  const [detectingUsb, setDetectingUsb] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [showWizard, setShowWizard] = useState(false);
   const [removing, setRemoving] = useState<MeshNodeItem | null>(null);
   const [busy, setBusy] = useState(false);
   const links = useLinks(true);
@@ -36,12 +35,14 @@ export const View: React.FC = () => {
     return () => window.clearInterval(timer);
   }, [load]);
 
-  const openEsp32 = async () => {
+  const detectUsb = async () => {
+    setDetectingUsb(true);
     try {
       setUsbPorts(await fetchUsbPorts());
-      setShowWizard(true);
     } catch (cause) {
       reportError('nodes_usb_failed', cause);
+    } finally {
+      setDetectingUsb(false);
     }
   };
 
@@ -67,7 +68,7 @@ export const View: React.FC = () => {
     >
       <div className="grid gap-4 xl:grid-cols-2">
         <Panel title={t('install_platforms')}>
-          <InstallationCards links={links} openEsp32={() => void openEsp32()} />
+          <InstallationCards links={links} usbPorts={usbPorts} detectingUsb={detectingUsb} detectUsb={() => void detectUsb()} />
         </Panel>
         <Panel title={t('total_nodes')}>
           {loading ? (
@@ -107,16 +108,6 @@ export const View: React.FC = () => {
           )}
         </Panel>
       </div>
-      {showWizard && (
-        <NodeWizard
-          startAtEsp32
-          nodes={nodes}
-          usbPorts={usbPorts}
-          links={links}
-          onChanged={setNodes}
-          onClose={() => setShowWizard(false)}
-        />
-      )}
       {removing && (
         <ConfirmDialog
           title={t('deprovision')}

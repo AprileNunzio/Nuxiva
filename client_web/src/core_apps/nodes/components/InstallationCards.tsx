@@ -3,6 +3,7 @@ import { ChevronDown, Cpu, Laptop, Monitor, Terminal } from 'lucide-react';
 import { useScopedI18n } from '../../../shared/i18n/useScopedI18n';
 import { LinksHandle } from '../../../node_apps/client_link/hooks/useLinks';
 import { Btn } from '../../shared/kit';
+import { UsbPort } from '../types';
 import { PcLinkPanel } from './PcLinkPanel';
 import { WindowsDownload } from './WindowsDownload';
 
@@ -15,8 +16,10 @@ const platforms = [
 
 export const InstallationCards: React.FC<{
   readonly links: LinksHandle;
-  readonly openEsp32: () => void;
-}> = ({ links, openEsp32 }) => {
+  readonly usbPorts: UsbPort[] | null;
+  readonly detectingUsb: boolean;
+  readonly detectUsb: () => void;
+}> = ({ links, usbPorts, detectingUsb, detectUsb }) => {
   const { t } = useScopedI18n('core_apps/nodes');
   return (
     <section aria-label={t('install_platforms')} className="grid items-start gap-3 sm:grid-cols-2">
@@ -29,7 +32,7 @@ export const InstallationCards: React.FC<{
             <span className="min-w-0 flex-1">
               <span className="block">{t(`install_${id}_title`)}</span>
               <span className="block text-xs font-normal text-slate-600 dark:text-slate-400">
-                {t(id === 'macos' ? 'install_pending' : 'install_steps_count', { count: steps })}
+                {t(id === 'macos' || id === 'esp32' ? 'install_pending' : 'install_steps_count', { count: steps })}
               </span>
             </span>
             <ChevronDown className="h-4 w-4 shrink-0 transition group-open:rotate-180" aria-hidden="true" />
@@ -48,7 +51,18 @@ export const InstallationCards: React.FC<{
             </ol>
             {id === 'linux' && <PcLinkPanel handle={links} />}
             {id === 'windows' && <WindowsDownload />}
-            {id === 'esp32' && <Btn onClick={openEsp32}>{t('install_esp32_start')}</Btn>}
+            {id === 'esp32' && (
+              <div className="space-y-2">
+                <Btn busy={detectingUsb} onClick={detectUsb}>{t('install_esp32_start')}</Btn>
+                <div aria-live="polite" className="break-all text-xs text-slate-600 dark:text-slate-400">
+                  {usbPorts && (usbPorts.length ? (
+                    <ul className="space-y-1">
+                      {usbPorts.map((port) => <li key={port.device}>{port.device} · {port.description}</li>)}
+                    </ul>
+                  ) : <p>{t('install_esp32_no_ports')}</p>)}
+                </div>
+              </div>
+            )}
           </div>
         </details>
       ))}
