@@ -1,5 +1,10 @@
 # Nuxiva — registro di implementazione
 
+## Priorità alta
+
+- [x] [Issue #41](https://github.com/AprileNunzio/Nuxiva/issues/41) — Ripristinare i widget pubblici nella pagina LAN senza display kiosk e con protezione di presenza disattivata. Verificati HTTP, entrambi gli stream SSE e isolamento dei dati del display fisico.
+- [ ] Issue #41 — Collaudare il comportamento in un browser sulla rete dell’installazione segnalata.
+
 ## Pubblicato o verificato in locale
 
 - [x] Download Windows da Nodi e Server con pacchetto ZIP e associazione monouso.

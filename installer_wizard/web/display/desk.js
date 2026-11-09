@@ -24,6 +24,7 @@
   }
   function moveTo(id, n, side) {
     const card = [...cards.values()].find((c) => c.inst.id === id);
+    if (card?.inst.browser_only) return;
     if (card) card.el.classList.add(FLY[side] || (n > hooks.screen ? "fly-right" : "fly-left"));
     return fetch("/api/desk/screen", { method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id, screen: n }) }).catch((err) => console.warn("Spostamento tra schermi non riuscito", err));
@@ -169,11 +170,12 @@
       const el = document.createElement("section");
       el.className = `widget size-${inst.size} w-${inst.id} tone-${TONES.has(inst.tone) ? inst.tone : "cyan"}${inst.essential ? " essential" : ""}${inst.urgent ? " urgent" : ""}${inst.takeover ? " takeover" : ""}${inst.immersive ? " immersive" : ""}${inst.chrome === false ? " frameless" : ""} hidden`;
       el.dataset.key = inst.key;
+      if (inst.browser_only) el.dataset.browserOnly = "true";
       el.innerHTML = '<div class="w-body"></div><i class="w-cycle" aria-hidden="true"></i>';
       card = { el, sig, rev: inst.rev, impl, inst, placed: false };
       cards.set(inst.key, card);
       host.appendChild(el);
-      enableDrag(card);
+      if (!inst.browser_only) enableDrag(card);
       if (resizeObs) resizeObs.observe(el);
       try { gov(inst.id, () => impl.render(el.firstChild, inst.data, ctxFor(inst.id)), el, true); } catch (err) { console.warn(`widget ${inst.id}:`, err); }
       if ((inst.takeover || (inst.data && inst.data.announce)) && inst.data && inst.data.speak) ctx.speak(inst.data.speak);

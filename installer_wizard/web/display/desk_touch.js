@@ -27,7 +27,7 @@
 
   function menu(widget, x, y) {
     hideMenu();
-    if (!widget) return;
+    if (!widget || widget.dataset.browserOnly === "true") return;
     const key = widget.dataset.key, full = isFull(widget);
     const el = document.createElement("div");
     el.className = "wt-menu";
