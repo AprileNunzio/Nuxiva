@@ -13,7 +13,7 @@ const groups = [
   },
   {
     id: 'privacy', icon: ShieldCheck, tone: 'bg-secondary-container text-on-secondary-container',
-    keys: ['NUXIVA_DISPLAY_PRESENCE_GATE', 'NUXIVA_DISPLAY_GUEST_PUBLIC', 'NUXIVA_DISPLAY_TRUST_GUESTS', 'NUXIVA_DISPLAY_ROOM_STRICT'],
+    keys: ['NUXIVA_DISPLAY_GUEST_PUBLIC', 'NUXIVA_DISPLAY_TRUST_GUESTS', 'NUXIVA_DISPLAY_ROOM_STRICT'],
   },
   {
     id: 'devices', icon: Webcam, tone: 'bg-tertiary-container text-on-tertiary-container',

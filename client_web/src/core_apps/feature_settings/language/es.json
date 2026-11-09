@@ -3,6 +3,17 @@
     "locale": "es"
   },
   "dictionary": {
+    "desktop_autosave": "Guardado automático",
+    "desktop_saving": "Guardando…",
+    "desktop_saved": "Cambios guardados",
+    "desktop_save_failed": "Error al guardar",
+    "desktop_retry_description": "Los cambios que no se guardaron se revirtieron. Puedes volver a intentarlo.",
+    "desktop_retry": "Reintentar guardado",
+    "desktop_protection_title": "Modo de protección",
+    "desktop_protected": "Verificar presencia",
+    "desktop_open": "Sin verificar presencia",
+    "desktop_protected_hint": "La pantalla del servidor exige la presencia de una persona autorizada antes de mostrar contenido protegido.",
+    "desktop_open_hint": "La pantalla del servidor puede mostrar contenido privado sin verificar quién está presente.",
     "desktop_widgets_title": "Widgets y personalización",
     "desktop_widgets_description": "Elige qué mostrar y si la pantalla puede adaptarse a tus hábitos.",
     "desktop_privacy_title": "Presencia y privacidad",

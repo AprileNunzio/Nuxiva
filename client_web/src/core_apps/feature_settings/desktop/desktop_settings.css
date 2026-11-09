@@ -1,8 +1,19 @@
 .desktop-settings-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 23rem), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 28rem), 1fr));
   align-items: start;
   gap: 1rem;
+}
+
+.desktop-mode-segments {
+  display: inline-flex;
+  flex-wrap: wrap;
+  max-width: 100%;
+}
+
+.desktop-mode-segments .md3-segmented-item {
+  flex: 1 1 auto;
+  white-space: normal;
 }
 
 .desktop-switch-row .md3-switch-wrapper {

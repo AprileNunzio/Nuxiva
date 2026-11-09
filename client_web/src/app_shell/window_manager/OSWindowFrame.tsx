@@ -49,6 +49,8 @@ function Frame({ entry, app }: { entry: OSWindow; app: NonNullable<ReturnType<ty
   const activeNodeId = entry.targetNodeId || (app.target === 'node' ? 'virtual_core' : undefined);
   const node = snapshot?.neurons.find(n => n.id === activeNodeId);
   const mode = entry.windowMode || 'floating';
+  const desktopSettings = entry.appId === 'feature_settings' && entry.instanceKey === 'desktop';
+  const toolbars = desktopSettings ? [] : app.toolbars;
   const title = entry.appId === 'explorer' ? assistant.name : entry.title || getScopedString(app.scope, lang, 'title', app.name);
   const geometry = mode === 'floating' ? { left: `${entry.x}%`, top: `${entry.y}%`, width: `${entry.width}%`, height: `${entry.height}%` }
     : { left: mode.endsWith('right') || mode.endsWith('tr') || mode.endsWith('br') ? '50%' : '0', top: mode.endsWith('bl') || mode.endsWith('br') ? '50%' : '0', width: mode === 'maximized' ? '100%' : '50%', height: mode.startsWith('quarter') ? '50%' : '100%' };
@@ -111,7 +113,7 @@ function Frame({ entry, app }: { entry: OSWindow; app: NonNullable<ReturnType<ty
 
   return <section role="region" tabIndex={-1} aria-label={title} className="os-window" style={{ ...geometry, display: entry.minimized ? 'none' : undefined, zIndex: entry.z + (entry.pinned ? 100000 : 0) }} onPointerDown={() => windowStore.focus(entry.id)} onKeyDown={event => {
     if (event.key === 'Escape') { setMenu(false); setInfo(false); }
-    const shortcut = app.toolbars?.flatMap(bar => bar.items).find(item => item.shortcut === event.key);
+    const shortcut = toolbars?.flatMap(bar => bar.items).find(item => item.shortcut === event.key);
     if (shortcut) { event.preventDefault(); activate(shortcut); }
   }}>
     <header className="os-titlebar" onPointerDown={e => gesture(e)} onDoubleClick={() => app.window?.maximizable !== false && windowStore.update(entry.id, { windowMode: mode === 'maximized' ? 'floating' : 'maximized' })}>
@@ -141,7 +143,7 @@ function Frame({ entry, app }: { entry: OSWindow; app: NonNullable<ReturnType<ty
           <option value="virtual_core">{snapshot?.neurons.find(n => n.id === 'virtual_core')?.name || 'Virtual Core'}</option>
           {snapshot?.neurons.filter(n => n.id !== 'virtual_core').map(n => <option key={n.id} value={n.id}>{n.name}</option>)}
         </select>}
-        {os.setInspectorOpen && (
+        {!desktopSettings && os.setInspectorOpen && (
           <button
             type="button"
             className={`os-titlebar-btn os-inspector-toggle ${os.inspectorOpen ? 'os-inspector-active' : ''}`}
@@ -164,12 +166,12 @@ function Frame({ entry, app }: { entry: OSWindow; app: NonNullable<ReturnType<ty
       <button role="menuitem" onClick={() => { windowStore.update(entry.id, { windowMode: 'snapped-left' }); setMenu(false); }}><PanelLeft />{t('os_snap_left')}</button>
       <button role="menuitem" onClick={() => { windowStore.update(entry.id, { windowMode: 'snapped-right' }); setMenu(false); }}><PanelRight />{t('os_snap_right')}</button>
       <button role="menuitem" aria-pressed={entry.pinned} onClick={() => { windowStore.update(entry.id, { pinned: !entry.pinned }); setMenu(false); }}><Pin />{t('os_pin')}</button>
-      <button role="menuitem" onClick={() => { action('refresh'); setMenu(false); }}><RefreshCw />{t('os_refresh')}</button>
+      {!desktopSettings && <button role="menuitem" onClick={() => { action('refresh'); setMenu(false); }}><RefreshCw />{t('os_refresh')}</button>}
       {entry.appId !== 'feature_settings' && app.featureIds?.map(id => <button key={id} role="menuitem" onClick={() => { windowStore.openWindow({ appId: 'feature_settings', instanceKey: id }); setMenu(false); }}><Settings />{app.featureIds!.length > 1 ? `${t('os_app_settings')} · ${id}` : t('os_app_settings')}</button>)}
       <button role="menuitem" onClick={() => { setInfo(v => !v); setMenu(false); }}><Info />{t('os_about_app')}</button>
     </div>}
     {info && <div className="os-app-info"><OSIcon3D name={app.name} source={app.iconUrl} /><strong>{title}</strong><span>{app.version || '1.0'} · {t(`os_category_${app.category || 'system'}`)}</span><button onClick={() => setInfo(false)}>{t('os_close')}</button><a href="https://icons8.it/icons/set/person--technique-3d" target="_blank" rel="noreferrer">Icons8</a></div>}
-    {app.toolbars?.map(bar => <div className="os-toolbar" key={bar.id}>{bar.items.map(item => {
+    {toolbars?.map(bar => <div className="os-toolbar" key={bar.id}>{bar.items.map(item => {
       const key = item.labelKey || item.placeholderKey || item.id;
       const label = getScopedString(app.scope, lang, key, t(key));
       return item.type === 'search' ? <input key={item.id} aria-label={label} placeholder={label} value={os.searchQuery} maxLength={200} onChange={e => action(item.id, e.target.value)} />

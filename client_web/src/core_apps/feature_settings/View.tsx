@@ -7,8 +7,8 @@ import { FeaturesOverview } from '../shared/featureTypes';
 import { setMode } from '../shared/featureApi';
 import { SettingsEditor } from '../shared/SettingsEditor';
 import { SetupGuide } from '../shared/SetupGuide';
-import { inputClass, Pill } from '../shared/kit';
-import { DesktopSettingsFields } from './desktop/DesktopSettingsFields';
+import { inputClass } from '../shared/kit';
+import { DesktopSettings } from './desktop/DesktopSettings';
 
 export function View() {
   const os = useOSApp();
@@ -20,17 +20,17 @@ export function View() {
   if (!feature) {
     return <ApplicationLayout sections={{}} loading={loading} error={t(error ? 'unreachable' : 'empty')} onRetry={reload} />;
   }
-  const desktop = feature.id === 'desktop';
+  if (feature.id === 'desktop') {
+    return <ApplicationLayout sections={{ desktop: <DesktopSettings key={feature.id} feature={feature} /> }} />;
+  }
   const status = t(feature.state.enabled ? 'running' : 'stopped');
   return (
     <ApplicationLayout sections={{
       settings: (
         <div className="space-y-5">
-          <header className={desktop ? 'rounded-3xl bg-primary-container p-4 text-on-primary-container sm:p-6' : undefined}>
+          <header>
             <div className="flex flex-wrap items-center gap-3">
-              {desktop && feature.icon_url && <img className="size-12 object-contain" src={feature.icon_url} alt="" />}
               <h1 className="text-xl font-semibold">{feature.name}</h1>
-              {desktop && <span role="status"><Pill tone={feature.state.enabled ? 'emerald' : 'slate'}>{status}</Pill></span>}
             </div>
             <p className="mt-2 max-w-3xl text-sm">{feature.description}</p>
           </header>
@@ -46,10 +46,10 @@ export function View() {
               <option value="1">{t('mode_on')}</option>
               <option value="0">{t('mode_off')}</option>
             </select>
-            {!desktop && <span role="status">{status}</span>}
+            <span role="status">{status}</span>
           </label>
           <SetupGuide guide={feature.guide} />
-          <SettingsEditor key={feature.id} feature={feature} busy={busy} t={t} run={run} layout={desktop ? DesktopSettingsFields : undefined} />
+          <SettingsEditor key={feature.id} feature={feature} busy={busy} t={t} run={run} />
         </div>
       ),
       details: (

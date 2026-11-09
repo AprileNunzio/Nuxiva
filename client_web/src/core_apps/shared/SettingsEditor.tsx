@@ -10,7 +10,6 @@ interface SettingsEditorProps {
   readonly busy: boolean;
   readonly t: (key: string, params?: Record<string, string | number>) => string;
   readonly run: <R>(task: () => Promise<R>, code?: string) => Promise<R | null>;
-  readonly layout?: React.ComponentType<SettingsFieldsProps>;
 }
 
 export interface SettingsFieldsProps {
@@ -40,7 +39,38 @@ export function SettingReference({ setting }: { readonly setting: FeatureSetting
   );
 }
 
-export const SettingsEditor: React.FC<SettingsEditorProps> = ({ feature, busy, t, run, layout: Layout }) => {
+export function SettingField({ setting, value, busy, t, onChange }: {
+  readonly setting: FeatureSetting;
+  readonly value: string;
+  readonly busy: boolean;
+  readonly t: SettingsEditorProps['t'];
+  readonly onChange: (value: string) => void;
+}) {
+  return (
+    <Field label={setting.label}>
+      {setting.type === 'select' || setting.type === 'bool' ? (
+        <select className={inputClass} disabled={busy} value={value} onChange={(event) => onChange(event.target.value)}>
+          {(setting.type === 'bool' ? [{ value: '1', label: t('on') }, { value: '0', label: t('off') }] : setting.options ?? [])
+            .map((option) => <option key={optionValue(option)} value={optionValue(option)}>{optionLabel(option)}</option>)}
+        </select>
+      ) : (
+        <input
+          className={inputClass}
+          type={setting.type === 'secret' ? 'password' : setting.type === 'number' ? 'number' : setting.type === 'color' ? 'color' : 'text'}
+          autoComplete="off"
+          disabled={busy}
+          value={value}
+          maxLength={500}
+          onChange={(event) => onChange(event.target.value)}
+        />
+      )}
+      {setting.help && <span className="text-xs font-normal text-on-surface-variant">{setting.help}</span>}
+      <SettingReference setting={setting} />
+    </Field>
+  );
+}
+
+export const SettingsEditor: React.FC<SettingsEditorProps> = ({ feature, busy, t, run }) => {
   const [draft, setDraft] = useState<Record<string, string>>({});
   const fields = feature.settings.filter(editable);
   const current = (setting: FeatureSetting) => draft[setting.key] ?? feature.values[setting.key] ?? setting.default ?? '';
@@ -58,40 +88,12 @@ export const SettingsEditor: React.FC<SettingsEditorProps> = ({ feature, busy, t
     return <p className="text-xs text-slate-500">{t('no_settings')}</p>;
   }
 
-  const renderDefault = (setting: FeatureSetting) => (
-        <Field key={setting.key} label={setting.label}>
-          {setting.type === 'select' ? (
-            <select className={inputClass} disabled={busy} value={current(setting)} onChange={(event) => change(setting.key, event.target.value)}>
-              {(setting.options ?? []).map((option) => (
-                <option key={optionValue(option)} value={optionValue(option)}>
-                  {optionLabel(option)}
-                </option>
-              ))}
-            </select>
-          ) : setting.type === 'bool' ? (
-            <select className={inputClass} disabled={busy} value={current(setting)} onChange={(event) => change(setting.key, event.target.value)}>
-              <option value="1">{t('on')}</option>
-              <option value="0">{t('off')}</option>
-            </select>
-          ) : (
-            <input
-              className={inputClass}
-              type={setting.type === 'secret' ? 'password' : setting.type === 'number' ? 'number' : setting.type === 'color' ? 'color' : 'text'}
-              autoComplete="off"
-              disabled={busy}
-              value={current(setting)}
-              maxLength={500}
-              onChange={(event) => change(setting.key, event.target.value)}
-            />
-          )}
-          {setting.help && <span className="text-[11px] font-normal text-slate-500">{setting.help}</span>}
-          <SettingReference setting={setting} />
-        </Field>
-  );
-
   return (
-    <div className={Layout ? 'space-y-4' : 'os-settings-grid'}>
-      {Layout ? <Layout fields={fields} current={current} change={change} renderDefault={renderDefault} busy={busy} /> : fields.map(renderDefault)}
+    <div className="os-settings-grid">
+      {fields.map((setting) => (
+        <SettingField key={setting.key} setting={setting} value={current(setting)} busy={busy} t={t}
+          onChange={(value) => change(setting.key, value)} />
+      ))}
       <div style={{gridColumn:'1 / -1'}}>
         <Btn tone="emerald" busy={busy} disabled={!dirty} onClick={() => void save()}>
           {t('save')}
