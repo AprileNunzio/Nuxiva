@@ -13,6 +13,52 @@ const MAX_FEEDBACK: usize = 4_000;
 const MAX_CRITERIA: usize = 16;
 const MAX_DEPENDENCIES: usize = 64;
 const MAX_ATTEMPTS: u8 = 10;
+const MAX_CHECKPOINT: usize = 64_000;
+const MAX_WORKER: usize = 128;
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ReviewCheckpoint {
+    deliverable: CleanText,
+    worker: CleanText,
+    generation: u64,
+    submitted_at_ms: u64,
+}
+
+impl ReviewCheckpoint {
+    pub fn new(
+        deliverable: &str,
+        worker: &str,
+        generation: u64,
+        submitted_at_ms: u64,
+    ) -> Result<Self, DomainError> {
+        Ok(Self {
+            deliverable: CleanText::new("deliverable", deliverable, MAX_CHECKPOINT)?,
+            worker: CleanText::new("worker", worker, MAX_WORKER)?,
+            generation,
+            submitted_at_ms,
+        })
+    }
+
+    #[must_use]
+    pub fn deliverable(&self) -> &CleanText {
+        &self.deliverable
+    }
+
+    #[must_use]
+    pub fn worker(&self) -> &CleanText {
+        &self.worker
+    }
+
+    #[must_use]
+    pub fn generation(&self) -> u64 {
+        self.generation
+    }
+
+    #[must_use]
+    pub fn submitted_at_ms(&self) -> u64 {
+        self.submitted_at_ms
+    }
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -102,6 +148,8 @@ pub struct Task {
     estimate_seconds: u64,
     feedback: Option<CleanText>,
     usage: Usage,
+    #[serde(default)]
+    checkpoint: Option<ReviewCheckpoint>,
 }
 
 impl Task {
@@ -153,6 +201,7 @@ impl Task {
             estimate_seconds: spec.estimate_seconds,
             feedback: None,
             usage: Usage::default(),
+            checkpoint: None,
         })
     }
 
@@ -207,6 +256,11 @@ impl Task {
     }
 
     #[must_use]
+    pub fn checkpoint(&self) -> Option<&ReviewCheckpoint> {
+        self.checkpoint.as_ref()
+    }
+
+    #[must_use]
     pub fn usage(&self) -> &Usage {
         &self.usage
     }
@@ -238,11 +292,21 @@ impl Task {
     pub fn interrupt(&mut self) -> Result<(), DomainError> {
         self.move_to(TaskStatus::Pending)?;
         self.attempts = self.attempts.saturating_sub(1);
+        self.checkpoint = None;
         Ok(())
     }
 
     pub fn submit(&mut self) -> Result<(), DomainError> {
-        self.move_to(TaskStatus::Review)
+        self.submit_with_checkpoint(None)
+    }
+
+    pub fn submit_with_checkpoint(
+        &mut self,
+        checkpoint: Option<ReviewCheckpoint>,
+    ) -> Result<(), DomainError> {
+        self.move_to(TaskStatus::Review)?;
+        self.checkpoint = checkpoint;
+        Ok(())
     }
 
     pub fn approve(&mut self) -> Result<(), DomainError> {
@@ -259,10 +323,12 @@ impl Task {
         if self.attempts >= self.max_attempts {
             self.move_to(TaskStatus::Failed)?;
             self.feedback = Some(note);
+            self.checkpoint = None;
             return Err(DomainError::AttemptsExhausted);
         }
         self.move_to(TaskStatus::Pending)?;
         self.feedback = Some(note);
+        self.checkpoint = None;
         Ok(())
     }
 

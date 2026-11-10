@@ -1,12 +1,13 @@
+use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Owner {
     pub tenant: String,
     pub account: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Lease {
     pub worker: String,
     pub generation: u64,
@@ -27,14 +28,15 @@ pub enum LeaseError {
     Stale,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 enum State {
     Pending,
     Assigned(Lease),
     Completed,
+    Revoked,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct JobLease {
     owner: Owner,
     generation: u64,
@@ -110,6 +112,45 @@ impl JobLease {
             State::Completed => Err(LeaseError::Completed),
             _ => Err(LeaseError::Stale),
         }
+    }
+
+    pub fn revoke(&mut self, owner: &Owner) -> Result<(), LeaseError> {
+        self.check_owner(owner)?;
+        match self.state {
+            State::Completed => return Err(LeaseError::Completed),
+            State::Assigned(_) | State::Pending | State::Revoked => {}
+        }
+        self.generation = self.generation.checked_add(1).ok_or(LeaseError::Invalid)?;
+        self.state = State::Revoked;
+        Ok(())
+    }
+
+    #[must_use]
+    pub const fn lease(&self) -> Option<&Lease> {
+        match &self.state {
+            State::Assigned(lease) => Some(lease),
+            _ => None,
+        }
+    }
+
+    #[must_use]
+    pub const fn generation(&self) -> u64 {
+        self.generation
+    }
+
+    #[must_use]
+    pub const fn is_assigned(&self) -> bool {
+        matches!(self.state, State::Assigned(_))
+    }
+
+    #[must_use]
+    pub const fn is_revoked(&self) -> bool {
+        matches!(self.state, State::Revoked)
+    }
+
+    #[must_use]
+    pub const fn owner(&self) -> &Owner {
+        &self.owner
     }
 
     fn check_owner(&self, owner: &Owner) -> Result<(), LeaseError> {

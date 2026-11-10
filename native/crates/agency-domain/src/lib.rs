@@ -9,7 +9,7 @@ pub use budget::{Budget, Usage};
 pub use error::DomainError;
 pub use ids::{ProjectId, RoleId, TaskId};
 pub use project::{Project, ProjectStatus, WorkspacePath};
-pub use task::{Criterion, Task, TaskSpec, TaskStatus};
+pub use task::{Criterion, ReviewCheckpoint, Task, TaskSpec, TaskStatus};
 pub use text::CleanText;
 
 #[cfg(test)]

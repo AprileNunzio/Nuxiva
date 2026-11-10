@@ -26,6 +26,8 @@ class Context:
     project_id: str
     folder: str
     task: str = ""
+    worker: str = ""
+    generation: int = 0
     tokens: int = 0
     forged: list[str] = field(default_factory=list)
     forge_attempts: int = 0
@@ -50,14 +52,22 @@ def _text(args: dict, key: str, limit: int, required: bool = True) -> str:
 
 
 async def _list_files(ctx: Context, args: dict) -> str:
-    files = (await client.call("code_files", project=ctx.project_id))["files"]
+    fields = {"project": ctx.project_id}
+    if ctx.worker:
+        fields["worker"] = ctx.worker
+        fields["generation"] = ctx.generation
+    files = (await client.call("code_files", **fields))["files"]
     lines = [f"{f['path']} ({f['bytes']} B, {f['language']})" for f in files[:400]]
     return "\n".join(lines) or "(empty project)"
 
 
 async def _search(ctx: Context, args: dict) -> str:
     query = _text(args, "query", QUERY_LIMIT)
-    hits = (await client.call("code_search", project=ctx.project_id, query=query, limit=40))["hits"]
+    fields = {"project": ctx.project_id, "query": query, "limit": 40}
+    if ctx.worker:
+        fields["worker"] = ctx.worker
+        fields["generation"] = ctx.generation
+    hits = (await client.call("code_search", **fields))["hits"]
     return "\n".join(f"{h['path']}:{h['line']}: {h['text']}" for h in hits) or "(no match)"
 
 

@@ -1,5 +1,8 @@
-use agency_domain::{Project, Task};
+use std::collections::BTreeMap;
+
+use agency_domain::{Project, Task, TaskId};
 use agency_planner::TaskGraph;
+use agency_scheduler::leases::JobLease;
 use agency_scheduler::{ModelProfile, Settings};
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
@@ -27,12 +30,15 @@ impl Default for EngineSettings {
 struct Snapshot {
     project: Project,
     tasks: Vec<Task>,
+    #[serde(default)]
+    leases: BTreeMap<TaskId, JobLease>,
 }
 
 #[derive(Debug, Clone)]
 pub struct ProjectState {
     pub project: Project,
     pub graph: TaskGraph,
+    pub leases: BTreeMap<TaskId, JobLease>,
 }
 
 impl ProjectState {
@@ -40,6 +46,7 @@ impl ProjectState {
         let snapshot = Snapshot {
             project: self.project.clone(),
             tasks: self.graph.tasks().cloned().collect(),
+            leases: self.leases.clone(),
         };
         Ok(serde_json::to_vec(&snapshot)?)
     }
@@ -49,6 +56,7 @@ impl ProjectState {
         Ok(Self {
             project: snapshot.project,
             graph: TaskGraph::from_tasks(snapshot.tasks)?,
+            leases: snapshot.leases,
         })
     }
 
@@ -76,6 +84,7 @@ impl ProjectState {
             "ready": self.graph.ready(),
             "blocked": self.graph.blocked(),
             "tasks": tasks,
+            "leases": self.leases,
         })
     }
 }

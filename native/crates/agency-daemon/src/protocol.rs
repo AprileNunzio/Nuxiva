@@ -81,19 +81,37 @@ pub enum Request {
         #[serde(default)]
         feedback: Option<String>,
         #[serde(default)]
+        checkpoint: Option<String>,
+        #[serde(default)]
+        worker: Option<String>,
+        #[serde(default)]
+        generation: Option<u64>,
+        #[serde(default)]
         tokens: u64,
         #[serde(default)]
         seconds: u64,
     },
+    AssignmentRevoke {
+        project: String,
+        task: String,
+    },
     Dispatch {},
     CodeFiles {
         project: String,
+        #[serde(default)]
+        worker: Option<String>,
+        #[serde(default)]
+        generation: Option<u64>,
     },
     CodeSearch {
         project: String,
         query: String,
         #[serde(default)]
         limit: Option<usize>,
+        #[serde(default)]
+        worker: Option<String>,
+        #[serde(default)]
+        generation: Option<u64>,
     },
     ForesightCreate {
         id: String,
