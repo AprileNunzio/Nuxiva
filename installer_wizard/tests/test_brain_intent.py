@@ -36,6 +36,25 @@ class BrainIntentTest(unittest.TestCase):
         self.assertTrue(updates["NUXIVA_LLM_CHAT_ORDER"].startswith("cloud:anthropic/"))
         self.assertTrue(updates["NUXIVA_LLM_DEEP_ORDER"].startswith("cloud:anthropic/"))
 
+    def test_cloud_with_local_role_reserve_requires_ollama(self):
+        env = {"NUXIVA_BRAIN": "cloud", "NUXIVA_LLM_CODER_ORDER": "cloud:gemini/gemini-3.8-flash,qwen2.5:1.5b"}
+        self.assertFalse(brain_intent.local_ollama_optional(env))
+        for package in ("brain_local", "brain_models"):
+            self.assertTrue(packages.wanted(packages.PACKAGE_BY_ID[package], env))
+
+    def test_cloud_with_remote_reserve_leaves_local_ollama_optional(self):
+        env = {"NUXIVA_BRAIN": "cloud", "NUXIVA_LLM_CODER_ORDER": "qwen2.5:1.5b"}
+        with mock.patch.object(brain_intent, "ollama_remote", return_value=True):
+            self.assertTrue(brain_intent.local_ollama_optional(env))
+
+    def test_cloud_store_reports_external_installation_without_install_step(self):
+        store.steps["ollama"] = {"status": "skipped"}
+        env = {"NUXIVA_BRAIN": "cloud"}
+        package = packages.PACKAGE_BY_ID["brain_local"]
+        with mock.patch.object(brain_intent, "local_engine", return_value=True):
+            self.assertEqual(packages.state(package, env), "installed")
+            self.assertFalse(packages.wanted(package, env))
+
     def test_cloud_orders_already_set_are_kept(self):
         env = {"NUXIVA_BRAIN": "pending", "NUXIVA_LLM_CHAT_ORDER": "cloud:gemini/gemini-3.8-flash"}
         with self.keyed("gemini"), mock.patch.object(brain_intent, "local_engine", return_value=True):

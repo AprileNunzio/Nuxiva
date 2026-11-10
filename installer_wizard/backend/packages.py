@@ -92,6 +92,8 @@ def wanted(pkg: Package, env: dict | None = None) -> bool:
     env = read_env() if env is None else env
     if pkg.env == "NUXIVA_BRAIN":
         mode = brain_mode(env)
+        if mode == "cloud" and brain_intent.required_local_models(env):
+            return True
         return mode == "local" if pkg.id == "brain_local" else mode in ("local", "remote")
     value = env.get(pkg.env, "").strip().lower()
     if value:
@@ -147,6 +149,8 @@ def state(pkg: Package, env: dict | None = None) -> str:
     statuses = [(store.steps.get(s) or {}).get("status", "") for s in pkg.steps]
     if any(s in ("running", "checking", "retrying") for s in statuses):
         return "installing"
+    if pkg.id == "brain_local" and not DEMO and brain_intent.local_engine():
+        return "installed"
     if not wanted(pkg, env):
         return "removed" if explicit(pkg, env) else "available"
     if statuses[0] == "done":

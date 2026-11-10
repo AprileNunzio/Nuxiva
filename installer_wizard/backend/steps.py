@@ -149,11 +149,19 @@ def _command(step: Step, action: str, quiet: bool) -> list[str]:
     return cmd
 
 
-async def _run_script(step: Step, action: str, stream: bool, quiet: bool = False) -> tuple[int, str]:
+def _script_env(step: Step) -> dict:
     env = {**os.environ, **read_env()}
+    if step.id in ("ollama", "models", "warmup"):
+        from brain_intent import required_local_models
+        cloud = env.get("NUXIVA_BRAIN", "").strip().lower() == "cloud"
+        env["NUXIVA_STEP_LOCAL_MODELS"] = ",".join(required_local_models(env)) if cloud else ""
+    return env
+
+
+async def _run_script(step: Step, action: str, stream: bool, quiet: bool = False) -> tuple[int, str]:
     proc = await asyncio.create_subprocess_exec(
         *_command(step, action, quiet),
-        stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.STDOUT, env=env,
+        stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.STDOUT, env=_script_env(step),
     )
     rec = store.steps[step.id]
     last_error = ""
@@ -269,7 +277,8 @@ async def heal(step: Step) -> None:
         await asyncio.sleep(1)
         return
     proc = await asyncio.create_subprocess_exec(
-        "bash", str(HEAL_SCRIPT), step.id, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.STDOUT)
+        "bash", str(HEAL_SCRIPT), step.id, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.STDOUT,
+        env=_script_env(step))
     assert proc.stdout is not None
     async for raw in proc.stdout:
         store.log(raw.decode("utf-8", "replace").rstrip()[:500], "heal")

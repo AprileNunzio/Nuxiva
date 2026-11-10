@@ -14,7 +14,9 @@ MODELS_SCOPE="${MODELS_SCOPE:-essential}"
 
 models() {
     local m list
-    if [ "$MODELS_SCOPE" = full ]; then
+    if [ -n "${NUXIVA_STEP_LOCAL_MODELS:-}" ]; then
+        IFS=, read -r -a list <<< "$NUXIVA_STEP_LOCAL_MODELS"
+    elif [ "$MODELS_SCOPE" = full ]; then
         list=("${NUXIVA_LLM_MODEL:-granite3.3:2b}")
     else
         list=("${NUXIVA_LLM_FAST_MODEL:-${NUXIVA_LLM_MODEL:-granite3.3:2b}}" "${NUXIVA_EMBED_MODEL:-embeddinggemma-2}")
@@ -35,7 +37,7 @@ step_check() {
     local_llm_disabled && return 0
     local m
     ollama_remote && return 0
-    [ "${NUXIVA_BRAIN:-}" = "local" ] || return 0
+    local_brain_selected || return 0
     curl -fsS --max-time 3 "$OLLAMA_URL/api/version" >/dev/null 2>&1 || return 0
     for m in $(models); do model_present "$m" || return 1; done
 }
@@ -77,7 +79,7 @@ PY
 
 step_apply() {
     local_llm_disabled && return 0
-    if [ "${NUXIVA_BRAIN:-}" != "local" ] && ! ollama_remote; then
+    if ! local_brain_selected && ! ollama_remote; then
         info "Cervello locale non selezionato: download modelli Ollama ignorato"
         progress 100 "In attesa di scelta tra Ollama locale o LLM esterno"
         return 0
@@ -87,7 +89,8 @@ step_apply() {
         progress 100 "Bypassato: in attesa di Ollama o LLM esterno"
         return 0
     fi
-    local all=($(models)) i=0 n span
+    local all i=0 n span
+    mapfile -t all < <(models)
     n=${#all[@]}
     span=$((100 / n))
     for m in "${all[@]}"; do

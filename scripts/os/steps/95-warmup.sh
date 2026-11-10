@@ -14,8 +14,12 @@ present() {
 
 primary_model() {
     local list="${NUXIVA_LLM_CHAT_ORDER:-${NUXIVA_LLM_FAST_MODEL:-${NUXIVA_LLM_MODEL:-granite3.3:2b}}},${NUXIVA_LLM_DEEP_ORDER:-}"
-    local m
-    for m in ${list//,/ }; do
+    list="${NUXIVA_STEP_LOCAL_MODELS:-$list}"
+    local m refs
+    IFS=, read -r -a refs <<< "$list"
+    for m in "${refs[@]}"; do
+        m="${m#"${m%%[![:space:]]*}"}"
+        m="${m%"${m##*[![:space:]]}"}"
         case "$m" in cloud:*|"") continue ;; esac
         ollama_remote && ! present "$m" && continue
         echo "$m"; return
@@ -23,8 +27,9 @@ primary_model() {
 }
 
 ask() {
-    curl -fsS --max-time 300 "$OLLAMA_URL/api/generate" \
-        -d "{\"model\":\"$1\",\"prompt\":\"Rispondi solo: pronto\",\"stream\":false,\"keep_alive\":\"24h\",\"options\":{\"num_predict\":8}}" \
+    local payload
+    payload=$(jq -nc --arg model "$1" '{model:$model,prompt:"Rispondi solo: pronto",stream:false,keep_alive:"24h",options:{num_predict:8}}')
+    curl -fsS --max-time 300 "$OLLAMA_URL/api/generate" -d "$payload" \
         | jq -r '.response' 2>/dev/null
 }
 
@@ -41,7 +46,7 @@ unload_others() {
 step_check() {
     local_llm_disabled && return 0
     local main
-    if [ "${NUXIVA_BRAIN:-}" != "local" ] && ! ollama_remote; then
+    if ! local_brain_selected && ! ollama_remote; then
         return 0
     fi
     curl -fsS --max-time 3 "$OLLAMA_URL/api/version" >/dev/null 2>&1 || return 0
@@ -52,7 +57,7 @@ step_check() {
 step_apply() {
     local_llm_disabled && return 0
     local main embed reply
-    if [ "${NUXIVA_BRAIN:-}" != "local" ] && ! ollama_remote; then
+    if ! local_brain_selected && ! ollama_remote; then
         info "Cervello locale non selezionato: precaricamento Ollama ignorato"
         progress 100 "Solo cervelli esterni o in attesa di scelta"
         return 0

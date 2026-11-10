@@ -94,7 +94,7 @@ step_check() {
         api_ok && local_off
         return
     fi
-    if [ "${NUXIVA_BRAIN:-}" != "local" ]; then
+    if ! local_brain_selected; then
         return 0
     fi
     command -v ollama >/dev/null 2>&1 \
@@ -122,7 +122,7 @@ step_apply() {
         progress 100 "Motore neurale remoto operativo"
         return
     fi
-    if [ "${NUXIVA_BRAIN:-}" != "local" ]; then
+    if ! local_brain_selected; then
         if [ "${NUXIVA_BRAIN:-}" = "cloud" ] && systemctl is-active --quiet ollama 2>/dev/null; then
             systemctl disable --now ollama >/dev/null 2>&1 || true
             info "Ollama locale fermato: selezionato cervello cloud esterno"

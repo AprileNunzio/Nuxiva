@@ -1,5 +1,6 @@
 html, body { overflow: hidden; }
 #scene { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 20; pointer-events: none; display: none; }
+body.brain #scene { pointer-events: auto; }
 #core { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 20; pointer-events: none; display: block; }
 .hud { position: fixed; inset: 0; z-index: 25; pointer-events: none; }
 .hud > * { pointer-events: auto; }

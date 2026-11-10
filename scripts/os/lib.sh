@@ -30,7 +30,11 @@ fi
 
 local_llm_disabled() {
     [ -f "$NUXIVA_STATE/local_llm_disabled" ] || [ "${NUXIVA_LOCAL_OLLAMA_DISABLED:-}" = "1" ] ||
-        [ "${NUXIVA_BRAIN:-}" = "cloud" ]
+        { [ "${NUXIVA_BRAIN:-}" = "cloud" ] && [ -z "${NUXIVA_STEP_LOCAL_MODELS:-}" ]; }
+}
+
+local_brain_selected() {
+    [ "${NUXIVA_BRAIN:-}" = "local" ] || [ -n "${NUXIVA_STEP_LOCAL_MODELS:-}" ]
 }
 
 ollama_remote() {

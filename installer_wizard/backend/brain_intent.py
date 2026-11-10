@@ -44,11 +44,26 @@ def cloud_ordered(env: dict) -> bool:
     return bool(refs) and all(r.startswith("cloud:") for r in refs)
 
 
+def required_local_models(env: dict) -> tuple[str, ...]:
+    from features.brain.configuration import legacy_ref
+    from features.brain.roles import ROLES, split_order
+    from features.cloud.catalog import is_cloud
+
+    if ollama_remote():
+        return ()
+    return tuple(dict.fromkeys(
+        model
+        for role in ROLES
+        for ref in split_order(env.get(role.env_key, ""))
+        if not is_cloud(model := legacy_ref(ref, env))
+    ))
+
+
 def local_ollama_optional(env: dict | None = None) -> bool:
     env = read_env() if env is None else env
     mode = env.get("NUXIVA_BRAIN", "").strip().lower()
     if mode == "cloud":
-        return True
+        return not required_local_models(env)
     if mode == "local" or mode == "remote" or ollama_remote():
         return False
     return bool(cloud_provider(env))
