@@ -25,6 +25,7 @@ arithmetic_side_effects = "deny"
 module_name_repetitions = "allow"
 missing_errors_doc = "allow"
 similar_names = "allow"
+assert_is_empty = "allow"
 
 [profile.release]
 lto = "fat"

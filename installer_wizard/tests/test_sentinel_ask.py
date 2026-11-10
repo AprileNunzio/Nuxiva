@@ -42,7 +42,7 @@ class FakeRustAskCore:
 
     def evaluate(self, query_json, sightings_json):
         import json
-        q = json.loads(query_json)
+        _ = json.loads(query_json)
         sightings = json.loads(sightings_json)
         if not sightings:
             return json.dumps({

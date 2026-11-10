@@ -1,4 +1,9 @@
-#![allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
+#![allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::panic,
+    clippy::indexing_slicing
+)]
 
 use nuxiva_memory_core::{
     Class, Color, Evidence, EvidenceKind, Item, Look, Sighting, Vehicle, Who,
@@ -141,16 +146,11 @@ fn test_evaluate_and_citations() {
 
     assert!(ans.found);
     assert_eq!(ans.citations.len(), 1);
-    assert_eq!(ans.citations[0].sighting_id, "s1");
-    assert_eq!(ans.citations[0].camera, "cancello");
-    assert_eq!(
-        ans.citations[0].frame_evidence_id.as_deref(),
-        Some("frame_s1")
-    );
-    assert_eq!(
-        ans.citations[0].clip_evidence_id.as_deref(),
-        Some("clip_s1")
-    );
+    let first = ans.citations.first().unwrap();
+    assert_eq!(first.sighting_id, "s1");
+    assert_eq!(first.camera, "cancello");
+    assert_eq!(first.frame_evidence_id.as_deref(), Some("frame_s1"));
+    assert_eq!(first.clip_evidence_id.as_deref(), Some("clip_s1"));
     assert!(ans.summary.contains("cancello"));
     assert!(ans.summary.contains("Prove:"));
     assert!(ans.summary.contains("frame_s1"));
@@ -162,7 +162,7 @@ fn test_evaluate_no_match() {
     let query = parse("è passata un'auto oggi?", now).unwrap();
     let ans = evaluate(&query, &[]);
     assert!(!ans.found);
-    assert!(ans.citations.is_empty());
+    assert_eq!(ans.citations.len(), 0);
     assert!(ans.summary.contains("Nessuna prova"));
 }
 
