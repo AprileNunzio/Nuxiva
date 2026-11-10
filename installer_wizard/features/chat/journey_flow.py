@@ -62,6 +62,11 @@ class ChatJourney:
         self._release()
         self.tracker.fail(f"{type(exc).__name__}: {exc}")
 
+    def cancelled(self) -> None:
+        self._release()
+        if self.tracker:
+            self.tracker.finish(state="cancelled")
+
     def _admit(self) -> None:
         if self.tracker:
             self.tracker.update_node(self.laws, state="ok", detail="Vincoli costituzionali rispettati: richiesta ammessa")

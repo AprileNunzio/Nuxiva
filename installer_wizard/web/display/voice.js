@@ -121,6 +121,11 @@
         async close() {
           try { await chain; } finally { if (gen === generation) quiet(); }
         },
+        stop() {
+          if (gen !== generation) return false;
+          stop();
+          return true;
+        },
       };
     }
 
@@ -176,6 +181,12 @@
     const live = D.voiceOn ? Voice.stream(lang) : null;
     return {
       add(text) { if (live) live.add(text); },
+      stop() {
+        if (live && live.stop()) {
+          D.lastVoice = false;
+          D.Ear.speaking(false);
+        }
+      },
       async close(fullText) {
         try {
           if (live) await live.close();

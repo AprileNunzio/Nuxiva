@@ -22,7 +22,7 @@ from features.brain.brains import brains
 from features.brain.residency import primary
 from features.brain.trace import trace
 from features.capabilities import manifest as capabilities
-from features.chat import addressee, assistant, brain_chain, intents, speaker, streaming, voice_id, wake
+from features.chat import addressee, assistant, brain_chain, intents, speaker, streaming, turns, voice_id, wake
 from features.chat.dialogue import dialogue
 from features.chat.journey_flow import ChatJourney
 from features.sentinel.collectors import operations
@@ -186,12 +186,22 @@ async def assistant_chat(text: str, device: str, heard_lang: str | None = None, 
         flow.begin()
         if not internal:
             desk.request_started()
-        try:
-            result = await assistant.handle(text, core_call, speech_lang)
-        except BaseException as exc:
-            flow.failed(exc)
-            operations.chat(device, flow.tracker.id if flow.tracker else "", {"error": type(exc).__name__})
-            raise
+        turn_id = flow.tracker.id if flow.tracker else ""
+        with turns.running(turn_id) as turn:
+            try:
+                result = await assistant.handle(text, core_call, speech_lang)
+            except asyncio.CancelledError:
+                flow.cancelled()
+                if turn and turn.stopping:
+                    return JSONResponse({"cancelled": True})
+                raise
+            except Exception as exc:
+                flow.failed(exc)
+                operations.chat(device, turn_id, {"error": type(exc).__name__})
+                raise
+            if turn and turn.stopping:
+                flow.cancelled()
+                return JSONResponse({"cancelled": True})
         flow.answered(result)
     if not result.pop("exact_reply", False):
         result["reply"] = speaker.fix_address(result.get("reply") or "") + voice_id.offer(heard.get("voice_known"))
@@ -251,6 +261,7 @@ async def public_chat(request: Request):
     internal = device == "kiosk" and request.headers.get("x-nuxiva-internal") == "1"
     cid = str(body.get("client_id") or request.headers.get("x-nuxiva-client") or device)[:80]
     request_context.client.set(cid)
+    turns.owner.set(turns.request_owner(request))
     return await assistant_chat(body.get("text", ""), "selftest" if internal else device, lang_of(body),
                                 _heard(body) if device == "kiosk" else None, internal=internal, client_id=cid)
 
@@ -259,31 +270,43 @@ def _sse(event: dict) -> str:
     return "data: " + json.dumps(event, ensure_ascii=False) + NL + NL
 
 
-async def _stream_chat(text: str, device: str, lang: str | None, heard: dict | None, client_id: str = ""):
+async def _stream_chat(text: str, device: str, lang: str | None, heard: dict | None, client_id: str = "",
+                       owner: tuple[str, str] | None = None):
     if client_id:
         request_context.client.set(client_id)
     queue: asyncio.Queue = asyncio.Queue()
     marker = streaming.sink.set(queue)
+    principal = turns.owner.set(owner)
     try:
         task = asyncio.create_task(assistant_chat(text, device, lang, heard))
     finally:
         streaming.sink.reset(marker)
-    while True:
-        getter = asyncio.create_task(queue.get())
-        done, _ = await asyncio.wait({getter, task}, return_when=asyncio.FIRST_COMPLETED)
-        if getter in done:
-            yield _sse(getter.result())
-            continue
-        getter.cancel()
-        while not queue.empty():
-            yield _sse(queue.get_nowait())
-        break
+        turns.owner.reset(principal)
+    getter = None
     try:
+        while not task.done():
+            getter = asyncio.create_task(queue.get())
+            done, _ = await asyncio.wait({getter, task}, return_when=asyncio.FIRST_COMPLETED)
+            if task not in done:
+                yield _sse(getter.result())
+        if getter and not getter.done():
+            getter.cancel()
         response = task.result()
+        payload = json.loads(response.body)
+        if not payload.get("cancelled"):
+            if getter and getter in done and task in done:
+                yield _sse(getter.result())
+            while not queue.empty():
+                yield _sse(queue.get_nowait())
+        yield _sse({"type": "done", **payload})
     except HTTPException as exc:
         yield _sse({"type": "error", "status": exc.status_code, "detail": str(exc.detail)})
-        return
-    yield _sse({"type": "done", **json.loads(response.body)})
+    finally:
+        if getter and not getter.done():
+            getter.cancel()
+        if not task.done():
+            task.cancel()
+            await asyncio.gather(task, return_exceptions=True)
 
 
 def _streaming_response(generator) -> StreamingResponse:
@@ -297,14 +320,16 @@ async def public_chat_stream(request: Request):
     device = _display_chat_device(request)
     cid = str(body.get("client_id") or request.headers.get("x-nuxiva-client") or device)[:80]
     heard = _heard(body) if device == "kiosk" else None
-    return _streaming_response(_stream_chat(body.get("text", ""), device, lang_of(body), heard, client_id=cid))
+    return _streaming_response(_stream_chat(body.get("text", ""), device, lang_of(body), heard,
+                                           client_id=cid, owner=turns.request_owner(request)))
 
 
 @admin_routes.post("/api/assistant/chat/stream")
-async def admin_chat_stream(request: Request, _: str = Depends(require_admin)):
+async def admin_chat_stream(request: Request, user: str = Depends(require_admin)):
     body = await request.json()
     cid = str(body.get("client_id") or request.headers.get("x-nuxiva-client") or "admin")[:80]
-    return _streaming_response(_stream_chat(body.get("text", ""), "admin", lang_of(body), None, client_id=cid))
+    return _streaming_response(_stream_chat(body.get("text", ""), "admin", lang_of(body), None,
+                                           client_id=cid, owner=("user", user)))
 
 
 @public_routes.get("/api/ambient")

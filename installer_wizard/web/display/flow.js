@@ -198,9 +198,12 @@
     const list = journeys();
 
     tabs.innerHTML = list.map((x) => `
-      <button class="flow-tab ${x.id === (j && j.id) ? "sel" : ""} ${x.state === "running" ? "live" : x.state === "failed" ? "failed" : ""}" data-id="${x.id}">
+      <div class="flow-turn">
+      <button type="button" class="flow-tab ${x.id === (j && j.id) ? "sel" : ""} ${x.state === "running" ? "live" : x.state === "failed" ? "failed" : ""}" data-id="${esc(x.id)}">
         ${x.query ? esc(x.query) : PageText.html("flow_question")} · ${x.state === "running" ? PageText.html("flow_running") : secs((x.elapsed || 0) * 1000)}
       </button>
+      ${x.can_stop ? `<button type="button" class="flow-tab flow-stop" data-id="${esc(x.id)}">${PageText.html("flow_stop")}</button>` : ""}
+      </div>
     `).join("");
 
     if (!j) {
@@ -229,7 +232,7 @@
 
     const live = j.state === "running";
     bar.innerHTML = `
-      <span><i class="dot ${live ? "live" : esc(j.state)}"></i>${PageText.html("flow_state")} <b>${PageText.html(live ? "flow_state_running" : j.state === "failed" ? "flow_state_failed" : "flow_state_done")}</b></span>
+      <span><i class="dot ${live ? "live" : esc(j.state)}"></i>${PageText.html("flow_state")} <b>${PageText.html(live ? "flow_state_running" : j.state === "failed" ? "flow_state_failed" : j.state === "cancelled" ? "flow_state_cancelled" : "flow_state_done")}</b></span>
       <span>${PageText.html("flow_agent")} <b>${esc(j.agent || "Dispatcher")}</b></span>
       <span>${PageText.html("flow_steps")} <b>${(j.nodes || []).length}</b></span>
       <span>${PageText.html("flow_time")} <b>${secs((j.elapsed || 0) * 1000)}</b></span>
@@ -313,7 +316,23 @@
       });
     }
 
-    $("flow-tabs").addEventListener("click", (ev) => {
+    $("flow-tabs").addEventListener("click", async (ev) => {
+      const stop = ev.target.closest(".flow-stop");
+      if (stop) {
+        stop.disabled = true;
+        try {
+          const response = await fetch(`/api/brain/journey/${encodeURIComponent(stop.dataset.id)}/stop`, {
+            method: "POST", headers: { "X-Nuxiva-Request": "1" },
+          });
+          if (!response.ok && response.status !== 404) throw new Error(String(response.status));
+          await poll();
+        } catch (err) {
+          console.warn("Flow stop failed", err);
+          stop.textContent = PageText.t("web/display", "flow_stop_retry");
+          stop.disabled = false;
+        }
+        return;
+      }
       const b = ev.target.closest(".flow-tab"); if (!b) return;
       state.pick = b.dataset.id; state.sel = null; state.sig = ""; render();
     });

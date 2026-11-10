@@ -11,6 +11,7 @@ from features.brain.residency import apply
 from features.brain.roles import ROLES
 from features.brain.routing import assignment_service
 from features.brain.trace import trace
+from features.chat import turns
 from features.cloud import servers
 from features.cloud.catalog import PROVIDERS, is_server
 from features.cloud.vault import vault
@@ -91,4 +92,19 @@ async def brain_trace(request: Request):
 @public_routes.get("/api/brain/journey")
 async def brain_journey(request: Request):
     require_display(request)
-    return journeys.snapshot()
+    principal = turns.request_owner(request)
+    snapshot = journeys.snapshot()
+    return {**snapshot, "journeys": [
+        {**item, "can_stop": turns.controllable(item["id"], principal)}
+        for item in snapshot["journeys"]
+    ]}
+
+
+@public_routes.post("/api/brain/journey/{turn_id}/stop", status_code=202)
+async def stop_journey(turn_id: str, request: Request):
+    require_display(request)
+    if request.headers.get("X-Nuxiva-Request") != "1":
+        raise HTTPException(403)
+    if not turns.stop(turn_id, turns.request_owner(request)):
+        raise HTTPException(404)
+    return {"state": "stopping"}

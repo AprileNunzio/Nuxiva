@@ -103,6 +103,11 @@
       }
     }
     if (!final) throw new Error(PageText.t("web/display", "chat_interrupted"));
+    if (final.cancelled) {
+      if (voice) voice.stop();
+      $("say").textContent = PageText.t("web/display", "flow_state_cancelled");
+      return { data: final, spoken: false };
+    }
     if (voice) {
       parseActions(final);
       const reply = final.reply || "", flat = cleanLive(reply), prefix = said.slice(0, cut);
@@ -156,6 +161,7 @@
       if (!heard.followup) await predict(text);
       const streamed = await askStream(text, lang, payload);
       if (streamed) {
+        if (streamed.data.cancelled) return;
         if (streamed.data.ignored) { D.lastVoice = false; D.Ear.followup(12); return; }
         show(text, streamed.data, streamed.spoken);
         return;
@@ -164,6 +170,10 @@
         body: JSON.stringify({ text, lang, client_id: D.clientId, ...payload }) });
       const d = await r.json();
       if (!r.ok) throw new Error(d.detail || "Errore");
+      if (d.cancelled) {
+        $("say").textContent = PageText.t("web/display", "flow_state_cancelled");
+        return;
+      }
       if (d.ignored) { D.lastVoice = false; D.Ear.followup(12); return; }
       show(text, d);
     } catch (err) {
