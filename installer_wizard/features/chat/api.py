@@ -67,6 +67,15 @@ async def _core_call(query: str, device: str, speech_lang: dict) -> dict:
     long_term = mind.recall(query, who=acting().slug)
     if long_term:
         context["long_term"] = long_term
+    from features.chat.reflex_memory import reflex_memory
+    prof = reflex_memory.learn(query)
+    if prof and (prof.interests or prof.facts or (prof.user_name and prof.user_name != "user")):
+        context["persona_memory"] = {
+            "user_name": prof.user_name if prof.user_name != "user" else None,
+            "style": prof.style,
+            "interests": prof.interests,
+            "facts": prof.facts,
+        }
     route = await brains.route(query)
     route["lang"] = speech_lang["lang"]
     route["person"] = acting().slug if acting().role != "system" else ""
