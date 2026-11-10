@@ -263,8 +263,16 @@
         } else {
           col.items.slice(0, 4).forEach((item) => {
             const card = make("article", "ag-kcard");
+            const top = make("div", "ag-kcard-top");
             const titleEl = make("b", "ag-kcard-title"); titleEl.textContent = item.title;
-            const subEl = make("span", "ag-kcard-sub"); subEl.textContent = item.subtitle || item.agent_id || "";
+            top.appendChild(titleEl);
+            if (item.risk) {
+              const rChip = make("span", `ag-chip ag-chip-xs ag-risk-${item.risk}`);
+              rChip.textContent = item.risk.toUpperCase();
+              top.appendChild(rChip);
+            }
+            const subEl = make("span", "ag-kcard-sub");
+            subEl.textContent = item.rationale || item.subtitle || item.agent_id || "";
             const actRow = make("div", "ag-kcard-actions");
 
             if (item.kind === "question") {
@@ -284,7 +292,7 @@
               actRow.append(appBtn, rejBtn);
             }
 
-            card.append(titleEl, subEl, actRow);
+            card.append(top, subEl, actRow);
             body.appendChild(card);
           });
         }

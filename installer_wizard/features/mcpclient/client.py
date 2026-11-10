@@ -2,6 +2,8 @@ import json
 
 import httpx
 
+from config import VERSION
+
 PROTOCOL = "2025-06-18"
 TIMEOUT = 30.0
 MAX_PAGES = 5
@@ -58,7 +60,7 @@ class Link:
     async def open(self) -> dict:
         self.counter += 1
         response = await self.post({"jsonrpc": "2.0", "id": self.counter, "method": "initialize",
-                                    "params": {"protocolVersion": PROTOCOL, "capabilities": {}, "clientInfo": {"name": "nuxiva-os", "version": "5.3.0"}}})
+                                    "params": {"protocolVersion": PROTOCOL, "capabilities": {}, "clientInfo": {"name": "nuxiva-os", "version": VERSION}}})
         self.session = response.headers.get("mcp-session-id", "")
         info = decode(response, self.counter)
         if "error" in info:

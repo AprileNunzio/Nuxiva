@@ -32,7 +32,23 @@ ADMIN_PORT = int(os.environ.get("NUXIVA_ADMIN_PORT", 8080))
 CORE_URL = os.environ.get("NUXIVA_CORE_URL", "http://127.0.0.1:8443")
 OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://127.0.0.1:11434")
 
-VERSION = "5.3.0"
+def _read_version() -> str:
+    for candidate in (
+        APP_DIR.parent / "VERSION",
+        NUXIVA_DIR / "VERSION",
+        Path("/opt/Nuxiva/VERSION"),
+    ):
+        try:
+            if candidate.is_file():
+                val = candidate.read_text(encoding="utf-8").strip()
+                if val:
+                    return val
+        except OSError:
+            pass
+    return "5.4.0"
+
+
+VERSION = _read_version()
 UI_LANGUAGES = {"it": "Italiano", "en": "English", "fr": "Français", "es": "Español"}
 
 for _d in (ETC_DIR, STATE_DIR, LOG_DIR):

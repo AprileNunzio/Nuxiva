@@ -10,7 +10,7 @@ import updater
 from setup_face import router as face_router
 from setup_voice import router as voice_router
 from access import NO_CACHE
-from config import STATE_DIR
+from config import STATE_DIR, VERSION
 from sealed import write_private
 from setup_session import STEPS, session_manager
 from state import store
@@ -164,6 +164,7 @@ async def setup_update_status(_: None = Depends(require_update_open)):
     local = await updater.current_rev()
     info = store.update
     return JSONResponse({
+        "version": VERSION,
         "local_rev": local,
         "remote_rev": info.get("remote_rev"),
         "target_rev": info.get("target_rev"),

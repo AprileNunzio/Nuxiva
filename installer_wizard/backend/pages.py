@@ -10,7 +10,7 @@ from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 from access import NO_CACHE
-from config import FEATURES_DIR, NUXIVA_DIR, STATE_DIR, UI_LANGUAGES, WEB_DIR, read_env
+from config import FEATURES_DIR, NUXIVA_DIR, STATE_DIR, UI_LANGUAGES, VERSION, WEB_DIR, read_env
 
 VENDOR_DIR = STATE_DIR / "vendor"
 VENDOR = {
@@ -125,7 +125,9 @@ def render(html: str, lang: str = "") -> Response:
         except Exception:
             bundle_json = "null"
     html = html.replace("{{assistant}}", escape(name))
-    html = html.replace("</head>", f"<script>window.NUXIVA_ASSISTANT = {assistant_json}; "
+    html = html.replace("{{version}}", escape(VERSION)).replace("{{VERSION}}", escape(VERSION))
+    html = html.replace("</head>", f"<script>window.NUXIVA_VERSION = {json.dumps(VERSION)}; "
+                                   f"window.NUXIVA_ASSISTANT = {assistant_json}; "
                                    f"window.NUXIVA_FACE = {json.dumps(face_options())}; "
                                    f"window.NUXIVA_ASSET_V = {json.dumps(ASSET_VERSION)}; "
                                    f"window.NUXIVA_UI_LANG = {json.dumps(target_lang)}; "

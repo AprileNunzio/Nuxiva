@@ -2,7 +2,7 @@ import asyncio
 import logging
 import time
 
-from features.agency import critic, worker, workspace
+from features.agency import autonomy, critic, worker, workspace
 from features.agency.client import AgencyRejected, AgencyUnavailable, client
 from features.agency.feature import enabled
 from features.agency.memory import memory
@@ -89,11 +89,14 @@ class Runner:
         await client.call("task_update", project=project_id, task=task_id, action="submit", tokens=tokens,
                           seconds=seconds, checkpoint=proof, proofs=proofs)
         verdict = await critic.review(task, proof, context["language_name"])
-        if verdict.approved:
+        decision = autonomy.evaluate(task, proof, proofs, verdict.approved)
+        if decision.approved:
             await client.call("task_update", project=project_id, task=task_id, action="approve",
                               tokens=verdict.tokens, proofs=proofs)
             return
-        feedback = verdict.feedback or word(context["lang"], "files", "review_unclear")
+        if verdict.approved and not decision.approved:
+            return
+        feedback = verdict.feedback or decision.rationale or word(context["lang"], "files", "review_unclear")
         await client.call("task_update", project=project_id, task=task_id, action="rework",
                           feedback=feedback, tokens=verdict.tokens)
 

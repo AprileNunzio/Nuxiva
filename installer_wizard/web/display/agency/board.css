@@ -61,6 +61,11 @@ body.agency-open .hud > :not(.dock) { visibility: hidden; }
 .ag-kanban-count { padding: 1px 7px; border-radius: 999px; background: rgba(41, 224, 255, 0.16); font: 600 11px var(--mono); color: #e0f2fe; }
 .ag-kanban-body { overflow-y: auto; display: grid; gap: 8px; padding-right: 2px; }
 .ag-kcard { padding: 8px 10px; border-radius: 10px; background: rgba(15, 29, 48, 0.92); border: 1px solid rgba(148, 163, 184, 0.22); display: grid; gap: 4px; }
+.ag-kcard-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 6px; }
+.ag-risk-low { border-color: #10b981; color: #6ee7b7; background: rgba(16, 185, 129, 0.12); }
+.ag-risk-medium { border-color: #38bdf8; color: #bae6fd; background: rgba(56, 189, 248, 0.12); }
+.ag-risk-high { border-color: #f59e0b; color: #fde68a; background: rgba(245, 158, 11, 0.12); }
+.ag-risk-critical { border-color: #ef4444; color: #fca5a5; background: rgba(239, 68, 68, 0.16); }
 .ag-kcard-title { font-size: 12px; color: #f8fafc; }
 .ag-kcard-sub { font-size: 11px; color: #94a3b8; }
 .ag-kcard-actions, .ag-task-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }

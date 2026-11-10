@@ -214,3 +214,64 @@ fn proofs_record_reproducible_evidence() -> Result<(), DomainError> {
     );
     Ok(())
 }
+
+#[test]
+fn autonomy_evaluates_risk_and_approvals() -> Result<(), DomainError> {
+    use crate::{RiskLevel, evaluate_task};
+
+    let low = evaluate_task(
+        "Crea stili css e template html",
+        "frontend",
+        &["css responsive"],
+        Some("done"),
+        1,
+        1,
+        Some(true),
+    )?;
+    assert_eq!(low.risk(), RiskLevel::Low);
+    assert!(low.is_approved());
+    assert!(low.is_autonomous());
+    assert!(!low.requires_double_permission());
+
+    let med = evaluate_task(
+        "Crea endpoint e controller per prodotti",
+        "backend",
+        &["test 200 ok"],
+        None,
+        2,
+        2,
+        Some(true),
+    )?;
+    assert_eq!(med.risk(), RiskLevel::Medium);
+    assert!(med.is_approved());
+    assert!(med.is_autonomous());
+
+    let high = evaluate_task(
+        "Esegui migration e schema alter table",
+        "backend",
+        &["schema aggiornato"],
+        None,
+        1,
+        1,
+        Some(true),
+    )?;
+    assert_eq!(high.risk(), RiskLevel::High);
+    assert!(!high.is_approved());
+    assert!(!high.is_autonomous());
+
+    let crit = evaluate_task(
+        "Salva password e api_key segreta credenziali",
+        "security",
+        &["salvato"],
+        None,
+        0,
+        0,
+        Some(true),
+    )?;
+    assert_eq!(crit.risk(), RiskLevel::Critical);
+    assert!(!crit.is_approved());
+    assert!(crit.requires_double_permission());
+    assert!(!crit.is_reversible());
+
+    Ok(())
+}

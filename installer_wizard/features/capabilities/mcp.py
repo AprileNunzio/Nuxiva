@@ -7,12 +7,13 @@ from features.authz.principal import act_as, current
 from features.authz.access_control import allows, principal_for_role
 from features.authz import risk
 from features.authz.policy import policy
+from config import VERSION
 from features.capabilities import audit, catalog, schema
 from features.sentinel.collectors import operations
 from features.team import roster, runner
 
 SUPPORTED = ("2025-06-18", "2025-03-26", "2024-11-05")
-INFO = {"name": "nuxiva-os", "version": "5.3.0"}
+INFO = {"name": "nuxiva-os", "version": VERSION}
 SAFE_AGENTS = {"music", "cameras", "desktop", "agent", "whiteboard"}
 INSTRUCTIONS = ("Nuxiva OS: ogni strumento appartiene a un agente con una priorità. Leggi il prompt «panoramica» e le risorse nuxiva://capabilities e "
                 "nuxiva://team per sapere cosa fa la squadra. Le azioni delicate richiedono _confirm=true dopo la conferma dell'utente.")

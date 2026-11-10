@@ -261,7 +261,9 @@
         if (activeRev === null) {
           activeRev = serverRev;
           const label = document.getElementById("version-text");
-          if (label) label.textContent = `v5.3 • ${serverRev.slice(0, 7)}`;
+          const ver = data.version || window.NUXIVA_VERSION || "";
+          const prefix = ver ? `v${String(ver).replace(/^v/, "")}` : "v5";
+          if (label) label.textContent = `${prefix} • ${serverRev.slice(0, 7)}`;
           return;
         }
 
@@ -339,6 +341,10 @@
 
     const btnNext = document.getElementById("btn-next");
     const btnBack = document.getElementById("btn-back");
+    const label = document.getElementById("version-text");
+    if (label && window.NUXIVA_VERSION) {
+      label.textContent = `v${String(window.NUXIVA_VERSION).replace(/^v/, "")}`;
+    }
 
     if (btnNext) btnNext.addEventListener("click", handleNext);
     if (btnBack) btnBack.addEventListener("click", handleBack);

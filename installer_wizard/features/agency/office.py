@@ -1,4 +1,4 @@
-from features.agency import service
+from features.agency import autonomy, service
 from features.agency.forge.registry import registry
 from features.agency.text import clean
 
@@ -201,6 +201,7 @@ def _build_kanban(tasks: list[dict], raw_questions: list[dict]) -> dict:
             "status": str(st or "pending"),
             "attempts": int(t.get("attempts") or 0),
         }
+        item = autonomy.enrich_task_kanban(item)
         if st == "review":
             to_approve.append({**item, "actions": ["approve", "rework"]})
         elif st in ("running", "pending"):
@@ -248,6 +249,11 @@ def _build_shared_brain(data: dict, base: dict, tasks: list[dict], questions: li
         "reviews_count": reviews_count,
         "active_tools_count": len(registry.active()),
         "propagation_mode": "director_to_all_agents",
+        "autonomy": {
+            "mode": "jarvis_risk_matrix",
+            "threshold": 0.94,
+            "status": "active",
+        },
         "decisions": decisions,
         "open_questions": open_questions,
         "critic_exchanges": questions,

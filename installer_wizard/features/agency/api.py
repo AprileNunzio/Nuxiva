@@ -184,3 +184,20 @@ async def board_question_answer(project_id: str, question_id: str, request: Requ
         _fail(request, "invalid", 400)
     await _guard(request, service.answer(pid, qid, option=option, answer_text=answer_text))
     return await _guard(request, board.focus(pid))
+
+
+@public_routes.get("/api/agency/board/{project_id}/autonomy")
+async def board_autonomy_status(project_id: str, request: Request):
+    from features.agency import autonomy
+    require_display(request)
+    pid = _project(request, project_id)
+    data = await _guard(request, service.detail(pid))
+    tasks = data.get("tasks") or []
+    evaluations = [autonomy.evaluate(t).to_dict() for t in tasks if isinstance(t, dict)]
+    return {
+        "project_id": pid,
+        "engine": "jarvis_risk_matrix",
+        "evaluations": evaluations,
+        "auto_approved": sum(1 for e in evaluations if e["autonomous"]),
+        "human_supervision_required": sum(1 for e in evaluations if not e["autonomous"]),
+    }

@@ -1,3 +1,4 @@
+mod autonomy;
 mod budget;
 mod decision;
 mod error;
@@ -8,6 +9,7 @@ mod question;
 mod task;
 mod text;
 
+pub use autonomy::{AutonomyDecision, RiskLevel, classify_risk, compute_confidence, evaluate_task};
 pub use budget::{Budget, TaskBudget, Usage};
 pub use decision::{Decision, DecisionStatus};
 pub use error::DomainError;
