@@ -105,5 +105,22 @@
     "ensemble": "Simulaciones repetidas",
     "narrative": "Informe del Analista",
     "chat": "Habla con el agente"
+  },
+  "proactive": {
+    "greeting": "Nunzio, aquí está el informe operativo de NunzioTech Agency.",
+    "progress": "El proyecto '{title}' está al {pct}% de avance ({done} de {total} tareas completadas).",
+    "status": "{running} agentes activos, {review} tareas en revisión.",
+    "attention": " Atención requerida: {details}",
+    "optimal": " La carga cognitiva y los recursos del sistema están perfectamente estables.",
+    "ins_disk_title": "Espacio en disco crítico",
+    "ins_disk_detail": "Uso del disco al {pct}%. Se recomienda limpieza de caché.",
+    "ins_q_title": "Preguntas abiertas en el DAG",
+    "ins_q_detail": "Hay {count} preguntas de decisión esperando al usuario.",
+    "ins_stalled_title": "Tareas con múltiples intentos",
+    "ins_stalled_detail": "{count} tareas requirieron correcciones o mostraron fricciones en pruebas.",
+    "ins_review_title": "Tareas listas para lanzamiento",
+    "ins_review_detail": "{count} tareas completadas esperan la validación del CEO.",
+    "ins_healthy_title": "Ecosistema optimizado",
+    "ins_healthy_detail": "Todos los departamentos operan fluidamente sin cuellos de botella."
   }
 }

@@ -105,5 +105,22 @@
     "ensemble": "Repeated simulations",
     "narrative": "Analyst report",
     "chat": "Talk to the agent"
+  },
+  "proactive": {
+    "greeting": "Nunzio, here is your executive briefing from NunzioTech Agency.",
+    "progress": "Project '{title}' is at {pct}% progress with {done} of {total} tasks completed.",
+    "status": "{running} agents active, {review} tasks awaiting review.",
+    "attention": " Attention required: {details}",
+    "optimal": " All systems and cognitive workloads are performing optimally.",
+    "ins_disk_title": "Critical disk space",
+    "ins_disk_detail": "Disk usage at {pct}%. Cache cleanup recommended.",
+    "ins_q_title": "Open questions in DAG",
+    "ins_q_detail": "There are {count} decision questions awaiting user response.",
+    "ins_stalled_title": "Tasks with multiple attempts",
+    "ins_stalled_detail": "{count} tasks required rework or experienced friction in tests.",
+    "ins_review_title": "Tasks ready for release",
+    "ins_review_detail": "{count} completed tasks are waiting for CEO validation.",
+    "ins_healthy_title": "Optimized ecosystem",
+    "ins_healthy_detail": "All departments are operating smoothly with no bottlenecks detected."
   }
 }

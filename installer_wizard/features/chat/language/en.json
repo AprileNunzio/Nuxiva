@@ -9,5 +9,16 @@
   "settings": {
     "NUXIVA_ADDRESSEE_THRESHOLD": "Confidence threshold required before responding (0.2 timid - 0.95 cautious)",
     "NUXIVA_ADDRESSEE_ALONE": "Bonus confidence when alone in the room (0 - 1)"
+  },
+  "reflex": {
+    "greeting_conversational": "Hello {name}! Everything is running smoothly. Ready to tackle our objectives today!",
+    "greeting_interest": "Great to see you {name}! {fact} What are your thoughts? How shall we proceed today?",
+    "greeting_executive": "Good day {name}. All systems operational and agency departments ready. How shall we proceed?",
+    "quick_status": "All systems optimal, {name}. Current focus: {focus}",
+    "quick_status_optimal": "Telemetry green across all workstations, {name}. No critical bottlenecks detected.",
+    "thinking_filler_1": "Understood {name}, analyzing the system graph while synthesizing the solution...",
+    "thinking_filler_2": "On it {name}. Let me cross-reference the components while I formulate the best approach...",
+    "thinking_filler_3": "Great question {name}. Processing the reasoning chain right now...",
+    "thinking_filler_4": "Acknowledged {name}, verifying system parameters while preparing the full solution..."
   }
 }

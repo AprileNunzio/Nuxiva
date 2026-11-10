@@ -105,5 +105,22 @@
     "ensemble": "Simulazioni ripetute",
     "narrative": "Rapporto dell'Analista",
     "chat": "Parla con l'agente"
+  },
+  "proactive": {
+    "greeting": "Nunzio, ecco il quadro operativo da NunzioTech Agency.",
+    "progress": "Il progetto '{title}' è al {pct}% di avanzamento ({done} su {total} attività completate).",
+    "status": "{running} agenti attivi, {review} attività in revisione.",
+    "attention": " Attenzione: {details}",
+    "optimal": " Il carico cognitivo e le risorse di sistema sono perfettamente stabili.",
+    "ins_disk_title": "Spazio su disco critico",
+    "ins_disk_detail": "Utilizzo disco a {pct}%. Consigliata bonifica cache.",
+    "ins_q_title": "Domande aperte nel DAG",
+    "ins_q_detail": "Ci sono {count} quesiti decisionali in attesa dell'utente.",
+    "ins_stalled_title": "Task con tentativi multipli",
+    "ins_stalled_detail": "{count} task hanno richiesto rework o presentano frizioni nei test.",
+    "ins_review_title": "Attività pronte per il rilascio",
+    "ins_review_detail": "{count} attività completate attendono la validazione del CEO.",
+    "ins_healthy_title": "Ecosistema ottimizzato",
+    "ins_healthy_detail": "Tutti i reparti operano a regime senza colli di bottiglia rilevati."
   }
 }

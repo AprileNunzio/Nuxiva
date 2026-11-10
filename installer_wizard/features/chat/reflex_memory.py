@@ -55,9 +55,9 @@ class ReflexMemoryStore:
                 style="conversational",
                 interests=["napoli_calcio", "clean_architecture", "ai_automation", "devops"],
                 facts={
-                    "napoli_status": "Il Napoli ha giocato una grande partita e ha vinto con entusiasmo.",
-                    "focus_today": "Rilascio Nuxiva v5.6.0 con riflesso vocale ultra-veloce e NunzioTech Agency 3D.",
                     "favorite_team": "SSC Napoli",
+                    "napoli_status": "Napoli - Inter 2-1",
+                    "focus_today": "Nuxiva v5.6.0",
                 },
             ))
 

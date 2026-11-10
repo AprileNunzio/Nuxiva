@@ -3,6 +3,7 @@ import re
 import time
 
 from features.chat.reflex_memory import PersonaProfile, reflex_memory
+from features.chat.words import word
 
 
 @dataclass(frozen=True)
@@ -21,16 +22,20 @@ GREETING_PATTERNS = (
     r"\b(?:ciao|buongiorno|buonasera|salve|ehi|hey)\b",
     r"\b(?:come\s+va|tutto\s+bene|come\s+stai|che\s+si\s+dice)\b",
     r"\b(?:hello|hi|good\s+morning|how\s+are\s+you)\b",
+    r"\b(?:hola|buenos\s+dias|buenas\s+tardes|que\s+tal)\b",
+    r"\b(?:bonjour|salut|comment\s+ca\s+va)\b",
 )
 
 STATUS_PATTERNS = (
     r"\b(?:situazione|stato|come\s+siamo\s+messi|riassunto|panoramica)\b",
     r"\b(?:status|overview|summary)\b",
+    r"\b(?:estado|resumen|situacion)\b",
 )
 
 REASONING_PATTERNS = (
     r"\b(?:perché|come\s+(?:fare|funziona|possiamo|risolvere|implementare)|progetta|sviluppa|analizza|risolvi|architettura|codice)\b",
     r"\b(?:why|how\s+(?:to|does|can|should)|design|develop|analyze|solve|refactor)\b",
+    r"\b(?:por\s+que|como\s+(?:hacer|funciona|podemos)|disena|desarrolla|analiza)\b",
 )
 
 
@@ -55,9 +60,11 @@ class AcousticReflexEngine:
             facts={"favorite_team": "SSC Napoli"},
         )
 
-        kind = "thinking_filler"
-        needs_deep = True
-        candidates = []
+        slots = {
+            "name": profile.user_name,
+            "focus": profile.facts.get("focus_today", "Nuxiva"),
+            "fact": profile.facts.get("napoli_status", profile.facts.get("favorite_team", "")),
+        }
 
         is_greeting = _matches(GREETING_PATTERNS, clean_q)
         is_status = _matches(STATUS_PATTERNS, clean_q)
@@ -66,17 +73,21 @@ class AcousticReflexEngine:
         if is_greeting and not is_reasoning:
             kind = "greeting"
             needs_deep = False
-            candidates = self._build_greetings(profile, lang)
+            template_keys = self._select_greeting_keys(profile)
         elif is_status and not is_reasoning:
             kind = "quick_status"
             needs_deep = False
-            candidates = self._build_status(profile, lang)
+            template_keys = ["quick_status", "quick_status_optimal"]
         else:
             kind = "thinking_filler"
             needs_deep = True
-            candidates = self._build_fillers(profile, lang)
+            template_keys = ["thinking_filler_1", "thinking_filler_2", "thinking_filler_3", "thinking_filler_4"]
 
-        chosen = self.memory.get_least_used(candidates) or candidates[0]
+        rendered_options = [
+            word(lang, "reflex", key).format(**slots)
+            for key in template_keys
+        ]
+        chosen = self.memory.get_least_used(rendered_options) or rendered_options[0]
         self.memory.record_usage(chosen, kind)
         latency_ms = round((time.monotonic() - start_time) * 1000.0, 2)
 
@@ -88,67 +99,12 @@ class AcousticReflexEngine:
             persona_applied=profile.style,
         )
 
-    def _build_greetings(self, profile: PersonaProfile, lang: str) -> list[str]:
-        name = profile.user_name
-        is_napoli = "napoli_calcio" in profile.interests
-        napoli_fact = profile.facts.get("napoli_status", "Il Napoli ha giocato una bella partita.")
-
-        if lang == "en":
-            if profile.style == "executive":
-                return [
-                    f"Good day {name}. All systems operational and agency departments ready. How shall we proceed?",
-                    f"Welcome back {name}. Cluster telemetry is stable. What is our core priority today?",
-                ]
-            return [
-                f"Hello {name}! Everything is running smoothly. Ready to tackle our objectives today!",
-                f"Hey {name}! Great to see you. How can I assist you right now?",
-            ]
-
+    def _select_greeting_keys(self, profile: PersonaProfile) -> list[str]:
         if profile.style == "executive":
-            return [
-                f"Buongiorno {name}. Tutti i nodi sono operativi e la pipeline è stabile. Quali sono le direttive?",
-                f"Ben ritrovato {name}. Ecosistema NunzioTech Agency a regime. Da dove iniziamo?",
-            ]
-
-        if is_napoli:
-            return [
-                f"Tutto alla grande {name}! {napoli_fact} Che ne pensa della prestazione? Di cosa ci occupiamo oggi?",
-                f"Buongiorno {name}! Con il Napoli in forma così la giornata parte alla perfezione! Qual è il piano?",
-                f"Ciao {name}! Ecosistema al cento per cento e morale altissimo per il Napoli. A cosa lavoriamo?",
-            ]
-
-        return [
-            f"Ciao {name}! Tutto procede a gonfie vele. Cosa vogliamo realizzare oggi?",
-            f"Buongiorno {name}! Sono pronto a supportarla su qualsiasi fronte. Come posso aiutarla?",
-        ]
-
-    def _build_status(self, profile: PersonaProfile, lang: str) -> list[str]:
-        name = profile.user_name
-        focus = profile.facts.get("focus_today", "Sviluppo dell'architettura autonoma.")
-        if lang == "en":
-            return [
-                f"All systems optimal, {name}. Focus: {focus}",
-                f"Telemetry green across all workstations, {name}. No critical bottlenecks detected.",
-            ]
-        return [
-            f"Siamo messi benissimo, {name}. Focus attuale: {focus}",
-            f"Telemetria verde su tutte le workstation di NunzioTech Agency, {name}. Nessun collo di bottiglia rilevato.",
-        ]
-
-    def _build_fillers(self, profile: PersonaProfile, lang: str) -> list[str]:
-        name = profile.user_name
-        if lang == "en":
-            return [
-                f"Understood {name}, analyzing the system graph while synthesizing the solution...",
-                f"On it {name}. Let me cross-reference the components while I formulate the best approach...",
-                f"Great question {name}. Processing the reasoning chain right now...",
-            ]
-        return [
-            f"Un attimo {name}, sto elaborando la risposta e incrociando i dati...",
-            f"Subito {name}. Fammi analizzare a fondo la richiesta mentre strutturo i dettagli...",
-            f"Ottimo quesito {name}, sto aggregando il contesto cognitivo proprio in questo istante...",
-            f"Ricevuto {name}, verifico i parametri di sistema mentre ti preparo la soluzione completa...",
-        ]
+            return ["greeting_executive"]
+        if "napoli_calcio" in profile.interests:
+            return ["greeting_interest", "greeting_conversational"]
+        return ["greeting_conversational"]
 
 
 reflex_engine = AcousticReflexEngine()

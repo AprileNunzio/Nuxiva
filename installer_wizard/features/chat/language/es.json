@@ -1,0 +1,24 @@
+{
+  "name": "Habla con Nuxiva",
+  "description": "Conversación de prueba con el asistente, mostrando el modelo que respondió y las latencias.",
+  "capabilities": [
+    "Chat de texto",
+    "Muestra qué cerebro respondió",
+    "Tiempos de respuesta"
+  ],
+  "settings": {
+    "NUXIVA_ADDRESSEE_THRESHOLD": "Qué tan seguro debe estar de que le hablas antes de responder (0.2 tímido - 0.95 cauto)",
+    "NUXIVA_ADDRESSEE_ALONE": "Confianza adicional cuando estás solo en la habitación (0 - 1)"
+  },
+  "reflex": {
+    "greeting_conversational": "¡Hola {name}! Todo funciona de maravilla. ¿Qué queremos lograr hoy?",
+    "greeting_interest": "¡Qué bueno verte {name}! {fact} ¿Qué te parece? ¿Por dónde comenzamos hoy?",
+    "greeting_executive": "Buenos días {name}. Todos los nodos están operativos y la canalización es estable. ¿Cuáles son las directivas?",
+    "quick_status": "Estamos perfectamente posicionados, {name}. Enfoque actual: {focus}",
+    "quick_status_optimal": "Telemetría verde en todas las estaciones de NunzioTech Agency, {name}. Sin cuellos de botella detectados.",
+    "thinking_filler_1": "Un momento {name}, estoy procesando la respuesta y cruzando los datos...",
+    "thinking_filler_2": "Enseguida {name}. Déjame analizar a fondo la solicitud mientras estructuro los detalles...",
+    "thinking_filler_3": "Excelente consulta {name}, estoy agregando el contexto cognitivo ahora mismo...",
+    "thinking_filler_4": "Recibido {name}, verifico los parámetros del sistema mientras preparo la solución completa..."
+  }
+}

@@ -9,5 +9,16 @@
   "settings": {
     "NUXIVA_ADDRESSEE_THRESHOLD": "Quanto deve essere sicuro che parli con lui prima di rispondere (0.2 timido - 0.95 prudente)",
     "NUXIVA_ADDRESSEE_ALONE": "Fiducia in più quando sei solo nella stanza (0 - 1)"
+  },
+  "reflex": {
+    "greeting_conversational": "Ciao {name}! Tutto procede a gonfie vele. Cosa vogliamo realizzare oggi?",
+    "greeting_interest": "Tutto alla grande {name}! {fact} Che ne pensa? Di cosa ci occupiamo oggi?",
+    "greeting_executive": "Buongiorno {name}. Tutti i nodi sono operativi e la pipeline è stabile. Quali sono le direttive?",
+    "quick_status": "Siamo messi benissimo, {name}. Focus attuale: {focus}",
+    "quick_status_optimal": "Telemetria verde su tutte le workstation di NunzioTech Agency, {name}. Nessun collo di bottiglia rilevato.",
+    "thinking_filler_1": "Un attimo {name}, sto elaborando la risposta e incrociando i dati...",
+    "thinking_filler_2": "Subito {name}. Fammi analizzare a fondo la richiesta mentre strutturo i dettagli...",
+    "thinking_filler_3": "Ottimo quesito {name}, sto aggregando il contesto cognitivo proprio in questo istante...",
+    "thinking_filler_4": "Ricevuto {name}, verifico i parametri di sistema mentre ti preparo la soluzione completa..."
   }
 }
