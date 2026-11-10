@@ -458,3 +458,8 @@ async def explain_assistant_mode(mode: str, request: Request):
         raise HTTPException(404, "Motore non trovato")
 
 
+from features.chat.reflex_routes import router as reflex_router
+public_routes.include_router(reflex_router)
+
+
+
