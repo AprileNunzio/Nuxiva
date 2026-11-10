@@ -54,7 +54,10 @@
     }
 
     function mark() {
-      st.projects.forEach((p, i) => st.nodes.get(p.id).button.classList.toggle("is-selected", i === st.selected));
+      st.projects.forEach((p, i) => {
+        const entry = st.nodes.get(p.id);
+        if (entry && entry.button) entry.button.classList.toggle("is-selected", i === st.selected);
+      });
     }
 
     function place(i, count) {

@@ -116,6 +116,8 @@ async def _forge(ctx: Context, args: dict) -> str:
 
 
 async def _forged(ctx: Context, call_name: str, args: dict) -> str:
+    if not isinstance(call_name, str):
+        return f"error: unknown tool, use one of {', '.join(names())}"
     raw = call_name.removeprefix(registry_module.PREFIX)
     tool = registry.get(raw)
     if tool is None:

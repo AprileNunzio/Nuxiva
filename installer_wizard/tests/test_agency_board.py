@@ -88,6 +88,18 @@ class BoardTest(BoardCase):
         card = board.card({"project": {"usage": {"tokens": -5}}, "progress": {"percent": True}})
         self.assertEqual((card["tokens"], card["percent"], card["id"]), (0, 0, ""))
 
+    def test_overview_handles_paused_and_completed_projects_only(self):
+        with mock.patch.object(service, "overview", return_value={
+            "capacity": {"running": 0, "capacity": {"parallel_agents": 4}},
+            "projects": [
+                {"project": {"id": "p1", "title": "P1", "status": "paused", "created_at_ms": 100}, "progress": {"percent": 50, "running": 0}},
+                {"project": {"id": "p2", "title": "P2", "status": "completed", "created_at_ms": 200}, "progress": {"percent": 100, "running": 0}},
+            ]
+        }):
+            data = asyncio.run(board.overview())
+            self.assertEqual(data["agents"]["running"], 0)
+            self.assertEqual([p["status"] for p in data["projects"]], ["completed", "paused"])
+
 
 class BoardApiTest(BoardCase):
     @classmethod

@@ -196,9 +196,18 @@
 
   window.addEventListener("keydown", (event) => {
     if (!st.open) return;
-    if (event.key === "Escape") { if (st.focus) backToGalaxy(); else shut(); }
-    else if (!st.focus && (event.key === "ArrowRight" || event.key === "ArrowLeft")) galaxy.step(event.key === "ArrowRight" ? 1 : -1);
-    else if (!st.focus && event.key === "Enter" && document.activeElement === close) openProject(galaxy.selected);
+    if (event.key === "Escape" || (st.focus && event.key === "Backspace")) {
+      if (st.focus) backToGalaxy(); else shut();
+    } else if (!st.focus && (event.key === "ArrowRight" || event.key === "ArrowLeft")) {
+      galaxy.step(event.key === "ArrowRight" ? 1 : -1);
+    } else if (!st.focus && event.key === "Enter") {
+      openProject(galaxy.selected);
+    } else if (st.focus && (event.key === "p" || event.key === "P")) {
+      const cur = view.current;
+      if (cur && ["running", "paused"].includes(cur.status)) {
+        control(cur.id, cur.status === "paused" ? "resume" : "pause");
+      }
+    }
   });
 
   close.addEventListener("click", shut);
