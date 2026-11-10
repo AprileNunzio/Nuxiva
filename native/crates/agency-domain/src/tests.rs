@@ -208,6 +208,9 @@ fn proofs_record_reproducible_evidence() -> Result<(), DomainError> {
     assert!(!proof.is_verified());
     proof.record_result("test result: ok. 10 passed", Some("sha256:abc123"), true)?;
     assert!(proof.is_verified());
-    assert_eq!(proof.artifact_hash().map(crate::CleanText::as_str), Some("sha256:abc123"));
+    assert_eq!(
+        proof.artifact_hash().map(crate::CleanText::as_str),
+        Some("sha256:abc123")
+    );
     Ok(())
 }

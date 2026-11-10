@@ -21,7 +21,10 @@ fn commands_are_bounded_and_unknown_ones_are_not_executed() {
         commands.get(3),
         Some(&Command::Unsupported("rm -rf /".into()))
     );
-    assert_eq!(parse_commands(&json!({"commands": "adapt"})), [] as [Command; 0]);
+    assert_eq!(
+        parse_commands(&json!({"commands": "adapt"})),
+        [] as [Command; 0]
+    );
 }
 
 #[test]

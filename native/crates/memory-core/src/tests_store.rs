@@ -138,9 +138,7 @@ fn search_hi_vis_and_class() {
         ..q
     };
     assert_eq!(
-        none.day(&KEY, &day(), &index(), &data)
-            .unwrap()
-            .0,
+        none.day(&KEY, &day(), &index(), &data).unwrap().0,
         [] as [Sighting; 0]
     );
 }

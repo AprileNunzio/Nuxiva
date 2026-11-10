@@ -171,9 +171,7 @@ fn reproducible_completion_proofs_recorded() -> Result<(), AgencyError> {
         .as_str()
         .unwrap_or_default()
         .to_string();
-    let generation_nr = at(&d, "/started/0/generation")
-        .as_u64()
-        .unwrap_or_default();
+    let generation_nr = at(&d, "/started/0/generation").as_u64().unwrap_or_default();
 
     let update = call(
         &mut engine,

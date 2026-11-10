@@ -5,7 +5,7 @@ from pathlib import Path
 from unittest import mock
 
 from features.agency import client as client_module
-from features.agency import runner, tools, workspace
+from features.agency import runner, tools
 from features.agency.memory import ProjectMemory
 
 
