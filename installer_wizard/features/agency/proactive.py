@@ -109,16 +109,36 @@ def analyze_insights(tasks: list[dict], questions: list[dict], telemetry: Teleme
     return insights
 
 
-def generate_briefing(lang: str, title: str, counts: dict, insights: list[ProactiveInsight]) -> str:
+def _compute_salutation(lang: str, hour: int) -> str:
+    if 5 <= hour < 12:
+        key = "salutation_morning"
+    elif 12 <= hour < 18:
+        key = "salutation_afternoon"
+    elif 18 <= hour < 22:
+        key = "salutation_evening"
+    else:
+        key = "salutation_general"
+    return word(lang, "proactive", key)
+
+
+def generate_briefing(lang: str, title: str, counts: dict, insights: list[ProactiveInsight], user_name: str | None = None) -> str:
     total = int(counts.get("total") or 0)
     done = int(counts.get("done") or 0)
     running = int(counts.get("running") or 0)
     review = int(counts.get("review") or 0)
     pct = int((done / total * 100) if total > 0 else 0)
 
-    greeting = word(lang, "proactive", "greeting")
+    hour = time.localtime().tm_hour
+    salutation = _compute_salutation(lang, hour)
+    address = f" {user_name}" if user_name and user_name != "user" else ""
+    greeting = word(lang, "proactive", "greeting").format(
+        salutation=salutation,
+        address=address,
+        org="NunzioTech Agency",
+    )
     progress = word(lang, "proactive", "progress").format(title=clean(title, 40), pct=pct, done=done, total=total)
     status = word(lang, "proactive", "status").format(running=running, review=review)
     urgents = [ins.detail for ins in insights if ins.urgency in ("critical", "high")]
     attention = word(lang, "proactive", "attention").format(details=" ".join(urgents)) if urgents else word(lang, "proactive", "optimal")
     return f"{greeting} {progress} {status}{attention}"
+

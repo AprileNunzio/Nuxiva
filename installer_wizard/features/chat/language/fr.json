@@ -11,14 +11,27 @@
     "NUXIVA_ADDRESSEE_ALONE": "Plus de confiance lorsqu'on est seul dans la pièce (0 - 1)"
   },
   "reflex": {
-    "greeting_conversational": "Bonjour {name} ! Tout fonctionne parfaitement. Que souhaitons-nous accomplir aujourd'hui ?",
-    "greeting_interest": "Ravi de vous voir {name} ! {fact} Qu'en pensez-vous ? Par quoi commençons-nous ?",
-    "greeting_executive": "Bonjour {name}. Tous les services sont opérationnels et la chaîne est stable. Quelles sont les directives ?",
-    "quick_status": "Tout est optimal, {name}. Priorité actuelle : {focus}",
-    "quick_status_optimal": "Télémétrie verte sur tous les postes de NunzioTech Agency, {name}. Aucun goulot d'étranglement.",
-    "thinking_filler_1": "Un instant {name}, j'analyse la requête et croise les données...",
-    "thinking_filler_2": "Tout de suite {name}. Permettez-moi d'approfondir pendant que je structure les détails...",
-    "thinking_filler_3": "Excellente question {name}, je prépare le contexte cognitif en ce moment même...",
-    "thinking_filler_4": "Bien reçu {name}, je vérifie les paramètres système tout en finalisant la solution..."
+    "temporal_morning": "Bonjour",
+    "temporal_afternoon": "Bon après-midi",
+    "temporal_evening": "Bonsoir",
+    "temporal_general": "Salut",
+    "status_optimal": "Tous les nœuds sont opérationnels et la télémétrie est stable.",
+    "status_focus": "Objectif actuel : {focus}.",
+    "bridge_interest": "À propos de {entity}, les flux informatifs sont synchronisés.",
+    "bridge_tech": "L'environnement pour {entity} est prêt.",
+    "bridge_desire": "Concernant {entity}, la planification est active.",
+    "bridge_open": "Tous les canaux sont prêts. Quelles sont nos priorités aujourd'hui ?",
+    "filler_action_eval": "J'évalue les contraintes",
+    "filler_action_synth": "Je synthétise l'approche",
+    "filler_action_cross": "Je croise les données",
+    "filler_action_proc": "Je traite la requête",
+    "domain_arch": "sur l'architecture logique",
+    "domain_code": "sur l'implémentation du code",
+    "domain_system": "sur les paramètres système",
+    "domain_general": "sur le graphe cognitif",
+    "connector_now": "en temps réel.",
+    "connector_struct": "tout en structurant la solution.",
+    "connector_stream": "sans interruption.",
+    "connector_instant": "immédiatement."
   }
 }

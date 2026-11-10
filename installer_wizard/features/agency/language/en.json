@@ -107,7 +107,11 @@
     "chat": "Talk to the agent"
   },
   "proactive": {
-    "greeting": "Nunzio, here is your executive briefing from NunzioTech Agency.",
+    "salutation_morning": "Good morning",
+    "salutation_afternoon": "Good afternoon",
+    "salutation_evening": "Good evening",
+    "salutation_general": "Greetings",
+    "greeting": "{salutation}{address}, here is your operational briefing from {org}.",
     "progress": "Project '{title}' is at {pct}% progress with {done} of {total} tasks completed.",
     "status": "{running} agents active, {review} tasks awaiting review.",
     "attention": " Attention required: {details}",

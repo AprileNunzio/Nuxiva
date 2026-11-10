@@ -11,14 +11,27 @@
     "NUXIVA_ADDRESSEE_ALONE": "Bonus confidence when alone in the room (0 - 1)"
   },
   "reflex": {
-    "greeting_conversational": "Hello {name}! Everything is running smoothly. Ready to tackle our objectives today!",
-    "greeting_interest": "Great to see you {name}! {fact} What are your thoughts? How shall we proceed today?",
-    "greeting_executive": "Good day {name}. All systems operational and agency departments ready. How shall we proceed?",
-    "quick_status": "All systems optimal, {name}. Current focus: {focus}",
-    "quick_status_optimal": "Telemetry green across all workstations, {name}. No critical bottlenecks detected.",
-    "thinking_filler_1": "Understood {name}, analyzing the system graph while synthesizing the solution...",
-    "thinking_filler_2": "On it {name}. Let me cross-reference the components while I formulate the best approach...",
-    "thinking_filler_3": "Great question {name}. Processing the reasoning chain right now...",
-    "thinking_filler_4": "Acknowledged {name}, verifying system parameters while preparing the full solution..."
+    "temporal_morning": "Good morning",
+    "temporal_afternoon": "Good afternoon",
+    "temporal_evening": "Good evening",
+    "temporal_general": "Hello",
+    "status_optimal": "All nodes are operational and telemetry is stable.",
+    "status_focus": "Current focus: {focus}.",
+    "bridge_interest": "Regarding {entity}, information streams are synchronized.",
+    "bridge_tech": "Operating environment for {entity} is ready.",
+    "bridge_desire": "Regarding {entity}, planning is active.",
+    "bridge_open": "All channels are online. What are our key objectives today?",
+    "filler_action_eval": "Evaluating constraints",
+    "filler_action_synth": "Synthesizing the approach",
+    "filler_action_cross": "Cross-referencing telemetry",
+    "filler_action_proc": "Processing the request",
+    "domain_arch": "across system architecture",
+    "domain_code": "within code implementation",
+    "domain_system": "over system parameters",
+    "domain_general": "through the cognitive graph",
+    "connector_now": "in real time.",
+    "connector_struct": "while formulating the response.",
+    "connector_stream": "without pauses.",
+    "connector_instant": "right away."
   }
 }

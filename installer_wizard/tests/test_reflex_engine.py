@@ -14,24 +14,30 @@ class ReflexMemoryTest(unittest.TestCase):
         self.tmp = Path(tempfile.mkdtemp())
         self.store = ReflexMemoryStore(self.tmp / "test_reflex.sqlite3")
 
-    def test_default_profile_created(self):
-        prof = self.store.get_profile("Nunzio")
-        self.assertIsNotNone(prof)
-        self.assertEqual(prof.user_name, "Nunzio")
-        self.assertIn("napoli_calcio", prof.interests)
+    def test_database_starts_empty_without_hardcoded_profiles(self):
+        self.assertIsNone(self.store.get_profile("any_user"))
 
-    def test_update_and_retrieve_facts(self):
-        self.store.update_fact("napoli_status", "Vittoria 3-0 contro la Juventus", "Nunzio")
-        prof = self.store.get_profile("Nunzio")
-        self.assertEqual(prof.facts.get("napoli_status"), "Vittoria 3-0 contro la Juventus")
+    def test_autonomous_learning_from_conversational_speech(self):
+        prof = self.store.learn("Mi chiamo Marco e tifo la Ferrari")
+        self.assertEqual(prof.user_name, "Marco")
+        self.assertIn("Ferrari", prof.interests)
+        loaded = self.store.get_profile("Marco")
+        self.assertIsNotNone(loaded)
+        self.assertEqual(loaded.user_name, "Marco")
+
+    def test_update_and_retrieve_dynamic_facts(self):
+        self.store.update_fact("preferred_stack", "Rust and PyTorch", "Alex")
+        prof = self.store.get_profile("Alex")
+        self.assertIsNotNone(prof)
+        self.assertEqual(prof.facts.get("preferred_stack"), "Rust and PyTorch")
 
     def test_least_used_rotation(self):
-        phrases = ["frase_a", "frase_b", "frase_c"]
+        phrases = ["frase_alpha", "frase_beta", "frase_gamma"]
         chosen1 = self.store.get_least_used(phrases)
-        self.assertEqual(chosen1, "frase_a")
-        self.store.record_usage("frase_a", "test")
+        self.assertEqual(chosen1, "frase_alpha")
+        self.store.record_usage("frase_alpha", "test")
         chosen2 = self.store.get_least_used(phrases)
-        self.assertNotEqual(chosen2, "frase_a")
+        self.assertNotEqual(chosen2, "frase_alpha")
 
 
 class AcousticReflexEngineTest(unittest.TestCase):
@@ -40,33 +46,40 @@ class AcousticReflexEngineTest(unittest.TestCase):
         self.store = ReflexMemoryStore(self.tmp / "test_engine.sqlite3")
         self.engine = AcousticReflexEngine(self.store)
 
-    def test_greeting_triggers_instant_napoli_response(self):
-        res = self.engine.evaluate("Ciao Jarvis come va?", user_name="Nunzio", lang="it")
+    def test_anonymous_greeting_synthesizes_open_bridge(self):
+        res = self.engine.evaluate("Ciao come va?", lang="it")
         self.assertEqual(res.kind, "greeting")
         self.assertFalse(res.needs_deep_reasoning)
         self.assertLess(res.latency_ms, 50.0)
-        self.assertTrue("Napoli" in res.reflex_text or "Nunzio" in res.reflex_text)
+        self.assertTrue(len(res.reflex_text) > 5)
 
-    def test_executive_greeting_triggers_work_status(self):
+    def test_learned_user_greeting_incorporates_discovered_identity_and_passion(self):
+        self.store.learn("Mi chiamo Sofia e tifo la Juventus")
+        res = self.engine.evaluate("Ciao come va?", user_name="Sofia", lang="it")
+        self.assertEqual(res.kind, "greeting")
+        self.assertIn("Sofia", res.reflex_text)
+        self.assertIn("Juventus", res.reflex_text)
+
+    def test_executive_mode_synthesizes_operational_status(self):
         self.store.save_profile(PersonaProfile(
-            user_name="Nunzio",
+            user_name="Elena",
             style="executive",
-            interests=["devops", "kubernetes"],
+            interests=[],
             facts={},
         ))
-        res = self.engine.evaluate("Buongiorno Jarvis", user_name="Nunzio", lang="it")
+        res = self.engine.evaluate("Buongiorno", user_name="Elena", lang="it")
         self.assertEqual(res.kind, "greeting")
-        self.assertIn("direttive", res.reflex_text.lower())
+        self.assertIn("Elena", res.reflex_text)
 
-    def test_complex_query_triggers_thinking_filler(self):
-        res = self.engine.evaluate("Analizza l'architettura dei microservizi e trova il collo di bottiglia", user_name="Nunzio", lang="it")
+    def test_complex_query_triggers_dynamic_zero_silence_filler(self):
+        res = self.engine.evaluate("Analizza l'architettura dei microservizi e trova il collo di bottiglia", lang="it")
         self.assertEqual(res.kind, "thinking_filler")
         self.assertTrue(res.needs_deep_reasoning)
         self.assertLess(res.latency_ms, 50.0)
-        self.assertIn("Nunzio", res.reflex_text)
+        self.assertTrue("architettura" in res.reflex_text or "logica" in res.reflex_text)
 
     def test_quick_status_triggers_summary(self):
-        res = self.engine.evaluate("Qual è la situazione di sistema?", user_name="Nunzio", lang="it")
+        res = self.engine.evaluate("Qual è la situazione di sistema?", lang="it")
         self.assertEqual(res.kind, "quick_status")
         self.assertFalse(res.needs_deep_reasoning)
 
@@ -76,34 +89,28 @@ class ReflexApiTest(unittest.TestCase):
     def setUpClass(cls):
         cls.client = TestClient(nuxiva_supervisor.public)
 
-    def test_reflex_endpoint(self):
-        res = self.client.post("/api/chat/reflex", json={"query": "Ciao come va?", "user_name": "Nunzio", "lang": "it"})
+    def test_reflex_endpoint_autonomous(self):
+        res = self.client.post("/api/chat/reflex", json={"query": "Ciao come va?", "lang": "it"})
         self.assertEqual(res.status_code, 200)
         data = res.json()
         self.assertIn("reflex_text", data)
         self.assertIn("latency_ms", data)
         self.assertLess(data["latency_ms"], 100.0)
 
-    def test_persona_get_and_update(self):
-        res = self.client.get("/api/chat/persona?user_name=Nunzio")
-        self.assertEqual(res.status_code, 200)
-        orig = res.json()
-        self.assertEqual(orig["user_name"], "Nunzio")
+    def test_persona_learn_and_get(self):
+        learn_res = self.client.post("/api/chat/learn", json={"utterance": "Mi chiamo Leonardo e lavoro su Rust"})
+        self.assertEqual(learn_res.status_code, 200)
+        learned = learn_res.json()
+        self.assertEqual(learned["user_name"], "Leonardo")
 
-        update_res = self.client.post("/api/chat/persona", json={
-            "user_name": "Nunzio",
-            "style": "entertaining",
-            "interests": ["napoli_calcio", "musica"],
-            "facts": {"napoli_status": "Vittoria storica al Maradona"},
-        })
-        self.assertEqual(update_res.status_code, 200)
-        updated = update_res.json()
-        self.assertEqual(updated["style"], "entertaining")
-        self.assertEqual(updated["facts"]["napoli_status"], "Vittoria storica al Maradona")
+        get_res = self.client.get("/api/chat/persona?user_name=Leonardo")
+        self.assertEqual(get_res.status_code, 200)
+        profile = get_res.json()
+        self.assertEqual(profile["user_name"], "Leonardo")
 
     def test_barge_in_endpoint(self):
-        res = self.client.post("/api/chat/barge_in", json={"session_id": "test_sess"})
+        res = self.client.post("/api/chat/barge_in", json={"session_id": "session_test"})
         self.assertEqual(res.status_code, 200)
         data = res.json()
         self.assertEqual(data["status"], "interrupted")
-        self.assertEqual(data["session_id"], "test_sess")
+        self.assertEqual(data["session_id"], "session_test")

@@ -60,8 +60,9 @@ class AgencyProactiveTest(unittest.TestCase):
     def test_generate_briefing_english(self):
         insights = []
         counts = {"total": 5, "done": 5, "running": 0, "review": 0}
-        briefing = proactive.generate_briefing("en", "Core Engine", counts, insights)
-        self.assertIn("Nunzio", briefing)
+        briefing = proactive.generate_briefing("en", "Core Engine", counts, insights, user_name="Sarah")
+        self.assertIn("Sarah", briefing)
+        self.assertIn("NunzioTech Agency", briefing)
         self.assertIn("100%", briefing)
         self.assertIn("optimally", briefing)
 

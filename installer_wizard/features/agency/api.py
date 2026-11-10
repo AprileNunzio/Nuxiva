@@ -216,7 +216,10 @@ async def board_briefing(project_id: str, request: Request):
     insights = proactive.analyze_insights(tasks, questions, telemetry)
     lang = request.query_params.get("lang") or "it"
     title = (data.get("project") or {}).get("title") or "Progetto"
-    briefing = proactive.generate_briefing(lang, title, counts, insights)
+    from features.chat.reflex_memory import reflex_memory
+    active_prof = reflex_memory.get_profile()
+    user_name = request.query_params.get("user") or (active_prof.user_name if active_prof and active_prof.user_name != "user" else None)
+    briefing = proactive.generate_briefing(lang, title, counts, insights, user_name=user_name)
     return {
         "project_id": pid,
         "briefing": briefing,

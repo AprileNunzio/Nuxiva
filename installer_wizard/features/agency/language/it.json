@@ -107,7 +107,11 @@
     "chat": "Parla con l'agente"
   },
   "proactive": {
-    "greeting": "Nunzio, ecco il quadro operativo da NunzioTech Agency.",
+    "salutation_morning": "Buongiorno",
+    "salutation_afternoon": "Buon pomeriggio",
+    "salutation_evening": "Buonasera",
+    "salutation_general": "Salve",
+    "greeting": "{salutation}{address}, ecco il quadro operativo da {org}.",
     "progress": "Il progetto '{title}' è al {pct}% di avanzamento ({done} su {total} attività completate).",
     "status": "{running} agenti attivi, {review} attività in revisione.",
     "attention": " Attenzione: {details}",

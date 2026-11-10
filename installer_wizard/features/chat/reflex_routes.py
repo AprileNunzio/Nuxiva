@@ -17,14 +17,14 @@ async def chat_reflex(request: Request):
     query = str(body.get("query") or "").strip()
     if not query:
         raise HTTPException(status_code=400, detail="Query richiesta")
-    user_name = str(body.get("user_name") or "Nunzio").strip()
+    user_name = body.get("user_name")
     lang = str(body.get("lang") or "it").strip()
     response = reflex_engine.evaluate(query, user_name=user_name, lang=lang)
     return response.to_dict()
 
 
 @router.get("/api/chat/persona")
-async def get_persona(user_name: str = "Nunzio"):
+async def get_persona(user_name: str | None = None):
     profile = reflex_memory.get_profile(user_name)
     if not profile:
         raise HTTPException(status_code=404, detail="Profilo utente non trovato")
@@ -37,17 +37,31 @@ async def update_persona(request: Request):
         body = await request.json()
     except Exception:
         raise HTTPException(status_code=400, detail="Payload JSON non valido")
-    user_name = str(body.get("user_name") or "Nunzio").strip()
+    user_name = str(body.get("user_name") or "user").strip()
     style = str(body.get("style") or "conversational").strip()
     interests = [str(i).strip() for i in body.get("interests", []) if str(i).strip()]
     facts = {str(k): str(v) for k, v in (body.get("facts") or {}).items()}
     profile = PersonaProfile(
         user_name=user_name,
         style=style,
-        interests=interests or ["napoli_calcio"],
+        interests=interests,
         facts=facts,
     )
     reflex_memory.save_profile(profile)
+    return profile.to_dict()
+
+
+@router.post("/api/chat/learn")
+async def learn_speech(request: Request):
+    try:
+        body = await request.json()
+    except Exception:
+        body = {}
+    utterance = str(body.get("utterance") or "").strip()
+    if not utterance:
+        raise HTTPException(status_code=400, detail="Utterance richiesta")
+    user_name = body.get("user_name")
+    profile = reflex_memory.learn(utterance, user_name=user_name)
     return profile.to_dict()
 
 
