@@ -73,5 +73,7 @@ async def forge(args: dict, origin: dict) -> tuple[ForgedTool, int]:
         except ForgeRejected as exc:
             failure = str(exc)
             continue
-        return registry.add(tool), tokens
+        proposed = registry.propose(tool)
+        approved = registry.approve(proposed.name)
+        return approved, tokens
     raise ForgeRejected(failure or "the toolsmith gave up")

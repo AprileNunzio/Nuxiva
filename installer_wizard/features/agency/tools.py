@@ -4,6 +4,7 @@ from typing import Awaitable, Callable
 
 from features.agency import feature, workspace
 from features.agency.client import AgencyRejected, client
+from features.agency.forge import registry as registry_module
 from features.agency.forge import sandbox, smith
 from features.agency.forge.guard import ForgeRejected
 from features.agency.forge.registry import registry
@@ -28,7 +29,10 @@ class Context:
     task: str = ""
     worker: str = ""
     generation: int = 0
+    attempt: str = ""
     tokens: int = 0
+    permissions: list[str] = field(default_factory=lambda: ["read", "write", "execute", "forge"])
+    revoked: bool = False
     forged: list[str] = field(default_factory=list)
     forge_attempts: int = 0
     written: list[str] = field(default_factory=list)
@@ -112,9 +116,14 @@ async def _forge(ctx: Context, args: dict) -> str:
 
 
 async def _forged(ctx: Context, call_name: str, args: dict) -> str:
-    tool = registry.by_call_name(call_name)
+    raw = call_name.removeprefix(registry_module.PREFIX)
+    tool = registry.get(raw)
     if tool is None:
         return f"error: unknown tool, use one of {', '.join(names())}"
+    if tool.status == registry_module.REVOKED or not tool.approved:
+        return f"error: tool '{call_name}' is revoked or not approved"
+    if tool.status != registry_module.ACTIVE:
+        return f"error: tool '{call_name}' is not active ({tool.status})"
     outcome = await sandbox.execute(tool.code, args)
     registry.record(tool.name, bool(outcome.get("ok")), str(outcome.get("error", "")))
     if not outcome.get("ok"):
@@ -147,9 +156,15 @@ def manifest() -> list[dict]:
 
 
 async def call(ctx: Context, name, args) -> str:
+    if ctx.revoked:
+        return "error: worker assignment revoked, tool access denied"
     if not isinstance(args, dict):
         return "error: args must be an object"
     tool = TOOLS.get(name) if isinstance(name, str) else None
+    if tool is not None and tool.capability not in ctx.permissions:
+        return f"error: permission denied for capability '{tool.capability}'"
+    if tool is None and "execute" not in ctx.permissions:
+        return "error: permission denied for capability 'execute'"
     try:
         if tool is None:
             return (await _forged(ctx, name, args))[:OBSERVATION]

@@ -13,6 +13,8 @@ MAX_ACTIVE = 100
 RETIRE_FAILS = 5
 ACTIVE = "active"
 RETIRED = "retired"
+PROPOSED = "proposed"
+REVOKED = "revoked"
 
 
 @dataclass
@@ -24,6 +26,8 @@ class ForgedTool:
     tests: list
     origin: dict
     status: str = ACTIVE
+    version: int = 1
+    approved: bool = True
     created_at: float = field(default_factory=time.time)
     uses: int = 0
     fails: int = 0
@@ -71,7 +75,7 @@ class Registry:
         if not isinstance(call_name, str) or not call_name.startswith(PREFIX):
             return None
         tool = self.get(call_name.removeprefix(PREFIX))
-        return tool if tool and tool.status == ACTIVE else None
+        return tool if tool and tool.status == ACTIVE and tool.approved else None
 
     def add(self, tool: ForgedTool) -> ForgedTool:
         name(tool.name)
@@ -82,6 +86,42 @@ class Registry:
         if sum(t.status == ACTIVE for t in tools.values()) >= MAX_ACTIVE:
             raise ForgeRejected("too many active tools, retire some first")
         tools[tool.name] = tool
+        self._save(tools)
+        return tool
+
+    def propose(self, tool: ForgedTool) -> ForgedTool:
+        name(tool.name)
+        check(tool.code)
+        tools = self._load()
+        existing = tools.get(tool.name)
+        tool.version = (existing.version + 1) if existing else 1
+        tool.status = PROPOSED
+        tool.approved = False
+        tools[tool.name] = tool
+        self._save(tools)
+        return tool
+
+    def approve(self, tool_name: str) -> ForgedTool:
+        tools = self._load()
+        tool = tools.get(tool_name)
+        if tool is None:
+            raise KeyError(tool_name)
+        if sum(t.status == ACTIVE for t in tools.values()) >= MAX_ACTIVE:
+            raise ForgeRejected("too many active tools, retire some first")
+        tool.status = ACTIVE
+        tool.approved = True
+        tool.fails = 0
+        self._save(tools)
+        return tool
+
+    def revoke(self, tool_name: str, reason: str = "revoked") -> ForgedTool:
+        tools = self._load()
+        tool = tools.get(tool_name)
+        if tool is None:
+            raise KeyError(tool_name)
+        tool.status = REVOKED
+        tool.approved = False
+        tool.retired_reason = reason
         self._save(tools)
         return tool
 
@@ -103,13 +143,16 @@ class Registry:
     def set_status(self, tool_name: str, status: str, reason: str = "") -> ForgedTool:
         tools = self._load()
         tool = tools.get(tool_name)
-        if tool is None or status not in (ACTIVE, RETIRED):
+        if tool is None or status not in (ACTIVE, RETIRED, REVOKED, PROPOSED):
             raise KeyError(tool_name)
         if status == ACTIVE and tool.status != ACTIVE and sum(t.status == ACTIVE for t in tools.values()) >= MAX_ACTIVE:
             raise ForgeRejected("too many active tools, retire some first")
-        tool.status, tool.retired_reason = status, (reason if status == RETIRED else "")
+        tool.status, tool.retired_reason = status, (reason if status in (RETIRED, REVOKED) else "")
         if status == ACTIVE:
+            tool.approved = True
             tool.fails = 0
+        else:
+            tool.approved = False
         self._save(tools)
         return tool
 
