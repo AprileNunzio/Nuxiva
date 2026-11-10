@@ -30,7 +30,12 @@
   root.append(sky, galaxyBox, viewRoot);
 
   const galaxy = window.NuxivaAgencyGalaxy.create(sky, planets, (id) => openProject(id));
-  const view = window.NuxivaAgencyView.create(viewRoot, { back: () => backToGalaxy(), control: (id, action) => control(id, action) });
+  const view = window.NuxivaAgencyView.create(viewRoot, {
+    back: () => backToGalaxy(),
+    control: (id, action) => control(id, action),
+    taskAction: (projectId, taskId, action, payload) => taskAction(projectId, taskId, action, payload),
+    answerQuestion: (projectId, questionId, answer) => answerQuestion(projectId, questionId, answer),
+  });
 
   async function request(path, options = {}) {
     const res = await fetch(path, { credentials: "same-origin", cache: "no-store", ...options,
@@ -103,6 +108,22 @@
   async function control(id, action) {
     try { view.render(await request(`/api/agency/board/${encodeURIComponent(id)}/${action}`, { method: "POST", body: "{}" })); return true; }
     catch (err) { return false; }
+  }
+
+  async function taskAction(projectId, taskId, action, payload = {}) {
+    try {
+      const path = `/api/agency/board/${encodeURIComponent(projectId)}/tasks/${encodeURIComponent(taskId)}/${encodeURIComponent(action)}`;
+      view.render(await request(path, { method: "POST", body: JSON.stringify(payload || {}) }));
+      return true;
+    } catch (err) { return false; }
+  }
+
+  async function answerQuestion(projectId, questionId, answer) {
+    try {
+      const path = `/api/agency/board/${encodeURIComponent(projectId)}/questions/${encodeURIComponent(questionId)}/answer`;
+      view.render(await request(path, { method: "POST", body: JSON.stringify({ answer: String(answer || "") }) }));
+      return true;
+    } catch (err) { return false; }
   }
 
   function plain(text) {
