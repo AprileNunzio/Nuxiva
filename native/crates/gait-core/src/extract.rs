@@ -87,7 +87,7 @@ fn compute_harmonics(signal: &[f32]) -> [f32; 8] {
     bins
 }
 
-#[allow(clippy::cast_precision_loss)]
+#[allow(clippy::too_many_lines, clippy::cast_precision_loss)]
 pub fn extract_signature(observations: &[GaitObservation]) -> Result<GaitSignature, GaitError> {
     if observations.len() < MIN_SAMPLES {
         return Err(GaitError::InsufficientSamples);
