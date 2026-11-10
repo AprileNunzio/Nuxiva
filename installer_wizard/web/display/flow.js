@@ -241,6 +241,7 @@
 
   async function poll() {
     if (D.mode !== "flow") return;
+    $("flow-stop-audio").disabled = !D.isSpeaking();
     try {
       const r = await fetch("/api/brain/journey", { cache: "no-store" });
       if (!r.ok) return;
@@ -316,6 +317,10 @@
       });
     }
 
+    $("flow-stop-audio").addEventListener("click", (ev) => {
+      D.hush();
+      ev.currentTarget.disabled = true;
+    });
     $("flow-tabs").addEventListener("click", async (ev) => {
       const stop = ev.target.closest(".flow-stop");
       if (stop) {

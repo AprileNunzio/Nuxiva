@@ -110,6 +110,9 @@ class Client:
     def assist(self, body: dict) -> dict:
         return self.request("/api/nodes/assist", body, timeout=300)
 
+    def stop_assist(self, turn_id: str) -> None:
+        self.request("/api/nodes/assist/stop", {"turn_id": turn_id}, timeout=10)
+
     def tts(self, text: str, lang: str | None) -> bytes:
         return self.request("/api/nodes/tts", {"text": text, "lang": lang or ""}, timeout=60, raw=True)
 

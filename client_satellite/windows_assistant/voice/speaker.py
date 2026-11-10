@@ -16,18 +16,20 @@ class Speaker:
         self.playing = threading.Event()
         self._stop = threading.Event()
 
-    def play_wav(self, data: bytes) -> None:
+    def play_wav(self, data: bytes, cancelled: threading.Event | None = None) -> None:
         with wave.open(io.BytesIO(data)) as w:
             rate, channels, width = w.getframerate(), w.getnchannels(), w.getsampwidth()
             frames = w.readframes(w.getnframes())
         dtype = SAMPLE_TYPES[width]
         audio = np.frombuffer(frames, dtype=dtype).astype(np.float32)
         audio = (audio - 128) / 128 if width == 1 else audio / float(np.iinfo(dtype).max)
-        self.play(audio.reshape(-1, channels), rate)
+        self.play(audio.reshape(-1, channels), rate, cancelled)
 
-    def play(self, audio: np.ndarray, rate: int) -> None:
+    def play(self, audio: np.ndarray, rate: int, cancelled: threading.Event | None = None) -> None:
         with self.lock:
             self._stop.clear()
+            if cancelled is not None and cancelled.is_set():
+                return
             self.playing.set()
             try:
                 sd.play(audio, rate)

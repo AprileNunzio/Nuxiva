@@ -70,7 +70,7 @@ class Assistant:
     def _ui_actions(self) -> dict:
         return {
             "ask": lambda text: self.conversation.ask(text), "listen": lambda: self.voice.listen(),
-            "stop": lambda: self.voice.speaker.stop(), "quit": self.quit, "is_muted": lambda: self.voice.mic.muted,
+            "stop": self.conversation.stop, "quit": self.quit, "is_muted": lambda: self.voice.mic.muted,
             "mute": lambda muted: self.voice.set_muted(muted), "save": lambda: store.save(self.cfg),
             "autostart": autostart.enabled, "fingerprint": lambda: tls.short(self.cfg["pin"]),
             "settings_saved": self._settings_saved, "unpair": self.unpair, "policy": lambda: self.policy,
@@ -134,7 +134,7 @@ class Assistant:
             self.hotkeys.append(keyboard.add_hotkey(self.cfg["hotkey"], lambda: self.ui.dispatch.post(self.voice.listen)))
         except ValueError as exc:
             self.ui.note(f"⚠ Tasti rapidi non validi ({self.cfg['hotkey']}): {exc}")
-        self.hotkeys.append(keyboard.add_hotkey("esc", lambda: self.voice.speaking and self.voice.speaker.stop()))
+        self.hotkeys.append(keyboard.add_hotkey("esc", self.conversation.stop))
 
     def _settings_saved(self, start_with_windows: bool) -> None:
         store.save(self.cfg)

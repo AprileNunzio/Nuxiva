@@ -9,6 +9,7 @@ mod scene;
 mod speaker;
 mod stft;
 mod voices;
+pub mod wake;
 pub mod words;
 
 pub use denoiser::{Denoiser, DenoiserConfig, clean_utterance};

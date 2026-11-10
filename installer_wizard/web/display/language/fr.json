@@ -22,6 +22,7 @@
     "flow_sub": "Parcours reconstruit de A à Z · décisions · jury · agents · boucles · retours",
     "btn_brain": "Afficher le cerveau",
     "flow_stop": "Interrompre",
+    "flow_stop_audio": "Arrêter l’audio",
     "flow_stop_retry": "Réessayer",
     "flow_state_cancelled": "interrompu",
     "btn_flow": "Flux de l'analyse",

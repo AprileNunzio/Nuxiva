@@ -4,6 +4,7 @@ import logging
 import re
 import socket
 import threading
+import uuid
 
 from actions.executor import Executor
 from connection import tls
@@ -31,11 +32,40 @@ class Conversation:
         self.client, self.executor, self.gate, self.policy = client, executor, gate, policy
         self.focus, self.ui, self.voice, self.environment = focus, ui, voice, environment
         self.busy = threading.Lock()
+        self._turn_lock = threading.Lock()
+        self._request_id = None
+        self._cancelled = False
         self.on_unauthorized = None
         self.on_security = None
 
     def ask(self, text: str, lang: str | None = None, spoken: bool = False) -> None:
         threading.Thread(target=self._ask, args=(text, lang, spoken), daemon=True, name="ask").start()
+
+    def stop(self) -> None:
+        with self._turn_lock:
+            self._cancelled = True
+            request_id = self._request_id
+        self.voice.stop_reply()
+        if request_id:
+            threading.Thread(target=self._stop_request, args=(request_id,), daemon=True, name="stop-assist").start()
+
+    def _stop_request(self, request_id: str) -> None:
+        try:
+            self.client.stop_assist(request_id)
+        except (ServerError, Unauthorized, tls.PinMismatch) as exc:
+            log.warning("Arresto remoto non confermato: %s", exc)
+
+    def _request(self, body: dict) -> dict:
+        with self._turn_lock:
+            if self._cancelled:
+                return {"cancelled": True}
+            request_id = uuid.uuid4().hex
+            self._request_id = request_id
+        try:
+            return self.client.assist({**body, "turn_id": request_id})
+        finally:
+            with self._turn_lock:
+                self._request_id = None
 
     def _post(self, fn, *args) -> None:
         self.ui.dispatch.post(fn, *args)
@@ -68,8 +98,10 @@ class Conversation:
         result: dict = {}
         research_requested = False
         for _ in range(MAX_ROUNDS):
-            result = self.client.assist(body)
+            result = self._request(body)
             body.pop("research_approved", None)
+            if self._cancelled or result.get("cancelled"):
+                return {"cancelled": True}
             if result.get("ignored"):
                 return result
             if result.get("need") == "research":
@@ -94,6 +126,8 @@ class Conversation:
 
     def _ask(self, text: str, lang: str | None, spoken: bool) -> None:
         with self.busy:
+            with self._turn_lock:
+                self._cancelled = False
             self._post(self.ui.show_panel)
             self._post(self.ui.say, "user", text)
             self._post(self.ui.set_state, "thinking")
@@ -119,7 +153,7 @@ class Conversation:
                 self._post(self.ui.say, "nuxiva", f"Non ci sono riuscita: {exc}")
                 self._post(self.ui.set_state, "error")
                 return
-            if result.get("ignored"):
+            if self._cancelled or result.get("cancelled") or result.get("ignored"):
                 self._post(self.ui.set_state, "idle")
                 return
             reply, show = result.get("reply") or "", result.get("show") or ""

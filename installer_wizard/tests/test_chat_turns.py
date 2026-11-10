@@ -7,9 +7,33 @@ from unittest.mock import patch
 from fastapi.responses import JSONResponse
 
 from features.chat import api, streaming, turns
+from features.nodes import assist_turn
 
 
 class ChatTurnTests(unittest.IsolatedAsyncioTestCase):
+    async def test_satellite_stop_is_bound_to_authenticated_node_and_request(self):
+        ready = asyncio.Event()
+        release = asyncio.Event()
+        first_id, second_id = "a" * 32, "b" * 32
+
+        async def operation():
+            ready.set()
+            await release.wait()
+            return {"reply": "done"}
+
+        first = asyncio.create_task(assist_turn.run("desktop", first_id, operation))
+        second = asyncio.create_task(assist_turn.run("desktop", second_id, operation))
+        await ready.wait()
+        try:
+            self.assertFalse(assist_turn.stop("other", first_id))
+            self.assertTrue(assist_turn.stop("desktop", first_id))
+            self.assertEqual(await first, {"cancelled": True})
+            self.assertFalse(second.done())
+        finally:
+            release.set()
+            await asyncio.gather(first, second)
+        self.assertEqual(second.result(), {"reply": "done"})
+
     async def test_stop_is_scoped_to_one_owned_turn(self):
         principal = ("user", "owner")
         ready = asyncio.Queue()

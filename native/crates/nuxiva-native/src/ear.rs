@@ -278,6 +278,11 @@ fn ear_utterance_gain(audio: &[u8], target: f64, max_gain: f64) -> PyResult<f64>
     ))
 }
 
+#[pyfunction]
+fn ear_wake_model_candidates(name: &str, override_id: &str) -> Vec<String> {
+    nuxiva_ear_core::wake::model_candidates(name, override_id)
+}
+
 pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<RustDenoiser>()?;
     m.add_class::<RustNoiseTracker>()?;
@@ -285,5 +290,6 @@ pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(ear_clean_utterance, m)?)?;
     m.add_function(wrap_pyfunction!(ear_normalize, m)?)?;
     m.add_function(wrap_pyfunction!(ear_utterance_gain, m)?)?;
+    m.add_function(wrap_pyfunction!(ear_wake_model_candidates, m)?)?;
     Ok(())
 }

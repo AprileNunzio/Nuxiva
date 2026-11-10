@@ -221,9 +221,18 @@ def _node(request: Request) -> dict:
 async def node_assist(request: Request):
     node = _node(request)
     body = await _body(request, 12 * 1024 * 1024)
+    from features.nodes import assist_turn
     from features.nodes import desk_assistant
     NODE.set(node["id"])
-    return await desk_assistant.assist(node, body)
+    return await assist_turn.run(node["id"], body.get("turn_id"), lambda: desk_assistant.assist(node, body))
+
+
+@public_routes.post("/api/nodes/assist/stop")
+async def node_assist_stop(request: Request):
+    node = _node(request)
+    body = await _body(request, 1024)
+    from features.nodes import assist_turn
+    return {"stopped": assist_turn.stop(node["id"], body.get("turn_id"))}
 
 
 @public_routes.post("/api/nodes/tts")

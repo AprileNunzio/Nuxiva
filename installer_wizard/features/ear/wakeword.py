@@ -8,6 +8,8 @@ from pathlib import Path
 
 import numpy as np
 
+import native_core
+from learner import current_name
 from tuning import tuning
 
 log = logging.getLogger("nuxiva.ear")
@@ -17,21 +19,24 @@ DEFAULT_MODEL = "ehi_nuxiva"
 MODEL_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,63}")
 
 
+def _model_candidates() -> list[str]:
+    override = os.environ.get("NUXIVA_WAKEWORD_MODEL", "").strip()
+    name = current_name()
+    native = native_core.symbol("ear_wake_model_candidates")
+    if native is not None:
+        return native(name, override)
+    if MODEL_RE.fullmatch(override) and ".." not in override:
+        return [override]
+    if name == "nuxiva":
+        return [DEFAULT_MODEL]
+    return [value for value in (f"ehi_{name}", name) if MODEL_RE.fullmatch(value) and ".." not in value]
+
+
 def model_name() -> str:
-    name = os.environ.get("NUXIVA_WAKEWORD_MODEL", "").strip()
-    if name and MODEL_RE.fullmatch(name) and ".." not in name:
-        return name
-    assist_name = os.environ.get("NUXIVA_ASSISTANT_NAME", "").strip().lower()
-    clean = re.sub(r"^(?:hey|hei|ehi|hi|ok|okay)\s+", "", assist_name).strip()
-    if clean and clean != "nuxiva":
-        custom = f"ehi_{clean}"
-        if (MODELS / f"{custom}.onnx").exists():
-            return custom
-        return clean
-    return DEFAULT_MODEL
+    candidates = _model_candidates()
+    return next((name for name in candidates if (MODELS / f"{name}.onnx").is_file()), candidates[-1] if candidates else "")
 
 
-MODEL_NAME = model_name()
 CHUNK = 1280
 COOLDOWN = 2.0
 
@@ -47,18 +52,17 @@ class WakeWord:
         self.pending = np.zeros(0, dtype=np.int16)
         self.last_hit = 0.0
         self.score = 0.0
-        assist_name = os.environ.get("NUXIVA_ASSISTANT_NAME", "").strip().lower()
-        clean = re.sub(r"^(?:hey|hei|ehi|hi|ok|okay)\s+", "", assist_name).strip()
-        if clean and clean != "nuxiva" and MODEL_NAME == DEFAULT_MODEL:
+        self.model_name = model_name()
+        if not self.model_name:
             return
-        files = [MODELS / f"{MODEL_NAME}.onnx", MODELS / "melspectrogram.onnx", MODELS / "embedding_model.onnx"]
+        files = [MODELS / f"{self.model_name}.onnx", MODELS / "melspectrogram.onnx", MODELS / "embedding_model.onnx"]
         if os.environ.get("NUXIVA_WAKEWORD", "1") == "0" or not all(f.exists() for f in files):
             log.info("Rilevatore istantaneo non disponibile: uso solo il riconoscimento del parlato")
             return
         try:
             from openwakeword.model import Model
             self.model = self._build(Model, files)
-            log.info("Rilevatore istantaneo «Ehi, Nuxiva» attivo (soglia %.2f)", tuning.wake_threshold())
+            log.info("Rilevatore istantaneo %s attivo (soglia %.2f)", self.model_name, tuning.wake_threshold())
         except Exception as exc:
             log.warning("Rilevatore istantaneo non avviato: %s", exc)
             self.model = None
@@ -104,7 +108,7 @@ class WakeWord:
         while len(self.pending) >= CHUNK:
             chunk, self.pending = self.pending[:CHUNK], self.pending[CHUNK:]
             try:
-                self.score = float(self.model.predict(chunk).get(MODEL_NAME, 0.0))
+                self.score = float(self.model.predict(chunk).get(self.model_name, 0.0))
             except Exception as exc:
                 log.warning("Rilevatore istantaneo disattivato dopo un errore: %s", exc)
                 self.model = None

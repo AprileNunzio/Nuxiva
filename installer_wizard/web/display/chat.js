@@ -120,8 +120,7 @@
         voice.add(flat);
         voice.close(reply);
       } else {
-        await voice.close(reply);
-        D.speak(reply, final.lang);
+        if (await voice.close(reply)) D.speak(reply, final.lang);
       }
     }
     return { data: final, spoken: Boolean(voice) };

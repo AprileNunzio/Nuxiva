@@ -34,8 +34,8 @@
       return out;
     }
 
-    async function synth(text, lang) {
-      const r = await fetch("/api/assistant/tts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text, lang }) });
+    async function synth(text, lang, signal) {
+      const r = await fetch("/api/assistant/tts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text, lang }), signal });
       if (!r.ok) throw new Error(`TTS ${r.status}`);
       return ctx.decodeAudioData(await r.arrayBuffer());
     }
@@ -81,28 +81,36 @@
       if (D.avatar) { D.avatar.setSpeaking(false); if (D.avatar.face) D.avatar.face.realAudio = false; }
     }
 
+    let pendingAudio = null;
+
+    function beginAudio() {
+      stop();
+      pendingAudio = new AbortController();
+      return { gen: generation, signal: pendingAudio.signal };
+    }
+
     async function speak(text, lang, onStart) {
-      const gen = ++generation;
+      const { gen, signal } = beginAudio();
       ensure();
       const parts = sentences(text);
       active = true;
       if (D.avatar && D.avatar.face) D.avatar.face.realAudio = true;
       cancelAnimationFrame(raf); animate();
       try {
-        let next = synth(parts[0], lang);
         for (let i = 0; i < parts.length; i++) {
-          const buffer = await next;
+          const buffer = await synth(parts[i], lang, signal);
           if (gen !== generation) return;
-          if (i + 1 < parts.length) next = synth(parts[i + 1], lang);
           await play(buffer, gen, i === 0 ? onStart : undefined);
         }
+      } catch (err) {
+        if (!signal.aborted) throw err;
       } finally {
         if (gen === generation) quiet();
       }
     }
 
     function stream(lang) {
-      const gen = ++generation;
+      const { gen, signal } = beginAudio();
       ensure();
       active = true;
       if (D.avatar && D.avatar.face) D.avatar.face.realAudio = true;
@@ -112,14 +120,15 @@
         add(text) {
           const part = (text || "").trim();
           if (!part || gen !== generation) return;
-          const audio = synth(part, lang);
           chain = chain.then(async () => {
-            const buffer = await audio;
+            if (signal.aborted) return;
+            const buffer = await synth(part, lang, signal);
             if (gen === generation) await play(buffer, gen);
-          }).catch((err) => console.warn("Frase non sintetizzata:", err));
+          }).catch((err) => { if (!signal.aborted) console.warn("Frase non sintetizzata:", err); });
         },
         async close() {
           try { await chain; } finally { if (gen === generation) quiet(); }
+          return !signal.aborted;
         },
         stop() {
           if (gen !== generation) return false;
@@ -131,6 +140,8 @@
 
     function stop() {
       generation++;
+      if (pendingAudio) pendingAudio.abort();
+      pendingAudio = null;
       try { source && source.stop(); } catch (e) {}
       quiet();
     }
@@ -189,8 +200,9 @@
       },
       async close(fullText) {
         try {
-          if (live) await live.close();
+          if (live) return await live.close();
           else mouthOnly(fullText || "");
+          return true;
         } finally {
           setTimeout(() => { D.Ear.speaking(false); if (D.lastVoice) { D.lastVoice = false; D.Ear.followup(); } }, 350);
         }
@@ -200,7 +212,12 @@
 
   D.setVoiceVolume = (v) => Voice.setVolume(v);
 
-  D.hush = () => { D.lastVoice = false; Voice.stop(); if ("speechSynthesis" in window) speechSynthesis.cancel(); };
+  D.hush = () => {
+    D.lastVoice = false;
+    Voice.stop();
+    if ("speechSynthesis" in window) speechSynthesis.cancel();
+    D.Ear.speaking(false);
+  };
 
   D.isSpeaking = () => Voice.isSpeaking() || ("speechSynthesis" in window && speechSynthesis.speaking);
 

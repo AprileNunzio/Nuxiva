@@ -22,6 +22,8 @@ class Voice:
         self.speaking = False
         self.busy = lambda: False
         self.on_transcript = None
+        self._reply_lock = threading.Lock()
+        self._reply_cancel: threading.Event | None = None
 
     def continuous(self) -> bool:
         return self.policy.level("senses.microphone") is not Level.DENY
@@ -37,7 +39,13 @@ class Voice:
     def stop(self) -> None:
         self.ear.stop()
         self.mic.stop()
-        self.speaker.stop()
+        self.stop_reply()
+
+    def stop_reply(self) -> None:
+        with self._reply_lock:
+            if self._reply_cancel is not None:
+                self._reply_cancel.set()
+            self.speaker.stop()
 
     def _levels(self) -> None:
         while True:
@@ -65,15 +73,14 @@ class Voice:
         elif kind == "transcript" and (event.get("text") or "").strip():
             self.on_transcript(event["text"].strip(), event.get("lang"))
         elif kind == "barge":
-            self.speaker.stop()
+            self.stop_reply()
         elif kind == "wake_only":
             post(self.ui.set_state, "listening")
         elif kind == "mic_level" and event.get("advice") == "lower":
             post(self.ui.note, "🎙 Il microfono è un po' troppo alto: abbassalo nelle impostazioni audio di Windows.")
 
     def listen(self) -> None:
-        if self.speaking:
-            self.speaker.stop()
+        self.stop_reply()
         if not self.ear.connected:
             self.ui.show_panel(focus=True)
             self.ui.note("🎙 Ascolto vocale non disponibile ora: scrivimi pure qui.")
@@ -95,10 +102,23 @@ class Voice:
             self.ear.send(type="followup", seconds=FOLLOWUP_SECONDS, conversation=True)
 
     def _speak(self, text: str, lang: str | None) -> None:
+        cancelled = threading.Event()
+        with self._reply_lock:
+            self._reply_cancel = cancelled
+        try:
+            self._play_reply(text, lang, cancelled)
+        finally:
+            with self._reply_lock:
+                if self._reply_cancel is cancelled:
+                    self._reply_cancel = None
+
+    def _play_reply(self, text: str, lang: str | None, cancelled: threading.Event) -> None:
         try:
             wav = self.client.tts(text, lang)
         except ServerError as exc:
             log.info("Voce non disponibile: %s", exc)
+            return
+        if cancelled.is_set():
             return
         self.speaking = True
         self.ui.dispatch.post(self.ui.set_state, "speaking")
@@ -107,10 +127,11 @@ class Voice:
         if not self.cfg.get("headset"):
             self.mic.muted = True
         try:
-            self.speaker.play_wav(wav)
+            self.speaker.play_wav(wav, cancelled)
         finally:
             self.mic.muted = was_muted
             self.speaking = False
             self.ear.send(type="speaking", on=False)
-            self.ear.send(type="followup", seconds=FOLLOWUP_SECONDS, conversation=True)
+            if not cancelled.is_set():
+                self.ear.send(type="followup", seconds=FOLLOWUP_SECONDS, conversation=True)
             self.ui.dispatch.post(self.ui.set_state, "idle")
