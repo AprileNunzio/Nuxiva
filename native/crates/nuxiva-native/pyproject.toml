@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "nuxiva-native"
-version = "5.7.1"
+version = "5.7.2"
 requires-python = ">=3.10"
 license = { text = "Proprietary" }
 

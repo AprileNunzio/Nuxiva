@@ -57,6 +57,7 @@
     "sentinel.sentinel.memory_forget": "A person's memories were erased on request ({count} sightings)",
     "sentinel.sentinel.memory_relink": "A guest's sightings were linked to a person ({count} sightings)",
     "sentinel.media.playback": "Media recording replayed for camera {camera} ({segment})",
-    "sentinel.media.encrypted": "Encrypted media recording stored for camera {camera} ({segment})"
+    "sentinel.media.encrypted": "Encrypted media recording stored for camera {camera} ({segment})",
+    "sentinel.sentinel.ask_query": "Evidence query requested: «{query}» ({citations} linked proofs)"
   }
 }

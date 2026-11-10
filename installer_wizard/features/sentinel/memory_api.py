@@ -126,3 +126,15 @@ async def memory_pin(request: Request, _: str = Depends(require_admin)):
 @routes.post("/api/sentinel/memory/sweep", openapi_extra=MANAGE)
 async def memory_sweep(_: str = Depends(require_admin)):
     return _engine(memory.sweep)
+
+
+@routes.post("/api/sentinel/ask", openapi_extra=READ)
+async def ask_sentinel(request: Request, user: str = Depends(require_admin)):
+    from features.sentinel.ask import ask_engine
+    body = await _body(request)
+    text = body.get("text", "")
+    if not isinstance(text, str) or not text.strip():
+        raise HTTPException(400, "sentinel_ask_text_required")
+    answer = _engine(lambda: ask_engine.ask(text, user=user))
+    return JSONResponse(answer, headers=NO_CACHE)
+

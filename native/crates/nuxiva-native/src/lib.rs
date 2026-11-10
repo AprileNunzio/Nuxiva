@@ -3,6 +3,7 @@
 mod access;
 mod admin_os;
 mod arbitration;
+mod ask_core;
 mod audio;
 mod authz;
 mod bus;
@@ -90,6 +91,7 @@ use update::{
 use vitals::vitals_parse_ble_heart_rate;
 
 #[pymodule(gil_used = false)]
+#[allow(clippy::too_many_lines)]
 fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add("__version__", env!("CARGO_PKG_VERSION"))?;
     m.add("MAX_SUBSCRIPTIONS", nuxiva_bus_core::MAX_SUBSCRIPTIONS)?;
@@ -148,6 +150,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<RustMeshTaskGovernor>()?;
     m.add_class::<RustNetworkGovernor>()?;
     m.add_class::<workbench::RustWorkbenchTracker>()?;
+    m.add_class::<ask_core::RustAskCore>()?;
     m.add_class::<RustNeuronIndex>()?;
     m.add_class::<RustContextGraph>()?;
     m.add_class::<RustCorticalCortex>()?;

@@ -57,6 +57,7 @@
     "sentinel.sentinel.memory_forget": "Les souvenirs d'une personne ont été effacés sur demande ({count} passages)",
     "sentinel.sentinel.memory_relink": "Les passages d'un invité ont été reliés à une personne ({count} passages)",
     "sentinel.media.playback": "Enregistrement lu pour la caméra {camera} ({segment})",
-    "sentinel.media.encrypted": "Enregistrement chiffré stocké pour la caméra {camera} ({segment})"
+    "sentinel.media.encrypted": "Enregistrement chiffré stocké pour la caméra {camera} ({segment})",
+    "sentinel.sentinel.ask_query": "Requête de preuves demandée: «{query}» ({citations} preuves liées)"
   }
 }

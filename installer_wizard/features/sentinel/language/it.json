@@ -57,6 +57,7 @@
     "sentinel.sentinel.memory_forget": "I ricordi di una persona sono stati cancellati su richiesta ({count} passaggi)",
     "sentinel.sentinel.memory_relink": "I passaggi di un ospite sono stati collegati a una persona ({count} passaggi)",
     "sentinel.media.playback": "È stata riprodotta la registrazione della telecamera {camera} ({segment})",
-    "sentinel.media.encrypted": "Registrazione cifrata archiviata per la telecamera {camera} ({segment})"
+    "sentinel.media.encrypted": "Registrazione cifrata archiviata per la telecamera {camera} ({segment})",
+    "sentinel.sentinel.ask_query": "Interrogazione con prove richiesta: «{query}» ({citations} prove collegate)"
   }
 }

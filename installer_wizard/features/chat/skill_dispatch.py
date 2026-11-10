@@ -1,6 +1,7 @@
 import inspect
 
 from features.chat.skills.camera import camera_skill
+from features.chat.skills.evidence import ask_evidence_skill
 from features.chat.skills.music import music_skill
 from features.chat.skills.network import network_skill
 from features.chat.skills.people import introduce_skill, person_info_skill, vision_skill
@@ -32,6 +33,7 @@ SKILLS = {
     "music": lambda text: music_skill(),
     "study": lambda text: _study(),
     "brain": lambda text: BRAIN_REPLY,
+    "ask_evidence": lambda text: ask_evidence_skill(text),
 }
 
 

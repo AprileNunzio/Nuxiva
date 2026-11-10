@@ -32,7 +32,7 @@ ADMIN_PORT = int(os.environ.get("NUXIVA_ADMIN_PORT", 8080))
 CORE_URL = os.environ.get("NUXIVA_CORE_URL", "http://127.0.0.1:8443")
 OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://127.0.0.1:11434")
 
-VERSION = "5.7.1"
+VERSION = "5.7.2"
 UI_LANGUAGES = {"it": "Italiano", "en": "English", "fr": "Français", "es": "Español"}
 
 for _d in (ETC_DIR, STATE_DIR, LOG_DIR):

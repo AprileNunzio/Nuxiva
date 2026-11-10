@@ -30,6 +30,10 @@ INTENTS = [
     ("voices", re.compile(r"\b(?:(?:scarica|installa|aggiungi|prendi|procurati|impara)(?:ti)?\s+(?:la\s+|una\s+|le\s+)?voc[ei]"
                            r"|(?:che|quali)\s+(?:voci|lingue)\s+(?:hai|parli|conosci|sai)|in\s+che\s+lingue\s+(?:parli|sai)"
                            r"|download\s+(?:the\s+|a\s+)?\w*\s*voice|which\s+languages\s+(?:do\s+you|can\s+you))\b", re.I)),
+    ("ask_evidence", re.compile(
+        r"\b(?:corriere|fattorino|chi [èe] passat[oa]|chi c'era|chi era|hai visto|com'?era vestit[oa]"
+        r"|passat[oa] (?:un|una|qualcun|il|la)|a che ora [èe] venut[oa]|quando [èe] venut[oa]"
+        r"|did you see|who passed|what time did)\b", re.I)),
     ("time", re.compile(r"\b(che ore sono|che ora [èe]|che giorno [èe]|che data [èe])\b", re.I)),
 ]
 

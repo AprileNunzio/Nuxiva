@@ -57,6 +57,7 @@
     "sentinel.sentinel.memory_forget": "Los recuerdos de una persona se borraron a petición ({count} pasos)",
     "sentinel.sentinel.memory_relink": "Los pasos de un invitado se vincularon a una persona ({count} pasos)",
     "sentinel.media.playback": "Grabación reproducida para cámara {camera} ({segment})",
-    "sentinel.media.encrypted": "Grabación cifrada archivada para cámara {camera} ({segment})"
+    "sentinel.media.encrypted": "Grabación cifrada archivada para cámara {camera} ({segment})",
+    "sentinel.sentinel.ask_query": "Consulta con pruebas solicitada: «{query}» ({citations} pruebas vinculadas)"
   }
 }
