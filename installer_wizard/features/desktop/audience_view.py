@@ -3,12 +3,28 @@ ANONYMOUS_KEYS = ("near", "gaze", "facing")
 HOUSEHOLD_SECTIONS = ("home",)
 PRIVATE_SECTIONS = ("agency", "background", "logs")
 QUIET_SECTIONS = ("live_dialogue",)
+SENSITIVE_IDS = frozenset({"vault", "passwords", "bank", "credentials", "secrets"})
+SENSITIVE_TOKENS = ("password", "passphrase", "iban", "conto corrente", "cvv", "secret_key", "api_key", "seed phrase")
+
+
+def requires_double_permission(item: dict) -> bool:
+    if not isinstance(item, dict):
+        return False
+    if item.get("sensitivity") == "sensitive" or str(item.get("id") or "") in SENSITIVE_IDS:
+        return True
+    data = item.get("data")
+    if isinstance(data, dict) and (data.get("sensitive") is True or data.get("requires_double_permission") is True):
+        return True
+    blob = str(data or "").lower()
+    return any(tok in blob for tok in SENSITIVE_TOKENS)
 
 
 def sensitivity(item: dict) -> str:
     level = item.get("sensitivity")
     if level in LEVELS:
         return level
+    if requires_double_permission(item):
+        return "sensitive"
     return "personal" if item.get("personal") else "public"
 
 

@@ -35,7 +35,8 @@
     if (!D.personalUi) return;
     if (D.mode !== "focus") { D.personalUi = null; return; }
     const limit = privacy.voice_s * 1000;
-    if (privacy.away || (limit > 0 && Date.now() - D.personalUi.at >= limit)) closePersonal();
+    const present = D.presentNames && D.presentNames.length > 0 && familyNearState;
+    if (privacy.away || (!present && limit > 0 && Date.now() - D.personalUi.at >= limit)) closePersonal();
   }
 
   function tick() {
@@ -45,7 +46,7 @@
     const h = d.getHours();
     const g = h < 6 ? "greet_night" : h < 13 ? "greet_morning" : h < 18 ? "greet_afternoon" : "greet_evening";
     if (D.presentNames.length) { D.greetNames = D.presentNames; D.greetSeen = Date.now(); }
-    const who = D.greetNames && Date.now() - (D.greetSeen || 0) < 20000 ? new Intl.ListFormat(Nuxiva.fmt.locale(), { type: "conjunction" }).format(D.greetNames) : "";
+    const who = D.greetNames && Date.now() - (D.greetSeen || 0) < 45000 ? new Intl.ListFormat(Nuxiva.fmt.locale(), { type: "conjunction" }).format(D.greetNames) : "";
     if ($("greet")) PageText.bind($("greet"), who ? `${g}_named` : g, who ? { who } : {});
     const quiet = !D.busy && !D.isSpeaking() && Date.now() - D.lastInteraction;
     if (D.mode !== "face" && quiet > (D.mode === "brain" ? 90000 : 60000)) goHome();
@@ -101,8 +102,8 @@
     const names = [...new Set(people.filter((p) => p.known).map((p) => p.name))];
     const near = new Set(people.filter((p) => p.known && p.near).map((p) => p.name));
     const strangers = people.filter((p) => !p.known).length;
-    const hasFamilyNear = people.some((p) => p.known && ["owner", "family"].includes(p.role));
-    if (hasFamilyNear) familyNearUntil = Date.now() + 8000;
+    const hasFamilyNear = people.some((p) => p.known && (!p.role || ["owner", "family"].includes(p.role)));
+    if (hasFamilyNear) familyNearUntil = Date.now() + 45000;
     familyNearState = hasFamilyNear || Date.now() < familyNearUntil || strangers === 0;
     document.body.classList.toggle("guest-lock", !familyNearState);
     D.presentNames = names;
@@ -133,7 +134,11 @@
     D.lastInteraction = Date.now();
     D.Mood.joy();
     if (g.names && g.names.length) {
-      $("welcome-name").textContent = [...new Set(g.names)].join(" · ");
+      familyNearUntil = Date.now() + 60000;
+      familyNearState = true;
+      D.greetNames = [...new Set(g.names)];
+      D.greetSeen = Date.now();
+      $("welcome-name").textContent = D.greetNames.join(" · ");
       PageText.bind($("welcome-sub"), "identity_recognized");
       $("welcome").classList.add("show");
       if (receivedAt !== null) console.info("Nuxiva greeting timing", {

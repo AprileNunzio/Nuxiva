@@ -225,9 +225,16 @@ async def assistant_chat(text: str, device: str, heard_lang: str | None = None, 
             "intent": result.get("intent", ""),
             "device": device,
             "client_id": cid,
+            "speaker_slug": principal.slug,
             "mode": (result.get("ui") or {}).get("mode", "face"),
             "ts": time.time(),
         }
+        if principal.slug:
+            try:
+                from features.desktop.presence_bridge import bridge
+                bridge.update()
+            except Exception:
+                pass
         store.touch()
         if not str(result.get("agent", "")).startswith("algoritmo") and skill_library.needs_algorithm(text):
             background(skill_library.learn(text, brains.config()["deep"]))

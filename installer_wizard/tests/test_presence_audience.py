@@ -229,6 +229,34 @@ class BridgeTests(unittest.TestCase):
         with mock.patch.object(presence_bridge, "gate_enabled", return_value=False):
             self.assertEqual(bridge.update()["kind"], "authorized")
 
+    def test_advisory_webcam_recognition_stays_authorized_after_greeting(self):
+        from features.people.presence import monitor
+        now = [1000.0]
+        bridge = presence_bridge.PresenceBridge(clock=lambda: now[0])
+        bridge.roles["nunzio"] = ("owner", 1000.0)
+        store.presence = {"status": "ok", "people": [{"slug": "nunzio", "name": "Nunzio Aprile", "known": True,
+                                                      "role": "owner", "confidence": 0.88,
+                                                      "liveness": {"state": "unknown"}, "near": True}]}
+        store.greeting = {"id": 1, "text": "Buongiorno, Nunzio Aprile.", "names": ["Nunzio Aprile"],
+                          "slug": "nunzio", "at": 1000.0}
+        with mock.patch.object(presence_bridge, "gate_enabled", return_value=True), \
+                mock.patch.object(presence_bridge, "_require_liveness", return_value=False), \
+                mock.patch.object(monitor, "updated_at", 1000.0):
+            bridge.update()
+            for step_s in (1.5, 4.0, 8.0, 12.0):
+                now[0] = 1000.0 + step_s
+                monitor.updated_at = now[0]
+                res = bridge.update()
+                self.assertEqual(res["kind"], "authorized")
+                self.assertFalse(res["nucleus_only"])
+
+    def test_sensitive_items_require_double_permission(self):
+        self.assertTrue(audience_view.requires_double_permission({"id": "vault", "data": {}}))
+        self.assertTrue(audience_view.requires_double_permission({"id": "note", "data": {"text": "IBAN IT60X0542811101000000123456"}}))
+        self.assertTrue(audience_view.requires_double_permission({"id": "note", "data": {"text": "password segreta"}}))
+        self.assertEqual(audience_view.sensitivity({"id": "note", "data": {"text": "conto corrente"}}), "sensitive")
+        self.assertFalse(audience_view.requires_double_permission({"id": "weather", "data": {"temp": 22}}))
+
 
 class DeskGateTests(unittest.TestCase):
 

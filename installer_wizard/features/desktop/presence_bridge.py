@@ -9,8 +9,9 @@ import native_module
 
 log = logging.getLogger("nuxiva.desktop.presence")
 DISPLAY_ROLES = frozenset({"owner", "family"})
-STALE_SECONDS = 5.0
-VOICE_WINDOW = 15.0
+STALE_SECONDS = 15.0
+VOICE_WINDOW = 60.0
+GREETING_WINDOW = 60.0
 ROLE_TTL = 30.0
 
 
@@ -38,7 +39,7 @@ def show_options() -> dict:
 
 def _require_liveness() -> bool:
     from features.vision import selection
-    return selection.liveness_mode() != "off"
+    return selection.liveness_mode() == "strict"
 
 
 def policy() -> Policy:
@@ -85,14 +86,51 @@ class PresenceBridge:
         self.roles[slug] = (role, now)
         return role
 
-    def signals(self, now: float) -> dict:
+    def _person_signal(self, person: dict, strict: bool, now: float) -> dict:
+        enriched = dict(person)
+        if enriched.get("known") and enriched.get("slug") and not enriched.get("role"):
+            enriched["role"] = self._role(str(enriched["slug"]), now)
+        sig = face_signal(enriched)
+        if not strict and sig["authorized"] and sig["liveness"] == "spoof":
+            sig["liveness"] = "unknown"
+        return sig
+
+    def _corroborated_voices(self, people_list: list, now: float) -> list[dict]:
         from features.authz.heard import heard
-        from features.people.presence import monitor
-        presence = store.presence or {}
-        faces = [face_signal(p) for p in presence.get("people") or [] if isinstance(p, dict)]
         voices = [{"person": proof.slug, "authorized": self._role(proof.slug, now) in DISPLAY_ROLES,
                    "score": proof.score, "at_ms": int(proof.at * 1000)} for proof in heard.recent(VOICE_WINDOW, now)]
-        return {"vision": _vision_state(presence, monitor.updated_at, now), "faces": faces, "voices": voices}
+        greeting = getattr(store, "greeting", None)
+        if isinstance(greeting, dict):
+            gat = float(greeting.get("at") or 0.0)
+            if 0.0 <= now - gat <= GREETING_WINDOW:
+                names = set(greeting.get("names") or [])
+                slugs = {str(greeting["slug"])} if greeting.get("slug") else set()
+                for p in people_list:
+                    if isinstance(p, dict) and p.get("known") and p.get("slug") and p.get("name") in names:
+                        slugs.add(str(p["slug"]))
+                for slug in slugs:
+                    voices.append({"person": slug, "authorized": self._role(slug, now) in DISPLAY_ROLES,
+                                   "score": 0.95, "at_ms": int(gat * 1000)})
+        dlg = getattr(store, "live_dialogue", None)
+        if isinstance(dlg, dict):
+            dat = float(dlg.get("ts") or 0.0)
+            dslug = str(dlg.get("speaker_slug") or "")
+            if dslug and 0.0 <= now - dat <= VOICE_WINDOW:
+                voices.append({"person": dslug, "authorized": self._role(dslug, now) in DISPLAY_ROLES,
+                               "score": 0.9, "at_ms": int(dat * 1000)})
+        return voices
+
+    def signals(self, now: float) -> dict:
+        from features.people.presence import monitor
+        presence = store.presence or {}
+        people_list = [p for p in presence.get("people") or [] if isinstance(p, dict)]
+        strict = _require_liveness()
+        faces = [self._person_signal(p, strict, now) for p in people_list]
+        voices = self._corroborated_voices(people_list, now)
+        vision = _vision_state(presence, monitor.updated_at, now)
+        if vision == "offline" and presence.get("status") != "disabled" and any(v.get("authorized") for v in voices):
+            vision = "ok"
+        return {"vision": vision, "faces": faces, "voices": voices}
 
     def _native(self, wanted: Policy, now_ms: int) -> NativeTracker | None:
         native = _native_class()

@@ -443,6 +443,7 @@
     const live = new Set(lastList.map((i) => i.key));
     [...cards.keys()].filter((k) => !live.has(k)).forEach((k) => remove(k));
     for (const inst of lastList) await draw(inst);
+    if (window.NuxivaShutter && typeof window.NuxivaShutter.syncCards === "function") window.NuxivaShutter.syncCards();
     scheduleLayout();
   }
 

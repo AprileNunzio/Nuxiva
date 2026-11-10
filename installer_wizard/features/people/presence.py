@@ -13,7 +13,7 @@ VISION_URL = "http://127.0.0.1:8091"
 GREET_AGAIN_AFTER = 20 * 60
 UNKNOWN_GREET_AFTER = 5 * 60
 STABLE_SECONDS = 1.2
-HOLD_SECONDS = 5.0
+HOLD_SECONDS = 15.0
 LANGUAGE_TTL = 30.0
 
 
@@ -132,19 +132,19 @@ class PresenceMonitor:
         from features.locale import service
         lang = service.preferred(slug)
         if lang == "it":
-            self._announce(text, names, timing)
+            self._announce(text, names, timing, slug)
             return
         from tasks import background
-        background(self._translated(text, names, lang, timing))
+        background(self._translated(text, names, lang, timing, slug))
 
-    async def _translated(self, text: str, names: list, lang: str, timing: tuple[float, float] | None) -> None:
+    async def _translated(self, text: str, names: list, lang: str, timing: tuple[float, float] | None, slug: str = "") -> None:
         from features.locale.pivot import pivot
-        self._announce(await pivot.from_pivot(text, lang, force=True), names, timing)
+        self._announce(await pivot.from_pivot(text, lang, force=True), names, timing, slug)
 
-    def _announce(self, text: str, names: list, timing: tuple[float, float] | None = None) -> None:
+    def _announce(self, text: str, names: list, timing: tuple[float, float] | None = None, slug: str = "") -> None:
         self.greeting_id += 1
         now = time.time()
-        greeting = {"id": self.greeting_id, "text": text, "names": names, "at": now}
+        greeting = {"id": self.greeting_id, "text": text, "names": names, "slug": slug, "at": now}
         if timing and timing[0] <= timing[1] <= now:
             detected_at, identity_at = timing
             durations = {
@@ -158,6 +158,7 @@ class PresenceMonitor:
                 durations["identity_to_greeting_ms"],
             )
         store.greeting = greeting
+        self._audience()
         store.event("INFO", f"Saluto: {text}", "vision")
 
     def _evaluate(self, people_list: list) -> None:
