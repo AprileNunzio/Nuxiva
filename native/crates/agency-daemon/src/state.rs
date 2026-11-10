@@ -29,7 +29,7 @@ struct Snapshot {
     tasks: Vec<Task>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct ProjectState {
     pub project: Project,
     pub graph: TaskGraph,

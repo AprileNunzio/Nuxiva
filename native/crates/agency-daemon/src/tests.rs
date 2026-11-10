@@ -438,3 +438,21 @@ async fn foresight_ensemble_runs_outside_the_engine_lock() -> Result<(), AgencyE
     handle.abort();
     Ok(())
 }
+
+#[test]
+fn rejected_task_update_preserves_project_snapshot() -> Result<(), AgencyError> {
+    let sandbox = Sandbox::new("rejected-update")?;
+    let mut engine = Engine::open(sandbox.config(), HOST)?;
+    create(&mut engine)?;
+    plan(&mut engine)?;
+    let before = call(&mut engine, json!({"op": "project_get", "id": "shop"}))?;
+    let rejected = call(
+        &mut engine,
+        json!({"op": "task_update", "project": "shop", "task": "design",
+               "action": "approve", "tokens": 500, "seconds": 10}),
+    );
+    assert!(rejected.is_err());
+    let after = call(&mut engine, json!({"op": "project_get", "id": "shop"}))?;
+    assert_eq!(before, after);
+    Ok(())
+}

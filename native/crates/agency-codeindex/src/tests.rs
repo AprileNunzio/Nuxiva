@@ -83,6 +83,11 @@ fn search_ranks_lines_and_ignores_binaries() -> Result<(), ScanError> {
     );
     assert!(hits.iter().all(|h| h.path != "logo.bin"));
     assert!(search(&tree.0, "  ", 10)?.is_empty());
-    assert_eq!(search(&tree.0, "product", 1)?.len(), 1);
+    let ranked = search(&tree.0, "product", 10)?;
+    assert!(ranked.len() > 1);
+    assert_eq!(
+        Some(search(&tree.0, "product", 1)?.as_slice()),
+        ranked.get(..1)
+    );
     Ok(())
 }

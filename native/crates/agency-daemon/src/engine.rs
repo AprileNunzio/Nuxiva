@@ -107,6 +107,13 @@ impl Engine {
         files::write_atomic(&path, &state.encode()?)
     }
 
+    fn commit_state(&mut self, id: &ProjectId, state: ProjectState) -> Result<(), AgencyError> {
+        let path = self.config.projects_dir().join(format!("{id}.json"));
+        files::write_atomic(&path, &state.encode()?)?;
+        self.projects.insert(id.clone(), state);
+        Ok(())
+    }
+
     fn state_mut(&mut self, id: &ProjectId) -> Result<&mut ProjectState, AgencyError> {
         self.projects.get_mut(id).ok_or(AgencyError::NotFound)
     }
@@ -329,7 +336,7 @@ impl Engine {
     }
 
     fn control(&mut self, id: &ProjectId, action: Control) -> Result<Value, AgencyError> {
-        let state = self.state_mut(id)?;
+        let mut state = self.state_mut(id)?.clone();
         match action {
             Control::Pause => state.project.transition(ProjectStatus::Paused)?,
             Control::Resume => {
@@ -341,6 +348,10 @@ impl Engine {
                 state.project.transition(next)?;
             }
             Control::Cancel => {
+                if state.project.status() == ProjectStatus::Cancelled {
+                    return Ok(state.detail());
+                }
+                state.project.transition(ProjectStatus::Cancelled)?;
                 let open: Vec<TaskId> = state
                     .graph
                     .tasks()
@@ -350,12 +361,11 @@ impl Engine {
                 for task in &open {
                     state.graph.update(task, agency_domain::Task::cancel)?;
                 }
-                state.project.transition(ProjectStatus::Cancelled)?;
             }
         }
         let status = state.project.status();
         let detail = state.detail();
-        self.persist(id)?;
+        self.commit_state(id, state)?;
         self.event("project.status", json!({ "project": id, "status": status }))?;
         Ok(detail)
     }
@@ -369,7 +379,7 @@ impl Engine {
         tokens: u64,
         seconds: u64,
     ) -> Result<Value, AgencyError> {
-        let state = self.state_mut(id)?;
+        let mut state = self.state_mut(id)?.clone();
         state
             .graph
             .update(task, |t| t.record_usage(tokens, seconds))?;
@@ -392,10 +402,10 @@ impl Engine {
             outcome?;
         }
         let before = state.project.status();
-        settle(state)?;
+        settle(&mut state)?;
         let after = state.project.status();
         let detail = state.detail();
-        self.persist(id)?;
+        self.commit_state(id, state)?;
         self.event(
             action.event(),
             json!({ "project": id, "task": task, "tokens": tokens, "seconds": seconds }),

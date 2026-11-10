@@ -1,5 +1,5 @@
 import asyncio
-import json
+from functools import partial
 import logging
 import os
 import re
@@ -18,7 +18,8 @@ import enhance
 import capture
 import feedback
 import stt
-from broadcast import SESSIONS, broadcast_event, park_hidden, register, unregister, send_event
+from broadcast import SESSIONS, broadcast_event, park_hidden, send_event
+from display_connection import handle_display
 from ingress import RealtimeInput
 from learner import current_name, learner, name_variant
 from music import MusicTap
@@ -461,51 +462,11 @@ class Session:
             await self.set_mode("idle")
 
 
-async def handler(ws) -> None:
-    try:
-        session = Session(ws)
-    except Exception as exc:
-        note_error("avvio della sessione", exc)
-        save_link()
-        raise
-    await session.send(type="ready", model=stt.MODEL_SIZE, instant=session.wake.ready, voiceprint=voiceprints.ready, host_mic=bool(HOST_MIC and HOST_MIC.is_capturing()))
-    log.info("Display collegato")
-    register(session)
-    LINK["clients"] += 1
-    save_link()
-    try:
-        async for message in ws:
-            try:
-                if isinstance(message, bytes):
-                    await session.feed(message)
-                else:
-                    await session.control(json.loads(message))
-            except (ValueError, TypeError) as exc:
-                if isinstance(message, bytes):
-                    note_error("elaborazione dell'audio", exc)
-                else:
-                    log.debug("Messaggio di controllo non valido")
-            except websockets.ConnectionClosed:
-                raise
-            except Exception as exc:
-                note_error("elaborazione dell'audio" if isinstance(message, bytes) else "comando", exc)
-                session.in_speech, session.speech = False, []
-                session.live.end()
-    except websockets.ConnectionClosed:
-        log.debug("Connessione chiusa dal display")
-    finally:
-        await session.input.close()
-        unregister(session)
-        LINK["pages"] = [s.page for s in SESSIONS if s.page]
-        LINK["clients"] = max(0, LINK["clients"] - 1)
-        save_link()
-        log.info("Display scollegato")
-
-
 async def main() -> None:
     global HOST_MIC
     reviewer = Reviewer(lambda: any(s.mode != "idle" or s.in_speech or s.nuxiva_speaking for s in SESSIONS))
     HOST_MIC = host_mic = HostMicCapture(Session)
+    handler = partial(handle_display, make_session=Session, voiceprints=voiceprints, host_mic=host_mic)
     async with websockets.serve(handler, "127.0.0.1", PORT, max_size=2 ** 20, ping_interval=20, ping_timeout=90):
         await asyncio.gather(supervise("stato", link_writer), supervise("revisione", reviewer.run),
                              supervise("registro", capture.maintenance), supervise("feedback", lambda: feedback.run(voiceprints)),

@@ -1,4 +1,7 @@
+use std::cmp::Ordering;
+use std::collections::BinaryHeap;
 use std::fs;
+use std::io::Read;
 use std::path::Path;
 
 use serde::Serialize;
@@ -14,6 +17,27 @@ pub struct Hit {
     pub line: usize,
     pub text: String,
     pub score: usize,
+}
+
+#[derive(PartialEq, Eq)]
+struct RankedHit(Hit);
+
+impl Ord for RankedHit {
+    fn cmp(&self, other: &Self) -> Ordering {
+        other
+            .0
+            .score
+            .cmp(&self.0.score)
+            .then_with(|| self.0.path.cmp(&other.0.path))
+            .then_with(|| self.0.line.cmp(&other.0.line))
+            .then_with(|| self.0.text.cmp(&other.0.text))
+    }
+}
+
+impl PartialOrd for RankedHit {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
 }
 
 fn terms(query: &str) -> Vec<String> {
@@ -32,11 +56,25 @@ fn is_text(bytes: &[u8]) -> bool {
     !bytes.iter().take(4096).any(|b| *b == 0)
 }
 
-fn file_hits(root: &Path, entry: &FileEntry, terms: &[String], out: &mut Vec<Hit>) {
-    let Ok(bytes) = fs::read(root.join(&entry.path)) else {
+fn file_hits(
+    root: &Path,
+    entry: &FileEntry,
+    terms: &[String],
+    limit: usize,
+    out: &mut BinaryHeap<RankedHit>,
+) {
+    let Ok(file) = fs::File::open(root.join(&entry.path)) else {
         return;
     };
-    if !is_text(&bytes) {
+    let mut bytes = Vec::new();
+    let max = Limits::default().max_file_bytes;
+    if file
+        .take(max.saturating_add(1))
+        .read_to_end(&mut bytes)
+        .is_err()
+        || bytes.len() as u64 > max
+        || !is_text(&bytes)
+    {
         return;
     }
     let text = String::from_utf8_lossy(&bytes);
@@ -51,12 +89,19 @@ fn file_hits(root: &Path, entry: &FileEntry, terms: &[String], out: &mut Vec<Hit
         if matched == 0 {
             continue;
         }
-        out.push(Hit {
+        let hit = RankedHit(Hit {
             path: entry.path.clone(),
             line: index.saturating_add(1),
             text: line.trim().chars().take(MAX_LINE_CHARS).collect(),
             score: matched.saturating_mul(10).saturating_add(path_bonus),
         });
+        if out.len() < limit {
+            out.push(hit);
+        } else if let Some(mut worst) = out.peek_mut() {
+            if hit < *worst {
+                *worst = hit;
+            }
+        }
     }
 }
 
@@ -65,16 +110,13 @@ pub fn search(root: &Path, query: &str, limit: usize) -> Result<Vec<Hit>, ScanEr
     if terms.is_empty() || limit == 0 {
         return Ok(Vec::new());
     }
-    let mut hits = Vec::new();
+    let mut hits = BinaryHeap::new();
     for entry in scan(root, Limits::default())? {
-        file_hits(root, &entry, &terms, &mut hits);
+        file_hits(root, &entry, &terms, limit, &mut hits);
     }
-    hits.sort_by(|a, b| {
-        b.score
-            .cmp(&a.score)
-            .then_with(|| a.path.cmp(&b.path))
-            .then(a.line.cmp(&b.line))
-    });
-    hits.truncate(limit);
-    Ok(hits)
+    Ok(hits
+        .into_sorted_vec()
+        .into_iter()
+        .map(|hit| hit.0)
+        .collect())
 }

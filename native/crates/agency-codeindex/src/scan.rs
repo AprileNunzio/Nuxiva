@@ -81,12 +81,15 @@ pub fn scan(root: &Path, limits: Limits) -> Result<Vec<FileEntry>, ScanError> {
     }
     let mut out = Vec::new();
     let mut stack: Vec<(PathBuf, usize)> = vec![(root.to_path_buf(), 0)];
-    while let Some((dir, depth)) = stack.pop() {
-        let mut entries: Vec<fs::DirEntry> = fs::read_dir(&dir)?.filter_map(Result::ok).collect();
+    'scan: while let Some((dir, depth)) = stack.pop() {
+        if out.len() >= limits.max_files {
+            break;
+        }
+        let mut entries: Vec<fs::DirEntry> = fs::read_dir(&dir)?.collect::<Result<_, _>>()?;
         entries.sort_by_key(fs::DirEntry::file_name);
         for entry in entries {
             if out.len() >= limits.max_files {
-                return Ok(out);
+                break 'scan;
             }
             let name = entry.file_name();
             let Some(name) = name.to_str() else {
