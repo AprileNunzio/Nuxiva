@@ -1,3 +1,4 @@
+import asyncio
 import json
 import unittest
 from unittest import mock
@@ -5,6 +6,7 @@ from unittest import mock
 import httpx
 
 from server.core.reasoning.conversation import ConversationEngine
+from server.cmd.conversation_response import ConversationResponse
 from server.features.llm_gateway import streaming
 from server.features.llm_gateway.contracts import SYNTHETIC_MODEL, LLMMessage, LLMRequest, LLMResponse
 from server.features.llm_gateway.gateway import LLMGateway
@@ -22,6 +24,43 @@ class StreamingTests(unittest.IsolatedAsyncioTestCase):
 
     def setUp(self):
         self.gateway = LLMGateway()
+
+    async def test_response_closes_events_when_client_disconnects_during_send(self):
+        closed = asyncio.Event()
+
+        async def events():
+            try:
+                yield "data: first\n\n"
+            finally:
+                closed.set()
+
+        async def send(message):
+            if message["type"] == "http.response.body":
+                raise OSError("disconnected")
+
+        with self.assertRaises(OSError):
+            await ConversationResponse(events()).stream_response(send)
+        self.assertTrue(closed.is_set())
+
+    async def test_closing_conversation_releases_provider_without_saving_partial_reply(self):
+        released = asyncio.Event()
+
+        async def chunks(base, payload):
+            try:
+                yield "Risposta parziale"
+                await asyncio.Future()
+            finally:
+                released.set()
+
+        engine = ConversationEngine()
+        with mock.patch.object(streaming, "ollama_chunks", side_effect=chunks), \
+                mock.patch.object(streaming, "apply_tuning", side_effect=lambda r: r), \
+                mock.patch("server.core.reasoning.conversation.llm_gateway", self.gateway):
+            reply = engine.reply_stream("ciao", "kiosk", models=["granite"])
+            self.assertEqual(await anext(reply), "Risposta parziale")
+            await reply.aclose()
+        self.assertTrue(released.is_set())
+        self.assertFalse(engine._history.get("kiosk"))
 
     async def test_chunks_arrive_in_order_from_the_first_working_model(self):
         async def chunks(base, payload):

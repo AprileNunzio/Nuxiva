@@ -1,16 +1,68 @@
 import asyncio
 import json
+import sys
 import unittest
 from contextlib import aclosing
+from pathlib import Path
+from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
 from fastapi.responses import JSONResponse
 
 from features.chat import api, streaming, turns
 from features.nodes import assist_turn
+from features.nodes.assist_stop_store import AssistStopStore
 
 
 class ChatTurnTests(unittest.IsolatedAsyncioTestCase):
+    def setUp(self):
+        folder = self.enterContext(TemporaryDirectory())
+        self.stop_db = Path(folder) / "assist-stops.sqlite3"
+        self.enterContext(patch.object(assist_turn, "_stops", AssistStopStore(self.stop_db)))
+
+    async def test_separate_process_can_cancel_running_work(self):
+        ready = asyncio.Event()
+        stopped = asyncio.Event()
+        turn_id = "d" * 32
+
+        async def operation():
+            ready.set()
+            try:
+                await asyncio.Future()
+            finally:
+                stopped.set()
+
+        work = asyncio.create_task(assist_turn.run("desktop", turn_id, operation))
+        await asyncio.wait_for(ready.wait(), 3)
+        code = (
+            "import sys; sys.path[:0] = sys.argv[3:]; "
+            "from features.nodes.assist_stop_store import AssistStopStore; "
+            "AssistStopStore(sys.argv[1]).record(sys.argv[2])"
+        )
+        try:
+            proc = await asyncio.create_subprocess_exec(
+                sys.executable, "-c", code, str(self.stop_db), f"node:desktop:{turn_id}", *sys.path,
+                stderr=asyncio.subprocess.PIPE,
+            )
+            _, stderr = await asyncio.wait_for(proc.communicate(), 10)
+            self.assertEqual(proc.returncode, 0, stderr.decode(errors="replace"))
+            self.assertEqual(await asyncio.wait_for(work, 3), {"cancelled": True})
+            self.assertTrue(stopped.is_set())
+        finally:
+            if not work.done():
+                work.cancel()
+                await asyncio.gather(work, return_exceptions=True)
+
+    async def test_stop_before_admission_skips_only_the_matching_node_request(self):
+        turn_id = "c" * 32
+
+        async def operation():
+            return {"reply": "done"}
+
+        self.assertFalse(await assist_turn.stop("first", turn_id))
+        self.assertEqual(await assist_turn.run("first", turn_id, operation), {"cancelled": True})
+        self.assertEqual(await assist_turn.run("second", turn_id, operation), {"reply": "done"})
+
     async def test_satellite_stop_is_bound_to_authenticated_node_and_request(self):
         ready = asyncio.Event()
         release = asyncio.Event()
@@ -25,8 +77,8 @@ class ChatTurnTests(unittest.IsolatedAsyncioTestCase):
         second = asyncio.create_task(assist_turn.run("desktop", second_id, operation))
         await ready.wait()
         try:
-            self.assertFalse(assist_turn.stop("other", first_id))
-            self.assertTrue(assist_turn.stop("desktop", first_id))
+            self.assertFalse(await assist_turn.stop("other", first_id))
+            await assist_turn.stop("desktop", first_id)
             self.assertEqual(await first, {"cancelled": True})
             self.assertFalse(second.done())
         finally:

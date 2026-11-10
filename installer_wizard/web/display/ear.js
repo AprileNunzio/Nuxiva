@@ -206,7 +206,7 @@
       }
       else if (ev.type === "state") { setState(ev.state); document.body.classList.toggle("conversing", !!ev.conversation); }
       else if (ev.type === "wake") { D.lastInteraction = Date.now(); D.pingActivity(true); setState("listening"); if (D.mode === "brain") D.setMode("face"); if (D.wakeDesk) D.wakeDesk(); }
-      else if (ev.type === "barge") { if (D.hush) D.hush(); }
+      else if (ev.type === "barge") { if (ev.origin !== false && D.hush) D.hush(); }
       else if (ev.type === "mic_level") micLevelAdvice(ev.advice);
       else if (ev.type === "wake_only") D.greetWake();
       else if (ev.type === "conversation_end") document.body.classList.remove("conversing");
@@ -323,7 +323,10 @@
     setAssistantName(name) { if (!name || name === assistant) return; assistant = name; setState(state); },
     start, send, restartMic, setAutoCalibrate, enableRemote, disableRemote, debugState: setState, debugLevel: level,
     listen() { if (ctx && ctx.state === "suspended") ctx.resume(); D.pingActivity(true); send({ type: "listen" }); setState("listening"); },
-    speaking(on) { send({ type: "speaking", on }); },
+    speaking(on) {
+      const track = stream?.getAudioTracks()[0];
+      send({ type: "speaking", on, echo_cancelled: track?.getSettings().echoCancellation === true });
+    },
     followup(seconds = 20) { send({ type: "followup", seconds, conversation: true }); },
     presence(alone) { if (alone !== lastAlone) { lastAlone = alone; send({ type: "presence", alone: alone || "" }); } },
     get state() { return state; },

@@ -8,6 +8,7 @@ from fastapi import WebSocket, WebSocketDisconnect
 
 import auth
 from features.authz.heard import heard
+from features.ear import room_capture
 from features.ear.remote_input import input_allowed, local_input, origin_matches
 
 logger = logging.getLogger("nuxiva.ear.proxy")
@@ -81,10 +82,13 @@ def _remote_control_allowed(client: WebSocket, text: str) -> bool:
 
 
 async def _down(client: Any, upstream: Any, device: str) -> None:
+    source = object()
     async for message in upstream:
         if isinstance(message, bytes):
             await client.send_bytes(message)
         else:
+            if not room_capture.accepts(device, source, message):
+                continue
             heard.tap(message, device)
             await client.send_text(message)
 

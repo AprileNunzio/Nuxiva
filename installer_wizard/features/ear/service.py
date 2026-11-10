@@ -80,6 +80,8 @@ class Session:
         self.awaiting_command = False
         self.instant = False
         self.nuxiva_speaking = False
+        self.echo_cancelled_input = False
+        self.speech_during_playback = False
         self.last_level = 0.0
         self.waiting = 0
         self.raw: list | None = None
@@ -163,7 +165,7 @@ class Session:
                                    self.profile.magnitude)
         if chunk is not None:
             asyncio.create_task(self._save(chunk))
-        if self.nuxiva_speaking:
+        if self.nuxiva_speaking and not self.echo_cancelled_input:
             self.in_speech, self.speech = False, []
             await self._drop_caption()
             if self.enroll is None and await self.wake.detect(frame) and self.wake.score >= BARGE_IN:
@@ -171,7 +173,7 @@ class Session:
                 await self.broadcast(type="barge")
                 await self._instant_wake()
             return
-        if self.mode == "idle" and self.enroll is None and await self.wake.detect(leveled):
+        if not self.nuxiva_speaking and self.mode == "idle" and self.enroll is None and await self.wake.detect(leveled):
             await self._instant_wake()
         if self.mode == "listening" and now > self.listen_until and (not self.in_speech or now > self.listen_until + 6):
             await self._listen_timeout()
@@ -184,7 +186,8 @@ class Session:
             if voiced:
                 self.in_speech, self.speech_start, self.last_voice = True, now, now
                 self.speech = [self.ring.copy()]
-                self.live.begin(self._addressed())
+                self.speech_during_playback = self.nuxiva_speaking
+                self.live.begin(self._addressed() and not self.speech_during_playback)
             return
 
         self.speech.append(frame)
@@ -198,8 +201,10 @@ class Session:
             instant, self.instant = self.instant, False
             caption = self.live.end()
             if duration >= MIN_UTTERANCE:
-                asyncio.create_task(self._utterance(audio, self.mode == "listening" or instant,
-                                                    self.conversation, instant, caption))
+                overlap = self.speech_during_playback
+                asyncio.create_task(self._utterance(audio, (self.mode == "listening" or instant) and not overlap,
+                                                    self.conversation and not overlap, instant and not overlap,
+                                                    caption, overlap=overlap))
             elif caption["utt"]:
                 await self.broadcast(type="caption_drop", utt=caption["utt"])
 
@@ -241,7 +246,8 @@ class Session:
         await self.broadcast(type="wake", source="instant")
         await self.set_mode("listening")
 
-    async def _utterance(self, audio: np.ndarray, attentive: bool, followup: bool, instant: bool, caption: dict) -> None:
+    async def _utterance(self, audio: np.ndarray, attentive: bool, followup: bool, instant: bool, caption: dict,
+                         overlap: bool = False) -> None:
         self.recorder.hold(20)
         if not await asyncio.to_thread(stt.has_speech, audio):
             await self.broadcast(type="caption_drop", utt=caption["utt"])
@@ -261,6 +267,7 @@ class Session:
         self.waiting += 0 if attentive else 1
         woke = instant
         overheard = None
+        probe = ""
         try:
             async with stt.lock:
                 t = time.time()
@@ -271,13 +278,21 @@ class Session:
                         learner.on_miss(probe)
                         self.recorder.note("heard", text=probe)
                         overheard = await self._overheard(clean, probe, caption)
-                    else:
-                        woke = True
-                        self.recorder.note("wake", source="speech")
-                        await self.broadcast(type="wake", source="speech")
                 if overheard is None:
-                    await self.broadcast(type="state", state="transcribing", conversation=followup)
+                    if attentive:
+                        await self.broadcast(type="state", state="transcribing", conversation=followup)
                     text, lang = await asyncio.to_thread(stt.transcribe, clean, False, True)
+                    if not attentive:
+                        confirmed = learner.find_wake(text)
+                        if confirmed is None or confirmed[0] >= 3 or stt.hallucination(text):
+                            self.recorder.note("heard", text=text or probe)
+                            overheard = text or caption["text"] or probe
+                        else:
+                            woke = True
+                            if overlap and self.nuxiva_speaking:
+                                await self.broadcast(type="barge")
+                            self.recorder.note("wake", source="speech")
+                            await self.broadcast(type="wake", source="speech")
                     ms = int((time.time() - t) * 1000)
         finally:
             self.waiting -= 0 if attentive else 1
@@ -320,7 +335,17 @@ class Session:
         self.awaiting_command = False
         learner.on_command()
         self.recorder.note("transcript", text=command, dur=round(len(clean) / RATE, 2), woke=woke, ms=ms)
-        speaker, score, turn = await asyncio.to_thread(speakers.identify, clean, self.alone)
+        speaker, score, turn, dominant = await asyncio.to_thread(speakers.inspect, clean, self.alone)
+        if turn.get("mixed_speakers"):
+            async with stt.lock:
+                verified, _ = await asyncio.to_thread(stt.transcribe, dominant, False, True)
+            wake = learner.find_wake(verified)
+            if wake and wake[0] < 3:
+                verified = verified[wake[1]:]
+            if re.findall(r"\w+", command.casefold()) != re.findall(r"\w+", verified.casefold()):
+                await self.broadcast(type="caption_drop", utt=caption["utt"])
+                await self.set_mode("idle")
+                return
         asyncio.create_task(capture.store(note_error, "command", command, lang, speaker, score, woke, ms, caption, clean))
         enforce_speaker = earconf.flag("NUXIVA_VOICEPRINT_ENFORCE", False)
         if enforce_speaker and voiceprints.ready and len(voiceprints.samples) > 0:
@@ -392,6 +417,10 @@ class Session:
             await self.set_mode("listening", seconds, conversation=bool(msg.get("conversation")))
         elif kind == "speaking":
             self.nuxiva_speaking = bool(msg.get("on"))
+            self.echo_cancelled_input = (
+                self.nuxiva_speaking and msg.get("echo_cancelled") is True
+                and earconf.flag("NUXIVA_EAR_DUPLEX", False)
+            )
             if self.nuxiva_speaking:
                 self.wake.request_reset()
         elif kind == "mic_adjusted":

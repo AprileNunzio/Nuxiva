@@ -57,6 +57,8 @@ class Voice:
 
     def on_event(self, event: dict) -> None:
         kind, post = event.get("type"), self.ui.dispatch.post
+        if event.get("origin") is False and kind in ("wake", "wake_only", "transcript", "barge", "state"):
+            return
         if kind == "wake":
             self.speaker.chime(True)
             post(self.ui.set_state, "listening")

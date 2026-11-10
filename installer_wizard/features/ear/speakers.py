@@ -50,6 +50,10 @@ class SpeakerContext:
         return np.concatenate(parts), True
 
     def identify(self, audio: np.ndarray, alone: str | None) -> tuple[str | None, float, dict]:
+        slug, score, info, _ = self.inspect(audio, alone)
+        return slug, score, info
+
+    def inspect(self, audio: np.ndarray, alone: str | None) -> tuple[str | None, float, dict, np.ndarray]:
         speech, mixed = self.dominant(audio)
         probe = self.voiceprints.embed(speech)
         slug, score = self.voiceprints.identify(probe)
@@ -58,7 +62,7 @@ class SpeakerContext:
         info: dict = {"mixed_speakers": mixed}
         if self.tracker is not None and probe is not None:
             info.update(turn_fields(self.tracker.observe(np.asarray(probe, dtype=np.float32).tolist(), time.time(), slug)))
-        return slug, score, info
+        return slug, score, info, speech
 
     def active(self) -> int:
         return self.tracker.active(time.time()) if self.tracker is not None else 0

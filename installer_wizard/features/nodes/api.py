@@ -232,7 +232,8 @@ async def node_assist_stop(request: Request):
     node = _node(request)
     body = await _body(request, 1024)
     from features.nodes import assist_turn
-    return {"stopped": assist_turn.stop(node["id"], body.get("turn_id"))}
+    stopped = await assist_turn.stop(node["id"], body.get("turn_id"))
+    return {"accepted": True, "stopped": stopped}
 
 
 @public_routes.post("/api/nodes/tts")

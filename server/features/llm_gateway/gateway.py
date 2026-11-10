@@ -2,7 +2,7 @@ from pathlib import Path
 import re
 import asyncio
 import time
-from typing import AsyncIterator
+from typing import AsyncGenerator
 import httpx
 import logging
 import os
@@ -78,7 +78,7 @@ class LLMGateway:
             chain.append("ollama")
         return chain
 
-    def stream_completion(self, request: LLMRequest) -> AsyncIterator[str]:
+    def stream_completion(self, request: LLMRequest) -> AsyncGenerator[str, None]:
         from server.features.llm_gateway.streaming import stream
         return stream(self, request)
 

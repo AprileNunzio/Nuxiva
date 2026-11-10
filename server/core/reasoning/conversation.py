@@ -3,7 +3,8 @@ import os
 import re
 import time
 from collections import defaultdict, deque
-from typing import AsyncIterator, Deque, Dict, List, Optional, Tuple
+from contextlib import aclosing
+from typing import AsyncGenerator, Deque, Dict, List, Optional, Tuple
 
 from server.config.env import settings
 from server.features.llm_gateway.contracts import LLMMessage, LLMRequest
@@ -129,13 +130,14 @@ class ConversationEngine:
     async def reply_stream(self, query: str, device_id: str, people_context: str = "", knowledge: str = "",
                            models: Optional[List[str]] = None, max_tokens: int = 400, reply_language: str = "",
                            speaker: str = "", dialogue: str = "", long_term: str = "", laws: str = "",
-                           pinned: str = "", capabilities: str = "") -> AsyncIterator[str]:
+                           pinned: str = "", capabilities: str = "") -> AsyncGenerator[str, None]:
         messages, persona = self._prompt(query, device_id, people_context, knowledge, reply_language, speaker,
                                          dialogue, long_term, laws, capabilities)
         parts: list[str] = []
-        async for chunk in llm_gateway.stream_completion(self._request(messages, persona, models, max_tokens, pinned)):
-            parts.append(chunk)
-            yield chunk
+        async with aclosing(llm_gateway.stream_completion(self._request(messages, persona, models, max_tokens, pinned))) as chunks:
+            async for chunk in chunks:
+                parts.append(chunk)
+                yield chunk
         answer = "".join(parts).strip()
         if not answer:
             raise AgentExecutionException("nuxiva_conversation", "risposta vuota", {"reason": "empty"})

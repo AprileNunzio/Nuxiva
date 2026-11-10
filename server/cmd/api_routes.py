@@ -3,10 +3,12 @@ import asyncio
 import json
 import logging
 import sqlite3
+from contextlib import aclosing
 from typing import Dict, Any, AsyncGenerator
 from fastapi import APIRouter, HTTPException, Request, Response, WebSocket, WebSocketDisconnect
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
+from server.cmd.conversation_response import ConversationResponse
 from server.core.orchestrator.dispatcher import orchestrator_dispatcher
 from server.core.context_graph.graph_client import graph_client
 from server.core.security_guard.token_provider import token_provider
@@ -224,15 +226,17 @@ async def _conversation_events(payload: UserCommandPayload) -> AsyncGenerator[st
         yield _event({"done": True, "agent": response.agent_id, "model": (response.result_data or {}).get("model", "")})
         return
     try:
-        async for piece in conversation_engine.reply_stream(
+        stream = conversation_engine.reply_stream(
                 payload.query, payload.device_id,
                 people_context=str(context.get("people_present") or ""), knowledge=str(context.get("knowledge") or ""),
                 models=list(context.get("models") or []) or None, max_tokens=int(context.get("max_tokens") or 400),
                 reply_language=str(context.get("reply_language") or ""), speaker=str(context.get("speaker") or ""),
                 dialogue=str(context.get("dialogue") or ""), long_term=str(context.get("long_term") or ""),
                 laws=str(context.get("laws") or ""), pinned=str(context.get("pinned") or ""),
-                capabilities=str(context.get("capabilities") or "")):
-            yield _event({"t": piece})
+                capabilities=str(context.get("capabilities") or ""))
+        async with aclosing(stream):
+            async for piece in stream:
+                yield _event({"t": piece})
     except (AgentExecutionException, RuntimeError) as exc:
         yield _event({"error": str(exc)[:300]})
         return
@@ -240,8 +244,7 @@ async def _conversation_events(payload: UserCommandPayload) -> AsyncGenerator[st
 
 @router.post("/conversation/stream")
 async def conversation_stream(payload: UserCommandPayload) -> StreamingResponse:
-    return StreamingResponse(_conversation_events(payload), media_type="text/event-stream",
-                             headers={"Cache-Control": "no-store", "X-Accel-Buffering": "no"})
+    return ConversationResponse(_conversation_events(payload))
 
 @router.get("/knowledge/graph")
 async def get_knowledge_graph_snapshot() -> Dict[str, Any]:

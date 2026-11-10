@@ -1,6 +1,7 @@
 import json
 import logging
-from typing import AsyncIterator
+from contextlib import aclosing
+from typing import AsyncGenerator
 
 import httpx
 
@@ -30,7 +31,7 @@ def payload_for(model: str, request: LLMRequest, chain: list[str]) -> dict:
             "options": {"temperature": request.temperature, "num_predict": request.max_tokens}}
 
 
-async def ollama_chunks(base_url: str, payload: dict) -> AsyncIterator[str]:
+async def ollama_chunks(base_url: str, payload: dict) -> AsyncGenerator[str, None]:
     async with httpx.AsyncClient(timeout=httpx.Timeout(180.0, connect=10.0)) as client:
         async with client.stream("POST", f"{base_url}/api/chat", json=payload) as response:
             response.raise_for_status()
@@ -47,7 +48,7 @@ async def ollama_chunks(base_url: str, payload: dict) -> AsyncIterator[str]:
                     return
 
 
-async def stream(gateway, request: LLMRequest) -> AsyncIterator[str]:
+async def stream(gateway, request: LLMRequest) -> AsyncGenerator[str, None]:
     request = apply_tuning(request)
     chain = chain_for(request)
     target_url = gateway.get_ollama_url()
@@ -58,10 +59,11 @@ async def stream(gateway, request: LLMRequest) -> AsyncIterator[str]:
         started = False
         try:
             logger.info("Routing LLM request to base_url: %s for model: %s", target_url, model)
-            async for piece in ollama_chunks(target_url, payload_for(model, request, chain)):
-                started = True
-                gateway.last_stream_model = f"ollama/{model}"
-                yield piece
+            async with aclosing(ollama_chunks(target_url, payload_for(model, request, chain))) as chunks:
+                async for piece in chunks:
+                    started = True
+                    gateway.last_stream_model = f"ollama/{model}"
+                    yield piece
             if started:
                 return
         except (httpx.HTTPError, ValueError, StreamUnavailable) as exc:
