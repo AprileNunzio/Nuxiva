@@ -146,5 +146,41 @@ async def board_control(project_id: str, action: str, request: Request):
     _display_write(request)
     if action not in BOARD_CONTROLS:
         _fail(request, "invalid", 400)
-    await _guard(request, service.control(_project(request, project_id), action))
-    return await _guard(request, board.focus(project_id))
+    pid = _project(request, project_id)
+    await _guard(request, service.control(pid, action))
+    return await _guard(request, board.focus(pid))
+
+
+@public_routes.post("/api/agency/board/{project_id}/tasks/{task_id}/{action}")
+async def board_task_action(project_id: str, task_id: str, action: str, request: Request):
+    from features.agency import office
+    _display_write(request)
+    pid = _project(request, project_id)
+    tid = _project(request, task_id)
+    if action not in office.TASK_ACTIONS:
+        _fail(request, "invalid", 400)
+    try:
+        body = await request.json()
+    except ValueError:
+        body = {}
+    await _guard(request, office.task_action(pid, tid, action, body if isinstance(body, dict) else {}))
+    return await _guard(request, board.focus(pid))
+
+
+@public_routes.post("/api/agency/board/{project_id}/questions/{question_id}/answer")
+async def board_question_answer(project_id: str, question_id: str, request: Request):
+    _display_write(request)
+    pid = _project(request, project_id)
+    qid = _project(request, question_id)
+    try:
+        body = await request.json()
+    except ValueError:
+        _fail(request, "invalid", 400)
+    if not isinstance(body, dict):
+        _fail(request, "invalid", 400)
+    option = str(body.get("option") or "").strip()[:120] or None
+    answer_text = str(body.get("answer") or "").strip()[:600] or None
+    if not option and not answer_text:
+        _fail(request, "invalid", 400)
+    await _guard(request, service.answer(pid, qid, option=option, answer_text=answer_text))
+    return await _guard(request, board.focus(pid))

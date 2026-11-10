@@ -46,11 +46,13 @@ def _questions(reasoning) -> list[dict]:
 
 
 async def overview() -> dict:
+    from features.agency import office
     data = await service.overview()
     capacity = data.get("capacity") or {}
     limit = capacity.get("capacity") or {}
     cards = sorted((card(p) for p in data.get("projects") or []), key=lambda c: -c["created_at_ms"])
     return {
+        "agency_name": office.AGENCY_NAME,
         "agents": {"running": _number(capacity.get("running")), "parallel": _number(limit.get("parallel_agents"))},
         "tools": len(registry.active()),
         "projects": cards,
@@ -58,10 +60,11 @@ async def overview() -> dict:
 
 
 async def focus(project_id: str) -> dict:
+    from features.agency import office
     data = await service.detail(project_id)
     blueprint = data.get("blueprint") or {}
     reasoning = data.get("reasoning") or {}
-    return {
+    base = {
         **card(data),
         "goal": clean((data.get("project") or {}).get("goal"), 400),
         "summary": clean(blueprint.get("summary"), 600),
@@ -72,3 +75,4 @@ async def focus(project_id: str) -> dict:
         "issues": [clean(i, 300) for i in (reasoning.get("issues") or [])[:MAX_QUESTIONS]],
         "tools": [t.call_name for t in registry.all() if t.origin.get("project") == project_id],
     }
+    return office.enrich_focus(data, base)

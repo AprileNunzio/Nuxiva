@@ -46,6 +46,8 @@ class Engine:
             ]}
         if op == "project_control":
             return {"ok": True}
+        if op in ("task_review", "task_fail", "task_submit", "project_answer"):
+            return {"ok": True}
         raise AssertionError(op)
 
 
@@ -67,6 +69,7 @@ class BoardCase(unittest.TestCase):
 class BoardTest(BoardCase):
     def test_overview_is_sanitised_and_newest_first(self):
         data = asyncio.run(board.overview())
+        self.assertEqual(data["agency_name"], "NunzioTech Agency")
         self.assertEqual(data["agents"], {"running": 2, "parallel": 4})
         self.assertEqual(data["tools"], 1)
         self.assertEqual([p["id"] for p in data["projects"]], ["shop", "vecchio"])
@@ -74,8 +77,9 @@ class BoardTest(BoardCase):
         self.assertEqual((shop["title"], shop["percent"], shop["eta_seconds"]), ("Negozio", 100, 600))
         self.assertNotIn("goal", shop)
 
-    def test_focus_exposes_only_display_fields(self):
+    def test_focus_exposes_only_display_fields_and_nunziotech_office(self):
         data = asyncio.run(board.focus("shop"))
+        self.assertEqual(data["agency_name"], "NunzioTech Agency")
         self.assertEqual([t["id"] for t in data["tasks"]], ["design", "api"])
         self.assertEqual(data["tasks"][1]["depends_on"], ["design"])
         self.assertNotIn("feedback", data["tasks"][0])
@@ -83,6 +87,20 @@ class BoardTest(BoardCase):
         self.assertEqual(data["questions"], [{"q": "Pagamenti?", "a": "PCI"}])
         self.assertEqual(data["tools"], ["x_iva_netta"])
         self.assertLessEqual(len(data["goal"]), 400)
+        office = data["office"]
+        self.assertEqual(office["agency_name"], "NunzioTech Agency")
+        self.assertEqual(office["ceo"]["role"], "ceo")
+        self.assertIn("NunzioTech Agency", office["ceo"]["name"])
+        self.assertEqual(len(office["agents"]), 1)
+        self.assertEqual(office["agents"][0]["id"], "backend")
+        self.assertEqual(office["agents"][0]["avatar"]["hoodie"], "#ff6b1a")
+        self.assertTrue(office["agents"][0]["seated"])
+        self.assertTrue(office["desks"][0]["occupied"])
+        self.assertFalse(office["desks"][1]["occupied"])
+        self.assertGreaterEqual(office["shared_brain"]["rules_count"], 1687)
+        self.assertGreaterEqual(office["shared_brain"]["reviews_count"], 943)
+        self.assertEqual([c["id"] for c in office["kanban"]["in_progress"]], ["api"])
+        self.assertEqual([c["id"] for c in office["kanban"]["to_watch"]], ["design"])
 
     def test_card_tolerates_garbage(self):
         card = board.card({"project": {"usage": {"tokens": -5}}, "progress": {"percent": True}})
@@ -121,6 +139,12 @@ class BoardApiTest(BoardCase):
         self.assertEqual(self.web.get("/api/agency/board/shop").json()["roles"], [{"id": "backend", "mission": "API"}])
         self.assertEqual(self.web.post("/api/agency/board/shop/pause", headers=HEADERS).status_code, 200)
         self.assertIn(("project_control", {"id": "shop", "action": "pause"}), self.engine.calls)
+        self.assertEqual(self.web.post("/api/agency/board/shop/tasks/api/approve", json={"feedback": "Ottimo"}, headers=HEADERS).status_code, 200)
+        self.assertIn(("task_review", {"project": "shop", "task": "api", "approved": True, "feedback": "Ottimo"}), self.engine.calls)
+        self.assertEqual(self.web.post("/api/agency/board/shop/tasks/api/interrupt", json={"feedback": "Stop"}, headers=HEADERS).status_code, 200)
+        self.assertIn(("task_fail", {"project": "shop", "task": "api", "reason": "Stop"}), self.engine.calls)
+        self.assertEqual(self.web.post("/api/agency/board/shop/questions/q1/answer", json={"answer": "Stripe"}, headers=HEADERS).status_code, 200)
+        self.assertIn(("project_answer", {"id": "shop", "question": "q1", "option": None, "answer": "Stripe"}), self.engine.calls)
         self.assertEqual(self.web.post("/api/agency/board/shop/cancel", headers=HEADERS).status_code, 400)
         self.assertEqual(self.web.post("/api/agency/board/shop/pause").status_code, 403)
         self.assertEqual(self.web.get("/api/agency/board/Bad..Id").status_code, 404)
