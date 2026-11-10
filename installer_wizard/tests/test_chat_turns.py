@@ -34,6 +34,7 @@ class ChatTurnTests(unittest.IsolatedAsyncioTestCase):
 
         work = asyncio.create_task(assist_turn.run("desktop", turn_id, operation))
         await asyncio.wait_for(ready.wait(), 3)
+        wizard = Path(__file__).resolve().parents[1]
         code = (
             "import sys; sys.path[:0] = sys.argv[3:]; "
             "from features.nodes.assist_stop_store import AssistStopStore; "
@@ -41,7 +42,8 @@ class ChatTurnTests(unittest.IsolatedAsyncioTestCase):
         )
         try:
             proc = await asyncio.create_subprocess_exec(
-                sys.executable, "-c", code, str(self.stop_db), f"node:desktop:{turn_id}", *sys.path,
+                sys.executable, "-I", "-c", code, str(self.stop_db), f"node:desktop:{turn_id}",
+                str(wizard), str(wizard / "backend"),
                 stderr=asyncio.subprocess.PIPE,
             )
             _, stderr = await asyncio.wait_for(proc.communicate(), 10)
