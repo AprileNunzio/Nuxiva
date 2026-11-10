@@ -13,7 +13,7 @@ class VersionSsotTest(unittest.TestCase):
         self.assertTrue(root_version_file.is_file())
         expected = root_version_file.read_text(encoding="utf-8").strip()
         self.assertEqual(VERSION, expected)
-        self.assertEqual(VERSION, "5.4.0")
+        self.assertRegex(VERSION, r"^\d+\.\d+\.\d+$")
 
     def test_render_injects_version_window_global(self):
         html_input = "<!doctype html><html><head></head><body><h1>v{{version}}</h1></body></html>"

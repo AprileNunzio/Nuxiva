@@ -201,3 +201,25 @@ async def board_autonomy_status(project_id: str, request: Request):
         "auto_approved": sum(1 for e in evaluations if e["autonomous"]),
         "human_supervision_required": sum(1 for e in evaluations if not e["autonomous"]),
     }
+
+
+@public_routes.get("/api/agency/board/{project_id}/briefing")
+async def board_briefing(project_id: str, request: Request):
+    from features.agency import proactive
+    require_display(request)
+    pid = _project(request, project_id)
+    data = await _guard(request, service.detail(pid))
+    tasks = data.get("tasks") or []
+    questions = (data.get("project") or {}).get("questions") or []
+    counts = data.get("counts") or {"total": len(tasks), "done": sum(1 for t in tasks if t.get("status") == "done")}
+    telemetry = proactive.sample_telemetry()
+    insights = proactive.analyze_insights(tasks, questions, telemetry)
+    lang = request.query_params.get("lang") or "it"
+    title = (data.get("project") or {}).get("title") or "Progetto"
+    briefing = proactive.generate_briefing(lang, title, counts, insights)
+    return {
+        "project_id": pid,
+        "briefing": briefing,
+        "insights": [ins.to_dict() for ins in insights],
+        "telemetry": telemetry.to_dict(),
+    }

@@ -1,4 +1,4 @@
-from features.agency import autonomy, service
+from features.agency import autonomy, proactive, service
 from features.agency.forge.registry import registry
 from features.agency.text import clean
 
@@ -242,6 +242,10 @@ def _build_shared_brain(data: dict, base: dict, tasks: list[dict], questions: li
     counts = base.get("counts") or {}
     rules_count = 1687 + len(decisions) * 12 + len(tasks) * 5 + len(tools) * 9
     reviews_count = 943 + int(counts.get("done", 0)) * 7 + int(counts.get("review", 0)) * 4 + len(questions) * 6
+    telemetry = proactive.sample_telemetry()
+    insights = proactive.analyze_insights(tasks, open_questions, telemetry)
+    title = project.get("title") or "Progetto"
+    briefing = proactive.generate_briefing("it", title, counts, insights)
     return {
         "agency_name": AGENCY_NAME,
         "core_type": "holographic_blue_grid_sphere",
@@ -254,6 +258,9 @@ def _build_shared_brain(data: dict, base: dict, tasks: list[dict], questions: li
             "threshold": 0.94,
             "status": "active",
         },
+        "telemetry": telemetry.to_dict(),
+        "proactive_insights": [ins.to_dict() for ins in insights],
+        "briefing": briefing,
         "decisions": decisions,
         "open_questions": open_questions,
         "critic_exchanges": questions,
