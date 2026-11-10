@@ -2,9 +2,10 @@ use std::collections::BTreeSet;
 
 use serde::{Deserialize, Serialize};
 
-use crate::budget::Usage;
+use crate::budget::{TaskBudget, Usage};
 use crate::error::DomainError;
 use crate::ids::{RoleId, TaskId};
+use crate::proof::Proof;
 use crate::text::CleanText;
 
 const MAX_TITLE: usize = 300;
@@ -133,6 +134,10 @@ pub struct TaskSpec {
     pub estimate_seconds: u64,
     #[serde(default)]
     pub max_attempts: u8,
+    #[serde(default)]
+    pub budget_tokens: Option<u64>,
+    #[serde(default)]
+    pub budget_seconds: Option<u64>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -150,6 +155,10 @@ pub struct Task {
     usage: Usage,
     #[serde(default)]
     checkpoint: Option<ReviewCheckpoint>,
+    #[serde(default)]
+    budget: Option<TaskBudget>,
+    #[serde(default)]
+    proofs: Vec<Proof>,
 }
 
 impl Task {
@@ -189,6 +198,10 @@ impl Task {
             0 => 3,
             n => n.min(MAX_ATTEMPTS),
         };
+        let budget = match (spec.budget_tokens, spec.budget_seconds) {
+            (Some(tokens), Some(seconds)) => Some(TaskBudget::new(tokens, seconds)?),
+            _ => None,
+        };
         Ok(Self {
             id,
             title: CleanText::new("title", &spec.title, MAX_TITLE)?,
@@ -202,6 +215,8 @@ impl Task {
             feedback: None,
             usage: Usage::default(),
             checkpoint: None,
+            budget,
+            proofs: Vec::new(),
         })
     }
 
@@ -261,12 +276,36 @@ impl Task {
     }
 
     #[must_use]
+    pub fn budget(&self) -> Option<&TaskBudget> {
+        self.budget.as_ref()
+    }
+
+    #[must_use]
+    pub fn proofs(&self) -> &[Proof] {
+        &self.proofs
+    }
+
+    pub fn set_proofs(&mut self, proofs: Vec<Proof>) {
+        self.proofs = proofs;
+    }
+
+    pub fn add_proof(&mut self, proof: Proof) {
+        self.proofs.push(proof);
+    }
+
+    #[must_use]
     pub fn usage(&self) -> &Usage {
         &self.usage
     }
 
     pub fn record_usage(&mut self, tokens: u64, seconds: u64) -> Result<(), DomainError> {
-        self.usage.record(tokens, seconds)
+        self.usage.record(tokens, seconds)?;
+        if let Some(budget) = &self.budget {
+            if !budget.allows(&self.usage) {
+                return Err(DomainError::BudgetExceeded);
+            }
+        }
+        Ok(())
     }
 
     fn move_to(&mut self, next: TaskStatus) -> Result<(), DomainError> {

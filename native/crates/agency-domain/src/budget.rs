@@ -79,3 +79,36 @@ impl Usage {
         Ok(())
     }
 }
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub struct TaskBudget {
+    tokens: u64,
+    seconds: u64,
+}
+
+impl TaskBudget {
+    pub fn new(tokens: u64, seconds: u64) -> Result<Self, DomainError> {
+        if tokens == 0 {
+            return Err(DomainError::InvalidBudget("tokens must be positive"));
+        }
+        if seconds == 0 {
+            return Err(DomainError::InvalidBudget("seconds must be positive"));
+        }
+        Ok(Self { tokens, seconds })
+    }
+
+    #[must_use]
+    pub fn max_tokens(&self) -> u64 {
+        self.tokens
+    }
+
+    #[must_use]
+    pub fn max_seconds(&self) -> u64 {
+        self.seconds
+    }
+
+    #[must_use]
+    pub fn allows(&self, usage: &Usage) -> bool {
+        usage.tokens <= self.tokens && usage.seconds <= self.seconds
+    }
+}

@@ -48,7 +48,9 @@ async def start(goal: str, lang: str) -> dict:
     memory.save(project_id, context)
     workspace.write(folder, word(lang, "files", "plan_file"), documents.plan(blueprint, goal, lang))
     workspace.write(folder, word(lang, "files", "reasoning_file"), documents.reasoning(reasoning, lang))
-    detail = await client.call("project_plan", id=project_id, tasks=[t.spec() for t in blueprint.tasks])
+    detail = await client.call("project_plan", id=project_id, tasks=[t.spec() for t in blueprint.tasks],
+                               decisions=[d.spec() for d in blueprint.decisions],
+                               questions=[q.spec() for q in blueprint.questions])
     store.event("INFO", f"Agency project {project_id} planned with {len(blueprint.tasks)} tasks", "agency")
     return detail
 
@@ -85,3 +87,8 @@ async def control(project_id: str, action: str) -> dict:
     if action not in CONTROLS:
         raise AgencyFailure("invalid")
     return await client.call("project_control", id=project_id, action=action)
+
+
+async def answer(project_id: str, question: str, option: str | None = None, answer_text: str | None = None) -> dict:
+    return await client.call("project_answer", id=project_id, question=question, option=option, answer=answer_text)
+

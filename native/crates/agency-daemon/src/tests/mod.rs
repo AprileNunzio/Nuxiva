@@ -1,5 +1,6 @@
 mod foresight;
 mod lifecycle;
+mod planning;
 mod reliability;
 
 use std::fs;

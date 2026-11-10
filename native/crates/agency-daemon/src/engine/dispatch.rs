@@ -19,6 +19,7 @@ pub struct TaskUpdateArgs<'a> {
     pub generation: Option<u64>,
     pub tokens: u64,
     pub seconds: u64,
+    pub proofs: &'a [crate::protocol::ProofSpec],
 }
 
 impl Engine {
@@ -54,6 +55,21 @@ impl Engine {
             }
             _ => None,
         };
+        for p in args.proofs {
+            let mut proof =
+                agency_domain::Proof::new(&p.criterion, &p.command, &p.expected_output)?;
+            if p.verified || p.actual_output.is_some() || p.artifact_hash.is_some() {
+                proof.record_result(
+                    p.actual_output.as_deref().unwrap_or(""),
+                    p.artifact_hash.as_deref(),
+                    p.verified,
+                )?;
+            }
+            state.graph.update(task, |t| {
+                t.add_proof(proof);
+                Ok(())
+            })?;
+        }
         state
             .graph
             .update(task, |t| t.record_usage(args.tokens, args.seconds))?;

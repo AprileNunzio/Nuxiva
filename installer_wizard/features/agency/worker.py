@@ -44,7 +44,29 @@ def evidence(context: dict, body: str, ctx: tools.Context) -> str:
     return "\n".join(parts)
 
 
-async def execute(context: dict, project_id: str, task: dict) -> tuple[str, str, int]:
+def proofs(ctx: tools.Context) -> list[dict]:
+    items = []
+    for check in ctx.checks:
+        cmd = f"{check.get('check', '')} {check.get('entry', '')}".strip()
+        items.append({
+            "criterion": f"Execution of {cmd}",
+            "command": cmd,
+            "expected_output": "exit 0",
+            "actual_output": str(check.get("output", ""))[:15000],
+            "verified": check.get("exit_code") == 0,
+        })
+    for path in ctx.written:
+        items.append({
+            "criterion": f"Artifact {path} created",
+            "command": f"test -f {path}",
+            "expected_output": "exists",
+            "actual_output": f"created {path}",
+            "verified": True,
+        })
+    return items
+
+
+async def execute(context: dict, project_id: str, task: dict) -> tuple[str, str, int, list[dict]]:
     role = next((r for r in context["blueprint"]["roles"] if r["id"] == task["role"]), {})
     brief = {"goal": context["goal"], "architecture": context["blueprint"].get("architecture", ""),
              "mission": clean(role.get("mission"), 400), "inputs": inputs(context, task),
@@ -54,4 +76,4 @@ async def execute(context: dict, project_id: str, task: dict) -> tuple[str, str,
     body = report(outcome, ctx) if (outcome.summary or ctx.written) else ""
     if body:
         workspace.write(context["folder"], deliverable_path(context, task["id"]), body)
-    return body, evidence(context, body, ctx) if body else "", outcome.tokens + ctx.tokens
+    return body, evidence(context, body, ctx) if body else "", outcome.tokens + ctx.tokens, proofs(ctx)

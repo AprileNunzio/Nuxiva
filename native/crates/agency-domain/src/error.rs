@@ -22,4 +22,6 @@ pub enum DomainError {
     AttemptsExhausted,
     #[error("usage counter overflow")]
     Overflow,
+    #[error("task budget exceeded")]
+    BudgetExceeded,
 }

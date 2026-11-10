@@ -45,6 +45,44 @@ impl TaskAction {
     }
 }
 
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct DecisionSpec {
+    pub id: String,
+    pub title: String,
+    pub rationale: String,
+    #[serde(default)]
+    pub status: Option<String>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct QuestionOptionSpec {
+    pub id: String,
+    pub label: String,
+    #[serde(default)]
+    pub description: Option<String>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct QuestionSpec {
+    pub id: String,
+    pub prompt: String,
+    #[serde(default)]
+    pub options: Vec<QuestionOptionSpec>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct ProofSpec {
+    pub criterion: String,
+    pub command: String,
+    pub expected_output: String,
+    #[serde(default)]
+    pub actual_output: Option<String>,
+    #[serde(default)]
+    pub verified: bool,
+    #[serde(default)]
+    pub artifact_hash: Option<String>,
+}
+
 #[derive(Debug, Clone, Deserialize)]
 #[serde(tag = "op", rename_all = "snake_case", deny_unknown_fields)]
 pub enum Request {
@@ -69,6 +107,18 @@ pub enum Request {
     ProjectPlan {
         id: String,
         tasks: Vec<TaskSpec>,
+        #[serde(default)]
+        decisions: Vec<DecisionSpec>,
+        #[serde(default)]
+        questions: Vec<QuestionSpec>,
+    },
+    ProjectAnswer {
+        id: String,
+        question: String,
+        #[serde(default)]
+        option: Option<String>,
+        #[serde(default)]
+        answer: Option<String>,
     },
     ProjectControl {
         id: String,
@@ -90,6 +140,8 @@ pub enum Request {
         tokens: u64,
         #[serde(default)]
         seconds: u64,
+        #[serde(default)]
+        proofs: Vec<ProofSpec>,
     },
     AssignmentRevoke {
         project: String,

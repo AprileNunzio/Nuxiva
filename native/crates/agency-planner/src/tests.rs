@@ -11,6 +11,8 @@ fn spec(id: &str, deps: &[&str], seconds: u64) -> TaskSpec {
         acceptance: Vec::new(),
         estimate_seconds: seconds,
         max_attempts: 1,
+        budget_tokens: None,
+        budget_seconds: None,
     }
 }
 
@@ -127,5 +129,16 @@ fn finished_plan_reports_full_progress() -> Result<(), PlanError> {
     assert!(graph.is_finished());
     assert_eq!(graph.progress().percent, 100);
     assert!(graph.ready().is_empty());
+    Ok(())
+}
+
+#[test]
+fn independent_tasks_dispatch_in_parallel() -> Result<(), PlanError> {
+    let mut graph = shop()?;
+    complete(&mut graph, "design")?;
+    let parallel = graph.dispatchable(2);
+    assert_eq!(parallel.len(), 2);
+    assert_eq!(parallel[0].as_str(), "db");
+    assert_eq!(parallel[1].as_str(), "ui");
     Ok(())
 }

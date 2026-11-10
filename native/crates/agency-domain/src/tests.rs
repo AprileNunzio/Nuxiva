@@ -14,6 +14,8 @@ fn spec(id: &str, deps: &[&str]) -> TaskSpec {
         acceptance: vec!["i test passano".to_owned()],
         estimate_seconds: 60,
         max_attempts: 2,
+        budget_tokens: None,
+        budget_seconds: None,
     }
 }
 
@@ -148,5 +150,64 @@ fn project_status_machine() -> Result<(), DomainError> {
     project.transition(ProjectStatus::Running)?;
     project.transition(ProjectStatus::Completed)?;
     assert!(project.transition(ProjectStatus::Running).is_err());
+    Ok(())
+}
+
+#[test]
+fn task_budget_enforces_limits() -> Result<(), DomainError> {
+    let mut task_spec = spec("budgeted", &[]);
+    task_spec.budget_tokens = Some(100);
+    task_spec.budget_seconds = Some(10);
+    let mut task = Task::from_spec(&task_spec)?;
+    assert!(task.budget().is_some());
+    assert!(task.record_usage(50, 5).is_ok());
+    assert_eq!(task.record_usage(60, 0), Err(DomainError::BudgetExceeded));
+    Ok(())
+}
+
+#[test]
+fn decision_and_questions_clarify_ambiguity() -> Result<(), DomainError> {
+    use crate::{Decision, DecisionStatus, Question, QuestionOption};
+
+    let mut project = Project::new(
+        ProjectId::new("clarify")?,
+        "Clarify",
+        "Ambigous request",
+        WorkspacePath::new("clarify")?,
+        Budget::new(1_000, 3_600, 4)?,
+        1,
+    )?;
+    let decision = Decision::new(
+        "framework",
+        "Framework Choice",
+        "Use Axum for high performance async Rust",
+        DecisionStatus::Accepted,
+    )?;
+    project.add_decision(decision);
+    assert_eq!(project.decisions().len(), 1);
+
+    let opt1 = QuestionOption::new("sql", "PostgreSQL", Some("Relational DB"))?;
+    let opt2 = QuestionOption::new("nosql", "MongoDB", Some("Document DB"))?;
+    let question = Question::new("db", "Quale database preferisci?", vec![opt1, opt2])?;
+    project.add_question(question);
+    assert!(project.has_unanswered_questions());
+
+    project.transition(ProjectStatus::WaitingUser)?;
+    project.answer_question("db", Some("sql"), Some("PostgreSQL selezionato"))?;
+    assert!(!project.has_unanswered_questions());
+    project.transition(ProjectStatus::Planning)?;
+    assert_eq!(project.status(), ProjectStatus::Planning);
+    Ok(())
+}
+
+#[test]
+fn proofs_record_reproducible_evidence() -> Result<(), DomainError> {
+    use crate::Proof;
+
+    let mut proof = Proof::new("test_passes", "cargo test", "test result: ok")?;
+    assert!(!proof.is_verified());
+    proof.record_result("test result: ok. 10 passed", Some("sha256:abc123"), true)?;
+    assert!(proof.is_verified());
+    assert_eq!(proof.artifact_hash().unwrap().as_str(), "sha256:abc123");
     Ok(())
 }

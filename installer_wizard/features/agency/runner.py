@@ -84,12 +84,14 @@ class Runner:
         raw = next(t for t in data["tasks"] if t["id"] == task_id)
         task = worker.task_view(raw)
         started = time.monotonic()
-        _, proof, tokens = await worker.execute(context, project_id, task)
+        _, proof, tokens, proofs = await worker.execute(context, project_id, task)
         seconds = max(1, int(time.monotonic() - started))
-        await client.call("task_update", project=project_id, task=task_id, action="submit", tokens=tokens, seconds=seconds)
+        await client.call("task_update", project=project_id, task=task_id, action="submit", tokens=tokens,
+                          seconds=seconds, checkpoint=proof, proofs=proofs)
         verdict = await critic.review(task, proof, context["language_name"])
         if verdict.approved:
-            await client.call("task_update", project=project_id, task=task_id, action="approve", tokens=verdict.tokens)
+            await client.call("task_update", project=project_id, task=task_id, action="approve",
+                              tokens=verdict.tokens, proofs=proofs)
             return
         feedback = verdict.feedback or word(context["lang"], "files", "review_unclear")
         await client.call("task_update", project=project_id, task=task_id, action="rework",

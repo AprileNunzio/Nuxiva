@@ -3,8 +3,10 @@ use std::path::{Path, PathBuf};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 use crate::budget::{Budget, Usage};
+use crate::decision::Decision;
 use crate::error::DomainError;
 use crate::ids::ProjectId;
+use crate::question::Question;
 use crate::text::CleanText;
 
 const MAX_TITLE: usize = 200;
@@ -128,6 +130,10 @@ pub struct Project {
     budget: Budget,
     usage: Usage,
     created_at_ms: u64,
+    #[serde(default)]
+    decisions: Vec<Decision>,
+    #[serde(default)]
+    questions: Vec<Question>,
 }
 
 impl Project {
@@ -148,6 +154,8 @@ impl Project {
             budget,
             usage: Usage::default(),
             created_at_ms,
+            decisions: Vec::new(),
+            questions: Vec::new(),
         })
     }
 
@@ -189,6 +197,51 @@ impl Project {
     #[must_use]
     pub fn created_at_ms(&self) -> u64 {
         self.created_at_ms
+    }
+
+    #[must_use]
+    pub fn decisions(&self) -> &[Decision] {
+        &self.decisions
+    }
+
+    #[must_use]
+    pub fn questions(&self) -> &[Question] {
+        &self.questions
+    }
+
+    pub fn set_decisions(&mut self, decisions: Vec<Decision>) {
+        self.decisions = decisions;
+    }
+
+    pub fn add_decision(&mut self, decision: Decision) {
+        self.decisions.push(decision);
+    }
+
+    pub fn set_questions(&mut self, questions: Vec<Question>) {
+        self.questions = questions;
+    }
+
+    pub fn add_question(&mut self, question: Question) {
+        self.questions.push(question);
+    }
+
+    pub fn answer_question(
+        &mut self,
+        question_id: &str,
+        selected_option: Option<&str>,
+        answer: Option<&str>,
+    ) -> Result<(), DomainError> {
+        let question = self
+            .questions
+            .iter_mut()
+            .find(|q| q.id().as_str() == question_id)
+            .ok_or_else(|| DomainError::InvalidId(format!("question {question_id} not found")))?;
+        question.answer(selected_option, answer)
+    }
+
+    #[must_use]
+    pub fn has_unanswered_questions(&self) -> bool {
+        self.questions.iter().any(|q| !q.is_answered())
     }
 
     #[must_use]

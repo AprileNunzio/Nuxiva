@@ -87,14 +87,44 @@ impl Engine {
         &mut self,
         id: &str,
         tasks: &[TaskSpec],
+        decisions: &[crate::protocol::DecisionSpec],
+        questions: &[crate::protocol::QuestionSpec],
     ) -> Result<Value, AgencyError> {
         let id = project_id(id)?;
         let state = self.state_mut(&id)?;
         if state.project.status().is_terminal() {
             return Err(AgencyError::BadRequest("project is closed".to_owned()));
         }
+        for d in decisions {
+            let status = match d.status.as_deref() {
+                Some("accepted") => agency_domain::DecisionStatus::Accepted,
+                Some("rejected") => agency_domain::DecisionStatus::Rejected,
+                _ => agency_domain::DecisionStatus::Proposed,
+            };
+            let decision = agency_domain::Decision::new(&d.id, &d.title, &d.rationale, status)?;
+            state.project.add_decision(decision);
+        }
+        for q in questions {
+            let options = q
+                .options
+                .iter()
+                .map(|opt| {
+                    agency_domain::QuestionOption::new(
+                        &opt.id,
+                        &opt.label,
+                        opt.description.as_deref(),
+                    )
+                })
+                .collect::<Result<Vec<_>, _>>()?;
+            let question = agency_domain::Question::new(&q.id, &q.prompt, options)?;
+            state.project.add_question(question);
+        }
         state.graph.extend(tasks)?;
-        if state.project.status() == ProjectStatus::Planning && !state.graph.is_empty() {
+        if state.project.has_unanswered_questions() {
+            if state.project.status() == ProjectStatus::Planning {
+                state.project.transition(ProjectStatus::WaitingUser)?;
+            }
+        } else if state.project.status() == ProjectStatus::Planning && !state.graph.is_empty() {
             state.project.transition(ProjectStatus::Running)?;
         }
         let detail = state.detail();
@@ -102,6 +132,35 @@ impl Engine {
         self.event(
             "project.planned",
             json!({ "project": id, "added": tasks.len() }),
+        )?;
+        Ok(detail)
+    }
+
+    pub(crate) fn answer_project_question(
+        &mut self,
+        id: &str,
+        question: &str,
+        option: Option<&str>,
+        answer: Option<&str>,
+    ) -> Result<Value, AgencyError> {
+        let id = project_id(id)?;
+        let state = self.state_mut(&id)?;
+        state.project.answer_question(question, option, answer)?;
+        if !state.project.has_unanswered_questions()
+            && state.project.status() == ProjectStatus::WaitingUser
+        {
+            let next = if state.graph.is_empty() {
+                ProjectStatus::Planning
+            } else {
+                ProjectStatus::Running
+            };
+            state.project.transition(next)?;
+        }
+        let detail = state.detail();
+        self.persist(&id)?;
+        self.event(
+            "project.question_answered",
+            json!({ "project": id, "question": question }),
         )?;
         Ok(detail)
     }

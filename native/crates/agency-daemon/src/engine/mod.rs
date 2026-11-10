@@ -179,7 +179,18 @@ impl Engine {
                     .ok_or(AgencyError::NotFound)?
                     .detail())
             }
-            Request::ProjectPlan { id, tasks } => self.plan_project(&id, &tasks),
+            Request::ProjectPlan {
+                id,
+                tasks,
+                decisions,
+                questions,
+            } => self.plan_project(&id, &tasks, &decisions, &questions),
+            Request::ProjectAnswer {
+                id,
+                question,
+                option,
+                answer,
+            } => self.answer_project_question(&id, &question, option.as_deref(), answer.as_deref()),
             Request::ProjectControl { id, action } => self.control(&project_id(&id)?, action),
             Request::AssignmentRevoke { project, task } => {
                 let id = project_id(&project)?;
@@ -196,6 +207,7 @@ impl Engine {
                 generation,
                 tokens,
                 seconds,
+                proofs,
             } => {
                 let id = project_id(&project)?;
                 let task = TaskId::new(&task)?;
@@ -210,6 +222,7 @@ impl Engine {
                         generation,
                         tokens,
                         seconds,
+                        proofs: &proofs,
                     },
                 )
             }

@@ -52,7 +52,7 @@ class FakeAgency:
         self.projects[id] = {"project": {"id": id, "title": title, "status": "planning"}, "tasks": [], "folder": workspace}
         return self.projects[id]
 
-    def project_plan(self, id, tasks):
+    def project_plan(self, id, tasks, **kwargs):
         state = self.projects[id]
         for spec in tasks:
             state["tasks"].append({**spec, "status": "pending", "feedback": None,
@@ -90,7 +90,7 @@ class FakeAgency:
                          for p in sorted(root.rglob("*.py"))
                          for n, line in enumerate(p.read_text().splitlines(), 1) if query in line][:limit]}
 
-    def task_update(self, project, task, action, feedback=None, tokens=0, seconds=0):
+    def task_update(self, project, task, action, feedback=None, tokens=0, seconds=0, **kwargs):
         target = next(t for t in self.projects[project]["tasks"] if t["id"] == task)
         target["status"] = {"submit": "review", "approve": "done", "rework": "pending",
                             "fail": "failed", "interrupt": "pending"}[action]
