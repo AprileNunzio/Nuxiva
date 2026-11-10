@@ -32,6 +32,8 @@ def _active_name_pattern() -> str:
     primary = clean.lower() or "nuxiva"
     if primary not in aliases:
         aliases.insert(0, primary)
+    if primary == "nuxiva" and "attena" not in aliases:
+        aliases.append("attena")
     return "|".join(re.escape(a) for a in aliases)
 
 def get_name_re() -> re.Pattern:
