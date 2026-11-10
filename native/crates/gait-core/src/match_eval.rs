@@ -64,18 +64,37 @@ pub fn evaluate_match(
     let similarity = (cos_sim * 0.5 + weight_sim * 0.5).clamp(0.0, 1.0);
     let base_conf = (candidate.confidence * reference.confidence).sqrt();
     let confidence = (base_conf * similarity).clamp(0.0, 1.0);
-    let probable_match = similarity >= SIMILARITY_THRESHOLD && confidence >= MIN_CONFIDENCE_THRESHOLD;
+    let probable_match =
+        similarity >= SIMILARITY_THRESHOLD && confidence >= MIN_CONFIDENCE_THRESHOLD;
     let conf_pct = (confidence * 100.0).round() as u32;
     let (time_str, date_it, date_en) = ref_ts_ms.map_or_else(
-        || ("--:--".to_owned(), "precedente".to_owned(), "previous".to_owned()),
-        |ts| (format_time_hh_mm(ts), format_day_month_it(ts), format_day_month_en(ts)),
+        || {
+            (
+                "--:--".to_owned(),
+                "precedente".to_owned(),
+                "previous".to_owned(),
+            )
+        },
+        |ts| {
+            (
+                format_time_hh_mm(ts),
+                format_day_month_it(ts),
+                format_day_month_en(ts),
+            )
+        },
     );
     let (narr_it, narr_en, narr_fr, narr_es) = if probable_match {
         (
-            format!("probabilmente la stessa persona del {date_it} alle {time_str}, confidenza {conf_pct}%"),
+            format!(
+                "probabilmente la stessa persona del {date_it} alle {time_str}, confidenza {conf_pct}%"
+            ),
             format!("likely the same person from {date_en} at {time_str}, confidence {conf_pct}%"),
-            format!("probablement la même personne du {date_it} à {time_str}, confiance {conf_pct}%"),
-            format!("probablemente la misma persona del {date_it} a las {time_str}, confianza {conf_pct}%"),
+            format!(
+                "probablement la même personne du {date_it} à {time_str}, confiance {conf_pct}%"
+            ),
+            format!(
+                "probablemente la misma persona del {date_it} a las {time_str}, confianza {conf_pct}%"
+            ),
         )
     } else {
         (

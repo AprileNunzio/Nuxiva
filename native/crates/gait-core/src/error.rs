@@ -17,7 +17,9 @@ impl fmt::Display for GaitError {
             Self::InsufficientDuration => write!(f, "gait: observation duration too short"),
             Self::InvalidBoundingBox => write!(f, "gait: invalid bounding box coordinates"),
             Self::InvalidSignatureLength => write!(f, "gait: signature must have 16 dimensions"),
-            Self::InvalidSignatureValue => write!(f, "gait: non-finite or out-of-range value in signature"),
+            Self::InvalidSignatureValue => {
+                write!(f, "gait: non-finite or out-of-range value in signature")
+            }
             Self::ArithmeticOverflow => write!(f, "gait: numeric overflow during computation"),
         }
     }

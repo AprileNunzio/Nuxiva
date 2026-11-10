@@ -1,6 +1,6 @@
 use nuxiva_gait_core::{
-    evaluate_match, extract_signature, find_best_match, GaitObservation, GaitSignature,
-    ReferenceGait,
+    GaitObservation, GaitSignature, ReferenceGait, evaluate_match, extract_signature,
+    find_best_match,
 };
 use pyo3::exceptions::{PyRuntimeError, PyValueError};
 use pyo3::prelude::*;

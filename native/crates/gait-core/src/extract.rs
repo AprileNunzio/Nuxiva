@@ -1,6 +1,6 @@
 use crate::error::GaitError;
 use crate::observation::GaitObservation;
-use crate::signature::{GaitSignature, GAIT_DIM};
+use crate::signature::{GAIT_DIM, GaitSignature};
 
 const MIN_SAMPLES: usize = 5;
 const MIN_DURATION_MS: u64 = 400;
@@ -46,7 +46,10 @@ fn estimate_period_lag(centered_y: &[f32]) -> (usize, f32) {
         let mut den_b = 0.0_f32;
         for i in 0..n.saturating_sub(lag) {
             let a = centered_y.get(i).copied().unwrap_or(0.0);
-            let b = centered_y.get(i.saturating_add(lag)).copied().unwrap_or(0.0);
+            let b = centered_y
+                .get(i.saturating_add(lag))
+                .copied()
+                .unwrap_or(0.0);
             num += a * b;
             den_a += a * a;
             den_b += b * b;
@@ -150,17 +153,36 @@ pub fn extract_signature(observations: &[GaitObservation]) -> Result<GaitSignatu
     } else {
         0.5
     };
-    let norm_signal: Vec<f32> = centered_y.iter().map(|y| (*y / mean_h).clamp(-1.0, 1.0)).collect();
+    let norm_signal: Vec<f32> = centered_y
+        .iter()
+        .map(|y| (*y / mean_h).clamp(-1.0, 1.0))
+        .collect();
     let harmonics = compute_harmonics(&norm_signal);
     let mut features = [0.0_f32; GAIT_DIM];
-    if let Some(s) = features.get_mut(0) { *s = norm_cadence; }
-    if let Some(s) = features.get_mut(1) { *s = rel_stride; }
-    if let Some(s) = features.get_mut(2) { *s = vert_osc; }
-    if let Some(s) = features.get_mut(3) { *s = lat_sway; }
-    if let Some(s) = features.get_mut(4) { *s = symmetry; }
-    if let Some(s) = features.get_mut(5) { *s = mean_ar.clamp(0.0, 2.0); }
-    if let Some(s) = features.get_mut(6) { *s = var_ar.clamp(0.0, 1.0); }
-    if let Some(s) = features.get_mut(7) { *s = norm_speed; }
+    if let Some(s) = features.get_mut(0) {
+        *s = norm_cadence;
+    }
+    if let Some(s) = features.get_mut(1) {
+        *s = rel_stride;
+    }
+    if let Some(s) = features.get_mut(2) {
+        *s = vert_osc;
+    }
+    if let Some(s) = features.get_mut(3) {
+        *s = lat_sway;
+    }
+    if let Some(s) = features.get_mut(4) {
+        *s = symmetry;
+    }
+    if let Some(s) = features.get_mut(5) {
+        *s = mean_ar.clamp(0.0, 2.0);
+    }
+    if let Some(s) = features.get_mut(6) {
+        *s = var_ar.clamp(0.0, 1.0);
+    }
+    if let Some(s) = features.get_mut(7) {
+        *s = norm_speed;
+    }
     for (idx, h) in harmonics.iter().enumerate() {
         if let Some(s) = features.get_mut(8_usize.saturating_add(idx)) {
             *s = *h;

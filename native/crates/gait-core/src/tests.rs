@@ -10,8 +10,8 @@
 )]
 
 use crate::{
-    evaluate_match, extract_signature, find_best_match, GaitError, GaitMatch, GaitObservation,
-    GaitSignature, ReferenceGait, GAIT_DIM,
+    GAIT_DIM, GaitError, GaitMatch, GaitObservation, GaitSignature, ReferenceGait, evaluate_match,
+    extract_signature, find_best_match,
 };
 
 fn generate_synthetic_walk(samples: usize, duration_ms: u64) -> Vec<GaitObservation> {
