@@ -19,6 +19,11 @@ async def chat_reflex(request: Request):
         raise HTTPException(status_code=400, detail="Query richiesta")
     user_name = body.get("user_name")
     lang = str(body.get("lang") or "it").strip()
+    try:
+        from features.sentinel.collectors.voice import record_voice
+        record_voice(query, speaker_slug=user_name, recognized=bool(user_name and user_name != "user"), device="reflex")
+    except Exception:
+        pass
     response = reflex_engine.evaluate(query, user_name=user_name, lang=lang)
     return response.to_dict()
 

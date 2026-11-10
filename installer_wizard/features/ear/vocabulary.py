@@ -152,9 +152,10 @@ def home_vocabulary_list(lang_or_limit=None, limit: int = 50) -> List[str]:
     result: List[str] = []
 
     name = _assistant_name()
-    if name:
-        seen.add(name.lower())
-        result.append(name)
+    for default_name in (name, "Jarvis", "Nuxiva"):
+        if default_name and default_name.lower() not in seen:
+            seen.add(default_name.lower())
+            result.append(default_name)
 
     for item in _collect_family_names() + _collect_home_assistant_terms() + _collect_places_terms():
         key = item.lower()

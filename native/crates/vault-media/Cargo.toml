@@ -1,0 +1,19 @@
+[package]
+name = "nuxiva-vault-media"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+blake3 = { version = "1", default-features = false, features = ["std", "pure"] }
+chacha20poly1305 = "0.10"
+hkdf = "0.12"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+zeroize = "1"

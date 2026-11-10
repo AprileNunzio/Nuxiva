@@ -25,8 +25,8 @@
     "sentinel.appearance.noted": "I saw {person} wearing something {color}",
     "sentinel.guest.arrived": "Guest {guest} arrived",
     "sentinel.guest.left": "Guest {guest} left",
-    "sentinel.guest.appearance": "I saw guest {guest} wearing something {color}",
-    "sentinel.voice.unknown": "I heard a voice I don't know",
+    "sentinel.voice.recognized": "Heard {person} say: '{phrase}'",
+    "sentinel.voice.unknown": "Heard an unknown voice say: '{phrase}'",
     "sentinel.access.denied": "{who} asked for {action}: I did not do it",
     "sentinel.automation.started": "I started the automation {automation}",
     "sentinel.automation.finished": "The automation {automation} finished",
@@ -55,6 +55,8 @@
     "sentinel.color.brown": "brown",
     "sentinel.sentinel.memory_read": "The sightings memory was read from the admin page",
     "sentinel.sentinel.memory_forget": "A person's memories were erased on request ({count} sightings)",
-    "sentinel.sentinel.memory_relink": "A guest's sightings were linked to a person ({count} sightings)"
+    "sentinel.sentinel.memory_relink": "A guest's sightings were linked to a person ({count} sightings)",
+    "sentinel.media.playback": "Media recording replayed for camera {camera} ({segment})",
+    "sentinel.media.encrypted": "Encrypted media recording stored for camera {camera} ({segment})"
   }
 }

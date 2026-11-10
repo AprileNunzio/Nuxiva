@@ -25,8 +25,8 @@
     "sentinel.appearance.noted": "Ho visto {person} con un capo {color}",
     "sentinel.guest.arrived": "È arrivato ospite {guest}",
     "sentinel.guest.left": "Ospite {guest} è andato via",
-    "sentinel.guest.appearance": "Ho visto ospite {guest} con un capo {color}",
-    "sentinel.voice.unknown": "Ho sentito una voce che non conosco",
+    "sentinel.voice.recognized": "Ho sentito {person} dire: «{phrase}»",
+    "sentinel.voice.unknown": "Ho sentito una voce che non conosco dire: «{phrase}»",
     "sentinel.access.denied": "{who} ha chiesto {action}: non l'ho fatto",
     "sentinel.automation.started": "Ho avviato l'automazione {automation}",
     "sentinel.automation.finished": "L'automazione {automation} è terminata",
@@ -55,6 +55,8 @@
     "sentinel.color.brown": "marrone",
     "sentinel.sentinel.memory_read": "La memoria dei passaggi è stata consultata dalla pagina di amministrazione",
     "sentinel.sentinel.memory_forget": "I ricordi di una persona sono stati cancellati su richiesta ({count} passaggi)",
-    "sentinel.sentinel.memory_relink": "I passaggi di un ospite sono stati collegati a una persona ({count} passaggi)"
+    "sentinel.sentinel.memory_relink": "I passaggi di un ospite sono stati collegati a una persona ({count} passaggi)",
+    "sentinel.media.playback": "È stata riprodotta la registrazione della telecamera {camera} ({segment})",
+    "sentinel.media.encrypted": "Registrazione cifrata archiviata per la telecamera {camera} ({segment})"
   }
 }

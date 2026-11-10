@@ -25,8 +25,8 @@
     "sentinel.appearance.noted": "Vi a {person} con una prenda de color {color}",
     "sentinel.guest.arrived": "Llegó el invitado {guest}",
     "sentinel.guest.left": "El invitado {guest} se fue",
-    "sentinel.guest.appearance": "Vi al invitado {guest} con una prenda de color {color}",
-    "sentinel.voice.unknown": "Oí una voz que no conozco",
+    "sentinel.voice.recognized": "Escuché a {person} decir: «{phrase}»",
+    "sentinel.voice.unknown": "Escuché una voz que no conozco decir: «{phrase}»",
     "sentinel.access.denied": "{who} pidió {action}: no lo hice",
     "sentinel.automation.started": "Inicié la automatización {automation}",
     "sentinel.automation.finished": "La automatización {automation} terminó",
@@ -55,6 +55,8 @@
     "sentinel.color.brown": "marrón",
     "sentinel.sentinel.memory_read": "La memoria de pasos fue consultada desde la página de administración",
     "sentinel.sentinel.memory_forget": "Los recuerdos de una persona se borraron a petición ({count} pasos)",
-    "sentinel.sentinel.memory_relink": "Los pasos de un invitado se vincularon a una persona ({count} pasos)"
+    "sentinel.sentinel.memory_relink": "Los pasos de un invitado se vincularon a una persona ({count} pasos)",
+    "sentinel.media.playback": "Grabación reproducida para cámara {camera} ({segment})",
+    "sentinel.media.encrypted": "Grabación cifrada archivada para cámara {camera} ({segment})"
   }
 }

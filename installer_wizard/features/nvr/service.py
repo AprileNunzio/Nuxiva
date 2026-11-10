@@ -84,7 +84,9 @@ class Nvr:
             cid = row["id"][2:] if row["id"].startswith("c-") else ""
             cam = cameras.items.get(cid, {}) if cid else {}
             folder = CAM_DIR / cid if cid else None
-            segments = list(folder.glob("seg_*.mp4")) if folder and folder.exists() else []
+            vault_folder = CAM_DIR / "vault" / cid if cid else None
+            segments = (list(folder.glob("seg_*.mp4")) if folder and folder.exists() else []) + \
+                       (list(vault_folder.glob("*.nvm")) if vault_folder and vault_folder.exists() else [])
             out.append({"id": row["id"], "name": row["name"], "kind": row["kind"], "room": row.get("room", ""),
                         "stream": bool(row.get("stream")), "recording": cid in recorder.procs,
                         "record_enabled": bool(cam and cameras._recording(cam)), "retention_min": cam.get("retention_min", 0),

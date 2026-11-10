@@ -175,6 +175,13 @@ async def assistant_chat(text: str, device: str, heard_lang: str | None = None, 
         if not verdict.directed:
             return JSONResponse({"ignored": True, "reason": verdict.reason, "score": verdict.score})
     said, text = text, dialogue.resolve(device, text)
+    try:
+        from features.sentinel.collectors.voice import record_voice
+        record_voice(said or text, speaker_slug=principal.slug if principal else None,
+                     recognized=bool(principal and principal.slug and principal.role != "system"),
+                     device=device)
+    except Exception:
+        pass
     speech_lang = languages.resolve(text, device, heard_lang, principal.slug)
     if speech_lang["lang"] != home_lang():
         background(ensure_language(speech_lang["lang"]))

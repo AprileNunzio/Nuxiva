@@ -20,7 +20,10 @@ class AssistantIdentity:
 
     @property
     def wake_phrases(self) -> Tuple[str, ...]:
-        return (self.wake_word, f"ehi {self.wake_word}", f"ok {self.wake_word}", f"ciao {self.wake_word}")
+        phrases = [self.wake_word, f"ehi {self.wake_word}", f"ok {self.wake_word}", f"ciao {self.wake_word}"]
+        if self.wake_word.lower() != "jarvis":
+            phrases.extend(["jarvis", "ehi jarvis", "ok jarvis", "ciao jarvis"])
+        return tuple(phrases)
 
 
 def _py_normalize_name(raw: str) -> str:

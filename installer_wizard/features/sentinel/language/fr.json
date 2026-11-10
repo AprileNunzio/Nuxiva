@@ -25,8 +25,8 @@
     "sentinel.appearance.noted": "J'ai vu {person} avec un vêtement {color}",
     "sentinel.guest.arrived": "L'invité {guest} est arrivé",
     "sentinel.guest.left": "L'invité {guest} est parti",
-    "sentinel.guest.appearance": "J'ai vu l'invité {guest} avec un vêtement {color}",
-    "sentinel.voice.unknown": "J'ai entendu une voix que je ne connais pas",
+    "sentinel.voice.recognized": "J'ai entendu {person} dire : «{phrase}»",
+    "sentinel.voice.unknown": "J'ai entendu une voix inconnue dire : «{phrase}»",
     "sentinel.access.denied": "{who} a demandé {action} : je ne l'ai pas fait",
     "sentinel.automation.started": "J'ai lancé l'automatisation {automation}",
     "sentinel.automation.finished": "L'automatisation {automation} est terminée",
@@ -55,6 +55,8 @@
     "sentinel.color.brown": "marron",
     "sentinel.sentinel.memory_read": "La mémoire des passages a été consultée depuis la page d'administration",
     "sentinel.sentinel.memory_forget": "Les souvenirs d'une personne ont été effacés sur demande ({count} passages)",
-    "sentinel.sentinel.memory_relink": "Les passages d'un invité ont été reliés à une personne ({count} passages)"
+    "sentinel.sentinel.memory_relink": "Les passages d'un invité ont été reliés à une personne ({count} passages)",
+    "sentinel.media.playback": "Enregistrement lu pour la caméra {camera} ({segment})",
+    "sentinel.media.encrypted": "Enregistrement chiffré stocké pour la caméra {camera} ({segment})"
   }
 }

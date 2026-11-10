@@ -3,6 +3,7 @@ import shutil
 import time
 
 from features.cameras.cameras import CAM_DIR, cameras
+from features.nvr.vault import media_vault
 from state import store
 
 SEGMENT_SECONDS = 60
@@ -21,11 +22,11 @@ class Recorder:
         self.procs: dict = {}
 
     async def _start(self, cam: dict) -> None:
-        out = CAM_DIR / cam["id"]
-        out.mkdir(parents=True, exist_ok=True)
+        incoming = CAM_DIR / cam["id"] / "incoming"
+        incoming.mkdir(parents=True, exist_ok=True)
         args = ["ffmpeg", "-loglevel", "error", "-nostdin", *_source_args(cam),
-                "-an", "-c:v", "copy", "-f", "segment", "-segment_time", str(SEGMENT_SECONDS),
-                "-reset_timestamps", "1", "-strftime", "1", str(out / "seg_%Y%m%d_%H%M%S.mp4")]
+                "-c:v", "copy", "-c:a", "aac", "-f", "segment", "-segment_time", str(SEGMENT_SECONDS),
+                "-reset_timestamps", "1", "-strftime", "1", str(incoming / "seg_%Y%m%d_%H%M%S.mp4")]
         try:
             proc = await asyncio.create_subprocess_exec(*args, stdout=asyncio.subprocess.DEVNULL,
                                                         stderr=asyncio.subprocess.DEVNULL)
@@ -33,7 +34,7 @@ class Recorder:
             store.event("WARN", f"Telecamera {cam['name']}: avvio registrazione non riuscito ({exc})", "cameras")
             return
         self.procs[cam["id"]] = {"proc": proc, "sig": self._sig(cam)}
-        store.event("INFO", f"Registrazione avviata: {cam['name']} (anello {cam['retention_min']} min)", "cameras")
+        store.event("INFO", f"Registrazione cifrata avviata: {cam['name']} (audio+video, anello {cam['retention_min']} min)", "cameras")
 
     def _stop(self, cid: str) -> None:
         rec = self.procs.pop(cid, None)
@@ -47,7 +48,20 @@ class Recorder:
     def _sig(cam: dict) -> str:
         return f"{cam['kind']}|{cam['url']}|{cam['retention_min']}"
 
+    def _encrypt_pending(self, cam: dict) -> None:
+        incoming = CAM_DIR / cam["id"] / "incoming"
+        if not incoming.exists():
+            return
+        now = time.time()
+        for seg in sorted(incoming.glob("seg_*.mp4")):
+            try:
+                if now - seg.stat().st_mtime >= 3:
+                    media_vault.encrypt_file(cam["id"], seg, tier="continuous")
+            except OSError:
+                pass
+
     def _prune(self, cam: dict) -> None:
+        media_vault.prune(cam["id"])
         folder = CAM_DIR / cam["id"]
         if not folder.exists():
             return
@@ -72,10 +86,11 @@ class Recorder:
                 for cid, cam in wanted.items():
                     if cid not in self.procs:
                         await self._start(cam)
+                    self._encrypt_pending(cam)
                     self._prune(cam)
             except Exception as exc:
                 store.event("WARN", f"Registratore telecamere: {exc}", "cameras")
-            await asyncio.sleep(30)
+            await asyncio.sleep(15)
 
 
 recorder = Recorder()

@@ -44,6 +44,7 @@ mod token;
 mod topics;
 mod transcript;
 mod update;
+mod vault_media;
 mod vitals;
 mod voice;
 mod workbench;
@@ -125,6 +126,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     voice::register(m)?;
     rescue::register(m)?;
     sentinel_memory::register(m)?;
+    vault_media::register(m)?;
     m.add_class::<RustSynapticBus>()?;
     m.add_class::<SynapticWeightMatrix>()?;
     m.add_class::<PySynapticSpike>()?;
