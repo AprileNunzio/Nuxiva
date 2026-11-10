@@ -70,7 +70,7 @@ fn rejects_invalid_input() {
     assert!(!book.set_person("anna", &[vec![f32::NAN; 8]]));
     assert!(book.set_person("anna", &rows(&voice(1, 8), 2, 0.1)));
     assert!(!book.set_person("luca", &rows(&voice(2, 16), 2, 0.1)));
-    assert!(book.scores(&[0.0; 4]).is_empty());
+    assert_eq!(book.scores(&[0.0; 4]), [] as [(std::string::String, f32); 0]);
     assert!(valid_slug("ospite-2"));
     assert!(!valid_slug("-x"));
 }

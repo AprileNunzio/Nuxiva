@@ -3,7 +3,7 @@ use crate::category::known_widgets;
 use crate::context::{Context, Mode, Previous, Screen};
 use crate::grid::Slot;
 use crate::nucleus::Form;
-use crate::plan::{Input, ScenePlan, plan};
+use crate::plan::{Input, Placed, ScenePlan, plan};
 use crate::policy::PlannerPolicy;
 use crate::select::Reason;
 use nuxiva_display_domain::{AudienceKind, Sensitivity};
@@ -92,7 +92,7 @@ fn an_empty_scene_keeps_the_hero_nucleus() {
         0,
     );
     assert_eq!(p.nucleus.form, Form::CoreHero);
-    assert!(p.shown.is_empty());
+    assert_eq!(p.shown, [] as [Placed; 0]);
 }
 
 #[test]

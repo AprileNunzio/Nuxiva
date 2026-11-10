@@ -52,7 +52,7 @@ fn rockchip_rk3588_uses_the_npu_for_listening_vision_and_llm() -> Result<(), Str
     assert_eq!(placement(&steps, Task::Vision), Some(edge("rknn")));
     assert_eq!(placement(&steps, Task::Llm), Some(edge("rknn")));
     assert_eq!(placement(&steps, Task::Tts), Some(edge("cpu")));
-    assert!(steps.missing_runtimes.is_empty());
+    assert_eq!(steps.missing_runtimes, [] as [crate::plan::Missing; 0]);
     Ok(())
 }
 
@@ -226,7 +226,7 @@ fn empty_root_never_fails_and_reports_cpu_only() -> Result<(), String> {
         Some("cpu")
     );
     assert!(found.system.cores >= 1);
-    assert!(found.senses.microphones.is_empty());
+    assert_eq!(found.senses.microphones, [] as [std::string::String; 0]);
     Ok(())
 }
 

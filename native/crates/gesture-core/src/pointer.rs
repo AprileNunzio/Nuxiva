@@ -272,7 +272,7 @@ mod tests {
         let profile = GestureProfile::default();
         let mut pointer = PointerTracker::default();
         let _ = pointer.track(&hand(true, 0.5)?, ratio(true), 0, false, &profile);
-        assert!(pointer.lost(500, &profile).is_empty());
+        assert_eq!(pointer.lost(500, &profile), [] as [GestureEvent; 0]);
         assert_eq!(
             phases(&pointer.lost(800, &profile)),
             vec![PointerPhase::Up, PointerPhase::Hidden]

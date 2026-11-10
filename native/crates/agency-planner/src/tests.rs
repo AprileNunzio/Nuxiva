@@ -128,7 +128,7 @@ fn finished_plan_reports_full_progress() -> Result<(), PlanError> {
     }
     assert!(graph.is_finished());
     assert_eq!(graph.progress().percent, 100);
-    assert!(graph.ready().is_empty());
+    assert_eq!(graph.ready(), [] as [&agency_domain::TaskId; 0]);
     Ok(())
 }
 
@@ -138,7 +138,7 @@ fn independent_tasks_dispatch_in_parallel() -> Result<(), PlanError> {
     complete(&mut graph, "design")?;
     let parallel = graph.dispatchable(2);
     assert_eq!(parallel.len(), 2);
-    assert_eq!(parallel[0].as_str(), "db");
-    assert_eq!(parallel[1].as_str(), "ui");
+    assert_eq!(parallel.first().copied().map(agency_domain::TaskId::as_str), Some("db"));
+    assert_eq!(parallel.get(1).copied().map(agency_domain::TaskId::as_str), Some("ui"));
     Ok(())
 }

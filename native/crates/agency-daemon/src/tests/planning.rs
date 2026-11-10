@@ -90,8 +90,13 @@ fn independent_tasks_run_in_parallel() -> Result<(), AgencyError> {
     )?;
 
     let d1 = call(&mut engine, json!({"op": "dispatch"}))?;
-    let worker = at(&d1, "/started/0/worker").as_str().unwrap().to_string();
-    let generation_nr = at(&d1, "/started/0/generation").as_u64().unwrap();
+    let worker = at(&d1, "/started/0/worker")
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
+    let generation_nr = at(&d1, "/started/0/generation")
+        .as_u64()
+        .unwrap_or_default();
 
     call(
         &mut engine,
@@ -122,11 +127,15 @@ fn independent_tasks_run_in_parallel() -> Result<(), AgencyError> {
     )?;
 
     let d2 = call(&mut engine, json!({"op": "dispatch"}))?;
-    let started = at(&d2, "/started").as_array().unwrap().clone();
+    let empty_arr = Vec::new();
+    let started = match at(&d2, "/started").as_array() {
+        Some(arr) => arr.clone(),
+        None => empty_arr,
+    };
     assert_eq!(started.len(), 2);
     let task_ids: Vec<&str> = started
         .iter()
-        .map(|s| s["task"].as_str().unwrap())
+        .filter_map(|s| s.get("task").and_then(serde_json::Value::as_str))
         .collect();
     assert!(task_ids.contains(&"api"));
     assert!(task_ids.contains(&"ui"));
@@ -158,8 +167,13 @@ fn reproducible_completion_proofs_recorded() -> Result<(), AgencyError> {
     )?;
 
     let d = call(&mut engine, json!({"op": "dispatch"}))?;
-    let worker = at(&d, "/started/0/worker").as_str().unwrap().to_string();
-    let generation_nr = at(&d, "/started/0/generation").as_u64().unwrap();
+    let worker = at(&d, "/started/0/worker")
+        .as_str()
+        .unwrap_or_default()
+        .to_string();
+    let generation_nr = at(&d, "/started/0/generation")
+        .as_u64()
+        .unwrap_or_default();
 
     let update = call(
         &mut engine,

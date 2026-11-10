@@ -137,11 +137,11 @@ fn search_hi_vis_and_class() {
         classes: vec![Class::Vehicle],
         ..q
     };
-    assert!(
+    assert_eq!(
         none.day(&KEY, &day(), &index(), &data)
             .unwrap()
-            .0
-            .is_empty()
+            .0,
+        [] as [Sighting; 0]
     );
 }
 

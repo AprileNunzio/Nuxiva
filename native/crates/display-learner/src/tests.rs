@@ -104,8 +104,8 @@ fn guests_only_touch_the_session_profile() {
     let mut s = sample(Some(ANNA), "music", Kind::QuickClose, 1000);
     s.guests = true;
     feed(&mut l, &s, 20);
-    assert!(l.take_dirty().is_empty());
-    assert!(l.persons().is_empty());
+    assert_eq!(l.take_dirty(), [] as [std::string::String; 0]);
+    assert_eq!(l.persons(), [] as [std::string::String; 0]);
     assert!(l.affinity(None, "music", &ctx(2), 30_000, 0, true).value < 0.0);
     l.forget_session();
     assert!(

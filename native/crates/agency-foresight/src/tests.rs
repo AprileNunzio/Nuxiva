@@ -238,7 +238,7 @@ fn report_and_agent_view() -> Result<(), ForesightError> {
     assert!(report.influencers.len() <= 10);
     let view = world.agent("a3")?;
     assert_eq!(view.name, "Agent 3");
-    assert!(!view.memory.is_empty());
+    assert_ne!(view.memory, [] as [crate::view::MemoryView; 0]);
     assert_eq!(world.agent("zz").err(), Some(ForesightError::AgentNotFound));
     Ok(())
 }

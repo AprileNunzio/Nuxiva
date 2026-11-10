@@ -175,13 +175,21 @@ impl Proxy {
 
     fn charge(&self, bytes: usize) -> bool {
         let bytes = u64::try_from(bytes).unwrap_or(u64::MAX);
-        self.carried
-            .fetch_update(Ordering::AcqRel, Ordering::Acquire, |carried| {
-                carried
-                    .checked_add(bytes)
-                    .filter(|total| *total <= self.max_bytes)
-            })
-            .is_ok()
+        let mut carried = self.carried.load(Ordering::Acquire);
+        loop {
+            let Some(total) = carried.checked_add(bytes).filter(|t| *t <= self.max_bytes) else {
+                return false;
+            };
+            match self.carried.compare_exchange_weak(
+                carried,
+                total,
+                Ordering::AcqRel,
+                Ordering::Acquire,
+            ) {
+                Ok(_) => return true,
+                Err(actual) => carried = actual,
+            }
+        }
     }
 
     async fn relay(

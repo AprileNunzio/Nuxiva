@@ -1,6 +1,6 @@
 use std::net::{IpAddr, Ipv4Addr};
 
-use crate::detect::{Detector, Kind, Severity, Thresholds, entropy};
+use crate::detect::{Alert, Detector, Kind, Severity, Thresholds, entropy};
 use crate::engine::Engine;
 use crate::flows::FlowTable;
 use crate::packet::{self, Ip, Payload, TCP, UDP};
@@ -203,7 +203,7 @@ fn arp_spoofing_is_critical_unless_trusted() {
     ) else {
         unreachable!("frame ARP di test non decodificati")
     };
-    assert!(detector.inspect(&first, 0).is_empty());
+    assert_eq!(detector.inspect(&first, 0), [] as [Alert; 0]);
     let alerts = detector.inspect(&second, 10);
     assert_eq!(
         alerts.first().map(|a| (a.kind, a.severity)),
@@ -211,8 +211,8 @@ fn arp_spoofing_is_critical_unless_trusted() {
     );
     let mut trusting = Detector::new(Thresholds::default());
     trusting.trust_mac(MAC_B);
-    assert!(trusting.inspect(&first, 0).is_empty());
-    assert!(trusting.inspect(&second, 10).is_empty());
+    assert_eq!(trusting.inspect(&first, 0), [] as [Alert; 0]);
+    assert_eq!(trusting.inspect(&second, 10), [] as [Alert; 0]);
 }
 
 #[test]
@@ -361,5 +361,5 @@ fn incoming_scans_are_still_detected_and_other_interfaces_ignored() {
         ));
     }
     assert!(incoming.iter().any(|a| a.kind == Kind::PortScan));
-    assert!(foreign.is_empty());
+    assert_eq!(foreign, [] as [Alert; 0]);
 }

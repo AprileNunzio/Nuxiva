@@ -39,8 +39,8 @@ mod tests {
 
     #[test]
     fn rejects_path_components_and_keeps_the_configured_identity() {
-        assert!(model_candidates("../../maya", "").is_empty());
-        assert!(model_candidates("maya/voice", "").is_empty());
+        assert_eq!(model_candidates("../../maya", ""), [] as [std::string::String; 0]);
+        assert_eq!(model_candidates("maya/voice", ""), [] as [std::string::String; 0]);
         assert_eq!(model_candidates("Ada", "../other"), ["ehi_ada", "ada"]);
     }
 }

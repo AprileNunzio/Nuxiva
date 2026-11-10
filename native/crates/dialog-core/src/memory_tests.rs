@@ -48,7 +48,7 @@ fn recent_turns_question_and_since_reply() {
     assert!(b.asked_question("kiosk", NOW));
     assert!((b.since_reply("kiosk", NOW) - 10.0).abs() < 1e-6);
     assert!(!b.asked_question("kiosk", NOW + 120.0));
-    assert!(b.recent("kiosk", NOW + 20.0 * 60.0).is_empty());
+    assert_eq!(b.recent("kiosk", NOW + 20.0 * 60.0), [] as [&Turn; 0]);
     for i in 0..15_u8 {
         b.remember("kiosk", turn(&format!("frase {i}"), "ok", "chat", 1.0));
     }
@@ -81,13 +81,13 @@ fn context_uses_speaker_names_and_resumes_after_a_pause() {
     assert!(ctx.starts_with("Conversazione ripresa dopo 180 minuti"));
     assert!(ctx.contains("Nunzio: parliamo del viaggio in Sicilia"));
     assert!(ctx.contains("Utente: a giugno"));
-    assert!(b.recent("kiosk", NOW).is_empty());
+    assert_eq!(b.recent("kiosk", NOW), [] as [&Turn; 0]);
     let mut far = book();
     far.remember(
         "kiosk",
         turn("parliamo del viaggio", "Va bene.", "chat", 12.0 * 3600.0),
     );
-    assert!(far.context("kiosk", NOW, "che ore sono").is_empty());
+    assert_eq!(far.context("kiosk", NOW, "che ore sono"), "");
     assert!(
         far.context("kiosk", NOW, "dove eravamo rimasti?")
             .contains("parliamo del viaggio")

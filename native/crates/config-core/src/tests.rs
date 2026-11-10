@@ -77,10 +77,16 @@ fn plans() {
         apply_plan(&owned(&["NUXIVA_EAR"]), &owned(&["kiosk"]), &known),
         owned(&["kiosk", "ear", "music"])
     );
-    assert!(apply_plan(&owned(&["UNKNOWN"]), &[], &known).is_empty());
+    assert_eq!(
+        apply_plan(&owned(&["UNKNOWN"]), &[], &known),
+        [] as [std::string::String; 0]
+    );
     assert_eq!(
         reload_units(&owned(&["NUXIVA_WAKE_WORD"])),
         owned(&["nuxiva-ear"])
     );
-    assert!(reload_units(&owned(&["NUXIVA_X"])).is_empty());
+    assert_eq!(
+        reload_units(&owned(&["NUXIVA_X"])),
+        [] as [std::string::String; 0]
+    );
 }

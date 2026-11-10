@@ -79,7 +79,7 @@ impl ThalamicRelay {
             None => (1.0, 0.0, 0.5),
         };
 
-        let phase_coherence = ((phase - self.master_clock_phase).cos() + 1.0) * 0.5;
+        let phase_coherence = f64::midpoint((phase - self.master_clock_phase).cos(), 1.0);
         let effective_gain = gain * (1.0 + coupling * (phase_coherence - 0.5));
 
         signal.iter().map(|&x| x * effective_gain).collect()

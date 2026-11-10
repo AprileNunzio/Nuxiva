@@ -83,10 +83,10 @@ fn confident_or_unrelated_words_are_left_alone() {
     ]);
     let (text, fixes) = lex.correct(&input, &none);
     assert_eq!(text, " Che tempo fa a marzo?");
-    assert!(fixes.is_empty());
+    assert_eq!(fixes, [] as [crate::words::Correction; 0]);
     let (text, fixes) = lex.correct(&tokens(&[(" Nunzio", 0.2), (" mangia", 0.3)]), &none);
     assert_eq!(text, " Nunzio mangia");
-    assert!(fixes.is_empty());
+    assert_eq!(fixes, [] as [crate::words::Correction; 0]);
     assert!(Lexicon::new(&["ab".to_owned(), "x".repeat(200)]).is_empty());
 }
 

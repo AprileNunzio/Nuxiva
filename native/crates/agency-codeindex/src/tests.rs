@@ -82,7 +82,7 @@ fn search_ranks_lines_and_ignores_binaries() -> Result<(), ScanError> {
         Some(("src/api/catalog.py", 1))
     );
     assert!(hits.iter().all(|h| h.path != "logo.bin"));
-    assert!(search(&tree.0, "  ", 10)?.is_empty());
+    assert_eq!(search(&tree.0, "  ", 10)?, [] as [crate::search::Hit; 0]);
     let ranked = search(&tree.0, "product", 10)?;
     assert!(ranked.len() > 1);
     assert_eq!(
@@ -90,4 +90,40 @@ fn search_ranks_lines_and_ignores_binaries() -> Result<(), ScanError> {
         ranked.get(..1)
     );
     Ok(())
+}
+
+#[test]
+fn incremental_sync_detects_changes_and_removals() -> Result<(), ScanError> {
+    let tree = Tree::new("incremental")?;
+    let mut index = crate::CodeIndex::new(10_000, 50 * 1024 * 1024);
+
+    let s1 = index.sync_incremental(&tree.0, Limits::default())?;
+    assert_eq!(s1.added, 3);
+    assert_eq!(s1.updated, 0);
+
+    let s2 = index.sync_incremental(&tree.0, Limits::default())?;
+    assert_eq!(s2.added, 0);
+    assert_eq!(s2.unchanged, 3);
+
+    fs::write(
+        tree.0.join("src/cart.js"),
+        "export function addToCart(product) { /* modified */ }\n",
+    )?;
+    let s3 = index.sync_incremental(&tree.0, Limits::default())?;
+    assert_eq!(s3.updated, 1);
+
+    fs::remove_file(tree.0.join("src/cart.js"))?;
+    let s4 = index.sync_incremental(&tree.0, Limits::default())?;
+    assert_eq!(s4.removed, 1);
+    assert_eq!(index.file_count(), 2);
+    Ok(())
+}
+
+#[test]
+fn million_file_corpus_performance_measurement() {
+    let metrics = crate::CodeIndex::measure_corpus(1_000_000);
+    assert_eq!(metrics.file_count, 1_000_000);
+    assert!(metrics.memory_bytes < 350 * 1024 * 1024);
+    assert!(metrics.search_latency_micros < 100_000);
+    assert!(metrics.update_latency_micros > 0);
 }

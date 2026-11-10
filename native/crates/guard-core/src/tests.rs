@@ -186,7 +186,7 @@ fn redirect_targets() {
         accept: "text/HTML",
         ..base
     };
-    assert!(!redirect_target(&html, false, 443).is_empty());
+    assert_ne!(redirect_target(&html, false, 443), "");
 }
 
 #[test]

@@ -71,9 +71,9 @@ impl Structure {
             return ([0.0; 3], 0.0);
         }
         let center = [
-            (low[0] + high[0]) * 0.5,
-            (low[1] + high[1]) * 0.5,
-            (low[2] + high[2]) * 0.5,
+            f32::midpoint(low[0], high[0]),
+            f32::midpoint(low[1], high[1]),
+            f32::midpoint(low[2], high[2]),
         ];
         let radius = self
             .atoms

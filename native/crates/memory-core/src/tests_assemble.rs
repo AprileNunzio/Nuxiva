@@ -40,13 +40,13 @@ fn obs(at: u64, class: Class, x: f32, who: Option<Who>) -> Observation {
 fn moving_person_becomes_one_sighting() {
     let mut a = Assembler::new(10_000, 600_000);
     for (i, x) in [0.10_f32, 0.15, 0.20, 0.26].iter().enumerate() {
-        assert!(
+        assert_eq!(
             a.push(&obs(1_000 * i as u64, Class::Person, *x, None))
-                .unwrap()
-                .is_empty()
+                .unwrap(),
+            [] as [crate::sighting::Sighting; 0]
         );
     }
-    assert!(a.flush(5_000).is_empty());
+    assert_eq!(a.flush(5_000), [] as [crate::sighting::Sighting; 0]);
     let done = a.flush(20_000);
     assert_eq!(done.len(), 1);
     let s = &done[0];
@@ -120,7 +120,7 @@ fn household_member_is_never_a_courier() {
     a.push(&obs(0, Class::Person, 0.1, Some(owner.clone())))
         .unwrap();
     a.push(&obs(1000, Class::Person, 0.1, Some(owner))).unwrap();
-    assert!(detect(&a.drain()).is_empty());
+    assert_eq!(detect(&a.drain()), [] as [crate::episode::Episode; 0]);
 }
 
 #[test]

@@ -257,6 +257,6 @@ fn signals_reject_unknown_fields() {
 fn the_audience_never_reports_identities_for_guests() {
     let mut tracker = Tracker::new(Policy::default(), 0);
     let audience = tracker.step(&seen(vec![stranger(), staff()]), 0);
-    assert!(audience.members.is_empty());
+    assert_eq!(audience.members, [] as [crate::fusion::Member; 0]);
     assert_eq!(audience.guests, 2);
 }
