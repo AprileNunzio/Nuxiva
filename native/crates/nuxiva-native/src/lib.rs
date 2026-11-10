@@ -20,6 +20,7 @@ mod expr;
 mod face;
 mod face_look;
 mod gesture;
+mod gait_core;
 mod governors;
 mod guard;
 mod home_rules;
@@ -151,6 +152,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<RustNetworkGovernor>()?;
     m.add_class::<workbench::RustWorkbenchTracker>()?;
     m.add_class::<ask_core::RustAskCore>()?;
+    m.add_class::<gait_core::RustGaitCore>()?;
     m.add_class::<RustNeuronIndex>()?;
     m.add_class::<RustContextGraph>()?;
     m.add_class::<RustCorticalCortex>()?;

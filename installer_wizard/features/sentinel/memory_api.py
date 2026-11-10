@@ -138,3 +138,19 @@ async def ask_sentinel(request: Request, user: str = Depends(require_admin)):
     answer = _engine(lambda: ask_engine.ask(text, user=user))
     return JSONResponse(answer, headers=NO_CACHE)
 
+
+@routes.post("/api/sentinel/gait/evaluate", openapi_extra=READ)
+async def gait_evaluate(request: Request, user: str = Depends(require_admin)):
+    from features.vision.gait import gait_engine
+    body = await _body(request)
+    candidate = body.get("candidate")
+    reference = body.get("reference")
+    if not isinstance(candidate, dict) or not isinstance(reference, dict):
+        raise HTTPException(400, "sentinel_gait_invalid")
+    ref_id = body.get("ref_id")
+    ref_ts_ms = body.get("ref_ts_ms")
+    result = _engine(lambda: gait_engine.evaluate(candidate, reference, ref_id, ref_ts_ms))
+    _audited(user)
+    return JSONResponse(result, headers=NO_CACHE)
+
+

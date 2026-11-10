@@ -173,4 +173,5 @@ fn profile_summarises_habits() {
     assert_eq!(p.height_cm, Some(178));
     assert!(p.glasses.is_some_and(|g| (g - 1.0 / 3.0).abs() < 1e-6));
     assert_eq!(p.gait_samples, 3);
+    assert!(p.gait_signature.is_some());
 }

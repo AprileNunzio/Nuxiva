@@ -93,6 +93,11 @@ def observations(source: dict, result: dict, at_ms: int, faces: list | None = No
                 row["who"] = who
             if not details:
                 row["look"] = {}
+            elif isinstance(body.get("gait"), list) and len(body["gait"]) == 16:
+                try:
+                    row["gait"] = [float(v) for v in body["gait"]]
+                except (TypeError, ValueError):
+                    pass
         elif body["class"] == "vehicle":
             vehicle = body.get("vehicle") or {}
             if vehicle.get("kind") not in VEHICLES:

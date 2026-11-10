@@ -21,6 +21,7 @@ pub struct Profile {
     pub glasses: Option<f32>,
     pub face_covered: usize,
     pub gait_samples: usize,
+    pub gait_signature: Option<Vec<f32>>,
 }
 
 fn top<K: Ord + Clone>(counts: BTreeMap<K, usize>) -> Vec<(K, usize)> {
@@ -48,6 +49,7 @@ pub fn build<'a>(sightings: impl IntoIterator<Item = &'a Sighting>) -> Profile {
     );
     let mut heights = Vec::new();
     let (mut seen_glasses, mut with_glasses) = (0_usize, 0_usize);
+    let mut sum_gait = [0.0_f32; 16];
     for s in sightings {
         out.count = out.count.saturating_add(1);
         out.first_ms = Some(out.first_ms.map_or(s.start_ms, |f| f.min(s.start_ms)));
@@ -76,8 +78,13 @@ pub fn build<'a>(sightings: impl IntoIterator<Item = &'a Sighting>) -> Profile {
         if look.face_covered == Some(true) {
             out.face_covered = out.face_covered.saturating_add(1);
         }
-        if !s.gait.is_empty() {
+        if s.gait.len() == 16 {
             out.gait_samples = out.gait_samples.saturating_add(1);
+            for (idx, val) in s.gait.iter().enumerate() {
+                if let Some(slot) = sum_gait.get_mut(idx) {
+                    *slot += *val;
+                }
+            }
         }
     }
     heights.sort_unstable();
@@ -88,5 +95,16 @@ pub fn build<'a>(sightings: impl IntoIterator<Item = &'a Sighting>) -> Profile {
     out.headwear = top(head);
     out.items = top(items);
     out.cameras = top(cams);
+    if out.gait_samples > 0 {
+        #[allow(clippy::cast_precision_loss)]
+        let count_f = out.gait_samples as f32;
+        let mut avg = vec![0.0_f32; 16];
+        for (idx, val) in sum_gait.iter().enumerate() {
+            if let Some(slot) = avg.get_mut(idx) {
+                *slot = *val / count_f;
+            }
+        }
+        out.gait_signature = Some(avg);
+    }
     out
 }
