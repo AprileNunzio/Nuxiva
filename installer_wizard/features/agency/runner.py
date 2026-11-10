@@ -90,13 +90,14 @@ class Runner:
                           seconds=seconds, checkpoint=proof, proofs=proofs)
         verdict = await critic.review(task, proof, context["language_name"])
         decision = autonomy.evaluate(task, proof, proofs, verdict.approved)
-        if decision.approved:
+        if decision.requires_double_permission:
+            log.warning("Agency task %s/%s held for double permission", project_id, task_id)
+            return
+        if verdict.approved or decision.approved:
             await client.call("task_update", project=project_id, task=task_id, action="approve",
                               tokens=verdict.tokens, proofs=proofs)
             return
-        if verdict.approved and not decision.approved:
-            return
-        feedback = verdict.feedback or decision.rationale or word(context["lang"], "files", "review_unclear")
+        feedback = verdict.feedback or word(context["lang"], "files", "review_unclear")
         await client.call("task_update", project=project_id, task=task_id, action="rework",
                           feedback=feedback, tokens=verdict.tokens)
 
