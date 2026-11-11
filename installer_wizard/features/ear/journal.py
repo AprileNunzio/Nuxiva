@@ -227,7 +227,7 @@ class Journal:
                 cur = conn.execute("UPDATE entries SET speaker = '' WHERE speaker = ?", (speaker,))
                 conn.commit()
                 return cur.rowcount
-        except (OSError, JournalUnavailable):
+        except (sqlite3.Error, OSError, JournalUnavailable):
             return 0
 
     def purge(self) -> int:
@@ -276,7 +276,7 @@ class Journal:
             size = sum(p.stat().st_size for p in self.root.glob("*.clip"))
             return {"total": total, "pending": by.get("pending", 0), "ok": by.get("ok", 0), "wrong": by.get("wrong", 0),
                     "speakers": speakers, "audio_mb": round(size / 1048576, 1)}
-        except (OSError, JournalUnavailable):
+        except (sqlite3.Error, OSError, JournalUnavailable):
             return {"total": 0, "pending": 0, "ok": 0, "wrong": 0, "speakers": {}, "audio_mb": 0.0}
 
 

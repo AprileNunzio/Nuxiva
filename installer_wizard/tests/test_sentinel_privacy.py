@@ -18,6 +18,7 @@ class SentinelPrivacyTest(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
         os.environ["NUXIVA_STATE_ROOT"] = str(self.root)
+        os.environ["NUXIVA_EAR_REVIEW_DIR"] = str(self.root / "ear_review")
         people.PEOPLE_DIR = self.root / "people"
         people.PEOPLE_DIR.mkdir(parents=True, exist_ok=True)
         from cryptography.fernet import Fernet
@@ -32,6 +33,7 @@ class SentinelPrivacyTest(unittest.TestCase):
         self.client = TestClient(self.app)
 
     def tearDown(self):
+        os.environ.pop("NUXIVA_EAR_REVIEW_DIR", None)
         self.tmp.cleanup()
 
     def test_privacy_overview_empty(self):

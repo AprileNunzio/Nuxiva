@@ -60,7 +60,10 @@ def privacy_overview() -> dict:
         })
 
     ej = _ear_journal()
-    audio_stats = ej.stats() if ej and ej.ready else {}
+    try:
+        audio_stats = ej.stats() if ej else {}
+    except Exception:
+        audio_stats = {}
     return {
         "profiles": profiles,
         "vault_days": len(days()),
@@ -121,7 +124,10 @@ def shred_person(slug: str) -> dict:
     ej = _ear_journal()
     journal_anonymized = 0
     if ej:
-        journal_anonymized = ej.anonymize_speaker(slug)
+        try:
+            journal_anonymized = ej.anonymize_speaker(slug)
+        except Exception:
+            journal_anonymized = 0
 
     remove_private(PEOPLE_DIR, slug)
 
