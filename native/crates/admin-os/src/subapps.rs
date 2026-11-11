@@ -26,18 +26,23 @@ pub struct SubappRegistry {
 }
 
 impl SubappRegistry {
+    #[must_use]
     pub fn new() -> Self {
         Self {
             entries: HashMap::new(),
         }
     }
 
+    #[must_use]
     pub fn sanitize_id(raw: &str) -> Option<String> {
         let trimmed = raw.trim();
         if trimmed.is_empty() || trimmed.len() > 64 {
             return None;
         }
-        if !trimmed.chars().all(|c| c.is_ascii_alphanumeric() || c == '_' || c == '-') {
+        if !trimmed
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || c == '_' || c == '-')
+        {
             return None;
         }
         Some(trimmed.to_ascii_lowercase())
@@ -48,7 +53,7 @@ impl SubappRegistry {
         let valid_parent = Self::sanitize_id(&manifest.parent).ok_or("invalid_parent")?;
 
         let mut sanitized = manifest;
-        sanitized.id = valid_id.clone();
+        sanitized.id.clone_from(&valid_id);
         sanitized.parent = valid_parent;
 
         self.entries.insert(valid_id, sanitized);
@@ -59,10 +64,12 @@ impl SubappRegistry {
         self.entries.remove(id)
     }
 
+    #[must_use]
     pub fn get(&self, id: &str) -> Option<&SubappManifest> {
         self.entries.get(id)
     }
 
+    #[must_use]
     pub fn list_by_parent(&self, parent: &str) -> Vec<SubappManifest> {
         self.entries
             .values()
@@ -71,6 +78,7 @@ impl SubappRegistry {
             .collect()
     }
 
+    #[must_use]
     pub fn list_all(&self) -> Vec<SubappManifest> {
         self.entries.values().cloned().collect()
     }
@@ -82,8 +90,14 @@ mod tests {
 
     #[test]
     fn test_sanitize_id() {
-        assert_eq!(SubappRegistry::sanitize_id("  Tris  "), Some("tris".to_string()));
-        assert_eq!(SubappRegistry::sanitize_id("scacchi-3d"), Some("scacchi-3d".to_string()));
+        assert_eq!(
+            SubappRegistry::sanitize_id("  Tris  "),
+            Some("tris".to_string())
+        );
+        assert_eq!(
+            SubappRegistry::sanitize_id("scacchi-3d"),
+            Some("scacchi-3d".to_string())
+        );
         assert_eq!(SubappRegistry::sanitize_id("bad/path"), None);
         assert_eq!(SubappRegistry::sanitize_id(""), None);
     }
@@ -129,4 +143,3 @@ mod tests {
         assert_eq!(reg.list_by_parent("giochi").len(), 1);
     }
 }
-

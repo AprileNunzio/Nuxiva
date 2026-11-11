@@ -12,7 +12,6 @@ pub mod process;
 pub mod status;
 pub mod subapps;
 
-pub use subapps::{MacroAppManifest, SubappManifest, SubappRegistry};
 pub use ai_engine::{
     AiEngineManager, AiEngineStatus, InferenceConfig, InferenceTelemetry, ModelKind, ModelProfile,
     ModelQuantization,
@@ -33,3 +32,4 @@ pub use peripherals::{
 };
 pub use process::{ProcessInfo, ProcessManager, ProcessStatus};
 pub use status::{HealthStatus, SystemStatus, calculate_system_status};
+pub use subapps::{MacroAppManifest, SubappManifest, SubappRegistry};

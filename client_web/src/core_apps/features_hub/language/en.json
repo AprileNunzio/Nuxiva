@@ -51,6 +51,7 @@
     "reset_filters": "Reset filters",
     "state_filter": "Feature status",
     "pin_to_desktop": "Add to Desktop",
+    "unpin_from_desktop": "Remove from Desktop",
     "tab_apps": "Applications & Directories",
     "tab_services": "Capabilities & Services",
     "tab_catalog": "Capabilities & Services",

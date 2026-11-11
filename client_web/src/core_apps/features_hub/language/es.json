@@ -52,6 +52,8 @@
     "state_filter": "Estado de las funciones",
     "pin_to_desktop": "Añadir al Escritorio",
     "unpin_from_desktop": "Quitar del Escritorio",
+    "tab_apps": "Aplicaciones y Directorios",
+    "tab_services": "Capacidades y Servicios",
     "tab_catalog": "Capacidades y Servicios",
     "tab_settings": "Ajustes del Sistema",
     "open_settings_shortcut": "Ajustes Frontend y Backend",
