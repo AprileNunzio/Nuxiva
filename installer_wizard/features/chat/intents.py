@@ -38,6 +38,9 @@ INTENTS = [
     ("rescue", re.compile(
         r"\b(?:stato (?:di |dei |del )?(?:soccorso|soccorsi|emergenza|emergenze|allarme|allarmi)|ci sono emergenze|qualcuno [èe] in pericolo"
         r"|allarme attivo|situazione di emergenza|rescue status|emergency status)\b", re.I)),
+    ("matter", re.compile(
+        r"\b(?:matter|stato matter|dispositivi matter|nodi matter|bridge matter"
+        r"|protocollo matter|matter status|matter devices)\b", re.I)),
     ("time", re.compile(r"\b(che ore sono|che ora [èe]|che giorno [èe]|che data [èe])\b", re.I)),
 ]
 

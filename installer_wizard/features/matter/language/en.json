@@ -1,0 +1,19 @@
+{
+  "title": "Universal Matter 1.6.1",
+  "description": "Matter 1.6.1 standard with native Controller, Universal Bridge, Thread support, Energy Management, and PTZ Cameras.",
+  "status_online": "Online",
+  "status_commissioning": "Commissioning",
+  "device_type_light": "Lighting",
+  "device_type_thermostat": "Climate",
+  "device_type_sensor": "Sensor",
+  "device_type_alarm": "Safety Alarm",
+  "device_type_camera": "PTZ 360° Camera",
+  "device_type_energy": "Energy Monitoring",
+  "bridge_active": "Universal Matter 1.6.1 Bridge active",
+  "endpoints_count": "{0} endpoints exposed on Matter",
+  "nodes_count": "{0} nodes connected",
+  "command_executed": "Matter command executed successfully",
+  "commissioning_success": "Matter device commissioned successfully",
+  "error_unsupported": "Unsupported Matter operation",
+  "error_timeout": "Matter node communication timeout"
+}

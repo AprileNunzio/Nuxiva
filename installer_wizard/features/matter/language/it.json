@@ -1,0 +1,19 @@
+{
+  "title": "Matter 1.6.1 Universale",
+  "description": "Standard Matter 1.6.1 con Controller nativo, Universal Bridge, supporto Thread, gestione energetica e telecamere PTZ.",
+  "status_online": "Online",
+  "status_commissioning": "In associazione",
+  "device_type_light": "Illuminazione",
+  "device_type_thermostat": "Climatizzazione",
+  "device_type_sensor": "Sensore",
+  "device_type_alarm": "Allarme di Sicurezza",
+  "device_type_camera": "Telecamera PTZ 360°",
+  "device_type_energy": "Monitoraggio Energetico",
+  "bridge_active": "Universal Bridge Matter 1.6.1 attivo",
+  "endpoints_count": "{0} endpoint esposti su Matter",
+  "nodes_count": "{0} nodi connessi",
+  "command_executed": "Comando Matter eseguito con successo",
+  "commissioning_success": "Dispositivo Matter associato con successo",
+  "error_unsupported": "Operazione Matter non supportata",
+  "error_timeout": "Timeout comunicazione nodo Matter"
+}

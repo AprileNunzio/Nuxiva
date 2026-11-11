@@ -88,8 +88,8 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install Rust 1.89.0
-        run: rustup toolchain install 1.89.0 --profile minimal -c clippy,rustfmt && rustup default 1.89.0
+      - name: Install Rust 1.99.1
+        run: rustup toolchain install 1.99.1 --profile minimal -c clippy,rustfmt && rustup default 1.99.1
 
       - name: Format
         run: cargo fmt --all --check

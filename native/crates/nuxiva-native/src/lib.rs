@@ -27,6 +27,7 @@ mod home_rules;
 mod jev;
 mod language;
 mod learner;
+mod matter;
 mod memory;
 mod mesh;
 mod molecule;
@@ -130,6 +131,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     rescue::register(m)?;
     sentinel_memory::register(m)?;
     vault_media::register(m)?;
+    matter::register(m)?;
     m.add_class::<RustSynapticBus>()?;
     m.add_class::<SynapticWeightMatrix>()?;
     m.add_class::<PySynapticSpike>()?;

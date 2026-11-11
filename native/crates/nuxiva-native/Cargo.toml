@@ -47,6 +47,7 @@ nuxiva-memory-core = { path = "../memory-core" }
 nuxiva-vault-media = { path = "../vault-media" }
 nuxiva-ask-core = { path = "../ask-core" }
 nuxiva-gait-core = { path = "../gait-core" }
+nuxiva-matter-core = { path = "../matter-core" }
 pyo3 = { version = "0.27.2", features = ["abi3-py310"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
