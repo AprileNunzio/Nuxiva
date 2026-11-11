@@ -155,7 +155,7 @@ class Reviewer:
     async def review(self, meta_file: Path, meta: dict) -> None:
         self.state, self.current = "revisione in corso", meta["id"]
         started = time.time()
-        audio = await asyncio.to_thread(read_wav, meta_file.with_suffix(".wav"))
+        audio = await asyncio.to_thread(recorder.read_chunk_audio, meta_file, meta)
         profile = enhance.NoiseProfile()
         if meta.get("noise_profile"):
             profile.magnitude = np.array(meta["noise_profile"], dtype=np.float32)
@@ -166,6 +166,7 @@ class Reviewer:
             return
         result = self.evaluate(meta, segments)
         result["took_s"] = round(time.time() - started, 1)
+        self.index_segments(meta, clean, segments)
         self.learn(meta, segments, result)
         applied = tuning.observe(result)
         if applied:
@@ -175,6 +176,72 @@ class Reviewer:
         self.state, self.current = "in attesa", ""
         log.info("Registrazione %s rivista in %.0fs: capito=%s attivazioni mancate=%d a vuoto=%d", meta["id"],
                  result["took_s"], result.get("agreement"), result["missed"], result["false_instant"])
+
+    @staticmethod
+    def index_segments(meta: dict, clean: np.ndarray, segments: list) -> None:
+        if not segments or not clean.size:
+            return
+        ctx = None
+        try:
+            from features.ear.speakers import SpeakerContext
+            from features.ear.voiceprint import voiceprints
+            ctx = SpeakerContext(voiceprints)
+        except Exception:
+            pass
+        from features.sentinel import memory_people
+        from features.sentinel.collectors.voice import record_voice
+        from features.sentinel.memory import memory, new_id
+        source = str(meta.get("source", "main"))[:30].replace("/", "-").lower()
+        chunk_started = float(meta.get("started", time.time()))
+        chunk_evidence_id = str(meta.get("id", "")).zfill(16)[:32]
+        for seg in segments:
+            text = str(seg.get("text") or "").strip()
+            if not text:
+                continue
+            t0 = float(seg.get("start", 0.0))
+            t1 = float(seg.get("end", t0 + 1.0))
+            piece = clean[max(0, int(t0 * RATE)):min(len(clean), int(t1 * RATE))]
+            speaker_slug, score = None, 0.0
+            if ctx is not None and len(piece) >= int(0.5 * RATE):
+                try:
+                    speaker_slug, score, _ = ctx.identify(piece, alone=None)
+                except Exception:
+                    speaker_slug = None
+            profile = memory_people._profile(speaker_slug) if speaker_slug else None
+            if not memory_people.allows_voice(profile):
+                speaker_slug = None
+            try:
+                record_voice(
+                    phrase=text,
+                    speaker_slug=speaker_slug,
+                    recognized=bool(speaker_slug),
+                    place=source,
+                    device="ear",
+                )
+            except Exception:
+                pass
+            who = memory_people.who_for(speaker_slug, profile) if speaker_slug else {"type": "unknown"}
+            s_ms = int((chunk_started + t0) * 1000)
+            e_ms = max(s_ms + 1, int((chunk_started + t1) * 1000))
+            sighting = {
+                "id": new_id(),
+                "start_ms": s_ms,
+                "end_ms": e_ms,
+                "camera": f"ear-{source}",
+                "zone": None,
+                "class": "person",
+                "who": who,
+                "look": {},
+                "vehicle": None,
+                "gait": [],
+                "evidence": [{"kind": "audio", "id": chunk_evidence_id, "at_ms": s_ms}],
+                "confidence": max(0.5, min(1.0, float(score))) if speaker_slug else 0.5,
+                "pinned": False,
+            }
+            try:
+                memory.add(sighting)
+            except Exception as exc:
+                log.debug("Index audio sighting fallback: %s", exc)
 
     @staticmethod
     def evaluate(meta: dict, segments: list) -> dict:
@@ -214,7 +281,7 @@ class Reviewer:
     def publish(self) -> None:
         rows = recent_reviews(SUMMARY_WINDOW)
         pending = sum(1 for _, m in recorder.listing() if not m.get("reviewed"))
-        size = sum(f.stat().st_size for f in recorder.RECORDS.glob("*.wav")) if recorder.RECORDS.exists() else 0
+        size = sum(f.stat().st_size for f in recorder.RECORDS.iterdir() if f.suffix in (".wav", ".nvm", ".enc")) if recorder.RECORDS.exists() else 0
         data = {"at": time.time(), "state": self.state, "recording": recorder.enabled(), "pending": pending,
                 "disk_mb": round(size / 1048576, 1), "summary": metrics.summarize(rows), "tuning": tuning.snapshot(),
                 "learned": learner.summary().get("variants", {}), "recent": rows[-8:]}

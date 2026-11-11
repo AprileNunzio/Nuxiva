@@ -57,6 +57,14 @@ async def journal_audio(item: str, request: Request):
     wav = journal.audio(entry_id(item))
     if wav is None:
         raise HTTPException(404, "Registrazione non disponibile")
+    try:
+        from features.sentinel import record as sentinel_record
+        sentinel_record.record(
+            "sentinel.read", sentinel_record.NUXIVA, "sentinel.audio_playback",
+            {"entry_id": item}, "household", "ear"
+        )
+    except Exception:
+        pass
     return Response(wav, media_type="audio/wav", headers={"Cache-Control": "no-store", "X-Content-Type-Options": "nosniff"})
 
 

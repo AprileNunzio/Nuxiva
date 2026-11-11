@@ -890,7 +890,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-bus-core"
-version = "5.7.3"
+version = "5.7.4"
 
 [[package]]
 name = "nuxiva-config-core"
@@ -916,7 +916,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-crdt-core"
-version = "5.7.3"
+version = "5.7.4"
 dependencies = [
  "serde",
  "serde_json",
@@ -1007,7 +1007,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-egress"
-version = "5.7.3"
+version = "5.7.4"
 dependencies = [
  "landlock",
  "serde",
@@ -1058,7 +1058,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-langid"
-version = "5.7.3"
+version = "5.7.4"
 dependencies = [
  "whatlang",
 ]
@@ -1086,7 +1086,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-native"
-version = "5.7.3"
+version = "5.7.4"
 dependencies = [
  "agency-scheduler",
  "nuxiva-access-core",
@@ -1133,7 +1133,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-netguard"
-version = "5.7.3"
+version = "5.7.4"
 dependencies = [
  "serde",
  "serde_json",

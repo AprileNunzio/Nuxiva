@@ -32,6 +32,14 @@ def allows_details(profile: dict | None) -> bool:
     return bool(profile is None or profile.get("consent", True)) and record.option("NUXIVA_SENTINEL_APPEARANCE")
 
 
+def allows_voice(profile: dict | None) -> bool:
+    if profile is not None and not profile.get("consent", True):
+        return False
+    if profile is not None and profile.get("consent_voice") is False:
+        return False
+    return record.option("NUXIVA_SENTINEL_VOICE")
+
+
 def sync(slug: str) -> dict | None:
     from features.people import people
     profile = _profile(slug)

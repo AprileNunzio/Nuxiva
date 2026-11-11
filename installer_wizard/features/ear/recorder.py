@@ -1,3 +1,4 @@
+import io
 import json
 import logging
 import os
@@ -129,7 +130,25 @@ class Recorder:
         return chunk
 
 
-def write_chunk(chunk: Chunk) -> None:
+def read_chunk_audio(meta_file: Path, meta: dict | None = None) -> np.ndarray:
+    meta = meta or {}
+    nvm = meta_file.with_suffix(".nvm")
+    if nvm.exists():
+        from features.nvr.vault import MediaVault
+        v = MediaVault()
+        v.root = ROOT / "vault"
+        source_id = f"ear_{meta.get('source', 'main')}"
+        raw_bytes = v.decrypt_file(source_id, nvm)
+        with wave.open(io.BytesIO(raw_bytes), "rb") as w:
+            raw = w.readframes(w.getnframes())
+        return np.frombuffer(raw, dtype="<i2").astype(np.float32) / 32768.0
+    wav = meta_file.with_suffix(".wav")
+    with wave.open(str(wav), "rb") as w:
+        raw = w.readframes(w.getnframes())
+    return np.frombuffer(raw, dtype="<i2").astype(np.float32) / 32768.0
+
+
+def write_chunk(chunk: Chunk, encrypt: bool | None = None) -> None:
     RECORDS.mkdir(parents=True, exist_ok=True)
     try:
         os.chmod(ROOT, 0o700)
@@ -138,17 +157,42 @@ def write_chunk(chunk: Chunk) -> None:
         log.debug("Permessi della cartella delle registrazioni: %s", exc)
     base = RECORDS / f"c{int(chunk.meta['started'])}_{chunk.meta['id']}"
     pcm = (np.clip(chunk.audio, -1, 1) * 32767).astype("<i2").tobytes()
-    tmp = base.with_suffix(".wav.tmp")
-    with wave.open(str(tmp), "wb") as w:
-        w.setnchannels(1)
-        w.setsampwidth(2)
-        w.setframerate(RATE)
-        w.writeframes(pcm)
-    os.replace(tmp, base.with_suffix(".wav"))
+    should_encrypt = earconf.flag("NUXIVA_EAR_ENCRYPT", False) if encrypt is None else encrypt
+    if should_encrypt:
+        tmp = RECORDS / f"{base.stem}.raw"
+        with wave.open(str(tmp), "wb") as w:
+            w.setnchannels(1)
+            w.setsampwidth(2)
+            w.setframerate(RATE)
+            w.writeframes(pcm)
+        try:
+            from features.nvr.vault import MediaVault
+            v = MediaVault()
+            v.root = ROOT / "vault"
+            v.root.mkdir(parents=True, exist_ok=True)
+            source_id = f"ear_{chunk.meta.get('source', 'main')}"
+            enc_file = v.encrypt_file(source_id, tmp, tier="continuous", has_audio=True, has_video=False)
+            target_nvm = base.with_suffix(".nvm")
+            os.replace(enc_file, target_nvm)
+            os.chmod(target_nvm, 0o600)
+            chunk.meta["encrypted"] = True
+        except Exception as exc:
+            log.warning("Cifratura del blocco audio non riuscita: %s", exc)
+            if tmp.exists():
+                os.replace(tmp, base.with_suffix(".wav"))
+                os.chmod(base.with_suffix(".wav"), 0o600)
+    else:
+        tmp = base.with_suffix(".wav.tmp")
+        with wave.open(str(tmp), "wb") as w:
+            w.setnchannels(1)
+            w.setsampwidth(2)
+            w.setframerate(RATE)
+            w.writeframes(pcm)
+        os.replace(tmp, base.with_suffix(".wav"))
+        os.chmod(base.with_suffix(".wav"), 0o600)
     meta_tmp = base.with_suffix(".json.tmp")
     meta_tmp.write_text(json.dumps(chunk.meta, ensure_ascii=False), encoding="utf-8")
     os.replace(meta_tmp, base.with_suffix(".json"))
-    os.chmod(base.with_suffix(".wav"), 0o600)
     os.chmod(base.with_suffix(".json"), 0o600)
     prune()
 
@@ -164,7 +208,7 @@ def listing() -> list[tuple[Path, dict]]:
 
 
 def remove(meta_file: Path) -> None:
-    for suffix in (".wav", ".json"):
+    for suffix in (".wav", ".nvm", ".enc", ".json"):
         try:
             meta_file.with_suffix(suffix).unlink()
         except FileNotFoundError:
@@ -189,11 +233,11 @@ def prune() -> int:
             removed += 1
         else:
             alive.append((meta_file, meta))
-    total = sum(f.with_suffix(".wav").stat().st_size for f, _ in alive if f.with_suffix(".wav").exists())
+    total = sum(f.stat().st_size for f in RECORDS.iterdir() if f.suffix in (".wav", ".nvm", ".enc")) if RECORDS.exists() else 0
     for meta_file, _ in alive:
         if total <= cap:
             break
-        size = meta_file.with_suffix(".wav").stat().st_size if meta_file.with_suffix(".wav").exists() else 0
+        size = sum(meta_file.with_suffix(s).stat().st_size for s in (".wav", ".nvm", ".enc") if meta_file.with_suffix(s).exists())
         remove(meta_file)
         total -= size
         removed += 1
@@ -205,6 +249,6 @@ def purge() -> int:
     for meta_file, _ in listing():
         remove(meta_file)
         count += 1
-    for stray in RECORDS.glob("*.tmp"):
+    for stray in list(RECORDS.glob("*.tmp")) + list(RECORDS.glob("*.nvm")):
         stray.unlink(missing_ok=True)
     return count
