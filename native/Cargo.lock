@@ -39,7 +39,7 @@ dependencies = [
 
 [[package]]
 name = "agency-codeindex"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "getrandom 0.3.4",
  "serde",
@@ -48,7 +48,7 @@ dependencies = [
 
 [[package]]
 name = "agency-domain"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "serde",
  "serde_json",
@@ -57,7 +57,7 @@ dependencies = [
 
 [[package]]
 name = "agency-foresight"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "serde",
  "serde_json",
@@ -66,7 +66,7 @@ dependencies = [
 
 [[package]]
 name = "agency-ledger"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "getrandom 0.3.4",
  "hmac",
@@ -80,7 +80,7 @@ dependencies = [
 
 [[package]]
 name = "agency-planner"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "agency-domain",
  "serde",
@@ -89,7 +89,7 @@ dependencies = [
 
 [[package]]
 name = "agency-scheduler"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "serde",
  "thiserror",
@@ -830,7 +830,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-access-core"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "serde",
  "serde_json",
@@ -838,7 +838,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-admin-os"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "serde",
  "serde_json",
@@ -846,7 +846,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-agency"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "agency-codeindex",
  "agency-domain",
@@ -866,7 +866,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-ask-core"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "nuxiva-memory-core",
  "serde",
@@ -875,7 +875,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-audio-dsp"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "serde",
  "serde_json",
@@ -883,25 +883,25 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-authz-core"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "serde_json",
 ]
 
 [[package]]
 name = "nuxiva-bus-core"
-version = "5.7.6"
+version = "5.7.7"
 
 [[package]]
 name = "nuxiva-config-core"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "nuxiva-guard-core",
 ]
 
 [[package]]
 name = "nuxiva-cortex-core"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "aes-gcm",
  "ed25519-dalek",
@@ -916,7 +916,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-crdt-core"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "serde",
  "serde_json",
@@ -924,14 +924,14 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-dialog-core"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "regex",
 ]
 
 [[package]]
 name = "nuxiva-display"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "nuxiva-display-scheduler",
  "nuxiva-display-stream",
@@ -944,14 +944,14 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-display-domain"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "serde",
 ]
 
 [[package]]
 name = "nuxiva-display-learner"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "aes-gcm",
  "getrandom 0.3.4",
@@ -965,7 +965,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-display-planner"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "nuxiva-display-domain",
  "serde",
@@ -974,14 +974,14 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-display-scheduler"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "serde",
 ]
 
 [[package]]
 name = "nuxiva-display-stream"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "nuxiva-display-domain",
  "serde",
@@ -990,7 +990,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-display-wasm"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "nuxiva-gesture-core",
  "serde",
@@ -1000,14 +1000,14 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-ear-core"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "realfft",
 ]
 
 [[package]]
 name = "nuxiva-egress"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "landlock",
  "serde",
@@ -1017,11 +1017,11 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-expr-core"
-version = "5.7.6"
+version = "5.7.7"
 
 [[package]]
 name = "nuxiva-face-core"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "serde",
  "serde_json",
@@ -1029,7 +1029,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-gait-core"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "nuxiva-memory-core",
  "serde",
@@ -1038,7 +1038,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-gesture-core"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "serde",
  "serde_json",
@@ -1046,7 +1046,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-guard-core"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "base64",
  "hmac",
@@ -1058,14 +1058,14 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-langid"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "whatlang",
 ]
 
 [[package]]
 name = "nuxiva-memory-core"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "blake3",
  "chacha20poly1305",
@@ -1079,14 +1079,14 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-molecule-core"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "serde",
 ]
 
 [[package]]
 name = "nuxiva-native"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "agency-scheduler",
  "nuxiva-access-core",
@@ -1133,7 +1133,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-netguard"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "serde",
  "serde_json",
@@ -1142,7 +1142,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-presence-core"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "nuxiva-display-domain",
  "serde",
@@ -1151,7 +1151,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-rescue-core"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "serde",
  "serde_json",
@@ -1159,7 +1159,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-satellite"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "aes-gcm",
  "getrandom 0.3.4",
@@ -1175,7 +1175,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-seal-core"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "aes",
  "base64",
@@ -1189,7 +1189,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-sentinel-core"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "blake3",
  "chacha20poly1305",
@@ -1204,7 +1204,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-spatial-core"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "serde",
  "serde_json",
@@ -1212,7 +1212,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-stage-core"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "serde",
  "serde_json",
@@ -1220,14 +1220,14 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-supervisor-core"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "serde",
 ]
 
 [[package]]
 name = "nuxiva-surface-core"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "serde",
  "serde_json",
@@ -1235,7 +1235,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-telemetry-core"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "rustix",
  "serde",
@@ -1243,7 +1243,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-token-core"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "base64",
  "hmac",
@@ -1255,7 +1255,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-update-core"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "serde",
  "serde_json",
@@ -1265,7 +1265,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-vault-media"
-version = "5.7.6"
+version = "5.7.7"
 dependencies = [
  "blake3",
  "chacha20poly1305",
@@ -1278,7 +1278,7 @@ dependencies = [
 
 [[package]]
 name = "nuxiva-vitals-core"
-version = "5.7.6"
+version = "5.7.7"
 
 [[package]]
 name = "once_cell"

@@ -173,3 +173,16 @@ async def sentinel_privacy_export(slug: str, _: str = Depends(require_admin)):
     except ValueError as exc:
         raise HTTPException(400, str(exc)) from exc
 
+
+@admin_routes.get("/api/sentinel/recalibrate/metrics", openapi_extra=READ)
+async def sentinel_recalibrate_metrics(_: str = Depends(require_admin)):
+    from features.sentinel.recalibrate import collect_metrics
+    return JSONResponse(collect_metrics(), headers=NO_CACHE)
+
+
+@admin_routes.post("/api/sentinel/recalibrate/run", openapi_extra=MANAGE)
+async def sentinel_recalibrate_run(_: str = Depends(require_admin)):
+    from features.sentinel.recalibrate import run_cycle
+    return JSONResponse(run_cycle(), headers=NO_CACHE)
+
+

@@ -60,6 +60,7 @@
     "sentinel.media.encrypted": "Registrazione cifrata archiviata per la telecamera {camera} ({segment})",
     "sentinel.sentinel.ask_query": "Interrogazione con prove richiesta: «{query}» ({citations} prove collegate)",
     "sentinel.sentinel.gdpr_shred": "Dati biometrici e ricordi cancellati definitivamente (GDPR Art. 17, ricevuta {receipt})",
-    "sentinel.sentinel.gdpr_export": "Esportazione dei dati personali richiesta ed eseguita (GDPR Art. 20)"
+    "sentinel.sentinel.gdpr_export": "Esportazione dei dati personali richiesta ed eseguita (GDPR Art. 20)",
+    "sentinel.self.recalibrate": "Ciclo notturno di ricalibrazione completato (precisione {precision}%, {tasks} compiti agency)"
   }
 }

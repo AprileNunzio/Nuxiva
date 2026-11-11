@@ -60,6 +60,7 @@
     "sentinel.media.encrypted": "Encrypted media recording stored for camera {camera} ({segment})",
     "sentinel.sentinel.ask_query": "Evidence query requested: «{query}» ({citations} linked proofs)",
     "sentinel.sentinel.gdpr_shred": "Biometric data and memories permanently erased (GDPR Art. 17, receipt {receipt})",
-    "sentinel.sentinel.gdpr_export": "Personal data export requested and processed (GDPR Art. 20)"
+    "sentinel.sentinel.gdpr_export": "Personal data export requested and processed (GDPR Art. 20)",
+    "sentinel.self.recalibrate": "Nightly recalibration cycle completed (precision {precision}%, {tasks} agency tasks)"
   }
 }
