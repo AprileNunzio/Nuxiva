@@ -10,6 +10,7 @@ from features.store.repositories import (
     get_custom_packages,
     set_custom_package_installed,
 )
+from features.store.sandbox_bridge import build_sandbox_profile_for_package
 from settings import apply_config
 
 log = logging.getLogger("nuxiva.store")
@@ -54,8 +55,15 @@ class StoreManagerService:
             budget_ok, reason = cls.verify_resource_budget(item_id, force=force)
             if not budget_ok:
                 return {"ok": False, "error": reason}
+            sandbox_profile = build_sandbox_profile_for_package(custom_pkg)
             set_custom_package_installed(item_id, True)
-            return {"ok": True, "applying": False, "id": item_id, "custom": True}
+            return {
+                "ok": True,
+                "applying": False,
+                "id": item_id,
+                "custom": True,
+                "sandbox": sandbox_profile.to_dict(),
+            }
 
         budget_ok, reason = cls.verify_resource_budget(item_id, force=force)
         if not budget_ok:

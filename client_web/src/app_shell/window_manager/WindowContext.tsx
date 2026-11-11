@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { OSWindow, OSAppContextValue } from './types';
 import { windowStore } from './WindowStore';
+import { createScopedStorage } from '../../shared/storage/scopedStorage';
 export const WindowContext = createContext<OSWindow | null>(null);
 const RuntimeContext=createContext<Pick<OSAppContextValue,'searchQuery'|'setSearchQuery'|'status'|'setStatus'|'breadcrumbs'|'setBreadcrumbs'|'inspectorOpen'|'setInspectorOpen'|'selectedId'|'setSelectedId'>|null>(null);
 export function WindowRuntimeProvider({children}:{children:React.ReactNode}) {
@@ -25,9 +26,10 @@ export function WindowRuntimeProvider({children}:{children:React.ReactNode}) {
 export function useOSApp():OSAppContextValue {
   const entry=useContext(WindowContext),runtime=useContext(RuntimeContext);
   if(!entry||!runtime)throw new Error('Missing OS application context');
+  const storage = createScopedStorage(entry.appId);
   return {...runtime,windowId:entry.id,appId:entry.appId,nodeId:entry.targetNodeId,instanceKey:entry.instanceKey,activeTab:entry.activeSection,
     setActiveTab:id=>windowStore.update(entry.id,{activeSection:id}),setNodeId:id=>windowStore.update(entry.id,{targetNodeId:id}),
-    setTitle:title=>windowStore.update(entry.id,{title:title.slice(0,200)}),openApp:request=>windowStore.openWindow(request)};
+    setTitle:title=>windowStore.update(entry.id,{title:title.slice(0,200)}),openApp:request=>windowStore.openWindow(request),storage};
 }
 export function useWindowNodeContext() {
   const window = useContext(WindowContext);

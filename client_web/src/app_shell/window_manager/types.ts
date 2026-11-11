@@ -45,6 +45,7 @@ export interface OSAppContextValue {
   breadcrumbs?: readonly BreadcrumbItem[]; setBreadcrumbs?: (crumbs: readonly BreadcrumbItem[]) => void;
   inspectorOpen?: boolean; setInspectorOpen?: (open: boolean | ((prev: boolean) => boolean)) => void;
   selectedId?: string; setSelectedId?: (id: string | undefined) => void;
+  storage?: import('../../shared/storage/scopedStorage').ScopedStorage;
 }
 export interface AppManifest {
   id: string; name: string; scope: string; icon3d?: string;

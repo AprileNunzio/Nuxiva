@@ -8,6 +8,7 @@ from typing import Any, Optional
 from urllib.parse import urlparse
 
 from config import STATE_DIR
+from features.store.integrity import validate_package_security_contract
 
 log = logging.getLogger("nuxiva.store.repositories")
 
@@ -129,6 +130,9 @@ def add_repository(name: str, url: str, description: str = "", packages: Optiona
     if packages and isinstance(packages, list):
         for pkg in packages:
             if isinstance(pkg, dict) and pkg.get("id") and pkg.get("title"):
+                valid, _ = validate_package_security_contract(pkg)
+                if not valid:
+                    continue
                 cached_packages.append({
                     "id": f"{repo_id}:{pkg['id']}",
                     "raw_id": str(pkg["id"]),
@@ -138,6 +142,9 @@ def add_repository(name: str, url: str, description: str = "", packages: Optiona
                     "size_gb": float(pkg.get("size_gb", 0.5)),
                     "removable": bool(pkg.get("removable", True)),
                     "install_url": str(pkg.get("install_url", "")),
+                    "capabilities": list(pkg.get("capabilities") or []),
+                    "allowed_hosts": list(pkg.get("allowed_hosts") or []),
+                    "checksum": str(pkg.get("checksum") or pkg.get("integrity") or ""),
                 })
 
     new_repo: dict[str, Any] = {
