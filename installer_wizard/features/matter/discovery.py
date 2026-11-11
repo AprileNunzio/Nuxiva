@@ -1,7 +1,6 @@
 import ipaddress
 import re
 import socket
-import struct
 import time
 from typing import Any, Dict, List, Optional
 
