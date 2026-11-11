@@ -66,13 +66,30 @@ class MatterIntegrationTest(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(status["spec"], "1.6.1")
         self.assertEqual(status["standard"], "Matter 1.6.1 (CSA)")
         self.assertTrue(status["bridge_active"])
-        self.assertGreaterEqual(status["bridge_endpoints_count"], 5)
+        self.assertGreaterEqual(status["bridge_endpoints_count"], 1)
 
     def test_matter_api_endpoints(self):
         resp = self.client.get("/api/matter/status")
         self.assertEqual(resp.status_code, 200)
         data = resp.json()
         self.assertEqual(data["spec"], "1.6.1")
+
+        resp_disc = self.client.get("/api/matter/discover?timeout=0.1")
+        self.assertEqual(resp_disc.status_code, 200)
+        self.assertIn("discovered", resp_disc.json())
+
+        resp_auto = self.client.post(
+            "/api/matter/auto_enroll",
+            json={
+                "ip": "192.168.1.188",
+                "discriminator": 1234,
+                "device_name": "Matter Smart Plug",
+                "device_type": MatterDeviceType.ON_OFF_PLUG.value,
+            },
+        )
+        self.assertEqual(resp_auto.status_code, 200)
+        auto_data = resp_auto.json()
+        self.assertTrue(auto_data.get("auto_enrolled"))
 
         resp_nodes = self.client.get("/api/matter/nodes")
         self.assertEqual(resp_nodes.status_code, 200)
@@ -95,6 +112,9 @@ class MatterIntegrationTest(unittest.IsolatedAsyncioTestCase):
             },
         )
         self.assertEqual(resp_inv.status_code, 200)
+
+        resp_sync = self.client.post("/api/matter/bridge/sync")
+        self.assertEqual(resp_sync.status_code, 200)
 
         resp_bridge = self.client.get("/api/matter/bridge/endpoints")
         self.assertEqual(resp_bridge.status_code, 200)

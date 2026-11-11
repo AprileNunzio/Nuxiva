@@ -16,6 +16,22 @@ async def matter_nodes():
     coordinator = MatterCoordinator.instance()
     return JSONResponse({"nodes": coordinator.list_nodes()}, headers=NO_CACHE)
 
+@admin_routes.get("/discover", dependencies=[Depends(require_admin)], openapi_extra=MANAGE)
+async def matter_discover(timeout: float = 1.5):
+    coordinator = MatterCoordinator.instance()
+    devices = coordinator.discover_network_devices(timeout=timeout)
+    return JSONResponse({"discovered": devices}, headers=NO_CACHE)
+
+@admin_routes.post("/auto_enroll", dependencies=[Depends(require_admin)], openapi_extra=MANAGE)
+async def matter_auto_enroll(request: Request):
+    try:
+        data = await request.json()
+    except Exception as exc:
+        raise HTTPException(400, "matter.invalid_payload") from exc
+    coordinator = MatterCoordinator.instance()
+    res = coordinator.auto_enroll_device(data)
+    return JSONResponse(res, headers=NO_CACHE)
+
 @admin_routes.post("/commission", dependencies=[Depends(require_admin)], openapi_extra=MANAGE)
 async def matter_commission(request: Request):
     try:
@@ -57,6 +73,12 @@ async def matter_invoke(request: Request):
 async def matter_bridge_endpoints():
     coordinator = MatterCoordinator.instance()
     return JSONResponse({"endpoints": coordinator.list_bridge_endpoints()}, headers=NO_CACHE)
+
+@admin_routes.post("/bridge/sync", dependencies=[Depends(require_admin)], openapi_extra=MANAGE)
+async def matter_bridge_sync():
+    coordinator = MatterCoordinator.instance()
+    res = coordinator.sync_system_devices()
+    return JSONResponse(res, headers=NO_CACHE)
 
 @admin_routes.post("/bridge/state", dependencies=[Depends(require_admin)], openapi_extra=MANAGE)
 async def matter_bridge_state(request: Request):

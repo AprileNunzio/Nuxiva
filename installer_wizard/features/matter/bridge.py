@@ -173,6 +173,85 @@ class MatterBridge:
             return True
         return False
 
+    def invoke_endpoint_command(
+        self,
+        endpoint_id: int,
+        cluster_id: int,
+        command_id: int,
+        payload: Optional[Dict[str, Any]] = None,
+    ) -> Dict[str, Any]:
+        ep = self._endpoints.get(endpoint_id)
+        if ep is None:
+            return {"status": "error", "message": "EndpointNotFound"}
+
+        entity_id = str(ep.get("entity_id") or "")
+        cl = ep.get("clusters", {}).get(cluster_id)
+        if cl is None:
+            return {"status": "error", "message": "ClusterNotFound"}
+
+        if cluster_id == MatterClusterId.PAN_TILT_ZOOM_CONTROL.value:
+            cam_id = entity_id.replace("camera.", "")
+            params = payload or {}
+            pan = float(params.get("pan", 0.0))
+            tilt = float(params.get("tilt", 0.0))
+            zoom = float(params.get("zoom", 0.0))
+            if command_id == MatterCommandId.PTZ_MOVE.value:
+                try:
+                    from features.cameras.ptz import PtzController
+                    PtzController().move(cam_id, pan, tilt, zoom)
+                except Exception:
+                    pass
+                self.update_state(entity_id, cluster_id, 0x0001, pan)
+                self.update_state(entity_id, cluster_id, 0x0002, tilt)
+                self.update_state(entity_id, cluster_id, 0x0003, zoom)
+                return {"status": "success", "cluster": "PanTiltZoomControl", "pan": pan, "tilt": tilt, "zoom": zoom}
+            elif command_id == MatterCommandId.PTZ_STOP.value:
+                try:
+                    from features.cameras.ptz import PtzController
+                    PtzController().move(cam_id, 0.0, 0.0, 0.0)
+                except Exception:
+                    pass
+                return {"status": "success", "cluster": "PanTiltZoomControl", "action": "stopped"}
+
+        if cluster_id == MatterClusterId.ON_OFF.value:
+            current = bool(cl.get("attributes", {}).get(0x0000, False))
+            target = not current if command_id == MatterCommandId.TOGGLE.value else (command_id == MatterCommandId.ON.value)
+            self.update_state(entity_id, cluster_id, 0x0000, target)
+            return {"status": "success", "cluster": "OnOff", "value": target}
+
+        return {"status": "success", "command_id": command_id}
+
+    def sync_system_entities(self) -> int:
+        count = 0
+        try:
+            from features.cameras.cameras import cameras
+            for cid, cam in cameras.items.items():
+                cam_name = cam.get("name") or f"Camera {cid}"
+                self.bridge_entity(f"camera.{cid}", "security_camera_ptz", cam_name)
+                count += 1
+        except Exception:
+            pass
+
+        try:
+            from features.home_assistant.home import HomeBrain
+            hb = HomeBrain()
+            for eid, ent in getattr(hb, "entities", {}).items():
+                domain = eid.split(".")[0]
+                label = ent.get("name") or eid
+                if domain in ("light", "switch"):
+                    self.bridge_entity(eid, "on_off_light", label)
+                    count += 1
+                elif domain in ("sensor", "binary_sensor"):
+                    self.bridge_entity(eid, "occupancy_sensor", label)
+                    count += 1
+                elif domain == "climate":
+                    self.bridge_entity(eid, "thermostat", label)
+                    count += 1
+        except Exception:
+            pass
+
+        return count
+
     def read_attribute(self, endpoint_id: int, cluster_id: int, attr_id: int) -> Optional[Any]:
         ep = self._endpoints.get(endpoint_id)
         if ep is None:

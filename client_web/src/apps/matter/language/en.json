@@ -1,6 +1,6 @@
 {
   "title": "Universal Matter 1.6.1",
-  "description": "360° Matter device management, pairing, and ecosystem for all devices worldwide.",
+  "description": "360° Matter management, commissioning, and ecosystem for every device in the world.",
   "tab_devices": "Devices",
   "tab_commission": "Add Device",
   "tab_bridge": "Universal Bridge",
@@ -17,8 +17,23 @@
   "action_turn_on": "Turn On",
   "action_turn_off": "Turn Off",
   "action_toggle": "Toggle",
-  "ptz_pan": "Pan 360°",
+  "ptz_pan": "360° Pan",
   "ptz_tilt": "Tilt",
   "ptz_zoom": "Zoom",
-  "no_devices": "No Matter devices connected. Use the Add Device tab to pair your first node."
+  "no_devices": "No Matter devices connected. Use the Add Device tab to start.",
+  "scan_network_title": "Automatic Network Discovery (mDNS/UDP)",
+  "scan_network_desc": "Scan the local network to automatically find Matter accessories ready for commissioning.",
+  "btn_scan_now": "Start Automatic Scan",
+  "btn_auto_enroll": "Add Automatically",
+  "scanning_label": "Searching for Matter accessories on the network...",
+  "no_discovered_devices": "No new Matter devices waiting for commissioning found on the network.",
+  "discovered_found": "{0} Matter devices discovered",
+  "manual_commission_title": "Manual or QR Code Commissioning",
+  "btn_sync_hardware": "Sync System Hardware",
+  "bridge_sync_desc": "Automatically connects Nuxiva cameras, sensors, and alarms to the Universal Bridge.",
+  "no_bridge_endpoints": "No hardware synchronized in the bridge. Click Sync System Hardware.",
+  "no_ptz_cameras": "No PTZ cameras detected. Connect a webcam or ONVIF/RTSP camera in Cameras.",
+  "commissioning_success": "Device commissioned successfully",
+  "error_unsupported": "Unsupported operation",
+  "error_timeout": "Request timed out"
 }

@@ -4,7 +4,7 @@
 
 NATIVE_SRC="$NUXIVA_DIR/native"
 NATIVE_HOME="${NUXIVA_NATIVE_HOME:-/opt/nuxiva-native}"
-RUST_VERSION="1.89.0"
+RUST_VERSION="1.99.1"
 MATURIN_VERSION="1.9.6"
 RUSTUP_URL="https://static.rust-lang.org/rustup/dist/$(uname -m)-unknown-linux-gnu/rustup-init"
 VENV="$NUXIVA_DIR/installer_wizard/venv"

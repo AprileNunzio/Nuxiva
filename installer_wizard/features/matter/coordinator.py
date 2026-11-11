@@ -2,6 +2,7 @@ import threading
 from typing import Any, Dict, List, Optional
 from features.matter.bridge import MatterBridge
 from features.matter.controller import MatterController
+from features.matter.discovery import MatterDiscovery
 from features.matter.model import MatterStandardVersion
 
 class MatterCoordinator:
@@ -11,8 +12,9 @@ class MatterCoordinator:
     def __init__(self):
         self.bridge = MatterBridge()
         self.controller = MatterController()
+        self.discovery = MatterDiscovery()
         self.spec_version = MatterStandardVersion.V1_6_1.value
-        self._sync_default_entities()
+        self.sync_system_devices()
 
     @classmethod
     def instance(cls) -> "MatterCoordinator":
@@ -21,12 +23,13 @@ class MatterCoordinator:
                 cls._instance = cls()
             return cls._instance
 
-    def _sync_default_entities(self) -> None:
-        self.bridge.bridge_entity("light.main", "on_off_light", "Luce Principale")
-        self.bridge.bridge_entity("sensor.living_presence", "occupancy_sensor", "Presenza Salotto")
-        self.bridge.bridge_entity("camera.ptz_360", "security_camera_ptz", "Telecamera 360° PTZ")
-        self.bridge.bridge_entity("alarm.home_rescue", "smoke_co_alarm", "Allarme Soccorso")
-        self.bridge.bridge_entity("meter.main_grid", "smart_energy_meter", "Contatore Rete")
+    def sync_system_devices(self) -> Dict[str, Any]:
+        count = self.bridge.sync_system_entities()
+        return {
+            "status": "success",
+            "bridged_entities_count": count,
+            "total_endpoints": len(self.bridge.list_endpoints()),
+        }
 
     def get_status(self) -> Dict[str, Any]:
         return {
@@ -39,6 +42,25 @@ class MatterCoordinator:
 
     def list_nodes(self) -> List[Dict[str, Any]]:
         return self.controller.list_nodes()
+
+    def discover_network_devices(self, timeout: float = 1.5) -> List[Dict[str, Any]]:
+        disc = MatterDiscovery(timeout=timeout)
+        return disc.discover_commissionable()
+
+    def auto_enroll_device(self, device_info: Dict[str, Any]) -> Dict[str, Any]:
+        ip = str(device_info.get("ip") or "")
+        disc = int(device_info.get("discriminator") or 3840)
+        name = str(device_info.get("device_name") or f"Matter-{ip.replace('.', '')[-4:]}")
+        dev_type = int(device_info.get("device_type") or 0x0100)
+        pairing_code = f"AUTO-DISC-{disc:04d}-{ip}"
+        node_res = self.commission_node(
+            pairing_code=pairing_code,
+            name=name,
+            device_type=dev_type,
+        )
+        node_res["auto_enrolled"] = True
+        node_res["source_ip"] = ip
+        return node_res
 
     def commission_node(
         self,
@@ -56,6 +78,13 @@ class MatterCoordinator:
         command_id: int,
         payload: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
+        if node_id == 0 or node_id == self.bridge.node_id:
+            return self.bridge.invoke_endpoint_command(
+                endpoint_id=endpoint_id,
+                cluster_id=cluster_id,
+                command_id=command_id,
+                payload=payload,
+            )
         return self.controller.invoke_command(
             node_id=node_id,
             endpoint_id=endpoint_id,

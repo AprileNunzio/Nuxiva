@@ -14,6 +14,10 @@
   "nodes_count": "{0} nodi connessi",
   "command_executed": "Comando Matter eseguito con successo",
   "commissioning_success": "Dispositivo Matter associato con successo",
+  "auto_enroll_success": "Dispositivo associato e configurato automaticamente",
+  "discovery_running": "Scansione della rete locale in corso...",
+  "discovery_complete": "Scansione completata: {0} dispositivi rilevati",
+  "bridge_sync_success": "Universal Bridge sincronizzato con l'hardware di sistema",
   "error_unsupported": "Operazione Matter non supportata",
   "error_timeout": "Timeout comunicazione nodo Matter"
 }

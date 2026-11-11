@@ -20,5 +20,20 @@
   "ptz_pan": "Pan 360°",
   "ptz_tilt": "Tilt",
   "ptz_zoom": "Zoom",
-  "no_devices": "Nessun dispositivo Matter connesso. Usa la scheda Aggiungi Dispositivo per iniziare."
+  "no_devices": "Nessun dispositivo Matter connesso. Usa la scheda Aggiungi Dispositivo per iniziare.",
+  "scan_network_title": "Rilevamento Automatico sulla Rete (mDNS/UDP)",
+  "scan_network_desc": "Scansiona la rete locale per trovare automaticamente accessori Matter pronti per l'associazione.",
+  "btn_scan_now": "Avvia Scansione Automatica",
+  "btn_auto_enroll": "Aggiungi Automaticamente",
+  "scanning_label": "Ricerca accessori Matter sulla rete in corso...",
+  "no_discovered_devices": "Nessun nuovo dispositivo Matter in attesa di associazione trovato sulla rete.",
+  "discovered_found": "{0} dispositivi Matter rilevati",
+  "manual_commission_title": "Associazione Manuale o Tramite QR Code",
+  "btn_sync_hardware": "Sincronizza Hardware di Sistema",
+  "bridge_sync_desc": "Collega automaticamente telecamere, sensori e allarmi di Nuxiva all'Universal Bridge.",
+  "no_bridge_endpoints": "Nessun hardware sincronizzato nel bridge. Clicca su Sincronizza Hardware.",
+  "no_ptz_cameras": "Nessuna telecamera PTZ rilevata. Collega una webcam o telecamera di rete ONVIF/RTSP in Telecamere.",
+  "commissioning_success": "Dispositivo associato con successo",
+  "error_unsupported": "Operazione non supportata",
+  "error_timeout": "Timeout della richiesta"
 }
