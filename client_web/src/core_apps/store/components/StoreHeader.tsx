@@ -1,11 +1,11 @@
 import React from 'react';
-import { Package, FolderGit2, Plus, HardDrive, Cpu, RefreshCw } from 'lucide-react';
+import { Package, FolderGit2, Plus, HardDrive, Cpu, RefreshCw, Code2 } from 'lucide-react';
 import { StoreResources } from '../types';
 
 interface StoreHeaderProps {
   t: (key: string, params?: Record<string, any>) => string;
-  activeTab: 'packages' | 'repositories';
-  setActiveTab: (tab: 'packages' | 'repositories') => void;
+  activeTab: 'packages' | 'repositories' | 'developer_guide';
+  setActiveTab: (tab: 'packages' | 'repositories' | 'developer_guide') => void;
   packagesCount: number;
   repositoriesCount: number;
   resources: StoreResources | null;
@@ -58,6 +58,18 @@ export const StoreHeader: React.FC<StoreHeaderProps> = ({
             <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-white/20 text-white font-mono">
               {packagesCount}
             </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('developer_guide')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+              activeTab === 'developer_guide'
+                ? 'bg-[var(--md-sys-color-primary)] text-white shadow-xs font-bold'
+                : 'text-[var(--md-sys-color-on-surface-variant)] hover:text-[var(--md-sys-color-on-surface)]'
+            }`}
+          >
+            <Code2 className="w-3.5 h-3.5" />
+            <span>{t('tab_developer_guide')}</span>
           </button>
           <button
             type="button"
