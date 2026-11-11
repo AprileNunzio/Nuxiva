@@ -35,6 +35,9 @@ INTENTS = [
         r"|passat[oa] (?:un|una|qualcun|il|la)|a che ora [èe] venut[oa]|quando [èe] venut[oa]"
         r"|(?:chi c'era|chi era)\s+(?:al|alla|davanti|in|nel|sul|fuori|ieri|stamattina|oggi)"
         r"|did you see|who passed|what time did)\b", re.I)),
+    ("rescue", re.compile(
+        r"\b(?:stato (?:di |dei |del )?(?:soccorso|soccorsi|emergenza|emergenze|allarme|allarmi)|ci sono emergenze|qualcuno [èe] in pericolo"
+        r"|allarme attivo|situazione di emergenza|rescue status|emergency status)\b", re.I)),
     ("time", re.compile(r"\b(che ore sono|che ora [èe]|che giorno [èe]|che data [èe])\b", re.I)),
 ]
 

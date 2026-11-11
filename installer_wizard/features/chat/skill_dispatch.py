@@ -6,6 +6,7 @@ from features.chat.skills.music import music_skill
 from features.chat.skills.network import network_skill
 from features.chat.skills.people import introduce_skill, person_info_skill, vision_skill
 from features.chat.skills.place import place_skill
+from features.chat.skills.rescue import rescue_skill
 from features.chat.skills.system import system_skill, time_skill
 from features.chat.skills.voices import voices_skill
 from features.chat.skills.weather import weather_skill
@@ -34,6 +35,7 @@ SKILLS = {
     "study": lambda text: _study(),
     "brain": lambda text: BRAIN_REPLY,
     "ask_evidence": lambda text: ask_evidence_skill(text),
+    "rescue": lambda text: rescue_skill(),
 }
 
 

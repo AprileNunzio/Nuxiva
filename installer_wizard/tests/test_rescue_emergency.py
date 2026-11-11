@@ -144,3 +144,17 @@ class RescueEmergencyTest(unittest.TestCase):
         resp = self.client.post("/api/rescue/policy", json={"check_in_s": 25.0})
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.json()["policy"]["check_in_s"], 25.0)
+
+    def test_chat_rescue_skill(self):
+        from features.chat.intents import detect_intent
+        from features.chat.skill_dispatch import run_skill
+        import asyncio
+
+        intent = detect_intent("qual è lo stato dei soccorsi?")
+        self.assertEqual(intent, "rescue")
+
+        speech, ui = asyncio.run(run_skill("rescue", ""))
+        self.assertIn("tranquillo", speech.lower())
+        self.assertEqual(ui["mode"], "rescue")
+        self.assertEqual(ui["stage"], "calm")
+
