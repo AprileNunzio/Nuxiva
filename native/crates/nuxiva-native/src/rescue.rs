@@ -139,8 +139,39 @@ fn rescue_policy(policy: &str) -> PyResult<String> {
     to_json(&policy_of(policy)?)
 }
 
+#[pyfunction]
+fn rescue_detect_speech(text: &str) -> (Option<String>, f64) {
+    let (kind, score) = nuxiva_rescue_core::detect_speech(text);
+    let kind_str = kind.map(|k| {
+        serde_json::to_string(&k)
+            .unwrap_or_default()
+            .trim_matches('"')
+            .to_owned()
+    });
+    (kind_str, score)
+}
+
+#[pyfunction]
+fn rescue_detect_visual(
+    class_name: &str,
+    score: f64,
+    width: f64,
+    height: f64,
+) -> (Option<String>, f64) {
+    let (kind, conf) = nuxiva_rescue_core::detect_visual(class_name, score, width, height);
+    let kind_str = kind.map(|k| {
+        serde_json::to_string(&k)
+            .unwrap_or_default()
+            .trim_matches('"')
+            .to_owned()
+    });
+    (kind_str, conf)
+}
+
 pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<RustRescue>()?;
     m.add_function(wrap_pyfunction!(rescue_assess, m)?)?;
-    m.add_function(wrap_pyfunction!(rescue_policy, m)?)
+    m.add_function(wrap_pyfunction!(rescue_policy, m)?)?;
+    m.add_function(wrap_pyfunction!(rescue_detect_speech, m)?)?;
+    m.add_function(wrap_pyfunction!(rescue_detect_visual, m)?)
 }

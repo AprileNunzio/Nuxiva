@@ -44,7 +44,14 @@ def normalize_text(text: str) -> str:
     return re.sub(r"\s+", " ", cleaned).strip()
 
 
-def detect_speech_intent(text: str) -> tuple[str | None, float]:
+import native_core
+
+
+def detect_speech_intent(text: str, prefer_native: bool = True) -> tuple[str | None, float]:
+    if prefer_native:
+        fn = native_core.symbol("rescue_detect_speech")
+        if fn is not None:
+            return fn(text)
     if not text or not isinstance(text, str):
         return None, 0.0
     norm = normalize_text(text)
@@ -59,20 +66,25 @@ def detect_speech_intent(text: str) -> tuple[str | None, float]:
     return None, 0.0
 
 
-def detect_visual_distress(detections: list[dict]) -> tuple[str | None, float, dict]:
+def detect_visual_distress(detections: list[dict], prefer_native: bool = True) -> tuple[str | None, float, dict]:
     if not detections:
         return None, 0.0, {}
+    fn = native_core.symbol("rescue_detect_visual") if prefer_native else None
     for d in detections:
         cls = str(d.get("class") or "").lower()
         score = float(d.get("score", 0.0))
-        if cls in ("fall", "caduta"):
-            return "fall", max(0.7, score), d
-        if cls in ("immobility", "immobilita", "immobilità"):
-            return "immobility", max(0.65, score), d
-        bbox = d.get("bbox") or d.get("box")
-        if isinstance(bbox, (list, tuple)) and len(bbox) == 4 and cls in ("person", "persona"):
-            w = float(bbox[2])
-            h = float(bbox[3])
-            if h > 0 and w / h >= 1.6 and score >= 0.75:
+        bbox = d.get("bbox") or d.get("box") or [0.0, 0.0, 0.0, 0.0]
+        w = float(bbox[2]) if len(bbox) >= 3 else 0.0
+        h = float(bbox[3]) if len(bbox) >= 4 else 0.0
+        if fn is not None:
+            kind, conf = fn(cls, score, w, h)
+            if kind:
+                return kind, conf, d
+        else:
+            if cls in ("fall", "caduta"):
+                return "fall", max(0.7, score), d
+            if cls in ("immobility", "immobilita", "immobilità"):
+                return "immobility", max(0.65, score), d
+            if (cls in ("person", "persona")) and h > 0 and w / h >= 1.6 and score >= 0.75:
                 return "fall", score, d
     return None, 0.0, {}
