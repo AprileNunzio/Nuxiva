@@ -51,6 +51,8 @@ export interface AppManifest {
   manifestId?: string;
   category?: string; version?: string;
   kind?: 'app' | 'feature' | 'system';
+  parent?: string;
+  isSubapp?: boolean;
   desktop?: { order?: number };
   launcher?: boolean;
   featureIds?: string[];

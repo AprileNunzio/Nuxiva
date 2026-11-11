@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Videosorveglianza",
+    "subtitle": "Centro di gestione telecamere e registrazioni NVR",
+    "open": "Apri Sezione",
+    "available": "Moduli e Sotto-applicazioni: {count}",
+    "empty": "Nessun modulo di videosorveglianza rilevato."
+  }
+}

@@ -10,7 +10,9 @@ pub mod notification;
 pub mod peripherals;
 pub mod process;
 pub mod status;
+pub mod subapps;
 
+pub use subapps::{MacroAppManifest, SubappManifest, SubappRegistry};
 pub use ai_engine::{
     AiEngineManager, AiEngineStatus, InferenceConfig, InferenceTelemetry, ModelKind, ModelProfile,
     ModelQuantization,

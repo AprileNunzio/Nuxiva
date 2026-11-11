@@ -1,0 +1,16 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Recordings",
+    "subtitle": "Continuous storage, history and video detections",
+    "filter_all": "All Events",
+    "filter_motion": "Motion",
+    "filter_ai": "People & Vehicles",
+    "empty": "No recordings saved in vault.",
+    "play": "Play",
+    "storage_used": "Vault Space Used",
+    "retention": "Vault Retention"
+  }
+}

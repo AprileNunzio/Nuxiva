@@ -4,13 +4,9 @@ import { appRegistry } from './window_manager/registry';
 const STORAGE_KEY = 'nuxiva_desktop_pinned_shortcuts';
 const EVENT_NAME = 'nuxiva:desktop_shortcuts_updated';
 
-// Scorciatoie di sistema di DEFAULT decise nel codice
 export const DEFAULT_DESKTOP_IDS: readonly string[] = [
   'explorer',
   'store',
-  'people',
-  'applications',
-  'games',
   'network',
   'features_hub',
   'updater',
@@ -31,9 +27,7 @@ function savePinnedIds(ids: string[]): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
     window.dispatchEvent(new CustomEvent(EVENT_NAME, { detail: ids }));
-  } catch {
-    // Ignora errori di storage
-  }
+  } catch {}
 }
 
 export function isPinnedToDesktop(appId: string): boolean {
@@ -88,12 +82,10 @@ export function useDesktopShortcuts() {
   }, []);
 
   const allDesktopApps = useCallback(() => {
-    // 1. App di default nell'ordine stabilito
     const defaultApps = DEFAULT_DESKTOP_IDS.map((id) =>
       appRegistry.find((app) => app.id === id)
     ).filter(Boolean) as typeof appRegistry;
 
-    // 2. App personalizzate aggiunte dall'utente
     const customApps = pinnedIds
       .filter((id) => !DEFAULT_DESKTOP_IDS.includes(id))
       .map((id) => appRegistry.find((app) => app.id === id))

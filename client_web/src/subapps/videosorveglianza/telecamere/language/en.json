@@ -1,0 +1,19 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Cameras",
+    "subtitle": "Live video feeds and camera configuration",
+    "add": "Add New Camera",
+    "field_name": "Camera Name",
+    "field_url": "Stream URL (RTSP / HTTP)",
+    "status_active": "Online",
+    "status_offline": "Offline",
+    "recording": "Recording Active",
+    "total": "Total Cameras: {count}",
+    "empty": "No cameras configured.",
+    "save": "Add",
+    "delete": "Remove"
+  }
+}

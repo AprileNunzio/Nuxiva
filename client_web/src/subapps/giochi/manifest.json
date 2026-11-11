@@ -1,0 +1,24 @@
+{
+  "id": "giochi",
+  "name": "Giochi",
+  "kind": "app",
+  "category": "system",
+  "icon": "Gamepad2",
+  "version": "1.0.0",
+  "description": "Catalogo e avvio dei giochi di Nuxiva",
+  "scope": "subapps/giochi",
+  "window": {
+    "defaultWidth": 68,
+    "defaultHeight": 72,
+    "minWidth": 30,
+    "minHeight": 28,
+    "resizable": true
+  },
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "giochi-3d",
+    "url": "https://img.icons8.com/?size=240&id=gamepad&format=png"
+  }
+}

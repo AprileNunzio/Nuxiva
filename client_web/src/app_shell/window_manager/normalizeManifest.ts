@@ -18,7 +18,9 @@ export function normalizeManifest(raw: unknown, scope:string):AppManifest | null
     ...(ui.searchable?[{id:'search',type:'search' as const,placeholderKey:ui.searchPlaceholderKey || 'os_search'}]:[]),
     ...(ui.actions || []).map(item=>({...item,type:'action' as const})),
   ]}]:input.toolbars;
-  const tone=input.tone==='light'||input.tone==='dark'?input.tone:undefined;
+  const tone = input.tone === 'light' || input.tone === 'dark' ? input.tone : undefined;
+  const isSubapp = input.isSubapp ?? (scope.startsWith('subapps/') && scope.split('/').length >= 3);
+  const parent = input.parent ?? (scope.startsWith('subapps/') && scope.split('/').length >= 3 ? scope.split('/')[1] : undefined);
   return {...input,tone,name:input.name || input.id,scope,i18nScope:input.i18nScope || scope,
-    window,toolbars,navigation:ui?.tabs || input.navigation};
+    parent,isSubapp,window,toolbars,navigation:ui?.tabs || input.navigation};
 }

@@ -1,0 +1,25 @@
+{
+  "id": "telecamere",
+  "name": "Telecamere",
+  "parent": "videosorveglianza",
+  "isSubapp": true,
+  "scope": "subapps/videosorveglianza/telecamere",
+  "kind": "app",
+  "category": "security",
+  "icon": "Video",
+  "version": "1.0.0",
+  "window": {
+    "defaultWidth": 68,
+    "defaultHeight": 74,
+    "minWidth": 28,
+    "minHeight": 30,
+    "resizable": true
+  },
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "telecamere-3d",
+    "url": "https://img.icons8.com/?size=240&id=camera&format=png"
+  }
+}

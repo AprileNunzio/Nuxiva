@@ -1,0 +1,18 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Tris",
+    "turn_x": "Turno Giocatore X",
+    "turn_o": "Turno Giocatore O",
+    "winner": "Ha vinto {player}!",
+    "tie": "Partita finita in pareggio!",
+    "restart": "Ricomincia Partita",
+    "mode_pvp": "Due Giocatori",
+    "mode_ai": "Sfida il Sistema",
+    "score_x": "Giocatore X",
+    "score_o": "Giocatore O",
+    "score_tie": "Pareggi"
+  }
+}

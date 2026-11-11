@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Sliders, Grid } from 'lucide-react';
-import { useScopedI18n } from '../../shared/i18n/useScopedI18n';
+import React, { useState, useMemo } from 'react';
+import { Sliders, Grid, Layers } from 'lucide-react';
+import { useScopedI18n, getScopedString } from '../../shared/i18n/useScopedI18n';
 import { ApplicationLayout } from '../../app_shell/window_manager/ApplicationLayout';
 import { ApplicationCatalog } from '../../app_shell/window_manager/ApplicationCatalog';
 import { appRegistry } from '../../app_shell/window_manager/registry';
@@ -8,14 +8,25 @@ import { useOSApp } from '../../app_shell/window_manager/WindowContext';
 import { useResource } from '../shared/useResource';
 import { FeaturesOverview } from '../shared/featureTypes';
 import { overviewUrl } from './api';
-import { isApplication } from '../../app_shell/window_manager/app_scanner';
+import { isApplication, isSubapp, getRegisteredApplications } from '../../app_shell/window_manager/app_scanner';
 import { SystemSettingsTabs } from './components/SystemSettingsTabs';
+import { useAssistantIdentity } from '../../shared/identity/IdentityContext';
 
 export function View() {
-  const { openApp } = useOSApp();
+  const { openApp, activeTab } = useOSApp();
   const { t, lang } = useScopedI18n('core_apps/features_hub');
-  const [viewMode, setViewMode] = useState<'catalog' | 'settings'>('catalog');
+  const appI18n = useScopedI18n('apps/applications');
+  const assistant = useAssistantIdentity();
+
+  const [viewMode, setViewMode] = useState<'apps' | 'services' | 'settings'>(() => {
+    if (activeTab === 'settings') return 'settings';
+    if (activeTab === 'services') return 'services';
+    return 'apps';
+  });
+
   const { data, error, loading, reload } = useResource<FeaturesOverview>(overviewUrl(lang), 15000);
+
+  const registeredApps = useMemo(() => getRegisteredApplications(), []);
 
   const findApp = (id: string) =>
     appRegistry.find((app) => (app.id === id || app.featureIds?.includes(id)) && app.target !== 'node');
@@ -24,16 +35,63 @@ export function View() {
 
   const isExcludedFromHub = (id: string) => isApplication({ id }) || id === 'applications';
 
-  if (!data && viewMode === 'catalog') {
+  const appCategories: Record<string, string> = {
+    media: appI18n.t('category_media'),
+    creativity: appI18n.t('category_creativity'),
+    productivity: appI18n.t('category_productivity'),
+    intelligence: appI18n.t('category_intelligence'),
+    security: appI18n.t('category_security'),
+    development: appI18n.t('category_development'),
+    spaces: appI18n.t('category_spaces'),
+    system: appI18n.t('category_system'),
+  };
+
+  const getAppTitle = (app: (typeof registeredApps)[number]) =>
+    app.id === 'explorer' ? assistant.name : getScopedString(app.scope, lang, 'title', app.name);
+
+  const getAppDesc = (app: (typeof registeredApps)[number]) =>
+    getScopedString(app.scope, lang, 'description', ((app as unknown as Record<string, unknown>).description as string) || '');
+
+  const applicationCatalogItems = useMemo(() => {
+    return registeredApps.map((app) => ({
+      id: app.id,
+      label: getAppTitle(app),
+      description: getAppDesc(app),
+      category: app.category || 'system',
+      icon: app.iconUrl,
+      symbol: (app as unknown as Record<string, unknown>).icon as string | undefined,
+      active: true,
+    }));
+  }, [registeredApps, lang, assistant.name]);
+
+  if (!data && viewMode === 'services') {
     return <ApplicationLayout sections={{}} loading={loading} error={error ? t('unreachable') : undefined} onRetry={reload} />;
   }
+
+  const catalogLabels = {
+    search: t('search'),
+    clearSearch: t('clear_search'),
+    categories: t('navigation'),
+    all: t('all_categories'),
+    empty: t('empty'),
+    emptyHint: t('empty_hint'),
+    stateFilter: t('state_filter'),
+    allStates: t('all_states'),
+    on: t('running'),
+    off: t('stopped'),
+    reset: t('reset_filters'),
+    pinToDesktop: t('pin_to_desktop'),
+    unpinFromDesktop: t('unpin_from_desktop'),
+    open: t('open_app'),
+  };
 
   return (
     <div className="flex h-full flex-col overflow-hidden bg-surface text-on-surface">
       <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 px-4 py-3">
-        <div role="tablist" aria-label={t('tab_catalog')} className="flex items-center gap-1 rounded-full bg-surface-container-high p-1">
+        <div role="tablist" aria-label={t('title')} className="flex items-center gap-1 rounded-full bg-surface-container-high p-1">
           {([
-            ['catalog', Grid, t('tab_catalog')],
+            ['apps', Grid, t('tab_apps')],
+            ['services', Layers, t('tab_services')],
             ['settings', Sliders, t('tab_settings')],
           ] as const).map(([mode, Icon, label]) => (
             <button
@@ -52,7 +110,7 @@ export function View() {
           ))}
         </div>
 
-        {viewMode === 'catalog' && (
+        {viewMode !== 'settings' && (
           <button
             type="button"
             onClick={() => setViewMode('settings')}
@@ -66,26 +124,19 @@ export function View() {
 
       <div className="flex-1 overflow-y-auto">
         {viewMode === 'settings' ? (
-          <SystemSettingsTabs t={t} lang={lang} onBack={() => setViewMode('catalog')} />
+          <SystemSettingsTabs t={t} lang={lang} onBack={() => setViewMode('apps')} />
+        ) : viewMode === 'apps' ? (
+          <ApplicationCatalog
+            lang={lang}
+            labels={catalogLabels}
+            categories={appCategories}
+            items={applicationCatalogItems}
+            onOpen={(id) => openApp({ appId: id })}
+          />
         ) : data ? (
           <ApplicationCatalog
             lang={lang}
-            labels={{
-              search: t('search'),
-              clearSearch: t('clear_search'),
-              categories: t('navigation'),
-              all: t('all_categories'),
-              empty: t('empty'),
-              emptyHint: t('empty_hint'),
-              stateFilter: t('state_filter'),
-              allStates: t('all_states'),
-              on: t('running'),
-              off: t('stopped'),
-              reset: t('reset_filters'),
-              pinToDesktop: t('pin_to_desktop'),
-              unpinFromDesktop: t('unpin_from_desktop'),
-              open: t('open_app')
-            }}
+            labels={catalogLabels}
             categories={Object.fromEntries(
               Object.entries(data.categories).map(([id, label]) => [
                 id,

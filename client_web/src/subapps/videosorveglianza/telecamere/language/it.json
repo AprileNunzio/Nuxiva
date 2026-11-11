@@ -1,0 +1,19 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Telecamere",
+    "subtitle": "Flussi video in diretta e configurazione telecamere",
+    "add": "Aggiungi Nuova Telecamera",
+    "field_name": "Nome Identificativo",
+    "field_url": "Indirizzo Streaming (RTSP / HTTP)",
+    "status_active": "In Linea",
+    "status_offline": "Disconnessa",
+    "recording": "Registrazione Attiva",
+    "total": "Telecamere Totali: {count}",
+    "empty": "Nessuna telecamera configurata.",
+    "save": "Aggiungi",
+    "delete": "Rimuovi"
+  }
+}
