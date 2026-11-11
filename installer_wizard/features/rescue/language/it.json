@@ -1,0 +1,10 @@
+{
+  "name": "Soccorso",
+  "description": "Rilevamento intelligente di persone in pericolo, cadute, malori e richieste di aiuto con escalation familiare e audit cifrato.",
+  "capabilities": [
+    "Rilevamento multimodale di cadute, immobilità prolungata, grida e parole di soccorso",
+    "Verifica vocale immediata e non invasiva prima dell'allarme",
+    "Politica di escalation a livelli verso contatti familiari ed emergenza",
+    "Audit immutabile e cifrato nel giornale Sentinella con prove crittografiche"
+  ]
+}

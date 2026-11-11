@@ -8,6 +8,7 @@ import numpy as np
 
 from features.nvr.service import nvr
 from features.nvr.vault import VAULT_DIR, media_vault
+from features.rescue.detector import detect_speech_intent, detect_visual_distress
 from features.sentinel import memory_people
 from features.sentinel.memory import memory, new_id
 
@@ -91,6 +92,21 @@ class NvrAnalyzer:
                 "look": {"upper": "scuro", "lower": "jeans", "carrying": []}
             })
         label, summary, details, score = self.format_description(camera_id, detections, transcripts)
+        for text in transcripts:
+            speech_kind, speech_conf = detect_speech_intent(text)
+            if speech_kind:
+                try:
+                    from features.rescue.coordinator import coordinator
+                    coordinator.observe(speech_kind, 0.9, speech_conf, f"nvr:{camera_id}")
+                except Exception as exc:
+                    log.debug("Rescue coordinator speech observation: %s", exc)
+        v_kind, v_score, _ = detect_visual_distress(detections)
+        if v_kind:
+            try:
+                from features.rescue.coordinator import coordinator
+                coordinator.observe(v_kind, v_score, 0.8, f"nvr:{camera_id}")
+            except Exception as exc:
+                log.debug("Rescue coordinator visual observation: %s", exc)
         event_id = f"nvr:{camera_id}:{segment_id}"
         event_dict = {
             "id": event_id,

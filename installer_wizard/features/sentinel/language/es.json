@@ -61,6 +61,11 @@
     "sentinel.sentinel.ask_query": "Consulta con pruebas solicitada: «{query}» ({citations} pruebas vinculadas)",
     "sentinel.sentinel.gdpr_shred": "Datos biométricos y recuerdos eliminados definitivamente (RGPD Art. 17, recibo {receipt})",
     "sentinel.sentinel.gdpr_export": "Exportación de datos personales solicitada y realizada (RGPD Art. 20)",
-    "sentinel.self.recalibrate": "Ciclo nocturno de recalibración completado (precisión {precision}%, {tasks} tareas agency)"
+    "sentinel.self.recalibrate": "Ciclo nocturno de recalibración completado (precisión {precision}%, {tasks} tareas agency)",
+    "sentinel.rescue.alert": "Alerta de rescate: {hazard} detectado por {source} (confianza {confidence}%)",
+    "sentinel.rescue.escalate": "Alerta de rescate escalada al nivel {tier} ({hazard})",
+    "sentinel.rescue.stand_down": "Alerta de rescate cancelada: {hazard}",
+    "sentinel.rescue.person_ok": "La persona confirmó que se encuentra bien",
+    "sentinel.rescue.need_help": "Solicitud urgente de ayuda confirmada por la persona"
   }
 }

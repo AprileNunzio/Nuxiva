@@ -220,6 +220,15 @@ class Reviewer:
                 )
             except Exception:
                 pass
+            try:
+                from features.rescue.detector import detect_speech_intent
+                speech_kind, speech_conf = detect_speech_intent(text)
+                if speech_kind:
+                    from features.rescue.coordinator import coordinator
+                    coordinator.observe(speech_kind, 0.9, max(speech_conf, float(score) if speaker_slug else 0.8),
+                                        f"ear:{source}", at=chunk_started + t0)
+            except Exception as exc:
+                log.debug("Rescue coordinator ear observation: %s", exc)
             who = memory_people.who_for(speaker_slug, profile) if speaker_slug else {"type": "unknown"}
             s_ms = int((chunk_started + t0) * 1000)
             e_ms = max(s_ms + 1, int((chunk_started + t1) * 1000))
