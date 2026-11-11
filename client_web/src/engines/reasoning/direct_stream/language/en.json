@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Direct Stream Engine",
+    "description": "Zero-latency reactive processing for immediate answers and fluid conversations.",
+    "opt_temperature_profile_label": "Creative Sensitivity",
+    "opt_temperature_profile_desc": "Balance between deterministic precision and stylistic variety of generated response."
+  }
+}

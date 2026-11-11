@@ -1,0 +1,30 @@
+{
+  "$schema": "https://nuxiva.org/schemas/engine.manifest.json",
+  "id": "tree_of_thought",
+  "name": "Tree-of-Thought Explorer",
+  "version": "1.5.0",
+  "kind": "engine",
+  "family": "reasoning",
+  "author": "Nuxiva Cognitive Core",
+  "capabilities": ["reasoning", "branching_search", "heuristic_pruning"],
+  "options": [
+    {
+      "id": "branching_factor",
+      "type": "range",
+      "default": 3,
+      "min": 2,
+      "max": 6,
+      "label_key": "opt_branching_factor_label",
+      "desc_key": "opt_branching_factor_desc"
+    },
+    {
+      "id": "heuristic_depth",
+      "type": "range",
+      "default": 4,
+      "min": 1,
+      "max": 8,
+      "label_key": "opt_heuristic_depth_label",
+      "desc_key": "opt_heuristic_depth_desc"
+    }
+  ]
+}

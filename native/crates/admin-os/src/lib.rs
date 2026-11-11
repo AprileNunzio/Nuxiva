@@ -2,6 +2,7 @@
 
 pub mod ai_engine;
 pub mod automations;
+pub mod engines;
 pub mod firewall;
 pub mod memory;
 pub mod network;
@@ -20,6 +21,7 @@ pub use ai_engine::{
 pub use automations::{
     ActionKind, AutomationEngine, AutomationRule, AutomationsSummary, LawRule, LawTier, TriggerKind,
 };
+pub use engines::{EngineFamily, EngineManifest, EngineOption, EngineRegistry};
 pub use firewall::{
     BlockedAddress, FirewallEngine, FirewallMode, FirewallRule, RuleAction, RuleDirection,
     RuleProtocol,

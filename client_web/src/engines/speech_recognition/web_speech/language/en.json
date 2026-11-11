@@ -1,0 +1,10 @@
+{
+  "dictionary": {
+    "title": "Web Speech Recognition",
+    "description": "Ultra low-latency browser native streaming engine for fast commands and dictation.",
+    "opt_interim_results_label": "Real-Time Interim Results",
+    "opt_interim_results_desc": "Displays words as they are spoken before final utterance completion.",
+    "opt_continuous_session_label": "Continuous Voice Listening",
+    "opt_continuous_session_desc": "Keeps microphone channel persistently attentive without interruption between commands."
+  }
+}

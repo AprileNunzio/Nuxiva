@@ -1,0 +1,10 @@
+{
+  "dictionary": {
+    "title": "Agent Autonome ReAct",
+    "description": "Boucle cognitive continue de pensée, action par outils et observation réflexive.",
+    "opt_max_thought_steps_label": "Nombre Maximal d'Étapes de Réflexion",
+    "opt_max_thought_steps_desc": "Nombre maximal d'itérations autonomes que l'agent peut effectuer avant de conclure.",
+    "opt_autonomous_verification_label": "Vérification Autonome des Résultats",
+    "opt_autonomous_verification_desc": "Exécute une phase d'autocritique et de vérification formelle avant de renvoyer le résultat final."
+  }
+}

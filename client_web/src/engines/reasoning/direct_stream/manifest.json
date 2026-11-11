@@ -1,0 +1,21 @@
+{
+  "$schema": "https://nuxiva.org/schemas/engine.manifest.json",
+  "id": "direct_stream",
+  "name": "Direct Stream Engine",
+  "version": "1.0.0",
+  "kind": "engine",
+  "family": "reasoning",
+  "author": "Nuxiva Cognitive Core",
+  "capabilities": ["reasoning", "streaming", "low_latency"],
+  "options": [
+    {
+      "id": "temperature_profile",
+      "type": "range",
+      "default": 30,
+      "min": 0,
+      "max": 100,
+      "label_key": "opt_temperature_profile_label",
+      "desc_key": "opt_temperature_profile_desc"
+    }
+  ]
+}

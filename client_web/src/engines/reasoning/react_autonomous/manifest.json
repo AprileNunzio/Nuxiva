@@ -1,0 +1,28 @@
+{
+  "$schema": "https://nuxiva.org/schemas/engine.manifest.json",
+  "id": "react_autonomous",
+  "name": "ReAct Autonomous Agent",
+  "version": "2.0.0",
+  "kind": "engine",
+  "family": "reasoning",
+  "author": "Nuxiva Cognitive Core",
+  "capabilities": ["reasoning", "tool_execution", "reflection"],
+  "options": [
+    {
+      "id": "max_thought_steps",
+      "type": "range",
+      "default": 10,
+      "min": 3,
+      "max": 30,
+      "label_key": "opt_max_thought_steps_label",
+      "desc_key": "opt_max_thought_steps_desc"
+    },
+    {
+      "id": "autonomous_verification",
+      "type": "boolean",
+      "default": true,
+      "label_key": "opt_autonomous_verification_label",
+      "desc_key": "opt_autonomous_verification_desc"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://nuxiva.org/schemas/engine.manifest.json",
+  "id": "web_speech",
+  "name": "Web Speech Streaming Engine",
+  "version": "1.0.0",
+  "kind": "engine",
+  "family": "speech_recognition",
+  "author": "Nuxiva Voice Team",
+  "capabilities": ["microphone", "continuous_listening"],
+  "options": [
+    {
+      "id": "interim_results",
+      "type": "boolean",
+      "default": true,
+      "label_key": "opt_interim_results_label",
+      "desc_key": "opt_interim_results_desc"
+    },
+    {
+      "id": "continuous_session",
+      "type": "boolean",
+      "default": true,
+      "label_key": "opt_continuous_session_label",
+      "desc_key": "opt_continuous_session_desc"
+    }
+  ]
+}

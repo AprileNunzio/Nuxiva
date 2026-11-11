@@ -36,6 +36,15 @@
     "opt_lyrics_overlay_title": "Music lyrics overlay (Karaoke)",
     "opt_lyrics_overlay_desc": "Display synchronized song lyrics on screen in real time",
     "opt_vitals_tracking_title": "Presence & vitals detection",
-    "opt_vitals_tracking_desc": "Analyze sensor and biometric telemetry to detect human presence"
+    "opt_vitals_tracking_desc": "Analyze sensor and biometric telemetry to detect human presence",
+    "tab_switches": "Global Switches",
+    "tab_engines": "Engines & Algorithms",
+    "family_reasoning": "AI Reasoning Algorithm",
+    "family_speech_recognition": "Voice Recognition",
+    "family_music_recognition": "Music Recognition",
+    "active_engine_badge": "Active",
+    "engine_options_header": "Engine Parameters",
+    "no_engine_options": "No additional parameters for this engine",
+    "select_engine_cta": "Select as Active Engine"
   }
 }

@@ -1,0 +1,10 @@
+{
+  "dictionary": {
+    "title": "Ascoltatore Ambientale Canzoni",
+    "description": "Riconoscimento automatico continuo di musica e radio in sottofondo nell'ambiente.",
+    "opt_polling_interval_label": "Intervallo Campionamento (Secondi)",
+    "opt_polling_interval_desc": "Frequenza dei campionamenti del flusso sonoro ambientale in background.",
+    "opt_screen_hud_toast_label": "Notifica a Schermo HUD",
+    "opt_screen_hud_toast_desc": "Mostra banner overlay istantaneo con titolo e cover non appena la canzone cambia."
+  }
+}

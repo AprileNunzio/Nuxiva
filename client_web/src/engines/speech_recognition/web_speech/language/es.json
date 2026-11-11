@@ -1,0 +1,10 @@
+{
+  "dictionary": {
+    "title": "Reconocimiento de Voz Web Speech",
+    "description": "Motor de transmisión nativo del navegador de muy baja latencia para comandos rápidos y dictado.",
+    "opt_interim_results_label": "Resultados Parciales en Tiempo Real",
+    "opt_interim_results_desc": "Muestra las palabras a medida que se pronuncian antes de completar la frase.",
+    "opt_continuous_session_label": "Escucha de Voz Continua",
+    "opt_continuous_session_desc": "Mantiene el canal de micrófono siempre atento sin interrupciones entre comandos."
+  }
+}

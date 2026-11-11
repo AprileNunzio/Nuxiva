@@ -1,0 +1,10 @@
+{
+  "dictionary": {
+    "title": "Tree-of-Thought Explorer",
+    "description": "Tree-based heuristic algorithm evaluating multiple logical pathways in parallel.",
+    "opt_branching_factor_label": "Branching Factor",
+    "opt_branching_factor_desc": "Number of alternative hypotheses generated and compared simultaneously at each step.",
+    "opt_heuristic_depth_label": "Exploration Depth",
+    "opt_heuristic_depth_desc": "Maximum level of hierarchical nodes explored before pruning unviable branches."
+  }
+}

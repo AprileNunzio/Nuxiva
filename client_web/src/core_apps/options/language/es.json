@@ -36,6 +36,15 @@
     "opt_lyrics_overlay_title": "Letras sincronizadas en pantalla (Karaoke)",
     "opt_lyrics_overlay_desc": "Muestra las letras de la canción sincronizadas en tiempo real en la pantalla",
     "opt_vitals_tracking_title": "Detección de presencia y signos vitales",
-    "opt_vitals_tracking_desc": "Analiza la telemetría biométrica y sensores para detectar la presencia humana"
+    "opt_vitals_tracking_desc": "Analiza la telemetría biométrica y sensores para detectar la presencia humana",
+    "tab_switches": "Interruptores Globales",
+    "tab_engines": "Motores y Algoritmos",
+    "family_reasoning": "Algoritmo de Razonamiento IA",
+    "family_speech_recognition": "Reconocimiento de Voz",
+    "family_music_recognition": "Reconocimiento Musical",
+    "active_engine_badge": "Activo",
+    "engine_options_header": "Parámetros del Motor",
+    "no_engine_options": "No hay parámetros adicionales para este motor",
+    "select_engine_cta": "Seleccionar como Motor Activo"
   }
 }

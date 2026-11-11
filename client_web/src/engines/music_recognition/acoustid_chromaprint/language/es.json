@@ -1,0 +1,10 @@
+{
+  "dictionary": {
+    "title": "Huella Acústica Chromaprint FFT",
+    "description": "Reconocimiento musical mediante análisis espectral FFT y huella acústica local de alta fidelidad.",
+    "opt_fft_sensitivity_label": "Sensibilidad Espectral FFT",
+    "opt_fft_sensitivity_desc": "Profundidad de muestreo de frecuencias armónicas para identificar pistas con eco o distorsión.",
+    "opt_show_song_overlay_label": "Mostrar Canción en Pantalla",
+    "opt_show_song_overlay_desc": "Muestra una notificación flotante con título y artista tan pronto como se reconoce una canción."
+  }
+}

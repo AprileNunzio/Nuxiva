@@ -1,0 +1,10 @@
+{
+  "dictionary": {
+    "title": "Whisper Neural Local Desconectado",
+    "description": "Transcripción de voz neuronal en el dispositivo sin enviar datos a la nube (Privacidad Absoluta).",
+    "opt_model_precision_label": "Cuantización y Precisión",
+    "opt_model_precision_desc": "Nivel de compresión int8 o float16 para equilibrar velocidad de inferencia y precisión.",
+    "opt_vad_threshold_label": "Umbral VAD Detección de Voz",
+    "opt_vad_threshold_desc": "Sensibilidad del filtro Voice Activity Detector para ignorar ruidos ambientales de fondo."
+  }
+}

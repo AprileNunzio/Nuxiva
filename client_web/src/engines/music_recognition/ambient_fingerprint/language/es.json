@@ -1,0 +1,10 @@
+{
+  "dictionary": {
+    "title": "Escucha de Música Ambiental",
+    "description": "Reconocimiento automático continuo de música y radio ambiental en segundo plano.",
+    "opt_polling_interval_label": "Intervalo de Muestreo (Segundos)",
+    "opt_polling_interval_desc": "Frecuencia de muestreo del flujo de sonido ambiental en segundo plano.",
+    "opt_screen_hud_toast_label": "Notificación HUD en Pantalla",
+    "opt_screen_hud_toast_desc": "Muestra un banner superpuesto instantáneo con título y portada en cuanto cambia la canción."
+  }
+}
