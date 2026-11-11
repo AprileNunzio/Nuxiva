@@ -1,0 +1,10 @@
+{
+  "dictionary": {
+    "title": "Monitor de Sistema de Hardware",
+    "description": "Telemetría en tiempo real de CPU, RAM, GPU y métricas de microkernel en la bandeja del sistema.",
+    "opt_sample_interval_label": "Frecuencia de Muestreo (ms)",
+    "opt_sample_interval_desc": "Intervalo de actualización entre lecturas de sensores de hardware.",
+    "opt_gpu_telemetry_label": "Sensores de GPU Activos",
+    "opt_gpu_telemetry_desc": "Habilita la telemetría de carga y temperatura para tarjetas gráficas dedicadas."
+  }
+}

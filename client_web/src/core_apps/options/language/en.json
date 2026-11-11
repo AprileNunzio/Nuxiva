@@ -45,6 +45,12 @@
     "active_engine_badge": "Active",
     "engine_options_header": "Engine Parameters",
     "no_engine_options": "No additional parameters for this engine",
-    "select_engine_cta": "Select as Active Engine"
+    "select_engine_cta": "Select as Active Engine",
+    "tab_ecosystem": "Ecosystem & Agents",
+    "ecosystem_agents": "Autonomous Cognitive Agents",
+    "ecosystem_skills": "System Skills & Tools",
+    "ecosystem_plugins": "Plugins & Hardware Integrations",
+    "ecosystem_brains": "Brains & Memory Modules",
+    "capabilities_badge": "Zero-Trust Capabilities"
   }
 }

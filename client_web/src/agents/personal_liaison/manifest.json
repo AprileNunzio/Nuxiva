@@ -1,0 +1,19 @@
+{
+  "$schema": "https://nuxiva.org/schemas/agent.manifest.json",
+  "id": "personal_liaison",
+  "name": "Personal Liaison Assistant",
+  "version": "1.0.0",
+  "kind": "agent",
+  "role": "liaison",
+  "author": "Nuxiva Cognitive Lab",
+  "capabilities": ["dialogue", "scheduling", "user_preferences"],
+  "options": [
+    {
+      "id": "proactive_reminders",
+      "type": "boolean",
+      "default": true,
+      "label_key": "opt_proactive_reminders_label",
+      "desc_key": "opt_proactive_reminders_desc"
+    }
+  ]
+}

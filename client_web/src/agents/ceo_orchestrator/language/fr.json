@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "CEO Orchestrateur Exécutif",
+    "description": "Méta-agent de commandement décomposant les objectifs complexes, coordonnant les spécialistes et validant les livrables.",
+    "opt_autonomous_delegation_label": "Délégation Exécutive Autonome",
+    "opt_autonomous_delegation_desc": "Permet à l'agent CEO d'attribuer des sous-tâches aux agents spécialisés sans confirmations intermédiaires."
+  }
+}

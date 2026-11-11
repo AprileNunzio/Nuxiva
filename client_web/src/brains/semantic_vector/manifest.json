@@ -1,0 +1,21 @@
+{
+  "$schema": "https://nuxiva.org/schemas/brain.manifest.json",
+  "id": "semantic_vector",
+  "name": "Semantic Vector Embedding Brain",
+  "version": "1.0.0",
+  "kind": "brain",
+  "author": "Nuxiva Cognitive Lab",
+  "capabilities": ["vector_embeddings", "cosine_similarity", "rag_retrieval"],
+  "options": [
+    {
+      "id": "similarity_threshold",
+      "type": "range",
+      "default": 75,
+      "min": 50,
+      "max": 95,
+      "step": 5,
+      "label_key": "opt_similarity_threshold_label",
+      "desc_key": "opt_similarity_threshold_desc"
+    }
+  ]
+}

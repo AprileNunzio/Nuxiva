@@ -1,0 +1,10 @@
+{
+  "dictionary": {
+    "title": "Moniteur Système Matériel",
+    "description": "Télémétrie en temps réel du processeur, mémoire, GPU et micro-noyau dans la zone de notification.",
+    "opt_sample_interval_label": "Fréquence d'Échantillonnage (ms)",
+    "opt_sample_interval_desc": "Intervalle de rafraîchissement entre chaque lecture des capteurs matériels.",
+    "opt_gpu_telemetry_label": "Capteurs GPU Actifs",
+    "opt_gpu_telemetry_desc": "Active la télémétrie de charge et de température pour les cartes graphiques dédiées."
+  }
+}

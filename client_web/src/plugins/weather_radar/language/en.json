@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Live Weather & Climate Radar",
+    "description": "High-resolution weather forecasts and animated precipitation radar docked in the System Tray.",
+    "opt_tray_temperature_label": "Temperature Badge in Clock",
+    "opt_tray_temperature_desc": "Displays current temperature directly next to the system clock."
+  }
+}

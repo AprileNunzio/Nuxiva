@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Contrôleur Domotique Maison Intelligente",
+    "description": "Compétence permettant d'interagir avec les appareils Matter, Zigbee et MQTT (lumières, thermostats, prises).",
+    "opt_confirm_critical_label": "Confirmer les Actions Critiques",
+    "opt_confirm_critical_desc": "Exige une confirmation avant d'actionner les serrures, portes de garage ou alarmes."
+  }
+}

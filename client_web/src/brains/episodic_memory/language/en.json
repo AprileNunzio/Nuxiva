@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Episodic Chrono Memory Brain",
+    "description": "Cognitive brain module for storing and recalling temporal events, past dialogs, and key user decisions.",
+    "opt_retention_days_label": "Retention Window (days)",
+    "opt_retention_days_desc": "Number of days of event history to retain in the local cognitive database."
+  }
+}

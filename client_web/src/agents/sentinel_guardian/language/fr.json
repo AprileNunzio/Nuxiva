@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Sentinelle de Sécurité et Sandbox",
+    "description": "Agent sentinelle autonome inspectant les canaux IPC, surveillant les anomalies de mémoire et isolant les menaces.",
+    "opt_strict_zero_trust_label": "Isolation Zero-Trust Stricte",
+    "opt_strict_zero_trust_desc": "Bloque immédiatement les sous-applications ou plugins sans autorisations explicitement déclarées."
+  }
+}

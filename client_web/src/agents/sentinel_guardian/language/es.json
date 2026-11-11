@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Centinela de Seguridad y Sandbox",
+    "description": "Agente autónomo que inspecciona canales IPC, vigila anomalías de memoria y aísla amenazas de seguridad.",
+    "opt_strict_zero_trust_label": "Aislamiento Zero-Trust Estricto",
+    "opt_strict_zero_trust_desc": "Bloquea de inmediato subaplicaciones o plugins sin permisos explícitamente declarados en su manifiesto."
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Autonomous Deep Web Researcher & Fact-Checker",
+    "description": "Skill conducting online research, cross-referencing multiple sources, and synthesizing findings with verified citations.",
+    "opt_citation_verify_label": "Academic Citation Cross-Check",
+    "opt_citation_verify_desc": "Performs cross-referencing across three independent sources before confirming factual answers."
+  }
+}

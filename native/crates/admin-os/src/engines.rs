@@ -81,10 +81,16 @@ impl EngineRegistry {
         if trimmed.is_empty() || trimmed.len() > 64 {
             return None;
         }
-        if trimmed.starts_with('.') || trimmed.contains("..") || trimmed.contains('/') || trimmed.contains('\\') {
+        if trimmed.starts_with('.')
+            || trimmed.contains("..")
+            || trimmed.contains('/')
+            || trimmed.contains('\\')
+        {
             return None;
         }
-        let valid = trimmed.chars().all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_');
+        let valid = trimmed
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_');
         if valid {
             Some(trimmed.to_ascii_lowercase())
         } else {
@@ -94,7 +100,10 @@ impl EngineRegistry {
 
     pub fn register(&mut self, manifest: EngineManifest) -> Result<(), String> {
         let Some(safe_id) = Self::sanitize_id(&manifest.id) else {
-            return Err(format!("Invalid engine identifier: {raw_id}", raw_id = manifest.id));
+            return Err(format!(
+                "Invalid engine identifier: {raw_id}",
+                raw_id = manifest.id
+            ));
         };
 
         if self.engines.contains_key(&safe_id) {
@@ -105,7 +114,9 @@ impl EngineRegistry {
         let mut sanitized = manifest;
         sanitized.id.clone_from(&safe_id);
 
-        self.active_engines.entry(family).or_insert_with(|| safe_id.clone());
+        self.active_engines
+            .entry(family)
+            .or_insert_with(|| safe_id.clone());
 
         self.engines.insert(safe_id, sanitized);
         Ok(())
@@ -119,7 +130,9 @@ impl EngineRegistry {
         match self.engines.get(&safe_id) {
             Some(engine) => {
                 if engine.family != family {
-                    return Err(format!("Engine '{safe_id}' does not belong to family {family:?}"));
+                    return Err(format!(
+                        "Engine '{safe_id}' does not belong to family {family:?}"
+                    ));
                 }
                 self.active_engines.insert(family, safe_id);
                 Ok(())
@@ -142,7 +155,10 @@ impl EngineRegistry {
 
     #[must_use]
     pub fn list_by_family(&self, family: &EngineFamily) -> Vec<&EngineManifest> {
-        self.engines.values().filter(|e| &e.family == family).collect()
+        self.engines
+            .values()
+            .filter(|e| &e.family == family)
+            .collect()
     }
 
     #[must_use]
@@ -190,10 +206,22 @@ mod tests {
 
     #[test]
     fn test_engine_family_parsing() {
-        assert_eq!(EngineFamily::parse_str("reasoning"), Some(EngineFamily::Reasoning));
-        assert_eq!(EngineFamily::parse_str("speech"), Some(EngineFamily::SpeechRecognition));
-        assert_eq!(EngineFamily::parse_str("music"), Some(EngineFamily::MusicRecognition));
-        assert_eq!(EngineFamily::parse_str("vision"), Some(EngineFamily::Vision));
+        assert_eq!(
+            EngineFamily::parse_str("reasoning"),
+            Some(EngineFamily::Reasoning)
+        );
+        assert_eq!(
+            EngineFamily::parse_str("speech"),
+            Some(EngineFamily::SpeechRecognition)
+        );
+        assert_eq!(
+            EngineFamily::parse_str("music"),
+            Some(EngineFamily::MusicRecognition)
+        );
+        assert_eq!(
+            EngineFamily::parse_str("vision"),
+            Some(EngineFamily::Vision)
+        );
         assert_eq!(EngineFamily::parse_str("invalid_family"), None);
     }
 
@@ -225,17 +253,21 @@ mod tests {
         assert!(registry.register(m2).is_ok());
         assert_eq!(registry.total_engines(), 2);
 
-        if let Some(active) = registry.get_active(&EngineFamily::Reasoning) {
+        let active1 = registry.get_active(&EngineFamily::Reasoning);
+        assert!(active1.is_some());
+        if let Some(active) = active1 {
             assert_eq!(active.id, "tree_of_thought");
-        } else {
-            panic!("Expected active engine");
         }
 
-        assert!(registry.set_active(EngineFamily::Reasoning, "react_autonomous").is_ok());
-        if let Some(active) = registry.get_active(&EngineFamily::Reasoning) {
+        assert!(
+            registry
+                .set_active(EngineFamily::Reasoning, "react_autonomous")
+                .is_ok()
+        );
+        let active2 = registry.get_active(&EngineFamily::Reasoning);
+        assert!(active2.is_some());
+        if let Some(active) = active2 {
             assert_eq!(active.id, "react_autonomous");
-        } else {
-            panic!("Expected active engine");
         }
     }
 }

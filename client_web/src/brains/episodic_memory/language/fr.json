@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Cerveau de Mémoire Épisodique et Chronologique",
+    "description": "Module cognitif stockant et restituant les événements temporels, dialogues passés et décisions clés.",
+    "opt_retention_days_label": "Période de Rétention (jours)",
+    "opt_retention_days_desc": "Nombre de jours d'historique à conserver dans la base de données cognitive locale."
+  }
+}

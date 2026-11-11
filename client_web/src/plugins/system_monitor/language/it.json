@@ -1,0 +1,10 @@
+{
+  "dictionary": {
+    "title": "Monitoraggio Hardware di Sistema",
+    "description": "Telemetria in tempo reale di CPU, RAM, GPU e metriche di microkernel visualizzate nella System Tray.",
+    "opt_sample_interval_label": "Frequenza di Campionamento (ms)",
+    "opt_sample_interval_desc": "Intervallo di aggiornamento tra ogni lettura dei sensori hardware.",
+    "opt_gpu_telemetry_label": "Sensori GPU Attivi",
+    "opt_gpu_telemetry_desc": "Abilita la telemetria di carico e temperatura per acceleratori grafici dedicati."
+  }
+}

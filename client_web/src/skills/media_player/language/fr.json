@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Lecteur Audio Spatial et Contrôleur Multimédia",
+    "description": "Compétence gérant le streaming musical, la lecture locale et les filtres DSP haute fidélité.",
+    "opt_spatial_audio_label": "Améliorateur Audio Spatial 3D",
+    "opt_spatial_audio_desc": "Traite le son en temps réel simulant un champ acoustique immersif à 360 degrés."
+  }
+}

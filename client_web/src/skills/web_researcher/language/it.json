@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Ricercatore Web Autonomo e Fact-Checker",
+    "description": "Skill che effettua ricerche online, confronta fonti multiple e sintetizza informazioni con citazioni verificate.",
+    "opt_citation_verify_label": "Verifica Accademica delle Citazioni",
+    "opt_citation_verify_desc": "Effettua un controllo incrociato su tre fonti distinte prima di convalidare una risposta."
+  }
+}

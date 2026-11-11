@@ -1,0 +1,19 @@
+{
+  "$schema": "https://nuxiva.org/schemas/agent.manifest.json",
+  "id": "ceo_orchestrator",
+  "name": "CEO Executive Orchestrator",
+  "version": "1.0.0",
+  "kind": "agent",
+  "role": "ceo",
+  "author": "Nuxiva Executive Team",
+  "capabilities": ["goal_decomposition", "team_supervision", "executive_review"],
+  "options": [
+    {
+      "id": "autonomous_delegation",
+      "type": "boolean",
+      "default": true,
+      "label_key": "opt_autonomous_delegation_label",
+      "desc_key": "opt_autonomous_delegation_desc"
+    }
+  ]
+}

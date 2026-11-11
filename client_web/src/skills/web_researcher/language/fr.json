@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Chercheur Web Autonome et Vérificateur",
+    "description": "Compétence effectuant des recherches en ligne, recoupant plusieurs sources et synthétisant avec citations fiables.",
+    "opt_citation_verify_label": "Vérification Croisée des Citations",
+    "opt_citation_verify_desc": "Recoupe trois sources indépendantes avant de valider une information."
+  }
+}

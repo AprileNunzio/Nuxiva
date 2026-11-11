@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Asistente Personal y Enlace Ejecutivo",
+    "description": "Agente dedicado a la interacción con el usuario, memoria conversacional y recordatorios contextuales.",
+    "opt_proactive_reminders_label": "Recordatorios Proactivos Contextuales",
+    "opt_proactive_reminders_desc": "Notifica al usuario cuando surgen compromisos o tareas según la actividad actual."
+  }
+}

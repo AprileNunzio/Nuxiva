@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Cerveau Vectoriel Sémantique et RAG",
+    "description": "Module neuronal pour la recherche sémantique avec plongements vectoriels et génération augmentée de récupération.",
+    "opt_similarity_threshold_label": "Seuil Minimal de Similitude (%)",
+    "opt_similarity_threshold_desc": "Score de similarité cosinus minimal requis pour injecter le contexte dans le modèle."
+  }
+}

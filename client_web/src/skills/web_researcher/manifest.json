@@ -1,0 +1,18 @@
+{
+  "$schema": "https://nuxiva.org/schemas/skill.manifest.json",
+  "id": "web_researcher",
+  "name": "Autonomous Deep Web Researcher",
+  "version": "1.0.0",
+  "kind": "skill",
+  "author": "Nuxiva Research Lab",
+  "capabilities": ["web_browsing", "page_scraping", "fact_checking"],
+  "options": [
+    {
+      "id": "citation_verification",
+      "type": "boolean",
+      "default": true,
+      "label_key": "opt_citation_verify_label",
+      "desc_key": "opt_citation_verify_desc"
+    }
+  ]
+}

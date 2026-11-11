@@ -1,0 +1,10 @@
+{
+  "dictionary": {
+    "title": "Hardware System Monitor",
+    "description": "Real-time telemetry for CPU, RAM, GPU and microkernel performance metrics docked in the System Tray.",
+    "opt_sample_interval_label": "Sampling Frequency (ms)",
+    "opt_sample_interval_desc": "Refresh interval between hardware sensor readings.",
+    "opt_gpu_telemetry_label": "Active GPU Sensors",
+    "opt_gpu_telemetry_desc": "Enables load and thermal telemetry for dedicated graphics hardware."
+  }
+}

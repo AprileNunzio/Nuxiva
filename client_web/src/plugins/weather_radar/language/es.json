@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Radar Meteorológico y Clima en Vivo",
+    "description": "Pronósticos meteorológicos de alta resolución y radar animado ubicado en la bandeja del sistema.",
+    "opt_tray_temperature_label": "Insignia de Temperatura en Reloj",
+    "opt_tray_temperature_desc": "Muestra los grados actuales directamente junto al reloj del sistema."
+  }
+}

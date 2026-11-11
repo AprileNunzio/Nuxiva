@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Semantic Vector Embedding & RAG Brain",
+    "description": "Neural module for semantic search with high-dimensional vector embeddings and retrieval-augmented generation.",
+    "opt_similarity_threshold_label": "Minimum Similarity Threshold (%)",
+    "opt_similarity_threshold_desc": "Minimum cosine similarity score required before context is injected into generation prompts."
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Assistente Personale e Liaison Esecutivo",
+    "description": "Agente dedicato all'interfaccia con l'utente, gestione della memoria conversazionale e promemoria contestuali.",
+    "opt_proactive_reminders_label": "Promemoria Proattivi Contestuali",
+    "opt_proactive_reminders_desc": "Notifica l'utente quando emergono impegni o scadenze rilevanti in base all'attività corrente."
+  }
+}

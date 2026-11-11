@@ -45,6 +45,12 @@
     "active_engine_badge": "Activo",
     "engine_options_header": "Parámetros del Motor",
     "no_engine_options": "No hay parámetros adicionales para este motor",
-    "select_engine_cta": "Seleccionar como Motor Activo"
+    "select_engine_cta": "Seleccionar como Motor Activo",
+    "tab_ecosystem": "Ecosistema y Agentes",
+    "ecosystem_agents": "Agentes Cognitivos Autónomos",
+    "ecosystem_skills": "Habilidades y Herramientas del Sistema",
+    "ecosystem_plugins": "Plugins e Integraciones de Hardware",
+    "ecosystem_brains": "Cerebros y Módulos de Memoria",
+    "capabilities_badge": "Permisos Zero-Trust"
   }
 }

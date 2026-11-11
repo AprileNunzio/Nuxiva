@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Cerebro Vectorial Semántico y RAG",
+    "description": "Módulo neuronal para búsqueda semántica con incrustaciones vectoriales y generación aumentada por recuperación.",
+    "opt_similarity_threshold_label": "Umbral Mínimo de Similitud (%)",
+    "opt_similarity_threshold_desc": "Puntaje de similitud del coseno necesario para incluir el contexto en la generación."
+  }
+}

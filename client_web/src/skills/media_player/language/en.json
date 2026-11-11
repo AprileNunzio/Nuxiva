@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Spatial Audio & Media Controller",
+    "description": "Skill controlling audio streaming, local media playback, and high-fidelity DSP filters.",
+    "opt_spatial_audio_label": "3D Spatial Audio Enhancer",
+    "opt_spatial_audio_desc": "Processes audio in real-time simulating an immersive 360-degree soundstage."
+  }
+}
