@@ -62,6 +62,12 @@ class Recorder:
 
     def _prune(self, cam: dict) -> None:
         media_vault.prune(cam["id"])
+        try:
+            from features.nvr.settings import load as load_nvr_settings
+            cfg = load_nvr_settings()
+            media_vault.prune_quota(cfg.get("storage_percent", 20), cfg.get("storage_max_gb", 0))
+        except Exception:
+            pass
         folder = CAM_DIR / cam["id"]
         if not folder.exists():
             return
@@ -73,11 +79,28 @@ class Recorder:
             except OSError:
                 pass
 
+    def _enroll_connected_cameras(self) -> None:
+        try:
+            from features.vision.webcams import webcams
+            devices = webcams.state.get("devices") or []
+            for dev in devices:
+                node = dev.get("rgb") or dev.get("ir")
+                if not node:
+                    continue
+                exists = any(c.get("url") == node or c.get("node") == node for c in cameras.items.values())
+                if not exists:
+                    name = str(dev.get("name") or "Webcam").strip()[:40]
+                    cameras.add({"name": name, "kind": "webcam", "url": node, "node": node,
+                                 "retention_min": 60, "enabled": True, "record": True, "consent": True})
+        except Exception:
+            pass
+
     async def run(self) -> None:
         if not shutil.which("ffmpeg"):
             return
         while True:
             try:
+                self._enroll_connected_cameras()
                 wanted = {c["id"]: c for c in cameras.items.values() if cameras._recording(c)}
                 for cid in list(self.procs):
                     rec = self.procs[cid]

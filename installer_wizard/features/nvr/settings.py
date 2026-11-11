@@ -12,7 +12,9 @@ TOPIC_RE = re.compile(r"^[A-Za-z0-9_/+#-]{1,120}$")
 SECRET = "mqtt_password"
 DEFAULTS = {"enabled": False, "mqtt_host": "", "mqtt_port": 1883, "mqtt_topic": "nvr/events", "mqtt_user": "", SECRET: "",
             "mqtt_tls": False, "retention_days": 30, "min_score": 0.6, "labels": list(LABELS[:4]) + ["dog", "cat", "package"],
-            "notify_labels": ["person"]}
+            "notify_labels": ["person"], "storage_percent": 20, "storage_max_gb": 0, "record_mode": "hybrid",
+            "ai_analysis": True, "ai_audio_transcription": True, "ptz_auto_tracking": True, "ptz_auto_patrol": False,
+            "ptz_patrol_interval_s": 60}
 
 
 class SettingsError(ValueError):
@@ -60,8 +62,15 @@ def validate(body: dict, current: dict) -> dict:
     try:
         out["retention_days"] = max(1, min(365, int(body.get("retention_days", current["retention_days"]))))
         out["min_score"] = round(max(0.0, min(1.0, float(body.get("min_score", current["min_score"])))), 2)
+        out["storage_percent"] = max(1, min(90, int(body.get("storage_percent", current.get("storage_percent", 20)))))
+        out["storage_max_gb"] = max(0, min(100000, int(body.get("storage_max_gb", current.get("storage_max_gb", 0)))))
+        out["ptz_patrol_interval_s"] = max(5, min(3600, int(body.get("ptz_patrol_interval_s", current.get("ptz_patrol_interval_s", 60)))))
     except (TypeError, ValueError):
         raise SettingsError("nvr.error.number")
+    mode = str(body.get("record_mode", current.get("record_mode", "hybrid"))).lower()
+    out["record_mode"] = mode if mode in ("continuous", "events", "hybrid") else "hybrid"
+    for b_key in ("ai_analysis", "ai_audio_transcription", "ptz_auto_tracking", "ptz_auto_patrol"):
+        out[b_key] = bool(body.get(b_key, current.get(b_key, DEFAULTS[b_key])))
     for key in ("labels", "notify_labels"):
         values = body.get(key, current[key])
         if not isinstance(values, list):

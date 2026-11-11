@@ -239,7 +239,65 @@ class MediaVault:
                 })
             except OSError:
                 pass
-        return out
+    def quota_bytes(self, storage_percent: float = 20.0, storage_max_gb: float = 0.0) -> int:
+        import shutil
+        try:
+            usage = shutil.disk_usage(self.root)
+            total = usage.total
+        except OSError:
+            total = 100 * 1024 * 1024 * 1024
+        calc = int(total * (max(1.0, min(90.0, float(storage_percent))) / 100.0))
+        if storage_max_gb > 0:
+            calc = min(calc, int(storage_max_gb * 1024 * 1024 * 1024))
+        return calc
+
+    def storage_stats(self, storage_percent: float = 20.0, storage_max_gb: float = 0.0) -> dict:
+        import shutil
+        try:
+            usage = shutil.disk_usage(self.root)
+            disk_total = usage.total
+            disk_free = usage.free
+        except OSError:
+            disk_total = 100 * 1024 * 1024 * 1024
+            disk_free = 50 * 1024 * 1024 * 1024
+        quota = self.quota_bytes(storage_percent, storage_max_gb)
+        files = list(self.root.glob("*/*.nvm"))
+        used_bytes = sum(f.stat().st_size for f in files if f.exists())
+        return {
+            "disk_total_bytes": disk_total,
+            "disk_free_bytes": disk_free,
+            "storage_percent": storage_percent,
+            "storage_max_gb": storage_max_gb,
+            "quota_bytes": quota,
+            "vault_used_bytes": used_bytes,
+            "vault_segments": len(files),
+            "quota_used_percent": round((used_bytes / max(1, quota)) * 100.0, 1),
+        }
+
+    def prune_quota(self, storage_percent: float = 20.0, storage_max_gb: float = 0.0) -> int:
+        quota = self.quota_bytes(storage_percent, storage_max_gb)
+        files = []
+        for p in self.root.glob("*/*.nvm"):
+            try:
+                st = p.stat()
+                files.append((st.st_mtime, st.st_size, p))
+            except OSError:
+                pass
+        total = sum(s for _, s, _ in files)
+        if total <= quota:
+            return 0
+        files.sort(key=lambda x: x[0])
+        removed = 0
+        for _, size, path in files:
+            if total <= quota:
+                break
+            try:
+                path.unlink(missing_ok=True)
+                total -= size
+                removed += 1
+            except OSError:
+                pass
+        return removed
 
 
 media_vault = MediaVault()
