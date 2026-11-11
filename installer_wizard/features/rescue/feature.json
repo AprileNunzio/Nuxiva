@@ -2,6 +2,7 @@
   "id": "rescue",
   "name": "Soccorso",
   "icon": "🆘",
+  "icon3d": "./icon.png",
   "category": "sicurezza",
   "order": 65,
   "api": "api.py",
