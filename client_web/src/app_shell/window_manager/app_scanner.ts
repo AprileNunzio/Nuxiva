@@ -3,6 +3,8 @@ import type { AppManifest } from './types';
 
 export type AppKind = 'app' | 'feature' | 'system';
 
+export const KNOWN_APPLICATION_IDS = new Set<string>([]);
+
 export function isSubapp(item: { id?: string; scope?: string; isSubapp?: boolean; parent?: string }): boolean {
   if (item.isSubapp === true) return true;
   if (typeof item.parent === 'string' && item.parent.length > 0) return true;

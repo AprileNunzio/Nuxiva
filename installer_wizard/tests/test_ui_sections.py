@@ -13,8 +13,10 @@ def panel_ids() -> set[str]:
 
 def known_apps() -> set[str]:
     text = (SRC / "app_shell/window_manager/app_scanner.ts").read_text(encoding="utf-8")
-    block = re.search(r"KNOWN_APPLICATION_IDS = new Set\(\[(.*?)\]\)", text, re.S).group(1)
-    return set(re.findall(r"'([a-z0-9_]+)'", block))
+    match = re.search(r"KNOWN_APPLICATION_IDS = new Set\(\[(.*?)\]\)", text, re.S)
+    if not match:
+        return set()
+    return set(re.findall(r"'([a-z0-9_]+)'", match.group(1)))
 
 
 def app_manifests() -> set[str]:
