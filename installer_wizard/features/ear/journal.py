@@ -219,6 +219,17 @@ class Journal:
             self._drop(conn, [entry_id])
         return bool(exists)
 
+    def anonymize_speaker(self, speaker: str) -> int:
+        if not speaker or not SLUG.match(speaker):
+            return 0
+        try:
+            with self.lock, closing(self._open()) as conn:
+                cur = conn.execute("UPDATE entries SET speaker = '' WHERE speaker = ?", (speaker,))
+                conn.commit()
+                return cur.rowcount
+        except (OSError, JournalUnavailable):
+            return 0
+
     def purge(self) -> int:
         with self.lock, closing(self._open()) as conn:
             ids = [row["id"] for row in conn.execute("SELECT id FROM entries")]
@@ -255,15 +266,18 @@ class Journal:
         return removed
 
     def stats(self) -> dict:
-        with self.lock, closing(self._open()) as conn:
-            total = conn.execute("SELECT COUNT(*) FROM entries").fetchone()[0]
-            by = {r["verdict"] or "pending": r["n"] for r in conn.execute(
-                "SELECT verdict, COUNT(*) AS n FROM entries GROUP BY verdict")}
-            speakers = {r["speaker"] or "-": r["n"] for r in conn.execute(
-                "SELECT speaker, COUNT(*) AS n FROM entries GROUP BY speaker")}
-        size = sum(p.stat().st_size for p in self.root.glob("*.clip"))
-        return {"total": total, "pending": by.get("pending", 0), "ok": by.get("ok", 0), "wrong": by.get("wrong", 0),
-                "speakers": speakers, "audio_mb": round(size / 1048576, 1)}
+        try:
+            with self.lock, closing(self._open()) as conn:
+                total = conn.execute("SELECT COUNT(*) FROM entries").fetchone()[0]
+                by = {r["verdict"] or "pending": r["n"] for r in conn.execute(
+                    "SELECT verdict, COUNT(*) AS n FROM entries GROUP BY verdict")}
+                speakers = {r["speaker"] or "-": r["n"] for r in conn.execute(
+                    "SELECT speaker, COUNT(*) AS n FROM entries GROUP BY speaker")}
+            size = sum(p.stat().st_size for p in self.root.glob("*.clip"))
+            return {"total": total, "pending": by.get("pending", 0), "ok": by.get("ok", 0), "wrong": by.get("wrong", 0),
+                    "speakers": speakers, "audio_mb": round(size / 1048576, 1)}
+        except (OSError, JournalUnavailable):
+            return {"total": 0, "pending": 0, "ok": 0, "wrong": 0, "speakers": {}, "audio_mb": 0.0}
 
 
 journal = Journal()

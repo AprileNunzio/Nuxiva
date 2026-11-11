@@ -58,6 +58,8 @@
     "sentinel.sentinel.memory_relink": "A guest's sightings were linked to a person ({count} sightings)",
     "sentinel.media.playback": "Media recording replayed for camera {camera} ({segment})",
     "sentinel.media.encrypted": "Encrypted media recording stored for camera {camera} ({segment})",
-    "sentinel.sentinel.ask_query": "Evidence query requested: «{query}» ({citations} linked proofs)"
+    "sentinel.sentinel.ask_query": "Evidence query requested: «{query}» ({citations} linked proofs)",
+    "sentinel.sentinel.gdpr_shred": "Biometric data and memories permanently erased (GDPR Art. 17, receipt {receipt})",
+    "sentinel.sentinel.gdpr_export": "Personal data export requested and processed (GDPR Art. 20)"
   }
 }

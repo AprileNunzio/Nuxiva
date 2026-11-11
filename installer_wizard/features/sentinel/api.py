@@ -148,3 +148,28 @@ async def sentinel_retention(request: Request, _: str = Depends(require_admin)):
 @admin_routes.post("/api/sentinel/sweep", openapi_extra=MANAGE)
 async def sentinel_sweep(_: str = Depends(require_admin)):
     return _engine_errors(journal.sweep)
+
+
+@admin_routes.get("/api/sentinel/privacy/overview", openapi_extra=READ)
+async def sentinel_privacy_overview(_: str = Depends(require_admin)):
+    from features.sentinel.privacy import privacy_overview
+    return JSONResponse(privacy_overview(), headers=NO_CACHE)
+
+
+@admin_routes.post("/api/sentinel/privacy/shred/{slug}", openapi_extra=MANAGE)
+async def sentinel_privacy_shred(slug: str, _: str = Depends(require_admin)):
+    from features.sentinel.privacy import shred_person
+    try:
+        return JSONResponse(shred_person(slug), headers=NO_CACHE)
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
+
+
+@admin_routes.get("/api/sentinel/privacy/export/{slug}", openapi_extra=READ)
+async def sentinel_privacy_export(slug: str, _: str = Depends(require_admin)):
+    from features.sentinel.privacy import export_person
+    try:
+        return JSONResponse(export_person(slug), headers=NO_CACHE)
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc
+

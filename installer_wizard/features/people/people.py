@@ -223,6 +223,11 @@ def _sync_relations(profile: dict, old: list) -> None:
 
 
 def delete(slug: str) -> bool:
+    try:
+        from features.sentinel.privacy import shred_person
+        shred_person(slug)
+    except Exception:
+        pass
     with _lock:
         path = _path(slug)
         if not path.exists():

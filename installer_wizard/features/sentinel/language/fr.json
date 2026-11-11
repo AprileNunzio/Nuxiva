@@ -58,6 +58,8 @@
     "sentinel.sentinel.memory_relink": "Les passages d'un invité ont été reliés à une personne ({count} passages)",
     "sentinel.media.playback": "Enregistrement lu pour la caméra {camera} ({segment})",
     "sentinel.media.encrypted": "Enregistrement chiffré stocké pour la caméra {camera} ({segment})",
-    "sentinel.sentinel.ask_query": "Requête de preuves demandée: «{query}» ({citations} preuves liées)"
+    "sentinel.sentinel.ask_query": "Requête de preuves demandée: «{query}» ({citations} preuves liées)",
+    "sentinel.sentinel.gdpr_shred": "Données biométriques et souvenirs définitivement supprimés (RGPD Art. 17, reçu {receipt})",
+    "sentinel.sentinel.gdpr_export": "Exportation des données personnelles demandée et exécutée (RGPD Art. 20)"
   }
 }

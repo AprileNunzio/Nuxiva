@@ -58,6 +58,8 @@
     "sentinel.sentinel.memory_relink": "Los pasos de un invitado se vincularon a una persona ({count} pasos)",
     "sentinel.media.playback": "Grabación reproducida para cámara {camera} ({segment})",
     "sentinel.media.encrypted": "Grabación cifrada archivada para cámara {camera} ({segment})",
-    "sentinel.sentinel.ask_query": "Consulta con pruebas solicitada: «{query}» ({citations} pruebas vinculadas)"
+    "sentinel.sentinel.ask_query": "Consulta con pruebas solicitada: «{query}» ({citations} pruebas vinculadas)",
+    "sentinel.sentinel.gdpr_shred": "Datos biométricos y recuerdos eliminados definitivamente (RGPD Art. 17, recibo {receipt})",
+    "sentinel.sentinel.gdpr_export": "Exportación de datos personales solicitada y realizada (RGPD Art. 20)"
   }
 }
