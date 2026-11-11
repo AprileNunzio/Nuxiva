@@ -8,6 +8,7 @@
   "kind": "app",
   "target": "global",
   "category": "system",
+  "launcher": false,
   "window": {
     "defaultWidth": 78,
     "defaultHeight": 82,

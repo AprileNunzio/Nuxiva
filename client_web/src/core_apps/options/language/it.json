@@ -1,0 +1,41 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Opzioni di Sistema",
+    "subtitle": "Gestisci tutti gli interruttori e le funzionalità globali in un unico posto",
+    "search_placeholder": "Cerca opzione (es. canzone, allarme, voce...)",
+    "all_categories": "Tutte le categorie",
+    "cat_multimedia": "Multimedia & Audio",
+    "cat_security": "Sicurezza & Allarme",
+    "cat_ai_voice": "IA & Voce",
+    "cat_display": "Schermo & HUD",
+    "cat_privacy": "Privacy & Sensori",
+    "active": "Attivo",
+    "disabled": "Disattivato",
+    "no_options_found": "Nessuna opzione trovata per la ricerca",
+    "opt_music_display_title": "Mostra canzone in ascolto a schermo",
+    "opt_music_display_desc": "Visualizza un widget a schermo o HUD con titolo, artista e copertina quando viene ascoltato o riconosciuto un brano",
+    "opt_music_recognition_title": "Riconoscimento musicale acustico",
+    "opt_music_recognition_desc": "Identifica automaticamente i brani riprodotti nell'ambiente tramite impronta acustica",
+    "opt_alarm_system_title": "Sistema di allarme perimetrale",
+    "opt_alarm_system_desc": "Attiva il monitoraggio antintrusione e la protezione perimetrale",
+    "opt_red_alert_title": "Protocollo Allarme Rosso",
+    "opt_red_alert_desc": "Blocca immediatamente gli accessi e segnala emergenza ad alta priorità",
+    "opt_camera_alerts_title": "Avvisi movimento telecamere",
+    "opt_camera_alerts_desc": "Invia notifiche e registra clip video quando viene rilevato movimento",
+    "opt_voice_listening_title": "Ascolto continuo comandi vocali",
+    "opt_voice_listening_desc": "Abilita il microfono sempre attivo per rispondere alla parola chiave Nuxiva",
+    "opt_speech_feedback_title": "Risposta vocale assistente",
+    "opt_speech_feedback_desc": "Riproduce la sintesi vocale delle risposte dell'assistente",
+    "opt_mcp_tools_title": "Strumenti autonomi MCP",
+    "opt_mcp_tools_desc": "Consente all'intelligenza artificiale di eseguire azioni e comandi di sistema tramite protocollo MCP",
+    "opt_kiosk_hud_title": "Widget HUD su desktop",
+    "opt_kiosk_hud_desc": "Mostra indicatori di stato, meteo e monitoraggio direttamente sul desktop",
+    "opt_lyrics_overlay_title": "Overlay testi musicali (Karaoke)",
+    "opt_lyrics_overlay_desc": "Mostra le parole della canzone sincronizzate sullo schermo in tempo reale",
+    "opt_vitals_tracking_title": "Rilevamento presenza vitale",
+    "opt_vitals_tracking_desc": "Analizza i dati dei sensori e biometrici per rilevare la presenza umana"
+  }
+}

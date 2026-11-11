@@ -1,0 +1,16 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Enregistrements",
+    "subtitle": "Archive continue, historique et détections vidéo",
+    "filter_all": "Tous les Événements",
+    "filter_motion": "Mouvement",
+    "filter_ai": "Personnes & Véhicules",
+    "empty": "Aucun enregistrement conservé dans l'archive.",
+    "play": "Lire",
+    "storage_used": "Espace archive utilisé",
+    "retention": "Rétention de l'archive"
+  }
+}

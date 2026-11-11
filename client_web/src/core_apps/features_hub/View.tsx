@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Sliders, Grid, Layers } from 'lucide-react';
+import { Sliders, Grid, Layers, ToggleRight } from 'lucide-react';
 import { useScopedI18n, getScopedString } from '../../shared/i18n/useScopedI18n';
 import { ApplicationLayout } from '../../app_shell/window_manager/ApplicationLayout';
 import { ApplicationCatalog } from '../../app_shell/window_manager/ApplicationCatalog';
@@ -11,6 +11,7 @@ import { overviewUrl } from './api';
 import { isApplication, isSubapp, getRegisteredApplications } from '../../app_shell/window_manager/app_scanner';
 import { SystemSettingsTabs } from './components/SystemSettingsTabs';
 import { useAssistantIdentity } from '../../shared/identity/IdentityContext';
+import { View as OptionsView } from '../options/View';
 
 export function View() {
   const { openApp, activeTab } = useOSApp();
@@ -18,15 +19,16 @@ export function View() {
   const appI18n = useScopedI18n('apps/applications');
   const assistant = useAssistantIdentity();
 
-  const [viewMode, setViewMode] = useState<'apps' | 'services' | 'settings'>(() => {
+  const [viewMode, setViewMode] = useState<'apps' | 'options' | 'services' | 'settings'>(() => {
     if (activeTab === 'settings') return 'settings';
     if (activeTab === 'services') return 'services';
+    if (activeTab === 'options') return 'options';
     return 'apps';
   });
 
   const { data, error, loading, reload } = useResource<FeaturesOverview>(overviewUrl(lang), 15000);
 
-  const registeredApps = useMemo(() => getRegisteredApplications(), []);
+  const registeredApps = useMemo(() => getRegisteredApplications(true), []);
 
   const findApp = (id: string) =>
     appRegistry.find((app) => (app.id === id || app.featureIds?.includes(id)) && app.target !== 'node');
@@ -36,14 +38,19 @@ export function View() {
   const isExcludedFromHub = (id: string) => isApplication({ id }) || id === 'applications';
 
   const appCategories: Record<string, string> = {
-    media: appI18n.t('category_media'),
-    creativity: appI18n.t('category_creativity'),
-    productivity: appI18n.t('category_productivity'),
-    intelligence: appI18n.t('category_intelligence'),
-    security: appI18n.t('category_security'),
-    development: appI18n.t('category_development'),
-    spaces: appI18n.t('category_spaces'),
-    system: appI18n.t('category_system'),
+    media: appI18n.t('category_media') || 'Multimedia & Audio',
+    creativity: appI18n.t('category_creativity') || 'Creatività & 3D',
+    productivity: appI18n.t('category_productivity') || 'Produttività',
+    intelligence: appI18n.t('category_intelligence') || 'Intelligenza Artificiale',
+    security: appI18n.t('category_security') || 'Sicurezza & Privacy',
+    development: appI18n.t('category_development') || 'Sviluppo & Strumenti',
+    spaces: appI18n.t('category_spaces') || 'Spazi & Ambienti',
+    system: appI18n.t('category_system') || 'Sistema & Rete',
+    games: 'Giochi',
+    giochi: 'Giochi',
+    videosorveglianza: 'Videosorveglianza & NVR',
+    surveillance: 'Videosorveglianza & NVR',
+    tools: 'Strumenti',
   };
 
   const getAppTitle = (app: (typeof registeredApps)[number]) =>
@@ -57,7 +64,7 @@ export function View() {
       id: app.id,
       label: getAppTitle(app),
       description: getAppDesc(app),
-      category: app.category || 'system',
+      category: app.category || (isSubapp(app) ? app.parent || 'system' : 'system'),
       icon: app.iconUrl,
       symbol: (app as unknown as Record<string, unknown>).icon as string | undefined,
       active: true,
@@ -91,6 +98,7 @@ export function View() {
         <div role="tablist" aria-label={t('title')} className="flex items-center gap-1 rounded-full bg-surface-container-high p-1">
           {([
             ['apps', Grid, t('tab_apps')],
+            ['options', ToggleRight, t('tab_options')],
             ['services', Layers, t('tab_services')],
             ['settings', Sliders, t('tab_settings')],
           ] as const).map(([mode, Icon, label]) => (
@@ -100,7 +108,7 @@ export function View() {
               role="tab"
               aria-selected={viewMode === mode}
               onClick={() => setViewMode(mode)}
-              className={`md-state flex items-center gap-2 rounded-full border-0 px-4 py-1.5 text-xs font-semibold ${
+              className={`md-state flex items-center gap-2 rounded-full border-0 px-3.5 py-1.5 text-xs font-semibold ${
                 viewMode === mode ? 'bg-primary text-on-primary shadow-[var(--md-elevation-1)]' : 'bg-transparent text-on-surface-variant'
               }`}
             >
@@ -125,6 +133,8 @@ export function View() {
       <div className="flex-1 overflow-y-auto">
         {viewMode === 'settings' ? (
           <SystemSettingsTabs t={t} lang={lang} onBack={() => setViewMode('apps')} />
+        ) : viewMode === 'options' ? (
+          <OptionsView />
         ) : viewMode === 'apps' ? (
           <ApplicationCatalog
             lang={lang}

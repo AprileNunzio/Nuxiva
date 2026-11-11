@@ -13,6 +13,24 @@
     "mode_ai": "Sfida il Sistema",
     "score_x": "Giocatore X",
     "score_o": "Giocatore O",
-    "score_tie": "Pareggi"
+    "score_tie": "Pareggi",
+    "voice": "Voce",
+    "listening": "Ascolto...",
+    "voice_mic_tooltip": "Gioca pronunciando le coordinate (es. al centro, alto sinistra)",
+    "difficulty": "Difficoltà",
+    "diff_easy": "Facile",
+    "diff_medium": "Medio",
+    "diff_hard": "Imbattibile",
+    "winner_speech": "Vittoria per {player}!",
+    "tie_speech": "La partita è terminata in pareggio!",
+    "ai_moved_speech": "Mossa effettuata sulla casella {pos}",
+    "save": "Salva",
+    "load": "Riprendi",
+    "save_game": "Salva stato partita",
+    "load_game": "Carica partita salvata",
+    "game_saved": "Partita salvata con successo",
+    "game_resumed": "Partita ripresa",
+    "saved_games_title": "Partite Salvate",
+    "no_saved_games": "Nessuna partita salvata al momento"
   }
 }

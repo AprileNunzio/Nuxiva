@@ -1,0 +1,16 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Ajedrez",
+    "turn_white": "Turno de las Blancas",
+    "turn_black": "Turno de las Negras",
+    "restart": "Nueva Partida",
+    "undo": "Deshacer Jugada",
+    "captured_white": "Capturadas por Blancas",
+    "captured_black": "Capturadas por Negras",
+    "check": "¡Jaque!",
+    "moves": "Jugadas realizadas: {count}"
+  }
+}

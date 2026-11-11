@@ -1,0 +1,19 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Cámaras",
+    "subtitle": "Transmisiones en vivo y configuración de cámaras",
+    "add": "Añadir Nueva Cámara",
+    "field_name": "Nombre Identificativo",
+    "field_url": "Dirección Streaming (RTSP / HTTP)",
+    "status_active": "En Línea",
+    "status_offline": "Desconectada",
+    "recording": "Grabación Activa",
+    "total": "Cámaras Totales: {count}",
+    "empty": "No hay cámaras configuradas.",
+    "save": "Añadir",
+    "delete": "Eliminar"
+  }
+}

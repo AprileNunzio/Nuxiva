@@ -1,0 +1,41 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Opciones del Sistema",
+    "subtitle": "Gestione todos los interruptores y capacidades globales en un solo lugar",
+    "search_placeholder": "Buscar opción (ej. canción, alarma, voz...)",
+    "all_categories": "Todas las categorías",
+    "cat_multimedia": "Multimedia y Audio",
+    "cat_security": "Seguridad y Alarma",
+    "cat_ai_voice": "IA y Voz",
+    "cat_display": "Pantalla y HUD",
+    "cat_privacy": "Privacidad y Sensores",
+    "active": "Activo",
+    "disabled": "Desactivado",
+    "no_options_found": "No se encontraron opciones para su búsqueda",
+    "opt_music_display_title": "Mostrar canción en reproducción en pantalla",
+    "opt_music_display_desc": "Muestra un widget o HUD con título, artista y portada cuando se escucha o reconoce una canción",
+    "opt_music_recognition_title": "Reconocimiento acústico de música",
+    "opt_music_recognition_desc": "Identifica automáticamente las canciones reproducidas en el entorno mediante huella acústica",
+    "opt_alarm_system_title": "Sistema de alarma perimetral",
+    "opt_alarm_system_desc": "Activa la monitorización de intrusión y los sensores de protección perimetral",
+    "opt_red_alert_title": "Protocolo de Alerta Roja",
+    "opt_red_alert_desc": "Bloquea accesos de inmediato y emite alertas de emergencia de alta prioridad",
+    "opt_camera_alerts_title": "Alertas de movimiento de cámaras",
+    "opt_camera_alerts_desc": "Envía notificaciones y graba videoclips cuando se detecta movimiento",
+    "opt_voice_listening_title": "Escucha continua de comandos de voz",
+    "opt_voice_listening_desc": "Habilita el micrófono activo continuo para responder a la palabra de activación de Nuxiva",
+    "opt_speech_feedback_title": "Respuesta por voz del asistente",
+    "opt_speech_feedback_desc": "Reproduce las respuestas del asistente con voz sintética",
+    "opt_mcp_tools_title": "Herramientas autónomas MCP",
+    "opt_mcp_tools_desc": "Permite que la inteligencia artificial ejecute acciones y herramientas de sistema mediante protocolo MCP",
+    "opt_kiosk_hud_title": "Widgets HUD en el escritorio",
+    "opt_kiosk_hud_desc": "Muestra indicadores de estado, clima y monitores directamente en el escritorio",
+    "opt_lyrics_overlay_title": "Letras sincronizadas en pantalla (Karaoke)",
+    "opt_lyrics_overlay_desc": "Muestra las letras de la canción sincronizadas en tiempo real en la pantalla",
+    "opt_vitals_tracking_title": "Detección de presencia y signos vitales",
+    "opt_vitals_tracking_desc": "Analiza la telemetría biométrica y sensores para detectar la presencia humana"
+  }
+}

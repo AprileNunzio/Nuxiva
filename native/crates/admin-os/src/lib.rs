@@ -7,6 +7,7 @@ pub mod memory;
 pub mod network;
 pub mod nodes;
 pub mod notification;
+pub mod options;
 pub mod peripherals;
 pub mod process;
 pub mod status;
@@ -27,6 +28,7 @@ pub use memory::{MemoryManager, MemorySample, MemoryState};
 pub use network::{AdapterKind, NetworkAdapter, NetworkManager};
 pub use nodes::{HardwareTarget, NodeInfo, NodeManager, NodeStatus, NodeTier, NodesSummary};
 pub use notification::{NotificationItem, NotificationLevel, NotificationManager};
+pub use options::{OptionCategory, SystemOption, SystemOptionsRegistry};
 pub use peripherals::{
     DeviceKind, PeripheralDevice, PeripheralsManager, PeripheralsSummary, StorePackageMeta,
 };

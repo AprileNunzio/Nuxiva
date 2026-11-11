@@ -1,0 +1,19 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Caméras",
+    "subtitle": "Flux vidéo en direct et configuration des caméras",
+    "add": "Ajouter une caméra",
+    "field_name": "Nom d'identification",
+    "field_url": "Adresse de streaming (RTSP / HTTP)",
+    "status_active": "En ligne",
+    "status_offline": "Déconnectée",
+    "recording": "Enregistrement actif",
+    "total": "Caméras totales : {count}",
+    "empty": "Aucune caméra configurée.",
+    "save": "Ajouter",
+    "delete": "Supprimer"
+  }
+}

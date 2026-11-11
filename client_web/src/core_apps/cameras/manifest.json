@@ -7,6 +7,7 @@
   "description": "Continuous recording, RTSP motion and AI",
   "scope": "core_apps/cameras",
   "target": "global",
+  "launcher": false,
   "window": {
     "defaultWidth": 65,
     "defaultHeight": 75,
