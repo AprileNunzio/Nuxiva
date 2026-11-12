@@ -11,6 +11,8 @@ PHRASE_BONUS = 14.0
 LEARNED_STEP = 2.0
 LEARNED_CAP = 4
 STEM = 5
+MAX_QUERY = 4096
+MAX_PHRASE = 512
 WEIGHTS = {"identity": 3.0, "noun": 4.0, "capability": 1.3, "tool": 1.6, "tool_text": 0.6, "description": 0.9, "keyword": 0.3}
 
 
@@ -19,7 +21,7 @@ def stem(token: str) -> str:
 
 
 def query_stems(text: str) -> dict[str, str]:
-    return {stem(t): t for t in clean_tokens(text) if t not in GENERIC}
+    return {stem(t): t for t in sorted(clean_tokens(text)) if t not in GENERIC}
 
 
 def _stems(text: str) -> set[str]:
@@ -62,6 +64,8 @@ def phrase_hits(agent, text: str) -> int:
     routing = getattr(agent, "routing", None) or {}
     hits = 0
     for pattern in routing.get("phrases", []):
+        if len(pattern) > MAX_PHRASE:
+            continue
         try:
             if re.search(pattern, text, re.I):
                 hits += 1
@@ -71,6 +75,7 @@ def phrase_hits(agent, text: str) -> int:
 
 
 def rank(agents: dict, text: str, learned: dict[str, dict[str, int]] | None = None) -> list[tuple[str, float, list[str]]]:
+    text = text[:MAX_QUERY]
     norm = normalize_text(text)
     wanted = query_stems(text)
     indexed = {aid: fields(a) for aid, a in agents.items()}

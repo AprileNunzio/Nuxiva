@@ -9,6 +9,7 @@ FILE = STATE_DIR / "team" / "learned.json"
 MAX_STEMS = 4000
 lock = threading.Lock()
 cache: dict | None = None
+version = 0
 
 
 def _load() -> dict[str, dict[str, int]]:
@@ -28,16 +29,19 @@ def table() -> dict[str, dict[str, int]]:
 
 
 def reset() -> None:
-    global cache
+    global cache, version
     with lock:
         cache = None
+        version += 1
 
 
 def record(text: str, agent_id: str) -> int:
+    global version
     stems = list(query_stems(text))
     if not stems or not agent_id:
         return 0
     with lock:
+        version += 1
         data = _load()
         for token in stems:
             row = data.setdefault(token, {})

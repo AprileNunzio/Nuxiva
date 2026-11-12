@@ -28,7 +28,7 @@ class ManifestValidationTest(unittest.TestCase):
     def test_complete_manifest_is_normalized(self):
         report = _manifest.validate(json.dumps(PARTICLES), "particles", "creativita")
         m = report["manifest"]
-        self.assertEqual(m["profile"], {"ram_mb": 2048, "vram_mb": 1024, "heavy": False})
+        self.assertEqual(m["profile"], {"ram_mb": 2048, "vram_mb": 1024, "heavy": False, "project": False})
         self.assertEqual(m["routing"]["nouns"], ["medusa", "ologramma"])
         self.assertEqual(report["issues"], [])
 

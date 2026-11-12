@@ -9,6 +9,7 @@ mod ask_core;
 mod audio;
 mod authz;
 mod bus;
+mod ceo;
 mod compute_lease;
 mod config;
 mod cortex;
@@ -210,6 +211,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(agents::agent_layout_inspect, m)?)?;
     m.add_function(wrap_pyfunction!(agents::agent_scaffold, m)?)?;
     m.add_function(wrap_pyfunction!(agents::agent_icon, m)?)?;
+    ceo::register(m)?;
     vitals::register(m)?;
     m.add_function(wrap_pyfunction!(gesture_validate_profile, m)?)?;
     m.add_function(wrap_pyfunction!(gesture_catalog, m)?)?;

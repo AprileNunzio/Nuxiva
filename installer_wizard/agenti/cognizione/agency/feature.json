@@ -70,5 +70,8 @@
     "url": "https://img.icons8.com/?size=240&id=hlnLMra14Qpa&format=png"
   },
   "connector": "commands.py",
-  "connector_risk": "home"
+  "connector_risk": "home",
+  "profile": {
+    "project": true
+  }
 }

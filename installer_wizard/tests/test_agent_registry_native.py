@@ -20,6 +20,8 @@ CORPUS = [
     '{"id":"ok_id","name":"x","profile":{"ram_mb":12.5,"vram_mb":2.5,"heavy":true}}',
     '{"id":"ok_id","name":"x","requires":{"ram_gb":0.5,"gpu_vram_gb":"2"}}',
     '{"id":"ok_id","name":"x","profile":{"heavy":1}}',
+    '{"id":"ok_id","name":"x","profile":{"project":true,"heavy":false}}',
+    '{"id":"ok_id","name":"x","profile":{"project":"si"}}',
     '{"id":"ok_id","name":"x","routing":{"nouns":["Medusa"],"verbs":null,"phrases":"no"}}',
     '{"id":"other","name":"x","category":"sport"}',
     '{"id":"ok_id","name":"x","category":"casa"}',

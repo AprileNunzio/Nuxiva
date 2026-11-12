@@ -108,30 +108,36 @@ def _megabytes(value, scale: float, field: str, issues: list) -> int:
     return min(int(f"{scaled:.0f}"), MAX_RAM_MB)
 
 
+def _flag(raw: dict, key: str, issues: list) -> bool:
+    value = raw.get(key)
+    if value is None:
+        return False
+    if not isinstance(value, bool):
+        issues.append(_issue(f"profile.{key}", "type_bool"))
+        return False
+    return value
+
+
 def _profile(obj: dict, issues: list) -> dict:
     raw = obj.get("profile")
     if raw is not None:
         if not isinstance(raw, dict):
             issues.append(_issue("profile", "type_object"))
-            return {"ram_mb": 0, "vram_mb": 0, "heavy": False}
-        heavy = raw.get("heavy")
-        if heavy is None:
-            heavy = False
-        elif not isinstance(heavy, bool):
-            issues.append(_issue("profile.heavy", "type_bool"))
-            heavy = False
+            return {"ram_mb": 0, "vram_mb": 0, "heavy": False, "project": False}
         return {
             "ram_mb": _megabytes(raw.get("ram_mb", _MISSING), 1.0, "profile.ram_mb", issues),
             "vram_mb": _megabytes(raw.get("vram_mb", _MISSING), 1.0, "profile.vram_mb", issues),
-            "heavy": heavy,
+            "heavy": _flag(raw, "heavy", issues),
+            "project": _flag(raw, "project", issues),
         }
     req = obj.get("requires")
     if not isinstance(req, dict):
-        return {"ram_mb": 0, "vram_mb": 0, "heavy": False}
+        return {"ram_mb": 0, "vram_mb": 0, "heavy": False, "project": False}
     return {
         "ram_mb": _megabytes(req.get("ram_gb", _MISSING), 1024.0, "requires.ram_gb", issues),
         "vram_mb": _megabytes(req.get("gpu_vram_gb", _MISSING), 1024.0, "requires.gpu_vram_gb", issues),
         "heavy": False,
+        "project": False,
     }
 
 

@@ -4,14 +4,13 @@ from dataclasses import dataclass, field
 from typing import Any
 from config import env_get
 
-from agenti.team import learning, reasoning, relevance
+from agenti.team import learning, reasoning, routing
 from agenti.team.board import board
 from agenti.team.outcomes import describe, execution_outcome
 from agenti.team.scanner import DiscoveredAgent, scanner
-from agenti.team.stopwords import clean_tokens, is_conversational_query, normalize_text
 from state import store
 
-MIN_SCORE_THRESHOLD = 5.0
+MIN_SCORE_THRESHOLD = routing.MIN_SCORE
 
 
 @dataclass
@@ -27,6 +26,7 @@ class CEODecision:
     target_node: str = "local"
     execution_tier: str = "balanced"
     node_reason: str = ""
+    level: str = "lampo"
     timestamp: float = field(default_factory=time.time)
 
 
@@ -59,42 +59,31 @@ class CEOExecutive:
         )
 
     @staticmethod
-    def _resolve_node_delegation(agent_id: str) -> tuple[str, str, str]:
-        heavy_agents = {
-            "neural_radiance",
-            "gaussian_splat",
-            "depth_parallax",
-            "models3d",
-            "vision",
-            "particles",
-        }
-        tier = "heavy" if agent_id in heavy_agents else "balanced"
+    def _resolve_node_delegation(agent_id: str, heavy: bool = False) -> tuple[str, str, str]:
+        tier = "heavy" if heavy else "balanced"
+        if not heavy:
+            return "local", tier, "Esecuzione locale ottimale"
         try:
             from agenti.nodes.registry import registry as nodes_reg
             nodes = [n for n in nodes_reg.listing() if n.get("online")]
-            if agent_id in heavy_agents:
-                for n in nodes:
-                    comp = n.get("compute", {})
-                    ollama = comp.get("ollama", {})
-                    if ollama.get("available") or n.get("type") in ("server", "desktop"):
-                        node_name = str(n.get("name") or n.get("id"))
-                        return (
-                            node_name,
-                            tier,
-                            f"Offloading calcolo «{agent_id}» su nodo «{node_name}» per ottimizzare consumi e memoria",
-                        )
-        except Exception:
-            pass
+        except (ImportError, OSError, RuntimeError, ValueError):
+            nodes = []
+        for n in nodes:
+            ollama = (n.get("compute") or {}).get("ollama") or {}
+            if ollama.get("available") or n.get("type") in ("server", "desktop"):
+                node_name = str(n.get("name") or n.get("id"))
+                return (
+                    node_name,
+                    tier,
+                    f"Offloading calcolo «{agent_id}» su nodo «{node_name}» per ottimizzare consumi e memoria",
+                )
         return "local", tier, "Esecuzione locale ottimale"
 
     def analyze_request(self, text: str, context: dict | None = None) -> CEODecision:
         agents = self.scan_team()
-        query_norm = normalize_text(text)
-        query_tokens = clean_tokens(text)
+        routed = routing.router.decide(agents, text, learning.table(), learning.version)
 
-        # 1. FAST-PATH: se la richiesta è una conversazione generica, convenevoli o saluti,
-        # non deve MAI essere instradata a widget o agenti verticali (es. Lavagna, Allarme, ecc.)
-        if is_conversational_query(query_norm) or not query_tokens:
+        if routed["conversational"]:
             conv_agent = self._get_conversation_agent(agents)
             plan = (
                 f"Il CEO rileva interazione conversazionale e affida la risposta "
@@ -110,21 +99,15 @@ class CEOExecutive:
                 target_node="local",
                 execution_tier="light",
                 node_reason="Conversazione naturale su host locale",
+                level=routed["level"],
             )
 
-        ranked = relevance.rank(agents, text, learning.table())
-        top_id, top_score, reasons = ranked[0] if ranked else ("", 0.0, [])
-        runner_score = ranked[1][1] if len(ranked) > 1 else 0.0
-        primary: DiscoveredAgent
-        secondaries: list[DiscoveredAgent] = []
-
-        if top_id and top_score >= MIN_SCORE_THRESHOLD:
+        ranked = routed["ranked"]
+        top_id = routed["primary"]
+        secondaries = [agents[a] for a in routed["secondaries"] if a in agents]
+        if top_id in agents:
             primary = agents[top_id]
-            for aid, sc, _ in ranked[1:4]:
-                if sc >= top_score * 0.55 and sc >= MIN_SCORE_THRESHOLD:
-                    secondaries.append(agents[aid])
-            margin = (top_score - runner_score) / max(top_score, 1.0)
-            confidence = round(min(1.0, 0.55 + min(top_score, 30.0) / 30.0 * 0.25 + margin * 0.2), 3)
+            reasons = ranked[0][2] if ranked else []
             plan = (
                 f"Il CEO assegna l'incarico specialistico a «{primary.name}» [{primary.id}] "
                 f"({len(primary.tools)} strumenti, {len(primary.widgets)} widget; indizi: {', '.join(reasons[:4])})."
@@ -133,13 +116,13 @@ class CEOExecutive:
                 plan += f" Supporto assegnato a: {', '.join(s.name for s in secondaries)}."
         else:
             primary = self._get_conversation_agent(agents)
-            confidence = 0.5
+            secondaries = []
             plan = (
                 f"Il CEO mantiene l'interazione sull'Assistente Generale «{primary.name}» "
                 f"(nessun comando verticale esclusivo rilevato con alta confidenza)."
             )
 
-        target_node, exec_tier, node_reason = self._resolve_node_delegation(primary.id)
+        target_node, exec_tier, node_reason = self._resolve_node_delegation(primary.id, routed["heavy"])
         if target_node != "local":
             plan += f" [Delega calcolo: {node_reason}]."
 
@@ -147,12 +130,13 @@ class CEOExecutive:
             primary_agent=primary,
             secondary_agents=secondaries,
             delegation_plan=plan,
-            confidence=confidence,
+            confidence=routed["confidence"],
             query=text,
             ranked=ranked,
             target_node=target_node,
             execution_tier=exec_tier,
             node_reason=node_reason,
+            level=routed["level"],
         )
 
     @staticmethod
@@ -191,7 +175,7 @@ class CEOExecutive:
         plan = f"Il CEO ha ragionato sulla richiesta e assegna «{chosen.name}» [{chosen.id}]: {verdict['reason']}"
         if helpers:
             plan += f" Supporto: {', '.join(h.name for h in helpers)}."
-        target_node, exec_tier, node_reason = self._resolve_node_delegation(chosen.id)
+        target_node, exec_tier, node_reason = self._resolve_node_delegation(chosen.id, chosen.heavy)
         if target_node != "local":
             plan += f" [Delega calcolo: {node_reason}]."
         return CEODecision(
@@ -206,6 +190,7 @@ class CEOExecutive:
             target_node=target_node,
             execution_tier=exec_tier,
             node_reason=node_reason,
+            level=decision.level,
         )
 
     def on_conversation_start(self, text: str, context: dict | None = None) -> CEODecision:

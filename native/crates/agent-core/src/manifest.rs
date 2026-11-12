@@ -85,6 +85,7 @@ pub struct Profile {
     pub ram_mb: u64,
     pub vram_mb: u64,
     pub heavy: bool,
+    pub project: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -234,24 +235,28 @@ fn megabytes(value: Option<&Value>, scale: f64, field: &str, issues: &mut Vec<Is
         .min(MAX_RAM_MB)
 }
 
+fn flag(p: &Map<String, Value>, key: &str, field: &str, issues: &mut Vec<Issue>) -> bool {
+    match p.get(key) {
+        None | Some(Value::Null) => false,
+        Some(Value::Bool(b)) => *b,
+        Some(_) => {
+            issues.push(Issue::error(field, "type_bool"));
+            false
+        }
+    }
+}
+
 fn profile(obj: &Map<String, Value>, issues: &mut Vec<Issue>) -> Profile {
     if let Some(raw) = obj.get("profile").filter(|v| !v.is_null()) {
         let Some(p) = raw.as_object() else {
             issues.push(Issue::error("profile", "type_object"));
             return Profile::default();
         };
-        let heavy = match p.get("heavy") {
-            None | Some(Value::Null) => false,
-            Some(Value::Bool(b)) => *b,
-            Some(_) => {
-                issues.push(Issue::error("profile.heavy", "type_bool"));
-                false
-            }
-        };
         return Profile {
             ram_mb: megabytes(p.get("ram_mb"), 1.0, "profile.ram_mb", issues),
             vram_mb: megabytes(p.get("vram_mb"), 1.0, "profile.vram_mb", issues),
-            heavy,
+            heavy: flag(p, "heavy", "profile.heavy", issues),
+            project: flag(p, "project", "profile.project", issues),
         };
     }
     let Some(req) = obj.get("requires").and_then(Value::as_object) else {
@@ -266,6 +271,7 @@ fn profile(obj: &Map<String, Value>, issues: &mut Vec<Issue>) -> Profile {
             issues,
         ),
         heavy: false,
+        project: false,
     }
 }
 

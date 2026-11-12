@@ -18,5 +18,8 @@
     "env": "NUXIVA_DEVSTUDIO",
     "apply": []
   },
-  "icon3d": "./icon.png"
+  "icon3d": "./icon.png",
+  "profile": {
+    "project": true
+  }
 }

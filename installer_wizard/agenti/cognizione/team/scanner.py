@@ -28,7 +28,12 @@ class DiscoveredAgent:
     widgets: list[dict] = field(default_factory=list)
     keywords: set[str] = field(default_factory=set)
     routing: dict = field(default_factory=dict)
+    profile: dict = field(default_factory=dict)
     mtime: float = 0.0
+
+    @property
+    def heavy(self) -> bool:
+        return self.profile.get("heavy") is True
 
     def brief(self) -> str:
         tools_count = len(self.tools)
@@ -134,6 +139,7 @@ class AgentScanner:
                 source=source,
                 dir_path=str(folder),
                 routing=self._routing(data.get("routing")),
+                profile=self._profile(data.get("profile")),
                 mtime=mtime
             )
             discovered_agents[agent_id] = agent
@@ -170,6 +176,12 @@ class AgentScanner:
             self._build_semantic_index(agent)
 
         return self.agents
+
+    @staticmethod
+    def _profile(raw) -> dict:
+        if not isinstance(raw, dict):
+            return {}
+        return {key: raw[key] is True for key in ("heavy", "project") if key in raw}
 
     @staticmethod
     def _routing(raw) -> dict:

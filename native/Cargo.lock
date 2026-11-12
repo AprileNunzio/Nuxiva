@@ -883,6 +883,7 @@ dependencies = [
 name = "nuxiva-agent-core"
 version = "5.8.0"
 dependencies = [
+ "regex",
  "serde",
  "serde_json",
 ]
