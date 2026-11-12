@@ -4,6 +4,7 @@ import re
 import sys
 import time
 
+from agenti._registry import CATEGORIES, SYSTEM_DIR as AGENTS_DIR
 from config import FEATURES_DIR
 from state import store
 
@@ -13,35 +14,48 @@ log = logging.getLogger("nuxiva.tools")
 FEATURE_ID = re.compile(r"^[a-z][a-z0-9_]*$")
 CORE = "agent"
 PACKAGE = "features"
+AGENT_PACKAGE = "agenti"
 CHECK_EVERY = 3.0
 
+_paths: dict[str, object] = {}
 _loaded: dict[str, str] = {}
 _failed: dict[str, str] = {}
 _signature = ""
 _checked = 0.0
 
 
+def _bases() -> list[tuple[object, str]]:
+    bases = [(FEATURES_DIR, PACKAGE)]
+    bases += [(AGENTS_DIR / name, AGENT_PACKAGE) for name in CATEGORIES]
+    return bases
+
+
 def candidates() -> dict[str, str]:
     found: dict[str, str] = {}
-    if not FEATURES_DIR.is_dir():
-        return found
-    for folder in sorted(FEATURES_DIR.iterdir()):
-        if not folder.is_dir() or not FEATURE_ID.fullmatch(folder.name):
+    _paths.clear()
+    for base, package in _bases():
+        if not base.is_dir():
             continue
-        if folder.name == CORE:
-            found.update({f"{PACKAGE}.{CORE}.{path.stem}": CORE for path in sorted(folder.glob("tools_*.py"))})
-        elif (folder / "feature.json").is_file() and (folder / "tools.py").is_file():
-            found[f"{PACKAGE}.{folder.name}.tools"] = folder.name
+        for folder in sorted(base.iterdir()):
+            if not folder.is_dir() or folder.is_symlink() or not FEATURE_ID.fullmatch(folder.name):
+                continue
+            if folder.name == CORE:
+                for path in sorted(folder.glob("tools_*.py")):
+                    found[f"{package}.{CORE}.{path.stem}"] = CORE
+                    _paths[f"{package}.{CORE}.{path.stem}"] = path
+            elif (folder / "feature.json").is_file() and (folder / "tools.py").is_file():
+                found[f"{package}.{folder.name}.tools"] = folder.name
+                _paths[f"{package}.{folder.name}.tools"] = folder / "tools.py"
     return found
 
 
 def _signature_of(modules: dict[str, str]) -> str:
     parts = []
     for name in sorted(modules):
-        path = FEATURES_DIR.joinpath(*name.split(".")[1:]).with_suffix(".py")
+        path = _paths.get(name)
         try:
             parts.append(f"{name}:{path.stat().st_mtime_ns}")
-        except OSError:
+        except (OSError, AttributeError):
             parts.append(f"{name}:gone")
     return "|".join(parts)
 

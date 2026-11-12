@@ -91,9 +91,24 @@ def _assets(folder: Path, ext: str) -> list[str]:
     return sorted(names, key=lambda n: (n != f"admin.{ext}", n))
 
 
+def _system_packages() -> list[Path]:
+    from agenti._registry import AgentRegistry, SYSTEM_DIR, root
+    scope = AgentRegistry(lambda: [root(SYSTEM_DIR, "system", "categorized"), root(FEATURES_DIR, "legacy", "flat")],
+                          native=False)
+    return scope.package_dirs()
+
+
+def _package(fid: str, user: bool = False) -> Path | None:
+    from agenti._registry import registry
+    found = registry.locate_package(fid)
+    if found is None or (not user and found.is_relative_to(STATE_DIR)):
+        return None
+    return found
+
+
 def admin_parts() -> dict[str, str]:
     parts = {"feature-styles": [], "feature-tabs": [], "feature-scripts": []}
-    for folder in sorted(p for p in FEATURES_DIR.iterdir() if p.is_dir()):
+    for folder in _system_packages():
         for css in _assets(folder, "css"):
             parts["feature-styles"].append(f'<link rel="stylesheet" href="/features/{folder.name}/{css}">')
         if (folder / "admin.html").exists():
@@ -192,27 +207,29 @@ async def vendor(name: str):
 
 @admin_routes.get("/features/{fid}/{name}")
 async def feature_asset(fid: str, name: str):
-    path = FEATURES_DIR / fid / name
     match = ADMIN_ASSET_RE.match(name)
-    if not match or not fid.isidentifier() or not path.is_file():
+    folder = _package(fid) if fid.isidentifier() else None
+    path = folder / name if folder is not None else None
+    if not match or path is None or not path.is_file():
         raise HTTPException(404, "Risorsa sconosciuta")
     return FileResponse(path, media_type=ADMIN_TYPES[match.group(2)], headers={"Cache-Control": "no-cache"})
 
 
 def _find_feature_lang(fid: str, lang: str) -> Path | None:
-    for base in (FEATURES_DIR, STATE_DIR / "features"):
-        p = base / fid / "language" / f"{lang}.json"
+    folder = _package(fid, user=True)
+    if folder is None:
+        return None
+    for name in (lang, "it"):
+        p = folder / "language" / f"{name}.json"
         if p.is_file():
             return p
-        fallback = base / fid / "language" / "it.json"
-        if fallback.is_file():
-            return fallback
     return None
 
 
 def _discover_all_languages() -> list[str]:
     langs = set()
-    for base in (FEATURES_DIR, STATE_DIR / "features"):
+    from agenti._registry import registry
+    for base in registry.bases():
         if base.exists():
             for p in base.rglob("*.json"):
                 if p.parent.name == "language":

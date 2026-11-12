@@ -11,6 +11,7 @@ from pathlib import Path
 
 import psutil
 
+from agenti._registry import AgentRegistry, SYSTEM_DIR as AGENTS_ROOT, root
 from config import FEATURES_DIR, EDITABLE_KEYS, STATE_DIR, is_secret, read_env, write_env
 from state import store
 
@@ -18,6 +19,8 @@ log = logging.getLogger("nuxiva.features")
 
 SYSTEM_DIR = FEATURES_DIR
 USER_DIR = STATE_DIR / "features"
+AGENTS_DIR = AGENTS_ROOT
+USER_AGENTS_DIR = STATE_DIR / "agenti"
 STATE_FILE = STATE_DIR / "features.json"
 SCAN_EVERY = 20
 MODES = ("auto", "1", "0")
@@ -40,8 +43,18 @@ def _alphabetical(name: str) -> str:
     return unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode().casefold().strip()
 
 
+def _agent_roots() -> list[dict]:
+    return [root(AGENTS_DIR, "system", "categorized"), root(SYSTEM_DIR, "legacy", "flat"),
+            root(USER_AGENTS_DIR, "user", "categorized"), root(USER_DIR, "user", "flat")]
+
+
+def _is_system(path: Path) -> bool:
+    return path.is_relative_to(SYSTEM_DIR) or path.is_relative_to(AGENTS_DIR)
+
+
 class Registry:
     def __init__(self) -> None:
+        self.agents = AgentRegistry(_agent_roots)
         self.features: dict[str, dict] = {}
         self.errors: list[dict] = []
         self.signature = ""
@@ -72,7 +85,7 @@ class Registry:
     def scan(self) -> bool:
         from backend.app_scanner import APPS_DIR, is_application
         apps_paths = glob.glob(str(APPS_DIR / "*" / "feature.json")) if APPS_DIR.exists() else []
-        paths = sorted(apps_paths + glob.glob(str(SYSTEM_DIR / "*" / "feature.json")) + glob.glob(str(USER_DIR / "*" / "feature.json")))
+        paths = sorted(apps_paths + [str(p) for p in self.agents.manifest_paths()])
         sig = "|".join(f"{p}:{os.path.getmtime(p)}" for p in paths if os.path.exists(p))
         if sig == self.signature:
             return False
@@ -80,7 +93,7 @@ class Registry:
         self.signature = sig
         found, errors = {}, []
         for p in paths:
-            source = "system" if Path(p).is_relative_to(SYSTEM_DIR) or (APPS_DIR.exists() and Path(p).is_relative_to(APPS_DIR)) else "user"
+            source = "system" if _is_system(Path(p)) or (APPS_DIR.exists() and Path(p).is_relative_to(APPS_DIR)) else "user"
             try:
                 manifest = self._validate(json.loads(Path(p).read_text(encoding="utf-8")), Path(p).parent.name)
             except (OSError, ValueError, TypeError) as exc:

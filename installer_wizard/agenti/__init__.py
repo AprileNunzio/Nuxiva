@@ -1,48 +1,44 @@
 import importlib
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-FEATURES_DIR = BASE_DIR / "features"
+_ROOT = Path(__file__).resolve().parent
+__path__ = [str(_ROOT)]
+
+from agenti import _loader, _manifest
+
+_CATEGORIES = _manifest.CATEGORIES
+__path__.extend(str(_ROOT / name) for name in _CATEGORIES)
+_loader.install()
 
 
-class _AgentNamespace:
-    def __init__(self, category: str = "") -> None:
-        self._category = category
+class _CategoryView:
+    def __init__(self, name: str) -> None:
+        self._name = name
 
-    def __getattr__(self, name: str):
-        flat_mod = f"features.{name}"
-        try:
-            return importlib.import_module(flat_mod)
-        except ImportError:
-            pass
-        if self._category:
-            cat_mod = f"features.{self._category}.{name}"
-            try:
-                return importlib.import_module(cat_mod)
-            except ImportError:
-                pass
-        raise AttributeError(f"Agente non trovato: {name}")
+    def __repr__(self) -> str:
+        return f"<categoria di agenti {self._name}>"
 
+    def __dir__(self) -> list[str]:
+        from agenti._registry import registry
+        return sorted(registry.by_category().get(self._name, []))
 
-creativita = _AgentNamespace("creativita")
-sicurezza = _AgentNamespace("sicurezza")
-percezione = _AgentNamespace("percezione")
-cognizione = _AgentNamespace("cognizione")
-domotica = _AgentNamespace("domotica")
-infrastruttura = _AgentNamespace("infrastruttura")
-multimedia = _AgentNamespace("multimedia")
+    def __getattr__(self, ident: str):
+        from agenti._registry import registry
+        agent = registry.get(ident) if _manifest.valid_id(ident) else None
+        if agent is None or agent.category != self._name:
+            raise AttributeError(f"Nessun agente «{ident}» nella categoria «{self._name}»")
+        return importlib.import_module(f"agenti.{ident}")
 
 
 def __getattr__(name: str):
-    categories = {
-        "creativita": creativita,
-        "sicurezza": sicurezza,
-        "percezione": percezione,
-        "cognizione": cognizione,
-        "domotica": domotica,
-        "infrastruttura": infrastruttura,
-        "multimedia": multimedia,
-    }
-    if name in categories:
-        return categories[name]
-    return getattr(_AgentNamespace(), name)
+    if name == "registry":
+        from agenti._registry import registry
+        return registry
+    if name in _CATEGORIES:
+        return _CategoryView(name)
+    if _manifest.valid_id(name):
+        try:
+            return importlib.import_module(f"agenti.{name}")
+        except ModuleNotFoundError as exc:
+            raise AttributeError(f"Agente non trovato: {name}") from exc
+    raise AttributeError(name)

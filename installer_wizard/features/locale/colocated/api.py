@@ -1,5 +1,7 @@
 import hashlib
 import json
+from collections.abc import Mapping
+from pathlib import Path
 
 from fastapi import APIRouter, Query, Request, Response
 
@@ -13,12 +15,32 @@ ROUTE = "/api/i18n/bundle"
 FALLBACK_LOCALES = ("en", "it")
 ALLOWED_LANGUAGES = frozenset(UI_LANGUAGES)
 
-roots = ScopeRoots({
-    "features": (FEATURES_DIR, STATE_DIR / "features"),
+class _LiveRoots(Mapping):
+    def __init__(self, static: dict[str, tuple[Path, ...]]) -> None:
+        self._static = static
+
+    def _agent_bases(self) -> tuple[Path, ...]:
+        from agenti._registry import registry
+        bases = registry.bases()
+        return tuple(bases) if bases else (FEATURES_DIR, STATE_DIR / "features")
+
+    def __getitem__(self, key: str) -> tuple[Path, ...]:
+        if key == "features":
+            return self._agent_bases()
+        return self._static[key]
+
+    def __iter__(self):
+        return iter(("features", *self._static))
+
+    def __len__(self) -> int:
+        return len(self._static) + 1
+
+
+roots = ScopeRoots(_LiveRoots({
     "web": (WEB_DIR,),
     "skills": (SKILLS_DIR,),
     "widgets": (WIDGETS_DIR,),
-})
+}))
 resolver = BundleResolver(roots, LanguageFileRepository(), FALLBACK_LOCALES)
 
 

@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from config import FEATURES_DIR, STATE_DIR, WIDGETS_DIR
+from agenti._registry import module_for, owner_of
 from features.team.stopwords import clean_tokens
 
 log = logging.getLogger("nuxiva.team.scanner")
@@ -65,6 +66,11 @@ WIDGET_AGENT_DEFAULTS: dict[str, tuple[str, list[str]]] = {
 }
 
 
+def _system_path(path: Path) -> bool:
+    from agenti._registry import SYSTEM_DIR
+    return path.is_relative_to(FEATURES_DIR) or path.is_relative_to(SYSTEM_DIR)
+
+
 class AgentScanner:
     """
     Scanner dinamico che analizza in tempo reale le directory degli agenti,
@@ -95,16 +101,8 @@ class AgentScanner:
 
     def scan(self, force: bool = False) -> dict[str, DiscoveredAgent]:
         self._ensure_dirs()
-        agenti_dir = FEATURES_DIR.parent / "agenti"
-        raw_feat_paths = (
-            glob.glob(str(FEATURES_DIR / "*" / "feature.json")) +
-            glob.glob(str(FEATURES_DIR / "*" / "*" / "feature.json")) +
-            glob.glob(str(agenti_dir / "*" / "feature.json")) +
-            glob.glob(str(agenti_dir / "*" / "*" / "feature.json")) +
-            glob.glob(str(USER_FEATURES_DIR / "*" / "feature.json")) +
-            glob.glob(str(USER_FEATURES_DIR / "*" / "*" / "feature.json"))
-        )
-        feat_paths = sorted(set(raw_feat_paths))
+        from agenti._registry import registry as agent_registry
+        feat_paths = [str(p) for p in agent_registry.manifest_paths()]
         widget_paths = sorted(
             glob.glob(str(WIDGETS_DIR / "*" / "widget.json")) +
             glob.glob(str(USER_WIDGETS_DIR / "*" / "widget.json"))
@@ -125,28 +123,18 @@ class AgentScanner:
             path_obj = Path(p)
             folder = path_obj.parent
             agent_id = folder.name
-            data = None
             try:
-                from features.stage import native
-                if native.lib is not None and hasattr(native.lib, "agent_catalog_index_manifest"):
-                    raw_text = path_obj.read_text(encoding="utf-8")
-                    indexed_json = native.lib.agent_catalog_index_manifest(raw_text, str(folder))
-                    data = json.loads(indexed_json)
-            except Exception:
-                pass
-            if data is None:
-                try:
-                    data = json.loads(path_obj.read_text(encoding="utf-8"))
-                except (OSError, ValueError, TypeError) as exc:
-                    log.warning("Impossibile leggere manifest agente %s: %s", p, exc)
-                    continue
+                data = json.loads(path_obj.read_text(encoding="utf-8"))
+            except (OSError, ValueError, TypeError) as exc:
+                log.warning("Impossibile leggere manifest agente %s: %s", p, exc)
+                continue
 
             agent_id = str(data.get("id") or agent_id).strip()
             name = str(data.get("name") or agent_id).strip()
             desc = str(data.get("description") or "").strip()
             caps = [str(c).strip() for c in data.get("capabilities", []) if c]
             cat = str(data.get("category") or "altro").strip()
-            source = "system" if path_obj.is_relative_to(FEATURES_DIR) else str(data.get("source") or "user")
+            source = "system" if _system_path(path_obj) else str(data.get("source") or "user")
 
             mtime = 0.0
             try:
@@ -255,7 +243,7 @@ class AgentScanner:
             # tools.py
             tools_file = folder / "tools.py"
             if tools_file.exists():
-                mod_name = f"features.{folder.name}.tools"
+                mod_name = f"{module_for(folder)}.tools"
                 try:
                     importlib.import_module(mod_name)
                 except Exception:
@@ -268,7 +256,7 @@ class AgentScanner:
                         pass
             tools_dir = folder / "tools"
             if tools_dir.is_dir():
-                mod_pkg = f"features.{folder.name}.tools"
+                mod_pkg = f"{module_for(folder)}.tools"
                 try:
                     importlib.import_module(mod_pkg)
                 except Exception:
@@ -281,7 +269,7 @@ class AgentScanner:
                             pass
             # tools_*.py
             for tf in folder.glob("tools_*.py"):
-                mod_name = f"features.{folder.name}.{tf.stem}"
+                mod_name = f"{module_for(folder)}.{tf.stem}"
                 try:
                     importlib.import_module(mod_name)
                 except Exception:
@@ -300,10 +288,8 @@ class AgentScanner:
                 fn = tmeta.get("fn")
                 mod = getattr(fn, "__module__", "") if fn else ""
                 owner_id = priority.MODULE_OWNER.get(mod, "")
-                if not owner_id and mod.startswith("features."):
-                    parts = mod.split(".")
-                    if len(parts) > 1 and parts[1] in self.agents:
-                        owner_id = parts[1]
+                if not owner_id and owner_of(mod) in self.agents:
+                    owner_id = owner_of(mod)
 
             if not owner_id or owner_id not in self.agents:
                 owner_id = "agent" if "agent" in self.agents else ""

@@ -880,6 +880,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-agent-core"
+version = "5.8.0"
+dependencies = [
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "nuxiva-ask-core"
 version = "5.8.0"
 dependencies = [
@@ -1118,6 +1126,7 @@ dependencies = [
  "agency-thought",
  "nuxiva-access-core",
  "nuxiva-admin-os",
+ "nuxiva-agent-core",
  "nuxiva-ask-core",
  "nuxiva-audio-dsp",
  "nuxiva-authz-core",

@@ -1,39 +1,44 @@
 import importlib
-import json
 import logging
-import re
 from pathlib import Path
 
 logger = logging.getLogger("nuxiva.feature_api_scanner")
 
 
+def _system_agents(root_dir: Path | None):
+    from agenti._registry import AgentRegistry, SYSTEM_DIR, root
+    legacy = root_dir or Path(__file__).resolve().parents[1] / "features"
+    roots = [root(legacy, "legacy", "flat")] if root_dir else [root(SYSTEM_DIR, "system", "categorized"), root(legacy, "legacy", "flat")]
+    return AgentRegistry(lambda: roots).agents()
+
+
+def _raw(agent) -> dict:
+    import json
+    return json.loads(agent.manifest_path.read_text(encoding="utf-8"))
+
+
 def discover_feature_apis(root: Path | None = None):
-    directory = root or Path(__file__).resolve().parents[1] / "features"
     modules = []
-    for manifest in sorted(directory.glob("*/feature.json")):
+    for agent in _system_agents(root):
         try:
-            data = json.loads(manifest.read_text(encoding="utf-8"))
-            folder = manifest.parent.name
-            if data.get("api") != "api.py" or not re.fullmatch(r"[a-z][a-z0-9_]*", folder):
+            if _raw(agent).get("api") != "api.py" or not agent.module:
                 continue
-            modules.append(importlib.import_module(f"features.{folder}.api"))
+            modules.append(importlib.import_module(f"{agent.module}.api"))
         except (OSError, ValueError, ImportError) as exc:
-            logger.warning("Feature API unavailable: %s (%s)", manifest.parent.name, type(exc).__name__)
+            logger.warning("Feature API unavailable: %s (%s)", agent.id, type(exc).__name__)
     return modules
 
 
 def discover_feature_connectors(root: Path | None = None):
     from features.authz.risk import CONNECTORS, Risk, parse
-    directory = root or Path(__file__).resolve().parents[1] / "features"
     connectors = {}
-    for manifest in sorted(directory.glob("*/feature.json")):
+    for agent in _system_agents(root):
         try:
-            data = json.loads(manifest.read_text(encoding="utf-8"))
-            folder = manifest.parent.name
-            if data.get("connector") == "commands.py" and re.fullmatch(r"[a-z][a-z0-9_]*", folder):
-                risk = parse(data.get("connector_risk"))
-                CONNECTORS[folder] = risk if risk is not None else Risk.CRITICAL
-                connectors[folder] = f"features.{folder}.commands"
+            data = _raw(agent)
         except (OSError, ValueError):
             continue
+        if data.get("connector") == "commands.py" and agent.module:
+            risk = parse(data.get("connector_risk"))
+            CONNECTORS[agent.id] = risk if risk is not None else Risk.CRITICAL
+            connectors[agent.id] = f"{agent.module}.commands"
     return connectors

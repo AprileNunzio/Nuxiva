@@ -31,6 +31,11 @@ def is_feature(manifest: dict, path: str | Path | None = None) -> bool:
     return not is_application(manifest, path)
 
 
+def _system_agents():
+    from agenti._registry import AgentRegistry, SYSTEM_DIR, root
+    return AgentRegistry(lambda: [root(SYSTEM_DIR, "system", "categorized"), root(FEATURES_DIR, "legacy", "flat")])
+
+
 def scan_catalog() -> dict[str, list[dict]]:
     """Scansiona tutte le applicazioni e le funzionalità del sistema."""
     apps, features = [], []
@@ -38,8 +43,7 @@ def scan_catalog() -> dict[str, list[dict]]:
     if APPS_DIR.exists():
         search_paths.extend(glob.glob(str(APPS_DIR / "*" / "feature.json")))
         search_paths.extend(glob.glob(str(APPS_DIR / "*" / "manifest.json")))
-    if FEATURES_DIR.exists():
-        search_paths.extend(glob.glob(str(FEATURES_DIR / "*" / "feature.json")))
+    search_paths.extend(str(p) for p in _system_agents().manifest_paths())
 
     seen_ids = set()
     for p in sorted(search_paths):

@@ -1,6 +1,5 @@
 #![forbid(unsafe_code)]
 
-pub mod agent_catalog;
 pub mod cache;
 pub mod depth_parallax;
 pub mod diorama;
@@ -12,7 +11,6 @@ pub mod particles;
 pub mod visual_catalog;
 pub mod visual_router;
 
-pub use agent_catalog::{AgentDatabase, FastAgentManifest};
 pub use cache::BlobCache;
 pub use depth_parallax::{
     DepthParallaxAgentArtifact, DepthParallaxScene, DepthReliefVertex,
