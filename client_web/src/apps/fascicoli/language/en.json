@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Dossiers",
+    "description": "Read the Md dossier of every operation: request, plan, steps, check and outcome",
+    "list_title": "Recent operations",
+    "empty": "No dossier yet: they appear as soon as the CEO works on a request.",
+    "loading": "Loading…",
+    "unreachable": "Server unreachable",
+    "detail_title": "Dossier",
+    "level_lampo": "Lampo",
+    "level_standard": "Standard",
+    "level_progetto": "Project",
+    "level_unknown": "Unknown level",
+    "status_closed": "closed",
+    "status_open": "open",
+    "status_checked": "checked",
+    "integrity_ok": "Signed ledger intact: no file was edited.",
+    "integrity_broken": "Warning: the signed ledger reports anomalies.",
+    "ledger": "ledger",
+    "problem_edited": "file edited by hand",
+    "problem_missing": "missing file",
+    "problem_unlogged": "unlogged file",
+    "problem_chain_broken": "ledger chain broken",
+    "problem_should_be_pruned": "file that should have been removed",
+    "problem_unknown": "unknown anomaly",
+    "problem_unknown_entry": "unknown ledger entry",
+    "no_files": "No readable file in this dossier.",
+    "privacy_hint": "Passwords, keys and cards are masked before writing; answers from agents that touch personal data are sealed."
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Dossiers",
+    "description": "Lisez le dossier Md de chaque opération : demande, plan, étapes, vérification et résultat",
+    "list_title": "Opérations récentes",
+    "empty": "Aucun dossier pour l'instant : ils apparaissent dès que le CEO travaille sur une demande.",
+    "loading": "Chargement…",
+    "unreachable": "Serveur injoignable",
+    "detail_title": "Dossier",
+    "level_lampo": "Éclair",
+    "level_standard": "Standard",
+    "level_progetto": "Projet",
+    "level_unknown": "Niveau inconnu",
+    "status_closed": "clos",
+    "status_open": "ouvert",
+    "status_checked": "vérifié",
+    "integrity_ok": "Registre signé intact : aucun fichier n'a été modifié.",
+    "integrity_broken": "Attention : le registre signé signale des anomalies.",
+    "ledger": "registre",
+    "problem_edited": "fichier modifié à la main",
+    "problem_missing": "fichier manquant",
+    "problem_unlogged": "fichier non enregistré",
+    "problem_chain_broken": "chaîne du registre rompue",
+    "problem_should_be_pruned": "fichier qui aurait dû être supprimé",
+    "problem_unknown": "anomalie inconnue",
+    "problem_unknown_entry": "entrée de registre inconnue",
+    "no_files": "Aucun fichier lisible dans ce dossier.",
+    "privacy_hint": "Mots de passe, clés et cartes sont masqués avant l'écriture ; les réponses des agents qui touchent des données personnelles sont scellées."
+  }
+}

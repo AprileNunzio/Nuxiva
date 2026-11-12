@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Fascicoli",
+    "description": "Leggi i fascicoli Md di ogni operazione: richiesta, piano, passi, verifica ed esito",
+    "list_title": "Operazioni recenti",
+    "empty": "Nessun fascicolo ancora: compariranno appena il CEO lavora su una richiesta.",
+    "loading": "Caricamento…",
+    "unreachable": "Server non raggiungibile",
+    "detail_title": "Fascicolo",
+    "level_lampo": "Lampo",
+    "level_standard": "Standard",
+    "level_progetto": "Progetto",
+    "level_unknown": "Livello sconosciuto",
+    "status_closed": "chiuso",
+    "status_open": "aperto",
+    "status_checked": "verificato",
+    "integrity_ok": "Registro firmato integro: nessun file è stato modificato.",
+    "integrity_broken": "Attenzione: il registro firmato segnala anomalie.",
+    "ledger": "registro",
+    "problem_edited": "file modificato a mano",
+    "problem_missing": "file mancante",
+    "problem_unlogged": "file non registrato",
+    "problem_chain_broken": "catena del registro rotta",
+    "problem_should_be_pruned": "file che doveva essere rimosso",
+    "problem_unknown": "anomalia sconosciuta",
+    "problem_unknown_entry": "voce di registro sconosciuta",
+    "no_files": "Nessun file leggibile in questo fascicolo.",
+    "privacy_hint": "Password, chiavi e carte sono oscurate prima della scrittura; le risposte degli agenti che toccano dati personali sono sigillate."
+  }
+}

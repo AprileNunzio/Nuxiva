@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Expedientes",
+    "description": "Lee el expediente Md de cada operación: solicitud, plan, pasos, verificación y resultado",
+    "list_title": "Operaciones recientes",
+    "empty": "Aún no hay expedientes: aparecen en cuanto el CEO trabaja en una solicitud.",
+    "loading": "Cargando…",
+    "unreachable": "Servidor inaccesible",
+    "detail_title": "Expediente",
+    "level_lampo": "Rayo",
+    "level_standard": "Estándar",
+    "level_progetto": "Proyecto",
+    "level_unknown": "Nivel desconocido",
+    "status_closed": "cerrado",
+    "status_open": "abierto",
+    "status_checked": "verificado",
+    "integrity_ok": "Registro firmado íntegro: ningún archivo fue modificado.",
+    "integrity_broken": "Atención: el registro firmado señala anomalías.",
+    "ledger": "registro",
+    "problem_edited": "archivo modificado a mano",
+    "problem_missing": "archivo ausente",
+    "problem_unlogged": "archivo no registrado",
+    "problem_chain_broken": "cadena del registro rota",
+    "problem_should_be_pruned": "archivo que debía eliminarse",
+    "problem_unknown": "anomalía desconocida",
+    "problem_unknown_entry": "entrada de registro desconocida",
+    "no_files": "Ningún archivo legible en este expediente.",
+    "privacy_hint": "Las contraseñas, claves y tarjetas se ocultan antes de escribir; las respuestas de agentes que tocan datos personales se sellan."
+  }
+}
