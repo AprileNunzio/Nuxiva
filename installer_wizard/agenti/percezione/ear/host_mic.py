@@ -384,6 +384,7 @@ class HostMicCapture:
         try:
             await capture.start()
             self.conditioner.restart()
+            self.session.channels = capture
             while self.running and self.should_capture():
                 chunk = await capture.read()
                 if not chunk:
@@ -400,6 +401,8 @@ class HostMicCapture:
         except (OSError, RuntimeError, ValueError) as exc:
             log.warning("Errore nell'ascolto con più microfoni: %s", exc)
         finally:
+            if self.session is not None:
+                self.session.channels = None
             await capture.stop()
         return read_any
 

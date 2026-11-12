@@ -1,6 +1,7 @@
 use std::sync::Mutex;
 
 use nuxiva_ear_core::endpoint::{EndpointConfig, Endpointer};
+use nuxiva_ear_core::vote::{MAX_HYPOTHESES, vote};
 use nuxiva_ear_core::{MAX_ARRAY_FRAME, MAX_CHANNELS, MicArray};
 use pyo3::exceptions::{PyRuntimeError, PyValueError};
 use pyo3::prelude::*;
@@ -148,7 +149,20 @@ impl RustEndpointer {
     }
 }
 
+const MAX_TEXT: usize = 4_000;
+
+#[pyfunction]
+#[allow(clippy::needless_pass_by_value)]
+fn ear_vote(py: Python<'_>, hypotheses: Vec<(String, f32)>) -> PyResult<(String, f32, usize)> {
+    if hypotheses.len() > MAX_HYPOTHESES || hypotheses.iter().any(|(t, _)| t.len() > MAX_TEXT) {
+        return Err(PyValueError::new_err("ear.vote.too_large"));
+    }
+    let ballot = py.detach(|| vote(&hypotheses));
+    Ok((ballot.text, ballot.agreement, ballot.changed))
+}
+
 pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    m.add_function(wrap_pyfunction!(ear_vote, m)?)?;
     m.add_class::<RustMicArray>()?;
     m.add_class::<RustEndpointer>()?;
     Ok(())

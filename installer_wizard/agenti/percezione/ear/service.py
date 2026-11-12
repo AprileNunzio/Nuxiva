@@ -16,6 +16,7 @@ for noisy in ("websockets", "faster_whisper"):
 import earconf
 import enhance
 import capture
+import consensus
 import endpoint
 import feedback
 import stt
@@ -76,6 +77,7 @@ class Session:
         self.speech: list = []
         self.speech_start = 0.0
         self.endpoint = endpoint.make()
+        self.channels = None
         self.mode = "idle"
         self.listen_until = 0.0
         self.conversation = False
@@ -292,6 +294,7 @@ class Session:
                     if attentive:
                         await self.broadcast(type="state", state="transcribing", conversation=followup)
                     text, lang = await asyncio.to_thread(stt.transcribe, clean, False, True)
+                    text = await consensus.agree(self.channels, clean, text, lang)
                     if not attentive:
                         confirmed = learner.find_wake(text)
                         if confirmed is None or confirmed[0] >= 3 or stt.hallucination(text):

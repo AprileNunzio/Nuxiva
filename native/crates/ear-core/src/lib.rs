@@ -16,6 +16,7 @@ mod sound_frame;
 mod speaker;
 mod stft;
 mod voices;
+pub mod vote;
 pub mod wake;
 pub mod words;
 

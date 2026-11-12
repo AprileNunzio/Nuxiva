@@ -17,6 +17,7 @@ FRAME_BYTES = 960
 STALL_S = 0.6
 MAX_SKEW_BYTES = 16000 * 2 * 3 // 10
 MAX_BUFFER_BYTES = 16000 * 2 * 2
+RECENT_BYTES = 16000 * 2 * 16
 LIST_TIMEOUT = 4.0
 SOURCE_RE = re.compile(r"^[A-Za-z0-9_.:@+\-]{1,200}$")
 SKIP_RE = re.compile(r"\.monitor$|^auto_null|echo-cancel-source-monitor", re.I)
@@ -60,6 +61,7 @@ class _Feed:
     def __init__(self, name: str) -> None:
         self.name = name
         self.buf = bytearray()
+        self.recent = bytearray()
         self.last = time.monotonic()
         self.process: asyncio.subprocess.Process | None = None
         self.task: asyncio.Task | None = None
@@ -122,11 +124,20 @@ class ArrayCapture:
                     del feed.buf[:len(feed.buf) - MAX_SKEW_BYTES]
             else:
                 frames.append(bytes(FRAME_BYTES))
+            feed.recent.extend(frames[-1])
+            if len(feed.recent) > RECENT_BYTES:
+                del feed.recent[:len(feed.recent) - RECENT_BYTES]
         mixed = self.array.mix_pcm(frames)
         if self.array.best != self.announced:
             self.announced = self.array.best
             log.info("Microfono che sente meglio: %s (uniti %d)", self.feeds[self.array.best].name, self.array.fused)
         return mixed
+
+    def recent(self, samples: int) -> list[tuple[str, float, bytes]]:
+        size = max(0, min(int(samples) * 2, RECENT_BYTES))
+        scores = list(self.array.scores) or [0.0] * len(self.feeds)
+        return [(feed.name, float(scores[i]) if i < len(scores) else 0.0, bytes(feed.recent[-size:]) if size else b"")
+                for i, feed in enumerate(self.feeds)]
 
     async def read(self) -> bytes:
         while self.alive():
