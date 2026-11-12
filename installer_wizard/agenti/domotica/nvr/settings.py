@@ -14,7 +14,11 @@ DEFAULTS = {"enabled": False, "mqtt_host": "", "mqtt_port": 1883, "mqtt_topic": 
             "mqtt_tls": False, "retention_days": 30, "min_score": 0.6, "labels": list(LABELS[:4]) + ["dog", "cat", "package"],
             "notify_labels": ["person"], "storage_percent": 20, "storage_max_gb": 0, "record_mode": "hybrid",
             "ai_analysis": True, "ai_audio_transcription": True, "ptz_auto_tracking": True, "ptz_auto_patrol": False,
-            "ptz_patrol_interval_s": 60, "continuous_hours": 48}
+            "ptz_patrol_interval_s": 60, "continuous_hours": 48, "audio_cameras": [], "notice_enabled": False,
+            "notice_repeat_hours": 12, "private_rooms": []}
+CAMERA_RE = re.compile(r"^[A-Za-z0-9_-]{1,64}$")
+MAX_AUDIO_CAMERAS = 64
+MAX_PRIVATE_ROOMS = 50
 
 
 class SettingsError(ValueError):
@@ -72,11 +76,32 @@ def validate(body: dict, current: dict) -> dict:
     out["record_mode"] = mode if mode in ("continuous", "events", "hybrid") else "hybrid"
     for b_key in ("ai_analysis", "ai_audio_transcription", "ptz_auto_tracking", "ptz_auto_patrol"):
         out[b_key] = bool(body.get(b_key, current.get(b_key, DEFAULTS[b_key])))
+    privacy(body, current, out)
     for key in ("labels", "notify_labels"):
         values = body.get(key, current[key])
         if not isinstance(values, list):
             raise SettingsError("nvr.error.labels")
         out[key] = [v for v in LABELS if v in values]
+    return out
+
+
+def privacy(body: dict, current: dict, out: dict) -> dict:
+    cams = body.get("audio_cameras", current.get("audio_cameras", []))
+    rooms = body.get("private_rooms", current.get("private_rooms", []))
+    if not isinstance(cams, list) or not isinstance(rooms, list):
+        raise SettingsError("nvr.error.privacy")
+    if len(cams) > MAX_AUDIO_CAMERAS or any(not isinstance(c, str) or not CAMERA_RE.match(c) for c in cams):
+        raise SettingsError("nvr.error.audio_cameras")
+    clean_rooms = [" ".join(str(r).split())[:64] for r in rooms if isinstance(r, str) and str(r).strip()]
+    if len(clean_rooms) > MAX_PRIVATE_ROOMS:
+        raise SettingsError("nvr.error.private_rooms")
+    out["audio_cameras"] = sorted(set(cams))
+    out["private_rooms"] = sorted(set(clean_rooms))
+    out["notice_enabled"] = bool(body.get("notice_enabled", current.get("notice_enabled", False)))
+    try:
+        out["notice_repeat_hours"] = max(1, min(168, int(body.get("notice_repeat_hours", current.get("notice_repeat_hours", 12)))))
+    except (TypeError, ValueError):
+        raise SettingsError("nvr.error.number")
     return out
 
 

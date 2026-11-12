@@ -1,5 +1,5 @@
 use nuxiva_nvr_core::{
-    BlindIndex, ByteRange, DocMeta, Utterance, cluster_voices, fuse, parse_range,
+    BlindIndex, ByteRange, DocMeta, Utterance, audio_decision, cluster_voices, fuse, parse_range,
 };
 use nuxiva_nvr_core::{Catalog, Marker, NvrError, Policy, Segment, Tier, next_marker, plan, spans};
 use pyo3::exceptions::PyValueError;
@@ -231,6 +231,18 @@ fn nvr_cluster_voices(embeddings: Vec<Vec<f32>>, threshold: f32) -> PyResult<Vec
         .ok_or_else(|| PyValueError::new_err("nvr.voices.invalid"))
 }
 
+#[pyfunction]
+#[allow(clippy::needless_pass_by_value)]
+fn nvr_audio_decision(
+    room: &str,
+    opted_in: bool,
+    notice_active: bool,
+    extra: Vec<String>,
+) -> (bool, String, bool) {
+    let d = audio_decision(room, opted_in, notice_active, &extra);
+    (d.allowed, d.reason.to_owned(), d.private)
+}
+
 pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<RustNvrCatalog>()?;
     m.add_class::<RustNvrIndex>()?;
@@ -238,5 +250,6 @@ pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(nvr_parse_range, m)?)?;
     m.add_function(wrap_pyfunction!(nvr_fuse, m)?)?;
     m.add_function(wrap_pyfunction!(nvr_cluster_voices, m)?)?;
+    m.add_function(wrap_pyfunction!(nvr_audio_decision, m)?)?;
     Ok(())
 }

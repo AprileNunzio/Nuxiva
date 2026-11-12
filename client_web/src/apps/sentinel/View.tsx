@@ -5,6 +5,7 @@ import { Timeline } from './Timeline';
 import { Header } from './Header';
 import { Settings } from './Settings';
 import { NativeGate } from './NativeGate';
+import { Recordings, RecordingPrivacy } from './Recordings';
 import { useScopedI18n } from '../../shared/i18n/useScopedI18n';
 import './sentinel.css';
 
@@ -22,6 +23,8 @@ function Sentinel() {
     guests:<Timeline model={model} groups={['guest']}/>,
     security:<Timeline model={model} groups={['access','display','voice']}/>,
     nuxiva:<Timeline model={model} groups={['automation','self','system','sentinel']}/>,
+    recordings:<Recordings model={model}/>,
+    privacy:<RecordingPrivacy model={model}/>,
     settings:<Settings model={model}/>,
   }}/>;
 }

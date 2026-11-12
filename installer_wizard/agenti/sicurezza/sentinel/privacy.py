@@ -27,6 +27,30 @@ def _ear_journal():
         return None
 
 
+def _nvr_export(slug: str) -> dict:
+    try:
+        from agenti.nvr.privacy import export_person as nvr_export
+        from agenti.nvr.transcripts import store
+    except ImportError:
+        return {}
+    try:
+        return nvr_export(slug, store)
+    except (OSError, ValueError) as exc:
+        return {"error": str(exc)[:120]}
+
+
+def _nvr_erase(slug: str) -> dict:
+    try:
+        from agenti.nvr.privacy import erase_person as nvr_erase
+        from agenti.nvr.search_index import index
+    except ImportError:
+        return {}
+    try:
+        return nvr_erase(slug, index.transcripts, index)
+    except (OSError, ValueError) as exc:
+        return {"error": str(exc)[:120]}
+
+
 def privacy_overview() -> dict:
     from agenti.people import people
     from agenti.people.people import PEOPLE_DIR
@@ -104,6 +128,7 @@ def export_person(slug: str) -> dict:
         "private_biometrics": private,
         "sentinel_profile": mem_profile,
         "sightings": sightings,
+        "recordings": _nvr_export(slug),
     }
 
 
@@ -130,6 +155,7 @@ def shred_person(slug: str) -> dict:
             journal_anonymized = 0
 
     remove_private(PEOPLE_DIR, slug)
+    recordings = _nvr_erase(slug)
 
     now = time.time()
     token = secrets.token_hex(8)
@@ -146,4 +172,5 @@ def shred_person(slug: str) -> dict:
         "sightings_removed": sightings_removed,
         "voiceprint_removed": voice_removed,
         "journal_anonymized": journal_anonymized,
+        "recordings": recordings,
     }

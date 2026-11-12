@@ -1,12 +1,12 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Circle, RefreshCw, FileText, Network, ShieldCheck, Clock3, History, Settings2, Info } from 'lucide-react';
+import { Circle, RefreshCw, FileText, Network, ShieldCheck, Clock3, History, Settings2, Info, Video, Lock } from 'lucide-react';
 import { WindowContext } from './WindowContext';
 import { resolveApp } from './registry';
 import { windowStore } from './WindowStore';
 import { getScopedString, useScopedI18n } from '../../shared/i18n/useScopedI18n';
 import './application.css';
 
-const symbols = { overview:RefreshCw, changes:FileText, network:Network, diagnostics:ShieldCheck, schedule:Clock3, history:History, settings:Settings2, info:Info };
+const symbols = { overview:RefreshCw, changes:FileText, network:Network, diagnostics:ShieldCheck, schedule:Clock3, history:History, settings:Settings2, info:Info, recordings:Video, privacy:Lock };
 /** Shared application chrome. Apps supply data-bound section content; manifests supply navigation. */
 export function AppViewFrame({sections,parameters,loading,error,onRetry,contentClassName='',header,footer}:{
   sections:Record<string,React.ReactNode>;parameters?:Record<string,string|number>;

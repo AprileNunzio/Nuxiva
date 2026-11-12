@@ -279,3 +279,30 @@ fn blind_index_search_prefix_window_and_removal() {
             .is_empty()
     );
 }
+
+#[test]
+fn audio_policy() {
+    use crate::policy::{audio_decision, is_private_room};
+    assert!(is_private_room("Bagno di servizio", &[]));
+    assert!(is_private_room("Camera da letto", &[]));
+    assert!(is_private_room("Salle de Bains", &[]));
+    assert!(is_private_room("Baño", &[]));
+    assert!(is_private_room("Master BEDROOM", &[]));
+    assert!(!is_private_room("Soggiorno", &[]));
+    assert!(!is_private_room("", &[]));
+    assert!(is_private_room("Studio", &["studio".into()]));
+    assert!(!is_private_room("Studio", &["x".repeat(65)]));
+    let d = audio_decision("Cucina", true, true, &[]);
+    assert!(d.allowed);
+    assert_eq!(d.reason, "allowed");
+    assert_eq!(
+        audio_decision("Cucina", true, false, &[]).reason,
+        "notice_off"
+    );
+    assert_eq!(
+        audio_decision("Cucina", false, true, &[]).reason,
+        "not_opted_in"
+    );
+    let p = audio_decision("Bagno", true, true, &[]);
+    assert!(!p.allowed && p.private);
+}

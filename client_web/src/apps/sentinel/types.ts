@@ -6,3 +6,10 @@ export interface NativeBuild { state:'building'|'restarting'|'ready'|'failed'|'d
 export interface SentinelStatus { enabled:boolean; native:boolean; build?:NativeBuild; days:string[]; retention:Record<string,number>|null; }
 export interface SentinelIntegrity { day:string; count:number; chain:boolean; signed:boolean|null; torn:boolean; }
 export interface SentinelSummary { day:string; total:number; kinds:Record<string,number>; guests:number; integrity:SentinelIntegrity; }
+export interface NvrCameraAudio { camera:string; name:string; room:string; opted_in:boolean; private:boolean; allowed:boolean; reason:'allowed'|'private_room'|'notice_off'|'not_opted_in'; }
+export interface NvrNoticeEntry { at_ms:number; places:string[]; spoken:boolean; text:string; }
+export interface NvrPrivacy { notice_enabled:boolean; notice_repeat_hours:number; private_rooms:string[]; cameras:NvrCameraAudio[]; recording_audio:string[]; notice:{places:string[]; last_spoken_ms:number; pending:boolean; history:NvrNoticeEntry[]}; }
+export interface NvrFindHit { kind:string; camera:string; segment:string|null; at_ms:number; text:string; speaker?:string|null; speaker_name?:string; voice?:string|null; }
+export interface NvrFind { speech:NvrFindHit[]; events:NvrFindHit[]; cameras:Record<string,{name:string;room:string}>; }
+export interface PrivacyProfile { slug:string; name:string; consent_voice:boolean; has_voiceprint:boolean; }
+export interface NvrErase { slug:string; turns_removed:number; segments_touched:number; segments_deleted:number; }

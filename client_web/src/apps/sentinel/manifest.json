@@ -60,6 +60,16 @@
         "icon": "schedule"
       },
       {
+        "id": "recordings",
+        "labelKey": "recordings",
+        "icon": "recordings"
+      },
+      {
+        "id": "privacy",
+        "labelKey": "privacy",
+        "icon": "privacy"
+      },
+      {
         "id": "settings",
         "labelKey": "settings",
         "icon": "settings"
