@@ -1,9 +1,12 @@
 #![forbid(unsafe_code)]
 
+mod align;
+mod array;
 pub mod danger_sound;
 mod denoiser;
 pub mod distress;
 mod distress_phrases;
+pub mod endpoint;
 mod features;
 mod gain;
 mod level;
@@ -16,6 +19,8 @@ mod voices;
 pub mod wake;
 pub mod words;
 
+pub use align::{ALIGN_WINDOW, Alignment, MAX_LAG};
+pub use array::{ArrayError, ArrayFrame, MAX_ARRAY_FRAME, MAX_CHANNELS, MicArray};
 pub use denoiser::{Denoiser, DenoiserConfig, clean_utterance};
 pub use features::FrameFeatures;
 pub use gain::{exp_integral, omlsa_gain};
@@ -29,6 +34,8 @@ pub use voices::{MAX_VOICES, TurnInfo, VoiceTracker, split_turns};
 pub const MAX_STREAM_SAMPLES: usize = 512 * 1024;
 pub const MAX_UTTERANCE_SAMPLES: usize = 16_000 * 600;
 
+#[cfg(test)]
+mod array_tests;
 #[cfg(test)]
 mod danger_tests;
 #[cfg(test)]

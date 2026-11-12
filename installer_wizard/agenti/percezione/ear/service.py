@@ -16,12 +16,14 @@ for noisy in ("websockets", "faster_whisper"):
 import earconf
 import enhance
 import capture
+import endpoint
 import feedback
 import stt
 from broadcast import SESSIONS, broadcast_event, park_hidden, send_event
 from display_connection import handle_display
+from enrollment import enroll_sample
 from ingress import RealtimeInput
-from learner import current_name, learner, name_variant
+from learner import learner
 from music import MusicTap
 from scene import SoundScene
 from danger import CONTROLS as RESCUE_CONTROLS, DangerEar, rescue_control
@@ -42,10 +44,8 @@ log = logging.getLogger("nuxiva.ear")
 RATE = 16000
 PORT = int(os.environ.get("NUXIVA_EAR_PORT", "8093"))
 FRAME = 480
-PRE_ROLL = int(0.4 * RATE)
-END_SILENCE = earconf.number("NUXIVA_EAR_END_SILENCE", 0.65, 0.3, 1.5)
+PRE_ROLL = int(0.5 * RATE)
 CONVERSATION_S = earconf.number("NUXIVA_EAR_CONVERSATION_S", 30.0, 5.0, 120.0)
-MAX_UTTERANCE = 14.0
 MIN_UTTERANCE = 0.35
 WAIT_FOR_SPEECH = 8.0
 SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9-]{0,40}$")
@@ -75,7 +75,7 @@ class Session:
         self.in_speech = False
         self.speech: list = []
         self.speech_start = 0.0
-        self.last_voice = 0.0
+        self.endpoint = endpoint.make()
         self.mode = "idle"
         self.listen_until = 0.0
         self.conversation = False
@@ -139,6 +139,7 @@ class Session:
         self.buffer = np.zeros(0, dtype=np.float32)
         self.ring = np.zeros(0, dtype=np.float32)
         self.in_speech, self.speech = False, []
+        self.endpoint.reset()
         await self._drop_caption()
 
     async def _process_pcm(self, pcm):
@@ -189,7 +190,8 @@ class Session:
                 self.profile.learn(frame)
             self.ring = np.concatenate([self.ring, frame])[-PRE_ROLL:]
             if voiced:
-                self.in_speech, self.speech_start, self.last_voice = True, now, now
+                self.in_speech, self.speech_start = True, now
+                self.endpoint.begin(now)
                 self.speech = [self.ring.copy()]
                 self.speech_during_playback = self.nuxiva_speaking
                 self.live.begin(self._addressed() and not self.speech_during_playback)
@@ -197,12 +199,12 @@ class Session:
 
         self.speech.append(frame)
         self.live.tick(self.speech, self.lang, self._addressed())
-        if voiced:
-            self.last_voice = now
         duration = now - self.speech_start
-        if now - self.last_voice > END_SILENCE or duration > MAX_UTTERANCE:
+        reason = self.endpoint.frame(now, voiced)
+        if reason is not None:
             audio = np.concatenate(self.speech)
-            self.in_speech, self.speech, self.ring = False, [], np.zeros(0, dtype=np.float32)
+            tail = audio[-PRE_ROLL:] if reason != "too_long" else np.zeros(0, dtype=np.float32)
+            self.in_speech, self.speech, self.ring = False, [], tail.copy()
             instant, self.instant = self.instant, False
             caption = self.live.end()
             if duration >= MIN_UTTERANCE:
@@ -234,6 +236,7 @@ class Session:
     async def _listen_timeout(self) -> None:
         if self.in_speech:
             self.in_speech, self.speech, self.ring = False, [], np.zeros(0, dtype=np.float32)
+            self.endpoint.reset()
             await self._drop_caption()
         if self.awaiting_command:
             self.awaiting_command = False
@@ -248,7 +251,9 @@ class Session:
         self.awaiting_command = True
         learner.on_wake(None, 0)
         self.recorder.note("wake", source="instant", score=round(self.wake.score, 2))
-        await self.broadcast(type="wake", source="instant")
+        if self.in_speech:
+            self.endpoint.wake()
+        await self.broadcast(type="wake", source="instant", mid_speech=self.in_speech)
         await self.set_mode("listening")
 
     async def _utterance(self, audio: np.ndarray, attentive: bool, followup: bool, instant: bool, caption: dict,
@@ -264,7 +269,7 @@ class Session:
         clean = await asyncio.to_thread(enhance.clean, audio, self.profile)
         if self.enroll is not None:
             await self.broadcast(type="caption_drop", utt=caption["utt"])
-            await self._enroll_sample(clean, audio)
+            await enroll_sample(self, voiceprints, clean, audio)
             return
         if not attentive and self.waiting >= 2:
             await self.broadcast(type="caption_drop", utt=caption["utt"])
@@ -340,7 +345,7 @@ class Session:
             else:
                 await self.set_mode("idle")
             return
-        self.awaiting_command = False
+        expected, self.awaiting_command = self.awaiting_command, False
         learner.on_command()
         self.recorder.note("transcript", text=command, dur=round(len(clean) / RATE, 2), woke=woke, ms=ms)
         speaker, score, turn, dominant = await asyncio.to_thread(speakers.inspect, clean, self.alone)
@@ -364,7 +369,7 @@ class Session:
                 return
 
         await self.broadcast(**(turn | {"type": "transcript", "text": command, "ms": ms, "lang": lang,
-                                        "followup": followup and not woke, "speaker": speaker,
+                                        "followup": followup and not woke and not expected, "speaker": speaker,
                                         "speaker_score": round(score, 3), "voice_known": self._known(self.alone),
                                         "utt": caption["utt"]}))
         auto_followup = earconf.number("NUXIVA_EAR_AUTO_FOLLOWUP", 8.0, 0.0, 30.0)
@@ -388,27 +393,6 @@ class Session:
         self.awaiting_command = True
         await self.broadcast(type="wake_only")
         await self.set_mode("listening")
-
-    async def _enroll_sample(self, clean: np.ndarray, raw: np.ndarray) -> None:
-        emb = await asyncio.to_thread(voiceprints.embed, clean) if voiceprints.ready else None
-        if emb is not None:
-            self.enroll["count"] = await asyncio.to_thread(voiceprints.add, self.enroll["slug"], emb, "lettura")
-        if not self.enroll.get("train"):
-            await self.send(type="enroll_progress", count=self.enroll["count"], ok=emb is not None)
-            return
-        expect = self.enroll.get("expect")
-        stt.refresh_hotwords()
-        async with stt.lock:
-            heard, _ = await asyncio.to_thread(stt.transcribe, clean, False, True)
-        variant = name_variant(heard) if expect in ("wake", "command") else None
-        taught = bool(variant) and learner.teach(variant)
-        matched = variant is not None if expect in ("wake", "command") else bool(heard.strip())
-        peak = float(np.abs(raw).max()) if len(raw) else 0.0
-        level = {"rms": round(float(np.sqrt(np.mean(raw * raw))) if len(raw) else 0.0, 4), "peak": round(peak, 4),
-                 "clipping": round(float(np.mean(np.abs(raw) >= 0.985)) if len(raw) else 0.0, 4),
-                 "advice": self.autolevel.status()["advice"]}
-        await self.send(type="enroll_progress", count=self.enroll["count"], ok=matched, heard=heard, variant=variant,
-                        taught=taught, level=level, expect=expect, name=current_name())
 
     async def _transcribe_raw(self) -> None:
         pcm, self.raw = b"".join(self.raw or []), None
@@ -472,6 +456,7 @@ class Session:
             await park_hidden()
         elif kind == "cancel":
             self.in_speech, self.speech = False, []
+            self.endpoint.reset()
             await self._drop_caption()
             await self.set_mode("idle")
 

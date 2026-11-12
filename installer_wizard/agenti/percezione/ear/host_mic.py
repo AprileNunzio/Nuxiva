@@ -15,13 +15,16 @@ from typing import Any
 
 try:
     from agenti.ear import earconf
+    from agenti.ear.array_capture import ArrayCapture, discover
     from agenti.ear.conditioner import from_env as conditioner_from_env
 except ImportError:
     try:
         import earconf
+        from array_capture import ArrayCapture, discover
         from conditioner import from_env as conditioner_from_env
     except ImportError:
         from installer_wizard.agenti.ear import earconf
+        from installer_wizard.agenti.ear.array_capture import ArrayCapture, discover
         from installer_wizard.agenti.ear.conditioner import from_env as conditioner_from_env
 
 VOICES_DIR = Path(__file__).resolve().parents[2] / "multimedia" / "voices"
@@ -102,6 +105,7 @@ ASSISTANT_URL = os.environ.get("NUXIVA_ASSISTANT_URL", PUBLIC_URL + "/api/assist
 TTS_URL = os.environ.get("NUXIVA_TTS_URL", PUBLIC_URL + "/api/voice/speak")
 KIOSK_USER = os.environ.get("NUXIVA_KIOSK_USER", "nuxiva-kiosk")
 DEFAULT_LATENCY_MS = 30
+ARRAY_RECHECK_S = 30.0
 
 
 def capture_latency_ms() -> int:
@@ -114,6 +118,13 @@ def _get_kiosk_uid() -> int | None:
         return pwd.getpwnam(KIOSK_USER).pw_uid
     except (KeyError, ImportError):
         return None
+
+
+def pulse_prefix() -> list[str]:
+    uid = _get_kiosk_uid()
+    if os.name != "nt" and hasattr(os, "getuid") and os.getuid() == 0 and uid is not None and shutil.which("runuser"):
+        return ["runuser", "-u", KIOSK_USER, "--", "env", f"XDG_RUNTIME_DIR=/run/user/{uid}"]
+    return []
 
 
 def get_capture_candidates() -> list[list[str]]:
@@ -165,7 +176,9 @@ class HeadlessSocket:
             if event.get("origin") is False:
                 return
             if event.get("type") in ("wake", "wake_only"):
-                if not self._wake_announced:
+                if event.get("mid_speech"):
+                    self._wake_announced = True
+                elif not self._wake_announced:
                     self._wake_announced = True
                     _spawn_background_task(play_wake_feedback())
             elif event.get("type") == "transcript" or (
@@ -258,6 +271,7 @@ class HostMicCapture:
         self._stderr_task: asyncio.Task | None = None
         self._stderr_tail = b""
         self.conditioner = conditioner_from_env()
+        self.array_sources: list[str] | None = None
 
     def should_capture(self) -> bool:
         if not earconf.flag("NUXIVA_EAR_HOST_MIC", True):
@@ -299,6 +313,16 @@ class HostMicCapture:
                     self.session.page = {"id": "host_mic", "page": "host_mic", "visible": "headless"}
                     _register_session(self.session)
                     log.info("Sessione host mic headless inizializzata e registrata in SESSIONS")
+                if self.array_sources is None:
+                    self.array_sources = await self._array_sources()
+                if self.array_sources:
+                    if not await self._capture_array(self.array_sources):
+                        log.info("Ascolto con più microfoni non riuscito: torno al microfono predefinito")
+                        self.array_sources = []
+                    else:
+                        self.array_sources = None
+                    await asyncio.sleep(1)
+                    continue
                 cmd = candidates[candidate_idx % len(candidates)]
                 read_any = False
                 start_time = time.time()
@@ -346,6 +370,38 @@ class HostMicCapture:
         finally:
             await self._stop_process()
             self._teardown_session()
+
+    async def _array_sources(self) -> list[str]:
+        if os.environ.get("NUXIVA_MIC_CMD") or not earconf.flag("NUXIVA_EAR_MIC_ARRAY", True):
+            return []
+        sources = await discover(pulse_prefix())
+        return sources if len(sources) >= 2 else []
+
+    async def _capture_array(self, sources: list[str]) -> bool:
+        capture = ArrayCapture(sources, pulse_prefix(), capture_latency_ms())
+        read_any = False
+        checked = time.monotonic()
+        try:
+            await capture.start()
+            self.conditioner.restart()
+            while self.running and self.should_capture():
+                chunk = await capture.read()
+                if not chunk:
+                    break
+                read_any = True
+                cleaned = self.conditioner.process(chunk)
+                if cleaned:
+                    await self.session.feed(cleaned)
+                if time.monotonic() - checked > ARRAY_RECHECK_S:
+                    checked = time.monotonic()
+                    if await discover(pulse_prefix()) != sources:
+                        log.info("I microfoni collegati sono cambiati: riconfiguro l'ascolto")
+                        break
+        except (OSError, RuntimeError, ValueError) as exc:
+            log.warning("Errore nell'ascolto con più microfoni: %s", exc)
+        finally:
+            await capture.stop()
+        return read_any
 
     async def _drain_stderr(self, stream) -> None:
         try:

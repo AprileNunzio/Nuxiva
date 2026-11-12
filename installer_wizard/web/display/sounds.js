@@ -1,6 +1,6 @@
 (() => {
   const D = window.NuxivaDisplay, S = window.NuxivaSfx;
-  const THINK_AFTER = 700, WORK_AFTER = 5000, URGENT = ["alert", "doorbell"];
+  const THINK_AFTER = 700, WORK_AFTER = 5000, QUIET_WAKE_MS = 1500, URGENT = ["alert", "doorbell"];
   const NOTIFY = { alert_error: "alert", alarm: "alert", reminder: "reminder", alert_warning: "notify", notice: "notify", g_notify: "notify", alert_info: "notify" };
   let cfg = null, seenCues = new Set(), seenDesk = null, earState = "idle", timers = [];
 
@@ -58,7 +58,7 @@
 
   window.addEventListener("nuxiva-ear", (e) => {
     const s = e.detail.state;
-    if (s === "listening" && earState !== "listening" && !D.busy) play("wake", "feedback");
+    if (s === "listening" && earState !== "listening" && !D.busy && !(Date.now() - (D.quietWakeAt || 0) < QUIET_WAKE_MS)) play("wake", "feedback");
     earState = s;
     if (S) S.duck(s === "listening" || s === "transcribing" || (D.isSpeaking && D.isSpeaking()));
   });

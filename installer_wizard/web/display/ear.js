@@ -206,7 +206,7 @@
         if (state === "off" && micAllowed()) setState("idle");
       }
       else if (ev.type === "state") { setState(ev.state); document.body.classList.toggle("conversing", !!ev.conversation); }
-      else if (ev.type === "wake") { D.lastInteraction = Date.now(); D.pingActivity(true); setState("listening"); if (D.mode === "brain") D.setMode("face"); if (D.wakeDesk) D.wakeDesk(); }
+      else if (ev.type === "wake") { if (ev.mid_speech) D.quietWakeAt = Date.now(); D.lastInteraction = Date.now(); D.pingActivity(true); setState("listening"); if (D.mode === "brain") D.setMode("face"); if (D.wakeDesk) D.wakeDesk(); }
       else if (ev.type === "barge") { if (ev.origin !== false && D.hush) D.hush(); }
       else if (ev.type === "mic_level") micLevelAdvice(ev.advice);
       else if (ev.type === "wake_only") D.greetWake();

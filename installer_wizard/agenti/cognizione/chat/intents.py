@@ -3,8 +3,11 @@ import re
 from agenti.chat.templates import predictable
 
 INTENTS = [
-    ("weather", re.compile(r"\b(meteo|previsioni|piover[àa]|piove|nevicher[àa]|temperatura (fuori|esterna)"
-                           r"|(che|com'?[eè]|come sar[àa]|com'?era) (il )?tempo|tempo (fa|far[àa]))\b", re.I)),
+    ("weather", re.compile(r"\b(meteo|prevision[ei]|piover[àa]|piove|nevicher[àa]|nevica|temperatura (fuori|esterna)"
+                           r"|(che|com'?[eè]|come sar[àa]|com'?era) (il )?tempo|tempo (fa|far[àa]|c'?[èe]|ci sar[àa])"
+                           r"|(bel|brutto|cattivo) tempo|tempo (per )?(oggi|domani|dopodomani|stasera|stanotte|nel (fine settimana|weekend))"
+                           r"|serve l'?ombrello|prendo l'?ombrello|quanti gradi (fa|far[àa]|ci sono fuori)"
+                           r"|far[àa] (freddo|caldo)|fa (freddo|caldo) fuori|weather|forecast)\b", re.I)),
     ("music", re.compile(r"\b(che canzone|che brano|chi canta|come si chiama (questa|la) canzone"
                          r"|cosa (sto|stiamo) ascoltando|che musica [èe]|cosa sta suonando)\b", re.I)),
     ("study", re.compile(r"\b(cosa stai studiando|stai studiando|cosa (hai|stai) (studiato|imparando|imparato)"

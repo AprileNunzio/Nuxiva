@@ -128,10 +128,10 @@ class RealtimeInputTest(unittest.IsolatedAsyncioTestCase):
             await stream.feed(b"\x01\x00" * 480)
             await started.wait()
             start = time.monotonic()
-            for value in range(10):
+            for value in range(MAX_PENDING + 6):
                 await stream.feed(np.full(480, value, dtype="<i2").tobytes())
-            self.assertLess(time.monotonic() - start, 0.15)
-            self.assertEqual(len(readings), 11)
+            self.assertLess(time.monotonic() - start, 0.5)
+            self.assertEqual(len(readings), MAX_PENDING + 7)
             self.assertEqual(len(analyzed), 0)
             self.assertLessEqual(len(stream.pending), MAX_PENDING)
             self.assertGreater(stream.dropped, 0)
