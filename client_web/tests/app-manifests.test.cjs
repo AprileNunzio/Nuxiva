@@ -1,4 +1,4 @@
-const { readdirSync, readFileSync, existsSync } = require('node:fs');
+const { readdirSync, readFileSync, existsSync, lstatSync } = require('node:fs');
 const { join, resolve } = require('node:path');
 const assert = require('node:assert/strict');
 const root = resolve(__dirname,'../src');
@@ -45,14 +45,20 @@ assert.ok(count>0);
 console.log(`${count} autonomous app manifests: categories, views, 3D assets, dimensions and discovered local dictionaries passed.`);
 
 // Feature plugins must own their assets too; no fixed registry size.
-const featureRoot=resolve(__dirname,'../../installer_wizard/features');
-for(const folder of readdirSync(featureRoot)) {
- const manifestPath=join(featureRoot,folder,'feature.json');
+const agentRoot=resolve(__dirname,'../../installer_wizard/agenti');
+const isDir=path=>lstatSync(path).isDirectory();
+const agentDirs=readdirSync(agentRoot).filter(c=>/^[a-z]/.test(c)&&isDir(join(agentRoot,c)))
+ .flatMap(c=>readdirSync(join(agentRoot,c)).map(f=>join(agentRoot,c,f)).filter(isDir));
+let agents=0;
+for(const dir of agentDirs) {
+ const manifestPath=join(dir,'feature.json');
  if(!existsSync(manifestPath))continue;
  const feature=JSON.parse(readFileSync(manifestPath,'utf8'));
  assert.equal(feature.icon3d,'./icon.png',manifestPath);
- const ownIcon=join(featureRoot,folder,'icon.png');
+ const ownIcon=join(dir,'icon.png');
  assert.ok(existsSync(ownIcon),manifestPath);
  assert.equal(readFileSync(ownIcon).subarray(0,8).toString('hex'),'89504e470d0a1a0a',manifestPath);
+ agents++;
 }
+assert.ok(agents>0);
 console.log('Discovered feature manifests own valid local PNG icons.');
