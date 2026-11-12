@@ -1,5 +1,6 @@
 import struct
 
+from cryptography.exceptions import InvalidTag
 from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
 
 KEY_LEN = 32
@@ -52,4 +53,7 @@ def seal(key: bytes, nonce: bytes, plain: bytes, aad: bytes = b"") -> bytes:
 
 def open_(key: bytes, nonce: bytes, sealed: bytes, aad: bytes = b"") -> bytes:
     engine, inner = _split(key, nonce)
-    return engine.decrypt(inner, sealed, aad or None)
+    try:
+        return engine.decrypt(inner, sealed, aad or None)
+    except InvalidTag:
+        raise ValueError("chunk authentication failed or corrupted") from None
