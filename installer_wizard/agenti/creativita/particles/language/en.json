@@ -54,8 +54,8 @@
       "detail": "Support the body and allow it to move."
     },
     "arms": {
-      "label": "Arms",
-      "detail": "Allow grasping and handling objects."
+      "label": "Spiral arms",
+      "detail": "Regions where new stars form, rich in gas and dust."
     },
     "tail": {
       "label": "Tail",
@@ -76,6 +76,78 @@
     "abdomen": {
       "label": "Abdomen",
       "detail": "Holds digestion and reproduction."
+    },
+    "bulge": {
+      "label": "Core",
+      "detail": "Central crowd of old stars around a supermassive black hole."
+    },
+    "disk": {
+      "label": "Disk",
+      "detail": "The thin plane where most stars orbit."
+    },
+    "halo": {
+      "label": "Halo",
+      "detail": "A sparse spherical region of ancient stars and dark matter."
+    },
+    "surface": {
+      "label": "Surface",
+      "detail": "The visible layer of the body."
+    },
+    "atmosphere": {
+      "label": "Atmosphere",
+      "detail": "The gas envelope around the planet."
+    },
+    "rings": {
+      "label": "Rings",
+      "detail": "Thin discs of ice and rock orbiting the planet."
+    },
+    "moons": {
+      "label": "Moons",
+      "detail": "Bodies orbiting the planet."
+    },
+    "bands": {
+      "label": "Bands",
+      "detail": "Atmospheric currents parallel to the equator."
+    },
+    "corona": {
+      "label": "Corona",
+      "detail": "Outer layer of thin, scorching plasma."
+    },
+    "flares": {
+      "label": "Flares",
+      "detail": "Jets of plasma thrown along magnetic field lines."
+    },
+    "star": {
+      "label": "Star",
+      "detail": "The central body holding the whole system in orbit."
+    },
+    "orbits": {
+      "label": "Orbits",
+      "detail": "Elliptical paths followed by the planets."
+    },
+    "planets": {
+      "label": "Planets",
+      "detail": "Bodies orbiting the star."
+    },
+    "cloud": {
+      "label": "Cloud",
+      "detail": "Gas and dust lit by newborn stars."
+    },
+    "stars": {
+      "label": "Stars",
+      "detail": "Stars just formed inside the cloud."
+    },
+    "horizon": {
+      "label": "Event horizon",
+      "detail": "The limit beyond which not even light can escape."
+    },
+    "accretion": {
+      "label": "Accretion disk",
+      "detail": "Matter spiralling in and heating up as it falls toward the black hole."
+    },
+    "jets": {
+      "label": "Jets",
+      "detail": "Beams of particles launched close to the speed of light."
     }
   }
 }

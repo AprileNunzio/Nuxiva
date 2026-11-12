@@ -1,5 +1,6 @@
 use nuxiva_forma_core::{
-    Anatomy, Plan, Traits, compile, compile_full, compose, compose_anatomy, preset, schema,
+    Anatomy, Cosmos, Plan, Traits, compile_full, compose, compose_anatomy, compose_cosmos,
+    cosmos_preset, preset, schema,
 };
 use pyo3::exceptions::{PyRuntimeError, PyValueError};
 use pyo3::prelude::*;
@@ -7,9 +8,13 @@ use pyo3::prelude::*;
 const MAX_INPUT: usize = 64 * 1024;
 
 fn parts_json(plan: &Plan) -> PyResult<String> {
-    let parts = compile(plan).map_err(|e| PyValueError::new_err(e.to_string()))?;
-    serde_json::to_string(&serde_json::json!({ "parts": parts }))
-        .map_err(|e| PyRuntimeError::new_err(e.to_string()))
+    let (parts, labels) = compile_full(plan).map_err(|e| PyValueError::new_err(e.to_string()))?;
+    let value = if labels.is_empty() {
+        serde_json::json!({ "parts": parts })
+    } else {
+        serde_json::json!({ "parts": parts, "labels": labels })
+    };
+    serde_json::to_string(&value).map_err(|e| PyRuntimeError::new_err(e.to_string()))
 }
 
 fn bounded(raw: &str) -> PyResult<&str> {
@@ -43,9 +48,33 @@ pub fn forma_schema() -> PyResult<String> {
 pub fn forma_anatomy_sculpt(anatomy_json: &str) -> PyResult<String> {
     let anatomy: Anatomy = serde_json::from_str(bounded(anatomy_json)?)
         .map_err(|e| PyValueError::new_err(e.to_string()))?;
-    let (parts, labels) = compile_full(&compose_anatomy(&anatomy))
-        .map_err(|e| PyValueError::new_err(e.to_string()))?;
+    labelled_json(&compose_anatomy(&anatomy))
+}
+
+fn labelled_json(plan: &Plan) -> PyResult<String> {
+    let (parts, labels) = compile_full(plan).map_err(|e| PyValueError::new_err(e.to_string()))?;
     serde_json::to_string(&serde_json::json!({ "parts": parts, "labels": labels }))
+        .map_err(|e| PyRuntimeError::new_err(e.to_string()))
+}
+
+#[pyfunction]
+pub fn forma_cosmos_sculpt(cosmos_json: &str) -> PyResult<String> {
+    let cosmos: Cosmos = serde_json::from_str(bounded(cosmos_json)?)
+        .map_err(|e| PyValueError::new_err(e.to_string()))?;
+    labelled_json(&compose_cosmos(&cosmos))
+}
+
+#[pyfunction]
+pub fn forma_cosmos_preset(concept: &str) -> PyResult<Option<String>> {
+    cosmos_preset(bounded(concept)?)
+        .map_err(|e| PyValueError::new_err(e.to_string()))?
+        .map(|c| serde_json::to_string(&c).map_err(|e| PyRuntimeError::new_err(e.to_string())))
+        .transpose()
+}
+
+#[pyfunction]
+pub fn forma_cosmos_schema() -> PyResult<String> {
+    serde_json::to_string(&nuxiva_forma_core::cosmos::schema())
         .map_err(|e| PyRuntimeError::new_err(e.to_string()))
 }
 

@@ -54,8 +54,8 @@
       "detail": "Sostienen el cuerpo y permiten moverse."
     },
     "arms": {
-      "label": "Brazos",
-      "detail": "Permiten agarrar y manipular objetos."
+      "label": "Brazos espirales",
+      "detail": "Regiones donde nacen estrellas nuevas, ricas en gas y polvo."
     },
     "tail": {
       "label": "Cola",
@@ -76,6 +76,78 @@
     "abdomen": {
       "label": "Abdomen",
       "detail": "Aloja la digestión y la reproducción."
+    },
+    "bulge": {
+      "label": "Núcleo",
+      "detail": "Concentración central de estrellas viejas alrededor de un agujero negro supermasivo."
+    },
+    "disk": {
+      "label": "Disco",
+      "detail": "El plano delgado donde orbitan la mayoría de las estrellas."
+    },
+    "halo": {
+      "label": "Halo",
+      "detail": "Región esférica poco densa de estrellas antiguas y materia oscura."
+    },
+    "surface": {
+      "label": "Superficie",
+      "detail": "La capa visible del astro."
+    },
+    "atmosphere": {
+      "label": "Atmósfera",
+      "detail": "La envoltura de gas alrededor del planeta."
+    },
+    "rings": {
+      "label": "Anillos",
+      "detail": "Discos finos de hielo y roca en órbita alrededor del planeta."
+    },
+    "moons": {
+      "label": "Lunas",
+      "detail": "Cuerpos que orbitan alrededor del planeta."
+    },
+    "bands": {
+      "label": "Bandas",
+      "detail": "Corrientes atmosféricas paralelas al ecuador."
+    },
+    "corona": {
+      "label": "Corona",
+      "detail": "Capa externa de plasma tenue y abrasador."
+    },
+    "flares": {
+      "label": "Erupciones",
+      "detail": "Chorros de plasma lanzados a lo largo de las líneas del campo magnético."
+    },
+    "star": {
+      "label": "Estrella",
+      "detail": "El cuerpo central que mantiene en órbita a todo el sistema."
+    },
+    "orbits": {
+      "label": "Órbitas",
+      "detail": "Trayectorias elípticas que siguen los planetas."
+    },
+    "planets": {
+      "label": "Planetas",
+      "detail": "Cuerpos que orbitan alrededor de la estrella."
+    },
+    "cloud": {
+      "label": "Nube",
+      "detail": "Gas y polvo iluminados por estrellas recién nacidas."
+    },
+    "stars": {
+      "label": "Estrellas",
+      "detail": "Estrellas recién formadas dentro de la nube."
+    },
+    "horizon": {
+      "label": "Horizonte de sucesos",
+      "detail": "El límite más allá del cual ni la luz puede escapar."
+    },
+    "accretion": {
+      "label": "Disco de acreción",
+      "detail": "Materia que gira en espiral y se calienta al caer hacia el agujero negro."
+    },
+    "jets": {
+      "label": "Chorros",
+      "detail": "Haces de partículas lanzados casi a la velocidad de la luz."
     }
   }
 }

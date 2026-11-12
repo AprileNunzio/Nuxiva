@@ -16,6 +16,12 @@ pub enum Shape {
     Torus,
     Helix,
     Plane,
+    Cloud,
+    Disc,
+    Spiral,
+    Ring,
+    Halo,
+    Orbit,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -133,6 +139,67 @@ fn shares(parts: &[Part], count: u32) -> Vec<u32> {
     base
 }
 
+fn diffuse(shape: Shape, ua: f64, ub: f64, uc: f64) -> [f64; 3] {
+    match shape {
+        Shape::Cloud => {
+            let theta = TAU * uc;
+            let height = 2.0 * ub - 1.0;
+            let flat = (1.0 - height * height).max(0.0).sqrt();
+            let radius = ua * ua;
+            [
+                radius * flat * theta.cos(),
+                radius * height,
+                radius * flat * theta.sin(),
+            ]
+        }
+        Shape::Disc => {
+            let theta = TAU * ub;
+            let radius = ua * ua;
+            [
+                radius * theta.cos(),
+                (uc - 0.5) * 0.12 * (1.0 - radius),
+                radius * theta.sin(),
+            ]
+        }
+        Shape::Spiral => {
+            let theta = 5.2 * ua + (ub - 0.5) * 1.1 * (1.0 - 0.6 * ua);
+            [
+                ua * theta.cos(),
+                (uc - 0.5) * 0.08 * (1.0 - ua),
+                ua * theta.sin(),
+            ]
+        }
+        Shape::Ring => {
+            let theta = TAU * ub;
+            let radius = 0.62 + 0.38 * ua;
+            [
+                radius * theta.cos(),
+                (uc - 0.5) * 0.01,
+                radius * theta.sin(),
+            ]
+        }
+        Shape::Halo => {
+            let theta = TAU * uc;
+            let height = 2.0 * ub - 1.0;
+            let flat = (1.0 - height * height).max(0.0).sqrt();
+            let radius = 0.45 + 0.55 * ua * ua;
+            [
+                radius * flat * theta.cos(),
+                radius * height,
+                radius * flat * theta.sin(),
+            ]
+        }
+        _ => {
+            let theta = TAU * ua;
+            [
+                theta.cos() + (ub - 0.5) * 0.004,
+                (uc - 0.5) * 0.004,
+                theta.sin(),
+            ]
+        }
+    }
+}
+
 fn point(shape: Shape, rng: &mut Rng) -> [f64; 3] {
     let ua = rng.next_f64();
     let ub = rng.next_f64();
@@ -197,6 +264,9 @@ fn point(shape: Shape, rng: &mut Rng) -> [f64; 3] {
             ]
         }
         Shape::Plane => [2.0 * ua - 1.0, (uc - 0.5) * 0.02, 2.0 * ub - 1.0],
+        Shape::Cloud | Shape::Disc | Shape::Spiral | Shape::Ring | Shape::Halo | Shape::Orbit => {
+            diffuse(shape, ua, ub, uc)
+        }
     }
 }
 

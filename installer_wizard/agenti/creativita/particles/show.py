@@ -7,7 +7,7 @@ from config import env_get
 from state import store as state_store
 from tasks import background
 
-from agenti.particles import codec as particles, forma_anatomy, morphogenesis, xr
+from agenti.particles import codec as particles, forma_design, morphogenesis, xr
 from agenti.particles.store import concept_key, store
 
 log = logging.getLogger("nuxiva.particles")
@@ -130,7 +130,6 @@ def clear() -> None:
 
 async def sculpt(concept: str) -> dict:
     from agenti.brain.llm import generate
-    from agenti.particles import forma_design
     general = await forma_design.design(concept)
     if general is not None:
         return general
@@ -143,11 +142,11 @@ async def sculpt(concept: str) -> dict:
 
 
 def _anatomy_spec(key: str) -> dict | None:
-    start = forma_anatomy.preset(key)
+    start = forma_design.draft(key)
     if start is None:
         return None
     try:
-        return particles.validate(forma_anatomy.sculpt(start))
+        return forma_design.build(start)[0]
     except (particles.ParticleError, ValueError):
         return None
 
@@ -168,9 +167,8 @@ def materialize_instant(concept: str) -> dict:
 
 
 async def refine(key: str, query: str) -> None:
-    from agenti.particles import forma_design
     try:
-        spec = await forma_design.design(key, forma_anatomy.preset(key))
+        spec = await forma_design.design(key, forma_design.draft(key))
         if spec is None:
             return
         seed = int.from_bytes(key.encode()[:8].ljust(8, b"\0"), "little")

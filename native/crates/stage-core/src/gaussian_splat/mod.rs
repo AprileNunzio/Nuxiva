@@ -53,7 +53,8 @@ fn subdivide_part_into_splats(part: &Part, subdiv: u8) -> Vec<GaussianSplat3D> {
     let rgb = parse_rgb_norm(&part.color);
     let quat = euler_deg_to_quat(part.rot);
     let roughness = match part.shape {
-        Shape::Sphere | Shape::Torus => 0.18,
+        Shape::Sphere | Shape::Torus | Shape::Orbit | Shape::Ring => 0.18,
+        Shape::Cloud | Shape::Halo | Shape::Disc | Shape::Spiral => 0.5,
         Shape::Cylinder | Shape::Cone => 0.28,
         Shape::Helix => 0.22,
         Shape::Box | Shape::Plane => 0.42,

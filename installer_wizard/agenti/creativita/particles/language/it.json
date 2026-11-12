@@ -54,8 +54,8 @@
       "detail": "Sostengono il corpo e permettono di muoversi."
     },
     "arms": {
-      "label": "Braccia",
-      "detail": "Permettono di afferrare e manipolare gli oggetti."
+      "label": "Bracci a spirale",
+      "detail": "Regioni dove nascono nuove stelle, dense di gas e polveri."
     },
     "tail": {
       "label": "Coda",
@@ -76,6 +76,78 @@
     "abdomen": {
       "label": "Addome",
       "detail": "Contiene digestione e riproduzione."
+    },
+    "bulge": {
+      "label": "Nucleo",
+      "detail": "Addensamento centrale di stelle vecchie, attorno a un buco nero supermassiccio."
+    },
+    "disk": {
+      "label": "Disco",
+      "detail": "Il piano sottile dove ruota la maggior parte delle stelle."
+    },
+    "halo": {
+      "label": "Alone",
+      "detail": "Regione sferica e rarefatta di stelle antiche e materia oscura."
+    },
+    "surface": {
+      "label": "Superficie",
+      "detail": "Lo strato visibile dell'astro."
+    },
+    "atmosphere": {
+      "label": "Atmosfera",
+      "detail": "Involucro di gas che avvolge il pianeta."
+    },
+    "rings": {
+      "label": "Anelli",
+      "detail": "Dischi sottili di ghiaccio e roccia in orbita attorno al pianeta."
+    },
+    "moons": {
+      "label": "Lune",
+      "detail": "Corpi che orbitano attorno al pianeta."
+    },
+    "bands": {
+      "label": "Fasce",
+      "detail": "Correnti atmosferiche parallele all'equatore."
+    },
+    "corona": {
+      "label": "Corona",
+      "detail": "Strato esterno di plasma rarefatto e rovente."
+    },
+    "flares": {
+      "label": "Brillamenti",
+      "detail": "Getti di plasma lanciati lungo le linee del campo magnetico."
+    },
+    "star": {
+      "label": "Stella",
+      "detail": "Il corpo centrale che tiene in orbita tutto il sistema."
+    },
+    "orbits": {
+      "label": "Orbite",
+      "detail": "Traiettorie ellittiche percorse dai pianeti."
+    },
+    "planets": {
+      "label": "Pianeti",
+      "detail": "Corpi che orbitano attorno alla stella."
+    },
+    "cloud": {
+      "label": "Nube",
+      "detail": "Gas e polveri illuminati dalle stelle neonate."
+    },
+    "stars": {
+      "label": "Stelle",
+      "detail": "Astri appena formati nella nube."
+    },
+    "horizon": {
+      "label": "Orizzonte degli eventi",
+      "detail": "Il limite oltre il quale nemmeno la luce può uscire."
+    },
+    "accretion": {
+      "label": "Disco di accrescimento",
+      "detail": "Materia che spiraleggia e si scalda cadendo verso il buco nero."
+    },
+    "jets": {
+      "label": "Getti",
+      "detail": "Fasci di particelle lanciati a velocità vicina a quella della luce."
     }
   }
 }

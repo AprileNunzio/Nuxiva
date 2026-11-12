@@ -14,7 +14,7 @@ MAX_PARTS = 96
 MAX_BLOB_POINTS = 65_536
 FLAG_COLORS = 1
 QUANT = 32_767.0
-SHAPES = ("sphere", "box", "cylinder", "cone", "torus", "helix", "plane")
+SHAPES = ("sphere", "box", "cylinder", "cone", "torus", "helix", "plane", "cloud", "disc", "spiral", "ring", "halo", "orbit")
 LABEL = re.compile(r"^[a-z_]{1,32}$")
 MAX_LABELS = 12
 COLOR = re.compile(r"^#[0-9a-fA-F]{6}$")
@@ -127,7 +127,24 @@ def _point(shape: str, rng: _Rng) -> tuple[float, float, float]:
     if shape == "helix":
         turn = 3.0 * tau * ua
         return math.cos(turn) + (ub - 0.5) * 0.08, 2.0 * ua - 1.0, math.sin(turn) + (uc - 0.5) * 0.08
-    return 2.0 * ua - 1.0, (uc - 0.5) * 0.02, 2.0 * ub - 1.0
+    if shape == "plane":
+        return 2.0 * ua - 1.0, (uc - 0.5) * 0.02, 2.0 * ub - 1.0
+    if shape in ("cloud", "halo"):
+        theta, height = tau * uc, 2.0 * ub - 1.0
+        flat = math.sqrt(max(0.0, 1.0 - height * height))
+        radius = ua * ua if shape == "cloud" else 0.45 + 0.55 * ua * ua
+        return radius * flat * math.cos(theta), radius * height, radius * flat * math.sin(theta)
+    if shape == "disc":
+        theta, radius = tau * ub, ua * ua
+        return radius * math.cos(theta), (uc - 0.5) * 0.12 * (1.0 - radius), radius * math.sin(theta)
+    if shape == "spiral":
+        theta = 5.2 * ua + (ub - 0.5) * 1.1 * (1.0 - 0.6 * ua)
+        return ua * math.cos(theta), (uc - 0.5) * 0.08 * (1.0 - ua), ua * math.sin(theta)
+    if shape == "ring":
+        theta, radius = tau * ub, 0.62 + 0.38 * ua
+        return radius * math.cos(theta), (uc - 0.5) * 0.01, radius * math.sin(theta)
+    theta = tau * ua
+    return math.cos(theta) + (ub - 0.5) * 0.004, (uc - 0.5) * 0.004, math.sin(theta)
 
 
 def _rotate(p, deg):

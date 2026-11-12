@@ -54,8 +54,8 @@
       "detail": "Soutiennent le corps et permettent de se déplacer."
     },
     "arms": {
-      "label": "Bras",
-      "detail": "Permettent de saisir et de manipuler les objets."
+      "label": "Bras spiraux",
+      "detail": "Régions où naissent de nouvelles étoiles, riches en gaz et en poussières."
     },
     "tail": {
       "label": "Queue",
@@ -76,6 +76,78 @@
     "abdomen": {
       "label": "Abdomen",
       "detail": "Abrite la digestion et la reproduction."
+    },
+    "bulge": {
+      "label": "Noyau",
+      "detail": "Concentration centrale d'étoiles anciennes autour d'un trou noir supermassif."
+    },
+    "disk": {
+      "label": "Disque",
+      "detail": "Le plan mince où tournent la plupart des étoiles."
+    },
+    "halo": {
+      "label": "Halo",
+      "detail": "Région sphérique clairsemée d'étoiles anciennes et de matière noire."
+    },
+    "surface": {
+      "label": "Surface",
+      "detail": "La couche visible de l'astre."
+    },
+    "atmosphere": {
+      "label": "Atmosphère",
+      "detail": "L'enveloppe de gaz autour de la planète."
+    },
+    "rings": {
+      "label": "Anneaux",
+      "detail": "Fins disques de glace et de roche en orbite autour de la planète."
+    },
+    "moons": {
+      "label": "Lunes",
+      "detail": "Corps en orbite autour de la planète."
+    },
+    "bands": {
+      "label": "Bandes",
+      "detail": "Courants atmosphériques parallèles à l'équateur."
+    },
+    "corona": {
+      "label": "Couronne",
+      "detail": "Couche externe de plasma ténu et brûlant."
+    },
+    "flares": {
+      "label": "Éruptions",
+      "detail": "Jets de plasma lancés le long des lignes du champ magnétique."
+    },
+    "star": {
+      "label": "Étoile",
+      "detail": "Le corps central qui maintient tout le système en orbite."
+    },
+    "orbits": {
+      "label": "Orbites",
+      "detail": "Trajectoires elliptiques suivies par les planètes."
+    },
+    "planets": {
+      "label": "Planètes",
+      "detail": "Corps en orbite autour de l'étoile."
+    },
+    "cloud": {
+      "label": "Nuage",
+      "detail": "Gaz et poussières éclairés par des étoiles naissantes."
+    },
+    "stars": {
+      "label": "Étoiles",
+      "detail": "Étoiles à peine formées dans le nuage."
+    },
+    "horizon": {
+      "label": "Horizon des événements",
+      "detail": "La limite au-delà de laquelle même la lumière ne s'échappe pas."
+    },
+    "accretion": {
+      "label": "Disque d'accrétion",
+      "detail": "Matière qui spirale et chauffe en tombant vers le trou noir."
+    },
+    "jets": {
+      "label": "Jets",
+      "detail": "Faisceaux de particules lancés presque à la vitesse de la lumière."
     }
   }
 }

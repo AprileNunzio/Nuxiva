@@ -50,6 +50,12 @@ pub enum Shape {
     Torus,
     Helix,
     Plane,
+    Cloud,
+    Disc,
+    Spiral,
+    Ring,
+    Halo,
+    Orbit,
 }
 
 const fn one() -> f64 {

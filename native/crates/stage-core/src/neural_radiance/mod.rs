@@ -42,13 +42,13 @@ fn hex_to_rgb(hex: &str) -> [f64; 3] {
 
 fn part_to_sdf(part: &Part, is_organic: bool) -> SdfNode {
     let primitive = match part.shape {
-        Shape::Sphere => "sdSphere",
+        Shape::Sphere | Shape::Cloud | Shape::Halo => "sdSphere",
         Shape::Box => "sdRoundBox",
         Shape::Cylinder => "sdCappedCylinder",
         Shape::Cone => "sdRoundCone",
-        Shape::Torus => "sdTorus",
+        Shape::Torus | Shape::Orbit => "sdTorus",
         Shape::Helix => "sdSpiralCapsule",
-        Shape::Plane => "sdPlane",
+        Shape::Plane | Shape::Disc | Shape::Ring | Shape::Spiral => "sdPlane",
     }
     .to_owned();
 

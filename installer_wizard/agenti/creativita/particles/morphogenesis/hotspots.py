@@ -6,7 +6,8 @@ from pathlib import Path
 LANGUAGE = Path(__file__).resolve().parents[1] / "language"
 MAX_SPOTS = 8
 ORDER = ("head", "snout", "beak", "ears", "horns", "neck", "body", "thorax", "abdomen", "front_legs", "hind_legs", "legs", "arms", "wings",
-         "fins", "tail")
+         "fins", "tail", "surface", "atmosphere", "bands", "rings", "moons", "bulge", "arms", "disk", "halo", "star", "planets", "orbits",
+         "corona", "flares", "cloud", "stars", "horizon", "accretion", "jets")
 
 
 @dataclass(frozen=True)
@@ -35,10 +36,9 @@ def _labelled(spec: dict, lang: str) -> list[dict]:
     names = _names(lang) or _names("it")
     spots = []
     for item in sorted(spec.get("labels") or [], key=lambda item: ORDER.index(item["name"]) if item["name"] in ORDER else len(ORDER)):
-        info = names.get(item["name"])
-        if info:
-            at = tuple(v / reach for v in item["at"])
-            spots.append(Hotspot3D(item["name"], info["label"], at, info["detail"], "anatomia").to_dict())
+        info = names.get(item["name"]) or {"label": item["name"].replace("_", " ").capitalize(), "detail": ""}
+        at = tuple(v / reach for v in item["at"])
+        spots.append(Hotspot3D(item["name"], info["label"], at, info["detail"], "anatomia").to_dict())
     return spots[:MAX_SPOTS]
 
 

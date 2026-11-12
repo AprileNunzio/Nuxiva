@@ -169,7 +169,7 @@ class DesignTest(unittest.TestCase):
         self.assertEqual(spec, codec.validate(forma_anatomy.sculpt(better["anatomy"])))
 
     def test_a_draft_is_reviewed_once(self):
-        spec, calls = self.run_design([{"anatomy": {"plan": "bird", "wings": 1.5}}], start=python_preset("aquila"))
+        spec, calls = self.run_design([{"anatomy": {"plan": "bird", "wings": 1.5}}], start={"anatomy": python_preset("aquila")})
         self.assertEqual(len(calls), 1)
         self.assertIn("<current>", calls[0])
         self.assertIsNotNone(spec)
@@ -189,12 +189,61 @@ class DesignTest(unittest.TestCase):
     def test_failures_give_none(self):
         self.assertIsNone(self.run_design([RuntimeError("x")])[0])
         self.assertIsNone(self.run_design([["not", "a", "dict"]])[0])
-        self.assertIsNone(self.run_design([RuntimeError("x")], start=python_preset("aquila"))[0])
+        self.assertIsNone(self.run_design([RuntimeError("x")], start={"anatomy": python_preset("aquila")})[0])
 
     def test_the_prompt_lists_both_schemas(self):
         text = forma_design.system()
         for item in forma_anatomy.SCHEMA["fields"] + forma_traits.SCHEMA["fields"]:
             self.assertIn(item["name"], text)
+
+
+LOCOMOTIVE = {"plan": {"theme": "mechanical", "nodes": [
+    {"op": "rotate", "axis": "x", "deg": 90, "child": {"op": "lathe", "profile": [[0.5, -2], [0.6, -1], [0.6, 1], [0.5, 2]], "color": 0, "weight": 2}},
+    {"op": "blob", "shape": "cylinder", "at": [0, 0.9, 1.6], "size": [0.15, 0.4, 0.15], "color": 1, "weight": 2},
+    {"op": "mirror", "axis": "x", "child": {"op": "blob", "shape": "torus", "at": [0.7, -0.5, 0.8], "size": [0.4, 0.4, 0.4], "rot": [0, 0, 90], "color": 2}},
+    {"op": "mark", "name": "boiler", "at": [0, 0.3, 0]}, {"op": "mark", "name": "chimney", "at": [0, 1.3, 1.6]},
+    {"op": "mark", "name": "driving_wheels", "at": [0.8, -0.5, 0.8]}]}}
+
+
+class PlanDesignTest(unittest.TestCase):
+    def test_the_model_can_design_any_machine_from_a_plan(self):
+        spec, kept = forma_design.build(LOCOMOTIVE)
+        self.assertEqual(kept, LOCOMOTIVE)
+        self.assertEqual([item["name"] for item in spec["labels"]], ["boiler", "chimney", "driving_wheels"])
+        self.assertEqual(codec.count(codec.sample(spec, 3000, 4)), 3000)
+
+    def test_unknown_names_become_readable_hotspots(self):
+        from agenti.particles.morphogenesis import extract_hotspots
+        spec, _ = forma_design.build(LOCOMOTIVE)
+        labels = {spot["label"] for spot in extract_hotspots("locomotiva", spec)}
+        self.assertEqual(labels, {"Boiler", "Chimney", "Driving wheels"})
+
+    def test_hostile_plans_are_refused(self):
+        bad = ({"plan": {"nodes": [{"op": "exec", "cmd": "x"}]}}, {"plan": {"nodes": [{"op": "blob", "evil": 1}]}},
+               {"plan": {"nodes": [{"op": "blob", "at": [1e9, 0, 0]}]}}, {"plan": {"nodes": []}},
+               {"plan": {"nodes": [{"op": "mark", "name": "x" * 40, "at": [0, 0, 0]}, {"op": "blob"}]}},
+               {"plan": {"nodes": [{"op": "blob", "shape": "sphere"}] * 120 + [{"op": "group", "children": [{"op": "blob"}] * 100}]}},
+               {"plan": {"nodes": [{"op": "blob", "shape": "sphere", "size": [1, 1, 1]}], "padding": "x" * 20_000}})
+        for data in bad:
+            with self.assertRaises((forma_anatomy.FormaError, codec.ParticleError)):
+                forma_design.build(data)
+
+    def test_the_prompt_explains_plans(self):
+        text = forma_design.system()
+        for word in ("lathe", "sweep", "blob", "radial", "mirror", "rotate", "group", "mark", "cloud", "orbit"):
+            self.assertIn(word, text)
+
+    def test_the_model_designs_and_reviews_a_machine(self):
+        calls = []
+
+        async def generate(prompt, **kw):
+            calls.append(prompt)
+            return LOCOMOTIVE
+
+        with mock.patch("agenti.brain.llm.generate", generate):
+            spec = asyncio.run(forma_design.design("treno"))
+        self.assertEqual(len(calls), 2)
+        self.assertTrue(spec["labels"])
 
 
 class VisualLaneTest(unittest.IsolatedAsyncioTestCase):

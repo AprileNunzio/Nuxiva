@@ -137,7 +137,7 @@ pub fn compose_anatomy(a: &Anatomy) -> Plan {
     }
 }
 
-fn words(concept: &str) -> Vec<String> {
+pub(crate) fn words(concept: &str) -> Vec<String> {
     concept
         .chars()
         .take(MAX_CONCEPT)
@@ -161,7 +161,7 @@ struct Entry {
     anatomy: Anatomy,
 }
 
-fn matches_root(token: &str, root: &str) -> bool {
+pub(crate) fn matches_root(token: &str, root: &str) -> bool {
     root.strip_suffix('*').map_or(token == root, |stem| {
         token.len() >= 3 && token.starts_with(stem)
     })

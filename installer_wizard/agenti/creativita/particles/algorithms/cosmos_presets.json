@@ -1,0 +1,178 @@
+[
+ {
+  "roots": [
+   "galass*",
+   "galaxy",
+   "galaxies",
+   "lattea",
+   "andromeda",
+   "spirale"
+  ],
+  "cosmos": {
+   "kind": "galaxy",
+   "size": 2.2,
+   "tilt": 62,
+   "arms": 2,
+   "theme": "celestial"
+  }
+ },
+ {
+  "roots": [
+   "buco",
+   "buchi",
+   "blackhole",
+   "quasar",
+   "singolarit*",
+   "hole",
+   "holes"
+  ],
+  "cosmos": {
+   "kind": "blackhole",
+   "size": 1.0,
+   "tilt": 70,
+   "theme": "celestial"
+  }
+ },
+ {
+  "roots": [
+   "nebulos*",
+   "nebula*"
+  ],
+  "cosmos": {
+   "kind": "nebula",
+   "size": 2.0,
+   "theme": "bioluminescent"
+  }
+ },
+ {
+  "roots": [
+   "solare",
+   "planetario",
+   "orrery"
+  ],
+  "cosmos": {
+   "kind": "system",
+   "size": 2.6,
+   "tilt": 55,
+   "planets": 8,
+   "theme": "celestial"
+  }
+ },
+ {
+  "roots": [
+   "stell*",
+   "star",
+   "stars",
+   "sole",
+   "soli",
+   "sun",
+   "supernova",
+   "nana"
+  ],
+  "cosmos": {
+   "kind": "star",
+   "size": 1.0,
+   "glow": 1.2,
+   "theme": "celestial"
+  }
+ },
+ {
+  "roots": [
+   "saturno",
+   "saturn"
+  ],
+  "cosmos": {
+   "kind": "planet",
+   "size": 1.0,
+   "tilt": 26,
+   "rings": 3,
+   "bands": 4,
+   "moons": 1,
+   "theme": "geological"
+  }
+ },
+ {
+  "roots": [
+   "giove",
+   "jupiter"
+  ],
+  "cosmos": {
+   "kind": "planet",
+   "size": 1.2,
+   "tilt": 3,
+   "bands": 7,
+   "moons": 2,
+   "theme": "fauna"
+  }
+ },
+ {
+  "roots": [
+   "nettuno",
+   "neptune",
+   "urano",
+   "uranus"
+  ],
+  "cosmos": {
+   "kind": "planet",
+   "size": 1.0,
+   "tilt": 28,
+   "rings": 1,
+   "bands": 3,
+   "theme": "bioluminescent"
+  }
+ },
+ {
+  "roots": [
+   "marte",
+   "mars",
+   "venere",
+   "venus",
+   "mercurio",
+   "mercury",
+   "plutone",
+   "pluto"
+  ],
+  "cosmos": {
+   "kind": "planet",
+   "size": 0.8,
+   "tilt": 25,
+   "bands": 0,
+   "theme": "geological"
+  }
+ },
+ {
+  "roots": [
+   "terra",
+   "earth",
+   "luna",
+   "moon",
+   "mondo",
+   "globo"
+  ],
+  "cosmos": {
+   "kind": "planet",
+   "size": 1.0,
+   "tilt": 23,
+   "moons": 1,
+   "theme": "botanical"
+  }
+ },
+ {
+  "roots": [
+   "pianet*",
+   "planet*",
+   "esopianeta",
+   "exoplanet*",
+   "asteroid*",
+   "cometa"
+  ],
+  "cosmos": {
+   "kind": "planet",
+   "size": 1.0,
+   "tilt": 20,
+   "rings": 0,
+   "bands": 2,
+   "theme": "celestial"
+  }
+ }
+]

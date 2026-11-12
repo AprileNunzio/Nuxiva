@@ -1,8 +1,11 @@
 import json
 import logging
 
-from agenti.particles import codec, forma_anatomy, forma_traits
+from agenti.particles import codec, forma, forma_anatomy, forma_cosmos, forma_traits
 from agenti.particles.forma import FormaError
+from agenti.particles.forma_guide import GUIDE
+
+MAX_PLAN = 16_384
 
 log = logging.getLogger("nuxiva.particles.forma")
 
@@ -21,10 +24,13 @@ def system() -> str:
     return ("You describe how an object is built so a generic generator can assemble it from particles. "
             "Do not describe a specific model: pick the values that make this object recognisable. "
             "For a living creature, or anything with a head, a body and limbs, reply {\"anatomy\":{...}} using only these fields: "
-            f"{_fields(forma_anatomy.SCHEMA)}. plan: quadruped has four legs, biped stands on two legs, bird, fish, insect has pairs of legs, "
+            f"{_fields(forma_anatomy.SCHEMA)}. In anatomy the field plan is the body plan: quadruped has four legs, biped stands on two legs, bird, fish, insect has pairs of legs, "
             "serpent has no limbs. Numbers are ratios around 1.0 against a typical specimen: stress what sets this animal apart, such as a long neck, "
             "big ears, short legs, a bushy tail, a long snout, horns, wings. "
-            f"For anything else reply {{\"traits\":{{...}}}} using only these fields: {_fields(forma_traits.SCHEMA)}. "
+            "For a star, a galaxy, a planet, a nebula, a black hole or a planetary system reply {\"cosmos\":{...}} using only these fields: "
+            f"{_fields(forma_cosmos.SCHEMA)}. "
+            "For any other object, such as a machine, an engine, a vehicle, a building, a tool or a device, reply {\"plan\":{...}}. " + GUIDE + " "
+            f"For an abstract shape you may instead reply {{\"traits\":{{...}}}} using only these fields: {_fields(forma_traits.SCHEMA)}. "
             "radial means parts repeat around a vertical axis, bilateral means a left and right mirror, axial means stacked along a vertical axis, "
             "spiral means winding strands, orbital means a centre with rings. "
             "When a <current> draft is given, review it: fix wrong proportions, add the features that are missing, keep what is right, and reply with the improved JSON in the same format. "
@@ -49,19 +55,34 @@ def build(data) -> tuple[dict, dict]:
     if isinstance(data.get("anatomy"), dict):
         kept = clean_anatomy(data["anatomy"])
         return codec.validate(forma_anatomy.sculpt(kept)), {"anatomy": kept}
+    if isinstance(data.get("plan"), dict):
+        if len(json.dumps(data["plan"])) > MAX_PLAN:
+            raise FormaError("too_large")
+        return codec.validate(forma.build(data["plan"])), {"plan": data["plan"]}
+    if isinstance(data.get("cosmos"), dict):
+        kept = {key: data["cosmos"][key] for key in forma_cosmos.DEFAULTS if key in data["cosmos"]}
+        return codec.validate(forma_cosmos.sculpt(kept)), {"cosmos": kept}
     body = data["traits"] if isinstance(data.get("traits"), dict) else data
     kept = clean(body)
     return codec.validate(forma_traits.sculpt(kept)), {"traits": kept}
 
 
+def draft(concept: str) -> dict | None:
+    found = forma_anatomy.preset(concept)
+    if found is not None:
+        return {"anatomy": found}
+    found = forma_cosmos.preset(concept)
+    return {"cosmos": found} if found is not None else None
+
+
 async def design(concept: str, start: dict | None = None) -> dict | None:
     from agenti.brain.llm import generate
-    current = {"anatomy": start} if start else None
+    current = start
     spec = None
     for _ in range(1 if start else 2):
         prompt = f"<object>{concept}</object>" + (f"<current>{json.dumps(current, separators=(',', ':'))}</current>" if current else "")
         try:
-            data = await generate(prompt, as_json=True, max_tokens=500, temperature=0.2, kind="chat", system=system(),
+            data = await generate(prompt, as_json=True, max_tokens=2400, temperature=0.2, kind="chat", system=system(),
                                   component="particles", timeout=60)
             spec, current = build(data)
         except (FormaError, codec.ParticleError, ValueError, TypeError, KeyError, RuntimeError, OSError) as exc:

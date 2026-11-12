@@ -1,4 +1,6 @@
+import json
 import math
+import os
 
 MAX_PARTS = 96
 MAX_PRIMS = 256
@@ -9,7 +11,7 @@ MAX_STEPS = 12
 MAX_COUNT = 24
 REACH = 3.0
 LIMIT = 100.0
-SHAPES = ("sphere", "box", "cylinder", "cone", "torus", "helix", "plane")
+SHAPES = ("sphere", "box", "cylinder", "cone", "torus", "helix", "plane", "cloud", "disc", "spiral", "ring", "halo", "orbit")
 AXES = ("x", "y", "z")
 PATHS = ("line", "arc", "wave", "spiral")
 PALETTES = {
@@ -310,3 +312,23 @@ def compile_plan(plan) -> dict:
     if not parts or len(parts) > MAX_PARTS:
         raise FormaError("too_many_parts")
     return {"parts": parts, "labels": labels} if labels else {"parts": parts}
+
+
+def _native():
+    if os.environ.get("NUXIVA_NATIVE", "auto").strip() == "0":
+        return None
+    try:
+        import nuxiva_native
+    except ImportError:
+        return None
+    return nuxiva_native if hasattr(nuxiva_native, "forma_compile") else None
+
+
+def build(plan) -> dict:
+    lib = _native()
+    if lib is None:
+        return compile_plan(plan)
+    try:
+        return json.loads(lib.forma_compile(json.dumps(plan, ensure_ascii=False)))
+    except ValueError as exc:
+        raise FormaError(str(exc)) from exc

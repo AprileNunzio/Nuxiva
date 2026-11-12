@@ -1,0 +1,16 @@
+GUIDE = (
+    "A plan is {\"theme\":\"celestial|fauna|mechanical|geological|botanical|bioluminescent|microscopic|ethereal\",\"nodes\":[...]}. "
+    "Axes: x is right, y is up, z is forward; keep every coordinate between -10 and 10. Node types, each with only these fields: "
+    "lathe {op,profile:[[radius,y],...] with 2 to 16 points and radius at least 0,color,weight} is a solid of revolution around the vertical axis "
+    "(boilers, bottles, columns, domes); "
+    "sweep {op,path:line|arc|wave|spiral,from:[x,y,z],dir:[x,y,z],length,bend between -2 and 2,r0,r1,steps 1 to 12,color,weight} is a tube that "
+    "narrows from radius r0 to r1 along a direction (pipes, rods, limbs, cables); "
+    "blob {op,shape:sphere|box|cylinder|cone|torus|helix|plane|cloud|disc|spiral|ring|halo|orbit,at:[x,y,z],size:[x,y,z] as half extents,"
+    "rot:[degrees x,y,z],color,weight} is a primitive, cylinders and cones stand along y; "
+    "radial {op,count 1 to 24,radius,phase,child} repeats its child around the vertical axis at that radius; "
+    "mirror {op,axis:x|y|z,child} adds the mirror image; rotate {op,axis,deg,child} turns its child, for example axis x and 90 degrees lays a lathe "
+    "along z; group {op,children}; mark {op,name,at:[x,y,z]} names a part for the viewer with 1 to 32 lowercase letters and underscores. "
+    "color is an index from 0 to 5 into the theme palette. weight is the particle density: 1 to 3 for large surfaces, up to 8 for small details. "
+    "At most 128 nodes, nesting depth 5 and 90 visible parts. Build it like an expert in that field: real proportions and real components, "
+    "symmetry through mirror and radial, one mark per important component placed on that component."
+)
