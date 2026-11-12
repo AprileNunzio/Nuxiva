@@ -7,7 +7,7 @@ use pyo3::prelude::*;
 use std::sync::RwLock;
 
 #[pyclass(module = "nuxiva_native", from_py_object)]
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 pub struct PySynapticSpike {
     #[pyo3(get, set)]
     pub source_neuron: u32,
@@ -119,7 +119,7 @@ impl RustSynapticBus {
         Ok(self.router.write().map_err(|_| poisoned())?.unsubscribe(id))
     }
 
-    fn push_spike(&self, spike: PySynapticSpike) -> PyResult<bool> {
+    fn push_spike(&self, spike: &PySynapticSpike) -> PyResult<bool> {
         let transmitter = if spike.inhibitory_gaba {
             TransmitterType::GabaInhibitory
         } else {
