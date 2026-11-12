@@ -1,3 +1,5 @@
+import sys
+import features.particles.show as _particles_show
 from features.particles.show import (
     COOLDOWN_SECONDS,
     DECIDE,
@@ -18,6 +20,7 @@ from features.particles.show import (
     present,
     sculpt,
     state,
+    store,
     target_screen,
     watch,
     worthwhile,
@@ -43,7 +46,10 @@ __all__ = [
     "present",
     "sculpt",
     "state",
+    "store",
     "target_screen",
     "watch",
     "worthwhile",
 ]
+
+sys.modules[__name__] = _particles_show

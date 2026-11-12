@@ -47,6 +47,25 @@
         "warmup",
         "services"
       ]
+    },
+    {
+      "key": "NUXIVA_VISUAL_DEFAULT_ENGINE",
+      "label": "Motore visivo 3D predefinito (particelle = più veloce e leggero)",
+      "type": "select",
+      "options": [
+        "particles",
+        "gaussian_splat",
+        "neural_radiance",
+        "depth_parallax",
+        "diorama"
+      ],
+      "default": "particles"
+    },
+    {
+      "key": "NUXIVA_VISUAL_PRIORITY",
+      "label": "Ordine di priorità algoritmi visivi 3D del Cervello",
+      "type": "text",
+      "default": "particles,depth_parallax,gaussian_splat,neural_radiance,diorama"
     }
   ],
   "surface": "hidden"

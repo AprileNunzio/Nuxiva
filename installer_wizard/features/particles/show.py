@@ -46,10 +46,23 @@ def target_screen() -> int:
         return 0
 
 
-def present(entry: dict, ttl: float = SHOW_SECONDS) -> dict:
+def _realistic_payload(engine_name: str, concept: str) -> dict | None:
+    if engine_name == "gaussian_splat":
+        from features.gaussian_splat import synthesize_gaussian_scene
+        return synthesize_gaussian_scene(concept, 10)
+    if engine_name == "neural_radiance":
+        from features.neural_radiance import synthesize_radiance_scene
+        return synthesize_radiance_scene(concept)
+    return None
+
+
+def present(entry: dict, ttl: float = SHOW_SECONDS, query: str = "") -> dict:
+    from features.visual_router import select_visual_engine
     concept = str(entry.get("concept") or "")
     spec = entry.get("spec") or morphogenesis.synthesize_spec(concept)
     hotspots = morphogenesis.extract_hotspots(concept, spec)
+    route_decision = select_visual_engine(query or concept)
+    engine_name = route_decision.get("selected_engine", "particles")
     current_entry = {
         "digest": entry["digest"],
         "concept": concept,
@@ -59,6 +72,8 @@ def present(entry: dict, ttl: float = SHOW_SECONDS) -> dict:
         "hotspots": hotspots,
         "lod_stages": ["shell", "core", "fine", "full"],
         "xr": xr.xr_envelope(entry["digest"], concept, hotspots),
+        "visual_engine": route_decision,
+        "realistic_scene": _realistic_payload(engine_name, concept),
     }
     state["current"] = current_entry
     state_store.touch()
@@ -77,6 +92,8 @@ def current() -> dict | None:
             "hotspots": cur.get("hotspots", []),
             "lod_stages": cur.get("lod_stages", []),
             "xr": cur.get("xr", {}),
+            "visual_engine": cur.get("visual_engine", {}),
+            "realistic_scene": cur.get("realistic_scene"),
         }
     return None
 
@@ -134,7 +151,7 @@ def ensure_visual(question: str) -> dict | None:
     try:
         entry = materialize_instant(direct_concept)
         state["last"] = time.time()
-        return present(entry)
+        return present(entry, query=question or "")
     except Exception:
         return None
 

@@ -52,6 +52,44 @@ pub fn particles_synthesize_spec(concept: &str) -> PyResult<String> {
     serde_json::to_string(&spec).map_err(|e| PyRuntimeError::new_err(e.to_string()))
 }
 
+#[pyfunction]
+pub fn visual_route_select(
+    query: &str,
+    brain_priority_csv: &str,
+    available_memory_mb: u32,
+) -> PyResult<String> {
+    let decision =
+        nuxiva_stage_core::select_visual_engine(query, brain_priority_csv, available_memory_mb);
+    serde_json::to_string(&decision).map_err(|e| PyRuntimeError::new_err(e.to_string()))
+}
+
+#[pyfunction]
+pub fn gaussian_splat_synthesize(concept: &str, subdiv_per_part: u8) -> PyResult<String> {
+    let spec = nuxiva_stage_core::synthesize_sculpture(concept);
+    let scene = nuxiva_stage_core::synthesize_gaussian_scene(concept, &spec, subdiv_per_part);
+    serde_json::to_string(&scene).map_err(|e| PyRuntimeError::new_err(e.to_string()))
+}
+
+#[pyfunction]
+pub fn neural_radiance_synthesize(concept: &str) -> PyResult<String> {
+    let spec = nuxiva_stage_core::synthesize_sculpture(concept);
+    let scene = nuxiva_stage_core::synthesize_radiance_scene(concept, &spec);
+    serde_json::to_string(&scene).map_err(|e| PyRuntimeError::new_err(e.to_string()))
+}
+
+#[pyfunction]
+pub fn depth_parallax_reconstruct(
+    concept: &str,
+    rgba: &[u8],
+    width: u32,
+    height: u32,
+    max_vertices: usize,
+) -> PyResult<String> {
+    let scene =
+        nuxiva_stage_core::reconstruct_depth_relief(concept, rgba, width, height, max_vertices);
+    serde_json::to_string(&scene).map_err(|e| PyRuntimeError::new_err(e.to_string()))
+}
+
 #[pyclass(module = "nuxiva_native")]
 #[derive(Debug)]
 pub struct RustParticleCache {
