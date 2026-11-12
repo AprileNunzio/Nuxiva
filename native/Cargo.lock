@@ -96,6 +96,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "agency-thought"
+version = "5.8.0"
+dependencies = [
+ "agency-domain",
+ "agency-planner",
+ "serde",
+ "serde_json",
+ "thiserror",
+]
+
+[[package]]
 name = "ahash"
 version = "0.8.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
