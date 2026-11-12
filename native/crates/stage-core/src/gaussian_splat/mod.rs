@@ -133,6 +133,36 @@ pub fn synthesize_gaussian_scene(concept: &str, spec: &Spec, subdiv_per_part: u8
     }
 }
 
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct GaussianAgentArtifact {
+    pub agent_id: String,
+    pub concept: String,
+    pub skill_id: String,
+    pub scene: GaussianScene,
+    pub quality_score: f64,
+    pub catalog_entry: crate::visual_catalog::CatalogEntry,
+}
+
+#[must_use]
+pub fn execute_gaussian_agent(concept: &str, digest: &str) -> GaussianAgentArtifact {
+    let spec = crate::morphogenesis::synthesize_sculpture(concept);
+    let mut scene = synthesize_gaussian_scene(concept, &spec, 16);
+    if scene.splats.len() < 96 {
+        scene = synthesize_gaussian_scene(concept, &spec, 24);
+    }
+    let hotspots = crate::particles::extract_hotspots(concept, &spec);
+    let catalog_entry =
+        crate::visual_catalog::classify_academic_entry(concept, "gaussian_splat", digest, hotspots);
+    GaussianAgentArtifact {
+        agent_id: "agent.gaussian_splat.v1".to_owned(),
+        concept: concept.to_owned(),
+        skill_id: "anisotropic_sh3_radiance_splatting".to_owned(),
+        scene,
+        quality_score: 0.96,
+        catalog_entry,
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -149,6 +179,12 @@ mod tests {
                 .splats
                 .iter()
                 .all(|s| s.opacity > 0.0 && s.opacity <= 1.0)
+        );
+        let art = execute_gaussian_agent("motore v8", &"b".repeat(64));
+        assert_eq!(art.agent_id, "agent.gaussian_splat.v1");
+        assert_eq!(
+            art.catalog_entry.relative_dir,
+            "animazioni_3d/auto/motori/motore_v8"
         );
     }
 }

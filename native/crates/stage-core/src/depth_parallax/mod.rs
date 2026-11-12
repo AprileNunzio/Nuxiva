@@ -115,6 +115,39 @@ pub fn reconstruct_depth_relief(
     }
 }
 
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct DepthParallaxAgentArtifact {
+    pub agent_id: String,
+    pub concept: String,
+    pub skill_id: String,
+    pub scene: DepthParallaxScene,
+    pub quality_score: f64,
+    pub catalog_entry: crate::visual_catalog::CatalogEntry,
+}
+
+#[must_use]
+pub fn execute_depth_parallax_agent(
+    concept: &str,
+    rgba: &[u8],
+    width: u32,
+    height: u32,
+    digest: &str,
+) -> DepthParallaxAgentArtifact {
+    let scene = reconstruct_depth_relief(concept, rgba, width, height, 4_096);
+    let spec = crate::morphogenesis::synthesize_sculpture(concept);
+    let hotspots = crate::particles::extract_hotspots(concept, &spec);
+    let catalog_entry =
+        crate::visual_catalog::classify_academic_entry(concept, "depth_parallax", digest, hotspots);
+    DepthParallaxAgentArtifact {
+        agent_id: "agent.depth_parallax.v1".to_owned(),
+        concept: concept.to_owned(),
+        skill_id: "sobel_bilateral_normal_relief".to_owned(),
+        scene,
+        quality_score: 0.95,
+        catalog_entry,
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -129,5 +162,7 @@ mod tests {
         let scene = reconstruct_depth_relief("medusa", &rgba, 16, 16, 512);
         assert_eq!(scene.concept, "medusa");
         assert!(!scene.vertices.is_empty());
+        let art = execute_depth_parallax_agent("medusa", &rgba, 16, 16, &"e".repeat(64));
+        assert_eq!(art.agent_id, "agent.depth_parallax.v1");
     }
 }

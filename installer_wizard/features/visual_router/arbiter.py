@@ -105,3 +105,23 @@ def select_visual_engine(
         "memory_budget_mb": MEMORY_MB["particles"],
         "fallback_order": priority,
     }
+
+
+def dispatch_visual_agent(query: str, persist: bool = True) -> dict:
+    route = select_visual_engine(query)
+    engine = route.get("selected_engine", "particles")
+    if engine == "diorama":
+        from features.diorama.agent import diorama_agent
+        return {"route": route, "artifact": diorama_agent.run(query, persist=persist)}
+    if engine == "gaussian_splat":
+        from features.gaussian_splat import gaussian_splat_agent
+        return {"route": route, "artifact": gaussian_splat_agent.run(query, persist=persist)}
+    if engine == "neural_radiance":
+        from features.neural_radiance import neural_radiance_agent
+        return {"route": route, "artifact": neural_radiance_agent.run(query, persist=persist)}
+    if engine == "depth_parallax":
+        from features.depth_parallax import depth_parallax_agent
+        return {"route": route, "artifact": depth_parallax_agent.run(query, persist=persist)}
+    from features.particles import particle_agent
+    return {"route": route, "artifact": particle_agent.run(query, persist=persist)}
+

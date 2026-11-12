@@ -98,6 +98,26 @@ pub fn visual_catalog_classify(concept: &str, engine: &str, digest: &str) -> PyR
     serde_json::to_string(&entry).map_err(|e| PyRuntimeError::new_err(e.to_string()))
 }
 
+#[pyfunction]
+pub fn visual_agent_execute(engine: &str, concept: &str, digest: &str) -> PyResult<String> {
+    match engine.trim().to_lowercase().as_str() {
+        "diorama" => {
+            serde_json::to_string(&nuxiva_stage_core::execute_diorama_agent(concept, digest))
+                .map_err(|e| PyRuntimeError::new_err(e.to_string()))
+        }
+        "gaussian_splat" => {
+            serde_json::to_string(&nuxiva_stage_core::execute_gaussian_agent(concept, digest))
+                .map_err(|e| PyRuntimeError::new_err(e.to_string()))
+        }
+        "neural_radiance" => serde_json::to_string(
+            &nuxiva_stage_core::execute_neural_radiance_agent(concept, digest),
+        )
+        .map_err(|e| PyRuntimeError::new_err(e.to_string())),
+        _ => serde_json::to_string(&nuxiva_stage_core::execute_particle_agent(concept, digest))
+            .map_err(|e| PyRuntimeError::new_err(e.to_string())),
+    }
+}
+
 #[pyclass(module = "nuxiva_native")]
 #[derive(Debug)]
 pub struct RustParticleCache {

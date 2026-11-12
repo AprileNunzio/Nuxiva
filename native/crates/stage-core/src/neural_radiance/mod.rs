@@ -93,6 +93,39 @@ pub fn synthesize_radiance_scene(concept: &str, spec: &Spec) -> NeuralRadianceSc
     }
 }
 
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct NeuralRadianceAgentArtifact {
+    pub agent_id: String,
+    pub concept: String,
+    pub skill_id: String,
+    pub scene: NeuralRadianceScene,
+    pub quality_score: f64,
+    pub catalog_entry: crate::visual_catalog::CatalogEntry,
+}
+
+#[must_use]
+pub fn execute_neural_radiance_agent(concept: &str, digest: &str) -> NeuralRadianceAgentArtifact {
+    let spec = crate::morphogenesis::synthesize_sculpture(concept);
+    let mut scene = synthesize_radiance_scene(concept, &spec);
+    scene.ambient_occlusion_steps = 8;
+    scene.shadow_softness = 24.0;
+    let hotspots = crate::particles::extract_hotspots(concept, &spec);
+    let catalog_entry = crate::visual_catalog::classify_academic_entry(
+        concept,
+        "neural_radiance",
+        digest,
+        hotspots,
+    );
+    NeuralRadianceAgentArtifact {
+        agent_id: "agent.neural_radiance.v1".to_owned(),
+        concept: concept.to_owned(),
+        skill_id: "sdf_pbr_subsurface_raymarching".to_owned(),
+        scene,
+        quality_score: 0.97,
+        catalog_entry,
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -105,5 +138,8 @@ mod tests {
         assert_eq!(scene.concept, "cervello umano");
         assert!(!scene.nodes.is_empty());
         assert!(scene.nodes.iter().all(|n| n.subsurface > 0.5));
+        let art = execute_neural_radiance_agent("cervello umano", &"d".repeat(64));
+        assert_eq!(art.agent_id, "agent.neural_radiance.v1");
+        assert_eq!(art.scene.ambient_occlusion_steps, 8);
     }
 }

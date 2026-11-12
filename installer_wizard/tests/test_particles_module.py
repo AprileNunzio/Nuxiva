@@ -159,8 +159,49 @@ class DedicatedParticlesDirectoryTest(unittest.TestCase):
             self.assertIsNotNone(hit_by_path)
             self.assertEqual(hit_by_path["slug"], "Rhizostoma_pulmo")
 
+    def test_independent_autonomous_agents(self):
+        from features.depth_parallax import depth_parallax_agent
+        from features.diorama.agent import diorama_agent
+        from features.gaussian_splat import gaussian_splat_agent
+        from features.neural_radiance import neural_radiance_agent
+        from features.particles import particle_agent
+        from features.visual_router import dispatch_visual_agent
+
+        p_art = particle_agent.run("Come è fatta una medusa?", persist=False)
+        self.assertEqual(p_art["agent_id"], "agent.particles.v1")
+        self.assertTrue(p_art["critique"]["passed"])
+        self.assertEqual(
+            p_art["catalog_entry"]["relative_dir"],
+            "particelle/animali/mare/Rhizostoma_pulmo",
+        )
+
+        d_art = diorama_agent.run("Castel dell'Ovo", persist=False)
+        self.assertEqual(d_art["agent_id"], "agent.diorama.v1")
+        self.assertEqual(
+            d_art["catalog_entry"]["relative_dir"],
+            "diorama/castelli/monumenti/Castel_dell_Ovo",
+        )
+
+        g_art = gaussian_splat_agent.run("motore v8", persist=False)
+        self.assertEqual(g_art["agent_id"], "agent.gaussian_splat.v1")
+        self.assertEqual(
+            g_art["catalog_entry"]["relative_dir"],
+            "animazioni_3d/auto/motori/motore_v8",
+        )
+
+        n_art = neural_radiance_agent.run("cervello umano", persist=False)
+        self.assertEqual(n_art["agent_id"], "agent.neural_radiance.v1")
+
+        dp_art = depth_parallax_agent.run("medusa", persist=False)
+        self.assertEqual(dp_art["agent_id"], "agent.depth_parallax.v1")
+
+        dispatched = dispatch_visual_agent("Mostrami un diorama di Castel dell'Ovo", persist=False)
+        self.assertEqual(dispatched["route"]["selected_engine"], "diorama")
+        self.assertEqual(dispatched["artifact"]["agent_id"], "agent.diorama.v1")
+
 
 if __name__ == "__main__":
     unittest.main()
+
 
 

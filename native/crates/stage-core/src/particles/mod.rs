@@ -1,8 +1,13 @@
+pub mod agent;
 pub mod codec;
 pub mod hotspots;
 pub mod lod;
 pub mod sample;
 
+pub use agent::{
+    ParticleAgentArtifact, ParticleAgentSkill, ParticleCritiqueReport, execute_particle_agent,
+    particle_agent_skills,
+};
 pub use codec::{Cloud, HEADER, MAGIC, MIN_POINTS, ParticleError, decode, encode};
 pub use hotspots::{Hotspot3D, extract_hotspots};
 pub use lod::{LodLevel, ProgressiveAssembly, decompose_lod, sample_progressive_layer};
