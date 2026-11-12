@@ -61,12 +61,18 @@ vision = VisionWatch()
 
 
 async def run() -> None:
-    async with httpx.AsyncClient(timeout=TIMEOUT) as client:
-        while True:
-            if enabled():
-                try:
-                    await vision.poll(client)
-                except (httpx.HTTPError, ValueError) as exc:
-                    log.debug("Visione non raggiungibile per il soccorso: %s", exc)
-                coordinator.update()
-            await asyncio.sleep(TICK)
+    from features.rescue.live import dispatcher, link
+    listener = asyncio.create_task(link.run(enabled))
+    try:
+        async with httpx.AsyncClient(timeout=TIMEOUT) as client:
+            while True:
+                if enabled():
+                    try:
+                        await vision.poll(client)
+                    except (httpx.HTTPError, ValueError) as exc:
+                        log.debug("Visione non raggiungibile per il soccorso: %s", exc)
+                    coordinator.update()
+                    await dispatcher.flush()
+                await asyncio.sleep(TICK)
+    finally:
+        listener.cancel()

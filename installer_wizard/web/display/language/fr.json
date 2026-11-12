@@ -463,6 +463,24 @@
     "upd_status_running": "en cours",
     "upd_status_done": "ok",
     "upd_status_skipped": "ignorée",
-    "upd_status_failed": "erreur"
+    "upd_status_failed": "erreur",
+    "rescue_hazard_medical": "Secours · malaise possible",
+    "rescue_hazard_fire": "Secours · incendie possible",
+    "rescue_hazard_intrusion": "Secours · intrusion possible",
+    "rescue_hazard_violence": "Secours · danger possible",
+    "rescue_ask_title": "Ça va ?",
+    "rescue_ask_body": "J'ai remarqué quelque chose qui pourrait être dangereux. Répondez à voix haute ou touchez un bouton.",
+    "rescue_ask_discreet": "Touchez un bouton pour répondre.",
+    "rescue_ask_spoken": "Ça va ? Répondez oui ou non.",
+    "rescue_countdown": "Sans réponse, je préviens vos contacts dans {{seconds}} secondes",
+    "rescue_ok": "Je vais bien",
+    "rescue_help": "J'ai besoin d'aide",
+    "rescue_remind_title": "Je préviens vos contacts",
+    "rescue_remind_body": "En cas d'urgence, appelez tout de suite le {{number}}.",
+    "rescue_ack_title": "Les secours arrivent",
+    "rescue_ack_body": "{{name}} a reçu l'alerte et arrive.",
+    "rescue_ack_anon": "Un proche a reçu l'alerte et arrive.",
+    "rescue_number": "Urgence : {{number}}",
+    "rescue_disclaimer": "Nuxiva ne remplace ni les services d'urgence ni un dispositif médical certifié."
   }
 }

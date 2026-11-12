@@ -6,5 +6,25 @@
     "Verificación por voz inmediata y no intrusiva antes de emitir alarma",
     "Política de escalada escalonada a contactos familiares y de emergencia",
     "Auditoría inmutable y cifrada en el diario Sentinella con pruebas criptográficas"
-  ]
+  ],
+  "messages": {
+    "hazard_medical": "posible caída o malestar",
+    "hazard_fire": "posible humo o incendio",
+    "hazard_intrusion": "posible intrusión",
+    "hazard_violence": "posible agresión",
+    "who": " (sobre {name})",
+    "alert_family": "🆘 <b>Nuxiva Socorro</b>\nPosible peligro en casa: {hazard}{who}.\nLa persona no respondió o pidió ayuda. Si puedes, llámala o ve a comprobarlo.\nSi es una emergencia, llama ahora al {number}.",
+    "alert_emergency": "🚨 <b>Nuxiva Socorro, aviso {round}</b>\nNadie se ha hecho cargo todavía: {hazard}{who}.\nLlama ahora al {number} o ve al lugar.",
+    "disclaimer": "<i>Nuxiva no sustituye a los servicios de emergencia ni a un dispositivo médico certificado.</i>",
+    "button_ack": "🏃 Voy, me encargo yo",
+    "button_cancel": "✅ Cancelar, todo bien",
+    "acked_by": "✅ {name} se ha hecho cargo del aviso.",
+    "cancelled_by": "Alarma cancelada por {name}.",
+    "stand_down": "Alarma terminada: la situación parece normal de nuevo.",
+    "callback_ok": "Recibido, gracias.",
+    "callback_stale": "Este aviso ya no está activo.",
+    "home_alarm": "Atención: posible incendio en casa. Salid ahora y llamad al {number}.",
+    "unreachable": "Atención: Nuxiva detectó un posible peligro y no puede contactar con ningún familiar. Si necesitáis ayuda, llamad al {number}.",
+    "someone": "un familiar"
+  }
 }

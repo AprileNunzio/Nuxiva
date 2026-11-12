@@ -378,6 +378,11 @@ class TelegramBot:
     async def _callback(self, cq: dict) -> None:
         chat_id = str(cq.get("message", {}).get("chat", {}).get("id", ""))
         chat = self.data["chats"].get(chat_id)
+        data = str(cq.get("data") or "")
+        if chat and data.startswith("rescue:") and self.handlers.get("rescue"):
+            reply = await self.handlers["rescue"](chat_id, data)
+            await self.call("answerCallbackQuery", callback_query_id=cq["id"], text=str(reply)[:190])
+            return
         await self.call("answerCallbackQuery", callback_query_id=cq["id"])
         if not chat or chat.get("role") != "owner":
             return

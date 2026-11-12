@@ -66,6 +66,9 @@
     "sentinel.rescue.escalate": "Allarme soccorso scalato al livello {tier} ({hazard})",
     "sentinel.rescue.stand_down": "Allarme soccorso rientrato: {hazard}",
     "sentinel.rescue.person_ok": "La persona ha confermato di stare bene",
-    "sentinel.rescue.need_help": "Richiesta urgente di aiuto confermata dalla persona"
+    "sentinel.rescue.need_help": "Richiesta urgente di aiuto confermata dalla persona",
+    "sentinel.rescue.delivery": "Avviso soccorso confermato da Telegram per {delivered} contatti su {total} (livello {tier})",
+    "sentinel.rescue.unreachable": "Nessun contatto raggiungibile per l'allarme soccorso ({hazard}): avviso diffuso in casa",
+    "sentinel.rescue.acknowledged": "Allarme soccorso preso in carico da {name}"
   }
 }

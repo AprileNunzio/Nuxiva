@@ -24,7 +24,7 @@ from ingress import RealtimeInput
 from learner import current_name, learner, name_variant
 from music import MusicTap
 from scene import SoundScene
-from danger import DangerEar
+from danger import CONTROLS as RESCUE_CONTROLS, DangerEar, rescue_control
 from speakers import SpeakerContext
 from livecap import LiveCaptions
 from livegov import LiveGovernor
@@ -436,8 +436,8 @@ class Session:
             )
             if self.nuxiva_speaking:
                 self.wake.request_reset()
-        elif kind == "rescue_ask":
-            self.danger.ask(msg.get("seconds"))
+        elif kind in RESCUE_CONTROLS:
+            await rescue_control(kind, msg, SESSIONS, self.broadcast)
         elif kind == "mic_adjusted":
             self.autolevel.rejudge()
         elif kind == "presence":

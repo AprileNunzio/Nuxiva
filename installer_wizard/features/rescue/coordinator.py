@@ -3,7 +3,6 @@ import logging
 import threading
 import time
 
-from features.redalert.service import RedAlert
 from features.rescue.engine import Rescue
 from features.sentinel import record
 
@@ -16,6 +15,7 @@ class RescueCoordinator:
         self.prefer_native = prefer_native
         self.rescue = Rescue(policy, prefer_native=prefer_native)
         self.last_step: dict = {}
+        self.listeners: list = []
         self._lock = threading.Lock()
 
     def observe(self, kind: str, probability: float, confidence: float, source: str,
@@ -26,7 +26,7 @@ class RescueCoordinator:
             self.rescue.observe(kind, probability, confidence, source, cur_at, cur_now, room)
             step = self.rescue.update(cur_now)
             self.last_step = step
-            self._dispatch_actions(step.get("actions", []), cur_now)
+            self._dispatch(step, cur_now)
             return step
 
     def update(self, now: float | None = None) -> dict:
@@ -34,7 +34,7 @@ class RescueCoordinator:
         with self._lock:
             step = self.rescue.update(cur_now)
             self.last_step = step
-            self._dispatch_actions(step.get("actions", []), cur_now)
+            self._dispatch(step, cur_now)
             return step
 
     def person_ok(self, now: float | None = None) -> dict:
@@ -42,7 +42,7 @@ class RescueCoordinator:
         with self._lock:
             step = self.rescue.person_ok(cur_now)
             self.last_step = step
-            self._dispatch_actions(step.get("actions", []), cur_now)
+            self._dispatch(step, cur_now)
             try:
                 record.record("system.recovered", record.NUXIVA, "sentinel.rescue.person_ok",
                               {}, "sensitive", "rescue", at=cur_now)
@@ -55,7 +55,7 @@ class RescueCoordinator:
         with self._lock:
             step = self.rescue.need_help(cur_now)
             self.last_step = step
-            self._dispatch_actions(step.get("actions", []), cur_now)
+            self._dispatch(step, cur_now)
             try:
                 record.record("system.alert", record.NUXIVA, "sentinel.rescue.need_help",
                               {}, "sensitive", "rescue", at=cur_now)
@@ -68,7 +68,7 @@ class RescueCoordinator:
         with self._lock:
             step = self.rescue.acknowledge(tier, cur_now)
             self.last_step = step
-            self._dispatch_actions(step.get("actions", []), cur_now)
+            self._dispatch(step, cur_now)
             return step
 
     def dismiss(self, now: float | None = None) -> dict:
@@ -76,7 +76,7 @@ class RescueCoordinator:
         with self._lock:
             step = self.rescue.dismiss(cur_now)
             self.last_step = step
-            self._dispatch_actions(step.get("actions", []), cur_now)
+            self._dispatch(step, cur_now)
             return step
 
     def status(self) -> dict:
@@ -98,6 +98,15 @@ class RescueCoordinator:
             self.rescue = Rescue(p_str, prefer_native=self.prefer_native)
             self.last_step = {}
             return self.rescue.policy()
+
+    def _dispatch(self, step: dict, now: float) -> None:
+        actions = step.get("actions", [])
+        self._dispatch_actions(actions, now)
+        for listener in list(self.listeners):
+            try:
+                listener(actions, step)
+            except Exception:
+                log.exception("Canale di soccorso non raggiungibile")
 
     def _dispatch_actions(self, actions: list[dict], now: float) -> None:
         for a in actions:
@@ -127,20 +136,12 @@ class RescueCoordinator:
                     log.debug("Sentinel emergency audit error: %s", exc)
             elif act_type == "home_alarm":
                 try:
-                    RedAlert().trigger("rescue.home_alarm")
-                except Exception as exc:
-                    log.debug("RedAlert trigger error: %s", exc)
-                try:
                     record.record("system.alert", record.NUXIVA, "sentinel.rescue.alert",
                                   {"hazard": "fire", "source": "rescue", "confidence": "95"},
                                   "sensitive", "rescue", at=now)
                 except Exception as exc:
                     log.debug("Sentinel home_alarm audit error: %s", exc)
             elif act_type == "stand_down":
-                try:
-                    RedAlert().stop()
-                except Exception as exc:
-                    log.debug("RedAlert stop error: %s", exc)
                 try:
                     record.record("system.recovered", record.NUXIVA, "sentinel.rescue.stand_down",
                                   {"hazard": hazard}, "sensitive", "rescue", at=now)

@@ -8,6 +8,7 @@ from broadcast import SESSIONS, register, unregister
 from link_state import LINK, note_error, save_link
 
 log = logging.getLogger("nuxiva.ear")
+SERVICE_PATHS = frozenset({"/rescue"})
 
 
 async def handle_display(ws, make_session, voiceprints, host_mic) -> None:
@@ -18,9 +19,10 @@ async def handle_display(ws, make_session, voiceprints, host_mic) -> None:
         save_link()
         raise
     await session.send(type="ready", model=stt.MODEL_SIZE, instant=session.wake.ready, voiceprint=voiceprints.ready, host_mic=host_mic.is_capturing())
-    log.info("Display collegato")
+    service = getattr(getattr(ws, "request", None), "path", "") in SERVICE_PATHS
+    log.info("Servizio collegato" if service else "Display collegato")
     register(session)
-    LINK["clients"] += 1
+    LINK["clients"] += 0 if service else 1
     save_link()
     try:
         async for message in ws:
@@ -46,6 +48,6 @@ async def handle_display(ws, make_session, voiceprints, host_mic) -> None:
         await session.input.close()
         unregister(session)
         LINK["pages"] = [s.page for s in SESSIONS if s.page]
-        LINK["clients"] = max(0, LINK["clients"] - 1)
+        LINK["clients"] = max(0, LINK["clients"] - (0 if service else 1))
         save_link()
-        log.info("Display scollegato")
+        log.info("Servizio scollegato" if service else "Display scollegato")

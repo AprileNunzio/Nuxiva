@@ -66,6 +66,9 @@
     "sentinel.rescue.escalate": "Rescue alert escalated to tier {tier} ({hazard})",
     "sentinel.rescue.stand_down": "Rescue alert stood down: {hazard}",
     "sentinel.rescue.person_ok": "Person confirmed safe and okay",
-    "sentinel.rescue.need_help": "Urgent assistance requested by person"
+    "sentinel.rescue.need_help": "Urgent assistance requested by person",
+    "sentinel.rescue.delivery": "Rescue alert confirmed by Telegram for {delivered} of {total} contacts (tier {tier})",
+    "sentinel.rescue.unreachable": "No contact reachable for the rescue alert ({hazard}): warning spread in the home",
+    "sentinel.rescue.acknowledged": "Rescue alert taken in charge by {name}"
   }
 }

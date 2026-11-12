@@ -6,5 +6,25 @@
     "Immediate non-intrusive voice check-in before sounding alarm",
     "Tiered escalation policy to family contacts and emergency responders",
     "Tamper-proof encrypted audit in Sentinel journal with cryptographic proof"
-  ]
+  ],
+  "messages": {
+    "hazard_medical": "possible fall or illness",
+    "hazard_fire": "possible smoke or fire",
+    "hazard_intrusion": "possible intrusion",
+    "hazard_violence": "possible assault",
+    "who": " (about {name})",
+    "alert_family": "🆘 <b>Nuxiva Rescue</b>\nPossible danger at home: {hazard}{who}.\nThe person did not answer or asked for help. If you can, call them or go and check.\nIf it is an emergency, call {number} now.",
+    "alert_emergency": "🚨 <b>Nuxiva Rescue, alert {round}</b>\nNobody has taken charge yet: {hazard}{who}.\nCall {number} now or go there.",
+    "disclaimer": "<i>Nuxiva does not replace emergency services or a certified medical device.</i>",
+    "button_ack": "🏃 On my way, I'll handle it",
+    "button_cancel": "✅ Cancel, all is fine",
+    "acked_by": "✅ {name} has taken charge of the alert.",
+    "cancelled_by": "Alert cancelled by {name}.",
+    "stand_down": "Alert over: things look back to normal.",
+    "callback_ok": "Got it, thank you.",
+    "callback_stale": "This alert is no longer active.",
+    "home_alarm": "Warning: possible fire in the house. Get out now and call {number}.",
+    "unreachable": "Warning: Nuxiva detected a possible danger and cannot reach any family member. If help is needed, call {number}.",
+    "someone": "a family member"
+  }
 }

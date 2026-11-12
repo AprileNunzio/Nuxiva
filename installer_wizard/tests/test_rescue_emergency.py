@@ -103,16 +103,16 @@ class RescueEmergencyTest(unittest.TestCase):
         self.assertEqual(step["stage"], "cooldown")
         self.assertTrue(any(a["type"] == "stand_down" for a in step["actions"]))
 
-    @mock.patch("features.redalert.service.RedAlert.trigger")
-    @mock.patch("features.redalert.service.RedAlert.stop")
-    def test_coordinator_home_alarm_on_fire(self, mock_stop, mock_trigger):
+    @mock.patch("features.sentinel.record.record")
+    def test_coordinator_home_alarm_on_fire(self, mock_record):
         coord = RescueCoordinator(prefer_native=False)
+        seen = []
+        coord.listeners.append(lambda actions, step: seen.extend(a["type"] for a in actions))
         step = coord.observe("smoke", 0.95, 1.0, "smoke_kitchen", at=0.0, now=0.0)
         self.assertTrue(any(a["type"] == "home_alarm" for a in step["actions"]))
-        mock_trigger.assert_called()
-
         coord.dismiss(now=2.0)
-        mock_stop.assert_called()
+        self.assertIn("home_alarm", seen)
+        self.assertIn("stand_down", seen)
 
     def test_rescue_api_endpoints(self):
         resp = self.client.get("/api/rescue/status")
