@@ -2,7 +2,7 @@ import json
 from dataclasses import dataclass, field
 from typing import Awaitable, Callable
 
-from features.agency import feature, workspace
+from features.agency import feature, surgical, workspace
 from features.agency.client import AgencyRejected, client
 from features.agency.forge import registry as registry_module
 from features.agency.forge import sandbox, smith
