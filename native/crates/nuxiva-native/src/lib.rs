@@ -211,6 +211,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<agents::RustAgentRegistry>()?;
     m.add_function(wrap_pyfunction!(agents::agent_layout_inspect, m)?)?;
     m.add_function(wrap_pyfunction!(agents::agent_scaffold, m)?)?;
+    m.add_function(wrap_pyfunction!(agents::agent_genesis_decide, m)?)?;
     m.add_function(wrap_pyfunction!(agents::agent_icon, m)?)?;
     ceo::register(m)?;
     dossier::register(m)?;

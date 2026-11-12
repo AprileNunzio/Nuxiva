@@ -92,3 +92,13 @@ pub fn agent_icon(category: &str, id: &str) -> PyResult<Vec<u8>> {
     }
     Ok(nuxiva_agent_core::icon::render(category, id))
 }
+
+#[pyfunction]
+pub fn agent_genesis_decide(case_json: &str) -> PyResult<String> {
+    if case_json.len() > 64 * 1024 {
+        return Err(PyValueError::new_err("genesis case too large"));
+    }
+    let case: nuxiva_agent_core::genesis::Case =
+        serde_json::from_str(case_json).map_err(|e| PyValueError::new_err(e.to_string()))?;
+    json(&nuxiva_agent_core::genesis::decide(&case))
+}

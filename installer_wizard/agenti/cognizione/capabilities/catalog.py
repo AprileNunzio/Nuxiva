@@ -6,7 +6,7 @@ from agenti.capabilities import manifest
 from agenti.desktop.desk import desk
 from agenti.team import roster
 
-READ_ONLY = ("list_", "find_", "file_info", "read_file", "music_search", "music_now", "music_outputs", "agent_info", "team_roster", "now", "avatar_catalog")
+READ_ONLY = ("list_", "find_", "file_info", "read_file", "music_search", "music_now", "music_outputs", "agent_info", "agent_valuta", "team_roster", "now", "avatar_catalog")
 AGENT_URI = "nuxiva://agent/"
 
 

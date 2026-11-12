@@ -1,4 +1,5 @@
 pub mod ceo;
+pub mod genesis;
 pub mod icon;
 pub mod layout;
 pub mod manifest;

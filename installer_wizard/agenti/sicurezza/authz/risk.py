@@ -15,7 +15,7 @@ NAMES = {r.name.lower(): r for r in Risk}
 
 TOOLS: dict[str, Risk] = {
     "now": Risk.INFO, "list_widgets": Risk.INFO, "avatar_catalog": Risk.INFO, "list_models": Risk.INFO, "cloud_catalog": Risk.INFO,
-    "team_roster": Risk.INFO, "agent_info": Risk.INFO, "agent_inbox": Risk.INFO, "ceo_overview": Risk.INFO, "list_automations": Risk.INFO,
+    "team_roster": Risk.INFO, "agent_info": Risk.INFO, "agent_inbox": Risk.INFO, "agent_valuta": Risk.INFO, "ceo_overview": Risk.INFO, "list_automations": Risk.INFO,
     "list_tasks": Risk.INFO, "list_custom_tools": Risk.INFO, "music_now": Risk.INFO, "music_search": Risk.INFO,
     "music_outputs": Risk.INFO,
     "show_widget": Risk.HOME, "hide_widget": Risk.HOME, "move_widget": Risk.HOME, "avatar": Risk.HOME,
@@ -47,7 +47,7 @@ TOOLS: dict[str, Risk] = {
     "rpa_run": Risk.CRITICAL, "run_command": Risk.CRITICAL, "http_get": Risk.CRITICAL,
     "create_automation": Risk.CRITICAL, "schedule_task": Risk.CRITICAL, "cancel_task": Risk.CRITICAL,
     "run_task_now": Risk.CRITICAL, "agent_set": Risk.CRITICAL,
-    "camera_motion": Risk.CRITICAL, "create_feature": Risk.CRITICAL, "delete_feature": Risk.CRITICAL,
+    "camera_motion": Risk.CRITICAL, "create_feature": Risk.CRITICAL, "agent_nuovo": Risk.CRITICAL, "delete_feature": Risk.CRITICAL,
     "create_tool": Risk.CRITICAL, "delete_tool": Risk.CRITICAL, "firewall_block": Risk.CRITICAL,
     "firewall_unblock": Risk.CRITICAL, "vpn_connect": Risk.CRITICAL, "vpn_disconnect": Risk.CRITICAL, "proxmox_power": Risk.CRITICAL,
     "football_scores": Risk.INFO, "football_table": Risk.INFO, "football_team": Risk.INFO, "apt_upgradable": Risk.INFO,

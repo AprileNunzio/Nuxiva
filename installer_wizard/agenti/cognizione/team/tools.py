@@ -1,3 +1,5 @@
+import asyncio
+
 from feature_registry import registry as features
 
 from agenti.agent import registry
@@ -98,3 +100,45 @@ async def ceo_delegate(agent: str, task: str) -> str:
         raise ValueError(f"Agente «{agent}» non trovato nella squadra scansionata. Disponibili: {available}")
     board.post("ceo", target.id, f"Incarico esplicito per {target.name}: {task[:200]}", "direttiva_esecutiva")
     return f"Incarico assegnato con successo dal CEO a «{target.name}» [{target.id}]: {task}"
+
+
+def _agent_spec(id: str, category: str, name: str, description: str, capabilities: list | None, nouns: list | None, phrases: list | None) -> dict:
+    return {"id": id.strip(), "category": category.strip(), "name": name.strip(), "description": description.strip(),
+            "capabilities": [str(c).strip() for c in capabilities or [] if str(c).strip()],
+            "nouns": [str(n).strip() for n in nouns or [] if str(n).strip()],
+            "phrases": [str(p).strip() for p in phrases or [] if str(p).strip()], "icon": ""}
+
+
+def _verdict_text(verdict: dict) -> str:
+    near = ", ".join(f"{h['id']} ({h['score']})" for h in verdict["similar"]) or "nessuno"
+    return f"decisione: {verdict['action']}; agente da potenziare: {verdict['target'] or '-'}; creazione consentita: {'sì' if verdict['creatable'] else 'no'}; motivo: {verdict['reason']}; simili: {near}"
+
+
+@registry.tool("agent_valuta", "prima di creare un agente verifica se ne esiste già uno da potenziare: restituisce la decisione (crea, verifica, potenzia) e gli agenti simili",
+               {"id": "id del nuovo agente", "category": "categoria", "name": "nome", "description": "a cosa serve",
+                "capabilities": "capacità (lista, facoltativa)", "nouns": "parole chiave (lista, facoltativa)"}, agent="agent")
+async def agent_valuta(id: str, category: str, name: str, description: str, capabilities: list | None = None, nouns: list | None = None) -> str:
+    from agenti import _genesis
+    spec = _agent_spec(id, category, name, description, capabilities, nouns, None)
+    return _verdict_text(await asyncio.to_thread(_genesis.decide, spec))
+
+
+@registry.tool("agent_nuovo", "crea un nuovo agente con la struttura standard, solo se nessun agente esistente può essere potenziato; se esiste uno simile spiega quale potenziare",
+               {"id": "id del nuovo agente", "category": "categoria", "name": "nome", "description": "a cosa serve",
+                "capabilities": "capacità (lista)", "nouns": "parole chiave (lista)", "phrases": "frasi di instradamento (lista)",
+                "motive": "perché nessun agente simile basta (obbligatorio se ne esiste uno parzialmente simile)"}, confirm=True, agent="agent")
+async def agent_nuovo(id: str, category: str, name: str, description: str, capabilities: list | None = None,
+                      nouns: list | None = None, phrases: list | None = None, motive: str = "") -> str:
+    from agenti import _genesis, _scaffold
+    from agenti._layout import ScaffoldError
+    spec = _agent_spec(id, category, name, description, capabilities, nouns, phrases)
+    verdict = await asyncio.to_thread(_genesis.decide, spec, motive)
+    if not verdict["creatable"]:
+        board.post("ceo", verdict["target"] or "tutti", f"creazione di «{spec['name']}» rifiutata: {verdict['reason']}", "creazione")
+        return "agente non creato. " + _verdict_text(verdict)
+    try:
+        target = await asyncio.to_thread(_scaffold.create, spec)
+    except ScaffoldError as exc:
+        raise ValueError(", ".join(f"{i.get('field', '')}:{i.get('code', '')}" for i in exc.issues)) from exc
+    board.post("ceo", "tutti", f"nuovo agente «{spec['name']}» in {spec['category']}", "creazione")
+    return f"agente «{spec['name']}» creato come {spec['id']} in {target.parent.name}/{target.name}"
