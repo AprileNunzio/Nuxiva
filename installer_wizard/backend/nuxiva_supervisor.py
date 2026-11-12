@@ -140,6 +140,7 @@ from agenti.skills import api as skills_api
 from agenti.soup import api as soup_api
 from agenti.study import api as study_api
 from agenti.study import study
+from agenti import _study_runner as study_runner
 from agenti.diorama import learning as diorama_learning
 from agenti.team import api as team_api
 from agenti.experts import api as experts_api
@@ -402,6 +403,7 @@ BACKGROUND = (
     ("rete", explorer.run, 0.0),
     ("audio", audio.watcher.run, 0.0),
     ("studio", study.engine.run, 0.0),
+    ("studio-agenti", study_runner.run, 0.0),
     ("diorami-appresi", diorama_learning.run, 0.0),
     ("addestramento", soup_api.trainer.run, 0.0),
     ("funzionalita", registry.run, 0.0),

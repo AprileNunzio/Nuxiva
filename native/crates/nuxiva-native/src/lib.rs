@@ -34,6 +34,7 @@ mod home_rules;
 mod jev;
 mod language;
 mod learner;
+mod mastery;
 mod matter;
 mod memory;
 mod mesh;
@@ -234,6 +235,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(agents::agent_icon, m)?)?;
     ceo::register(m)?;
     dossier::register(m)?;
+    m.add_function(wrap_pyfunction!(mastery::mastery_evaluate, m)?)?;
     vitals::register(m)?;
     m.add_function(wrap_pyfunction!(gesture_validate_profile, m)?)?;
     m.add_function(wrap_pyfunction!(gesture_catalog, m)?)?;

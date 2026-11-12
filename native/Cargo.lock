@@ -1166,6 +1166,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-mastery-core"
+version = "5.8.0"
+dependencies = [
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "nuxiva-matter-core"
 version = "5.8.0"
 dependencies = [
@@ -1227,6 +1235,7 @@ dependencies = [
  "nuxiva-gesture-core",
  "nuxiva-guard-core",
  "nuxiva-langid",
+ "nuxiva-mastery-core",
  "nuxiva-matter-core",
  "nuxiva-memory-core",
  "nuxiva-molecule-core",
