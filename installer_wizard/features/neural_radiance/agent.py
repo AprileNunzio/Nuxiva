@@ -1,17 +1,11 @@
 import json
 
 from features.neural_radiance.engine import synthesize_radiance_scene
+from features.neural_radiance.skills import NEURAL_RADIANCE_SKILLS
+from features.neural_radiance.tools import NEURAL_RADIANCE_TOOLS
 from features.particles import morphogenesis
 from features.stage import native
 from features.visual_catalog import catalog, classify_academic_entry
-
-NEURAL_RADIANCE_SKILLS = [
-    {
-        "id": "sdf_pbr_subsurface_raymarching",
-        "domain": "animazioni_3d/fotorealismo",
-        "description": "Campi di distanza con segno (SDF) con fusione morbida, Subsurface Scattering, ombre soffuse e occlusione ambientale.",
-    }
-]
 
 
 class AutonomousNeuralRadianceAgent:
@@ -20,7 +14,7 @@ class AutonomousNeuralRadianceAgent:
 
     def __init__(self) -> None:
         self.skills = list(NEURAL_RADIANCE_SKILLS)
-        self.tools = {"synthesize_radiance_scene": synthesize_radiance_scene}
+        self.tools = dict(NEURAL_RADIANCE_TOOLS)
 
     def run(self, concept: str, digest: str = "", persist: bool = True) -> dict:
         clean_digest = digest or ("d" * 64)

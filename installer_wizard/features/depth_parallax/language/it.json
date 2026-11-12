@@ -1,0 +1,12 @@
+{
+  "name": "Depth Parallax da Immagini",
+  "description": "Agente di fotogrammetria e rilievo da immagini: converte immagini 2D e file PNG in mesh volumetriche 3D con stima della profondità, normali Sobel e riflessi speculari.",
+  "capabilities": [
+    "Ricostruzione di rilievo 3D da byte RGBA di qualunque immagine o PNG",
+    "Calcolo in tempo reale delle normali di superficie tramite filtri Sobel bidirezionali",
+    "Estrusione bilaterale anteriore e posteriore con correzione radiale",
+    "Illuminazione speculare ad alta potenza per esaltare texture e dettagli",
+    "Salvataggio automatico nel catalogo tassonomico gerarchico"
+  ],
+  "settings": {}
+}

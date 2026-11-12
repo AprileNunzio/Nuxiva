@@ -1,0 +1,11 @@
+{
+  "name": "Gaussian Splatting 3D",
+  "description": "Agente 3DGS per la sintesi volumetrica fotorealistica: decompone oggetti in ellissoidi gaussiani anisotropici con armoniche sferiche direzionali SH3 ed esposizione dinamica.",
+  "capabilities": [
+    "Sintesi di ellissoidi anisotropici orientati nello spazio 3D tramite quaternioni",
+    "Riflettanza angolare calcolata con armoniche sferiche di terzo ordine",
+    "Autocritica della densità dei volumi con raffinamento iterativo",
+    "Archiviazione tassonomica nel database 3D gerarchico"
+  ],
+  "settings": {}
+}

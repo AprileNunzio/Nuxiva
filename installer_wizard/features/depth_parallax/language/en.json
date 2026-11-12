@@ -1,0 +1,12 @@
+{
+  "name": "Image Depth Parallax",
+  "description": "Photogrammetry and image relief agent: converts 2D images and PNG files into 3D volumetric meshes with depth estimation, Sobel normals, and specular highlights.",
+  "capabilities": [
+    "3D relief reconstruction from RGBA bytes of any image or PNG",
+    "Real-time surface normal calculation using bidirectional Sobel filters",
+    "Bilateral anterior and posterior extrusion with radial correction",
+    "High-power specular lighting to enhance texture and detail",
+    "Automatic archiving into the hierarchical taxonomic catalog"
+  ],
+  "settings": {}
+}

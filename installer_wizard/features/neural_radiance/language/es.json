@@ -1,0 +1,12 @@
+{
+  "name": "Neural Radiance & SDF",
+  "description": "Agente óptico fotorrealista: modela superficies continuas matemáticas con Signed Distance Fields (SDF), fusión suave, PBR, dispersión subsuperficial y sombras suaves.",
+  "capabilities": [
+    "Generación de primitivas SDF con unión suave esférica, toroidal y prismática",
+    "Renderizado PBR avanzado con metalicidad, rugosidad y dispersión subsuperficial (SSS)",
+    "Iluminación cinematográfica de tres puntos: luz principal, relleno y contraluz",
+    "Oclusión ambiental multietapa y cálculo de penumbras suaves",
+    "Catalogación instantánea en el catálogo visual"
+  ],
+  "settings": {}
+}

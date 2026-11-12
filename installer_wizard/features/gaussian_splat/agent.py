@@ -1,17 +1,11 @@
 import json
 
 from features.gaussian_splat.engine import synthesize_gaussian_scene
+from features.gaussian_splat.skills import GAUSSIAN_SKILLS
+from features.gaussian_splat.tools import GAUSSIAN_AGENT_TOOLS
 from features.particles import morphogenesis
 from features.stage import native
 from features.visual_catalog import catalog, classify_academic_entry
-
-GAUSSIAN_SKILLS = [
-    {
-        "id": "anisotropic_sh3_radiance_splatting",
-        "domain": "animazioni_3d/volumi",
-        "description": "Decomposizione in ellissoidi anisotropici 3D con armoniche sferiche direzionali e controllo di opacità.",
-    }
-]
 
 
 class AutonomousGaussianSplatAgent:
@@ -20,7 +14,7 @@ class AutonomousGaussianSplatAgent:
 
     def __init__(self) -> None:
         self.skills = list(GAUSSIAN_SKILLS)
-        self.tools = {"synthesize_gaussian_scene": synthesize_gaussian_scene}
+        self.tools = dict(GAUSSIAN_AGENT_TOOLS)
 
     def run(self, concept: str, digest: str = "", persist: bool = True) -> dict:
         clean_digest = digest or ("b" * 64)

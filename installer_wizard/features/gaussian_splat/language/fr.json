@@ -1,0 +1,11 @@
+{
+  "name": "Gaussian Splatting 3D",
+  "description": "Agent 3DGS pour la synthèse volumétrique photoréaliste: décompose les objets en ellipsoïdes gaussiens anisotropes avec harmoniques sphériques directionnelles SH3.",
+  "capabilities": [
+    "Synthèse d'ellipsoïdes anisotropes dans l'espace 3D par quaternions",
+    "Réflectance angulaire calculée avec harmoniques sphériques d'ordre 3",
+    "Autocritique de la densité volumétrique avec raffinement itératif",
+    "Archivage taxonomique dans la base de données 3D hiérarchique"
+  ],
+  "settings": {}
+}

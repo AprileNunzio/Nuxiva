@@ -1,0 +1,11 @@
+{
+  "name": "Gaussian Splatting 3D",
+  "description": "Agente 3DGS para síntesis volumétrica fotorrealista: descompone objetos en elipsoides gaussianos anisotrópicos con armónicos esféricos direccionales SH3.",
+  "capabilities": [
+    "Síntesis de elipsoides anisotrópicos espaciales mediante cuaterniones",
+    "Reflectancia angular calculada con armónicos esféricos de tercer orden",
+    "Autocrítica de densidad volumétrica con refinamiento iterativo",
+    "Almacenamiento taxonómico en la base de datos 3D jerárquica"
+  ],
+  "settings": {}
+}

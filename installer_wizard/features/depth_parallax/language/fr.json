@@ -1,0 +1,12 @@
+{
+  "name": "Parallaxe de Profondeur d'Images",
+  "description": "Agent de photogrammétrie et relief 3D: convertit des images 2D et fichiers PNG en maillages volumétriques 3D avec estimation de profondeur, normales de Sobel et reflets spéculaires.",
+  "capabilities": [
+    "Reconstruction de relief 3D à partir d'octets RGBA de toute image ou PNG",
+    "Calcul en temps réel des normales de surface par filtres de Sobel bidirectionnels",
+    "Extrusion bilatérale antérieure et postérieure avec correction radiale",
+    "Éclairage spéculaire haute puissance pour sublimer textures et détails",
+    "Sauvegarde automatique dans le catalogue taxonomique hiérarchique"
+  ],
+  "settings": {}
+}

@@ -1,0 +1,11 @@
+{
+  "name": "3D Gaussian Splatting",
+  "description": "3DGS agent for photorealistic volumetric synthesis: decomposes objects into anisotropic Gaussian ellipsoids with SH3 directional spherical harmonics and dynamic exposure.",
+  "capabilities": [
+    "Anisotropic ellipsoid synthesis in 3D space with quaternions",
+    "Third-order spherical harmonics angular reflectance",
+    "Volume density self-critique with iterative refinement",
+    "Taxonomic archiving in the hierarchical 3D database"
+  ],
+  "settings": {}
+}

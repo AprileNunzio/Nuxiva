@@ -1,14 +1,8 @@
 from features.depth_parallax.engine import reconstruct_depth_relief
+from features.depth_parallax.skills import DEPTH_PARALLAX_SKILLS
+from features.depth_parallax.tools import DEPTH_PARALLAX_TOOLS
 from features.particles import morphogenesis
 from features.visual_catalog import catalog, classify_academic_entry
-
-DEPTH_PARALLAX_SKILLS = [
-    {
-        "id": "sobel_bilateral_normal_relief",
-        "domain": "animazioni_3d/rilievo_immagini",
-        "description": "Estrazione di mappa di profondità da PNG/immagini 2D con calcolo delle normali Sobel e illuminazione speculare 3D.",
-    }
-]
 
 
 class AutonomousDepthParallaxAgent:
@@ -17,7 +11,7 @@ class AutonomousDepthParallaxAgent:
 
     def __init__(self) -> None:
         self.skills = list(DEPTH_PARALLAX_SKILLS)
-        self.tools = {"reconstruct_depth_relief": reconstruct_depth_relief}
+        self.tools = dict(DEPTH_PARALLAX_TOOLS)
 
     def run(
         self,

@@ -1,0 +1,12 @@
+{
+  "name": "Neural Radiance & SDF",
+  "description": "Optical and photorealistic agent: models mathematical continuous surfaces with Signed Distance Fields (SDF), smooth union, PBR, subsurface scattering, and raymarched soft shadows.",
+  "capabilities": [
+    "SDF primitive generation with spherical, toroidal, and prismatic smooth-union",
+    "Advanced PBR rendering with metallicity, roughness, and subsurface scattering (SSS)",
+    "Three-point cinematic lighting: key light, fill light, and backlight",
+    "Multi-stage ambient occlusion and soft shadow calculation",
+    "Instant archiving into the visual catalog"
+  ],
+  "settings": {}
+}
