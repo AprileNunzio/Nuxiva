@@ -1023,6 +1023,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-dossier-core"
+version = "5.8.0"
+dependencies = [
+ "agency-ledger",
+ "getrandom 0.3.4",
+ "regex",
+ "rustix",
+ "serde",
+ "serde_json",
+ "sha2",
+ "zeroize",
+]
+
+[[package]]
 name = "nuxiva-ear-core"
 version = "5.8.0"
 dependencies = [
@@ -1139,6 +1153,7 @@ dependencies = [
  "nuxiva-display-learner",
  "nuxiva-display-planner",
  "nuxiva-display-stream",
+ "nuxiva-dossier-core",
  "nuxiva-ear-core",
  "nuxiva-expr-core",
  "nuxiva-face-core",

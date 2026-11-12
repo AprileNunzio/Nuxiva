@@ -118,6 +118,10 @@ class Router:
                 self._index = self._build(payload)
             return self._cards
 
+    def card_of(self, agent_id: str) -> dict | None:
+        with self._lock:
+            return self._cards.get(agent_id)
+
     def _build(self, payload: str):
         if self._factory is None:
             return None

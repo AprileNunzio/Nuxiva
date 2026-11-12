@@ -16,6 +16,7 @@ mod cortex;
 mod dialog;
 mod dialogue;
 mod display;
+mod dossier;
 mod ear;
 mod embodied;
 mod errors;
@@ -212,6 +213,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(agents::agent_scaffold, m)?)?;
     m.add_function(wrap_pyfunction!(agents::agent_icon, m)?)?;
     ceo::register(m)?;
+    dossier::register(m)?;
     vitals::register(m)?;
     m.add_function(wrap_pyfunction!(gesture_validate_profile, m)?)?;
     m.add_function(wrap_pyfunction!(gesture_catalog, m)?)?;

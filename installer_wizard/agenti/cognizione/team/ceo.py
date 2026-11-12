@@ -27,6 +27,7 @@ class CEODecision:
     execution_tier: str = "balanced"
     node_reason: str = ""
     level: str = "lampo"
+    dossier: dict = field(default_factory=dict)
     timestamp: float = field(default_factory=time.time)
 
 
@@ -167,7 +168,7 @@ class CEOExecutive:
             verdict = await reasoning.think(text, agents, decision.ranked)
             if verdict:
                 decision = self._apply_verdict(decision, verdict, agents)
-        return self._announce(decision, text)
+        return self._announce(decision, text, context)
 
     def _apply_verdict(self, decision: CEODecision, verdict: dict, agents: dict[str, DiscoveredAgent]) -> CEODecision:
         chosen = self._get_conversation_agent(agents) if verdict["agent"] == reasoning.ASSISTANT else agents[verdict["agent"]]
@@ -194,9 +195,13 @@ class CEOExecutive:
         )
 
     def on_conversation_start(self, text: str, context: dict | None = None) -> CEODecision:
-        return self._announce(self.analyze_request(text, context), text)
+        return self._announce(self.analyze_request(text, context), text, context)
 
-    def _announce(self, decision: CEODecision, text: str) -> CEODecision:
+    def _announce(self, decision: CEODecision, text: str, context: dict | None = None) -> CEODecision:
+        from agenti.team.fascicoli.scrivano import scrivano
+        lang = str((context or {}).get("lang") or env_get("NUXIVA_UI_LANG", "it"))
+        decision.dossier = scrivano.open(decision, text, lang, str((context or {}).get("channel") or "chat"),
+                                         routing.router.card_of(decision.primary_agent.id))
         store.event("INFO", f"CEO ha orchestrato la conversazione: {decision.delegation_plan}", "ceo")
         board.post(
             "ceo",
@@ -282,6 +287,10 @@ class CEOExecutive:
         else:
             result["agent"] = f"CEO [{agent_name}] · {clean_current}"
 
+        if decision.dossier:
+            from agenti.team.fascicoli.scrivano import scrivano
+            scrivano.close(decision.dossier, decision, result, outcome, agent_name)
+            result["ceo"]["dossier"] = decision.dossier.get("id", "")
         message, kind = describe(outcome, agent_name, env_get("NUXIVA_UI_LANG", "it"))
         board.post("ceo", "tutti", message, kind)
         return result

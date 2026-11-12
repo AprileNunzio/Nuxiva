@@ -8,5 +8,55 @@
     "pending": "La tâche de {agent} attend une approbation.",
     "running": "La tâche de {agent} est toujours en cours.",
     "unverified": "Le résultat de la tâche de {agent} n’est pas vérifié."
+  },
+  "fascicolo": {
+    "titles": {
+      "richiesta": "Demande",
+      "contesto": "Contexte",
+      "piano": "Plan",
+      "passo": "Étape",
+      "verifica": "Vérification",
+      "esito": "Résultat"
+    },
+    "headings": {
+      "request": "Ce qui a été demandé",
+      "origin": "D'où cela vient",
+      "agents": "Agents choisis",
+      "signals": "Indices et confiance",
+      "goal": "Objectif",
+      "criteria": "Comment je sais que j'ai fini",
+      "steps": "Étapes",
+      "risks": "Risques et confirmations",
+      "tool": "Outil et arguments",
+      "result": "Résultat",
+      "check": "Vérification",
+      "status": "État",
+      "evidence": "Preuves",
+      "verdict": "Verdict",
+      "summary": "Résultat",
+      "answer": "Réponse donnée",
+      "timing": "Durée"
+    },
+    "text": {
+      "origin": "Canal : {channel}. Langue : {lang}.",
+      "agent_line": "- {role} : {name} [{id}], score {score}",
+      "role_primary": "responsable",
+      "role_support": "soutien",
+      "none": "aucun",
+      "signals": "Confiance {confidence}. Niveau {level}. Indices : {why}. Exécution : {node} ({tier}).",
+      "goal": "Répondre à la demande avec l'agent « {name} ».",
+      "criteria": "- l'agent confirme le résultat de la tâche\n- la réponse parvient à l'utilisateur",
+      "step": "- [{mark}] {n:02d} · {id} · {goal}",
+      "step_primary": "exécute la demande",
+      "step_support": "apporte son soutien",
+      "risks_low": "Aucune action risquée prévue.",
+      "risks_high": "Cet agent peut toucher des données personnelles, des fichiers ou des systèmes : les actions sensibles demandent une confirmation et la réponse n'est pas enregistrée en clair.",
+      "summary": "État : {status}. Vérifié : {verified}. Exécuté par {agent}.",
+      "yes": "oui",
+      "no": "non",
+      "answer_sealed": "Réponse privée, non enregistrée en clair ({chars} caractères, empreinte {digest}).",
+      "answer_empty": "Aucune réponse textuelle.",
+      "timing": "Durée {ms} ms. Niveau {level}."
+    }
   }
 }

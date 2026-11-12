@@ -8,5 +8,55 @@
     "pending": "{agent}'s task is waiting for approval.",
     "running": "{agent}'s task is still running.",
     "unverified": "The outcome of {agent}'s task is unverified."
+  },
+  "fascicolo": {
+    "titles": {
+      "richiesta": "Request",
+      "contesto": "Context",
+      "piano": "Plan",
+      "passo": "Step",
+      "verifica": "Check",
+      "esito": "Outcome"
+    },
+    "headings": {
+      "request": "What was asked",
+      "origin": "Where it comes from",
+      "agents": "Chosen agents",
+      "signals": "Clues and confidence",
+      "goal": "Goal",
+      "criteria": "How I know I am done",
+      "steps": "Steps",
+      "risks": "Risks and confirmations",
+      "tool": "Tool and arguments",
+      "result": "Result",
+      "check": "Check",
+      "status": "Status",
+      "evidence": "Evidence",
+      "verdict": "Verdict",
+      "summary": "Outcome",
+      "answer": "Answer given",
+      "timing": "Timing"
+    },
+    "text": {
+      "origin": "Channel: {channel}. Language: {lang}.",
+      "agent_line": "- {role}: {name} [{id}], score {score}",
+      "role_primary": "owner",
+      "role_support": "support",
+      "none": "none",
+      "signals": "Confidence {confidence}. Level {level}. Clues: {why}. Execution: {node} ({tier}).",
+      "goal": "Answer the request with the «{name}» agent.",
+      "criteria": "- the agent confirms the outcome of the task\n- the answer reaches the user",
+      "step": "- [{mark}] {n:02d} · {id} · {goal}",
+      "step_primary": "carries out the request",
+      "step_support": "provides support",
+      "risks_low": "No risky action expected.",
+      "risks_high": "This agent can touch personal data, files or systems: sensitive actions ask for confirmation and the answer is not stored in clear text.",
+      "summary": "Status: {status}. Verified: {verified}. Carried out by {agent}.",
+      "yes": "yes",
+      "no": "no",
+      "answer_sealed": "Private answer, not stored in clear text ({chars} characters, fingerprint {digest}).",
+      "answer_empty": "No text answer.",
+      "timing": "Duration {ms} ms. Level {level}."
+    }
   }
 }

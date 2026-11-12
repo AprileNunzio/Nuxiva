@@ -8,5 +8,55 @@
     "pending": "L’incarico di {agent} è in attesa di approvazione.",
     "running": "L’incarico di {agent} è ancora in esecuzione.",
     "unverified": "L’esito dell’incarico di {agent} non è verificato."
+  },
+  "fascicolo": {
+    "titles": {
+      "richiesta": "Richiesta",
+      "contesto": "Contesto",
+      "piano": "Piano",
+      "passo": "Passo",
+      "verifica": "Verifica",
+      "esito": "Esito"
+    },
+    "headings": {
+      "request": "Cosa è stato chiesto",
+      "origin": "Da dove arriva",
+      "agents": "Agenti scelti",
+      "signals": "Indizi e confidenza",
+      "goal": "Obiettivo",
+      "criteria": "Come capisco che ho finito",
+      "steps": "Passi",
+      "risks": "Rischi e conferme",
+      "tool": "Strumento e argomenti",
+      "result": "Risultato",
+      "check": "Verifica",
+      "status": "Stato",
+      "evidence": "Prove",
+      "verdict": "Giudizio",
+      "summary": "Esito",
+      "answer": "Risposta data",
+      "timing": "Tempi"
+    },
+    "text": {
+      "origin": "Canale: {channel}. Lingua: {lang}.",
+      "agent_line": "- {role}: {name} [{id}], punteggio {score}",
+      "role_primary": "responsabile",
+      "role_support": "supporto",
+      "none": "nessuno",
+      "signals": "Confidenza {confidence}. Livello {level}. Indizi: {why}. Esecuzione: {node} ({tier}).",
+      "goal": "Rispondere alla richiesta con l'agente «{name}».",
+      "criteria": "- l'agente conferma l'esito dell'incarico\n- la risposta arriva all'utente",
+      "step": "- [{mark}] {n:02d} · {id} · {goal}",
+      "step_primary": "esegue la richiesta",
+      "step_support": "fornisce supporto",
+      "risks_low": "Nessuna azione rischiosa prevista.",
+      "risks_high": "Questo agente può toccare dati personali, file o sistemi: le azioni sensibili chiedono conferma e la risposta non viene salvata in chiaro.",
+      "summary": "Stato: {status}. Verificato: {verified}. Eseguito da {agent}.",
+      "yes": "sì",
+      "no": "no",
+      "answer_sealed": "Risposta riservata, non salvata in chiaro ({chars} caratteri, impronta {digest}).",
+      "answer_empty": "Nessuna risposta testuale.",
+      "timing": "Durata {ms} ms. Livello {level}."
+    }
   }
 }

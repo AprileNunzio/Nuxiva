@@ -13,6 +13,7 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 agency-action = { path = "../agency-action" }
 nuxiva-agent-core = { path = "../agent-core" }
+nuxiva-dossier-core = { path = "../dossier-core" }
 agency-codeindex = { path = "../agency-codeindex" }
 agency-forge = { path = "../agency-forge" }
 agency-scheduler = { path = "../agency-scheduler" }
