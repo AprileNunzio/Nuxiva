@@ -220,6 +220,14 @@ class DedicatedParticlesDirectoryTest(unittest.TestCase):
             self.assertGreater(len(record.capabilities), 0)
             self.assertIsInstance(record.routing, dict)
 
+        import agenti
+
+        self.assertEqual(agenti.creativita.particles.particle_agent.agent_id, "agent.particles.v1")
+        self.assertEqual(
+            agenti.creativita.gaussian_splat.gaussian_splat_agent.agent_id,
+            "agent.gaussian_splat.v1",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

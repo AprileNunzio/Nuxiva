@@ -85,10 +85,10 @@ use scanner::FastScanner;
 use sentinel::RustSentinel;
 use signal::{RustSignalEnhancer, RustVoiceBiomarkers};
 use stage::{
-    RustParticleCache, depth_parallax_reconstruct, gaussian_splat_synthesize,
-    neural_radiance_synthesize, particles_count, particles_extract_concept, particles_sample,
-    particles_synthesize_spec, stage_plan, visual_agent_execute, visual_catalog_classify,
-    visual_route_select,
+    RustParticleCache, agent_catalog_index_manifest, depth_parallax_reconstruct,
+    gaussian_splat_synthesize, neural_radiance_synthesize, particles_count,
+    particles_extract_concept, particles_sample, particles_synthesize_spec, stage_plan,
+    visual_agent_execute, visual_catalog_classify, visual_route_select,
 };
 use surface::{RustMoveGuard, surface_audience, surface_layout};
 use token::{RustTokenCodec, TokenRejected};
@@ -205,6 +205,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(depth_parallax_reconstruct, m)?)?;
     m.add_function(wrap_pyfunction!(visual_catalog_classify, m)?)?;
     m.add_function(wrap_pyfunction!(visual_agent_execute, m)?)?;
+    m.add_function(wrap_pyfunction!(agent_catalog_index_manifest, m)?)?;
     m.add_function(wrap_pyfunction!(vitals_parse_ble_heart_rate, m)?)?;
     m.add_function(wrap_pyfunction!(gesture_validate_profile, m)?)?;
     m.add_function(wrap_pyfunction!(gesture_catalog, m)?)?;

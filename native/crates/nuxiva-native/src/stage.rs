@@ -151,3 +151,13 @@ impl RustParticleCache {
         Ok(guard.len())
     }
 }
+
+#[pyfunction]
+pub fn agent_catalog_index_manifest(manifest_json: &str, dir_path: &str) -> PyResult<String> {
+    let manifest = nuxiva_stage_core::agent_catalog::AgentDatabase::parse_manifest_json(
+        manifest_json,
+        dir_path,
+    )
+    .map_err(|e| PyValueError::new_err(e.to_string()))?;
+    serde_json::to_string(&manifest).map_err(|e| PyRuntimeError::new_err(e.to_string()))
+}

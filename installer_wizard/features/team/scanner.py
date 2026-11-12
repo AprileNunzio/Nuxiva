@@ -95,10 +95,16 @@ class AgentScanner:
 
     def scan(self, force: bool = False) -> dict[str, DiscoveredAgent]:
         self._ensure_dirs()
-        feat_paths = sorted(
+        agenti_dir = FEATURES_DIR.parent / "agenti"
+        raw_feat_paths = (
             glob.glob(str(FEATURES_DIR / "*" / "feature.json")) +
-            glob.glob(str(USER_FEATURES_DIR / "*" / "feature.json"))
+            glob.glob(str(FEATURES_DIR / "*" / "*" / "feature.json")) +
+            glob.glob(str(agenti_dir / "*" / "feature.json")) +
+            glob.glob(str(agenti_dir / "*" / "*" / "feature.json")) +
+            glob.glob(str(USER_FEATURES_DIR / "*" / "feature.json")) +
+            glob.glob(str(USER_FEATURES_DIR / "*" / "*" / "feature.json"))
         )
+        feat_paths = sorted(set(raw_feat_paths))
         widget_paths = sorted(
             glob.glob(str(WIDGETS_DIR / "*" / "widget.json")) +
             glob.glob(str(USER_WIDGETS_DIR / "*" / "widget.json"))
@@ -119,11 +125,21 @@ class AgentScanner:
             path_obj = Path(p)
             folder = path_obj.parent
             agent_id = folder.name
+            data = None
             try:
-                data = json.loads(path_obj.read_text(encoding="utf-8"))
-            except (OSError, ValueError, TypeError) as exc:
-                log.warning("Impossibile leggere manifest agente %s: %s", p, exc)
-                continue
+                from features.stage import native
+                if native.lib is not None and hasattr(native.lib, "agent_catalog_index_manifest"):
+                    raw_text = path_obj.read_text(encoding="utf-8")
+                    indexed_json = native.lib.agent_catalog_index_manifest(raw_text, str(folder))
+                    data = json.loads(indexed_json)
+            except Exception:
+                pass
+            if data is None:
+                try:
+                    data = json.loads(path_obj.read_text(encoding="utf-8"))
+                except (OSError, ValueError, TypeError) as exc:
+                    log.warning("Impossibile leggere manifest agente %s: %s", p, exc)
+                    continue
 
             agent_id = str(data.get("id") or agent_id).strip()
             name = str(data.get("name") or agent_id).strip()
