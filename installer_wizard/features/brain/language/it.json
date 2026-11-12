@@ -12,6 +12,8 @@
   ],
   "settings": {
     "NUXIVA_LLM_ROUTING": "Instradamento tra cervello veloce e potente",
-    "NUXIVA_OLLAMA_URL": "Indirizzo del server Ollama"
+    "NUXIVA_OLLAMA_URL": "Indirizzo del server Ollama",
+    "NUXIVA_VISUAL_DEFAULT_ENGINE": "Motore visivo 3D predefinito (particelle veloce e leggero)",
+    "NUXIVA_VISUAL_PRIORITY": "Ordine di priorità dei motori visivi 3D"
   }
 }
