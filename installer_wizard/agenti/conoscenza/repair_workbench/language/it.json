@@ -1,0 +1,8 @@
+{
+  "name": "Banco Riparazioni Live",
+  "description": "Collega il banco riparazioni al motore di analisi e agli specialisti del progetto.",
+  "capabilities": [
+    "Sessioni del banco riparazioni",
+    "Analisi dei fotogrammi e conversazione con gli specialisti"
+  ]
+}

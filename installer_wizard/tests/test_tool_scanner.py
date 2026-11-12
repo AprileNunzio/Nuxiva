@@ -74,6 +74,33 @@ class ToolScannerTest(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn("zz_probe_tool", registry.TOOLS)
         self.assertNotIn("zzfeatures.zz_probe.tools", tool_scanner.loaded())
 
+    async def test_tools_package_is_discovered_and_unloaded(self):
+        folder = self.root / "zz_probe"
+        (folder / "tools").mkdir(parents=True)
+        (folder / "__init__.py").write_text("")
+        (folder / "feature.json").write_text("{}")
+        (folder / "tools" / "zz_probe_tools.py").write_text(TOOL)
+        (folder / "tools" / "__init__.py").write_text("from zzfeatures.zz_probe.tools import zz_probe_tools\n")
+        importlib.invalidate_caches()
+        tool_scanner.sync(force=True)
+        self.assertEqual(registry.TOOLS["zz_probe_tool"]["feature"], "zz_probe")
+        self.assertEqual(await registry.run("zz_probe_tool", {}), "ok")
+        (folder / "tools" / "__init__.py").unlink()
+        tool_scanner.sync(force=True)
+        self.assertNotIn("zz_probe_tool", registry.TOOLS)
+        self.assertNotIn("zzfeatures.zz_probe.tools.zz_probe_tools", sys.modules)
+
+    def test_empty_tools_package_is_not_imported(self):
+        folder = self.root / "zz_probe"
+        (folder / "tools").mkdir(parents=True)
+        (folder / "__init__.py").write_text("raise RuntimeError('non importare')\n")
+        (folder / "feature.json").write_text("{}")
+        (folder / "tools" / "__init__.py").write_text("TOOLS: tuple = ()\n")
+        importlib.invalidate_caches()
+        tool_scanner.sync(force=True)
+        self.assertNotIn("zzfeatures.zz_probe.tools", tool_scanner.failed())
+        self.assertNotIn("zzfeatures.zz_probe.tools", tool_scanner.loaded())
+
     def test_folder_without_manifest_is_not_a_feature(self):
         self.add_feature(manifest=False)
         tool_scanner.sync(force=True)

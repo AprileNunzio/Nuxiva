@@ -155,3 +155,73 @@ fn ignores_symlinked_agent_directories() {
     assert!(registry.snapshot().agents.is_empty());
     let _ = fs::remove_dir_all(base);
 }
+
+#[test]
+fn scaffold_builds_a_complete_valid_agent() {
+    let spec = crate::layout::ScaffoldSpec {
+        id: "medico".into(),
+        category: "salute".into(),
+        name: "Medico".into(),
+        description: "Battito, stress e respiro".into(),
+        capabilities: vec!["Battito".into()],
+        nouns: vec!["battito".into()],
+        ..Default::default()
+    };
+    let Ok(files) = crate::layout::scaffold(&spec) else {
+        unreachable!("scaffold rejected")
+    };
+    let base = scratch();
+    let dir = base.join("agenti/salute/medico");
+    for file in &files {
+        let path = dir.join(&file.path);
+        if let Some(parent) = path.parent() {
+            let _ = fs::create_dir_all(parent);
+        }
+        let _ = fs::write(path, &file.bytes);
+    }
+    let report = crate::layout::inspect(&dir);
+    assert!(report.complete, "{:?}", report.missing);
+    assert_eq!(report.score, 100);
+    let roots = vec![Root {
+        path: base.join("agenti"),
+        origin: Origin::System,
+        layout: Layout::Categorized,
+    }];
+    let mut registry = Registry::new();
+    registry.refresh(&roots);
+    let Some(entry) = registry.snapshot().locate("medico") else {
+        unreachable!("missing")
+    };
+    assert!(entry.issues.is_empty(), "{:?}", entry.issues);
+    let _ = fs::remove_dir_all(base);
+}
+
+#[test]
+fn scaffold_rejects_unknown_category_and_bad_ids() {
+    for (id, category, description) in [
+        ("medico", "inventata", "x"),
+        ("Medico!", "salute", "x"),
+        ("medico", "salute", " "),
+    ] {
+        let spec = crate::layout::ScaffoldSpec {
+            id: id.into(),
+            category: category.into(),
+            name: "Medico".into(),
+            description: description.into(),
+            ..Default::default()
+        };
+        assert!(crate::layout::scaffold(&spec).is_err(), "{id} {category}");
+    }
+}
+
+#[test]
+fn inspect_reports_missing_parts() {
+    let base = scratch();
+    put(&base, "a/feature.json", PARTICLES);
+    let report = crate::layout::inspect(&base.join("a"));
+    assert!(!report.complete);
+    assert!(report.missing.contains(&"agent.py".to_owned()));
+    assert!(report.missing.contains(&"language/es.json".to_owned()));
+    assert_eq!(report.optional_missing, vec!["widget/".to_owned()]);
+    let _ = fs::remove_dir_all(base);
+}

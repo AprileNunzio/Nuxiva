@@ -1,0 +1,10 @@
+{
+  "name": "Juegos y ajedrez 3D",
+  "description": "Juegos interactivos con ajedrez 3D a pantalla completa, partidas contra el Gran Maestro Nuxiva, análisis tácticos y comandos de voz.",
+  "capabilities": [
+    "Ajedrez 3D a pantalla completa con representación tridimensional y controles interactivos",
+    "Inicio rápido por voz del tablero y de las partidas con Nuxiva",
+    "Agente Gran Maestro de ajedrez con comentarios, consejos tácticos y jugadas razonadas",
+    "Catálogo y ejecución de juegos de mesa y de entretenimiento"
+  ]
+}

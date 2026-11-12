@@ -66,3 +66,29 @@ impl RustAgentRegistry {
         Ok(guard.snapshot().search(query, limit.min(256)))
     }
 }
+
+#[pyfunction]
+pub fn agent_layout_inspect(dir: &str) -> PyResult<String> {
+    json(&nuxiva_agent_core::inspect(std::path::Path::new(dir)))
+}
+
+#[pyfunction]
+pub fn agent_scaffold(spec_json: &str) -> PyResult<Vec<(String, Vec<u8>)>> {
+    if spec_json.len() > 64 * 1024 {
+        return Err(PyValueError::new_err("scaffold spec too large"));
+    }
+    let spec: nuxiva_agent_core::ScaffoldSpec =
+        serde_json::from_str(spec_json).map_err(|e| PyValueError::new_err(e.to_string()))?;
+    match nuxiva_agent_core::scaffold(&spec) {
+        Ok(files) => Ok(files.into_iter().map(|f| (f.path, f.bytes)).collect()),
+        Err(issues) => Err(PyValueError::new_err(json(&issues)?)),
+    }
+}
+
+#[pyfunction]
+pub fn agent_icon(category: &str, id: &str) -> PyResult<Vec<u8>> {
+    if category.len() > 64 || id.len() > 64 {
+        return Err(PyValueError::new_err("icon input too long"));
+    }
+    Ok(nuxiva_agent_core::icon::render(category, id))
+}

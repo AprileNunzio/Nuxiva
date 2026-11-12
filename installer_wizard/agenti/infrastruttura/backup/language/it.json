@@ -1,0 +1,11 @@
+{
+  "name": "Backup",
+  "description": "Copie di sicurezza dello stato di Nuxiva (impostazioni, memoria, progetti, automazioni): archivi compressi con impronta SHA-256, verificabili e scaricabili, creati a mano o a intervalli regolari.",
+  "capabilities": [
+    "Archivio compresso dello stato, con permessi riservati al solo sistema",
+    "Impronta SHA-256 per verificare che l'archivio non sia stato alterato",
+    "Backup automatico a intervalli regolari",
+    "Conserva solo gli ultimi backup, eliminando i più vecchi",
+    "Download e cancellazione dal pannello"
+  ]
+}

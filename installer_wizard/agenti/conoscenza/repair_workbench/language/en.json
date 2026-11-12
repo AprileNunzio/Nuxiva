@@ -1,0 +1,8 @@
+{
+  "name": "Live Repair Bench",
+  "description": "Connects the repair bench to the analysis engine and to the project specialists.",
+  "capabilities": [
+    "Repair bench sessions",
+    "Frame analysis and conversation with the specialists"
+  ]
+}

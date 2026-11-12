@@ -310,7 +310,7 @@ fn category(
 ) -> String {
     let declared = text(obj, "category", 40, issues);
     if let Some(physical) = folder_category {
-        if !declared.is_empty() && declared != physical {
+        if known_category(&declared) && declared != physical {
             issues.push(Issue::warning("category", "category_folder_mismatch"));
         }
         if !known_category(physical) {

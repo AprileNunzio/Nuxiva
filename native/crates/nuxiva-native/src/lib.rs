@@ -207,6 +207,9 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(visual_agent_execute, m)?)?;
     m.add_function(wrap_pyfunction!(agents::agent_manifest_validate, m)?)?;
     m.add_class::<agents::RustAgentRegistry>()?;
+    m.add_function(wrap_pyfunction!(agents::agent_layout_inspect, m)?)?;
+    m.add_function(wrap_pyfunction!(agents::agent_scaffold, m)?)?;
+    m.add_function(wrap_pyfunction!(agents::agent_icon, m)?)?;
     vitals::register(m)?;
     m.add_function(wrap_pyfunction!(gesture_validate_profile, m)?)?;
     m.add_function(wrap_pyfunction!(gesture_catalog, m)?)?;

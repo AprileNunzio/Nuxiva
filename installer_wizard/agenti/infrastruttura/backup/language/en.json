@@ -1,0 +1,11 @@
+{
+  "name": "Backup",
+  "description": "Safety copies of Nuxiva's state (settings, memory, projects, automations): compressed archives with a SHA-256 fingerprint, verifiable and downloadable, created by hand or at regular intervals.",
+  "capabilities": [
+    "Compressed state archive, with permissions reserved to the system only",
+    "SHA-256 fingerprint to verify the archive has not been altered",
+    "Automatic backup at regular intervals",
+    "Keeps only the latest backups, deleting the oldest",
+    "Download and deletion from the panel"
+  ]
+}

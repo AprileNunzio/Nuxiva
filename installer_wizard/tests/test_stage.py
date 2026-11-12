@@ -259,7 +259,8 @@ class MorphogenesisTest(unittest.TestCase):
         self.store = ParticleStore(self.root)
 
     def test_medusa_and_universal_concepts_materialize_automatically(self):
-        from agenti.stage import morphogenesis, show
+        from agenti.particles import morphogenesis
+        from agenti.stage import show
         concept = morphogenesis.extract_visual_concept("Come è fatta una medusa?")
         self.assertEqual(concept, "medusa")
         spec = morphogenesis.synthesize_spec(concept)

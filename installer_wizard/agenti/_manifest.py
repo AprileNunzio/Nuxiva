@@ -169,7 +169,7 @@ def _identity(obj: dict, folder: str, issues: list) -> str:
 def _category(obj: dict, physical: str | None, issues: list) -> str:
     declared = _text(obj, "category", 40, issues)
     if physical is not None:
-        if declared and declared != physical:
+        if declared in CATEGORIES and declared != physical:
             issues.append(_issue("category", "category_folder_mismatch", "warning"))
         if physical not in CATEGORIES:
             issues.append(_issue("category", "category_unknown", "warning"))

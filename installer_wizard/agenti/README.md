@@ -1,6 +1,6 @@
-# Funzionalità di Nuxiva
+# Agenti di Nuxiva
 
-Ogni funzionalità è una cartella con un file `feature.json`. Il supervisore scansiona in background
+Ogni agente è una cartella con un file `feature.json`. Il supervisore scansiona in background
 (ogni 20 secondi) queste posizioni e la funzionalità compare da sola, come scheda, in
 **Pannello → Funzionalità**:
 
@@ -13,12 +13,45 @@ Ogni funzionalità è una cartella con un file `feature.json`. Il supervisore sc
 Una funzionalità non ha bisogno di modificare il pannello: la scheda, l'interruttore, le impostazioni e
 la voce nel menu laterale (se l'utente la aggiunge ai preferiti) sono generati dal manifest.
 
-## Contenuto della cartella
+## Struttura di un agente
+
+Ogni agente vive in `agenti/<categoria>/<id>/` e ha sempre la stessa forma:
+
+| Parte | Ruolo |
+|---|---|
+| `feature.json` | manifest: capacità, parole che lo richiamano (`routing`), risorse richieste (`profile`) |
+| `agent.py` | coordinatore: ciclo di vita (`start`, `stop`) e `describe()` per il CEO |
+| `tools/` | strumenti dell'agente registrati con `@tool(..., agent="<id>")` |
+| `skills/` | abilità composte che usano gli strumenti |
+| `algorithms/` | algoritmi generali dell'agente, mai codice scritto per un solo caso |
+| `language/it.json`, `en.json`, `fr.json`, `es.json` | tutti i testi, nessuno scritto nel codice |
+| `widget/` | facoltativo: widget dell'agente, senza sfondo e senza bordi |
+| `icon.png` | icona generata dalla categoria |
+
+Si importa sempre per id, `agenti.<id>.<modulo>`, mai per categoria. `agenti.<categoria>.<id>` resta
+una vista in sola lettura utile per esplorare.
+
+## Creare un agente nuovo
+
+```bash
+cd installer_wizard
+python -m agenti nuovo --id calcio --categoria sport --nome "Calcio" \
+  --descrizione "Risultati, classifiche e statistiche" --parole partita --parole classifica
+python -m agenti verifica calcio
+```
+
+Il comando crea la cartella completa in un passaggio unico (nessuna cartella a metà se qualcosa va storto)
+e rifiuta l'id se esiste già, anche come modulo interno di un'altra categoria. Se trova un agente che fa
+già cose simili si ferma e lo indica: meglio potenziare quello. `--comunque` serve solo quando un agente
+nuovo è davvero necessario. `verifica` senza id controlla tutti gli agenti e i manifesti rifiutati.
+
+La generazione è scritta in Rust (`native/crates/agent-core`), con una copia Python identica byte per byte
+usata quando il modulo nativo non è installato.
+
+## Altri file
 
 | File | Ruolo |
 |---|---|
-| `feature.json` | manifest (obbligatorio) |
-| `*.py` | logica della funzionalità, importata per id come `agenti.<id>.<modulo>` (mai per categoria) |
 | `api.py` | rotte HTTP: `public_routes` (porta 80) e `admin_routes` (porta 8080), registrate in `backend/nuxiva_supervisor.py` |
 | `service.py` | servizio esterno con una propria unità systemd (voce, visione, ascolto) |
 | `admin.html` | una `<section class="tab" id="tab-<panel>">` inserita nel pannello |
@@ -35,7 +68,7 @@ del pannello: aggiungere una scheda non richiede di modificare `web/admin`.
   "id": "meteo_avanzato",
   "name": "Meteo avanzato",
   "icon": "⛅",
-  "category": "casa",
+  "category": "domotica",
   "order": 200,
   "source": "ai",
   "description": "Allerta meteo e qualità dell'aria per la tua zona.",
@@ -53,8 +86,8 @@ del pannello: aggiungere una scheda non richiede di modificare `web/admin`.
 
 | Campo | Significato |
 |---|---|
-| `id` | minuscole, cifre, `-` e `_` (di norma uguale al nome della cartella) |
-| `category` | `assistente`, `percezione`, `casa`, `conoscenza`, `comunicazione`, `sistema`, `altro` |
+| `id` | inizia con una lettera, poi minuscole, cifre e `_`; uguale al nome della cartella e unico in tutte le categorie |
+| `category` | `creativita`, `percezione`, `cognizione`, `sicurezza`, `domotica`, `infrastruttura`, `multimedia`, `comunicazione`, `conoscenza`, `salute`, `sport`, `scienza`, `informatica` (deve coincidere con la cartella) |
 | `source` | solo per le cartelle utente: `ai` (creata da Nuxiva) o `user` |
 | `pinned` | se `true` compare già nel menu laterale alla prima scoperta |
 | `panel` | scheda dedicata già presente nel pannello (es. `telegram`); vuoto = pagina generata |

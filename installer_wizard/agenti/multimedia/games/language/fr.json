@@ -1,0 +1,10 @@
+{
+  "name": "Jeux et échecs 3D",
+  "description": "Jeux interactifs avec échecs 3D en plein écran, parties contre le Grand Maître Nuxiva, analyses tactiques et commandes vocales.",
+  "capabilities": [
+    "Échecs 3D en plein écran avec rendu tridimensionnel et commandes interactives",
+    "Lancement vocal rapide de l'échiquier et des parties avec Nuxiva",
+    "Agent Grand Maître des échecs avec commentaires, conseils tactiques et coups raisonnés",
+    "Catalogue et lancement de jeux de société et de divertissement"
+  ]
+}

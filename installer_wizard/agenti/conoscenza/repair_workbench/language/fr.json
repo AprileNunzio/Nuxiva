@@ -1,0 +1,8 @@
+{
+  "name": "Établi de réparation en direct",
+  "description": "Relie l'établi de réparation au moteur d'analyse et aux spécialistes du projet.",
+  "capabilities": [
+    "Sessions de l'établi de réparation",
+    "Analyse des images et conversation avec les spécialistes"
+  ]
+}

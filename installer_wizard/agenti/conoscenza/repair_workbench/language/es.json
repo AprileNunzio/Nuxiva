@@ -1,0 +1,8 @@
+{
+  "name": "Banco de reparación en vivo",
+  "description": "Conecta el banco de reparación con el motor de análisis y con los especialistas del proyecto.",
+  "capabilities": [
+    "Sesiones del banco de reparación",
+    "Análisis de fotogramas y conversación con los especialistas"
+  ]
+}

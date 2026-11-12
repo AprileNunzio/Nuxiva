@@ -1,0 +1,11 @@
+{
+  "name": "Copia de seguridad",
+  "description": "Copias de seguridad del estado de Nuxiva (ajustes, memoria, proyectos, automatizaciones): archivos comprimidos con huella SHA-256, verificables y descargables, creados a mano o a intervalos regulares.",
+  "capabilities": [
+    "Archivo comprimido del estado, con permisos reservados solo al sistema",
+    "Huella SHA-256 para verificar que el archivo no ha sido alterado",
+    "Copia automática a intervalos regulares",
+    "Conserva solo las últimas copias y elimina las más antiguas",
+    "Descarga y borrado desde el panel"
+  ]
+}

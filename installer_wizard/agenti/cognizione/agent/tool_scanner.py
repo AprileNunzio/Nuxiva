@@ -27,6 +27,26 @@ def _bases() -> list[tuple[object, str]]:
     return [(AGENTS_DIR / name, PACKAGE) for name in CATEGORIES]
 
 
+def _real_file(path) -> bool:
+    return path.is_file() and not path.is_symlink()
+
+
+def _tools_source(folder):
+    if _real_file(folder / "tools.py"):
+        return folder / "tools.py"
+    package = folder / "tools"
+    if package.is_dir() and not package.is_symlink() and _real_file(package / "__init__.py"):
+        if any(p.name != "__init__.py" and _real_file(p) for p in package.glob("*.py")):
+            return package
+    return None
+
+
+def _stamp(path) -> int:
+    if path.is_dir():
+        return max((p.stat().st_mtime_ns for p in path.glob("*.py") if not p.is_symlink()), default=0)
+    return path.stat().st_mtime_ns
+
+
 def candidates() -> dict[str, str]:
     found: dict[str, str] = {}
     _paths.clear()
@@ -40,9 +60,11 @@ def candidates() -> dict[str, str]:
                 for path in sorted(folder.glob("tools_*.py")):
                     found[f"{package}.{CORE}.{path.stem}"] = CORE
                     _paths[f"{package}.{CORE}.{path.stem}"] = path
-            elif (folder / "feature.json").is_file() and (folder / "tools.py").is_file():
-                found[f"{package}.{folder.name}.tools"] = folder.name
-                _paths[f"{package}.{folder.name}.tools"] = folder / "tools.py"
+            elif (folder / "feature.json").is_file():
+                source = _tools_source(folder)
+                if source is not None:
+                    found[f"{package}.{folder.name}.tools"] = folder.name
+                    _paths[f"{package}.{folder.name}.tools"] = source
     return found
 
 
@@ -51,14 +73,18 @@ def _signature_of(modules: dict[str, str]) -> str:
     for name in sorted(modules):
         path = _paths.get(name)
         try:
-            parts.append(f"{name}:{path.stat().st_mtime_ns}")
+            parts.append(f"{name}:{_stamp(path)}")
         except (OSError, AttributeError):
             parts.append(f"{name}:gone")
     return "|".join(parts)
 
 
+def _owned(name: str, module: str) -> bool:
+    return name == module or name.startswith(f"{module}.")
+
+
 def _attach(module: str, feature: str) -> int:
-    names = [name for name, row in registry.TOOLS.items() if getattr(row["fn"], "__module__", "") == module]
+    names = [name for name, row in registry.TOOLS.items() if _owned(getattr(row["fn"], "__module__", ""), module)]
     for name in names:
         registry.TOOLS[name]["feature"] = feature
     return len(names)
@@ -75,14 +101,16 @@ def _load(module: str, feature: str) -> None:
     _failed.pop(module, None)
     _loaded[module] = feature
     count = _attach(module, feature)
-    store.event("INFO", f"Strumenti scoperti in «{feature}»: {count}", "tools")
+    if count:
+        store.event("INFO", f"Strumenti scoperti in «{feature}»: {count}", "tools")
 
 
 def _unload(module: str, feature: str) -> None:
-    gone = [name for name, row in registry.TOOLS.items() if getattr(row["fn"], "__module__", "") == module]
+    gone = [name for name, row in registry.TOOLS.items() if _owned(getattr(row["fn"], "__module__", ""), module)]
     for name in gone:
         registry.TOOLS.pop(name, None)
-    sys.modules.pop(module, None)
+    for name in [m for m in sys.modules if _owned(m, module)]:
+        sys.modules.pop(name, None)
     _loaded.pop(module, None)
     store.event("INFO", f"Strumenti rimossi con «{feature}»: {len(gone)}", "tools")
 

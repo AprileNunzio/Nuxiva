@@ -1,0 +1,11 @@
+{
+  "name": "Sauvegarde",
+  "description": "Copies de sécurité de l'état de Nuxiva (réglages, mémoire, projets, automatisations) : archives compressées avec empreinte SHA-256, vérifiables et téléchargeables, créées à la main ou à intervalles réguliers.",
+  "capabilities": [
+    "Archive compressée de l'état, avec permissions réservées au seul système",
+    "Empreinte SHA-256 pour vérifier que l'archive n'a pas été modifiée",
+    "Sauvegarde automatique à intervalles réguliers",
+    "Ne conserve que les dernières sauvegardes et supprime les plus anciennes",
+    "Téléchargement et suppression depuis le panneau"
+  ]
+}

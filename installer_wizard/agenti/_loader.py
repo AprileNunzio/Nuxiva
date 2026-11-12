@@ -36,6 +36,10 @@ class AgentFinder(importlib.abc.MetaPathFinder):
 
     def find_spec(self, fullname: str, path=None, target=None):
         parts = fullname.split(".")
+        if fullname == LEGACY_PACKAGE:
+            spec = importlib.machinery.ModuleSpec(fullname, None, is_package=True)
+            spec.submodule_search_locations = []
+            return spec
         if len(parts) < 2:
             return None
         if parts[0] == PACKAGE and parts[1] in _manifest.CATEGORIES:

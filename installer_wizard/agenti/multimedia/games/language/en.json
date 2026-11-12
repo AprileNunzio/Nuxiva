@@ -1,0 +1,10 @@
+{
+  "name": "Games and 3D Chess",
+  "description": "Interactive games with full-screen 3D chess, matches against the Nuxiva Grandmaster, tactical analysis and voice commands.",
+  "capabilities": [
+    "Full-screen 3D chess with three-dimensional rendering and interactive controls",
+    "Quick voice start of the board and of matches with Nuxiva",
+    "Chess Grandmaster agent with comments, tactical advice and reasoned moves",
+    "Catalogue and launch of board and entertainment games"
+  ]
+}
