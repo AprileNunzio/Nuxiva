@@ -1,3 +1,4 @@
+mod build;
 pub mod compose;
 pub mod geom;
 pub mod plan;
