@@ -1,0 +1,1 @@
+import{m as r}from"./index-C4evy6CC.js";import{View as t}from"./View-Bn4DM6pS.js";import"./locale-en-C3Xjz3Mr.js";import"./locale-es-7WV7mFyS.js";import"./locale-fr-B9RDgAR0.js";import"./locale-it-DqeByUat.js";import"./app_scanner-CAtMKkyU.js";import"./video-D6LkYoN3.js";import"./arrow-right-D81r4qCb.js";const n=()=>r.jsx(t,{});export{n as View,n as default};
