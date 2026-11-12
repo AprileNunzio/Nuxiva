@@ -75,6 +75,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "agency-forge"
+version = "5.8.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "thiserror",
+]
+
+[[package]]
 name = "agency-ledger"
 version = "5.8.0"
 dependencies = [
