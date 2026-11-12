@@ -7,7 +7,7 @@ from config import env_get
 from state import store as state_store
 from tasks import background
 
-from features.stage import particles
+from features.stage import morphogenesis, particles
 from features.stage.store import concept_key, store
 
 log = logging.getLogger("nuxiva.stage")
@@ -70,9 +70,24 @@ def clear() -> None:
 
 async def sculpt(concept: str) -> dict:
     from features.brain.llm import generate
-    data = await generate(f"<object>{concept}</object>", as_json=True, max_tokens=900, temperature=0.3, kind="chat",
-                          system=SCULPT, component="particles", timeout=60)
-    return particles.validate(data)
+    try:
+        data = await generate(f"<object>{concept}</object>", as_json=True, max_tokens=900, temperature=0.3, kind="chat",
+                              system=SCULPT, component="particles", timeout=60)
+        return morphogenesis.repair_or_synthesize(concept, data)
+    except Exception:
+        return morphogenesis.synthesize_spec(concept)
+
+
+def materialize_instant(concept: str) -> dict:
+    key = concept_key(concept)
+    if not key:
+        raise particles.ParticleError("empty concept")
+    hit = store.lookup(key)
+    if hit:
+        return hit
+    clean = morphogenesis.synthesize_spec(key)
+    seed = int.from_bytes(key.encode()[:8].ljust(8, b"\0"), "little")
+    return store.put(key, clean, particles.sample(clean, POINTS, seed))
 
 
 async def materialize(concept: str, spec: dict | None = None) -> dict:
@@ -87,6 +102,20 @@ async def materialize(concept: str, spec: dict | None = None) -> dict:
     return store.put(key, clean, particles.sample(clean, POINTS, seed))
 
 
+def ensure_visual(question: str) -> dict | None:
+    if not enabled() or PRIVATE.search(question or ""):
+        return None
+    direct_concept = morphogenesis.extract_visual_concept(question or "")
+    if not direct_concept:
+        return None
+    try:
+        entry = materialize_instant(direct_concept)
+        state["last"] = time.time()
+        return present(entry)
+    except Exception:
+        return None
+
+
 def diorama_recent(window: float = 30.0) -> bool:
     try:
         from features.diorama import ambient
@@ -96,9 +125,15 @@ def diorama_recent(window: float = 30.0) -> bool:
 
 
 def worthwhile(question: str, reply: str, now: float) -> bool:
-    if not enabled() or state["busy"] or now - state["last"] < COOLDOWN_SECONDS:
+    if not enabled() or state["busy"]:
         return False
-    if len(question.strip()) < MIN_QUESTION or TRIVIAL.match(question) or PRIVATE.search(question + " " + reply):
+    if PRIVATE.search(question + " " + reply):
+        return False
+    if morphogenesis.extract_visual_concept(question):
+        return True
+    if now - state["last"] < COOLDOWN_SECONDS:
+        return False
+    if len(question.strip()) < MIN_QUESTION or TRIVIAL.match(question):
         return False
     return len(reply.strip()) >= 20
 
@@ -107,13 +142,16 @@ async def decide(question: str, reply: str) -> None:
     from features.brain.llm import generate
     state["busy"] = True
     try:
-        turn = f"<user>{question[:300]}</user>\n<assistant>{reply[:500]}</assistant>"
-        data = await generate(turn, as_json=True, max_tokens=80, temperature=0.2, kind="chat", system=DECIDE,
-                              component="particles", timeout=30)
-        if not isinstance(data, dict) or data.get("show") is not True:
-            return
-        concept = concept_key(data.get("concept"))
-        if len(concept) < 3:
+        direct = morphogenesis.extract_visual_concept(question)
+        concept = concept_key(direct) if direct else ""
+        if len(concept) < 2:
+            turn = f"<user>{question[:300]}</user>\n<assistant>{reply[:500]}</assistant>"
+            data = await generate(turn, as_json=True, max_tokens=80, temperature=0.2, kind="chat", system=DECIDE,
+                                  component="particles", timeout=30)
+            if not isinstance(data, dict) or data.get("show") is not True:
+                return
+            concept = concept_key(data.get("concept"))
+        if len(concept) < 2:
             return
         entry = await materialize(concept)
         state["last"] = time.time()
@@ -128,5 +166,7 @@ async def decide(question: str, reply: str) -> None:
 
 
 def watch(question: str, reply: str) -> None:
+    ensure_visual(question)
     if worthwhile(question, reply, time.time()):
         background(decide(question, reply))
+

@@ -131,6 +131,12 @@ async def handle(text: str, core_call, speech_lang: dict | None = None) -> dict:
 
     if lang != pivot.PIVOT and result.get("reply"):
         result["reply"] = await pivot.from_pivot(result["reply"], lang, force=not generated["by_model"])
+    if result.get("reply"):
+        ambient_diorama(text, str(result["reply"]))
+        from features.stage import show
+        current_particles = show.current()
+        if current_particles and isinstance(result.get("ui"), dict):
+            result["ui"].setdefault("particles", current_particles)
     return result
 
 

@@ -253,5 +253,36 @@ class ScreenRolesTest(unittest.TestCase):
         self.assertEqual(system_api._screen_roles("bad"), {})
 
 
+class MorphogenesisTest(unittest.TestCase):
+    def setUp(self):
+        self.root = Path(tempfile.mkdtemp())
+        self.store = ParticleStore(self.root)
+
+    def test_medusa_and_universal_concepts_materialize_automatically(self):
+        from features.stage import morphogenesis, show
+        concept = morphogenesis.extract_visual_concept("Come è fatta una medusa?")
+        self.assertEqual(concept, "medusa")
+        spec = morphogenesis.synthesize_spec(concept)
+        self.assertGreaterEqual(len(spec["parts"]), 8)
+        shapes = {p["shape"] for p in spec["parts"]}
+        self.assertIn("sphere", shapes)
+        self.assertIn("helix", shapes)
+        self.assertIn("torus", shapes)
+        with mock.patch.object(show, "store", self.store):
+            show.clear()
+            entry = show.ensure_visual("Come è fatta una medusa?")
+            self.assertIsNotNone(entry)
+            self.assertEqual(entry["concept"], "medusa")
+            self.assertIsNotNone(show.current())
+            self.assertEqual(show.current()["concept"], "medusa")
+            blob = self.store.blob(entry["digest"])
+            self.assertIsNotNone(blob)
+            self.assertEqual(particles.count(blob), show.POINTS)
+            other = show.ensure_visual("Mostrami la struttura di un quasar magnetico")
+            self.assertIsNotNone(other)
+            self.assertEqual(particles.count(self.store.blob(other["digest"])), show.POINTS)
+
+
 if __name__ == "__main__":
     unittest.main()
+

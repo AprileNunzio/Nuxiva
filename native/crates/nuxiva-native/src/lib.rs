@@ -83,7 +83,10 @@ use pyo3::prelude::*;
 use scanner::FastScanner;
 use sentinel::RustSentinel;
 use signal::{RustSignalEnhancer, RustVoiceBiomarkers};
-use stage::{RustParticleCache, particles_count, particles_sample, stage_plan};
+use stage::{
+    RustParticleCache, particles_count, particles_extract_concept, particles_sample,
+    particles_synthesize_spec, stage_plan,
+};
 use surface::{RustMoveGuard, surface_audience, surface_layout};
 use token::{RustTokenCodec, TokenRejected};
 use topics::{TopicRouter, matches, valid_origin, valid_pattern, valid_topic};
@@ -190,6 +193,8 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(stage_plan, m)?)?;
     m.add_function(wrap_pyfunction!(particles_sample, m)?)?;
     m.add_function(wrap_pyfunction!(particles_count, m)?)?;
+    m.add_function(wrap_pyfunction!(particles_extract_concept, m)?)?;
+    m.add_function(wrap_pyfunction!(particles_synthesize_spec, m)?)?;
     m.add_function(wrap_pyfunction!(vitals_parse_ble_heart_rate, m)?)?;
     m.add_function(wrap_pyfunction!(gesture_validate_profile, m)?)?;
     m.add_function(wrap_pyfunction!(gesture_catalog, m)?)?;

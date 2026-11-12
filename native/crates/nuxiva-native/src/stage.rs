@@ -41,6 +41,17 @@ pub fn particles_count(blob: &[u8]) -> PyResult<usize> {
         .map_err(|e| PyValueError::new_err(e.to_string()))
 }
 
+#[pyfunction]
+pub fn particles_extract_concept(query: &str) -> Option<String> {
+    nuxiva_stage_core::extract_visual_concept(query)
+}
+
+#[pyfunction]
+pub fn particles_synthesize_spec(concept: &str) -> PyResult<String> {
+    let spec = nuxiva_stage_core::synthesize_sculpture(concept);
+    serde_json::to_string(&spec).map_err(|e| PyRuntimeError::new_err(e.to_string()))
+}
+
 #[pyclass(module = "nuxiva_native")]
 #[derive(Debug)]
 pub struct RustParticleCache {
