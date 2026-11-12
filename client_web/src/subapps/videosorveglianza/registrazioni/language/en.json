@@ -56,6 +56,11 @@
     "kind_license_plate": "License plate",
     "kind_face": "Face",
     "kind_motion": "Motion",
-    "kind_speech": "Speech"
+    "kind_speech": "Speech",
+    "transcript": "Transcript",
+    "no_transcript": "No transcribed words in this window.",
+    "unknown_voice": "Unknown voice",
+    "agreement": "Agreement between microphones: {value}%",
+    "mics": "{count} microphones"
   }
 }

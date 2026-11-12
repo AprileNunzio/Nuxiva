@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight, Film, HardDrive, Pin, PinOff, RefreshCw, SkipBack, SkipForward, Trash2 } from 'lucide-react';
 import { useScopedI18n } from '../../../shared/i18n/useScopedI18n';
-import { deleteSegment, fetchRecordings, fetchStorage, fetchTimeline, jump, seekTo, setPinned } from './api';
+import { deleteSegment, fetchRecordings, fetchStorage, fetchTimeline, fetchTranscript, jump, seekTo, setPinned } from './api';
+import { TranscriptPanel } from './components/TranscriptPanel';
 import { Player } from './components/Player';
 import { TimelineBar } from './components/TimelineBar';
 import { bytes, clock, dayLabel, KIND_GROUPS, ZOOMS } from './format';
-import type { RecordingCamera, SegmentRow, StorageStats, Timeline } from './types';
+import type { RecordingCamera, SegmentRow, StorageStats, Timeline, TranscriptTurn } from './types';
 
 const REFRESH_MS = 30_000;
 
@@ -22,6 +23,7 @@ export function View() {
   const [group, setGroup] = useState('all');
   const [storage, setStorage] = useState<StorageStats | null>(null);
   const [notice, setNotice] = useState('');
+  const [turns, setTurns] = useState<TranscriptTurn[]>([]);
   const fromMs = windowEnd - zoom;
   const kindLabel = (kind: string) => {
     const key = `kind_${kind}`;
@@ -47,6 +49,9 @@ export function View() {
     let alive = true;
     void fetchTimeline(camera, fromMs, windowEnd).then((data) => {
       if (alive) setTimeline(data);
+    });
+    void fetchTranscript(camera, Math.max(fromMs, windowEnd - 86_400_000), windowEnd).then((rows) => {
+      if (alive) setTurns(rows);
     });
     return () => {
       alive = false;
@@ -199,6 +204,7 @@ export function View() {
                 </div>
               )}
               {notice && <p role="status" className="text-on-surface-variant">{notice}</p>}
+              <TranscriptPanel turns={turns} cursorMs={cursor} lang={lang} t={t} onSeek={(at) => void openAt(at)} />
             </aside>
           </div>
 

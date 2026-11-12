@@ -1,6 +1,6 @@
 import { adminPath } from '../../../shared/http/basePath';
 import { reportError } from '../../../shared/errors/errorBus';
-import type { JumpResult, RecordingCamera, SeekResult, SegmentRow, StorageStats, Timeline } from './types';
+import type { TranscriptTurn, JumpResult, RecordingCamera, SeekResult, SegmentRow, StorageStats, Timeline } from './types';
 
 const CSRF_HEADER = 'X-Nuxiva-Request';
 const ID = /^[A-Za-z0-9_-]{1,64}$/;
@@ -124,4 +124,18 @@ export async function deleteSegment(camera: string, segment: string): Promise<bo
 
 export function playUrl(camera: string, segment: string): string {
   return adminPath(`/api/nvr/play/${safeId(camera)}/${safeId(segment)}`);
+}
+
+export async function fetchTranscript(camera: string, fromMs: number, toMs: number): Promise<TranscriptTurn[]> {
+  try {
+    const data = await getJson<{ turns: TranscriptTurn[] }>('/api/nvr/transcript', {
+      camera: safeId(camera),
+      from_ms: Math.floor(fromMs),
+      to_ms: Math.floor(Math.min(toMs, fromMs + 86_400_000)),
+    });
+    return Array.isArray(data?.turns) ? data!.turns : [];
+  } catch (cause) {
+    reportError('nvr_transcript_error', cause);
+    return [];
+  }
 }

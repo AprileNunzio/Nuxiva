@@ -7,11 +7,13 @@ from access import require_admin
 from agenti.nvr.service import nvr
 from agenti.nvr.settings import SettingsError, public
 from agenti.nvr.playback_api import routes as playback_routes
+from agenti.nvr.transcript_api import routes as transcript_routes
 from agenti.nvr.vault import media_vault
 
 admin_routes = APIRouter()
 public_routes = APIRouter()
 admin_routes.include_router(playback_routes)
+admin_routes.include_router(transcript_routes)
 
 
 @admin_routes.get("/api/nvr/overview")

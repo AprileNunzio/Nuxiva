@@ -111,6 +111,8 @@ class Nvr:
     async def run(self) -> None:
         self.subscription = nuxiva_bus.subscribe("camera.event.>", self.on_camera_event)
         self.ingest.configure(self.settings)
+        from agenti.nvr.scribe import get_dispatcher
+        self.scribe_task = asyncio.create_task(get_dispatcher().run(lambda: bool(self.settings.get("ai_audio_transcription", True))))
         last_prune = 0.0
         while True:
             try:

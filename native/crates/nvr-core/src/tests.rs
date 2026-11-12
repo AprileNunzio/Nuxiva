@@ -188,3 +188,54 @@ fn byte_ranges() {
     }
     assert_eq!(parse_range("bytes=0-1", 0), ByteRange::Unsatisfiable);
 }
+
+#[test]
+fn fuse_votes_words_and_speaker() {
+    use crate::{Utterance, cluster_voices, fuse};
+    let u = |source: &str,
+             start: u64,
+             end: u64,
+             text: &str,
+             speaker: Option<&str>,
+             score: f32,
+             weight: f32| Utterance {
+        source: source.into(),
+        start_ms: start,
+        end_ms: end,
+        text: text.into(),
+        speaker: speaker.map(Into::into),
+        speaker_score: score,
+        weight,
+    };
+    let rows = vec![
+        u(
+            "cam-a",
+            1000,
+            3000,
+            "il pacco e arrivato",
+            Some("anna"),
+            0.8,
+            1.0,
+        ),
+        u("cam-b", 1100, 3100, "il pacco è arrivato", None, 0.0, 1.0),
+        u(
+            "cam-c",
+            1050,
+            2900,
+            "il pacco è arrivato",
+            Some("anna"),
+            0.7,
+            1.0,
+        ),
+        u("cam-a", 9000, 9500, "ciao", None, 0.0, 1.0),
+    ];
+    let turns = fuse(&rows, 0.5).unwrap();
+    assert_eq!(turns.len(), 2);
+    assert_eq!(turns[0].text, "il pacco è arrivato");
+    assert_eq!(turns[0].speaker.as_deref(), Some("anna"));
+    assert_eq!(turns[0].sources.len(), 3);
+    assert!(turns[1].speaker.is_none());
+    let labels = cluster_voices(&[vec![1.0, 0.0], vec![0.9, 0.1], vec![0.0, 1.0]], 0.8).unwrap();
+    assert_eq!(labels, vec![0, 0, 1]);
+    assert!(cluster_voices(&[vec![f32::NAN]], 0.8).is_none());
+}

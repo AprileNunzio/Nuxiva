@@ -56,6 +56,11 @@
     "kind_license_plate": "Plaque",
     "kind_face": "Visage",
     "kind_motion": "Mouvement",
-    "kind_speech": "Parole"
+    "kind_speech": "Parole",
+    "transcript": "Transcription",
+    "no_transcript": "Aucune parole transcrite dans cette fenêtre.",
+    "unknown_voice": "Voix inconnue",
+    "agreement": "Accord entre microphones : {value} %",
+    "mics": "{count} microphones"
   }
 }

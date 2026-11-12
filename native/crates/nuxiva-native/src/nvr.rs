@@ -1,4 +1,4 @@
-use nuxiva_nvr_core::{ByteRange, parse_range};
+use nuxiva_nvr_core::{ByteRange, Utterance, cluster_voices, fuse, parse_range};
 use nuxiva_nvr_core::{Catalog, Marker, NvrError, Policy, Segment, Tier, next_marker, plan, spans};
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
@@ -151,9 +151,26 @@ fn nvr_parse_range(header: &str, total: u64) -> (String, u64, u64) {
     }
 }
 
+#[pyfunction]
+fn nvr_fuse(utterances_json: &str, min_overlap: f32) -> PyResult<String> {
+    let rows: Vec<Utterance> =
+        serde_json::from_str(bounded(utterances_json)?).map_err(|e| json_err(&e))?;
+    let turns = fuse(&rows, min_overlap.clamp(0.0, 1.0)).map_err(|e| fail(&e))?;
+    serde_json::to_string(&turns).map_err(|e| json_err(&e))
+}
+
+#[pyfunction]
+#[allow(clippy::needless_pass_by_value)]
+fn nvr_cluster_voices(embeddings: Vec<Vec<f32>>, threshold: f32) -> PyResult<Vec<usize>> {
+    cluster_voices(&embeddings, threshold)
+        .ok_or_else(|| PyValueError::new_err("nvr.voices.invalid"))
+}
+
 pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<RustNvrCatalog>()?;
     m.add_function(wrap_pyfunction!(nvr_next_marker, m)?)?;
     m.add_function(wrap_pyfunction!(nvr_parse_range, m)?)?;
+    m.add_function(wrap_pyfunction!(nvr_fuse, m)?)?;
+    m.add_function(wrap_pyfunction!(nvr_cluster_voices, m)?)?;
     Ok(())
 }

@@ -56,6 +56,11 @@
     "kind_license_plate": "Matrícula",
     "kind_face": "Rostro",
     "kind_motion": "Movimiento",
-    "kind_speech": "Habla"
+    "kind_speech": "Habla",
+    "transcript": "Transcripción",
+    "no_transcript": "No hay palabras transcritas en esta ventana.",
+    "unknown_voice": "Voz desconocida",
+    "agreement": "Acuerdo entre micrófonos: {value}%",
+    "mics": "{count} micrófonos"
   }
 }

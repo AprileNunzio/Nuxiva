@@ -6,6 +6,8 @@ pub mod range;
 pub mod retention;
 pub mod segment;
 pub mod timeline;
+pub mod transcript;
+pub mod voices;
 
 #[cfg(test)]
 mod tests;
@@ -16,3 +18,5 @@ pub use range::{ByteRange, parse_range};
 pub use retention::{Policy, RetentionPlan, plan};
 pub use segment::{Segment, Tier, valid_id};
 pub use timeline::{Marker, Span, next_marker, spans};
+pub use transcript::{Turn, Utterance, fuse};
+pub use voices::cluster_voices;

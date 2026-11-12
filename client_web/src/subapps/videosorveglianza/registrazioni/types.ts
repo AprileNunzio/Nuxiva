@@ -62,3 +62,15 @@ export interface StorageStats {
   vault_used_bytes: number;
   quota_used_percent: number;
 }
+
+export interface TranscriptTurn {
+  start_ms: number;
+  end_ms: number;
+  text: string;
+  speaker: string | null;
+  speaker_name: string;
+  speaker_score: number;
+  agreement: number;
+  changed: number;
+  sources: string[];
+}

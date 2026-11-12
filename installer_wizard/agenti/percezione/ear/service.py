@@ -32,6 +32,7 @@ from speakers import SpeakerContext
 from livecap import LiveCaptions
 from livegov import LiveGovernor
 from recorder import Recorder, write_chunk
+from nvr_scribe import NvrScribe
 from reviewer import Reviewer, activity
 from voiceprint import ENROLLED_AT, Voiceprints
 from wakeword import WakeWord
@@ -472,7 +473,9 @@ async def main() -> None:
     async with websockets.serve(handler, "127.0.0.1", PORT, max_size=2 ** 20, ping_interval=20, ping_timeout=90):
         await asyncio.gather(supervise("stato", link_writer), supervise("revisione", reviewer.run),
                              supervise("registro", capture.maintenance), supervise("feedback", lambda: feedback.run(voiceprints)),
-                             supervise("microfono del computer", host_mic.run))
+                             supervise("microfono del computer", host_mic.run),
+                             supervise("trascrizione registrazioni", NvrScribe(voiceprints, lambda: any(
+                                 s.mode != "idle" or s.in_speech or s.nuxiva_speaking for s in SESSIONS)).run))
 
 
 if __name__ == "__main__":

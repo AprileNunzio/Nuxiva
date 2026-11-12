@@ -1264,6 +1264,7 @@ dependencies = [
 name = "nuxiva-nvr-core"
 version = "5.8.0"
 dependencies = [
+ "nuxiva-ear-core",
  "serde",
  "serde_json",
 ]

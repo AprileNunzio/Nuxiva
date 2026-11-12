@@ -56,6 +56,11 @@
     "kind_license_plate": "Targa",
     "kind_face": "Volto",
     "kind_motion": "Movimento",
-    "kind_speech": "Parlato"
+    "kind_speech": "Parlato",
+    "transcript": "Trascrizione",
+    "no_transcript": "Nessuna parola trascritta in questa finestra.",
+    "unknown_voice": "Voce sconosciuta",
+    "agreement": "Accordo fra microfoni: {value}%",
+    "mics": "{count} microfoni"
   }
 }
