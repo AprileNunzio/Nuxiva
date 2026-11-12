@@ -11,5 +11,71 @@
   ],
   "settings": {
     "NUXIVA_PARTICLES_AMBIENT": "Spontaneous particles during conversation"
+  },
+  "parts": {
+    "body": {
+      "label": "Body",
+      "detail": "The trunk: holds the vital organs and supports every other part."
+    },
+    "neck": {
+      "label": "Neck",
+      "detail": "Joins the head to the trunk and allows its movement."
+    },
+    "head": {
+      "label": "Head",
+      "detail": "Holds the brain, eyes and sense organs."
+    },
+    "snout": {
+      "label": "Snout",
+      "detail": "Nose and mouth: used to smell, eat and breathe."
+    },
+    "beak": {
+      "label": "Beak",
+      "detail": "A tool to grab food and preen the feathers."
+    },
+    "ears": {
+      "label": "Ears",
+      "detail": "Pick up sounds and help with balance."
+    },
+    "horns": {
+      "label": "Horns",
+      "detail": "Rigid structures used for defence and display."
+    },
+    "front_legs": {
+      "label": "Front legs",
+      "detail": "Carry the weight at the front and guide movement."
+    },
+    "hind_legs": {
+      "label": "Hind legs",
+      "detail": "Give the push to run and jump."
+    },
+    "legs": {
+      "label": "Legs",
+      "detail": "Support the body and allow it to move."
+    },
+    "arms": {
+      "label": "Arms",
+      "detail": "Allow grasping and handling objects."
+    },
+    "tail": {
+      "label": "Tail",
+      "detail": "Helps with balance and shows mood."
+    },
+    "wings": {
+      "label": "Wings",
+      "detail": "Surfaces that create the lift needed to fly."
+    },
+    "fins": {
+      "label": "Fins",
+      "detail": "Steady and steer the swimming."
+    },
+    "thorax": {
+      "label": "Thorax",
+      "detail": "Carries the legs and wings and holds the flight muscles."
+    },
+    "abdomen": {
+      "label": "Abdomen",
+      "detail": "Holds digestion and reproduction."
+    }
   }
 }

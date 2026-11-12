@@ -30,6 +30,7 @@ FIELDS = {
     "mirror": {"op", "axis", "child"},
     "rotate": {"op", "axis", "deg", "child"},
     "group": {"op", "children"},
+    "mark": {"op", "name", "at"},
 }
 
 
@@ -102,7 +103,9 @@ def _mirror(p, axis: str):
 
 def _move(prim: dict, fn, yaw: float) -> dict:
     out = dict(prim)
-    if prim["kind"] == "seg":
+    if prim["kind"] == "mark":
+        out["at"] = fn(prim["at"])
+    elif prim["kind"] == "seg":
         out["a"], out["b"] = fn(prim["a"]), fn(prim["b"])
     else:
         out["at"] = fn(prim["at"])
@@ -202,6 +205,14 @@ class _Builder:
         self.room(1)
         self.out.append(item)
 
+    def _mark(self, node, depth: int) -> None:
+        name = node.get("name")
+        if not isinstance(name, str) or not 1 <= len(name.encode()) <= 32:
+            raise FormaError("bad_mark")
+        item = {"kind": "mark", "name": name, "at": _vec(node.get("at"), (0.0, 0.0, 0.0))}
+        self.room(1)
+        self.out.append(item)
+
     def _radial(self, node, depth: int) -> None:
         radius, phase = _num(node.get("radius", 0.0)), _num(node.get("phase", 0.0))
         count = node.get("count")
@@ -237,6 +248,8 @@ class _Builder:
 def _reach(prims: list[dict]) -> float:
     best = 0.0
     for p in prims:
+        if p["kind"] == "mark":
+            continue
         if p["kind"] == "seg":
             ext = max(max(abs(v) for v in p["a"]), max(abs(v) for v in p["b"])) + max(p["r0"], p["r1"])
         else:
@@ -279,7 +292,12 @@ def compile_plan(plan) -> dict:
     k = REACH / extent
     colors = PALETTES.get(plan.get("theme", "ethereal"), PALETTES["ethereal"])
     parts = []
+    labels: list[dict] = []
     for p in builder.out:
+        if p["kind"] == "mark":
+            if all(item["name"] != p["name"] for item in labels):
+                labels.append({"name": p["name"], "at": _scale(p["at"], k)})
+            continue
         weight = max(0.05, min(10.0, p["weight"]))
         if p["kind"] == "seg":
             built = _seg(p, k)
@@ -291,4 +309,4 @@ def compile_plan(plan) -> dict:
                           "rot": [_wrap(v) for v in p["rot"]], "color": colors[p["color"] % 6], "weight": weight})
     if not parts or len(parts) > MAX_PARTS:
         raise FormaError("too_many_parts")
-    return {"parts": parts}
+    return {"parts": parts, "labels": labels} if labels else {"parts": parts}

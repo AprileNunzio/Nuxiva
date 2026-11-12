@@ -171,7 +171,7 @@ class LiveRefineTest(unittest.IsolatedAsyncioTestCase):
         import asyncio
         spec = python_only(ARCHETYPES["medusa"])
 
-        async def design(concept):
+        async def design(concept, start=None):
             return spec
 
         with mock.patch("agenti.particles.forma_design.design", design):
@@ -192,7 +192,7 @@ class LiveRefineTest(unittest.IsolatedAsyncioTestCase):
     async def test_failed_design_keeps_the_instant_shape(self):
         import asyncio
 
-        async def design(concept):
+        async def design(concept, start=None):
             return None
 
         with mock.patch("agenti.particles.forma_design.design", design):

@@ -138,6 +138,10 @@ pub enum Node {
     Group {
         children: Vec<Node>,
     },
+    Mark {
+        name: String,
+        at: [f64; 3],
+    },
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

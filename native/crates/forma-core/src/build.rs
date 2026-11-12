@@ -27,6 +27,10 @@ pub(crate) enum Prim {
         color: usize,
         weight: f64,
     },
+    Mark {
+        name: String,
+        at: V,
+    },
 }
 
 pub(crate) fn sub(a: V, b: V) -> V {
@@ -87,6 +91,10 @@ pub(crate) fn mirror(p: V, axis: Axis) -> V {
 
 pub(crate) fn map_prim(prim: &Prim, f: &dyn Fn(V) -> V, yaw: f64) -> Prim {
     match prim {
+        Prim::Mark { name, at } => Prim::Mark {
+            name: name.clone(),
+            at: f(*at),
+        },
         Prim::Seg {
             a,
             b,
@@ -209,6 +217,18 @@ impl Builder {
             } => self.radial(*count, *radius, *phase, child, depth),
             Node::Mirror { axis, child } => self.mirrored(*axis, child, depth),
             Node::Rotate { axis, deg, child } => self.rotated(*axis, *deg, child, depth),
+            Node::Mark { name, at } => {
+                finite(at)?;
+                if name.is_empty() || name.len() > 32 {
+                    return Err(FormaError("bad_mark"));
+                }
+                self.room(1)?;
+                self.out.push(Prim::Mark {
+                    name: name.clone(),
+                    at: *at,
+                });
+                Ok(())
+            }
             Node::Group { children } => {
                 for node in children {
                     self.emit(node, depth.saturating_add(1))?;

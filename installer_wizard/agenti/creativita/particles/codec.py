@@ -15,6 +15,8 @@ MAX_BLOB_POINTS = 65_536
 FLAG_COLORS = 1
 QUANT = 32_767.0
 SHAPES = ("sphere", "box", "cylinder", "cone", "torus", "helix", "plane")
+LABEL = re.compile(r"^[a-z_]{1,32}$")
+MAX_LABELS = 12
 COLOR = re.compile(r"^#[0-9a-fA-F]{6}$")
 MASK = (1 << 64) - 1
 
@@ -56,7 +58,20 @@ def validate(spec) -> dict:
                       "at": _triple(part.get("at"), 0.0, -10.0, 10.0, "position"),
                       "rot": _triple(part.get("rot"), 0.0, -360.0, 360.0, "rotation"),
                       "color": color.lower(), "weight": float(weight)})
-    return {"parts": clean}
+    out = {"parts": clean}
+    labels = _labels(spec.get("labels"))
+    if labels:
+        out["labels"] = labels
+    return out
+
+
+def _labels(raw) -> list[dict]:
+    found = []
+    for item in raw[:MAX_LABELS] if isinstance(raw, list) else []:
+        name = item.get("name") if isinstance(item, dict) else None
+        if isinstance(name, str) and LABEL.match(name):
+            found.append({"name": name, "at": _triple(item.get("at"), 0.0, -10.0, 10.0, "label position")})
+    return found
 
 
 class _Rng:
@@ -163,7 +178,7 @@ def sample_python(spec: dict, count: int, seed: int) -> bytes:
 
 
 def sample(spec: dict, count: int = 12_000, seed: int = 1) -> bytes:
-    clean = validate(spec)
+    clean = {"parts": validate(spec)["parts"]}
     seed &= MASK
     if native.lib is not None:
         try:

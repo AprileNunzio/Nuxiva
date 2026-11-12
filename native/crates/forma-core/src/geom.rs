@@ -15,6 +15,12 @@ pub struct Part {
     pub weight: f64,
 }
 
+#[derive(Debug, Clone, Serialize)]
+pub struct Label {
+    pub name: String,
+    pub at: V,
+}
+
 #[must_use]
 pub fn palette(theme: &str) -> [&'static str; 6] {
     match theme {
@@ -57,6 +63,7 @@ fn reach(prims: &[Prim]) -> f64 {
                 at.iter().map(|v| v.abs()).fold(0.0_f64, f64::max)
                     + size.iter().copied().fold(0.0_f64, f64::max)
             }
+            Prim::Mark { .. } => 0.0,
         })
         .fold(0.0_f64, f64::max)
 }
@@ -100,6 +107,10 @@ fn seg_part(a: V, b: V, r0: f64, r1: f64, k: f64) -> Option<(Shape, V, V, V)> {
 }
 
 pub fn compile(plan: &Plan) -> Result<Vec<Part>, FormaError> {
+    compile_full(plan).map(|(parts, _)| parts)
+}
+
+pub fn compile_full(plan: &Plan) -> Result<(Vec<Part>, Vec<Label>), FormaError> {
     let mut builder = Builder {
         nodes: 0,
         out: Vec::new(),
@@ -115,8 +126,17 @@ pub fn compile(plan: &Plan) -> Result<Vec<Part>, FormaError> {
     let k = REACH / extent;
     let colors = palette(&plan.theme);
     let mut parts = Vec::with_capacity(prims.len());
+    let mut labels: Vec<Label> = Vec::new();
     for prim in &prims {
         match prim {
+            Prim::Mark { name, at } => {
+                if !labels.iter().any(|l| l.name == *name) {
+                    labels.push(Label {
+                        name: name.clone(),
+                        at: scale(*at, k),
+                    });
+                }
+            }
             Prim::Seg {
                 a,
                 b,
@@ -156,5 +176,5 @@ pub fn compile(plan: &Plan) -> Result<Vec<Part>, FormaError> {
     if parts.is_empty() || parts.len() > MAX_PARTS {
         return Err(FormaError("too_many_parts"));
     }
-    Ok(parts)
+    Ok((parts, labels))
 }

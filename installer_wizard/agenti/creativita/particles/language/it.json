@@ -11,5 +11,71 @@
   ],
   "settings": {
     "NUXIVA_PARTICLES_AMBIENT": "Particelle spontanee durante la conversazione"
+  },
+  "parts": {
+    "body": {
+      "label": "Corpo",
+      "detail": "Il tronco: ospita gli organi vitali e sostiene tutte le altre parti."
+    },
+    "neck": {
+      "label": "Collo",
+      "detail": "Collega la testa al tronco e ne permette i movimenti."
+    },
+    "head": {
+      "label": "Testa",
+      "detail": "Ospita cervello, occhi e organi di senso."
+    },
+    "snout": {
+      "label": "Muso",
+      "detail": "Naso e bocca: servono per annusare, mangiare e respirare."
+    },
+    "beak": {
+      "label": "Becco",
+      "detail": "Strumento per afferrare il cibo e curare le piume."
+    },
+    "ears": {
+      "label": "Orecchie",
+      "detail": "Captano i suoni e aiutano l'equilibrio."
+    },
+    "horns": {
+      "label": "Corna",
+      "detail": "Strutture rigide usate per difesa e per farsi riconoscere."
+    },
+    "front_legs": {
+      "label": "Zampe anteriori",
+      "detail": "Sostengono il peso davanti e guidano il movimento."
+    },
+    "hind_legs": {
+      "label": "Zampe posteriori",
+      "detail": "Danno la spinta per correre e saltare."
+    },
+    "legs": {
+      "label": "Zampe",
+      "detail": "Sostengono il corpo e permettono di muoversi."
+    },
+    "arms": {
+      "label": "Braccia",
+      "detail": "Permettono di afferrare e manipolare gli oggetti."
+    },
+    "tail": {
+      "label": "Coda",
+      "detail": "Aiuta l'equilibrio e comunica lo stato d'animo."
+    },
+    "wings": {
+      "label": "Ali",
+      "detail": "Superfici che generano la portanza per volare."
+    },
+    "fins": {
+      "label": "Pinne",
+      "detail": "Stabilizzano e dirigono il nuoto."
+    },
+    "thorax": {
+      "label": "Torace",
+      "detail": "Regge zampe e ali e contiene i muscoli del movimento."
+    },
+    "abdomen": {
+      "label": "Addome",
+      "detail": "Contiene digestione e riproduzione."
+    }
   }
 }

@@ -55,7 +55,7 @@ pub fn schema() -> serde_json::Value {
     })
 }
 
-fn clean(value: f64, lo: f64, hi: f64, fallback: f64) -> f64 {
+pub(crate) fn clean(value: f64, lo: f64, hi: f64, fallback: f64) -> f64 {
     if value.is_finite() {
         value.clamp(lo, hi)
     } else {

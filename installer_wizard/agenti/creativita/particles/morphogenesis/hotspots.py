@@ -1,4 +1,12 @@
+import json
 from dataclasses import asdict, dataclass
+from functools import lru_cache
+from pathlib import Path
+
+LANGUAGE = Path(__file__).resolve().parents[1] / "language"
+MAX_SPOTS = 8
+ORDER = ("head", "snout", "beak", "ears", "horns", "neck", "body", "thorax", "abdomen", "front_legs", "hind_legs", "legs", "arms", "wings",
+         "fins", "tail")
 
 
 @dataclass(frozen=True)
@@ -13,9 +21,32 @@ class Hotspot3D:
         return asdict(self)
 
 
-def extract_hotspots(concept: str, spec: dict) -> list[dict]:
-    lower = str(concept or "").lower()
+@lru_cache(maxsize=8)
+def _names(lang: str) -> dict:
+    try:
+        return json.loads((LANGUAGE / f"{lang}.json").read_text(encoding="utf-8")).get("parts", {})
+    except (OSError, ValueError):
+        return {}
+
+
+def _labelled(spec: dict, lang: str) -> list[dict]:
+    parts = spec.get("parts") or []
+    reach = max((max(abs(v) for v in p["at"]) + max(p["size"]) for p in parts), default=0.0) or 1.0
+    names = _names(lang) or _names("it")
     spots = []
+    for item in sorted(spec.get("labels") or [], key=lambda item: ORDER.index(item["name"]) if item["name"] in ORDER else len(ORDER)):
+        info = names.get(item["name"])
+        if info:
+            at = tuple(v / reach for v in item["at"])
+            spots.append(Hotspot3D(item["name"], info["label"], at, info["detail"], "anatomia").to_dict())
+    return spots[:MAX_SPOTS]
+
+
+def extract_hotspots(concept: str, spec: dict, lang: str = "it") -> list[dict]:
+    lower = str(concept or "").lower()
+    spots = _labelled(spec or {}, lang)
+    if spots:
+        return spots
 
     if any(k in lower for k in ("cervell", "brain")):
         return [

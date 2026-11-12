@@ -11,5 +11,71 @@
   ],
   "settings": {
     "NUXIVA_PARTICLES_AMBIENT": "Particules spontanées pendant la conversation"
+  },
+  "parts": {
+    "body": {
+      "label": "Corps",
+      "detail": "Le tronc: abrite les organes vitaux et soutient toutes les autres parties."
+    },
+    "neck": {
+      "label": "Cou",
+      "detail": "Relie la tête au tronc et permet ses mouvements."
+    },
+    "head": {
+      "label": "Tête",
+      "detail": "Abrite le cerveau, les yeux et les organes des sens."
+    },
+    "snout": {
+      "label": "Museau",
+      "detail": "Nez et bouche: servent à sentir, manger et respirer."
+    },
+    "beak": {
+      "label": "Bec",
+      "detail": "Outil pour saisir la nourriture et lisser les plumes."
+    },
+    "ears": {
+      "label": "Oreilles",
+      "detail": "Captent les sons et aident l'équilibre."
+    },
+    "horns": {
+      "label": "Cornes",
+      "detail": "Structures rigides utilisées pour la défense et la parade."
+    },
+    "front_legs": {
+      "label": "Pattes avant",
+      "detail": "Portent le poids à l'avant et guident le mouvement."
+    },
+    "hind_legs": {
+      "label": "Pattes arrière",
+      "detail": "Donnent l'impulsion pour courir et sauter."
+    },
+    "legs": {
+      "label": "Pattes",
+      "detail": "Soutiennent le corps et permettent de se déplacer."
+    },
+    "arms": {
+      "label": "Bras",
+      "detail": "Permettent de saisir et de manipuler les objets."
+    },
+    "tail": {
+      "label": "Queue",
+      "detail": "Aide à l'équilibre et montre l'humeur."
+    },
+    "wings": {
+      "label": "Ailes",
+      "detail": "Surfaces qui créent la portance pour voler."
+    },
+    "fins": {
+      "label": "Nageoires",
+      "detail": "Stabilisent et dirigent la nage."
+    },
+    "thorax": {
+      "label": "Thorax",
+      "detail": "Porte les pattes et les ailes et contient les muscles du vol."
+    },
+    "abdomen": {
+      "label": "Abdomen",
+      "detail": "Abrite la digestion et la reproduction."
+    }
   }
 }

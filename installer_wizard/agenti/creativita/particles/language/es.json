@@ -11,5 +11,71 @@
   ],
   "settings": {
     "NUXIVA_PARTICLES_AMBIENT": "Partículas espontáneas durante la conversación"
+  },
+  "parts": {
+    "body": {
+      "label": "Cuerpo",
+      "detail": "El tronco: aloja los órganos vitales y sostiene todas las demás partes."
+    },
+    "neck": {
+      "label": "Cuello",
+      "detail": "Une la cabeza al tronco y permite sus movimientos."
+    },
+    "head": {
+      "label": "Cabeza",
+      "detail": "Aloja el cerebro, los ojos y los órganos de los sentidos."
+    },
+    "snout": {
+      "label": "Hocico",
+      "detail": "Nariz y boca: sirven para oler, comer y respirar."
+    },
+    "beak": {
+      "label": "Pico",
+      "detail": "Herramienta para atrapar comida y arreglar las plumas."
+    },
+    "ears": {
+      "label": "Orejas",
+      "detail": "Captan los sonidos y ayudan al equilibrio."
+    },
+    "horns": {
+      "label": "Cuernos",
+      "detail": "Estructuras rígidas usadas para defensa y exhibición."
+    },
+    "front_legs": {
+      "label": "Patas delanteras",
+      "detail": "Soportan el peso delantero y guían el movimiento."
+    },
+    "hind_legs": {
+      "label": "Patas traseras",
+      "detail": "Dan el impulso para correr y saltar."
+    },
+    "legs": {
+      "label": "Patas",
+      "detail": "Sostienen el cuerpo y permiten moverse."
+    },
+    "arms": {
+      "label": "Brazos",
+      "detail": "Permiten agarrar y manipular objetos."
+    },
+    "tail": {
+      "label": "Cola",
+      "detail": "Ayuda al equilibrio y muestra el ánimo."
+    },
+    "wings": {
+      "label": "Alas",
+      "detail": "Superficies que crean la sustentación para volar."
+    },
+    "fins": {
+      "label": "Aletas",
+      "detail": "Estabilizan y dirigen la natación."
+    },
+    "thorax": {
+      "label": "Tórax",
+      "detail": "Lleva las patas y las alas y contiene los músculos del vuelo."
+    },
+    "abdomen": {
+      "label": "Abdomen",
+      "detail": "Aloja la digestión y la reproducción."
+    }
   }
 }

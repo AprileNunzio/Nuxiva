@@ -1,0 +1,714 @@
+[
+ {
+  "roots": [
+   "drago*",
+   "drag*",
+   "dragon*"
+  ],
+  "anatomy": {
+   "plan": "quadruped",
+   "size": 2.4,
+   "build": 1.0,
+   "neck": 1.2,
+   "head": 0.9,
+   "snout": 1.0,
+   "ears": "none",
+   "horns": 1.2,
+   "tail": 2.2,
+   "tail_curl": 0.6,
+   "legs": 0.7,
+   "leg_thick": 1.1,
+   "wings": 2.0,
+   "theme": "geological"
+  }
+ },
+ {
+  "roots": [
+   "cane",
+   "cani",
+   "cagnolin*",
+   "cucciol*",
+   "dog",
+   "dogs",
+   "puppy"
+  ],
+  "anatomy": {
+   "plan": "quadruped",
+   "size": 1.6,
+   "build": 0.85,
+   "neck": 0.45,
+   "head": 1.0,
+   "snout": 0.9,
+   "ears": "floppy",
+   "ear_size": 1.4,
+   "tail": 0.7,
+   "tail_curl": 0.9,
+   "legs": 0.9,
+   "leg_thick": 1.12,
+   "theme": "fauna"
+  }
+ },
+ {
+  "roots": [
+   "lupo",
+   "lupi",
+   "wolf",
+   "wolves",
+   "volpe",
+   "volpi",
+   "fox",
+   "foxes"
+  ],
+  "anatomy": {
+   "plan": "quadruped",
+   "size": 1.7,
+   "build": 0.8,
+   "neck": 0.5,
+   "head": 0.95,
+   "snout": 1.2,
+   "ears": "point",
+   "ear_size": 1.43,
+   "tail": 1.3,
+   "tail_curl": 0.3,
+   "legs": 1.05,
+   "leg_thick": 1.0,
+   "theme": "fauna"
+  }
+ },
+ {
+  "roots": [
+   "gatt*",
+   "micio",
+   "cat",
+   "cats",
+   "kitten",
+   "felin*"
+  ],
+  "anatomy": {
+   "plan": "quadruped",
+   "size": 1.3,
+   "build": 0.75,
+   "neck": 0.35,
+   "head": 1.0,
+   "snout": 0.25,
+   "ears": "point",
+   "ear_size": 1.3,
+   "tail": 1.5,
+   "tail_curl": 0.8,
+   "legs": 0.75,
+   "leg_thick": 0.88,
+   "theme": "fauna"
+  }
+ },
+ {
+  "roots": [
+   "leon*",
+   "lion",
+   "lions",
+   "tigre",
+   "tigri",
+   "tiger",
+   "tigers",
+   "pantera",
+   "panther",
+   "leopard*"
+  ],
+  "anatomy": {
+   "plan": "quadruped",
+   "size": 2.0,
+   "build": 1.1,
+   "neck": 0.5,
+   "head": 1.15,
+   "snout": 0.5,
+   "ears": "round",
+   "ear_size": 0.7,
+   "tail": 1.2,
+   "tail_curl": 0.5,
+   "legs": 0.85,
+   "leg_thick": 1.2,
+   "theme": "fauna"
+  }
+ },
+ {
+  "roots": [
+   "cavall*",
+   "horse",
+   "horses",
+   "pony",
+   "asino",
+   "asini",
+   "donkey",
+   "zebra*"
+  ],
+  "anatomy": {
+   "plan": "quadruped",
+   "size": 2.3,
+   "build": 0.8,
+   "neck": 1.3,
+   "head": 0.9,
+   "snout": 1.8,
+   "ears": "point",
+   "ear_size": 0.91,
+   "tail": 1.4,
+   "tail_curl": 0.3,
+   "legs": 1.5,
+   "leg_thick": 0.94,
+   "theme": "fauna"
+  }
+ },
+ {
+  "roots": [
+   "cervo",
+   "cervi",
+   "deer",
+   "renna",
+   "reindeer",
+   "alce",
+   "moose"
+  ],
+  "anatomy": {
+   "plan": "quadruped",
+   "size": 2.1,
+   "build": 0.75,
+   "neck": 1.2,
+   "head": 0.8,
+   "snout": 1.2,
+   "ears": "point",
+   "ear_size": 1.17,
+   "horns": 1.8,
+   "tail": 0.3,
+   "tail_curl": 0.2,
+   "legs": 1.5,
+   "leg_thick": 0.75,
+   "theme": "botanical"
+  }
+ },
+ {
+  "roots": [
+   "giraff*"
+  ],
+  "anatomy": {
+   "plan": "quadruped",
+   "size": 2.2,
+   "build": 0.7,
+   "neck": 2.5,
+   "head": 0.7,
+   "snout": 0.8,
+   "ears": "round",
+   "ear_size": 0.6,
+   "horns": 0.5,
+   "tail": 0.9,
+   "tail_curl": 0.2,
+   "legs": 1.9,
+   "leg_thick": 0.75,
+   "theme": "fauna"
+  }
+ },
+ {
+  "roots": [
+   "elefant*",
+   "elephant*",
+   "mammut*",
+   "mammoth*"
+  ],
+  "anatomy": {
+   "plan": "quadruped",
+   "size": 2.6,
+   "build": 1.5,
+   "neck": 0.2,
+   "head": 1.2,
+   "snout": 2.4,
+   "ears": "round",
+   "ear_size": 2.4,
+   "tail": 0.5,
+   "tail_curl": 0.2,
+   "legs": 0.9,
+   "leg_thick": 2.0,
+   "theme": "geological"
+  }
+ },
+ {
+  "roots": [
+   "orso",
+   "orsi",
+   "bear",
+   "bears",
+   "panda"
+  ],
+  "anatomy": {
+   "plan": "quadruped",
+   "size": 2.0,
+   "build": 1.4,
+   "neck": 0.25,
+   "head": 1.0,
+   "snout": 0.55,
+   "ears": "round",
+   "ear_size": 0.6,
+   "tail": 0.15,
+   "tail_curl": 0.1,
+   "legs": 0.75,
+   "leg_thick": 1.6,
+   "theme": "fauna"
+  }
+ },
+ {
+  "roots": [
+   "coniglio",
+   "conigli",
+   "rabbit*",
+   "lepre",
+   "lepri",
+   "hare*",
+   "bunny"
+  ],
+  "anatomy": {
+   "plan": "quadruped",
+   "size": 1.1,
+   "build": 0.9,
+   "neck": 0.2,
+   "head": 0.9,
+   "snout": 0.25,
+   "ears": "long",
+   "ear_size": 1.5,
+   "tail": 0.25,
+   "tail_curl": 0.1,
+   "legs": 0.7,
+   "leg_thick": 1.0,
+   "theme": "fauna"
+  }
+ },
+ {
+  "roots": [
+   "mucca",
+   "mucche",
+   "vacca",
+   "cow",
+   "cows",
+   "bue",
+   "buoi",
+   "toro",
+   "tori",
+   "bull",
+   "bulls",
+   "bufal*"
+  ],
+  "anatomy": {
+   "plan": "quadruped",
+   "size": 2.2,
+   "build": 1.3,
+   "neck": 0.4,
+   "head": 1.0,
+   "snout": 0.8,
+   "ears": "point",
+   "ear_size": 0.78,
+   "horns": 0.9,
+   "tail": 1.0,
+   "tail_curl": 0.1,
+   "legs": 0.85,
+   "leg_thick": 1.3,
+   "theme": "fauna"
+  }
+ },
+ {
+  "roots": [
+   "maial*",
+   "pig",
+   "pigs",
+   "cinghial*",
+   "boar",
+   "pecora",
+   "pecore",
+   "sheep",
+   "capra",
+   "capre",
+   "goat*"
+  ],
+  "anatomy": {
+   "plan": "quadruped",
+   "size": 1.6,
+   "build": 1.2,
+   "neck": 0.25,
+   "head": 0.9,
+   "snout": 0.7,
+   "ears": "floppy",
+   "ear_size": 1.26,
+   "tail": 0.3,
+   "tail_curl": 1.2,
+   "legs": 0.6,
+   "leg_thick": 1.1,
+   "theme": "fauna"
+  }
+ },
+ {
+  "roots": [
+   "topo",
+   "topi",
+   "mouse",
+   "mice",
+   "ratto",
+   "ratti",
+   "rat",
+   "scoiattol*",
+   "squirrel*",
+   "criceto",
+   "hamster"
+  ],
+  "anatomy": {
+   "plan": "quadruped",
+   "size": 1.0,
+   "build": 0.8,
+   "neck": 0.2,
+   "head": 0.9,
+   "snout": 0.9,
+   "ears": "round",
+   "ear_size": 1.2,
+   "tail": 2.0,
+   "tail_curl": 0.7,
+   "legs": 0.45,
+   "leg_thick": 0.75,
+   "theme": "fauna"
+  }
+ },
+ {
+  "roots": [
+   "scimmia",
+   "scimmie",
+   "monkey*",
+   "gorilla",
+   "scimpanz*",
+   "chimp*"
+  ],
+  "anatomy": {
+   "plan": "biped",
+   "size": 1.5,
+   "build": 1.3,
+   "neck": 0.3,
+   "head": 1.1,
+   "snout": 0.4,
+   "ears": "round",
+   "ear_size": 0.9,
+   "tail": 1.2,
+   "tail_curl": 1.0,
+   "legs": 0.6,
+   "arms": 1.7,
+   "leg_thick": 1.4,
+   "theme": "fauna"
+  }
+ },
+ {
+  "roots": [
+   "uomo",
+   "uomini",
+   "donna",
+   "donne",
+   "persona",
+   "persone",
+   "human*",
+   "person",
+   "man",
+   "woman",
+   "bambin*",
+   "child*",
+   "ragazz*"
+  ],
+  "anatomy": {
+   "plan": "biped",
+   "size": 1.9,
+   "build": 1.0,
+   "neck": 1.0,
+   "head": 1.0,
+   "snout": 0.0,
+   "ears": "round",
+   "ear_size": 0.5,
+   "tail": 0.0,
+   "legs": 1.0,
+   "arms": 1.0,
+   "leg_thick": 1.0,
+   "theme": "ethereal"
+  }
+ },
+ {
+  "roots": [
+   "robot",
+   "robots",
+   "androide",
+   "android",
+   "cyborg",
+   "automa"
+  ],
+  "anatomy": {
+   "plan": "biped",
+   "size": 2.0,
+   "build": 1.2,
+   "neck": 0.6,
+   "head": 0.9,
+   "snout": 0.0,
+   "ears": "none",
+   "tail": 0.0,
+   "legs": 1.0,
+   "arms": 1.0,
+   "leg_thick": 1.3,
+   "theme": "mechanical"
+  }
+ },
+ {
+  "roots": [
+   "aquila",
+   "aquile",
+   "eagle*",
+   "falco",
+   "falchi",
+   "hawk*",
+   "avvoltoio",
+   "vulture",
+   "gufo",
+   "gufi",
+   "owl*",
+   "civetta"
+  ],
+  "anatomy": {
+   "plan": "bird",
+   "size": 1.5,
+   "build": 0.9,
+   "neck": 0.4,
+   "head": 0.9,
+   "snout": 0.55,
+   "tail": 0.9,
+   "legs": 0.6,
+   "leg_thick": 1.0,
+   "wings": 1.8,
+   "theme": "fauna"
+  }
+ },
+ {
+  "roots": [
+   "uccell*",
+   "bird",
+   "birds",
+   "passero",
+   "passeri",
+   "sparrow*",
+   "colomb*",
+   "dove*",
+   "pigeon*",
+   "corvo",
+   "corvi",
+   "crow*",
+   "pappagall*",
+   "parrot*",
+   "rondine",
+   "rondini",
+   "swallow*"
+  ],
+  "anatomy": {
+   "plan": "bird",
+   "size": 1.1,
+   "build": 0.9,
+   "neck": 0.35,
+   "head": 1.0,
+   "snout": 0.5,
+   "tail": 1.1,
+   "legs": 0.55,
+   "leg_thick": 0.8,
+   "wings": 1.3,
+   "theme": "fauna"
+  }
+ },
+ {
+  "roots": [
+   "anatr*",
+   "duck*",
+   "oca",
+   "oche",
+   "goose",
+   "geese",
+   "cigno",
+   "cigni",
+   "swan*",
+   "pollo",
+   "polli",
+   "gallina",
+   "galline",
+   "gallo",
+   "galli",
+   "chicken*",
+   "hen",
+   "rooster",
+   "tacchino",
+   "turkey",
+   "pinguin*",
+   "penguin*",
+   "fenicottero",
+   "flamingo*"
+  ],
+  "anatomy": {
+   "plan": "bird",
+   "size": 1.3,
+   "build": 1.3,
+   "neck": 0.9,
+   "head": 0.8,
+   "snout": 0.7,
+   "tail": 0.5,
+   "legs": 0.9,
+   "leg_thick": 0.9,
+   "wings": 0.7,
+   "theme": "fauna"
+  }
+ },
+ {
+  "roots": [
+   "squal*",
+   "shark*",
+   "delfin*",
+   "dolphin*",
+   "balen*",
+   "whale*",
+   "orca",
+   "orche"
+  ],
+  "anatomy": {
+   "plan": "fish",
+   "size": 2.6,
+   "build": 1.0,
+   "tail": 1.3,
+   "wings": 1.4,
+   "theme": "bioluminescent"
+  }
+ },
+ {
+  "roots": [
+   "pesc*",
+   "fish",
+   "fishes",
+   "trota",
+   "trout",
+   "salmon*",
+   "tonno",
+   "tuna",
+   "carpa",
+   "carp"
+  ],
+  "anatomy": {
+   "plan": "fish",
+   "size": 1.4,
+   "build": 1.0,
+   "tail": 1.1,
+   "wings": 1.0,
+   "theme": "bioluminescent"
+  }
+ },
+ {
+  "roots": [
+   "serpent*",
+   "snake*",
+   "biscia",
+   "bisce",
+   "vipera",
+   "viper*",
+   "cobra",
+   "pitone",
+   "python",
+   "anaconda",
+   "anguilla",
+   "eel",
+   "verme",
+   "vermi",
+   "worm*"
+  ],
+  "anatomy": {
+   "plan": "serpent",
+   "size": 3.0,
+   "build": 1.0,
+   "head": 1.0,
+   "tail_curl": 0.6,
+   "theme": "botanical"
+  }
+ },
+ {
+  "roots": [
+   "ragno",
+   "ragni",
+   "spider*",
+   "scorpion*",
+   "granchio",
+   "granchi",
+   "crab*",
+   "aragosta",
+   "lobster"
+  ],
+  "anatomy": {
+   "plan": "insect",
+   "size": 1.0,
+   "build": 1.2,
+   "head": 0.7,
+   "pairs": 4,
+   "legs": 1.3,
+   "leg_thick": 1.4,
+   "wings": 0.0,
+   "theme": "microscopic"
+  }
+ },
+ {
+  "roots": [
+   "farfall*",
+   "butterfl*",
+   "falena",
+   "moth*",
+   "libellula",
+   "dragonfl*"
+  ],
+  "anatomy": {
+   "plan": "insect",
+   "size": 1.0,
+   "build": 0.5,
+   "head": 0.7,
+   "pairs": 3,
+   "legs": 0.6,
+   "wings": 2.4,
+   "horns": 1.0,
+   "theme": "celestial"
+  }
+ },
+ {
+  "roots": [
+   "ape",
+   "api",
+   "bee",
+   "bees",
+   "vespa",
+   "vespe",
+   "wasp*",
+   "mosca",
+   "mosche",
+   "fly",
+   "flies",
+   "zanzara",
+   "mosquito*",
+   "insett*",
+   "insect*",
+   "formica",
+   "formiche",
+   "ant",
+   "ants",
+   "coccinella",
+   "ladybug*",
+   "scarabeo",
+   "beetle*",
+   "grillo",
+   "cricket*",
+   "cavalletta",
+   "grasshopper*"
+  ],
+  "anatomy": {
+   "plan": "insect",
+   "size": 1.0,
+   "build": 1.0,
+   "head": 0.8,
+   "pairs": 3,
+   "legs": 1.0,
+   "wings": 1.2,
+   "horns": 0.8,
+   "theme": "fauna"
+  }
+ }
+]
