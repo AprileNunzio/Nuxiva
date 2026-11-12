@@ -1,0 +1,13 @@
+{
+  "name": "Pizarra",
+  "description": "Una pizarra como en el colegio: dices «abre la pizarra a pantalla completa» y Nuxiva se convierte en un widget sobre la pizarra, donde escribís y dibujáis juntos para cálculos, ecuaciones y razonamientos.",
+  "capabilities": [
+    "Se abre por voz, también a pantalla completa; el contenido queda guardado incluso después de cerrarla",
+    "Tú escribes y dibujas con el dedo, el ratón o un lápiz; Nuxiva escribe en azul, como un compañero de pupitre",
+    "Cálculos y ecuaciones de primer grado resueltos paso a paso: «calcula 12 por (3 más 4)», «resuelve 2x + 3 = 11»",
+    "Explicaciones y razonamientos escritos en la pizarra: «explícame la fotosíntesis en la pizarra»",
+    "Nuxiva mira la pizarra y comprueba lo que has escrito: «revisa lo que he escrito»",
+    "Otros comandos: «escribe en la pizarra…», «deshaz», «borra la pizarra», «cierra la pizarra»"
+  ],
+  "settings": {}
+}

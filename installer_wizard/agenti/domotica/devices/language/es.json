@@ -1,0 +1,10 @@
+{
+  "name": "Audio de la pantalla",
+  "description": "Altavoces, auriculares y micrófonos de la pantalla: dispositivo en uso, volumen y silencio, actualizados en tiempo real.",
+  "capabilities": [
+    "Dispositivos de audio en tiempo real",
+    "Volumen y silencio",
+    "Perfiles de las tarjetas de sonido"
+  ],
+  "settings": {}
+}

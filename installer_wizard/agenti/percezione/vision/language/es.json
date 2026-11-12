@@ -1,0 +1,35 @@
+{
+  "name": "Visión y caras",
+  "description": "Webcam y reconocimiento facial local: quién está en casa, saludos personalizados, nuevas personas añadidas solas.",
+  "capabilities": [
+    "Reconocimiento facial sin conexión",
+    "Presencias en tiempo real",
+    "Invitados registrados solos",
+    "Filtro de reflejos (espejos y cristales)",
+    "Objetos que tienes en la mano",
+    "Lectura de etiquetas y textos",
+    "Reparación guiada por webcam con los cerebros que ven",
+    "Webcams de doble sensor (color + infrarrojo) reconocidas al conectarlas, sin reiniciar",
+    "Anti-foto y anti-pantalla con el infrarrojo",
+    "Gemelos y caras parecidas distinguidos con un margen más estricto, sin mezclar sus muestras",
+    "El reconocimiento mejora solo: muestras distintas, umbrales por persona, infrarrojo"
+  ],
+  "settings": {
+    "NUXIVA_IR_MODE": "Sensor infrarrojo (webcam con doble sensor)",
+    "NUXIVA_LIVENESS": "Control anti-foto y anti-pantalla (requiere el infrarrojo)",
+    "NUXIVA_LIVENESS_MIN": "Puntuación mínima para considerar viva una cara (0,1 - 0,95)",
+    "NUXIVA_CAMERA_RES": "Resolución de la webcam",
+    "NUXIVA_CAMERA_RGB": "Webcam en color: automática o ruta (p. ej. /dev/video0)",
+    "NUXIVA_CAMERA_IR": "Sensor infrarrojo: automático, apagado o ruta (p. ej. /dev/video2)",
+    "NUXIVA_FACE_AUTOIMPROVE": "El reconocimiento de caras mejora solo con el tiempo",
+    "NUXIVA_FACE_ADAPTIVE": "Umbral de reconocimiento calculado para cada persona",
+    "NUXIVA_FACE_THRESHOLD": "Umbral de parecido de la cara (0,2 - 0,8)",
+    "NUXIVA_FACE_MARGIN": "Distancia mínima respecto a la segunda persona más parecida (0 - 0,4)",
+    "NUXIVA_FACE_TWIN_SIM": "Dos personas son «parecidas» por encima de este parecido (0,3 - 0,95)",
+    "NUXIVA_FACE_TWIN_MARGIN": "Distancia exigida entre personas parecidas, por ejemplo gemelos (0 - 0,5)",
+    "NUXIVA_FACE_IR_WEIGHT": "Peso del infrarrojo en el reconocimiento (0 - 0,8)"
+  },
+  "help": {
+    "NUXIVA_LIVENESS": "Con una webcam sin infrarrojo no se puede comprobar que la cara esté viva: en «Solo avisar» y «Estricto» la pantalla pide también la voz antes de mostrar los datos personales. «Desactivado» acepta solo la cara reconocida, pero una foto podría abrir los widgets."
+  }
+}

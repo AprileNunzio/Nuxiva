@@ -1,0 +1,16 @@
+{
+  "name": "Comandos con las manos",
+  "description": "Controla Nuxiva con una o dos manos delante de la webcam. El motor en Rust reconoce poses, poses mantenidas, deslizamientos, círculos, toques y gestos con dos manos; cada gesto puede hacer la acción que elijas en la ficha Comandos con las manos.",
+  "capabilities": [
+    "Pellizca para agarrar y arrastrar los widgets, lanzamiento lateral para cambiar de pantalla",
+    "12 poses, deslizamientos, círculos, toque y doble toque",
+    "Gestos con dos manos: abrir, cerrar, girar, o bien una mano sujeta y la otra actúa",
+    "Cada gesto se puede asociar a cualquier acción, por contexto y por mano",
+    "Perfil cifrado, sensibilidad ajustable, alternativa en JavaScript si falta el motor"
+  ],
+  "settings": {
+    "NUXIVA_HANDS_FPS": "Análisis por segundo con una mano a la vista",
+    "NUXIVA_HANDS_COUNT": "Manos reconocidas",
+    "NUXIVA_HANDS_MAX_MS": "Tiempo máximo por análisis (por encima de este se apaga en automático)"
+  }
+}

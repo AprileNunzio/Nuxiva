@@ -1,0 +1,19 @@
+{
+  "name": "Alarma roja",
+  "description": "Cuando salta una alarma (humo, agua, intrusión…) Nuxiva hace parpadear lentamente en rojo todas las luces de Home Assistant y repite el mensaje urgente en todos los Chromecast; al terminar la alarma las luces vuelven a como estaban.",
+  "capabilities": [
+    "Luces de casa rojas parpadeantes (lentas, seguras para quien es sensible a la luz)",
+    "Luces excluidas a elección (dormitorios, luces de cortesía)",
+    "Mensaje de voz urgente en todos los Chromecast, con intervalo de repetición ajustable",
+    "Restauración automática de las luces como estaban",
+    "Se detiene cerrando el widget de la alarma o cuando la alarma se desactiva",
+    "Prueba y parada con un botón, estado en tiempo real"
+  ],
+  "settings": {
+    "NUXIVA_REDALERT_LIGHTS": "Hacer parpadear las luces en rojo",
+    "NUXIVA_REDALERT_CAST": "Avisar por voz en todos los Chromecast",
+    "NUXIVA_REDALERT_SECONDS": "Durante cuánto tiempo",
+    "NUXIVA_REDALERT_REPEAT": "Repetir el mensaje de voz cada",
+    "NUXIVA_REDALERT_EXCLUDE": "Luces que no deben parpadear"
+  }
+}

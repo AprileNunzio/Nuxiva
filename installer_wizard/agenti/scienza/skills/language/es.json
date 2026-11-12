@@ -1,0 +1,13 @@
+{
+  "name": "Algoritmos",
+  "description": "Cálculos, conversiones y procedimientos como algoritmos de Python verificados: Nuxiva los escribe una vez, los guarda en memoria y los reutiliza en milisegundos.",
+  "capabilities": [
+    "Calculadora, porcentajes e IVA, conversiones, fechas",
+    "Nuevos algoritmos escritos por Nuxiva",
+    "Control del código y prueba en un entorno aislado",
+    "Estadísticas de uso"
+  ],
+  "settings": {
+    "NUXIVA_SKILLS_GENERATE": "Nuxiva escribe sola nuevos algoritmos"
+  }
+}

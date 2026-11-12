@@ -1,0 +1,12 @@
+{
+  "name": "Puente de mando",
+  "description": "La casa digital de Nuxiva en 3D: un camión lleva cada pregunta a lo largo del flujo cognitivo, los agentes dejan la salita y se sientan en su escritorio cuando trabajan, y cada área se abre tocando su edificio.",
+  "capabilities": [
+    "Flujo cognitivo en 3D: Entrada, Lectura, Memoria, Clasificación, Planificación, Agentes, Herramientas, Juicio, Respuesta",
+    "Oficina de los agentes en tiempo real con el modelo que están usando",
+    "Edificios en los que se puede hacer clic para Casa, Cerebro, Deporte, TV, Google, Personas y otras áreas",
+    "Pregunta a Nuxiva desde el puente de mando y mira la pregunta viajar",
+    "Página inicial del modo Sencillo; en Experto se mantiene el gráfico detallado",
+    "Alternativa 2D automática en los dispositivos sin WebGL"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Forja de Nuxiva",
+  "description": "Nuxiva crea sola nuevas herramientas (combinando las existentes), widgets y funciones: en cuanto se crean están disponibles para ella, para los demás agentes y para cada cliente MCP conectado.",
+  "capabilities": [
+    "Herramientas nuevas como secuencias de herramientas existentes, con parámetros y confirmaciones heredados de los pasos",
+    "Widgets para la pantalla con título, valor, texto y listas",
+    "Funciones nuevas que se convierten enseguida en agentes del equipo",
+    "Eliminación solo de lo que ha creado ella, siempre con confirmación"
+  ],
+  "settings": {}
+}

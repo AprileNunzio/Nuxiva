@@ -1,0 +1,12 @@
+{
+  "name": "Consolidación en los pesos (Soup)",
+  "description": "De noche traslada lo que ha estudiado a los pesos de un modelo personal (LoRA). Experimental: requiere una GPU adecuada.",
+  "capabilities": [
+    "Conjunto de datos a partir de los apuntes",
+    "Entrenamiento nocturno",
+    "Modelo «nuxiva-studio» en Ollama"
+  ],
+  "settings": {
+    "NUXIVA_STUDY_BASE_MODEL": "Modelo base (Hugging Face)"
+  }
+}

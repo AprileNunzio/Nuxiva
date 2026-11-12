@@ -1,0 +1,30 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "features/authz",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Control de accesos",
+    "desc": "Políticas de seguridad y autorizaciones",
+    "error.invalid_policy": "Política no válida",
+    "error.forbidden": "Operación no permitida",
+    "audit.updated": "Política de autorizaciones actualizada",
+    "refusal.role": "Perfil no autorizado para esta operación",
+    "refusal.schedule": "Operación permitida solo en la franja horaria de servicio",
+    "refusal.zone": "Dispositivo o habitación no autorizados",
+    "refusal.guest": "Lo siento, esto no puedo hacerlo. Puedo ayudarte con música, luces o información general.",
+    "refusal.room": "Lo siento, desde aquí solo puedo controlar esta habitación.",
+    "refusal.owner_data": "Lo siento, solo puedo mostrarte tus datos.",
+    "refusal.rate": "Hagamos una pequeña pausa: inténtalo de nuevo dentro de un minuto.",
+    "access.guest.not_available": "Lo siento, esta información no está disponible.",
+    "matrix.saved": "Matriz de permisos actualizada",
+    "matrix.reset": "Matriz de permisos restablecida a los valores predeterminados",
+    "access.error.schema": "Estructura de la matriz no válida",
+    "access.error.capability": "Capacidad no válida",
+    "access.error.cell": "Valor de celda no válido",
+    "access.error.version": "Versión de la matriz no admitida",
+    "access.error.too_large": "Matriz demasiado grande",
+    "access.error.too_many": "Demasiadas capacidades en una sola petición"
+  }
+}

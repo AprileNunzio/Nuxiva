@@ -1,0 +1,17 @@
+{
+  "name": "Estudio de voces",
+  "description": "Crea nuevas voces para Nuxiva: invéntalas eligiendo cómo son o copia la tuya leyendo una frase. Funciona con VoiceStudio, un programa aparte que se ejecuta en este ordenador o en otro PC de casa.",
+  "capabilities": [
+    "Voces inventadas eligiendo rasgos: mujer u hombre, edad, tono, susurro",
+    "Copia de tu voz leyendo una frase, con el consentimiento registrado",
+    "Nuxiva habla con la voz que elijas, en más de 600 idiomas",
+    "Transcripción de audio y vídeo de la carpeta compartida",
+    "Audiolibros y lecturas de documentos guardados como archivos de audio",
+    "Instalación con un clic en este ordenador o conexión con otro PC de casa"
+  ],
+  "settings": {
+    "NUXIVA_VOICESTUDIO_WHERE": "Dónde funciona el Estudio de voces",
+    "NUXIVA_VOICESTUDIO_URL": "Dirección del otro ordenador",
+    "NUXIVA_VOICESTUDIO_KEY": "Clave del Estudio de voces"
+  }
+}

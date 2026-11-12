@@ -1,0 +1,10 @@
+{
+  "name": "Leyes",
+  "description": "Las leyes fundamentales y jerárquicas que Nuxiva y cada uno de sus agentes o nodos deben respetar siempre. Las cuatro leyes básicas no se pueden modificar ni eliminar; debajo puedes añadir tus reglas, siempre obligatorias.",
+  "capabilities": [
+    "Cuatro leyes fundamentales inmutables (Ley Cero, Primera, Segunda, Tercera)",
+    "Reglas personales adicionales, siempre respetadas",
+    "Insertadas al principio de cada razonamiento del cerebro, local y en la nube"
+  ],
+  "settings": {}
+}

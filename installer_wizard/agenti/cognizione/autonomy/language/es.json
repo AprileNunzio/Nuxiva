@@ -1,0 +1,13 @@
+{
+  "name": "Autonomía",
+  "description": "Nuxiva trabaja sola: ejecuta las tareas programadas, comprueba y diagnostica las averías, aprende lo que no sabía hacer y cada noche te envía el resumen. Las acciones delicadas esperan tu aprobación, una sola vez si eliges «Aprobar siempre».",
+  "capabilities": [
+    "Tareas programadas por voz: «cada mañana a las 8 envíame el tiempo por correo», «cada viernes copia los proyectos en la carpeta SMB»",
+    "Horarios: cada día, días de la semana, laborables, fin de semana, cada N minutos/horas, una vez, cuando te ve llegar, al arrancar",
+    "Piloto automático cada 30 minutos: diagnóstico de los componentes averiados, estudio de las peticiones no atendidas, resumen nocturno",
+    "Aprobaciones: correos, borrados y comandos de sistema quedan en cola hasta que dices «aprueba» o apruebas desde el panel",
+    "Diario de todo lo que hace sola, notificaciones en pantalla y Telegram",
+    "Diagnóstico solo de lectura sin aprobaciones, ninguna petición duplicada, rechazos recordados durante 24 horas y acciones aprobadas para siempre revocables"
+  ],
+  "settings": {}
+}

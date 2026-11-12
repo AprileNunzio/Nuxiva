@@ -1,0 +1,16 @@
+{
+  "name": "Personas",
+  "description": "Registro completo: caras, relaciones, aniversarios, preferencias y hábitos de cada persona.",
+  "capabilities": [
+    "Registro automático de las caras",
+    "Cumpleaños y santos",
+    "Relaciones",
+    "Hábitos",
+    "Actualiza sola la información de la persona que habla y anota su estado de ánimo, con tu criterio",
+    "Pulso y respiración estimados por la webcam para quien no tiene una pulsera conectada, desactivables para ahorrar recursos"
+  ],
+  "settings": {
+    "NUXIVA_PEOPLE_LEARN": "Aprender de las conversaciones",
+    "NUXIVA_RPPG": "Pulso y respiración por la webcam para quien no tiene una pulsera conectada"
+  }
+}

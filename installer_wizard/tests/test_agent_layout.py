@@ -105,6 +105,18 @@ class ScaffoldTest(unittest.TestCase):
         self.assertEqual(report["score"], 100 // len(_layout.required_parts()))
 
 
+class ShippedLanguagesTest(unittest.TestCase):
+    def test_every_language_folder_has_four_files_with_the_same_keys(self):
+        from agenti._registry import SYSTEM_DIR
+        folders = sorted(SYSTEM_DIR.glob("*/*/language"))
+        self.assertTrue(folders)
+        for folder in folders:
+            with self.subTest(folder=f"{folder.parent.parent.name}/{folder.parent.name}"):
+                keys = {lang: set(json.loads((folder / f"{lang}.json").read_text(encoding="utf-8")))
+                        for lang in _layout.LANGUAGES}
+                self.assertTrue(all(k == keys["it"] for k in keys.values()), keys)
+
+
 class CliTest(unittest.TestCase):
     def run_cli(self, *argv):
         out, err = io.StringIO(), io.StringIO()

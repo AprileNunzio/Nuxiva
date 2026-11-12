@@ -1,0 +1,15 @@
+{
+  "name": "Volumen durante la conversación",
+  "description": "Mientras hablas con Nuxiva baja sola la música, la TV en los Chromecast y los altavoces de Home Assistant, y vuelve a poner el volumen anterior al terminar la conversación (si mientras tanto no lo has cambiado tú).",
+  "capabilities": [
+    "Música en las salidas de Nuxiva (Chromecast, DLNA, PC)",
+    "TV transmitida en los Chromecast",
+    "Altavoces y reproductores de Home Assistant",
+    "Vídeo y audio de los widgets en la pantalla",
+    "Restauración segura: no toca un volumen cambiado a mano"
+  ],
+  "settings": {
+    "NUXIVA_DUCK_LEVEL": "Durante la conversación el volumen baja al",
+    "NUXIVA_DUCK_HOME": "Bajar también la TV y los altavoces de casa"
+  }
+}

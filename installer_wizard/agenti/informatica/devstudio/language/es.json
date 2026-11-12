@@ -1,0 +1,11 @@
+{
+  "name": "Desarrollo de software",
+  "description": "Nuxiva programa de verdad: crea proyectos (sitios, apps Python, servicios API, apps Node y React), escribe y relee los archivos en una carpeta confinada, ejecuta pruebas y comprobaciones aisladas y publica los sitios en la red de casa.",
+  "capabilities": [
+    "Proyectos iniciales que funcionan: sitio estático, Python, FastAPI, Node, React con Vite",
+    "Archivos confinados en el proyecto, sin rutas externas ni enlaces simbólicos",
+    "Pruebas y comprobaciones sin red, con límites de tiempo, memoria y procesos, solo tras confirmación",
+    "Resultado real de las pruebas, nunca declarado sin haberlas ejecutado",
+    "Publicación de los sitios estáticos en la red de casa"
+  ]
+}

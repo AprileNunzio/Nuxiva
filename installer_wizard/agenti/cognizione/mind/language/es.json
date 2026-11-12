@@ -1,0 +1,11 @@
+{
+  "name": "Mente",
+  "description": "Después de cada intercambio Nuxiva evalúa la frase, decide qué guardar en la memoria a largo o a corto plazo, si recurrir a un widget o a un algoritmo y qué ideas enviar al estudio.",
+  "capabilities": [
+    "Evalúa cada frase: pertinencia, importancia, memorabilidad y confianza en que se le esté hablando",
+    "Memoria a largo plazo de los hechos duraderos, a corto plazo para el contexto",
+    "Diario de las decisiones",
+    "Conecta conversación, widgets, algoritmos y estudio"
+  ],
+  "settings": {}
+}

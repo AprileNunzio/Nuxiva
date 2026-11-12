@@ -1,0 +1,16 @@
+{
+  "name": "Hábitos",
+  "description": "Nuxiva observa cómo se usa la casa, reconoce los hábitos recurrentes y los propone como automatizaciones; también avisa de situaciones inusuales cuando no hay nadie.",
+  "capabilities": [
+    "Registra luces, enchufes, persianas, termostatos, multimedia y cerraduras accionados a mano (no los que mueven las automatizaciones)",
+    "Cada noche busca regularidades: misma hora (todos los días, laborables o fin de semana), al atardecer, a la llegada de alguien",
+    "Lo propone por voz cuando estás presente: «Señor, he notado que… ¿Quiere que me ocupe yo?» — sí, no, más tarde",
+    "Crea sola la automatización aceptada, con las condiciones adecuadas (presencia, oscuridad)",
+    "Situaciones inusuales: puerta, ventana o movimiento a una hora nunca vista y casa vacía → aviso por voz, alarma y Telegram"
+  ],
+  "settings": {
+    "NUXIVA_HABITS_CONFIDENCE": "Cuán regular debe ser un hábito para proponerlo",
+    "NUXIVA_HABITS_ASK": "Propuestas por voz",
+    "NUXIVA_HABITS_ANOMALIES": "Avisos de situaciones inusuales"
+  }
+}

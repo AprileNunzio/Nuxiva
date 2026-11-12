@@ -1,0 +1,17 @@
+{
+  "name": "Comprobación",
+  "description": "Nuxiva prueba de verdad sus funciones cada noche y después de cada actualización; si una actualización rompe algo esencial vuelve sola a la versión anterior y avisa.",
+  "capabilities": [
+    "13 pruebas reales: supervisor y panel, componentes, conversación, voz, automatizaciones, cerebro, pantalla, escucha, visión, casa, sonidos, espacio, actualizaciones",
+    "Cada noche (03:30) y cinco minutos después de cada actualización",
+    "Vuelta automática a la versión anterior si una prueba esencial que antes pasaba ahora falla",
+    "Aviso en Telegram y en la pantalla de lo que se ha roto o ha vuelto a funcionar",
+    "Las actualizaciones se instalan solo si han superado las pruebas en GitHub",
+    "Por voz: «haz la comprobación»"
+  ],
+  "settings": {
+    "NUXIVA_SELFTEST_AT": "Hora de la comprobación nocturna (HH:MM)",
+    "NUXIVA_SELFTEST_ROLLBACK": "Si una actualización rompe algo esencial",
+    "NUXIVA_UPDATE_REQUIRE_CI": "Actualizaciones desde GitHub"
+  }
+}

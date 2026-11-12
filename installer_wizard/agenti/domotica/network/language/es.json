@@ -1,0 +1,10 @@
+{
+  "name": "Explorador de la red",
+  "description": "Descubre, estudia y clasifica los dispositivos de la red de casa y aprende sus costumbres.",
+  "capabilities": [
+    "Escaneo cada 10 minutos",
+    "Reconocimiento del tipo de dispositivo",
+    "Aviso de dispositivos nuevos"
+  ],
+  "settings": {}
+}

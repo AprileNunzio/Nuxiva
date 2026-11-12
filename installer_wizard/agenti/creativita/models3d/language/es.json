@@ -1,0 +1,13 @@
+{
+  "name": "Modelos 3D",
+  "description": "Nuxiva crea objetos 3D a petición («créame un martillo en 3D») y abre cualquier archivo 3D en un widget que se gira con el ratón, con los dedos o con las manos delante de la webcam.",
+  "capabilities": [
+    "Generación a partir de una frase: GLB en color, STL en milímetros para imprimir, OBJ con materiales",
+    "Visor: glTF/GLB, OBJ+MTL, STL, 3MF, AMF, PLY, FBX, DAE, 3DS, VRML, DXF, STEP/STP, IGES/IGS, BREP",
+    "Conversión en el servidor: BLEND y USD/USDZ con Blender, DWG con LibreDWG",
+    "Comandos: «muéstrame el modelo del martillo», «qué modelos tienes», «cierra el modelo»"
+  ],
+  "settings": {
+    "NUXIVA_3D_CONVERT": "Conversión de los archivos 3D en el servidor"
+  }
+}

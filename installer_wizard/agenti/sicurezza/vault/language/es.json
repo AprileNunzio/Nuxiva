@@ -1,0 +1,14 @@
+{
+  "name": "Memoria en claro y diario",
+  "description": "La memoria de Nuxiva en archivos de texto legibles, guardados solo en el servidor (no en la red) por privacidad: fichas de las personas, hechos, hábitos, automatizaciones y un diario para cada día. Las correcciones hechas en los archivos vuelven a la memoria.",
+  "capabilities": [
+    "Persone/<Nombre>.md: datos personales, gustos, hábitos y lo que Nuxiva sabe (salud y documentos siguen siendo privados)",
+    "Memoria/Fatti generali.md, Casa/Abitudini.md, Automazioni.md",
+    "Diario/AAAA/MM/AAAA-MM-DD.md: quién estaba, peticiones, automatizaciones, qué ha aprendido, situaciones inusuales, comprobación, con resumen nocturno",
+    "Cambios desde los archivos: borrar, corregir o añadir líneas en «Cosa so» actualiza la memoria",
+    "Por voz: «qué ha pasado hoy», «léeme el diario de ayer»"
+  ],
+  "settings": {
+    "NUXIVA_VAULT_DIR": "Carpeta personalizada (vacío = /var/lib/nuxiva/memoria, solo en el servidor)"
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "name": "Cámaras",
+  "description": "Una única función para webcam, infrarrojos y cámaras de red: vista en directo de todas las fuentes, búsqueda y plantillas para las marcas más comunes, prueba de la conexión, opciones para cada cámara (nombre, habitación, rotación, espejo, fluidez), controles de la webcam (brillo, contraste, exposición), fotos y clips, aviso de movimiento y grabación en bucle. Grabación apagada por defecto: debe activarse con el consentimiento de quien es grabado.",
+  "capabilities": [
+    "Webcams locales, sensor infrarrojo y cámaras de red (RTSP, ONVIF, Hikvision) en una única vista en directo",
+    "Búsqueda automática en la red (ONVIF y puertos RTSP) y plantillas para Hikvision, Dahua, Reolink, Tapo, Foscam, Axis y otras",
+    "Prueba de la conexión con diagnóstico del error (contraseña, ruta, puerto, red)",
+    "Opciones por cámara: nombre, habitación, rotación, espejo, fluidez, resolución, favorita, oculta",
+    "Controles de la webcam (brillo, contraste, exposición, balance) restaurados en cada arranque",
+    "Fotos a petición y por movimiento, archivo con vista previa, descarga y borrado",
+    "Aviso de movimiento con sensibilidad ajustable y registro de los eventos",
+    "Grabación en bucle (5/15/60 minutos) con credenciales cifradas, consentimiento obligatorio e indicador visible",
+    "Configuración automática del emisor infrarrojo con un clic",
+    "Con la voz: «abre la webcam del salón a pantalla completa», «haz una foto desde la entrada», «avísame si algo se mueve en el jardín»",
+    "Todo lo que falta (ffmpeg, v4l-utils, herramienta del emisor infrarrojo) se instala y se configura solo, sin intervención"
+  ],
+  "settings": {
+    "NUXIVA_LIVECAM_FPS": "Fluidez de la imagen en directo",
+    "NUXIVA_LIVECAM_WIDTH": "Anchura de la imagen en directo",
+    "NUXIVA_LIVECAM_MAX": "Cámaras en directo simultáneas",
+    "NUXIVA_CAMERAS_MOTION_EVERY": "Control del movimiento cada",
+    "NUXIVA_CAMERAS_MOTION_COOLDOWN": "Pausa entre dos avisos de movimiento",
+    "NUXIVA_CAMERAS_PHOTOS_MAX": "Fotos conservadas por cámara",
+    "NUXIVA_IR_AUTO": "Configurar solo el emisor infrarrojo si la imagen está a oscuras"
+  },
+  "meta": {
+    "locale": "es",
+    "scope": "features/cameras",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "tab.title": "Cámaras",
+    "a11y.tabs": "Secciones de cámaras",
+    "privacy.title": "Privacidad: léelo antes de grabar",
+    "privacy.body": "La grabación está apagada por defecto. Actívala solo con el consentimiento de quien pueda ser grabado, y quien esté presente debe poder saber que la cámara graba (indicador encendido). Los vídeos se quedan en el dispositivo durante el bucle elegido y después se borran. La detección de movimiento solo compara la diferencia entre dos imágenes pequeñas y no conserva nada.",
+    "privacy.analysis": "El análisis automático de los vídeos (lectura de labios, reconocimiento de quién habla) no está activo.",
+    "tabs.live": "En directo",
+    "tabs.add": "Añadir",
+    "tabs.archive": "Fotos y clips",
+    "tabs.events": "Eventos",
+    "tabs.devices": "Webcam e infrarrojos",
+    "kind.local": "Webcam",
+    "kind.ip": "Red",
+    "kind.infrared": "Infrarrojos",
+    "status.summary": "{{live}} fuentes de vídeo · {{recording}} grabando · {{motion}} con aviso de movimiento",
+    "status.ffmpeg_missing": "ffmpeg no instalado: hace falta para las cámaras de red",
+    "status.v4l_missing": "v4l-utils no instalado: hace falta para los controles de la webcam",
+    "card.no_image": "Sin imagen",
+    "card.recording": "REC",
+    "badge.main": "en uso por la visión",
+    "badge.motion": "movimiento",
+    "badge.hidden": "oculta",
+    "actions.view": "Ampliar",
+    "actions.photo": "Foto",
+    "actions.options": "Opciones",
+    "live.empty": "Ninguna fuente. Conecta una webcam (se reconoce sola) o usa «Añadir» para una cámara de red.",
+    "toast.photo_saved": "Foto guardada ({{size}})"
+  }
+}

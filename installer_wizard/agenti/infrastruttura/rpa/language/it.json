@@ -15,5 +15,95 @@
     "NUXIVA_RPA_DASHBOARD_LINK": "Dashboard Controllo Remoto (aggiungi IP, password e verifica lo stato)",
     "NUXIVA_RPA_DOWNLOAD_LINK": "Scarica l'Assistente NUXIVA per Windows (.ZIP)",
     "NUXIVA_RPA_NODES": "Compatibilità Nodi Legacy (id separati da virgola)"
+  },
+  "buttons": {
+    "NUXIVA_RPA_DASHBOARD_LINK": "Apri la plancia dei PC",
+    "NUXIVA_RPA_DOWNLOAD_LINK": "Scarica l'Assistente per Windows",
+    "NUXIVA_RPA_DOWNLOAD_ZIP": "Scarica lo ZIP"
+  },
+  "guide": [
+    {
+      "title": "Cos'è e a cosa serve (in parole semplici)",
+      "text": "Con l'Assistente per Windows, NUXIVA «vive» anche sul tuo computer. Compare come una piccola sfera luminosa nell'angolo dello schermo: discreta, ma sempre pronta. La chiami dicendo «Nuxiva…», premendo Ctrl+Alt+Spazio o facendo clic sulla sfera per scrivere. Risponde a voce, può leggere il documento su cui stai lavorando, guardare lo schermo o la webcam (solo quando glielo chiedi) e fare cose per te: creare cartelle e file, aprire programmi, scrivere testi, preparare un sito web.",
+      "tip": "L'intelligenza resta sul server di NUXIVA: sul PC gira solo un programma leggero che fa da orecchie, occhi e mani."
+    },
+    {
+      "title": "Prima di iniziare: cosa serve",
+      "steps": [
+        "Un PC con Windows 10 o 11 (64 bit) sulla stessa rete (stesso Wi-Fi o router) del computer su cui gira NUXIVA.",
+        "Non serve installare Python o altri programmi: l'installatore contiene già tutto.",
+        "Facoltativo ma consigliato: microfono e casse (o cuffie) per parlare con NUXIVA, una webcam se vuoi che possa guardarti."
+      ]
+    },
+    {
+      "title": "Scarica e installa l'assistente",
+      "steps": [
+        "Dal PC Windows apri questa pagina e premi «Scarica l'Assistente per Windows»: ottieni NUXIVA_Assistente_Setup.exe.",
+        "Apri il file scaricato. Se compare l'avviso blu «Windows ha protetto il PC», fai clic su «Ulteriori informazioni» e poi su «Esegui comunque».",
+        "Segui l'installazione: non servono diritti di amministratore e NUXIVA si installa solo per il tuo utente, con un collegamento nel menu Start.",
+        "Gli aggiornamenti successivi arrivano da soli: NUXIVA li installa solo se sono firmati digitalmente dallo sviluppatore."
+      ],
+      "tip": "Se Windows chiede di consentire a NUXIVA l'accesso alla rete, scegli «Reti private» e premi «Consenti»."
+    },
+    {
+      "title": "Collega il PC a NUXIVA (con un codice)",
+      "steps": [
+        "Nel pannello di amministrazione di NUXIVA apri Funzionalità → Nodi e server e premi «+ Aggiungi un nodo»: compaiono un codice di 6 cifre e l'impronta del certificato di NUXIVA.",
+        "Nella finestra «Collega questo PC ad NUXIVA» scrivi l'indirizzo di NUXIVA (es. 192.168.1.100) e premi «Verifica».",
+        "Controlla che l'impronta mostrata sia identica a quella del pannello e spunta «L'impronta coincide»: così sei sicuro di parlare con il tuo NUXIVA e non con un intruso nella rete.",
+        "Scrivi il codice e un nome per il PC, poi premi «Collega». In basso a destra compare la sfera luminosa: NUXIVA è pronta."
+      ]
+    },
+    {
+      "title": "Uso di tutti i giorni",
+      "steps": [
+        "Per parlare: di' «Nuxiva» seguito dalla richiesta, oppure premi Ctrl+Alt+Spazio. Mentre ascolta la sfera pulsa di blu, mentre pensa diventa viola, mentre parla diventa verde.",
+        "Per scrivere: fai clic sulla sfera, scrivi nella casella in basso e premi Invio. Il pannello si chiude da solo quando non serve.",
+        "Per interromperla mentre parla: premi Esc. Con il tasto destro sulla sfera metti in pausa il microfono, apri le impostazioni o esci.",
+        "Puoi trascinare la sfera dove preferisci: ricorda la posizione."
+      ]
+    },
+    {
+      "title": "Cose che puoi chiedere",
+      "steps": [
+        "«Crea una cartella Preventivi 2026 sul Desktop con dentro Clienti e Fornitori»",
+        "«Riassumi il documento che sto leggendo» oppure «Correggi gli errori nel testo che sto scrivendo»",
+        "«Scrivi un'email cortese per spostare la riunione a giovedì» (NUXIVA la scrive direttamente nell'app aperta)",
+        "«Crea un sito web per una pizzeria e aprilo in Visual Studio Code»",
+        "«In AutoCAD come faccio una serie polare?» oppure «Prepara uno script AutoCAD che disegna una griglia 5x5»",
+        "«Guarda il mio schermo: cosa sbaglio in questo disegno di Archicad?»",
+        "«Apri Excel», «Apri la cartella Download», «Trova il file del contratto»",
+        "Tutto il resto funziona come sempre: «Che tempo fa domani?», «Accendi la luce dello studio», «Metti un po' di musica»."
+      ]
+    },
+    {
+      "title": "Privacy, permessi e sicurezza",
+      "steps": [
+        "Decidi tu cosa può fare NUXIVA: tasto destro sulla sfera → Permessi. Per ogni capacità scegli «Consenti», «Chiedi ogni volta» o «Mai».",
+        "Con «Chiedi ogni volta» NUXIVA mostra sempre l'azione esatta prima di eseguirla: il comando PowerShell, il contenuto dello script, il comando SSH o il file da modificare.",
+        "I comandi che cancellano, formattano o scaricano ed eseguono programmi chiedono sempre conferma, anche se hai scelto «Consenti».",
+        "NUXIVA lavora nelle tue cartelle personali; aggiungi altre cartelle in Permessi. Prima di modificare un file ne salva una copia di sicurezza.",
+        "La comunicazione con NUXIVA è cifrata (HTTPS) e legata al certificato verificato all'abbinamento: un intruso nella rete non può fingersi NUXIVA.",
+        "Microfono, schermo e webcam si usano solo quando servono e puoi vietarli in Permessi. Per scollegare il PC: Impostazioni → «Scollega questo PC»."
+      ]
+    },
+    {
+      "title": "Risoluzione dei problemi",
+      "steps": [
+        "«NUXIVA è raggiungibile solo in HTTPS» o «non raggiungibile»: controlla che il PC sia sulla stessa rete e che NUXIVA sia accesa e aggiornata: l'HTTPS è sempre attivo sulla porta 443.",
+        "«Codice di abbinamento non valido o scaduto»: genera un nuovo codice in Nodi e server e scrivilo entro pochi minuti.",
+        "L'impronta non coincide: non collegare il PC e controlla la rete. Se hai reinstallato NUXIVA, l'impronta cambia ed è normale ricollegarsi.",
+        "«Il certificato presentato non è firmato dall'autorità di NUXIVA»: NUXIVA è stata reinstallata o qualcuno si sta intromettendo nella rete. Ricollega il PC solo se ne sei sicuro.",
+        "La sfera è grigia o NUXIVA non ti sente: il servizio di ascolto di NUXIVA potrebbe essere spento; nel frattempo puoi scrivere facendo clic sulla sfera.",
+        "Per qualsiasi altro problema il registro è in %APPDATA%/NUXIVA/assistant.log."
+      ]
+    }
+  ],
+  "help": {
+    "NUXIVA_RPA_PSK": "Non serve cambiarla: viene creata in automatico. Cambiala solo se sai cosa stai facendo.",
+    "NUXIVA_RPA_AUTO_SYNC": "Se attivo, NUXIVA controlla da sola, a intervalli, che i PC collegati siano accesi e raggiungibili.",
+    "NUXIVA_RPA_DASHBOARD_LINK": "Per utenti esperti: aggiungi i PC a mano via WinRM o SSH e controlla se sono in linea.",
+    "NUXIVA_RPA_DOWNLOAD_LINK": "Installatore per Windows 10/11: non serve Python. Si aggiorna da solo con aggiornamenti firmati digitalmente.",
+    "NUXIVA_RPA_NODES": "Lascia vuoto. Serve solo per le vecchie installazioni."
   }
 }

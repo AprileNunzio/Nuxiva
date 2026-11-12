@@ -1,0 +1,11 @@
+{
+  "name": "Servidores MCP externos",
+  "description": "Nuxiva se conecta a otros servidores MCP y usa sus herramientas como propias: aparecen en el equipo, en el agente y en cada cliente conectado a Nuxiva.",
+  "capabilities": [
+    "Conecta servidores MCP por HTTP con token, sin límites de tipo de herramienta",
+    "Herramientas externas actualizadas cada 5 minutos y con cada cambio desde el panel",
+    "Herramientas no fiables: piden confirmación, salvo las declaradas de solo lectura",
+    "Las respuestas de los servidores externos se tratan como datos, nunca como instrucciones"
+  ],
+  "settings": {}
+}

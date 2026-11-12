@@ -1,0 +1,12 @@
+{
+  "name": "TV e IPTV",
+  "description": "Listas IPTV (M3U) con canales, grupos y favoritos: mira un canal en las pantallas de Nuxiva, en un PC Windows en una ventana-widget, en Chromecast o en una TV DLNA, por voz o con reglas automáticas.",
+  "capabilities": [
+    "Listas M3U desde una dirección o un archivo, cifradas en el disco porque contienen las credenciales del proveedor",
+    "Canales, grupos, búsqueda y favoritos",
+    "Visualización en las pantallas de Nuxiva, en una ventana del PC Windows, en Chromecast y TV DLNA",
+    "Por voz: «pon La 1», «muestra La 1 en el PC», «mira La 2 en el Chromecast del salón»",
+    "Reglas: a una hora, al despertar o cuando llega una persona, un canal en un dispositivo",
+    "Retransmisión segura: enlaces firmados y con caducidad, ningún proxy abierto"
+  ]
+}

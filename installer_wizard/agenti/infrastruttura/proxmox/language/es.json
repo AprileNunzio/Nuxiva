@@ -1,0 +1,11 @@
+{
+  "name": "Gestión de Proxmox",
+  "description": "Nuxiva se conecta a tu hipervisor Proxmox VE: estado de nodos, máquinas virtuales y contenedores, arranque, apagado, reinicio e instantáneas, también por voz.",
+  "capabilities": [
+    "Estado de nodos, VM y contenedores LXC con CPU y RAM",
+    "Arranque, apagado, parada forzada, reinicio, suspensión y reanudación",
+    "Instantáneas con un clic",
+    "Comandos de voz protegidos por el reconocimiento de cara y voz",
+    "Acceso con token API o usuario y contraseña"
+  ]
+}

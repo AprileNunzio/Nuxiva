@@ -1,0 +1,18 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "features/nexus",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Nexus Shell",
+    "desc": "Panel principal y espacio de trabajo del sistema",
+    "error.tool_not_found": "Herramienta no encontrada",
+    "error.invalid_preference": "Preferencia no válida",
+    "error.invalid_awakening_step": "Paso del Despertar desconocido",
+    "status.ready": "Nexus operativo",
+    "nav.home": "Inicio",
+    "nav.flows": "Flujos",
+    "nav.settings": "Ajustes"
+  }
+}

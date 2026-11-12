@@ -1,0 +1,11 @@
+{
+  "name": "Plantas y habitaciones",
+  "description": "Mapa de plantas y habitaciones: dónde están el servidor, los satélites, los PC, las cámaras y los micrófonos, y en qué habitación estás para entender comandos como «enciende la luz»",
+  "capabilities": [
+    "Plantas y habitaciones, también importadas de Home Assistant",
+    "Posición del servidor, satélites, PC, cámaras y micrófonos",
+    "Habitación en la que estás, estimada por quién te oye y te ve",
+    "«Enciende la luz» actúa en la habitación correcta",
+    "Pregunta «¿dónde estoy?»"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "name": "Sonidos y efectos",
+  "description": "Efectos de sonido mientras Nuxiva escucha, piensa y procesa, sonidos de notificación y alarma, fondo ambiental; horarios de silencio, no molestar y volúmenes nocturnos.",
+  "capabilities": [
+    "Activación, petición recibida, error",
+    "Ciclo discreto mientras piensa, que se convierte en «procesando» si la respuesta tarda",
+    "Notificaciones, recordatorios, alarmas y timbre (las alarmas suenan incluso en silencio)",
+    "Fondo: reactor, espacio profundo, lluvia, olas, laboratorio; baja mientras habla o escucha",
+    "Horarios de silencio por días, no molestar por voz («no molestar durante una hora», «modo noche hasta mañana por la mañana»)",
+    "De noche: efectos atenuados o silenciados, fondo apagado, voz más baja",
+    "Tres temas de timbre, todos sintetizados en directo sin archivos que descargar",
+    "Utilizables en las automatizaciones como acción «Sonido»"
+  ],
+  "settings": {
+    "NUXIVA_SOUNDS_VOLUME": "Volumen de los efectos (0 - 100)",
+    "NUXIVA_SOUNDS_THEME": "Tema de los sonidos",
+    "NUXIVA_SOUNDS_FEEDBACK": "Sonidos de activación y petición",
+    "NUXIVA_SOUNDS_THINKING": "Sonido mientras piensa y procesa",
+    "NUXIVA_SOUNDS_NOTIFY": "Sonidos de notificación",
+    "NUXIVA_SOUNDS_AMBIENT": "Fondo",
+    "NUXIVA_SOUNDS_AMBIENT_VOLUME": "Volumen del fondo (0 - 100)",
+    "NUXIVA_QUIET_MODE": "En los horarios de silencio",
+    "NUXIVA_QUIET_START": "Silencio desde las (HH:MM)",
+    "NUXIVA_QUIET_END": "Silencio hasta las (HH:MM)",
+    "NUXIVA_QUIET_DAYS": "Noches de silencio",
+    "NUXIVA_QUIET_VOICE": "Volumen de la voz en silencio (0 - 100)",
+    "NUXIVA_QUIET_EFFECTS": "Volumen de los efectos en silencio atenuado (0 - 100)"
+  }
+}

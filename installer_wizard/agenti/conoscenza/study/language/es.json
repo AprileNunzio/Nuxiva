@@ -1,0 +1,13 @@
+{
+  "name": "Estudio autónomo",
+  "description": "En reposo Nuxiva estudia las materias que eliges o que descubre en las conversaciones, de básico a experto, y usa lo que aprende en las respuestas.",
+  "capabilities": [
+    "Lecciones a partir de fuentes reales",
+    "Repaso y exámenes de nivel",
+    "Memoria binaria → ternaria → coseno"
+  ],
+  "settings": {
+    "NUXIVA_STUDY_FINETUNE": "Ajuste fino del modelo durante el estudio",
+    "NUXIVA_STUDY_BASE_MODEL": "Modelo base para el ajuste fino"
+  }
+}

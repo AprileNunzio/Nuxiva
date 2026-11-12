@@ -1,0 +1,16 @@
+{
+  "name": "Búsqueda en línea",
+  "description": "El agente especializado en búsquedas en línea: cuando Nuxiva, el CEO u otro agente no sabe algo o depende de la actualidad, lo verifica en fuentes fiables y recientes, las cita y, si no encuentra nada, lo dice en lugar de inventar.",
+  "capabilities": [
+    "Busca en paralelo entre noticias recientes y la web, descarta redes sociales, foros y sitios de baja calidad",
+    "Ordena las fuentes por fiabilidad (instituciones, agencias, medios) y fecha de publicación",
+    "Extrae solo las frases pertinentes y las devuelve con fuente, fecha y nivel de fiabilidad",
+    "Si no encuentra fuentes o la red no responde lo declara, nunca respuestas inventadas",
+    "Red protegida: sin direcciones internas, redirecciones controladas, tamaños y tipos limitados; datos personales eliminados de la pregunta"
+  ],
+  "settings": {
+    "NUXIVA_RESEARCH_DAYS": "Ventana de actualidad en días (0 = sin límite)",
+    "NUXIVA_RESEARCH_MAX_SOURCES": "Fuentes máximas por respuesta",
+    "NUXIVA_SEARXNG_URL": "Dirección de SearXNG privado (opcional)"
+  }
+}

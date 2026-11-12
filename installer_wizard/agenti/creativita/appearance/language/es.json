@@ -1,0 +1,14 @@
+{
+  "name": "Aspecto del asistente",
+  "description": "Personaje 3D animado de cuerpo entero (o bien holograma de malla o núcleo ligero, elegido según el dispositivo). Camina, gesticula mientras habla, saluda, baila con la música y abre el paraguas cuando llueve; detrás se muestra el tiempo de hoy.",
+  "capabilities": [
+    "Elección automática para cada pantalla",
+    "Personaje 3D animado o bien holograma de malla, color personalizable",
+    "Baila con la música, paraguas cuando llueve, fondo con el tiempo"
+  ],
+  "settings": {
+    "NUXIVA_AVATAR": "Aspecto",
+    "NUXIVA_AVATAR_STYLE": "Estilo del 3D",
+    "NUXIVA_FACE_COLOR": "Color del holograma"
+  }
+}

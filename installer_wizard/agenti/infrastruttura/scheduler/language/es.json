@@ -1,0 +1,21 @@
+{
+  "name": "Planificador y servicios continuos",
+  "description": "Mantiene siempre vivos los servicios en segundo plano (los reinicia si se detienen o se bloquean) y ejecuta los cron: expresiones cron, recuperación de las ejecuciones perdidas cuando Nuxiva estaba apagada y estado que sobrevive a los reinicios.",
+  "capabilities": [
+    "Reinicio automático de los servicios en segundo plano con espera creciente",
+    "Detección de los servicios bloqueados mediante latido",
+    "Cron de 5 campos (*/15 8-18 * * 1-5, @daily, @hourly) con días y meses por nombre",
+    "Ejecuciones perdidas recuperadas: omitir, recuperar una vez o recuperarlas todas",
+    "Estado de los planificadores guardado en disco: los intervalos no vuelven a empezar de cero",
+    "Próximas ejecuciones en lista"
+  ],
+  "settings": {
+    "NUXIVA_LOOPS_BACKOFF_MAX": "Espera máxima antes de reiniciar un servicio averiado, en segundos (5 - 600)",
+    "NUXIVA_LOOPS_STALE_FACTOR": "Un servicio está bloqueado después de cuántas veces su latido normal (2 - 20)",
+    "NUXIVA_SCHED_PERSIST": "Recordar las ejecuciones después de un reinicio",
+    "NUXIVA_SCHED_MISFIRE": "Si Nuxiva estaba apagada a la hora de una automatización",
+    "NUXIVA_SCHED_GRACE_MIN": "Recuperar solo si la ejecución perdida es más reciente que (minutos, 0 = no recuperar nunca)",
+    "NUXIVA_SCHED_MAX_CATCHUP": "Máximo de ejecuciones recuperadas por cada disparador (1 - 50)",
+    "NUXIVA_SCHED_JITTER_S": "Desfase aleatorio de los horarios para que no se disparen todos a la vez, en segundos (0 - 300)"
+  }
+}

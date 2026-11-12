@@ -1,0 +1,10 @@
+{
+  "name": "Capacidades de Nuxiva",
+  "description": "Nuxiva le dice a cada cerebro conectado (local o en la nube) todo lo que sabe hacer y con qué frases pedirlo, así ningún modelo responde «no puedo» a algo que Nuxiva hace de verdad.",
+  "capabilities": [
+    "Lista actualizada de música, cámaras, widgets y herramientas del agente incluida en las instrucciones de cada modelo",
+    "Página de datos /api/capabilities (panel) con frases y herramientas en un formato legible por cualquier LLM",
+    "Herramientas del agente para música, dispositivos de red y cámaras en directo"
+  ],
+  "settings": {}
+}

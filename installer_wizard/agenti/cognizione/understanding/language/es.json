@@ -1,0 +1,13 @@
+{
+  "name": "Comprensión de los comandos",
+  "description": "Antes de ejecutar un comando Nuxiva lee toda la frase, mira los widgets abiertos y las conversaciones anteriores, compara las funciones que podrían corresponder y, si dos parecen igual de probables, lo razona con el modelo antes de elegir.",
+  "capabilities": [
+    "Cada función (pizarra, cámaras, música, casa) puntúa la frase: gana la más convincente, no la primera que se parece",
+    "Contexto: widgets abiertos, último tema de la conversación y referencias como «¿y ahora 5 por 5?»",
+    "Si dos funciones están cerca, el modelo decide leyendo la frase y la conversación, y explica el motivo",
+    "Cada decisión queda registrada y se puede consultar en el panel (/api/understanding)"
+  ],
+  "settings": {
+    "NUXIVA_UNDERSTANDING_LLM": "Razonamiento con el modelo en los casos dudosos"
+  }
+}

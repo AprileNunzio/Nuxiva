@@ -1,0 +1,14 @@
+{
+  "name": "Acciones",
+  "description": "Nuxiva ejecuta de verdad lo que pides: archivos, sitios web, carpetas compartidas, búsqueda de dispositivos, velocidad de la conexión, actualizaciones, programas y cálculos verificados.",
+  "capabilities": [
+    "Crea archivos y sitios web publicados en la red de casa",
+    "Carpetas compartidas SMB",
+    "Encuentra un dispositivo en la red y su IP",
+    "Prueba de velocidad de Internet",
+    "Comprobación e instalación de actualizaciones",
+    "Cálculos en palabras con resultado verificado",
+    "Diagnóstico con comandos de solo lectura cuando falta una habilidad"
+  ],
+  "settings": {}
+}

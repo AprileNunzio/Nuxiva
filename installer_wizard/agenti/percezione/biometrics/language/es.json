@@ -1,0 +1,16 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "features/biometrics",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Biometría",
+    "desc": "Verificación biométrica y modelos de reconocimiento",
+    "status.ready": "Motor biométrico listo",
+    "status.indexing": "Procesando vectores biométricos",
+    "status.liveness_failed": "Comprobación de vida no superada",
+    "error.no_face": "Ninguna cara detectada",
+    "error.no_voice": "Ninguna muestra de voz válida"
+  }
+}

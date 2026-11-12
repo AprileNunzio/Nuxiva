@@ -1,0 +1,109 @@
+{
+  "name": "Control del ordenador",
+  "description": "NUXIVA vive también en tu PC Windows como asistente digital, un poco como Gemini en Android: la llamas con la voz (\"Nuxiva…\") o con Ctrl+Alt+Espacio, te responde con la voz, mira la pantalla o la webcam cuando se lo pides y trabaja por ti: crea carpetas y archivos, abre documentos y programas, te ayuda a escribir, a crear sitios web y a usar AutoCAD o Archicad.",
+  "capabilities": [
+    "Asistente de voz en el PC: palabra de activación «Nuxiva», respuestas con la voz neuronal de NUXIVA, interrupción con Esc",
+    "Ve lo que ves: lee el documento o la página en la que trabajas y, si hace falta, mira la pantalla o la webcam",
+    "Trabaja por ti: crea carpetas y archivos, abre documentos, apps y sitios, escribe o pega texto en el programa abierto",
+    "Ayuda con los proyectos: sitios web listos en Visual Studio Code, scripts de AutoCAD (.scr/.lsp), guía paso a paso para Archicad",
+    "Seguro por diseño: escribe solo en tus carpetas, nunca borra, pide confirmación antes de sobrescribir",
+    "Control remoto de los PC por WinRM/SSH desde el panel, con cifrado de extremo a extremo"
+  ],
+  "settings": {
+    "NUXIVA_RPA_PSK": "Clave PSK para el cifrado E2E del satélite (generada automáticamente)",
+    "NUXIVA_RPA_AUTO_SYNC": "Ping y sincronización automática de los PC en segundo plano",
+    "NUXIVA_RPA_DASHBOARD_LINK": "Panel de control remoto (añade IP, contraseña y comprueba el estado)",
+    "NUXIVA_RPA_DOWNLOAD_LINK": "Descarga el asistente NUXIVA para Windows (.ZIP)",
+    "NUXIVA_RPA_NODES": "Compatibilidad con nodos antiguos (id separados por comas)"
+  },
+  "buttons": {
+    "NUXIVA_RPA_DASHBOARD_LINK": "Abrir el panel de los PC",
+    "NUXIVA_RPA_DOWNLOAD_LINK": "Descargar el Asistente para Windows",
+    "NUXIVA_RPA_DOWNLOAD_ZIP": "Descargar el ZIP"
+  },
+  "guide": [
+    {
+      "title": "Qué es y para qué sirve (en palabras sencillas)",
+      "text": "Con el Asistente para Windows, NUXIVA «vive» también en tu ordenador. Aparece como una pequeña esfera luminosa en la esquina de la pantalla: discreta, pero siempre lista. La llamas diciendo «Nuxiva…», pulsando Ctrl+Alt+Espacio o haciendo clic en la esfera para escribir. Responde en voz alta, puede leer el documento en el que trabajas, mirar la pantalla o la webcam (solo cuando se lo pides) y hacer cosas por ti: crear carpetas y archivos, abrir programas, escribir textos, preparar un sitio web.",
+      "tip": "La inteligencia se queda en el servidor de NUXIVA: en el PC solo funciona un programa ligero que hace de oídos, ojos y manos."
+    },
+    {
+      "title": "Antes de empezar: qué hace falta",
+      "steps": [
+        "Un PC con Windows 10 u 11 (64 bits) en la misma red (mismo Wi-Fi o router) que el ordenador donde funciona NUXIVA.",
+        "No hace falta instalar Python ni otros programas: el instalador ya lo contiene todo.",
+        "Opcional pero recomendado: micrófono y altavoces (o auriculares) para hablar con NUXIVA, una webcam si quieres que pueda verte."
+      ]
+    },
+    {
+      "title": "Descarga e instala el asistente",
+      "steps": [
+        "Desde el PC con Windows abre esta página y pulsa «Descargar el Asistente para Windows»: obtienes NUXIVA_Assistente_Setup.exe.",
+        "Abre el archivo descargado. Si aparece el aviso azul «Windows protegió su PC», haz clic en «Más información» y después en «Ejecutar de todas formas».",
+        "Sigue la instalación: no hacen falta permisos de administrador y NUXIVA se instala solo para tu usuario, con un acceso directo en el menú Inicio.",
+        "Las actualizaciones posteriores llegan solas: NUXIVA solo las instala si están firmadas digitalmente por el desarrollador."
+      ],
+      "tip": "Si Windows pide permitir a NUXIVA el acceso a la red, elige «Redes privadas» y pulsa «Permitir»."
+    },
+    {
+      "title": "Conecta el PC a NUXIVA (con un código)",
+      "steps": [
+        "En el panel de administración de NUXIVA abre Funciones → Nodos y servidores y pulsa «+ Añadir un nodo»: aparecen un código de 6 cifras y la huella del certificado de NUXIVA.",
+        "En la ventana «Collega questo PC ad NUXIVA» escribe la dirección de NUXIVA (p. ej. 192.168.1.100) y pulsa «Verifica».",
+        "Comprueba que la huella mostrada es idéntica a la del panel y marca «L'impronta coincide»: así estás seguro de hablar con tu NUXIVA y no con un intruso en la red.",
+        "Escribe el código y un nombre para el PC, después pulsa «Collega». Abajo a la derecha aparece la esfera luminosa: NUXIVA está lista."
+      ]
+    },
+    {
+      "title": "Uso diario",
+      "steps": [
+        "Para hablar: di «Nuxiva» seguido de tu petición, o pulsa Ctrl+Alt+Espacio. Mientras escucha la esfera late en azul, mientras piensa se vuelve violeta, mientras habla se vuelve verde.",
+        "Para escribir: haz clic en la esfera, escribe en la casilla de abajo y pulsa Intro. El panel se cierra solo cuando no hace falta.",
+        "Para interrumpirla mientras habla: pulsa Esc. Con el botón derecho sobre la esfera pausas el micrófono, abres los ajustes o sales.",
+        "Puedes arrastrar la esfera donde prefieras: recuerda la posición."
+      ]
+    },
+    {
+      "title": "Cosas que puedes pedir",
+      "steps": [
+        "«Crea una carpeta Presupuestos 2026 en el Escritorio con Clientes y Proveedores dentro»",
+        "«Resume el documento que estoy leyendo» o «Corrige los errores del texto que estoy escribiendo»",
+        "«Escribe un correo amable para pasar la reunión al jueves» (NUXIVA lo escribe directamente en la app abierta)",
+        "«Crea un sitio web para una pizzería y ábrelo en Visual Studio Code»",
+        "«En AutoCAD, ¿cómo hago una matriz polar?» o «Prepara un script de AutoCAD que dibuje una cuadrícula de 5x5»",
+        "«Mira mi pantalla: ¿qué hago mal en este dibujo de Archicad?»",
+        "«Abre Excel», «Abre la carpeta Descargas», «Encuentra el archivo del contrato»",
+        "Todo lo demás funciona como siempre: «¿Qué tiempo hará mañana?», «Enciende la luz del estudio», «Pon un poco de música»."
+      ]
+    },
+    {
+      "title": "Privacidad, permisos y seguridad",
+      "steps": [
+        "Tú decides qué puede hacer NUXIVA: botón derecho sobre la esfera → Permisos. Para cada capacidad elige «Permitir», «Preguntar cada vez» o «Nunca».",
+        "Con «Preguntar cada vez» NUXIVA muestra siempre la acción exacta antes de ejecutarla: el comando de PowerShell, el contenido del script, el comando SSH o el archivo que va a modificar.",
+        "Los comandos que borran, formatean o descargan y ejecutan programas siempre piden confirmación, aunque hayas elegido «Permitir».",
+        "NUXIVA trabaja en tus carpetas personales; añade otras carpetas en Permisos. Antes de modificar un archivo guarda una copia de seguridad.",
+        "La comunicación con NUXIVA está cifrada (HTTPS) y vinculada al certificado comprobado en el emparejamiento: un intruso en la red no puede hacerse pasar por NUXIVA.",
+        "Micrófono, pantalla y webcam solo se usan cuando hace falta y puedes prohibirlos en Permisos. Para desconectar el PC: Ajustes → «Scollega questo PC»."
+      ]
+    },
+    {
+      "title": "Solución de problemas",
+      "steps": [
+        "«NUXIVA solo es accesible por HTTPS» o «no accesible»: comprueba que el PC está en la misma red y que NUXIVA está encendida y actualizada: el HTTPS siempre está activo en el puerto 443.",
+        "«Código de emparejamiento no válido o caducado»: genera un nuevo código en Nodos y servidores y escríbelo en pocos minutos.",
+        "La huella no coincide: no conectes el PC y revisa la red. Si has reinstalado NUXIVA, la huella cambia y es normal volver a conectarse.",
+        "«El certificado presentado no está firmado por la autoridad de NUXIVA»: NUXIVA se ha reinstalado o alguien se está entrometiendo en la red. Vuelve a conectar el PC solo si estás seguro.",
+        "La esfera está gris o NUXIVA no te oye: el servicio de escucha de NUXIVA podría estar apagado; mientras tanto puedes escribir haciendo clic en la esfera.",
+        "Para cualquier otro problema el registro está en %APPDATA%/NUXIVA/assistant.log."
+      ]
+    }
+  ],
+  "help": {
+    "NUXIVA_RPA_PSK": "No hace falta cambiarla: se crea automáticamente. Cámbiala solo si sabes lo que haces.",
+    "NUXIVA_RPA_AUTO_SYNC": "Si está activo, NUXIVA comprueba sola, cada cierto tiempo, que los PC conectados estén encendidos y accesibles.",
+    "NUXIVA_RPA_DASHBOARD_LINK": "Para usuarios avanzados: añade los PC a mano por WinRM o SSH y comprueba si están en línea.",
+    "NUXIVA_RPA_DOWNLOAD_LINK": "Instalador para Windows 10/11: no hace falta Python. Se actualiza solo con actualizaciones firmadas digitalmente.",
+    "NUXIVA_RPA_NODES": "Déjalo vacío. Solo sirve para las instalaciones antiguas."
+  }
+}

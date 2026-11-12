@@ -1,0 +1,23 @@
+{
+  "name": "Gestión de los recursos",
+  "description": "Mide cuánto pesan funciones y widgets, lleva una estadística de los consumos y adapta Nuxiva al dispositivo: aplaza los trabajos de fondo cuando el sistema está sobrecargado y hace funcionar la pantalla de forma más ligera en los PC antiguos.",
+  "capabilities": [
+    "Presión del sistema a partir de procesador, memoria, swap y carga, con histéresis",
+    "Trabajos de fondo y cron aplazados (no descartados) cuando hace falta",
+    "Clase del dispositivo (baja, media, alta) detectada a partir del hardware y modificable",
+    "Base de datos de costes por componente, con estimación según el tamaño del contenido",
+    "La pantalla aprende cuánto aguanta cada dispositivo y baja o sube de nivel sola",
+    "Límite de widgets activos por dispositivo, con prioridad para el que se ha llamado"
+  ],
+  "settings": {
+    "NUXIVA_GOV_CLASS": "Clase del dispositivo",
+    "NUXIVA_GOV_QUALITY": "Calidad gráfica de la pantalla",
+    "NUXIVA_GOV_MAX_WIDGETS": "Widgets activos a la vez (0 = automático)",
+    "NUXIVA_GOV_CLIENT_REPORT": "Las pantallas envían sus propias medidas de fluidez",
+    "NUXIVA_GOV_SAMPLE_S": "Cada cuántos segundos medir el sistema (1 - 30)",
+    "NUXIVA_GOV_PRESSURE_ENTER": "Sistema sobrecargado por encima de esta presión (30 - 100)",
+    "NUXIVA_GOV_PRESSURE_EXIT": "Vuelve a la normalidad por debajo de esta presión (10 - 99)",
+    "NUXIVA_GOV_DEFER_MAX_MIN": "Un trabajo de fondo se puede aplazar como máximo (minutos, 0 = nunca)",
+    "NUXIVA_GOV_RETENTION_DAYS": "Conservar las estadísticas durante (días, 1 - 365)"
+  }
+}

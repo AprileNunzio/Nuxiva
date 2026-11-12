@@ -1,0 +1,29 @@
+{
+  "name": "Escritorio de widgets",
+  "description": "La pantalla es un escritorio: cada información es un widget independiente que aparece cuando hace falta (música, tiempo, avisos, alarmas), por orden de prioridad.",
+  "capabilities": [
+    "Widgets descubiertos desde las carpetas",
+    "Prioridades modificables",
+    "Alarmas a pantalla completa",
+    "Prueba de cada widget desde el panel",
+    "Cierre automático de los datos personales",
+    "Widgets del propietario en la pantalla: recursos, sistemas, cortafuegos, actualizaciones y noticias cuando te acercas"
+  ],
+  "settings": {
+    "NUXIVA_REMOTE_CAMERA_PROBE": "Permitir a los administradores una prueba de reconocimiento con la webcam remota",
+    "NUXIVA_REMOTE_CAMERA_PREVIEW": "Permitir la vista previa local de la webcam en los navegadores remotos autorizados",
+    "NUXIVA_REMOTE_MIC_INPUT": "Permitir el envío de audio desde sesiones y nodos remotos autorizados",
+    "NUXIVA_PRIVACY_AUTOCLOSE": "Cerrar los widgets con datos personales cuando no estás",
+    "NUXIVA_PRIVACY_AWAY_S": "Cuánto tiempo después de que te hayas alejado",
+    "NUXIVA_PRIVACY_VOICE_S": "Cerrar los datos personales abiertos por voz después de",
+    "NUXIVA_SECRETARY": "En la pantalla, mostrar los widgets del propietario cuando se acerca",
+    "NUXIVA_DISPLAY_PRESENCE_GATE": "En la pantalla mostrar botones, widgets y chat solo cuando ve u oye a una persona autorizada",
+    "NUXIVA_DISPLAY_GUEST_PUBLIC": "Con solo invitados mostrar también los widgets públicos adecuados para invitados",
+    "NUXIVA_DISPLAY_TRUST_GUESTS": "Con invitados presentes mostrar también los widgets de casa",
+    "NUXIVA_DISPLAY_LEARNING": "La pantalla aprende de los hábitos de cada persona autorizada (datos cifrados, nunca con invitados)",
+    "NUXIVA_DISPLAY_ROOM_STRICT": "En las pantallas de habitaciones sin cámara mostrar solo lo que es adecuado para cualquiera"
+  },
+  "help": {
+    "NUXIVA_DISPLAY_PRESENCE_GATE": "Sin webcam infrarroja la cara sola no basta y también hace falta la voz. Después de hablar, los widgets siguen abiertos mientras sigas encuadrado, durante el tiempo de «Cerrar los datos personales abiertos por voz después de». El control contra fotos se ajusta en Visión y caras."
+  }
+}

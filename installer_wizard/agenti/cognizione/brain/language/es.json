@@ -1,0 +1,19 @@
+{
+  "name": "Cerebro",
+  "description": "Los cerebros de Nuxiva en un único lugar: modelos en el servidor y servicios en la nube (OpenAI, Claude, Gemini, Grok, Mistral, DeepSeek y otros), combinados por orden de prioridad, con el modelo en uso siempre visible.",
+  "capabilities": [
+    "Modelo en uso siempre visible, con origen y tiempos",
+    "Listas de prioridad mixtas local y nube",
+    "22 servicios en la nube con listas de modelos reales y actualizadas",
+    "Claves cifradas en el disco",
+    "Modo solo nube, sin Ollama",
+    "Catálogo local con evaluación del hardware y descarga",
+    "Enrutamiento automático entre conversación y razonamiento"
+  ],
+  "settings": {
+    "NUXIVA_LLM_ROUTING": "Enrutamiento entre cerebro rápido y potente",
+    "NUXIVA_OLLAMA_URL": "Dirección del servidor Ollama",
+    "NUXIVA_VISUAL_DEFAULT_ENGINE": "Motor visual 3D predeterminado (partículas, rápido y ligero)",
+    "NUXIVA_VISUAL_PRIORITY": "Orden de prioridad de los motores visuales 3D"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Escena y presencia",
+  "description": "Grafo espacial de la casa: habitaciones, muebles y zonas con coordenadas, objetos vistos por las cámaras y fusión de cara, voz y rastreadores en una única estimación de presencia.",
+  "capabilities": [
+    "Recuerda dónde vio por última vez los objetos (mesa de la cocina, estante de la entrada…) incluso con coordenadas en metros",
+    "Responde a «¿dónde está la cartera?» y «¿está todo listo para salir?»",
+    "Perfiles de preparación: lista de objetos que deben estar en una zona o cerca de la entrada",
+    "Fusiona cara (con prueba de vida), voz reconocida y rastreadores de Home Assistant en una probabilidad de presencia por persona",
+    "Inicia la previsión de los comandos con la llegada fusionada, no con un solo sensor"
+  ],
+  "settings": {}
+}

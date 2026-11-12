@@ -1,0 +1,17 @@
+{
+  "name": "Agente con herramientas",
+  "description": "Nuxiva razona paso a paso y usa herramientas reales hasta terminar la tarea: incluso peticiones encadenadas como «créame un martillo en 3D y envíaselo por correo a Marco».",
+  "capabilities": [
+    "Archivos y carpetas: crea, lee, escribe, copia, mueve, comprime, busca; lo borrado va a la papelera",
+    "Pantalla: abre, cierra y mueve los widgets entre monitores",
+    "Música: busca y reproduce canciones en Chromecast, DLNA y pantalla, controla volumen y pista; cámaras en directo incluso a pantalla completa",
+    "Holograma: acciones, expresiones, encuadres, accesorios y color",
+    "Modelos 3D: los diseña, los muestra y los adjunta",
+    "Correo con adjuntos (Gmail conectado o SMTP) y carpetas compartidas SMB",
+    "Terminal y páginas web (acceso completo)",
+    "Confirmación por voz antes de correos, borrados, comandos que modifican el sistema y escrituras fuera de la carpeta de trabajo"
+  ],
+  "settings": {
+    "NUXIVA_AGENT_ACCESS": "Nivel de acceso"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "Mapas",
+  "description": "Indicaciones de ruta, tiempos con el tráfico y avisos de salida: el trayecto al trabajo de quien está delante de la pantalla por la mañana y la ruta para las citas de la agenda.",
+  "capabilities": [
+    "«¿Cómo llego a…?», «¿cuánto tardo en ir al trabajo?»",
+    "Tráfico y transporte público con la clave de Google Maps (sin ella: OpenStreetMap)",
+    "Lugares guardados por voz: trabajo, gimnasio, colegio…",
+    "Trayecto al trabajo de cada persona, desde su ficha, cuando la ve por la mañana",
+    "Recuerda las citas con un lugar y cuándo salir",
+    "Cuándo salir para autobuses, trenes y vuelos: tiempo con el tráfico previsto a la hora de salida, antelación y margen calculado a partir del historial",
+    "Actualiza el consejo si cambia el tráfico y avisa cuando es hora de salir"
+  ],
+  "settings": {
+    "NUXIVA_MAPS_MODE": "Medio de transporte predeterminado",
+    "NUXIVA_MAPS_TRIPS": "Avísame cuándo salir para las citas con un lugar y para autobuses, trenes y vuelos",
+    "NUXIVA_MAPS_WISE": "Margen de seguridad calculado a partir del historial de tiempos (tráfico variable)",
+    "NUXIVA_MAPS_MARGIN_MIN": "Margen mínimo añadido al tiempo de viaje, en minutos (0 - 60)",
+    "NUXIVA_MAPS_BUFFER_BUS": "Llegar con antelación para un autobús (minutos)",
+    "NUXIVA_MAPS_BUFFER_TRAIN": "Llegar con antelación para un tren (minutos)",
+    "NUXIVA_MAPS_BUFFER_FLIGHT": "Llegar con antelación para un vuelo (minutos)",
+    "NUXIVA_MAPS_BUFFER_EVENT": "Antelación para las demás citas (minutos)",
+    "NUXIVA_MAPS_HEADSUP_MIN": "Primer aviso cuántos minutos antes de la hora de salida (10 - 720)",
+    "NUXIVA_MAPS_EVENT_HOURS": "Mirar los compromisos de las próximas horas (1 - 48)"
+  }
+}

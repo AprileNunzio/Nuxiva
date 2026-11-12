@@ -1,0 +1,21 @@
+{
+  "name": "Carpeta compartida",
+  "description": "Carpeta de red protegida para documentos, sitios, modelos 3D, código y música. La memoria de Nuxiva no está en la red.",
+  "capabilities": [
+    "\\\\IP-del-servidor\\condivisa desde el Explorador de archivos de Windows, smb://IP/condivisa desde Mac y Linux",
+    "Subcarpetas: 01 Documenti, 02 Siti web, 03 Modelli 3D, 04 Codice, 05 Scambio, 06 Musica",
+    "Nombres con fecha inversa: 20261002_nombre.extensión",
+    "Acceso solo con el usuario nuxiva-share y contraseña, compatible con Windows 11 (SMB2/3)",
+    "La memoria personal se queda solo en el servidor, nunca en la red"
+  ],
+  "settings": {
+    "NUXIVA_SMB_PASSWORD": "Contraseña del usuario nuxiva-share (vacía = generada)",
+    "NUXIVA_SHARES_READONLY": "Acceso a la carpeta",
+    "NUXIVA_SHARES_NETWORKS": "Redes admitidas (prefijos, IP o CIDR separados por espacios; vacío = redes domésticas)",
+    "NUXIVA_SHARES_RECYCLE": "Papelera de red (los archivos eliminados se recuperan)",
+    "NUXIVA_SHARES_DISCOVERY": "Visible en la red de Windows",
+    "NUXIVA_SHARES_PROTOCOL": "Protocolo SMB mínimo",
+    "NUXIVA_SHARES_ENCRYPT": "Cifrado del tráfico",
+    "NUXIVA_SHARES_UPLOAD_MB": "Límite de subida desde el panel"
+  }
+}

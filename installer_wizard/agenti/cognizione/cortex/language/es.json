@@ -1,0 +1,16 @@
+{
+  "name": "Hipocampo",
+  "description": "Enrutamiento rápido de las neuronas: reconoce las peticiones ya aprendidas y decide sin generar tokens, dejando a la corteza solo lo que requiere razonamiento.",
+  "capabilities": [
+    "Árbitro con tres resultados: rápido, zona gris, lento, con motivación",
+    "Memoria de las neuronas cifrada y firmada, sin texto de los usuarios en la telemetría",
+    "Núcleo en Rust con degradación explícita si falta un componente",
+    "Aprende sola las peticiones repetidas: el modelo escribe la competencia, Nuxiva la prueba y la aísla antes de adoptarla",
+    "Entrenamiento QLoRA automático si detecta una tarjeta gráfica y el usuario lo permite",
+    "Consolidación nocturna: olvida lo que no sirve, recupera las noches perdidas"
+  ],
+  "settings": {
+    "NUXIVA_CORTEX_AUTOFORGE": "Aprende sola las peticiones repetidas",
+    "NUXIVA_CORTEX_TRAINING": "Entrenamiento en la tarjeta gráfica (QLoRA)"
+  }
+}

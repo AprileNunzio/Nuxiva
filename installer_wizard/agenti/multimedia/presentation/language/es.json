@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "features/presentation",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Presentación",
+    "desc": "Gestión del diseño escénico y de los contenidos multimedia",
+    "error.not_found": "Imagen o recurso no encontrado",
+    "error.invalid_plan": "Plan de presentación no válido",
+    "status.playing": "Presentación en reproducción",
+    "status.paused": "Presentación en pausa"
+  }
+}

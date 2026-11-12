@@ -1,0 +1,15 @@
+{
+  "name": "VPN",
+  "description": "VPN universal: WireGuard cliente y servidor con QR, OpenVPN, IPsec IKEv2, Tailscale, Headscale y ZeroTier, con interruptor de corte, protección DNS y túnel dividido",
+  "capabilities": [
+    "Servidor WireGuard para entrar en casa desde fuera, con QR para los teléfonos",
+    "Importación segura de archivos WireGuard y OpenVPN",
+    "IPsec IKEv2, Tailscale, Headscale y ZeroTier",
+    "Interruptor de corte y bloqueo de las fugas DNS",
+    "Túnel dividido para redes incluidas o excluidas",
+    "Reconexión automática y claves cifradas"
+  ],
+  "settings": {
+    "NUXIVA_VPN": "Herramientas VPN"
+  }
+}

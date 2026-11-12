@@ -1,6 +1,12 @@
 {
   "name": "Telegram",
   "description": "Habla con Nuxiva desde cualquier lugar: texto, voz y fotos; avisos de llegadas, averías y efemérides.",
+  "capabilities": [
+    "Emparejamiento con código",
+    "Chat de texto y voz",
+    "Notificaciones con foto",
+    "Comandos de gestión"
+  ],
   "settings": {
     "NUXIVA_TELEGRAM_TOKEN": "Token del bot de Telegram"
   },

@@ -1,6 +1,15 @@
 {
   "name": "Google",
   "description": "Cada persona vincula su propia cuenta de Google: agenda, correo, tareas, contactos, Drive y notas.",
+  "capabilities": [
+    "Una cuenta de Google para cada persona, tokens cifrados",
+    "Privacidad: datos solo para quien es reconocido, correos no leídos en voz alta delante de otros",
+    "Calendar: compromisos, nuevas citas con aviso de solapamiento, cancelación, «cuándo estoy libre»",
+    "Gmail: no leídos, búsqueda por remitente o tema, «léeme el último correo»",
+    "Tasks: «recuérdame que…», lista con retrasos, «ya he hecho…»",
+    "Contactos, Drive y Google Health (salud, actividad y sueño)",
+    "Recordatorios personales antes de cada cita"
+  ],
   "settings": {
     "NUXIVA_GOOGLE_CLIENT_ID": "ID de cliente de OAuth",
     "NUXIVA_GOOGLE_CLIENT_SECRET": "Secreto de cliente de OAuth"

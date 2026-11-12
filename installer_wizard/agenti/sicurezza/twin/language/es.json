@@ -1,0 +1,13 @@
+{
+  "name": "Gemelo digital",
+  "description": "Antes de ejecutar un comando para la casa, Nuxiva lo simula en una copia del estado actual y descarta las acciones que violan las reglas de seguridad.",
+  "capabilities": [
+    "Simula cada comando, automatización y previsión antes de enviarlo a Home Assistant",
+    "Detiene cámaras apagadas con la alarma conectada, puertas abiertas con la alarma activa, válvulas abiertas con la casa vacía y comandos contradictorios",
+    "Avisa si se enciende el clima con una ventana abierta o se conecta la alarma con un acceso abierto",
+    "Corrige el plan quitando solo las acciones en conflicto y ejecuta el resto"
+  ],
+  "settings": {
+    "NUXIVA_TWIN": "Modo"
+  }
+}

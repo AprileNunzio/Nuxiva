@@ -1,0 +1,14 @@
+{
+  "name": "Automatizaciones",
+  "description": "Motor de automatización en varias etapas: disparadores múltiples, condiciones anidadas, acciones con ramas, esperas, repeticiones, ejecución en paralelo, confirmaciones por voz, variables y traza paso a paso de cada ejecución.",
+  "capabilities": [
+    "Disparadores: horas y días, intervalos, amanecer y atardecer con desplazamiento, cambios de estado de dispositivos (también umbrales y duración), presencias, frases dichas a Nuxiva, eventos (correo, agenda, averías, arranque), expresiones, webhook",
+    "Condiciones anidadas Y/O/NO: franjas horarias, estados con duración, presencias, día/noche, horario de silencio, expresiones",
+    "Acciones: dispositivos de Home Assistant, voz, notificaciones (pantalla, voz, Telegram, correo), widget, holograma, sonidos, agente con herramientas, correo, peticiones web, eventos",
+    "Control de flujo: si/si no, elección entre varios casos, ramas paralelas, repeticiones (veces, mientras, hasta), esperas de tiempo, estado, evento o expresión, confirmación por voz sí/no",
+    "Variables por ejecución y globales, expresiones {{ … }}, modo único/reiniciar/cola/paralelo, pausa mínima entre ejecuciones",
+    "Diseño con palabras («crea una automatización que…») con verificación automática, plantillas listas, importar/exportar",
+    "Historial con traza de cada paso, duración y errores; ejecuciones en curso que se pueden detener"
+  ],
+  "settings": {}
+}

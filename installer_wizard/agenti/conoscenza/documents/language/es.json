@@ -1,0 +1,14 @@
+{
+  "name": "Documentos Office",
+  "description": "Nuxiva prepara documentos profesionales para Microsoft Office, LibreOffice y OpenOffice: Word, Excel, PowerPoint, ODT, ODS, ODP y PDF, con temas gráficos modernos, tipos de letra, colores, tablas, gráficos e indicadores. Para los proyectos crea una carpeta con subcarpetas, varios documentos enlazados entre sí y un índice.",
+  "capabilities": [
+    "Word y ODT: portada, estilos de títulos, encabezado y números de página, tablas con totales, gráficos, indicadores, recuadros, citas, enlaces",
+    "Excel y ODS: columnas con tipo (moneda, porcentaje, fechas), fórmulas, totales, filtros, encabezados fijos, gráficos nativos",
+    "PowerPoint y ODP: diapositivas 16:9 con portada, secciones, dos columnas, tablas, gráficos nativos, indicadores y notas del orador",
+    "PDF de cualquier documento, vista previa en la pantalla",
+    "Proyectos: carpeta con subcarpetas, documentos generados en paralelo y enlazados con rutas relativas, documento índice",
+    "Siete temas gráficos (moderno, corporativo, elegante, vivo, minimalista, naturaleza, tecnológico) o colores y tipo de letra a elección",
+    "Guardado en «01 Documenti» con nombres AAAAMMDD_título"
+  ],
+  "settings": {}
+}

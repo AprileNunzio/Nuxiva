@@ -1,0 +1,14 @@
+{
+  "name": "Pantalla",
+  "description": "Pantalla dedicada a Nuxiva en modo quiosco, segura y siempre encendida.",
+  "capabilities": [
+    "Chromium dedicado",
+    "Reinicio automático",
+    "Sin ventanas emergentes ni traductor",
+    "Controlador de vídeo oficial de NVIDIA cuando la tarjeta lo admite, con comprobación tras el reinicio y vuelta automática al controlador libre"
+  ],
+  "settings": {
+    "NUXIVA_GPU_DRIVER": "Controlador de vídeo",
+    "NUXIVA_GPU_DRIVER_REBOOT": "Reinicio para activar el controlador"
+  }
+}

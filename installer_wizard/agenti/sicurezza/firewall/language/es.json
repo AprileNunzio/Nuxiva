@@ -1,0 +1,17 @@
+{
+  "name": "Cortafuegos",
+  "description": "Cortafuegos interno con análisis del tráfico en tiempo real, reglas de experto y defensa asistida por inteligencia artificial",
+  "capabilities": [
+    "Análisis en tiempo real del tráfico ethernet y wifi (motor en Rust)",
+    "Detección de escaneos, fuerza bruta, inundaciones, suplantación ARP, túneles DNS y exfiltración",
+    "Bloqueo total: acceso solo a IP, redes y MAC autorizadas",
+    "Reglas de experto con grupos, puertos, límites y caducidades",
+    "Bloqueo automático temporal de los atacantes",
+    "Analista IA que propone contramedidas para aprobar",
+    "Confirmación en 90 segundos con restauración automática"
+  ],
+  "settings": {
+    "NUXIVA_NETGUARD": "Análisis del tráfico",
+    "NUXIVA_NETGUARD_INTERFACES": "Interfaces analizadas (vacío = todas)"
+  }
+}

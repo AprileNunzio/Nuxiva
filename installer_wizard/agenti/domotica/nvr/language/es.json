@@ -1,0 +1,11 @@
+{
+  "name": "NVR",
+  "description": "Grabador de vídeo en red: archivo de los eventos de las cámaras y de los motores NVR externos por MQTT, búsqueda en lenguaje natural, conservación y avisos.",
+  "capabilities": [
+    "Archiva los eventos de movimiento de las cámaras de Nuxiva",
+    "Recibe por MQTT los eventos de motores NVR externos (personas, vehículos, animales, paquetes, matrículas)",
+    "Búsquedas como «persona ayer en el jardín» o «coche hoy»",
+    "Publica eventos y avisos en el bus de Nuxiva para widgets y automatizaciones"
+  ],
+  "settings": {}
+}

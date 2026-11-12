@@ -1,0 +1,11 @@
+{
+  "name": "Nodos y servidores",
+  "description": "El servidor principal y todos los nodos de Nuxiva (satélites de audio, pantallas, otros servidores, microcontroladores): estado en tiempo real, emparejamiento seguro y comandos.",
+  "capabilities": [
+    "Estado del servidor principal y de sus subsistemas",
+    "Emparejamiento de los nodos con código de un solo uso y token personal",
+    "En línea, último contacto y recursos de cada nodo",
+    "Nombre, habitación, comandos remotos y revocación"
+  ],
+  "settings": {}
+}

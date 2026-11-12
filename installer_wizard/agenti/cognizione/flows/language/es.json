@@ -1,0 +1,17 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "features/flows",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Flujos operativos",
+    "desc": "Composición visual de disparadores y acciones",
+    "error.invalid_json": "JSON no válido",
+    "error.request_too_large": "Petición demasiado grande",
+    "error.unknown_template": "Plantilla de flujo desconocida",
+    "error.invalid_node": "Posición de nodo no válida",
+    "status.running": "Flujo en ejecución",
+    "status.idle": "Flujo en espera"
+  }
+}

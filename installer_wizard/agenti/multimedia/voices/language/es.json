@@ -1,0 +1,20 @@
+{
+  "name": "Voces",
+  "description": "Más de 600 voces en más de 60 idiomas (una treintena en italiano): elige, escucha y descarga; ordénalas. Nuxiva responde en el idioma en que le hablas o en el que le pides («háblame en inglés», «enséñame alemán») y descarga sola la voz que le falta.",
+  "capabilities": [
+    "Voces neuronales Kokoro (9 idiomas)",
+    "Catálogo Piper completo, descargable",
+    "Voces en línea muy naturales (Microsoft Edge)",
+    "Voz preferida para cada idioma",
+    "Descarga automática de los idiomas nuevos",
+    "Orden de prioridad",
+    "Vista previa de cada voz"
+  ],
+  "settings": {
+    "NUXIVA_VOICE_SPEED": "Velocidad de la voz (0.6 - 1.6)",
+    "NUXIVA_VOICE_PITCH": "Tono de la voz (-6 grave … +6 agudo)",
+    "NUXIVA_VOICE_VOLUME": "Volumen de la voz (0.4 - 2.0)",
+    "NUXIVA_VOICE_ONLINE": "Voces en línea",
+    "NUXIVA_VOICE_AUTO_DOWNLOAD": "Descargar sola las voces de los idiomas nuevos"
+  }
+}
