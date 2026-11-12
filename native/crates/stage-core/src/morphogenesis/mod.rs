@@ -65,6 +65,12 @@ const PREFIXES: &[&str] = &[
     "struttura di",
     "forma di",
     "mostrami",
+    "mi mostri",
+    "mi mostra",
+    "mi fai vedere",
+    "puoi mostrarmi",
+    "potresti mostrarmi",
+    "mostrarmi",
     "fammi vedere",
     "visualizza",
     "ologramma di",
@@ -188,6 +194,22 @@ pub fn synthesize_sculpture(concept: &str) -> Spec {
 mod tests {
     use super::*;
     use crate::particles::sample;
+
+    #[test]
+    fn extracts_the_concept_from_polite_requests() {
+        for text in [
+            "Mi mostri una medusa?",
+            "Mi mostra una medusa",
+            "Mi fai vedere una medusa",
+            "Puoi mostrarmi una medusa?",
+        ] {
+            assert_eq!(
+                extract_visual_concept(text).as_deref(),
+                Some("medusa"),
+                "{text}"
+            );
+        }
+    }
 
     #[test]
     fn extracts_medusa_and_synthesizes_valid_12k_cloud() {

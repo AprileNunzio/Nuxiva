@@ -153,5 +153,76 @@ class FormaDesignTest(unittest.TestCase):
             self.assertIn(field, text)
 
 
+
+class LiveRefineTest(unittest.IsolatedAsyncioTestCase):
+    def setUp(self):
+        import tempfile
+        from pathlib import Path
+        from agenti.particles import ParticleStore, show
+        self.show = show
+        self.store = ParticleStore(Path(tempfile.mkdtemp()) / "particles")
+        patcher = mock.patch.object(show, "store", self.store)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+        self.addCleanup(show.clear)
+        show.refining.clear()
+
+    async def test_instant_shape_is_replaced_by_the_designed_one(self):
+        import asyncio
+        spec = python_only(ARCHETYPES["medusa"])
+
+        async def design(concept):
+            return spec
+
+        with mock.patch("agenti.particles.forma_design.design", design):
+            shown = self.show.ensure_visual("Mi mostri una medusa")
+            self.assertIsNotNone(shown)
+            first = self.show.current()
+            self.assertIn("medusa", self.show.refining)
+            for _ in range(50):
+                await asyncio.sleep(0.02)
+                if not self.show.refining:
+                    break
+        after = self.show.current()
+        self.assertNotEqual(first["digest"], after["digest"])
+        self.assertNotEqual(first["id"], after["id"])
+        self.assertEqual(self.store.lookup("medusa")["digest"], after["digest"])
+        self.assertEqual(self.show.refining, set())
+
+    async def test_failed_design_keeps_the_instant_shape(self):
+        import asyncio
+
+        async def design(concept):
+            return None
+
+        with mock.patch("agenti.particles.forma_design.design", design):
+            self.show.ensure_visual("Mi mostri una medusa")
+            first = self.show.current()
+            for _ in range(50):
+                await asyncio.sleep(0.02)
+                if not self.show.refining:
+                    break
+        self.assertEqual(self.show.current()["digest"], first["digest"])
+
+    async def test_a_known_concept_is_not_refined_again(self):
+        spec = python_only(ARCHETYPES["medusa"])
+        self.store.put("medusa", spec, codec.sample(spec, 2000, 1))
+        self.show.ensure_visual("Mi mostri una medusa")
+        self.assertEqual(self.show.refining, set())
+
+    def test_polite_requests_name_the_concept(self):
+        from agenti.particles import extract_visual_concept
+        from agenti.particles.morphogenesis import synthesizer
+        for text in ("Mi mostri una medusa?", "Mi mostra una medusa", "Mi fai vedere una medusa", "Puoi mostrarmi una medusa?"):
+            with self.subTest(text=text):
+                self.assertEqual(extract_visual_concept(text), "medusa")
+                with mock.patch.object(synthesizer.native, "lib", None):
+                    self.assertEqual(synthesizer.extract_visual_concept(text), "medusa")
+
+    def test_without_an_event_loop_nothing_is_scheduled(self):
+        self.assertFalse(self.show.refine_later("medusa", "x"))
+        self.assertEqual(self.show.refining, set())
+
+
 if __name__ == "__main__":
     unittest.main()
