@@ -250,6 +250,25 @@ class PyStore:
         complete = known and all(any(formato.kind_of_name(f) == k for f in files) for k in formato.LEVELS[level])
         return {"ok": not problems and known, "level": level, "complete": complete, "files": files, "problems": problems}
 
+    def recent(self, limit: int) -> list[str]:
+        def dirs(base: Path, size: int) -> list[str]:
+            return sorted((e.name for e in os.scandir(base)
+                           if e.is_dir(follow_symlinks=False) and len(e.name) == size and e.name.isascii() and e.name.isdigit()),
+                          reverse=True)
+
+        out: list[str] = []
+        limit = min(limit, 1000)
+        for y in dirs(self.root, 4):
+            for m in dirs(self.root / y, 2):
+                for d in dirs(self.root / y / m, 2):
+                    day = self.root / y / m / d
+                    ids = sorted((e.name for e in os.scandir(day) if e.is_dir(follow_symlinks=False) and _ID.fullmatch(e.name)), reverse=True)
+                    for op in ids:
+                        out.append(f"{y}/{m}/{d}/{op}")
+                        if len(out) >= limit:
+                            return out
+        return out
+
     def expired(self, now_ms: int, days: int, limit: int) -> list[str]:
         cutoff = day_path(max(0, now_ms - days * 86_400_000))
         out: list[str] = []

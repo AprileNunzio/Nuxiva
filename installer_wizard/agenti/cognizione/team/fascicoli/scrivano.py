@@ -1,3 +1,4 @@
+import asyncio
 import hashlib
 import json
 import logging
@@ -6,17 +7,20 @@ import secrets
 import stat
 import threading
 import time
+from contextvars import ContextVar
 from functools import lru_cache
 from pathlib import Path
 
 from config import STATE_DIR, env_get
-from agenti.team.fascicoli import motore
+from agenti.team.fascicoli import motore, passi
 from agenti.team.fascicoli.archivio import StoreError
 from agenti.team.fascicoli.formato import SCHEMA
 
 log = logging.getLogger("nuxiva.team.fascicoli")
 LANGS = ("it", "en", "fr", "es")
 SEALED_RISK = 2
+MAX_STEPS = 99
+CURRENT: ContextVar[dict | None] = ContextVar("fascicolo_corrente", default=None)
 PRUNE_EVERY_MS = 3_600_000
 PRUNE_BATCH = 200
 DEFAULT_DAYS = 30
@@ -60,6 +64,7 @@ class Scrivano:
         self._store = None
         self._lock = threading.Lock()
         self._pruned_at = 0
+        self._locks: dict[str, threading.Lock] = {}
 
     @staticmethod
     def enabled() -> bool:
@@ -91,7 +96,26 @@ class Scrivano:
 
     def _write(self, handle: dict, name: str, kind: str, sections: dict) -> None:
         doc = self._doc(kind, handle, sections, handle["lang"])
-        self.store().write(handle["rel"], name, doc, _now_ms())
+        lock = self._locks.setdefault(handle["id"], threading.Lock())
+        with lock:
+            self.store().write(handle["rel"], name, doc, _now_ms())
+
+    async def record_step(self, tool: str, agent: str, args: dict, result: str, ok: bool, started: float) -> None:
+        handle = CURRENT.get()
+        if not handle or handle.get("level") == "lampo" or not handle.get("rel") or handle["steps"] >= MAX_STEPS:
+            return
+        handle["steps"] += 1
+        handle["failed"] += 0 if ok else 1
+        number = handle["steps"]
+        ms = max(0, int((time.monotonic() - started) * 1000))
+        try:
+            name = motore.step_file(number, tool)
+            if name is None:
+                return
+            sections = passi.step_sections(texts(handle["lang"])["text"], tool, agent or "-", args, result, ok, ms, handle["sealed"])
+            await asyncio.to_thread(self._write, handle, name, "passo", sections)
+        except (OSError, ValueError, RuntimeError, StoreError, KeyError) as exc:
+            log.warning("passo del fascicolo non scritto: %s", exc)
 
     def open(self, decision, text: str, lang: str, channel: str = "chat", card=None) -> dict:
         if not self.enabled():
@@ -114,6 +138,9 @@ class Scrivano:
         except (OSError, ValueError, RuntimeError, StoreError, KeyError) as exc:
             log.warning("fascicolo non scritto: %s", exc)
             return {}
+        handle.update(steps=0, failed=0)
+        self._locks[handle["id"]] = threading.Lock()
+        CURRENT.set(handle)
         return handle
 
     def _plan(self, handle: dict, decision, card, state: str) -> None:
@@ -155,16 +182,31 @@ class Scrivano:
         status = outcome.get("status", "unverified")
         verified = bool(outcome.get("verified"))
         try:
-            if handle["level"] != "lampo":
-                state = "verified" if verified else ("failed" if status in ("failed", "blocked") else "done")
-                self._plan(handle, decision, None if not handle["sealed"] else {"risk": SEALED_RISK}, state)
             self._write(handle, "99-esito.md", "esito", {
                 "summary": t["summary"].format(status=status, verified=t["yes"] if verified else t["no"], agent=agent_name),
                 "answer": answer,
                 "timing": t["timing"].format(ms=max(0, _now_ms() - handle["started"]), level=handle["level"]),
             })
+            if handle["level"] != "lampo":
+                self._verify(handle, decision, status, verified, not reply)
         except (OSError, ValueError, RuntimeError, StoreError, KeyError) as exc:
             log.warning("esito del fascicolo non scritto: %s", exc)
+        finally:
+            self._locks.pop(handle["id"], None)
+            if CURRENT.get() is handle:
+                CURRENT.set(None)
+
+    def _verify(self, handle: dict, decision, status: str, verified: bool, empty: bool) -> None:
+        store = self.store()
+        report = store.verify(handle["rel"])
+        facts = {"steps_total": handle["steps"], "steps_failed": handle["failed"], "outcome_status": status,
+                 "outcome_verified": verified, "answer_empty": empty}
+        judgement = motore.judge(report, facts)
+        t = texts(handle["lang"])["text"]
+        self._write(handle, "90-verifica.md", "verifica", passi.verifica_sections(t, report, facts, judgement))
+        state = {"superata": "verified", "incompleta": "done", "non_superata": "failed"}[judgement["verdict"]]
+        self._plan(handle, decision, {"risk": SEALED_RISK} if handle["sealed"] else None, state)
+        handle["verdict"] = judgement["verdict"]
 
     def _maybe_prune(self) -> None:
         now = _now_ms()

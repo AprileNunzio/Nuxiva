@@ -5,7 +5,7 @@ use std::io::{BufRead, BufReader, Read, Write};
 use std::path::{Path, PathBuf};
 
 use agency_ledger::{Entry, LedgerKey, LedgerStore};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use serde_json::json;
 use sha2::{Digest, Sha256};
 use zeroize::Zeroizing;
@@ -50,7 +50,7 @@ impl From<agency_ledger::LedgerError> for StoreError {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Report {
     pub ok: bool,
     pub level: String,
@@ -376,6 +376,43 @@ impl Store {
             }
         }
         out.sort();
+        Ok(out)
+    }
+
+    pub fn recent(&self, limit: usize) -> Result<Vec<String>, StoreError> {
+        let names = |path: PathBuf, size: usize| -> Result<Vec<String>, StoreError> {
+            let mut out = Vec::new();
+            for entry in fs::read_dir(path)? {
+                let entry = entry?;
+                let name = entry.file_name().to_string_lossy().into_owned();
+                if entry.file_type()?.is_dir() && digits(&name, size) {
+                    out.push(name);
+                }
+            }
+            out.sort_unstable_by(|a, b| b.cmp(a));
+            Ok(out)
+        };
+        let mut out = Vec::new();
+        for y in names(self.root.clone(), 4)? {
+            for m in names(self.root.join(&y), 2)? {
+                for d in names(self.root.join(&y).join(&m), 2)? {
+                    let day = self.root.join(&y).join(&m).join(&d);
+                    let mut ids: Vec<String> = fs::read_dir(&day)?
+                        .filter_map(Result::ok)
+                        .filter(|e| e.file_type().is_ok_and(|t| t.is_dir()))
+                        .map(|e| e.file_name().to_string_lossy().into_owned())
+                        .filter(|n| valid_id(n))
+                        .collect();
+                    ids.sort_unstable_by(|a, b| b.cmp(a));
+                    for id in ids {
+                        out.push(format!("{y}/{m}/{d}/{id}"));
+                        if out.len() >= limit {
+                            return Ok(out);
+                        }
+                    }
+                }
+            }
+        }
         Ok(out)
     }
 

@@ -56,7 +56,30 @@
       "no": "no",
       "answer_sealed": "Private answer, not stored in clear text ({chars} characters, fingerprint {digest}).",
       "answer_empty": "No text answer.",
-      "timing": "Duration {ms} ms. Level {level}."
+      "timing": "Duration {ms} ms. Level {level}.",
+      "step_goal": "Run the «{tool}» tool for the {agent} agent.",
+      "step_tool": "{tool}, arguments: {args}",
+      "step_tool_sealed": "{tool}, private arguments: {names}",
+      "step_none": "none",
+      "step_result_sealed": "Private result, not stored in clear text ({chars} characters, fingerprint {digest}).",
+      "check_ok": "The tool answered without errors in {ms} ms.",
+      "check_error": "The tool reported an error: {why}",
+      "status_ok": "completed",
+      "status_error": "error",
+      "v_chain": "the signed ledger is intact",
+      "v_files": "every file required by the level is present",
+      "v_steps": "no step ended in error",
+      "v_outcome": "the outcome was verified by the agent",
+      "v_answer": "an answer reached the user",
+      "mark_ok": "✓",
+      "mark_ko": "✗",
+      "ev_files": "Recorded files: {files}.",
+      "ev_steps": "Steps run: {total}, failed: {failed}.",
+      "ev_outcome": "Declared status: {status}.",
+      "ev_problems": "Ledger anomalies: {problems}.",
+      "verdict_superata": "Check passed: the goal appears to be reached.",
+      "verdict_incompleta": "Check incomplete: at least one confirmation is missing, the result is not guaranteed.",
+      "verdict_non_superata": "Check failed: the work does not appear to have been completed correctly."
     }
   }
 }

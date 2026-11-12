@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 
 from access import require_admin
 from agenti.agent import registry as tools
@@ -182,3 +182,32 @@ async def delete_widget(wid: str, user: str = Depends(require_admin)):
         raise HTTPException(409, "Si possono eliminare solo i widget creati da te o da Nuxiva")
     store.event("INFO", f"Widget {wid} eliminato da {user}", "team")
     return {"ok": True}
+
+
+def _fascicoli_store():
+    from agenti.team.fascicoli.scrivano import scrivano
+    try:
+        return scrivano.store()
+    except (OSError, ValueError, PermissionError) as exc:
+        raise HTTPException(503, "Archivio dei fascicoli non disponibile") from exc
+
+
+@admin_routes.get("/api/fascicoli")
+def fascicoli(limit: int = Query(50, ge=1, le=100), _: str = Depends(require_admin)):
+    from agenti.team.fascicoli import lettura
+    try:
+        return {"items": lettura.listing(_fascicoli_store(), limit)}
+    except OSError as exc:
+        raise HTTPException(503, "Archivio dei fascicoli non disponibile") from exc
+
+
+@admin_routes.get("/api/fascicoli/{year}/{month}/{day}/{operation}")
+def fascicolo(year: str, month: str, day: str, operation: str, _: str = Depends(require_admin)):
+    from agenti.team.fascicoli import lettura
+    from agenti.team.fascicoli.archivio import StoreError
+    try:
+        return lettura.detail(_fascicoli_store(), f"{year}/{month}/{day}/{operation}")
+    except StoreError as exc:
+        raise HTTPException(404, "Fascicolo non trovato") from exc
+    except OSError as exc:
+        raise HTTPException(404, "Fascicolo non trovato") from exc

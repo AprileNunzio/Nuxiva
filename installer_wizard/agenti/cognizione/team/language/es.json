@@ -56,7 +56,30 @@
       "no": "no",
       "answer_sealed": "Respuesta privada, no guardada en claro ({chars} caracteres, huella {digest}).",
       "answer_empty": "Ninguna respuesta de texto.",
-      "timing": "Duración {ms} ms. Nivel {level}."
+      "timing": "Duración {ms} ms. Nivel {level}.",
+      "step_goal": "Ejecutar la herramienta «{tool}» para el agente {agent}.",
+      "step_tool": "{tool}, argumentos: {args}",
+      "step_tool_sealed": "{tool}, argumentos privados: {names}",
+      "step_none": "ninguno",
+      "step_result_sealed": "Resultado privado, no guardado en claro ({chars} caracteres, huella {digest}).",
+      "check_ok": "La herramienta respondió sin errores en {ms} ms.",
+      "check_error": "La herramienta señaló un error: {why}",
+      "status_ok": "completado",
+      "status_error": "error",
+      "v_chain": "el registro firmado está íntegro",
+      "v_files": "todos los archivos previstos por el nivel están presentes",
+      "v_steps": "ningún paso terminó en error",
+      "v_outcome": "el agente verificó el resultado",
+      "v_answer": "al usuario le llegó una respuesta",
+      "mark_ok": "✓",
+      "mark_ko": "✗",
+      "ev_files": "Archivos registrados: {files}.",
+      "ev_steps": "Pasos ejecutados: {total}, con error: {failed}.",
+      "ev_outcome": "Estado declarado: {status}.",
+      "ev_problems": "Anomalías del registro: {problems}.",
+      "verdict_superata": "Verificación superada: el objetivo parece alcanzado.",
+      "verdict_incompleta": "Verificación incompleta: falta al menos una confirmación, el resultado no está garantizado.",
+      "verdict_non_superata": "Verificación no superada: el trabajo no parece haberse completado correctamente."
     }
   }
 }

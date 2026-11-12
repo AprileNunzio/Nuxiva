@@ -343,3 +343,89 @@ fn replies_are_checked_and_repaired() {
     assert!(turn::repair(&c.problems).contains("goal: empty"));
     assert!(!turn::check(&contract(), &"x".repeat(200_000)).ok);
 }
+
+#[test]
+fn recent_lists_newest_first() -> Result<(), String> {
+    let tmp = Temp::new("recent");
+    let store = Store::new(&tmp.0, [5u8; 32]).map_err(|e| e.to_string())?;
+    let a = store.open(NOW, Level::Lampo).map_err(|e| e.to_string())?;
+    let b = store
+        .open(NOW + 86_400_000, Level::Lampo)
+        .map_err(|e| e.to_string())?;
+    let c = store
+        .open(NOW + 86_400_000 + 5_000, Level::Lampo)
+        .map_err(|e| e.to_string())?;
+    assert_eq!(
+        store.recent(10).map_err(|e| e.to_string())?,
+        vec![c.clone(), b, a]
+    );
+    assert_eq!(store.recent(1).map_err(|e| e.to_string())?, vec![c]);
+    Ok(())
+}
+
+fn report(level: &str, files: &[&str], ok: bool) -> crate::store::Report {
+    crate::store::Report {
+        ok,
+        level: level.to_owned(),
+        complete: false,
+        files: files.iter().map(|f| (*f).to_owned()).collect(),
+        problems: Vec::new(),
+    }
+}
+
+fn facts(failed: u32, status: &str, verified: bool, empty: bool) -> crate::judge::Facts {
+    crate::judge::Facts {
+        steps_total: 2,
+        steps_failed: failed,
+        outcome_status: status.to_owned(),
+        outcome_verified: verified,
+        answer_empty: empty,
+    }
+}
+
+#[test]
+fn judge_rules() {
+    use crate::judge::{Verdict, judge};
+    let full = [
+        "00-richiesta.md",
+        "01-contesto.md",
+        "02-piano.md",
+        "99-esito.md",
+    ];
+    let good = judge(
+        &report("standard", &full, true),
+        &facts(0, "completed", true, false),
+    );
+    assert_eq!(good.verdict, Verdict::Superata);
+    assert!(good.checks.iter().all(|c| c.ok));
+    let unverified = judge(
+        &report("standard", &full, true),
+        &facts(0, "completed", false, false),
+    );
+    assert_eq!(unverified.verdict, Verdict::Incompleta);
+    let missing = judge(
+        &report("standard", &full[..2], true),
+        &facts(0, "completed", true, false),
+    );
+    assert_eq!(missing.verdict, Verdict::Incompleta);
+    let broken = judge(
+        &report("standard", &full, false),
+        &facts(0, "completed", true, false),
+    );
+    assert_eq!(broken.verdict, Verdict::NonSuperata);
+    let failed = judge(
+        &report("standard", &full, true),
+        &facts(1, "completed", true, false),
+    );
+    assert_eq!(failed.verdict, Verdict::NonSuperata);
+    let bad = judge(
+        &report("standard", &full, true),
+        &facts(0, "failed", true, false),
+    );
+    assert_eq!(bad.verdict, Verdict::NonSuperata);
+    let unknown = judge(
+        &report("boh", &full, true),
+        &facts(0, "completed", true, false),
+    );
+    assert_eq!(unknown.verdict, Verdict::Incompleta);
+}

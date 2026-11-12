@@ -1,5 +1,6 @@
 import inspect
 import re
+import time
 from contextvars import ContextVar
 
 TOOLS: dict[str, dict] = {}
@@ -105,10 +106,22 @@ class ToolDisabled(PermissionError):
     pass
 
 
+async def _record(name: str, args: dict, result: str, ok: bool, started: float) -> None:
+    from agenti.team.fascicoli.scrivano import scrivano
+    await scrivano.record_step(name, str(TOOLS[name].get("agent") or ""), clean_args(name, args), result, ok, started)
+
+
 async def run(name: str, args: dict) -> str:
     if not enabled(name):
         raise ToolDisabled(f"lo strumento «{name}» è disattivato dalla console")
-    out = TOOLS[name]["fn"](**clean_args(name, args))
-    if inspect.isawaitable(out):
-        out = await out
-    return str(out)[:6000]
+    started = time.monotonic()
+    try:
+        out = TOOLS[name]["fn"](**clean_args(name, args))
+        if inspect.isawaitable(out):
+            out = await out
+    except Exception as exc:
+        await _record(name, args, f"ERRORE: {type(exc).__name__}: {exc}", False, started)
+        raise
+    result = str(out)[:6000]
+    await _record(name, args, result, not result.startswith(("ERRORE", "NEGATO")), started)
+    return result

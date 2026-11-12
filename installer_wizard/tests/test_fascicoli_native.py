@@ -121,6 +121,30 @@ class StoreParityTest(unittest.TestCase):
         other = PyStore(str(self.root), bytes(32))
         self.assertFalse(other.verify(rel2)["ok"])
 
+    def test_recent_and_judge_match(self):
+        a = self.py.open("lampo", NOW)
+        b = self.rust.open("lampo", NOW + 86_400_000)
+        c = self.py.open("lampo", NOW + 86_400_000 + 5000)
+        self.assertEqual(self.rust.recent(10), self.py.recent(10))
+        self.assertEqual(self.py.recent(10), [c, b, a])
+        self.assertEqual(self.rust.recent(1), self.py.recent(1))
+
+    def test_judge_matches(self):
+        from agenti.team.fascicoli import giudizio
+        full = ["00-richiesta.md", "01-contesto.md", "02-piano.md", "99-esito.md"]
+        for level in ("standard", "progetto", "boh"):
+            for files in (full, full[:2], []):
+                for ok in (True, False):
+                    for failed in (0, 1):
+                        for status in ("completed", "failed", "unverified", ""):
+                            for verified in (True, False):
+                                for empty in (True, False):
+                                    report = {"ok": ok, "level": level, "complete": False, "files": files, "problems": []}
+                                    facts = {"steps_total": 2, "steps_failed": failed, "outcome_status": status,
+                                             "outcome_verified": verified, "answer_empty": empty}
+                                    self.assertEqual(json.loads(nuxiva_native.dossier_judge(json.dumps(report), json.dumps(facts))),
+                                                     giudizio.judge(report, facts))
+
     def test_native_refuses_bad_input(self):
         with self.assertRaises(ValueError):
             nuxiva_native.RustDossierStore(str(self.root), b"short")

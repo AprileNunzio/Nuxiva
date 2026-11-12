@@ -1,7 +1,7 @@
 import json
 import os
 
-from agenti.team.fascicoli import formato, oscura
+from agenti.team.fascicoli import formato, giudizio, oscura
 from agenti.team.fascicoli.archivio import PyStore, StoreError
 
 
@@ -53,6 +53,9 @@ class RustStore:
     def prune(self, rel: str, now_ms: int) -> int:
         return self._inner.prune(rel, now_ms)
 
+    def recent(self, limit: int) -> list[str]:
+        return self._inner.recent(limit)
+
 
 def store(root: str, key: bytes, native: bool = True):
     return RustStore(root, key) if native and _rust is not None else PyStore(root, key)
@@ -68,3 +71,9 @@ def redact(text: str) -> str:
 
 def step_file(number: int, slug: str) -> str | None:
     return _rust.dossier_step_file(number, slug) if _rust else formato.step_file(number, slug)
+
+
+def judge(report: dict, facts: dict) -> dict:
+    if _rust is None:
+        return giudizio.judge(report, facts)
+    return json.loads(_rust.dossier_judge(json.dumps(report), json.dumps(facts)))

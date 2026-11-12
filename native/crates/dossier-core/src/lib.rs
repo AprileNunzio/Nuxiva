@@ -1,5 +1,6 @@
 pub mod clock;
 pub mod doc;
+pub mod judge;
 pub mod kind;
 pub mod redact;
 pub mod store;

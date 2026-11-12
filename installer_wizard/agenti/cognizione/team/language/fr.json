@@ -56,7 +56,30 @@
       "no": "non",
       "answer_sealed": "Réponse privée, non enregistrée en clair ({chars} caractères, empreinte {digest}).",
       "answer_empty": "Aucune réponse textuelle.",
-      "timing": "Durée {ms} ms. Niveau {level}."
+      "timing": "Durée {ms} ms. Niveau {level}.",
+      "step_goal": "Exécuter l'outil « {tool} » pour l'agent {agent}.",
+      "step_tool": "{tool}, arguments : {args}",
+      "step_tool_sealed": "{tool}, arguments privés : {names}",
+      "step_none": "aucun",
+      "step_result_sealed": "Résultat privé, non enregistré en clair ({chars} caractères, empreinte {digest}).",
+      "check_ok": "L'outil a répondu sans erreur en {ms} ms.",
+      "check_error": "L'outil a signalé une erreur : {why}",
+      "status_ok": "terminé",
+      "status_error": "erreur",
+      "v_chain": "le registre signé est intact",
+      "v_files": "tous les fichiers prévus par le niveau sont présents",
+      "v_steps": "aucune étape ne s'est terminée en erreur",
+      "v_outcome": "le résultat a été vérifié par l'agent",
+      "v_answer": "une réponse est parvenue à l'utilisateur",
+      "mark_ok": "✓",
+      "mark_ko": "✗",
+      "ev_files": "Fichiers enregistrés : {files}.",
+      "ev_steps": "Étapes exécutées : {total}, en erreur : {failed}.",
+      "ev_outcome": "État déclaré : {status}.",
+      "ev_problems": "Anomalies du registre : {problems}.",
+      "verdict_superata": "Vérification réussie : l'objectif semble atteint.",
+      "verdict_incompleta": "Vérification incomplète : au moins une confirmation manque, le résultat n'est pas garanti.",
+      "verdict_non_superata": "Vérification échouée : le travail ne semble pas avoir été terminé correctement."
     }
   }
 }

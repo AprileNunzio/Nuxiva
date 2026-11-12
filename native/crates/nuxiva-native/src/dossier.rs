@@ -1,4 +1,5 @@
 use nuxiva_dossier_core::doc::{self, Doc, Problem};
+use nuxiva_dossier_core::judge;
 use nuxiva_dossier_core::kind::{self, Kind, Level};
 use nuxiva_dossier_core::turn::{self, Contract, Input};
 use nuxiva_dossier_core::{Store, StoreError, redact};
@@ -90,10 +91,22 @@ impl RustDossierStore {
             .map_err(store_error)
     }
 
+    fn recent(&self, py: Python<'_>, limit: usize) -> PyResult<Vec<String>> {
+        py.detach(|| self.inner.recent(limit.min(1_000)))
+            .map_err(store_error)
+    }
+
     fn prune(&self, py: Python<'_>, rel: &str, now_ms: u64) -> PyResult<usize> {
         py.detach(|| self.inner.prune(rel, now_ms))
             .map_err(store_error)
     }
+}
+
+#[pyfunction]
+pub fn dossier_judge(report_json: &str, facts_json: &str) -> PyResult<String> {
+    let report: nuxiva_dossier_core::Report = parse(report_json)?;
+    let facts: judge::Facts = parse(facts_json)?;
+    json(&judge::judge(&report, &facts))
 }
 
 #[pyfunction]
@@ -162,6 +175,7 @@ pub fn dossier_repair(problems_json: &str) -> PyResult<String> {
 
 pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<RustDossierStore>()?;
+    m.add_function(wrap_pyfunction!(dossier_judge, m)?)?;
     m.add_function(wrap_pyfunction!(dossier_render, m)?)?;
     m.add_function(wrap_pyfunction!(dossier_parse, m)?)?;
     m.add_function(wrap_pyfunction!(dossier_validate, m)?)?;
