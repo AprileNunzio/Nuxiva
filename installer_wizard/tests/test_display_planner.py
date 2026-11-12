@@ -2,8 +2,8 @@ import json
 import unittest
 from unittest import mock
 
-from features.desktop import planner_bridge
-from features.desktop.planner_bridge import PlannerBridge, candidate
+from agenti.desktop import planner_bridge
+from agenti.desktop.planner_bridge import PlannerBridge, candidate
 from state import store
 
 ITEMS = [

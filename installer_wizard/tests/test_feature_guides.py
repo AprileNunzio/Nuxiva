@@ -7,11 +7,12 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "backend"))
 
 from feature_localization import localize_feature
+from tests.agent_tree import AGENTS
 
 
 def manifest(feature: str) -> dict:
-    data = json.loads((ROOT / "features" / feature / "feature.json").read_text(encoding="utf-8"))
-    return {**data, "dir": str(ROOT / "features" / feature), "source": "system"}
+    data = json.loads((AGENTS / feature / "feature.json").read_text(encoding="utf-8"))
+    return {**data, "dir": str(AGENTS / feature), "source": "system"}
 
 
 class GuideTest(unittest.TestCase):
@@ -29,7 +30,7 @@ class GuideTest(unittest.TestCase):
             self.assertTrue(all(s.get("help") for s in secrets), feature)
 
     def test_google_guide_lists_every_api_and_scope(self):
-        from features.google.constants import SERVICES
+        from agenti.google.constants import SERVICES
         for lang in ("it", "en", "fr", "es"):
             guide = localize_feature(manifest("google"), lang)["guide"]
             urls = " ".join(item["url"] for item in guide["items"])

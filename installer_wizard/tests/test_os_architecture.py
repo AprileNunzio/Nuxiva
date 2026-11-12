@@ -4,10 +4,10 @@ from pathlib import Path
 
 from fastapi.testclient import TestClient
 
-from features.os.api import routes
-from features.os.taskbar_manager import TaskbarManager
-from features.os.wallpaper_manager import WallpaperManager
-from features.os.window_manager import WindowManager
+from agenti.os.api import routes
+from agenti.os.taskbar_manager import TaskbarManager
+from agenti.os.wallpaper_manager import WallpaperManager
+from agenti.os.window_manager import WindowManager
 
 
 class TestOSArchitecture(unittest.TestCase):

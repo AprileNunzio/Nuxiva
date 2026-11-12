@@ -8,9 +8,9 @@ from unittest import mock
 from fastapi import HTTPException
 from starlette.requests import Request
 
-from features.authz import access_control as access
-from features.authz.risk import Risk
-from features.capabilities import mcp, tokens
+from agenti.authz import access_control as access
+from agenti.authz.risk import Risk
+from agenti.capabilities import mcp, tokens
 
 
 class AccessControlTests(unittest.TestCase):

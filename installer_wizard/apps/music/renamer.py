@@ -3,8 +3,8 @@ import shutil
 import time
 from pathlib import Path
 
-from features.music import layout, naming, organizer
-from features.music.db import db
+from agenti.music import layout, naming, organizer
+from agenti.music.db import db
 
 log = logging.getLogger("nuxiva.music")
 COLUMNS = "id, path, title, artist, album_artist, album, track_no, disc_no, year"

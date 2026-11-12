@@ -11,17 +11,17 @@ import setup_api
 import setup_purposes as purposes
 import setup_routes
 import setup_session
-from config import FEATURES_DIR
-from features.ear import learner as learner_module
+from agenti.ear import learner as learner_module
 from setup_config import WIZARD_PACKAGES
 from setup_session import STEPS, session_manager
+from tests.agent_tree import AGENTS
 
 HEADERS = {"X-Nuxiva-Request": "1"}
 
 
 def feature_toggles() -> set[str]:
     found = set()
-    for manifest in Path(FEATURES_DIR).glob("*/feature.json"):
+    for manifest in AGENTS.glob("*/feature.json"):
         toggle = json.loads(manifest.read_text(encoding="utf-8")).get("toggle") or {}
         if toggle.get("env"):
             found.add(toggle["env"])
@@ -140,7 +140,7 @@ class FlowTest(unittest.TestCase):
         apply.assert_not_called()
 
     def finalize(self):
-        from features.people import people
+        from agenti.people import people
         with tempfile.TemporaryDirectory() as root, mock.patch.object(people, "PEOPLE_DIR", Path(root)), \
                 mock.patch.object(learner_module.learner, "teach", return_value=True), \
                 mock.patch.object(setup_api, "_apply") as apply:

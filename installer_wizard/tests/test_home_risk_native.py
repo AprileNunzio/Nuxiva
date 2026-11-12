@@ -9,8 +9,8 @@ for p in (str(Path(__file__).resolve().parents[1]), str(Path(__file__).resolve()
         sys.path.insert(0, p)
 
 import native_core
-from features.authz import capability, capmap
-from features.authz.risk import Risk
+from agenti.authz import capability, capmap
+from agenti.authz.risk import Risk
 
 NATIVE = native_core.load()
 READY = NATIVE is not None and hasattr(NATIVE, "RustHomeRules")

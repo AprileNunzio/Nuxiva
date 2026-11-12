@@ -2,10 +2,10 @@ import asyncio
 import unittest
 from unittest import mock
 
-from features.agent import registry
-from features.authz.principal import SYSTEM, act_as, current
-from features.team import runner
-from features.team.board import board
+from agenti.agent import registry
+from agenti.authz.principal import SYSTEM, act_as, current
+from agenti.team import runner
+from agenti.team.board import board
 
 
 class VerificationTest(unittest.TestCase):

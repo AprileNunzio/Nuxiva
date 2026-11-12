@@ -7,7 +7,8 @@ from unittest import mock
 from fastapi.testclient import TestClient
 
 import nuxiva_supervisor
-from features.nexus.domain.zones import classify
+from agenti.nexus.domain.zones import classify
+from tests.agent_tree import AGENTS
 
 ROOT = Path(__file__).resolve().parents[1]
 ADMIN = ROOT / "web" / "admin" / "admin.html"
@@ -29,8 +30,8 @@ class NexusParityTest(unittest.TestCase):
         self.assertEqual(classic_tabs - linked, set(), "aggiungi queste schede a «sections» in web/nexus/features/shell/zones.js")
 
     def test_every_feature_tab_belongs_to_a_feature_with_a_full_panel(self):
-        panels = {json.loads(p.read_text(encoding="utf-8")).get("panel") for p in (ROOT / "features").glob("*/feature.json")}
-        for html in (ROOT / "features").glob("*/admin.html"):
+        panels = {json.loads(p.read_text(encoding="utf-8")).get("panel") for p in AGENTS.glob("*/feature.json")}
+        for html in AGENTS.glob("*/admin.html"):
             for tab in re.findall(r'id="tab-([a-z0-9_-]+)"', html.read_text(encoding="utf-8")):
                 self.assertIn(tab, panels, f"{html.parent.name}: la scheda «{tab}» non è collegata a nessun manifest")
         tool = TOOL_JS.read_text(encoding="utf-8")
@@ -51,7 +52,7 @@ class NexusParityTest(unittest.TestCase):
         self.assertLessEqual({"overview", "updates", "config", "logs", "events", "steps", "packages"}, native)
 
     def test_every_feature_has_a_zone(self):
-        for path in (ROOT / "features").glob("*/feature.json"):
+        for path in AGENTS.glob("*/feature.json"):
             self.assertTrue(classify(json.loads(path.read_text(encoding="utf-8"))).zone)
 
     def test_old_panel_is_gone_and_never_embedded(self):

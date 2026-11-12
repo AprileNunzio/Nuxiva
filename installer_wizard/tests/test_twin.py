@@ -1,8 +1,8 @@
 import unittest
 
-from features.twin.model import HomeState, predicted_state
-from features.twin.rules import RULES
-from features.twin.simulator import review, simulate
+from agenti.twin.model import HomeState, predicted_state
+from agenti.twin.rules import RULES
+from agenti.twin.simulator import review, simulate
 
 ALL = list(RULES)
 

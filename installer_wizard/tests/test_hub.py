@@ -1,6 +1,6 @@
 import unittest
 
-from features.hub import model
+from agenti.hub import model
 
 
 class HubModelTest(unittest.TestCase):

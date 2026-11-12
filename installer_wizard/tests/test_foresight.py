@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime, timedelta
 
-from features.habits.foresight import Foresight, predict
+from agenti.habits.foresight import Foresight, predict
 
 DAY0 = datetime(2026, 9, 7)
 

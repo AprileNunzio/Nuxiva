@@ -1,10 +1,10 @@
 import unittest
 from unittest import mock
-from features.authz.policy import Policy
-from features.authz.principal import Principal, Strength
-from features.authz.risk import Risk
-from features.authz.spatial_temporal import is_time_allowed, is_zone_allowed, validate_spatial_temporal
-from features.authz import resolve, heard
+from agenti.authz.policy import Policy
+from agenti.authz.principal import Principal, Strength
+from agenti.authz.risk import Risk
+from agenti.authz.spatial_temporal import is_time_allowed, is_zone_allowed, validate_spatial_temporal
+from agenti.authz import resolve, heard
 
 
 class SpatialTemporalRBACUnitTests(unittest.TestCase):

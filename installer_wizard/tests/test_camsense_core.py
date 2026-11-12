@@ -2,7 +2,7 @@ import unittest
 
 import numpy as np
 
-from features.camsense import classifier, model
+from agenti.camsense import classifier, model
 
 
 def unit(values):

@@ -6,8 +6,8 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.agent import registry
-from features.experts import admin, store, templates, tools
+from agenti.agent import registry
+from agenti.experts import admin, store, templates, tools
 
 
 def run(coro):

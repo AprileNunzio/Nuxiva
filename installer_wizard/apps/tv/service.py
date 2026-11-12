@@ -3,8 +3,8 @@ import logging
 
 from config import env_get
 
-from features.tv.m3u import PlaylistError
-from features.tv.store import tv_store
+from agenti.tv.m3u import PlaylistError
+from agenti.tv.store import tv_store
 
 log = logging.getLogger("nuxiva.tv")
 CHECK_EVERY = 1800.0

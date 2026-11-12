@@ -10,18 +10,19 @@ for p in SYS_DIRS:
     if str(p) not in sys.path:
         sys.path.insert(0, str(p))
 
-from config import FEATURES_DIR, SKILLS_DIR, STATE_DIR, UI_LANGUAGES, WEB_DIR, WIDGETS_DIR
-from features.locale.colocated.domain import Locale, Scope, tokens_of
-from features.locale.colocated.errors import ScopeRejected
-from features.locale.colocated.repository import LanguageFileRepository
-from features.locale.colocated.resolver import BundleResolver
-from features.locale.colocated.roots import ScopeRoots
+from tests.agent_tree import AGENTS
+from config import SKILLS_DIR, STATE_DIR, UI_LANGUAGES, WEB_DIR, WIDGETS_DIR
+from agenti.locale.colocated.domain import Locale, Scope, tokens_of
+from agenti.locale.colocated.errors import ScopeRejected
+from agenti.locale.colocated.repository import LanguageFileRepository
+from agenti.locale.colocated.resolver import BundleResolver
+from agenti.locale.colocated.roots import ScopeRoots
 
 
 class ColocatedI18nCatalogTests(unittest.TestCase):
     def setUp(self):
         self.roots = ScopeRoots({
-            "features": (FEATURES_DIR, STATE_DIR / "features"),
+            "features": (*AGENTS.categories(), STATE_DIR / "features"),
             "web": (WEB_DIR,),
             "skills": (SKILLS_DIR,),
             "widgets": (WIDGETS_DIR,),

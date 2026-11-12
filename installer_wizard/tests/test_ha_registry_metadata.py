@@ -3,18 +3,18 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.home_assistant.home import HomeBrain
-from features.home_assistant.db import HomeDB
+from agenti.home_assistant.home import HomeBrain
+from agenti.home_assistant.db import HomeDB
 
 
 class RegistryMetadataTest(unittest.TestCase):
     def setUp(self):
         folder = tempfile.TemporaryDirectory()
         self.addCleanup(folder.cleanup)
-        with mock.patch("features.home_assistant.db.DB_FILE", Path(folder.name) / "home.db"):
+        with mock.patch("agenti.home_assistant.db.DB_FILE", Path(folder.name) / "home.db"):
             self.db = HomeDB()
         self.addCleanup(self.db.conn.close)
-        with mock.patch("features.home_assistant.home.HomeDB", return_value=self.db):
+        with mock.patch("agenti.home_assistant.home.HomeDB", return_value=self.db):
             self.home = HomeBrain()
 
     def test_external_metadata_persists_and_reloads_without_losing_devices(self):
@@ -31,7 +31,7 @@ class RegistryMetadataTest(unittest.TestCase):
         rows = self.db.query("SELECT device_id, sw_version, hw_version FROM devices ORDER BY device_id")
         self.assertEqual(rows, [(str(i), expected, expected) for i, (_, expected) in enumerate(cases)])
         self.assertEqual(self.db.query("SELECT count(*) FROM entities"), [(1,)])
-        with mock.patch("features.home_assistant.home.HomeDB", return_value=self.db):
+        with mock.patch("agenti.home_assistant.home.HomeDB", return_value=self.db):
             restored = HomeBrain()
         self.assertEqual(len(restored.devices), len(cases))
         self.assertEqual(restored.devices["2"]["sw_version"], "1.2, 3.4")

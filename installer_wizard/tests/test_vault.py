@@ -4,11 +4,11 @@ import time
 import unittest
 from datetime import date
 
-from features.automations.bus import bus
-from features.mind.mind import mind
-from features.people import people
-from features.vault import render
-from features.vault.service import root, vault
+from agenti.automations.bus import bus
+from agenti.mind.mind import mind
+from agenti.people import people
+from agenti.vault import render
+from agenti.vault.service import root, vault
 
 
 class VaultTest(unittest.TestCase):
@@ -55,7 +55,7 @@ class VaultTest(unittest.TestCase):
         text = path.read_text(encoding="utf-8")
         self.assertIn("accendi la luce del salotto", text)
         self.assertIn("Giornata in corso", text)
-        from features.vault import commands
+        from agenti.vault import commands
         reply, _ = asyncio.run(commands.answer("cosa è successo oggi?"))
         self.assertTrue(reply.startswith("Oggi:"))
 

@@ -1,8 +1,8 @@
 import copy
 import threading
 
-from features.desktop.desk import desk
-from features.models3d import generator, library, parts as ops
+from agenti.desktop.desk import desk
+from agenti.models3d import generator, library, parts as ops
 
 WIDGET = "studio_3d"
 HISTORY = 40

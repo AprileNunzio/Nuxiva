@@ -2,14 +2,14 @@ import asyncio
 import unittest
 from unittest import mock
 
-from features.ear import api
+from agenti.ear import api
 
 
 class MicConfigTest(unittest.TestCase):
     def config(self, agc: str | None) -> dict:
         values = {} if agc is None else {"NUXIVA_MIC_AGC": agc}
-        with mock.patch("features.ear.api.require_display"), \
-                mock.patch("features.ear.api.env_get", side_effect=lambda key, default: values.get(key, default)):
+        with mock.patch("agenti.ear.api.require_display"), \
+                mock.patch("agenti.ear.api.env_get", side_effect=lambda key, default: values.get(key, default)):
             return asyncio.run(api.ear_config(mock.Mock()))
 
     def test_automatic_level_is_the_default(self):

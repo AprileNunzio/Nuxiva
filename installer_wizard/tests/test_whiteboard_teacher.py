@@ -4,10 +4,10 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.whiteboard import board as board_module
-from features.whiteboard import science, teacher_kit
-from features.whiteboard.board import BOTTOM, COLUMN_WIDTH, Board
-from features.whiteboard.pdf_exporter import export_pages_to_pdf
+from agenti.whiteboard import board as board_module
+from agenti.whiteboard import science, teacher_kit
+from agenti.whiteboard.board import BOTTOM, COLUMN_WIDTH, Board
+from agenti.whiteboard.pdf_exporter import export_pages_to_pdf
 
 PNG = "data:image/png;base64," + base64.b64encode(
     bytes.fromhex("89504e470d0a1a0a0000000d4948445200000001000000010806000000"
@@ -120,7 +120,7 @@ class TeacherKitTest(unittest.IsolatedAsyncioTestCase):
             {"type": "formula", "expression": "(x+1)^2"}, {"type": "plot", "functions": ["x^2", "2*x+1"], "xmin": -3, "xmax": 3},
             {"type": "chart", "kind": "bar", "labels": ["a", "b"], "values": [1, 2]}, {"type": "table", "header": ["x", "y"], "rows": [["0", "1"]]},
             {"type": "chemistry", "reaction": "H2 + O2 -> H2O"}, {"type": "formula", "expression": "__import__('os')"}, {"type": "evil"}]}
-        with mock.patch("features.brain.llm.generate", mock.AsyncMock(return_value=lesson)):
+        with mock.patch("agenti.brain.llm.generate", mock.AsyncMock(return_value=lesson)):
             result = await teacher_kit.lesson("la parabola", "it", "math")
         self.assertEqual(result["blocks"], 8)
         kinds = {i["type"] for p in self.board.pages for i in p["items"]}
@@ -182,7 +182,7 @@ class TeacherKitTest(unittest.IsolatedAsyncioTestCase):
 
 class VoiceScienceTest(unittest.IsolatedAsyncioTestCase):
     async def test_voice_patterns(self):
-        from features.whiteboard import commands
+        from agenti.whiteboard import commands
         with tempfile.TemporaryDirectory() as root, mock.patch.object(board_module, "FILE", Path(root) / "wb.json"):
             fresh = Board()
             with mock.patch.object(teacher_kit, "board", fresh):

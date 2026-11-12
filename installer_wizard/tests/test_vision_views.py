@@ -8,7 +8,7 @@ from fastapi import HTTPException
 from tests.test_vision_service import face_row, service, vectors
 
 import views as vviews
-from features.people import views as pviews
+from agenti.people import views as pviews
 
 
 def textured(size=200) -> np.ndarray:

@@ -6,13 +6,12 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
 
-from agenti import _manifest, _scan
+from . import _manifest, _scan
 
 log = logging.getLogger("nuxiva.agenti")
 
 APP_DIR = Path(__file__).resolve().parents[1]
 SYSTEM_DIR = APP_DIR / "agenti"
-LEGACY_DIR = APP_DIR / "features"
 CATEGORIES = _manifest.CATEGORIES
 
 
@@ -25,11 +24,10 @@ def root(path: Path, origin: str, layout: str) -> dict:
     return {"path": str(path), "origin": origin, "layout": layout}
 
 
-def standard_roots(system: Path | None = None, legacy: Path | None = None, user: Path | None = None) -> list[dict]:
+def standard_roots(system: Path | None = None, user: Path | None = None) -> list[dict]:
     state = _state_dir()
     return [
         root(system or SYSTEM_DIR, "system", "categorized"),
-        root(legacy or LEGACY_DIR, "legacy", "flat"),
         root(state / "agenti", "user", "categorized"),
         root(user or state / "features", "user", "flat"),
     ]
@@ -39,8 +37,6 @@ def module_for(folder: Path) -> str:
     folder = Path(folder)
     if not _manifest.valid_id(folder.name):
         return ""
-    if folder.parent == LEGACY_DIR:
-        return f"features.{folder.name}"
     if folder.parent.parent == SYSTEM_DIR and folder.parent.name in CATEGORIES:
         return f"agenti.{folder.name}"
     return ""

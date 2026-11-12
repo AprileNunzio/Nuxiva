@@ -1,6 +1,6 @@
 import unittest
 
-from features.ear.room_capture import RoomCapture
+from agenti.ear.room_capture import RoomCapture
 
 
 class RoomCaptureTests(unittest.TestCase):

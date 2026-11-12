@@ -2,8 +2,8 @@ import unittest
 from unittest import mock
 
 from config import write_env
-from features.desktop import desk as desk_module
-from features.desktop import privacy as privacy_module
+from agenti.desktop import desk as desk_module
+from agenti.desktop import privacy as privacy_module
 from state import store
 
 OK = {"status": "ok", "people": [{"name": "Ann", "known": True}], "summary": ""}

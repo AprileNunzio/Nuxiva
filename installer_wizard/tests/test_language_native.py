@@ -1,6 +1,6 @@
 import unittest
 
-from features.voices import languages
+from agenti.voices import languages
 
 
 @unittest.skipIf(languages.NATIVE is None, "nuxiva_native not built")

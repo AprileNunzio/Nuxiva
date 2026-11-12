@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.shares import policy, status
+from agenti.shares import policy, status
 
 STEP = Path(__file__).resolve().parents[2] / "scripts" / "os" / "steps" / "63-shares.sh"
 

@@ -22,7 +22,7 @@ _secured = APIRouter(dependencies=[Depends(require_admin)])
 
 
 def _require_paired_node(request: Request) -> dict:
-    from features.nodes.registry import registry
+    from agenti.nodes.registry import registry
 
     token = request.headers.get("authorization", "").removeprefix("Bearer ").strip()
     try:

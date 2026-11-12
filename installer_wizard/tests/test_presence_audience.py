@@ -3,8 +3,8 @@ import random
 import unittest
 from unittest import mock
 
-from features.desktop import audience_view, presence_bridge
-from features.desktop.audience import Policy, Tracker, fuse
+from agenti.desktop import audience_view, presence_bridge
+from agenti.desktop.audience import Policy, Tracker, fuse
 from state import store
 
 OWNER = {"person": "nunzio", "authorized": True, "confidence": 0.9, "liveness": "live", "near": True}
@@ -230,7 +230,7 @@ class BridgeTests(unittest.TestCase):
             self.assertEqual(bridge.update()["kind"], "authorized")
 
     def test_advisory_webcam_recognition_stays_authorized_after_greeting(self):
-        from features.people.presence import monitor
+        from agenti.people.presence import monitor
         now = [1000.0]
         bridge = presence_bridge.PresenceBridge(clock=lambda: now[0])
         bridge.roles["nunzio"] = ("owner", 1000.0)
@@ -262,7 +262,7 @@ class DeskGateTests(unittest.TestCase):
 
     def setUp(self):
         from config import write_env
-        from features.desktop import desk as desk_module
+        from agenti.desktop import desk as desk_module
         write_env({"NUXIVA_PRIVACY_AUTOCLOSE": "1", "NUXIVA_DISPLAY_PRESENCE_GATE": "1"})
         self.addCleanup(lambda: write_env({"NUXIVA_DISPLAY_PRESENCE_GATE": "1"}))
         self.saved = (store.presence, store.audience, store.privacy)

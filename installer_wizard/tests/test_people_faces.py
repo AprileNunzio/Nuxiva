@@ -8,8 +8,8 @@ from unittest import mock
 import numpy as np
 from fastapi import HTTPException, Response
 
-from features.people import faces, people
-from features.vision import gallery as gallery_module
+from agenti.people import faces, people
+from agenti.vision import gallery as gallery_module
 
 
 def unit(seed: int, count: int) -> np.ndarray:
@@ -99,7 +99,7 @@ class AssociateTest(FacesTest):
     def test_a_vision_failure_never_loses_the_guest(self):
         self.seed_profiles()
         down = Response(json.dumps({"detail": "Servizio di visione non disponibile"}).encode(), status_code=503)
-        with mock.patch("features.people.faces.vision_proxy", new_callable=mock.AsyncMock, return_value=down):
+        with mock.patch("agenti.people.faces.vision_proxy", new_callable=mock.AsyncMock, return_value=down):
             with self.assertRaises(HTTPException) as caught:
                 asyncio.run(faces.associate("ospite-1", "nunzio"))
         self.assertEqual(caught.exception.status_code, 503)
@@ -108,7 +108,7 @@ class AssociateTest(FacesTest):
     def test_association_moves_visits_and_removes_the_guest(self):
         self.seed_profiles()
         ok = Response(b"{}", status_code=200)
-        with mock.patch("features.people.faces.vision_proxy", new_callable=mock.AsyncMock, return_value=ok) as proxy:
+        with mock.patch("agenti.people.faces.vision_proxy", new_callable=mock.AsyncMock, return_value=ok) as proxy:
             target = asyncio.run(faces.associate("ospite-1", "nunzio"))
         proxy.assert_awaited_once()
         self.assertEqual(proxy.await_args.args[2], {"into": "nunzio", "name": "Nunzio"})
@@ -125,7 +125,7 @@ class AssociateTest(FacesTest):
 
         client = mock.AsyncMock()
         client.__aenter__.return_value.get = mock.AsyncMock(return_value=Reply())
-        return mock.patch("features.people.faces.httpx.AsyncClient", return_value=client)
+        return mock.patch("agenti.people.faces.httpx.AsyncClient", return_value=client)
 
     def test_an_automatic_shadow_of_a_named_person_is_absorbed(self):
         self.seed_profiles()
@@ -134,7 +134,7 @@ class AssociateTest(FacesTest):
         people.save(guest)
         ok = Response(b"{}", status_code=200)
         with self.shadows([{"guest": "ospite-1", "host": "nunzio"}]), \
-                mock.patch("features.people.faces.vision_proxy", new_callable=mock.AsyncMock, return_value=ok):
+                mock.patch("agenti.people.faces.vision_proxy", new_callable=mock.AsyncMock, return_value=ok):
             absorbed = asyncio.run(faces.absorb_shadows())
         self.assertEqual(absorbed, ["ospite-1>nunzio"])
         self.assertIsNone(people.load("ospite-1"))
@@ -145,7 +145,7 @@ class AssociateTest(FacesTest):
         guest.update(auto=True, name="Ciro Esposito", first_name="Ciro")
         people.save(guest)
         with self.shadows([{"guest": "ospite-1", "host": "nunzio"}, {"guest": "nunzio", "host": "ospite-1"}]), \
-                mock.patch("features.people.faces.vision_proxy", new_callable=mock.AsyncMock) as proxy:
+                mock.patch("agenti.people.faces.vision_proxy", new_callable=mock.AsyncMock) as proxy:
             self.assertEqual(asyncio.run(faces.absorb_shadows()), [])
         proxy.assert_not_awaited()
         self.assertIsNotNone(people.load("ospite-1"))

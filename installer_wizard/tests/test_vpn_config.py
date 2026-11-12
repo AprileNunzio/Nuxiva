@@ -5,7 +5,7 @@ import subprocess
 import tempfile
 import unittest
 
-from features.vpn import guard, ipsec, mesh, model, openvpn, wireguard
+from agenti.vpn import guard, ipsec, mesh, model, openvpn, wireguard
 
 PRIVATE, PUBLIC = wireguard.keypair()
 SERVER_PRIVATE, SERVER_PUBLIC = wireguard.keypair()

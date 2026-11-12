@@ -4,13 +4,13 @@ from pathlib import Path
 from unittest import mock
 
 from backend.app_scanner import is_application, is_feature
-from features.home_assistant.custom_assist import (
+from agenti.home_assistant.custom_assist import (
     eval_simple_jinja,
     load_custom_sentences,
     match_and_eval,
 )
-from features.home_assistant.home import brain
-from features.home_assistant import tools as ha_tools
+from agenti.home_assistant.home import brain
+from agenti.home_assistant import tools as ha_tools
 
 
 class HomeAssistantSplitAndAssistTest(unittest.IsolatedAsyncioTestCase):
@@ -32,8 +32,8 @@ class HomeAssistantSplitAndAssistTest(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(is_application(app_manifest, "client_web/src/apps/home_assistant/manifest.json"))
         self.assertFalse(is_feature(app_manifest, "client_web/src/apps/home_assistant/manifest.json"))
 
-        self.assertFalse(is_application(feature_manifest, "installer_wizard/features/home_assistant/feature.json"))
-        self.assertTrue(is_feature(feature_manifest, "installer_wizard/features/home_assistant/feature.json"))
+        self.assertFalse(is_application(feature_manifest, "installer_wizard/agenti/domotica/home_assistant/feature.json"))
+        self.assertTrue(is_feature(feature_manifest, "installer_wizard/agenti/domotica/home_assistant/feature.json"))
 
     def test_custom_assist_yaml_scanner_and_evaluation(self):
         """Verifica che /config/custom_sentences/it/energia.yaml e /config/packages/custom_assist_energia.yaml

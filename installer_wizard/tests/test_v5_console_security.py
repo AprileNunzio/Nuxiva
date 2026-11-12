@@ -20,7 +20,7 @@ import auth
 import mesh_api
 import mesh_topology
 import node_api
-from features.update_center import api as update_center_api
+from agenti.update_center import api as update_center_api
 from server.features.mesh_coordinator.p2p_mesh import p2p_mesh
 
 

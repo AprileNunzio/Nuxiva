@@ -5,9 +5,9 @@ from datetime import datetime, timedelta
 from unittest import mock
 
 from config import WIDGETS_DIR
-from features.desktop import sources
-from features.desktop.manifest import TONES
-from features.desktop.desk import Desk
+from agenti.desktop import sources
+from agenti.desktop.manifest import TONES
+from agenti.desktop.desk import Desk
 from state import store
 
 EMOJI = re.compile("[\U0001F300-\U0001FAFF\u2600-\u26FF]")
@@ -46,11 +46,11 @@ class SourcesTest(unittest.TestCase):
     def test_sun_cycle_reports_today(self):
         now = datetime.now().astimezone().replace(hour=12, minute=0)
         fake = {"sunrise": now - timedelta(hours=5), "sunset": now + timedelta(hours=5)}
-        with mock.patch("features.automations.sun.times", return_value=fake):
+        with mock.patch("agenti.automations.sun.times", return_value=fake):
             data = sources.sun_cycle()
         self.assertEqual(data["daylight_min"], 600)
         self.assertTrue(0 <= data["progress"] <= 100)
-        with mock.patch("features.automations.sun.times", return_value={"sunrise": None, "sunset": None}):
+        with mock.patch("agenti.automations.sun.times", return_value={"sunrise": None, "sunset": None}):
             self.assertIsNone(sources.sun_cycle())
 
     def test_alerts_only_when_ready(self):

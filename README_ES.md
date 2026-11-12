@@ -148,7 +148,7 @@ flowchart LR
 
 ### 4.1 Flujo de una solicitud
 
-Una solicitud de texto o voz la gestiona el enrutador del chat en `installer_wizard/features/chat/`. Recorre una cadena ordenada de etapas (automatizaciones, comandos directos, habilidades de intención, conectores, control del hogar, acciones, conversación). La primera etapa que reconoce la solicitud responde; las demás se omiten. Las solicitudes que necesitan información actualizada se delegan al agente, que busca antes de responder. La generación recorre la lista de prioridad de modelos y omite los que fallan, de modo que un modelo no disponible nunca bloquea una respuesta.
+Una solicitud de texto o voz la gestiona el enrutador del chat en `installer_wizard/agenti/cognizione/chat/`. Recorre una cadena ordenada de etapas (automatizaciones, comandos directos, habilidades de intención, conectores, control del hogar, acciones, conversación). La primera etapa que reconoce la solicitud responde; las demás se omiten. Las solicitudes que necesitan información actualizada se delegan al agente, que busca antes de responder. La generación recorre la lista de prioridad de modelos y omite los que fallan, de modo que un modelo no disponible nunca bloquea una respuesta.
 
 ### 4.2 Razonamiento del Core
 

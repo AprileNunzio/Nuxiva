@@ -4,12 +4,12 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.locale import household
-from features.locale import store as locale_store
-from features.people import people
+from agenti.locale import household
+from agenti.locale import store as locale_store
+from agenti.people import people
 from tests.test_locale import LocaleBase
 
-SPEC = importlib.util.spec_from_file_location("langpick", Path(__file__).resolve().parents[1] / "features" / "ear" / "langpick.py")
+SPEC = importlib.util.spec_from_file_location("langpick", Path(__file__).resolve().parents[1] / "agenti" / "percezione" / "ear" / "langpick.py")
 langpick = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(langpick)
 

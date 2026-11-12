@@ -1,6 +1,6 @@
 import unittest
 
-from features.google.data import UNREAD_QUERY, GoogleData
+from agenti.google.data import UNREAD_QUERY, GoogleData
 
 
 class FakeGmail(GoogleData):

@@ -4,8 +4,8 @@ from pathlib import Path
 import httpx
 
 from config import STATE_DIR
-from features.music import layout, naming, tags
-from features.music.db import db
+from agenti.music import layout, naming, tags
+from agenti.music.db import db
 
 log = logging.getLogger("nuxiva.music")
 CACHE = STATE_DIR / "music_covers"

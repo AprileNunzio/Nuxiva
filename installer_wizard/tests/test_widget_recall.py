@@ -3,7 +3,7 @@ import unittest
 from fastapi.testclient import TestClient
 
 import nuxiva_supervisor
-from features.desktop.desk import desk
+from agenti.desktop.desk import desk
 
 HEADERS = {"X-Nuxiva-Request": "1"}
 

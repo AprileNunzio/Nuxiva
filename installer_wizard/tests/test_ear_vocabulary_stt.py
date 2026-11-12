@@ -10,7 +10,7 @@ from unittest import mock
 
 import numpy as np
 
-EAR = Path(__file__).resolve().parents[1] / "features" / "ear"
+EAR = Path(__file__).resolve().parents[1] / "agenti" / "percezione" / "ear"
 if str(EAR) not in sys.path:
     sys.path.insert(0, str(EAR))
 

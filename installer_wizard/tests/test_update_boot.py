@@ -9,7 +9,7 @@ for p in (str(Path(__file__).resolve().parents[1]), str(Path(__file__).resolve()
     if p not in sys.path:
         sys.path.insert(0, p)
 
-from features.update_center import boot
+from agenti.update_center import boot
 
 ROOT = Path(__file__).resolve().parents[2]
 

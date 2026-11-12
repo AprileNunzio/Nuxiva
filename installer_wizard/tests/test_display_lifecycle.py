@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from features.desktop import lifecycle
+from agenti.desktop import lifecycle
 
 
 class FakeEngine:

@@ -7,7 +7,7 @@ import uuid
 from pathlib import Path
 
 from config import STATE_DIR
-from features.desktop.desk import desk
+from agenti.desktop.desk import desk
 
 ROOT = STATE_DIR / "models3d"
 MAX_BYTES = 200 * 1024 * 1024
@@ -72,7 +72,7 @@ def create(title: str, source: str, extra: dict | None = None) -> dict:
 
 
 def export(meta: dict) -> dict:
-    from features.shares import archive
+    from agenti.shares import archive
     try:
         target = archive.new_path("modelli3d", meta["title"], "modello")
         target.mkdir(parents=True, exist_ok=True)

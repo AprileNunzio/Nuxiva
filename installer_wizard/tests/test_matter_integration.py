@@ -3,13 +3,13 @@ from fastapi import FastAPI
 from starlette.testclient import TestClient
 
 from access import require_admin
-from features.chat.intents import detect_intent
-from features.chat.skill_dispatch import run_skill
-from features.matter.api import admin_routes
-from features.matter.bridge import MatterBridge
-from features.matter.controller import MatterController
-from features.matter.coordinator import MatterCoordinator
-from features.matter.model import (
+from agenti.chat.intents import detect_intent
+from agenti.chat.skill_dispatch import run_skill
+from agenti.matter.api import admin_routes
+from agenti.matter.bridge import MatterBridge
+from agenti.matter.controller import MatterController
+from agenti.matter.coordinator import MatterCoordinator
+from agenti.matter.model import (
     MatterClusterId,
     MatterCommandId,
     MatterDeviceType,

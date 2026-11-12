@@ -5,7 +5,7 @@ import unittest
 import wave
 from pathlib import Path
 
-from features.music import id3, tags, tagwriter
+from agenti.music import id3, tags, tagwriter
 
 FIELDS = {"title": "Città", "artist": "Artista", "album": "Album", "album_artist": "Gruppo", "genre": "Jazz", "year": "2001",
           "track_no": "4"}

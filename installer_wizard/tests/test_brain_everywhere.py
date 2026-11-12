@@ -1,9 +1,9 @@
 import unittest
 
-from features.brain.assignments import Assignment
-from features.brain.everywhere import EverywhereError, assignment_updates, clean_model, role_updates
-from features.brain.roles import ROLES
-from features.brain.tuning import Tuning
+from agenti.brain.assignments import Assignment
+from agenti.brain.everywhere import EverywhereError, assignment_updates, clean_model, role_updates
+from agenti.brain.roles import ROLES
+from agenti.brain.tuning import Tuning
 
 HEADERS = {"X-Nuxiva-Request": "1"}
 MODEL = "cloud:pc_studio/qwen3:14b"

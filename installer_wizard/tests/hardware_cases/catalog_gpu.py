@@ -1,10 +1,10 @@
 import unittest
-from features.hardware import capabilities as caps_mod
-from features.hardware import dkms as dkms_mod
-from features.hardware import identify
-from features.hardware.accelerators import plan_gpu
-from features.hardware.catalog import catalog
-from features.hardware.model import HardwareDevice
+from agenti.hardware import capabilities as caps_mod
+from agenti.hardware import dkms as dkms_mod
+from agenti.hardware import identify
+from agenti.hardware.accelerators import plan_gpu
+from agenti.hardware.catalog import catalog
+from agenti.hardware.model import HardwareDevice
 
 
 class CatalogTest(unittest.TestCase):

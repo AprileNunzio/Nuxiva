@@ -3,11 +3,11 @@ import time
 import unittest
 from unittest import mock
 
-from features.firewall import analyst as analyst_module
-from features.firewall import model
-from features.firewall.analyst import analyst, validate
-from features.firewall.events import monitor
-from features.firewall.store import store
+from agenti.firewall import analyst as analyst_module
+from agenti.firewall import model
+from agenti.firewall.analyst import analyst, validate
+from agenti.firewall.events import monitor
+from agenti.firewall.store import store
 from tests.test_firewall_runtime import FirewallBase
 
 ATTACK = {"kind": "brute_force", "severity": "critical", "src": "198.51.100.7", "dst": "192.168.1.10", "count": 30,
@@ -51,7 +51,7 @@ class AutoApplyTests(FirewallBase):
 
     def run_analysis(self, reply, alerts):
         monitor.alerts.extend(alerts)
-        with mock.patch("features.brain.llm.generate", return_value=reply) as generate:
+        with mock.patch("agenti.brain.llm.generate", return_value=reply) as generate:
             report = asyncio.run(analyst.analyse("prova"))
         return report, generate
 
@@ -84,9 +84,9 @@ class AutoApplyTests(FirewallBase):
         self.assertEqual(kinds, ["drop", "limit"])
 
     def test_no_model_is_reported_not_raised(self):
-        from features.brain.llm import BrainUnavailable
+        from agenti.brain.llm import BrainUnavailable
         monitor.alerts.append(ATTACK)
-        with mock.patch("features.brain.llm.generate", side_effect=BrainUnavailable("giù")):
+        with mock.patch("agenti.brain.llm.generate", side_effect=BrainUnavailable("giù")):
             self.assertIsNone(asyncio.run(analyst.analyse("prova")))
 
     def test_high_alerts_trigger_one_debounced_analysis(self):

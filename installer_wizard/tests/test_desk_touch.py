@@ -5,10 +5,10 @@ from unittest import mock
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from features.desktop.desk import SNOOZE, Desk
-from features.desktop.news import News
-from features.nodes import display_link
-from features.nodes.display_link import COOKIE, DisplayLinks
+from agenti.desktop.desk import SNOOZE, Desk
+from agenti.desktop.news import News
+from agenti.nodes import display_link
+from agenti.nodes.display_link import COOKIE, DisplayLinks
 
 RSS = b"""<?xml version="1.0"?><rss xmlns:media="http://search.yahoo.com/mrss/"><channel>
 <item><title>Titolo &amp; uno</title><description><![CDATA[<p>Testo <b>completo</b></p>]]></description>

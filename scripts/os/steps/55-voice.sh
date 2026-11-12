@@ -9,7 +9,7 @@ VOICES_URL=https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0
 FALLBACK="${NUXIVA_VOICE_FALLBACK:-it_IT-riccardo-x_low}"
 UNIT_SRC="$NUXIVA_DIR/scripts/os/systemd/nuxiva-voice.service"
 UNIT=/etc/systemd/system/nuxiva-voice.service
-CODE="$NUXIVA_DIR/installer_wizard/features/voices/service.py"
+CODE="$NUXIVA_DIR/installer_wizard/agenti/multimedia/voices/service.py"
 MIGRATION="$NUXIVA_STATE/.voice-v2"
 
 piper_arch() {

@@ -6,7 +6,7 @@ from unittest import mock
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from features.games import api, saves
+from agenti.games import api, saves
 from server.core.orchestrator.co_pilot import live_copilot
 
 GAME = {"v": 1, "moves": [[6, 4, 4, 4, ""], [1, 4, 3, 4, ""]], "player": "white"}
@@ -19,7 +19,7 @@ class SavesTest(unittest.TestCase):
         self.addCleanup(tmp.cleanup)
         base = Path(tmp.name)
         for patcher in (mock.patch.object(saves, "FOLDER", base / "games"), mock.patch.object(saves, "KEY_FILE", base / "k.key"),
-                        mock.patch("features.people.people.load", return_value={"slug": "anna"})):
+                        mock.patch("agenti.people.people.load", return_value={"slug": "anna"})):
             patcher.start()
             self.addCleanup(patcher.stop)
 

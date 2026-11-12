@@ -8,11 +8,11 @@ from urllib.parse import parse_qsl
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import Response
 
-from features.music import catalog, conf, covers, layout, listening, mixes, playlists, scanner, stream
-from features.music import subsonic_fmt as fmt
-from features.music.db import db
-from features.music.service import library
-from features.music.sharing import failed, throttled
+from agenti.music import catalog, conf, covers, layout, listening, mixes, playlists, scanner, stream
+from agenti.music import subsonic_fmt as fmt
+from agenti.music.db import db
+from agenti.music.service import library
+from agenti.music.sharing import failed, throttled
 
 public_routes = APIRouter()
 USER_RE = re.compile(r"[^A-Za-z0-9_.@-]")

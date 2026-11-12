@@ -2,7 +2,7 @@ import logging
 import re
 from pathlib import Path
 
-from features.music import naming
+from agenti.music import naming
 
 try:
     from tinytag import TinyTag

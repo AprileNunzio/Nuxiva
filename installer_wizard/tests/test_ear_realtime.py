@@ -10,8 +10,8 @@ from unittest import mock
 
 import numpy as np
 
-from features.ear import broadcast, delivery
-from features.ear.ingress import MAX_PENDING, RealtimeInput
+from agenti.ear import broadcast, delivery
+from agenti.ear.ingress import MAX_PENDING, RealtimeInput
 
 
 class Socket:
@@ -180,7 +180,7 @@ class RealtimeInputTest(unittest.IsolatedAsyncioTestCase):
             await stream.close()
 
     async def test_actual_session_ingress_emits_meter_before_slow_frame_analysis(self):
-        path = Path(__file__).resolve().parents[1] / "features" / "ear" / "service.py"
+        path = Path(__file__).resolve().parents[1] / "agenti" / "percezione" / "ear" / "service.py"
         tree = ast.parse(path.read_text(encoding="utf-8"))
         session_node = next(node for node in tree.body if isinstance(node, ast.ClassDef) and node.name == "Session")
         namespace = {"asyncio": asyncio, "time": time, "np": np, "WAIT_FOR_SPEECH": 8, "FRAME": 480,
@@ -218,7 +218,7 @@ class RealtimeInputTest(unittest.IsolatedAsyncioTestCase):
 
 class WakeInferenceTest(unittest.IsolatedAsyncioTestCase):
     async def test_reset_during_inference_discards_the_stale_wake_result(self):
-        ear = Path(__file__).resolve().parents[1] / "features" / "ear"
+        ear = Path(__file__).resolve().parents[1] / "agenti" / "percezione" / "ear"
         if str(ear) not in sys.path:
             sys.path.append(str(ear))
         import wakeword
@@ -237,7 +237,7 @@ class WakeInferenceTest(unittest.IsolatedAsyncioTestCase):
             self.assertFalse(await task)
 
     async def test_slow_wake_inference_leaves_event_loop_available(self):
-        ear = Path(__file__).resolve().parents[1] / "features" / "ear"
+        ear = Path(__file__).resolve().parents[1] / "agenti" / "percezione" / "ear"
         if str(ear) not in sys.path:
             sys.path.append(str(ear))
         import wakeword

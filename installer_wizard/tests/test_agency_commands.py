@@ -5,10 +5,10 @@ from unittest import mock
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from features.agency import commands, presence, service
-from features.agency.client import AgencyUnavailable
-from features.tasks import api as tasks_api
-from features.tasks import sources
+from agenti.agency import commands, presence, service
+from agenti.agency.client import AgencyUnavailable
+from agenti.tasks import api as tasks_api
+from agenti.tasks import sources
 
 
 def card(pid, status, percent=50):

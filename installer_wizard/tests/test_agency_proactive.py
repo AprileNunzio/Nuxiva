@@ -4,7 +4,7 @@ from unittest import mock
 from fastapi.testclient import TestClient
 
 import nuxiva_supervisor
-from features.agency import proactive
+from agenti.agency import proactive
 
 
 class AgencyProactiveTest(unittest.TestCase):
@@ -81,8 +81,8 @@ class AgencyBriefingApiTest(unittest.TestCase):
             ],
             "counts": {"total": 2, "done": 1, "running": 1, "review": 0},
         }
-        with mock.patch("features.agency.api.require_display", lambda r: None), \
-             mock.patch("features.agency.service.detail", mock.AsyncMock(return_value=fake_detail)):
+        with mock.patch("agenti.agency.api.require_display", lambda r: None), \
+             mock.patch("agenti.agency.service.detail", mock.AsyncMock(return_value=fake_detail)):
             res = self.web.get("/api/agency/board/proj-1/briefing", headers={"X-Nuxiva-Request": "1"})
         self.assertEqual(res.status_code, 200)
         data = res.json()

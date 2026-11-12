@@ -9,7 +9,7 @@ from unittest import mock
 
 import numpy as np
 
-VISION = Path(__file__).resolve().parents[1] / "features" / "vision"
+VISION = Path(__file__).resolve().parents[1] / "agenti" / "percezione" / "vision"
 
 
 def load_learning():

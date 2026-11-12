@@ -4,11 +4,11 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from features.store.integrity import (
+from agenti.store.integrity import (
     validate_package_security_contract,
     verify_sha256_checksum,
 )
-from features.store.sandbox_bridge import (
+from agenti.store.sandbox_bridge import (
     build_sandbox_profile_for_package,
 )
 

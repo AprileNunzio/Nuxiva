@@ -1,0 +1,384 @@
+import importlib
+import time
+
+import httpx
+from feature_api_scanner import discover_feature_connectors
+from state import store
+
+from agenti.actions import router as actions
+from agenti.authz import gate
+from agenti.authz.principal import acting
+from agenti.brain import stages
+from agenti.brain.llm import BrainUnavailable, generate
+from agenti.chat import code, strict_reply
+from agenti.chat import context as request_context
+from agenti.chat.claims import ConnectorClaims
+from agenti.chat.compose import compose_generic
+from agenti.chat.intents import detect_intent
+from agenti.chat.skill_dispatch import run_skill
+from agenti.chat.skills.people import person_info_skill
+from agenti.locale.pivot import pivot
+from agenti.chat.templates import remember_template
+from agenti.agent import grounding
+from agenti.understanding import router as understanding
+
+CONNECTORS = {"places": "agenti.places.commands", "vault": "agenti.vault.commands", "selftest": "agenti.selftest.commands", "sounds": "agenti.sounds.commands", "whiteboard": "agenti.whiteboard.commands", "games": "agenti.games.commands", "screens": "agenti.desktop.commands", "models3d": "agenti.models3d.commands", "documents": "agenti.documents.commands", "music": "agenti.music.commands", "livecam": "agenti.cameras.commands", "vision": "agenti.vision.sight", "gservices": "agenti.google.commands", "maps": "agenti.maps.maps", "sports": "agenti.sports.commands", "tv": "agenti.tv.commands", "experts": "agenti.experts.commands"}
+
+EARLY = ("whiteboard", "livecam", "games")
+_DISCOVERED_CONNECTORS = discover_feature_connectors()
+CONNECTORS = {**_DISCOVERED_CONNECTORS, **CONNECTORS}
+PROJECT_FIRST = tuple(_DISCOVERED_CONNECTORS)
+CLAIMS = ConnectorClaims(CONNECTORS)
+PERSONAL = {"gservices", "vault", "documents", "maps", "vision", "livecam"}
+
+
+def _refused(name: str, started: float) -> dict | None:
+    decision = gate.connector(name)
+    if decision.allowed:
+        return None
+    return {"reply": gate.refusal(decision), "ui": {"mode": "face"}, "intent": "authz", "agent": f"autorizzazioni · {name}",
+            "elapsed_ms": int((time.time() - started) * 1000)}
+
+
+async def _agent(text: str, started: float) -> dict:
+    from agenti.agent import commands as agent_cmd
+    async with stages.stage("agent", "Agente con strumenti"):
+        speech, ui = await agent_cmd.answer(text)
+    return {"reply": speech, "ui": ui, "intent": "agent", "agent": "agente · strumenti",
+            "elapsed_ms": int((time.time() - started) * 1000)}
+
+
+async def _connect(text: str, started: float, only: tuple | None = None, skip: tuple = ()) -> dict | None:
+    for connector, module in CONNECTORS.items():
+        if (only and connector not in only) or connector in skip:
+            continue
+        if not gate.connector_allowed(connector):
+            continue
+        try:
+            async with stages.attempt("tool", f"Connettore · {connector}", misses=(LookupError,)):
+                speech, ui = await importlib.import_module(module).answer(text)
+        except LookupError:
+            continue
+        except Exception as exc:
+            if type(exc).__name__ == "NotLinked":
+                speech, ui = str(exc), {"mode": "face"}
+            else:
+                store.event("WARN", f"Connettore {connector}: {exc}", connector)
+                speech, ui = f"Non riesco a raggiungere il servizio in questo momento: {exc}", {"mode": "face"}
+        elapsed = int((time.time() - started) * 1000)
+        if ui.get("mode") != "face":
+            remember_template(connector, ui, elapsed)
+        if connector in PERSONAL and ui.get("mode") == "focus":
+            ui["personal"] = True
+        return {"reply": speech, "ui": ui, "intent": connector, "agent": connector, "elapsed_ms": elapsed}
+    return None
+
+
+async def _claimed(text: str, started: float) -> dict | None:
+    for connector in CLAIMS.claiming(text):
+        refused = _refused(connector, started)
+        if refused:
+            return refused
+        out = await _connect(text, started, (connector,))
+        if out:
+            return out
+    return None
+
+
+async def _home(text: str, started: float) -> dict | None:
+    try:
+        from agenti.home_assistant.home import brain as home_brain
+        async with stages.attempt("agent", "Domotica") as probe:
+            home_out = await home_brain.handle(text)
+            if not home_out:
+                probe.skip()
+    except Exception as exc:
+        store.event("WARN", f"Casa non disponibile: {exc}", "home")
+        return None
+    if not home_out:
+        return None
+    speech, ui, agent = home_out
+    elapsed = int((time.time() - started) * 1000)
+    if ui.get("mode") != "face":
+        remember_template("home", ui, elapsed)
+    return {"reply": speech, "ui": ui, "intent": "home", "agent": agent, "elapsed_ms": elapsed}
+
+
+async def handle(text: str, core_call, speech_lang: dict | None = None) -> dict:
+    lang = (speech_lang or {}).get("lang", "it")
+    started = time.monotonic()
+    exact = strict_reply.deterministic(text)
+    if exact is not None:
+        return _exact_reply(exact, "algoritmo", started)
+    json_only = bool(strict_reply.JSON_ONLY.match(text.strip()))
+    if json_only or strict_reply.CHAT_ONLY.search(text):
+        return await _text_only(text, lang, started, json_only=json_only)
+    switched = bool((speech_lang or {}).get("switched"))
+    routing = text if switched else await pivot.to_pivot(text, lang)
+
+    from agenti.team.ceo import ceo
+    ceo_decision = await ceo.decide(routing, {"lang": lang})
+
+    generated = {"by_model": False}
+
+    async def ask(_query: str) -> dict:
+        generated["by_model"] = True
+        return await core_call(text)
+
+    async with stages.stage("ceo", "CEO Orchestrator", ceo_decision.delegation_plan):
+        raw_result = await _route(routing, ask, speech_lang, _hint(ceo_decision))
+        result = ceo.synthesize(ceo_decision, raw_result)
+
+    if lang != pivot.PIVOT and result.get("reply"):
+        result["reply"] = await pivot.from_pivot(result["reply"], lang, force=not generated["by_model"])
+    if result.get("reply"):
+        from agenti.particles import show as particles_show
+        if particles_show.ensure_visual(text) is not None and isinstance(result.get("ui"), dict):
+            current_particles = particles_show.current()
+            if current_particles:
+                result["ui"].setdefault("particles", current_particles)
+    return result
+
+
+def _exact_reply(reply: str, agent: str, started: float) -> dict:
+    return {"reply": reply, "ui": {"mode": "face"}, "intent": "conversation", "agent": agent,
+            "elapsed_ms": int((time.monotonic() - started) * 1000), "exact_reply": True}
+
+
+async def _text_only(text: str, lang: str, started: float, *, json_only: bool) -> dict:
+    format_rule = "Return exactly one JSON object or array." if json_only else "Reply with text only."
+    planning_rule = "" if json_only else (
+        " For technical plans, state material assumptions and verify that quantities, units, tolerances and timing agree."
+        " Distinguish targets from measured results and give concrete acceptance checks for the requested constraints."
+    )
+    try:
+        reply = await generate(text, kind="chat", max_tokens=None, person=acting().slug,
+                               system=f"Reply in {lang}. {format_rule} Do not claim any action was performed.{planning_rule}")
+    except BrainUnavailable as exc:
+        store.event("WARN", f"Risposta solo in chat non disponibile: {exc}", "assistant")
+        return {**_exact_reply("", "chat", started), "error": "brain_unavailable"}
+    if json_only:
+        reply = strict_reply.json_reply(reply)
+        if reply is None:
+            return {**_exact_reply("", "chat", started), "error": "invalid_json_reply"}
+    return {**_exact_reply(reply, "chat", started), "execution_status": "not_executed", "verified": False}
+
+
+def _hint(decision) -> str:
+    agent = decision.primary_agent.id
+    return agent if (decision.reasoned or decision.confidence >= 0.85) and agent in CONNECTORS else ""
+
+
+async def _route(text: str, core_call, speech_lang: dict | None = None, hint: str = "") -> dict:
+    started = time.time()
+    from agenti.automations.bus import emit
+    emit("voice_command", {"text": text})
+    try:
+        from agenti.automations import commands as automation_cmd
+        async with stages.attempt("skill", "Automazioni", misses=(LookupError,)):
+            speech, ui = await automation_cmd.answer(text)
+        return {"reply": speech, "ui": ui, "intent": "automations", "agent": "automazioni",
+                "elapsed_ms": int((time.time() - started) * 1000)}
+    except LookupError:
+        pass
+    try:
+        from agenti.scene import voice as scene_voice
+        from agenti.scene.service import scene
+        spatial = scene_voice.answer(text, scene.graph, pivot.PIVOT)
+    except Exception:
+        spatial = None
+    if spatial:
+        return {"reply": spatial, "ui": {"mode": "face"}, "intent": "scene", "agent": "scena",
+                "elapsed_ms": int((time.time() - started) * 1000)}
+    claimed = await _claimed(text, started)
+    if claimed:
+        return claimed
+    located = await _connect(text, started, ("places",))
+    if located:
+        return located
+    project = await _connect(text, started, PROJECT_FIRST)
+    if project:
+        return project
+    from agenti.models3d import studio
+    if studio.ACTIVE["id"]:
+        modelling = await _connect(text, started, ("models3d",))
+        if modelling:
+            return modelling
+    expert = await _connect(text, started, ("experts",))
+    if expert:
+        return expert
+    from agenti.agent import commands as agent_cmd
+    if agent_cmd.strong(text):
+        return await _agent(text, started)
+    intent = detect_intent(text)
+    if (speech_lang or {}).get("switched") and intent not in ("voices",):
+        intent = "conversation"
+    if intent != "conversation":
+        refused = _refused(intent, started)
+        if refused:
+            return refused
+        try:
+            async with stages.attempt("skill", f"Abilità · {intent}", misses=(LookupError,)):
+                speech, ui = await run_skill(intent, text)
+            if ui.get("code"):
+                intent = ui.pop("intent", "code_view")
+            elapsed = int((time.time() - started) * 1000)
+            if ui.get("mode") != "face":
+                remember_template(intent, ui, elapsed)
+            return {"reply": speech, "ui": ui, "intent": intent, "agent": "nuxiva_ui", "elapsed_ms": elapsed}
+        except LookupError:
+            pass
+        except (httpx.HTTPError, KeyError, ValueError) as exc:
+            store.event("WARN", f"Abilità '{intent}' non disponibile: {exc}", "assistant")
+            async with stages.stage("system2", "Generazione della risposta", f"Abilità «{intent}» non disponibile"):
+                data = await core_call(text)
+            agent = data.get("agent_id") or "core"
+            speech, ui = code.answer(data.get("speech_output") or "", text) or compose_generic(data.get("speech_output") or "…", text)
+            if ui.get("code"):
+                intent = ui.pop("intent", "code_view")
+            elapsed = int((time.time() - started) * 1000)
+            if ui.get("mode") != "face":
+                remember_template(intent, ui, elapsed)
+            return {"reply": speech, "ui": ui, "intent": intent, "agent": agent, "elapsed_ms": elapsed}
+
+    tried: set[str] = set()
+    async with stages.stage("classifier", "Classificatore Intenti", "Analisi semantica e instradamento") as probe:
+        decision = await understanding.route(text, request_context.device.get())
+        probe.note(understanding.describe(decision))
+    domains = decision.domains if understanding.enabled() else list(EARLY)
+    if hint:
+        domains = [hint] + [d for d in domains if d != hint]
+    if understanding.enabled() and domains and (refused := _refused(domains[0], started)):
+        return refused
+    for domain in domains:
+        tried.add(domain)
+        if domain == "people":
+            if not gate.connector_allowed("people"):
+                continue
+            speech, ui = await person_info_skill(text)
+            ui["personal"] = True
+            return {"reply": speech, "ui": ui, "intent": "people", "agent": "persone", "elapsed_ms": int((time.time() - started) * 1000)}
+        out = await (_home(text, started) if domain == "home" else _connect(text, started, (domain,)))
+        if out:
+            return out
+    if "home" not in tried:
+        tried.add("home")
+        out = await _home(text, started)
+        if out:
+            return out
+    async with stages.attempt("tool", "Azioni") as probe:
+        act = await actions.handle(text)
+        if not act:
+            probe.skip()
+    if act:
+        speech, ui, agent = act
+        elapsed = int((time.time() - started) * 1000)
+        return {"reply": speech, "ui": ui, "intent": "action", "agent": agent, "elapsed_ms": elapsed}
+
+    from agenti.skills.library import library
+    async with stages.attempt("skill", "Libreria di algoritmi") as probe:
+        solved = await library.try_answer(text)
+        if not solved:
+            probe.skip()
+    if solved:
+        agent = f"algoritmo · {solved['name']} ({solved['total_ms']} ms)"
+        speech, ui = solved["speech"], {"mode": "face"}
+    elif actions.CALC.search(text) and (calc := await actions.try_calc(text)):
+        agent = "calcolo verificato"
+        speech, ui = calc
+    else:
+        from agenti.agent import commands as agent_cmd
+        unrouted = bool(understanding.enabled() and not decision.domains and "home" in tried and not agent_cmd.weak(text) and not actions.ACTIONISH.search(text))
+        agent, speech, ui = await _converse(text, core_call, unrouted=unrouted)
+
+    if ui.get("code"):
+        intent = ui.pop("intent", "code_view")
+
+    elapsed = int((time.time() - started) * 1000)
+    if ui.get("mode") != "face":
+        remember_template(intent, ui, elapsed)
+    return {"reply": speech, "ui": ui, "intent": intent, "agent": agent, "elapsed_ms": elapsed}
+
+
+async def _diagnose(text: str) -> tuple[str, dict] | None:
+    try:
+        return await actions.diagnose_action(text)
+    except BrainUnavailable as exc:
+        store.event("WARN", f"Diagnostica senza cervello disponibile: {exc}", "assistant")
+        return None
+
+
+async def _delegate(text: str) -> tuple[str, str, dict] | None:
+    from agenti.experts import commands as expert_cmd
+    from agenti.team.ceo import ceo
+    choice = ceo.pick_expert(text)
+    expert = choice.expert if choice else await _forged(text)
+    if expert is None:
+        return None
+    async with stages.attempt("agent", f"Esperto · {expert.role}") as probe:
+        found = await expert_cmd.run(expert, text)
+        if found is None:
+            probe.skip()
+    if found is None:
+        return None
+    return f"esperto · {expert.role}", *found
+
+
+async def _forged(text: str):
+    from agenti.experts import autonomy
+    async with stages.attempt("agent", "Nuovo esperto per la domanda") as probe:
+        expert = await autonomy.create_for(text)
+        if expert is None:
+            probe.skip()
+    return expert
+
+
+async def _converse(text: str, core_call, unrouted: bool = False) -> tuple[str, str, dict]:
+    from agenti.agent import commands as agent_cmd
+    delegated = await _delegate(text)
+    if delegated:
+        return delegated
+    if not unrouted and agent_cmd.enabled() and not code.wanted(text) and (agent_cmd.weak(text) or await grounding.needs_lookup(text)):
+        async with stages.stage("agent", "Agente con strumenti"):
+            speech, ui = await agent_cmd.answer(text)
+        return "agente · strumenti", speech, ui
+    if actions.ACTIONISH.search(text):
+        found = await _diagnose(text)
+        if found:
+            return "diagnostica · comando di sistema", *found
+    async with stages.stage("system2", "Generazione della risposta") as probe:
+        data = await core_call(text)
+        probe.note(f"Modello: {data.get('agent_id') or 'core'}")
+    reply = data.get("speech_output") or "…"
+    refused = not reply.strip(" .…") or bool(actions.REFUSAL.search(reply)) or actions.promised(reply)
+    if refused and not actions.ACTIONISH.search(text):
+        found = await _diagnose(text)
+        if found:
+            return "diagnostica · comando di sistema", *found
+    if refused and not unrouted and agent_cmd.enabled():
+        async with stages.stage("agent", "Agente con strumenti", "Il modello ha rifiutato: provo con gli strumenti"):
+            speech, ui = await agent_cmd.answer(text)
+        return "agente · strumenti", speech, ui
+    if refused:
+        actions.note_gap(text, "il modello ha rifiutato e nessuno strumento è adatto")
+        if unrouted:
+            clarify = "Non ho capito la richiesta. Puoi ripetere?"
+            return data.get("agent_id") or "core", *(code.answer(clarify, text) or await _presented(clarify, text) or compose_generic(clarify, text))
+    ambient_diorama(text, reply)
+    return data.get("agent_id") or "core", *(code.answer(reply, text) or await _presented(reply, text) or compose_generic(reply, text))
+
+
+def ambient_diorama(text: str, reply: str) -> None:
+    from agenti.diorama import ambient
+    ambient.watch(text, reply)
+    from agenti.particles import show as particles_show
+    particles_show.watch(text, reply)
+
+
+async def _presented(reply: str, text: str):
+    from agenti.presentation.composition import compose
+    async with stages.attempt("tool", "Impaginazione della risposta") as probe:
+        laid_out = await compose(text, reply)
+        if not laid_out:
+            probe.skip()
+    return laid_out

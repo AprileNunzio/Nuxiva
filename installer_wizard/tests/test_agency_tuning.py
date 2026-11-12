@@ -2,7 +2,7 @@ import asyncio
 import unittest
 from unittest import mock
 
-from features.agency import tuning
+from agenti.agency import tuning
 
 ENV = {}
 
@@ -28,15 +28,15 @@ class TuningTest(unittest.TestCase):
         self.assertEqual(tuning.scheduler(), {"mode": "manual", "manual_parallel": 2, "max_parallel": 16, "reserve_ram_mb": 2048})
 
     def model_for(self, chain):
-        with mock.patch("features.brain.llm.component_chain", mock.AsyncMock(return_value=chain)), \
-                mock.patch("features.brain.llm.chain", mock.AsyncMock(return_value=["qwen2.5:7b"])):
+        with mock.patch("agenti.brain.llm.component_chain", mock.AsyncMock(return_value=chain)), \
+                mock.patch("agenti.brain.llm.chain", mock.AsyncMock(return_value=["qwen2.5:7b"])):
             return asyncio.run(tuning.model())
 
     def test_model_profile_follows_the_brain_choice(self):
         self.assertEqual(self.model_for(["qwen2.5:3b"]), {"kind": "local", "size_mb": int(1.9 * 1024)})
         self.assertEqual(self.model_for([]), {"kind": "local", "size_mb": int(4.7 * 1024)})
         self.assertEqual(self.model_for(["sconosciuto:1b"]), {"kind": "local", "size_mb": tuning.DEFAULT_SIZE_MB})
-        with mock.patch("features.cloud.catalog.is_cloud", lambda m: m.startswith("cloud:")):
+        with mock.patch("agenti.cloud.catalog.is_cloud", lambda m: m.startswith("cloud:")):
             ENV["NUXIVA_AGENCY_CLOUD_RPM"] = "120"
             self.assertEqual(self.model_for(["cloud:openai/gpt"]), {"kind": "cloud", "requests_per_minute": 120})
 

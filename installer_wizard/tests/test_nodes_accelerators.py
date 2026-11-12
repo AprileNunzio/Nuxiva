@@ -1,6 +1,6 @@
 import unittest
 
-from features.nodes import adapt
+from agenti.nodes import adapt
 
 RK3588 = {"cores": 8, "ram_gb": 16, "audio_in": ["USB Mic"], "soc": {"vendor": "Rockchip", "family": "rk3588", "model": "Radxa ROCK 5B"},
           "cpu_features": ["neon", "dotprod", "<script>"],

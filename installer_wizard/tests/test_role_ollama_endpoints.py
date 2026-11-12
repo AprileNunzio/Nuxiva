@@ -9,8 +9,8 @@ from unittest.mock import AsyncMock, patch
 import httpx
 import config
 from sealed import SealedFile
-from features.brain import api, brains as brains_module, bridge, llm, routing, scope
-from features.cloud import catalog, vault as vault_module
+from agenti.brain import api, brains as brains_module, bridge, llm, routing, scope
+from agenti.cloud import catalog, vault as vault_module
 
 
 class RoleOllamaEndpointTests(unittest.IsolatedAsyncioTestCase):
@@ -33,7 +33,7 @@ class RoleOllamaEndpointTests(unittest.IsolatedAsyncioTestCase):
         self.enterContext(patch.object(llm, "brains", self.brains))
         self.enterContext(patch.object(self.brains, "installed", new=AsyncMock(return_value=["local:latest"])))
         self.unload = self.enterContext(patch.object(api, "unload_local_ollama_vram", new_callable=AsyncMock))
-        self.free_refs = self.enterContext(patch("features.brain.free_router.failover_engine.configured_refs", new=AsyncMock(return_value=None)))
+        self.free_refs = self.enterContext(patch("agenti.brain.free_router.failover_engine.configured_refs", new=AsyncMock(return_value=None)))
         self.enterContext(patch.object(llm, "background", side_effect=lambda coroutine: coroutine.close()))
         self.client = httpx.AsyncClient
         self.enterContext(patch("httpx.AsyncClient", side_effect=self.mock_client))

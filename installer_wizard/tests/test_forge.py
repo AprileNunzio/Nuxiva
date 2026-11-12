@@ -5,14 +5,14 @@ from pathlib import Path
 from unittest import mock
 
 import feature_registry
-from features.agent import registry
-from features.authz.principal import SYSTEM, act_as, current
-from features.capabilities import catalog, mcp
-from features.desktop import desk as desk_module
-from features.desktop.desk import desk
-from features.forge import assets, recipes
-from features.team import roster
-from features.team.board import board
+from agenti.agent import registry
+from agenti.authz.principal import SYSTEM, act_as, current
+from agenti.capabilities import catalog, mcp
+from agenti.desktop import desk as desk_module
+from agenti.desktop.desk import desk
+from agenti.forge import assets, recipes
+from agenti.team import roster
+from agenti.team.board import board
 
 
 def call(tool_name: str, **args) -> str:

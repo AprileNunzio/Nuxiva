@@ -1,6 +1,6 @@
 import unittest
 
-from features.automations.expr import ExprError, evaluate, render
+from agenti.automations.expr import ExprError, evaluate, render
 
 
 class ExprTest(unittest.TestCase):

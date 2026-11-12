@@ -9,7 +9,7 @@ Environment=PYTHONUNBUFFERED=1
 Environment=HF_HUB_OFFLINE=1
 Environment=PYTHONPATH=/opt/Nuxiva/installer_wizard/backend:/opt/Nuxiva/installer_wizard
 EnvironmentFile=-/etc/nuxiva/nuxiva.env
-ExecStart=/opt/nuxiva-ear/venv/bin/python /opt/Nuxiva/installer_wizard/features/ear/service.py
+ExecStart=/opt/nuxiva-ear/venv/bin/python /opt/Nuxiva/installer_wizard/agenti/percezione/ear/service.py
 Restart=always
 RestartSec=5
 Nice=-5

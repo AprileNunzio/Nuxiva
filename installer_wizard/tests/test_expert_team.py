@@ -1,9 +1,9 @@
 import unittest
 
-from features.experts import routing, service, templates
-from features.experts.model import build
-from features.team.board import board
-from features.team.ceo import ceo
+from agenti.experts import routing, service, templates
+from agenti.experts.model import build
+from agenti.team.board import board
+from agenti.team.ceo import ceo
 from tests.test_experts import IsolatedStore
 
 LANGS = ("it", "en", "es", "fr")

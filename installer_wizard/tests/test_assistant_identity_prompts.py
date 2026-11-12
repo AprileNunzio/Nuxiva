@@ -2,7 +2,7 @@ import unittest
 from unittest import mock
 
 import identity
-from features.chat import speaker
+from agenti.chat import speaker
 
 
 def reader(name, gender):

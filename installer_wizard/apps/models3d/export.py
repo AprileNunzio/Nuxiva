@@ -1,7 +1,7 @@
 import json
 import struct
 
-from features.models3d.mesh import Mesh, placed
+from agenti.models3d.mesh import Mesh, placed
 
 CM_TO_M, CM_TO_MM = 0.01, 10.0
 

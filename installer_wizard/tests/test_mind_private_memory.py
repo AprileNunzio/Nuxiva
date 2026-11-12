@@ -6,9 +6,9 @@ from pathlib import Path
 from unittest import mock
 
 from cryptography.fernet import Fernet
-from features.mind import memory as memory_module
-from features.mind.persistence import MemoryStorageError
-from features.mind.records import MemoryInputError
+from agenti.mind import memory as memory_module
+from agenti.mind.persistence import MemoryStorageError
+from agenti.mind.records import MemoryInputError
 
 
 class PrivateMemoryTest(unittest.TestCase):
@@ -138,7 +138,7 @@ class PrivateMemoryTest(unittest.TestCase):
         self.assertEqual(self.memory.listing()[0]["revision"], 1)
 
     def test_diary_migration_encrypts_personal_utterances_too(self):
-        from features.mind import mind as mind_module
+        from agenti.mind import mind as mind_module
         legacy = self.root / "mind.json"
         legacy.write_text(json.dumps({"diary": [{"said": "La mia allergia alle arachidi"}]}), encoding="utf-8")
         with mock.patch.object(mind_module, "MIND_DIR", self.root), mock.patch.object(mind_module, "STATE_FILE", legacy):

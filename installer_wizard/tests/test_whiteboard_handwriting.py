@@ -1,8 +1,8 @@
 import unittest
 
-from features.desktop.desk import desk
-from features.whiteboard import ocr, service, shortcuts, teacher
-from features.whiteboard.board import PREVIOUS_SESSION, board
+from agenti.desktop.desk import desk
+from agenti.whiteboard import ocr, service, shortcuts, teacher
+from agenti.whiteboard.board import PREVIOUS_SESSION, board
 
 
 def line(x0, y0, x1, y1, steps=8):
@@ -39,7 +39,7 @@ class StrokeRecognitionTest(Base):
         self.assertTrue(data["has_equals"])
 
     def test_a_narrow_handwritten_seven_is_not_read_as_one(self):
-        from features.whiteboard import digits
+        from agenti.whiteboard import digits
         for width in (48, 56, 64):
             seven = [[100 + width * 0.05, 100], [100 + width * 0.95, 100], [100 + width * 0.35, 180]]
             self.assertEqual(digits.recognize([seven]), "7")

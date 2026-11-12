@@ -10,7 +10,7 @@ from pathlib import Path
 
 import numpy as np
 
-EAR = Path(__file__).resolve().parents[1] / "features" / "ear"
+EAR = Path(__file__).resolve().parents[1] / "agenti" / "percezione" / "ear"
 if str(EAR) not in sys.path:
     sys.path.append(str(EAR))
 
@@ -28,7 +28,7 @@ sys.modules["stt"] = fake_stt
 
 import recorder
 import reviewer as reviewer_module
-from features.sentinel import memory_people
+from agenti.sentinel import memory_people
 
 
 class EarVaultTest(unittest.TestCase):
@@ -121,9 +121,9 @@ class EarVaultTest(unittest.TestCase):
 
     def test_journal_audio_playback_audit(self):
         from unittest import mock
-        from features.ear.journal import journal
-        from features.ear.journal_api import routes
-        import features.ear.journal_api as journal_api
+        from agenti.ear.journal import journal
+        from agenti.ear.journal_api import routes
+        import agenti.ear.journal_api as journal_api
         from starlette.testclient import TestClient
         from fastapi import FastAPI
         journal.root = self.root / "journal"

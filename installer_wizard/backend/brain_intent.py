@@ -15,8 +15,8 @@ def local_engine() -> bool:
 
 
 def _keyed(pid: str) -> bool:
-    from features.cloud.catalog import BY_ID, is_server
-    from features.cloud.vault import vault
+    from agenti.cloud.catalog import BY_ID, is_server
+    from agenti.cloud.vault import vault
     spec = BY_ID.get(pid)
     if spec is None or is_server(pid) or spec.key_optional:
         return False
@@ -24,13 +24,13 @@ def _keyed(pid: str) -> bool:
 
 
 def _ordered(env: dict) -> list[str]:
-    from features.cloud.catalog import PREFIX
+    from agenti.cloud.catalog import PREFIX
     refs = [r.strip() for r in env.get("NUXIVA_LLM_CHAT_ORDER", "").split(",") if r.strip()]
     return [r.removeprefix(PREFIX).partition("/")[0] for r in refs if r.startswith(PREFIX)]
 
 
 def cloud_provider(env: dict | None = None) -> str:
-    from features.cloud.catalog import BY_ID
+    from agenti.cloud.catalog import BY_ID
     env = read_env() if env is None else env
     try:
         return next((pid for pid in [*_ordered(env), *BY_ID] if _keyed(pid)), "")
@@ -45,9 +45,9 @@ def cloud_ordered(env: dict) -> bool:
 
 
 def required_local_models(env: dict) -> tuple[str, ...]:
-    from features.brain.configuration import legacy_ref
-    from features.brain.roles import ROLES, split_order
-    from features.cloud.catalog import is_cloud
+    from agenti.brain.configuration import legacy_ref
+    from agenti.brain.roles import ROLES, split_order
+    from agenti.cloud.catalog import is_cloud
 
     if ollama_remote():
         return ()
@@ -70,7 +70,7 @@ def local_ollama_optional(env: dict | None = None) -> bool:
 
 
 def _models(pid: str) -> tuple[str, str]:
-    from features.cloud.catalog import BY_ID
+    from agenti.cloud.catalog import BY_ID
     from setup_config import CLOUD_PICK
     if pid in CLOUD_PICK:
         _, fast, deep = CLOUD_PICK[pid]

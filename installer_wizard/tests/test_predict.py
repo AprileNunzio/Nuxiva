@@ -1,6 +1,6 @@
 import unittest
 
-from features.chat import intents, templates
+from agenti.chat import intents, templates
 
 FOCUS = {"mode": "focus", "panels": [{"type": "text", "title": "Risposta"}, {"type": "text", "title": "Output del comando"}]}
 OTHER = {"mode": "focus", "panels": [{"type": "list", "title": "Punti chiave"}]}

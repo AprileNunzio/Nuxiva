@@ -19,7 +19,7 @@ def require_open(request: Request) -> None:
 
 def _owner() -> tuple[str, str]:
     import setup_owner
-    from features.people import people
+    from agenti.people import people
     cfg = session_manager.config
     first, last = setup_owner.clean_names({"name": cfg.get("owner_name"), "last_name": cfg.get("owner_last"),
                                            "assistant_name": cfg.get("assistant_name")})
@@ -31,7 +31,7 @@ def _owner() -> tuple[str, str]:
 
 async def _vision(method: str, path: str, content: bytes | None = None, params: dict | None = None,
                   timeout: float = 10.0) -> httpx.Response:
-    from features.vision.proxy import VISION_URL
+    from agenti.vision.proxy import VISION_URL
     headers = {"Content-Type": "application/octet-stream"} if content else None
     try:
         async with httpx.AsyncClient(timeout=timeout) as client:

@@ -8,7 +8,7 @@ from pathlib import Path
 
 import agenti
 from agenti import _manifest, _scan
-from agenti._registry import LEGACY_DIR, AgentRegistry, module_for, owner_of, root
+from agenti._registry import SYSTEM_DIR, AgentRegistry, module_for, owner_of, root
 
 PARTICLES = {
     "id": "particles", "name": "Particelle", "category": "creativita", "description": "Scultore di particelle 3D",
@@ -107,9 +107,11 @@ class RepositoryAgentsTest(unittest.TestCase):
     def test_every_shipped_manifest_is_a_valid_agent(self):
         registry = AgentRegistry(native=False)
         self.assertEqual(registry.rejected(), [])
-        shipped = {p.parent.name for p in LEGACY_DIR.glob("*/feature.json")}
-        shipped |= {p.parent.name for p in (Path(agenti.__file__).parent).glob("*/*/feature.json")}
-        self.assertEqual({a.dir.name for a in registry.agents()}, shipped)
+        shipped = {p.parent.name for p in SYSTEM_DIR.glob("*/*/feature.json")}
+        self.assertEqual({a.dir.name for a in registry.agents() if a.origin == "system"}, shipped)
+        self.assertFalse((SYSTEM_DIR.parent / "features").exists())
+        for agent in registry.agents():
+            self.assertEqual(agent.dir.parent.name, agent.category)
 
 
 class LoaderTest(unittest.TestCase):
@@ -128,8 +130,8 @@ class LoaderTest(unittest.TestCase):
             importlib.import_module("agenti.creativita")
 
     def test_module_names(self):
-        self.assertEqual(module_for(LEGACY_DIR / "particles"), "features.particles")
-        self.assertEqual(module_for(Path(agenti.__file__).parent / "creativita" / "particles"), "agenti.particles")
+        self.assertEqual(module_for(SYSTEM_DIR / "creativita" / "particles"), "agenti.particles")
+        self.assertEqual(module_for(SYSTEM_DIR / "ignota" / "particles"), "")
         self.assertEqual(module_for(Path("/tmp/x/particles")), "")
         self.assertEqual(owner_of("agenti.particles.tools"), "particles")
         self.assertEqual(owner_of("os.path"), "")

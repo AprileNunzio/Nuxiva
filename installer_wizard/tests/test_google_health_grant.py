@@ -6,12 +6,12 @@ from unittest import mock
 
 import httpx
 
-from features.google import app as google_app
-from features.google import session as session_module
-from features.google.accounts import Accounts
-from features.google.constants import SERVICES
-from features.google.errors import explain
-from features.google.session import Session
+from agenti.google import app as google_app
+from agenti.google import session as session_module
+from agenti.google.accounts import Accounts
+from agenti.google.constants import SERVICES
+from agenti.google.errors import explain
+from agenti.google.session import Session
 
 HEALTH_SCOPES = SERVICES["health"]["scopes"] + SERVICES["health_activity"]["scopes"]
 

@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import numpy as np
 
-from features.ear.conditioner import HOP, NativeConditioner
+from agenti.ear.conditioner import HOP, NativeConditioner
 
 RATE = 16000
 CHUNK = 960

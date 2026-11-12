@@ -11,8 +11,8 @@ for p in (str(Path(__file__).resolve().parents[1]), str(Path(__file__).resolve()
     if p not in sys.path:
         sys.path.insert(0, p)
 
-from features.update_center import guard, native
-from features.update_center.progress import UpdateProgress
+from agenti.update_center import guard, native
+from agenti.update_center.progress import UpdateProgress
 
 
 def blob(data: bytes) -> str:

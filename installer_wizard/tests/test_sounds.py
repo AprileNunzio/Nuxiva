@@ -3,8 +3,8 @@ import unittest
 from datetime import datetime
 from unittest import mock
 
-from features.sounds import commands, policy as policy_module
-from features.sounds.policy import policy
+from agenti.sounds import commands, policy as policy_module
+from agenti.sounds.policy import policy
 
 
 def env(values: dict):

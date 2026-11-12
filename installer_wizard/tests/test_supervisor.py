@@ -5,7 +5,7 @@ from unittest import mock
 from fastapi.testclient import TestClient
 
 import nuxiva_supervisor
-from config import FEATURES_DIR
+from tests.agent_tree import AGENTS
 
 HEADERS = {"X-Nuxiva-Request": "1"}
 
@@ -40,7 +40,7 @@ class SupervisorTest(unittest.TestCase):
         listing = self.admin.get("/api/features", headers=HEADERS).json()
         self.assertEqual(listing.get("errors") or [], [])
         ids = {f["id"] for f in listing["features"]}
-        for manifest in FEATURES_DIR.glob("*/feature.json"):
+        for manifest in AGENTS.glob("*/feature.json"):
             with self.subTest(feature=manifest.parent.name):
                 self.assertIn(json.loads(manifest.read_text(encoding="utf-8"))["id"], ids)
 

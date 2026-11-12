@@ -3,8 +3,8 @@ import time
 import unittest
 from unittest import mock
 
-from features.agent.agent import PENDING_TTL, Agent
-from features.chat import context
+from agenti.agent.agent import PENDING_TTL, Agent
+from agenti.chat import context
 
 
 def _as(device: str, voice: str = "") -> None:

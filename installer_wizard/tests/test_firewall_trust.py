@@ -8,9 +8,9 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from access import require_admin
-from features.firewall import api as firewall_api
-from features.firewall import model, nft
-from features.firewall.store import store
+from agenti.firewall import api as firewall_api
+from agenti.firewall import model, nft
+from agenti.firewall.store import store
 from tests.test_firewall_runtime import FirewallBase
 
 

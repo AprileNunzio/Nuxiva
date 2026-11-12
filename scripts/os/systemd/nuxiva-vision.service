@@ -8,7 +8,7 @@ Type=simple
 Environment=PYTHONUNBUFFERED=1
 Environment=OMP_NUM_THREADS=2
 EnvironmentFile=-/etc/nuxiva/nuxiva.env
-ExecStart=/opt/Nuxiva/installer_wizard/venv/bin/python /opt/Nuxiva/installer_wizard/features/vision/service.py
+ExecStart=/opt/Nuxiva/installer_wizard/venv/bin/python /opt/Nuxiva/installer_wizard/agenti/percezione/vision/service.py
 Restart=always
 RestartSec=5
 Nice=5

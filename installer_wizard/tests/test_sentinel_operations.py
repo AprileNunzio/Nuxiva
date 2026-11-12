@@ -2,8 +2,8 @@ import json
 import unittest
 from unittest.mock import patch
 
-from features.sentinel.collectors import operations
-from features.sentinel import journey_detail
+from agenti.sentinel.collectors import operations
+from agenti.sentinel import journey_detail
 
 
 class OperationsTest(unittest.TestCase):

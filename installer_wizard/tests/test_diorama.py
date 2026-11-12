@@ -7,8 +7,8 @@ from unittest import mock
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from features.brain.llm import BrainUnavailable
-from features.diorama import api, catalog, planner, service, spec, store, templates
+from agenti.brain.llm import BrainUnavailable
+from agenti.diorama import api, catalog, planner, service, spec, store, templates
 
 
 class Sandbox(unittest.TestCase):
@@ -133,7 +133,7 @@ if __name__ == "__main__":
 class VoiceTest(Sandbox):
     def setUp(self):
         super().setUp()
-        from features.diorama import commands
+        from agenti.diorama import commands
         self.commands = commands
         record = {"id": "0a1b2c3d", "title": "Stazione", "story": "", "prompt": "p", "created": 1, "base": spec.clean_base({}),
                   "look": spec.clean_look({}), "items": [], "revision": 0}
@@ -213,7 +213,7 @@ class MotionTest(unittest.TestCase):
 class AmbientTest(Sandbox):
     def setUp(self):
         super().setUp()
-        from features.diorama import ambient
+        from agenti.diorama import ambient
         self.ambient = ambient
         ambient.state.update({"last": 0.0, "busy": False})
         self.shown = []
@@ -255,7 +255,7 @@ class AmbientTest(Sandbox):
 class LearningTest(Sandbox):
     def setUp(self):
         super().setUp()
-        from features.diorama import learned, learning
+        from agenti.diorama import learned, learning
         self.learned, self.learning = learned, learning
         patch = mock.patch.object(learned, "FILE", store.DIRECTORY / "learned.json")
         patch.start()
@@ -330,7 +330,7 @@ class LearningTest(Sandbox):
 
 class RecallTests(unittest.TestCase):
     def test_similar_prompts_match_and_unrelated_do_not(self):
-        from features.diorama import recall
+        from agenti.diorama import recall
         a = recall.tokens("stazione giapponese sotto la neve con treno")
         self.assertGreaterEqual(recall.score(a, recall.tokens("una stazione giapponese con il treno sotto la neve")), recall.THRESHOLD)
         self.assertLess(recall.score(a, recall.tokens("giardino zen con laghetto")), recall.THRESHOLD)
@@ -338,7 +338,7 @@ class RecallTests(unittest.TestCase):
 
 class VisualShowTests(unittest.TestCase):
     def test_pattern(self):
-        from features.diorama import commands
+        from agenti.diorama import commands
         for ok in ("mostrami un treno", "fammi vedere una locomotiva", "mostrami il Colosseo", "fammi vedere un castello medievale"):
             with self.subTest(ok=ok):
                 self.assertTrue(commands.VISUAL.match(ok))
@@ -351,8 +351,8 @@ class VisualShowTests(unittest.TestCase):
 
 class ExportTests(unittest.TestCase):
     def test_saved_to_share(self):
-        from features.diorama import export
-        from features.shares import archive
+        from agenti.diorama import export
+        from agenti.shares import archive
         with tempfile.TemporaryDirectory() as tmp, mock.patch.object(archive, "ROOT", Path(tmp)), mock.patch.object(store, "DIRECTORY", Path(tmp) / "st"):
             record = {"id": "a1b2c3d4", "title": "Treno", "story": "", "prompt": "un treno", "created": 1, "base": spec.clean_base({}),
                       "look": spec.clean_look({}), "items": [spec.clean_item({"kind": "house", "x": 0, "z": 0})], "revision": 1, "ambient": False}
@@ -364,7 +364,7 @@ class ExportTests(unittest.TestCase):
 
 class ReferenceTests(unittest.TestCase):
     def test_every_kind_is_fully_declared(self):
-        from features.diorama import reference
+        from agenti.diorama import reference
         rows = {r["id"]: r for r in reference.catalog()}
         for kind in catalog.KINDS:
             with self.subTest(kind=kind.id):
@@ -376,7 +376,7 @@ class ReferenceTests(unittest.TestCase):
         self.assertEqual(len({r["code"] for r in rows.values()}), len(rows))
 
     def test_search_and_compact_prompt(self):
-        from features.diorama import reference
+        from agenti.diorama import reference
         self.assertEqual(reference.search("un treno sui binari")[0]["id"] in ("train", "rails"), True)
         self.assertEqual(reference.describe("train")["motion"]["capable"], True)
         self.assertIsNone(reference.describe("nope"))
@@ -388,7 +388,7 @@ class ReferenceTests(unittest.TestCase):
 
 class LayoutTests(unittest.TestCase):
     def test_castle_template_is_valid_and_settles(self):
-        from features.diorama import layout
+        from agenti.diorama import layout
         plan = templates.compose("costruiscimi un castello", seed=1)
         rows = [r for stage in templates.STAGES for r in plan["stages"][stage]]
         self.assertGreater(len(rows), 40)
@@ -399,7 +399,7 @@ class LayoutTests(unittest.TestCase):
             self.assertLessEqual(abs(item["x"]) - min(hx, 13), plan["base"]["w"] / 2)
 
     def test_overlap_is_resolved_and_hill_lifts(self):
-        from features.diorama import layout
+        from agenti.diorama import layout
         base = {"w": 20, "d": 20, "depth": 1.2}
         hill = spec.clean_item({"kind": "hill", "x": 0, "z": 0, "params": {"radius": 5, "height": 2}})
         a = spec.clean_item({"kind": "house", "x": 0, "z": 0})

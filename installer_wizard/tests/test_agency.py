@@ -8,12 +8,12 @@ from unittest import mock
 from fastapi.testclient import TestClient
 
 import nuxiva_supervisor
-from features.agency import blueprint as bp
-from features.agency import client as client_module
-from features.agency import agent, critic, runner, service, tools, workspace
-from features.agency.forge import registry as forge_registry
-from features.agency.memory import ProjectMemory
-from features.shares import archive
+from agenti.agency import blueprint as bp
+from agenti.agency import client as client_module
+from agenti.agency import agent, critic, runner, service, tools, workspace
+from agenti.agency.forge import registry as forge_registry
+from agenti.agency.memory import ProjectMemory
+from agenti.shares import archive
 
 HEADERS = {"X-Nuxiva-Request": "1"}
 
@@ -130,7 +130,7 @@ class AgencyCase(unittest.TestCase):
         (self.tmp / "condivisa" / "09 Progetti").mkdir(parents=True)
 
     def start_project(self):
-        with mock.patch("features.brain.llm.generate", scripted(PLAN, CRITIQUE)):
+        with mock.patch("agenti.brain.llm.generate", scripted(PLAN, CRITIQUE)):
             return asyncio.run(service.start("Creami un e-commerce di informatica", "it"))
 
 
@@ -161,7 +161,7 @@ class BlueprintTest(unittest.TestCase):
 class CriticTest(unittest.TestCase):
     def test_interrogate_records_questions_and_adds_missing_tasks(self):
         plan = bp.parse(PLAN, "goal")
-        with mock.patch("features.brain.llm.generate", scripted(CRITIQUE)):
+        with mock.patch("agenti.brain.llm.generate", scripted(CRITIQUE)):
             reasoning, tokens = asyncio.run(critic.interrogate("goal", plan, "italiano"))
         self.assertEqual(reasoning.added, ["checkout"])
         self.assertEqual(reasoning.exchanges[0].question, "I pagamenti sono sicuri?")
@@ -170,7 +170,7 @@ class CriticTest(unittest.TestCase):
 
     def test_review_never_approves_without_explicit_verdict(self):
         task = {"title": "x", "acceptance": ["y"]}
-        with mock.patch("features.brain.llm.generate", scripted({}, {"verdict": "approve"}, {"verdict": "approve"})):
+        with mock.patch("agenti.brain.llm.generate", scripted({}, {"verdict": "approve"}, {"verdict": "approve"})):
             self.assertFalse(asyncio.run(critic.review(task, "lavoro", "italiano")).approved)
             self.assertTrue(asyncio.run(critic.review(task, "lavoro", "italiano")).approved)
             self.assertFalse(asyncio.run(critic.review(task, "  ", "italiano")).approved)
@@ -213,7 +213,7 @@ class ServiceTest(AgencyCase):
         with self.assertRaises(service.AgencyFailure) as short:
             asyncio.run(service.start("ciao", "it"))
         self.assertEqual(short.exception.code, "goal")
-        with mock.patch("features.brain.llm.generate", scripted({"tasks": []})):
+        with mock.patch("agenti.brain.llm.generate", scripted({"tasks": []})):
             with self.assertRaises(service.AgencyFailure) as empty:
                 asyncio.run(service.start("Creami un sito per la pizzeria", "it"))
         self.assertEqual(empty.exception.code, "empty_plan")
@@ -225,7 +225,7 @@ class RunnerTest(AgencyCase):
         engine = runner.Runner()
 
         async def go():
-            with mock.patch("features.brain.llm.generate", scripted(*replies)):
+            with mock.patch("agenti.brain.llm.generate", scripted(*replies)):
                 for _ in range(rounds):
                     await engine.tick()
                     while engine.inflight:
@@ -330,7 +330,7 @@ class AgentTest(AgencyCase):
 
     def run_agent(self, *replies):
         ctx = tools.Context("shop", "shop")
-        with mock.patch("features.brain.llm.generate", scripted(*replies)):
+        with mock.patch("agenti.brain.llm.generate", scripted(*replies)):
             return asyncio.run(agent.act(self.BRIEF, self.TASK, ctx)), ctx
 
     def test_uses_tools_then_finishes_with_history_in_prompt(self):

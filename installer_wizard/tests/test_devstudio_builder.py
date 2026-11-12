@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.devstudio import builder, plan as plans, starters, tools, workspace
+from agenti.devstudio import builder, plan as plans, starters, tools, workspace
 
 
 def run(coro):
@@ -89,7 +89,7 @@ class BuildTests(BuilderCase):
 
     def test_unreachable_model_stops_without_losing_the_plan(self):
         self.plan()
-        from features.brain.llm import BrainUnavailable
+        from agenti.brain.llm import BrainUnavailable
 
         async def down(prompt, **kwargs):
             raise BrainUnavailable("offline")
@@ -102,8 +102,8 @@ class BuildTests(BuilderCase):
 class GrantTests(unittest.TestCase):
 
     def test_existing_programming_experts_receive_the_build_tools(self):
-        from features.experts import service, store as store_module
-        from features.experts.model import build
+        from agenti.experts import service, store as store_module
+        from agenti.experts.model import build
         with tempfile.TemporaryDirectory() as root:
             base = Path(root)
             for name, file in (("PROFILES", "e.json"), ("HISTORY", "h.sealed"), ("HISTORY_KEY", "h.key"), ("SEEDED", "s.json")):

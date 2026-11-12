@@ -27,7 +27,7 @@ def enforced() -> bool:
 
 
 def tls_port() -> int:
-    from features.secure.api import active_port
+    from agenti.secure.api import active_port
     return active_port()
 
 

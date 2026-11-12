@@ -1,6 +1,6 @@
 import re
 
-from features.models3d import library, parts as ops, studio
+from agenti.models3d import library, parts as ops, studio
 
 NUM = r"(?P<n>\d+(?:[.,]\d+)?)"
 UNIT = r"(?:\s*(?P<u>mm|millimetr\w*|cm|centimetr\w*|metr\w*|m)\b)?"

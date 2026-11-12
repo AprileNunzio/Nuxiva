@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.avatars import api, store
+from agenti.avatars import api, store
 
 
 class AvatarStoreTest(unittest.TestCase):

@@ -20,7 +20,7 @@ admin_routes = APIRouter()
 _ollama_cache = {}
 
 try:
-    from features.brain.brains import brains
+    from agenti.brain.brains import brains
 except ImportError:
     class _DummyBrains:
         def invalidate(self):
@@ -150,7 +150,7 @@ def save_display_settings(data: dict) -> dict:
         log.error("Impostazioni del display non salvate: %s", exc)
     store.display_settings = current
     try:
-        from features.desktop.desk import desk
+        from agenti.desktop.desk import desk
         desk.publish()
     except Exception:
         pass

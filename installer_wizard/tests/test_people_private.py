@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.people import mood, people, private_store
+from agenti.people import mood, people, private_store
 
 
 class PeoplePrivateTest(unittest.TestCase):

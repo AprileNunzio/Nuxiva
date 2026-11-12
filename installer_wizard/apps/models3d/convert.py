@@ -3,7 +3,7 @@ import shutil
 import tempfile
 from pathlib import Path
 
-from features.models3d import library
+from agenti.models3d import library
 
 BLENDER_SCRIPT = """
 import bpy, sys

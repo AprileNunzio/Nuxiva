@@ -4,7 +4,7 @@ from pathlib import Path
 
 import numpy as np
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "features" / "vision"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "agenti" / "percezione" / "vision"))
 
 import affect
 

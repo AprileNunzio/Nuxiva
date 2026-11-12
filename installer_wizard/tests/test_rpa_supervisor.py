@@ -5,10 +5,10 @@ import unittest
 import zlib
 from unittest.mock import patch
 
-from features.rpa.broker import RpaBroker, RpaOffline, RpaTimeout
-from features.rpa.controller import RpaController
-from features.rpa.steps import parse_steps
-from features.vision.ui_anchor import Screen, UiElement, image_size, parse_elements, prompt_for
+from agenti.rpa.broker import RpaBroker, RpaOffline, RpaTimeout
+from agenti.rpa.controller import RpaController
+from agenti.rpa.steps import parse_steps
+from agenti.vision.ui_anchor import Screen, UiElement, image_size, parse_elements, prompt_for
 
 SCREEN = Screen(1000, 500)
 
@@ -264,7 +264,7 @@ class ControllerTest(unittest.IsolatedAsyncioTestCase):
 
 class ServicePermissionTest(unittest.IsolatedAsyncioTestCase):
     async def test_disabled_or_unlisted_nodes_are_refused(self):
-        from features.rpa import service
+        from agenti.rpa import service
 
         for env in ({}, {"NUXIVA_RPA": "1"}, {"NUXIVA_RPA": "0", "NUXIVA_RPA_NODES": "n1"}, {"NUXIVA_RPA": "1", "NUXIVA_RPA_NODES": "n2"}):
             with self.subTest(env=env), patch.object(service, "env_get", lambda k, d="": env.get(k, d)):
@@ -272,7 +272,7 @@ class ServicePermissionTest(unittest.IsolatedAsyncioTestCase):
                     await service.rpa.run("n1", [{"do": "wait", "seconds": 1}])
 
     async def test_permitted_node_with_invalid_steps_is_a_value_error(self):
-        from features.rpa import service
+        from agenti.rpa import service
 
         env = {"NUXIVA_RPA": "1", "NUXIVA_RPA_NODES": "n1, n3"}
         with patch.object(service, "env_get", lambda k, d="": env.get(k, d)):

@@ -4,9 +4,9 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.agency import tools
-from features.agency.forge import registry as forge_registry
-from features.agency.forge.registry import ForgedTool
+from agenti.agency import tools
+from agenti.agency.forge import registry as forge_registry
+from agenti.agency.forge.registry import ForgedTool
 
 SQUARE_CODE = "def run(args):\n    return args['x'] * args['x']\n"
 TESTS = [{"args": {"x": 3}, "expect": 9}, {"args": {"x": 4}, "expect": 16}]
@@ -88,7 +88,7 @@ class ToolPermissionsTest(unittest.TestCase):
             task="t1",
             permissions=["read", "write", "execute"],
         )
-        with mock.patch("features.agency.forge.sandbox.execute", return_value={"ok": True, "result": 25}):
+        with mock.patch("agenti.agency.forge.sandbox.execute", return_value={"ok": True, "result": 25}):
             res_unapproved = self.run_tool(ctx, "x_calc_sq", {"x": 5})
             self.assertIn("revoked or not approved", res_unapproved)
 

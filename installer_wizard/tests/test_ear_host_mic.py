@@ -4,26 +4,26 @@ import time
 import unittest
 from unittest.mock import AsyncMock, MagicMock, patch
 
-from features.ear.host_mic import (HeadlessSocket, HostMicCapture,
+from agenti.ear.host_mic import (HeadlessSocket, HostMicCapture,
                                    get_capture_candidates, pick_capture_binary,
                                    speak_reply)
 
 
 def _get_sessions() -> set:
-    for mod_name in ("features.ear.broadcast", "broadcast", "installer_wizard.features.ear.broadcast"):
+    for mod_name in ("agenti.ear.broadcast", "broadcast", "installer_wizard.agenti.ear.broadcast"):
         if mod_name in sys.modules:
             mod = sys.modules[mod_name]
             if hasattr(mod, "SESSIONS"):
                 return mod.SESSIONS
     try:
-        from features.ear.broadcast import SESSIONS
+        from agenti.ear.broadcast import SESSIONS
         return SESSIONS
     except ImportError:
         try:
             from broadcast import SESSIONS
             return SESSIONS
         except ImportError:
-            from installer_wizard.features.ear.broadcast import SESSIONS
+            from installer_wizard.agenti.ear.broadcast import SESSIONS
             return SESSIONS
 
 
@@ -43,7 +43,7 @@ class EarHostMicTest(unittest.IsolatedAsyncioTestCase):
                 self.ws = socket
 
         capture = HostMicCapture(CaptureSession)
-        with patch("features.ear.host_mic.get_capture_candidates", return_value=[["capture"]]), \
+        with patch("agenti.ear.host_mic.get_capture_candidates", return_value=[["capture"]]), \
              patch("asyncio.create_subprocess_exec", new=AsyncMock(return_value=process)):
             task = asyncio.create_task(capture.run())
             await asyncio.wait_for(started.wait(), 1)
@@ -64,7 +64,7 @@ class EarHostMicTest(unittest.IsolatedAsyncioTestCase):
 
     def test_public_port_default_and_explicit_url_overrides(self):
         import runpy
-        from features.ear import host_mic
+        from agenti.ear import host_mic
         with patch.dict("os.environ", {}, clear=True):
             defaults = runpy.run_path(host_mic.__file__)
         self.assertEqual(defaults["ASSISTANT_URL"], "http://127.0.0.1:80/api/assistant/chat")
@@ -79,7 +79,7 @@ class EarHostMicTest(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(overrides["TTS_URL"], "http://localhost:9000/speak")
 
     async def test_wake_feedback_origin_deduplication_and_rearm(self):
-        with patch("features.ear.host_mic.play_wake_feedback", new_callable=AsyncMock) as sound:
+        with patch("agenti.ear.host_mic.play_wake_feedback", new_callable=AsyncMock) as sound:
             sock = HeadlessSocket()
             await sock.send('{"type":"wake", "origin":false}')
             await asyncio.sleep(0)
@@ -99,8 +99,8 @@ class EarHostMicTest(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(sound.await_count, 2)
 
     async def test_wake_playback_failure_and_opt_out(self):
-        from features.ear.host_mic import play_wake_feedback
-        with patch("features.voices.playback.play_host_audio", new_callable=AsyncMock) as play:
+        from agenti.ear.host_mic import play_wake_feedback
+        with patch("agenti.voices.playback.play_host_audio", new_callable=AsyncMock) as play:
             with patch.dict("os.environ", {"NUXIVA_EAR_HOST_WAKE_SOUND": "0"}):
                 await play_wake_feedback()
                 play.assert_not_awaited()
@@ -111,7 +111,7 @@ class EarHostMicTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_headless_requests_use_public_urls_and_preserve_payload(self):
         import json
-        from features.ear.host_mic import dispatch_headless_command, PUBLIC_URL
+        from agenti.ear.host_mic import dispatch_headless_command, PUBLIC_URL
         with patch("urllib.request.urlopen") as opened:
             response = MagicMock()
             response.__enter__.return_value = response
@@ -134,10 +134,10 @@ class EarHostMicTest(unittest.IsolatedAsyncioTestCase):
                 await speak_reply("Ciao", "it")
 
     def test_native_capture_requests_low_latency(self):
-        from features.ear import host_mic
+        from agenti.ear import host_mic
         with patch.dict("os.environ", {}, clear=True), \
-             patch("features.ear.host_mic.shutil.which", return_value="/usr/bin/tool"), \
-             patch("features.ear.host_mic._get_kiosk_uid", return_value=None):
+             patch("agenti.ear.host_mic.shutil.which", return_value="/usr/bin/tool"), \
+             patch("agenti.ear.host_mic._get_kiosk_uid", return_value=None):
             commands = host_mic.get_capture_candidates()
         parec = [c for c in commands if c[0] == "parec"]
         self.assertEqual(len(parec), 1)
@@ -152,30 +152,30 @@ class EarHostMicTest(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(host_mic.capture_latency_ms(), 30)
 
     def test_kiosk_capture_keeps_latency_hint(self):
-        from features.ear import host_mic
+        from agenti.ear import host_mic
         with patch.dict("os.environ", {}, clear=True), \
-             patch("features.ear.host_mic.shutil.which", side_effect=lambda name: name in ("parec", "runuser") and name), \
-             patch("features.ear.host_mic._get_kiosk_uid", return_value=1001), \
-             patch("features.ear.host_mic.os.getuid", return_value=0, create=True), \
-             patch("features.ear.host_mic.os.name", "posix"):
+             patch("agenti.ear.host_mic.shutil.which", side_effect=lambda name: name in ("parec", "runuser") and name), \
+             patch("agenti.ear.host_mic._get_kiosk_uid", return_value=1001), \
+             patch("agenti.ear.host_mic.os.getuid", return_value=0, create=True), \
+             patch("agenti.ear.host_mic.os.name", "posix"):
             commands = host_mic.get_capture_candidates()
         self.assertEqual(commands[0][:3], ["runuser", "-u", host_mic.KIOSK_USER])
         self.assertIn("--latency-msec=30", commands[0])
 
     async def test_wake_feedback_loads_voice_modules_without_features_package(self):
         import importlib
-        from features.ear import host_mic
+        from agenti.ear import host_mic
         real_import = importlib.import_module
 
         def isolated(name, *args, **kwargs):
-            if name.startswith(("features.voices", "installer_wizard.features.voices")):
+            if name.startswith(("agenti.voices", "installer_wizard.agenti.voices")):
                 raise ModuleNotFoundError(name)
             return real_import(name, *args, **kwargs)
 
         for name in ("feedback", "playback"):
             sys.modules.pop(f"_nuxiva_host_voices_{name}", None)
         try:
-            with patch("features.ear.host_mic.importlib.import_module", side_effect=isolated):
+            with patch("agenti.ear.host_mic.importlib.import_module", side_effect=isolated):
                 feedback = host_mic._voice_module("feedback")
                 playback = host_mic._voice_module("playback")
                 self.assertTrue(feedback.wake_wav().startswith(b"RIFF"))
@@ -190,7 +190,7 @@ class EarHostMicTest(unittest.IsolatedAsyncioTestCase):
                 sys.modules.pop(f"_nuxiva_host_voices_{name}", None)
 
     def test_voice_module_loader_rejects_unknown_names(self):
-        from features.ear import host_mic
+        from agenti.ear import host_mic
         for name in ("../ear/service", "os", "synthesis"):
             with self.assertRaises(ValueError):
                 host_mic._voice_module(name)
@@ -215,7 +215,7 @@ class EarHostMicTest(unittest.IsolatedAsyncioTestCase):
         mock_proc.stdout.read = AsyncMock(side_effect=[b"\x01\x00" * 4, b"\x01\x00" * 4, b""])
         mock_proc.terminate = MagicMock()
         mock_proc.wait = AsyncMock(return_value=0)
-        with patch("features.ear.host_mic.get_capture_candidates", return_value=[["fake-rec"]]), \
+        with patch("agenti.ear.host_mic.get_capture_candidates", return_value=[["fake-rec"]]), \
              patch("asyncio.create_subprocess_exec", return_value=mock_proc):
             run_task = asyncio.create_task(capture.run())
             await asyncio.sleep(0.05)
@@ -282,7 +282,7 @@ class EarHostMicTest(unittest.IsolatedAsyncioTestCase):
         async def mock_dispatch(event):
             dispatched.append(event)
 
-        with patch("features.ear.host_mic.dispatch_headless_command", mock_dispatch):
+        with patch("agenti.ear.host_mic.dispatch_headless_command", mock_dispatch):
             sock = HeadlessSocket()
             await sock.send('{"type": "transcript", "text": "ciao Nuxiva", "lang": "it"}')
             await asyncio.sleep(0.05)
@@ -296,7 +296,7 @@ class EarHostMicTest(unittest.IsolatedAsyncioTestCase):
         async def mock_dispatch(event):
             dispatched.append(event)
 
-        with patch("features.ear.host_mic.dispatch_headless_command", mock_dispatch):
+        with patch("agenti.ear.host_mic.dispatch_headless_command", mock_dispatch):
             sock = HeadlessSocket()
             # Un evento con origin=False rappresenta un broadcast mirror da un'altra sessione (es. display/kiosk)
             await sock.send('{"type": "transcript", "text": "ciao Nuxiva", "lang": "it", "origin": false}')
@@ -324,7 +324,7 @@ class EarHostMicTest(unittest.IsolatedAsyncioTestCase):
         mock_proc.terminate = MagicMock()
         mock_proc.wait = AsyncMock(return_value=0)
 
-        with patch("features.ear.host_mic.get_capture_candidates", return_value=[["fake-rec"]]), \
+        with patch("agenti.ear.host_mic.get_capture_candidates", return_value=[["fake-rec"]]), \
              patch("asyncio.create_subprocess_exec", return_value=mock_proc):
             run_task = asyncio.create_task(capture.run())
             await asyncio.sleep(0.05)
@@ -349,7 +349,7 @@ class EarHostMicTest(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(len(_get_sessions()), 0)
 
     async def test_broadcast_event_delivers_transcript_to_registered_host_mic(self):
-        from features.ear.broadcast import broadcast_event
+        from agenti.ear.broadcast import broadcast_event
 
         class MockSession:
             def __init__(self, ws):
@@ -365,7 +365,7 @@ class EarHostMicTest(unittest.IsolatedAsyncioTestCase):
         async def mock_dispatch(event):
             dispatched.append(event)
 
-        with patch("features.ear.host_mic.dispatch_headless_command", mock_dispatch):
+        with patch("agenti.ear.host_mic.dispatch_headless_command", mock_dispatch):
             # Simuliamo la chiamata broadcast da Session._deliver (origin=session)
             await broadcast_event(origin=session, type="transcript", text="accendi la luce", lang="it")
             await asyncio.sleep(0.05)

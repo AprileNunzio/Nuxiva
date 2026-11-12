@@ -2,12 +2,12 @@ import asyncio
 import unittest
 from unittest import mock
 
-from features.agent import registry, tools_media
-from features.capabilities import manifest
-from features.cloud import conversation
-from features.desktop.desk import desk
-from features.music import commands
-from features.music.outputs import Outputs
+from agenti.agent import registry, tools_media
+from agenti.capabilities import manifest
+from agenti.cloud import conversation
+from agenti.desktop.desk import desk
+from agenti.music import commands
+from agenti.music.outputs import Outputs
 from state import store
 from tests.test_music_library import Base
 

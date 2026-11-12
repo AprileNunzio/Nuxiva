@@ -75,8 +75,8 @@ def _mark_done(source: str) -> None:
     os.chmod(tmp, 0o600)
     os.replace(tmp, SETUP_FILE)
     try:
-        from features.activation.domain.journey import Journey, Stage
-        from features.activation.infrastructure.journey_store import JourneyStore
+        from agenti.activation.domain.journey import Journey, Stage
+        from agenti.activation.infrastructure.journey_store import JourneyStore
         act_file = STATE_DIR / "activation.json"
         now = time.time()
         JourneyStore(act_file).save(Journey(stage=Stage.DONE, created_at=now, updated_at=now))
@@ -240,7 +240,7 @@ def _store_cloud(raw: dict) -> None:
     if str(raw.get("brain") or "") != "cloud":
         return
     provider, key = cloud_choice(raw)
-    from features.cloud.vault import vault
+    from agenti.cloud.vault import vault
     try:
         vault.update(provider, {"key": key, "enabled": True})
     except ValueError as exc:
@@ -275,7 +275,7 @@ async def setup_voice_preview(voice: str, request: Request, _: None = Depends(re
         raise HTTPException(429, "Un momento: sto ancora parlando")
     async with _preview["lock"]:
         _preview["at"] = time.time()
-        from features.voices import catalog, synthesis
+        from agenti.voices import catalog, synthesis
         if catalog.is_piper(voice) and not catalog.piper_installed(voice):
             raise HTTPException(409, "Voce non ancora installata: la potrai ascoltare tra poco")
         try:
@@ -336,7 +336,7 @@ async def setup_assistant(request: Request, _: None = Depends(require_setup)):
         "NUXIVA_UI_LANG": lang,
     }, "configurazione assistente")
 
-    from features.ear import learner as learner_mod
+    from agenti.ear import learner as learner_mod
     import setup_complete
     learner_mod.learner.teach(setup_complete.wake_word(name))
 
@@ -369,7 +369,7 @@ async def setup_voice_greeting_preview(request: Request, _: None = Depends(requi
     voice = VOICES_BY_LANG_GENDER.get(lang, {}).get(gender, "if_sara")
     tmpl = GREETING_TEMPLATES.get(lang, GREETING_TEMPLATES["it"])
     text = tmpl.format(name=name)
-    from features.voices import catalog, synthesis
+    from agenti.voices import catalog, synthesis
     if catalog.is_piper(voice) and not catalog.piper_installed(voice):
         raise HTTPException(409, "Voce non ancora installata: la potrai ascoltare tra poco")
     try:

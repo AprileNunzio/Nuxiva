@@ -9,9 +9,9 @@ from unittest import mock
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from features.nodes import enroll_routes
-from features.nodes import enrollment as enrollment_module
-from features.nodes import registry as registry_module
+from agenti.nodes import enroll_routes
+from agenti.nodes import enrollment as enrollment_module
+from agenti.nodes import registry as registry_module
 
 
 class TokensTest(unittest.TestCase):
@@ -42,7 +42,7 @@ class TokensTest(unittest.TestCase):
 
     def test_expired_and_unknown_tokens_are_rejected(self):
         token, expires = self.tokens.issue(ttl=120)
-        with mock.patch("features.nodes.enrollment.time.time", return_value=expires + 1):
+        with mock.patch("agenti.nodes.enrollment.time.time", return_value=expires + 1):
             with self.assertRaises(enrollment_module.EnrollmentError):
                 self.tokens.verify(token)
         for bad in ("", None, "x" * 43, 12):

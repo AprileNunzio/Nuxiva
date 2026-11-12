@@ -16,7 +16,7 @@ PAIRED_KIND = {
 
 
 def paired_nodes() -> List[Dict[str, Any]]:
-    from features.nodes.registry import registry
+    from agenti.nodes.registry import registry
 
     return registry.listing()
 

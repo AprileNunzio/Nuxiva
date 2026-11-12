@@ -10,7 +10,7 @@ import nuxiva_supervisor
 from os_notification import NotificationManager
 from os_memory import MemoryManager
 from os_process import ProcessManager
-from features.auto_update.boot_updater import BootUpdater
+from agenti.auto_update.boot_updater import BootUpdater
 
 
 class TestOSNotificationManager(unittest.TestCase):
@@ -109,7 +109,7 @@ class TestBootUpdater(unittest.IsolatedAsyncioTestCase):
         self.bu = BootUpdater()
 
     async def test_boot_check_executes_self_healing(self):
-        with mock.patch("features.auto_update.boot_updater.self_healer.run_all", return_value={"test": True}) as mock_heal:
+        with mock.patch("agenti.auto_update.boot_updater.self_healer.run_all", return_value={"test": True}) as mock_heal:
             with mock.patch("updater.priority_update", mock.AsyncMock(return_value=False)):
                 res = await self.bu.execute_boot_check()
                 self.assertTrue(res.get("ok"))

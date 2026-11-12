@@ -1,6 +1,6 @@
 import unittest
 
-from features.voices import speech_rules
+from agenti.voices import speech_rules
 
 
 class SpeechRulesTests(unittest.TestCase):

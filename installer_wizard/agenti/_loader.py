@@ -4,11 +4,11 @@ import importlib.machinery
 import sys
 from pathlib import Path
 
-from agenti import _manifest
+from . import _manifest
 
 PACKAGE = "agenti"
+LEGACY_PACKAGE = "features"
 ROOT = Path(__file__).resolve().parent
-LEGACY_DIR = ROOT.parent / "features"
 
 
 class _Alias(importlib.abc.Loader):
@@ -27,26 +27,23 @@ def _real_dir(path: Path) -> bool:
 
 
 class AgentFinder(importlib.abc.MetaPathFinder):
-    def __init__(self, root: Path = ROOT, legacy: Path = LEGACY_DIR) -> None:
+    def __init__(self, root: Path = ROOT) -> None:
         self.root = root
-        self.legacy = legacy
+
+    def _installed(self, ident: str) -> bool:
+        return _manifest.valid_id(ident) and any(
+            _real_dir(self.root / category / ident) for category in _manifest.CATEGORIES)
 
     def find_spec(self, fullname: str, path=None, target=None):
-        if not fullname.startswith(PACKAGE + "."):
-            return None
         parts = fullname.split(".")
-        head = parts[1]
-        if head in _manifest.CATEGORIES:
+        if len(parts) < 2:
+            return None
+        if parts[0] == PACKAGE and parts[1] in _manifest.CATEGORIES:
             raise ModuleNotFoundError(f"Gli agenti si importano per id (agenti.<id>), non per categoria: {fullname}",
                                       name=fullname)
-        if not _manifest.valid_id(head):
-            return None
-        if any(_real_dir(self.root / category / head) for category in _manifest.CATEGORIES):
-            return None
-        if not _real_dir(self.legacy / head):
-            return None
-        alias = "features." + ".".join(parts[1:])
-        return importlib.machinery.ModuleSpec(fullname, _Alias(alias))
+        if parts[0] == LEGACY_PACKAGE and self._installed(parts[1]):
+            return importlib.machinery.ModuleSpec(fullname, _Alias(".".join([PACKAGE, *parts[1:]])))
+        return None
 
 
 def install() -> AgentFinder:

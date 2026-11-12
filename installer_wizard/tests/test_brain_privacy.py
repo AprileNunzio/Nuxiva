@@ -5,12 +5,12 @@ from unittest import mock
 
 from sealed import SealedFile
 
-from features.brain.privacy import origin
-from features.brain.privacy.audit import BLOCKED, PrivacyAudit
-from features.brain.privacy.detector import classify
-from features.brain.privacy.gate import PrivacyBlocked, PrivacyGate
-from features.brain.privacy.levels import PERSONAL, PUBLIC, SENSITIVE, strictest
-from features.brain.privacy.policy import HOME, LOCAL, REMOTE, PolicyError, PolicyStore, parse, preset
+from agenti.brain.privacy import origin
+from agenti.brain.privacy.audit import BLOCKED, PrivacyAudit
+from agenti.brain.privacy.detector import classify
+from agenti.brain.privacy.gate import PrivacyBlocked, PrivacyGate
+from agenti.brain.privacy.levels import PERSONAL, PUBLIC, SENSITIVE, strictest
+from agenti.brain.privacy.policy import HOME, LOCAL, REMOTE, PolicyError, PolicyStore, parse, preset
 
 ORIGINS = {"llama3:8b": LOCAL, "cloud:srv-casa/qwen": HOME, "cloud:openai/gpt-5": REMOTE}
 

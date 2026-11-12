@@ -19,8 +19,8 @@ def require_open(request: Request) -> None:
 
 
 async def _probe(provider: str, key: str) -> bool:
-    from features.cloud.catalog import BY_ID
-    from features.cloud.client import endpoint, headers
+    from agenti.cloud.catalog import BY_ID
+    from agenti.cloud.client import endpoint, headers
     spec = BY_ID[provider]
     entry = {"key": key}
     async with httpx.AsyncClient(timeout=TIMEOUT_S, follow_redirects=False) as client:

@@ -2,8 +2,8 @@ import re
 
 from fastapi import HTTPException
 
-from features.people import people
-from features.voices.languages import LANGS as VOICE_LANGUAGES
+from agenti.people import people
+from agenti.voices.languages import LANGS as VOICE_LANGUAGES
 
 FIRST_RE = re.compile(r"[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ-]{0,39}")
 LAST_RE = re.compile(r"[A-Za-zÀ-ÖØ-öø-ÿ][A-Za-zÀ-ÖØ-öø-ÿ' -]{0,59}")

@@ -4,14 +4,14 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.chat import assistant
-from features.chat.dialogue import dialogue
-from features.desktop.desk import desk
-from features.home_assistant.nlu import matching
-from features.home_assistant.nlu.text import stem
-from features.understanding import claims, context, router
-from features.whiteboard import board as board_module, commands, service
-from features.whiteboard.board import Board
+from agenti.chat import assistant
+from agenti.chat.dialogue import dialogue
+from agenti.desktop.desk import desk
+from agenti.home_assistant.nlu import matching
+from agenti.home_assistant.nlu.text import stem
+from agenti.understanding import claims, context, router
+from agenti.whiteboard import board as board_module, commands, service
+from agenti.whiteboard.board import Board
 
 DEVICE = "prova-comprensione"
 
@@ -52,9 +52,9 @@ class ClaimsTest(unittest.TestCase):
         self.assertEqual(claims.music(ctx("che ore sono")), 0.0)
 
     def test_home_is_scored_by_how_well_the_device_was_recognised(self):
-        from features.home_assistant.home import brain
+        from agenti.home_assistant.home import brain
         plans = {"nome": {"kind": "command", "how": "nome"}, "stanza": {"kind": "command", "how": "stanza"}, "q": {"kind": "query"}, "x": {"kind": "unsupported"}}
-        with mock.patch.dict(brain.catalog.entities, {"light.a": {}}), mock.patch("features.home_assistant.nlu.parser.parse") as parse:
+        with mock.patch.dict(brain.catalog.entities, {"light.a": {}}), mock.patch("agenti.home_assistant.nlu.parser.parse") as parse:
             parse.return_value = plans["nome"]
             self.assertEqual(claims.home(ctx("accendi la luce")), 0.85)
             parse.return_value = plans["stanza"]
@@ -110,7 +110,7 @@ class RouterTest(unittest.TestCase):
         async def generate(prompt, **kw):
             seen["prompt"] = prompt
             return {"domain": "whiteboard", "motivo": "stava facendo calcoli alla lavagna"}
-        with mock.patch("features.brain.llm.generate", generate):
+        with mock.patch("agenti.brain.llm.generate", generate):
             decision = self.route({"home": 0.85, "whiteboard": 0.8}, "metti 5 per 5")
         self.assertEqual(decision.domains, ["whiteboard", "home"])
         self.assertTrue(decision.arbitrated)
@@ -121,14 +121,14 @@ class RouterTest(unittest.TestCase):
 
     def test_without_a_usable_answer_the_best_score_wins(self):
         for reply in ({"domain": "inventato"}, "testo", None):
-            with mock.patch("features.brain.llm.generate", mock.AsyncMock(return_value=reply)):
+            with mock.patch("agenti.brain.llm.generate", mock.AsyncMock(return_value=reply)):
                 self.assertEqual(self.route({"home": 0.85, "whiteboard": 0.8}).domains, ["home", "whiteboard"])
-        with mock.patch("features.brain.llm.generate", mock.AsyncMock(side_effect=RuntimeError("nessun modello"))):
+        with mock.patch("agenti.brain.llm.generate", mock.AsyncMock(side_effect=RuntimeError("nessun modello"))):
             decision = self.route({"home": 0.85, "whiteboard": 0.8})
         self.assertEqual((decision.domains, decision.arbitrated), (["home", "whiteboard"], False))
 
     def test_clear_winners_and_switched_off_reasoning_never_call_the_model(self):
-        with mock.patch("features.brain.llm.generate", mock.AsyncMock(side_effect=AssertionError("non deve essere chiamato"))):
+        with mock.patch("agenti.brain.llm.generate", mock.AsyncMock(side_effect=AssertionError("non deve essere chiamato"))):
             self.assertEqual(self.route({"home": 0.6, "whiteboard": 0.97}).domains[0], "whiteboard")
             self.assertEqual(self.route({"home": 0.9, "whiteboard": 0.3}).domains[0], "home")
             with mock.patch.object(router, "reasoning", lambda: False):
@@ -160,8 +160,8 @@ class FlowTest(unittest.TestCase):
         router.RING.clear()
 
     def handle(self, text: str) -> dict:
-        from features.chat import context as request_context
-        from features.home_assistant.home import brain
+        from agenti.chat import context as request_context
+        from agenti.home_assistant.home import brain
 
         async def greedy_home(said: str):
             return ("Non so fare questa operazione con Ingresso Apri la porta.", {"mode": "face"}, "casa") if "apri" in said else None

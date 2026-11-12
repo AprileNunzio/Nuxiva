@@ -1,8 +1,8 @@
 import unittest
 from unittest.mock import patch
 
-from features.brain import brains as brains_module
-from features.brain import presets, scope
+from agenti.brain import brains as brains_module
+from agenti.brain import presets, scope
 
 LOCAL_A, LOCAL_B = "qwen2.5:1.5b", "qwen2.5:7b"
 SERVER = "cloud:srv-studio/llama3.1:8b"

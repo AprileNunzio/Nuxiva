@@ -2,9 +2,9 @@ import time
 import unittest
 from unittest import mock
 
-from features.people.vitals import camera as camera_module
-from features.people.vitals.camera import CameraVitals
-from features.people.vitals.live import Live
+from agenti.people.vitals import camera as camera_module
+from agenti.people.vitals.camera import CameraVitals
+from agenti.people.vitals.live import Live
 
 
 def person(slug: str, reading: dict | None = None, known: bool = True) -> dict:
@@ -57,7 +57,7 @@ class CameraVitalsTest(unittest.TestCase):
             self.assertEqual(self.cam.status("anna", 100.0)["state"], "busy")
 
     def test_readings_are_ingested_once_and_validated(self):
-        from features.people.vitals import service
+        from agenti.people.vitals import service
         now = time.time()
         good = {"heart_rate": 68, "resp_rate": 14, "hr_quality": 0.7, "rr_quality": 0.8, "progress": 1.0, "at": now}
         with mock.patch.object(service, "ingest", return_value={"accepted": 2, "rejected": 0}) as ingest:
@@ -75,7 +75,7 @@ class CameraVitalsTest(unittest.TestCase):
         self.assertEqual(self.cam.status("anna", now + 21)["state"], "measuring")
 
     def test_cost_is_recorded_as_a_delta(self):
-        from features.governor.service import governor
+        from agenti.governor.service import governor
         with mock.patch.object(governor, "enabled", return_value=True), mock.patch.object(governor.ledger, "record") as record:
             self.cam.ingest([], {"cpu_ms": 50.0, "frames": 10}, ["anna"])
             self.cam.ingest([], {"cpu_ms": 80.0, "frames": 16}, ["anna"])

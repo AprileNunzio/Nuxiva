@@ -24,7 +24,7 @@ class MusicTool(BaseAgentTool):
 
     async def execute(self, brano: str = "", sorgente: str = "locale", **kwargs: Any) -> str:
         try:
-            from installer_wizard.features.shares.archive import folder as share_folder
+            from installer_wizard.agenti.shares.archive import folder as share_folder
             music_root = str(share_folder("musica"))
         except ImportError:
             music_root = os.path.join(os.environ.get("DATA_DIR", "./data"), "Musica")

@@ -2,9 +2,9 @@ import asyncio
 import json
 import unittest
 import unittest.mock
-from pathlib import Path
+from tests.agent_tree import AGENTS
 
-FEATURES = Path(__file__).resolve().parents[1] / "features"
+FEATURES = AGENTS
 CONFIGURED = ("research", "fleet", "brain", "location", "study", "avatars", "models3d", "firewall", "vpn", "telegram", "experts")
 
 
@@ -52,7 +52,7 @@ class SurfaceTest(unittest.TestCase):
 
 class FleetAutoCreateTest(unittest.TestCase):
     def test_creation_can_be_switched_off(self):
-        from features.fleet import tools
+        from agenti.fleet import tools
         with unittest.mock.patch.object(tools, "env_get", return_value="0"):
             reply = asyncio.run(tools.fleet_create("Zeta", "scopo qualsiasi"))
         self.assertIn("disattivata", reply)

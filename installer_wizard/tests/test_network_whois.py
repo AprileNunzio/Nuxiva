@@ -4,10 +4,10 @@ import time
 import unittest
 from unittest import mock
 
-from features.firewall import analyst
-from features.firewall.events import Monitor
-from features.network import tools, whois
-from features.network.explorer import explorer
+from agenti.firewall import analyst
+from agenti.firewall.events import Monitor
+from agenti.network import tools, whois
+from agenti.network.explorer import explorer
 
 DEVICES = {
     "aa:bb": {"key": "aa:bb", "ip": "192.168.1.5", "mac": "aa:bb", "name": "iPhone di Nunzio", "type": "phone",
@@ -35,7 +35,7 @@ class WhoisTest(unittest.TestCase):
         monitor = Monitor()
         line = json.dumps({"type": "alert", "kind": "port_scan", "severity": "medium", "src": "192.168.1.9",
                            "dst": "192.168.1.5", "detail": "porte 1-1000"})
-        with mock.patch("features.firewall.events.self_inflicted", return_value=False):
+        with mock.patch("agenti.firewall.events.self_inflicted", return_value=False):
             asyncio.run(monitor.handle(line))
         alert = monitor.alerts[-1]
         self.assertEqual(alert["dst_who"], "iPhone di Nunzio")

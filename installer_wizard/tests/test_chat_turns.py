@@ -9,9 +9,9 @@ from unittest.mock import patch
 
 from fastapi.responses import JSONResponse
 
-from features.chat import api, streaming, turns
-from features.nodes import assist_turn
-from features.nodes.assist_stop_store import AssistStopStore
+from agenti.chat import api, streaming, turns
+from agenti.nodes import assist_turn
+from agenti.nodes.assist_stop_store import AssistStopStore
 
 
 class ChatTurnTests(unittest.IsolatedAsyncioTestCase):
@@ -37,7 +37,7 @@ class ChatTurnTests(unittest.IsolatedAsyncioTestCase):
         wizard = Path(__file__).resolve().parents[1]
         code = (
             "import sys; sys.path[:0] = sys.argv[3:]; "
-            "from features.nodes.assist_stop_store import AssistStopStore; "
+            "from agenti.nodes.assist_stop_store import AssistStopStore; "
             "AssistStopStore(sys.argv[1]).record(sys.argv[2])"
         )
         try:

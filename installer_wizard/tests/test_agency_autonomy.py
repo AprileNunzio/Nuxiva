@@ -6,8 +6,8 @@ from unittest import mock
 from fastapi.testclient import TestClient
 
 import nuxiva_supervisor
-from features.agency import api, autonomy, service
-from features.agency.memory import ProjectMemory
+from agenti.agency import api, autonomy, service
+from agenti.agency.memory import ProjectMemory
 
 HEADERS = {"X-Nuxiva-Request": "1"}
 

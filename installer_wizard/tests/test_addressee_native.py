@@ -4,7 +4,7 @@ from unittest import mock
 
 import native_core
 
-from features.chat import addressee
+from agenti.chat import addressee
 
 TEXTS = [
     "nuxiva accendi la luce", "Ehi Nuxiva che ore sono?", "nuxiva è lenta oggi", "attena spegni tutto",

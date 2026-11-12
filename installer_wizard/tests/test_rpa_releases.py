@@ -1,6 +1,6 @@
 import unittest
 
-from features.rpa import releases
+from agenti.rpa import releases
 
 
 def release(tag, assets=("NUXIVA_Assistente_Setup.exe",), **extra):

@@ -2,8 +2,8 @@ import os
 import stat
 from pathlib import Path
 
-from agenti import _manifest
-from agenti._text import tokens
+from . import _manifest
+from ._text import tokens
 
 MANIFEST = "feature.json"
 MAX_AGENTS = 200_000

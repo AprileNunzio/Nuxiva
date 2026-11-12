@@ -6,7 +6,7 @@ import unittest
 from unittest import mock
 from pathlib import Path
 
-EAR = Path(__file__).resolve().parents[1] / "features" / "ear"
+EAR = Path(__file__).resolve().parents[1] / "agenti" / "percezione" / "ear"
 if str(EAR) not in sys.path:
     sys.path.append(str(EAR))
 

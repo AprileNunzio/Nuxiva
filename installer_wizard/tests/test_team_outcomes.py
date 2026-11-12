@@ -1,9 +1,9 @@
 import unittest
 from unittest import mock
 
-from features.team.ceo import CEODecision, CEOExecutive
-from features.team.outcomes import execution_outcome, messages
-from features.team.scanner import DiscoveredAgent
+from agenti.team.ceo import CEODecision, CEOExecutive
+from agenti.team.outcomes import execution_outcome, messages
+from agenti.team.scanner import DiscoveredAgent
 
 
 class TeamOutcomeTest(unittest.TestCase):
@@ -40,7 +40,7 @@ class TeamOutcomeTest(unittest.TestCase):
                  ({"status": "SUCCESS", "verified": True}, "completed", "conferma")]
         with mock.patch.object(ceo, "scan_team", return_value={"agent": agent}):
             for details, status, kind in cases:
-                with self.subTest(details=details), mock.patch("features.team.ceo.board.post") as post:
+                with self.subTest(details=details), mock.patch("agenti.team.ceo.board.post") as post:
                     raw = {"reply": "Tutto fatto", "intent": "conversation", "result_data": {"artifact": "file"}, **details}
                     result = ceo.synthesize(decision, raw)
                     self.assertEqual(result["outcome"]["status"], status)

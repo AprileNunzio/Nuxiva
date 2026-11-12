@@ -6,10 +6,10 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.authz import access, capmap, gate, guard, matrix_store, texts
-from features.authz.access import COLUMNS, Matrix, MatrixError, PythonEngine
-from features.authz.principal import ANONYMOUS, Principal, Strength, act_as, current
-from features.authz.risk import compose, forget
+from agenti.authz import access, capmap, gate, guard, matrix_store, texts
+from agenti.authz.access import COLUMNS, Matrix, MatrixError, PythonEngine
+from agenti.authz.principal import ANONYMOUS, Principal, Strength, act_as, current
+from agenti.authz.risk import compose, forget
 from state import store
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -129,7 +129,7 @@ class GateTests(unittest.TestCase):
     def setUp(self):
         guard.throttle.reset()
         self.saved = store.audience
-        patcher = mock.patch("features.authz.capability.ha_lookup", side_effect=lookup)
+        patcher = mock.patch("agenti.authz.capability.ha_lookup", side_effect=lookup)
         patcher.start()
         self.addCleanup(patcher.stop)
 

@@ -5,18 +5,18 @@ import unittest
 from pathlib import Path
 from unittest.mock import AsyncMock
 
-from features.presentation.application.gate import worth_planning
-from features.presentation.application.planner import PresentationPlanner
-from features.presentation.domain.plan import Block, PlanError, fill_rows, parse_block, parse_plan
-from features.presentation.domain.stage import ImageAsset, to_ui
-from features.presentation.infrastructure import wikimedia
-from features.presentation.infrastructure.image_store import ImageStore
+from agenti.presentation.application.gate import worth_planning
+from agenti.presentation.application.planner import PresentationPlanner
+from agenti.presentation.domain.plan import Block, PlanError, fill_rows, parse_block, parse_plan
+from agenti.presentation.domain.stage import ImageAsset, to_ui
+from agenti.presentation.infrastructure import wikimedia
+from agenti.presentation.infrastructure.image_store import ImageStore
 
 try:
     import cv2
     import numpy as np
-    from features.presentation.infrastructure import cutout
-    from features.presentation.infrastructure.commons_images import CommonsImages
+    from agenti.presentation.infrastructure import cutout
+    from agenti.presentation.infrastructure.commons_images import CommonsImages
     IMAGING = True
 except Exception:
     IMAGING = False
@@ -189,7 +189,7 @@ class PlannerTest(unittest.IsolatedAsyncioTestCase):
             self.assertEqual([p["type"] for p in result.ui["panels"]], ["text", "steps"])
 
     async def test_slow_images_are_cut_off(self):
-        from features.presentation.application import planner as module
+        from agenti.presentation.application import planner as module
         original = module.IMAGE_TIMEOUT_SECONDS
         module.IMAGE_TIMEOUT_SECONDS = 0.05
         try:
@@ -257,7 +257,7 @@ class ImageStoreTest(unittest.TestCase):
             self.assertIsNone(self.store.path(name), name)
 
     def test_old_files_are_pruned(self):
-        from features.presentation.infrastructure import image_store
+        from agenti.presentation.infrastructure import image_store
         original = image_store.MAX_FILES
         image_store.MAX_FILES = 3
         try:
@@ -341,7 +341,7 @@ class CommonsImagesTest(unittest.IsolatedAsyncioTestCase):
 
 class CompositionTest(unittest.IsolatedAsyncioTestCase):
     async def test_short_answers_never_reach_the_planner(self):
-        from features.presentation import composition
+        from agenti.presentation import composition
         original = composition.planner.compose
         composition.planner.compose = AsyncMock(side_effect=AssertionError("should not run"))
         try:
@@ -350,8 +350,8 @@ class CompositionTest(unittest.IsolatedAsyncioTestCase):
             composition.planner.compose = original
 
     async def test_face_plans_keep_the_original_answer_as_speech(self):
-        from features.presentation import composition
-        from features.presentation.application.planner import Presentation
+        from agenti.presentation import composition
+        from agenti.presentation.application.planner import Presentation
         original = composition.planner.compose
         composition.planner.compose = AsyncMock(return_value=Presentation("riassunto", {"mode": "face"}))
         try:
@@ -362,7 +362,7 @@ class CompositionTest(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(result[0].startswith("Risposta completa"))
 
     async def test_a_hanging_planner_is_abandoned(self):
-        from features.presentation import composition
+        from agenti.presentation import composition
         original, budget = composition.planner.compose, composition.BUDGET_SECONDS
 
         async def hang(question, reply):
@@ -400,12 +400,12 @@ class WidgetModeTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_composition_shows_the_brief_widget_and_keeps_the_face(self):
         from unittest.mock import patch
-        from features.presentation import composition
-        from features.presentation.application.planner import Presentation
+        from agenti.presentation import composition
+        from agenti.presentation.application.planner import Presentation
         original = composition.planner.compose
         composition.planner.compose = AsyncMock(return_value=Presentation("Eccolo.", {"mode": "face"}, {"title": "Diodo", "lines": ["a"], "image": None}))
         try:
-            with patch("features.desktop.desk.desk") as desk:
+            with patch("agenti.desktop.desk.desk") as desk:
                 result = await composition.compose("mostrami un diodo", "Un diodo è un componente.")
         finally:
             composition.planner.compose = original
@@ -422,7 +422,7 @@ class OpenverseTest(unittest.TestCase):
         return {**base, **overrides}
 
     def test_only_free_licences_and_trusted_thumbnails_survive(self):
-        from features.presentation.infrastructure import openverse
+        from agenti.presentation.infrastructure import openverse
         payload = {"results": [self.item(), self.item(license="by-nc"), self.item(license="by-nd"),
                                self.item(thumbnail="https://evil.example/x.jpg"), self.item(width=100),
                                self.item(license="cc0", license_version="1.0"), self.item(license="pdm")]}
@@ -432,7 +432,7 @@ class OpenverseTest(unittest.TestCase):
         self.assertEqual(openverse.candidates({}), [])
 
     def test_the_search_is_restricted_to_free_licences(self):
-        from features.presentation.infrastructure import openverse
+        from agenti.presentation.infrastructure import openverse
         params = openverse.search_params("diode")
         self.assertNotIn("nc", params["license"].split(","))
         self.assertEqual(params["mature"], "false")

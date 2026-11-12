@@ -13,7 +13,7 @@ class ClassifyTest(unittest.TestCase):
         self.assertEqual(safe_mode.classify(ModuleNotFoundError("x", name="uvicorn")), "missing_library")
 
     def test_broken_local_module(self):
-        self.assertEqual(safe_mode.classify(ModuleNotFoundError("x", name="features.brain")), "broken_code")
+        self.assertEqual(safe_mode.classify(ModuleNotFoundError("x", name="agenti.brain")), "broken_code")
         self.assertEqual(safe_mode.classify(ImportError("x", name="config")), "broken_code")
         self.assertEqual(safe_mode.classify(SyntaxError("bad")), "broken_code")
 

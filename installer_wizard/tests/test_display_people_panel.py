@@ -7,7 +7,7 @@ from unittest import mock
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from features.people import learning, mood, panel, people, private_store
+from agenti.people import learning, mood, panel, people, private_store
 
 
 class PanelTest(unittest.TestCase):

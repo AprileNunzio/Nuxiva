@@ -8,12 +8,12 @@ from unittest import mock
 from fastapi.testclient import TestClient
 
 import nuxiva_supervisor
-from features.flows import composition
-from features.flows.application.studio import ConfirmationRequired, Studio
-from features.flows.domain import draft, guard
-from features.flows.domain.catalog import EDGES, NODE_BY_ID, NODES, TEMPLATES, defaults, template
-from features.flows.infrastructure.env_settings import MIXED, EnvSettings
-from features.flows.infrastructure.signed_store import SignedVersionStore
+from agenti.flows import composition
+from agenti.flows.application.studio import ConfirmationRequired, Studio
+from agenti.flows.domain import draft, guard
+from agenti.flows.domain.catalog import EDGES, NODE_BY_ID, NODES, TEMPLATES, defaults, template
+from agenti.flows.infrastructure.env_settings import MIXED, EnvSettings
+from agenti.flows.infrastructure.signed_store import SignedVersionStore
 
 HEADERS = {"X-Nuxiva-Request": "1"}
 DEFAULT_SETTINGS = {"understanding.enabled": "1", "understanding.arbiter": "1", "skills.enabled": "1", "skills.generate": "1",

@@ -2,8 +2,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from features.desktop.desk import Desk
-from features.desktop.novelty import AUTO_CAP, MAX_PENALTY, Novelty
+from agenti.desktop.desk import Desk
+from agenti.desktop.novelty import AUTO_CAP, MAX_PENALTY, Novelty
 
 
 class Clock:

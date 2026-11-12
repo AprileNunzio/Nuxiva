@@ -1,7 +1,7 @@
 import re
 from pathlib import Path
 
-from features.music import layout
+from agenti.music import layout
 
 ILLEGAL = re.compile(r'[\\/:*?"<>|\x00-\x1f]+')
 SLASH = re.compile(r"(?<=\w)/(?=\w)")

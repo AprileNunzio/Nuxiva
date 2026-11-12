@@ -3,8 +3,8 @@ import time
 from pathlib import Path
 from xml.sax.saxutils import escape, quoteattr
 
-from features.music import layout
-from features.music.db import db
+from agenti.music import layout
+from agenti.music.db import db
 
 API_VERSION = "1.16.1"
 ERRORS = {10: "Parametro mancante", 40: "Utente o password errati", 50: "Operazione non consentita", 70: "Elemento non trovato", 0: "Errore"}

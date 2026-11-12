@@ -7,9 +7,9 @@ import numpy as np
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from features.ear import api as ear_api
-from features.ear import journal as journal_module
-from features.ear import journal_api
+from agenti.ear import api as ear_api
+from agenti.ear import journal as journal_module
+from agenti.ear import journal_api
 
 PEOPLE = [{"slug": "anna", "name": "Anna Rossi"}, {"slug": "marco", "name": "Marco Bianchi"}]
 

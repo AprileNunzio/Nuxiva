@@ -31,14 +31,14 @@ def require_admin(request: Request) -> str:
         raise HTTPException(401, "Accesso richiesto")
     if request.method in ("POST", "PUT", "PATCH", "DELETE") and request.headers.get("X-Nuxiva-Request") != "1":
         raise HTTPException(403, "Richiesta non valida")
-    from features.authz.access_control import authorize_request
+    from agenti.authz.access_control import authorize_request
     authorize_request(user, request)
     return user
 
 
 def paired_display(request: Request) -> bool:
-    from features.desktop.xr_api import xr_device
-    from features.nodes.display_link import display_node
+    from agenti.desktop.xr_api import xr_device
+    from agenti.nodes.display_link import display_node
     return display_node(request) is not None or xr_device(request) is not None
 
 

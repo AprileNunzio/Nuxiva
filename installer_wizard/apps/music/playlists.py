@@ -3,8 +3,8 @@ import logging
 import time
 from pathlib import Path
 
-from features.music import catalog, layout, organizer
-from features.music.db import db
+from agenti.music import catalog, layout, organizer
+from agenti.music.db import db
 
 log = logging.getLogger("nuxiva.music")
 MAX_TRACKS = 5000

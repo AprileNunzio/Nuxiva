@@ -1,7 +1,7 @@
 import unittest
 
-from features.chat.intents import detect_intent
-from features.chat.skills.camera import camera_skill, wants_camera_off
+from agenti.chat.intents import detect_intent
+from agenti.chat.skills.camera import camera_skill, wants_camera_off
 
 
 class CameraIntentTest(unittest.TestCase):

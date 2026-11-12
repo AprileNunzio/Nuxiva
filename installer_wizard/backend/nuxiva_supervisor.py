@@ -32,141 +32,141 @@ from os_memory import memory_manager
 import mesh_api
 import node_api
 import node_commands_api
-from features.update_center import api as update_center_api
+from agenti.update_center import api as update_center_api
 import updater
 from config import ADMIN_PORT, PUBLIC_PORT, VERSION, env_get
 from https_guard import HttpsGuard
 from origin_guard import OriginGuard
 from nuxiva_bus import nuxiva_bus
 from feature_registry import registry
-from features.brain import api as brain_api
-from features.brain import routing as brain_routing
-from features.presentation import api as presentation_api
-from features.secure import api as secure_api
-from features.actions import api as actions_api
-from features.bluetooth import api as bluetooth_api
-from features.bluetooth.service import service as bluetooth_service
-from features.vision.tips import tips as object_tips
-from features.nodes.beacon import beacon as node_beacon
-from features.chat import api as chat_api
-from features.nodes import api as nodes_api
-from features.cloud import api as cloud_api
-from features.desktop import api as desktop_api
-from features.desktop import lifecycle_api as display_lifecycle_api
-from features.desktop import explain_api as display_explain_api
-from features.desktop import learning_api as display_learning_api
-from features.desktop import surfaces_api as display_surfaces_api, xr_api as display_xr_api
-from features.desktop.desk import desk
-from features.desktop.secretary import secretary
-from features.documents import api as documents_api
-from features.devices import api as devices_api
-from features.devices import audio
-from features.google import api as google_api
-from features.google.gservices import google
-from features.home_assistant import api as home_api
-from features.home_assistant import home
-from features.location import api as location_api
-from features.cameras import api as cameras_api
-from features.models3d import api as models3d_api
-from features.models3d import studio_api as models3d_studio_api
-from features.ear import api as ear_api
-from features.people import camera_watch
-from features.sentinel import watch as sentinel_watch
-from features.rescue import watch as rescue_watch
-from features.automations import api as automations_api
-from features.automations.engine import engine as automations_engine
-from features.autonomy import api as autonomy_api
-from features.avatars import api as avatars_api
-from features.capabilities import api as capabilities_api
-from features.habits import api as habits_api
-from features.kiosk import driver as display_driver
-from features.habits.service import habits
-from features.governor import api as governor_api
-from features.governor.service import governor
-from features.scheduler import api as scheduler_api
-from features.selftest import api as selftest_api
-from features.shares import api as shares_api
-from features.vault import api as vault_api
-from features.vault.service import vault
-from features.selftest.service import selftest
-from features.sounds import api as sounds_api
-from features.autonomy.engine import autonomy
-from features.cameras import autosetup as cameras_autosetup
-from features.cameras import controls as cameras_controls
-from features.cameras import motion as cameras_motion
-from features.cameras.recorder import recorder as cameras_recorder
-from features.laws import api as laws_api
-from features.maps import api as maps_api
-from features.mind import api as mind_api
-from features.authz import api as authz_api
-from features.locale import api as locale_api
-from features.locale.colocated import api as i18n_bundle_api
-from features.locale.colocated import handlers as i18n_handlers
-from features.firewall import api as firewall_api
-from features.firewall.events import monitor as firewall_monitor
-from features.vpn import api as vpn_api
-from features.places import api as places_api
-from features.sports import api as sports_api
-from features.tv import api as tv_api
-from features.hub import api as hub_api
-from features.tv import service as tv_service
-from features.sports.watch import watcher as sports_watcher
-from features.proxmox import api as proxmox_api
-from features.voicestudio import api as voicestudio_api
-from features.nodes import display_link as display_link_api
-from features.ducking import api as ducking_api
-from features.redalert import api as redalert_api
-from features.ducking.ducker import ducker
-from features.places import service as places_service
-from features.locale import household as locale_household
-from features.vpn.service import service as vpn_service
-from features.maps.maps import maps
-from features.mcpclient import api as mcpclient_api
-from features.mcpclient.service import run as mcpclient_run
-from features.music import api as music_api
-from features.music import api_library as music_library_api
-from features.music import api_play as music_play_api
-from features.music import api_playlists as music_playlists_api
-from features.music import api_share as music_share_api
-from features.music import subsonic as music_subsonic_api
-from features.music.outputs import outputs as music_outputs
-from features.music.service import library as music_library
-from features.network import api as network_api
-from features.network.explorer import explorer
-from features.people import api as people_api
-from features.people import presence
-from features.people.vitals.local_ble import local_ble as vitals_local_ble
-from features.skills import api as skills_api
-from features.soup import api as soup_api
-from features.study import api as study_api
-from features.study import study
-from features.diorama import learning as diorama_learning
-from features.team import api as team_api
-from features.experts import api as experts_api
-from features.backup import api as backup_api
-from features.backup import service as backup_service
-from features.agency import runner as agency_runner
-from features.camsense import service as camsense_service
-from features.telegram import api as telegram_api
-from features.understanding import api as understanding_api
-from features.telegram.bot import bot
-from features.vision import api as vision_api
-from features.vision.nightly import loop as nightly_biometrics_loop
-from features.whiteboard import api as whiteboard_api
-from features.printers import api as printers_api
-from features.rpa import api as rpa_api
-from features.nvr import api as nvr_api
-from features.nvr.service import nvr as nvr_service
-from features.scene import api as scene_api
-from features.nexus import api as nexus_api
-from features.flows import api as flows_api
-from features.flows import watchdog as flows_watchdog
-from features.scene.service import scene as scene_service
-from features.twin import api as twin_api
-from features.vision.webcams import webcams
-from features.voices import api as voices_api
-from features.hardware import api as hardware_api
-from features.hardware.service import hardware_service
+from agenti.brain import api as brain_api
+from agenti.brain import routing as brain_routing
+from agenti.presentation import api as presentation_api
+from agenti.secure import api as secure_api
+from agenti.actions import api as actions_api
+from agenti.bluetooth import api as bluetooth_api
+from agenti.bluetooth.service import service as bluetooth_service
+from agenti.vision.tips import tips as object_tips
+from agenti.nodes.beacon import beacon as node_beacon
+from agenti.chat import api as chat_api
+from agenti.nodes import api as nodes_api
+from agenti.cloud import api as cloud_api
+from agenti.desktop import api as desktop_api
+from agenti.desktop import lifecycle_api as display_lifecycle_api
+from agenti.desktop import explain_api as display_explain_api
+from agenti.desktop import learning_api as display_learning_api
+from agenti.desktop import surfaces_api as display_surfaces_api, xr_api as display_xr_api
+from agenti.desktop.desk import desk
+from agenti.desktop.secretary import secretary
+from agenti.documents import api as documents_api
+from agenti.devices import api as devices_api
+from agenti.devices import audio
+from agenti.google import api as google_api
+from agenti.google.gservices import google
+from agenti.home_assistant import api as home_api
+from agenti.home_assistant import home
+from agenti.location import api as location_api
+from agenti.cameras import api as cameras_api
+from agenti.models3d import api as models3d_api
+from agenti.models3d import studio_api as models3d_studio_api
+from agenti.ear import api as ear_api
+from agenti.people import camera_watch
+from agenti.sentinel import watch as sentinel_watch
+from agenti.rescue import watch as rescue_watch
+from agenti.automations import api as automations_api
+from agenti.automations.engine import engine as automations_engine
+from agenti.autonomy import api as autonomy_api
+from agenti.avatars import api as avatars_api
+from agenti.capabilities import api as capabilities_api
+from agenti.habits import api as habits_api
+from agenti.kiosk import driver as display_driver
+from agenti.habits.service import habits
+from agenti.governor import api as governor_api
+from agenti.governor.service import governor
+from agenti.scheduler import api as scheduler_api
+from agenti.selftest import api as selftest_api
+from agenti.shares import api as shares_api
+from agenti.vault import api as vault_api
+from agenti.vault.service import vault
+from agenti.selftest.service import selftest
+from agenti.sounds import api as sounds_api
+from agenti.autonomy.engine import autonomy
+from agenti.cameras import autosetup as cameras_autosetup
+from agenti.cameras import controls as cameras_controls
+from agenti.cameras import motion as cameras_motion
+from agenti.cameras.recorder import recorder as cameras_recorder
+from agenti.laws import api as laws_api
+from agenti.maps import api as maps_api
+from agenti.mind import api as mind_api
+from agenti.authz import api as authz_api
+from agenti.locale import api as locale_api
+from agenti.locale.colocated import api as i18n_bundle_api
+from agenti.locale.colocated import handlers as i18n_handlers
+from agenti.firewall import api as firewall_api
+from agenti.firewall.events import monitor as firewall_monitor
+from agenti.vpn import api as vpn_api
+from agenti.places import api as places_api
+from agenti.sports import api as sports_api
+from agenti.tv import api as tv_api
+from agenti.hub import api as hub_api
+from agenti.tv import service as tv_service
+from agenti.sports.watch import watcher as sports_watcher
+from agenti.proxmox import api as proxmox_api
+from agenti.voicestudio import api as voicestudio_api
+from agenti.nodes import display_link as display_link_api
+from agenti.ducking import api as ducking_api
+from agenti.redalert import api as redalert_api
+from agenti.ducking.ducker import ducker
+from agenti.places import service as places_service
+from agenti.locale import household as locale_household
+from agenti.vpn.service import service as vpn_service
+from agenti.maps.maps import maps
+from agenti.mcpclient import api as mcpclient_api
+from agenti.mcpclient.service import run as mcpclient_run
+from agenti.music import api as music_api
+from agenti.music import api_library as music_library_api
+from agenti.music import api_play as music_play_api
+from agenti.music import api_playlists as music_playlists_api
+from agenti.music import api_share as music_share_api
+from agenti.music import subsonic as music_subsonic_api
+from agenti.music.outputs import outputs as music_outputs
+from agenti.music.service import library as music_library
+from agenti.network import api as network_api
+from agenti.network.explorer import explorer
+from agenti.people import api as people_api
+from agenti.people import presence
+from agenti.people.vitals.local_ble import local_ble as vitals_local_ble
+from agenti.skills import api as skills_api
+from agenti.soup import api as soup_api
+from agenti.study import api as study_api
+from agenti.study import study
+from agenti.diorama import learning as diorama_learning
+from agenti.team import api as team_api
+from agenti.experts import api as experts_api
+from agenti.backup import api as backup_api
+from agenti.backup import service as backup_service
+from agenti.agency import runner as agency_runner
+from agenti.camsense import service as camsense_service
+from agenti.telegram import api as telegram_api
+from agenti.understanding import api as understanding_api
+from agenti.telegram.bot import bot
+from agenti.vision import api as vision_api
+from agenti.vision.nightly import loop as nightly_biometrics_loop
+from agenti.whiteboard import api as whiteboard_api
+from agenti.printers import api as printers_api
+from agenti.rpa import api as rpa_api
+from agenti.nvr import api as nvr_api
+from agenti.nvr.service import nvr as nvr_service
+from agenti.scene import api as scene_api
+from agenti.nexus import api as nexus_api
+from agenti.flows import api as flows_api
+from agenti.flows import watchdog as flows_watchdog
+from agenti.scene.service import scene as scene_service
+from agenti.twin import api as twin_api
+from agenti.vision.webcams import webcams
+from agenti.voices import api as voices_api
+from agenti.hardware import api as hardware_api
+from agenti.hardware.service import hardware_service
 from orchestrator import native_reload_loop, orch, telemetry_loop
 
 logging.basicConfig(
@@ -273,7 +273,7 @@ def build(admin: bool) -> FastAPI:
         # Register before the assets mount: preview and desktop share one release.
         @app.get("/assets/webos-preview/index.html", include_in_schema=False)
         async def serve_webos_preview(request: Request):
-            from features.nexus.api import nexus_index
+            from agenti.nexus.api import nexus_index
             return await nexus_index(request)
 
     if (client_web_dist / "assets").exists():
@@ -448,13 +448,13 @@ BACKGROUND = (
 
 
 def seed_experts() -> None:
-    from features.experts import service as experts_service
+    from agenti.experts import service as experts_service
     try:
         experts_service.seed_defaults(pages.ui_language() or "it")
     except Exception:
         log.exception("Esperti predefiniti non aggiunti")
     try:
-        from features.fleet import mirror
+        from agenti.fleet import mirror
         mirror.sync_all()
     except Exception:
         log.exception("Esperti non riportati nella flotta")

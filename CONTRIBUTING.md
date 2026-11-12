@@ -151,8 +151,8 @@ on existing installations (migrations, defaults, upgrade path) and documentation
 | To add | Read |
 | :--- | :--- |
 | A feature (agent) with panel tab and settings | [installer_wizard/features/README.md](installer_wizard/features/README.md) |
-| A tool for agents and MCP | [installer_wizard/MCP.md](installer_wizard/MCP.md) and `installer_wizard/features/agent/registry.py` |
-| A command the understanding layer can route | `installer_wizard/features/understanding/` |
+| A tool for agents and MCP | [installer_wizard/MCP.md](installer_wizard/MCP.md) and `installer_wizard/agenti/cognizione/agent/registry.py` |
+| A command the understanding layer can route | `installer_wizard/agenti/cognizione/understanding/` |
 | A display widget | an existing folder in `installer_wizard/widgets/` as a template |
 | An algorithm (skill) | `installer_wizard/skills/` |
 | An installation step | `installer_wizard/backend/steps.py` and `scripts/os/steps/` |

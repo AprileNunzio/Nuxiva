@@ -9,12 +9,12 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from access import require_admin
-from features.firewall import api as firewall_api
-from features.firewall import applier as applier_module
-from features.firewall import events
-from features.firewall import model
-from features.firewall import store as store_module
-from features.firewall.store import store
+from agenti.firewall import api as firewall_api
+from agenti.firewall import applier as applier_module
+from agenti.firewall import events
+from agenti.firewall import model
+from agenti.firewall import store as store_module
+from agenti.firewall.store import store
 
 ALERT = {"type": "alert", "kind": "brute_force", "severity": "critical", "src": "198.51.100.7", "dst": "192.168.1.10",
          "count": 20, "detail": "20 tentativi di accesso sulla porta 22"}

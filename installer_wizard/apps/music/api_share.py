@@ -7,10 +7,10 @@ from fastapi.responses import HTMLResponse, Response
 
 from access import require_admin
 from config import write_env
-from features.music import conf, covers, layout, sharing, stream
-from features.music.api_library import body
-from features.music.api_play import base_of
-from features.music.db import db
+from agenti.music import conf, covers, layout, sharing, stream
+from agenti.music.api_library import body
+from agenti.music.api_play import base_of
+from agenti.music.db import db
 
 admin_routes = APIRouter()
 public_routes = APIRouter()

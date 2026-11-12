@@ -11,7 +11,7 @@ from env_format import decode_value, format_line
 BACKEND_DIR = Path(__file__).resolve().parent
 APP_DIR = BACKEND_DIR.parent
 WEB_DIR = APP_DIR / "web"
-FEATURES_DIR = APP_DIR / "features"
+AGENTS_DIR = APP_DIR / "agenti"
 WIDGETS_DIR = APP_DIR / "widgets"
 SKILLS_DIR = APP_DIR / "skills"
 

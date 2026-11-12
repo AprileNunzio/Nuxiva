@@ -3,8 +3,8 @@ import unittest
 from pathlib import Path
 from unittest.mock import AsyncMock, patch
 
-from features.brain import api, cervello_state
-from features.brain.routing import assignment_service
+from agenti.brain import api, cervello_state
+from agenti.brain.routing import assignment_service
 
 
 class CervelloSyncTests(unittest.IsolatedAsyncioTestCase):
@@ -13,8 +13,8 @@ class CervelloSyncTests(unittest.IsolatedAsyncioTestCase):
              patch.object(cervello_state, "STATE_DIR", Path(folder)), \
              patch.object(api, "write_env") as write, \
              patch.object(api.brains, "invalidate"), \
-             patch("features.brain.free_router.settings.load", return_value={"enabled": True, "pools": ["chat"]}), \
-             patch("features.brain.free_router.settings.save") as free_save, \
+             patch("agenti.brain.free_router.settings.load", return_value={"enabled": True, "pools": ["chat"]}), \
+             patch("agenti.brain.free_router.settings.save") as free_save, \
              patch.object(assignment_service, "assignments", return_value={"old": object()}), \
              patch.object(assignment_service, "save") as assignments, \
              patch.object(api, "unload_local_ollama_vram", new_callable=AsyncMock), \

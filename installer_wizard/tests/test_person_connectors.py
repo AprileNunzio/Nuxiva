@@ -8,10 +8,11 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from access import require_admin
-from features.people import api as people_api
-from features.people import connectors
-from features.telegram import api as telegram_api
-from features.telegram import bot as telegram
+from agenti.people import api as people_api
+from agenti.people import connectors
+from agenti.telegram import api as telegram_api
+from agenti.telegram import bot as telegram
+from tests.agent_tree import AGENTS
 
 
 def message(chat_id: int, text: str) -> dict:
@@ -80,8 +81,8 @@ class TelegramPerPersonTest(unittest.IsolatedAsyncioTestCase):
 
 class RegistryTest(unittest.TestCase):
     def test_real_connectors_are_registered(self):
-        importlib.import_module("features.telegram.api")
-        importlib.import_module("features.google.api")
+        importlib.import_module("agenti.telegram.api")
+        importlib.import_module("agenti.google.api")
         self.assertTrue({"telegram", "google"} <= set(connectors.known()))
 
     def test_a_failing_connector_does_not_break_the_listing(self):
@@ -145,7 +146,7 @@ class ApiTest(unittest.TestCase):
 class CredentialSettingsTest(unittest.TestCase):
     def test_credentials_can_be_saved_from_the_person_cards(self):
         import json
-        base = Path(__file__).resolve().parents[1] / "features"
+        base = AGENTS
         wanted = {"telegram": {"NUXIVA_TELEGRAM_TOKEN"}, "google": {"NUXIVA_GOOGLE_CLIENT_ID", "NUXIVA_GOOGLE_CLIENT_SECRET"}}
         for feature, keys in wanted.items():
             manifest = json.loads((base / feature / "feature.json").read_text(encoding="utf-8"))

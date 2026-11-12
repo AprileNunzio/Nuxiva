@@ -5,8 +5,8 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from access import require_admin
-from features.locale import api as locale_api
-from features.locale import service
+from agenti.locale import api as locale_api
+from agenti.locale import service
 from tests.test_locale import LocaleBase
 
 

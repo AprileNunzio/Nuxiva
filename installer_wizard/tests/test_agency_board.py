@@ -7,11 +7,11 @@ from unittest import mock
 from fastapi.testclient import TestClient
 
 import nuxiva_supervisor
-from features.agency import api, board, service
-from features.agency.client import AgencyUnavailable
-from features.agency.forge import registry as forge_registry
-from features.agency.forge.registry import ForgedTool
-from features.agency.memory import ProjectMemory
+from agenti.agency import api, board, service
+from agenti.agency.client import AgencyUnavailable
+from agenti.agency.forge import registry as forge_registry
+from agenti.agency.forge.registry import ForgedTool
+from agenti.agency.memory import ProjectMemory
 
 HEADERS = {"X-Nuxiva-Request": "1"}
 

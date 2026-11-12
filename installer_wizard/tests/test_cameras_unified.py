@@ -9,9 +9,9 @@ from fastapi.testclient import TestClient
 
 import access
 import nuxiva_supervisor
-from features.cameras import captures, controls, discovery, events, live, motion, netguard, options, presets, probe, unified
-from features.cameras.cameras import cameras
-from features.vision.webcams import webcams
+from agenti.cameras import captures, controls, discovery, events, live, motion, netguard, options, presets, probe, unified
+from agenti.cameras.cameras import cameras
+from agenti.vision.webcams import webcams
 
 HEADERS = {"X-Nuxiva-Request": "1"}
 LIST_CTRLS = """

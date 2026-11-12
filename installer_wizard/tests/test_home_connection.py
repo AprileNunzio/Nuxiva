@@ -6,8 +6,8 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from access import require_admin
-from features.home_assistant import address, connection_api, probe
-from features.home_assistant.connection import AuthError, HAError, HomeConnection
+from agenti.home_assistant import address, connection_api, probe
+from agenti.home_assistant.connection import AuthError, HAError, HomeConnection
 
 
 class AddressTest(unittest.TestCase):

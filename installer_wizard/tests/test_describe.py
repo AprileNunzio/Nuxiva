@@ -3,12 +3,12 @@ import time
 import unittest
 from unittest import mock
 
-from features.brain.llm import BrainUnavailable
-from features.cameras import live
-from features.cameras.cameras import cameras
-from features.desktop.desk import desk
-from features.vision import describe, sight
-from features.vision.webcams import webcams
+from agenti.brain.llm import BrainUnavailable
+from agenti.cameras import live
+from agenti.cameras.cameras import cameras
+from agenti.desktop.desk import desk
+from agenti.vision import describe, sight
+from agenti.vision.webcams import webcams
 from state import store
 
 JPEG = b"\xff\xd8\xff\xe0fake"

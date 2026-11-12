@@ -2,12 +2,12 @@ import asyncio
 import unittest
 from unittest import mock
 
-from features.agent import registry
-from features.authz.principal import SYSTEM, act_as, current
-from features.capabilities import manifest
-from features.team import roster, runner
-from features.team import tools as team_tools
-from features.team.board import Board, board
+from agenti.agent import registry
+from agenti.authz.principal import SYSTEM, act_as, current
+from agenti.capabilities import manifest
+from agenti.team import roster, runner
+from agenti.team import tools as team_tools
+from agenti.team.board import Board, board
 
 
 def call(tool_name: str, **args) -> str:

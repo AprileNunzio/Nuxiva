@@ -1,8 +1,8 @@
 import re
 
-from features.tv import targets
-from features.tv.m3u import norm
-from features.tv.store import tv_store
+from agenti.tv import targets
+from agenti.tv.m3u import norm
+from agenti.tv.store import tv_store
 
 FACE = {"mode": "face"}
 WATCH = re.compile(r"\b(metti|mettimi|guarda|guardare|visualizza|sintonizza|trasmetti|voglio vedere|fammi vedere)\b")
@@ -13,7 +13,7 @@ LIST = re.compile(r"\b(che canali|quali canali|elenco (dei )?canali|lista (dei )
 
 
 def default_target(rows: list[dict]) -> dict:
-    from features.chat import context
+    from agenti.chat import context
     device = context.device.get()
     mine = next((r for r in rows if r["id"] == f"pc:{device}"), None)
     return mine or next(r for r in rows if r["id"] == "display")

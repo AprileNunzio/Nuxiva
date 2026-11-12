@@ -2,12 +2,12 @@ import asyncio
 import unittest
 from unittest.mock import AsyncMock, patch
 
-from features.cameras.capture import CameraCapture
+from agenti.cameras.capture import CameraCapture
 
 
 class PersistentCaptureTest(unittest.IsolatedAsyncioTestCase):
     async def test_stream_and_snapshot_share_capture_and_release_viewer_slot(self):
-        from features.cameras import live
+        from agenti.cameras import live
         source = {'id': 'bench', 'kind': 'local', 'main': False, 'device': '/dev/video4'}
         jpeg = b'\xff\xd8frame\xff\xd9'
         before = live._active['count']
@@ -33,7 +33,7 @@ class PersistentCaptureTest(unittest.IsolatedAsyncioTestCase):
             stream.feed_eof()
         process.kill = kill
         capture = CameraCapture(['camera'])
-        with patch('features.cameras.capture.asyncio.create_subprocess_exec', new=AsyncMock(return_value=process)) as start:
+        with patch('agenti.cameras.capture.asyncio.create_subprocess_exec', new=AsyncMock(return_value=process)) as start:
             first = asyncio.create_task(capture.read())
             second = asyncio.create_task(capture.read())
             await asyncio.sleep(0)

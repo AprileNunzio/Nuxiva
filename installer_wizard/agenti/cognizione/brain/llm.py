@@ -1,0 +1,247 @@
+import asyncio
+import json
+import re
+import time
+from typing import Any
+
+import httpx
+from config import ollama_url
+from tasks import background
+
+from agenti.brain import scope
+from agenti.brain.assignments import load_synaptic_weights, save_synaptic_weights
+from agenti.brain.brains import brains
+from agenti.brain.privacy.gate import PrivacyBlocked, privacy_gate
+from agenti.brain.trace import trace
+from agenti.brain.usage.ledger import usage_ledger
+from agenti.brain.residency import keep_alive, touch
+from agenti.cloud.catalog import is_cloud
+from agenti.cloud.client import CloudError, complete
+
+_FENCE = re.compile(r"^```(?:json)?\s*|\s*```$", re.I)
+
+
+class BrainUnavailable(RuntimeError):
+    pass
+
+
+async def chain(kind: str = "deep") -> list[str]:
+    cfg = brains.config()
+    installed = {n if ":" in n else f"{n}:latest" for n in await brains.installed()}
+    order = brains.effective(kind, cfg, cfg["deep" if kind == "chat" else "chat"])
+    usable = [m for m in dict.fromkeys(order) if brains.usable(m, installed)]
+    return usable or [cfg["main"]]
+
+
+async def component_chain(component: str) -> list[str]:
+    if not component:
+        return []
+    from agenti.brain.routing import assignment_service
+    installed = {n if ":" in n else f"{n}:latest" for n in await brains.installed()}
+    return assignment_service.chain(component, installed)
+
+
+def decode(text: str, as_json: bool):
+    if not as_json:
+        return text.strip()
+    body = _FENCE.sub("", text.strip())
+    start, end = body.find("{"), body.rfind("}")
+    return json.loads(body[start:end + 1] if start >= 0 and end > start else body)
+
+
+def _runtime_ollama_options(kind: str, component: str, max_tokens: int | None, temperature: float) -> dict:
+    try:
+        from agenti.ollama.service import get_runtime_options
+        opts = get_runtime_options(kind=kind, component=component)
+        num_ctx = opts.get("num_ctx", 8192)
+        num_predict = max_tokens if max_tokens != 500 else opts.get("num_predict", 4096)
+        num_thread = opts.get("num_thread", 4)
+    except Exception:
+        num_ctx = 8192 if kind == "deep" else 4096
+        num_predict = max_tokens if max_tokens != 500 else (4096 if kind == "deep" else 1024)
+        num_thread = 4
+    if max_tokens is None:
+        return {"temperature": temperature, "num_predict": -1, "num_thread": num_thread}
+    return {
+        "temperature": temperature,
+        "num_predict": num_predict,
+        "num_ctx": num_ctx,
+        "num_thread": num_thread,
+    }
+
+
+async def _ollama(model: str, prompt: str, system: str, as_json: bool, max_tokens: int | None, temperature: float,
+                  timeout: float, kind: str = "deep", component: str = "") -> str:
+    opts = _runtime_ollama_options(kind, component, max_tokens, temperature)
+    body = {"model": model, "prompt": prompt, "stream": False, "keep_alive": keep_alive(model),
+            "options": opts}
+    if system:
+        body["system"] = system
+    if as_json:
+        body["format"] = "json"
+    async with httpx.AsyncClient(timeout=httpx.Timeout(timeout, connect=10)) as client:
+        r = await client.post(f"{ollama_url()}/api/generate", json=body)
+        r.raise_for_status()
+    data = r.json()
+    usage_ledger.record(model, data.get("prompt_eval_count"), data.get("eval_count"))
+    return data.get("response", "")
+
+
+def _govern(system: str) -> str:
+    try:
+        from agenti.laws.laws import laws
+        preamble = laws.preamble()
+    except Exception:
+        preamble = ""
+    return (preamble + "\n\n" + system) if preamble else system
+
+
+async def generate(prompt: str, *, as_json: bool = False, max_tokens: int | None = 500, temperature: float = 0.1,
+                   kind: str = "deep", system: str = "", prefer: list[str] | None = None, timeout: float = 240,
+                   govern: bool = True, component: str = "", privacy: str = "", person: str = ""):
+    if component:
+        from agenti.brain.routing import assignment_service
+        tuned = assignment_service.tuning(component)
+        temperature = tuned.temperature if tuned.temperature is not None else temperature
+        max_tokens = tuned.max_tokens if tuned.max_tokens is not None else max_tokens
+        timeout = tuned.timeout if tuned.timeout is not None else timeout
+        system = tuned.system(system)
+    if govern:
+        system = _govern(system)
+    errors = []
+    models = list(dict.fromkeys([m for m in prefer or [] if m] + await component_chain(component) + await chain(kind)))
+    pool = "agent_tools" if as_json else "deep_code" if kind == "deep" else "chat"
+    from agenti.brain.free_router.failover_engine import configured_refs, pool_for, succeeded
+    free_models = await configured_refs(pool)
+    free_matrix_active = free_models is not None
+    if free_matrix_active:
+        local_models = [model for model in models if scope.origin(model) != scope.CLOUD]
+        models = list(dict.fromkeys([*free_models, *local_models]))
+    level = privacy_gate.level((prompt,), component=component, declared=privacy)
+    try:
+        models = privacy_gate.screen(models, level, person)
+    except PrivacyBlocked as exc:
+        raise BrainUnavailable(str(exc)) from exc
+    call = trace.begin(component or kind, "richiesta di ragionamento" if kind == "deep" else "richiesta veloce", models)
+    for model in models:
+        if free_matrix_active and model.startswith("cloud:openrouter/"):
+            from agenti.brain.free_router.rate_limiter import rate_limiter
+            if not rate_limiter.available("openrouter", model.removeprefix("cloud:openrouter/")):
+                continue
+        trace.attempt(call, model)
+        started = time.perf_counter()
+        try:
+            if is_cloud(model):
+                reply = await complete(model, [{"role": "user", "content": prompt}], system, max_tokens=max_tokens,
+                                       temperature=temperature, json_mode=as_json)
+                text = reply.text
+            else:
+                target = getattr(_ollama, "side_effect", None) or _ollama
+                try:
+                    import inspect
+                    sig = inspect.signature(target)
+                    accepts = "kind" in sig.parameters or any(p.kind == inspect.Parameter.VAR_KEYWORD for p in sig.parameters.values())
+                except Exception:
+                    accepts = False
+                if accepts:
+                    text = await _ollama(model, prompt, system, as_json, max_tokens, temperature, timeout,
+                                         kind=kind, component=component)
+                else:
+                    text = await _ollama(model, prompt, system, as_json, max_tokens, temperature, timeout)
+            result = decode(text, as_json)
+        except (httpx.HTTPError, CloudError, ValueError) as exc:
+            errors.append(f"{model}: {str(exc)[:120]}")
+            trace.failed(call, model, str(exc) or type(exc).__name__)
+            brains.record(model, (time.perf_counter() - started) * 1000, False, kind)
+            if component:
+                try:
+                    sw = load_synaptic_weights()
+                    key = f"{component}:{model}"
+                    sw[key] = max(0.05, round(sw.get(key, 0.6) - 0.05, 3))
+                    save_synaptic_weights(sw)
+                except Exception:
+                    pass
+            continue
+        elapsed = (time.perf_counter() - started) * 1000
+        if free_matrix_active and model.startswith("cloud:openrouter/"):
+            succeeded(model, model.removeprefix("cloud:openrouter/"), elapsed, pool_for(model, pool))
+        brains.record(model, elapsed, True, kind)
+        privacy_gate.served(model, level)
+        trace.finish(call, model, elapsed, text)
+        background(touch(model))
+        if component:
+            try:
+                sw = load_synaptic_weights()
+                key = f"{component}:{model}"
+                sw[key] = min(2.5, round(sw.get(key, 0.6) + 0.05, 3))
+                save_synaptic_weights(sw)
+            except Exception:
+                pass
+        return result
+    trace.abort(call, "; ".join(errors))
+    raise BrainUnavailable("; ".join(errors) or "nessun modello disponibile")
+
+
+async def generate_branches(
+    prompt: str,
+    *,
+    n_branches: int = 1,
+    as_json: bool = False,
+    max_tokens: int = 500,
+    temperature: float = 0.1,
+    kind: str = "deep",
+    system: str = "",
+    prefer: list[str] | None = None,
+    timeout: float = 240,
+    govern: bool = True,
+    component: str = "",
+    privacy: str = "",
+    person: str = "",
+) -> list[Any]:
+    if n_branches <= 1:
+        single = await generate(
+            prompt,
+            as_json=as_json,
+            max_tokens=max_tokens,
+            temperature=temperature,
+            kind=kind,
+            system=system,
+            prefer=prefer,
+            timeout=timeout,
+            govern=govern,
+            component=component,
+            privacy=privacy,
+            person=person,
+        )
+        return [single]
+    tasks = [
+        asyncio.create_task(
+            generate(
+                prompt,
+                as_json=as_json,
+                max_tokens=max_tokens,
+                temperature=min(1.0, max(0.05, temperature + (i * 0.07))),
+                kind=kind,
+                system=system,
+                prefer=prefer,
+                timeout=timeout,
+                govern=govern,
+                component=component,
+                privacy=privacy,
+                person=person,
+            )
+        )
+        for i in range(min(n_branches, 8))
+    ]
+    done, pending = await asyncio.wait(tasks, timeout=timeout)
+    for p in pending:
+        p.cancel()
+    results = []
+    for d in done:
+        try:
+            results.append(d.result())
+        except Exception:
+            pass
+    if not results:
+        raise BrainUnavailable("nessuna branca parallela completata")
+    return results

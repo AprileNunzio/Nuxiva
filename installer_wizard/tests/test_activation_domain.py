@@ -3,11 +3,11 @@ import time
 import unittest
 from pathlib import Path
 
-from features.activation.domain.errors import SequenceError
-from features.activation.domain.journey import Journey, SequenceStatus, Stage
-from features.activation.domain.sequence import Sequence, SequenceKind
-from features.activation.domain.telemetry import TelemetryParser
-from features.activation.infrastructure.journey_store import JourneyStore
+from agenti.activation.domain.errors import SequenceError
+from agenti.activation.domain.journey import Journey, SequenceStatus, Stage
+from agenti.activation.domain.sequence import Sequence, SequenceKind
+from agenti.activation.domain.telemetry import TelemetryParser
+from agenti.activation.infrastructure.journey_store import JourneyStore
 
 
 class ActivationDomainTests(unittest.TestCase):

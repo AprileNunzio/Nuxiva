@@ -7,7 +7,7 @@ from unittest import mock
 
 import numpy as np
 
-from features.biometrics import sealed_rows
+from agenti.biometrics import sealed_rows
 
 
 def rows(seed: int, count: int = 6, dim: int = 128) -> np.ndarray:
@@ -119,7 +119,7 @@ class SealedRowsTest(unittest.TestCase):
 
 class GalleryVaultTest(unittest.TestCase):
     def test_gallery_writes_sealed_embeddings(self):
-        from features.vision import gallery as gallery_module
+        from agenti.vision import gallery as gallery_module
         root = Path(tempfile.mkdtemp())
         with mock.patch.dict(os.environ, {"NUXIVA_BIOMETRIC_KEY": str(root / "biometrics.key")}), \
                 mock.patch.object(gallery_module, "FACES", root / "faces"):

@@ -3,9 +3,9 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from features.google import cmd_mail
-from features.google.commands import match
-from features.people.photos import clear_samples
+from agenti.google import cmd_mail
+from agenti.google.commands import match
+from agenti.people.photos import clear_samples
 
 ROOT = Path(__file__).resolve().parents[2]
 

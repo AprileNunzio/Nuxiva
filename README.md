@@ -148,7 +148,7 @@ flowchart LR
 
 ### 4.1 Request flow
 
-A text or voice request is handled by the chat router in `installer_wizard/features/chat/`. It passes through an ordered chain of stages (automations, direct commands, intent skills, connectors, home control, actions, conversation). The first stage that recognises the request answers it; the others are skipped. Requests that need current information are delegated to the agent, which searches before it answers. Generation walks the model priority list and skips any model that fails, so one unavailable model never blocks an answer.
+A text or voice request is handled by the chat router in `installer_wizard/agenti/cognizione/chat/`. It passes through an ordered chain of stages (automations, direct commands, intent skills, connectors, home control, actions, conversation). The first stage that recognises the request answers it; the others are skipped. Requests that need current information are delegated to the agent, which searches before it answers. Generation walks the model priority list and skips any model that fails, so one unavailable model never blocks an answer.
 
 ### 4.2 Core reasoning
 

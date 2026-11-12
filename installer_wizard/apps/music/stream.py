@@ -7,7 +7,7 @@ from pathlib import Path
 from fastapi import HTTPException, Request
 from fastapi.responses import Response, StreamingResponse
 
-from features.music import conf, layout
+from agenti.music import conf, layout
 
 log = logging.getLogger("nuxiva.music")
 CHUNK = 128 * 1024

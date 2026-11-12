@@ -7,8 +7,8 @@ from unittest import mock
 from fastapi.testclient import TestClient
 
 import nuxiva_supervisor
-from features.nodes import adapt
-from features.nodes import registry as registry_module
+from agenti.nodes import adapt
+from agenti.nodes import registry as registry_module
 
 HEADERS = {"X-Nuxiva-Request": "1"}
 
@@ -139,7 +139,7 @@ class ApiTest(unittest.TestCase):
     def test_command_endpoint_accepts_adapt_for_a_node(self):
         with mock.patch.object(registry_module, "NODES_FILE", Path(tempfile.mkdtemp()) / "n.json"):
             reg = registry_module.Registry()
-            with mock.patch("features.nodes.api.registry", reg):
+            with mock.patch("agenti.nodes.api.registry", reg):
                 reg.pair(reg.new_code()["code"], "sala-pi", {"name": "Sala", "type": "display"})
                 r = self.admin.post("/api/nodes/sala-pi/command/adapt", headers=HEADERS)
                 self.assertEqual(r.status_code, 200, r.text)

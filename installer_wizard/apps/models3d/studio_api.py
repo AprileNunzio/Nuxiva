@@ -3,7 +3,7 @@ import json
 from fastapi import APIRouter, HTTPException, Request
 
 from access import require_display
-from features.models3d import library, studio
+from agenti.models3d import library, studio
 
 public_routes = APIRouter()
 admin_routes = APIRouter()

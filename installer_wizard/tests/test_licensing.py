@@ -2,8 +2,8 @@ import unittest
 
 import licensing
 from config import write_env
-from features.music import conf, music
-from features.voices import catalog
+from agenti.music import conf, music
+from agenti.voices import catalog
 
 
 class Base(unittest.TestCase):

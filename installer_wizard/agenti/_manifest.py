@@ -2,7 +2,7 @@ import json
 import math
 import re
 
-from agenti._text import has_control, trim
+from ._text import has_control, trim
 
 MAX_MANIFEST_BYTES = 64 * 1024
 MAX_ID = 40

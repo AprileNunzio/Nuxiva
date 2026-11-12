@@ -8,10 +8,10 @@ sys.modules.setdefault("cv2", mock.MagicMock())
 from fastapi.testclient import TestClient
 
 import nuxiva_supervisor
-from features.hardware.expert import agent as hardware_agent
-from features.hardware.model import HardwareDevice
-from features.hardware.repos import OsInfo, RepoManager
-from features.hardware.service import hardware_service
+from agenti.hardware.expert import agent as hardware_agent
+from agenti.hardware.model import HardwareDevice
+from agenti.hardware.repos import OsInfo, RepoManager
+from agenti.hardware.service import hardware_service
 
 HEADERS = {"X-Nuxiva-Request": "1"}
 
@@ -36,7 +36,7 @@ class HardwareAgentTest(unittest.TestCase):
             self.assertEqual(self.client.post(path, headers=HEADERS).status_code, 404)
 
     def test_device_status_uses_requested_interface_language(self):
-        from features.hardware import api
+        from agenti.hardware import api
         device = HardwareDevice("test", "Test", "", "", "", "wifi", status="ready")
         with mock.patch.object(hardware_service, "_devices", {device.id: device}), \
              mock.patch.object(api, "page_language", return_value="en"):

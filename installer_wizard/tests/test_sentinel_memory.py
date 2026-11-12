@@ -4,9 +4,9 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.sentinel import memory_people, memory_vault, record, vault
-from features.sentinel.journal import SentinelUnavailable
-from features.sentinel.memory import Memory, new_id
+from agenti.sentinel import memory_people, memory_vault, record, vault
+from agenti.sentinel.journal import SentinelUnavailable
+from agenti.sentinel.memory import Memory, new_id
 
 T0 = 1_793_900_000.0
 OWNER = "0123456789abcdef0123456789abcdef"

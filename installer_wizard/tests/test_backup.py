@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.backup import service
+from agenti.backup import service
 
 
 class BackupTests(unittest.IsolatedAsyncioTestCase):

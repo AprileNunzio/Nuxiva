@@ -7,7 +7,7 @@ from unittest import mock
 from fastapi.testclient import TestClient
 
 import nuxiva_supervisor
-from features.shares import archive
+from agenti.shares import archive
 
 HEADERS = {"X-Nuxiva-Request": "1"}
 SCRIPT = Path(__file__).resolve().parents[2] / "scripts" / "os" / "steps" / "63-shares.sh"

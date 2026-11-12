@@ -284,14 +284,14 @@ async def check(fetch_timeout: float = 180, allow_bad: bool = False, fresh: bool
 
 async def _record(**fields) -> None:
     try:
-        from features.update_center import history
+        from agenti.update_center import history
         await history.record_update(git, **fields)
     except Exception:
         log.exception("Cronologia aggiornamenti non registrata")
 
 
 def _tracker():
-    from features.update_center.progress import tracker
+    from agenti.update_center.progress import tracker
     return tracker
 
 
@@ -308,7 +308,7 @@ async def apply(reason: str = "automatico", fetch_timeout: float = 180, force: b
         return False
     if force:
         clear_bad_rev(target)
-    from features.update_center import guard
+    from agenti.update_center import guard
     previous = pending()
     rollback_to = previous["from"] if previous else info["local_rev"]
     tracker = _tracker()
@@ -418,7 +418,7 @@ async def finish_pending(success: bool) -> bool:
 async def _scheduled_cycle(stuck: bool) -> None:
     from datetime import datetime
 
-    from features.update_center.policy import in_window, load_policy
+    from agenti.update_center.policy import in_window, load_policy
 
     policy = load_policy(env_get)
     if not policy.auto_update:
@@ -429,8 +429,8 @@ async def _scheduled_cycle(stuck: bool) -> None:
         return
     applied = await apply("correttivo (sistema bloccato)" if stuck else "automatico")
     if applied and policy.sync_nodes:
-        from features.nodes.registry import registry
-        from features.update_center.rollout import queue_updates
+        from agenti.nodes.registry import registry
+        from agenti.update_center.rollout import queue_updates
 
         queued = queue_updates(registry, [n["id"] for n in registry.listing()])
         store.event("INFO", f"Aggiornamento simultaneo inviato a {len(queued)} nodi", "updater")

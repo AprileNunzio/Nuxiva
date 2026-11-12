@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import AsyncMock, patch
 
-from features.chat import code, layout, strict_reply
+from agenti.chat import code, layout, strict_reply
 
 EXPLAIN = ("Una pagina HTML ha una testa con le informazioni per il browser e un corpo con ciò che si vede. "
            "Il tag meta charset dichiara la codifica dei caratteri, title dà il nome alla scheda. "
@@ -12,14 +12,14 @@ PAGE = "<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"utf-8\">\n  <title>Pr
 
 class ChatOnlyTest(unittest.IsolatedAsyncioTestCase):
     async def test_calculation_is_in_the_reply_when_requested(self):
-        from features.actions import calc
+        from agenti.actions import calc
 
         with patch.object(calc, "llm", new_callable=AsyncMock, return_value={"expression": "120 * 0.85 / 3"}):
             reply, _ = await calc.calc_action("Quanti pezzi restano? Mostra il calcolo.")
         self.assertIn("Espressione: 120 * 0.85 / 3", reply)
 
     async def test_music_device_listing_uses_inventory_without_playback(self):
-        from features.music import commands
+        from agenti.music import commands
 
         query = "Elenca i dispositivi disponibili per riprodurre musica. Non avviare la riproduzione."
         devices = [{"name": "Studio"}, {"name": "Cucina"}]
@@ -33,7 +33,7 @@ class ChatOnlyTest(unittest.IsolatedAsyncioTestCase):
             play.assert_not_awaited()
 
     async def test_plans_do_not_enter_operational_routing(self):
-        from features.chat import assistant
+        from agenti.chat import assistant
 
         core = AsyncMock()
         with patch.object(assistant, "generate", new_callable=AsyncMock, return_value="Piano") as model:
@@ -48,7 +48,7 @@ class ChatOnlyTest(unittest.IsolatedAsyncioTestCase):
         core.assert_not_awaited()
 
     async def test_json_request_does_not_enter_operational_routing(self):
-        from features.chat import assistant
+        from agenti.chat import assistant
 
         core = AsyncMock()
         with patch.object(assistant, "generate", new_callable=AsyncMock, side_effect=['{"ok": true}', "invalid"]):

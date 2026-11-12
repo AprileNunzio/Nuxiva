@@ -10,9 +10,9 @@ from fastapi.testclient import TestClient
 import access
 import nuxiva_supervisor
 from config import write_env
-from features.music import catalog, dlna, sharing, tokens
-from features.music.db import db
-from features.music.outputs import DEVICE_RE, Outputs, outputs as shared_outputs
+from agenti.music import catalog, dlna, sharing, tokens
+from agenti.music.db import db
+from agenti.music.outputs import DEVICE_RE, Outputs, outputs as shared_outputs
 from state import store
 from tests.test_music_library import Base
 
@@ -142,7 +142,7 @@ class OutputsTest(Base, unittest.IsolatedAsyncioTestCase):
     async def test_long_poll_returns_the_pending_command_or_nothing(self):
         self.out.remote_queue["display:sala"].put_nowait({"type": "pause"})
         self.assertEqual(await self.out.wait_command("display:sala", "Sala"), {"type": "pause"})
-        with mock.patch("features.music.outputs.REMOTE_WAIT", 0.05):
+        with mock.patch("agenti.music.outputs.REMOTE_WAIT", 0.05):
             self.assertIsNone(await self.out.wait_command("display:sala", "Sala"))
 
 
@@ -293,7 +293,7 @@ class OutputApiTest(Base):
 
     def test_display_registers_polls_and_reports(self):
         self.filled()
-        with mock.patch("features.music.outputs.REMOTE_WAIT", 0.05):
+        with mock.patch("agenti.music.outputs.REMOTE_WAIT", 0.05):
             first = self.display.get("/api/music/out/poll?device=display:sala&name=Sala")
         self.assertEqual(first.status_code, 200)
         self.assertIsNone(first.json()["command"])

@@ -1,12 +1,12 @@
 import unittest
 from unittest import mock
 
-from features.people.vitals import checkup as checkup_module
-from features.people.vitals import consent as consent_module
-from features.people.vitals.camera import CameraVitals
-from features.people.vitals.checkup import Watch
-from features.people.vitals.live import Live
-from features.people.vitals.watch_engine import ATTEMPT, REFRESH, SHOW, PyWatch
+from agenti.people.vitals import checkup as checkup_module
+from agenti.people.vitals import consent as consent_module
+from agenti.people.vitals.camera import CameraVitals
+from agenti.people.vitals.checkup import Watch
+from agenti.people.vitals.live import Live
+from agenti.people.vitals.watch_engine import ATTEMPT, REFRESH, SHOW, PyWatch
 
 
 def engines():
@@ -124,9 +124,9 @@ class ForcedCameraTest(unittest.TestCase):
     def test_forced_people_are_measured_even_with_a_band(self):
         cam = CameraVitals()
         with mock.patch.object(cam, "has_band", return_value=True), \
-                mock.patch("features.people.vitals.camera.enabled", return_value=True), \
-                mock.patch("features.people.vitals.camera.server_busy", return_value=False), \
-                mock.patch("features.people.vitals.camera.consent.allowed", return_value=True):
+                mock.patch("agenti.people.vitals.camera.enabled", return_value=True), \
+                mock.patch("agenti.people.vitals.camera.server_busy", return_value=False), \
+                mock.patch("agenti.people.vitals.camera.consent.allowed", return_value=True):
             people = [{"slug": "anna", "known": True}]
             self.assertEqual(cam.targets(people, 100.0), [])
             cam.force("anna", 30, 100.0)

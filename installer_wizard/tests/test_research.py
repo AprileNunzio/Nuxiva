@@ -4,8 +4,8 @@ import unittest.mock
 
 import httpx
 
-from features.research import extract, providers, ranking, safeweb, service
-from features.research.report import render
+from agenti.research import extract, providers, ranking, safeweb, service
+from agenti.research.report import render
 
 PUBLIC = ["93.184.216.34"]
 
@@ -195,7 +195,7 @@ if __name__ == "__main__":
 
 class SettingsTest(unittest.TestCase):
     def test_setting_falls_back_and_clamps(self):
-        from features.research import service
+        from agenti.research import service
         with unittest.mock.patch.object(service, "env_get", return_value="abc"):
             self.assertEqual(service._setting("X", 5, 1, 8), 5)
         with unittest.mock.patch.object(service, "env_get", return_value="99"):

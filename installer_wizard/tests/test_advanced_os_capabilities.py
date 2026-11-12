@@ -1,9 +1,9 @@
 import unittest
 
-from features.activation.application.capability_security_manager import CapabilitySecurityManager
-from features.activation.application.cognitive_memory_manager import CognitiveMemoryScheduler
-from features.activation.domain.capability_tokens import CapabilityScope
-from features.activation.domain.memory_scheduler import ModelAllocation, ModelKind, ModelPriority
+from agenti.activation.application.capability_security_manager import CapabilitySecurityManager
+from agenti.activation.application.cognitive_memory_manager import CognitiveMemoryScheduler
+from agenti.activation.domain.capability_tokens import CapabilityScope
+from agenti.activation.domain.memory_scheduler import ModelAllocation, ModelKind, ModelPriority
 
 
 class AdvancedOSCapabilitiesTests(unittest.TestCase):

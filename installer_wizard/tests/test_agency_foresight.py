@@ -7,10 +7,10 @@ from unittest import mock
 from fastapi.testclient import TestClient
 
 import nuxiva_supervisor
-from features.agency import client as client_module
-from features.agency.foresight import scenario, service
-from features.agency.memory import ProjectMemory
-from features.agency.words import LANGUAGES, dictionary
+from agenti.agency import client as client_module
+from agenti.agency.foresight import scenario, service
+from agenti.agency.memory import ProjectMemory
+from agenti.agency.words import LANGUAGES, dictionary
 
 HEADERS = {"X-Nuxiva-Request": "1"}
 
@@ -156,7 +156,7 @@ class ServiceTest(unittest.TestCase):
             self.addCleanup(patcher.stop)
 
     def create(self):
-        with mock.patch("features.brain.llm.generate", scripted(WORLD)):
+        with mock.patch("agenti.brain.llm.generate", scripted(WORLD)):
             return asyncio.run(service.create("Il comune annuncia un nuovo ponte sul fiume.",
                                               "Il ponte sarà accolto bene?", "it", 80, 30))
 
@@ -167,14 +167,14 @@ class ServiceTest(unittest.TestCase):
         self.assertTrue(result["finished"])
         detail = asyncio.run(service.detail(sim_id))
         self.assertIsNone(detail["narrative"])
-        with mock.patch("features.brain.llm.generate", scripted("## Esito\nContrario")):
+        with mock.patch("agenti.brain.llm.generate", scripted("## Esito\nContrario")):
             narrated = asyncio.run(service.narrate(sim_id, "it"))
         self.assertIn("Esito", narrated["narrative"])
         self.assertEqual(asyncio.run(service.detail(sim_id))["narrative"], narrated["narrative"])
         asyncio.run(service.ensemble(sim_id, 999))
         self.assertTrue(asyncio.run(service.detail(sim_id))["narrative_stale"])
         key = self.fake.sims[sim_id]["scenario"]["agents"][0]["key"]
-        with mock.patch("features.brain.llm.generate", scripted("Sono favorevole.")):
+        with mock.patch("agenti.brain.llm.generate", scripted("Sono favorevole.")):
             reply = asyncio.run(service.chat(sim_id, key, "  Cosa\tne pensi?  ", "it"))
         self.assertEqual(reply["chat"][0]["text"], "Cosa ne pensi?")
         self.assertEqual(asyncio.run(service.agent(sim_id, key))["chat"][-1]["text"], "Sono favorevole.")
@@ -187,11 +187,11 @@ class ServiceTest(unittest.TestCase):
             with self.assertRaises(service.ForesightFailure) as failure:
                 asyncio.run(service.create(material, question, "it"))
             self.assertEqual(failure.exception.code, code)
-        with mock.patch("features.brain.llm.generate", scripted({"actors": []})):
+        with mock.patch("agenti.brain.llm.generate", scripted({"actors": []})):
             with self.assertRaises(service.ForesightFailure) as failure:
                 asyncio.run(service.create("Materiale abbastanza lungo davvero", "Domanda valida?", "it"))
         self.assertEqual(failure.exception.code, "empty_world")
-        with mock.patch("features.brain.llm.generate", scripted()):
+        with mock.patch("agenti.brain.llm.generate", scripted()):
             with self.assertRaises(service.ForesightFailure) as failure:
                 asyncio.run(service.create("Materiale abbastanza lungo davvero", "Domanda valida?", "it"))
         self.assertEqual(failure.exception.code, "brain")
@@ -221,7 +221,7 @@ class LanguageTest(unittest.TestCase):
             words = dictionary(lang)
             for group in ("foresight", "foresight_errors"):
                 self.assertEqual(set(words[group]), set(base[group]), (lang, group))
-        from features.agency.foresight.api import CODES
+        from agenti.agency.foresight.api import CODES
         self.assertEqual(set(CODES), set(base["foresight_errors"]))
 
 

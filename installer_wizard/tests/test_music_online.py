@@ -5,9 +5,9 @@ from unittest import mock
 import httpx
 
 from config import write_env
-from features.music import catalog, covers, enrich, layout, lyrics, lyrics_store, organizer, renamer, scanner, sources
-from features.music.db import db
-from features.music.service import LibraryService
+from agenti.music import catalog, covers, enrich, layout, lyrics, lyrics_store, organizer, renamer, scanner, sources
+from agenti.music.db import db
+from agenti.music.service import LibraryService
 from tests.test_music_library import Base, age, make_wav
 
 ITUNES = {"results": [

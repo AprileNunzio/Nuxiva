@@ -7,8 +7,8 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from access import require_admin
-from features.fleet import api, catalog, tools
-from features.fleet.service import FleetService
+from agenti.fleet import api, catalog, tools
+from agenti.fleet.service import FleetService
 
 HEADERS = {"X-Nuxiva-Request": "1"}
 

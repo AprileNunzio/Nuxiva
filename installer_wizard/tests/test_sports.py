@@ -4,8 +4,8 @@ import unittest.mock
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from features.sports import commands, events, football, formula1, speech
-from features.sports.prefs import SportsPrefs, clean
+from agenti.sports import commands, events, football, formula1, speech
+from agenti.sports.prefs import SportsPrefs, clean
 
 NOW = datetime(2026, 10, 11, 15, 30, tzinfo=timezone.utc)
 
@@ -178,7 +178,7 @@ class AnswerRefreshTest(unittest.IsolatedAsyncioTestCase):
                 await commands.answer("quando gioca il napoli?")
 
     async def test_tool_answers_or_asks_for_clarification(self):
-        from features.sports import tools
+        from agenti.sports import tools
 
         async def answer(question):
             raise LookupError("sports")
@@ -220,9 +220,9 @@ class UniversalSportsTest(unittest.IsolatedAsyncioTestCase):
         async def decide(*_a, **_k):
             return plan
         commands._INDEX.update(at=0.0, teams=[])
-        with unittest.mock.patch("features.sports.fetch.get_json", self.fake), \
-                unittest.mock.patch("features.sports.football.get_json", self.fake), \
-                unittest.mock.patch("features.sports.understand.generate", decide), \
+        with unittest.mock.patch("agenti.sports.fetch.get_json", self.fake), \
+                unittest.mock.patch("agenti.sports.football.get_json", self.fake), \
+                unittest.mock.patch("agenti.sports.understand.generate", decide), \
                 unittest.mock.patch.object(commands, "_desk", return_value=unittest.mock.Mock()):
             return (await commands.answer(text))[0]
 
@@ -244,14 +244,14 @@ class UniversalSportsTest(unittest.IsolatedAsyncioTestCase):
             await self.ask("chi ha vinto il premio nobel", {"sport": True, "want": "auto", "focus": "auto"})
 
     async def test_new_sport_needs_only_a_catalog_entry(self):
-        from features.sports.catalog import BY_CODE
+        from agenti.sports.catalog import BY_CODE
         self.assertEqual({BY_CODE[c].sport for c in ("nhl", "nba", "nfl", "mlb")}, {"hockey", "basketball", "football", "baseball"})
         self.assertEqual(football.check_league("nba"), "nba")
 
 
 class NightlyDigestTest(unittest.IsolatedAsyncioTestCase):
     def setUp(self):
-        from features.sports import fetch
+        from agenti.sports import fetch
         self.fetch = fetch
         self.dir = tempfile.TemporaryDirectory()
         self.addCleanup(self.dir.cleanup)
@@ -288,7 +288,7 @@ class NightlyDigestTest(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(await fetch.get_json(self.url, 60), {"old": 1})
 
     async def test_capture_stores_and_expiry_follows_first_kickoff(self):
-        from features.sports import digest
+        from agenti.sports import digest
         now = 1_000_000.0
         pre = {"state": "pre", "start": datetime.fromtimestamp(now + 7200, timezone.utc).isoformat()}
         post = {"state": "post", "start": datetime.fromtimestamp(now - 7200, timezone.utc).isoformat()}
@@ -297,7 +297,7 @@ class NightlyDigestTest(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(digest._expiry([{**pre, "state": "in"}], now), now)
 
     async def test_nothing_followed_means_nothing_cached(self):
-        from features.sports import digest
+        from agenti.sports import digest
         self.fetch._remember(self.url, {"a": 1}, 9e12)
         with unittest.mock.patch.object(digest.prefs, "followed_teams", return_value={}), \
                 unittest.mock.patch.object(digest.prefs, "f1_fans", return_value=[]):

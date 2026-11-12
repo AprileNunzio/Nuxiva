@@ -4,8 +4,8 @@ from unittest import mock
 
 import native_core
 
-from features.automations import expr
-from features.automations.expr import ExprError, functions, wrap
+from agenti.automations import expr
+from agenti.automations.expr import ExprError, functions, wrap
 
 NATIVE = native_core.symbol("expr_evaluate") is not None
 

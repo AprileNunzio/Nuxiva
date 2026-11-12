@@ -3,11 +3,11 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.agent import agent as agent_module
-from features.agent import registry
-from features.agent.agent import Agent
-from features.autonomy import approvals, trust
-from features.autonomy.trust import TrustBook
+from agenti.agent import agent as agent_module
+from agenti.agent import registry
+from agenti.agent.agent import Agent
+from agenti.autonomy import approvals, trust
+from agenti.autonomy.trust import TrustBook
 
 RPA_LS = {"node": "localhost", "steps": [{"do": "ls", "target": "/sys/class/sound-virtual/pcm0"}]}
 MAIL = {"to": "a@b.c", "subject": "x", "body": "y"}

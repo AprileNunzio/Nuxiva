@@ -7,8 +7,8 @@ from unittest import mock
 from fastapi.testclient import TestClient
 
 import nuxiva_supervisor
-from features.agency import agent, api, cognition, service, tools, workspace
-from features.agency.memory import ProjectMemory
+from agenti.agency import agent, api, cognition, service, tools, workspace
+from agenti.agency.memory import ProjectMemory
 
 HEADERS = {"X-Nuxiva-Request": "1"}
 
@@ -93,7 +93,7 @@ class AgencyCognitionAndSurgicalTest(unittest.TestCase):
                 "sha256_after": "b" * 64,
             }
         }
-        with mock.patch("features.agency.surgical.ops.client.call", mock.AsyncMock(return_value=fake_patch)):
+        with mock.patch("agenti.agency.surgical.ops.client.call", mock.AsyncMock(return_value=fake_patch)):
             patch_out = asyncio.run(tools.call(ctx, "replace_content", {
                 "path": "src/catalog.py",
                 "start_line": 2,
@@ -130,7 +130,7 @@ class AgencyCognitionAndSurgicalTest(unittest.TestCase):
             "language_name": "Italian",
         }
         task = {"id": "t-check", "title": "Verify modules", "role": "backend", "acceptance": ["Modules verified"]}
-        with mock.patch("features.agency.agent.llm.generate", mock.AsyncMock(side_effect=replies)):
+        with mock.patch("agenti.agency.agent.llm.generate", mock.AsyncMock(side_effect=replies)):
             outcome = asyncio.run(agent.act(brief, task, ctx))
         self.assertEqual(outcome.steps, 2)
         self.assertIn("Verified alpha and beta", outcome.summary)

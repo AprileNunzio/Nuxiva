@@ -4,12 +4,12 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.hardware import identify
-from features.hardware.expert import HardwareAgent
-from features.hardware.repos import OsInfo, RepoManager
-from features.hardware.firmware import missing_for_device
-from features.hardware.managed import ManagedDevices
-from features.hardware.service import HardwareService
+from agenti.hardware import identify
+from agenti.hardware.expert import HardwareAgent
+from agenti.hardware.repos import OsInfo, RepoManager
+from agenti.hardware.firmware import missing_for_device
+from agenti.hardware.managed import ManagedDevices
+from agenti.hardware.service import HardwareService
 from . import agent_cases
 from .common import dev
 
@@ -19,7 +19,7 @@ class PipelineFailureTest(unittest.TestCase):
         self.agent = HardwareAgent()
         self.agent._pkg_manager = "apt"
         self.agent._repos = RepoManager(self.agent._run_cmd, OsInfo("debian", [], "13"), "/nonexistent")
-        patcher = mock.patch("features.hardware.expert.shutil.which", return_value="tool")
+        patcher = mock.patch("agenti.hardware.expert.shutil.which", return_value="tool")
         patcher.start()
         self.addCleanup(patcher.stop)
 
@@ -75,7 +75,7 @@ class PipelineFailureTest(unittest.TestCase):
 
 class ServiceLifecycleTest(unittest.IsolatedAsyncioTestCase):
     async def test_duplicate_tasks_and_scan_preserve_current_operation(self):
-        from features.hardware import service as hardware_module
+        from agenti.hardware import service as hardware_module
         started, finish = asyncio.Event(), asyncio.Event()
         service = HardwareService()
         device = dev(status="needs_driver", kernel_modules=["test_driver"])
@@ -116,7 +116,7 @@ class ServiceLifecycleTest(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(found[0].bus, "i2c")
 
     def test_translations_share_status_keys(self):
-        from features.hardware.localization import messages
+        from agenti.hardware.localization import messages
         reference = set(messages("en"))
         for language in ("it", "fr", "es"):
             self.assertEqual(set(messages(language)), reference)

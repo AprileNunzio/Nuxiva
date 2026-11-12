@@ -1,8 +1,8 @@
 import asyncio
 import unittest
 
-from features.chat import assistant, code
-from features.desktop.desk import desk
+from agenti.chat import assistant, code
+from agenti.desktop.desk import desk
 
 FENCED = "Ecco una pagina minima, signore.\n```html\n<!DOCTYPE html>\n<html>\n<body><h1>Ciao</h1></body>\n</html>\n```"
 BARE = "Ecco il codice: <!DOCTYPE html><html><head><title>Prova</title></head><body><p>Ciao</p></body></html>"

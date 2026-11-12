@@ -1,6 +1,6 @@
 import unittest
 
-from features.models3d import commands
+from agenti.models3d import commands
 
 
 def subject(text: str) -> str | None:

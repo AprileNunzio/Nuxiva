@@ -5,7 +5,7 @@ import subprocess
 import tempfile
 from pathlib import Path
 
-from features.music import id3
+from agenti.music import id3
 
 log = logging.getLogger("nuxiva.music")
 FFMPEG_KEYS = {"title": "title", "artist": "artist", "album": "album", "album_artist": "album_artist", "genre": "genre",

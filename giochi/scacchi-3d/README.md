@@ -15,7 +15,7 @@
 - **Ambiente 3D**: Scena cattedrale gotica con illuminazione dinamica, ombre proiettate, candelabri, particelle volumetriche e modelli GLB ottimizzati per i pezzi.
 - **Motore Scacchistico**: `wizardChessEngine.js` con validazione rigorosa dei movimenti, catture, scacco, scacco matto, patta e arrocco.
 - **Integrazione Nuxiva OS**:
-  - Rilevamento automatico tramite `GamesScanner` (`installer_wizard/features/games/games_scanner.py`).
+  - Rilevamento automatico tramite `GamesScanner` (`installer_wizard/agenti/multimedia/games/games_scanner.py`).
   - Modalità doppio rendering: applicazione a finestra intera nel desktop WebOS o widget dedicato dockable nel layout anticolisione di `desk.js`.
   - Ridimensionamento automatico dell'assistente: all'apertura del gioco, l'orb olografico e l'assistente si comprimono per lasciare priorità visiva alla scacchiera.
   - Manifest dichiarativo (`manifest.json`) con comandi vocali multilingua registrati nell'intent router di Nuxiva.
@@ -63,7 +63,7 @@ giochi/scacchi-3d/
 - **Gothic Cathedral Environment**: Real-time directional lighting, soft shadow mapping, chandeliers, atmospheric dust particles, and optimized GLB piece models.
 - **Game Engine**: `wizardChessEngine.js` delivering move validation, en-passant, castling, promotion, check, checkmate, and stalemate states.
 - **Nuxiva OS Integration**:
-  - Autonomous discovery via `GamesScanner` (`installer_wizard/features/games/games_scanner.py`).
+  - Autonomous discovery via `GamesScanner` (`installer_wizard/agenti/multimedia/games/games_scanner.py`).
   - Dual presentation mode: full-screen WebOS window or dedicated desktop widget managed by `desk.js` anti-collision layout solver.
   - Assistant auto-minimization: launching the game triggers the assistant to compress, yielding primary focus to the board.
   - Declarative contract (`manifest.json`) exposing multilingual voice triggers directly to Nuxiva's intent pipeline.

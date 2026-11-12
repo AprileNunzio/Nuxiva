@@ -8,11 +8,11 @@ from unittest import mock
 from fastapi.testclient import TestClient
 
 import nuxiva_supervisor
-from features.agent import tool_scanner
-from features.agent import registry
-from features.experts import live, routing, service, skills, store as store_module, templates, tools
-from features.experts.model import ExpertError, build, slug
-from features.team.board import board
+from agenti.agent import tool_scanner
+from agenti.agent import registry
+from agenti.experts import live, routing, service, skills, store as store_module, templates, tools
+from agenti.experts.model import ExpertError, build, slug
+from agenti.team.board import board
 
 HEADERS = {"X-Nuxiva-Request": "1"}
 
@@ -27,7 +27,7 @@ class IsolatedStore(unittest.TestCase):
             patch.start()
             self.addCleanup(patch.stop)
         self.store = store_module.ExpertStore()
-        from features.experts import api as api_module, commands as commands_module
+        from agenti.experts import api as api_module, commands as commands_module
         for module in (store_module, service, api_module, commands_module):
             swap = mock.patch.object(module, "experts", self.store)
             swap.start()
@@ -143,14 +143,14 @@ class ToolsTest(unittest.TestCase):
 
     def test_football_table_uses_source(self):
         rows = [{"rank": 1, "name": "Napoli", "points": 20, "played": 8, "won": 6, "drawn": 2, "lost": 0, "diff": 9}]
-        with mock.patch("features.sports.football.standings", mock.AsyncMock(return_value=rows)):
+        with mock.patch("agenti.sports.football.standings", mock.AsyncMock(return_value=rows)):
             out = asyncio.run(tools.football_table("ita.1"))
         self.assertIn("1. Napoli 20 pt", out)
         with self.assertRaises(ValueError):
             asyncio.run(tools.football_table("xyz"))
 
     def test_tools_registered_to_main_agent(self):
-        self.assertEqual(tool_scanner.loaded().get("features.experts.tools"), "experts")
+        self.assertEqual(tool_scanner.loaded().get("agenti.experts.tools"), "experts")
         for name in ("expert_ask", "expert_create", "debian_status", "football_scores"):
             self.assertEqual(registry.TOOLS[name]["agent"], "experts")
 
@@ -158,12 +158,12 @@ class ToolsTest(unittest.TestCase):
 class AgentLoopTest(IsolatedStore):
     def setUp(self):
         super().setUp()
-        from features.authz.principal import SYSTEM, act_as, current
+        from agenti.authz.principal import SYSTEM, act_as, current
         token = act_as(SYSTEM)
         self.addCleanup(current.reset, token)
 
     def _ask(self, expert_id, question, replies):
-        with mock.patch("features.brain.llm.generate", mock.AsyncMock(side_effect=replies)) as brain:
+        with mock.patch("agenti.brain.llm.generate", mock.AsyncMock(side_effect=replies)) as brain:
             out = asyncio.run(service.ask(expert_id, question, "it"))
         return out, brain
 
@@ -189,7 +189,7 @@ class AgentLoopTest(IsolatedStore):
         replies = [{"escalate": "crea un'automazione che mi avvisa via email prima della partita del Napoli"},
                    {"answer": "Fatto: l'automazione è attiva."}]
         run = mock.AsyncMock(return_value="Automazione creata")
-        with mock.patch("features.agent.agent.agent.run", run):
+        with mock.patch("agenti.agent.agent.agent.run", run):
             out, brain = self._ask(expert.id, "aggiungi un'automazione che mi avvisa prima della partita", replies)
         run.assert_awaited_once()
         self.assertIn("automazione", run.await_args.args[0])
@@ -209,7 +209,7 @@ class AgentLoopTest(IsolatedStore):
             self.assertIn("già stata affidata", steps[0]["result"])
             return "ok"
 
-        with mock.patch("features.agent.agent.agent.run", nested):
+        with mock.patch("agenti.agent.agent.agent.run", nested):
             out, _ = self._ask(expert.id, "fai qualcosa", [{"escalate": "fai"}, {"answer": "ok"}])
         self.assertEqual(out["text"], "ok")
 
@@ -229,7 +229,7 @@ class AgentLoopTest(IsolatedStore):
         out, _ = self._ask(expert.id, "aggiorna gli indici", [{"skill": "security_updates"}, {"tool": "run_command", "args": {"command": "apt-get update"}}])
         self.assertEqual(out["pending"]["tool"], "run_command")
         self.assertEqual(service.pending(expert.id)["args"]["command"], "apt-get update")
-        with mock.patch("features.brain.llm.generate", mock.AsyncMock(return_value={"answer": "Annullato come richiesto."})):
+        with mock.patch("agenti.brain.llm.generate", mock.AsyncMock(return_value={"answer": "Annullato come richiesto."})):
             done = asyncio.run(service.confirm(expert.id, False))
         self.assertIn("NEGATO", done["steps"][1]["result"])
         self.assertEqual(done["text"], "Annullato come richiesto.")

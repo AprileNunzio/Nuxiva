@@ -1,6 +1,6 @@
 import unittest
 
-from features.actions.router import REFUSAL
+from agenti.actions.router import REFUSAL
 
 
 class RefusalDetectionTest(unittest.TestCase):
@@ -27,7 +27,7 @@ if __name__ == "__main__":
 class GroundingTest(unittest.IsolatedAsyncioTestCase):
     async def verdict(self, text, reply):
         from unittest import mock
-        from features.agent import grounding
+        from agenti.agent import grounding
         grounding.cache.clear()
         calls = []
 
@@ -47,21 +47,21 @@ class GroundingTest(unittest.IsolatedAsyncioTestCase):
         self.assertFalse((await self.verdict("spiegami la fotosintesi", {"lookup": False, "reason": "conoscenza stabile"}))[0])
 
     async def test_verdicts_are_cached_and_failures_fall_back_to_the_model(self):
-        from features.agent import grounding
+        from agenti.agent import grounding
         await self.verdict("quanto costa un bitcoin", {"lookup": True})
         self.assertIn("quanto costa un bitcoin", grounding.cache)
-        from features.brain.llm import BrainUnavailable
+        from agenti.brain.llm import BrainUnavailable
         self.assertFalse((await self.verdict("altra domanda", BrainUnavailable("offline")))[0])
         self.assertFalse((await self.verdict("domanda strana", {"lookup": "forse"}))[0])
 
 
 class PromiseDetectionTest(unittest.TestCase):
     def test_bare_promises_are_detected(self):
-        from features.actions.router import promised
+        from agenti.actions.router import promised
         self.assertTrue(promised("Subito, signore. Procedo…"))
         self.assertTrue(promised("Certo, procedo con lo scaricamento."))
 
     def test_real_answers_are_not_promises(self):
-        from features.actions.router import promised
+        from agenti.actions.router import promised
         self.assertFalse(promised("Il Napoli gioca domenica alle 18 contro la Roma."))
         self.assertFalse(promised("x" * 400))

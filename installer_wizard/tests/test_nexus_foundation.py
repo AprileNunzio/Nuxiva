@@ -9,10 +9,10 @@ from unittest import mock
 from fastapi.testclient import TestClient
 
 import nuxiva_supervisor
-from features.nexus import composition
-from features.nexus.application.preferences_service import PreferencesService
-from features.nexus.domain.preferences import MAX_FAVORITES, Preferences, amend, restore
-from features.nexus.infrastructure.json_preferences import JsonPreferencesRepository
+from agenti.nexus import composition
+from agenti.nexus.application.preferences_service import PreferencesService
+from agenti.nexus.domain.preferences import MAX_FAVORITES, Preferences, amend, restore
+from agenti.nexus.infrastructure.json_preferences import JsonPreferencesRepository
 
 HEADERS = {"X-Nuxiva-Request": "1"}
 NEXUS = Path(__file__).resolve().parents[1] / "web" / "nexus"
@@ -100,7 +100,7 @@ class NexusApiTest(unittest.TestCase):
         )
 
     def test_page_declares_the_user_language(self):
-        with mock.patch("setup_api.done", return_value=True), mock.patch("features.nexus.api.page_language", return_value="fr"):
+        with mock.patch("setup_api.done", return_value=True), mock.patch("agenti.nexus.api.page_language", return_value="fr"):
             r = TestClient(nuxiva_supervisor.admin).get("/")
         self.assertIn('<html lang="fr">', r.text)
 

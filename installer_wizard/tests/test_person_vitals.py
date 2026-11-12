@@ -9,13 +9,13 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from access import require_admin
-from features.people import people, private_store
-from features.people.vitals import api as vitals_api
-from features.people.vitals import book as book_module
-from features.people.vitals import cloud, service
-from features.people.vitals.lease import Arbiter
-from features.people.vitals.live import Live
-from features.people.vitals.model import clean_sample
+from agenti.people import people, private_store
+from agenti.people.vitals import api as vitals_api
+from agenti.people.vitals import book as book_module
+from agenti.people.vitals import cloud, service
+from agenti.people.vitals.lease import Arbiter
+from agenti.people.vitals.live import Live
+from agenti.people.vitals.model import clean_sample
 
 MAC = "AA:BB:CC:DD:EE:01"
 MAC2 = "AA:BB:CC:DD:EE:02"
@@ -359,21 +359,21 @@ if __name__ == "__main__":
 
 class LocalBleTest(unittest.TestCase):
     def test_server_counts_as_a_node_only_when_ready(self):
-        from features.people.vitals import local_ble as module
+        from agenti.people.vitals import local_ble as module
         with mock.patch.object(module.local_ble, "ready", False):
             self.assertNotIn(module.NODE_NAME, service.capable_nodes())
         with mock.patch.object(module.local_ble, "ready", True):
             self.assertEqual(service.capable_nodes()[0], module.NODE_NAME)
 
     def test_codec_decodes_a_standard_heart_rate_broadcast(self):
-        from features.people.vitals import ble_codec
+        from agenti.people.vitals import ble_codec
         self.assertEqual(ble_codec.parse_heart_rate(bytes([0x00, 72])), [("heart_rate", 72)])
         self.assertEqual(ble_codec.parse_heart_rate(bytes([0x01, 0x2C, 0x01])), [("heart_rate", 300)])
         self.assertEqual(ble_codec.parse_heart_rate(b"\x00"), [])
 
     def test_idle_server_does_not_scan(self):
         import asyncio
-        from features.people.vitals import local_ble as module
+        from agenti.people.vitals import local_ble as module
         engine = module.LocalBle()
         with mock.patch.object(module.book, "addresses", return_value=[]), mock.patch.object(module.nearby, "active", return_value=False):
             self.assertFalse(engine.wanted(0.0))

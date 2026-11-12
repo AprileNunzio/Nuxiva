@@ -63,7 +63,7 @@ async def ear_log() -> list[str]:
 
 
 async def kiosk_check() -> dict:
-    from features.desktop.screens import has_physical_screen
+    from agenti.desktop.screens import has_physical_screen
     if not has_physical_screen():
         return {
             "status": "ok",
@@ -74,7 +74,7 @@ async def kiosk_check() -> dict:
     windows = [ln for ln in out.splitlines() if "chromium" in ln and "--user-data-dir" in ln and "--type=" not in ln]
     if code != 0 or not windows:
         return {"status": "warn", "detail": "Sessione grafica assente"}
-    from features.desktop.screens import screens
+    from agenti.desktop.screens import screens
     monitors = max(1, len({s["n"] for s in screens.active() if s.get("local")}))
     if len(windows) > monitors:
         return {"status": "warn", "detail": f"{len(windows)} finestre Chromium per {monitors} monitor: "
@@ -83,7 +83,7 @@ async def kiosk_check() -> dict:
 
 
 def kiosk_hint() -> str:
-    from features.desktop.screens import screens
+    from agenti.desktop.screens import screens
     local = [s for s in screens.active() if s.get("local")]
     if not local:
         hint = " — nessun display locale del kiosk risponde (la pagina non è caricata su 127.0.0.1)"
@@ -102,7 +102,7 @@ def mic_check(env: dict) -> dict | None:
     import json as _json
     if env.get("NUXIVA_KIOSK", "1") == "0":
         return None
-    from features.desktop.screens import has_physical_screen
+    from agenti.desktop.screens import has_physical_screen
     if not has_physical_screen():
         return None
     try:
@@ -158,7 +158,7 @@ async def probe_all() -> dict:
             except (httpx.HTTPError, ValueError):
                 results["ollama"] = {"status": "down", "detail": f"Non raggiungibile ({ollama_url().split('//', 1)[-1]})"}
 
-            from features.brain.residency import primary
+            from agenti.brain.residency import primary
             main = primary()
             llm = norm_model(main) if main else ""
             if not llm:
@@ -187,7 +187,7 @@ async def probe_all() -> dict:
         except httpx.HTTPError:
             results["qdrant"] = {"status": "down", "detail": "Non raggiungibile"}
 
-    from features.voices import catalog
+    from agenti.voices import catalog
     try:
         async with httpx.AsyncClient(timeout=3) as client:
             (await client.get(f"{catalog.KOKORO_URL}/health")).raise_for_status()

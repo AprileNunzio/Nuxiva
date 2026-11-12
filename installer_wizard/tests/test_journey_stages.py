@@ -2,9 +2,9 @@ import asyncio
 import unittest
 from unittest import mock
 
-from features.brain import stages
-from features.brain.journey import JourneyStore
-from features.chat.journey_flow import ChatJourney
+from agenti.brain import stages
+from agenti.brain.journey import JourneyStore
+from agenti.chat.journey_flow import ChatJourney
 
 
 def tracker():
@@ -72,7 +72,7 @@ class StageTest(unittest.IsolatedAsyncioTestCase):
 
 class ChatJourneyTest(unittest.IsolatedAsyncioTestCase):
     async def test_classifier_no_longer_absorbs_the_answer_generation(self):
-        with mock.patch("features.chat.journey_flow.journeys", JourneyStore()):
+        with mock.patch("agenti.chat.journey_flow.journeys", JourneyStore()):
             flow = ChatJourney("accendi la luce", "accendi la luce", "display", "utente")
             flow.begin()
             async with stages.stage("classifier", "Classificatore Intenti"):
@@ -88,7 +88,7 @@ class ChatJourneyTest(unittest.IsolatedAsyncioTestCase):
         self.assertIsNone(stages.current())
 
     async def test_a_failing_answer_closes_the_journey(self):
-        with mock.patch("features.chat.journey_flow.journeys", JourneyStore()):
+        with mock.patch("agenti.chat.journey_flow.journeys", JourneyStore()):
             flow = ChatJourney("ciao", "ciao", "display", "utente")
             flow.begin()
             flow.failed(RuntimeError("nessun cervello"))

@@ -2,8 +2,8 @@ import json
 import time
 from pathlib import Path
 
-from features.music import naming
-from features.music.db import db
+from agenti.music import naming
+from agenti.music.db import db
 
 FIELDS = ("title", "artist", "album", "genre", "year", "track_no")
 

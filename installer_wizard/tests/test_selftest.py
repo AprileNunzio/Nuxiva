@@ -3,7 +3,7 @@ import unittest
 from datetime import datetime
 from unittest import mock
 
-from features.selftest.service import SelfTest
+from agenti.selftest.service import SelfTest
 
 
 def report(rev: str, **statuses) -> dict:

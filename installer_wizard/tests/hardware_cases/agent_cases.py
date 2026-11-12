@@ -3,10 +3,10 @@ import tempfile
 import unittest
 from pathlib import Path
 from unittest import mock
-from features.hardware import dkms as dkms_mod
-from features.hardware import identify
-from features.hardware.expert import HardwareAgent
-from features.hardware.repos import OsInfo, RepoManager
+from agenti.hardware import dkms as dkms_mod
+from agenti.hardware import identify
+from agenti.hardware.expert import HardwareAgent
+from agenti.hardware.repos import OsInfo, RepoManager
 from .common import dev
 
 
@@ -15,7 +15,7 @@ class AgentTest(unittest.TestCase):
         self.agent = HardwareAgent()
         self.agent._pkg_manager = "apt"
         self.agent._repos = RepoManager(self.agent._run_cmd, OsInfo("debian", [], "13"), "/nonexistent")
-        self.which = mock.patch("features.hardware.expert.shutil.which", return_value="/usr/bin/x")
+        self.which = mock.patch("agenti.hardware.expert.shutil.which", return_value="/usr/bin/x")
         self.which.start()
 
     def tearDown(self):
@@ -82,7 +82,7 @@ class AgentTest(unittest.TestCase):
             mock.patch.object(self.agent, "load_module_safely", modload),
             mock.patch.object(self.agent, "activate_device", activate),
             mock.patch.object(self.agent.repos, "ensure", ensure),
-            mock.patch("features.hardware.pipeline.reprobe", return_value=False),
+            mock.patch("agenti.hardware.pipeline.reprobe", return_value=False),
             mock.patch.object(self.agent, "_rebind", lambda d: (setattr(d, "interface", d.interface or "wlan0") or identify.Identity(bus=d.bus, sys_id=d.sys_id, bound_driver=d.driver or "test_driver", interface=d.interface or "wlan0"))),
             mock.patch.object(self.agent.repos, "restore", return_value=["/b"]),
         ]
@@ -138,7 +138,7 @@ class AgentTest(unittest.TestCase):
 
         self._mock_pipeline(_run_cmd=verify_fails)
         d = self._gpu_dev()
-        with mock.patch("features.hardware.accelerators.has_graphical_session", return_value=True):
+        with mock.patch("agenti.hardware.accelerators.has_graphical_session", return_value=True):
             self.assertFalse(asyncio.run(self.agent.provision(d)))
             self.assertEqual(d.status, "awaiting_approval")
             self.assertEqual(d.capabilities, [])
@@ -152,7 +152,7 @@ class AgentTest(unittest.TestCase):
 
         self._mock_pipeline(_run_cmd=verify_ok)
         d = self._gpu_dev()
-        with mock.patch.object(self.agent, "_rebind", side_effect=lambda d: (setattr(d, "driver", "nvidia") or identify.Identity(bus="pci", sys_id=d.sys_id, bound_driver="nvidia"))), mock.patch("features.hardware.accelerators.has_graphical_session", return_value=False):
+        with mock.patch.object(self.agent, "_rebind", side_effect=lambda d: (setattr(d, "driver", "nvidia") or identify.Identity(bus="pci", sys_id=d.sys_id, bound_driver="nvidia"))), mock.patch("agenti.hardware.accelerators.has_graphical_session", return_value=False):
             self.assertTrue(asyncio.run(self.agent.provision(d)))
         self.assertEqual(d.status, "ready")
         self.assertEqual(d.capabilities, ["graphics.render", "compute.accelerator"])
@@ -173,7 +173,7 @@ class AgentTest(unittest.TestCase):
             return 0, ""
 
         self.agent._run_cmd = run
-        with tempfile.TemporaryDirectory() as d, mock.patch("features.hardware.expert.BLACKLIST_DIR", Path(d)):
+        with tempfile.TemporaryDirectory() as d, mock.patch("agenti.hardware.expert.BLACKLIST_DIR", Path(d)):
             ok, note = asyncio.run(self.agent.load_module_safely("bad_mod"))
             self.assertFalse(ok)
             self.assertGreaterEqual(calls.count("modprobe"), 3)

@@ -4,7 +4,7 @@ import subprocess
 import tempfile
 import unittest
 
-from features.firewall import model, nft
+from agenti.firewall import model, nft
 
 NOW = 1_800_000_000.0
 
@@ -129,8 +129,8 @@ if __name__ == "__main__":
 class HardeningOrderTests(unittest.TestCase):
 
     def _script(self, mode="protect", rules=(), blocks=()):
-        from features.firewall import model as fw_model
-        from features.firewall.nft import compile_script
+        from agenti.firewall import model as fw_model
+        from agenti.firewall.nft import compile_script
         policy = fw_model.policy({"mode": mode})
         return compile_script(policy, [fw_model.rule(r) for r in rules], {}, list(blocks), now=1000.0)
 
@@ -146,12 +146,12 @@ class HardeningOrderTests(unittest.TestCase):
         self.assertLess(chain.index("192.168.1.66"), chain.index("tcp dport { 22, 80, 443, 8080 } accept"))
 
     def test_sub_second_block_is_not_made_permanent(self):
-        from features.firewall.model import address
-        from features.firewall.nft import Block
+        from agenti.firewall.model import address
+        from agenti.firewall.nft import Block
         script = self._script(blocks=[Block(address("203.0.113.9"), 1000.4)])
         self.assertIn("203.0.113.9 timeout 1s", script)
 
     def test_reserved_group_names_are_refused(self):
-        from features.firewall.model import address_set
+        from agenti.firewall.model import address_set
         with self.assertRaises(ValueError):
             address_set("trusted", ["192.168.1.2"])

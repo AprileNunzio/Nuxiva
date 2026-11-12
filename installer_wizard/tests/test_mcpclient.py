@@ -9,9 +9,9 @@ import httpx
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from features.agent import registry
-from features.capabilities import mcp
-from features.mcpclient import api, client, service, store
+from agenti.agent import registry
+from agenti.capabilities import mcp
+from agenti.mcpclient import api, client, service, store
 
 REAL = httpx.AsyncClient
 TOOLS = [
@@ -108,7 +108,7 @@ class SyncTest(ClientBase):
         self.assertFalse(registry.needs_confirm("ext_calendario_leggi_agenda", {}))
         self.assertEqual(store.load()[server_id]["status"], "collegato")
         self.assertEqual(store.load()[server_id]["tools"], 3)
-        from features.capabilities import schema
+        from agenti.capabilities import schema
         spec = schema.input_schema("ext_calendario_crea_evento")
         self.assertEqual((spec["required"], spec["properties"]["titolo"]["type"], spec["properties"]["durata"]["type"]), (["titolo"], "string", "integer"))
         self.assertEqual(self.server.seen[0][0], "initialize")

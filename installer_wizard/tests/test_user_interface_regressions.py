@@ -6,11 +6,11 @@ from unittest import mock
 from fastapi import HTTPException
 
 import node_api
-from features.cameras.cameras import cameras
-from features.cameras.recorder import _source_args
-from features.people.photos import delete_photo
-from features.people.views import kind_of
-from features.nodes.registry import registry
+from agenti.cameras.cameras import cameras
+from agenti.cameras.recorder import _source_args
+from agenti.people.photos import delete_photo
+from agenti.people.views import kind_of
+from agenti.nodes.registry import registry
 from server.features.mesh_coordinator.p2p_mesh import p2p_mesh
 
 

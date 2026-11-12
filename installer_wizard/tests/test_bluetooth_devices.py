@@ -1,9 +1,9 @@
 import unittest
 
-from features.bluetooth import classes, schema, store
-from features.bluetooth.adapter import parse_info
-from features.bluetooth.router import choose
-from features.bluetooth.service import gamepads
+from agenti.bluetooth import classes, schema, store
+from agenti.bluetooth.adapter import parse_info
+from agenti.bluetooth.router import choose
+from agenti.bluetooth.service import gamepads
 
 MAC_A = "AA:BB:CC:DD:EE:01"
 MAC_B = "AA:BB:CC:DD:EE:02"

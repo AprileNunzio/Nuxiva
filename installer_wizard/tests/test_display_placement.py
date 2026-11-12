@@ -9,10 +9,10 @@ from unittest import mock
 
 from fastapi import HTTPException
 
-from features.desktop import moves, surfaces as surfaces_module, surfaces_api
-from features.desktop.moves import MoveGuard
-from features.desktop.screens import Screens
-from features.desktop.surfaces import Surfaces, clean_pose, clean_surface, slug
+from agenti.desktop import moves, surfaces as surfaces_module, surfaces_api
+from agenti.desktop.moves import MoveGuard
+from agenti.desktop.screens import Screens
+from agenti.desktop.surfaces import Surfaces, clean_pose, clean_surface, slug
 
 
 def _native(name):

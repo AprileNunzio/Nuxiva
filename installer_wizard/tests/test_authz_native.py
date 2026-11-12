@@ -10,10 +10,10 @@ for p in (str(Path(__file__).resolve().parents[1]), str(Path(__file__).resolve()
         sys.path.insert(0, p)
 
 import native_core
-from features.authz import policy as policy_module
-from features.authz import risk
-from features.authz.principal import Principal, Strength
-from features.authz.risk import Risk
+from agenti.authz import policy as policy_module
+from agenti.authz import risk
+from agenti.authz.principal import Principal, Strength
+from agenti.authz.risk import Risk
 
 NATIVE = native_core.load()
 READY = NATIVE is not None and hasattr(NATIVE, "RustAuthzPolicy") and hasattr(NATIVE, "RustRiskTable")

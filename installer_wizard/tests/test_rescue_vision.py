@@ -8,9 +8,9 @@ from fastapi import FastAPI
 from starlette.testclient import TestClient
 
 import native_core
-from features.rescue import watch
-from features.rescue.posture import PyPosture
-from features.vision.posture import PostureWatch, bodies_of, router
+from agenti.rescue import watch
+from agenti.rescue.posture import PyPosture
+from agenti.vision.posture import PostureWatch, bodies_of, router
 
 NATIVE = native_core.symbol("RustPosture") is not None
 FW, FH = 1280.0, 720.0

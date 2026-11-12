@@ -9,9 +9,9 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from access import require_admin
-from features.proxmox import api as proxmox_api
-from features.proxmox import client as client_module
-from features.proxmox.client import ProxmoxClient, ProxmoxError
+from agenti.proxmox import api as proxmox_api
+from agenti.proxmox import client as client_module
+from agenti.proxmox.client import ProxmoxClient, ProxmoxError
 
 NODES = [{"node": "pve", "status": "online", "cpu": 0.12, "maxcpu": 8, "mem": 4e9, "maxmem": 16e9, "uptime": 90000, "extra": "x"}]
 GUESTS = [{"vmid": 101, "name": "nas", "node": "pve", "type": "lxc", "status": "running", "mem": 1e9, "maxmem": 2e9},

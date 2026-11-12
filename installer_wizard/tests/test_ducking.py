@@ -3,9 +3,9 @@ import time
 import unittest
 from unittest import mock
 
-from features.ducking import ducker as ducker_module
-from features.ducking import targets
-from features.ducking.ducker import RELEASE_AFTER, Ducker
+from agenti.ducking import ducker as ducker_module
+from agenti.ducking import targets
+from agenti.ducking.ducker import RELEASE_AFTER, Ducker
 
 
 class FakeTarget(targets.Target):
@@ -74,7 +74,7 @@ class DuckerTest(unittest.TestCase):
 
 class HomeTargetTest(unittest.TestCase):
     def test_only_playing_media_players_with_volume(self):
-        from features.home_assistant.home import brain
+        from agenti.home_assistant.home import brain
         states = {"media_player.salotto": {"state": "playing", "attrs": {"volume_level": 0.6, "friendly_name": "Salotto"}},
                   "media_player.cucina": {"state": "paused", "attrs": {"volume_level": 0.4}},
                   "light.sala": {"state": "on", "attrs": {}}}

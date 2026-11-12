@@ -2,8 +2,8 @@ import asyncio
 import unittest
 import zipfile
 
-from features.documents import builder, convert, jobs, spec
-from features.shares import archive
+from agenti.documents import builder, convert, jobs, spec
+from agenti.shares import archive
 
 CHART = {"chart": "column", "title": "Ricavi per trimestre", "categories": ["T1", "T2", "T3", "T4"],
          "series": [{"name": "2026", "values": [120, 135, 150, 170]}, {"name": "2025", "values": [100, 110, 125, 140]}], "unit": "k€"}
@@ -72,7 +72,7 @@ class DocumentsTest(unittest.TestCase):
             path.unlink()
 
     def test_charts_without_matplotlib(self):
-        from features.documents import raster, themes
+        from agenti.documents import raster, themes
         theme = themes.pick("tech")
         for kind in ("column", "bar", "line", "area", "scatter", "pie", "doughnut"):
             data = raster.png({**CHART, "chart": kind}, theme)
@@ -94,7 +94,7 @@ class DocumentsTest(unittest.TestCase):
 
     @unittest.skipUnless(convert.office(), "LibreOffice non installato")
     def test_conversion_recipes_are_learned_and_reused(self):
-        from features.documents import recipes, word
+        from agenti.documents import recipes, word
         recipes.FILE.unlink(missing_ok=True)
         folder = archive.folder("documenti")
         source = folder / "ricetta-prova.docx"
@@ -117,7 +117,7 @@ class DocumentsTest(unittest.TestCase):
         source.unlink()
 
     def test_project_with_links(self):
-        from features.brain import llm
+        from agenti.brain import llm
 
         async def fake(prompt, **_):
             if prompt.startswith(jobs.PLAN[:40]):

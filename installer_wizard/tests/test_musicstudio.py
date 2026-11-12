@@ -8,11 +8,11 @@ from unittest import mock
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from features.brain.llm import BrainUnavailable
-from features.musicstudio import api, catalog, commands, composer, exporter, expert, generator, agent, broadcast, edits, genres, imports, library, songtext, schema, service, store, theory, voicebank
-from features.shares import archive
-from features.tasks import registry as registry_module
-from features.tasks.registry import registry
+from agenti.brain.llm import BrainUnavailable
+from agenti.musicstudio import api, catalog, commands, composer, exporter, expert, generator, agent, broadcast, edits, genres, imports, library, songtext, schema, service, store, theory, voicebank
+from agenti.shares import archive
+from agenti.tasks import registry as registry_module
+from agenti.tasks.registry import registry
 
 
 class Sandbox(unittest.TestCase):
@@ -249,7 +249,7 @@ class ExporterTest(Sandbox):
 class BridgeTest(Sandbox):
     def setUp(self):
         super().setUp()
-        patch = mock.patch("features.music.layout.archive.ROOT", self.root / "share")
+        patch = mock.patch("agenti.music.layout.archive.ROOT", self.root / "share")
         patch.start()
         self.addCleanup(patch.stop)
         self.project = generator.arrange({"genre": "pop", "seed": 2, "title": "Alba"})
@@ -298,7 +298,7 @@ class BridgeTest(Sandbox):
         store.save(project)
         tid = project["tracks"][-1]["id"]
         voices = mock.AsyncMock(return_value=b"RIFF" + b"\x00" * 40)
-        with mock.patch("features.voices.synthesis.synthesize", voices):
+        with mock.patch("agenti.voices.synthesis.synthesize", voices):
             updated = asyncio.run(service.revoice(project["id"], tid, "im_nicola", 1.2))
         clip = next(t for t in updated["tracks"] if t["id"] == tid)["clips"][0]["vocal"]
         self.assertEqual((clip["voice"], clip["speed"]), ("im_nicola", 1.2))
@@ -398,7 +398,7 @@ class SongTextTest(Sandbox):
         with mock.patch.object(service.composer, "plan", mock.AsyncMock(return_value=spec)), \
                 mock.patch.object(service.songtext, "find", mock.AsyncMock(return_value=found)), \
                 mock.patch.object(service.lyr, "translate", translated), \
-                mock.patch("features.voices.synthesis.synthesize", mock.AsyncMock(return_value=b"RIFF" + b"\x00" * 40)):
+                mock.patch("agenti.voices.synthesis.synthesize", mock.AsyncMock(return_value=b"RIFF" + b"\x00" * 40)):
             asyncio.run(service._enrich(project["id"], "crea una canzone blues di Brano in versione inglese"))
         return project["id"]
 
@@ -447,7 +447,7 @@ class VocalFitTest(unittest.TestCase):
             return silence(4.0 / speed)
 
         vocal = {"text": "x", "lang": "it", "voice": "", "speed": 1.0, "pitch": 0, "asset": ""}
-        with mock.patch("features.voices.synthesis.synthesize", synth):
+        with mock.patch("agenti.voices.synthesis.synthesize", synth):
             asyncio.run(service.sing(vocal, 2.5))
         self.assertEqual(len(calls), 2)
         self.assertGreater(vocal["speed"], 1.5)
@@ -457,7 +457,7 @@ class VocalFitTest(unittest.TestCase):
             return silence(1.0)
 
         vocal = {"text": "x", "lang": "it", "voice": "", "speed": 1.0, "pitch": 0, "asset": ""}
-        with mock.patch("features.voices.synthesis.synthesize", synth):
+        with mock.patch("agenti.voices.synthesis.synthesize", synth):
             asyncio.run(service.sing(vocal, 3.0))
         self.assertEqual(vocal["speed"], 1.0)
 
@@ -569,7 +569,7 @@ if __name__ == "__main__":
 
 class RendererTest(unittest.TestCase):
     def test_every_genre_renders_audible_audio(self):
-        from features.musicstudio import renderer
+        from agenti.musicstudio import renderer
         for genre in ("blues", "house", "bossa_nova"):
             with self.subTest(genre=genre):
                 project = generator.arrange({"genre": genre, "seed": 3, "bars": 4})
@@ -579,7 +579,7 @@ class RendererTest(unittest.TestCase):
 
     def test_all_effects_keep_length_and_stay_finite(self):
         import numpy as np
-        from features.musicstudio import dsp_fx
+        from agenti.musicstudio import dsp_fx
         x = (np.random.default_rng(1).standard_normal((2, 22050)) * 0.1).astype(np.float32)
         for effect in catalog.EFFECTS:
             with self.subTest(effect=effect.id):
@@ -589,7 +589,7 @@ class RendererTest(unittest.TestCase):
                 self.assertTrue(np.isfinite(y).all())
 
     def test_too_long_projects_are_refused(self):
-        from features.musicstudio import renderer
+        from agenti.musicstudio import renderer
         project = generator.arrange({"genre": "pop", "seed": 1, "bars": 8})
         project["tempo"] = 40
         project["bars"] = 256
@@ -631,7 +631,7 @@ class TaskRegistryTest(unittest.TestCase):
         self.assertEqual((registry.get(b)["state"], registry.get(b)["error"]), ("error", "interrupted"))
 
     def test_api_snapshot_and_answer(self):
-        from features.tasks import api as tasks_api
+        from agenti.tasks import api as tasks_api
         task = registry.start("song", "Blues", "musicstudio")
         registry.finish(task, "ok", {}, {"question": "?", "actions": []})
         app = FastAPI()
@@ -647,7 +647,7 @@ class TaskRegistryTest(unittest.TestCase):
 
 class TaskVoiceTest(TaskRegistryTest):
     def test_status_question_lists_active_and_waiting(self):
-        from features.tasks import commands as task_commands
+        from agenti.tasks import commands as task_commands
         registry.start("song", "Blues di Napoli", "musicstudio")
         done = registry.start("song", "Lo-fi", "musicstudio")
         registry.finish(done, "ok", {}, {"question": "?", "actions": []})

@@ -10,11 +10,11 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from access import require_admin
-from features.voices import catalog, synthesis
-from features.voicestudio import api as studio_api
-from features.voicestudio import client as client_module
-from features.voicestudio import design, tools
-from features.voicestudio.client import StudioError, client, profile_of, safe_url
+from agenti.voices import catalog, synthesis
+from agenti.voicestudio import api as studio_api
+from agenti.voicestudio import client as client_module
+from agenti.voicestudio import design, tools
+from agenti.voicestudio.client import StudioError, client, profile_of, safe_url
 
 
 def tone(frames: int = 2400) -> bytes:

@@ -8,9 +8,9 @@ from fastapi.responses import FileResponse, Response, StreamingResponse
 from starlette.background import BackgroundTask
 from state import store
 
-from features.tv import relay, targets
-from features.tv.m3u import MAX_BYTES, PlaylistError
-from features.tv.store import tv_store
+from agenti.tv import relay, targets
+from agenti.tv.m3u import MAX_BYTES, PlaylistError
+from agenti.tv.store import tv_store
 
 admin_routes = APIRouter()
 public_routes = APIRouter()
@@ -28,7 +28,7 @@ def _check_vpn_constraint():
         return
 
     try:
-        from features.vpn.service import service as vpn_svc
+        from agenti.vpn.service import service as vpn_svc
         target_profile = settings.get("vpn_profile")
         if target_profile:
             is_connected = bool(vpn_svc.state.get(target_profile, {}).get("connected"))

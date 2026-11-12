@@ -7,10 +7,10 @@ from fastapi import FastAPI
 from starlette.testclient import TestClient
 
 from access import require_admin
-from features.people import people
-from features.people.private_store import SealedFile
-from features.sentinel.api import admin_routes
-from features.sentinel.privacy import export_person, privacy_overview, shred_person
+from agenti.people import people
+from agenti.people.private_store import SealedFile
+from agenti.sentinel.api import admin_routes
+from agenti.sentinel.privacy import export_person, privacy_overview, shred_person
 
 
 class SentinelPrivacyTest(unittest.TestCase):
@@ -24,7 +24,7 @@ class SentinelPrivacyTest(unittest.TestCase):
         from cryptography.fernet import Fernet
         self.key_file = self.root / "people.key"
         self.key_file.write_bytes(Fernet.generate_key())
-        import features.people.private_store as ps
+        import agenti.people.private_store as ps
         ps.KEY_FILE = self.key_file
 
         self.app = FastAPI()

@@ -1,6 +1,6 @@
-from features.desktop.manifest import clean_cost
-from features.governor import gpu
-from features.governor.devices import clean_report
+from agenti.desktop.manifest import clean_cost
+from agenti.governor import gpu
+from agenti.governor.devices import clean_report
 
 
 def test_estimate_kinds():

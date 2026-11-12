@@ -15,8 +15,8 @@ import setup_audio
 import setup_routes
 import setup_session
 from setup_session import session_manager
-from features.ear import learner as learner_module
-from features.chat import speaker
+from agenti.ear import learner as learner_module
+from agenti.chat import speaker
 
 HEADERS = {"X-Nuxiva-Request": "1"}
 
@@ -145,7 +145,7 @@ class MasterBlueprintTest(unittest.TestCase):
             setup_audio.analyze(tone(seconds=0.1))
 
     def test_camera_scan_reports_only_found_devices(self):
-        from features.cameras import discovery
+        from agenti.cameras import discovery
         with mock.patch.object(discovery, "onvif", return_value=[]), mock.patch("setup_probe.glob.glob", return_value=[]):
             r = self.public.post("/api/setup/cameras/scan", headers=HEADERS)
         self.assertEqual(r.status_code, 200)
@@ -153,7 +153,7 @@ class MasterBlueprintTest(unittest.TestCase):
         self.assertEqual(r.json()["count"], 0)
 
     def test_finalize_setup_flow(self):
-        from features.people import people
+        from agenti.people import people
         from config import write_env
         self.addCleanup(write_env, {"NUXIVA_UI_LANG": "it"})
         with tempfile.TemporaryDirectory() as root, mock.patch.object(people, "PEOPLE_DIR", Path(root)), \

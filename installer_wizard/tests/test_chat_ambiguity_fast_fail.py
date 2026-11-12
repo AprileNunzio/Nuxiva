@@ -2,11 +2,11 @@ import asyncio
 import unittest
 from unittest import mock
 
-from features.actions import router as actions_router
-from features.agent import commands as agent_cmd
-from features.chat import assistant
-from features.home_assistant.home import brain as home_brain
-from features.understanding import router as understanding_router
+from agenti.actions import router as actions_router
+from agenti.agent import commands as agent_cmd
+from agenti.chat import assistant
+from agenti.home_assistant.home import brain as home_brain
+from agenti.understanding import router as understanding_router
 
 
 class ChatAmbiguityFastFailTest(unittest.TestCase):
@@ -46,7 +46,7 @@ class ChatAmbiguityFastFailTest(unittest.TestCase):
         with mock.patch.object(understanding_router, "enabled", return_value=True), \
              mock.patch.object(understanding_router, "route", mock.AsyncMock(return_value=understanding_router.Decision())), \
              mock.patch.object(home_brain, "handle", mock.AsyncMock(return_value=None)), \
-             mock.patch("features.agent.grounding.needs_lookup", mock.AsyncMock(return_value=True)), \
+             mock.patch("agenti.agent.grounding.needs_lookup", mock.AsyncMock(return_value=True)), \
              mock.patch.object(agent_cmd, "answer", fake_agent_answer):
             result = asyncio.run(assistant.handle("a Cendilette Veletta", fake_core_call, {"lang": "it"}))
 

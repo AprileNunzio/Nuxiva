@@ -5,13 +5,13 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.authz.heard import HeardLog
-from features.home_assistant.nlu.matching import Catalog, area_names
-from features.home_assistant.nlu.parser import parse_command
-from features.places import commands, context
-from features.places import store as store_module
-from features.places.locate import Locator, current_room, locator
-from features.places.store import store
+from agenti.authz.heard import HeardLog
+from agenti.home_assistant.nlu.matching import Catalog, area_names
+from agenti.home_assistant.nlu.parser import parse_command
+from agenti.places import commands, context
+from agenti.places import store as store_module
+from agenti.places.locate import Locator, current_room, locator
+from agenti.places.store import store
 
 
 class PlacesBase(unittest.TestCase):
@@ -119,7 +119,7 @@ class HomeCommandTests(PlacesBase):
         self.assertEqual(parse_command("accendi la luce in cucina", self.catalog())["entities"], ["light.cucina"])
 
     def test_rooms_link_to_home_assistant_areas_by_name(self):
-        from features.home_assistant.home import brain
+        from agenti.home_assistant.home import brain
         room = store.put_room({"name": "Camera da letto", "floor_id": self.first.id})
         current_room.set(room)
         with mock.patch.object(brain, "areas", {"camera": {"name": "camera da letto"}}, create=True):

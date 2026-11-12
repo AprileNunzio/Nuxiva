@@ -10,7 +10,7 @@ from unittest import mock
 import numpy as np
 import fastapi.routing
 
-VISION = Path(__file__).resolve().parents[1] / "features" / "vision"
+VISION = Path(__file__).resolve().parents[1] / "agenti" / "percezione" / "vision"
 
 
 def load_observer():
@@ -112,18 +112,18 @@ class ObserverTest(unittest.TestCase):
 
 class CameraWatchTest(unittest.TestCase):
     def test_main_webcam_and_infrared_are_left_to_the_vision_service(self):
-        from features.people import camera_watch
+        from agenti.people import camera_watch
         rows = [{"id": "w-1", "kind": "local", "main": True}, {"id": "i-1", "kind": "infrared", "main": False},
                 {"id": "c-2", "kind": "ip", "main": False}, {"id": "w-3", "kind": "local", "main": False}]
         fake_live = SimpleNamespace(all_rows=lambda: rows)
-        with mock.patch.dict(sys.modules, {"features.cameras.live": fake_live}), \
-                mock.patch("features.cameras.live", fake_live, create=True):
-            import features.cameras as cameras_pkg
+        with mock.patch.dict(sys.modules, {"agenti.cameras.live": fake_live}), \
+                mock.patch("agenti.cameras.live", fake_live, create=True):
+            import agenti.cameras as cameras_pkg
             with mock.patch.object(cameras_pkg, "live", fake_live, create=True):
                 self.assertEqual([r["id"] for r in camera_watch.sources()], ["c-2", "w-3"])
 
     def test_sightings_keep_one_row_per_camera_and_are_private(self):
-        from features.people import camera_watch, private_store
+        from agenti.people import camera_watch, private_store
         saved = {}
         profile = {"slug": "nunzio", "sightings": [{"source": "c-2", "at": 1}, {"source": "c-9", "at": 2}]}
         with mock.patch.object(camera_watch.people, "load", return_value=profile), \
@@ -134,7 +134,7 @@ class CameraWatchTest(unittest.TestCase):
         self.assertIn("sightings", private_store.PRIVATE_KEYS)
 
     def test_sweep_adopts_new_guests_into_people(self):
-        from features.people import camera_watch
+        from agenti.people import camera_watch
         source = {"id": "c-2", "name": "Portone"}
         with mock.patch.object(camera_watch, "sources", return_value=[source]), \
                 mock.patch.object(camera_watch, "observe", mock.AsyncMock(return_value={"known": [], "created": ["ospite-1"]})), \

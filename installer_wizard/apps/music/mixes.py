@@ -2,8 +2,8 @@ import random
 import time
 from itertools import zip_longest
 
-from features.music import catalog, listening
-from features.music.db import db
+from agenti.music import catalog, listening
+from agenti.music.db import db
 
 MIX_SIZE = 50
 KINDS = ("artist", "genre", "decade", "rediscover", "unheard", "liked", "recent", "random")

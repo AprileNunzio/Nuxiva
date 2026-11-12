@@ -8,7 +8,7 @@ from unittest import mock
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from features.factory_reset import api, catalog, challenge, engine, service
+from agenti.factory_reset import api, catalog, challenge, engine, service
 
 
 def populate(root: Path) -> None:

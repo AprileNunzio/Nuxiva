@@ -3,7 +3,7 @@ import unittest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from features.cortex import api
+from agenti.cortex import api
 
 
 class CortexFeatureTests(unittest.TestCase):

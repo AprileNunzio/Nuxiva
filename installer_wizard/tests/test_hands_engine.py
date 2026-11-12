@@ -5,7 +5,7 @@ from fastapi.testclient import TestClient
 
 import auth
 import nuxiva_supervisor
-from features.hands import native, store
+from agenti.hands import native, store
 
 HEADERS = {"X-Nuxiva-Request": "1"}
 POINTS = [[0.5, 0.5, 0.0]] * 21

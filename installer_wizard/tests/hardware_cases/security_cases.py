@@ -7,14 +7,14 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.hardware import capabilities, dkms, identify
-from features.hardware.apt_sources import deb822, source_lines
-from features.hardware.catalog_validation import validate_catalog
-from features.hardware.execution import run_command
-from features.hardware.gpu_verification import verified_capabilities
-from features.hardware.managed import ManagedDevices
-from features.hardware.modules import load_module
-from features.hardware.repos import OsInfo, RepoManager
+from agenti.hardware import capabilities, dkms, identify
+from agenti.hardware.apt_sources import deb822, source_lines
+from agenti.hardware.catalog_validation import validate_catalog
+from agenti.hardware.execution import run_command
+from agenti.hardware.gpu_verification import verified_capabilities
+from agenti.hardware.managed import ManagedDevices
+from agenti.hardware.modules import load_module
+from agenti.hardware.repos import OsInfo, RepoManager
 from . import dkms_cases
 from .common import dev
 
@@ -135,7 +135,7 @@ class VerificationSecurityTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_gpu_compute_requires_matching_pci_address(self):
         device = dev(category="gpu", vendor_id="10de", sys_id="0000:01:00.0", driver="nvidia")
-        with mock.patch("features.hardware.gpu_verification.shutil.which", return_value="nvidia-smi"):
+        with mock.patch("agenti.hardware.gpu_verification.shutil.which", return_value="nvidia-smi"):
             self.assertEqual(await verified_capabilities(device, mock.AsyncMock(return_value=(0, "00000000:02:00.0"))), [])
             self.assertEqual(await verified_capabilities(device, mock.AsyncMock(return_value=(0, "00000000:01:00.0"))), ["compute.accelerator"])
 
@@ -154,10 +154,10 @@ class VerificationSecurityTest(unittest.IsolatedAsyncioTestCase):
             path = Path(root, "managed.json")
             device = dev(required_packages=["firmware-realtek"])
             registry = ManagedDevices(path)
-            with mock.patch("features.hardware.managed.time.time", return_value=100):
+            with mock.patch("agenti.hardware.managed.time.time", return_value=100):
                 registry.record(device)
             restarted = ManagedDevices(path)
-            with mock.patch("features.hardware.managed.time.time", return_value=100000):
+            with mock.patch("agenti.hardware.managed.time.time", return_value=100000):
                 self.assertTrue(restarted.due(device.id))
                 self.assertFalse(restarted.due("unmanaged"))
             self.assertEqual(json.loads(path.read_text())["devices"][device.id]["packages"], ["firmware-realtek"])

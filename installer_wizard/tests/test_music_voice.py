@@ -3,8 +3,8 @@ import unittest
 from unittest import mock
 
 from config import write_env
-from features.music import catalog, commands, playlists
-from features.music.outputs import Outputs
+from agenti.music import catalog, commands, playlists
+from agenti.music.outputs import Outputs
 from state import store
 from tests.test_music_library import Base
 

@@ -15,7 +15,7 @@ import setup_api
 import setup_audio
 import setup_routes
 import setup_session
-from features.ear import learner as learner_module
+from agenti.ear import learner as learner_module
 from setup_session import session_manager
 
 HEADERS = {"X-Nuxiva-Request": "1"}

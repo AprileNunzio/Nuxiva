@@ -1,16 +1,16 @@
 import json
 import unittest
-from pathlib import Path
 
 from fastapi.testclient import TestClient
 
 import nuxiva_supervisor
-from features.nexus.application.summary_service import SummaryService
-from features.nexus.domain import summary
-from features.nexus.domain.zones import FAMILIES, ZONES, classify
+from agenti.nexus.application.summary_service import SummaryService
+from agenti.nexus.domain import summary
+from agenti.nexus.domain.zones import FAMILIES, ZONES, classify
+from tests.agent_tree import AGENTS
 
 HEADERS = {"X-Nuxiva-Request": "1"}
-FEATURES = Path(__file__).resolve().parents[1] / "features"
+FEATURES = AGENTS
 
 
 def inputs(**overrides) -> summary.Inputs:

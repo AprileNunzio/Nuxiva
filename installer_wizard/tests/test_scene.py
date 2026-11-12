@@ -3,9 +3,9 @@ import unittest
 from datetime import datetime
 from pathlib import Path
 
-from features.scene import voice
-from features.scene.fusion import PresenceFusion
-from features.scene.graph import SceneError, SceneGraph, inside
+from agenti.scene import voice
+from agenti.scene.fusion import PresenceFusion
+from agenti.scene.graph import SceneError, SceneGraph, inside
 
 T0 = datetime(2026, 10, 6, 8, 0).timestamp()
 TABLE = [[0.0, 0.5], [0.5, 0.5], [0.5, 1.0], [0.0, 1.0]]

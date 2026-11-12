@@ -9,6 +9,7 @@ for p in (str(_ROOT / "installer_wizard"), str(_ROOT / "installer_wizard" / "bac
         sys.path.insert(0, p)
 
 from feature_localization import link_related, localize_feature
+from tests.agent_tree import AGENTS
 
 
 def item(fid, name, settings):
@@ -34,7 +35,7 @@ class RelatedSettingsTests(unittest.TestCase):
         self.assertEqual(len(items[0]["settings"][0]["see_name"]), 80)
 
     def test_presence_gate_points_to_vision_with_help_in_every_language(self):
-        features = _ROOT / "installer_wizard" / "features"
+        features = AGENTS
         manifest = json.loads((features / "desktop" / "feature.json").read_text(encoding="utf-8"))
         gate = next(s for s in manifest["settings"] if s["key"] == "NUXIVA_DISPLAY_PRESENCE_GATE")
         self.assertEqual(gate["see"], "vision")

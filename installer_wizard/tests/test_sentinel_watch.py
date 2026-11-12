@@ -7,11 +7,11 @@ from unittest import mock
 
 import numpy as np
 
-from features.sentinel import memory_people, observe, vault
-from features.sentinel.memory import Memory
-from features.sentinel.watch import Watcher
+from agenti.sentinel import memory_people, observe, vault
+from agenti.sentinel.memory import Memory
+from agenti.sentinel.watch import Watcher
 
-VISION = Path(__file__).resolve().parents[1] / "features" / "vision"
+VISION = Path(__file__).resolve().parents[1] / "agenti" / "percezione" / "vision"
 if str(VISION) not in sys.path:
     sys.path.insert(0, str(VISION))
 
@@ -116,7 +116,7 @@ class WatcherTests(unittest.TestCase):
         self.clock = Clock(T0)
         self.memory = Memory(clock=self.clock)
         self.memory.swept_at = T0
-        patcher = mock.patch("features.sentinel.watch.memory", self.memory)
+        patcher = mock.patch("agenti.sentinel.watch.memory", self.memory)
         patcher.start()
         self.addCleanup(patcher.stop)
 

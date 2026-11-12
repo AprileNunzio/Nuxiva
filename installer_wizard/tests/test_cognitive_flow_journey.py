@@ -7,10 +7,10 @@ ROOT_DIR = Path(__file__).resolve().parents[2]
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-from features.brain.journey import journeys
-from features.brain import stages
-from features.chat.journey_flow import ChatJourney
-from features.chat import brain_chain
+from agenti.brain.journey import journeys
+from agenti.brain import stages
+from agenti.chat.journey_flow import ChatJourney
+from agenti.chat import brain_chain
 from server.core.reasoning.engines.scanner import engine_scanner
 
 class CognitiveFlowJourneyTest(unittest.IsolatedAsyncioTestCase):

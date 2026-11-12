@@ -3,7 +3,7 @@ import tempfile
 import unittest
 from unittest import mock
 from pathlib import Path
-from features.hardware import dkms as dkms_mod
+from agenti.hardware import dkms as dkms_mod
 from .common import w
 
 

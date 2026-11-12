@@ -5,9 +5,9 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.governor import conf, devices, pressure, profile
-from features.governor.ledger import Ledger
-from features.governor.service import Governor
+from agenti.governor import conf, devices, pressure, profile
+from agenti.governor.ledger import Ledger
+from agenti.governor.service import Governor
 
 
 class PressureTest(unittest.TestCase):
@@ -166,8 +166,8 @@ class GovernorTest(unittest.TestCase):
                 await asyncio.sleep(0.05)
                 self.gov.pressure.high = False
             with (
-                mock.patch("features.governor.service.DEFER_STEP", 0.01),
-                mock.patch("features.governor.service.time.time", return_value=0.0),
+                mock.patch("agenti.governor.service.DEFER_STEP", 0.01),
+                mock.patch("agenti.governor.service.time.time", return_value=0.0),
             ):
                 task = asyncio.create_task(relief())
                 waited = await self.gov.gate("background", "job")

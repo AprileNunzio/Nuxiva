@@ -5,7 +5,7 @@ import health
 import native_core
 from config import _ollama_cache, write_env
 from feature_registry import registry
-from features.brain.brains import brains
+from agenti.brain.brains import brains
 from orchestrator import converge_steps
 from state import store
 from steps import STEP_BY_ID

@@ -4,8 +4,8 @@ from unittest import mock
 
 import httpx
 
-from features.google import session as session_module
-from features.google.errors import GoogleApiError, explain
+from agenti.google import session as session_module
+from agenti.google.errors import GoogleApiError, explain
 
 
 def response(status: int, body: dict | None = None, headers: dict | None = None) -> httpx.Response:

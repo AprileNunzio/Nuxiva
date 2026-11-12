@@ -8,9 +8,9 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import Response
 
 from access import require_admin
-from features.music import catalog, conf, covers, enrich, hints, identify, layout, listening, lyrics, lyrics_store, mixes, naming, organizer, renamer, scanner, stream, tagwriter, tags
-from features.music.db import db
-from features.music.service import library
+from agenti.music import catalog, conf, covers, enrich, hints, identify, layout, listening, lyrics, lyrics_store, mixes, naming, organizer, renamer, scanner, stream, tagwriter, tags
+from agenti.music.db import db
+from agenti.music.service import library
 from state import store
 
 admin_routes = APIRouter()

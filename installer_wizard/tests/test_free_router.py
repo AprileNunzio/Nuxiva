@@ -4,9 +4,9 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from features.brain.free_router import capability_matrix, failover_engine
-from features.brain.free_router.catalog_poller import normalize_model
-from features.brain.free_router.rate_limiter import RateLimiter
+from agenti.brain.free_router import capability_matrix, failover_engine
+from agenti.brain.free_router.catalog_poller import normalize_model
+from agenti.brain.free_router.rate_limiter import RateLimiter
 
 INSTALLER_DIR = Path(__file__).resolve().parents[1]
 
@@ -31,7 +31,7 @@ class FreeRouterCatalogTests(unittest.TestCase):
 
     def test_isolated_i18n_keys_match_in_all_languages(self):
         directories = [
-            INSTALLER_DIR / "features/brain/free_router/language",
+            INSTALLER_DIR / "agenti/cognizione/brain/free_router/language",
             INSTALLER_DIR / "web/display/widgets/live_brain_badge/language",
             INSTALLER_DIR / "web/display/widgets/token_usage/language",
             *sorted((INSTALLER_DIR.parent / "client_web/src/features/brain_center").rglob("language")),

@@ -5,12 +5,12 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from features.brain import assignments as model
-from features.brain import routing
-from features.brain.assignments import Assignment, AssignmentError
-from features.brain.components import BY_ID, COMPONENTS
-from features.brain.roles import BY_ID as ROLES
-from features.brain.trace import Trace
+from agenti.brain import assignments as model
+from agenti.brain import routing
+from agenti.brain.assignments import Assignment, AssignmentError
+from agenti.brain.components import BY_ID, COMPONENTS
+from agenti.brain.roles import BY_ID as ROLES
+from agenti.brain.trace import Trace
 
 ORDERS = {"chat": ["fast"], "deep": ["big", "mid"], "coder": ["code"], "ricercatore": ["web"]}
 
@@ -41,7 +41,7 @@ class AgentComponentTest(unittest.TestCase):
             model.parse_all({"agent:Bad Id": {"order": ["a"]}})
 
     def test_agent_component_maps_known_features_to_themselves(self):
-        from features.brain.components import agent_component
+        from agenti.brain.components import agent_component
         self.assertEqual(agent_component("projects"), "projects")
         self.assertEqual(agent_component("Social Media!"), "agent:social-media")
 
@@ -174,13 +174,13 @@ class BridgeSigningTest(unittest.TestCase):
     CORE_SIGNATURE = "fbc7faccff102e01595d6f4b51a4bf83e90732582fddf532aa996050bf28f138"
 
     def test_supervisor_and_core_sign_identically(self):
-        from features.brain import bridge
+        from agenti.brain import bridge
         key, path, body = "k" * 64, "/api/internal/brain/complete", b'{"a":1}'
         self.assertEqual(bridge.sign(key, "POST", path, 1700000000, body), self.CORE_SIGNATURE)
         self.assertTrue(bridge.verify(key, "POST", path, 1700000000, body, self.CORE_SIGNATURE, 1700000010))
 
     def test_verification_rejects_skew_wrong_key_and_zero_key(self):
-        from features.brain import bridge
+        from agenti.brain import bridge
         key, path, body = "k" * 64, "/p", b"{}"
         good = bridge.sign(key, "POST", path, 1000, body)
         self.assertFalse(bridge.verify(key, "POST", path, 1000, body, good, 1100))
@@ -191,13 +191,13 @@ class BridgeSigningTest(unittest.TestCase):
 
 class KeepAliveTest(unittest.TestCase):
     def setUp(self):
-        from features.brain.keepalive import KeepAlivePolicy
+        from agenti.brain.keepalive import KeepAlivePolicy
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.policy = KeepAlivePolicy(Path(self.temp.name) / "k.json")
 
     def test_set_get_clear_and_persist(self):
-        from features.brain.keepalive import KeepAlivePolicy
+        from agenti.brain.keepalive import KeepAlivePolicy
         self.policy.set_many({"qwen2.5-coder:32b-base-q3_K_M": "1h", "cloud:s1/m": "-1"})
         self.assertEqual(self.policy.get("qwen2.5-coder:32b-base-q3_K_M"), "1h")
         self.assertEqual(KeepAlivePolicy(Path(self.temp.name) / "k.json").get("cloud:s1/m"), "-1")
@@ -210,7 +210,7 @@ class KeepAliveTest(unittest.TestCase):
                 self.policy.set_many(changes)
 
     def test_published_with_the_routes_for_the_core(self):
-        from features.brain.keepalive import keep_alive_policy
+        from agenti.brain.keepalive import keep_alive_policy
         service = routing.AssignmentService(Path(self.temp.name) / "brain")
         with patch.object(routing, "keep_alive_policy", self.policy), patch.object(routing.brains, "usable", return_value=True),                 patch.object(service, "role_orders", return_value=ORDERS):
             self.policy.set_many({"m:1": "1h"})

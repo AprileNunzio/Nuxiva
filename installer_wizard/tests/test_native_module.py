@@ -194,7 +194,7 @@ class SentinelStatusTests(unittest.TestCase):
 
     def test_status_reports_build_state(self):
         import asyncio
-        from features.sentinel import api
+        from agenti.sentinel import api
         with mock.patch.dict(os.environ, {"NUXIVA_NATIVE": "0"}):
             response = asyncio.run(api.sentinel_status("admin"))
         body = json.loads(response.body)

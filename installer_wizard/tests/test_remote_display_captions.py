@@ -9,8 +9,8 @@ from fastapi.responses import Response
 
 import auth
 from access import require_display
-from features.ear import broadcast
-from features.ear.broadcast import broadcast_event, register, unregister
+from agenti.ear import broadcast
+from agenti.ear.broadcast import broadcast_event, register, unregister
 from system_api import _display_response
 
 WEB = Path(__file__).resolve().parents[1] / "web" / "display"

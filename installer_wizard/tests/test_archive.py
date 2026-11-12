@@ -2,11 +2,11 @@ import asyncio
 import re
 import unittest
 
-from features.actions.smb import smb_action
-from features.agent import registry
-from features.automations import tools as automation_tools
-from features.chat import code
-from features.shares import archive
+from agenti.actions.smb import smb_action
+from agenti.agent import registry
+from agenti.automations import tools as automation_tools
+from agenti.chat import code
+from agenti.shares import archive
 
 TODAY = re.compile(r"^\d{8}_")
 

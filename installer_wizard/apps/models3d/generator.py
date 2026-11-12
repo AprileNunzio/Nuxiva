@@ -1,6 +1,6 @@
-from features.brain.llm import BrainUnavailable, generate
-from features.models3d import export, library
-from features.models3d.mesh import SHAPES
+from agenti.brain.llm import BrainUnavailable, generate
+from agenti.models3d import export, library
+from agenti.models3d.mesh import SHAPES
 
 SYSTEM = (
     "Sei un modellatore 3D. Descrivi l'oggetto richiesto come insieme di forme primitive e rispondi SOLO con JSON valido:\n"

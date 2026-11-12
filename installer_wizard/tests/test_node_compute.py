@@ -8,10 +8,10 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from access import require_admin
-from features.nodes import compute, compute_routes
-from features.nodes import registry as registry_module
-from features.nodes.relay import ComputeRelay, RelayError
-from features.nodes import relay as relay_module
+from agenti.nodes import compute, compute_routes
+from agenti.nodes import registry as registry_module
+from agenti.nodes.relay import ComputeRelay, RelayError
+from agenti.nodes import relay as relay_module
 
 
 def b64(data: bytes) -> str:

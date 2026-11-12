@@ -41,7 +41,7 @@ _last_request = 0.0
 def classify(exc: BaseException) -> str:
     if isinstance(exc, ImportError) and not isinstance(exc, SyntaxError):
         top = (getattr(exc, "name", None) or "").split(".")[0]
-        local = bool(top) and (top == "features" or (BACKEND_DIR / f"{top}.py").exists() or (BACKEND_DIR / top).is_dir()
+        local = bool(top) and (top in ("agenti", "features") or (BACKEND_DIR / f"{top}.py").exists() or (BACKEND_DIR / top).is_dir()
                                or (APP_DIR / top).is_dir())
         return "broken_code" if local or not top else "missing_library"
     if isinstance(exc, (SyntaxError, NameError, AttributeError, TypeError)):

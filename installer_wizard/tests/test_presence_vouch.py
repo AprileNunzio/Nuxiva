@@ -2,8 +2,8 @@ import json
 import random
 import unittest
 
-from features.desktop import presence_bridge
-from features.desktop.audience import Policy, Tracker
+from agenti.desktop import presence_bridge
+from agenti.desktop.audience import Policy, Tracker
 
 WEBCAM = {"person": "nunzio", "authorized": True, "confidence": 0.9, "liveness": "unknown", "near": True}
 

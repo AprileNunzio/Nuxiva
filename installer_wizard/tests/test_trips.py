@@ -7,9 +7,9 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from unittest import mock
 
-from features.google import notify, timing
-from features.maps import departure, trips
-from features.maps.travel_stats import TravelStats
+from agenti.google import notify, timing
+from agenti.maps import departure, trips
+from agenti.maps.travel_stats import TravelStats
 
 
 def now_at(h, m=0):
@@ -211,7 +211,7 @@ class TripsFlowTest(unittest.TestCase):
         self.trips = trips.Trips()
         self.trips.stats = TravelStats(self.dir / "s.json")
         self.desk = mock.Mock()
-        patcher = mock.patch("features.desktop.desk.desk", self.desk)
+        patcher = mock.patch("agenti.desktop.desk.desk", self.desk)
         patcher.start()
         self.addCleanup(patcher.stop)
 
@@ -324,7 +324,7 @@ class TripsFlowTest(unittest.TestCase):
             async def resolve(self, where):
                 raise LookupError(where)
 
-        with mock.patch("features.google.gservices.google", Google()):
+        with mock.patch("agenti.google.gservices.google", Google()):
             asyncio.run(self.trips.check(FakeMaps()))
             self.assertEqual(self.desk.show.call_count, 1)
             self.assertNotIn("event:s", self.trips.state)
@@ -336,7 +336,7 @@ class TripsFlowTest(unittest.TestCase):
 
 class GreetingRegressionTest(unittest.TestCase):
     def next_event(self, events):
-        from features.chat import wake
+        from agenti.chat import wake
 
         class Session:
             @staticmethod
@@ -348,7 +348,7 @@ class GreetingRegressionTest(unittest.TestCase):
 
         google = mock.Mock()
         google.for_profile.return_value = Session()
-        with mock.patch("features.people.identity.current", return_value={"slug": "n"}),                 mock.patch("features.google.gservices.google", google):
+        with mock.patch("agenti.people.identity.current", return_value={"slug": "n"}),                 mock.patch("agenti.google.gservices.google", google):
             return asyncio.run(wake._next_event())
 
     def test_trip_in_progress_is_not_the_next_event(self):

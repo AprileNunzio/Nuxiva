@@ -2,7 +2,7 @@ import asyncio
 import tempfile
 import unittest
 from pathlib import Path
-from features.hardware.repos import OsInfo, RepoManager, enable_components_in_deb822, enable_components_in_sources, map_components
+from agenti.hardware.repos import OsInfo, RepoManager, enable_components_in_deb822, enable_components_in_sources, map_components
 from .common import DEB822, DEBIAN11, DEBIAN13, SOURCES, UBUNTU, w
 
 

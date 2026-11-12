@@ -30,7 +30,7 @@ class Orchestrator:
     async def boot(self) -> None:
         store.boot_count += 1
         store.save()
-        from features.brain.configuration import migrate_legacy
+        from agenti.brain.configuration import migrate_legacy
         migrate_legacy()
         from node_api import enforce_local_ollama_off
         await asyncio.to_thread(enforce_local_ollama_off)
@@ -39,7 +39,7 @@ class Orchestrator:
         except (OSError, ValueError):
             log.exception("Pacchetti installati non confermati")
         await self._reconcile_brain()
-        from features.auto_update.self_healing import self_healer
+        from agenti.auto_update.self_healing import self_healer
         self_healer.run_all()
         pending = updater.pending()
         if pending:
@@ -56,7 +56,7 @@ class Orchestrator:
             log.warning("Codice per la prima configurazione da un altro dispositivo: %s", setup_api.guard.code)
         await asyncio.to_thread(enforce_local_ollama_off)
 
-        from features.auto_update.boot_updater import boot_updater
+        from agenti.auto_update.boot_updater import boot_updater
         boot_res = await boot_updater.execute_boot_check()
         if boot_res.get("applied"):
             return

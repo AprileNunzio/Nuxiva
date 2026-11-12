@@ -7,11 +7,11 @@ from unittest import mock
 
 from nuxiva_bus import NuxivaBus
 
-from features.nvr import service as nvr_service
-from features.nvr import settings as nvr_settings
-from features.nvr.ingest import parse_event
-from features.nvr.search import parse
-from features.nvr.store import EventStore
+from agenti.nvr import service as nvr_service
+from agenti.nvr import settings as nvr_settings
+from agenti.nvr.ingest import parse_event
+from agenti.nvr.search import parse
+from agenti.nvr.store import EventStore
 
 NOW = datetime(2025, 10, 6, 15, 0).timestamp()
 

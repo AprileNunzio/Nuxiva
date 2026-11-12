@@ -10,10 +10,10 @@ from fastapi.testclient import TestClient
 from sealed import SealedFile
 
 from access import require_admin
-from features.people import api as people_api
-from features.people import learning, mood, people, private_store
-from features.people.mentions import Mentions
-from features.people.vitals.history import DAYS, History
+from agenti.people import api as people_api
+from agenti.people import learning, mood, people, private_store
+from agenti.people.mentions import Mentions
+from agenti.people.vitals.history import DAYS, History
 
 
 class Base(unittest.TestCase):

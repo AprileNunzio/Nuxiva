@@ -1,5 +1,5 @@
-from features.music import catalog, naming
-from features.music.db import db
+from agenti.music import catalog, naming
+from agenti.music.db import db
 
 
 def migrate() -> int:

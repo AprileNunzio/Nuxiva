@@ -10,10 +10,10 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from access import require_admin
-from features.habits import api as habits_api
-from features.habits import service
-from features.habits.journal import Journal
-from features.people import schema
+from agenti.habits import api as habits_api
+from agenti.habits import service
+from agenti.habits.journal import Journal
+from agenti.people import schema
 
 
 class JournalAttributionTest(unittest.TestCase):

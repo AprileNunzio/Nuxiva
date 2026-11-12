@@ -1,7 +1,7 @@
 import time
 
-from features.music import catalog, conf
-from features.music.db import db
+from agenti.music import catalog, conf
+from agenti.music.db import db
 
 MIN_PLAYED = 20.0
 

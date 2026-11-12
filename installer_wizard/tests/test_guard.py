@@ -1,7 +1,7 @@
 import unittest
 
-from features.laws import guard
-from features.laws.laws import Laws
+from agenti.laws import guard
+from agenti.laws.laws import Laws
 
 
 class GuardTest(unittest.TestCase):

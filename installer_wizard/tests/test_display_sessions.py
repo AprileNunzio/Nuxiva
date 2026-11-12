@@ -3,8 +3,8 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 from state import store
-from features.desktop.desk import desk
-from features.desktop.screens import screens
+from agenti.desktop.desk import desk
+from agenti.desktop.screens import screens
 from system_api import DEFAULT_DISPLAY_SETTINGS, save_display_settings
 
 

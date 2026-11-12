@@ -6,15 +6,15 @@ from pathlib import Path
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
-for p in (str(ROOT), str(ROOT / "backend"), str(ROOT / "features" / "ear")):
+for p in (str(ROOT), str(ROOT / "backend"), str(ROOT / "agenti" / "percezione" / "ear")):
     if p not in sys.path:
         sys.path.insert(0, p)
 
 import native_core
-from features.ear import distress
-from features.ear.danger import DangerEar
-from features.ear.distress_rules import PHRASES
-from features.rescue.detector import detect_speech_intent
+from agenti.ear import distress
+from agenti.ear.danger import DangerEar
+from agenti.ear.distress_rules import PHRASES
+from agenti.rescue.detector import detect_speech_intent
 
 RATE = 16000
 NATIVE = native_core.symbol("ear_distress") is not None

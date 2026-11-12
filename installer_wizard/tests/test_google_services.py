@@ -7,12 +7,12 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from access import require_admin
-from features.google import accounts as accounts_module
-from features.google import api as google_api
-from features.google.app import oauth
-from features.google.constants import SERVICES
-from features.google.gservices import google
-from features.people import people, private_store
+from agenti.google import accounts as accounts_module
+from agenti.google import api as google_api
+from agenti.google.app import oauth
+from agenti.google.constants import SERVICES
+from agenti.google.gservices import google
+from agenti.people import people, private_store
 from sealed import SealedFile
 
 ALL_SCOPES = ["openid", "email"] + [x for d in SERVICES.values() for x in d["scopes"]]
@@ -124,5 +124,5 @@ class ReminderTest(Base):
 
     def test_global_setting_is_gone_from_the_feature(self):
         import json
-        manifest = json.loads((Path(__file__).resolve().parents[1] / "features" / "google" / "feature.json").read_text(encoding="utf-8"))
+        manifest = json.loads((Path(__file__).resolve().parents[1] / "agenti" / "comunicazione" / "google" / "feature.json").read_text(encoding="utf-8"))
         self.assertNotIn("NUXIVA_GOOGLE_REMIND_MIN", [s["key"] for s in manifest["settings"]])

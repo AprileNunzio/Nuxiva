@@ -5,11 +5,11 @@ from unittest import mock
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from features.desktop import api as desk_api
-from features.home_assistant.home import brain
-from features.redalert import api as red_api
-from features.redalert import broadcast, lights, service
-from features.redalert.service import RedAlert
+from agenti.desktop import api as desk_api
+from agenti.home_assistant.home import brain
+from agenti.redalert import api as red_api
+from agenti.redalert import broadcast, lights, service
+from agenti.redalert.service import RedAlert
 
 STATES = {
     "light.sala": {"state": "on", "attrs": {"brightness": 120, "color_temp_kelvin": 3000, "friendly_name": "Sala"}},

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 
 from access import require_admin, require_internal
 from config import write_env
-from features.music import music
+from agenti.music import music
 from orchestrator import orch
 from state import store
 from tasks import background

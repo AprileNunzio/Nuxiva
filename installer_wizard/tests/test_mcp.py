@@ -7,7 +7,7 @@ from unittest import mock
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from features.capabilities import api, audit, mcp, schema, tokens
+from agenti.capabilities import api, audit, mcp, schema, tokens
 
 
 def rpc(method: str, params: dict | None = None, ident: int | None = 1) -> dict:
@@ -161,7 +161,7 @@ class PromptsAndLimitsTest(TokenBase):
             self.assertNotIn("error", self.ask(self.risky, "ping"))
 
     def test_clients_are_told_when_the_catalog_changes(self):
-        from features.forge import assets
+        from agenti.forge import assets
 
         class Request:
             async def is_disconnected(self):

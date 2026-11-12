@@ -13,11 +13,11 @@ from access import NO_CACHE, require_admin, require_internal, session_user
 from config import EDITABLE_KEYS, NUXIVA_DIR, NODE, env_get, is_secret, kiosk_log, read_env, write_env
 from orchestrator import orch
 from pages import page
-from features.locale.api import page_language
+from agenti.locale.api import page_language
 from settings import apply_config
 import display_events
 from snapshot import full_snapshot, shared_snapshot, sse, sse_delta
-from features.desktop.display_scope import remote_display_scope
+from agenti.desktop.display_scope import remote_display_scope
 from state import INSTALL_LOG, store
 from steps import STEP_BY_ID
 from tasks import background, delayed
@@ -26,7 +26,7 @@ log = logging.getLogger("nuxiva.system_api")
 
 public_routes = APIRouter()
 admin_routes = APIRouter()
-from features.system_logs.api import admin_routes as system_logs_routes
+from agenti.system_logs.api import admin_routes as system_logs_routes
 admin_routes.include_router(system_logs_routes)
 
 LOG_SOURCES = {
@@ -73,14 +73,14 @@ def _activation_completed() -> bool:
             from config import STATE_DIR
             store_path = STATE_DIR / "activation.json"
             if not store_path.exists():
-                from features.activation.domain.journey import Journey, Stage
-                from features.activation.infrastructure.journey_store import JourneyStore
+                from agenti.activation.domain.journey import Journey, Stage
+                from agenti.activation.infrastructure.journey_store import JourneyStore
                 now = time.time()
                 j = Journey(stage=Stage.DONE, created_at=now, updated_at=now)
                 JourneyStore(store_path).save(j)
             return True
-        from features.activation.infrastructure.journey_store import JourneyStore
-        from features.activation.domain.journey import Stage
+        from agenti.activation.infrastructure.journey_store import JourneyStore
+        from agenti.activation.domain.journey import Stage
         from config import STATE_DIR
         store_path = STATE_DIR / "activation.json"
         if not store_path.exists():
@@ -96,7 +96,7 @@ async def public_index(request: Request, node: str = ""):
     if store.phase != "INSTALLING" and setup_api.setup_required(request):
         return RedirectResponse("/setup", status_code=303)
     if node:
-        from features.nodes.registry import registry
+        from agenti.nodes.registry import registry
         if node in registry.data["nodes"]:
             NODE.set(node)
     page_name = "display/display.html" if _activation_completed() else "activation/activation.html"

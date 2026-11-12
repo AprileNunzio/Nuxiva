@@ -1,7 +1,7 @@
 import unittest
 from unittest import mock
 
-from features.home_assistant.commands import HomeCommands
+from agenti.home_assistant.commands import HomeCommands
 
 
 class FakeHome(HomeCommands):
@@ -21,10 +21,10 @@ class FakeHome(HomeCommands):
 class HomeTwinIntegrationTest(unittest.IsolatedAsyncioTestCase):
     async def run_plan(self, calls, mode="enforce"):
         home = FakeHome()
-        from features.twin.model import HomeState
+        from agenti.twin.model import HomeState
         state = HomeState(home.states, {"people": 1})
-        with mock.patch("features.twin.service.Twin.snapshot", return_value=state), \
-                mock.patch("features.twin.service.Twin.mode", return_value=mode):
+        with mock.patch("agenti.twin.service.Twin.snapshot", return_value=state), \
+                mock.patch("agenti.twin.service.Twin.mode", return_value=mode):
             return home, await home.execute({"calls": calls}, "test", "voce")
 
     async def test_conflicting_call_never_reaches_home_assistant(self):

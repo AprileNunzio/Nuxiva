@@ -11,15 +11,14 @@ from pathlib import Path
 
 import psutil
 
-from agenti._registry import AgentRegistry, SYSTEM_DIR as AGENTS_ROOT, root
-from config import FEATURES_DIR, EDITABLE_KEYS, STATE_DIR, is_secret, read_env, write_env
+from agenti._registry import AgentRegistry, root
+from config import AGENTS_DIR, EDITABLE_KEYS, STATE_DIR, is_secret, read_env, write_env
 from state import store
 
 log = logging.getLogger("nuxiva.features")
 
-SYSTEM_DIR = FEATURES_DIR
+SYSTEM_DIR = AGENTS_DIR
 USER_DIR = STATE_DIR / "features"
-AGENTS_DIR = AGENTS_ROOT
 USER_AGENTS_DIR = STATE_DIR / "agenti"
 STATE_FILE = STATE_DIR / "features.json"
 SCAN_EVERY = 20
@@ -44,12 +43,12 @@ def _alphabetical(name: str) -> str:
 
 
 def _agent_roots() -> list[dict]:
-    return [root(AGENTS_DIR, "system", "categorized"), root(SYSTEM_DIR, "legacy", "flat"),
-            root(USER_AGENTS_DIR, "user", "categorized"), root(USER_DIR, "user", "flat")]
+    return [root(SYSTEM_DIR, "system", "categorized"), root(USER_AGENTS_DIR, "user", "categorized"),
+            root(USER_DIR, "user", "flat")]
 
 
 def _is_system(path: Path) -> bool:
-    return path.is_relative_to(SYSTEM_DIR) or path.is_relative_to(AGENTS_DIR)
+    return path.is_relative_to(SYSTEM_DIR)
 
 
 class Registry:
@@ -85,7 +84,7 @@ class Registry:
     def scan(self) -> bool:
         from backend.app_scanner import APPS_DIR, is_application
         apps_paths = glob.glob(str(APPS_DIR / "*" / "feature.json")) if APPS_DIR.exists() else []
-        paths = sorted(apps_paths + [str(p) for p in self.agents.manifest_paths()])
+        paths = sorted(apps_paths) + [str(p) for p in self.agents.manifest_paths()]
         sig = "|".join(f"{p}:{os.path.getmtime(p)}" for p in paths if os.path.exists(p))
         if sig == self.signature:
             return False

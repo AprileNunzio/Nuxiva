@@ -7,8 +7,8 @@ import httpx
 from fastapi import HTTPException
 from fastapi.responses import JSONResponse
 
-from features.chat import api as chat_api
-from features.chat import streaming
+from agenti.chat import api as chat_api
+from agenti.chat import streaming
 
 
 def events(chunks: list[str]) -> list[dict]:

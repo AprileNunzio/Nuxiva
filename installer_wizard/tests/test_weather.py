@@ -8,8 +8,8 @@ from unittest import mock
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from features.chat.skills import weather as skill
-from features.weather import api, astro, codes, places, provider, settings
+from agenti.chat.skills import weather as skill
+from agenti.weather import api, astro, codes, places, provider, settings
 
 
 def hours(count=72):

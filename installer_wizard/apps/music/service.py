@@ -2,8 +2,8 @@ import asyncio
 import logging
 import time
 
-from features.governor.service import governor
-from features.music import conf, covers, enrich, identify, legacy, listening, lyrics_store, organizer, renamer, scanner, sharing
+from agenti.governor.service import governor
+from agenti.music import conf, covers, enrich, identify, legacy, listening, lyrics_store, organizer, renamer, scanner, sharing
 from state import store
 
 log = logging.getLogger("nuxiva.music")

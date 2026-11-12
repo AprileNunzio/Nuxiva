@@ -6,9 +6,9 @@ from unittest import mock
 from fastapi.testclient import TestClient
 
 import nuxiva_supervisor
-from features.agent import registry
-from features.team import control as control_module
-from features.team import priority
+from agenti.agent import registry
+from agenti.team import control as control_module
+from agenti.team import priority
 
 HEADERS = {"X-Nuxiva-Request": "1"}
 

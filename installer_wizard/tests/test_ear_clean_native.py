@@ -6,14 +6,14 @@ from unittest import mock
 
 import numpy as np
 
-EAR = Path(__file__).resolve().parents[1] / "features" / "ear"
+EAR = Path(__file__).resolve().parents[1] / "agenti" / "percezione" / "ear"
 for p in (str(Path(__file__).resolve().parents[1]), str(Path(__file__).resolve().parents[1] / "backend"), str(EAR)):
     if p not in sys.path:
         sys.path.insert(0, p)
 
 import native_core
-from features.ear import conditioner
-from features.ear.conditioner import HOP, NativeConditioner, RustConditioner
+from agenti.ear import conditioner
+from agenti.ear.conditioner import HOP, NativeConditioner, RustConditioner
 
 import enhance
 import levels

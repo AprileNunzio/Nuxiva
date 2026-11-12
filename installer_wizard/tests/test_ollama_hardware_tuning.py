@@ -1,13 +1,13 @@
 import unittest
 from pathlib import Path
 
-from features.ollama.hardware import calculate_hardware_profile, detect_cpu, detect_memory
-from features.ollama.service import (
+from agenti.ollama.hardware import calculate_hardware_profile, detect_cpu, detect_memory
+from agenti.ollama.service import (
     generate_systemd_override,
     get_default_config,
     get_runtime_options,
 )
-from features.ollama.types import OllamaRuntimeConfig
+from agenti.ollama.types import OllamaRuntimeConfig
 
 
 class TestOllamaHardwareTuning(unittest.TestCase):

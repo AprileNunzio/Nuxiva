@@ -1,12 +1,12 @@
 import unittest
 from unittest import mock
 
-from features.home_assistant.answers import HomeAnswers
-from features.home_assistant.live import HomeLive
-from features.home_assistant.nlu.matching import Catalog
-from features.home_assistant.nlu.parser import parse
-from features.home_assistant.readings import messages
-from features.home_assistant.registry import HomeRegistry
+from agenti.home_assistant.answers import HomeAnswers
+from agenti.home_assistant.live import HomeLive
+from agenti.home_assistant.nlu.matching import Catalog
+from agenti.home_assistant.nlu.parser import parse
+from agenti.home_assistant.readings import messages
+from agenti.home_assistant.registry import HomeRegistry
 
 
 class SensorHome(HomeRegistry, HomeLive, HomeAnswers):
@@ -50,7 +50,7 @@ class SensorHome(HomeRegistry, HomeLive, HomeAnswers):
         query = parse(text, self.catalog)
         if query is None:
             raise AssertionError(f"query not recognized: {text}")
-        with mock.patch("features.places.context.area", return_value=None):
+        with mock.patch("agenti.places.context.area", return_value=None):
             return query, self.answer(query)
 
 

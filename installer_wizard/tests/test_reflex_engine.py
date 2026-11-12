@@ -5,8 +5,8 @@ import unittest
 from fastapi.testclient import TestClient
 
 import nuxiva_supervisor
-from features.chat.reflex_engine import AcousticReflexEngine
-from features.chat.reflex_memory import PersonaProfile, ReflexMemoryStore
+from agenti.chat.reflex_engine import AcousticReflexEngine
+from agenti.chat.reflex_memory import PersonaProfile, ReflexMemoryStore
 
 
 class ReflexMemoryTest(unittest.TestCase):

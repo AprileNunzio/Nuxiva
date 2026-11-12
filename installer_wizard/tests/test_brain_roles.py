@@ -1,8 +1,8 @@
 import unittest
 from unittest.mock import patch
 
-from features.brain import brains as module
-from features.brain.roles import FALLBACK_ROLE, ROLES, split_order
+from agenti.brain import brains as module
+from agenti.brain.roles import FALLBACK_ROLE, ROLES, split_order
 
 
 def config_with(env):

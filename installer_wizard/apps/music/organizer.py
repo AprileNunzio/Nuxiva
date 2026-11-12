@@ -4,7 +4,7 @@ import shutil
 import time
 from pathlib import Path
 
-from features.music import hints, layout, naming, tags
+from agenti.music import hints, layout, naming, tags
 
 log = logging.getLogger("nuxiva.music")
 SETTLE = 20

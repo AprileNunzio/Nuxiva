@@ -10,9 +10,9 @@ from fastapi import HTTPException
 from fastapi.testclient import TestClient
 
 import nuxiva_supervisor
-from features.music import catalog, id3, layout, listening, mixes, organizer, playlists, scanner, stream, tags, tokens
-from features.music.db import db
-from features.shares import archive
+from agenti.music import catalog, id3, layout, listening, mixes, organizer, playlists, scanner, stream, tags, tokens
+from agenti.music.db import db
+from agenti.shares import archive
 
 HEADERS = {"X-Nuxiva-Request": "1"}
 
@@ -125,11 +125,11 @@ class OrganizerTest(Base):
 
     def test_the_service_wakes_up_by_itself_when_a_file_arrives(self):
         import asyncio
-        from features.music.service import LibraryService
+        from agenti.music.service import LibraryService
         service = LibraryService()
 
         async def scenario():
-            with mock.patch("features.music.service.WATCH_EVERY", 0.05):
+            with mock.patch("agenti.music.service.WATCH_EVERY", 0.05):
                 task = asyncio.create_task(service.idle())
                 await asyncio.sleep(0.15)
                 self.assertFalse(task.done())
@@ -188,7 +188,7 @@ class CatalogTest(Base):
         self.assertEqual(catalog.tracks("title")[0]["title"], "Blu")
 
     def test_edit_updates_the_index_and_regroups_albums(self):
-        from features.music.api_library import apply_edit
+        from agenti.music.api_library import apply_edit
         self.filled()
         luna = next(t for t in catalog.tracks() if t["title"] == "Luna")
         self.assertEqual(apply_edit(luna["id"], {"album": "Nuovo disco", "genre": "Soul"}, "track"), 1)
@@ -369,7 +369,7 @@ class ApiTest(Base):
         self.assertFalse((self.tmp / "x.wav").exists())
 
     def test_check_now_sorts_and_indexes_at_once_even_when_the_machine_is_busy(self):
-        from features.governor.service import governor
+        from agenti.governor.service import governor
         self.drop("a.wav", title="Rosso", artist="Vasco", album="Blasco", track="1")
         make_wav(self.inbox / "ancora-in-copia.wav", title="Lento", artist="Vasco", album="Blasco")
         with mock.patch.object(governor, "busy", return_value=True):

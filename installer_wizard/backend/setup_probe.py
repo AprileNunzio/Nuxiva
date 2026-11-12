@@ -30,7 +30,7 @@ def _capture_nodes() -> list[str]:
 
 
 async def scan_cameras() -> dict:
-    from features.cameras import discovery
+    from agenti.cameras import discovery
     started = time.monotonic()
     network: list[dict] = []
     error = ""

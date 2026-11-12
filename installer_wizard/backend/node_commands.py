@@ -27,7 +27,7 @@ class NodeControl:
 
 
 def _paired_registry():
-    from features.nodes.registry import COMMANDS, registry
+    from agenti.nodes.registry import COMMANDS, registry
 
     return registry, COMMANDS
 

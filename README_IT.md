@@ -148,7 +148,7 @@ flowchart LR
 
 ### 4.1 Flusso di una richiesta
 
-Una richiesta di testo o voce viene gestita dal router della chat in `installer_wizard/features/chat/`. Attraversa una catena ordinata di stadi (automazioni, comandi diretti, skill di intento, connettori, controllo della casa, azioni, conversazione). Il primo stadio che riconosce la richiesta risponde; gli altri vengono saltati. Le richieste che hanno bisogno di informazioni aggiornate vengono affidate all'agente, che cerca prima di rispondere. La generazione scorre la lista di priorità dei modelli e salta quelli che falliscono, così un modello non disponibile non blocca mai una risposta.
+Una richiesta di testo o voce viene gestita dal router della chat in `installer_wizard/agenti/cognizione/chat/`. Attraversa una catena ordinata di stadi (automazioni, comandi diretti, skill di intento, connettori, controllo della casa, azioni, conversazione). Il primo stadio che riconosce la richiesta risponde; gli altri vengono saltati. Le richieste che hanno bisogno di informazioni aggiornate vengono affidate all'agente, che cerca prima di rispondere. La generazione scorre la lista di priorità dei modelli e salta quelli che falliscono, così un modello non disponibile non blocca mai una risposta.
 
 ### 4.2 Ragionamento del Core
 

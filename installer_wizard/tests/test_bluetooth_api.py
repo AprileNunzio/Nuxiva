@@ -4,8 +4,8 @@ from unittest import mock
 from fastapi.testclient import TestClient
 
 import nuxiva_supervisor
-from features.bluetooth import adapter
-from features.bluetooth.service import service
+from agenti.bluetooth import adapter
+from agenti.bluetooth.service import service
 
 HEADERS = {"X-Nuxiva-Request": "1"}
 READY = {"present": True, "installed": True, "powered": False, "discovering": False, "name": "hci0", "address": ""}

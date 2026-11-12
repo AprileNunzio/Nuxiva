@@ -3,9 +3,9 @@ import unittest
 
 import native_core
 
-from features.rescue import engine
-from features.rescue.policy import PolicyError, parse
-from features.rescue.signals import KINDS, EvidenceError
+from agenti.rescue import engine
+from agenti.rescue.policy import PolicyError, parse
+from agenti.rescue.signals import KINDS, EvidenceError
 
 SOURCES = ("cam1", "cam2", "mic1", "mic2", "watch", "ha.smoke", "voice")
 NATIVE = native_core.symbol("RustRescue") is not None

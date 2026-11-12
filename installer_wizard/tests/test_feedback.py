@@ -4,9 +4,9 @@ from datetime import datetime
 from pathlib import Path
 from unittest import mock
 
-from features.habits import feedback as feedback_module
-from features.habits.feedback import WINDOW, Feedback, context
-from features.habits.foresight import Foresight
+from agenti.habits import feedback as feedback_module
+from agenti.habits.feedback import WINDOW, Feedback, context
+from agenti.habits.foresight import Foresight
 
 T0 = datetime(2026, 9, 7, 18, 0).timestamp()
 

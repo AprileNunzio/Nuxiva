@@ -7,14 +7,14 @@ from unittest import mock
 
 import numpy as np
 
-from features.sentinel import narrate, record, vault
-from features.sentinel.collectors import automations
-from features.sentinel.collectors.access import AccessCollector
-from features.sentinel.collectors.presence import PresenceCollector
-from features.sentinel.journal import Journal, SentinelUnavailable
+from agenti.sentinel import narrate, record, vault
+from agenti.sentinel.collectors import automations
+from agenti.sentinel.collectors.access import AccessCollector
+from agenti.sentinel.collectors.presence import PresenceCollector
+from agenti.sentinel.journal import Journal, SentinelUnavailable
 
 ROOT = Path(__file__).resolve().parents[1]
-LANG = ROOT / "features" / "sentinel" / "language"
+LANG = ROOT / "agenti" / "sicurezza" / "sentinel" / "language"
 T0 = 1_793_900_000.0
 
 
@@ -79,12 +79,12 @@ class VaultTests(TempVault):
 class WithoutNativeTests(TempVault):
 
     def test_the_journal_refuses_without_the_engine(self):
-        with mock.patch("features.sentinel.journal._engine_class", return_value=None):
+        with mock.patch("agenti.sentinel.journal._engine_class", return_value=None):
             with self.assertRaises(SentinelUnavailable):
                 Journal().ready()
 
     def test_recording_does_not_break_the_caller(self):
-        with mock.patch("features.sentinel.journal._engine_class", return_value=None), \
+        with mock.patch("agenti.sentinel.journal._engine_class", return_value=None), \
                 mock.patch.object(record, "journal", Journal()), mock.patch.object(record, "enabled", return_value=True):
             self.assertIsNone(record.record("presence.arrived", record.NUXIVA, "sentinel.presence.arrived"))
 
@@ -93,9 +93,9 @@ class CollectorTests(unittest.TestCase):
 
     def setUp(self):
         self.calls = []
-        for target in ("features.sentinel.collectors.presence.record.record",
-                       "features.sentinel.collectors.access.record.record",
-                       "features.sentinel.collectors.automations.record.record"):
+        for target in ("agenti.sentinel.collectors.presence.record.record",
+                       "agenti.sentinel.collectors.access.record.record",
+                       "agenti.sentinel.collectors.automations.record.record"):
             patcher = mock.patch(target, side_effect=lambda kind, subject, key, params=None, *a, **k:
                                  self.calls.append((kind, key, params)))
             patcher.start()
@@ -107,7 +107,7 @@ class CollectorTests(unittest.TestCase):
         patcher = mock.patch.object(record, "pseudonym", side_effect=lambda slug: "ab" * 16)
         patcher.start()
         self.addCleanup(patcher.stop)
-        patcher = mock.patch("features.sentinel.collectors.presence.display_name", side_effect=str.title)
+        patcher = mock.patch("agenti.sentinel.collectors.presence.display_name", side_effect=str.title)
         patcher.start()
         self.addCleanup(patcher.stop)
 
@@ -153,7 +153,7 @@ class AppearanceTests(unittest.TestCase):
 
     def test_a_uniform_shirt_gives_its_colour_and_noise_gives_nothing(self):
         import sys
-        sys.path.insert(0, str(ROOT / "features" / "vision"))
+        sys.path.insert(0, str(ROOT / "agenti" / "percezione" / "vision"))
         import appearance
         frame = np.zeros((480, 640, 3), dtype=np.uint8)
         frame[:, :] = (128, 128, 128)

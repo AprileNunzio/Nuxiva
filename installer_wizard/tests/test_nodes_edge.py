@@ -3,7 +3,7 @@ from unittest import mock
 
 from state import store
 
-from features.nodes import edge
+from agenti.nodes import edge
 
 
 class FakeHome:
@@ -33,7 +33,7 @@ class EdgeClaimTest(unittest.TestCase):
 class FastPathTest(unittest.IsolatedAsyncioTestCase):
     async def run_path(self, out, claim, phase="READY"):
         home = FakeHome(out)
-        with mock.patch("features.home_assistant.home.brain", home), mock.patch.object(store, "phase", phase):
+        with mock.patch("agenti.home_assistant.home.brain", home), mock.patch.object(store, "phase", phase):
             return await edge.fast_path("accendi la luce", claim), home
 
     async def test_home_handles_trusted_claims(self):

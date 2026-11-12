@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 
 from access import require_admin
 from config import env_get
-from features.actions.common import SMB_CONF, my_ip
+from agenti.actions.common import SMB_CONF, my_ip
 from state import store
 
 public_routes = APIRouter()
@@ -29,7 +29,7 @@ async def overview(_: str = Depends(require_admin)):
         shares.append({"name": name, "path": path.group(1).strip() if path else "", "guest": bool(guest)})
     active = (await sh("systemctl", "is-active", "smbd", timeout=5))[1].strip()
     ip = my_ip()
-    from features.shares import archive
+    from agenti.shares import archive
     try:
         archive.ensure()
     except OSError as exc:
@@ -41,7 +41,7 @@ async def overview(_: str = Depends(require_admin)):
 
 @admin_routes.get("/api/shares/files")
 async def list_files(subpath: str = "", _: str = Depends(require_admin)):
-    from features.shares import archive
+    from agenti.shares import archive
     archive.ensure()
     base = archive.ROOT.resolve()
     target = (base / subpath.strip("/\\")).resolve()
@@ -77,7 +77,7 @@ async def list_files(subpath: str = "", _: str = Depends(require_admin)):
 @admin_routes.get("/api/shares/file")
 async def get_file_content(path: str = "", _: str = Depends(require_admin)):
     from fastapi.responses import FileResponse
-    from features.shares import archive
+    from agenti.shares import archive
     base = archive.ROOT.resolve()
     target = (base / path.strip("/\\")).resolve()
     if not target.is_relative_to(base):
@@ -118,7 +118,7 @@ async def get_file_content(path: str = "", _: str = Depends(require_admin)):
 
 @admin_routes.post("/api/shares/create_folder")
 async def create_folder(payload: dict, _: str = Depends(require_admin)):
-    from features.shares import archive
+    from agenti.shares import archive
     base = archive.ROOT.resolve()
     parent = (base / str(payload.get("parent", "")).strip("/\\")).resolve()
     if not parent.is_relative_to(base):
@@ -134,7 +134,7 @@ MAX_UPLOAD_SHARE = 1000 * 1024 * 1024  # 1 GB
 
 @admin_routes.put("/api/shares/upload")
 async def upload_share_file(request: Request, subpath: str = "", name: str = "", _: str = Depends(require_admin)):
-    from features.shares import archive
+    from agenti.shares import archive
     base = archive.ROOT.resolve()
     target_dir = (base / subpath.strip("/\\")).resolve()
     if not target_dir.is_relative_to(base):

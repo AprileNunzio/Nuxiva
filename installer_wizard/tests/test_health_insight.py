@@ -5,9 +5,9 @@ from pathlib import Path
 
 from sealed import SealedFile
 
-from features.people.vitals import ble_codec, insight
-from features.people.vitals.history import History
-from features.people.vitals.model import clean_sample
+from agenti.people.vitals import ble_codec, insight
+from agenti.people.vitals.history import History
+from agenti.people.vitals.model import clean_sample
 
 
 def sfloat(value: int, exponent: int = 0) -> bytes:
@@ -91,7 +91,7 @@ class HistoryTest(unittest.TestCase):
 class GoogleDailyTest(unittest.TestCase):
     def test_steps_sleep_and_resting_heart_rate_are_read(self):
         from datetime import datetime
-        from features.people.vitals import cloud
+        from agenti.people.vitals import cloud
         now = datetime(2027, 1, 15, 18, 0).timestamp()
         iso = lambda h: datetime(2027, 1, 15, h, 0).astimezone().isoformat()
         steps = {"dataPoints": [{"steps": {"count": "1200", "interval": {"startTime": iso(9)}}},

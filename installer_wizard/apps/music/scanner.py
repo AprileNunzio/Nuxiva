@@ -4,8 +4,8 @@ import os
 import time
 from pathlib import Path
 
-from features.music import catalog, covers, layout, tags
-from features.music.db import db
+from agenti.music import catalog, covers, layout, tags
+from agenti.music.db import db
 
 log = logging.getLogger("nuxiva.music")
 BATCH = 40

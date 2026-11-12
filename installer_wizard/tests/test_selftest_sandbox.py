@@ -3,8 +3,8 @@ import unittest
 from types import SimpleNamespace
 from unittest import mock
 
-from features.selftest import sandbox_check
-from features.selftest.skip import Skip
+from agenti.selftest import sandbox_check
+from agenti.selftest.skip import Skip
 
 
 class SandboxSelftestTests(unittest.IsolatedAsyncioTestCase):

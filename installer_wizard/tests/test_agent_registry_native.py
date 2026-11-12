@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 
 from agenti import _manifest
-from agenti._registry import LEGACY_DIR, AgentRegistry, root, standard_roots
+from agenti._registry import SYSTEM_DIR, AgentRegistry, root, standard_roots
 
 try:
     import nuxiva_native
@@ -49,8 +49,9 @@ class AgentRegistryParityTest(unittest.TestCase):
                 self.assert_same_validation(raw, "ok_id", category)
 
     def test_validation_matches_on_every_shipped_manifest(self):
-        for path in sorted(LEGACY_DIR.glob("*/feature.json")):
-            self.assert_same_validation(path.read_text(encoding="utf-8"), path.parent.name, None)
+        for path in sorted(SYSTEM_DIR.glob("*/*/feature.json")):
+            for category in (None, path.parent.parent.name):
+                self.assert_same_validation(path.read_text(encoding="utf-8"), path.parent.name, category)
 
     def test_snapshot_matches_on_repository_and_fixture(self):
         base = Path(tempfile.mkdtemp())
@@ -62,7 +63,7 @@ class AgentRegistryParityTest(unittest.TestCase):
         (base / "features" / "a-b" / "feature.json").write_text('{"name":"x"}')
         (base / "features" / "medico").mkdir(parents=True)
         (base / "features" / "medico" / "feature.json").write_text('{"name":"Doppio"}')
-        os.symlink(LEGACY_DIR / "particles", base / "features" / "particles")
+        os.symlink(SYSTEM_DIR / "creativita" / "particles", base / "features" / "particles")
         fixtures = [root(base / "agenti", "system", "categorized"), root(base / "features", "legacy", "flat")]
         for roots in (fixtures, standard_roots()):
             rust = AgentRegistry(lambda r=roots: r)

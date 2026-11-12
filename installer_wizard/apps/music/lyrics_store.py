@@ -2,8 +2,8 @@ import logging
 import time
 from pathlib import Path
 
-from features.music import layout, lyrics, naming
-from features.music.db import db
+from agenti.music import layout, lyrics, naming
+from agenti.music.db import db
 
 log = logging.getLogger("nuxiva.music")
 RETRY = 7 * 86400

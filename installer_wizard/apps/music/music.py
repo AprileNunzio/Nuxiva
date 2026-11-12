@@ -12,7 +12,7 @@ import licensing
 from config import env_get
 from state import store
 
-from features.music import lyrics
+from agenti.music import lyrics
 
 log = logging.getLogger("nuxiva.music")
 

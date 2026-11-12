@@ -12,7 +12,7 @@ from cryptography.hazmat.primitives.asymmetric import ec
 
 import auth
 import tls
-from features.ear import proxy
+from agenti.ear import proxy
 
 
 class CertificateTest(unittest.TestCase):
@@ -147,9 +147,9 @@ class ProxyTest(unittest.IsolatedAsyncioTestCase):
         socket = self.socket("192.168.1.20", auth.issue("admin"),
                              headers={"host": "nuxiva.test", "origin": "https://nuxiva.test"})
         socket.url = SimpleNamespace(scheme="wss")
-        with mock.patch("features.ear.remote_input.env_get", return_value="0"):
+        with mock.patch("agenti.ear.remote_input.env_get", return_value="0"):
             self.assertFalse(proxy.input_allowed(socket, False))
-        with mock.patch("features.ear.remote_input.env_get", return_value="1"):
+        with mock.patch("agenti.ear.remote_input.env_get", return_value="1"):
             self.assertTrue(proxy.input_allowed(socket, False))
             self.assertFalse(proxy._remote_control_allowed(socket, '{"type":"presence","alone":"admin"}'))
             self.assertFalse(proxy._remote_control_allowed(socket, '{"type":"enroll_start"}'))
@@ -164,7 +164,7 @@ class ProxyTest(unittest.IsolatedAsyncioTestCase):
             self.assertFalse(proxy.input_allowed(socket, True))
 
     def test_paired_nodes_are_accepted_only_with_their_token(self):
-        from features.nodes.registry import registry
+        from agenti.nodes.registry import registry
 
         def authenticate(node_id, token):
             if (node_id, token) != ("pc-studio", "good"):

@@ -3,9 +3,9 @@ import time
 import unittest
 from datetime import datetime, timedelta
 
-from features.automations import sun
-from features.automations.schema import validate
-from features.habits.miner import mine
+from agenti.automations import sun
+from agenti.automations.schema import validate
+from agenti.habits.miner import mine
 
 START = datetime(2026, 9, 1)
 
@@ -76,9 +76,9 @@ class MinerTest(unittest.TestCase):
 
 class ServiceTest(unittest.TestCase):
     def test_own_actions_are_ignored_and_accept_creates_automation(self):
-        from features.automations.bus import bus
-        from features.automations.library import library
-        from features.habits.service import habits
+        from agenti.automations.bus import bus
+        from agenti.automations.library import library
+        from agenti.habits.service import habits
         before = habits.journal.count()
         bus.state_changed("light.prova", {"state": "off"}, {"state": "on"})
         self.assertEqual(habits.journal.count(), before + 1)

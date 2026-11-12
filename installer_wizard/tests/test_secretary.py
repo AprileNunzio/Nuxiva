@@ -3,11 +3,11 @@ import time
 import unittest
 from unittest import mock
 
-from features.desktop import secretary as secretary_mod
-from features.desktop.desk import Desk
-from features.desktop.news import News
-from features.desktop import briefing
-from features.desktop.secretary import PREFIX, SLOTS, Secretary, pick
+from agenti.desktop import secretary as secretary_mod
+from agenti.desktop.desk import Desk
+from agenti.desktop.news import News
+from agenti.desktop import briefing
+from agenti.desktop.secretary import PREFIX, SLOTS, Secretary, pick
 from state import store
 
 RSS = b"""<?xml version="1.0"?><rss><channel>
@@ -29,7 +29,7 @@ class NewsTest(unittest.TestCase):
             News.parse(b'<!DOCTYPE x [<!ENTITY a "b">]><rss/>')
 
     def test_feed_outside_allowlist_falls_back(self):
-        with mock.patch("features.desktop.news.env_get", return_value="https://evil.example/rss"):
+        with mock.patch("agenti.desktop.news.env_get", return_value="https://evil.example/rss"):
             self.assertTrue(News.feed().startswith("https://www.ansa.it/"))
 
 

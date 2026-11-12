@@ -5,8 +5,8 @@ from unittest import mock
 
 from sealed import SealedFile
 
-from features.brain.usage.ledger import BudgetError, UsageLedger, provider_of
-from features.cloud.catalog import BY_ID
+from agenti.brain.usage.ledger import BudgetError, UsageLedger, provider_of
+from agenti.cloud.catalog import BY_ID
 
 HEADERS = {"X-Nuxiva-Request": "1"}
 
@@ -100,14 +100,14 @@ class BrainUsageApiTests(unittest.TestCase):
         from fastapi.testclient import TestClient
 
         import nuxiva_supervisor
-        from features.brain.usage import ledger as ledger_module
+        from agenti.brain.usage import ledger as ledger_module
 
         self.dir = tempfile.TemporaryDirectory()
         root = Path(self.dir.name)
         self.ledger = UsageLedger(SealedFile(root / "u.vault", root / "u.key"))
         self.patch = mock.patch.object(ledger_module, "usage_ledger", self.ledger)
         self.patch.start()
-        import features.brain.usage.api as usage_api
+        import agenti.brain.usage.api as usage_api
         self.api_patch = mock.patch.object(usage_api, "usage_ledger", self.ledger)
         self.api_patch.start()
         self.client = TestClient(nuxiva_supervisor.admin)

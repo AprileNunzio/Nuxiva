@@ -7,14 +7,14 @@ from unittest import mock
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
-for p in (str(ROOT), str(ROOT / "backend"), str(ROOT / "features" / "ear"), str(ROOT / "features" / "biometrics")):
+for p in (str(ROOT), str(ROOT / "backend"), str(ROOT / "agenti" / "percezione" / "ear"), str(ROOT / "agenti" / "percezione" / "biometrics")):
     if p not in sys.path:
         sys.path.insert(0, p)
 
 import native_core
 import embeddings as emb
 import voiceprint
-from features.ear.speakers import SpeakerContext, turn_fields
+from agenti.ear.speakers import SpeakerContext, turn_fields
 
 NATIVE = native_core.load()
 READY = NATIVE is not None and all(hasattr(NATIVE, n) for n in ("RustVoiceBook", "RustVoiceTracker", "ear_split_turns"))

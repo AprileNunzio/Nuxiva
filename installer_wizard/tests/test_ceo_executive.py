@@ -9,8 +9,8 @@ Verifica la totale assenza di falsi positivi (0.001% tolleranza errori):
 """
 
 import unittest
-from features.team.ceo import CEOExecutive
-from features.team.stopwords import is_conversational_query, clean_tokens
+from agenti.team.ceo import CEOExecutive
+from agenti.team.stopwords import is_conversational_query, clean_tokens
 
 
 class CEOExecutiveEnterpriseRoutingTest(unittest.TestCase):
@@ -161,7 +161,7 @@ class CEORelevanceTest(unittest.TestCase):
         import tempfile
         from pathlib import Path
         from unittest import mock
-        from features.team import learning
+        from agenti.team import learning
         self.ceo = CEOExecutive()
         tmp = tempfile.TemporaryDirectory()
         self.addCleanup(tmp.cleanup)
@@ -187,12 +187,12 @@ class CEORelevanceTest(unittest.TestCase):
                 self.assertEqual(self.ceo.analyze_request(query).primary_agent.id, expected)
 
     def test_generic_verbs_do_not_decide(self):
-        from features.team import relevance
+        from agenti.team import relevance
         self.assertEqual(relevance.query_stems("crea fai apri mostrami"), {})
         self.assertEqual(set(relevance.query_stems("canzoni")), set(relevance.query_stems("canzone")))
 
     def test_synthesize_realigns_plan_and_learns(self):
-        from features.team import learning
+        from agenti.team import learning
         decision = self.ceo.analyze_request("apri la lavagna")
         raw = {"reply": "ok", "intent": "conversation", "agent": "Connettore · musicstudio"}
         result = self.ceo.synthesize(decision, raw)
@@ -211,7 +211,7 @@ class CEOReasoningTest(unittest.TestCase):
         import tempfile
         from pathlib import Path
         from unittest import mock
-        from features.team import learning, reasoning
+        from agenti.team import learning, reasoning
         self.asyncio, self.mock, self.reasoning = asyncio, mock, reasoning
         self.ceo = CEOExecutive()
         tmp = tempfile.TemporaryDirectory()
@@ -244,7 +244,7 @@ class CEOReasoningTest(unittest.TestCase):
         self.assertEqual([a.id for a in decision.secondary_agents], [helper])
 
     def test_invalid_or_unavailable_model_falls_back(self):
-        from features.brain.llm import BrainUnavailable
+        from agenti.brain.llm import BrainUnavailable
         for outcome in ({"agent": "ghost"}, BrainUnavailable("off")):
             self.reasoning.cache.clear()
             patcher = self.mock.AsyncMock(side_effect=outcome) if isinstance(outcome, Exception) else self.mock.AsyncMock(return_value=outcome)
@@ -254,7 +254,7 @@ class CEOReasoningTest(unittest.TestCase):
             self.assertEqual(decision.primary_agent.id, "music")
 
     def test_reasoned_decision_steers_the_connector(self):
-        from features.chat import assistant
+        from agenti.chat import assistant
         decision = self.ceo.analyze_request("crea una canzone blues")
         self.assertEqual(assistant._hint(decision), "musicstudio")
         weak = self.ceo.analyze_request("ciao come va?")
@@ -276,7 +276,7 @@ class CEOReasoningTest(unittest.TestCase):
             "online": True,
             "compute": {"ollama": {"available": True, "shared": True}},
         }
-        with self.mock.patch("features.nodes.registry.registry.listing", return_value=[mock_remote_node]):
+        with self.mock.patch("agenti.nodes.registry.registry.listing", return_value=[mock_remote_node]):
             delegated = self.ceo.analyze_request("mostrami la scultura a particelle di una medusa")
             self.assertEqual(delegated.target_node, "Workstation GPU")
             self.assertEqual(delegated.execution_tier, "heavy")

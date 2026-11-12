@@ -3,12 +3,12 @@ import unittest
 
 from state import store
 
-from features.automations import actions as leaf
-from features.automations.bus import bus
-from features.automations.engine import engine
-from features.automations.library import InvalidAutomation, library
-from features.automations.schema import validate
-from features.automations.templates import TEMPLATES
+from agenti.automations import actions as leaf
+from agenti.automations.bus import bus
+from agenti.automations.engine import engine
+from agenti.automations.library import InvalidAutomation, library
+from agenti.automations.schema import validate
+from agenti.automations.templates import TEMPLATES
 
 SPOKEN: list[str] = []
 
@@ -104,7 +104,7 @@ class AutomationsTest(unittest.TestCase):
         asyncio.run(self._phrase())
 
     async def _phrase(self):
-        from features.automations import commands
+        from agenti.automations import commands
         library.add({"name": "Notte", "triggers": [{"type": "phrase", "phrases": ["spegni tutto in *"]}],
                      "actions": [{"type": "confirm", "question": "Procedo?", "timeout": 3,
                                   "yes": [{"type": "set", "name": "fatto", "value": "{{ parole[0] }}", "scope": "global"}],

@@ -12,8 +12,8 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from starlette.websockets import WebSocketDisconnect
 
-from features.ear import api as ear_api
-from features.ear import equalizer, levels, micsource, mictest, mictest_api
+from agenti.ear import api as ear_api
+from agenti.ear import equalizer, levels, micsource, mictest, mictest_api
 
 RATE = 16000
 

@@ -1,8 +1,8 @@
 import asyncio
 import unittest
 
-from features.cloud.catalog import BY_ID, make_ref, parse_ref
-from features.cloud.tools import cloud_catalog
+from agenti.cloud.catalog import BY_ID, make_ref, parse_ref
+from agenti.cloud.tools import cloud_catalog
 
 
 class CloudCatalogTests(unittest.TestCase):

@@ -6,7 +6,7 @@ from unittest import mock
 import cv2
 import numpy as np
 
-VISION = Path(__file__).resolve().parents[1] / "features" / "vision"
+VISION = Path(__file__).resolve().parents[1] / "agenti" / "percezione" / "vision"
 if str(VISION) not in sys.path:
     sys.path.insert(0, str(VISION))
 

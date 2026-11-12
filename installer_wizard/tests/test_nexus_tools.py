@@ -7,15 +7,16 @@ from unittest import mock
 from fastapi.testclient import TestClient
 
 import nuxiva_supervisor
-from features.nexus import composition
-from features.nexus.application.freshness_service import FreshnessService
-from features.nexus.application.tool_service import ToolNotFound, ToolService
-from features.nexus.domain import freshness, wizard
-from features.nexus.infrastructure.fingerprint import FolderFingerprint
-from features.nexus.infrastructure.json_store import JsonDocument
+from agenti.nexus import composition
+from agenti.nexus.application.freshness_service import FreshnessService
+from agenti.nexus.application.tool_service import ToolNotFound, ToolService
+from agenti.nexus.domain import freshness, wizard
+from agenti.nexus.infrastructure.fingerprint import FolderFingerprint
+from agenti.nexus.infrastructure.json_store import JsonDocument
+from tests.agent_tree import AGENTS
 
 HEADERS = {"X-Nuxiva-Request": "1"}
-FEATURES = Path(__file__).resolve().parents[1] / "features"
+FEATURES = AGENTS
 CAMERA = {"id": "cam", "name": "Cam", "toggle": {"env": "NUXIVA_CAM"}, "settings": [
     {"key": "NUXIVA_CAM_FPS", "label": "Fluidità", "type": "select", "options": [{"value": "8", "label": "8 al secondo"}, "15"]},
     {"key": "NUXIVA_CAM_KEY", "label": "Chiave", "type": "secret"},

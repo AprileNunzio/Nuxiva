@@ -3,9 +3,9 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.agency import blueprint, client as client_module, runner, service, tools, worker
-from features.agency.memory import ProjectMemory
-from features.shares import archive
+from agenti.agency import blueprint, client as client_module, runner, service, tools, worker
+from agenti.agency.memory import ProjectMemory
+from agenti.shares import archive
 
 
 class FakeEcommerceAgencyDaemon:

@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.update_center import history
+from agenti.update_center import history
 
 
 class UpdateHistoryTest(unittest.IsolatedAsyncioTestCase):
@@ -16,8 +16,8 @@ class UpdateHistoryTest(unittest.IsolatedAsyncioTestCase):
         self.history_file = self.root / "update_history.json"
         self.state_dir = self.root / "var/lib/nuxiva"
         self.state_dir.mkdir(parents=True, exist_ok=True)
-        self.patcher1 = mock.patch("features.update_center.history.UPDATE_HISTORY_FILE", self.history_file)
-        self.patcher2 = mock.patch("features.update_center.history.STATE_DIR", self.state_dir)
+        self.patcher1 = mock.patch("agenti.update_center.history.UPDATE_HISTORY_FILE", self.history_file)
+        self.patcher2 = mock.patch("agenti.update_center.history.STATE_DIR", self.state_dir)
         self.patcher1.start()
         self.patcher2.start()
 
@@ -242,7 +242,7 @@ class UpdateHistoryTest(unittest.IsolatedAsyncioTestCase):
         from fastapi import FastAPI
         from fastapi.testclient import TestClient
         import auth
-        from features.update_center import api as upd_api
+        from agenti.update_center import api as upd_api
 
         app = FastAPI()
         app.include_router(upd_api.admin_routes)

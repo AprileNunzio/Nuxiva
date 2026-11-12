@@ -19,7 +19,7 @@ def wake_word(assistant_name: str) -> str:
 
 
 def _queue_voice_training(owner: dict) -> None:
-    from features.chat import voice_id
+    from agenti.chat import voice_id
 
     def start() -> None:
         store.voice_training = {"id": secrets.token_hex(6), "at": time.time(), **voice_id.session(owner)}
@@ -81,7 +81,7 @@ async def complete(raw: dict, request: Request, source: str) -> dict:
     owner = setup_owner.register_owner(first, last, updates["NUXIVA_UI_LANG"], voice_lang)
     setup_api._mark_done(source)
     if assistant:
-        from features.ear import learner as learner_mod
+        from agenti.ear import learner as learner_mod
         learner_mod.learner.teach(wake_word(assistant))
     training = is_local(request)
     if training:

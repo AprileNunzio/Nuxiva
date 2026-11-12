@@ -8,11 +8,11 @@ from unittest import mock
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from features.agent import registry
-from features.capabilities import mcp
-from features.desktop.desk import desk
-from features.whiteboard import api, board as board_module, commands, ocr, service, solver, tools
-from features.whiteboard.board import Board
+from agenti.agent import registry
+from agenti.capabilities import mcp
+from agenti.desktop.desk import desk
+from agenti.whiteboard import api, board as board_module, commands, ocr, service, solver, tools
+from agenti.whiteboard.board import Board
 
 JPEG = b"\xff\xd8" + b"x" * 500
 
@@ -121,7 +121,7 @@ class Base(unittest.TestCase):
         patcher.start()
         self.addCleanup(patcher.stop)
         self.board = Board()
-        from features.whiteboard import teacher
+        from agenti.whiteboard import teacher
         for module in (service, commands, tools, api, teacher):
             patcher = mock.patch.object(module, "board", self.board)
             patcher.start()
@@ -187,12 +187,12 @@ class VoiceTest(Base):
 
     def test_explaining_writes_a_title_and_the_steps(self):
         reply = {"titolo": "Fotosintesi", "passi": ["La pianta assorbe luce", "CO2 + acqua", "produce zucchero e ossigeno"], "riassunto": "Ecco la fotosintesi."}
-        with mock.patch("features.brain.llm.generate", mock.AsyncMock(return_value=reply)):
+        with mock.patch("agenti.brain.llm.generate", mock.AsyncMock(return_value=reply)):
             self.assertEqual(self.say("spiegami la fotosintesi alla lavagna"), "Ecco la fotosintesi.")
         self.assertEqual(self.texts()[0], "Fotosintesi")
         self.assertEqual(len(self.texts()), 4)
         self.assertTrue(service.is_open())
-        with mock.patch("features.brain.llm.generate", mock.AsyncMock(return_value={})):
+        with mock.patch("agenti.brain.llm.generate", mock.AsyncMock(return_value={})):
             self.assertIn("non sono riuscito", self.say("spiegami le frazioni alla lavagna"))
 
     def test_nuxiva_looks_at_what_the_user_wrote_and_checks_it(self):
@@ -204,7 +204,7 @@ class VoiceTest(Base):
         async def look(jpeg, prompt, **kw):
             seen.update(jpeg=jpeg, prompt=prompt)
             return "Hai scritto 2+2=5: è sbagliato, fa 4.", "modello"
-        with mock.patch("features.brain.sight.look", look):
+        with mock.patch("agenti.brain.sight.look", look):
             reply = self.say("controlla cosa ho scritto")
         self.assertIn("sbagliato", reply)
         self.assertEqual(seen["jpeg"], JPEG)
@@ -277,8 +277,8 @@ class AccessTest(Base):
 
 class PrecedenceTest(Base):
     def handle(self, text: str) -> dict:
-        from features.chat import assistant
-        from features.home_assistant.home import brain
+        from agenti.chat import assistant
+        from agenti.home_assistant.home import brain
 
         async def greedy_home(said: str):
             if "apri" in said:
@@ -327,7 +327,7 @@ class ToolTest(Base):
         self.assertIn("non era aperta", self.run_tool("board_close"))
 
     def test_the_tools_belong_to_the_whiteboard_agent_and_reach_standard_mcp_tokens(self):
-        from features.team import roster
+        from agenti.team import roster
         self.assertEqual(roster.owner("board_solve"), "whiteboard")
         self.assertIn("whiteboard", roster.ids())
         standard = mcp.visible({"id": "t", "label": "x", "risky": False})
@@ -374,7 +374,7 @@ class AdvancedTeacherAndPrinterTest(Base):
         self.assertTrue(self.board.ai_enabled)
 
     def test_teacher_error_detection_and_dual_methods(self):
-        from features.whiteboard import teacher
+        from agenti.whiteboard import teacher
         err = teacher.detect_student_error("2 + 2 = 5")
         self.assertIsNotNone(err)
         self.assertTrue(err["has_error"])
@@ -392,7 +392,7 @@ class AdvancedTeacherAndPrinterTest(Base):
         self.assertTrue(has_hint)
 
     def test_teacher_university_level_math(self):
-        from features.whiteboard import teacher
+        from agenti.whiteboard import teacher
         d_res = teacher.teach("derivata di x^3 + 2*x")
         self.assertFalse(d_res["error_detected"])
         self.assertIn("3*x**2 + 2", d_res["result"])
@@ -407,7 +407,7 @@ class AdvancedTeacherAndPrinterTest(Base):
         self.assertEqual(l_res["result"], "1")
 
     def test_pdf_exporter(self):
-        from features.whiteboard.pdf_exporter import export_pages_to_pdf
+        from agenti.whiteboard.pdf_exporter import export_pages_to_pdf
         pages = [
             {"items": [{"type": "text", "text": "Lezione 1", "x": 50, "y": 50, "size": 36, "color": "#29e0ff"}]},
             {"items": [{"type": "stroke", "points": [[10, 10], [50, 50]], "color": "#f4f4f0", "width": 4}]}
@@ -418,7 +418,7 @@ class AdvancedTeacherAndPrinterTest(Base):
         self.assertGreater(len(pdf_bytes), 1000)
 
     def test_universal_printer_manager(self):
-        from features.whiteboard.printer import printer_manager
+        from agenti.whiteboard.printer import printer_manager
         printers = printer_manager.list_printers()
         types = {p["type"] for p in printers}
         self.assertIn("virtual_pdf", types)

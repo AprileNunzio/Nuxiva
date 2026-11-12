@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from access import require_admin
-from features.people import insight_api, learning, mood, people, private_store
+from agenti.people import insight_api, learning, mood, people, private_store
 
 
 class DetectionTest(unittest.TestCase):

@@ -8,8 +8,8 @@ from unittest import mock
 
 from fastapi import HTTPException
 
-from features.desktop import learner_bridge, learner_store, learning_api
-from features.desktop.learner_bridge import LearnerBridge, audience_of, context_vector
+from agenti.desktop import learner_bridge, learner_store, learning_api
+from agenti.desktop.learner_bridge import LearnerBridge, audience_of, context_vector
 
 
 def _native():

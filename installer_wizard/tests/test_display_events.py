@@ -7,9 +7,9 @@ from fastapi import HTTPException
 
 import display_events
 import snapshot
-from features.desktop.camera_sessions import MAX_PER_LOGIN, TTL_SECONDS, CameraSessions, camera_owner
-from features.desktop.display_scope import is_host_display, remote_display_scope, remote_state
-from features.vision.remote_frame import CONTENT_TYPE, FRAME_BYTES, read_frame
+from agenti.desktop.camera_sessions import MAX_PER_LOGIN, TTL_SECONDS, CameraSessions, camera_owner
+from agenti.desktop.display_scope import is_host_display, remote_display_scope, remote_state
+from agenti.vision.remote_frame import CONTENT_TYPE, FRAME_BYTES, read_frame
 from state import store
 
 
@@ -133,8 +133,8 @@ class SharedSnapshotTests(unittest.TestCase):
                             "client": (peer, 50000), "server": ("192.168.1.197", 80)})
 
         with (
-            mock.patch("features.desktop.display_scope.env_get", return_value="0") as kiosk,
-            mock.patch("features.desktop.display_scope.gate_enabled", return_value=False) as gate,
+            mock.patch("agenti.desktop.display_scope.env_get", return_value="0") as kiosk,
+            mock.patch("agenti.desktop.display_scope.gate_enabled", return_value=False) as gate,
         ):
             self.assertEqual(remote_display_scope(request("192.168.1.20")), "browser")
             self.assertEqual(remote_display_scope(request("127.0.0.1")), "browser")
@@ -175,10 +175,10 @@ class SharedSnapshotTests(unittest.TestCase):
                  "client": ("192.168.1.20", 50000), "server": ("192.168.1.197", 443)}
         private = {"desk": [{"id": "personal-widget"}], "presence": {"status": "active"}}
         with (
-            mock.patch("features.desktop.display_scope.env_get", return_value="0"),
-            mock.patch("features.desktop.display_scope.gate_enabled", return_value=False),
-            mock.patch("features.desktop.display_scope.session_user", return_value="alice") as session,
-            mock.patch("features.desktop.display_scope.account", return_value={"role": "administrator"}) as account,
+            mock.patch("agenti.desktop.display_scope.env_get", return_value="0"),
+            mock.patch("agenti.desktop.display_scope.gate_enabled", return_value=False),
+            mock.patch("agenti.desktop.display_scope.session_user", return_value="alice") as session,
+            mock.patch("agenti.desktop.display_scope.account", return_value={"role": "administrator"}) as account,
             mock.patch.object(snapshot, "full_snapshot", return_value=private),
         ):
             request = Request(scope)
@@ -223,8 +223,8 @@ class CameraSessionTests(unittest.TestCase):
                 "headers": [(b"host", b"nuxiva.test"), (b"origin", origin), (b"x-nuxiva-request", b"1")],
             })
 
-        with mock.patch("features.desktop.camera_sessions.session_user", return_value=None), \
-                mock.patch("features.desktop.camera_sessions.display_node", return_value=None):
+        with mock.patch("agenti.desktop.camera_sessions.session_user", return_value=None), \
+                mock.patch("agenti.desktop.camera_sessions.display_node", return_value=None):
             for origin, scheme, expected in (
                 (b"https://other.test", "https", 403),
                 (b"https://nuxiva.test", "http", 403),
@@ -258,8 +258,8 @@ class RemoteFrameTests(unittest.IsolatedAsyncioTestCase):
                            "headers": [(b"host", b"192.168.1.197")],
                            "client": ("192.168.1.20", 50000), "server": ("192.168.1.197", 80)})
         with (
-            mock.patch("features.desktop.display_scope.env_get", return_value="0"),
-            mock.patch("features.desktop.display_scope.gate_enabled", return_value=False) as gate,
+            mock.patch("agenti.desktop.display_scope.env_get", return_value="0"),
+            mock.patch("agenti.desktop.display_scope.gate_enabled", return_value=False) as gate,
             mock.patch.object(request, "is_disconnected", new=mock.AsyncMock(return_value=False)),
             mock.patch.dict(snapshot._shared, clear=True),
         ):

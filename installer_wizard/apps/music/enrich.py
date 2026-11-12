@@ -3,8 +3,8 @@ import time
 
 import httpx
 
-from features.music import catalog, covers, naming, scanner, sources
-from features.music.db import db
+from agenti.music import catalog, covers, naming, scanner, sources
+from agenti.music.db import db
 
 log = logging.getLogger("nuxiva.music")
 RETRY = 30 * 86400

@@ -2,7 +2,7 @@ import asyncio
 import unittest
 from unittest import mock
 
-from features.vision import ir_auto, ir_configure
+from agenti.vision import ir_auto, ir_configure
 
 
 class PromptTests(unittest.TestCase):

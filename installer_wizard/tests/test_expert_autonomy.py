@@ -2,7 +2,7 @@ import asyncio
 import unittest
 import unittest.mock
 
-from features.experts import autonomy
+from agenti.experts import autonomy
 from tests.test_experts import IsolatedStore
 
 
@@ -25,7 +25,7 @@ class AutonomyCase(IsolatedStore):
             if isinstance(spec, Exception):
                 raise spec
             return spec
-        with unittest.mock.patch("features.actions.common.llm", fake):
+        with unittest.mock.patch("agenti.actions.common.llm", fake):
             return asyncio.run(autonomy.create_for(text))
 
 
@@ -77,26 +77,26 @@ class CreateTest(AutonomyCase):
 
 class WiringTest(AutonomyCase):
     def test_unmatched_question_is_answered_by_a_new_expert(self):
-        from features.chat import assistant
-        from features.experts import commands
+        from agenti.chat import assistant
+        from agenti.experts import commands
 
         async def fake_run(expert, text):
             return f"risposta di {expert.role}", {"mode": "face"}
 
-        with unittest.mock.patch("features.team.ceo.ceo.pick_expert", return_value=None), \
+        with unittest.mock.patch("agenti.team.ceo.ceo.pick_expert", return_value=None), \
                 unittest.mock.patch.object(commands, "run", fake_run):
             async def go():
                 async def fake(*args, **kwargs):
                     return SPEC
-                with unittest.mock.patch("features.actions.common.llm", fake):
+                with unittest.mock.patch("agenti.actions.common.llm", fake):
                     return await assistant._delegate(QUESTION)
             label, speech, ui = asyncio.run(go())
         self.assertIn("apicoltura", label)
         self.assertIn("risposta di", speech)
 
     def test_no_expert_and_no_creation_falls_through(self):
-        from features.chat import assistant
-        with unittest.mock.patch("features.team.ceo.ceo.pick_expert", return_value=None):
+        from agenti.chat import assistant
+        with unittest.mock.patch("agenti.team.ceo.ceo.pick_expert", return_value=None):
             self.assertIsNone(asyncio.run(assistant._delegate("ok")))
 
 

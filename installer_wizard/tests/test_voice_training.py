@@ -7,8 +7,8 @@ from unittest import mock
 
 from fastapi import HTTPException
 
-from features.ear import learner as learner_module
-from features.people import api, people, voice_training
+from agenti.ear import learner as learner_module
+from agenti.people import api, people, voice_training
 from state import store
 
 
@@ -103,14 +103,14 @@ class RecordTest(unittest.TestCase):
         store.voice_training = {"id": "abc", "slug": "nunzio"}
         request = mock.Mock(headers={"content-length": "100"})
         request.json = mock.AsyncMock(return_value={"lang": "it", "answers": self.answers()})
-        with mock.patch("features.people.api.require_display"), mock.patch.object(store, "touch"):
+        with mock.patch("agenti.people.api.require_display"), mock.patch.object(store, "touch"):
             result = asyncio.run(api.display_voice_training_save("nunzio", request))
         self.assertEqual(result["score"], 100)
         self.assertEqual(store.voice_training, {})
 
     def test_oversized_display_payloads_are_refused(self):
         request = mock.Mock(headers={"content-length": str(api.TRAINING_BODY_LIMIT + 1)})
-        with mock.patch("features.people.api.require_display"), self.assertRaises(HTTPException) as caught:
+        with mock.patch("agenti.people.api.require_display"), self.assertRaises(HTTPException) as caught:
             asyncio.run(api.display_voice_training_save("nunzio", request))
         self.assertEqual(caught.exception.status_code, 413)
 

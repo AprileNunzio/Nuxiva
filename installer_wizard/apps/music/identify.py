@@ -6,8 +6,8 @@ from pathlib import Path
 
 import httpx
 
-from features.music import catalog, covers, hints, layout, music, naming, scanner, sources, tagwriter, tags
-from features.music.db import db
+from agenti.music import catalog, covers, hints, layout, music, naming, scanner, sources, tagwriter, tags
+from agenti.music.db import db
 
 log = logging.getLogger("nuxiva.music")
 RETRY = 30 * 86400

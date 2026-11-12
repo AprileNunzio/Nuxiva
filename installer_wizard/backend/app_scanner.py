@@ -3,11 +3,11 @@ import json
 import logging
 from pathlib import Path
 
-from config import FEATURES_DIR
+from config import AGENTS_DIR
 
 log = logging.getLogger("nuxiva.app_scanner")
 
-APPS_DIR = FEATURES_DIR.parent / "apps"
+APPS_DIR = AGENTS_DIR.parent / "apps"
 KNOWN_APP_IDS = {"music", "tv", "models3d", "shares", "terminal", "system_logs", "applications", "explorer", "home_assistant"}
 
 
@@ -32,8 +32,8 @@ def is_feature(manifest: dict, path: str | Path | None = None) -> bool:
 
 
 def _system_agents():
-    from agenti._registry import AgentRegistry, SYSTEM_DIR, root
-    return AgentRegistry(lambda: [root(SYSTEM_DIR, "system", "categorized"), root(FEATURES_DIR, "legacy", "flat")])
+    from agenti._registry import AgentRegistry, root
+    return AgentRegistry(lambda: [root(AGENTS_DIR, "system", "categorized")])
 
 
 def scan_catalog() -> dict[str, list[dict]]:
@@ -43,10 +43,9 @@ def scan_catalog() -> dict[str, list[dict]]:
     if APPS_DIR.exists():
         search_paths.extend(glob.glob(str(APPS_DIR / "*" / "feature.json")))
         search_paths.extend(glob.glob(str(APPS_DIR / "*" / "manifest.json")))
-    search_paths.extend(str(p) for p in _system_agents().manifest_paths())
 
     seen_ids = set()
-    for p in sorted(search_paths):
+    for p in [*sorted(search_paths), *(str(p) for p in _system_agents().manifest_paths())]:
         try:
             manifest = json.loads(Path(p).read_text(encoding="utf-8"))
         except Exception as exc:

@@ -3,7 +3,7 @@ import sqlite3
 import threading
 from pathlib import Path
 
-from features.music import layout
+from agenti.music import layout
 
 log = logging.getLogger("nuxiva.music")
 SCHEMA = (

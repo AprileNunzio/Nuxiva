@@ -1,6 +1,6 @@
 import unittest
 
-from features.desktop.audience import Policy, Tracker
+from agenti.desktop.audience import Policy, Tracker
 
 
 def face(confidence=0.9, liveness="unknown"):

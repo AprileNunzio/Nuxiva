@@ -1,10 +1,10 @@
 import unittest
 from unittest.mock import AsyncMock
 
-from features.home_assistant.automations import describe, model
+from agenti.home_assistant.automations import describe, model
 from tests.ha_automation_fixtures import DEMO_AUTOMATIONS
-from features.home_assistant.automations.model import AutomationError
-from features.home_assistant.automations.service import AutomationService
+from agenti.home_assistant.automations.model import AutomationError
+from agenti.home_assistant.automations.service import AutomationService
 
 NAMES = {"binary_sensor.porta": "Porta ingresso", "light.ingresso": "Luce ingresso"}
 

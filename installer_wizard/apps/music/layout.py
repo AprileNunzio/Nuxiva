@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from config import STATE_DIR
-from features.shares import archive
+from agenti.shares import archive
 
 AUDIO = {".mp3", ".flac", ".m4a", ".aac", ".ogg", ".oga", ".opus", ".wav", ".wma", ".aiff", ".aif", ".alac", ".ape", ".mka"}
 VIDEO = {".mp4", ".webm", ".mkv", ".mov"}

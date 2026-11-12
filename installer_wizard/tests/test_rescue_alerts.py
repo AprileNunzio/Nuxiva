@@ -5,15 +5,15 @@ from pathlib import Path
 from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
-for p in (str(ROOT), str(ROOT / "backend"), str(ROOT / "features" / "ear")):
+for p in (str(ROOT), str(ROOT / "backend"), str(ROOT / "agenti" / "percezione" / "ear")):
     if p not in sys.path:
         sys.path.insert(0, p)
 
-from features.ear.danger import rescue_control
-from features.rescue import contacts
-from features.rescue.channels import Dispatcher
-from features.rescue.coordinator import RescueCoordinator
-from features.rescue.ear_link import EarLink, translate
+from agenti.ear.danger import rescue_control
+from agenti.rescue import contacts
+from agenti.rescue.channels import Dispatcher
+from agenti.rescue.coordinator import RescueCoordinator
+from agenti.rescue.ear_link import EarLink, translate
 
 PEOPLE = [
     {"slug": "nonna", "first_name": "Rosa", "role": "family", "emergency": [{"person": "marco"}, {"name": "Vicina", "phone": "1"}]},
@@ -86,7 +86,7 @@ def build(telegram=None, people=PEOPLE):
     return coord, disp, tg, alarm, ear_sent, audits, clock
 
 
-@mock.patch("features.sentinel.record.record")
+@mock.patch("agenti.sentinel.record.record")
 class RescueAlertsTest(unittest.TestCase):
     def test_contacts_plan_orders_subject_contacts_then_household(self, _):
         levels = contacts.plan(PEOPLE, "nonna", 2)

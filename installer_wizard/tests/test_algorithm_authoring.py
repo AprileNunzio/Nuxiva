@@ -7,8 +7,8 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from access import require_admin
-from features.skills import api, authoring, catalog
-from features.skills import library as lib
+from agenti.skills import api, authoring, catalog
+from agenti.skills import library as lib
 
 CODE = (
     "import re\n\n\n"

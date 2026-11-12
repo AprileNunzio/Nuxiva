@@ -7,7 +7,7 @@ from unittest import mock
 from fastapi.testclient import TestClient
 
 import nuxiva_supervisor
-from features.shares import archive, scoped
+from agenti.shares import archive, scoped
 
 HEADERS = {"X-Nuxiva-Request": "1"}
 
@@ -153,7 +153,7 @@ class SharesExplorerTest(unittest.TestCase):
         bindings = {"alice": {"role": "auditor", "shares": {"documenti": "read"}}}
         with (
             mock.patch("access.session_user", return_value="alice"),
-            mock.patch("features.authz.access_control.bindings", return_value=bindings),
+            mock.patch("agenti.authz.access_control.bindings", return_value=bindings),
         ):
             self.assertEqual(self.admin.get("/api/shares/scoped").json(),
                              {"shares": [{"id": "documenti", "name": "01 Documenti", "can_create": False}]})
@@ -175,7 +175,7 @@ class SharesExplorerTest(unittest.TestCase):
         account = {"role": "auditor", "shares": {"documenti": "write"}}
         with (
             mock.patch("access.session_user", return_value="alice"),
-            mock.patch("features.authz.access_control.bindings", return_value={"alice": account}),
+            mock.patch("agenti.authz.access_control.bindings", return_value={"alice": account}),
         ):
             url = "/api/shares/scoped/documenti/folders"
             params = {"name": "Cartella"}
@@ -193,7 +193,7 @@ class SharesExplorerTest(unittest.TestCase):
             self.assertEqual(created.json()["path"], "Cartella/Sottocartella")
             listed = self.admin.get("/api/shares/scoped/documenti", params={"subpath": "Cartella"})
             self.assertEqual(listed.json()["items"], [{"name": "Sottocartella", "is_dir": True}])
-            with mock.patch("features.shares.policy.read", return_value={"readonly": True}):
+            with mock.patch("agenti.shares.policy.read", return_value={"readonly": True}):
                 self.assertFalse(self.admin.get("/api/shares/scoped").json()["shares"][0]["can_create"])
                 self.assertEqual(self.admin.post(url, params={"name": "Bloccata"}, headers=HEADERS).status_code, 403)
             (directory / "Collegamento").symlink_to(self.root, target_is_directory=True)
@@ -209,13 +209,13 @@ class SharesExplorerTest(unittest.TestCase):
         bindings = {"alice": {"role": "operator", "shares": {"documenti": "write"}}}
         with (
             mock.patch("access.session_user", return_value="alice"),
-            mock.patch("features.authz.access_control.bindings", return_value=bindings),
+            mock.patch("agenti.authz.access_control.bindings", return_value=bindings),
         ):
             url = "/api/shares/scoped/documenti/file"
             duplicate = self.admin.put(url, params={"name": "nota.txt"}, content=b"replacement", headers=HEADERS)
             self.assertEqual(duplicate.status_code, 409)
             self.assertEqual((directory / "nota.txt").read_bytes(), b"original")
-            with mock.patch("features.shares.policy.upload_limit_mb", return_value=0):
+            with mock.patch("agenti.shares.policy.upload_limit_mb", return_value=0):
                 oversized = self.admin.put(url, params={"name": "big.txt"}, content=b"x", headers=HEADERS)
             self.assertEqual(oversized.status_code, 413)
             self.assertFalse((directory / "big.txt").exists())

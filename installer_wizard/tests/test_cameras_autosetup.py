@@ -4,8 +4,8 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.cameras import autosetup
-from features.vision import ir_auto
+from agenti.cameras import autosetup
+from agenti.vision import ir_auto
 
 NOW = 1_000_000.0
 

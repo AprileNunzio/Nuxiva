@@ -3,11 +3,11 @@ import time
 import unittest
 from pathlib import Path
 
-from features.activation.application.advance_journey import AdvanceJourneyUseCase
-from features.activation.domain.journey import Journey, SequenceStatus, Stage
-from features.activation.infrastructure.journey_store import JourneyStore
-from features.activation.infrastructure.sequence_catalog import SequenceCatalog
-from features.activation.infrastructure.step_runner import StepRunner
+from agenti.activation.application.advance_journey import AdvanceJourneyUseCase
+from agenti.activation.domain.journey import Journey, SequenceStatus, Stage
+from agenti.activation.infrastructure.journey_store import JourneyStore
+from agenti.activation.infrastructure.sequence_catalog import SequenceCatalog
+from agenti.activation.infrastructure.step_runner import StepRunner
 
 
 class AdvanceJourneyTests(unittest.IsolatedAsyncioTestCase):

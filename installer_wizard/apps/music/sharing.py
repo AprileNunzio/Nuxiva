@@ -1,8 +1,8 @@
 import secrets
 import time
 
-from features.music import catalog, conf, playlists
-from features.music.db import db
+from agenti.music import catalog, conf, playlists
+from agenti.music.db import db
 
 KINDS = ("track", "album", "playlist")
 MAX_ACTIVE = 200

@@ -5,10 +5,10 @@ from fastapi.responses import Response
 
 from access import is_local, require_admin, require_display, session_user
 from config import PUBLIC_PORT
-from features.music import conf, covers, layout, stream, tokens
-from features.music.api_library import body
-from features.music.db import db
-from features.music.outputs import DEVICE_RE, outputs
+from agenti.music import conf, covers, layout, stream, tokens
+from agenti.music.api_library import body
+from agenti.music.db import db
+from agenti.music.outputs import DEVICE_RE, outputs
 
 admin_routes = APIRouter()
 public_routes = APIRouter()

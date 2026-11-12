@@ -2,7 +2,7 @@ import hashlib
 import re
 import time
 
-from features.music.db import db
+from agenti.music.db import db
 
 SORTS = {"recent": "added DESC", "title": "title COLLATE NOCASE", "artist": "artist COLLATE NOCASE, album COLLATE NOCASE, disc_no, track_no",
          "album": "album COLLATE NOCASE, disc_no, track_no", "year": "year DESC, album COLLATE NOCASE", "plays": "plays DESC",

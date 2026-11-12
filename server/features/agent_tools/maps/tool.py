@@ -28,7 +28,7 @@ class MapsTool(BaseAgentTool):
 
     async def execute(self, destinazione: str, partenza: str = "", **kwargs: Any) -> str:
         try:
-            from installer_wizard.features.maps.maps import answer
+            from installer_wizard.agenti.maps.maps import answer
             dest = re.sub(r"[\?\.\!].*$", "", destinazione).strip()
             part = re.sub(r"[\?\.\!].*$", "", partenza).strip() if partenza else ""
             testo_domanda = f"da {part} a {dest}" if part else f"per {dest}"

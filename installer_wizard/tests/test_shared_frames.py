@@ -4,7 +4,7 @@ import time
 import unittest
 from pathlib import Path
 
-VISION = Path(__file__).resolve().parents[1] / "features" / "vision"
+VISION = Path(__file__).resolve().parents[1] / "agenti" / "percezione" / "vision"
 if str(VISION) not in sys.path:
     sys.path.append(str(VISION))
 

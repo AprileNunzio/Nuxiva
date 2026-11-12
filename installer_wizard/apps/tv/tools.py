@@ -1,6 +1,6 @@
-from features.agent.registry import tool
-from features.tv import targets
-from features.tv.store import tv_store
+from agenti.agent.registry import tool
+from agenti.tv import targets
+from agenti.tv.store import tv_store
 
 OWNER = "tv"
 
@@ -45,7 +45,7 @@ async def tv_play_channel(channel: str, target: str = "display") -> dict:
     settings = tv_store.settings()
     if settings.get("vpn_required"):
         try:
-            from features.vpn.service import service as vpn_svc
+            from agenti.vpn.service import service as vpn_svc
             target_profile = settings.get("vpn_profile")
             if target_profile:
                 is_connected = bool(vpn_svc.state.get(target_profile, {}).get("connected"))

@@ -3,7 +3,7 @@ import unittest
 from unittest import mock
 
 from pages import face_options
-from features.avatars import store
+from agenti.avatars import store
 
 
 class FaceOptionsTest(unittest.TestCase):

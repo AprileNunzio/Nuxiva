@@ -11,11 +11,11 @@ from fastapi.testclient import TestClient
 import access
 import nuxiva_supervisor
 import system_api
-from features.desktop.screens import Screens, role_of
-from features.stage import api as stage_api
-from features.stage import director, native, particles
-from features.stage.service import Stage, clean_context
-from features.stage.store import ParticleStore, concept_key
+from agenti.desktop.screens import Screens, role_of
+from agenti.stage import api as stage_api
+from agenti.stage import director, native, particles
+from agenti.stage.service import Stage, clean_context
+from agenti.stage.store import ParticleStore, concept_key
 
 HEADERS = {"X-Nuxiva-Request": "1"}
 SPEC = {"parts": [{"shape": "box", "size": [1.2, 0.3, 0.6], "color": "#ff5533"},
@@ -74,7 +74,7 @@ class DirectorTest(unittest.TestCase):
         self.assertEqual(later["surfaces"]["chat"]["state"], "min")
 
     def test_feedback_moves_the_weight_and_is_bounded(self):
-        with tempfile.TemporaryDirectory() as tmp, mock.patch("features.stage.service.WEIGHTS_FILE", Path(tmp) / "w.json"):
+        with tempfile.TemporaryDirectory() as tmp, mock.patch("agenti.stage.service.WEIGHTS_FILE", Path(tmp) / "w.json"):
             stage = Stage()
             stage.plan("kiosk", {"listening": True, "people": 1}, {})
             for _ in range(40):
@@ -226,7 +226,7 @@ class ScreenRolesTest(unittest.TestCase):
         return s
 
     def test_roles_follow_the_number_of_screens(self):
-        with mock.patch("features.desktop.screens.configured_roles", lambda: {}):
+        with mock.patch("agenti.desktop.screens.configured_roles", lambda: {}):
             self.assertEqual(self.screens(0).roles(), {0: "agent"})
             self.assertEqual(self.screens(0, 1).roles(), {0: "agent", 1: "work"})
             self.assertEqual(self.screens(0, 1, 2).roles(), {0: "agent", 1: "work", 2: "visual"})
@@ -234,7 +234,7 @@ class ScreenRolesTest(unittest.TestCase):
             self.assertEqual(self.screens(0).screen_for_role("visual"), 0)
 
     def test_work_goes_to_the_workbench_screen(self):
-        with mock.patch("features.desktop.screens.configured_roles", lambda: {}):
+        with mock.patch("agenti.desktop.screens.configured_roles", lambda: {}):
             s = self.screens(0, 1, 2)
             items = s.assign([{"id": "repair_workbench"}, {"id": "diorama"}, {"id": "weather"}, {"id": "alarm", "urgent": True},
                               {"id": "health_hub", "screen_role": "person"}], {})
@@ -259,7 +259,7 @@ class MorphogenesisTest(unittest.TestCase):
         self.store = ParticleStore(self.root)
 
     def test_medusa_and_universal_concepts_materialize_automatically(self):
-        from features.stage import morphogenesis, show
+        from agenti.stage import morphogenesis, show
         concept = morphogenesis.extract_visual_concept("Come è fatta una medusa?")
         self.assertEqual(concept, "medusa")
         spec = morphogenesis.synthesize_spec(concept)

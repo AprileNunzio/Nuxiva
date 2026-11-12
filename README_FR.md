@@ -148,7 +148,7 @@ flowchart LR
 
 ### 4.1 Traitement d'une requête
 
-Une requête texte ou vocale est prise en charge par le routeur de chat dans `installer_wizard/features/chat/`. Elle traverse une chaîne ordonnée d'étapes (automatisations, commandes directes, compétences d'intention, connecteurs, contrôle de la maison, actions, conversation). La première étape qui reconnaît la requête y répond ; les autres sont ignorées. Les requêtes qui nécessitent des informations à jour sont confiées à l'agent, qui effectue une recherche avant de répondre. La génération parcourt la liste de priorité des modèles et ignore ceux qui échouent, si bien qu'un modèle indisponible ne bloque jamais une réponse.
+Une requête texte ou vocale est prise en charge par le routeur de chat dans `installer_wizard/agenti/cognizione/chat/`. Elle traverse une chaîne ordonnée d'étapes (automatisations, commandes directes, compétences d'intention, connecteurs, contrôle de la maison, actions, conversation). La première étape qui reconnaît la requête y répond ; les autres sont ignorées. Les requêtes qui nécessitent des informations à jour sont confiées à l'agent, qui effectue une recherche avant de répondre. La génération parcourt la liste de priorité des modèles et ignore ceux qui échouent, si bien qu'un modèle indisponible ne bloque jamais une réponse.
 
 ### 4.2 Raisonnement du Core
 

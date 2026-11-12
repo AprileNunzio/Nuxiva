@@ -1,8 +1,8 @@
 import unittest
 
-from features.services.command_center import command_center
-from features.services.download_manager import DownloadManager
-from features.services.install_manager import InstallManager
+from agenti.services.command_center import command_center
+from agenti.services.download_manager import DownloadManager
+from agenti.services.install_manager import InstallManager
 
 
 class TestServicesArchitecture(unittest.IsolatedAsyncioTestCase):
@@ -33,7 +33,7 @@ class TestServicesArchitecture(unittest.IsolatedAsyncioTestCase):
         dm = DownloadManager()
         task_id = "test_1"
         from pathlib import Path
-        from features.services.download_manager import DownloadTask
+        from agenti.services.download_manager import DownloadTask
         task = DownloadTask(id=task_id, url="https://example.com/test", destination=Path("/tmp/test"), status="downloading")
         dm._tasks[task_id] = task
         self.assertTrue(dm.cancel(task_id))

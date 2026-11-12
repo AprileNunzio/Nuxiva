@@ -4,8 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import Response
 
 from access import require_admin
-from features.music import catalog, playlists
-from features.music.api_library import body
+from agenti.music import catalog, playlists
+from agenti.music.api_library import body
 
 admin_routes = APIRouter()
 

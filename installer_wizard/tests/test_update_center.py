@@ -9,8 +9,8 @@ for p in (str(_ROOT), str(_ROOT / "installer_wizard"), str(_ROOT / "installer_wi
     if p not in sys.path:
         sys.path.insert(0, p)
 
-from features.update_center import diagnostics, rollout
-from features.update_center.policy import UpdatePolicy, in_window, load_policy, next_window, policy_to_env
+from agenti.update_center import diagnostics, rollout
+from agenti.update_center.policy import UpdatePolicy, in_window, load_policy, next_window, policy_to_env
 
 
 class PolicyTests(unittest.TestCase):

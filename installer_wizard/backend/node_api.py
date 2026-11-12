@@ -177,7 +177,7 @@ def onboard_node(req: OnboardNodeRequest) -> Dict[str, Any]:
 @router.delete("/{node_id}")
 def delete_node(node_id: str) -> Dict[str, Any]:
     from server.features.mesh_coordinator.p2p_mesh import p2p_mesh
-    from features.nodes.registry import registry
+    from agenti.nodes.registry import registry
     from state import store
     if node_id in (p2p_mesh.node_id, "virtual-core", "virtual_core"):
         raise HTTPException(409, "Il server attuale e il nucleo non possono essere rimossi")

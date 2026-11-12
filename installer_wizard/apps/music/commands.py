@@ -5,9 +5,9 @@ import socket
 import unicodedata
 
 from config import PUBLIC_PORT
-from features.music import catalog, conf, listening, mixes, playlists
-from features.music.db import db
-from features.music.outputs import outputs
+from agenti.music import catalog, conf, listening, mixes, playlists
+from agenti.music.db import db
+from agenti.music.outputs import outputs
 
 PLAY = re.compile(r"^(?:per favore |ti prego |ehi |nuxiva )*(?:metti(?:mi)?|riproduci|suona|fai partire|fammi sentire|fammi ascoltare|voglio ascoltare|"
                   r"ascoltiamo|ascolta|mandami|play)\b\s*(?P<rest>.*)$")

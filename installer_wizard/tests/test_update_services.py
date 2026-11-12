@@ -8,7 +8,7 @@ for p in (str(_ROOT), str(_ROOT / "installer_wizard"), str(_ROOT / "installer_wi
     if p not in sys.path:
         sys.path.insert(0, p)
 
-from features.update_center import telemetry
+from agenti.update_center import telemetry
 
 
 class FakeShell:

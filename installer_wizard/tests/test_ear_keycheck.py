@@ -1,7 +1,7 @@
 import unittest
 from unittest import mock
 
-from features.ear import keycheck
+from agenti.ear import keycheck
 
 
 class Response:

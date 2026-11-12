@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import AsyncMock, patch
 
-from features.agency import blueprint, service, tools, worker
+from agenti.agency import blueprint, service, tools, worker
 
 
 class AgencyPlanningTests(unittest.IsolatedAsyncioTestCase):
@@ -72,7 +72,7 @@ class AgencyPlanningTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(proofs[1]["command"], "test -f src/main.py")
         self.assertTrue(proofs[1]["verified"])
 
-    @patch("features.agency.service.client.call", new_callable=AsyncMock)
+    @patch("agenti.agency.service.client.call", new_callable=AsyncMock)
     async def test_service_answer(self, mock_call):
         mock_call.return_value = {"ok": True}
         res = await service.answer("shop", "payment", "stripe", "Stripe selected")

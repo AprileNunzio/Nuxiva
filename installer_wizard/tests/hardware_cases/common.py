@@ -1,8 +1,8 @@
 import os
 import tempfile
 from pathlib import Path
-from features.hardware.model import HardwareDevice
-from features.hardware.repos import OsInfo
+from agenti.hardware.model import HardwareDevice
+from agenti.hardware.repos import OsInfo
 
 
 DEBIAN13 = OsInfo("debian", [], "13")

@@ -6,10 +6,10 @@ from unittest import mock
 from fastapi.testclient import TestClient
 
 import nuxiva_supervisor
-from features.nexus import composition
-from features.nexus.application.awakening_service import AwakeningService
-from features.nexus.domain import awakening, summary
-from features.nexus.infrastructure.json_store import JsonDocument
+from agenti.nexus import composition
+from agenti.nexus.application.awakening_service import AwakeningService
+from agenti.nexus.domain import awakening, summary
+from agenti.nexus.infrastructure.json_store import JsonDocument
 
 HEADERS = {"X-Nuxiva-Request": "1"}
 CATALOG = {"features": [

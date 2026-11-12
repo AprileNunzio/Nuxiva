@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import FileResponse
 
 from access import require_admin, require_display
-from features.models3d import convert, generator, library
+from agenti.models3d import convert, generator, library
 from state import store
 
 public_routes = APIRouter()

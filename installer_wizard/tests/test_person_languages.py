@@ -3,10 +3,10 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.locale import store as locale_store
-from features.people import people
-from features.people.presence import PresenceMonitor
-from features.voices import languages
+from agenti.locale import store as locale_store
+from agenti.people import people
+from agenti.people.presence import PresenceMonitor
+from agenti.voices import languages
 
 
 class PersonLanguagesTest(unittest.TestCase):

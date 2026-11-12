@@ -2,7 +2,7 @@ import unittest
 from types import SimpleNamespace
 from unittest import mock
 
-from features.home_assistant.api import admin_home_energy
+from agenti.home_assistant.api import admin_home_energy
 
 
 class EnergyReadingsTest(unittest.IsolatedAsyncioTestCase):
@@ -12,7 +12,7 @@ class EnergyReadingsTest(unittest.IsolatedAsyncioTestCase):
             eid = f"sensor.power_{index}"
             brain.entities[eid] = {"domain": "sensor", "name": eid}
             brain.states[eid] = {"state": value, "attrs": {"unit_of_measurement": unit}}
-        with mock.patch("features.home_assistant.api.home.brain", brain):
+        with mock.patch("agenti.home_assistant.api.home.brain", brain):
             return await admin_home_energy()
 
     async def test_empty_or_partial_data_never_invents_whole_home_totals(self):

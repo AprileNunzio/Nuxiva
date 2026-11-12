@@ -7,11 +7,11 @@ from fastapi.testclient import TestClient
 
 import access
 import nuxiva_supervisor
-from features.cameras import commands, live
-from features.cameras.cameras import cameras
-from features.desktop import desk as desk_module
-from features.desktop.desk import desk
-from features.vision.webcams import webcams
+from agenti.cameras import commands, live
+from agenti.cameras.cameras import cameras
+from agenti.desktop import desk as desk_module
+from agenti.desktop.desk import desk
+from agenti.vision.webcams import webcams
 
 HEADERS = {"X-Nuxiva-Request": "1"}
 

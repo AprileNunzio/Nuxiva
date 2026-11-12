@@ -63,7 +63,7 @@ class LanguageFilesTest(unittest.TestCase):
         files = {p.stem for p in codes()}
         self.assertEqual(declared, picker)
         self.assertEqual(declared, files)
-        for folder in (WIZ / "features" / "hardware" / "language", WIZ / "language"):
+        for folder in (WIZ / "agenti" / "infrastruttura" / "hardware" / "language", WIZ / "language"):
             self.assertTrue(all((folder / f"{c}.json").exists() for c in declared), folder)
 
     def test_no_control_characters(self):

@@ -138,7 +138,7 @@ class HealthAndChatTest(unittest.TestCase):
 
     def test_chat_can_install_a_package(self):
         import asyncio
-        from features.agent import registry, tools_packages
+        from agenti.agent import registry, tools_packages
         self.assertTrue(registry.needs_confirm("packages", {"action": "install"}))
         self.assertFalse(registry.needs_confirm("packages", {"action": "list"}))
         with mock.patch("settings.apply_config", return_value=["office"]) as apply, \

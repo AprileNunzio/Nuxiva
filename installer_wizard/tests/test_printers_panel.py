@@ -5,8 +5,8 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.printers import service
-from features.whiteboard.printer import PrinterManager
+from agenti.printers import service
+from agenti.whiteboard.printer import PrinterManager
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -75,8 +75,8 @@ class I18nCoverageTest(unittest.TestCase):
             self.skipTest("Legacy web/admin i18n dictionaries retired in v5.0.0 (using colocated JSONs)")
 
     def test_every_key_used_by_the_panels_exists_in_every_language(self):
-        files = [*ROOT.glob("features/printers/*.*"), *ROOT.glob("features/nvr/*.*"), *ROOT.glob("features/twin/*.*"),
-                 *ROOT.glob("features/scene/*.*"), ROOT / "features" / "habits" / "admin.js", ROOT / "features" / "habits" / "admin.html",
+        files = [*ROOT.glob("agenti/domotica/printers/*.*"), *ROOT.glob("agenti/domotica/nvr/*.*"), *ROOT.glob("agenti/sicurezza/twin/*.*"),
+                 *ROOT.glob("agenti/percezione/scene/*.*"), ROOT / "agenti" / "cognizione" / "habits" / "admin.js", ROOT / "agenti" / "cognizione" / "habits" / "admin.html",
                  ROOT / "backend" / "bus_api.py"]
         used = {k for f in files if f.suffix in (".js", ".html", ".py") for k in self.KEY.findall(f.read_text(encoding="utf-8"))}
         self.assertGreater(len(used), 40)

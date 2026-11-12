@@ -5,9 +5,9 @@ from pathlib import Path
 
 from sealed import SealedFile
 
-from features.nodes.inbox import Inbox
-from features.tv import m3u, relay, targets
-from features.tv.store import TvStore
+from agenti.nodes.inbox import Inbox
+from agenti.tv import m3u, relay, targets
+from agenti.tv.store import TvStore
 
 PLAYLIST = """#EXTM3U url-tvg="http://epg.example/x.xml"
 #EXTINF:-1 tvg-id="rai1.it" tvg-logo="http://logo.example/rai1.png" group-title="Italia",Rai 1 HD

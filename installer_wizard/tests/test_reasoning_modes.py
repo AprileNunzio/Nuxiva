@@ -5,17 +5,17 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from features.brain import brains as brains_module
-from features.brain import presets
-from features.brain.assignments import load_synaptic_weights, save_synaptic_weights
-from features.brain.components import LimbicModulator, SpikingNeuron, SpikingNeuronNode, SynapticSpike
-from features.chat import brain_chain
-from features.chat.brain_chain import CorticalBrainChain, cortical_chain
-from features.mind.scoring import compute_emotional_salience, score_memory_retention
-from features.people import people
-from features.scene.fusion import PresenceFusion
-from features.twin.simulator import predict_user_impact
-from features.vision.nightly import consolidate_synapses
+from agenti.brain import brains as brains_module
+from agenti.brain import presets
+from agenti.brain.assignments import load_synaptic_weights, save_synaptic_weights
+from agenti.brain.components import LimbicModulator, SpikingNeuron, SpikingNeuronNode, SynapticSpike
+from agenti.chat import brain_chain
+from agenti.chat.brain_chain import CorticalBrainChain, cortical_chain
+from agenti.mind.scoring import compute_emotional_salience, score_memory_retention
+from agenti.people import people
+from agenti.scene.fusion import PresenceFusion
+from agenti.twin.simulator import predict_user_impact
+from agenti.vision.nightly import consolidate_synapses
 from loops import DefaultModeNetwork
 from nuxiva_bus import NuxivaBus
 
@@ -186,8 +186,8 @@ class ReasoningModesTest(unittest.IsolatedAsyncioTestCase):
         with tempfile.NamedTemporaryFile(delete=False) as tf:
             p = Path(tf.name)
         save_synaptic_weights({"analytic_reasoner:qwen2.5:14b": 1.4}, file_path=p)
-        with patch("features.brain.assignments.load_synaptic_weights", return_value={"analytic_reasoner:qwen2.5:14b": 1.4}), \
-             patch("features.brain.assignments.save_synaptic_weights") as mock_save:
+        with patch("agenti.brain.assignments.load_synaptic_weights", return_value={"analytic_reasoner:qwen2.5:14b": 1.4}), \
+             patch("agenti.brain.assignments.save_synaptic_weights") as mock_save:
             res = consolidate_synapses()
             self.assertEqual(res["status"], "ok")
             self.assertEqual(res["count"], 1)

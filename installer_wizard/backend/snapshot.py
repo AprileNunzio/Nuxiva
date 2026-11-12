@@ -13,11 +13,11 @@ import display_events
 import stream_delta
 from access import NO_CACHE
 from config import ADMIN_PORT, NODE, OLLAMA_URL, PUBLIC_PORT, STATE_DIR, VERSION, read_env
-from features.agency.presence import intent as agency_intent
-from features.desktop.display_scope import RemoteScope, remote_display_scope, remote_state
-from features.brain.brains import brains
-from features.home_assistant import home
-from features.music import music
+from agenti.agency.presence import intent as agency_intent
+from agenti.desktop.display_scope import RemoteScope, remote_display_scope, remote_state
+from agenti.brain.brains import brains
+from agenti.home_assistant import home
+from agenti.music import music
 from orchestrator import orch
 from pages import ASSET_VERSION, face_options
 from state import store
@@ -62,7 +62,7 @@ def node_ids_with(keys: set) -> list[str]:
 
 def _satellites() -> list[dict]:
     try:
-        from features.nodes.registry import registry
+        from agenti.nodes.registry import registry
         return registry.listing()
     except Exception:
         return []
@@ -134,12 +134,12 @@ def full_snapshot(admin: bool) -> dict:
     snap["now_playing"] = music.watcher.current()
     snap["home"] = home.brain.brief()
     snap["selftest"] = getattr(store, "selftest", None)
-    from features.update_center.progress import tracker as update_tracker
+    from agenti.update_center.progress import tracker as update_tracker
     snap["update_progress"] = update_tracker.public()
     from background import queue
     snap["background"] = queue.snapshot()
     try:
-        from features.sounds.policy import policy as sound_policy
+        from agenti.sounds.policy import policy as sound_policy
         snap["sounds"] = sound_policy.state()
     except Exception as exc:
         _report("sounds", exc)
@@ -156,8 +156,8 @@ def full_snapshot(admin: bool) -> dict:
     except Exception as exc:
         _report("display_settings", exc)
     try:
-        from features.stage import show as stage_show
-        from features.desktop.screens import screens as screen_roles
+        from agenti.stage import show as stage_show
+        from agenti.desktop.screens import screens as screen_roles
         snap["particles"] = stage_show.current()
         snap["screen_roles"] = screen_roles.roles()
     except Exception as exc:
@@ -165,7 +165,7 @@ def full_snapshot(admin: bool) -> dict:
         snap["particles"] = None
     if admin:
         return snap
-    from features.desktop import audience_view, planner_bridge, presence_bridge
+    from agenti.desktop import audience_view, planner_bridge, presence_bridge
     planned = planner_bridge.bridge.apply(snap, store.audience)
     return audience_view.redact(planned, store.audience, presence_bridge.show_options())
 

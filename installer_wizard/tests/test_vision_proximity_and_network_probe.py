@@ -15,7 +15,7 @@ from node_network_probe import (
     parse_resolvectl_dns,
 )
 
-_VISION_DIR = Path(__file__).resolve().parents[1] / "features" / "vision"
+_VISION_DIR = Path(__file__).resolve().parents[1] / "agenti" / "percezione" / "vision"
 
 
 def _load_vision_mod(name: str):

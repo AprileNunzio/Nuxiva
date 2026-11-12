@@ -9,9 +9,9 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from access import require_admin
-from features.people import people, private_store
-from features.people.wellbeing import api as wb_api
-from features.people.wellbeing import protocol, report, safety, scoring, service, store
+from agenti.people import people, private_store
+from agenti.people.wellbeing import api as wb_api
+from agenti.people.wellbeing import protocol, report, safety, scoring, service, store
 
 
 def run(coro):
@@ -198,7 +198,7 @@ class FlowTest(Base):
             run(service.turn("anna", sid, "   "))
 
     def test_model_unavailable_uses_the_fallback(self):
-        from features.brain.llm import BrainUnavailable
+        from agenti.brain.llm import BrainUnavailable
         self.llm.side_effect = BrainUnavailable("x")
         store.set_consent("anna", True)
         started = run(service.start("anna", "en"))

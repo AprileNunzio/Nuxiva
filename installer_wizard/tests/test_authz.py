@@ -6,12 +6,12 @@ from unittest import mock
 
 from state import store
 
-from features.agent import registry
-from features.authz import gate, resolve
-from features.authz.heard import HeardLog, heard
-from features.authz.policy import Policy, policy
-from features.authz.principal import ANONYMOUS, SYSTEM, Principal, Strength, act_as, current
-from features.authz.risk import Risk
+from agenti.agent import registry
+from agenti.authz import gate, resolve
+from agenti.authz.heard import HeardLog, heard
+from agenti.authz.policy import Policy, policy
+from agenti.authz.principal import ANONYMOUS, SYSTEM, Principal, Strength, act_as, current
+from agenti.authz.risk import Risk
 
 PROFILES = {
     "nunzio": {"slug": "nunzio", "role": "owner"},
@@ -156,7 +156,7 @@ class EnforcementTests(unittest.TestCase):
         return asyncio.run(go())
 
     def test_runner_refuses_critical_tools_without_strong_proof(self):
-        from features.team import runner
+        from agenti.team import runner
         weak_owner = Principal(slug="nunzio", role="owner", strength=Strength.SINGLE)
         with mock.patch.object(runner, "execute") as execute:
             with self.assertRaises(gate.Forbidden):
@@ -169,7 +169,7 @@ class EnforcementTests(unittest.TestCase):
         current.set(ANONYMOUS)
 
     def test_agent_explains_instead_of_executing(self):
-        from features.agent.agent import Agent
+        from agenti.agent.agent import Agent
         agent = Agent()
         move = {"tool": "run_command", "args": {"command": "ls"}}
         with mock.patch.object(agent, "_decide", return_value=move), mock.patch.object(agent, "_execute") as execute, \
@@ -180,7 +180,7 @@ class EnforcementTests(unittest.TestCase):
         self.assertIn("volto e voce", reply)
 
     def test_automations_run_as_nuxiva_and_restore_the_caller(self):
-        from features.agent.agent import Agent
+        from agenti.agent.agent import Agent
         agent = Agent()
         seen = []
 
@@ -200,7 +200,7 @@ class EnforcementTests(unittest.TestCase):
         current.set(ANONYMOUS)
 
     def test_personal_connectors_need_recognition(self):
-        from features.chat import assistant
+        from agenti.chat import assistant
         act_as(ANONYMOUS)
         refused = assistant._refused("vault", time.time())
         self.assertEqual(refused["intent"], "authz")
@@ -213,7 +213,7 @@ class EnforcementTests(unittest.TestCase):
 class CatalogCoverageTests(unittest.TestCase):
 
     def test_tools_built_by_nuxiva_inherit_the_riskiest_step(self):
-        from features.authz import risk
+        from agenti.authz import risk
         risk.compose("zz_saluta", ["show_widget", "now"])
         risk.compose("zz_pulizia", ["show_widget", "delete"])
         risk.compose("zz_loop", ["zz_loop"])
@@ -224,12 +224,12 @@ class CatalogCoverageTests(unittest.TestCase):
             risk.forget(name)
 
     def test_every_registered_tool_has_an_explicit_risk(self):
-        from features.agent import tool_scanner
-        from features.authz.risk import TOOLS
+        from agenti.agent import tool_scanner
+        from agenti.authz.risk import TOOLS
         tool_scanner.sync(force=True)
         self.assertTrue(tool_scanner.loaded())
         missing = sorted(set(registry.TOOLS) - set(TOOLS))
-        self.assertEqual(missing, [], "classify these tools in features/authz/risk.py")
+        self.assertEqual(missing, [], "classify these tools in agenti/sicurezza/authz/risk.py")
 
 
 class VoiceStrongTests(unittest.TestCase):

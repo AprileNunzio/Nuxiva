@@ -8,9 +8,9 @@ from unittest import mock
 
 import native_core
 
-from features.chat import dialogue as dialogue_module
-from features.chat.dialogue import Dialogue, PyBook, RustBook, make_turn
-from features.chat.history import HistoryStore
+from agenti.chat import dialogue as dialogue_module
+from agenti.chat.dialogue import Dialogue, PyBook, RustBook, make_turn
+from agenti.chat.history import HistoryStore
 
 ENGINE = native_core.symbol("RustDialogue")
 NOW = 1_000_000.0

@@ -5,10 +5,10 @@ from pathlib import Path
 
 import numpy as np
 
-from features.people.vitals import consent as consent_module
-from features.people.vitals.watch_engine import PyWatch
+from agenti.people.vitals import consent as consent_module
+from agenti.people.vitals.watch_engine import PyWatch
 
-VISION = Path(__file__).resolve().parents[1] / "features" / "vision"
+VISION = Path(__file__).resolve().parents[1] / "agenti" / "percezione" / "vision"
 if str(VISION) not in sys.path:
     sys.path.insert(0, str(VISION))
 

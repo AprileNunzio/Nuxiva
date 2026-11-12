@@ -93,7 +93,7 @@ class UpdaterPriorityTest(unittest.IsolatedAsyncioTestCase):
                     mock.patch("updater.current_rev", new_callable=mock.AsyncMock, return_value="fixed"), \
                     mock.patch("updater.sh", new_callable=mock.AsyncMock, return_value=(0, "")), \
                     mock.patch("updater.asyncio.sleep", new_callable=mock.AsyncMock), \
-                    mock.patch("features.update_center.guard.integrity", new_callable=mock.AsyncMock, return_value=INTACT):
+                    mock.patch("agenti.update_center.guard.integrity", new_callable=mock.AsyncMock, return_value=INTACT):
                 self.assertTrue(await updater.apply("correttivo dopo un errore"))
             written = json.loads(pending_file.read_text())
         self.assertEqual((written["from"], written["to"]), ("good", "fixed"))

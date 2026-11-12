@@ -6,12 +6,12 @@ from unittest import mock
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
-for p in (str(ROOT), str(ROOT / "backend"), str(ROOT / "features" / "ear")):
+for p in (str(ROOT), str(ROOT / "backend"), str(ROOT / "agenti" / "percezione" / "ear")):
     if p not in sys.path:
         sys.path.insert(0, p)
 
 import native_core
-from features.ear.scene import SoundScene
+from agenti.ear.scene import SoundScene
 
 NATIVE = native_core.load()
 READY = NATIVE is not None and hasattr(NATIVE, "RustSoundScene")

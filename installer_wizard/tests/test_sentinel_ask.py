@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 
-from features.sentinel.ask import AskCore
+from agenti.sentinel.ask import AskCore
 
 
 class FakeRustAskCore:
@@ -82,8 +82,8 @@ class TestSentinelAsk(unittest.TestCase):
         self.asker = AskCore(clock=lambda: self.clock)
         self.asker._engine = FakeRustAskCore()
 
-    @patch("features.sentinel.memory.memory.search")
-    @patch("features.sentinel.record.record")
+    @patch("agenti.sentinel.memory.memory.search")
+    @patch("agenti.sentinel.record.record")
     def test_ask_courier_found(self, mock_record, mock_search):
         mock_search.return_value = {
             "sightings": [{
@@ -110,8 +110,8 @@ class TestSentinelAsk(unittest.TestCase):
         self.assertEqual(args[2], "sentinel.sentinel.ask_query")
         self.assertEqual(args[3]["citations"], 1)
 
-    @patch("features.sentinel.memory.memory.search")
-    @patch("features.sentinel.record.record")
+    @patch("agenti.sentinel.memory.memory.search")
+    @patch("agenti.sentinel.record.record")
     def test_ask_not_found(self, mock_record, mock_search):
         mock_search.return_value = {"sightings": []}
 

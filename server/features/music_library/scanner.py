@@ -10,7 +10,7 @@ except ImportError:
 logger = logging.getLogger("nuxiva.music_library")
 
 try:
-    from installer_wizard.features.shares.archive import folder as share_folder
+    from installer_wizard.agenti.shares.archive import folder as share_folder
     MUSIC_ROOT = str(share_folder("musica"))
 except ImportError:
     MUSIC_ROOT = os.path.join(os.environ.get("DATA_DIR", "./data"), "Musica")

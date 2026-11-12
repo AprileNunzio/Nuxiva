@@ -10,8 +10,8 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from access import require_admin
-from features.system_logs import api, service
-from features.authz import access_control
+from agenti.system_logs import api, service
+from agenti.authz import access_control
 
 
 class SystemLogsTests(unittest.IsolatedAsyncioTestCase):

@@ -1,5 +1,5 @@
 import time
-from features.agent.registry import tool
+from agenti.agent.registry import tool
 
 OWNER = "brain"
 

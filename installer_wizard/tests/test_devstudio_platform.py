@@ -2,8 +2,8 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from features.devstudio import runner
-from features.devstudio.workspace import DevError
+from agenti.devstudio import runner
+from agenti.devstudio.workspace import DevError
 
 
 class DevstudioPlatformTest(unittest.IsolatedAsyncioTestCase):

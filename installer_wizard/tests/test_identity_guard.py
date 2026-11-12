@@ -7,8 +7,8 @@ from unittest import mock
 from fastapi import HTTPException
 from state import store
 
-from features.chat.skills import people as people_skill
-from features.people import faces, people
+from agenti.chat.skills import people as people_skill
+from agenti.people import faces, people
 
 
 class IdentityGuardTests(unittest.TestCase):

@@ -12,9 +12,9 @@ import httpx
 from config import ETC_DIR
 from sealed import SealedFile
 
-from features.tv import m3u
-from features.tv.m3u import PlaylistError
-from features.tv.tuner_discovery import detect_real_tuners
+from agenti.tv import m3u
+from agenti.tv.m3u import PlaylistError
+from agenti.tv.tuner_discovery import detect_real_tuners
 
 MAX_PLAYLISTS = 20
 MAX_FAVORITES = 200

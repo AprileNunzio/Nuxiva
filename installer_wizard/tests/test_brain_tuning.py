@@ -5,10 +5,10 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.brain import assignments, llm
-from features.brain.routing import AssignmentService
-from features.brain.trace import Trace
-from features.brain.tuning import Tuning, TuningError, parse
+from agenti.brain import assignments, llm
+from agenti.brain.routing import AssignmentService
+from agenti.brain.trace import Trace
+from agenti.brain.tuning import Tuning, TuningError, parse
 
 
 class TuningParseTest(unittest.TestCase):
@@ -56,7 +56,7 @@ class GenerateTuningTest(unittest.TestCase):
             return "risposta"
 
         tuned = Tuning(temperature=0.9, max_tokens=777, timeout=15, instructions="Usa un tono formale")
-        with mock.patch("features.brain.routing.assignment_service.tuning", return_value=tuned), \
+        with mock.patch("agenti.brain.routing.assignment_service.tuning", return_value=tuned), \
                 mock.patch.object(llm, "component_chain", new=mock.AsyncMock(return_value=["modello-a"])), \
                 mock.patch.object(llm, "chain", new=mock.AsyncMock(return_value=[])), \
                 mock.patch.object(llm, "is_cloud", return_value=False), \
@@ -73,7 +73,7 @@ class GenerateTuningTest(unittest.TestCase):
 class TraceStatsTest(unittest.TestCase):
     def test_every_agent_gets_its_own_metrics(self):
         trace = Trace()
-        with mock.patch("features.brain.trace.brains.describe", side_effect=lambda ref: {"label": ref}):
+        with mock.patch("agenti.brain.trace.brains.describe", side_effect=lambda ref: {"label": ref}):
             ok = trace.begin("research", "", ["m1"])
             trace.attempt(ok, "m1")
             trace.finish(ok, "m1", 1200)

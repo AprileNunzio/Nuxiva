@@ -3,8 +3,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from features.desktop import manifest
-from features.desktop.desk import Desk
+from agenti.desktop import manifest
+from agenti.desktop.desk import Desk
 
 
 def widget(root: Path, wid: str, **extra) -> None:
@@ -23,7 +23,7 @@ class StickyTests(unittest.TestCase):
         widget(self.root, "partita", sticky=True, immersive=True, size="full", priority=95, essential=True)
         widget(self.root, "meteo")
         widget(self.root, "lavagna", standalone=True, size="full")
-        from features.desktop import desk as desk_module
+        from agenti.desktop import desk as desk_module
         from unittest import mock
         for patch in (mock.patch.object(desk_module, "SYSTEM_DIR", self.root), mock.patch.object(desk_module, "USER_DIR", self.root / "none"),
                       mock.patch.object(desk_module, "STATE_FILE", self.root / "state.json"), mock.patch.object(desk_module, "NOVELTY_FILE", self.root / "nov.json")):

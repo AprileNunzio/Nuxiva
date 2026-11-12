@@ -10,12 +10,12 @@ from unittest import mock
 
 import numpy as np
 
-EAR = Path(__file__).resolve().parents[1] / "features" / "ear"
+EAR = Path(__file__).resolve().parents[1] / "agenti" / "percezione" / "ear"
 if str(EAR) not in sys.path:
     sys.path.append(str(EAR))
 
 import voiceprint
-from features.biometrics import embeddings as emb
+from agenti.biometrics import embeddings as emb
 
 DIM = 192
 
@@ -146,7 +146,7 @@ class VoiceprintTest(unittest.TestCase):
 
     def test_import_from_features_ear_in_clean_process(self):
         root = str(Path(__file__).resolve().parents[1])
-        code = f"import sys; sys.path.insert(0, {root!r}); from features.ear.voiceprint import margin, match_base; assert match_base() > 0; assert margin() > 0"
+        code = f"import sys; sys.path.insert(0, {root!r}); from agenti.ear.voiceprint import margin, match_base; assert match_base() > 0; assert margin() > 0"
         res = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True)
         self.assertEqual(res.returncode, 0, msg=res.stderr)
 

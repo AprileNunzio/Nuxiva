@@ -6,10 +6,10 @@ from fastapi.testclient import TestClient
 
 import nuxiva_supervisor
 from config import write_env
-from features.music import catalog, identify, layout, music, naming, organizer, renamer, scanner, tagwriter, tags
-from features.music.db import db
-from features.music import service as service_module
-from features.music.service import LibraryService
+from agenti.music import catalog, identify, layout, music, naming, organizer, renamer, scanner, tagwriter, tags
+from agenti.music.db import db
+from agenti.music import service as service_module
+from agenti.music.service import LibraryService
 from tests.test_music_library import Base, age, make_wav
 
 HEADERS = {"X-Nuxiva-Request": "1"}
@@ -205,7 +205,7 @@ class IdentifyTest(Base):
         self.assertEqual(asyncio.run(identify.inbox([path], True)), 1)
 
     def test_legacy_unknown_names_are_migrated_and_the_old_folder_emptied(self):
-        from features.music import legacy
+        from agenti.music import legacy
         old = make_wav(layout.library() / "Artista sconosciuto" / "Album sconosciuto" / "x.wav", title="X", artist="Artista sconosciuto")
         age(old)
         known = make_wav(layout.library() / "Mina" / "Album sconosciuto" / "y.wav", title="Luna", artist="Mina")
@@ -259,8 +259,8 @@ class ServiceAndApiTest(Base):
             calls.append(limit)
             return {"identified": 0, "tried": 0, "available": True, "items": []}
         service = LibraryService()
-        with mock.patch.object(identify, "run", fake), mock.patch("features.music.service.covers.complete", mock.AsyncMock(return_value=0)), \
-                mock.patch("features.music.enrich.run", mock.AsyncMock(return_value=0)), mock.patch("features.music.service.lyrics_store.fetch_missing", mock.AsyncMock(return_value=0)):
+        with mock.patch.object(identify, "run", fake), mock.patch("agenti.music.service.covers.complete", mock.AsyncMock(return_value=0)), \
+                mock.patch("agenti.music.enrich.run", mock.AsyncMock(return_value=0)), mock.patch("agenti.music.service.lyrics_store.fetch_missing", mock.AsyncMock(return_value=0)):
             service_module.state["covers_at"] = 0.0
             asyncio.run(service.cycle(True))
             self.assertEqual(calls, [3])

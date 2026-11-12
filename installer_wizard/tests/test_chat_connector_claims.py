@@ -4,13 +4,13 @@ import types
 import unittest
 from unittest import mock
 
-from features.agent import registry
-from features.chat import assistant
-from features.chat.claims import ConnectorClaims
-from features.google import commands as google
+from agenti.agent import registry
+from agenti.chat import assistant
+from agenti.chat.claims import ConnectorClaims
+from agenti.google import commands as google
 
 def setUpModule():
-    importlib.import_module("features.agent.tools_comm")
+    importlib.import_module("agenti.agent.tools_comm")
 
 
 GOOGLE_PHRASES = {
@@ -73,7 +73,7 @@ class ClaimsTest(unittest.TestCase):
             "bad": self.module("claims_bad", recognizes=explode),
             "good": self.module("claims_good", recognizes=lambda t: True),
         })
-        with mock.patch("features.chat.claims.store.event") as event:
+        with mock.patch("agenti.chat.claims.store.event") as event:
             self.assertEqual(claims.claiming("x"), ["good"])
         self.assertEqual(event.call_count, 2)
         self.assertTrue(all(call.args[0] == "WARN" for call in event.call_args_list))
@@ -86,7 +86,7 @@ class RoutingTest(unittest.IsolatedAsyncioTestCase):
         strong = mock.Mock(side_effect=AssertionError("l'agente generico non deve essere interpellato"))
         with mock.patch.object(assistant, "CLAIMS", stub), mock.patch.object(assistant, "_connect", connect), \
                 mock.patch.object(assistant, "_refused", return_value=refused), \
-                mock.patch("features.agent.commands.strong", strong):
+                mock.patch("agenti.agent.commands.strong", strong):
             return await assistant._route(text, mock.AsyncMock(), None), connect
 
     async def test_a_claiming_connector_answers_before_the_generic_agent_and_the_classifier(self):

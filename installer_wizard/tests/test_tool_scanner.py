@@ -5,9 +5,9 @@ import unittest
 import unittest.mock
 from pathlib import Path
 
-from features.agent import registry, tool_scanner
+from agenti.agent import registry, tool_scanner
 
-TOOL = '''from features.agent.registry import tool
+TOOL = '''from agenti.agent.registry import tool
 
 
 @tool("zz_probe_tool", "strumento di prova", {}, agent="zz_probe")
@@ -26,12 +26,13 @@ class ToolScannerTest(unittest.IsolatedAsyncioTestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         base = Path(self.tmp.name)
-        self.root = base / "zzfeatures"
-        self.root.mkdir()
-        (self.root / "__init__.py").write_text("")
+        self.pkg = base / "zzfeatures"
+        self.root = self.pkg / "creativita"
+        self.root.mkdir(parents=True)
+        (self.pkg / "__init__.py").write_text(f"__path__ = [{str(self.root)!r}]\n")
         sys.path.insert(0, str(base))
         self.addCleanup(sys.path.remove, str(base))
-        for target, value in (("FEATURES_DIR", self.root), ("PACKAGE", "zzfeatures")):
+        for target, value in (("AGENTS_DIR", self.pkg), ("PACKAGE", "zzfeatures")):
             patcher = unittest.mock.patch.object(tool_scanner, target, value)
             patcher.start()
             self.addCleanup(patcher.stop)

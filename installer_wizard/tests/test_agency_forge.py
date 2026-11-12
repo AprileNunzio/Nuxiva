@@ -7,11 +7,11 @@ from unittest import mock
 from fastapi.testclient import TestClient
 
 import nuxiva_supervisor
-from features.agency import tools
-from features.agency.forge import guard, sandbox, smith
-from features.agency.forge import registry as forge_registry
-from features.agency.forge.registry import ForgedTool
-from features.brain.llm import BrainUnavailable
+from agenti.agency import tools
+from agenti.agency.forge import guard, sandbox, smith
+from agenti.agency.forge import registry as forge_registry
+from agenti.agency.forge.registry import ForgedTool
+from agenti.brain.llm import BrainUnavailable
 
 HEADERS = {"X-Nuxiva-Request": "1"}
 SQUARE = "def run(args):\n    return args['x'] * args['x']\n"
@@ -132,7 +132,7 @@ class SmithTest(ForgeCase):
         def fixed(prompt, kwargs):
             seen.append(prompt)
             return SPEC
-        with mock.patch("features.brain.llm.generate", scripted(wrong, fixed)):
+        with mock.patch("agenti.brain.llm.generate", scripted(wrong, fixed)):
             tool, tokens = asyncio.run(smith.forge(self.ARGS, {"project": "p"}))
         self.assertEqual(tool.name, "quadrato")
         self.assertIn("expected 10", seen[0])
@@ -141,7 +141,7 @@ class SmithTest(ForgeCase):
 
     def test_gives_up_without_registering(self):
         unsafe = {**SPEC, "code": "import os\ndef run(args):\n    return 1\n"}
-        with mock.patch("features.brain.llm.generate", scripted(unsafe, {**SPEC, "tests": []})):
+        with mock.patch("agenti.brain.llm.generate", scripted(unsafe, {**SPEC, "tests": []})):
             with self.assertRaises(guard.ForgeRejected):
                 asyncio.run(smith.forge(self.ARGS, {}))
         self.assertEqual(self.registry.all(), [])
@@ -159,7 +159,7 @@ class ForgeToolsTest(ForgeCase):
 
     def test_agent_forges_then_calls_the_new_tool(self):
         ctx = tools.Context("shop", "shop", task="IVA")
-        with mock.patch("features.brain.llm.generate", scripted(SPEC)):
+        with mock.patch("agenti.brain.llm.generate", scripted(SPEC)):
             created = self.use(ctx, "forge_tool", {"name": "quadrato", "purpose": "q", "example": "3 -> 9"})
         self.assertTrue(created.startswith("created x_quadrato"))
         self.assertEqual(ctx.forged, ["quadrato"])
@@ -171,7 +171,7 @@ class ForgeToolsTest(ForgeCase):
 
     def test_forging_is_bounded_and_can_be_disabled(self):
         ctx = tools.Context("shop", "shop")
-        with mock.patch("features.brain.llm.generate", scripted({}, {}, {}, {})):
+        with mock.patch("agenti.brain.llm.generate", scripted({}, {}, {}, {})):
             for _ in range(tools.FORGES_PER_TASK):
                 self.assertTrue(self.use(ctx, "forge_tool", {"name": "nulla_qui"}).startswith("error: tool not created"))
         self.assertIn("at most", self.use(ctx, "forge_tool", {"name": "nulla_qui"}))

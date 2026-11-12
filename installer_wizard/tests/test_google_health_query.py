@@ -3,8 +3,8 @@ import unittest
 from datetime import datetime, timedelta, timezone
 from unittest import mock
 
-from features.people.sync_board import board
-from features.people.vitals import cloud
+from agenti.people.sync_board import board
+from agenti.people.vitals import cloud
 
 END = datetime(2026, 11, 2, 9, 30, tzinfo=timezone.utc)
 
@@ -35,7 +35,7 @@ class QueryTest(unittest.TestCase):
         session._get = fake_get
         cloud._state.pop("ana", None)
         self.addCleanup(board.forget, "ana")
-        with mock.patch("features.google.gservices.google.session", return_value=session):
+        with mock.patch("agenti.google.gservices.google.session", return_value=session):
             asyncio.run(cloud.poll("ana", END.timestamp()))
         self.assertEqual(len(calls), len(cloud.SOURCES) + len(cloud.DAILY))
         for url, params in calls:

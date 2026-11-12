@@ -19,7 +19,7 @@ os.environ["NUXIVA_CAMERA"] = "/dev/null-camera"
 for sub in ("faces", "models"):
     (ROOT / sub).mkdir()
 
-VISION = Path(__file__).resolve().parents[1] / "features" / "vision"
+VISION = Path(__file__).resolve().parents[1] / "agenti" / "percezione" / "vision"
 if str(VISION) in sys.path:
     sys.path.remove(str(VISION))
 sys.path.insert(0, str(VISION))
@@ -73,7 +73,7 @@ with mock.patch.object(cv2, "FaceDetectorYN", FakeCv2Class), mock.patch.object(c
     import selection
     from tracks import Track
 
-from features.biometrics import embeddings as emb
+from agenti.biometrics import embeddings as emb
 
 
 def vectors(seed, n=14, noise=0.05):

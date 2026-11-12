@@ -8,8 +8,8 @@ from unittest import mock
 
 from fastapi import HTTPException
 
-from features.desktop import xr_api, xr_pairing
-from features.desktop.xr_pairing import XrPairing
+from agenti.desktop import xr_api, xr_pairing
+from agenti.desktop.xr_pairing import XrPairing
 
 
 class Clock:
@@ -117,7 +117,7 @@ class ApiTests(Temp):
 
     def test_scene_shows_only_the_nucleus_without_authorized_people(self):
         token = self.pairing.redeem(self.pairing.issue("nunzio")["code"], "device-1234", "x")
-        from features.desktop import presence_bridge
+        from agenti.desktop import presence_bridge
         with mock.patch.dict(presence_bridge.bridge.last, {"kind": "guest_only"}):
             scene = asyncio.run(xr_api.xr_scene(Request(cookies={xr_pairing.COOKIE: token})))
         self.assertEqual((scene["nucleus_only"], scene["panels"]), (True, []))
@@ -126,8 +126,8 @@ class ApiTests(Temp):
         token = self.pairing.redeem(self.pairing.issue("nunzio")["code"], "device-1234", "x")
         items = [{"key": "molecule:a", "id": "molecule_viewer", "name": "Molecola", "icon": "🧬", "data": {"id": "0123456789abcdef"}},
                  {"key": "secret", "id": "notes", "name": "Note", "icon": "📝", "sensitivity": "private"}]
-        from features.desktop import presence_bridge
-        from features.desktop.desk import desk
+        from agenti.desktop import presence_bridge
+        from agenti.desktop.desk import desk
         with mock.patch.dict(presence_bridge.bridge.last, {"kind": "authorized"}), mock.patch.object(desk, "active", return_value=items):
             scene = asyncio.run(xr_api.xr_scene(Request(cookies={xr_pairing.COOKIE: token})))
         self.assertFalse(scene["nucleus_only"])

@@ -8,8 +8,8 @@ from fastapi import FastAPI
 from starlette.testclient import TestClient
 
 from access import require_admin
-from features.sentinel import recalibrate
-from features.sentinel.api import admin_routes
+from agenti.sentinel import recalibrate
+from agenti.sentinel.api import admin_routes
 
 
 class SentinelRecalibrateTest(unittest.TestCase):
@@ -44,7 +44,7 @@ class SentinelRecalibrateTest(unittest.TestCase):
             {"verdict": "ok"},
             {"verdict": "wrong"},
         ]
-        with mock.patch("features.ear.journal.journal", fake_journal):
+        with mock.patch("agenti.ear.journal.journal", fake_journal):
             metrics = recalibrate.collect_metrics()
             self.assertEqual(metrics["ok_count"], 2)
             self.assertEqual(metrics["wrong_count"], 1)
@@ -59,7 +59,7 @@ class SentinelRecalibrateTest(unittest.TestCase):
             {"verdict": "wrong"},
             {"verdict": "wrong"},
         ]
-        with mock.patch("features.ear.journal.journal", fake_journal):
+        with mock.patch("agenti.ear.journal.journal", fake_journal):
             res = recalibrate.run_cycle()
             self.assertLess(res["precision"], 0.75)
             self.assertGreater(res["parameters"]["voice_match_threshold"], 0.62)
@@ -71,7 +71,7 @@ class SentinelRecalibrateTest(unittest.TestCase):
         fake_journal = mock.MagicMock()
         fake_journal.ready = True
         fake_journal.entries.return_value = [{"verdict": "wrong"}] * 20
-        with mock.patch("features.ear.journal.journal", fake_journal):
+        with mock.patch("agenti.ear.journal.journal", fake_journal):
             for _ in range(25):
                 res = recalibrate.run_cycle()
             self.assertLessEqual(res["parameters"]["voice_match_threshold"], recalibrate.VOICE_THRESH_BOUNDS[1])

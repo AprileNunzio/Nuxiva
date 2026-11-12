@@ -1,7 +1,7 @@
 import unittest
 
-from features.laws import laws as module
-from features.laws.defaults import SEED_VERSION, behaviour
+from agenti.laws import laws as module
+from agenti.laws.defaults import SEED_VERSION, behaviour
 
 
 class LawsSeedTest(unittest.TestCase):

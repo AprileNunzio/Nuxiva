@@ -3,7 +3,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from unittest import mock
-from features.hardware import identify
+from agenti.hardware import identify
 from .common import ALIAS, PCI_IDS, can_symlink, pci_modalias, usb_modalias, w
 
 

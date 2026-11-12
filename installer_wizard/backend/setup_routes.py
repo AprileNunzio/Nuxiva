@@ -123,7 +123,7 @@ async def setup_wake_sample(request: Request, _: None = Depends(require_open)):
     write_private(SAMPLES_DIR / f"{index}.wav", data)
     learned = False
     if metrics["usable"]:
-        from features.ear import learner as learner_mod
+        from agenti.ear import learner as learner_mod
         learned = learner_mod.learner.teach(word)
     samples = dict(session_manager.config.get("wake_samples") or {})
     samples[str(index)] = {**metrics, "word": word, "learned": learned}

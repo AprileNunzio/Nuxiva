@@ -10,11 +10,11 @@ from fastapi.testclient import TestClient
 
 from access import require_admin
 from sealed import SealedFile
-from features.vpn import api as vpn_api
-from features.vpn import profiles, runner, service as service_module, wireguard
-from features.vpn import store as store_module
-from features.vpn.service import service
-from features.vpn.store import store
+from agenti.vpn import api as vpn_api
+from agenti.vpn import profiles, runner, service as service_module, wireguard
+from agenti.vpn import store as store_module
+from agenti.vpn.service import service
+from agenti.vpn.store import store
 from tests.test_vpn_config import OVPN, WG
 
 

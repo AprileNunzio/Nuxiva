@@ -7,8 +7,7 @@ logger = logging.getLogger("nuxiva.feature_api_scanner")
 
 def _system_agents(root_dir: Path | None):
     from agenti._registry import AgentRegistry, SYSTEM_DIR, root
-    legacy = root_dir or Path(__file__).resolve().parents[1] / "features"
-    roots = [root(legacy, "legacy", "flat")] if root_dir else [root(SYSTEM_DIR, "system", "categorized"), root(legacy, "legacy", "flat")]
+    roots = [root(root_dir or SYSTEM_DIR, "system", "categorized")]
     return AgentRegistry(lambda: roots).agents()
 
 
@@ -30,7 +29,7 @@ def discover_feature_apis(root: Path | None = None):
 
 
 def discover_feature_connectors(root: Path | None = None):
-    from features.authz.risk import CONNECTORS, Risk, parse
+    from agenti.authz.risk import CONNECTORS, Risk, parse
     connectors = {}
     for agent in _system_agents(root):
         try:

@@ -133,10 +133,10 @@ def from_python(text: str) -> list[str]:
     return out
 
 
-LITERAL_FILES = {"features/brain/roles.py", "features/brain/presets.py", "features/brain/components.py",
-                 "features/nexus/domain/summary.py", "features/nexus/domain/zones.py", "features/nexus/domain/wizard.py",
-                 "features/nexus/domain/preferences.py", "features/nexus/domain/awakening.py", "features/flows/domain/catalog.py",
-                 "features/flows/domain/draft.py", "features/flows/application/studio.py", "backend/feature_registry.py",
+LITERAL_FILES = {"agenti/cognizione/brain/roles.py", "agenti/cognizione/brain/presets.py", "agenti/cognizione/brain/components.py",
+                 "agenti/infrastruttura/nexus/domain/summary.py", "agenti/infrastruttura/nexus/domain/zones.py", "agenti/infrastruttura/nexus/domain/wizard.py",
+                 "agenti/infrastruttura/nexus/domain/preferences.py", "agenti/infrastruttura/nexus/domain/awakening.py", "agenti/cognizione/flows/domain/catalog.py",
+                 "agenti/cognizione/flows/domain/draft.py", "agenti/cognizione/flows/application/studio.py", "backend/feature_registry.py",
                  "backend/packages.py"}
 DICT_BLOCKS = {"backend/config.py": "EDITABLE_KEYS", "backend/feature_registry.py": "CATEGORIES", "backend/state.py": "PHASES", "backend/health.py": "COMPONENTS"}
 DICT_VALUE = re.compile(r"^\s*\"[A-Za-z0-9_]+\"\s*:\s*\"((?:[^\"\\]|\\.)+)\"", re.M)

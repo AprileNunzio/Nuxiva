@@ -1,6 +1,6 @@
 import unittest
 
-from features.actions import router
+from agenti.actions import router
 
 
 def route(text: str) -> str | None:

@@ -3,10 +3,10 @@ import tempfile
 import unittest
 from unittest import mock
 
-from features.depth_parallax import reconstruct_depth_relief
-from features.gaussian_splat import synthesize_gaussian_scene
-from features.neural_radiance import synthesize_radiance_scene
-from features.particles import (
+from agenti.depth_parallax import reconstruct_depth_relief
+from agenti.gaussian_splat import synthesize_gaussian_scene
+from agenti.neural_radiance import synthesize_radiance_scene
+from agenti.particles import (
     ParticleStore,
     codec,
     concept_key,
@@ -18,12 +18,12 @@ from features.particles import (
     synthesize_spec,
     xr_envelope,
 )
-from features.visual_catalog import (
+from agenti.visual_catalog import (
     NightDreamSynthesis,
     VisualCatalog,
     classify_academic_entry,
 )
-from features.visual_router import select_visual_engine
+from agenti.visual_router import select_visual_engine
 
 
 class DedicatedParticlesDirectoryTest(unittest.TestCase):
@@ -136,7 +136,7 @@ class DedicatedParticlesDirectoryTest(unittest.TestCase):
             "diorama/castelli/monumenti/Castel_dell_Ovo",
         )
 
-        with mock.patch("features.visual_catalog.night_builder.particle_store", self.store):
+        with mock.patch("agenti.visual_catalog.night_builder.particle_store", self.store):
             built = self.dreamer.run_idle_cycle(max_items=3)
             self.assertEqual(len(built), 3)
             paths = {item["relative_dir"] for item in built}
@@ -160,12 +160,12 @@ class DedicatedParticlesDirectoryTest(unittest.TestCase):
             self.assertEqual(hit_by_path["slug"], "Rhizostoma_pulmo")
 
     def test_independent_autonomous_agents(self):
-        from features.depth_parallax import depth_parallax_agent
-        from features.diorama.agent import diorama_agent
-        from features.gaussian_splat import gaussian_splat_agent
-        from features.neural_radiance import neural_radiance_agent
-        from features.particles import particle_agent
-        from features.visual_router import dispatch_visual_agent
+        from agenti.depth_parallax import depth_parallax_agent
+        from agenti.diorama.agent import diorama_agent
+        from agenti.gaussian_splat import gaussian_splat_agent
+        from agenti.neural_radiance import neural_radiance_agent
+        from agenti.particles import particle_agent
+        from agenti.visual_router import dispatch_visual_agent
 
         p_art = particle_agent.run("Come è fatta una medusa?", persist=False)
         self.assertEqual(p_art["agent_id"], "agent.particles.v1")
@@ -200,7 +200,7 @@ class DedicatedParticlesDirectoryTest(unittest.TestCase):
         self.assertEqual(dispatched["artifact"]["agent_id"], "agent.diorama.v1")
 
     def test_visual_agents_feature_manifests_and_scanner(self):
-        from features.team.scanner import scanner
+        from agenti.team.scanner import scanner
 
         discovered = scanner.scan(force=True)
         expected_agents = (

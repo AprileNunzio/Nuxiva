@@ -7,13 +7,13 @@ from unittest import mock
 from fastapi import FastAPI
 from starlette.testclient import TestClient
 
-from features.cameras.ptz import PtzController
-from features.nvr import settings as nvr_settings
-from features.nvr.analyzer import NvrAnalyzer
-from features.nvr.api import admin_routes
-from features.nvr.service import nvr
-from features.nvr.store import EventStore
-from features.nvr.vault import MediaVault
+from agenti.cameras.ptz import PtzController
+from agenti.nvr import settings as nvr_settings
+from agenti.nvr.analyzer import NvrAnalyzer
+from agenti.nvr.api import admin_routes
+from agenti.nvr.service import nvr
+from agenti.nvr.store import EventStore
+from agenti.nvr.vault import MediaVault
 
 
 class NvrAiPtzTest(unittest.TestCase):
@@ -98,7 +98,7 @@ class NvrAiPtzTest(unittest.TestCase):
 
     def test_ptz_controller_capabilities_and_movement(self):
         ptz = PtzController()
-        with mock.patch("features.cameras.cameras.cameras.items", {
+        with mock.patch("agenti.cameras.cameras.cameras.items", {
             "cam_ip": {"id": "cam_ip", "name": "IP Camera PTZ", "kind": "onvif", "url": "rtsp://admin:pass@192.168.1.100:554/live"}
         }):
             caps = ptz.capabilities("cam_ip")
@@ -112,8 +112,8 @@ class NvrAiPtzTest(unittest.TestCase):
             self.assertTrue(track_res["ok"])
 
     def test_api_storage_and_ptz(self):
-        with mock.patch("features.nvr.api.require_admin", return_value="admin"), \
-             mock.patch("features.nvr.api.media_vault", self.vault):
+        with mock.patch("agenti.nvr.api.require_admin", return_value="admin"), \
+             mock.patch("agenti.nvr.api.media_vault", self.vault):
             res_storage = self.client.get("/api/nvr/storage")
             self.assertEqual(res_storage.status_code, 200)
             data = res_storage.json()

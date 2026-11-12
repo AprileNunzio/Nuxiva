@@ -16,7 +16,7 @@ max_loaded() {
 }
 
 override_conf() {
-    if python3 -c "import sys; sys.path.insert(0, '$NUXIVA_DIR/installer_wizard'); from features.ollama.service import load_config, generate_systemd_override; print(generate_systemd_override(load_config()), end='')" 2>/dev/null; then
+    if python3 -c "import sys; sys.path.insert(0, '$NUXIVA_DIR/installer_wizard'); from agenti.ollama.service import load_config, generate_systemd_override; print(generate_systemd_override(load_config()), end='')" 2>/dev/null; then
         return 0
     fi
     printf '%s\n' \

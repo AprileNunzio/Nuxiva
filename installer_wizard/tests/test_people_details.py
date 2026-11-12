@@ -8,9 +8,9 @@ from unittest import mock
 
 import numpy as np
 
-from features.people import details, people
+from agenti.people import details, people
 
-VISION = Path(__file__).resolve().parents[1] / "features" / "vision"
+VISION = Path(__file__).resolve().parents[1] / "agenti" / "percezione" / "vision"
 if str(VISION) not in sys.path:
     sys.path.append(str(VISION))
 

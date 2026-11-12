@@ -4,10 +4,10 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.desktop.sources import SOURCES
-from features.google.errors import GoogleApiError
-from features.people import focus, sync_view
-from features.people.sync_board import SyncBoard, board
+from agenti.desktop.sources import SOURCES
+from agenti.google.errors import GoogleApiError
+from agenti.people import focus, sync_view
+from agenti.people.sync_board import SyncBoard, board
 
 WIDGET = Path(__file__).resolve().parents[1] / "widgets" / "sync_pulse"
 
@@ -109,7 +109,7 @@ class CardTest(unittest.TestCase):
 
 class RefreshTest(unittest.TestCase):
     def test_one_failing_step_does_not_stop_the_others(self):
-        from features.google import gservices
+        from agenti.google import gservices
         board.forget("ana")
         self.addCleanup(board.forget, "ana")
         session = mock.Mock()

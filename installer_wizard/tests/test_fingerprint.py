@@ -8,13 +8,13 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from access import require_admin
-from features.people import people, private_store
-from features.people.fingerprint import api as fp_api
-from features.people.fingerprint import service as fp_service
-from features.people.fingerprint import store as fp_store
-from features.people.fingerprint.readers import readers
-from features.people.fingerprint.service import service
-from features.people.fingerprint.store import bindings
+from agenti.people import people, private_store
+from agenti.people.fingerprint import api as fp_api
+from agenti.people.fingerprint import service as fp_service
+from agenti.people.fingerprint import store as fp_store
+from agenti.people.fingerprint.readers import readers
+from agenti.people.fingerprint.service import service
+from agenti.people.fingerprint.store import bindings
 
 
 class Base(unittest.TestCase):

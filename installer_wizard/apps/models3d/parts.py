@@ -2,7 +2,7 @@ import copy
 import re
 import unicodedata
 
-from features.models3d.mesh import SHAPES, placed
+from agenti.models3d.mesh import SHAPES, placed
 
 KEYS = ("name", "shape", "size", "radius", "radius_top", "radius_bottom", "height", "tube", "position", "rotation", "scale", "color", "metal")
 LIMIT = 10000.0

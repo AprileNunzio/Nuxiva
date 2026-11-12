@@ -3,11 +3,11 @@ import unittest
 import unittest.mock
 from pathlib import Path
 
-from features.fleet import catalog
-from features.fleet.model import FleetError, build_spec, clean_text, slug
-from features.fleet.service import FleetService
-from features.fleet.shards import SHARDS, shard_of
-from features.fleet.store import Filter, FleetStore, decode_cursor, encode_cursor
+from agenti.fleet import catalog
+from agenti.fleet.model import FleetError, build_spec, clean_text, slug
+from agenti.fleet.service import FleetService
+from agenti.fleet.shards import SHARDS, shard_of
+from agenti.fleet.store import Filter, FleetStore, decode_cursor, encode_cursor
 
 
 def spec(agent_id: str, **extra):

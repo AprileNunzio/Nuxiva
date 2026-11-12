@@ -5,9 +5,9 @@ from fastapi import FastAPI
 from starlette.testclient import TestClient
 
 from access import require_admin
-from features.rescue.api import admin_routes
-from features.rescue.coordinator import RescueCoordinator
-from features.rescue.detector import detect_speech_intent, detect_visual_distress
+from agenti.rescue.api import admin_routes
+from agenti.rescue.coordinator import RescueCoordinator
+from agenti.rescue.detector import detect_speech_intent, detect_visual_distress
 
 
 class RescueEmergencyTest(unittest.TestCase):
@@ -69,7 +69,7 @@ class RescueEmergencyTest(unittest.TestCase):
         ])
         self.assertIsNone(kind)
 
-    @mock.patch("features.sentinel.record.record")
+    @mock.patch("agenti.sentinel.record.record")
     def test_coordinator_fall_and_escalation_flow(self, mock_record):
         coord = RescueCoordinator(prefer_native=False)
         step = coord.observe("fall", 0.9, 0.8, "cam_living", at=0.0, now=0.0)
@@ -92,7 +92,7 @@ class RescueEmergencyTest(unittest.TestCase):
         self.assertEqual(step["stage"], "emergency")
         self.assertTrue(any(a["type"] == "alert_emergency_contacts" for a in step["actions"]))
 
-    @mock.patch("features.sentinel.record.record")
+    @mock.patch("agenti.sentinel.record.record")
     def test_coordinator_person_ok_recovery(self, mock_record):
         coord = RescueCoordinator(prefer_native=False)
         coord.need_help(now=0.0)
@@ -103,7 +103,7 @@ class RescueEmergencyTest(unittest.TestCase):
         self.assertEqual(step["stage"], "cooldown")
         self.assertTrue(any(a["type"] == "stand_down" for a in step["actions"]))
 
-    @mock.patch("features.sentinel.record.record")
+    @mock.patch("agenti.sentinel.record.record")
     def test_coordinator_home_alarm_on_fire(self, mock_record):
         coord = RescueCoordinator(prefer_native=False)
         seen = []
@@ -146,8 +146,8 @@ class RescueEmergencyTest(unittest.TestCase):
         self.assertEqual(resp.json()["policy"]["check_in_s"], 25.0)
 
     def test_chat_rescue_skill(self):
-        from features.chat.intents import detect_intent
-        from features.chat.skill_dispatch import run_skill
+        from agenti.chat.intents import detect_intent
+        from agenti.chat.skill_dispatch import run_skill
         import asyncio
 
         intent = detect_intent("qual è lo stato dei soccorsi?")

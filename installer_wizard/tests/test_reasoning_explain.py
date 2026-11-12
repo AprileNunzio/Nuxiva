@@ -3,7 +3,7 @@ import unittest
 from fastapi.testclient import TestClient
 
 import nuxiva_supervisor
-from features.chat.brain_chain import CONFIDENCE_WEIGHT, CRITIC_WEIGHT, HARD_TIMEOUT_S
+from agenti.chat.brain_chain import CONFIDENCE_WEIGHT, CRITIC_WEIGHT, HARD_TIMEOUT_S
 from server.core.reasoning.engines.scanner import engine_scanner
 
 

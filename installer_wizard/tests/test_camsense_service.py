@@ -10,9 +10,9 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from access import require_admin
-from features.camsense import api as camsense_api
-from features.camsense import imaging, service, store as store_module, tools
-from features.camsense.model import SenseError
+from agenti.camsense import api as camsense_api
+from agenti.camsense import imaging, service, store as store_module, tools
+from agenti.camsense.model import SenseError
 
 
 def run(coro):
@@ -42,8 +42,8 @@ class Base(unittest.TestCase):
         self.current = "open"
         patches = [mock.patch.object(store_module, "FILE", Path(folder.name) / "camsense.json"),
                    mock.patch.object(service, "frame", self.fake_frame),
-                   mock.patch("features.cameras.live.find", lambda camera: {"id": camera} if camera == "cam1" else None),
-                   mock.patch("features.cameras.events.add"), mock.patch.object(service.system_store, "event")]
+                   mock.patch("agenti.cameras.live.find", lambda camera: {"id": camera} if camera == "cam1" else None),
+                   mock.patch("agenti.cameras.events.add"), mock.patch.object(service.system_store, "event")]
         self.events = patches[3].start()
         for patch in patches[:3] + patches[4:]:
             patch.start()

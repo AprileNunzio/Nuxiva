@@ -1,6 +1,6 @@
 import math
 import unittest
-from features.vision.gait import GaitCore
+from agenti.vision.gait import GaitCore
 
 
 class TestGait(unittest.TestCase):

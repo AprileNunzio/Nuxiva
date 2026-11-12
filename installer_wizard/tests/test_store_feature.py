@@ -9,14 +9,14 @@ sys.modules.setdefault("cv2", mock.MagicMock())
 
 from access import require_admin
 from fastapi.testclient import TestClient
-from features.store.catalog import STORE_CATALOG, find_item
-from features.store.repositories import (
+from agenti.store.catalog import STORE_CATALOG, find_item
+from agenti.store.repositories import (
     add_repository,
     get_custom_packages,
     load_repositories,
     remove_repository,
 )
-from features.store.service import StoreManagerService
+from agenti.store.service import StoreManagerService
 import nuxiva_supervisor
 import setup_api
 
@@ -81,13 +81,13 @@ class TestStoreCatalogAndService(unittest.IsolatedAsyncioTestCase):
             self.assertTrue(res.get("can_force"))
             self.assertIn("budget di memoria fisica", res.get("message", ""))
 
-            with mock.patch("features.store.service.apply_config", mock.AsyncMock(return_value=["step1"])):
+            with mock.patch("agenti.store.service.apply_config", mock.AsyncMock(return_value=["step1"])):
                 res_forced = await self.service.install_package("brain_local", user="admin", force=True)
                 self.assertTrue(res_forced.get("ok"))
                 self.assertEqual(res_forced.get("id"), "brain_local")
 
     async def test_install_and_uninstall_package(self):
-        with mock.patch("features.store.service.apply_config", mock.AsyncMock(return_value=["step1"])):
+        with mock.patch("agenti.store.service.apply_config", mock.AsyncMock(return_value=["step1"])):
             with mock.patch.object(self.service, "verify_resource_budget", return_value=(True, "ok")):
                 res = await self.service.install_package("music", user="admin")
                 self.assertTrue(res.get("ok"))
@@ -107,7 +107,7 @@ class TestStoreCatalogAndService(unittest.IsolatedAsyncioTestCase):
     async def test_custom_repository_flow(self):
         with TemporaryDirectory() as tmp:
             tmp_path = Path(tmp)
-            with mock.patch("features.store.repositories.STATE_DIR", tmp_path):
+            with mock.patch("agenti.store.repositories.STATE_DIR", tmp_path):
                 repos = load_repositories()
                 self.assertEqual(len(repos), 1)
                 self.assertEqual(repos[0]["id"], "official")
@@ -189,8 +189,8 @@ class TestStoreEndpoints(unittest.TestCase):
 
     def test_install_success_with_csrf(self):
         headers = {"X-Nuxiva-Request": "1"}
-        with mock.patch("features.store.service.apply_config", mock.AsyncMock(return_value=["step1"])):
-            with mock.patch("features.store.service.store_service.verify_resource_budget", return_value=(True, "ok")):
+        with mock.patch("agenti.store.service.apply_config", mock.AsyncMock(return_value=["step1"])):
+            with mock.patch("agenti.store.service.store_service.verify_resource_budget", return_value=(True, "ok")):
                 res = self.client.post("/api/store/packages/music/install", headers=headers)
                 self.assertEqual(res.status_code, 200)
                 self.assertTrue(res.json().get("ok"))
@@ -212,7 +212,7 @@ class TestStoreEndpoints(unittest.TestCase):
         with mock.patch("psutil.disk_usage") as mock_disk, mock.patch("psutil.virtual_memory") as mock_ram:
             mock_disk.return_value = mock.Mock(free=100 * (1024**3))
             mock_ram.return_value = mock.Mock(total=4 * (1024**3))
-            with mock.patch("features.store.service.apply_config", mock.AsyncMock(return_value=["step1"])):
+            with mock.patch("agenti.store.service.apply_config", mock.AsyncMock(return_value=["step1"])):
                 res = self.client.post("/api/store/packages/brain_local/install", headers=headers, json={"force": True})
                 self.assertEqual(res.status_code, 200)
                 data = res.json()
@@ -222,7 +222,7 @@ class TestStoreEndpoints(unittest.TestCase):
         headers = {"X-Nuxiva-Request": "1"}
         with TemporaryDirectory() as tmp:
             tmp_path = Path(tmp)
-            with mock.patch("features.store.repositories.STATE_DIR", tmp_path):
+            with mock.patch("agenti.store.repositories.STATE_DIR", tmp_path):
                 # 1. Get repos
                 res = self.client.get("/api/store/repositories")
                 self.assertEqual(res.status_code, 200)

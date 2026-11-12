@@ -1,6 +1,7 @@
 import json
 import unittest
 from pathlib import Path
+from tests.agent_tree import AGENTS
 
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "client_web" / "src"
@@ -13,9 +14,8 @@ def load(path):
 
 def feature_ids():
     found = set()
-    for folder in ("features", "apps"):
-        for path in (WIZARD / folder).glob("*/feature.json"):
-            found.add(load(path)["id"])
+    for path in [*AGENTS.glob("*/feature.json"), *(WIZARD / "apps").glob("*/feature.json")]:
+        found.add(load(path)["id"])
     return found
 
 
@@ -39,6 +39,6 @@ class ControlPanelLayoutTest(unittest.TestCase):
             self.assertEqual(len(apps), 1, f"{ident}:{apps}")
 
     def test_removed_integration_leaves_no_trace(self):
-        self.assertFalse((WIZARD / "features" / "spotify").exists())
+        self.assertFalse((AGENTS / "spotify").exists())
         self.assertFalse((WIZARD / "widgets" / "spotify").exists())
         self.assertNotIn("spotify", feature_ids())

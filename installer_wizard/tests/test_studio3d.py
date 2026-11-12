@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.models3d import generator, library, parts as ops, studio, voice
+from agenti.models3d import generator, library, parts as ops, studio, voice
 
 HAMMER = generator.TEMPLATES["martello"]
 

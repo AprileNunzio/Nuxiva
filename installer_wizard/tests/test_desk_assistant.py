@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.nodes import desk_assistant, jev, trust
+from agenti.nodes import desk_assistant, jev, trust
 
 
 class JevTest(unittest.IsolatedAsyncioTestCase):
@@ -86,8 +86,8 @@ class ResearchTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_explicit_research_uses_only_the_question_and_returns_no_actions(self):
         with (
-            mock.patch("features.research.service.research", new_callable=mock.AsyncMock) as search,
-            mock.patch("features.research.report.render", return_value="Sources"),
+            mock.patch("agenti.research.service.research", new_callable=mock.AsyncMock) as search,
+            mock.patch("agenti.research.report.render", return_value="Sources"),
         ):
             result = await desk_assistant.assist({"id": "pc"}, {
                 "text": "Cerca online: come si usa Excel?",

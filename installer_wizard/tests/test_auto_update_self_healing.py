@@ -10,8 +10,8 @@ from unittest import mock
 sys.modules.setdefault("cv2", mock.MagicMock())
 
 from fastapi.testclient import TestClient
-from features.auto_update.self_healing import SelfHealingEngine
-from features.auto_update.service import AutoUpdateService
+from agenti.auto_update.self_healing import SelfHealingEngine
+from agenti.auto_update.service import AutoUpdateService
 import nuxiva_supervisor
 import system_api
 import setup_api

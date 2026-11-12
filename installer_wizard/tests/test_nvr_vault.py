@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from features.nvr.vault import MediaVault
+from agenti.nvr.vault import MediaVault
 
 
 class TestNvrMediaVault(unittest.TestCase):

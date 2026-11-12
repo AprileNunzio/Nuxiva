@@ -1,8 +1,8 @@
 import asyncio
 import unittest
 
-from features.agent import commands, paths, tools_files
-from features.shares import archive
+from agenti.agent import commands, paths, tools_files
+from agenti.shares import archive
 
 
 class ShareFilesTest(unittest.TestCase):

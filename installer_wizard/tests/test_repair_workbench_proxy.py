@@ -6,8 +6,8 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 import httpx
 
-from features.repair_workbench import api
-from features.repair_workbench import commands
+from agenti.repair_workbench import api
+from agenti.repair_workbench import commands
 from feature_api_scanner import discover_feature_apis, discover_feature_connectors
 
 
@@ -15,7 +15,7 @@ class WorkbenchProxyTest(unittest.TestCase):
     def test_manifest_discovers_api_in_both_surfaces(self):
         self.assertIn(api, discover_feature_apis())
         self.assertIs(api.admin_routes, api.public_routes)
-        self.assertEqual(discover_feature_connectors()["repair_workbench"], "features.repair_workbench.commands")
+        self.assertEqual(discover_feature_connectors()["repair_workbench"], "agenti.repair_workbench.commands")
 
     def setUp(self):
         app = FastAPI()
@@ -73,14 +73,14 @@ class WorkbenchProxyTest(unittest.TestCase):
 
 class WorkbenchCommandTest(unittest.IsolatedAsyncioTestCase):
     async def test_vision_tries_next_model_after_timeout(self):
-        from features.brain import sight
+        from agenti.brain import sight
         with patch.object(sight, "models", new=AsyncMock(return_value=["slow", "ready"])), \
              patch.object(sight, "_ollama", new=AsyncMock(side_effect=[TimeoutError(), '{"summary":"Scheda"}'])):
             result, model = await sight.look(b"frame", "Inspect", as_json=True, attempt_timeout=1)
         self.assertEqual((model, result["summary"]), ("ready", "Scheda"))
 
     async def test_vision_falls_back_when_structured_output_is_invalid(self):
-        from features.brain import sight
+        from agenti.brain import sight
         from server.features.repair_workbench.session_models import VisionObservation
         with patch.object(sight, "models", new=AsyncMock(return_value=["first", "second"])), \
              patch.object(sight, "_ollama", new=AsyncMock(side_effect=[

@@ -2,8 +2,8 @@ import asyncio
 import unittest
 from unittest import mock
 
-from features.cloud import client
-from features.cloud.catalog import BY_ID
+from agenti.cloud import client
+from agenti.cloud.catalog import BY_ID
 
 
 def reply(content: str, finish: str = "stop") -> mock.Mock:

@@ -4,8 +4,8 @@ import urllib.parse
 
 from config import PUBLIC_PORT
 
-from features.tv import relay
-from features.tv.m3u import norm
+from agenti.tv import relay
+from agenti.tv.m3u import norm
 
 TARGET = re.compile(r"^(display(:\d{1,2})?|pc:[a-z0-9][a-z0-9-]{2,47}|(cast|dlna):[A-Za-z0-9._-]{1,64})$")
 ONLINE_FOR = 90.0
@@ -17,7 +17,7 @@ class TargetError(ValueError):
 
 
 def base_url() -> str:
-    from features.actions.common import my_ip
+    from agenti.actions.common import my_ip
     return f"http://{my_ip()}" + ("" if PUBLIC_PORT == 80 else f":{PUBLIC_PORT}")
 
 
@@ -32,7 +32,7 @@ def live_path(channel: dict) -> str:
 
 
 def _pcs() -> list[dict]:
-    from features.nodes.registry import registry
+    from agenti.nodes.registry import registry
     now = time.time()
     return [{"id": f"pc:{n['id']}", "kind": "pc", "name": n["name"], "room": n.get("room", ""),
              "online": now - n.get("last_seen", 0) < ONLINE_FOR}
@@ -40,7 +40,7 @@ def _pcs() -> list[dict]:
 
 
 def _screens() -> list[dict]:
-    from features.desktop.screens import screens
+    from agenti.desktop.screens import screens
     rows = [{"id": "display", "kind": "display", "name": "Schermi di Nuxiva", "online": True}]
     active = screens.active()
     if len(active) > 1:
@@ -49,7 +49,7 @@ def _screens() -> list[dict]:
 
 
 async def listing(discover: bool = False) -> list[dict]:
-    from features.music.outputs import outputs
+    from agenti.music.outputs import outputs
     devices = await outputs.refresh(discover)
     casts = [{"id": d["id"], "kind": d["kind"], "name": d["name"], "online": True} for d in devices if d["kind"] in ("cast", "dlna")]
     return _screens() + _pcs() + casts
@@ -74,7 +74,7 @@ async def play(channel: dict, target_id: str, who: str = "") -> str:
         raise TargetError("Destinazione non valida")
     kind, _, ref = target_id.partition(":")
     if kind == "display":
-        from features.desktop.desk import desk
+        from agenti.desktop.desk import desk
         desk.show("tv_player", {"channel": channel["id"], "name": channel["name"], "group": channel.get("group", ""),
                                 "src": live_path(channel)}, key="tv", ttl=0, priority=72)
         if ref:
@@ -82,7 +82,7 @@ async def play(channel: dict, target_id: str, who: str = "") -> str:
         desk.fullscreen("tv", True)
         return "sullo schermo di Nuxiva"
     if kind == "pc":
-        from features.nodes.inbox import inbox
+        from agenti.nodes.inbox import inbox
         pc = next((p for p in _pcs() if p["id"] == target_id), None)
         if not pc:
             raise TargetError("PC sconosciuto")
@@ -90,8 +90,8 @@ async def play(channel: dict, target_id: str, who: str = "") -> str:
             raise TargetError(f"Il PC {pc['name']} non è collegato in questo momento")
         inbox.push(ref, {"type": "tv", "url": base_url() + watch_path(channel), "title": channel["name"], "by": who[:40]})
         return f"sul PC {pc['name']}"
-    from features.music import cast_chrome, dlna
-    from features.music.outputs import outputs
+    from agenti.music import cast_chrome, dlna
+    from agenti.music.outputs import outputs
     try:
         device = outputs.device(target_id)
     except KeyError as exc:
@@ -111,5 +111,5 @@ async def play(channel: dict, target_id: str, who: str = "") -> str:
 
 
 def stop_display() -> None:
-    from features.desktop.desk import desk
+    from agenti.desktop.desk import desk
     desk.hide(key="tv")

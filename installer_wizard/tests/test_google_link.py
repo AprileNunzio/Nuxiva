@@ -6,8 +6,8 @@ from unittest import mock
 
 from sealed import SealedFile
 
-from features.google import app as google_app
-from features.google.flows import FlowStore, LinkError, parse
+from agenti.google import app as google_app
+from agenti.google.flows import FlowStore, LinkError, parse
 
 CODE = "4/0AVG7fiQ" + "x" * 40
 
@@ -63,7 +63,7 @@ class FlowStoreTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as root:
             flows = store_in(root)
             flows.create("s1", "mario", "v1")
-            with mock.patch("features.google.flows.time.time", return_value=time.time() + 4000):
+            with mock.patch("agenti.google.flows.time.time", return_value=time.time() + 4000):
                 self.assertEqual(flows.pending(), [])
                 with self.assertRaisesRegex(LinkError, "Nessun collegamento"):
                     flows.resolve(parse(f"?state=s1&code={CODE}"))

@@ -3,14 +3,14 @@ import unittest
 import unittest.mock
 from pathlib import Path
 
-from features.experts import templates
-from features.experts.model import build
-from features.fleet import mirror
-from features.fleet.service import FleetService
+from agenti.experts import templates
+from agenti.experts.model import build
+from agenti.fleet import mirror
+from agenti.fleet.service import FleetService
 
 
 def expert(template: str, expert_id: str):
-    from features.experts import service
+    from agenti.experts import service
     return build(templates.blueprint(template, "it", expert_id), service.known_tools())
 
 
@@ -24,11 +24,11 @@ class MirrorTest(unittest.TestCase):
         self.addCleanup(patch.stop)
 
     def test_every_catalogue_expert_becomes_a_fleet_agent(self):
-        from features.agent import registry
+        from agenti.agent import registry
         registry.refresh()
         rows = [expert(tid, tid) for tid in templates.ids()]
         self.assertEqual(mirror.mirror(rows, self.service), len(rows))
-        listing = self.service.store.list(__import__("features.fleet.store", fromlist=["Filter"]).Filter("", "", "", "", "", "", ""), "", 200)
+        listing = self.service.store.list(__import__("agenti.fleet.store", fromlist=["Filter"]).Filter("", "", "", "", "", "", ""), "", 200)
         self.assertGreaterEqual(len(listing["items"]), 100)
 
     def test_mirroring_is_idempotent_and_respects_deletions(self):
@@ -39,7 +39,7 @@ class MirrorTest(unittest.TestCase):
         self.assertEqual(mirror.mirror([row], self.service), 0)
 
     def test_agent_carries_role_purpose_and_existing_tools_only(self):
-        from features.agent import registry
+        from agenti.agent import registry
         registry.refresh()
         row = expert("web-developer", "web-developer")
         mirror.mirror([row], self.service)

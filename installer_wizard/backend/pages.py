@@ -10,7 +10,7 @@ from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 from access import NO_CACHE
-from config import FEATURES_DIR, NUXIVA_DIR, STATE_DIR, UI_LANGUAGES, VERSION, WEB_DIR, read_env
+from config import AGENTS_DIR, NUXIVA_DIR, STATE_DIR, UI_LANGUAGES, VERSION, WEB_DIR, read_env
 
 VENDOR_DIR = STATE_DIR / "vendor"
 VENDOR = {
@@ -71,7 +71,7 @@ def face_options() -> dict:
     hands = choice("NUXIVA_HANDS", ("auto", "1", "0"), "auto")
     style = choice("NUXIVA_AVATAR_STYLE", ("character", "hologram"), "character")
 
-    from features.avatars.store import active_model_url
+    from agenti.avatars.store import active_model_url
     custom_model = active_model_url()
     default_model = "/vendor/Michelle.glb" if style == "character" else "/static/shared/models/head.glb"
     model_url = custom_model or default_model
@@ -92,9 +92,8 @@ def _assets(folder: Path, ext: str) -> list[str]:
 
 
 def _system_packages() -> list[Path]:
-    from agenti._registry import AgentRegistry, SYSTEM_DIR, root
-    scope = AgentRegistry(lambda: [root(SYSTEM_DIR, "system", "categorized"), root(FEATURES_DIR, "legacy", "flat")],
-                          native=False)
+    from agenti._registry import AgentRegistry, root
+    scope = AgentRegistry(lambda: [root(AGENTS_DIR, "system", "categorized")], native=False)
     return scope.package_dirs()
 
 
@@ -133,8 +132,8 @@ def render(html: str, lang: str = "") -> Response:
     bundle_json = "null"
     if scope_match:
         try:
-            from features.locale.colocated.api import resolver, ALLOWED_LANGUAGES
-            from features.locale.colocated.domain import Scope, Locale
+            from agenti.locale.colocated.api import resolver, ALLOWED_LANGUAGES
+            from agenti.locale.colocated.domain import Scope, Locale
             res = resolver.resolve(Scope.parse(scope_match.group(1)), Locale.parse(target_lang, ALLOWED_LANGUAGES))
             bundle_json = json.dumps(res.to_payload(), ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
         except Exception:

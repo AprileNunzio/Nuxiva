@@ -7,8 +7,8 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.vision import devices as dev
-from features.vision import ir_configure, ir_emitter, webcams
+from agenti.vision import devices as dev
+from agenti.vision import ir_configure, ir_emitter, webcams
 
 LIST = """HD Webcam: HD Webcam (usb-0000:00:14.0-3):
 \t/dev/video0
@@ -294,7 +294,7 @@ if __name__ == "__main__":
 
 class PersonPhotoTest(unittest.TestCase):
     def test_photo_is_served_from_disk_when_vision_is_down(self):
-        from features.vision import api
+        from agenti.vision import api
         root = Path(tempfile.mkdtemp())
         (root / "ospite-1").mkdir()
         (root / "ospite-1" / "photo.jpg").write_bytes(b"\xff\xd8jpeg")

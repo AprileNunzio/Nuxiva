@@ -9,8 +9,8 @@ from unittest import mock
 
 from fastapi import HTTPException
 
-from features.molecules import api, library as library_module
-from features.molecules.library import EngineUnavailable, Library, clean_title, format_of
+from agenti.molecules import api, library as library_module
+from agenti.molecules.library import EngineUnavailable, Library, clean_title, format_of
 
 
 def _native():

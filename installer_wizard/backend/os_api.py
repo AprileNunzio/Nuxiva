@@ -8,7 +8,7 @@ from fastapi.responses import JSONResponse
 from os_memory import memory_manager
 from os_notification import notification_manager
 from os_process import process_manager
-from features.auto_update.boot_updater import boot_updater
+from agenti.auto_update.boot_updater import boot_updater
 
 public_routes = APIRouter()
 admin_routes = APIRouter()

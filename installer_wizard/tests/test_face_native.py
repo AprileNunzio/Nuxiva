@@ -4,7 +4,7 @@ from pathlib import Path
 
 import numpy as np
 
-BIO = Path(__file__).resolve().parents[1] / "features" / "biometrics"
+BIO = Path(__file__).resolve().parents[1] / "agenti" / "percezione" / "biometrics"
 if str(BIO) not in sys.path:
     sys.path.append(str(BIO))
 

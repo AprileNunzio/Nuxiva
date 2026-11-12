@@ -4,9 +4,9 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.chat import dialogue as dialogue_module
-from features.chat.dialogue import Dialogue
-from features.chat.history import HistoryStore
+from agenti.chat import dialogue as dialogue_module
+from agenti.chat.dialogue import Dialogue
+from agenti.chat.history import HistoryStore
 
 
 class DialogueHistoryTests(unittest.TestCase):

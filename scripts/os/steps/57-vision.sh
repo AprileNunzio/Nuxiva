@@ -5,9 +5,9 @@ MODELS=/opt/nuxiva-vision/models
 ZOO=https://github.com/opencv/opencv_zoo/raw/main/models
 UNIT_SRC="$NUXIVA_DIR/scripts/os/systemd/nuxiva-vision.service"
 UNIT=/etc/systemd/system/nuxiva-vision.service
-VDIR="$NUXIVA_DIR/installer_wizard/features/vision"
-BDIR="$NUXIVA_DIR/installer_wizard/features/biometrics"
-CODE=("$VDIR/service.py" "$VDIR/gallery.py" "$VDIR/tracks.py" "$VDIR/objects.py" "$VDIR/posture.py" "$NUXIVA_DIR/installer_wizard/features/rescue/posture.py" "$VDIR/devices.py"
+VDIR="$NUXIVA_DIR/installer_wizard/agenti/percezione/vision"
+BDIR="$NUXIVA_DIR/installer_wizard/agenti/percezione/biometrics"
+CODE=("$VDIR/service.py" "$VDIR/gallery.py" "$VDIR/tracks.py" "$VDIR/objects.py" "$VDIR/posture.py" "$NUXIVA_DIR/installer_wizard/agenti/sicurezza/rescue/posture.py" "$VDIR/devices.py"
       "$VDIR/ircam.py" "$VDIR/fusion.py" "$VDIR/learning.py" "$VDIR/selection.py" "$VDIR/views.py" "$VDIR/perception.py" "$VDIR/details.py" "$VDIR/bodies.py" "$BDIR/embeddings.py" "$BDIR/liveness.py" "$BDIR/face_engine.py")
 FILES=(
     "face_detection_yunet/face_detection_yunet_2023mar.onnx"

@@ -4,8 +4,8 @@ import re
 import time
 from pathlib import Path
 
-from features.music import cast_chrome, catalog, conf, dlna, layout, listening, mixes, tokens
-from features.music.db import db
+from agenti.music import cast_chrome, catalog, conf, dlna, layout, listening, mixes, tokens
+from agenti.music.db import db
 from state import store
 
 log = logging.getLogger("nuxiva.music")

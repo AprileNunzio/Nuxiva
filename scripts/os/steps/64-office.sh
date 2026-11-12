@@ -5,7 +5,7 @@ PACKAGES=(libreoffice-writer-nogui libreoffice-calc-nogui libreoffice-impress-no
           fonts-crosextra-caladea fonts-liberation2 fonts-dejavu-core fonts-noto-core)
 
 VENV="$NUXIVA_DIR/installer_wizard/venv"
-REQ="$NUXIVA_DIR/installer_wizard/features/documents/requirements.txt"
+REQ="$NUXIVA_DIR/installer_wizard/agenti/conoscenza/documents/requirements.txt"
 
 wanted() { [ "${NUXIVA_DOCUMENTS:-1}" != "0" ]; }
 python_ready() { "$VENV/bin/python" -c "import docx, openpyxl, pptx, PIL, matplotlib" >/dev/null 2>&1; }

@@ -7,7 +7,7 @@ import urllib.parse
 
 import httpx
 
-from features.music import tokens
+from agenti.music import tokens
 
 PLAYLIST_LIMIT = 2 * 1024 * 1024
 TOKEN_TTL = 12 * 3600

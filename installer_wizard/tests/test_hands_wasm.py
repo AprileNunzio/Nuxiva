@@ -9,7 +9,7 @@ from unittest import mock
 
 from fastapi import HTTPException
 
-from features.hands import display_api
+from agenti.hands import display_api
 
 ROOT = Path(__file__).resolve().parents[1]
 WASM_DIR = ROOT / "web" / "display" / "hands" / "wasm"
@@ -77,7 +77,7 @@ class DisplayApiTests(unittest.TestCase):
             {"slug": "anna", "known": True, "role": "owner", "liveness": {"state": "spoof"}, "gaze": {"x": 0.2, "y": 0.3},
              "raw_proximity": 0.1},
             {"gaze": {"x": 4, "y": 0.3}, "raw_proximity": 0.1}, "junk"]}
-        with mock.patch("features.desktop.presence_bridge.face_signal",
+        with mock.patch("agenti.desktop.presence_bridge.face_signal",
                         side_effect=lambda p: {"authorized": bool(p.get("known")), "liveness": (p.get("liveness") or {}).get("state", "unknown")}):
             faces = display_api.faces(presence)
         self.assertEqual([f["authorized"] for f in faces], [True, False, False])

@@ -1,16 +1,16 @@
 import unittest
 from unittest.mock import AsyncMock, patch
 
-from features.voices.playback import get_playback_commands, play_host_audio
+from agenti.voices.playback import get_playback_commands, play_host_audio
 
 
 class VoicePlaybackTest(unittest.IsolatedAsyncioTestCase):
     def test_paplay_uses_implicit_stdin_for_direct_and_kiosk_commands(self):
         with patch.dict("os.environ", {"NUXIVA_PLAY_CMD": ""}), \
-             patch("features.voices.playback.shutil.which", side_effect=lambda name: name), \
-             patch("features.voices.playback._get_kiosk_uid", return_value=1000), \
-             patch("features.voices.playback.os.name", "posix"), \
-             patch("features.voices.playback.os.getuid", return_value=0, create=True):
+             patch("agenti.voices.playback.shutil.which", side_effect=lambda name: name), \
+             patch("agenti.voices.playback._get_kiosk_uid", return_value=1000), \
+             patch("agenti.voices.playback.os.name", "posix"), \
+             patch("agenti.voices.playback.os.getuid", return_value=0, create=True):
             commands = get_playback_commands()
         self.assertIn(["paplay"], commands)
         kiosk = next(cmd for cmd in commands if cmd[0] == "runuser")
@@ -23,7 +23,7 @@ class VoicePlaybackTest(unittest.IsolatedAsyncioTestCase):
         import io
         import struct
         import wave
-        from features.voices.feedback import wake_wav
+        from agenti.voices.feedback import wake_wav
         with wave.open(io.BytesIO(wake_wav()), "rb") as wav:
             self.assertEqual((wav.getnchannels(), wav.getsampwidth(), wav.getframerate()), (1, 2, 16000))
             self.assertAlmostEqual(wav.getnframes() / wav.getframerate(), 0.58, places=3)
@@ -42,7 +42,7 @@ class VoicePlaybackTest(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(res)
 
     async def test_play_host_audio_success(self):
-        with patch("features.voices.playback.get_playback_commands", return_value=[["aplay", "-q", "-"]]):
+        with patch("agenti.voices.playback.get_playback_commands", return_value=[["aplay", "-q", "-"]]):
             mock_proc = AsyncMock()
             mock_proc.communicate.return_value = (b"", b"")
             mock_proc.returncode = 0
@@ -51,7 +51,7 @@ class VoicePlaybackTest(unittest.IsolatedAsyncioTestCase):
                 self.assertTrue(res)
 
     async def test_play_host_audio_fallback(self):
-        with patch("features.voices.playback.get_playback_commands", return_value=[["paplay"], ["aplay", "-q", "-"]]):
+        with patch("agenti.voices.playback.get_playback_commands", return_value=[["paplay"], ["aplay", "-q", "-"]]):
             failing_proc = AsyncMock()
             failing_proc.communicate.return_value = (b"", b"connection refused")
             failing_proc.returncode = 1

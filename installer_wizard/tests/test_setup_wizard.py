@@ -126,7 +126,7 @@ class WizardTest(unittest.TestCase):
     def test_cloud_key_goes_to_the_vault_not_the_env_file(self):
         key = "AIza" + "b" * 35
         self.addCleanup(write_env, {"NUXIVA_BRAIN": "", "NUXIVA_LLM_CHAT_ORDER": "", "NUXIVA_LLM_DEEP_ORDER": ""})
-        with Network(local=True), mock.patch("features.cloud.vault.vault.update") as update:
+        with Network(local=True), mock.patch("agenti.cloud.vault.vault.update") as update:
             r = self.public.post("/api/setup", json={"name": "Nunzio", "brain": "cloud", "cloud_provider": "gemini",
                                                      "cloud_key": key}, headers=HEADERS)
             self.assertEqual(r.status_code, 200, r.text)
@@ -144,7 +144,7 @@ class WizardTest(unittest.TestCase):
             self.assertFalse(setup_api.done())
 
     def test_completing_the_wizard_registers_the_owner_with_languages(self):
-        from features.people import people
+        from agenti.people import people
         with tempfile.TemporaryDirectory() as root, mock.patch.object(people, "PEOPLE_DIR", Path(root)), Network(local=False):
             r = self.public.post("/api/setup", json={"name": "Nunzio", "last_name": "D'Aprile", "lang": "fr",
                                                      "voice_lang": "en"}, headers=HEADERS)

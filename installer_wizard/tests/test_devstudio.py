@@ -6,8 +6,8 @@ import unittest
 import unittest.mock
 from pathlib import Path
 
-from features.devstudio import publish, runner, starters, tools, workspace
-from features.devstudio.workspace import DevError
+from agenti.devstudio import publish, runner, starters, tools, workspace
+from agenti.devstudio.workspace import DevError
 
 
 def can_isolate() -> bool:
@@ -129,7 +129,7 @@ class RunnerTest(DevCase):
         self.assertEqual(set(env) & {"HOME", "PATH"}, {"HOME", "PATH"})
 
     def test_tool_requires_confirmation(self):
-        from features.agent import registry
+        from agenti.agent import registry
         self.assertTrue(registry.TOOLS["dev_run"]["confirm"])
 
     @unittest.skipUnless(can_isolate(), "unshare --net non disponibile")

@@ -4,10 +4,10 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.chat import wake
-from features.chat.wake_phrases import PHRASES
-from features.locale import service
-from features.voices import languages
+from agenti.chat import wake
+from agenti.chat.wake_phrases import PHRASES
+from agenti.locale import service
+from agenti.voices import languages
 
 ROOT = Path(__file__).resolve().parents[1]
 ITALIAN = re.compile(r"\b(Eccomi|signore|sistemi|operativi|Come posso aiutarla)\b")
@@ -60,7 +60,7 @@ class WakeGreetingTest(unittest.TestCase):
             await asyncio.sleep(10)
             return text
         with mock.patch.object(wake, "TRANSLATE_SECONDS", 0.05), \
-                mock.patch("features.locale.pivot.pivot.from_pivot", slow):
+                mock.patch("agenti.locale.pivot.pivot.from_pivot", slow):
             result = self.run_greeting("de")
         self.assertTrue(result["reply"])
 

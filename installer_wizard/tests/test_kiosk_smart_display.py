@@ -2,7 +2,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import AsyncMock, mock_open, patch
 
-from features.desktop.screens import has_physical_screen
+from agenti.desktop.screens import has_physical_screen
 from health import kiosk_check, mic_check
 
 
@@ -30,7 +30,7 @@ class TestKioskSmartDisplay(unittest.IsolatedAsyncioTestCase):
             self.assertTrue(has_physical_screen())
 
     async def test_kiosk_check_headless_standby_returns_ok(self):
-        with patch("features.desktop.screens.has_physical_screen", return_value=False):
+        with patch("agenti.desktop.screens.has_physical_screen", return_value=False):
             res = await kiosk_check()
             self.assertEqual(res["status"], "ok")
             self.assertTrue(res.get("headless"))
@@ -38,7 +38,7 @@ class TestKioskSmartDisplay(unittest.IsolatedAsyncioTestCase):
             self.assertIn("memoria risparmiata", res["detail"])
 
     async def test_kiosk_check_screen_present_no_windows_warns(self):
-        with patch("features.desktop.screens.has_physical_screen", return_value=True), \
+        with patch("agenti.desktop.screens.has_physical_screen", return_value=True), \
              patch("health.sh", AsyncMock(return_value=(0, ""))):
             res = await kiosk_check()
             self.assertEqual(res["status"], "warn")
@@ -46,14 +46,14 @@ class TestKioskSmartDisplay(unittest.IsolatedAsyncioTestCase):
 
     async def test_kiosk_check_screen_present_with_chromium_ok(self):
         proc_out = "chromium --kiosk --user-data-dir=/home/kiosk/.config/nuxiva-chromium http://127.0.0.1/"
-        with patch("features.desktop.screens.has_physical_screen", return_value=True), \
+        with patch("agenti.desktop.screens.has_physical_screen", return_value=True), \
              patch("health.sh", AsyncMock(return_value=(0, proc_out))):
             res = await kiosk_check()
             self.assertEqual(res["status"], "ok")
             self.assertIn("Chromium attivo", res["detail"])
 
     def test_mic_check_ignores_headless(self):
-        with patch("features.desktop.screens.has_physical_screen", return_value=False):
+        with patch("agenti.desktop.screens.has_physical_screen", return_value=False):
             self.assertIsNone(mic_check({"NUXIVA_KIOSK": "1"}))
 
     def test_launch_script_structure(self):

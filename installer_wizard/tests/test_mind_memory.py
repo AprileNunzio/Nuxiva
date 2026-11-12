@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from features.mind import memory as memory_module
+from agenti.mind import memory as memory_module
 
 
 class LongTermMemoryTests(unittest.TestCase):

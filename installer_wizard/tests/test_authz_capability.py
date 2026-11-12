@@ -2,11 +2,11 @@ import asyncio
 import unittest
 from unittest import mock
 
-from features.agent import registry
-from features.authz import capability, gate
-from features.authz.principal import ANONYMOUS, Principal, Strength, act_as, current
-from features.authz.risk import Risk
-from features.home_assistant.home import brain
+from agenti.agent import registry
+from agenti.authz import capability, gate
+from agenti.authz.principal import ANONYMOUS, Principal, Strength, act_as, current
+from agenti.authz.risk import Risk
+from agenti.home_assistant.home import brain
 
 ENTITIES = {
     "light.salotto": {"entity_id": "light.salotto", "domain": "light"},
@@ -109,10 +109,10 @@ class AgentConfirmationTests(unittest.TestCase):
                                                                       "entity_id": "light.salotto"}))
 
     def test_only_the_person_who_asked_can_confirm(self):
-        from features.agent.agent import Agent
+        from agenti.agent.agent import Agent
         agent = Agent()
         act_as(OWNER_STRONG)
-        with mock.patch("features.agent.agent.session_key", return_value="k"):
+        with mock.patch("agenti.agent.agent.session_key", return_value="k"):
             agent.pending["k"] = {"request": "apri", "steps": [], "tool": "ha_call_service", "at": 1e18, "who": "nunzio",
                                   "args": {"domain": "lock", "service": "unlock", "entity_id": "lock.ingresso"}}
             act_as(Principal(slug="anna", role="family", strength=Strength.STRONG))
