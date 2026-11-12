@@ -1,11 +1,15 @@
 #![forbid(unsafe_code)]
 
+pub mod danger_sound;
 mod denoiser;
+pub mod distress;
+mod distress_phrases;
 mod features;
 mod gain;
 mod level;
 mod noise;
 mod scene;
+mod sound_frame;
 mod speaker;
 mod stft;
 mod voices;
@@ -25,6 +29,8 @@ pub use voices::{MAX_VOICES, TurnInfo, VoiceTracker, split_turns};
 pub const MAX_STREAM_SAMPLES: usize = 512 * 1024;
 pub const MAX_UTTERANCE_SAMPLES: usize = 16_000 * 600;
 
+#[cfg(test)]
+mod danger_tests;
 #[cfg(test)]
 mod scene_tests;
 #[cfg(test)]

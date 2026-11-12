@@ -5,6 +5,8 @@ use pyo3::exceptions::{PyRuntimeError, PyValueError};
 use pyo3::prelude::*;
 
 const MAX_JSON: usize = 262_144;
+const SPEECH_ALARM: f64 = 0.5;
+const ALL_CLEAR: f64 = 0.95;
 
 fn kind_of(raw: &str) -> PyResult<Kind> {
     serde_json::from_value(serde_json::Value::String(raw.to_owned()))
@@ -141,14 +143,24 @@ fn rescue_policy(policy: &str) -> PyResult<String> {
 
 #[pyfunction]
 fn rescue_detect_speech(text: &str) -> (Option<String>, f64) {
-    let (kind, score) = nuxiva_rescue_core::detect_speech(text);
-    let kind_str = kind.map(|k| {
-        serde_json::to_string(&k)
-            .unwrap_or_default()
-            .trim_matches('"')
-            .to_owned()
-    });
-    (kind_str, score)
+    let verdict = nuxiva_ear_core::distress::analyze(text, false, false, 1.0);
+    let best = [
+        ("help_words", verdict.help),
+        ("fire", verdict.fire),
+        ("violence", verdict.threat),
+    ]
+    .into_iter()
+    .fold(
+        ("", 0.0_f64),
+        |acc, item| if item.1 > acc.1 { item } else { acc },
+    );
+    if best.1 >= SPEECH_ALARM {
+        return (Some(best.0.to_owned()), best.1);
+    }
+    if verdict.answer == Some(nuxiva_ear_core::distress::Answer::Ok) {
+        return (Some("all_clear".to_owned()), ALL_CLEAR);
+    }
+    (None, 0.0)
 }
 
 #[pyfunction]

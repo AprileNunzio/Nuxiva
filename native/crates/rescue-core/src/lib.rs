@@ -8,7 +8,7 @@ mod policy;
 mod signal;
 
 pub use action::{Action, Entry, Stage, Step, Tone};
-pub use detect::{detect_speech, detect_visual};
+pub use detect::detect_visual;
 pub use escalation::{Engine, MAX_TIMELINE};
 pub use fusion::{Assessment, Driver, HazardRisk, assess};
 pub use policy::{Policy, PolicyError, Sensitivity};

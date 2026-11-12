@@ -24,6 +24,7 @@ from ingress import RealtimeInput
 from learner import current_name, learner, name_variant
 from music import MusicTap
 from scene import SoundScene
+from danger import DangerEar
 from speakers import SpeakerContext
 from livecap import LiveCaptions
 from livegov import LiveGovernor
@@ -90,6 +91,7 @@ class Session:
         self.enroll: dict | None = None
         self.music = MusicTap()
         self.scene = SoundScene()
+        self.danger = DangerEar()
         self.profile = enhance.NoiseProfile()
         self.wake = WakeWord()
         self.autolevel = AutoLevel()
@@ -156,6 +158,8 @@ class Session:
             LINK["mic_level"] = advice
             await self.send(type="mic_level", advice=advice)
         heard = self.scene.hear(frame, rms, self.noise, self.music.playing)
+        for event in self.danger.frame(frame, heard.music or self.music.playing, self.nuxiva_speaking):
+            await self.broadcast(type="danger", source="sound", **event)
         self.music.feed(frame, rms, self.noise, self.mode == "idle" and not self.nuxiva_speaking, now,
                         heard.kind == "music" if self.scene.native else None)
         voiced = heard.voiced
@@ -314,6 +318,7 @@ class Session:
             await self.broadcast(type="caption_drop", utt=caption["utt"])
             return
         slug, score = await asyncio.to_thread(lambda: voiceprints.identify(voiceprints.embed(clean)))
+        await self._danger_words(text, slug)
         await self.broadcast(type="heard", text=text, utt=caption["utt"], speaker=slug, speaker_score=round(score, 3),
                              voice_known=self._known(slug))
         asyncio.create_task(capture.store(note_error, "heard", text, self.lang, slug, score, False, 0, caption, clean))
@@ -326,6 +331,8 @@ class Session:
         log.info("Sentito (%d ms, attivazione=%s, conversazione=%s): %s", ms, woke, followup, text)
         if woke and found:
             learner.on_wake(found[2], ms)
+        if not stt.hallucination(command):
+            await self._danger_words(command, self.alone)
         if stt.hallucination(command) or len(command) <= 2:
             await self.broadcast(type="caption_drop", utt=caption["utt"])
             if woke or self.awaiting_command:
@@ -365,6 +372,11 @@ class Session:
             await self.set_mode("listening", seconds=auto_followup, conversation=True)
         else:
             await self.set_mode("idle")
+
+    async def _danger_words(self, text: str, speaker: str | None) -> None:
+        verdict = self.danger.text(text, self.music.playing)
+        if verdict is not None:
+            await self.broadcast(type="danger", source="words", speaker=speaker, **verdict)
 
     @staticmethod
     def _known(slug: str | None) -> bool | None:
@@ -424,6 +436,8 @@ class Session:
             )
             if self.nuxiva_speaking:
                 self.wake.request_reset()
+        elif kind == "rescue_ask":
+            self.danger.ask(msg.get("seconds"))
         elif kind == "mic_adjusted":
             self.autolevel.rejudge()
         elif kind == "presence":
