@@ -281,6 +281,18 @@ class MorphogenesisTest(unittest.TestCase):
             other = show.ensure_visual("Mostrami la struttura di un quasar magnetico")
             self.assertIsNotNone(other)
             self.assertEqual(particles.count(self.store.blob(other["digest"])), show.POINTS)
+
+            eagle = show.ensure_visual("Mostrami un aquila in volo")
+            self.assertIsNotNone(eagle)
+            self.assertEqual(eagle["concept"], "aquila in volo")
+            eagle_spec = morphogenesis.synthesize_spec(eagle["concept"])
+            self.assertIn("cone", {p["shape"] for p in eagle_spec["parts"]})
+
+            dna = show.ensure_visual("Mostrami la struttura del DNA")
+            self.assertIsNotNone(dna)
+            self.assertEqual(dna["concept"], "struttura del dna")
+            dna_spec = morphogenesis.synthesize_spec(dna["concept"])
+            self.assertIn("helix", {p["shape"] for p in dna_spec["parts"]})
             show.clear()
 
 

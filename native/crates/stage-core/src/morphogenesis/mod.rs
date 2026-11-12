@@ -1,7 +1,8 @@
-mod archetypes;
+mod procedural;
+mod taxonomy;
 
 use crate::particles::Spec;
-use archetypes::{cosmic_spec, mechanical_spec, medusa_spec, molecular_spec, universal_hash_spec};
+use taxonomy::{MorphologyKind, classify_morphology};
 
 const PREFIXES: &[&str] = &[
     "creami con delle particelle",
@@ -31,10 +32,18 @@ const PREFIXES: &[&str] = &[
     "come è strutturata",
     "come e strutturato",
     "come è strutturato",
+    "com e strutturata",
+    "com è strutturata",
+    "com e strutturato",
+    "com è strutturato",
     "com'e strutturata",
     "com'è strutturata",
     "com'e strutturato",
     "com'è strutturato",
+    "com e composta",
+    "com è composta",
+    "com e composto",
+    "com è composto",
     "come e composta",
     "come è composta",
     "come e composto",
@@ -43,6 +52,10 @@ const PREFIXES: &[&str] = &[
     "come è fatta",
     "come e fatto",
     "come è fatto",
+    "com e fatta",
+    "com è fatta",
+    "com e fatto",
+    "com è fatto",
     "com'e fatta",
     "com'è fatta",
     "com'e fatto",
@@ -154,70 +167,21 @@ pub fn extract_visual_concept(query: &str) -> Option<String> {
 #[must_use]
 pub fn synthesize_sculpture(concept: &str) -> Spec {
     let lower = clean_text(concept);
-    if [
-        "medusa",
-        "jellyfish",
-        "polpo",
-        "piovra",
-        "calamaro",
-        "anemone",
-        "cnidario",
-    ]
-    .iter()
-    .any(|kw| lower.contains(kw))
-    {
-        return medusa_spec();
+    let desc = classify_morphology(&lower);
+    match desc.kind {
+        MorphologyKind::RadialOrganism | MorphologyKind::RadialMechanical => {
+            procedural::generate_radial(desc)
+        }
+        MorphologyKind::BilateralOrganism | MorphologyKind::BilateralVehicle => {
+            procedural::generate_bilateral(desc)
+        }
+        MorphologyKind::OrbitalSystem => procedural::generate_orbital(desc),
+        MorphologyKind::HelicalSpiral => procedural::generate_helical(desc),
+        MorphologyKind::BranchingNetwork => procedural::generate_branching(desc),
+        MorphologyKind::AxialColumn => procedural::generate_axial(desc),
+        MorphologyKind::PolyhedralLattice => procedural::generate_polyhedral(desc),
+        MorphologyKind::HarmonicMultibody => procedural::generate_harmonic(desc),
     }
-    if [
-        "dna",
-        "atomo",
-        "molecola",
-        "cellula",
-        "virus",
-        "neurone",
-        "proteina",
-        "cromosoma",
-        "batterio",
-    ]
-    .iter()
-    .any(|kw| lower.contains(kw))
-    {
-        return molecular_spec();
-    }
-    if [
-        "saturno",
-        "pianeta",
-        "galassia",
-        "buco nero",
-        "stella",
-        "sole",
-        "sistema solare",
-        "cometa",
-        " pulsar",
-    ]
-    .iter()
-    .any(|kw| lower.contains(kw))
-    {
-        return cosmic_spec();
-    }
-    if [
-        "motore",
-        "turbina",
-        "reattore",
-        "razzo",
-        "aereo",
-        "drone",
-        "elicottero",
-        "robot",
-        "auto",
-        "macchina",
-    ]
-    .iter()
-    .any(|kw| lower.contains(kw))
-    {
-        return mechanical_spec();
-    }
-    universal_hash_spec(&lower)
 }
 
 #[cfg(test)]
@@ -230,22 +194,28 @@ mod tests {
         let concept = extract_visual_concept("Come è fatta una medusa?");
         assert_eq!(concept.as_deref(), Some("medusa"));
         let spec = synthesize_sculpture("medusa");
-        assert!(spec.parts.len() >= 8);
+        assert!(spec.parts.len() >= 7);
         let cloud = sample(&spec, 12_000, 42);
         assert!(cloud.is_ok());
         assert_eq!(cloud.map_or(0, |c| c.len()), 12_000);
     }
 
     #[test]
-    fn synthesizes_any_arbitrary_concept_deterministically() {
+    fn synthesizes_diverse_taxonomic_forms_procedurally() {
         for word in [
-            "turbina a gas",
+            "medusa",
+            "aquila reale",
+            "turbina idraulica",
+            "drone supersonico",
             "atomo di idrogeno",
-            "buco nero",
-            "qualsiasi oggetto",
+            "doppia elica del dna",
+            "albero di quercia",
+            "razzo spaziale",
+            "cristallo di quarzo",
+            "qualsiasi oggetto sconosciuto",
         ] {
             let spec = synthesize_sculpture(word);
-            let cloud = sample(&spec, 4_000, 7);
+            let cloud = sample(&spec, 4_000, 19);
             assert!(cloud.is_ok());
         }
     }

@@ -32,10 +32,18 @@ PREFIXES = (
     "come è strutturata",
     "come e strutturato",
     "come è strutturato",
+    "com e strutturata",
+    "com è strutturata",
+    "com e strutturato",
+    "com è strutturato",
     "com'e strutturata",
     "com'è strutturata",
     "com'e strutturato",
     "com'è strutturato",
+    "com e composta",
+    "com è composta",
+    "com e composto",
+    "com è composto",
     "come e composta",
     "come è composta",
     "come e composto",
@@ -44,6 +52,10 @@ PREFIXES = (
     "come è fatta",
     "come e fatto",
     "come è fatto",
+    "com e fatta",
+    "com è fatta",
+    "com e fatto",
+    "com è fatto",
     "com'e fatta",
     "com'è fatta",
     "com'e fatto",
@@ -82,6 +94,17 @@ STOP_TAILS = (
     "built",
     "structured",
 )
+
+PALETTES = {
+    "bioluminescent": ("#4ce6ff", "#7952ec", "#a87bff", "#ff6be5", "#5ef2ff", "#c49bff"),
+    "celestial": ("#ffd166", "#5ce1e6", "#480ca8", "#72efdd", "#9b7bff", "#ff9f1c"),
+    "botanical": ("#38b000", "#70e000", "#a7c957", "#ff70a6", "#ffb703", "#007200"),
+    "fauna": ("#ee9b00", "#ca6702", "#bb3e03", "#0077b6", "#90e0ef", "#f1faee"),
+    "mechanical": ("#64dfdf", "#48bfe3", "#5390d9", "#ff9f1c", "#80ffdb", "#7400b8"),
+    "microscopic": ("#ff006e", "#00f5d4", "#8338ec", "#fee440", "#3a86ff", "#ffbe0b"),
+    "geological": ("#2ec4b6", "#e71d36", "#ff9f1c", "#7209b7", "#e0aaff", "#c77dff"),
+    "ethereal": ("#5ef2ff", "#9b7bff", "#66ffe3", "#ff7be5", "#7aa2ff", "#ffd166"),
+}
 
 
 def _clean_text(raw: str) -> str:
@@ -143,78 +166,87 @@ def _part(shape: str, size: list[float], at: list[float], rot: list[float], colo
     return {"shape": shape, "size": size, "at": at, "rot": rot, "color": color, "weight": weight}
 
 
-def _medusa_spec() -> dict:
+def _color(theme: str, idx: int) -> str:
+    palette = PALETTES.get(theme) or PALETTES["ethereal"]
+    return palette[idx % len(palette)]
+
+
+def _generate_radial(theme: str, count: int, is_organism: bool, aspect: float) -> dict:
+    core_shape = "sphere" if is_organism else "cylinder"
+    sat_shape = "helix" if is_organism else "box"
     parts = [
-        _part("sphere", [1.35, 0.85, 1.35], [0.0, 0.95, 0.0], [0.0, 0.0, 0.0], "#5ef2ff", 2.4),
-        _part("torus", [1.22, 0.32, 1.22], [0.0, 0.45, 0.0], [0.0, 0.0, 0.0], "#a87bff", 1.6),
-        _part("sphere", [0.68, 0.48, 0.68], [0.0, 0.82, 0.0], [0.0, 0.0, 0.0], "#ff7be5", 1.3),
-        _part("cone", [0.42, 1.1, 0.42], [0.0, -0.35, 0.0], [180.0, 0.0, 0.0], "#c49bff", 1.5),
+        _part(core_shape, [1.3 * aspect, 0.85, 1.3 * aspect], [0.0, 0.85, 0.0], [0.0, 0.0, 0.0], _color(theme, 0), 2.4),
+        _part("torus", [1.25 * aspect, 0.3, 1.25 * aspect], [0.0, 0.45, 0.0], [0.0, 0.0, 0.0], _color(theme, 1), 1.6),
+        _part("cone", [0.45, 1.15, 0.45], [0.0, -0.25, 0.0], [180.0, 0.0, 0.0], _color(theme, 2), 1.4),
     ]
-    for i in range(6):
-        angle = (i / 6.0) * math.tau
-        x = round(0.78 * math.cos(angle), 4)
-        z = round(0.78 * math.sin(angle), 4)
-        color = "#4ce6ff" if i % 2 == 0 else "#8c6bff"
-        parts.append(_part("helix", [0.16, 1.35, 0.16], [x, -0.85, z], [0.0, float(i * 30), 0.0], color, 1.1))
+    n = max(4, min(10, count))
+    for i in range(n):
+        angle = (i / float(n)) * math.tau
+        radius = 0.82 * aspect
+        x = round(radius * math.cos(angle), 4)
+        z = round(radius * math.sin(angle), 4)
+        rot_y = float(i * 30) if is_organism else round(-math.degrees(angle), 1)
+        parts.append(_part(sat_shape, [0.18, 1.3, 0.18], [x, -0.85, z], [0.0, rot_y, 0.0], _color(theme, i + 3), 1.1))
     return {"parts": parts}
 
 
-def _molecular_spec() -> dict:
-    return {
-        "parts": [
-            _part("sphere", [0.55, 0.55, 0.55], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], "#ff6bd6", 2.0),
-            _part("helix", [0.75, 1.85, 0.75], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], "#4cf2ff", 2.2),
-            _part("helix", [0.75, 1.85, 0.75], [0.0, 0.0, 0.0], [0.0, 180.0, 0.0], "#9b7bff", 2.2),
-            _part("torus", [1.45, 0.25, 1.45], [0.0, 0.0, 0.0], [35.0, 20.0, 0.0], "#66ffe3", 1.4),
-            _part("torus", [1.45, 0.25, 1.45], [0.0, 0.0, 0.0], [-35.0, -20.0, 0.0], "#7aa2ff", 1.4),
-        ]
-    }
-
-
-def _cosmic_spec() -> dict:
-    return {
-        "parts": [
-            _part("sphere", [0.95, 0.95, 0.95], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], "#ffd166", 2.5),
-            _part("torus", [1.85, 0.22, 1.85], [0.0, 0.0, 0.0], [22.0, 0.0, 12.0], "#5ce1e6", 2.0),
-            _part("torus", [2.35, 0.16, 2.35], [0.0, 0.0, 0.0], [22.0, 0.0, 12.0], "#9b7bff", 1.5),
-            _part("cone", [0.25, 1.4, 0.25], [0.0, 1.2, 0.0], [0.0, 0.0, 0.0], "#72efdd", 0.9),
-            _part("cone", [0.25, 1.4, 0.25], [0.0, -1.2, 0.0], [180.0, 0.0, 0.0], "#72efdd", 0.9),
-        ]
-    }
-
-
-def _mechanical_spec() -> dict:
-    return {
-        "parts": [
-            _part("cylinder", [0.65, 1.55, 0.65], [0.0, 0.0, 0.0], [0.0, 0.0, 90.0], "#64dfdf", 2.2),
-            _part("torus", [1.05, 0.3, 1.05], [-0.85, 0.0, 0.0], [0.0, 0.0, 90.0], "#48bfe3", 1.6),
-            _part("torus", [1.05, 0.3, 1.05], [0.85, 0.0, 0.0], [0.0, 0.0, 90.0], "#48bfe3", 1.6),
-            _part("cone", [0.65, 0.75, 0.65], [1.75, 0.0, 0.0], [0.0, 0.0, -90.0], "#80ffdb", 1.3),
-            _part("sphere", [0.48, 0.48, 0.48], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], "#ff9f1c", 1.5),
-            _part("box", [0.35, 0.08, 1.95], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], "#7400b8", 1.4),
-        ]
-    }
-
-
-def _universal_hash_spec(concept: str) -> dict:
-    h = 0xCBF29CE484222325
-    for b in concept.encode("utf-8"):
-        h ^= b
-        h = (h * 0x0100000001B3) & 0xFFFFFFFFFFFFFFFF
-    palette = ("#5ef2ff", "#9b7bff", "#66ffe3", "#ff7be5", "#7aa2ff", "#ffd166")
-    core_shape = ("sphere", "cylinder", "cone")[h % 3]
-    sat_shape = ("helix", "cone", "cylinder", "sphere")[(h >> 4) % 4]
+def _generate_bilateral(theme: str, is_vehicle: bool, aspect: float) -> dict:
+    spine_shape = "cone" if is_vehicle else "cylinder"
+    wing_shape = "box" if is_vehicle else "helix"
     parts = [
-        _part(core_shape, [1.05, 1.05, 1.05], [0.0, 0.15, 0.0], [0.0, 0.0, 0.0], palette[0], 2.2),
-        _part("torus", [1.45, 0.28, 1.45], [0.0, 0.0, 0.0], [18.0, 0.0, -18.0], palette[1], 1.7),
-        _part("cone", [0.5, 0.9, 0.5], [0.0, 1.15, 0.0], [0.0, 0.0, 0.0], palette[2], 1.2),
+        _part(spine_shape, [0.45, 1.6 * aspect, 0.45], [0.0, 0.0, 0.0], [-90.0, 0.0, 0.0], _color(theme, 0), 2.2),
+        _part("sphere", [0.55, 0.55, 0.55], [0.0, 0.1, 1.45 * aspect], [0.0, 0.0, 0.0], _color(theme, 1), 1.8),
+        _part("cone", [0.35, 0.75, 0.35], [0.0, 0.0, -1.55 * aspect], [90.0, 0.0, 0.0], _color(theme, 2), 1.3),
+    ]
+    for side in (-1.0, 1.0):
+        parts.append(_part(wing_shape, [1.25, 0.12, 0.55], [side * 1.35, 0.05, 0.15], [0.0, side * -18.0, side * 8.0], _color(theme, 3), 1.6))
+        parts.append(_part("cone", [0.25, 0.85, 0.25], [side * 0.85, -0.45, -0.5], [-90.0, side * -15.0, 0.0], _color(theme, 4), 1.2))
+    return {"parts": parts}
+
+
+def _generate_orbital(theme: str, count: int) -> dict:
+    parts = [_part("sphere", [0.85, 0.85, 0.85], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], _color(theme, 0), 2.6)]
+    n = max(2, min(5, count))
+    for i in range(n):
+        f = i / float(n)
+        radius = 1.35 + i * 0.45
+        pitch = 25.0 + f * 40.0
+        roll = -15.0 + f * 55.0
+        parts.append(_part("torus", [radius, 0.18, radius], [0.0, 0.0, 0.0], [pitch, 0.0, roll], _color(theme, i + 1), 1.5))
+        theta = f * math.tau + 0.5
+        sat_x = round(radius * math.cos(theta) * 0.85, 4)
+        sat_y = round(radius * math.sin(theta) * 0.4, 4)
+        sat_z = round(radius * math.sin(theta * 1.2) * 0.75, 4)
+        parts.append(_part("sphere", [0.22, 0.22, 0.22], [sat_x, sat_y, sat_z], [0.0, 0.0, 0.0], _color(theme, i + 3), 0.9))
+    return {"parts": parts}
+
+
+def _generate_helical(theme: str) -> dict:
+    return {
+        "parts": [
+            _part("sphere", [0.45, 0.45, 0.45], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], _color(theme, 0), 1.8),
+            _part("helix", [0.72, 1.85, 0.72], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], _color(theme, 1), 2.2),
+            _part("helix", [0.72, 1.85, 0.72], [0.0, 0.0, 0.0], [0.0, 180.0, 0.0], _color(theme, 2), 2.2),
+            _part("torus", [1.35, 0.22, 1.35], [0.0, 0.0, 0.0], [32.0, 15.0, 0.0], _color(theme, 3), 1.3),
+            _part("torus", [1.35, 0.22, 1.35], [0.0, 0.0, 0.0], [-32.0, -15.0, 0.0], _color(theme, 4), 1.3),
+        ]
+    }
+
+
+def _generate_harmonic(theme: str, seed: int, aspect: float) -> dict:
+    core_shape = ("sphere", "cylinder", "cone")[seed % 3]
+    sat_shape = ("helix", "cone", "cylinder", "sphere")[(seed >> 4) % 4]
+    parts = [
+        _part(core_shape, [1.05 * aspect, 1.05, 1.05 * aspect], [0.0, 0.15, 0.0], [0.0, 0.0, 0.0], _color(theme, 0), 2.2),
+        _part("torus", [1.45 * aspect, 0.28, 1.45 * aspect], [0.0, 0.0, 0.0], [18.0, 0.0, -18.0], _color(theme, 1), 1.7),
+        _part("cone", [0.5, 0.9, 0.5], [0.0, 1.15, 0.0], [0.0, 0.0, 0.0], _color(theme, 2), 1.2),
     ]
     for i in range(4):
         angle = (i / 4.0) * math.tau
-        x = round(1.15 * math.cos(angle), 4)
-        z = round(1.15 * math.sin(angle), 4)
-        color = palette[(i + 2) % len(palette)]
-        parts.append(_part(sat_shape, [0.28, 0.95, 0.28], [x, -0.45, z], [0.0, float(i * 45), 0.0], color, 1.1))
+        radius = 1.15 * aspect
+        x = round(radius * math.cos(angle), 4)
+        z = round(radius * math.sin(angle), 4)
+        parts.append(_part(sat_shape, [0.28, 0.95, 0.28], [x, -0.45, z], [0.0, float(i * 45), 0.0], _color(theme, i + 2), 1.1))
     return {"parts": parts}
 
 
@@ -226,15 +258,26 @@ def synthesize_spec(concept: str) -> dict:
         except Exception:
             pass
     lower = _clean_text(concept)
-    if any(kw in lower for kw in ("medusa", "jellyfish", "polpo", "piovra", "calamaro", "anemone", "cnidario")):
-        return particles.validate(_medusa_spec())
-    if any(kw in lower for kw in ("dna", "atomo", "molecola", "cellula", "virus", "neurone", "proteina", "cromosoma", "batterio")):
-        return particles.validate(_molecular_spec())
-    if any(kw in lower for kw in ("saturno", "pianeta", "galassia", "buco nero", "stella", "sole", "sistema solare", "cometa", "pulsar")):
-        return particles.validate(_cosmic_spec())
-    if any(kw in lower for kw in ("motore", "turbina", "reattore", "razzo", "aereo", "drone", "elicottero", "robot", "auto", "macchina")):
-        return particles.validate(_mechanical_spec())
-    return particles.validate(_universal_hash_spec(lower))
+    h = 0xCBF29CE484222325
+    for b in lower.encode("utf-8"):
+        h ^= b
+        h = (h * 0x0100000001B3) & 0xFFFFFFFFFFFFFFFF
+
+    if any(k in lower for k in ("medusa", "jellyfish", "polp", "octopus", "squid", "anemon", "cnidar", "starfish")):
+        return particles.validate(_generate_radial("bioluminescent", 6, True, 1.35))
+    if any(k in lower for k in ("turbin", "propeller", "elica", "rotore", "girandol", "gear", "ruota", "wheel")):
+        return particles.validate(_generate_radial("mechanical", 5, False, 0.95))
+    if any(k in lower for k in ("aquila", "eagle", "falco", "bird", "farfall", "leone", "pesce", "shark", "ragno", "lupo")):
+        return particles.validate(_generate_bilateral("fauna", False, 1.2))
+    if any(k in lower for k in ("aereo", "airplane", "jet", "drone", "astronave", "spaceship", "auto", "car", "nave", "ship")):
+        return particles.validate(_generate_bilateral("mechanical", True, 1.6))
+    if any(k in lower for k in ("atom", "molecol", "nucleo", "planet", "saturn", "galassia", "galaxy", "buco nero", "pulsar")):
+        theme = "microscopic" if "atom" in lower or "molecol" in lower else "celestial"
+        return particles.validate(_generate_orbital(theme, 3))
+    if any(k in lower for k in ("dna", "rna", "spiral", "vortice", "vortex", "ciclone", "tornado")):
+        theme = "microscopic" if "dna" in lower or "rna" in lower else "celestial"
+        return particles.validate(_generate_helical(theme))
+    return particles.validate(_generate_harmonic("ethereal", h, 1.1))
 
 
 def _clamp_vec(raw, default: float, lo: float, hi: float) -> list[float]:
