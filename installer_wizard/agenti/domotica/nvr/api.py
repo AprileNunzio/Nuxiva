@@ -2,15 +2,16 @@ import asyncio
 import time
 
 from fastapi import APIRouter, Depends, HTTPException, Request
-from fastapi.responses import StreamingResponse
 
 from access import require_admin
 from agenti.nvr.service import nvr
 from agenti.nvr.settings import SettingsError, public
-from agenti.nvr.vault import VAULT_DIR, media_vault
+from agenti.nvr.playback_api import routes as playback_routes
+from agenti.nvr.vault import media_vault
 
 admin_routes = APIRouter()
 public_routes = APIRouter()
+admin_routes.include_router(playback_routes)
 
 
 @admin_routes.get("/api/nvr/overview")
@@ -46,28 +47,6 @@ async def nvr_clear(_: str = Depends(require_admin)):
     nvr.store.clear()
     nvr.publish_status()
     return {"ok": True}
-
-
-@admin_routes.get("/api/nvr/media/{camera_id}/segments")
-async def nvr_media_segments(camera_id: str, _: str = Depends(require_admin)):
-    return {"camera_id": camera_id, "segments": media_vault.list_segments(camera_id)}
-
-
-@admin_routes.get("/api/nvr/media/{camera_id}/stream/{segment_id}")
-async def nvr_media_stream(camera_id: str, segment_id: str, _: str = Depends(require_admin)):
-    clean_seg = "".join(c for c in segment_id if c.isalnum() or c in ("-", "_"))
-    clean_cam = "".join(c for c in camera_id if c.isalnum() or c in ("-", "_"))
-    seg_file = VAULT_DIR / clean_cam / f"{clean_seg}.nvm"
-    if not seg_file.exists():
-        raise HTTPException(404, "nvr.media.not_found")
-    try:
-        return StreamingResponse(
-            media_vault.stream_chunks(clean_cam, seg_file),
-            media_type="video/mp4",
-            headers={"Content-Disposition": f'inline; filename="{clean_seg}.mp4"'}
-        )
-    except Exception as exc:
-        raise HTTPException(500, f"nvr.media.stream_error: {exc}")
 
 
 @admin_routes.get("/api/nvr/storage")

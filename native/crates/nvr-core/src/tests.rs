@@ -6,6 +6,7 @@
     clippy::arithmetic_side_effects
 )]
 
+use crate::{ByteRange, parse_range};
 use crate::{Catalog, Marker, Policy, Segment, Tier, next_marker, plan, spans};
 
 fn seg(camera: &str, id: &str, start: u64, bytes: u64, tier: Tier) -> Segment {
@@ -149,4 +150,41 @@ fn retention_promotes_expires_and_evicts() {
     assert!(q.kept_bytes <= 250);
     assert!(!q.evict.iter().any(|(_, id)| id == "s0"));
     assert_eq!(q.evict.first().unwrap().1, "s9");
+}
+
+#[test]
+fn byte_ranges() {
+    assert_eq!(parse_range("", 100), ByteRange::Whole);
+    assert_eq!(
+        parse_range("bytes=0-9", 100),
+        ByteRange::Part { start: 0, end: 9 }
+    );
+    assert_eq!(
+        parse_range("bytes=90-", 100),
+        ByteRange::Part { start: 90, end: 99 }
+    );
+    assert_eq!(
+        parse_range("bytes=-10", 100),
+        ByteRange::Part { start: 90, end: 99 }
+    );
+    assert_eq!(
+        parse_range("bytes=-1000", 100),
+        ByteRange::Part { start: 0, end: 99 }
+    );
+    assert_eq!(
+        parse_range("bytes=50-5000", 100),
+        ByteRange::Part { start: 50, end: 99 }
+    );
+    for bad in [
+        "bytes=100-",
+        "bytes=9-1",
+        "bytes=0-1,4-5",
+        "items=0-1",
+        "bytes=-0",
+        "bytes=a-b",
+        "bytes=+1-2",
+    ] {
+        assert_eq!(parse_range(bad, 100), ByteRange::Unsatisfiable, "{bad}");
+    }
+    assert_eq!(parse_range("bytes=0-1", 0), ByteRange::Unsatisfiable);
 }

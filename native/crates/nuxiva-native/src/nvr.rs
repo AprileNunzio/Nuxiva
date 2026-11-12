@@ -1,3 +1,4 @@
+use nuxiva_nvr_core::{ByteRange, parse_range};
 use nuxiva_nvr_core::{Catalog, Marker, NvrError, Policy, Segment, Tier, next_marker, plan, spans};
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
@@ -141,8 +142,18 @@ fn nvr_next_marker(
         .transpose()
 }
 
+#[pyfunction]
+fn nvr_parse_range(header: &str, total: u64) -> (String, u64, u64) {
+    match parse_range(header, total) {
+        ByteRange::Whole => ("whole".to_owned(), 0, total.saturating_sub(1)),
+        ByteRange::Part { start, end } => ("part".to_owned(), start, end),
+        ByteRange::Unsatisfiable => ("invalid".to_owned(), 0, 0),
+    }
+}
+
 pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<RustNvrCatalog>()?;
     m.add_function(wrap_pyfunction!(nvr_next_marker, m)?)?;
+    m.add_function(wrap_pyfunction!(nvr_parse_range, m)?)?;
     Ok(())
 }

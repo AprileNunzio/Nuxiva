@@ -21,6 +21,7 @@ VAULT_DIR = STATE_DIR / "cameras" / "vault"
 ID = re.compile(r"^[A-Za-z0-9_-]{1,64}$")
 STAMP = re.compile(r"(\d{8}_\d{6})")
 DEFAULT_DURATION_MS = 60000
+AUDIT_EVERY = 300.0
 MAX_SEGMENT_BYTES = 2 * 1024 * 1024 * 1024
 
 
@@ -68,6 +69,7 @@ class MediaVault:
         self.continuous_seconds = continuous_seconds
         self.event_seconds = event_seconds
         self.root = VAULT_DIR
+        self._audited: dict[tuple, float] = {}
 
     def _master_key(self) -> bytes:
         try:
@@ -185,6 +187,13 @@ class MediaVault:
         yield from self.read_range(camera_id, segment_path, 0, max(0, info["plain_bytes"] - 1))
 
     def _audit_read(self, camera_id: str, segment_id: str) -> None:
+        now = time.monotonic()
+        key = (camera_id, segment_id)
+        if now - self._audited.get(key, -AUDIT_EVERY) < AUDIT_EVERY:
+            return
+        if len(self._audited) > 4096:
+            self._audited.clear()
+        self._audited[key] = now
         record("sentinel.read", NUXIVA, "sentinel.media.playback", {"camera": camera_id, "segment": segment_id},
                sensitivity="sensitive", source="nvr", place=camera_id)
 

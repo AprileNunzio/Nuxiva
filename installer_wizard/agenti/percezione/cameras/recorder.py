@@ -26,7 +26,7 @@ class Recorder:
         incoming.mkdir(parents=True, exist_ok=True)
         args = ["ffmpeg", "-loglevel", "error", "-nostdin", *_source_args(cam),
                 "-c:v", "copy", "-c:a", "aac", "-f", "segment", "-segment_time", str(SEGMENT_SECONDS),
-                "-reset_timestamps", "1", "-strftime", "1", str(incoming / "seg_%Y%m%d_%H%M%S.mp4")]
+                "-reset_timestamps", "1", "-segment_format_options", "movflags=+faststart", "-strftime", "1", str(incoming / "seg_%Y%m%d_%H%M%S.mp4")]
         try:
             proc = await asyncio.create_subprocess_exec(*args, stdout=asyncio.subprocess.DEVNULL,
                                                         stderr=asyncio.subprocess.DEVNULL)
