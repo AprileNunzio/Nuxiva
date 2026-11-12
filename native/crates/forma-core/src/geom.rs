@@ -111,6 +111,10 @@ pub fn compile(plan: &Plan) -> Result<Vec<Part>, FormaError> {
 }
 
 pub fn compile_full(plan: &Plan) -> Result<(Vec<Part>, Vec<Label>), FormaError> {
+    compile_scaled(plan).map(|(parts, labels, _)| (parts, labels))
+}
+
+pub fn compile_scaled(plan: &Plan) -> Result<(Vec<Part>, Vec<Label>, f64), FormaError> {
     let mut builder = Builder {
         nodes: 0,
         out: Vec::new(),
@@ -176,5 +180,5 @@ pub fn compile_full(plan: &Plan) -> Result<(Vec<Part>, Vec<Label>), FormaError> 
     if parts.is_empty() || parts.len() > MAX_PARTS {
         return Err(FormaError("too_many_parts"));
     }
-    Ok((parts, labels))
+    Ok((parts, labels, k))
 }

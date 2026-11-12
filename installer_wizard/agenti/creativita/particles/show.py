@@ -130,7 +130,7 @@ def clear() -> None:
 
 async def sculpt(concept: str) -> dict:
     from agenti.brain.llm import generate
-    general = await forma_design.design(concept)
+    general = await forma_design.create(concept)
     if general is not None:
         return general
     try:

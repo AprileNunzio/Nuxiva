@@ -1,6 +1,6 @@
 use nuxiva_forma_core::{
-    Anatomy, Cosmos, Plan, Traits, compile_full, compose, compose_anatomy, compose_cosmos,
-    cosmos_preset, preset, schema,
+    Anatomy, Cosmos, Plan, Traits, compile_full, compile_scaled, compose, compose_anatomy,
+    compose_cosmos, cosmos_preset, inspect, preset, schema,
 };
 use pyo3::exceptions::{PyRuntimeError, PyValueError};
 use pyo3::prelude::*;
@@ -90,4 +90,12 @@ pub fn forma_anatomy_preset(concept: &str) -> PyResult<Option<String>> {
 pub fn forma_anatomy_schema() -> PyResult<String> {
     serde_json::to_string(&nuxiva_forma_core::anatomy::schema())
         .map_err(|e| PyRuntimeError::new_err(e.to_string()))
+}
+
+#[pyfunction]
+pub fn forma_inspect(plan_json: &str) -> PyResult<String> {
+    let plan: Plan = serde_json::from_str(bounded(plan_json)?)
+        .map_err(|e| PyValueError::new_err(e.to_string()))?;
+    let (parts, _, k) = compile_scaled(&plan).map_err(|e| PyValueError::new_err(e.to_string()))?;
+    serde_json::to_string(&inspect(&parts, k)).map_err(|e| PyRuntimeError::new_err(e.to_string()))
 }

@@ -283,6 +283,10 @@ def _seg(p: dict, k: float):
 
 
 def compile_plan(plan) -> dict:
+    return compile_scaled(plan)[0]
+
+
+def compile_scaled(plan) -> tuple[dict, float]:
     if not isinstance(plan, dict) or set(plan) - {"theme", "nodes"} or not isinstance(plan.get("nodes"), list):
         raise FormaError("bad_plan")
     builder = _Builder()
@@ -311,7 +315,7 @@ def compile_plan(plan) -> dict:
                           "rot": [_wrap(v) for v in p["rot"]], "color": colors[p["color"] % 6], "weight": weight})
     if not parts or len(parts) > MAX_PARTS:
         raise FormaError("too_many_parts")
-    return {"parts": parts, "labels": labels} if labels else {"parts": parts}
+    return ({"parts": parts, "labels": labels} if labels else {"parts": parts}), k
 
 
 def _native():

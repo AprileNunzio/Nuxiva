@@ -5,12 +5,14 @@ mod build;
 pub mod compose;
 pub mod cosmos;
 pub mod geom;
+pub mod inspect;
 pub mod plan;
 
 pub use anatomy::{Anatomy, compose_anatomy, preset};
 pub use compose::{Traits, compose, schema};
 pub use cosmos::{Cosmos, compose_cosmos, cosmos_preset};
-pub use geom::{Label, Part, compile, compile_full, palette};
+pub use geom::{Label, Part, compile, compile_full, compile_scaled, palette};
+pub use inspect::{Report, inspect};
 pub use plan::{FormaError, MAX_PARTS, Node, Plan};
 
 #[cfg(test)]
@@ -21,3 +23,6 @@ mod anatomy_tests;
 
 #[cfg(test)]
 mod cosmos_tests;
+
+#[cfg(test)]
+mod inspect_tests;
