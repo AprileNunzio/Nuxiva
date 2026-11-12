@@ -1,44 +1,66 @@
-import hashlib
-import hmac
 import json
 import logging
 import os
+import re
 import secrets
-import struct
+import shutil
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Generator
-
-from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
+from typing import Iterator
 
 from config import STATE_DIR
+from agenti.nvr import legacy, nvm2
 from agenti.sentinel import vault as sentinel_vault
 from agenti.sentinel.record import NUXIVA, record
 import native_module
 
 log = logging.getLogger("nuxiva.nvr.vault")
-CHUNK_SIZE = 65536
+CHUNK_SIZE = nvm2.CHUNK_SIZE
 VAULT_DIR = STATE_DIR / "cameras" / "vault"
+ID = re.compile(r"^[A-Za-z0-9_-]{1,64}$")
+STAMP = re.compile(r"(\d{8}_\d{6})")
+DEFAULT_DURATION_MS = 60000
+MAX_SEGMENT_BYTES = 2 * 1024 * 1024 * 1024
 
 
-def _rust_vault_class():
-    return native_module.feature("RustMediaVault")
+class VaultError(ValueError):
+    pass
 
 
 def day_str(ts: float | None = None) -> str:
-    return datetime.fromtimestamp(ts or time.time()).strftime("%Y-%m-%d")
+    return datetime.fromtimestamp(ts if ts is not None else time.time()).strftime("%Y-%m-%d")
 
 
-def derive_day_key(master_key: bytes, camera_id: str, day: str) -> bytes:
-    prk = hmac.new(b"nuxiva.vault_media.salt.v1", master_key, hashlib.sha256).digest()
-    info = f"camera:{camera_id}|day:{day}".encode("utf-8")
-    return hmac.new(prk, info + b"\x01", hashlib.sha256).digest()[:32]
+def clean_id(value: str) -> str:
+    text = str(value or "")
+    if not ID.match(text):
+        raise VaultError("nvr.id.invalid")
+    return text
 
 
-def derive_seg_key(day_key: bytes, segment_id: str) -> bytes:
-    prk = hmac.new(b"nuxiva.vault_media.segment.salt", day_key, hashlib.sha256).digest()
-    return hmac.new(prk, segment_id.encode("utf-8") + b"\x01", hashlib.sha256).digest()[:32]
+def stamp_ms(name: str, fallback: float) -> int:
+    found = STAMP.search(name)
+    if found:
+        try:
+            return int(datetime.strptime(found.group(1), "%Y%m%d_%H%M%S").timestamp() * 1000)
+        except ValueError:
+            pass
+    return int(fallback * 1000)
+
+
+def _private_write(path: Path, data: bytes) -> None:
+    path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+    tmp = path.with_name(f".{path.name}.{secrets.token_hex(6)}.tmp")
+    fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    try:
+        with os.fdopen(fd, "wb") as handle:
+            handle.write(data)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(tmp, path)
+    finally:
+        tmp.unlink(missing_ok=True)
 
 
 class MediaVault:
@@ -46,258 +68,167 @@ class MediaVault:
         self.continuous_seconds = continuous_seconds
         self.event_seconds = event_seconds
         self.root = VAULT_DIR
-        self.root.mkdir(parents=True, exist_ok=True)
 
     def _master_key(self) -> bytes:
         try:
             return sentinel_vault.secret("media")
-        except Exception:
-            path = self.root / ".master.key"
-            if not path.exists():
-                path.write_bytes(secrets.token_bytes(32))
-                os.chmod(path, 0o600)
-            return path.read_bytes()
+        except (OSError, sentinel_vault.VaultError) as exc:
+            log.warning("NVR: chiave media della Sentinella non disponibile, uso la chiave locale: %s", exc)
+        path = self.root / ".master.key"
+        if not path.exists():
+            _private_write(path, secrets.token_bytes(32))
+        key = path.read_bytes()
+        if len(key) != 32:
+            raise VaultError("nvr.key.invalid")
+        return key
 
     def _engine(self):
-        cls = _rust_vault_class()
-        if cls:
-            try:
-                return cls(self._master_key(), self.continuous_seconds, self.event_seconds)
-            except Exception as exc:
-                log.debug("RustMediaVault initialization fallback: %s", exc)
-        return None
+        cls = native_module.feature("RustMediaVault")
+        if cls is None or not hasattr(cls, "seal_v2"):
+            native_module.python_fallback("nvr.vault")
+            return None
+        return cls(self._master_key(), self.continuous_seconds, self.event_seconds)
 
-    def encrypt_file(self, camera_id: str, raw_path: Path, tier: str = "continuous",
-                     has_audio: bool = True, has_video: bool = True) -> Path:
-        raw_bytes = raw_path.read_bytes()
-        segment_id = raw_path.stem
-        now = time.time()
-        day = day_str(now)
-        recorded_at = int(now)
-        duration_ms = 60000
+    def path_for(self, camera_id: str, segment_id: str) -> Path:
+        return self.root / clean_id(camera_id) / f"{clean_id(segment_id)}.nvm"
 
-        cam_dir = self.root / camera_id
-        cam_dir.mkdir(parents=True, exist_ok=True)
-        out_path = cam_dir / f"{segment_id}.nvm"
-
+    def seal(self, camera_id: str, segment_id: str, raw: bytes, *, recorded_at_ms: int, duration_ms: int,
+             tier: str = "continuous", has_audio: bool = True, has_video: bool = True, nonce: bytes | None = None) -> bytes:
+        nonce = nonce or secrets.token_bytes(nvm2.NONCE_LEN)
+        day = day_str(recorded_at_ms / 1000)
+        args = (clean_id(camera_id), day, clean_id(segment_id), int(recorded_at_ms), int(duration_ms),
+                bool(has_audio), bool(has_video), tier, nonce, raw)
         engine = self._engine()
-        if engine:
-            nonce_bytes = secrets.token_bytes(24)
-            enc_data = engine.encrypt_segment(
-                camera_id, day, segment_id, recorded_at, duration_ms,
-                has_audio, has_video, tier, nonce_bytes, raw_bytes
-            )
-        else:
-            enc_data = self._py_encrypt(
-                camera_id, day, segment_id, recorded_at, duration_ms,
-                has_audio, has_video, tier, raw_bytes
-            )
+        if engine is not None:
+            return bytes(engine.seal_v2(*args))
+        return nvm2.py_seal(self._master_key(), *args)
 
-        out_path.write_bytes(bytes(enc_data))
-        os.chmod(out_path, 0o600)
+    def encrypt_file(self, camera_id: str, raw_path: Path, tier: str = "continuous", has_audio: bool = True,
+                     has_video: bool = True, recorded_at_ms: int | None = None, duration_ms: int | None = None) -> Path:
+        stat = raw_path.stat()
+        if stat.st_size > MAX_SEGMENT_BYTES:
+            raise VaultError("nvr.segment.too_large")
+        raw = raw_path.read_bytes()
+        segment_id = clean_id(raw_path.stem)
+        start_ms = recorded_at_ms if recorded_at_ms is not None else stamp_ms(raw_path.name, stat.st_mtime)
+        out = self.path_for(camera_id, segment_id)
+        sealed = self.seal(camera_id, segment_id, raw, recorded_at_ms=start_ms,
+                           duration_ms=duration_ms or DEFAULT_DURATION_MS, tier=tier,
+                           has_audio=has_audio, has_video=has_video)
+        _private_write(out, sealed)
+        raw_path.unlink(missing_ok=True)
+        record("sentinel.read", NUXIVA, "sentinel.media.encrypted", {"camera": camera_id, "segment": segment_id},
+               sensitivity="household", source="nvr", place=camera_id, at=start_ms / 1000)
+        return out
 
-        try:
-            raw_path.unlink(missing_ok=True)
-        except OSError:
-            pass
+    def header(self, path: Path) -> dict | None:
+        with open(path, "rb") as handle:
+            prefix = handle.read(8 + nvm2.MAX_HEADER)
+        if prefix[:4] != nvm2.MAGIC:
+            return None
+        header, _, start = self._parse(prefix)
+        return {**header, "data_start": start, "file_bytes": path.stat().st_size}
 
-        record(
-            "sentinel.read", NUXIVA, "sentinel.media.encrypted",
-            {"camera": camera_id, "segment": segment_id},
-            sensitivity="household", source="nvr", place=camera_id, at=now
-        )
-        return out_path
-
-    def _py_encrypt(self, camera_id: str, day: str, segment_id: str,
-                    recorded_at: int, duration_ms: int, has_audio: bool,
-                    has_video: bool, tier: str, raw_media: bytes) -> bytes:
-        day_key = derive_day_key(self._master_key(), camera_id, day)
-        seg_key = derive_seg_key(day_key, segment_id)
-        nonce_base = secrets.token_bytes(12)
-        cipher = ChaCha20Poly1305(seg_key)
-
-        chunks = []
-        for idx, offset in enumerate(range(0, len(raw_media), CHUNK_SIZE)):
-            chunk = raw_media[offset:offset + CHUNK_SIZE]
-            idx_bytes = struct.pack(">Q", idx)
-            chunk_nonce = nonce_base[:4] + idx_bytes
-            ct = cipher.encrypt(chunk_nonce, chunk, None)
-            chunks.append(chunk_nonce + ct)
-
-        meta = {
-            "segment_id": segment_id,
-            "camera_id": camera_id,
-            "day": day,
-            "recorded_at": recorded_at,
-            "duration_ms": duration_ms,
-            "has_audio": has_audio,
-            "has_video": has_video,
-            "tier": tier.capitalize(),
-            "total_plaintext_bytes": len(raw_media),
-            "chunk_count": len(chunks),
-        }
-        meta_json = json.dumps(meta).encode("utf-8")
-        out = bytearray(b"NVM1")
-        out.extend(struct.pack(">I", len(meta_json)))
-        out.extend(meta_json)
-        for c in chunks:
-            out.extend(struct.pack(">I", len(c)))
-            out.extend(c)
-        return bytes(out)
+    def _parse(self, prefix: bytes) -> tuple[dict, bytes, int]:
+        engine = self._engine()
+        if engine is None:
+            return nvm2.py_header(prefix)
+        text, start = engine.header_v2(prefix)
+        return json.loads(text), prefix[8:start], start
 
     def decrypt_file(self, camera_id: str, segment_path: Path) -> bytes:
         data = segment_path.read_bytes()
-        segment_id = segment_path.stem
-        day = day_str(segment_path.stat().st_mtime)
+        if data[:4] == nvm2.MAGIC:
+            engine = self._engine()
+            if engine is not None:
+                _, plain = engine.open_v2(data)
+                plain = bytes(plain)
+            else:
+                _, plain = nvm2.py_open(self._master_key(), data)
+        else:
+            plain = legacy.open_v1(self._master_key(), clean_id(camera_id), clean_id(segment_path.stem), data,
+                                   day_str(segment_path.stat().st_mtime))
+        self._audit_read(camera_id, segment_path.stem)
+        return plain
 
+    def read_range(self, camera_id: str, segment_path: Path, start: int, end: int) -> Iterator[bytes]:
+        info = self.header(segment_path)
+        if info is None:
+            data = self.decrypt_file(camera_id, segment_path)
+            yield data[start:end + 1]
+            return
+        if info["camera_id"] != camera_id:
+            raise VaultError("nvr.segment.camera_mismatch")
+        span = nvm2.chunk_span(info["plain_bytes"], start, end)
+        if span is None:
+            return
         engine = self._engine()
-        if engine:
-            try:
-                dec = engine.decrypt_segment(camera_id, day, segment_id, data)
-                self._audit_read(camera_id, segment_id)
-                return bytes(dec)
-            except Exception as exc:
-                log.debug("RustMediaVault decrypt fallback: %s", exc)
+        master = None if engine is not None else self._master_key()
+        self._audit_read(camera_id, segment_path.stem)
+        with open(segment_path, "rb") as handle:
+            prefix = handle.read(info["data_start"])
+            for index in range(span[0], span[1] + 1):
+                handle.seek(nvm2.frame_offset(info["data_start"], index))
+                frame = handle.read(nvm2.frame_len(info, index))
+                plain = bytes(engine.open_chunk_v2(prefix, index, frame)) if engine is not None \
+                    else nvm2.py_open_chunk(master, prefix, index, frame)
+                base = index * CHUNK_SIZE
+                yield plain[max(0, start - base):max(0, end + 1 - base)]
 
-        dec = self._py_decrypt(camera_id, day, segment_id, data)
-        self._audit_read(camera_id, segment_id)
-        return dec
-
-    def _py_decrypt(self, camera_id: str, day: str, segment_id: str, data: bytes) -> bytes:
-        if len(data) < 8 or data[:4] != b"NVM1":
-            raise ValueError("Invalid media segment format")
-        meta_len = struct.unpack(">I", data[4:8])[0]
-        meta = json.loads(data[8:8 + meta_len].decode("utf-8"))
-
-        day_key = derive_day_key(self._master_key(), camera_id, meta.get("day", day))
-        seg_key = derive_seg_key(day_key, segment_id)
-        cipher = ChaCha20Poly1305(seg_key)
-
-        offset = 8 + meta_len
-        out = bytearray()
-        while offset < len(data):
-            clen = struct.unpack(">I", data[offset:offset + 4])[0]
-            offset += 4
-            chunk_blob = data[offset:offset + clen]
-            offset += clen
-            chunk_nonce = chunk_blob[:12]
-            ct = chunk_blob[12:]
-            out.extend(cipher.decrypt(chunk_nonce, ct, None))
-        return bytes(out)
-
-    def stream_chunks(self, camera_id: str, segment_path: Path) -> Generator[bytes, None, None]:
-        decrypted = self.decrypt_file(camera_id, segment_path)
-        for offset in range(0, len(decrypted), CHUNK_SIZE):
-            yield decrypted[offset:offset + CHUNK_SIZE]
+    def stream_chunks(self, camera_id: str, segment_path: Path) -> Iterator[bytes]:
+        info = self.header(segment_path)
+        if info is None:
+            data = self.decrypt_file(camera_id, segment_path)
+            for offset in range(0, len(data), CHUNK_SIZE):
+                yield data[offset:offset + CHUNK_SIZE]
+            return
+        yield from self.read_range(camera_id, segment_path, 0, max(0, info["plain_bytes"] - 1))
 
     def _audit_read(self, camera_id: str, segment_id: str) -> None:
-        record(
-            "sentinel.read", NUXIVA, "sentinel.media.playback",
-            {"camera": camera_id, "segment": segment_id},
-            sensitivity="sensitive", source="nvr", place=camera_id
-        )
+        record("sentinel.read", NUXIVA, "sentinel.media.playback", {"camera": camera_id, "segment": segment_id},
+               sensitivity="sensitive", source="nvr", place=camera_id)
 
     def is_expired(self, tier: str, recorded_at: int, now: int) -> bool:
         t = tier.lower()
         if t == "pinned":
             return False
-        engine = self._engine()
-        if engine:
-            return engine.is_expired(t, recorded_at, now)
         limit = self.event_seconds if "event" in t else self.continuous_seconds
         return (now - recorded_at) > limit
 
-    def prune(self, camera_id: str, now: float | None = None) -> int:
-        cam_dir = self.root / camera_id
-        if not cam_dir.exists():
-            return 0
-        current = int(now or time.time())
-        removed = 0
-        for p in cam_dir.glob("*.nvm"):
-            try:
-                mtime = int(p.stat().st_mtime)
-                if self.is_expired("continuous", mtime, current):
-                    p.unlink(missing_ok=True)
-                    removed += 1
-            except OSError:
-                pass
-        return removed
+    def delete(self, camera_id: str, segment_id: str) -> bool:
+        path = self.path_for(camera_id, segment_id)
+        existed = path.exists()
+        path.unlink(missing_ok=True)
+        return existed
 
     def list_segments(self, camera_id: str) -> list[dict]:
-        cam_dir = self.root / camera_id
-        if not cam_dir.exists():
-            return []
+        cam_dir = self.root / clean_id(camera_id)
         out = []
-        for p in sorted(cam_dir.glob("*.nvm")):
+        for p in sorted(cam_dir.glob("*.nvm")) if cam_dir.exists() else []:
             try:
                 st = p.stat()
-                out.append({
-                    "id": p.stem,
-                    "size": st.st_size,
-                    "mtime": st.st_mtime,
-                    "path": str(p),
-                })
-            except OSError:
-                pass
+                out.append({"id": p.stem, "size": st.st_size, "mtime": st.st_mtime})
+            except OSError as exc:
+                log.debug("NVR: segmento illeggibile %s: %s", p.name, exc)
+        return out
+
     def quota_bytes(self, storage_percent: float = 20.0, storage_max_gb: float = 0.0) -> int:
-        import shutil
-        try:
-            usage = shutil.disk_usage(self.root)
-            total = usage.total
-        except OSError:
-            total = 100 * 1024 * 1024 * 1024
+        self.root.mkdir(parents=True, exist_ok=True)
+        total = shutil.disk_usage(self.root).total
         calc = int(total * (max(1.0, min(90.0, float(storage_percent))) / 100.0))
         if storage_max_gb > 0:
-            calc = min(calc, int(storage_max_gb * 1024 * 1024 * 1024))
+            calc = min(calc, int(storage_max_gb * 1024 ** 3))
         return calc
 
     def storage_stats(self, storage_percent: float = 20.0, storage_max_gb: float = 0.0) -> dict:
-        import shutil
-        try:
-            usage = shutil.disk_usage(self.root)
-            disk_total = usage.total
-            disk_free = usage.free
-        except OSError:
-            disk_total = 100 * 1024 * 1024 * 1024
-            disk_free = 50 * 1024 * 1024 * 1024
+        self.root.mkdir(parents=True, exist_ok=True)
+        usage = shutil.disk_usage(self.root)
         quota = self.quota_bytes(storage_percent, storage_max_gb)
         files = list(self.root.glob("*/*.nvm"))
-        used_bytes = sum(f.stat().st_size for f in files if f.exists())
-        return {
-            "disk_total_bytes": disk_total,
-            "disk_free_bytes": disk_free,
-            "storage_percent": storage_percent,
-            "storage_max_gb": storage_max_gb,
-            "quota_bytes": quota,
-            "vault_used_bytes": used_bytes,
-            "vault_segments": len(files),
-            "quota_used_percent": round((used_bytes / max(1, quota)) * 100.0, 1),
-        }
-
-    def prune_quota(self, storage_percent: float = 20.0, storage_max_gb: float = 0.0) -> int:
-        quota = self.quota_bytes(storage_percent, storage_max_gb)
-        files = []
-        for p in self.root.glob("*/*.nvm"):
-            try:
-                st = p.stat()
-                files.append((st.st_mtime, st.st_size, p))
-            except OSError:
-                pass
-        total = sum(s for _, s, _ in files)
-        if total <= quota:
-            return 0
-        files.sort(key=lambda x: x[0])
-        removed = 0
-        for _, size, path in files:
-            if total <= quota:
-                break
-            try:
-                path.unlink(missing_ok=True)
-                total -= size
-                removed += 1
-            except OSError:
-                pass
-        return removed
+        used = sum(f.stat().st_size for f in files if f.exists())
+        return {"disk_total_bytes": usage.total, "disk_free_bytes": usage.free, "storage_percent": storage_percent,
+                "storage_max_gb": storage_max_gb, "quota_bytes": quota, "vault_used_bytes": used,
+                "vault_segments": len(files), "quota_used_percent": round(used / max(1, quota) * 100.0, 1)}
 
 
 media_vault = MediaVault()

@@ -38,6 +38,7 @@ mod matter;
 mod memory;
 mod mesh;
 mod molecule;
+mod nvr;
 mod planner;
 mod presence;
 mod rescue;
@@ -144,6 +145,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     voice::register(m)?;
     rescue::register(m)?;
     rescue_ear::register(m)?;
+    nvr::register(m)?;
     sentinel_memory::register(m)?;
     vault_media::register(m)?;
     matter::register(m)?;

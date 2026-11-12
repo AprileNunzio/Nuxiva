@@ -3,7 +3,7 @@ import shutil
 import time
 
 from agenti.cameras.cameras import CAM_DIR, cameras
-from agenti.nvr.vault import media_vault
+from agenti.nvr.archive import archive
 from state import store
 
 SEGMENT_SECONDS = 60
@@ -56,18 +56,18 @@ class Recorder:
         for seg in sorted(incoming.glob("seg_*.mp4")):
             try:
                 if now - seg.stat().st_mtime >= 3:
-                    media_vault.encrypt_file(cam["id"], seg, tier="continuous")
-            except OSError:
-                pass
+                    archive.ingest(cam["id"], seg, tier="continuous")
+            except (OSError, ValueError) as exc:
+                store.event("WARN", f"Telecamera {cam['name']}: segmento non archiviato ({exc})", "cameras")
+
+    def _maintain(self, wanted: dict) -> None:
+        if not archive.due():
+            return
+        from agenti.nvr.service import nvr
+        events = nvr.store.camera_times(time.time() - int(nvr.settings.get("retention_days", 30)) * 86400)
+        archive.maintain(events, nvr.settings, wanted)
 
     def _prune(self, cam: dict) -> None:
-        media_vault.prune(cam["id"])
-        try:
-            from agenti.nvr.settings import load as load_nvr_settings
-            cfg = load_nvr_settings()
-            media_vault.prune_quota(cfg.get("storage_percent", 20), cfg.get("storage_max_gb", 0))
-        except Exception:
-            pass
         folder = CAM_DIR / cam["id"]
         if not folder.exists():
             return
@@ -111,6 +111,7 @@ class Recorder:
                         await self._start(cam)
                     self._encrypt_pending(cam)
                     self._prune(cam)
+                await asyncio.to_thread(self._maintain, wanted)
             except Exception as exc:
                 store.event("WARN", f"Registratore telecamere: {exc}", "cameras")
             await asyncio.sleep(15)

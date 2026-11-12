@@ -1230,6 +1230,7 @@ dependencies = [
  "nuxiva-matter-core",
  "nuxiva-memory-core",
  "nuxiva-molecule-core",
+ "nuxiva-nvr-core",
  "nuxiva-presence-core",
  "nuxiva-rescue-core",
  "nuxiva-seal-core",
@@ -1257,6 +1258,14 @@ dependencies = [
  "serde",
  "serde_json",
  "socket2",
+]
+
+[[package]]
+name = "nuxiva-nvr-core"
+version = "5.8.0"
+dependencies = [
+ "serde",
+ "serde_json",
 ]
 
 [[package]]

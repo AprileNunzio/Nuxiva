@@ -14,7 +14,7 @@ DEFAULTS = {"enabled": False, "mqtt_host": "", "mqtt_port": 1883, "mqtt_topic": 
             "mqtt_tls": False, "retention_days": 30, "min_score": 0.6, "labels": list(LABELS[:4]) + ["dog", "cat", "package"],
             "notify_labels": ["person"], "storage_percent": 20, "storage_max_gb": 0, "record_mode": "hybrid",
             "ai_analysis": True, "ai_audio_transcription": True, "ptz_auto_tracking": True, "ptz_auto_patrol": False,
-            "ptz_patrol_interval_s": 60}
+            "ptz_patrol_interval_s": 60, "continuous_hours": 48}
 
 
 class SettingsError(ValueError):
@@ -64,6 +64,7 @@ def validate(body: dict, current: dict) -> dict:
         out["min_score"] = round(max(0.0, min(1.0, float(body.get("min_score", current["min_score"])))), 2)
         out["storage_percent"] = max(1, min(90, int(body.get("storage_percent", current.get("storage_percent", 20)))))
         out["storage_max_gb"] = max(0, min(100000, int(body.get("storage_max_gb", current.get("storage_max_gb", 0)))))
+        out["continuous_hours"] = max(1, min(24 * 90, int(body.get("continuous_hours", current.get("continuous_hours", 48)))))
         out["ptz_patrol_interval_s"] = max(5, min(3600, int(body.get("ptz_patrol_interval_s", current.get("ptz_patrol_interval_s", 60)))))
     except (TypeError, ValueError):
         raise SettingsError("nvr.error.number")

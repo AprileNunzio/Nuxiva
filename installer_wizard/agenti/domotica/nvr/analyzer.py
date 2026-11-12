@@ -85,12 +85,6 @@ class NvrAnalyzer:
             dec_bytes = media_vault.decrypt_file(camera_id, seg_file)
         transcripts, speaker_slug, voice_score = self.extract_audio_speech(dec_bytes)
         detections = []
-        if len(dec_bytes) > 1000:
-            detections.append({
-                "class": "person",
-                "score": 0.85,
-                "look": {"upper": "scuro", "lower": "jeans", "carrying": []}
-            })
         label, summary, details, score = self.format_description(camera_id, detections, transcripts)
         for text in transcripts:
             speech_kind, speech_conf = detect_speech_intent(text)
@@ -112,6 +106,7 @@ class NvrAnalyzer:
             "id": event_id,
             "at": time.time(),
             "camera": camera_id,
+            "camera_id": camera_id,
             "label": label,
             "score": score,
             "source": "ai_analyzer",

@@ -1,3 +1,6 @@
+import asyncio
+import time
+
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import StreamingResponse
 
@@ -76,10 +79,12 @@ async def nvr_storage(_: str = Depends(require_admin)):
 
 @admin_routes.post("/api/nvr/prune")
 async def nvr_prune(_: str = Depends(require_admin)):
-    percent = float(nvr.settings.get("storage_percent", 20))
-    max_gb = float(nvr.settings.get("storage_max_gb", 0))
-    freed = media_vault.prune_quota(percent, max_gb)
-    return {"ok": True, "freed_segments": freed}
+    from agenti.cameras.cameras import cameras
+    from agenti.nvr.archive import archive
+    events = nvr.store.camera_times(time.time() - int(nvr.settings.get("retention_days", 30)) * 86400)
+    wanted = {cid: cam for cid, cam in cameras.items.items() if cameras._recording(cam)}
+    done = await asyncio.to_thread(archive.maintain, events, nvr.settings, wanted)
+    return {"ok": True, "freed_segments": done["removed"], **done}
 
 
 @admin_routes.get("/api/nvr/ptz/cameras")

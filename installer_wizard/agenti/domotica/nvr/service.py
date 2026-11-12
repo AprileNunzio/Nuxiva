@@ -53,8 +53,11 @@ class Nvr:
             at = float(p.get("at") or envelope.ts)
         except (TypeError, ValueError):
             return
-        self.record({"id": f"cam:{str(p.get('source', ''))[:40]}:{at:.3f}", "at": at, "camera": str(p.get("name") or p.get("source") or "?"),
-                     "label": str(p.get("kind") or "motion"), "score": 1.0, "source": "camera", "zone": "", "text": str(p.get("text") or "")})
+        source = str(p.get("source") or "")[:40]
+        camera_id = source[2:] if source.startswith("c-") else ""
+        self.record({"id": f"cam:{source}:{at:.3f}", "at": at, "camera": str(p.get("name") or source or "?"),
+                     "label": str(p.get("kind") or "motion"), "score": 1.0, "source": "camera", "zone": "",
+                     "text": str(p.get("text") or ""), "camera_id": camera_id})
 
     def update_settings(self, body: dict) -> dict:
         fresh = nvr_settings.validate(body, self.settings)

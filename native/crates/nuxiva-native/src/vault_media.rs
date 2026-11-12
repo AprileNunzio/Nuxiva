@@ -1,3 +1,7 @@
+use nuxiva_vault_media::v2::{
+    SegmentSpec, chunk_span, open_blob, open_chunk, open_segment, parse_header, seal_blob,
+    seal_segment,
+};
 use nuxiva_vault_media::{
     EncryptedSegment, KEY_LEN, NONCE_LEN, RawSegmentInput, RetentionPolicy, RetentionTier,
     derive_day_camera_key, derive_segment_key,
@@ -6,6 +10,19 @@ use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::types::PyBytes;
 use zeroize::Zeroizing;
+
+fn nonce_of(bytes: &[u8]) -> PyResult<[u8; NONCE_LEN]> {
+    let mut out = [0u8; NONCE_LEN];
+    if bytes.len() != NONCE_LEN {
+        return Err(PyValueError::new_err("nvr.nonce.invalid"));
+    }
+    out.copy_from_slice(bytes);
+    Ok(out)
+}
+
+fn fail(e: &nuxiva_vault_media::MediaVaultError) -> PyErr {
+    PyValueError::new_err(e.to_string())
+}
 
 #[pyclass]
 #[derive(Debug)]
@@ -148,9 +165,102 @@ impl RustMediaVault {
         };
         self.policy.is_expired(tier, recorded_at, now)
     }
+
+    #[allow(clippy::too_many_arguments, clippy::fn_params_excessive_bools)]
+    #[pyo3(signature = (camera_id, day, segment_id, recorded_at_ms, duration_ms, has_audio, has_video, tier, nonce, raw_media))]
+    pub fn seal_v2(
+        &self,
+        py: Python<'_>,
+        camera_id: &str,
+        day: &str,
+        segment_id: &str,
+        recorded_at_ms: u64,
+        duration_ms: u32,
+        has_audio: bool,
+        has_video: bool,
+        tier: &str,
+        nonce: &[u8],
+        raw_media: &[u8],
+    ) -> PyResult<Py<PyBytes>> {
+        let spec = SegmentSpec {
+            segment_id,
+            camera_id,
+            day,
+            recorded_at_ms,
+            duration_ms,
+            has_audio,
+            has_video,
+            tier,
+        };
+        let sealed = seal_segment(
+            self.master_key.as_slice(),
+            &spec,
+            &nonce_of(nonce)?,
+            raw_media,
+        )
+        .map_err(|e| fail(&e))?;
+        Ok(PyBytes::new(py, &sealed).into())
+    }
+
+    #[allow(clippy::unused_self)]
+    pub fn header_v2(&self, prefix: &[u8]) -> PyResult<(String, usize)> {
+        let opened = parse_header(prefix).map_err(|e| fail(&e))?;
+        let text = serde_json::to_string(&opened.header)
+            .map_err(|e| PyValueError::new_err(e.to_string()))?;
+        Ok((text, opened.data_start))
+    }
+
+    pub fn open_chunk_v2(
+        &self,
+        py: Python<'_>,
+        prefix: &[u8],
+        index: u64,
+        frame: &[u8],
+    ) -> PyResult<Py<PyBytes>> {
+        let opened = parse_header(prefix).map_err(|e| fail(&e))?;
+        let plain =
+            open_chunk(self.master_key.as_slice(), &opened, index, frame).map_err(|e| fail(&e))?;
+        Ok(PyBytes::new(py, &plain).into())
+    }
+
+    pub fn open_v2(&self, py: Python<'_>, data: &[u8]) -> PyResult<(String, Py<PyBytes>)> {
+        let (header, plain) =
+            open_segment(self.master_key.as_slice(), data).map_err(|e| fail(&e))?;
+        let text =
+            serde_json::to_string(&header).map_err(|e| PyValueError::new_err(e.to_string()))?;
+        Ok((text, PyBytes::new(py, &plain).into()))
+    }
+
+    pub fn seal_blob(
+        &self,
+        py: Python<'_>,
+        context: &str,
+        nonce: &[u8],
+        plain: &[u8],
+    ) -> PyResult<Py<PyBytes>> {
+        let sealed = seal_blob(
+            self.master_key.as_slice(),
+            context,
+            &nonce_of(nonce)?,
+            plain,
+        )
+        .map_err(|e| fail(&e))?;
+        Ok(PyBytes::new(py, &sealed).into())
+    }
+
+    pub fn open_blob(&self, py: Python<'_>, context: &str, blob: &[u8]) -> PyResult<Py<PyBytes>> {
+        let plain = open_blob(self.master_key.as_slice(), context, blob).map_err(|e| fail(&e))?;
+        Ok(PyBytes::new(py, &plain).into())
+    }
+}
+
+#[pyfunction]
+fn nvr_chunk_span(plain_bytes: u64, start: u64, end_inclusive: u64) -> Option<(u64, u64)> {
+    chunk_span(plain_bytes, start, end_inclusive)
 }
 
 pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<RustMediaVault>()?;
+    m.add_function(wrap_pyfunction!(nvr_chunk_span, m)?)?;
     Ok(())
 }

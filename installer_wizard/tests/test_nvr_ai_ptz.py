@@ -57,13 +57,17 @@ class NvrAiPtzTest(unittest.TestCase):
         self.assertEqual(stats["vault_segments"], 0)
 
     def test_media_vault_prune_quota(self):
-        cam_dir = self.vault.root / "cam_test"
-        cam_dir.mkdir(parents=True, exist_ok=True)
-        for i in range(5):
-            seg = cam_dir / f"seg_20261111_000{i}.nvm"
-            seg.write_bytes(b"DATA" * 1024)
-        removed = self.vault.prune_quota(storage_percent=1, storage_max_gb=0.000001)
-        self.assertGreater(removed, 0)
+        from agenti.nvr import archive as archive_mod
+        store = archive_mod.NvrArchive(self.vault)
+        with mock.patch.object(archive_mod, "probe", return_value={"duration_ms": 60000, "audio": True, "video": True}):
+            for i in range(5):
+                raw = self.root / f"seg_20261111_00{i}000.mp4"
+                raw.write_bytes(b"DATA" * 1024)
+                store.ingest("cam_test", raw)
+        done = store.maintain([], {"continuous_hours": 48, "retention_days": 30, "storage_percent": 1,
+                                   "storage_max_gb": 0.00001}, {}, now_ms=int(time.time() * 1000))
+        self.assertGreater(done["evicted"], 0)
+        self.assertLessEqual(done["kept_bytes"], 10737)
 
     def test_nvr_analyzer_description_and_details(self):
         analyzer = NvrAnalyzer()
