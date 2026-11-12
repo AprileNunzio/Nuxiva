@@ -15,6 +15,7 @@ from agenti.desktop.screens import Screens, role_of
 from agenti.stage import api as stage_api
 from agenti.stage import director, native, particles
 from agenti.stage.service import Stage, clean_context
+from agenti.particles.archive import shard
 from agenti.stage.store import ParticleStore, concept_key
 
 HEADERS = {"X-Nuxiva-Request": "1"}
@@ -156,7 +157,8 @@ class StoreTest(unittest.TestCase):
         entry = self.store.put("Bicicletta", SPEC, blob)
         self.assertEqual(self.store.blob(entry["digest"]), blob)
         self.assertEqual(ParticleStore(self.root).lookup("bicicletta")["digest"], entry["digest"])
-        for path in (self.root / ".key", self.root / "index.json", self.root / "blobs" / f"{entry['digest']}.nxpc"):
+        for path in (self.root / ".key", self.root / "index.json", self.root / "creazioni.db",
+                     self.root / "blobs" / f"{shard(entry['digest'])}.nxpc"):
             self.assertEqual(os.stat(path).st_mode & 0o077, 0, path)
 
     def test_tampered_index_is_discarded(self):
@@ -164,12 +166,13 @@ class StoreTest(unittest.TestCase):
         doc = json.loads((self.root / "index.json").read_text())
         doc["concepts"]["ruota"]["digest"] = "0" * 64
         (self.root / "index.json").write_text(json.dumps(doc))
-        self.assertIsNone(ParticleStore(self.root).lookup("ruota"))
-        self.assertIsNotNone(entry)
+        restored = ParticleStore(self.root).lookup("ruota")
+        self.assertEqual(restored["digest"], entry["digest"])
+        self.assertNotEqual(restored["digest"], "0" * 64)
 
     def test_corrupted_blob_is_refused(self):
         entry = self.store.put("vite", SPEC, particles.sample_python(SPEC, 256, 3))
-        path = self.root / "blobs" / f"{entry['digest']}.nxpc"
+        path = self.root / "blobs" / f"{shard(entry['digest'])}.nxpc"
         data = bytearray(path.read_bytes())
         data[20] ^= 0xFF
         path.write_bytes(bytes(data))

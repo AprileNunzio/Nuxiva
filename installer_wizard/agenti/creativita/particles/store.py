@@ -13,6 +13,7 @@ from pathlib import Path
 
 from config import STATE_DIR
 from agenti.particles import codec as particles
+from agenti.particles.archive import MAX_META, open_archive, shard
 from agenti.stage import native
 
 log = logging.getLogger("nuxiva.particles")
@@ -20,6 +21,8 @@ log = logging.getLogger("nuxiva.particles")
 ROOT = Path(os.environ.get("NUXIVA_PARTICLES_DIR", str(STATE_DIR / "particles")))
 DIGEST = re.compile(r"^[0-9a-f]{64}$")
 MAX_CONCEPTS = 2_000
+MAX_ARCHIVE = 1_000_000
+EVICT_EVERY = 500
 CACHE_BYTES = 48 * 1024 * 1024
 
 
@@ -61,6 +64,8 @@ class ParticleStore:
         self.lock = threading.RLock()
         self.index: dict[str, dict] = {}
         self.loaded = False
+        self.archive = None
+        self.puts = 0
         self.cache = native.lib.RustParticleCache(CACHE_BYTES) if native.lib is not None else _PyCache(CACHE_BYTES)
 
     def _ensure(self) -> None:
@@ -69,7 +74,61 @@ class ParticleStore:
         self.root.mkdir(parents=True, exist_ok=True, mode=0o700)
         (self.root / "blobs").mkdir(exist_ok=True, mode=0o700)
         self.index = self._read_index()
+        self.archive = open_archive(self.root / "creazioni.db")
+        if self.archive.count() == 0:
+            for key, row in self.index.items():
+                self._record(key, row)
         self.loaded = True
+
+    def _path(self, digest: str) -> Path:
+        return self.root / "blobs" / f"{shard(digest)}.nxpc"
+
+    def _seal(self, key: str, digest: str, spec: dict) -> str:
+        body = json.dumps(spec, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+        return self._sign(f"{key}\n{digest}\n{body}".encode())
+
+    def _record(self, key: str, row: dict, tags: list[str] | None = None) -> None:
+        spec = row.get("spec") or {}
+        meta = json.dumps({"spec": spec, "sig": self._seal(key, row["digest"], spec)}, separators=(",", ":"), ensure_ascii=False)
+        if len(meta.encode()) > MAX_META:
+            spec = {}
+            meta = json.dumps({"spec": spec, "sig": self._seal(key, row["digest"], spec)}, separators=(",", ":"))
+        self.archive.put({"key": key, "digest": row["digest"], "kind": "particles", "tags": tags or [], "meta": meta},
+                         int(float(row.get("last", time.time())) * 1000))
+
+    def _restore(self, key: str) -> dict | None:
+        found = self.archive.lookup(key, int(time.time() * 1000))
+        if not found or self.blob(found["digest"]) is None:
+            return None
+        try:
+            meta = json.loads(found["meta"])
+            spec = meta["spec"]
+            if not hmac.compare_digest(str(meta["sig"]), self._seal(key, found["digest"], spec)):
+                log.warning("Riga dell'archivio delle creazioni non firmata correttamente: ignorata")
+                return None
+            spec = particles.validate(spec) if spec else {}
+        except (ValueError, KeyError, TypeError, particles.ParticleError):
+            return None
+        row = {"digest": found["digest"], "spec": spec, "created": found["created"] / 1000, "uses": found["uses"], "last": time.time()}
+        self.index[key] = row
+        return row
+
+    def search(self, query: str, limit: int = 10) -> list[dict]:
+        with self.lock:
+            self._ensure()
+            return [hit for hit in self.archive.search(query, limit) if self.blob(hit["digest"]) is not None]
+
+    def count(self) -> int:
+        with self.lock:
+            self._ensure()
+            return self.archive.count()
+
+    def _evict(self) -> None:
+        if self.archive.count() <= MAX_ARCHIVE:
+            return
+        for digest in self.archive.evict(MAX_ARCHIVE):
+            self._path(digest).unlink(missing_ok=True)
+            (self.root / "blobs" / f"{digest}.nxpc").unlink(missing_ok=True)
 
     def _key(self) -> bytes:
         path = self.root / ".key"
@@ -117,14 +176,14 @@ class ParticleStore:
         key = concept_key(concept)
         with self.lock:
             self._ensure()
-            hit = self.index.get(key)
+            hit = self.index.get(key) or self._restore(key)
             if hit and self.blob(hit["digest"]) is not None:
                 hit["uses"] = int(hit.get("uses", 0)) + 1
                 hit["last"] = time.time()
                 return {"concept": key, **hit}
             return None
 
-    def put(self, concept: str, spec: dict, blob: bytes) -> dict:
+    def put(self, concept: str, spec: dict, blob: bytes, tags: list[str] | None = None) -> dict:
         key = concept_key(concept)
         if not key:
             raise particles.ParticleError("empty concept")
@@ -132,8 +191,9 @@ class ParticleStore:
         digest = hashlib.sha256(blob).hexdigest()
         with self.lock:
             self._ensure()
-            path = self.root / "blobs" / f"{digest}.nxpc"
-            if not path.exists():
+            path = self._path(digest)
+            if not path.exists() and not (self.root / "blobs" / f"{digest}.nxpc").exists():
+                path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
                 tmp = path.with_suffix(".tmp")
                 fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
                 with os.fdopen(fd, "wb") as fh:
@@ -145,6 +205,10 @@ class ParticleStore:
                 for old in sorted(self.index, key=lambda k: self.index[k].get("last", 0))[:len(self.index) - MAX_CONCEPTS]:
                     self.index.pop(old, None)
             self._write_index()
+            self._record(key, self.index[key], tags)
+            self.puts += 1
+            if self.puts % EVICT_EVERY == 0:
+                self._evict()
             self.cache.put(digest, blob)
             return {"concept": key, **self.index[key]}
 
@@ -154,11 +218,13 @@ class ParticleStore:
         cached = self.cache.get(digest)
         if cached is not None:
             return bytes(cached)
-        path = self.root / "blobs" / f"{digest}.nxpc"
         try:
-            data = path.read_bytes()
+            data = self._path(digest).read_bytes()
         except OSError:
-            return None
+            try:
+                data = (self.root / "blobs" / f"{digest}.nxpc").read_bytes()
+            except OSError:
+                return None
         if not hmac.compare_digest(hashlib.sha256(data).hexdigest(), digest):
             log.warning("Animazione a particelle corrotta scartata: %s", digest[:12])
             return None

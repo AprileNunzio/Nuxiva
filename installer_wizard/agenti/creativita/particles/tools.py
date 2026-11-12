@@ -36,10 +36,15 @@ def tool_store_and_index(concept: str, spec: dict, blob: bytes, hotspots: list[d
     return {"stored": stored, "catalog_entry": cat_entry}
 
 
+def tool_search_creations(query: str, limit: int = 10) -> list[dict]:
+    return store.search(str(query or ""), int(limit))
+
+
 PARTICLE_AGENT_TOOLS = {
     "extract_concept": tool_extract_concept,
     "synthesize_spec": tool_synthesize_spec,
     "extract_hotspots": tool_extract_hotspots,
     "sample_cloud": tool_sample_cloud,
     "store_and_index": tool_store_and_index,
+    "search_creations": tool_search_creations,
 }

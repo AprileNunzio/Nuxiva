@@ -13,6 +13,7 @@ mod ceo;
 mod compute_lease;
 mod config;
 mod cortex;
+mod creations;
 mod dialog;
 mod dialogue;
 mod display;
@@ -216,6 +217,9 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(forma::forma_compile, m)?)?;
     m.add_function(wrap_pyfunction!(forma::forma_sculpt, m)?)?;
     m.add_function(wrap_pyfunction!(forma::forma_schema, m)?)?;
+    m.add_class::<creations::RustCreationArchive>()?;
+    m.add_function(wrap_pyfunction!(creations::creations_shard, m)?)?;
+    m.add_function(wrap_pyfunction!(creations::creations_tokens, m)?)?;
     m.add_function(wrap_pyfunction!(agents::agent_icon, m)?)?;
     ceo::register(m)?;
     dossier::register(m)?;
