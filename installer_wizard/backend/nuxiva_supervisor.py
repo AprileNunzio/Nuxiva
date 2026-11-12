@@ -72,6 +72,7 @@ from features.models3d import studio_api as models3d_studio_api
 from features.ear import api as ear_api
 from features.people import camera_watch
 from features.sentinel import watch as sentinel_watch
+from features.rescue import watch as rescue_watch
 from features.automations import api as automations_api
 from features.automations.engine import engine as automations_engine
 from features.autonomy import api as autonomy_api
@@ -396,6 +397,7 @@ BACKGROUND = (
     ("presenze", presence.monitor.run, 0.0),
     ("volti-telecamere", camera_watch.run, 0.0),
     ("sentinella-memoria", sentinel_watch.run, 0.0),
+    ("soccorso", rescue_watch.run, 0.0),
     ("telegram", bot.run, 0.0),
     ("rete", explorer.run, 0.0),
     ("audio", audio.watcher.run, 0.0),

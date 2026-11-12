@@ -1,6 +1,9 @@
 use std::sync::{Mutex, MutexGuard};
 
-use nuxiva_rescue_core::{Engine, Evidence, Kind, MAX_EVIDENCE, Policy, Step, assess};
+use nuxiva_rescue_core::{
+    Body, Engine, Evidence, Kind, MAX_BODIES, MAX_EVIDENCE, Policy, Posture, PostureConfig, Step,
+    assess,
+};
 use pyo3::exceptions::{PyRuntimeError, PyValueError};
 use pyo3::prelude::*;
 
@@ -180,8 +183,87 @@ fn rescue_detect_visual(
     (kind_str, conf)
 }
 
+type BodyTuple = (f64, f64, f64, f64, f64, bool);
+type PostureTuple = (String, u32, &'static str, f64, f64, f64);
+
+#[pyclass(module = "nuxiva_native", frozen)]
+#[derive(Debug)]
+pub struct RustPosture {
+    inner: Mutex<Posture>,
+}
+
+#[pymethods]
+impl RustPosture {
+    #[new]
+    #[pyo3(signature = (fall_window_s=2.5, confirm_s=4.0, immobile_s=60.0, still_frac=0.04, max_gap_s=6.0))]
+    fn new(
+        fall_window_s: f64,
+        confirm_s: f64,
+        immobile_s: f64,
+        still_frac: f64,
+        max_gap_s: f64,
+    ) -> PyResult<Self> {
+        let config = PostureConfig {
+            fall_window_s,
+            confirm_s,
+            immobile_s,
+            still_frac,
+            max_gap_s,
+        };
+        Posture::new(config)
+            .map(|p| Self {
+                inner: Mutex::new(p),
+            })
+            .ok_or_else(|| PyValueError::new_err("rescue.posture.config"))
+    }
+
+    #[allow(clippy::needless_pass_by_value)]
+    fn observe(
+        &self,
+        camera: &str,
+        t: f64,
+        frame_w: f64,
+        frame_h: f64,
+        bodies: Vec<BodyTuple>,
+    ) -> PyResult<Vec<PostureTuple>> {
+        if bodies.len() > MAX_BODIES * 4 {
+            return Err(PyValueError::new_err("rescue.posture.too_many"));
+        }
+        let list: Vec<Body> = bodies
+            .iter()
+            .map(|&(x, y, w, h, score, rest)| Body {
+                x,
+                y,
+                w,
+                h,
+                score,
+                rest,
+            })
+            .collect();
+        let mut engine = self
+            .inner
+            .lock()
+            .map_err(|_| PyRuntimeError::new_err("rescue.poisoned"))?;
+        Ok(engine
+            .observe(camera, t, frame_w, frame_h, &list)
+            .into_iter()
+            .map(|e| {
+                (
+                    e.camera,
+                    e.track,
+                    e.kind.code(),
+                    e.probability,
+                    e.confidence,
+                    e.at,
+                )
+            })
+            .collect())
+    }
+}
+
 pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<RustRescue>()?;
+    m.add_class::<RustPosture>()?;
     m.add_function(wrap_pyfunction!(rescue_assess, m)?)?;
     m.add_function(wrap_pyfunction!(rescue_policy, m)?)?;
     m.add_function(wrap_pyfunction!(rescue_detect_speech, m)?)?;

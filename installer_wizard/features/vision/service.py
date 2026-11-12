@@ -24,6 +24,7 @@ from tracks import Track, facing, iou, reliable_unknown
 from observer import Observer, router as observer_router
 from remote_probe import router as remote_probe_router
 from bodies import router as bodies_router
+from posture import PostureWatch, router as posture_router
 from views import Views, router as views_router
 from vitalcam import VitalCam
 
@@ -67,6 +68,7 @@ class Vision:
         self.pick: dict = selection.current()
         self.det_size = self.size
         self.objects = ObjectDetector(OBJECT_MODEL) if OBJECT_MODEL.exists() else None
+        self.posture = PostureWatch()
         threading.Thread(target=self._loop, daemon=True).start()
         if self.objects:
             threading.Thread(target=self._object_loop, daemon=True).start()
@@ -141,7 +143,7 @@ class Vision:
             if frame is None:
                 continue
             try:
-                self.objects.update(frame, [t.box for t in self.tracks])
+                self.posture.observe(self.objects.update(frame, [t.box for t in self.tracks]), frame.shape[1], frame.shape[0])
             except cv2.error as exc:
                 log.warning("Riconoscimento oggetti non riuscito: %s", exc)
                 time.sleep(10)
@@ -340,6 +342,7 @@ threading.Thread(target=views.backfill, daemon=True, name="segni-particolari").s
 app.include_router(views_router(views))
 app.include_router(observer_router(Observer(views, gallery)))
 app.include_router(bodies_router(lambda: vision.objects))
+app.include_router(posture_router(vision.posture))
 app.include_router(remote_probe_router(views, gallery))
 
 
