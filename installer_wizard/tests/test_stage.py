@@ -281,6 +281,7 @@ class MorphogenesisTest(unittest.TestCase):
             other = show.ensure_visual("Mostrami la struttura di un quasar magnetico")
             self.assertIsNotNone(other)
             self.assertEqual(particles.count(self.store.blob(other["digest"])), show.POINTS)
+            show.clear()
 
 
 if __name__ == "__main__":

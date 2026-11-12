@@ -166,7 +166,8 @@ async def decide(question: str, reply: str) -> None:
 
 
 def watch(question: str, reply: str) -> None:
-    ensure_visual(question)
+    if ensure_visual(question) is not None:
+        return
     if worthwhile(question, reply, time.time()):
         background(decide(question, reply))
 
