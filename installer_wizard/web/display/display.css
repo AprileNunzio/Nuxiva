@@ -344,11 +344,11 @@ body:has(#vol-panel.show) :is(.bgq, .setup-cta, .brain-route-host) { opacity: 0;
 .rail > [data-surface][data-stage="hidden"] { display: none; }
 @media (prefers-reduced-motion: reduce) { [data-surface][data-stage] { transition: none; } }
 #particles { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 21; pointer-events: none; opacity: 0; transition: opacity 0.6s; }
-body.particles-on #particles { opacity: 1; }
-body.particles-on:not(.brain, .flow) #core { opacity: 0.22; transition: opacity 0.8s; }
-body:is(.brain, .flow, .focus, .desk-full, .desk-whiteboard) #particles { visibility: hidden; }
+body.particles-on #particles { opacity: 1; pointer-events: auto; }
+body.particles-on:not(.brain, .flow) #core { opacity: 0.92; transform: translate(-36vw, 31vh) scale(0.28); transform-origin: center center; filter: drop-shadow(0 0 24px rgba(41, 224, 255, 0.55)); transition: transform 0.75s cubic-bezier(.2,.8,.2,1), opacity 0.75s ease; }
+body:is(.brain, .flow, .focus, .desk-full, .desk-whiteboard) #particles { visibility: hidden; pointer-events: none; }
 body.satellite.particles-on .rest { opacity: 0; }
-#core, #scene { transition: opacity 0.9s ease, filter 0.9s ease; }
+#core, #scene { transition: opacity 0.9s ease, filter 0.9s ease, transform 0.75s cubic-bezier(.2,.8,.2,1); }
 body.voice-only #core, body.voice-only #scene { opacity: 0 !important; filter: blur(12px); }
 .voice-strip { position: fixed; left: 50%; bottom: calc(var(--av-bottom, 128px) + 64px); z-index: 21; display: flex; align-items: center; gap: 4px; height: 56px;
                transform: translateX(-50%) scale(0.9); opacity: 0; pointer-events: none; transition: opacity 0.9s ease, transform 0.9s cubic-bezier(.2,.8,.2,1); }
@@ -357,4 +357,5 @@ body.voice-only #core, body.voice-only #scene { opacity: 0 !important; filter: b
 body.voice-only .voice-strip { opacity: 1; transform: translateX(-50%) scale(1); }
 @media (prefers-reduced-motion: reduce) { #core, #scene, .voice-strip { transition: none; } }
 body.presence-mini #core, body.presence-mini #scene { z-index: 35; filter: drop-shadow(0 8px 32px rgba(41, 224, 255, 0.35)); }
+
 

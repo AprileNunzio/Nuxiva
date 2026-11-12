@@ -90,6 +90,14 @@ pub fn depth_parallax_reconstruct(
     serde_json::to_string(&scene).map_err(|e| PyRuntimeError::new_err(e.to_string()))
 }
 
+#[pyfunction]
+pub fn visual_catalog_classify(concept: &str, engine: &str, digest: &str) -> PyResult<String> {
+    let spec = nuxiva_stage_core::synthesize_sculpture(concept);
+    let hotspots = nuxiva_stage_core::extract_hotspots(concept, &spec);
+    let entry = nuxiva_stage_core::classify_academic_entry(concept, engine, digest, hotspots);
+    serde_json::to_string(&entry).map_err(|e| PyRuntimeError::new_err(e.to_string()))
+}
+
 #[pyclass(module = "nuxiva_native")]
 #[derive(Debug)]
 pub struct RustParticleCache {

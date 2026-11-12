@@ -57,12 +57,21 @@ def _realistic_payload(engine_name: str, concept: str) -> dict | None:
 
 
 def present(entry: dict, ttl: float = SHOW_SECONDS, query: str = "") -> dict:
+    from features.visual_catalog import catalog, night_dreamer
     from features.visual_router import select_visual_engine
     concept = str(entry.get("concept") or "")
     spec = entry.get("spec") or morphogenesis.synthesize_spec(concept)
     hotspots = morphogenesis.extract_hotspots(concept, spec)
     route_decision = select_visual_engine(query or concept)
     engine_name = route_decision.get("selected_engine", "particles")
+    catalog_entry = catalog.record(
+        concept=concept,
+        engine=engine_name,
+        digest=entry["digest"],
+        spec=spec,
+        hotspots=hotspots,
+    )
+    night_dreamer.observe_topic(query or concept, engine_name)
     current_entry = {
         "digest": entry["digest"],
         "concept": concept,
@@ -74,6 +83,13 @@ def present(entry: dict, ttl: float = SHOW_SECONDS, query: str = "") -> dict:
         "xr": xr.xr_envelope(entry["digest"], concept, hotspots),
         "visual_engine": route_decision,
         "realistic_scene": _realistic_payload(engine_name, concept),
+        "catalog": catalog_entry,
+        "professor_mode": {
+            "active": True,
+            "avatar_dock": "bottom-left-mini",
+            "avatar_scale": 0.32,
+            "lecture": catalog_entry["lecture"],
+        },
     }
     state["current"] = current_entry
     state_store.touch()
@@ -94,8 +110,11 @@ def current() -> dict | None:
             "xr": cur.get("xr", {}),
             "visual_engine": cur.get("visual_engine", {}),
             "realistic_scene": cur.get("realistic_scene"),
+            "catalog": cur.get("catalog", {}),
+            "professor_mode": cur.get("professor_mode", {}),
         }
     return None
+
 
 
 def clear() -> None:

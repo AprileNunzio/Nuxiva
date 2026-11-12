@@ -7,6 +7,7 @@ pub mod gaussian_splat;
 pub mod morphogenesis;
 pub mod neural_radiance;
 pub mod particles;
+pub mod visual_catalog;
 pub mod visual_router;
 
 pub use cache::BlobCache;
@@ -20,5 +21,8 @@ pub use neural_radiance::{NeuralRadianceScene, SdfNode, synthesize_radiance_scen
 pub use particles::{
     Cloud, Hotspot3D, LodLevel, Part, ParticleError, ProgressiveAssembly, Shape, Spec, decode,
     decompose_lod, encode, extract_hotspots, sample, sample_progressive_layer,
+};
+pub use visual_catalog::{
+    AcademicLectureCard, CatalogEntry, CatalogIndex, classify_academic_entry, map_engine_folder,
 };
 pub use visual_router::{VisualEngineKind, VisualRouteDecision, select_visual_engine};

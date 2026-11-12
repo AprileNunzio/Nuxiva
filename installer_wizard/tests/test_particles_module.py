@@ -18,13 +18,21 @@ from features.particles import (
     synthesize_spec,
     xr_envelope,
 )
+from features.visual_catalog import (
+    NightDreamSynthesis,
+    VisualCatalog,
+    classify_academic_entry,
+)
 from features.visual_router import select_visual_engine
 
 
 class DedicatedParticlesDirectoryTest(unittest.TestCase):
     def setUp(self):
         self.root = Path(tempfile.mkdtemp())
-        self.store = ParticleStore(self.root)
+        self.store = ParticleStore(self.root / "particles")
+        self.catalog = VisualCatalog(self.root / "catalog")
+        self.dreamer = NightDreamSynthesis(self.catalog)
+
 
     def test_dedicated_particles_pipeline(self):
         concept = extract_visual_concept("Come è fatta una medusa?")
@@ -108,7 +116,51 @@ class DedicatedParticlesDirectoryTest(unittest.TestCase):
         self.assertEqual(relief["concept"], "medusa")
         self.assertGreaterEqual(len(relief["vertices"]), 16)
 
+    def test_hierarchical_catalog_and_night_dreamer(self):
+        medusa_entry = classify_academic_entry("medusa", "particles", "a" * 64)
+        self.assertEqual(
+            medusa_entry["relative_dir"],
+            "particelle/animali/mare/Rhizostoma_pulmo",
+        )
+        self.assertIn("Rhizostoma pulmo", medusa_entry["lecture"]["binomial_or_code"])
+
+        v8_entry = classify_academic_entry("motore v8", "gaussian_splat", "b" * 64)
+        self.assertEqual(
+            v8_entry["relative_dir"],
+            "animazioni_3d/auto/motori/motore_v8",
+        )
+
+        castello_entry = classify_academic_entry("Castel dell'Ovo", "diorama", "c" * 64)
+        self.assertEqual(
+            castello_entry["relative_dir"],
+            "diorama/castelli/monumenti/Castel_dell_Ovo",
+        )
+
+        with mock.patch("features.visual_catalog.night_builder.particle_store", self.store):
+            built = self.dreamer.run_idle_cycle(max_items=3)
+            self.assertEqual(len(built), 3)
+            paths = {item["relative_dir"] for item in built}
+            self.assertIn("particelle/animali/mare/Rhizostoma_pulmo", paths)
+            self.assertIn("animazioni_3d/auto/motori/motore_v8", paths)
+            self.assertIn("diorama/castelli/monumenti/Castel_dell_Ovo", paths)
+
+            medusa_dir = self.root / "catalog" / "particelle/animali/mare/Rhizostoma_pulmo"
+            self.assertTrue((medusa_dir / "manifest.json").exists())
+            self.assertTrue((medusa_dir / "lecture.json").exists())
+            self.assertTrue((medusa_dir / "Rhizostoma_pulmo.nxpc").exists())
+
+            hit_by_concept = self.catalog.lookup("medusa")
+            self.assertIsNotNone(hit_by_concept)
+            self.assertEqual(
+                hit_by_concept["relative_dir"],
+                "particelle/animali/mare/Rhizostoma_pulmo",
+            )
+            hit_by_path = self.catalog.lookup("particelle/animali/mare/Rhizostoma_pulmo")
+            self.assertIsNotNone(hit_by_path)
+            self.assertEqual(hit_by_path["slug"], "Rhizostoma_pulmo")
+
 
 if __name__ == "__main__":
     unittest.main()
+
 

@@ -186,21 +186,62 @@ void main() {
       });
     }
 
-    setHotspots(spots) {
+    setHotspots(spots, lecture) {
       this.hotspots = Array.isArray(spots) ? spots : [];
+      this.lecture = lecture || null;
+      this.selectedSpot = this.hotspots[0] || null;
       this.ensureOverlay();
+      this.renderLecturePanel();
     }
 
     ensureOverlay() {
       if (!this.overlay) {
         this.overlay = document.createElement("div");
         this.overlay.className = "particles-hotspots-layer";
-        this.overlay.style.position = "absolute";
-        this.overlay.style.inset = "0";
-        this.overlay.style.pointerEvents = "none";
-        this.overlay.style.overflow = "hidden";
-        this.canvas.parentElement?.appendChild(this.overlay);
+        this.overlay.style.cssText = "position:fixed;inset:0;z-index:26;pointer-events:none;overflow:hidden;";
+        this.overlay.addEventListener("click", (ev) => {
+          const el = ev.target.closest("[data-spot-idx]");
+          if (!el) return;
+          const idx = Number(el.getAttribute("data-spot-idx"));
+          if (this.hotspots[idx]) {
+            this.selectedSpot = this.hotspots[idx];
+            this.renderLecturePanel();
+          }
+        });
+        document.body.appendChild(this.overlay);
       }
+      if (!this.lectureCard) {
+        this.lectureCard = document.createElement("aside");
+        this.lectureCard.className = "particles-professor-card";
+        this.lectureCard.style.cssText = "position:fixed;right:26px;top:110px;width:min(360px,88vw);z-index:27;background:rgba(6,14,26,0.88);border:1px solid rgba(94,242,255,0.45);border-radius:14px;padding:16px 18px;color:#e8f4f8;backdrop-filter:blur(12px);box-shadow:0 8px 32px rgba(0,0,0,0.65);pointer-events:auto;display:none;font-size:13px;line-height:1.5;";
+        document.body.appendChild(this.lectureCard);
+      }
+    }
+
+    renderLecturePanel() {
+      if (!this.lectureCard) return;
+      if (!this.to || (!this.lecture && !this.hotspots.length)) {
+        this.lectureCard.style.display = "none";
+        return;
+      }
+      const lec = this.lecture || {};
+      const spot = this.selectedSpot || this.hotspots[0] || {};
+      const taxPath = lec.taxonomy_path || "particelle/enciclopedia";
+      const binomial = lec.binomial_or_code || "Modello Accademico 3D";
+      const spotHtml = spot.label
+        ? `<div style="margin-top:12px;padding:10px 12px;border-radius:10px;background:rgba(41,224,255,0.1);border:1px solid rgba(94,242,255,0.35);">
+             <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:#5ef2ff;">Punto Selezionato · ${spot.category || "struttura"}</div>
+             <div style="font-size:15px;font-weight:600;margin:2px 0 4px;color:#fff;">${spot.label}</div>
+             <div style="font-size:12.5px;color:#d2e9f3;">${spot.detail || ""}</div>
+           </div>`
+        : "";
+      this.lectureCard.style.display = "block";
+      this.lectureCard.innerHTML = `
+        <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:#5ef2ff;">Cattedra Olografica · ${taxPath}</div>
+        <div style="font-size:18px;font-weight:500;color:#fff;margin-top:2px;">${ binomial }</div>
+        <div style="font-size:12px;color:#9ab8ca;margin-top:6px;">${lec.abstract_summary || "Trascina per ruotare a 360°, usa la rotellina per ingrandire e clicca sui nodi luminosi per l'analisi universitaria."}</div>
+        ${spotHtml}
+      `;
     }
 
     renderHotspots(w, h, dpr, aspect) {
@@ -213,7 +254,8 @@ void main() {
       const cp = Math.cos(this.pitch), sp = Math.sin(this.pitch);
 
       let html = "";
-      for (const spot of this.hotspots) {
+      for (let i = 0; i < this.hotspots.length; i += 1) {
+        const spot = this.hotspots[i];
         const at = Array.isArray(spot.at) ? spot.at : [0, 0, 0];
         const hx = Number(at[0]) || 0, hy = Number(at[1]) || 0, hz = Number(at[2]) || 0;
         const rx = cy * hx + sy * hz, rz = -sy * hx + cy * hz;
@@ -222,11 +264,13 @@ void main() {
 
         const screenX = ((rx * this.scale / aspect) / (depth * 0.5) * 0.5 + 0.5) * (w / dpr);
         const screenY = ((-ry2 * this.scale) / (depth * 0.5) * 0.5 + 0.5) * (h / dpr);
+        const active = this.selectedSpot && this.selectedSpot.id === spot.id;
+        const ring = active ? "background:#ff6be5;box-shadow:0 0 14px #ff6be5,0 0 24px #5ef2ff;" : "background:#5ef2ff;box-shadow:0 0 10px #5ef2ff,0 0 20px #a87bff;";
 
         if (screenX >= 0 && screenX <= (w / dpr) && screenY >= 0 && screenY <= (h / dpr)) {
-          html += `<div class="particle-spot" style="position:absolute;left:${Math.round(screenX)}px;top:${Math.round(screenY)}px;transform:translate(-50%,-50%);pointer-events:auto;cursor:pointer;" title="${spot.detail || ''}">
-            <span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#5ef2ff;box-shadow:0 0 10px #5ef2ff,0 0 20px #a87bff;animation:pulse 1.8s infinite;"></span>
-            <span style="display:block;font-size:11px;color:#e8f4f8;background:rgba(12,20,32,0.85);padding:2px 6px;border-radius:4px;border:1px solid rgba(94,242,255,0.4);white-space:nowrap;margin-top:2px;">${spot.label || ''}</span>
+          html += `<div class="particle-spot" data-spot-idx="${i}" style="position:absolute;left:${Math.round(screenX)}px;top:${Math.round(screenY)}px;transform:translate(-50%,-50%);pointer-events:auto;cursor:pointer;" title="${spot.detail || ''}">
+            <span style="display:inline-block;width:13px;height:13px;border-radius:50%;${ring}"></span>
+            <span style="display:block;font-size:11px;color:#e8f4f8;background:rgba(12,20,32,0.88);padding:2px 7px;border-radius:4px;border:1px solid rgba(94,242,255,0.5);white-space:nowrap;margin-top:2px;">${spot.label || ''}</span>
           </div>`;
         }
       }
@@ -305,6 +349,7 @@ void main() {
       this.fadeAt = performance.now();
       this.onDone = done || null;
       if (this.overlay) this.overlay.innerHTML = "";
+      if (this.lectureCard) this.lectureCard.style.display = "none";
       if (reduced()) this.finish();
     }
 
@@ -315,6 +360,7 @@ void main() {
       this.fadeAt = 0;
       if (this.gl) this.gl.clear(this.gl.COLOR_BUFFER_BIT);
       if (this.overlay) this.overlay.innerHTML = "";
+      if (this.lectureCard) this.lectureCard.style.display = "none";
       const done = this.onDone;
       this.onDone = null;
       if (done) done();
@@ -413,7 +459,8 @@ void main() {
       const cloud = await load(p.digest);
       if (wanted !== p.id) return;
       renderer = renderer || new Renderer(canvas);
-      renderer.setHotspots(p.hotspots || []);
+      const lecture = (p.professor_mode && p.professor_mode.lecture) || (p.catalog && p.catalog.lecture) || null;
+      renderer.setHotspots(p.hotspots || [], lecture);
       if (!renderer.show(cloud)) return;
       showing = p.id;
       setOn(true);

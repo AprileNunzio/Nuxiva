@@ -155,13 +155,26 @@ class Autonomy:
             lines.append("⚠ Da controllare: " + ", ".join(broken))
         await self.tell("\n".join(lines), icon="📋", show=False)
 
+    async def _night_3d_catalog(self) -> None:
+        from features.visual_catalog import night_dreamer
+        built = night_dreamer.run_idle_cycle(max_items=2)
+        if built:
+            paths = ", ".join(item["relative_dir"] for item in built)
+            journal.write("catalogo_3d", "Sintesi notturna 3D", f"Pre-costruiti nel database 3D: {paths}")
+
     async def autopilot(self) -> None:
-        for name, step in (("salute", self._health), ("studio", self._gaps), ("riepilogo", self._digest)):
+        for name, step in (
+            ("salute", self._health),
+            ("studio", self._gaps),
+            ("catalogo_3d", self._night_3d_catalog),
+            ("riepilogo", self._digest),
+        ):
             try:
                 await step()
             except Exception as exc:
                 log.warning("Autopilota (%s): %s", name, exc)
         self.last_autopilot = time.time()
+
 
     async def run(self) -> None:
         await asyncio.sleep(60)
