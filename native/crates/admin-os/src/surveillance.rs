@@ -241,21 +241,27 @@ mod tests {
 
     #[test]
     fn test_url_validation_zero_trust() {
-        assert!(SurveillanceManager::validate_stream_url(
-            CameraKind::Rtsp,
-            "rtsp://192.168.1.100:554/live"
-        )
-        .is_ok());
-        assert!(SurveillanceManager::validate_stream_url(
-            CameraKind::Rtsps,
-            "rtsps://camera.local/stream"
-        )
-        .is_ok());
-        assert!(SurveillanceManager::validate_stream_url(
-            CameraKind::Rtsps,
-            "rtsp://camera.local/stream"
-        )
-        .is_err());
+        assert!(
+            SurveillanceManager::validate_stream_url(
+                CameraKind::Rtsp,
+                "rtsp://192.168.1.100:554/live"
+            )
+            .is_ok()
+        );
+        assert!(
+            SurveillanceManager::validate_stream_url(
+                CameraKind::Rtsps,
+                "rtsps://camera.local/stream"
+            )
+            .is_ok()
+        );
+        assert!(
+            SurveillanceManager::validate_stream_url(
+                CameraKind::Rtsps,
+                "rtsp://camera.local/stream"
+            )
+            .is_err()
+        );
         assert!(SurveillanceManager::validate_stream_url(CameraKind::Webcam, "0").is_ok());
         assert!(
             SurveillanceManager::validate_stream_url(CameraKind::Webcam, "/dev/video0").is_ok()
@@ -263,11 +269,10 @@ mod tests {
         assert!(
             SurveillanceManager::validate_stream_url(CameraKind::Webcam, "http://bad").is_err()
         );
-        assert!(SurveillanceManager::validate_stream_url(
-            CameraKind::Rtsp,
-            "rtsp://bad url with space"
-        )
-        .is_err());
+        assert!(
+            SurveillanceManager::validate_stream_url(CameraKind::Rtsp, "rtsp://bad url with space")
+                .is_err()
+        );
     }
 
     #[test]

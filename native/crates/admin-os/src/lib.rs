@@ -41,4 +41,3 @@ pub use subapps::{MacroAppManifest, SubappManifest, SubappRegistry};
 pub use surveillance::{
     CameraConfig, CameraKind, CameraTelemetry, StreamState, SurveillanceManager,
 };
-

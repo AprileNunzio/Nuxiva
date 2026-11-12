@@ -1,16 +1,12 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Optional
+from typing import Any
 
 log = logging.getLogger("nuxiva.store.sandbox_bridge")
 
 try:
-    from server.features.sandbox.domain.spec import (
-        NetworkPolicy,
-        ResourceLimits,
-        valid_egress_host,
-    )
+    from server.features.sandbox.domain.spec import valid_egress_host
     HAS_SANDBOX_DOMAIN = True
 except (ImportError, ModuleNotFoundError, Exception):
     HAS_SANDBOX_DOMAIN = False
