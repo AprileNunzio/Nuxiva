@@ -9,9 +9,7 @@ import tempfile
 import threading
 from pathlib import Path
 
-DEMO: bool = False
-
-from config import ETC_DIR, LOG_DIR, STATE_DIR
+from config import DEMO, ETC_DIR, LOG_DIR, STATE_DIR
 from agenti.factory_reset import catalog, engine
 from state import store
 

@@ -6,9 +6,7 @@ from dataclasses import dataclass
 
 import brain_intent
 import machine
-from config import STATE_DIR, ollama_remote, read_env, write_env
-
-DEMO: bool = True
+from config import DEMO, STATE_DIR, ollama_remote, read_env, write_env
 from state import store
 
 MARK_FILE = STATE_DIR / "packages.json"

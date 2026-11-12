@@ -4,8 +4,6 @@ import os
 import sys
 from pathlib import Path
 
-DEMO: bool = False
-
 import packages
 from config import NUXIVA_DIR
 from agenti.selftest.skip import Skip

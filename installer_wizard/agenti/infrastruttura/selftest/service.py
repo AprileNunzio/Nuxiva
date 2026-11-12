@@ -6,7 +6,6 @@ from datetime import datetime
 
 from config import STATE_DIR, env_get
 
-DEMO: bool = False
 from state import store
 
 from agenti.selftest.checks import CHECKS

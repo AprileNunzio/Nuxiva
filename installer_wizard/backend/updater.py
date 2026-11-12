@@ -8,7 +8,6 @@ import httpx
 
 from config import NUXIVA_DIR, STATE_DIR, env_get
 
-DEMO: bool = False
 from health import sh
 from state import now_iso, store
 

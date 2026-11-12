@@ -239,8 +239,7 @@ class UpdaterTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_check_makes_available_even_if_target_was_previously_bad(self):
         info_dict = {}
-        with mock.patch("updater.DEMO", False), \
-                mock.patch("updater.store.update", info_dict), \
+        with mock.patch("updater.store.update", info_dict), \
                 mock.patch("updater.store.touch"), \
                 mock.patch("updater.git", new_callable=mock.AsyncMock) as git_mock, \
                 mock.patch("updater.pick_target", new_callable=mock.AsyncMock) as pick_mock:
@@ -257,7 +256,7 @@ class UpdaterTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_fetch_failure_invalidates_stale_update_target(self):
         info = {"available": True, "target_rev": "old-target", "remote_rev": "old-target", "last_result": "installed"}
-        with mock.patch("updater.DEMO", False), mock.patch("updater.store.update", info), \
+        with mock.patch("updater.store.update", info), \
                 mock.patch("updater.store.touch"), mock.patch("updater.git", new_callable=mock.AsyncMock, return_value=(1, "Could not resolve host: github.com")):
             result = await updater.check()
         self.assertFalse(result["available"])
@@ -268,7 +267,7 @@ class UpdaterTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_successful_fetch_clears_transient_error(self):
         info = {"check_error": "dns failure", "last_result": "Fetch non riuscito: dns failure"}
-        with mock.patch("updater.DEMO", False), mock.patch("updater.store.update", info), \
+        with mock.patch("updater.store.update", info), \
                 mock.patch("updater.store.touch"), mock.patch("updater.git", new_callable=mock.AsyncMock) as git_mock:
             git_mock.side_effect = [(0, ""), (0, "same-rev"), (0, "same-rev"), (0, "")]
             result = await updater.check()

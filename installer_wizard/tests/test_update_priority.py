@@ -36,7 +36,6 @@ class BootPriorityTest(unittest.IsolatedAsyncioTestCase):
             patch("orchestrator.updater.priority_update", side_effect=priority)
             pipeline_mock = patch("orchestrator.run_pipeline", side_effect=run_pipeline)
             patch("orchestrator.updater.pending", return_value=pending)
-            patch("orchestrator.DEMO", False)
             finish = patch("orchestrator.updater.finish_pending", new_callable=mock.AsyncMock, return_value=True)
             patch("orchestrator.updater.mark_good", new_callable=mock.AsyncMock)
             patch("orchestrator.health.probe_all", new_callable=mock.AsyncMock, return_value={})
@@ -77,7 +76,7 @@ class BootPriorityTest(unittest.IsolatedAsyncioTestCase):
 
 class UpdaterPriorityTest(unittest.IsolatedAsyncioTestCase):
     async def test_disabling_auto_update_bypasses_every_online_check(self):
-        with mock.patch("updater.DEMO", False), mock.patch("updater.env_get", return_value="0"), \
+        with mock.patch("updater.env_get", return_value="0"), \
                 mock.patch("updater.check", new_callable=mock.AsyncMock) as check:
             self.assertFalse(await updater.priority_update("prioritario all'avvio"))
         check.assert_not_awaited()

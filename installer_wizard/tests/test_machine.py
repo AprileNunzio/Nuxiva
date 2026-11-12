@@ -41,7 +41,7 @@ class ClassTest(unittest.TestCase):
     def test_small_machines_start_light_with_the_brain_in_the_cloud(self):
         for cls, brain, voice in (("pi", "cloud", False), ("small", "cloud", False), ("standard", "local", True)):
             with self.subTest(cls=cls), mock.patch.object(machine, "current", return_value=cls), \
-                    mock.patch.object(setup_api, "DEMO", False), mock.patch("glob.glob", return_value=[]):
+                    mock.patch("glob.glob", return_value=[]):
                 self.assertEqual(machine.BRAIN[cls], brain)
                 self.assertEqual("voice" in setup_api.suggested_packages(), voice)
 

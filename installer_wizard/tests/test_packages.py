@@ -63,9 +63,9 @@ class PackageRulesTest(unittest.TestCase):
                 self.assertEqual(packages.step_wanted("warmup", env), models)
 
     def test_brain_mode_detects_a_remote_server(self):
-        with mock.patch.object(packages, "DEMO", False), mock.patch.object(packages, "ollama_remote", return_value=True):
+        with mock.patch.object(packages, "ollama_remote", return_value=True):
             self.assertEqual(packages.brain_mode({}), "remote")
-        with mock.patch.object(packages, "DEMO", False), mock.patch.object(packages, "ollama_remote", return_value=False):
+        with mock.patch.object(packages, "ollama_remote", return_value=False):
             self.assertEqual(packages.brain_mode({}), "pending")
 
     def test_non_removable_packages_cannot_be_turned_off(self):

@@ -12,7 +12,6 @@ import setup_owner
 import setup_purposes
 from config import STATE_DIR, read_env
 
-DEMO: bool = False
 from state import store
 
 SETUP_FILE = STATE_DIR / "setup.json"

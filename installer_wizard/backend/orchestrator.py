@@ -9,7 +9,6 @@ import sysinfo
 import updater
 from config import VERSION
 
-DEMO: bool = False
 from state import store
 from steps import STEP_BY_ID, STEPS, converge_step, run_pipeline
 

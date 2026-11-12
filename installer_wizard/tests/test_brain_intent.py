@@ -9,8 +9,7 @@ from state import store
 class BrainIntentTest(unittest.TestCase):
     def setUp(self):
         for target in (mock.patch.object(brain_intent, "ollama_remote", return_value=False),
-                       mock.patch.object(packages, "ollama_remote", return_value=False),
-                       mock.patch.object(packages, "DEMO", False)):
+                       mock.patch.object(packages, "ollama_remote", return_value=False)):
             target.start()
             self.addCleanup(target.stop)
         saved = dict(store.steps.get("ollama") or {})

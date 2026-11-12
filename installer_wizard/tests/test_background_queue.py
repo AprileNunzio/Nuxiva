@@ -24,7 +24,7 @@ def fresh_queue() -> BackgroundQueue:
 
 
 class QueueTest(unittest.TestCase):
-    @mock.patch("background.read_env", return_value={})
+    @mock.patch("background.read_env", return_value={"NUXIVA_BRAIN": "local"})
     def test_requested_packages_only(self, _env):
         ids = {s.id for s in fresh_queue().steps()}
         self.assertNotIn("office", ids)
@@ -37,7 +37,7 @@ class QueueTest(unittest.TestCase):
         self.assertFalse({"preflight", "system", "docker", "ollama", "models", "core", "services"} & heavy)
         self.assertGreater(STEP_BY_ID["brain"].size_gb, STEP_BY_ID["models"].size_gb)
 
-    @mock.patch("background.read_env", return_value={"NUXIVA_VOICE_PACKAGE": "1", "NUXIVA_EAR": "1", "NUXIVA_DOCUMENTS": "1"})
+    @mock.patch("background.read_env", return_value={"NUXIVA_BRAIN": "local", "NUXIVA_VOICE_PACKAGE": "1", "NUXIVA_EAR": "1", "NUXIVA_DOCUMENTS": "1"})
     def test_order_follows_priority_and_admin_choice(self, _env):
         q = fresh_queue()
         order = [s.id for s in q.steps()]
@@ -97,7 +97,8 @@ class QueueTest(unittest.TestCase):
         q.resume()
         self.assertTrue(asyncio.run(gated()))
 
-    def test_missing_disk_space_skips_the_part(self):
+    @mock.patch("background.read_env", return_value={"NUXIVA_BRAIN": "local"})
+    def test_missing_disk_space_skips_the_part(self, _env):
         q = fresh_queue()
         q.free_gb = lambda: 1.0
         real_demo, background.DEMO = background.DEMO, False
