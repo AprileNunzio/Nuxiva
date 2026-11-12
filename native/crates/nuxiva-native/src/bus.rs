@@ -6,7 +6,7 @@ use nuxiva_bus_core::{
 use pyo3::prelude::*;
 use std::sync::RwLock;
 
-#[pyclass(module = "nuxiva_native")]
+#[pyclass(module = "nuxiva_native", from_py_object)]
 #[derive(Debug, Clone, Copy)]
 pub struct PySynapticSpike {
     #[pyo3(get, set)]

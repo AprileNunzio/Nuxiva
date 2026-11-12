@@ -3,7 +3,7 @@ use pyo3::exceptions::{PyRuntimeError, PyValueError};
 use pyo3::prelude::*;
 use std::sync::{Arc, RwLock};
 
-#[pyclass(module = "nuxiva_native")]
+#[pyclass(module = "nuxiva_native", from_py_object)]
 #[derive(Debug, Clone)]
 pub struct RustSpatialArbiter {
     inner: nuxiva_spatial_core::PriorityArbiter,

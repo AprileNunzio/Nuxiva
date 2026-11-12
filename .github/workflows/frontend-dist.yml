@@ -9,7 +9,7 @@ on:
 
 concurrency:
   group: frontend-dist
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 permissions:
   contents: write
