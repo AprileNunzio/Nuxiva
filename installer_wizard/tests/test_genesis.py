@@ -1,4 +1,5 @@
 import asyncio
+import importlib
 import itertools
 import json
 import shutil
@@ -82,7 +83,7 @@ class GenesisToolsTest(unittest.TestCase):
 
     def run_tool(self, tool, **args):
         from agenti.agent import registry
-        import agenti.team.tools
+        importlib.import_module("agenti.team.tools")
         return asyncio.run(registry.TOOLS[tool]["fn"](**args))
 
     def test_tool_creates_then_refuses_a_duplicate(self):
