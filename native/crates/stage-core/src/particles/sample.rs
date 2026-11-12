@@ -1,32 +1,10 @@
 use serde::{Deserialize, Serialize};
 use std::f64::consts::TAU;
-use std::fmt;
 
-pub const MAGIC: &[u8; 4] = b"NXPC";
-pub const VERSION: u8 = 1;
-pub const HEADER: usize = 12;
-pub const MIN_POINTS: u32 = 256;
-pub const MAX_POINTS: u32 = 40_000;
+use super::codec::{Cloud, MIN_POINTS, ParticleError};
+
 pub const MAX_PARTS: usize = 24;
-const FLAG_COLORS: u8 = 1;
 const QUANT: f64 = 32_767.0;
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum ParticleError {
-    Spec(&'static str),
-    Format(&'static str),
-}
-
-impl fmt::Display for ParticleError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Self::Spec(why) => write!(f, "invalid particle spec: {why}"),
-            Self::Format(why) => write!(f, "invalid particle blob: {why}"),
-        }
-    }
-}
-
-impl std::error::Error for ParticleError {}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
@@ -70,24 +48,6 @@ const fn one() -> f64 {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Spec {
     pub parts: Vec<Part>,
-}
-
-#[derive(Debug, Clone, Default, PartialEq, Eq)]
-pub struct Cloud {
-    pub positions: Vec<[i16; 3]>,
-    pub colors: Vec<[u8; 3]>,
-}
-
-impl Cloud {
-    #[must_use]
-    pub fn len(&self) -> usize {
-        self.positions.len()
-    }
-
-    #[must_use]
-    pub fn is_empty(&self) -> bool {
-        self.positions.is_empty()
-    }
 }
 
 #[derive(Debug, Clone)]
@@ -264,7 +224,7 @@ fn shade(channel: u8, factor: f64) -> u8 {
 }
 
 pub fn sample(spec: &Spec, count: u32, seed: u64) -> Result<Cloud, ParticleError> {
-    if !(MIN_POINTS..=MAX_POINTS).contains(&count) {
+    if !(MIN_POINTS..=super::codec::MAX_POINTS).contains(&count) {
         return Err(ParticleError::Spec("count out of range"));
     }
     let colors = validate(spec)?;
@@ -296,160 +256,4 @@ pub fn sample(spec: &Spec, count: u32, seed: u64) -> Result<Cloud, ParticleError
         positions: raw.iter().map(|p| p.map(|v| quantize(v * scale))).collect(),
         colors: tint,
     })
-}
-
-#[must_use]
-pub fn encode(cloud: &Cloud) -> Vec<u8> {
-    let count = u32::try_from(cloud.len()).unwrap_or(u32::MAX);
-    let colored = !cloud.colors.is_empty() && cloud.colors.len() == cloud.len();
-    let mut out = Vec::with_capacity(HEADER.saturating_add(cloud.len().saturating_mul(9)));
-    out.extend_from_slice(MAGIC);
-    out.push(VERSION);
-    out.push(if colored { FLAG_COLORS } else { 0 });
-    out.extend_from_slice(&[0, 0]);
-    out.extend_from_slice(&count.to_le_bytes());
-    for p in &cloud.positions {
-        for v in p {
-            out.extend_from_slice(&v.to_le_bytes());
-        }
-    }
-    if colored {
-        for c in &cloud.colors {
-            out.extend_from_slice(c);
-        }
-    }
-    out
-}
-
-pub fn decode(blob: &[u8]) -> Result<Cloud, ParticleError> {
-    let header = blob
-        .get(..HEADER)
-        .ok_or(ParticleError::Format("too short"))?;
-    if header.get(..4) != Some(MAGIC.as_slice()) {
-        return Err(ParticleError::Format("bad magic"));
-    }
-    if header.get(4) != Some(&VERSION) {
-        return Err(ParticleError::Format("unsupported version"));
-    }
-    let flags = header.get(5).copied().unwrap_or(0);
-    if flags & !FLAG_COLORS != 0 || header.get(6..8) != Some([0_u8, 0].as_slice()) {
-        return Err(ParticleError::Format("unknown flags"));
-    }
-    let count_bytes: [u8; 4] = header
-        .get(8..12)
-        .and_then(|s| s.try_into().ok())
-        .ok_or(ParticleError::Format("too short"))?;
-    let count = u32::from_le_bytes(count_bytes);
-    if count > 65_536 {
-        return Err(ParticleError::Format("too many points"));
-    }
-    let n = count as usize;
-    let per = if flags & FLAG_COLORS == 0 { 6 } else { 9 };
-    let expected = n
-        .checked_mul(per)
-        .and_then(|b| b.checked_add(HEADER))
-        .ok_or(ParticleError::Format("size overflow"))?;
-    if blob.len() != expected {
-        return Err(ParticleError::Format("length mismatch"));
-    }
-    let body = blob.get(HEADER..).unwrap_or_default();
-    let split = n.saturating_mul(6);
-    let (pos, col) = body.split_at(split.min(body.len()));
-    let positions = pos
-        .chunks_exact(6)
-        .map(|c| {
-            let v = |i: usize| {
-                let lo = c.get(i).copied().unwrap_or(0);
-                let hi = c.get(i.saturating_add(1)).copied().unwrap_or(0);
-                i16::from_le_bytes([lo, hi])
-            };
-            [v(0), v(2), v(4)]
-        })
-        .collect();
-    let colors = col
-        .chunks_exact(3)
-        .map(|c| {
-            [
-                c.first().copied().unwrap_or(0),
-                c.get(1).copied().unwrap_or(0),
-                c.get(2).copied().unwrap_or(0),
-            ]
-        })
-        .collect();
-    Ok(Cloud { positions, colors })
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    fn part(shape: Shape) -> Part {
-        Part {
-            shape,
-            size: [1.0, 1.0, 1.0],
-            at: [0.0, 0.0, 0.0],
-            rot: [0.0, 0.0, 0.0],
-            color: "#ff8800".to_owned(),
-            weight: 1.0,
-        }
-    }
-
-    #[test]
-    fn sampling_is_deterministic_and_normalized() -> Result<(), ParticleError> {
-        let spec = Spec {
-            parts: vec![part(Shape::Sphere), part(Shape::Torus), part(Shape::Box)],
-        };
-        let a = sample(&spec, 3_000, 7)?;
-        let b = sample(&spec, 3_000, 7)?;
-        assert_eq!(a, b);
-        assert_eq!(a.len(), 3_000);
-        assert!(
-            a.positions
-                .iter()
-                .flatten()
-                .any(|v| v.unsigned_abs() == 32_767)
-        );
-        Ok(())
-    }
-
-    #[test]
-    fn roundtrip_and_strict_decoding() -> Result<(), ParticleError> {
-        let spec = Spec {
-            parts: vec![part(Shape::Helix), part(Shape::Cone)],
-        };
-        let cloud = sample(&spec, 512, 1)?;
-        let blob = encode(&cloud);
-        assert_eq!(blob.len(), HEADER + 512 * 9);
-        assert_eq!(decode(&blob)?, cloud);
-        let mut bad = blob.clone();
-        bad.push(0);
-        assert!(decode(&bad).is_err());
-        let mut magic = blob;
-        if let Some(b) = magic.first_mut() {
-            *b = b'X';
-        }
-        assert!(decode(&magic).is_err());
-        Ok(())
-    }
-
-    #[test]
-    fn rejects_hostile_specs() {
-        let mut big = part(Shape::Plane);
-        big.size = [1e9, 1.0, 1.0];
-        assert!(sample(&Spec { parts: vec![big] }, 512, 1).is_err());
-        let mut color = part(Shape::Plane);
-        color.color = "red;x".to_owned();
-        assert!(sample(&Spec { parts: vec![color] }, 512, 1).is_err());
-        assert!(sample(&Spec { parts: vec![] }, 512, 1).is_err());
-        assert!(
-            sample(
-                &Spec {
-                    parts: vec![part(Shape::Box)]
-                },
-                10,
-                1
-            )
-            .is_err()
-        );
-    }
 }

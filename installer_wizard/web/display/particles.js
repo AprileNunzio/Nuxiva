@@ -17,6 +17,7 @@ in float aSeed;
 uniform float uMix;
 uniform float uTime;
 uniform float uYaw;
+uniform float uPitch;
 uniform float uAspect;
 uniform float uScale;
 uniform float uBurst;
@@ -38,8 +39,8 @@ void main() {
   p += uDrift * 0.012 * vec3(sin(uTime * 1.3 + aSeed * 40.0), cos(uTime * 1.1 + aSeed * 23.0), sin(uTime * 0.9 + aSeed * 61.0));
   float c = cos(uYaw), s = sin(uYaw);
   p = vec3(c * p.x + s * p.z, p.y, -s * p.x + c * p.z);
-  float t = 0.28;
-  p = vec3(p.x, cos(t) * p.y - sin(t) * p.z, sin(t) * p.y + cos(t) * p.z);
+  float cp = cos(uPitch), sp = sin(uPitch);
+  p = vec3(p.x, cp * p.y - sp * p.z, sp * p.y + cp * p.z);
   float depth = max(0.6, p.z + 3.2);
   gl_Position = vec4(p.x * uScale / uAspect, p.y * uScale, 0.0, depth * 0.5);
   gl_PointSize = uSize * (3.2 / depth);
@@ -122,8 +123,114 @@ void main() {
       this.fadeAt = 0;
       this.onDone = null;
       this.lost = false;
+      this.yaw = 0.0;
+      this.pitch = 0.28;
+      this.scale = 0.85;
+      this.userInteracted = false;
+      this.hotspots = [];
+      this.overlay = null;
+
+      this.initInteractions();
       canvas.addEventListener("webglcontextlost", (ev) => { ev.preventDefault(); this.lost = true; this.stop(); }, false);
       canvas.addEventListener("webglcontextrestored", () => { this.lost = false; this.gl = null; if (this.to) { this.init(); this.upload(); this.play(); } }, false);
+    }
+
+    initInteractions() {
+      let dragging = false;
+      let lastX = 0, lastY = 0;
+      const c = this.canvas;
+
+      c.style.touchAction = "none";
+      c.style.cursor = "grab";
+
+      c.addEventListener("pointerdown", (ev) => {
+        dragging = true;
+        lastX = ev.clientX;
+        lastY = ev.clientY;
+        c.setPointerCapture?.(ev.pointerId);
+        c.style.cursor = "grabbing";
+      });
+
+      c.addEventListener("pointermove", (ev) => {
+        if (!dragging) return;
+        const dx = ev.clientX - lastX;
+        const dy = ev.clientY - lastY;
+        lastX = ev.clientX;
+        lastY = ev.clientY;
+        this.yaw += dx * 0.008;
+        this.pitch = Math.max(-1.3, Math.min(1.3, this.pitch + dy * 0.008));
+        this.userInteracted = true;
+      });
+
+      const stopDrag = (ev) => {
+        if (!dragging) return;
+        dragging = false;
+        c.releasePointerCapture?.(ev.pointerId);
+        c.style.cursor = "grab";
+      };
+      c.addEventListener("pointerup", stopDrag);
+      c.addEventListener("pointercancel", stopDrag);
+
+      c.addEventListener("wheel", (ev) => {
+        ev.preventDefault();
+        const factor = 1.0 - Math.max(-0.3, Math.min(0.3, ev.deltaY * 0.0015));
+        this.scale = Math.max(0.18, Math.min(4.8, this.scale * factor));
+        this.userInteracted = true;
+      }, { passive: false });
+
+      c.addEventListener("dblclick", () => {
+        this.yaw = 0.0;
+        this.pitch = 0.28;
+        this.scale = 0.85;
+        this.userInteracted = false;
+      });
+    }
+
+    setHotspots(spots) {
+      this.hotspots = Array.isArray(spots) ? spots : [];
+      this.ensureOverlay();
+    }
+
+    ensureOverlay() {
+      if (!this.overlay) {
+        this.overlay = document.createElement("div");
+        this.overlay.className = "particles-hotspots-layer";
+        this.overlay.style.position = "absolute";
+        this.overlay.style.inset = "0";
+        this.overlay.style.pointerEvents = "none";
+        this.overlay.style.overflow = "hidden";
+        this.canvas.parentElement?.appendChild(this.overlay);
+      }
+    }
+
+    renderHotspots(w, h, dpr, aspect) {
+      if (!this.overlay) return;
+      if (!this.hotspots.length || !this.to) {
+        this.overlay.innerHTML = "";
+        return;
+      }
+      const cy = Math.cos(this.yaw), sy = Math.sin(this.yaw);
+      const cp = Math.cos(this.pitch), sp = Math.sin(this.pitch);
+
+      let html = "";
+      for (const spot of this.hotspots) {
+        const at = Array.isArray(spot.at) ? spot.at : [0, 0, 0];
+        const hx = Number(at[0]) || 0, hy = Number(at[1]) || 0, hz = Number(at[2]) || 0;
+        const rx = cy * hx + sy * hz, rz = -sy * hx + cy * hz;
+        const ry2 = cp * hy - sp * rz, rz2 = sp * hy + cp * rz;
+        const depth = Math.max(0.6, rz2 + 3.2);
+
+        const screenX = ((rx * this.scale / aspect) / (depth * 0.5) * 0.5 + 0.5) * (w / dpr);
+        const screenY = ((-ry2 * this.scale) / (depth * 0.5) * 0.5 + 0.5) * (h / dpr);
+
+        if (screenX >= 0 && screenX <= (w / dpr) && screenY >= 0 && screenY <= (h / dpr)) {
+          html += `<div class="particle-spot" style="position:absolute;left:${Math.round(screenX)}px;top:${Math.round(screenY)}px;transform:translate(-50%,-50%);pointer-events:auto;cursor:pointer;" title="${spot.detail || ''}">
+            <span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#5ef2ff;box-shadow:0 0 10px #5ef2ff,0 0 20px #a87bff;animation:pulse 1.8s infinite;"></span>
+            <span style="display:block;font-size:11px;color:#e8f4f8;background:rgba(12,20,32,0.85);padding:2px 6px;border-radius:4px;border:1px solid rgba(94,242,255,0.4);white-space:nowrap;margin-top:2px;">${spot.label || ''}</span>
+          </div>`;
+        }
+      }
+      this.overlay.innerHTML = html;
     }
 
     init() {
@@ -147,7 +254,7 @@ void main() {
       this.vao = gl.createVertexArray();
       this.buffers = {};
       this.attrs = Object.fromEntries(["aFrom", "aTo", "aColFrom", "aColTo", "aSeed"].map((a) => [a, gl.getAttribLocation(prog, a)]));
-      this.uniforms = Object.fromEntries(["uMix", "uTime", "uYaw", "uAspect", "uScale", "uBurst", "uSize", "uDrift", "uAlpha"].map((u) => [u, gl.getUniformLocation(prog, u)]));
+      this.uniforms = Object.fromEntries(["uMix", "uTime", "uYaw", "uPitch", "uAspect", "uScale", "uBurst", "uSize", "uDrift", "uAlpha"].map((u) => [u, gl.getUniformLocation(prog, u)]));
       return true;
     }
 
@@ -197,6 +304,7 @@ void main() {
       if (!this.to || this.fadeAt) { if (!this.to && done) done(); return; }
       this.fadeAt = performance.now();
       this.onDone = done || null;
+      if (this.overlay) this.overlay.innerHTML = "";
       if (reduced()) this.finish();
     }
 
@@ -206,6 +314,7 @@ void main() {
       this.from = null;
       this.fadeAt = 0;
       if (this.gl) this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+      if (this.overlay) this.overlay.innerHTML = "";
       const done = this.onDone;
       this.onDone = null;
       if (done) done();
@@ -236,11 +345,18 @@ void main() {
       gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
       gl.useProgram(this.prog);
       const u = this.uniforms;
+      const aspect = w / Math.max(1, h);
+
+      if (!this.userInteracted && !still) {
+        this.yaw = now / 9000;
+      }
+
       gl.uniform1f(u.uMix, Math.min(1, (now - this.morphAt) / MORPH_MS));
       gl.uniform1f(u.uTime, now / 1000);
-      gl.uniform1f(u.uYaw, still ? 0.6 : now / 9000);
-      gl.uniform1f(u.uAspect, w / Math.max(1, h));
-      gl.uniform1f(u.uScale, 0.85);
+      gl.uniform1f(u.uYaw, this.yaw);
+      gl.uniform1f(u.uPitch, this.pitch);
+      gl.uniform1f(u.uAspect, aspect);
+      gl.uniform1f(u.uScale, this.scale);
       gl.uniform1f(u.uBurst, burst * burst);
       gl.uniform1f(u.uSize, Math.max(1.5, Math.min(5, 2.2 * dpr * (h / (1080 * dpr)) * 1.4)));
       gl.uniform1f(u.uDrift, still ? 0 : 1);
@@ -248,6 +364,9 @@ void main() {
       gl.bindVertexArray(this.vao);
       gl.drawArrays(gl.POINTS, 0, this.count);
       gl.bindVertexArray(null);
+
+      this.renderHotspots(w, h, dpr, aspect);
+
       if (burst >= 1) { this.finish(); return; }
       this.play();
     }
@@ -294,6 +413,7 @@ void main() {
       const cloud = await load(p.digest);
       if (wanted !== p.id) return;
       renderer = renderer || new Renderer(canvas);
+      renderer.setHotspots(p.hotspots || []);
       if (!renderer.show(cloud)) return;
       showing = p.id;
       setOn(true);

@@ -132,9 +132,9 @@ async def handle(text: str, core_call, speech_lang: dict | None = None) -> dict:
     if lang != pivot.PIVOT and result.get("reply"):
         result["reply"] = await pivot.from_pivot(result["reply"], lang, force=not generated["by_model"])
     if result.get("reply"):
-        from features.stage import show
-        if show.ensure_visual(text) is not None and isinstance(result.get("ui"), dict):
-            current_particles = show.current()
+        from features.particles import show as particles_show
+        if particles_show.ensure_visual(text) is not None and isinstance(result.get("ui"), dict):
+            current_particles = particles_show.current()
             if current_particles:
                 result["ui"].setdefault("particles", current_particles)
     return result
@@ -371,8 +371,8 @@ async def _converse(text: str, core_call, unrouted: bool = False) -> tuple[str, 
 def ambient_diorama(text: str, reply: str) -> None:
     from features.diorama import ambient
     ambient.watch(text, reply)
-    from features.stage import show
-    show.watch(text, reply)
+    from features.particles import show as particles_show
+    particles_show.watch(text, reply)
 
 
 async def _presented(reply: str, text: str):
