@@ -259,3 +259,26 @@ class CEOReasoningTest(unittest.TestCase):
         self.assertEqual(assistant._hint(decision), "musicstudio")
         weak = self.ceo.analyze_request("ciao come va?")
         self.assertEqual(assistant._hint(weak), "")
+
+    def test_autonomous_node_delegation_and_tiers(self):
+        conv_decision = self.ceo.analyze_request("ciao come va?")
+        self.assertEqual(conv_decision.target_node, "local")
+        self.assertEqual(conv_decision.execution_tier, "light")
+
+        heavy_decision = self.ceo.analyze_request("mostrami la scultura a particelle di una medusa")
+        self.assertEqual(heavy_decision.execution_tier, "heavy")
+        self.assertEqual(heavy_decision.target_node, "local")
+
+        mock_remote_node = {
+            "id": "gpu-worker-1",
+            "name": "Workstation GPU",
+            "type": "server",
+            "online": True,
+            "compute": {"ollama": {"available": True, "shared": True}},
+        }
+        with self.mock.patch("features.nodes.registry.registry.listing", return_value=[mock_remote_node]):
+            delegated = self.ceo.analyze_request("mostrami la scultura a particelle di una medusa")
+            self.assertEqual(delegated.target_node, "Workstation GPU")
+            self.assertEqual(delegated.execution_tier, "heavy")
+            self.assertIn("Offloading calcolo", delegated.delegation_plan)
+            self.assertIn("Workstation GPU", delegated.node_reason)

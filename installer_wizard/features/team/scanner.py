@@ -250,6 +250,19 @@ class AgentScanner:
                             spec.loader.exec_module(mod)
                     except Exception:
                         pass
+            tools_dir = folder / "tools"
+            if tools_dir.is_dir():
+                mod_pkg = f"features.{folder.name}.tools"
+                try:
+                    importlib.import_module(mod_pkg)
+                except Exception:
+                    pass
+                for tf in tools_dir.glob("*.py"):
+                    if tf.stem != "__init__":
+                        try:
+                            importlib.import_module(f"{mod_pkg}.{tf.stem}")
+                        except Exception:
+                            pass
             # tools_*.py
             for tf in folder.glob("tools_*.py"):
                 mod_name = f"features.{folder.name}.{tf.stem}"

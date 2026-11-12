@@ -24,6 +24,9 @@ class CEODecision:
     ranked: list = field(default_factory=list)
     conversational: bool = False
     reasoned: bool = False
+    target_node: str = "local"
+    execution_tier: str = "balanced"
+    node_reason: str = ""
     timestamp: float = field(default_factory=time.time)
 
 
@@ -55,6 +58,35 @@ class CEOExecutive:
             description="Coordinamento cognitivo e conversazione naturale"
         )
 
+    @staticmethod
+    def _resolve_node_delegation(agent_id: str) -> tuple[str, str, str]:
+        heavy_agents = {
+            "neural_radiance",
+            "gaussian_splat",
+            "depth_parallax",
+            "models3d",
+            "vision",
+            "particles",
+        }
+        tier = "heavy" if agent_id in heavy_agents else "balanced"
+        try:
+            from features.nodes.registry import registry as nodes_reg
+            nodes = [n for n in nodes_reg.listing() if n.get("online")]
+            if agent_id in heavy_agents:
+                for n in nodes:
+                    comp = n.get("compute", {})
+                    ollama = comp.get("ollama", {})
+                    if ollama.get("available") or n.get("type") in ("server", "desktop"):
+                        node_name = str(n.get("name") or n.get("id"))
+                        return (
+                            node_name,
+                            tier,
+                            f"Offloading calcolo «{agent_id}» su nodo «{node_name}» per ottimizzare consumi e memoria",
+                        )
+        except Exception:
+            pass
+        return "local", tier, "Esecuzione locale ottimale"
+
     def analyze_request(self, text: str, context: dict | None = None) -> CEODecision:
         agents = self.scan_team()
         query_norm = normalize_text(text)
@@ -74,7 +106,10 @@ class CEOExecutive:
                 delegation_plan=plan,
                 confidence=1.0,
                 query=text,
-                conversational=True
+                conversational=True,
+                target_node="local",
+                execution_tier="light",
+                node_reason="Conversazione naturale su host locale",
             )
 
         ranked = relevance.rank(agents, text, learning.table())
@@ -104,13 +139,20 @@ class CEOExecutive:
                 f"(nessun comando verticale esclusivo rilevato con alta confidenza)."
             )
 
+        target_node, exec_tier, node_reason = self._resolve_node_delegation(primary.id)
+        if target_node != "local":
+            plan += f" [Delega calcolo: {node_reason}]."
+
         return CEODecision(
             primary_agent=primary,
             secondary_agents=secondaries,
             delegation_plan=plan,
             confidence=confidence,
             query=text,
-            ranked=ranked
+            ranked=ranked,
+            target_node=target_node,
+            execution_tier=exec_tier,
+            node_reason=node_reason,
         )
 
     @staticmethod
@@ -149,8 +191,22 @@ class CEOExecutive:
         plan = f"Il CEO ha ragionato sulla richiesta e assegna «{chosen.name}» [{chosen.id}]: {verdict['reason']}"
         if helpers:
             plan += f" Supporto: {', '.join(h.name for h in helpers)}."
-        return CEODecision(primary_agent=chosen, secondary_agents=helpers, delegation_plan=plan, confidence=round(max(0.5, verdict["confidence"]), 3),
-                           query=decision.query, ranked=decision.ranked, conversational=False, reasoned=True)
+        target_node, exec_tier, node_reason = self._resolve_node_delegation(chosen.id)
+        if target_node != "local":
+            plan += f" [Delega calcolo: {node_reason}]."
+        return CEODecision(
+            primary_agent=chosen,
+            secondary_agents=helpers,
+            delegation_plan=plan,
+            confidence=round(max(0.5, verdict["confidence"]), 3),
+            query=decision.query,
+            ranked=decision.ranked,
+            conversational=False,
+            reasoned=True,
+            target_node=target_node,
+            execution_tier=exec_tier,
+            node_reason=node_reason,
+        )
 
     def on_conversation_start(self, text: str, context: dict | None = None) -> CEODecision:
         return self._announce(self.analyze_request(text, context), text)
