@@ -58,6 +58,27 @@ class QueueTest(unittest.TestCase):
         self.assertEqual(snap["progress"], 100.0)
         self.assertTrue(all(i["status"] == "done" for i in snap["items"]))
 
+    def test_parts_installed_before_an_update_are_verified_again_once_per_boot(self):
+        q = fresh_queue()
+        background.RETRY_SECONDS = 0
+        ids = [s.id for s in q.steps()]
+        for sid in ids:
+            store.steps[sid] = {"status": "done", "progress": 100, "message": "Operativo"}
+        seen: list[str] = []
+
+        async def verify(step, quiet=False):
+            seen.append(step.id)
+            self.assertNotEqual(store.steps[step.id]["status"], "running")
+            return True
+        q.free_gb = lambda: 0.0
+        with mock.patch("background.converge_step", side_effect=verify):
+            asyncio.run(asyncio.wait_for(q.run(asyncio.Lock()), timeout=60))
+            self.assertEqual(sorted(seen), sorted(ids))
+            seen.clear()
+            asyncio.run(asyncio.wait_for(q.run(asyncio.Lock()), timeout=60))
+            self.assertEqual(seen, [])
+        self.assertTrue(q.snapshot()["finished"])
+
     def test_conversation_and_pause_hold_the_queue(self):
         q = fresh_queue()
         q.note_activity()

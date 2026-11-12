@@ -80,6 +80,12 @@
     "state_reset": "État de mise à jour, de rollback et des verrous réinitialisé",
     "restart_warn": "Attention : impossible de redémarrer %s",
     "verify_fail": "Nuxiva n'a pas répondu en %s secondes : consultez le journal ci-dessus ou lancez « sudo nuxivactl logs supervisor »",
-    "restored": "Code restauré à la version précédente %s"
+    "restored": "Code restauré à la version précédente %s",
+    "units_synced": "Unité système alignée sur la version installée : %s",
+    "units_restarted": "Service redémarré avec sa nouvelle configuration : %s",
+    "units_masked": "Unité laissée intacte (masquée ou liée par l'administrateur) : %s",
+    "units_invalid": "Unité ignorée car non valide : %s",
+    "units_failed": "Impossible de mettre à jour l'unité système : %s",
+    "units_reload_failed": "systemd n'a pas rechargé les unités mises à jour"
   }
 }

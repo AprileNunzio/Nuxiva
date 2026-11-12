@@ -80,6 +80,12 @@
     "state_reset": "Update, rollback and lock state cleared",
     "restart_warn": "Warning: %s could not be restarted",
     "verify_fail": "Nuxiva did not answer within %s seconds: see the log above or run “sudo nuxivactl logs supervisor”",
-    "restored": "Code restored to the previous version %s"
+    "restored": "Code restored to the previous version %s",
+    "units_synced": "System unit updated to the installed version: %s",
+    "units_restarted": "Service restarted with its new configuration: %s",
+    "units_masked": "Unit left untouched (masked or linked by the administrator): %s",
+    "units_invalid": "Unit skipped because it is not valid: %s",
+    "units_failed": "Could not update the system unit: %s",
+    "units_reload_failed": "systemd did not reload the updated units"
   }
 }

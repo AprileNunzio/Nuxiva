@@ -80,6 +80,12 @@
     "state_reset": "Stato di aggiornamento, rollback e blocchi azzerati",
     "restart_warn": "Attenzione: riavvio di %s non riuscito",
     "verify_fail": "Nuxiva non ha risposto entro %s secondi: guarda il registro qui sopra o lancia «sudo nuxivactl logs supervisor»",
-    "restored": "Codice riportato alla versione precedente %s"
+    "restored": "Codice riportato alla versione precedente %s",
+    "units_synced": "Unità di sistema allineata alla versione installata: %s",
+    "units_restarted": "Servizio riavviato con la nuova configurazione: %s",
+    "units_masked": "Unità lasciata invariata (mascherata o collegata dall'amministratore): %s",
+    "units_invalid": "Unità ignorata perché non valida: %s",
+    "units_failed": "Impossibile aggiornare l'unità di sistema: %s",
+    "units_reload_failed": "systemd non ha ricaricato le unità aggiornate"
   }
 }

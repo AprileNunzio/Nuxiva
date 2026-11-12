@@ -45,6 +45,7 @@ class BackgroundQueue:
         self.current = ""
         self.finished = False
         self.last_activity = 0.0
+        self.verified: set[str] = set()
         self.free_gb = _free_gb
         self.wake = asyncio.Event()
         self._load()
@@ -184,7 +185,7 @@ class BackgroundQueue:
 
     def _next(self, attempted: set) -> Step | None:
         for step in self.steps():
-            if step.id not in attempted and self.status(step) != "done":
+            if step.id not in attempted and (self.status(step) != "done" or step.id not in self.verified):
                 return step
         return None
 
@@ -211,18 +212,19 @@ class BackgroundQueue:
                 if step is None:
                     break
                 attempted.add(step.id)
-                if not self._disk_ok(step):
+                was_done = self.status(step) == "done"
+                if not was_done and not self._disk_ok(step):
                     continue
-                was_done = store.steps.get(step.id, {}).get("status") == "done"
                 async with lock:
                     self.current = step.id
-                    store.steps.setdefault(step.id, {}).update(
-                        status="running",
-                        progress=0,
-                        message="Avvio…",
-                        detail=f"Preparazione di {step.title}...",
-                        last_update=time.time(),
-                    )
+                    if not was_done:
+                        store.steps.setdefault(step.id, {}).update(
+                            status="running",
+                            progress=0,
+                            message="Avvio…",
+                            detail=f"Preparazione di {step.title}...",
+                            last_update=time.time(),
+                        )
                     store.touch()
                     try:
                         ok = await converge_step(step, quiet=True)
@@ -232,6 +234,7 @@ class BackgroundQueue:
                         ok = False
                     finally:
                         self.current = ""
+                        self.verified.add(step.id)
                         store.touch()
                 if not was_done:
                     store.event("INFO" if ok else "WARN",

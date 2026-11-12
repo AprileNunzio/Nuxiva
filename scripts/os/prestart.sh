@@ -41,15 +41,7 @@ fi
 
 pkill -f 'backend/wizard_server.py' >/dev/null 2>&1 || true
 
-units_changed=0
-for unit in nuxiva-supervisor.service nuxiva-rollback.service; do
-    src="$NUXIVA_DIR/scripts/os/systemd/$unit"
-    if [ -f "$src" ] && ! cmp -s "$src" "/etc/systemd/system/$unit"; then
-        install -m 0644 "$src" /etc/systemd/system/
-        units_changed=1
-    fi
-done
-if [ "$units_changed" = 1 ]; then systemctl daemon-reload >/dev/null 2>&1 || true; fi
+bash "$NUXIVA_DIR/scripts/os/units.sh" || true
 systemctl is-enabled -q nuxiva-supervisor.service 2>/dev/null \
     || systemctl enable -q nuxiva-supervisor.service >/dev/null 2>&1 || true
 
