@@ -1,0 +1,42 @@
+{
+  "id": "depth_parallax",
+  "name": "Depth Parallax da Immagini",
+  "icon": "🖼️",
+  "category": "creativita",
+  "order": 42,
+  "pinned": false,
+  "panel": "",
+  "api": "engine.py",
+  "description": "Agente di fotogrammetria e rilievo da immagini: converte immagini 2D e file PNG in mesh volumetriche 3D con stima della profondità, normali Sobel e riflessi speculari.",
+  "capabilities": [
+    "Ricostruzione di rilievo 3D da byte RGBA di qualunque immagine o PNG",
+    "Calcolo in tempo reale delle normali di superficie tramite filtri Sobel bidirezionali",
+    "Estrusione bilaterale anteriore e posteriore con correzione radiale",
+    "Illuminazione speculare ad alta potenza per esaltare texture e dettagli",
+    "Salvataggio automatico nel catalogo tassonomico gerarchico"
+  ],
+  "routing": {
+    "nouns": [
+      "depth parallax",
+      "immagine 3d",
+      "png 3d",
+      "rilievo 3d",
+      "parallasse",
+      "depth map"
+    ],
+    "phrases": [
+      "trasforma questa immagine in 3d",
+      "rilievo 3d da png",
+      "effetto parallasse 3d",
+      "da immagine a 3d"
+    ]
+  },
+  "settings": [],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "gvQUkpW15e1x",
+    "url": "https://img.icons8.com/?size=240&id=gvQUkpW15e1x&format=png"
+  }
+}

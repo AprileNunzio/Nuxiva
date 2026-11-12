@@ -1,0 +1,40 @@
+{
+  "id": "gaussian_splat",
+  "name": "Gaussian Splatting 3D",
+  "icon": "🔮",
+  "category": "creativita",
+  "order": 40,
+  "pinned": false,
+  "panel": "",
+  "api": "engine.py",
+  "description": "Agente 3DGS per la sintesi volumetrica fotorealistica: decompone oggetti in ellissoidi gaussiani anisotropici con armoniche sferiche direzionali SH3 ed esposizione dinamica.",
+  "capabilities": [
+    "Sintesi di ellissoidi anisotropici orientati nello spazio 3D tramite quaternioni",
+    "Riflettanza angolare calcolata con armoniche sferiche di terzo ordine",
+    "Autocritica della densità dei volumi con raffinamento iterativo",
+    "Archiviazione tassonomica nel database 3D gerarchico",
+    "Integrazione nel visual router con priorità personalizzabile dal Cervello"
+  ],
+  "routing": {
+    "nouns": [
+      "gaussian splat",
+      "splatting",
+      "3dgs",
+      "ellissoidi gaussiani",
+      "volume continuo"
+    ],
+    "phrases": [
+      "mostrami un gaussian splat",
+      "crea un modello splatting",
+      "splat 3d fotorealistico"
+    ]
+  },
+  "settings": [],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "gvQUkpW15e1x",
+    "url": "https://img.icons8.com/?size=240&id=gvQUkpW15e1x&format=png"
+  }
+}

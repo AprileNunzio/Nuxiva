@@ -1,0 +1,15 @@
+{
+  "name": "Holographic Particles",
+  "description": "Holographic 3D particle sculptor agent: generates complex shapes with luminescent point clouds, 360° rotation and zoom controls, and academic explanations for each point.",
+  "capabilities": [
+    "Ultra-high density procedural holographic sculpting",
+    "Full interactive controls: 360° rotation, tilt, and zoom",
+    "Clickable inspection points with holographic university professor mode",
+    "Hierarchical O(1) automated taxonomy in the 3D catalog",
+    "Autonomous nocturnal synthesis of shapes discussed during the day",
+    "WebXR headset support for volumetric stereoscopic immersion"
+  ],
+  "settings": {
+    "NUXIVA_PARTICLES_AMBIENT": "Spontaneous particles during conversation"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "Partículas Holográficas",
+  "description": "Agente escultor holográfico 3D: modela formas complejas con nubes de partículas luminiscentes, rotación y zoom 360°, y explicaciones académicas de cada punto.",
+  "capabilities": [
+    "Escultura holográfica procedimental de ultra alta densidad",
+    "Controles interactivos completos: rotación 360°, inclinación y zoom",
+    "Puntos de inspección interactivos con modo de profesor universitario",
+    "Taxonomía jerárquica automática O(1) en el catálogo 3D",
+    "Síntesis nocturna autónoma de formas discutidas durante el día",
+    "Compatibilidad con visores WebXR para inmersión volumétrica estereoscópica"
+  ],
+  "settings": {
+    "NUXIVA_PARTICLES_AMBIENT": "Partículas espontáneas durante la conversación"
+  }
+}

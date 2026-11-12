@@ -1,0 +1,65 @@
+{
+  "id": "particles",
+  "name": "Particelle Olografiche",
+  "icon": "✨",
+  "category": "creativita",
+  "order": 39,
+  "pinned": false,
+  "panel": "",
+  "api": "show.py",
+  "description": "Agente scultore olografico specializzato in particelle 3D: modella forme complesse con nuvole di particelle luminescenti, controlli di rotazione e zoom a 360°, e spiegazione accademica per ogni punto.",
+  "capabilities": [
+    "Scultura procedurale olografica ad altissima densità (fino a 24.000 punti)",
+    "Controlli interattivi completi: rotazione 360°, inclinazione e zoom con rotellina del mouse",
+    "Punti di ispezione cliccabili con cattedra olografica da professore universitario",
+    "Tassonomia automatica gerarchica O(1) nel catalogo 3D",
+    "Sintesi notturna autonoma delle forme discusse durante il giorno",
+    "Supporto visori WebXR per immersione volumetrica stereoscopica"
+  ],
+  "routing": {
+    "nouns": [
+      "particelle",
+      "ologramma",
+      "nuvola di punti",
+      "scultura olografica",
+      "medusa",
+      "atomo",
+      "dna",
+      "cellula",
+      "neurone",
+      "galassia"
+    ],
+    "phrases": [
+      "mostrami le particelle",
+      "crea con le particelle",
+      "scultura di particelle",
+      "come e fatta una medusa",
+      "modello olografico"
+    ]
+  },
+  "settings": [
+    {
+      "key": "NUXIVA_PARTICLES_AMBIENT",
+      "label": "Particelle spontanee durante la conversazione",
+      "type": "select",
+      "default": "on",
+      "options": [
+        {
+          "value": "on",
+          "label": "Sì, quando l'oggetto è concreto"
+        },
+        {
+          "value": "off",
+          "label": "No, solo su richiesta esplicita"
+        }
+      ]
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "gvQUkpW15e1x",
+    "url": "https://img.icons8.com/?size=240&id=gvQUkpW15e1x&format=png"
+  }
+}

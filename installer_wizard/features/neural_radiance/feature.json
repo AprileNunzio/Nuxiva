@@ -1,0 +1,42 @@
+{
+  "id": "neural_radiance",
+  "name": "Neural Radiance & SDF",
+  "icon": "💡",
+  "category": "creativita",
+  "order": 41,
+  "pinned": false,
+  "panel": "",
+  "api": "engine.py",
+  "description": "Agente ottico e fotorealistico: modella superfici continue matematiche con Signed Distance Fields (SDF), fusione morbida, PBR, subsurface scattering e ombre soffuse raymarched.",
+  "capabilities": [
+    "Generazione di primitive SDF con smooth-union sferica, toroidale e prismatica",
+    "Rendering PBR avanzato con metallicità, rugosità e diffusione sottosuperficiale (SSS)",
+    "Illuminazione cinematografica a tre punti: luce chiave, riempimento e controluce",
+    "Occlusione ambientale a stadi multipli e calcolo delle penombre morbide",
+    "Catalogazione istantanea nel visual catalog"
+  ],
+  "routing": {
+    "nouns": [
+      "neural radiance",
+      "nerf",
+      "sdf",
+      "raymarching",
+      "3d realistico",
+      "luci e ombre"
+    ],
+    "phrases": [
+      "crea in 3d realistico",
+      "con luci e ombre realistiche",
+      "effetto wow 3d",
+      "raymarching sdf"
+    ]
+  },
+  "settings": [],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "gvQUkpW15e1x",
+    "url": "https://img.icons8.com/?size=240&id=gvQUkpW15e1x&format=png"
+  }
+}

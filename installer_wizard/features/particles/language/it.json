@@ -1,0 +1,15 @@
+{
+  "name": "Particelle Olografiche",
+  "description": "Agente scultore olografico specializzato in particelle 3D: modella forme complesse con nuvole di particelle luminescenti, controlli di rotazione e zoom a 360°, e spiegazione accademica per ogni punto.",
+  "capabilities": [
+    "Scultura procedurale olografica ad altissima densità",
+    "Controlli interattivi completi: rotazione 360°, inclinazione e zoom",
+    "Punti di ispezione cliccabili con cattedra olografica da professore universitario",
+    "Tassonomia automatica gerarchica O(1) nel catalogo 3D",
+    "Sintesi notturna autonoma delle forme discusse durante il giorno",
+    "Supporto visori WebXR per immersione volumetrica stereoscopica"
+  ],
+  "settings": {
+    "NUXIVA_PARTICLES_AMBIENT": "Particelle spontanee durante la conversazione"
+  }
+}

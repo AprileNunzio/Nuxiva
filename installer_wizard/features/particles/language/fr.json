@@ -1,0 +1,15 @@
+{
+  "name": "Particules Holographiques",
+  "description": "Agent sculpteur holographique 3D: façonne des formes complexes avec nuages de particules luminescentes, commandes de rotation et zoom à 360°, et explications académiques de chaque point.",
+  "capabilities": [
+    "Sculpture procédurale holographique à très haute densité",
+    "Commandes interactives complètes: rotation 360°, inclinaison et zoom",
+    "Points d'inspection cliquables avec mode professeur universitaire",
+    "Taxonomie hiérarchique automatique O(1) dans le catalogue 3D",
+    "Synthèse nocturne autonome des formes discutées pendant la journée",
+    "Prise en charge des casques WebXR pour immersion volumétrique stéréoscopique"
+  ],
+  "settings": {
+    "NUXIVA_PARTICLES_AMBIENT": "Particules spontanées pendant la conversation"
+  }
+}

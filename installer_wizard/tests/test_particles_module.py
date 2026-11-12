@@ -199,6 +199,27 @@ class DedicatedParticlesDirectoryTest(unittest.TestCase):
         self.assertEqual(dispatched["route"]["selected_engine"], "diorama")
         self.assertEqual(dispatched["artifact"]["agent_id"], "agent.diorama.v1")
 
+    def test_visual_agents_feature_manifests_and_scanner(self):
+        from features.team.scanner import scanner
+
+        discovered = scanner.scan(force=True)
+        expected_agents = (
+            "particles",
+            "diorama",
+            "gaussian_splat",
+            "neural_radiance",
+            "depth_parallax",
+        )
+        for agent_id in expected_agents:
+            self.assertIn(agent_id, discovered)
+            record = discovered[agent_id]
+            self.assertEqual(record.id, agent_id)
+            self.assertTrue(Path(record.dir_path).exists())
+            self.assertTrue((Path(record.dir_path) / "feature.json").exists())
+            self.assertIsInstance(record.capabilities, list)
+            self.assertGreater(len(record.capabilities), 0)
+            self.assertIsInstance(record.routing, dict)
+
 
 if __name__ == "__main__":
     unittest.main()
