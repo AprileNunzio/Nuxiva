@@ -254,7 +254,7 @@ def _build_shared_brain(data: dict, base: dict, tasks: list[dict], questions: li
         "active_tools_count": len(registry.active()),
         "propagation_mode": "director_to_all_agents",
         "autonomy": {
-            "mode": "jarvis_risk_matrix",
+            "mode": "nuxiva_risk_matrix",
             "threshold": 0.94,
             "status": "active",
         },

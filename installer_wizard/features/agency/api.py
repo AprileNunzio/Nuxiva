@@ -196,7 +196,7 @@ async def board_autonomy_status(project_id: str, request: Request):
     evaluations = [autonomy.evaluate(t).to_dict() for t in tasks if isinstance(t, dict)]
     return {
         "project_id": pid,
-        "engine": "jarvis_risk_matrix",
+        "engine": "nuxiva_risk_matrix",
         "evaluations": evaluations,
         "auto_approved": sum(1 for e in evaluations if e["autonomous"]),
         "human_supervision_required": sum(1 for e in evaluations if not e["autonomous"]),
@@ -226,3 +226,24 @@ async def board_briefing(project_id: str, request: Request):
         "insights": [ins.to_dict() for ins in insights],
         "telemetry": telemetry.to_dict(),
     }
+
+
+@public_routes.get("/api/agency/board/{project_id}/cognition")
+async def board_cognition(project_id: str, request: Request):
+    from features.agency import cognition
+    require_display(request)
+    pid = _project(request, project_id)
+    data = await _guard(request, service.detail(pid))
+    project = data.get("project") or {}
+    goal = str(project.get("goal") or project.get("title") or "Progetto")
+    bp = data.get("blueprint") or {}
+    arch = str(bp.get("architecture") or "")
+    decisions = [f"{d.get('topic', '')}: {d.get('choice', '')}" for d in (project.get("decisions") or []) if isinstance(d, dict)]
+    socratic = cognition.interrogate_goal(goal, decisions)
+    specialists = cognition.recruit_specialists(goal, arch)
+    return {
+        "project_id": pid,
+        "socratic": socratic,
+        "specialists": specialists,
+    }
+

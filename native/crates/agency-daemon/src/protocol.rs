@@ -1,6 +1,8 @@
+use agency_action::ReplacementChunk;
 use agency_domain::TaskSpec;
 use agency_foresight::{EventSpec, ScenarioSpec};
 use agency_scheduler::{ModelProfile, Settings};
+use agency_thought::{ArchitectureCandidate, SubTaskBlueprint};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
@@ -164,6 +166,65 @@ pub enum Request {
         worker: Option<String>,
         #[serde(default)]
         generation: Option<u64>,
+    },
+    CodeOutline {
+        project: String,
+        path: String,
+        #[serde(default)]
+        worker: Option<String>,
+        #[serde(default)]
+        generation: Option<u64>,
+    },
+    CodeSymbols {
+        project: String,
+        query: String,
+        #[serde(default)]
+        limit: Option<usize>,
+        #[serde(default)]
+        worker: Option<String>,
+        #[serde(default)]
+        generation: Option<u64>,
+    },
+    CodeViewRange {
+        project: String,
+        path: String,
+        start_line: usize,
+        end_line: usize,
+        #[serde(default)]
+        worker: Option<String>,
+        #[serde(default)]
+        generation: Option<u64>,
+    },
+    CodePatch {
+        project: String,
+        path: String,
+        chunks: Vec<ReplacementChunk>,
+        #[serde(default)]
+        worker: Option<String>,
+        #[serde(default)]
+        generation: Option<u64>,
+    },
+    ThoughtEvaluate {
+        candidates: Vec<ArchitectureCandidate>,
+    },
+    SocraticInterrogate {
+        goal: String,
+        #[serde(default)]
+        known_decisions: Vec<String>,
+    },
+    SpecialistRecruit {
+        goal: String,
+        #[serde(default)]
+        architecture: String,
+    },
+    TaskExpand {
+        project: String,
+        task: String,
+        subtasks: Vec<SubTaskBlueprint>,
+    },
+    ForgeInspect {
+        name: String,
+        code: String,
     },
     ForesightCreate {
         id: String,

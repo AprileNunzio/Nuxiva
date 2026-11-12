@@ -2,6 +2,7 @@
 
 mod access;
 mod admin_os;
+mod agency_core;
 mod arbitration;
 mod ask_core;
 mod audio;
@@ -111,6 +112,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<RustAccessMatrix>()?;
     m.add_class::<RustTokenCodec>()?;
     m.add("TokenRejected", m.py().get_type::<TokenRejected>())?;
+    agency_core::register(m)?;
     guard::register(m)?;
     compute_lease::register(m)?;
     jev::register(m)?;

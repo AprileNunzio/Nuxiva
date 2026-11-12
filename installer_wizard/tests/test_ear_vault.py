@@ -20,7 +20,7 @@ fake_stt.lock = asyncio.Lock()
 
 
 def fake_transcribe(audio, name="same", offset=0.0):
-    return [{"start": round(offset + 0.1, 2), "end": round(offset + 1.5, 2), "text": "Jarvis come va"}]
+    return [{"start": round(offset + 0.1, 2), "end": round(offset + 1.5, 2), "text": "Nuxiva come va"}]
 
 
 fake_stt.transcribe_segments = fake_transcribe

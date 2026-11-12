@@ -2,7 +2,7 @@ import logging
 
 from state import store
 
-from features.agency import critic, director, documents, workspace
+from features.agency import cognition, critic, director, documents, workspace
 from features.agency.client import AgencyRejected, AgencyUnavailable, client
 from features.agency.memory import memory
 from features.agency.text import clean, folder_name, unique_id
@@ -35,6 +35,9 @@ async def start(goal: str, lang: str) -> dict:
         reasoning, critic_tokens = await critic.interrogate(goal, blueprint, language_name)
     except BrainUnavailable as exc:
         raise AgencyFailure("brain") from exc
+    known_decisions = [f"{d.topic}: {d.choice}" for d in blueprint.decisions]
+    socratic = cognition.interrogate_goal(goal, known_decisions)
+    specialists = cognition.recruit_specialists(goal, blueprint.architecture)
     project_id = unique_id(blueprint.title)
     folder = f"{folder_name(blueprint.title, project_id)} {project_id[-6:]}"
     try:
@@ -44,7 +47,8 @@ async def start(goal: str, lang: str) -> dict:
         raise AgencyFailure("unavailable") from exc
     context = {"goal": goal, "lang": lang, "language_name": language_name, "folder": folder,
                "work_dir": word(lang, "files", "work_dir"), "blueprint": blueprint.to_dict(),
-               "reasoning": reasoning.to_dict(), "planning_tokens": planning_tokens + critic_tokens}
+               "reasoning": reasoning.to_dict(), "socratic": socratic, "specialists": specialists,
+               "planning_tokens": planning_tokens + critic_tokens}
     memory.save(project_id, context)
     workspace.write(folder, word(lang, "files", "plan_file"), documents.plan(blueprint, goal, lang))
     workspace.write(folder, word(lang, "files", "reasoning_file"), documents.reasoning(reasoning, lang))

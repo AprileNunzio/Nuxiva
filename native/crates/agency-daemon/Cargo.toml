@@ -24,6 +24,9 @@ agency-ledger = { path = "../agency-ledger" }
 agency-scheduler = { path = "../agency-scheduler" }
 agency-codeindex = { path = "../agency-codeindex" }
 agency-foresight = { path = "../agency-foresight" }
+agency-thought = { path = "../agency-thought" }
+agency-action = { path = "../agency-action" }
+agency-forge = { path = "../agency-forge" }
 chacha20poly1305 = "0.10"
 zeroize = "1"
 serde = { version = "1", features = ["derive"] }

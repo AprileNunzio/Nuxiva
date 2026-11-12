@@ -136,7 +136,16 @@ async def _forged(ctx: Context, call_name: str, args: dict) -> str:
 TOOLS: dict[str, Tool] = {tool.name: tool for tool in (
     Tool("list_files", "List every file of the project with size and language.", {}, "read", _list_files),
     Tool("search_code", "Search the project code for words; returns file:line matches.", {"query": "words to find"}, "read", _search),
+    Tool("view_outline", "Extract structural symbols (functions, classes, structs, interfaces) and line ranges of a file.",
+         {"path": "relative/path.ext"}, "read", surgical.view_outline),
+    Tool("search_symbols", "Search structural symbols across the entire project by name or signature.",
+         {"query": "symbol name"}, "read", surgical.search_symbols),
+    Tool("view_range", "Read a numbered slice of lines (start_line..=end_line) from a file without loading the entire file.",
+         {"path": "relative/path.ext", "start_line": 1, "end_line": 120}, "read", surgical.view_range),
     Tool("read_file", "Read a project file (UTF-8, first 20000 characters).", {"path": "relative/path.ext"}, "read", _read),
+    Tool("replace_content", "Apply surgical line-bounded replacements to an existing file without rewriting the full file.",
+         {"path": "relative/path.ext", "start_line": 1, "end_line": 10, "target_content": "exact lines", "replacement_content": "new lines"},
+         "write", surgical.replace_content),
     Tool("write_file", "Create or replace a project file with the full content.", {"path": "relative/path.ext", "content": "full file content"}, "write", _write),
     Tool("run_check", "Run a check in an offline sandbox: " + ", ".join(checks.names()) + ". 'entry' is the file for *_run checks.",
          {"check": "python_tests", "entry": "optional file"}, "execute", _check),
@@ -171,7 +180,7 @@ async def call(ctx: Context, name, args) -> str:
         if tool is None:
             return (await _forged(ctx, name, args))[:OBSERVATION]
         return (await tool.run(ctx, args))[:OBSERVATION]
-    except ToolError as exc:
+    except (ToolError, ValueError) as exc:
         return f"error: {exc}"
     except workspace.WorkspaceError as exc:
         return f"error: {exc}"
@@ -179,3 +188,4 @@ async def call(ctx: Context, name, args) -> str:
         return f"error: engine refused ({exc.code})"
     except sandbox.SandboxUnavailable as exc:
         return f"error: {exc}"
+

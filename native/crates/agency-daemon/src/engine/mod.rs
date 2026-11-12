@@ -1,4 +1,5 @@
 mod code;
+mod cognition;
 mod dispatch;
 mod projects;
 
@@ -150,6 +151,7 @@ impl Engine {
             .sum()
     }
 
+    #[allow(clippy::too_many_lines)]
     pub fn handle(&mut self, request: Request) -> Result<Value, AgencyError> {
         match request {
             Request::Ping {} => {
@@ -239,6 +241,55 @@ impl Engine {
                 worker,
                 generation,
             } => self.code_search(&project, &query, limit, worker.as_deref(), generation),
+            Request::CodeOutline {
+                project,
+                path,
+                worker,
+                generation,
+            } => self.code_outline(&project, &path, worker.as_deref(), generation),
+            Request::CodeSymbols {
+                project,
+                query,
+                limit,
+                worker,
+                generation,
+            } => self.code_symbols(&project, &query, limit, worker.as_deref(), generation),
+            Request::CodeViewRange {
+                project,
+                path,
+                start_line,
+                end_line,
+                worker,
+                generation,
+            } => self.code_view_range(
+                &project,
+                &path,
+                start_line,
+                end_line,
+                worker.as_deref(),
+                generation,
+            ),
+            Request::CodePatch {
+                project,
+                path,
+                chunks,
+                worker,
+                generation,
+            } => self.code_patch(&project, &path, &chunks, worker.as_deref(), generation),
+            Request::ThoughtEvaluate { candidates } => Self::thought_evaluate(&candidates),
+            Request::SocraticInterrogate {
+                goal,
+                known_decisions,
+            } => Self::socratic_interrogate(&goal, &known_decisions),
+            Request::SpecialistRecruit { goal, architecture } => {
+                Self::specialist_recruit(&goal, &architecture)
+            }
+            Request::TaskExpand {
+                project,
+                task,
+                subtasks,
+            } => self.task_expand(&project, &task, &subtasks),
+            Request::ForgeInspect { name, code } => Ok(Self::forge_inspect(&name, &code)),
             request @ (Request::ForesightList {}
             | Request::ForesightReport { .. }
             | Request::ForesightAgent { .. }

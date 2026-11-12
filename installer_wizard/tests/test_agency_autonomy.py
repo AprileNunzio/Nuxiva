@@ -116,7 +116,7 @@ class AutonomyApiTest(unittest.TestCase):
             res = self.web.get("/api/agency/board/proj1/autonomy", headers=HEADERS)
         self.assertEqual(res.status_code, 200)
         data = res.json()
-        self.assertEqual(data["engine"], "jarvis_risk_matrix")
+        self.assertEqual(data["engine"], "nuxiva_risk_matrix")
         self.assertEqual(len(data["evaluations"]), 2)
         self.assertEqual(data["auto_approved"], 1)
         self.assertEqual(data["human_supervision_required"], 1)

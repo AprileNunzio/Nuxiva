@@ -27,7 +27,7 @@ def populate(root: Path) -> None:
     (root / "etc/session.key").write_bytes(b"s" * 32)
     (root / "etc/core-native.env").write_text("A=1\n")
     (root / "etc/nuxiva.env").write_text(
-        "NUXIVA_MACHINE=pc\nNUXIVA_ASSISTANT_NAME=Jarvis\nNUXIVA_SECRET_KEY=old\nNUXIVA_TELEGRAM_TOKEN=abc\n# nota\nNUXIVA_LLM_MODEL=qwen\n")
+        "NUXIVA_MACHINE=pc\nNUXIVA_ASSISTANT_NAME=Orion\nNUXIVA_SECRET_KEY=old\nNUXIVA_TELEGRAM_TOKEN=abc\n# nota\nNUXIVA_LLM_MODEL=qwen\n")
     (root / "log").mkdir()
     (root / "log/events.log").write_text("hello")
 

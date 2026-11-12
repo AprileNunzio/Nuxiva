@@ -88,7 +88,7 @@ class NvrAiPtzTest(unittest.TestCase):
             "source": "ai_analyzer",
             "zone": "entrance",
             "text": "Persona rilevata all'ingresso",
-            "details": "Look: giacca rossa, pantaloni scuri. Audio: «ciao jarvis»",
+            "details": "Look: giacca rossa, pantaloni scuri. Audio: «ciao nuxiva»",
         }
         self.assertTrue(self.store.add(ev))
         fetched = self.store.get("ev_test_123")

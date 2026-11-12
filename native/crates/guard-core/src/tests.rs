@@ -210,7 +210,7 @@ fn env_round_trip() -> Result<(), crate::GuardError> {
 
 #[test]
 fn assistant_names() {
-    assert_eq!(normalize_name("  hey   jarvis  "), "jarvis");
+    assert_eq!(normalize_name("  hey   nuxiva  "), "nuxiva");
     assert_eq!(normalize_name("OKAY Friday"), "Friday");
     assert_eq!(normalize_name("ok"), "ok");
     assert_eq!(normalize_name("MAX"), "Max");

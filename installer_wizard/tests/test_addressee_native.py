@@ -47,11 +47,11 @@ class AddresseeParityTest(unittest.TestCase):
 
     def test_custom_name_and_aliases(self):
         ctx = SCENES[1]
-        with env("Hey Jarvis", "giarvis, gervis"):
-            for text in ("jarvis accendi", "giarvis che ore sono", "gervis è lento", "nuxiva accendi", "attena spegni"):
+        with env("Hey Orion", "orione, orioncino"):
+            for text in ("orion accendi", "orione che ore sono", "orioncino è lento", "nuxiva accendi", "attena spegni"):
                 with self.subTest(text=text):
                     self.assertEqual(addressee.decide(text, ctx), addressee._py_decide(text, ctx))
-            self.assertTrue(addressee.decide("giarvis che ore sono", ctx).directed)
+            self.assertTrue(addressee.decide("orione che ore sono", ctx).directed)
             self.assertFalse(addressee.decide("attena spegni", ctx).reason == "mi ha chiamato per nome")
 
     def test_voice_turns_move_the_decision(self):

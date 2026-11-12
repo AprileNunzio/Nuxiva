@@ -270,7 +270,7 @@ async def single_save_brain_assignment(request: Request):
     updates = {}
 
     if assigned_model:
-        if target_id in ("conversation", "jarvis_page80", "core_brain"):
+        if target_id in ("conversation", "nuxiva_page80", "core_brain"):
             updates["NUXIVA_LLM_MODEL"] = assigned_model
             updates["NUXIVA_LLM_CHAT_ORDER"] = assigned_model
         role_id = {"fast_conversation": "chat", "reasoning": "deep"}.get(target_id, target_id)

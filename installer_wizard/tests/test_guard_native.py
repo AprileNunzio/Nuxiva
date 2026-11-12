@@ -33,7 +33,7 @@ SITES = ["", "same-origin", "cross-site", "CROSS-SITE", "none"]
 ENV_VALUES = ["", "plain", "  spaced  ", "\"quoted\"", "'single'", "\"a\\\"b\\$c\"", "'\"x\"'", "\"a\" \"b\"",
               "\"\\u00e9\"", "\"\\ud83d\\ude00\"", "\"bad\\q\"", "\"\"", "''", "\"'\"", "x=y", "é ù 😀",
               "\"tab\\tnl\"", "'  inner  '"]
-NAMES = ["", "  hey   jarvis  ", "OKAY Friday", "ok", "okay", "MAX", "<script>", "!!!", "ｎｕｘｉｖａ",
+NAMES = ["", "  hey   nuxiva  ", "OKAY Friday", "ok", "okay", "MAX", "<script>", "!!!", "ｎｕｘｉｖａ",
          "a" * 50, "Anna   Maria", "Ehi Luna", "hé Zoé", "R2-D2", "O'Neil", "Jean.Luc", "日本", "ÉLODIE",
          "hi\tthere", "x"]
 

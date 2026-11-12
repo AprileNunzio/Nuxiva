@@ -860,12 +860,15 @@ dependencies = [
 name = "nuxiva-agency"
 version = "5.8.0"
 dependencies = [
+ "agency-action",
  "agency-codeindex",
  "agency-domain",
  "agency-foresight",
+ "agency-forge",
  "agency-ledger",
  "agency-planner",
  "agency-scheduler",
+ "agency-thought",
  "chacha20poly1305",
  "getrandom 0.3.4",
  "rustix",
@@ -1108,7 +1111,11 @@ dependencies = [
 name = "nuxiva-native"
 version = "5.8.0"
 dependencies = [
+ "agency-action",
+ "agency-codeindex",
+ "agency-forge",
  "agency-scheduler",
+ "agency-thought",
  "nuxiva-access-core",
  "nuxiva-admin-os",
  "nuxiva-ask-core",

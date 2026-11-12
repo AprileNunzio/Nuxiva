@@ -1,3 +1,4 @@
+mod cognition;
 mod foresight;
 mod lifecycle;
 mod planning;

@@ -8,13 +8,13 @@ class SentinelVoiceTest(unittest.TestCase):
     @mock.patch("features.sentinel.collectors.voice.record")
     def test_record_recognized_voice_event(self, mock_record):
         mock_record.return_value = "ev_123"
-        ev_id = record_voice("Jarvis, come va", speaker_slug="Marco", recognized=True, place="salotto")
+        ev_id = record_voice("Nuxiva, come va", speaker_slug="Marco", recognized=True, place="salotto")
         self.assertEqual(ev_id, "ev_123")
         mock_record.assert_called_once()
         args, kwargs = mock_record.call_args
         self.assertEqual(kwargs["kind"], "voice.recognized")
         self.assertEqual(kwargs["params"]["person"], "Marco")
-        self.assertEqual(kwargs["params"]["phrase"], "Jarvis, come va")
+        self.assertEqual(kwargs["params"]["phrase"], "Nuxiva, come va")
         self.assertEqual(kwargs["place"], "salotto")
 
     @mock.patch("features.sentinel.collectors.voice.record")

@@ -8,7 +8,7 @@ NOUN = r"(?:diorama|diorami|plastico|modellino\s+in\s+miniatura|scena\s+in\s+min
 CREATE_VERB = (r"(?:cre[aiou]\w*|costru\w*|realizz\w*|fa(?:i|mmi|re|rmi)|fammi|genera\w*|progett\w*|disegn\w*|prepar\w*|inventa\w*|componi\w*|compon\w*)")
 CREATE = re.compile(rf"\b{CREATE_VERB}\b(?:\s+(?:mi|me|ci|per\s+me|pure|subito|per\s+favore))*\s+(?:(?:un|uno|una|il|lo|la|l')\s*)?{NOUN}\b(?P<what>.*)$", re.I)
 SHOW = re.compile(rf"\b(?:mostra\w*|apri\w*|riapri\w*|rivedi|fammi\s+vedere|visualizza)\b.*\b{NOUN}\b(?P<what>.*)$", re.I)
-VISUAL = re.compile(r"^\W*(?:(?:per\s+favore|dai|su|jarvis)\s+)*(?:mostr\w*|(?:fa|fai|fammi|facci|voglio)\s+vedere|fammi\s+un\s+vedere)\s+(?:(?:mi|ci)\s+)?"
+VISUAL = re.compile(r"^\W*(?:(?:per\s+favore|dai|su|nuxiva)\s+)*(?:mostr\w*|(?:fa|fai|fammi|facci|voglio)\s+vedere|fammi\s+un\s+vedere)\s+(?:(?:mi|ci)\s+)?"
                     r"(?:(?:un|uno|una|il|lo|la|l')\s*|(?:dei|delle|degli)\s+)(?P<what>[^\W\d_][^.?!]{1,70})\W*$", re.I)
 NOT_VISUAL = re.compile(r"\b(?:modell\w*|3\s*d|file|foto\w*|video|immagin\w*|camera|telecamer\w*|meteo|film|canale|app|applicazion\w*|finestr\w*|widget|"
                         r"schermat\w*|pannell\w*|log|elenco|lista|documento|document\w*|mappa|partit\w*|risultat\w*|orologio|ora|data|calendario|"
