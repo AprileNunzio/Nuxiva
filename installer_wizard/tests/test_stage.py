@@ -120,7 +120,7 @@ class ParticlesTest(unittest.TestCase):
         for bad in (None, {}, {"parts": []}, {"parts": [{"shape": "pyramid"}]},
                     {"parts": [{"shape": "box", "size": [1, 1]}]}, {"parts": [{"shape": "box", "color": "red"}]},
                     {"parts": [{"shape": "box", "at": [float("nan"), 0, 0]}]}, {"parts": [{"shape": "box", "weight": True}]},
-                    {"parts": [{"shape": "box"}] * 25}):
+                    {"parts": [{"shape": "box"}] * 97}):
             with self.assertRaises(particles.ParticleError, msg=bad):
                 particles.validate(bad)
         with self.assertRaises(particles.ParticleError):

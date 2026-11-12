@@ -3,7 +3,7 @@ use std::f64::consts::TAU;
 
 use super::codec::{Cloud, MIN_POINTS, ParticleError};
 
-pub const MAX_PARTS: usize = 24;
+pub const MAX_PARTS: usize = 96;
 const QUANT: f64 = 32_767.0;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -85,7 +85,7 @@ fn parse_color(hex: &str) -> Option<[u8; 3]> {
 
 fn validate(spec: &Spec) -> Result<Vec<[u8; 3]>, ParticleError> {
     if spec.parts.is_empty() || spec.parts.len() > MAX_PARTS {
-        return Err(ParticleError::Spec("parts must be between 1 and 24"));
+        return Err(ParticleError::Spec("parts must be between 1 and 96"));
     }
     let mut colors = Vec::with_capacity(spec.parts.len());
     for part in &spec.parts {

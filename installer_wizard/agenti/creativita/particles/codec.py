@@ -10,7 +10,7 @@ VERSION = 1
 HEADER = 12
 MIN_POINTS = 256
 MAX_POINTS = 40_000
-MAX_PARTS = 24
+MAX_PARTS = 96
 MAX_BLOB_POINTS = 65_536
 FLAG_COLORS = 1
 QUANT = 32_767.0
@@ -41,7 +41,7 @@ def validate(spec) -> dict:
         raise ParticleError("spec must contain parts")
     parts = spec["parts"]
     if not 1 <= len(parts) <= MAX_PARTS:
-        raise ParticleError("parts must be between 1 and 24")
+        raise ParticleError("parts must be between 1 and 96")
     clean = []
     for part in parts:
         if not isinstance(part, dict) or part.get("shape") not in SHAPES:

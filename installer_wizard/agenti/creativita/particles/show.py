@@ -125,6 +125,10 @@ def clear() -> None:
 
 async def sculpt(concept: str) -> dict:
     from agenti.brain.llm import generate
+    from agenti.particles import forma_design
+    general = await forma_design.design(concept)
+    if general is not None:
+        return general
     try:
         data = await generate(f"<object>{concept}</object>", as_json=True, max_tokens=900, temperature=0.3, kind="chat",
                               system=SCULPT, component="particles", timeout=60)

@@ -1066,6 +1066,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-forma-core"
+version = "5.8.0"
+dependencies = [
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "nuxiva-gait-core"
 version = "5.8.0"
 dependencies = [
@@ -1157,6 +1165,7 @@ dependencies = [
  "nuxiva-ear-core",
  "nuxiva-expr-core",
  "nuxiva-face-core",
+ "nuxiva-forma-core",
  "nuxiva-gait-core",
  "nuxiva-gesture-core",
  "nuxiva-guard-core",

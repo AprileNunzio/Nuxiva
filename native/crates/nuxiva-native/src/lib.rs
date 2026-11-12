@@ -23,6 +23,7 @@ mod errors;
 mod expr;
 mod face;
 mod face_look;
+mod forma;
 mod gait_core;
 mod gesture;
 mod governors;
@@ -212,6 +213,9 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(agents::agent_layout_inspect, m)?)?;
     m.add_function(wrap_pyfunction!(agents::agent_scaffold, m)?)?;
     m.add_function(wrap_pyfunction!(agents::agent_genesis_decide, m)?)?;
+    m.add_function(wrap_pyfunction!(forma::forma_compile, m)?)?;
+    m.add_function(wrap_pyfunction!(forma::forma_sculpt, m)?)?;
+    m.add_function(wrap_pyfunction!(forma::forma_schema, m)?)?;
     m.add_function(wrap_pyfunction!(agents::agent_icon, m)?)?;
     ceo::register(m)?;
     dossier::register(m)?;

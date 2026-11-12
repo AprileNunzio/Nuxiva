@@ -14,6 +14,7 @@ crate-type = ["cdylib", "rlib"]
 agency-action = { path = "../agency-action" }
 nuxiva-agent-core = { path = "../agent-core" }
 nuxiva-dossier-core = { path = "../dossier-core" }
+nuxiva-forma-core = { path = "../forma-core" }
 agency-codeindex = { path = "../agency-codeindex" }
 agency-forge = { path = "../agency-forge" }
 agency-scheduler = { path = "../agency-scheduler" }
