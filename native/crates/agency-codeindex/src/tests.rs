@@ -127,3 +127,23 @@ fn million_file_corpus_performance_measurement() {
     assert!(metrics.search_latency_micros < 100_000);
     assert!(metrics.update_latency_micros > 0);
 }
+
+#[test]
+fn extract_outline_and_search_symbols_across_languages() -> Result<(), ScanError> {
+    let tree = Tree::new("symbols")?;
+    let outline = crate::outline_file(&tree.0, "src/api/catalog.py")?;
+    assert_eq!(outline.language, "python");
+    assert_eq!(outline.symbols.len(), 1);
+    assert_eq!(
+        outline.symbols.first().map(|s| s.name.as_str()),
+        Some("list_products")
+    );
+
+    let sym_hits = crate::search_symbols(&tree.0, "addToCart", 10)?;
+    assert_eq!(sym_hits.len(), 1);
+    assert_eq!(
+        sym_hits.first().map(|h| h.path.as_str()),
+        Some("src/cart.js")
+    );
+    Ok(())
+}

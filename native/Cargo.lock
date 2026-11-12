@@ -38,6 +38,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "agency-action"
+version = "5.8.0"
+dependencies = [
+ "agency-domain",
+ "serde",
+ "serde_json",
+ "thiserror",
+]
+
+[[package]]
 name = "agency-codeindex"
 version = "5.8.0"
 dependencies = [
