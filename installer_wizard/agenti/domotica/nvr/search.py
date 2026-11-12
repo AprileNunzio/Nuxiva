@@ -69,3 +69,16 @@ def parse(text: str, now: float | None = None) -> Query:
             elif w not in STOP and len(w) >= 3:
                 terms.append(w)
     return Query(since, until, frozenset(labels), tuple(terms[:6]))
+
+
+TIME_WORDS = {"oggi", "today", "ieri", "yesterday", "stanotte", "tonight", "notte", "night", "ora", "hour",
+              "settimana", "week", "mese", "month", "ultima", "last", "ultimo"}
+
+
+def speech_terms(text: str) -> str:
+    words = WORD.findall(_plain(text))[:40]
+    return " ".join(w for w in words if w not in TIME_WORDS and w not in STOP and len(w) >= 2)[:300]
+
+
+def has_time(text: str) -> bool:
+    return any(w in TIME_WORDS for w in WORD.findall(_plain(text))[:40])

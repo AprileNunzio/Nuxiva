@@ -61,6 +61,11 @@
     "no_transcript": "No transcribed words in this window.",
     "unknown_voice": "Unknown voice",
     "agreement": "Agreement between microphones: {value}%",
-    "mics": "{count} microphones"
+    "mics": "{count} microphones",
+    "search": "Search recordings",
+    "search_placeholder": "What was said or seen? E.g. parcel yesterday, person today, keys",
+    "search_this_camera": "This camera only",
+    "search_none": "No results.",
+    "search_count": "{speech} sentences found, {events} events"
   }
 }

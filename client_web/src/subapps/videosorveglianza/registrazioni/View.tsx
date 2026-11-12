@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, Film, HardDrive, Pin, PinOff, RefreshCw, Ski
 import { useScopedI18n } from '../../../shared/i18n/useScopedI18n';
 import { deleteSegment, fetchRecordings, fetchStorage, fetchTimeline, fetchTranscript, jump, seekTo, setPinned } from './api';
 import { TranscriptPanel } from './components/TranscriptPanel';
+import { SearchPanel } from './components/SearchPanel';
 import { Player } from './components/Player';
 import { TimelineBar } from './components/TimelineBar';
 import { bytes, clock, dayLabel, KIND_GROUPS, ZOOMS } from './format';
@@ -59,9 +60,10 @@ export function View() {
   }, [camera, fromMs, windowEnd]);
 
   const openAt = useCallback(
-    async (atMs: number) => {
-      if (!camera) return;
-      const found = await seekTo(camera, atMs);
+    async (atMs: number, target?: string) => {
+      const cam = target ?? camera;
+      if (!cam) return;
+      const found = await seekTo(cam, atMs);
       if (!found) {
         setNotice(t('nothing_here'));
         return;
@@ -158,6 +160,18 @@ export function View() {
               <RefreshCw className="h-3.5 w-3.5" />
             </button>
           </nav>
+
+          <SearchPanel
+            camera={camera}
+            lang={lang}
+            t={t}
+            kindLabel={kindLabel}
+            onOpen={(cam, atMs) => {
+              setCamera(cam);
+              setWindowEnd(Math.min(Date.now(), atMs + zoom / 2));
+              void openAt(atMs, cam);
+            }}
+          />
 
           <div className="grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
             <Player

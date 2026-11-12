@@ -1,4 +1,6 @@
-use nuxiva_nvr_core::{ByteRange, Utterance, cluster_voices, fuse, parse_range};
+use nuxiva_nvr_core::{
+    BlindIndex, ByteRange, DocMeta, Utterance, cluster_voices, fuse, parse_range,
+};
 use nuxiva_nvr_core::{Catalog, Marker, NvrError, Policy, Segment, Tier, next_marker, plan, spans};
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
@@ -127,6 +129,69 @@ impl RustNvrCatalog {
     }
 }
 
+fn index_key(key: &[u8]) -> PyResult<[u8; 32]> {
+    <[u8; 32]>::try_from(key).map_err(|_| PyValueError::new_err("nvr.index.key"))
+}
+
+#[pyclass(module = "nuxiva_native")]
+#[derive(Debug)]
+pub struct RustNvrIndex {
+    inner: BlindIndex,
+}
+
+#[pymethods]
+impl RustNvrIndex {
+    #[new]
+    fn new(key: &[u8]) -> PyResult<Self> {
+        Ok(Self {
+            inner: BlindIndex::new(index_key(key)?),
+        })
+    }
+
+    #[staticmethod]
+    fn from_json(key: &[u8], text: &str) -> PyResult<Self> {
+        Ok(Self {
+            inner: BlindIndex::from_json(index_key(key)?, bounded(text)?).map_err(|e| fail(&e))?,
+        })
+    }
+
+    fn to_json(&self) -> PyResult<String> {
+        self.inner.to_json().map_err(|e| fail(&e))
+    }
+
+    fn __len__(&self) -> usize {
+        self.inner.len()
+    }
+
+    fn add(&mut self, meta_json: &str, text: &str) -> PyResult<()> {
+        let meta: DocMeta = serde_json::from_str(bounded(meta_json)?).map_err(|e| json_err(&e))?;
+        self.inner.add(meta, text).map_err(|e| fail(&e))
+    }
+
+    fn remove(&mut self, key: &str) -> bool {
+        self.inner.remove(key)
+    }
+
+    fn remove_prefix(&mut self, prefix: &str) -> usize {
+        self.inner.remove_prefix(prefix)
+    }
+
+    #[pyo3(signature = (query, camera, from_ms, to_ms, limit))]
+    fn search(
+        &self,
+        query: &str,
+        camera: Option<&str>,
+        from_ms: u64,
+        to_ms: u64,
+        limit: usize,
+    ) -> PyResult<String> {
+        let hits = self
+            .inner
+            .search(query, camera, from_ms, to_ms, limit.min(MAX_LIMIT));
+        serde_json::to_string(&hits).map_err(|e| json_err(&e))
+    }
+}
+
 #[pyfunction]
 #[allow(clippy::needless_pass_by_value)]
 fn nvr_next_marker(
@@ -168,6 +233,7 @@ fn nvr_cluster_voices(embeddings: Vec<Vec<f32>>, threshold: f32) -> PyResult<Vec
 
 pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<RustNvrCatalog>()?;
+    m.add_class::<RustNvrIndex>()?;
     m.add_function(wrap_pyfunction!(nvr_next_marker, m)?)?;
     m.add_function(wrap_pyfunction!(nvr_parse_range, m)?)?;
     m.add_function(wrap_pyfunction!(nvr_fuse, m)?)?;

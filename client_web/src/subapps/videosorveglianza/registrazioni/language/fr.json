@@ -61,6 +61,11 @@
     "no_transcript": "Aucune parole transcrite dans cette fenêtre.",
     "unknown_voice": "Voix inconnue",
     "agreement": "Accord entre microphones : {value} %",
-    "mics": "{count} microphones"
+    "mics": "{count} microphones",
+    "search": "Rechercher dans les enregistrements",
+    "search_placeholder": "Qu'a-t-on dit ou vu ? Ex. colis hier, personne aujourd'hui, clés",
+    "search_this_camera": "Cette caméra uniquement",
+    "search_none": "Aucun résultat.",
+    "search_count": "{speech} phrases trouvées, {events} événements"
   }
 }

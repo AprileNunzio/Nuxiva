@@ -37,7 +37,7 @@ class EventStore:
             return cur.rowcount == 1
 
     def search(self, query: Query, limit: int = 50) -> list[dict]:
-        sql = "SELECT id, at, camera, label, score, source, zone, text, details FROM events WHERE at >= ? AND at <= ?"
+        sql = "SELECT id, at, camera, label, score, source, zone, text, details, camera_id FROM events WHERE at >= ? AND at <= ?"
         args: list = [query.since, query.until]
         if query.labels:
             sql += f" AND label IN ({','.join('?' * len(query.labels))})"
@@ -50,7 +50,7 @@ class EventStore:
         args.append(max(1, min(MAX_RESULTS, limit)))
         with self.lock:
             rows = self.db.execute(sql, args).fetchall()
-        keys = ("id", "at", "camera", "label", "score", "source", "zone", "text", "details")
+        keys = ("id", "at", "camera", "label", "score", "source", "zone", "text", "details", "camera_id")
         return [dict(zip(keys, r)) for r in rows]
 
     def get(self, event_id: str) -> dict | None:

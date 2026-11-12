@@ -1,6 +1,6 @@
 import { adminPath } from '../../../shared/http/basePath';
 import { reportError } from '../../../shared/errors/errorBus';
-import type { TranscriptTurn, JumpResult, RecordingCamera, SeekResult, SegmentRow, StorageStats, Timeline } from './types';
+import type { FindResult, TranscriptTurn, JumpResult, RecordingCamera, SeekResult, SegmentRow, StorageStats, Timeline } from './types';
 
 const CSRF_HEADER = 'X-Nuxiva-Request';
 const ID = /^[A-Za-z0-9_-]{1,64}$/;
@@ -137,5 +137,21 @@ export async function fetchTranscript(camera: string, fromMs: number, toMs: numb
   } catch (cause) {
     reportError('nvr_transcript_error', cause);
     return [];
+  }
+}
+
+export async function findRecordings(q: string, camera = ''): Promise<FindResult | null> {
+  const text = q.trim().slice(0, 300);
+  if (!text) return null;
+  try {
+    const params: Record<string, string | number> = { q: text, limit: 40 };
+    if (camera) params.camera = safeId(camera);
+    const data = await getJson<FindResult>('/api/nvr/find', params);
+    if (!data) return null;
+    const valid = (hit: { camera: string }) => ID.test(hit.camera);
+    return { ...data, speech: (data.speech ?? []).filter(valid), events: (data.events ?? []).filter(valid) };
+  } catch (cause) {
+    reportError('nvr_find_error', cause);
+    return null;
   }
 }

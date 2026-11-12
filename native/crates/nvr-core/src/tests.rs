@@ -239,3 +239,43 @@ fn fuse_votes_words_and_speaker() {
     assert_eq!(labels, vec![0, 0, 1]);
     assert!(cluster_voices(&[vec![f32::NAN]], 0.8).is_none());
 }
+
+#[test]
+fn blind_index_search_prefix_window_and_removal() {
+    use crate::{BlindIndex, DocMeta, tokens};
+    assert_eq!(
+        tokens("Il PACCO è arrivato, grazie!"),
+        vec!["il", "pacco", "arrivato", "grazie"]
+    );
+    let mut idx = BlindIndex::new([7u8; 32]);
+    let meta = |key: &str, at: u64| DocMeta {
+        key: key.into(),
+        camera: "cam1".into(),
+        at_ms: at,
+        kind: "speech".into(),
+    };
+    idx.add(meta("cam1|s1|1000", 1000), "il pacco è arrivato")
+        .unwrap();
+    idx.add(meta("cam1|s1|2000", 2000), "grazie per il pacco pacco")
+        .unwrap();
+    idx.add(meta("cam1|s2|9000", 9000), "a domani").unwrap();
+    let hits = idx.search("pacco", None, 0, 10_000, 10);
+    assert_eq!(hits.len(), 2);
+    assert_eq!(hits[0].key, "cam1|s1|2000");
+    assert_eq!(idx.search("arriv", None, 0, 10_000, 10).len(), 1);
+    assert_eq!(idx.search("pacco arrivato", None, 0, 10_000, 10).len(), 1);
+    assert_eq!(idx.search("pacco", None, 0, 1500, 10).len(), 1);
+    assert!(idx.search("pacco", Some("cam9"), 0, 10_000, 10).is_empty());
+    let json = idx.to_json().unwrap();
+    assert!(!json.contains("pacco"));
+    let mut back = BlindIndex::from_json([7u8; 32], &json).unwrap();
+    assert_eq!(back.remove_prefix("cam1|s1|"), 2);
+    assert!(back.search("pacco", None, 0, 10_000, 10).is_empty());
+    assert_eq!(back.len(), 1);
+    assert!(
+        BlindIndex::from_json([8u8; 32], &json)
+            .unwrap()
+            .search("pacco", None, 0, 10_000, 10)
+            .is_empty()
+    );
+}

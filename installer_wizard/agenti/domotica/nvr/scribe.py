@@ -38,7 +38,7 @@ def voice_allowed(slug: str | None) -> bool:
 
 class ScribeDispatcher:
     def __init__(self, archive=None, store: TranscriptStore | None = None, extract=extract_pcm,
-                 allowed=voice_allowed) -> None:
+                 allowed=voice_allowed, index=None) -> None:
         if archive is None:
             from agenti.nvr.archive import archive as default_archive
             archive = default_archive
@@ -47,6 +47,7 @@ class ScribeDispatcher:
         self.extract = extract
         self.allowed = allowed
         self.failed: set[str] = set()
+        self.index = index
 
     def candidates(self, now_ms: int) -> list[dict]:
         rows = []
@@ -98,6 +99,8 @@ class ScribeDispatcher:
                 self.store.save(camera, segment, {"camera": camera, "segment": segment, "start_ms": start,
                                                   "seconds": header.get("seconds"), "turns": turns,
                                                   "at": int(time.time() * 1000)})
+                if self.index is not None:
+                    self.index.index_transcript(camera, segment, turns)
                 self._observe(camera, turns)
                 saved += 1
             except (OSError, ValueError, KeyError, TypeError, scribe_spool.SpoolError) as exc:
@@ -132,5 +135,6 @@ dispatcher = None
 def get_dispatcher() -> ScribeDispatcher:
     global dispatcher
     if dispatcher is None:
-        dispatcher = ScribeDispatcher()
+        from agenti.nvr.search_index import index
+        dispatcher = ScribeDispatcher(index=index)
     return dispatcher

@@ -48,6 +48,7 @@ class NvrArchive:
         self.lock = threading.Lock()
         self.last_save = 0.0
         self.last_maintain = 0.0
+        self.listeners: list = []
 
     def ingest(self, camera_id: str, raw_path: Path, tier: str = "continuous", audio_allowed: bool = True) -> dict:
         camera_id = clean_id(camera_id)
@@ -91,11 +92,19 @@ class NvrArchive:
             for camera, segment_id in plan["expire"] + plan["evict"]:
                 self.vault.delete(camera, segment_id)
                 self.catalog.remove(camera, segment_id)
+                self._notify(camera, segment_id)
                 removed += 1
             self.last_maintain = time.monotonic()
             self.save_soon(force=True)
             return {"promoted": len(plan["promote"]), "expired": len(plan["expire"]), "evicted": len(plan["evict"]),
                     "removed": removed, "kept_bytes": plan["kept_bytes"]}
+
+    def _notify(self, camera_id: str, segment_id: str) -> None:
+        for listener in list(self.listeners):
+            try:
+                listener(camera_id, segment_id)
+            except (OSError, ValueError) as exc:
+                log.warning("NVR: pulizia dei dati derivati di %s/%s non riuscita: %s", camera_id, segment_id, exc)
 
     def due(self) -> bool:
         return time.monotonic() - self.last_maintain >= MAINTAIN_EVERY
@@ -111,6 +120,7 @@ class NvrArchive:
     def delete(self, camera_id: str, segment_id: str) -> bool:
         gone = self.vault.delete(camera_id, segment_id)
         gone = self.catalog.remove(clean_id(camera_id), clean_id(segment_id)) is not None or gone
+        self._notify(camera_id, segment_id)
         self.save_soon(force=True)
         return gone
 

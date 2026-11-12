@@ -74,3 +74,24 @@ export interface TranscriptTurn {
   changed: number;
   sources: string[];
 }
+
+export interface FindHit {
+  kind: string;
+  camera: string;
+  segment: string | null;
+  at_ms: number;
+  end_ms?: number;
+  score: number;
+  text: string;
+  zone?: string;
+  speaker?: string | null;
+  speaker_name?: string;
+  voice?: string | null;
+}
+
+export interface FindResult {
+  q: string;
+  speech: FindHit[];
+  events: FindHit[];
+  cameras: Record<string, { name: string; room: string }>;
+}
