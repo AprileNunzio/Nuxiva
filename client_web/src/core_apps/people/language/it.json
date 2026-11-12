@@ -519,6 +519,7 @@
     "hl_cam_tips": "Funziona meglio con buona luce, viso verso la webcam e restando fermi. Stime informative, non mediche.",
     "hl_cam_cost": "Mentre misura usa più processore sul server: spegnila dal pannello di controllo o qui per risparmiare risorse.",
     "hl_cam_off": "Disattivata",
+    "hl_cam_denied": "Disattivata dalla privacy di questa persona",
     "hl_cam_band": "Non serve: c'è un bracciale",
     "hl_cam_busy": "In pausa: server sotto carico",
     "hl_cam_idle": "Pronta: in attesa del viso",

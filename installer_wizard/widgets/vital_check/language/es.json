@@ -2,37 +2,17 @@
   "meta": {
     "locale": "es",
     "scope": "widgets/vital_check",
-    "version": "1.0.0"
+    "version": "2.0.0"
   },
   "dictionary": {
-    "title_greet": "Control de parámetros",
-    "title_device": "Conectando tu dispositivo",
-    "title_camera": "Medición con la webcam",
-    "title_done": "Control completado",
-    "title_failed": "Medición no lograda",
-    "greet": "Hola {{name}}, voy a echarte un vistazo: un momento.",
-    "device": "Busco tu dispositivo e intento conectarme.",
-    "device_named": "Intento conectarme a {{name}}.",
-    "camera_hold": "Ninguna pulsera conectada: no te muevas y mira la webcam durante {{n}} segundos.",
-    "camera_wait": "Un momento más: estoy leyendo el pulso.",
-    "camera_breath": "Pulso encontrado. Ahora respira con normalidad: mido la respiración.",
-    "moved": "Ha habido un movimiento: vuelvo a empezar. No te muevas y mira la webcam.",
-    "done_device": "Listo: valores leídos de tu dispositivo.",
-    "done_camera": "Listo: valores estimados con la webcam.",
-    "failed": "No consigo leer los parámetros. Prueba con más luz en la cara y sin moverte.",
-    "d_search": "Busco el dispositivo",
-    "d_connect": "Me conecto",
-    "d_read": "Leo los parámetros",
-    "c_still": "No te muevas",
-    "c_look": "Mira la webcam",
-    "c_breathe": "Respira con normalidad",
-    "m_heart": "Pulso",
+    "title": "Pulso",
+    "people_one": "{{n}} persona",
+    "people_other": "{{n}} personas",
     "m_breath": "Respiración",
     "per_min": "/min",
-    "seconds": "segundos",
-    "measuring": "midiendo",
-    "src_device": "Del dispositivo",
-    "src_camera": "De la webcam",
-    "not_medical": "Estimación informativa, no médica"
+    "src_device": "Desde el dispositivo",
+    "src_camera": "Desde la webcam",
+    "not_medical": "Estimación informativa, no médica",
+    "aria_row": "{{name}}: {{bpm}} latidos por minuto"
   }
 }

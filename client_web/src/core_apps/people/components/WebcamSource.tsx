@@ -11,6 +11,7 @@ interface Props {
 
 const TONE: Record<CameraVitals['state'], string> = {
   off: 'border-slate-300 text-slate-600',
+  denied: 'border-slate-300 text-slate-600',
   band: 'border-slate-300 text-slate-600',
   busy: 'border-amber-300 text-amber-800',
   idle: 'border-teal-300 text-teal-800',

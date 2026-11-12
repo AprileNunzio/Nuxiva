@@ -17,14 +17,24 @@ class CameraVitalsTest(unittest.TestCase):
         self.live = Live()
         self.devices: dict[str, list] = {}
         self.env = {"NUXIVA_RPPG": "1"}
+        self.denied: set = set()
         patches = (mock.patch.object(camera_module, "live", self.live),
                    mock.patch.object(camera_module.book, "of", side_effect=lambda slug: self.devices.get(slug, [])),
                    mock.patch.object(camera_module, "env_get", side_effect=lambda key, default="": self.env.get(key, default)),
-                   mock.patch.object(camera_module, "server_busy", return_value=False))
+                   mock.patch.object(camera_module, "server_busy", return_value=False),
+                   mock.patch.object(camera_module.consent, "allowed", side_effect=lambda slug, now=None: slug not in self.denied))
         for patch in patches:
             patch.start()
             self.addCleanup(patch.stop)
         self.cam = CameraVitals()
+
+    def test_privacy_of_each_person_blocks_the_measure(self):
+        self.denied.add("luca")
+        visible = [person("anna"), person("luca")]
+        self.assertEqual(self.cam.targets(visible, 100.0), ["anna"])
+        self.cam.force("luca", 30, 100.0)
+        self.assertEqual(self.cam.targets(visible, 101.0), ["anna"])
+        self.assertEqual(self.cam.status("luca", 101.0)["state"], "denied")
 
     def test_only_people_without_a_band_are_measured(self):
         self.devices["luca"] = [{"id": "a1", "kind": "ble", "enabled": True}]

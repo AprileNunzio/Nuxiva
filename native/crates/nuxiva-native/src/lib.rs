@@ -97,7 +97,6 @@ use update::{
     update_changelog, update_impact, update_pipeline_advance, update_signature, update_valid_rev,
     update_verify_tree,
 };
-use vitals::vitals_parse_ble_heart_rate;
 
 #[pymodule(gil_used = false)]
 #[allow(clippy::too_many_lines)]
@@ -206,7 +205,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(visual_catalog_classify, m)?)?;
     m.add_function(wrap_pyfunction!(visual_agent_execute, m)?)?;
     m.add_function(wrap_pyfunction!(agent_catalog_index_manifest, m)?)?;
-    m.add_function(wrap_pyfunction!(vitals_parse_ble_heart_rate, m)?)?;
+    vitals::register(m)?;
     m.add_function(wrap_pyfunction!(gesture_validate_profile, m)?)?;
     m.add_function(wrap_pyfunction!(gesture_catalog, m)?)?;
     m.add_function(wrap_pyfunction!(update_valid_rev, m)?)?;

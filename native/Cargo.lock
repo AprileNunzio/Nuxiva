@@ -1307,6 +1307,9 @@ dependencies = [
 [[package]]
 name = "nuxiva-vitals-core"
 version = "5.8.0"
+dependencies = [
+ "realfft",
+]
 
 [[package]]
 name = "once_cell"

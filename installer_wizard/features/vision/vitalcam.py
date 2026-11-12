@@ -126,10 +126,8 @@ class PersonMeter:
 
     @staticmethod
     def _agreed(seen: deque, value: float, quality: float, minimum: float, spread: float) -> int | None:
-        seen.append(value if value and quality >= minimum else None)
-        if len(seen) < AGREE or None in seen or max(seen) - min(seen) > spread:
-            return None
-        return int(round(float(np.median(seen))))
+        seen.append(float(value) if value and quality >= minimum else None)
+        return pulse.agreed(list(seen), AGREE, spread)
 
     def sample(self, frame: np.ndarray, face, box, now: float) -> bool:
         if now - self.last < SAMPLE_GAP:

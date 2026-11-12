@@ -2,37 +2,17 @@
   "meta": {
     "locale": "it",
     "scope": "widgets/vital_check",
-    "version": "1.0.0"
+    "version": "2.0.0"
   },
   "dictionary": {
-    "title_greet": "Controllo dei parametri",
-    "title_device": "Collego il dispositivo",
-    "title_camera": "Misura con la webcam",
-    "title_done": "Controllo completato",
-    "title_failed": "Misura non riuscita",
-    "greet": "Ciao {{name}}, ti do un'occhiata: un momento.",
-    "device": "Cerco il tuo dispositivo e provo a collegarmi.",
-    "device_named": "Provo a collegarmi a {{name}}.",
-    "camera_hold": "Nessun bracciale collegato: resta immobile e guarda la webcam per {{n}} secondi.",
-    "camera_wait": "Ancora un attimo: sto leggendo il battito.",
-    "camera_breath": "Battito trovato. Ora respira normalmente: misuro il respiro.",
-    "moved": "C'è stato un movimento: ricomincio. Resta immobile, con il viso verso la webcam.",
-    "done_device": "Fatto: valori letti dal tuo dispositivo.",
-    "done_camera": "Fatto: valori stimati dalla webcam.",
-    "failed": "Non riesco a leggere i parametri. Prova con più luce sul viso, restando immobile.",
-    "d_search": "Cerco il dispositivo",
-    "d_connect": "Mi collego",
-    "d_read": "Leggo i parametri",
-    "c_still": "Resta immobile",
-    "c_look": "Guarda la webcam",
-    "c_breathe": "Respira normalmente",
-    "m_heart": "Battito",
+    "title": "Battito",
+    "people_one": "{{n}} persona",
+    "people_other": "{{n}} persone",
     "m_breath": "Respiro",
     "per_min": "/min",
-    "seconds": "secondi",
-    "measuring": "misuro",
     "src_device": "Dal dispositivo",
     "src_camera": "Dalla webcam",
-    "not_medical": "Stima informativa, non medica"
+    "not_medical": "Stima informativa, non medica",
+    "aria_row": "{{name}}: {{bpm}} battiti al minuto"
   }
 }

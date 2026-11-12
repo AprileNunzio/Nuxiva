@@ -1,7 +1,7 @@
 {
   "id": "vital_check",
-  "name": "Controllo dei parametri",
-  "icon": "🩺",
+  "name": "Battito in background",
+  "icon": "❤️",
   "priority": 85,
   "size": "m",
   "tone": "cyan",
@@ -9,12 +9,12 @@
   "bind": "person_checkup",
   "screen_role": "person",
   "intents": [
-    "controllo",
-    "parametri",
     "battito",
-    "checkup"
+    "bpm",
+    "respiro",
+    "parametri"
   ],
-  "description": "Quando una persona si avvicina allo schermo controlla se ha un bracciale o un telefono collegato e prova a leggerlo; se non c'è, la guida in silenzio, passo passo, nella misura di battito e respiro con la webcam.",
+  "description": "Misura in silenzio battito e respiro delle persone riconosciute davanti allo schermo, dal bracciale o dalla webcam; compare solo quando ha un valore affidabile, altrimenti resta nascosto e ritenta da solo. Fino a quattro persone insieme, nel rispetto della privacy di ciascuna.",
   "refresh": 1,
   "cost": {
     "gpu": 1,

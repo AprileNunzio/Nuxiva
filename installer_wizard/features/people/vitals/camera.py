@@ -5,6 +5,7 @@ import time
 from config import env_get
 
 from features.people.vitals.book import book
+from features.people.vitals.consent import consent
 from features.people.vitals.live import live
 
 log = logging.getLogger("nuxiva.vitals.camera")
@@ -57,6 +58,7 @@ class CameraVitals:
 
     def forget(self, slug: str) -> None:
         self._bands.pop(slug, None)
+        consent.forget(slug)
 
     def force(self, slug: str, seconds: float, now: float | None = None) -> None:
         now = now or time.time()
@@ -83,7 +85,9 @@ class CameraVitals:
         slugs = []
         for person in visible:
             slug = person.get("slug")
-            if person.get("known") and isinstance(slug, str) and slug not in slugs and (self.forced(slug, now) or not self.has_band(slug, now)):
+            if not person.get("known") or not isinstance(slug, str) or slug in slugs or not consent.allowed(slug, now):
+                continue
+            if self.forced(slug, now) or not self.has_band(slug, now):
                 slugs.append(slug)
         return slugs[:MAX_TARGETS]
 
@@ -148,6 +152,8 @@ class CameraVitals:
         streaming = any(v.get("kind") == KIND and v.get("age", SEEN_TTL * 10) <= 120 for v in values.values())
         if not enabled():
             state = "off"
+        elif not consent.allowed(slug, now):
+            state = "denied"
         elif self.has_band(slug, now) and not self.forced(slug, now):
             state = "band"
         elif server_busy():

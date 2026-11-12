@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 
 HEART_BAND = (0.7, 3.5)
@@ -6,6 +8,7 @@ HEART_RATE = 30.0
 BREATH_RATE = 10.0
 EPS = 1e-9
 FFT_SIZE = 4096
+MAX_SAMPLES = 8192
 
 
 def uniform(ts: np.ndarray, values: np.ndarray, rate: float) -> np.ndarray:
@@ -60,7 +63,7 @@ def dominant(signal: np.ndarray, rate: float, band: tuple[float, float], width: 
     return peak * 60.0, min(1.0, quality)
 
 
-def heart_rate(ts: np.ndarray, rgb: np.ndarray) -> tuple[float, float]:
+def py_heart_rate(ts: np.ndarray, rgb: np.ndarray) -> tuple[float, float]:
     if ts.size < 16 or ts[-1] - ts[0] < 4.0:
         return 0.0, 0.0
     even = uniform(ts, rgb, HEART_RATE)
@@ -69,8 +72,48 @@ def heart_rate(ts: np.ndarray, rgb: np.ndarray) -> tuple[float, float]:
     return dominant(pos(even, HEART_RATE), HEART_RATE, HEART_BAND, 0.1)
 
 
-def breath_rate(ts: np.ndarray, shift: np.ndarray) -> tuple[float, float]:
+def py_breath_rate(ts: np.ndarray, shift: np.ndarray) -> tuple[float, float]:
     if ts.size < 32 or ts[-1] - ts[0] < 15.0:
         return 0.0, 0.0
     even = np.diff(uniform(ts, shift, BREATH_RATE))
     return dominant(even, BREATH_RATE, BREATH_BAND, 0.04)
+
+
+def native():
+    if os.environ.get("NUXIVA_NATIVE", "auto").strip() == "0":
+        return None
+    try:
+        import nuxiva_native
+    except ImportError:
+        return None
+    return nuxiva_native if hasattr(nuxiva_native, "vitals_heart_rate") else None
+
+
+_NATIVE = native()
+
+
+def heart_rate(ts: np.ndarray, rgb: np.ndarray) -> tuple[float, float]:
+    if _NATIVE is None or ts.size > MAX_SAMPLES:
+        return py_heart_rate(ts, rgb)
+    return tuple(_NATIVE.vitals_heart_rate(np.asarray(ts, dtype=np.float64).tolist(), np.asarray(rgb, dtype=np.float64).reshape(-1, 3).tolist()))
+
+
+def breath_rate(ts: np.ndarray, shift: np.ndarray) -> tuple[float, float]:
+    if _NATIVE is None or ts.size > MAX_SAMPLES:
+        return py_breath_rate(ts, shift)
+    return tuple(_NATIVE.vitals_breath_rate(np.asarray(ts, dtype=np.float64).tolist(), np.asarray(shift, dtype=np.float64).ravel().tolist()))
+
+
+def py_agreed(seen: list, spread: float) -> int | None:
+    if not seen or None in seen or max(seen) - min(seen) > spread:
+        return None
+    return int(round(float(np.median(seen))))
+
+
+def agreed(seen: list, window: int, spread: float) -> int | None:
+    if len(seen) < window:
+        return None
+    last = list(seen)[-window:]
+    if _NATIVE is None:
+        return py_agreed(last, spread)
+    return _NATIVE.vitals_agreed([None if v is None else float(v) for v in last], window, float(spread))

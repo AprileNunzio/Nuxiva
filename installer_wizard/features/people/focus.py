@@ -84,10 +84,11 @@ def sync_card() -> dict | None:
 
 
 def checkup_card() -> dict | None:
-    slug = _focus()
-    who = _who(slug)
-    if not who:
+    if _away():
         return None
-    near = any(p.get("slug") == slug and p.get("near") for p in visible_people())
-    view = checkup.tick(slug, near, time.time())
-    return {"person": who, **view} if view else None
+    rows = []
+    for reading in checkup.tick(visible_people(), time.time()):
+        who = _who(reading["slug"])
+        if who:
+            rows.append({"person": who, "values": reading["values"], "source": reading["source"], "at": reading["at"]})
+    return {"people": rows} if rows else None

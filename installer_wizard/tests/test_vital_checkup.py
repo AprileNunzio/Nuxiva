@@ -2,84 +2,121 @@ import unittest
 from unittest import mock
 
 from features.people.vitals import checkup as checkup_module
+from features.people.vitals import consent as consent_module
 from features.people.vitals.camera import CameraVitals
-from features.people.vitals.checkup import Checkup
+from features.people.vitals.checkup import Watch
 from features.people.vitals.live import Live
+from features.people.vitals.watch_engine import ATTEMPT, REFRESH, SHOW, PyWatch
 
 
-class CheckupTest(unittest.TestCase):
+def engines():
+    out = [PyWatch]
+    try:
+        import nuxiva_native
+    except ImportError:
+        return out
+    native = getattr(nuxiva_native, "RustVitalWatch", None)
+    return out + ([native] if native else [])
+
+
+def person(slug: str, known: bool = True) -> dict:
+    return {"slug": slug, "known": known}
+
+
+class BackgroundWatchBase:
+    ENGINE = PyWatch
 
     def setUp(self):
         self.live = Live()
-        self.devices: list = []
         self.camera = CameraVitals()
-        self.reading: dict | None = None
+        self.readings: dict[str, dict] = {}
         self.enabled = True
+        self.denied: set = set()
         patches = (mock.patch.object(checkup_module, "live", self.live),
-                   mock.patch.object(checkup_module.book, "of", side_effect=lambda slug: self.devices),
                    mock.patch.object(checkup_module, "camera", self.camera),
-                   mock.patch.object(self.camera, "reading", side_effect=lambda slug, now=None: self.reading),
-                   mock.patch.object(checkup_module.camera_module, "enabled", side_effect=lambda: self.enabled))
+                   mock.patch.object(self.camera, "reading", side_effect=lambda slug, now=None: self.readings.get(slug)),
+                   mock.patch.object(checkup_module.camera_module, "enabled", side_effect=lambda: self.enabled),
+                   mock.patch.object(checkup_module.consent, "allowed", side_effect=lambda slug, now=None: slug not in self.denied))
         for patch in patches:
             patch.start()
             self.addCleanup(patch.stop)
-        self.check = Checkup()
+        self.watch = Watch(self.ENGINE())
 
-    def test_without_a_band_it_guides_a_webcam_measure(self):
-        view = self.check.tick("anna", True, 100.0)
-        self.assertEqual(view["phase"], "greet")
-        view = self.check.tick("anna", True, 103.0)
-        self.assertEqual(view["phase"], "camera")
-        self.assertEqual(view["hold_left"], 20)
-        self.assertTrue(self.camera.forced("anna", 104.0))
-        self.reading = {"progress": 0.8, "values": {"heart_rate": 71}}
-        view = self.check.tick("anna", True, 118.0)
-        self.assertEqual((view["phase"], view["values"]["heart_rate"], view["hold_left"]), ("camera", 71, 5))
-        self.reading = {"progress": 0.2, "values": {}}
-        self.assertTrue(self.check.tick("anna", True, 119.0)["moved"])
-        self.reading = {"progress": 1.0, "values": {"resp_rate": 14}}
-        view = self.check.tick("anna", True, 130.0)
-        self.assertEqual((view["phase"], view["source"], view["values"]), ("done", "camera", {"heart_rate": 71, "resp_rate": 14}))
-        self.assertFalse(self.camera.forced("anna", 131.0))
-        self.assertEqual(self.check.tick("anna", True, 150.0)["phase"], "done")
-        self.assertIsNone(self.check.tick("anna", True, 160.0))
-        self.assertIsNone(self.check.tick("anna", True, 1000.0))
-        self.assertEqual(self.check.tick("anna", True, 130.0 + 31 * 60)["phase"], "greet")
+    def test_measure_is_silent_until_a_reliable_value_arrives(self):
+        watch = self.watch
+        self.assertEqual(watch.tick([person("anna")], 100.0), [])
+        self.assertTrue(self.camera.forced("anna", 101.0))
+        self.readings["anna"] = {"values": {}}
+        self.assertEqual(watch.tick([person("anna")], 130.0), [])
+        self.readings["anna"] = {"values": {"heart_rate": 71, "resp_rate": 14}}
+        rows = watch.tick([person("anna")], 131.0)
+        self.assertEqual([(r["slug"], r["values"], r["source"]) for r in rows], [("anna", {"heart_rate": 71, "resp_rate": 14}, "camera")])
+        self.assertEqual(watch.tick([person("anna")], 131.0 + SHOW), [])
+        self.assertFalse(self.camera.forced("anna", 131.0 + SHOW + 1))
+        self.assertEqual(watch.tick([person("anna")], 131.0 + SHOW + REFRESH / 2), [])
 
-    def test_a_linked_band_is_tried_first_then_the_webcam(self):
-        self.devices = [{"label": "Fascia", "kind": "ble", "enabled": True}]
-        self.check.tick("anna", True, 100.0)
-        view = self.check.tick("anna", True, 103.0)
-        self.assertEqual((view["phase"], view["devices"][0]["label"]), ("device", "Fascia"))
-        self.assertEqual(self.check.tick("anna", True, 120.0)["phase"], "device")
-        self.assertEqual(self.check.tick("anna", True, 129.0)["phase"], "camera")
+    def test_failure_shows_nothing_and_retries_alone(self):
+        watch = self.watch
+        watch.tick([person("anna")], 1.0)
+        self.assertEqual(watch.tick([person("anna")], ATTEMPT + 1.0), [])
+        self.assertFalse(self.camera.forced("anna", ATTEMPT + 2.0))
+        self.assertEqual(watch.tick([person("anna")], ATTEMPT + 26.0), [])
+        self.assertTrue(self.camera.forced("anna", ATTEMPT + 27.0))
 
-    def test_band_values_finish_the_check(self):
-        self.devices = [{"label": "Fascia", "kind": "ble", "enabled": True}]
-        self.check.tick("anna", True, 100.0)
-        self.check.tick("anna", True, 103.0)
-        self.live.put("anna", {"metric": "heart_rate", "value": 64, "ts": 104.0}, "fascia@n1", "ble", 104.0)
-        view = self.check.tick("anna", True, 105.0)
-        self.assertEqual((view["phase"], view["source"], view["values"]["heart_rate"]), ("done", "device", 64))
+    def test_device_value_is_shown_without_the_camera(self):
+        watch = self.watch
+        self.live.put("anna", {"metric": "heart_rate", "value": 64, "ts": 99.0}, "fascia@n1", "ble", 99.0)
+        rows = watch.tick([person("anna")], 100.0)
+        self.assertEqual([(r["values"]["heart_rate"], r["source"]) for r in rows], [(64, "device")])
+        self.assertFalse(self.camera.forced("anna", 100.5))
+        self.live.forget("anna")
 
-    def test_leaving_stops_and_allows_a_retry_later(self):
-        self.check.tick("anna", True, 100.0)
-        self.check.tick("anna", True, 103.0)
-        self.assertEqual(self.check.tick("anna", False, 105.0)["phase"], "camera")
-        self.assertIsNone(self.check.tick("anna", False, 112.0))
-        self.assertFalse(self.camera.forced("anna", 112.0))
-        self.assertIsNone(self.check.tick("anna", True, 150.0))
-        self.assertEqual(self.check.tick("anna", True, 175.0)["phase"], "greet")
+    def test_several_people_get_one_value_each_and_privacy_is_respected(self):
+        watch = self.watch
+        self.denied = {"luca"}
+        crowd = [person("anna"), person("luca"), person("sara"), person("x", known=False)]
+        watch.tick(crowd, 100.0)
+        self.assertTrue(self.camera.forced("sara", 101.0))
+        self.assertFalse(self.camera.forced("luca", 101.0))
+        self.readings = {"anna": {"values": {"heart_rate": 80}}, "sara": {"values": {"heart_rate": 66}}, "luca": {"values": {"heart_rate": 90}}}
+        rows = watch.tick(crowd, 110.0)
+        self.assertEqual([(r["slug"], r["values"]["heart_rate"]) for r in rows], [("anna", 80), ("sara", 66)])
+        self.denied = set()
 
-    def test_nothing_is_shown_when_no_measure_is_possible(self):
+    def test_leaving_stops_the_camera(self):
+        watch = self.watch
+        watch.tick([person("anna")], 100.0)
+        watch.tick([], 105.0)
+        self.assertTrue(self.camera.forced("anna", 105.5))
+        watch.tick([], 110.0)
+        self.assertFalse(self.camera.forced("anna", 110.5))
+
+    def test_camera_switched_off_never_forces(self):
+        watch = self.watch
         self.enabled = False
-        self.assertIsNone(self.check.tick("anna", True, 100.0))
-        self.assertIsNone(self.check.tick("anna", False, 100.0))
+        self.assertEqual(watch.tick([person("anna")], 100.0), [])
+        self.assertFalse(self.camera.forced("anna", 100.5))
+        self.enabled = True
 
-    def test_no_reading_ends_in_a_failure(self):
-        self.check.tick("anna", True, 100.0)
-        self.check.tick("anna", True, 103.0)
-        self.assertEqual(self.check.tick("anna", True, 174.0)["phase"], "failed")
+
+class PythonWatchTest(BackgroundWatchBase, unittest.TestCase):
+    ENGINE = PyWatch
+
+
+@unittest.skipUnless(len(engines()) > 1, "nuxiva_native senza RustVitalWatch")
+class RustWatchTest(BackgroundWatchBase, unittest.TestCase):
+    ENGINE = engines()[-1]
+
+
+class ConsentTest(unittest.TestCase):
+
+    def test_profile_rules(self):
+        self.assertTrue(consent_module.decide({"role": "family"}))
+        self.assertFalse(consent_module.decide({"role": "owner", "consent": False}))
+        self.assertFalse(consent_module.decide({"role": "owner", "camera_vitals": False}))
+        self.assertFalse(consent_module.decide({"role": "guest"}))
+        self.assertTrue(consent_module.decide({"role": "guest", "share_health": True}))
+        self.assertFalse(consent_module.decide(None))
 
 
 class ForcedCameraTest(unittest.TestCase):
@@ -88,7 +125,8 @@ class ForcedCameraTest(unittest.TestCase):
         cam = CameraVitals()
         with mock.patch.object(cam, "has_band", return_value=True), \
                 mock.patch("features.people.vitals.camera.enabled", return_value=True), \
-                mock.patch("features.people.vitals.camera.server_busy", return_value=False):
+                mock.patch("features.people.vitals.camera.server_busy", return_value=False), \
+                mock.patch("features.people.vitals.camera.consent.allowed", return_value=True):
             people = [{"slug": "anna", "known": True}]
             self.assertEqual(cam.targets(people, 100.0), [])
             cam.force("anna", 30, 100.0)

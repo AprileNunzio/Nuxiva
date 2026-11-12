@@ -182,6 +182,7 @@ SECTIONS = [
         {"key": "notes", "label": "Note per Nuxiva", "type": "textarea"},
         {"key": "consent", "label": "Usa questo profilo per personalizzare le risposte", "type": "bool"},
         {"key": "share_health", "label": "Nuxiva può usare i dati sanitari (es. promemoria farmaci)", "type": "bool"},
+        {"key": "camera_vitals", "label": "Misura battito e respiro dalla webcam, in silenzio", "type": "bool"},
     ]},
 ]
 

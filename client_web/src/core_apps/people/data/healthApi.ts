@@ -6,7 +6,7 @@ export const HEALTH_GROUPS = ['heart', 'breath', 'body', 'move', 'rest'] as cons
 export type HealthGroup = (typeof HEALTH_GROUPS)[number];
 const METRIC = /^[a-z0-9_]{2,24}$/;
 const KINDS = ['cloud', 'ble', 'push', 'phone', 'camera'] as const;
-export const CAMERA_STATES = ['off', 'band', 'busy', 'idle', 'measuring', 'streaming'] as const;
+export const CAMERA_STATES = ['off', 'denied', 'band', 'busy', 'idle', 'measuring', 'streaming'] as const;
 export type CameraVitalsState = (typeof CAMERA_STATES)[number];
 const CAMERA_SETTING = 'NUXIVA_RPPG';
 

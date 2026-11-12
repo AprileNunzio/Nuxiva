@@ -12,7 +12,7 @@ export const chipClass =
 export const primaryClass =
   'md-state flex items-center justify-center gap-2 rounded-full border-0 bg-primary px-5 py-2 text-sm font-semibold text-on-primary shadow-[var(--md-elevation-1)] disabled:opacity-50';
 
-export const PERMISSION_KEYS = ['role', 'membership', 'business_role', 'subrole', 'authorization', 'allowed_zones', 'allowed_schedule', 'consent', 'share_health'] as const;
+export const PERMISSION_KEYS = ['role', 'membership', 'business_role', 'subrole', 'authorization', 'allowed_zones', 'allowed_schedule', 'consent', 'share_health', 'camera_vitals'] as const;
 
 export function initials(name: string): string {
   return name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]?.toUpperCase() ?? '').join('') || '?';

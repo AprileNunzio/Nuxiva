@@ -64,7 +64,7 @@ def _blank(slug: str, name: str) -> dict:
     first, _, last = name.strip().partition(" ")
     return {
         "slug": slug, "name": name, "first_name": first, "last_name": last, "role": "guest",
-        "consent": True, "share_health": False,
+        "consent": True, "share_health": False, "camera_vitals": True,
         "voice": {"tts_voice": "", "speed": 1.0, "voiceprint": None},
         "created_at": time.time(), "updated_at": time.time(),
         "stats": {"visits": 0, "total_seconds": 0, "first_seen": None, "last_seen": None},
@@ -81,6 +81,7 @@ def _migrate(p: dict) -> dict:
         custom = p.setdefault("custom", [])
         custom.extend({"key": k, "value": str(v)} for k, v in prefs.items())
     p.setdefault("consent", True)
+    p.setdefault("camera_vitals", True)
     return p
 
 
