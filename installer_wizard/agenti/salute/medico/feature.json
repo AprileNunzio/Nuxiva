@@ -1,0 +1,51 @@
+{
+  "capabilities": [
+    "Battito e respiro in background, anche per più persone insieme",
+    "Variabilità cardiaca, stress e recupero rispetto alla media personale",
+    "Sonno, passi e attività dai dispositivi collegati",
+    "Segnali da tenere d'occhio, senza diagnosi",
+    "Percorsi di benessere guidati con resoconto"
+  ],
+  "category": "salute",
+  "description": "Segue la salute delle persone di casa: battito, respiro, stress, sonno e recupero da bracciale, webcam e cloud salute, con percorsi di benessere guidati.",
+  "icon": "🩺",
+  "icon3d": "./icon.png",
+  "id": "medico",
+  "name": "Medico",
+  "profile": {
+    "heavy": false,
+    "ram_mb": 128,
+    "vram_mb": 0
+  },
+  "routing": {
+    "nouns": [
+      "battito",
+      "bpm",
+      "cuore",
+      "respiro",
+      "stress",
+      "sonno",
+      "pressione",
+      "saturazione",
+      "salute",
+      "benessere",
+      "medico",
+      "dottore",
+      "recupero"
+    ],
+    "phrases": [
+      "come sto",
+      "come sta",
+      "quanti battiti",
+      "mi misuri"
+    ],
+    "verbs": []
+  },
+  "skills": [],
+  "surface": "hidden",
+  "tools": [
+    "medico_parametri"
+  ],
+  "version": "1.0.0",
+  "widgets": []
+}

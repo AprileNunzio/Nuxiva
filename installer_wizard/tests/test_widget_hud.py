@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from unittest import mock
 
 from config import WIDGETS_DIR
+from agenti._widgets import manifests
 from agenti.desktop import sources
 from agenti.desktop.manifest import TONES
 from agenti.desktop.desk import Desk
@@ -17,7 +18,7 @@ OLD_NAME = "".join(("j", "ar", "v", "is"))
 
 class ManifestTest(unittest.TestCase):
     def test_every_widget_declares_a_valid_look(self):
-        for path in sorted(WIDGETS_DIR.glob("*/widget.json")):
+        for path, _ in manifests(WIDGETS_DIR):
             with self.subTest(widget=path.parent.name):
                 data = json.loads(path.read_text(encoding="utf-8"))
                 self.assertIn(data.get("tone", "cyan"), TONES)
@@ -27,7 +28,7 @@ class ManifestTest(unittest.TestCase):
                 self.assertNotIn("#0f172a", script)
 
     def test_widget_scripts_use_vector_icons_not_emoji(self):
-        offenders = [p.parent.name for p in WIDGETS_DIR.glob("*/widget.js")
+        offenders = [p.parent.name for p in (m.parent / "widget.js" for m, _ in manifests(WIDGETS_DIR))
                      if any(EMOJI.search(line) and not REGEX_LINE.search(line) for line in p.read_text(encoding="utf-8").splitlines())]
         self.assertEqual(offenders, [])
 

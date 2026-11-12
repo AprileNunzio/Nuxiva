@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 from unittest import mock
 
 from agenti.people.sync_board import board
-from agenti.people.vitals import cloud
+from agenti.medico.vitals import cloud
 
 END = datetime(2026, 11, 2, 9, 30, tzinfo=timezone.utc)
 

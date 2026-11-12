@@ -4,16 +4,16 @@ import time
 from collections import deque
 
 from agenti.nodes.registry import registry
-from agenti.people.vitals import cloud
-from agenti.people.vitals.book import book
-from agenti.people.vitals.history import history
-from agenti.people.vitals import insight
-from agenti.people.vitals.lease import arbiter
-from agenti.people.vitals.journal import journal
-from agenti.people.vitals.live import live
-from agenti.people.vitals.local_ble import NODE_NAME, local_ble
-from agenti.people.vitals.model import METRICS, clean_sample
-from agenti.people.vitals.nearby import nearby
+from agenti.medico.vitals import cloud
+from agenti.medico.vitals.book import book
+from agenti.medico.vitals.history import history
+from agenti.medico.vitals import insight
+from agenti.medico.vitals.lease import arbiter
+from agenti.medico.vitals.journal import journal
+from agenti.medico.vitals.live import live
+from agenti.medico.vitals.local_ble import NODE_NAME, local_ble
+from agenti.medico.vitals.model import METRICS, clean_sample
+from agenti.medico.vitals.nearby import nearby
 
 SEEN_SECONDS = 45.0
 ERROR_CODES = {"connect_failed", "no_profiles", "disconnected", "scan_failed"}

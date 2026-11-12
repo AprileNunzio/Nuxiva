@@ -8,6 +8,7 @@ import time
 from pathlib import Path
 
 from config import STATE_DIR, WIDGETS_DIR
+from agenti._widgets import manifests as widget_manifests, system_dirs as widget_system_dirs
 from agenti.desktop import manifest
 from agenti.desktop.manifest import clamp_refresh
 from agenti.desktop.novelty import AUTO_CAP, Novelty
@@ -64,7 +65,7 @@ class Desk:
         tmp.replace(STATE_FILE)
 
     def scan(self) -> bool:
-        paths = sorted(glob.glob(str(SYSTEM_DIR / "*" / "widget.json")) + glob.glob(str(USER_DIR / "*" / "widget.json")))
+        paths = [str(p) for p, _ in widget_manifests(SYSTEM_DIR)] + sorted(glob.glob(str(USER_DIR / "*" / "widget.json")))
         sig = "|".join(f"{p}:{os.path.getmtime(p)}" for p in paths if os.path.exists(p))
         if sig == self.signature:
             return False
@@ -84,7 +85,7 @@ class Desk:
             except (OSError, ValueError, TypeError) as exc:
                 errors.append({"path": p, "error": str(exc)[:200]})
                 continue
-            manifest.normalize(m, folder, SYSTEM_DIR)
+            manifest.normalize(m, folder, widget_system_dirs(SYSTEM_DIR))
             found[m["id"]] = m
         new = [w for w in found if w not in self.widgets and self.widgets]
         self.widgets, self.errors = found, errors

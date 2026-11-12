@@ -59,7 +59,7 @@ class Google:
         self.sessions[slug] = session
         who = (people.load(slug) or {}).get("name", slug)
         if grant == HEALTH:
-            from agenti.people.vitals import cloud
+            from agenti.medico.vitals import cloud
             cloud.reset(slug)
             store.event("INFO", f"Google Health autorizzato per {who}", "google")
             return slug, (accounts.get(slug) or {}).get("email", "")

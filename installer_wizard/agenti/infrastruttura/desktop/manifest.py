@@ -28,7 +28,7 @@ def clean_cost(raw) -> dict | None:
     return out
 
 
-def normalize(m: dict, folder: Path, system_dir: Path) -> None:
+def normalize(m: dict, folder: Path, system_dirs: tuple[Path, ...]) -> None:
     m["priority"] = max(0, min(100, int(m.get("priority", 50))))
     m["size"] = m.get("size") if m.get("size") in SIZES else "m"
     m.setdefault("icon", "▣")
@@ -41,7 +41,7 @@ def normalize(m: dict, folder: Path, system_dir: Path) -> None:
     m["tone"] = m.get("tone") if m.get("tone") in TONES else "cyan"
     m["refresh"] = clamp_refresh(m.get("refresh"))
     m["cost"] = clean_cost(m.get("cost"))
-    m["source"] = "system" if folder.is_relative_to(system_dir) else (m.get("source") if m.get("source") in ("ai", "user") else "user")
+    m["source"] = "system" if any(folder.is_relative_to(d) for d in system_dirs) else (m.get("source") if m.get("source") in ("ai", "user") else "user")
     m["dir"] = str(folder)
     m["has_css"] = (folder / "widget.css").exists()
     m["rev"] = str(int(max(p.stat().st_mtime for p in folder.glob("widget.*"))))

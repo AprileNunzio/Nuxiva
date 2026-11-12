@@ -86,14 +86,14 @@ class StickyTests(unittest.TestCase):
     def test_normalize_is_strict_about_flags(self):
         data = {"id": "a", "name": "a", "sticky": "yes", "immersive": 1, "refresh": "abc", "size": "huge", "tone": "pink"}
         folder = self.root / "partita"
-        manifest.normalize(data, folder, self.root)
+        manifest.normalize(data, folder, (self.root,))
         self.assertFalse(data["sticky"])
         self.assertFalse(data["immersive"])
         self.assertIsNone(data["refresh"])
         self.assertEqual((data["size"], data["tone"]), ("m", "cyan"))
 
     def test_the_chess_board_is_sticky_and_immersive(self):
-        real = json.loads((Path(__file__).resolve().parents[1] / "widgets" / "chess_3d" / "widget.json").read_text(encoding="utf-8"))
+        real = json.loads((Path(__file__).resolve().parents[1] / "agenti" / "multimedia" / "games" / "widget" / "chess_3d" / "widget.json").read_text(encoding="utf-8"))
         self.assertTrue(real["sticky"] and real["immersive"] and real["chrome"] is False)
 
 

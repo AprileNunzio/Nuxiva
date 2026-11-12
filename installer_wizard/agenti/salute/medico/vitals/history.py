@@ -6,7 +6,7 @@ from datetime import datetime
 from config import ETC_DIR, STATE_DIR
 from sealed import SealedFile
 
-from agenti.people.vitals.model import METRICS
+from agenti.medico.vitals.model import METRICS
 
 log = logging.getLogger("nuxiva.vitals.history")
 DAYS = 120

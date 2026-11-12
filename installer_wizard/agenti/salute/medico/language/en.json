@@ -1,0 +1,19 @@
+{
+  "capabilities": [
+    "Heart rate and breathing in the background, even for several people at once",
+    "Heart rate variability, stress and recovery compared with the personal average",
+    "Sleep, steps and activity from connected devices",
+    "Signs worth keeping an eye on, without diagnosis",
+    "Guided wellbeing sessions with a report"
+  ],
+  "description": "Follows the health of the people at home: heart rate, breathing, stress, sleep and recovery from wristband, webcam and health cloud, with guided wellbeing sessions.",
+  "dictionary": {
+    "description": "Follows the health of the people at home: heart rate, breathing, stress, sleep and recovery from wristband, webcam and health cloud, with guided wellbeing sessions.",
+    "name": "Doctor"
+  },
+  "meta": {
+    "locale": "en"
+  },
+  "name": "Doctor",
+  "scope": "features/medico"
+}

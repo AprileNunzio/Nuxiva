@@ -2,7 +2,7 @@ import time
 
 from agenti.people import connectors
 from agenti.people.sync_board import board
-from agenti.people.vitals import service
+from agenti.medico.vitals import service
 
 MAX_ROWS = 12
 DEVICE_STATES = {"streaming": "ok", "connected": "running", "seen": "waiting", "waiting": "waiting", "unsupported": "error"}

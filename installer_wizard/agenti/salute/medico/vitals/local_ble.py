@@ -5,9 +5,9 @@ import time
 
 from config import env_get
 from agenti.bluetooth import adapter
-from agenti.people.vitals.ble_codec import HR_CHAR, METRICS_OF, PARSERS, RrWindow, nearby_rows, rr_intervals
-from agenti.people.vitals.book import book
-from agenti.people.vitals.nearby import nearby
+from agenti.medico.vitals.ble_codec import HR_CHAR, METRICS_OF, PARSERS, RrWindow, nearby_rows, rr_intervals
+from agenti.medico.vitals.book import book
+from agenti.medico.vitals.nearby import nearby
 
 log = logging.getLogger("nuxiva.vitals")
 NODE_ID = "server"
@@ -122,7 +122,7 @@ class LocalBle:
         report = {"seen": seen, "samples": self.samples[:MAX_SAMPLES], "errors": self.errors[:20], "profiles": dict(self.profiles),
                   "nearby": nearby_rows(found) if self.discover else []}
         self.samples, self.errors, self.profiles = self.samples[MAX_SAMPLES:], self.errors[20:], {}
-        from agenti.people.vitals import service
+        from agenti.medico.vitals import service
         res = service.node_report(NODE_ID, report)
         self.discover = bool(res.get("discover"))
         self.watch = [str(a).upper() for a in res.get("watch") or []]

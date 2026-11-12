@@ -2,8 +2,8 @@ import time
 
 from agenti.people import mood, people, sync_view
 from agenti.people.panel import focus_of, initials, series, visible_people
-from agenti.people.vitals import cloud, service
-from agenti.people.vitals.checkup import checkup
+from agenti.medico.vitals import cloud, service
+from agenti.medico.vitals.checkup import checkup
 from state import store
 from tasks import background
 
@@ -61,7 +61,7 @@ def mood_card() -> dict | None:
                  "evidence": latest.get("evidence", "")}
     face = None
     try:
-        from agenti.people.wellbeing import service as wellbeing
+        from agenti.medico.wellbeing import service as wellbeing
         signal = wellbeing.live(slug, now)
         if signal and not signal.get("calibrating"):
             face = {"area": signal["area"], "arousal": signal["arousal"], "valence": signal["valence"]}

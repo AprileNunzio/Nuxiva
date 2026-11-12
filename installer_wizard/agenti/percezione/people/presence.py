@@ -91,7 +91,7 @@ class PresenceMonitor:
         return [p for p, _ in self.held.values()] + self.unknown_held[0]
 
     def _affect(self, visible: list) -> None:
-        from agenti.people.wellbeing import service as wellbeing
+        from agenti.medico.wellbeing import service as wellbeing
         for p in visible:
             if p.get("known") and p.get("slug") and isinstance(p.get("affect"), dict) and p["affect"].get("at") != self.affect_at.get(p["slug"]):
                 self.affect_at[p["slug"]] = p["affect"].get("at")
@@ -111,12 +111,12 @@ class PresenceMonitor:
 
     @staticmethod
     def _vitals_targets() -> list[str]:
-        from agenti.people.vitals.camera import camera
+        from agenti.medico.vitals.camera import camera
         return camera.targets(store.presence.get("people") or [])
 
     @staticmethod
     def _vitals(data: dict, visible: list, wanted: list[str]) -> None:
-        from agenti.people.vitals.camera import camera
+        from agenti.medico.vitals.camera import camera
         if wanted:
             camera.ingest(visible, data.get("vitals_cost"), wanted)
 

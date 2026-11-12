@@ -3,8 +3,8 @@ from pathlib import Path
 
 from agenti.chat import voice_id
 from agenti.people import connectors, faces, people
-from agenti.people.vitals import service as vitals
-from agenti.people.vitals.history import history
+from agenti.medico.vitals import service as vitals
+from agenti.medico.vitals.history import history
 
 LEARNED_STATES = ("auto", "confirmed")
 

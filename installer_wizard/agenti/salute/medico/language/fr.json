@@ -1,0 +1,19 @@
+{
+  "capabilities": [
+    "Pouls et respiration en arrière-plan, même pour plusieurs personnes à la fois",
+    "Variabilité cardiaque, stress et récupération par rapport à la moyenne personnelle",
+    "Sommeil, pas et activité depuis les appareils connectés",
+    "Signaux à surveiller, sans diagnostic",
+    "Parcours de bien-être guidés avec compte rendu"
+  ],
+  "description": "Suit la santé des personnes de la maison : pouls, respiration, stress, sommeil et récupération depuis le bracelet, la webcam et le cloud santé, avec des parcours de bien-être guidés.",
+  "dictionary": {
+    "description": "Suit la santé des personnes de la maison : pouls, respiration, stress, sommeil et récupération depuis le bracelet, la webcam et le cloud santé, avec des parcours de bien-être guidés.",
+    "name": "Médecin"
+  },
+  "meta": {
+    "locale": "fr"
+  },
+  "name": "Médecin",
+  "scope": "features/medico"
+}

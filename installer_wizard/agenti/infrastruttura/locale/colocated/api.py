@@ -23,22 +23,27 @@ class _LiveRoots(Mapping):
         from agenti._registry import registry
         return tuple(registry.bases()) or (STATE_DIR / "features",)
 
+    def _widget_bases(self) -> tuple[Path, ...]:
+        from agenti._widgets import agent_bases
+        return (WIDGETS_DIR, *(base for _, base in agent_bases()))
+
     def __getitem__(self, key: str) -> tuple[Path, ...]:
         if key == "features":
             return self._agent_bases()
+        if key == "widgets":
+            return self._widget_bases()
         return self._static[key]
 
     def __iter__(self):
-        return iter(("features", *self._static))
+        return iter(("features", "widgets", *self._static))
 
     def __len__(self) -> int:
-        return len(self._static) + 1
+        return len(self._static) + 2
 
 
 roots = ScopeRoots(_LiveRoots({
     "web": (WEB_DIR,),
     "skills": (SKILLS_DIR,),
-    "widgets": (WIDGETS_DIR,),
 }))
 resolver = BundleResolver(roots, LanguageFileRepository(), FALLBACK_LOCALES)
 

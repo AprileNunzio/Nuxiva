@@ -5,8 +5,8 @@ from pathlib import Path
 
 import numpy as np
 
-from agenti.people.vitals import consent as consent_module
-from agenti.people.vitals.watch_engine import PyWatch
+from agenti.medico.vitals import consent as consent_module
+from agenti.medico.vitals.watch_engine import PyWatch
 
 VISION = Path(__file__).resolve().parents[1] / "agenti" / "percezione" / "vision"
 if str(VISION) not in sys.path:

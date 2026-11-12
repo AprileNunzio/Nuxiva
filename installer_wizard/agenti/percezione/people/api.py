@@ -18,13 +18,13 @@ from agenti.people import connectors, faces, insight_api, overview, panel, peopl
 from agenti.people.mentions import mentions
 from agenti.people.fingerprint import api as fingerprint_api
 from agenti.people.fingerprint.store import bindings as fingerprint_bindings
-from agenti.people.wellbeing import api as wellbeing_api
-from agenti.people.wellbeing import service as wellbeing_service
-from agenti.people.vitals import api as vitals_api
-from agenti.people.vitals.book import book as vitals_book
-from agenti.people.vitals.journal import journal as vitals_journal
-from agenti.people.vitals.live import live as vitals_live
-from agenti.people.vitals.history import history as vitals_history
+from agenti.medico.wellbeing import api as wellbeing_api
+from agenti.medico.wellbeing import service as wellbeing_service
+from agenti.medico.vitals import api as vitals_api
+from agenti.medico.vitals.book import book as vitals_book
+from agenti.medico.vitals.journal import journal as vitals_journal
+from agenti.medico.vitals.live import live as vitals_live
+from agenti.medico.vitals.history import history as vitals_history
 from agenti.vision.proxy import vision_proxy
 from agenti.voices.catalog import VOICES
 from state import store

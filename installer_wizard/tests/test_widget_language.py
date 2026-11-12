@@ -3,6 +3,7 @@ import re
 import unittest
 from pathlib import Path
 
+from agenti._widgets import manifests
 from agenti.desktop.desk import desk
 from agenti.desktop.manifest import REFRESH_MAX, REFRESH_MIN, clamp_refresh
 
@@ -16,12 +17,13 @@ COUNT = re.compile(r'\bcount\(\s*"([a-z0-9_.]+)"')
 DYNAMIC = re.compile(r'(?<![\w.])(?:ctx\.)?t\(\s*`([a-z0-9_.]*)\$\{')
 
 
-def dictionary(scope, lang):
-    return json.loads((WIDGETS / scope / "language" / f"{lang}.json").read_text(encoding="utf-8"))["dictionary"]
-
-
 def widget_dirs():
-    return sorted(p for p in WIDGETS.iterdir() if (p / "widget.json").exists())
+    return sorted((p.parent for p, _ in manifests(WIDGETS)), key=lambda p: p.name)
+
+
+def dictionary(scope, lang):
+    base = {p.name: p for p in widget_dirs()}.get(scope, WIDGETS / scope)
+    return json.loads((base / "language" / f"{lang}.json").read_text(encoding="utf-8"))["dictionary"]
 
 
 class WidgetLanguageTest(unittest.TestCase):

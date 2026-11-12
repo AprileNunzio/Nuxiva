@@ -7,10 +7,10 @@ from datetime import datetime, timedelta, timezone
 import httpx
 
 from agenti.people.sync_board import board
-from agenti.people.vitals.history import history
-from agenti.people.vitals.journal import journal
-from agenti.people.vitals.live import live
-from agenti.people.vitals.model import clean_sample
+from agenti.medico.vitals.history import history
+from agenti.medico.vitals.journal import journal
+from agenti.medico.vitals.live import live
+from agenti.medico.vitals.model import clean_sample
 
 log = logging.getLogger("nuxiva.vitals.cloud")
 BASE = "https://health.googleapis.com/v4/users/me/dataTypes"

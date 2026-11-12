@@ -1,0 +1,19 @@
+{
+  "capabilities": [
+    "Pulso y respiración en segundo plano, incluso para varias personas a la vez",
+    "Variabilidad cardiaca, estrés y recuperación respecto a la media personal",
+    "Sueño, pasos y actividad desde los dispositivos conectados",
+    "Señales a vigilar, sin diagnóstico",
+    "Recorridos de bienestar guiados con informe"
+  ],
+  "description": "Sigue la salud de las personas de casa: pulso, respiración, estrés, sueño y recuperación desde la pulsera, la webcam y la nube de salud, con recorridos de bienestar guiados.",
+  "dictionary": {
+    "description": "Sigue la salud de las personas de casa: pulso, respiración, estrés, sueño y recuperación desde la pulsera, la webcam y la nube de salud, con recorridos de bienestar guiados.",
+    "name": "Médico"
+  },
+  "meta": {
+    "locale": "es"
+  },
+  "name": "Médico",
+  "scope": "features/medico"
+}

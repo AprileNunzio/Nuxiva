@@ -38,6 +38,7 @@ TOOLS: dict[str, Risk] = {
     "file_info": Risk.PERSONAL, "camera_events": Risk.PERSONAL, "camera_overview": Risk.PERSONAL,
     "list_cameras": Risk.PERSONAL, "open_camera": Risk.PERSONAL, "firewall_status": Risk.PERSONAL, "vpn_status": Risk.PERSONAL, "proxmox_status": Risk.PERSONAL,
     "who_is": Risk.PERSONAL, "person_profile": Risk.PERSONAL, "person_learn": Risk.PERSONAL, "person_mood": Risk.PERSONAL,
+    "medico_parametri": Risk.PERSONAL,
     "stop_red_alert": Risk.HOME, "red_alert": Risk.CRITICAL, "studio_voices": Risk.INFO, "transcribe_audio": Risk.PERSONAL, "studio_design_voice": Risk.HOME, "speak_to_file": Risk.FILES,
     "write_file": Risk.FILES, "make_dir": Risk.FILES, "copy": Risk.FILES, "move": Risk.FILES, "zip": Risk.FILES,
     "create_site": Risk.FILES, "create_3d": Risk.FILES, "create_document": Risk.FILES, "copy_to_share": Risk.FILES,

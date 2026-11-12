@@ -43,26 +43,9 @@ class DiscoveredAgent:
 
 
 WIDGET_AGENT_DEFAULTS: dict[str, tuple[str, list[str]]] = {
-    "lavagna": ("whiteboard", ["whiteboard", "lavagna"]),
-    "alarm": ("home_assistant", ["alarm", "allarme"]),
     "brief": ("agent", ["brief", "scheda_rapida"]),
-    "f1_race": ("sports", ["f1", "formula1"]),
-    "g_notify": ("google", ["g_notify", "google"]),
-    "home_rooms": ("home_assistant", ["home_rooms", "stanze"]),
-    "karaoke": ("music", ["karaoke"]),
-    "listening": ("ear", ["listening"]),
-    "live_cam": ("cameras", ["live_cam", "webcam"]),
-    "music": ("music", ["music", "musica"]),
     "notice": ("agent", ["notice", "avvisi"]),
-    "sport_match": ("sports", ["sport_match", "partita"]),
-    "sport_table": ("sports", ["sport_table", "classifica"]),
-    "study": ("study", ["study", "studio"]),
-    "subsystem_alert": ("governor", ["subsystem_alert"]),
-    "sun_cycle": ("location", ["sun_cycle", "astronomy"]),
-    "system_update": ("auto_update", ["system_update", "aggiornamento"]),
-    "tv_player": ("tv", ["tv", "tv_player"]),
     "weather": ("chat", ["weather", "meteo"]),
-    "chess_3d": ("games", ["chess_3d", "scacchi", "games", "chess"]),
 }
 
 
@@ -80,6 +63,7 @@ class AgentScanner:
     def __init__(self) -> None:
         self.agents: dict[str, DiscoveredAgent] = {}
         self.signature = ""
+        self._widget_owners: dict[str, str] = {}
         self._ensure_dirs()
 
     def _ensure_dirs(self) -> None:
@@ -102,10 +86,10 @@ class AgentScanner:
         self._ensure_dirs()
         from agenti._registry import registry as agent_registry
         feat_paths = [str(p) for p in agent_registry.manifest_paths()]
-        widget_paths = sorted(
-            glob.glob(str(WIDGETS_DIR / "*" / "widget.json")) +
-            glob.glob(str(USER_WIDGETS_DIR / "*" / "widget.json"))
-        )
+        from agenti._widgets import manifests as widget_manifests
+        owned = widget_manifests(WIDGETS_DIR, agent_registry)
+        self._widget_owners = {str(p): owner for p, owner in owned if owner}
+        widget_paths = [str(p) for p, _ in owned] + sorted(glob.glob(str(USER_WIDGETS_DIR / "*" / "widget.json")))
 
         sig = self._compute_signature(feat_paths, widget_paths)
         if not force and sig == self.signature and self.agents:
@@ -204,7 +188,7 @@ class AgentScanner:
             try:
                 data = json.loads(path_obj.read_text(encoding="utf-8"))
                 wid = str(data.get("id") or wid).strip()
-                target_agent = data.get("agent")
+                target_agent = self._widget_owners.get(p) or data.get("agent")
                 target_intents = list(data.get("intents") or [])
                 if not target_agent and wid in WIDGET_AGENT_DEFAULTS:
                     def_agent, def_intents = WIDGET_AGENT_DEFAULTS[wid]

@@ -5,7 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SCOPES = (ROOT / "client_web/src/core_apps/people/language", ROOT / "installer_wizard/web/display/language",
-          ROOT / "installer_wizard/widgets/chess_3d/language")
+          ROOT / "installer_wizard/agenti/multimedia/games/widget/chess_3d/language")
 CODE = (ROOT / "client_web/src/core_apps/people/components", ROOT / "installer_wizard/web/display")
 TRACKED = ("vitals_", "gg_", "tg_", "training_", "condition_", "open_control_panel")
 KEY = re.compile(r"""\bt\(\s*['"]([a-z0-9_]+)['"]""")

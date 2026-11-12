@@ -4,9 +4,9 @@ import time
 
 from config import env_get
 
-from agenti.people.vitals.book import book
-from agenti.people.vitals.consent import consent
-from agenti.people.vitals.live import live
+from agenti.medico.vitals.book import book
+from agenti.medico.vitals.consent import consent
+from agenti.medico.vitals.live import live
 
 log = logging.getLogger("nuxiva.vitals.camera")
 SETTING = "NUXIVA_RPPG"
@@ -108,7 +108,7 @@ class CameraVitals:
 
     def ingest(self, visible: list, cost: dict | None, wanted: list[str], now: float | None = None) -> int:
         now = now or time.time()
-        from agenti.people.vitals import service
+        from agenti.medico.vitals import service
         accepted = 0
         for person in visible:
             slug, reading = person.get("slug"), person.get("vitals")

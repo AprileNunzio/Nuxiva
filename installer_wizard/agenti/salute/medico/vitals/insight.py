@@ -1,4 +1,4 @@
-from agenti.people.vitals.history import history
+from agenti.medico.vitals.history import history
 
 SLEEP_GOAL = 480
 STEP_GOAL = 8000

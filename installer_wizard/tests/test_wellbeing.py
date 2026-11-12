@@ -10,8 +10,8 @@ from fastapi.testclient import TestClient
 
 from access import require_admin
 from agenti.people import people, private_store
-from agenti.people.wellbeing import api as wb_api
-from agenti.people.wellbeing import protocol, report, safety, scoring, service, store
+from agenti.medico.wellbeing import api as wb_api
+from agenti.medico.wellbeing import protocol, report, safety, scoring, service, store
 
 
 def run(coro):

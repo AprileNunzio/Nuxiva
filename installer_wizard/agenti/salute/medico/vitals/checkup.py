@@ -2,11 +2,11 @@ import os
 import threading
 import time
 
-from agenti.people.vitals import camera as camera_module
-from agenti.people.vitals.camera import camera
-from agenti.people.vitals.consent import consent
-from agenti.people.vitals.live import live
-from agenti.people.vitals.watch_engine import LIMITS, MAX_PEOPLE, PyWatch
+from agenti.medico.vitals import camera as camera_module
+from agenti.medico.vitals.camera import camera
+from agenti.medico.vitals.consent import consent
+from agenti.medico.vitals.live import live
+from agenti.medico.vitals.watch_engine import LIMITS, MAX_PEOPLE, PyWatch
 
 DEVICE_FRESH = 120.0
 METRICS = tuple(LIMITS)

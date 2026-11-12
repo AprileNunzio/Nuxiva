@@ -13,7 +13,7 @@ from access import require_admin
 from agenti.people import api as people_api
 from agenti.people import learning, mood, people, private_store
 from agenti.people.mentions import Mentions
-from agenti.people.vitals.history import DAYS, History
+from agenti.medico.vitals.history import DAYS, History
 
 
 class Base(unittest.TestCase):

@@ -1,8 +1,8 @@
 import time
 
 from agenti.people import people
-from agenti.people.wellbeing import prompts, protocol, safety, store
-from agenti.people.wellbeing.scoring import meter
+from agenti.medico.wellbeing import prompts, protocol, safety, store
+from agenti.medico.wellbeing.scoring import meter
 
 SAVE_BASELINE_EVERY = 120.0
 HISTORY_TURNS = 12

@@ -9,7 +9,7 @@ import time
 from config import STATE_DIR
 from sealed import write_private
 
-from agenti.people.vitals.model import KINDS
+from agenti.medico.vitals.model import KINDS
 
 FILE = STATE_DIR / "vitals_devices.json"
 MAX_PER_PERSON = 6

@@ -7,6 +7,6 @@ client_web/src/apps/sport/sports/football/index.tsx 650
 client_web/src/apps/sport/sports/hockey/index.tsx 834
 client_web/src/node_apps/task_manager/View.tsx 519
 installer_wizard/tests/test_musicstudio.py 658
-installer_wizard/widgets/lavagna/widget.js 688
+installer_wizard/agenti/creativita/whiteboard/widget/lavagna/widget.js 688
 server/web/features/proximity_hud/vision_controller.js 566
 server/web/style.css 508

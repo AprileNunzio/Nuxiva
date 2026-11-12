@@ -2,9 +2,9 @@ import time
 import unittest
 from unittest import mock
 
-from agenti.people.vitals import camera as camera_module
-from agenti.people.vitals.camera import CameraVitals
-from agenti.people.vitals.live import Live
+from agenti.medico.vitals import camera as camera_module
+from agenti.medico.vitals.camera import CameraVitals
+from agenti.medico.vitals.live import Live
 
 
 def person(slug: str, reading: dict | None = None, known: bool = True) -> dict:
@@ -57,7 +57,7 @@ class CameraVitalsTest(unittest.TestCase):
             self.assertEqual(self.cam.status("anna", 100.0)["state"], "busy")
 
     def test_readings_are_ingested_once_and_validated(self):
-        from agenti.people.vitals import service
+        from agenti.medico.vitals import service
         now = time.time()
         good = {"heart_rate": 68, "resp_rate": 14, "hr_quality": 0.7, "rr_quality": 0.8, "progress": 1.0, "at": now}
         with mock.patch.object(service, "ingest", return_value={"accepted": 2, "rejected": 0}) as ingest:

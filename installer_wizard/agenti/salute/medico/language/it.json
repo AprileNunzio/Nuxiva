@@ -1,0 +1,19 @@
+{
+  "capabilities": [
+    "Battito e respiro in background, anche per più persone insieme",
+    "Variabilità cardiaca, stress e recupero rispetto alla media personale",
+    "Sonno, passi e attività dai dispositivi collegati",
+    "Segnali da tenere d'occhio, senza diagnosi",
+    "Percorsi di benessere guidati con resoconto"
+  ],
+  "description": "Segue la salute delle persone di casa: battito, respiro, stress, sonno e recupero da bracciale, webcam e cloud salute, con percorsi di benessere guidati.",
+  "dictionary": {
+    "description": "Segue la salute delle persone di casa: battito, respiro, stress, sonno e recupero da bracciale, webcam e cloud salute, con percorsi di benessere guidati.",
+    "name": "Medico"
+  },
+  "meta": {
+    "locale": "it"
+  },
+  "name": "Medico",
+  "scope": "features/medico"
+}

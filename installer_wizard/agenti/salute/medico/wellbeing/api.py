@@ -5,7 +5,7 @@ from fastapi.responses import PlainTextResponse
 
 from access import require_admin
 from agenti.people import people
-from agenti.people.wellbeing import report, service, store
+from agenti.medico.wellbeing import report, service, store
 from state import store as events
 
 admin_routes = APIRouter()

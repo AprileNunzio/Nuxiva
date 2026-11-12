@@ -135,7 +135,7 @@ from agenti.network import api as network_api
 from agenti.network.explorer import explorer
 from agenti.people import api as people_api
 from agenti.people import presence
-from agenti.people.vitals.local_ble import local_ble as vitals_local_ble
+from agenti.medico.vitals.local_ble import local_ble as vitals_local_ble
 from agenti.skills import api as skills_api
 from agenti.soup import api as soup_api
 from agenti.study import api as study_api

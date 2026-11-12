@@ -2,8 +2,8 @@ import time
 from collections import Counter
 
 from agenti.people import people
-from agenti.people.wellbeing import store
-from agenti.people.wellbeing.scoring import AREAS
+from agenti.medico.wellbeing import store
+from agenti.medico.wellbeing.scoring import AREAS
 
 DISCLAIMER = {
     "it": "Questo documento NON è una diagnosi né una cartella clinica. Raccoglie osservazioni di un assistente di benessere basate su ciò che la persona ha riferito e su stime automatiche del volto (non cliniche), pensato per essere discusso con un professionista della salute.",

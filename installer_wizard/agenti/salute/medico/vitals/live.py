@@ -2,7 +2,7 @@ import threading
 import time
 from collections import deque
 
-from agenti.people.vitals.model import METRICS, PRIORITY
+from agenti.medico.vitals.model import METRICS, PRIORITY
 
 KEEP = 240
 TIE_WINDOW = 5.0

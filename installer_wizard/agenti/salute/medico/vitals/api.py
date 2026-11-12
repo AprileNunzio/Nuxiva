@@ -6,15 +6,15 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from access import require_admin
 from agenti.nodes.registry import registry
 from agenti.people import connectors, people
-from agenti.people.vitals import cloud, service
-from agenti.people.vitals.history import history
-from agenti.people.vitals.model import METRICS
-from agenti.people.vitals.book import book
-from agenti.people.vitals.camera import camera
-from agenti.people.vitals.journal import journal
-from agenti.people.vitals.live import live
-from agenti.people.vitals.nearby import SEARCH_SECONDS, nearby
-from agenti.people.vitals.pairing import pairing
+from agenti.medico.vitals import cloud, service
+from agenti.medico.vitals.history import history
+from agenti.medico.vitals.model import METRICS
+from agenti.medico.vitals.book import book
+from agenti.medico.vitals.camera import camera
+from agenti.medico.vitals.journal import journal
+from agenti.medico.vitals.live import live
+from agenti.medico.vitals.nearby import SEARCH_SECONDS, nearby
+from agenti.medico.vitals.pairing import pairing
 from state import store
 
 admin_routes = APIRouter()

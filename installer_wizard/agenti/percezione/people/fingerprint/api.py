@@ -10,7 +10,7 @@ from agenti.people.fingerprint.model import FINGERS
 from agenti.people.fingerprint.readers import readers
 from agenti.people.fingerprint.service import service
 from agenti.people.fingerprint.store import bindings
-from agenti.people.vitals.service import RateLimit
+from agenti.medico.vitals.service import RateLimit
 from state import store
 
 admin_routes = APIRouter()

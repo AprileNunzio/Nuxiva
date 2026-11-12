@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException, Request
 
 from access import require_display
 from agenti.people import learning, mood, people
-from agenti.people.vitals import cloud, service
+from agenti.medico.vitals import cloud, service
 from tasks import background
 from state import store
 
