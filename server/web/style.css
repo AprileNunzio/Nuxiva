@@ -1,0 +1,508 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg-deep: #050811;
+  --bg-panel: rgba(10, 16, 31, 0.85);
+  --bg-card: rgba(15, 23, 42, 0.7);
+  --border-neon: rgba(0, 240, 255, 0.25);
+  --border-glow: rgba(139, 92, 246, 0.3);
+  --cyan-glow: #00f0ff;
+  --purple-glow: #8b5cf6;
+  --emerald-glow: #10b981;
+  --amber-glow: #f59e0b;
+  --rose-glow: #f43f5e;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  --font-display: 'Rajdhani', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-body: 'Inter', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-deep);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  min-height: 100vh;
+  background-image: 
+    radial-gradient(circle at 15% 15%, rgba(0, 240, 255, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.05) 0%, transparent 40%),
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+}
+
+/* Scrollbar futuristica */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(5, 8, 17, 0.6);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 240, 255, 0.3);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--cyan-glow);
+}
+
+/* Header & Barra Tattica Superiore */
+.tactical-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(5, 8, 17, 0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-neon);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.7);
+}
+
+.brand-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.brand-core-reactor {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid var(--cyan-glow);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pulse-core 3s infinite alternate;
+}
+
+.brand-core-inner {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--cyan-glow);
+  box-shadow: 0 0 12px var(--cyan-glow);
+}
+
+@keyframes pulse-core {
+  0% { transform: scale(0.95); box-shadow: 0 0 10px rgba(0, 240, 255, 0.4); }
+  100% { transform: scale(1.05); box-shadow: 0 0 25px rgba(0, 240, 255, 0.8); }
+}
+
+.brand-text h1 {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.brand-text h1 span {
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
+  background: rgba(0, 240, 255, 0.15);
+  border: 1px solid var(--cyan-glow);
+  color: var(--cyan-glow);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.tactical-telemetry-pills {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.telemetry-pill {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border-neon);
+  background: rgba(0, 240, 255, 0.06);
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.telemetry-pill.accent {
+  border-color: rgba(16, 185, 129, 0.5);
+  background: rgba(16, 185, 129, 0.1);
+  color: #34d399;
+}
+
+.telemetry-pill.warning {
+  border-color: rgba(245, 158, 11, 0.5);
+  background: rgba(245, 158, 11, 0.1);
+  color: #fbbf24;
+}
+
+.pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 8px currentColor;
+  animation: blink-dot 1.5s infinite;
+}
+
+@keyframes blink-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Navigazione Plance Tattiche (Deck Switcher) */
+.plance-navbar {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(10, 16, 31, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.5rem 1.5rem;
+  overflow-x: auto;
+}
+
+.plancia-tab-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.plancia-tab-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.plancia-tab-btn.active {
+  color: var(--cyan-glow);
+  background: rgba(0, 240, 255, 0.1);
+  border-color: var(--cyan-glow);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.25);
+}
+
+/* Main Display Area */
+.tactical-viewport {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  min-height: calc(100vh - 160px);
+  padding-bottom: 90px;
+}
+
+.plancia-section {
+  display: none;
+  animation: fadeInDeck 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.plancia-section.active {
+  display: block;
+}
+
+@keyframes fadeInDeck {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Cards & Layout Panels */
+.grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.grid-3col {
+  display: grid;
+  grid-template-columns: 320px 1fr 340px;
+  gap: 1.5rem;
+}
+
+.tactical-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-neon);
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  display: flex;
+  flex-col: column;
+}
+
+.card-header {
+  padding: 1rem 1.25rem;
+  background: linear-gradient(90deg, rgba(0, 240, 255, 0.08), rgba(139, 92, 246, 0.04));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.card-body {
+  padding: 1.25rem;
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* War Room Feed Styles */
+.war-room-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.feed-item {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-left: 3px solid var(--cyan-glow);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.feed-item.alert {
+  border-left-color: var(--rose-glow);
+  background: rgba(244, 63, 94, 0.08);
+}
+
+.feed-item.action {
+  border-left-color: var(--emerald-glow);
+}
+
+.feed-item.thought {
+  border-left-color: var(--purple-glow);
+}
+
+.feed-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.feed-sender {
+  font-weight: 600;
+  color: var(--cyan-glow);
+}
+
+.feed-content {
+  color: var(--text-main);
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+/* Progress Bars */
+.progress-container {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  height: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--cyan-glow), var(--emerald-glow));
+  border-radius: 20px;
+  transition: width 0.4s ease;
+  box-shadow: 0 0 10px var(--cyan-glow);
+}
+
+/* Form Controls & Futuristic Inputs */
+.tactical-input {
+  background: rgba(5, 8, 17, 0.8);
+  border: 1px solid var(--border-neon);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  padding: 0.6rem 0.85rem;
+  border-radius: 8px;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.tactical-input:focus {
+  border-color: var(--cyan-glow);
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+}
+
+.tactical-btn {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(139, 92, 246, 0.2));
+  border: 1px solid var(--cyan-glow);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 0.6rem 1.25rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.tactical-btn:hover {
+  background: var(--cyan-glow);
+  color: #000;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.6);
+}
+
+.tactical-btn.secondary {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-muted);
+}
+.tactical-btn.secondary:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Floating Bottom Command Bar */
+.bottom-command-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(5, 8, 17, 0.95);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border-neon);
+  padding: 0.75rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  z-index: 100;
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.8);
+}
+
+.command-input-wrapper {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.command-input-wrapper input {
+  width: 100%;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid var(--border-neon);
+  border-radius: 30px;
+  padding: 0.8rem 1.4rem;
+  color: #fff;
+  font-size: 0.95rem;
+  outline: none;
+  font-family: var(--font-body);
+  transition: all 0.3s;
+}
+
+.command-input-wrapper input:focus {
+  border-color: var(--cyan-glow);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+}
+
+/* Node Flow Graph Styling */
+.flow-node-item {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: 10px;
+  padding: 0.85rem;
+  margin-bottom: 0.75rem;
+  position: relative;
+  transition: transform 0.2s;
+}
+
+.flow-node-item:hover {
+  transform: translateX(4px);
+  border-color: var(--cyan-glow);
+}
+
+.node-meta-badges {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+}
+
+.badge-tag {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+}
+
+.badge-tag.agent {
+  background: rgba(139, 92, 246, 0.2);
+  color: #c4b5fd;
+  border: 1px solid rgba(139, 92, 246, 0.4);
+}
+
+.badge-tag.tool {
+  background: rgba(16, 185, 129, 0.2);
+  color: #6ee7b7;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.badge-tag.widget {
+  background: rgba(0, 240, 255, 0.2);
+  color: #7dd3fc;
+  border: 1px solid rgba(0, 240, 255, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .grid-3col, .grid-2col {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "manifest_version": 1,
+  "id": "shares",
+  "kind": "optional",
+  "order": 185,
+  "steps": ["shares"],
+  "icon": "icon.png",
+  "choices": [
+    {
+      "id": "yes",
+      "installs": true,
+      "icon": "choice_yes.png",
+      "recommended": false,
+      "env": {
+        "NUXIVA_SHARES": "1"
+      }
+    },
+    {
+      "id": "no",
+      "installs": false,
+      "icon": "choice_no.png",
+      "env": {
+        "NUXIVA_SHARES": "0"
+      }
+    }
+  ]
+}

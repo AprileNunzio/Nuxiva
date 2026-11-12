@@ -1,0 +1,8 @@
+{
+  "id": "android",
+  "name": "Android Companion",
+  "target": "android_arm64",
+  "tier": "tier2_satellite",
+  "version": "5.0.0",
+  "description": "Mobile companion APK provisioning with QR code handshake and WireGuard tunnel"
+}

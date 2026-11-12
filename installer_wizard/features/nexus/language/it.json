@@ -1,0 +1,18 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "features/nexus",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Nexus Shell",
+    "desc": "Cruscotto principale e workspace di sistema",
+    "error.tool_not_found": "Strumento non trovato",
+    "error.invalid_preference": "Preferenza non valida",
+    "error.invalid_awakening_step": "Passo del Risveglio sconosciuto",
+    "status.ready": "Nexus operativo",
+    "nav.home": "Home",
+    "nav.flows": "Flussi",
+    "nav.settings": "Impostazioni"
+  }
+}

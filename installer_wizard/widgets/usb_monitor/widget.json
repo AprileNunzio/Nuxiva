@@ -1,0 +1,13 @@
+{
+  "id": "usb_monitor",
+  "name": "Analizzatore USB",
+  "icon": "🔌",
+  "priority": 100,
+  "size": "m",
+  "intents": [
+    "usb_monitor"
+  ],
+  "description": "Dettagli hardware quando viene inserita una periferica USB.",
+  "ttl": 60,
+  "tone": "blue"
+}

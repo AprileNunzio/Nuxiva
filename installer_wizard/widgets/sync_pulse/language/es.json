@@ -1,0 +1,40 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/sync_pulse",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title_running": "Sincronización en curso",
+    "title_ok": "Todo sincronizado",
+    "title_error": "Errores de sincronización",
+    "s_ok": "Actualizado",
+    "s_running": "Sincronizando…",
+    "s_waiting": "En espera",
+    "s_error": "Error",
+    "k_google": "Google",
+    "k_google_calendar": "Calendario",
+    "k_google_gmail": "Gmail",
+    "k_google_tasks": "Tareas",
+    "k_google_health": "Google Health",
+    "k_telegram": "Telegram",
+    "k_band": "Pulsera",
+    "k_phone": "Teléfono",
+    "r_revoked": "Hay que volver a conectar",
+    "r_unavailable": "Servicio no activo",
+    "r_unsupported": "Dispositivo no compatible",
+    "r_timeout": "Sin respuesta",
+    "r_api_disabled": "API no habilitada",
+    "r_scope_missing": "Falta un permiso",
+    "r_health_profile_missing": "Sin perfil de Google Health",
+    "r_quota": "Demasiadas solicitudes, reintento",
+    "r_unauthorized": "Acceso no válido",
+    "r_forbidden": "Acceso denegado",
+    "r_not_found": "No encontrado",
+    "errors_one": "{{n}} error",
+    "errors_other": "{{n}} errores",
+    "r_health_grant": "Reactiva Google Health",
+    "r_health_preview": "Cuenta aún no habilitada",
+    "r_not_linked": "No autorizado"
+  }
+}

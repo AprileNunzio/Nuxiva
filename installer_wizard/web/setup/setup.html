@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Nuxiva OS Setup</title>
+  <link rel="stylesheet" href="/static/shared/theme/os_theme.css">
+  <link rel="stylesheet" href="/static/shared/theme/os_background.css">
+  <link rel="stylesheet" href="/static/shared/theme/os_window.css">
+  <link rel="stylesheet" href="/static/shared/theme/os_cards.css">
+  <link rel="stylesheet" href="/static/shared/theme/os_components.css">
+  <link rel="stylesheet" href="/static/setup/setup_base.css">
+  <link rel="stylesheet" href="/static/setup/steps/lang/step.css">
+  <link rel="stylesheet" href="/static/setup/steps/wifi/step.css">
+  <link rel="stylesheet" href="/static/setup/steps/components/step.css">
+  <link rel="stylesheet" href="/static/setup/steps/install/step.css">
+  <link rel="stylesheet" href="/static/setup/steps/llm/step.css">
+  <link rel="stylesheet" href="/static/setup/steps/owner/step.css">
+  <link rel="stylesheet" href="/static/setup/steps/face/step.css">
+  <link rel="stylesheet" href="/static/setup/steps/fingerprint/step.css">
+  <link rel="stylesheet" href="/static/setup/steps/voice/step.css">
+  <link rel="stylesheet" href="/static/setup/steps/assistant/step.css">
+  <link rel="stylesheet" href="/static/setup/steps/final/step.css">
+  <link rel="stylesheet" href="/static/setup/shared/setup_network.css">
+</head>
+<body>
+  <div class="os-ambient-root" aria-hidden="true">
+    <div class="os-aurora-mesh">
+      <div class="os-aurora-blob os-aurora-blob-1"></div>
+      <div class="os-aurora-blob os-aurora-blob-2"></div>
+      <div class="os-aurora-blob os-aurora-blob-3"></div>
+    </div>
+    <div class="os-grid-overlay"></div>
+    <div class="os-vignette-overlay"></div>
+  </div>
+
+  <div class="os-version-toast" id="version-toast" role="status" aria-live="polite"></div>
+
+  <main class="os-dialog-container" id="setup-shell">
+    <header class="os-window-header">
+      <div class="os-window-header-left">
+        <span class="os-window-title">Nuxiva OS</span>
+        <button type="button" class="os-window-badge os-version-badge" id="btn-version-check" title="Cerca nuovi commit online" aria-label="Cerca nuovi commit online">
+          <span id="version-text">v{{version}}</span>
+          <svg class="os-version-sync-icon" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+        </button>
+      </div>
+      <div class="os-window-actions">
+        <button type="button" class="os-theme-toggle" id="btn-theme-toggle" aria-label="Cambia tema">
+          <svg class="os-theme-icon os-theme-icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line></svg>
+          <svg class="os-theme-icon os-theme-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="os-dialog-hero" id="setup-hero">
+      <div class="os-dialog-icon-wrapper" id="hero-icon-container">
+        <svg class="os-globe-icon" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"></path></svg>
+      </div>
+      <h1 class="os-dialog-heading" id="setup-screen-title">Lingua</h1>
+      <p class="os-dialog-subheading" id="setup-screen-subtitle">Scegli la lingua principale per l'interfaccia e i modelli vocali.</p>
+      <div class="os-dialog-stepper" aria-hidden="true"></div>
+    </div>
+
+    <div class="os-window-body">
+      <div class="status-alert" id="status-alert" role="alert"></div>
+
+      <section class="setup-screen active" id="screen-lang">
+        <div class="os-lang-container"><div class="os-lang-list" id="lang-list" role="listbox"></div></div>
+      </section>
+
+      <section class="setup-screen" id="screen-wifi">
+        <div class="os-wifi-container">
+          <div class="os-wifi-banner-cable" id="wifi-cable-banner" style="display: none;">
+            <div class="os-wifi-banner-left">
+              <span class="os-wifi-dot-live"></span>
+              <span>Connessione Cablata Attiva: Ethernet (<strong id="wifi-cable-ip">127.0.0.1</strong>)</span>
+            </div>
+            <span class="os-wifi-chip-optional">Facoltativo</span>
+          </div>
+          <div class="os-wifi-banner-warn" id="wifi-warn-banner" style="display: none;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            <span>Nessun cavo collegato. Connettiti a una rete Wi-Fi per continuare.</span>
+          </div>
+          <div class="os-wifi-toolbar">
+            <span class="os-wifi-toolbar-title">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>
+              <span>Reti Wireless Disponibili</span>
+            </span>
+            <button type="button" class="os-btn-wifi-refresh" id="btn-wifi-refresh">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+              <span>Aggiorna</span>
+            </button>
+          </div>
+          <div class="os-wifi-list-box" id="wifi-networks-list"></div>
+        </div>
+      </section>
+
+      <section class="setup-screen" id="screen-components-core">
+        <div class="os-components-list" id="components-list-core"></div>
+      </section>
+
+      <section class="setup-screen" id="screen-components-opt">
+        <div class="os-components-list" id="components-list-opt"></div>
+      </section>
+
+      <section class="setup-screen" id="screen-install">
+        <div class="os-install-container">
+          <div class="os-install-progress-card">
+            <div class="os-install-progress-header">
+              <span class="os-install-progress-title">Installazione Componenti Nuxiva</span>
+              <span class="os-install-progress-val" id="install-overall-val">0%</span>
+            </div>
+            <div class="os-install-bar-track"><div class="os-install-bar-fill" id="install-overall-fill"></div></div>
+          </div>
+          <div class="os-install-items-list" id="install-items-list"></div>
+          <div class="os-install-banner-done" id="install-banner-done"></div>
+          <div class="os-install-console" id="install-console-log"></div>
+        </div>
+      </section>
+
+      <section class="setup-screen" id="screen-llm">
+        <div class="os-llm-container">
+          <div class="os-llm-cards-grid">
+            <div class="os-card-llm is-selected" data-llm-mode="local">
+              <span class="os-card-llm-badge">100% Privacy</span>
+              <div class="os-card-llm-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10H12V2z"></path><path d="M12 12 2.1 12.5"></path></svg></div>
+              <div class="os-card-llm-title">LLM Locale Integrato</div>
+              <div class="os-card-llm-desc">Inferenza on-device con Ollama. Zero dati all'esterno, massima privacy garantita.</div>
+            </div>
+            <div class="os-card-llm" data-llm-mode="remote">
+              <span class="os-card-llm-badge">Self-Hosted</span>
+              <div class="os-card-llm-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"></rect><rect x="2" y="14" width="20" height="8" rx="2"></rect></svg></div>
+              <div class="os-card-llm-title">LLM Remoto Dedicato</div>
+              <div class="os-card-llm-desc">Collega un server Ollama, vLLM o endpoint OpenAI esterno sulla rete locale.</div>
+            </div>
+            <div class="os-card-llm" data-llm-mode="cloud">
+              <span class="os-card-llm-badge">Cloud API</span>
+              <div class="os-card-llm-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path></svg></div>
+              <div class="os-card-llm-title">Provider Cloud API</div>
+              <div class="os-card-llm-desc">Utilizza modelli avanzati in cloud con chiave API (OpenAI, Gemini, Claude, Groq).</div>
+            </div>
+          </div>
+          <div class="os-llm-detail-panel" id="llm-panel-local">
+            <div style="font-size:12px;color:var(--md-sys-color-on-surface-variant);display:flex;align-items:center;gap:8px;">
+              <span style="color:#10b981;font-weight:700;">✓</span><span>Il pacchetto motore Ollama verrà ottimizzato automaticamente per il tuo hardware.</span>
+            </div>
+          </div>
+          <div class="os-llm-detail-panel" id="llm-panel-remote" style="display:none;">
+            <div class="os-llm-field-group">
+              <label class="os-llm-field-label" for="llm-remote-url">URL Endpoint Server Remoto:</label>
+              <div class="os-llm-input-row">
+                <input type="url" id="llm-remote-url" class="os-llm-input" placeholder="http://192.168.1.100:11434" />
+                <button type="button" class="os-llm-btn-test" id="btn-test-remote-llm">Verifica Server</button>
+              </div>
+              <div class="os-llm-feedback" id="llm-remote-feedback"></div>
+            </div>
+          </div>
+          <div class="os-llm-detail-panel" id="llm-panel-cloud" style="display:none;">
+            <div style="display:flex;gap:12px;">
+              <div class="os-llm-field-group" style="flex:1;">
+                <label class="os-llm-field-label" for="llm-cloud-provider">Provider AI:</label>
+                <select id="llm-cloud-provider" class="os-llm-select">
+                  <option value="anthropic">Anthropic Claude</option>
+                  <option value="gemini">Google Gemini</option>
+                  <option value="openai">OpenAI</option>
+                  <option value="mistral">Mistral AI</option>
+                  <option value="groq">Groq</option>
+                  <option value="openrouter">OpenRouter</option>
+                </select>
+              </div>
+              <div class="os-llm-field-group" style="flex:2;">
+                <label class="os-llm-field-label" for="llm-cloud-key">Chiave API Personale:</label>
+                <div class="os-llm-input-row">
+                  <input type="password" id="llm-cloud-key" class="os-llm-input" placeholder="sk-..." />
+                  <button type="button" class="os-llm-btn-test" id="btn-test-cloud-key">Verifica Chiave</button>
+                </div>
+                <div class="os-llm-feedback" id="llm-cloud-feedback"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="setup-screen" id="screen-owner">
+        <div class="os-owner-form">
+          <div>
+            <label class="block text-xs font-semibold mb-1.5" for="cfg-owner-name">Nome del Proprietario</label>
+            <input type="text" id="cfg-owner-name" class="os-input" placeholder="es. Marco" maxlength="48" required />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold mb-1.5" for="cfg-owner-last">Cognome (opzionale)</label>
+            <input type="text" id="cfg-owner-last" class="os-input" maxlength="48" />
+          </div>
+        </div>
+      </section>
+
+      <section class="setup-screen" id="screen-face">
+        <div class="os-face-container">
+          <div class="os-face-source-bar">
+            <div class="os-face-tabs">
+              <button type="button" class="os-face-tab-btn is-active" id="face-tab-client" data-face-i18n="tab_client"></button>
+              <button type="button" class="os-face-tab-btn" id="face-tab-server" data-face-i18n="tab_server"></button>
+            </div>
+            <span class="os-face-mode" id="face-mode"></span>
+            <select id="face-camera-select" class="os-face-select"></select>
+          </div>
+          <div class="os-face-main-row" id="face-live-box">
+            <div class="os-face-viewport-card">
+              <video id="face-video-feed" class="os-face-video" autoplay playsinline muted></video>
+              <img id="face-server-feed" class="os-face-video" alt="" hidden>
+              <canvas id="face-overlay" class="os-face-overlay" aria-hidden="true"></canvas>
+              <div class="os-face-hint" id="face-hint" role="status" aria-live="polite"></div>
+              <div class="os-face-alert" id="face-alert" role="alert" hidden></div>
+              <div class="os-face-perm-overlay" id="face-perm-overlay">
+                <div style="font-size: 26px;">📷</div>
+                <div style="font-size: 11px; font-weight: 600; opacity: 0.85;" data-face-i18n="perm_title"></div>
+                <button type="button" class="os-btn-req-perm" id="btn-req-face-perm" data-face-i18n="btn_req_perm"></button>
+                <div class="os-face-perm-error" id="face-perm-error" style="display: none;"></div>
+                <button type="button" class="os-btn-switch-server" id="btn-face-perm-fallback" style="display: none;" data-face-i18n="btn_fallback_server"></button>
+              </div>
+              <div class="os-face-corner os-face-corner-tl"></div>
+              <div class="os-face-corner os-face-corner-tr"></div>
+              <div class="os-face-corner os-face-corner-bl"></div>
+              <div class="os-face-corner os-face-corner-br"></div>
+            </div>
+            <div class="os-face-nerd-panel">
+              <div class="os-face-telemetry">
+                <div><span data-face-i18n="tel_pose"></span> <span id="face-val-pose" class="os-face-val">—</span></div>
+                <div><span data-face-i18n="tel_distance"></span> <span id="face-val-dist" class="os-face-val">—</span></div>
+                <div><span data-face-i18n="tel_eyes"></span> <span id="face-val-eyes" class="os-face-val">—</span></div>
+                <div><span data-face-i18n="tel_conf"></span> <span id="face-val-conf" class="os-face-val">—</span></div>
+                <div><span data-face-i18n="tel_sharp"></span> <span id="face-val-sharp" class="os-face-val">—</span></div>
+                <div><span data-face-i18n="tel_light"></span> <span id="face-val-light" class="os-face-val">—</span></div>
+                <div><span data-face-i18n="tel_quality"></span> <span id="face-val-quality" class="os-face-val">—</span></div>
+                <div class="os-face-meter"><span id="face-quality-bar"></span></div>
+              </div>
+              <div class="os-face-shot-list">
+                <div class="os-face-shot-item is-active" id="face-shot-front"><span data-face-i18n="shot_front"></span><span class="os-face-shot-status" data-face-i18n="shot_wait"></span></div>
+                <div class="os-face-shot-item" id="face-shot-three_left"><span data-face-i18n="shot_left"></span><span class="os-face-shot-status" data-face-i18n="shot_wait"></span></div>
+                <div class="os-face-shot-item" id="face-shot-three_right"><span data-face-i18n="shot_right"></span><span class="os-face-shot-status" data-face-i18n="shot_wait"></span></div>
+              </div>
+              <button type="button" class="os-face-btn-capture" id="btn-face-capture" data-face-i18n="btn_capture"></button>
+            </div>
+          </div>
+          <div class="os-face-empty-card" id="face-empty-box">
+            <div style="font-size:28px;">📷</div>
+            <div style="font-weight:700;font-size:14px;" data-face-i18n="no_camera"></div>
+            <div style="font-size:12px;opacity:0.75;max-width:380px;" data-face-i18n="no_camera_hint"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="setup-screen" id="screen-fingerprint">
+        <div class="os-fp-container">
+          <div class="os-fp-scanner-card" id="fp-scanner-card">
+            <div class="os-fp-sensor-target" id="fp-sensor-target" title="Tocca per scansionare">
+              <div class="os-fp-laser"></div>
+              <svg class="os-fp-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"></path><path d="M14 13.12c0 2.38 0 6.38-1 8.88"></path><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"></path><path d="M2 12a10 10 0 0 1 18-6"></path><path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"></path><path d="M9 6.8a6 6 0 0 1 9 5.2v2"></path></svg>
+            </div>
+            <div id="fp-prompt-text" style="font-size:12px;font-weight:600;">Tocca il sensore per registrare l'impronta</div>
+            <div class="os-fp-steps-row">
+              <div class="os-fp-step-chip is-active" id="fp-chip-1">1. Centro</div>
+              <div class="os-fp-step-chip" id="fp-chip-2">2. Lato Sinistro</div>
+              <div class="os-fp-step-chip" id="fp-chip-3">3. Lato Destro</div>
+            </div>
+            <div class="os-fp-nerd-meta"><span id="fp-meta-minutiae">Minutiae: 0</span><span id="fp-meta-vector">FMR: 0.001% (Pronto)</span></div>
+          </div>
+          <div class="os-fp-no-sensor-card" id="fp-no-sensor-card">
+            <div style="font-size:28px;">🖐️</div>
+            <div style="font-weight:700;font-size:14px;">Nessun lettore d'impronte digitali hardware</div>
+            <div style="font-size:12px;opacity:0.75;max-width:380px;">Questo dispositivo non dispone di un sensore d'impronte compatibile. Puoi procedere regolarmente.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="setup-screen" id="screen-voice">
+        <div class="os-voice-container">
+          <div class="os-voice-source-bar">
+            <span class="os-voice-mode" id="voice-mode"></span>
+            <select id="voice-mic-select" class="os-voice-select" aria-label="mic"></select>
+          </div>
+          <div class="os-voice-card">
+            <div class="os-voice-perm-bar is-hidden" id="voice-perm-bar">
+              <span id="voice-perm-text" data-voice-i18n="perm_text"></span>
+              <button type="button" class="os-btn-req-perm" id="btn-req-voice-perm" style="padding: 4px 10px; font-size: 10px;" data-voice-i18n="btn_req_perm"></button>
+            </div>
+            <div class="os-voice-vu-card">
+              <div class="os-voice-vu-header"><span data-voice-i18n="test_live"></span><span class="os-voice-vu-val" id="voice-vu-val">—</span></div>
+              <div class="os-voice-vu-track"><div class="os-voice-vu-fill" id="voice-vu-fill"></div><div class="os-voice-vu-peak" id="voice-vu-peak"></div><div class="os-voice-vu-target"></div></div>
+            </div>
+            <div class="os-voice-params-grid">
+              <div class="os-voice-param-item"><span class="os-voice-param-label" data-voice-i18n="param_sample_rate"></span><span class="os-voice-param-val" id="voice-val-rate">—</span></div>
+              <div class="os-voice-param-item"><span class="os-voice-param-label" data-voice-i18n="param_snr"></span><span class="os-voice-param-val" id="voice-val-snr">—</span></div>
+              <div class="os-voice-param-item"><span class="os-voice-param-label" data-voice-i18n="param_noise_floor"></span><span class="os-voice-param-val" id="voice-val-noise">—</span></div>
+              <div class="os-voice-param-item"><span class="os-voice-param-label" data-voice-i18n="param_clipping"></span><span class="os-voice-param-val" id="voice-val-clip">—</span></div>
+            </div>
+            <div class="os-voice-row" style="padding:4px 0;">
+              <span style="font-size:11px;font-weight:600;" data-voice-i18n="slider_gain"></span>
+              <input type="range" id="voice-gain-slider" min="-12" max="24" step="1" value="0" style="flex:1;" />
+              <span id="voice-gain-val" style="font-size:11px;font-family:monospace;width:52px;text-align:right;">0 dB</span>
+              <button type="button" class="os-btn-voice-auto" id="btn-voice-auto" data-voice-i18n="btn_auto"></button>
+            </div>
+            <div class="os-voice-hint" id="voice-hint" role="status" aria-live="polite"></div>
+            <div class="os-voice-toggles-row">
+              <label class="os-voice-toggle-label"><input type="checkbox" id="voice-opt-echo" /><span data-voice-i18n="opt_aec"></span></label>
+              <label class="os-voice-toggle-label"><input type="checkbox" id="voice-opt-noise" /><span data-voice-i18n="opt_noise"></span></label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="setup-screen" id="screen-assistant">
+        <div class="os-assistant-container">
+          <div class="os-assistant-name-row">
+            <div class="os-assistant-name-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:4px;">
+              <label for="assistant-name-input" style="font-size:11px;font-weight:600;color:var(--md-sys-color-on-surface-variant);">Nome dell'Assistente:</label>
+              <input type="text" id="assistant-name-input" class="os-assistant-name-input" value="Nuxiva" maxlength="32" placeholder="Nuxiva" />
+            </div>
+          </div>
+          <div class="os-assistant-voices-grid">
+            <div class="os-card-voice is-selected" data-voice-gender="female">
+              <div class="os-voice-icon-box os-voice-icon-female"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="5"></circle><path d="M12 13v8"></path><path d="M9 18h6"></path></svg></div>
+              <div class="os-card-voice-title">Voce Femminile</div>
+              <div class="os-card-voice-desc">Tono caldo ed espressivo, sintesi neurale Piper HD Sara.</div>
+              <button type="button" class="os-btn-voice-preview" data-preview-gender="female">▶ Ascolta</button>
+            </div>
+            <div class="os-card-voice" data-voice-gender="male">
+              <div class="os-voice-icon-box os-voice-icon-male"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="14" r="5"></circle><path d="M19 5l-5.4 5.4"></path><path d="M19 5h-5"></path><path d="M19 5v5"></path></svg></div>
+              <div class="os-card-voice-title">Voce Maschile</div>
+              <div class="os-card-voice-desc">Tono profondo e chiaro, sintesi neurale Piper HD Riccardo.</div>
+              <button type="button" class="os-btn-voice-preview" data-preview-gender="male">▶ Ascolta</button>
+            </div>
+            <div class="os-card-voice" data-voice-gender="neutral">
+              <div class="os-voice-icon-box os-voice-icon-neutral"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"></rect><circle cx="9" cy="9" r="2"></circle><circle cx="15" cy="9" r="2"></circle><path d="M9 15h6"></path></svg></div>
+              <div class="os-card-voice-title">Voce Sintetica</div>
+              <div class="os-card-voice-desc">Tono futuristico cybernetico con risposta ultra rapida.</div>
+              <button type="button" class="os-btn-voice-preview" data-preview-gender="neutral">▶ Ascolta</button>
+            </div>
+          </div>
+          <div class="os-wake-training-card">
+            <div class="os-wake-header">
+              <span class="os-wake-title">Calibrazione Attivazione Vocale: pronuncia "<span id="wake-assistant-name" style="color:var(--md-sys-color-primary);">Nuxiva</span>"</span>
+            </div>
+            <div class="os-wake-shots-grid">
+              <div class="os-wake-shot-box" id="wake-shot-box-1"><span class="os-wake-shot-label" data-wake-label="1"></span><div class="os-wake-metrics" id="wake-metrics-1"></div><div class="os-wake-actions"><button type="button" class="os-btn-wake-rec" id="btn-wake-rec-1"></button><button type="button" class="os-btn-wake-play" id="btn-wake-play-1" hidden></button></div></div>
+              <div class="os-wake-shot-box" id="wake-shot-box-2"><span class="os-wake-shot-label" data-wake-label="2"></span><div class="os-wake-metrics" id="wake-metrics-2"></div><div class="os-wake-actions"><button type="button" class="os-btn-wake-rec" id="btn-wake-rec-2"></button><button type="button" class="os-btn-wake-play" id="btn-wake-play-2" hidden></button></div></div>
+              <div class="os-wake-shot-box" id="wake-shot-box-3"><span class="os-wake-shot-label" data-wake-label="3"></span><div class="os-wake-metrics" id="wake-metrics-3"></div><div class="os-wake-actions"><button type="button" class="os-btn-wake-rec" id="btn-wake-rec-3"></button><button type="button" class="os-btn-wake-play" id="btn-wake-play-3" hidden></button></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="setup-screen" id="screen-final">
+        <div class="os-card os-summary-card">
+          <div class="os-summary-row"><span class="os-summary-label">Lingua Principale:</span><span class="os-summary-val" id="sum-lang">Italiano</span></div>
+          <div class="os-summary-row"><span class="os-summary-label">Rete &amp; Connessione:</span><span class="os-summary-val" id="sum-network">Cablata (Ethernet)</span></div>
+          <div class="os-summary-row"><span class="os-summary-label">Componenti:</span><span class="os-summary-val" id="sum-components">4 moduli attivi</span></div>
+          <div class="os-summary-row"><span class="os-summary-label">Cervello AI:</span><span class="os-summary-val" id="sum-llm">Locale (Ollama)</span></div>
+          <div class="os-summary-row"><span class="os-summary-label">Proprietario:</span><span class="os-summary-val" id="sum-owner">—</span></div>
+          <div class="os-summary-row"><span class="os-summary-label">Biometria Facciale:</span><span class="os-summary-val" id="sum-face">Non configurato</span></div>
+          <div class="os-summary-row"><span class="os-summary-label">Impronta Digitale:</span><span class="os-summary-val" id="sum-fingerprint">Non rilevata</span></div>
+          <div class="os-summary-row"><span class="os-summary-label">Microfono:</span><span class="os-summary-val" id="sum-voice">Microfono Attivo</span></div>
+          <div class="os-summary-row"><span class="os-summary-label">Assistente:</span><span class="os-summary-val" id="sum-assistant">Nuxiva (Femminile)</span></div>
+        </div>
+      </section>
+    </div>
+
+    <footer class="os-dialog-footer">
+      <button type="button" class="os-btn os-btn-secondary" id="btn-back" style="visibility: hidden;">
+        <svg class="os-btn-arrow-back" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        <span id="btn-back-label">Indietro</span>
+      </button>
+      <button type="button" class="os-btn os-btn-primary" id="btn-next">
+        <span id="btn-next-label">Avanti</span>
+        <svg class="os-btn-arrow" id="btn-next-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+    </footer>
+  </main>
+
+  <button type="button" class="os-network-fab" id="btn-network-fab" title="Diagnostica di Rete" aria-label="Diagnostica di Rete">
+    <span class="os-network-pulse" aria-hidden="true"></span>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"></path></svg>
+  </button>
+
+  <script src="/static/setup/shared/setup_storage.js"></script>
+  <script src="/static/setup/shared/setup_network.js"></script>
+  <script src="/static/setup/setup_audio.js"></script>
+  <script src="/static/setup/steps/lang/i18n.js"></script>
+  <script src="/static/setup/steps/lang/step.js"></script>
+  <script src="/static/setup/steps/wifi/i18n.js"></script>
+  <script src="/static/setup/steps/wifi/step.js"></script>
+  <script src="/static/setup/steps/components/i18n.js"></script>
+  <script src="/static/setup/steps/components/step.js"></script>
+  <script src="/static/setup/steps/install/i18n.js"></script>
+  <script src="/static/setup/steps/install/step.js"></script>
+  <script src="/static/setup/steps/llm/i18n.js"></script>
+  <script src="/static/setup/steps/llm/step.js"></script>
+  <script src="/static/setup/steps/owner/i18n.js"></script>
+  <script src="/static/setup/steps/owner/step.js"></script>
+  <script src="/static/setup/steps/face/i18n.js"></script>
+  <script src="/static/setup/steps/face/step.js"></script>
+  <script src="/static/setup/steps/fingerprint/i18n.js"></script>
+  <script src="/static/setup/steps/fingerprint/step.js"></script>
+  <script src="/static/setup/steps/voice/i18n.js"></script>
+  <script src="/static/setup/steps/voice/step.js"></script>
+  <script src="/static/setup/steps/assistant/i18n.js"></script>
+  <script src="/static/setup/steps/assistant/step.js"></script>
+  <script src="/static/setup/steps/final/i18n.js"></script>
+  <script src="/static/setup/steps/final/step.js"></script>
+  <script src="/static/setup/setup.js"></script>
+</body>
+</html>

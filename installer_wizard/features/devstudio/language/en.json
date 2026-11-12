@@ -1,0 +1,11 @@
+{
+  "name": "Software development",
+  "description": "Nuxiva really programs: it creates projects (sites, Python apps, API services, Node and React apps), writes and reads files in a confined folder, runs tests and checks in isolation and publishes sites on the home network.",
+  "capabilities": [
+    "Working starter projects: static site, Python, FastAPI, Node, React with Vite",
+    "Files confined to the project, no outside paths or symlinks",
+    "Tests and checks without network, with time, memory and process limits, only after confirmation",
+    "Real test results returned, never claimed without running them",
+    "Static sites published on the home network"
+  ]
+}

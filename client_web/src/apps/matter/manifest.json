@@ -1,0 +1,28 @@
+{
+  "id": "matter",
+  "tone": "light",
+  "name": "Matter 1.6.1 Universale",
+  "icon": "Cpu",
+  "version": "1.6.1",
+  "description": "Applicazione universale Matter 1.6.1 per associare, controllare e monitorare a 360° qualsiasi dispositivo al mondo con controller nativo e Universal Bridge.",
+  "scope": "apps/matter",
+  "kind": "app",
+  "target": "global",
+  "category": "spaces",
+  "window": {
+    "defaultWidth": 85,
+    "defaultHeight": 85,
+    "minWidth": 36,
+    "resizable": true
+  },
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "matter_universe",
+    "url": "https://img.icons8.com/?size=240&id=gvQUkpW15e1x&format=png"
+  },
+  "featureIds": [
+    "matter"
+  ]
+}

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="it" translate="no">
+<head>
+<meta charset="UTF-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<title>…</title>
+<style>
+:root { --bg: #04070d; --text: #e8f6ff; --dim: #8fa6b8; --faint: #55697a; --cyan: 41, 224, 255; --green: #3dffa8; --amber: #ffb547; --red: #ff4d6a; --mono: ui-monospace, "JetBrains Mono", Menlo, monospace; }
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); font: 15px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+body { display: grid; place-items: center; min-height: 100vh; padding: 24px 16px;
+       background: radial-gradient(1200px 600px at 50% -10%, rgba(var(--cyan), 0.10), transparent 60%), var(--bg); }
+main { width: 100%; max-width: 560px; }
+.brand { font: 600 12px/1 var(--mono); letter-spacing: 0.42em; color: rgba(var(--cyan), 0.85); margin-bottom: 28px; }
+.pulse { display: inline-block; width: 8px; height: 8px; margin-right: 12px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 12px var(--amber); vertical-align: 1px; animation: blink 2.4s ease-in-out infinite; }
+.ok .pulse { background: var(--green); box-shadow: 0 0 12px var(--green); }
+h1 { margin: 0 0 10px; font-size: 26px; font-weight: 300; letter-spacing: -0.01em; }
+p { margin: 0 0 18px; color: var(--dim); }
+ol { list-style: none; margin: 26px 0; padding: 0; }
+li { display: grid; grid-template-columns: 22px 1fr; gap: 10px; padding: 9px 0; }
+li + li { box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.05); }
+li b { font-weight: 400; }
+li small { display: block; color: var(--faint); font-size: 12.5px; }
+.i { font: 600 13px/1.6 var(--mono); text-align: center; color: var(--faint); }
+.s-ok .i, .s-fixed .i { color: var(--green); }
+.s-failed .i { color: var(--red); }
+.s-failed small { color: var(--red); }
+.s-running .i { color: rgb(var(--cyan)); animation: blink 1.2s ease-in-out infinite; }
+button { appearance: none; border: 0; border-radius: 999px; padding: 12px 26px; font: 500 15px system-ui, sans-serif; cursor: pointer;
+         color: #00131a; background: rgb(var(--cyan)); box-shadow: 0 0 30px rgba(var(--cyan), 0.25); transition: opacity 0.2s; }
+button:disabled { opacity: 0.4; cursor: default; }
+button:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+.msg { min-height: 1.5em; margin-top: 14px; font-size: 13.5px; color: var(--dim); }
+.msg.bad { color: var(--red); }
+details { margin-top: 30px; color: var(--faint); font-size: 12.5px; }
+summary { cursor: pointer; }
+code { display: block; margin-top: 8px; padding: 10px 12px; border-radius: 10px; background: rgba(255, 255, 255, 0.04); font: 12px/1.5 var(--mono); color: var(--dim); overflow-wrap: anywhere; }
+.cli { margin-top: 10px; }
+@keyframes blink { 50% { opacity: 0.35; } }
+@media (prefers-reduced-motion: reduce) { .pulse, .s-running .i { animation: none; } }
+@media (max-width: 540px) { body { padding: 16px 12px; } main { max-width: 100%; } h1 { font-size: 22px; } button { width: 100%; min-height: 48px; } }
+@media (min-width: 2560px) { html, body { font-size: 18px; } main { max-width: 800px; } h1 { font-size: 36px; } button { padding: 16px 36px; font-size: 18px; } }
+@media (min-width: 3840px) { html, body { font-size: 24px; } main { max-width: 1100px; } h1 { font-size: 48px; } button { padding: 22px 48px; font-size: 24px; } code { font-size: 18px; padding: 16px 20px; } }
+@media (min-width: 7680px) { html, body { font-size: 38px; } main { max-width: 1800px; } h1 { font-size: 80px; } button { padding: 32px 72px; font-size: 38px; } code { font-size: 28px; padding: 24px 32px; } }
+</style>
+</head>
+<body>
+<main id="app">
+  <div class="brand"><span class="pulse"></span><span id="brand"></span></div>
+  <h1 id="title"></h1>
+  <p id="lead"></p>
+  <ol id="steps" hidden></ol>
+  <button type="button" id="repair"></button>
+  <div class="msg" id="msg" role="status" aria-live="polite"></div>
+  <details>
+    <summary id="tech"></summary>
+    <code id="error"></code>
+    <code class="cli" id="cli"></code>
+  </details>
+</main>
+<script>
+(() => {
+  "use strict";
+  const ICON = { ok: "✓", fixed: "✓", failed: "✗", running: "◌", pending: "·", skipped: "–" };
+  const $ = (id) => document.getElementById(id);
+  let saved = "";
+  try { saved = localStorage.getItem("nuxiva_ui_lang") || ""; } catch (error) { console.warn("lingua salvata non leggibile", error); }
+  const browser = (navigator.language || "").slice(0, 2).toLowerCase();
+  let words = {};
+  let lastState = "";
+  const t = (key) => words[key] || key;
+  const say = (key, bad) => { $("msg").textContent = key ? t(key) : ""; $("msg").className = bad ? "msg bad" : "msg"; };
+
+  function renderSteps(repair) {
+    const list = $("steps");
+    if (!repair || !Array.isArray(repair.steps)) { list.hidden = true; return; }
+    list.hidden = false;
+    list.replaceChildren(...repair.steps.map((s) => {
+      const li = document.createElement("li");
+      li.className = `s-${String(s.status || "").replace(/[^a-z]/g, "")}`;
+      const icon = document.createElement("span");
+      icon.className = "i";
+      icon.textContent = ICON[s.status] || "·";
+      const body = document.createElement("span");
+      const name = document.createElement("b");
+      name.textContent = words[`step_${s.key}`] || String(s.key || "");
+      body.append(name);
+      if (s.detail) {
+        const small = document.createElement("small");
+        small.textContent = s.detail;
+        body.append(small);
+      }
+      li.append(icon, body);
+      return li;
+    }));
+  }
+
+  function render(data) {
+    words = data.text || {};
+    if (data.lang) document.documentElement.lang = data.lang;
+    document.title = t("page_title");
+    $("brand").textContent = t("brand");
+    $("title").textContent = t("title");
+    $("lead").textContent = `${words[`reason_${data.reason}`] || t("reason_unknown")} ${t("calm")}`;
+    $("tech").textContent = t("tech");
+    $("cli").textContent = t("cli");
+    $("error").textContent = data.error || "";
+    const repair = data.repair;
+    renderSteps(repair);
+    const running = repair && repair.state === "running";
+    $("repair").disabled = running;
+    $("repair").textContent = t(running ? "repairing" : (repair && repair.state === "failed" ? "retry" : "repair"));
+    if (repair && repair.state !== lastState) {
+      if (repair.state === "failed") say("failed", true);
+      if (repair.state === "done") say("done");
+      lastState = repair.state;
+    }
+  }
+
+  async function poll() {
+    try {
+      const health = await fetch("/healthz", { cache: "no-store" }).then((r) => r.json());
+      if (!health.safe_mode) {
+        $("app").classList.add("ok");
+        $("title").textContent = t("title_ok");
+        setTimeout(() => location.replace("/"), 1200);
+        return;
+      }
+      const query = new URLSearchParams({ lang: saved.slice(0, 2), browser });
+      render(await fetch(`/api/safe?${query}`, { cache: "no-store" }).then((r) => r.json()));
+    } catch (error) {
+      console.warn("modalità sicura: server non raggiungibile", error);
+      say("offline");
+    }
+    setTimeout(poll, 2000);
+  }
+
+  $("repair").addEventListener("click", async () => {
+    $("repair").disabled = true;
+    try {
+      const r = await fetch("/api/safe/repair", { method: "POST", headers: { "X-Nuxiva-Request": "1" } });
+      const map = { 202: ["started"], 409: ["busy"], 429: ["wait"], 503: ["unavailable", true] };
+      const [key, bad] = map[r.status] || ["unavailable", true];
+      say(key, bad);
+    } catch (error) {
+      console.warn("modalità sicura: riparazione non richiesta", error);
+      say("offline");
+    }
+  });
+
+  poll();
+})();
+</script>
+</body>
+</html>

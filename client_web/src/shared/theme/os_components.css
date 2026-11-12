@@ -1,0 +1,273 @@
+.os-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--os-font-family);
+  font-size: var(--os-font-size-sm);
+  font-weight: 600;
+  line-height: 1;
+  padding: 10px 20px;
+  border-radius: var(--os-radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  transition: all var(--os-transition-fast);
+  text-decoration: none;
+}
+
+.os-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.os-btn-primary {
+  background-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);
+}
+
+.os-btn-primary:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.45);
+  transform: translateY(-1px);
+}
+
+.os-btn-primary:active {
+  transform: translateY(0);
+}
+
+.os-btn-secondary {
+  background-color: var(--md-sys-color-surface-container-high);
+  color: var(--md-sys-color-on-surface);
+  border-color: var(--md-sys-color-outline);
+}
+
+.os-btn-secondary:hover {
+  background-color: var(--md-sys-color-surface-container-highest);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.os-btn-tonal {
+  background-color: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+}
+
+.os-btn-tonal:hover {
+  filter: brightness(1.15);
+}
+
+.os-btn-ghost {
+  background-color: transparent;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.os-btn-ghost:hover {
+  background-color: var(--md-sys-color-surface-container-high);
+  color: var(--md-sys-color-on-surface);
+}
+
+.os-btn-danger {
+  background-color: var(--md-sys-color-error);
+  color: var(--md-sys-color-on-error);
+  box-shadow: 0 4px 14px rgba(244, 63, 94, 0.35);
+}
+
+.os-btn-danger:hover {
+  filter: brightness(1.1);
+}
+
+.os-checkbox-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.os-checkbox-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+}
+
+.os-checkbox-box {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 2px solid var(--md-sys-color-outline);
+  background-color: var(--md-sys-color-surface-container-high);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--os-transition-fast);
+  flex-shrink: 0;
+}
+
+.os-checkbox-wrapper:hover .os-checkbox-box {
+  border-color: var(--md-sys-color-primary);
+  background-color: var(--md-sys-color-surface-container-highest);
+}
+
+.os-checkbox-tick {
+  width: 14px;
+  height: 14px;
+  color: #ffffff;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: all var(--os-transition-fast);
+}
+
+.os-checkbox-input:checked + .os-checkbox-box {
+  background-color: var(--md-sys-color-primary);
+  border-color: var(--md-sys-color-primary);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.35);
+}
+
+.os-checkbox-input:checked + .os-checkbox-box .os-checkbox-tick {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.os-checkbox-input:focus-visible + .os-checkbox-box {
+  outline: 2px solid var(--md-sys-color-primary);
+  outline-offset: 2px;
+}
+
+.os-checkbox-input:disabled + .os-checkbox-box {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.os-input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: var(--os-radius-md);
+  border: 1px solid var(--md-sys-color-outline);
+  background-color: var(--md-sys-color-surface-container);
+  color: var(--md-sys-color-on-surface);
+  font-family: var(--os-font-family);
+  font-size: var(--os-font-size-sm);
+  outline: none;
+  transition: all var(--os-transition-fast);
+}
+
+.os-input:focus {
+  border-color: var(--md-sys-color-primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+  background-color: var(--md-sys-color-surface-container-high);
+}
+
+.os-input::placeholder {
+  color: var(--md-sys-color-on-surface-variant);
+  opacity: 0.7;
+}
+
+.os-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.os-step-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--os-radius-full);
+  background-color: var(--md-sys-color-outline);
+  transition: all var(--os-transition-normal);
+  cursor: pointer;
+}
+
+.os-step-dot.is-active {
+  width: 28px;
+  background-color: var(--md-sys-color-primary);
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+}
+
+.os-step-dot.is-completed {
+  background-color: var(--md-sys-color-success);
+}
+
+.os-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: var(--os-radius-full);
+  font-size: var(--os-font-size-xs);
+  font-weight: 600;
+  line-height: 1;
+}
+
+.os-badge-primary {
+  background-color: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+}
+
+.os-badge-success {
+  background-color: var(--md-sys-color-success-container);
+  color: var(--md-sys-color-on-success-container);
+}
+
+.os-badge-warning {
+  background-color: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+}
+
+.os-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--os-radius-full);
+  background: var(--os-glass-bg);
+  border: 1px solid var(--md-sys-color-outline);
+  color: var(--md-sys-color-on-surface);
+  cursor: pointer;
+  transition: all var(--os-transition-fast);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: var(--os-shadow-sm);
+  padding: 0;
+}
+
+.os-theme-toggle:hover {
+  background: var(--md-sys-color-surface-container-high);
+  border-color: var(--md-sys-color-primary);
+  transform: scale(1.06);
+  box-shadow: 0 0 14px rgba(59, 130, 246, 0.25);
+}
+
+.os-theme-toggle .os-theme-icon {
+  width: 17px;
+  height: 17px;
+  transition: transform var(--os-transition-normal);
+}
+
+.os-theme-toggle:hover .os-theme-icon {
+  transform: rotate(18deg);
+}
+
+[data-theme="dark"] .os-theme-icon-moon {
+  display: none;
+}
+[data-theme="dark"] .os-theme-icon-sun {
+  display: block;
+  color: #fbbf24;
+}
+
+[data-theme="light"] .os-theme-icon-sun {
+  display: none;
+}
+[data-theme="light"] .os-theme-icon-moon {
+  display: block;
+  color: #4f46e5;
+}

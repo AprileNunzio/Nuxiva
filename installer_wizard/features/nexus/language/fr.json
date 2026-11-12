@@ -1,0 +1,18 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "features/nexus",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Nexus Shell",
+    "desc": "Tableau de bord principal et espace de travail système",
+    "error.tool_not_found": "Outil introuvable",
+    "error.invalid_preference": "Préférence non valide",
+    "error.invalid_awakening_step": "Étape du Réveil inconnue",
+    "status.ready": "Nexus opérationnel",
+    "nav.home": "Accueil",
+    "nav.flows": "Flux",
+    "nav.settings": "Paramètres"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "Activation Sequence",
+  "scope": "features/activation",
+  "dictionary": {
+    "title": "Activation Sequence",
+    "subtitle": "Subsystem activation and guided configuration",
+    "btn_start": "Start installation",
+    "btn_continue": "Continue",
+    "btn_retry": "Retry",
+    "btn_skip": "Skip sequence",
+    "btn_reset": "Start from scratch",
+    "status_pending": "Pending",
+    "status_running": "Running...",
+    "status_done": "Completed",
+    "status_failed": "Failed",
+    "status_declined": "Declined",
+    "status_deferred": "Deferred",
+    "choice_later_note": "You can also install this component later from Settings > Packages."
+  }
+}

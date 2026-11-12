@@ -1,0 +1,61 @@
+[package]
+name = "nuxiva-native"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lib]
+name = "nuxiva_native"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+agency-scheduler = { path = "../agency-scheduler" }
+nuxiva-admin-os = { path = "../admin-os" }
+nuxiva-audio-dsp = { path = "../audio-dsp" }
+nuxiva-bus-core = { path = "../bus-core" }
+nuxiva-langid = { path = "../langid" }
+nuxiva-crdt-core = { path = "../crdt-core" }
+nuxiva-cortex-core = { path = "../cortex-core" }
+nuxiva-spatial-core = { path = "../spatial-core" }
+nuxiva-stage-core = { path = "../stage-core" }
+nuxiva-vitals-core = { path = "../vitals-core" }
+nuxiva-gesture-core = { path = "../gesture-core" }
+nuxiva-token-core = { path = "../token-core" }
+nuxiva-display-stream = { path = "../display-stream" }
+nuxiva-presence-core = { path = "../presence-core" }
+nuxiva-update-core = { path = "../update-core" }
+nuxiva-access-core = { path = "../access-core" }
+nuxiva-display-planner = { path = "../display-planner" }
+nuxiva-display-learner = { path = "../display-learner" }
+nuxiva-sentinel-core = { path = "../sentinel-core" }
+nuxiva-surface-core = { path = "../surface-core" }
+nuxiva-molecule-core = { path = "../molecule-core" }
+nuxiva-guard-core = { path = "../guard-core" }
+nuxiva-seal-core = { path = "../seal-core" }
+nuxiva-config-core = { path = "../config-core" }
+nuxiva-telemetry-core = { path = "../telemetry-core" }
+nuxiva-supervisor-core = { path = "../supervisor-core" }
+nuxiva-authz-core = { path = "../authz-core" }
+nuxiva-ear-core = { path = "../ear-core" }
+nuxiva-face-core = { path = "../face-core" }
+nuxiva-dialog-core = { path = "../dialog-core" }
+nuxiva-rescue-core = { path = "../rescue-core" }
+nuxiva-expr-core = { path = "../expr-core" }
+nuxiva-memory-core = { path = "../memory-core" }
+nuxiva-vault-media = { path = "../vault-media" }
+nuxiva-ask-core = { path = "../ask-core" }
+nuxiva-gait-core = { path = "../gait-core" }
+nuxiva-matter-core = { path = "../matter-core" }
+pyo3 = { version = "0.28.3", features = ["abi3-py310"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+zeroize = "1"
+ureq = { version = "3", default-features = false, features = ["rustls", "json"] }
+
+[features]
+extension-module = ["pyo3/extension-module"]
+
+[lints]
+workspace = true

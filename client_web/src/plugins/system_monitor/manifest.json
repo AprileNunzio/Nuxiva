@@ -1,0 +1,40 @@
+{
+  "$schema": "https://nuxiva.org/schemas/plugin.manifest.json",
+  "id": "system_monitor",
+  "name": "Hardware System Monitor",
+  "version": "1.2.0",
+  "kind": "plugin",
+  "author": "Nuxiva Kernel Team",
+  "placement": {
+    "desktop": false,
+    "taskbar": {
+      "pinned": false,
+      "tray": true,
+      "tray_order": 1
+    },
+    "control_panel": {
+      "show": true,
+      "category": "sistema"
+    }
+  },
+  "capabilities": ["telemetry", "hardware_sensors", "kernel_metrics"],
+  "options": [
+    {
+      "id": "sample_interval_ms",
+      "type": "range",
+      "default": 1000,
+      "min": 250,
+      "max": 5000,
+      "step": 250,
+      "label_key": "opt_sample_interval_label",
+      "desc_key": "opt_sample_interval_desc"
+    },
+    {
+      "id": "show_gpu_telemetry",
+      "type": "boolean",
+      "default": true,
+      "label_key": "opt_gpu_telemetry_label",
+      "desc_key": "opt_gpu_telemetry_desc"
+    }
+  ]
+}

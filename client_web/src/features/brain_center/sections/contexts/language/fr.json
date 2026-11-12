@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Qui répond",
+    "description": "Pour chaque tâche, choisissez le modèle principal et ses secours : si le premier ne répond pas ou atteint sa limite, {assistant} passe tout seul au suivant.",
+    "answering": "Répond maintenant : {model}",
+    "auto_explain": "En automatique, le système choisit le meilleur modèle disponible. Choisissez-en un pour décider vous-même.",
+    "picker_title": "Modèle pour : {context}",
+    "options": "Options",
+    "scope_label": "Où les modèles peuvent tourner",
+    "scope_anywhere": "Partout",
+    "scope_home_first": "D'abord à la maison, puis en ligne",
+    "scope_home": "Maison uniquement",
+    "strategy_label": "Comment choisir",
+    "strategy_order": "Respecter l'ordre",
+    "strategy_fastest": "Le plus rapide",
+    "reset_auto": "Revenir en automatique",
+    "routing_title": "Conversation et travail",
+    "routing_hint": "Comment répartir les demandes entre conversation et travail.",
+    "routing_auto": "Automatique",
+    "routing_auto_hint": "Sépare seulement si les deux tâches utilisent des modèles différents.",
+    "routing_1": "Toujours séparé",
+    "routing_1_hint": "Questions courtes à la conversation, le reste au travail.",
+    "routing_0": "Un seul modèle",
+    "routing_0_hint": "Tout passe par le modèle de travail.",
+    "tester_title": "Essayer",
+    "tester_hint": "Saisissez une demande d'exemple et voyez qui répondrait, sans l'envoyer.",
+    "tester_placeholder": "Ex. « Allume la lumière de la cuisine »",
+    "tester_submit": "Qui répondrait ?",
+    "tester_result": "Tâche : {context}"
+  }
+}

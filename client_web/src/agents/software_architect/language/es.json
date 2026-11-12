@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Arquitecto de Software y Team Lead",
+    "description": "Garante estricto de Clean Architecture, Separation of Concerns (SoC) y Single Responsibility Principle (SRP).",
+    "opt_strict_line_limits_label": "Límite Estricto de 500 Líneas",
+    "opt_strict_line_limits_desc": "Evita escribir o fusionar archivos que superen las 500 líneas de código puro."
+  }
+}

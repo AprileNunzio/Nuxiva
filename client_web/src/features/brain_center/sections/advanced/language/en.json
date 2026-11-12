@@ -1,0 +1,27 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Advanced",
+    "description": "Options for those who want finer control.",
+    "agents_title": "Model per agent",
+    "agents_hint": "It is chosen in the Agents app, on each agent's card.",
+    "free_title": "Free online models",
+    "free_hint": "Uses zero-cost models from the OpenRouter catalog (an OpenRouter key is required). Free limits can change.",
+    "free_refresh": "Refresh catalog",
+    "free_enable": "Use free models for the selected tasks",
+    "free_pools": "Tasks",
+    "pool_chat": "Conversation",
+    "pool_voice_fast": "Fast voice",
+    "pool_agent_tools": "Agents and tools",
+    "pool_vision": "Images",
+    "pool_deep_code": "Reasoning and code",
+    "free_live": "In use: {provider} · {model}",
+    "free_failover": "(switched from {model})",
+    "free_idle": "No free request yet in this session.",
+    "free_models": "Verified free models ({count})",
+    "free_empty": "Catalog empty: press Refresh catalog.",
+    "free_cooldown": "paused {seconds} s"
+  }
+}

@@ -1,0 +1,22 @@
+.w-os_networks .on-h { display: flex; align-items: center; gap: 6px; margin: 4px 0 4px; font: 600 9px/1 var(--mono); letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-faint); }
+.w-os_networks .on-h svg { width: 12px; height: 12px; color: rgb(var(--tone)); }
+.w-os_networks .on-h b { margin-left: auto; padding: 2px 6px; border-radius: 8px; font-weight: 600; letter-spacing: 0; color: rgb(var(--tone)); background: rgba(var(--tone), 0.12); }
+.w-os_networks .on-h + .on-list { margin-bottom: 8px; }
+.w-os_networks .on-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.w-os_networks .on-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 6px 4px; border-radius: 8px; }
+.w-os_networks .on-row + .on-row { box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.05); }
+.w-os_networks .on-row.cur { background: rgba(var(--tone), 0.1); box-shadow: 0 0 0 1px rgba(var(--tone), 0.3) inset; }
+.w-os_networks .on-ic { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 8px; color: var(--text-dim); background: rgba(255, 255, 255, 0.05); }
+.w-os_networks .on-row.cur .on-ic { color: rgb(var(--tone)); background: rgba(var(--tone), 0.16); }
+.w-os_networks .on-ic svg { width: 14px; height: 14px; }
+.w-os_networks .on-txt { display: flex; flex-direction: column; min-width: 0; }
+.w-os_networks .on-txt b { font-size: 13px; font-weight: 400; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.w-os_networks .on-row.cur .on-txt b { font-weight: 600; }
+.w-os_networks .on-txt small { font-size: 10.5px; color: var(--text-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.w-os_networks .on-end { display: flex; align-items: center; gap: 8px; }
+.w-os_networks .on-lock svg, .w-os_networks .on-open svg { width: 12px; height: 12px; }
+.w-os_networks .on-lock { color: var(--text-faint); }
+.w-os_networks .on-open { color: var(--amber); }
+.w-os_networks .on-sig { display: inline-flex; align-items: flex-end; gap: 2px; height: 13px; }
+.w-os_networks .on-sig i { width: 3px; border-radius: 1px; background: rgba(255, 255, 255, 0.14); }
+.w-os_networks .on-sig i.on { background: rgb(var(--tone)); }

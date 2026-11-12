@@ -1,0 +1,32 @@
+.w-thinking_tree .tt-sum { display: flex; gap: 12px; margin: 0 0 8px; font-size: 11.5px; }
+.w-thinking_tree .tt-sum span { display: inline-flex; align-items: center; gap: 4px; }
+.w-thinking_tree .tt-sum .wk-svg { width: 12px; height: 12px; }
+.w-thinking_tree .tt-sum .ok { color: var(--green); }
+.w-thinking_tree .tt-sum .bad { color: #ff9b9b; }
+.w-thinking_tree .tt-tree { list-style: none; margin: 0; padding: 0; max-height: 420px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(var(--tone), 0.3) transparent; }
+.w-thinking_tree .tt-node { position: relative; display: flex; align-items: flex-start; gap: 8px; padding: 3px 4px 3px calc(var(--d) * 18px + 4px); font-size: 13px; line-height: 1.4; color: var(--text-dim); border-radius: 6px; }
+.w-thinking_tree .tt-node::before { content: ""; position: absolute; left: calc(var(--d) * 18px - 9px); top: 0; bottom: 0; width: 1px; background: rgba(var(--tone), 0.18); }
+.w-thinking_tree .tt-node.d0::before { display: none; }
+.w-thinking_tree .tt-node::after { content: ""; position: absolute; left: calc(var(--d) * 18px - 9px); top: 12px; width: 8px; height: 1px; background: rgba(var(--tone), 0.25); }
+.w-thinking_tree .tt-node.d0::after { display: none; }
+.w-thinking_tree .tt-node.d0 { color: var(--text); font-weight: 500; }
+.w-thinking_tree .tt-node.parent { cursor: pointer; }
+.w-thinking_tree .tt-node.parent:hover, .w-thinking_tree .tt-node:focus-visible { background: rgba(255, 255, 255, 0.04); outline: none; }
+.w-thinking_tree .tt-dot { width: 16px; height: 16px; flex: none; margin-top: 1px; border-radius: 50%; display: grid; place-items: center; border: 1.5px solid rgba(var(--tone), 0.4); }
+.w-thinking_tree .tt-node.parent .tt-dot { background: rgba(var(--tone), 0.18); }
+.w-thinking_tree .tt-node.shut .tt-dot { background: rgb(var(--tone)); }
+.w-thinking_tree .tt-dot .wk-svg { width: 10px; height: 10px; }
+.w-thinking_tree .tt-node.done .tt-dot { border-color: var(--green); color: var(--green); }
+.w-thinking_tree .tt-node.fail .tt-dot { border-color: var(--red); color: var(--red); }
+.w-thinking_tree .tt-node.fail .tt-txt { text-decoration: line-through; text-decoration-color: rgba(255, 90, 90, 0.5); color: var(--text-faint); }
+.w-thinking_tree .tt-node.now .tt-dot { border-color: rgb(var(--tone)); color: rgb(var(--tone)); animation: tt-pulse 1.4s ease-in-out infinite; }
+.w-thinking_tree .tt-node.now .tt-txt { color: var(--text); }
+.w-thinking_tree .tt-node.ask .tt-dot { border-color: var(--amber); color: var(--amber); }
+.w-thinking_tree .tt-node.final .tt-dot { border-color: var(--amber); color: var(--amber); }
+.w-thinking_tree .tt-txt { min-width: 0; overflow-wrap: anywhere; }
+.w-thinking_tree .tt-more { margin-left: auto; font: 600 10px var(--mono); font-style: normal; color: var(--text-faint); }
+.w-thinking_tree .tt-final { display: flex; gap: 10px; align-items: flex-start; margin-top: 10px; padding: 10px 12px; border-radius: 10px; background: rgba(var(--tone), 0.1); border: 1px solid rgba(var(--tone), 0.3); font-size: 13.5px; color: var(--text); }
+.w-thinking_tree .tt-final .wk-svg { width: 16px; height: 16px; flex: none; color: var(--amber); margin-top: 2px; }
+.w-thinking_tree .tt-final small { display: block; font: 600 9.5px var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 2px; }
+@keyframes tt-pulse { 50% { box-shadow: 0 0 0 4px rgba(var(--tone), 0.15); } }
+@media (prefers-reduced-motion: reduce) { .w-thinking_tree .tt-node.now .tt-dot { animation: none; } }

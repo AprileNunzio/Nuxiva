@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Cerebro de Memoria Episódica y Cronológica",
+    "description": "Módulo cognitivo para almacenar y recuperar eventos cronológicos, diálogos pasados y decisiones clave.",
+    "opt_retention_days_label": "Ventana de Retención (días)",
+    "opt_retention_days_desc": "Días de historial de eventos a conservar en la base de datos cognitiva local."
+  }
+}

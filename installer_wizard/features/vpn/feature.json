@@ -1,0 +1,34 @@
+{
+  "id": "vpn",
+  "name": "VPN",
+  "title": "VPN",
+  "description": "VPN universale: WireGuard client e server con QR, OpenVPN, IPsec IKEv2, Tailscale, Headscale e ZeroTier, con kill switch, protezione DNS e split tunneling",
+  "icon": "🔐",
+  "version": "1.0",
+  "widgets": [],
+  "has_admin": true,
+  "panel": "vpn",
+  "category": "sistema",
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "J2fYkPtfcYwj",
+    "url": "https://img.icons8.com/?size=240&id=J2fYkPtfcYwj&format=png"
+  },
+  "settings": [
+    {
+      "key": "NUXIVA_VPN",
+      "label": "Strumenti VPN",
+      "type": "select",
+      "options": [
+        "1",
+        "0"
+      ],
+      "default": "1",
+      "apply": [
+        "vpn"
+      ]
+    }
+  ]
+}

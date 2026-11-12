@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Control Domótico del Hogar Inteligente",
+    "description": "Habilidad que interactúa con dispositivos Matter, Zigbee y MQTT (luces, climatización, enchufes).",
+    "opt_confirm_critical_label": "Confirmar Acciones Críticas",
+    "opt_confirm_critical_desc": "Solicita confirmación antes de abrir cerraduras, portones o desactivar alarmas."
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Chi risponde",
+    "description": "Per ogni compito scegli il modello principale e le riserve: se il primo non risponde o supera il limite di spesa, {assistant} passa da solo al successivo.",
+    "answering": "Adesso risponde: {model}",
+    "auto_explain": "In automatico il sistema sceglie il modello migliore disponibile. Scegline uno per decidere tu.",
+    "picker_title": "Modello per: {context}",
+    "options": "Opzioni",
+    "scope_label": "Dove possono girare i modelli",
+    "scope_anywhere": "Ovunque",
+    "scope_home_first": "Prima in casa, poi online",
+    "scope_home": "Solo in casa",
+    "strategy_label": "Come scegliere",
+    "strategy_order": "Rispetta l'ordine",
+    "strategy_fastest": "Il più veloce",
+    "reset_auto": "Torna automatico",
+    "routing_title": "Conversazione e lavoro",
+    "routing_hint": "Come dividere le richieste tra la conversazione e il lavoro.",
+    "routing_auto": "Automatico",
+    "routing_auto_hint": "Divide solo se i due compiti usano modelli diversi.",
+    "routing_1": "Sempre diviso",
+    "routing_1_hint": "Le domande brevi alla conversazione, il resto al lavoro.",
+    "routing_0": "Un solo modello",
+    "routing_0_hint": "Tutto passa dal modello di lavoro.",
+    "tester_title": "Prova",
+    "tester_hint": "Scrivi una richiesta di esempio e guarda chi risponderebbe, senza inviarla.",
+    "tester_placeholder": "Es. «Accendi la luce in cucina»",
+    "tester_submit": "Chi risponderebbe?",
+    "tester_result": "Compito: {context}"
+  }
+}

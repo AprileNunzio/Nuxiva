@@ -1,0 +1,9 @@
+.widget.w-frozen *,
+.widget.w-frozen *::before,
+.widget.w-frozen *::after {
+  animation-play-state: paused !important;
+}
+
+.widget.w-hibernated > .w-body {
+  content-visibility: hidden;
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://nuxiva.org/schemas/agent.manifest.json",
+  "id": "sentinel_guardian",
+  "name": "Sentinel Security Guardian",
+  "version": "1.0.0",
+  "kind": "agent",
+  "role": "security",
+  "author": "Nuxiva Cyber Defense",
+  "capabilities": ["threat_analysis", "sandbox_enforcement", "audit_logging"],
+  "options": [
+    {
+      "id": "strict_zero_trust",
+      "type": "boolean",
+      "default": true,
+      "label_key": "opt_strict_zero_trust_label",
+      "desc_key": "opt_strict_zero_trust_desc"
+    }
+  ]
+}

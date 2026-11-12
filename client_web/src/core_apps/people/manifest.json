@@ -1,0 +1,45 @@
+{
+  "id": "people",
+  "tone": "light",
+  "name": "Identity Manager",
+  "icon": "UserCheck",
+  "version": "5.0.0",
+  "description": "Identity manager: one record per person with profile, health, moods, permissions, face, voice, habits and everything Nuxiva learns about them",
+  "scope": "core_apps/people",
+  "target": "global",
+  "window": {
+    "defaultWidth": 80,
+    "defaultHeight": 85,
+    "minWidth": 25,
+    "resizable": true
+  },
+  "toolbars": [
+    {
+      "id": "system",
+      "items": [
+        {
+          "type": "action",
+          "id": "refresh",
+          "labelKey": "os_refresh",
+          "shortcut": "F5"
+        }
+      ]
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "x0qTmzjcFRhW",
+    "url": "https://img.icons8.com/?size=240&id=x0qTmzjcFRhW&format=png"
+  },
+  "category": "spaces",
+  "kind": "app",
+  "featureIds": [
+    "people",
+    "habits",
+    "vision",
+    "scene",
+    "telegram"
+  ]
+}

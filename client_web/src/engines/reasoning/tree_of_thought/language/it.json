@@ -1,0 +1,10 @@
+{
+  "dictionary": {
+    "title": "Esploratore Tree-of-Thought",
+    "description": "Algoritmo euristico ad albero che valuta percorsi logici multipli in parallelo.",
+    "opt_branching_factor_label": "Fattore di Ramificazione",
+    "opt_branching_factor_desc": "Numero di ipotesi alternative generate e confrontate contemporaneamente ad ogni passaggio.",
+    "opt_heuristic_depth_label": "Profondità di Esplorazione",
+    "opt_heuristic_depth_desc": "Livello massimo di nodi gerarchici esplorati prima della potatura dei rami deboli."
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Esecutore di Codice in Sandbox Sicura",
+    "description": "Skill che compila ed esegue codice Python, Rust e JavaScript all'interno di un runtime WebAssembly isolato.",
+    "opt_timeout_sec_label": "Timeout Massimo di Esecuzione (s)",
+    "opt_timeout_sec_desc": "Interrompe forzatamente lo script se l'esecuzione supera il limite di secondi impostato."
+  }
+}

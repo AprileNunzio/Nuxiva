@@ -1,0 +1,120 @@
+.widget.w-sealed {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms linear;
+}
+
+body.nucleus-only .hud > :not(.caption),
+body.nucleus-only #mind,
+body.nucleus-only #agency-board,
+body.nucleus-only #particles,
+body.nucleus-only .tooltip,
+body.nucleus-only .toast-mem,
+body[data-audience="empty"] .hud > .caption,
+body[data-audience="uncertain"] .hud > .caption {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 120ms linear, visibility 0s linear 120ms;
+}
+
+.privacy-veil {
+  position: fixed;
+  left: 50%;
+  bottom: max(18px, env(safe-area-inset-bottom));
+  z-index: 25;
+  max-width: min(92vw, 640px);
+  transform: translateX(-50%);
+  text-align: center;
+  font-size: clamp(11px, 1.4vh, 14px);
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 400ms ease, visibility 0s linear 400ms;
+}
+
+body.nucleus-only[data-gate="on"] .privacy-veil {
+  opacity: 0.72;
+  visibility: visible;
+  transition: opacity 400ms ease 1200ms, visibility 0s linear 1200ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .privacy-veil,
+  body.nucleus-only[data-gate="on"] .privacy-veil { transition: none; }
+}
+
+.widget.w-double-locked {
+  position: relative;
+  overflow: hidden;
+}
+
+.widget.w-double-locked > .w-body {
+  filter: blur(12px);
+  pointer-events: none;
+  user-select: none;
+}
+
+.w-double-gate {
+  position: absolute;
+  inset: 0;
+  z-index: 12;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  background: rgba(8, 13, 24, 0.78);
+  backdrop-filter: blur(8px);
+  border-radius: inherit;
+}
+
+.w-dg-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+  max-width: 260px;
+}
+
+.w-dg-icon {
+  font-size: 20px;
+}
+
+.w-dg-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #f8fafc;
+}
+
+.w-dg-sub {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.35;
+  color: rgba(226, 232, 240, 0.78);
+}
+
+.w-dg-btn {
+  margin-top: 4px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  background: rgba(14, 165, 233, 0.22);
+  color: #e0f2fe;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease;
+}
+
+.w-dg-btn.confirm {
+  border-color: rgba(251, 191, 36, 0.65);
+  background: rgba(245, 158, 11, 0.28);
+  color: #fef3c7;
+}
+
+.w-dg-btn:hover {
+  background: rgba(14, 165, 233, 0.36);
+}

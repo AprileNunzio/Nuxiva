@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Cerveau",
+    "description": "Les modèles qu'utilise {assistant} pour parler, raisonner et travailler",
+    "scope_local": "serveur local",
+    "scope_paired": "nœud associé",
+    "scope_mesh": "non associé",
+    "notice_unpaired": "Ce nœud est visible sur le réseau mais n'est pas associé.",
+    "notice_paired": "Les nœuds associés utilisent les modèles du serveur : gérez-les depuis le serveur local. Pour exploiter la puissance de ce nœud, ajoutez-le comme service dans la section Fournisseurs."
+  }
+}

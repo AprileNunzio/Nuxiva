@@ -1,0 +1,11 @@
+{
+  "name": "Molecole",
+  "description": "Visore di strutture biomolecolari sul display: carichi un file PDB o mmCIF e la molecola compare in 3D, da esplorare con le mani.",
+  "capabilities": [
+    "Apre strutture PDB e mmCIF di proteine, acidi nucleici e ligandi, lette in modo sicuro dal motore Rust",
+    "Atomi come sfere luminose senza sfondo, legami calcolati dalle distanze, scheletro per le strutture grandi",
+    "Colori per elemento, per catena o per struttura secondaria (eliche e foglietti)",
+    "Si ruota e si ingrandisce con mouse, dita o due mani, e si lancia su un altro schermo"
+  ],
+  "settings": {}
+}

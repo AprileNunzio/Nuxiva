@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Cervello Vettoriale Semantico e RAG",
+    "description": "Modulo neurale per la ricerca semantica con embedding vettoriali e recupero aumentato per generazione.",
+    "opt_similarity_threshold_label": "Soglia Minima di Similarità (%)",
+    "opt_similarity_threshold_desc": "Punteggio di similarità del coseno minimo richiesto per includere il contesto nel prompt."
+  }
+}

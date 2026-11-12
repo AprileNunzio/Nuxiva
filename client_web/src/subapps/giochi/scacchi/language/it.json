@@ -1,0 +1,16 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Scacchi",
+    "turn_white": "Turno del Bianco",
+    "turn_black": "Turno del Nero",
+    "restart": "Nuova Partita",
+    "undo": "Annulla Mossa",
+    "captured_white": "Catturati dal Bianco",
+    "captured_black": "Catturati dal Nero",
+    "check": "Scacco!",
+    "moves": "Mosse Effettuate: {count}"
+  }
+}

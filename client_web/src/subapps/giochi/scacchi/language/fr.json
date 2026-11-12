@@ -1,0 +1,16 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Échecs",
+    "turn_white": "Tour des Blancs",
+    "turn_black": "Tour des Noirs",
+    "restart": "Nouvelle Partie",
+    "undo": "Annuler le coup",
+    "captured_white": "Capturées par les Blancs",
+    "captured_black": "Capturées par les Noirs",
+    "check": "Échec !",
+    "moves": "Coups joués : {count}"
+  }
+}

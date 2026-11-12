@@ -1,0 +1,23 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "web/screen",
+    "version": "2.0.0"
+  },
+  "dictionary": {
+    "page_title": "{{assistant}} · Pantalla",
+    "screen_label": "PANTALLA",
+    "screen_n": "PANTALLA {{n}}",
+    "mirror_label": "WIDGETS DE {{assistant}}",
+    "link_lost": "Reconectando con el supervisor",
+    "role_agent": "Asistente",
+    "role_work": "Trabajo",
+    "role_visual": "Visual",
+    "screens_map": "Pantallas conectadas",
+    "pages_nav": "Páginas de widgets",
+    "page_of": "{{n}} / {{total}}",
+    "page_go": "Página {{n}}",
+    "page_prev": "Página anterior",
+    "page_next": "Página siguiente"
+  }
+}

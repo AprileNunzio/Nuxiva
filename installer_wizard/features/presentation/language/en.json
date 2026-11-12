@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "features/presentation",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Presentation",
+    "desc": "Stage layout management and multimedia assets",
+    "error.not_found": "Image or resource not found",
+    "error.invalid_plan": "Invalid presentation plan",
+    "status.playing": "Presentation playing",
+    "status.paused": "Presentation paused"
+  }
+}

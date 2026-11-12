@@ -1,0 +1,14 @@
+{
+  "name": "Sensori a telecamera",
+  "description": "Trasforma una zona di una telecamera in un sensore: impari tu gli stati (porta aperta o chiusa, luce accesa o spenta) e Nuxiva li riconosce da solo, senza servizi esterni e senza inviare immagini fuori casa.",
+  "capabilities": [
+    "Zona a scelta dell'immagine e stati insegnati con esempi reali",
+    "Lettura continua con conferma su più letture contro i falsi cambi",
+    "Rifiuta le scene mai viste invece di indovinare",
+    "Indice di qualità: precisione e somiglianza tra stati",
+    "Eventi nel registro delle telecamere e sul bus, per automazioni e avvisi"
+  ],
+  "settings": {
+    "NUXIVA_CAMSENSE_SECONDS": "Secondi tra una lettura e l'altra"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Caméras",
+    "subtitle": "Flux vidéo en direct et configuration des caméras",
+    "stat_total": "Total Caméras",
+    "stat_active": "Caméras Actives",
+    "stat_recording": "Enregistrement",
+    "live_title": "Flux Vidéo en Direct",
+    "live_label": "DIRECT",
+    "stream_mode": "Mode de Flux",
+    "offline": "Image indisponible",
+    "status_active": "En Ligne",
+    "status_offline": "Déconnectée",
+    "recording": "Enregistrement Actif",
+    "enabled": "Activée",
+    "record": "Enregistrer",
+    "consent": "Consentement Donné",
+    "consent_note": "L'enregistrement ne commence qu'avec le consentement explicite des personnes filmées.",
+    "add": "Ajouter une Caméra",
+    "add_title": "Configurer une Nouvelle Caméra",
+    "field_name": "Nom d'Identification",
+    "field_kind": "Type de Caméra",
+    "field_url": "Adresse de Streaming (RTSP / HTTP)",
+    "field_device": "Périphérique Local (ex. 0 ou /dev/video0)",
+    "field_retention": "Durée de Conservation",
+    "minutes": "{n} minutes",
+    "save": "Enregistrer la Caméra",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "delete_confirm": "Voulez-vous vraiment supprimer cette caméra ?",
+    "refresh": "Actualiser les Flux",
+    "empty": "Aucune caméra configurée.",
+    "empty_sources": "Aucune source vidéo en direct détectée."
+  }
+}

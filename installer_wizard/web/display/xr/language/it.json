@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "web/display/xr",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "page_title": "{{assistant}} · Visore",
+    "status_connecting": "Collegamento in corso…",
+    "enter_vr": "Entra in realtà virtuale",
+    "enter_ar": "Entra in realtà mista",
+    "panels_label": "Widget visibili nel visore",
+    "status_code_refused": "Codice di accoppiamento scaduto o già usato: generane uno nuovo dal pannello",
+    "status_pair_failed": "Accoppiamento non riuscito",
+    "status_unpaired": "Visore non accoppiato: inquadra il codice dal pannello di amministrazione",
+    "status_nucleus_only": "Nessuna persona autorizzata riconosciuta in questa stanza: mostro solo il nucleo",
+    "status_ready": "Visore pronto",
+    "status_offline": "Connessione al supervisore persa, riprovo",
+    "status_xr_failed": "Il visore non ha avviato la sessione immersiva"
+  }
+}

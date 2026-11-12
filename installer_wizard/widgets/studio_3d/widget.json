@@ -1,0 +1,15 @@
+{
+  "id": "studio_3d",
+  "name": "Studio 3D",
+  "icon": "🧊",
+  "priority": 92,
+  "size": "full",
+  "intents": [
+    "studio_3d",
+    "studio3d"
+  ],
+  "description": "Studio di modellazione 3D: modifica le parti dell'oggetto, aggiungi forme, cambia misure, colori e posizioni a tocco o a voce, con annulla e ripeti ed esportazione in GLB, STL e OBJ.",
+  "ttl": 3600,
+  "tone": "violet",
+  "essential": true
+}

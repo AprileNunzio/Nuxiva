@@ -1,0 +1,24 @@
+{
+  "name": "Meteo",
+  "description": "Previsioni complete con più località: oggi o tutta la settimana, ora per ora, vento, qualità dell'aria, umidità, pressione, UV, pollini, alba e tramonto, fasi lunari. Si apre da una domanda sul tempo.",
+  "capabilities": [
+    "Vista giornaliera dettagliata e vista settimanale, scelte in base alla domanda",
+    "Ora per ora: temperatura, pioggia, vento, raffiche, UV, nuvole e visibilità",
+    "Qualità dell'aria europea e americana, polveri sottili, gas e pollini",
+    "Pressione con tendenza, punto di rugiada, umidità e temperatura percepita",
+    "Alba, tramonto, durata del giorno, ore di sole e fase della luna",
+    "Più località salvate, con una predefinita, e unità di misura a scelta"
+  ],
+  "settings": {
+    "NUXIVA_WEATHER_UNITS": "Sistema di misura",
+    "NUXIVA_WEATHER_WIND": "Unità del vento",
+    "NUXIVA_WEATHER_VIEW": "Vista alla domanda generica",
+    "NUXIVA_WEATHER_DAYS": "Giorni di previsione",
+    "NUXIVA_WEATHER_HOURS": "Ore mostrate nel dettaglio",
+    "NUXIVA_WEATHER_REFRESH": "Aggiornamento dei dati (minuti)",
+    "NUXIVA_WEATHER_AIR": "Qualità dell'aria",
+    "NUXIVA_WEATHER_POLLEN": "Pollini",
+    "NUXIVA_WEATHER_ASTRO": "Luna, alba e tramonto"
+  },
+  "help": {}
+}

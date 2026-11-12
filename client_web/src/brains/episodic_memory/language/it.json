@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Cervello di Memoria Episodica e Cronologica",
+    "description": "Modulo cognitivo per la memorizzazione e il recupero temporale di eventi, conversazioni passate e decisioni chiave.",
+    "opt_retention_days_label": "Finestra di Ritenzione (giorni)",
+    "opt_retention_days_desc": "Numero di giorni di cronologia eventi da conservare nel database cognitivo locale."
+  }
+}

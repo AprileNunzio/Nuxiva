@@ -1,0 +1,92 @@
+{
+  "id": "hands",
+  "name": "Comandi con le mani",
+  "icon": "✋",
+  "category": "percezione",
+  "order": 62,
+  "api": "api.py",
+  "description": "Controlla Nuxiva con una o due mani davanti alla webcam. Il motore Rust riconosce pose, pose tenute, swipe, cerchi, tocchi e gesti a due mani; ogni gesto può fare l'azione che scegli dalla scheda Comandi con le mani.",
+  "toggle": {
+    "env": "NUXIVA_HANDS",
+    "tri": true,
+    "apply": []
+  },
+  "requires": {
+    "video": true,
+    "features": [
+      "vision"
+    ]
+  },
+  "capabilities": [
+    "Pizzica per afferrare e trascinare i widget, lancio laterale per cambiare schermo",
+    "12 pose, swipe, cerchi, tocco e doppio tocco",
+    "Gesti a due mani: allarga, stringi, ruota, oppure una mano tiene e l'altra agisce",
+    "Ogni gesto collegabile a qualsiasi azione, per contesto e per mano",
+    "Profilo cifrato, sensibilità regolabile, riserva JavaScript se il motore manca"
+  ],
+  "settings": [
+    {
+      "key": "NUXIVA_HANDS_FPS",
+      "label": "Analisi al secondo con una mano in vista",
+      "type": "select",
+      "default": "20",
+      "options": [
+        {
+          "value": "10",
+          "label": "10 (leggero)"
+        },
+        {
+          "value": "20",
+          "label": "20 (bilanciato)"
+        },
+        {
+          "value": "30",
+          "label": "30 (più reattivo, serve una buona GPU)"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_HANDS_COUNT",
+      "label": "Mani riconosciute",
+      "type": "select",
+      "default": "2",
+      "options": [
+        {
+          "value": "1",
+          "label": "Una (metà del lavoro, niente zoom a due mani)"
+        },
+        {
+          "value": "2",
+          "label": "Due (zoom a due mani)"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_HANDS_MAX_MS",
+      "label": "Tempo massimo per analisi (in automatico oltre questo si spegne)",
+      "type": "select",
+      "default": "50",
+      "options": [
+        {
+          "value": "30",
+          "label": "30 ms (solo GPU veloci)"
+        },
+        {
+          "value": "50",
+          "label": "50 ms (consigliato)"
+        },
+        {
+          "value": "90",
+          "label": "90 ms (tollerante)"
+        }
+      ]
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "92oZwSFODREJ",
+    "url": "https://img.icons8.com/?size=240&id=92oZwSFODREJ&format=png"
+  }
+}

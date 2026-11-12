@@ -1,0 +1,41 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Meteo",
+    "description": "Località salvate, località predefinita e tutte le impostazioni del meteo, con anteprima dal vivo",
+    "loading": "Caricamento…",
+    "unreachable": "Server non raggiungibile",
+    "on": "Attivo",
+    "off": "Spento",
+    "save": "Salva",
+    "no_settings": "Nessuna impostazione disponibile",
+    "cancel": "Annulla",
+    "delete": "Elimina",
+    "places_title": "Località",
+    "places_empty": "Nessuna località salvata: cerca una città per aggiungerla",
+    "search": "Cerca",
+    "search_placeholder": "Città o indirizzo",
+    "search_empty": "Nessun luogo trovato",
+    "add": "Aggiungi",
+    "preview": "Anteprima",
+    "make_default": "Imposta come predefinita",
+    "rename": "Rinomina",
+    "remove": "Rimuovi",
+    "remove_confirm": "Conferma",
+    "default": "Predefinita",
+    "preview_title": "Anteprima dal vivo",
+    "preview_no_location": "Aggiungi una località per vedere le previsioni",
+    "preview_unavailable": "Servizio meteo non raggiungibile al momento",
+    "stale": "Dati non aggiornati",
+    "forecast": "Prossimi giorni",
+    "stat_feels": "Percepita",
+    "stat_humidity": "Umidità",
+    "stat_wind": "Vento",
+    "stat_pressure": "Pressione",
+    "stat_uv": "Indice UV",
+    "stat_air": "Qualità dell'aria (EAQI)",
+    "settings_title": "Impostazioni meteo"
+  }
+}

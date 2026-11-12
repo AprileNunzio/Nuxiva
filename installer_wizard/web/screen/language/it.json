@@ -1,0 +1,23 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "web/screen",
+    "version": "2.0.0"
+  },
+  "dictionary": {
+    "page_title": "{{assistant}} · Schermo",
+    "screen_label": "SCHERMO",
+    "screen_n": "SCHERMO {{n}}",
+    "mirror_label": "WIDGET DI {{assistant}}",
+    "link_lost": "Riconnessione al supervisore",
+    "role_agent": "Assistente",
+    "role_work": "Lavoro",
+    "role_visual": "Visuale",
+    "screens_map": "Schermi collegati",
+    "pages_nav": "Pagine dei widget",
+    "page_of": "{{n}} / {{total}}",
+    "page_go": "Pagina {{n}}",
+    "page_prev": "Pagina precedente",
+    "page_next": "Pagina successiva"
+  }
+}

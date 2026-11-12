@@ -1,0 +1,10 @@
+{
+  "name": "Socorro",
+  "description": "Detección inteligente de personas en peligro, caídas, emergencias y pedidos de ayuda con escalada familiar y auditoría cifrada.",
+  "capabilities": [
+    "Detección multimodal de caídas, inmovilidad prolongada, gritos y llamadas de auxilio",
+    "Verificación por voz inmediata y no intrusiva antes de emitir alarma",
+    "Política de escalada escalonada a contactos familiares y de emergencia",
+    "Auditoría inmutable y cifrada en el diario Sentinella con pruebas criptográficas"
+  ]
+}

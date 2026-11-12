@@ -1,0 +1,138 @@
+import os
+from typing import Callable
+
+from server.features.deep_memory.application.workspace import StructureWorkspace
+from server.features.deep_memory.domain.python_extractor import SourceError
+from server.features.deep_memory.domain.script_extractor import is_script
+
+MAX_FILE_BYTES = 1024 * 1024
+_REPORTED_SYMBOLS = 8
+
+
+class WorkspaceError(ValueError):
+    pass
+
+
+class WorkspaceFiles:
+    def __init__(self, root: str, structure: Callable[[], StructureWorkspace]) -> None:
+        self._root = os.path.realpath(root)
+        self._structure = structure
+
+    def resolve(self, relative: str) -> str:
+        if not isinstance(relative, str) or not relative.strip() or "\x00" in relative:
+            raise WorkspaceError("invalid path")
+        if os.path.isabs(relative) or os.path.splitdrive(relative)[0] or (len(relative) >= 2 and relative[1] == ":" and relative[0].isalpha()) or relative.startswith("\\"):
+            raise WorkspaceError("absolute paths are not allowed")
+        full = os.path.realpath(os.path.join(self._root, relative))
+        if os.path.commonpath([self._root, full]) != self._root or full == self._root:
+            raise WorkspaceError("path traversal detected")
+        return full
+
+    def make_directory(self, relative: str) -> str:
+        os.makedirs(self.resolve(relative), exist_ok=True)
+        return f"Directory {relative} creata con successo."
+
+    def write(self, relative: str, content: str) -> str:
+        if not isinstance(content, str) or len(content.encode("utf-8")) > MAX_FILE_BYTES:
+            raise WorkspaceError("content must be text of at most 1 MB")
+        full = self.resolve(relative)
+        os.makedirs(os.path.dirname(full), exist_ok=True)
+        with open(full, "w", encoding="utf-8", newline="\n") as handle:
+            handle.write(content)
+        return f"File {relative} scritto con successo.{self._track(self._normalise(relative), content)}"
+
+    def apply_patch(self, relative: str, patch_text: str) -> str:
+        full = self.resolve(relative)
+        if full not in getattr(self, '_memory_state', {}):
+            try:
+                with open(full, "r", encoding="utf-8") as f:
+                    content = f.read()
+            except OSError:
+                content = ""
+        else:
+            content = self._memory_state[full]
+
+        new_text = content
+        
+        # Try to parse as JSON for AST-based patching
+        import json
+        is_ast_patch = False
+        if patch_text.strip().startswith("{") or patch_text.strip().startswith("["):
+            try:
+                patch_data = json.loads(patch_text)
+                if isinstance(patch_data, dict) and "patches" in patch_data:
+                    patch_data = patch_data["patches"]
+                if isinstance(patch_data, list):
+                    is_ast_patch = True
+                    if relative.endswith(".py"):
+                        import ast
+                        for patch in patch_data:
+                            action = patch.get("action", patch.get("type"))
+                            target = patch.get("target", patch.get("name"))
+                            code = patch.get("code", patch.get("new_body", ""))
+                            
+                            if action in ("replace_function", "replace_class", "replace_method"):
+                                tree = ast.parse(new_text)
+                                node_to_replace = None
+                                
+                                if action == "replace_method" and "." in target:
+                                    cls_name, meth_name = target.split(".", 1)
+                                    for node in tree.body:
+                                        if isinstance(node, ast.ClassDef) and node.name == cls_name:
+                                            for subnode in node.body:
+                                                if isinstance(subnode, (ast.FunctionDef, ast.AsyncFunctionDef)) and subnode.name == meth_name:
+                                                    node_to_replace = subnode
+                                                    break
+                                else:
+                                    for node in tree.body:
+                                        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) and getattr(node, "name", "") == target:
+                                            node_to_replace = node
+                                            break
+                                            
+                                if node_to_replace and hasattr(node_to_replace, "lineno") and hasattr(node_to_replace, "end_lineno"):
+                                    lines = new_text.split("\n")
+                                    start_line = node_to_replace.lineno - 1
+                                    if hasattr(node_to_replace, "decorator_list") and node_to_replace.decorator_list:
+                                        start_line = node_to_replace.decorator_list[0].lineno - 1
+                                        
+                                    end_line = node_to_replace.end_lineno
+                                    
+                                    new_lines = lines[:start_line] + code.rstrip("\n").split("\n") + lines[end_line:]
+                                    new_text = "\n".join(new_lines)
+                                else:
+                                    raise ValueError(f"Target '{target}' not found for AST replacement in {relative}")
+                            else:
+                                raise ValueError(f"Unknown AST patch action: {action}")
+                    else:
+                        raise ValueError("AST patching is only supported for .py files")
+            except Exception as e:
+                if is_ast_patch:
+                    raise ValueError(f"Failed to apply AST patch: {e}")
+                is_ast_patch = False
+                
+        if not is_ast_patch:
+            import diff_match_patch
+            dmp = diff_match_patch.diff_match_patch()
+            patches = dmp.patch_fromText(patch_text)
+            new_text, _ = dmp.patch_apply(patches, content)
+            
+        if not hasattr(self, '_memory_state'):
+            self._memory_state = {}
+        self._memory_state[full] = new_text
+        return self.write(relative, new_text)
+
+    def _normalise(self, relative: str) -> str:
+        return os.path.relpath(self.resolve(relative), self._root).replace(os.sep, "/")
+
+    def _track(self, relative: str, content: str) -> str:
+        if not (relative.endswith(".py") or is_script(relative)):
+            return ""
+        try:
+            invalidation = self._structure().update_file(relative, content)
+        except SourceError as exc:
+            return f" Attenzione, il file non è analizzabile: {exc}."
+        if not invalidation.invalidated:
+            return ""
+        others = sorted(invalidation.invalidated - invalidation.changed)
+        shown = ", ".join(others[:_REPORTED_SYMBOLS]) + ("…" if len(others) > _REPORTED_SYMBOLS else "")
+        return f" Questa modifica invalida {len(others)} elementi che ne dipendono ({shown}): verificali." if others else ""

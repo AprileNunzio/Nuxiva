@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "skills/finanza/interesse_composto",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Compound Interest",
+    "desc": "Yield simulation with reinvestment",
+    "error_rate": "Invalid interest rate",
+    "result_total": "Final capital: {{total}}"
+  }
+}

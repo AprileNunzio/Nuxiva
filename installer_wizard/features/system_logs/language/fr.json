@@ -1,0 +1,9 @@
+{
+  "name": "Journaux systeme",
+  "description": "Les nombres et analyses concernent seulement appareil, source et filtres selectionnes. Ils ne certifient pas la sante de tout le systeme.",
+  "capabilities": [
+    "Les sources sont detectees sur cette machine. Inventaire actualise toutes les 15 secondes. Selectionnez une ligne pour la lire.",
+    "Les secrets reconnaissables sont masques dans la vue et les exports. Verifiez les fichiers avant de les partager.",
+    "Seuls les evenements du serveur explicitement associes a cet appareil sont disponibles. Cet appareil ne fournit pas ses propres journaux distants."
+  ]
+}

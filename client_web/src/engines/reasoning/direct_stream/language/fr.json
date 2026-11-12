@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Moteur Stream Direct",
+    "description": "Traitement réactif à latence zéro pour des réponses immédiates et des conversations fluides.",
+    "opt_temperature_profile_label": "Sensibilité Créative",
+    "opt_temperature_profile_desc": "Équilibre entre précision déterministe et variété stylistique de la réponse générée."
+  }
+}

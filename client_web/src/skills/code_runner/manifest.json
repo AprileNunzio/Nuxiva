@@ -1,0 +1,21 @@
+{
+  "$schema": "https://nuxiva.org/schemas/skill.manifest.json",
+  "id": "code_runner",
+  "name": "Sandboxed Code Execution Engine",
+  "version": "1.0.0",
+  "kind": "skill",
+  "author": "Nuxiva Developer Tools",
+  "capabilities": ["wasm_runtime", "isolated_eval", "code_analysis"],
+  "options": [
+    {
+      "id": "execution_timeout_sec",
+      "type": "range",
+      "default": 10,
+      "min": 1,
+      "max": 60,
+      "step": 1,
+      "label_key": "opt_timeout_sec_label",
+      "desc_key": "opt_timeout_sec_desc"
+    }
+  ]
+}

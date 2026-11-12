@@ -1,0 +1,43 @@
+[Unit]
+Description=Nuxiva Core (senza Docker)
+After=network-online.target nuxiva-supervisor.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=nuxiva-core
+Group=nuxiva-core
+WorkingDirectory=/opt/Nuxiva
+EnvironmentFile=-/etc/nuxiva/nuxiva.env
+EnvironmentFile=-/etc/nuxiva/core-native.env
+ExecStart=/opt/nuxiva-core/venv/bin/python -m server.cmd.main
+Restart=always
+RestartSec=5
+MemoryMax=2G
+UMask=0027
+NoNewPrivileges=yes
+CapabilityBoundingSet=
+AmbientCapabilities=
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+ProtectProc=invisible
+RestrictSUIDSGID=yes
+RestrictRealtime=yes
+RestrictNamespaces=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+LockPersonality=yes
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+ReadWritePaths=/opt/Nuxiva/data -/run/nuxiva/sandbox
+
+[Install]
+WantedBy=multi-user.target

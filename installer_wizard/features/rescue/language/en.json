@@ -1,0 +1,10 @@
+{
+  "name": "Rescue",
+  "description": "Intelligent distress detection for falls, medical emergencies and help requests with family escalation and encrypted audit.",
+  "capabilities": [
+    "Multimodal detection of falls, prolonged immobility, screams and distress calls",
+    "Immediate non-intrusive voice check-in before sounding alarm",
+    "Tiered escalation policy to family contacts and emergency responders",
+    "Tamper-proof encrypted audit in Sentinel journal with cryptographic proof"
+  ]
+}

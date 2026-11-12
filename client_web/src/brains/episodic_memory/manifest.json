@@ -1,0 +1,21 @@
+{
+  "$schema": "https://nuxiva.org/schemas/brain.manifest.json",
+  "id": "episodic_memory",
+  "name": "Episodic Chrono Memory Brain",
+  "version": "1.0.0",
+  "kind": "brain",
+  "author": "Nuxiva Cognitive Lab",
+  "capabilities": ["timeline_storage", "event_recall", "sqlite_persistence"],
+  "options": [
+    {
+      "id": "retention_days",
+      "type": "range",
+      "default": 30,
+      "min": 1,
+      "max": 365,
+      "step": 1,
+      "label_key": "opt_retention_days_label",
+      "desc_key": "opt_retention_days_desc"
+    }
+  ]
+}

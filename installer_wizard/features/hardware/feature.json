@@ -1,0 +1,20 @@
+{
+  "id": "hardware",
+  "name": "Hardware e driver",
+  "icon": "ðŸ”Œ",
+  "category": "sistema",
+  "order": 88,
+  "panel": "hardware",
+  "description": "Rilevamento Linux USB, PCIe, ACPI e bus ausiliari, provisioning verificato e aggiornamenti mirati dei driver gestiti.",
+  "capabilities": [
+    "Risoluzione modalias tramite il kernel in uso",
+    "Repository Debian/Ubuntu e RPM con verifiche di firma e backup APT",
+    "Driver DKMS da catalogo con revisioni Git immutabili e protezione Secure Boot",
+    "Piani GPU NVIDIA, AMD e Intel con verifica delle capacità disponibili",
+    "Aggiornamenti mirati e persistenti dei pacchetti gestiti",
+    "Capacità hardware verificate per i controlli WebOS"
+  ],
+  "settings": [],
+  "icon3d": "./icon.png",
+  "surface": "hidden"
+}

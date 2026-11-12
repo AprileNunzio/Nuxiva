@@ -1,0 +1,38 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Cameras",
+    "subtitle": "Live video feeds and camera configuration",
+    "stat_total": "Total Cameras",
+    "stat_active": "Active Cameras",
+    "stat_recording": "Recording",
+    "live_title": "Live Video Feeds",
+    "live_label": "LIVE",
+    "stream_mode": "Stream Mode",
+    "offline": "Feed unavailable",
+    "status_active": "Online",
+    "status_offline": "Offline",
+    "recording": "Recording Active",
+    "enabled": "Enabled",
+    "record": "Record",
+    "consent": "Consent Given",
+    "consent_note": "Recording only begins with the explicit consent of recorded individuals.",
+    "add": "Add Camera",
+    "add_title": "Configure New Camera",
+    "field_name": "Camera Name",
+    "field_kind": "Camera Type",
+    "field_url": "Stream Address (RTSP / HTTP)",
+    "field_device": "Local Device (e.g. 0 or /dev/video0)",
+    "field_retention": "Retention Period",
+    "minutes": "{n} minutes",
+    "save": "Save Camera",
+    "cancel": "Cancel",
+    "delete": "Remove",
+    "delete_confirm": "Are you sure you want to remove this camera?",
+    "refresh": "Refresh Feeds",
+    "empty": "No cameras configured.",
+    "empty_sources": "No live camera feeds detected."
+  }
+}

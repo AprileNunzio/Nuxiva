@@ -1,0 +1,37 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/health_hub",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Health",
+    "recovery": "Recovery {{n}}",
+    "live": "Live heart rate",
+    "no_pulse": "No heart rate",
+    "hours": "{{h}} h {{m}} min",
+    "m_spo2": "Oxygen",
+    "m_hrv": "HRV",
+    "m_resp_rate": "Breaths",
+    "m_body_temp": "Temperature",
+    "m_bp_sys": "Blood pressure",
+    "m_glucose": "Glucose",
+    "m_resting_hr": "Resting",
+    "m_weight": "Weight",
+    "m_steps": "Steps",
+    "m_active_kcal": "Calories",
+    "m_sleep_min": "Sleep",
+    "s_spo2_low": "Low oxygen",
+    "s_spo2_very_low": "Very low oxygen",
+    "s_heart_rate_high": "High heart rate",
+    "s_heart_rate_low": "Low heart rate",
+    "s_body_temp_fever": "Fever",
+    "s_body_temp_high_fever": "High fever",
+    "s_bp_sys_high": "High pressure",
+    "s_bp_sys_very_high": "Very high pressure",
+    "s_bp_dia_high": "High diastolic",
+    "s_glucose_low": "Low glucose",
+    "s_glucose_high": "High glucose",
+    "s_resp_rate_high": "Fast breathing"
+  }
+}

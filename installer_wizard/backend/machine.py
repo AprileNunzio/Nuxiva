@@ -1,0 +1,74 @@
+import os
+from pathlib import Path
+
+import psutil
+
+import native_core
+
+from config import read_env
+
+DEMO: bool = os.environ.get("NUXIVA_TEST_AUTH") == "1"
+
+CLASSES = ("pi", "small", "standard", "powerful")
+LABELS = {"pi": "Raspberry Pi", "small": "Computer leggero", "standard": "Computer standard", "powerful": "Computer potente"}
+SUGGESTED = {"pi": (), "small": (), "standard": ("voice", "ear"), "powerful": ("voice", "ear", "documents")}
+HEAVY = {"pi": {"brain_local", "convert3d", "native", "vision", "documents"}, "small": {"brain_local", "convert3d"},
+         "standard": set(), "powerful": set()}
+BRAIN = {"pi": "cloud", "small": "cloud", "standard": "local", "powerful": "local"}
+MODEL_TREE = Path("/proc/device-tree/model")
+
+
+def board() -> str:
+    try:
+        model = MODEL_TREE.read_text(encoding="utf-8", errors="replace").strip("\x00 \n")
+    except OSError:
+        return ""
+    return model[:80] if "raspberry" in model.lower() else ""
+
+
+def ram_gb() -> float:
+    return psutil.virtual_memory().total / 2 ** 30
+
+
+def detect(gpu: bool = False) -> str:
+    native = native_core.symbol("machine_detect")
+    if native is not None:
+        return native(board(), int(psutil.virtual_memory().total), bool(gpu))
+    native_core.python_fallback("machine")
+    if board():
+        return "pi"
+    ram = ram_gb()
+    if ram < 7.5:
+        return "small"
+    if gpu or ram >= 28:
+        return "powerful"
+    return "standard"
+
+
+def current(env: dict | None = None) -> str:
+    env = read_env() if env is None else env
+    value = env.get("NUXIVA_MACHINE", "")
+    return value if value in CLASSES else detect(env.get("NUXIVA_HW_PROFILE") == "gpu")
+
+
+def heavy(pkg_id: str, env: dict | None = None) -> bool:
+    return pkg_id in HEAVY[current(env)]
+
+
+def core_runtime(env: dict | None = None) -> str:
+    env = read_env() if env is None else env
+    value = env.get("NUXIVA_CORE_RUNTIME", "")
+    native = native_core.symbol("machine_core_runtime")
+    if native is not None:
+        return native(str(value), current(env))
+    if value in ("native", "docker"):
+        return value
+    return "native" if current(env) in ("pi", "small") else "docker"
+
+
+def docker_needed(env: dict | None = None) -> bool:
+    env = read_env() if env is None else env
+    native = native_core.symbol("machine_docker_needed")
+    if native is not None:
+        return native(core_runtime(env), str(env.get("NUXIVA_SANDBOX", "")))
+    return core_runtime(env) == "docker" or env.get("NUXIVA_SANDBOX", "").strip().lower() in ("1", "on", "yes", "true", "auto")

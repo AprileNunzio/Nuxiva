@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Controllo Domotico Smart Home IoT",
+    "description": "Skill per l'interazione con dispositivi Matter, Zigbee e MQTT (luci, termostati, prese intelligenti).",
+    "opt_confirm_critical_label": "Conferma Azioni Critiche",
+    "opt_confirm_critical_desc": "Richiede conferma vocale prima di azionare serrature, porte del garage o sistemi di allarme."
+  }
+}

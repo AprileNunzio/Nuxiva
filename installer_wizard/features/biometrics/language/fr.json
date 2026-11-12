@@ -1,0 +1,16 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "features/biometrics",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Biométrie",
+    "desc": "Vérification biométrique et modèles de reconnaissance",
+    "status.ready": "Moteur biométrique prêt",
+    "status.indexing": "Traitement des vecteurs biométriques",
+    "status.liveness_failed": "Échec du test de présence",
+    "error.no_face": "Aucun visage détecté",
+    "error.no_voice": "Aucun échantillon vocal valide"
+  }
+}

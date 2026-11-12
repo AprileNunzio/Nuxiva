@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Software Architect e Team Lead",
+    "description": "Garante assoluto della Clean Architecture, Separation of Concerns (SoC) e Single Responsibility Principle (SRP).",
+    "opt_strict_line_limits_label": "Limite Rigido di 500 Righe",
+    "opt_strict_line_limits_desc": "Impedisce la scrittura o il merge di file che superano 500 righe di codice puro."
+  }
+}

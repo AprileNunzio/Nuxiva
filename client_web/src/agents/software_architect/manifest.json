@@ -1,0 +1,19 @@
+{
+  "$schema": "https://nuxiva.org/schemas/agent.manifest.json",
+  "id": "software_architect",
+  "name": "Software Architect Sentinel",
+  "version": "1.0.0",
+  "kind": "agent",
+  "role": "architect",
+  "author": "Nuxiva Engineering Core",
+  "capabilities": ["clean_architecture", "code_review", "modularity_enforcement"],
+  "options": [
+    {
+      "id": "strict_line_limits",
+      "type": "boolean",
+      "default": true,
+      "label_key": "opt_strict_line_limits_label",
+      "desc_key": "opt_strict_line_limits_desc"
+    }
+  ]
+}

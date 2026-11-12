@@ -1,0 +1,21 @@
+{
+  "id": "rescue",
+  "name": "Soccorso",
+  "icon": "🆘",
+  "icon3d": "./icon.png",
+  "category": "sicurezza",
+  "order": 65,
+  "api": "api.py",
+  "description": "Rilevamento intelligente di persone in pericolo, cadute, malori e richieste di aiuto con escalation familiare e audit cifrato.",
+  "toggle": {
+    "env": "NUXIVA_RESCUE",
+    "tri": false,
+    "apply": []
+  },
+  "capabilities": [
+    "Rilevamento multimodale di cadute, immobilità prolungata, grida e parole di soccorso",
+    "Verifica vocale immediata e non invasiva prima dell'allarme",
+    "Politica di escalation a livelli verso contatti familiari ed emergenza",
+    "Audit immutabile e cifrato nel giornale Sentinella con prove crittografiche"
+  ]
+}

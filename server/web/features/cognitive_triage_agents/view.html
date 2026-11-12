@@ -1,0 +1,126 @@
+<div class="cognitive-triage-container" id="cognitiveTriageContainer">
+  <header class="triage-header">
+    <div class="header-titles">
+      <div class="header-icon-badge">
+        <svg viewBox="0 0 24 24" class="triage-icon" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14h-2v-2h2zm0-4h-2V7h2z"/>
+        </svg>
+      </div>
+      <div>
+        <h2 data-i18n="title">Clinical Cognitive Triage</h2>
+        <p class="subtitle" data-i18n="subtitle">Valutazione Tri-Agente per Risposte Adattive e Protezione dell'Utente</p>
+      </div>
+    </div>
+    <div class="header-controls">
+      <div class="status-indicator-badge active" id="triageStatusBadge">
+        <span class="status-dot"></span>
+        <span id="triageStatusText" data-i18n="status_active">Attivo (Coprocessore Asincrono)</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="triage-grid">
+    <div class="agent-card psych-agent">
+      <div class="agent-card-header">
+        <div class="agent-pill psych-pill">CBT</div>
+        <h3 data-i18n="agent_psych">Agente Psicologico</h3>
+      </div>
+      <p class="agent-desc" data-i18n="agent_psych_desc">Analisi vulnerabilità affettiva, distorsioni cognitive e reframing empatico</p>
+      <div class="agent-stat-box">
+        <div class="stat-row">
+          <span>Stato Emotivo:</span>
+          <strong id="psychStateVal">CALM</strong>
+        </div>
+        <div class="stat-row">
+          <span>Profondità Empatica:</span>
+          <strong id="psychEmpathyVal">0.10</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="agent-card meth-agent">
+      <div class="agent-card-header">
+        <div class="agent-pill meth-pill">SOCRATIC</div>
+        <h3 data-i18n="agent_meth">Agente Metodologico</h3>
+      </div>
+      <p class="agent-desc" data-i18n="agent_meth_desc">Decomposizione socratica dei task e strutturazione pragmatica a micro-passi</p>
+      <div class="agent-stat-box">
+        <div class="stat-row">
+          <span>Complessità:</span>
+          <strong id="methComplexityVal">0.15</strong>
+        </div>
+        <div class="stat-row">
+          <span>Indice Sovraccarico:</span>
+          <strong id="methOverloadVal">0.10</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="agent-card psychiatry-agent">
+      <div class="agent-card-header">
+        <div class="agent-pill psychiatry-pill">GATEKEEPER</div>
+        <h3 data-i18n="agent_psychiatry">Agente Psichiatrico</h3>
+      </div>
+      <p class="agent-desc" data-i18n="agent_psychiatry_desc">Clinical Risk Gatekeeper, rilevamento red flags e protocolli salvavita</p>
+      <div class="agent-stat-box">
+        <div class="stat-row">
+          <span>Livello Rischio:</span>
+          <span class="risk-badge safe" id="psychiatryRiskBadge" data-i18n="risk_safe">Rischio: Minimo / Sicuro</span>
+        </div>
+        <div class="stat-row">
+          <span>Interlock Clinico:</span>
+          <strong id="psychiatryInterlockVal">INATTIVO</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="triage-interaction-section">
+    <div class="input-form-box">
+      <textarea id="triageTextInput" class="triage-textarea" rows="3" placeholder="Inserisci frase o pensiero per la valutazione clinica e metodologica..." data-i18n-attr="placeholder:input_placeholder"></textarea>
+      <div class="form-actions">
+        <button id="triageEvaluateBtn" class="primary-action-btn">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          <span data-i18n="simulate_btn">Valuta Input Cognitivo</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="consensus-result-card" id="consensusResultCard">
+      <div class="consensus-header">
+        <h4 data-i18n="results_title">Consenso Tri-Agente</h4>
+        <span class="mode-tag" id="consensusModeTag" data-i18n="mode_transparent">Trasparente (Latenza Zero)</span>
+      </div>
+      <div class="consensus-body">
+        <div class="directive-box">
+          <label data-i18n="meta_directive">Direttiva Meta-Prompt</label>
+          <div class="directive-code" id="metaDirectiveOutput">STANDARD_FLOW: Normal interaction, zero latency path.</div>
+        </div>
+        <div class="meta-metrics">
+          <div class="metric-pill">
+            <span data-i18n="speech_rate">Fattore Velocità TTS</span>:
+            <strong id="speechRateOutput">1.00x</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="emergency-safety-card hidden" id="emergencySafetyCard">
+      <div class="emergency-icon-banner">
+        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#ef4444" stroke-width="2">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+      </div>
+      <div class="emergency-details">
+        <h3 data-i18n="emergency_card_title">Protocollo Salvavita di Supporto Immediato</h3>
+        <p id="emergencyProtocolMessage">Ti ascolto e la tua incolumità ha la priorità assoluta. Nuxiva consiglia un supporto protetto immediato.</p>
+        <div class="emergency-buttons">
+          <a href="tel:112" class="emergency-call-btn" data-i18n="emergency_call_btn">Chiama 112 Emergenza</a>
+          <span class="crisis-label" data-i18n="crisis_line_label">Telefono Amico Italia: 02 2327 2327</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

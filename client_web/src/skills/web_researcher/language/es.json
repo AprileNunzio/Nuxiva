@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Investigador Web Autónomo y Verificador",
+    "description": "Habilidad que investiga en internet, compara diversas fuentes y sintetiza datos con referencias verificadas.",
+    "opt_citation_verify_label": "Verificación Cruzada de Fuentes",
+    "opt_citation_verify_desc": "Compara tres fuentes independientes antes de validar respuestas factuales."
+  }
+}

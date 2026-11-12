@@ -1,0 +1,40 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Flux",
+    "description": "Éditeur nodal DAG du raisonnement de {assistant}",
+    "status": "Actif",
+    "open_app": "Ouvrir",
+    "loading": "Chargement…",
+    "unreachable": "Serveur injoignable",
+    "on": "Actif",
+    "off": "Éteint",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "add": "Ajouter",
+    "stat_pending": "Modifications en brouillon",
+    "stat_estimate": "Temps estimé",
+    "stat_speed": "Vitesse",
+    "stat_quality": "Qualité",
+    "stat_privacy": "Confidentialité",
+    "stat_saving": "Économie",
+    "templates": "Modèles de flux",
+    "nodes": "Étapes du raisonnement",
+    "locked": "Verrouillé",
+    "changed": "Modifié",
+    "publish_title": "Publier et restaurer",
+    "publish_hint": "Votre mot de passe est requis pour modifier le raisonnement.",
+    "password": "Mot de passe",
+    "publish": "Publier",
+    "discard": "Abandonner le brouillon",
+    "versions": "Versions",
+    "no_versions": "Aucune version publiée.",
+    "active": "Active",
+    "restore": "Restaurer",
+    "auto": "Automatique"
+  }
+}

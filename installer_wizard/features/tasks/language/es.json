@@ -1,0 +1,11 @@
+{
+  "name": "Tareas en segundo plano",
+  "description": "Cada creación larga se convierte en una tarea: progreso, pasos, cancelación y, al terminar, la pregunta de escucharla, abrirla o hablar de ella.",
+  "capabilities": [
+    "Registro único de tareas: canciones, proyectos y creaciones largas",
+    "Progreso y pasos en vivo en el widget Tareas",
+    "Al terminar propone: escuchar, abrir, hablar",
+    "Responde a «¿cómo vas?»"
+  ],
+  "settings": []
+}

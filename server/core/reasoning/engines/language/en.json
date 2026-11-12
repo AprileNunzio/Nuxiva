@@ -1,0 +1,62 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "server/reasoning"
+  },
+  "engines": {
+    "classico": {
+      "name": "Nuxiva Classic",
+      "summary": "One model at a time, in the configured order, until one answers"
+    },
+    "veloce": {
+      "name": "Nuxiva Fast",
+      "summary": "Race between the fast models: the first valid answer wins"
+    },
+    "empatico": {
+      "name": "Nuxiva Empathic",
+      "summary": "Compares two answers and picks the clearest, most tone-aware one"
+    },
+    "pro": {
+      "name": "Nuxiva Pro",
+      "summary": "Compares two deep models and a critic picks the best answer"
+    },
+    "ultra": {
+      "name": "Nuxiva Ultra",
+      "summary": "Compares up to three deep models with more time and picks with the critic"
+    },
+    "auto": {
+      "name": "Nuxiva Auto",
+      "summary": "Picks the method by itself from the question length and the emotional state"
+    }
+  },
+  "stages": {
+    "route": {
+      "name": "Automatic method choice",
+      "detail": "{words} words · complexity {complexity} · chose {chosen}: {reason}"
+    },
+    "reason_fast": "you are agitated and the question is short",
+    "reason_empathy": "the emotional tone is strong",
+    "reason_complex": "the question is long and complex",
+    "reason_default": "regular question",
+    "sequential": {
+      "name": "One model at a time",
+      "detail": "Tries {count} model groups in order and stops at the first that answers"
+    },
+    "first": {
+      "name": "Race between fast models",
+      "detail": "{count} models in parallel: the first valid answer wins, the others are stopped"
+    },
+    "best": {
+      "name": "Comparison between models",
+      "detail": "{count} models in parallel: after the first answer it waits at most {wait} s for the others"
+    },
+    "critic": {
+      "name": "Critic evaluation",
+      "detail": "score = {cw} × reliability + {kw} × critic (risks, clarity, tone)"
+    },
+    "decision": {
+      "name": "Chosen answer",
+      "detail": "The answer with the highest score is returned"
+    }
+  }
+}

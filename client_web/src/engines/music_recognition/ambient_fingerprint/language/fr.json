@@ -1,0 +1,10 @@
+{
+  "dictionary": {
+    "title": "Écoute de Musique Ambiante",
+    "description": "Reconnaissance automatique continue de la musique et de la radio ambiante en arrière-plan.",
+    "opt_polling_interval_label": "Intervalle d'Échantillonnage (Secondes)",
+    "opt_polling_interval_desc": "Fréquence d'échantillonnage du flux sonore ambiant en arrière-plan.",
+    "opt_screen_hud_toast_label": "Notification HUD à l'Écran",
+    "opt_screen_hud_toast_desc": "Affiche une bannière flottante avec titre et pochette dès que le morceau change."
+  }
+}

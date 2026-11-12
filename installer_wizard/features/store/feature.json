@@ -1,0 +1,22 @@
+{
+  "id": "store",
+  "name": "Nuxiva Store",
+  "icon": "🛍️",
+  "category": "sistema",
+  "order": 180,
+  "panel": "store",
+  "api": "api.py",
+  "description": "Store ufficiale per l'installazione e gestione modulare di capacità, modelli e applicazioni opzionali.",
+  "capabilities": [
+    "Catalogo capacità modulari",
+    "Installazione one-click con gestione dipendenze",
+    "Monitoraggio risorse hardware in tempo reale"
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "6xRZJrVWQLNn",
+    "url": "https://img.icons8.com/?size=240&id=6xRZJrVWQLNn&format=png"
+  }
+}

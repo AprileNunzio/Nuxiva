@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "apps/studio_3d",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Studio 3D",
+    "status_loaded": "Cargado",
+    "action_interact": "Interactuar",
+    "render_fps": "FPS: {{fps}}"
+  }
+}

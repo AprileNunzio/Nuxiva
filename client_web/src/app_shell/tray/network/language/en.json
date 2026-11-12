@@ -1,0 +1,21 @@
+{
+  "title": "Network & Connections",
+  "refresh": "Refresh",
+  "close": "Close",
+  "wifi": "Wi-Fi",
+  "interfaces": "Network Interfaces",
+  "wifi_enabled": "Wi-Fi On",
+  "wifi_disabled": "Wi-Fi Off",
+  "scanning": "Scanning...",
+  "no_networks": "No Wi-Fi networks found",
+  "connected": "Connected",
+  "disconnected": "Disconnected",
+  "connect": "Connect",
+  "disconnect": "Disconnect",
+  "cancel": "Cancel",
+  "enter_password": "Network password",
+  "ip_address": "IP Address",
+  "mac_address": "MAC Address",
+  "gateway": "Default Gateway",
+  "manage_network": "Manage Network"
+}

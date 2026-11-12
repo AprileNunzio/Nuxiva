@@ -1,0 +1,11 @@
+{
+  "manifest_version": 1,
+  "id": "biometrics_vision",
+  "kind": "configure",
+  "order": 230,
+  "icon": "icon.png",
+  "when": ["hardware:camera"],
+  "skippable": true,
+  "view": "view.js",
+  "handler": "handler.py"
+}

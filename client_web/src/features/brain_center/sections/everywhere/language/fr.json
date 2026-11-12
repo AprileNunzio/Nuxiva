@@ -1,0 +1,19 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Un modèle pour tout",
+    "hint": "Choisissez un modèle et appliquez-le d'un coup à toutes les tâches et fonctions, agents compris.",
+    "pick": "Choisir le modèle",
+    "change": "Changer de modèle",
+    "only": "Uniquement ce modèle",
+    "only_hint": "Partout, seul le modèle choisi sera utilisé, sans secours.",
+    "keep": "Celui-ci d'abord, les actuels en secours",
+    "keep_hint": "Le modèle choisi passe en tête ; les modèles déjà configurés restent en secours s'il ne répond pas.",
+    "apply": "Appliquer à tout",
+    "confirm_title": "Utiliser {model} pour tout ?",
+    "confirm_only": "Toutes les tâches et fonctions utiliseront uniquement ce modèle. Les réglages actuels seront remplacés.",
+    "confirm_keep": "Ce modèle sera placé en premier dans toutes les tâches et fonctions. Les modèles actuels restent en secours."
+  }
+}

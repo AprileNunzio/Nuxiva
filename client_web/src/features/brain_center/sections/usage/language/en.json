@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Usage and limits",
+    "description": "Tokens used in {month}. Set a limit: when an online service reaches it, {assistant} moves to the next backup by itself.",
+    "today": "Today",
+    "month_total": "This month",
+    "month_cloud": "Online services this month",
+    "budget_global": "Total monthly limit (online tokens)",
+    "of_budget": "of {cap}",
+    "no_budget": "No limit",
+    "by_provider": "By provider",
+    "empty": "No usage recorded yet.",
+    "col_provider": "Provider",
+    "col_in": "Sent",
+    "col_out": "Received",
+    "col_calls": "Requests",
+    "col_budget": "Limit",
+    "daily_title": "Last 30 days",
+    "budgets_title": "Spending limits",
+    "budgets_hint": "Maximum tokens per month. Leave empty for no limit. Once reached, the next backup is used.",
+    "no_limit": "No limit",
+    "budgets_no_providers": "Set up a provider to give it its own limit.",
+    "widget_title": "Show usage on the main screen",
+    "widget_hint": "Adds a panel with today's and this month's tokens to the main page."
+  }
+}

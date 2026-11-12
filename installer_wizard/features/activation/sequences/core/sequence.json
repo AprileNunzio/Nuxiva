@@ -1,0 +1,9 @@
+{
+  "manifest_version": 1,
+  "id": "core",
+  "kind": "mandatory",
+  "order": 195,
+  "steps": ["core"],
+  "icon": "icon.png",
+  "critical": true
+}

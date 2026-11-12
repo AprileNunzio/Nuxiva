@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Video Surveillance",
+    "subtitle": "Central camera management and NVR recordings hub",
+    "open": "Open Section",
+    "available": "Modules and Sub-applications: {count}",
+    "empty": "No surveillance modules detected."
+  }
+}

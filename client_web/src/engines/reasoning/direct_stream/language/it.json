@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Motore Stream Diretto",
+    "description": "Elaborazione reattiva a latenza zero per risposte immediate e conversazioni fluide.",
+    "opt_temperature_profile_label": "Sensibilità Creativa",
+    "opt_temperature_profile_desc": "Bilanciamento tra precisione deterministica e varietà stilistica della risposta generata."
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "dictionary": {
+    "title": "Whisper Offline Local Neural",
+    "description": "On-device neural speech transcription without sending data to cloud (Absolute Privacy).",
+    "opt_model_precision_label": "Quantization & Precision",
+    "opt_model_precision_desc": "Compression level (int8 or float16) balancing inference speed and transcription accuracy.",
+    "opt_vad_threshold_label": "VAD Voice Activity Threshold",
+    "opt_vad_threshold_desc": "Sensitivity of the Voice Activity Detector filter to reject background ambient noises."
+  }
+}

@@ -1,0 +1,118 @@
+Nuxiva Personal and Commercial License 1.0
+Copyright (c) 2026 NunzioTech (Nunzio Aprile)
+Effective for revisions first distributed with this license.
+
+1. Scope and definitions
+
+"Software" means the original Nuxiva code and documentation supplied under
+this license. "Licensor" means Nunzio Aprile (NunzioTech). Third-party works
+and previously licensed material are governed by section 6.
+
+"Personal Home Use" means use by a natural person and members of that person's
+household, on devices they own or control, solely for private, non-commercial
+household purposes. Operating a business from home is not Personal Home Use
+when the Software supports that business.
+
+"Commercial Use" includes use in a trade, profession or business; internal
+business operations; paid installation, hosting, support or managed services;
+use for customers; commercial rental accommodation; resale; and incorporation
+in a product or service offered for payment or commercial advantage. Charging
+separately for the Software is not required for use to be commercial.
+
+2. Free personal home license
+
+Subject to these terms, the Licensor grants you a worldwide, non-exclusive,
+royalty-free license to download, install, execute, study, copy for backup and
+modify the Software for Personal Home Use. No purchase or subscription is
+required for that use.
+
+You may share unmodified or modified source copies without charge for Personal
+Home Use, provided that you retain this license, copyright and third-party
+notices, identify your modifications, and provide recipients with these same
+terms. This permission does not authorize commercial distribution or imply
+that the Licensor endorses your version.
+
+3. Commercial license
+
+Commercial Use requires a separate written commercial license from the
+Licensor and payment of the fees specified in that agreement before that use
+begins. The written agreement determines price, duration, permitted deployment,
+redistribution and service rights, and any support commitments. This public
+license does not specify a price or grant a commercial trial.
+
+Request commercial terms at aprilenunzio88@gmail.com with the subject
+"Nuxiva commercial license". Downloading the repository, contributing code or
+setting NUXIVA_COMMERCIAL=1 does not purchase or activate a commercial license.
+That configuration flag concerns third-party component selection only.
+
+Uses outside Personal Home Use that are not expressly covered above, including
+institutional deployment, require prior written permission from the Licensor.
+
+4. Development and contributions
+
+You may inspect, test and modify the Software solely to evaluate its technical
+behavior or prepare contributions to Nuxiva, without operating a production
+service or using it for business operations under this permission. Submitted
+contributions are subject to CONTRIBUTING.md. This section does not assign
+ownership of your work or authorize unrelated commercial deployment.
+
+5. Restrictions and termination
+
+Do not remove notices, misrepresent authorship, or grant rights to the Software
+that this license does not provide. No trademark rights are granted. Rights not
+expressly granted are reserved, subject to applicable law and section 6.
+
+If you breach this license, the Licensor may terminate the rights granted here
+by written notice. Where the breach can be remedied, you have 30 days after
+receipt of notice to remedy it; timely remedy prevents termination for that
+breach. Following termination, cease use and distribution authorized solely by
+this license. Rights under separate licenses are unaffected.
+
+6. Earlier MIT releases and third-party material
+
+This license does not revoke, narrow or replace rights already granted for
+Nuxiva material distributed under the MIT License. Copies and portions obtained
+under MIT remain usable, modifiable and redistributable, including commercially,
+under those terms. LICENSE-MIT-LEGACY preserves the earlier license notice.
+The new terms apply only to material for which the Licensor can grant these
+terms and do not retroactively restrict the earlier MIT code.
+
+Third-party dependencies, contributions with separate notices, models, fonts,
+media and services retain their own licenses and terms. Preserve their notices.
+See THIRD_PARTY_NOTICES.md and the relevant component's license. A paid Nuxiva
+license does not purchase third-party rights or override their restrictions.
+
+7. Disclaimer and limitation of liability
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE SOFTWARE IS PROVIDED
+"AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT.
+THE LICENSOR DOES NOT WARRANT UNINTERRUPTED OPERATION, ACCURACY OF AI OUTPUT,
+COMPATIBILITY WITH EVERY DEVICE OR FITNESS FOR SAFETY-CRITICAL CONTROL.
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE LICENSOR SHALL NOT BE
+LIABLE FOR CLAIMS, DAMAGES OR OTHER LIABILITY ARISING FROM THE SOFTWARE OR ITS
+USE, WHETHER IN CONTRACT, TORT OR OTHERWISE. NOTHING HERE EXCLUDES LIABILITY
+OR CONSUMER RIGHTS THAT CANNOT LAWFULLY BE EXCLUDED. A SEPARATE SIGNED COMMERCIAL
+AGREEMENT MAY PROVIDE ADDITIONAL WARRANTIES OR REMEDIES.
+
+8. Interpretation
+
+This is a source-available license with use restrictions, not the MIT License
+and not an OSI-approved open-source license. The English text above governs;
+the Italian summary below is explanatory. If a provision is unenforceable,
+the remaining provisions continue to apply to the extent permitted by law.
+
+Riepilogo italiano (informativo)
+
+L'uso privato e domestico da parte di persone fisiche e del loro nucleo
+familiare e gratuito, incluse modifiche personali e condivisione gratuita del
+sorgente secondo queste condizioni. L'uso professionale o commerciale,
+anche interno o svolto da casa, richiede un accordo scritto a pagamento con
+Nunzio Aprile (NunzioTech), da richiedere a aprilenunzio88@gmail.com.
+Prezzi, durata, distribuzione e assistenza sono definiti nell'accordo.
+Gli altri impieghi, inclusi quelli istituzionali, richiedono autorizzazione
+scritta. Sono consentite valutazione tecnica e preparazione di contributi,
+nei limiti della sezione 4. I diritti MIT gia concessi restano validi;
+dipendenze e materiali di terzi conservano le rispettive licenze.
+Il software e fornito senza garanzie nei limiti consentiti dalla legge.

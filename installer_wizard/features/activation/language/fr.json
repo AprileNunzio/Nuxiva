@@ -1,0 +1,20 @@
+{
+  "name": "Séquence d'Activation",
+  "scope": "features/activation",
+  "dictionary": {
+    "title": "Séquence d'Activation",
+    "subtitle": "Activation des sous-systèmes et configuration guidée",
+    "btn_start": "Démarrer l'installation",
+    "btn_continue": "Continuer",
+    "btn_retry": "Réessayer",
+    "btn_skip": "Passer la séquence",
+    "btn_reset": "Repartir de zéro",
+    "status_pending": "En attente",
+    "status_running": "En cours d'exécution...",
+    "status_done": "Terminé",
+    "status_failed": "Échoué",
+    "status_declined": "Non installé",
+    "status_deferred": "Reporté",
+    "choice_later_note": "Vous pourrez installer ce composant ultérieurement depuis Paramètres > Paquets."
+  }
+}

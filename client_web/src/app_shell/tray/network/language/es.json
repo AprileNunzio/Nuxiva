@@ -1,0 +1,21 @@
+{
+  "title": "Red y Conexiones",
+  "refresh": "Actualizar",
+  "close": "Cerrar",
+  "wifi": "Wi-Fi",
+  "interfaces": "Interfaces de Red",
+  "wifi_enabled": "Wi-Fi Activado",
+  "wifi_disabled": "Wi-Fi Desactivado",
+  "scanning": "Buscando...",
+  "no_networks": "No se encontraron redes Wi-Fi",
+  "connected": "Conectado",
+  "disconnected": "Desconectado",
+  "connect": "Conectar",
+  "disconnect": "Desconectar",
+  "cancel": "Cancelar",
+  "enter_password": "Contraseña de red",
+  "ip_address": "Dirección IP",
+  "mac_address": "Dirección MAC",
+  "gateway": "Puerta de enlace",
+  "manage_network": "Gestionar Red"
+}

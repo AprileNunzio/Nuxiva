@@ -1,0 +1,41 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Tiempo",
+    "description": "Ubicaciones guardadas, ubicación predeterminada y todos los ajustes del tiempo, con vista previa en vivo",
+    "loading": "Cargando…",
+    "unreachable": "Servidor inaccesible",
+    "on": "Activo",
+    "off": "Apagado",
+    "save": "Guardar",
+    "no_settings": "Sin ajustes disponibles",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "places_title": "Ubicaciones",
+    "places_empty": "Ninguna ubicación guardada: busca una ciudad para añadirla",
+    "search": "Buscar",
+    "search_placeholder": "Ciudad o dirección",
+    "search_empty": "No se encontró ningún lugar",
+    "add": "Añadir",
+    "preview": "Vista previa",
+    "make_default": "Predeterminar",
+    "rename": "Renombrar",
+    "remove": "Quitar",
+    "remove_confirm": "Confirmar",
+    "default": "Predeterminada",
+    "preview_title": "Vista previa en vivo",
+    "preview_no_location": "Añade una ubicación para ver el pronóstico",
+    "preview_unavailable": "Servicio meteorológico inaccesible por ahora",
+    "stale": "Datos no actualizados",
+    "forecast": "Próximos días",
+    "stat_feels": "Sensación",
+    "stat_humidity": "Humedad",
+    "stat_wind": "Viento",
+    "stat_pressure": "Presión",
+    "stat_uv": "Índice UV",
+    "stat_air": "Calidad del aire (EAQI)",
+    "settings_title": "Ajustes del tiempo"
+  }
+}

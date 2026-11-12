@@ -1,0 +1,10 @@
+{
+  "name": "Secours",
+  "description": "Détection intelligente de personnes en danger, chutes, malaises et appels à l'aide avec escalade familiale et audit chiffré.",
+  "capabilities": [
+    "Détection multimodale de chutes, immobilité prolongée, cris et appels au secours",
+    "Vérification vocale immédiate et non intrusive avant alarme",
+    "Politique d'escalade par paliers vers les proches et les secours",
+    "Audit infalsifiable et chiffré dans le journal Sentinelle avec preuves cryptographiques"
+  ]
+}

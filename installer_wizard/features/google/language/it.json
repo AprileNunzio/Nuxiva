@@ -1,0 +1,108 @@
+{
+  "name": "Google",
+  "description": "Ogni persona collega il proprio account Google: agenda, posta, cose da fare, rubrica, Drive e note, mostrati solo a chi Nuxiva riconosce.",
+  "capabilities": [
+    "Un account Google per ogni persona, token cifrati",
+    "Privacy: dati solo a chi è riconosciuto, email non lette ad alta voce davanti ad altri",
+    "Calendar: impegni, nuovi appuntamenti con avviso di sovrapposizione, cancellazione, «quando sono libero»",
+    "Gmail: non lette, ricerca per mittente o argomento, «leggimi l'ultima email»",
+    "Tasks: «ricordami di…», elenco con ritardi, «ho fatto…»",
+    "Contatti, Drive e Google Health (salute, attività e sonno)",
+    "Promemoria personali prima di ogni appuntamento"
+  ],
+  "settings": {
+    "NUXIVA_GOOGLE_CLIENT_ID": "Client ID OAuth",
+    "NUXIVA_GOOGLE_CLIENT_SECRET": "Client Secret OAuth"
+  },
+  "guide": {
+    "title": "Come ottenere Client ID e Client Secret di Google",
+    "steps": [
+      "Apri Google Cloud Console e accedi con l'account Google che amministrerà Nuxiva.",
+      "In alto apri il selettore dei progetti, scegli «Nuovo progetto», chiamalo «Nuxiva», premi Crea e assicurati che resti selezionato.",
+      "Abilita le API qui sotto: apri ogni link, verifica che in alto ci sia il progetto Nuxiva e premi «Abilita». Senza un'API abilitata quel servizio risponde «API non abilitata».",
+      "Apri Google Auth Platform › Branding: nome app «Nuxiva», la tua email di assistenza e quella dello sviluppatore, poi Salva.",
+      "Apri Audience: tipo di utente «Esterno». In «Utenti di prova» aggiungi l'indirizzo Google di ogni persona che collegherà il proprio account (massimo 100).",
+      "Apri Accesso ai dati (Data access) › «Aggiungi o rimuovi ambiti», incolla l'elenco degli ambiti qui sotto nel campo «Aggiungi ambiti manualmente», premi Aggiungi e poi Salva.",
+      "Apri Client › «Crea client», tipo di applicazione «App desktop», nome «Nuxiva», poi Crea. Non serve alcun URI di reindirizzamento: Nuxiva usa http://127.0.0.1:8889/, che Google accetta da solo per le app desktop.",
+      "Copia Client ID e Client Secret dalla finestra che compare, incollali qui sotto e premi Salva.",
+      "Ogni persona collega il proprio account dal Gestore Identità: apre la sua scheda, Connettori, Google, sceglie i servizi e autorizza. Se Google mostra «Google non ha verificato questa app», premi «Avanzate» e poi «Vai a Nuxiva»: è normale per un'app personale. Lascia spuntate tutte le caselle.",
+      "Alla fine il browser apre una pagina che non si carica (127.0.0.1): copia l'indirizzo completo dalla barra e incollalo in Nuxiva entro 30 minuti.",
+      "Google Health si autorizza a parte: Google non accetta i permessi di salute insieme a quelli di Gmail, Calendar e degli altri servizi. Dopo aver collegato Google, accendi l'interruttore «Google Health» (e «attività e sonno»): si apre una seconda autorizzazione con i soli permessi di salute.",
+      "Per la salute la persona deve usare l'app Google Health sul telefono con lo stesso account Google e avere creato il profilo (o migrato l'account Fitbit), altrimenti Google non restituisce dati."
+    ],
+    "items_title": "API da abilitare",
+    "items": [
+      {
+        "label": "Google Calendar API",
+        "detail": "agenda, appuntamenti e promemoria",
+        "url": "https://console.cloud.google.com/apis/library/calendar-json.googleapis.com"
+      },
+      {
+        "label": "Gmail API",
+        "detail": "leggere e inviare email",
+        "url": "https://console.cloud.google.com/apis/library/gmail.googleapis.com"
+      },
+      {
+        "label": "Google Tasks API",
+        "detail": "cose da fare",
+        "url": "https://console.cloud.google.com/apis/library/tasks.googleapis.com"
+      },
+      {
+        "label": "People API",
+        "detail": "rubrica dei contatti",
+        "url": "https://console.cloud.google.com/apis/library/people.googleapis.com"
+      },
+      {
+        "label": "Google Drive API",
+        "detail": "elenco dei file",
+        "url": "https://console.cloud.google.com/apis/library/drive.googleapis.com"
+      },
+      {
+        "label": "Google Health API",
+        "detail": "battito, HRV, ossigeno, pressione, glicemia, peso, passi e sonno",
+        "url": "https://console.cloud.google.com/apis/library/health.googleapis.com"
+      }
+    ],
+    "copy": [
+      {
+        "label": "Ambiti OAuth da aggiungere in «Accesso ai dati»",
+        "text": "openid\nemail\nprofile\nhttps://www.googleapis.com/auth/calendar.events\nhttps://www.googleapis.com/auth/calendar.readonly\nhttps://www.googleapis.com/auth/contacts.readonly\nhttps://www.googleapis.com/auth/drive.metadata.readonly\nhttps://www.googleapis.com/auth/gmail.readonly\nhttps://www.googleapis.com/auth/gmail.send\nhttps://www.googleapis.com/auth/googlehealth.activity_and_fitness.readonly\nhttps://www.googleapis.com/auth/googlehealth.health_metrics_and_measurements.readonly\nhttps://www.googleapis.com/auth/googlehealth.sleep.readonly\nhttps://www.googleapis.com/auth/tasks"
+      }
+    ],
+    "links": [
+      {
+        "label": "Google Cloud Console",
+        "url": "https://console.cloud.google.com/"
+      },
+      {
+        "label": "Libreria delle API",
+        "url": "https://console.cloud.google.com/apis/library"
+      },
+      {
+        "label": "Branding",
+        "url": "https://console.cloud.google.com/auth/branding"
+      },
+      {
+        "label": "Audience e utenti di prova",
+        "url": "https://console.cloud.google.com/auth/audience"
+      },
+      {
+        "label": "Accesso ai dati (ambiti)",
+        "url": "https://console.cloud.google.com/auth/scopes"
+      },
+      {
+        "label": "Client OAuth",
+        "url": "https://console.cloud.google.com/auth/clients"
+      },
+      {
+        "label": "Autorizzazioni del tuo account Google",
+        "url": "https://myaccount.google.com/permissions"
+      }
+    ],
+    "note": "In modalità «Test» Google fa scadere l'autorizzazione ogni 7 giorni: per evitarlo, in Audience premi «Pubblica app». Un'app personale non verificata funziona fino a 100 utenti mostrando l'avviso di app non verificata. Il Client Secret è riservato: non condividerlo. Google Keep non si collega con questo metodo: Google lo concede solo alle aziende Google Workspace Enterprise tramite un account di servizio con delega a livello di dominio, quindi non aggiungere l'ambito …/auth/keep (Google lo rifiuta)."
+  },
+  "help": {
+    "NUXIVA_GOOGLE_CLIENT_ID": "Finisce con .apps.googleusercontent.com. Lo trovi in Credenziali, ID client OAuth.",
+    "NUXIVA_GOOGLE_CLIENT_SECRET": "Stringa riservata che inizia con GOCSPX-, mostrata accanto al Client ID."
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://nuxiva.org/schemas/engine.manifest.json",
+  "id": "whisper_offline",
+  "name": "Whisper Local Neural Stt",
+  "version": "2.1.0",
+  "kind": "engine",
+  "family": "speech_recognition",
+  "author": "Nuxiva Neural Voice Team",
+  "capabilities": ["microphone", "local_neural_inference", "zero_cloud_privacy"],
+  "options": [
+    {
+      "id": "model_precision",
+      "type": "select",
+      "default": "int8",
+      "label_key": "opt_model_precision_label",
+      "desc_key": "opt_model_precision_desc"
+    },
+    {
+      "id": "vad_threshold",
+      "type": "range",
+      "default": 65,
+      "min": 10,
+      "max": 95,
+      "label_key": "opt_vad_threshold_label",
+      "desc_key": "opt_vad_threshold_desc"
+    }
+  ]
+}

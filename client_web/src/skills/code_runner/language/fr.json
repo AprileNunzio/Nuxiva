@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Exécuteur de Code en Sandbox Sécurisée",
+    "description": "Compétence exécutant du code Python, Rust et JavaScript dans un bac à sable WebAssembly isolé.",
+    "opt_timeout_sec_label": "Délai Maximal d'Exécution (s)",
+    "opt_timeout_sec_desc": "Interrompt le programme si l'exécution dépasse le nombre de secondes configuré."
+  }
+}

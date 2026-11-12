@@ -1,0 +1,52 @@
+{
+  "id": "location",
+  "name": "Posizione",
+  "icon": "📍",
+  "category": "percezione",
+  "order": 95,
+  "panel": "location",
+  "description": "Dove si trova Nuxiva, per meteo e servizi locali: GPS del telefono, display, reti Wi-Fi e access point di casa, posizione indicata da te; l'indirizzo IP solo come ultima risorsa.",
+  "capabilities": [
+    "Posizione dal telefono via Telegram",
+    "Access point di casa → BeaconDB",
+    "Consenso tra più servizi IP",
+    "«Abito a Napoli» detto a voce"
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "gvQUkpW15e1x",
+    "url": "https://img.icons8.com/?size=240&id=gvQUkpW15e1x&format=png"
+  },
+  "settings": [
+    {
+      "key": "NUXIVA_LOCATION_MODE",
+      "label": "Modalità posizione (auto o fissa)",
+      "type": "select",
+      "options": [
+        "auto",
+        "fixed"
+      ],
+      "default": "auto"
+    },
+    {
+      "key": "NUXIVA_LOCATION",
+      "label": "Nome della posizione predefinita",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "key": "NUXIVA_LOCATION_LAT",
+      "label": "Latitudine predefinita",
+      "type": "text",
+      "default": ""
+    },
+    {
+      "key": "NUXIVA_LOCATION_LON",
+      "label": "Longitudine predefinita",
+      "type": "text",
+      "default": ""
+    }
+  ]
+}

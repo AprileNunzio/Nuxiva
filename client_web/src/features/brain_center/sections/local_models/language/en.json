@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Local models",
+    "description": "Models running on this server: private, free and working even without internet.",
+    "downloading": "Downloading: {name}",
+    "percent": "{n}% done",
+    "installed_title": "Installed ({count})",
+    "installed_empty": "No model installed.",
+    "loaded": "in memory",
+    "delete": "Delete",
+    "pull_placeholder": "Name of the model to download (e.g. qwen2.5:3b)",
+    "pull": "Download",
+    "delete_title": "Delete the model?",
+    "delete_body": "{name} will be removed from disk. Tasks using it will move to their next backup.",
+    "catalog_title": "Recommended catalog",
+    "catalog_hint": "Each model shows whether it suits this server's hardware.",
+    "category_all": "All",
+    "category_chat": "Conversation",
+    "category_deep": "General use",
+    "category_reasoning": "Reasoning",
+    "category_code": "Code",
+    "category_vision": "Images",
+    "category_embed": "Document search",
+    "category_other": "Other",
+    "installed": "Installed",
+    "fit_ok": "Good fit · about {tps} words/s",
+    "fit_slow": "Slow · about {tps} words/s",
+    "fit_no": "Too large for this server",
+    "license_restricted": "Restricted license"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "manifest_version": 1,
+  "id": "voice",
+  "kind": "optional",
+  "order": 110,
+  "steps": ["voice"],
+  "icon": "icon.png",
+  "choices": [
+    {
+      "id": "yes",
+      "installs": true,
+      "icon": "choice_yes.png",
+      "recommended": true,
+      "env": {
+        "NUXIVA_VOICE_PACKAGE": "1"
+      }
+    },
+    {
+      "id": "no",
+      "installs": false,
+      "icon": "choice_no.png",
+      "env": {
+        "NUXIVA_VOICE_PACKAGE": "0"
+      }
+    }
+  ]
+}

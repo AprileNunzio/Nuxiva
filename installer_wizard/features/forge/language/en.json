@@ -1,0 +1,12 @@
+{
+  "name": "Nuxiva Forge",
+  "description": "Self-healing code generation, runtime skill synthesis, sandbox testing, and automated microVM execution.",
+  "capabilities": [
+    "Python script generation and static verification",
+    "MicroVM sandbox execution with egress filtering",
+    "Dynamic tool synthesis"
+  ],
+  "settings": {
+    "NUXIVA_SANDBOX_TIMEOUT": "Sandbox execution timeout (seconds)"
+  }
+}

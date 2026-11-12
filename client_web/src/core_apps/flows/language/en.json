@@ -1,0 +1,40 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Flows",
+    "description": "DAG nodal editor of {assistant} reasoning",
+    "status": "Active",
+    "open_app": "Open",
+    "loading": "Loading…",
+    "unreachable": "Server unreachable",
+    "on": "On",
+    "off": "Off",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "stat_pending": "Draft changes",
+    "stat_estimate": "Estimated time",
+    "stat_speed": "Speed",
+    "stat_quality": "Quality",
+    "stat_privacy": "Privacy",
+    "stat_saving": "Saving",
+    "templates": "Flow templates",
+    "nodes": "Reasoning steps",
+    "locked": "Locked",
+    "changed": "Changed",
+    "publish_title": "Publish and restore",
+    "publish_hint": "Your password is required to change how Nuxiva reasons.",
+    "password": "Password",
+    "publish": "Publish",
+    "discard": "Discard draft",
+    "versions": "Versions",
+    "no_versions": "No published versions.",
+    "active": "Active",
+    "restore": "Restore",
+    "auto": "Automatic"
+  }
+}

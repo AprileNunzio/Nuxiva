@@ -1,0 +1,8 @@
+{
+  "id": "pc",
+  "name": "PC / Server x86_64",
+  "target": "x86_64",
+  "tier": "tier1_compute",
+  "version": "5.0.0",
+  "description": "High-compute node provisioner for PC, workstations, and virtualization servers"
+}

@@ -1,0 +1,9 @@
+{
+  "name": "Nuxiva Store",
+  "description": "Tienda oficial para la instalación modular de capacidades opcionales, modelos y aplicaciones.",
+  "capabilities": [
+    "Catálogo de capacidades modulares",
+    "Instalación en un clic con gestión de dependencias",
+    "Monitorización de recursos de hardware en tiempo real"
+  ]
+}

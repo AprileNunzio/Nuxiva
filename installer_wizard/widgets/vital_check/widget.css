@@ -1,0 +1,50 @@
+.w-vital_check .vc-wrap { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 14px 20px; padding: 6px 0 4px; }
+.w-vital_check .vc-dial { position: relative; width: clamp(112px, 9vw, 168px); aspect-ratio: 1; display: grid; place-items: center; }
+.w-vital_check .vc-dial > svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.w-vital_check .vc-trk { fill: none; stroke: rgba(var(--tone), 0.14); stroke-width: 5; }
+.w-vital_check .vc-arc { fill: none; stroke: rgb(var(--tone)); stroke-width: 5; stroke-linecap: round; transition: stroke-dashoffset 0.9s ease-out;
+  filter: drop-shadow(0 0 6px rgba(var(--tone), 0.85)); }
+.w-vital_check .vc-halo { position: absolute; inset: 14%; border-radius: 50%; border: 1px solid rgba(var(--tone), 0.45); opacity: 0;
+  animation: vc-halo 2.4s ease-out infinite; animation-delay: var(--sync); }
+.w-vital_check .vc-live .vc-halo { animation-duration: calc(var(--beat) * 2); border-color: rgba(255, 77, 106, 0.55); }
+.w-vital_check .vc-core { position: relative; display: flex; flex-direction: column; align-items: center; line-height: 1; }
+.w-vital_check .vc-count { font-size: clamp(34px, 3vw, 64px); font-weight: 200; font-variant-numeric: tabular-nums;
+  background: linear-gradient(180deg, #fff, rgb(var(--tone))); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.w-vital_check .vc-core small { margin-top: 4px; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim); }
+.w-vital_check .vc-glyph { display: inline-flex; width: 38px; height: 38px; color: rgb(var(--tone)); filter: drop-shadow(0 0 8px rgba(var(--tone), 0.8)); }
+.w-vital_check .vc-glyph svg { width: 100%; height: 100%; }
+.w-vital_check .vc-core .vc-heart { width: 22px; height: 22px; margin-bottom: 4px; fill: #ff4d6a; filter: drop-shadow(0 0 8px rgba(255, 77, 106, 0.9));
+  animation: vc-beat var(--beat) ease-in-out infinite; animation-delay: var(--sync); }
+.w-vital_check .vc-side { min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.w-vital_check .vc-msg { margin: 0; font-size: clamp(15px, 1.15vw, 22px); font-weight: 300; line-height: 1.3; color: var(--text); }
+.w-vital_check .vc-moved .vc-msg { color: #ffb547; }
+.w-vital_check .vc-failed .vc-msg { color: #ff8095; }
+.w-vital_check .vc-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.w-vital_check .vc-steps li { display: grid; grid-template-columns: 20px minmax(0, 1fr); align-items: center; gap: 8px; font-size: 12px; color: var(--text-dim); transition: color 0.4s; }
+.w-vital_check .vc-steps i { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; font-style: normal; font-size: 10px;
+  border: 1px solid rgba(var(--tone), 0.3); color: rgba(var(--tone), 0.8); }
+.w-vital_check .vc-steps i svg { width: 12px; height: 12px; }
+.w-vital_check .vc-steps li.now { color: var(--text); }
+.w-vital_check .vc-steps li.now i { border-color: rgb(var(--tone)); box-shadow: 0 0 10px rgba(var(--tone), 0.6); animation: vc-blink 1.6s ease-in-out infinite; animation-delay: var(--sync); }
+.w-vital_check .vc-steps li.done i { border-color: #3effa8; color: #3effa8; }
+.w-vital_check .vc-vals { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 28px; }
+.w-vital_check .vc-vals li { display: flex; flex-direction: column; gap: 2px; }
+.w-vital_check .vc-vals span { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(var(--tone), 0.8); }
+.w-vital_check .vc-vals div { display: flex; align-items: baseline; gap: 5px; }
+.w-vital_check .vc-vals b { font-size: 28px; font-weight: 200; line-height: 1; font-variant-numeric: tabular-nums; }
+.w-vital_check .vc-vals small { font-size: 11px; color: var(--text-dim); }
+.w-vital_check .vc-vals .vc-v-heart span, .w-vital_check .vc-vals .vc-v-heart b { color: #ff8095; }
+.w-vital_check .vc-note { margin: 0; font-size: 10px; color: var(--text-dim); }
+@keyframes vc-halo { 0% { transform: scale(0.85); opacity: 0.7; } 100% { transform: scale(1.25); opacity: 0; } }
+@keyframes vc-beat { 0%, 100% { transform: scale(1); } 15% { transform: scale(1.22); } 30% { transform: scale(1); } 45% { transform: scale(1.12); } }
+@keyframes vc-blink { 50% { box-shadow: 0 0 2px rgba(var(--tone), 0.2); } }
+@media (max-width: 640px) {
+  .w-vital_check .vc-wrap { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+  .w-vital_check .vc-steps { align-self: center; }
+  .w-vital_check .vc-steps li { text-align: left; }
+  .w-vital_check .vc-vals { justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .w-vital_check .vc-halo, .w-vital_check .vc-core .vc-heart, .w-vital_check .vc-steps li.now i { animation: none !important; }
+  .w-vital_check .vc-arc { transition: none; }
+}

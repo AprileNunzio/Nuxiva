@@ -1,0 +1,5 @@
+.w-weather .wk-alert-hint { margin: 0 0 8px; }
+.w-weather .wk-alert-hint.wt-rain { background: rgba(108, 193, 255, 0.12); }
+.w-weather .wk-alert-hint.wt-rain .wk-svg { color: #6cc1ff; }
+.w-weather .wk-alert-hint.wt-stale { margin: 8px 0 0; background: rgba(255, 209, 102, 0.1); }
+.w-weather .wk-alert-hint.wt-stale .wk-svg { color: var(--amber, #ffd166); }

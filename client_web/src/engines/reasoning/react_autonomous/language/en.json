@@ -1,0 +1,10 @@
+{
+  "dictionary": {
+    "title": "ReAct Autonomous Agent",
+    "description": "Continuous cognitive loop of thought, tool action, and reflective observation.",
+    "opt_max_thought_steps_label": "Max Reflection Steps",
+    "opt_max_thought_steps_desc": "Maximum number of autonomous iterations the agent can perform before concluding.",
+    "opt_autonomous_verification_label": "Autonomous Verification of Results",
+    "opt_autonomous_verification_desc": "Performs self-criticism and formal verification before returning the final result."
+  }
+}

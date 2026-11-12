@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "client_web/src/features/studio_3d",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Studio 3D",
+    "status_loaded": "Loaded",
+    "action_interact": "Interact",
+    "render_fps": "FPS: {{fps}}"
+  }
+}

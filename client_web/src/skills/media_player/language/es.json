@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Reproductor de Audio Espacial y Medios",
+    "description": "Habilidad que gestiona streaming musical, reproducción local y filtros DSP de alta fidelidad.",
+    "opt_spatial_audio_label": "Mejorador de Audio Espacial 3D",
+    "opt_spatial_audio_desc": "Procesa sonido en tiempo real simulando un escenario acústico envolvente de 360 grados."
+  }
+}

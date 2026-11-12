@@ -1,0 +1,99 @@
+{
+  "name": "Google",
+  "description": "Cada persona vincula su propia cuenta de Google: agenda, correo, tareas, contactos, Drive y notas.",
+  "settings": {
+    "NUXIVA_GOOGLE_CLIENT_ID": "ID de cliente de OAuth",
+    "NUXIVA_GOOGLE_CLIENT_SECRET": "Secreto de cliente de OAuth"
+  },
+  "guide": {
+    "title": "Cómo obtener el Client ID y el Client Secret de Google",
+    "steps": [
+      "Abre Google Cloud Console e inicia sesión con la cuenta de Google que administrará Nuxiva.",
+      "Arriba abre el selector de proyectos, elige «Proyecto nuevo», llámalo «Nuxiva», pulsa Crear y comprueba que quede seleccionado.",
+      "Habilita las API de abajo: abre cada enlace, comprueba que arriba esté el proyecto Nuxiva y pulsa «Habilitar». Sin una API habilitada ese servicio responde «API no habilitada».",
+      "Abre Google Auth Platform › Branding: nombre de la app «Nuxiva», tu correo de asistencia y el del desarrollador, y Guardar.",
+      "Abre Audience: tipo de usuario «Externo». En «Usuarios de prueba» añade la dirección de Google de cada persona que vinculará su cuenta (máximo 100).",
+      "Abre Acceso a datos (Data access) › «Añadir o quitar permisos», pega la lista de permisos de abajo en «Añadir permisos manualmente», pulsa Añadir y luego Guardar.",
+      "Abre Clientes › «Crear cliente», tipo de aplicación «App de escritorio», nombre «Nuxiva» y Crear. No hace falta URI de redirección: Nuxiva usa http://127.0.0.1:8889/, que Google acepta solo para las apps de escritorio.",
+      "Copia el Client ID y el Client Secret de la ventana, pégalos abajo y pulsa Guardar.",
+      "Cada persona vincula su cuenta desde el Gestor de Identidades: abre su ficha, Conectores, Google, elige los servicios y autoriza. Si Google muestra «Google no ha verificado esta app», pulsa «Configuración avanzada» y luego «Ir a Nuxiva»: es normal en una app personal. Deja marcadas todas las casillas.",
+      "Al final el navegador abre una página que no carga (127.0.0.1): copia la dirección completa de la barra y pégala en Nuxiva antes de 30 minutos.",
+      "Google Health se autoriza por separado: Google no acepta los permisos de salud junto con los de Gmail, Calendar y los demás servicios. Después de conectar Google, enciende «Google Health» (y «actividad y sueño»): se abre una segunda autorización solo con los permisos de salud.",
+      "Para la salud la persona debe usar la app Google Health en el teléfono con la misma cuenta de Google y haber creado el perfil (o migrado la cuenta de Fitbit); si no, Google no devuelve datos."
+    ],
+    "items_title": "API que hay que habilitar",
+    "items": [
+      {
+        "label": "Google Calendar API",
+        "detail": "agenda, citas y recordatorios",
+        "url": "https://console.cloud.google.com/apis/library/calendar-json.googleapis.com"
+      },
+      {
+        "label": "Gmail API",
+        "detail": "leer y enviar correos",
+        "url": "https://console.cloud.google.com/apis/library/gmail.googleapis.com"
+      },
+      {
+        "label": "Google Tasks API",
+        "detail": "tareas pendientes",
+        "url": "https://console.cloud.google.com/apis/library/tasks.googleapis.com"
+      },
+      {
+        "label": "People API",
+        "detail": "agenda de contactos",
+        "url": "https://console.cloud.google.com/apis/library/people.googleapis.com"
+      },
+      {
+        "label": "Google Drive API",
+        "detail": "lista de archivos",
+        "url": "https://console.cloud.google.com/apis/library/drive.googleapis.com"
+      },
+      {
+        "label": "Google Health API",
+        "detail": "pulso, VFC, oxígeno, presión, glucosa, peso, pasos y sueño",
+        "url": "https://console.cloud.google.com/apis/library/health.googleapis.com"
+      }
+    ],
+    "copy": [
+      {
+        "label": "Permisos OAuth que hay que añadir en «Acceso a datos»",
+        "text": "openid\nemail\nprofile\nhttps://www.googleapis.com/auth/calendar.events\nhttps://www.googleapis.com/auth/calendar.readonly\nhttps://www.googleapis.com/auth/contacts.readonly\nhttps://www.googleapis.com/auth/drive.metadata.readonly\nhttps://www.googleapis.com/auth/gmail.readonly\nhttps://www.googleapis.com/auth/gmail.send\nhttps://www.googleapis.com/auth/googlehealth.activity_and_fitness.readonly\nhttps://www.googleapis.com/auth/googlehealth.health_metrics_and_measurements.readonly\nhttps://www.googleapis.com/auth/googlehealth.sleep.readonly\nhttps://www.googleapis.com/auth/tasks"
+      }
+    ],
+    "links": [
+      {
+        "label": "Google Cloud Console",
+        "url": "https://console.cloud.google.com/"
+      },
+      {
+        "label": "Biblioteca de API",
+        "url": "https://console.cloud.google.com/apis/library"
+      },
+      {
+        "label": "Branding",
+        "url": "https://console.cloud.google.com/auth/branding"
+      },
+      {
+        "label": "Audience y usuarios de prueba",
+        "url": "https://console.cloud.google.com/auth/audience"
+      },
+      {
+        "label": "Acceso a datos (permisos)",
+        "url": "https://console.cloud.google.com/auth/scopes"
+      },
+      {
+        "label": "Clientes OAuth",
+        "url": "https://console.cloud.google.com/auth/clients"
+      },
+      {
+        "label": "Permisos de tu cuenta de Google",
+        "url": "https://myaccount.google.com/permissions"
+      }
+    ],
+    "note": "En modo «Prueba» Google caduca la autorización cada 7 días: para evitarlo, en Audience pulsa «Publicar app». Una app personal no verificada funciona hasta con 100 usuarios mostrando el aviso de app no verificada. El Client Secret es privado: no lo compartas. Google Keep no se vincula con este método: Google solo lo concede a empresas Google Workspace Enterprise mediante una cuenta de servicio con delegación de todo el dominio, así que no añadas el permiso …/auth/keep (Google lo rechaza)."
+  },
+  "help": {
+    "NUXIVA_GOOGLE_CLIENT_ID": "Termina en .apps.googleusercontent.com. En Credenciales, ID de cliente de OAuth.",
+    "NUXIVA_GOOGLE_CLIENT_SECRET": "Cadena privada que empieza por GOCSPX-, junto al ID de cliente."
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "id": "redalert",
+  "name": "Allarme rosso",
+  "icon": "🚨",
+  "category": "casa",
+  "order": 118,
+  "panel": "redalert",
+  "description": "Quando scatta un allarme (fumo, acqua, intrusione…) Nuxiva fa lampeggiare lentamente di rosso tutte le luci di Home Assistant e ripete il messaggio urgente su tutti i Chromecast; finito l'allarme le luci tornano come prima.",
+  "toggle": {
+    "env": "NUXIVA_REDALERT",
+    "default": "1",
+    "apply": []
+  },
+  "capabilities": [
+    "Luci di casa rosse lampeggianti (lente, sicure per chi è sensibile alla luce)",
+    "Luci escluse a scelta (camere da letto, luci di cortesia)",
+    "Messaggio vocale urgente su tutti i Chromecast, con intervallo di ripetizione regolabile",
+    "Ripristino automatico delle luci com'erano",
+    "Si ferma chiudendo il widget dell'allarme o quando l'allarme rientra",
+    "Prova e stop con un pulsante, stato in tempo reale"
+  ],
+  "settings": [
+    {
+      "key": "NUXIVA_REDALERT_LIGHTS",
+      "label": "Fai lampeggiare le luci di rosso",
+      "type": "select",
+      "default": "1",
+      "options": [
+        {
+          "value": "1",
+          "label": "Sì"
+        },
+        {
+          "value": "0",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_REDALERT_CAST",
+      "label": "Avvisa a voce su tutti i Chromecast",
+      "type": "select",
+      "default": "1",
+      "options": [
+        {
+          "value": "1",
+          "label": "Sì"
+        },
+        {
+          "value": "0",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_REDALERT_SECONDS",
+      "label": "Per quanto tempo",
+      "type": "select",
+      "default": "60",
+      "options": [
+        {
+          "value": "30",
+          "label": "30 secondi"
+        },
+        {
+          "value": "60",
+          "label": "1 minuto"
+        },
+        {
+          "value": "120",
+          "label": "2 minuti"
+        },
+        {
+          "value": "300",
+          "label": "5 minuti"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_REDALERT_REPEAT",
+      "label": "Ripeti il messaggio vocale ogni",
+      "type": "select",
+      "default": "25",
+      "options": [
+        {
+          "value": "10",
+          "label": "10 secondi"
+        },
+        {
+          "value": "25",
+          "label": "25 secondi"
+        },
+        {
+          "value": "45",
+          "label": "45 secondi"
+        },
+        {
+          "value": "90",
+          "label": "90 secondi"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_REDALERT_EXCLUDE",
+      "label": "Luci da non far lampeggiare",
+      "type": "text",
+      "default": ""
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "Qv15MoNYxkA7",
+    "url": "https://img.icons8.com/?size=240&id=Qv15MoNYxkA7&format=png"
+  },
+  "surface": "settings"
+}

@@ -1,0 +1,10 @@
+{
+  "dictionary": {
+    "title": "Chromaprint FFT Acoustic Fingerprint",
+    "description": "Music recognition via FFT spectral analysis and high-fidelity local acoustic fingerprinting.",
+    "opt_fft_sensitivity_label": "FFT Spectral Sensitivity",
+    "opt_fft_sensitivity_desc": "Harmonic frequency sampling depth to identify tracks even with reverberation or distortion.",
+    "opt_show_song_overlay_label": "Show Song on Screen",
+    "opt_show_song_overlay_desc": "Displays a floating notification with title and artist as soon as a song is recognized."
+  }
+}

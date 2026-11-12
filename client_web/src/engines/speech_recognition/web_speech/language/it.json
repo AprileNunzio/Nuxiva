@@ -1,0 +1,10 @@
+{
+  "dictionary": {
+    "title": "Riconoscimento Vocale Web Speech",
+    "description": "Motore streaming nativo browser a bassissima latenza per dettatura e comandi rapidi.",
+    "opt_interim_results_label": "Risultati Parziali in Tempo Reale",
+    "opt_interim_results_desc": "Mostra le parole mentre vengono pronunciate prima del completamento della frase.",
+    "opt_continuous_session_label": "Ascolto Vocale Continuo",
+    "opt_continuous_session_desc": "Mantiene il canale microfonico sempre vigile senza interruzioni tra un comando e l'altro."
+  }
+}

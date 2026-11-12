@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Quién responde",
+    "description": "Para cada tarea elige el modelo principal y las reservas: si el primero no responde o supera su límite de gasto, {assistant} pasa solo al siguiente.",
+    "answering": "Responde ahora: {model}",
+    "auto_explain": "En automático el sistema elige el mejor modelo disponible. Elige uno para decidir tú.",
+    "picker_title": "Modelo para: {context}",
+    "options": "Opciones",
+    "scope_label": "Dónde pueden ejecutarse los modelos",
+    "scope_anywhere": "En cualquier lugar",
+    "scope_home_first": "Primero en casa, luego en línea",
+    "scope_home": "Solo en casa",
+    "strategy_label": "Cómo elegir",
+    "strategy_order": "Respetar el orden",
+    "strategy_fastest": "El más rápido",
+    "reset_auto": "Volver a automático",
+    "routing_title": "Conversación y trabajo",
+    "routing_hint": "Cómo repartir las peticiones entre conversación y trabajo.",
+    "routing_auto": "Automático",
+    "routing_auto_hint": "Divide solo si las dos tareas usan modelos distintos.",
+    "routing_1": "Siempre dividido",
+    "routing_1_hint": "Las preguntas breves a la conversación, el resto al trabajo.",
+    "routing_0": "Un solo modelo",
+    "routing_0_hint": "Todo pasa por el modelo de trabajo.",
+    "tester_title": "Prueba",
+    "tester_hint": "Escribe una petición de ejemplo y mira quién respondería, sin enviarla.",
+    "tester_placeholder": "P. ej. «Enciende la luz de la cocina»",
+    "tester_submit": "¿Quién respondería?",
+    "tester_result": "Tarea: {context}"
+  }
+}

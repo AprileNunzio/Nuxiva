@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Cervello",
+    "description": "Quali modelli usa {assistant} per parlare, ragionare e lavorare",
+    "scope_local": "server locale",
+    "scope_paired": "nodo abbinato",
+    "scope_mesh": "non abbinato",
+    "notice_unpaired": "Questo nodo è visibile nella rete ma non è abbinato.",
+    "notice_paired": "I nodi abbinati usano i modelli del server: gestiscili dal server locale. Per usare la potenza di questo nodo, aggiungilo come servizio nella sezione Fornitori."
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "manifest_version": 1,
+  "id": "mcp_gate",
+  "kind": "configure",
+  "order": 250,
+  "icon": "icon.png",
+  "skippable": true,
+  "view": "view.js",
+  "handler": "handler.py"
+}

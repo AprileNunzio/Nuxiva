@@ -1,0 +1,88 @@
+.webos .os-fullscreen-toggle {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.7rem;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  flex-direction: row-reverse;
+  gap: 0;
+  height: 2.1rem;
+  min-width: 2.1rem;
+  padding: 0 0.5rem;
+  border: 1px solid var(--os-glass-border);
+  border-radius: var(--os-radius-full, 9999px);
+  background: var(--os-glass-bg);
+  color: var(--md-sys-color-on-surface);
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  box-shadow: var(--os-shadow-sm);
+  overflow: hidden;
+  transition: gap 0.25s ease, background 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+}
+
+.webos .os-fullscreen-toggle:hover,
+.webos .os-fullscreen-toggle:focus-visible {
+  gap: 0.45rem;
+  background: var(--md-sys-color-surface-container-high);
+  border-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-primary);
+  box-shadow: var(--os-shadow-md);
+}
+
+.webos .os-fullscreen-toggle[data-active="true"] {
+  color: var(--md-sys-color-primary);
+}
+
+.os-fullscreen-glyph {
+  display: grid;
+  place-items: center;
+  width: 1.05rem;
+  height: 1.05rem;
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+
+.os-fullscreen-glyph svg {
+  width: 1.05rem;
+  height: 1.05rem;
+  stroke-width: 2.1;
+}
+
+.os-fullscreen-toggle:hover .os-fullscreen-glyph {
+  transform: scale(1.08);
+}
+
+.os-fullscreen-hint {
+  max-width: 0;
+  opacity: 0;
+  white-space: nowrap;
+  font-size: 0.72rem;
+  font-weight: 550;
+  letter-spacing: 0.01em;
+  transition: max-width 0.3s ease, opacity 0.2s ease;
+}
+
+.os-fullscreen-toggle:hover .os-fullscreen-hint,
+.os-fullscreen-toggle:focus-visible .os-fullscreen-hint {
+  max-width: 12rem;
+  opacity: 1;
+}
+
+@media (max-width: 45rem) {
+  .webos .os-fullscreen-toggle {
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+  .os-fullscreen-hint {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .webos .os-fullscreen-toggle,
+  .os-fullscreen-glyph,
+  .os-fullscreen-hint {
+    transition: none;
+  }
+}

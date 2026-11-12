@@ -1,0 +1,30 @@
+{
+  "id": "sports",
+  "name": "Sport",
+  "icon": "⚽",
+  "category": "intrattenimento",
+  "order": 150,
+  "panel": "sports",
+  "description": "Calcio, Formula 1, hockey, basket, football americano, baseball e ogni sport aggiunto al catalogo, per ogni persona: squadre preferite, risultati in diretta, gol e fine partita annunciati, classifiche e calendario dei Gran Premi, con i widget che compaiono quando servono o quando ti avvicini.",
+  "toggle": {
+    "env": "NUXIVA_SPORTS",
+    "apply": []
+  },
+  "capabilities": [
+    "Squadre preferite per persona o per tutta la casa (Serie A, B, coppe europee, principali campionati, nazionali)",
+    "Controllo continuo in background: inizio, gol, espulsioni e fine partita con widget e annuncio a voce",
+    "Formula 1: calendario delle sessioni, gara in corso, risultati e classifiche piloti e costruttori",
+    "Catalogo di sport e campionati basato su dati: aggiungerne uno non richiede nuovo codice, la squadra o la competizione si riconosce dai nomi reali e il modello capisce cosa si vuole sapere",
+    "Domande a voce: «com'è finito il Napoli?», «classifica Serie A», «quando corre la F1?», «quando giocano i Bruins?»",
+    "Widget richiamati quando ti avvicini allo schermo se non ci sono avvisi più importanti",
+    "Nessuno sport è seguito di default: i preferiti si scelgono per persona; ogni notte (dopo le 3) un aggiornamento automatico salva su disco partite, calendari, classifiche e Formula 1 dei preferiti, così le risposte sono immediate; se il dato non è più valido (una partita è iniziata) si cerca online",
+    "Nessuna chiave richiesta: fonti pubbliche, dati in cache e nessun dato personale inviato"
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "NNiLa5wndFCN",
+    "url": "https://img.icons8.com/?size=240&id=NNiLa5wndFCN&format=png"
+  }
+}

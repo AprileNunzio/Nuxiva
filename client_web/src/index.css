@@ -1,0 +1,63 @@
+@import './shared/theme/os_theme.css';
+@import './shared/theme/os_background.css';
+@import './shared/theme/os_window.css';
+@import './shared/theme/os_cards.css';
+@import './shared/theme/os_components.css';
+@import './shared/theme/os_expressive.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-size: clamp(14px, calc(0.08vw + 13px), 18px);
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  background-color: var(--md-sys-color-background, #060b19);
+  color: var(--md-sys-color-on-background, #f1f5f9);
+  overflow-x: hidden;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  font-family: var(--os-font-family);
+}
+
+button, input, select, textarea {
+  touch-action: manipulation;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--md-sys-color-surface, #0a1226);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--md-sys-color-outline, #2c3e66);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--md-sys-color-primary, #3b82f6);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.2);
+  border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 130, 246, 0.5);
+}

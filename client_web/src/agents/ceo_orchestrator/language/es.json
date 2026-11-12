@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "CEO Orquestador Ejecutivo",
+    "description": "Meta-agente de mando que descompone objetivos complejos, coordina especialistas y valida resultados.",
+    "opt_autonomous_delegation_label": "Delegación Ejecutiva Autónoma",
+    "opt_autonomous_delegation_desc": "Permite al agente CEO asignar subtareas a agentes especializados sin confirmaciones intermedias."
+  }
+}

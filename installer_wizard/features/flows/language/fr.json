@@ -1,0 +1,17 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "features/flows",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Flux Opérationnels",
+    "desc": "Composition visuelle de déclencheurs et d'actions",
+    "error.invalid_json": "JSON non valide",
+    "error.request_too_large": "Requête trop volumineuse",
+    "error.unknown_template": "Modèle de flux inconnu",
+    "error.invalid_node": "Position de nœud non valide",
+    "status.running": "Flux en cours",
+    "status.idle": "Flux en attente"
+  }
+}

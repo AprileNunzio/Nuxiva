@@ -1,0 +1,37 @@
+{
+  "name": "Parlez à Athéna",
+  "description": "Testez la conversation avec l'assistante, avec le modèle qui a répondu et les horaires.",
+  "capabilities": [
+    "Chat textuel",
+    "Montrer quel cerveau a répondu",
+    "Délais de réponse"
+  ],
+  "settings": {
+    "NUXIVA_ADDRESSEE_THRESHOLD": "Dans quelle mesure devez-vous être sûr de lui parler avant de répondre (0,2 timide - 0,95 prudent)",
+    "NUXIVA_ADDRESSEE_ALONE": "Plus de confiance lorsqu'on est seul dans la pièce (0 - 1)"
+  },
+  "reflex": {
+    "temporal_morning": "Bonjour",
+    "temporal_afternoon": "Bon après-midi",
+    "temporal_evening": "Bonsoir",
+    "temporal_general": "Salut",
+    "status_optimal": "Tous les nœuds sont opérationnels et la télémétrie est stable.",
+    "status_focus": "Objectif actuel : {focus}.",
+    "bridge_interest": "À propos de {entity}, les flux informatifs sont synchronisés.",
+    "bridge_tech": "L'environnement pour {entity} est prêt.",
+    "bridge_desire": "Concernant {entity}, la planification est active.",
+    "bridge_open": "Tous les canaux sont prêts. Quelles sont nos priorités aujourd'hui ?",
+    "filler_action_eval": "J'évalue les contraintes",
+    "filler_action_synth": "Je synthétise l'approche",
+    "filler_action_cross": "Je croise les données",
+    "filler_action_proc": "Je traite la requête",
+    "domain_arch": "sur l'architecture logique",
+    "domain_code": "sur l'implémentation du code",
+    "domain_system": "sur les paramètres système",
+    "domain_general": "sur le graphe cognitif",
+    "connector_now": "en temps réel.",
+    "connector_struct": "tout en structurant la solution.",
+    "connector_stream": "sans interruption.",
+    "connector_instant": "immédiatement."
+  }
+}

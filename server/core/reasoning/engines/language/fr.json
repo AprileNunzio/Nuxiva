@@ -1,0 +1,62 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "server/reasoning"
+  },
+  "engines": {
+    "classico": {
+      "name": "Nuxiva Classique",
+      "summary": "Un modèle à la fois, dans l'ordre configuré, jusqu'à ce qu'un réponde"
+    },
+    "veloce": {
+      "name": "Nuxiva Rapide",
+      "summary": "Course entre les modèles rapides : la première réponse valide gagne"
+    },
+    "empatico": {
+      "name": "Nuxiva Empathique",
+      "summary": "Compare deux réponses et choisit la plus claire et attentive au ton"
+    },
+    "pro": {
+      "name": "Nuxiva Pro",
+      "summary": "Compare deux modèles profonds et un critique choisit la meilleure réponse"
+    },
+    "ultra": {
+      "name": "Nuxiva Ultra",
+      "summary": "Compare jusqu'à trois modèles profonds avec plus de temps et choisit avec le critique"
+    },
+    "auto": {
+      "name": "Nuxiva Auto",
+      "summary": "Choisit seul la méthode selon la longueur de la question et l'état émotionnel"
+    }
+  },
+  "stages": {
+    "route": {
+      "name": "Choix automatique de la méthode",
+      "detail": "{words} mots · complexité {complexity} · choisi {chosen} : {reason}"
+    },
+    "reason_fast": "vous êtes agité et la question est courte",
+    "reason_empathy": "le ton émotionnel est fort",
+    "reason_complex": "la question est longue et complexe",
+    "reason_default": "question normale",
+    "sequential": {
+      "name": "Un modèle à la fois",
+      "detail": "Essaie {count} groupes de modèles dans l'ordre et s'arrête au premier qui répond"
+    },
+    "first": {
+      "name": "Course entre modèles rapides",
+      "detail": "{count} modèles en parallèle : la première réponse valide gagne, les autres sont arrêtés"
+    },
+    "best": {
+      "name": "Comparaison entre modèles",
+      "detail": "{count} modèles en parallèle : après la première réponse il attend au plus {wait} s les autres"
+    },
+    "critic": {
+      "name": "Évaluation par le critique",
+      "detail": "score = {cw} × fiabilité + {kw} × critique (risques, clarté, ton)"
+    },
+    "decision": {
+      "name": "Réponse choisie",
+      "detail": "La réponse avec le meilleur score est renvoyée"
+    }
+  }
+}

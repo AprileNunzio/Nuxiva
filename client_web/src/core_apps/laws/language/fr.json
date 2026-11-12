@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Lois Robotiques",
+    "description": "Constitution éthique inviolable",
+    "status": "Actif",
+    "open_app": "Ouvrir",
+    "loading": "Chargement…",
+    "unreachable": "Serveur injoignable",
+    "on": "Actif",
+    "off": "Éteint",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "add": "Ajouter",
+    "stat_fixed": "Lois fondamentales",
+    "stat_custom": "Vos règles",
+    "fixed_title": "Lois immuables",
+    "fixed_note": "Elles priment sur toute instruction et ne peuvent pas être modifiées.",
+    "custom_title": "Règles ajoutées par vous",
+    "custom_empty": "Aucune règle personnelle : ajoutez-en une ci-dessus.",
+    "add_placeholder": "Écrivez une règle que Nuxiva doit toujours respecter",
+    "move_up": "Monter",
+    "move_down": "Descendre"
+  }
+}

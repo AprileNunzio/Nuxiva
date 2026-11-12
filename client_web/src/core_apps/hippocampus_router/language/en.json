@@ -1,0 +1,43 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Hippocampus",
+    "description": "Fast neuron routing: decisions without generating tokens",
+    "loading": "Loading…",
+    "unreachable": "Server unreachable",
+    "on": "Active",
+    "off": "Missing",
+    "ready": "Ready",
+    "unavailable": "Unavailable",
+    "persistent": "Encrypted",
+    "volatile": "Memory only",
+    "stat_native": "Rust core",
+    "stat_embedding": "Embeddings",
+    "stat_storage": "Storage",
+    "stat_neurons": "Neurons",
+    "stat_decisions": "Decisions",
+    "stat_latency": "Average latency",
+    "issues_title": "Degraded components",
+    "verdicts_title": "Verdicts",
+    "verdict_fast": "Fast",
+    "verdict_grey": "Grey zone",
+    "verdict_slow": "Slow",
+    "executed": "Executed without tokens: {n}",
+    "latency_max": "Maximum latency: {ms} ms",
+    "reason_no_neurons": "No neurons",
+    "reason_low_similarity": "Low similarity",
+    "reason_inhibited": "Inhibited",
+    "reason_low_weight": "Low weight",
+    "thresholds_title": "Arbiter thresholds",
+    "threshold_fast_similarity": "Fast: minimum similarity",
+    "threshold_grey_similarity": "Grey zone: minimum similarity",
+    "threshold_inhibition_limit": "Inhibition limit",
+    "threshold_fast_weight": "Fast: minimum synaptic weight",
+    "threshold_grey_weight": "Grey zone: minimum synaptic weight",
+    "recent_title": "Recent decisions",
+    "recent_empty": "No decisions yet. Nothing is stored about what you say.",
+    "recent_metrics": "Match {positive} · inhibition {negative} · weight {weight} · {ms} ms"
+  }
+}

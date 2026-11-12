@@ -1,0 +1,28 @@
+{
+  "id": "brain",
+  "name": "Cervello",
+  "icon": "🧠",
+  "category": "intelligenza",
+  "kind": "app",
+  "order": 140,
+  "panel": "brain",
+  "description": "Centro di comando LLM: gestione modelli interni (Ollama, llama.cpp, vLLM) ed esterni (OpenAI, Claude, Gemini, DeepSeek, Groq), assegnazione a ciascun Agente e Dispositivo satellite, e playground di test interattivo.",
+  "toggle": {
+    "env": "NUXIVA_BRAIN_APP",
+    "apply": []
+  },
+  "capabilities": [
+    "Gestione completa modelli locali su GPU/CPU e provider cloud esterni",
+    "Assegnazione specifica dell'LLM per ogni singolo Agente della squadra",
+    "Assegnazione dell'LLM predefinito per ogni Dispositivo satellite e nodo",
+    "Playground interattivo di benchmark con misurazione latenza e token/s",
+    "Integrazione con API REST e tool MCP per l'automazione dei flussi"
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "nQuaNO36nu68",
+    "url": "https://img.icons8.com/?size=240&id=nQuaNO36nu68&format=png"
+  }
+}

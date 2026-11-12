@@ -1,0 +1,38 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Giochi",
+    "description": "Centro di controllo e gestione dei giochi Nuxiva",
+    "search_placeholder": "Cerca giochi o comandi…",
+    "rescan_games": "Riscansiona Giochi",
+    "filter_all": "Tutti i giochi",
+    "filter_active": "Solo abilitati",
+    "filter_disabled": "Disabilitati",
+    "empty_title": "Nessun gioco rilevato",
+    "empty_desc": "La directory giochi/ è vuota o nessun gioco soddisfa i criteri di ricerca.",
+    "status_active": "Abilitato",
+    "status_disabled": "Disabilitato",
+    "toggle_status": "Abilita/Disabilita",
+    "launch_game": "Gioca",
+    "inspect_commands": "Comandi & Funzionalità",
+    "commands_count": "{count} comandi rilevati",
+    "capabilities_count": "{count} capacità attive",
+    "modal_title": "Dettagli Gioco & Comandi",
+    "modal_close": "Chiudi",
+    "tab_commands": "Comandi Rilevati",
+    "tab_capabilities": "Funzionalità & Moduli",
+    "cmd_triggers": "Triggers Vocali:",
+    "cmd_params": "Parametri:",
+    "cmd_no_params": "Nessun parametro richiesto",
+    "cap_category": "Categoria:",
+    "tech_stack": "Stack Tecnologico:",
+    "entrypoint": "Entrypoint:",
+    "path": "Percorso:",
+    "toast_rescan_success": "Scansione giochi completata con successo",
+    "toast_toggle_success": "Stato del gioco aggiornato",
+    "toast_toggle_error": "Impossibile aggiornare lo stato del gioco",
+    "unsupported_launch": "Gioco disabilitato. Abilitalo per giocare."
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Smart Home IoT Controller",
+    "description": "Skill enabling interaction with Matter, Zigbee, and MQTT devices (lighting, thermostats, smart plugs).",
+    "opt_confirm_critical_label": "Confirm Critical Actions",
+    "opt_confirm_critical_desc": "Requires vocal confirmation before triggering smart locks, garage doors, or alarm systems."
+  }
+}

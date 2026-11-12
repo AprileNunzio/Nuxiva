@@ -1,0 +1,31 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/mood_aura",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Emociones",
+    "face_live": "Rostro",
+    "intensity": "Intensidad {{n}} de 5",
+    "face": "Señal del rostro: {{area}}",
+    "week": "Últimos 7 días",
+    "m_felice": "Feliz",
+    "m_sereno": "Sereno",
+    "m_entusiasta": "Entusiasta",
+    "m_innamorato": "Enamorado",
+    "m_grato": "Agradecido",
+    "m_neutro": "Neutral",
+    "m_stanco": "Cansado",
+    "m_annoiato": "Aburrido",
+    "m_stressato": "Estresado",
+    "m_preoccupato": "Preocupado",
+    "m_triste": "Triste",
+    "m_arrabbiato": "Enfadado",
+    "m_malato": "Enfermo",
+    "a_tension": "Tensión",
+    "a_exhaustion": "Agotamiento",
+    "a_receptive": "Receptivo",
+    "a_relief": "Alivio"
+  }
+}

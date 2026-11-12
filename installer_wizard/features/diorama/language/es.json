@@ -1,0 +1,18 @@
+{
+  "name": "Dioramas 3D",
+  "description": "Un agente creativo construye en directo dioramas fotorrealistas a partir de una frase: terreno, edificios, árboles, trenes y personas toman forma uno tras otro, con óptica tilt-shift, macro o 50 mm y luz natural.",
+  "capabilities": [
+    "Todo por voz: «crea un diorama de una estación japonesa con cerezos» y se abre solo a pantalla completa",
+    "Espontáneo: si se habla de un tren, un edificio o un lugar, Nuxiva puede mostrar solo un pequeño diorama animado (desactivable)",
+    "Construcción en directo: los elementos aparecen por capas mientras el agente trabaja",
+    "Catálogo de 27 elementos: ferrocarril, arquitectura, vegetación, mobiliario, personas y volúmenes libres",
+    "Aspecto fotográfico: tilt-shift, macro y 50 mm, hora dorada, cielo nublado, hora azul, mediodía, noche",
+    "Ediciones con palabras: «añade un cerezo a la izquierda», «haz un atardecer», «quita el banco»",
+    "También funciona sin cerebro disponible con composiciones de reserva",
+    "En reposo estudia las conversaciones sobre temas visuales, diseña solo nuevos elementos y los añade al catálogo (eliminables)"
+  ],
+  "settings": {
+    "NUXIVA_DIORAMA_AMBIENT": "Dioramas espontáneos durante la conversación",
+    "NUXIVA_DIORAMA_LEARN": "Nuevos elementos del catálogo aprendidos en reposo"
+  }
+}

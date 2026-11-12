@@ -1,0 +1,14 @@
+{
+  "id": "ssh_sessions",
+  "name": "Sessioni SSH",
+  "icon": "🔌",
+  "priority": 90,
+  "size": "m",
+  "intents": [
+    "ssh_sessions"
+  ],
+  "description": "Accessi SSH attivi in questo momento.",
+  "ttl": 60,
+  "tone": "red",
+  "essential": true
+}

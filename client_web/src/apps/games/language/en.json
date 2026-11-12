@@ -1,0 +1,38 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Games",
+    "description": "Nuxiva Games Management & Control Center",
+    "search_placeholder": "Search games or commands…",
+    "rescan_games": "Rescan Games",
+    "filter_all": "All Games",
+    "filter_active": "Enabled Only",
+    "filter_disabled": "Disabled",
+    "empty_title": "No games discovered",
+    "empty_desc": "The giochi/ directory is empty or no games match the search filters.",
+    "status_active": "Enabled",
+    "status_disabled": "Disabled",
+    "toggle_status": "Enable/Disable",
+    "launch_game": "Play",
+    "inspect_commands": "Commands & Features",
+    "commands_count": "{count} commands discovered",
+    "capabilities_count": "{count} active capabilities",
+    "modal_title": "Game Details & Commands",
+    "modal_close": "Close",
+    "tab_commands": "Discovered Commands",
+    "tab_capabilities": "Capabilities & Modules",
+    "cmd_triggers": "Voice Triggers:",
+    "cmd_params": "Parameters:",
+    "cmd_no_params": "No parameters required",
+    "cap_category": "Category:",
+    "tech_stack": "Tech Stack:",
+    "entrypoint": "Entrypoint:",
+    "path": "Path:",
+    "toast_rescan_success": "Games scan completed successfully",
+    "toast_toggle_success": "Game status updated",
+    "toast_toggle_error": "Failed to update game status",
+    "unsupported_launch": "Game is disabled. Enable it to play."
+  }
+}

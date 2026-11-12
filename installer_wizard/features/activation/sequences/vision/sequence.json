@@ -1,0 +1,28 @@
+{
+  "manifest_version": 1,
+  "id": "vision",
+  "kind": "optional",
+  "order": 130,
+  "steps": ["vision"],
+  "icon": "icon.png",
+  "when": ["hardware:camera"],
+  "choices": [
+    {
+      "id": "yes",
+      "installs": true,
+      "icon": "choice_yes.png",
+      "recommended": true,
+      "env": {
+        "NUXIVA_VISION": "1"
+      }
+    },
+    {
+      "id": "no",
+      "installs": false,
+      "icon": "choice_no.png",
+      "env": {
+        "NUXIVA_VISION": "0"
+      }
+    }
+  ]
+}

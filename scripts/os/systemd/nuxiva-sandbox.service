@@ -1,0 +1,27 @@
+[Unit]
+Description=Nuxiva Sandbox Broker (esecuzione isolata del codice generato)
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/Nuxiva
+Environment=PYTHONPATH=/opt/Nuxiva
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/python3 -m sandbox_broker.main
+RuntimeDirectory=nuxiva/sandbox
+RuntimeDirectoryMode=0750
+RuntimeDirectoryPreserve=yes
+StateDirectory=nuxiva/sandbox
+Restart=always
+RestartSec=3
+NoNewPrivileges=yes
+ProtectHome=yes
+PrivateTmp=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictRealtime=yes
+LockPersonality=yes
+
+[Install]
+WantedBy=multi-user.target

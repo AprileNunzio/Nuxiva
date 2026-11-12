@@ -1,0 +1,38 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/vital_check",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title_greet": "Contrôle des paramètres",
+    "title_device": "Connexion à l'appareil",
+    "title_camera": "Mesure par la webcam",
+    "title_done": "Contrôle terminé",
+    "title_failed": "Mesure impossible",
+    "greet": "Bonjour {{name}}, je jette un œil : un instant.",
+    "device": "Je cherche votre appareil et j'essaie de m'y connecter.",
+    "device_named": "J'essaie de me connecter à {{name}}.",
+    "camera_hold": "Aucun bracelet connecté : restez immobile et regardez la webcam pendant {{n}} secondes.",
+    "camera_wait": "Encore un instant : je lis le pouls.",
+    "camera_breath": "Pouls trouvé. Respirez normalement : je mesure la respiration.",
+    "moved": "Vous avez bougé : je recommence. Restez immobile, face à la webcam.",
+    "done_device": "Terminé : valeurs lues sur votre appareil.",
+    "done_camera": "Terminé : valeurs estimées par la webcam.",
+    "failed": "Je n'arrive pas à lire vos paramètres. Essayez avec plus de lumière sur le visage et sans bouger.",
+    "d_search": "Je cherche l'appareil",
+    "d_connect": "Je me connecte",
+    "d_read": "Je lis les valeurs",
+    "c_still": "Restez immobile",
+    "c_look": "Regardez la webcam",
+    "c_breathe": "Respirez normalement",
+    "m_heart": "Pouls",
+    "m_breath": "Respiration",
+    "per_min": "/min",
+    "seconds": "secondes",
+    "measuring": "mesure",
+    "src_device": "Depuis l'appareil",
+    "src_camera": "Depuis la webcam",
+    "not_medical": "Estimation informative, non médicale"
+  }
+}

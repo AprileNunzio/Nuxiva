@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "locale": "fr"
+  },
+  "dictionary": {
+    "title": "Morpion",
+    "turn_x": "Tour Joueur X",
+    "turn_o": "Tour Joueur O",
+    "winner": "{player} a gagné !",
+    "tie": "Partie terminée par un match nul !",
+    "restart": "Recommencer la partie",
+    "mode_pvp": "Deux Joueurs",
+    "mode_ai": "Défier le Système",
+    "score_x": "Joueur X",
+    "score_o": "Joueur O",
+    "score_tie": "Nuls",
+    "voice": "Voix",
+    "listening": "Écoute...",
+    "voice_mic_tooltip": "Jouez en prononçant les coordonnées (ex. au centre, en haut à gauche)",
+    "difficulty": "Difficulté",
+    "diff_easy": "Facile",
+    "diff_medium": "Moyen",
+    "diff_hard": "Imbattable",
+    "winner_speech": "Victoire pour {player} !",
+    "tie_speech": "La partie s'est terminée par un match nul !",
+    "ai_moved_speech": "Coup joué sur la case {pos}",
+    "save": "Enregistrer",
+    "load": "Reprendre",
+    "save_game": "Enregistrer la partie",
+    "load_game": "Charger une partie",
+    "game_saved": "Partie enregistrée avec succès",
+    "game_resumed": "Partie reprise",
+    "saved_games_title": "Parties Enregistrées",
+    "no_saved_games": "Aucune partie enregistrée"
+  }
+}

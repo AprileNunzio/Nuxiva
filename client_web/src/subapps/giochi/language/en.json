@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Games",
+    "subtitle": "Nuxiva games directory and hub",
+    "play": "Play Now",
+    "available": "Available sub-applications: {count}",
+    "empty": "No games found in directory."
+  }
+}

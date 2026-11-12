@@ -1,0 +1,11 @@
+{
+  "name": "Développement logiciel",
+  "description": "Nuxiva programme vraiment : il crée des projets (sites, applications Python, services API, applications Node et React), écrit et lit des fichiers dans un dossier confiné, exécute tests et vérifications en isolation et publie les sites sur le réseau local.",
+  "capabilities": [
+    "Projets de départ fonctionnels : site statique, Python, FastAPI, Node, React avec Vite",
+    "Fichiers confinés au projet, sans chemins externes ni liens symboliques",
+    "Tests et vérifications sans réseau, avec limites de temps, mémoire et processus, après confirmation seulement",
+    "Résultats réels des tests, jamais annoncés sans exécution",
+    "Sites statiques publiés sur le réseau local"
+  ]
+}

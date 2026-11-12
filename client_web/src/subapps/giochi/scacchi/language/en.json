@@ -1,0 +1,16 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Chess",
+    "turn_white": "White's Turn",
+    "turn_black": "Black's Turn",
+    "restart": "Restart Game",
+    "undo": "Undo Move",
+    "captured_white": "Captured by White",
+    "captured_black": "Captured by Black",
+    "check": "Check!",
+    "moves": "Moves Played: {count}"
+  }
+}

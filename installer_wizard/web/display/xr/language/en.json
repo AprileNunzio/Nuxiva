@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "web/display/xr",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "page_title": "{{assistant}} · Headset",
+    "status_connecting": "Connecting…",
+    "enter_vr": "Enter virtual reality",
+    "enter_ar": "Enter mixed reality",
+    "panels_label": "Widgets visible in the headset",
+    "status_code_refused": "Pairing code expired or already used: create a new one from the panel",
+    "status_pair_failed": "Pairing failed",
+    "status_unpaired": "Headset not paired: scan the code from the admin panel",
+    "status_nucleus_only": "No authorized person recognised in this room: showing only the nucleus",
+    "status_ready": "Headset ready",
+    "status_offline": "Connection to the supervisor lost, retrying",
+    "status_xr_failed": "The headset did not start the immersive session"
+  }
+}

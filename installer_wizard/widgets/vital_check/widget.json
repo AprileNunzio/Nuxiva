@@ -1,0 +1,24 @@
+{
+  "id": "vital_check",
+  "name": "Controllo dei parametri",
+  "icon": "🩺",
+  "priority": 85,
+  "size": "m",
+  "tone": "cyan",
+  "personal": true,
+  "bind": "person_checkup",
+  "screen_role": "person",
+  "intents": [
+    "controllo",
+    "parametri",
+    "battito",
+    "checkup"
+  ],
+  "description": "Quando una persona si avvicina allo schermo controlla se ha un bracciale o un telefono collegato e prova a leggerlo; se non c'è, la guida in silenzio, passo passo, nella misura di battito e respiro con la webcam.",
+  "refresh": 1,
+  "cost": {
+    "gpu": 1,
+    "cpu": 1
+  },
+  "chrome": false
+}

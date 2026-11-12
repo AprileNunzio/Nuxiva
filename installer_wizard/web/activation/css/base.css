@@ -1,0 +1,77 @@
+:root {
+  --bg-deep: #070b14;
+  --bg-window: rgba(13, 20, 36, 0.78);
+  --bg-window-hover: rgba(18, 28, 50, 0.88);
+  --bg-card: rgba(15, 23, 42, 0.65);
+  --bg-card-selected: rgba(14, 165, 233, 0.16);
+  --border-glass: rgba(56, 189, 248, 0.22);
+  --border-active: #0ea5e9;
+  --cyan-primary: #38bdf8;
+  --cyan-glow: #00f0ff;
+  --emerald-success: #10b981;
+  --amber-warning: #f59e0b;
+  --rose-danger: #f43f5e;
+  --text-main: #f8fafc;
+  --text-dim: #94a3b8;
+  --text-muted: #64748b;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+  --radius-window: 18px;
+  --radius-card: 10px;
+  --radius-btn: 8px;
+  --shadow-window: 0 24px 64px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(56, 189, 248, 0.2);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+html, body {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: var(--bg-deep);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  user-select: none;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.ambient-backdrop {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    radial-gradient(circle at 50% 30%, rgba(14, 165, 233, 0.14), transparent 60%),
+    radial-gradient(circle at 10% 90%, rgba(6, 182, 212, 0.08), transparent 40%),
+    radial-gradient(circle at 90% 90%, rgba(16, 185, 129, 0.05), transparent 40%),
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+}
+
+.os-desktop {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  padding: 24px 16px;
+  gap: 18px;
+}

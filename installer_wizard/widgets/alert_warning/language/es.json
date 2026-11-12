@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/alert_warning",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Aviso",
+    "chip": "Atención",
+    "fallback_title": "Atención"
+  }
+}

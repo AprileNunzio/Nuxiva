@@ -1,0 +1,9 @@
+{
+  "manifest_version": 1,
+  "id": "sandbox",
+  "kind": "mandatory",
+  "order": 60,
+  "steps": ["sandbox", "gvisor"],
+  "icon": "icon.png",
+  "critical": false
+}

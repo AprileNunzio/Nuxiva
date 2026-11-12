@@ -1,0 +1,26 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "session": "Sessione personale",
+    "close": "Chiudi",
+    "role": "Profilo di accesso",
+    "devices": "Dispositivi assegnati",
+    "all_devices": "Tutti i dispositivi",
+    "device_count": "{count} dispositivi",
+    "language": "Lingua della sessione",
+    "permissions": "Autorizzazioni effettive",
+    "all_permissions": "Tutte le autorizzazioni",
+    "settings": "Pannello di controllo",
+    "sign_out": "Disconnetti",
+    "signing_out": "Disconnessione…",
+    "loading": "Verifica in corso…",
+    "access_failed": "Permessi non verificabili",
+    "unavailable": "Non disponibile",
+    "role_administrator": "Amministratore",
+    "role_operator": "Operatore",
+    "role_auditor": "Revisore",
+    "role_viewer": "Osservatore"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "dictionary": {
+    "title": "Impronta Acustica Chromaprint FFT",
+    "description": "Riconoscimento musicale tramite analisi spettrale FFT e fingerprinting acustico locale ad alta fedeltà.",
+    "opt_fft_sensitivity_label": "Sensibilità Spettrale FFT",
+    "opt_fft_sensitivity_desc": "Profondità di campionamento delle frequenze armoniche per identificare brani con eco o distorsione.",
+    "opt_show_song_overlay_label": "Mostra Canzone a Schermo",
+    "opt_show_song_overlay_desc": "Visualizza una notifica fluttuante ed elegante con titolo e artista appena un brano viene riconosciuto."
+  }
+}

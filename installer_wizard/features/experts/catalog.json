@@ -1,0 +1,2707 @@
+[
+  {
+    "id": "teacher-math",
+    "group": "teacher",
+    "icon": "📐",
+    "color": "#4f8cff",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "matematic",
+      "equazion",
+      "algebra",
+      "geometri",
+      "trigonometri",
+      "derivat",
+      "integral",
+      "frazion",
+      "polinom",
+      "teorema",
+      "calcolo",
+      "math",
+      "equation",
+      "calculus",
+      "derivative",
+      "fraction",
+      "percentual",
+      "problema di matem",
+      "radice",
+      "logaritm",
+      "probabilit"
+    ]
+  },
+  {
+    "id": "teacher-physics",
+    "group": "teacher",
+    "icon": "⚛️",
+    "color": "#29e0ff",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "fisica",
+      "cinematic",
+      "dinamica",
+      "termodinamic",
+      "elettromagnet",
+      "ottica",
+      "meccanica quant",
+      "relativit",
+      "newton",
+      "energia cinetic",
+      "physics",
+      "velocit",
+      "accelerazion"
+    ]
+  },
+  {
+    "id": "teacher-chemistry",
+    "group": "teacher",
+    "icon": "🧪",
+    "color": "#3dffa8",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "chimic",
+      "molecol",
+      "atomo",
+      "reazion",
+      "tavola periodic",
+      "stechiometri",
+      "acid",
+      "legame chimic",
+      "ossidoriduz",
+      "chemistry",
+      "composto",
+      "elemento chimic"
+    ]
+  },
+  {
+    "id": "teacher-biology",
+    "group": "teacher",
+    "icon": "🧬",
+    "color": "#7ddc5a",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "biologi",
+      "cellula",
+      "dna",
+      "genetic",
+      "evoluzion",
+      "fotosintesi",
+      "ecosistem",
+      "anatomia",
+      "organismo",
+      "biology",
+      "mitosi",
+      "proteine",
+      "specie"
+    ]
+  },
+  {
+    "id": "teacher-italian",
+    "group": "teacher",
+    "icon": "📖",
+    "color": "#ff9f43",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "letteratur",
+      "grammatic",
+      "analisi del testo",
+      "analisi logic",
+      "poesia",
+      "dante",
+      "manzoni",
+      "leopardi",
+      "riassunto",
+      "tema di italiano",
+      "italiano",
+      "sintassi",
+      "romanzo",
+      "novella",
+      "figure retoric"
+    ]
+  },
+  {
+    "id": "teacher-history",
+    "group": "teacher",
+    "icon": "🏛️",
+    "color": "#c8a15a",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "storia",
+      "guerra mondial",
+      "impero",
+      "rivoluzion",
+      "medioevo",
+      "rinascimento",
+      "risorgimento",
+      "antica roma",
+      "egizi",
+      "history",
+      "fascismo",
+      "napoleon",
+      "secolo"
+    ]
+  },
+  {
+    "id": "teacher-geography",
+    "group": "teacher",
+    "icon": "🌍",
+    "color": "#2fb5a0",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "geografi",
+      "capitale di",
+      "continent",
+      "fiume",
+      "montagn",
+      "clima",
+      "popolazione",
+      "geography",
+      "mappa",
+      "oceano",
+      "stati del mondo",
+      "cartografi"
+    ]
+  },
+  {
+    "id": "teacher-english",
+    "group": "teacher",
+    "icon": "🇬🇧",
+    "color": "#5b7cff",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "inglese",
+      "english",
+      "grammar",
+      "past simple",
+      "present perfect",
+      "phrasal",
+      "pronuncia inglese",
+      "ielts",
+      "toefl",
+      "how do you say",
+      "vocabolario inglese",
+      "verbi irregolari"
+    ]
+  },
+  {
+    "id": "teacher-languages",
+    "group": "teacher",
+    "icon": "🗣️",
+    "color": "#e056a0",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "spagnolo",
+      "francese",
+      "tedesco",
+      "portoghese",
+      "russo",
+      "giapponese",
+      "cinese",
+      "arabo",
+      "spanish",
+      "french",
+      "german",
+      "coniugazione",
+      "imparare una lingua",
+      "lingua straniera"
+    ]
+  },
+  {
+    "id": "teacher-programming",
+    "group": "teacher",
+    "icon": "💻",
+    "color": "#8b5cf6",
+    "tools": [
+      "now",
+      "web_research",
+      "dev_new",
+      "dev_plan",
+      "dev_build",
+      "dev_status",
+      "dev_tree",
+      "dev_read",
+      "dev_write",
+      "dev_run"
+    ],
+    "keywords": [
+      "programmazion",
+      "imparare a programmare",
+      "algoritm",
+      "strutture dati",
+      "python",
+      "javascript",
+      "java ",
+      "c++",
+      "linguaggio di programmazione",
+      "ricorsion",
+      "orientata agli oggetti",
+      "coding",
+      "esercizio di codice",
+      "complessit"
+    ]
+  },
+  {
+    "id": "teacher-philosophy",
+    "group": "teacher",
+    "icon": "🦉",
+    "color": "#9aa5b1",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "filosofi",
+      "platone",
+      "aristotele",
+      "kant",
+      "nietzsche",
+      "etica",
+      "metafisica",
+      "epistemolog",
+      "socrate",
+      "philosophy",
+      "esistenzial",
+      "illuminismo"
+    ]
+  },
+  {
+    "id": "teacher-music",
+    "group": "teacher",
+    "icon": "🎼",
+    "color": "#f06292",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "musica",
+      "teoria musicale",
+      "solfeggio",
+      "accord",
+      "scala maggiore",
+      "pianoforte",
+      "chitarra",
+      "armonia",
+      "spartito",
+      "composizione music",
+      "tonalit",
+      "ritmo",
+      "music theory"
+    ]
+  },
+  {
+    "id": "teacher-art",
+    "group": "teacher",
+    "icon": "🎨",
+    "color": "#ff7a59",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "storia dell'arte",
+      "pittur",
+      "scultur",
+      "rinascimento artistic",
+      "impressionis",
+      "michelangelo",
+      "leonardo",
+      "caravaggio",
+      "barocco",
+      "museo",
+      "art history",
+      "avanguardi",
+      "architettura storica"
+    ]
+  },
+  {
+    "id": "teacher-economics",
+    "group": "teacher",
+    "icon": "📊",
+    "color": "#f5b942",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "economia",
+      "microeconomia",
+      "macroeconomia",
+      "inflazione",
+      "pil ",
+      "domanda e offerta",
+      "bilancio aziendale",
+      "economics",
+      "politica monetaria",
+      "ragioneria",
+      "tassi di interesse"
+    ]
+  },
+  {
+    "id": "teacher-astronomy",
+    "group": "teacher",
+    "icon": "🔭",
+    "color": "#6c63ff",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "astronomi",
+      "pianeta",
+      "stelle",
+      "galassi",
+      "buco nero",
+      "sistema solare",
+      "telescopio",
+      "cosmolog",
+      "astrophysics",
+      "costellazion",
+      "eclissi",
+      "big bang"
+    ]
+  },
+  {
+    "id": "lawyer",
+    "group": "professional",
+    "icon": "⚖️",
+    "color": "#8d6e63",
+    "tools": [
+      "now",
+      "http_get",
+      "web_research"
+    ],
+    "keywords": [
+      "avvocato",
+      "legale",
+      "contratto",
+      "causa",
+      "tribunale",
+      "diritto",
+      "sentenza",
+      "denuncia",
+      "risarcimento",
+      "multa",
+      "ricorso",
+      "eredit",
+      "locazione",
+      "affitto",
+      "lawyer",
+      "legal ",
+      "sfratto",
+      "licenziamento",
+      "privacy gdpr"
+    ]
+  },
+  {
+    "id": "accountant",
+    "group": "professional",
+    "icon": "🧾",
+    "color": "#6d8b74",
+    "tools": [
+      "now",
+      "http_get",
+      "web_research"
+    ],
+    "keywords": [
+      "commercialista",
+      "fiscal",
+      "tasse",
+      "partita iva",
+      "dichiarazione dei redditi",
+      "730",
+      "iva ",
+      "irpef",
+      "fattura",
+      "contribut",
+      "regime forfettario",
+      "detrazion",
+      "tax ",
+      "imu",
+      "f24"
+    ]
+  },
+  {
+    "id": "financial",
+    "group": "professional",
+    "icon": "💶",
+    "color": "#2e9e6b",
+    "tools": [
+      "now",
+      "http_get",
+      "web_research"
+    ],
+    "keywords": [
+      "investiment",
+      "risparmio",
+      "etf",
+      "obbligazion",
+      "azioni in borsa",
+      "portafoglio",
+      "pensione",
+      "mutuo",
+      "prestito",
+      "interessi composti",
+      "consulente finanziario",
+      "finanza personale",
+      "budget familiare",
+      "fondo di emergenza",
+      "financial advisor"
+    ]
+  },
+  {
+    "id": "doctor",
+    "group": "professional",
+    "icon": "🩺",
+    "color": "#e5484d",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "medico",
+      "sintomi",
+      "febbre",
+      "dolore",
+      "farmaco",
+      "medicina",
+      "malattia",
+      "pressione arteriosa",
+      "visita",
+      "terapia",
+      "analisi del sangue",
+      "infezione",
+      "mal di",
+      "symptom",
+      "doctor",
+      "allergia"
+    ]
+  },
+  {
+    "id": "nutritionist",
+    "group": "professional",
+    "icon": "🥗",
+    "color": "#8bc34a",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "nutrizion",
+      "dieta",
+      "calorie",
+      "proteine",
+      "carboidrat",
+      "vitamin",
+      "alimentazione",
+      "perdere peso",
+      "dimagrire",
+      "integrator",
+      "macronutrient",
+      "nutrition",
+      "intolleranz",
+      "menu settimanale"
+    ]
+  },
+  {
+    "id": "trainer",
+    "group": "professional",
+    "icon": "🏋️",
+    "color": "#ff6b35",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "allenamento",
+      "palestra",
+      "esercizi",
+      "massa muscolare",
+      "cardio",
+      "scheda di allenamento",
+      "stretching",
+      "personal trainer",
+      "workout",
+      "corsa",
+      "ipertrofia",
+      "mobilit",
+      "squat",
+      "addominali"
+    ]
+  },
+  {
+    "id": "psychologist",
+    "group": "professional",
+    "icon": "🧠",
+    "color": "#a78bfa",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "psicolog",
+      "ansia",
+      "stress",
+      "autostima",
+      "relazione di coppia",
+      "motivazione",
+      "emozion",
+      "depressione",
+      "terapia psicolog",
+      "benessere mentale",
+      "mindfulness",
+      "burnout",
+      "anxiety",
+      "attacchi di panico"
+    ]
+  },
+  {
+    "id": "electrician",
+    "group": "professional",
+    "icon": "⚡",
+    "color": "#ffd43b",
+    "tools": [
+      "now",
+      "http_get",
+      "web_research"
+    ],
+    "keywords": [
+      "elettricista",
+      "impianto elettrico",
+      "interruttore",
+      "salvavita",
+      "differenziale",
+      "cavo elettrico",
+      "presa elettrica",
+      "quadro elettrico",
+      "magnetotermico",
+      "lampadina",
+      "cablaggio",
+      "messa a terra",
+      "sezione dei cavi",
+      "electrician",
+      "wiring",
+      "corto circuito",
+      "fase e neutro"
+    ]
+  },
+  {
+    "id": "electronics-engineer",
+    "group": "professional",
+    "icon": "🔌",
+    "color": "#00c2a8",
+    "tools": [
+      "now",
+      "http_get",
+      "web_research"
+    ],
+    "keywords": [
+      "elettronica",
+      "circuito",
+      "resistenza",
+      "condensatore",
+      "transistor",
+      "arduino",
+      "esp32",
+      "raspberry",
+      "microcontrollore",
+      "saldatura",
+      "schema elettrico",
+      "sensore",
+      "pcb",
+      "led ",
+      "tensione e corrente",
+      "electronics",
+      "oscilloscopio",
+      "multimetro",
+      "mosfet"
+    ]
+  },
+  {
+    "id": "architect",
+    "group": "professional",
+    "icon": "🏗️",
+    "color": "#b08968",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "architett",
+      "ristrutturazion",
+      "progetto casa",
+      "planimetria",
+      "arredamento",
+      "interior design",
+      "permessi edilizi",
+      "cantiere",
+      "muratura",
+      "isolamento termico",
+      "bonus edilizi",
+      "renovation",
+      "geometra",
+      "ampliamento"
+    ]
+  },
+  {
+    "id": "plumber",
+    "group": "professional",
+    "icon": "🔧",
+    "color": "#3b82f6",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "idraulico",
+      "perdita d'acqua",
+      "rubinetto",
+      "tubo",
+      "scarico",
+      "caldaia",
+      "sifone",
+      "water",
+      "sanitari",
+      "otturat",
+      "scaldabagno",
+      "plumber",
+      "pressione dell'acqua",
+      "radiator"
+    ]
+  },
+  {
+    "id": "mechanic",
+    "group": "professional",
+    "icon": "🚗",
+    "color": "#6b7280",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "meccanico",
+      "automobile",
+      "motore",
+      "freni",
+      "cambio olio",
+      "pneumatic",
+      "batteria auto",
+      "tagliando",
+      "revisione",
+      "spia",
+      "frizione",
+      "car repair",
+      "mechanic",
+      "carrozzeria",
+      "moto "
+    ]
+  },
+  {
+    "id": "chef",
+    "group": "professional",
+    "icon": "👨‍🍳",
+    "color": "#f97316",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "ricetta",
+      "cucinare",
+      "cuoco",
+      "chef",
+      "ingredienti",
+      "cottura",
+      "impasto",
+      "sugo",
+      "dolce",
+      "cena",
+      "pranzo",
+      "come si cucina",
+      "recipe",
+      "forno",
+      "pasta fresca",
+      "lievitazione"
+    ]
+  },
+  {
+    "id": "gardener",
+    "group": "professional",
+    "icon": "🌱",
+    "color": "#4caf50",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "giardin",
+      "piante",
+      "orto",
+      "potatura",
+      "concime",
+      "irrigazione",
+      "semin",
+      "terriccio",
+      "agronom",
+      "parassiti",
+      "fiori",
+      "garden",
+      "prato",
+      "vaso",
+      "bonsai"
+    ]
+  },
+  {
+    "id": "veterinarian",
+    "group": "professional",
+    "icon": "🐾",
+    "color": "#14b8a6",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "veterinari",
+      "cane",
+      "gatto",
+      "animale domestico",
+      "vaccino animale",
+      "cucciolo",
+      "pet ",
+      "pulci",
+      "addestramento",
+      "mangime",
+      "criceto",
+      "coniglio",
+      "pappagallo"
+    ]
+  },
+  {
+    "id": "cybersecurity",
+    "group": "professional",
+    "icon": "🛡️",
+    "color": "#ef4444",
+    "tools": [
+      "now",
+      "http_get",
+      "web_research"
+    ],
+    "keywords": [
+      "sicurezza informatica",
+      "cybersecurity",
+      "phishing",
+      "malware",
+      "ransomware",
+      "vulnerabilit",
+      "password manager",
+      "crittograf",
+      "vpn",
+      "autenticazione a due",
+      "hacker",
+      "firewall",
+      "owasp",
+      "cve-",
+      "truffa online"
+    ]
+  },
+  {
+    "id": "software-engineer",
+    "group": "professional",
+    "icon": "🧑‍💻",
+    "color": "#6366f1",
+    "tools": [
+      "now",
+      "http_get",
+      "web_research",
+      "dev_new",
+      "dev_plan",
+      "dev_build",
+      "dev_status",
+      "dev_tree",
+      "dev_read",
+      "dev_write",
+      "dev_run"
+    ],
+    "keywords": [
+      "sviluppatore",
+      "software",
+      "bug",
+      "debug",
+      "refactor",
+      "architettura software",
+      "api rest",
+      "database",
+      "sql",
+      "docker",
+      "git ",
+      "framework",
+      "unit test",
+      "code review",
+      "typescript",
+      "rust ",
+      "deploy"
+    ]
+  },
+  {
+    "id": "marketing",
+    "group": "professional",
+    "icon": "📣",
+    "color": "#ec4899",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "marketing",
+      "social media",
+      "seo",
+      "campagna",
+      "brand",
+      "pubblicit",
+      "newsletter",
+      "strategia di vendita",
+      "instagram",
+      "conversion",
+      "posizionamento",
+      "advertising"
+    ]
+  },
+  {
+    "id": "writer",
+    "group": "professional",
+    "icon": "✍️",
+    "color": "#d97706",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "scrivere un testo",
+      "copywriting",
+      "articolo",
+      "racconto",
+      "editing",
+      "sceneggiatura",
+      "blog",
+      "storytelling",
+      "lettera di",
+      "discorso",
+      "slogan",
+      "romanzo mio",
+      "revisione del testo",
+      "scrittore"
+    ]
+  },
+  {
+    "id": "translator",
+    "group": "professional",
+    "icon": "🌐",
+    "color": "#0ea5e9",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "traduci",
+      "traduzione",
+      "tradurre",
+      "come si dice",
+      "translate",
+      "interprete",
+      "localizzazion",
+      "sottotitoli",
+      "traduttore",
+      "in inglese si",
+      "in francese si",
+      "in spagnolo si"
+    ]
+  },
+  {
+    "id": "project-manager",
+    "group": "professional",
+    "icon": "📋",
+    "color": "#64748b",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "project manag",
+      "gestione progetto",
+      "roadmap",
+      "kanban",
+      "scrum",
+      "agile",
+      "diagramma di gantt",
+      "milestone",
+      "stima dei tempi",
+      "organizzare il lavoro"
+    ]
+  },
+  {
+    "id": "travel",
+    "group": "professional",
+    "icon": "✈️",
+    "color": "#38bdf8",
+    "tools": [
+      "now",
+      "http_get",
+      "web_research"
+    ],
+    "keywords": [
+      "viaggio",
+      "vacanza",
+      "itinerario",
+      "volo",
+      "hotel",
+      "cosa vedere a",
+      "visto",
+      "valigia",
+      "weekend a",
+      "travel",
+      "crociera",
+      "agriturismo",
+      "interrail",
+      "alloggio"
+    ]
+  },
+  {
+    "id": "home-automation",
+    "group": "professional",
+    "icon": "🏠",
+    "color": "#22c55e",
+    "tools": [
+      "now",
+      "list_automations",
+      "web_research"
+    ],
+    "keywords": [
+      "domotica",
+      "home assistant",
+      "automazione casa",
+      "zigbee",
+      "matter",
+      "z-wave",
+      "smart home",
+      "mqtt",
+      "sensore di movimento",
+      "termostato intelligente",
+      "knx",
+      "shelly",
+      "tasmota",
+      "esphome"
+    ]
+  },
+  {
+    "id": "photographer",
+    "group": "professional",
+    "icon": "📷",
+    "color": "#a3a3a3",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "fotografi",
+      "obiettivo",
+      "esposizione",
+      "apertura",
+      "iso ",
+      "scatto",
+      "lightroom",
+      "composizione foto",
+      "videomaker",
+      "montaggio video",
+      "reflex",
+      "mirrorless",
+      "luce naturale",
+      "ritratto",
+      "drone"
+    ]
+  },
+  {
+    "id": "career-coach",
+    "group": "professional",
+    "icon": "💼",
+    "color": "#0d9488",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "curriculum",
+      "colloquio di lavoro",
+      "cv ",
+      "carriera",
+      "cover letter",
+      "stipendio",
+      "dimissioni",
+      "linkedin",
+      "cambiare lavoro",
+      "soft skills",
+      "busta paga",
+      "contratto di lavoro",
+      "negoziare"
+    ]
+  },
+  {
+    "id": "teacher-statistics",
+    "group": "teacher",
+    "icon": "📊",
+    "color": "#5b8def",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "statistic",
+      "media",
+      "mediana",
+      "varianza",
+      "deviazione",
+      "campione",
+      "regressione",
+      "correlazion",
+      "probabilit",
+      "statistics",
+      "mean",
+      "variance",
+      "regression",
+      "sampling"
+    ]
+  },
+  {
+    "id": "teacher-psychology",
+    "group": "teacher",
+    "icon": "🧠",
+    "color": "#b36bff",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "psicologi",
+      "comportament",
+      "cognitiv",
+      "emozion",
+      "apprendiment",
+      "memoria",
+      "sviluppo",
+      "personalit",
+      "psychology",
+      "cognitive",
+      "emotion",
+      "behavior"
+    ]
+  },
+  {
+    "id": "teacher-engineering",
+    "group": "teacher",
+    "icon": "⚙️",
+    "color": "#e08a2e",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "ingegneri",
+      "meccanic",
+      "statica",
+      "dinamica",
+      "termodinamic",
+      "circuiti",
+      "resistenz materiali",
+      "engineering",
+      "mechanics",
+      "thermodynamics",
+      "statics",
+      "materials"
+    ]
+  },
+  {
+    "id": "teacher-environment",
+    "group": "teacher",
+    "icon": "🌍",
+    "color": "#2fa36b",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "ambient",
+      "ecolog",
+      "clima",
+      "riscaldamento globale",
+      "riciclo",
+      "biodiversit",
+      "energie rinnovabili",
+      "sostenibil",
+      "environment",
+      "climate",
+      "recycling",
+      "sustainab",
+      "biodiversity"
+    ]
+  },
+  {
+    "id": "dentist-info",
+    "group": "professional",
+    "icon": "🦷",
+    "color": "#4cc9f0",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "dent",
+      "denti",
+      "carie",
+      "gengiv",
+      "apparecchio",
+      "igiene orale",
+      "ortodonz",
+      "tooth",
+      "teeth",
+      "cavity",
+      "gum",
+      "braces"
+    ]
+  },
+  {
+    "id": "physiotherapist",
+    "group": "professional",
+    "icon": "🦴",
+    "color": "#7bd389",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "fisioterap",
+      "postura",
+      "schiena",
+      "cervicale",
+      "tendin",
+      "distorsion",
+      "riabilit",
+      "mal di schiena",
+      "physio",
+      "posture",
+      "back pain",
+      "rehab",
+      "sprain"
+    ]
+  },
+  {
+    "id": "pharmacy-info",
+    "group": "professional",
+    "icon": "💊",
+    "color": "#f06a6a",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "farmac",
+      "medicinal",
+      "foglietto",
+      "controindicazion",
+      "effetti collaterali",
+      "posologia",
+      "integrator",
+      "pharmacy",
+      "medicine",
+      "side effects",
+      "leaflet",
+      "supplement"
+    ]
+  },
+  {
+    "id": "real-estate",
+    "group": "professional",
+    "icon": "🏠",
+    "color": "#c9a227",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "immobil",
+      "casa",
+      "affitto",
+      "mutuo",
+      "compravendita",
+      "rogito",
+      "catasto",
+      "agenzia immobiliare",
+      "real estate",
+      "rent",
+      "mortgage",
+      "property",
+      "landlord"
+    ]
+  },
+  {
+    "id": "insurance",
+    "group": "professional",
+    "icon": "🛡️",
+    "color": "#5a7dff",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "assicurazion",
+      "polizza",
+      "rc auto",
+      "sinistro",
+      "franchigia",
+      "massimale",
+      "risarcimento",
+      "insurance",
+      "policy",
+      "claim",
+      "deductible",
+      "premium"
+    ]
+  },
+  {
+    "id": "hr-recruiter",
+    "group": "professional",
+    "icon": "🤝",
+    "color": "#ff8fab",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "curriculum",
+      "colloquio di lavoro",
+      "assunzion",
+      "contratto di lavoro",
+      "stipendio",
+      "ferie",
+      "recruit",
+      "job interview",
+      "hiring",
+      "resume",
+      "salary",
+      "onboarding"
+    ]
+  },
+  {
+    "id": "data-analyst",
+    "group": "professional",
+    "icon": "📈",
+    "color": "#3ddc97",
+    "tools": [
+      "now",
+      "web_research",
+      "create_document"
+    ],
+    "keywords": [
+      "analisi dei dati",
+      "dati",
+      "excel",
+      "foglio di calcolo",
+      "tabella pivot",
+      "grafico",
+      "dashboard",
+      "sql",
+      "data analysis",
+      "spreadsheet",
+      "pivot",
+      "chart",
+      "dataset"
+    ]
+  },
+  {
+    "id": "devops-engineer",
+    "group": "professional",
+    "icon": "🚀",
+    "color": "#6c8cff",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "devops",
+      "docker",
+      "container",
+      "kubernetes",
+      "pipeline",
+      "deploy",
+      "ci/cd",
+      "github actions",
+      "nginx",
+      "terraform",
+      "ansible",
+      "continuous integration"
+    ]
+  },
+  {
+    "id": "network-engineer",
+    "group": "professional",
+    "icon": "🌐",
+    "color": "#29b6f6",
+    "tools": [
+      "now",
+      "web_research",
+      "vpn_status"
+    ],
+    "keywords": [
+      "router",
+      "wifi",
+      "rete domestica",
+      "switch",
+      "vlan",
+      "ip",
+      "dhcp",
+      "dns",
+      "firewall",
+      "modem",
+      "fibra",
+      "latenza",
+      "network",
+      "lan",
+      "bandwidth",
+      "port forwarding"
+    ]
+  },
+  {
+    "id": "database-engineer",
+    "group": "professional",
+    "icon": "🗄️",
+    "color": "#8d6e63",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "database",
+      "sql",
+      "postgres",
+      "mysql",
+      "sqlite",
+      "indice",
+      "query lenta",
+      "normalizzazione",
+      "migrazione",
+      "transazione",
+      "mongodb",
+      "redis"
+    ]
+  },
+  {
+    "id": "ai-engineer",
+    "group": "professional",
+    "icon": "🤖",
+    "color": "#ab47bc",
+    "tools": [
+      "now",
+      "web_research",
+      "list_models"
+    ],
+    "keywords": [
+      "intelligenza artificiale",
+      "machine learning",
+      "rete neurale",
+      "modello linguistico",
+      "llm",
+      "addestramento",
+      "fine tuning",
+      "embedding",
+      "prompt",
+      "artificial intelligence",
+      "neural network",
+      "training",
+      "inference"
+    ]
+  },
+  {
+    "id": "ux-designer",
+    "group": "professional",
+    "icon": "🎨",
+    "color": "#ff7043",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "ux",
+      "ui",
+      "interfaccia",
+      "usabilit",
+      "wireframe",
+      "prototipo",
+      "design system",
+      "accessibilit",
+      "user experience",
+      "usability",
+      "interface",
+      "mockup"
+    ]
+  },
+  {
+    "id": "graphic-designer",
+    "group": "professional",
+    "icon": "🖌️",
+    "color": "#ec407a",
+    "tools": [
+      "now",
+      "web_research",
+      "create_3d"
+    ],
+    "keywords": [
+      "grafica",
+      "logo",
+      "tipografia",
+      "palette",
+      "colori",
+      "impaginazione",
+      "locandina",
+      "branding",
+      "poster",
+      "typography",
+      "layout",
+      "illustration"
+    ]
+  },
+  {
+    "id": "video-editor",
+    "group": "professional",
+    "icon": "🎬",
+    "color": "#ef5350",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "video",
+      "montaggio",
+      "regia",
+      "sceneggiatura",
+      "inquadratura",
+      "colorazione",
+      "sottotitoli",
+      "editing",
+      "footage",
+      "filming",
+      "storyboard",
+      "codec"
+    ]
+  },
+  {
+    "id": "music-producer",
+    "group": "professional",
+    "icon": "🎹",
+    "color": "#9575cd",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "produzione musicale",
+      "mixaggio",
+      "mastering",
+      "accordi",
+      "scala musicale",
+      "daw",
+      "sintetizzatore",
+      "chitarra",
+      "pianoforte",
+      "composizione",
+      "music production",
+      "chords",
+      "mixing",
+      "songwriting"
+    ]
+  },
+  {
+    "id": "interior-designer",
+    "group": "professional",
+    "icon": "🛋️",
+    "color": "#a1887f",
+    "tools": [
+      "now",
+      "web_research",
+      "create_3d"
+    ],
+    "keywords": [
+      "arredament",
+      "interni",
+      "ristrutturazione",
+      "mobili",
+      "illuminazione",
+      "colori delle pareti",
+      "cucina",
+      "bagno",
+      "interior design",
+      "furniture",
+      "renovation",
+      "lighting",
+      "decor"
+    ]
+  },
+  {
+    "id": "carpenter",
+    "group": "professional",
+    "icon": "🪚",
+    "color": "#8d6e63",
+    "tools": [
+      "now",
+      "web_research",
+      "create_3d"
+    ],
+    "keywords": [
+      "falegname",
+      "legno",
+      "mobile su misura",
+      "incastro",
+      "truciolare",
+      "verniciatura",
+      "pialla",
+      "sega",
+      "carpentry",
+      "wood",
+      "joinery",
+      "cabinet",
+      "furniture build"
+    ]
+  },
+  {
+    "id": "metalworker",
+    "group": "professional",
+    "icon": "🔩",
+    "color": "#78909c",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "saldatura",
+      "saldare",
+      "tornio",
+      "fresa",
+      "lamiera",
+      "acciaio",
+      "alluminio",
+      "carpenteria metallica",
+      "fabbro",
+      "welding",
+      "lathe",
+      "sheet metal",
+      "steel",
+      "machining"
+    ]
+  },
+  {
+    "id": "hvac-technician",
+    "group": "professional",
+    "icon": "❄️",
+    "color": "#4dd0e1",
+    "tools": [
+      "now",
+      "web_research",
+      "ha_get_state"
+    ],
+    "keywords": [
+      "condizionatore",
+      "climatizzazione",
+      "caldaia",
+      "riscaldamento",
+      "pompa di calore",
+      "termostato",
+      "radiator",
+      "deumidificatore",
+      "ventilazione",
+      "air conditioning",
+      "heating",
+      "heat pump",
+      "boiler",
+      "thermostat"
+    ]
+  },
+  {
+    "id": "solar-energy",
+    "group": "professional",
+    "icon": "☀️",
+    "color": "#ffca28",
+    "tools": [
+      "now",
+      "web_research",
+      "ha_energy_consumption"
+    ],
+    "keywords": [
+      "fotovoltaic",
+      "pannelli solari",
+      "inverter",
+      "accumulo",
+      "batteria",
+      "autoconsumo",
+      "kwh",
+      "bolletta",
+      "contatore",
+      "solar",
+      "photovoltaic",
+      "net metering",
+      "energy bill",
+      "wallbox"
+    ]
+  },
+  {
+    "id": "aviation",
+    "group": "professional",
+    "icon": "✈️",
+    "color": "#42a5f5",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "aviazione",
+      "aereo",
+      "volo",
+      "pilota",
+      "aeroporto",
+      "drone",
+      "meteo aeronautico",
+      "aviation",
+      "aircraft",
+      "flight",
+      "airport",
+      "pilot",
+      "aerodynamics"
+    ]
+  },
+  {
+    "id": "boating",
+    "group": "professional",
+    "icon": "⛵",
+    "color": "#26c6da",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "barca",
+      "vela",
+      "nautica",
+      "patente nautica",
+      "ormeggio",
+      "motore marino",
+      "navigazione",
+      "maree",
+      "boat",
+      "sailing",
+      "mooring",
+      "marine",
+      "yacht"
+    ]
+  },
+  {
+    "id": "agronomist",
+    "group": "professional",
+    "icon": "🌾",
+    "color": "#9ccc65",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "agricoltur",
+      "agronom",
+      "orto",
+      "coltivazione",
+      "irrigazione",
+      "concime",
+      "potatura",
+      "uliveto",
+      "vigneto",
+      "frutteto",
+      "farming",
+      "crop",
+      "irrigation",
+      "fertiliser",
+      "orchard"
+    ]
+  },
+  {
+    "id": "beekeeper",
+    "group": "professional",
+    "icon": "🐝",
+    "color": "#ffb300",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "apicolt",
+      "api",
+      "alveare",
+      "miele",
+      "arnia",
+      "sciame",
+      "regina",
+      "varroa",
+      "bees",
+      "beehive",
+      "honey",
+      "swarm",
+      "queen bee"
+    ]
+  },
+  {
+    "id": "sommelier",
+    "group": "professional",
+    "icon": "🍷",
+    "color": "#8e24aa",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "vino",
+      "sommelier",
+      "vitigno",
+      "cantina",
+      "abbinamento",
+      "degustazione",
+      "birra",
+      "distillat",
+      "wine",
+      "grape",
+      "pairing",
+      "tasting",
+      "beer",
+      "whisky"
+    ]
+  },
+  {
+    "id": "barista",
+    "group": "professional",
+    "icon": "☕",
+    "color": "#6d4c41",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "caffè",
+      "espresso",
+      "barista",
+      "moka",
+      "macinatura",
+      "estrazione",
+      "latte art",
+      "tè",
+      "infusione",
+      "coffee",
+      "grinder",
+      "extraction",
+      "brew",
+      "tea"
+    ]
+  },
+  {
+    "id": "pastry-chef",
+    "group": "professional",
+    "icon": "🥐",
+    "color": "#ffab91",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "pasticceria",
+      "dolci",
+      "torta",
+      "lievitazione",
+      "pane",
+      "pizza",
+      "impasto",
+      "lievito",
+      "forno",
+      "biscotti",
+      "baking",
+      "pastry",
+      "dough",
+      "bread",
+      "cake",
+      "yeast"
+    ]
+  },
+  {
+    "id": "pet-behaviorist",
+    "group": "professional",
+    "icon": "🐕",
+    "color": "#a5d6a7",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "cane",
+      "gatto",
+      "educazione cinofila",
+      "comportamento animale",
+      "cucciolo",
+      "guinzaglio",
+      "abbaia",
+      "graffia",
+      "pet",
+      "dog",
+      "cat",
+      "puppy",
+      "training",
+      "behavior"
+    ]
+  },
+  {
+    "id": "parenting",
+    "group": "professional",
+    "icon": "👶",
+    "color": "#f48fb1",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "figli",
+      "bambino",
+      "neonato",
+      "genitor",
+      "svezzamento",
+      "sonno del bambino",
+      "capricci",
+      "adolescent",
+      "scuola",
+      "children",
+      "baby",
+      "parenting",
+      "toddler",
+      "teenager",
+      "weaning"
+    ]
+  },
+  {
+    "id": "senior-care",
+    "group": "professional",
+    "icon": "👵",
+    "color": "#b0bec5",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "anziani",
+      "anziano",
+      "assistenza",
+      "badante",
+      "caduta",
+      "demenza",
+      "autonomia",
+      "pensione",
+      "invalidità",
+      "elderly",
+      "caregiver",
+      "dementia",
+      "senior",
+      "retirement"
+    ]
+  },
+  {
+    "id": "formula1",
+    "group": "professional",
+    "icon": "🏎️",
+    "color": "#e53935",
+    "tools": [
+      "now",
+      "web_research",
+      "sport_query"
+    ],
+    "keywords": [
+      "formula 1",
+      "f1",
+      "gran premio",
+      "pilota",
+      "scuderia",
+      "qualifica",
+      "pit stop",
+      "motogp",
+      "automobilismo",
+      "grand prix",
+      "driver",
+      "qualifying",
+      "motorsport",
+      "rally"
+    ]
+  },
+  {
+    "id": "chess-coach",
+    "group": "professional",
+    "icon": "♟️",
+    "color": "#455a64",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "scacchi",
+      "apertura",
+      "mossa",
+      "finale",
+      "scacco matto",
+      "gambetto",
+      "partita a scacchi",
+      "chess",
+      "opening",
+      "endgame",
+      "checkmate",
+      "tactics"
+    ]
+  },
+  {
+    "id": "fashion-stylist",
+    "group": "professional",
+    "icon": "👗",
+    "color": "#f06292",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "moda",
+      "abbigliamento",
+      "stile",
+      "outfit",
+      "abbinare",
+      "taglia",
+      "guardaroba",
+      "scarpe",
+      "fashion",
+      "style",
+      "wardrobe",
+      "clothes",
+      "dress code"
+    ]
+  },
+  {
+    "id": "event-planner",
+    "group": "professional",
+    "icon": "🎉",
+    "color": "#ffa726",
+    "tools": [
+      "now",
+      "web_research",
+      "create_document"
+    ],
+    "keywords": [
+      "evento",
+      "festa",
+      "matrimonio",
+      "compleanno",
+      "catering",
+      "invitati",
+      "location",
+      "budget evento",
+      "party",
+      "wedding",
+      "birthday",
+      "guests",
+      "venue",
+      "event planning"
+    ]
+  },
+  {
+    "id": "public-speaking",
+    "group": "professional",
+    "icon": "🎤",
+    "color": "#26a69a",
+    "tools": [
+      "now",
+      "web_research",
+      "create_document"
+    ],
+    "keywords": [
+      "parlare in pubblico",
+      "presentazione",
+      "discorso",
+      "ansia da palcoscenico",
+      "slide",
+      "oratoria",
+      "public speaking",
+      "speech",
+      "presentation",
+      "stage fright",
+      "pitch"
+    ]
+  },
+  {
+    "id": "bureaucracy",
+    "group": "professional",
+    "icon": "🏛️",
+    "color": "#90a4ae",
+    "tools": [
+      "now",
+      "web_research",
+      "create_document"
+    ],
+    "keywords": [
+      "pratica",
+      "burocrazia",
+      "spid",
+      "anagrafe",
+      "certificato",
+      "residenza",
+      "passaporto",
+      "carta d'identità",
+      "isee",
+      "comune",
+      "agenzia delle entrate",
+      "patente",
+      "bureaucracy",
+      "paperwork",
+      "passport",
+      "certificate",
+      "residence permit",
+      "council"
+    ]
+  },
+  {
+    "id": "consumer-rights",
+    "group": "professional",
+    "icon": "🧾",
+    "color": "#7e57c2",
+    "tools": [
+      "now",
+      "web_research",
+      "create_document"
+    ],
+    "keywords": [
+      "reclamo",
+      "rimborso",
+      "garanzia",
+      "diritto di recesso",
+      "truffa",
+      "acquisto online",
+      "bolletta",
+      "contestazione",
+      "consumer",
+      "refund",
+      "warranty",
+      "scam",
+      "complaint",
+      "chargeback"
+    ]
+  },
+  {
+    "id": "startup-founder",
+    "group": "professional",
+    "icon": "💡",
+    "color": "#ffd54f",
+    "tools": [
+      "now",
+      "web_research",
+      "create_document"
+    ],
+    "keywords": [
+      "startup",
+      "impresa",
+      "partita iva",
+      "business plan",
+      "fatturazione",
+      "clienti",
+      "modello di business",
+      "finanziamento",
+      "mercato",
+      "founder",
+      "business model",
+      "funding",
+      "entrepreneur",
+      "revenue"
+    ]
+  },
+  {
+    "id": "ecommerce-seo",
+    "group": "professional",
+    "icon": "🛒",
+    "color": "#00acc1",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "e-commerce",
+      "negozio online",
+      "seo",
+      "posizionamento",
+      "google ads",
+      "social media",
+      "newsletter",
+      "conversione",
+      "shopify",
+      "online shop",
+      "ranking",
+      "traffic",
+      "conversion",
+      "keywords"
+    ]
+  },
+  {
+    "id": "printing-3d",
+    "group": "professional",
+    "icon": "🖨️",
+    "color": "#26c6a0",
+    "tools": [
+      "now",
+      "web_research",
+      "create_3d"
+    ],
+    "keywords": [
+      "stampa 3d",
+      "stampante 3d",
+      "filamento",
+      "pla",
+      "petg",
+      "slicer",
+      "supporti",
+      "ugello",
+      "stl",
+      "3d printing",
+      "filament",
+      "nozzle",
+      "layer height",
+      "print bed"
+    ]
+  },
+  {
+    "id": "robotics-maker",
+    "group": "professional",
+    "icon": "🤖",
+    "color": "#ff7043",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "arduino",
+      "raspberry",
+      "esp32",
+      "sensore",
+      "microcontrollore",
+      "robot",
+      "servo",
+      "motore passo",
+      "saldatura elettronica",
+      "maker",
+      "microcontroller",
+      "sensor",
+      "stepper",
+      "breadboard",
+      "gpio"
+    ]
+  },
+  {
+    "id": "radio-amateur",
+    "group": "professional",
+    "icon": "📻",
+    "color": "#5c6bc0",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "radioamatore",
+      "antenna",
+      "frequenza",
+      "onde radio",
+      "ricetrasmittente",
+      "sdr",
+      "banda",
+      "propagazione",
+      "ham radio",
+      "antenna",
+      "transceiver",
+      "radio frequency",
+      "shortwave"
+    ]
+  },
+  {
+    "id": "meteorologist",
+    "group": "professional",
+    "icon": "⛅",
+    "color": "#64b5f6",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "meteo",
+      "previsioni",
+      "pioggia",
+      "temporale",
+      "nuvole",
+      "pressione",
+      "fronte",
+      "grandine",
+      "neve",
+      "weather",
+      "forecast",
+      "storm",
+      "humidity",
+      "wind",
+      "climate zone"
+    ]
+  },
+  {
+    "id": "web-developer",
+    "group": "professional",
+    "icon": "💻",
+    "color": "#3b82f6",
+    "tools": [
+      "now",
+      "web_research",
+      "dev_new",
+      "dev_plan",
+      "dev_build",
+      "dev_status",
+      "dev_tree",
+      "dev_read",
+      "dev_write",
+      "dev_run",
+      "dev_publish"
+    ],
+    "keywords": [
+      "sito web",
+      "pagina web",
+      "html",
+      "css",
+      "javascript",
+      "responsive",
+      "landing page",
+      "frontend",
+      "react",
+      "vue",
+      "tailwind",
+      "website",
+      "web page",
+      "web app",
+      "frontend"
+    ]
+  },
+  {
+    "id": "backend-developer",
+    "group": "professional",
+    "icon": "🧩",
+    "color": "#10b981",
+    "tools": [
+      "now",
+      "web_research",
+      "dev_new",
+      "dev_plan",
+      "dev_build",
+      "dev_status",
+      "dev_tree",
+      "dev_read",
+      "dev_write",
+      "dev_run"
+    ],
+    "keywords": [
+      "backend",
+      "api",
+      "rest",
+      "graphql",
+      "fastapi",
+      "django",
+      "flask",
+      "express",
+      "nestjs",
+      "autenticazione",
+      "jwt",
+      "microservizi",
+      "server api",
+      "endpoint",
+      "authentication",
+      "microservice"
+    ]
+  },
+  {
+    "id": "mobile-app-developer",
+    "group": "professional",
+    "icon": "📱",
+    "color": "#8b5cf6",
+    "tools": [
+      "now",
+      "web_research",
+      "dev_new",
+      "dev_plan",
+      "dev_build",
+      "dev_status",
+      "dev_tree",
+      "dev_read",
+      "dev_write",
+      "dev_run"
+    ],
+    "keywords": [
+      "app mobile",
+      "android",
+      "ios",
+      "kotlin",
+      "swift",
+      "flutter",
+      "react native",
+      "app store",
+      "play store",
+      "notifiche push",
+      "mobile app",
+      "swiftui",
+      "jetpack compose"
+    ]
+  },
+  {
+    "id": "desktop-app-developer",
+    "group": "professional",
+    "icon": "🖥️",
+    "color": "#0ea5e9",
+    "tools": [
+      "now",
+      "web_research",
+      "dev_new",
+      "dev_plan",
+      "dev_build",
+      "dev_status",
+      "dev_tree",
+      "dev_read",
+      "dev_write",
+      "dev_run"
+    ],
+    "keywords": [
+      "applicazione desktop",
+      "app per windows",
+      "app per mac",
+      "electron",
+      "tauri",
+      "wpf",
+      "qt",
+      "tkinter",
+      "finestra",
+      "installer",
+      "desktop app",
+      "windows app",
+      "gui"
+    ]
+  },
+  {
+    "id": "game-developer",
+    "group": "professional",
+    "icon": "🎮",
+    "color": "#f43f5e",
+    "tools": [
+      "now",
+      "web_research",
+      "dev_new",
+      "dev_plan",
+      "dev_build",
+      "dev_status",
+      "dev_tree",
+      "dev_read",
+      "dev_write",
+      "dev_run",
+      "create_3d"
+    ],
+    "keywords": [
+      "videogioco",
+      "gioco",
+      "unity",
+      "unreal",
+      "godot",
+      "game engine",
+      "sprite",
+      "fisica del gioco",
+      "livello",
+      "game design",
+      "videogame",
+      "game dev",
+      "pygame",
+      "phaser"
+    ]
+  },
+  {
+    "id": "python-developer",
+    "group": "professional",
+    "icon": "🐍",
+    "color": "#facc15",
+    "tools": [
+      "now",
+      "web_research",
+      "dev_new",
+      "dev_plan",
+      "dev_build",
+      "dev_status",
+      "dev_tree",
+      "dev_read",
+      "dev_write",
+      "dev_run"
+    ],
+    "keywords": [
+      "python",
+      "pip",
+      "venv",
+      "pandas",
+      "numpy",
+      "django",
+      "flask",
+      "script python",
+      "pytest",
+      "asyncio",
+      "dataclass",
+      "type hints",
+      "python script"
+    ]
+  },
+  {
+    "id": "typescript-developer",
+    "group": "professional",
+    "icon": "🟦",
+    "color": "#2563eb",
+    "tools": [
+      "now",
+      "web_research",
+      "dev_new",
+      "dev_plan",
+      "dev_build",
+      "dev_status",
+      "dev_tree",
+      "dev_read",
+      "dev_write",
+      "dev_run"
+    ],
+    "keywords": [
+      "typescript",
+      "node",
+      "nodejs",
+      "npm",
+      "pnpm",
+      "deno",
+      "bun",
+      "vite",
+      "eslint",
+      "jest",
+      "vitest",
+      "zod",
+      "tsconfig"
+    ]
+  },
+  {
+    "id": "systems-programmer",
+    "group": "professional",
+    "icon": "⚙️",
+    "color": "#f97316",
+    "tools": [
+      "now",
+      "web_research",
+      "dev_new",
+      "dev_plan",
+      "dev_build",
+      "dev_status",
+      "dev_tree",
+      "dev_read",
+      "dev_write",
+      "dev_run"
+    ],
+    "keywords": [
+      "rust",
+      "c++",
+      "cargo",
+      "puntatori",
+      "memoria",
+      "concorrenza",
+      "assembly",
+      "linguaggio c",
+      "ownership",
+      "borrow",
+      "segfault",
+      "kernel module",
+      "systems programming",
+      "pointer",
+      "memory safety"
+    ]
+  },
+  {
+    "id": "software-architect",
+    "group": "professional",
+    "icon": "🏗️",
+    "color": "#64748b",
+    "tools": [
+      "now",
+      "web_research",
+      "dev_tree",
+      "dev_read"
+    ],
+    "keywords": [
+      "architettura",
+      "design pattern",
+      "clean architecture",
+      "microservizi",
+      "monolite",
+      "scalabilità",
+      "event driven",
+      "ddd",
+      "hexagonal",
+      "system design",
+      "architecture",
+      "scalability",
+      "trade-off"
+    ]
+  },
+  {
+    "id": "code-reviewer",
+    "group": "professional",
+    "icon": "🔍",
+    "color": "#ef4444",
+    "tools": [
+      "now",
+      "web_research",
+      "dev_tree",
+      "dev_read",
+      "dev_run"
+    ],
+    "keywords": [
+      "revisione del codice",
+      "code review",
+      "vulnerabilità nel codice",
+      "owasp",
+      "sql injection",
+      "xss",
+      "csrf",
+      "codice sicuro",
+      "audit",
+      "analisi statica",
+      "secure coding",
+      "security review",
+      "code smell"
+    ]
+  },
+  {
+    "id": "automation-scripting",
+    "group": "professional",
+    "icon": "📜",
+    "color": "#14b8a6",
+    "tools": [
+      "now",
+      "web_research",
+      "dev_new",
+      "dev_plan",
+      "dev_build",
+      "dev_status",
+      "dev_tree",
+      "dev_read",
+      "dev_write",
+      "dev_run",
+      "create_automation"
+    ],
+    "keywords": [
+      "script",
+      "automatizzare",
+      "bash",
+      "powershell",
+      "cron",
+      "batch",
+      "scraping",
+      "macro",
+      "automazione di file",
+      "shell script",
+      "automate",
+      "scheduled task",
+      "regex",
+      "one-liner"
+    ]
+  },
+  {
+    "id": "embedded-firmware",
+    "group": "professional",
+    "icon": "🔌",
+    "color": "#a3e635",
+    "tools": [
+      "now",
+      "web_research",
+      "dev_new",
+      "dev_plan",
+      "dev_build",
+      "dev_status",
+      "dev_tree",
+      "dev_read",
+      "dev_write",
+      "dev_run"
+    ],
+    "keywords": [
+      "firmware",
+      "microcontrollore",
+      "esp32",
+      "stm32",
+      "arduino ide",
+      "platformio",
+      "i2c",
+      "spi",
+      "uart",
+      "interrupt",
+      "rtos",
+      "embedded",
+      "bare metal",
+      "micropython"
+    ]
+  },
+  {
+    "id": "git-expert",
+    "group": "professional",
+    "icon": "🌿",
+    "color": "#f59e0b",
+    "tools": [
+      "now",
+      "web_research"
+    ],
+    "keywords": [
+      "git",
+      "commit",
+      "branch",
+      "merge",
+      "rebase",
+      "pull request",
+      "conflitto",
+      "github",
+      "gitlab",
+      "cherry-pick",
+      "stash",
+      "repository",
+      "merge conflict",
+      "version control"
+    ]
+  }
+]

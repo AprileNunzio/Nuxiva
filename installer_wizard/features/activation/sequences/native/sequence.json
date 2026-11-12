@@ -1,0 +1,8 @@
+{
+  "manifest_version": 1,
+  "id": "native",
+  "kind": "auto",
+  "order": 70,
+  "steps": ["native"],
+  "icon": "icon.png"
+}

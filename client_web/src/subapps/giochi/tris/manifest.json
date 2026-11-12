@@ -1,0 +1,25 @@
+{
+  "id": "tris",
+  "name": "Tris",
+  "parent": "giochi",
+  "isSubapp": true,
+  "scope": "subapps/giochi/tris",
+  "kind": "app",
+  "category": "system",
+  "icon": "Grid3X3",
+  "version": "1.0.0",
+  "window": {
+    "defaultWidth": 46,
+    "defaultHeight": 58,
+    "minWidth": 24,
+    "minHeight": 28,
+    "resizable": true
+  },
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "tris-3d",
+    "url": "https://img.icons8.com/?size=240&id=tictactoe&format=png"
+  }
+}

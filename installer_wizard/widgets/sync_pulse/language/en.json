@@ -1,0 +1,40 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/sync_pulse",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title_running": "Syncing",
+    "title_ok": "All synced",
+    "title_error": "Sync errors",
+    "s_ok": "Up to date",
+    "s_running": "Syncing…",
+    "s_waiting": "Waiting",
+    "s_error": "Error",
+    "k_google": "Google",
+    "k_google_calendar": "Calendar",
+    "k_google_gmail": "Gmail",
+    "k_google_tasks": "Tasks",
+    "k_google_health": "Google Health",
+    "k_telegram": "Telegram",
+    "k_band": "Band",
+    "k_phone": "Phone",
+    "r_revoked": "Needs reconnecting",
+    "r_unavailable": "Service not active",
+    "r_unsupported": "Device not supported",
+    "r_timeout": "No response",
+    "r_api_disabled": "API not enabled",
+    "r_scope_missing": "Permission missing",
+    "r_health_profile_missing": "No Google Health profile",
+    "r_quota": "Too many requests, retrying",
+    "r_unauthorized": "Invalid access",
+    "r_forbidden": "Access denied",
+    "r_not_found": "Not found",
+    "errors_one": "{{n}} error",
+    "errors_other": "{{n}} errors",
+    "r_health_grant": "Re-enable Google Health",
+    "r_health_preview": "Account not enabled yet",
+    "r_not_linked": "Not authorized"
+  }
+}

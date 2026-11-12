@@ -1,0 +1,24 @@
+{
+  "name": "Weather",
+  "description": "Complete forecasts with multiple locations: today or the whole week, hour by hour, wind, air quality, humidity, pressure, UV, pollen, sunrise and sunset, moon phases. Opens from a question about the weather.",
+  "capabilities": [
+    "Detailed day view and weekly view, chosen from the question",
+    "Hour by hour: temperature, rain, wind, gusts, UV, cloud and visibility",
+    "European and US air quality, fine particles, gases and pollen",
+    "Pressure with trend, dew point, humidity and feels-like temperature",
+    "Sunrise, sunset, day length, sunshine hours and moon phase",
+    "Several saved locations with a default, and units of your choice"
+  ],
+  "settings": {
+    "NUXIVA_WEATHER_UNITS": "Measurement system",
+    "NUXIVA_WEATHER_WIND": "Wind unit",
+    "NUXIVA_WEATHER_VIEW": "View for a generic question",
+    "NUXIVA_WEATHER_DAYS": "Forecast days",
+    "NUXIVA_WEATHER_HOURS": "Hours shown in detail",
+    "NUXIVA_WEATHER_REFRESH": "Data refresh (minutes)",
+    "NUXIVA_WEATHER_AIR": "Air quality",
+    "NUXIVA_WEATHER_POLLEN": "Pollen",
+    "NUXIVA_WEATHER_ASTRO": "Moon, sunrise and sunset"
+  },
+  "help": {}
+}

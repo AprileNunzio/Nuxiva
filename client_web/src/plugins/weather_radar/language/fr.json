@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Radar Météo et Climat en Direct",
+    "description": "Prévisions météo haute résolution et radar de précipitations animé situé dans la zone de notification.",
+    "opt_tray_temperature_label": "Badge Température dans l'Horloge",
+    "opt_tray_temperature_desc": "Affiche les degrés actuels directement à côté de l'horloge système."
+  }
+}

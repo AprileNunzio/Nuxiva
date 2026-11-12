@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "features/presentation",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Presentazione",
+    "desc": "Gestione layout scenico e contenuti multimediali",
+    "error.not_found": "Immagine o risorsa non trovata",
+    "error.invalid_plan": "Piano di presentazione non valido",
+    "status.playing": "Presentazione in riproduzione",
+    "status.paused": "Presentazione in pausa"
+  }
+}

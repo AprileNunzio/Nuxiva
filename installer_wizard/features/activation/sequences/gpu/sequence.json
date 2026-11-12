@@ -1,0 +1,9 @@
+{
+  "manifest_version": 1,
+  "id": "gpu",
+  "kind": "auto",
+  "order": 80,
+  "steps": ["display_driver", "gpu"],
+  "icon": "icon.png",
+  "when": ["hardware:nvidia"]
+}

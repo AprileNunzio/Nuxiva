@@ -1,0 +1,38 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Cámaras",
+    "subtitle": "Transmisiones en vivo y configuración de cámaras",
+    "stat_total": "Total Cámaras",
+    "stat_active": "Cámaras Activas",
+    "stat_recording": "Grabando",
+    "live_title": "Flujos de Video en Vivo",
+    "live_label": "EN VIVO",
+    "stream_mode": "Modo de Flujo",
+    "offline": "Imagen no disponible",
+    "status_active": "En Línea",
+    "status_offline": "Desconectada",
+    "recording": "Grabación Activa",
+    "enabled": "Activa",
+    "record": "Grabar",
+    "consent": "Consentimiento",
+    "consent_note": "La grabación solo inicia con el consentimiento explícito de las personas grabadas.",
+    "add": "Añadir Cámara",
+    "add_title": "Configurar Nueva Cámara",
+    "field_name": "Nombre Identificativo",
+    "field_kind": "Tipo de Cámara",
+    "field_url": "Dirección Streaming (RTSP / HTTP)",
+    "field_device": "Dispositivo Local (ej. 0 o /dev/video0)",
+    "field_retention": "Tiempo de Retención",
+    "minutes": "{n} minutos",
+    "save": "Guardar Cámara",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "delete_confirm": "¿Seguro que desea eliminar esta cámara?",
+    "refresh": "Actualizar Flujos",
+    "empty": "No hay cámaras configuradas.",
+    "empty_sources": "No se detectaron fuentes de video en vivo."
+  }
+}

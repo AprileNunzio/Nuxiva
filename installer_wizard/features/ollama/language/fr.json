@@ -1,0 +1,16 @@
+{
+  "title": "Moteur Ollama",
+  "subtitle": "Réglage et optimisation matérielle pour inférence locale continue 24/7",
+  "status_online": "Opérationnel",
+  "status_offline": "Inactif",
+  "hardware_profile": "Profil Matériel",
+  "parallel_slots": "Créneaux Parallèles",
+  "context_window": "Fenêtre de Contexte",
+  "max_predict": "Max Jetons de Sortie",
+  "flash_attention": "Flash Attention",
+  "keep_alive": "Rétention Mémoire",
+  "save_applied": "Configuration enregistrée et appliquée",
+  "reset_success": "Profil matériel optimal restauré",
+  "restart_success": "Service Ollama redémarré avec succès",
+  "bench_success": "Benchmark terminé"
+}

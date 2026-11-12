@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Sentinel Security & Sandbox Guardian",
+    "description": "Autonomous sentinel agent inspecting IPC channels, tracking memory anomalies, and isolating security threats.",
+    "opt_strict_zero_trust_label": "Strict Zero-Trust Isolation",
+    "opt_strict_zero_trust_desc": "Immediately blocks subapps or plugins lacking explicitly declared manifest permissions."
+  }
+}

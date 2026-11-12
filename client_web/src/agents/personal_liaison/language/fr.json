@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Assistant Personnel et Liaison Exécutive",
+    "description": "Agent dédié à l'interaction utilisateur, gestion de la mémoire conversationnelle et rappels contextuels.",
+    "opt_proactive_reminders_label": "Rappels Proactifs Contextuels",
+    "opt_proactive_reminders_desc": "Avertit l'utilisateur des tâches importantes ou échéances en fonction de l'activité en cours."
+  }
+}

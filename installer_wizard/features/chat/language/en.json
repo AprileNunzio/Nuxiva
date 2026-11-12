@@ -1,0 +1,37 @@
+{
+  "name": "Chat with Nuxiva",
+  "description": "Interactive conversational console with the assistant, detailing the active reasoning model, tool calls, and execution latencies.",
+  "capabilities": [
+    "Textual multi-turn chat",
+    "Dual-brain engine attribution indicator",
+    "Detailed latency and step breakdown"
+  ],
+  "settings": {
+    "NUXIVA_ADDRESSEE_THRESHOLD": "Confidence threshold required before responding (0.2 timid - 0.95 cautious)",
+    "NUXIVA_ADDRESSEE_ALONE": "Bonus confidence when alone in the room (0 - 1)"
+  },
+  "reflex": {
+    "temporal_morning": "Good morning",
+    "temporal_afternoon": "Good afternoon",
+    "temporal_evening": "Good evening",
+    "temporal_general": "Hello",
+    "status_optimal": "All nodes are operational and telemetry is stable.",
+    "status_focus": "Current focus: {focus}.",
+    "bridge_interest": "Regarding {entity}, information streams are synchronized.",
+    "bridge_tech": "Operating environment for {entity} is ready.",
+    "bridge_desire": "Regarding {entity}, planning is active.",
+    "bridge_open": "All channels are online. What are our key objectives today?",
+    "filler_action_eval": "Evaluating constraints",
+    "filler_action_synth": "Synthesizing the approach",
+    "filler_action_cross": "Cross-referencing telemetry",
+    "filler_action_proc": "Processing the request",
+    "domain_arch": "across system architecture",
+    "domain_code": "within code implementation",
+    "domain_system": "over system parameters",
+    "domain_general": "through the cognitive graph",
+    "connector_now": "in real time.",
+    "connector_struct": "while formulating the response.",
+    "connector_stream": "without pauses.",
+    "connector_instant": "right away."
+  }
+}

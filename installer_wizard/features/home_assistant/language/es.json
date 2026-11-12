@@ -1,0 +1,36 @@
+{
+  "name": "Casa (Home Assistant)",
+  "description": "Nuxiva estudia la casa con Home Assistant: habitaciones, plantas, dispositivos Zigbee, Thread, Matter, Wi-Fi, Z-Wave y Bluetooth con sus modelos y funciones. Permite controlarlos por voz y detectar movimiento o presencia en las habitaciones.",
+  "capabilities": [
+    "Descubrimiento automático de habitaciones, dispositivos, modelos y protocolos",
+    "Base de datos local actualizada en tiempo real",
+    "Control por voz de luces, colores, persianas, climatización, televisión y escenas",
+    "Movimiento y presencia por habitación",
+    "Temperatura, humedad, puertas y ventanas abiertas",
+    "Confirmación para cerraduras, alarmas, portones y garajes",
+    "Aprende y recuerda nuevas frases"
+  ],
+  "settings": {
+    "HOME_ASSISTANT_URL": "Dirección de Home Assistant",
+    "HOME_ASSISTANT_TOKEN": "Token de acceso de larga duración",
+    "NUXIVA_HOME_ROOM": "Habitación donde se encuentra Nuxiva",
+    "NUXIVA_HOME_MOTION_MIN": "Minutos de ocupación tras el último movimiento",
+    "NUXIVA_HOME_CONFIRM": "Pedir confirmación para cerraduras, alarmas, portones y garajes",
+    "HOME_ASSISTANT_VERIFY_SSL": "Verificar el certificado HTTPS"
+  },
+  "readings": {
+    "missing_reading": "No encuentro un sensor que corresponda a la medida, al dispositivo o al período solicitado.",
+    "unavailable": "lectura no disponible",
+    "multiple": "He encontrado varios sensores; estas son sus lecturas individuales, sin sumarlas.",
+    "power": "Potencia eléctrica",
+    "energy": "Energía eléctrica",
+    "sensor_values": "Valores de los sensores de Home Assistant",
+    "sensors": "Sensores",
+    "temperature": "Temperatura",
+    "humidity": "Humedad",
+    "missing_temperature": "temperatura no disponible",
+    "missing_humidity": "humedad no disponible",
+    "climate": "Clima de la casa",
+    "rooms": "Habitaciones"
+  }
+}

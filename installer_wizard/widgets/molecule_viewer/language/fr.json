@@ -1,0 +1,23 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/molecule_viewer",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Molécule",
+    "loading": "Préparation de la structure…",
+    "spin": "Rotation automatique",
+    "backbone": "Squelette",
+    "scheme_element": "Éléments",
+    "scheme_chain": "Chaînes",
+    "scheme_secondary": "Hélices et feuillets",
+    "atoms_one": "{{n}} atome",
+    "atoms_other": "{{n}} atomes",
+    "bonds_one": "{{n}} liaison",
+    "bonds_other": "{{n}} liaisons",
+    "error_engine": "Moteur moléculaire indisponible sur ce système",
+    "error_library": "Bibliothèque 3D indisponible",
+    "error_data": "Structure illisible"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "CEO Executive Orchestrator",
+    "description": "Executive meta-agent decomposing complex objectives, orchestrating specialists, and validating deliverables.",
+    "opt_autonomous_delegation_label": "Autonomous Executive Delegation",
+    "opt_autonomous_delegation_desc": "Allows the CEO agent to assign sub-tasks to specialized agents without intermediate confirmation prompts."
+  }
+}

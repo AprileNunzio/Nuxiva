@@ -1,0 +1,59 @@
+{
+  "name": "Telecamere",
+  "description": "Un'unica funzione per webcam, infrarosso e telecamere di rete: vista dal vivo di tutte le sorgenti, ricerca e modelli per le marche più comuni, prova della connessione, opzioni per ogni telecamera (nome, stanza, rotazione, specchio, fluidità), controlli della webcam (luminosità, contrasto, esposizione), foto e clip, avviso di movimento e registrazione ad anello. Registrazione spenta di default: va attivata con il consenso di chi viene ripreso.",
+  "capabilities": [
+    "Webcam locali, sensore infrarosso e telecamere di rete (RTSP, ONVIF, Hikvision) in un'unica vista dal vivo",
+    "Ricerca automatica in rete (ONVIF e porte RTSP) e modelli per Hikvision, Dahua, Reolink, Tapo, Foscam, Axis e altre",
+    "Prova della connessione con diagnosi dell'errore (password, percorso, porta, rete)",
+    "Opzioni per telecamera: nome, stanza, rotazione, specchio, fluidità, risoluzione, preferita, nascosta",
+    "Controlli della webcam (luminosità, contrasto, esposizione, bilanciamento) ripristinati a ogni avvio",
+    "Foto a richiesta e al movimento, archivio con anteprima, scarico e cancellazione",
+    "Avviso di movimento con sensibilità regolabile e registro degli eventi",
+    "Registrazione ad anello (5/15/60 minuti) con credenziali cifrate, consenso obbligatorio e indicatore visibile",
+    "Configurazione automatica dell'emettitore infrarosso con un clic",
+    "Con la voce: «apri la webcam salotto a tutto schermo», «scatta una foto dall'ingresso», «avvisami se si muove qualcosa in giardino»",
+    "Tutto ciò che manca (ffmpeg, v4l-utils, strumento dell'emettitore infrarosso) si installa e si configura da solo, senza interventi"
+  ],
+  "settings": {
+    "NUXIVA_LIVECAM_FPS": "Fluidità dell'immagine in diretta",
+    "NUXIVA_LIVECAM_WIDTH": "Larghezza dell'immagine in diretta",
+    "NUXIVA_LIVECAM_MAX": "Telecamere in diretta contemporanee",
+    "NUXIVA_CAMERAS_MOTION_EVERY": "Controllo del movimento ogni",
+    "NUXIVA_CAMERAS_MOTION_COOLDOWN": "Pausa tra due avvisi di movimento",
+    "NUXIVA_CAMERAS_PHOTOS_MAX": "Foto conservate per telecamera",
+    "NUXIVA_IR_AUTO": "Configura da solo l'emettitore infrarosso se l'immagine è al buio"
+  },
+  "meta": {
+    "locale": "it",
+    "scope": "features/cameras",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "tab.title": "Telecamere",
+    "a11y.tabs": "Sezioni telecamere",
+    "privacy.title": "Privacy — leggi prima di registrare",
+    "privacy.body": "La registrazione è spenta di default. Attivala solo con il consenso di chi può essere ripreso, e chi è presente deve poter sapere che la telecamera registra (indicatore acceso). I video restano sul dispositivo per la durata dell'anello scelto e poi vengono cancellati. Il rilevamento del movimento confronta solo la differenza tra due immagini piccole e non conserva nulla.",
+    "privacy.analysis": "L'analisi automatica dei video (lettura del labiale, riconoscimento di chi parla) non è attiva.",
+    "tabs.live": "Dal vivo",
+    "tabs.add": "Aggiungi",
+    "tabs.archive": "Foto e clip",
+    "tabs.events": "Eventi",
+    "tabs.devices": "Webcam e infrarosso",
+    "kind.local": "Webcam",
+    "kind.ip": "Rete",
+    "kind.infrared": "Infrarossi",
+    "status.summary": "{{live}} sorgenti video · {{recording}} in registrazione · {{motion}} con avviso di movimento",
+    "status.ffmpeg_missing": "ffmpeg non installato: serve per le telecamere di rete",
+    "status.v4l_missing": "v4l-utils non installato: servono per i controlli webcam",
+    "card.no_image": "Nessuna immagine",
+    "card.recording": "REC",
+    "badge.main": "in uso dalla visione",
+    "badge.motion": "movimento",
+    "badge.hidden": "nascosta",
+    "actions.view": "Ingrandisci",
+    "actions.photo": "Foto",
+    "actions.options": "Opzioni",
+    "live.empty": "Nessuna sorgente. Collega una webcam (viene riconosciuta da sola) oppure usa «Aggiungi» per una telecamera di rete.",
+    "toast.photo_saved": "Foto salvata ({{size}})"
+  }
+}

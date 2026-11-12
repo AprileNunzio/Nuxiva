@@ -1,0 +1,23 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "web/screen",
+    "version": "2.0.0"
+  },
+  "dictionary": {
+    "page_title": "{{assistant}} · Screen",
+    "screen_label": "SCREEN",
+    "screen_n": "SCREEN {{n}}",
+    "mirror_label": "{{assistant}} WIDGETS",
+    "link_lost": "Reconnecting to the supervisor",
+    "role_agent": "Assistant",
+    "role_work": "Work",
+    "role_visual": "Visual",
+    "screens_map": "Connected screens",
+    "pages_nav": "Widget pages",
+    "page_of": "{{n}} / {{total}}",
+    "page_go": "Page {{n}}",
+    "page_prev": "Previous page",
+    "page_next": "Next page"
+  }
+}

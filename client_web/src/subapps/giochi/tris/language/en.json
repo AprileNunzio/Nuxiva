@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Tic-Tac-Toe",
+    "turn_x": "Player X Turn",
+    "turn_o": "Player O Turn",
+    "winner": "Player {player} won!",
+    "tie": "Game ended in a draw!",
+    "restart": "Restart Game",
+    "mode_pvp": "Two Players",
+    "mode_ai": "Play vs AI",
+    "score_x": "Player X",
+    "score_o": "Player O",
+    "score_tie": "Draws",
+    "voice": "Voice",
+    "listening": "Listening...",
+    "voice_mic_tooltip": "Play by speaking coordinates (e.g. center, top left)",
+    "difficulty": "Difficulty",
+    "diff_easy": "Easy",
+    "diff_medium": "Medium",
+    "diff_hard": "Unbeatable",
+    "winner_speech": "Victory for {player}!",
+    "tie_speech": "The game ended in a draw!",
+    "ai_moved_speech": "Move placed on position {pos}",
+    "save": "Save",
+    "load": "Resume",
+    "save_game": "Save current game",
+    "load_game": "Load saved game",
+    "game_saved": "Game saved successfully",
+    "game_resumed": "Game resumed",
+    "saved_games_title": "Saved Games",
+    "no_saved_games": "No saved games found"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Registrazioni",
+    "subtitle": "Archivio continuo, cronologia e rilevamenti video",
+    "filter_all": "Tutti gli Eventi",
+    "filter_motion": "Movimento",
+    "filter_ai": "Persone & Veicoli",
+    "empty": "Nessuna registrazione salvata in archivio.",
+    "play": "Riproduci",
+    "storage_used": "Spazio Archivio Utilizzato",
+    "retention": "Conservazione Archivio"
+  }
+}

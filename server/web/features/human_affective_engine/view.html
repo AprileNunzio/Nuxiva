@@ -1,0 +1,92 @@
+<section id="deck-affective-engine" class="plancia-section">
+  <div class="affective-container">
+    <div class="affective-header-bar">
+      <div>
+        <h2 class="affective-title" data-i18n="title">Motore Affettivo &amp; Inferenza Psicofisiologica</h2>
+        <p class="affective-subtitle" data-i18n="subtitle">Rilevamento contactless battiti (rPPG), prosodia vocale e sguardo con risposta adattiva allo stato umorale</p>
+      </div>
+      <div class="affective-actions">
+        <button id="btn-run-affective-assessment" class="tactical-btn primary" data-i18n="evaluate_btn">⚡ Esegui Valutazione Multimodale</button>
+      </div>
+    </div>
+
+    <div class="affective-grid">
+      <div class="tactical-card affective-card">
+        <div class="card-header">
+          <span class="card-title">💓 Telemetria Emodinamica Contactless (rPPG)</span>
+          <span id="badge-hemodynamic-live" class="badge-tag pulse-badge">MONITORAGGIO ATTIVO</span>
+        </div>
+        <div class="card-body">
+          <div class="biometric-metrics-row">
+            <div class="metric-pill">
+              <span class="metric-label" data-i18n="pulse_label">Battiti Cardiaci (rPPG):</span>
+              <strong id="val-affective-bpm" class="metric-val pulse-val">72 BPM</strong>
+            </div>
+            <div class="metric-pill">
+              <span class="metric-label" data-i18n="hrv_label">Variabilità Cardiaca (HRV):</span>
+              <strong id="val-affective-hrv" class="metric-val">42.5 ms</strong>
+            </div>
+            <div class="metric-pill">
+              <span class="metric-label">Confidenza Segnale:</span>
+              <strong id="val-affective-confidence" class="metric-val">94.8%</strong>
+            </div>
+          </div>
+          <div class="photoplethysmogram-box">
+            <canvas id="canvas-rppg-pulse-wave" width="600" height="110"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="tactical-card affective-card">
+        <div class="card-header">
+          <span class="card-title" data-i18n="mood_label">Stato Umorale Rilevato:</span>
+          <span id="badge-current-mood-state" class="badge-tag mood-badge optimal">OTTIMALE &amp; BILANCIATO</span>
+        </div>
+        <div class="card-body">
+          <div class="risk-meters-container">
+            <div class="risk-meter-item">
+              <div class="meter-header">
+                <span data-i18n="depression_risk_label">Indice Rischio Depressione:</span>
+                <strong id="val-depression-risk-pct">12%</strong>
+              </div>
+              <div class="progress-container">
+                <div id="bar-depression-risk" class="progress-bar-fill" style="width: 12%; background: #10b981;"></div>
+              </div>
+            </div>
+
+            <div class="risk-meter-item">
+              <div class="meter-header">
+                <span data-i18n="anxiety_risk_label">Indice Ansia &amp; Stress:</span>
+                <strong id="val-anxiety-risk-pct">18%</strong>
+              </div>
+              <div class="progress-container">
+                <div id="bar-anxiety-risk" class="progress-bar-fill" style="width: 18%; background: #00f0ff;"></div>
+              </div>
+            </div>
+
+            <div class="risk-meter-item">
+              <div class="meter-header">
+                <span data-i18n="fatigue_risk_label">Indice Affaticamento / Burnout:</span>
+                <strong id="val-fatigue-risk-pct">14%</strong>
+              </div>
+              <div class="progress-container">
+                <div id="bar-fatigue-risk" class="progress-bar-fill" style="width: 14%; background: #3b82f6;"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="intervention-strategy-box">
+            <span class="strategy-badge" data-i18n="intervention_title">Strategia Risposta Adattiva Nuxiva:</span>
+            <strong id="val-intervention-strategy-name" class="strategy-name">INTERVENTION_STANDARD_HIGH_PRODUCTIVITY</strong>
+            <p id="txt-adaptive-system-prompt-body" class="strategy-desc">L'utente è in stato emotivo bilanciato ed energico. Massima proattività operativa ed efficienza esecutiva.</p>
+            <div class="adaptive-tone-meta">
+              <span class="meta-tag">TTS Tono: <b id="val-tone-warmth">Standard</b></span>
+              <span class="meta-tag">Velocità Vocale: <b id="val-tone-speed">1.0x</b></span>
+              <span class="meta-tag">Ambiente: <b id="val-tone-ambient">Neutro / Focus</b></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

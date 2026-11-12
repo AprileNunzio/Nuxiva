@@ -1,0 +1,28 @@
+{
+  "$schema": "https://nuxiva.org/schemas/engine.manifest.json",
+  "id": "ambient_fingerprint",
+  "name": "Ambient Background Music Listener",
+  "version": "1.0.0",
+  "kind": "engine",
+  "family": "music_recognition",
+  "author": "Nuxiva Acoustic Team",
+  "capabilities": ["background_audio", "continuous_sampling"],
+  "options": [
+    {
+      "id": "polling_interval_seconds",
+      "type": "range",
+      "default": 15,
+      "min": 5,
+      "max": 60,
+      "label_key": "opt_polling_interval_label",
+      "desc_key": "opt_polling_interval_desc"
+    },
+    {
+      "id": "screen_hud_toast",
+      "type": "boolean",
+      "default": true,
+      "label_key": "opt_screen_hud_toast_label",
+      "desc_key": "opt_screen_hud_toast_desc"
+    }
+  ]
+}

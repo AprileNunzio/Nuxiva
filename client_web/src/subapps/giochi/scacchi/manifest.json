@@ -1,0 +1,25 @@
+{
+  "id": "scacchi",
+  "name": "Scacchi",
+  "parent": "giochi",
+  "isSubapp": true,
+  "scope": "subapps/giochi/scacchi",
+  "kind": "app",
+  "category": "system",
+  "icon": "Gamepad2",
+  "version": "1.0.0",
+  "window": {
+    "defaultWidth": 54,
+    "defaultHeight": 66,
+    "minWidth": 28,
+    "minHeight": 32,
+    "resizable": true
+  },
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "scacchi-3d",
+    "url": "https://img.icons8.com/?size=240&id=chess&format=png"
+  }
+}

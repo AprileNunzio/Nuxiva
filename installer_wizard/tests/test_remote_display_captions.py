@@ -1,0 +1,165 @@
+import asyncio
+import json
+import unittest
+from pathlib import Path
+from types import SimpleNamespace
+
+from fastapi import Request
+from fastapi.responses import Response
+
+import auth
+from access import require_display
+from features.ear import broadcast
+from features.ear.broadcast import broadcast_event, register, unregister
+from system_api import _display_response
+
+WEB = Path(__file__).resolve().parents[1] / "web" / "display"
+
+
+class FakeSession:
+    def __init__(self, name: str) -> None:
+        self.name = name
+        self.sent: list[dict] = []
+        self.delivered = asyncio.Event()
+        self.ws = SimpleNamespace(send=self._send)
+        self.page = {"visible": "visible"}
+
+    async def _send(self, data: str) -> None:
+        self.sent.append(json.loads(data))
+        self.delivered.set()
+
+
+class RemoteDisplayBroadcastTest(unittest.IsolatedAsyncioTestCase):
+    async def asyncSetUp(self) -> None:
+        broadcast.SESSIONS.clear()
+
+    async def asyncTearDown(self) -> None:
+        for session in list(broadcast.SESSIONS):
+            unregister(session)
+        await asyncio.sleep(0)
+
+    async def test_broadcast_event_reaches_all_active_sessions(self) -> None:
+        s1, s2 = FakeSession("kiosk"), FakeSession("remote_tablet")
+        register(s1)
+        register(s2)
+        await broadcast_event(s1, type="partial", utt="u1", text="accendi la", stable=1)
+        await asyncio.wait_for(asyncio.gather(s1.delivered.wait(), s2.delivered.wait()), 1)
+        self.assertEqual(len(s1.sent), 1)
+        self.assertEqual(len(s2.sent), 1)
+        self.assertEqual(s1.sent[0]["text"], "accendi la")
+        self.assertEqual(s2.sent[0]["text"], "accendi la")
+
+    async def test_transcript_origin_flag_distinguishes_source_from_mirrors(self) -> None:
+        kiosk, remote = FakeSession("kiosk"), FakeSession("remote_browser")
+        register(kiosk)
+        register(remote)
+        await broadcast_event(kiosk, type="transcript", text="spegni le luci", utt="u2", speaker="anna")
+        await asyncio.wait_for(asyncio.gather(kiosk.delivered.wait(), remote.delivered.wait()), 1)
+        self.assertNotIn("origin", kiosk.sent[0])
+        self.assertFalse(remote.sent[0]["origin"])
+        self.assertEqual(remote.sent[0]["text"], "spegni le luci")
+        self.assertEqual(remote.sent[0]["speaker"], "anna")
+
+    async def test_session_lifecycle_registration(self) -> None:
+        s = FakeSession("test")
+        register(s)
+        self.assertIn(s, broadcast.all_sessions())
+        unregister(s)
+        self.assertNotIn(s, broadcast.all_sessions())
+
+
+class DisplaySessionCookieTest(unittest.TestCase):
+    def test_display_response_sets_signed_cookie_when_missing(self) -> None:
+        req = SimpleNamespace(cookies={}, url=SimpleNamespace(scheme="http"))
+        res = Response("ok")
+        out = _display_response(req, res)
+        cookies = [h[1].decode("latin-1") for h in out.raw_headers if h[0].lower() == b"set-cookie"]
+        self.assertTrue(any(auth.DISPLAY_COOKIE in c and auth.verify(c.split(";")[0].split("=", 1)[1].strip('"')) == "display" for c in cookies))
+        self.assertFalse(any(auth.SESSION_COOKIE in c for c in cookies))
+
+    def test_display_response_preserves_existing_valid_session(self) -> None:
+        admin_token = auth.issue("admin")
+        req = SimpleNamespace(cookies={auth.SESSION_COOKIE: admin_token}, url=SimpleNamespace(scheme="http"))
+        res = Response("ok")
+        out = _display_response(req, res)
+        cookies = [h[1].decode("latin-1") for h in out.raw_headers if h[0].lower() == b"set-cookie"]
+        self.assertEqual(len(cookies), 0)
+
+    def test_display_cookie_never_grants_admin_session_user(self) -> None:
+        from access import session_user
+        display_token = auth.issue("display")
+        scope = {
+            "type": "http",
+            "method": "GET",
+            "client": ("192.168.1.50", 12345),
+            "headers": [(b"cookie", f"{auth.SESSION_COOKIE}={display_token}".encode())],
+        }
+        self.assertIsNone(session_user(Request(scope)))
+
+
+class RequireDisplaySecurityTest(unittest.TestCase):
+    def fake_request(self, host: str, method: str = "GET", cookie: str = "") -> Request:
+        scope = {
+            "type": "http",
+            "method": method,
+            "client": (host, 12345),
+            "headers": [(b"cookie", f"{auth.SESSION_COOKIE}={cookie}".encode())] if cookie else [],
+        }
+        return Request(scope)
+
+    def test_private_ip_allowed_for_read_only_get(self) -> None:
+        require_display(self.fake_request("192.168.1.50", "GET"))
+        require_display(self.fake_request("10.0.0.5", "HEAD"))
+
+    def test_public_ip_without_session_denied_for_get(self) -> None:
+        from fastapi import HTTPException
+        with self.assertRaises(HTTPException) as ctx:
+            require_display(self.fake_request("8.8.8.8", "GET"))
+        self.assertEqual(ctx.exception.status_code, 401)
+
+    def test_private_ip_denied_for_post_without_session(self) -> None:
+        from fastapi import HTTPException
+        with self.assertRaises(HTTPException) as ctx:
+            require_display(self.fake_request("192.168.1.50", "POST"))
+        self.assertEqual(ctx.exception.status_code, 401)
+
+    def test_valid_display_session_cookie_allowed_for_all_methods(self) -> None:
+        token = auth.issue("display")
+        require_display(self.fake_request("192.168.1.50", "GET", token))
+        require_display(self.fake_request("192.168.1.50", "POST", token))
+        scope_display = {
+            "type": "http",
+            "method": "POST",
+            "client": ("192.168.1.50", 12345),
+            "headers": [(b"cookie", f"{auth.DISPLAY_COOKIE}={token}".encode())],
+        }
+        require_display(Request(scope_display))
+
+
+class DisplayGuestLockAndEarScriptTest(unittest.TestCase):
+    def test_display_js_starts_unlocked_unless_strangers_present(self) -> None:
+        src = (WEB / "display.js").read_text(encoding="utf-8")
+        self.assertIn("let familyNearState = true;", src)
+        self.assertIn("familyNearState = hasFamilyNear || Date.now() < familyNearUntil || strangers === 0;", src)
+
+    def test_58_ear_code_files_all_exist(self) -> None:
+        root = WEB.parents[2]
+        ear_sh = (root / "scripts" / "os" / "steps" / "58-ear.sh").read_text(encoding="utf-8")
+        self.assertNotIn("wakegain.py", ear_sh)
+        self.assertIn("autolevel.py", ear_sh)
+
+
+class EarJsScriptVerificationTest(unittest.TestCase):
+    def test_ear_js_connects_before_mic_check(self) -> None:
+        src = (WEB / "ear.js").read_text(encoding="utf-8").replace("\r\n", "\n")
+        conn_idx = src.index("connect();\n    if (!micAllowed())")
+        self.assertGreater(conn_idx, 0)
+
+    def test_transcript_guard_checks_origin_and_mic_live_before_ask(self) -> None:
+        src = (WEB / "ear.js").read_text(encoding="utf-8").replace("\r\n", "\n")
+        self.assertIn("if (ev.origin !== false && micLive())", src)
+        self.assertIn("if (D.Captions) D.Captions.event(ev);", src)
+
+
+if __name__ == "__main__":
+    unittest.main()

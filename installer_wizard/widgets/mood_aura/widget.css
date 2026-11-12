@@ -1,0 +1,20 @@
+.w-mood_aura .ma-core { display: flex; align-items: center; gap: 16px; padding: 4px 0 8px; }
+.w-mood_aura .ma-aura { position: relative; width: 70px; height: 70px; flex: none; }
+.w-mood_aura .ma-aura i { position: absolute; inset: 0; border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, rgba(var(--c), 0.95), rgba(var(--c), 0.25) 55%, transparent 72%); filter: blur(1px);
+  animation: ma-float calc(7s / var(--a, 1)) ease-in-out infinite; }
+.w-mood_aura .ma-aura i:nth-child(2) { inset: 8px; mix-blend-mode: screen; animation-delay: -2s; animation-duration: calc(9s / var(--a, 1)); }
+.w-mood_aura .ma-aura i:nth-child(3) { inset: 18px; background: radial-gradient(circle, #fff, rgba(var(--c), 0.6) 60%, transparent 75%); animation-delay: -4s; }
+.w-mood_aura .ma-txt { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.w-mood_aura .ma-txt b { font-size: clamp(20px, 1.6vw, 44px); font-weight: 300; text-transform: capitalize; color: rgb(var(--c)); text-shadow: 0 0 18px rgba(var(--c), 0.5); }
+.w-mood_aura .ma-txt small { font-size: 11px; color: var(--text-dim); }
+.w-mood_aura .ma-dots { display: flex; gap: 4px; }
+.w-mood_aura .ma-dots i { width: 14px; height: 4px; border-radius: 4px; background: rgba(var(--c), 0.2); }
+.w-mood_aura .ma-dots i.on { background: rgb(var(--c)); box-shadow: 0 0 6px rgba(var(--c), 0.8); }
+.w-mood_aura .ma-bar { display: block; height: 3px; border-radius: 3px; background: rgba(var(--c), 0.15); overflow: hidden; }
+.w-mood_aura .ma-bar i { display: block; height: 100%; background: rgb(var(--c)); }
+.w-mood_aura .ma-week { list-style: none; margin: 6px 0 0; padding: 0; display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; height: 34px; align-items: end; }
+.w-mood_aura .ma-week li { height: 100%; display: flex; align-items: flex-end; }
+.w-mood_aura .ma-week li i { width: 100%; height: var(--h, 10%); min-height: 3px; border-radius: 3px; background: rgba(var(--c, 150, 170, 190), 0.75); box-shadow: 0 0 8px rgba(var(--c, 0, 0, 0), 0.4); }
+@keyframes ma-float { 0%, 100% { transform: scale(0.94) translate(0, 0); } 33% { transform: scale(1.04) translate(2px, -2px); } 66% { transform: scale(0.98) translate(-2px, 1px); } }
+@media (prefers-reduced-motion: reduce) { .w-mood_aura .ma-aura i { animation: none; } }

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://nuxiva.org/schemas/skill.manifest.json",
+  "id": "media_player",
+  "name": "Spatial Audio & Media Controller",
+  "version": "1.0.0",
+  "kind": "skill",
+  "author": "Nuxiva Sound Engineering",
+  "capabilities": ["audio_playback", "dsp_effects", "playlist_management"],
+  "options": [
+    {
+      "id": "spatial_audio_enhancer",
+      "type": "boolean",
+      "default": true,
+      "label_key": "opt_spatial_audio_label",
+      "desc_key": "opt_spatial_audio_desc"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Radar Meteo e Clima in Tempo Reale",
+    "description": "Previsioni meteo ad alta risoluzione e radar precipitazioni animato collocato nella System Tray.",
+    "opt_tray_temperature_label": "Badge Temperatura nell'Orologio",
+    "opt_tray_temperature_desc": "Mostra i gradi centigradi correnti direttamente accanto all'orologio di sistema."
+  }
+}

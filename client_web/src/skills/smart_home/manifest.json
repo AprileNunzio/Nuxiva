@@ -1,0 +1,18 @@
+{
+  "$schema": "https://nuxiva.org/schemas/skill.manifest.json",
+  "id": "smart_home",
+  "name": "Smart Home IoT Controller",
+  "version": "1.0.0",
+  "kind": "skill",
+  "author": "Nuxiva Home Automation",
+  "capabilities": ["local_network", "matter_protocol", "mqtt"],
+  "options": [
+    {
+      "id": "confirm_critical_actions",
+      "type": "boolean",
+      "default": true,
+      "label_key": "opt_confirm_critical_label",
+      "desc_key": "opt_confirm_critical_desc"
+    }
+  ]
+}

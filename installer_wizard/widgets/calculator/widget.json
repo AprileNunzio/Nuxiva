@@ -1,0 +1,20 @@
+{
+  "id": "calculator",
+  "name": "Calcolatrice",
+  "icon": "🧮",
+  "priority": 50,
+  "size": "m",
+  "intents": [
+    "calculator",
+    "calc",
+    "calcolatrice",
+    "calcola",
+    "fai un calcolo"
+  ],
+  "panel_type": "tool",
+  "ttl": 3600,
+  "description": "Calcolatrice normale e scientifica. Effettua calcoli matematici.",
+  "tone": "cyan",
+  "essential": true,
+  "standalone": true
+}

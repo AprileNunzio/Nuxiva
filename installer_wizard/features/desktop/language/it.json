@@ -1,0 +1,29 @@
+{
+  "name": "Desktop a widget",
+  "description": "Il display è un desktop: ogni informazione è un widget indipendente che compare quando serve (musica, meteo, avvisi, allarmi), in ordine di priorità.",
+  "capabilities": [
+    "Widget scoperti dalle cartelle",
+    "Priorità modificabili",
+    "Allarmi a schermo intero",
+    "Prova di ogni widget dal pannello",
+    "Chiusura automatica dei dati personali",
+    "Widget del proprietario sul display: risorse, sistemi, firewall, aggiornamenti e notizie quando ti avvicini"
+  ],
+  "settings": {
+    "NUXIVA_REMOTE_CAMERA_PROBE": "Consenti agli amministratori una prova di riconoscimento con la webcam remota",
+    "NUXIVA_REMOTE_CAMERA_PREVIEW": "Consenti l'anteprima locale della webcam nei browser remoti autorizzati",
+    "NUXIVA_REMOTE_MIC_INPUT": "Consenti l'invio audio da sessioni e nodi remoti autorizzati",
+    "NUXIVA_PRIVACY_AUTOCLOSE": "Chiudi i widget con dati personali quando non ci sei",
+    "NUXIVA_PRIVACY_AWAY_S": "Dopo quanto tempo che ti sei allontanato",
+    "NUXIVA_PRIVACY_VOICE_S": "Chiudi i dati personali aperti a voce dopo",
+    "NUXIVA_SECRETARY": "Sul display, mostra i widget del proprietario quando si avvicina",
+    "NUXIVA_DISPLAY_PRESENCE_GATE": "Sul display mostra pulsanti, widget e chat solo quando vede o sente una persona autorizzata",
+    "NUXIVA_DISPLAY_GUEST_PUBLIC": "Con soli ospiti mostra anche i widget pubblici adatti agli ospiti",
+    "NUXIVA_DISPLAY_TRUST_GUESTS": "Con ospiti presenti mostra anche i widget di casa",
+    "NUXIVA_DISPLAY_LEARNING": "Il display impara dalle abitudini di ogni persona autorizzata (dati cifrati, mai con ospiti)",
+    "NUXIVA_DISPLAY_ROOM_STRICT": "Negli schermi di stanze senza telecamera mostra solo ciò che va bene per chiunque"
+  },
+  "help": {
+    "NUXIVA_DISPLAY_PRESENCE_GATE": "Senza webcam a infrarossi il volto da solo non basta e serve anche la voce. Dopo che hai parlato, i widget restano aperti finché resti inquadrato, per il tempo di «Chiudi i dati personali aperti a voce dopo». Il controllo anti-foto si regola in Visione e volti."
+  }
+}

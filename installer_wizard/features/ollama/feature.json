@@ -1,0 +1,39 @@
+{
+  "id": "ollama",
+  "name": "Ollama Engine",
+  "icon": "⚡",
+  "category": "assistente",
+  "order": 21,
+  "pinned": false,
+  "panel": "",
+  "api": "api.py",
+  "toggle": {
+    "env": "NUXIVA_OLLAMA_ENABLED",
+    "apply": ["ollama"]
+  },
+  "description": "Motore di inferenza neurale locale H24 con auto-tuning hardware, doppio canale di concorrenza e gestione contesti lunghi.",
+  "capabilities": [
+    "Rilevamento hardware dinamico di CPU, RAM e GPU/VRAM",
+    "Auto-tuning automatico di parallelismo, contesto e memoria",
+    "Canale a doppia corsia per chat interattiva e processi lunghi H24",
+    "Abilitazione automatica di Flash Attention e KV-cache ottimizzata",
+    "Controllo completo del demone e ripristino istantaneo del profilo ottimale"
+  ],
+  "icon3d": "./icon.png",
+  "settings": [
+    {
+      "key": "NUXIVA_OLLAMA_PARALLEL",
+      "label": "Numero slot di concorrenza paralleli",
+      "type": "select",
+      "default": "auto",
+      "options": ["auto", "1", "2", "4", "8"]
+    },
+    {
+      "key": "NUXIVA_OLLAMA_NUM_CTX",
+      "label": "Finestra di contesto token di default",
+      "type": "select",
+      "default": "auto",
+      "options": ["auto", "2048", "4096", "8192", "16384", "32768"]
+    }
+  ]
+}

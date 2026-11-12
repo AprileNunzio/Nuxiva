@@ -1,0 +1,191 @@
+.os-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--os-radius-md);
+  padding: 16px;
+  color: var(--md-sys-color-on-surface);
+  transition: all var(--os-transition-normal);
+  user-select: none;
+}
+
+.os-card-interactive {
+  cursor: pointer;
+}
+
+.os-card-interactive:hover {
+  background-color: var(--md-sys-color-surface-container-high);
+  border-color: rgba(59, 130, 246, 0.4);
+  transform: translateY(-2px);
+  box-shadow: var(--os-shadow-md);
+}
+
+.os-card-interactive:active {
+  transform: translateY(0);
+}
+
+.os-card-selected {
+  background-color: var(--md-sys-color-primary-container);
+  border: 2px solid var(--md-sys-color-primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25), var(--os-shadow-md);
+}
+
+[data-theme="light"] .os-card-interactive:hover {
+  background-color: #ffffff;
+  border-color: #60a5fa;
+  box-shadow: 0 8px 24px rgba(0, 91, 193, 0.08);
+}
+
+[data-theme="light"] .os-card-selected {
+  background-color: #eff6ff;
+  border-color: #005bc1;
+  box-shadow: 0 0 0 3px rgba(0, 91, 193, 0.16), var(--os-shadow-md);
+}
+
+.os-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.os-card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--os-radius-sm);
+  background-color: rgba(59, 130, 246, 0.12);
+  color: var(--md-sys-color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.os-card-title-group {
+  flex: 1;
+  min-width: 0;
+}
+
+.os-card-title {
+  font-size: var(--os-font-size-base);
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.os-card-subtitle {
+  font-size: var(--os-font-size-xs);
+  color: var(--md-sys-color-on-surface-variant);
+  margin: 2px 0 0;
+}
+
+.os-card-body {
+  font-size: var(--os-font-size-sm);
+  color: var(--md-sys-color-on-surface-variant);
+  line-height: 1.45;
+  margin-bottom: 12px;
+  flex: 1;
+}
+
+.os-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+  font-size: var(--os-font-size-xs);
+}
+
+.os-card-addon {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background-color: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--os-radius-md);
+  transition: all var(--os-transition-normal);
+  cursor: pointer;
+  user-select: none;
+}
+
+.os-card-addon:hover {
+  background-color: var(--md-sys-color-surface-container-high);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.os-card-addon.is-selected {
+  border-color: var(--md-sys-color-primary);
+  background-color: var(--md-sys-color-primary-container);
+}
+
+[data-theme="light"] .os-card-addon.is-selected {
+  background-color: #eff6ff;
+  border-color: #005bc1;
+}
+
+.os-card-addon-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.os-card-addon-name {
+  font-size: var(--os-font-size-base);
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.os-card-addon-desc {
+  font-size: var(--os-font-size-sm);
+  color: var(--md-sys-color-on-surface-variant);
+  line-height: 1.4;
+}
+
+.os-card-addon-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+  font-size: var(--os-font-size-xs);
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.os-card-addon-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: var(--os-radius-full);
+  background-color: rgba(59, 130, 246, 0.15);
+  color: var(--md-sys-color-primary);
+  font-weight: 500;
+}
+
+.os-decision-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  width: 100%;
+}
+
+@media (max-width: 600px) {
+  .os-card-addon {
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    padding: 12px 14px;
+  }
+  .os-card-addon .os-card-icon {
+    display: none;
+  }
+}

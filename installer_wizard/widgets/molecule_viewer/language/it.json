@@ -1,0 +1,23 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/molecule_viewer",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Molecola",
+    "loading": "Preparo la struttura…",
+    "spin": "Rotazione automatica",
+    "backbone": "Scheletro",
+    "scheme_element": "Elementi",
+    "scheme_chain": "Catene",
+    "scheme_secondary": "Eliche e foglietti",
+    "atoms_one": "{{n}} atomo",
+    "atoms_other": "{{n}} atomi",
+    "bonds_one": "{{n}} legame",
+    "bonds_other": "{{n}} legami",
+    "error_engine": "Motore molecolare non disponibile su questo sistema",
+    "error_library": "Libreria 3D non disponibile",
+    "error_data": "Struttura non leggibile"
+  }
+}

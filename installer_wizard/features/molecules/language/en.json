@@ -1,0 +1,11 @@
+{
+  "name": "Molecules",
+  "description": "Biomolecular structure viewer on the display: upload a PDB or mmCIF file and the molecule appears in 3D, ready to explore with your hands.",
+  "capabilities": [
+    "Opens PDB and mmCIF structures of proteins, nucleic acids and ligands, read safely by the Rust engine",
+    "Atoms as glowing spheres with no background, bonds computed from distances, backbone for large structures",
+    "Colours by element, by chain or by secondary structure (helices and sheets)",
+    "Rotate and zoom with mouse, fingers or two hands, and fling it to another screen"
+  ],
+  "settings": {}
+}

@@ -1,0 +1,9 @@
+{
+  "name": "System Logs",
+  "description": "Counts and findings refer only to the selected device, source and filters. They do not certify the health of the whole system.",
+  "capabilities": [
+    "Sources are discovered on this machine. Inventory refreshes every 15 seconds; select a row to read it.",
+    "Recognizable secrets are redacted in both the view and exports. Review files before sharing them.",
+    "Only server audit events explicitly linked to this device are available. The device does not expose its own remote logs."
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "id": "tasks",
+  "name": "Attività in background",
+  "icon": "⏱️",
+  "category": "assistente",
+  "order": 17,
+  "pinned": false,
+  "panel": "",
+  "api": "api.py",
+  "connector": "commands.py",
+  "connector_risk": "home",
+  "kind": "feature",
+  "description": "Ogni creazione che richiede tempo diventa un'attività in background: progresso, passi, annullamento e, a lavoro finito, la domanda se vuoi ascoltarla, aprirla o parlarne. Reggono ore o giorni di lavoro e sopravvivono ai riavvii.",
+  "capabilities": [
+    "Registro unico delle attività: canzoni, progetti e creazioni lunghe",
+    "Progresso e passi in tempo reale nel widget Attività",
+    "A lavoro finito propone: ascolta, apri, parlane",
+    "Risponde a «a che punto sei?» e «cosa stai facendo?»"
+  ],
+  "settings": [],
+  "routing": {
+    "nouns": ["attività", "task", "background", "lavori in corso"],
+    "phrases": ["cosa stai facendo", "a che punto sei", "hai finito", "attività in corso"]
+  },
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "nQuaNO36nu68",
+    "url": "https://img.icons8.com/?size=240&id=nQuaNO36nu68&format=png"
+  }
+}

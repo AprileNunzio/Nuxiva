@@ -1,0 +1,16 @@
+{
+  "id": "matter",
+  "name": "Matter 1.6.1",
+  "version": "1.6.1",
+  "category": "home",
+  "icon3d": "./icon.png",
+  "requires_root": false,
+  "api_prefix": "/api/matter",
+  "capabilities": [
+    "matter_controller",
+    "matter_bridge",
+    "thread_network",
+    "energy_management",
+    "surveillance_ptz"
+  ]
+}

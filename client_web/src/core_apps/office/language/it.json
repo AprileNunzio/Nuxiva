@@ -1,0 +1,35 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Documenti e Ufficio",
+    "description": "OCR, gestione documentale e file server",
+    "status": "Attivo",
+    "open_app": "Apri",
+    "loading": "Caricamento…",
+    "unreachable": "Server non raggiungibile",
+    "on": "Attivo",
+    "off": "Spento",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "edit": "Modifica",
+    "delete": "Elimina",
+    "add": "Aggiungi",
+    "stat_documents": "Documenti",
+    "stat_engine": "Motore ufficio",
+    "engine_ready": "Pronto",
+    "engine_missing": "Non installato",
+    "stat_recipes": "Conversioni imparate",
+    "create_title": "Crea un documento",
+    "create_placeholder": "Descrivi il documento da preparare (almeno 8 caratteri)",
+    "create": "Crea",
+    "documents_title": "Documenti creati",
+    "documents_empty": "Nessun documento creato.",
+    "preview": "Anteprima",
+    "download": "Scarica",
+    "recipes_title": "Conversioni di formato",
+    "recipes_empty": "Nessuna conversione ancora.",
+    "recipe_uses": "{count} usi"
+  }
+}

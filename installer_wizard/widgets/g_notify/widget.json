@@ -1,0 +1,18 @@
+{
+  "id": "g_notify",
+  "personal": true,
+  "name": "Notifiche Google",
+  "icon": "🔔",
+  "priority": 80,
+  "size": "m",
+  "ttl": 180,
+  "agent": "google",
+  "intents": [
+    "g_notify",
+    "google",
+    "gmail",
+    "calendario"
+  ],
+  "description": "Nuove email, appuntamenti in arrivo e riepilogo della giornata di chi è davanti ad Nuxiva.",
+  "tone": "violet"
+}

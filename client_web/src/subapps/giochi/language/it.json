@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Giochi",
+    "subtitle": "Directory e raccolta giochi di Nuxiva",
+    "play": "Gioca Ora",
+    "available": "Sotto-applicazioni disponibili: {count}",
+    "empty": "Nessun gioco rilevato nella directory."
+  }
+}

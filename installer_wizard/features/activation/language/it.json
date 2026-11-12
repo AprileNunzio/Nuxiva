@@ -1,0 +1,20 @@
+{
+  "name": "Sequenza di Attivazione",
+  "scope": "features/activation",
+  "dictionary": {
+    "title": "Sequenza di Attivazione",
+    "subtitle": "Attivazione dei sottosistemi e configurazione guidata",
+    "btn_start": "Avvia installazione",
+    "btn_continue": "Continua",
+    "btn_retry": "Riprova",
+    "btn_skip": "Salta sequenza",
+    "btn_reset": "Ricomincia da zero",
+    "status_pending": "In attesa",
+    "status_running": "In esecuzione...",
+    "status_done": "Completato",
+    "status_failed": "Non riuscito",
+    "status_declined": "Non installato",
+    "status_deferred": "Posticipato",
+    "choice_later_note": "Potrai installare questo componente anche in un secondo momento da Impostazioni > Pacchetti."
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "meta": {"locale": "it"},
+  "dictionary": {
+    "module.title": "Matrice LLM gratuita e failover",
+    "module.subtitle": "Instradamento tra modelli con prezzo ufficiale pari a zero",
+    "mode.free_matrix": "Matrice cloud a costo zero",
+    "pool.chat": "Conversazione",
+    "pool.voice_fast": "Voce rapida misurata",
+    "pool.agent_tools": "Agenti e strumenti",
+    "pool.vision": "Visione e immagini",
+    "pool.deep_code": "Ragionamento e codice",
+    "status.available": "Pronto",
+    "status.cooldown_429": "In pausa per limite richieste",
+    "status.degraded": "Fornitore rallentato",
+    "status.key_invalid": "Chiave non valida",
+    "failover.reason.rate_limit_429": "Limite di richieste raggiunto",
+    "failover.reason.provider_error": "Fornitore temporaneamente non disponibile",
+    "failover.reason.timeout": "Tempo di risposta superato",
+    "catalog.unavailable": "Catalogo non raggiungibile"
+  }
+}

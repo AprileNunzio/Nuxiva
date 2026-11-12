@@ -1,0 +1,10 @@
+{
+  "dictionary": {
+    "title": "Reconnaissance Vocale Web Speech",
+    "description": "Moteur streaming natif du navigateur à très faible latence pour commandes et dictée.",
+    "opt_interim_results_label": "Résultats Partiels en Temps Réel",
+    "opt_interim_results_desc": "Affiche les mots au fur et à mesure qu'ils sont prononcés avant la fin de la phrase.",
+    "opt_continuous_session_label": "Écoute Vocale Continue",
+    "opt_continuous_session_desc": "Maintient le canal microphone toujours attentif sans interruption entre les commandes."
+  }
+}

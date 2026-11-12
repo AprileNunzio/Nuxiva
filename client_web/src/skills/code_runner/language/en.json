@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Sandboxed Secure Code Runner",
+    "description": "Skill compiling and executing Python, Rust, and JavaScript snippets within an isolated WebAssembly sandbox.",
+    "opt_timeout_sec_label": "Maximum Execution Timeout (s)",
+    "opt_timeout_sec_desc": "Forcibly terminates the script if execution exceeds the configured duration."
+  }
+}

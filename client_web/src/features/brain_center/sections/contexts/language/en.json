@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Who answers",
+    "description": "For each task choose the main model and its backups: if the first one fails or hits its spending limit, {assistant} moves to the next one by itself.",
+    "answering": "Answering now: {model}",
+    "auto_explain": "In automatic mode the system picks the best available model. Choose one to decide yourself.",
+    "picker_title": "Model for: {context}",
+    "options": "Options",
+    "scope_label": "Where models may run",
+    "scope_anywhere": "Anywhere",
+    "scope_home_first": "Home first, then online",
+    "scope_home": "Home only",
+    "strategy_label": "How to choose",
+    "strategy_order": "Follow the order",
+    "strategy_fastest": "The fastest",
+    "reset_auto": "Back to automatic",
+    "routing_title": "Conversation and work",
+    "routing_hint": "How to split requests between conversation and work.",
+    "routing_auto": "Automatic",
+    "routing_auto_hint": "Splits only if the two tasks use different models.",
+    "routing_1": "Always split",
+    "routing_1_hint": "Short questions go to conversation, the rest to work.",
+    "routing_0": "A single model",
+    "routing_0_hint": "Everything goes to the work model.",
+    "tester_title": "Try it",
+    "tester_hint": "Type a sample request and see who would answer, without sending it.",
+    "tester_placeholder": "E.g. “Turn on the kitchen light”",
+    "tester_submit": "Who would answer?",
+    "tester_result": "Task: {context}"
+  }
+}

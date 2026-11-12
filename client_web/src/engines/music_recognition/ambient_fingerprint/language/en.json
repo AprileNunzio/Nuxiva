@@ -1,0 +1,10 @@
+{
+  "dictionary": {
+    "title": "Ambient Background Music Listener",
+    "description": "Continuous automatic recognition of background ambient music and radio.",
+    "opt_polling_interval_label": "Sampling Interval (Seconds)",
+    "opt_polling_interval_desc": "Frequency of background ambient sound stream sampling.",
+    "opt_screen_hud_toast_label": "HUD Screen Notification",
+    "opt_screen_hud_toast_desc": "Displays instant overlay banner with title and cover as soon as song changes."
+  }
+}

@@ -1,0 +1,11 @@
+.w-home_rooms .hr-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 6px; }
+.w-home_rooms .hr-room { display: flex; align-items: center; gap: 8px; min-width: 0; padding: 7px 8px; border-radius: 10px; background: rgba(var(--tone), 0.08); box-shadow: 0 0 0 1px rgba(var(--tone), 0.16) inset; animation: hr-in 0.4s ease-out both; animation-delay: calc(var(--i) * 40ms); }
+.w-home_rooms .hr-ic { position: relative; flex: none; width: 26px; height: 26px; display: grid; place-items: center; border-radius: 8px; color: rgb(var(--tone)); background: rgba(var(--tone), 0.14); }
+.w-home_rooms .hr-ic svg { width: 14px; height: 14px; }
+.w-home_rooms .hr-dot { position: absolute; top: -2px; right: -2px; width: 7px; height: 7px; border-radius: 50%; background: rgb(var(--tone)); box-shadow: 0 0 0 0 rgba(var(--tone), 0.6); animation: hr-pulse 2s ease-out infinite; }
+.w-home_rooms .hr-txt { display: flex; flex-direction: column; min-width: 0; }
+.w-home_rooms .hr-txt b { font-size: 12.5px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.w-home_rooms .hr-txt small { font-size: 10.5px; color: var(--text-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@keyframes hr-pulse { 70% { box-shadow: 0 0 0 6px rgba(var(--tone), 0); } 100% { box-shadow: 0 0 0 0 rgba(var(--tone), 0); } }
+@keyframes hr-in { from { opacity: 0; transform: scale(0.96); } }
+@media (prefers-reduced-motion: reduce) { .w-home_rooms .hr-room, .w-home_rooms .hr-dot { animation: none; } }

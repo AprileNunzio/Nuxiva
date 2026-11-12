@@ -1,0 +1,9 @@
+{
+  "name": "Nuxiva Store",
+  "description": "Official Store for modular installation of optional capabilities, neural models and applications.",
+  "capabilities": [
+    "Modular capabilities catalog",
+    "One-click install with dependency management",
+    "Real-time hardware resource monitoring"
+  ]
+}

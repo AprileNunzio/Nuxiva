@@ -1,0 +1,22 @@
+{
+  "id": "laws",
+  "name": "Leggi",
+  "icon": "⚖",
+  "category": "sistema",
+  "order": 5,
+  "pinned": true,
+  "panel": "laws",
+  "description": "Le leggi fondamentali e gerarchiche che Nuxiva e ogni suo agente o nodo devono sempre rispettare. Le quattro leggi di base non si possono modificare né eliminare; sotto puoi aggiungere le tue regole, sempre obbligatorie.",
+  "capabilities": [
+    "Quattro leggi fondamentali immutabili (Legge Zero, Prima, Seconda, Terza)",
+    "Regole personali aggiuntive, sempre rispettate",
+    "Iniettate in testa a ogni ragionamento del cervello, locale e cloud"
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "Qv15MoNYxkA7",
+    "url": "https://img.icons8.com/?size=240&id=Qv15MoNYxkA7&format=png"
+  }
+}

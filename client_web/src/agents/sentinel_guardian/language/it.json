@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Sentinella di Sicurezza e Sandbox",
+    "description": "Agente autonomo sentinella che ispeziona i flussi IPC, monitora le violazioni di memoria e isola le minacce.",
+    "opt_strict_zero_trust_label": "Isolamento Zero-Trust Rigido",
+    "opt_strict_zero_trust_desc": "Blocca immediatamente le subapp o i plugin privi di permessi esplicitamente dichiarati nel manifest."
+  }
+}

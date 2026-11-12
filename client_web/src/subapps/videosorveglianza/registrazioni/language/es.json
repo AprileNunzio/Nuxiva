@@ -1,0 +1,16 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Grabaciones",
+    "subtitle": "Archivo continuo, historial y detecciones de vídeo",
+    "filter_all": "Todos los Eventos",
+    "filter_motion": "Movimiento",
+    "filter_ai": "Personas y Vehículos",
+    "empty": "No hay grabaciones guardadas en el archivo.",
+    "play": "Reproducir",
+    "storage_used": "Espacio de archivo utilizado",
+    "retention": "Retención del archivo"
+  }
+}

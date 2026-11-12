@@ -1,0 +1,139 @@
+.brain-route-host {
+  --brain-route-bottom: clamp(14px, 2.4vh, 40px);
+  position: fixed;
+  right: max(clamp(16px, 1.6vw, 40px), env(safe-area-inset-right));
+  bottom: max(var(--brain-route-bottom), env(safe-area-inset-bottom));
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  max-width: min(20rem, calc(100vw - 2rem));
+  font: 500 clamp(0.75rem, 0.7vw, 1rem)/1.4 system-ui, sans-serif;
+  pointer-events: none;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.brain-route-button {
+  display: flex;
+  max-width: 100%;
+  min-height: calc(var(--dock-clear, 80px) - 22px);
+  align-items: center;
+  gap: 0.55rem;
+  border: 0;
+  background: none;
+  padding: 0 0.15rem;
+  color: rgb(223 250 255 / 72%);
+  text-align: right;
+  text-shadow: 0 1px 10px rgb(0 0 0 / 70%);
+  cursor: pointer;
+  pointer-events: auto;
+  transition: color 0.2s ease;
+}
+
+.brain-route-button:hover,
+.brain-route-button[aria-expanded="true"] {
+  color: #dffaff;
+}
+
+.brain-route-button:focus-visible {
+  outline: 2px solid #67e8f9;
+  outline-offset: 4px;
+  border-radius: 0.5rem;
+}
+
+.brain-route-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  flex: none;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 0.7rem rgb(52 211 153 / 75%);
+}
+
+.brain-route-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+.brain-route-free {
+  flex: none;
+  color: #a7f3d0;
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.brain-route-popover {
+  max-width: 100%;
+  margin-bottom: 0.25rem;
+  padding: 0 0.15rem;
+  color: #cbd5e1;
+  text-align: right;
+  text-shadow: 0 1px 10px rgb(0 0 0 / 80%);
+  pointer-events: auto;
+}
+
+.brain-route-popover[hidden],
+.brain-route-host[hidden] {
+  display: none;
+}
+
+.brain-route-popover p:empty {
+  display: none;
+}
+
+.brain-route-popover p + p {
+  margin-top: 0.3rem;
+}
+
+.brain-route-switch {
+  animation: brain-route-glow 2.5s ease-out;
+}
+
+@keyframes brain-route-glow {
+  0%, 100% { color: rgb(223 250 255 / 72%); }
+  20%, 65% { color: #fde68a; text-shadow: 0 0 1rem rgb(34 211 238 / 60%); }
+}
+
+:root:has(.brain-route-host:not([hidden])) .dock {
+  max-width: calc(100vw - 2 * var(--brain-badge-w, 16px));
+}
+
+body:is(.desk-whiteboard, .desk-full) .brain-route-host {
+  opacity: 0.35;
+}
+
+@media (max-width: 900px) {
+  .brain-route-host {
+    left: 50%;
+    right: auto;
+    align-items: center;
+    transform: translateX(-50%);
+    bottom: calc(var(--brain-route-bottom) + var(--dock-clear, 80px) - 18px);
+  }
+
+  .brain-route-button {
+    min-height: 2rem;
+  }
+
+  .brain-route-popover {
+    text-align: center;
+  }
+
+  :root:has(.brain-route-host:not([hidden])) .dock {
+    max-width: calc(100vw - 24px);
+  }
+
+  body:has(.dock.tools-open) .brain-route-host {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brain-route-switch { animation: none; }
+  .brain-route-host, .brain-route-button { transition: none; }
+}

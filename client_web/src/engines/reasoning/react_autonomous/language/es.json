@@ -1,0 +1,10 @@
+{
+  "dictionary": {
+    "title": "Agente Autónomo ReAct",
+    "description": "Ciclo cognitivo continuo de pensamiento, acción con herramientas y observación reflexiva.",
+    "opt_max_thought_steps_label": "Pasos Máximos de Reflexión",
+    "opt_max_thought_steps_desc": "Número máximo de iteraciones autónomas que el agente puede realizar antes de concluir.",
+    "opt_autonomous_verification_label": "Verificación Autónoma de Resultados",
+    "opt_autonomous_verification_desc": "Realiza una fase de autocrítica y verificación formal antes de devolver el resultado final."
+  }
+}

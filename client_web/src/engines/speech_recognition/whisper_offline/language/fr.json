@@ -1,0 +1,10 @@
+{
+  "dictionary": {
+    "title": "Whisper Neuronal Local Hors-Ligne",
+    "description": "Transcription vocale neuronale sur l'appareil sans envoi de données vers le cloud (Confidentialité Totale).",
+    "opt_model_precision_label": "Quantification et Précision",
+    "opt_model_precision_desc": "Niveau de compression int8 ou float16 pour équilibrer vitesse d'inférence et précision.",
+    "opt_vad_threshold_label": "Seuil VAD Détection de Voix",
+    "opt_vad_threshold_desc": "Sensibilité du filtre Voice Activity Detector pour rejeter les bruits de fond."
+  }
+}

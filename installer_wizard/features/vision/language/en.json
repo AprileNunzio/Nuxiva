@@ -1,0 +1,16 @@
+{
+  "name": "Vision & Biometrics",
+  "description": "Visual perception: face recognition, head pose, gaze estimation, person tracking, and spatial presence.",
+  "capabilities": [
+    "Real-time face recognition and owner verification",
+    "3D head pose and gaze attention tracking",
+    "Proximity detection and presence scoring"
+  ],
+  "settings": {
+    "NUXIVA_VISION_DEVICE": "Camera device index",
+    "NUXIVA_LIVENESS": "Anti-photo and anti-screen check (needs infrared)"
+  },
+  "help": {
+    "NUXIVA_LIVENESS": "With a webcam without infrared the face cannot be confirmed as live, so in the report-only and strict modes the display also asks for your voice before showing personal data. Turning the check off accepts a recognized face alone, but a photo could then open the widgets."
+  }
+}

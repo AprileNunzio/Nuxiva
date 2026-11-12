@@ -1,0 +1,10 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/brief",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Résumé"
+  }
+}

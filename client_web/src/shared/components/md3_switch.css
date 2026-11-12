@@ -1,0 +1,117 @@
+.md3-switch-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  user-select: none;
+  cursor: pointer;
+  min-height: 48px;
+}
+
+.md3-switch-wrapper.is-disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.md3-switch-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+}
+
+.md3-switch-track {
+  position: relative;
+  width: 52px;
+  height: 32px;
+  border-radius: var(--os-radius-full);
+  background-color: var(--md-sys-color-surface-container-highest);
+  border: 2px solid var(--md-sys-color-outline);
+  box-sizing: border-box;
+  transition: background-color var(--os-transition-normal), border-color var(--os-transition-normal);
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+}
+
+.md3-switch-wrapper:hover .md3-switch-track {
+  background-color: var(--md-sys-color-surface-container-high);
+}
+
+.md3-switch-thumb {
+  position: absolute;
+  left: 6px;
+  width: 16px;
+  height: 16px;
+  border-radius: var(--os-radius-full);
+  background-color: var(--md-sys-color-outline);
+  transition: transform 300ms var(--os-motion-expressive-spring),
+              width 250ms var(--os-transition-fast),
+              height 250ms var(--os-transition-fast),
+              background-color var(--os-transition-fast),
+              box-shadow var(--os-transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--os-shadow-sm);
+}
+
+.md3-switch-wrapper:hover .md3-switch-thumb {
+  width: 20px;
+  height: 20px;
+  background-color: var(--md-sys-color-on-surface-variant);
+}
+
+.md3-switch-input:focus-visible + .md3-switch-track {
+  outline: 2px solid var(--md-sys-color-primary);
+  outline-offset: 3px;
+}
+
+.md3-switch-input:checked + .md3-switch-track {
+  background-color: var(--md-sys-color-primary);
+  border-color: var(--md-sys-color-primary);
+}
+
+.md3-switch-input:checked + .md3-switch-track .md3-switch-thumb {
+  transform: translateX(20px);
+  width: 24px;
+  height: 24px;
+  left: 4px;
+  background-color: var(--md-sys-color-on-primary);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+}
+
+.md3-switch-wrapper:hover .md3-switch-input:checked + .md3-switch-track .md3-switch-thumb {
+  background-color: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+}
+
+.md3-switch-icon {
+  width: 14px;
+  height: 14px;
+  color: var(--md-sys-color-primary);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity var(--os-transition-fast), transform var(--os-transition-fast);
+}
+
+.md3-switch-input:checked + .md3-switch-track .md3-switch-icon {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.md3-switch-label {
+  font-family: var(--os-font-family);
+  font-size: var(--os-font-size-sm);
+  font-weight: 500;
+  color: var(--md-sys-color-on-surface);
+  line-height: 1.4;
+}
+
+.md3-switch-description {
+  font-size: var(--os-font-size-xs);
+  color: var(--md-sys-color-on-surface-variant);
+  margin-top: 2px;
+}

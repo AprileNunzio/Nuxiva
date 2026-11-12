@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "features/secure",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Sécurité et Certificats",
+    "desc": "Protection des points d'accès, chiffrement et magasins de confiance",
+    "error.no_cert": "Certificat non encore généré",
+    "error.renewal_failed": "Échec du renouvellement du certificat",
+    "status.valid": "Certificats actifs et vérifiés",
+    "action.renew": "Régénérer les certificats"
+  }
+}

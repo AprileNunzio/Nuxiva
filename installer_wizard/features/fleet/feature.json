@@ -1,0 +1,51 @@
+{
+  "id": "fleet",
+  "name": "Flotta di agenti",
+  "icon": "🛰",
+  "category": "assistente",
+  "order": 21,
+  "pinned": false,
+  "panel": "",
+  "api": "api.py",
+  "toggle": {
+    "env": "NUXIVA_FLEET",
+    "apply": []
+  },
+  "description": "Catalogo scalabile di agenti specializzati: Nuxiva li crea quando servono, collega loro strumenti e widget, e tu li vedi e gestisci tutti, anche se diventano milioni o miliardi.",
+  "capabilities": [
+    "Archivio a 256 partizioni con paginazione a cursore e contatori incrementali: il costo non cresce con il numero di agenti",
+    "Nuxiva crea un agente quando serve, evitando duplicati, e sceglie strumenti e widget adatti allo scopo",
+    "Collegamento di strumenti e widget esistenti, o di un widget nuovo creato al volo",
+    "Istruzioni degli agenti cifrate a riposo; stato attivo, in pausa o archiviato anche in blocco"
+  ],
+  "settings": [
+    {
+      "key": "NUXIVA_FLEET_AUTO_CREATE",
+      "label": "Creazione automatica",
+      "type": "select",
+      "options": [
+        "1",
+        "0"
+      ],
+      "default": "1"
+    },
+    {
+      "key": "NUXIVA_FLEET_PAGE",
+      "label": "Agenti per pagina",
+      "type": "select",
+      "options": [
+        "25",
+        "50",
+        "100"
+      ],
+      "default": "50"
+    }
+  ],
+  "icon3d": "./icon.png",
+  "icon3dSource": {
+    "provider": "Icons8",
+    "technique": "3d",
+    "id": "9QHudN9uBhDv",
+    "url": "https://img.icons8.com/?size=240&id=9QHudN9uBhDv&format=png"
+  }
+}

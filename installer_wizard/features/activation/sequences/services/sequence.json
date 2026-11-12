@@ -1,0 +1,9 @@
+{
+  "manifest_version": 1,
+  "id": "services",
+  "kind": "mandatory",
+  "order": 198,
+  "steps": ["services"],
+  "icon": "icon.png",
+  "critical": true
+}

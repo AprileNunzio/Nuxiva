@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "skills/date/giorni",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "title": "Days Calculation",
+    "desc": "Difference between dates and work days",
+    "error_date": "Invalid date",
+    "result_days": "Elapsed days: {{days}}"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "hockey_match",
+  "name": "Partita Hockey",
+  "icon": "circle",
+  "priority": 60,
+  "size": "m",
+  "agent": "sports",
+  "intents": [
+    "hockey_match",
+    "hockey",
+    "nhl"
+  ],
+  "ttl": 120,
+  "description": "Partita e risultato hockey su ghiaccio: diretta periodi, gol e power play.",
+  "tone": "cyan"
+}

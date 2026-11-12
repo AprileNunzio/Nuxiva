@@ -1,0 +1,37 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/health_hub",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Santé",
+    "recovery": "Récupération {{n}}",
+    "live": "Fréquence en direct",
+    "no_pulse": "Pas de fréquence",
+    "hours": "{{h}} h {{m}} min",
+    "m_spo2": "Oxygène",
+    "m_hrv": "VFC",
+    "m_resp_rate": "Respirations",
+    "m_body_temp": "Température",
+    "m_bp_sys": "Tension",
+    "m_glucose": "Glycémie",
+    "m_resting_hr": "Au repos",
+    "m_weight": "Poids",
+    "m_steps": "Pas",
+    "m_active_kcal": "Calories",
+    "m_sleep_min": "Sommeil",
+    "s_spo2_low": "Oxygène bas",
+    "s_spo2_very_low": "Oxygène très bas",
+    "s_heart_rate_high": "Fréquence élevée",
+    "s_heart_rate_low": "Fréquence basse",
+    "s_body_temp_fever": "Fièvre",
+    "s_body_temp_high_fever": "Forte fièvre",
+    "s_bp_sys_high": "Tension élevée",
+    "s_bp_sys_very_high": "Tension très élevée",
+    "s_bp_dia_high": "Diastolique élevée",
+    "s_glucose_low": "Glycémie basse",
+    "s_glucose_high": "Glycémie élevée",
+    "s_resp_rate_high": "Respiration rapide"
+  }
+}

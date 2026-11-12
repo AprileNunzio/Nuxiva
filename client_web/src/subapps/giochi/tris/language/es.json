@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Tres en Raya",
+    "turn_x": "Turno Jugador X",
+    "turn_o": "Turno Jugador O",
+    "winner": "¡Ha ganado {player}!",
+    "tie": "¡La partida terminó en empate!",
+    "restart": "Reiniciar Partida",
+    "mode_pvp": "Dos Jugadores",
+    "mode_ai": "Desafiar al Sistema",
+    "score_x": "Jugador X",
+    "score_o": "Jugador O",
+    "score_tie": "Empates",
+    "voice": "Voz",
+    "listening": "Escuchando...",
+    "voice_mic_tooltip": "Juega diciendo las coordenadas (ej. al centro, arriba izquierda)",
+    "difficulty": "Dificultad",
+    "diff_easy": "Fácil",
+    "diff_medium": "Medio",
+    "diff_hard": "Imbatible",
+    "winner_speech": "¡Victoria para {player}!",
+    "tie_speech": "¡La partida ha terminado en empate!",
+    "ai_moved_speech": "Movimiento colocado en la casilla {pos}",
+    "save": "Guardar",
+    "load": "Reanudar",
+    "save_game": "Guardar estado de partida",
+    "load_game": "Cargar partida guardada",
+    "game_saved": "Partida guardada con éxito",
+    "game_resumed": "Partida reanudada",
+    "saved_games_title": "Partidas Guardadas",
+    "no_saved_games": "No hay partidas guardadas"
+  }
+}

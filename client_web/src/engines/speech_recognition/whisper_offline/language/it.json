@@ -1,0 +1,10 @@
+{
+  "dictionary": {
+    "title": "Whisper Neurale Locale Offline",
+    "description": "Trascrizione vocale su rete neurale on-device senza invio dati al cloud (Privacy Assoluta).",
+    "opt_model_precision_label": "Quantizzazione e Precisione",
+    "opt_model_precision_desc": "Livello di compressione int8 o float16 per bilanciare velocità di calcolo e accuratezza.",
+    "opt_vad_threshold_label": "Soglia VAD Rilevamento Voce",
+    "opt_vad_threshold_desc": "Sensibilità del filtro Voice Activity Detector per ignorare rumori di fondo."
+  }
+}

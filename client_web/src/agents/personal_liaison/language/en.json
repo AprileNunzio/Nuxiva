@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Personal Assistant & Executive Liaison",
+    "description": "Agent dedicated to user interaction, conversational memory management, and contextual scheduling reminders.",
+    "opt_proactive_reminders_label": "Proactive Contextual Reminders",
+    "opt_proactive_reminders_desc": "Notifies the user when relevant tasks or commitments arise based on current activity."
+  }
+}

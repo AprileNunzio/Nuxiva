@@ -1,0 +1,20 @@
+{
+  "name": "Secuencia de Activación",
+  "scope": "features/activation",
+  "dictionary": {
+    "title": "Secuencia de Activación",
+    "subtitle": "Activación de subsistemas y configuración guiada",
+    "btn_start": "Iniciar instalación",
+    "btn_continue": "Continuar",
+    "btn_retry": "Reintentar",
+    "btn_skip": "Saltar secuencia",
+    "btn_reset": "Empezar de cero",
+    "status_pending": "Pendiente",
+    "status_running": "En ejecución...",
+    "status_done": "Completado",
+    "status_failed": "Fallido",
+    "status_declined": "No instalado",
+    "status_deferred": "Pospuesto",
+    "choice_later_note": "Podrás instalar este componente más adelante desde Ajustes > Paquetes."
+  }
+}

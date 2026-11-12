@@ -1,0 +1,23 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "web/screen",
+    "version": "2.0.0"
+  },
+  "dictionary": {
+    "page_title": "{{assistant}} · Écran",
+    "screen_label": "ÉCRAN",
+    "screen_n": "ÉCRAN {{n}}",
+    "mirror_label": "WIDGETS DE {{assistant}}",
+    "link_lost": "Reconnexion au superviseur",
+    "role_agent": "Assistant",
+    "role_work": "Travail",
+    "role_visual": "Visuel",
+    "screens_map": "Écrans connectés",
+    "pages_nav": "Pages de widgets",
+    "page_of": "{{n}} / {{total}}",
+    "page_go": "Page {{n}}",
+    "page_prev": "Page précédente",
+    "page_next": "Page suivante"
+  }
+}

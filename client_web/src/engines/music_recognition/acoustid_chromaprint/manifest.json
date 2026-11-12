@@ -1,0 +1,28 @@
+{
+  "$schema": "https://nuxiva.org/schemas/engine.manifest.json",
+  "id": "acoustid_chromaprint",
+  "name": "Chromaprint Local FFT Fingerprint",
+  "version": "1.2.0",
+  "kind": "engine",
+  "family": "music_recognition",
+  "author": "Nuxiva Acoustic Team",
+  "capabilities": ["audio_stream", "fft_spectrogram", "fingerprinting"],
+  "options": [
+    {
+      "id": "fft_sensitivity",
+      "type": "range",
+      "default": 80,
+      "min": 20,
+      "max": 100,
+      "label_key": "opt_fft_sensitivity_label",
+      "desc_key": "opt_fft_sensitivity_desc"
+    },
+    {
+      "id": "show_song_overlay",
+      "type": "boolean",
+      "default": true,
+      "label_key": "opt_show_song_overlay_label",
+      "desc_key": "opt_show_song_overlay_desc"
+    }
+  ]
+}

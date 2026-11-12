@@ -1,0 +1,27 @@
+{
+  "manifest_version": 1,
+  "id": "convert3d",
+  "kind": "optional",
+  "order": 170,
+  "steps": ["convert3d"],
+  "icon": "icon.png",
+  "choices": [
+    {
+      "id": "yes",
+      "installs": true,
+      "icon": "choice_yes.png",
+      "recommended": false,
+      "env": {
+        "NUXIVA_3D_CONVERT": "1"
+      }
+    },
+    {
+      "id": "no",
+      "installs": false,
+      "icon": "choice_no.png",
+      "env": {
+        "NUXIVA_3D_CONVERT": "0"
+      }
+    }
+  ]
+}

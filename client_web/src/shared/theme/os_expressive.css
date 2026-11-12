@@ -1,0 +1,96 @@
+:root {
+  --md-motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --md-motion-easing-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --md-motion-easing-emphasized-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
+  --md-motion-easing-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --md-motion-duration-short: 150ms;
+  --md-motion-duration-medium: 300ms;
+  --md-motion-duration-long: 500ms;
+  --md-state-hover: 0.08;
+  --md-state-focus: 0.1;
+  --md-state-pressed: 0.12;
+  --md-focus-ring: 0 0 0 3px color-mix(in oklab, var(--md-sys-color-primary) 55%, transparent);
+  --md-elevation-1: 0 1px 2px color-mix(in oklab, var(--md-sys-color-shadow) 30%, transparent), 0 1px 3px 1px color-mix(in oklab, var(--md-sys-color-shadow) 15%, transparent);
+  --md-elevation-2: 0 1px 2px color-mix(in oklab, var(--md-sys-color-shadow) 30%, transparent), 0 2px 6px 2px color-mix(in oklab, var(--md-sys-color-shadow) 15%, transparent);
+  --md-elevation-3: 0 4px 8px 3px color-mix(in oklab, var(--md-sys-color-shadow) 15%, transparent), 0 1px 3px color-mix(in oklab, var(--md-sys-color-shadow) 30%, transparent);
+}
+
+@keyframes md-enter {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes md-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes md-pop {
+  0% { opacity: 0; transform: scale(0.85); }
+  70% { opacity: 1; transform: scale(1.03); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes md-aurora {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes md-pulse {
+  0% { box-shadow: 0 0 0 0 color-mix(in oklab, currentColor 45%, transparent); }
+  70% { box-shadow: 0 0 0 6px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+@keyframes md-shimmer {
+  from { background-position: -200% 0; }
+  to { background-position: 200% 0; }
+}
+
+.md-enter { animation: md-enter var(--md-motion-duration-long) var(--md-motion-easing-emphasized-decelerate) both; }
+.md-fade { animation: md-fade var(--md-motion-duration-medium) var(--md-motion-easing-emphasized) both; }
+.md-pop { animation: md-pop var(--md-motion-duration-long) var(--md-motion-easing-emphasized-decelerate) both; }
+.md-stagger > * { animation: md-enter var(--md-motion-duration-long) var(--md-motion-easing-emphasized-decelerate) both; animation-delay: calc(min(var(--md-i, 0), 16) * 35ms); }
+.md-stagger > :nth-child(1) { --md-i: 0; } .md-stagger > :nth-child(2) { --md-i: 1; } .md-stagger > :nth-child(3) { --md-i: 2; }
+.md-stagger > :nth-child(4) { --md-i: 3; } .md-stagger > :nth-child(5) { --md-i: 4; } .md-stagger > :nth-child(6) { --md-i: 5; }
+.md-stagger > :nth-child(7) { --md-i: 6; } .md-stagger > :nth-child(8) { --md-i: 7; } .md-stagger > :nth-child(9) { --md-i: 8; }
+.md-stagger > :nth-child(10) { --md-i: 9; } .md-stagger > :nth-child(11) { --md-i: 10; } .md-stagger > :nth-child(12) { --md-i: 11; }
+.md-stagger > :nth-child(n + 13) { --md-i: 12; }
+
+.md-state { position: relative; isolation: isolate; transition: transform var(--md-motion-duration-short) var(--md-motion-easing-spring), box-shadow var(--md-motion-duration-medium) var(--md-motion-easing-emphasized), background-color var(--md-motion-duration-short) linear, color var(--md-motion-duration-short) linear; }
+.md-state::after { content: ''; position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: currentColor; opacity: 0; pointer-events: none; transition: opacity var(--md-motion-duration-short) linear; }
+.md-state:hover::after { opacity: var(--md-state-hover); }
+.md-state:focus-visible::after { opacity: var(--md-state-focus); }
+.md-state:active::after { opacity: var(--md-state-pressed); }
+.md-state:active { transform: scale(0.97); }
+.md-state:focus-visible { outline: none; box-shadow: var(--md-focus-ring); }
+.md-lift:hover { transform: translateY(-3px); box-shadow: var(--md-elevation-2); }
+
+.md-hero {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  color: var(--md-sys-color-on-primary-container);
+  background: linear-gradient(120deg, var(--md-sys-color-primary-container), color-mix(in oklab, var(--md-sys-color-tertiary-container) 70%, var(--md-sys-color-primary-container)), color-mix(in oklab, var(--md-sys-color-secondary-container) 60%, var(--md-sys-color-primary-container)));
+  background-size: 220% 220%;
+  animation: md-aurora 18s ease-in-out infinite;
+}
+.md-hero::before { content: ''; position: absolute; inset: -40% -10% auto auto; width: 55%; aspect-ratio: 1; border-radius: 50%; z-index: -1; background: radial-gradient(circle, color-mix(in oklab, var(--md-sys-color-primary) 28%, transparent), transparent 70%); }
+.md-hero-muted { color: color-mix(in oklab, var(--md-sys-color-on-primary-container) 78%, transparent); }
+.md-hero-tile { background: color-mix(in oklab, var(--md-sys-color-on-primary-container) 9%, transparent); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--md-sys-color-on-primary-container) 14%, transparent); }
+
+.md-tonal { background: var(--md-tonal-container, var(--md-sys-color-secondary-container)); color: var(--md-tonal-on, var(--md-sys-color-on-secondary-container)); }
+.md-glyph { display: inline-grid; place-items: center; border-radius: 30%; color: var(--md-glyph-ink, var(--md-sys-color-primary)); background: linear-gradient(145deg, color-mix(in oklab, var(--md-glyph-ink, var(--md-sys-color-primary)) 22%, transparent), color-mix(in oklab, var(--md-glyph-ink, var(--md-sys-color-primary)) 8%, transparent)); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--md-glyph-ink, var(--md-sys-color-primary)) 18%, transparent); }
+.md-glyph svg { width: 55%; height: 55%; }
+.md-live { color: var(--md-sys-color-success); animation: md-pulse 2.4s var(--md-motion-easing-emphasized) infinite; }
+.md-skeleton { background: linear-gradient(90deg, var(--md-sys-color-surface-container-high) 25%, var(--md-sys-color-surface-container-highest) 50%, var(--md-sys-color-surface-container-high) 75%); background-size: 200% 100%; animation: md-shimmer 1.6s linear infinite; }
+
+.os-content { animation: md-fade var(--md-motion-duration-medium) var(--md-motion-easing-emphasized) both; }
+.os-content ::selection { background: color-mix(in oklab, var(--md-sys-color-primary) 30%, transparent); color: inherit; }
+
+@media (prefers-reduced-motion: reduce) {
+  .md-enter, .md-fade, .md-pop, .md-stagger > *, .md-hero, .md-live, .md-skeleton, .os-content { animation: none !important; }
+  .md-state, .md-state::after { transition: none !important; }
+  .md-state:active, .md-lift:hover { transform: none; }
+}

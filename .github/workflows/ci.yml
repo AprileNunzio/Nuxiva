@@ -1,0 +1,179 @@
+name: Nuxiva CI Pipeline
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-python:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Linters
+        run: python -m pip install --upgrade pip pyflakes
+
+      - name: Syntax Validation
+        run: python -m py_compile $(find server sandbox_broker installer_wizard client_satellite -name "*.py")
+
+      - name: Static Analysis
+        run: python -m pyflakes server sandbox_broker installer_wizard client_satellite
+
+      - name: File Size Limit
+        run: python scripts/ci/line_limit.py
+
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: installer_wizard/backend/requirements.txt
+
+      - name: Install Supervisor Dependencies
+        run: python -m pip install -r installer_wizard/backend/requirements.txt -r installer_wizard/features/documents/requirements.txt
+
+      - name: Unit and API Tests
+        working-directory: ./installer_wizard
+        run: python -m unittest discover -s tests -t . -v
+
+      - name: Firewall Rules Against Real nftables
+        working-directory: ./installer_wizard
+        run: |
+          sudo apt-get install -y -qq nftables
+          sudo "$(command -v python)" -m unittest tests.test_firewall_rules tests.test_vpn_config -v
+
+  kernel-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Kernel Test Dependencies
+        run: python -m pip install httpx==0.28.1 pydantic==2.13.5 pydantic-settings==2.15.0 psutil pyyaml numpy cryptography fastapi
+
+      - name: Kernel and Sandbox Broker Tests
+        run: python -m unittest discover -s server/tests -t . -v
+
+  native-core:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./native
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Rust 1.99.1
+        run: rustup toolchain install 1.99.1 --profile minimal -c clippy,rustfmt && rustup default 1.99.1
+
+      - name: Format
+        run: cargo fmt --all --check
+
+      - name: Clippy
+        run: cargo clippy --workspace --all-targets --locked -- -D warnings
+
+      - name: Rust Tests
+        run: |
+          cargo test --workspace --locked
+          cargo clippy -p nuxiva-egress --all-targets --locked --features test-hooks -- -D warnings
+          cargo test -p nuxiva-egress --locked --features test-hooks
+          cargo build --release --locked -p nuxiva-egress --features test-hooks
+
+      - name: Build and Install Python Module
+        run: |
+          python -m pip install --upgrade pip maturin==1.9.6
+          maturin build --release --locked --manifest-path crates/nuxiva-native/Cargo.toml --out dist
+          python -m pip install dist/nuxiva_native-*.whl
+          python -m pip install -r ../installer_wizard/backend/requirements.txt
+
+      - name: Native Parity and Bus Tests
+        working-directory: ./installer_wizard
+        run: python -m unittest tests.test_bus_router tests.test_nuxiva_bus tests.test_nvr tests.test_language_native tests.test_stage tests.test_hands_engine tests.test_biometric_vault tests.test_update_guard tests.test_presence_audience tests.test_presence_vouch tests.test_guard_native tests.test_seal_native tests.test_config_native tests.test_telemetry_native tests.test_loops_native tests.test_authz_native tests.test_home_risk_native tests.test_ear_clean_native tests.test_face_native tests.test_people_details tests.test_setup_voice tests.test_ear_scene_native tests.test_ear_speaker_native tests.test_ear_words_native tests.test_addressee_native tests.test_dialogue_native tests.test_dialogue_history tests.test_sentinel_memory tests.test_sentinel_watch tests.test_expr_native tests.test_expr tests.test_automations tests.test_rescue_native tests.test_ear_realtime tests.test_ear_live tests.test_ear_conditioner tests.test_ear_modes tests.test_ear_host_mic tests.test_authz tests.test_authz_capability tests.test_access_matrix tests.test_config_secrets tests.test_env_sanitizer tests.test_backend_settings_security tests.test_https_guard tests.test_origin_guard tests.test_identity tests.test_first_boot -v
+
+      - name: Native Egress Proxy Tests
+        working-directory: .
+        env:
+          NUXIVA_EGRESS_TEST_BIN: ${{ github.workspace }}/native/target/release/nuxiva-egress
+        run: |
+          python -m pip install httpx==0.28.1 pydantic==2.13.5 pydantic-settings==2.15.0 psutil pyyaml
+          python -m unittest server.tests.test_sandbox_native_egress server.tests.test_sandbox_egress -v
+
+      - name: Cortex Native Tests
+        working-directory: .
+        run: python -m unittest server.tests.test_cortex_core_platform server.tests.test_embodied_cortex server.tests.test_hippocampus_router server.tests.test_gliner_slots server.tests.test_skill_forge server.tests.test_plasticity server.tests.test_skill_auto server.tests.test_skill_isolation server.tests.test_native_hot_paths server.tests.test_token_provider -v
+
+      - name: Set up Python 3.10
+        id: py310
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Native Module on Python 3.10
+        run: |
+          "${{ steps.py310.outputs.python-path }}" -m venv "$RUNNER_TEMP/py310"
+          "$RUNNER_TEMP/py310/bin/pip" install --no-deps dist/nuxiva_native-*.whl
+          "$RUNNER_TEMP/py310/bin/python" -I -c "import nuxiva_native"
+
+  validate-scripts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: JavaScript Syntax
+        run: for f in $(find installer_wizard -name "*.js"); do node --check "$f"; done
+
+      - name: Shell Syntax
+        run: for f in $(find scripts installer_wizard -name "*.sh") scripts/os/nuxivactl install.sh; do bash -n "$f"; done
+
+  validate-web-client:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: client_web/package-lock.json
+
+      - name: Install and Build Frontend
+        working-directory: ./client_web
+        run: |
+          npm ci
+          npm run build

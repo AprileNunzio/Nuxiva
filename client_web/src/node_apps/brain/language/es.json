@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "locale": "es"
+  },
+  "dictionary": {
+    "title": "Cerebro",
+    "description": "Qué modelos usa {assistant} para hablar, razonar y trabajar",
+    "scope_local": "servidor local",
+    "scope_paired": "nodo vinculado",
+    "scope_mesh": "no vinculado",
+    "notice_unpaired": "Este nodo es visible en la red pero no está vinculado.",
+    "notice_paired": "Los nodos vinculados usan los modelos del servidor: gestiónalos desde el servidor local. Para aprovechar la potencia de este nodo, añádelo como servicio en la sección Proveedores."
+  }
+}

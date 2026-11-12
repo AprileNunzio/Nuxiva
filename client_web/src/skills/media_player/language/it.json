@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Riproduttore Audio Spaziale e Media Hub",
+    "description": "Skill che controlla lo streaming musicale, riproduzione locale e filtri DSP ad alta fedeltà.",
+    "opt_spatial_audio_label": "Equalizzatore Spaziale 3D",
+    "opt_spatial_audio_desc": "Elabora l'audio in tempo reale simulando un campo acustico surround a 360 gradi."
+  }
+}

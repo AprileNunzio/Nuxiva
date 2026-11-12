@@ -1,0 +1,8 @@
+{
+  "dictionary": {
+    "title": "Ejecutor de Código en Sandbox Seguro",
+    "description": "Habilidad que compila y ejecuta código Python, Rust y JavaScript en un entorno WebAssembly aislado.",
+    "opt_timeout_sec_label": "Tiempo Límite de Ejecución (s)",
+    "opt_timeout_sec_desc": "Interrumpe la ejecución si el programa sobrepasa los segundos definidos."
+  }
+}

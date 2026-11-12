@@ -1,0 +1,14 @@
+{
+  "name": "Apparence de l'assistant",
+  "description": "Personnage 3D animé en pied (ou hologramme filaire ou noyau léger, choisi selon l'appareil). Il marche, fait des gestes en parlant, salue, danse sur la musique et ouvre un parapluie quand il pleut, devant la météo du jour.",
+  "capabilities": [
+    "Choix automatique pour chaque écran",
+    "Personnage 3D animé ou hologramme filaire, couleur personnalisable",
+    "Danse sur la musique, parapluie quand il pleut, fond météo"
+  ],
+  "settings": {
+    "NUXIVA_AVATAR": "Apparence",
+    "NUXIVA_AVATAR_STYLE": "Style 3D",
+    "NUXIVA_FACE_COLOR": "Couleur de l'hologramme"
+  }
+}

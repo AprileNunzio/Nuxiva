@@ -1,0 +1,19 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Un modello per tutto",
+    "hint": "Scegli un modello e applicalo in un colpo solo a tutti i compiti e a tutte le funzioni, agenti compresi.",
+    "pick": "Scegli il modello",
+    "change": "Cambia modello",
+    "only": "Solo questo modello",
+    "only_hint": "Ovunque userà solo il modello scelto, senza riserve.",
+    "keep": "Questo per primo, gli attuali come riserva",
+    "keep_hint": "Il modello scelto va in cima; i modelli già impostati restano come riserva se non risponde.",
+    "apply": "Applica a tutto",
+    "confirm_title": "Usare {model} per tutto?",
+    "confirm_only": "Tutti i compiti e tutte le funzioni useranno solo questo modello. Le impostazioni attuali verranno sostituite.",
+    "confirm_keep": "Questo modello verrà messo per primo in tutti i compiti e in tutte le funzioni. I modelli attuali restano come riserva."
+  }
+}

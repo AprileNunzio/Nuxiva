@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "locale": "en"
+  },
+  "dictionary": {
+    "title": "Vault",
+    "description": "Encrypted store for keys and credentials",
+    "status": "Active",
+    "open_app": "Open",
+    "loading": "Loading…",
+    "unreachable": "Server unreachable",
+    "on": "On",
+    "off": "Off",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "sync": "Sync",
+    "sync_done": "Synced {written} files, {imported} edits read",
+    "stat_state": "Status",
+    "stat_files": "Files in memory",
+    "stat_last_export": "Last export",
+    "files_title": "Vault files",
+    "files_empty": "No files exported yet.",
+    "diary_title": "Today's diary",
+    "diary_empty": "Today's diary is still empty."
+  }
+}

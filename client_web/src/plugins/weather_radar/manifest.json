@@ -1,0 +1,30 @@
+{
+  "$schema": "https://nuxiva.org/schemas/plugin.manifest.json",
+  "id": "weather_radar",
+  "name": "Live Weather Radar",
+  "version": "1.1.0",
+  "kind": "plugin",
+  "author": "Nuxiva Geospatial",
+  "placement": {
+    "desktop": false,
+    "taskbar": {
+      "pinned": false,
+      "tray": true,
+      "tray_order": 2
+    },
+    "control_panel": {
+      "show": true,
+      "category": "sistema"
+    }
+  },
+  "capabilities": ["network", "geolocation", "weather_telemetry"],
+  "options": [
+    {
+      "id": "tray_temperature_badge",
+      "type": "boolean",
+      "default": true,
+      "label_key": "opt_tray_temperature_label",
+      "desc_key": "opt_tray_temperature_desc"
+    }
+  ]
+}

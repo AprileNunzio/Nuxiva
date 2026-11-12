@@ -1,0 +1,38 @@
+{
+  "meta": {
+    "locale": "it"
+  },
+  "dictionary": {
+    "title": "Telecamere",
+    "subtitle": "Flussi video in diretta e configurazione telecamere",
+    "stat_total": "Totale Telecamere",
+    "stat_active": "Telecamere Attive",
+    "stat_recording": "In Registrazione",
+    "live_title": "Flussi Video dal Vivo",
+    "live_label": "LIVE",
+    "stream_mode": "Modalità Flusso",
+    "offline": "Immagine non disponibile",
+    "status_active": "In Linea",
+    "status_offline": "Disconnessa",
+    "recording": "Registrazione Attiva",
+    "enabled": "Attiva",
+    "record": "Registra",
+    "consent": "Consenso Dato",
+    "consent_note": "La registrazione si attiva unicamente con il consenso esplicito delle persone riprese.",
+    "add": "Aggiungi Telecamera",
+    "add_title": "Configura Nuova Telecamera",
+    "field_name": "Nome Identificativo",
+    "field_kind": "Tipologia Telecamera",
+    "field_url": "Indirizzo Streaming (RTSP / HTTP)",
+    "field_device": "Dispositivo Locale (es. 0 o /dev/video0)",
+    "field_retention": "Tempo di Conservazione",
+    "minutes": "{n} minuti",
+    "save": "Salva Telecamera",
+    "cancel": "Annulla",
+    "delete": "Rimuovi",
+    "delete_confirm": "Sei sicuro di voler rimuovere questa telecamera?",
+    "refresh": "Aggiorna Flussi",
+    "empty": "Nessuna telecamera configurata.",
+    "empty_sources": "Nessuna sorgente video live rilevata."
+  }
+}

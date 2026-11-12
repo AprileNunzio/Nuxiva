@@ -1,0 +1,37 @@
+{
+  "name": "Habla con Nuxiva",
+  "description": "Conversación de prueba con el asistente, mostrando el modelo que respondió y las latencias.",
+  "capabilities": [
+    "Chat de texto",
+    "Muestra qué cerebro respondió",
+    "Tiempos de respuesta"
+  ],
+  "settings": {
+    "NUXIVA_ADDRESSEE_THRESHOLD": "Qué tan seguro debe estar de que le hablas antes de responder (0.2 tímido - 0.95 cauto)",
+    "NUXIVA_ADDRESSEE_ALONE": "Confianza adicional cuando estás solo en la habitación (0 - 1)"
+  },
+  "reflex": {
+    "temporal_morning": "Buenos días",
+    "temporal_afternoon": "Buenas tardes",
+    "temporal_evening": "Buenas noches",
+    "temporal_general": "Hola",
+    "status_optimal": "Todos los nodos están operativos y la telemetría es estable.",
+    "status_focus": "Enfoque actual: {focus}.",
+    "bridge_interest": "Respecto a {entity}, los flujos informativos están actualizados.",
+    "bridge_tech": "El entorno para {entity} está listo.",
+    "bridge_desire": "En cuanto a {entity}, la planificación está activa.",
+    "bridge_open": "Todos los canales están listos. ¿Cuáles son las prioridades hoy?",
+    "filler_action_eval": "Estoy evaluando las restricciones",
+    "filler_action_synth": "Estoy sintetizando el enfoque",
+    "filler_action_cross": "Estoy cruzando los datos",
+    "filler_action_proc": "Estoy procesando la solicitud",
+    "domain_arch": "sobre la arquitectura lógica",
+    "domain_code": "en la implementación del código",
+    "domain_system": "en los parámetros del sistema",
+    "domain_general": "en el grafo cognitivo",
+    "connector_now": "en tiempo real.",
+    "connector_struct": "mientras formulo la solución.",
+    "connector_stream": "sin interrupciones.",
+    "connector_instant": "de inmediato."
+  }
+}

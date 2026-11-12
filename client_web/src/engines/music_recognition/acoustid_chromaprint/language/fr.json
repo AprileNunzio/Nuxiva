@@ -1,0 +1,10 @@
+{
+  "dictionary": {
+    "title": "Empreinte Acoustique Chromaprint FFT",
+    "description": "Reconnaissance musicale par analyse spectrale FFT et empreinte acoustique locale haute fidélité.",
+    "opt_fft_sensitivity_label": "Sensibilité Spectrale FFT",
+    "opt_fft_sensitivity_desc": "Profondeur d'échantillonnage des fréquences harmoniques pour identifier les morceaux avec écho ou distorsion.",
+    "opt_show_song_overlay_label": "Afficher la Chanson à l'Écran",
+    "opt_show_song_overlay_desc": "Affiche une notification flottante avec titre et artiste dès qu'un morceau est reconnu."
+  }
+}

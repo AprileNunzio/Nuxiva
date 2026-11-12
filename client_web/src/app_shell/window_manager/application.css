@@ -1,0 +1,242 @@
+.os-content {
+  container-type: inline-size;
+  container-name: application;
+  color: var(--md-sys-color-on-surface);
+}
+
+.os-application-layout {
+  display: flex;
+  min-height: 100%;
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+}
+
+.os-app-sidebar {
+  width: 15rem;
+  flex-shrink: 0;
+  padding: 1rem 0.65rem;
+  background: var(--md-sys-color-surface-container-low);
+  border-right: 1px solid var(--md-sys-color-outline-variant);
+  box-sizing: border-box;
+}
+
+.os-app-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.4rem 0.65rem 1.4rem;
+}
+
+.os-app-identity strong {
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  color: var(--md-sys-color-on-surface);
+}
+
+.os-app-identity span {
+  color: var(--md-sys-color-on-surface-variant);
+  font-size: 0.78rem;
+}
+
+.os-app-sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.webos .os-app-sidebar nav button {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border: 0;
+  background: transparent;
+  border-radius: var(--os-radius-md);
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-align: left;
+  color: var(--md-sys-color-on-surface-variant);
+  transition: all var(--os-transition-fast);
+  cursor: pointer;
+}
+
+.os-app-sidebar nav button svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  flex-shrink: 0;
+}
+
+.webos .os-app-sidebar nav button:hover {
+  background: var(--md-sys-color-surface-container-high);
+  color: var(--md-sys-color-on-surface);
+}
+
+.webos .os-app-sidebar nav button[aria-current="page"] {
+  background: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+  font-weight: 600;
+}
+
+.os-app-body {
+  min-width: 0;
+  flex: 1;
+  padding: clamp(1rem, 2.5cqi, 2.5rem);
+  overflow-wrap: anywhere;
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+}
+
+.os-app-body > div {
+  max-width: 85rem;
+  margin-inline: auto;
+}
+
+.os-app-body > div[hidden] {
+  display: none;
+}
+
+.os-app-body h1 {
+  font-family: inherit;
+  font-size: 1.65rem;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  color: var(--md-sys-color-on-surface);
+  margin-bottom: 0.5rem;
+}
+
+.os-app-body h2 {
+  font-family: inherit;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--md-sys-color-on-surface);
+  text-transform: none;
+  margin-bottom: 0.75rem;
+}
+
+.os-app-body input,
+.os-app-body select,
+.os-app-body textarea {
+  max-width: 100%;
+  min-width: 0;
+  background: var(--md-sys-color-surface-container-lowest);
+  color: var(--md-sys-color-on-surface);
+  border: 1px solid var(--md-sys-color-outline);
+  border-radius: var(--os-radius-sm);
+  padding: 0.45rem 0.65rem;
+  font-family: inherit;
+  font-size: var(--os-font-size-sm);
+  transition: border-color var(--os-transition-fast), box-shadow var(--os-transition-fast);
+}
+
+.os-app-body input:focus,
+.os-app-body select:focus,
+.os-app-body textarea:focus {
+  outline: none;
+  border-color: var(--md-sys-color-primary);
+  box-shadow: 0 0 0 2px var(--md-sys-color-primary-container);
+}
+
+.os-app-body table {
+  width: 100%;
+}
+
+.os-app-state {
+  display: grid;
+  place-content: center;
+  min-height: 12rem;
+  padding: 1rem;
+  text-align: center;
+  gap: 1rem;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.os-settings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: 1rem;
+}
+
+.os-data-grid {
+  max-width: 100%;
+  overflow: auto;
+  border-radius: var(--os-radius-md);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  background: var(--md-sys-color-surface-container-lowest);
+}
+
+.os-data-grid table {
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  width: 100%;
+}
+
+.os-data-grid th {
+  position: sticky;
+  top: 0;
+  background: var(--md-sys-color-surface-container-high);
+  text-align: left;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface-variant);
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  z-index: 1;
+}
+
+.os-data-grid td {
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  vertical-align: top;
+  max-width: 45rem;
+  overflow-wrap: anywhere;
+  color: var(--md-sys-color-on-surface);
+}
+
+.os-data-grid tbody tr:hover,
+.os-data-grid tbody tr:focus {
+  background: var(--md-sys-color-surface-container);
+}
+
+.webos .os-data-grid th button {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.os-data-grid > p {
+  padding: 2rem;
+  text-align: center;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+@container application (max-width: 48rem) {
+  .os-app-sidebar {
+    width: 11rem;
+    padding: 0.8rem 0.4rem;
+  }
+  .os-app-body {
+    padding: 1rem;
+  }
+}
+
+@container application (max-width: 33rem) {
+  .os-app-sidebar {
+    width: 3.5rem;
+  }
+  .os-app-identity {
+    display: none;
+  }
+  .os-app-sidebar nav button span {
+    display: none;
+  }
+  .webos .os-app-sidebar nav button {
+    justify-content: center;
+    padding: 0.75rem 0.4rem;
+  }
+}
