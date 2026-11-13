@@ -161,7 +161,8 @@ fn store_writes_verifies_and_detects_edits() -> Result<(), String> {
     let report = store.verify(&rel).map_err(|e| e.to_string())?;
     assert!(report.ok && report.complete, "{report:?}");
     let back = store.read(&rel, "99-esito.md").map_err(|e| e.to_string())?;
-    assert_eq!(doc::get(&back, "operazione"), Some(id.as_str()));
+    let shown = crate::redact::redact(&id);
+    assert_eq!(doc::get(&back, "operazione"), Some(shown.as_str()));
     let path = tmp.0.join(&rel).join("00-richiesta.md");
     let edited = fs::read_to_string(&path).map_err(|e| e.to_string())? + "x";
     fs::write(&path, edited).map_err(|e| e.to_string())?;

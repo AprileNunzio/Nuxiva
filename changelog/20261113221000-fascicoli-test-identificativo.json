@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Fascicoli: test dell'identificativo reso stabile",
+    "en": "Dossiers: operation id test made stable",
+    "fr": "Dossiers : test de l'identifiant rendu stable",
+    "es": "Expedientes: prueba del identificador estabilizada"
+  },
+  "fixes": [
+    {
+      "it": "Un controllo interno sui fascicoli falliva a caso quando l'identificativo casuale assomigliava a un numero di carta; ora il controllo tiene conto dell'oscuramento.",
+      "en": "An internal dossier check failed at random when the random id looked like a card number; the check now accounts for redaction.",
+      "fr": "Un contrôle interne des dossiers échouait au hasard quand l'identifiant aléatoire ressemblait à un numéro de carte ; il tient maintenant compte de l'occultation.",
+      "es": "Una comprobación interna de expedientes fallaba al azar cuando el identificador aleatorio parecía un número de tarjeta; ahora tiene en cuenta el ocultado."
+    }
+  ],
+  "features": []
+}
