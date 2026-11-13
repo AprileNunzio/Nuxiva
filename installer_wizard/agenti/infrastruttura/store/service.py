@@ -4,6 +4,8 @@ import logging
 import psutil
 from typing import Any
 
+import packages
+
 from agenti.store.catalog import find_item, get_catalog_with_status
 from agenti.store.repositories import (
     find_custom_package,
@@ -84,8 +86,8 @@ class StoreManagerService:
                 }
             return {"ok": False, "error": reason}
 
-        updates = {item.env_key: "1"}
-        steps = list(item.steps)
+        updates = packages.request_updates(item.id, True)
+        steps = packages.request_steps(item.id)
         try:
             applying = await apply_config(updates, user, steps)
             return {"ok": True, "applying": applying, "id": item_id}
@@ -106,8 +108,8 @@ class StoreManagerService:
         if not item.removable:
             return {"ok": False, "error": "package_not_removable"}
 
-        updates = {item.env_key: "0"}
-        steps = list(item.steps)
+        updates = packages.request_updates(item.id, False)
+        steps = packages.request_steps(item.id)
         try:
             applying = await apply_config(updates, user, steps)
             return {"ok": True, "applying": applying, "id": item_id}

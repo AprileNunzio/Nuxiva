@@ -14,10 +14,26 @@ class StoreItem:
     title: str
     description: str
     size_gb: float
-    env_key: str
-    steps: tuple[str, ...]
-    detect: str = ""
-    removable: bool = True
+
+    @property
+    def package(self) -> packages.Package:
+        return packages.PACKAGE_BY_ID[self.id]
+
+    @property
+    def env_key(self) -> str:
+        return self.package.env
+
+    @property
+    def steps(self) -> tuple[str, ...]:
+        return self.package.steps
+
+    @property
+    def detect(self) -> str:
+        return self.package.detect
+
+    @property
+    def removable(self) -> bool:
+        return self.package.removable
 
 
 STORE_CATALOG = (
@@ -27,8 +43,6 @@ STORE_CATALOG = (
         "Riconoscimento Musicale",
         "Riconosce brano, artista e album della musica in riproduzione o ascolto",
         0.3,
-        "NUXIVA_MUSIC_ID",
-        ("music",),
     ),
     StoreItem(
         "ear",
@@ -36,8 +50,6 @@ STORE_CATALOG = (
         "Ascolto Continuo",
         "Abilita il microfono sempre attivo con rilevamento della wake-word",
         1.5,
-        "NUXIVA_EAR",
-        ("ear",),
     ),
     StoreItem(
         "vision",
@@ -45,9 +57,6 @@ STORE_CATALOG = (
         "Visione e Biometria",
         "Riconoscimento facciale e tracciamento visivo con elaborazione locale",
         1.0,
-        "NUXIVA_VISION",
-        ("vision",),
-        detect="camera",
     ),
     StoreItem(
         "documents",
@@ -55,8 +64,6 @@ STORE_CATALOG = (
         "Suite Documenti Office",
         "Elabora, genera e legge file Word, Excel, PowerPoint e PDF",
         1.5,
-        "NUXIVA_DOCUMENTS",
-        ("office",),
     ),
     StoreItem(
         "convert3d",
@@ -64,8 +71,6 @@ STORE_CATALOG = (
         "Conversione & CAD 3D",
         "Visualizzazione e conversione per modelli BLEND, OBJ, STL e DWG",
         1.0,
-        "NUXIVA_3D_CONVERT",
-        ("convert3d",),
     ),
     StoreItem(
         "shares",
@@ -73,8 +78,6 @@ STORE_CATALOG = (
         "Cartelle Condivise",
         "Condivisione file di rete compatibile con Windows, macOS e Linux",
         0.05,
-        "NUXIVA_SHARES",
-        ("shares",),
     ),
     StoreItem(
         "brain_local",
@@ -82,9 +85,6 @@ STORE_CATALOG = (
         "Cervello Neurale Locale",
         "Esegue modelli linguistici avanzati sul computer tramite Ollama",
         8.0,
-        "NUXIVA_BRAIN",
-        ("ollama", "brain", "soup"),
-        removable=False,
     ),
     StoreItem(
         "voicestudio",
@@ -92,8 +92,6 @@ STORE_CATALOG = (
         "Studio Voci Neurali",
         "Personalizzazione e sintesi vocale ad alta definizione con VoiceStudio",
         6.0,
-        "NUXIVA_VOICESTUDIO",
-        ("voicestudio",),
     ),
     StoreItem(
         "bluetooth",
@@ -101,9 +99,6 @@ STORE_CATALOG = (
         "Dispositivi Bluetooth",
         "Connessione con altoparlanti, cuffie e sensori wireless",
         0.05,
-        "NUXIVA_BLUETOOTH",
-        ("bluetooth",),
-        detect="bluetooth",
     ),
     StoreItem(
         "display",
@@ -111,10 +106,6 @@ STORE_CATALOG = (
         "Display Kiosk HDMI",
         "Interfaccia grafica a tutto schermo su monitor fisico via Chromium",
         0.5,
-        "NUXIVA_KIOSK",
-        ("kiosk",),
-        detect="monitor",
-        removable=True,
     ),
 )
 
@@ -125,15 +116,15 @@ def get_catalog_with_status() -> List[dict]:
     env = read_env()
     out = []
     for item in STORE_CATALOG:
-        val = env.get(item.env_key, "0").lower()
-        is_installed = val in packages.ON
+        state = packages.state(item.package, env)
         out.append({
             "id": item.id,
             "category": item.category,
             "title": item.title,
             "description": item.description,
             "size_gb": item.size_gb,
-            "installed": is_installed,
+            "installed": state == "installed",
+            "state": state,
             "removable": item.removable,
             "detect": item.detect,
             "source": "official",

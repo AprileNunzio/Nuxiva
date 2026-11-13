@@ -6,9 +6,6 @@ from settings import apply_config, normalize_ollama
 
 admin_routes = APIRouter()
 
-BRAIN_STEPS = {"local": ["ollama", "models", "brain", "warmup"], "remote": ["models", "warmup"], "cloud": []}
-
-
 async def _body(request: Request) -> dict:
     try:
         data = await request.json()
@@ -36,7 +33,7 @@ async def set_brain(request: Request, user: str = Depends(require_admin)):
         updates["NUXIVA_OLLAMA_URL"] = url
     elif mode == "local":
         updates["NUXIVA_OLLAMA_URL"] = ""
-    applying = await apply_config(updates, user, BRAIN_STEPS[mode])
+    applying = await apply_config(updates, user, list(packages.BRAIN_STEPS[mode]))
     return {"ok": True, "brain": mode, "applying": applying}
 
 
@@ -48,7 +45,5 @@ async def set_package(pkg_id: str, request: Request, user: str = Depends(require
         updates = packages.request_updates(pkg_id, on)
     except KeyError:
         raise HTTPException(404, "Pacchetto sconosciuto o non rimovibile")
-    pkg = packages.PACKAGE_BY_ID[pkg_id]
-    steps = list(pkg.steps) + (BRAIN_STEPS["local"] if pkg_id == "brain_local" else [])
-    applying = await apply_config(updates, user, steps)
+    applying = await apply_config(updates, user, packages.request_steps(pkg_id))
     return {"ok": True, "applying": applying, "packages": packages.catalog()}

@@ -11,6 +11,7 @@ from state import store
 
 MARK_FILE = STATE_DIR / "packages.json"
 BRAIN_MODES = ("local", "remote", "cloud")
+BRAIN_STEPS = {"local": ("ollama", "models", "brain", "warmup"), "remote": ("models", "warmup"), "cloud": ()}
 
 
 @dataclass(frozen=True)
@@ -173,3 +174,9 @@ def request_updates(pkg_id: str, on: bool) -> dict:
     if pkg.env == "NUXIVA_BRAIN":
         return {"NUXIVA_BRAIN": "local"}
     return {pkg.env: "1" if on else "0"}
+
+
+def request_steps(pkg_id: str) -> list[str]:
+    pkg = PACKAGE_BY_ID[pkg_id]
+    extra = BRAIN_STEPS["local"] if pkg.id == "brain_local" else ()
+    return list(dict.fromkeys((*pkg.steps, *extra)))
