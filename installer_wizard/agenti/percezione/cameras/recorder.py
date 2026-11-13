@@ -1,13 +1,16 @@
 import asyncio
+import collections
 import shutil
 import subprocess
 import time
 
 from agenti.cameras.cameras import CAM_DIR, cameras
+from agenti.cameras.segments import SegmentError, strip_audio, video_args
 from agenti.nvr.archive import archive
 from state import store
 
 SEGMENT_SECONDS = 60
+STRIP_RETRIES = 3
 
 
 def _source_args(cam: dict) -> list:
@@ -23,23 +26,13 @@ def _nvr_settings() -> dict:
     return nvr.settings
 
 
-def strip_audio(path) -> None:
-    exe = shutil.which("ffmpeg")
-    if not exe:
-        raise RuntimeError("ffmpeg_missing")
-    tmp = path.with_name(path.stem + ".noaudio.mp4")
-    done = subprocess.run([exe, "-nostdin", "-loglevel", "error", "-y", "-i", str(path), "-map", "0", "-map", "-0:a", "-c", "copy",
-                           "-movflags", "+faststart", str(tmp)], capture_output=True, timeout=120, check=False)
-    if done.returncode != 0 or not tmp.exists():
-        tmp.unlink(missing_ok=True)
-        raise RuntimeError("audio_strip_failed")
-    tmp.replace(path)
-
-
 class Recorder:
     def __init__(self) -> None:
         self.procs: dict = {}
         self.audio: dict[str, dict] = {}
+        self.failures: dict[str, int] = {}
+        self.last_exit: dict[str, str] = {}
+        self.watchers: set = set()
 
     def _audio_ok(self, cam: dict) -> bool:
         return bool(self.audio.get(cam["id"], {}).get("allowed"))
@@ -56,17 +49,34 @@ class Recorder:
         incoming = CAM_DIR / cam["id"] / "incoming"
         incoming.mkdir(parents=True, exist_ok=True)
         args = ["ffmpeg", "-loglevel", "error", "-nostdin", *_source_args(cam),
-                "-c:v", "copy", *(["-c:a", "aac"] if self._audio_ok(cam) else ["-an"]), "-f", "segment", "-segment_time", str(SEGMENT_SECONDS),
+                *video_args(cam), *(["-c:a", "aac"] if self._audio_ok(cam) else ["-an"]), "-f", "segment", "-segment_time", str(SEGMENT_SECONDS),
                 "-reset_timestamps", "1", "-segment_format_options", "movflags=+faststart", "-strftime", "1", str(incoming / "seg_%Y%m%d_%H%M%S.mp4")]
         try:
             proc = await asyncio.create_subprocess_exec(*args, stdout=asyncio.subprocess.DEVNULL,
-                                                        stderr=asyncio.subprocess.DEVNULL)
+                                                        stderr=asyncio.subprocess.PIPE)
         except OSError as exc:
             store.event("WARN", f"Telecamera {cam['name']}: avvio registrazione non riuscito ({exc})", "cameras")
             return
         self.procs[cam["id"]] = {"proc": proc, "sig": self._sig_of(cam)}
+        task = asyncio.create_task(self._watch(cam, proc))
+        self.watchers.add(task)
+        task.add_done_callback(self.watchers.discard)
         mode = "audio+video" if self._audio_ok(cam) else "solo video"
         store.event("INFO", f"Registrazione cifrata avviata: {cam['name']} ({mode}, anello {cam['retention_min']} min)", "cameras")
+
+    async def _watch(self, cam: dict, proc) -> None:
+        tail: collections.deque = collections.deque(maxlen=4)
+        while line := await proc.stderr.readline():
+            text = line.decode("utf-8", "replace").strip()
+            if text:
+                tail.append("".join(ch if ch.isprintable() else " " for ch in text)[:200])
+        code = await proc.wait()
+        if code in (0, -15, 255) and not tail:
+            return
+        reason = tail[-1] if tail else f"exit {code}"
+        if self.last_exit.get(cam["id"]) != reason:
+            self.last_exit[cam["id"]] = reason
+            store.event("WARN", f"Telecamera {cam['name']}: registrazione interrotta (recorder_exit {code}: {reason})", "cameras")
 
     def _stop(self, cid: str) -> None:
         rec = self.procs.pop(cid, None)
@@ -87,16 +97,37 @@ class Recorder:
         incoming = CAM_DIR / cam["id"] / "incoming"
         if not incoming.exists():
             return
+        rec = self.procs.get(cam["id"])
+        segments = sorted(incoming.glob("seg_*.mp4"))
+        if rec and rec["proc"].returncode is None and segments:
+            segments = segments[:-1]
         now = time.time()
-        for seg in sorted(incoming.glob("seg_*.mp4")):
+        for seg in segments:
             try:
                 if now - seg.stat().st_mtime >= 3:
-                    allowed = self._audio_ok(cam)
-                    if not allowed:
-                        strip_audio(seg)
-                    archive.ingest(cam["id"], seg, tier="continuous", audio_allowed=allowed)
+                    self._archive_one(cam, seg)
+            except SegmentError as exc:
+                self._segment_failed(cam, seg, exc)
             except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as exc:
-                store.event("WARN", f"Telecamera {cam['name']}: segmento non archiviato ({exc})", "cameras")
+                store.event("WARN", f"Telecamera {cam['name']}: segmento non archiviato ({type(exc).__name__}: {exc})", "cameras")
+
+    def _archive_one(self, cam: dict, seg) -> None:
+        allowed = self._audio_ok(cam)
+        if not allowed:
+            strip_audio(seg)
+        archive.ingest(cam["id"], seg, tier="continuous", audio_allowed=allowed)
+        self.failures.pop(str(seg), None)
+
+    def _segment_failed(self, cam: dict, seg, exc: SegmentError) -> None:
+        key = str(seg)
+        count = self.failures.get(key, 0) + 1
+        self.failures[key] = count
+        if exc.discard or count >= STRIP_RETRIES:
+            seg.unlink(missing_ok=True)
+            self.failures.pop(key, None)
+            store.event("WARN", f"Telecamera {cam['name']}: segmento {seg.name} scartato ({exc})", "cameras")
+        elif count == 1:
+            store.event("WARN", f"Telecamera {cam['name']}: segmento {seg.name} non archiviato, nuovo tentativo ({exc})", "cameras")
 
     def _maintain(self, wanted: dict) -> None:
         if not archive.due():
