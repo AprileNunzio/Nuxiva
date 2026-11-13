@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Il widget della musica compare da solo quando in casa suona un brano",
+    "en": "The music widget appears on its own when a song is playing at home",
+    "fr": "Le widget musique apparaît tout seul quand une chanson passe à la maison",
+    "es": "El widget de música aparece solo cuando suena una canción en casa"
+  },
+  "features": [
+    {
+      "it": "Nuxiva si accorge della musica in pochi secondi anche quando il brano ha voce, pause e ritornelli, e riconosce subito cosa sta suonando.",
+      "en": "Nuxiva notices music within seconds even when the song has vocals, pauses and choruses, and recognises right away what is playing.",
+      "fr": "Nuxiva remarque la musique en quelques secondes même avec du chant, des pauses et des refrains, et reconnaît tout de suite ce qui passe.",
+      "es": "Nuxiva detecta la música en pocos segundos aunque la canción tenga voz, pausas y estribillos, y reconoce enseguida lo que suena."
+    },
+    {
+      "it": "Con più microfoni in casa l'ascolto è unico: un solo riconoscimento alla volta e la musica è finita solo quando nessun microfono la sente più.",
+      "en": "With several microphones at home listening is shared: one recognition at a time, and music counts as over only when no microphone hears it.",
+      "fr": "Avec plusieurs micros l'écoute est commune : une seule reconnaissance à la fois, et la musique n'est finie que quand aucun micro ne l'entend.",
+      "es": "Con varios micrófonos la escucha es común: un solo reconocimiento a la vez, y la música termina solo cuando ningún micrófono la oye."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Il widget «Musica in ascolto» non partiva mai da solo: ora compare quando la musica viene riconosciuta e sparisce pochi secondi dopo che finisce.",
+      "en": "The «Now playing» widget never started on its own: it now appears when music is recognised and disappears a few seconds after it ends.",
+      "fr": "Le widget « En écoute » ne démarrait jamais tout seul : il apparaît maintenant quand la musique est reconnue et disparaît peu après la fin.",
+      "es": "El widget «Sonando ahora» nunca se abría solo: ahora aparece al reconocer la música y desaparece pocos segundos después de que termina."
+    },
+    {
+      "it": "Posizione nel brano più precisa: si usa l'istante reale in cui è iniziato l'ascolto, base per il karaoke sincronizzato.",
+      "en": "More precise position within the song: the real moment listening started is used, the basis for synced karaoke.",
+      "fr": "Position dans la chanson plus précise : l'instant réel du début de l'écoute est utilisé, base du karaoké synchronisé.",
+      "es": "Posición en la canción más precisa: se usa el instante real en que empezó la escucha, base del karaoke sincronizado."
+    }
+  ]
+}

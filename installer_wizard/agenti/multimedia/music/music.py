@@ -21,6 +21,8 @@ VENV_PY = Path("/opt/nuxiva-music/venv/bin/python")
 RECOGNIZER = Path(__file__).resolve().parent / "music_id.py"
 USER_AGENT = "NuxivaOS/3 (+https://github.com/AprileNunzio/NUXIVA)"
 DISABLED_RETRY = 300
+SAMPLE_WINDOW = 10.0
+CAPTURE_SKEW = 120.0
 
 
 def enabled() -> bool:
@@ -114,7 +116,22 @@ class MusicWatcher:
             "offset": offset,
         }
 
-    async def handle(self, wav: bytes) -> dict:
+    @staticmethod
+    def capture_time(captured_at: float | None, now: float) -> float:
+        if captured_at is None or not now - CAPTURE_SKEW <= captured_at <= now:
+            return now - SAMPLE_WINDOW
+        return captured_at
+
+    def ended(self) -> bool:
+        current = store.now_playing or {}
+        self.misses = 0
+        if not current or current.get("source") == "library":
+            return False
+        store.now_playing = {}
+        store.touch()
+        return True
+
+    async def handle(self, wav: bytes, captured_at: float | None = None) -> dict:
         if not enabled():
             return {"ok": False, "next_in": DISABLED_RETRY, "reason": "disabilitato"}
         if not available():
@@ -122,7 +139,7 @@ class MusicWatcher:
         if self.lock.locked():
             return {"ok": False, "next_in": 30}
         async with self.lock:
-            captured_at = time.time() - 5
+            captured_at = self.capture_time(captured_at, time.time())
             try:
                 song = self._parse(await self._recognize(wav))
             except Exception as exc:

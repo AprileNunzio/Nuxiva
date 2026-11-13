@@ -165,7 +165,7 @@ class Session:
         for event in self.danger.frame(frame, heard.music or self.music.playing, self.nuxiva_speaking):
             await self.broadcast(type="danger", source="sound", **event)
         self.music.feed(frame, rms, self.noise, self.mode == "idle" and not self.nuxiva_speaking, now,
-                        heard.kind == "music" if self.scene.native else None)
+                        heard.music if self.scene.native else None)
         voiced = heard.voiced
         if voiced:
             activity.voice()

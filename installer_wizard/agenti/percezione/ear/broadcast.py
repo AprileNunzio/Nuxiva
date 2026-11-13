@@ -24,6 +24,9 @@ def unregister(session: Any) -> None:
     stream = getattr(session, "input", None)
     if stream is not None:
         stream.stop()
+    tap = getattr(session, "music", None)
+    if tap is not None and hasattr(tap, "close"):
+        tap.close()
 
 
 def all_sessions() -> set:

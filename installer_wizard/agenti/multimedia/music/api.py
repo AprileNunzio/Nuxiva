@@ -1,3 +1,5 @@
+import math
+
 from fastapi import APIRouter, Depends, HTTPException, Request
 
 from access import require_admin, require_internal
@@ -59,5 +61,20 @@ async def internal_music(request: Request):
     wav = await request.body()
     if not 1000 < len(wav) < 4_000_000:
         raise HTTPException(400, "Audio non valido")
-    return await music.watcher.handle(wav)
+    return await music.watcher.handle(wav, captured_at(request.headers.get("x-nuxiva-captured-at")))
+
+
+@admin_routes.post("/api/internal/music/ended")
+async def internal_music_ended(request: Request):
+    require_internal(request)
+    return {"ok": True, "cleared": music.watcher.ended()}
+
+
+def captured_at(raw: str | None) -> float | None:
+    text = str(raw or "").strip()[:32]
+    try:
+        value = float(text)
+    except ValueError:
+        return None
+    return value if math.isfinite(value) else None
 

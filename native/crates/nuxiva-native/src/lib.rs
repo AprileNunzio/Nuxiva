@@ -21,6 +21,7 @@ mod display;
 mod dossier;
 mod ear;
 mod ear_array;
+mod ear_music;
 mod embodied;
 mod errors;
 mod expr;
@@ -139,6 +140,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     home_rules::register(m)?;
     ear::register(m)?;
     ear_array::register(m)?;
+    ear_music::register(m)?;
     face::register(m)?;
     face_look::register(m)?;
     dialog::register(m)?;
