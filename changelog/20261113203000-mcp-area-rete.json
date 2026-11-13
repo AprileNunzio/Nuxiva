@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Download di pagine web con politica di rete rigida",
+    "en": "Web page download with a strict network policy",
+    "fr": "Téléchargement de pages web avec politique réseau stricte",
+    "es": "Descarga de páginas web con política de red estricta"
+  },
+  "fixes": [],
+  "features": [
+    {
+      "it": "Il download di pagine web può passare da un server dedicato che blocca indirizzi locali e riserve, riconvalida ogni reindirizzamento e limita host, porte e dimensione.",
+      "en": "Web page download can go through a dedicated server that blocks local and reserved addresses, revalidates every redirect and limits hosts, ports and size.",
+      "fr": "Le téléchargement de pages web peut passer par un serveur dédié qui bloque les adresses locales et réservées, revalide chaque redirection et limite hôtes, ports et taille.",
+      "es": "La descarga de páginas web puede pasar por un servidor dedicado que bloquea direcciones locales y reservadas, revalida cada redirección y limita hosts, puertos y tamaño."
+    }
+  ]
+}

@@ -3,6 +3,7 @@ import re
 import httpx
 
 from agenti.actions.common import sh
+from agenti.agent import web_mcp
 from agenti.agent.paths import FILES
 from agenti.agent.registry import tool
 
@@ -28,8 +29,10 @@ async def run_command(command: str) -> str:
     return f"codice di uscita {code}\n{out[-5000:]}"
 
 
-@tool("http_get", "scarica il testo di una pagina web o di un'API pubblica", {"url": "indirizzo http(s)"})
+@tool("http_get", "scarica il testo di una pagina web o di un'API pubblica", {"url": "indirizzo http(s)"}, consent=web_mcp.consent("http_get"))
 async def http_get(url: str) -> str:
+    if web_mcp.active():
+        return await web_mcp.call("http_get", url=url)
     if not re.match(r"^https?://", url):
         raise ValueError("indirizzo non valido")
     async with httpx.AsyncClient(timeout=20, follow_redirects=True) as client:

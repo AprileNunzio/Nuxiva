@@ -1562,6 +1562,7 @@ version = "5.8.0"
 dependencies = [
  "libc",
  "nuxiva-mcp-core",
+ "reqwest",
  "serde",
  "serde_json",
  "time",

@@ -1,8 +1,5 @@
-import asyncio
-
-from config import env_get
 from agenti.agent import paths
-from agenti.mcpclient import calls, engine, store
+from agenti.mcpclient.area import Area
 
 SERVER = "files"
 AREA = "NUXIVA_MCP_AREA_FILES"
@@ -19,35 +16,9 @@ def definition() -> dict:
     return {"id": SERVER, "kind": "filesystem", "config": {"roots": roots, "default_root": "work", "trash": str(paths.TRASH)}}
 
 
-engine.INTERNAL[SERVER] = definition
-
-
-def active() -> bool:
-    return env_get(AREA, "legacy").lower() == "mcp" and engine.available()
-
-
-def ensure() -> None:
-    if not engine.published():
-        engine.publish(store.load())
-
-
-def needs_consent(tool: str) -> bool:
-    if not active():
-        return False
-    ensure()
-    return calls.confirm(f"{SERVER}.{tool}")
-
-
-def consent(tool: str):
-    return lambda: needs_consent(tool)
-
-
-async def call(tool: str, **arguments) -> str:
-    tool_id = f"{SERVER}.{tool}"
-    await asyncio.to_thread(ensure)
-    if not await asyncio.to_thread(engine.wait_tool, tool_id):
-        raise RuntimeError("il server dei file non è disponibile")
-    out = (await asyncio.to_thread(calls.invoke, tool_id, arguments, calls.operation(), SERVER))["external"]
-    if out["is_error"]:
-        raise RuntimeError(out["text"])
-    return out["text"]
+area = Area(SERVER, AREA, definition)
+active = area.active
+ensure = area.ensure
+needs_consent = area.needs_consent
+consent = area.consent
+call = area.call

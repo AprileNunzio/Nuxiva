@@ -8,6 +8,7 @@ use nuxiva_mcp_core::{
     Factory, InternalRegistry, McpError, McpResult, ToolServer, pair, serve, valid_server_id,
 };
 
+use crate::fetch::{FetchConfig, FetchServer};
 use crate::fs::{FileServer, FsConfig};
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -27,6 +28,11 @@ fn build(definition: &ServerDefinition) -> McpResult<Arc<dyn ToolServer>> {
             let config: FsConfig = serde_json::from_value(definition.config.clone())
                 .map_err(|_| McpError::InvalidSettings)?;
             Ok(Arc::new(FileServer::new(&definition.id, &config)?))
+        }
+        "fetch" => {
+            let config: FetchConfig = serde_json::from_value(definition.config.clone())
+                .map_err(|_| McpError::InvalidSettings)?;
+            Ok(Arc::new(FetchServer::new(&definition.id, &config)?))
         }
         _ => Err(McpError::InvalidSettings),
     }
