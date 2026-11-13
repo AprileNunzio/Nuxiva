@@ -3,6 +3,7 @@
 pub mod aec;
 mod align;
 mod array;
+mod attribution;
 pub mod danger_sound;
 mod denoiser;
 pub mod distress;
@@ -14,6 +15,7 @@ mod level;
 pub mod lock;
 mod music_room;
 mod noise;
+mod rhythm;
 mod scene;
 mod sound_frame;
 mod speaker;
@@ -25,6 +27,9 @@ pub mod words;
 
 pub use align::{ALIGN_WINDOW, Alignment, MAX_LAG};
 pub use array::{ArrayError, ArrayFrame, MAX_ARRAY_FRAME, MAX_CHANNELS, MicArray};
+pub use attribution::{
+    Attribution, AttributionPolicy, Attributor, Evidence, MAX_FOREIGN, WindowVerdict,
+};
 pub use denoiser::{Denoiser, DenoiserConfig, clean_utterance};
 pub use features::FrameFeatures;
 pub use gain::{exp_integral, omlsa_gain};
@@ -46,6 +51,10 @@ pub const MAX_UTTERANCE_SAMPLES: usize = 16_000 * 600;
 mod aec_tests;
 #[cfg(test)]
 mod array_tests;
+#[cfg(test)]
+mod attribution_tests;
+#[cfg(test)]
+mod beat_tests;
 #[cfg(test)]
 mod danger_tests;
 #[cfg(test)]

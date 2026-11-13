@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Radio e canzoni non vengono più scambiate per la tua voce",
+    "en": "Radio and songs are no longer mistaken for your voice",
+    "fr": "La radio et les chansons ne sont plus prises pour votre voix",
+    "es": "La radio y las canciones ya no se confunden con tu voz"
+  },
+  "features": [
+    {
+      "it": "Il riconoscimento della musica ora sente il ritmo, quindi capisce le canzoni con batteria e voce cantata e non solo i suoni fermi.",
+      "en": "Music recognition now listens for rhythm, so it understands songs with drums and singing and not only steady sounds.",
+      "fr": "La reconnaissance de la musique écoute désormais le rythme et comprend les chansons avec batterie et chant, pas seulement les sons constants.",
+      "es": "El reconocimiento de la música ahora escucha el ritmo, así que entiende canciones con batería y voz cantada y no solo sonidos constantes."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Una frase viene attribuita a una persona solo se la voce supera una verifica più severa; nel dubbio resta senza nome invece di essere attribuita male.",
+      "en": "A sentence is attributed to a person only when the voice passes a stricter check; when in doubt it stays unnamed instead of being attributed wrongly.",
+      "fr": "Une phrase n'est attribuée à une personne que si la voix passe un contrôle plus strict ; en cas de doute elle reste sans nom plutôt que mal attribuée.",
+      "es": "Una frase se atribuye a una persona solo si la voz supera una verificación más estricta; en caso de duda queda sin nombre en vez de atribuirse mal."
+    },
+    {
+      "it": "Le voci estranee che tornano, come quella di una radio, vengono ricordate e scartate. Con musica o programma in sottofondo il parlato non verificato non viene scritto a schermo.",
+      "en": "Foreign voices that keep coming back, such as a radio, are remembered and discarded. With music or a programme in the background, unverified speech is not written on screen.",
+      "fr": "Les voix étrangères qui reviennent, comme une radio, sont mémorisées et écartées. Avec de la musique ou un programme en fond, la parole non vérifiée n'est pas écrite à l'écran.",
+      "es": "Las voces ajenas que vuelven, como una radio, se recuerdan y se descartan. Con música o un programa de fondo, el habla no verificada no se escribe en pantalla."
+    },
+    {
+      "it": "Il profilo vocale non impara più voci sconosciute solo perché sei solo in casa, così la radio non lo inquina.",
+      "en": "The voice profile no longer learns unknown voices just because you are home alone, so the radio cannot pollute it.",
+      "fr": "Le profil vocal n'apprend plus de voix inconnues simplement parce que vous êtes seul, la radio ne peut donc plus le polluer.",
+      "es": "El perfil de voz ya no aprende voces desconocidas solo porque estás solo en casa, así la radio no puede contaminarlo."
+    }
+  ]
+}

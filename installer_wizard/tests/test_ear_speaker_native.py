@@ -97,6 +97,19 @@ class FakePrints:
             return None, 0.0
         return ("anna", 0.8) if float(probe @ self.voices[1]) > 0.9 else (None, 0.1)
 
+    def verdict(self, probe):
+        slug, score = self.identify(probe)
+        return {"slug": slug, "score": score}
+
+    def attest(self, probe, seconds, programme, windows=None):
+        slug, score = self.identify(probe)
+        verified = slug is not None and seconds >= 1.2 and not programme
+        return {"slug": slug if verified else None, "verified": verified, "foreign": False, "score": score,
+                "needed": 0.7, "reason": "ok" if verified else "rifiutata"}
+
+    def count(self, slug):
+        return 5
+
     def add(self, slug, probe, source):
         self.added.append(slug)
 
@@ -132,6 +145,26 @@ class SpeakerContextTest(unittest.TestCase):
         self.assertEqual(context.active(), 2)
 
 
+@unittest.skipUnless(READY, "modulo nativo ear-core non installato")
+class RadioIsNeverLearnedTest(unittest.TestCase):
+
+    def test_unrecognised_voice_is_not_added_to_the_owner_profile(self):
+        prints = FakePrints()
+        context = SpeakerContext(prints)
+        slug, _, info = context.identify(np.full(16000 * 2, 0.2, dtype=np.float32), "anna")
+        self.assertIsNone(slug)
+        self.assertEqual(prints.added, [])
+        self.assertFalse(info["voice_verified"])
+
+    def test_nothing_is_learned_while_music_or_a_programme_plays(self):
+        prints = FakePrints()
+        context = SpeakerContext(prints)
+        slug, _, info = context.identify(np.full(16000 * 2, 0.1, dtype=np.float32), "anna", True)
+        self.assertIsNone(slug)
+        self.assertEqual(prints.added, [])
+        self.assertFalse(info["voice_verified"])
+
+
 class FallbackTest(unittest.TestCase):
 
     def test_without_native_module(self):
@@ -140,7 +173,7 @@ class FallbackTest(unittest.TestCase):
             self.assertIsNone(voiceprint.build_book({"anna": np.ones((2, DIM), dtype=np.float32)}))
         slug, _, info = context.identify(np.full(16000 * 4, 0.1, dtype=np.float32), None)
         self.assertEqual(slug, "anna")
-        self.assertEqual(info, {"mixed_speakers": False})
+        self.assertEqual(info, {"mixed_speakers": False, "voice_verified": True, "voice_reason": "ok"})
         self.assertEqual(context.active(), 0)
 
 

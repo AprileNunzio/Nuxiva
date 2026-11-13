@@ -6,6 +6,7 @@ mod agency_core;
 mod agents;
 mod arbitration;
 mod ask_core;
+mod attribution;
 mod audio;
 mod authz;
 mod bus;
@@ -158,6 +159,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     transcript::register(m)?;
     expr::register(m)?;
     voice::register(m)?;
+    attribution::register(m)?;
     rescue::register(m)?;
     defense::register(m)?;
     resources::register(m)?;

@@ -184,7 +184,7 @@ class RealtimeInputTest(unittest.IsolatedAsyncioTestCase):
         tree = ast.parse(path.read_text(encoding="utf-8"))
         session_node = next(node for node in tree.body if isinstance(node, ast.ClassDef) and node.name == "Session")
         namespace = {"asyncio": asyncio, "time": time, "np": np, "WAIT_FOR_SPEECH": 8, "FRAME": 480,
-                     "LINK": {}, "SESSIONS": broadcast.SESSIONS, "broadcast_event": broadcast.broadcast_event}
+                     "LINK": {}, "AttestMixin": object, "SESSIONS": broadcast.SESSIONS, "broadcast_event": broadcast.broadcast_event}
         exec(compile(ast.Module(body=[session_node], type_ignores=[]), str(path), "exec"), namespace)
         session = namespace["Session"].__new__(namespace["Session"])
         session.page, session.raw = {"visible": "visible"}, None

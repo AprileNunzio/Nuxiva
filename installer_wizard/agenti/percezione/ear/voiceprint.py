@@ -36,6 +36,11 @@ try:
 except ImportError:
     from agenti.ear import earconf
 
+try:
+    import attribution
+except ImportError:
+    from agenti.ear import attribution
+
 log = logging.getLogger("nuxiva.ear")
 
 MODEL = Path(os.environ.get("NUXIVA_VOICEPRINT_MODEL", "/opt/nuxiva-ear/voiceprint/speaker.onnx"))
@@ -46,7 +51,7 @@ MAX_SAMPLES = 40
 ENROLLED_AT = 5
 TOP_K = 3
 CENTROID_SHARE = 0.5
-LEARN_SLACK = 0.1
+LEARN_MARGIN = 0.05
 _SLUG = re.compile(r"^[a-z0-9][a-z0-9-]{0,40}$")
 
 
@@ -100,6 +105,7 @@ class Voiceprints:
         self.book = None
         self.book_policy = policy()
         self.stamp = 0.0
+        self.gate = attribution.Attribution()
         if os.environ.get("NUXIVA_VOICEPRINT", "1") == "0" or not MODEL.exists():
             log.info("Impronta vocale non disponibile su questo sistema")
             return
@@ -229,6 +235,33 @@ class Voiceprints:
             pass
         return result["slug"], result["score"]
 
+    def limit(self, slug: str) -> float:
+        book = self._book()
+        value = book.limit(slug) if book is not None else None
+        with self.lock:
+            return float(value if value is not None else self.limits.get(slug, match_base()))
+
+    def attest(self, probe: np.ndarray | None, seconds: float, programme: bool, windows: list | None = None) -> dict:
+        refused = {"slug": None, "verified": False, "foreign": False, "score": 0.0, "needed": 0.0, "reason": "nessuna prova"}
+        if probe is None:
+            return refused
+        self._refresh()
+        result = self.verdict(probe)
+        slug = result.get("slug")
+        limit = self.limit(slug) if slug else match_base()
+        if not earconf.flag("NUXIVA_VOICE_STRICT", True):
+            return {**refused, "slug": slug, "verified": slug is not None, "score": float(result.get("score") or 0.0),
+                    "reason": "controllo rigoroso spento"}
+        out = self.gate.judge(probe, slug, float(result.get("score") or 0.0), limit, seconds,
+                              programme or self.gate.recent() > 0, windows or [])
+        if out["verified"]:
+            try:
+                from nuxiva_bus import nuxiva_bus
+                nuxiva_bus.publish("biometrics.voice", {"slug": out["slug"], "score": out["score"]}, origin="voiceprint")
+            except ImportError:
+                pass
+        return out
+
     def may_learn(self, slug: str, probe: np.ndarray, source: str) -> bool:
         if source != "ascolto":
             return True
@@ -240,7 +273,7 @@ class Voiceprints:
         if result["ambiguous"]:
             return False
         own = self.scores(probe).get(slug, 0.0)
-        return own >= self.limits.get(slug, match_base()) - LEARN_SLACK and result["best"] in (slug, None)
+        return own >= self.limit(slug) + LEARN_MARGIN and result["best"] == slug
 
     def add(self, slug: str, probe: np.ndarray, source: str) -> int:
         if sealed_rows is None or not _SLUG.match(slug) or probe is None:

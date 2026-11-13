@@ -29,6 +29,7 @@ from music import MusicTap
 from scene import SoundScene
 from danger import CONTROLS as RESCUE_CONTROLS, DangerEar, rescue_control
 from defense_view import CONTROLS as DEFENSE_CONTROLS, defense_control
+from attest_mixin import AttestMixin
 from speakers import SpeakerContext
 from livecap import LiveCaptions
 from livegov import LiveGovernor
@@ -68,7 +69,7 @@ async def link_writer() -> None:
         await asyncio.sleep(5)
 
 
-class Session:
+class Session(AttestMixin):
 
     def __init__(self, ws) -> None:
         self.ws = ws
@@ -92,6 +93,8 @@ class Session:
         self.waiting = 0
         self.raw: list | None = None
         self.alone: str | None = None
+        self.bed_seen = 0.0
+        self.voiceprints = voiceprints
         self.enroll: dict | None = None
         self.music = MusicTap()
         self.scene = SoundScene()
@@ -163,6 +166,8 @@ class Session:
             LINK["mic_level"] = advice
             await self.send(type="mic_level", advice=advice)
         heard = self.scene.hear(frame, rms, self.noise, self.music.playing)
+        if heard.music:
+            self.bed_seen = now
         for event in self.danger.frame(frame, heard.music or self.music.playing, self.nuxiva_speaking):
             await self.broadcast(type="danger", source="sound", **event)
         self.music.feed(frame, rms, self.noise, self.mode == "idle" and not self.nuxiva_speaking, now,
@@ -232,10 +237,6 @@ class Session:
         caption = self.live.end()
         if caption["utt"]:
             await self.broadcast(type="caption_drop", utt=caption["utt"])
-
-    def _identify_live(self, audio: np.ndarray) -> tuple:
-        slug, score = voiceprints.identify(voiceprints.embed(audio))
-        return slug, score, self._known(slug)
 
     async def _listen_timeout(self) -> None:
         if self.in_speech:
@@ -327,10 +328,14 @@ class Session:
         if not text.strip():
             await self.broadcast(type="caption_drop", utt=caption["utt"])
             return
-        slug, score = await asyncio.to_thread(lambda: voiceprints.identify(voiceprints.embed(clean)))
+        proof = await asyncio.to_thread(self._attest, clean)
+        slug, score = proof["slug"], proof["score"]
         await self._danger_words(text, slug)
+        if not proof["verified"] and self._programme():
+            await self.broadcast(type="caption_drop", utt=caption["utt"])
+            return
         await self.broadcast(type="heard", text=text, utt=caption["utt"], speaker=slug, speaker_score=round(score, 3),
-                             voice_known=self._known(slug))
+                             voice_known=self._known(slug), verified=bool(proof["verified"]))
         asyncio.create_task(capture.store(note_error, "heard", text, self.lang, slug, score, False, 0, caption, clean))
 
     async def _deliver(self, text: str, lang: str, ms: int, clean: np.ndarray, woke: bool, followup: bool,
@@ -353,7 +358,7 @@ class Session:
         expected, self.awaiting_command = self.awaiting_command, False
         learner.on_command()
         self.recorder.note("transcript", text=command, dur=round(len(clean) / RATE, 2), woke=woke, ms=ms)
-        speaker, score, turn, dominant = await asyncio.to_thread(speakers.inspect, clean, self.alone)
+        speaker, score, turn, dominant = await asyncio.to_thread(speakers.inspect, clean, self.alone, self._programme())
         if turn.get("mixed_speakers"):
             async with stt.lock:
                 verified, _ = await asyncio.to_thread(stt.transcribe, dominant, False, True)
@@ -364,6 +369,11 @@ class Session:
                 await self.broadcast(type="caption_drop", utt=caption["utt"])
                 await self.set_mode("idle")
                 return
+        if self._programme() and voiceprints.ready and voiceprints.samples and not speaker:
+            log.info("Parlato non verificato durante musica o programma (%s): ignorato", turn.get("voice_reason"))
+            await self.broadcast(type="caption_drop", utt=caption["utt"])
+            await self.set_mode("idle")
+            return
         asyncio.create_task(capture.store(note_error, "command", command, lang, speaker, score, woke, ms, caption, clean))
         enforce_speaker = earconf.flag("NUXIVA_VOICEPRINT_ENFORCE", False)
         if enforce_speaker and voiceprints.ready and len(voiceprints.samples) > 0:
@@ -375,7 +385,7 @@ class Session:
 
         await self.broadcast(**(turn | {"type": "transcript", "text": command, "ms": ms, "lang": lang,
                                         "followup": followup and not woke and not expected, "speaker": speaker,
-                                        "speaker_score": round(score, 3), "voice_known": self._known(self.alone),
+                                        "speaker_score": round(score, 3), "voice_known": self._known(speaker),
                                         "utt": caption["utt"]}))
         auto_followup = earconf.number("NUXIVA_EAR_AUTO_FOLLOWUP", 8.0, 0.0, 30.0)
         if auto_followup > 0.0:

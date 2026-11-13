@@ -1,6 +1,7 @@
 use std::collections::VecDeque;
 
 use crate::features::{FrameFeatures, analyze};
+use crate::rhythm::RhythmMeter;
 use crate::stft::{N_FFT, Spectrum, Stft};
 
 const FLOOR_INIT: f32 = 0.004;
@@ -21,6 +22,8 @@ const HARMONIC: f32 = 0.5;
 const MOVING_CENTS: f32 = 12.0;
 const STEADY_DB: f32 = 4.5;
 const PAUSES: f32 = 0.1;
+const BEAT_MIN: f32 = 0.3;
+const BEAT_PAUSES: f32 = 0.06;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SoundKind {
@@ -72,6 +75,7 @@ pub struct SceneClassifier {
     bed: f32,
     bed_on: bool,
     bed_power: f32,
+    rhythm: RhythmMeter,
 }
 
 impl Default for SceneClassifier {
@@ -104,6 +108,7 @@ impl SceneClassifier {
             bed: 0.0,
             bed_on: false,
             bed_power: 0.0,
+            rhythm: RhythmMeter::new(),
         }
     }
 
@@ -111,6 +116,7 @@ impl SceneClassifier {
         self.window.iter_mut().for_each(|v| *v = 0.0);
         self.noise_run = 0;
         self.hold = 0;
+        self.rhythm.reset();
     }
 
     #[must_use]
@@ -177,6 +183,11 @@ impl SceneClassifier {
         });
     }
 
+    fn beat_present(&self) -> bool {
+        let reading = self.rhythm.read();
+        reading.ready && reading.regularity >= BEAT_MIN && reading.pause_ratio < BEAT_PAUSES
+    }
+
     fn music_evidence(&self, f: &FrameFeatures, moving: Option<f32>) -> f32 {
         let full = self.history.len() >= HISTORY;
         if !full {
@@ -193,6 +204,7 @@ impl SceneClassifier {
         match votes {
             4 => 1.0,
             3 if steady && continuous => 0.8,
+            _ if self.beat_present() => 0.8,
             _ => 0.0,
         }
     }
@@ -206,6 +218,7 @@ impl SceneClassifier {
         let gate = (self.floor * GATE_FACTOR).max(GATE_MIN);
         let energetic = f.rms > gate;
         self.remember(&f, !energetic);
+        self.rhythm.push(f.rms, !energetic);
         self.track_floor(f.rms);
         let moving = self.pitch_motion();
         let evidence = if energetic {
