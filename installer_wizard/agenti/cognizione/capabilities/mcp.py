@@ -14,6 +14,7 @@ from agenti.team import roster, runner
 SUPPORTED = ("2025-06-18", "2025-03-26", "2024-11-05")
 INFO = {"name": "nuxiva-os", "version": "5.8.0"}
 SAFE_AGENTS = {"music", "cameras", "desktop", "agent", "whiteboard"}
+SCOPED_READ = frozenset({"firewall_status", "firewall_incidents", "firewall_trusted"})
 INSTRUCTIONS = ("Nuxiva OS: ogni strumento appartiene a un agente con una priorità. Leggi il prompt «panoramica» e le risorse nuxiva://capabilities e "
                 "nuxiva://team per sapere cosa fa la squadra. Le azioni delicate richiedono _confirm=true dopo la conferma dell'utente.")
 
@@ -41,7 +42,8 @@ def visible(token: dict) -> list[str]:
                 (scope is None or any(fnmatchcase(tool["name"], pattern) for pattern in scope))]
     if token["risky"]:
         return [t["name"] for t in eligible]
-    return [t["name"] for t in eligible if not t["confirm"] and roster.owner(t["name"]) in SAFE_AGENTS]
+    return [t["name"] for t in eligible if not t["confirm"] and (roster.owner(t["name"]) in SAFE_AGENTS or
+                                                                  (scope is not None and t["name"] in SCOPED_READ))]
 
 
 def listing(token: dict) -> dict:

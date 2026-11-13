@@ -74,3 +74,34 @@ async def firewall_untrust(address: str) -> str:
     target = model.text_of(model.address(address))
     await apply([target], False, "voce")
     return f"{target} non è più affidabile"
+
+
+@tool("firewall_incidents", "attacchi in corso o recenti rilevati dal firewall: tipo, gravità, paese di origine e dispositivi colpiti", {},
+      agent="firewall")
+async def firewall_incidents() -> str:
+    from agenti.firewall.defense.guardian import guardian
+    state = guardian.snapshot()
+    rows = state["incidents"][:8]
+    head = f"stato della difesa: {state['posture']}, {len(state['incidents'])} incidenti, {len(state['responses'])} difese attive"
+    return "\n".join([head] + [f"- {i['level']} {','.join(i['kinds'])} da {i['src']}"
+                              f"{' (' + i['country'] + ')' if i['country'] else ''}, {len(i['targets'])} bersagli" for i in rows])
+
+
+@tool("firewall_defend", "attiva una difesa temporanea e reversibile contro un indirizzo o un paese (blocco, tarpit, limite, esca, quarantena, sinkhole)",
+      {"kind": "block, tarpit, rate_limit, honeypot, quarantine, sinkhole o country_block", "target": "IP, MAC o codice paese",
+       "minutes": "durata in minuti"}, confirm=True, agent="firewall")
+async def firewall_defend(kind: str, target: str, minutes: int = 60) -> str:
+    from agenti.firewall.defense.responder import responder
+    from agenti.firewall.defense.routes import MANUAL
+    if kind not in MANUAL:
+        raise ValueError("difesa sconosciuta")
+    await responder.execute({"kind": kind, "target": str(target)[:80], "minutes": int(minutes), "reason": "richiesta vocale"}, "voce")
+    return f"difesa {kind} attiva su {target} per {max(1, min(int(minutes), 525_600))} minuti, revocabile in qualsiasi momento"
+
+
+@tool("firewall_defense_revoke", "revoca una difesa attiva del firewall", {"key": "chiave della difesa, per esempio tarpit:203.0.113.9"},
+      confirm=True, agent="firewall")
+async def firewall_defense_revoke(key: str) -> str:
+    from agenti.firewall.defense.responder import responder
+    await responder.revoke(str(key)[:120], "voce")
+    return f"difesa {key} revocata"

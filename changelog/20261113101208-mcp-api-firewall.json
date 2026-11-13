@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Firewall: MCP e API con ambiti minimi",
+    "en": "Firewall: MCP and API with minimal scopes",
+    "fr": "Pare-feu : MCP et API avec portées minimales",
+    "es": "Cortafuegos: MCP y API con ámbitos mínimos"
+  },
+  "features": [
+    {
+      "it": "Assistenti e programmi esterni possono leggere lo stato della difesa e gli attacchi recenti con un token che ha solo i permessi scelti da te, con limite di richieste al minuto e registro di ogni chiamata.",
+      "en": "Assistants and outside programs can read the defence state and recent attacks with a token that only has the permissions you choose, with a per-minute request limit and a log of every call.",
+      "fr": "Les assistants et programmes externes peuvent lire l'état de la défense et les attaques récentes avec un jeton qui n'a que les droits choisis par vous, avec une limite de requêtes par minute et un journal de chaque appel.",
+      "es": "Los asistentes y programas externos pueden leer el estado de la defensa y los ataques recientes con un token que solo tiene los permisos que elijas, con límite de peticiones por minuto y registro de cada llamada."
+    },
+    {
+      "it": "Nuovi comandi per assistenti e voce: elenco degli attacchi, attivazione e revoca di una difesa temporanea, sempre dopo la tua conferma e con le stesse protezioni del firewall.",
+      "en": "New commands for assistants and voice: list attacks, turn a temporary defence on and revoke it, always after your confirmation and with the same firewall safeguards.",
+      "fr": "Nouvelles commandes pour les assistants et la voix : liste des attaques, activation et révocation d'une défense temporaire, toujours après votre confirmation et avec les mêmes garde-fous du pare-feu.",
+      "es": "Nuevos comandos para asistentes y voz: lista de ataques, activación y revocación de una defensa temporal, siempre tras tu confirmación y con las mismas salvaguardas del cortafuegos."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Un token senza ambito esplicito non vede più nessuno strumento del firewall, nemmeno in sola lettura.",
+      "en": "A token without an explicit scope no longer sees any firewall tool, not even read-only ones.",
+      "fr": "Un jeton sans portée explicite ne voit plus aucun outil du pare-feu, pas même en lecture seule.",
+      "es": "Un token sin ámbito explícito ya no ve ninguna herramienta del cortafuegos, ni siquiera de solo lectura."
+    }
+  ]
+}

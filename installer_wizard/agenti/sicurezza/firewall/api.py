@@ -9,6 +9,7 @@ from state import store as system_store
 
 from agenti.firewall import model
 from agenti.firewall.analyst import analyst
+from agenti.firewall.defense import external as defense_external
 from agenti.firewall.defense import routes as defense_routes
 from agenti.firewall.defense.guardian import guardian
 from agenti.firewall.defense.trust import TrustError, apply as apply_trust, trust
@@ -20,6 +21,7 @@ from agenti.firewall.store import store
 
 admin_routes = APIRouter()
 admin_routes.include_router(defense_routes.router)
+admin_routes.include_router(defense_external.router)
 CONFIRM_SECONDS = 90
 _changes = asyncio.Lock()
 
