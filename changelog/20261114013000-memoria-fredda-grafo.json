@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Memoria fredda: Nuxiva costruisce la mappa dei file del progetto",
+    "en": "Cold memory: Nuxiva builds a map of the project files",
+    "fr": "Mémoire froide : Nuxiva construit la carte des fichiers du projet",
+    "es": "Memoria fría: Nuxiva construye el mapa de los archivos del proyecto"
+  },
+  "features": [
+    {
+      "it": "Nuxiva legge il codice e i documenti del progetto e ne ricava una mappa di file, funzioni, pacchetti e collegamenti, per sapere cosa dipende da cosa prima di modificare qualcosa. Capisce Rust, Python, JavaScript e TypeScript, i pacchetti Cargo, i manifest degli agenti e i documenti Markdown.",
+      "en": "Nuxiva reads the project's code and documents and derives a map of files, functions, packages and links, to know what depends on what before changing anything. It understands Rust, Python, JavaScript and TypeScript, Cargo packages, agent manifests and Markdown documents.",
+      "fr": "Nuxiva lit le code et les documents du projet et en tire une carte des fichiers, fonctions, paquets et liens, pour savoir ce qui dépend de quoi avant de modifier quoi que ce soit. Il comprend Rust, Python, JavaScript et TypeScript, les paquets Cargo, les manifestes d'agents et les documents Markdown.",
+      "es": "Nuxiva lee el código y los documentos del proyecto y obtiene un mapa de archivos, funciones, paquetes y vínculos, para saber qué depende de qué antes de cambiar nada. Entiende Rust, Python, JavaScript y TypeScript, los paquetes Cargo, los manifiestos de agentes y los documentos Markdown."
+    },
+    {
+      "it": "La lettura è protetta: percorsi pericolosi, file troppo grandi o illeggibili vengono scartati e ogni file riceve un'impronta crittografica per accorgersi dei cambiamenti.",
+      "en": "Reading is protected: dangerous paths and files that are too large or unreadable are discarded, and every file gets a cryptographic fingerprint to detect changes.",
+      "fr": "La lecture est protégée : les chemins dangereux et les fichiers trop gros ou illisibles sont écartés, et chaque fichier reçoit une empreinte cryptographique pour détecter les changements.",
+      "es": "La lectura está protegida: se descartan rutas peligrosas y archivos demasiado grandes o ilegibles, y cada archivo recibe una huella criptográfica para detectar cambios."
+    }
+  ],
+  "fixes": []
+}
