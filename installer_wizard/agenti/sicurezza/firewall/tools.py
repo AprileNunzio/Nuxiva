@@ -87,6 +87,22 @@ async def firewall_incidents() -> str:
                               f"{' (' + i['country'] + ')' if i['country'] else ''}, {len(i['targets'])} bersagli" for i in rows])
 
 
+@tool("firewall_show_view", "mostra a schermo intero la vista 3D della difesa: dispositivi, attacchi, paese di origine e difese attive", {},
+      agent="firewall")
+async def firewall_show_view() -> str:
+    from agenti.firewall.defense.stage import stage
+    if not await stage.show(True):
+        return "lo schermo non è raggiungibile in questo momento"
+    return "vista della difesa aperta a schermo intero"
+
+
+@tool("firewall_hide_view", "chiude la vista 3D della difesa", {}, agent="firewall")
+async def firewall_hide_view() -> str:
+    from agenti.firewall.defense.stage import stage
+    await stage.close()
+    return "vista della difesa chiusa"
+
+
 @tool("firewall_defend", "attiva una difesa temporanea e reversibile contro un indirizzo o un paese (blocco, tarpit, limite, esca, quarantena, sinkhole)",
       {"kind": "block, tarpit, rate_limit, honeypot, quarantine, sinkhole o country_block", "target": "IP, MAC o codice paese",
        "minutes": "durata in minuti"}, confirm=True, agent="firewall")

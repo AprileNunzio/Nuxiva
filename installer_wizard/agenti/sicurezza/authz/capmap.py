@@ -27,7 +27,7 @@ TOOL_CAPS: dict[str, str] = {
     **dict.fromkeys(("write_file", "make_dir", "copy", "move", "zip", "create_document", "copy_to_share",
                      "create_site", "create_3d", "speak_to_file"), "files.document.write"),
     **dict.fromkeys(("delete",), "files.document.delete"),
-    **dict.fromkeys(("firewall_status", "firewall_trusted", "firewall_incidents", "vpn_status", "proxmox_status", "debian_status", "debian_logs",
+    **dict.fromkeys(("firewall_status", "firewall_trusted", "firewall_incidents", "firewall_show_view", "firewall_hide_view", "vpn_status", "proxmox_status", "debian_status", "debian_logs",
                      "debian_processes", "debian_network", "ssh_public_key", "system_file_read"), "system.status.read"),
     **dict.fromkeys(("firewall_block", "firewall_unblock", "firewall_trust", "firewall_untrust", "firewall_defend", "firewall_defense_revoke", "vpn_connect", "vpn_disconnect", "proxmox_power",
                      "debian_service", "apt_install", "apt_remove", "apt_maintain", "service_control", "power_control",

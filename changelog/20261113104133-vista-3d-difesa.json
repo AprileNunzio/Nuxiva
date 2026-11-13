@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Firewall: vista 3D a schermo intero della difesa",
+    "en": "Firewall: full-screen 3D defence view",
+    "fr": "Pare-feu : vue 3D de la défense en plein écran",
+    "es": "Cortafuegos: vista 3D de la defensa a pantalla completa"
+  },
+  "features": [
+    {
+      "it": "Quando c'è un tentativo di attacco o un attacco in corso, la pagina 80 mostra a schermo intero un globo 3D con i dispositivi di casa, da dove arriva l'attacco, il paese di origine e le difese attive, spiegati in parole semplici.",
+      "en": "When an attack is attempted or in progress, page 80 shows a full-screen 3D globe with your home devices, where the attack comes from, the country of origin and the active defences, explained in plain words.",
+      "fr": "En cas de tentative d'attaque ou d'attaque en cours, la page 80 affiche en plein écran un globe 3D avec les appareils de la maison, l'origine de l'attaque, le pays d'origine et les défenses actives, expliqués simplement.",
+      "es": "Ante un intento de ataque o un ataque en curso, la página 80 muestra a pantalla completa un globo 3D con los dispositivos de casa, de dónde viene el ataque, el país de origen y las defensas activas, explicados con palabras sencillas."
+    },
+    {
+      "it": "Puoi aprire e chiudere la vista anche a voce chiedendo informazioni sulla difesa; se la chiudi, non si riapre da sola per dieci minuti.",
+      "en": "You can also open and close the view by voice when you ask about the defence; if you close it, it does not reopen by itself for ten minutes.",
+      "fr": "Tu peux aussi ouvrir et fermer la vue à la voix en demandant des informations sur la défense ; si tu la fermes, elle ne se rouvre pas seule pendant dix minutes.",
+      "es": "También puedes abrir y cerrar la vista por voz al pedir información sobre la defensa; si la cierras, no se vuelve a abrir sola durante diez minutos."
+    }
+  ],
+  "fixes": []
+}

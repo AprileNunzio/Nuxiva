@@ -28,6 +28,7 @@ from learner import learner
 from music import MusicTap
 from scene import SoundScene
 from danger import CONTROLS as RESCUE_CONTROLS, DangerEar, rescue_control
+from defense_view import CONTROLS as DEFENSE_CONTROLS, defense_control
 from speakers import SpeakerContext
 from livecap import LiveCaptions
 from livegov import LiveGovernor
@@ -426,6 +427,8 @@ class Session:
                 self.wake.request_reset()
         elif kind in RESCUE_CONTROLS:
             await rescue_control(kind, msg, SESSIONS, self.broadcast)
+        elif kind in DEFENSE_CONTROLS:
+            await defense_control(kind, msg, self.broadcast)
         elif kind == "mic_adjusted":
             self.autolevel.rejudge()
         elif kind == "presence":

@@ -36,7 +36,7 @@ TOOLS: dict[str, Risk] = {
                                          "solve", "table", "write")},
     "find_contact": Risk.PERSONAL, "list_dir": Risk.PERSONAL, "read_file": Risk.PERSONAL, "find_files": Risk.PERSONAL,
     "file_info": Risk.PERSONAL, "camera_events": Risk.PERSONAL, "camera_overview": Risk.PERSONAL,
-    "list_cameras": Risk.PERSONAL, "open_camera": Risk.PERSONAL, "firewall_status": Risk.PERSONAL, "firewall_trusted": Risk.PERSONAL, "firewall_incidents": Risk.PERSONAL, "vpn_status": Risk.PERSONAL, "proxmox_status": Risk.PERSONAL,
+    "list_cameras": Risk.PERSONAL, "open_camera": Risk.PERSONAL, "firewall_status": Risk.PERSONAL, "firewall_trusted": Risk.PERSONAL, "firewall_incidents": Risk.PERSONAL, "firewall_show_view": Risk.PERSONAL, "firewall_hide_view": Risk.PERSONAL, "vpn_status": Risk.PERSONAL, "proxmox_status": Risk.PERSONAL,
     "who_is": Risk.PERSONAL, "person_profile": Risk.PERSONAL, "person_learn": Risk.PERSONAL, "person_mood": Risk.PERSONAL,
     "medico_parametri": Risk.PERSONAL,
     "stop_red_alert": Risk.HOME, "red_alert": Risk.CRITICAL, "studio_voices": Risk.INFO, "transcribe_audio": Risk.PERSONAL, "studio_design_voice": Risk.HOME, "speak_to_file": Risk.FILES,

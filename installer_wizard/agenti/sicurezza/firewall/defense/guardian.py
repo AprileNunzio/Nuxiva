@@ -8,6 +8,7 @@ from state import store as system_store
 from agenti.firewall import model
 from agenti.firewall.defense import engine, netaddr
 from agenti.firewall.defense.geo import GeoError, geo, refresh
+from agenti.firewall.defense.stage import stage
 from agenti.firewall.store import store
 
 EVERY = 30.0
@@ -89,6 +90,7 @@ class Guardian:
         alert["country"] = geo.lookup(alert.get("src", ""))
         self.tick()
         await self.act()
+        await stage.update(self.posture)
 
     async def act(self) -> list[dict]:
         from agenti.firewall.applier import FirewallError
@@ -143,6 +145,7 @@ class Guardian:
             try:
                 self.tick()
                 await self.act()
+                await stage.update(self.posture)
             except (ValueError, TypeError, KeyError) as exc:
                 log.error("Valutazione della difesa non riuscita: %s", exc)
             if time.time() - last_geo > 86_400:
