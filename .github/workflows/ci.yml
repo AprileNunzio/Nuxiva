@@ -207,6 +207,9 @@ jobs:
     needs: [validate-python, release-notes, tests, kernel-tests, native-core, validate-scripts, validate-web-client]
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
       - name: Summarize Results
         env:
           NEEDS: ${{ toJSON(needs) }}

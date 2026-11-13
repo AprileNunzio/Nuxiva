@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Esito dei controlli di pubblicazione di nuovo corretto",
+    "en": "Publishing check result correct again",
+    "fr": "Résultat des contrôles de publication de nouveau correct",
+    "es": "Resultado de los controles de publicación de nuevo correcto"
+  },
+  "features": [
+    {
+      "it": "Il riepilogo finale dei controlli ora distingue chiaramente un errore vero da un controllo interrotto.",
+      "en": "The final summary of the checks now clearly tells a real error from an interrupted check.",
+      "fr": "Le résumé final des contrôles distingue désormais clairement une vraie erreur d'un contrôle interrompu.",
+      "es": "El resumen final de los controles distingue ahora con claridad un error real de un control interrumpido."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Il riepilogo dei controlli non riusciva ad avviarsi e segnava come fallita una versione che aveva passato tutti i test: ora parte correttamente.",
+      "en": "The checks summary could not start and marked as failed a version that had passed every test: it now starts correctly.",
+      "fr": "Le résumé des contrôles ne parvenait pas à démarrer et marquait comme échouée une version qui avait réussi tous les tests : il démarre désormais correctement.",
+      "es": "El resumen de los controles no conseguía iniciarse y marcaba como fallida una versión que había pasado todas las pruebas: ahora se inicia correctamente."
+    }
+  ]
+}
