@@ -79,6 +79,34 @@ class MirrorTest(unittest.TestCase):
         with self.assertRaises(PermissionError):
             run(mirror.route("readonly", "now", {"extra": 1}))
 
+    def test_catalog_is_consistent_with_the_registry(self):
+        registry.refresh()
+        mirror.install()
+        seen: dict[str, str] = {}
+        for server, area in mirror.AREAS.items():
+            self.assertTrue(area["flag"].startswith("NUXIVA_MCP_AREA_"))
+            for name, traits in area["tools"].items():
+                self.assertIn(name, registry.TOOLS)
+                self.assertNotIn(name, seen, f"{name} in {server} and {seen.get(name)}")
+                seen[name] = server
+                self.assertFalse(traits.get("read_only") and traits.get("destructive"))
+                self.assertIn(name, mirror.ORIGINALS)
+
+    def test_every_area_is_registered_and_gated(self):
+        self.build("mcp")
+        registry.refresh()
+        for server in mirror.AREAS:
+            definition = mirror.definition(server)
+            self.assertIsNotNone(definition, server)
+            self.assertEqual(definition["kind"], "mirror")
+            self.assertTrue(definition["config"]["tools"])
+
+    def test_destructive_tools_always_need_consent(self):
+        self.build("mcp")
+        with mock.patch.dict(os.environ, {"NUXIVA_MCP_AREA_EXEC": "mcp"}):
+            registry.refresh()
+            self.assertTrue(registry.needs_confirm("run_command", {"command": "ls"}))
+
     def test_legacy_mode_never_touches_the_engine(self):
         self.build("legacy")
         run(registry.TOOLS["now"]["fn"]())

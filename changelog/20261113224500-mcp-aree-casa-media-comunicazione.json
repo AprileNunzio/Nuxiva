@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Casa, media, comunicazione e comandi sotto controllo MCP",
+    "en": "Home, media, communication and commands under MCP control",
+    "fr": "Maison, médias, communication et commandes sous contrôle MCP",
+    "es": "Casa, medios, comunicación y comandos bajo control MCP"
+  },
+  "fixes": [],
+  "features": [
+    {
+      "it": "Domotica, TV, musica, telecamere, contatti, email e comandi possono passare dal registro MCP unico: permessi, consenso e audit sono gestiti dal nucleo Rust.",
+      "en": "Home automation, TV, music, cameras, contacts, email and commands can go through the single MCP registry: permissions, consent and audit are handled by the Rust core.",
+      "fr": "Domotique, TV, musique, caméras, contacts, e-mail et commandes peuvent passer par le registre MCP unique : permissions, consentement et audit sont gérés par le cœur Rust.",
+      "es": "Domótica, TV, música, cámaras, contactos, correo y comandos pueden pasar por el registro MCP único: permisos, consentimiento y auditoría los gestiona el núcleo Rust."
+    }
+  ]
+}

@@ -4,13 +4,117 @@
       "server": "readonly",
       "flag": "NUXIVA_MCP_AREA_READONLY",
       "tools": {
-        "now": {"read_only": true},
-        "list_widgets": {"read_only": true},
-        "team_roster": {"read_only": true},
-        "list_cameras": {"read_only": true},
-        "camera_overview": {"read_only": true},
-        "firewall_status": {"read_only": true},
-        "list_models": {"read_only": true}
+        "now": {
+          "read_only": true
+        },
+        "list_widgets": {
+          "read_only": true
+        },
+        "team_roster": {
+          "read_only": true
+        },
+        "list_cameras": {
+          "read_only": true
+        },
+        "camera_overview": {
+          "read_only": true
+        },
+        "firewall_status": {
+          "read_only": true
+        },
+        "list_models": {
+          "read_only": true
+        }
+      }
+    },
+    {
+      "server": "home",
+      "flag": "NUXIVA_MCP_AREA_HOME",
+      "tools": {
+        "ha_get_state": {
+          "read_only": true
+        },
+        "ha_list_entities": {
+          "read_only": true
+        },
+        "ha_devices_by_room": {
+          "read_only": true
+        },
+        "ha_energy_consumption": {
+          "read_only": true
+        },
+        "ha_ask_assist": {},
+        "ha_call_service": {},
+        "tv_list_channels": {
+          "read_only": true
+        },
+        "tv_list_tuners": {
+          "read_only": true
+        },
+        "tv_get_epg": {
+          "read_only": true
+        },
+        "tv_play_channel": {},
+        "tv_add_tuner": {},
+        "tv_scan_tuner": {},
+        "tv_set_vpn_policy": {}
+      }
+    },
+    {
+      "server": "media",
+      "flag": "NUXIVA_MCP_AREA_MEDIA",
+      "tools": {
+        "music_now": {
+          "read_only": true
+        },
+        "music_outputs": {
+          "read_only": true
+        },
+        "music_search": {
+          "read_only": true
+        },
+        "music_control": {},
+        "music_play": {},
+        "camera_events": {
+          "read_only": true
+        },
+        "camera_motion": {
+          "read_only": true
+        },
+        "camera_photo": {},
+        "open_camera": {}
+      }
+    },
+    {
+      "server": "comms",
+      "flag": "NUXIVA_MCP_AREA_COMMS",
+      "tools": {
+        "find_contact": {
+          "read_only": true
+        },
+        "agent_inbox": {
+          "read_only": true
+        },
+        "agent_tell": {},
+        "agent_ask": {},
+        "send_email": {
+          "open_world": true
+        }
+      }
+    },
+    {
+      "server": "exec",
+      "flag": "NUXIVA_MCP_AREA_EXEC",
+      "tools": {
+        "run_command": {
+          "destructive": true
+        },
+        "packages": {
+          "destructive": true
+        },
+        "rpa_run": {
+          "destructive": true
+        }
       }
     }
   ]
