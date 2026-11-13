@@ -11,6 +11,7 @@ workspace = true
 
 [dependencies]
 nuxiva-mcp-core = { path = "../mcp-core" }
+nuxiva-graph-core = { path = "../graph-core" }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 libc = "0.2"

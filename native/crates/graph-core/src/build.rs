@@ -1,78 +1,22 @@
-use std::collections::{BTreeSet, HashMap};
+use std::collections::HashMap;
 
-use sha2::{Digest, Sha256};
-
+use crate::cache::{Cache, Parsed};
 use crate::error::{GraphError, GraphResult};
-use crate::extract::{extract, language};
 use crate::graph::{Graph, RawEdge};
-use crate::model::{EdgeKind, Facts, Language, Node, NodeKind, SymKind};
-use crate::path::{parent, validate};
+use crate::model::{EdgeKind, Language, Node, NodeKind, SymKind};
+use crate::path::parent;
 use crate::resolve::{Index, Target};
 use crate::settings::GraphSettings;
 use crate::source::FileSource;
-
-struct Parsed {
-    facts: Facts,
-    digest: [u8; 32],
-    language: Language,
-}
-
-fn load(source: &dyn FileSource, path: &str, settings: &GraphSettings) -> Option<Parsed> {
-    let lang = language(path);
-    if lang == Language::Other {
-        return Some(Parsed {
-            facts: Facts::default(),
-            digest: [0; 32],
-            language: lang,
-        });
-    }
-    let bytes = source.read(path, settings.max_file_bytes).ok()?;
-    let text = std::str::from_utf8(&bytes).ok()?;
-    let digest: [u8; 32] = Sha256::digest(&bytes).into();
-    Some(Parsed {
-        facts: extract(lang, text, settings),
-        digest,
-        language: lang,
-    })
-}
 
 fn node_id(value: usize) -> GraphResult<u32> {
     u32::try_from(value).map_err(|_| GraphError::Capacity)
 }
 
-struct Collected {
-    paths: Vec<String>,
-    parsed: Vec<Parsed>,
+struct Collected<'a> {
+    paths: &'a [String],
+    parsed: &'a [Parsed],
     skipped: usize,
-}
-
-fn collect(source: &dyn FileSource, settings: &GraphSettings) -> GraphResult<Collected> {
-    let mut skipped = 0usize;
-    let mut listed = BTreeSet::new();
-    for entry in source.list()? {
-        if validate(&entry.path, settings.max_path_chars).is_err() {
-            skipped = skipped.saturating_add(1);
-            continue;
-        }
-        listed.insert(entry.path);
-    }
-    skipped = skipped.saturating_add(listed.len().saturating_sub(settings.max_files));
-    let mut paths = Vec::new();
-    let mut parsed = Vec::new();
-    for path in listed.into_iter().take(settings.max_files) {
-        match load(source, &path, settings) {
-            Some(item) => {
-                paths.push(path);
-                parsed.push(item);
-            }
-            None => skipped = skipped.saturating_add(1),
-        }
-    }
-    Ok(Collected {
-        paths,
-        parsed,
-        skipped,
-    })
 }
 
 struct Layout {
@@ -83,7 +27,7 @@ struct Layout {
     cargo_dirs: HashMap<String, u32>,
 }
 
-fn layout(data: &Collected) -> GraphResult<Layout> {
+fn layout(data: &Collected<'_>) -> GraphResult<Layout> {
     let mut nodes = Vec::new();
     for (i, path) in data.paths.iter().enumerate() {
         nodes.push(Node {
@@ -159,7 +103,7 @@ fn owning_package(cargo_dirs: &HashMap<String, u32>, path: &str) -> Option<u32> 
     }
 }
 
-fn link(index: &Index<'_>, data: &Collected, layout: &mut Layout) -> GraphResult<()> {
+fn link(index: &Index<'_>, data: &Collected<'_>, layout: &mut Layout) -> GraphResult<()> {
     for (i, path) in data.paths.iter().enumerate() {
         let (src, Some(item)) = (node_id(i)?, data.parsed.get(i)) else {
             continue;
@@ -197,11 +141,14 @@ fn link(index: &Index<'_>, data: &Collected, layout: &mut Layout) -> GraphResult
     Ok(())
 }
 
-pub fn build(source: &dyn FileSource, settings: &GraphSettings) -> GraphResult<Graph> {
-    settings.validate()?;
-    let data = collect(source, settings)?;
+pub fn assemble(paths: &[String], parsed: &[Parsed], skipped: usize) -> GraphResult<Graph> {
+    let data = Collected {
+        paths,
+        parsed,
+        skipped,
+    };
     let mut shape = layout(&data)?;
-    let index = Index::new(&data.paths, shape.by_name.clone());
+    let index = Index::new(data.paths, shape.by_name.clone());
     link(&index, &data, &mut shape)?;
     let languages = data.parsed.iter().map(|p| p.language).collect();
     let digests = data.parsed.iter().map(|p| p.digest).collect();
@@ -213,6 +160,12 @@ pub fn build(source: &dyn FileSource, settings: &GraphSettings) -> GraphResult<G
         shape.edges,
         data.skipped,
     )
+}
+
+pub fn build(source: &dyn FileSource, settings: &GraphSettings) -> GraphResult<Graph> {
+    let mut cache = Cache::new();
+    cache.sync(source, settings)?;
+    cache.graph()
 }
 
 #[must_use]

@@ -2,7 +2,7 @@ use crate::{
     EdgeKind, GraphError, GraphSettings, Language, MemorySource, NodeKind, build, extract, language,
 };
 
-fn fixture() -> MemorySource {
+pub(crate) fn fixture() -> MemorySource {
     let mut s = MemorySource::new();
     s.put(
         "Cargo.toml",
@@ -372,4 +372,12 @@ fn clippy_free_scale() {
     let g = build(&s, &GraphSettings::default()).expect("build");
     assert_eq!(g.file_count(), 3_000);
     assert!(g.edge_count() > 3_000);
+}
+
+#[test]
+fn rust_constants_and_const_fns() {
+    let text = "const LIMIT: usize = 3;\npub const fn make() {}\npub(crate) static mut COUNT: u8 = 0;\npub async fn go() {}\n";
+    let facts = extract(Language::Rust, text, &GraphSettings::default());
+    let names: Vec<&str> = facts.symbols.iter().map(|f| f.name.as_str()).collect();
+    assert_eq!(names, vec!["LIMIT", "make", "COUNT", "go"]);
 }

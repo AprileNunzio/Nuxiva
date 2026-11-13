@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize)]
 #[serde(rename_all = "snake_case")]
@@ -9,7 +9,7 @@ pub enum NodeKind {
     Section,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum SymKind {
     Function,
@@ -29,7 +29,7 @@ pub enum EdgeKind {
     Documents,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Language {
     Rust,
@@ -50,17 +50,32 @@ pub struct Node {
     pub line: u32,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Fact {
     pub name: String,
     pub kind: SymKind,
     pub line: u32,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Default)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct Facts {
     pub symbols: Vec<Fact>,
     pub imports: Vec<String>,
     pub package: Option<String>,
     pub mentions: Vec<String>,
+}
+
+impl Language {
+    #[must_use]
+    pub const fn label(self) -> &'static str {
+        match self {
+            Self::Rust => "rust",
+            Self::Python => "python",
+            Self::Script => "script",
+            Self::Cargo => "cargo",
+            Self::Manifest => "manifest",
+            Self::Markdown => "markdown",
+            Self::Other => "other",
+        }
+    }
 }

@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Memoria fredda: aggiornamento veloce e domande sul progetto",
+    "en": "Cold memory: fast refresh and questions about the project",
+    "fr": "Mémoire froide : mise à jour rapide et questions sur le projet",
+    "es": "Memoria fría: actualización rápida y preguntas sobre el proyecto"
+  },
+  "features": [
+    {
+      "it": "La mappa del progetto si aggiorna rileggendo solo i file cambiati e può essere conservata cifrata. Gli agenti possono chiedere cosa dipende da un file, cosa gli sta vicino, il percorso più breve tra due elementi e un riassunto compatto da consultare prima di modificare qualcosa.",
+      "en": "The project map refreshes by rereading only changed files and can be stored encrypted. Agents can ask what depends on a file, what sits next to it, the shortest route between two items and a compact summary to consult before changing anything.",
+      "fr": "La carte du projet se met à jour en ne relisant que les fichiers modifiés et peut être conservée chiffrée. Les agents peuvent demander ce qui dépend d'un fichier, ce qui l'entoure, le chemin le plus court entre deux éléments et un résumé compact à consulter avant de modifier quoi que ce soit.",
+      "es": "El mapa del proyecto se actualiza releyendo solo los archivos modificados y puede guardarse cifrado. Los agentes pueden preguntar qué depende de un archivo, qué tiene cerca, la ruta más corta entre dos elementos y un resumen compacto que consultar antes de cambiar algo."
+    }
+  ],
+  "fixes": []
+}

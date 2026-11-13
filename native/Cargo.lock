@@ -1516,6 +1516,8 @@ dependencies = [
 name = "nuxiva-graph-core"
 version = "5.8.0"
 dependencies = [
+ "chacha20poly1305",
+ "getrandom 0.3.4",
  "serde",
  "serde_json",
  "sha2",
@@ -1581,6 +1583,7 @@ name = "nuxiva-mcp-servers"
 version = "5.8.0"
 dependencies = [
  "libc",
+ "nuxiva-graph-core",
  "nuxiva-mcp-core",
  "reqwest",
  "serde",

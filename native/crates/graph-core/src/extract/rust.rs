@@ -2,9 +2,7 @@ use super::util::{after, clip, ident, line_no, strip_all};
 use crate::model::{Fact, Facts, SymKind};
 use crate::settings::GraphSettings;
 
-const QUALIFIERS: [&str; 7] = [
-    "pub", "async", "unsafe", "const", "extern", "default", "static",
-];
+const QUALIFIERS: [&str; 6] = ["pub", "async", "unsafe", "extern", "default", "mut"];
 const MAX_DEPTH: usize = 6;
 
 fn expand(path: &str, out: &mut Vec<String>, depth: usize) {
@@ -62,6 +60,13 @@ fn symbol(line: &str) -> Option<(SymKind, String)> {
         .and_then(|r| r.split_once(')'))
         .map_or(rest, |(_, r)| r.trim_start());
     let rest = strip_all(rest, &QUALIFIERS);
+    let rest = after(rest, "const")
+        .filter(|r| {
+            ["fn", "unsafe", "async", "extern"]
+                .iter()
+                .any(|w| after(r, w).is_some())
+        })
+        .map_or(rest, |r| strip_all(r, &QUALIFIERS));
     let table = [
         ("fn", SymKind::Function),
         ("struct", SymKind::Type),
@@ -75,6 +80,11 @@ fn symbol(line: &str) -> Option<(SymKind, String)> {
     ];
     for (word, kind) in table {
         if let Some(tail) = after(rest, word) {
+            let tail = if word == "static" {
+                after(tail, "mut").unwrap_or(tail)
+            } else {
+                tail
+            };
             let name = ident(tail);
             if !name.is_empty() {
                 return Some((kind, name.to_owned()));

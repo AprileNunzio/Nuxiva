@@ -7,6 +7,10 @@ pub const CEIL_FILE_BYTES: usize = 8 * 1024 * 1024;
 pub const CEIL_ITEMS: usize = 4_096;
 pub const CEIL_PATH: usize = 1_024;
 pub const CEIL_NAME: usize = 256;
+pub const CEIL_RESULTS: usize = 4_096;
+pub const CEIL_DEPTH: usize = 32;
+pub const CEIL_VISITED: usize = 5_000_000;
+pub const CEIL_PACK: usize = 200_000;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(default, deny_unknown_fields)]
@@ -17,6 +21,10 @@ pub struct GraphSettings {
     pub max_imports_per_file: usize,
     pub max_path_chars: usize,
     pub max_name_chars: usize,
+    pub max_results: usize,
+    pub max_depth: usize,
+    pub max_visited: usize,
+    pub max_pack_chars: usize,
 }
 
 impl Default for GraphSettings {
@@ -28,6 +36,10 @@ impl Default for GraphSettings {
             max_imports_per_file: 256,
             max_path_chars: 512,
             max_name_chars: 120,
+            max_results: 200,
+            max_depth: 6,
+            max_visited: 50_000,
+            max_pack_chars: 24_000,
         }
     }
 }
@@ -43,7 +55,11 @@ impl GraphSettings {
             && within(self.max_symbols_per_file, CEIL_ITEMS)
             && within(self.max_imports_per_file, CEIL_ITEMS)
             && within(self.max_path_chars, CEIL_PATH)
-            && within(self.max_name_chars, CEIL_NAME);
+            && within(self.max_name_chars, CEIL_NAME)
+            && within(self.max_results, CEIL_RESULTS)
+            && within(self.max_depth, CEIL_DEPTH)
+            && within(self.max_visited, CEIL_VISITED)
+            && within(self.max_pack_chars, CEIL_PACK);
         if ok {
             Ok(())
         } else {

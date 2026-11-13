@@ -1,3 +1,5 @@
+use sha2::{Digest, Sha256};
+
 use crate::error::{GraphError, GraphResult};
 use crate::model::{EdgeKind, Language, Node, NodeKind};
 
@@ -72,6 +74,7 @@ pub struct Graph {
     out: Csr,
     inc: Csr,
     skipped: usize,
+    version: [u8; 32],
 }
 
 impl Graph {
@@ -89,6 +92,13 @@ impl Graph {
         let out = Csr::build(nodes.len(), &edges, false)?;
         edges.sort_unstable_by_key(|&(src, dst, kind)| (dst, src, kind));
         let inc = Csr::build(nodes.len(), &edges, true)?;
+        let mut hasher = Sha256::new();
+        for (node, digest) in nodes.iter().take(files).zip(&digests) {
+            hasher.update((node.name.len() as u64).to_le_bytes());
+            hasher.update(node.name.as_bytes());
+            hasher.update(digest);
+        }
+        let version: [u8; 32] = hasher.finalize().into();
         Ok(Self {
             nodes,
             files,
@@ -97,7 +107,28 @@ impl Graph {
             out,
             inc,
             skipped,
+            version,
         })
+    }
+
+    #[must_use]
+    pub const fn version(&self) -> &[u8; 32] {
+        &self.version
+    }
+
+    #[must_use]
+    pub fn reference(&self) -> String {
+        self.version
+            .iter()
+            .take(8)
+            .fold(String::with_capacity(16), |mut acc, b| {
+                acc.extend(
+                    [b >> 4, b & 15]
+                        .into_iter()
+                        .filter_map(|n| char::from_digit(u32::from(n), 16)),
+                );
+                acc
+            })
     }
 
     #[must_use]
