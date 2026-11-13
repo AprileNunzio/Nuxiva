@@ -21,7 +21,8 @@
     "Chromecast, DLNA e schermo di Nuxiva",
     "Link condivisi a scadenza",
     "Server compatibile con le app musicali",
-    "Riconoscimento ambientale"
+    "Riconoscimento ambientale",
+    "Abilità karaoke: testo sincronizzato a tempo"
   ],
   "settings": [
     {
@@ -349,6 +350,22 @@
         {
           "value": "0",
           "label": "No"
+        }
+      ]
+    },
+    {
+      "key": "NUXIVA_MUSIC_KARAOKE",
+      "label": "Abilità karaoke: mostra il testo sincronizzato della musica in ascolto",
+      "type": "select",
+      "default": "0",
+      "options": [
+        {
+          "value": "1",
+          "label": "Attiva"
+        },
+        {
+          "value": "0",
+          "label": "Disattivata"
         }
       ]
     }

@@ -36,6 +36,7 @@ mod home_rules;
 mod jev;
 mod language;
 mod learner;
+mod lyrics;
 mod mastery;
 mod matter;
 mod memory;
@@ -141,6 +142,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     ear::register(m)?;
     ear_array::register(m)?;
     ear_music::register(m)?;
+    lyrics::register(m)?;
     face::register(m)?;
     face_look::register(m)?;
     dialog::register(m)?;

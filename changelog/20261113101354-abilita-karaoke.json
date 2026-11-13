@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Abilità karaoke: il testo della canzone in ascolto, sincronizzato per cantare",
+    "en": "Karaoke skill: the lyrics of the song playing, in sync so you can sing",
+    "fr": "Compétence karaoké : les paroles de la chanson en cours, synchronisées pour chanter",
+    "es": "Habilidad karaoke: la letra de la canción que suena, sincronizada para cantar"
+  },
+  "features": [
+    {
+      "it": "Dicendo «abilità karaoke» compare un widget a tutto spazio, senza bordi né barre, con la riga corrente evidenziata e lo scorrimento fluido; «disattiva karaoke» lo spegne.",
+      "en": "Saying «karaoke skill» opens a full-space widget with no borders or bars, the current line highlighted and smooth scrolling; «turn off karaoke» closes it.",
+      "fr": "Dire « compétence karaoké » ouvre un widget plein espace, sans bordures ni barres, avec la ligne courante mise en avant et un défilement fluide ; « désactive le karaoké » le ferme.",
+      "es": "Al decir «habilidad karaoke» aparece un widget a todo el espacio, sin bordes ni barras, con la línea actual resaltada y desplazamiento fluido; «desactiva el karaoke» lo cierra."
+    },
+    {
+      "it": "Il testo segue il brano parola per parola quando disponibile e l'orologio si corregge da solo a ogni riconoscimento, compensando anche l'orario del display.",
+      "en": "The lyrics follow the song word by word when available and the clock corrects itself at every recognition, also compensating for the display's time.",
+      "fr": "Les paroles suivent la chanson mot à mot quand c'est possible et l'horloge se corrige à chaque reconnaissance, en compensant aussi l'heure de l'écran.",
+      "es": "La letra sigue la canción palabra por palabra cuando está disponible y el reloj se corrige en cada reconocimiento, compensando también la hora de la pantalla."
+    },
+    {
+      "it": "Per cercare il testo escono dal dispositivo solo titolo, artista, album e durata (verso LRCLIB), mai l'audio; i file .lrc della libreria hanno la precedenza e la fonte è indicata nel widget.",
+      "en": "To find the lyrics only title, artist, album and duration leave the device (to LRCLIB), never the audio; .lrc files in your library come first and the source is shown in the widget.",
+      "fr": "Pour trouver les paroles, seuls le titre, l'artiste, l'album et la durée quittent l'appareil (vers LRCLIB), jamais l'audio ; les fichiers .lrc de la bibliothèque passent en premier et la source est indiquée dans le widget.",
+      "es": "Para buscar la letra solo salen del dispositivo título, artista, álbum y duración (hacia LRCLIB), nunca el audio; los archivos .lrc de la biblioteca tienen prioridad y la fuente se indica en el widget."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Se il testo non esiste o è solo in versione semplice, il karaoke mostra uno stato chiaro o il testo che scorre con il brano, senza errori.",
+      "en": "When no lyrics exist or only plain ones do, karaoke shows a clear state or the text scrolling with the song, without errors.",
+      "fr": "Quand les paroles n'existent pas ou sont seulement simples, le karaoké affiche un état clair ou le texte défilant avec la chanson, sans erreur.",
+      "es": "Si la letra no existe o es solo simple, el karaoke muestra un estado claro o el texto desplazándose con la canción, sin errores."
+    }
+  ]
+}

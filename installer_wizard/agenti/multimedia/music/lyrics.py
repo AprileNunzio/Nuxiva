@@ -1,27 +1,14 @@
-import re
-
 import httpx
+
+from agenti.music.algorithms import lrc
 
 LRCLIB = "https://lrclib.net/api/get"
 USER_AGENT = "NuxivaOS/3 (+https://github.com/AprileNunzio/NUXIVA)"
-LINE = re.compile(r"((?:\[\d{1,2}:\d{2}(?:[.:]\d{1,3})?\])+)(.*)")
-TAG = re.compile(r"\[(\d{1,2}):(\d{2})(?:[.:](\d{1,3}))?\]")
 _cache: dict = {}
 
 
 def _parse(synced: str) -> list:
-    out = []
-    for raw in synced.splitlines():
-        m = LINE.match(raw.strip())
-        if not m:
-            continue
-        text = m.group(2).strip()
-        for tag in TAG.finditer(m.group(1)):
-            mm, ss, frac = tag.groups()
-            t = int(mm) * 60 + int(ss) + (int(frac.ljust(3, "0")) / 1000 if frac else 0)
-            out.append({"t": round(t, 2), "text": text})
-    out.sort(key=lambda x: x["t"])
-    return out[:400]
+    return lrc.parse(synced)
 
 
 async def fetch(title: str, artist: str, album: str = "", duration: float | None = None) -> dict:

@@ -12,7 +12,7 @@ from agenti.desktop.camera_sessions import (
 )
 from agenti.desktop.desk import FILES, desk
 from agenti.desktop.sources import PROVIDERS, SOURCES
-from agenti.music import music
+from agenti.music import karaoke as music_karaoke, music
 from agenti.nodes.display_link import display_node
 from state import store
 
@@ -58,6 +58,7 @@ async def revoke_remote_camera(request: Request):
     return JSONResponse({"ok": True}, headers=NO_CACHE)
 
 desk.register_source("now_playing", music.watcher.current)
+desk.register_source("karaoke", music_karaoke.source)
 for _name, _fn in SOURCES.items():
     desk.register_source(_name, _fn)
 for _name, _fn in PROVIDERS.items():

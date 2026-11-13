@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 
 from access import require_admin, require_internal
 from config import write_env
-from agenti.music import music
+from agenti.music import karaoke, music
 from orchestrator import orch
 from state import store
 from tasks import background
@@ -32,6 +32,16 @@ async def admin_music_set(request: Request, user: str = Depends(require_admin)):
     store.event("INFO", f"Riconoscimento musicale {'attivato' if enabled else 'disattivato'} da {user}", "music")
     background(orch.converge(["music"], reason="Riconoscimento musicale", force=enabled))
     return overview()
+
+
+@admin_routes.get("/api/music/karaoke")
+async def admin_karaoke(_: str = Depends(require_admin)):
+    return {"enabled": karaoke.enabled()}
+
+
+@admin_routes.put("/api/music/karaoke")
+async def admin_karaoke_set(request: Request, _: str = Depends(require_admin)):
+    return {"enabled": karaoke.set_enabled(bool((await request.json()).get("enabled")))}
 
 
 @admin_routes.get("/api/music/settings")

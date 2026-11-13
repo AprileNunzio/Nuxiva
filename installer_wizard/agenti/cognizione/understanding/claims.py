@@ -50,6 +50,8 @@ def time_pending(module) -> bool:
 def music(ctx: Context) -> float:
     from agenti.music import commands as m
     t = ctx.plain
+    if m.karaoke_request(t) is not None:
+        return 0.92
     noun = bool(m.NOUNS.search(t))
     if m.PLAY.match(t) and noun and not re.search(r"\b(?:web\s?cam|telecamera|lavagna|widget|schermo|finestra)\b", t):
         return 0.88

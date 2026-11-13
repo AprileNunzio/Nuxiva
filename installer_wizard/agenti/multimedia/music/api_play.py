@@ -1,4 +1,5 @@
 import asyncio
+import time
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import Response
@@ -43,6 +44,11 @@ async def art(album_key: str, request: Request, t: str = "", size: int = 300):
     if data is None:
         raise HTTPException(404, "Nessuna copertina")
     return Response(data, media_type="image/jpeg", headers={"Cache-Control": "private, max-age=86400"})
+
+
+@public_routes.get("/api/music/clock")
+async def clock():
+    return Response(f'{{"now": {time.time():.3f}}}', media_type="application/json", headers={"Cache-Control": "no-store"})
 
 
 @public_routes.get("/api/music/out/poll")

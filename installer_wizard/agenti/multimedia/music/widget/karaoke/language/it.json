@@ -2,12 +2,15 @@
   "meta": {
     "locale": "it",
     "scope": "widgets/karaoke",
-    "version": "1.1.0"
+    "version": "2.0.0"
   },
   "dictionary": {
-    "label": "Karaoke",
+    "karaoke": "Karaoke",
     "synced": "Sincronizzato",
-    "no_lyrics": "Testo non disponibile",
-    "next_in": "Si riparte tra {{n}} s"
+    "loading": "Cerco il testo…",
+    "no_lyrics": "Testo non disponibile per questo brano",
+    "next_in": "Si riparte tra {{n}} s",
+    "from_lrclib": "Testo: LRCLIB",
+    "from_local": "Testo: file .lrc locale"
   }
 }

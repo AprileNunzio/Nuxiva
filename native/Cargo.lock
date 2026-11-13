@@ -1174,6 +1174,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-lyrics-core"
+version = "5.8.0"
+
+[[package]]
 name = "nuxiva-mastery-core"
 version = "5.8.0"
 dependencies = [
@@ -1244,6 +1248,7 @@ dependencies = [
  "nuxiva-gesture-core",
  "nuxiva-guard-core",
  "nuxiva-langid",
+ "nuxiva-lyrics-core",
  "nuxiva-mastery-core",
  "nuxiva-matter-core",
  "nuxiva-memory-core",

@@ -5,7 +5,7 @@ import socket
 import unicodedata
 
 from config import PUBLIC_PORT
-from agenti.music import catalog, conf, listening, mixes, playlists
+from agenti.music import catalog, conf, karaoke, listening, mixes, playlists
 from agenti.music.db import db
 from agenti.music.outputs import outputs
 
@@ -26,6 +26,8 @@ VOLUME_UP = re.compile(r"\b(?:alza|aumenta|piu forte|sali)\b")
 VOLUME_DOWN = re.compile(r"\b(?:abbassa|diminuisci|piu piano|scendi|meno forte)\b")
 VOLUME_SET = re.compile(r"\bvolume\b.*?\b(\d{1,3})\s*(?:%|per cento|percento)?")
 LIKE = re.compile(r"\b(?:mi piace|aggiungi ai preferiti|salva (?:questa|il brano)|metti il cuore)\b")
+KARAOKE_OFF = re.compile(r"\b(?:disattiva|disabilita|spegni|chiudi|togli|basta|ferma|stop)\b.*\bkaraoke\b")
+KARAOKE_ON = re.compile(r"\b(?:abilita|abilitiamo|attiva|attiviamo|accendi|avvia|apri|metti|mostra|voglio)\b.*\bkaraoke\b|^karaoke$")
 USER = "voce"
 STEP = 0.15
 FACE = {"mode": "face"}
@@ -199,10 +201,26 @@ async def control(text: str) -> tuple[str, dict]:
     raise LookupError
 
 
+def karaoke_request(t: str) -> bool | None:
+    if KARAOKE_OFF.search(t):
+        return False
+    return True if KARAOKE_ON.search(t) else None
+
+
+def karaoke_reply(on: bool) -> str:
+    if not on:
+        return "Karaoke disattivato."
+    online = " Per cercare il testo invio solo titolo e artista a LRCLIB, mai l'audio." if conf.lyrics_online() else " La ricerca online dei testi è spenta: uso solo i file .lrc della tua libreria."
+    return "Abilità karaoke attiva: quando in casa suona una canzone mostro il testo in tempo." + online
+
+
 async def answer(text: str) -> tuple[str, dict]:
     if not conf.voice():
         raise LookupError
     t = plain(text)
+    wanted = karaoke_request(t)
+    if wanted is not None:
+        return karaoke_reply(karaoke.set_enabled(wanted)), FACE
     if LIST_OUTPUTS.match(t):
         names = sorted({device["name"] for device in await outputs.refresh()}, key=str.casefold)
         return ("Dispositivi rilevati: " + ", ".join(names) if names else "Nessun dispositivo di riproduzione rilevato."), FACE

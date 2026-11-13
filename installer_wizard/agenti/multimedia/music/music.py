@@ -14,6 +14,7 @@ from config import env_get
 from state import store
 
 from agenti.music import lyrics
+from agenti.music.algorithms.song_clock import SongClock
 
 log = logging.getLogger("nuxiva.music")
 
@@ -39,6 +40,7 @@ class MusicWatcher:
         self.history: list = []
         self.lock = asyncio.Lock()
         self.bio_cache: dict = {}
+        self.clock = SongClock()
 
     async def _recognize(self, wav: bytes) -> dict:
         with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as fh:
@@ -125,6 +127,7 @@ class MusicWatcher:
     def ended(self) -> bool:
         current = store.now_playing or {}
         self.misses = 0
+        self.clock.reset()
         if not current or current.get("source") == "library":
             return False
         store.now_playing = {}
@@ -154,6 +157,8 @@ class MusicWatcher:
                 return {"ok": True, "found": False, "next_in": min(480, 60 * 2 ** min(self.misses - 1, 3))}
             self.misses = 0
             same = now_playing.get("key") == song["key"]
+            if not same:
+                self.clock.reset()
             if same:
                 enriched = {k: v for k, v in now_playing.items() if k not in ("offset", "recognized_at")}
                 enriched.update({k: v for k, v in song.items() if v})
@@ -169,7 +174,7 @@ class MusicWatcher:
                                 + self.history)[:20]
                 store.event("INFO", f"Brano riconosciuto: {song['title']} — {song['artist']}", "music")
             duration, offset = enriched.get("duration"), song.get("offset")
-            started = captured_at - offset if offset is not None else now_playing.get("started_at", captured_at)
+            started = self.clock.observe(captured_at, offset)[0] if offset is not None else now_playing.get("started_at", captured_at)
             enriched.update(recognized_at=time.time(), started_at=started)
             if duration:
                 remaining = started + duration - time.time()
