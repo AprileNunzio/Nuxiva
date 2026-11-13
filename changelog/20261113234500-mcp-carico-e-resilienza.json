@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Strumenti esterni: capacità adattata al carico del sistema",
+    "en": "External tools: capacity adapted to system load",
+    "fr": "Outils externes : capacité adaptée à la charge du système",
+    "es": "Herramientas externas: capacidad adaptada a la carga del sistema"
+  },
+  "fixes": [],
+  "features": [
+    {
+      "it": "All'avvio il numero di chiamate e compiti in parallelo si riduce quando il sistema è sotto pressione, e un nuovo test di stress verifica che un server instabile non blocchi mai l'assistente.",
+      "en": "At startup the number of parallel calls and jobs shrinks when the system is under pressure, and a new stress test checks that an unstable server never blocks the assistant.",
+      "fr": "Au démarrage, le nombre d'appels et de tâches en parallèle diminue quand le système est sous pression, et un nouveau test de charge vérifie qu'un serveur instable ne bloque jamais l'assistant.",
+      "es": "Al arrancar, el número de llamadas y tareas en paralelo se reduce cuando el sistema está bajo presión, y una nueva prueba de estrés comprueba que un servidor inestable nunca bloquea al asistente."
+    }
+  ]
+}

@@ -425,3 +425,77 @@ fn resilience_settings_are_validated() {
     }
     assert!(Settings::default().validate().is_ok());
 }
+
+#[test]
+fn pressure_scales_capacity_down_and_never_below_one() -> Result<(), McpError> {
+    let base = Settings::default();
+    assert_eq!(base.for_pressure(0)?, base);
+    let high = base.for_pressure(2)?;
+    assert_eq!(high.max_in_flight, base.max_in_flight / 2);
+    assert_eq!(high.max_jobs, base.max_jobs / 2);
+    assert_eq!(high.request_timeout_ms, base.request_timeout_ms);
+    let critical = base.for_pressure(99)?;
+    assert_eq!(critical.max_in_flight, base.max_in_flight / 4);
+    let tiny = Settings {
+        max_in_flight: 1,
+        ..Settings::default()
+    };
+    assert_eq!(tiny.for_pressure(3)?.max_in_flight, 1);
+    let bad = Settings {
+        pressure_scale_pct: [100, 0, 50, 25],
+        ..Settings::default()
+    };
+    assert!(bad.validate().is_err());
+    Ok(())
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn chaos_a_flapping_server_never_hangs_callers_or_the_hub() -> McpResult<()> {
+    let hub = hub_with(tuned())?;
+    hub.apply_catalog(&catalog())?;
+    assert!(ready(&hub, 2).await);
+    let started = Instant::now();
+    let mut calls = Vec::new();
+    for index in 0..60 {
+        let hub = Arc::clone(&hub);
+        calls.push(tokio::spawn(async move {
+            hub.call_within(request("srv.echo", "butler", f64::from(index)))
+                .await
+        }));
+    }
+    let chaos = {
+        let hub = Arc::clone(&hub);
+        tokio::spawn(async move {
+            for _ in 0..8 {
+                let _ = hub.restart_server("srv");
+                tokio::time::sleep(Duration::from_millis(40)).await;
+            }
+        })
+    };
+    let mut finished = 0usize;
+    for call in calls {
+        let outcome = tokio::time::timeout(Duration::from_secs(20), call)
+            .await
+            .map_err(|_| McpError::Timeout)?
+            .map_err(|_| McpError::Closed)?;
+        let _ = outcome;
+        finished += 1;
+    }
+    let _ = chaos.await;
+    assert_eq!(finished, 60);
+    assert!(started.elapsed() < Duration::from_secs(25));
+    let metrics = hub.metrics();
+    assert_eq!(metrics.servers, 1);
+    let report = hub.heal();
+    assert!(report.errors.len() <= 256);
+    for _ in 0..100 {
+        if hub.metrics().healthy == 1 {
+            break;
+        }
+        tokio::time::sleep(Duration::from_millis(100)).await;
+    }
+    assert_eq!(hub.metrics().healthy, 1);
+    let after = hub.call_within(request("srv.echo", "butler", 0.0)).await?;
+    assert!(matches!(after, Within::Done(_)));
+    Ok(())
+}

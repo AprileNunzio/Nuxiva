@@ -61,6 +61,21 @@ def vault() -> dict:
     return data
 
 
+def pressure() -> int:
+    try:
+        from agenti.governor.service import governor
+    except ImportError:
+        return 0
+    if not governor.enabled():
+        return 0
+    value, enter, leave = governor.pressure.value, governor.enter_level(), governor.leave_level()
+    if value < leave:
+        return 0
+    if value < enter:
+        return 1
+    return 2 if value < (enter + 100.0) / 2 else 3
+
+
 def consent_ttl() -> float:
     return float(_json(POLICY_FILE, {}).get("consent_ttl_ms", 120_000)) / 1000.0
 
@@ -79,7 +94,7 @@ def get():
             from agenti.mcpclient import mirror
             mirror.install()
             AUDIT_FILE.parent.mkdir(parents=True, exist_ok=True)
-            built = native_core.symbol("RustMcpEngine")(_text(SETTINGS_FILE, "{}"), _text(POLICY_FILE, "{}"), str(AUDIT_FILE))
+            built = native_core.symbol("RustMcpEngine")(_text(SETTINGS_FILE, "{}"), _text(POLICY_FILE, "{}"), str(AUDIT_FILE), pressure())
             for ident, token in vault()["tokens"].items():
                 built.set_secret(ident, token)
             built.set_scopes(json.dumps(_json(SCOPES_FILE, {**DEFAULT_SCOPES, **{i: scope(i) for i in INTERNAL}})))

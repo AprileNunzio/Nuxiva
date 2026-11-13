@@ -41,6 +41,7 @@ pub struct Settings {
     pub error_queue: usize,
     pub critic_threshold: usize,
     pub critic_window_ms: usize,
+    pub pressure_scale_pct: [usize; 4],
 }
 
 impl Default for Settings {
@@ -73,6 +74,7 @@ impl Default for Settings {
             error_queue: 256,
             critic_threshold: 3,
             critic_window_ms: 60_000,
+            pressure_scale_pct: [100, 75, 50, 25],
         }
     }
 }
@@ -90,6 +92,23 @@ impl Settings {
         let settings: Self = serde_json::from_str(text).map_err(|_| McpError::InvalidSettings)?;
         settings.validate()?;
         Ok(settings)
+    }
+
+    pub fn for_pressure(&self, level: usize) -> McpResult<Self> {
+        let percent = *self
+            .pressure_scale_pct
+            .get(level.min(3))
+            .ok_or(McpError::InvalidSettings)?;
+        let scale = |value: usize| (value.saturating_mul(percent) / 100).max(1);
+        let mut scaled = self.clone();
+        scaled.max_in_flight = scale(self.max_in_flight);
+        scaled.max_jobs = scale(self.max_jobs);
+        scaled.max_tools_total = scale(self.max_tools_total);
+        scaled.event_queue = scale(self.event_queue);
+        scaled.error_queue = scale(self.error_queue);
+        scaled.max_tools_per_server = scaled.max_tools_per_server.min(scaled.max_tools_total);
+        scaled.validate()?;
+        Ok(scaled)
     }
 
     pub fn validate(&self) -> McpResult<()> {
@@ -118,6 +137,13 @@ impl Settings {
         within(self.error_queue, Ceilings::ERROR_QUEUE)?;
         within(self.critic_threshold, Ceilings::BREAKER_FAILURES)?;
         within(self.critic_window_ms, Ceilings::LONG_MS)?;
+        if self
+            .pressure_scale_pct
+            .iter()
+            .any(|p| !(1..=100).contains(p))
+        {
+            return Err(McpError::InvalidSettings);
+        }
         if self.backoff_jitter_pct > 100 || self.backoff_base_ms > self.backoff_max_ms {
             return Err(McpError::InvalidSettings);
         }

@@ -84,8 +84,16 @@ pub struct RustMcpEngine {
 #[pymethods]
 impl RustMcpEngine {
     #[new]
-    fn new(settings_json: &str, policy_json: &str, audit_path: &str) -> PyResult<Self> {
-        let settings = Settings::from_json(settings_json).map_err(rejected)?;
+    #[pyo3(signature = (settings_json, policy_json, audit_path, pressure = 0))]
+    fn new(
+        settings_json: &str,
+        policy_json: &str,
+        audit_path: &str,
+        pressure: usize,
+    ) -> PyResult<Self> {
+        let settings = Settings::from_json(settings_json)
+            .and_then(|s| s.for_pressure(pressure))
+            .map_err(rejected)?;
         let (max_message, max_in_flight) = (settings.max_message_bytes, settings.max_in_flight);
         let policy = PolicyConfig::from_json(policy_json).map_err(rejected)?;
         let path = Path::new(audit_path);
