@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Nuovo pannello Strumenti MCP",
+    "en": "New MCP tools panel",
+    "fr": "Nouveau panneau Outils MCP",
+    "es": "Nuevo panel de herramientas MCP"
+  },
+  "fixes": [],
+  "features": [
+    {
+      "it": "Un nuovo pannello mostra server, strumenti da approvare, aree attive e il registro delle chiamate con la verifica dell'integrità, in quattro lingue.",
+      "en": "A new panel shows servers, tools awaiting approval, active areas and the call log with its integrity check, in four languages.",
+      "fr": "Un nouveau panneau affiche serveurs, outils à approuver, zones actives et journal des appels avec contrôle d'intégrité, en quatre langues.",
+      "es": "Un nuevo panel muestra servidores, herramientas por aprobar, áreas activas y el registro de llamadas con su comprobación de integridad, en cuatro idiomas."
+    }
+  ]
+}

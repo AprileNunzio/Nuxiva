@@ -10,6 +10,7 @@ import { View as FirewallView } from '../core_apps/firewall/View';
 import { View as FlowsView } from '../core_apps/flows/View';
 import { View as GoogleView } from '../core_apps/google/View';
 import { View as HandsView } from '../core_apps/hands/View';
+import { View as McpView } from '../core_apps/mcp/View';
 import { View as HippocampusRouterView } from '../core_apps/hippocampus_router/View';
 import { View as HomeAssistantView } from '../apps/home_assistant/View';
 import { View as IptvView } from '../apps/iptv/View';
@@ -47,6 +48,7 @@ const CORE_APP_COMPONENTS: Readonly<Record<string, React.FC>> = {
   flows: FlowsView,
   google: GoogleView,
   hands: HandsView,
+  mcp: McpView,
   hippocampus_router: HippocampusRouterView,
   home_assistant: HomeAssistantView,
   iptv: IptvView,
