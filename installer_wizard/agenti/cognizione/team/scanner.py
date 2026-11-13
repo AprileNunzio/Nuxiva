@@ -29,6 +29,7 @@ class DiscoveredAgent:
     keywords: set[str] = field(default_factory=set)
     routing: dict = field(default_factory=dict)
     profile: dict = field(default_factory=dict)
+    worker: dict = field(default_factory=dict)
     mtime: float = 0.0
 
     @property
@@ -140,6 +141,7 @@ class AgentScanner:
                 dir_path=str(folder),
                 routing=self._routing(data.get("routing")),
                 profile=self._profile(data.get("profile")),
+                worker=self._worker(data.get("worker")),
                 mtime=mtime
             )
             discovered_agents[agent_id] = agent
@@ -182,6 +184,12 @@ class AgentScanner:
         if not isinstance(raw, dict):
             return {}
         return {key: raw[key] is True for key in ("heavy", "project") if key in raw}
+
+    @staticmethod
+    def _worker(raw) -> dict:
+        if not isinstance(raw, dict):
+            return {}
+        return {key: raw[key] for key in ("kind", "concurrency_max", "tokens_max", "tool_calls_max", "time_ms", "tools_scope", "needs_graph") if key in raw}
 
     @staticmethod
     def _routing(raw) -> dict:

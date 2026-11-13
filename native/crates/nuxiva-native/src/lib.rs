@@ -59,6 +59,7 @@ mod signal;
 mod stage;
 mod supervisor;
 mod surface;
+mod swarm;
 mod telemetry;
 mod token;
 mod topics;
@@ -252,6 +253,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     ceo::register(m)?;
     dossier::register(m)?;
     context::register(m)?;
+    swarm::register(m)?;
     m.add_function(wrap_pyfunction!(mastery::mastery_evaluate, m)?)?;
     m.add_function(wrap_pyfunction!(weather::weather_verify, m)?)?;
     m.add_function(wrap_pyfunction!(weather::weather_insights, m)?)?;

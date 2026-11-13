@@ -8,6 +8,7 @@ from agenti.team import learning, reasoning, routing
 from agenti.team.board import board
 from agenti.team.outcomes import describe, execution_outcome
 from agenti.team.scanner import DiscoveredAgent, scanner
+from agenti.team.swarm import swarm
 from state import store
 
 MIN_SCORE_THRESHOLD = routing.MIN_SCORE
@@ -83,6 +84,7 @@ class CEOExecutive:
     def analyze_request(self, text: str, context: dict | None = None) -> CEODecision:
         agents = self.scan_team()
         routed = routing.router.decide(agents, text, learning.table(), learning.version)
+        swarm.shadow(agents, text, routed, learning.table(), learning.version)
 
         if routed["conversational"]:
             conv_agent = self._get_conversation_agent(agents)

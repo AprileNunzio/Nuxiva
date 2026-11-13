@@ -1666,6 +1666,7 @@ dependencies = [
  "nuxiva-stage-core",
  "nuxiva-supervisor-core",
  "nuxiva-surface-core",
+ "nuxiva-swarm-core",
  "nuxiva-telemetry-core",
  "nuxiva-token-core",
  "nuxiva-update-core",

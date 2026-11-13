@@ -15,6 +15,7 @@ agency-action = { path = "../agency-action" }
 nuxiva-agent-core = { path = "../agent-core" }
 nuxiva-dossier-core = { path = "../dossier-core" }
 nuxiva-context-core = { path = "../context-core" }
+nuxiva-swarm-core = { path = "../swarm-core" }
 nuxiva-forma-core = { path = "../forma-core" }
 nuxiva-creations-core = { path = "../creations-core" }
 nuxiva-mastery-core = { path = "../mastery-core" }
@@ -63,7 +64,7 @@ nuxiva-nvr-core = { path = "../nvr-core" }
 nuxiva-vision-core = { path = "../vision-core" }
 nuxiva-mcp-core = { path = "../mcp-core" }
 nuxiva-mcp-servers = { path = "../mcp-servers" }
-tokio = { version = "1", features = ["rt-multi-thread", "time", "sync"] }
+tokio = { version = "1", features = ["rt-multi-thread", "time", "sync", "macros"] }
 nuxiva-ask-core = { path = "../ask-core" }
 nuxiva-gait-core = { path = "../gait-core" }
 nuxiva-matter-core = { path = "../matter-core" }

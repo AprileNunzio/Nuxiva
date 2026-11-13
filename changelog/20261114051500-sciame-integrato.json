@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Sciame di agenti collegato al cervello di Nuxiva in modalità ombra",
+    "en": "Agent swarm connected to Nuxiva's brain in shadow mode",
+    "fr": "Essaim d'agents relié au cerveau de Nuxiva en mode ombre",
+    "es": "Enjambre de agentes conectado al cerebro de Nuxiva en modo sombra"
+  },
+  "features": [
+    {
+      "it": "Il nuovo sistema multi-agente ora affianca le decisioni di Nuxiva in silenzio: confronta ogni scelta con quella attuale e segnala eventuali differenze, senza cambiare il comportamento. Gli agenti nuovi vengono riconosciuti dai loro manifest.",
+      "en": "The new multi-agent system now runs silently alongside Nuxiva's decisions: it compares each choice with the current one and flags any differences, without changing behaviour. New agents are recognised from their manifests.",
+      "fr": "Le nouveau système multi-agents accompagne désormais en silence les décisions de Nuxiva : il compare chaque choix avec l'actuel et signale les écarts, sans changer le comportement. Les nouveaux agents sont reconnus via leurs manifestes.",
+      "es": "El nuevo sistema multiagente acompaña ahora en silencio las decisiones de Nuxiva: compara cada elección con la actual y señala las diferencias, sin cambiar el comportamiento. Los agentes nuevos se reconocen por sus manifiestos."
+    }
+  ],
+  "fixes": []
+}
