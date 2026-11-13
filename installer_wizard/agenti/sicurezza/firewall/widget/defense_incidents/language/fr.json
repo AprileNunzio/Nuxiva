@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/defense_incidents",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Attaques",
+    "none": "Aucune tentative d'intrusion",
+    "incidents_one": "{{n}} tentative",
+    "incidents_other": "{{n}} tentatives",
+    "from_home": "depuis un appareil de la maison",
+    "from_internet": "depuis Internet",
+    "done": "Ce que j'ai fait",
+    "for": "pendant {{t}}",
+    "minutes": "{{n}} min",
+    "hours": "{{n}} h",
+    "k_port_scan": "Quelqu'un cherche des ports ouverts",
+    "k_host_sweep": "Quelqu'un cherche des appareils sur le réseau",
+    "k_syn_flood": "Trop de connexions à la fois",
+    "k_brute_force": "Tentatives de deviner un mot de passe",
+    "k_arp_spoof": "Un appareil se fait passer pour un autre",
+    "k_dns_tunnel": "Données cachées dans des requêtes DNS",
+    "k_icmp_flood": "Trop de pings à la fois",
+    "k_exfiltration": "Un appareil envoie beaucoup de données vers l'extérieur",
+    "d_block": "Adresse bloquée",
+    "d_tarpit": "Tentatives ralenties",
+    "d_rate_limit": "Débit limité",
+    "d_honeypot": "Détourné vers un leurre isolé",
+    "d_quarantine": "Appareil en quarantaine",
+    "d_sinkhole": "Destination suspecte isolée",
+    "d_country_block": "Pays bloqué"
+  }
+}

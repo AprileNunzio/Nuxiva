@@ -1,0 +1,9 @@
+.w-defense_status .df-state { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
+.w-defense_status .df-state strong { font-size: 19px; font-weight: 600; line-height: 1.2; color: rgb(var(--tone)); }
+.w-defense_status .df-state.amber strong { color: var(--amber); }
+.w-defense_status .df-state.red strong { color: var(--red); animation: df-pulse 2.4s ease-in-out infinite; }
+.w-defense_status .df-state p { margin: 0; font-size: 12.5px; line-height: 1.45; color: var(--text-dim); }
+.w-defense_status .df-active { display: flex; align-items: center; gap: 6px; margin-top: 10px; font-size: 12px; color: var(--text-dim); }
+.w-defense_status .df-active .wk-svg { width: 14px; height: 14px; color: rgb(var(--tone)); flex: none; }
+@keyframes df-pulse { 50% { opacity: 0.72; } }
+@media (prefers-reduced-motion: reduce) { .w-defense_status .df-state.red strong { animation: none; } }

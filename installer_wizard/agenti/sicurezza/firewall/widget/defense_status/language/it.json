@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/defense_status",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Difesa",
+    "p_calm": "Tutto sotto controllo",
+    "p_watch": "Un po' di attività sospetta",
+    "p_alert": "Attenzione: qualcuno prova a entrare",
+    "p_attack": "Sotto attacco: ti sto difendendo",
+    "h_calm": "Non devi fare nulla.",
+    "h_watch": "Sto tenendo d'occhio la situazione, non serve fare niente.",
+    "h_alert": "Di' «Nuxiva, mostrami l'attacco» per vedere i dettagli.",
+    "h_attack": "Di' «Nuxiva, mostrami l'attacco» per vedere cosa succede.",
+    "h_observing": "La difesa sta solo osservando: attiva la protezione per bloccare gli attacchi.",
+    "defending_one": "{{n}} difesa attiva",
+    "defending_other": "{{n}} difese attive"
+  }
+}

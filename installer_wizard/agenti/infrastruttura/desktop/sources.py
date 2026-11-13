@@ -107,6 +107,16 @@ def person_sync() -> dict | None:
     return sync_card()
 
 
-SOURCES = {"person_health": person_health, "person_mood": person_mood, "person_sync": person_sync, "person_checkup": person_checkup, "sun_cycle": sun_cycle, "home_rooms": home_rooms, "update_ready": update_ready, "components_down": components_down}
-PROVIDERS = {"system_monitor": system_monitor, "system_health": system_health, "network_devices": network_devices,
+def defense_status() -> dict | None:
+    from agenti.firewall.defense import view
+    return view.notable()
+
+
+def defense_view() -> dict:
+    from agenti.firewall.defense import view
+    return view.build()
+
+
+SOURCES = {"defense_status": defense_status, "defense_incidents": defense_status, "person_health": person_health, "person_mood": person_mood, "person_sync": person_sync, "person_checkup": person_checkup, "sun_cycle": sun_cycle, "home_rooms": home_rooms, "update_ready": update_ready, "components_down": components_down}
+PROVIDERS = {"defense_status": defense_view, "defense_incidents": defense_view, "system_monitor": system_monitor, "system_health": system_health, "network_devices": network_devices,
              "sun_cycle": sun_cycle, "weather": weather}

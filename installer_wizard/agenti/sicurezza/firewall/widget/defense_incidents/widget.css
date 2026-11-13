@@ -1,0 +1,9 @@
+.w-defense_incidents .di-list, .w-defense_incidents .di-defs { list-style: none; margin: 6px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.w-defense_incidents .di-list li { display: flex; flex-direction: column; gap: 1px; padding-left: 10px; border-left: 2px solid var(--amber); }
+.w-defense_incidents .di-list li.high, .w-defense_incidents .di-list li.critical { border-left-color: var(--red); }
+.w-defense_incidents .di-list li.low { border-left-color: var(--text-faint); }
+.w-defense_incidents .di-list b { font-size: 13.5px; font-weight: 600; color: var(--text); line-height: 1.3; }
+.w-defense_incidents .di-list span { font-size: 12px; color: var(--text-dim); }
+.w-defense_incidents .di-title { margin: 14px 0 0; font: 500 9.5px/1.4 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-faint); }
+.w-defense_incidents .di-defs li { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; font-size: 12.5px; color: var(--text-dim); }
+.w-defense_incidents .di-defs small { font: 500 10.5px var(--mono); color: var(--text-faint); white-space: nowrap; }

@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Firewall: due widget semplici per capire la difesa",
+    "en": "Firewall: two simple widgets to understand the defence",
+    "fr": "Pare-feu : deux widgets simples pour comprendre la défense",
+    "es": "Cortafuegos: dos widgets sencillos para entender la defensa"
+  },
+  "features": [
+    {
+      "it": "Il widget Difesa dice in parole semplici se è tutto sotto controllo, cosa sta succedendo e cosa fare, con un colore che cambia se serve attenzione.",
+      "en": "The Defence widget says in plain words whether everything is under control, what is happening and what to do, with a colour that changes when attention is needed.",
+      "fr": "Le widget Défense dit en mots simples si tout est sous contrôle, ce qui se passe et quoi faire, avec une couleur qui change quand il faut être attentif.",
+      "es": "El widget Defensa dice con palabras sencillas si todo está bajo control, qué ocurre y qué hacer, con un color que cambia cuando hace falta atención."
+    },
+    {
+      "it": "Il widget Attacchi mostra chi prova a entrare, da quale paese, e cosa ha fatto Nuxiva per difenderti, senza sfondi né bordi.",
+      "en": "The Attacks widget shows who is trying to get in, from which country, and what Nuxiva did to defend you, with no background or borders.",
+      "fr": "Le widget Attaques montre qui essaie d'entrer, depuis quel pays, et ce que Nuxiva a fait pour vous défendre, sans fond ni bordures.",
+      "es": "El widget Ataques muestra quién intenta entrar, desde qué país, y qué hizo Nuxiva para defenderte, sin fondo ni bordes."
+    },
+    {
+      "it": "Se la difesa è solo in osservazione, il widget te lo spiega e ti dice come attivare la protezione.",
+      "en": "If the defence is only observing, the widget explains it and tells you how to turn protection on.",
+      "fr": "Si la défense ne fait qu'observer, le widget vous l'explique et vous dit comment activer la protection.",
+      "es": "Si la defensa solo está observando, el widget te lo explica y te dice cómo activar la protección."
+    }
+  ],
+  "fixes": []
+}

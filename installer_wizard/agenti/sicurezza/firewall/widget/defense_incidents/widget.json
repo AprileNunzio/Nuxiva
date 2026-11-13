@@ -1,0 +1,14 @@
+{
+  "id": "defense_incidents",
+  "name": "Attacchi",
+  "icon": "🌍",
+  "priority": 94,
+  "size": "m",
+  "tone": "red",
+  "agent": "firewall",
+  "intents": ["defense_incidents", "attacchi", "chi mi attacca", "mostrami l'attacco"],
+  "description": "Chi sta provando ad entrare, da quale paese e cosa ha fatto Nuxiva per difenderti.",
+  "refresh": 5,
+  "chrome": false,
+  "essential": true
+}

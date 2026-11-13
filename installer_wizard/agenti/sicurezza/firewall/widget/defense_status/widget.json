@@ -1,0 +1,14 @@
+{
+  "id": "defense_status",
+  "name": "Difesa",
+  "icon": "🛡️",
+  "priority": 96,
+  "size": "s",
+  "tone": "green",
+  "agent": "firewall",
+  "intents": ["defense_status", "difesa", "sicurezza", "firewall", "sono al sicuro"],
+  "description": "Stato della difesa della casa in parole semplici: se va tutto bene, cosa succede e cosa fare.",
+  "refresh": 5,
+  "chrome": false,
+  "essential": true
+}
