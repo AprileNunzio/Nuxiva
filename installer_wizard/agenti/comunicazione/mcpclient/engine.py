@@ -12,6 +12,7 @@ VAULT = SealedFile(ETC_DIR / "mcp.vault", ETC_DIR / "mcp.key")
 SETTINGS_FILE = ETC_DIR / "mcp-settings.json"
 POLICY_FILE = ETC_DIR / "mcp-policy.json"
 SCOPES_FILE = ETC_DIR / "mcp-scopes.json"
+INTERNAL_FILE = ETC_DIR / "mcp-internal.json"
 AUDIT_FILE = STATE_DIR / "mcp-audit.log"
 AGENT = "mcpclient"
 PRINCIPAL = "nuxiva"
@@ -19,8 +20,12 @@ CATALOG_TTL = 900
 DEFAULT_SCOPES = {AGENT: {"servers": ["*"], "tools": ["*"], "max_risk": "critical"}}
 LAN_SUFFIXES = (".local", ".lan", ".home", ".internal")
 
+INTERNAL: dict = {}
+WAIT = 10.0
+
 _lock = threading.RLock()
 _engine = None
+_published = False
 
 
 def available() -> bool:
@@ -67,9 +72,40 @@ def get():
             built = native_core.symbol("RustMcpEngine")(_text(SETTINGS_FILE, "{}"), _text(POLICY_FILE, "{}"), str(AUDIT_FILE))
             for ident, token in vault()["tokens"].items():
                 built.set_secret(ident, token)
-            built.set_scopes(json.dumps(_json(SCOPES_FILE, DEFAULT_SCOPES)))
+            built.set_scopes(json.dumps(_json(SCOPES_FILE, {**DEFAULT_SCOPES, **{i: scope(i) for i in INTERNAL}})))
+            built.set_internal(json.dumps(internal_definitions()))
             _engine = built
         return _engine
+
+
+def scope(ident: str) -> dict:
+    return {"servers": [ident], "tools": [f"{ident}.*"], "max_risk": "critical"}
+
+
+def internal_definitions() -> list:
+    found = {ident: build() for ident, build in INTERNAL.items()}
+    for item in _json(INTERNAL_FILE, []):
+        if isinstance(item, dict) and "id" in item:
+            found[item["id"]] = item
+    return list(found.values())
+
+
+def internal_entry(item: dict) -> dict:
+    return {"id": item["id"], "enabled": True, "max_risk": "critical", "honor_read_only": True,
+            "transport": {"kind": "internal", "name": item["id"]}}
+
+
+def published() -> bool:
+    return _published
+
+
+def wait_tool(tool_id: str, timeout: float = WAIT) -> bool:
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        if any(t["id"] == tool_id and t["state"] == "active" for t in json.loads(get().tools_json())):
+            return True
+        time.sleep(0.05)
+    return False
 
 
 def rejected():
@@ -111,23 +147,26 @@ def entry(ident: str, row: dict) -> dict:
 
 
 def publish(rows: dict) -> int:
+    global _published
     with _lock:
         data = vault()
         now = int(time.time())
         serial = int(data["serial"]) + 1
         catalog = {"version": 1, "serial": serial, "issued_at": now, "not_after": now + CATALOG_TTL,
-                   "servers": [entry(i, r) for i, r in rows.items()]}
+                   "servers": [entry(i, r) for i, r in rows.items()] + [internal_entry(d) for d in internal_definitions()]}
         engine = get()
         signed = type(engine).sign_catalog(json.dumps(catalog), bytes.fromhex(data["signing"]))
         engine.apply_catalog(signed, bytes.fromhex(data["public"]), now, int(data["serial"]))
         data["serial"] = serial
         VAULT.save(data)
+        _published = True
         return serial
 
 
 def shutdown() -> None:
-    global _engine
+    global _engine, _published
     with _lock:
+        _published = False
         if _engine is not None:
             _engine.shutdown()
             _engine = None

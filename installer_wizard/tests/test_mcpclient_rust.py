@@ -13,7 +13,7 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from agenti.agent import registry
-from agenti.mcpclient import api, engine, rust_service, store
+from agenti.mcpclient import api, calls, engine, rust_service, store
 from sealed import SealedFile
 
 TOOLS = [
@@ -98,7 +98,7 @@ class RustEngineTest(unittest.TestCase):
         for ident in {s["server"] for s in rust_service.EXTERNAL.values()}:
             rust_service.drop(ident)
         rust_service.EXTERNAL.clear()
-        rust_service.ASKED.clear()
+        calls.ASKED.clear()
         rust_service.state_version["seen"] = -1
 
     def name_of(self, suffix: str) -> str:
@@ -135,12 +135,12 @@ class RustEngineTest(unittest.TestCase):
         out = asyncio.run(registry.run(name, {"titolo": "cena", "durata": 2}))
         self.assertIn('"titolo": "cena"', out)
         self.assertEqual(Handler.calls[-1][0], "crea_evento")
-        rust_service.ASKED.clear()
+        calls.ASKED.clear()
         with self.assertRaises(PermissionError):
             asyncio.run(self.call_without_asking(name, tool_id))
 
     async def call_without_asking(self, name: str, tool_id: str):
-        return await asyncio.to_thread(rust_service.invoke, tool_id, {"titolo": "z"}, rust_service.operation())
+        return await asyncio.to_thread(calls.invoke, tool_id, {"titolo": "z"}, calls.operation())
 
     def test_untrusted_server_hints_never_skip_confirmation(self):
         self.connect()

@@ -113,12 +113,12 @@ impl Hub {
             .get(&request.agent)
             .cloned()
             .unwrap_or_else(Scope::none);
-        let server_max = self
+        let (server_max, honors_hints) = self
             .servers
             .lock()
             .unwrap_or_else(PoisonError::into_inner)
             .get(&entry.server)
-            .map(|r| r.entry.max_risk)
+            .map(|r| (r.entry.max_risk, r.entry.honor_read_only))
             .ok_or(McpError::NotCallable)?;
         self.gate
             .check(request, entry, &scope, server_max, Instant::now())?;
@@ -147,7 +147,11 @@ impl Hub {
             self.policy.max_result_chars,
             &self.policy.allowed_image_mime,
         );
-        self.gate.taint.mark(&request.operation);
+        let closed = honors_hints
+            && entry.spec.annotations.as_ref().and_then(|a| a.open_world) == Some(false);
+        if !closed {
+            self.gate.taint.mark(&request.operation);
+        }
         Ok(CallOutput {
             external,
             structured: result.structured_content,

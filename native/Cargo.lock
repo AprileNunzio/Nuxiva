@@ -1557,6 +1557,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-mcp-servers"
+version = "5.8.0"
+dependencies = [
+ "libc",
+ "nuxiva-mcp-core",
+ "serde",
+ "serde_json",
+ "time",
+ "tokio",
+]
+
+[[package]]
 name = "nuxiva-memory-core"
 version = "5.8.0"
 dependencies = [
@@ -1616,6 +1628,7 @@ dependencies = [
  "nuxiva-mastery-core",
  "nuxiva-matter-core",
  "nuxiva-mcp-core",
+ "nuxiva-mcp-servers",
  "nuxiva-memory-core",
  "nuxiva-molecule-core",
  "nuxiva-nvr-core",

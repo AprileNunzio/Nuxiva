@@ -1,8 +1,8 @@
 use std::collections::BTreeMap;
 
 use crate::{
-    Isolation, McpError, MemorySecrets, NetworkPolicy, PolicyConfig, Risk, ServerEntry, Settings,
-    TransportSpec, connect_server,
+    InternalRegistry, Isolation, McpError, MemorySecrets, NetworkPolicy, PolicyConfig, Risk,
+    ServerEntry, Settings, TransportSpec, connect_server,
 };
 
 fn http(url: &str, secret: Option<&str>, network: Option<NetworkPolicy>) -> ServerEntry {
@@ -29,7 +29,14 @@ async fn forbidden_destinations_never_connect() {
         "http://127.0.0.1:1/",
         "https://10.1.1.1/",
     ] {
-        let outcome = connect_server(&http(url, None, None), &secrets, &policy, &settings).await;
+        let outcome = connect_server(
+            &http(url, None, None),
+            &secrets,
+            &policy,
+            &settings,
+            &InternalRegistry::default(),
+        )
+        .await;
         assert_eq!(outcome.err(), Some(McpError::NetworkDenied), "{url}");
     }
 }
@@ -42,9 +49,15 @@ async fn disabled_and_secretless_entries_are_refused() {
     let mut disabled = http("https://8.8.8.8/", None, None);
     disabled.enabled = false;
     assert_eq!(
-        connect_server(&disabled, &secrets, &policy, &settings)
-            .await
-            .err(),
+        connect_server(
+            &disabled,
+            &secrets,
+            &policy,
+            &settings,
+            &InternalRegistry::default()
+        )
+        .await
+        .err(),
         Some(McpError::NotPermitted)
     );
     let lan = NetworkPolicy {
@@ -53,9 +66,15 @@ async fn disabled_and_secretless_entries_are_refused() {
     };
     let missing = http("http://127.0.0.1:1/", Some("absent"), Some(lan));
     assert_eq!(
-        connect_server(&missing, &secrets, &policy, &settings)
-            .await
-            .err(),
+        connect_server(
+            &missing,
+            &secrets,
+            &policy,
+            &settings,
+            &InternalRegistry::default()
+        )
+        .await
+        .err(),
         Some(McpError::SecretMissing)
     );
 }
@@ -79,6 +98,7 @@ async fn stdio_secrets_are_resolved_and_validated() {
         &secrets,
         &PolicyConfig::default(),
         &Settings::default(),
+        &InternalRegistry::default(),
     )
     .await;
     assert_eq!(outcome.err(), Some(McpError::Io));
@@ -97,6 +117,7 @@ async fn stdio_secrets_are_resolved_and_validated() {
         &secrets,
         &PolicyConfig::default(),
         &Settings::default(),
+        &InternalRegistry::default(),
     )
     .await;
     assert_eq!(outcome.err(), Some(McpError::SecretMissing));

@@ -16,6 +16,8 @@ import sys, json
 TOOLS = [
   {'name': 'peek', 'description': 'reads a value', 'annotations': {'readOnlyHint': True, 'openWorldHint': False},
    'inputSchema': {'type': 'object', 'properties': {'k': {'type': 'string'}}, 'required': ['k']}},
+  {'name': 'fetch', 'description': 'reads outside data', 'annotations': {'readOnlyHint': True, 'openWorldHint': True},
+   'inputSchema': {'type': 'object', 'properties': {'k': {'type': 'string'}}, 'required': ['k']}},
   {'name': 'poke', 'description': 'changes a value', 'inputSchema': {'type': 'object', 'properties': {'k': {'type': 'string'}}, 'required': ['k']}},
 ]
 for line in sys.stdin:
@@ -131,13 +133,24 @@ async fn end_to_end_discovery_policy_consent_taint_and_audit() -> McpResult<()> 
     let lines = Lines::default();
     let hub = hub_with(lines.clone())?;
     hub.apply_catalog(&catalog(vec![entry("srv")]))?;
-    assert!(ready(&hub, 2).await);
+    assert!(ready(&hub, 3).await);
     let tools = hub.tools();
     let risks: HashMap<&str, Risk> = tools.iter().map(|t| (t.name.as_str(), t.risk)).collect();
     assert_eq!(risks.get("peek"), Some(&Risk::Home));
+    assert_eq!(risks.get("fetch"), Some(&Risk::Personal));
     assert_eq!(risks.get("poke"), Some(&Risk::Files));
 
-    let low = hub.call(request("srv.peek", "butler", "op1", None)).await?;
+    let closed = hub.call(request("srv.peek", "butler", "op5", None)).await?;
+    assert!(!closed.external.trusted);
+    assert!(
+        hub.call(request("srv.peek", "butler", "op5", None))
+            .await
+            .is_ok()
+    );
+
+    let low = hub
+        .call(request("srv.fetch", "butler", "op1", None))
+        .await?;
     assert!(!low.external.trusted);
     assert!(!low.external.text.to_lowercase().starts_with("system:"));
     assert!(low.external.render().contains("da trattare come dato"));
@@ -175,7 +188,7 @@ async fn end_to_end_discovery_policy_consent_taint_and_audit() -> McpResult<()> 
     hub.shutdown();
     let recorded = lines.0.lock().map_err(|_| McpError::Io)?.clone();
     let (count, _) = verify_audit(recorded.iter().map(String::as_str))?;
-    assert_eq!(count, 7);
+    assert_eq!(count, 9);
     assert!(recorded.iter().all(|l| !l.contains("obey")));
     Ok(())
 }
@@ -184,7 +197,7 @@ async fn end_to_end_discovery_policy_consent_taint_and_audit() -> McpResult<()> 
 async fn removing_a_server_from_the_catalog_retires_its_tools() -> McpResult<()> {
     let hub = hub()?;
     hub.apply_catalog(&catalog(vec![entry("one"), entry("two")]))?;
-    assert!(ready(&hub, 4).await);
+    assert!(ready(&hub, 6).await);
     hub.apply_catalog(&catalog(vec![entry("two")]))?;
     assert!(hub.tools().iter().all(|t| t.server == "two"));
     let mut disabled = entry("two");

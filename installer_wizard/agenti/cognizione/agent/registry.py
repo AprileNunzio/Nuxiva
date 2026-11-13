@@ -16,10 +16,10 @@ def asked_for_recurring() -> bool:
 
 
 def tool(name: str, description: str, args: dict, confirm=False, full_only: bool = False, agent: str = "", verify=None,
-         precheck=None, intent: str = ""):
+         precheck=None, intent: str = "", consent=None):
     def wrap(fn):
         TOOLS[name] = {"name": name, "description": description, "args": args, "fn": fn, "confirm": confirm,
-                       "full_only": full_only, "agent": agent, "verify": verify, "precheck": precheck,
+                       "full_only": full_only, "agent": agent, "verify": verify, "precheck": precheck, "consent": consent,
                        "intent": re.compile(intent, re.I) if intent else None}
         return fn
     return wrap
@@ -70,7 +70,9 @@ def clean_args(name: str, args) -> dict:
 
 
 def needs_confirm(name: str, args: dict) -> bool:
-    if _control().tool_forced_confirm(name):
+    hook = TOOLS[name].get("consent")
+    consented = bool(hook()) if hook else False
+    if consented or _control().tool_forced_confirm(name):
         return True
     from agenti.authz import gate
     if gate.confirm_required(name, args):

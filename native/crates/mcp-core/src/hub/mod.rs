@@ -8,6 +8,7 @@ use std::sync::{Arc, Mutex, PoisonError, RwLock};
 use crate::audit::{AuditChain, AuditSink};
 use crate::connect::connect_server;
 use crate::error::McpResult;
+use crate::internal::InternalRegistry;
 use crate::keystore::SecretProvider;
 use crate::policy::{Gate, PolicyConfig, Scope, classify};
 use crate::protocol::Implementation;
@@ -33,6 +34,7 @@ pub struct Hub {
     pub(super) gate: Gate,
     pub(super) audit: Mutex<AuditChain<Box<dyn AuditSink>>>,
     secrets: Arc<dyn SecretProvider>,
+    internal: Arc<InternalRegistry>,
     pub(super) servers: Mutex<HashMap<String, Running>>,
     pub(super) scopes: RwLock<HashMap<String, Scope>>,
     pub(super) counter: AtomicU64,
@@ -63,6 +65,7 @@ impl Hub {
             gate: Gate::new(policy.clone()),
             audit: Mutex::new(chain),
             secrets,
+            internal: Arc::new(InternalRegistry::default()),
             servers: Mutex::new(HashMap::new()),
             scopes: RwLock::new(HashMap::new()),
             counter: AtomicU64::new(0),
@@ -74,6 +77,11 @@ impl Hub {
     #[must_use]
     pub fn registry(&self) -> &Arc<Registry> {
         &self.registry
+    }
+
+    #[must_use]
+    pub fn internal(&self) -> &Arc<InternalRegistry> {
+        &self.internal
     }
 
     pub fn set_scopes(&self, scopes: HashMap<String, Scope>) {
@@ -124,14 +132,16 @@ impl Hub {
             let secrets = Arc::clone(&self.secrets);
             let policy = self.policy.clone();
             let settings = self.settings.clone();
+            let internal = Arc::clone(&self.internal);
             move || {
-                let (entry, secrets, policy, settings) = (
+                let (entry, secrets, policy, settings, internal) = (
                     entry.clone(),
                     Arc::clone(&secrets),
                     policy.clone(),
                     settings.clone(),
+                    Arc::clone(&internal),
                 );
-                async move { connect_link(&entry, &*secrets, &policy, &settings).await }
+                async move { connect_link(&entry, &*secrets, &policy, &settings, &internal).await }
             }
         };
         let client = Implementation {
@@ -169,6 +179,7 @@ async fn connect_link(
     secrets: &dyn SecretProvider,
     policy: &PolicyConfig,
     settings: &Settings,
+    internal: &InternalRegistry,
 ) -> McpResult<Link> {
-    connect_server(entry, secrets, policy, settings).await
+    connect_server(entry, secrets, policy, settings, internal).await
 }

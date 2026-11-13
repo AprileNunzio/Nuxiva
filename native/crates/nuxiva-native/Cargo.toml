@@ -61,6 +61,7 @@ nuxiva-vault-media = { path = "../vault-media" }
 nuxiva-nvr-core = { path = "../nvr-core" }
 nuxiva-vision-core = { path = "../vision-core" }
 nuxiva-mcp-core = { path = "../mcp-core" }
+nuxiva-mcp-servers = { path = "../mcp-servers" }
 tokio = { version = "1", features = ["rt-multi-thread", "time", "sync"] }
 nuxiva-ask-core = { path = "../ask-core" }
 nuxiva-gait-core = { path = "../gait-core" }

@@ -3,6 +3,7 @@ import shutil
 from pathlib import Path
 
 OFFICE = {".docx", ".xlsx", ".pptx"}
+DOCUMENTS = OFFICE | {".pdf"}
 
 
 def _docx(p: Path) -> str:

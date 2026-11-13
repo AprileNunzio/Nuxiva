@@ -31,6 +31,9 @@ pub enum TransportSpec {
         secret: Option<String>,
         network: Option<NetworkPolicy>,
     },
+    Internal {
+        name: String,
+    },
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -86,6 +89,13 @@ impl ServerEntry {
                 }
             }
             TransportSpec::Http { url, .. } => parse_target(url).map(|_| ()),
+            TransportSpec::Internal { name } => {
+                if valid_server_id(name) {
+                    Ok(())
+                } else {
+                    Err(McpError::InvalidName)
+                }
+            }
         }
     }
 }

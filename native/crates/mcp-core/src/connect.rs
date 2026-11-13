@@ -3,6 +3,7 @@ use std::time::Duration;
 
 use crate::error::{McpError, McpResult};
 use crate::guard::{parse_target, resolve};
+use crate::internal::InternalRegistry;
 use crate::keystore::{SecretProvider, bearer_header};
 use crate::policy::PolicyConfig;
 use crate::settings::Settings;
@@ -14,12 +15,14 @@ pub async fn connect_server(
     secrets: &dyn SecretProvider,
     policy: &PolicyConfig,
     settings: &Settings,
+    internal: &InternalRegistry,
 ) -> McpResult<Link> {
     if !entry.enabled {
         return Err(McpError::NotPermitted);
     }
     entry.validate()?;
     match &entry.transport {
+        TransportSpec::Internal { name } => internal.open(name),
         TransportSpec::Stdio {
             program,
             args,

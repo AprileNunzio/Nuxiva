@@ -8,6 +8,7 @@ use nuxiva_mcp_core::{
     SharedSecrets, SignedCatalog, generate_signing_key, resume_from_file, sign_catalog,
     verify_catalog,
 };
+use nuxiva_mcp_servers::{ServerDefinition, register_all};
 use pyo3::create_exception;
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
@@ -30,6 +31,8 @@ pub struct RustMcpEngine {
     runtime: Runtime,
     hub: Arc<Hub>,
     secrets: Arc<SharedSecrets>,
+    max_message: usize,
+    max_in_flight: usize,
 }
 
 #[pymethods]
@@ -37,6 +40,7 @@ impl RustMcpEngine {
     #[new]
     fn new(settings_json: &str, policy_json: &str, audit_path: &str) -> PyResult<Self> {
         let settings = Settings::from_json(settings_json).map_err(rejected)?;
+        let (max_message, max_in_flight) = (settings.max_message_bytes, settings.max_in_flight);
         let policy = PolicyConfig::from_json(policy_json).map_err(rejected)?;
         let path = Path::new(audit_path);
         let resume = resume_from_file(path).map_err(rejected)?;
@@ -53,6 +57,8 @@ impl RustMcpEngine {
             runtime,
             hub: Arc::new(hub),
             secrets,
+            max_message,
+            max_in_flight,
         })
     }
 
@@ -93,6 +99,19 @@ impl RustMcpEngine {
             serde_json::from_str(catalog_json).map_err(|_| rejected(McpError::InvalidSettings))?;
         let signed = sign_catalog(&catalog, &SigningKey::from_bytes(&seed)).map_err(rejected)?;
         json_of(&signed)
+    }
+
+    fn set_internal(&self, definitions_json: &str) -> PyResult<()> {
+        let definitions: Vec<ServerDefinition> = serde_json::from_str(definitions_json)
+            .map_err(|_| rejected(McpError::InvalidSettings))?;
+        register_all(
+            self.hub.internal(),
+            &definitions,
+            self.runtime.handle(),
+            self.max_message,
+            self.max_in_flight,
+        )
+        .map_err(rejected)
     }
 
     fn needs_consent(&self, tool_id: &str, operation: &str) -> bool {

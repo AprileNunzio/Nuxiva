@@ -9,6 +9,7 @@ import time
 from config import env_get
 from agenti.agent import registry
 from agenti.mcpclient import engine, store
+from agenti.mcpclient.calls import confirm, invoke, operation
 from agenti.team.board import board
 from state import store as state
 
@@ -20,9 +21,7 @@ SETTLE = 15.0
 KINDS = {"string": str, "integer": int, "number": float, "boolean": bool, "object": dict, "array": list}
 KEY = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 NAME_LIMIT = 60
-CONSENT = "mcp.consent.required"
 HEALTH = {"ready": "collegato", "connecting": "in connessione", "quarantined": "in quarantena"}
-ASKED: dict[tuple[str, str], float] = {}
 state_version = {"seen": -1}
 
 
@@ -36,33 +35,6 @@ def tool_name(tool_id: str) -> str:
     if len(base) <= NAME_LIMIT and (taken is None or taken["id"] == tool_id):
         return base
     return base[:NAME_LIMIT - 9] + "_" + hashlib.sha256(tool_id.encode()).hexdigest()[:8]
-
-
-def operation() -> str:
-    return hashlib.sha256(registry.REQUEST.get().encode()).hexdigest()[:32]
-
-
-def confirm(tool_id: str) -> bool:
-    now = time.monotonic()
-    for key in [k for k, t in ASKED.items() if now - t > engine.consent_ttl()]:
-        ASKED.pop(key, None)
-    needed = engine.get().needs_consent(tool_id, operation())
-    if needed:
-        ASKED[(tool_id, operation())] = now
-    return needed
-
-
-def invoke(tool_id: str, arguments: dict, op: str) -> dict:
-    core = engine.get()
-    request = {"tool": tool_id, "principal": engine.PRINCIPAL, "agent": engine.AGENT, "operation": op, "arguments": arguments}
-    try:
-        return json.loads(core.call(json.dumps(request)))
-    except engine.rejected() as exc:
-        code = str(exc.args[0]) if exc.args else ""
-        if code != CONSENT or ASKED.pop((tool_id, op), None) is None:
-            raise PermissionError(code or "mcp.rejected") from exc
-    request["consent"] = core.request_consent(json.dumps(request))
-    return json.loads(core.call(json.dumps(request)))
 
 
 def build(view: dict, name: str, label: str) -> dict:
