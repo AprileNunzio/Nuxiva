@@ -15,6 +15,7 @@ agency-action = { path = "../agency-action" }
 nuxiva-agent-core = { path = "../agent-core" }
 nuxiva-dossier-core = { path = "../dossier-core" }
 nuxiva-context-core = { path = "../context-core" }
+nuxiva-percept-core = { path = "../percept-core" }
 nuxiva-swarm-core = { path = "../swarm-core" }
 nuxiva-forma-core = { path = "../forma-core" }
 nuxiva-creations-core = { path = "../creations-core" }

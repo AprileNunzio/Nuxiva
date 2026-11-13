@@ -1657,6 +1657,7 @@ dependencies = [
  "nuxiva-memory-core",
  "nuxiva-molecule-core",
  "nuxiva-nvr-core",
+ "nuxiva-percept-core",
  "nuxiva-presence-core",
  "nuxiva-rescue-core",
  "nuxiva-resource-core",
@@ -1700,6 +1701,16 @@ dependencies = [
  "serde",
  "serde_json",
  "sha2",
+]
+
+[[package]]
+name = "nuxiva-percept-core"
+version = "5.8.0"
+dependencies = [
+ "nuxiva-context-core",
+ "nuxiva-swarm-core",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]

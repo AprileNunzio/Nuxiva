@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Nuxiva unisce voce, presenze, umore e scena in un'unica percezione",
+    "en": "Nuxiva merges voice, presence, mood and scene into a single perception",
+    "fr": "Nuxiva fusionne voix, présences, humeur et scène en une seule perception",
+    "es": "Nuxiva une voz, presencias, estado de ánimo y escena en una sola percepción"
+  },
+  "features": [
+    {
+      "it": "Quando parli, Nuxiva capisce chi sei, chi è presente e come ti senti, e ne tiene conto nella risposta: se dici di essere a cena, ricorda le tue allergie. Un'identità poco sicura non viene usata e un umore vecchio non viene presentato come attuale.",
+      "en": "When you speak, Nuxiva works out who you are, who is present and how you feel, and uses it in its answer: if you ask about dinner, it remembers your allergies. A shaky identity is not used and an old mood is not presented as current.",
+      "fr": "Quand vous parlez, Nuxiva comprend qui vous êtes, qui est présent et comment vous vous sentez, et en tient compte dans sa réponse : pour le dîner, elle se souvient de vos allergies. Une identité peu sûre n'est pas utilisée et une humeur ancienne n'est pas présentée comme actuelle.",
+      "es": "Cuando hablas, Nuxiva entiende quién eres, quién está presente y cómo te sientes, y lo tiene en cuenta en la respuesta: si hablas de la cena, recuerda tus alergias. Una identidad poco segura no se usa y un ánimo antiguo no se presenta como actual."
+    },
+    {
+      "it": "Se in casa c'è un ospite o una persona sconosciuta, i dati personali dei familiari restano fuori dalle risposte.",
+      "en": "If a guest or an unknown person is in the house, family members' personal data stays out of the answers.",
+      "fr": "Si un invité ou une personne inconnue est présent, les données personnelles des proches restent hors des réponses.",
+      "es": "Si hay un invitado o una persona desconocida en casa, los datos personales de la familia quedan fuera de las respuestas."
+    }
+  ],
+  "fixes": []
+}

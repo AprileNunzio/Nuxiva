@@ -46,6 +46,7 @@ mod memory;
 mod mesh;
 mod molecule;
 mod nvr;
+mod percept;
 mod planner;
 mod presence;
 mod rescue;
@@ -256,6 +257,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     dossier::register(m)?;
     context::register(m)?;
     swarm::register(m)?;
+    percept::register(m)?;
     m.add_function(wrap_pyfunction!(mastery::mastery_evaluate, m)?)?;
     m.add_function(wrap_pyfunction!(weather::weather_verify, m)?)?;
     m.add_function(wrap_pyfunction!(weather::weather_insights, m)?)?;

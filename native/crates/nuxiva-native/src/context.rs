@@ -29,7 +29,7 @@ fn lang(code: &str) -> PyResult<Lang> {
 #[pyclass(module = "nuxiva_native")]
 #[derive(Debug)]
 pub struct RustUserContext {
-    inner: SharedContext,
+    pub(crate) inner: SharedContext,
 }
 
 #[pymethods]
