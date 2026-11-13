@@ -486,11 +486,42 @@
     "rescue_ack_anon": "Un proche a reçu l'alerte et arrive.",
     "rescue_number": "Urgence : {{number}}",
     "rescue_disclaimer": "Nuxiva ne remplace ni les services d'urgence ni un dispositif médical certifié.",
+<<<<<<< Updated upstream
     "upd_hero_version": "Nuxiva {{version}}",
     "upd_hero_date": "Mise à jour du {{date}}",
     "upd_step": "Étape {{n}} sur {{total}}",
     "upd_calm_sub": "Maintenance",
     "upd_calm_title": "Tout est sous contrôle",
     "upd_calm_text": "Cette mise à jour contient des améliorations internes, sans nouveauté visible à lister."
+=======
+    "wx_now": "Maint.",
+    "wx_hourly_legend": "Barres bleues : probabilité de pluie · ligne du bas : vent en {{unit}}",
+    "wx_until": "jusqu'à {{time}}",
+    "wx_alert_source": "Alerte officielle · {{source}}",
+    "wx_in_storm": "Orage prévu à partir de {{time}}",
+    "wx_in_snow": "Neige prévue à partir de {{time}}",
+    "wx_in_umbrella": "Prenez un parapluie : pluie à {{value}} % vers {{time}}",
+    "wx_in_wind": "Rafales jusqu'à {{value}} vers {{time}}",
+    "wx_in_heat": "Forte chaleur : ressenti {{value}} vers {{time}}",
+    "wx_in_frost": "Risque de gel : minimale {{value}}",
+    "wx_in_uv": "UV élevé ({{value}}) : protégez-vous en milieu de journée",
+    "wx_in_fog": "Brouillard possible à partir de {{time}}",
+    "wx_in_warmer": "Aujourd'hui plus chaud qu'hier de {{value}}",
+    "wx_in_colder": "Aujourd'hui plus frais qu'hier de {{value}}",
+    "wx_in_same": "Températures proches d'hier",
+    "wx_in_rain_soon": "Pluie attendue vers {{time}} ({{value}} en 2 heures)",
+    "wx_in_rain_stops": "Il pleut, arrêt vers {{time}}",
+    "wx_in_raining": "Pluie pendant les 2 prochaines heures",
+    "wx_nowcast": "2 prochaines heures",
+    "wx_nowcast_dry": "Pas de pluie prévue",
+    "wx_nowcast_wet": "Pluie par quart d'heure",
+    "wx_yesterday": "Par rapport à hier",
+    "wx_yesterday_short": "Hier",
+    "wx_yesterday_now": "Maintenant {{value}} par rapport à hier à la même heure",
+    "wx_air_days": "Air et pollens les prochains jours",
+    "wx_radar": "Radar de pluie",
+    "wx_radar_credit": "Dernières images radar · RainViewer, OpenStreetMap",
+    "wx_model": "modèle {{model}}, le plus précis ici"
+>>>>>>> Stashed changes
   }
 }

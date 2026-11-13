@@ -42,5 +42,31 @@ class StageFitTest(unittest.TestCase):
         self.assertGreaterEqual(weather.count('data-prio="'), 5)
 
 
+class WeatherWidgetsTest(unittest.TestCase):
+    def test_every_weather_text_key_exists_in_four_languages(self):
+        import json
+        used = set()
+        for name in ("weather.js", "weather_hourly.js", "weather_widgets.js"):
+            used |= set(re.findall(r'\bt\("(wx_[a-z0-9_]+)"', (WEB / name).read_text(encoding="utf-8")))
+        self.assertGreater(len(used), 30)
+        for code in ("it", "en", "fr", "es"):
+            words = json.loads((WEB / "language" / f"{code}.json").read_text(encoding="utf-8"))["dictionary"]
+            missing = sorted(k for k in used if k not in words)
+            self.assertEqual(missing, [], code)
+            for kind in ("storm", "snow", "umbrella", "wind", "heat", "frost", "uv", "fog", "warmer", "colder", "same", "rain_soon", "rain_stops", "raining"):
+                self.assertIn(f"wx_in_{kind}", words)
+
+    def test_widgets_are_frameless_and_scripts_loaded(self):
+        css = (WEB / "weather.css").read_text(encoding="utf-8")
+        self.assertIn(".wx-hero, .wx-panel, .wx-tile { position: relative; border: 0; background: none; box-shadow: none; }", css)
+        self.assertNotIn("backdrop-filter: blur", css)
+        html = (WEB / "display.html").read_text(encoding="utf-8")
+        for name in ("weather_hourly.js", "weather_widgets.js"):
+            self.assertLess(html.index(f"/static/display/{name}"), html.index("/static/display/weather.js"))
+
+    def test_refits_on_late_content(self):
+        self.assertIn("subtree: true", (WEB / "stage_fit.js").read_text(encoding="utf-8"))
+
+
 if __name__ == "__main__":
     unittest.main()

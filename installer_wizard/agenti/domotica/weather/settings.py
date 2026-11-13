@@ -40,5 +40,5 @@ def current() -> dict:
 
 
 def _pick_days() -> int:
-    days = _number("NUXIVA_WEATHER_DAYS", 7, 3, 16)
-    return days if days in DAY_CHOICES else 7
+    days = _number("NUXIVA_WEATHER_DAYS", 14, 3, 16)
+    return days if days in DAY_CHOICES else 14

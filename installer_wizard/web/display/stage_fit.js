@@ -88,6 +88,6 @@
       if (key !== last) { last = key; schedule(); }
     }).observe(document.documentElement);
   }
-  new MutationObserver(schedule).observe(box, { childList: true });
+  new MutationObserver(schedule).observe(box, { childList: true, subtree: true });
   D.fitStage = schedule;
 })();

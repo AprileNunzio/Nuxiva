@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Nuovi widget meteo eleganti, senza bordi né sfondo, che riempiono tutto lo schermo",
+    "en": "New elegant weather widgets, with no borders or background, filling the whole screen",
+    "fr": "Nouveaux widgets météo élégants, sans bordures ni fond, qui remplissent tout l'écran",
+    "es": "Nuevos widgets del tiempo elegantes, sin bordes ni fondo, que llenan toda la pantalla"
+  },
+  "features": [
+    {
+      "it": "Accanto alla temperatura compaiono le allerte e gli avvisi più utili del momento: ombrello, vento forte, caldo, gelo, UV, nebbia e pioggia in arrivo.",
+      "en": "Next to the temperature you now see warnings and the most useful notices of the moment: umbrella, strong wind, heat, frost, UV, fog and incoming rain.",
+      "fr": "À côté de la température apparaissent les alertes et les avis les plus utiles du moment : parapluie, vent fort, chaleur, gel, UV, brouillard et pluie à venir.",
+      "es": "Junto a la temperatura aparecen los avisos y las indicaciones más útiles del momento: paraguas, viento fuerte, calor, helada, UV, niebla y lluvia en camino."
+    },
+    {
+      "it": "Nuovo grafico ora per ora che si adatta alla larghezza di qualsiasi schermo, con temperatura, icona, probabilità di pioggia e vento per ogni ora.",
+      "en": "New hour-by-hour chart that adapts to the width of any screen, with temperature, icon, chance of rain and wind for every hour.",
+      "fr": "Nouveau graphique heure par heure qui s'adapte à la largeur de tout écran, avec température, icône, probabilité de pluie et vent pour chaque heure.",
+      "es": "Nuevo gráfico hora a hora que se adapta al ancho de cualquier pantalla, con temperatura, icono, probabilidad de lluvia y viento para cada hora."
+    },
+    {
+      "it": "Nuovi riquadri: pioggia nelle prossime 2 ore, confronto con ieri, radar animato, aria e pollini dei prossimi giorni. Tutti i testi in italiano, inglese, francese e spagnolo.",
+      "en": "New panels: rain in the next 2 hours, comparison with yesterday, animated radar, air and pollen for the coming days. All texts in Italian, English, French and Spanish.",
+      "fr": "Nouveaux encadrés : pluie dans les 2 prochaines heures, comparaison avec hier, radar animé, air et pollens des prochains jours. Tous les textes en italien, anglais, français et espagnol.",
+      "es": "Nuevos paneles: lluvia en las próximas 2 horas, comparación con ayer, radar animado, aire y polen de los próximos días. Todos los textos en italiano, inglés, francés y español."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Il testo della risposta non si sovrappone più ai widget quando il pannello occupa tutto lo schermo.",
+      "en": "The reply text no longer overlaps the widgets when the panel takes the whole screen.",
+      "fr": "Le texte de la réponse ne chevauche plus les widgets quand le panneau occupe tout l'écran.",
+      "es": "El texto de la respuesta ya no se superpone a los widgets cuando el panel ocupa toda la pantalla."
+    },
+    {
+      "it": "Il pannello si riadatta anche quando un contenuto viene aggiunto o rimosso dopo l'apertura, come la mappa del radar.",
+      "en": "The panel also refits when content is added or removed after opening, such as the radar map.",
+      "fr": "Le panneau se réajuste aussi quand un contenu est ajouté ou retiré après l'ouverture, comme la carte radar.",
+      "es": "El panel también se reajusta cuando se añade o quita contenido tras abrirlo, como el mapa del radar."
+    }
+  ]
+}

@@ -90,6 +90,23 @@ def _week_speech(place: str, current: dict, days: list[dict]) -> str:
     return text + (f"Pioggia probabile {', '.join(x.lower() for x in rainy[:3])}." if rainy else "Non sono previste piogge significative.")
 
 
+LEVEL_WORDS = {"yellow": "gialla", "orange": "arancione", "red": "rossa"}
+
+
+def _warnings(report: dict, focus: int) -> str:
+    out = []
+    official = report.get("alerts") or []
+    if official:
+        first = official[0]
+        level = LEVEL_WORDS.get(first.get("level", ""), "")
+        out.append(f"Attenzione: allerta {level} {first.get('event', '').lower()} per {first.get('area', '')}.".replace("  ", " "))
+    if focus == 0:
+        soon = next((i for i in report.get("insights") or [] if i.get("kind") == "rain_soon"), None)
+        if soon and soon.get("time"):
+            out.append(f"Pioggia in arrivo verso le {soon['time'][11:16]}.")
+    return " ".join(out) + (" " if out else "")
+
+
 async def weather_skill(text: str = "") -> tuple[str, dict]:
     asked = _weather_place(text)
     if asked:
@@ -111,6 +128,7 @@ async def weather_skill(text: str = "") -> tuple[str, dict]:
         index, week = None, True
     focus = 0 if index is None else index
     speech = _week_speech(report["location"], current, days) if week else _day_speech(report["location"], current, days[focus], focus, report["air"])
+    speech = _warnings(report, focus) + speech
     view = "week" if week else "day"
     title = f"Meteo — {report['location']}"
     ui = {"mode": "focus", "title": title,

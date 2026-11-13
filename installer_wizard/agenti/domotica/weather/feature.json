@@ -83,7 +83,7 @@
       "key": "NUXIVA_WEATHER_DAYS",
       "label": "Giorni di previsione",
       "type": "select",
-      "default": "7",
+      "default": "14",
       "options": [
         {
           "value": "5",

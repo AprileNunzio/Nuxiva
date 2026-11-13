@@ -5,7 +5,8 @@ from datetime import date, datetime
 
 import httpx
 
-from agenti.weather import astro, settings
+from agenti.weather import alerts, astro, extras, radar, settings, skill
+from agenti.weather.algorithms import engine
 from agenti.weather.codes import DAYS_IT, MONTHS_IT, compass, describe
 
 log = logging.getLogger("nuxiva.weather")
@@ -19,6 +20,7 @@ HOURLY = ("temperature_2m,apparent_temperature,relative_humidity_2m,dew_point_2m
 DAILY = ("weather_code,temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,sunrise,sunset,"
          "daylight_duration,sunshine_duration,uv_index_max,precipitation_sum,snowfall_sum,precipitation_hours,"
          "precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant")
+AIR_HOURLY = "european_aqi,pm2_5,alder_pollen,birch_pollen,grass_pollen,mugwort_pollen,olive_pollen,ragweed_pollen"
 AIR_CURRENT = ("european_aqi,us_aqi,pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone,dust,"
                "alder_pollen,birch_pollen,grass_pollen,mugwort_pollen,olive_pollen,ragweed_pollen")
 POLLEN = ("alder", "birch", "grass", "mugwort", "olive", "ragweed")
@@ -105,14 +107,19 @@ def air_block(raw: dict | None) -> dict | None:
             "o3": rounded(current.get("ozone"), 1), "co": rounded(current.get("carbon_monoxide")), "dust": rounded(current.get("dust"), 1), "pollen": pollen}
 
 
-def build(place: dict, forecast: dict, air: dict | None, hours: int) -> dict:
+def _from(series: dict, offset: int) -> dict:
+    return {k: (v[offset:] if isinstance(v, list) else v) for k, v in series.items()}
+
+
+def build(place: dict, forecast: dict, air: dict | None, hours: int, past_days: int = 0) -> dict:
     now, hourly = forecast["current"], forecast["hourly"]
     stamp = now["time"][:13]
     start = next((i for i, value in enumerate(hourly["time"]) if value[:13] >= stamp), 0)
     daytime = bool(now.get("is_day"))
     desc, icon = describe(now.get("weather_code"), not daytime)
     rows = hourly_rows(hourly, start, hours)
-    days = daily_rows(forecast["daily"])
+    days = daily_rows(_from(forecast["daily"], past_days))
+    before = extras.yesterday(forecast["daily"], hourly, start) if past_days else None
     here = rows[0] if rows else {}
     current = {"temp": rounded(now["temperature_2m"]), "temp_exact": rounded(now["temperature_2m"], 1), "feels": rounded(now["apparent_temperature"]),
                "humidity": now["relative_humidity_2m"], "wind": rounded(now["wind_speed_10m"]), "gust": rounded(now.get("wind_gusts_10m")),
@@ -122,30 +129,34 @@ def build(place: dict, forecast: dict, air: dict | None, hours: int) -> dict:
                "dew": here.get("dew"), "visibility": here.get("visibility"), "uv": here.get("uv"), "time": now["time"]}
     payload = {"location": place["name"], "detail": place.get("detail", ""), "lat": place["lat"], "lon": place["lon"],
                "timezone": forecast.get("timezone", ""), "elevation": forecast.get("elevation"), "current": current, "hourly": rows,
-               "days": days, "air": air_block(air), "fetched": time.time(), "source": "open-meteo.com"}
+               "days": days, "air": air_block(air), "air_days": extras.air_days(air), "yesterday": before,
+               "nowcast": extras.nowcast(forecast.get("minutely_15"), now["time"]), "fetched": time.time(), "source": "open-meteo.com"}
     return payload
 
 
-async def fetch(place: dict, days: int, hours: int, with_air: bool, refresh_minutes: int) -> dict:
-    key = (round(place["lat"], 2), round(place["lon"], 2), days, hours, with_air)
+async def fetch(place: dict, days: int, hours: int, with_air: bool, refresh_minutes: int, model: str | None = None) -> dict:
+    key = (round(place["lat"], 2), round(place["lon"], 2), days, hours, with_air, model)
     hit = cache.get(key)
     if hit and time.time() - hit[0] < refresh_minutes * 60:
         return {**hit[1], "location": place["name"], "detail": place.get("detail", "")}
     try:
         async with httpx.AsyncClient(timeout=12) as client:
             forecast_task = client.get(FORECAST_URL, params={"latitude": place["lat"], "longitude": place["lon"], "timezone": "auto",
-                                                              "forecast_days": days, "forecast_hours": 72, "past_hours": 3, "current": CURRENT,
-                                                              "hourly": HOURLY, "daily": DAILY})
+                                                              "forecast_days": days, "forecast_hours": 72, "past_hours": 25, "past_days": 1,
+                                                              "current": CURRENT, "hourly": HOURLY, "daily": DAILY,
+                                                              "minutely_15": "precipitation", "forecast_minutely_15": 12,
+                                                              **({"models": model} if model else {})})
             air = None
             if with_air:
                 try:
                     air = (await client.get(AIR_URL, params={"latitude": place["lat"], "longitude": place["lon"], "timezone": "auto",
-                                                              "current": AIR_CURRENT})).json()
+                                                              "current": AIR_CURRENT, "hourly": AIR_HOURLY,
+                                                              "forecast_days": extras.AIR_DAYS})).json()
                 except (httpx.HTTPError, ValueError) as exc:
                     log.info("Qualità dell'aria non disponibile: %s", type(exc).__name__)
             response = await forecast_task
             response.raise_for_status()
-            payload = build(place, response.json(), air, hours)
+            payload = {**build(place, response.json(), air, hours, 1), "model": model or "best_match"}
     except (httpx.HTTPError, ValueError, KeyError) as exc:
         if hit and time.time() - hit[0] < STALE_SECONDS:
             return {**hit[1], "stale": True}
@@ -154,13 +165,35 @@ async def fetch(place: dict, days: int, hours: int, with_air: bool, refresh_minu
     return payload
 
 
-async def report(place: dict) -> dict:
+def situation(payload: dict) -> dict:
+    return {"hourly": [{k: h.get(k) for k in ("time", "temp", "feels", "rain_prob", "rain", "gust", "uv", "code")} for h in payload.get("hourly") or []],
+            "days": [{k: d.get(k) for k in ("tmax", "tmin", "uv")} for d in (payload.get("days") or [])[:2]],
+            "yesterday": payload.get("yesterday"), "nowcast": payload.get("nowcast") or []}
+
+
+async def _optional(task, fallback):
+    try:
+        return await task
+    except (alerts.AlertsUnavailable, ValueError, KeyError, TypeError) as exc:
+        log.info("dato meteo facoltativo non disponibile: %s", type(exc).__name__)
+        return fallback
+
+
+async def report(place: dict, language: str = "it") -> dict:
     prefs = settings.current()
-    payload = await fetch(place, prefs["days"], prefs["hours"], prefs["air"], prefs["refresh"])
+    try:
+        model = skill.preferred_model(place)
+    except (ValueError, KeyError, TypeError):
+        model = None
+    payload = await fetch(place, prefs["days"], prefs["hours"], prefs["air"], prefs["refresh"], model)
     result = {**payload, "units": prefs["units"], "view": prefs["view"]}
     if not prefs["air"]:
-        result["air"] = None
+        result["air"], result["air_days"] = None, []
     elif not prefs["pollen"] and result.get("air"):
         result["air"] = {**result["air"], "pollen": {}}
+        result["air_days"] = [{**d, "pollen": {}} for d in result.get("air_days") or []]
     result["astro"] = astro.moon(datetime.now().astimezone()) if prefs["astro"] else None
+    result["insights"] = engine.insights(situation(result))
+    result["alerts"] = await _optional(alerts.official(place, language), None)
+    result["radar"] = await _optional(radar.latest(), None)
     return result

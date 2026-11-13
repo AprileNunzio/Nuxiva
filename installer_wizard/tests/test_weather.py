@@ -84,7 +84,7 @@ class SettingsTest(unittest.TestCase):
         with mock.patch.object(settings, "env_get", side_effect=lambda k, d="": d):
             data = settings.current()
         self.assertEqual(data["units"], {"temp": "c", "wind": "kmh", "precip": "mm", "pressure": "hpa", "distance": "km"})
-        self.assertEqual((data["days"], data["hours"], data["view"]), (7, 24, "day"))
+        self.assertEqual((data["days"], data["hours"], data["view"]), (14, 24, "day"))
         env = {"NUXIVA_WEATHER_UNITS": "imperial", "NUXIVA_WEATHER_DAYS": "10", "NUXIVA_WEATHER_REFRESH": "9999", "NUXIVA_WEATHER_VIEW": "bogus"}
         with mock.patch.object(settings, "env_get", side_effect=lambda k, d="": env.get(k, d)):
             data = settings.current()
@@ -93,7 +93,7 @@ class SettingsTest(unittest.TestCase):
 
     def test_days_outside_choices_fall_back(self):
         with mock.patch.object(settings, "env_get", side_effect=lambda k, d="": "6" if k.endswith("DAYS") else d):
-            self.assertEqual(settings.current()["days"], 7)
+            self.assertEqual(settings.current()["days"], 14)
 
 
 class CodesAndAstroTest(unittest.TestCase):

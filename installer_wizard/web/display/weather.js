@@ -1,10 +1,10 @@
 (() => {
-  const I = window.NuxivaWeatherIcons, C = window.NuxivaWeatherCharts;
+  const I = window.NuxivaWeatherIcons, C = window.NuxivaWeatherCharts, H = window.NuxivaWeatherHourly, W = window.NuxivaWeatherWidgets;
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const has = (v) => v !== null && v !== undefined && Number.isFinite(Number(v));
   const AQI_COLORS = ["#3ddc97", "#a6e22e", "#ffd166", "#ff9a4d", "#ff5d73", "#b24bf3"];
   const UV_COLORS = ["#3ddc97", "#ffd166", "#ff9a4d", "#ff5d73", "#b24bf3"];
-  const PRIO = { "wx-wind": 1, "wx-rain": 1, "wx-hum": 2, "wx-uv": 2, "wx-air": 2, "wx-sun": 2, "wx-press": 3, "wx-vis": 3, "wx-moon": 3, "wx-pollen": 3 };
+  const PRIO = { "wx-wind": 1, "wx-rain": 1, "wx-now": 1, "wx-yday": 2, "wx-hum": 2, "wx-uv": 2, "wx-air": 2, "wx-sun": 2, "wx-press": 3, "wx-vis": 3, "wx-moon": 3, "wx-pollen": 3 };
 
   function units(u = {}) {
     const imperial = u.temp === "f";
@@ -65,6 +65,7 @@
       const span = has(day.daylight_min) ? `${Math.floor(day.daylight_min / 60)}h ${day.daylight_min % 60}m` : "";
       out.push(tile("wx-sun", t("wx_sun"), C.sunArc(day.sunrise, day.sunset, minutes, span), has(day.sun_min) ? `${t("wx_sunshine")} ${Math.floor(day.sun_min / 60)}h ${day.sun_min % 60}m` : ""));
     }
+    if (W) out.push(W.nowcastTile(data, k), W.yesterdayTile(data, k));
     if (data.astro) out.push(tile("wx-moon", t("wx_moon"), `<div class="wx-row">${C.moon(data.astro.fraction)}<b class="wx-big">${data.astro.illumination}<small>%</small></b></div>`,
       `${t(`wx_moon_${data.astro.phase}`)}<br>${t("wx_full")} ${new Date(data.astro.next_full).toLocaleDateString(k.loc, { day: "numeric", month: "short" })}`));
     const pollen = air && air.pollen ? Object.entries(air.pollen).filter(([, v]) => v.level) : [];
@@ -84,20 +85,20 @@
         <div class="wx-temp"><span>${has(big) ? Math.round(k.U.temp(big)) : "—"}</span><sup>${k.U.tempUnit}</sup></div>
         <div class="wx-desc"><b>${k.esc(desc)}</b>
           <span>${today ? `${k.t("wx_feels")} ${k.deg(c.feels)}` : `${k.t("wx_feels")} ${has(day.feels_max) ? k.deg(day.feels_max) : "—"}`}</span>
-          <span>▲ ${has(day.tmax) ? k.deg(day.tmax) : "—"} &nbsp; ▼ ${has(day.tmin) ? k.deg(day.tmin) : "—"}</span></div></div></header>`;
+          <span>▲ ${has(day.tmax) ? k.deg(day.tmax) : "—"} &nbsp; ▼ ${has(day.tmin) ? k.deg(day.tmin) : "—"}</span></div></div>
+      ${W && today ? `<div class="wx-notes">${W.alerts(data, k)}${W.insights(data, k)}</div>` : ""}</header>`;
   }
 
   function hourlyBlock(data, k) {
     const date = (data.days || [])[k.focus] && data.days[k.focus].iso, rows = (data.hourly || []).filter((h) => k.focus === 0 || (date && h.time.startsWith(date)));
-    const room = Math.max(8, Math.floor((window.innerWidth || 1280) / 54)), shown = rows.slice(0, Math.min(room, data.view === "week" ? 24 : 36));
+    const room = Math.max(8, Math.floor((window.innerWidth || 1280) / 64)), shown = rows.slice(0, Math.min(room, 24));
     if (shown.length < 3) return "";
-    return `<section class="wx-panel" data-prio="1"><h4>${k.esc(k.t("wx_hourly"))}</h4><div class="wx-scroll">${C.hourly(shown, {
-      temp: k.U.temp, hour: k.hourLabel, every: shown.length > 24 ? 4 : shown.length > 12 ? 3 : 2, icon: I.icon, label: k.t("wx_hourly") })}</div></section>`;
+    return `<section class="wx-panel" data-prio="1"><h4>${k.esc(k.t("wx_hourly"))}</h4>${H.render(shown, k, I.icon)}</section>`;
   }
 
   function strip(data, k) {
     const days = data.days || [];
-    return `<section class="wx-panel" data-prio="2"><h4>${k.esc(k.t("wx_next_days"))}</h4><div class="wx-strip">${days.slice(0, 7).map((d, i) => `<div class="wx-mini ${i === k.focus ? "on" : ""}">
+    return `<section class="wx-panel" data-prio="2"><h4>${k.esc(k.t("wx_next_days"))}</h4><div class="wx-strip">${days.slice(0, 10).map((d, i) => `<div class="wx-mini ${i === k.focus ? "on" : ""}">
       <b>${k.esc(k.rel(d, i))}</b>${I.icon(d.icon, 34)}<span>${k.deg(d.tmax)} <small>${k.deg(d.tmin)}</small></span><em>☂ ${d.rain ?? 0}%</em></div>`).join("")}</div></section>`;
   }
 
@@ -121,9 +122,9 @@
     const theme = I.theme(k.focus === 0 ? data.current.icon : data.days[k.focus].icon);
     const view = data.view === "week" ? "week" : "day";
     const body = view === "week"
-      ? `${hero(data, k)}${weekRows(data, k)}<div class="wx-tiles">${tiles(data, k)}</div>`
-      : `${hero(data, k)}${hourlyBlock(data, k)}<div class="wx-tiles">${tiles(data, k)}</div>${strip(data, k)}`;
-    return `<div class="wx wx-${view} wx-theme-${theme} ${opts.compact ? "wx-compact" : ""}">${body}<p class="wx-credit" data-prio="4">${k.esc(data.source || "")}${data.stale ? ` · ${k.esc(k.t("wx_stale"))}` : ""}</p></div>`;
+      ? `${hero(data, k)}${weekRows(data, k)}<div class="wx-tiles">${tiles(data, k)}</div>${W ? W.airDays(data, k) : ""}`
+      : `${hero(data, k)}${hourlyBlock(data, k)}<div class="wx-tiles">${tiles(data, k)}</div><div class="wx-duo">${W ? W.radar(data, k) : ""}${strip(data, k)}</div>${W ? W.airDays(data, k) : ""}`;
+    return `<div class="wx wx-${view} wx-theme-${theme} ${opts.compact ? "wx-compact" : ""}">${body}<p class="wx-credit" data-prio="4">${k.esc(data.source || "")}${data.model && data.model !== "best_match" ? ` · ${k.esc(k.t("wx_model", { model: data.model }))}` : ""}${data.stale ? ` · ${k.esc(k.t("wx_stale"))}` : ""}</p></div>`;
   }
 
   function compact(data, opts) {
@@ -139,5 +140,9 @@
       <div class="wx-strip">${next.map((d, i) => `<div class="wx-mini"><b>${k.esc(k.rel(d, i + 1))}</b>${I.icon(d.icon, 28)}<span>${k.deg(d.tmax)} <small>${k.deg(d.tmin)}</small></span></div>`).join("")}</div></div>`;
   }
 
-  window.NuxivaWeather = Object.freeze({ render, compact, units });
+  function mount(root, data, opts) {
+    if (W && root && data) W.mount(root, data, opts.loadLeaflet, opts.locale || "it-IT");
+  }
+
+  window.NuxivaWeather = Object.freeze({ render, compact, units, mount });
 })();

@@ -87,6 +87,12 @@
     area.remove();
   };
   const AFTER = {
+    forecast(el, p) {
+      if (window.NuxivaWeather && window.NuxivaWeather.mount) {
+        const desk = window.NuxivaDesk && window.NuxivaDesk.ctx;
+        window.NuxivaWeather.mount(el, p.data, { loadLeaflet, locale: desk ? desk.locale() : navigator.language });
+      }
+    },
     code(el, p) {
       const b = el.querySelector(".p-code-copy");
       if (b) b.addEventListener("click", (e) => { e.stopPropagation(); copyText(p.content || "", b); });
@@ -110,7 +116,7 @@
       } catch (err) { box.classList.add("rm-none"); }
     },
   };
-  D.stagePanels = { render: RENDER, wide: WIDE };
+  D.stagePanels = { render: RENDER, wide: WIDE, loadLeaflet };
 
   const spanOf = (p) => Math.max(1, Math.min(12, parseInt(p.span, 10) || 12));
 

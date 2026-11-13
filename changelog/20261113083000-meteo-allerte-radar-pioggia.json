@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Meteo più completo: allerte ufficiali, radar, pioggia nelle prossime 2 ore e confronto con ieri",
+    "en": "Richer weather: official warnings, radar, rain in the next 2 hours and comparison with yesterday",
+    "fr": "Météo plus complète : alertes officielles, radar, pluie dans les 2 prochaines heures et comparaison avec hier",
+    "es": "Tiempo más completo: avisos oficiales, radar, lluvia en las próximas 2 horas y comparación con ayer"
+  },
+  "features": [
+    {
+      "it": "Allerte meteo ufficiali per la tua zona: MeteoAlarm in Europa e il servizio meteorologico nazionale negli Stati Uniti, con livello, area e scadenza. Nuxiva le dice anche a voce.",
+      "en": "Official weather warnings for your area: MeteoAlarm in Europe and the National Weather Service in the United States, with level, area and expiry. Nuxiva also says them aloud.",
+      "fr": "Alertes météo officielles pour votre zone : MeteoAlarm en Europe et le service météorologique national aux États-Unis, avec niveau, zone et échéance. Nuxiva les annonce aussi à voix haute.",
+      "es": "Avisos meteorológicos oficiales para tu zona: MeteoAlarm en Europa y el servicio meteorológico nacional en Estados Unidos, con nivel, zona y vencimiento. Nuxiva también los dice en voz alta."
+    },
+    {
+      "it": "Pioggia quarto d'ora per quarto d'ora nelle prossime 2 ore, ultime immagini del radar, confronto con ieri e qualità dell'aria e pollini per i prossimi 4 giorni.",
+      "en": "Rain quarter-hour by quarter-hour for the next 2 hours, latest radar images, comparison with yesterday, and air quality and pollen for the next 4 days.",
+      "fr": "Pluie quart d'heure par quart d'heure pour les 2 prochaines heures, dernières images radar, comparaison avec hier, et qualité de l'air et pollens pour les 4 prochains jours.",
+      "es": "Lluvia cada cuarto de hora en las próximas 2 horas, últimas imágenes de radar, comparación con ayer, y calidad del aire y polen para los próximos 4 días."
+    },
+    {
+      "it": "Previsioni a 14 giorni come impostazione predefinita, calcolate con il modello che si è dimostrato più preciso per la tua zona.",
+      "en": "14-day forecast by default, computed with the model that proved most accurate for your area.",
+      "fr": "Prévisions à 14 jours par défaut, calculées avec le modèle qui s'est montré le plus précis pour votre zone.",
+      "es": "Previsión a 14 días por defecto, calculada con el modelo que ha demostrado ser más preciso para tu zona."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Se un servizio esterno (allerte o radar) non risponde, il meteo resta comunque disponibile e non vengono mostrati dati inventati.",
+      "en": "If an outside service (warnings or radar) does not answer, the weather stays available and no made-up data is shown.",
+      "fr": "Si un service externe (alertes ou radar) ne répond pas, la météo reste disponible et aucune donnée inventée n'est affichée.",
+      "es": "Si un servicio externo (avisos o radar) no responde, el tiempo sigue disponible y no se muestran datos inventados."
+    }
+  ]
+}

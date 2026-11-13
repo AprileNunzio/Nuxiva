@@ -486,11 +486,42 @@
     "rescue_ack_anon": "A family member got the alert and is on the way.",
     "rescue_number": "Emergency: {{number}}",
     "rescue_disclaimer": "Nuxiva does not replace emergency services or a certified medical device.",
+<<<<<<< Updated upstream
     "upd_hero_version": "Nuxiva {{version}}",
     "upd_hero_date": "Update of {{date}}",
     "upd_step": "Step {{n}} of {{total}}",
     "upd_calm_sub": "Maintenance",
     "upd_calm_title": "All under control",
     "upd_calm_text": "This update contains internal improvements, with no visible changes to list."
+=======
+    "wx_now": "Now",
+    "wx_hourly_legend": "Blue bars: chance of rain · bottom row: wind in {{unit}}",
+    "wx_until": "until {{time}}",
+    "wx_alert_source": "Official warning · {{source}}",
+    "wx_in_storm": "Thunderstorm expected from {{time}}",
+    "wx_in_snow": "Snow expected from {{time}}",
+    "wx_in_umbrella": "Take an umbrella: {{value}}% chance of rain around {{time}}",
+    "wx_in_wind": "Gusts up to {{value}} around {{time}}",
+    "wx_in_heat": "Intense heat: feels like {{value}} around {{time}}",
+    "wx_in_frost": "Frost risk: low of {{value}}",
+    "wx_in_uv": "High UV ({{value}}): protect yourself around midday",
+    "wx_in_fog": "Fog possible from {{time}}",
+    "wx_in_warmer": "Today is {{value}} warmer than yesterday",
+    "wx_in_colder": "Today is {{value}} cooler than yesterday",
+    "wx_in_same": "Temperatures similar to yesterday",
+    "wx_in_rain_soon": "Rain arriving around {{time}} ({{value}} in 2 hours)",
+    "wx_in_rain_stops": "It is raining, stopping around {{time}}",
+    "wx_in_raining": "Rain for the next 2 hours",
+    "wx_nowcast": "Next 2 hours",
+    "wx_nowcast_dry": "No rain expected",
+    "wx_nowcast_wet": "Rain every 15 minutes",
+    "wx_yesterday": "Compared with yesterday",
+    "wx_yesterday_short": "Yesterday",
+    "wx_yesterday_now": "Now {{value}} compared with yesterday at this time",
+    "wx_air_days": "Air and pollen in the coming days",
+    "wx_radar": "Rain radar",
+    "wx_radar_credit": "Latest radar images · RainViewer, OpenStreetMap",
+    "wx_model": "{{model}} model, the most accurate here"
+>>>>>>> Stashed changes
   }
 }

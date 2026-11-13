@@ -88,7 +88,7 @@ body.focus .stage { opacity: 1; transform: none; pointer-events: auto; }
 .stage-body .fit-cut { display: none !important; }
 .stage-body.fit-measuring, .stage-body.fit-measuring * { transform: none !important; transition: none !important; }
 body.stage-wide .stage { left: 26px; width: auto; }
-body.stage-wide .focus-say { opacity: 0; pointer-events: none; }
+body.focus.stage-wide .focus-say { opacity: 0; pointer-events: none; }
 body.stage-wide.voice-only .voice-strip { left: auto; right: 26px; top: 112px; bottom: auto; height: 30px; transform: none; }
 body.stage-wide .stage-head { padding-right: 150px; }
 .stage-body .wide { grid-column: 1 / -1; }
