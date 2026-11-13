@@ -48,6 +48,8 @@ pub struct Settings {
     pub levels: LevelLimits,
     pub max_graph_refs: usize,
     pub repair_attempts: usize,
+    pub lease_ms: u64,
+    pub step_attempts: u32,
     pub max_payload_bytes: usize,
     pub max_text_chars: usize,
     pub max_presence: usize,
@@ -74,6 +76,8 @@ impl Default for Settings {
             levels: LevelLimits::default(),
             max_graph_refs: 1_024,
             repair_attempts: 1,
+            lease_ms: 30_000,
+            step_attempts: 2,
             max_payload_bytes: 256 * 1024,
             max_text_chars: 16_000,
             max_presence: 16,
@@ -127,6 +131,8 @@ impl Settings {
             && numbers.iter().all(|(v, c)| within_u64(*v, *c))
             && self.max_redelegation_depth <= Ceilings::REDELEGATION_DEPTH
             && self.repair_attempts <= 3
+            && within_u64(self.lease_ms, 3_600_000)
+            && (1..=5).contains(&self.step_attempts)
             && within(self.max_graph_refs, 65_536)
             && [
                 self.levels.lampo,

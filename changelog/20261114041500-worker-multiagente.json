@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Worker: gli agenti lavorano in parallelo con limiti e controllo",
+    "en": "Workers: agents work in parallel with limits and control",
+    "fr": "Workers : les agents travaillent en parallèle avec des limites et un contrôle",
+    "es": "Workers: los agentes trabajan en paralelo con límites y control"
+  },
+  "features": [
+    {
+      "it": "Nuxiva esegue i piani a passi facendo lavorare più agenti in parallelo, nel rispetto delle dipendenze: ogni passo riceve i risultati di quelli che lo precedono e rispetta limiti di tempo, costo e chiamate. Un nuovo agente descritto solo nel suo manifest è subito utilizzabile.",
+      "en": "Nuxiva runs step-by-step plans with several agents working in parallel, respecting dependencies: each step receives the results of its predecessors and keeps to limits on time, cost and calls. A new agent described only in its manifest is usable right away.",
+      "fr": "Nuxiva exécute les plans par étapes en faisant travailler plusieurs agents en parallèle, dans le respect des dépendances : chaque étape reçoit les résultats des précédentes et respecte des limites de temps, de coût et d'appels. Un nouvel agent décrit seulement dans son manifeste est utilisable immédiatement.",
+      "es": "Nuxiva ejecuta los planes por pasos con varios agentes trabajando en paralelo, respetando las dependencias: cada paso recibe los resultados de los anteriores y respeta límites de tiempo, coste y llamadas. Un agente nuevo descrito solo en su manifiesto se puede usar de inmediato."
+    },
+    {
+      "it": "Se un agente si blocca o smette di dare segni di vita, Nuxiva lo ferma, riprova una volta e poi segnala l'errore in modo chiaro; si può anche annullare tutto il lavoro in corso. Un agente che va in errore non fa cadere gli altri.",
+      "en": "If an agent hangs or stops showing signs of life, Nuxiva stops it, retries once and then reports the error clearly; all the work in progress can also be cancelled. An agent that fails does not bring down the others.",
+      "fr": "Si un agent se bloque ou ne donne plus signe de vie, Nuxiva l'arrête, réessaie une fois puis signale clairement l'erreur ; tout le travail en cours peut aussi être annulé. Un agent en échec ne fait pas tomber les autres.",
+      "es": "Si un agente se bloquea o deja de dar señales de vida, Nuxiva lo detiene, reintenta una vez y luego informa del error con claridad; también se puede cancelar todo el trabajo en curso. Un agente que falla no derriba a los demás."
+    }
+  ],
+  "fixes": []
+}

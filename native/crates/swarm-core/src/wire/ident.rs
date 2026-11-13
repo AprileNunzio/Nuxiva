@@ -25,6 +25,10 @@ impl Ident {
     pub fn as_str(&self) -> &str {
         &self.0
     }
+
+    pub(crate) fn known(text: &'static str) -> Self {
+        Self(text.to_owned())
+    }
 }
 
 impl TryFrom<String> for Ident {
