@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Strumenti di sola lettura sotto il controllo MCP",
+    "en": "Read-only tools under MCP control",
+    "fr": "Outils en lecture seule sous contrôle MCP",
+    "es": "Herramientas de solo lectura bajo control MCP"
+  },
+  "fixes": [],
+  "features": [
+    {
+      "it": "Gli strumenti interni possono passare dal registro MCP unico, con permessi, consenso e audit gestiti dal nucleo Rust, partendo da quelli di sola lettura.",
+      "en": "Internal tools can go through the single MCP registry, with permissions, consent and audit handled by the Rust core, starting with the read-only ones.",
+      "fr": "Les outils internes peuvent passer par le registre MCP unique, avec permissions, consentement et audit gérés par le cœur Rust, en commençant par la lecture seule.",
+      "es": "Las herramientas internas pueden pasar por el registro MCP único, con permisos, consentimiento y auditoría gestionados por el núcleo Rust, empezando por las de solo lectura."
+    }
+  ]
+}

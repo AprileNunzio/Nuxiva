@@ -66,6 +66,7 @@ async fn internal_servers_go_through_the_same_gate_as_external_ones() -> McpResu
         &Handle::current(),
         1 << 20,
         8,
+        None,
     )?;
     hub.set_scopes(HashMap::from([(
         "butler".to_owned(),
@@ -123,9 +124,9 @@ async fn unknown_kinds_and_bad_definitions_are_rejected_before_anything_is_regis
     let registry = nuxiva_mcp_core::InternalRegistry::default();
     let mut unknown = definition(&scratch);
     unknown.kind = "ignoto".into();
-    assert!(register_all(&registry, &[unknown], &Handle::current(), 1 << 20, 8).is_err());
+    assert!(register_all(&registry, &[unknown], &Handle::current(), 1 << 20, 8, None).is_err());
     let mut bad_id = definition(&scratch);
     bad_id.id = "Non Valido".into();
-    assert!(register_all(&registry, &[bad_id], &Handle::current(), 1 << 20, 8).is_err());
+    assert!(register_all(&registry, &[bad_id], &Handle::current(), 1 << 20, 8, None).is_err());
     assert!(registry.open("files").is_err());
 }

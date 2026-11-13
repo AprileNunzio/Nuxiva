@@ -36,7 +36,9 @@ def enabled(name: str) -> bool:
 
 def refresh() -> None:
     from agenti.agent import tool_scanner
+    from agenti.mcpclient import mirror
     tool_scanner.sync()
+    mirror.install()
 
 
 def available(level: str) -> list[dict]:

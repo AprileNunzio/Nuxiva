@@ -3,16 +3,19 @@ use std::path::Path;
 use std::sync::Arc;
 
 use ed25519_dalek::SigningKey;
+use nuxiva_mcp_core::ToolOutput;
 use nuxiva_mcp_core::{
     AuditSink, CallRequest, Catalog, FileSink, Hub, McpError, PolicyConfig, Scope, Settings,
     SharedSecrets, SignedCatalog, ToolError, Within, generate_signing_key, resume_from_file,
     sign_catalog, verify_catalog,
 };
-use nuxiva_mcp_servers::{ServerDefinition, register_all};
+use nuxiva_mcp_servers::{Dispatch, ServerDefinition, register_all};
 use pyo3::create_exception;
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::types::PyBytes;
+use serde_json::{Map, Value};
+use std::sync::Mutex;
 use tokio::runtime::{Builder, Runtime};
 
 create_exception!(nuxiva_native, McpRejected, PyValueError);
@@ -25,6 +28,48 @@ fn json_of<T: serde::Serialize>(value: &T) -> PyResult<String> {
     serde_json::to_string(value).map_err(|_| rejected(McpError::Serialize))
 }
 
+#[derive(Debug)]
+struct PyDispatch {
+    callback: Py<PyAny>,
+}
+
+impl Dispatch for PyDispatch {
+    fn call(
+        &self,
+        server: &str,
+        tool: &str,
+        arguments: &Map<String, Value>,
+        context: Option<&str>,
+    ) -> ToolOutput {
+        let Ok(payload) = serde_json::to_string(arguments) else {
+            return ToolOutput::fail("argomenti non validi");
+        };
+        let reply: Result<String, PyErr> = Python::attach(|py| {
+            self.callback
+                .call1(py, (server, tool, payload, context))?
+                .extract(py)
+        });
+        let parsed = reply
+            .ok()
+            .and_then(|text| serde_json::from_str::<Value>(&text).ok());
+        match parsed {
+            Some(Value::Object(object)) => {
+                let text = object
+                    .get("text")
+                    .and_then(Value::as_str)
+                    .unwrap_or_default()
+                    .to_owned();
+                if object.get("is_error").and_then(Value::as_bool) == Some(true) {
+                    ToolOutput::fail(text)
+                } else {
+                    ToolOutput::ok(text)
+                }
+            }
+            _ => ToolOutput::fail("errore interno del servizio"),
+        }
+    }
+}
+
 #[pyclass(module = "nuxiva_native", frozen)]
 #[derive(Debug)]
 pub struct RustMcpEngine {
@@ -33,6 +78,7 @@ pub struct RustMcpEngine {
     secrets: Arc<SharedSecrets>,
     max_message: usize,
     max_in_flight: usize,
+    dispatch: Mutex<Option<Arc<dyn Dispatch>>>,
 }
 
 #[pymethods]
@@ -59,6 +105,7 @@ impl RustMcpEngine {
             secrets,
             max_message,
             max_in_flight,
+            dispatch: Mutex::new(None),
         })
     }
 
@@ -110,8 +157,21 @@ impl RustMcpEngine {
             self.runtime.handle(),
             self.max_message,
             self.max_in_flight,
+            self.dispatch
+                .lock()
+                .map_err(|_| rejected(McpError::Closed))?
+                .as_ref(),
         )
         .map_err(rejected)
+    }
+
+    fn set_dispatch(&self, callback: Py<PyAny>) -> PyResult<()> {
+        *self
+            .dispatch
+            .lock()
+            .map_err(|_| rejected(McpError::Closed))? =
+            Some(Arc::new(PyDispatch { callback }) as Arc<dyn Dispatch>);
+        Ok(())
     }
 
     fn needs_consent(&self, tool_id: &str, operation: &str) -> bool {

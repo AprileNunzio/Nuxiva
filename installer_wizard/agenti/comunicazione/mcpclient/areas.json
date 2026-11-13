@@ -1,0 +1,17 @@
+{
+  "areas": [
+    {
+      "server": "readonly",
+      "flag": "NUXIVA_MCP_AREA_READONLY",
+      "tools": {
+        "now": {"read_only": true},
+        "list_widgets": {"read_only": true},
+        "team_roster": {"read_only": true},
+        "list_cameras": {"read_only": true},
+        "camera_overview": {"read_only": true},
+        "firewall_status": {"read_only": true},
+        "list_models": {"read_only": true}
+      }
+    }
+  ]
+}

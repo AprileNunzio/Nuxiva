@@ -21,6 +21,7 @@ DEFAULT_SCOPES = {AGENT: {"servers": ["*"], "tools": ["*"], "max_risk": "critica
 LAN_SUFFIXES = (".local", ".lan", ".home", ".internal")
 
 INTERNAL: dict = {}
+HANDLERS: dict = {}
 WAIT = 10.0
 
 _lock = threading.RLock()
@@ -64,15 +65,25 @@ def consent_ttl() -> float:
     return float(_json(POLICY_FILE, {}).get("consent_ttl_ms", 120_000)) / 1000.0
 
 
+def dispatch(server: str, tool: str, arguments: str, token) -> str:
+    handler = HANDLERS.get(server)
+    if handler is None:
+        return json.dumps({"text": "servizio non disponibile", "is_error": True})
+    return handler(tool, arguments, token)
+
+
 def get():
     global _engine
     with _lock:
         if _engine is None:
+            from agenti.mcpclient import mirror
+            mirror.install()
             AUDIT_FILE.parent.mkdir(parents=True, exist_ok=True)
             built = native_core.symbol("RustMcpEngine")(_text(SETTINGS_FILE, "{}"), _text(POLICY_FILE, "{}"), str(AUDIT_FILE))
             for ident, token in vault()["tokens"].items():
                 built.set_secret(ident, token)
             built.set_scopes(json.dumps(_json(SCOPES_FILE, {**DEFAULT_SCOPES, **{i: scope(i) for i in INTERNAL}})))
+            built.set_dispatch(dispatch)
             built.set_internal(json.dumps(internal_definitions()))
             _engine = built
         return _engine
@@ -83,7 +94,7 @@ def scope(ident: str) -> dict:
 
 
 def internal_definitions() -> list:
-    found = {ident: build() for ident, build in INTERNAL.items()}
+    found = {ident: item for ident, item in ((i, b()) for i, b in INTERNAL.items()) if item}
     for item in _json(INTERNAL_FILE, []):
         if isinstance(item, dict) and "id" in item:
             found[item["id"]] = item
