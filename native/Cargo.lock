@@ -1104,7 +1104,9 @@ dependencies = [
 name = "nuxiva-ear-core"
 version = "5.8.0"
 dependencies = [
+ "nuxiva-seal-core",
  "realfft",
+ "zeroize",
 ]
 
 [[package]]
@@ -1266,6 +1268,7 @@ dependencies = [
  "nuxiva-token-core",
  "nuxiva-update-core",
  "nuxiva-vault-media",
+ "nuxiva-vision-core",
  "nuxiva-vitals-core",
  "nuxiva-weather-core",
  "pyo3",
@@ -1428,6 +1431,13 @@ dependencies = [
  "serde",
  "serde_json",
  "sha2",
+ "zeroize",
+]
+
+[[package]]
+name = "nuxiva-vision-core"
+version = "5.8.0"
+dependencies = [
  "zeroize",
 ]
 

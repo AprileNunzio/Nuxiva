@@ -49,6 +49,7 @@ mod rescue;
 mod rescue_ear;
 mod scanner;
 mod seal;
+mod sensory;
 mod sentinel;
 mod sentinel_memory;
 mod signal;
@@ -140,6 +141,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     authz::register(m)?;
     home_rules::register(m)?;
     ear::register(m)?;
+    sensory::register(m)?;
     ear_array::register(m)?;
     ear_music::register(m)?;
     lyrics::register(m)?;

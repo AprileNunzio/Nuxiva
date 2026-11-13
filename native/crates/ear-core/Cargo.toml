@@ -11,3 +11,5 @@ workspace = true
 
 [dependencies]
 realfft = "3.5"
+nuxiva-seal-core = { path = "../seal-core" }
+zeroize = "1"

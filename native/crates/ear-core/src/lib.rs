@@ -1,5 +1,6 @@
 #![forbid(unsafe_code)]
 
+pub mod aec;
 mod align;
 mod array;
 pub mod danger_sound;
@@ -10,6 +11,7 @@ pub mod endpoint;
 mod features;
 mod gain;
 mod level;
+pub mod lock;
 mod music_room;
 mod noise;
 mod scene;
@@ -41,9 +43,13 @@ pub const MAX_STREAM_SAMPLES: usize = 512 * 1024;
 pub const MAX_UTTERANCE_SAMPLES: usize = 16_000 * 600;
 
 #[cfg(test)]
+mod aec_tests;
+#[cfg(test)]
 mod array_tests;
 #[cfg(test)]
 mod danger_tests;
+#[cfg(test)]
+mod lock_tests;
 #[cfg(test)]
 mod music_room_tests;
 #[cfg(test)]

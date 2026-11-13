@@ -58,6 +58,7 @@ nuxiva-expr-core = { path = "../expr-core" }
 nuxiva-memory-core = { path = "../memory-core" }
 nuxiva-vault-media = { path = "../vault-media" }
 nuxiva-nvr-core = { path = "../nvr-core" }
+nuxiva-vision-core = { path = "../vision-core" }
 nuxiva-ask-core = { path = "../ask-core" }
 nuxiva-gait-core = { path = "../gait-core" }
 nuxiva-matter-core = { path = "../matter-core" }

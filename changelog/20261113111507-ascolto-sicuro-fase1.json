@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Ascolto più sicuro: eco, voce del proprietario e filtro degli intenti",
+    "en": "Safer listening: echo, owner voice and intent filter",
+    "fr": "Écoute plus sûre : écho, voix du propriétaire et filtre d'intention",
+    "es": "Escucha más segura: eco, voz del propietario y filtro de intención"
+  },
+  "features": [
+    {
+      "it": "Nuxiva non ascolta più la propria voce né l'audio del computer: un cancellatore d'eco adattivo lo toglie dal microfono.",
+      "en": "Nuxiva no longer hears its own voice or the computer audio: an adaptive echo canceller removes it from the microphone.",
+      "fr": "Nuxiva n'entend plus sa propre voix ni le son de l'ordinateur : un annuleur d'écho adaptatif le retire du microphone.",
+      "es": "Nuxiva ya no oye su propia voz ni el audio del ordenador: un cancelador de eco adaptativo lo quita del micrófono."
+    },
+    {
+      "it": "Il microfono si sblocca solo con la tua voce. L'impronta vocale resta sul dispositivo, cifrata, e si salva solo con il tuo consenso esplicito.",
+      "en": "The microphone unlocks only for your voice. The voiceprint stays on the device, encrypted, and is saved only with your explicit consent.",
+      "fr": "Le microphone ne se déverrouille qu'avec votre voix. L'empreinte vocale reste sur l'appareil, chiffrée, et n'est enregistrée qu'avec votre consentement explicite.",
+      "es": "El micrófono solo se desbloquea con tu voz. La huella de voz permanece en el dispositivo, cifrada, y solo se guarda con tu consentimiento explícito."
+    },
+    {
+      "it": "Un filtro locale scarta in silenzio canzoni, chiacchiere altrui e rumori che non sono un comando.",
+      "en": "A local filter silently discards songs, other people's chatter and noise that is not a command.",
+      "fr": "Un filtre local écarte en silence les chansons, les bavardages d'autrui et les bruits qui ne sont pas une commande.",
+      "es": "Un filtro local descarta en silencio canciones, charlas ajenas y ruidos que no son una orden."
+    },
+    {
+      "it": "Base per la visione continua, solo su tua scelta: indicatore visibile, app sensibili escluse e memoria breve solo in RAM.",
+      "en": "Groundwork for continuous vision, only if you opt in: visible indicator, sensitive apps excluded and short memory in RAM only.",
+      "fr": "Base de la vision continue, uniquement sur votre choix : indicateur visible, applications sensibles exclues et courte mémoire en RAM seulement.",
+      "es": "Base de la visión continua, solo si lo eliges: indicador visible, apps sensibles excluidas y memoria corta solo en RAM."
+    }
+  ]
+}
