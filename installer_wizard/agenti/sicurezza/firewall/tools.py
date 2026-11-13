@@ -44,3 +44,33 @@ async def firewall_unblock(address: str) -> str:
         store.save()
     await applier.apply(f"sblocco di {target.value}")
     return f"{target.value} sbloccato"
+
+
+@tool("firewall_trusted", "elenco dei dispositivi affidabili del firewall, che non vengono mai bloccati", {}, agent="firewall")
+async def firewall_trusted() -> str:
+    from agenti.firewall.defense.trust import trust
+    devices = trust.listing()
+    if not devices:
+        return "nessun dispositivo affidabile"
+    return "\n".join(f"- {d['label'] or 'senza nome'} ({d['address']})" for d in devices)
+
+
+@tool("firewall_trust", "aggiunge un dispositivo di casa agli affidabili del firewall dopo la conferma esplicita dell'utente",
+      {"address": "IP o MAC del dispositivo di casa", "label": "nome del dispositivo"}, confirm=True, agent="firewall")
+async def firewall_trust(address: str, label: str = "") -> str:
+    from agenti.firewall.defense.trust import apply, trust
+    entry = trust.request(address, label, "voce")
+    if entry["risks"]:
+        raise ValueError("questo indirizzo non è un singolo dispositivo di casa: aggiungilo dalla pagina del firewall")
+    confirmed = trust.confirm(entry["id"], entry["code"], False)
+    await apply(confirmed["addresses"], True, "voce", confirmed["label"])
+    return f"{confirmed['label'] or address} è ora affidabile ({', '.join(confirmed['addresses'])}); puoi revocarlo quando vuoi"
+
+
+@tool("firewall_untrust", "toglie un dispositivo dagli affidabili del firewall", {"address": "IP o MAC del dispositivo"},
+      confirm=True, agent="firewall")
+async def firewall_untrust(address: str) -> str:
+    from agenti.firewall.defense.trust import apply
+    target = model.text_of(model.address(address))
+    await apply([target], False, "voce")
+    return f"{target} non è più affidabile"

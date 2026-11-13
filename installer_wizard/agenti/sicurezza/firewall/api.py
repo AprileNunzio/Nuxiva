@@ -11,6 +11,7 @@ from agenti.firewall import model
 from agenti.firewall.analyst import analyst
 from agenti.firewall.defense import routes as defense_routes
 from agenti.firewall.defense.guardian import guardian
+from agenti.firewall.defense.trust import TrustError, apply as apply_trust, trust
 from agenti.firewall.applier import FirewallError, applier, render
 from agenti.firewall.events import monitor
 from agenti.firewall.nft import Block
@@ -149,26 +150,55 @@ async def admin_block(request: Request, user: str = Depends(require_admin)):
     return await _change(user, f"blocco di {body.get('address')}", mutate, confirm=False)
 
 
+@admin_routes.get("/api/firewall/trusted")
+async def admin_trusted(_: str = Depends(require_admin)):
+    return JSONResponse({"devices": trust.listing()}, headers=NO_CACHE)
+
+
+@admin_routes.post("/api/firewall/trusted/requests")
+async def admin_trust_request(request: Request, user: str = Depends(require_admin)):
+    body = await _body(request)
+    try:
+        return trust.request(str(body.get("address") or ""), str(body.get("label") or ""), user)
+    except ValueError as exc:
+        raise HTTPException(400, str(exc))
+
+
+@admin_routes.post("/api/firewall/trusted/requests/{rid}/confirm")
+async def admin_trust_confirm(rid: str, request: Request, user: str = Depends(require_admin)):
+    body = await _body(request)
+    try:
+        entry = trust.confirm(rid[:32], str(body.get("code") or ""), body.get("accept_risks") is True)
+    except TrustError as exc:
+        raise HTTPException(409, str(exc))
+    async with _changes:
+        try:
+            await apply_trust(entry["addresses"], True, user, entry["label"])
+        except FirewallError as exc:
+            raise HTTPException(400, f"nftables ha rifiutato la modifica: {exc}")
+    return {"devices": trust.listing(), **store.snapshot()}
+
+
 @admin_routes.put("/api/firewall/trusted")
 async def admin_trust(request: Request, user: str = Depends(require_admin)):
     body = await _body(request)
-    trusted = bool(body.get("trusted"))
+    if body.get("trusted"):
+        raise HTTPException(428, "Serve una conferma esplicita: usa /api/firewall/trusted/requests")
+    return await admin_untrust(str(body.get("address") or ""), user)
 
-    def mutate():
-        target = model.address(str(body.get("address") or ""))
-        if target.family == "set":
-            raise ValueError("un gruppo non può essere attendibile")
-        current = {model.text_of(a): a for a in store.policy.trusted}
-        key = model.text_of(target)
-        if trusted:
-            current[key] = target
-            store.blocks.pop(target.value, None)
-        else:
-            current.pop(key, None)
-        store.policy = model.policy({"trusted": list(current)}, store.policy)
 
-    verb = "attendibile" if trusted else "non più attendibile"
-    return await _change(user, f"{body.get('address')} {verb}", mutate, confirm=False)
+@admin_routes.delete("/api/firewall/trusted/{address:path}")
+async def admin_untrust(address: str, user: str = Depends(require_admin)):
+    try:
+        target = model.text_of(model.address(address))
+    except ValueError as exc:
+        raise HTTPException(400, str(exc))
+    async with _changes:
+        try:
+            await apply_trust([target], False, user)
+        except FirewallError as exc:
+            raise HTTPException(400, f"nftables ha rifiutato la modifica: {exc}")
+    return {"devices": trust.listing(), **store.snapshot()}
 
 
 @admin_routes.delete("/api/firewall/blocks/{address:path}")

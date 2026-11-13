@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Firewall: dispositivi affidabili con conferma esplicita",
+    "en": "Firewall: trusted devices with explicit confirmation",
+    "fr": "Pare-feu : appareils de confiance avec confirmation explicite",
+    "es": "Cortafuegos: dispositivos de confianza con confirmación explícita"
+  },
+  "features": [
+    {
+      "it": "Puoi aggiungere un dispositivo agli affidabili con un codice di conferma: da quel momento il firewall non lo blocca mai, nemmeno durante un attacco, e ti avvisa soltanto se si comporta in modo insolito.",
+      "en": "You can add a device to the trusted ones with a confirmation code: from then on the firewall never blocks it, even during an attack, and only warns you if it behaves unusually.",
+      "fr": "Vous pouvez ajouter un appareil aux appareils de confiance avec un code de confirmation : dès lors le pare-feu ne le bloque jamais, même pendant une attaque, et vous prévient seulement s'il se comporte de façon inhabituelle.",
+      "es": "Puedes añadir un dispositivo a los de confianza con un código de confirmación: desde entonces el cortafuegos nunca lo bloquea, ni siquiera durante un ataque, y solo te avisa si se comporta de forma inusual."
+    },
+    {
+      "it": "Se l'indirizzo è su Internet o una rete molto ampia, Nuxiva te lo segnala e chiede una seconda conferma; la revoca è sempre possibile con un tocco o a voce.",
+      "en": "If the address is on the Internet or a very wide network, Nuxiva flags it and asks for a second confirmation; revoking is always possible with a tap or by voice.",
+      "fr": "Si l'adresse est sur Internet ou un réseau très large, Nuxiva vous le signale et demande une seconde confirmation ; la révocation reste toujours possible d'un geste ou à la voix.",
+      "es": "Si la dirección está en Internet o en una red muy amplia, Nuxiva te lo señala y pide una segunda confirmación; revocar es siempre posible con un toque o por voz."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Aggiungere un dispositivo affidabile non è più possibile con una singola richiesta non confermata, così nessun programma può farlo di nascosto.",
+      "en": "A trusted device can no longer be added with a single unconfirmed request, so no program can do it behind your back.",
+      "fr": "Un appareil de confiance ne peut plus être ajouté par une seule requête non confirmée : aucun programme ne peut le faire dans votre dos.",
+      "es": "Ya no se puede añadir un dispositivo de confianza con una sola petición sin confirmar, así que ningún programa puede hacerlo a tus espaldas."
+    }
+  ]
+}
