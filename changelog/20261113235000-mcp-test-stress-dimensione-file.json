@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Test di stress degli strumenti esterni più compatto",
+    "en": "More compact stress test for external tools",
+    "fr": "Test de charge des outils externes plus compact",
+    "es": "Prueba de estrés de herramientas externas más compacta"
+  },
+  "fixes": [
+    {
+      "it": "Un file di test superava di una riga il limite di dimensione consentito dal progetto; ora rientra nel limite senza cambiare il comportamento.",
+      "en": "A test file exceeded the project's file size limit by one line; it is now within the limit with no change in behavior.",
+      "fr": "Un fichier de test dépassait d'une ligne la limite de taille du projet ; il rentre maintenant dans la limite sans changer le comportement.",
+      "es": "Un archivo de prueba superaba en una línea el límite de tamaño del proyecto; ahora cumple el límite sin cambiar el comportamiento."
+    }
+  ],
+  "features": []
+}

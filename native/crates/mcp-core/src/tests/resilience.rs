@@ -474,11 +474,11 @@ async fn chaos_a_flapping_server_never_hangs_callers_or_the_hub() -> McpResult<(
     };
     let mut finished = 0usize;
     for call in calls {
-        let outcome = tokio::time::timeout(Duration::from_secs(20), call)
+        tokio::time::timeout(Duration::from_secs(20), call)
             .await
             .map_err(|_| McpError::Timeout)?
-            .map_err(|_| McpError::Closed)?;
-        let _ = outcome;
+            .map_err(|_| McpError::Closed)?
+            .ok();
         finished += 1;
     }
     let _ = chaos.await;
@@ -486,8 +486,7 @@ async fn chaos_a_flapping_server_never_hangs_callers_or_the_hub() -> McpResult<(
     assert!(started.elapsed() < Duration::from_secs(25));
     let metrics = hub.metrics();
     assert_eq!(metrics.servers, 1);
-    let report = hub.heal();
-    assert!(report.errors.len() <= 256);
+    assert!(hub.heal().errors.len() <= 256);
     for _ in 0..100 {
         if hub.metrics().healthy == 1 {
             break;
