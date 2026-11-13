@@ -437,7 +437,7 @@
     "agency_cmd_resume": "\\b(?:riprendi|continua|riparti|fai ripartire)\\b",
     "agency_cmd_next": "\\b(?:prossimo|successivo|avanti)\\b",
     "agency_cmd_prev": "\\b(?:precedente|indietro)\\b",
-    "upd_kicker": "Nuxiva · manutenzione",
+    "upd_kicker": "Nuxiva · aggiornamento di sistema",
     "upd_title": "Aggiornamento di Sistema",
     "upd_hint": "Non spegnere il dispositivo",
     "upd_waiting": "Preparazione dell'aggiornamento…",
@@ -467,7 +467,7 @@
     "upd_notes_title": "Cosa troverai",
     "upd_notes_features": "Novità",
     "upd_notes_fixes": "Bugfix",
-    "upd_notes_more": "e altre {{count}}",
+    "upd_notes_more": "e altre {{count}} nell'app Aggiornamenti",
     "rescue_hazard_medical": "Soccorso · possibile malore",
     "rescue_hazard_fire": "Soccorso · possibile incendio",
     "rescue_hazard_intrusion": "Soccorso · possibile intrusione",
@@ -485,6 +485,12 @@
     "rescue_ack_body": "{{name}} ha ricevuto l'avviso e sta arrivando.",
     "rescue_ack_anon": "Un familiare ha ricevuto l'avviso e sta arrivando.",
     "rescue_number": "Emergenza: {{number}}",
-    "rescue_disclaimer": "Nuxiva non sostituisce i servizi di emergenza né un dispositivo medico certificato."
+    "rescue_disclaimer": "Nuxiva non sostituisce i servizi di emergenza né un dispositivo medico certificato.",
+    "upd_hero_version": "Nuxiva {{version}}",
+    "upd_hero_date": "Aggiornamento del {{date}}",
+    "upd_step": "Fase {{n}} di {{total}}",
+    "upd_calm_sub": "Manutenzione",
+    "upd_calm_title": "Tutto sotto controllo",
+    "upd_calm_text": "Questo aggiornamento contiene miglioramenti interni, senza novità visibili da elencare."
   }
 }

@@ -21,6 +21,7 @@ DIFF_TIMEOUT = 60
 READ_TIMEOUT = 15
 _NAME = re.compile(r"^[0-9]{14}-[a-z0-9]+(?:-[a-z0-9]+)*\.json$")
 _DATE = re.compile(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}$")
+_VERSION = re.compile(r"^[0-9]{1,4}\.[0-9]{1,4}\.[0-9]{1,4}(?:-[0-9A-Za-z.]{1,24})?$")
 _INVISIBLE = ((0x200B, 0x200F), (0x202A, 0x202E), (0x2060, 0x2064), (0x2066, 0x2069), (0xFEFF, 0xFEFF),
               (0xFFF9, 0xFFFB))
 _NOTE_KEYS = {"schema", "date", "title", "features", "fixes"}
@@ -159,13 +160,27 @@ async def collect(git: Git, base: Optional[str], target: Optional[str]) -> Dict[
         code, raw = await git("cat-file", "blob", f"{target}:{DIR}/{name}", timeout=READ_TIMEOUT)
         if code == 0:
             files.append((name, raw))
-    return digest(files)
+    report = digest(files)
+    old, new = await _version(git, base), await _version(git, target)
+    if new and new != old:
+        report["version"] = new
+    return report
 
 
-def compact(report: Optional[Dict[str, Any]], limit: int = 12) -> Optional[Dict[str, Any]]:
+async def _version(git: Git, rev: str) -> Optional[str]:
+    code, raw = await git("cat-file", "blob", f"{rev}:VERSION", timeout=READ_TIMEOUT)
+    value = raw.strip() if code == 0 else ""
+    return value if _VERSION.fullmatch(value) else None
+
+
+def compact(report: Optional[Dict[str, Any]], limit: int = 24) -> Optional[Dict[str, Any]]:
     if not report or not report.get("notes"):
         return None
     features = [item for note in report["notes"] for item in note.get("features", [])][:limit]
     fixes = [item for note in report["notes"] for item in note.get("fixes", [])][:limit]
+    dates = sorted(str(note.get("date", "")) for note in report["notes"] if _DATE.fullmatch(str(note.get("date", ""))))
+    version = report.get("version")
     return {"features": features, "fixes": fixes, "total_features": report.get("features", len(features)),
-            "total_fixes": report.get("fixes", len(fixes))}
+            "total_fixes": report.get("fixes", len(fixes)), "notes": len(report["notes"]),
+            "date": dates[-1] if dates else None,
+            "version": version if isinstance(version, str) and _VERSION.fullmatch(version) else None}

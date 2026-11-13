@@ -437,7 +437,7 @@
     "agency_cmd_resume": "\\b(?:reprends|continue|relance)\\b",
     "agency_cmd_next": "\\b(?:suivant|prochain)\\b",
     "agency_cmd_prev": "\\b(?:précédent|retour)\\b",
-    "upd_kicker": "Nuxiva · maintenance",
+    "upd_kicker": "Nuxiva · mise à jour du système",
     "upd_title": "Mise à jour du système",
     "upd_hint": "N'éteignez pas l'appareil",
     "upd_waiting": "Préparation de la mise à jour…",
@@ -464,10 +464,10 @@
     "upd_status_done": "ok",
     "upd_status_skipped": "ignorée",
     "upd_status_failed": "erreur",
-    "upd_notes_title": "Ce que vous trouverez",
+    "upd_notes_title": "Ce qui vous attend",
     "upd_notes_features": "Nouveautés",
     "upd_notes_fixes": "Corrections",
-    "upd_notes_more": "et {{count}} de plus",
+    "upd_notes_more": "et {{count}} de plus dans l'app Mises à jour",
     "rescue_hazard_medical": "Secours · malaise possible",
     "rescue_hazard_fire": "Secours · incendie possible",
     "rescue_hazard_intrusion": "Secours · intrusion possible",
@@ -485,6 +485,12 @@
     "rescue_ack_body": "{{name}} a reçu l'alerte et arrive.",
     "rescue_ack_anon": "Un proche a reçu l'alerte et arrive.",
     "rescue_number": "Urgence : {{number}}",
-    "rescue_disclaimer": "Nuxiva ne remplace ni les services d'urgence ni un dispositif médical certifié."
+    "rescue_disclaimer": "Nuxiva ne remplace ni les services d'urgence ni un dispositif médical certifié.",
+    "upd_hero_version": "Nuxiva {{version}}",
+    "upd_hero_date": "Mise à jour du {{date}}",
+    "upd_step": "Étape {{n}} sur {{total}}",
+    "upd_calm_sub": "Maintenance",
+    "upd_calm_title": "Tout est sous contrôle",
+    "upd_calm_text": "Cette mise à jour contient des améliorations internes, sans nouveauté visible à lister."
   }
 }

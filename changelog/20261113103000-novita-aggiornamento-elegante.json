@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "La schermata di aggiornamento mostra le novità a tutto schermo, in modo elegante",
+    "en": "The update screen shows what's new in full screen, elegantly",
+    "fr": "L'écran de mise à jour présente les nouveautés en plein écran, avec élégance",
+    "es": "La pantalla de actualización muestra las novedades a pantalla completa, con elegancia"
+  },
+  "features": [
+    {
+      "it": "Durante l'aggiornamento le Novità e i Bugfix occupano tutto lo schermo con testo grande e leggibile, il titolo della versione e icone dedicate, senza barre di scorrimento.",
+      "en": "During the update, New features and Bug fixes fill the whole screen with large readable text, the version title and dedicated icons, with no scroll bars.",
+      "fr": "Pendant la mise à jour, les Nouveautés et les Corrections occupent tout l'écran avec un texte grand et lisible, le titre de la version et des icônes dédiées, sans barres de défilement.",
+      "es": "Durante la actualización, las Novedades y las Correcciones ocupan toda la pantalla con texto grande y legible, el título de la versión e iconos propios, sin barras de desplazamiento."
+    },
+    {
+      "it": "Se le voci sono molte, le pagine scorrono da sole con una transizione delicata. Il progresso resta discreto in basso e, senza note, compare una schermata pulita.",
+      "en": "When there are many items, pages advance on their own with a gentle transition. Progress stays discreet at the bottom and, without notes, a clean screen appears.",
+      "fr": "Quand il y a beaucoup d'éléments, les pages défilent seules avec une transition douce. La progression reste discrète en bas et, sans notes, un écran épuré s'affiche.",
+      "es": "Si hay muchas entradas, las páginas avanzan solas con una transición suave. El progreso queda discreto abajo y, sin notas, aparece una pantalla limpia."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Le novità non vengono più tagliate né ridotte a pochi righi su telefono e schermi piccoli: tutto si adatta allo spazio disponibile.",
+      "en": "Release notes are no longer cut off or squeezed on phones and small screens: everything adapts to the available space.",
+      "fr": "Les notes de version ne sont plus coupées ni réduites sur téléphone et petits écrans : tout s'adapte à l'espace disponible.",
+      "es": "Las notas de versión ya no se cortan ni se reducen en teléfonos y pantallas pequeñas: todo se adapta al espacio disponible."
+    }
+  ]
+}

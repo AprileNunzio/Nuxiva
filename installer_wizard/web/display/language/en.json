@@ -437,7 +437,7 @@
     "agency_cmd_resume": "\\b(?:resume|continue|restart|go on)\\b",
     "agency_cmd_next": "\\b(?:next|forward)\\b",
     "agency_cmd_prev": "\\b(?:previous|back)\\b",
-    "upd_kicker": "Nuxiva · maintenance",
+    "upd_kicker": "Nuxiva · system update",
     "upd_title": "System Update",
     "upd_hint": "Do not turn off the device",
     "upd_waiting": "Preparing the update…",
@@ -464,10 +464,10 @@
     "upd_status_done": "ok",
     "upd_status_skipped": "skipped",
     "upd_status_failed": "error",
-    "upd_notes_title": "What you will find",
+    "upd_notes_title": "What's new for you",
     "upd_notes_features": "New features",
     "upd_notes_fixes": "Bug fixes",
-    "upd_notes_more": "and {{count}} more",
+    "upd_notes_more": "and {{count}} more in the Updates app",
     "rescue_hazard_medical": "Rescue · possible illness",
     "rescue_hazard_fire": "Rescue · possible fire",
     "rescue_hazard_intrusion": "Rescue · possible intrusion",
@@ -485,6 +485,12 @@
     "rescue_ack_body": "{{name}} got the alert and is on the way.",
     "rescue_ack_anon": "A family member got the alert and is on the way.",
     "rescue_number": "Emergency: {{number}}",
-    "rescue_disclaimer": "Nuxiva does not replace emergency services or a certified medical device."
+    "rescue_disclaimer": "Nuxiva does not replace emergency services or a certified medical device.",
+    "upd_hero_version": "Nuxiva {{version}}",
+    "upd_hero_date": "Update of {{date}}",
+    "upd_step": "Step {{n}} of {{total}}",
+    "upd_calm_sub": "Maintenance",
+    "upd_calm_title": "All under control",
+    "upd_calm_text": "This update contains internal improvements, with no visible changes to list."
   }
 }

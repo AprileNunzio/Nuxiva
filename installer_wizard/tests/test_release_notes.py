@@ -108,6 +108,13 @@ class ParseTest(unittest.TestCase, Engines):
         self.assertEqual(view["total_features"], 20)
         self.assertIsNone(notes.compact(notes.empty()))
 
+    def test_compact_exposes_date_and_safe_version(self):
+        report = notes.py_digest([(NAME, note(features=[text("a")]))])
+        self.assertEqual(notes.compact(report)["date"], "2026-11-13")
+        self.assertIsNone(notes.compact(report)["version"])
+        self.assertEqual(notes.compact({**report, "version": "5.9.0"})["version"], "5.9.0")
+        self.assertIsNone(notes.compact({**report, "version": "<script>"})["version"])
+
 
 class CollectTest(unittest.TestCase):
     def setUp(self):
