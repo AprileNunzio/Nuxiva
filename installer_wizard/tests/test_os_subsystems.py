@@ -69,9 +69,10 @@ class TestOSMemoryManager(unittest.TestCase):
 
     def test_warning_memory_state(self):
         with mock.patch("psutil.virtual_memory") as mock_vm, mock.patch("psutil.swap_memory") as mock_swap:
-            mock_vm.return_value = mock.Mock(total=16000 * 1024 * 1024, available=800 * 1024 * 1024, percent=82.0)
+            mock_vm.return_value = mock.Mock(total=16000 * 1024 * 1024, available=2880 * 1024 * 1024, percent=82.0)
             mock_swap.return_value = mock.Mock(percent=10.0)
-            res = self.mem.sample()
+            for _ in range(3):
+                res = self.mem.sample()
             self.assertEqual(res["state"], "warning")
 
     def test_critical_memory_state_triggers_throttling(self):

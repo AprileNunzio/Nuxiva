@@ -49,7 +49,7 @@ class NotificationManager:
     ) -> Optional[OSNotification]:
         now = time.time()
         if self._rust_engine is not None:
-            res = self._rust_engine.notify(level, code, message or label_key, int(now), force)
+            res = self._rust_engine.notify(level, code, code, int(now), force)
             if res is None:
                 return None
         else:

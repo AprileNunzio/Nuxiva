@@ -118,7 +118,7 @@ class ContextManifest:
                 "allowed_safe_zones": [z.value for z in self.assistant_requirement.allowed_safe_zones],
                 "voice_interaction": self.assistant_requirement.voice_interaction.value,
             },
-            "focus_lock_level": self.focus_lock_level.value,
+            "focus_lock_level": str(self.focus_lock_level.value),
         }
 
 

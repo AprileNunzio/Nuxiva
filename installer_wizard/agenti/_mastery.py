@@ -13,6 +13,7 @@ MAX_ATTEMPTS = 400
 WINDOW = 5
 PASS_MIN = 3
 PASS_MEAN = 0.7
+PASS_EPS = 1e-9
 STALE_SECS = 30 * 86_400
 LAPSE_SECS = 90 * 86_400
 MAX_LESSONS = 100
@@ -65,7 +66,7 @@ def _passed(items: list[dict], tier: int, now: int):
         return None
     last = max(a["at"] for a in recent)
     average = sum(a["score"] for a in recent) / len(recent)
-    return last if average >= PASS_MEAN and now - last <= LAPSE_SECS else None
+    return last if average >= PASS_MEAN - PASS_EPS and now - last <= LAPSE_SECS else None
 
 
 def evaluate_python(attempts: list[dict], now: int) -> dict:

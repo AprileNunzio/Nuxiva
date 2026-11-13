@@ -5,6 +5,7 @@ pub const MAX_ATTEMPTS: usize = 400;
 pub const WINDOW: usize = 5;
 pub const PASS_MIN: usize = 3;
 pub const PASS_MEAN: f64 = 0.7;
+const PASS_EPS: f64 = 1e-9;
 pub const STALE_SECS: i64 = 30 * 86_400;
 pub const LAPSE_SECS: i64 = 90 * 86_400;
 
@@ -90,7 +91,7 @@ fn passed(list: &[Attempt], tier: u8, now: i64) -> Option<i64> {
     let recent = window(list, tier);
     let last = latest(&recent);
     let fresh = now.saturating_sub(last) <= LAPSE_SECS;
-    (recent.len() >= PASS_MIN && mean(&recent) >= PASS_MEAN && fresh).then_some(last)
+    (recent.len() >= PASS_MIN && mean(&recent) >= PASS_MEAN - PASS_EPS && fresh).then_some(last)
 }
 
 #[must_use]

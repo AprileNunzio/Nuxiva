@@ -45,6 +45,8 @@ class Journal:
 
     def ready(self):
         with self._lock:
+            if self.engine is not None and _engine_class() is None:
+                self.engine = None
             if self.engine is None:
                 engine = _engine_class()
                 if engine is None:

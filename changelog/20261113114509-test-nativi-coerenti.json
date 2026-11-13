@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Controlli più affidabili tra motore nativo e Python",
+    "en": "More reliable checks between native engine and Python",
+    "fr": "Vérifications plus fiables entre moteur natif et Python",
+    "es": "Comprobaciones más fiables entre motor nativo y Python"
+  },
+  "fixes": [
+    {
+      "it": "Il livello di studio degli agenti non cambia più per un arrotondamento sul 70 per cento, e le notifiche di sistema non si ripetono con testi diversi.",
+      "en": "The agents' study level no longer changes because of rounding at 70 percent, and system notifications no longer repeat with different texts.",
+      "fr": "Le niveau d'étude des agents ne change plus à cause d'un arrondi à 70 pour cent, et les notifications système ne se répètent plus avec des textes différents.",
+      "es": "El nivel de estudio de los agentes ya no cambia por un redondeo en el 70 por ciento, y las notificaciones del sistema ya no se repiten con textos distintos."
+    },
+    {
+      "it": "L'arbitro dello spazio accetta il livello di blocco del contesto anche con il motore nativo, e lo stato di Sentinella rispetta lo spegnimento del modulo nativo.",
+      "en": "The space arbiter accepts the context lock level with the native engine too, and Sentinel status honours turning the native module off.",
+      "fr": "L'arbitre de l'espace accepte le niveau de verrouillage du contexte aussi avec le moteur natif, et l'état de Sentinelle respecte l'arrêt du module natif.",
+      "es": "El árbitro del espacio acepta el nivel de bloqueo del contexto también con el motor nativo, y el estado de Centinela respeta el apagado del módulo nativo."
+    }
+  ]
+}
