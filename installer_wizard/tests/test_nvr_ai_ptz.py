@@ -65,7 +65,7 @@ class NvrAiPtzTest(unittest.TestCase):
                 raw.write_bytes(b"DATA" * 1024)
                 store.ingest("cam_test", raw)
         done = store.maintain([], {"continuous_hours": 48, "retention_days": 30, "storage_percent": 1,
-                                   "storage_max_gb": 0.00001}, {}, now_ms=int(time.time() * 1000))
+                                   "storage_max_gb": 0.00001}, {}, now_ms=int(time.mktime((2026, 11, 11, 1, 0, 0, 0, 0, -1)) * 1000))
         self.assertGreater(done["evicted"], 0)
         self.assertLessEqual(done["kept_bytes"], 10737)
 
