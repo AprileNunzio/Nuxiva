@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Firewall: nasce l'agente di difesa autonomo",
+    "en": "Firewall: the autonomous defence agent is here",
+    "fr": "Pare-feu : voici l'agent de défense autonome",
+    "es": "Cortafuegos: llega el agente de defensa autónomo"
+  },
+  "features": [
+    {
+      "it": "Il firewall raggruppa gli allarmi in incidenti, riconosce che tipo di attacco è in corso (esplorazione, intrusione, sovraccarico, intercettazione, furto di dati) e ne valuta la gravità.",
+      "en": "The firewall groups alerts into incidents, recognises what kind of attack is happening (probing, intrusion, overload, interception, data theft) and rates how serious it is.",
+      "fr": "Le pare-feu regroupe les alertes en incidents, reconnaît le type d'attaque en cours (exploration, intrusion, surcharge, interception, vol de données) et en évalue la gravité.",
+      "es": "El cortafuegos agrupa las alertas en incidentes, reconoce qué tipo de ataque está en curso (exploración, intrusión, sobrecarga, interceptación, robo de datos) y valora su gravedad."
+    },
+    {
+      "it": "Per ogni attacco proveniente da Internet viene mostrato il paese di origine, usando un database salvato sul dispositivo: nessun indirizzo viene inviato a servizi esterni.",
+      "en": "Every attack coming from the Internet shows its country of origin, using a database stored on the device: no address is ever sent to outside services.",
+      "fr": "Chaque attaque venant d'Internet affiche son pays d'origine grâce à une base enregistrée sur l'appareil : aucune adresse n'est envoyée à des services externes.",
+      "es": "Cada ataque procedente de Internet muestra su país de origen gracias a una base de datos guardada en el dispositivo: ninguna dirección se envía a servicios externos."
+    },
+    {
+      "it": "Nuove opzioni di autonomia della difesa (osserva, assisti, autonomo) con un limite di azioni all'ora e protezioni che non bloccano mai il server, il router o i dispositivi affidabili.",
+      "en": "New defence autonomy options (observe, assist, autonomous) with an hourly action limit and safeguards that never block the server, the router or trusted devices.",
+      "fr": "Nouvelles options d'autonomie de la défense (observer, assister, autonome) avec une limite d'actions par heure et des garde-fous qui ne bloquent jamais le serveur, le routeur ni les appareils de confiance.",
+      "es": "Nuevas opciones de autonomía de la defensa (observar, asistir, autónomo) con un límite de acciones por hora y salvaguardas que nunca bloquean el servidor, el router ni los dispositivos de confianza."
+    }
+  ],
+  "fixes": []
+}

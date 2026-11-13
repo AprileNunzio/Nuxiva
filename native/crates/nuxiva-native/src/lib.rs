@@ -14,6 +14,7 @@ mod compute_lease;
 mod config;
 mod cortex;
 mod creations;
+mod defense;
 mod dialog;
 mod dialogue;
 mod display;
@@ -145,6 +146,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     expr::register(m)?;
     voice::register(m)?;
     rescue::register(m)?;
+    defense::register(m)?;
     rescue_ear::register(m)?;
     nvr::register(m)?;
     sentinel_memory::register(m)?;

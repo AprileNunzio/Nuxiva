@@ -163,12 +163,20 @@ class Monitor:
             except FirewallError as exc:
                 log.error("Firewall non aggiornato dopo le scadenze: %s", exc)
 
+    def start_guardian(self) -> None:
+        from agenti.firewall.defense.guardian import guardian
+        if guardian.on_alert not in self.listeners:
+            self.listeners.insert(0, guardian.on_alert)
+        if guardian.task is None or guardian.task.done():
+            guardian.task = asyncio.get_running_loop().create_task(guardian.run())
+
     async def run(self) -> None:
         from agenti.firewall.applier import FirewallError, applier
         try:
             await applier.apply("avvio di Nuxiva")
         except FirewallError as exc:
             log.error("Firewall non applicato all'avvio: %s", exc)
+        self.start_guardian()
         if not sys.platform.startswith("linux"):
             return
         self.cleaner = asyncio.get_running_loop().create_task(self.housekeeping())

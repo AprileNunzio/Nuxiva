@@ -2,7 +2,7 @@
   "id": "firewall",
   "name": "Firewall",
   "title": "Firewall",
-  "description": "Firewall interno con analisi del traffico in tempo reale, regole da esperto e difesa assistita dall'intelligenza artificiale",
+  "description": "Firewall e agente di difesa autonomo: analizza il traffico in tempo reale, riconosce gli attacchi, ne mostra il paese di origine e protegge la casa con risposte reversibili",
   "icon": "🛡",
   "version": "1.0",
   "widgets": [],

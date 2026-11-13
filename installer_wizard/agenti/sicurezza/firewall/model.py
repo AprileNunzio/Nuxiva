@@ -9,6 +9,8 @@ DIRECTIONS = ("input", "output", "forward")
 PROTOCOLS = ("any", "tcp", "udp", "icmp")
 MODES = ("off", "monitor", "protect", "lockdown")
 SEVERITIES = ("low", "medium", "high", "critical")
+AUTONOMY = ("observe", "assist", "autonomous")
+COUNTRY = re.compile(r"^[A-Z]{2}$")
 MAC = re.compile(r"^[0-9a-f]{2}(?::[0-9a-f]{2}){5}$")
 NAME = re.compile(r"^[a-z][a-z0-9_]{0,30}$")
 IFACE = re.compile(r"^[A-Za-z0-9_.:-]{1,15}$")
@@ -166,11 +168,35 @@ class Policy:
     ai_analysis: bool = True
     ai_auto_apply: bool = False
     ai_min_confidence: float = 0.85
+    autonomy: str = "assist"
+    max_block_minutes: int = 10_080
+    tarpit: bool = True
+    honeypot: bool = False
+    quarantine: bool = False
+    country_block: bool = False
+    country_threshold: int = 5
+    home_countries: list[str] = field(default_factory=list)
+    max_actions_per_hour: int = 30
+    geo_updates: bool = True
 
     def export(self) -> dict:
         data = asdict(self)
         data["trusted"] = [text_of(a) for a in self.trusted]
         return data
+
+
+def countries(value) -> list[str]:
+    items = value if isinstance(value, list) else [v for v in str(value or "").replace(",", " ").split() if v]
+    if len(items) > 32:
+        raise ValueError("troppi paesi (massimo 32)")
+    out = []
+    for item in items:
+        code = str(item).strip().upper()
+        if not COUNTRY.match(code):
+            raise ValueError(f"codice paese non valido: {item}")
+        if code not in out:
+            out.append(code)
+    return out
 
 
 def policy(data: dict, base: Policy | None = None) -> Policy:
@@ -193,4 +219,14 @@ def policy(data: dict, base: Policy | None = None) -> Policy:
         ai_analysis=bool(merged.get("ai_analysis")),
         ai_auto_apply=bool(merged.get("ai_auto_apply")),
         ai_min_confidence=min(max(float(merged.get("ai_min_confidence") or 0.85), 0.5), 0.99),
+        autonomy=_choice(merged.get("autonomy"), AUTONOMY, "autonomia"),
+        max_block_minutes=max(5, min(int(merged.get("max_block_minutes", 10_080)), 525_600)),
+        tarpit=bool(merged.get("tarpit")),
+        honeypot=bool(merged.get("honeypot")),
+        quarantine=bool(merged.get("quarantine")),
+        country_block=bool(merged.get("country_block")),
+        country_threshold=max(2, min(int(merged.get("country_threshold", 5)), 1000)),
+        home_countries=countries(merged.get("home_countries")),
+        max_actions_per_hour=max(1, min(int(merged.get("max_actions_per_hour", 30)), 500)),
+        geo_updates=bool(merged.get("geo_updates")),
     )

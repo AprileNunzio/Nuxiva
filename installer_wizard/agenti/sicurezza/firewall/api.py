@@ -9,6 +9,7 @@ from state import store as system_store
 
 from agenti.firewall import model
 from agenti.firewall.analyst import analyst
+from agenti.firewall.defense.guardian import guardian
 from agenti.firewall.applier import FirewallError, applier, render
 from agenti.firewall.events import monitor
 from agenti.firewall.nft import Block
@@ -62,7 +63,7 @@ async def admin_firewall(_: str = Depends(require_admin)):
     seen += [t.get("host") for t in (monitor.summary.get("top_talkers") or [])]
     return JSONResponse({**snap, "status": applier.status(), "engine": {"connected": monitor.connected},
                          "summary": monitor.summary, "alerts": alerts, "names": names(seen),
-                         "reports": list(analyst.reports)[-10:]}, headers=NO_CACHE)
+                         "reports": list(analyst.reports)[-10:], "defense": guardian.snapshot()}, headers=NO_CACHE)
 
 
 @admin_routes.put("/api/firewall/policy")
@@ -173,6 +174,22 @@ async def admin_unblock(address: str, user: str = Depends(require_admin)):
         store.blocks.pop(model.address(address).value)
 
     return await _change(user, f"sblocco di {address}", mutate, confirm=False)
+
+
+@admin_routes.get("/api/firewall/defense")
+async def admin_defense(_: str = Depends(require_admin)):
+    return JSONResponse(guardian.snapshot(), headers=NO_CACHE)
+
+
+@admin_routes.post("/api/firewall/geo/refresh")
+async def admin_geo_refresh(user: str = Depends(require_admin)):
+    from agenti.firewall.defense.geo import GeoError, refresh
+    try:
+        outcome = await refresh()
+    except (GeoError, OSError) as exc:
+        raise HTTPException(502, f"aggiornamento non riuscito: {exc}")
+    system_store.event("INFO", f"Firewall · database dei paesi aggiornato da {user}: {outcome}", "firewall")
+    return outcome
 
 
 @admin_routes.get("/api/firewall/preview")

@@ -68,6 +68,9 @@ Models installed manually are shown with "license unknown" until the administrat
   or CC BY-SA are used, and each one is captioned with its author and license (also in PDF exports).
 - **Wikipedia text** returned by web search: CC BY-SA 4.0, with source links.
 - **OpenStreetMap** data © OpenStreetMap contributors, ODbL.
+- **IP to Country Lite** database used by the firewall to show the country of origin of attacks: IP Geolocation by
+  [DB-IP](https://db-ip.com), [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Downloaded monthly on the device; addresses are
+  looked up locally and never sent to outside services.
 
 ## Software
 

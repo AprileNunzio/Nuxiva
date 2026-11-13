@@ -1,6 +1,6 @@
 {
   "name": "Firewall",
-  "description": "Internal firewall with real-time traffic analysis, expert rules and AI-assisted defence",
+  "description": "Firewall and autonomous defence agent: analyses traffic in real time, recognises attacks, shows where they come from and protects the home with reversible responses",
   "capabilities": [
     "Real-time analysis of ethernet and wifi traffic (Rust engine)",
     "Detection of scans, brute force, floods, ARP spoofing, DNS tunnels and exfiltration",
@@ -8,7 +8,10 @@
     "Expert rules with groups, ports, rate limits and expiry",
     "Timed automatic blocking of attackers",
     "AI analyst proposing countermeasures to approve",
-    "Confirmation within 90 seconds with automatic rollback"
+    "Confirmation within 90 seconds with automatic rollback",
+    "Autonomous defence agent: groups alerts into incidents, recognises the kind of attack and picks the response (Rust engine)",
+    "Country of origin of attacks from a local database: no address is ever sent to outside services",
+    "Three autonomy levels (observe, assist, autonomous) with hourly limits and safeguards so you are never locked out"
   ],
   "settings": {
     "NUXIVA_NETGUARD": "Traffic analysis",

@@ -1,6 +1,6 @@
 {
   "name": "Pare-feu",
-  "description": "Pare-feu interne avec analyse du trafic en temps réel, règles expertes et défense assistée par l'intelligence artificielle",
+  "description": "Pare-feu et agent de défense autonome : analyse le trafic en temps réel, reconnaît les attaques, montre leur pays d'origine et protège la maison avec des réponses réversibles",
   "capabilities": [
     "Analyse en temps réel du trafic ethernet et wifi (moteur Rust)",
     "Détection des balayages, force brute, inondations, usurpation ARP, tunnels DNS et exfiltration",
@@ -8,7 +8,10 @@
     "Règles expertes avec groupes, ports, limites et expiration",
     "Blocage automatique temporaire des attaquants",
     "Analyste IA qui propose des contre-mesures à approuver",
-    "Confirmation sous 90 secondes avec restauration automatique"
+    "Confirmation sous 90 secondes avec restauration automatique",
+    "Agent de défense autonome : regroupe les alertes en incidents, reconnaît le type d'attaque et choisit la réponse (moteur Rust)",
+    "Pays d'origine des attaques grâce à une base locale : aucune adresse n'est envoyée à des services externes",
+    "Trois niveaux d'autonomie (observer, assister, autonome) avec des limites horaires et des garde-fous pour ne jamais vous bloquer"
   ],
   "settings": {
     "NUXIVA_NETGUARD": "Analyse du trafic",
