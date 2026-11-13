@@ -7,7 +7,9 @@
     "Calidad del aire europea y estadounidense, partículas finas, gases y polen",
     "Presión con tendencia, punto de rocío, humedad y sensación térmica",
     "Amanecer, atardecer, duración del día, horas de sol y fase lunar",
-    "Varias ubicaciones guardadas con una predeterminada y unidades a elegir"
+    "Varias ubicaciones guardadas con una predeterminada y unidades a elegir",
+    "Aprende solo: cada día compara las previsiones de ECMWF, ICON, GFS y Météo-France con los valores horarios medidos y usa el modelo más preciso para tu zona",
+    "Avisos claros calculados a partir de la previsión: tormentas, nieve, viento fuerte, calor, helada, UV alto, niebla, paraguas y comparación con ayer"
   ],
   "settings": {
     "NUXIVA_WEATHER_UNITS": "Sistema de medida",

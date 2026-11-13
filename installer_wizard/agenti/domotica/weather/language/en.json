@@ -7,7 +7,9 @@
     "European and US air quality, fine particles, gases and pollen",
     "Pressure with trend, dew point, humidity and feels-like temperature",
     "Sunrise, sunset, day length, sunshine hours and moon phase",
-    "Several saved locations with a default, and units of your choice"
+    "Several saved locations with a default, and units of your choice",
+    "Studies on its own: every day it compares ECMWF, ICON, GFS and Météo-France forecasts with the measured hourly values and uses the most accurate model for your area",
+    "Clear notices computed from the forecast: thunderstorms, snow, strong wind, heat, frost, high UV, fog, umbrella and comparison with yesterday"
   ],
   "settings": {
     "NUXIVA_WEATHER_UNITS": "Measurement system",

@@ -7,7 +7,9 @@
     "Qualité de l'air européenne et américaine, particules fines, gaz et pollens",
     "Pression avec tendance, point de rosée, humidité et température ressentie",
     "Lever, coucher, durée du jour, heures de soleil et phase de la lune",
-    "Plusieurs lieux enregistrés avec un lieu par défaut, et unités au choix"
+    "Plusieurs lieux enregistrés avec un lieu par défaut, et unités au choix",
+    "Apprend seul : chaque jour il compare les prévisions ECMWF, ICON, GFS et Météo-France aux valeurs horaires relevées et utilise le modèle le plus précis pour votre zone",
+    "Avis clairs calculés à partir des prévisions : orages, neige, vent fort, chaleur, gel, UV élevé, brouillard, parapluie et comparaison avec hier"
   ],
   "settings": {
     "NUXIVA_WEATHER_UNITS": "Système de mesure",

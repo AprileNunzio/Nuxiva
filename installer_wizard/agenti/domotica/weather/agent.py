@@ -22,7 +22,15 @@ class Agent:
 
     def describe(self) -> dict:
         m = self.manifest
-        return {"id": AGENT_ID, "name": m.get("name", AGENT_ID), "capabilities": list(m.get("capabilities", []))}
+        out = {"id": AGENT_ID, "name": m.get("name", AGENT_ID), "capabilities": list(m.get("capabilities", []))}
+        from agenti.weather import places, skill
+        chosen = places.default()
+        if chosen:
+            try:
+                out["skill"] = skill.standing(chosen)
+            except ValueError:
+                pass
+        return out
 
 
 agent = Agent()

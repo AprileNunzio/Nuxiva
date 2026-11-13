@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 
 from access import NO_CACHE, require_admin
-from agenti.weather import places, provider, settings
+from agenti.weather import places, provider, settings, skill
 
 admin_routes = APIRouter(prefix="/api/weather", tags=["Weather"])
 ID_RE = re.compile(r"^[0-9a-f]{8}$")
@@ -98,3 +98,14 @@ async def delete_place(place_id: str, _: str = Depends(require_admin)):
     if not places.remove(_known(place_id)):
         raise HTTPException(404, "place_unknown")
     return {"ok": True}
+
+
+@admin_routes.get("/skill")
+async def skill_standing(place: str = "", _: str = Depends(require_admin)):
+    chosen = places.find(_known(place)) if place else await _current_place()
+    if chosen is None:
+        raise HTTPException(404, "no_location")
+    try:
+        return JSONResponse(skill.standing(chosen), headers=NO_CACHE)
+    except ValueError as exc:
+        raise HTTPException(422, "place_invalid") from exc

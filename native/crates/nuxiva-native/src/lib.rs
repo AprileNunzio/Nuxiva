@@ -61,6 +61,7 @@ mod update;
 mod vault_media;
 mod vitals;
 mod voice;
+mod weather;
 mod workbench;
 
 use access::RustAccessMatrix;
@@ -238,6 +239,8 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     ceo::register(m)?;
     dossier::register(m)?;
     m.add_function(wrap_pyfunction!(mastery::mastery_evaluate, m)?)?;
+    m.add_function(wrap_pyfunction!(weather::weather_verify, m)?)?;
+    m.add_function(wrap_pyfunction!(weather::weather_insights, m)?)?;
     vitals::register(m)?;
     m.add_function(wrap_pyfunction!(gesture_validate_profile, m)?)?;
     m.add_function(wrap_pyfunction!(gesture_catalog, m)?)?;

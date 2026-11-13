@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "L'agente Meteo impara da solo quale previsione è la più precisa per casa tua",
+    "en": "The Weather agent learns on its own which forecast is the most accurate for your home",
+    "fr": "L'agent Météo apprend seul quelle prévision est la plus précise pour chez vous",
+    "es": "El agente del Tiempo aprende solo qué previsión es la más precisa para tu casa"
+  },
+  "features": [
+    {
+      "it": "Ogni giorno l'agente Meteo confronta le previsioni di quattro modelli internazionali (ECMWF, ICON, GFS, Météo-France) con i valori orari rilevati e misura l'errore di ciascuno, da 1 a 10 giorni di anticipo.",
+      "en": "Every day the Weather agent compares the forecasts of four international models (ECMWF, ICON, GFS, Météo-France) with the measured hourly values and measures each one's error, from 1 to 10 days ahead.",
+      "fr": "Chaque jour l'agent Météo compare les prévisions de quatre modèles internationaux (ECMWF, ICON, GFS, Météo-France) aux valeurs horaires relevées et mesure l'erreur de chacun, de 1 à 10 jours à l'avance.",
+      "es": "Cada día el agente del Tiempo compara las previsiones de cuatro modelos internacionales (ECMWF, ICON, GFS, Météo-France) con los valores horarios medidos y mide el error de cada uno, de 1 a 10 días de antelación."
+    },
+    {
+      "it": "Il suo livello di esperienza cresce con prove misurabili: precisione reale delle previsioni e riconoscimento corretto di temporali, neve, vento forte, caldo, gelo, UV alto e nebbia.",
+      "en": "Its experience level grows through measurable tests: real forecast accuracy and correct detection of thunderstorms, snow, strong wind, heat, frost, high UV and fog.",
+      "fr": "Son niveau d'expérience progresse grâce à des épreuves mesurables : précision réelle des prévisions et détection correcte des orages, neige, vent fort, chaleur, gel, UV élevé et brouillard.",
+      "es": "Su nivel de experiencia crece con pruebas medibles: precisión real de las previsiones y detección correcta de tormentas, nieve, viento fuerte, calor, helada, UV alto y niebla."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Gli avvisi meteo vengono calcolati con lo stesso risultato sia dal motore veloce sia da quello di riserva, verificato da test automatici.",
+      "en": "Weather notices are computed with the same result by both the fast engine and the fallback one, checked by automatic tests.",
+      "fr": "Les avis météo sont calculés avec le même résultat par le moteur rapide et par celui de secours, vérifié par des tests automatiques.",
+      "es": "Los avisos meteorológicos se calculan con el mismo resultado tanto en el motor rápido como en el de reserva, comprobado por pruebas automáticas."
+    }
+  ]
+}

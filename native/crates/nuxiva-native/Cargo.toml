@@ -17,6 +17,7 @@ nuxiva-dossier-core = { path = "../dossier-core" }
 nuxiva-forma-core = { path = "../forma-core" }
 nuxiva-creations-core = { path = "../creations-core" }
 nuxiva-mastery-core = { path = "../mastery-core" }
+nuxiva-weather-core = { path = "../weather-core" }
 agency-codeindex = { path = "../agency-codeindex" }
 agency-forge = { path = "../agency-forge" }
 agency-scheduler = { path = "../agency-scheduler" }

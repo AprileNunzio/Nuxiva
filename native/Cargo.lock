@@ -1262,6 +1262,7 @@ dependencies = [
  "nuxiva-update-core",
  "nuxiva-vault-media",
  "nuxiva-vitals-core",
+ "nuxiva-weather-core",
  "pyo3",
  "serde",
  "serde_json",
@@ -1430,6 +1431,14 @@ name = "nuxiva-vitals-core"
 version = "5.8.0"
 dependencies = [
  "realfft",
+]
+
+[[package]]
+name = "nuxiva-weather-core"
+version = "5.8.0"
+dependencies = [
+ "serde",
+ "serde_json",
 ]
 
 [[package]]

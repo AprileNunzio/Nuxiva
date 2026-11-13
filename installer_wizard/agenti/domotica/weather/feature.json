@@ -14,7 +14,9 @@
     "Qualità dell'aria europea e americana, polveri sottili, gas e pollini",
     "Pressione con tendenza, punto di rugiada, umidità e temperatura percepita",
     "Alba, tramonto, durata del giorno, ore di sole e fase della luna",
-    "Più località salvate, con una predefinita, e unità di misura a scelta"
+    "Più località salvate, con una predefinita, e unità di misura a scelta",
+    "Studia da solo: ogni giorno confronta le previsioni di ECMWF, ICON, GFS e Météo-France con i valori orari rilevati e usa il modello più preciso per la tua zona",
+    "Avvisi chiari calcolati dalle previsioni: temporali, neve, vento forte, caldo, gelo, UV alto, nebbia, ombrello e confronto con ieri"
   ],
   "settings": [
     {
