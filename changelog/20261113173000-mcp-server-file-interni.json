@@ -9,10 +9,10 @@
   },
   "features": [
     {
-      "it": "Nuxiva ora può gestire i file attraverso un server interno che lavora solo nelle cartelle consentite: nessun percorso fuori da esse, nessun collegamento simbolico, nomi riservati nascosti, limiti di dimensione e profondità, e ogni versione sovrascritta finisce nel cestino. Si attiva con NUXIVA_MCP_AREA_FILES=mcp; di default resta il comportamento attuale.",
-      "en": "Nuxiva can now handle files through an internal server that only works inside the allowed folders: no path outside them, no symbolic links, reserved names hidden, size and depth limits, and every overwritten version goes to the trash. Enable it with NUXIVA_MCP_AREA_FILES=mcp; the current behaviour stays the default.",
-      "fr": "Nuxiva peut désormais gérer les fichiers via un serveur interne qui ne travaille que dans les dossiers autorisés : aucun chemin extérieur, aucun lien symbolique, noms réservés masqués, limites de taille et de profondeur, et chaque version écrasée va à la corbeille. Activation avec NUXIVA_MCP_AREA_FILES=mcp ; le comportement actuel reste celui par défaut.",
-      "es": "Nuxiva ahora puede gestionar archivos mediante un servidor interno que solo trabaja dentro de las carpetas permitidas: ninguna ruta fuera de ellas, sin enlaces simbólicos, nombres reservados ocultos, límites de tamaño y profundidad, y cada versión sobrescrita va a la papelera. Se activa con NUXIVA_MCP_AREA_FILES=mcp; por defecto se mantiene el comportamiento actual."
+      "it": "Nuxiva può gestire i file tramite un server interno che lavora solo nelle cartelle consentite: niente percorsi esterni né collegamenti simbolici, nomi riservati nascosti e ogni versione sovrascritta nel cestino. Si attiva con NUXIVA_MCP_AREA_FILES=mcp.",
+      "en": "Nuxiva can handle files through an internal server that only works in the allowed folders: no outside paths or symbolic links, reserved names hidden and every overwritten version sent to the trash. Enable it with NUXIVA_MCP_AREA_FILES=mcp.",
+      "fr": "Nuxiva peut gérer les fichiers via un serveur interne limité aux dossiers autorisés : pas de chemins extérieurs ni de liens symboliques, noms réservés masqués, chaque version écrasée va à la corbeille. Activation : NUXIVA_MCP_AREA_FILES=mcp.",
+      "es": "Nuxiva puede gestionar archivos mediante un servidor interno limitado a las carpetas permitidas: sin rutas externas ni enlaces simbólicos, nombres reservados ocultos y cada versión sobrescrita va a la papelera. Se activa con NUXIVA_MCP_AREA_FILES=mcp."
     },
     {
       "it": "Una nuova verifica automatica impedisce ai moduli degli strumenti di accedere ai file in modo diretto senza passare dal server dedicato.",
