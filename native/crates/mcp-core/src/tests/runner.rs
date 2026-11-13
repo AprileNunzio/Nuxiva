@@ -7,8 +7,8 @@ use tokio::sync::{Mutex, mpsc};
 
 use super::dynamic::{Control, Tools, serve, tool_with};
 use crate::{
-    Health, Implementation, Link, McpError, McpResult, Registry, ServerHandle, Settings, pair,
-    spawn_server,
+    Health, Implementation, Link, McpError, McpResult, Registry, Risk, ServerHandle, Settings,
+    pair, spawn_server,
 };
 
 fn client() -> Implementation {
@@ -82,7 +82,14 @@ fn rig(settings: Settings, fail_first: usize) -> McpResult<Rig> {
             Ok(client_link)
         }
     };
-    let handle = spawn_server("srv", connect, Arc::clone(&registry), settings, client())?;
+    let handle = spawn_server(
+        "srv",
+        connect,
+        Arc::clone(&registry),
+        settings,
+        client(),
+        Arc::new(|_| Risk::Home),
+    )?;
     Ok(Rig {
         registry,
         handle,
@@ -213,6 +220,13 @@ async fn repeated_failures_trip_the_breaker() -> McpResult<()> {
 async fn invalid_server_id_is_refused() {
     let registry = Arc::new(Registry::new(fast()));
     let connect = || async { Err::<Link, McpError>(McpError::Io) };
-    let outcome = spawn_server("Bad Id", connect, registry, fast(), client());
+    let outcome = spawn_server(
+        "Bad Id",
+        connect,
+        registry,
+        fast(),
+        client(),
+        Arc::new(|_| Risk::Home),
+    );
     assert_eq!(outcome.err(), Some(McpError::InvalidName));
 }

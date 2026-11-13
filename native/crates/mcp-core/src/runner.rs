@@ -11,7 +11,8 @@ use crate::discovery::discover;
 use crate::error::{McpError, McpResult};
 use crate::health::{Health, ServerStatus};
 use crate::normalize::valid_server_id;
-use crate::protocol::Implementation;
+use crate::policy::Risk;
+use crate::protocol::{Implementation, ToolSpec};
 use crate::registry::Registry;
 use crate::session::Session;
 use crate::settings::Settings;
@@ -50,11 +51,14 @@ fn entropy(counter: u64) -> u64 {
     std::collections::hash_map::RandomState::new().hash_one(counter)
 }
 
+pub type Classifier = Arc<dyn Fn(&ToolSpec) -> Risk + Send + Sync>;
+
 struct Context {
     server: String,
     registry: Arc<Registry>,
     settings: Settings,
     client: Implementation,
+    classifier: Classifier,
     status: watch::Sender<ServerStatus>,
 }
 
@@ -71,7 +75,14 @@ impl Context {
 
     async fn serve_session(&self, link: Link) -> McpResult<()> {
         let (session, _, _) = Session::connect(link, self.settings.clone(), &self.client).await?;
-        discover(&session, &self.server, &self.registry, &self.settings).await?;
+        discover(
+            &session,
+            &self.server,
+            &self.registry,
+            &self.settings,
+            &*self.classifier,
+        )
+        .await?;
         self.publish(Health::Ready, 0, None);
         let interval = millis(self.settings.refresh_interval_ms);
         let debounce = millis(self.settings.refresh_debounce_ms);
@@ -81,7 +92,7 @@ impl Context {
                     None => return Ok(()),
                     Some(note) if note.method == LIST_CHANGED => {
                         tokio::time::sleep(debounce).await;
-                        discover(&session, &self.server, &self.registry, &self.settings).await?;
+                        discover(&session, &self.server, &self.registry, &self.settings, &*self.classifier).await?;
                         self.publish(Health::Ready, 0, None);
                     }
                     Some(_) => {}
@@ -90,7 +101,7 @@ impl Context {
                     if session.is_closed() {
                         return Ok(());
                     }
-                    discover(&session, &self.server, &self.registry, &self.settings).await?;
+                    discover(&session, &self.server, &self.registry, &self.settings, &*self.classifier).await?;
                     self.publish(Health::Ready, 0, None);
                 }
             }
@@ -151,6 +162,7 @@ pub fn spawn_server<C, Fut>(
     registry: Arc<Registry>,
     settings: Settings,
     client: Implementation,
+    classifier: Classifier,
 ) -> McpResult<ServerHandle>
 where
     C: Fn() -> Fut + Send + Sync + 'static,
@@ -166,6 +178,7 @@ where
         registry,
         settings,
         client,
+        classifier,
         status,
     };
     let task = tokio::spawn(supervise(context, connect));

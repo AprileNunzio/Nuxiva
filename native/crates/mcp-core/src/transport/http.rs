@@ -17,6 +17,7 @@ pub struct HttpConfig {
     pub headers: Vec<(String, String)>,
     pub timeout: Duration,
     pub protocol_version: Option<String>,
+    pub pinned: Option<(String, std::net::SocketAddr)>,
 }
 
 struct Shared {
@@ -42,11 +43,13 @@ fn header_map(pairs: &[(String, String)]) -> McpResult<HeaderMap> {
 }
 
 pub fn spawn_http(config: &HttpConfig, max_message: usize) -> McpResult<Link> {
-    let client = reqwest::Client::builder()
+    let mut builder = reqwest::Client::builder()
         .redirect(Policy::none())
-        .timeout(config.timeout)
-        .build()
-        .map_err(|_| McpError::Io)?;
+        .timeout(config.timeout);
+    if let Some((host, address)) = &config.pinned {
+        builder = builder.resolve(host, *address);
+    }
+    let client = builder.build().map_err(|_| McpError::Io)?;
     let (out_tx, mut out_rx) = mpsc::channel::<Vec<u8>>(QUEUE);
     let (in_tx, in_rx) = mpsc::channel::<Vec<u8>>(QUEUE);
     let shared = Arc::new(Shared {

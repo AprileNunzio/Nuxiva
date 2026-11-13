@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "MCP dinamico: sicurezza a prova di server ostili",
+    "en": "Dynamic MCP: safety against hostile servers",
+    "fr": "MCP dynamique : sécurité face aux serveurs hostiles",
+    "es": "MCP dinámico: seguridad frente a servidores hostiles"
+  },
+  "features": [
+    {
+      "it": "Nuxiva si collega solo ai server di un elenco firmato dall'amministratore e blocca indirizzi pericolosi come quelli interni del cloud.",
+      "en": "Nuxiva connects only to servers from a list signed by the administrator and blocks dangerous addresses such as internal cloud ones.",
+      "fr": "Nuxiva se connecte uniquement aux serveurs d'une liste signée par l'administrateur et bloque les adresses dangereuses comme celles internes du cloud.",
+      "es": "Nuxiva se conecta solo a los servidores de una lista firmada por el administrador y bloquea direcciones peligrosas como las internas de la nube."
+    },
+    {
+      "it": "Le azioni delicate chiedono una conferma valida una sola volta, le risposte dei server esterni sono trattate come dati e ogni chiamata lascia una traccia a prova di manomissione.",
+      "en": "Sensitive actions ask for a one-time confirmation, answers from external servers are treated as data and every call leaves a tamper-proof trace.",
+      "fr": "Les actions sensibles demandent une confirmation à usage unique, les réponses des serveurs externes sont traitées comme des données et chaque appel laisse une trace infalsifiable.",
+      "es": "Las acciones delicadas piden una confirmación de un solo uso, las respuestas de servidores externos se tratan como datos y cada llamada deja un rastro a prueba de manipulación."
+    }
+  ]
+}

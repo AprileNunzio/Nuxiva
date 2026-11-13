@@ -18,6 +18,15 @@ pub enum McpError {
     InvalidOutput,
     NotCallable,
     UnknownTool,
+    ChainBroken,
+    SignatureInvalid,
+    CatalogExpired,
+    NetworkDenied,
+    ConsentRequired,
+    ConsentDenied,
+    RateLimited,
+    NotPermitted,
+    SecretMissing,
 }
 
 impl McpError {
@@ -42,6 +51,15 @@ impl McpError {
             Self::InvalidOutput => "mcp.output.invalid",
             Self::NotCallable => "mcp.tool.not_callable",
             Self::UnknownTool => "mcp.tool.unknown",
+            Self::ChainBroken => "mcp.audit.chain_broken",
+            Self::SignatureInvalid => "mcp.catalog.signature_invalid",
+            Self::CatalogExpired => "mcp.catalog.expired",
+            Self::NetworkDenied => "mcp.network.denied",
+            Self::ConsentRequired => "mcp.consent.required",
+            Self::ConsentDenied => "mcp.consent.denied",
+            Self::RateLimited => "mcp.rate_limited",
+            Self::NotPermitted => "mcp.not_permitted",
+            Self::SecretMissing => "mcp.secret.missing",
         }
     }
 }

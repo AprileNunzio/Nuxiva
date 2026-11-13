@@ -2,6 +2,7 @@ use sha2::{Digest, Sha256};
 
 use crate::error::{McpError, McpResult};
 use crate::normalize::canonical_name;
+use crate::policy::Risk;
 use crate::protocol::ToolSpec;
 use crate::schema::CompiledSchema;
 use crate::settings::Settings;
@@ -21,6 +22,7 @@ pub struct ToolEntry {
     pub spec: ToolSpec,
     pub hash: String,
     pub state: ToolState,
+    pub risk: Risk,
     pub input: CompiledSchema,
     pub output: Option<CompiledSchema>,
 }
@@ -47,6 +49,7 @@ impl ToolEntry {
             spec,
             hash,
             state: ToolState::Active,
+            risk: Risk::Critical,
             input,
             output,
         })
@@ -55,6 +58,12 @@ impl ToolEntry {
     #[must_use]
     pub fn callable(&self) -> bool {
         self.state == ToolState::Active
+    }
+
+    #[must_use]
+    pub fn with_risk(mut self, risk: Risk) -> Self {
+        self.risk = risk;
+        self
     }
 
     #[must_use]

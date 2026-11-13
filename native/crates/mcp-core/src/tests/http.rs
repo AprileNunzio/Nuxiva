@@ -109,6 +109,7 @@ fn config(url: String, token: &str) -> HttpConfig {
         headers: vec![("authorization".into(), format!("Bearer {token}"))],
         timeout: Duration::from_secs(5),
         protocol_version: Some("2025-06-18".into()),
+        pinned: None,
     }
 }
 

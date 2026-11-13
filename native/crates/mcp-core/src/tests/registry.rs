@@ -5,8 +5,8 @@ use serde_json::{Map, Value, json};
 
 use super::dynamic::tool_with;
 use crate::{
-    ChangePolicy, Diff, McpError, McpResult, Registry, Settings, ToolEntry, ToolSpec, ToolState,
-    build_entries, parse_tool,
+    ChangePolicy, Diff, McpError, McpResult, Registry, Risk, Settings, ToolEntry, ToolSpec,
+    ToolState, build_entries, parse_tool,
 };
 
 fn spec(name: &str, schema: Value) -> McpResult<ToolSpec> {
@@ -145,7 +145,7 @@ fn total_cap_is_enforced() -> McpResult<()> {
     let specs = (0..6)
         .map(|i| spec(&format!("t{i}"), simple()))
         .collect::<McpResult<Vec<_>>>()?;
-    let (entries, rejected) = build_entries("fs", specs, &settings);
+    let (entries, rejected) = build_entries("fs", specs, &settings, &|_| Risk::Home);
     assert_eq!(rejected, 0);
     let diff = registry.apply("fs", entries)?;
     assert_eq!(diff.added.len(), 3);
@@ -201,7 +201,7 @@ fn five_thousand_tools_load_quickly() -> McpResult<()> {
         .map(|i| parse_tool(tool_with(&format!("tool_{i}"), simple()), &settings))
         .collect::<McpResult<Vec<_>>>()?;
     let started = Instant::now();
-    let (entries, rejected) = build_entries("big", specs, &settings);
+    let (entries, rejected) = build_entries("big", specs, &settings, &|_| Risk::Home);
     let registry = Registry::new(settings);
     let diff = registry.apply("big", entries)?;
     assert_eq!(rejected, 0);

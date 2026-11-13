@@ -1544,12 +1544,16 @@ dependencies = [
 name = "nuxiva-mcp-core"
 version = "5.8.0"
 dependencies = [
+ "base64 0.23.1",
+ "ed25519-dalek",
+ "getrandom 0.3.4",
  "jsonschema",
  "reqwest",
  "serde",
  "serde_json",
  "sha2",
  "tokio",
+ "zeroize",
 ]
 
 [[package]]
