@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Nuovo pannello «Squadra e memoria» e widget di salute della squadra",
+    "en": "New \"Team and memory\" panel and team health widget",
+    "fr": "Nouveau panneau « Équipe et mémoire » et widget de santé de l'équipe",
+    "es": "Nuevo panel «Equipo y memoria» y widget de salud del equipo"
+  },
+  "features": [
+    {
+      "it": "Nella pagina Agenti c'è un nuovo pannello che mostra quanti agenti lavorano, lo stato del motore multi-agente e della memoria, con avvisi chiari se qualcosa non va. Mostra solo numeri, mai dati personali, ed è in italiano, inglese, francese e spagnolo.",
+      "en": "The Agents page has a new panel showing how many agents are working and the state of the multi-agent engine and of memory, with clear warnings if something is wrong. It shows only numbers, never personal data, in Italian, English, French and Spanish.",
+      "fr": "La page Agents a un nouveau panneau qui montre combien d'agents travaillent, l'état du moteur multi-agents et de la mémoire, avec des alertes claires en cas de problème. Il n'affiche que des chiffres, jamais de données personnelles, en italien, anglais, français et espagnol.",
+      "es": "La página Agentes tiene un nuevo panel que muestra cuántos agentes trabajan y el estado del motor multiagente y de la memoria, con avisos claros si algo falla. Solo muestra números, nunca datos personales, en italiano, inglés, francés y español."
+    },
+    {
+      "it": "Nuovo widget «Salute della squadra», senza sfondo né bordi: puoi chiedere a Nuxiva come sta la squadra e lo mostra sul display.",
+      "en": "New \"Team health\" widget, with no background or borders: ask Nuxiva how the team is doing and it shows it on the display.",
+      "fr": "Nouveau widget « Santé de l'équipe », sans fond ni bordures : demandez à Nuxiva comment va l'équipe et elle l'affiche à l'écran.",
+      "es": "Nuevo widget «Salud del equipo», sin fondo ni bordes: pregunta a Nuxiva cómo va el equipo y lo muestra en la pantalla."
+    }
+  ],
+  "fixes": []
+}

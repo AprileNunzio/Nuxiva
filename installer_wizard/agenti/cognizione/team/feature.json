@@ -19,6 +19,9 @@
     "Cambio delle impostazioni di un agente a voce, previa conferma"
   ],
   "settings": [],
+  "widgets": [
+    "team_health"
+  ],
   "icon3d": "./icon.png",
   "icon3dSource": {
     "provider": "Icons8",

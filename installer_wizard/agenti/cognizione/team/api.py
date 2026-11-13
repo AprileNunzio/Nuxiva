@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request
 
 from access import require_admin
 from agenti.agent import registry as tools
-from agenti.team import roster
+from agenti.team import observability, roster
 from agenti.team.board import board
 from agenti.team.control import control
 from state import store
@@ -52,6 +52,11 @@ def _overview() -> dict:
     doc["people"] = _people()
     doc["recipes"] = list(recipes.CUSTOM.values())
     return doc
+
+
+@admin_routes.get("/api/team/observability")
+async def team_observability(_: str = Depends(require_admin)):
+    return observability.snapshot()
 
 
 @admin_routes.get("/api/team")

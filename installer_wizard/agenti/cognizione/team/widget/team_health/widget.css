@@ -1,0 +1,3 @@
+.w-team_health .th-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 12px; margin-top: 8px; }
+.w-team_health .th-alerts { margin: 10px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; font-size: 11.5px; color: var(--amber); }
+@media (max-width: 420px) { .w-team_health .th-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

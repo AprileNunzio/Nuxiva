@@ -1,0 +1,20 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/team_health",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Salute della squadra",
+    "agents": "agenti",
+    "busy": "al lavoro",
+    "people": "persone",
+    "attention": "attenzione",
+    "say_fine": "La squadra sta bene.",
+    "say_attention": "La squadra ha bisogno di attenzione.",
+    "alert_engine_unavailable": "Motore multi-agente non disponibile",
+    "alert_decision_drift": "Le decisioni si discostano dal CEO",
+    "alert_engine_errors": "Il motore ha segnalato errori",
+    "alert_memory_cold": "Memoria calda non ancora caricata"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/team_health",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Team health",
+    "agents": "agents",
+    "busy": "working",
+    "people": "people",
+    "attention": "attention",
+    "say_fine": "The team is doing well.",
+    "say_attention": "The team needs attention.",
+    "alert_engine_unavailable": "Multi-agent engine unavailable",
+    "alert_decision_drift": "Decisions differ from the CEO",
+    "alert_engine_errors": "The engine reported errors",
+    "alert_memory_cold": "Hot memory not loaded yet"
+  }
+}

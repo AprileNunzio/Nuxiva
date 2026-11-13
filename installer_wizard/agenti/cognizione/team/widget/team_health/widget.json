@@ -1,0 +1,19 @@
+{
+  "id": "team_health",
+  "name": "Salute della squadra",
+  "icon": "🫀",
+  "priority": 28,
+  "size": "s",
+  "intents": [
+    "team_health"
+  ],
+  "description": "Quanti agenti lavorano, stato del motore e della memoria.",
+  "ttl": 60,
+  "tone": "cyan",
+  "category": "system",
+  "chrome": false,
+  "simple": {
+    "icon": "brain",
+    "mode": "collapse"
+  }
+}
