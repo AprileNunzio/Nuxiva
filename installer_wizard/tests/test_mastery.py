@@ -180,7 +180,9 @@ class ParticleExercisesTest(unittest.IsolatedAsyncioTestCase):
 class RunnerTest(unittest.IsolatedAsyncioTestCase):
     def test_the_particle_agent_is_discovered(self):
         from agenti import _study_runner
-        self.assertIn("particles", [ident for ident, _ in _study_runner.providers()])
+        found = [ident for ident, _ in _study_runner.providers()]
+        for ident in ("particles", "ear", "chat"):
+            self.assertIn(ident, found)
 
     def test_interval_is_bounded_and_can_be_disabled(self):
         from agenti import _study_runner
@@ -199,6 +201,47 @@ class RunnerTest(unittest.IsolatedAsyncioTestCase):
         with mock.patch.object(_study_runner, "providers", lambda: [("rotto", None), ("sano", None)]), \
                 mock.patch.object(_study, "session", session):
             self.assertEqual(await _study_runner.round_all(), [{"agent": "sano"}])
+
+
+class MeasurableAgentsTest(unittest.IsolatedAsyncioTestCase):
+    async def test_ear_vote_recovers_light_noise_and_degrades_with_heavy_noise(self):
+        from agenti.ear import exercises
+        scores = []
+        for tier in (0, 9):
+            total = 0.0
+            for _ in range(20):
+                exercise = exercises.make("consensus", tier)
+                total += exercises.grade(exercise, await exercises.attempt(exercise))[0]
+            scores.append(total / 20)
+        self.assertGreater(scores[0], 0.85)
+        self.assertLess(scores[1], scores[0])
+
+    async def test_ear_exercise_is_reproducible_from_its_seed_and_refuses_junk(self):
+        from agenti.ear import exercises
+        exercise = exercises.make("consensus", 4)
+        first, second = await exercises.attempt(exercise), await exercises.attempt(exercise)
+        self.assertEqual(first, second)
+        self.assertEqual(exercises.grade(exercise, "boh"), (0.0, ""))
+
+    async def test_chat_weather_ladder_scores_real_behaviour(self):
+        from agenti.chat import exercises
+        easy = exercises.make("weather_requests", 0)
+        self.assertEqual(exercises.grade(easy, await exercises.attempt(easy))[0], 1.0)
+        self.assertEqual(exercises.grade(easy, [])[0], 0.0)
+        self.assertEqual(len(exercises.LADDER), _mastery.TIERS)
+        wrong = [(text, "Atlantide", 5) for text, _, _ in easy.data["cases"]]
+        score, lesson = exercises.grade(easy, wrong)
+        self.assertEqual(score, 0.0)
+        self.assertIn("atteso", lesson)
+
+    async def test_sessions_run_end_to_end_for_both(self):
+        from agenti.chat import exercises as chat
+        from agenti.ear import exercises as ear
+        book = Ledger(Path(tempfile.mkdtemp()) / "mastery")
+        for ident, module in (("chat", chat), ("ear", ear)):
+            done = await _study.session(ident, module, 3, book)
+            self.assertEqual(len(done), 3)
+            self.assertEqual(book.standing(ident, module.TOPICS[0])["attempts"], 3)
 
 
 if __name__ == "__main__":
