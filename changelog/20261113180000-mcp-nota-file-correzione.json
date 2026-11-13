@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Note di rilascio: corretta la voce del server file",
+    "en": "Release notes: fixed the file server entry",
+    "fr": "Notes de version : entrée du serveur de fichiers corrigée",
+    "es": "Notas de versión: corregida la entrada del servidor de archivos"
+  },
+  "fixes": [
+    {
+      "it": "La descrizione del nuovo server file nelle note di rilascio era troppo lunga e ora è stata accorciata.",
+      "en": "The description of the new file server in the release notes was too long and has been shortened.",
+      "fr": "La description du nouveau serveur de fichiers dans les notes de version était trop longue et a été raccourcie.",
+      "es": "La descripción del nuevo servidor de archivos en las notas de versión era demasiado larga y se ha acortado."
+    }
+  ],
+  "features": []
+}
