@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "MCP dinamico: strumenti scoperti da soli",
+    "en": "Dynamic MCP: tools discovered on their own",
+    "fr": "MCP dynamique : outils découverts automatiquement",
+    "es": "MCP dinámico: herramientas descubiertas automáticamente"
+  },
+  "features": [
+    {
+      "it": "Nuxiva scopre da sola gli strumenti dei server collegati, li aggiorna appena cambiano e si ricollega con attese crescenti se un server cade.",
+      "en": "Nuxiva discovers the tools of connected servers on its own, refreshes them as soon as they change and reconnects with growing delays if a server drops.",
+      "fr": "Nuxiva découvre seule les outils des serveurs connectés, les met à jour dès qu'ils changent et se reconnecte avec des délais croissants si un serveur tombe.",
+      "es": "Nuxiva descubre sola las herramientas de los servidores conectados, las actualiza en cuanto cambian y se reconecta con esperas crecientes si un servidor se cae."
+    },
+    {
+      "it": "Uno strumento il cui schema cambia in modo rischioso viene bloccato finché non lo approva l'amministratore.",
+      "en": "A tool whose schema changes in a risky way is blocked until the administrator approves it.",
+      "fr": "Un outil dont le schéma change de façon risquée est bloqué jusqu'à l'approbation de l'administrateur.",
+      "es": "Una herramienta cuyo esquema cambia de forma arriesgada queda bloqueada hasta que el administrador la apruebe."
+    }
+  ]
+}

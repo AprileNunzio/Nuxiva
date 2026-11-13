@@ -14,6 +14,10 @@ pub enum McpError {
     Remote,
     Busy,
     Io,
+    InvalidArguments,
+    InvalidOutput,
+    NotCallable,
+    UnknownTool,
 }
 
 impl McpError {
@@ -34,6 +38,10 @@ impl McpError {
             Self::Remote => "mcp.remote",
             Self::Busy => "mcp.busy",
             Self::Io => "mcp.io",
+            Self::InvalidArguments => "mcp.arguments.invalid",
+            Self::InvalidOutput => "mcp.output.invalid",
+            Self::NotCallable => "mcp.tool.not_callable",
+            Self::UnknownTool => "mcp.tool.unknown",
         }
     }
 }

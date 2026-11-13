@@ -3,6 +3,14 @@ use serde::{Deserialize, Serialize};
 use crate::error::{McpError, McpResult};
 use crate::limits::Ceilings;
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum ChangePolicy {
+    Compatible,
+    Quarantine,
+    Accept,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(default, deny_unknown_fields)]
 pub struct Settings {
@@ -18,6 +26,15 @@ pub struct Settings {
     pub request_timeout_ms: usize,
     pub max_in_flight: usize,
     pub event_queue: usize,
+    pub change_policy: ChangePolicy,
+    pub backoff_base_ms: usize,
+    pub backoff_max_ms: usize,
+    pub backoff_jitter_pct: usize,
+    pub stale_retire_ms: usize,
+    pub breaker_failures: usize,
+    pub breaker_window_ms: usize,
+    pub refresh_debounce_ms: usize,
+    pub refresh_interval_ms: usize,
 }
 
 impl Default for Settings {
@@ -35,6 +52,15 @@ impl Default for Settings {
             request_timeout_ms: 30_000,
             max_in_flight: 64,
             event_queue: 256,
+            change_policy: ChangePolicy::Compatible,
+            backoff_base_ms: 1_000,
+            backoff_max_ms: 300_000,
+            backoff_jitter_pct: 20,
+            stale_retire_ms: 600_000,
+            breaker_failures: 5,
+            breaker_window_ms: 60_000,
+            refresh_debounce_ms: 200,
+            refresh_interval_ms: 300_000,
         }
     }
 }
@@ -67,6 +93,16 @@ impl Settings {
         within(self.request_timeout_ms, Ceilings::TIMEOUT_MS)?;
         within(self.max_in_flight, Ceilings::IN_FLIGHT)?;
         within(self.event_queue, Ceilings::EVENT_QUEUE)?;
+        within(self.backoff_base_ms, Ceilings::LONG_MS)?;
+        within(self.backoff_max_ms, Ceilings::LONG_MS)?;
+        within(self.stale_retire_ms, Ceilings::LONG_MS)?;
+        within(self.breaker_failures, Ceilings::BREAKER_FAILURES)?;
+        within(self.breaker_window_ms, Ceilings::LONG_MS)?;
+        within(self.refresh_debounce_ms, Ceilings::LONG_MS)?;
+        within(self.refresh_interval_ms, Ceilings::LONG_MS)?;
+        if self.backoff_jitter_pct > 100 || self.backoff_base_ms > self.backoff_max_ms {
+            return Err(McpError::InvalidSettings);
+        }
         if self.max_tools_per_server > self.max_tools_total {
             return Err(McpError::InvalidSettings);
         }

@@ -17,4 +17,6 @@ impl Ceilings {
     pub const TIMEOUT_MS: usize = 600_000;
     pub const IN_FLIGHT: usize = 4_096;
     pub const EVENT_QUEUE: usize = 65_536;
+    pub const LONG_MS: usize = 86_400_000;
+    pub const BREAKER_FAILURES: usize = 1_000;
 }

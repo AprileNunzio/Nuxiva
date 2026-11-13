@@ -1,9 +1,13 @@
 mod architecture;
+mod backoff;
+mod dynamic;
 mod fake;
 mod http;
 mod jsonrpc;
 mod model;
 mod names;
+mod registry;
+mod runner;
 mod session;
 mod settings;
 mod sse;
