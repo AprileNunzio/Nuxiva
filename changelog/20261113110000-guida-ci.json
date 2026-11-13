@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Guida ai controlli prima della pubblicazione",
+    "en": "Guide to the checks before publishing",
+    "fr": "Guide des contrôles avant publication",
+    "es": "Guía de los controles antes de publicar"
+  },
+  "features": [
+    {
+      "it": "Aggiunta una guida che spiega come ogni versione viene verificata prima di arrivare ai dispositivi.",
+      "en": "Added a guide explaining how every version is verified before it reaches devices.",
+      "fr": "Ajout d'un guide expliquant comment chaque version est vérifiée avant d'arriver sur les appareils.",
+      "es": "Añadida una guía que explica cómo se verifica cada versión antes de llegar a los dispositivos."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Nessuna correzione visibile in questa nota: contiene solo documentazione.",
+      "en": "No visible fix in this note: it only contains documentation.",
+      "fr": "Aucune correction visible dans cette note : elle ne contient que de la documentation.",
+      "es": "Ninguna corrección visible en esta nota: solo contiene documentación."
+    }
+  ]
+}
