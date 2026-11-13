@@ -9,10 +9,10 @@
   },
   "features": [
     {
-      "it": "Quando una richiesta richiede più agenti, Nuxiva prepara un piano a passi con limiti di tempo, costo e chiamate. Le richieste semplici partono subito, senza pianificazione; quelle più grandi usano un piano che viene controllato prima di partire e, se è sbagliato, corretto una sola volta prima di dichiarare onestamente l'errore.",
-      "en": "When a request needs several agents, Nuxiva prepares a step-by-step plan with limits on time, cost and calls. Simple requests start at once, with no planning; bigger ones use a plan that is checked before it runs and, if wrong, fixed only once before honestly reporting the error.",
-      "fr": "Quand une demande exige plusieurs agents, Nuxiva prépare un plan par étapes avec des limites de temps, de coût et d'appels. Les demandes simples démarrent aussitôt, sans planification ; les plus grandes utilisent un plan vérifié avant l'exécution et, s'il est faux, corrigé une seule fois avant de signaler honnêtement l'erreur.",
-      "es": "Cuando una petición requiere varios agentes, Nuxiva prepara un plan por pasos con límites de tiempo, coste y llamadas. Las peticiones simples empiezan al instante, sin planificar; las mayores usan un plan que se comprueba antes de ejecutarse y, si es erróneo, se corrige una sola vez antes de informar honestamente del error."
+      "it": "Quando una richiesta richiede più agenti, Nuxiva prepara un piano a passi con limiti di tempo, costo e chiamate. Le richieste semplici partono subito; quelle grandi usano un piano controllato prima di partire e corretto una sola volta se è sbagliato.",
+      "en": "When a request needs several agents, Nuxiva prepares a step-by-step plan with limits on time, cost and calls. Simple requests start at once; big ones use a plan that is checked before running and fixed only once if it is wrong.",
+      "fr": "Quand une demande exige plusieurs agents, Nuxiva prépare un plan par étapes avec des limites de temps, de coût et d'appels. Les demandes simples démarrent aussitôt ; les grandes utilisent un plan vérifié avant l'exécution et corrigé une seule fois s'il est faux.",
+      "es": "Cuando una petición requiere varios agentes, Nuxiva prepara un plan por pasos con límites de tiempo, coste y llamadas. Las simples empiezan al instante; las grandes usan un plan que se comprueba antes de ejecutarse y se corrige una sola vez si es erróneo."
     },
     {
       "it": "Per i passi che toccano file del progetto, Nuxiva richiede di aver consultato prima la mappa del progetto, con un riferimento recente.",
