@@ -16,6 +16,10 @@
     "tasks": "Tâches",
     "due": "À faire",
     "note": "Note",
-    "calm": "Rien de nouveau"
+    "calm": "Rien de nouveau",
+    "simple_title": "Des nouvelles pour toi",
+    "say_n_one": "Tu as une nouveauté",
+    "say_n_other": "Tu as {{n}} nouveautés",
+    "say_none": "Pas de nouveauté"
   }
 }

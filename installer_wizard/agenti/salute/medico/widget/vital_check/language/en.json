@@ -14,6 +14,8 @@
     "src_camera": "From the webcam",
     "not_medical": "Informative estimate, not medical",
     "aria_row": "{{name}}: {{bpm}} beats per minute",
-    "unit": "bpm"
+    "unit": "bpm",
+    "simple_title": "Heartbeat check",
+    "say_bpm": "Your heart beats {{n}} times a minute"
   }
 }

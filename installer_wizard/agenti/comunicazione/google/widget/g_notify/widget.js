@@ -66,5 +66,10 @@
     }
   }
 
-  NuxivaDesk.register("g_notify", { render, destroy: stop });
+  NuxivaDesk.register("g_notify", {
+    headline(d, ctx) {
+      const data = d && typeof d === "object" ? d : {};
+      const n = ctx.arr(data.items, 50).length;
+      return n ? { text: ctx.count("say_n", n) } : { text: ctx.t("say_none"), tone: "ok" };
+    }, render, destroy: stop });
 })();

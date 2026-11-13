@@ -10,5 +10,11 @@
   "description": "Ultimi pacchetti bloccati dal firewall.",
   "ttl": 120,
   "tone": "red",
-  "essential": true
+  "essential": true,
+  "category": "system",
+  "chrome": false,
+  "simple": {
+    "icon": "list",
+    "mode": "collapse"
+  }
 }

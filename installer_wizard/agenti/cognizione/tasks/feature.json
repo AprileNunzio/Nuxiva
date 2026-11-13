@@ -19,8 +19,18 @@
   ],
   "settings": [],
   "routing": {
-    "nouns": ["attività", "task", "background", "lavori in corso"],
-    "phrases": ["cosa stai facendo", "a che punto sei", "hai finito", "attività in corso"]
+    "nouns": [
+      "attività",
+      "task",
+      "background",
+      "lavori in corso"
+    ],
+    "phrases": [
+      "cosa stai facendo",
+      "a che punto sei",
+      "hai finito",
+      "attività in corso"
+    ]
   },
   "icon3d": "./icon.png",
   "icon3dSource": {
@@ -28,5 +38,12 @@
     "technique": "3d",
     "id": "nQuaNO36nu68",
     "url": "https://img.icons8.com/?size=240&id=nQuaNO36nu68&format=png"
-  }
+  },
+  "widgets": [
+    "active_tasks",
+    "kanban_board",
+    "notice",
+    "pomodoro",
+    "reminder"
+  ]
 }

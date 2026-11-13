@@ -19,6 +19,8 @@
     "less": "Show less",
     "all": "Full table ({{n}})",
     "zone_up": "European places",
-    "zone_down": "Relegation"
+    "zone_down": "Relegation",
+    "simple_title": "Standings",
+    "say_first": "{{name}} is first in the standings"
   }
 }

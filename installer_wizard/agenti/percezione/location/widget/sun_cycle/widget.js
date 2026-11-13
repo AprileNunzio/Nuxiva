@@ -58,5 +58,10 @@
     },
     destroy(el) { clearInterval(el._scTick); },
   };
+  impl.headline = (d, ctx) => {
+    const data = d && typeof d === "object" ? d : {};
+    const at = ctx.when(data.set_ts ?? data.sunset_ts) || ctx.pick(data, ["sunset", "set"], 10);
+    return at ? { text: ctx.t("say_set", { at }) } : "";
+  };
   NuxivaDesk.register("sun_cycle", impl);
 })();

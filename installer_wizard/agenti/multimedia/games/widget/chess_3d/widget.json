@@ -17,5 +17,10 @@
   "essential": true,
   "chrome": false,
   "sticky": true,
-  "immersive": true
+  "immersive": true,
+  "category": "media",
+  "simple": {
+    "icon": "cube",
+    "mode": "open"
+  }
 }

@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/audio_spectrum",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Spectre audio",
+    "silent": "Silence",
+    "simple_title": "La musique joue"
+  }
+}

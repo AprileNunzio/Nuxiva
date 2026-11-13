@@ -2,6 +2,11 @@
   const STATE = { studying: ["chip", true, "", "brain"], paused: ["paused", false, "warn", "stop"], waiting: ["waiting", false, "", "clock"], idle: ["idle", false, "ok", "check"] };
 
   NuxivaDesk.register("study", {
+    headline(d, ctx) {
+      const data = d && typeof d === "object" ? d : {};
+      const topic = ctx.pick(data, ["topic"], 50);
+      return topic ? { text: ctx.t("say_topic", { topic }) } : "";
+    },
     render(el, raw, ctx) {
       const d = raw && typeof raw === "object" ? raw : {};
       const [key, live, state, icon] = STATE[ctx.str(d.state, 20)] || STATE.studying;

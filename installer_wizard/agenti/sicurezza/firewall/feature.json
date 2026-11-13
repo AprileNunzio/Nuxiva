@@ -5,7 +5,13 @@
   "description": "Firewall e agente di difesa autonomo: analizza il traffico in tempo reale, riconosce gli attacchi, ne mostra il paese di origine e protegge la casa con risposte reversibili",
   "icon": "🛡",
   "version": "1.0",
-  "widgets": [],
+  "widgets": [
+    "cyber_alert",
+    "defense_incidents",
+    "defense_status",
+    "firewall_logs",
+    "ssh_sessions"
+  ],
   "has_admin": true,
   "panel": "firewall",
   "category": "sistema",

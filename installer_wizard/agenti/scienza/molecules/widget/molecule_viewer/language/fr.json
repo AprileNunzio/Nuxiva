@@ -18,6 +18,7 @@
     "bonds_other": "{{n}} liaisons",
     "error_engine": "Moteur moléculaire indisponible sur ce système",
     "error_library": "Bibliothèque 3D indisponible",
-    "error_data": "Structure illisible"
+    "error_data": "Structure illisible",
+    "simple_title": "Molécule en 3D"
   }
 }

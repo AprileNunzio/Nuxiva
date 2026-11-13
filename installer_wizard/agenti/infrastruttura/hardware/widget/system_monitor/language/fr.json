@@ -1,0 +1,25 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/system_monitor",
+    "version": "1.1.0"
+  },
+  "dictionary": {
+    "label": "Télémétrie du nœud",
+    "cpu": "CPU",
+    "ram": "RAM",
+    "loaded": "Sous charge",
+    "nominal": "Nominal",
+    "critical": "Critique",
+    "avg_peak": "Ø {{a}}% · max {{p}}%",
+    "temp": "Température",
+    "load": "Charge par cœur",
+    "cores": "cœurs",
+    "swap": "Swap",
+    "pressure": "Pression",
+    "simple_title": "L'ordinateur est occupé ?",
+    "say_hot": "L'ordinateur est trop chaud",
+    "say_busy": "L'ordinateur travaille beaucoup",
+    "say_calm": "L'ordinateur est tranquille"
+  }
+}

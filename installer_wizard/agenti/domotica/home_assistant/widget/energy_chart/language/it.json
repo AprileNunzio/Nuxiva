@@ -1,0 +1,28 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/energy_chart",
+    "version": "1.1.0"
+  },
+  "dictionary": {
+    "label": "Energia",
+    "solar": "Sole",
+    "home": "Casa",
+    "grid_in": "Dalla rete",
+    "grid_out": "Alla rete",
+    "battery": "Batteria",
+    "today": "Consumo oggi",
+    "solar_today": "Prodotto oggi",
+    "cost": "Costo oggi",
+    "self_share": "Autonomia",
+    "exporting": "cedi energia",
+    "self_powered": "autosufficiente",
+    "peak": "picco",
+    "history": "ultime 24 h",
+    "simple_title": "Energia di casa",
+    "say_more": "Il sole produce più energia di quella che usi",
+    "say_high": "Stai usando molta energia",
+    "say_mid": "Stai usando un po' di energia",
+    "say_low": "Stai usando poca energia"
+  }
+}

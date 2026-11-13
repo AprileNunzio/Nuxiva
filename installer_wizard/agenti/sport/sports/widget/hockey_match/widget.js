@@ -37,6 +37,14 @@
   };
 
   NuxivaDesk.register("hockey_match", {
+    headline(d, ctx) {
+      const data = d && typeof d === "object" ? d : {};
+      const side = (x) => (x && typeof x === "object" ? { n: ctx.pick(x, ["short", "name", "abbr"], 20), s: ctx.num(x.score) } : { n: "", s: null });
+      const home = side(data.home), away = side(data.away);
+      if (!home.n || !away.n) return "";
+      if (home.s === null || away.s === null) return { text: ctx.t("say_vs", { home: home.n, away: away.n }) };
+      return { text: ctx.t("say_score", { home: home.n, hs: home.s, away: away.n, aws: away.s }) };
+    },
     render(el, d, ctx) {
       const data = d && typeof d === "object" ? d : {};
       const m = data.match && typeof data.match === "object" ? data.match : {};

@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/alert_warning",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Warning",
+    "chip": "Caution",
+    "fallback_title": "Caution",
+    "simple_title": "Be careful"
+  }
+}

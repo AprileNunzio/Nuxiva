@@ -11,5 +11,11 @@
   ],
   "ttl": 120,
   "description": "Classifica di un campionato con la squadra preferita evidenziata.",
-  "tone": "cyan"
+  "tone": "cyan",
+  "category": "info",
+  "chrome": false,
+  "simple": {
+    "icon": "list",
+    "mode": "collapse"
+  }
 }

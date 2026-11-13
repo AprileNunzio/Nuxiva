@@ -88,6 +88,7 @@
     stop: '<rect x="6" y="6" width="12" height="12" rx="1.5"/>',
     copy: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>',
     gift: '<rect x="3" y="9" width="18" height="12" rx="1.5"/><path d="M3 13h18M12 9v12M12 9c-2-4-6-4-6-1.5S10 9 12 9c2 0 6 .5 6-1.5S14 5 12 9"/>',
+    chevron: '<path d="m6 9 6 6 6-6"/>',
     star: '<path d="m12 3 2.8 5.8 6.2.9-4.5 4.4 1 6.2L12 17.4 6.5 20.3l1-6.2L3 9.7l6.2-.9Z"/>',
   };
   const WEATHER = { clear: "sun", partly: "partly", cloudy: "cloud", fog: "fog", drizzle: "rain", rain: "rain", snow: "snow", storm: "storm" };

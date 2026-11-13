@@ -24,6 +24,8 @@
     "s_sprint": "Sprint",
     "s_quali": "Qualifying",
     "s_race": "Race",
-    "teams_title": "Constructors"
+    "teams_title": "Constructors",
+    "simple_title": "Formula 1 race",
+    "say_lead": "{{name}} is in front"
   }
 }

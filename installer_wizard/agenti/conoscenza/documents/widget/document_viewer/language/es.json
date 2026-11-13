@@ -1,0 +1,25 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/document_viewer",
+    "version": "1.1.0"
+  },
+  "dictionary": {
+    "viewer": "Vista previa",
+    "document": "Documento",
+    "project": "Proyecto",
+    "documents": "Documentos",
+    "shared_folder": "Carpeta compartida",
+    "failed": "Fallido:",
+    "no_preview": "Vista previa no disponible",
+    "loading": "Cargando vista previa…",
+    "files_one": "{{n}} archivo",
+    "files_other": "{{n}} archivos",
+    "kind_word": "Documento de texto",
+    "kind_sheet": "Hoja de cálculo",
+    "kind_slides": "Presentación",
+    "kind_pdf": "PDF",
+    "kind_file": "Archivo",
+    "simple_title": "Documento"
+  }
+}

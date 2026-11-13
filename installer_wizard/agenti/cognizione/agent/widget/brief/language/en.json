@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/brief",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Briefing",
+    "simple_title": "Good to know today"
+  }
+}

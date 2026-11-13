@@ -1,0 +1,26 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/clipboard_sync",
+    "version": "1.2.0"
+  },
+  "dictionary": {
+    "label": "Appunti",
+    "empty": "Appunti vuoti",
+    "chars_one": "{{n}} carattere",
+    "chars_other": "{{n}} caratteri",
+    "copy": "Copia",
+    "copied": "Copiato",
+    "copy_failed": "Non copiato",
+    "reveal": "Mostra",
+    "hide": "Nascondi",
+    "hidden": "Contenuto nascosto",
+    "kind_secret": "riservato",
+    "from": "da {{source}}",
+    "stats": "{{w}} parole · {{l}} righe",
+    "words": "{{w}} parole",
+    "simple_title": "Testo copiato",
+    "say_from": "{{who}} ha copiato un testo",
+    "say_plain": "Hai copiato un testo"
+  }
+}

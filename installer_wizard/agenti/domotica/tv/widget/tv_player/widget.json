@@ -11,5 +11,13 @@
   ],
   "ttl": 0,
   "description": "Canale TV in diretta da una playlist IPTV.",
-  "tone": "violet"
+  "tone": "violet",
+  "category": "media",
+  "chrome": false,
+  "media": "audio",
+  "exclusive": "video",
+  "simple": {
+    "icon": "video",
+    "mode": "open"
+  }
 }

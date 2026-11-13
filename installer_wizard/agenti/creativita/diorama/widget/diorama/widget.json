@@ -13,5 +13,10 @@
   "tone": "amber",
   "essential": true,
   "immersive": true,
-  "chrome": false
+  "chrome": false,
+  "category": "ambient",
+  "simple": {
+    "icon": "image",
+    "mode": "open"
+  }
 }

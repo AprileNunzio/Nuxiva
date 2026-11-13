@@ -11,5 +11,8 @@
     "Analisi dei fotogrammi e conversazione con gli specialisti"
   ],
   "settings": [],
-  "icon3d": "./icon.png"
+  "icon3d": "./icon.png",
+  "widgets": [
+    "repair_workbench"
+  ]
 }

@@ -17,6 +17,12 @@
   }
 
   NuxivaDesk.register("home_rooms", {
+    headline(d, ctx) {
+      const data = d && typeof d === "object" ? d : {};
+      let n = 0;
+      for (const room of ctx.arr(data.rooms, 40)) if (room && typeof room === "object") n += ctx.arr(room.people, 20).length;
+      return n ? { text: ctx.count("say_n", n) } : { text: ctx.t("say_none") };
+    },
     render(el, d, ctx) {
       const list = rooms(d && typeof d === "object" ? d : {}, ctx);
       const head = ctx.head({ icon: "home", label: ctx.t("label"), chip: list.length ? ctx.count("occupied", list.length) : "", live: list.length > 0 });

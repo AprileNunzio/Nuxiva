@@ -22,6 +22,9 @@
     "auto_at": "Will install itself at {{t}}",
     "auto_soon": "Will install itself shortly",
     "manual": "Automatic updates are off: install it from settings",
-    "checked": "checked {{t}}"
+    "checked": "checked {{t}}",
+    "simple_title": "Update",
+    "say_new": "There are updates to install",
+    "say_ok": "Everything is up to date"
   }
 }

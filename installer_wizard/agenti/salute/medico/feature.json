@@ -47,5 +47,8 @@
     "medico_parametri"
   ],
   "version": "1.0.0",
-  "widgets": []
+  "widgets": [
+    "health_hub",
+    "vital_check"
+  ]
 }

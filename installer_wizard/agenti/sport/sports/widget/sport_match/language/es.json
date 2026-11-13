@@ -22,6 +22,9 @@
     "out_won": "Victoria",
     "out_lost": "Derrota",
     "out_drew": "Empate",
-    "last": "Último"
+    "last": "Último",
+    "simple_title": "Partido",
+    "say_vs": "{{home}} contra {{away}}",
+    "say_score": "{{home}} {{hs}} - {{aws}} {{away}}"
   }
 }

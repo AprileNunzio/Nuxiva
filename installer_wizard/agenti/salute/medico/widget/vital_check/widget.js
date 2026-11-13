@@ -75,6 +75,11 @@
   }
 
   NuxivaDesk.register("vital_check", {
+    headline(d, ctx) {
+      const data = d && typeof d === "object" ? d : {};
+      const bpm = ctx.num(data.heart ?? (data.values && data.values.heart));
+      return bpm !== null && bpm > 0 ? { text: ctx.t("say_bpm", { n: Math.round(bpm) }) } : "";
+    },
     render,
     update(el, raw, ctx) {
       const list = parse(raw, ctx);

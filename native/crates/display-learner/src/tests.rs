@@ -11,6 +11,7 @@ const LUCA: &str = "0f1e2d3c4b5a69788796a5b4c3d2e1f00f1e2d3c4b5a69788796a5b4c3d2
 const DAY: u64 = 86_400_000;
 
 fn ctx(band: u8) -> ContextVector {
+    nuxiva_display_planner::fixtures::install();
     ContextVector {
         band,
         weekend: false,
@@ -21,6 +22,7 @@ fn ctx(band: u8) -> ContextVector {
 }
 
 fn sample(person: Option<&str>, widget: &str, kind: Kind, at_ms: u64) -> FeedbackSample {
+    nuxiva_display_planner::fixtures::install();
     FeedbackSample {
         person: person.map(str::to_owned),
         widget: widget.to_owned(),

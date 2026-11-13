@@ -14,6 +14,8 @@
     "level_of": "Livello {{n}} di {{total}}",
     "level_progress": "Avanzamento del livello",
     "today": "{{n}} min oggi",
-    "cells": "{{n}} nozioni"
+    "cells": "{{n}} nozioni",
+    "simple_title": "Cosa sto imparando",
+    "say_topic": "Sto studiando: {{topic}}"
   }
 }

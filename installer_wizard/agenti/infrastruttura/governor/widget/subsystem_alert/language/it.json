@@ -15,6 +15,7 @@
     "repair_critical": "Componente essenziale fermo: il supervisore lo sta riavviando, alcune funzioni sono sospese",
     "critical": "essenziale",
     "tries_one": "{{n}} controllo fallito",
-    "tries_other": "{{n}} controlli falliti"
+    "tries_other": "{{n}} controlli falliti",
+    "simple_title": "Qualcosa non risponde"
   }
 }

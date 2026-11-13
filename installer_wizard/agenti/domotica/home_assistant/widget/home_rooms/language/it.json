@@ -8,6 +8,10 @@
     "label": "Stanze",
     "occupied_one": "{{n}} occupata",
     "occupied_other": "{{n}} occupate",
-    "none": "Nessuno rilevato in casa"
+    "none": "Nessuno rilevato in casa",
+    "simple_title": "Chi c'è nelle stanze",
+    "say_n_one": "C'è una persona in casa",
+    "say_n_other": "Ci sono {{n}} persone in casa",
+    "say_none": "Non vedo nessuno in casa"
   }
 }

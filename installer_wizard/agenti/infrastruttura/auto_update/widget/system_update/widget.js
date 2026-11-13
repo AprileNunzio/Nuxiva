@@ -18,6 +18,10 @@
   };
 
   NuxivaDesk.register("system_update", {
+    headline(d, ctx) {
+      const data = d && typeof d === "object" ? d : {};
+      return ctx.num(data.count) ? { text: ctx.t("say_new"), tone: "warn" } : { text: ctx.t("say_ok"), tone: "ok" };
+    },
     render(el, raw, ctx) {
       const d = raw && typeof raw === "object" ? raw : {};
       const changes = ctx.arr(d.changes, 12).map((l) => entry(l, ctx)).filter((e) => e.text);

@@ -22,6 +22,9 @@
     "auto_at": "Se instalará solo a las {{t}}",
     "auto_soon": "Se instalará solo en breve",
     "manual": "Actualización automática desactivada: instálala desde los ajustes",
-    "checked": "comprobado {{t}}"
+    "checked": "comprobado {{t}}",
+    "simple_title": "Actualización",
+    "say_new": "Hay novedades por instalar",
+    "say_ok": "Todo está al día"
   }
 }

@@ -1,0 +1,883 @@
+{
+ "active_tasks": {
+  "tasks": [
+   {
+    "title": "Riassumo le email di oggi",
+    "status": "running",
+    "agent": "Posta"
+   },
+   {
+    "title": "Controllo il meteo di domani",
+    "status": "queued"
+   },
+   {
+    "title": "Aggiorno il calendario",
+    "status": "done"
+   }
+  ]
+ },
+ "alert_error": {
+  "title": "Backup non riuscito",
+  "content": "Il disco esterno non risponde.",
+  "hint": "Ricollega il disco e riprova.",
+  "source": "backup",
+  "items": [
+   "Disco USB-02 assente",
+   "Ultimo salvataggio 3 giorni fa"
+  ],
+  "at": 1763000000
+ },
+ "alert_info": {
+  "title": "Nuova versione pronta",
+  "content": "L'aggiornamento verrà installato stanotte.",
+  "source": "updater",
+  "at": 1763000000
+ },
+ "alert_warning": {
+  "title": "Disco quasi pieno",
+  "content": "Resta il 6% di spazio libero.",
+  "hint": "Elimina file vecchi.",
+  "source": "storage",
+  "at": 1763000000
+ },
+ "api_costs": {
+  "today": 0.84,
+  "month": 12.4,
+  "budget": 30,
+  "currency": "EUR",
+  "models": [
+   {
+    "name": "claude-sonnet",
+    "today": 0.5,
+    "month": 8.1
+   },
+   {
+    "name": "gpt-mini",
+    "today": 0.34,
+    "month": 4.3
+   }
+  ]
+ },
+ "audio_spectrum": {
+  "title": "Blue in Green",
+  "artist": "Miles Davis",
+  "bpm": 92,
+  "levels": [
+   3,
+   8,
+   14,
+   9,
+   20,
+   17,
+   11,
+   6,
+   13,
+   18,
+   7,
+   4,
+   9,
+   15,
+   10,
+   5
+  ]
+ },
+ "brief": {
+  "title": "Oggi in breve",
+  "subtitle": "Giovedì",
+  "lines": [
+   "Riunione alle 10:30 con Marco",
+   "Piove dalle 15",
+   "Compleanno di Laura"
+  ],
+  "value": "3 cose da sapere"
+ },
+ "calculator": {
+  "expression": "12*(3+4)"
+ },
+ "cam_stream": {
+  "name": "Ingresso",
+  "ok": true,
+  "motion": true,
+  "status": "live"
+ },
+ "cicd_tracker": {
+  "pipelines": [
+   {
+    "name": "build-main",
+    "status": "success",
+    "branch": "main",
+    "commit": "a1b2c3d",
+    "duration": 212,
+    "author": "nunzio"
+   },
+   {
+    "name": "deploy-prod",
+    "status": "running",
+    "branch": "main",
+    "commit": "a1b2c3d",
+    "progress": 60
+   },
+   {
+    "name": "tests-e2e",
+    "status": "failed",
+    "branch": "dev",
+    "commit": "ff09e1a",
+    "duration": 340
+   }
+  ]
+ },
+ "clipboard_sync": {
+  "text": "https://nuxiva.local/ospiti",
+  "source": "Telefono di Anna",
+  "copied_at": 1763000000
+ },
+ "clock": {
+  "city": "Roma",
+  "timezone": "Europe/Rome",
+  "zones": [
+   {
+    "city": "New York",
+    "tz": "America/New_York"
+   },
+   {
+    "city": "Tokyo",
+    "tz": "Asia/Tokyo"
+   }
+  ]
+ },
+ "code_view": {
+  "language": "python",
+  "title": "ciao.py",
+  "content": "def saluta(nome):\n    return f'Ciao {nome}!'\n\nprint(saluta('mondo'))"
+ },
+ "contact_card": {
+  "name": "Laura Bianchi",
+  "company": "Studio Bianchi",
+  "phones": [
+   {
+    "label": "Cellulare",
+    "value": "+39 333 1234567"
+   }
+  ],
+  "emails": [
+   {
+    "label": "Lavoro",
+    "value": "laura@studio.it"
+   }
+  ],
+  "birthday": "14 novembre"
+ },
+ "context_window": {
+  "model": "claude-sonnet",
+  "used": 48000,
+  "limit": 200000,
+  "parts": {
+   "system": 4000,
+   "history": 30000,
+   "tools": 6000,
+   "files": 6000,
+   "memory": 2000
+  }
+ },
+ "crypto_ticker": {
+  "coins": [
+   {
+    "name": "Bitcoin",
+    "symbol": "BTC",
+    "price": 91250.4,
+    "change": 2.1
+   },
+   {
+    "name": "Ethereum",
+    "symbol": "ETH",
+    "price": 3120.8,
+    "change": -0.8
+   }
+  ],
+  "currency": "EUR"
+ },
+ "cyber_alert": {
+  "title": "Tentativi di accesso bloccati",
+  "attack_type": "brute_force",
+  "ip": "203.0.113.45",
+  "country": "Russia",
+  "attempts": 128,
+  "port": 22,
+  "service": "ssh",
+  "threat_level": "high",
+  "blocked": true,
+  "at": 1763000000
+ },
+ "docker_matrix": {
+  "containers": [
+   {
+    "name": "nuxiva-core",
+    "status": "running",
+    "image": "nuxiva/core:5.8",
+    "health": "healthy",
+    "ports": "8080"
+   },
+   {
+    "name": "postgres",
+    "status": "running",
+    "image": "postgres:16",
+    "health": "healthy"
+   },
+   {
+    "name": "ollama",
+    "status": "exited",
+    "image": "ollama/ollama"
+   }
+  ]
+ },
+ "document_viewer": {
+  "title": "Preventivo cucina",
+  "type": "docx",
+  "summary": "Preventivo di 12 pagine con 3 tabelle.",
+  "files": [
+   {
+    "id": "1",
+    "kind": "docx",
+    "title": "Preventivo cucina"
+   }
+  ]
+ },
+ "energy_chart": {
+  "consumption_w": 1840,
+  "solar_w": 2900,
+  "grid_w": -1060,
+  "battery_pct": 76,
+  "today_kwh": 14.2,
+  "solar_today_kwh": 21.5,
+  "cost_today": 1.9,
+  "currency": "EUR",
+  "history": [
+   800,
+   1200,
+   1500,
+   1840,
+   2100,
+   1700,
+   1840
+  ]
+ },
+ "expert_work": {
+  "specialty": "Cucina",
+  "role": "Esperto di ricette",
+  "question": "Cosa preparo con zucchine e uova?",
+  "status": "working",
+  "steps": [
+   "Cerco le ricette",
+   "Controllo le allergie in casa"
+  ],
+  "icon": "🍳"
+ },
+ "git_diff": {
+  "path": "src/main.rs",
+  "status": "modified",
+  "hunks": [
+   {
+    "old": 12,
+    "lines": [
+     "-let a = 1;",
+     "+let a = 2;",
+     " println!(a);"
+    ]
+   }
+  ]
+ },
+ "kanban_board": {
+  "todo": [
+   {
+    "title": "Prenotare il dentista",
+    "assignee": "Nuxiva"
+   }
+  ],
+  "doing": [
+   {
+    "title": "Preparare il budget",
+    "assignee": "Marco"
+   }
+  ],
+  "done": [
+   {
+    "title": "Pagare la bolletta"
+   }
+  ]
+ },
+ "lan_device": {
+  "name": "Telefono sconosciuto",
+  "ip": "192.168.1.57",
+  "mac": "AA:BB:CC:11:22:33",
+  "vendor": "Xiaomi",
+  "known": false,
+  "ports": [
+   80,
+   443
+  ],
+  "first_seen": 1763000000
+ },
+ "mood_aura": {
+  "person": "Nunzio",
+  "mood": "calm",
+  "face": true
+ },
+ "net_topology": {
+  "gateway": "192.168.1.1",
+  "subnet": "192.168.1.0/24",
+  "devices": [
+   {
+    "label": "Router",
+    "ip": "192.168.1.1",
+    "type": "router",
+    "online": true,
+    "trusted": true
+   },
+   {
+    "label": "TV salotto",
+    "ip": "192.168.1.20",
+    "type": "tv",
+    "online": true,
+    "trusted": true
+   },
+   {
+    "label": "Sconosciuto",
+    "ip": "192.168.1.57",
+    "type": "phone",
+    "online": true,
+    "trusted": false
+   }
+  ]
+ },
+ "network_devices": {
+  "devices": [
+   {
+    "label": "iPhone di Anna",
+    "ip": "192.168.1.31",
+    "online": true,
+    "room": "Salotto",
+    "trusted": true
+   },
+   {
+    "label": "Stampante",
+    "ip": "192.168.1.40",
+    "online": true,
+    "trusted": true
+   },
+   {
+    "label": "Sconosciuto",
+    "ip": "192.168.1.57",
+    "online": true,
+    "trusted": false
+   }
+  ]
+ },
+ "notice": {
+  "title": "Compleanno di Laura",
+  "text": "Domani compie 42 anni.",
+  "icon": "gift",
+  "level": "info",
+  "at": 1763000000
+ },
+ "os_networks": {
+  "networks": [
+   {
+    "ssid": "CasaWiFi",
+    "band": "5 GHz",
+    "channel": 36,
+    "signal": 82
+   },
+   {
+    "ssid": "Vicini-2G",
+    "band": "2.4 GHz",
+    "channel": 6,
+    "signal": 41
+   }
+  ]
+ },
+ "people_seen": {
+  "people": [
+   {
+    "name": "Nunzio",
+    "known": true,
+    "confidence": 0.97
+   },
+   {
+    "name": "Ospite",
+    "known": false,
+    "confidence": 0.6
+   }
+  ]
+ },
+ "pomodoro": {
+  "phase": "focus",
+  "task": "Scrivere la relazione",
+  "focus_min": 25,
+  "short_min": 5,
+  "ends_at": 1763000900
+ },
+ "port_scanner": {
+  "target": "192.168.1.57",
+  "ports": [
+   {
+    "port": 22,
+    "service": "ssh",
+    "state": "open",
+    "product": "OpenSSH 9.2"
+   },
+   {
+    "port": 80,
+    "service": "http",
+    "state": "open"
+   },
+   {
+    "port": 3389,
+    "service": "rdp",
+    "state": "open"
+   }
+  ]
+ },
+ "rag_sources": {
+  "query": "Quando scade la garanzia?",
+  "sources": [
+   {
+    "title": "Garanzia lavatrice.pdf",
+    "page": 2,
+    "snippet": "La garanzia scade il 3 marzo 2027.",
+    "score": 0.91
+   }
+  ]
+ },
+ "reminder": {
+  "items": [
+   {
+    "text": "Chiamare il dentista",
+    "when": 1763003600
+   },
+   {
+    "text": "Ritirare il pacco",
+    "when": 1763090000
+   }
+  ]
+ },
+ "route": {
+  "from": "Casa",
+  "to": "Ufficio",
+  "minutes": 34,
+  "distance": 18.4,
+  "traffic": "intenso",
+  "delay_minutes": 12,
+  "leave_by": 1763001800,
+  "mode": "car",
+  "advice": "Parti prima delle 8:10."
+ },
+ "ssh_sessions": {
+  "sessions": [
+   {
+    "user": "nunzio",
+    "from": "192.168.1.15",
+    "tty": "pts/0",
+    "since": 1762996400,
+    "idle": 120,
+    "what": "htop"
+   },
+   {
+    "user": "root",
+    "from": "203.0.113.45",
+    "tty": "pts/1",
+    "since": 1762999940,
+    "what": "bash"
+   }
+  ]
+ },
+ "sync_pulse": {
+  "person": "Nunzio",
+  "rows": [
+   {
+    "key": "google_calendar",
+    "state": "ok",
+    "age": 60
+   },
+   {
+    "key": "google_gmail",
+    "state": "running"
+   },
+   {
+    "key": "telegram",
+    "state": "error",
+    "error": "Token scaduto"
+   }
+  ]
+ },
+ "system_health": {
+  "items": [
+   {
+    "id": "cpu",
+    "label": "Processore",
+    "value": "34 %"
+   },
+   {
+    "id": "memory",
+    "label": "Memoria",
+    "value": "61 %"
+   },
+   {
+    "id": "disk",
+    "label": "Disco",
+    "value": "78 %"
+   },
+   {
+    "id": "temperature",
+    "label": "Temperatura",
+    "value": "52 °C"
+   }
+  ]
+ },
+ "system_monitor": {
+  "cpu": 34,
+  "mem": 61,
+  "swap": 4,
+  "temp": 52,
+  "load": 1.4,
+  "cores": 8
+ },
+ "text_long": {
+  "title": "Ricetta",
+  "text": "Taglia le zucchine a rondelle, scaldale in padella con un filo d'olio per cinque minuti, poi aggiungi le uova sbattute con un pizzico di sale e mescola fino a ottenere una frittata morbida. Servi calda con una macinata di pepe."
+ },
+ "text_short": {
+  "title": "Risposta",
+  "text": "Domani **pioverà** dal pomeriggio. Porta l'ombrello."
+ },
+ "thermostat": {
+  "rooms": [
+   {
+    "name": "Salotto",
+    "current": 20.5,
+    "target": 21,
+    "mode": "heat"
+   },
+   {
+    "name": "Camera",
+    "current": 18.2,
+    "target": 19,
+    "mode": "heat"
+   }
+  ],
+  "outside": 8,
+  "humidity": 55
+ },
+ "thinking_tree": {
+  "question": "Cosa cucino stasera?",
+  "nodes": [
+   {
+    "text": "Controllo il frigo",
+    "state": "done"
+   },
+   {
+    "text": "Cerco una ricetta veloce",
+    "state": "now"
+   },
+   {
+    "text": "Propongo il menu",
+    "state": "ask"
+   }
+  ]
+ },
+ "usb_monitor": {
+  "devices": [
+   {
+    "name": "Chiavetta SanDisk",
+    "vendor": "SanDisk",
+    "vid": "0781",
+    "pid": "5581",
+    "type": "storage",
+    "size": 32000000000,
+    "used_percent": 42,
+    "speed": "480 Mb/s"
+   }
+  ]
+ },
+ "voices_ready": {
+  "items": [
+   {
+    "label": "Italiano"
+   },
+   {
+    "label": "English"
+   },
+   {
+    "label": "Français"
+   },
+   {
+    "label": "Español"
+   }
+  ]
+ },
+ "vram_allocator": {
+  "total_mb": 12288,
+  "used_mb": 9100,
+  "models": [
+   {
+    "name": "llama3:8b",
+    "used_mb": 5800,
+    "processor": "GPU"
+   },
+   {
+    "name": "whisper-large",
+    "used_mb": 3300,
+    "processor": "GPU"
+   }
+  ]
+ },
+ "weather": {
+  "label": "Roma",
+  "date": "oggi",
+  "icon": "partly",
+  "tmax": 21,
+  "tmin": 12,
+  "rain": 20
+ },
+ "viewer_3d": {
+  "title": "Vaso",
+  "format": "glb"
+ },
+ "studio_3d": {
+  "title": "Tavolo",
+  "parts": []
+ },
+ "g_notify": {
+  "items": [
+   {
+    "kind": "mail",
+    "title": "Nuova email da Marco",
+    "who": "Marco",
+    "at": 1763000000
+   },
+   {
+    "kind": "calendar",
+    "title": "Riunione alle 10:30",
+    "at": 1763000000
+   }
+  ],
+  "groups": []
+ },
+ "study": {
+  "topic": "Cucina italiana",
+  "level": "principiante",
+  "level_n": 2,
+  "progress": 35,
+  "today_minutes": 18,
+  "state": "studying",
+  "target": "Esperto di cucina"
+ },
+ "alarm": {
+  "title": "Fumo in cucina",
+  "room": "Cucina",
+  "kind": "smoke",
+  "message": "Rilevato fumo, controlla subito.",
+  "at": 1763000000
+ },
+ "home_rooms": {
+  "rooms": [
+   {
+    "name": "Salotto",
+    "people": [
+     "Nunzio"
+    ]
+   },
+   {
+    "name": "Cucina",
+    "people": []
+   },
+   {
+    "name": "Camera",
+    "people": [
+     "Anna"
+    ]
+   }
+  ]
+ },
+ "system_update": {
+  "checked": 1763000000,
+  "count": 4,
+  "local": "5.8.0",
+  "remote": "5.8.1",
+  "auto": true,
+  "changes": [
+   {
+    "kind": "feat",
+    "title": "Nuovo meteo"
+   },
+   {
+    "kind": "fix",
+    "title": "Audio più stabile"
+   }
+  ]
+ },
+ "subsystem_alert": {
+  "items": [
+   {
+    "label": "Voce",
+    "key": "voice"
+   },
+   {
+    "label": "Telecamere",
+    "key": "cameras"
+   }
+  ]
+ },
+ "karaoke": {
+  "title": "Volare",
+  "artist": "Domenico Modugno",
+  "duration": 215,
+  "started_at": 1763000000,
+  "lyrics": [
+   {
+    "t": 0,
+    "text": "Penso che un sogno così non ritorni mai più"
+   }
+  ]
+ },
+ "music": {
+  "title": "Volare",
+  "artist": "Domenico Modugno",
+  "album": "Nel blu dipinto di blu",
+  "year": 1958,
+  "genre": "Pop",
+  "duration": 215,
+  "started_at": 1763000000
+ },
+ "sun_cycle": {
+  "place": "Roma",
+  "sunrise": "06:52",
+  "sunset": "16:58",
+  "rise_ts": 1763000000,
+  "set_ts": 1763036000
+ },
+ "health_hub": {
+  "person": "Nunzio",
+  "level": "mid",
+  "metric": "sleep",
+  "goals": [],
+  "signals": []
+ },
+ "vital_check": {
+  "person": "Nunzio",
+  "name": "Nunzio",
+  "heart": 68,
+  "breath": 14,
+  "source": "webcam",
+  "values": {
+   "heart": 68,
+   "breath": 14
+  }
+ },
+ "defense_status": {
+  "mode": "calm",
+  "posture": "calm",
+  "defenses": []
+ },
+ "defense_incidents": {
+  "incidents": [
+   {
+    "kind": "port_scan",
+    "severity": "medium",
+    "defenses": [
+     "block"
+    ],
+    "expires": 1763003600
+   }
+  ]
+ },
+ "firewall_logs": {
+  "entries": [
+   {
+    "src": "203.0.113.45",
+    "dst": "192.168.1.10",
+    "dpt": 22,
+    "proto": "TCP",
+    "kind": "brute_force",
+    "severity": "high",
+    "time": 1763000000
+   }
+  ]
+ },
+ "f1_race": {
+  "race": "Gran Premio d'Italia",
+  "session": "Gara",
+  "drivers": [
+   {
+    "pos": 1,
+    "name": "Leclerc",
+    "team": "Ferrari",
+    "points": 25,
+    "time": "1:21:04"
+   },
+   {
+    "pos": 2,
+    "name": "Verstappen",
+    "team": "Red Bull",
+    "points": 18
+   }
+  ]
+ },
+ "sport_match": {
+  "league_name": "Serie A",
+  "state": "in",
+  "home": {
+   "name": "Roma",
+   "score": 2
+  },
+  "away": {
+   "name": "Lazio",
+   "score": 1
+  },
+  "clock": "67'",
+  "venue": "Stadio Olimpico"
+ },
+ "sport_table": {
+  "league_name": "Serie A",
+  "rows": [
+   {
+    "rank": 1,
+    "name": "Inter",
+    "points": 31
+   },
+   {
+    "rank": 2,
+    "name": "Napoli",
+    "points": 29
+   },
+   {
+    "rank": 3,
+    "name": "Roma",
+    "points": 27
+   }
+  ]
+ },
+ "hockey_match": {
+  "league_name": "NHL",
+  "state": "in",
+  "home": {
+   "name": "Rangers",
+   "score": 3
+  },
+  "away": {
+   "name": "Bruins",
+   "score": 2
+  },
+  "period": 2
+ },
+ "listening": {
+  "state": "listening"
+ },
+ "live_cam": {
+  "name": "Giardino",
+  "on": true
+ },
+ "tv_player": {
+  "name": "Rai 1",
+  "state": "playing"
+ }
+}

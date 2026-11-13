@@ -139,7 +139,7 @@ flowchart LR
 | :--- | :--- | :--- | :--- |
 | Superviseur | `installer_wizard/backend/` | Python, FastAPI, Uvicorn | Installation, cycle de vie, API HTTP et WebSocket, authentification, mises à jour, découverte des modules |
 | Modules fonctionnels | `installer_wizard/features/` | Python | Fonctionnalités : routes, commandes vocales et de chat, outils pour les agents, traductions |
-| Widgets | `installer_wizard/widgets/` | JavaScript, CSS | Widgets d'affichage autodescriptifs |
+| Widgets | `installer_wizard/agenti/<catégorie>/<agent>/widget/` | JavaScript, CSS | Widgets d'affichage en mots simples, dans chaque agent |
 | Core | `server/` | Python | Routage des requêtes, moteurs de raisonnement, moteur de décision, plasticité, event sourcing, génération de compétences |
 | Couche native | `native/crates/` | Rust (edition 2024) | Code critique pour les performances et la sécurité, exposé à Python via PyO3 |
 | Sandbox broker | `sandbox_broker/` | Python, Rust | Exécution isolée du code généré, contrôle du trafic sortant |
@@ -341,7 +341,7 @@ features/<id>/
 └── language/        en.json, it.json, fr.json, es.json
 ```
 
-Les widgets suivent le même schéma dans `installer_wizard/widgets/<id>/` (`widget.json`, `widget.js`, `widget.css`, `language/`). Le superviseur découvre modules et widgets au démarrage ; les outils sont mis à la disposition de l'agent, de l'équipe de spécialistes et des clients MCP externes sans câblage supplémentaire.
+Les widgets suivent le même schéma dans `installer_wizard/agenti/<…>/<agent>/widget/<id>/` (`widget.json`, `widget.js`, `widget.css`, `language/`). Le superviseur découvre modules et widgets au démarrage ; les outils sont mis à la disposition de l'agent, de l'équipe de spécialistes et des clients MCP externes sans câblage supplémentaire.
 
 Des serveurs MCP externes peuvent être connectés comme sources d'outils, et Nuxiva expose ses propres outils, ressources et prompts en tant que serveur MCP sur le port 8080 (voir `installer_wizard/MCP.md`).
 

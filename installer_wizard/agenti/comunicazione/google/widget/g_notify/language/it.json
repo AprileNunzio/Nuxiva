@@ -16,6 +16,10 @@
     "tasks": "Attività",
     "due": "In scadenza",
     "note": "Nota",
-    "calm": "Niente di nuovo"
+    "calm": "Niente di nuovo",
+    "simple_title": "Novità per te",
+    "say_n_one": "Hai una novità",
+    "say_n_other": "Hai {{n}} novità",
+    "say_none": "Nessuna novità"
   }
 }

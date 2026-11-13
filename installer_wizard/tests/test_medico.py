@@ -59,7 +59,7 @@ class AgentWidgetsTest(unittest.TestCase):
         owners = {p.parent.name: owner for p, owner in _widgets.manifests(WIDGETS_DIR)}
         self.assertEqual(owners["vital_check"], "medico")
         self.assertEqual(owners["chess_3d"], "games")
-        self.assertEqual(owners["clock"], "")
+        self.assertEqual(owners["clock"], "location")
         self.assertFalse((WIDGETS_DIR / "vital_check").exists())
 
     def test_widget_ids_are_unique_across_agents_and_shared_folder(self):

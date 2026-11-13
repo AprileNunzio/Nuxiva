@@ -36,6 +36,7 @@
     "side_white": "White",
     "side_black": "Black",
     "hint_question_moves": "I'm playing chess. Moves so far, from square to square: {{moves}}. It's {{turn}} to move. Which move do you suggest and why, briefly?",
-    "hint_failed": "Hint not available, try again shortly"
+    "hint_failed": "Hint not available, try again shortly",
+    "simple_title": "Chess"
   }
 }

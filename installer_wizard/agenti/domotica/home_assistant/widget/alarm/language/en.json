@@ -21,6 +21,7 @@
     "advice_flood": "Shut off the main water valve and don't touch wet sockets or appliances.",
     "advice_intrusion": "Stay somewhere safe, don't confront anyone and call 112.",
     "advice_co": "Open the windows, get into fresh air and call 112.",
-    "advice_generic": "Check what is happening and call 112 if needed."
+    "advice_generic": "Check what is happening and call 112 if needed.",
+    "simple_title": "Alarm"
   }
 }

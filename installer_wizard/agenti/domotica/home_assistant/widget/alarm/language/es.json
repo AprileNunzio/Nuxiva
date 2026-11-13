@@ -21,6 +21,7 @@
     "advice_flood": "Cierra la llave general del agua y no toques enchufes ni aparatos mojados.",
     "advice_intrusion": "Quédate en un lugar seguro, no te enfrentes a nadie y llama al 112.",
     "advice_co": "Abre las ventanas, sal al aire libre y llama al 112.",
-    "advice_generic": "Comprueba qué ocurre y, si hace falta, llama al 112."
+    "advice_generic": "Comprueba qué ocurre y, si hace falta, llama al 112.",
+    "simple_title": "Alarma"
   }
 }

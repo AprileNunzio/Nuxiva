@@ -21,5 +21,10 @@
   "icon3d": "./icon.png",
   "profile": {
     "project": true
-  }
+  },
+  "widgets": [
+    "cicd_tracker",
+    "code_view",
+    "git_diff"
+  ]
 }

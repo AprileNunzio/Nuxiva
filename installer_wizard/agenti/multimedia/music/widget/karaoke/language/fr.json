@@ -11,6 +11,7 @@
     "no_lyrics": "Paroles indisponibles pour ce titre",
     "next_in": "Reprise dans {{n}} s",
     "from_lrclib": "Paroles : LRCLIB",
-    "from_local": "Paroles : fichier .lrc local"
+    "from_local": "Paroles : fichier .lrc local",
+    "simple_title": "Chantons"
   }
 }

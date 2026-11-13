@@ -19,6 +19,8 @@
     "less": "Mostra meno",
     "all": "Classifica completa ({{n}})",
     "zone_up": "Zona coppe",
-    "zone_down": "Retrocessione"
+    "zone_down": "Retrocessione",
+    "simple_title": "Classifica",
+    "say_first": "{{name}} è primo in classifica"
   }
 }

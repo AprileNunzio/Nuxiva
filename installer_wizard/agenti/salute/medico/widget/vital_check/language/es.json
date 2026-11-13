@@ -14,6 +14,8 @@
     "src_camera": "Desde la webcam",
     "not_medical": "Estimación informativa, no médica",
     "aria_row": "{{name}}: {{bpm}} latidos por minuto",
-    "unit": "lpm"
+    "unit": "lpm",
+    "simple_title": "Control del latido",
+    "say_bpm": "Tu corazón late {{n}} veces por minuto"
   }
 }

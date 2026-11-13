@@ -16,6 +16,10 @@
     "h_attack": "Say “Nuxiva, show me the attack” to see what is going on.",
     "h_observing": "Defence is only observing: turn protection on to block attacks.",
     "defending_one": "{{n}} defence active",
-    "defending_other": "{{n}} defences active"
+    "defending_other": "{{n}} defences active",
+    "simple_title": "Is the house safe?",
+    "say_alert": "Someone is attacking the network: I'm defending it",
+    "say_watch": "I'm watching more carefully",
+    "say_calm": "The house is safe"
   }
 }

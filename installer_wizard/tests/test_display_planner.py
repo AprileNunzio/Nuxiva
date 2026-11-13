@@ -26,11 +26,12 @@ class CandidateTests(unittest.TestCase):
 
     def test_desk_items_become_planner_candidates(self):
         c = candidate({"key": "bind:x", "id": "tv_player", "priority": 300, "takeover": True, "urgent": True,
-                       "personal": True, "weight": "nope", "shown_at": 990.0, "expires_at": 1090.0}, 1000.0)
+                       "personal": True, "weight": "nope", "shown_at": 990.0, "expires_at": 1090.0,
+                       "media": "audio", "exclusive": "video", "category": "media"}, 1000.0)
         self.assertEqual((c["importance"], c["urgency"], c["size"], c["sensitivity"]), (100, 3, "full", "personal"))
         self.assertTrue(c["forced"])
         self.assertEqual((c["cost"], c["age_ms"], c["ttl_ms"]), (1.0, 10000, 100000))
-        self.assertEqual((c["media"], c["exclusive"]), ("audio", "video"))
+        self.assertEqual((c["media"], c["exclusive"], c["category"]), ("audio", "video", "media"))
         self.assertEqual(candidate({"key": "k", "id": "clock", "size": "weird"}, 5.0)["size"], "m")
 
 

@@ -21,6 +21,7 @@
     "advice_flood": "Chiudi il rubinetto generale e non toccare prese o apparecchi bagnati.",
     "advice_intrusion": "Resta in un posto sicuro, non affrontare nessuno e chiama il 112.",
     "advice_co": "Apri le finestre, esci all'aria aperta e chiama il 112.",
-    "advice_generic": "Controlla cosa succede e, se serve, chiama il 112."
+    "advice_generic": "Controlla cosa succede e, se serve, chiama il 112.",
+    "simple_title": "Allarme"
   }
 }

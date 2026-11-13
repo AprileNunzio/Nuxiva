@@ -19,6 +19,8 @@
     "less": "Afficher moins",
     "all": "Classement complet ({{n}})",
     "zone_up": "Places européennes",
-    "zone_down": "Relégation"
+    "zone_down": "Relégation",
+    "simple_title": "Classement",
+    "say_first": "{{name}} est premier au classement"
   }
 }

@@ -15,6 +15,7 @@
     "repair_critical": "An essential component is down: the supervisor is restarting it, some features are paused",
     "critical": "essential",
     "tries_one": "{{n}} failed check",
-    "tries_other": "{{n}} failed checks"
+    "tries_other": "{{n}} failed checks",
+    "simple_title": "Something is not responding"
   }
 }

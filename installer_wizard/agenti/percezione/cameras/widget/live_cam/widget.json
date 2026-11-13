@@ -13,5 +13,12 @@
   ],
   "description": "Immagine in diretta di una webcam o telecamera: si apre con la voce («apri la webcam salotto»), anche a tutto schermo.",
   "tone": "red",
-  "essential": true
+  "essential": true,
+  "category": "home",
+  "chrome": false,
+  "exclusive": "video",
+  "simple": {
+    "icon": "video",
+    "mode": "open"
+  }
 }

@@ -12,5 +12,10 @@
   "ttl": 1800,
   "tone": "violet",
   "essential": true,
-  "chrome": false
+  "chrome": false,
+  "category": "work",
+  "simple": {
+    "icon": "cube",
+    "mode": "open"
+  }
 }

@@ -36,6 +36,7 @@
     "side_white": "Blanco",
     "side_black": "Negro",
     "hint_question_moves": "Estoy jugando al ajedrez. Jugadas hasta ahora, de casilla a casilla: {{moves}}. Ahora mueve el {{turn}}. ¿Qué jugada me aconsejas y por qué, en breve?",
-    "hint_failed": "Sugerencia no disponible, inténtalo en un momento"
+    "hint_failed": "Sugerencia no disponible, inténtalo en un momento",
+    "simple_title": "Ajedrez"
   }
 }

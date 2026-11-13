@@ -48,5 +48,10 @@
       "type": "text",
       "default": ""
     }
+  ],
+  "widgets": [
+    "clock",
+    "route",
+    "sun_cycle"
   ]
 }

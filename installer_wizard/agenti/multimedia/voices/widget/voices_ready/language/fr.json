@@ -1,0 +1,20 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/voices_ready",
+    "version": "1.1.0"
+  },
+  "dictionary": {
+    "label": "Voix prêtes",
+    "languages_one": "{{n}} langue",
+    "languages_other": "{{n}} langues",
+    "voices": "voix prêtes à l’emploi",
+    "n_voices_one": "{{n}} voix",
+    "n_voices_other": "{{n}} voix",
+    "more": "+{{n}} autres langues",
+    "hint": "Dites «parle-moi en {{lang}}» ou demandez-moi une nouvelle langue : je la télécharge tout seul.",
+    "simple_title": "Langues que je parle",
+    "say_n_one": "Je parle une langue",
+    "say_n_other": "Je parle {{n}} langues"
+  }
+}

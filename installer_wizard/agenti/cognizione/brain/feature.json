@@ -68,5 +68,9 @@
       "default": "particles,depth_parallax,gaussian_splat,neural_radiance,diorama"
     }
   ],
-  "surface": "hidden"
+  "surface": "hidden",
+  "widgets": [
+    "api_costs",
+    "context_window"
+  ]
 }

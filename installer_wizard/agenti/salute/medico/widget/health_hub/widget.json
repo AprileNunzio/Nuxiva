@@ -19,5 +19,10 @@
     "gpu": 2,
     "cpu": 2
   },
-  "chrome": false
+  "chrome": false,
+  "category": "personal",
+  "simple": {
+    "icon": "user",
+    "mode": "collapse"
+  }
 }

@@ -18,6 +18,7 @@
     "bonds_other": "{{n}} legami",
     "error_engine": "Motore molecolare non disponibile su questo sistema",
     "error_library": "Libreria 3D non disponibile",
-    "error_data": "Struttura non leggibile"
+    "error_data": "Struttura non leggibile",
+    "simple_title": "Molecola in 3D"
   }
 }

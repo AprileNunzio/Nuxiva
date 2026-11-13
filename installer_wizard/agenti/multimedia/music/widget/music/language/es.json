@@ -8,6 +8,7 @@
     "listening": "Música",
     "playing": "Reproduciendo",
     "silence": "Ninguna canción reconocida",
-    "lyrics": "Letra disponible"
+    "lyrics": "Letra disponible",
+    "simple_title": "Música"
   }
 }

@@ -12,5 +12,11 @@
   ],
   "ttl": 120,
   "description": "Partita e risultato hockey su ghiaccio: diretta periodi, gol e power play.",
-  "tone": "cyan"
+  "tone": "cyan",
+  "category": "info",
+  "chrome": false,
+  "simple": {
+    "icon": "star",
+    "mode": "collapse"
+  }
 }

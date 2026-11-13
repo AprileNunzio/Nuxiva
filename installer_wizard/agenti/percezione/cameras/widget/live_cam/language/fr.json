@@ -12,6 +12,7 @@
     "close": "Fermer",
     "snapshot": "Enregistrer une image",
     "reconnecting": "Reconnexion dans {{n}} s…",
-    "unavailable_retry": "Caméra injoignable, nouvel essai dans {{n}} s"
+    "unavailable_retry": "Caméra injoignable, nouvel essai dans {{n}} s",
+    "simple_title": "Caméra en direct"
   }
 }

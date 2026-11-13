@@ -11,6 +11,7 @@ from config import STATE_DIR, WIDGETS_DIR
 from agenti._widgets import manifests as widget_manifests, system_dirs as widget_system_dirs
 from agenti.desktop import manifest
 from agenti.desktop.manifest import clamp_refresh
+from agenti.desktop.widget_catalog import item_fields, register_categories, report_conformance
 from agenti.desktop.novelty import AUTO_CAP, Novelty
 from agenti.desktop import presence_bridge
 from agenti.desktop.privacy import privacy
@@ -86,7 +87,9 @@ class Desk:
                 errors.append({"path": p, "error": str(exc)[:200]})
                 continue
             manifest.normalize(m, folder, widget_system_dirs(SYSTEM_DIR))
+            report_conformance(m, folder)
             found[m["id"]] = m
+        register_categories(found)
         new = [w for w in found if w not in self.widgets and self.widgets]
         self.widgets, self.errors = found, errors
         for w in new:
@@ -287,15 +290,9 @@ class Desk:
                 continue
             m = self.widgets[i["id"]]
             prio = i["priority"] if i["priority"] is not None else self.priority(i["id"])
-            out.append({**i, "priority": prio, "size": m["size"], "name": m["name"], "icon": m["icon"],
-                        "rev": m["rev"], "css": m["has_css"], "chrome": m.get("chrome", True),
-                        "essential": m.get("essential", False), "urgent": m.get("urgent", False), "tone": m.get("tone", "cyan"),
-                        "pos": self.position(i["id"]), "overlay": m.get("overlay", False),
+            out.append({**i, **item_fields(m), "priority": prio, "pos": self.position(i["id"]),
                         "takeover": prio >= 90 and m["size"] == "full", "fullscreen": bool(i.get("fullscreen")),
-                        "sticky": bool(m.get("sticky")), "immersive": bool(m.get("immersive")),
-                        "personal": m.get("personal", False), "refresh": self.refresh_of(i["id"]),
-                        "sensitivity": m.get("sensitivity"), "guest_safe": bool(m.get("guest_safe")),
-                        "client_id": i.get("client_id"), "screen_role": m.get("screen_role"),
+                        "refresh": self.refresh_of(i["id"]), "client_id": i.get("client_id"),
                         "weight": gpu.weight(m.get("cost"), m["size"], None)})
         out = self._rotate(out)
         wanted = {wid: p["screen"] for wid, p in self.prefs.items() if p.get("screen") is not None}

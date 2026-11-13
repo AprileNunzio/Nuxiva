@@ -23,6 +23,10 @@
     "k_arp_spoof": "ARP spoofing",
     "k_dns_tunnel": "Túnel DNS",
     "k_icmp_flood": "ICMP flood",
-    "k_exfiltration": "Exfiltración"
+    "k_exfiltration": "Exfiltración",
+    "simple_title": "Intentos bloqueados",
+    "say_n_one": "He detenido un intento",
+    "say_n_other": "He detenido {{n}} intentos",
+    "say_none": "Ningún intento que detener"
   }
 }

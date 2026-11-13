@@ -1,0 +1,22 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/expert_work",
+    "version": "1.1.0"
+  },
+  "dictionary": {
+    "label": "Esperto al lavoro",
+    "question": "Domanda",
+    "answer": "Risposta",
+    "steps": "Passaggi",
+    "status_thinking": "Ragiona",
+    "status_working": "Al lavoro",
+    "status_waiting": "In attesa",
+    "status_done": "Completato",
+    "elapsed": "Tempo trascorso",
+    "simple_title": "Un esperto ci pensa",
+    "say_done": "L'esperto ha finito",
+    "say_on": "Un esperto di {{who}} ci sta lavorando",
+    "say_on_plain": "Un esperto ci sta lavorando"
+  }
+}

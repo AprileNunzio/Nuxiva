@@ -22,6 +22,9 @@
     "out_won": "Victoire",
     "out_lost": "Défaite",
     "out_drew": "Nul",
-    "last": "Dernier"
+    "last": "Dernier",
+    "simple_title": "Match",
+    "say_vs": "{{home}} contre {{away}}",
+    "say_score": "{{home}} {{hs}} - {{aws}} {{away}}"
   }
 }

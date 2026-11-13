@@ -39,5 +39,15 @@
     "id": "nQuaNO36nu68",
     "url": "https://img.icons8.com/?size=240&id=nQuaNO36nu68&format=png"
   },
-  "surface": "settings"
+  "surface": "settings",
+  "widgets": [
+    "alert_error",
+    "alert_info",
+    "alert_warning",
+    "brief",
+    "calculator",
+    "clipboard_sync",
+    "text_long",
+    "text_short"
+  ]
 }

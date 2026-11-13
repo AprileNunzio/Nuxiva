@@ -13,5 +13,11 @@
     "stanze"
   ],
   "description": "Le stanze in cui i sensori di Home Assistant rilevano qualcuno in questo momento.",
-  "refresh": 10
+  "refresh": 10,
+  "category": "home",
+  "chrome": false,
+  "simple": {
+    "icon": "home",
+    "mode": "collapse"
+  }
 }

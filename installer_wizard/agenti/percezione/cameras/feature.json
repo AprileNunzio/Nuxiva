@@ -193,5 +193,9 @@
     "technique": "3d",
     "id": "MSyqQ3LgGhFt",
     "url": "https://img.icons8.com/?size=240&id=MSyqQ3LgGhFt&format=png"
-  }
+  },
+  "widgets": [
+    "cam_stream",
+    "live_cam"
+  ]
 }

@@ -15,6 +15,7 @@
     "repair_critical": "Un componente esencial está caído: el supervisor lo está reiniciando, algunas funciones están en pausa",
     "critical": "esencial",
     "tries_one": "{{n}} comprobación fallida",
-    "tries_other": "{{n}} comprobaciones fallidas"
+    "tries_other": "{{n}} comprobaciones fallidas",
+    "simple_title": "Algo no responde"
   }
 }

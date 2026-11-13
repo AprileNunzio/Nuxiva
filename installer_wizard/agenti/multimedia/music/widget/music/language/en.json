@@ -8,6 +8,7 @@
     "listening": "Music",
     "playing": "Playing",
     "silence": "No song recognised",
-    "lyrics": "Lyrics available"
+    "lyrics": "Lyrics available",
+    "simple_title": "Music"
   }
 }

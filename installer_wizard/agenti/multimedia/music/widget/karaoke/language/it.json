@@ -11,6 +11,7 @@
     "no_lyrics": "Testo non disponibile per questo brano",
     "next_in": "Si riparte tra {{n}} s",
     "from_lrclib": "Testo: LRCLIB",
-    "from_local": "Testo: file .lrc locale"
+    "from_local": "Testo: file .lrc locale",
+    "simple_title": "Cantiamo"
   }
 }

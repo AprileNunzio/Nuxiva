@@ -22,6 +22,9 @@
     "shots": "Shots on goal",
     "tag_pp": "Power play",
     "tag_sh": "Short-handed",
-    "tag_en": "Empty net"
+    "tag_en": "Empty net",
+    "simple_title": "Hockey match",
+    "say_vs": "{{home}} against {{away}}",
+    "say_score": "{{home}} {{hs}} - {{aws}} {{away}}"
   }
 }

@@ -8,6 +8,7 @@
     "state_idle": "Say “{{name}}” to talk to me",
     "state_listening": "Listening…",
     "state_transcribing": "Understanding…",
-    "state_off": "Microphone off"
+    "state_off": "Microphone off",
+    "simple_title": "I'm listening"
   }
 }

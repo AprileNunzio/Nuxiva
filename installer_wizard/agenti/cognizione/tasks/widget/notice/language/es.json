@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/notice",
+    "version": "1.1.0"
+  },
+  "dictionary": {
+    "notice": "Aviso",
+    "warning": "Atención",
+    "error": "Error",
+    "done": "Hecho",
+    "simple_title": "Un recordatorio"
+  }
+}

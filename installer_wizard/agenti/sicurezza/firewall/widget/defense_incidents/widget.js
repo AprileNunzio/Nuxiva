@@ -22,6 +22,11 @@
   };
 
   NuxivaDesk.register("defense_incidents", {
+    headline(d, ctx) {
+      const data = d && typeof d === "object" ? d : {};
+      const n = ctx.arr(data.incidents, 100).length;
+      return n ? { text: ctx.count("say_n", n), tone: "warn" } : { text: ctx.t("say_none"), tone: "ok" };
+    },
     render(el, raw, ctx) {
       const d = raw && typeof raw === "object" ? raw : {};
       const incidents = ctx.arr(d.incidents, 5).filter((i) => i && typeof i === "object");

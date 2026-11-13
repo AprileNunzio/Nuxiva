@@ -41,5 +41,9 @@
   ],
   "profile": {
     "heavy": true
-  }
+  },
+  "widgets": [
+    "studio_3d",
+    "viewer_3d"
+  ]
 }

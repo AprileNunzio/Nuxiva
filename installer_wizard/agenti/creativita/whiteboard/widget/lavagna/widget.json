@@ -11,5 +11,10 @@
     "lavagna"
   ],
   "description": "Lavagna condivisa: tu scrivi e disegni, Nuxiva scrive in azzurro e risolve i calcoli passo per passo. «Apri la lavagna a tutto schermo».",
-  "standalone": true
+  "standalone": true,
+  "category": "work",
+  "simple": {
+    "icon": "pen",
+    "mode": "open"
+  }
 }

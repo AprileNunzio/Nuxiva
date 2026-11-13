@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/crypto_ticker",
+    "version": "1.1.0"
+  },
+  "dictionary": {
+    "label": "Cryptomonnaies",
+    "market_up": "marché en hausse",
+    "market_down": "marché en baisse",
+    "updated": "mis à jour {{when}}",
+    "simple_title": "Monnaies numériques",
+    "say_price": "{{name}} vaut {{price}} aujourd'hui"
+  }
+}

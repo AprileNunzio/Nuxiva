@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/rag_sources",
+    "version": "1.1.0"
+  },
+  "dictionary": {
+    "label": "Fuentes",
+    "n_one": "{{n}} fuente",
+    "n_other": "{{n}} fuentes",
+    "strong": "Respuesta bien respaldada por los documentos",
+    "fair": "Respaldo parcial: revisa los pasajes clave",
+    "weak": "Fuentes poco pertinentes: la respuesta puede ser imprecisa",
+    "page": "p. {{p}}",
+    "more": "+{{n}} fuentes más",
+    "simple_title": "Dónde lo leí",
+    "say_found_one": "Encontré la respuesta en un documento",
+    "say_found_other": "Encontré la respuesta en {{n}} documentos",
+    "say_none": "No encontré documentos"
+  }
+}

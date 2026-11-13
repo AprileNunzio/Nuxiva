@@ -58,6 +58,7 @@
     "boards_head": "Saved boards",
     "name_placeholder": "Name for the new board",
     "delete_btn": "Delete",
-    "no_boards": "No saved boards"
+    "no_boards": "No saved boards",
+    "simple_title": "Whiteboard"
   }
 }

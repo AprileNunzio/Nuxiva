@@ -15,6 +15,7 @@
     "repair_critical": "Un composant essentiel est arrêté : le superviseur le redémarre, certaines fonctions sont suspendues",
     "critical": "essentiel",
     "tries_one": "{{n}} contrôle échoué",
-    "tries_other": "{{n}} contrôles échoués"
+    "tries_other": "{{n}} contrôles échoués",
+    "simple_title": "Quelque chose ne répond pas"
   }
 }

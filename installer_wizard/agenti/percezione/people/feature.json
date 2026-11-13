@@ -40,5 +40,9 @@
       "type": "bool",
       "default": "1"
     }
+  ],
+  "widgets": [
+    "mood_aura",
+    "people_seen"
   ]
 }

@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "it",
+    "scope": "widgets/audio_spectrum",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Spettro audio",
+    "silent": "Silenzio",
+    "simple_title": "Si sente la musica"
+  }
+}

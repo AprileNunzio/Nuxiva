@@ -16,6 +16,10 @@
     "h_attack": "Dites « Nuxiva, montre-moi l'attaque » pour voir ce qui se passe.",
     "h_observing": "La défense observe seulement : activez la protection pour bloquer les attaques.",
     "defending_one": "{{n}} défense active",
-    "defending_other": "{{n}} défenses actives"
+    "defending_other": "{{n}} défenses actives",
+    "simple_title": "La maison est-elle en sécurité ?",
+    "say_alert": "Quelqu'un attaque le réseau : je me défends",
+    "say_watch": "Je surveille avec plus d'attention",
+    "say_calm": "La maison est en sécurité"
   }
 }

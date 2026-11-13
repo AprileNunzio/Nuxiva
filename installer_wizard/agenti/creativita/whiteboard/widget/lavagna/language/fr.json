@@ -58,6 +58,7 @@
     "boards_head": "Tableaux enregistrés",
     "name_placeholder": "Nom du nouveau tableau",
     "delete_btn": "Supprimer",
-    "no_boards": "Aucun tableau enregistré"
+    "no_boards": "Aucun tableau enregistré",
+    "simple_title": "Tableau"
   }
 }

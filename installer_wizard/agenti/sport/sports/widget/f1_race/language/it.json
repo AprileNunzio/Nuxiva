@@ -24,6 +24,8 @@
     "s_sprint": "Sprint",
     "s_quali": "Qualifiche",
     "s_race": "Gara",
-    "teams_title": "Costruttori"
+    "teams_title": "Costruttori",
+    "simple_title": "Corsa di Formula 1",
+    "say_lead": "Il primo è {{name}}"
   }
 }

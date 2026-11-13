@@ -1,0 +1,28 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/energy_chart",
+    "version": "1.1.0"
+  },
+  "dictionary": {
+    "label": "Énergie",
+    "solar": "Soleil",
+    "home": "Maison",
+    "grid_in": "Du réseau",
+    "grid_out": "Vers le réseau",
+    "battery": "Batterie",
+    "today": "Consommé aujourd'hui",
+    "solar_today": "Produit aujourd'hui",
+    "cost": "Coût aujourd'hui",
+    "self_share": "Autonomie",
+    "exporting": "injection réseau",
+    "self_powered": "autonome",
+    "peak": "pic",
+    "history": "dernières 24 h",
+    "simple_title": "Énergie de la maison",
+    "say_more": "Le soleil produit plus d'énergie que tu n'en utilises",
+    "say_high": "Tu utilises beaucoup d'énergie",
+    "say_mid": "Tu utilises un peu d'énergie",
+    "say_low": "Tu utilises peu d'énergie"
+  }
+}

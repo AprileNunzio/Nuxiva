@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/audio_spectrum",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Audio spectrum",
+    "silent": "Silence",
+    "simple_title": "Music is playing"
+  }
+}

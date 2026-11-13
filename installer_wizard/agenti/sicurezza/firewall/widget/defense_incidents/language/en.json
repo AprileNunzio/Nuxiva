@@ -29,6 +29,10 @@
     "d_honeypot": "Diverted to an isolated decoy",
     "d_quarantine": "Device in quarantine",
     "d_sinkhole": "Suspicious destination cut off",
-    "d_country_block": "Country blocked"
+    "d_country_block": "Country blocked",
+    "simple_title": "What happened to the network",
+    "say_n_one": "I turned away one attempt",
+    "say_n_other": "I turned away {{n}} attempts",
+    "say_none": "No attempts, all quiet"
   }
 }

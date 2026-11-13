@@ -13,5 +13,11 @@
     "aggiornamento"
   ],
   "description": "Avvisa quando su GitHub c'è una nuova versione di Nuxiva con i test superati, con le novità.",
-  "refresh": 300
+  "refresh": 300,
+  "category": "system",
+  "chrome": false,
+  "simple": {
+    "icon": "download",
+    "mode": "collapse"
+  }
 }

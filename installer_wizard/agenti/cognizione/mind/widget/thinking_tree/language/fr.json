@@ -1,0 +1,19 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/thinking_tree",
+    "version": "1.1.0"
+  },
+  "dictionary": {
+    "label": "Raisonnement",
+    "steps_one": "{{n}} étape",
+    "steps_other": "{{n}} étapes",
+    "verified_one": "{{n}} vérifié",
+    "verified_other": "{{n}} vérifiés",
+    "discarded_one": "{{n}} écarté",
+    "discarded_other": "{{n}} écartés",
+    "conclusion": "Conclusion",
+    "simple_title": "Comment j'y réfléchis",
+    "say_plain": "Je réfléchis une étape à la fois"
+  }
+}

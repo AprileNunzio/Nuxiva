@@ -1,0 +1,28 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/energy_chart",
+    "version": "1.1.0"
+  },
+  "dictionary": {
+    "label": "Energy",
+    "solar": "Solar",
+    "home": "Home",
+    "grid_in": "From grid",
+    "grid_out": "To grid",
+    "battery": "Battery",
+    "today": "Used today",
+    "solar_today": "Produced today",
+    "cost": "Cost today",
+    "self_share": "Self-sufficiency",
+    "exporting": "exporting",
+    "self_powered": "self-powered",
+    "peak": "peak",
+    "history": "last 24 h",
+    "simple_title": "Home energy",
+    "say_more": "The sun makes more energy than you use",
+    "say_high": "You are using a lot of energy",
+    "say_mid": "You are using some energy",
+    "say_low": "You are using little energy"
+  }
+}

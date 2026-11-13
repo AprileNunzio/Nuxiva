@@ -15,6 +15,7 @@
     "player_missing": "player unavailable",
     "unmute": "Turn on sound",
     "retry": "Retry",
-    "retrying": "Retry {{n}} of {{max}}…"
+    "retrying": "Retry {{n}} of {{max}}…",
+    "simple_title": "Television"
   }
 }

@@ -17,5 +17,11 @@
   ],
   "description": "Materia e livello che Nuxiva sta studiando nei momenti di riposo.",
   "tone": "violet",
-  "refresh": 30
+  "refresh": 30,
+  "category": "work",
+  "chrome": false,
+  "simple": {
+    "icon": "study",
+    "mode": "collapse"
+  }
 }

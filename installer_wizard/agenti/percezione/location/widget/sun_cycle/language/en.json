@@ -15,6 +15,8 @@
     "sunset_in": "Sunset in {{t}}",
     "sunrise_in": "Sunrise in {{t}}",
     "day_pct": "Day {{n}}% through",
-    "night": "Night"
+    "night": "Night",
+    "simple_title": "Sunrise and sunset",
+    "say_set": "The sun sets at {{at}}"
   }
 }

@@ -81,5 +81,11 @@
     destroy(el) { stop(el); },
   };
 
+  impl.headline = (d, ctx) => {
+    const data = d && typeof d === "object" ? d : {};
+    const lead = ctx.arr(data.drivers ?? data.results, 30).find((x) => x && typeof x === "object");
+    const name = lead ? ctx.pick(lead, ["name"], 30) : "";
+    return name ? { text: ctx.t("say_lead", { name }) } : "";
+  };
   NuxivaDesk.register("f1_race", impl);
 })();

@@ -15,6 +15,7 @@
     "player_missing": "lecteur indisponible",
     "unmute": "Activer le son",
     "retry": "Réessayer",
-    "retrying": "Nouvel essai {{n}} sur {{max}}…"
+    "retrying": "Nouvel essai {{n}} sur {{max}}…",
+    "simple_title": "Télévision"
   }
 }

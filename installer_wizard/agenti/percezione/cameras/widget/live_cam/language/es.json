@@ -12,6 +12,7 @@
     "close": "Cerrar",
     "snapshot": "Guardar un fotograma",
     "reconnecting": "Reconectando en {{n}} s…",
-    "unavailable_retry": "Cámara no disponible, nuevo intento en {{n}} s"
+    "unavailable_retry": "Cámara no disponible, nuevo intento en {{n}} s",
+    "simple_title": "Cámara en vivo"
   }
 }

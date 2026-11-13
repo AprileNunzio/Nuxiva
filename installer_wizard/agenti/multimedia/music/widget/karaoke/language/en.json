@@ -11,6 +11,7 @@
     "no_lyrics": "Lyrics not available for this song",
     "next_in": "Back in {{n}} s",
     "from_lrclib": "Lyrics: LRCLIB",
-    "from_local": "Lyrics: local .lrc file"
+    "from_local": "Lyrics: local .lrc file",
+    "simple_title": "Let's sing"
   }
 }

@@ -9,6 +9,7 @@
     "slow": "Está tardando más de lo normal",
     "offline": "El diorama no responde",
     "missing": "Diorama no encontrado",
-    "retry": "Reintentar"
+    "retry": "Reintentar",
+    "simple_title": "Escena en 3D"
   }
 }

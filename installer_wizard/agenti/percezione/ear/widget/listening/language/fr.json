@@ -8,6 +8,7 @@
     "state_idle": "Dites « {{name}} » pour me parler",
     "state_listening": "Je vous écoute…",
     "state_transcribing": "Je comprends…",
-    "state_off": "Microphone éteint"
+    "state_off": "Microphone éteint",
+    "simple_title": "Je t'écoute"
   }
 }

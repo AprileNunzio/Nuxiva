@@ -16,6 +16,10 @@
     "tasks": "Tasks",
     "due": "Due",
     "note": "Note",
-    "calm": "Nothing new"
+    "calm": "Nothing new",
+    "simple_title": "News for you",
+    "say_n_one": "You have one piece of news",
+    "say_n_other": "You have {{n}} pieces of news",
+    "say_none": "No news"
   }
 }

@@ -11,6 +11,7 @@
     "no_lyrics": "Letra no disponible para esta canción",
     "next_in": "Vuelve en {{n}} s",
     "from_lrclib": "Letra: LRCLIB",
-    "from_local": "Letra: archivo .lrc local"
+    "from_local": "Letra: archivo .lrc local",
+    "simple_title": "Cantemos"
   }
 }

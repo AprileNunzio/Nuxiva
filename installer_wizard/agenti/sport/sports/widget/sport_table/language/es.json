@@ -19,6 +19,8 @@
     "less": "Mostrar menos",
     "all": "Clasificación completa ({{n}})",
     "zone_up": "Puestos europeos",
-    "zone_down": "Descenso"
+    "zone_down": "Descenso",
+    "simple_title": "Clasificación",
+    "say_first": "{{name}} es primero en la clasificación"
   }
 }

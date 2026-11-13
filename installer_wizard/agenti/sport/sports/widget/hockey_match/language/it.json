@@ -22,6 +22,9 @@
     "shots": "Tiri in porta",
     "tag_pp": "In superiorità numerica",
     "tag_sh": "In inferiorità numerica",
-    "tag_en": "A porta vuota"
+    "tag_en": "A porta vuota",
+    "simple_title": "Partita di hockey",
+    "say_vs": "{{home}} contro {{away}}",
+    "say_score": "{{home}} {{hs}} - {{aws}} {{away}}"
   }
 }

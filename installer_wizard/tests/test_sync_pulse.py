@@ -9,7 +9,7 @@ from agenti.google.errors import GoogleApiError
 from agenti.people import focus, sync_view
 from agenti.people.sync_board import SyncBoard, board
 
-WIDGET = Path(__file__).resolve().parents[1] / "widgets" / "sync_pulse"
+WIDGET = Path(__file__).resolve().parents[1] / "agenti" / "comunicazione" / "google" / "widget" / "sync_pulse"
 
 
 class BoardTest(unittest.TestCase):

@@ -45,5 +45,8 @@
       "type": "text",
       "default": ""
     }
+  ],
+  "widgets": [
+    "study"
   ]
 }

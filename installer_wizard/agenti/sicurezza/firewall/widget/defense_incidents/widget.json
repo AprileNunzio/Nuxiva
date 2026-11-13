@@ -6,9 +6,19 @@
   "size": "m",
   "tone": "red",
   "agent": "firewall",
-  "intents": ["defense_incidents", "attacchi", "chi mi attacca", "mostrami l'attacco"],
+  "intents": [
+    "defense_incidents",
+    "attacchi",
+    "chi mi attacca",
+    "mostrami l'attacco"
+  ],
   "description": "Chi sta provando ad entrare, da quale paese e cosa ha fatto Nuxiva per difenderti.",
   "refresh": 5,
   "chrome": false,
-  "essential": true
+  "essential": true,
+  "category": "info",
+  "simple": {
+    "icon": "shield",
+    "mode": "collapse"
+  }
 }

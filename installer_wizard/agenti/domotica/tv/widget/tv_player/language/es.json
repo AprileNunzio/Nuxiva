@@ -15,6 +15,7 @@
     "player_missing": "reproductor no disponible",
     "unmute": "Activar el sonido",
     "retry": "Reintentar",
-    "retrying": "Nuevo intento {{n}} de {{max}}…"
+    "retrying": "Nuevo intento {{n}} de {{max}}…",
+    "simple_title": "Televisión"
   }
 }

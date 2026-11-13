@@ -1,0 +1,26 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/clipboard_sync",
+    "version": "1.2.0"
+  },
+  "dictionary": {
+    "label": "Portapapeles",
+    "empty": "Portapapeles vacío",
+    "chars_one": "{{n}} carácter",
+    "chars_other": "{{n}} caracteres",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "copy_failed": "No copiado",
+    "reveal": "Mostrar",
+    "hide": "Ocultar",
+    "hidden": "Contenido oculto",
+    "kind_secret": "privado",
+    "from": "desde {{source}}",
+    "stats": "{{w}} palabras · {{l}} líneas",
+    "words": "{{w}} palabras",
+    "simple_title": "Texto copiado",
+    "say_from": "{{who}} copió un texto",
+    "say_plain": "Copiaste un texto"
+  }
+}

@@ -22,6 +22,9 @@
     "shots": "Tirs au but",
     "tag_pp": "En supériorité numérique",
     "tag_sh": "En infériorité numérique",
-    "tag_en": "Cage vide"
+    "tag_en": "Cage vide",
+    "simple_title": "Match de hockey",
+    "say_vs": "{{home}} contre {{away}}",
+    "say_score": "{{home}} {{hs}} - {{aws}} {{away}}"
   }
 }

@@ -8,6 +8,10 @@
     "label": "Pièces",
     "occupied_one": "{{n}} occupée",
     "occupied_other": "{{n}} occupées",
-    "none": "Personne détecté à la maison"
+    "none": "Personne détecté à la maison",
+    "simple_title": "Qui est dans chaque pièce",
+    "say_n_one": "Il y a une personne à la maison",
+    "say_n_other": "Il y a {{n}} personnes à la maison",
+    "say_none": "Je ne vois personne à la maison"
   }
 }

@@ -1,5 +1,5 @@
 use crate::candidate::{Candidate, Size};
-use crate::category::known_widgets;
+use crate::category::Category;
 use crate::context::{Context, Mode, Previous, Screen};
 use crate::grid::Slot;
 use crate::nucleus::Form;
@@ -9,6 +9,7 @@ use crate::select::Reason;
 use nuxiva_display_domain::{AudienceKind, Sensitivity};
 
 pub fn cand(key: &str, widget: &str) -> Candidate {
+    crate::fixtures::install();
     Candidate {
         key: key.into(),
         widget: widget.into(),
@@ -376,17 +377,45 @@ fn invalid_policies_and_inputs_are_rejected() {
 }
 
 #[test]
-fn every_installed_widget_has_a_category() {
-    let dir =
-        std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../../installer_wizard/widgets");
-    let Ok(entries) = std::fs::read_dir(dir) else {
-        return;
-    };
-    let known: Vec<&str> = known_widgets().collect();
-    for entry in entries.flatten() {
-        if entry.path().join("widget.json").exists() {
-            let name = entry.file_name().to_string_lossy().to_string();
-            assert!(known.contains(&name.as_str()), "{name}");
+fn every_installed_widget_declares_a_valid_category() {
+    let root =
+        std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../../installer_wizard/agenti");
+    let mut seen = 0;
+    for category in std::fs::read_dir(root).into_iter().flatten().flatten() {
+        for agent in std::fs::read_dir(category.path())
+            .into_iter()
+            .flatten()
+            .flatten()
+        {
+            let widgets = agent.path().join("widget");
+            for entry in std::fs::read_dir(widgets).into_iter().flatten().flatten() {
+                let Ok(raw) = std::fs::read_to_string(entry.path().join("widget.json")) else {
+                    continue;
+                };
+                let manifest: serde_json::Value = serde_json::from_str(&raw).unwrap_or_default();
+                let declared = manifest.get("category").and_then(serde_json::Value::as_str);
+                let name = entry.file_name().to_string_lossy().to_string();
+                assert!(
+                    declared.and_then(Category::parse).is_some(),
+                    "{name}: {declared:?}"
+                );
+                seen += 1;
+            }
         }
     }
+    assert!(seen == 0 || seen > 50);
+}
+
+#[test]
+fn registry_build_rejects_bad_ids() {
+    let built = crate::category::build(vec![
+        ("ok_widget".to_owned(), Category::Safety),
+        ("Bad Id".to_owned(), Category::Safety),
+        (String::new(), Category::Safety),
+        ("x".repeat(65), Category::Safety),
+    ]);
+    assert_eq!(built.len(), 1);
+    assert_eq!(built.get("ok_widget"), Some(&Category::Safety));
+    assert_eq!(Category::parse("safety"), Some(Category::Safety));
+    assert_eq!(Category::parse("nope"), None);
 }

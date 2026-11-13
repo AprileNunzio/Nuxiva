@@ -12,5 +12,11 @@
   "description": "Fumo, gas, allagamento, intrusione: occupa tutto lo schermo e lo ripete a voce.",
   "tone": "red",
   "essential": true,
-  "urgent": true
+  "urgent": true,
+  "category": "safety",
+  "chrome": false,
+  "simple": {
+    "icon": "alert",
+    "mode": "open"
+  }
 }

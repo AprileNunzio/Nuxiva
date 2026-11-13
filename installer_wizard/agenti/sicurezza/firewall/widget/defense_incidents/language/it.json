@@ -29,6 +29,10 @@
     "d_honeypot": "Deviato su un'esca isolata",
     "d_quarantine": "Dispositivo in quarantena",
     "d_sinkhole": "Destinazione sospetta isolata",
-    "d_country_block": "Paese bloccato"
+    "d_country_block": "Paese bloccato",
+    "simple_title": "Cosa è successo alla rete",
+    "say_n_one": "Ho respinto un tentativo",
+    "say_n_other": "Ho respinto {{n}} tentativi",
+    "say_none": "Nessun tentativo, tutto tranquillo"
   }
 }

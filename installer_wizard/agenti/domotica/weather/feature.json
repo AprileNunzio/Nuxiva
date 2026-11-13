@@ -191,5 +191,8 @@
       "\\b(?:meteo|previsioni)\\b",
       "\\b(?:pioverà|piove|nevica)\\b"
     ]
-  }
+  },
+  "widgets": [
+    "weather"
+  ]
 }

@@ -22,6 +22,9 @@
     "out_won": "Win",
     "out_lost": "Loss",
     "out_drew": "Draw",
-    "last": "Last"
+    "last": "Last",
+    "simple_title": "Match",
+    "say_vs": "{{home}} against {{away}}",
+    "say_score": "{{home}} {{hs}} - {{aws}} {{away}}"
   }
 }

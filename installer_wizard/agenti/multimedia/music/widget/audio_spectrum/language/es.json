@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "locale": "es",
+    "scope": "widgets/audio_spectrum",
+    "version": "1.0.0"
+  },
+  "dictionary": {
+    "label": "Espectro de audio",
+    "silent": "Silencio",
+    "simple_title": "Suena la música"
+  }
+}

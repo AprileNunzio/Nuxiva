@@ -12,5 +12,11 @@
   ],
   "ttl": 120,
   "description": "Partita della squadra preferita: diretta, gol, risultato o prossimo incontro.",
-  "tone": "green"
+  "tone": "green",
+  "category": "info",
+  "chrome": false,
+  "simple": {
+    "icon": "star",
+    "mode": "collapse"
+  }
 }

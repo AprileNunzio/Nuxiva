@@ -139,7 +139,7 @@ flowchart LR
 | :--- | :--- | :--- | :--- |
 | Supervisor | `installer_wizard/backend/` | Python, FastAPI, Uvicorn | Installation, lifecycle, HTTP and WebSocket APIs, authentication, updates, module discovery |
 | Feature modules | `installer_wizard/features/` | Python | Capabilities: routes, voice and chat commands, agent tools, translations |
-| Widgets | `installer_wizard/widgets/` | JavaScript, CSS | Self-describing display widgets |
+| Widgets | `installer_wizard/agenti/<category>/<agent>/widget/` | JavaScript, CSS | Plain-language display widgets, shipped inside each agent |
 | Core | `server/` | Python | Request routing, reasoning engines, decision engine, plasticity, event sourcing, skill generation |
 | Native layer | `native/crates/` | Rust (edition 2024) | Performance- and security-critical code, exposed to Python through PyO3 |
 | Sandbox broker | `sandbox_broker/` | Python, Rust | Isolated execution of generated code, egress control |
@@ -341,7 +341,7 @@ features/<id>/
 └── language/        en.json, it.json, fr.json, es.json
 ```
 
-Widgets follow the same pattern in `installer_wizard/widgets/<id>/` (`widget.json`, `widget.js`, `widget.css`, `language/`). The supervisor discovers modules and widgets at start-up; tools are made available to the agent, to the specialist team and to external MCP clients without further wiring.
+Widgets follow the same pattern in `installer_wizard/agenti/<…>/<agent>/widget/<id>/` (`widget.json`, `widget.js`, `widget.css`, `language/`). The supervisor discovers modules and widgets at start-up; tools are made available to the agent, to the specialist team and to external MCP clients without further wiring.
 
 External MCP servers can be connected as tool sources, and Nuxiva exposes its own tools, resources and prompts as an MCP server on port 8080 (see `installer_wizard/MCP.md`).
 

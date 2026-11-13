@@ -1,0 +1,24 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/context_window",
+    "version": "1.1.0"
+  },
+  "dictionary": {
+    "label": "Fenêtre de contexte",
+    "used": "utilisé",
+    "free": "{{n}} libres",
+    "messages": "{{n}} messages",
+    "filling": "se remplit",
+    "nearly_full": "presque plein",
+    "part_system": "Instructions",
+    "part_history": "Conversation",
+    "part_tools": "Outils",
+    "part_files": "Fichiers",
+    "part_memory": "Mémoire",
+    "simple_title": "Ce dont je me souviens",
+    "say_full": "Je vais oublier les choses les plus anciennes",
+    "say_half": "Je me souviens déjà de beaucoup",
+    "say_room": "J'ai encore beaucoup de place pour me souvenir"
+  }
+}

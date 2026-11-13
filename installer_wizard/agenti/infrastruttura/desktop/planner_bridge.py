@@ -12,8 +12,7 @@ import native_module
 
 log = logging.getLogger("nuxiva.desktop.planner")
 SIZES = frozenset({"s", "m", "l", "xl", "full"})
-AUDIO = frozenset({"music", "karaoke", "tv_player", "audio_spectrum"})
-VIDEO = frozenset({"tv_player", "cam_stream", "live_cam"})
+CATEGORIES = frozenset({"safety", "conversation", "personal", "home", "work", "media", "info", "system", "ambient"})
 FORCED_PREFIXES = ("recall:", "test:", "bind:")
 CONVERSATION_SECONDS = 60.0
 KINDS = frozenset({"empty", "guest_only", "authorized", "mixed", "uncertain"})
@@ -51,7 +50,9 @@ def candidate(item: dict, now: float) -> dict:
             "sensitivity": audience_view.sensitivity(item), "size": size if size in SIZES else "m",
             "cost": _number(item.get("weight"), 1.0, 0.0, 64.0), "forced": forced(item), "intent": bool(item.get("intent")),
             "guest_safe": bool(item.get("guest_safe")), "relevance": 1.0 if item.get("intent") else 0.0,
-            "media": "audio" if wid in AUDIO else None, "exclusive": "video" if wid in VIDEO and size == "full" else None,
+            "category": item.get("category") if item.get("category") in CATEGORIES else None,
+            "media": "audio" if item.get("media") == "audio" else None,
+            "exclusive": "video" if item.get("exclusive") == "video" and size == "full" else None,
             "age_ms": int((now - shown) * 1000), "ttl_ms": ttl}
 
 

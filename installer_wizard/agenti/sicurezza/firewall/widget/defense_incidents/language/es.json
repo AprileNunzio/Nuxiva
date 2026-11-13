@@ -29,6 +29,10 @@
     "d_honeypot": "Desviado a un señuelo aislado",
     "d_quarantine": "Dispositivo en cuarentena",
     "d_sinkhole": "Destino sospechoso aislado",
-    "d_country_block": "País bloqueado"
+    "d_country_block": "País bloqueado",
+    "simple_title": "Qué ha pasado en la red",
+    "say_n_one": "He rechazado un intento",
+    "say_n_other": "He rechazado {{n}} intentos",
+    "say_none": "Ningún intento, todo tranquilo"
   }
 }

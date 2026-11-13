@@ -1,0 +1,19 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/vram_allocator",
+    "version": "1.1.0"
+  },
+  "dictionary": {
+    "label": "Mémoire vidéo",
+    "models_one": "{{n}} modèle",
+    "models_other": "{{n}} modèles",
+    "of": "sur {{total}}",
+    "free": "{{v}} libres",
+    "split": "Un modèle ne tient pas entièrement dans le GPU et utilise aussi le CPU : il répondra plus lentement.",
+    "cpu_only": "Un modèle tourne uniquement sur le CPU : les réponses seront lentes.",
+    "simple_title": "Mémoire pour réfléchir",
+    "say_full": "La mémoire pour réfléchir s'épuise",
+    "say_ok": "J'ai assez de mémoire"
+  }
+}

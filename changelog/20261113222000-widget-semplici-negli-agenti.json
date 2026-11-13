@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Widget della pagina 80 semplici, dentro ogni agente",
+    "en": "Simple page 80 widgets, inside each agent",
+    "fr": "Widgets de la page 80 simples, dans chaque agent",
+    "es": "Widgets de la página 80 sencillos, dentro de cada agente"
+  },
+  "features": [
+    {
+      "it": "Ogni widget della pagina 80 ora mostra una grande icona, un titolo in parole facili e una sola frase chiara, verde, arancione o rossa come un semaforo. I dettagli tecnici restano nascosti dietro un tocco su «Dettagli».",
+      "en": "Every page 80 widget now shows a large icon, a title in plain words and one clear sentence, green, orange or red like a traffic light. Technical details stay hidden behind a tap on «Details».",
+      "fr": "Chaque widget de la page 80 affiche désormais une grande icône, un titre en mots simples et une seule phrase claire, verte, orange ou rouge comme un feu tricolore. Les détails techniques restent cachés derrière un appui sur « Détails ».",
+      "es": "Cada widget de la página 80 muestra ahora un icono grande, un título en palabras sencillas y una sola frase clara, verde, naranja o roja como un semáforo. Los detalles técnicos quedan ocultos tras un toque en «Detalles»."
+    },
+    {
+      "it": "Ogni widget vive dentro il proprio agente e la pagina 80 li scopre da sola dal manifest: aggiungere un agente con il suo widget basta a farlo comparire, senza elenchi da aggiornare.",
+      "en": "Every widget lives inside its own agent and page 80 discovers them from the manifest: adding an agent with its widget is enough to make it appear, with no lists to update.",
+      "fr": "Chaque widget vit dans son propre agent et la page 80 les découvre seule depuis le manifeste : ajouter un agent avec son widget suffit à le faire apparaître, sans liste à mettre à jour.",
+      "es": "Cada widget vive dentro de su propio agente y la página 80 los descubre sola desde el manifiesto: añadir un agente con su widget basta para que aparezca, sin listas que actualizar."
+    },
+    {
+      "it": "Testi in italiano, inglese, francese e spagnolo, senza sfondi né bordi, con tasti grandi da toccare sia su telefono sia su schermo grande.",
+      "en": "Texts in Italian, English, French and Spanish, with no backgrounds or borders and large tap targets on both phone and big screen.",
+      "fr": "Textes en italien, anglais, français et espagnol, sans fonds ni bordures, avec de grandes zones à toucher sur téléphone comme sur grand écran.",
+      "es": "Textos en italiano, inglés, francés y español, sin fondos ni bordes y con botones grandes tanto en el móvil como en pantalla grande."
+    },
+    {
+      "it": "Nuovo controllo per sviluppatori che elenca tutti i widget, dice in quale agente vivono e segnala quelli con testi troppo tecnici, sigle o numeri difficili.",
+      "en": "New developer check that lists every widget, tells which agent owns it and flags the ones with overly technical text, acronyms or hard numbers.",
+      "fr": "Nouveau contrôle pour les développeurs qui liste tous les widgets, indique l'agent propriétaire et signale ceux dont les textes sont trop techniques, avec sigles ou chiffres difficiles.",
+      "es": "Nueva comprobación para desarrolladores que lista todos los widgets, indica a qué agente pertenecen y señala los que tienen textos demasiado técnicos, siglas o números difíciles."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Un controllo automatico verifica che ogni widget sia completo nelle quattro lingue e che quelli con dettagli abbiano la loro frase principale.",
+      "en": "An automatic check verifies that every widget is complete in all four languages and that those with details have their main sentence.",
+      "fr": "Un contrôle automatique vérifie que chaque widget est complet dans les quatre langues et que ceux qui ont des détails ont leur phrase principale.",
+      "es": "Una comprobación automática verifica que cada widget esté completo en los cuatro idiomas y que los que tienen detalles tengan su frase principal."
+    }
+  ]
+}

@@ -12,6 +12,7 @@
     "close": "Close",
     "snapshot": "Save a frame",
     "reconnecting": "Reconnecting in {{n}} s…",
-    "unavailable_retry": "Camera unreachable, retrying in {{n}} s"
+    "unavailable_retry": "Camera unreachable, retrying in {{n}} s",
+    "simple_title": "Live camera"
   }
 }

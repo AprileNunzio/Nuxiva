@@ -7,6 +7,8 @@
   "dictionary": {
     "waiting": "Waiting for data",
     "live": "Live",
-    "empty_widget": "No data available"
+    "empty_widget": "No data available",
+    "simple_more": "Details",
+    "simple_less": "Hide"
   }
 }

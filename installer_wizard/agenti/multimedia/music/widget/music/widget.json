@@ -11,5 +11,12 @@
     "musica"
   ],
   "description": "Il brano che suona nella stanza, riconosciuto dall'ascolto (Shazam).",
-  "tone": "violet"
+  "tone": "violet",
+  "category": "media",
+  "chrome": false,
+  "media": "audio",
+  "simple": {
+    "icon": "music",
+    "mode": "open"
+  }
 }

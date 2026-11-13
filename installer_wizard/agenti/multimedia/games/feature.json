@@ -18,5 +18,8 @@
     "Catalogo ed esecuzione giochi da tavolo e intrattenimento"
   ],
   "settings": [],
-  "icon3d": "./icon.png"
+  "icon3d": "./icon.png",
+  "widgets": [
+    "chess_3d"
+  ]
 }

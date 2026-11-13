@@ -9,6 +9,9 @@ publish.workspace = true
 [lints]
 workspace = true
 
+[features]
+test-fixtures = []
+
 [dependencies]
 nuxiva-display-domain = { path = "../display-domain" }
 serde = { version = "1", features = ["derive"] }

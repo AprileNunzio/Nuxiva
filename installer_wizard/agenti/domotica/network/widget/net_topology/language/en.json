@@ -1,0 +1,41 @@
+{
+  "meta": {
+    "locale": "en",
+    "scope": "widgets/net_topology",
+    "version": "1.1.0"
+  },
+  "dictionary": {
+    "label": "Network",
+    "title": "Topology",
+    "loading": "Scanning the network…",
+    "t_router": "Router",
+    "t_ap": "Access point",
+    "t_phone": "Phone or tablet",
+    "t_computer": "Computer",
+    "t_server": "Server",
+    "t_printer": "Printer",
+    "t_tv": "TV and media",
+    "t_camera": "Camera",
+    "t_nas": "NAS",
+    "t_iot": "Smart device",
+    "t_esp": "ESP microcontroller",
+    "t_raspberry": "Raspberry Pi",
+    "t_speaker": "Speaker",
+    "t_homeassistant": "Home Assistant",
+    "t_console": "Game console",
+    "t_nuxiva": "This Nuxiva",
+    "t_unknown": "Unknown",
+    "none": "No devices to show",
+    "gateway": "Gateway",
+    "online_one": "{{n}} online",
+    "online_other": "{{n}} online",
+    "more": "and {{n}} more",
+    "online_word": "online",
+    "offline_word": "offline",
+    "simple_title": "The home network",
+    "say_odd_one": "There is one device I don't know",
+    "say_odd_other": "There are {{n}} devices I don't know",
+    "say_ok_one": "There is one device and I know it",
+    "say_ok_other": "{{n}} devices, all known"
+  }
+}

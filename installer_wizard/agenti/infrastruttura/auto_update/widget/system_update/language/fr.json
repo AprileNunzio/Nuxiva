@@ -22,6 +22,9 @@
     "auto_at": "S’installera tout seul à {{t}}",
     "auto_soon": "S’installera tout seul sous peu",
     "manual": "Mises à jour automatiques désactivées : installez-la depuis les réglages",
-    "checked": "vérifié {{t}}"
+    "checked": "vérifié {{t}}",
+    "simple_title": "Mise à jour",
+    "say_new": "Il y a des mises à jour à installer",
+    "say_ok": "Tout est à jour"
   }
 }

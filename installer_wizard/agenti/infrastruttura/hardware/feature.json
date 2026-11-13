@@ -16,5 +16,10 @@
   ],
   "settings": [],
   "icon3d": "./icon.png",
-  "surface": "hidden"
+  "surface": "hidden",
+  "widgets": [
+    "system_health",
+    "system_monitor",
+    "usb_monitor"
+  ]
 }

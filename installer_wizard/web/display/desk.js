@@ -3,6 +3,8 @@
   let host = null, resizeObs = null, lastList = [], allList = [], layoutRaf = 0, lastZone = "", screens = [];
   const hooks = { speak: () => {}, onStage: () => {}, screen: 0, satellite: false, quiet: false, clientId: "", sessionMode: "shared" };
   const EDGE = 28;
+  const bodyOf = (el) => el.querySelector(":scope > .w-body");
+  const simple = (card) => { if (window.NuxivaDeskSimple) window.NuxivaDeskSimple.apply(card, ctxFor(card.inst.id), scheduleLayout); };
   const gov = (id, fn, el, mount) => (window.nuxivaGovernor ? window.nuxivaGovernor.measure(id, fn, el, mount) : fn());
 
   const { esc, lang, locale, plain, lines, pair, str, num, arr, pick, stamp, fmt, when, ago, copy } = window.NuxivaDeskKit;
@@ -129,7 +131,7 @@
     setTimeout(async () => {
       for (const card of cards.values()) {
         await preload(card.inst.id);
-        try { gov(card.inst.id, () => card.impl.render(card.el.firstChild, card.inst.data, ctxFor(card.inst.id)), card.el, false); } catch (err) { console.warn(`widget ${card.inst.id}:`, err); }
+        try { gov(card.inst.id, () => card.impl.render(bodyOf(card.el), card.inst.data, ctxFor(card.inst.id)), card.el, false); simple(card); } catch (err) { console.warn(`widget ${card.inst.id}:`, err); }
       }
     }, 0);
   });
@@ -175,11 +177,11 @@
       host.appendChild(el);
       if (!inst.browser_only) enableDrag(card);
       if (resizeObs) resizeObs.observe(el);
-      try { gov(inst.id, () => impl.render(el.firstChild, inst.data, ctxFor(inst.id)), el, true); } catch (err) { console.warn(`widget ${inst.id}:`, err); }
+      try { gov(inst.id, () => impl.render(bodyOf(el), inst.data, ctxFor(inst.id)), el, true); simple(card); } catch (err) { console.warn(`widget ${inst.id}:`, err); }
       if ((inst.takeover || (inst.data && inst.data.announce)) && inst.data && inst.data.speak) ctx.speak(inst.data.speak);
     } else {
       card.sig = sig; card.inst = inst;
-      try { gov(inst.id, () => (impl.update || impl.render)(card.el.firstChild, inst.data, ctxFor(inst.id)), card.el, false); } catch (err) { console.warn(`widget ${inst.id}:`, err); }
+      try { gov(inst.id, () => (impl.update || impl.render)(bodyOf(card.el), inst.data, ctxFor(inst.id)), card.el, false); simple(card); } catch (err) { console.warn(`widget ${inst.id}:`, err); }
     }
     return card;
   }
@@ -188,7 +190,8 @@
     const card = cards.get(key);
     if (!card) return;
     cards.delete(key);
-    try { card.impl.destroy && card.impl.destroy(card.el.firstChild); } catch (err) { console.warn(`widget ${card.inst.id} destroy:`, err); }
+    if (window.NuxivaDeskSimple) window.NuxivaDeskSimple.forget(key);
+    try { card.impl.destroy && card.impl.destroy(bodyOf(card.el)); } catch (err) { console.warn(`widget ${card.inst.id} destroy:`, err); }
     if (window.NuxivaDisplay && window.NuxivaDisplay.presence === "mini" && document.body.dataset.nucleus !== "ambient_stream") {
       const hasFull = [...cards.values()].some((c) => c.inst && c.inst.fullscreen);
       if (!hasFull) window.NuxivaDisplay.setPresence("normal");

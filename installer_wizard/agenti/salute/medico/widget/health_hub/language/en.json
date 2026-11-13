@@ -30,6 +30,8 @@
     "s_bp_dia_high": "High diastolic",
     "s_glucose_low": "Low glucose",
     "s_glucose_high": "High glucose",
-    "s_resp_rate_high": "Fast breathing"
+    "s_resp_rate_high": "Fast breathing",
+    "simple_title": "How you are",
+    "say_plain": "Here is how you are today"
   }
 }

@@ -4,6 +4,13 @@
   const ICON = { calm: "shield", watch: "shield", alert: "alert", attack: "alert" };
 
   NuxivaDesk.register("defense_status", {
+    headline(d, ctx) {
+      const data = d && typeof d === "object" ? d : {};
+      const p = String(data.posture ?? data.mode ?? "calm").toLowerCase();
+      if (p === "attack" || p === "alert") return { text: ctx.t("say_alert"), tone: "bad" };
+      if (p === "watch") return { text: ctx.t("say_watch"), tone: "warn" };
+      return { text: ctx.t("say_calm"), tone: "ok" };
+    },
     render(el, raw, ctx) {
       const d = raw && typeof raw === "object" ? raw : {};
       const posture = POSTURES.has(d.posture) ? d.posture : "calm";

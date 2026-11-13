@@ -13,5 +13,11 @@
     "subsystem_alert"
   ],
   "description": "Compare solo se un componente di Nuxiva smette di funzionare, mentre il supervisore prova a ripararlo.",
-  "refresh": 5
+  "refresh": 5,
+  "category": "safety",
+  "chrome": false,
+  "simple": {
+    "icon": "alert",
+    "mode": "open"
+  }
 }

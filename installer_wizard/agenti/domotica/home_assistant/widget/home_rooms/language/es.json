@@ -8,6 +8,10 @@
     "label": "Habitaciones",
     "occupied_one": "{{n}} ocupada",
     "occupied_other": "{{n}} ocupadas",
-    "none": "No se detecta a nadie en casa"
+    "none": "No se detecta a nadie en casa",
+    "simple_title": "Quién está en cada habitación",
+    "say_n_one": "Hay una persona en casa",
+    "say_n_other": "Hay {{n}} personas en casa",
+    "say_none": "No veo a nadie en casa"
   }
 }

@@ -1,0 +1,26 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/cyber_alert",
+    "version": "1.1.0"
+  },
+  "dictionary": {
+    "label": "Alerte cyber",
+    "fallback_title": "Menace détectée",
+    "threat_default": "élevée",
+    "attack": "Attaque",
+    "origin": "Origine",
+    "action": "Action",
+    "severity": "Gravité",
+    "ip_local": "réseau local",
+    "ip_public": "internet",
+    "blocked": "bloqué",
+    "not_blocked": "non bloqué",
+    "target": "Cible",
+    "attempts": "Tentatives",
+    "window": "Période",
+    "simple_title": "Quelqu'un essaie d'entrer",
+    "say_open": "Quelqu'un essaie d'entrer !",
+    "say_blocked": "J'ai arrêté quelqu'un qui voulait entrer"
+  }
+}

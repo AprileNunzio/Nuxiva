@@ -139,7 +139,7 @@ flowchart LR
 | :--- | :--- | :--- | :--- |
 | Supervisor | `installer_wizard/backend/` | Python, FastAPI, Uvicorn | Instalación, ciclo de vida, API HTTP y WebSocket, autenticación, actualizaciones, descubrimiento de módulos |
 | Módulos funcionales | `installer_wizard/features/` | Python | Capacidades: rutas, comandos de voz y chat, herramientas para agentes, traducciones |
-| Widgets | `installer_wizard/widgets/` | JavaScript, CSS | Widgets de pantalla autodescriptivos |
+| Widgets | `installer_wizard/agenti/<categoría>/<agente>/widget/` | JavaScript, CSS | Widgets de pantalla en palabras sencillas, dentro de cada agente |
 | Core | `server/` | Python | Enrutamiento de solicitudes, motores de razonamiento, motor de decisión, plasticidad, event sourcing, generación de habilidades |
 | Capa nativa | `native/crates/` | Rust (edition 2024) | Código crítico para el rendimiento y la seguridad, expuesto a Python mediante PyO3 |
 | Sandbox broker | `sandbox_broker/` | Python, Rust | Ejecución aislada del código generado, control del tráfico saliente |
@@ -341,7 +341,7 @@ features/<id>/
 └── language/        en.json, it.json, fr.json, es.json
 ```
 
-Los widgets siguen el mismo esquema en `installer_wizard/widgets/<id>/` (`widget.json`, `widget.js`, `widget.css`, `language/`). El supervisor descubre módulos y widgets al arrancar; las herramientas quedan disponibles para el agente, el equipo de especialistas y los clientes MCP externos sin conexiones adicionales.
+Los widgets siguen el mismo esquema en `installer_wizard/agenti/<…>/<agent>/widget/<id>/` (`widget.json`, `widget.js`, `widget.css`, `language/`). El supervisor descubre módulos y widgets al arrancar; las herramientas quedan disponibles para el agente, el equipo de especialistas y los clientes MCP externos sin conexiones adicionales.
 
 Se pueden conectar servidores MCP externos como fuentes de herramientas, y Nuxiva expone sus propias herramientas, recursos y prompts como servidor MCP en el puerto 8080 (consulta `installer_wizard/MCP.md`).
 

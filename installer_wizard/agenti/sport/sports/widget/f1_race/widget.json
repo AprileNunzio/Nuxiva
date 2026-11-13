@@ -12,5 +12,11 @@
   ],
   "ttl": 120,
   "description": "Formula 1: prossima sessione con conto alla rovescia, gara in corso, risultati e classifiche.",
-  "tone": "red"
+  "tone": "red",
+  "category": "info",
+  "chrome": false,
+  "simple": {
+    "icon": "car",
+    "mode": "collapse"
+  }
 }

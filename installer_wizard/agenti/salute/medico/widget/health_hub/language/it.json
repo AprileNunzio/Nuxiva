@@ -30,6 +30,8 @@
     "s_bp_dia_high": "Minima alta",
     "s_glucose_low": "Glicemia bassa",
     "s_glucose_high": "Glicemia alta",
-    "s_resp_rate_high": "Respiro accelerato"
+    "s_resp_rate_high": "Respiro accelerato",
+    "simple_title": "Come stai",
+    "say_plain": "Ecco come stai oggi"
   }
 }

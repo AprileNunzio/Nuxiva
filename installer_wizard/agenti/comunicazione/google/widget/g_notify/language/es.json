@@ -16,6 +16,10 @@
     "tasks": "Tareas",
     "due": "Pendiente",
     "note": "Nota",
-    "calm": "Nada nuevo"
+    "calm": "Nada nuevo",
+    "simple_title": "Novedades para ti",
+    "say_n_one": "Tienes una novedad",
+    "say_n_other": "Tienes {{n}} novedades",
+    "say_none": "Sin novedades"
   }
 }

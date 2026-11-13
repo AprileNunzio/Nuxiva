@@ -9,5 +9,11 @@
   "agent": "music",
   "intents": [],
   "description": "Il testo della canzone in ascolto, sincronizzato riga per riga e parola per parola: canta insieme a Nuxiva. Si attiva dicendo «abilità karaoke».",
-  "tone": "violet"
+  "tone": "violet",
+  "category": "media",
+  "media": "audio",
+  "simple": {
+    "icon": "mic",
+    "mode": "open"
+  }
 }

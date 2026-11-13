@@ -19,5 +19,8 @@
     "technique": "3d",
     "id": "molecules-helix",
     "url": "./icon.png"
-  }
+  },
+  "widgets": [
+    "molecule_viewer"
+  ]
 }

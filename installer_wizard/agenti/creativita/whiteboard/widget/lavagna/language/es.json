@@ -58,6 +58,7 @@
     "boards_head": "Pizarras guardadas",
     "name_placeholder": "Nombre de la nueva pizarra",
     "delete_btn": "Eliminar",
-    "no_boards": "No hay pizarras guardadas"
+    "no_boards": "No hay pizarras guardadas",
+    "simple_title": "Pizarra"
   }
 }

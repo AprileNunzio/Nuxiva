@@ -73,6 +73,13 @@ pub fn agent_layout_inspect(dir: &str) -> PyResult<String> {
 }
 
 #[pyfunction]
+pub fn widget_inspect(dir: &str) -> PyResult<String> {
+    json(&nuxiva_agent_core::widget::inspect(std::path::Path::new(
+        dir,
+    )))
+}
+
+#[pyfunction]
 pub fn agent_scaffold(spec_json: &str) -> PyResult<Vec<(String, Vec<u8>)>> {
     if spec_json.len() > 64 * 1024 {
         return Err(PyValueError::new_err("scaffold spec too large"));

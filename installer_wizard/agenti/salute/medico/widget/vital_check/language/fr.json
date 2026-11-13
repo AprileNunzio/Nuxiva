@@ -14,6 +14,8 @@
     "src_camera": "Depuis la webcam",
     "not_medical": "Estimation indicative, non médicale",
     "aria_row": "{{name}} : {{bpm}} battements par minute",
-    "unit": "bpm"
+    "unit": "bpm",
+    "simple_title": "Contrôle du cœur",
+    "say_bpm": "Ton cœur bat {{n}} fois par minute"
   }
 }

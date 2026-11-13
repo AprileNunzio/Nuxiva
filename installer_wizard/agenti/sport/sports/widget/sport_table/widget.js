@@ -59,5 +59,11 @@
     },
     destroy(el) { el.onclick = null; },
   };
+  impl.headline = (d, ctx) => {
+    const data = d && typeof d === "object" ? d : {};
+    const first = ctx.arr(data.rows, 40).find((x) => x && typeof x === "object");
+    const name = first ? ctx.pick(first, ["short", "name", "abbr"], 30) : "";
+    return name ? { text: ctx.t("say_first", { name }) } : "";
+  };
   NuxivaDesk.register("sport_table", impl);
 })();

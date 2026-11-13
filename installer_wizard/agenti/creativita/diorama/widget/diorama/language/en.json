@@ -9,6 +9,7 @@
     "slow": "This is taking longer than usual",
     "offline": "The diorama is not responding",
     "missing": "Diorama not found",
-    "retry": "Retry"
+    "retry": "Retry",
+    "simple_title": "3D scene"
   }
 }

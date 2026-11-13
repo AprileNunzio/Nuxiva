@@ -36,6 +36,7 @@
     "side_white": "Bianco",
     "side_black": "Nero",
     "hint_question_moves": "Sto giocando a scacchi. Mosse finora, da casa a casa: {{moves}}. Ora tocca al {{turn}}. Che mossa mi consigli e perché, in breve?",
-    "hint_failed": "Suggerimento non disponibile, riprova tra poco"
+    "hint_failed": "Suggerimento non disponibile, riprova tra poco",
+    "simple_title": "Scacchi"
   }
 }

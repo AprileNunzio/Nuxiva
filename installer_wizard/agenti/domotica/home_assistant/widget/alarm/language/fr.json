@@ -21,6 +21,7 @@
     "advice_flood": "Coupe l'arrivée d'eau générale et ne touche pas aux prises ou appareils mouillés.",
     "advice_intrusion": "Reste dans un endroit sûr, n'affronte personne et appelle le 112.",
     "advice_co": "Ouvre les fenêtres, sors à l'air libre et appelle le 112.",
-    "advice_generic": "Vérifie ce qui se passe et, si besoin, appelle le 112."
+    "advice_generic": "Vérifie ce qui se passe et, si besoin, appelle le 112.",
+    "simple_title": "Alarme"
   }
 }

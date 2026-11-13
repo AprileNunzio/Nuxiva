@@ -8,6 +8,10 @@
     "label": "Rooms",
     "occupied_one": "{{n}} occupied",
     "occupied_other": "{{n}} occupied",
-    "none": "Nobody detected at home"
+    "none": "Nobody detected at home",
+    "simple_title": "Who is in each room",
+    "say_n_one": "There is one person at home",
+    "say_n_other": "There are {{n}} people at home",
+    "say_none": "I don't see anyone at home"
   }
 }

@@ -12,6 +12,7 @@
     "close": "Chiudi",
     "snapshot": "Salva un fotogramma",
     "reconnecting": "Riconnessione tra {{n}} s…",
-    "unavailable_retry": "Telecamera non raggiungibile, nuovo tentativo tra {{n}} s"
+    "unavailable_retry": "Telecamera non raggiungibile, nuovo tentativo tra {{n}} s",
+    "simple_title": "Telecamera dal vivo"
   }
 }

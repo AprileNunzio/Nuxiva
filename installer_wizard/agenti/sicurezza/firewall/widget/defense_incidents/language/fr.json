@@ -29,6 +29,10 @@
     "d_honeypot": "Détourné vers un leurre isolé",
     "d_quarantine": "Appareil en quarantaine",
     "d_sinkhole": "Destination suspecte isolée",
-    "d_country_block": "Pays bloqué"
+    "d_country_block": "Pays bloqué",
+    "simple_title": "Ce qui s'est passé sur le réseau",
+    "say_n_one": "J'ai repoussé une tentative",
+    "say_n_other": "J'ai repoussé {{n}} tentatives",
+    "say_none": "Aucune tentative, tout est calme"
   }
 }

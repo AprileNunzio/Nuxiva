@@ -94,7 +94,7 @@ use learner::RustLearner;
 use memory::{RustFastMemory, RustLiveCoPilot};
 use mesh::{RustCrdtMesh, RustGossipMesh, RustP2PStreamManager};
 use molecule::molecule_build;
-use planner::display_plan;
+use planner::{display_plan, display_register_widgets};
 use presence::RustPresenceTracker;
 use pyo3::prelude::*;
 use scanner::FastScanner;
@@ -123,6 +123,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(display_diff, m)?)?;
     m.add_function(wrap_pyfunction!(display_apply, m)?)?;
     m.add_function(wrap_pyfunction!(display_plan, m)?)?;
+    m.add_function(wrap_pyfunction!(display_register_widgets, m)?)?;
     m.add_class::<RustPresenceTracker>()?;
     m.add_class::<RustLearner>()?;
     m.add_class::<RustSentinel>()?;
@@ -231,6 +232,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(agents::agent_manifest_validate, m)?)?;
     m.add_class::<agents::RustAgentRegistry>()?;
     m.add_function(wrap_pyfunction!(agents::agent_layout_inspect, m)?)?;
+    m.add_function(wrap_pyfunction!(agents::widget_inspect, m)?)?;
     m.add_function(wrap_pyfunction!(agents::agent_scaffold, m)?)?;
     m.add_function(wrap_pyfunction!(agents::agent_genesis_decide, m)?)?;
     m.add_function(wrap_pyfunction!(forma::forma_compile, m)?)?;

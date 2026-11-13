@@ -14,5 +14,11 @@
     "calendario"
   ],
   "description": "Nuove email, appuntamenti in arrivo e riepilogo della giornata di chi è davanti ad Nuxiva.",
-  "tone": "violet"
+  "tone": "violet",
+  "category": "personal",
+  "chrome": false,
+  "simple": {
+    "icon": "mail",
+    "mode": "collapse"
+  }
 }

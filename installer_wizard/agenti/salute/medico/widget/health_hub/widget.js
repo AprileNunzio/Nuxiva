@@ -49,6 +49,10 @@
   }
 
   NuxivaDesk.register("health_hub", {
+    headline(d, ctx) {
+      const data = d && typeof d === "object" ? d : {};
+      return { text: ctx.t("say_plain") };
+    },
     render(el, d, ctx) {
       const data = d && typeof d === "object" ? d : {};
       const v = values(data, ctx);

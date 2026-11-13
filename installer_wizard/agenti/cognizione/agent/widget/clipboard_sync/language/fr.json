@@ -1,0 +1,26 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/clipboard_sync",
+    "version": "1.2.0"
+  },
+  "dictionary": {
+    "label": "Presse-papiers",
+    "empty": "Presse-papiers vide",
+    "chars_one": "{{n}} caractère",
+    "chars_other": "{{n}} caractères",
+    "copy": "Copier",
+    "copied": "Copié",
+    "copy_failed": "Non copié",
+    "reveal": "Afficher",
+    "hide": "Masquer",
+    "hidden": "Contenu masqué",
+    "kind_secret": "privé",
+    "from": "depuis {{source}}",
+    "stats": "{{w}} mots · {{l}} lignes",
+    "words": "{{w}} mots",
+    "simple_title": "Texte copié",
+    "say_from": "{{who}} a copié un texte",
+    "say_plain": "Tu as copié un texte"
+  }
+}

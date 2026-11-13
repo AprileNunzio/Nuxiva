@@ -8,7 +8,7 @@
   function call(card, hook) {
     const fn = card.impl && card.impl[hook];
     if (typeof fn !== "function") return;
-    try { fn.call(card.impl, card.el.firstChild); } catch (err) {
+    try { fn.call(card.impl, card.el.querySelector(":scope > .w-body")); } catch (err) {
       st.failed.add(card.key);
       console.warn(`widget ${card.id} ${hook}:`, err);
     }

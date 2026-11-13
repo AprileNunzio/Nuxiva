@@ -3,6 +3,8 @@
 pub mod candidate;
 pub mod category;
 pub mod context;
+#[cfg(any(test, feature = "test-fixtures"))]
+pub mod fixtures;
 pub mod grid;
 pub mod nucleus;
 pub mod plan;

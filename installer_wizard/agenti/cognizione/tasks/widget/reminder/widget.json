@@ -1,0 +1,20 @@
+{
+  "id": "reminder",
+  "personal": true,
+  "name": "Promemoria",
+  "icon": "⏰",
+  "priority": 75,
+  "size": "m",
+  "ttl": 300,
+  "intents": [
+    "reminder"
+  ],
+  "description": "Promemoria.",
+  "tone": "amber",
+  "category": "personal",
+  "chrome": false,
+  "simple": {
+    "icon": "bell",
+    "mode": "collapse"
+  }
+}

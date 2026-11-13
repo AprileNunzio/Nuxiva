@@ -18,6 +18,7 @@
     "bonds_other": "{{n}} bonds",
     "error_engine": "Molecular engine not available on this system",
     "error_library": "3D library not available",
-    "error_data": "Structure not readable"
+    "error_data": "Structure not readable",
+    "simple_title": "3D molecule"
   }
 }

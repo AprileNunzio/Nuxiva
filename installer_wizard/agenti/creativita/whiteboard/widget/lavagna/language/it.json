@@ -58,6 +58,7 @@
     "boards_head": "Lavagne salvate",
     "name_placeholder": "Nome della nuova lavagna",
     "delete_btn": "Elimina",
-    "no_boards": "Nessuna lavagna salvata"
+    "no_boards": "Nessuna lavagna salvata",
+    "simple_title": "Lavagna"
   }
 }

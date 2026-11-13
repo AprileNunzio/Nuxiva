@@ -1,0 +1,20 @@
+{
+  "meta": {
+    "locale": "fr",
+    "scope": "widgets/docker_matrix",
+    "version": "1.1.0"
+  },
+  "dictionary": {
+    "label": "Conteneurs Docker",
+    "cpu": "CPU",
+    "ram": "RAM",
+    "restarts": "Redémarrages",
+    "sum_ok": "{{n}} actifs",
+    "sum_warn": "{{n}} en transition",
+    "sum_bad": "{{n}} arrêtés ou en panne",
+    "simple_title": "Programmes en marche",
+    "say_down_one": "Un programme est arrêté",
+    "say_down_other": "{{n}} programmes sont arrêtés",
+    "say_ok": "Tous les programmes fonctionnent"
+  }
+}

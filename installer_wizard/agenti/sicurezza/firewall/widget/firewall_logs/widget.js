@@ -36,6 +36,11 @@
   }
 
   NuxivaDesk.register("firewall_logs", {
+    headline(d, ctx) {
+      const data = d && typeof d === "object" ? d : {};
+      const n = ctx.arr(data.entries ?? data.alerts, 200).length;
+      return n ? { text: ctx.count("say_n", n), tone: "warn" } : { text: ctx.t("say_none"), tone: "ok" };
+    },
     render(el, d, ctx) {
       const data = d && typeof d === "object" ? d : {};
       const objs = ctx.arr(data.entries ?? data.alerts ?? data.blocks, 60).filter((o) => o && typeof o === "object").map((o) => fromObj(o, ctx)).filter((e) => e.src || e.raw || e.kind);
