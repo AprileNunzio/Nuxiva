@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Memoria calda del contesto personale, con privacy per chi è presente",
+    "en": "Hot personal-context memory, with privacy for whoever is present",
+    "fr": "Mémoire chaude du contexte personnel, avec confidentialité selon les personnes présentes",
+    "es": "Memoria caliente del contexto personal, con privacidad según quién está presente"
+  },
+  "features": [
+    {
+      "it": "Nuxiva tiene in memoria, pronto all'uso, il contesto di ogni persona: preferenze, relazioni, lavoro, ascolti, umore e allergie. Gli agenti lo leggono senza accedere al disco.",
+      "en": "Nuxiva keeps each person's context ready in memory: preferences, relationships, work, listening, mood and allergies. Agents read it without touching the disk.",
+      "fr": "Nuxiva garde en mémoire, prêt à l'emploi, le contexte de chaque personne : préférences, relations, travail, écoutes, humeur et allergies. Les agents le lisent sans accéder au disque.",
+      "es": "Nuxiva mantiene en memoria, listo para usar, el contexto de cada persona: preferencias, relaciones, trabajo, escuchas, ánimo y alergias. Los agentes lo leen sin acceder al disco."
+    },
+    {
+      "it": "Quello che Nuxiva può dire dipende da chi c'è nella stanza: se è presente un ospite, i dettagli personali dei familiari restano riservati. Allergie e dati di salute sono cifrati anche in memoria e le allergie non vengono mai tagliate dalle risposte.",
+      "en": "What Nuxiva can say depends on who is in the room: when a guest is present, family members' personal details stay private. Allergies and health data are encrypted even in memory, and allergies are never trimmed from answers.",
+      "fr": "Ce que Nuxiva peut dire dépend de qui est dans la pièce : en présence d'un invité, les détails personnels des membres de la famille restent confidentiels. Allergies et données de santé sont chiffrées même en mémoire, et les allergies ne sont jamais retirées des réponses.",
+      "es": "Lo que Nuxiva puede decir depende de quién está en la habitación: con un invitado presente, los detalles personales de los familiares quedan reservados. Alergias y datos de salud se cifran incluso en memoria y las alergias nunca se recortan de las respuestas."
+    }
+  ],
+  "fixes": []
+}
