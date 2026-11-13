@@ -27,6 +27,17 @@ pub struct ToolEntry {
     pub output: Option<CompiledSchema>,
 }
 
+impl ToolState {
+    #[must_use]
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Active => "active",
+            Self::Stale => "stale",
+            Self::Quarantined => "quarantined",
+        }
+    }
+}
+
 impl ToolEntry {
     pub fn build(server: &str, spec: ToolSpec, settings: &Settings) -> McpResult<Self> {
         let id = canonical_name(server, &spec.name, settings.max_name_len)?;

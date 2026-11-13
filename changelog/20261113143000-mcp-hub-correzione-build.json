@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "MCP dinamico: correzione della build e cuore del collegamento",
+    "en": "Dynamic MCP: build fix and connection core",
+    "fr": "MCP dynamique : correction de la compilation et cœur de la connexion",
+    "es": "MCP dinámico: corrección de la compilación y núcleo de la conexión"
+  },
+  "fixes": [
+    {
+      "it": "Corretta la compilazione del nuovo motore MCP: un file era stato escluso per errore dal repository.",
+      "en": "Fixed the build of the new MCP engine: a file had been wrongly left out of the repository.",
+      "fr": "Correction de la compilation du nouveau moteur MCP : un fichier avait été exclu du dépôt par erreur.",
+      "es": "Corregida la compilación del nuevo motor MCP: un archivo había quedado excluido del repositorio por error."
+    }
+  ],
+  "features": [
+    {
+      "it": "Il motore MCP ora coordina da solo server, strumenti, permessi, conferme e registro delle chiamate, ed è pronto a essere collegato al resto di Nuxiva.",
+      "en": "The MCP engine now coordinates servers, tools, permissions, confirmations and the call log on its own, and is ready to be connected to the rest of Nuxiva.",
+      "fr": "Le moteur MCP coordonne désormais seul serveurs, outils, permissions, confirmations et journal des appels, et il est prêt à être relié au reste de Nuxiva.",
+      "es": "El motor MCP ahora coordina por sí solo servidores, herramientas, permisos, confirmaciones y registro de llamadas, y está listo para conectarse con el resto de Nuxiva."
+    }
+  ]
+}

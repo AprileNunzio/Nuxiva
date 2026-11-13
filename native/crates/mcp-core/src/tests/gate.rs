@@ -19,6 +19,7 @@ fn request(consent: Option<String>) -> CallRequest {
     let mut arguments = Map::new();
     arguments.insert("a".into(), json!("x"));
     CallRequest {
+        tool: "fs.w".into(),
         principal: "p".into(),
         agent: "ag".into(),
         operation: "op".into(),

@@ -7,6 +7,8 @@ mod discovery;
 mod error;
 mod guard;
 mod health;
+mod hub;
+mod keystore;
 mod limits;
 mod normalize;
 mod policy;
@@ -14,7 +16,6 @@ mod protocol;
 mod registry;
 mod runner;
 mod schema;
-mod secrets;
 mod session;
 mod settings;
 mod shape;
@@ -24,7 +25,7 @@ mod trust;
 
 pub use audit::{
     AuditChain, AuditEvent, AuditRecord, AuditSink, FileSink, GENESIS, MemorySink, Verdict,
-    hash_value, verify as verify_audit,
+    hash_value, resume_from_file, verify as verify_audit,
 };
 pub use backoff::{Backoff, Breaker};
 pub use connect::connect_server;
@@ -32,6 +33,8 @@ pub use discovery::{build_entries, discover};
 pub use error::{McpError, McpResult};
 pub use guard::{IpClass, NetworkPolicy, Target, admit, classify_ip, parse_target, resolve};
 pub use health::{Health, ServerStatus};
+pub use hub::{CallOutput, Hub, ServerView, ToolView};
+pub use keystore::{MemorySecrets, Secret, SecretProvider, SharedSecrets, bearer_header};
 pub use limits::Ceilings;
 pub use normalize::{canonical_name, valid_server_id};
 pub use policy::{
@@ -46,16 +49,16 @@ pub use protocol::{
     parse_tools_page, ping_request, supported_versions, tools_call_request, tools_list_request,
 };
 pub use registry::{Diff, Registry, Snapshot, ToolEntry, ToolState, compatible};
-pub use runner::{Classifier, ServerHandle, spawn_server};
+pub use runner::{Classifier, ServerHandle, SessionSlot, spawn_server};
 pub use schema::CompiledSchema;
-pub use secrets::{MemorySecrets, Secret, SecretProvider, bearer_header};
 pub use session::{Session, ToolListing};
 pub use settings::{ChangePolicy, Settings};
 pub use shape::{depth, node_count};
 pub use text::sanitize_text;
 pub use transport::{HttpConfig, Link, QUEUE, SseParser, StdioSpec, pair, spawn_http, spawn_stdio};
 pub use trust::{
-    Catalog, Isolation, ServerEntry, SignedCatalog, TransportSpec, sign_catalog, verify_catalog,
+    Catalog, Isolation, ServerEntry, SignedCatalog, TransportSpec, generate_signing_key,
+    sign_catalog, verify_catalog,
 };
 
 #[cfg(test)]

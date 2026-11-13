@@ -48,6 +48,12 @@ pub trait AuditSink: Send {
     fn append(&mut self, line: &str) -> McpResult<()>;
 }
 
+impl AuditSink for Box<dyn AuditSink> {
+    fn append(&mut self, line: &str) -> McpResult<()> {
+        (**self).append(line)
+    }
+}
+
 #[derive(Debug, Default)]
 pub struct MemorySink {
     pub lines: Vec<String>,
@@ -153,6 +159,14 @@ impl<S: AuditSink> AuditChain<S> {
 
     pub fn sink(&self) -> &S {
         &self.sink
+    }
+}
+
+pub fn resume_from_file(path: &Path) -> McpResult<Option<(u64, String)>> {
+    match std::fs::read_to_string(path) {
+        Ok(text) => verify(text.lines()).map(Some),
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(None),
+        Err(_) => Err(McpError::Io),
     }
 }
 

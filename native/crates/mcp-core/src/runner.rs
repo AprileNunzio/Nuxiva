@@ -1,6 +1,6 @@
 use std::future::Future;
 use std::hash::BuildHasher;
-use std::sync::Arc;
+use std::sync::{Arc, PoisonError, RwLock};
 use std::time::{Duration, Instant};
 
 use tokio::sync::watch;
@@ -51,7 +51,17 @@ fn entropy(counter: u64) -> u64 {
     std::collections::hash_map::RandomState::new().hash_one(counter)
 }
 
+pub type SessionSlot = Arc<RwLock<Option<Arc<Session>>>>;
+
 pub type Classifier = Arc<dyn Fn(&ToolSpec) -> Risk + Send + Sync>;
+
+struct SlotGuard(SessionSlot);
+
+impl Drop for SlotGuard {
+    fn drop(&mut self) {
+        *self.0.write().unwrap_or_else(PoisonError::into_inner) = None;
+    }
+}
 
 struct Context {
     server: String,
@@ -59,6 +69,7 @@ struct Context {
     settings: Settings,
     client: Implementation,
     classifier: Classifier,
+    slot: SessionSlot,
     status: watch::Sender<ServerStatus>,
 }
 
@@ -75,6 +86,9 @@ impl Context {
 
     async fn serve_session(&self, link: Link) -> McpResult<()> {
         let (session, _, _) = Session::connect(link, self.settings.clone(), &self.client).await?;
+        let session = Arc::new(session);
+        *self.slot.write().unwrap_or_else(PoisonError::into_inner) = Some(Arc::clone(&session));
+        let _clear = SlotGuard(Arc::clone(&self.slot));
         discover(
             &session,
             &self.server,
@@ -163,6 +177,7 @@ pub fn spawn_server<C, Fut>(
     settings: Settings,
     client: Implementation,
     classifier: Classifier,
+    slot: SessionSlot,
 ) -> McpResult<ServerHandle>
 where
     C: Fn() -> Fut + Send + Sync + 'static,
@@ -179,6 +194,7 @@ where
         settings,
         client,
         classifier,
+        slot,
         status,
     };
     let task = tokio::spawn(supervise(context, connect));

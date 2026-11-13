@@ -17,6 +17,19 @@ pub struct ServerStatus {
     pub last_error: Option<McpError>,
 }
 
+impl Health {
+    #[must_use]
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Disconnected => "disconnected",
+            Self::Connecting => "connecting",
+            Self::Ready => "ready",
+            Self::Degraded => "degraded",
+            Self::Quarantined => "quarantined",
+        }
+    }
+}
+
 impl ServerStatus {
     #[must_use]
     pub fn new() -> Self {

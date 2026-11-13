@@ -1586,6 +1586,7 @@ dependencies = [
  "agency-forge",
  "agency-scheduler",
  "agency-thought",
+ "ed25519-dalek",
  "nuxiva-access-core",
  "nuxiva-admin-os",
  "nuxiva-agent-core",
@@ -1614,6 +1615,7 @@ dependencies = [
  "nuxiva-lyrics-core",
  "nuxiva-mastery-core",
  "nuxiva-matter-core",
+ "nuxiva-mcp-core",
  "nuxiva-memory-core",
  "nuxiva-molecule-core",
  "nuxiva-nvr-core",
@@ -1636,6 +1638,7 @@ dependencies = [
  "pyo3",
  "serde",
  "serde_json",
+ "tokio",
  "ureq",
  "zeroize",
 ]

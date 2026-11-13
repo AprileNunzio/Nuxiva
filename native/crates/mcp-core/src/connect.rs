@@ -3,8 +3,8 @@ use std::time::Duration;
 
 use crate::error::{McpError, McpResult};
 use crate::guard::{parse_target, resolve};
+use crate::keystore::{SecretProvider, bearer_header};
 use crate::policy::PolicyConfig;
-use crate::secrets::{SecretProvider, bearer_header};
 use crate::settings::Settings;
 use crate::transport::{HttpConfig, Link, StdioSpec, spawn_http, spawn_stdio};
 use crate::trust::{ServerEntry, TransportSpec};

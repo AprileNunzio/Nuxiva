@@ -89,6 +89,7 @@ fn rig(settings: Settings, fail_first: usize) -> McpResult<Rig> {
         settings,
         client(),
         Arc::new(|_| Risk::Home),
+        Arc::default(),
     )?;
     Ok(Rig {
         registry,
@@ -227,6 +228,7 @@ async fn invalid_server_id_is_refused() {
         fast(),
         client(),
         Arc::new(|_| Risk::Home),
+        Arc::default(),
     );
     assert_eq!(outcome.err(), Some(McpError::InvalidName));
 }

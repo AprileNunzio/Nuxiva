@@ -16,6 +16,12 @@ pub struct SignedCatalog {
     pub signature: String,
 }
 
+pub fn generate_signing_key() -> McpResult<SigningKey> {
+    let mut seed = [0u8; 32];
+    getrandom::fill(&mut seed).map_err(|_| McpError::Io)?;
+    Ok(SigningKey::from_bytes(&seed))
+}
+
 pub fn sign_catalog(catalog: &Catalog, key: &SigningKey) -> McpResult<SignedCatalog> {
     catalog.validate()?;
     let payload = serde_json::to_string(catalog).map_err(|_| McpError::Serialize)?;

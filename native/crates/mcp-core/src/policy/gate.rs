@@ -1,5 +1,6 @@
 use std::time::Instant;
 
+use serde::Deserialize;
 use serde_json::{Map, Value};
 
 use super::config::PolicyConfig;
@@ -12,12 +13,15 @@ use crate::audit::hash_value;
 use crate::error::{McpError, McpResult};
 use crate::registry::ToolEntry;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct CallRequest {
+    pub tool: String,
     pub principal: String,
     pub agent: String,
     pub operation: String,
     pub arguments: Map<String, Value>,
+    #[serde(default)]
     pub consent: Option<String>,
 }
 

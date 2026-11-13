@@ -1,4 +1,5 @@
 use std::collections::{BTreeMap, HashSet};
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, PoisonError, RwLock};
 
 use super::compat::compatible;
@@ -67,6 +68,7 @@ impl Diff {
 pub struct Registry {
     current: RwLock<Arc<Snapshot>>,
     settings: Settings,
+    version: AtomicU64,
 }
 
 impl Registry {
@@ -75,7 +77,13 @@ impl Registry {
         Self {
             current: RwLock::new(Arc::new(Snapshot::default())),
             settings,
+            version: AtomicU64::new(0),
         }
+    }
+
+    #[must_use]
+    pub fn version(&self) -> u64 {
+        self.version.load(Ordering::Acquire)
     }
 
     #[must_use]
@@ -90,6 +98,7 @@ impl Registry {
         let mut guard = self.current.write().unwrap_or_else(PoisonError::into_inner);
         let (next, diff) = build(&guard)?;
         *guard = Arc::new(next);
+        self.version.fetch_add(1, Ordering::AcqRel);
         Ok(diff)
     }
 

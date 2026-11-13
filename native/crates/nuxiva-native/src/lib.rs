@@ -39,6 +39,7 @@ mod learner;
 mod lyrics;
 mod mastery;
 mod matter;
+mod mcp;
 mod memory;
 mod mesh;
 mod molecule;
@@ -136,6 +137,7 @@ fn nuxiva_native(m: &Bound<'_, PyModule>) -> PyResult<()> {
     compute_lease::register(m)?;
     jev::register(m)?;
     seal::register(m)?;
+    mcp::register(m)?;
     config::register(m)?;
     telemetry::register(m)?;
     supervisor::register(m)?;

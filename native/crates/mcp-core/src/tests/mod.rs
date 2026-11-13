@@ -7,6 +7,7 @@ mod fake;
 mod gate;
 mod guard;
 mod http;
+mod hub;
 mod jsonrpc;
 mod model;
 mod names;
