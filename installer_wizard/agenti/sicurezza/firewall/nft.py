@@ -2,6 +2,7 @@ import math
 import time
 from dataclasses import dataclass
 
+from agenti.firewall.defense import nft_rules
 from agenti.firewall.model import Address, Policy, Rule
 
 TABLE = "nuxiva_guard"
@@ -175,7 +176,7 @@ def _fallbacks(policy: Policy) -> list[str]:
 
 
 def compile_script(policy: Policy, rules: list[Rule], sets: dict[str, list[Address]], blocks: list[Block],
-                   now: float | None = None) -> str:
+                   now: float | None = None, responses: list | None = None, ranges: dict | None = None) -> str:
     now = now or time.time()
     head = [f"table inet {TABLE}", f"delete table inet {TABLE}"]
     if policy.mode in ("off", "monitor"):
@@ -190,6 +191,7 @@ def compile_script(policy: Policy, rules: list[Rule], sets: dict[str, list[Addre
         grouped = _group(entries)
         body += _set(f"{name}_4", "ipv4_addr", grouped["ip4"]) + _set(f"{name}_6", "ipv6_addr", grouped["ip6"])
         body += _set(f"{name}_mac", "ether_addr", grouped["mac"])
+    body += nft_rules.sets(responses or [], ranges or {}, now)
     active = sorted((r for r in rules if r.active(now)), key=lambda r: (r.priority, r.id))
     default = "drop" if policy.mode == "lockdown" else "accept"
     for chain, hook, policy_verdict in (("input", "input", default), ("forward", "forward", "accept"),
@@ -197,12 +199,15 @@ def compile_script(policy: Policy, rules: list[Rule], sets: dict[str, list[Addre
         body.append(f"    chain {chain} {{")
         body.append(f"        type filter hook {hook} priority filter - 5; policy {policy_verdict};")
         if chain == "input":
-            body += _guards()
+            guards = _guards()
+            body += guards[:1] + nft_rules.input_guard()[:2] + guards[1:7] + nft_rules.input_guard()[2:] + guards[7:8]
+            body += nft_rules.input_throttle() + guards[8:]
             body += _hardening()
         else:
             side = "d" if chain == "output" else "s"
             body.append(f"        ip {side}addr @blocked_4 counter drop")
             body.append(f"        ip6 {side}addr @blocked_6 counter drop")
+            body += nft_rules.output() if chain == "output" else nft_rules.forward()
             body.append("        ct state established,related accept")
         for rule in active:
             if rule.direction == chain:
@@ -212,5 +217,6 @@ def compile_script(policy: Policy, rules: list[Rule], sets: dict[str, list[Addre
         if chain == "input" and policy.mode == "lockdown":
             body += _fallbacks(policy)
         body.append("    }")
+    body += nft_rules.nat()
     body.append("}")
     return "\n".join(head + body) + "\n"

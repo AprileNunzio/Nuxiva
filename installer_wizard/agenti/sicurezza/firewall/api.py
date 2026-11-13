@@ -9,6 +9,7 @@ from state import store as system_store
 
 from agenti.firewall import model
 from agenti.firewall.analyst import analyst
+from agenti.firewall.defense import routes as defense_routes
 from agenti.firewall.defense.guardian import guardian
 from agenti.firewall.applier import FirewallError, applier, render
 from agenti.firewall.events import monitor
@@ -17,6 +18,7 @@ from agenti.firewall import events as firewall_events
 from agenti.firewall.store import store
 
 admin_routes = APIRouter()
+admin_routes.include_router(defense_routes.router)
 CONFIRM_SECONDS = 90
 _changes = asyncio.Lock()
 
@@ -56,7 +58,8 @@ async def _apply_change(user: str, reason: str, mutate, confirm: bool) -> dict:
 
 
 @admin_routes.get("/api/firewall")
-async def admin_firewall(_: str = Depends(require_admin)):
+async def admin_firewall(request: Request, _: str = Depends(require_admin)):
+    defense_routes.remember(request)
     from agenti.network.whois import names
     snap, alerts = store.snapshot(), list(monitor.alerts)[-50:]
     seen = [a["src"] for a in alerts] + [a["dst"] for a in alerts] + [b["address"] for b in snap["blocks"]]
@@ -174,11 +177,6 @@ async def admin_unblock(address: str, user: str = Depends(require_admin)):
         store.blocks.pop(model.address(address).value)
 
     return await _change(user, f"sblocco di {address}", mutate, confirm=False)
-
-
-@admin_routes.get("/api/firewall/defense")
-async def admin_defense(_: str = Depends(require_admin)):
-    return JSONResponse(guardian.snapshot(), headers=NO_CACHE)
 
 
 @admin_routes.post("/api/firewall/geo/refresh")

@@ -2,6 +2,7 @@ import bisect
 import gzip
 import hashlib
 import io
+import ipaddress
 import json
 import logging
 import os
@@ -88,6 +89,14 @@ class PyTable:
     def size(self) -> int:
         return len(self.rows[4]) + len(self.rows[6])
 
+    def ranges(self, code: str, limit: int = 200_000) -> list[tuple[str, str]]:
+        wanted = _country(code)
+        if wanted is None:
+            return []
+        out = [(str(ipaddress.IPv4Address(a)), str(ipaddress.IPv4Address(b))) for a, b, c in self.rows[4] if c == wanted]
+        out += [(str(ipaddress.IPv6Address(a)), str(ipaddress.IPv6Address(b))) for a, b, c in self.rows[6] if c == wanted]
+        return out[:min(limit, 1_000_000)]
+
 
 def _native_table():
     if os.environ.get("NUXIVA_NATIVE", "auto").strip() == "0":
@@ -152,6 +161,12 @@ class Geo:
             if code:
                 found[netaddr.canonical(raw)] = code
         return found
+
+    def ranges(self, code: str) -> list[tuple[str, str]]:
+        if not self.loaded:
+            return []
+        with self.lock:
+            return list(self.table.ranges(code))
 
     def status(self) -> dict:
         try:

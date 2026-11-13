@@ -35,7 +35,7 @@ def scenario(rng: random.Random) -> dict:
     return {"now": now, "alerts": alerts, "policy": policy,
             "trusted": rng.sample(["8.8.8.0/24", "192.168.1.20", "aa:bb:cc:dd:ee:ff", "2001:4860::/32", "nonsense", "10.0.0.0/33"], rng.randint(0, 3)),
             "protected": rng.sample(["127.0.0.1", "192.168.1.1", "1.1.1.1"], rng.randint(0, 2)),
-            "active": rng.sample(["8.8.4.4", "country:US", "203.0.113.9"], rng.randint(0, 2)),
+            "active": rng.sample(["8.8.4.4", "country:US", "203.0.113.9", "192.168.1.20", "1.1.1.1"], rng.randint(0, 3)),
             "strikes": {s: rng.randint(0, 12) for s in rng.sample(["8.8.8.8", "1.1.1.1", "203.0.113.9"], rng.randint(0, 3))},
             "countries": {s: rng.choice(COUNTRIES) for s in rng.sample(["8.8.8.8", "8.8.4.4", "1.1.1.1", "203.0.113.9", "198.51.100.7"], 4)},
             "recent_actions": rng.randint(0, 5)}
@@ -65,6 +65,8 @@ class DefenseParity(unittest.TestCase):
         probes = ["8.8.8.8", "8.8.4.200", "1.0.0.1", "9.9.9.9", "2001:4860::1", "203.0.113.200", "192.168.1.1", "::ffff:8.8.8.8",
                   "nonsense", "", "0.0.0.0", "255.255.255.255"]
         self.assertEqual([native.lookup(p) for p in probes], [python.lookup(p) for p in probes])
+        for code in ("US", "AU", "ZZ", "us", "XX"):
+            self.assertEqual(native.ranges(code), python.ranges(code))
 
     def test_geo_rejects_the_same_corrupt_tables(self):
         for text in ("", "a,b\n", "1.0.0.0,1.0.0.255,AU\n1.0.0.10,1.0.1.0,US\n"):

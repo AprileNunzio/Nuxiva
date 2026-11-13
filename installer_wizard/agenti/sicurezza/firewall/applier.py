@@ -22,8 +22,13 @@ def available() -> bool:
 
 
 def render() -> str:
+    from agenti.firewall.defense.geo import geo
     with store.lock:
-        return compile_script(store.policy, list(store.rules.values()), dict(store.sets), list(store.blocks.values()))
+        answers = list(store.responses.values())
+        countries = {r.target for r in answers if r.kind == "country_block"}
+        ranges = {code: geo.ranges(code) for code in sorted(countries)}
+        return compile_script(store.policy, list(store.rules.values()), dict(store.sets), list(store.blocks.values()),
+                              responses=answers, ranges=ranges)
 
 
 async def run_nft(*args: str) -> None:

@@ -111,6 +111,26 @@ impl GeoTable {
     }
 
     #[must_use]
+    pub fn ranges(&self, code: &str, limit: usize) -> Vec<(String, String)> {
+        let Some(wanted) = country(code) else {
+            return Vec::new();
+        };
+        let v4 = self.v4.iter().filter(|row| row.2 == wanted).map(|row| {
+            (
+                std::net::Ipv4Addr::from(row.0).to_string(),
+                std::net::Ipv4Addr::from(row.1).to_string(),
+            )
+        });
+        let v6 = self.v6.iter().filter(|row| row.2 == wanted).map(|row| {
+            (
+                std::net::Ipv6Addr::from(row.0).to_string(),
+                std::net::Ipv6Addr::from(row.1).to_string(),
+            )
+        });
+        v4.chain(v6).take(limit).collect()
+    }
+
+    #[must_use]
     pub fn lookup(&self, raw: &str) -> Option<String> {
         let code = match ip(raw)? {
             Addr::V4(v) => find(&self.v4, v)?,

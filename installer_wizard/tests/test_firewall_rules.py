@@ -121,6 +121,24 @@ class CompilerTests(unittest.TestCase):
             os.unlink(handle.name)
         self.assertEqual(check.returncode, 0, check.stderr + script)
 
+    @unittest.skipUnless(shutil.which("nft") and hasattr(os, "geteuid") and os.geteuid() == 0, "serve nft come root")
+    def test_defensive_responses_are_accepted_by_nftables(self):
+        from agenti.firewall.defense import responses
+        answers = [responses.build(kind, target, 30, at=NOW) for kind, target in (
+            ("tarpit", "203.0.113.9"), ("rate_limit", "2001:db8::5"), ("honeypot", "198.51.100.3"), ("quarantine", "192.168.1.66"),
+            ("quarantine", "aa:bb:cc:dd:ee:ff"), ("sinkhole", "203.0.113.50"), ("country_block", "CN"))]
+        ranges = {"CN": [("1.0.1.0", "1.0.3.255"), ("1.0.8.0", "1.0.8.0"), ("2001:250::", "2001:252:ffff:ffff:ffff:ffff:ffff:ffff")]}
+        script = nft.compile_script(model.policy({"mode": "lockdown", "trusted": ["192.168.1.5"]}), [], {}, [], now=NOW,
+                                    responses=answers, ranges=ranges)
+        script = script.replace("delete table inet nuxiva_guard\n", "", 1)
+        with tempfile.NamedTemporaryFile("w", suffix=".nft", delete=False) as handle:
+            handle.write(script)
+        try:
+            check = subprocess.run(["nft", "-c", "-f", handle.name], capture_output=True, text=True, timeout=20)
+        finally:
+            os.unlink(handle.name)
+        self.assertEqual(check.returncode, 0, check.stderr + script)
+
 
 if __name__ == "__main__":
     unittest.main()

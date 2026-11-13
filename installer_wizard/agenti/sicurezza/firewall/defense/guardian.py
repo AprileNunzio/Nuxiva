@@ -48,7 +48,8 @@ class Guardian:
         with store.lock:
             policy = store.policy
             trusted = [model.text_of(a) for a in policy.trusted]
-            active = list(store.blocks)
+            active = list(store.blocks) + [r.target if r.family != "country" else f"country:{r.target}"
+                                           for r in store.responses.values()]
             view = policy_view(policy)
         clean = [{k: a[k] for k in ("kind", "severity", "src", "dst", "count", "at")} for a in alerts]
         sources = {netaddr.canonical(a["src"]) for a in clean if a["src"]}
@@ -78,11 +79,47 @@ class Guardian:
             log.warning("Stato della difesa non pubblicato sul bus: %s", exc)
 
     def snapshot(self) -> dict:
-        return {**self.assessment, "geo": geo.status()}
+        from agenti.firewall.defense.honeypot import honeypot
+        from agenti.firewall.defense.journal import journal
+        from agenti.firewall.defense.responder import responder
+        return {**self.assessment, "geo": geo.status(), "responses": responder.active(), "decoy": honeypot.status(),
+                "journal": journal.tail(30), "journal_ok": journal.verify()}
 
     async def on_alert(self, alert: dict) -> None:
         alert["country"] = geo.lookup(alert.get("src", ""))
         self.tick()
+        await self.act()
+
+    async def act(self) -> list[dict]:
+        from agenti.firewall.applier import FirewallError
+        from agenti.firewall.defense.responder import Refused, responder
+        done = []
+        for action in list(self.assessment.get("actions", [])):
+            if not action["auto"] and action["kind"] != "warn":
+                continue
+            try:
+                outcome = await responder.execute(action, "auto")
+            except (Refused, ValueError, FirewallError) as exc:
+                log.warning("Difesa automatica non applicata su %s: %s", action["target"], exc)
+                continue
+            if action["kind"] != "warn":
+                self.strike(action["target"])
+                done.append({**action, "outcome": outcome})
+        if done:
+            self.tick()
+        await self.decoy()
+        return done
+
+    async def decoy(self) -> None:
+        from agenti.firewall.defense.honeypot import honeypot
+        with store.lock:
+            wanted = store.policy.honeypot and store.policy.mode in ("protect", "lockdown")
+            targets = [r.target for r in store.responses.values() if r.kind == "honeypot"]
+        honeypot.allow(targets)
+        if wanted and targets:
+            await honeypot.start()
+        elif honeypot.server is not None and not targets:
+            await honeypot.stop()
 
     def tick(self) -> dict:
         from agenti.firewall.events import monitor, protected
@@ -105,6 +142,7 @@ class Guardian:
         while True:
             try:
                 self.tick()
+                await self.act()
             except (ValueError, TypeError, KeyError) as exc:
                 log.error("Valutazione della difesa non riuscita: %s", exc)
             if time.time() - last_geo > 86_400:

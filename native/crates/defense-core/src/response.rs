@@ -40,6 +40,10 @@ fn choose(incident: &Incident, input: &Input) -> (ActionKind, &'static str) {
     }
 }
 
+fn external(target: &str) -> bool {
+    crate::net::ip(target).is_some_and(|a| !crate::net::is_lan(&a))
+}
+
 #[must_use]
 pub fn duration(input: &Input, strikes: u32) -> u32 {
     let policy = &input.policy;
@@ -56,7 +60,8 @@ const fn allowed(autonomy: Autonomy, kind: ActionKind, minutes: u32) -> bool {
             minutes <= ASSIST_MINUTES
                 && matches!(
                     kind,
-                    ActionKind::RateLimit
+                    ActionKind::Sinkhole
+                        | ActionKind::RateLimit
                         | ActionKind::Tarpit
                         | ActionKind::Honeypot
                         | ActionKind::Block
@@ -66,58 +71,103 @@ const fn allowed(autonomy: Autonomy, kind: ActionKind, minutes: u32) -> bool {
     }
 }
 
-#[must_use]
-pub fn plan(input: &Input, incidents: &[Incident]) -> Vec<Action> {
-    let policy = &input.policy;
-    let enforcing = matches!(policy.mode, Mode::Protect | Mode::Lockdown);
-    let active: BTreeSet<String> = input
-        .active
-        .iter()
+fn addresses(raw: &[String]) -> BTreeSet<String> {
+    raw.iter()
         .take(crate::model::MAX_LIST)
         .filter_map(|a| clean(a))
-        .collect();
-    let budget = policy
-        .max_actions_per_hour
-        .saturating_sub(input.recent_actions);
-    let mut used = 0_u32;
-    let mut actions = Vec::new();
-    for incident in incidents {
-        if incident.level < policy.min_level {
-            continue;
-        }
-        let (kind, reason) = choose(incident, input);
-        if kind != ActionKind::Warn && active.contains(&incident.src) {
-            continue;
-        }
-        let minutes = if kind == ActionKind::Warn {
-            0
-        } else {
-            duration(input, incident.strikes)
-        };
-        let auto = enforcing
-            && kind != ActionKind::Warn
-            && allowed(policy.autonomy, kind, minutes)
-            && used < budget;
+        .collect()
+}
+
+struct Planner<'a> {
+    input: &'a Input,
+    enforcing: bool,
+    active: BTreeSet<String>,
+    protected: BTreeSet<String>,
+    budget: u32,
+    used: u32,
+    actions: Vec<Action>,
+}
+
+impl Planner<'_> {
+    fn push(
+        &mut self,
+        kind: ActionKind,
+        target: String,
+        minutes: u32,
+        reason: &str,
+        incident: &str,
+        permitted: bool,
+    ) {
+        let auto =
+            self.enforcing && kind != ActionKind::Warn && permitted && self.used < self.budget;
         if auto {
-            used = used.saturating_add(1);
+            self.used = self.used.saturating_add(1);
         }
-        actions.push(Action {
+        self.actions.push(Action {
             kind,
-            target: incident.src.clone(),
+            target,
             minutes,
             reason: reason.to_owned(),
-            incident: incident.id.clone(),
+            incident: incident.to_owned(),
             auto,
             reversible: true,
         });
     }
-    if policy.country_block {
+
+    fn incident(&mut self, incident: &Incident) {
+        let autonomy = self.input.policy.autonomy;
+        let (kind, reason) = choose(incident, self.input);
+        if kind == ActionKind::Warn || !self.active.contains(&incident.src) {
+            let minutes = if kind == ActionKind::Warn {
+                0
+            } else {
+                duration(self.input, incident.strikes)
+            };
+            self.push(
+                kind,
+                incident.src.clone(),
+                minutes,
+                reason,
+                &incident.id,
+                allowed(autonomy, kind, minutes),
+            );
+        }
+        if incident.origin != Origin::Lan
+            || incident.stage != Stage::Exfiltration
+            || incident.protected
+        {
+            return;
+        }
+        for target in &incident.targets {
+            if external(target) && !self.active.contains(target) && !self.protected.contains(target)
+            {
+                let minutes = duration(self.input, incident.strikes);
+                let permitted = allowed(autonomy, ActionKind::Sinkhole, minutes);
+                self.push(
+                    ActionKind::Sinkhole,
+                    target.clone(),
+                    minutes,
+                    "exfiltration_sinkhole",
+                    &incident.id,
+                    permitted,
+                );
+            }
+        }
+    }
+
+    fn countries(&mut self, incidents: &[Incident]) {
+        let policy = &self.input.policy;
         let home: BTreeSet<String> = policy
             .home_countries
             .iter()
             .map(|c| c.trim().to_ascii_uppercase())
             .collect();
         let threshold = policy.country_threshold.max(2);
+        let minutes = policy
+            .block_minutes
+            .max(60)
+            .min(policy.max_minutes.clamp(60, 525_600));
+        let permitted = policy.autonomy == Autonomy::Autonomous;
         let mut waves: BTreeMap<&str, u32> = BTreeMap::new();
         for incident in incidents {
             if incident.origin == Origin::Internet
@@ -132,27 +182,41 @@ pub fn plan(input: &Input, incidents: &[Incident]) -> Vec<Action> {
         }
         for (country, count) in waves {
             let target = format!("country:{country}");
-            if count < threshold || home.contains(country) || active.contains(&target) {
-                continue;
+            if count >= threshold && !home.contains(country) && !self.active.contains(&target) {
+                self.push(
+                    ActionKind::CountryBlock,
+                    target,
+                    minutes,
+                    "country_wave",
+                    "",
+                    permitted,
+                );
             }
-            let auto = enforcing && policy.autonomy == Autonomy::Autonomous && used < budget;
-            if auto {
-                used = used.saturating_add(1);
-            }
-            actions.push(Action {
-                kind: ActionKind::CountryBlock,
-                target,
-                minutes: policy
-                    .block_minutes
-                    .max(60)
-                    .min(policy.max_minutes.clamp(60, 525_600)),
-                reason: "country_wave".to_owned(),
-                incident: String::new(),
-                auto,
-                reversible: true,
-            });
         }
     }
+}
+
+#[must_use]
+pub fn plan(input: &Input, incidents: &[Incident]) -> Vec<Action> {
+    let policy = &input.policy;
+    let mut planner = Planner {
+        input,
+        enforcing: matches!(policy.mode, Mode::Protect | Mode::Lockdown),
+        active: addresses(&input.active),
+        protected: addresses(&input.protected),
+        budget: policy
+            .max_actions_per_hour
+            .saturating_sub(input.recent_actions),
+        used: 0,
+        actions: Vec::new(),
+    };
+    for incident in incidents.iter().filter(|i| i.level >= policy.min_level) {
+        planner.incident(incident);
+    }
+    if policy.country_block {
+        planner.countries(incidents);
+    }
+    let mut actions = planner.actions;
     actions.truncate(MAX_ACTIONS);
     actions
 }

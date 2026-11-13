@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Firewall: difese automatiche reversibili e registro a prova di manomissione",
+    "en": "Firewall: reversible automatic defences and a tamper-evident log",
+    "fr": "Pare-feu : défenses automatiques réversibles et journal infalsifiable",
+    "es": "Cortafuegos: defensas automáticas reversibles y registro a prueba de manipulaciones"
+  },
+  "features": [
+    {
+      "it": "Contro chi esplora la rete Nuxiva rallenta i tentativi oppure li devia verso un'esca isolata sul dispositivo; contro le intrusioni blocca a tempo, contro i flood limita la velocità.",
+      "en": "Against network probing Nuxiva slows the attempts down or diverts them to an isolated decoy on the device; intrusions are blocked for a while and floods are rate limited.",
+      "fr": "Face à l'exploration du réseau, Nuxiva ralentit les tentatives ou les détourne vers un leurre isolé sur l'appareil ; les intrusions sont bloquées temporairement et les inondations limitées.",
+      "es": "Ante la exploración de la red, Nuxiva ralentiza los intentos o los desvía a un señuelo aislado en el dispositivo; las intrusiones se bloquean por un tiempo y las inundaciones se limitan."
+    },
+    {
+      "it": "Un dispositivo di casa che invia dati in modo sospetto può essere messo in quarantena e le destinazioni esterne sospette vengono isolate; si può anche bloccare temporaneamente un intero paese.",
+      "en": "A home device sending data suspiciously can be quarantined and suspicious outside destinations are cut off; a whole country can also be blocked for a while.",
+      "fr": "Un appareil de la maison qui envoie des données de façon suspecte peut être mis en quarantaine et les destinations externes suspectes sont isolées ; un pays entier peut aussi être bloqué temporairement.",
+      "es": "Un dispositivo de casa que envía datos de forma sospechosa puede ponerse en cuarentena y los destinos externos sospechosos se aíslan; también se puede bloquear temporalmente un país entero."
+    },
+    {
+      "it": "Ogni difesa scade da sola e si può annullare; ogni azione finisce in un registro concatenato che rivela qualsiasi modifica.",
+      "en": "Every defence expires on its own and can be undone; every action goes into a chained log that reveals any tampering.",
+      "fr": "Chaque défense expire d'elle-même et peut être annulée ; chaque action est inscrite dans un journal chaîné qui révèle toute modification.",
+      "es": "Cada defensa caduca sola y se puede deshacer; cada acción queda en un registro encadenado que revela cualquier modificación."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Le difese non bloccano mai il server, il router, i dispositivi affidabili né l'indirizzo da cui hai usato di recente la pagina di amministrazione, così non resti mai chiuso fuori.",
+      "en": "Defences never block the server, the router, trusted devices or the address you recently used the admin page from, so you are never locked out.",
+      "fr": "Les défenses ne bloquent jamais le serveur, le routeur, les appareils de confiance ni l'adresse d'où vous avez récemment utilisé la page d'administration : vous n'êtes jamais bloqué dehors.",
+      "es": "Las defensas nunca bloquean el servidor, el router, los dispositivos de confianza ni la dirección desde la que usaste hace poco la página de administración, así que nunca te quedas fuera."
+    }
+  ]
+}

@@ -68,6 +68,9 @@ class Monitor:
 
     def block_candidate(self, alert: dict) -> model.Address | None:
         policy = store.policy
+        from agenti.firewall.defense.guardian import guardian
+        if guardian.task is not None and not guardian.task.done():
+            return None
         if not policy.auto_block or policy.mode not in ("protect", "lockdown"):
             return None
         if SEVERITY[alert["severity"]] < SEVERITY[policy.auto_block_severity]:

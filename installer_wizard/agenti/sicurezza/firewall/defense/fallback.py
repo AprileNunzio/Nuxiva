@@ -98,7 +98,7 @@ def _allowed(autonomy: str, kind: str, minutes: int) -> bool:
     if autonomy == "observe":
         return False
     if autonomy == "assist":
-        return minutes <= ASSIST_MINUTES and kind in ("rate_limit", "tarpit", "honeypot", "block")
+        return minutes <= ASSIST_MINUTES and kind in ("sinkhole", "rate_limit", "tarpit", "honeypot", "block")
     return True
 
 
@@ -106,6 +106,7 @@ def plan(data: dict, incidents: list[dict]) -> list[dict]:
     policy = data["policy"]
     enforcing = policy["mode"] in ("protect", "lockdown")
     active = {c for c in (netaddr.clean(a) for a in data["active"][:MAX_LIST]) if c is not None}
+    protected = {c for c in (netaddr.clean(a) for a in data["protected"][:MAX_LIST]) if c is not None}
     budget = max(policy["max_actions_per_hour"] - data["recent_actions"], 0)
     used = 0
     actions = []
@@ -113,13 +114,23 @@ def plan(data: dict, incidents: list[dict]) -> list[dict]:
         if _sev(incident["level"]) < _sev(policy["min_level"]):
             continue
         kind, reason = _choose(incident, policy)
-        if kind != "warn" and incident["src"] in active:
+        if kind == "warn" or incident["src"] not in active:
+            minutes = 0 if kind == "warn" else duration(policy, incident["strikes"])
+            auto = enforcing and kind != "warn" and _allowed(policy["autonomy"], kind, minutes) and used < budget
+            used += 1 if auto else 0
+            actions.append({"kind": kind, "target": incident["src"], "minutes": minutes, "reason": reason,
+                            "incident": incident["id"], "auto": auto, "reversible": True})
+        if incident["origin"] != "lan" or incident["stage"] != "exfiltration" or incident["protected"]:
             continue
-        minutes = 0 if kind == "warn" else duration(policy, incident["strikes"])
-        auto = enforcing and kind != "warn" and _allowed(policy["autonomy"], kind, minutes) and used < budget
-        used += 1 if auto else 0
-        actions.append({"kind": kind, "target": incident["src"], "minutes": minutes, "reason": reason,
-                        "incident": incident["id"], "auto": auto, "reversible": True})
+        for target in incident["targets"]:
+            found = netaddr.ip(target)
+            if found is None or netaddr.is_lan(("ip", found)) or target in active or target in protected:
+                continue
+            minutes = duration(policy, incident["strikes"])
+            auto = enforcing and _allowed(policy["autonomy"], "sinkhole", minutes) and used < budget
+            used += 1 if auto else 0
+            actions.append({"kind": "sinkhole", "target": target, "minutes": minutes, "reason": "exfiltration_sinkhole",
+                            "incident": incident["id"], "auto": auto, "reversible": True})
     if policy["country_block"]:
         home = {"".join(c.upper() if "a" <= c <= "z" else c for c in h.strip()) for h in policy["home_countries"]}
         threshold = max(policy["country_threshold"], 2)

@@ -76,6 +76,7 @@ pub enum Mode {
 #[serde(rename_all = "snake_case")]
 pub enum ActionKind {
     Warn,
+    Sinkhole,
     RateLimit,
     Tarpit,
     Honeypot,

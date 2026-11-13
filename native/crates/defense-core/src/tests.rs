@@ -251,6 +251,32 @@ fn geo_table_finds_ranges() {
     assert_eq!(table.lookup("2001:4860::8888").as_deref(), Some("US"));
     assert_eq!(table.lookup("9.9.9.9"), None);
     assert_eq!(table.lookup("1.0.1.0"), None);
+    assert_eq!(table.ranges("US", 10).len(), 2);
+    assert_eq!(
+        table.ranges("US", 1),
+        vec![("8.8.8.0".to_owned(), "8.8.8.255".to_owned())]
+    );
+    assert!(table.ranges("ZZ", 10).is_empty());
+}
+
+#[test]
+fn lan_exfiltration_sinkholes_external_destinations() {
+    let mut data = input(serde_json::json!([
+        {"kind": "exfiltration", "severity": "high", "src": "192.168.1.40", "dst": "203.0.113.50", "count": 9, "at": 9_990.0},
+        {"kind": "dns_tunnel", "severity": "high", "src": "192.168.1.40", "dst": "192.168.1.1", "count": 9, "at": 9_991.0}
+    ]));
+    data.policy.mode = Mode::Protect;
+    let out = assess(&data);
+    let sink: Vec<_> = out
+        .actions
+        .iter()
+        .filter(|a| a.kind == ActionKind::Sinkhole)
+        .collect();
+    assert_eq!(sink.len(), 1);
+    assert_eq!(
+        sink.first().map(|a| (a.target.as_str(), a.auto)),
+        Some(("203.0.113.50", true))
+    );
 }
 
 #[test]

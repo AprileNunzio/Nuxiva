@@ -86,6 +86,15 @@ impl RustGeo {
         Ok(addresses.into_iter().map(|a| table.lookup(&a)).collect())
     }
 
+    #[pyo3(signature = (code, limit=200_000))]
+    fn ranges(&self, code: &str, limit: usize) -> PyResult<Vec<(String, String)>> {
+        Ok(self
+            .table
+            .read()
+            .map_err(|_| PyRuntimeError::new_err("geo.poisoned"))?
+            .ranges(code, limit.min(1_000_000)))
+    }
+
     fn size(&self) -> PyResult<usize> {
         Ok(self
             .table

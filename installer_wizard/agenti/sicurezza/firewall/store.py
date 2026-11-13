@@ -9,6 +9,7 @@ from config import STATE_DIR
 
 from agenti.firewall import model
 from agenti.firewall.nft import Block
+from agenti.firewall.defense import responses as defense_responses
 
 FIREWALL_DIR = STATE_DIR / "firewall"
 CONFIG_FILE = FIREWALL_DIR / "config.json"
@@ -24,6 +25,7 @@ class FirewallStore:
         self.rules: dict[str, model.Rule] = {}
         self.sets: dict[str, list[model.Address]] = {}
         self.blocks: dict[str, Block] = {}
+        self.responses: dict[str, defense_responses.Response] = {}
         self.history: deque[dict] = deque(maxlen=HISTORY)
         self.load()
 
@@ -35,6 +37,7 @@ class FirewallStore:
                 "sets": {name: [model.text_of(a) for a in entries] for name, entries in sorted(self.sets.items())},
                 "blocks": [{"address": model.text_of(b.address), "expires": b.expires, "reason": b.reason}
                            for b in self.blocks.values()],
+                "responses": [r.export() for r in sorted(self.responses.values(), key=lambda r: (r.kind, r.target))],
             }
 
     def restore(self, data: dict) -> None:
@@ -45,8 +48,9 @@ class FirewallStore:
         for item in data.get("blocks") or []:
             address = model.address(item["address"])
             blocks[address.value] = Block(address, float(item.get("expires") or 0.0), model.comment(item.get("reason", "")))
+        answers = {r.key: r for r in (defense_responses.restore(item) for item in data.get("responses") or [])}
         with self.lock:
-            self.policy, self.rules, self.sets, self.blocks = policy, rules, sets, blocks
+            self.policy, self.rules, self.sets, self.blocks, self.responses = policy, rules, sets, blocks, answers
 
     def load(self) -> None:
         try:
@@ -90,7 +94,10 @@ class FirewallStore:
             gone = [k for k, r in self.rules.items() if r.expires and r.expires <= now]
             for key in gone:
                 del self.rules[key]
-            return len(expired) + len(gone)
+            ended = [k for k, r in self.responses.items() if not r.live(now)]
+            for key in ended:
+                del self.responses[key]
+            return len(expired) + len(gone) + len(ended)
 
     def trusted(self, address: model.Address) -> bool:
         with self.lock:
