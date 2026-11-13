@@ -486,14 +486,12 @@
     "rescue_ack_anon": "Un familiare ha ricevuto l'avviso e sta arrivando.",
     "rescue_number": "Emergenza: {{number}}",
     "rescue_disclaimer": "Nuxiva non sostituisce i servizi di emergenza né un dispositivo medico certificato.",
-<<<<<<< Updated upstream
     "upd_hero_version": "Nuxiva {{version}}",
     "upd_hero_date": "Aggiornamento del {{date}}",
     "upd_step": "Fase {{n}} di {{total}}",
     "upd_calm_sub": "Manutenzione",
     "upd_calm_title": "Tutto sotto controllo",
-    "upd_calm_text": "Questo aggiornamento contiene miglioramenti interni, senza novità visibili da elencare."
-=======
+    "upd_calm_text": "Questo aggiornamento contiene miglioramenti interni, senza novità visibili da elencare.",
     "wx_now": "Ora",
     "wx_hourly_legend": "Barre blu: probabilità di pioggia · riga in basso: vento in {{unit}}",
     "wx_until": "fino a {{time}}",
@@ -522,6 +520,5 @@
     "wx_radar": "Radar pioggia",
     "wx_radar_credit": "Ultime immagini radar · RainViewer, OpenStreetMap",
     "wx_model": "modello {{model}}, il più preciso qui"
->>>>>>> Stashed changes
   }
 }

@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Testi in quattro lingue di nuovo integri",
+    "en": "Text in four languages intact again",
+    "fr": "Textes en quatre langues de nouveau intacts",
+    "es": "Textos en cuatro idiomas de nuevo íntegros"
+  },
+  "features": [
+    {
+      "it": "Ogni versione viene ora controllata anche contro file rimasti a metà durante l'unione di due modifiche, prima di essere pubblicata.",
+      "en": "Every version is now also checked against files left half-merged when two changes were combined, before being published.",
+      "fr": "Chaque version est désormais aussi vérifiée contre les fichiers restés à moitié fusionnés lors de la combinaison de deux modifications, avant d'être publiée.",
+      "es": "Cada versión se comprueba ahora también contra archivos que quedaron a medias al unir dos cambios, antes de publicarse."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "I testi della schermata (italiano, inglese, francese, spagnolo) contenevano un residuo di unione che impediva di leggerli: ora sono integri e le nuove voci del meteo e delle novità compaiono.",
+      "en": "The on-screen texts (Italian, English, French, Spanish) contained a merge leftover that made them unreadable: they are intact again and the new weather and release-note entries appear.",
+      "fr": "Les textes de l'écran (italien, anglais, français, espagnol) contenaient un résidu de fusion qui les rendait illisibles : ils sont de nouveau intacts et les nouvelles entrées météo et nouveautés apparaissent.",
+      "es": "Los textos de pantalla (italiano, inglés, francés, español) contenían un resto de fusión que los hacía ilegibles: están íntegros de nuevo y aparecen las nuevas entradas del tiempo y las novedades."
+    }
+  ]
+}
