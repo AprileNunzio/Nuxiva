@@ -61,6 +61,16 @@ async def defense_revoke(key: str, request: Request, user: str = Depends(require
     return guardian.snapshot()
 
 
+@router.post("/api/firewall/defense/view")
+async def defense_view(request: Request, _: str = Depends(require_admin)):
+    from agenti.firewall.defense.stage import stage
+    remember(request)
+    body = await request.json()
+    opened = isinstance(body, dict) and body.get("open") is True
+    reached = await (stage.show(True) if opened else stage.close())
+    return JSONResponse({"open": opened, "reached": reached}, headers=NO_CACHE)
+
+
 @router.get("/api/firewall/defense/journal")
 async def defense_journal(_: str = Depends(require_admin)):
     return JSONResponse({"entries": journal.tail(500), "intact": journal.verify()}, headers=NO_CACHE)

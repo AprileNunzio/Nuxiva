@@ -6,7 +6,10 @@ import { useAction, useResource } from '../shared/useResource';
 import { blockAddress, confirmChange, rollbackChange, savePolicy, unblockAddress } from './api';
 import { ConfirmBanner } from './components/ConfirmBanner';
 import { RulesPanel } from './components/RulesPanel';
-import { FirewallOverview } from './types';
+import { DefensePanel } from './components/DefensePanel';
+import { JournalPanel } from './components/JournalPanel';
+import { TrustedPanel } from './components/TrustedPanel';
+import { DefenseState, FirewallOverview, JournalState, TrustedDevice } from './types';
 
 const MODES = ['off', 'monitor', 'protect', 'lockdown'] as const;
 const SEVERITY_TONE: Record<string, 'slate' | 'amber' | 'rose'> = { low: 'slate', medium: 'amber', high: 'rose', critical: 'rose' };
@@ -14,7 +17,16 @@ const SEVERITY_TONE: Record<string, 'slate' | 'amber' | 'rose'> = { low: 'slate'
 export const View: React.FC = () => {
   const { t, lang } = useScopedI18n('core_apps/firewall');
   const { data, error, loading, reload } = useResource<FirewallOverview>('/api/firewall', 5000);
-  const { busy, run } = useAction(reload);
+  const defense = useResource<DefenseState>('/api/firewall/defense', 5000);
+  const trusted = useResource<{ readonly devices: readonly TrustedDevice[] }>('/api/firewall/trusted', 15000);
+  const journal = useResource<JournalState>('/api/firewall/defense/journal', 15000);
+  const everything = () => {
+    reload();
+    defense.reload();
+    trusted.reload();
+    journal.reload();
+  };
+  const { busy, run } = useAction(everything);
   const [address, setAddress] = useState('');
   const [minutes, setMinutes] = useState(60);
 
@@ -104,6 +116,11 @@ export const View: React.FC = () => {
           )}
         </Panel>
       </div>
+      <div className="grid gap-4 lg:grid-cols-2">
+        <DefensePanel policy={policy} state={defense.data} busy={busy} lang={lang} t={t} run={run} reload={everything} />
+        <TrustedPanel devices={trusted.data?.devices ?? []} busy={busy} lang={lang} t={t} run={run} reload={everything} />
+      </div>
+      <JournalPanel journal={journal.data} lang={lang} t={t} />
       <RulesPanel rules={data.rules} busy={busy} t={t} run={run} />
       <Panel title={t('alerts_title')} icon={<Radar className="h-4 w-4 text-amber-700" aria-hidden="true" />}>
         {data.alerts.length === 0 ? (

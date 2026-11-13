@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Pagina 8080: controllo completo della difesa del firewall",
+    "en": "Page 8080: full control of the firewall defence",
+    "fr": "Page 8080 : contrôle complet de la défense du pare-feu",
+    "es": "Página 8080: control completo de la defensa del cortafuegos"
+  },
+  "features": [
+    {
+      "it": "Nell'app Sicurezza e Firewall scegli quanto la difesa deve fare da sola, attivi o spegni rallentamento, esca isolata, quarantena e blocco dei paesi, e indichi i tuoi paesi che non vengono mai bloccati.",
+      "en": "In the Security & Firewall app you choose how much the defence does on its own, turn slowing down, isolated decoy, quarantine and country blocking on or off, and list your own countries that are never blocked.",
+      "fr": "Dans l'app Sécurité et pare-feu, tu choisis ce que la défense fait seule, actives ou coupes le ralentissement, le leurre isolé, la quarantaine et le blocage de pays, et indiques tes pays qui ne sont jamais bloqués.",
+      "es": "En la app Seguridad y cortafuegos eliges cuánto hace la defensa por su cuenta, activas o apagas ralentización, señuelo aislado, cuarentena y bloqueo de países, e indicas tus países que nunca se bloquean."
+    },
+    {
+      "it": "Vedi le difese attive con scadenza, le puoi annullare o aggiungerne una a mano, e puoi aprire o chiudere la vista 3D a schermo intero sulla pagina 80.",
+      "en": "You see the active defences with their expiry, can undo them or add one by hand, and can open or close the full-screen 3D view on page 80.",
+      "fr": "Tu vois les défenses actives avec leur échéance, tu peux les annuler ou en ajouter une à la main, et ouvrir ou fermer la vue 3D plein écran sur la page 80.",
+      "es": "Ves las defensas activas con su caducidad, puedes anularlas o añadir una a mano, y abrir o cerrar la vista 3D a pantalla completa en la página 80."
+    },
+    {
+      "it": "Aggiungi un dispositivo affidabile con un codice di conferma, rimuovilo quando vuoi, controlla il registro della difesa con la verifica di integrità e aggiorna l'elenco dei paesi.",
+      "en": "Add a trusted device with a confirmation code, remove it any time, check the defence log with its integrity check and update the country list.",
+      "fr": "Ajoute un appareil de confiance avec un code de confirmation, retire-le quand tu veux, consulte le journal de défense avec sa vérification d'intégrité et mets à jour la liste des pays.",
+      "es": "Añade un dispositivo de confianza con un código de confirmación, quítalo cuando quieras, consulta el registro de defensa con su verificación de integridad y actualiza la lista de países."
+    }
+  ],
+  "fixes": []
+}

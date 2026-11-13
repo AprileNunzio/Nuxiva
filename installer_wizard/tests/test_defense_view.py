@@ -5,6 +5,12 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
+
+from access import require_admin
+from agenti.firewall import api as firewall_api
+
 ROOT = Path(__file__).resolve().parents[1]
 for p in (str(ROOT), str(ROOT / "backend"), str(ROOT / "agenti" / "percezione" / "ear")):
     if p not in sys.path:
@@ -116,6 +122,28 @@ class StageTests(FirewallBase):
         stage = stage_module.Stage()
         with mock.patch.object(stage_module.websockets, "connect", side_effect=OSError("down")):
             self.assertFalse(asyncio.run(stage.show()))
+
+
+class RouteTests(FirewallBase):
+    def setUp(self):
+        super().setUp()
+        app = FastAPI()
+        app.include_router(firewall_api.admin_routes)
+        app.dependency_overrides[require_admin] = lambda: "nunzio"
+        self.client = TestClient(app)
+
+    def test_view_route_opens_and_closes(self):
+        with mock.patch.object(stage_module.stage, "send", new=mock.AsyncMock(return_value=True)) as send:
+            opened = self.client.post("/api/firewall/defense/view", json={"open": True}).json()
+            closed = self.client.post("/api/firewall/defense/view", json={"open": "x"}).json()
+        self.assertEqual(opened, {"open": True, "reached": True})
+        self.assertEqual(closed, {"open": False, "reached": True})
+        self.assertEqual([c.args[0]["open"] for c in send.call_args_list], [True, False])
+
+    def test_view_route_needs_admin(self):
+        app = FastAPI()
+        app.include_router(firewall_api.admin_routes)
+        self.assertIn(TestClient(app).post("/api/firewall/defense/view", json={"open": True}).status_code, (401, 403))
 
 
 class AssetTests(unittest.TestCase):
