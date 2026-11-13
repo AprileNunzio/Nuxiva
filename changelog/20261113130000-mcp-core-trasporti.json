@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "MCP dinamico: collegamento stabile ai server",
+    "en": "Dynamic MCP: stable connection to servers",
+    "fr": "MCP dynamique : connexion stable aux serveurs",
+    "es": "MCP dinámico: conexión estable con los servidores"
+  },
+  "features": [
+    {
+      "it": "Il nuovo motore MCP sa parlare con i server tramite programma locale o rete, mantiene una sola sessione per server e non resta mai appeso se un server tace o cade.",
+      "en": "The new MCP engine can talk to servers through a local program or the network, keeps a single session per server and never hangs when a server goes silent or drops.",
+      "fr": "Le nouveau moteur MCP dialogue avec les serveurs via un programme local ou le réseau, garde une seule session par serveur et ne se bloque jamais si un serveur se tait ou tombe.",
+      "es": "El nuevo motor MCP habla con los servidores mediante un programa local o la red, mantiene una sola sesión por servidor y nunca se queda colgado si un servidor calla o se cae."
+    }
+  ]
+}

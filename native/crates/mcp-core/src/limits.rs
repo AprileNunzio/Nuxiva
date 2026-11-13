@@ -14,4 +14,7 @@ impl Ceilings {
     pub const ID_TEXT: usize = 128;
     pub const METHOD_LEN: usize = 128;
     pub const ERROR_MESSAGE_CHARS: usize = 1_000;
+    pub const TIMEOUT_MS: usize = 600_000;
+    pub const IN_FLIGHT: usize = 4_096;
+    pub const EVENT_QUEUE: usize = 65_536;
 }

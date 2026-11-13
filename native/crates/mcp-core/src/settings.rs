@@ -15,6 +15,9 @@ pub struct Settings {
     pub max_schema_bytes: usize,
     pub max_schema_depth: usize,
     pub max_schema_nodes: usize,
+    pub request_timeout_ms: usize,
+    pub max_in_flight: usize,
+    pub event_queue: usize,
 }
 
 impl Default for Settings {
@@ -29,6 +32,9 @@ impl Default for Settings {
             max_schema_bytes: 64 * 1024,
             max_schema_depth: 24,
             max_schema_nodes: 20_000,
+            request_timeout_ms: 30_000,
+            max_in_flight: 64,
+            event_queue: 256,
         }
     }
 }
@@ -58,6 +64,9 @@ impl Settings {
         within(self.max_schema_bytes, Ceilings::SCHEMA_BYTES)?;
         within(self.max_schema_depth, Ceilings::SCHEMA_DEPTH)?;
         within(self.max_schema_nodes, Ceilings::SCHEMA_NODES)?;
+        within(self.request_timeout_ms, Ceilings::TIMEOUT_MS)?;
+        within(self.max_in_flight, Ceilings::IN_FLIGHT)?;
+        within(self.event_queue, Ceilings::EVENT_QUEUE)?;
         if self.max_tools_per_server > self.max_tools_total {
             return Err(McpError::InvalidSettings);
         }

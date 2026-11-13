@@ -9,6 +9,11 @@ pub enum McpError {
     InvalidSettings,
     InvalidName,
     Serialize,
+    Timeout,
+    Closed,
+    Remote,
+    Busy,
+    Io,
 }
 
 impl McpError {
@@ -24,6 +29,11 @@ impl McpError {
             Self::InvalidSettings => "mcp.settings.invalid",
             Self::InvalidName => "mcp.name.invalid",
             Self::Serialize => "mcp.serialize",
+            Self::Timeout => "mcp.timeout",
+            Self::Closed => "mcp.closed",
+            Self::Remote => "mcp.remote",
+            Self::Busy => "mcp.busy",
+            Self::Io => "mcp.io",
         }
     }
 }

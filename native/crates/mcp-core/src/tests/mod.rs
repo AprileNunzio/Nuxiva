@@ -1,5 +1,10 @@
 mod architecture;
+mod fake;
+mod http;
 mod jsonrpc;
 mod model;
 mod names;
+mod session;
 mod settings;
+mod sse;
+mod stdio;
