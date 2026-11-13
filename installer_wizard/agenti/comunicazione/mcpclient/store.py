@@ -33,7 +33,7 @@ def check_url(url: str) -> str:
     return parsed.geturl()
 
 
-def add(name: str, url: str, token: str = "", trusted: bool = False) -> str:
+def add(name: str, url: str, token: str = "", trusted: bool = False, lan=None) -> str:
     data = load()
     if len(data) >= MAX_SERVERS:
         raise ValueError("Troppi server collegati")
@@ -41,7 +41,7 @@ def add(name: str, url: str, token: str = "", trusted: bool = False) -> str:
         raise ValueError("nome non valido")
     server_id = "s" + secrets.token_hex(3)
     data[server_id] = {"name": str(name).strip(), "url": check_url(url), "token": str(token).strip()[:400], "trusted": bool(trusted), "enabled": True,
-                       "added": time.time(), "status": "mai controllato", "tools": 0, "checked": 0}
+                       "has_token": bool(str(token).strip()), "lan": None if lan is None else bool(lan), "added": time.time(), "status": "mai controllato", "tools": 0, "checked": 0}
     save(data)
     return server_id
 
@@ -62,5 +62,5 @@ def remove(server_id: str) -> bool:
 
 
 def public(row_id: str, row: dict) -> dict:
-    return {"id": row_id, "name": row["name"], "url": row["url"], "trusted": row["trusted"], "enabled": row["enabled"], "has_token": bool(row["token"]),
+    return {"id": row_id, "name": row["name"], "url": row["url"], "trusted": row["trusted"], "enabled": row["enabled"], "has_token": bool(row["token"]) or bool(row.get("has_token")), "lan": row.get("lan"),
             "status": row["status"], "tools": row["tools"], "checked": row["checked"]}

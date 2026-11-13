@@ -123,7 +123,7 @@ from agenti.locale import household as locale_household
 from agenti.vpn.service import service as vpn_service
 from agenti.maps.maps import maps
 from agenti.mcpclient import api as mcpclient_api
-from agenti.mcpclient.service import run as mcpclient_run
+from agenti.mcpclient.runtime import run as mcpclient_run
 from agenti.music import api as music_api
 from agenti.music import api_library as music_library_api
 from agenti.music import api_play as music_play_api

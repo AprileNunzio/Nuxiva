@@ -1,5 +1,6 @@
 import asyncio
 import json
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -64,6 +65,9 @@ class ClientBase(unittest.TestCase):
             patcher = mock.patch.object(target, name, value)
             patcher.start()
             self.addCleanup(patcher.stop)
+        patcher = mock.patch.dict(os.environ, {"NUXIVA_MCP_ENGINE": "python"})
+        patcher.start()
+        self.addCleanup(patcher.stop)
         self.server = FakeServer()
         self.use(self.server)
         self.addCleanup(lambda: [service.drop(s) for s in {v["server"] for v in service.EXTERNAL.values()}])

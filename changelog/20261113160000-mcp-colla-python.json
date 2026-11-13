@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Server MCP esterni: ora usano il nuovo motore",
+    "en": "External MCP servers: now running on the new engine",
+    "fr": "Serveurs MCP externes : ils utilisent désormais le nouveau moteur",
+    "es": "Servidores MCP externos: ahora usan el nuevo motor"
+  },
+  "features": [
+    {
+      "it": "I server MCP esterni passano dal nuovo motore nativo: riconnessione automatica, strumenti aggiornati in tempo reale, conferma per le azioni rischiose e registro delle chiamate a prova di manomissione.",
+      "en": "External MCP servers now go through the new native engine: automatic reconnection, live tool updates, confirmation for risky actions and a tamper-evident call log.",
+      "fr": "Les serveurs MCP externes passent par le nouveau moteur natif : reconnexion automatique, outils mis à jour en direct, confirmation des actions risquées et journal des appels infalsifiable.",
+      "es": "Los servidores MCP externos pasan por el nuevo motor nativo: reconexión automática, herramientas actualizadas en vivo, confirmación de acciones de riesgo y registro de llamadas a prueba de manipulación."
+    },
+    {
+      "it": "I token dei server esterni sono ora salvati cifrati nel vault e i vecchi token in chiaro vengono migrati da soli.",
+      "en": "External server tokens are now stored encrypted in the vault and old plain-text tokens are migrated automatically.",
+      "fr": "Les jetons des serveurs externes sont désormais chiffrés dans le coffre et les anciens jetons en clair sont migrés automatiquement.",
+      "es": "Los tokens de los servidores externos ahora se guardan cifrados en la bóveda y los antiguos en texto plano se migran automáticamente."
+    }
+  ],
+  "fixes": []
+}
