@@ -5,8 +5,8 @@ use std::sync::Arc;
 use ed25519_dalek::SigningKey;
 use nuxiva_mcp_core::{
     AuditSink, CallRequest, Catalog, FileSink, Hub, McpError, PolicyConfig, Scope, Settings,
-    SharedSecrets, SignedCatalog, generate_signing_key, resume_from_file, sign_catalog,
-    verify_catalog,
+    SharedSecrets, SignedCatalog, ToolError, Within, generate_signing_key, resume_from_file,
+    sign_catalog, verify_catalog,
 };
 use nuxiva_mcp_servers::{ServerDefinition, register_all};
 use pyo3::create_exception;
@@ -166,6 +166,54 @@ impl RustMcpEngine {
             })
             .map_err(rejected)?;
         json_of(&output)
+    }
+
+    fn call_budgeted(&self, py: Python<'_>, request_json: &str) -> PyResult<String> {
+        let request: CallRequest =
+            serde_json::from_str(request_json).map_err(|_| rejected(McpError::InvalidArguments))?;
+        let hub = Arc::clone(&self.hub);
+        let within = py
+            .detach(|| {
+                self.runtime
+                    .block_on(async move { hub.call_within(request).await })
+            })
+            .map_err(rejected)?;
+        match within {
+            Within::Done(output) => {
+                json_of(&serde_json::json!({"state": "done", "output": output}))
+            }
+            Within::Pending(id) => json_of(&serde_json::json!({"state": "pending", "job": id})),
+        }
+    }
+
+    fn job_status(&self, id: &str, agent: &str) -> PyResult<String> {
+        let view = self.hub.poll(id, agent).map_err(rejected)?;
+        json_of(&view)
+    }
+
+    fn job_cancel(&self, id: &str, agent: &str) -> PyResult<()> {
+        self.hub.cancel(id, agent).map_err(rejected)
+    }
+
+    fn heal_json(&self) -> PyResult<String> {
+        json_of(&self.hub.heal())
+    }
+
+    fn report_error(&self, component: &str, code: &str, context: &str) {
+        self.hub.report(component, code, context);
+    }
+
+    #[staticmethod]
+    fn typed_error(code: &str, tool: &str) -> PyResult<String> {
+        json_of(&ToolError::from_code(code, tool))
+    }
+
+    fn release_quarantine(&self, id: &str) -> PyResult<()> {
+        self.hub.release_quarantine(id).map_err(rejected)
+    }
+
+    fn quarantined(&self) -> Vec<String> {
+        self.hub.quarantined()
     }
 
     fn shutdown(&self) {

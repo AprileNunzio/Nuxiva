@@ -2,6 +2,7 @@ import asyncio
 import json
 import os
 import tempfile
+import time
 import threading
 import unittest
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -20,6 +21,7 @@ TOOLS = [
     {"name": "crea_evento", "description": "Crea un evento", "inputSchema": {"type": "object", "properties": {"titolo": {"type": "string", "description": "nome"},
                                                                                                            "durata": {"type": "integer"}}, "required": ["titolo"]}},
     {"name": "leggi_agenda", "description": "Legge l'agenda", "annotations": {"readOnlyHint": True}, "inputSchema": {"type": "object", "properties": {}}},
+    {"name": "lenta", "description": "Risponde tardi", "annotations": {"readOnlyHint": True}, "inputSchema": {"type": "object", "properties": {}}},
     {"name": "rompi", "description": "Fallisce sempre", "annotations": {"readOnlyHint": True}, "inputSchema": {"type": "object", "properties": {}}},
 ]
 TOKEN = "segreto"
@@ -61,6 +63,8 @@ class Handler(BaseHTTPRequestHandler):
         elif method == "tools/call":
             name, args = message["params"]["name"], message["params"]["arguments"]
             self.calls.append((name, args))
+            if name == "lenta":
+                time.sleep(1.2)
             if name == "rompi":
                 self.reply(message["id"], {"content": [{"type": "text", "text": "guasto"}], "isError": True})
             else:
@@ -112,9 +116,9 @@ class RustEngineTest(unittest.TestCase):
 
     def test_tools_are_discovered_and_token_never_hits_disk(self):
         ident = self.connect()
-        self.assertEqual({n.split(f"{ident}_")[1] for n in registry.TOOLS if n.startswith(f"ext_{ident}_")}, {"crea_evento", "leggi_agenda", "rompi"})
+        self.assertEqual({n.split(f"{ident}_")[1] for n in registry.TOOLS if n.startswith(f"ext_{ident}_")}, {"crea_evento", "leggi_agenda", "lenta", "rompi"})
         self.assertEqual(store.load()[ident]["status"], "collegato")
-        self.assertEqual(store.load()[ident]["tools"], 3)
+        self.assertEqual(store.load()[ident]["tools"], 4)
         disk = "".join(p.read_text(errors="ignore") for p in self.root.glob("*.json"))
         self.assertNotIn(TOKEN, disk)
         self.assertEqual(engine.VAULT.load()["tokens"][ident], TOKEN)
@@ -168,7 +172,7 @@ class RustEngineTest(unittest.TestCase):
         self.assertEqual(asyncio.run(rust_service.sync_one(ident)), 0)
         self.assertFalse([n for n in registry.TOOLS if n.startswith(f"ext_{ident}_")])
         store.update(ident, enabled=True)
-        self.assertEqual(asyncio.run(rust_service.sync_one(ident)), 3)
+        self.assertEqual(asyncio.run(rust_service.sync_one(ident)), 4)
         store.remove(ident)
         asyncio.run(rust_service.remove(ident))
         self.assertFalse([n for n in registry.TOOLS if n.startswith(f"ext_{ident}_")])
@@ -176,9 +180,35 @@ class RustEngineTest(unittest.TestCase):
 
     def test_plaintext_tokens_from_the_old_store_are_migrated(self):
         ident = store.add("Calendario", self.url, TOKEN, False)
-        self.assertEqual(asyncio.run(rust_service.sync_one(ident)), 3)
+        self.assertEqual(asyncio.run(rust_service.sync_one(ident)), 4)
         self.assertEqual(store.load()[ident]["token"], "")
         self.assertTrue(store.public(ident, store.load()[ident])["has_token"])
+
+    def test_slow_call_becomes_a_job_and_completes_on_the_board(self):
+        engine.SETTINGS_FILE.write_text(json.dumps({"foreground_budget_ms": 300}))
+        self.connect(trusted=True)
+        name = self.name_of("lenta")
+        posted = []
+
+        async def scenario():
+            with mock.patch.object(rust_service.board, "post", lambda *a, **k: posted.append(a)):
+                started = time.monotonic()
+                out = await registry.run(name, {})
+                elapsed = time.monotonic() - started
+                await asyncio.gather(*list(rust_service.JOBS.values()))
+                return out, elapsed
+        out, elapsed = asyncio.run(scenario())
+        self.assertLess(elapsed, 1.0)
+        self.assertIn("sta ancora lavorando", out)
+        self.assertTrue(any("completato" in str(a[2]) for a in posted))
+
+    def test_heal_reports_errors_within_one_cycle(self):
+        self.connect(trusted=True)
+        engine.get().report_error("task:probe", "panic", "iniettato")
+        events = []
+        with mock.patch.object(rust_service.state, "event", lambda *a, **k: events.append(a)):
+            rust_service.heal()
+        self.assertTrue(any("iniettato" in str(a[1]) for a in events))
 
     def test_panel_api(self):
         app = FastAPI()
@@ -187,10 +217,10 @@ class RustEngineTest(unittest.TestCase):
         web = TestClient(app)
         self.assertEqual(web.post("/api/mcp/servers", json={"name": "x", "url": "ftp://no"}).status_code, 400)
         made = web.post("/api/mcp/servers", json={"name": "Calendario", "url": self.url, "token": TOKEN}).json()
-        self.assertEqual((made["tools"], made["status"]), (3, "collegato"))
+        self.assertEqual((made["tools"], made["status"]), (4, "collegato"))
         listed = web.get("/api/mcp/servers").json()["servers"]
         self.assertNotIn(TOKEN, json.dumps(listed))
-        self.assertEqual(web.post(f"/api/mcp/servers/{made['id']}/refresh").json()["tools"], 3)
+        self.assertEqual(web.post(f"/api/mcp/servers/{made['id']}/refresh").json()["tools"], 4)
         self.assertEqual(web.delete(f"/api/mcp/servers/{made['id']}").status_code, 200)
         self.assertEqual(web.delete(f"/api/mcp/servers/{made['id']}").status_code, 404)
 

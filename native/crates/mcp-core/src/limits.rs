@@ -19,4 +19,7 @@ impl Ceilings {
     pub const EVENT_QUEUE: usize = 65_536;
     pub const LONG_MS: usize = 86_400_000;
     pub const BREAKER_FAILURES: usize = 1_000;
+    pub const JOBS: usize = 4_096;
+    pub const ERROR_QUEUE: usize = 65_536;
+    pub const CRITIC_KEYS: usize = 1_024;
 }

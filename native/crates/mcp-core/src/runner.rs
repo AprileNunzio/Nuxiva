@@ -9,6 +9,7 @@ use tokio::task::JoinHandle;
 use crate::backoff::{Backoff, Breaker};
 use crate::discovery::discover;
 use crate::error::{McpError, McpResult};
+use crate::errors::{ErrorBus, guarded};
 use crate::health::{Health, ServerStatus};
 use crate::normalize::valid_server_id;
 use crate::policy::Risk;
@@ -71,9 +72,16 @@ struct Context {
     classifier: Classifier,
     slot: SessionSlot,
     status: watch::Sender<ServerStatus>,
+    errors: Option<Arc<ErrorBus>>,
 }
 
 impl Context {
+    fn report(&self, error: Option<McpError>) {
+        if let (Some(bus), Some(error)) = (&self.errors, error) {
+            bus.report(&format!("server:{}", self.server), error.code(), "session");
+        }
+    }
+
     fn publish(&self, health: Health, attempts: u32, error: Option<McpError>) {
         let tools = self.registry.snapshot().server_tools(&self.server).count();
         let _ = self.status.send(ServerStatus {
@@ -143,6 +151,7 @@ where
         let started = down_since.get_or_insert(now);
         let _ = context.registry.mark_stale(&context.server);
         let error = outcome.err();
+        context.report(error);
         if error.is_none() {
             backoff.reset();
         }
@@ -183,6 +192,26 @@ where
     C: Fn() -> Fut + Send + Sync + 'static,
     Fut: Future<Output = McpResult<Link>> + Send + 'static,
 {
+    spawn_server_with(
+        server, connect, registry, settings, client, classifier, slot, None,
+    )
+}
+
+#[allow(clippy::too_many_arguments)]
+pub fn spawn_server_with<C, Fut>(
+    server: &str,
+    connect: C,
+    registry: Arc<Registry>,
+    settings: Settings,
+    client: Implementation,
+    classifier: Classifier,
+    slot: SessionSlot,
+    errors: Option<Arc<ErrorBus>>,
+) -> McpResult<ServerHandle>
+where
+    C: Fn() -> Fut + Send + Sync + 'static,
+    Fut: Future<Output = McpResult<Link>> + Send + 'static,
+{
     if !valid_server_id(server) {
         return Err(McpError::InvalidName);
     }
@@ -196,8 +225,17 @@ where
         classifier,
         slot,
         status,
+        errors: errors.clone(),
     };
-    let task = tokio::spawn(supervise(context, connect));
+    let task = match errors {
+        Some(bus) => guarded(
+            bus,
+            format!("task:{server}"),
+            "supervisor".to_owned(),
+            supervise(context, connect),
+        ),
+        None => tokio::spawn(supervise(context, connect)),
+    };
     Ok(ServerHandle {
         status: receiver,
         task,

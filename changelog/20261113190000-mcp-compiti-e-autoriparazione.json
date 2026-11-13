@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Strumenti esterni: compiti lunghi e autoriparazione",
+    "en": "External tools: long tasks and self-healing",
+    "fr": "Outils externes : tâches longues et auto-réparation",
+    "es": "Herramientas externas: tareas largas y autorreparación"
+  },
+  "fixes": [],
+  "features": [
+    {
+      "it": "Le chiamate lente agli strumenti esterni non bloccano più l'assistente: diventano compiti in background e il risultato arriva in bacheca.",
+      "en": "Slow calls to external tools no longer block the assistant: they become background tasks and the result is posted to the board.",
+      "fr": "Les appels lents aux outils externes ne bloquent plus l'assistant : ils deviennent des tâches en arrière-plan et le résultat arrive au tableau.",
+      "es": "Las llamadas lentas a herramientas externas ya no bloquean al asistente: pasan a tareas en segundo plano y el resultado llega al tablero."
+    },
+    {
+      "it": "Errori e blocchi dei server esterni vengono rilevati subito e un revisore applica da solo riavvio o quarantena.",
+      "en": "Errors and hangs of external servers are detected at once and a critic applies restart or quarantine on its own.",
+      "fr": "Les erreurs et blocages des serveurs externes sont détectés aussitôt et un critique applique seul redémarrage ou quarantaine.",
+      "es": "Los errores y bloqueos de los servidores externos se detectan al instante y un crítico aplica por sí solo reinicio o cuarentena."
+    }
+  ]
+}

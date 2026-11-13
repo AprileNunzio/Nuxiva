@@ -3,8 +3,10 @@
 mod audit;
 mod backoff;
 mod connect;
+mod critic;
 mod discovery;
 mod error;
+mod errors;
 mod guard;
 mod health;
 mod hub;
@@ -12,6 +14,7 @@ mod internal;
 mod keystore;
 mod limits;
 mod normalize;
+mod payload;
 mod policy;
 mod protocol;
 mod registry;
@@ -30,15 +33,18 @@ pub use audit::{
 };
 pub use backoff::{Backoff, Breaker};
 pub use connect::connect_server;
+pub use critic::{Critic, Remedy};
 pub use discovery::{build_entries, discover};
 pub use error::{McpError, McpResult};
+pub use errors::{ErrorBus, guarded};
 pub use guard::{IpClass, NetworkPolicy, Target, admit, classify_ip, parse_target, resolve};
 pub use health::{Health, ServerStatus};
-pub use hub::{CallOutput, Hub, ServerView, ToolView};
+pub use hub::{CallOutput, HealReport, Hub, JobView, ServerView, ToolView, Within};
 pub use internal::{Factory, InternalRegistry, ToolOutput, ToolServer, serve};
 pub use keystore::{MemorySecrets, Secret, SecretProvider, SharedSecrets, bearer_header};
 pub use limits::Ceilings;
 pub use normalize::{canonical_name, valid_server_id};
+pub use payload::{ErrorKind, ErrorPayload, SCHEMA_VERSION, ToolError, ToolsChanged, kind_of};
 pub use policy::{
     CallRequest, ConsentKey, ConsentLedger, ExternalData, Gate, PolicyConfig, RateConfig,
     RateLimiter, Risk, RiskRule, RuleField, Scope, TaintLedger, classify, glob_match, wrap_result,
@@ -51,7 +57,7 @@ pub use protocol::{
     parse_tools_page, ping_request, supported_versions, tools_call_request, tools_list_request,
 };
 pub use registry::{Diff, Registry, Snapshot, ToolEntry, ToolState, compatible};
-pub use runner::{Classifier, ServerHandle, SessionSlot, spawn_server};
+pub use runner::{Classifier, ServerHandle, SessionSlot, spawn_server, spawn_server_with};
 pub use schema::CompiledSchema;
 pub use session::{Session, ToolListing};
 pub use settings::{ChangePolicy, Settings};

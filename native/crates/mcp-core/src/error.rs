@@ -30,6 +30,41 @@ pub enum McpError {
 }
 
 impl McpError {
+    const ALL: [Self; 27] = [
+        Self::Parse,
+        Self::InvalidMessage,
+        Self::TooLarge,
+        Self::TooDeep,
+        Self::UnsupportedVersion,
+        Self::InvalidTool,
+        Self::InvalidSettings,
+        Self::InvalidName,
+        Self::Serialize,
+        Self::Timeout,
+        Self::Closed,
+        Self::Remote,
+        Self::Busy,
+        Self::Io,
+        Self::InvalidArguments,
+        Self::InvalidOutput,
+        Self::NotCallable,
+        Self::UnknownTool,
+        Self::ChainBroken,
+        Self::SignatureInvalid,
+        Self::CatalogExpired,
+        Self::NetworkDenied,
+        Self::ConsentRequired,
+        Self::ConsentDenied,
+        Self::RateLimited,
+        Self::NotPermitted,
+        Self::SecretMissing,
+    ];
+
+    #[must_use]
+    pub fn from_code(code: &str) -> Option<Self> {
+        Self::ALL.into_iter().find(|e| e.code() == code)
+    }
+
     #[must_use]
     pub fn code(self) -> &'static str {
         match self {

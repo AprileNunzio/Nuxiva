@@ -32,6 +32,18 @@ fn verdict_of(error: McpError) -> Verdict {
     }
 }
 
+fn reportable(error: McpError) -> bool {
+    matches!(
+        error,
+        McpError::Timeout
+            | McpError::Closed
+            | McpError::Remote
+            | McpError::Io
+            | McpError::InvalidOutput
+            | McpError::InvalidTool
+    )
+}
+
 fn now_ms() -> u64 {
     SystemTime::now()
         .duration_since(UNIX_EPOCH)
@@ -98,6 +110,12 @@ impl Hub {
             args_hash: hash_value(&Value::Object(request.arguments.clone())),
             response_hash,
         };
+        if let Err(error) = &outcome {
+            if reportable(*error) {
+                self.errors
+                    .report(&format!("call:{}", event.server), error.code(), &event.tool);
+            }
+        }
         self.audit
             .lock()
             .unwrap_or_else(PoisonError::into_inner)

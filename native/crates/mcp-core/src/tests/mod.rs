@@ -13,6 +13,7 @@ mod model;
 mod names;
 mod policy;
 mod registry;
+mod resilience;
 mod runner;
 mod session;
 mod settings;

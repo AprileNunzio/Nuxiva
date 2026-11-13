@@ -35,6 +35,12 @@ pub struct Settings {
     pub breaker_window_ms: usize,
     pub refresh_debounce_ms: usize,
     pub refresh_interval_ms: usize,
+    pub foreground_budget_ms: usize,
+    pub max_jobs: usize,
+    pub job_ttl_ms: usize,
+    pub error_queue: usize,
+    pub critic_threshold: usize,
+    pub critic_window_ms: usize,
 }
 
 impl Default for Settings {
@@ -61,6 +67,12 @@ impl Default for Settings {
             breaker_window_ms: 60_000,
             refresh_debounce_ms: 200,
             refresh_interval_ms: 300_000,
+            foreground_budget_ms: 4_000,
+            max_jobs: 64,
+            job_ttl_ms: 600_000,
+            error_queue: 256,
+            critic_threshold: 3,
+            critic_window_ms: 60_000,
         }
     }
 }
@@ -100,6 +112,12 @@ impl Settings {
         within(self.breaker_window_ms, Ceilings::LONG_MS)?;
         within(self.refresh_debounce_ms, Ceilings::LONG_MS)?;
         within(self.refresh_interval_ms, Ceilings::LONG_MS)?;
+        within(self.foreground_budget_ms, Ceilings::TIMEOUT_MS)?;
+        within(self.max_jobs, Ceilings::JOBS)?;
+        within(self.job_ttl_ms, Ceilings::LONG_MS)?;
+        within(self.error_queue, Ceilings::ERROR_QUEUE)?;
+        within(self.critic_threshold, Ceilings::BREAKER_FAILURES)?;
+        within(self.critic_window_ms, Ceilings::LONG_MS)?;
         if self.backoff_jitter_pct > 100 || self.backoff_base_ms > self.backoff_max_ms {
             return Err(McpError::InvalidSettings);
         }

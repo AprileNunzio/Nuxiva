@@ -1,24 +1,30 @@
 mod call;
+mod heal;
+mod jobs;
 mod view;
 
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::sync::atomic::AtomicU64;
 use std::sync::{Arc, Mutex, PoisonError, RwLock};
 
 use crate::audit::{AuditChain, AuditSink};
 use crate::connect::connect_server;
+use crate::critic::Critic;
 use crate::error::McpResult;
+use crate::errors::ErrorBus;
 use crate::internal::InternalRegistry;
 use crate::keystore::SecretProvider;
 use crate::policy::{Gate, PolicyConfig, Scope, classify};
 use crate::protocol::Implementation;
 use crate::registry::Registry;
-use crate::runner::{Classifier, ServerHandle, SessionSlot, spawn_server};
+use crate::runner::{Classifier, ServerHandle, SessionSlot, spawn_server_with};
 use crate::settings::Settings;
 use crate::transport::Link;
 use crate::trust::{Catalog, ServerEntry};
 
 pub use call::CallOutput;
+pub use heal::HealReport;
+pub use jobs::{JobView, Within};
 pub use view::{ServerView, ToolView};
 
 pub(super) struct Running {
@@ -38,6 +44,11 @@ pub struct Hub {
     pub(super) servers: Mutex<HashMap<String, Running>>,
     pub(super) scopes: RwLock<HashMap<String, Scope>>,
     pub(super) counter: AtomicU64,
+    pub(super) errors: Arc<ErrorBus>,
+    pub(super) critic: Mutex<Critic>,
+    pub(super) quarantined: Mutex<HashSet<String>>,
+    pub(super) catalog: Mutex<Option<Catalog>>,
+    pub(super) jobs: jobs::JobTable,
 }
 
 impl std::fmt::Debug for Hub {
@@ -69,6 +80,11 @@ impl Hub {
             servers: Mutex::new(HashMap::new()),
             scopes: RwLock::new(HashMap::new()),
             counter: AtomicU64::new(0),
+            errors: Arc::new(ErrorBus::new(settings.error_queue)),
+            critic: Mutex::new(Critic::new(&settings)),
+            quarantined: Mutex::new(HashSet::new()),
+            catalog: Mutex::new(None),
+            jobs: jobs::JobTable::new(settings.max_jobs, settings.job_ttl_ms),
             settings,
             policy,
         })
@@ -94,11 +110,17 @@ impl Hub {
 
     pub fn apply_catalog(&self, catalog: &Catalog) -> McpResult<()> {
         catalog.validate()?;
+        *self.catalog.lock().unwrap_or_else(PoisonError::into_inner) = Some(catalog.clone());
+        let blocked = self
+            .quarantined
+            .lock()
+            .unwrap_or_else(PoisonError::into_inner)
+            .clone();
         let mut servers = self.servers.lock().unwrap_or_else(PoisonError::into_inner);
         let wanted: HashMap<&str, &ServerEntry> = catalog
             .servers
             .iter()
-            .filter(|e| e.enabled)
+            .filter(|e| e.enabled && !blocked.contains(&e.id))
             .map(|e| (e.id.as_str(), e))
             .collect();
         let stale: Vec<String> = servers
@@ -120,7 +142,7 @@ impl Hub {
         Ok(())
     }
 
-    fn start(&self, entry: &ServerEntry) -> McpResult<Running> {
+    pub(super) fn start(&self, entry: &ServerEntry) -> McpResult<Running> {
         let slot: SessionSlot = Arc::default();
         let classifier: Classifier = {
             let policy = self.policy.clone();
@@ -149,7 +171,7 @@ impl Hub {
             version: env!("CARGO_PKG_VERSION").into(),
             title: None,
         };
-        let handle = spawn_server(
+        let handle = spawn_server_with(
             &entry.id,
             connect,
             Arc::clone(&self.registry),
@@ -157,6 +179,7 @@ impl Hub {
             client,
             classifier,
             Arc::clone(&slot),
+            Some(Arc::clone(&self.errors)),
         )?;
         Ok(Running {
             entry: entry.clone(),
