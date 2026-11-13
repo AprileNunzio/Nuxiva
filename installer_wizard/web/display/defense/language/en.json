@@ -18,8 +18,6 @@
     "h_observing": "I am only observing: automatic defence is off, I block nothing until you turn it on.",
     "s_alert": "Attention, someone is trying to get into the network. I am defending.",
     "s_attack": "Attention, an attack is in progress. I am defending and your devices are safe.",
-    "s_calm": "",
-    "s_watch": "",
     "incidents_title": "Who is attacking",
     "defenses_title": "How I defend",
     "no_incidents": "No recent attacks.",

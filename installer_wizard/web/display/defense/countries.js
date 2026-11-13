@@ -6,5 +6,6 @@
     return [code, Object.freeze({ lat, lon })];
   })));
   window.NuxivaDefense = window.NuxivaDefense || {};
+  window.NuxivaDefense.countries = () => Object.values(TABLE);
   window.NuxivaDefense.centroid = (code) => (typeof code === "string" && Object.hasOwn(TABLE, code) ? TABLE[code] : null);
 })();

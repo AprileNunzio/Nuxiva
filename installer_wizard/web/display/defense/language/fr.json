@@ -18,8 +18,6 @@
     "h_observing": "Je me contente d'observer : la défense automatique est désactivée, je ne bloque rien tant que tu ne l'actives pas.",
     "s_alert": "Attention, quelqu'un essaie d'entrer dans le réseau. Je me défends.",
     "s_attack": "Attention, attaque en cours. Je me défends et tes appareils sont en sécurité.",
-    "s_calm": "",
-    "s_watch": "",
     "incidents_title": "Qui attaque",
     "defenses_title": "Comment je me défends",
     "no_incidents": "Aucune attaque récente.",

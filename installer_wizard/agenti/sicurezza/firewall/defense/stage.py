@@ -11,7 +11,6 @@ URL = "ws://127.0.0.1:8093/rescue"
 WATCH_S = 600.0
 CONNECT_S = 5.0
 MAX_TARGETS = 6
-OPEN_POSTURES = frozenset({"alert", "attack"})
 log = logging.getLogger("nuxiva.firewall")
 
 
@@ -67,12 +66,10 @@ class Stage:
         return await self.send({"type": "defense_view", "open": False})
 
     async def update(self, posture: str) -> None:
-        now = time.time()
-        changed = posture != self.sent
-        if posture == "calm" and not changed and now >= self.watch_until:
+        if time.time() >= self.watch_until:
             return
         self.sent = posture
-        await self.send({"type": "defense_state", "auto": posture in OPEN_POSTURES, "scene": scene()})
+        await self.send({"type": "defense_state", "scene": scene()})
 
 
 stage = Stage()

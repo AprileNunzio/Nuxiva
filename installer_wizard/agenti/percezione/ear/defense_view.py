@@ -71,4 +71,4 @@ async def defense_control(kind: str, msg: dict, broadcast) -> None:
             event["scene"] = clean_scene(msg.get("scene"))
         await broadcast(**event)
     elif kind == "defense_state":
-        await broadcast(type="defense_state", auto=msg.get("auto") is True, scene=clean_scene(msg.get("scene")))
+        await broadcast(type="defense_state", scene=clean_scene(msg.get("scene")))

@@ -6,14 +6,12 @@
   const T = window.PageText ? PageText.scope(SCOPE) : (key) => key;
   const POSTURES = new Set(["calm", "watch", "alert", "attack"]);
   const KINDS = new Set(["port_scan", "host_sweep", "syn_flood", "brute_force", "arp_spoof", "dns_tunnel", "icmp_flood", "exfiltration"]);
-  const COOLDOWN_MS = 10 * 60 * 1000;
   const LIBS = ["/vendor/three.min.js", "/vendor/OrbitControls.js", "/static/display/defense/countries.js", "/static/display/defense/scene.js"];
   let root = null;
   let stage = null;
   let view = null;
   let current = null;
   let selected = "";
-  let dismissedUntil = 0;
   let loading = null;
   let regions = null;
 
@@ -41,7 +39,7 @@
     root.setAttribute("aria-modal", "true");
     root.setAttribute("aria-labelledby", "defense-title");
     stage = el("div", "defense-stage", root);
-    const head = el("header", "defense-head", root);
+    const head = el("div", "defense-head", root);
     const titles = el("div", "defense-titles", head);
     PageText.bind(el("p", "defense-kicker", titles), "kicker");
     const title = el("h2", "defense-title", titles);
@@ -126,7 +124,7 @@
     return loading;
   }
 
-  async function open(data, spoken) {
+  async function open(data) {
     if (!root) build();
     current = data;
     await PageText.ready([SCOPE]);
@@ -147,7 +145,6 @@
     }
     const close = root.querySelector(".defense-close");
     if (close) close.focus({ preventScroll: true });
-    if (spoken && D.speak && D.mode !== "off") D.speak(T(`s_${data.posture}`));
   }
 
   function hide() {
@@ -157,7 +154,6 @@
   }
 
   function dismiss() {
-    dismissedUntil = Date.now() + COOLDOWN_MS;
     hide();
   }
 
@@ -171,15 +167,14 @@
       return;
     }
     if (ev.type === "defense_view") {
-      if (ev.open === true) open(ev.scene, false);
+      if (ev.open === true) open(ev.scene);
       else hide();
       return;
     }
     if (ev.type !== "defense_state") return;
-    if (isOpen()) { current = ev.scene; paint(ev.scene); return; }
-    if (ev.auto === true && Date.now() >= dismissedUntil) open(ev.scene, true);
+    if (isOpen()) { current = ev.scene; paint(ev.scene); }
   }
 
-  NS.View = { event, open: (data) => open(data, false), hide, isOpen };
+  NS.View = { event, open, hide, isOpen };
   D.DefenseView = NS.View;
 })();

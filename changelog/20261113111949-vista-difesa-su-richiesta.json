@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Vista 3D della difesa: solo a richiesta, leggibile e leggera",
+    "en": "3D defence view: on request only, readable and light",
+    "fr": "Vue 3D de la défense : sur demande, lisible et légère",
+    "es": "Vista 3D de la defensa: solo a petición, legible y ligera"
+  },
+  "features": [],
+  "fixes": [
+    {
+      "it": "La vista 3D della difesa sulla pagina 80 non si apre più da sola: compare solo se la chiedi a voce o dalla pagina 8080, e il server non le invia dati quando è chiusa.",
+      "en": "The 3D defence view on page 80 no longer opens by itself: it only appears when you ask by voice or from page 8080, and the server sends it no data while it is closed.",
+      "fr": "La vue 3D de la défense sur la page 80 ne s'ouvre plus seule : elle n'apparaît que sur demande vocale ou depuis la page 8080, et le serveur ne lui envoie rien quand elle est fermée.",
+      "es": "La vista 3D de la defensa en la página 80 ya no se abre sola: solo aparece si la pides por voz o desde la página 8080, y el servidor no le envía datos cuando está cerrada."
+    },
+    {
+      "it": "Sono tornati visibili i testi della vista: un testo vuoto nelle traduzioni faceva scartare l'intero elenco. Grafica più chiara, con paesi e punto di casa evidenziati.",
+      "en": "The view texts are visible again: an empty translation made the whole list be discarded. Clearer graphics, with countries and the home point highlighted.",
+      "fr": "Les textes de la vue sont de nouveau visibles : un texte vide dans les traductions faisait rejeter toute la liste. Graphismes plus clairs, avec pays et point de la maison mis en évidence.",
+      "es": "Los textos de la vista vuelven a verse: un texto vacío en las traducciones hacía descartar toda la lista. Gráficos más claros, con países y punto de casa resaltados."
+    },
+    {
+      "it": "Consumo ridotto: la vista usa la grafica a bassa potenza, 30 immagini al secondo, si ferma se la scheda è nascosta, riusa le forme e libera tutta la memoria grafica alla chiusura.",
+      "en": "Lower consumption: the view uses low-power graphics at 30 frames per second, pauses when the tab is hidden, reuses shapes and releases all graphics memory on close.",
+      "fr": "Consommation réduite : la vue utilise le graphisme basse consommation à 30 images par seconde, se met en pause si l'onglet est masqué, réutilise les formes et libère toute la mémoire graphique à la fermeture.",
+      "es": "Consumo reducido: la vista usa gráficos de bajo consumo a 30 imágenes por segundo, se pausa si la pestaña está oculta, reutiliza formas y libera toda la memoria gráfica al cerrar."
+    }
+  ]
+}

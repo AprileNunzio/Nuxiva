@@ -18,8 +18,6 @@
     "h_observing": "Sto solo osservando: la difesa automatica è spenta, non blocco nulla finché non la attivi.",
     "s_alert": "Attenzione, qualcuno sta cercando di entrare nella rete. Mi sto difendendo.",
     "s_attack": "Attenzione, attacco in corso. Mi sto difendendo, i tuoi dispositivi sono al sicuro.",
-    "s_calm": "",
-    "s_watch": "",
     "incidents_title": "Chi sta attaccando",
     "defenses_title": "Come mi difendo",
     "no_incidents": "Nessun attacco recente.",

@@ -63,7 +63,7 @@ class SanitiserTests(unittest.TestCase):
         self.assertEqual(seen[0]["scene"]["posture"], "attack")
         self.assertNotIn("x", seen[0]["scene"])
         self.assertEqual(seen[1], {"type": "defense_view", "open": False})
-        self.assertFalse(seen[2]["auto"])
+        self.assertNotIn("auto", seen[2])
 
     def test_browsers_cannot_send_defense_controls(self):
         from agenti.ear import proxy
@@ -84,7 +84,7 @@ class StageTests(FirewallBase):
         scene = stage_module.scene()
         self.assertEqual(scene["incidents"][0]["hosts"], ["192.168.1.5", "192.168.1.6"])
 
-    def test_update_pushes_state_only_when_needed(self):
+    def test_state_is_pushed_only_while_the_view_was_requested(self):
         stage = stage_module.Stage()
         sent = []
 
@@ -93,13 +93,14 @@ class StageTests(FirewallBase):
             return True
 
         stage.send = send
-        asyncio.run(stage.update("calm"))
+        asyncio.run(stage.update("attack"))
         self.assertEqual(sent, [])
+        asyncio.run(stage.show())
         asyncio.run(stage.update("attack"))
-        self.assertEqual(sent[0]["type"], "defense_state")
-        self.assertTrue(sent[0]["auto"])
+        self.assertEqual([m["type"] for m in sent], ["defense_view", "defense_state"])
+        asyncio.run(stage.close())
         asyncio.run(stage.update("attack"))
-        self.assertEqual(len(sent), 2)
+        self.assertEqual(len(sent), 3)
 
     def test_show_opens_and_keeps_watching(self):
         stage = stage_module.Stage()
@@ -147,6 +148,18 @@ class RouteTests(FirewallBase):
 
 
 class AssetTests(unittest.TestCase):
+    def test_bundles_are_accepted_by_the_real_resolver(self):
+        from agenti.locale.colocated.domain import Locale, Scope
+        from agenti.locale.colocated.repository import LanguageFileRepository
+        from agenti.locale.colocated.resolver import BundleResolver
+        from agenti.locale.colocated.roots import ScopeRoots
+        from config import UI_LANGUAGES, WEB_DIR
+        resolver = BundleResolver(ScopeRoots({"web": (WEB_DIR,)}), LanguageFileRepository(), ("en", "it"))
+        for code in ("it", "en", "fr", "es"):
+            bundle = resolver.resolve(Scope.parse("web/display/defense"), Locale.parse(code, frozenset(UI_LANGUAGES)))
+            self.assertIn("p_attack", bundle.dictionary)
+            self.assertEqual(len(bundle.fallback_keys), 0)
+
     def test_languages_have_same_keys(self):
         bundles = {c: json.loads((DEFENSE / "language" / f"{c}.json").read_text("utf-8")) for c in ("it", "en", "fr", "es")}
         keys = set(bundles["it"]["dictionary"])

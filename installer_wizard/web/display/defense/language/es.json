@@ -18,8 +18,6 @@
     "h_observing": "Solo observo: la defensa automática está apagada y no bloqueo nada hasta que la actives.",
     "s_alert": "Atención, alguien intenta entrar en la red. Me estoy defendiendo.",
     "s_attack": "Atención, ataque en curso. Me defiendo y tus dispositivos están a salvo.",
-    "s_calm": "",
-    "s_watch": "",
     "incidents_title": "Quién ataca",
     "defenses_title": "Cómo me defiendo",
     "no_incidents": "Ningún ataque reciente.",

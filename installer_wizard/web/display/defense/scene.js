@@ -7,6 +7,7 @@
   const HOME = { lat: 42, lon: 12.5 };
   const MAX_DEVICES = 24;
   const MAX_ATTACKERS = 12;
+  const FRAME_MS = 1000 / 30;
   const PULSES = 3;
 
   function toVector(THREE, lat, lon, radius) {
@@ -50,8 +51,8 @@
     const THREE = window.THREE;
     if (!THREE) throw new Error("three");
     const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "low-power" });
+    renderer.setPixelRatio(1);
     renderer.setClearColor(0x000000, 0);
     host.appendChild(renderer.domElement);
     const scene = new THREE.Scene();
@@ -74,6 +75,19 @@
     const home = new THREE.Mesh(new THREE.SphereGeometry(0.035, 16, 12), new THREE.MeshBasicMaterial({ color: 0x34d399 }));
     home.position.copy(toVector(THREE, HOME.lat, HOME.lon, 1.01));
     world.add(globe, grid, shield, home);
+    const dots = [];
+    NS.countries && NS.countries().forEach((place) => dots.push(toVector(THREE, place.lat, place.lon, 1.004)));
+    const land = new THREE.Points(new THREE.BufferGeometry().setFromPoints(dots), new THREE.PointsMaterial({ color: 0x7dd3fc, size: 0.016, transparent: true, opacity: 0.55, sizeAttenuation: true }));
+    const halo = new THREE.Mesh(new THREE.RingGeometry(0.05, 0.062, 40), new THREE.MeshBasicMaterial({ color: TONES.calm, transparent: true, opacity: 0.8, side: THREE.DoubleSide }));
+    halo.position.copy(home.position.clone().multiplyScalar(1.004));
+    halo.lookAt(home.position.clone().multiplyScalar(2));
+    world.add(land, halo);
+    const shared = {
+      device: new THREE.OctahedronGeometry(0.028),
+      dot: new THREE.SphereGeometry(0.03, 12, 8),
+      bead: new THREE.SphereGeometry(0.014, 8, 6),
+      trap: new THREE.OctahedronGeometry(0.05),
+    };
     const dynamic = new THREE.Group();
     world.add(dynamic);
     const picks = [];
@@ -87,7 +101,10 @@
     function clear() {
       picks.length = 0;
       arcs.length = 0;
-      disposeTree(dynamic);
+      dynamic.traverse((node) => {
+        if (node.material) node.material.dispose();
+        if (node.geometry && !Object.values(shared).includes(node.geometry)) node.geometry.dispose();
+      });
       dynamic.clear();
     }
 
@@ -96,7 +113,7 @@
       const anchor = home.position.clone().normalize();
       for (let i = 0; i < count; i += 1) {
         const angle = (i / Math.max(count, 1)) * Math.PI * 2;
-        const node = new THREE.Mesh(new THREE.OctahedronGeometry(0.028), new THREE.MeshBasicMaterial({ color: 0x7dd3fc }));
+        const node = new THREE.Mesh(shared.device, new THREE.MeshBasicMaterial({ color: 0x7dd3fc }));
         const side = new THREE.Vector3(0, 1, 0).cross(anchor).normalize();
         const up = anchor.clone().cross(side).normalize();
         node.position.copy(anchor.clone().multiplyScalar(1.12).add(side.multiplyScalar(Math.cos(angle) * 0.13)).add(up.multiplyScalar(Math.sin(angle) * 0.13)));
@@ -111,7 +128,7 @@
       const jitter = place ? 3 : 0;
       const start = toVector(THREE, lat + (seeded(incident.id) - 0.5) * jitter, lon + (seeded(incident.src) - 0.5) * jitter, 1.012);
       const tone = state === "blocked" ? 0x94a3b8 : state === "decoy" ? 0xa78bfa : LEVEL_TONE[incident.level] || LEVEL_TONE.low;
-      const dot = new THREE.Mesh(new THREE.SphereGeometry(0.03, 14, 10), new THREE.MeshBasicMaterial({ color: tone }));
+      const dot = new THREE.Mesh(shared.dot, new THREE.MeshBasicMaterial({ color: tone }));
       dot.position.copy(start);
       dot.userData.id = incident.id;
       dynamic.add(dot);
@@ -122,17 +139,17 @@
       const mid = start.clone().add(target).multiplyScalar(0.5).normalize().multiplyScalar(1.0 + start.distanceTo(target) * 0.45);
       const curve = new THREE.QuadraticBezierCurve3(start, mid, target);
       const points = curve.getPoints(48).slice(0, Math.max(2, Math.round(48 * stop)));
-      const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), new THREE.LineBasicMaterial({ color: tone, transparent: true, opacity: state === "blocked" ? 0.35 : 0.7 }));
+      const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), new THREE.LineBasicMaterial({ color: tone, transparent: true, opacity: state === "blocked" ? 0.4 : 0.95 }));
       dynamic.add(line);
       const pulses = [];
       for (let p = 0; p < PULSES; p += 1) {
-        const bead = new THREE.Mesh(new THREE.SphereGeometry(0.014, 8, 6), new THREE.MeshBasicMaterial({ color: tone }));
+        const bead = new THREE.Mesh(shared.bead, new THREE.MeshBasicMaterial({ color: tone }));
         dynamic.add(bead);
         pulses.push({ bead, offset: p / PULSES });
       }
       arcs.push({ points, pulses, speed: state === "blocked" ? 0.12 : 0.22 });
       if (state === "decoy") {
-        const trap = new THREE.Mesh(new THREE.OctahedronGeometry(0.05), new THREE.MeshBasicMaterial({ color: 0xa78bfa, wireframe: true }));
+        const trap = new THREE.Mesh(shared.trap, new THREE.MeshBasicMaterial({ color: 0xa78bfa, wireframe: true }));
         trap.position.copy(decoy);
         dynamic.add(trap);
       }
@@ -143,6 +160,7 @@
       posture = TONES[data.posture] ? data.posture : "calm";
       shield.material.color.setHex(TONES[posture]);
       home.material.color.setHex(TONES[posture]);
+      halo.material.color.setHex(TONES[posture]);
       ring(data.lan);
       data.incidents.slice(0, MAX_ATTACKERS).forEach((incident, index) => attacker(incident, defended(incident, data.defenses), index));
     }
@@ -157,9 +175,11 @@
 
     function render(now) {
       frame = requestAnimationFrame(render);
+      if (document.hidden || now - last < FRAME_MS) return;
       const dt = Math.min((now - last) / 1000, 0.1);
       last = now;
       const beat = reduced ? 0 : Math.sin(now / 520) * 0.5 + 0.5;
+      halo.scale.setScalar(1 + beat * 0.5);
       shield.material.opacity = 0.05 + (posture === "calm" ? 0.02 : 0.08) * beat;
       arcs.forEach((arc) => arc.pulses.forEach((pulse) => {
         pulse.offset = reduced ? pulse.offset : (pulse.offset + dt * arc.speed) % 1;
@@ -189,6 +209,8 @@
       resize,
       dispose() {
         cancelAnimationFrame(frame);
+        Object.values(shared).forEach((g) => g.dispose());
+        renderer.forceContextLoss();
         if (observer) observer.disconnect();
         renderer.domElement.removeEventListener("click", pick);
         if (controls) controls.dispose();
