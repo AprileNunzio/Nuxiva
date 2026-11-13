@@ -4,7 +4,7 @@ import time
 import unittest
 from unittest import mock
 
-from agenti.people import hot, people, percept
+from agenti.people import people, percept
 from tests.test_context_hot import HotContextBase
 
 try:

@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Percezione unificata: pulizia dei controlli automatici",
+    "en": "Unified perception: automated checks cleanup",
+    "fr": "Perception unifiée : nettoyage des contrôles automatiques",
+    "es": "Percepción unificada: limpieza de las comprobaciones automáticas"
+  },
+  "features": [],
+  "fixes": [
+    {
+      "it": "Corretto un controllo automatico dei test della percezione unificata: nessun cambiamento visibile per chi usa Nuxiva.",
+      "en": "Fixed an automated check on the unified perception tests: no visible change for people using Nuxiva.",
+      "fr": "Correction d'un contrôle automatique sur les tests de la perception unifiée : aucun changement visible pour les utilisateurs de Nuxiva.",
+      "es": "Corregida una comprobación automática de las pruebas de la percepción unificada: sin cambios visibles para quien usa Nuxiva."
+    }
+  ]
+}
