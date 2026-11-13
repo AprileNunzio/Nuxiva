@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "date": "2026-11-13",
+  "title": {
+    "it": "Aggiornamenti più affidabili: ogni versione è controllata prima di arrivare a te",
+    "en": "More reliable updates: every version is checked before it reaches you",
+    "fr": "Mises à jour plus fiables : chaque version est vérifiée avant de vous parvenir",
+    "es": "Actualizaciones más fiables: cada versión se comprueba antes de llegar a ti"
+  },
+  "features": [
+    {
+      "it": "Prima di essere pubblicata, ogni versione di Nuxiva passa gli stessi controlli automatici che girano online, così gli aggiornamenti bloccati per un errore diventano molto più rari.",
+      "en": "Before being published, every Nuxiva version passes the same automatic checks that run online, so updates blocked by an error become much rarer.",
+      "fr": "Avant d'être publiée, chaque version de Nuxiva passe les mêmes contrôles automatiques que ceux exécutés en ligne, si bien que les mises à jour bloquées par une erreur deviennent bien plus rares.",
+      "es": "Antes de publicarse, cada versión de Nuxiva pasa los mismos controles automáticos que se ejecutan en línea, de modo que las actualizaciones bloqueadas por un error serán mucho menos frecuentes."
+    }
+  ],
+  "fixes": [
+    {
+      "it": "Alcuni controlli interni dipendevano dalla data del giorno o da internet e potevano fallire senza un vero problema: ora funzionano sempre allo stesso modo.",
+      "en": "Some internal checks depended on today's date or on the internet and could fail without a real problem: they now behave the same way every time.",
+      "fr": "Certains contrôles internes dépendaient de la date du jour ou d'internet et pouvaient échouer sans vrai problème : ils se comportent désormais toujours de la même façon.",
+      "es": "Algunos controles internos dependían de la fecha del día o de internet y podían fallar sin un problema real: ahora se comportan siempre igual."
+    }
+  ]
+}

@@ -2,6 +2,7 @@ import asyncio
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from sealed import SealedFile
 
@@ -133,7 +134,12 @@ class StoreTest(unittest.TestCase):
             # Aggiunta manuale di tuner reale specificato dall'utente
             tuner = again.add_tuner("HDHomeRun Salotto", "hdhomerun", "192.168.1.150:65001")
             self.assertEqual(tuner["name"], "HDHomeRun Salotto")
-            scanned = again.scan_tuner(tuner["id"])
+            lineup = mock.MagicMock(status_code=200)
+            lineup.json.return_value = [{"GuideName": "Rai 1"}, {"GuideName": "Rai 2"}]
+            with mock.patch("httpx.Client") as client:
+                client.return_value.__enter__.return_value.get.return_value = lineup
+                scanned = again.scan_tuner(tuner["id"])
+            client.return_value.__enter__.return_value.get.assert_called_once_with("http://192.168.1.150:65001/lineup.json")
             self.assertEqual(scanned["status"], "online")
             # Impostazioni VPN obbligatoria
             settings = again.update_settings({"vpn_required": True, "vpn_profile": "wg-home"})

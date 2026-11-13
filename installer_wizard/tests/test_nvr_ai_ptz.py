@@ -104,12 +104,14 @@ class NvrAiPtzTest(unittest.TestCase):
         ptz = PtzController()
         with mock.patch("agenti.cameras.cameras.cameras.items", {
             "cam_ip": {"id": "cam_ip", "name": "IP Camera PTZ", "kind": "onvif", "url": "rtsp://admin:pass@192.168.1.100:554/live"}
-        }):
+        }), mock.patch("urllib.request.urlopen", mock.MagicMock()) as sent:
             caps = ptz.capabilities("cam_ip")
             self.assertTrue(caps["has_ptz"])
             self.assertTrue(caps["is_360"])
             res = ptz.move("cam_ip", 0.5, -0.2)
             self.assertTrue(res["ok"])
+            self.assertEqual(res["type"], "onvif")
+            self.assertEqual(sent.call_args[0][0].full_url, "http://192.168.1.100:554/onvif/ptz_service")
             preset_res = ptz.goto_preset("cam_ip", "home")
             self.assertTrue(preset_res["ok"])
             track_res = ptz.track("cam_ip", [0.1, 0.5, 0.2, 0.4])

@@ -58,7 +58,7 @@ class TestGait(unittest.TestCase):
     def test_find_best(self):
         cand = {"features": [0.5] * 16, "samples": 10, "confidence": 0.8}
         refs = [
-            {"id": "r-1", "timestamp_ms": 1000, "signature": {"features": [0.1] * 16, "confidence": 0.8}},
+            {"id": "r-1", "timestamp_ms": 1000, "signature": {"features": [0.1, 0.9] * 8, "confidence": 0.8}},
             {"id": "r-2", "timestamp_ms": 2000, "signature": {"features": [0.49] * 16, "confidence": 0.8}},
         ]
         best = self.gait.find_best(cand, refs)

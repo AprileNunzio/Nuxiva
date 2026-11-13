@@ -12,6 +12,7 @@ from fastapi.testclient import TestClient
 import nuxiva_supervisor
 from agenti.music import catalog, id3, layout, listening, mixes, organizer, playlists, scanner, stream, tags, tokens
 from agenti.music.db import db
+from agenti.music.service import library
 from agenti.shares import archive
 
 HEADERS = {"X-Nuxiva-Request": "1"}
@@ -322,6 +323,12 @@ class ApiTest(Base):
     def setUpClass(cls):
         cls.admin = TestClient(nuxiva_supervisor.admin)
         assert cls.admin.post("/api/auth/login", json={"username": "admin", "password": "nuxiva"}, headers=HEADERS).status_code == 200
+
+    def setUp(self):
+        super().setUp()
+        offline = mock.patch.object(library, "online", new=mock.AsyncMock())
+        offline.start()
+        self.addCleanup(offline.stop)
 
     def test_browsing_endpoints_and_streaming_with_ranges(self):
         self.filled()

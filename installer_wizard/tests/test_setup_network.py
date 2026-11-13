@@ -16,6 +16,9 @@ class SetupNetworkTest(unittest.IsolatedAsyncioTestCase):
         self.done_patch.start()
         self.private_patch.start()
         self.local_patch.start()
+        offline = mock.patch.object(setup_network, "_get_public_ip_and_ping", return_value=("203.0.113.7", 12.5))
+        offline.start()
+        self.addCleanup(offline.stop)
 
     def tearDown(self):
         self.local_patch.stop()

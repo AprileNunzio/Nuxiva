@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+ROOT="$(git rev-parse --show-toplevel)"
+cd "$ROOT"
+if [ "${NUXIVA_SKIP_PREPUSH:-}" = "1" ]; then
+    printf 'pre-push saltato su richiesta esplicita / pre-push skipped on explicit request\n' >&2
+    exit 0
+fi
+exec bash scripts/ci/check.sh "${NUXIVA_CHECK_MODE:-fast}"

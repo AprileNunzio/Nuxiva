@@ -2,13 +2,15 @@ name: Nuxiva CI Pipeline
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "17 3 * * *"
   push:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
 concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  group: ci-${{ github.event_name == 'pull_request' && github.ref || github.sha }}-${{ github.event_name }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   validate-python:
@@ -35,6 +37,7 @@ jobs:
         run: python scripts/ci/line_limit.py
 
   release-notes:
+    if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -70,8 +73,7 @@ jobs:
         run: python -m pip install -r installer_wizard/backend/requirements.txt -r installer_wizard/agenti/conoscenza/documents/requirements.txt
 
       - name: Unit and API Tests
-        working-directory: ./installer_wizard
-        run: python -m unittest discover -s tests -t . -v
+        run: python scripts/ci/unit.py --top installer_wizard --title "Installer wizard" --network report
 
       - name: Firewall Rules Against Real nftables
         working-directory: ./installer_wizard
@@ -196,3 +198,13 @@ jobs:
         run: |
           npm ci
           npm run build
+
+  ci-status:
+    if: always()
+    needs: [validate-python, release-notes, tests, kernel-tests, native-core, validate-scripts, validate-web-client]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Summarize Results
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+        run: python3 scripts/ci/status_summary.py
