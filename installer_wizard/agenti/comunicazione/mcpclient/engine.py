@@ -30,7 +30,7 @@ _published = False
 
 
 def available() -> bool:
-    return env_get("NUXIVA_MCP_ENGINE", "rust") != "python" and native_core.symbol("RustMcpEngine") is not None
+    return native_core.symbol("RustMcpEngine") is not None
 
 
 def _text(path, default: str) -> str:
@@ -59,6 +59,10 @@ def vault() -> dict:
         data["signing"], data["public"] = bytes(secret).hex(), bytes(public).hex()
         VAULT.save(data)
     return data
+
+
+def mode(flag: str) -> str:
+    return env_get(flag, env_get("NUXIVA_MCP_AREAS", "mcp")).lower()
 
 
 def pressure() -> int:

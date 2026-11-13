@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Strumenti passati al registro unico, vecchio client rimosso",
+    "en": "Tools moved to the single registry, old client removed",
+    "fr": "Outils passés au registre unique, ancien client supprimé",
+    "es": "Herramientas movidas al registro único, cliente antiguo eliminado"
+  },
+  "fixes": [],
+  "features": [
+    {
+      "it": "File, rete, casa, media, comunicazione e comandi passano ora dal registro MCP unico, con permessi, consenso e audit nel nucleo Rust; il vecchio client in Python è stato rimosso.",
+      "en": "Files, network, home, media, communication and commands now go through the single MCP registry, with permissions, consent and audit in the Rust core; the old Python client has been removed.",
+      "fr": "Fichiers, réseau, maison, médias, communication et commandes passent désormais par le registre MCP unique, avec permissions, consentement et audit dans le cœur Rust ; l'ancien client Python a été supprimé.",
+      "es": "Archivos, red, casa, medios, comunicación y comandos pasan ahora por el registro MCP único, con permisos, consentimiento y auditoría en el núcleo Rust; el cliente antiguo de Python se ha eliminado."
+    }
+  ]
+}

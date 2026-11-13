@@ -6,7 +6,6 @@ import json
 import uuid
 from pathlib import Path
 
-from config import env_get
 from agenti.agent import registry
 from agenti.capabilities import schema
 from agenti.mcpclient import calls, engine, store
@@ -27,7 +26,14 @@ def load() -> None:
 
 
 def active(server: str) -> bool:
-    return env_get(AREAS[server]["flag"], "legacy").lower() == "mcp" and engine.available()
+    return engine.mode(AREAS[server]["flag"]) == "mcp" and engine.available()
+
+
+def lenient(spec: dict) -> dict:
+    for prop in spec.get("properties", {}).values():
+        if prop.get("type") in ("integer", "number", "boolean"):
+            prop["type"] = [prop["type"], "string"]
+    return spec
 
 
 def definition(server: str) -> dict | None:
@@ -36,7 +42,7 @@ def definition(server: str) -> dict | None:
         row = registry.TOOLS.get(name)
         if row is None:
             continue
-        tools.append({"name": name, "description": row["description"], "input_schema": schema.input_schema(name),
+        tools.append({"name": name, "description": row["description"], "input_schema": lenient(schema.input_schema(name)),
                       "read_only": bool(traits.get("read_only")), "destructive": bool(traits.get("destructive")),
                       "open_world": bool(traits.get("open_world"))})
     return {"id": server, "kind": "mirror", "config": {"tools": tools}} if tools else None

@@ -9,6 +9,7 @@ tempfile.tempdir = SANDBOX
 os.environ["TMPDIR"] = SANDBOX
 os.environ.pop("NUXIVA_DEMO", None)
 os.environ["NUXIVA_TEST_AUTH"] = "1"
+os.environ.setdefault("NUXIVA_MCP_AREAS", "legacy")
 os.environ["NUXIVA_STATE_ROOT"] = str(Path(SANDBOX) / "state")
 os.environ["NUXIVA_PUBLIC_PORT"] = "8000"
 os.environ["NUXIVA_ADMIN_PORT"] = "8001"

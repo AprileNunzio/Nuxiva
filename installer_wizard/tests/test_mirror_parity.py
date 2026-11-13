@@ -107,6 +107,23 @@ class MirrorTest(unittest.TestCase):
             registry.refresh()
             self.assertTrue(registry.needs_confirm("run_command", {"command": "ls"}))
 
+    def test_production_default_is_mcp_with_per_area_override(self):
+        self.build("legacy")
+        env = {k: v for k, v in os.environ.items() if k not in ("NUXIVA_MCP_AREAS", FLAG)}
+        with mock.patch.dict(os.environ, env, clear=True):
+            self.assertEqual(engine.mode(FLAG), "mcp")
+            self.assertTrue(mirror.active("readonly"))
+        with mock.patch.dict(os.environ, {**env, FLAG: "legacy"}, clear=True):
+            self.assertFalse(mirror.active("readonly"))
+        with mock.patch.dict(os.environ, {**env, "NUXIVA_MCP_AREAS": "legacy"}, clear=True):
+            self.assertFalse(mirror.active("readonly"))
+
+    def test_numeric_and_boolean_arguments_also_accept_text_like_the_old_tools(self):
+        spec = mirror.lenient({"type": "object", "properties": {"n": {"type": "integer"}, "f": {"type": "boolean"}, "s": {"type": "string"}}})
+        self.assertEqual(spec["properties"]["n"]["type"], ["integer", "string"])
+        self.assertEqual(spec["properties"]["f"]["type"], ["boolean", "string"])
+        self.assertEqual(spec["properties"]["s"]["type"], "string")
+
     def test_legacy_mode_never_touches_the_engine(self):
         self.build("legacy")
         run(registry.TOOLS["now"]["fn"]())

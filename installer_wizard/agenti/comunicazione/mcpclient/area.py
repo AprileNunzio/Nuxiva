@@ -1,6 +1,5 @@
 import asyncio
 
-from config import env_get
 from agenti.mcpclient import calls, engine, store
 
 
@@ -11,7 +10,7 @@ class Area:
         engine.INTERNAL[server] = definition
 
     def active(self) -> bool:
-        return env_get(self.flag, "legacy").lower() == "mcp" and engine.available()
+        return engine.mode(self.flag) == "mcp" and engine.available()
 
     def ensure(self) -> None:
         if not engine.published():

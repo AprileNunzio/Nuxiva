@@ -39,6 +39,9 @@ jobs:
       - name: File Access Boundary
         run: python scripts/ci/fs_boundary.py
 
+      - name: MCP Logic Boundary
+        run: python scripts/ci/mcp_boundary.py
+
       - name: Merge Conflict Markers
         run: python scripts/ci/conflict_markers.py
 

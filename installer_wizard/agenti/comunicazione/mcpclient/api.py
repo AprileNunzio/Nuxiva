@@ -10,9 +10,15 @@ public_routes = APIRouter()
 admin_routes = APIRouter()
 
 
+def service():
+    if not runtime.rust():
+        raise HTTPException(503, "Motore MCP nativo non disponibile")
+    return runtime.impl()
+
+
 @admin_routes.get("/api/mcp/servers")
 async def listing(_: str = Depends(require_admin)):
-    return {"servers": [store.public(i, r) for i, r in store.load().items()], "enabled": runtime.impl().enabled()}
+    return {"servers": [store.public(i, r) for i, r in store.load().items()], "enabled": service().enabled()}
 
 
 @admin_routes.post("/api/mcp/servers")
@@ -22,7 +28,7 @@ async def add(request: Request, _: str = Depends(require_admin)):
         server_id = runtime.add_server(body)
     except ValueError as exc:
         raise HTTPException(400, str(exc))
-    count = await runtime.impl().sync_one(server_id)
+    count = await service().sync_one(server_id)
     return {"id": server_id, "tools": count, "status": store.load()[server_id]["status"]}
 
 
@@ -30,7 +36,7 @@ async def add(request: Request, _: str = Depends(require_admin)):
 async def refresh(server_id: str, _: str = Depends(require_admin)):
     if server_id not in store.load():
         raise HTTPException(404, "Server sconosciuto")
-    count = await runtime.impl().sync_one(server_id)
+    count = await service().sync_one(server_id)
     return {"tools": count, "status": store.load()[server_id]["status"]}
 
 
@@ -41,7 +47,7 @@ async def change(server_id: str, request: Request, _: str = Depends(require_admi
     body = await request.json()
     fields = {k: bool(body[k]) for k in ("enabled", "trusted", "lan") if k in body}
     store.update(server_id, **fields)
-    await runtime.impl().sync_one(server_id)
+    await service().sync_one(server_id)
     return {"ok": True}
 
 
@@ -55,18 +61,16 @@ async def remove(server_id: str, _: str = Depends(require_admin)):
 
 @admin_routes.post("/api/mcp/tools/{tool_id}/approve")
 async def approve(tool_id: str, _: str = Depends(require_admin)):
-    if not runtime.rust():
-        raise HTTPException(404, "Funzione non disponibile")
+    service()
     try:
-        await runtime.impl().approve(tool_id)
+        await service().approve(tool_id)
     except ValueError as exc:
         raise HTTPException(400, str(exc.args[0]) if exc.args else "rifiutato")
     return {"ok": True}
 
 
 def need_rust() -> None:
-    if not runtime.rust():
-        raise HTTPException(404, "Funzione non disponibile")
+    service()
 
 
 @admin_routes.get("/api/mcp/status")

@@ -107,6 +107,7 @@ sync_state
 run "Note di rilascio per ogni commit / Release note for every commit" changelog_check
 run "Limite di 500 righe per file / 500-line limit per file" "$PY" scripts/ci/line_limit.py
 run "Accessi ai file solo tramite il server MCP / File access only through the MCP server" "$PY" scripts/ci/fs_boundary.py
+run "Nessuna logica MCP in Python / No MCP logic in Python" "$PY" scripts/ci/mcp_boundary.py
 run "Marcatori di conflitto git / Git conflict markers" "$PY" scripts/ci/conflict_markers.py
 run "Sintassi e analisi statica Python / Python syntax and static analysis" python_static
 run "Sintassi script shell e JavaScript / Shell and JavaScript syntax" script_syntax
