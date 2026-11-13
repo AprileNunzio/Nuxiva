@@ -1779,6 +1779,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "nuxiva-swarm-core"
+version = "5.8.0"
+dependencies = [
+ "nuxiva-agent-core",
+ "serde",
+ "serde_json",
+ "sha2",
+]
+
+[[package]]
 name = "nuxiva-telemetry-core"
 version = "5.8.0"
 dependencies = [

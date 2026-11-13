@@ -225,3 +225,32 @@ fn inspect_reports_missing_parts() {
     assert_eq!(report.optional_missing, vec!["widget/".to_owned()]);
     let _ = fs::remove_dir_all(base);
 }
+
+#[test]
+fn worker_block_is_optional_and_bounded() {
+    let plain = validate(r#"{"id":"ok_id","name":"x"}"#, "ok_id", None);
+    assert!(plain.manifest.is_some_and(|m| m.worker.is_none()));
+    let good = validate(
+        r#"{"id":"ok_id","name":"x","worker":{"kind":"mcp","concurrency_max":4,"tools_scope":["fs.*","fs.*"],"needs_graph":true}}"#,
+        "ok_id",
+        None,
+    );
+    let Some(block) = good.manifest.and_then(|m| m.worker) else {
+        unreachable!("worker block rejected")
+    };
+    assert_eq!(block.kind, "mcp");
+    assert_eq!(block.concurrency_max, 4);
+    assert_eq!(block.tools_scope, vec!["fs.*"]);
+    assert!(block.needs_graph);
+    for (raw, code) in [
+        (r#"{"concurrency_max":257}"#, "out_of_range"),
+        (r#"{"kind":"Bad"}"#, "invalid"),
+        (r#"{"tokens_max":1.5}"#, "type_number"),
+        (r#"{"needs_graph":"si"}"#, "type_bool"),
+    ] {
+        let text = format!(r#"{{"id":"ok_id","name":"x","worker":{raw}}}"#);
+        let report = validate(&text, "ok_id", None);
+        assert!(report.manifest.is_none());
+        assert!(report.issues.iter().any(|i| i.code == code));
+    }
+}

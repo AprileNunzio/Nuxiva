@@ -32,6 +32,25 @@ class ManifestValidationTest(unittest.TestCase):
         self.assertEqual(m["routing"]["nouns"], ["medusa", "ologramma"])
         self.assertEqual(report["issues"], [])
 
+    def test_worker_block_is_optional_and_validated(self):
+        base = {"id": "ok_id", "name": "x"}
+        self.assertIsNone(_manifest.validate(json.dumps(base), "ok_id")["manifest"]["worker"])
+        good = dict(base, worker={"kind": "mcp", "concurrency_max": 4, "tools_scope": ["fs.*", "fs.*"], "needs_graph": True})
+        block = _manifest.validate(json.dumps(good), "ok_id")["manifest"]["worker"]
+        self.assertEqual(block["kind"], "mcp")
+        self.assertEqual(block["tools_scope"], ["fs.*"])
+        self.assertTrue(block["needs_graph"])
+        for worker, code in [
+            ({"concurrency_max": 257}, "out_of_range"),
+            ({"kind": "Bad"}, "invalid"),
+            ({"tokens_max": 1.5}, "type_number"),
+            ({"needs_graph": "si"}, "type_bool"),
+        ]:
+            with self.subTest(code=code):
+                report = _manifest.validate(json.dumps(dict(base, worker=worker)), "ok_id")
+                self.assertIsNone(report["manifest"])
+                self.assertIn(code, [i["code"] for i in report["issues"]])
+
     def test_structural_errors_reject_the_manifest(self):
         cases = [
             ({"id": "Bad Id", "name": "x"}, "id_invalid"),

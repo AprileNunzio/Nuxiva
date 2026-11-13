@@ -1,4 +1,5 @@
 use crate::text::has_control;
+use crate::worker::{self, WorkerBlock};
 use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
 
@@ -56,7 +57,7 @@ pub struct Issue {
 }
 
 impl Issue {
-    fn error(field: &str, code: &str) -> Self {
+    pub(crate) fn error(field: &str, code: &str) -> Self {
         Self {
             field: field.to_owned(),
             code: code.to_owned(),
@@ -98,6 +99,7 @@ pub struct Manifest {
     pub capabilities: Vec<String>,
     pub routing: Routing,
     pub profile: Profile,
+    pub worker: Option<WorkerBlock>,
     pub tools: Vec<String>,
     pub skills: Vec<String>,
     pub widgets: Vec<String>,
@@ -367,6 +369,7 @@ pub fn validate_value(raw: &Value, folder: &str, folder_category: Option<&str>) 
         ),
         routing: routing(obj, &mut issues),
         profile: profile(obj, &mut issues),
+        worker: worker::parse(obj, &mut issues),
         tools: list(obj.get("tools"), "tools", MAX_LIST, &mut issues),
         skills: list(obj.get("skills"), "skills", MAX_LIST, &mut issues),
         widgets: list(obj.get("widgets"), "widgets", MAX_LIST, &mut issues),

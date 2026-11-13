@@ -2,6 +2,7 @@ import json
 import math
 import re
 
+from . import _manifest_worker
 from ._text import has_control, trim
 
 MAX_MANIFEST_BYTES = 64 * 1024
@@ -204,6 +205,7 @@ def validate_value(raw, folder: str, physical: str | None = None) -> dict:
     manifest["capabilities"] = _list(raw.get("capabilities", _MISSING), "capabilities", MAX_LIST, issues)
     manifest["routing"] = _routing(raw, issues)
     manifest["profile"] = _profile(raw, issues)
+    manifest["worker"] = _manifest_worker.parse(raw, issues)
     for key in ("tools", "skills", "widgets"):
         manifest[key] = _list(raw.get(key, _MISSING), key, MAX_LIST, issues)
     manifest["api"] = _text(raw, "api", 64, issues)

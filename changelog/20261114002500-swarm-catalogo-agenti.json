@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "date": "2026-11-14",
+  "title": {
+    "it": "Fondamenta della squadra di agenti: messaggi tipizzati e catalogo dei worker",
+    "en": "Agent team foundations: typed messages and worker catalog",
+    "fr": "Bases de l'équipe d'agents : messages typés et catalogue de workers",
+    "es": "Bases del equipo de agentes: mensajes tipados y catálogo de workers"
+  },
+  "features": [
+    {
+      "it": "Nuxiva ha ora un formato unico e validato per i messaggi tra gli agenti: input multimodale, piani a passi, risultati ed errori, con limiti rigidi e rifiuto di tutto ciò che non è conforme.",
+      "en": "Nuxiva now has a single validated format for messages between agents: multimodal input, step plans, results and errors, with strict limits and rejection of anything non-conforming.",
+      "fr": "Nuxiva dispose désormais d'un format unique et validé pour les messages entre agents : entrée multimodale, plans par étapes, résultats et erreurs, avec des limites strictes et le rejet de tout ce qui n'est pas conforme.",
+      "es": "Nuxiva tiene ahora un formato único y validado para los mensajes entre agentes: entrada multimodal, planes por pasos, resultados y errores, con límites estrictos y rechazo de todo lo que no sea conforme."
+    },
+    {
+      "it": "Ogni agente può dichiarare nel proprio manifest come va eseguito (budget di token, tempo e chiamate, strumenti ammessi, consultazione obbligatoria della conoscenza del progetto); senza dichiarazione valgono valori sicuri di default.",
+      "en": "Each agent can declare in its manifest how it must run (token, time and call budgets, allowed tools, mandatory consultation of project knowledge); without a declaration safe defaults apply.",
+      "fr": "Chaque agent peut déclarer dans son manifeste comment il doit s'exécuter (budgets de jetons, de temps et d'appels, outils autorisés, consultation obligatoire des connaissances du projet) ; sans déclaration, des valeurs sûres par défaut s'appliquent.",
+      "es": "Cada agente puede declarar en su manifiesto cómo debe ejecutarse (presupuestos de tokens, tiempo y llamadas, herramientas permitidas, consulta obligatoria del conocimiento del proyecto); sin declaración se aplican valores seguros por defecto."
+    }
+  ],
+  "fixes": []
+}
